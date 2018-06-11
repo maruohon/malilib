@@ -12,19 +12,22 @@ import fi.dy.masa.malilib.config.IConfigBase;
 import fi.dy.masa.malilib.config.IConfigBoolean;
 import fi.dy.masa.malilib.config.IConfigOptionList;
 import fi.dy.masa.malilib.config.IConfigValue;
-import fi.dy.masa.malilib.config.gui.button.ConfigButtonBase;
-import fi.dy.masa.malilib.config.gui.button.ConfigButtonBoolean;
-import fi.dy.masa.malilib.config.gui.button.ConfigButtonOptionList;
+import fi.dy.masa.malilib.gui.button.ButtonBase;
+import fi.dy.masa.malilib.gui.button.ButtonEntry;
+import fi.dy.masa.malilib.gui.button.ConfigButtonBoolean;
+import fi.dy.masa.malilib.gui.button.ConfigButtonOptionList;
+import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import net.minecraft.client.resources.I18n;
 
 public abstract class ConfigPanelSub extends AbstractConfigPanel
 {
     private final ConfigPanelBase parent;
     private final Map<IConfigValue, ConfigTextField> textFields = new HashMap<>();
-    private final ConfigOptionListenerGeneric<ConfigButtonBase> listener = new ConfigOptionListenerGeneric<>();
-    private final List<ConfigButtonBase> buttons = new ArrayList<>();
+    private final ConfigOptionListenerGeneric<ButtonBase> listener = new ConfigOptionListenerGeneric<>();
+    private final List<ButtonEntry<?>> buttons = new ArrayList<>();
     private final List<HoverInfo> configComments = new ArrayList<>();
     private final String title;
+    protected IConfigValue[] configs = new IConfigValue[0];
     protected int elementWidth = 204;
     protected int maxTextfieldTextLength = 256;
 
@@ -36,11 +39,17 @@ public abstract class ConfigPanelSub extends AbstractConfigPanel
 
     protected IConfigValue[] getConfigs()
     {
-        return new IConfigValue[0];
+        return this.configs;
     }
 
     protected void onSettingsChanged()
     {
+    }
+
+    public ConfigPanelSub setElementWidth(int elementWidth)
+    {
+        this.elementWidth = elementWidth;
+        return this;
     }
 
     @Override
@@ -83,12 +92,11 @@ public abstract class ConfigPanelSub extends AbstractConfigPanel
      */
     protected boolean mousePressed(int mouseX, int mouseY, int mouseButton)
     {
-        for (ConfigButtonBase button : this.buttons)
+        for (ButtonEntry<?> entry : this.buttons)
         {
-            if (button.mousePressed(this.mc, mouseX, mouseY))
+            if (entry.mousePressed(this.mc, mouseX, mouseY, mouseButton))
             {
-                button.onMouseButtonClicked(mouseButton);
-                this.listener.actionPerformed(button);
+                // Don't call super if the button press got handled
                 return true;
             }
         }
@@ -96,10 +104,11 @@ public abstract class ConfigPanelSub extends AbstractConfigPanel
         return false;
     }
 
-    protected <T extends ConfigButtonBase> void addButton(T button, ConfigOptionListener<T> listener)
+    protected <T extends ButtonBase> ButtonEntry<T> addButton(T button, IButtonActionListener<T> listener)
     {
-        this.buttons.add(button);
-        this.addControl(button, listener);
+        ButtonEntry<T> entry = new ButtonEntry<>(button, listener);
+        this.buttons.add(entry);
+        return entry;
     }
 
     protected boolean handleTextFields()
@@ -133,7 +142,7 @@ public abstract class ConfigPanelSub extends AbstractConfigPanel
         return dirty;
     }
 
-    protected ConfigOptionListenerGeneric<ConfigButtonBase> getConfigListener()
+    protected ConfigOptionListenerGeneric<ButtonBase> getConfigListener()
     {
         return this.listener;
     }
@@ -189,12 +198,15 @@ public abstract class ConfigPanelSub extends AbstractConfigPanel
     {
         super.clearOptions();
         this.buttons.clear();
+        this.textFields.clear();
     }
 
     @Override
     public void drawPanel(ConfigPanelHost host, int mouseX, int mouseY, float partialTicks)
     {
         super.drawPanel(host, mouseX, mouseY, partialTicks);
+
+        this.drawButtons(mouseX, mouseY, partialTicks);
 
         for (HoverInfo label : this.configComments)
         {
@@ -203,6 +215,14 @@ public abstract class ConfigPanelSub extends AbstractConfigPanel
                 this.drawHoveringText(label.getLines(), label.x, label.y + 30);
                 break;
             }
+        }
+    }
+
+    protected void drawButtons(int mouseX, int mouseY, float partialTicks)
+    {
+        for (ButtonEntry<?> entry : this.buttons)
+        {
+            entry.draw(this.mc, mouseX, mouseY, partialTicks);
         }
     }
 

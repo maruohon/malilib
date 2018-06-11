@@ -1,9 +1,9 @@
-package fi.dy.masa.malilib.config.gui.button;
+package fi.dy.masa.malilib.gui.button;
 
 import fi.dy.masa.malilib.config.IConfigOptionList;
 import net.minecraft.client.Minecraft;
 
-public class ConfigButtonOptionList extends ConfigButtonBase
+public class ConfigButtonOptionList extends ButtonBase
 {
     private final IConfigOptionList config;
 

@@ -2,6 +2,8 @@ language.name=English
 language.region=US
 language.code=en_US
 
+malilib.gui.button.reset.caps=RESET
+
 malilib.message.toggled=Toggled %s %s
 malilib.message.value.off=OFF
 malilib.message.value.on=ON

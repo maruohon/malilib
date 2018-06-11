@@ -158,6 +158,12 @@ public class KeybindMulti implements IKeybind
     }
 
     @Override
+    public void resetToDefault()
+    {
+        this.setKeysFromStorageString(this.defaultStorageString);
+    }
+
+    @Override
     public String getStorageString()
     {
         StringBuilder sb = new StringBuilder(32);

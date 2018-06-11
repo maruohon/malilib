@@ -1,10 +1,10 @@
-package fi.dy.masa.malilib.config.gui.button;
+package fi.dy.masa.malilib.gui.button;
 
 import fi.dy.masa.malilib.config.IConfigBoolean;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.TextFormatting;
 
-public class ConfigButtonBoolean extends ConfigButtonBase
+public class ConfigButtonBoolean extends ButtonBase
 {
     private final IConfigBoolean config;
 

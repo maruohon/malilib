@@ -45,6 +45,8 @@ public interface IKeybind
      */
     boolean isModified();
 
+    void resetToDefault();
+
     Collection<Integer> getKeys();
 
     void setCallback(@Nullable IHotkeyCallback callback);

@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.config.gui.button;
+package fi.dy.masa.malilib.gui.button;
 
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.input.Keyboard;
@@ -7,7 +7,7 @@ import fi.dy.masa.malilib.hotkeys.IHotkey;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
 import net.minecraft.util.text.TextFormatting;
 
-public class ConfigButtonHotkey extends ConfigButtonBase
+public class ConfigButtonHotkey extends ButtonBase
 {
     private final ConfigPanelHotkeysBase host;
     private final IHotkey hotkey;
@@ -85,7 +85,7 @@ public class ConfigButtonHotkey extends ConfigButtonBase
         this.updateDisplayString();
     }
 
-    private void updateDisplayString()
+    public void updateDisplayString()
     {
         String valueStr = this.hotkey.getKeybind().getKeysDisplayString();
 
@@ -98,12 +98,6 @@ public class ConfigButtonHotkey extends ConfigButtonBase
         {
             this.displayString = "> " + TextFormatting.YELLOW + valueStr + TextFormatting.RESET + " <";
         }
-        /*
-        else if (isConflicted(this.hotkey.getKeybind()))
-        {
-            this.displayString = TextFormatting.RED + valueStr + TextFormatting.RESET;
-        }
-        */
         else
         {
             this.displayString = valueStr;
