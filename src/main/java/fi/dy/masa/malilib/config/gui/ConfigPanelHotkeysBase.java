@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.config.gui;
 import javax.annotation.Nullable;
 import com.mumfrey.liteloader.modconfig.ConfigPanelHost;
 import fi.dy.masa.malilib.config.gui.button.ConfigButtonHotkey;
+import fi.dy.masa.malilib.hotkeys.KeybindEventHandler;
 
 public abstract class ConfigPanelHotkeysBase extends ConfigPanelSub
 {
@@ -11,6 +12,12 @@ public abstract class ConfigPanelHotkeysBase extends ConfigPanelSub
     public ConfigPanelHotkeysBase(String title, ConfigPanelBase parent)
     {
         super(title, parent);
+    }
+
+    @Override
+    protected void onSettingsChanged()
+    {
+        KeybindEventHandler.getInstance().updateUsedKeys();
     }
 
     public void setActiveButton(@Nullable ConfigButtonHotkey button)

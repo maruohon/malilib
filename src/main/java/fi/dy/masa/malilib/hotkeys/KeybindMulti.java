@@ -17,9 +17,16 @@ public class KeybindMulti implements IKeybind
 
     private List<Integer> keyCodes = new ArrayList<>(4);
     private boolean pressed;
+    private boolean pressedLast;
     private int heldTime;
+    private final String defaultStorageString;
     @Nullable
     private IHotkeyCallback callback;
+
+    private KeybindMulti(String defaultStorageString)
+    {
+        this.defaultStorageString = defaultStorageString;
+    }
 
     @Override
     public void setCallback(@Nullable IHotkeyCallback callback)
@@ -41,34 +48,20 @@ public class KeybindMulti implements IKeybind
     @Override
     public boolean isPressed()
     {
-        if (this.isValid())
-        {
-            boolean pressedLast = this.pressed;
-
-            this.updateIsPressed();
-
-            return this.pressed && pressedLast == false && this.heldTime == 0;
-        }
-        else
-        {
-            this.pressed = false;
-            return false;
-        }
+        return this.pressed && this.pressedLast == false && this.heldTime == 0;
     }
 
-    /**
-     * Returns whether the keybind is being held down.
-     * @return
-     */
     @Override
     public boolean isKeybindHeld()
     {
         return this.pressed;
     }
 
-    private void updateIsPressed()
+    @Override
+    public boolean updateIsPressed()
     {
         int activeCount = 0;
+        boolean cancel = false;
 
         for (int i = 0; i < this.keyCodes.size(); ++i)
         {
@@ -101,13 +94,15 @@ public class KeybindMulti implements IKeybind
 
             if (pressedLast && this.callback != null)
             {
-                this.callback.onKeyAction(KeyAction.RELEASE, this);
+                cancel = this.callback.onKeyAction(KeyAction.RELEASE, this);
             }
         }
         else if (pressedLast == false && this.heldTime == 0 && this.callback != null)
         {
-            this.callback.onKeyAction(KeyAction.PRESS, this);
+            cancel = this.callback.onKeyAction(KeyAction.PRESS, this);
         }
+
+        return cancel;
     }
 
     @Override
@@ -134,6 +129,8 @@ public class KeybindMulti implements IKeybind
         {
             this.heldTime++;
         }
+
+        this.pressedLast = this.pressed;
     }
 
     @Override
@@ -152,6 +149,12 @@ public class KeybindMulti implements IKeybind
     public String getKeysDisplayString()
     {
         return this.getStorageString().replaceAll(",", " + ");
+    }
+
+    @Override
+    public boolean isModified()
+    {
+        return this.getStorageString().equals(this.defaultStorageString) == false;
     }
 
     @Override
@@ -218,7 +221,7 @@ public class KeybindMulti implements IKeybind
 
     public static KeybindMulti fromStorageString(String str)
     {
-        KeybindMulti keybind = new KeybindMulti();
+        KeybindMulti keybind = new KeybindMulti(str);
         keybind.setKeysFromStorageString(str);
         return keybind;
     }

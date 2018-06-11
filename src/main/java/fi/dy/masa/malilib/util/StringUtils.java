@@ -1,5 +1,9 @@
 package fi.dy.masa.malilib.util;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.text.ChatType;
+import net.minecraft.util.text.TextComponentTranslation;
+
 public class StringUtils
 {
     /**
@@ -19,4 +23,9 @@ public class StringUtils
            " "
         );
      }
+
+    public static void printActionbarMessage(String key, Object... args)
+    {
+        Minecraft.getMinecraft().ingameGUI.addChatMessage(ChatType.GAME_INFO, new TextComponentTranslation(key, args));
+    }
 }

@@ -25,6 +25,8 @@ public abstract class ConfigPanelSub extends AbstractConfigPanel
     private final List<ConfigButtonBase> buttons = new ArrayList<>();
     private final List<HoverInfo> configComments = new ArrayList<>();
     private final String title;
+    protected int elementWidth = 204;
+    protected int maxTextfieldTextLength = 256;
 
     public ConfigPanelSub(String title, ConfigPanelBase parent)
     {
@@ -32,9 +34,14 @@ public abstract class ConfigPanelSub extends AbstractConfigPanel
         this.parent = parent;
     }
 
-    protected abstract IConfigValue[] getConfigs();
+    protected IConfigValue[] getConfigs()
+    {
+        return new IConfigValue[0];
+    }
 
-    protected abstract void onSettingsChanged();
+    protected void onSettingsChanged()
+    {
+    }
 
     @Override
     public String getPanelTitle()
@@ -138,6 +145,7 @@ public abstract class ConfigPanelSub extends AbstractConfigPanel
 
         int x = 10;
         int y = 10;
+        int configWidth = this.elementWidth;
         int configHeight = 20;
         int labelWidth = this.getMaxLabelWidth(this.getConfigs()) + 10;
 
@@ -155,20 +163,20 @@ public abstract class ConfigPanelSub extends AbstractConfigPanel
 
             if (type == ConfigType.BOOLEAN)
             {
-                this.addButton(new ConfigButtonBoolean(0, x + labelWidth, y, 204, configHeight, (IConfigBoolean) config), this.listener);
+                this.addButton(new ConfigButtonBoolean(0, x + labelWidth, y, configWidth, configHeight, (IConfigBoolean) config), this.listener);
             }
             else if (type == ConfigType.OPTION_LIST)
             {
-                this.addButton(new ConfigButtonOptionList(0, x + labelWidth, y, 204, configHeight, (IConfigOptionList) config), this.listener);
+                this.addButton(new ConfigButtonOptionList(0, x + labelWidth, y, configWidth, configHeight, (IConfigOptionList) config), this.listener);
             }
             else if (type == ConfigType.STRING ||
                      type == ConfigType.HEX_STRING ||
                      type == ConfigType.INTEGER ||
                      type == ConfigType.DOUBLE)
             {
-                ConfigTextField field = this.addTextField(0, x + labelWidth, y + 1, 200, configHeight - 3);
+                ConfigTextField field = this.addTextField(0, x + labelWidth, y + 1, configWidth - 4, configHeight - 3);
                 field.setText(config.getStringValue());
-                field.getNativeTextField().setMaxStringLength(128);
+                field.getNativeTextField().setMaxStringLength(this.maxTextfieldTextLength);
                 this.addTextField(config, field);
             }
 

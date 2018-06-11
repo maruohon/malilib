@@ -6,6 +6,7 @@ public interface IHotkeyCallback
      * Called when a hotkey action happens.
      * @param action
      * @param key
+     * @return true if further processing of the just pressed key should be cancelled
      */
-    void onKeyAction(KeyAction action, IKeybind key);
+    boolean onKeyAction(KeyAction action, IKeybind key);
 }
