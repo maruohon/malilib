@@ -145,7 +145,7 @@ public class ConfigPanelHotkeysBase extends ConfigPanelSub
         }
     }
 
-    public class ConfigOptionListenerResetKeybind implements IButtonActionListener<ButtonGeneric>
+    protected class ConfigOptionListenerResetKeybind implements IButtonActionListener<ButtonGeneric>
     {
         private final ConfigButtonHotkey buttonHotkey;
         private final ButtonGeneric button;

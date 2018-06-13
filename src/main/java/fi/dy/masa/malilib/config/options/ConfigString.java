@@ -18,19 +18,27 @@ public class ConfigString extends ConfigBase
         this.value = defaultValue;
     }
 
-    public String getValue()
-    {
-        return this.value;
-    }
-
     public String getDefaultValue()
     {
         return this.defaultValue;
     }
 
-    public void setValue(String value)
+    @Override
+    public boolean isModified()
     {
-        this.value = value;
+        return this.value.equals(this.defaultValue) == false;
+    }
+
+    @Override
+    public boolean isModified(String newValue)
+    {
+        return this.defaultValue.equals(newValue) == false;
+    }
+
+    @Override
+    public void resetToDefault()
+    {
+        this.value = this.defaultValue;
     }
 
     @Override

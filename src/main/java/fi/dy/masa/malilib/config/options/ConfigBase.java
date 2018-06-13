@@ -1,7 +1,6 @@
 package fi.dy.masa.malilib.config.options;
 
 import javax.annotation.Nullable;
-import com.google.gson.JsonElement;
 import fi.dy.masa.malilib.config.ConfigType;
 import fi.dy.masa.malilib.config.IConfigValue;
 
@@ -41,14 +40,4 @@ public abstract class ConfigBase implements IConfigValue
     {
         this.comment = comment;
     }
-
-    @Override
-    public abstract String getStringValue();
-
-    @Override
-    public abstract void setValueFromString(String value);
-
-    public abstract void setValueFromJsonElement(JsonElement element);
-
-    public abstract JsonElement getAsJsonElement();
 }

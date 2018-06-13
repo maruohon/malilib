@@ -23,7 +23,8 @@ public class ConfigButtonOptionList extends ButtonBase
         this.playPressSound(Minecraft.getMinecraft().getSoundHandler());
     }
 
-    private void updateDisplayString()
+    @Override
+    public void updateDisplayString()
     {
         this.displayString = String.valueOf(this.config.getOptionListValue().getDisplayName());
     }

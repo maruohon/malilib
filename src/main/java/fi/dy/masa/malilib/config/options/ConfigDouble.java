@@ -39,6 +39,32 @@ public class ConfigDouble extends ConfigBase
     }
 
     @Override
+    public boolean isModified()
+    {
+        return this.value != this.defaultValue;
+    }
+
+    @Override
+    public boolean isModified(String newValue)
+    {
+        try
+        {
+            return Double.parseDouble(newValue) != this.defaultValue;
+        }
+        catch (Exception e)
+        {
+        }
+
+        return true;
+    }
+
+    @Override
+    public void resetToDefault()
+    {
+        this.value = this.defaultValue;
+    }
+
+    @Override
     public String getStringValue()
     {
         return String.valueOf(this.value);

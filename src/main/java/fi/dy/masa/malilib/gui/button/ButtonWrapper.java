@@ -3,12 +3,12 @@ package fi.dy.masa.malilib.gui.button;
 import com.mumfrey.liteloader.modconfig.AbstractConfigPanel.ConfigOptionListener;
 import net.minecraft.client.Minecraft;
 
-public class ButtonEntry<T extends ButtonBase>
+public class ButtonWrapper<T extends ButtonBase>
 {
     private final T button;
     private final IButtonActionListener<T> listener;
     
-    public ButtonEntry(T button, IButtonActionListener<T> listener)
+    public ButtonWrapper(T button, IButtonActionListener<T> listener)
     {
         this.button = button;
         this.listener = listener;

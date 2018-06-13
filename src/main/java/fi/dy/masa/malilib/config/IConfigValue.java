@@ -21,5 +21,23 @@ public interface IConfigValue extends IConfigBase
      * the config GUI textfield.
      * @param value
      */
-    public void setValueFromString(String value);
+    void setValueFromString(String value);
+
+    /**
+     * Returns true if the value has been changed from the default value
+     * @return
+     */
+    boolean isModified();
+
+    /**
+     * Checks whether or not the given value would be modified from the default value.
+     * @param newValue
+     * @return
+     */
+    boolean isModified(String newValue);
+
+    /**
+     * Resets the value back to the default value
+     */
+    void resetToDefault();
 }

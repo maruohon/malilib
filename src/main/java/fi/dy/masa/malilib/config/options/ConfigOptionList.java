@@ -4,42 +4,42 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import fi.dy.masa.malilib.LiteModMaLiLib;
 import fi.dy.masa.malilib.config.ConfigType;
-import fi.dy.masa.malilib.config.IConfigBoolean;
+import fi.dy.masa.malilib.config.IConfigOptionList;
+import fi.dy.masa.malilib.config.IConfigOptionListEntry;
 
-public class ConfigBoolean extends ConfigBase implements IConfigBoolean
+public class ConfigOptionList extends ConfigBase implements IConfigOptionList
 {
     private final String prettyName;
-    private final boolean defaultValue;
-    private boolean value;
+    private final IConfigOptionListEntry defaultValue;
+    private IConfigOptionListEntry value;
 
-    public ConfigBoolean(String name, boolean defaultValue, String comment)
+    public ConfigOptionList(String name, IConfigOptionListEntry defaultValue, String comment)
     {
         this(name, defaultValue, comment, name);
     }
 
-    public ConfigBoolean(String name, boolean defaultValue, String comment, String prettyName)
+    public ConfigOptionList(String name, IConfigOptionListEntry defaultValue, String comment, String prettyName)
     {
-        super(ConfigType.BOOLEAN, name, comment);
+        super(ConfigType.OPTION_LIST, name, comment);
 
         this.prettyName = prettyName;
         this.defaultValue = defaultValue;
         this.value = defaultValue;
     }
 
-    @Override
     public String getPrettyName()
     {
         return this.prettyName;
     }
 
     @Override
-    public boolean getBooleanValue()
+    public IConfigOptionListEntry getOptionListValue()
     {
         return this.value;
     }
 
     @Override
-    public void setBooleanValue(boolean value)
+    public void setOptionListValue(IConfigOptionListEntry value)
     {
         this.value = value;
     }
@@ -53,7 +53,15 @@ public class ConfigBoolean extends ConfigBase implements IConfigBoolean
     @Override
     public boolean isModified(String newValue)
     {
-        return Boolean.parseBoolean(newValue) != this.defaultValue;
+        try
+        {
+            return this.value.fromString(newValue) != this.defaultValue;
+        }
+        catch (Exception e)
+        {
+        }
+
+        return true;
     }
 
     @Override
@@ -65,13 +73,13 @@ public class ConfigBoolean extends ConfigBase implements IConfigBoolean
     @Override
     public String getStringValue()
     {
-        return String.valueOf(this.value);
+        return this.value.getStringValue();
     }
 
     @Override
     public void setValueFromString(String value)
     {
-        this.value = Boolean.parseBoolean(value);
+        this.value = this.value.fromString(value);
     }
 
     @Override
@@ -81,8 +89,7 @@ public class ConfigBoolean extends ConfigBase implements IConfigBoolean
         {
             if (element.isJsonPrimitive())
             {
-                JsonPrimitive primitive = element.getAsJsonPrimitive();
-                this.value = primitive.getAsBoolean();
+                this.setValueFromString(element.getAsString());
             }
             else
             {
@@ -98,6 +105,6 @@ public class ConfigBoolean extends ConfigBase implements IConfigBoolean
     @Override
     public JsonElement getAsJsonElement()
     {
-        return new JsonPrimitive(this.value);
+        return new JsonPrimitive(this.getStringValue());
     }
 }

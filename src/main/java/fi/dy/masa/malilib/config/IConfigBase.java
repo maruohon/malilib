@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.config;
 
 import javax.annotation.Nullable;
+import com.google.gson.JsonElement;
 
 public interface IConfigBase
 {
@@ -17,4 +18,16 @@ public interface IConfigBase
      */
     @Nullable
     String getComment();
+
+    /**
+     * Set the value of this config option from a JSON element (is possible)
+     * @param element
+     */
+    void setValueFromJsonElement(JsonElement element);
+
+    /**
+     * Return the value of this config option as a JSON element, for saving into a config file.
+     * @return
+     */
+    JsonElement getAsJsonElement();
 }

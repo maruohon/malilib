@@ -24,7 +24,8 @@ public class ConfigButtonBoolean extends ButtonBase
         this.playPressSound(Minecraft.getMinecraft().getSoundHandler());
     }
 
-    private void updateDisplayString()
+    @Override
+    public void updateDisplayString()
     {
         String valueStr = String.valueOf(this.config.getBooleanValue());
 

@@ -20,4 +20,8 @@ public abstract class ButtonBase extends GuiButton
     }
 
     public abstract void onMouseButtonClicked(int mouseButton);
+
+    public void updateDisplayString()
+    {
+    }
 }

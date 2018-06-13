@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import com.mumfrey.liteloader.modconfig.AbstractConfigPanel;
 import com.mumfrey.liteloader.modconfig.ConfigPanelHost;
@@ -12,8 +13,13 @@ import fi.dy.masa.malilib.config.IConfigBase;
 import fi.dy.masa.malilib.config.IConfigBoolean;
 import fi.dy.masa.malilib.config.IConfigOptionList;
 import fi.dy.masa.malilib.config.IConfigValue;
+import fi.dy.masa.malilib.config.gui.ConfigOptionListenerResetConfig.ConfigResetterBase;
+import fi.dy.masa.malilib.config.gui.ConfigOptionListenerResetConfig.ConfigResetterButton;
+import fi.dy.masa.malilib.config.gui.ConfigOptionListenerResetConfig.ConfigResetterTextField;
+import fi.dy.masa.malilib.gui.HoverInfo;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
-import fi.dy.masa.malilib.gui.button.ButtonEntry;
+import fi.dy.masa.malilib.gui.button.ButtonGeneric;
+import fi.dy.masa.malilib.gui.button.ButtonWrapper;
 import fi.dy.masa.malilib.gui.button.ConfigButtonBoolean;
 import fi.dy.masa.malilib.gui.button.ConfigButtonOptionList;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
@@ -22,9 +28,10 @@ import net.minecraft.client.resources.I18n;
 public abstract class ConfigPanelSub extends AbstractConfigPanel
 {
     private final ConfigPanelBase parent;
-    private final Map<IConfigValue, ConfigTextField> textFields = new HashMap<>();
-    private final ConfigOptionListenerGeneric<ButtonBase> listener = new ConfigOptionListenerGeneric<>();
-    private final List<ButtonEntry<?>> buttons = new ArrayList<>();
+    private final List<ButtonWrapper<? extends ButtonBase>> buttons = new ArrayList<>();
+    private final Map<IConfigValue, TextFieldWrapper> textFields = new HashMap<>();
+    private final ConfigOptionDirtyListener<ButtonBase> dirtyListener = new ConfigOptionDirtyListener<>();
+    private final List<ConfigOptionListenerResetConfig> configResetListeners = new ArrayList<>();
     private final List<HoverInfo> configComments = new ArrayList<>();
     private final String title;
     protected IConfigValue[] configs = new IConfigValue[0];
@@ -63,10 +70,10 @@ public abstract class ConfigPanelSub extends AbstractConfigPanel
     {
         boolean dirty = false;
 
-        if (this.listener.isDirty())
+        if (this.dirtyListener.isDirty())
         {
             dirty = true;
-            this.listener.resetDirty();
+            this.dirtyListener.resetDirty();
         }
 
         dirty |= this.handleTextFields();
@@ -92,7 +99,7 @@ public abstract class ConfigPanelSub extends AbstractConfigPanel
      */
     protected boolean mousePressed(int mouseX, int mouseY, int mouseButton)
     {
-        for (ButtonEntry<?> entry : this.buttons)
+        for (ButtonWrapper<? extends ButtonBase> entry : this.buttons)
         {
             if (entry.mousePressed(this.mc, mouseX, mouseY, mouseButton))
             {
@@ -104,9 +111,9 @@ public abstract class ConfigPanelSub extends AbstractConfigPanel
         return false;
     }
 
-    protected <T extends ButtonBase> ButtonEntry<T> addButton(T button, IButtonActionListener<T> listener)
+    protected <T extends ButtonBase> ButtonWrapper<T> addButton(T button, IButtonActionListener<T> listener)
     {
-        ButtonEntry<T> entry = new ButtonEntry<>(button, listener);
+        ButtonWrapper<T> entry = new ButtonWrapper<>(button, listener);
         this.buttons.add(entry);
         return entry;
     }
@@ -142,9 +149,9 @@ public abstract class ConfigPanelSub extends AbstractConfigPanel
         return dirty;
     }
 
-    protected ConfigOptionListenerGeneric<ButtonBase> getConfigListener()
+    protected ConfigOptionDirtyListener<ButtonBase> getConfigListener()
     {
-        return this.listener;
+        return this.dirtyListener;
     }
 
     @Override
@@ -152,15 +159,17 @@ public abstract class ConfigPanelSub extends AbstractConfigPanel
     {
         this.clearOptions();
 
-        int x = 10;
+        final int xStart = 10;
+        int x = xStart;
         int y = 10;
         int configWidth = this.elementWidth;
         int configHeight = 20;
-        int labelWidth = this.getMaxLabelWidth(this.getConfigs()) + 10;
+        int labelWidth = this.getMaxLabelWidth(this.getConfigs());
+        int id = 0;
 
         for (IConfigValue config : this.getConfigs())
         {
-            this.addLabel(0, x, y + 7, labelWidth, 8, 0xFFFFFFFF, config.getName());
+            this.addLabel(id++, x, y + 7, labelWidth, 8, 0xFFFFFFFF, config.getName());
 
             String comment = config.getComment();
             ConfigType type = config.getType();
@@ -170,35 +179,87 @@ public abstract class ConfigPanelSub extends AbstractConfigPanel
                 this.addConfigComment(x, y + 2, labelWidth, 10, comment);
             }
 
-            if (type == ConfigType.BOOLEAN)
+            x += labelWidth + 10;
+
+            if (type == ConfigType.BOOLEAN && (config instanceof IConfigBoolean))
             {
-                this.addButton(new ConfigButtonBoolean(0, x + labelWidth, y, configWidth, configHeight, (IConfigBoolean) config), this.listener);
+                ConfigButtonBoolean optionButton = new ConfigButtonBoolean(id++, x, y, configWidth, configHeight, (IConfigBoolean) config);
+                this.addConfigButtonEntry(id++, x + configWidth + 10, y, config, optionButton);
             }
-            else if (type == ConfigType.OPTION_LIST)
+            else if (type == ConfigType.OPTION_LIST && (config instanceof IConfigOptionList))
             {
-                this.addButton(new ConfigButtonOptionList(0, x + labelWidth, y, configWidth, configHeight, (IConfigOptionList) config), this.listener);
+                ConfigButtonOptionList optionButton = new ConfigButtonOptionList(id++, x, y, configWidth, configHeight, (IConfigOptionList) config);
+                this.addConfigButtonEntry(id++, x + configWidth + 10, y, config, optionButton);
             }
             else if (type == ConfigType.STRING ||
                      type == ConfigType.HEX_STRING ||
                      type == ConfigType.INTEGER ||
                      type == ConfigType.DOUBLE)
             {
-                ConfigTextField field = this.addTextField(0, x + labelWidth, y + 1, configWidth - 4, configHeight - 3);
-                field.setText(config.getStringValue());
-                field.getNativeTextField().setMaxStringLength(this.maxTextfieldTextLength);
-                this.addTextField(config, field);
+                this.addConfigTextFieldEntry(id++, x, y, configWidth, configHeight, config);
             }
 
+            x = xStart;
             y += configHeight + 1;
         }
+    }
+
+    protected void addConfigButtonEntry(int id, int xReset, int yReset, IConfigValue config, ButtonBase optionButton)
+    {
+        ButtonGeneric resetButton = this.createResetButton(id, xReset, yReset, config);
+
+        ConfigOptionChangeListenerButton<ButtonBase> listenerChange = new ConfigOptionChangeListenerButton<>(config, this.dirtyListener, resetButton);
+        ConfigOptionListenerResetConfig listenerReset = new ConfigOptionListenerResetConfig(new ConfigResetterButton(optionButton), config, resetButton);
+
+        this.addButton(optionButton, listenerChange);
+        this.addButton(resetButton, listenerReset);
+    }
+
+    protected void addConfigTextFieldEntry(int id, int x, int y, int configWidth, int configHeight, IConfigValue config)
+    {
+        ConfigTextField field = this.addTextField(id++, x, y + 1, configWidth - 4, configHeight - 3);
+        field.setText(config.getStringValue());
+        field.getNativeTextField().setMaxStringLength(this.maxTextfieldTextLength);
+
+        ButtonGeneric resetButton = this.createResetButton(id, x + configWidth + 10, y, config);
+        ConfigOptionChangeListenerTextField listenerChange = new ConfigOptionChangeListenerTextField(config, field, resetButton);
+        ConfigOptionListenerResetConfig listenerReset = new ConfigOptionListenerResetConfig(new ConfigResetterTextField(config, field), config, resetButton);
+
+        this.addTextField(config, field, listenerChange);
+        this.addButton(resetButton, listenerReset);
+    }
+
+    protected ButtonWrapper<ButtonGeneric> createConfigResetButton(int id, int x, int y, IConfigValue config, ConfigResetterBase reset)
+    {
+        String label = I18n.format("malilib.gui.button.reset.caps");
+        int w = this.mc.fontRenderer.getStringWidth(label) + 10;
+        ButtonGeneric buttonReset = new ButtonGeneric(id, x, y, w, 20, label);
+        buttonReset.enabled = config.isModified();
+
+        ConfigOptionListenerResetConfig listener = new ConfigOptionListenerResetConfig(reset, config, buttonReset);
+        this.configResetListeners.add(listener);
+        return this.addButton(buttonReset, listener);
+    }
+
+    protected ButtonGeneric createResetButton(int id, int x, int y, IConfigValue config)
+    {
+        String labelReset = I18n.format("malilib.gui.button.reset.caps");
+        int w = this.mc.fontRenderer.getStringWidth(labelReset) + 10;
+
+        ButtonGeneric resetButton = new ButtonGeneric(id, x, y, w, 20, labelReset);
+        resetButton.enabled = config.isModified();
+
+        return resetButton;
     }
 
     @Override
     public void clearOptions()
     {
         super.clearOptions();
+
         this.buttons.clear();
         this.textFields.clear();
+        this.configResetListeners.clear();
     }
 
     @Override
@@ -212,7 +273,7 @@ public abstract class ConfigPanelSub extends AbstractConfigPanel
         {
             if (label.isMouseOver(mouseX, mouseY))
             {
-                this.drawHoveringText(label.getLines(), label.x, label.y + 30);
+                this.drawHoveringText(label.getLines(), label.getX(), label.getY() + 30);
                 break;
             }
         }
@@ -220,20 +281,22 @@ public abstract class ConfigPanelSub extends AbstractConfigPanel
 
     protected void drawButtons(int mouseX, int mouseY, float partialTicks)
     {
-        for (ButtonEntry<?> entry : this.buttons)
+        for (ButtonWrapper<?> entry : this.buttons)
         {
             entry.draw(this.mc, mouseX, mouseY, partialTicks);
         }
     }
 
-    protected void addTextField(IConfigValue config, ConfigTextField field)
+    protected void addTextField(IConfigValue config, ConfigTextField field, ConfigOptionChangeListenerTextField listener)
     {
-        this.textFields.put(config, field);
+        this.textFields.put(config, new TextFieldWrapper(field, listener));
     }
 
+    @Nullable
     protected ConfigTextField getTextFieldFor(IConfigValue config)
     {
-        return this.textFields.get(config);
+        TextFieldWrapper wrapper = this.textFields.get(config);
+        return wrapper != null ? wrapper.getTextField() : null;
     }
 
     protected void addConfigComment(int x, int y, int width, int height, String comment)
@@ -265,6 +328,14 @@ public abstract class ConfigPanelSub extends AbstractConfigPanel
         }
 
         super.keyPressed(host, keyChar, keyCode);
+
+        for (TextFieldWrapper wrapper : this.textFields.values())
+        {
+            if (wrapper.keyTyped(keyChar, keyCode))
+            {
+                break;
+            }
+        }
     }
 
     /**
@@ -274,47 +345,5 @@ public abstract class ConfigPanelSub extends AbstractConfigPanel
     public boolean hasModifications()
     {
         return false;
-    }
-
-    public static class HoverInfo
-    {
-        protected final List<String> lines;
-        protected int x;
-        protected int y;
-        protected int width;
-        protected int height;
-
-        public HoverInfo(int x, int y, int width, int height)
-        {
-            this.lines = new ArrayList<>();
-            this.x = x;
-            this.y = y;
-            this.width = width;
-            this.height = height;
-        }
-
-        public void addLines(String... lines)
-        {
-            for (String line : lines)
-            {
-                line = I18n.format(line);
-                String[] split = line.split("\n");
-
-                for (String str : split)
-                {
-                    this.lines.add(str);
-                }
-            }
-        }
-
-        public List<String> getLines()
-        {
-            return this.lines;
-        }
-
-        public boolean isMouseOver(int mouseX, int mouseY)
-        {
-            return mouseX >= this.x && mouseX <= (this.x + this.width) && mouseY >= this.y && mouseY <= (this.y + this.height);
-        }
     }
 }
