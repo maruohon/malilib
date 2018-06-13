@@ -130,6 +130,18 @@ processResources
     }
 }
 
+task deobfJar(type: Jar) {
+    from sourceSets.main.output
+    // This classifier is standard and should not be changed
+    classifier = 'deobf'
+}
+
+// This section enables the last two tasks
+artifacts {
+    //archives sourcesJar
+    archives deobfJar
+}
+
 tasks.publish.dependsOn build
 publishing {
     publications {
@@ -137,6 +149,7 @@ publishing {
             artifactId project.archivesBaseName
             from components.java
 
+            artifact deobfJar
             artifact sourceJar
         }
     }
