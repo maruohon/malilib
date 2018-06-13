@@ -16,6 +16,7 @@ public class KeybindMulti implements IKeybind
     private static Set<Integer> pressedKeys = new HashSet<>();
 
     private List<Integer> keyCodes = new ArrayList<>(4);
+    private boolean isStrict = true;
     private boolean pressed;
     private boolean pressedLast;
     private int heldTime;
@@ -26,6 +27,12 @@ public class KeybindMulti implements IKeybind
     private KeybindMulti(String defaultStorageString)
     {
         this.defaultStorageString = defaultStorageString;
+    }
+
+    @Override
+    public void setIsStrict(boolean isStrict)
+    {
+        this.isStrict = isStrict;
     }
 
     @Override
@@ -86,7 +93,7 @@ public class KeybindMulti implements IKeybind
         }
 
         boolean pressedLast = this.pressed;
-        this.pressed = pressedKeys.size() == activeCount && this.keyCodes.size() == activeCount;
+        this.pressed = this.keyCodes.size() == activeCount && (this.isStrict == false || pressedKeys.size() == activeCount);
 
         if (this.pressed == false)
         {

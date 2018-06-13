@@ -26,6 +26,12 @@ public interface IKeybind
      */
     boolean updateIsPressed();
 
+    /**
+     * Sets whether or not this keybind should check that no other keys are allowed to be pressed
+     * @param isStrict
+     */
+    void setIsStrict(boolean isStrict);
+
     void clearKeys();
 
     void addKey(int keyCode);
