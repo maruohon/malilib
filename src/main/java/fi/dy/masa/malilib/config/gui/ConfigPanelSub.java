@@ -11,6 +11,7 @@ import com.mumfrey.liteloader.modconfig.ConfigPanelHost;
 import fi.dy.masa.malilib.config.ConfigType;
 import fi.dy.masa.malilib.config.IConfigBase;
 import fi.dy.masa.malilib.config.IConfigBoolean;
+import fi.dy.masa.malilib.config.IConfigHotkey;
 import fi.dy.masa.malilib.config.IConfigOptionList;
 import fi.dy.masa.malilib.config.IConfigValue;
 import fi.dy.masa.malilib.config.gui.ConfigOptionListenerResetConfig.ConfigResetterBase;
@@ -21,8 +22,11 @@ import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.ButtonWrapper;
 import fi.dy.masa.malilib.gui.button.ConfigButtonBoolean;
+import fi.dy.masa.malilib.gui.button.ConfigButtonKeybind;
 import fi.dy.masa.malilib.gui.button.ConfigButtonOptionList;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
+import fi.dy.masa.malilib.hotkeys.IKeybind;
+import fi.dy.masa.malilib.hotkeys.KeybindEventHandler;
 import net.minecraft.client.resources.I18n;
 
 public abstract class ConfigPanelSub extends AbstractConfigPanel
@@ -32,8 +36,10 @@ public abstract class ConfigPanelSub extends AbstractConfigPanel
     private final Map<IConfigValue, TextFieldWrapper> textFields = new HashMap<>();
     private final ConfigOptionDirtyListener<ButtonBase> dirtyListener = new ConfigOptionDirtyListener<>();
     private final List<ConfigOptionListenerResetConfig> configResetListeners = new ArrayList<>();
+    protected final List<ConfigOptionListenerResetKeybind> hotkeyResetListeners = new ArrayList<>();
     private final List<HoverInfo> configComments = new ArrayList<>();
     private final String title;
+    protected ConfigButtonKeybind activeKeybindButton;
     protected IConfigValue[] configs = new IConfigValue[0];
     protected int elementWidth = 204;
     protected int maxTextfieldTextLength = 256;
@@ -51,6 +57,10 @@ public abstract class ConfigPanelSub extends AbstractConfigPanel
 
     protected void onSettingsChanged()
     {
+        if (this.hotkeyResetListeners.size() > 0)
+        {
+            KeybindEventHandler.getInstance().updateUsedKeys();
+        }
     }
 
     public ConfigPanelSub setElementWidth(int elementWidth)
@@ -70,10 +80,10 @@ public abstract class ConfigPanelSub extends AbstractConfigPanel
     {
         boolean dirty = false;
 
-        if (this.dirtyListener.isDirty())
+        if (this.getConfigListener().isDirty())
         {
             dirty = true;
-            this.dirtyListener.resetDirty();
+            this.getConfigListener().resetDirty();
         }
 
         dirty |= this.handleTextFields();
@@ -108,6 +118,14 @@ public abstract class ConfigPanelSub extends AbstractConfigPanel
             }
         }
 
+        // When clicking on not-a-button, clear the selection
+        if (this.activeKeybindButton != null)
+        {
+            this.activeKeybindButton.onClearSelection();
+            this.setActiveKeybindButton(null);
+            return true;
+        }
+
         return false;
     }
 
@@ -116,6 +134,30 @@ public abstract class ConfigPanelSub extends AbstractConfigPanel
         ButtonWrapper<T> entry = new ButtonWrapper<>(button, listener);
         this.buttons.add(entry);
         return entry;
+    }
+
+    public void setActiveKeybindButton(@Nullable ConfigButtonKeybind button)
+    {
+        if (this.activeKeybindButton != null)
+        {
+            this.activeKeybindButton.onClearSelection();
+            this.updateKeybindButtons();
+        }
+
+        this.activeKeybindButton = button;
+
+        if (this.activeKeybindButton != null)
+        {
+            this.activeKeybindButton.onSelected();
+        }
+    }
+
+    protected void updateKeybindButtons()
+    {
+        for (ConfigOptionListenerResetKeybind listener : this.hotkeyResetListeners)
+        {
+            listener.updateButtons();
+        }
     }
 
     protected boolean handleTextFields()
@@ -127,7 +169,7 @@ public abstract class ConfigPanelSub extends AbstractConfigPanel
             ConfigType type = config.getType();
 
             if (type == ConfigType.STRING ||
-                type == ConfigType.HEX_STRING ||
+                type == ConfigType.COLOR ||
                 type == ConfigType.INTEGER ||
                 type == ConfigType.DOUBLE)
             {
@@ -191,8 +233,16 @@ public abstract class ConfigPanelSub extends AbstractConfigPanel
                 ConfigButtonOptionList optionButton = new ConfigButtonOptionList(id++, x, y, configWidth, configHeight, (IConfigOptionList) config);
                 this.addConfigButtonEntry(id++, x + configWidth + 10, y, config, optionButton);
             }
+            else if (type == ConfigType.HOTKEY && (config instanceof IConfigHotkey))
+            {
+                IKeybind keybind = ((IConfigHotkey) config).getKeybind();
+                ConfigButtonKeybind keybindButton = new ConfigButtonKeybind(id++, x, y, configWidth, configHeight, keybind, this);
+
+                this.addButton(keybindButton, this.getConfigListener());
+                this.addKeybindResetButton(id++, x + configWidth + 10, y, keybind, keybindButton);
+            }
             else if (type == ConfigType.STRING ||
-                     type == ConfigType.HEX_STRING ||
+                     type == ConfigType.COLOR ||
                      type == ConfigType.INTEGER ||
                      type == ConfigType.DOUBLE)
             {
@@ -208,8 +258,8 @@ public abstract class ConfigPanelSub extends AbstractConfigPanel
     {
         ButtonGeneric resetButton = this.createResetButton(id, xReset, yReset, config);
 
-        ConfigOptionChangeListenerButton<ButtonBase> listenerChange = new ConfigOptionChangeListenerButton<>(config, this.dirtyListener, resetButton);
-        ConfigOptionListenerResetConfig listenerReset = new ConfigOptionListenerResetConfig(new ConfigResetterButton(optionButton), config, resetButton);
+        ConfigOptionChangeListenerButton<ButtonBase> listenerChange = new ConfigOptionChangeListenerButton<>(config, this.getConfigListener(), resetButton);
+        ConfigOptionListenerResetConfig listenerReset = new ConfigOptionListenerResetConfig(config, new ConfigResetterButton(optionButton), resetButton, this.getConfigListener());
 
         this.addButton(optionButton, listenerChange);
         this.addButton(resetButton, listenerReset);
@@ -218,12 +268,12 @@ public abstract class ConfigPanelSub extends AbstractConfigPanel
     protected void addConfigTextFieldEntry(int id, int x, int y, int configWidth, int configHeight, IConfigValue config)
     {
         ConfigTextField field = this.addTextField(id++, x, y + 1, configWidth - 4, configHeight - 3);
-        field.setText(config.getStringValue());
         field.getNativeTextField().setMaxStringLength(this.maxTextfieldTextLength);
+        field.setText(config.getStringValue());
 
         ButtonGeneric resetButton = this.createResetButton(id, x + configWidth + 10, y, config);
         ConfigOptionChangeListenerTextField listenerChange = new ConfigOptionChangeListenerTextField(config, field, resetButton);
-        ConfigOptionListenerResetConfig listenerReset = new ConfigOptionListenerResetConfig(new ConfigResetterTextField(config, field), config, resetButton);
+        ConfigOptionListenerResetConfig listenerReset = new ConfigOptionListenerResetConfig(config, new ConfigResetterTextField(config, field), resetButton, this.getConfigListener());
 
         this.addTextField(config, field, listenerChange);
         this.addButton(resetButton, listenerReset);
@@ -236,7 +286,7 @@ public abstract class ConfigPanelSub extends AbstractConfigPanel
         ButtonGeneric buttonReset = new ButtonGeneric(id, x, y, w, 20, label);
         buttonReset.enabled = config.isModified();
 
-        ConfigOptionListenerResetConfig listener = new ConfigOptionListenerResetConfig(reset, config, buttonReset);
+        ConfigOptionListenerResetConfig listener = new ConfigOptionListenerResetConfig(config, reset, buttonReset, this.getConfigListener());
         this.configResetListeners.add(listener);
         return this.addButton(buttonReset, listener);
     }
@@ -252,6 +302,18 @@ public abstract class ConfigPanelSub extends AbstractConfigPanel
         return resetButton;
     }
 
+    protected void addKeybindResetButton(int id, int x, int y, IKeybind keybind, ConfigButtonKeybind buttonHotkey)
+    {
+        String label = I18n.format("malilib.gui.button.reset.caps");
+        int w = this.mc.fontRenderer.getStringWidth(label) + 10;
+        ButtonGeneric button = new ButtonGeneric(id, x, y, w, 20, label);
+        button.enabled = keybind.isModified();
+
+        ConfigOptionListenerResetKeybind listener = new ConfigOptionListenerResetKeybind(keybind, buttonHotkey, button);
+        this.hotkeyResetListeners.add(listener);
+        this.addButton(button, listener);
+    }
+
     @Override
     public void clearOptions()
     {
@@ -260,6 +322,7 @@ public abstract class ConfigPanelSub extends AbstractConfigPanel
         this.buttons.clear();
         this.textFields.clear();
         this.configResetListeners.clear();
+        this.hotkeyResetListeners.clear();
     }
 
     @Override
@@ -321,19 +384,26 @@ public abstract class ConfigPanelSub extends AbstractConfigPanel
     @Override
     public void keyPressed(ConfigPanelHost host, char keyChar, int keyCode)
     {
-        if (keyCode == Keyboard.KEY_ESCAPE)
+        if (this.activeKeybindButton != null)
         {
-            this.parent.setSelectedSubPanel(-1);
-            return;
+            this.activeKeybindButton.onKeyPressed(keyCode);
         }
-
-        super.keyPressed(host, keyChar, keyCode);
-
-        for (TextFieldWrapper wrapper : this.textFields.values())
+        else
         {
-            if (wrapper.keyTyped(keyChar, keyCode))
+            if (keyCode == Keyboard.KEY_ESCAPE)
             {
-                break;
+                this.parent.setSelectedSubPanel(-1);
+                return;
+            }
+
+            super.keyPressed(host, keyChar, keyCode);
+
+            for (TextFieldWrapper wrapper : this.textFields.values())
+            {
+                if (wrapper.keyTyped(keyChar, keyCode))
+                {
+                    break;
+                }
             }
         }
     }

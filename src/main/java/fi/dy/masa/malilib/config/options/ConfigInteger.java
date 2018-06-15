@@ -4,14 +4,20 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import fi.dy.masa.malilib.LiteModMaLiLib;
 import fi.dy.masa.malilib.config.ConfigType;
+import fi.dy.masa.malilib.config.IConfigInteger;
 import net.minecraft.util.math.MathHelper;
 
-public class ConfigInteger extends ConfigBase
+public class ConfigInteger extends ConfigBase implements IConfigInteger
 {
     private final int minValue;
     private final int maxValue;
     private final int defaultValue;
     private int value;
+
+    public ConfigInteger(String name, int defaultValue, String comment)
+    {
+        this(name, defaultValue, Integer.MIN_VALUE, Integer.MAX_VALUE, comment);
+    }
 
     public ConfigInteger(String name, int defaultValue, int minValue, int maxValue, String comment)
     {
@@ -23,17 +29,20 @@ public class ConfigInteger extends ConfigBase
         this.value = defaultValue;
     }
 
-    public int getValue()
+    @Override
+    public int getIntegerValue()
     {
         return this.value;
     }
 
-    public int getDefaultValue()
+    @Override
+    public int getDefaultIntegerValue()
     {
         return this.defaultValue;
     }
 
-    public void setValue(int value)
+    @Override
+    public void setIntegerValue(int value)
     {
         this.value = MathHelper.clamp(value, this.minValue, this.maxValue);
     }
@@ -71,11 +80,17 @@ public class ConfigInteger extends ConfigBase
     }
 
     @Override
+    public String getDefaultStringValue()
+    {
+        return String.valueOf(this.defaultValue);
+    }
+
+    @Override
     public void setValueFromString(String value)
     {
         try
         {
-            this.setValue(Integer.parseInt(value));
+            this.setIntegerValue(Integer.parseInt(value));
         }
         catch (Exception e)
         {
@@ -90,8 +105,7 @@ public class ConfigInteger extends ConfigBase
         {
             if (element.isJsonPrimitive())
             {
-                JsonPrimitive primitive = element.getAsJsonPrimitive();
-                this.setValue(primitive.getAsInt());
+                this.setIntegerValue(element.getAsInt());
             }
             else
             {

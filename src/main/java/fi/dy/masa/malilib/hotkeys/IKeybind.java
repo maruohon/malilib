@@ -2,8 +2,9 @@ package fi.dy.masa.malilib.hotkeys;
 
 import java.util.Collection;
 import javax.annotation.Nullable;
+import fi.dy.masa.malilib.config.IStringRepresentable;
 
-public interface IKeybind
+public interface IKeybind extends IStringRepresentable
 {
     boolean isValid();
 
@@ -41,17 +42,6 @@ public interface IKeybind
     void tick();
 
     String getKeysDisplayString();
-
-    String getStorageString();
-
-    void setKeysFromStorageString(String key);
-
-    /**
-     * Returns true if the keybind has been changed from the default value
-     */
-    boolean isModified();
-
-    void resetToDefault();
 
     Collection<Integer> getKeys();
 

@@ -4,5 +4,7 @@ public interface IConfigOptionList
 {
     IConfigOptionListEntry getOptionListValue();
 
+    IConfigOptionListEntry getDefaultOptionListValue();
+
     void setOptionListValue(IConfigOptionListEntry value);
 }

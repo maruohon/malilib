@@ -2,6 +2,8 @@ package fi.dy.masa.malilib.util;
 
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -225,5 +227,39 @@ public class JsonUtils
         }
 
         return null;
+    }
+
+    public static boolean writeJsonToFile(JsonObject root, File file)
+    {
+        FileWriter writer = null;
+
+        try
+        {
+            writer = new FileWriter(file);
+            writer.write(GSON.toJson(root));
+            writer.close();
+
+            return true;
+        }
+        catch (IOException e)
+        {
+            LiteModMaLiLib.logger.warn("Failed to write JSON data to file '{}'", file.getAbsolutePath(), e);
+        }
+        finally
+        {
+            try
+            {
+                if (writer != null)
+                {
+                    writer.close();
+                }
+            }
+            catch (Exception e)
+            {
+                LiteModMaLiLib.logger.warn("Failed to close JSON file", e);
+            }
+        }
+
+        return false;
     }
 }

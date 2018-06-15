@@ -39,6 +39,12 @@ public class ConfigOptionList extends ConfigBase implements IConfigOptionList
     }
 
     @Override
+    public IConfigOptionListEntry getDefaultOptionListValue()
+    {
+        return this.defaultValue;
+    }
+
+    @Override
     public void setOptionListValue(IConfigOptionListEntry value)
     {
         this.value = value;
@@ -74,6 +80,12 @@ public class ConfigOptionList extends ConfigBase implements IConfigOptionList
     public String getStringValue()
     {
         return this.value.getStringValue();
+    }
+
+    @Override
+    public String getDefaultStringValue()
+    {
+        return this.defaultValue.getStringValue();
     }
 
     @Override

@@ -11,5 +11,7 @@ public interface IConfigBoolean extends IConfigValue
 
     boolean getBooleanValue();
 
+    boolean getDefaultBooleanValue();
+
     void setBooleanValue(boolean value);
 }

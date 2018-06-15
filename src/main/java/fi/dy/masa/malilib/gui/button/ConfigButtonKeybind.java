@@ -2,24 +2,23 @@ package fi.dy.masa.malilib.gui.button;
 
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.input.Keyboard;
-import fi.dy.masa.malilib.config.gui.ConfigPanelHotkeysBase;
-import fi.dy.masa.malilib.hotkeys.IHotkey;
+import fi.dy.masa.malilib.config.gui.ConfigPanelSub;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
 import net.minecraft.util.text.TextFormatting;
 
-public class ConfigButtonHotkey extends ButtonBase
+public class ConfigButtonKeybind extends ButtonBase
 {
-    private final ConfigPanelHotkeysBase host;
-    private final IHotkey hotkey;
+    private final ConfigPanelSub host;
+    private final IKeybind keybind;
     private boolean selected;
     private boolean firstKey;
 
-    public ConfigButtonHotkey(int id, int x, int y, int width, int height, IHotkey hotkey, ConfigPanelHotkeysBase host)
+    public ConfigButtonKeybind(int id, int x, int y, int width, int height, IKeybind keybind, ConfigPanelSub host)
     {
         super(id, x, y, width, height);
 
         this.host = host;
-        this.hotkey = hotkey;
+        this.keybind = keybind;
 
         this.updateDisplayString();
     }
@@ -35,7 +34,7 @@ public class ConfigButtonHotkey extends ButtonBase
         else if (mouseButton == 0)
         {
             this.selected = true;
-            this.host.setActiveButton(this);
+            this.host.setActiveKeybindButton(this);
         }
     }
 
@@ -43,12 +42,10 @@ public class ConfigButtonHotkey extends ButtonBase
     {
         if (this.selected)
         {
-            IKeybind keybind = this.hotkey.getKeybind();
-
             if (keyCode == Keyboard.KEY_ESCAPE)
             {
-                keybind.clearKeys();
-                this.host.setActiveButton(null);
+                this.keybind.clearKeys();
+                this.host.setActiveKeybindButton(null);
             }
             else
             {
@@ -61,15 +58,13 @@ public class ConfigButtonHotkey extends ButtonBase
 
     private void addKey(int keyCode)
     {
-        IKeybind keybind = this.hotkey.getKeybind();
-
         if (this.firstKey)
         {
-            keybind.clearKeys();
+            this.keybind.clearKeys();
             this.firstKey = false;
         }
 
-        keybind.addKey(keyCode);
+        this.keybind.addKey(keyCode);
     }
 
     public void onSelected()
@@ -87,9 +82,9 @@ public class ConfigButtonHotkey extends ButtonBase
 
     public void updateDisplayString()
     {
-        String valueStr = this.hotkey.getKeybind().getKeysDisplayString();
+        String valueStr = this.keybind.getKeysDisplayString();
 
-        if (this.hotkey.getKeybind().isValid() == false || StringUtils.isBlank(valueStr))
+        if (this.keybind.isValid() == false || StringUtils.isBlank(valueStr))
         {
             valueStr = "NONE";
         }

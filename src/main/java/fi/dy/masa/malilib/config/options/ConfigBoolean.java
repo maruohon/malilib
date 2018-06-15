@@ -39,6 +39,12 @@ public class ConfigBoolean extends ConfigBase implements IConfigBoolean
     }
 
     @Override
+    public boolean getDefaultBooleanValue()
+    {
+        return this.defaultValue;
+    }
+
+    @Override
     public void setBooleanValue(boolean value)
     {
         this.value = value;
@@ -69,6 +75,12 @@ public class ConfigBoolean extends ConfigBase implements IConfigBoolean
     }
 
     @Override
+    public String getDefaultStringValue()
+    {
+        return String.valueOf(this.defaultValue);
+    }
+
+    @Override
     public void setValueFromString(String value)
     {
         this.value = Boolean.parseBoolean(value);
@@ -81,8 +93,7 @@ public class ConfigBoolean extends ConfigBase implements IConfigBoolean
         {
             if (element.isJsonPrimitive())
             {
-                JsonPrimitive primitive = element.getAsJsonPrimitive();
-                this.value = primitive.getAsBoolean();
+                this.value = element.getAsBoolean();
             }
             else
             {

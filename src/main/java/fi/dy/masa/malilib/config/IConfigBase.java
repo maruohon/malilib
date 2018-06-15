@@ -6,6 +6,13 @@ import com.google.gson.JsonElement;
 public interface IConfigBase
 {
     /**
+     * Returns the type of this config. Used by the config GUI to determine what kind of control
+     * to use for this config.
+     * @return the type of this config
+     */
+    ConfigType getType();
+
+    /**
      * Returns the config name to display in the config GUIs
      * @return the name of this config
      */

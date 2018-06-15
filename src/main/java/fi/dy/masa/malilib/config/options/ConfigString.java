@@ -18,9 +18,28 @@ public class ConfigString extends ConfigBase
         this.value = defaultValue;
     }
 
-    public String getDefaultValue()
+    @Override
+    public String getStringValue()
+    {
+        return this.value;
+    }
+
+    @Override
+    public String getDefaultStringValue()
     {
         return this.defaultValue;
+    }
+
+    @Override
+    public void setValueFromString(String value)
+    {
+        this.value = value;
+    }
+
+    @Override
+    public void resetToDefault()
+    {
+        this.value = this.defaultValue;
     }
 
     @Override
@@ -36,32 +55,13 @@ public class ConfigString extends ConfigBase
     }
 
     @Override
-    public void resetToDefault()
-    {
-        this.value = this.defaultValue;
-    }
-
-    @Override
-    public String getStringValue()
-    {
-        return this.value;
-    }
-
-    @Override
-    public void setValueFromString(String value)
-    {
-        this.value = value;
-    }
-
-    @Override
     public void setValueFromJsonElement(JsonElement element)
     {
         try
         {
             if (element.isJsonPrimitive())
             {
-                JsonPrimitive primitive = element.getAsJsonPrimitive();
-                this.value = primitive.getAsString();
+                this.value = element.getAsString();
             }
             else
             {

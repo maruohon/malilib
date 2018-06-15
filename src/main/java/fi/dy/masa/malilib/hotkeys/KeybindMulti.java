@@ -10,17 +10,19 @@ import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import com.google.common.collect.ImmutableList;
+import fi.dy.masa.malilib.util.IMinecraftAccessor;
+import net.minecraft.client.Minecraft;
 
 public class KeybindMulti implements IKeybind
 {
     private static Set<Integer> pressedKeys = new HashSet<>();
 
+    private final String defaultStorageString;
     private List<Integer> keyCodes = new ArrayList<>(4);
     private boolean isStrict = true;
     private boolean pressed;
     private boolean pressedLast;
     private int heldTime;
-    private final String defaultStorageString;
     @Nullable
     private IHotkeyCallback callback;
 
@@ -67,6 +69,11 @@ public class KeybindMulti implements IKeybind
     @Override
     public boolean updateIsPressed()
     {
+        if (this.isValid() == false)
+        {
+            return false;
+        }
+
         int activeCount = 0;
         boolean cancel = false;
 
@@ -104,9 +111,18 @@ public class KeybindMulti implements IKeybind
                 cancel = this.callback.onKeyAction(KeyAction.RELEASE, this);
             }
         }
-        else if (pressedLast == false && this.heldTime == 0 && this.callback != null)
+        else if (pressedLast == false && this.heldTime == 0)
         {
-            cancel = this.callback.onKeyAction(KeyAction.PRESS, this);
+            if (this.keyCodes.contains(Keyboard.KEY_F3))
+            {
+                // Prevent the debug GUI from opening after the F3 key is released
+                ((IMinecraftAccessor) Minecraft.getMinecraft()).setActionKeyF3(true);
+            }
+
+            if (this.callback != null)
+            {
+                cancel = this.callback.onKeyAction(KeyAction.PRESS, this);
+            }
         }
 
         return cancel;
@@ -155,23 +171,32 @@ public class KeybindMulti implements IKeybind
     @Override
     public String getKeysDisplayString()
     {
-        return this.getStorageString().replaceAll(",", " + ");
+        return this.getStringValue().replaceAll(",", " + ");
     }
 
+    /**
+     * Returns true if the keybind has been changed from the default value
+     */
     @Override
     public boolean isModified()
     {
-        return this.getStorageString().equals(this.defaultStorageString) == false;
+        return this.getStringValue().equals(this.defaultStorageString) == false;
+    }
+
+    @Override
+    public boolean isModified(String newValue)
+    {
+        return this.defaultStorageString.equals(newValue) == false;
     }
 
     @Override
     public void resetToDefault()
     {
-        this.setKeysFromStorageString(this.defaultStorageString);
+        this.setValueFromString(this.defaultStorageString);
     }
 
     @Override
-    public String getStorageString()
+    public String getStringValue()
     {
         StringBuilder sb = new StringBuilder(32);
 
@@ -203,7 +228,13 @@ public class KeybindMulti implements IKeybind
     }
 
     @Override
-    public void setKeysFromStorageString(String str)
+    public String getDefaultStringValue()
+    {
+        return this.defaultStorageString;
+    }
+
+    @Override
+    public void setValueFromString(String str)
     {
         this.clearKeys();
         String[] keys = str.split(",");
@@ -235,7 +266,7 @@ public class KeybindMulti implements IKeybind
     public static KeybindMulti fromStorageString(String str)
     {
         KeybindMulti keybind = new KeybindMulti(str);
-        keybind.setKeysFromStorageString(str);
+        keybind.setValueFromString(str);
         return keybind;
     }
 

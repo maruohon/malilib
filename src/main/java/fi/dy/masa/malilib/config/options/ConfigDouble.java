@@ -4,14 +4,20 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import fi.dy.masa.malilib.LiteModMaLiLib;
 import fi.dy.masa.malilib.config.ConfigType;
+import fi.dy.masa.malilib.config.IConfigDouble;
 import net.minecraft.util.math.MathHelper;
 
-public class ConfigDouble extends ConfigBase
+public class ConfigDouble extends ConfigBase implements IConfigDouble
 {
     private final double minValue;
     private final double maxValue;
     private final double defaultValue;
     private double value;
+
+    public ConfigDouble(String name, double defaultValue, String comment)
+    {
+        this(name, defaultValue, Double.MIN_VALUE, Double.MAX_VALUE, comment);
+    }
 
     public ConfigDouble(String name, double defaultValue, double minValue, double maxValue, String comment)
     {
@@ -23,17 +29,20 @@ public class ConfigDouble extends ConfigBase
         this.value = defaultValue;
     }
 
-    public double getValue()
+    @Override
+    public double getDoubleValue()
     {
         return this.value;
     }
 
-    public double getDefaultValue()
+    @Override
+    public double getDefaultDoubleValue()
     {
         return this.defaultValue;
     }
 
-    public void setValue(double value)
+    @Override
+    public void setDoubleValue(double value)
     {
         this.value = MathHelper.clamp(value, this.minValue, this.maxValue);
     }
@@ -71,11 +80,17 @@ public class ConfigDouble extends ConfigBase
     }
 
     @Override
+    public String getDefaultStringValue()
+    {
+        return String.valueOf(this.defaultValue);
+    }
+
+    @Override
     public void setValueFromString(String value)
     {
         try
         {
-            this.setValue(Double.parseDouble(value));
+            this.setDoubleValue(Double.parseDouble(value));
         }
         catch (Exception e)
         {
@@ -90,8 +105,7 @@ public class ConfigDouble extends ConfigBase
         {
             if (element.isJsonPrimitive())
             {
-                JsonPrimitive primitive = element.getAsJsonPrimitive();
-                this.setValue(primitive.getAsDouble());
+                this.setDoubleValue(element.getAsDouble());
             }
             else
             {

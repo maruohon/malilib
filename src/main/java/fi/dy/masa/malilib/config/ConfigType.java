@@ -5,9 +5,9 @@ public enum ConfigType
     BOOLEAN,
     INTEGER,
     DOUBLE,
-    HEX_STRING,
+    COLOR,
     STRING,
     STRING_LIST,
-    HOTKEY,
-    OPTION_LIST;
+    OPTION_LIST,
+    HOTKEY;
 }

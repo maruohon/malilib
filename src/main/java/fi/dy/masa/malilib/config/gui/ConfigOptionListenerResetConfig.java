@@ -12,12 +12,15 @@ public class ConfigOptionListenerResetConfig implements IButtonActionListener<Bu
     private final ConfigResetterBase reset;
     private final IConfigValue config;
     private final ButtonGeneric buttonReset;
+    private final ConfigOptionDirtyListener<ButtonBase> dirtyListener;
 
-    public ConfigOptionListenerResetConfig(ConfigResetterBase reset, IConfigValue config, ButtonGeneric buttonReset)
+    public ConfigOptionListenerResetConfig(IConfigValue config, ConfigResetterBase reset,
+            ButtonGeneric buttonReset, ConfigOptionDirtyListener<ButtonBase> dirtyListener)
     {
-        this.reset = reset;
         this.config = config;
+        this.reset = reset;
         this.buttonReset = buttonReset;
+        this.dirtyListener = dirtyListener;
     }
 
     @Override
@@ -25,19 +28,15 @@ public class ConfigOptionListenerResetConfig implements IButtonActionListener<Bu
     {
         this.config.resetToDefault();
         this.buttonReset.playPressSound(Minecraft.getMinecraft().getSoundHandler());
-        this.updateElements();
+        this.buttonReset.enabled = this.config.isModified();
+        this.reset.resetConfigOption();
     }
 
     @Override
     public void actionPerformedWithButton(ButtonGeneric control, int mouseButton)
     {
         this.actionPerformed(control);
-    }
-
-    public void updateElements()
-    {
-        this.buttonReset.enabled = this.config.isModified();
-        this.reset.resetConfigOption();
+        this.dirtyListener.actionPerformedWithButton(control, mouseButton);
     }
 
     public abstract static class ConfigResetterBase
