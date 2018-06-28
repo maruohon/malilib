@@ -123,7 +123,7 @@ public class KeybindEventHandler implements IKeybindManager
     public boolean onMouseInput()
     {
         int eventButton = Mouse.getEventButton();
-        int dWheel = Mouse.getDWheel();
+        int dWheel = Mouse.getEventDWheel();
         boolean eventButtonState = Mouse.getEventButtonState();
         boolean cancel = false;
 
