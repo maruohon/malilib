@@ -3,15 +3,18 @@ package fi.dy.masa.malilib;
 import java.io.File;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import com.mumfrey.liteloader.Configurable;
 import com.mumfrey.liteloader.InitCompleteListener;
 import com.mumfrey.liteloader.LiteMod;
 import com.mumfrey.liteloader.Tickable;
 import com.mumfrey.liteloader.core.LiteLoader;
+import com.mumfrey.liteloader.modconfig.ConfigPanel;
+import fi.dy.masa.malilib.config.gui.MaLiLibConfigPanel;
 import fi.dy.masa.malilib.hotkeys.KeybindEventHandler;
 import fi.dy.masa.malilib.reference.Reference;
 import net.minecraft.client.Minecraft;
 
-public class LiteModMaLiLib implements LiteMod, InitCompleteListener, Tickable
+public class LiteModMaLiLib implements Configurable, LiteMod, InitCompleteListener, Tickable
 {
     public static final Logger logger = LogManager.getLogger(Reference.MOD_ID);
 
@@ -29,6 +32,12 @@ public class LiteModMaLiLib implements LiteMod, InitCompleteListener, Tickable
     public String getVersion()
     {
         return Reference.MOD_VERSION;
+    }
+
+    @Override
+    public Class<? extends ConfigPanel> getConfigPanelClass()
+    {
+        return MaLiLibConfigPanel.class;
     }
 
     @Override

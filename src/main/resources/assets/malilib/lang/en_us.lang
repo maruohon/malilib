@@ -3,6 +3,7 @@ language.region=US
 language.code=en_US
 
 malilib.gui.button.reset.caps=RESET
+malilib.gui.title.all_hotkeys=All registered hotkeys
 
 malilib.message.toggled=Toggled %s %s
 malilib.message.value.off=OFF

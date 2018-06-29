@@ -9,4 +9,14 @@ public interface IKeybindManager
      * @param keybind
      */
     void addKeybindToMap(IKeybind keybind);
+
+    /**
+     * Adds hotkeys for the given mod and category to the master list.
+     * These are used to show a combined view of all registered keybinds
+     * from all mods using this library.
+     * @param modName
+     * @param keyCategory
+     * @param hotkeys
+     */
+    void addHotkeysForCategory(String modName, String keyCategory, IHotkey[] hotkeys);
 }

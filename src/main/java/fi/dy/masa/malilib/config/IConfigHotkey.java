@@ -1,8 +1,8 @@
 package fi.dy.masa.malilib.config;
 
-import fi.dy.masa.malilib.hotkeys.IKeybind;
+import fi.dy.masa.malilib.hotkeys.IHotkey;
 
-public interface IConfigHotkey
+public interface IConfigHotkey extends IHotkey
 {
     /**
      * Returns the "pretty name" for this config.
@@ -10,8 +10,6 @@ public interface IConfigHotkey
      * @return
      */
     String getPrettyName();
-
-    IKeybind getKeybind();
 
     String getStringValue();
 

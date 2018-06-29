@@ -1,19 +1,23 @@
 package fi.dy.masa.malilib.hotkeys;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import net.minecraft.client.resources.I18n;
 
 public class KeybindEventHandler implements IKeybindManager
 {
     private static final KeybindEventHandler INSTANCE = new KeybindEventHandler();
 
     private final Multimap<Integer, IKeybind> hotkeyMap = ArrayListMultimap.create();
+    private final List<KeybindCategory> allKeybinds = new ArrayList<>();
     private final IntOpenHashSet modifierKeys = new IntOpenHashSet();
     private final Set<IKeybindEventHandler> keybindHandlers = new HashSet<>();
 
@@ -35,6 +39,8 @@ public class KeybindEventHandler implements IKeybindManager
     public void registerKeyEventHandler(IKeybindEventHandler handler)
     {
         this.keybindHandlers.add(handler);
+
+        handler.addHotkeys(this);
     }
 
     public void unregisterKeyEventHandler(IKeybindEventHandler handler)
@@ -52,6 +58,11 @@ public class KeybindEventHandler implements IKeybindManager
         }
     }
 
+    public List<KeybindCategory> getKeybindCategories()
+    {
+        return this.allKeybinds;
+    }
+
     public boolean isModifierKey(int eventKey)
     {
         return this.modifierKeys.contains(eventKey);
@@ -66,6 +77,16 @@ public class KeybindEventHandler implements IKeybindManager
         {
             this.hotkeyMap.put(key, keybind);
         }
+    }
+
+    @Override
+    public void addHotkeysForCategory(String modName, String keyCategory, IHotkey[] hotkeys)
+    {
+        KeybindCategory cat = new KeybindCategory(modName, keyCategory, hotkeys);
+
+        // Remove a previous entry, if any (matched based on the modName and keyCategory only!)
+        this.allKeybinds.remove(cat);
+        this.allKeybinds.add(cat);
     }
 
     protected boolean checkKeyBindsForChanges(int eventKey)
@@ -147,5 +168,74 @@ public class KeybindEventHandler implements IKeybindManager
         }
 
         return cancel;
+    }
+
+    public static class KeybindCategory implements Comparable<KeybindCategory>
+    {
+        private final String modName;
+        private final String category;
+        private final IHotkey[] hotkeys;
+
+        public KeybindCategory(String modName, String category, IHotkey[] hotkeys)
+        {
+            this.modName = modName;
+            this.category = category;
+            this.hotkeys = hotkeys;
+        }
+
+        public String getModName()
+        {
+            return this.modName;
+        }
+
+        public String getCategory()
+        {
+            return I18n.format(this.category);
+        }
+
+        public IHotkey[] getHotkeys()
+        {
+            return this.hotkeys;
+        }
+
+        @Override
+        public int compareTo(KeybindCategory other)
+        {
+            int val = this.modName.compareTo(other.modName);
+
+            if (val != 0)
+            {
+                return val;
+            }
+
+            return this.category.compareTo(other.category);
+        }
+
+        @Override
+        public boolean equals(Object obj)
+        {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            KeybindCategory other = (KeybindCategory) obj;
+            if (category == null)
+            {
+                if (other.category != null)
+                    return false;
+            }
+            else if (!category.equals(other.category))
+                return false;
+            if (modName == null)
+            {
+                if (other.modName != null)
+                    return false;
+            }
+            else if (!modName.equals(other.modName))
+                return false;
+            return true;
+        }
     }
 }
