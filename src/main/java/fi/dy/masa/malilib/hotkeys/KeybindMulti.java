@@ -282,7 +282,7 @@ public class KeybindMulti implements IKeybind
         return keyCode >= 0 && keyCode < Mouse.getButtonCount() && Mouse.isButtonDown(keyCode);
     }
 
-    static void onKeyInput(int keyCode, boolean state)
+    public static void onKeyInput(int keyCode, boolean state)
     {
         reCheckPressedKeys();
 

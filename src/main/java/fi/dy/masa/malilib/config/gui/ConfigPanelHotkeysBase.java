@@ -3,24 +3,17 @@ package fi.dy.masa.malilib.config.gui;
 import com.mumfrey.liteloader.modconfig.ConfigPanelHost;
 import fi.dy.masa.malilib.gui.button.ConfigButtonKeybind;
 import fi.dy.masa.malilib.hotkeys.IHotkey;
-import fi.dy.masa.malilib.hotkeys.KeybindEventHandler;
 
 public class ConfigPanelHotkeysBase extends ConfigPanelSub
 {
     protected final IHotkey[] hotkeys;
     protected int hotkeyButtonWidth = 200;
 
-    public ConfigPanelHotkeysBase(String title, IHotkey[] hotkeys, ConfigPanelBase parent)
+    public ConfigPanelHotkeysBase(String modId, String title, IHotkey[] hotkeys, ConfigPanelBase parent)
     {
-        super(title, parent);
+        super(modId, title, parent);
 
         this.hotkeys = hotkeys;
-    }
-
-    @Override
-    protected void onSettingsChanged()
-    {
-        KeybindEventHandler.getInstance().updateUsedKeys();
     }
 
     protected IHotkey[] getHotkeys()

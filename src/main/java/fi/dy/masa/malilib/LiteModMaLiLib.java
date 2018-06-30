@@ -6,15 +6,16 @@ import org.apache.logging.log4j.Logger;
 import com.mumfrey.liteloader.Configurable;
 import com.mumfrey.liteloader.InitCompleteListener;
 import com.mumfrey.liteloader.LiteMod;
-import com.mumfrey.liteloader.Tickable;
+import com.mumfrey.liteloader.ShutdownListener;
 import com.mumfrey.liteloader.core.LiteLoader;
 import com.mumfrey.liteloader.modconfig.ConfigPanel;
+import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.config.gui.MaLiLibConfigPanel;
-import fi.dy.masa.malilib.hotkeys.KeybindEventHandler;
+import fi.dy.masa.malilib.event.InputEventHandler;
 import fi.dy.masa.malilib.reference.Reference;
 import net.minecraft.client.Minecraft;
 
-public class LiteModMaLiLib implements Configurable, LiteMod, InitCompleteListener, Tickable
+public class LiteModMaLiLib implements Configurable, LiteMod, InitCompleteListener, ShutdownListener
 {
     public static final Logger logger = LogManager.getLogger(Reference.MOD_ID);
 
@@ -53,12 +54,20 @@ public class LiteModMaLiLib implements Configurable, LiteMod, InitCompleteListen
     @Override
     public void onInitCompleted(Minecraft minecraft, LiteLoader loader)
     {
-        KeybindEventHandler.getInstance().updateUsedKeys();
+        InputEventHandler.getInstance().updateUsedKeys();
     }
 
+    /*
     @Override
-    public void onTick(Minecraft minecraft, float partialTicks, boolean inGame, boolean clock)
+    public void onTick(Minecraft mc, float partialTicks, boolean inGame, boolean clock)
     {
-        KeybindEventHandler.getInstance().tickKeybinds();
+        InputEventHandler.getInstance().tickKeybinds();
+    }
+    */
+
+    @Override
+    public void onShutDown()
+    {
+        ConfigManager.getInstance().saveAllConfigs();
     }
 }

@@ -1,27 +1,34 @@
-package fi.dy.masa.malilib.hotkeys;
+package fi.dy.masa.malilib.event;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import fi.dy.masa.malilib.hotkeys.IHotkey;
+import fi.dy.masa.malilib.hotkeys.IKeybind;
+import fi.dy.masa.malilib.hotkeys.IKeybindManager;
+import fi.dy.masa.malilib.hotkeys.IKeybindProvider;
+import fi.dy.masa.malilib.hotkeys.IKeyboardInputHandler;
+import fi.dy.masa.malilib.hotkeys.IMouseInputHandler;
+import fi.dy.masa.malilib.hotkeys.KeybindMulti;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import net.minecraft.client.resources.I18n;
 
-public class KeybindEventHandler implements IKeybindManager
+public class InputEventHandler implements IKeybindManager
 {
-    private static final KeybindEventHandler INSTANCE = new KeybindEventHandler();
+    private static final InputEventHandler INSTANCE = new InputEventHandler();
 
     private final Multimap<Integer, IKeybind> hotkeyMap = ArrayListMultimap.create();
     private final List<KeybindCategory> allKeybinds = new ArrayList<>();
     private final IntOpenHashSet modifierKeys = new IntOpenHashSet();
-    private final Set<IKeybindEventHandler> keybindHandlers = new HashSet<>();
+    private final List<IKeybindProvider> keybindProviders = new ArrayList<>();
+    private final List<IKeyboardInputHandler> keyboardHandlers = new ArrayList<>();
+    private final List<IMouseInputHandler> mouseHandlers = new ArrayList<>();
 
-    private KeybindEventHandler()
+    private InputEventHandler()
     {
         this.modifierKeys.add(Keyboard.KEY_LSHIFT);
         this.modifierKeys.add(Keyboard.KEY_RSHIFT);
@@ -31,28 +38,57 @@ public class KeybindEventHandler implements IKeybindManager
         this.modifierKeys.add(Keyboard.KEY_RMENU);
     }
 
-    public static KeybindEventHandler getInstance()
+    public static InputEventHandler getInstance()
     {
         return INSTANCE;
     }
 
-    public void registerKeyEventHandler(IKeybindEventHandler handler)
+    public void registerKeybindProvider(IKeybindProvider provider)
     {
-        this.keybindHandlers.add(handler);
+        if (this.keybindProviders.contains(provider) == false)
+        {
+            this.keybindProviders.add(provider);
+        }
 
-        handler.addHotkeys(this);
+        provider.addHotkeys(this);
     }
 
-    public void unregisterKeyEventHandler(IKeybindEventHandler handler)
+    public void unregisterKeybindProvider(IKeybindProvider provider)
     {
-        this.keybindHandlers.remove(handler);
+        this.keybindProviders.remove(provider);
+    }
+
+    public void registerKeyboardInputHandler(IKeyboardInputHandler handler)
+    {
+        if (this.keyboardHandlers.contains(handler) == false)
+        {
+            this.keyboardHandlers.add(handler);
+        }
+    }
+
+    public void unregisterKeyboardInputHandler(IKeyboardInputHandler handler)
+    {
+        this.keyboardHandlers.remove(handler);
+    }
+
+    public void registerMouseInputHandler(IMouseInputHandler handler)
+    {
+        if (this.mouseHandlers.contains(handler) == false)
+        {
+            this.mouseHandlers.add(handler);
+        }
+    }
+
+    public void unregisterMouseInputHandler(IMouseInputHandler handler)
+    {
+        this.mouseHandlers.remove(handler);
     }
 
     public void updateUsedKeys()
     {
         this.hotkeyMap.clear();
 
-        for (IKeybindEventHandler handler : this.keybindHandlers)
+        for (IKeybindProvider handler : this.keybindProviders)
         {
             handler.addKeysToMap(this);
         }
@@ -127,11 +163,14 @@ public class KeybindEventHandler implements IKeybindManager
 
         cancel = this.checkKeyBindsForChanges(eventKey);
 
-        for (IKeybindEventHandler handler : this.keybindHandlers)
+        if (this.keyboardHandlers.isEmpty() == false)
         {
-            if (handler.onKeyInput(eventKey, eventKeyState))
+            for (IKeyboardInputHandler handler : this.keyboardHandlers)
             {
-                return true;
+                if (handler.onKeyInput(eventKey, eventKeyState))
+                {
+                    return true;
+                }
             }
         }
 
@@ -158,11 +197,14 @@ public class KeybindEventHandler implements IKeybindManager
                 cancel = this.checkKeyBindsForChanges(eventButton - 100);
             }
 
-            for (IKeybindEventHandler handler : this.keybindHandlers)
+            if (this.mouseHandlers.isEmpty() == false)
             {
-                if (handler.onMouseInput(eventButton, dWheel, eventButtonState))
+                for (IMouseInputHandler handler : this.mouseHandlers)
                 {
-                    return true;
+                    if (handler.onMouseInput(eventButton, dWheel, eventButtonState))
+                    {
+                        return true;
+                    }
                 }
             }
         }

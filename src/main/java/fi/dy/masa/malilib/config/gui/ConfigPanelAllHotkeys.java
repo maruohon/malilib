@@ -2,10 +2,12 @@ package fi.dy.masa.malilib.config.gui;
 
 import java.util.List;
 import com.mumfrey.liteloader.modconfig.ConfigPanelHost;
+import fi.dy.masa.malilib.config.ConfigManager;
+import fi.dy.masa.malilib.event.InputEventHandler;
+import fi.dy.masa.malilib.event.InputEventHandler.KeybindCategory;
 import fi.dy.masa.malilib.gui.button.ConfigButtonKeybind;
 import fi.dy.masa.malilib.hotkeys.IHotkey;
-import fi.dy.masa.malilib.hotkeys.KeybindEventHandler;
-import fi.dy.masa.malilib.hotkeys.KeybindEventHandler.KeybindCategory;
+import fi.dy.masa.malilib.reference.Reference;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.resources.I18n;
 
@@ -13,7 +15,14 @@ public class ConfigPanelAllHotkeys extends ConfigPanelHotkeysBase
 {
     public ConfigPanelAllHotkeys(MaLiLibConfigPanel parent)
     {
-        super(I18n.format("malilib.gui.title.all_hotkeys"), null, parent);
+        super(Reference.MOD_ID, I18n.format("malilib.gui.title.all_hotkeys"), null, parent);
+    }
+
+    @Override
+    protected void onSettingsChanged()
+    {
+        ConfigManager.getInstance().saveAllConfigs();
+        InputEventHandler.getInstance().updateUsedKeys();
     }
 
     @Override
@@ -27,7 +36,7 @@ public class ConfigPanelAllHotkeys extends ConfigPanelHotkeysBase
         int i = 0;
 
         int maxLabelWidth = 0;
-        List<KeybindCategory> categories = KeybindEventHandler.getInstance().getKeybindCategories();
+        List<KeybindCategory> categories = InputEventHandler.getInstance().getKeybindCategories();
 
         for (KeybindCategory category : categories)
         {

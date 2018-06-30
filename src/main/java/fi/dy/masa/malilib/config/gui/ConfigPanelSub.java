@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import com.mumfrey.liteloader.modconfig.AbstractConfigPanel;
 import com.mumfrey.liteloader.modconfig.ConfigPanelHost;
+import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.config.ConfigType;
 import fi.dy.masa.malilib.config.IConfigBase;
 import fi.dy.masa.malilib.config.IConfigBoolean;
@@ -17,6 +18,7 @@ import fi.dy.masa.malilib.config.IConfigValue;
 import fi.dy.masa.malilib.config.gui.ConfigOptionListenerResetConfig.ConfigResetterBase;
 import fi.dy.masa.malilib.config.gui.ConfigOptionListenerResetConfig.ConfigResetterButton;
 import fi.dy.masa.malilib.config.gui.ConfigOptionListenerResetConfig.ConfigResetterTextField;
+import fi.dy.masa.malilib.event.InputEventHandler;
 import fi.dy.masa.malilib.gui.HoverInfo;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
@@ -26,11 +28,11 @@ import fi.dy.masa.malilib.gui.button.ConfigButtonKeybind;
 import fi.dy.masa.malilib.gui.button.ConfigButtonOptionList;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
-import fi.dy.masa.malilib.hotkeys.KeybindEventHandler;
 import net.minecraft.client.resources.I18n;
 
-public abstract class ConfigPanelSub extends AbstractConfigPanel
+public class ConfigPanelSub extends AbstractConfigPanel
 {
+    private final String modId;
     private final ConfigPanelBase parent;
     private final List<ButtonWrapper<? extends ButtonBase>> buttons = new ArrayList<>();
     private final Map<IConfigValue, TextFieldWrapper> textFields = new HashMap<>();
@@ -44,10 +46,18 @@ public abstract class ConfigPanelSub extends AbstractConfigPanel
     protected int elementWidth = 204;
     protected int maxTextfieldTextLength = 256;
 
-    public ConfigPanelSub(String title, ConfigPanelBase parent)
+    public ConfigPanelSub(String modId, String title, ConfigPanelBase parent)
     {
+        this.modId = modId;
         this.title = title;
         this.parent = parent;
+    }
+
+    public ConfigPanelSub(String modId, String title, IConfigValue[] configs, ConfigPanelBase parent)
+    {
+        this(modId, title, parent);
+
+        this.configs = configs;
     }
 
     protected IConfigValue[] getConfigs()
@@ -57,9 +67,11 @@ public abstract class ConfigPanelSub extends AbstractConfigPanel
 
     protected void onSettingsChanged()
     {
+        ConfigManager.getInstance().onConfigsChanged(this.modId);
+
         if (this.hotkeyResetListeners.size() > 0)
         {
-            KeybindEventHandler.getInstance().updateUsedKeys();
+            InputEventHandler.getInstance().updateUsedKeys();
         }
     }
 

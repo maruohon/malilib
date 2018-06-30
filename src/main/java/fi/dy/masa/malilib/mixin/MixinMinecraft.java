@@ -5,7 +5,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import fi.dy.masa.malilib.hotkeys.KeybindEventHandler;
+import fi.dy.masa.malilib.event.InputEventHandler;
 import fi.dy.masa.malilib.util.IMinecraftAccessor;
 import net.minecraft.client.Minecraft;
 
@@ -25,7 +25,7 @@ public class MixinMinecraft implements IMinecraftAccessor
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;dispatchKeypresses()V"))
     private void onKeyboardInput(CallbackInfo ci)
     {
-        if (KeybindEventHandler.getInstance().onKeyInput())
+        if (InputEventHandler.getInstance().onKeyInput())
         {
             ci.cancel();
         }
@@ -35,7 +35,7 @@ public class MixinMinecraft implements IMinecraftAccessor
             at = @At(value = "INVOKE", target = "Lorg/lwjgl/input/Mouse;getEventButton()I", remap = false))
     private void onMouseInput(CallbackInfo ci)
     {
-        if (KeybindEventHandler.getInstance().onMouseInput())
+        if (InputEventHandler.getInstance().onMouseInput())
         {
             ci.cancel();
         }
