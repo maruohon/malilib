@@ -7,8 +7,6 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import fi.dy.masa.malilib.LiteModMaLiLib;
-import fi.dy.masa.malilib.config.options.ConfigBoolean;
 import fi.dy.masa.malilib.hotkeys.IHotkey;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
 import fi.dy.masa.malilib.hotkeys.IKeybindManager;
@@ -16,15 +14,12 @@ import fi.dy.masa.malilib.hotkeys.IKeybindProvider;
 import fi.dy.masa.malilib.hotkeys.IKeyboardInputHandler;
 import fi.dy.masa.malilib.hotkeys.IMouseInputHandler;
 import fi.dy.masa.malilib.hotkeys.KeybindMulti;
-import fi.dy.masa.malilib.util.StringUtils;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import net.minecraft.client.resources.I18n;
 
 public class InputEventHandler implements IKeybindManager
 {
     private static final InputEventHandler INSTANCE = new InputEventHandler();
-
-    public static final ConfigBoolean KEYBIND_DEBUG = new ConfigBoolean("keybindDebugging", false, "When enabled, key presses and held keys are printed to the action abr and console");
 
     private final Multimap<Integer, IKeybind> hotkeyMap = ArrayListMultimap.create();
     private final List<KeybindCategory> allKeybinds = new ArrayList<>();
@@ -166,16 +161,6 @@ public class InputEventHandler implements IKeybindManager
         // Update the cached pressed keys status
         KeybindMulti.onKeyInput(eventKey, eventKeyState);
 
-        if (KEYBIND_DEBUG.getBooleanValue())
-        {
-            String type = eventKeyState ? "pressed" : "released";
-            String name = Keyboard.getKeyName(eventKey);
-            String held = KeybindMulti.getActiveKeysString();
-            String msg = String.format("%s %s, held keys: %s", type, name, held);
-            StringUtils.printActionbarMessage(msg);
-            LiteModMaLiLib.logger.info(msg);
-        }
-
         cancel = this.checkKeyBindsForChanges(eventKey);
 
         if (this.keyboardHandlers.isEmpty() == false)
@@ -208,16 +193,6 @@ public class InputEventHandler implements IKeybindManager
             {
                 // Update the cached pressed keys status
                 KeybindMulti.onKeyInput(eventButton - 100, eventButtonState);
-
-                if (KEYBIND_DEBUG.getBooleanValue())
-                {
-                    String type = eventButtonState ? "pressed" : "released";
-                    String name = Mouse.getButtonName(eventButton);
-                    String held = KeybindMulti.getActiveKeysString();
-                    String msg = String.format("%s %s, held keys: %s", type, name, held);
-                    StringUtils.printActionbarMessage(msg);
-                    LiteModMaLiLib.logger.info(msg);
-                }
 
                 cancel = this.checkKeyBindsForChanges(eventButton - 100);
             }

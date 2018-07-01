@@ -10,11 +10,16 @@ import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import com.google.common.collect.ImmutableList;
+import fi.dy.masa.malilib.LiteModMaLiLib;
+import fi.dy.masa.malilib.config.options.ConfigBoolean;
 import fi.dy.masa.malilib.util.IMinecraftAccessor;
+import fi.dy.masa.malilib.util.StringUtils;
 import net.minecraft.client.Minecraft;
 
 public class KeybindMulti implements IKeybind
 {
+    public static final ConfigBoolean KEYBIND_DEBUG = new ConfigBoolean("keybindDebugging", false, "When enabled, key presses and held keys are printed to the action abr and console");
+
     private static Set<Integer> pressedKeys = new HashSet<>();
 
     private final String defaultStorageString;
@@ -294,6 +299,11 @@ public class KeybindMulti implements IKeybind
         {
             pressedKeys.remove(keyCode);
         }
+
+        if (KEYBIND_DEBUG.getBooleanValue())
+        {
+            printKeybindDebugMessage(keyCode, state);
+        }
     }
 
     private static void reCheckPressedKeys()
@@ -309,6 +319,16 @@ public class KeybindMulti implements IKeybind
                 iter.remove();
             }
         }
+    }
+
+    private static void printKeybindDebugMessage(int eventKey, boolean eventKeyState)
+    {
+        String keyName = eventKey > 0 ? Keyboard.getKeyName(eventKey) : Mouse.getButtonName(eventKey + 100);
+        String type = eventKeyState ? "pressed" : "released";
+        String held = KeybindMulti.getActiveKeysString();
+        String msg = String.format("%s %s, held keys: %s", type, keyName, held);
+        StringUtils.printActionbarMessage(msg);
+        LiteModMaLiLib.logger.info(msg);
     }
 
     public static String getActiveKeysString()
