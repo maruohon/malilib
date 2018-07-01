@@ -310,4 +310,48 @@ public class KeybindMulti implements IKeybind
             }
         }
     }
+
+    public static String getActiveKeysString()
+    {
+        if (pressedKeys.isEmpty() == false)
+        {
+            StringBuilder sb = new StringBuilder(128);
+            int i = 0;
+
+            for (int key : pressedKeys)
+            {
+                if (i > 0)
+                {
+                    sb.append(" + ");
+                }
+
+                String name;
+
+                if (key > 0)
+                {
+                    name = Keyboard.getKeyName(key);
+                }
+                else
+                {
+                    key += 100;
+
+                    if (key >= 0)
+                    {
+                        name = Mouse.getButtonName(key);
+                    }
+                    else
+                    {
+                        name = "<unknown>";
+                    }
+                }
+
+                sb.append(String.format("%s (%d)", name, key));
+                i++;
+            }
+
+            return sb.toString();
+        }
+
+        return "<none>";
+    }
 }
