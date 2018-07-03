@@ -5,6 +5,12 @@ language.code=en_US
 malilib.gui.button.reset.caps=RESET
 malilib.gui.title.all_hotkeys=All registered hotkeys
 
+malilib.label.aligment.top_left=Top Left
+malilib.label.aligment.top_right=Top Right
+malilib.label.aligment.bottom_left=Bottom Left
+malilib.label.aligment.bottom_right=Bottom Right
+malilib.label.aligment.center=Center
+
 malilib.message.toggled=Toggled %s %s
 malilib.message.value.off=OFF
 malilib.message.value.on=ON

@@ -1,30 +1,34 @@
 package fi.dy.masa.malilib.config;
 
+import net.minecraft.client.resources.I18n;
+
 public enum HudAlignment implements IConfigOptionListEntry
 {
-    TOP_LEFT        ("Top Left"),
-    TOP_RIGHT       ("Top Right"),
-    BOTTOM_LEFT     ("Bottom Left"),
-    BOTTOM_RIGHT    ("Bottom Right"),
-    CENTER          ("Center");
+    TOP_LEFT        ("top_left",        "malilib.label.aligment.top_left"),
+    TOP_RIGHT       ("top_right",       "malilib.label.aligment.top_right"),
+    BOTTOM_LEFT     ("bottom_left",     "malilib.label.aligment.bottom_left"),
+    BOTTOM_RIGHT    ("bottom_right",    "malilib.label.aligment.bottom_right"),
+    CENTER          ("center",          "malilib.label.aligment.center");
 
-    private final String displayName;
+    private final String configString;
+    private final String unlocName;
 
-    private HudAlignment(String displayName)
+    private HudAlignment(String configString, String unlocName)
     {
-        this.displayName = displayName;
+        this.configString = configString;
+        this.unlocName = unlocName;
     }
 
     @Override
     public String getStringValue()
     {
-        return this.name().toLowerCase();
+        return this.configString;
     }
 
     @Override
     public String getDisplayName()
     {
-        return this.displayName;
+        return I18n.format(this.unlocName);
     }
 
     @Override
@@ -58,11 +62,11 @@ public enum HudAlignment implements IConfigOptionListEntry
 
     public static HudAlignment fromStringStatic(String name)
     {
-        for (HudAlignment al : HudAlignment.values())
+        for (HudAlignment aligment : HudAlignment.values())
         {
-            if (al.name().equalsIgnoreCase(name))
+            if (aligment.configString.equalsIgnoreCase(name))
             {
-                return al;
+                return aligment;
             }
         }
 
