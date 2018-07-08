@@ -10,6 +10,7 @@ import fi.dy.masa.malilib.config.IConfigInteger;
 import fi.dy.masa.malilib.config.IConfigOptionList;
 import fi.dy.masa.malilib.config.IConfigOptionListEntry;
 import fi.dy.masa.malilib.config.IConfigValue;
+import fi.dy.masa.malilib.config.IConfigValueChangeCallback;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class ConfigTypeWrapper implements IConfigBoolean, IConfigDouble, IConfigInteger, IConfigOptionList
@@ -45,6 +46,18 @@ public class ConfigTypeWrapper implements IConfigBoolean, IConfigDouble, IConfig
     public String getPrettyName()
     {
         return this.wrappedConfig.getType() == ConfigType.BOOLEAN ? ((IConfigBoolean) this.wrappedConfig).getPrettyName() : this.wrappedConfig.getName();
+    }
+
+    @Override
+    public void onValueChanged()
+    {
+        this.wrappedConfig.onValueChanged();
+    }
+
+    @Override
+    public void setValueChangeCallback(IConfigValueChangeCallback callback)
+    {
+        this.wrappedConfig.setValueChangeCallback(callback);
     }
 
     @Override
