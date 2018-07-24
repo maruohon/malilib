@@ -8,15 +8,17 @@ import net.minecraft.client.Minecraft;
 
 public class ConfigOptionListenerResetKeybind implements IButtonActionListener<ButtonGeneric>
 {
+    private final ConfigPanelSub configPanel;
     private final ConfigButtonKeybind buttonHotkey;
     private final ButtonGeneric button;
     private final IKeybind keybind;
 
-    public ConfigOptionListenerResetKeybind(IKeybind keybind, ConfigButtonKeybind buttonHotkey, ButtonGeneric button)
+    public ConfigOptionListenerResetKeybind(IKeybind keybind, ConfigButtonKeybind buttonHotkey, ButtonGeneric button, ConfigPanelSub configPanel)
     {
         this.buttonHotkey = buttonHotkey;
         this.button = button;
         this.keybind = keybind;
+        this.configPanel = configPanel;
     }
 
     @Override
@@ -31,6 +33,7 @@ public class ConfigOptionListenerResetKeybind implements IButtonActionListener<B
     public void actionPerformedWithButton(ButtonGeneric control, int mouseButton)
     {
         this.actionPerformed(control);
+        this.configPanel.getConfigListener().actionPerformedWithButton(control, mouseButton);
     }
 
     public void updateButtons()

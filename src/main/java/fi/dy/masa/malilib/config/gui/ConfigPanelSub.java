@@ -203,7 +203,7 @@ public class ConfigPanelSub extends AbstractConfigPanel
         return dirty;
     }
 
-    protected ConfigOptionDirtyListener<ButtonBase> getConfigListener()
+    public ConfigOptionDirtyListener<ButtonBase> getConfigListener()
     {
         return this.dirtyListener;
     }
@@ -321,7 +321,7 @@ public class ConfigPanelSub extends AbstractConfigPanel
         ButtonGeneric button = new ButtonGeneric(id, x, y, w, 20, label);
         button.enabled = keybind.isModified();
 
-        ConfigOptionListenerResetKeybind listener = new ConfigOptionListenerResetKeybind(keybind, buttonHotkey, button);
+        ConfigOptionListenerResetKeybind listener = new ConfigOptionListenerResetKeybind(keybind, buttonHotkey, button, this);
         this.hotkeyResetListeners.add(listener);
         this.addButton(button, listener);
     }
