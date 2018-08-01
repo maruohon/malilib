@@ -4,7 +4,9 @@
     "refmap": "mixins.malilib.refmap.json",
     "minVersion": "0.6",
     "client": [
-        "MixinMinecraft"
+        "MixinGuiScreen",
+        "MixinMinecraft",
+        "MixinTabCompleter"
     ],
     "injectors": {
         "defaultRequire": 1
