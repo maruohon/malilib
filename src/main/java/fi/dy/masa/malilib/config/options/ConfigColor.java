@@ -4,19 +4,29 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import fi.dy.masa.malilib.LiteModMaLiLib;
 import fi.dy.masa.malilib.config.ConfigType;
+import fi.dy.masa.malilib.util.Color4f;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class ConfigColor extends ConfigInteger
 {
+    private Color4f color;
+
     public ConfigColor(String name, String defaultValue, String comment)
     {
         super(name, StringUtils.getColor(defaultValue, 0), comment);
+
+        this.color = Color4f.fromColor(this.getIntegerValue());
     }
 
     @Override
     public ConfigType getType()
     {
         return ConfigType.COLOR;
+    }
+
+    public Color4f getColor()
+    {
+        return this.color;
     }
 
     @Override
@@ -35,6 +45,14 @@ public class ConfigColor extends ConfigInteger
     public void setValueFromString(String value)
     {
         this.setIntegerValue(StringUtils.getColor(value, 0));
+    }
+
+    @Override
+    public void setIntegerValue(int value)
+    {
+        super.setIntegerValue(value);
+
+        this.color = Color4f.fromColor(this.getIntegerValue());
     }
 
     @Override
