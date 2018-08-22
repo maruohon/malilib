@@ -10,9 +10,22 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntityBrewingStand;
+import net.minecraft.tileentity.TileEntityFurnace;
+import net.minecraft.util.ResourceLocation;
 
 public class RenderUtils
 {
+    public static final ResourceLocation TEXTURE_BREWING_STAND = new ResourceLocation("textures/gui/container/brewing_stand.png");
+    public static final ResourceLocation TEXTURE_DISPENSER = new ResourceLocation("textures/gui/container/dispenser.png");
+    public static final ResourceLocation TEXTURE_DOUBLE_CHEST = new ResourceLocation("textures/gui/container/generic_54.png");
+    public static final ResourceLocation TEXTURE_FURNACE = new ResourceLocation("textures/gui/container/furnace.png");
+    public static final ResourceLocation TEXTURE_HOPPER = new ResourceLocation("textures/gui/container/hopper.png");
+    public static final ResourceLocation TEXTURE_PLAYER_INV = new ResourceLocation("textures/gui/container/hopper.png");
+    public static final ResourceLocation TEXTURE_SINGLE_CHEST = new ResourceLocation("textures/gui/container/shulker_box.png");
+    public static final ResourceLocation TEXTURE_MAP_BACKGROUND = new ResourceLocation("textures/map/map_background.png");
     //private static final Vec3d LIGHT0_POS = (new Vec3d( 0.2D, 1.0D, -0.7D)).normalize();
     //private static final Vec3d LIGHT1_POS = (new Vec3d(-0.2D, 1.0D,  0.7D)).normalize();
 
@@ -174,6 +187,135 @@ public class RenderUtils
         GlStateManager.disableBlend();
         GlStateManager.enableAlpha();
         GlStateManager.enableTexture2D();
+    }
+
+    public static void renderText(int x, int y, int color, List<String> lines, FontRenderer font)
+    {
+        if (lines.isEmpty() == false)
+        {
+            for (String line : lines)
+            {
+                font.drawString(line, x, y, color);
+                y += font.FONT_HEIGHT + 2;
+            }
+        }
+    }
+
+    public static void renderInventoryBackground(int x, int y, int slotsPerRow, int totalSlots, IInventory inv, Minecraft mc)
+    {
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+
+        if (inv instanceof TileEntityFurnace)
+        {
+            mc.getTextureManager().bindTexture(TEXTURE_FURNACE);
+            mc.ingameGUI.drawTexturedModalRect(x, y      , 0,   0, 176,  80);
+            mc.ingameGUI.drawTexturedModalRect(x, y +  80, 0, 163, 176,   3);
+        }
+        else if (inv instanceof TileEntityBrewingStand)
+        {
+            mc.getTextureManager().bindTexture(TEXTURE_BREWING_STAND);
+            mc.ingameGUI.drawTexturedModalRect(x, y      , 0,   0, 176,  80);
+            mc.ingameGUI.drawTexturedModalRect(x, y +  80, 0, 163, 176,   3);
+        }
+        else if (totalSlots <= 5)
+        {
+            mc.getTextureManager().bindTexture(TEXTURE_HOPPER);
+            mc.ingameGUI.drawTexturedModalRect(x, y      , 0,   0, 176,  50);
+            mc.ingameGUI.drawTexturedModalRect(x, y +  50, 0, 127, 176,   6);
+        }
+        else if (totalSlots <= 9)
+        {
+            mc.getTextureManager().bindTexture(TEXTURE_DISPENSER);
+            mc.ingameGUI.drawTexturedModalRect(x, y      , 0,   0, 176,  83);
+            mc.ingameGUI.drawTexturedModalRect(x, y +  83, 0, 163, 176,   3);
+        }
+        else if (totalSlots <= 27)
+        {
+            mc.getTextureManager().bindTexture(TEXTURE_SINGLE_CHEST);
+            mc.ingameGUI.drawTexturedModalRect(x, y      , 0,   0, 176,  83);
+            mc.ingameGUI.drawTexturedModalRect(x, y +  83, 0, 161, 176,   5);
+        }
+        else if (totalSlots <= 36)
+        {
+            mc.getTextureManager().bindTexture(TEXTURE_DOUBLE_CHEST);
+            mc.ingameGUI.drawTexturedModalRect(x, y     , 0,   0, 176,  89);
+            mc.ingameGUI.drawTexturedModalRect(x, y + 89, 0,   4, 176,   6);
+            mc.ingameGUI.drawTexturedModalRect(x, y + 95, 0, 219, 176,   3);
+        }
+        else
+        {
+            mc.getTextureManager().bindTexture(TEXTURE_DOUBLE_CHEST);
+            mc.ingameGUI.drawTexturedModalRect(x, y      , 0,   0, 176, 139);
+            mc.ingameGUI.drawTexturedModalRect(x, y + 139, 0, 219, 176,   3);
+        }
+    }
+
+    public static void renderInventoryStacks(IInventory inv, int startX, int startY, int slotsPerRow, int startSlot, int maxSlots, Minecraft mc)
+    {
+        if (inv instanceof TileEntityFurnace)
+        {
+            renderStackAt(inv.getStackInSlot(0), startX +  56, startY + 17, 1, mc);
+            renderStackAt(inv.getStackInSlot(1), startX +  56, startY + 53, 1, mc);
+            renderStackAt(inv.getStackInSlot(2), startX + 116, startY + 35, 1, mc);
+            return;
+        }
+        else if (inv instanceof TileEntityBrewingStand)
+        {
+            renderStackAt(inv.getStackInSlot(0), startX +  56, startY + 51, 1, mc);
+            renderStackAt(inv.getStackInSlot(1), startX +  79, startY + 58, 1, mc);
+            renderStackAt(inv.getStackInSlot(2), startX + 102, startY + 51, 1, mc);
+            renderStackAt(inv.getStackInSlot(3), startX +  79, startY + 17, 1, mc);
+            renderStackAt(inv.getStackInSlot(4), startX +  17, startY + 17, 1, mc);
+            return;
+        }
+
+        final int slots = inv.getSizeInventory();
+        int x = startX;
+        int y = startY;
+
+        if (maxSlots < 0)
+        {
+            maxSlots = slots;
+        }
+
+        for (int slot = startSlot, i = 0; slot < slots && i < maxSlots;)
+        {
+            for (int column = 0; column < slotsPerRow && slot < slots && i < maxSlots; ++column, ++slot, ++i)
+            {
+                ItemStack stack = inv.getStackInSlot(slot);
+
+                if (stack.isEmpty() == false)
+                {
+                    renderStackAt(stack, x, y, 1, mc);
+                }
+
+                x += 18;
+            }
+
+            x = startX;
+            y += 18;
+        }
+    }
+
+    public static void renderStackAt(ItemStack stack, float x, float y, float scale, Minecraft mc)
+    {
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(x, y, 0);
+        GlStateManager.scale(scale, scale, 1);
+        GlStateManager.disableLighting();
+
+        //Gui.drawRect(0, 0, 16, 16, 0x20FFFFFF); // light background for the item
+
+        RenderHelper.enableGUIStandardItemLighting();
+
+        mc.getRenderItem().zLevel += 100;
+        mc.getRenderItem().renderItemAndEffectIntoGUI(mc.player, stack, 0, 0);
+        mc.getRenderItem().renderItemOverlayIntoGUI(mc.fontRenderer, stack, 0, 0, null);
+        mc.getRenderItem().zLevel -= 100;
+
+        //GlStateManager.disableBlend();
+        RenderHelper.disableStandardItemLighting();
+        GlStateManager.popMatrix();
     }
 
     /*
