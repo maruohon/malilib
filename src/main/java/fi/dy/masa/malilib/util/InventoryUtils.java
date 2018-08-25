@@ -1,10 +1,12 @@
 package fi.dy.masa.malilib.util;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 
 public class InventoryUtils
 {
@@ -97,5 +99,44 @@ public class InventoryUtils
         }
 
         return -1;
+    }
+
+    /**
+     * Swap the given item to the player's main hand, if that item is found
+     * in the player's inventory.
+     * @param stackReference
+     * @param mc
+     * @return true if an item was swapped to the main hand, false if it was already in the hand, or was not found in the inventory
+     */
+    public static boolean swapItemToMainHand(ItemStack stackReference, Minecraft mc)
+    {
+        EntityPlayer player = mc.player;
+        boolean isCreative = player.capabilities.isCreativeMode;
+
+        // Already holding the requested item
+        if (areStacksEqual(stackReference, player.getHeldItemMainhand()))
+        {
+            return false;
+        }
+
+        if (isCreative)
+        {
+            player.inventory.setPickedItemStack(stackReference);
+            mc.playerController.sendSlotPacket(player.getHeldItem(EnumHand.MAIN_HAND), 36 + player.inventory.currentItem);
+            return true;
+        }
+        else
+        {
+            int slot = findSlotWithItem(player.inventoryContainer, stackReference, true);
+
+            if (slot != -1)
+            {
+                int currentHotbarSlot = player.inventory.currentItem;
+                mc.playerController.windowClick(player.inventoryContainer.windowId, slot, currentHotbarSlot, ClickType.SWAP, mc.player);
+                return true;
+            }
+        }
+
+        return false;
     }
 }
