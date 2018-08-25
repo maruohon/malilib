@@ -32,13 +32,13 @@ public class ConfigColor extends ConfigInteger
     @Override
     public String getStringValue()
     {
-        return String.format("0x%08X", this.getIntegerValue());
+        return String.format("#%08X", this.getIntegerValue());
     }
 
     @Override
     public String getDefaultStringValue()
     {
-        return String.format("0x%08X", this.getDefaultIntegerValue());
+        return String.format("#%08X", this.getDefaultIntegerValue());
     }
 
     @Override
@@ -53,6 +53,20 @@ public class ConfigColor extends ConfigInteger
         super.setIntegerValue(value);
 
         this.color = Color4f.fromColor(this.getIntegerValue());
+    }
+
+    @Override
+    public boolean isModified(String newValue)
+    {
+        try
+        {
+            return StringUtils.getColor(newValue, 0) != this.getDefaultIntegerValue();
+        }
+        catch (Exception e)
+        {
+        }
+
+        return true;
     }
 
     @Override
