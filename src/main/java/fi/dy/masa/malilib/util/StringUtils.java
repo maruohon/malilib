@@ -3,8 +3,10 @@ package fi.dy.masa.malilib.util;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
 
 public class StringUtils
 {
@@ -47,6 +49,14 @@ public class StringUtils
            " "
         );
      }
+
+    public static void printBooleanConfigToggleMessage(String prettyName, boolean newValue)
+    {
+        String pre = newValue ? TextFormatting.GREEN.toString() : TextFormatting.RED.toString();
+        String status = I18n.format("malilib.message.value." + (newValue ? "on" : "off"));
+        String message = I18n.format("malilib.message.toggled", prettyName, pre + status + TextFormatting.RESET);
+        printActionbarMessage(message);
+    }
 
     public static void printActionbarMessage(String key, Object... args)
     {
