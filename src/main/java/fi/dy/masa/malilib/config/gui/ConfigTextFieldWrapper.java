@@ -2,18 +2,18 @@ package fi.dy.masa.malilib.config.gui;
 
 import com.mumfrey.liteloader.modconfig.AbstractConfigPanel.ConfigTextField;
 
-public class TextFieldWrapper
+public class ConfigTextFieldWrapper
 {
     private final ConfigTextField textField;
     private final ConfigOptionChangeListenerTextField listener;
 
-    public TextFieldWrapper(ConfigTextField textField, ConfigOptionChangeListenerTextField listener)
+    public ConfigTextFieldWrapper(ConfigTextField textField, ConfigOptionChangeListenerTextField listener)
     {
         this.textField = textField;
         this.listener = listener;
     }
 
-    public ConfigTextField getTextField()
+    public ConfigTextField getConfigTextField()
     {
         return this.textField;
     }

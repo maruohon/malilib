@@ -2,18 +2,18 @@ package fi.dy.masa.malilib.gui.button;
 
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.input.Keyboard;
-import fi.dy.masa.malilib.config.gui.ConfigPanelSub;
+import fi.dy.masa.malilib.config.gui.IKeybindConfigGui;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
 import net.minecraft.util.text.TextFormatting;
 
 public class ConfigButtonKeybind extends ButtonBase
 {
-    private final ConfigPanelSub host;
+    private final IKeybindConfigGui host;
     private final IKeybind keybind;
     private boolean selected;
     private boolean firstKey;
 
-    public ConfigButtonKeybind(int id, int x, int y, int width, int height, IKeybind keybind, ConfigPanelSub host)
+    public ConfigButtonKeybind(int id, int x, int y, int width, int height, IKeybind keybind, IKeybindConfigGui host)
     {
         super(id, x, y, width, height);
 

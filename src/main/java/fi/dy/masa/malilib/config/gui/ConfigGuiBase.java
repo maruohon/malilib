@@ -1,19 +1,15 @@
 package fi.dy.masa.malilib.config.gui;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
-import com.mumfrey.liteloader.modconfig.AbstractConfigPanel;
-import com.mumfrey.liteloader.modconfig.ConfigPanelHost;
 import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.config.ConfigType;
 import fi.dy.masa.malilib.config.IConfigBase;
-import fi.dy.masa.malilib.config.IConfigBoolean;
-import fi.dy.masa.malilib.config.IConfigHotkey;
-import fi.dy.masa.malilib.config.IConfigOptionList;
 import fi.dy.masa.malilib.config.IConfigValue;
 import fi.dy.masa.malilib.config.gui.ConfigOptionListenerResetConfig.ConfigResetterBase;
 import fi.dy.masa.malilib.config.gui.ConfigOptionListenerResetConfig.ConfigResetterButton;
@@ -23,47 +19,38 @@ import fi.dy.masa.malilib.gui.HoverInfo;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.ButtonWrapper;
-import fi.dy.masa.malilib.gui.button.ConfigButtonBoolean;
 import fi.dy.masa.malilib.gui.button.ConfigButtonKeybind;
-import fi.dy.masa.malilib.gui.button.ConfigButtonOptionList;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
+import fi.dy.masa.malilib.reference.Reference;
+import net.minecraft.client.gui.GuiLabel;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.resources.I18n;
 
-public class ConfigPanelSub extends AbstractConfigPanel implements IKeybindConfigGui
+public abstract class ConfigGuiBase extends GuiScreen implements IKeybindConfigGui
 {
     private final String modId;
-    private final ConfigPanelBase parent;
+    @Nullable private final GuiScreen parent;
+    private final List<GuiLabel> labels = new ArrayList<>();
+    private final List<HoverInfo> configComments = new ArrayList<>();
     private final List<ButtonWrapper<? extends ButtonBase>> buttons = new ArrayList<>();
-    private final Map<IConfigValue, ConfigTextFieldWrapper> textFields = new HashMap<>();
-    private final ConfigOptionDirtyListener<ButtonBase> dirtyListener = new ConfigOptionDirtyListener<>();
+    private final List<GuiTextFieldWrapper> textFields = new ArrayList<>();
+    private final Map<IConfigValue, GuiTextFieldWrapper> textFieldsForConfigs = new HashMap<>();
     private final List<ConfigOptionListenerResetConfig> configResetListeners = new ArrayList<>();
     protected final List<ConfigOptionListenerResetKeybind> hotkeyResetListeners = new ArrayList<>();
-    private final List<HoverInfo> configComments = new ArrayList<>();
-    private final String title;
+    private final ConfigOptionDirtyListener<ButtonBase> dirtyListener = new ConfigOptionDirtyListener<>();
     protected ConfigButtonKeybind activeKeybindButton;
-    protected IConfigValue[] configs = new IConfigValue[0];
     protected int elementWidth = 204;
     protected int maxTextfieldTextLength = 256;
 
-    public ConfigPanelSub(String modId, String title, ConfigPanelBase parent)
+    public ConfigGuiBase(@Nullable GuiScreen parent)
     {
-        this.modId = modId;
-        this.title = title;
+        this.modId = Reference.MOD_ID;
         this.parent = parent;
     }
 
-    public ConfigPanelSub(String modId, String title, IConfigValue[] configs, ConfigPanelBase parent)
-    {
-        this(modId, title, parent);
-
-        this.configs = configs;
-    }
-
-    protected IConfigValue[] getConfigs()
-    {
-        return this.configs;
-    }
+    protected abstract Collection<IConfigValue> getConfigs();
 
     protected void onSettingsChanged()
     {
@@ -75,20 +62,14 @@ public class ConfigPanelSub extends AbstractConfigPanel implements IKeybindConfi
         }
     }
 
-    public ConfigPanelSub setElementWidth(int elementWidth)
+    public ConfigGuiBase setElementWidth(int elementWidth)
     {
         this.elementWidth = elementWidth;
         return this;
     }
 
     @Override
-    public String getPanelTitle()
-    {
-        return this.title;
-    }
-
-    @Override
-    public void onPanelHidden()
+    public void onGuiClosed()
     {
         boolean dirty = false;
 
@@ -106,20 +87,37 @@ public class ConfigPanelSub extends AbstractConfigPanel implements IKeybindConfi
         }
     }
 
-    @Override
-    public void mousePressed(ConfigPanelHost host, int mouseX, int mouseY, int mouseButton)
+    public boolean keyPressed(char keyChar, int keyCode)
     {
-        // Don't call super if the button got handled
-        if (this.mousePressed(mouseX, mouseY, mouseButton) == false)
+        if (this.activeKeybindButton != null)
         {
-            super.mousePressed(host, mouseX, mouseY, mouseButton);
+            this.activeKeybindButton.onKeyPressed(keyCode);
+            return true;
+        }
+        else
+        {
+            if (keyCode == Keyboard.KEY_ESCAPE)
+            {
+                this.mc.displayGuiScreen(this.parent);
+                return true;
+            }
+
+            for (GuiTextFieldWrapper wrapper : this.textFields)
+            {
+                if (wrapper.keyTyped(keyChar, keyCode))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 
     /**
      * Handle a mouse button click. Returns true if the click was handled
      */
-    protected boolean mousePressed(int mouseX, int mouseY, int mouseButton)
+    public boolean mousePressed(int mouseX, int mouseY, int mouseButton)
     {
         for (ButtonWrapper<? extends ButtonBase> entry : this.buttons)
         {
@@ -128,6 +126,18 @@ public class ConfigPanelSub extends AbstractConfigPanel implements IKeybindConfi
                 // Don't call super if the button press got handled
                 return true;
             }
+        }
+
+        boolean ret = false;
+
+        for (GuiTextFieldWrapper wrapper : this.textFields)
+        {
+            ret |= wrapper.getTextField().mouseClicked(mouseX, mouseY, mouseButton);
+        }
+
+        if (ret)
+        {
+            return true;
         }
 
         // When clicking on not-a-button, clear the selection
@@ -146,6 +156,42 @@ public class ConfigPanelSub extends AbstractConfigPanel implements IKeybindConfi
         ButtonWrapper<T> entry = new ButtonWrapper<>(button, listener);
         this.buttons.add(entry);
         return entry;
+    }
+
+    protected void addLabel(int id, int x, int y, int width, int height, int colour, String... lines)
+    {
+        if (lines == null || lines.length < 1)
+        {
+            return;
+        }
+
+        GuiLabel label = new GuiLabel(this.mc.fontRenderer, id, x, y, width, height, colour);
+
+        for (String line : lines)
+        {
+            label.addLine(line);
+        }
+
+        this.labels.add(label);
+    }
+
+    protected void addConfigComment(int x, int y, int width, int height, String comment)
+    {
+        HoverInfo info = new HoverInfo(x, y, width, height);
+        info.addLines(comment);
+        this.configComments.add(info);
+    }
+
+    protected GuiTextField createTextField(int id, int x, int y, int width, int height)
+    {
+        return new GuiTextField(id, this.mc.fontRenderer, x + 2, y, width, height);
+    }
+
+    protected void addTextField(IConfigValue config, GuiTextField field, GuiTextFieldChangeListener listener)
+    {
+        GuiTextFieldWrapper wrapper = new GuiTextFieldWrapper(field, listener);
+        this.textFields.add(wrapper);
+        this.textFieldsForConfigs.put(config, wrapper);
     }
 
     @Override
@@ -192,7 +238,7 @@ public class ConfigPanelSub extends AbstractConfigPanel implements IKeybindConfi
                 type == ConfigType.INTEGER ||
                 type == ConfigType.DOUBLE)
             {
-                ConfigTextField field = this.getTextFieldFor(config);
+                GuiTextField field = this.getTextFieldFor(config);
 
                 if (field != null)
                 {
@@ -210,64 +256,6 @@ public class ConfigPanelSub extends AbstractConfigPanel implements IKeybindConfi
         return dirty;
     }
 
-    @Override
-    public void addOptions(ConfigPanelHost host)
-    {
-        this.clearOptions();
-
-        final int xStart = 10;
-        int x = xStart;
-        int y = 10;
-        int configWidth = this.elementWidth;
-        int configHeight = 20;
-        int labelWidth = this.getMaxLabelWidth(this.getConfigs());
-        int id = 0;
-
-        for (IConfigValue config : this.getConfigs())
-        {
-            this.addLabel(id++, x, y + 7, labelWidth, 8, 0xFFFFFFFF, config.getName());
-
-            String comment = config.getComment();
-            ConfigType type = config.getType();
-
-            if (comment != null)
-            {
-                this.addConfigComment(x, y + 2, labelWidth, 10, comment);
-            }
-
-            x += labelWidth + 10;
-
-            if (type == ConfigType.BOOLEAN && (config instanceof IConfigBoolean))
-            {
-                ConfigButtonBoolean optionButton = new ConfigButtonBoolean(id++, x, y, configWidth, configHeight, (IConfigBoolean) config);
-                this.addConfigButtonEntry(id++, x + configWidth + 10, y, config, optionButton);
-            }
-            else if (type == ConfigType.OPTION_LIST && (config instanceof IConfigOptionList))
-            {
-                ConfigButtonOptionList optionButton = new ConfigButtonOptionList(id++, x, y, configWidth, configHeight, (IConfigOptionList) config);
-                this.addConfigButtonEntry(id++, x + configWidth + 10, y, config, optionButton);
-            }
-            else if (type == ConfigType.HOTKEY && (config instanceof IConfigHotkey))
-            {
-                IKeybind keybind = ((IConfigHotkey) config).getKeybind();
-                ConfigButtonKeybind keybindButton = new ConfigButtonKeybind(id++, x, y, configWidth, configHeight, keybind, this);
-
-                this.addButton(keybindButton, this.getConfigListener());
-                this.addKeybindResetButton(id++, x + configWidth + 10, y, keybind, keybindButton);
-            }
-            else if (type == ConfigType.STRING ||
-                     type == ConfigType.COLOR ||
-                     type == ConfigType.INTEGER ||
-                     type == ConfigType.DOUBLE)
-            {
-                this.addConfigTextFieldEntry(id++, x, y, configWidth, configHeight, config);
-            }
-
-            x = xStart;
-            y += configHeight + 1;
-        }
-    }
-
     protected void addConfigButtonEntry(int id, int xReset, int yReset, IConfigValue config, ButtonBase optionButton)
     {
         ButtonGeneric resetButton = this.createResetButton(id, xReset, yReset, config);
@@ -281,13 +269,13 @@ public class ConfigPanelSub extends AbstractConfigPanel implements IKeybindConfi
 
     protected void addConfigTextFieldEntry(int id, int x, int y, int configWidth, int configHeight, IConfigValue config)
     {
-        ConfigTextField field = this.addTextField(id++, x, y + 1, configWidth - 4, configHeight - 3);
-        field.getNativeTextField().setMaxStringLength(this.maxTextfieldTextLength);
+        GuiTextField field = this.createTextField(id++, x, y + 1, configWidth - 4, configHeight - 3);
+        field.setMaxStringLength(this.maxTextfieldTextLength);
         field.setText(config.getStringValue());
 
         ButtonGeneric resetButton = this.createResetButton(id, x + configWidth + 10, y, config);
-        ConfigOptionChangeListenerTextField listenerChange = new ConfigOptionChangeListenerTextField(config, field, resetButton);
-        ConfigOptionListenerResetConfig listenerReset = new ConfigOptionListenerResetConfig(config, new ConfigResetterTextField(config, field.getNativeTextField()), resetButton, this.getConfigListener());
+        GuiTextFieldChangeListener listenerChange = new GuiTextFieldChangeListener(config, field, resetButton);
+        ConfigOptionListenerResetConfig listenerReset = new ConfigOptionListenerResetConfig(config, new ConfigResetterTextField(config, field), resetButton, this.getConfigListener());
 
         this.addTextField(config, field, listenerChange);
         this.addButton(resetButton, listenerReset);
@@ -328,23 +316,22 @@ public class ConfigPanelSub extends AbstractConfigPanel implements IKeybindConfi
         this.addButton(button, listener);
     }
 
-    @Override
     public void clearOptions()
     {
-        super.clearOptions();
-
+        this.labels.clear();
+        this.configComments.clear();
         this.buttons.clear();
         this.textFields.clear();
+        this.textFieldsForConfigs.clear();
         this.configResetListeners.clear();
         this.hotkeyResetListeners.clear();
     }
 
-    @Override
-    public void drawPanel(ConfigPanelHost host, int mouseX, int mouseY, float partialTicks)
+    protected void drawGui(int mouseX, int mouseY, float partialTicks)
     {
-        super.drawPanel(host, mouseX, mouseY, partialTicks);
-
+        this.drawLabels(mouseX, mouseY, partialTicks);
         this.drawButtons(mouseX, mouseY, partialTicks);
+        this.drawTextFields(mouseX, mouseY, partialTicks);
 
         for (HoverInfo label : this.configComments)
         {
@@ -356,6 +343,14 @@ public class ConfigPanelSub extends AbstractConfigPanel implements IKeybindConfi
         }
     }
 
+    protected void drawLabels(int mouseX, int mouseY, float partialTicks)
+    {
+        for (GuiLabel label : this.labels)
+        {
+            label.drawLabel(this.mc, mouseX, mouseY);
+        }
+    }
+
     protected void drawButtons(int mouseX, int mouseY, float partialTicks)
     {
         for (ButtonWrapper<?> entry : this.buttons)
@@ -364,26 +359,22 @@ public class ConfigPanelSub extends AbstractConfigPanel implements IKeybindConfi
         }
     }
 
-    protected void addTextField(IConfigValue config, ConfigTextField field, ConfigOptionChangeListenerTextField listener)
+    protected void drawTextFields(int mouseX, int mouseY, float partialTicks)
     {
-        this.textFields.put(config, new ConfigTextFieldWrapper(field, listener));
+        for (GuiTextFieldWrapper entry : this.textFields)
+        {
+            entry.getTextField().drawTextBox();
+        }
     }
 
     @Nullable
-    protected ConfigTextField getTextFieldFor(IConfigValue config)
+    protected GuiTextField getTextFieldFor(IConfigValue config)
     {
-        ConfigTextFieldWrapper wrapper = this.textFields.get(config);
-        return wrapper != null ? wrapper.getConfigTextField() : null;
+        GuiTextFieldWrapper wrapper = this.textFieldsForConfigs.get(config);
+        return wrapper != null ? wrapper.getTextField() : null;
     }
 
-    protected void addConfigComment(int x, int y, int width, int height, String comment)
-    {
-        HoverInfo info = new HoverInfo(x, y, width, height);
-        info.addLines(comment);
-        this.configComments.add(info);
-    }
-
-    protected int getMaxLabelWidth(IConfigBase[] entries)
+    protected int getMaxLabelWidth(Collection<IConfigValue> entries)
     {
         int maxWidth = 0;
 
@@ -393,41 +384,5 @@ public class ConfigPanelSub extends AbstractConfigPanel implements IKeybindConfi
         }
 
         return maxWidth;
-    }
-
-    @Override
-    public void keyPressed(ConfigPanelHost host, char keyChar, int keyCode)
-    {
-        if (this.activeKeybindButton != null)
-        {
-            this.activeKeybindButton.onKeyPressed(keyCode);
-        }
-        else
-        {
-            if (keyCode == Keyboard.KEY_ESCAPE)
-            {
-                this.parent.setSelectedSubPanel(-1);
-                return;
-            }
-
-            super.keyPressed(host, keyChar, keyCode);
-
-            for (ConfigTextFieldWrapper wrapper : this.textFields.values())
-            {
-                if (wrapper.keyTyped(keyChar, keyCode))
-                {
-                    break;
-                }
-            }
-        }
-    }
-
-    /**
-     * Returns true if some of the options in this panel were modified
-     * @return
-     */
-    public boolean hasModifications()
-    {
-        return false;
     }
 }

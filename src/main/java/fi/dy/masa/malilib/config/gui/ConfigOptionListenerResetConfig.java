@@ -1,11 +1,11 @@
 package fi.dy.masa.malilib.config.gui;
 
-import com.mumfrey.liteloader.modconfig.AbstractConfigPanel.ConfigTextField;
 import fi.dy.masa.malilib.config.IConfigValue;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiTextField;
 
 public class ConfigOptionListenerResetConfig implements IButtonActionListener<ButtonGeneric>
 {
@@ -63,9 +63,9 @@ public class ConfigOptionListenerResetConfig implements IButtonActionListener<Bu
     public static class ConfigResetterTextField extends ConfigResetterBase
     {
         private final IConfigValue config;
-        private final ConfigTextField textField;
+        private final GuiTextField textField;
 
-        public ConfigResetterTextField(IConfigValue config, ConfigTextField textField)
+        public ConfigResetterTextField(IConfigValue config, GuiTextField textField)
         {
             this.config = config;
             this.textField = textField;
