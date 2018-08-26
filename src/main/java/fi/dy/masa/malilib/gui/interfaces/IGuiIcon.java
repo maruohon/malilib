@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.gui;
+package fi.dy.masa.malilib.gui.interfaces;
 
 import net.minecraft.util.ResourceLocation;
 

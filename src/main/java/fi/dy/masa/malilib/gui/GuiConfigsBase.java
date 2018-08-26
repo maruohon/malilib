@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.config.gui;
+package fi.dy.masa.malilib.gui;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,11 +11,15 @@ import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.config.ConfigType;
 import fi.dy.masa.malilib.config.IConfigBase;
 import fi.dy.masa.malilib.config.IConfigValue;
+import fi.dy.masa.malilib.config.gui.ConfigOptionChangeListenerButton;
+import fi.dy.masa.malilib.config.gui.ConfigOptionDirtyListener;
+import fi.dy.masa.malilib.config.gui.ConfigOptionListenerResetConfig;
+import fi.dy.masa.malilib.config.gui.ConfigOptionListenerResetKeybind;
+import fi.dy.masa.malilib.config.gui.IKeybindConfigGui;
 import fi.dy.masa.malilib.config.gui.ConfigOptionListenerResetConfig.ConfigResetterBase;
 import fi.dy.masa.malilib.config.gui.ConfigOptionListenerResetConfig.ConfigResetterButton;
 import fi.dy.masa.malilib.config.gui.ConfigOptionListenerResetConfig.ConfigResetterTextField;
 import fi.dy.masa.malilib.event.InputEventHandler;
-import fi.dy.masa.malilib.gui.HoverInfo;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.ButtonWrapper;
@@ -28,7 +32,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.resources.I18n;
 
-public abstract class ConfigGuiBase extends GuiScreen implements IKeybindConfigGui
+public abstract class GuiConfigsBase extends GuiScreen implements IKeybindConfigGui
 {
     private final String modId;
     @Nullable private final GuiScreen parent;
@@ -44,7 +48,7 @@ public abstract class ConfigGuiBase extends GuiScreen implements IKeybindConfigG
     protected int elementWidth = 204;
     protected int maxTextfieldTextLength = 256;
 
-    public ConfigGuiBase(@Nullable GuiScreen parent)
+    public GuiConfigsBase(@Nullable GuiScreen parent)
     {
         this.modId = Reference.MOD_ID;
         this.parent = parent;
@@ -62,7 +66,7 @@ public abstract class ConfigGuiBase extends GuiScreen implements IKeybindConfigG
         }
     }
 
-    public ConfigGuiBase setElementWidth(int elementWidth)
+    public GuiConfigsBase setElementWidth(int elementWidth)
     {
         this.elementWidth = elementWidth;
         return this;
@@ -187,7 +191,7 @@ public abstract class ConfigGuiBase extends GuiScreen implements IKeybindConfigG
         return new GuiTextField(id, this.mc.fontRenderer, x + 2, y, width, height);
     }
 
-    protected void addTextField(IConfigValue config, GuiTextField field, GuiTextFieldChangeListener listener)
+    protected void addTextField(IConfigValue config, GuiTextField field, ConfigOptionTextFieldChangeListener listener)
     {
         GuiTextFieldWrapper wrapper = new GuiTextFieldWrapper(field, listener);
         this.textFields.add(wrapper);
@@ -274,7 +278,7 @@ public abstract class ConfigGuiBase extends GuiScreen implements IKeybindConfigG
         field.setText(config.getStringValue());
 
         ButtonGeneric resetButton = this.createResetButton(id, x + configWidth + 10, y, config);
-        GuiTextFieldChangeListener listenerChange = new GuiTextFieldChangeListener(config, field, resetButton);
+        ConfigOptionTextFieldChangeListener listenerChange = new ConfigOptionTextFieldChangeListener(config, field, resetButton);
         ConfigOptionListenerResetConfig listenerReset = new ConfigOptionListenerResetConfig(config, new ConfigResetterTextField(config, field), resetButton, this.getConfigListener());
 
         this.addTextField(config, field, listenerChange);

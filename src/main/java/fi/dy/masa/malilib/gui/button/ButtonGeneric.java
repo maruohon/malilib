@@ -1,8 +1,8 @@
 package fi.dy.masa.malilib.gui.button;
 
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.gui.IGuiIcon;
 import fi.dy.masa.malilib.gui.LeftRight;
+import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;

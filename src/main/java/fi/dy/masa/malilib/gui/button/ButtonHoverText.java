@@ -2,7 +2,7 @@ package fi.dy.masa.malilib.gui.button;
 
 import java.util.ArrayList;
 import java.util.List;
-import fi.dy.masa.malilib.gui.IGuiIcon;
+import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import net.minecraft.client.resources.I18n;
 
 public class ButtonHoverText extends ButtonGeneric

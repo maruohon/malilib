@@ -1,16 +1,16 @@
-package fi.dy.masa.malilib.config.gui;
+package fi.dy.masa.malilib.gui;
 
 import fi.dy.masa.malilib.config.IConfigValue;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import net.minecraft.client.gui.GuiTextField;
 
-public class GuiTextFieldChangeListener
+public class ConfigOptionTextFieldChangeListener
 {
     private final IConfigValue config;
     private final GuiTextField textField;
     private final ButtonBase buttonReset;
 
-    public GuiTextFieldChangeListener(IConfigValue config, GuiTextField textField, ButtonBase buttonReset)
+    public ConfigOptionTextFieldChangeListener(IConfigValue config, GuiTextField textField, ButtonBase buttonReset)
     {
         this.config = config;
         this.textField = textField;
