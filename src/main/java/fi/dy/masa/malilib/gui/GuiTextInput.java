@@ -82,15 +82,15 @@ public class GuiTextInput extends GuiBase
 
         ButtonGeneric button;
 
-        button = new ButtonGeneric(0, x, y, buttonWidth, 20, I18n.format("litematica.gui.button.ok"));
+        button = new ButtonGeneric(0, x, y, buttonWidth, 20, I18n.format("malilib.gui.button.ok"));
         this.addButton(button, this.createActionListener(ButtonListener.Type.OK));
         x += buttonWidth + 2;
 
-        button = new ButtonGeneric(0, x, y, buttonWidth, 20, I18n.format("litematica.gui.button.reset"));
+        button = new ButtonGeneric(0, x, y, buttonWidth, 20, I18n.format("malilib.gui.button.reset"));
         this.addButton(button, this.createActionListener(ButtonListener.Type.RESET));
         x += buttonWidth + 2;
 
-        button = new ButtonGeneric(0, x, y, buttonWidth, 20, I18n.format("litematica.gui.button.cancel"));
+        button = new ButtonGeneric(0, x, y, buttonWidth, 20, I18n.format("malilib.gui.button.cancel"));
         this.addButton(button, this.createActionListener(ButtonListener.Type.CANCEL));
 
         Keyboard.enableRepeatEvents(true);
