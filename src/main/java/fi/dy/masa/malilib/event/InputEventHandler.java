@@ -6,7 +6,6 @@ import java.util.List;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
 import fi.dy.masa.malilib.hotkeys.IHotkey;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
@@ -117,7 +116,7 @@ public class InputEventHandler implements IKeybindManager
     }
 
     @Override
-    public void addHotkeysForCategory(String modName, String keyCategory, IHotkey[] hotkeys)
+    public void addHotkeysForCategory(String modName, String keyCategory, List<? extends IHotkey> hotkeys)
     {
         KeybindCategory cat = new KeybindCategory(modName, keyCategory, hotkeys);
 
@@ -217,13 +216,13 @@ public class InputEventHandler implements IKeybindManager
     {
         private final String modName;
         private final String category;
-        private final List<IHotkey> hotkeys;
+        private final List<? extends IHotkey> hotkeys;
 
-        public KeybindCategory(String modName, String category, IHotkey[] hotkeys)
+        public KeybindCategory(String modName, String category, List<? extends IHotkey> hotkeys)
         {
             this.modName = modName;
             this.category = category;
-            this.hotkeys = ImmutableList.copyOf(hotkeys);
+            this.hotkeys = hotkeys;
         }
 
         public String getModName()
@@ -236,7 +235,7 @@ public class InputEventHandler implements IKeybindManager
             return I18n.format(this.category);
         }
 
-        public List<IHotkey> getHotkeys()
+        public List<? extends IHotkey> getHotkeys()
         {
             return this.hotkeys;
         }

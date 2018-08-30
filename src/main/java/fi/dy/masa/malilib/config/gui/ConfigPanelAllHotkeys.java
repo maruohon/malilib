@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.config.gui;
 
 import java.util.List;
+import com.google.common.collect.ImmutableList;
 import com.mumfrey.liteloader.modconfig.ConfigPanelHost;
 import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.event.InputEventHandler;
@@ -15,7 +16,7 @@ public class ConfigPanelAllHotkeys extends ConfigPanelHotkeysBase
 {
     public ConfigPanelAllHotkeys(MaLiLibConfigPanel parent)
     {
-        super(Reference.MOD_ID, I18n.format("malilib.gui.title.all_hotkeys"), null, parent);
+        super(Reference.MOD_ID, I18n.format("malilib.gui.title.all_hotkeys"), ImmutableList.of(), parent);
     }
 
     @Override

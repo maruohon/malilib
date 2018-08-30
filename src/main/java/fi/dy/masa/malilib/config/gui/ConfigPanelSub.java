@@ -13,7 +13,6 @@ import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.config.ConfigType;
 import fi.dy.masa.malilib.config.IConfigBase;
 import fi.dy.masa.malilib.config.IConfigBoolean;
-import fi.dy.masa.malilib.config.IConfigHotkey;
 import fi.dy.masa.malilib.config.IConfigOptionList;
 import fi.dy.masa.malilib.config.IConfigValue;
 import fi.dy.masa.malilib.config.IStringRepresentable;
@@ -29,6 +28,7 @@ import fi.dy.masa.malilib.gui.button.ConfigButtonKeybind;
 import fi.dy.masa.malilib.gui.button.ConfigButtonOptionList;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.gui.interfaces.IKeybindConfigGui;
+import fi.dy.masa.malilib.hotkeys.IHotkey;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
 import net.minecraft.client.resources.I18n;
 
@@ -255,9 +255,9 @@ public class ConfigPanelSub extends AbstractConfigPanel implements IKeybindConfi
                 ConfigButtonOptionList optionButton = new ConfigButtonOptionList(id++, x, y, configWidth, configHeight, (IConfigOptionList) config);
                 this.addConfigButtonEntry(id++, x + configWidth + 10, y, config, optionButton);
             }
-            else if (type == ConfigType.HOTKEY && (config instanceof IConfigHotkey))
+            else if (type == ConfigType.HOTKEY && (config instanceof IHotkey))
             {
-                IKeybind keybind = ((IConfigHotkey) config).getKeybind();
+                IKeybind keybind = ((IHotkey) config).getKeybind();
                 ConfigButtonKeybind keybindButton = new ConfigButtonKeybind(id++, x, y, configWidth, configHeight, keybind, this);
 
                 this.addButton(keybindButton, this.getButtonPressListener());

@@ -1,5 +1,7 @@
 package fi.dy.masa.malilib.hotkeys;
 
+import java.util.List;
+
 public interface IKeybindManager
 {
     /**
@@ -18,5 +20,5 @@ public interface IKeybindManager
      * @param keyCategory
      * @param hotkeys
      */
-    void addHotkeysForCategory(String modName, String keyCategory, IHotkey[] hotkeys);
+    void addHotkeysForCategory(String modName, String keyCategory, List<? extends IHotkey> hotkeys);
 }

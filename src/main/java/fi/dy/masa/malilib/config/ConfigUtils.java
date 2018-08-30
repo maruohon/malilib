@@ -8,12 +8,12 @@ import fi.dy.masa.malilib.util.JsonUtils;
 
 public class ConfigUtils
 {
-    public static void readConfigValues(JsonObject root, String category, List<IConfigValue> options)
+    public static void readConfigValues(JsonObject root, String category, List<? extends IConfigValue> options)
     {
         readConfigBase(root, category, ImmutableList.copyOf(options));
     }
 
-    public static void readConfigBase(JsonObject root, String category, List<IConfigBase> options)
+    public static void readConfigBase(JsonObject root, String category, List<? extends IConfigBase> options)
     {
         JsonObject obj = JsonUtils.getNestedObject(root, category, false);
 
@@ -29,12 +29,12 @@ public class ConfigUtils
         }
     }
 
-    public static void writeConfigValues(JsonObject root, String category, List<IConfigValue> options)
+    public static void writeConfigValues(JsonObject root, String category, List<? extends IConfigValue> options)
     {
         writeConfigBase(root, category, ImmutableList.copyOf(options));
     }
 
-    public static void writeConfigBase(JsonObject root, String category, List<IConfigBase> options)
+    public static void writeConfigBase(JsonObject root, String category, List<? extends IConfigBase> options)
     {
         JsonObject obj = JsonUtils.getNestedObject(root, category, true);
 

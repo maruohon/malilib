@@ -27,6 +27,16 @@ public interface IConfigBase
     String getComment();
 
     /**
+     * Returns the "pretty name" for this config.
+     * This is used in the possible toggle messages.
+     * @return
+     */
+    default String getPrettyName()
+    {
+        return this.getName();
+    }
+
+    /**
      * Set the value of this config option from a JSON element (is possible)
      * @param element
      */

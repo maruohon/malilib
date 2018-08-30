@@ -1,18 +1,18 @@
 package fi.dy.masa.malilib.config.gui;
 
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.config.IConfigValue;
+import fi.dy.masa.malilib.config.IStringRepresentable;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 
 public class ConfigOptionChangeListenerButton<T extends ButtonBase> implements IButtonActionListener<T>
 {
-    private final IConfigValue config;
+    private final IStringRepresentable config;
     private final ButtonBase buttonReset;
     @Nullable
     private final ButtonPressDirtyListenerSimple<T> dirtyListener;
 
-    public ConfigOptionChangeListenerButton(IConfigValue config, T buttonReset, @Nullable ButtonPressDirtyListenerSimple<T> dirtyListener)
+    public ConfigOptionChangeListenerButton(IStringRepresentable config, T buttonReset, @Nullable ButtonPressDirtyListenerSimple<T> dirtyListener)
     {
         this.config = config;
         this.dirtyListener = dirtyListener;
