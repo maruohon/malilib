@@ -57,9 +57,7 @@ public class ConfigPanelAllHotkeys extends ConfigPanelHotkeysBase
             Gui.drawRect(xStart, y, xStart + 300, y + 1, 0xFFFFFFFF);
             y += 6;
 
-            IHotkey[] hotkeys = category.getHotkeys();
-
-            for (IHotkey hotkey : hotkeys)
+            for (IHotkey hotkey : category.getHotkeys())
             {
                 this.addLabel(i++, x, y + 7, maxLabelWidth, 8, 0xFFFFFFFF, hotkey.getName());
                 this.addConfigComment(x, y + 7, maxLabelWidth, 8, this.getHotkeyComment(hotkey));
@@ -68,7 +66,7 @@ public class ConfigPanelAllHotkeys extends ConfigPanelHotkeysBase
                 ConfigButtonKeybind buttonHotkey = new ConfigButtonKeybind(i++, x, y, this.hotkeyButtonWidth, 20, hotkey.getKeybind(), this);
 
                 x += this.hotkeyButtonWidth + 10;
-                this.addButton(buttonHotkey, this.getConfigListener());
+                this.addButton(buttonHotkey, this.getButtonPressListener());
                 this.addKeybindResetButton(i++, x, y, hotkey.getKeybind(), buttonHotkey);
 
                 y += 21;

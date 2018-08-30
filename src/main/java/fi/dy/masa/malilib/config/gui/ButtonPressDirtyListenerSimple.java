@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.config.gui;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 
-public class ConfigOptionDirtyListener<T extends ButtonBase> implements IButtonActionListener<T>
+public class ButtonPressDirtyListenerSimple<T extends ButtonBase> implements IButtonActionListener<T>
 {
     private boolean dirty;
 

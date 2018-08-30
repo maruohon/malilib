@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.config.gui;
 
+import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.IConfigValue;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
@@ -12,10 +13,11 @@ public class ConfigOptionListenerResetConfig implements IButtonActionListener<Bu
     private final ConfigResetterBase reset;
     private final IConfigValue config;
     private final ButtonGeneric buttonReset;
-    private final ConfigOptionDirtyListener<ButtonBase> dirtyListener;
+    @Nullable
+    private final ButtonPressDirtyListenerSimple<ButtonBase> dirtyListener;
 
     public ConfigOptionListenerResetConfig(IConfigValue config, ConfigResetterBase reset,
-            ButtonGeneric buttonReset, ConfigOptionDirtyListener<ButtonBase> dirtyListener)
+            ButtonGeneric buttonReset, @Nullable ButtonPressDirtyListenerSimple<ButtonBase> dirtyListener)
     {
         this.config = config;
         this.reset = reset;
@@ -36,7 +38,11 @@ public class ConfigOptionListenerResetConfig implements IButtonActionListener<Bu
     public void actionPerformedWithButton(ButtonGeneric control, int mouseButton)
     {
         this.actionPerformed(control);
-        this.dirtyListener.actionPerformedWithButton(control, mouseButton);
+
+        if (this.dirtyListener != null)
+        {
+            this.dirtyListener.actionPerformedWithButton(control, mouseButton);
+        }
     }
 
     public abstract static class ConfigResetterBase

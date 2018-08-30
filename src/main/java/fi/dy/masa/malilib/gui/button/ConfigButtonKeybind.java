@@ -2,7 +2,7 @@ package fi.dy.masa.malilib.gui.button;
 
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.input.Keyboard;
-import fi.dy.masa.malilib.config.gui.IKeybindConfigGui;
+import fi.dy.masa.malilib.gui.interfaces.IKeybindConfigGui;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
 import net.minecraft.util.text.TextFormatting;
 

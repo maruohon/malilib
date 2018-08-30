@@ -179,7 +179,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetBase> extends Gu
         if (this.scrollBar.getValue() != this.lastScrollbarPosition)
         {
             this.lastScrollbarPosition = this.scrollBar.getValue();
-            this.recreateListWidgets();
+            this.reCreateListEntryWidgets();
         }
     }
 
@@ -201,7 +201,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetBase> extends Gu
         return this.browserEntryHeight;
     }
 
-    protected void recreateListWidgets()
+    protected void reCreateListEntryWidgets()
     {
         this.listWidgets.clear();
         this.maxVisibleBrowserEntries = 0;
@@ -214,7 +214,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetBase> extends Gu
 
         for (int index = this.scrollBar.getValue(); index < numEntries; ++index)
         {
-            WIDGET widget = this.createListWidget(x, y, (index & 0x1) != 0, this.listContents.get(index));
+            WIDGET widget = this.createListEntryWidget(x, y, (index & 0x1) != 0, this.listContents.get(index));
 
             if ((usedHeight + widget.getHeight()) > usableHeight)
             {
@@ -232,7 +232,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetBase> extends Gu
 
     public abstract void refreshEntries();
 
-    protected abstract WIDGET createListWidget(int x, int y, boolean isOdd, TYPE entry);
+    protected abstract WIDGET createListEntryWidget(int x, int y, boolean isOdd, TYPE entry);
 
     @Nullable
     public TYPE getSelectedEntry()
@@ -288,6 +288,11 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetBase> extends Gu
             }
         }
 
-        this.recreateListWidgets();
+        this.reCreateListEntryWidgets();
+    }
+
+    public void resetScrollbarPosition()
+    {
+        this.scrollBar.setValue(0);
     }
 }

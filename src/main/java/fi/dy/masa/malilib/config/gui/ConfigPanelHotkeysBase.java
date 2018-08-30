@@ -1,22 +1,24 @@
 package fi.dy.masa.malilib.config.gui;
 
+import java.util.List;
+import com.google.common.collect.ImmutableList;
 import com.mumfrey.liteloader.modconfig.ConfigPanelHost;
 import fi.dy.masa.malilib.gui.button.ConfigButtonKeybind;
 import fi.dy.masa.malilib.hotkeys.IHotkey;
 
 public class ConfigPanelHotkeysBase extends ConfigPanelSub
 {
-    protected final IHotkey[] hotkeys;
+    protected final List<IHotkey> hotkeys;
     protected int hotkeyButtonWidth = 200;
 
     public ConfigPanelHotkeysBase(String modId, String title, IHotkey[] hotkeys, ConfigPanelBase parent)
     {
         super(modId, title, parent);
 
-        this.hotkeys = hotkeys;
+        this.hotkeys = ImmutableList.copyOf(hotkeys);
     }
 
-    protected IHotkey[] getHotkeys()
+    protected List<IHotkey> getHotkeys()
     {
         return this.hotkeys;
     }
@@ -35,7 +37,7 @@ public class ConfigPanelHotkeysBase extends ConfigPanelSub
         int x = xStart;
         int y = 10;
         int i = 0;
-        IHotkey[] hotkeys = this.getHotkeys();
+        List<IHotkey> hotkeys = this.getHotkeys();
         int labelWidth = this.getMaxLabelWidth(hotkeys);
 
         for (IHotkey hotkey : hotkeys)
@@ -47,7 +49,7 @@ public class ConfigPanelHotkeysBase extends ConfigPanelSub
             ConfigButtonKeybind buttonHotkey = new ConfigButtonKeybind(i + 1, x, y, this.hotkeyButtonWidth, 20, hotkey.getKeybind(), this);
 
             x += this.hotkeyButtonWidth + 10;
-            this.addButton(buttonHotkey, this.getConfigListener());
+            this.addButton(buttonHotkey, this.getButtonPressListener());
             this.addKeybindResetButton(i + 2, x, y, hotkey.getKeybind(), buttonHotkey);
 
             i += 3;

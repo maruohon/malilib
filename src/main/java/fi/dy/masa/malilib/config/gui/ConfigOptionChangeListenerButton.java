@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.config.gui;
 
+import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.IConfigValue;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
@@ -7,10 +8,11 @@ import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 public class ConfigOptionChangeListenerButton<T extends ButtonBase> implements IButtonActionListener<T>
 {
     private final IConfigValue config;
-    private final ConfigOptionDirtyListener<T> dirtyListener;
     private final ButtonBase buttonReset;
+    @Nullable
+    private final ButtonPressDirtyListenerSimple<T> dirtyListener;
 
-    public ConfigOptionChangeListenerButton(IConfigValue config, ConfigOptionDirtyListener<T> dirtyListener, T buttonReset)
+    public ConfigOptionChangeListenerButton(IConfigValue config, T buttonReset, @Nullable ButtonPressDirtyListenerSimple<T> dirtyListener)
     {
         this.config = config;
         this.dirtyListener = dirtyListener;
@@ -28,7 +30,10 @@ public class ConfigOptionChangeListenerButton<T extends ButtonBase> implements I
     {
         this.actionPerformed(control);
 
-        // Call the dirty listener to know if the configs should be saved when the GUI is closed
-        this.dirtyListener.actionPerformedWithButton(control, mouseButton);
+        if (this.dirtyListener != null)
+        {
+            // Call the dirty listener to know if the configs should be saved when the GUI is closed
+            this.dirtyListener.actionPerformedWithButton(control, mouseButton);
+        }
     }
 }

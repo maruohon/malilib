@@ -1,13 +1,14 @@
 package fi.dy.masa.malilib.gui;
 
+import fi.dy.masa.malilib.config.gui.ConfigOptionChangeListenerTextField;
 import net.minecraft.client.gui.GuiTextField;
 
 public class GuiTextFieldWrapper
 {
     private final GuiTextField textField;
-    private final ConfigOptionTextFieldChangeListener listener;
+    private final ConfigOptionChangeListenerTextField listener;
 
-    public GuiTextFieldWrapper(GuiTextField textField, ConfigOptionTextFieldChangeListener listener)
+    public GuiTextFieldWrapper(GuiTextField textField, ConfigOptionChangeListenerTextField listener)
     {
         this.textField = textField;
         this.listener = listener;
@@ -18,7 +19,7 @@ public class GuiTextFieldWrapper
         return this.textField;
     }
 
-    public ConfigOptionTextFieldChangeListener getListener()
+    public ConfigOptionChangeListenerTextField getListener()
     {
         return this.listener;
     }

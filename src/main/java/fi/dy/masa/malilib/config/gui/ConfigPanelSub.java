@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
+import com.google.common.collect.ImmutableList;
 import com.mumfrey.liteloader.modconfig.AbstractConfigPanel;
 import com.mumfrey.liteloader.modconfig.ConfigPanelHost;
 import fi.dy.masa.malilib.config.ConfigManager;
@@ -15,7 +16,7 @@ import fi.dy.masa.malilib.config.IConfigBoolean;
 import fi.dy.masa.malilib.config.IConfigHotkey;
 import fi.dy.masa.malilib.config.IConfigOptionList;
 import fi.dy.masa.malilib.config.IConfigValue;
-import fi.dy.masa.malilib.config.gui.ConfigOptionListenerResetConfig.ConfigResetterBase;
+import fi.dy.masa.malilib.config.IStringRepresentable;
 import fi.dy.masa.malilib.config.gui.ConfigOptionListenerResetConfig.ConfigResetterButton;
 import fi.dy.masa.malilib.config.gui.ConfigOptionListenerResetConfig.ConfigResetterTextField;
 import fi.dy.masa.malilib.event.InputEventHandler;
@@ -27,6 +28,7 @@ import fi.dy.masa.malilib.gui.button.ConfigButtonBoolean;
 import fi.dy.masa.malilib.gui.button.ConfigButtonKeybind;
 import fi.dy.masa.malilib.gui.button.ConfigButtonOptionList;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
+import fi.dy.masa.malilib.gui.interfaces.IKeybindConfigGui;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
 import net.minecraft.client.resources.I18n;
 
@@ -36,13 +38,12 @@ public class ConfigPanelSub extends AbstractConfigPanel implements IKeybindConfi
     private final ConfigPanelBase parent;
     private final List<ButtonWrapper<? extends ButtonBase>> buttons = new ArrayList<>();
     private final Map<IConfigValue, ConfigTextFieldWrapper> textFields = new HashMap<>();
-    private final ConfigOptionDirtyListener<ButtonBase> dirtyListener = new ConfigOptionDirtyListener<>();
-    private final List<ConfigOptionListenerResetConfig> configResetListeners = new ArrayList<>();
-    protected final List<ConfigOptionListenerResetKeybind> hotkeyResetListeners = new ArrayList<>();
+    private final ButtonPressDirtyListenerSimple<ButtonBase> dirtyListener = new ButtonPressDirtyListenerSimple<>();
+    protected final List<ConfigOptionChangeListenerKeybind> hotkeyResetListeners = new ArrayList<>();
     private final List<HoverInfo> configComments = new ArrayList<>();
     private final String title;
     protected ConfigButtonKeybind activeKeybindButton;
-    protected IConfigValue[] configs = new IConfigValue[0];
+    protected List<IConfigValue> configs = ImmutableList.of();
     protected int elementWidth = 204;
     protected int maxTextfieldTextLength = 256;
 
@@ -57,10 +58,11 @@ public class ConfigPanelSub extends AbstractConfigPanel implements IKeybindConfi
     {
         this(modId, title, parent);
 
-        this.configs = configs;
+        this.configs = ImmutableList.copyOf(this.configs);
     }
 
-    protected IConfigValue[] getConfigs()
+    @Override
+    public List<? extends IConfigValue> getConfigs()
     {
         return this.configs;
     }
@@ -92,10 +94,10 @@ public class ConfigPanelSub extends AbstractConfigPanel implements IKeybindConfi
     {
         boolean dirty = false;
 
-        if (this.getConfigListener().isDirty())
+        if (this.getButtonPressListener().isDirty())
         {
             dirty = true;
-            this.getConfigListener().resetDirty();
+            this.getButtonPressListener().resetDirty();
         }
 
         dirty |= this.handleTextFields();
@@ -149,6 +151,12 @@ public class ConfigPanelSub extends AbstractConfigPanel implements IKeybindConfi
     }
 
     @Override
+    public void addKeybindChangeListener(ConfigOptionChangeListenerKeybind listener)
+    {
+        this.hotkeyResetListeners.add(listener);
+    }
+
+    @Override
     public void setActiveKeybindButton(@Nullable ConfigButtonKeybind button)
     {
         if (this.activeKeybindButton != null)
@@ -166,14 +174,14 @@ public class ConfigPanelSub extends AbstractConfigPanel implements IKeybindConfi
     }
 
     @Override
-    public ConfigOptionDirtyListener<ButtonBase> getConfigListener()
+    public ButtonPressDirtyListenerSimple<ButtonBase> getButtonPressListener()
     {
         return this.dirtyListener;
     }
 
     protected void updateKeybindButtons()
     {
-        for (ConfigOptionListenerResetKeybind listener : this.hotkeyResetListeners)
+        for (ConfigOptionChangeListenerKeybind listener : this.hotkeyResetListeners)
         {
             listener.updateButtons();
         }
@@ -252,7 +260,7 @@ public class ConfigPanelSub extends AbstractConfigPanel implements IKeybindConfi
                 IKeybind keybind = ((IConfigHotkey) config).getKeybind();
                 ConfigButtonKeybind keybindButton = new ConfigButtonKeybind(id++, x, y, configWidth, configHeight, keybind, this);
 
-                this.addButton(keybindButton, this.getConfigListener());
+                this.addButton(keybindButton, this.getButtonPressListener());
                 this.addKeybindResetButton(id++, x + configWidth + 10, y, keybind, keybindButton);
             }
             else if (type == ConfigType.STRING ||
@@ -272,8 +280,8 @@ public class ConfigPanelSub extends AbstractConfigPanel implements IKeybindConfi
     {
         ButtonGeneric resetButton = this.createResetButton(id, xReset, yReset, config);
 
-        ConfigOptionChangeListenerButton<ButtonBase> listenerChange = new ConfigOptionChangeListenerButton<>(config, this.getConfigListener(), resetButton);
-        ConfigOptionListenerResetConfig listenerReset = new ConfigOptionListenerResetConfig(config, new ConfigResetterButton(optionButton), resetButton, this.getConfigListener());
+        ConfigOptionChangeListenerButton<ButtonBase> listenerChange = new ConfigOptionChangeListenerButton<>(config, resetButton, this.getButtonPressListener());
+        ConfigOptionListenerResetConfig listenerReset = new ConfigOptionListenerResetConfig(config, new ConfigResetterButton(optionButton), resetButton, this.getButtonPressListener());
 
         this.addButton(optionButton, listenerChange);
         this.addButton(resetButton, listenerReset);
@@ -286,26 +294,14 @@ public class ConfigPanelSub extends AbstractConfigPanel implements IKeybindConfi
         field.setText(config.getStringValue());
 
         ButtonGeneric resetButton = this.createResetButton(id, x + configWidth + 10, y, config);
-        ConfigOptionChangeListenerTextField listenerChange = new ConfigOptionChangeListenerTextField(config, field, resetButton);
-        ConfigOptionListenerResetConfig listenerReset = new ConfigOptionListenerResetConfig(config, new ConfigResetterTextField(config, field.getNativeTextField()), resetButton, this.getConfigListener());
+        ConfigOptionChangeListenerTextField listenerChange = new ConfigOptionChangeListenerTextField(config, field.getNativeTextField(), resetButton);
+        ConfigOptionListenerResetConfig listenerReset = new ConfigOptionListenerResetConfig(config, new ConfigResetterTextField(config, field.getNativeTextField()), resetButton, this.getButtonPressListener());
 
         this.addTextField(config, field, listenerChange);
         this.addButton(resetButton, listenerReset);
     }
 
-    protected ButtonWrapper<ButtonGeneric> createConfigResetButton(int id, int x, int y, IConfigValue config, ConfigResetterBase reset)
-    {
-        String label = I18n.format("malilib.gui.button.reset.caps");
-        int w = this.mc.fontRenderer.getStringWidth(label) + 10;
-        ButtonGeneric buttonReset = new ButtonGeneric(id, x, y, w, 20, label);
-        buttonReset.enabled = config.isModified();
-
-        ConfigOptionListenerResetConfig listener = new ConfigOptionListenerResetConfig(config, reset, buttonReset, this.getConfigListener());
-        this.configResetListeners.add(listener);
-        return this.addButton(buttonReset, listener);
-    }
-
-    protected ButtonGeneric createResetButton(int id, int x, int y, IConfigValue config)
+    protected ButtonGeneric createResetButton(int id, int x, int y, IStringRepresentable config)
     {
         String labelReset = I18n.format("malilib.gui.button.reset.caps");
         int w = this.mc.fontRenderer.getStringWidth(labelReset) + 10;
@@ -318,13 +314,10 @@ public class ConfigPanelSub extends AbstractConfigPanel implements IKeybindConfi
 
     protected void addKeybindResetButton(int id, int x, int y, IKeybind keybind, ConfigButtonKeybind buttonHotkey)
     {
-        String label = I18n.format("malilib.gui.button.reset.caps");
-        int w = this.mc.fontRenderer.getStringWidth(label) + 10;
-        ButtonGeneric button = new ButtonGeneric(id, x, y, w, 20, label);
-        button.enabled = keybind.isModified();
+        ButtonGeneric button = this.createResetButton(id, x, y, keybind);
 
-        ConfigOptionListenerResetKeybind listener = new ConfigOptionListenerResetKeybind(keybind, buttonHotkey, button, this);
-        this.hotkeyResetListeners.add(listener);
+        ConfigOptionChangeListenerKeybind listener = new ConfigOptionChangeListenerKeybind(keybind, buttonHotkey, button, this);
+        this.addKeybindChangeListener(listener);
         this.addButton(button, listener);
     }
 
@@ -335,7 +328,6 @@ public class ConfigPanelSub extends AbstractConfigPanel implements IKeybindConfi
 
         this.buttons.clear();
         this.textFields.clear();
-        this.configResetListeners.clear();
         this.hotkeyResetListeners.clear();
     }
 
@@ -383,7 +375,7 @@ public class ConfigPanelSub extends AbstractConfigPanel implements IKeybindConfi
         this.configComments.add(info);
     }
 
-    protected int getMaxLabelWidth(IConfigBase[] entries)
+    protected int getMaxLabelWidth(List<? extends IConfigBase> entries)
     {
         int maxWidth = 0;
 
