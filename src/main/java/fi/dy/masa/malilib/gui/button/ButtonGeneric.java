@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.gui.button;
 
 import javax.annotation.Nullable;
+import org.apache.commons.lang3.StringUtils;
 import fi.dy.masa.malilib.gui.LeftRight;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import net.minecraft.client.Minecraft;
@@ -10,9 +11,9 @@ import net.minecraft.client.renderer.GlStateManager;
 public class ButtonGeneric extends ButtonBase
 {
     @Nullable
-    private final IGuiIcon icon;
-    private LeftRight alignment = LeftRight.LEFT;
-    private boolean textCentered;
+    protected final IGuiIcon icon;
+    protected LeftRight alignment = LeftRight.LEFT;
+    protected boolean textCentered;
 
     public ButtonGeneric(int id, int x, int y, int width, int height, String text)
     {
@@ -75,33 +76,35 @@ public class ButtonGeneric extends ButtonBase
                 this.drawTexturedModalRect(x, y, u, this.icon.getV(), this.icon.getWidth(), this.icon.getHeight());
             }
 
-            int color = 0xE0E0E0;
-
-            if (this.enabled == false)
+            if (StringUtils.isBlank(this.displayString) == false)
             {
-                color = 0xA0A0A0;
-            }
-            else if (this.hovered)
-            {
-                color = 0xFFFFA0;
-            }
+                int y = this.y + (this.height - 8) / 2;
+                int color = 0xE0E0E0;
 
-            int y = this.y + (this.height - 8) / 2;
-
-            if (this.textCentered)
-            {
-                this.drawCenteredString(fontRenderer, this.displayString, this.x + this.width / 2, y, color);
-            }
-            else
-            {
-                int x = this.x + 6;
-
-                if (this.icon != null && this.alignment == LeftRight.LEFT)
+                if (this.enabled == false)
                 {
-                    x += this.icon.getWidth() + 2;
+                    color = 0xA0A0A0;
+                }
+                else if (this.hovered)
+                {
+                    color = 0xFFFFA0;
                 }
 
-                this.drawString(fontRenderer, this.displayString, x, y, color);
+                if (this.textCentered)
+                {
+                    this.drawCenteredString(fontRenderer, this.displayString, this.x + this.width / 2, y, color);
+                }
+                else
+                {
+                    int x = this.x + 6;
+
+                    if (this.icon != null && this.alignment == LeftRight.LEFT)
+                    {
+                        x += this.icon.getWidth() + 2;
+                    }
+
+                    this.drawString(fontRenderer, this.displayString, x, y, color);
+                }
             }
         }
     }

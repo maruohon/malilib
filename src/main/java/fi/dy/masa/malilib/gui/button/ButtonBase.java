@@ -19,7 +19,9 @@ public abstract class ButtonBase extends GuiButton
         return this.height;
     }
 
-    public abstract void onMouseButtonClicked(int mouseButton);
+    public void onMouseButtonClicked(int mouseButton)
+    {
+    }
 
     public void updateDisplayString()
     {

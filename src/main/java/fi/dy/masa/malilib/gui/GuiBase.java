@@ -10,11 +10,11 @@ import org.lwjgl.opengl.GL11;
 import fi.dy.masa.malilib.gui.Message.MessageType;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonHoverText;
-import fi.dy.masa.malilib.gui.button.ButtonWrapper;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.gui.interfaces.IMessageConsumer;
 import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
 import fi.dy.masa.malilib.gui.widgets.WidgetInfo;
+import fi.dy.masa.malilib.gui.wrappers.ButtonWrapper;
 import fi.dy.masa.malilib.gui.wrappers.TextFieldWrapper;
 import fi.dy.masa.malilib.interfaces.IStringConsumer;
 import net.minecraft.client.Minecraft;
@@ -490,5 +490,10 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     public static boolean isMouseOver(int mouseX, int mouseY, int x, int y, int width, int height)
     {
         return mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + height;
+    }
+
+    public static int getTextWidth(String text)
+    {
+        return Minecraft.getMinecraft().fontRenderer.getStringWidth(text);
     }
 }
