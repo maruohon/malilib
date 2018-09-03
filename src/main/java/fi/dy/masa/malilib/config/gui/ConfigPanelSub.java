@@ -58,7 +58,7 @@ public class ConfigPanelSub extends AbstractConfigPanel implements IKeybindConfi
     {
         this(modId, title, parent);
 
-        this.configs = ImmutableList.copyOf(this.configs);
+        this.configs = ImmutableList.copyOf(configs);
     }
 
     @Override
