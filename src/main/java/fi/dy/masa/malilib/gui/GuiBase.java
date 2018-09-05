@@ -11,18 +11,21 @@ import fi.dy.masa.malilib.gui.Message.MessageType;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonHoverText;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
+import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.gui.interfaces.IMessageConsumer;
 import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
-import fi.dy.masa.malilib.gui.widgets.WidgetInfo;
+import fi.dy.masa.malilib.gui.widgets.WidgetBase;
+import fi.dy.masa.malilib.gui.widgets.WidgetCheckBox;
+import fi.dy.masa.malilib.gui.widgets.WidgetLabel;
 import fi.dy.masa.malilib.gui.wrappers.ButtonWrapper;
 import fi.dy.masa.malilib.gui.wrappers.TextFieldWrapper;
 import fi.dy.masa.malilib.interfaces.IStringConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiLabel;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 
@@ -50,9 +53,9 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     protected static final int TOP          = 10;
     private final List<ButtonWrapper<? extends ButtonBase>> buttons = new ArrayList<>();
     private final List<TextFieldWrapper<? extends GuiTextField>> textFields = new ArrayList<>();
-    private final List<GuiLabel> labels = new ArrayList<>();
-    private final List<WidgetInfo> infoWidgets = new ArrayList<>();
+    private final List<WidgetBase> widgets = new ArrayList<>();
     private final List<Message> messages = new ArrayList<>();
+    protected WidgetBase hoveredWidget = null;
     private MessageType nextMessageType = MessageType.INFO;
     protected String title = "";
     @Nullable
@@ -106,7 +109,7 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     {
         super.initGui();
 
-        this.clearLabels();
+        this.clearWidgets();
         this.clearButtons();
         this.clearTextFields();
     }
@@ -114,7 +117,7 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
-        this.drawPanel(mouseX, mouseY, partialTicks);
+        this.drawScreenBaseContents(mouseX, mouseY, partialTicks);
 
         this.drawContents(mouseX, mouseY, partialTicks);
 
@@ -124,13 +127,7 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
 
         this.drawButtonHoverTexts(mouseX, mouseY, partialTicks);
 
-        if (this.infoWidgets.isEmpty() == false)
-        {
-            for (WidgetInfo widget : this.infoWidgets)
-            {
-                widget.render(mouseX, mouseY, false);
-            }
-        }
+        this.drawHoveredWidget(mouseX, mouseY);
     }
 
     public void drawContents(int mouseX, int mouseY, float partialTicks)
@@ -212,6 +209,18 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
             }
         }
 
+        if (handled == false)
+        {
+            for (WidgetBase widget : this.widgets)
+            {
+                if (widget.isMouseOver(mouseX, mouseY) && widget.onMouseClicked(mouseX, mouseY, mouseButton))
+                {
+                    // Don't call super if the button press got handled
+                    handled = true;
+                }
+            }
+        }
+
         return handled;
     }
 
@@ -276,11 +285,6 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
         }
 
         return handled;
-    }
-
-    protected void addInfoWidget(WidgetInfo widget)
-    {
-        this.infoWidgets.add(widget);
     }
 
     @Override
@@ -368,7 +372,12 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
         this.textFields.add(new TextFieldWrapper<>(textField, listener));
     }
 
-    protected void addLabel(int id, int x, int y, int width, int height, int colour, String... lines)
+    protected void addWidget(WidgetBase widget)
+    {
+        this.widgets.add(widget);
+    }
+
+    protected void addLabel(int x, int y, int width, int height, int textColor, String... lines)
     {
         if (lines != null && lines.length >= 1)
         {
@@ -380,20 +389,21 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
                 }
             }
 
-            GuiLabel label = new GuiLabel(this.mc.fontRenderer, id, x, y, width, height, colour);
-
-            for (String line : lines)
-            {
-                label.addLine(line);
-            }
-
-            this.labels.add(label);
+            WidgetLabel label = new WidgetLabel(x, y, width, height, this.zLevel, textColor, lines);
+            this.addWidget(label);
         }
     }
 
-    protected void clearLabels()
+    protected void addCheckBox(int x, int y, int width, int height, int textColor, String text,
+            IGuiIcon widgetUnchecked, IGuiIcon widgetChecked, @Nullable String hoverInfo)
     {
-        this.labels.clear();
+        WidgetCheckBox checkbox = new WidgetCheckBox(x, y, this.zLevel, widgetUnchecked, widgetChecked, text, this.mc, hoverInfo);
+        this.addWidget(checkbox);
+    }
+
+    protected void clearWidgets()
+    {
+        this.widgets.clear();
     }
 
     protected void clearButtons()
@@ -411,7 +421,7 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
         this.mc.displayGuiScreen(null);
     }
 
-    protected void drawPanel(int mouseX, int mouseY, float partialTicks)
+    protected void drawScreenBaseContents(int mouseX, int mouseY, float partialTicks)
     {
         GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
         GlStateManager.pushMatrix();
@@ -419,7 +429,19 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
         // Draw the dark background
         drawRect(0, 0, this.width, this.height, TOOLTIP_BACKGROUND);
 
-        this.draw(mouseX, mouseY, partialTicks);
+        // Draw screen title
+        this.mc.fontRenderer.drawString(this.getTitle(), LEFT, TOP, COLOR_WHITE);
+
+        this.hoveredWidget = null;
+
+        // Draw base widgets
+        this.drawWidgets(mouseX, mouseY);
+
+        this.drawTextFields();
+
+        this.drawButtons(mouseX, mouseY, partialTicks);
+
+        GlStateManager.clear(GL11.GL_DEPTH_BUFFER_BIT);
 
         GlStateManager.popMatrix();
     }
@@ -445,6 +467,22 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
         }
     }
 
+    protected void drawHoveredWidget(int mouseX, int mouseY)
+    {
+        if (this.hoveredWidget != null)
+        {
+            //GlStateManager.pushMatrix();
+            //GlStateManager.translate(0, 0, 500);
+
+            this.hoveredWidget.postRenderHovered(mouseX, mouseY, false);
+
+            //GlStateManager.color(1, 1, 1, 1);
+            //GlStateManager.disableLighting();
+            RenderHelper.disableStandardItemLighting();
+            //GlStateManager.popMatrix();
+        }
+    }
+
     protected void drawTextFields()
     {
         for (TextFieldWrapper<?> entry : this.textFields)
@@ -453,38 +491,20 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
         }
     }
 
-    protected void drawLabels(int mouseX, int mouseY, float partialTicks)
+    protected void drawWidgets(int mouseX, int mouseY)
     {
-        for (GuiLabel label : this.labels)
+        if (this.widgets.isEmpty() == false)
         {
-            label.drawLabel(this.mc, mouseX, mouseY);
+            for (WidgetBase widget : this.widgets)
+            {
+                widget.render(mouseX, mouseY, false);
+
+                if (widget.isMouseOver(mouseX, mouseY))
+                {
+                    this.hoveredWidget = widget;
+                }
+            }
         }
-    }
-
-    /**
-     * Draw the panel and chrome
-     * 
-     * @param mouseX
-     * @param mouseY
-     * @param partialTicks
-     */
-    protected void draw(int mouseX, int mouseY, float partialTicks)
-    {
-        // Draw panel title
-        this.mc.fontRenderer.drawString(this.getTitle(), LEFT, TOP, COLOR_WHITE);
-
-        // Offset by scroll
-        GlStateManager.pushMatrix();
-
-        // Draw panel contents
-        this.drawLabels(mouseX, mouseY, partialTicks);
-        this.drawTextFields();
-        this.drawButtons(mouseX, mouseY, partialTicks);
-
-        GlStateManager.clear(GL11.GL_DEPTH_BUFFER_BIT);
-
-        // Restore transform
-        GlStateManager.popMatrix();
     }
 
     public static boolean isMouseOver(int mouseX, int mouseY, int x, int y, int width, int height)

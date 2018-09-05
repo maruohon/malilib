@@ -318,6 +318,40 @@ public class RenderUtils
         GlStateManager.popMatrix();
     }
 
+    public static void drawCenteredString(FontRenderer fontRendererIn, String text, int x, int y, int color)
+    {
+        fontRendererIn.drawStringWithShadow(text, (float)(x - fontRendererIn.getStringWidth(text) / 2), (float)y, color);
+    }
+
+    public static void drawString(FontRenderer fontRendererIn, String text, int x, int y, int color)
+    {
+        fontRendererIn.drawStringWithShadow(text, (float)x, (float)y, color);
+    }
+
+    public static void drawHorizontalLine(int startX, int endX, int y, int color)
+    {
+        if (endX < startX)
+        {
+            int i = startX;
+            startX = endX;
+            endX = i;
+        }
+
+        Gui.drawRect(startX, y, endX + 1, y + 1, color);
+    }
+
+    public static void drawVerticalLine(int x, int startY, int endY, int color)
+    {
+        if (endY < startY)
+        {
+            int i = startY;
+            startY = endY;
+            endY = i;
+        }
+
+        Gui.drawRect(x, startY + 1, x + 1, endY, color);
+    }
+
     /*
     public static void enableGUIStandardItemLighting(float scale)
     {

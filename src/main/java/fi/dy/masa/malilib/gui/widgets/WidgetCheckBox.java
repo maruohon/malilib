@@ -1,35 +1,58 @@
 package fi.dy.masa.malilib.gui.widgets;
 
+import java.util.List;
+import javax.annotation.Nullable;
+import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
+import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 
-public class WidgetCheckBox
+public class WidgetCheckBox extends WidgetBase
 {
     protected final Minecraft mc;
-    protected final int x;
-    protected final int y;
-    protected final int totalWidth;
-    protected final int totalHeight;
-    protected final int textWidth;
-    protected final float zLevel;
     protected final String displayText;
     protected final IGuiIcon widgetUnchecked;
     protected final IGuiIcon widgetChecked;
+    protected final List<String> hoverInfo;
+    protected final int textWidth;
     protected boolean checked;
+    @Nullable
+    protected ISelectionListener<WidgetCheckBox> listener;
 
-    public WidgetCheckBox(int x, int y, float zLevel, IGuiIcon widgetUnchecked, IGuiIcon widgetChecked, String text, Minecraft mc)
+    public WidgetCheckBox(int x, int y, float zLevel, IGuiIcon widgetUnchecked,
+            IGuiIcon widgetChecked, String text, Minecraft mc)
     {
-        this.x = x;
-        this.y = y;
-        this.zLevel = zLevel;
+        this(x, y, zLevel, widgetUnchecked, widgetChecked, text, mc, null);
+    }
+
+    public WidgetCheckBox(int x, int y, float zLevel, IGuiIcon widgetUnchecked,
+            IGuiIcon widgetChecked, String text, Minecraft mc, @Nullable String hoverInfo)
+    {
+        super(x, y, widgetUnchecked.getWidth() + 3 + mc.fontRenderer.getStringWidth(text),
+                Math.max(mc.fontRenderer.FONT_HEIGHT, widgetChecked.getHeight()), zLevel);
+
+        this.mc = mc;
+        this.displayText = text;
         this.textWidth = mc.fontRenderer.getStringWidth(text);
-        this.totalWidth = this.textWidth + widgetChecked.getWidth() + 3;
-        this.totalHeight = Math.max(mc.fontRenderer.FONT_HEIGHT, widgetChecked.getHeight());
         this.widgetUnchecked = widgetUnchecked;
         this.widgetChecked = widgetChecked;
-        this.displayText = text;
-        this.mc = mc;
+
+        if (hoverInfo != null)
+        {
+            //hoverInfo = I18n.format(hoverInfo);
+            String[] parts = hoverInfo.split("\\n");
+            this.hoverInfo = ImmutableList.copyOf(parts);
+        }
+        else
+        {
+            this.hoverInfo = ImmutableList.of();
+        }
+    }
+
+    public void setListener(@Nullable ISelectionListener<WidgetCheckBox> listener)
+    {
+        this.listener = listener;
     }
 
     public boolean isChecked()
@@ -40,26 +63,22 @@ public class WidgetCheckBox
     public void setChecked(boolean checked)
     {
         this.checked = checked;
-    }
 
-    public boolean isMouseOver(int mouseX, int mouseY)
-    {
-        return mouseX >= this.x && mouseX < this.x + this.totalWidth &&
-               mouseY >= this.y && mouseY < this.y + this.totalHeight;
-    }
-
-    public boolean mouseClicked(int mouseX, int mouseY, int mouseButton)
-    {
-        if (this.isMouseOver(mouseX, mouseY))
+        if (this.listener != null)
         {
-            this.checked = ! this.checked;
-            return true;
+            this.listener.onSelectionChange(this);
         }
-
-        return false;
     }
 
-    public void render()
+    @Override
+    protected boolean onMouseClickedImpl(int mouseX, int mouseY, int mouseButton)
+    {
+        this.setChecked(! this.checked);
+        return true;
+    }
+
+    @Override
+    public void render(int mouseX, int mouseY, boolean selected)
     {
         IGuiIcon icon = this.checked ? this.widgetChecked : this.widgetUnchecked;
 
@@ -68,9 +87,18 @@ public class WidgetCheckBox
         icon.renderAt(this.x, this.y, this.zLevel, false, false);
 
         int iw = icon.getWidth();
-        int y = this.y + this.totalHeight / 2 - this.mc.fontRenderer.FONT_HEIGHT;
-        int textColor = this.checked ? 0xFFFFFFFF : 0xCCCCCCCC;
+        int y = this.y + (this.height - this.mc.fontRenderer.FONT_HEIGHT) / 2;
+        int textColor = this.checked ? 0xFFFFFFFF : 0xB0B0B0B0;
 
         this.mc.fontRenderer.drawString(this.displayText, this.x + iw + 3, y, textColor);
+    }
+
+    @Override
+    public void postRenderHovered(int mouseX, int mouseY, boolean selected)
+    {
+        if (this.hoverInfo.isEmpty() == false)
+        {
+            this.mc.currentScreen.drawHoveringText(this.hoverInfo, mouseX, mouseY);
+        }
     }
 }
