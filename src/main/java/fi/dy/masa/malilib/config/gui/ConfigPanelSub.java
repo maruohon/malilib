@@ -19,7 +19,6 @@ import fi.dy.masa.malilib.config.IStringRepresentable;
 import fi.dy.masa.malilib.config.gui.ConfigOptionListenerResetConfig.ConfigResetterButton;
 import fi.dy.masa.malilib.config.gui.ConfigOptionListenerResetConfig.ConfigResetterTextField;
 import fi.dy.masa.malilib.event.InputEventHandler;
-import fi.dy.masa.malilib.gui.HoverInfo;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.ConfigButtonBoolean;
@@ -27,6 +26,7 @@ import fi.dy.masa.malilib.gui.button.ConfigButtonKeybind;
 import fi.dy.masa.malilib.gui.button.ConfigButtonOptionList;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.gui.interfaces.IKeybindConfigGui;
+import fi.dy.masa.malilib.gui.widgets.WidgetHoverInfo;
 import fi.dy.masa.malilib.gui.wrappers.ButtonWrapper;
 import fi.dy.masa.malilib.hotkeys.IHotkey;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
@@ -40,7 +40,7 @@ public class ConfigPanelSub extends AbstractConfigPanel implements IKeybindConfi
     private final Map<IConfigValue, ConfigTextFieldWrapper> textFields = new HashMap<>();
     private final ButtonPressDirtyListenerSimple<ButtonBase> dirtyListener = new ButtonPressDirtyListenerSimple<>();
     protected final List<ConfigOptionChangeListenerKeybind> hotkeyResetListeners = new ArrayList<>();
-    private final List<HoverInfo> configComments = new ArrayList<>();
+    private final List<WidgetHoverInfo> configComments = new ArrayList<>();
     private final String title;
     protected ConfigButtonKeybind activeKeybindButton;
     protected List<IConfigValue> configs = ImmutableList.of();
@@ -338,11 +338,11 @@ public class ConfigPanelSub extends AbstractConfigPanel implements IKeybindConfi
 
         this.drawButtons(mouseX, mouseY, partialTicks);
 
-        for (HoverInfo label : this.configComments)
+        for (WidgetHoverInfo label : this.configComments)
         {
             if (label.isMouseOver(mouseX, mouseY))
             {
-                this.drawHoveringText(label.getLines(), label.getX(), label.getY() + 30);
+                label.postRenderHovered(mouseX, mouseY + 30, false);
                 break;
             }
         }
@@ -370,8 +370,7 @@ public class ConfigPanelSub extends AbstractConfigPanel implements IKeybindConfi
 
     protected void addConfigComment(int x, int y, int width, int height, String comment)
     {
-        HoverInfo info = new HoverInfo(x, y, width, height);
-        info.addLines(comment);
+        WidgetHoverInfo info = new WidgetHoverInfo(x, y, width, height, comment);
         this.configComments.add(info);
     }
 

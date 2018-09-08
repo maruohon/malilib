@@ -16,7 +16,6 @@ import fi.dy.masa.malilib.gui.button.ConfigButtonKeybind;
 import fi.dy.masa.malilib.gui.interfaces.IKeybindConfigGui;
 import fi.dy.masa.malilib.gui.widgets.WidgetConfigOption;
 import fi.dy.masa.malilib.gui.widgets.WidgetListConfigOptions;
-import fi.dy.masa.malilib.reference.Reference;
 import net.minecraft.client.gui.GuiScreen;
 
 public abstract class GuiConfigsBase extends GuiListBase<IConfigValue, WidgetConfigOption, WidgetListConfigOptions> implements IKeybindConfigGui
@@ -32,11 +31,11 @@ public abstract class GuiConfigsBase extends GuiListBase<IConfigValue, WidgetCon
     protected ConfigButtonKeybind activeKeybindButton;
     protected int maxTextfieldTextLength = 256;
 
-    public GuiConfigsBase(int x, int y, @Nullable GuiScreen parent)
+    public GuiConfigsBase(int x, int y, String modId, @Nullable GuiScreen parent)
     {
         super(x, y);
 
-        this.modId = Reference.MOD_ID;
+        this.modId = modId;
         this.parent = parent;
     }
 

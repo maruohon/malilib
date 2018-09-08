@@ -2,10 +2,8 @@ package fi.dy.masa.malilib.hotkeys;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -20,26 +18,36 @@ public class KeybindMulti implements IKeybind
 {
     public static final ConfigBoolean KEYBIND_DEBUG = new ConfigBoolean("keybindDebugging", false, "When enabled, key presses and held keys are printed to the action bar and console");
 
-    private static Set<Integer> pressedKeys = new HashSet<>();
+    private static List<Integer> pressedKeys = new ArrayList<>();
+    private static int triggeredCount;
 
     private final String defaultStorageString;
+    private final KeybindSettings defaultSettings;
     private List<Integer> keyCodes = new ArrayList<>(4);
-    private boolean isStrict = true;
+    private KeybindSettings settings;
     private boolean pressed;
     private boolean pressedLast;
     private int heldTime;
     @Nullable
     private IHotkeyCallback callback;
 
-    private KeybindMulti(String defaultStorageString)
+    private KeybindMulti(String defaultStorageString, KeybindSettings settings)
     {
         this.defaultStorageString = defaultStorageString;
+        this.defaultSettings = settings;
+        this.settings = settings;
     }
 
     @Override
-    public void setIsStrict(boolean isStrict)
+    public KeybindSettings getSettings()
     {
-        this.isStrict = isStrict;
+        return this.settings;
+    }
+
+    @Override
+    public void setSettings(KeybindSettings settings)
+    {
+        this.settings = settings;
     }
 
     @Override
@@ -74,44 +82,74 @@ public class KeybindMulti implements IKeybind
     @Override
     public boolean updateIsPressed()
     {
-        if (this.isValid() == false)
+        if (this.isValid() == false ||
+            (this.settings.getContext() != KeybindSettings.Context.ANY &&
+            ((this.settings.getContext() == KeybindSettings.Context.INGAME) != (Minecraft.getMinecraft().currentScreen == null))))
         {
             return false;
         }
 
-        int activeCount = 0;
-        boolean cancel = false;
+        boolean allowExtraKeys = this.settings.getAllowExtraKeys();
+        boolean allowOutOfOrder = this.settings.isOrderSensitive() == false;
+        boolean pressedLast = this.pressed;
 
-        for (int i = 0; i < this.keyCodes.size(); ++i)
+        if (pressedKeys.size() >= this.keyCodes.size() && (allowExtraKeys || pressedKeys.size() == this.keyCodes.size()))
         {
-            int keyCode = this.keyCodes.get(i).intValue();
+            final int numKeys = this.keyCodes.size();
+            int keyCodeIndex = 0;
+            this.pressed = true;
 
-            if (keyCode > 0)
+            for (int i = 0; i < pressedKeys.size(); ++i)
             {
-                if (Keyboard.isKeyDown(keyCode))
+                Integer keyCodeObj = pressedKeys.get(i);
+
+                if (this.keyCodes.get(keyCodeIndex).equals(keyCodeObj))
                 {
-                    activeCount++;
+                    // Fully matched keybind
+                    if (++keyCodeIndex >= numKeys)
+                    {
+                        break;
+                    }
                 }
-            }
-            else
-            {
-                keyCode += 100;
-
-                if (keyCode >= 0 && keyCode < Mouse.getButtonCount() && Mouse.isButtonDown(keyCode))
+                else if (allowOutOfOrder == false || (this.keyCodes.contains(keyCodeObj) == false && allowExtraKeys == false))
                 {
-                    activeCount++;
+                    this.pressed = false;
+                    break;
                 }
             }
         }
+        else
+        {
+            this.pressed = false;
+        }
 
-        boolean pressedLast = this.pressed;
-        this.pressed = this.keyCodes.size() == activeCount && (this.isStrict == false || pressedKeys.size() == activeCount);
+        if (this.pressed != pressedLast && this.pressed == (this.settings.getActivateOn() == KeyAction.PRESS))
+        {
+            if (triggeredCount == 0 || this.settings.isExclusive() == false)
+            {
+                boolean cancel = this.triggerKeyAction(pressedLast) && this.settings.shouldCancel();
+
+                if (cancel)
+                {
+                    ++triggeredCount;
+                }
+
+                return cancel;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean triggerKeyAction(boolean pressedLast)
+    {
+        boolean cancel = false;
 
         if (this.pressed == false)
         {
             this.heldTime = 0;
 
-            if (pressedLast && this.callback != null)
+            if (pressedLast && this.callback != null && this.settings.getActivateOn() == KeyAction.RELEASE)
             {
                 cancel = this.callback.onKeyAction(KeyAction.RELEASE, this);
             }
@@ -124,7 +162,7 @@ public class KeybindMulti implements IKeybind
                 ((IMinecraftAccessor) Minecraft.getMinecraft()).setActionKeyF3(true);
             }
 
-            if (this.callback != null)
+            if (this.callback != null && this.settings.getActivateOn() == KeyAction.PRESS)
             {
                 cancel = this.callback.onKeyAction(KeyAction.PRESS, this);
             }
@@ -201,6 +239,18 @@ public class KeybindMulti implements IKeybind
     }
 
     @Override
+    public boolean areSettingsModified()
+    {
+        return this.settings.equals(this.defaultSettings) == false;
+    }
+
+    @Override
+    public void resetSettingsToDefaults()
+    {
+        this.settings = this.defaultSettings;
+    }
+
+    @Override
     public String getStringValue()
     {
         StringBuilder sb = new StringBuilder(32);
@@ -268,18 +318,18 @@ public class KeybindMulti implements IKeybind
         }
     }
 
-    public static KeybindMulti fromStorageString(String str)
+    public static KeybindMulti fromStorageString(String str, KeybindSettings settings)
     {
-        KeybindMulti keybind = new KeybindMulti(str);
+        KeybindMulti keybind = new KeybindMulti(str, settings);
         keybind.setValueFromString(str);
         return keybind;
     }
 
-    private static boolean isKeyDown(int keyCode)
+    public static boolean isKeyDown(int keyCode)
     {
         if (keyCode > 0)
         {
-            return Keyboard.isKeyDown(keyCode);
+            return keyCode < Keyboard.getKeyCount() && Keyboard.isKeyDown(keyCode);
         }
 
         keyCode += 100;
@@ -287,22 +337,35 @@ public class KeybindMulti implements IKeybind
         return keyCode >= 0 && keyCode < Mouse.getButtonCount() && Mouse.isButtonDown(keyCode);
     }
 
-    public static void onKeyInput(int keyCode, boolean state)
+    public static void onKeyInputPre(int keyCode, boolean state)
     {
         reCheckPressedKeys();
+        Integer valObj = Integer.valueOf(keyCode);
 
         if (state)
         {
-            pressedKeys.add(keyCode);
+            if (pressedKeys.contains(valObj) == false)
+            {
+                pressedKeys.add(valObj);
+            }
         }
         else
         {
-            pressedKeys.remove(keyCode);
+            pressedKeys.remove(valObj);
         }
 
         if (KEYBIND_DEBUG.getBooleanValue())
         {
             printKeybindDebugMessage(keyCode, state);
+        }
+    }
+
+    public static void onKeyInputPost()
+    {
+        // Clear the triggered count after all keys have been released
+        if (pressedKeys.size() == 0)
+        {
+            triggeredCount = 0;
         }
     }
 

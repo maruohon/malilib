@@ -12,12 +12,12 @@ import com.mumfrey.liteloader.modconfig.ConfigPanel;
 import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.config.gui.MaLiLibConfigPanel;
 import fi.dy.masa.malilib.event.InputEventHandler;
-import fi.dy.masa.malilib.reference.Reference;
+import fi.dy.masa.malilib.reference.MaLiLibReference;
 import net.minecraft.client.Minecraft;
 
 public class LiteModMaLiLib implements Configurable, LiteMod, InitCompleteListener, ShutdownListener
 {
-    public static final Logger logger = LogManager.getLogger(Reference.MOD_ID);
+    public static final Logger logger = LogManager.getLogger(MaLiLibReference.MOD_ID);
 
     public LiteModMaLiLib()
     {
@@ -26,13 +26,13 @@ public class LiteModMaLiLib implements Configurable, LiteMod, InitCompleteListen
     @Override
     public String getName()
     {
-        return Reference.MOD_NAME;
+        return MaLiLibReference.MOD_NAME;
     }
 
     @Override
     public String getVersion()
     {
-        return Reference.MOD_VERSION;
+        return MaLiLibReference.MOD_VERSION;
     }
 
     @Override

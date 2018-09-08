@@ -7,19 +7,14 @@ import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.interfaces.IStringConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.resources.I18n;
 
-public class GuiTextInput extends GuiBase
+public class GuiTextInput extends GuiDialogBase
 {
     private final String title;
     private final GuiTextField textField;
     private final String originalText;
     private final IStringConsumer consumer;
-    private int dialogWidth;
-    private int dialogHeight;
-    private int dialogLeft;
-    private int dialogTop;
 
     public GuiTextInput(int maxTextLength, String titleKey, String defaultText, @Nullable GuiBase parent, IStringConsumer consumer)
     {
@@ -38,33 +33,6 @@ public class GuiTextInput extends GuiBase
         this.textField.setFocused(true);
         this.textField.setText(this.originalText);
         this.textField.setCursorPositionEnd();
-    }
-
-    public void setWidthAndHeight(int width, int height)
-    {
-        this.dialogWidth = width;
-        this.dialogHeight = height;
-    }
-
-    public void setPosition(int left, int top)
-    {
-        this.dialogLeft = left;
-        this.dialogTop = top;
-    }
-
-    public void centerOnScreen()
-    {
-        if (this.getParent() != null)
-        {
-            this.dialogLeft = this.getParent().width / 2 - this.dialogWidth / 2;
-            this.dialogTop = this.getParent().height / 2 - this.dialogHeight / 2;
-        }
-        else
-        {
-            ScaledResolution res = new ScaledResolution(this.mc);
-            this.dialogLeft = res.getScaledWidth() / 2 - this.dialogWidth / 2;
-            this.dialogTop = res.getScaledHeight() / 2 - this.dialogHeight / 2;
-        }
     }
 
     @Override

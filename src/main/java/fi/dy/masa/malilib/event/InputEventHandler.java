@@ -159,7 +159,7 @@ public class InputEventHandler implements IKeybindManager
         boolean cancel = false;
 
         // Update the cached pressed keys status
-        KeybindMulti.onKeyInput(eventKey, eventKeyState);
+        KeybindMulti.onKeyInputPre(eventKey, eventKeyState);
 
         cancel = this.checkKeyBindsForChanges(eventKey);
 
@@ -173,6 +173,8 @@ public class InputEventHandler implements IKeybindManager
                 }
             }
         }
+
+        KeybindMulti.onKeyInputPost();
 
         // Somewhat hacky fix to prevent eating the modifier keys... >_>
         // A proper fix would likely require adding a context for the keys,
@@ -192,9 +194,11 @@ public class InputEventHandler implements IKeybindManager
             if (eventButton != -1)
             {
                 // Update the cached pressed keys status
-                KeybindMulti.onKeyInput(eventButton - 100, eventButtonState);
+                KeybindMulti.onKeyInputPre(eventButton - 100, eventButtonState);
 
                 cancel = this.checkKeyBindsForChanges(eventButton - 100);
+
+                KeybindMulti.onKeyInputPost();
             }
 
             if (this.mouseHandlers.isEmpty() == false)

@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.gui.widgets;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import fi.dy.masa.malilib.config.ConfigType;
 import fi.dy.masa.malilib.config.IConfigBoolean;
@@ -17,7 +18,6 @@ import fi.dy.masa.malilib.config.gui.ConfigOptionListenerResetConfig.ConfigReset
 import fi.dy.masa.malilib.config.options.ConfigColor;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.GuiTextFieldWrapper;
-import fi.dy.masa.malilib.gui.HoverInfo;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.ConfigButtonBoolean;
@@ -28,22 +28,23 @@ import fi.dy.masa.malilib.gui.interfaces.IKeybindConfigGui;
 import fi.dy.masa.malilib.gui.wrappers.ButtonWrapper;
 import fi.dy.masa.malilib.hotkeys.IHotkey;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
+import fi.dy.masa.malilib.hotkeys.KeybindSettings;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiLabel;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 
 public class WidgetConfigOption extends WidgetBase
 {
-    protected final List<GuiLabel> labels = new ArrayList<>();
-    protected final List<HoverInfo> configComments = new ArrayList<>();
+    protected final List<WidgetBase> widgets = new ArrayList<>();
     protected final List<ButtonWrapper<? extends ButtonBase>> buttons = new ArrayList<>();
     protected final IConfigValue config;
     protected final Minecraft mc;
     protected final IKeybindConfigGui host;
     protected final WidgetListConfigOptions parent;
     protected final String initialValue;
+    @Nullable
+    protected final KeybindSettings initialKeybindSettings;
     protected GuiTextFieldWrapper textField = null;
     /**
      * The last applied value for any textfield-based configs.
@@ -64,12 +65,13 @@ public class WidgetConfigOption extends WidgetBase
         this.host = host;
         this.mc = mc;
         this.parent = parent;
+        this.initialKeybindSettings = (config instanceof IHotkey) ? ((IHotkey) config).getKeybind().getSettings() : null;
         int id = 0;
 
         y += 1;
         int configHeight = 20;
 
-        this.addLabel(id++, x, y + 7, labelWidth, 8, 0xFFFFFFFF, config.getName());
+        this.addLabel(x, y + 7, labelWidth, 8, 0xFFFFFFFF, config.getName());
 
         String comment = config.getComment();
         ConfigType type = config.getType();
@@ -95,9 +97,13 @@ public class WidgetConfigOption extends WidgetBase
         {
             IKeybind keybind = ((IHotkey) config).getKeybind();
             ConfigButtonKeybind keybindButton = new ConfigButtonKeybind(id++, x, y, configWidth, configHeight, keybind, this.host);
+            x += configWidth + 4;
+
+            this.addWidget(new WidgetKeybindSettings(x, y, 20, 20, zLevel, keybind, config.getName(), this.parent));
+            x += 24;
 
             this.addButton(keybindButton, this.host.getButtonPressListener());
-            this.addKeybindResetButton(id++, x + configWidth + 10, y, keybind, keybindButton);
+            this.addKeybindResetButton(id++, x, y, keybind, keybindButton);
         }
         else if (type == ConfigType.STRING ||
                  type == ConfigType.COLOR ||
@@ -117,12 +123,19 @@ public class WidgetConfigOption extends WidgetBase
 
     public boolean wasConfigModified()
     {
+        boolean modified = false;
+
         if (this.textField != null)
         {
-            return this.initialValue.equals(this.textField.getTextField().getText()) == false;
+            modified |= this.initialValue.equals(this.textField.getTextField().getText()) == false;
         }
 
-        return this.initialValue.equals(this.config.getStringValue()) == false;
+        if (this.initialKeybindSettings != null && this.initialKeybindSettings.equals(((IHotkey) this.config).getKeybind().getSettings()) == false)
+        {
+            modified = true;
+        }
+
+        return modified || this.initialValue.equals(this.config.getStringValue()) == false;
     }
 
     public boolean hasPendingModifications()
@@ -152,28 +165,9 @@ public class WidgetConfigOption extends WidgetBase
         return entry;
     }
 
-    protected void addLabel(int id, int x, int y, int width, int height, int colour, String... lines)
-    {
-        if (lines == null || lines.length < 1)
-        {
-            return;
-        }
-
-        GuiLabel label = new GuiLabel(this.mc.fontRenderer, id, x, y, width, height, colour);
-
-        for (String line : lines)
-        {
-            label.addLine(line);
-        }
-
-        this.labels.add(label);
-    }
-
     protected void addConfigComment(int x, int y, int width, int height, String comment)
     {
-        HoverInfo info = new HoverInfo(x, y, width, height);
-        info.addLines(comment);
-        this.configComments.add(info);
+        this.addWidget(new WidgetHoverInfo(x, y, width, height, comment));
     }
 
     protected GuiTextField createTextField(int id, int x, int y, int width, int height)
@@ -252,6 +246,14 @@ public class WidgetConfigOption extends WidgetBase
             ret |= this.textField.getTextField().mouseClicked(mouseX, mouseY, mouseButton);
         }
 
+        if (this.subWidgets.isEmpty() == false)
+        {
+            for (WidgetBase widget : this.subWidgets)
+            {
+                ret |= widget.isMouseOver(mouseX, mouseY) && widget.onMouseClicked(mouseX, mouseY, mouseButton);
+            }
+        }
+
         return ret;
     }
 
@@ -278,14 +280,6 @@ public class WidgetConfigOption extends WidgetBase
         return false;
     }
 
-    protected void drawLabels(int mouseX, int mouseY)
-    {
-        for (GuiLabel label : this.labels)
-        {
-            label.drawLabel(this.mc, mouseX, mouseY);
-        }
-    }
-
     protected void drawButtons(int mouseX, int mouseY, float partialTicks)
     {
         for (ButtonWrapper<?> entry : this.buttons)
@@ -302,24 +296,12 @@ public class WidgetConfigOption extends WidgetBase
         }
     }
 
-    protected void drawHoverInfos(int mouseX, int mouseY)
-    {
-        for (HoverInfo label : this.configComments)
-        {
-            if (label.isMouseOver(mouseX, mouseY))
-            {
-                this.mc.currentScreen.drawHoveringText(label.getLines(), label.getX(), label.getY() + 30);
-                break;
-            }
-        }
-    }
-
     @Override
     public void render(int mouseX, int mouseY, boolean selected)
     {
         GlStateManager.color(1, 1, 1, 1);
 
-        this.drawLabels(mouseX, mouseY);
+        this.drawSubWidgets(mouseX, mouseY);
         this.drawTextFields(mouseX, mouseY);
         this.drawButtons(mouseX, mouseY, 0f);
 
@@ -330,11 +312,5 @@ public class WidgetConfigOption extends WidgetBase
             GuiBase.drawRect(this.colorDisplayPosX + 1, y + 1, this.colorDisplayPosX + 18, y + 18, 0xFF000000);
             GuiBase.drawRect(this.colorDisplayPosX + 2, y + 2, this.colorDisplayPosX + 17, y + 17, 0xFF000000 | ((ConfigColor) this.config).getIntegerValue());
         }
-    }
-
-    @Override
-    public void postRenderHovered(int mouseX, int mouseY, boolean selected)
-    {
-        this.drawHoverInfos(mouseX, mouseY);
     }
 }

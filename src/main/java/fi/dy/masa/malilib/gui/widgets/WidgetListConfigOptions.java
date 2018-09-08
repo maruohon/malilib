@@ -40,6 +40,15 @@ public class WidgetListConfigOptions extends WidgetListBase<IConfigValue, Widget
     protected void reCreateListEntryWidgets()
     {
         this.applyPendingModifications();
+
+        // Check for modifications before re-creating the widgets.
+        // This is needed for the keybind settings, as re-creating
+        // those widgets wipes the cached initial settings value.
+        if (this.configsModified == false)
+        {
+            this.wereConfigsModified();
+        }
+
         this.textFields.clear();
         super.reCreateListEntryWidgets();
     }

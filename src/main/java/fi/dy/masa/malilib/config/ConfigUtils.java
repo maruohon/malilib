@@ -1,18 +1,15 @@
 package fi.dy.masa.malilib.config;
 
 import java.util.List;
-import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import fi.dy.masa.malilib.config.options.ConfigTypeWrapper;
+import fi.dy.masa.malilib.hotkeys.IHotkey;
+import fi.dy.masa.malilib.hotkeys.KeybindSettings;
 import fi.dy.masa.malilib.util.JsonUtils;
 
 public class ConfigUtils
 {
-    public static void readConfigValues(JsonObject root, String category, List<? extends IConfigValue> options)
-    {
-        readConfigBase(root, category, ImmutableList.copyOf(options));
-    }
-
     public static void readConfigBase(JsonObject root, String category, List<? extends IConfigBase> options)
     {
         JsonObject obj = JsonUtils.getNestedObject(root, category, false);
@@ -29,9 +26,64 @@ public class ConfigUtils
         }
     }
 
-    public static void writeConfigValues(JsonObject root, String category, List<? extends IConfigValue> options)
+    public static void readHotkeys(JsonObject root, String keyHotkey, List<? extends IHotkey> hotkeys)
     {
-        writeConfigBase(root, category, ImmutableList.copyOf(options));
+        JsonObject objHotkey = JsonUtils.getNestedObject(root, keyHotkey, false);
+
+        if (objHotkey != null)
+        {
+            for (IHotkey hotkey : hotkeys)
+            {
+                String keyVal = null;
+
+                if (JsonUtils.hasObject(objHotkey, hotkey.getName()))
+                {
+                    JsonObject obj = objHotkey.getAsJsonObject(hotkey.getName());
+
+                    if (JsonUtils.hasString(obj, "keys"))
+                    {
+                        keyVal = obj.get("keys").getAsString();
+                    }
+
+                    if (JsonUtils.hasObject(obj, "settings"))
+                    {
+                        hotkey.getKeybind().setSettings(KeybindSettings.fromJson(obj.getAsJsonObject("settings")));
+                    }
+                }
+                // Backwards compatibility for reading the old simple keybinds
+                else if (JsonUtils.hasString(objHotkey, hotkey.getName()))
+                {
+                    keyVal = JsonUtils.getString(objHotkey, hotkey.getName());
+                }
+
+                if (keyVal != null)
+                {
+                    hotkey.getKeybind().setValueFromString(keyVal);
+                }
+            }
+        }
+    }
+
+    public static void readHotkeyToggleOptions(JsonObject root, String keyHotkey, String keyBoolean, List<? extends IHotkeyTogglable> options)
+    {
+        JsonObject objBoolean = JsonUtils.getNestedObject(root, keyBoolean, false);
+        JsonObject objHotkey = JsonUtils.getNestedObject(root, keyHotkey, false);
+
+        if (objHotkey != null)
+        {
+            readHotkeys(root, keyHotkey, options);
+        }
+
+        if (objBoolean != null)
+        {
+            for (IConfigBoolean option : options)
+            {
+                if (JsonUtils.hasBoolean(objBoolean, option.getName()))
+                {
+                    option.setBooleanValue(JsonUtils.getBoolean(objBoolean, option.getName()));
+                }
+            }
+        }
     }
 
     public static void writeConfigBase(JsonObject root, String category, List<? extends IConfigBase> options)
@@ -42,6 +94,32 @@ public class ConfigUtils
         {
             obj.add(option.getName(), option.getAsJsonElement());
         }
+    }
+
+    public static void writeHotkeys(JsonObject root, String keyHotkey, List<? extends IHotkey> hotkeys)
+    {
+        JsonObject objHotkey = JsonUtils.getNestedObject(root, keyHotkey, true);
+
+        for (IHotkey hotkey : hotkeys)
+        {
+            JsonObject obj = new JsonObject();
+            obj.add("keys", new JsonPrimitive(hotkey.getKeybind().getStringValue()));
+            obj.add("settings", hotkey.getKeybind().getSettings().toJson());
+
+            objHotkey.add(hotkey.getName(), obj);
+        }
+    }
+
+    public static void writeHotkeyToggleOptions(JsonObject root, String keyHotkey, String keyBoolean, List<? extends IHotkeyTogglable> options)
+    {
+        JsonObject objBoolean = JsonUtils.getNestedObject(root, keyBoolean, true);
+
+        for (IConfigBoolean option : options)
+        {
+            objBoolean.add(option.getName(), new JsonPrimitive(option.getBooleanValue()));
+        }
+
+        writeHotkeys(root, keyHotkey, options);
     }
 
     /**

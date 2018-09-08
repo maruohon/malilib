@@ -8,7 +8,7 @@ import fi.dy.masa.malilib.event.InputEventHandler;
 import fi.dy.masa.malilib.event.InputEventHandler.KeybindCategory;
 import fi.dy.masa.malilib.gui.button.ConfigButtonKeybind;
 import fi.dy.masa.malilib.hotkeys.IHotkey;
-import fi.dy.masa.malilib.reference.Reference;
+import fi.dy.masa.malilib.reference.MaLiLibReference;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.resources.I18n;
 
@@ -16,7 +16,7 @@ public class ConfigPanelAllHotkeys extends ConfigPanelHotkeysBase
 {
     public ConfigPanelAllHotkeys(MaLiLibConfigPanel parent)
     {
-        super(Reference.MOD_ID, I18n.format("malilib.gui.title.all_hotkeys"), ImmutableList.of(), parent);
+        super(MaLiLibReference.MOD_ID, I18n.format("malilib.gui.title.all_hotkeys"), ImmutableList.of(), parent);
     }
 
     @Override

@@ -7,23 +7,16 @@ public class KeyCallbackToggleBooleanConfigWithMessage extends KeyCallbackToggle
 {
     public KeyCallbackToggleBooleanConfigWithMessage(IConfigBoolean config)
     {
-        this(config, KeyAction.PRESS);
-    }
-
-    public KeyCallbackToggleBooleanConfigWithMessage(IConfigBoolean config, KeyAction toggleOnAction)
-    {
-        super(config, toggleOnAction);
+        super(config);
     }
 
     @Override
     public boolean onKeyAction(KeyAction action, IKeybind key)
     {
-        if (super.onKeyAction(action, key))
-        {
-            StringUtils.printBooleanConfigToggleMessage(this.config.getPrettyName(), this.config.getBooleanValue());
-            return true;
-        }
+        super.onKeyAction(action, key);
 
-        return false;
+        StringUtils.printBooleanConfigToggleMessage(this.config.getPrettyName(), this.config.getBooleanValue());
+
+        return true;
     }
 }

@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.reference;
 
-public class Reference
+public class MaLiLibReference
 {
     public static final String MOD_ID = "malilib";
     public static final String MOD_NAME = "MaLiLib";

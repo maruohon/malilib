@@ -27,11 +27,13 @@ public interface IKeybind extends IStringRepresentable
      */
     boolean updateIsPressed();
 
+    KeybindSettings getSettings();
+
     /**
-     * Sets whether or not this keybind should check that no other keys are allowed to be pressed
-     * @param isStrict
+     * Set the settings for this keybind.
+     * @param settings
      */
-    void setIsStrict(boolean isStrict);
+    void setSettings(KeybindSettings settings);
 
     void clearKeys();
 
@@ -46,4 +48,8 @@ public interface IKeybind extends IStringRepresentable
     Collection<Integer> getKeys();
 
     void setCallback(@Nullable IHotkeyCallback callback);
+
+    boolean areSettingsModified();
+
+    void resetSettingsToDefaults();
 }

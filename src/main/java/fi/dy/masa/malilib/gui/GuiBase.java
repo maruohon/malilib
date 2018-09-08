@@ -6,7 +6,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
+import fi.dy.masa.malilib.config.IConfigBase;
 import fi.dy.masa.malilib.gui.Message.MessageType;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonHoverText;
@@ -21,10 +21,10 @@ import fi.dy.masa.malilib.gui.wrappers.ButtonWrapper;
 import fi.dy.masa.malilib.gui.wrappers.TextFieldWrapper;
 import fi.dy.masa.malilib.interfaces.IStringConsumer;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
@@ -60,10 +60,6 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     protected String title = "";
     @Nullable
     private GuiBase parent;
-
-    public GuiBase()
-    {
-    }
 
     public GuiBase setParent(@Nullable GuiBase parent)
     {
@@ -117,21 +113,19 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
-        this.drawScreenBaseContents(mouseX, mouseY, partialTicks);
-
+        this.drawScreenBackground(mouseX, mouseY);
         this.drawContents(mouseX, mouseY, partialTicks);
+        this.drawTitle(mouseX, mouseY, partialTicks);
 
-        super.drawScreen(mouseX, mouseY, partialTicks);
-
-        this.drawGuiMessages();
+        // Draw base widgets
+        this.drawWidgets(mouseX, mouseY);
+        this.drawTextFields();
+        this.drawButtons(mouseX, mouseY, partialTicks);
+        //super.drawScreen(mouseX, mouseY, partialTicks);
 
         this.drawButtonHoverTexts(mouseX, mouseY, partialTicks);
-
         this.drawHoveredWidget(mouseX, mouseY);
-    }
-
-    public void drawContents(int mouseX, int mouseY, float partialTicks)
-    {
+        this.drawGuiMessages();
     }
 
     @Override
@@ -421,29 +415,19 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
         this.mc.displayGuiScreen(null);
     }
 
-    protected void drawScreenBaseContents(int mouseX, int mouseY, float partialTicks)
+    protected void drawScreenBackground(int mouseX, int mouseY)
     {
-        GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO);
-        GlStateManager.pushMatrix();
-
         // Draw the dark background
         drawRect(0, 0, this.width, this.height, TOOLTIP_BACKGROUND);
+    }
 
-        // Draw screen title
+    protected void drawTitle(int mouseX, int mouseY, float partialTicks)
+    {
         this.mc.fontRenderer.drawString(this.getTitle(), LEFT, TOP, COLOR_WHITE);
+    }
 
-        this.hoveredWidget = null;
-
-        // Draw base widgets
-        this.drawWidgets(mouseX, mouseY);
-
-        this.drawTextFields();
-
-        this.drawButtons(mouseX, mouseY, partialTicks);
-
-        GlStateManager.clear(GL11.GL_DEPTH_BUFFER_BIT);
-
-        GlStateManager.popMatrix();
+    protected void drawContents(int mouseX, int mouseY, float partialTicks)
+    {
     }
 
     protected void drawButtons(int mouseX, int mouseY, float partialTicks)
@@ -451,6 +435,32 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
         for (ButtonWrapper<?> entry : this.buttons)
         {
             entry.draw(this.mc, mouseX, mouseY, partialTicks);
+        }
+    }
+
+    protected void drawTextFields()
+    {
+        for (TextFieldWrapper<?> entry : this.textFields)
+        {
+            entry.draw();
+        }
+    }
+
+    protected void drawWidgets(int mouseX, int mouseY)
+    {
+        this.hoveredWidget = null;
+
+        if (this.widgets.isEmpty() == false)
+        {
+            for (WidgetBase widget : this.widgets)
+            {
+                widget.render(mouseX, mouseY, false);
+
+                if (widget.isMouseOver(mouseX, mouseY))
+                {
+                    this.hoveredWidget = widget;
+                }
+            }
         }
     }
 
@@ -471,39 +481,8 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     {
         if (this.hoveredWidget != null)
         {
-            //GlStateManager.pushMatrix();
-            //GlStateManager.translate(0, 0, 500);
-
             this.hoveredWidget.postRenderHovered(mouseX, mouseY, false);
-
-            //GlStateManager.color(1, 1, 1, 1);
-            //GlStateManager.disableLighting();
             RenderHelper.disableStandardItemLighting();
-            //GlStateManager.popMatrix();
-        }
-    }
-
-    protected void drawTextFields()
-    {
-        for (TextFieldWrapper<?> entry : this.textFields)
-        {
-            entry.draw();
-        }
-    }
-
-    protected void drawWidgets(int mouseX, int mouseY)
-    {
-        if (this.widgets.isEmpty() == false)
-        {
-            for (WidgetBase widget : this.widgets)
-            {
-                widget.render(mouseX, mouseY, false);
-
-                if (widget.isMouseOver(mouseX, mouseY))
-                {
-                    this.hoveredWidget = widget;
-                }
-            }
         }
     }
 
@@ -515,5 +494,18 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     public static int getTextWidth(String text)
     {
         return Minecraft.getMinecraft().fontRenderer.getStringWidth(text);
+    }
+
+    public static int getMaxNameLength(List<? extends IConfigBase> configs)
+    {
+        FontRenderer font = Minecraft.getMinecraft().fontRenderer;
+        int width = 0;
+
+        for (IConfigBase config : configs)
+        {
+            width = Math.max(width, font.getStringWidth(config.getName()));
+        }
+
+        return width;
     }
 }
