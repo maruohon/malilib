@@ -97,7 +97,7 @@ public class KeybindMulti implements IKeybind
         {
             final int numKeys = this.keyCodes.size();
             int keyCodeIndex = 0;
-            this.pressed = true;
+            this.pressed = pressedKeys.containsAll(this.keyCodes);
 
             for (int i = 0; i < pressedKeys.size(); ++i)
             {
@@ -111,8 +111,12 @@ public class KeybindMulti implements IKeybind
                         break;
                     }
                 }
-                else if (allowOutOfOrder == false || (this.keyCodes.contains(keyCodeObj) == false && allowExtraKeys == false))
+                else if ((allowOutOfOrder == false && keyCodeIndex > 0) || (this.keyCodes.contains(keyCodeObj) == false && allowExtraKeys == false))
                 {
+                    /*
+                    System.out.printf("km fail: key: %s, ae: %s, aoo: %s, cont: %s, keys: %s, pressed: %s\n",
+                            keyCodeObj, allowExtraKeys, allowOutOfOrder, this.keyCodes.contains(keyCodeObj), this.keyCodes, pressedKeys);
+                    */
                     this.pressed = false;
                     break;
                 }
