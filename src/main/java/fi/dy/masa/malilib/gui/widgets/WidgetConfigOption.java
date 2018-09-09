@@ -24,6 +24,7 @@ import fi.dy.masa.malilib.gui.button.ConfigButtonBoolean;
 import fi.dy.masa.malilib.gui.button.ConfigButtonKeybind;
 import fi.dy.masa.malilib.gui.button.ConfigButtonOptionList;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
+import fi.dy.masa.malilib.gui.interfaces.IConfigInfoProvider;
 import fi.dy.masa.malilib.gui.interfaces.IKeybindConfigGui;
 import fi.dy.masa.malilib.gui.wrappers.ButtonWrapper;
 import fi.dy.masa.malilib.hotkeys.IHotkey;
@@ -59,13 +60,15 @@ public class WidgetConfigOption extends WidgetBase
     {
         super(x, y, width, height, zLevel);
 
+        ConfigType type = config.getType();
+
         this.config = config;
         this.initialValue = config.getStringValue();
         this.lastAppliedValue = config.getStringValue();
         this.host = host;
         this.mc = mc;
         this.parent = parent;
-        this.initialKeybindSettings = (config instanceof IHotkey) ? ((IHotkey) config).getKeybind().getSettings() : null;
+        this.initialKeybindSettings = type == ConfigType.HOTKEY ? ((IHotkey) config).getKeybind().getSettings() : null;
         int id = 0;
 
         y += 1;
@@ -73,8 +76,17 @@ public class WidgetConfigOption extends WidgetBase
 
         this.addLabel(x, y + 7, labelWidth, 8, 0xFFFFFFFF, config.getName());
 
-        String comment = config.getComment();
-        ConfigType type = config.getType();
+        String comment = null;
+        IConfigInfoProvider infoProvider = this.host.getHoverInfoProvider();
+
+        if (infoProvider != null)
+        {
+            comment = infoProvider.getHoverInfo(config);
+        }
+        else
+        {
+            comment = config.getComment();
+        }
 
         if (comment != null)
         {
@@ -86,21 +98,22 @@ public class WidgetConfigOption extends WidgetBase
         if (type == ConfigType.BOOLEAN && (config instanceof IConfigBoolean))
         {
             ConfigButtonBoolean optionButton = new ConfigButtonBoolean(id++, x, y, configWidth, configHeight, (IConfigBoolean) config);
-            this.addConfigButtonEntry(id++, x + configWidth + 10, y, config, optionButton);
+            this.addConfigButtonEntry(id++, x + configWidth + 4, y, config, optionButton);
         }
         else if (type == ConfigType.OPTION_LIST && (config instanceof IConfigOptionList))
         {
             ConfigButtonOptionList optionButton = new ConfigButtonOptionList(id++, x, y, configWidth, configHeight, (IConfigOptionList) config);
-            this.addConfigButtonEntry(id++, x + configWidth + 10, y, config, optionButton);
+            this.addConfigButtonEntry(id++, x + configWidth + 4, y, config, optionButton);
         }
         else if (type == ConfigType.HOTKEY && (config instanceof IHotkey))
         {
+            configWidth -= 25; // adjust the width to match other configs due to the settings widget
             IKeybind keybind = ((IHotkey) config).getKeybind();
             ConfigButtonKeybind keybindButton = new ConfigButtonKeybind(id++, x, y, configWidth, configHeight, keybind, this.host);
             x += configWidth + 4;
 
-            this.addWidget(new WidgetKeybindSettings(x, y, 20, 20, zLevel, keybind, config.getName(), this.parent));
-            x += 24;
+            this.addWidget(new WidgetKeybindSettings(x, y, 20, 20, zLevel, keybind, config.getName(), this.parent, this.host.getDialogHandler()));
+            x += 25;
 
             this.addButton(keybindButton, this.host.getButtonPressListener());
             this.addKeybindResetButton(id++, x, y, keybind, keybindButton);
@@ -110,14 +123,15 @@ public class WidgetConfigOption extends WidgetBase
                  type == ConfigType.INTEGER ||
                  type == ConfigType.DOUBLE)
         {
+            int resetX = x + configWidth + 4;
+
             if (type == ConfigType.COLOR)
             {
-                this.colorDisplayPosX = x;
-                x += 20;
-                configWidth = 80;
+                configWidth -= 24; // adjust the width to match other configs due to the color display
+                this.colorDisplayPosX = x + configWidth + 4;
             }
 
-            this.addConfigTextFieldEntry(id++, x, y, configWidth, configHeight, config);
+            this.addConfigTextFieldEntry(id++, x, y, resetX, configWidth, configHeight, config);
         }
     }
 
@@ -193,13 +207,13 @@ public class WidgetConfigOption extends WidgetBase
         this.addButton(resetButton, listenerReset);
     }
 
-    protected void addConfigTextFieldEntry(int id, int x, int y, int configWidth, int configHeight, IStringRepresentable config)
+    protected void addConfigTextFieldEntry(int id, int x, int y, int resetX, int configWidth, int configHeight, IStringRepresentable config)
     {
         GuiTextField field = this.createTextField(id++, x, y + 1, configWidth - 4, configHeight - 3);
         field.setMaxStringLength(this.maxTextfieldTextLength);
         field.setText(config.getStringValue());
 
-        ButtonGeneric resetButton = this.createResetButton(id, x + configWidth + 10, y, config);
+        ButtonGeneric resetButton = this.createResetButton(id, resetX, y, config);
         ConfigOptionChangeListenerTextField listenerChange = new ConfigOptionChangeListenerTextField(config, field, resetButton);
         ConfigOptionListenerResetConfig listenerReset = new ConfigOptionListenerResetConfig(config, new ConfigResetterTextField(config, field), resetButton, null);
 

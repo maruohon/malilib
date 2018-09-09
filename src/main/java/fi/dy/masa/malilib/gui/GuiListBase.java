@@ -5,14 +5,18 @@ import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
 import fi.dy.masa.malilib.gui.widgets.WidgetBase;
 import fi.dy.masa.malilib.gui.widgets.WidgetListBase;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 
 public abstract class GuiListBase<TYPE, WIDGET extends WidgetBase, WIDGETLIST extends WidgetListBase<TYPE, WIDGET>> extends GuiBase
 {
-    protected final WIDGETLIST widget;
+    private final int listX;
+    private final int listY;
+    private WIDGETLIST widget;
 
     protected GuiListBase(int listX, int listY)
     {
-        this.widget = this.createListWidget(listX, listY);
+        this.listX = listX;
+        this.listY = listY;
     }
 
     protected abstract WIDGETLIST createListWidget(int listX, int listY);
@@ -27,14 +31,25 @@ public abstract class GuiListBase<TYPE, WIDGET extends WidgetBase, WIDGETLIST ex
         return null;
     }
 
-    @Override
-    public GuiBase setParent(GuiBase parent)
+    protected WIDGETLIST getListWidget()
     {
-        if (this.widget != null)
+        if (this.widget == null)
         {
-            this.widget.setParent(parent);
+            this.reCreateListWidget();
         }
 
+        return this.widget;
+    }
+
+    protected void reCreateListWidget()
+    {
+        this.widget = this.createListWidget(this.listX, this.listY);
+    }
+
+    @Override
+    public GuiBase setParent(GuiScreen parent)
+    {
+        this.getListWidget().setParent(parent);
         return super.setParent(parent);
     }
 
@@ -43,8 +58,8 @@ public abstract class GuiListBase<TYPE, WIDGET extends WidgetBase, WIDGETLIST ex
     {
         super.initGui();
 
-        this.widget.setSize(this.getBrowserWidth(), this.getBrowserHeight());
-        this.widget.initGui();
+        this.getListWidget().setSize(this.getBrowserWidth(), this.getBrowserHeight());
+        this.getListWidget().initGui();
     }
 
     @Override
@@ -52,13 +67,13 @@ public abstract class GuiListBase<TYPE, WIDGET extends WidgetBase, WIDGETLIST ex
     {
         super.onGuiClosed();
 
-        this.widget.onGuiClosed();
+        this.getListWidget().onGuiClosed();
     }
 
     @Override
     public boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
-        if (this.widget.onMouseClicked(mouseX, mouseY, mouseButton))
+        if (this.getListWidget().onMouseClicked(mouseX, mouseY, mouseButton))
         {
             return true;
         }
@@ -69,7 +84,7 @@ public abstract class GuiListBase<TYPE, WIDGET extends WidgetBase, WIDGETLIST ex
     @Override
     public boolean onMouseReleased(int mouseX, int mouseY, int mouseButton)
     {
-        if (this.widget.onMouseReleased(mouseX, mouseY, mouseButton))
+        if (this.getListWidget().onMouseReleased(mouseX, mouseY, mouseButton))
         {
             return true;
         }
@@ -80,7 +95,7 @@ public abstract class GuiListBase<TYPE, WIDGET extends WidgetBase, WIDGETLIST ex
     @Override
     public boolean onMouseScrolled(int mouseX, int mouseY, int mouseWheelDelta)
     {
-        if (this.widget.onMouseScrolled(mouseX, mouseY, mouseWheelDelta))
+        if (this.getListWidget().onMouseScrolled(mouseX, mouseY, mouseWheelDelta))
         {
             return true;
         }
@@ -91,7 +106,7 @@ public abstract class GuiListBase<TYPE, WIDGET extends WidgetBase, WIDGETLIST ex
     @Override
     public boolean onKeyTyped(char typedChar, int keyCode)
     {
-        if (this.widget.onKeyTyped(typedChar, keyCode))
+        if (this.getListWidget().onKeyTyped(typedChar, keyCode))
         {
             return true;
         }
@@ -104,12 +119,12 @@ public abstract class GuiListBase<TYPE, WIDGET extends WidgetBase, WIDGETLIST ex
     {
         super.setWorldAndResolution(mc, width, height);
 
-        this.widget.setWorldAndResolution(mc, width, height);
+        this.getListWidget().setWorldAndResolution(mc, width, height);
     }
 
     @Override
     public void drawContents(int mouseX, int mouseY, float partialTicks)
     {
-        this.widget.drawContents(mouseX, mouseY, partialTicks);
+        this.getListWidget().drawContents(mouseX, mouseY, partialTicks);
     }
 }

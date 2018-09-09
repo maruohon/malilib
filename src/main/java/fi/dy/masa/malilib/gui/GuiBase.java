@@ -22,7 +22,6 @@ import fi.dy.masa.malilib.gui.wrappers.TextFieldWrapper;
 import fi.dy.masa.malilib.interfaces.IStringConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.RenderHelper;
@@ -59,9 +58,9 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     private MessageType nextMessageType = MessageType.INFO;
     protected String title = "";
     @Nullable
-    private GuiBase parent;
+    private GuiScreen parent;
 
-    public GuiBase setParent(@Nullable GuiBase parent)
+    public GuiBase setParent(@Nullable GuiScreen parent)
     {
         // Don't allow nesting the GUI with itself...
         if (parent == null || parent.getClass() != this.getClass())
@@ -73,19 +72,14 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     }
 
     @Nullable
-    public GuiBase getParent()
+    public GuiScreen getParent()
     {
         return this.parent;
     }
 
-    protected String getTitle()
+    public String getTitle()
     {
-        return this.parent != null ? this.parent.getTitle() + " => " + this.title : this.title;
-    }
-
-    public Minecraft getMinecraft()
-    {
-        return this.mc;
+        return this.parent instanceof GuiBase ? ((GuiBase) this.parent).getTitle() + " => " + this.title : this.title;
     }
 
     @Override
@@ -126,15 +120,6 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
         this.drawButtonHoverTexts(mouseX, mouseY, partialTicks);
         this.drawHoveredWidget(mouseX, mouseY);
         this.drawGuiMessages();
-    }
-
-    @Override
-    protected void actionPerformed(GuiButton control)
-    {
-        if (control.id == 0)
-        {
-            this.close();
-        }
     }
 
     @Override
@@ -408,11 +393,6 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     protected void clearTextFields()
     {
         this.textFields.clear();
-    }
-
-    public void close()
-    {
-        this.mc.displayGuiScreen(null);
     }
 
     protected void drawScreenBackground(int mouseX, int mouseY)

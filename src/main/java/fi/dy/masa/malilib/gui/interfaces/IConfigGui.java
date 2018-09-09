@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.gui.interfaces;
 
 import java.util.List;
+import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.IConfigValue;
 import fi.dy.masa.malilib.config.gui.ButtonPressDirtyListenerSimple;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
@@ -26,4 +27,21 @@ public interface IConfigGui
      * @return
      */
     ButtonPressDirtyListenerSimple<ButtonBase> getButtonPressListener();
+
+    /**
+     * Get the "dialog window" handler for this GUI, if any.
+     * @return
+     */
+    @Nullable
+    default IDialogHandler getDialogHandler()
+    {
+        return null;
+    }
+
+    /**
+     * Returns an info provider to get customized hover tooltips for the configs
+     * @return
+     */
+    @Nullable
+    IConfigInfoProvider getHoverInfoProvider();
 }

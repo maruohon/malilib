@@ -1,42 +1,44 @@
 package fi.dy.masa.malilib.gui;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import fi.dy.masa.malilib.config.ConfigManager;
-import fi.dy.masa.malilib.config.IConfigBase;
 import fi.dy.masa.malilib.config.IConfigValue;
 import fi.dy.masa.malilib.config.gui.ButtonPressDirtyListenerSimple;
 import fi.dy.masa.malilib.config.gui.ConfigOptionChangeListenerKeybind;
 import fi.dy.masa.malilib.event.InputEventHandler;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ConfigButtonKeybind;
+import fi.dy.masa.malilib.gui.interfaces.IConfigInfoProvider;
+import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
 import fi.dy.masa.malilib.gui.interfaces.IKeybindConfigGui;
 import fi.dy.masa.malilib.gui.widgets.WidgetConfigOption;
 import fi.dy.masa.malilib.gui.widgets.WidgetListConfigOptions;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 
 public abstract class GuiConfigsBase extends GuiListBase<IConfigValue, WidgetConfigOption, WidgetListConfigOptions> implements IKeybindConfigGui
 {
-    @Nullable
-    protected final GuiScreen parent;
     protected final List<ConfigOptionChangeListenerKeybind> hotkeyChangeListeners = new ArrayList<>();
     protected final ButtonPressDirtyListenerSimple<ButtonBase> dirtyListener = new ButtonPressDirtyListenerSimple<>();
     protected final String modId;
     protected final List<String> initialConfigValues = new ArrayList<>();
-    protected boolean configsDirty;
-
     protected ConfigButtonKeybind activeKeybindButton;
-    protected int maxTextfieldTextLength = 256;
+    protected boolean configsDirty;
+    protected int configWidth = 204;
+    @Nullable protected GuiScreen parentScreen;
+    @Nullable protected IConfigInfoProvider hoverInfoProvider;
+    @Nullable protected IDialogHandler dialogHandler;
 
-    public GuiConfigsBase(int x, int y, String modId, @Nullable GuiScreen parent)
+    public GuiConfigsBase(int listX, int listY, String modId, @Nullable GuiScreen parent)
     {
-        super(x, y);
+        super(listX, listY);
 
+        this.mc = Minecraft.getMinecraft();
         this.modId = modId;
-        this.parent = parent;
+        this.parentScreen = parent;
     }
 
     @Override
@@ -53,7 +55,47 @@ public abstract class GuiConfigsBase extends GuiListBase<IConfigValue, WidgetCon
 
     protected int getConfigWidth()
     {
-        return 204;
+        return this.configWidth;
+    }
+
+    public void setParentGui(GuiScreen parent)
+    {
+        this.parentScreen = parent;
+    }
+
+    public GuiConfigsBase setConfigWidth(int configWidth)
+    {
+        this.configWidth = configWidth;
+        return this;
+    }
+
+    public GuiConfigsBase setHoverInfoProvider(IConfigInfoProvider provider)
+    {
+        this.hoverInfoProvider = provider;
+        return this;
+    }
+
+    @Override
+    public IDialogHandler getDialogHandler()
+    {
+        return this.dialogHandler;
+    }
+
+    public void setDialogHandler(IDialogHandler handler)
+    {
+        this.dialogHandler = handler;
+    }
+
+    public String getModId()
+    {
+        return this.modId;
+    }
+
+    @Override
+    @Nullable
+    public IConfigInfoProvider getHoverInfoProvider()
+    {
+        return this.hoverInfoProvider;
     }
 
     @Override
@@ -73,9 +115,9 @@ public abstract class GuiConfigsBase extends GuiListBase<IConfigValue, WidgetCon
     @Override
     public void onGuiClosed()
     {
-        if (this.widget.wereConfigsModified())
+        if (this.getListWidget().wereConfigsModified())
         {
-            this.widget.applyPendingModifications();
+            this.getListWidget().applyPendingModifications();
             this.onSettingsChanged();
         }
 
@@ -102,14 +144,14 @@ public abstract class GuiConfigsBase extends GuiListBase<IConfigValue, WidgetCon
         }
         else
         {
-            if (this.widget.onKeyTyped(typedChar, keyCode))
+            if (this.getListWidget().onKeyTyped(typedChar, keyCode))
             {
                 return true;
             }
 
-            if (keyCode == Keyboard.KEY_ESCAPE)
+            if (keyCode == Keyboard.KEY_ESCAPE && this.parentScreen != this.mc.currentScreen)
             {
-                this.mc.displayGuiScreen(this.parent);
+                this.mc.displayGuiScreen(this.parentScreen);
                 return true;
             }
 
@@ -178,17 +220,5 @@ public abstract class GuiConfigsBase extends GuiListBase<IConfigValue, WidgetCon
         {
             listener.updateButtons();
         }
-    }
-
-    public int getMaxLabelWidth(Collection<IConfigValue> entries)
-    {
-        int maxWidth = 0;
-
-        for (IConfigBase entry : entries)
-        {
-            maxWidth = Math.max(maxWidth, this.mc.fontRenderer.getStringWidth(entry.getName()));
-        }
-
-        return maxWidth;
     }
 }

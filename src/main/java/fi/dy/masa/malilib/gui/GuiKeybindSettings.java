@@ -1,6 +1,9 @@
 package fi.dy.masa.malilib.gui;
 
+import java.io.IOException;
 import java.util.List;
+import javax.annotation.Nullable;
+import org.lwjgl.input.Keyboard;
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.config.options.ConfigBase;
 import fi.dy.masa.malilib.config.options.ConfigBoolean;
@@ -9,10 +12,12 @@ import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ConfigButtonBoolean;
 import fi.dy.masa.malilib.gui.button.ConfigButtonOptionList;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
+import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
 import fi.dy.masa.malilib.hotkeys.KeyAction;
 import fi.dy.masa.malilib.hotkeys.KeybindSettings;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.TextFormatting;
 
@@ -27,15 +32,30 @@ public class GuiKeybindSettings extends GuiDialogBase
     protected final ConfigBoolean cfgExclusive      = new ConfigBoolean("Exclusive", false, "If true, then no other keybinds can have been activated before\nthe keybind in question, while some keys are being pressed");
     protected final ConfigBoolean cfgCancel         = new ConfigBoolean("Cancel further processing", false, "Cancel further (vanilla) processing when the keybind activates");
     protected final List<ConfigBase> configList;
+    @Nullable protected final IDialogHandler dialogHandler;
     protected int labelWidth;
     protected int configWidth;
 
-    public GuiKeybindSettings(IKeybind keybind, String name, GuiBase parent)
+    public GuiKeybindSettings(IKeybind keybind, String name, @Nullable IDialogHandler dialogHandler, GuiScreen parent)
     {
+        this.mc = Minecraft.getMinecraft();
         this.keybind = keybind;
         this.keybindName = name;
+        this.dialogHandler = dialogHandler;
 
-        this.setParent(parent);
+        // When we have a dialog handler, then we are inside the Liteloader config menu.
+        // In there we don't want to use the normal "GUI replacement and render parent first" trick.
+        // The "dialog handler" stuff is used within the Liteloader config menus,
+        // because there we can't change the mc.currentScreen reference to this GUI,
+        // because otherwise Liteloader will freak out.
+        // So instead we are using a weird wrapper "sub panel" thingy in there, and thus
+        // we can NOT try to render the parent GUI here in that case, otherwise it will
+        // lead to an infinite recursion loop and a StackOverflowError.
+        if (this.dialogHandler == null)
+        {
+            this.setParent(parent);
+        }
+
         this.title = TextFormatting.UNDERLINE.toString() + I18n.format("malilib.gui.title.keybind_settings.advanced", this.keybindName);
         KeybindSettings settings = this.keybind.getSettings();
 
@@ -50,12 +70,13 @@ public class GuiKeybindSettings extends GuiDialogBase
         this.labelWidth = GuiBase.getMaxNameLength(this.configList);
         this.configWidth = 100;
 
-        Minecraft mc = Minecraft.getMinecraft();
         int totalWidth = this.labelWidth + this.configWidth + 30;
-        totalWidth = Math.max(totalWidth, mc.fontRenderer.getStringWidth(this.title) + 20);
+        totalWidth = Math.max(totalWidth, this.mc.fontRenderer.getStringWidth(this.title) + 20);
 
         this.setWidthAndHeight(totalWidth, this.configList.size() * 22 + 30);
         this.centerOnScreen();
+
+        this.setWorldAndResolution(this.mc, this.dialogWidth, this.dialogHeight);
     }
 
     @Override
@@ -107,7 +128,10 @@ public class GuiKeybindSettings extends GuiDialogBase
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
-        this.getParent().drawScreen(mouseX, mouseY, partialTicks);
+        if (this.getParent() != null)
+        {
+            this.getParent().drawScreen(mouseX, mouseY, partialTicks);
+        }
 
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
@@ -122,6 +146,29 @@ public class GuiKeybindSettings extends GuiDialogBase
     protected void drawTitle(int mouseX, int mouseY, float partialTicks)
     {
         this.drawString(this.fontRenderer, this.title, this.dialogLeft + 10, this.dialogTop + 6, COLOR_WHITE);
+    }
+
+    @Override
+    protected void keyTyped(char typedChar, int keyCode) throws IOException
+    {
+        System.out.printf("ks keyTyped\n");
+        this.onKeyTyped(typedChar, keyCode);
+    }
+
+    @Override
+    public boolean onKeyTyped(char typedChar, int keyCode)
+    {
+        if (keyCode == Keyboard.KEY_ESCAPE && this.dialogHandler != null)
+        {
+            System.out.printf("ks plop dialog close\n");
+            this.dialogHandler.closeDialog();
+            return true;
+        }
+        else
+        {
+            System.out.printf("ks plop super\n");
+            return super.onKeyTyped(typedChar, keyCode);
+        }
     }
 
     protected static class Listener implements IButtonActionListener<ButtonBase>

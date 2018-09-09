@@ -1,19 +1,8 @@
 package fi.dy.masa.malilib.config.gui;
 
-import java.util.List;
-import com.google.common.collect.ImmutableList;
-import com.mumfrey.liteloader.modconfig.ConfigPanelHost;
-import fi.dy.masa.malilib.config.ConfigManager;
-import fi.dy.masa.malilib.event.InputEventHandler;
-import fi.dy.masa.malilib.event.InputEventHandler.KeybindCategory;
-import fi.dy.masa.malilib.gui.button.ConfigButtonKeybind;
-import fi.dy.masa.malilib.hotkeys.IHotkey;
-import fi.dy.masa.malilib.reference.MaLiLibReference;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.resources.I18n;
-
-public class ConfigPanelAllHotkeys extends ConfigPanelHotkeysBase
+public class ConfigPanelAllHotkeys
 {
+    /*
     public ConfigPanelAllHotkeys(MaLiLibConfigPanel parent)
     {
         super(MaLiLibReference.MOD_ID, I18n.format("malilib.gui.title.all_hotkeys"), ImmutableList.of(), parent);
@@ -77,4 +66,5 @@ public class ConfigPanelAllHotkeys extends ConfigPanelHotkeysBase
             y += 30;
         }
     }
+    */
 }

@@ -11,7 +11,6 @@ import net.minecraft.client.resources.I18n;
 
 public class GuiTextInput extends GuiDialogBase
 {
-    private final String title;
     private final GuiTextField textField;
     private final String originalText;
     private final IStringConsumer consumer;
@@ -33,12 +32,6 @@ public class GuiTextInput extends GuiDialogBase
         this.textField.setFocused(true);
         this.textField.setText(this.originalText);
         this.textField.setCursorPositionEnd();
-    }
-
-    @Override
-    protected String getTitle()
-    {
-        return this.title;
     }
 
     @Override

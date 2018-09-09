@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.config;
 
 import java.util.List;
+import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import fi.dy.masa.malilib.config.options.ConfigTypeWrapper;
@@ -131,15 +132,15 @@ public class ConfigUtils
      * @param toWrap
      * @return
      */
-    public static IConfigValue[] createConfigWrapperForType(ConfigType wrappedType, IConfigValue[] toWrap)
+    public static List<? extends IConfigValue> createConfigWrapperForType(ConfigType wrappedType, List<? extends IConfigValue> toWrap)
     {
-        IConfigValue[] wrapped = new IConfigValue[toWrap.length];
+        ImmutableList.Builder<ConfigTypeWrapper> builder = ImmutableList.builder();
 
-        for (int i = 0; i < wrapped.length; ++i)
+        for (int i = 0; i < toWrap.size(); ++i)
         {
-            wrapped[i] = new ConfigTypeWrapper(wrappedType, toWrap[i]);
+            builder.add(new ConfigTypeWrapper(wrappedType, toWrap.get(i)));
         }
 
-        return wrapped;
+        return builder.build();
     }
 }

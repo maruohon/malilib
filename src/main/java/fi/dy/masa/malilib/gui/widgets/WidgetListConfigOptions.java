@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.lwjgl.input.Keyboard;
 import fi.dy.masa.malilib.config.IConfigValue;
+import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.GuiConfigsBase;
 import fi.dy.masa.malilib.gui.GuiTextFieldWrapper;
 import net.minecraft.client.gui.GuiScreen;
@@ -31,7 +32,7 @@ public class WidgetListConfigOptions extends WidgetListBase<IConfigValue, Widget
     {
         this.listContents.clear();
         this.listContents.addAll(this.parent.getConfigs());
-        this.maxLabelWidth = this.parent.getMaxLabelWidth(this.listContents);
+        this.maxLabelWidth = GuiBase.getMaxNameLength(this.listContents);
 
         this.reCreateListEntryWidgets();
     }

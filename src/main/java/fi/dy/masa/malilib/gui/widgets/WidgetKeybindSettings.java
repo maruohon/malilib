@@ -2,9 +2,11 @@ package fi.dy.masa.malilib.gui.widgets;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.GuiKeybindSettings;
 import fi.dy.masa.malilib.gui.RenderUtils;
+import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
 import fi.dy.masa.malilib.hotkeys.KeyAction;
 import fi.dy.masa.malilib.hotkeys.KeybindSettings;
@@ -23,8 +25,10 @@ public class WidgetKeybindSettings extends WidgetBase
     protected final IKeybind keybind;
     protected final KeybindSettings settings;
     protected final WidgetListBase<?, ?> widgetList;
+    @Nullable protected final IDialogHandler dialogHandler;
 
-    public WidgetKeybindSettings(int x, int y, int width, int height, float zLevel, IKeybind keybind, String keybindName, WidgetListBase<?, ?> widgetList)
+    public WidgetKeybindSettings(int x, int y, int width, int height, float zLevel,
+            IKeybind keybind, String keybindName, WidgetListBase<?, ?> widgetList, @Nullable IDialogHandler dialogHandler)
     {
         super(x, y, width, height, zLevel);
 
@@ -32,6 +36,7 @@ public class WidgetKeybindSettings extends WidgetBase
         this.keybindName = keybindName;
         this.settings = keybind.getSettings();
         this.widgetList = widgetList;
+        this.dialogHandler = dialogHandler;
     }
 
     @Override
@@ -40,7 +45,16 @@ public class WidgetKeybindSettings extends WidgetBase
         if (mouseButton == 0)
         {
             Minecraft mc = Minecraft.getMinecraft();
-            mc.displayGuiScreen(new GuiKeybindSettings(this.keybind, this.keybindName, (GuiBase) mc.currentScreen));
+
+            if (this.dialogHandler != null)
+            {
+                this.dialogHandler.openDialog(new GuiKeybindSettings(this.keybind, this.keybindName, this.dialogHandler, mc.currentScreen));
+            }
+            else
+            {
+                mc.displayGuiScreen(new GuiKeybindSettings(this.keybind, this.keybindName, null, mc.currentScreen));
+            }
+
             return true;
         }
         // Reset the settings to defaults on right click
