@@ -9,13 +9,15 @@ public class KeybindSettings
 {
     public static final KeybindSettings DEFAULT                     = new KeybindSettings(Context.INGAME, KeyAction.PRESS, false, true, false, true);
     public static final KeybindSettings EXCLUSIVE                   = new KeybindSettings(Context.INGAME, KeyAction.PRESS, false, true, true, true);
-    public static final KeybindSettings RELEASE                     = new KeybindSettings(Context.INGAME, KeyAction.RELEASE, false, true, false, true);
+    public static final KeybindSettings RELEASE                     = new KeybindSettings(Context.INGAME, KeyAction.RELEASE, false, true, false, false);
+    public static final KeybindSettings RELEASE_ALLOW_EXTRA         = new KeybindSettings(Context.INGAME, KeyAction.RELEASE, true, true, false, false);
     public static final KeybindSettings RELEASE_EXCLUSIVE           = new KeybindSettings(Context.INGAME, KeyAction.RELEASE, false, true, true, true);
     public static final KeybindSettings NOCANCEL                    = new KeybindSettings(Context.INGAME, KeyAction.PRESS, false, true, false, false);
     public static final KeybindSettings PRESS_ALLOWEXTRA            = new KeybindSettings(Context.INGAME, KeyAction.PRESS, true, true, false, true);
     public static final KeybindSettings PRESS_NON_ORDER_SENSITIVE   = new KeybindSettings(Context.INGAME, KeyAction.PRESS, false, false, false, true);
     public static final KeybindSettings MODIFIER_INGAME             = new KeybindSettings(Context.INGAME, KeyAction.PRESS, true, false, false, false);
     public static final KeybindSettings MODIFIER_GUI                = new KeybindSettings(Context.GUI,    KeyAction.PRESS, true, false, false, false);
+    public static final KeybindSettings BOTH                        = new KeybindSettings(Context.INGAME, KeyAction.BOTH, false, true, false, true);
 
     private final Context context;
     private final KeyAction activateOn;
