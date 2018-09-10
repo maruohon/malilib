@@ -99,9 +99,7 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     {
         super.initGui();
 
-        this.clearWidgets();
-        this.clearButtons();
-        this.clearTextFields();
+        this.clearElements();
     }
 
     @Override
@@ -378,6 +376,13 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     {
         WidgetCheckBox checkbox = new WidgetCheckBox(x, y, this.zLevel, widgetUnchecked, widgetChecked, text, this.mc, hoverInfo);
         this.addWidget(checkbox);
+    }
+
+    protected void clearElements()
+    {
+        this.clearWidgets();
+        this.clearButtons();
+        this.clearTextFields();
     }
 
     protected void clearWidgets()
