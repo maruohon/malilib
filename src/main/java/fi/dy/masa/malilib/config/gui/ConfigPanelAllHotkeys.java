@@ -20,14 +20,21 @@ public class ConfigPanelAllHotkeys extends GuiModConfigs
     {
         List<KeybindCategory> categories = InputEventHandler.getInstance().getKeybindCategories();
         ImmutableList.Builder<ConfigOptionWrapper> builder = ImmutableList.builder();
+        boolean first = true;
 
         for (KeybindCategory category : categories)
         {
             // Category header
             String header = category.getModName() + " - " + category.getCategory();
 
+            if (first == false)
+            {
+                builder.add(new ConfigOptionWrapper(""));
+            }
+
             builder.add(new ConfigOptionWrapper(header));
             builder.add(new ConfigOptionWrapper("-------------------------------------------------------------------"));
+            first = false;
 
             for (IHotkey hotkey : category.getHotkeys())
             {
