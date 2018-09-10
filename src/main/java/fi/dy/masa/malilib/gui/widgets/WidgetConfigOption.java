@@ -110,7 +110,7 @@ public class WidgetConfigOption extends WidgetBase
 
         if (comment != null)
         {
-            this.addConfigComment(x, y + 2, labelWidth, 10, comment);
+            this.addConfigComment(x, y + 5, labelWidth, 12, comment);
         }
 
         x += labelWidth + 10;

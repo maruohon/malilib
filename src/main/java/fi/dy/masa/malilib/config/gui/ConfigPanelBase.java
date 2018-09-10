@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 import com.mumfrey.liteloader.modconfig.AbstractConfigPanel;
 import com.mumfrey.liteloader.modconfig.ConfigPanelHost;
 import fi.dy.masa.malilib.gui.GuiBase;
@@ -12,6 +13,7 @@ import fi.dy.masa.malilib.gui.GuiConfigsBase.ConfigOptionWrapper;
 import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.ScaledResolution;
 
 public abstract class ConfigPanelBase extends AbstractConfigPanel
 {
@@ -73,6 +75,14 @@ public abstract class ConfigPanelBase extends AbstractConfigPanel
     @Override
     public void drawPanel(ConfigPanelHost host, int mouseX, int mouseY, float partialTicks)
     {
+        int mouseWheelDelta = Mouse.getDWheel();
+
+        // The Liteloader config panel doesn't provide us with mouse scroll calls, so we have to do it here >_>
+        if (mouseWheelDelta != 0)
+        {
+            this.onMouseScrolled(mouseX, mouseY, mouseWheelDelta);
+        }
+
         if (this.selectedSubPanel != null)
         {
             this.selectedSubPanel.drawScreen(mouseX, mouseY, partialTicks);
@@ -137,6 +147,14 @@ public abstract class ConfigPanelBase extends AbstractConfigPanel
         }
     }
 
+    public void onMouseScrolled(int mouseX, int mouseY, int mouseWheelDelta)
+    {
+        if (this.selectedSubPanel != null)
+        {
+            this.selectedSubPanel.onMouseScrolled(mouseX, mouseY, mouseWheelDelta);
+        }
+    }
+
     @Override
     public void mouseReleased(ConfigPanelHost host, int mouseX, int mouseY, int mouseButton)
     {
@@ -155,7 +173,7 @@ public abstract class ConfigPanelBase extends AbstractConfigPanel
     {
         if (this.selectedSubPanel != null)
         {
-            this.selectedSubPanel.initGui();
+            this.updateSubPanelSize(this.selectedSubPanel);
         }
         else
         {
@@ -178,7 +196,7 @@ public abstract class ConfigPanelBase extends AbstractConfigPanel
 
     protected void addSubPanel(GuiConfigsBase panel)
     {
-        panel.setWorldAndResolution(this.mc, this.mc.displayWidth, this.mc.displayHeight);
+        this.updateSubPanelSize(panel);
         this.subPanels.add(panel);
     }
 
@@ -194,12 +212,22 @@ public abstract class ConfigPanelBase extends AbstractConfigPanel
             this.selectedSubPanel = panel;
             this.selectedSubPanel.setParentGui(this.mc.currentScreen);
             this.selectedSubPanel.setDialogHandler(new DialogHandler(this.selectedSubPanel));
-            this.selectedSubPanel.initGui();
+            this.updateSubPanelSize(this.selectedSubPanel);
         }
         else
         {
             this.selectedSubPanel = null;
         }
+    }
+
+    protected void updateSubPanelSize(GuiConfigsBase panel)
+    {
+        // Liteloader panel margins and offsets...
+        ScaledResolution sr = new ScaledResolution(this.mc);
+        int width = sr.getScaledWidth() - 80 - 12 - 10;
+        int height = sr.getScaledHeight();
+
+        panel.setWorldAndResolution(this.mc, width, height);
     }
 
     private class ButtonListenerPanelSelection<T extends GuiButton> implements ConfigOptionListener<T>

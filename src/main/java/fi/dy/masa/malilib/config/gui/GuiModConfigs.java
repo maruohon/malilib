@@ -15,10 +15,16 @@ public class GuiModConfigs extends GuiConfigsBase
 
     public GuiModConfigs(String modId, String title, List<ConfigOptionWrapper> wrappers, boolean unused)
     {
-        super(10, 10, modId, null);
+        super(10, 0, modId, null);
 
         this.title = title;
         this.configs = wrappers;
+    }
+
+    @Override
+    protected int getBrowserHeight()
+    {
+        return this.height - 70;
     }
 
     @Override
