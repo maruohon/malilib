@@ -1,10 +1,13 @@
 package fi.dy.masa.malilib.gui;
 
+import java.util.Collection;
 import java.util.List;
 import org.lwjgl.opengl.GL11;
+import fi.dy.masa.malilib.config.HudAlignment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -12,6 +15,8 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntityBrewingStand;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.ResourceLocation;
@@ -189,18 +194,6 @@ public class RenderUtils
         GlStateManager.enableTexture2D();
     }
 
-    public static void renderText(int x, int y, int color, List<String> lines, FontRenderer font)
-    {
-        if (lines.isEmpty() == false)
-        {
-            for (String line : lines)
-            {
-                font.drawString(line, x, y, color);
-                y += font.FONT_HEIGHT + 2;
-            }
-        }
-    }
-
     public static void renderInventoryBackground(int x, int y, int slotsPerRow, int totalSlots, IInventory inv, Minecraft mc)
     {
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
@@ -350,6 +343,126 @@ public class RenderUtils
         }
 
         Gui.drawRect(x, startY + 1, x + 1, endY, color);
+    }
+
+    public static void renderText(int x, int y, int color, List<String> lines, FontRenderer font)
+    {
+        if (lines.isEmpty() == false)
+        {
+            for (String line : lines)
+            {
+                font.drawString(line, x, y, color);
+                y += font.FONT_HEIGHT + 2;
+            }
+        }
+    }
+
+    public static int renderText(Minecraft mc, int xOff, int yOff, double scale, int textColor, int bgColor,
+            HudAlignment alignment, boolean useBackground, boolean useShadow, List<String> lines)
+    {
+        FontRenderer fontRenderer = mc.fontRenderer;
+        ScaledResolution res = new ScaledResolution(mc);
+        final int lineHeight = fontRenderer.FONT_HEIGHT + 2;
+        final int bgMargin = 2;
+        double posX = xOff + bgMargin;
+        double posY = yOff + bgMargin;
+
+        // Only Chuck Norris can divide by zero
+        if (scale == 0d)
+        {
+            return (int) yOff;
+        }
+
+        if (alignment == HudAlignment.TOP_RIGHT)
+        {
+            Collection<PotionEffect> effects = mc.player.getActivePotionEffects();
+
+            if (effects.isEmpty() == false)
+            {
+                int y1 = 0;
+                int y2 = 0;
+
+                for (PotionEffect effect : effects)
+                {
+                    Potion potion = effect.getPotion();
+
+                    if (effect.doesShowParticles() && potion.hasStatusIcon())
+                    {
+                        if (potion.isBeneficial())
+                        {
+                            y1 = 26;
+                        }
+                        else
+                        {
+                            y2 = 52;
+                            break;
+                        }
+                    }
+                }
+
+                posY += Math.max(y1, y2) / scale;
+            }
+        }
+
+        switch (alignment)
+        {
+            case BOTTOM_LEFT:
+            case BOTTOM_RIGHT:
+                posY = res.getScaledHeight() / scale - (lines.size() * lineHeight) - yOff + 2;
+                break;
+            case CENTER:
+                posY = (res.getScaledHeight() / scale / 2.0d) - (lines.size() * lineHeight / 2.0d) + yOff;
+                break;
+            default:
+        }
+
+        if (scale != 1d)
+        {
+            GlStateManager.pushMatrix();
+            GlStateManager.scale(scale, scale, 0);
+        }
+
+        for (String line : lines)
+        {
+            final int width = fontRenderer.getStringWidth(line);
+
+            switch (alignment)
+            {
+                case TOP_RIGHT:
+                case BOTTOM_RIGHT:
+                    posX = (res.getScaledWidth() / scale) - width - xOff - bgMargin;
+                    break;
+                case CENTER:
+                    posX = (res.getScaledWidth() / scale / 2) - (width / 2) - xOff;
+                    break;
+                default:
+            }
+
+            final int x = (int) posX;
+            final int y = (int) posY;
+            posY += (double) lineHeight;
+
+            if (useBackground)
+            {
+                Gui.drawRect(x - bgMargin, y - bgMargin, x + width + bgMargin, y + fontRenderer.FONT_HEIGHT, bgColor);
+            }
+
+            if (useShadow)
+            {
+                fontRenderer.drawStringWithShadow(line, x, y, textColor);
+            }
+            else
+            {
+                fontRenderer.drawString(line, x, y, textColor);
+            }
+        }
+
+        if (scale != 1d)
+        {
+            GlStateManager.popMatrix();
+        }
+
+        return (int) Math.ceil(posY);
     }
 
     /*
