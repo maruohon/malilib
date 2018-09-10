@@ -17,6 +17,7 @@ import fi.dy.masa.malilib.config.gui.ConfigOptionListenerResetConfig.ConfigReset
 import fi.dy.masa.malilib.config.gui.ConfigOptionListenerResetConfig.ConfigResetterTextField;
 import fi.dy.masa.malilib.config.options.ConfigColor;
 import fi.dy.masa.malilib.gui.GuiBase;
+import fi.dy.masa.malilib.gui.GuiConfigsBase.ConfigOptionWrapper;
 import fi.dy.masa.malilib.gui.GuiTextFieldWrapper;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
@@ -39,7 +40,7 @@ public class WidgetConfigOption extends WidgetBase
 {
     protected final List<WidgetBase> widgets = new ArrayList<>();
     protected final List<ButtonWrapper<? extends ButtonBase>> buttons = new ArrayList<>();
-    protected final IConfigValue config;
+    protected final ConfigOptionWrapper wrapper;
     protected final Minecraft mc;
     protected final IKeybindConfigGui host;
     protected final WidgetListConfigOptions parent;
@@ -56,19 +57,38 @@ public class WidgetConfigOption extends WidgetBase
     protected int colorDisplayPosX;
 
     public WidgetConfigOption(int x, int y, int width, int height, float zLevel, int labelWidth, int configWidth,
-            IConfigValue config, IKeybindConfigGui host, Minecraft mc, WidgetListConfigOptions parent)
+            ConfigOptionWrapper wrapper, IKeybindConfigGui host, Minecraft mc, WidgetListConfigOptions parent)
     {
         super(x, y, width, height, zLevel);
 
-        ConfigType type = config.getType();
-
-        this.config = config;
-        this.initialValue = config.getStringValue();
-        this.lastAppliedValue = config.getStringValue();
         this.host = host;
         this.mc = mc;
         this.parent = parent;
-        this.initialKeybindSettings = type == ConfigType.HOTKEY ? ((IHotkey) config).getKeybind().getSettings() : null;
+        this.wrapper = wrapper;
+
+        if (wrapper.getType() == ConfigOptionWrapper.Type.CONFIG)
+        {
+            IConfigValue config = wrapper.getConfig();
+            this.initialValue = config.getStringValue();
+            this.lastAppliedValue = config.getStringValue();
+            this.initialKeybindSettings = config.getType() == ConfigType.HOTKEY ? ((IHotkey) config).getKeybind().getSettings() : null;
+
+            this.addConfigOption(x, y, zLevel, labelWidth, configWidth, config);
+        }
+        else
+        {
+            this.initialValue = null;
+            this.lastAppliedValue = null;
+            this.initialKeybindSettings = null;
+
+            this.addLabel(x, y + 7, labelWidth, 8, 0xFFFFFFFF, wrapper.getLabel());
+        }
+    }
+
+    protected void addConfigOption(int x, int y, float zLevel, int labelWidth, int configWidth, IConfigValue config)
+    {
+        ConfigType type = config.getType();
+
         int id = 0;
 
         y += 1;
@@ -137,19 +157,25 @@ public class WidgetConfigOption extends WidgetBase
 
     public boolean wasConfigModified()
     {
-        boolean modified = false;
-
-        if (this.textField != null)
+        if (this.wrapper.getType() == ConfigOptionWrapper.Type.CONFIG)
         {
-            modified |= this.initialValue.equals(this.textField.getTextField().getText()) == false;
+            IConfigValue config = this.wrapper.getConfig();
+            boolean modified = false;
+
+            if (this.textField != null)
+            {
+                modified |= this.initialValue.equals(this.textField.getTextField().getText()) == false;
+            }
+
+            if (this.initialKeybindSettings != null && this.initialKeybindSettings.equals(((IHotkey) config).getKeybind().getSettings()) == false)
+            {
+                modified = true;
+            }
+
+            return modified || this.initialValue.equals(config.getStringValue()) == false;
         }
 
-        if (this.initialKeybindSettings != null && this.initialKeybindSettings.equals(((IHotkey) this.config).getKeybind().getSettings()) == false)
-        {
-            modified = true;
-        }
-
-        return modified || this.initialValue.equals(this.config.getStringValue()) == false;
+        return false;
     }
 
     public boolean hasPendingModifications()
@@ -164,12 +190,17 @@ public class WidgetConfigOption extends WidgetBase
 
     public void applyNewValueToConfig()
     {
-        if (this.textField != null && this.hasPendingModifications())
+        if (this.wrapper.getType() == ConfigOptionWrapper.Type.CONFIG)
         {
-            this.config.setValueFromString(this.textField.getTextField().getText());
-        }
+            IConfigValue config = this.wrapper.getConfig();
 
-        this.lastAppliedValue = this.config.getStringValue();
+            if (this.textField != null && this.hasPendingModifications())
+            {
+                config.setValueFromString(this.textField.getTextField().getText());
+            }
+
+            this.lastAppliedValue = config.getStringValue();
+        }
     }
 
     protected <T extends ButtonBase> ButtonWrapper<T> addButton(T button, IButtonActionListener<T> listener)
@@ -316,15 +347,20 @@ public class WidgetConfigOption extends WidgetBase
         GlStateManager.color(1, 1, 1, 1);
 
         this.drawSubWidgets(mouseX, mouseY);
-        this.drawTextFields(mouseX, mouseY);
-        this.drawButtons(mouseX, mouseY, 0f);
 
-        if (this.config.getType() == ConfigType.COLOR)
+        if (this.wrapper.getType() == ConfigOptionWrapper.Type.CONFIG)
         {
-            int y = this.y + 1;
-            GuiBase.drawRect(this.colorDisplayPosX    , y + 0, this.colorDisplayPosX + 19, y + 19, 0xFFFFFFFF);
-            GuiBase.drawRect(this.colorDisplayPosX + 1, y + 1, this.colorDisplayPosX + 18, y + 18, 0xFF000000);
-            GuiBase.drawRect(this.colorDisplayPosX + 2, y + 2, this.colorDisplayPosX + 17, y + 17, 0xFF000000 | ((ConfigColor) this.config).getIntegerValue());
+            IConfigValue config = this.wrapper.getConfig();
+            this.drawTextFields(mouseX, mouseY);
+            this.drawButtons(mouseX, mouseY, 0f);
+
+            if (config.getType() == ConfigType.COLOR)
+            {
+                int y = this.y + 1;
+                GuiBase.drawRect(this.colorDisplayPosX    , y + 0, this.colorDisplayPosX + 19, y + 19, 0xFFFFFFFF);
+                GuiBase.drawRect(this.colorDisplayPosX + 1, y + 1, this.colorDisplayPosX + 18, y + 18, 0xFF000000);
+                GuiBase.drawRect(this.colorDisplayPosX + 2, y + 2, this.colorDisplayPosX + 17, y + 17, 0xFF000000 | ((ConfigColor) config).getIntegerValue());
+            }
         }
     }
 }

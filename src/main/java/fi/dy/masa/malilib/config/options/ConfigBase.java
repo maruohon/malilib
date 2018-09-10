@@ -2,16 +2,16 @@ package fi.dy.masa.malilib.config.options;
 
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.ConfigType;
-import fi.dy.masa.malilib.config.IConfigValue;
-import fi.dy.masa.malilib.config.IConfigValueChangeCallback;
+import fi.dy.masa.malilib.config.IConfigValueNotifyable;
+import fi.dy.masa.malilib.interfaces.IValueChangeCallback;
 
-public abstract class ConfigBase implements IConfigValue
+public abstract class ConfigBase implements IConfigValueNotifyable
 {
     private final ConfigType type;
     private final String name;
     private String comment;
     @Nullable
-    private IConfigValueChangeCallback callback;
+    private IValueChangeCallback callback;
 
     public ConfigBase(ConfigType type, String name, String comment)
     {
@@ -45,7 +45,7 @@ public abstract class ConfigBase implements IConfigValue
     }
 
     @Override
-    public void setValueChangeCallback(IConfigValueChangeCallback callback)
+    public void setValueChangeCallback(IValueChangeCallback callback)
     {
         this.callback = callback;
     }

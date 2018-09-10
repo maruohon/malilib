@@ -6,9 +6,9 @@ import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import com.mumfrey.liteloader.modconfig.AbstractConfigPanel;
 import com.mumfrey.liteloader.modconfig.ConfigPanelHost;
-import fi.dy.masa.malilib.config.IConfigValue;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.GuiConfigsBase;
+import fi.dy.masa.malilib.gui.GuiConfigsBase.ConfigOptionWrapper;
 import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -232,9 +232,9 @@ public abstract class ConfigPanelBase extends AbstractConfigPanel
         {
             String modId = this.selectedPanel.getModId();
             String title = this.selectedPanel.getTitle();
-            List<? extends IConfigValue> configs = this.selectedPanel.getConfigs();
+            List<ConfigOptionWrapper> wrappers = this.selectedPanel.getConfigs();
 
-            ConfigPanelBase.this.setSelectedSubPanel(new GuiConfigsWrapper(modId, title, configs, this.selectedPanel, gui));
+            ConfigPanelBase.this.setSelectedSubPanel(new GuiConfigsWrapper(modId, title, wrappers, this.selectedPanel, gui));
         }
 
         @Override
@@ -249,10 +249,10 @@ public abstract class ConfigPanelBase extends AbstractConfigPanel
         protected final GuiScreen backgroundGui;
         protected final GuiBase foregroundGui;
 
-        public GuiConfigsWrapper(String modId, String title, List<? extends IConfigValue> configs,
+        public GuiConfigsWrapper(String modId, String title, List<ConfigOptionWrapper> wrappers,
                 GuiScreen backgroundGui, GuiBase foregroundGui)
         {
-            super(modId, title, configs);
+            super(modId, title, wrappers, false);
 
             this.backgroundGui = backgroundGui;
             this.foregroundGui = foregroundGui;

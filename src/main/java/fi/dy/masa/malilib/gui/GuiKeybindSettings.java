@@ -151,7 +151,6 @@ public class GuiKeybindSettings extends GuiDialogBase
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException
     {
-        System.out.printf("ks keyTyped\n");
         this.onKeyTyped(typedChar, keyCode);
     }
 
@@ -160,13 +159,11 @@ public class GuiKeybindSettings extends GuiDialogBase
     {
         if (keyCode == Keyboard.KEY_ESCAPE && this.dialogHandler != null)
         {
-            System.out.printf("ks plop dialog close\n");
             this.dialogHandler.closeDialog();
             return true;
         }
         else
         {
-            System.out.printf("ks plop super\n");
             return super.onKeyTyped(typedChar, keyCode);
         }
     }

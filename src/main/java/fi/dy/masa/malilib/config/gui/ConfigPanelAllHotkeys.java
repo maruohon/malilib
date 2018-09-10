@@ -1,11 +1,41 @@
 package fi.dy.masa.malilib.config.gui;
 
-public class ConfigPanelAllHotkeys
+import java.util.List;
+import com.google.common.collect.ImmutableList;
+import fi.dy.masa.malilib.config.ConfigManager;
+import fi.dy.masa.malilib.event.InputEventHandler;
+import fi.dy.masa.malilib.event.InputEventHandler.KeybindCategory;
+import fi.dy.masa.malilib.hotkeys.IHotkey;
+import fi.dy.masa.malilib.reference.MaLiLibReference;
+import net.minecraft.client.resources.I18n;
+
+public class ConfigPanelAllHotkeys extends GuiModConfigs
 {
-    /*
-    public ConfigPanelAllHotkeys(MaLiLibConfigPanel parent)
+    public ConfigPanelAllHotkeys()
     {
-        super(MaLiLibReference.MOD_ID, I18n.format("malilib.gui.title.all_hotkeys"), ImmutableList.of(), parent);
+        super(MaLiLibReference.MOD_ID, I18n.format("malilib.gui.title.all_hotkeys"), createWrappers(), false);
+    }
+
+    protected static List<ConfigOptionWrapper> createWrappers()
+    {
+        List<KeybindCategory> categories = InputEventHandler.getInstance().getKeybindCategories();
+        ImmutableList.Builder<ConfigOptionWrapper> builder = ImmutableList.builder();
+
+        for (KeybindCategory category : categories)
+        {
+            // Category header
+            String header = category.getModName() + " - " + category.getCategory();
+
+            builder.add(new ConfigOptionWrapper(header));
+            builder.add(new ConfigOptionWrapper("-------------------------------------------------------------------"));
+
+            for (IHotkey hotkey : category.getHotkeys())
+            {
+                builder.add(new ConfigOptionWrapper(hotkey));
+            }
+        }
+
+        return builder.build();
     }
 
     @Override
@@ -14,57 +44,4 @@ public class ConfigPanelAllHotkeys
         ConfigManager.getInstance().saveAllConfigs();
         InputEventHandler.getInstance().updateUsedKeys();
     }
-
-    @Override
-    public void addOptions(ConfigPanelHost host)
-    {
-        this.clearOptions();
-
-        int xStart = 10;
-        int x = xStart;
-        int y = 10;
-        int i = 0;
-
-        int maxLabelWidth = 0;
-        List<KeybindCategory> categories = InputEventHandler.getInstance().getKeybindCategories();
-
-        for (KeybindCategory category : categories)
-        {
-            maxLabelWidth = Math.max(maxLabelWidth, this.getMaxLabelWidth(category.getHotkeys()));
-        }
-
-        for (KeybindCategory category : categories)
-        {
-            // Category header
-            String header = category.getModName() + " - " + category.getCategory();
-            int labelWidth = this.mc.fontRenderer.getStringWidth(header);
-            this.addLabel(i++, x, y, labelWidth, 8, 0xFFFFFFFF, header);
-            y += 12;
-            this.addLabel(i++, x, y, labelWidth, 8, 0xFFFFFFFF, "-------------------------------------------------------------------");
-            y += 12;
-
-            // Draw a horizontal bar
-            Gui.drawRect(xStart, y, xStart + 300, y + 1, 0xFFFFFFFF);
-            y += 6;
-
-            for (IHotkey hotkey : category.getHotkeys())
-            {
-                this.addLabel(i++, x, y + 7, maxLabelWidth, 8, 0xFFFFFFFF, hotkey.getName());
-                this.addConfigComment(x, y + 7, maxLabelWidth, 8, this.getHotkeyComment(hotkey));
-
-                x += maxLabelWidth + 10;
-                ConfigButtonKeybind buttonHotkey = new ConfigButtonKeybind(i++, x, y, this.hotkeyButtonWidth, 20, hotkey.getKeybind(), this);
-
-                x += this.hotkeyButtonWidth + 10;
-                this.addButton(buttonHotkey, this.getButtonPressListener());
-                this.addKeybindResetButton(i++, x, y, hotkey.getKeybind(), buttonHotkey);
-
-                y += 21;
-                x = xStart;
-            }
-
-            y += 30;
-        }
-    }
-    */
 }

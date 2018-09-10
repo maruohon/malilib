@@ -1,14 +1,17 @@
 package fi.dy.masa.malilib.gui;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
+import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.config.IConfigValue;
 import fi.dy.masa.malilib.config.gui.ButtonPressDirtyListenerSimple;
 import fi.dy.masa.malilib.config.gui.ConfigOptionChangeListenerKeybind;
 import fi.dy.masa.malilib.event.InputEventHandler;
+import fi.dy.masa.malilib.gui.GuiConfigsBase.ConfigOptionWrapper;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ConfigButtonKeybind;
 import fi.dy.masa.malilib.gui.interfaces.IConfigInfoProvider;
@@ -19,7 +22,7 @@ import fi.dy.masa.malilib.gui.widgets.WidgetListConfigOptions;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 
-public abstract class GuiConfigsBase extends GuiListBase<IConfigValue, WidgetConfigOption, WidgetListConfigOptions> implements IKeybindConfigGui
+public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, WidgetConfigOption, WidgetListConfigOptions> implements IKeybindConfigGui
 {
     protected final List<ConfigOptionChangeListenerKeybind> hotkeyChangeListeners = new ArrayList<>();
     protected final ButtonPressDirtyListenerSimple<ButtonBase> dirtyListener = new ButtonPressDirtyListenerSimple<>();
@@ -219,6 +222,62 @@ public abstract class GuiConfigsBase extends GuiListBase<IConfigValue, WidgetCon
         for (ConfigOptionChangeListenerKeybind listener : this.hotkeyChangeListeners)
         {
             listener.updateButtons();
+        }
+    }
+
+    public static class ConfigOptionWrapper
+    {
+        private final Type type;
+        @Nullable private final IConfigValue config;
+        @Nullable private final String label;
+
+        public ConfigOptionWrapper(IConfigValue config)
+        {
+            this.type = Type.CONFIG;
+            this.config = config;
+            this.label = null;
+        }
+
+        public ConfigOptionWrapper(String label)
+        {
+            this.type = Type.LABEL;
+            this.config = null;
+            this.label = label;
+        }
+
+        public Type getType()
+        {
+            return this.type;
+        }
+
+        @Nullable
+        public IConfigValue getConfig()
+        {
+            return this.config;
+        }
+
+        @Nullable
+        public String getLabel()
+        {
+            return this.label;
+        }
+
+        public static List<ConfigOptionWrapper> createFor(Collection<? extends IConfigValue> configs)
+        {
+            ImmutableList.Builder<ConfigOptionWrapper> builder = ImmutableList.builder();
+
+            for (IConfigValue config : configs)
+            {
+                builder.add(new ConfigOptionWrapper(config));
+            }
+
+            return builder.build();
+        }
+
+        public enum Type
+        {
+            CONFIG,
+            LABEL;
         }
     }
 }

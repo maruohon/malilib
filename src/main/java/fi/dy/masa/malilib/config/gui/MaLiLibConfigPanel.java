@@ -15,7 +15,7 @@ public class MaLiLibConfigPanel extends ConfigPanelBase
     @Override
     protected void createSubPanels()
     {
-        //this.addSubPanel(new ConfigPanelAllHotkeys(this));
         this.addSubPanel((new GuiModConfigs(MaLiLibReference.MOD_ID, "Debug", ImmutableList.of(KeybindMulti.KEYBIND_DEBUG))).setConfigWidth(120));
+        this.addSubPanel(new ConfigPanelAllHotkeys());
     }
 }

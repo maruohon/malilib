@@ -6,18 +6,23 @@ import fi.dy.masa.malilib.gui.GuiConfigsBase;
 
 public class GuiModConfigs extends GuiConfigsBase
 {
-    protected final List<? extends IConfigValue> configs;
+    protected final List<ConfigOptionWrapper> configs;
 
     public GuiModConfigs(String modId, String title, List<? extends IConfigValue> configs)
+    {
+        this(modId, title, ConfigOptionWrapper.createFor(configs), false);
+    }
+
+    public GuiModConfigs(String modId, String title, List<ConfigOptionWrapper> wrappers, boolean unused)
     {
         super(10, 10, modId, null);
 
         this.title = title;
-        this.configs = configs;
+        this.configs = wrappers;
     }
 
     @Override
-    public List<? extends IConfigValue> getConfigs()
+    public List<ConfigOptionWrapper> getConfigs()
     {
         return this.configs;
     }

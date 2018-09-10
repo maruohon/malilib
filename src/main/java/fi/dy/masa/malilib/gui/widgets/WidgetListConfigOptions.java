@@ -3,14 +3,15 @@ package fi.dy.masa.malilib.gui.widgets;
 import java.util.ArrayList;
 import java.util.List;
 import org.lwjgl.input.Keyboard;
-import fi.dy.masa.malilib.config.IConfigValue;
-import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.GuiConfigsBase;
+import fi.dy.masa.malilib.gui.GuiConfigsBase.ConfigOptionWrapper;
 import fi.dy.masa.malilib.gui.GuiTextFieldWrapper;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 
-public class WidgetListConfigOptions extends WidgetListBase<IConfigValue, WidgetConfigOption>
+public class WidgetListConfigOptions extends WidgetListBase<ConfigOptionWrapper, WidgetConfigOption>
 {
     protected final GuiConfigsBase parent;
     protected final List<GuiTextFieldWrapper> textFields = new ArrayList<>();
@@ -32,7 +33,7 @@ public class WidgetListConfigOptions extends WidgetListBase<IConfigValue, Widget
     {
         this.listContents.clear();
         this.listContents.addAll(this.parent.getConfigs());
-        this.maxLabelWidth = GuiBase.getMaxNameLength(this.listContents);
+        this.maxLabelWidth = getMaxNameLengthWrapped(this.listContents);
 
         this.reCreateListEntryWidgets();
     }
@@ -55,10 +56,10 @@ public class WidgetListConfigOptions extends WidgetListBase<IConfigValue, Widget
     }
 
     @Override
-    protected WidgetConfigOption createListEntryWidget(int x, int y, boolean isOdd, IConfigValue config)
+    protected WidgetConfigOption createListEntryWidget(int x, int y, boolean isOdd, ConfigOptionWrapper wrapper)
     {
         return new WidgetConfigOption(x, y, this.browserEntryWidth, this.browserEntryHeight, this.zLevel,
-                this.maxLabelWidth, this.configWidth, config, this.parent, this.mc, this);
+                this.maxLabelWidth, this.configWidth, wrapper, this.parent, this.mc, this);
     }
 
     @Override
@@ -190,5 +191,21 @@ public class WidgetListConfigOptions extends WidgetListBase<IConfigValue, Widget
     public void clearModifiedStatus()
     {
         this.configsModified = false;
+    }
+
+    public static int getMaxNameLengthWrapped(List<ConfigOptionWrapper> wrappers)
+    {
+        FontRenderer font = Minecraft.getMinecraft().fontRenderer;
+        int width = 0;
+
+        for (ConfigOptionWrapper wrapper : wrappers)
+        {
+            if (wrapper.getType() == ConfigOptionWrapper.Type.CONFIG)
+            {
+                width = Math.max(width, font.getStringWidth(wrapper.getConfig().getName()));
+            }
+        }
+
+        return width;
     }
 }
