@@ -92,14 +92,16 @@ public class KeybindMulti implements IKeybind
         boolean allowExtraKeys = this.settings.getAllowExtraKeys();
         boolean allowOutOfOrder = this.settings.isOrderSensitive() == false;
         boolean pressedLast = this.pressed;
+        final int sizePressed = pressedKeys.size();
+        final int sizeRequired = this.keyCodes.size();
 
-        if (pressedKeys.size() >= this.keyCodes.size() && (allowExtraKeys || pressedKeys.size() == this.keyCodes.size()))
+        if (pressedKeys.size() >= this.keyCodes.size() && (allowExtraKeys || sizePressed == sizeRequired))
         {
             final int numKeys = this.keyCodes.size();
             int keyCodeIndex = 0;
             this.pressed = pressedKeys.containsAll(this.keyCodes);
 
-            for (int i = 0; i < pressedKeys.size(); ++i)
+            for (int i = 0; i < sizePressed; ++i)
             {
                 Integer keyCodeObj = pressedKeys.get(i);
 
@@ -111,7 +113,8 @@ public class KeybindMulti implements IKeybind
                         break;
                     }
                 }
-                else if ((allowOutOfOrder == false && keyCodeIndex > 0) || (this.keyCodes.contains(keyCodeObj) == false && allowExtraKeys == false))
+                else if ((allowOutOfOrder == false && (keyCodeIndex > 0 || sizePressed == sizeRequired)) ||
+                         (this.keyCodes.contains(keyCodeObj) == false && allowExtraKeys == false))
                 {
                     /*
                     System.out.printf("km fail: key: %s, ae: %s, aoo: %s, cont: %s, keys: %s, pressed: %s\n",
