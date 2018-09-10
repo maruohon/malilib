@@ -95,9 +95,8 @@ public class KeybindMulti implements IKeybind
         final int sizePressed = pressedKeys.size();
         final int sizeRequired = this.keyCodes.size();
 
-        if (pressedKeys.size() >= this.keyCodes.size() && (allowExtraKeys || sizePressed == sizeRequired))
+        if (sizePressed >= sizeRequired && (allowExtraKeys || sizePressed == sizeRequired))
         {
-            final int numKeys = this.keyCodes.size();
             int keyCodeIndex = 0;
             this.pressed = pressedKeys.containsAll(this.keyCodes);
 
@@ -108,7 +107,7 @@ public class KeybindMulti implements IKeybind
                 if (this.keyCodes.get(keyCodeIndex).equals(keyCodeObj))
                 {
                     // Fully matched keybind
-                    if (++keyCodeIndex >= numKeys)
+                    if (++keyCodeIndex >= sizeRequired)
                     {
                         break;
                     }
