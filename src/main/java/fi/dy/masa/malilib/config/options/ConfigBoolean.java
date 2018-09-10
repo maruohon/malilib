@@ -47,7 +47,13 @@ public class ConfigBoolean extends ConfigBase implements IConfigBoolean
     @Override
     public void setBooleanValue(boolean value)
     {
+        boolean oldValue = this.value;
         this.value = value;
+
+        if (oldValue != this.value)
+        {
+            this.onValueChanged();
+        }
     }
 
     @Override

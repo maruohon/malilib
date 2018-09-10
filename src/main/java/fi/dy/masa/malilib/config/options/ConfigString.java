@@ -33,7 +33,13 @@ public class ConfigString extends ConfigBase
     @Override
     public void setValueFromString(String value)
     {
+        String oldValue = this.value;
         this.value = value;
+
+        if (oldValue.equals(this.value) == false)
+        {
+            this.onValueChanged();
+        }
     }
 
     @Override

@@ -47,7 +47,13 @@ public class ConfigOptionList extends ConfigBase implements IConfigOptionList
     @Override
     public void setOptionListValue(IConfigOptionListEntry value)
     {
+        IConfigOptionListEntry oldValue = this.value;
         this.value = value;
+
+        if (oldValue != this.value)
+        {
+            this.onValueChanged();
+        }
     }
 
     @Override

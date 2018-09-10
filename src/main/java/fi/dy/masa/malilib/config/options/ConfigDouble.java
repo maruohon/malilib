@@ -44,7 +44,18 @@ public class ConfigDouble extends ConfigBase implements IConfigDouble
     @Override
     public void setDoubleValue(double value)
     {
-        this.value = MathHelper.clamp(value, this.minValue, this.maxValue);
+        double oldValue = this.value;
+        this.value = this.getClampedValue(value);
+
+        if (oldValue != this.value)
+        {
+            this.onValueChanged();
+        }
+    }
+
+    protected double getClampedValue(double value)
+    {
+        return MathHelper.clamp(value, this.minValue, this.maxValue);
     }
 
     @Override
@@ -105,7 +116,7 @@ public class ConfigDouble extends ConfigBase implements IConfigDouble
         {
             if (element.isJsonPrimitive())
             {
-                this.setDoubleValue(element.getAsDouble());
+                this.value = this.getClampedValue(element.getAsDouble());
             }
             else
             {

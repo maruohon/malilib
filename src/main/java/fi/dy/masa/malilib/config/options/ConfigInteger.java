@@ -9,10 +9,10 @@ import net.minecraft.util.math.MathHelper;
 
 public class ConfigInteger extends ConfigBase implements IConfigInteger
 {
-    private final int minValue;
-    private final int maxValue;
-    private final int defaultValue;
-    private int value;
+    protected final int minValue;
+    protected final int maxValue;
+    protected final int defaultValue;
+    protected int value;
 
     public ConfigInteger(String name, int defaultValue, String comment)
     {
@@ -44,7 +44,18 @@ public class ConfigInteger extends ConfigBase implements IConfigInteger
     @Override
     public void setIntegerValue(int value)
     {
-        this.value = MathHelper.clamp(value, this.minValue, this.maxValue);
+        int oldValue = this.value;
+        this.value = this.getClampedValue(value);
+
+        if (oldValue != this.value)
+        {
+            this.onValueChanged();
+        }
+    }
+
+    protected int getClampedValue(int value)
+    {
+        return MathHelper.clamp(value, this.minValue, this.maxValue);
     }
 
     @Override
@@ -105,7 +116,7 @@ public class ConfigInteger extends ConfigBase implements IConfigInteger
         {
             if (element.isJsonPrimitive())
             {
-                this.setIntegerValue(element.getAsInt());
+                this.value = this.getClampedValue(element.getAsInt());
             }
             else
             {

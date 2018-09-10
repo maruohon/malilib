@@ -50,9 +50,9 @@ public class ConfigColor extends ConfigInteger
     @Override
     public void setIntegerValue(int value)
     {
-        super.setIntegerValue(value);
+        this.color = Color4f.fromColor(this.getClampedValue(value));
 
-        this.color = Color4f.fromColor(this.getIntegerValue());
+        super.setIntegerValue(value); // This also calls the callback, if set
     }
 
     @Override
@@ -76,7 +76,8 @@ public class ConfigColor extends ConfigInteger
         {
             if (element.isJsonPrimitive())
             {
-                this.setValueFromString(element.getAsString());
+                this.value = this.getClampedValue(StringUtils.getColor(element.getAsString(), 0));
+                this.color = Color4f.fromColor(this.value);
             }
             else
             {
