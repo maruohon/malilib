@@ -8,7 +8,6 @@ import fi.dy.masa.malilib.gui.GuiKeybindSettings;
 import fi.dy.masa.malilib.gui.RenderUtils;
 import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
-import fi.dy.masa.malilib.hotkeys.KeyAction;
 import fi.dy.masa.malilib.hotkeys.KeybindSettings;
 import fi.dy.masa.malilib.reference.MaLiLibReference;
 import net.minecraft.client.Minecraft;
@@ -77,7 +76,7 @@ public class WidgetKeybindSettings extends WidgetBase
         mc.getTextureManager().bindTexture(TEXTURE);
 
         int w = 18;
-        int v1 = this.settings.getActivateOn() == KeyAction.RELEASE ? w : 0;
+        int v1 = this.settings.getActivateOn().ordinal() * w;
         int v2 = this.settings.getAllowExtraKeys() == false ? w : 0;
         int v3 = this.settings.isOrderSensitive() ? w : 0;
         int v4 = this.settings.isExclusive() ? w : 0;

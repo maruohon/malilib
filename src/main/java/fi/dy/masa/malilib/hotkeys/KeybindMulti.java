@@ -129,19 +129,20 @@ public class KeybindMulti implements IKeybind
             this.pressed = false;
         }
 
-        if (this.pressed != pressedLast && this.pressed == (this.settings.getActivateOn() == KeyAction.PRESS))
+        KeyAction activateOn = this.settings.getActivateOn();
+
+        if (this.pressed != pressedLast &&
+            (triggeredCount == 0 || this.settings.isExclusive() == false) &&
+            (activateOn == KeyAction.BOTH || this.pressed == (activateOn == KeyAction.PRESS)))
         {
-            if (triggeredCount == 0 || this.settings.isExclusive() == false)
+            boolean cancel = this.triggerKeyAction(pressedLast) && this.settings.shouldCancel();
+
+            if (cancel)
             {
-                boolean cancel = this.triggerKeyAction(pressedLast) && this.settings.shouldCancel();
-
-                if (cancel)
-                {
-                    ++triggeredCount;
-                }
-
-                return cancel;
+                ++triggeredCount;
             }
+
+            return cancel;
         }
 
         return false;
@@ -154,8 +155,9 @@ public class KeybindMulti implements IKeybind
         if (this.pressed == false)
         {
             this.heldTime = 0;
+            KeyAction activateOn = this.settings.getActivateOn();
 
-            if (pressedLast && this.callback != null && this.settings.getActivateOn() == KeyAction.RELEASE)
+            if (pressedLast && this.callback != null && (activateOn == KeyAction.RELEASE || activateOn == KeyAction.BOTH))
             {
                 cancel = this.callback.onKeyAction(KeyAction.RELEASE, this);
             }
@@ -168,7 +170,9 @@ public class KeybindMulti implements IKeybind
                 ((IMinecraftAccessor) Minecraft.getMinecraft()).setActionKeyF3(true);
             }
 
-            if (this.callback != null && this.settings.getActivateOn() == KeyAction.PRESS)
+            KeyAction activateOn = this.settings.getActivateOn();
+
+            if (this.callback != null && (activateOn == KeyAction.PRESS || activateOn == KeyAction.BOTH))
             {
                 cancel = this.callback.onKeyAction(KeyAction.PRESS, this);
             }

@@ -16,6 +16,7 @@ malilib.gui.label.keybind_settings.order_sensitive=Order Sensitive
 malilib.gui.label.keybind_settings.tips=- Left click to configure\n- Right click to reset to defaults
 malilib.gui.label.keybind_settings.title_advanced_keybind_settings=Advanced Keybind settings
 
+malilib.label.key_action.both=BOTH
 malilib.label.key_action.press=PRESS
 malilib.label.key_action.release=RELEASE
 

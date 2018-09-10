@@ -6,7 +6,8 @@ import net.minecraft.client.resources.I18n;
 public enum KeyAction implements IConfigOptionListEntry
 {
     PRESS   ("press",   "malilib.label.key_action.press"),
-    RELEASE ("release", "malilib.label.key_action.release");
+    RELEASE ("release", "malilib.label.key_action.release"),
+    BOTH    ("both",    "malilib.label.key_action.both");
 
     private final String configString;
     private final String translationKey;

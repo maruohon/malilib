@@ -86,6 +86,7 @@ public class KeybindSettings
     public static KeybindSettings fromJson(JsonObject obj)
     {
         Context context = Context.INGAME;
+        KeyAction activateOn = KeyAction.PRESS;
         String contextStr = JsonUtils.getString(obj, "context");
         String activateStr = JsonUtils.getString(obj, "activate_on");
 
@@ -101,7 +102,17 @@ public class KeybindSettings
             }
         }
 
-        KeyAction activateOn = activateStr != null && activateStr.equalsIgnoreCase("release") ? KeyAction.RELEASE : KeyAction.PRESS;
+        if (activateStr != null)
+        {
+            for (KeyAction act : KeyAction.values())
+            {
+                if (act.name().equalsIgnoreCase(activateStr))
+                {
+                    activateOn = act;
+                    break;
+                }
+            }
+        }
 
         boolean allowExtraKeys = JsonUtils.getBoolean(obj, "allow_extra_keys");
         boolean orderSensitive = JsonUtils.getBoolean(obj, "order_sensitive");
