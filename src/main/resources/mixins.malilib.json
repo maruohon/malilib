@@ -4,6 +4,7 @@
     "refmap": "mixins.malilib.refmap.json",
     "minVersion": "0.6",
     "client": [
+        "MixinEntityRenderer",
         "MixinGuiScreen",
         "MixinMinecraft",
         "MixinTabCompleter"
