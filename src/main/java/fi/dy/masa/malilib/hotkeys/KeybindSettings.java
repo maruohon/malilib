@@ -18,6 +18,7 @@ public class KeybindSettings
     public static final KeybindSettings MODIFIER_INGAME             = new KeybindSettings(Context.INGAME, KeyAction.PRESS, true, false, false, false);
     public static final KeybindSettings MODIFIER_GUI                = new KeybindSettings(Context.GUI,    KeyAction.PRESS, true, false, false, false);
     public static final KeybindSettings BOTH                        = new KeybindSettings(Context.INGAME, KeyAction.BOTH, false, true, false, true);
+    public static final KeybindSettings GUI                         = new KeybindSettings(Context.GUI,    KeyAction.PRESS, false, false, false, true);
 
     private final Context context;
     private final KeyAction activateOn;

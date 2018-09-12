@@ -14,7 +14,7 @@ public interface IKeybindProvider
     /**
      * Called when the event handler is registered.
      * Any mod that wants all their keybinds to appear in the master/combined list of all
-     * keybinds, should add them here using the {@link IKeybindManager#addHotkeysForCategory(String, String, IHotkey[])} method).
+     * keybinds, should add them here using the {@link IKeybindManager#addHotkeysForCategory(String, String, java.util.List)} method).
      * @param manager
      */
     void addHotkeys(IKeybindManager manager);

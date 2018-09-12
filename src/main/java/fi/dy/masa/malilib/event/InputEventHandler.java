@@ -184,9 +184,9 @@ public class InputEventHandler implements IKeybindManager
 
     public boolean onMouseInput()
     {
-        int eventButton = Mouse.getEventButton();
-        int dWheel = Mouse.getEventDWheel();
-        boolean eventButtonState = Mouse.getEventButtonState();
+        final int eventButton = Mouse.getEventButton();
+        final int dWheel = Mouse.getEventDWheel();
+        final boolean eventButtonState = Mouse.getEventButtonState();
         boolean cancel = false;
 
         if (eventButton != -1 || dWheel != 0)
@@ -210,6 +210,13 @@ public class InputEventHandler implements IKeybindManager
                         return true;
                     }
                 }
+            }
+        }
+        else if (this.mouseHandlers.isEmpty() == false)
+        {
+            for (IMouseInputHandler handler : this.mouseHandlers)
+            {
+                handler.onMouseMoved();
             }
         }
 
