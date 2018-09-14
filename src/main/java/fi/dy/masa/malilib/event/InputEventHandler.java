@@ -178,7 +178,7 @@ public class InputEventHandler implements IKeybindManager
         }
 
         KeybindMulti.onKeyInputPost();
-        boolean overrideCancel = this.cancelKeyInput;
+        boolean overrideCancel = this.cancelKeyInput && isGui == false;
 
         // This hacky state indicates that a mouse event was cancelled in the GUI mouse handler,
         // which would then cause a key press to not get handled in the GuiScreen keyboard handling code,
