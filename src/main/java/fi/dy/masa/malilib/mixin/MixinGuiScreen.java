@@ -33,7 +33,7 @@ public abstract class MixinGuiScreen extends Gui
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiScreen;handleKeyboardInput()V"))
     private void onKeyboardInputGui(CallbackInfo ci)
     {
-        if (InputEventHandler.getInstance().onKeyInput())
+        if (InputEventHandler.getInstance().onKeyInput(true))
         {
             ci.cancel();
         }
@@ -43,7 +43,7 @@ public abstract class MixinGuiScreen extends Gui
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiScreen;handleMouseInput()V"))
     private void onMouseInputGui(CallbackInfo ci)
     {
-        if (InputEventHandler.getInstance().onMouseInput())
+        if (InputEventHandler.getInstance().onMouseInput(true))
         {
             ci.cancel();
         }

@@ -25,7 +25,7 @@ public class MixinMinecraft implements IMinecraftAccessor
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;dispatchKeypresses()V"))
     private void onKeyboardInput(CallbackInfo ci)
     {
-        if (InputEventHandler.getInstance().onKeyInput())
+        if (InputEventHandler.getInstance().onKeyInput(false))
         {
             ci.cancel();
         }
@@ -35,7 +35,7 @@ public class MixinMinecraft implements IMinecraftAccessor
             at = @At(value = "INVOKE", target = "Lorg/lwjgl/input/Mouse;getEventButton()I", remap = false))
     private void onMouseInput(CallbackInfo ci)
     {
-        if (InputEventHandler.getInstance().onMouseInput())
+        if (InputEventHandler.getInstance().onMouseInput(false))
         {
             ci.cancel();
         }
