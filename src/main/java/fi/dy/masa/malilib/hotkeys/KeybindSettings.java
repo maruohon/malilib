@@ -15,10 +15,10 @@ public class KeybindSettings
     public static final KeybindSettings NOCANCEL                    = new KeybindSettings(Context.INGAME, KeyAction.PRESS, false, true, false, false);
     public static final KeybindSettings PRESS_ALLOWEXTRA            = new KeybindSettings(Context.INGAME, KeyAction.PRESS, true, true, false, true);
     public static final KeybindSettings PRESS_NON_ORDER_SENSITIVE   = new KeybindSettings(Context.INGAME, KeyAction.PRESS, false, false, false, true);
+    public static final KeybindSettings INGAME_BOTH                 = new KeybindSettings(Context.INGAME, KeyAction.BOTH, false, true, false, true);
     public static final KeybindSettings MODIFIER_INGAME             = new KeybindSettings(Context.INGAME, KeyAction.PRESS, true, false, false, false);
     public static final KeybindSettings MODIFIER_GUI                = new KeybindSettings(Context.GUI,    KeyAction.PRESS, true, false, false, false);
-    public static final KeybindSettings BOTH                        = new KeybindSettings(Context.INGAME, KeyAction.BOTH, false, true, false, true);
-    public static final KeybindSettings GUI                         = new KeybindSettings(Context.GUI,    KeyAction.PRESS, false, false, false, true);
+    public static final KeybindSettings GUI                         = new KeybindSettings(Context.GUI,    KeyAction.PRESS, false, true, false, true);
 
     private final Context context;
     private final KeyAction activateOn;
