@@ -42,7 +42,7 @@ minecraft {
         mod_version = mod_version + "." + new Date().format('yyyyMMdd.HHmmss')
     }
 
-    replaceIn "reference/Reference.java"
+    replaceIn "reference/MaLiLibReference.java"
     replace "@MOD_VERSION@", mod_version
 }
 
