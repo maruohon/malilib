@@ -13,13 +13,16 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.inventory.ContainerHorseChest;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntityBrewingStand;
+import net.minecraft.tileentity.TileEntityDispenser;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 
 public class RenderUtils
 {
@@ -65,6 +68,11 @@ public class RenderUtils
         Gui.drawRect(    x          , bottom         , right              , bottom + borderWidth, colorBorder); // bottom edge
     }
 
+    public static void drawTexturedRect(int x, int y, int u, int v, int width, int height)
+    {
+        drawTexturedRect(x, y, u, v, width, height, 0);
+    }
+
     public static void drawTexturedRect(int x, int y, int u, int v, int width, int height, float zLevel)
     {
         float pixelWidth = 0.00390625F;
@@ -78,6 +86,21 @@ public class RenderUtils
         buffer.pos(x        , y         , zLevel).tex( u          * pixelWidth,  v           * pixelWidth).endVertex();
 
         tessellator.draw();
+    }
+
+    public static void drawTexturedRectBatched(int x, int y, int u, int v, int width, int height, BufferBuilder buffer)
+    {
+        drawTexturedRectBatched(x, y, u, v, width, height, 0, buffer);
+    }
+
+    public static void drawTexturedRectBatched(int x, int y, int u, int v, int width, int height, float zLevel, BufferBuilder buffer)
+    {
+        float pixelWidth = 0.00390625F;
+
+        buffer.pos(x        , y + height, zLevel).tex( u          * pixelWidth, (v + height) * pixelWidth).endVertex();
+        buffer.pos(x + width, y + height, zLevel).tex((u + width) * pixelWidth, (v + height) * pixelWidth).endVertex();
+        buffer.pos(x + width, y         , zLevel).tex((u + width) * pixelWidth,  v           * pixelWidth).endVertex();
+        buffer.pos(x        , y         , zLevel).tex( u          * pixelWidth,  v           * pixelWidth).endVertex();
     }
 
     public static void drawHoverText(int x, int y, List<String> textLines)
@@ -198,67 +221,205 @@ public class RenderUtils
     {
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder buffer = tessellator.getBuffer();
+        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+
         if (inv instanceof TileEntityFurnace)
         {
             mc.getTextureManager().bindTexture(TEXTURE_FURNACE);
-            mc.ingameGUI.drawTexturedModalRect(x, y      , 0,   0, 176,  80);
-            mc.ingameGUI.drawTexturedModalRect(x, y +  80, 0, 163, 176,   3);
+            drawTexturedRectBatched(x     , y     ,   0,   0,   4,  64, buffer); // left (top)
+            drawTexturedRectBatched(x +  4, y     ,  84,   0,  92,   4, buffer); // top (right)
+            drawTexturedRectBatched(x     , y + 64,   0, 162,  92,   4, buffer); // bottom (left)
+            drawTexturedRectBatched(x + 92, y +  4, 172, 102,   4,  64, buffer); // right (bottom)
+            drawTexturedRectBatched(x +  4, y +  4,  52,  13,  88,  60, buffer); // middle
         }
         else if (inv instanceof TileEntityBrewingStand)
         {
             mc.getTextureManager().bindTexture(TEXTURE_BREWING_STAND);
-            mc.ingameGUI.drawTexturedModalRect(x, y      , 0,   0, 176,  80);
-            mc.ingameGUI.drawTexturedModalRect(x, y +  80, 0, 163, 176,   3);
+            drawTexturedRectBatched(x      , y     ,   0,   0,   4,  68, buffer); // left (top)
+            drawTexturedRectBatched(x +   4, y     ,  63,   0, 113,   4, buffer); // top (right)
+            drawTexturedRectBatched(x      , y + 68,   0, 162, 113,   4, buffer); // bottom (left)
+            drawTexturedRectBatched(x + 113, y +  4, 172,  98,   4,  68, buffer); // right (bottom)
+            drawTexturedRectBatched(x +   4, y +  4,  13,  13, 109,  64, buffer); // middle
         }
-        else if (totalSlots <= 5)
-        {
-            mc.getTextureManager().bindTexture(TEXTURE_HOPPER);
-            mc.ingameGUI.drawTexturedModalRect(x, y      , 0,   0, 176,  50);
-            mc.ingameGUI.drawTexturedModalRect(x, y +  50, 0, 127, 176,   6);
-        }
-        else if (totalSlots <= 9)
+        else if (inv instanceof TileEntityDispenser) // this includes the Dropper as a sub class
         {
             mc.getTextureManager().bindTexture(TEXTURE_DISPENSER);
-            mc.ingameGUI.drawTexturedModalRect(x, y      , 0,   0, 176,  83);
-            mc.ingameGUI.drawTexturedModalRect(x, y +  83, 0, 163, 176,   3);
+            drawTexturedRectBatched(x     , y     ,   0,   0,   7,  61, buffer); // left (top)
+            drawTexturedRectBatched(x +  7, y     , 115,   0,  61,   7, buffer); // top (right)
+            drawTexturedRectBatched(x     , y + 61,   0, 159,  61,   7, buffer); // bottom (left)
+            drawTexturedRectBatched(x + 61, y +  7, 169, 105,   7,  61, buffer); // right (bottom)
+            drawTexturedRectBatched(x +  7, y +  7,  61,  16,  54,  54, buffer); // middle
         }
-        else if (totalSlots <= 27)
+        else if (totalSlots == 5)
         {
-            mc.getTextureManager().bindTexture(TEXTURE_SINGLE_CHEST);
-            mc.ingameGUI.drawTexturedModalRect(x, y      , 0,   0, 176,  83);
-            mc.ingameGUI.drawTexturedModalRect(x, y +  83, 0, 161, 176,   5);
+            mc.getTextureManager().bindTexture(TEXTURE_HOPPER);
+            drawTexturedRectBatched(x      , y     ,   0,   0,   7,  25, buffer); // left (top)
+            drawTexturedRectBatched(x +   7, y     ,  79,   0,  97,   7, buffer); // top (right)
+            drawTexturedRectBatched(x      , y + 25,   0, 126,  97,   7, buffer); // bottom (left)
+            drawTexturedRectBatched(x +  97, y +  7, 169, 108,   7,  25, buffer); // right (bottom)
+            drawTexturedRectBatched(x +   7, y +  7,  43,  19,  90,  18, buffer); // middle
         }
-        else if (totalSlots <= 36)
+        // Most likely a Villager, or possibly a Llama
+        else if (totalSlots == 8)
         {
             mc.getTextureManager().bindTexture(TEXTURE_DOUBLE_CHEST);
-            mc.ingameGUI.drawTexturedModalRect(x, y     , 0,   0, 176,  89);
-            mc.ingameGUI.drawTexturedModalRect(x, y + 89, 0,   4, 176,   6);
-            mc.ingameGUI.drawTexturedModalRect(x, y + 95, 0, 219, 176,   3);
+            drawTexturedRectBatched(x     , y     ,   0,   0,   7,  79, buffer); // left (top)
+            drawTexturedRectBatched(x +  7, y     , 133,   0,  43,   7, buffer); // top (right)
+            drawTexturedRectBatched(x     , y + 79,   0, 215,  43,   7, buffer); // bottom (left)
+            drawTexturedRectBatched(x + 43, y +  7, 169, 143,   7,  79, buffer); // right (bottom)
+            drawTexturedRectBatched(x +  7, y +  7,   7,  17,  36,  72, buffer); // 2x4 slots
+        }
+        else if (totalSlots == 27)
+        {
+            mc.getTextureManager().bindTexture(TEXTURE_SINGLE_CHEST);
+            drawTexturedRectBatched(x      , y     ,   0,   0,   7,  61, buffer); // left (top)
+            drawTexturedRectBatched(x +   7, y     ,   7,   0, 169,   7, buffer); // top (right)
+            drawTexturedRectBatched(x      , y + 61,   0, 159, 169,   7, buffer); // bottom (left)
+            drawTexturedRectBatched(x + 169, y +  7, 169, 105,   7,  61, buffer); // right (bottom)
+            drawTexturedRectBatched(x +   7, y +  7,   7,  17, 162,  54, buffer); // middle
+        }
+        else if (totalSlots == 54)
+        {
+            mc.getTextureManager().bindTexture(TEXTURE_DOUBLE_CHEST);
+            drawTexturedRectBatched(x      , y      ,   0,   0,   7, 115, buffer); // left (top)
+            drawTexturedRectBatched(x +   7, y      ,   7,   0, 169,   7, buffer); // top (right)
+            drawTexturedRectBatched(x      , y + 115,   0, 215, 169,   7, buffer); // bottom (left)
+            drawTexturedRectBatched(x + 169, y +   7, 169, 107,   7, 115, buffer); // right (bottom)
+            drawTexturedRectBatched(x +   7, y +   7,   7,  17, 162, 108, buffer); // middle
         }
         else
         {
             mc.getTextureManager().bindTexture(TEXTURE_DOUBLE_CHEST);
-            mc.ingameGUI.drawTexturedModalRect(x, y      , 0,   0, 176, 139);
-            mc.ingameGUI.drawTexturedModalRect(x, y + 139, 0, 219, 176,   3);
+
+            // Draw the slot backgrounds according to how many slots there actually are
+            int rows = (int) (Math.ceil((double) totalSlots / (double) slotsPerRow));
+            int bgw = Math.min(totalSlots, slotsPerRow) * 18 + 7;
+            int bgh = rows * 18 + 7;
+
+            drawTexturedRectBatched(x      , y      ,         0,         0,   7, bgh, buffer); // left (top)
+            drawTexturedRectBatched(x +   7, y      , 176 - bgw,         0, bgw,   7, buffer); // top (right)
+            drawTexturedRectBatched(x      , y + bgh,         0,       215, bgw,   7, buffer); // bottom (left)
+            drawTexturedRectBatched(x + bgw, y +   7,       169, 222 - bgh,   7, bgh, buffer); // right (bottom)
+
+            for (int row = 0; row < rows; row++)
+            {
+                int rowLen = MathHelper.clamp(totalSlots - (row * slotsPerRow), 1, slotsPerRow);
+                drawTexturedRectBatched(x + 7, y + row * 18 + 7, 7, 17, rowLen * 18, 18, buffer);
+
+                // Render the background for the last non-existing slots on the last row,
+                // in two strips of the background texture from the double chest texture's top part.
+                if (rowLen < slotsPerRow)
+                {
+                    drawTexturedRectBatched(x + rowLen * 18 + 7, y + row * 18 +  7, 7, 3, (slotsPerRow - rowLen) * 18, 9, buffer);
+                    drawTexturedRectBatched(x + rowLen * 18 + 7, y + row * 18 + 16, 7, 3, (slotsPerRow - rowLen) * 18, 9, buffer);
+                }
+            }
         }
+
+        tessellator.draw();
+    }
+
+    /**
+     * Returns the inventory background width and height that will
+     * be used for rendering,<br>masked together as (width << 16) | height
+     */
+    public static int getInventoryBackgroundWidthHeight(IInventory inv, int totalSlots, int slotsPerRow)
+    {
+        int width = 176;
+        int height = 83;
+
+        if (inv instanceof TileEntityFurnace)
+        {
+            width = 96;
+            height = 68;
+        }
+        else if (inv instanceof TileEntityBrewingStand)
+        {
+            width = 127;
+            height = 72;
+        }
+        else if (inv instanceof TileEntityDispenser)
+        {
+            width = 68;
+            height = 68;
+        }
+        else if (inv instanceof ContainerHorseChest)
+        {
+            width = totalSlots * 18 / 3 + 14;
+            height = 68;
+        }
+        else if (totalSlots == 5)
+        {
+            width = 105;
+            height = 32;
+        }
+        // Most likely a Villager, or possibly a Llama
+        else if (totalSlots == 8)
+        {
+            width = 50;
+            height = 86;
+        }
+        else
+        {
+            int rows = (int) (Math.ceil((double) totalSlots / (double) slotsPerRow));
+            width = Math.min(slotsPerRow, totalSlots) * 18 + 14;
+            height = rows * 18 + 14;
+        }
+
+        return width << 16 | height;
+    }
+
+    /**
+     * Returns the inventory slot x and y offsets from the top left corner,<br>
+     * and the number of slots per row that will be used for rendering,<br>
+     * masked together as (slotsPerRow << 16) | (offsetX << 8) | offsetY
+     */
+    public static int getInventorySlotConfiguration(IInventory inv, int totalSlots)
+    {
+        int slotsPerRow = 9;
+        int slotOffsetX = 8;
+        int slotOffsetY = 8;
+
+        if ((inv instanceof TileEntityFurnace) || (inv instanceof TileEntityBrewingStand))
+        {
+            slotOffsetX = 0;
+            slotOffsetY = 0;
+        }
+        else if (inv instanceof TileEntityDispenser)
+        {
+            slotsPerRow = 3;
+        }
+        else if (inv instanceof ContainerHorseChest)
+        {
+            slotsPerRow = Math.max(1, totalSlots / 3);
+        }
+        else if (totalSlots == 8)
+        {
+            slotsPerRow = 2;
+            slotOffsetY = 8;
+        }
+
+        return (slotsPerRow << 16) | (slotOffsetX << 8) | slotOffsetY;
     }
 
     public static void renderInventoryStacks(IInventory inv, int startX, int startY, int slotsPerRow, int startSlot, int maxSlots, Minecraft mc)
     {
         if (inv instanceof TileEntityFurnace)
         {
-            renderStackAt(inv.getStackInSlot(0), startX +  56, startY + 17, 1, mc);
-            renderStackAt(inv.getStackInSlot(1), startX +  56, startY + 53, 1, mc);
-            renderStackAt(inv.getStackInSlot(2), startX + 116, startY + 35, 1, mc);
+            renderStackAt(inv.getStackInSlot(0), startX +   8, startY +  8, 1, mc);
+            renderStackAt(inv.getStackInSlot(1), startX +   8, startY + 44, 1, mc);
+            renderStackAt(inv.getStackInSlot(2), startX +  68, startY + 26, 1, mc);
             return;
         }
         else if (inv instanceof TileEntityBrewingStand)
         {
-            renderStackAt(inv.getStackInSlot(0), startX +  56, startY + 51, 1, mc);
-            renderStackAt(inv.getStackInSlot(1), startX +  79, startY + 58, 1, mc);
-            renderStackAt(inv.getStackInSlot(2), startX + 102, startY + 51, 1, mc);
-            renderStackAt(inv.getStackInSlot(3), startX +  79, startY + 17, 1, mc);
-            renderStackAt(inv.getStackInSlot(4), startX +  17, startY + 17, 1, mc);
+            renderStackAt(inv.getStackInSlot(0), startX +  47, startY + 42, 1, mc);
+            renderStackAt(inv.getStackInSlot(1), startX +  70, startY + 49, 1, mc);
+            renderStackAt(inv.getStackInSlot(2), startX +  93, startY + 42, 1, mc);
+            renderStackAt(inv.getStackInSlot(3), startX +  70, startY +  8, 1, mc);
+            renderStackAt(inv.getStackInSlot(4), startX +   8, startY +  8, 1, mc);
             return;
         }
 
