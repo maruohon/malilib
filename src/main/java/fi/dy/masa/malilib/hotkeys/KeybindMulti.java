@@ -7,8 +7,8 @@ import java.util.List;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
-import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.LiteModMaLiLib;
+import fi.dy.masa.malilib.config.MaLiLibConfigs;
 import fi.dy.masa.malilib.config.options.ConfigBoolean;
 import fi.dy.masa.malilib.util.IMinecraftAccessor;
 import fi.dy.masa.malilib.util.StringUtils;
@@ -219,7 +219,7 @@ public class KeybindMulti implements IKeybind
     @Override
     public Collection<Integer> getKeys()
     {
-        return ImmutableList.copyOf(this.keyCodes);
+        return this.keyCodes;
     }
 
     @Override
@@ -357,7 +357,12 @@ public class KeybindMulti implements IKeybind
         {
             if (pressedKeys.contains(valObj) == false)
             {
-                pressedKeys.add(valObj);
+                Collection<Integer> ignored = MaLiLibConfigs.Generic.IGNORED_KEYS.getKeybind().getKeys();
+
+                if (ignored.size() == 0 || ignored.contains(valObj) == false)
+                {
+                    pressedKeys.add(valObj);
+                }
             }
         }
         else

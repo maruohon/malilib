@@ -10,6 +10,7 @@ import com.mumfrey.liteloader.ShutdownListener;
 import com.mumfrey.liteloader.core.LiteLoader;
 import com.mumfrey.liteloader.modconfig.ConfigPanel;
 import fi.dy.masa.malilib.config.ConfigManager;
+import fi.dy.masa.malilib.config.MaLiLibConfigs;
 import fi.dy.masa.malilib.config.gui.MaLiLibConfigPanel;
 import fi.dy.masa.malilib.event.InputEventHandler;
 import fi.dy.masa.malilib.reference.MaLiLibReference;
@@ -44,6 +45,8 @@ public class LiteModMaLiLib implements Configurable, LiteMod, InitCompleteListen
     @Override
     public void init(File configPath)
     {
+        MaLiLibConfigs.loadFromFile();
+        ConfigManager.getInstance().registerConfigHandler(MaLiLibReference.MOD_ID, new MaLiLibConfigs());
     }
 
     @Override
