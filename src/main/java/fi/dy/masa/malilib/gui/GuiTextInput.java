@@ -35,6 +35,13 @@ public class GuiTextInput extends GuiDialogBase
     }
 
     @Override
+    public String getTitle()
+    {
+        // Don't get the full title hierarchy that the super.getTitle() would return
+        return this.title;
+    }
+
+    @Override
     public void initGui()
     {
         int x = this.dialogLeft + 10;
