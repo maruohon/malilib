@@ -460,6 +460,8 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
                 this.drawHoveringText(((ButtonHoverText) button).getHoverStrings(), mouseX, mouseY);
             }
         }
+
+        RenderHelper.disableStandardItemLighting();
     }
 
     protected void drawHoveredWidget(int mouseX, int mouseY)
