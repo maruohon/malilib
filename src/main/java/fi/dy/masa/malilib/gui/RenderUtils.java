@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.gui;
 
 import java.util.Collection;
 import java.util.List;
+import javax.annotation.Nullable;
 import org.lwjgl.opengl.GL11;
 import fi.dy.masa.malilib.config.HudAlignment;
 import net.minecraft.client.Minecraft;
@@ -21,6 +22,7 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntityBrewingStand;
 import net.minecraft.tileentity.TileEntityDispenser;
 import net.minecraft.tileentity.TileEntityFurnace;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
@@ -273,12 +275,7 @@ public class RenderUtils
         }
         else if (totalSlots == 27)
         {
-            mc.getTextureManager().bindTexture(TEXTURE_SINGLE_CHEST);
-            drawTexturedRectBatched(x      , y     ,   0,   0,   7,  61, buffer); // left (top)
-            drawTexturedRectBatched(x +   7, y     ,   7,   0, 169,   7, buffer); // top (right)
-            drawTexturedRectBatched(x      , y + 61,   0, 159, 169,   7, buffer); // bottom (left)
-            drawTexturedRectBatched(x + 169, y +  7, 169, 105,   7,  61, buffer); // right (bottom)
-            drawTexturedRectBatched(x +   7, y +  7,   7,  17, 162,  54, buffer); // middle
+            renderInventoryBackground27(x, y, buffer, mc);
         }
         else if (totalSlots == 54)
         {
@@ -321,11 +318,21 @@ public class RenderUtils
         tessellator.draw();
     }
 
+    public static void renderInventoryBackground27(int x, int y, BufferBuilder buffer, Minecraft mc)
+    {
+        mc.getTextureManager().bindTexture(TEXTURE_SINGLE_CHEST);
+        drawTexturedRectBatched(x      , y     ,   0,   0,   7,  61, buffer); // left (top)
+        drawTexturedRectBatched(x +   7, y     ,   7,   0, 169,   7, buffer); // top (right)
+        drawTexturedRectBatched(x      , y + 61,   0, 159, 169,   7, buffer); // bottom (left)
+        drawTexturedRectBatched(x + 169, y +  7, 169, 105,   7,  61, buffer); // right (bottom)
+        drawTexturedRectBatched(x +   7, y +  7,   7,  17, 162,  54, buffer); // middle
+    }
+
     /**
      * Returns the inventory background width and height that will
      * be used for rendering,<br>masked together as (width << 16) | height
      */
-    public static int getInventoryBackgroundWidthHeight(IInventory inv, int totalSlots, int slotsPerRow)
+    public static int getInventoryBackgroundWidthHeight(@Nullable IInventory inv, int totalSlots, int slotsPerRow)
     {
         int width = 176;
         int height = 83;
@@ -437,6 +444,36 @@ public class RenderUtils
             for (int column = 0; column < slotsPerRow && slot < slots && i < maxSlots; ++column, ++slot, ++i)
             {
                 ItemStack stack = inv.getStackInSlot(slot);
+
+                if (stack.isEmpty() == false)
+                {
+                    renderStackAt(stack, x, y, 1, mc);
+                }
+
+                x += 18;
+            }
+
+            x = startX;
+            y += 18;
+        }
+    }
+
+    public static void renderItemStacks(NonNullList<ItemStack> items, int startX, int startY, int slotsPerRow, int startSlot, int maxSlots, Minecraft mc)
+    {
+        final int slots = items.size();
+        int x = startX;
+        int y = startY;
+
+        if (maxSlots < 0)
+        {
+            maxSlots = slots;
+        }
+
+        for (int slot = startSlot, i = 0; slot < slots && i < maxSlots;)
+        {
+            for (int column = 0; column < slotsPerRow && slot < slots && i < maxSlots; ++column, ++slot, ++i)
+            {
+                ItemStack stack = items.get(slot);
 
                 if (stack.isEmpty() == false)
                 {

@@ -178,6 +178,18 @@ public class InventoryUtils
      */
     public static NonNullList<ItemStack> getShulkerBoxItems(ItemStack stackShulkerBox)
     {
+        return getShulkerBoxItems(stackShulkerBox, false);
+    }
+
+    /**
+     * Returns the list of items currently stored in the given Shulker Box
+     * (or other storage item with the same NBT data structure).
+     * @param stackShulkerBox
+     * @param includeEmpty if true, then empty stacks are also included in the list, to keep the original slot numbering
+     * @return
+     */
+    public static NonNullList<ItemStack> getShulkerBoxItems(ItemStack stackShulkerBox, boolean includeEmpty)
+    {
         NBTTagCompound nbt = stackShulkerBox.getTagCompound();
 
         if (nbt != null && nbt.hasKey("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
@@ -194,7 +206,7 @@ public class InventoryUtils
                 {
                     ItemStack stack = new ItemStack(tagList.getCompoundTagAt(i));
 
-                    if (stack.isEmpty() == false)
+                    if (includeEmpty || stack.isEmpty() == false)
                     {
                         items.add(stack);
                     }
