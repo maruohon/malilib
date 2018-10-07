@@ -173,22 +173,11 @@ public class InventoryUtils
     /**
      * Returns the list of items currently stored in the given Shulker Box
      * (or other storage item with the same NBT data structure).
+     * Does not keep empty slots.
      * @param stackShulkerBox
      * @return
      */
     public static NonNullList<ItemStack> getShulkerBoxItems(ItemStack stackShulkerBox)
-    {
-        return getShulkerBoxItems(stackShulkerBox, false);
-    }
-
-    /**
-     * Returns the list of items currently stored in the given Shulker Box
-     * (or other storage item with the same NBT data structure).
-     * @param stackShulkerBox
-     * @param includeEmpty if true, then empty stacks are also included in the list, to keep the original slot numbering
-     * @return
-     */
-    public static NonNullList<ItemStack> getShulkerBoxItems(ItemStack stackShulkerBox, boolean includeEmpty)
     {
         NBTTagCompound nbt = stackShulkerBox.getTagCompound();
 
@@ -206,7 +195,7 @@ public class InventoryUtils
                 {
                     ItemStack stack = new ItemStack(tagList.getCompoundTagAt(i));
 
-                    if (includeEmpty || stack.isEmpty() == false)
+                    if (stack.isEmpty() == false)
                     {
                         items.add(stack);
                     }
@@ -217,6 +206,47 @@ public class InventoryUtils
         }
 
         return NonNullList.create();
+    }
+
+    /**
+     * Returns the list of items currently stored in the given Shulker Box
+     * (or other storage item with the same NBT data structure).
+     * Preserves empty slots.
+     * @param stackShulkerBox
+     * @param slotCount the maximum number of slots, and thus also the size of the list to create
+     * @return
+     */
+    public static NonNullList<ItemStack> getShulkerBoxItems(ItemStack stackShulkerBox, int slotCount)
+    {
+        NonNullList<ItemStack> items = NonNullList.withSize(slotCount, ItemStack.EMPTY);
+        NBTTagCompound nbt = stackShulkerBox.getTagCompound();
+
+        if (nbt != null && nbt.hasKey("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
+        {
+            NBTTagCompound tagBlockEntity = nbt.getCompoundTag("BlockEntityTag");
+
+            if (tagBlockEntity.hasKey("Items", Constants.NBT.TAG_LIST))
+            {
+                NBTTagList tagList = tagBlockEntity.getTagList("Items", Constants.NBT.TAG_COMPOUND);
+                final int count = tagList.tagCount();
+
+                for (int i = 0; i < count; ++i)
+                {
+                    NBTTagCompound tag = tagList.getCompoundTagAt(i);
+                    ItemStack stack = new ItemStack(tag);
+                    int slot = tag.getByte("Slot");
+
+                    if (slot >= 0 && slot < items.size() && stack.isEmpty() == false)
+                    {
+                        items.set(slot, stack);
+                    }
+                }
+
+                return items;
+            }
+        }
+
+        return items;
     }
 
     /**
