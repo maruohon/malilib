@@ -307,7 +307,7 @@ public class RenderUtils
 
                 // Render the background for the last non-existing slots on the last row,
                 // in two strips of the background texture from the double chest texture's top part.
-                if (rowLen < slotsPerRow)
+                if (rows > 1 && rowLen < slotsPerRow)
                 {
                     drawTexturedRectBatched(x + rowLen * 18 + 7, y + row * 18 +  7, 7, 3, (slotsPerRow - rowLen) * 18, 9, buffer);
                     drawTexturedRectBatched(x + rowLen * 18 + 7, y + row * 18 + 16, 7, 3, (slotsPerRow - rowLen) * 18, 9, buffer);
