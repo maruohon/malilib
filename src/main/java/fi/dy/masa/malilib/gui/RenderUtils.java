@@ -221,8 +221,6 @@ public class RenderUtils
 
     public static void renderInventoryBackground(int x, int y, int slotsPerRow, int totalSlots, IInventory inv, Minecraft mc)
     {
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
