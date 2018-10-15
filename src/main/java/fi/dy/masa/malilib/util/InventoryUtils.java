@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.ContainerPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemShulkerBox;
@@ -52,6 +53,19 @@ public class InventoryUtils
     }
 
     /**
+     * Assuming that the slot is from the ContainerPlayer container,
+     * returns whether the given slot number is one of the regular inventory slots.
+     * This means that the crafting slots and armor slots are not valid.
+     * @param slotNumber
+     * @param allowOffhand
+     * @return
+     */
+    public static boolean isRegularInventorySlot(int slotNumber, boolean allowOffhand)
+    {
+        return slotNumber > 8 && (allowOffhand || slotNumber < 45);
+    }
+
+    /**
      * Finds an empty slot in the player inventory. Armor slots are not valid for the return value of this method.
      * Whether or not the offhand slot is valid, depends on the <b>allowOffhand</b> argument.
      * @param containerPlayer
@@ -71,7 +85,7 @@ public class InventoryUtils
             ItemStack stackSlot = slot.getStack();
 
             // Inventory crafting, armor and offhand slots are not valid
-            if (stackSlot.isEmpty() && slot.slotNumber > 8 && (allowOffhand || slot.slotNumber < 45))
+            if (stackSlot.isEmpty() && isRegularInventorySlot(slot.slotNumber, allowOffhand))
             {
                 return slot.slotNumber;
             }
@@ -82,7 +96,8 @@ public class InventoryUtils
 
     /**
      * Finds a slot with an identical item than <b>stackReference</b>, ignoring the durability
-     * of damageable items.
+     * of damageable items. Does not allow crafting or armor slots or the offhand slot
+     * in the ContainerPlayer container.
      * @param container
      * @param stackReference
      * @param reverse
@@ -93,12 +108,14 @@ public class InventoryUtils
         final int startSlot = reverse ? container.inventorySlots.size() - 1 : 0;
         final int endSlot = reverse ? -1 : container.inventorySlots.size();
         final int increment = reverse ? -1 : 1;
+        final boolean isPlayerInv = container instanceof ContainerPlayer;
 
         for (int slotNum = startSlot; slotNum != endSlot; slotNum += increment)
         {
             Slot slot = container.inventorySlots.get(slotNum);
 
-            if (areStacksEqualIgnoreDurability(slot.getStack(), stackReference))
+            if ((isPlayerInv == false || isRegularInventorySlot(slot.slotNumber, false)) &&
+                areStacksEqualIgnoreDurability(slot.getStack(), stackReference))
             {
                 return slot.slotNumber;
             }
