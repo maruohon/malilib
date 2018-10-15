@@ -270,7 +270,12 @@ public class JsonUtils
             try
             {
                 JsonParser parser = new JsonParser();
-                return parser.parse(new FileReader(file));
+                FileReader reader = new FileReader(file);
+
+                JsonElement element = parser.parse(reader);
+                reader.close();
+
+                return element;
             }
             catch (Exception e)
             {
