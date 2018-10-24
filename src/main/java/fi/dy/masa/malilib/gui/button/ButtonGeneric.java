@@ -1,5 +1,7 @@
 package fi.dy.masa.malilib.gui.button;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import fi.dy.masa.malilib.gui.LeftRight;
@@ -7,26 +9,41 @@ import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.resources.I18n;
 
 public class ButtonGeneric extends ButtonBase
 {
     @Nullable
     protected final IGuiIcon icon;
+    protected final List<String> hoverStrings = new ArrayList<>();
     protected LeftRight alignment = LeftRight.LEFT;
     protected boolean textCentered;
+    protected boolean renderDefaultBackground = true;
 
-    public ButtonGeneric(int id, int x, int y, int width, int height, String text)
+    public ButtonGeneric(int id, int x, int y, int width, int height, String text, String... hoverStrings)
     {
-        this(id, x, y, width, height, text, null);
+        this(id, x, y, width, height, text, null, hoverStrings);
 
         this.textCentered = true;
     }
 
-    public ButtonGeneric(int id, int x, int y, int width, int height, String text, IGuiIcon icon)
+    public ButtonGeneric(int id, int x, int y, int width, int height, String text, IGuiIcon icon, String... hoverStrings)
     {
         super(id, x, y, width, height, text);
 
         this.icon = icon;
+
+        if (hoverStrings.length > 0)
+        {
+            this.setHoverStrings(hoverStrings);
+        }
+    }
+
+    public ButtonGeneric(int id, int x, int y, IGuiIcon icon, String... hoverStrings)
+    {
+        this(id, x, y, icon.getWidth(), icon.getHeight(), "", icon, hoverStrings);
+
+        this.setRenderDefaultBackground(false);
     }
 
     public ButtonGeneric setTextCentered(boolean centered)
@@ -39,6 +56,37 @@ public class ButtonGeneric extends ButtonBase
     {
         this.alignment = alignment;
         return this;
+    }
+
+    public ButtonGeneric setRenderDefaultBackground(boolean render)
+    {
+        this.renderDefaultBackground = render;
+        return this;
+    }
+
+    public boolean hasHoverText()
+    {
+        return this.hoverStrings.isEmpty() == false;
+    }
+
+    public void setHoverStrings(String... hoverStrings)
+    {
+        this.hoverStrings.clear();
+
+        for (String str : hoverStrings)
+        {
+            String[] parts = str.split("\\n");
+
+            for (String part : parts)
+            {
+                this.hoverStrings.add(I18n.format(part));
+            }
+        }
+    }
+
+    public List<String> getHoverStrings()
+    {
+        return this.hoverStrings;
     }
 
     @Override
@@ -54,21 +102,26 @@ public class ButtonGeneric extends ButtonBase
             this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
 
             FontRenderer fontRenderer = mc.fontRenderer;
-            mc.getTextureManager().bindTexture(BUTTON_TEXTURES);
-            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-
             int buttonStyle = this.getHoverState(this.hovered);
+
+            GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             GlStateManager.enableBlend();
             GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
             GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 
-            this.drawTexturedModalRect(this.x, this.y, 0, 46 + buttonStyle * 20, this.width / 2, this.height);
-            this.drawTexturedModalRect(this.x + this.width / 2, this.y, 200 - this.width / 2, 46 + buttonStyle * 20, this.width / 2, this.height);
+            if (this.renderDefaultBackground)
+            {
+                mc.getTextureManager().bindTexture(BUTTON_TEXTURES);
+                this.drawTexturedModalRect(this.x, this.y, 0, 46 + buttonStyle * 20, this.width / 2, this.height);
+                this.drawTexturedModalRect(this.x + this.width / 2, this.y, 200 - this.width / 2, 46 + buttonStyle * 20, this.width / 2, this.height);
+            }
+
             this.mouseDragged(mc, mouseX, mouseY);
 
             if (this.icon != null)
             {
-                int x = this.alignment == LeftRight.LEFT ? this.x + 4 : this.x + this.width - this.icon.getWidth() - 4;
+                int offset = this.renderDefaultBackground ? 4 : 0;
+                int x = this.alignment == LeftRight.LEFT ? this.x + offset : this.x + this.width - this.icon.getWidth() - offset;
                 int y = this.y + (this.height - this.icon.getHeight()) / 2;
                 int u = this.icon.getU() + buttonStyle * this.icon.getWidth();
 

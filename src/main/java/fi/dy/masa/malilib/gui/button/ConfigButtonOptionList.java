@@ -3,13 +3,13 @@ package fi.dy.masa.malilib.gui.button;
 import fi.dy.masa.malilib.config.IConfigOptionList;
 import net.minecraft.client.Minecraft;
 
-public class ConfigButtonOptionList extends ButtonBase
+public class ConfigButtonOptionList extends ButtonGeneric
 {
     private final IConfigOptionList config;
 
     public ConfigButtonOptionList(int id, int x, int y, int width, int height, IConfigOptionList config)
     {
-        super(id, x, y, width, height);
+        super(id, x, y, width, height, "");
         this.config = config;
 
         this.updateDisplayString();

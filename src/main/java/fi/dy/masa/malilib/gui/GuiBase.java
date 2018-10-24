@@ -8,8 +8,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import fi.dy.masa.malilib.config.IConfigBase;
 import fi.dy.masa.malilib.gui.Message.MessageType;
-import fi.dy.masa.malilib.gui.button.ButtonBase;
-import fi.dy.masa.malilib.gui.button.ButtonHoverText;
+import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.gui.interfaces.IMessageConsumer;
@@ -50,7 +49,7 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     public static final int COLOR_HORIZONTAL_BAR = 0xFF999999;
     protected static final int LEFT         = 20;
     protected static final int TOP          = 10;
-    private final List<ButtonWrapper<? extends ButtonBase>> buttons = new ArrayList<>();
+    private final List<ButtonWrapper<? extends ButtonGeneric>> buttons = new ArrayList<>();
     private final List<TextFieldWrapper<? extends GuiTextField>> textFields = new ArrayList<>();
     private final List<WidgetBase> widgets = new ArrayList<>();
     private final List<Message> messages = new ArrayList<>();
@@ -336,7 +335,7 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
         this.mc.getTextureManager().bindTexture(texture);
     }
 
-    protected <T extends ButtonBase> ButtonWrapper<T> addButton(T button, IButtonActionListener<T> listener)
+    protected <T extends ButtonGeneric> ButtonWrapper<T> addButton(T button, IButtonActionListener<T> listener)
     {
         ButtonWrapper<T> entry = new ButtonWrapper<>(button, listener);
         this.buttons.add(entry);
@@ -451,13 +450,13 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
 
     protected void drawButtonHoverTexts(int mouseX, int mouseY, float partialTicks)
     {
-        for (ButtonWrapper<? extends ButtonBase> entry : this.buttons)
+        for (ButtonWrapper<? extends ButtonGeneric> entry : this.buttons)
         {
-            ButtonBase button = entry.getButton();
+            ButtonGeneric button = entry.getButton();
 
-            if ((button instanceof ButtonHoverText) && button.isMouseOver())
+            if (button.hasHoverText() && button.isMouseOver())
             {
-                this.drawHoveringText(((ButtonHoverText) button).getHoverStrings(), mouseX, mouseY);
+                this.drawHoveringText(button.getHoverStrings(), mouseX, mouseY);
             }
         }
 

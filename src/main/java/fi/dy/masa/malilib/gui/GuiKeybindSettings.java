@@ -8,7 +8,7 @@ import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.config.options.ConfigBase;
 import fi.dy.masa.malilib.config.options.ConfigBoolean;
 import fi.dy.masa.malilib.config.options.ConfigOptionList;
-import fi.dy.masa.malilib.gui.button.ButtonBase;
+import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.ConfigButtonBoolean;
 import fi.dy.masa.malilib.gui.button.ConfigButtonOptionList;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
@@ -170,15 +170,15 @@ public class GuiKeybindSettings extends GuiDialogBase
         }
     }
 
-    protected static class Listener implements IButtonActionListener<ButtonBase>
+    protected static class Listener implements IButtonActionListener<ButtonGeneric>
     {
         @Override
-        public void actionPerformed(ButtonBase control)
+        public void actionPerformed(ButtonGeneric control)
         {
         }
 
         @Override
-        public void actionPerformedWithButton(ButtonBase control, int mouseButton)
+        public void actionPerformedWithButton(ButtonGeneric control, int mouseButton)
         {
         }
     }

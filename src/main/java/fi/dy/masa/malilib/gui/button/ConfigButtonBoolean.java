@@ -4,13 +4,13 @@ import fi.dy.masa.malilib.config.IConfigBoolean;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.TextFormatting;
 
-public class ConfigButtonBoolean extends ButtonBase
+public class ConfigButtonBoolean extends ButtonGeneric
 {
     private final IConfigBoolean config;
 
     public ConfigButtonBoolean(int id, int x, int y, int width, int height, IConfigBoolean config)
     {
-        super(id, x, y, width, height);
+        super(id, x, y, width, height, "");
         this.config = config;
 
         this.updateDisplayString();
