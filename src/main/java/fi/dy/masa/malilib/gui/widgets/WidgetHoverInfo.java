@@ -2,7 +2,7 @@ package fi.dy.masa.malilib.gui.widgets;
 
 import java.util.ArrayList;
 import java.util.List;
-import fi.dy.masa.malilib.gui.RenderUtils;
+import fi.dy.masa.malilib.render.RenderUtils;
 import net.minecraft.client.resources.I18n;
 
 public class WidgetHoverInfo extends WidgetBase

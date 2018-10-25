@@ -1,8 +1,7 @@
-package fi.dy.masa.malilib.gui;
+package fi.dy.masa.malilib.render;
 
 import java.util.Collection;
 import java.util.List;
-import javax.annotation.Nullable;
 import org.lwjgl.opengl.GL11;
 import fi.dy.masa.malilib.config.HudAlignment;
 import net.minecraft.client.Minecraft;
@@ -13,28 +12,14 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.inventory.ContainerHorseChest;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.tileentity.TileEntityBrewingStand;
-import net.minecraft.tileentity.TileEntityDispenser;
-import net.minecraft.tileentity.TileEntityFurnace;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
 
 public class RenderUtils
 {
-    public static final ResourceLocation TEXTURE_BREWING_STAND = new ResourceLocation("textures/gui/container/brewing_stand.png");
-    public static final ResourceLocation TEXTURE_DISPENSER = new ResourceLocation("textures/gui/container/dispenser.png");
-    public static final ResourceLocation TEXTURE_DOUBLE_CHEST = new ResourceLocation("textures/gui/container/generic_54.png");
-    public static final ResourceLocation TEXTURE_FURNACE = new ResourceLocation("textures/gui/container/furnace.png");
-    public static final ResourceLocation TEXTURE_HOPPER = new ResourceLocation("textures/gui/container/hopper.png");
-    public static final ResourceLocation TEXTURE_PLAYER_INV = new ResourceLocation("textures/gui/container/hopper.png");
-    public static final ResourceLocation TEXTURE_SINGLE_CHEST = new ResourceLocation("textures/gui/container/shulker_box.png");
     public static final ResourceLocation TEXTURE_MAP_BACKGROUND = new ResourceLocation("textures/map/map_background.png");
     //private static final Vec3d LIGHT0_POS = (new Vec3d( 0.2D, 1.0D, -0.7D)).normalize();
     //private static final Vec3d LIGHT1_POS = (new Vec3d(-0.2D, 1.0D,  0.7D)).normalize();
@@ -219,294 +204,6 @@ public class RenderUtils
         GlStateManager.enableTexture2D();
     }
 
-    public static void renderInventoryBackground(int x, int y, int slotsPerRow, int totalSlots, IInventory inv, Minecraft mc)
-    {
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
-        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-
-        if (inv instanceof TileEntityFurnace)
-        {
-            mc.getTextureManager().bindTexture(TEXTURE_FURNACE);
-            drawTexturedRectBatched(x     , y     ,   0,   0,   4,  64, buffer); // left (top)
-            drawTexturedRectBatched(x +  4, y     ,  84,   0,  92,   4, buffer); // top (right)
-            drawTexturedRectBatched(x     , y + 64,   0, 162,  92,   4, buffer); // bottom (left)
-            drawTexturedRectBatched(x + 92, y +  4, 172, 102,   4,  64, buffer); // right (bottom)
-            drawTexturedRectBatched(x +  4, y +  4,  52,  13,  88,  60, buffer); // middle
-        }
-        else if (inv instanceof TileEntityBrewingStand)
-        {
-            mc.getTextureManager().bindTexture(TEXTURE_BREWING_STAND);
-            drawTexturedRectBatched(x      , y     ,   0,   0,   4,  68, buffer); // left (top)
-            drawTexturedRectBatched(x +   4, y     ,  63,   0, 113,   4, buffer); // top (right)
-            drawTexturedRectBatched(x      , y + 68,   0, 162, 113,   4, buffer); // bottom (left)
-            drawTexturedRectBatched(x + 113, y +  4, 172,  98,   4,  68, buffer); // right (bottom)
-            drawTexturedRectBatched(x +   4, y +  4,  13,  13, 109,  64, buffer); // middle
-        }
-        else if (inv instanceof TileEntityDispenser) // this includes the Dropper as a sub class
-        {
-            mc.getTextureManager().bindTexture(TEXTURE_DISPENSER);
-            drawTexturedRectBatched(x     , y     ,   0,   0,   7,  61, buffer); // left (top)
-            drawTexturedRectBatched(x +  7, y     , 115,   0,  61,   7, buffer); // top (right)
-            drawTexturedRectBatched(x     , y + 61,   0, 159,  61,   7, buffer); // bottom (left)
-            drawTexturedRectBatched(x + 61, y +  7, 169, 105,   7,  61, buffer); // right (bottom)
-            drawTexturedRectBatched(x +  7, y +  7,  61,  16,  54,  54, buffer); // middle
-        }
-        else if (totalSlots == 5)
-        {
-            mc.getTextureManager().bindTexture(TEXTURE_HOPPER);
-            drawTexturedRectBatched(x      , y     ,   0,   0,   7,  25, buffer); // left (top)
-            drawTexturedRectBatched(x +   7, y     ,  79,   0,  97,   7, buffer); // top (right)
-            drawTexturedRectBatched(x      , y + 25,   0, 126,  97,   7, buffer); // bottom (left)
-            drawTexturedRectBatched(x +  97, y +  7, 169, 108,   7,  25, buffer); // right (bottom)
-            drawTexturedRectBatched(x +   7, y +  7,  43,  19,  90,  18, buffer); // middle
-        }
-        // Most likely a Villager, or possibly a Llama
-        else if (totalSlots == 8)
-        {
-            mc.getTextureManager().bindTexture(TEXTURE_DOUBLE_CHEST);
-            drawTexturedRectBatched(x     , y     ,   0,   0,   7,  79, buffer); // left (top)
-            drawTexturedRectBatched(x +  7, y     , 133,   0,  43,   7, buffer); // top (right)
-            drawTexturedRectBatched(x     , y + 79,   0, 215,  43,   7, buffer); // bottom (left)
-            drawTexturedRectBatched(x + 43, y +  7, 169, 143,   7,  79, buffer); // right (bottom)
-            drawTexturedRectBatched(x +  7, y +  7,   7,  17,  36,  72, buffer); // 2x4 slots
-        }
-        else if (totalSlots == 27)
-        {
-            renderInventoryBackground27(x, y, buffer, mc);
-        }
-        else if (totalSlots == 54)
-        {
-            mc.getTextureManager().bindTexture(TEXTURE_DOUBLE_CHEST);
-            drawTexturedRectBatched(x      , y      ,   0,   0,   7, 115, buffer); // left (top)
-            drawTexturedRectBatched(x +   7, y      ,   7,   0, 169,   7, buffer); // top (right)
-            drawTexturedRectBatched(x      , y + 115,   0, 215, 169,   7, buffer); // bottom (left)
-            drawTexturedRectBatched(x + 169, y +   7, 169, 107,   7, 115, buffer); // right (bottom)
-            drawTexturedRectBatched(x +   7, y +   7,   7,  17, 162, 108, buffer); // middle
-        }
-        else
-        {
-            mc.getTextureManager().bindTexture(TEXTURE_DOUBLE_CHEST);
-
-            // Draw the slot backgrounds according to how many slots there actually are
-            int rows = (int) (Math.ceil((double) totalSlots / (double) slotsPerRow));
-            int bgw = Math.min(totalSlots, slotsPerRow) * 18 + 7;
-            int bgh = rows * 18 + 7;
-
-            drawTexturedRectBatched(x      , y      ,         0,         0,   7, bgh, buffer); // left (top)
-            drawTexturedRectBatched(x +   7, y      , 176 - bgw,         0, bgw,   7, buffer); // top (right)
-            drawTexturedRectBatched(x      , y + bgh,         0,       215, bgw,   7, buffer); // bottom (left)
-            drawTexturedRectBatched(x + bgw, y +   7,       169, 222 - bgh,   7, bgh, buffer); // right (bottom)
-
-            for (int row = 0; row < rows; row++)
-            {
-                int rowLen = MathHelper.clamp(totalSlots - (row * slotsPerRow), 1, slotsPerRow);
-                drawTexturedRectBatched(x + 7, y + row * 18 + 7, 7, 17, rowLen * 18, 18, buffer);
-
-                // Render the background for the last non-existing slots on the last row,
-                // in two strips of the background texture from the double chest texture's top part.
-                if (rows > 1 && rowLen < slotsPerRow)
-                {
-                    drawTexturedRectBatched(x + rowLen * 18 + 7, y + row * 18 +  7, 7, 3, (slotsPerRow - rowLen) * 18, 9, buffer);
-                    drawTexturedRectBatched(x + rowLen * 18 + 7, y + row * 18 + 16, 7, 3, (slotsPerRow - rowLen) * 18, 9, buffer);
-                }
-            }
-        }
-
-        tessellator.draw();
-    }
-
-    public static void renderInventoryBackground27(int x, int y, BufferBuilder buffer, Minecraft mc)
-    {
-        mc.getTextureManager().bindTexture(TEXTURE_SINGLE_CHEST);
-        drawTexturedRectBatched(x      , y     ,   0,   0,   7,  61, buffer); // left (top)
-        drawTexturedRectBatched(x +   7, y     ,   7,   0, 169,   7, buffer); // top (right)
-        drawTexturedRectBatched(x      , y + 61,   0, 159, 169,   7, buffer); // bottom (left)
-        drawTexturedRectBatched(x + 169, y +  7, 169, 105,   7,  61, buffer); // right (bottom)
-        drawTexturedRectBatched(x +   7, y +  7,   7,  17, 162,  54, buffer); // middle
-    }
-
-    /**
-     * Returns the inventory background width and height that will
-     * be used for rendering,<br>masked together as (width << 16) | height
-     */
-    public static int getInventoryBackgroundWidthHeight(@Nullable IInventory inv, int totalSlots, int slotsPerRow)
-    {
-        int width = 176;
-        int height = 83;
-
-        if (inv instanceof TileEntityFurnace)
-        {
-            width = 96;
-            height = 68;
-        }
-        else if (inv instanceof TileEntityBrewingStand)
-        {
-            width = 127;
-            height = 72;
-        }
-        else if (inv instanceof TileEntityDispenser)
-        {
-            width = 68;
-            height = 68;
-        }
-        else if (inv instanceof ContainerHorseChest)
-        {
-            width = totalSlots * 18 / 3 + 14;
-            height = 68;
-        }
-        else if (totalSlots == 5)
-        {
-            width = 105;
-            height = 32;
-        }
-        // Most likely a Villager, or possibly a Llama
-        else if (totalSlots == 8)
-        {
-            width = 50;
-            height = 86;
-        }
-        else
-        {
-            int rows = (int) (Math.ceil((double) totalSlots / (double) slotsPerRow));
-            width = Math.min(slotsPerRow, totalSlots) * 18 + 14;
-            height = rows * 18 + 14;
-        }
-
-        return width << 16 | height;
-    }
-
-    /**
-     * Returns the inventory slot x and y offsets from the top left corner,<br>
-     * and the number of slots per row that will be used for rendering,<br>
-     * masked together as (slotsPerRow << 16) | (offsetX << 8) | offsetY
-     */
-    public static int getInventorySlotConfiguration(IInventory inv, int totalSlots)
-    {
-        int slotsPerRow = 9;
-        int slotOffsetX = 8;
-        int slotOffsetY = 8;
-
-        if ((inv instanceof TileEntityFurnace) || (inv instanceof TileEntityBrewingStand))
-        {
-            slotOffsetX = 0;
-            slotOffsetY = 0;
-        }
-        else if (inv instanceof TileEntityDispenser)
-        {
-            slotsPerRow = 3;
-        }
-        else if (inv instanceof ContainerHorseChest)
-        {
-            slotsPerRow = Math.max(1, totalSlots / 3);
-        }
-        else if (totalSlots == 8)
-        {
-            slotsPerRow = 2;
-            slotOffsetY = 8;
-        }
-
-        return (slotsPerRow << 16) | (slotOffsetX << 8) | slotOffsetY;
-    }
-
-    public static void renderInventoryStacks(IInventory inv, int startX, int startY, int slotsPerRow, int startSlot, int maxSlots, Minecraft mc)
-    {
-        if (inv instanceof TileEntityFurnace)
-        {
-            renderStackAt(inv.getStackInSlot(0), startX +   8, startY +  8, 1, mc);
-            renderStackAt(inv.getStackInSlot(1), startX +   8, startY + 44, 1, mc);
-            renderStackAt(inv.getStackInSlot(2), startX +  68, startY + 26, 1, mc);
-            return;
-        }
-        else if (inv instanceof TileEntityBrewingStand)
-        {
-            renderStackAt(inv.getStackInSlot(0), startX +  47, startY + 42, 1, mc);
-            renderStackAt(inv.getStackInSlot(1), startX +  70, startY + 49, 1, mc);
-            renderStackAt(inv.getStackInSlot(2), startX +  93, startY + 42, 1, mc);
-            renderStackAt(inv.getStackInSlot(3), startX +  70, startY +  8, 1, mc);
-            renderStackAt(inv.getStackInSlot(4), startX +   8, startY +  8, 1, mc);
-            return;
-        }
-
-        final int slots = inv.getSizeInventory();
-        int x = startX;
-        int y = startY;
-
-        if (maxSlots < 0)
-        {
-            maxSlots = slots;
-        }
-
-        for (int slot = startSlot, i = 0; slot < slots && i < maxSlots;)
-        {
-            for (int column = 0; column < slotsPerRow && slot < slots && i < maxSlots; ++column, ++slot, ++i)
-            {
-                ItemStack stack = inv.getStackInSlot(slot);
-
-                if (stack.isEmpty() == false)
-                {
-                    renderStackAt(stack, x, y, 1, mc);
-                }
-
-                x += 18;
-            }
-
-            x = startX;
-            y += 18;
-        }
-    }
-
-    public static void renderItemStacks(NonNullList<ItemStack> items, int startX, int startY, int slotsPerRow, int startSlot, int maxSlots, Minecraft mc)
-    {
-        final int slots = items.size();
-        int x = startX;
-        int y = startY;
-
-        if (maxSlots < 0)
-        {
-            maxSlots = slots;
-        }
-
-        for (int slot = startSlot, i = 0; slot < slots && i < maxSlots;)
-        {
-            for (int column = 0; column < slotsPerRow && slot < slots && i < maxSlots; ++column, ++slot, ++i)
-            {
-                ItemStack stack = items.get(slot);
-
-                if (stack.isEmpty() == false)
-                {
-                    renderStackAt(stack, x, y, 1, mc);
-                }
-
-                x += 18;
-            }
-
-            x = startX;
-            y += 18;
-        }
-    }
-
-    public static void renderStackAt(ItemStack stack, float x, float y, float scale, Minecraft mc)
-    {
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(x, y, 0);
-        GlStateManager.scale(scale, scale, 1);
-        GlStateManager.disableLighting();
-
-        //Gui.drawRect(0, 0, 16, 16, 0x20FFFFFF); // light background for the item
-
-        RenderHelper.enableGUIStandardItemLighting();
-
-        mc.getRenderItem().zLevel += 100;
-        mc.getRenderItem().renderItemAndEffectIntoGUI(mc.player, stack, 0, 0);
-        mc.getRenderItem().renderItemOverlayIntoGUI(mc.fontRenderer, stack, 0, 0, null);
-        mc.getRenderItem().zLevel -= 100;
-
-        //GlStateManager.disableBlend();
-        RenderHelper.disableStandardItemLighting();
-        GlStateManager.popMatrix();
-    }
-
     public static void drawCenteredString(FontRenderer fontRendererIn, String text, int x, int y, int color)
     {
         fontRendererIn.drawStringWithShadow(text, (float)(x - fontRendererIn.getStringWidth(text) / 2), (float)y, color);
@@ -539,6 +236,16 @@ public class RenderUtils
         }
 
         Gui.drawRect(x, startY + 1, x + 1, endY, color);
+    }
+
+    public static void renderSprite(Minecraft mc, int x, int y, String texture, int width, int height)
+    {
+        if (texture != null)
+        {
+            TextureAtlasSprite sprite = mc.getTextureMapBlocks().getAtlasSprite(texture);
+            GlStateManager.disableLighting();
+            mc.ingameGUI.drawTexturedModalRect(x, y, sprite, width, height);
+        }
     }
 
     public static void renderText(int x, int y, int color, List<String> lines, FontRenderer font)

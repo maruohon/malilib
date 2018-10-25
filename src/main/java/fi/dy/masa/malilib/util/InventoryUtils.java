@@ -7,6 +7,7 @@ import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemShulkerBox;
 import net.minecraft.item.ItemStack;
@@ -17,6 +18,8 @@ import net.minecraft.util.NonNullList;
 
 public class InventoryUtils
 {
+    private static final NonNullList<ItemStack> EMPTY_LIST = NonNullList.create();
+
     /**
      * Check whether the stacks are identical otherwise, but ignoring the stack size
      * @param stack1
@@ -194,9 +197,9 @@ public class InventoryUtils
      * @param stackShulkerBox
      * @return
      */
-    public static NonNullList<ItemStack> getShulkerBoxItems(ItemStack stackShulkerBox)
+    public static NonNullList<ItemStack> getStoredItems(ItemStack stackIn)
     {
-        NBTTagCompound nbt = stackShulkerBox.getTagCompound();
+        NBTTagCompound nbt = stackIn.getTagCompound();
 
         if (nbt != null && nbt.hasKey("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
         {
@@ -233,10 +236,9 @@ public class InventoryUtils
      * @param slotCount the maximum number of slots, and thus also the size of the list to create
      * @return
      */
-    public static NonNullList<ItemStack> getShulkerBoxItems(ItemStack stackShulkerBox, int slotCount)
+    public static NonNullList<ItemStack> getStoredItems(ItemStack stackIn, int slotCount)
     {
-        NonNullList<ItemStack> items = NonNullList.withSize(slotCount, ItemStack.EMPTY);
-        NBTTagCompound nbt = stackShulkerBox.getTagCompound();
+        NBTTagCompound nbt = stackIn.getTagCompound();
 
         if (nbt != null && nbt.hasKey("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
         {
@@ -246,6 +248,25 @@ public class InventoryUtils
             {
                 NBTTagList tagList = tagBlockEntity.getTagList("Items", Constants.NBT.TAG_COMPOUND);
                 final int count = tagList.tagCount();
+                int maxSlot = -1;
+
+                if (slotCount <= 0)
+                {
+                    for (int i = 0; i < count; ++i)
+                    {
+                        NBTTagCompound tag = tagList.getCompoundTagAt(i);
+                        int slot = tag.getByte("Slot");
+
+                        if (slot > maxSlot)
+                        {
+                            maxSlot = slot;
+                        }
+                    }
+
+                    slotCount = maxSlot + 1;
+                }
+
+                NonNullList<ItemStack> items = NonNullList.withSize(slotCount, ItemStack.EMPTY);
 
                 for (int i = 0; i < count; ++i)
                 {
@@ -263,7 +284,7 @@ public class InventoryUtils
             }
         }
 
-        return items;
+        return EMPTY_LIST;
     }
 
     /**
@@ -272,10 +293,10 @@ public class InventoryUtils
      * @param stackShulkerBox
      * @return
      */
-    public static Object2IntOpenHashMap<ItemType> getShulkerBoxItemCounts(ItemStack stackShulkerBox)
+    public static Object2IntOpenHashMap<ItemType> getStoredItemCounts(ItemStack stackShulkerBox)
     {
         Object2IntOpenHashMap<ItemType> map = new Object2IntOpenHashMap<>();
-        NonNullList<ItemStack> items = getShulkerBoxItems(stackShulkerBox);
+        NonNullList<ItemStack> items = getStoredItems(stackShulkerBox);
 
         for (int slot = 0; slot < items.size(); ++slot)
         {
@@ -312,7 +333,7 @@ public class InventoryUtils
 
                 if (stack.getItem() instanceof ItemShulkerBox && shulkerBoxHasItems(stack))
                 {
-                    Object2IntOpenHashMap<ItemType> boxCounts = getShulkerBoxItemCounts(stack);
+                    Object2IntOpenHashMap<ItemType> boxCounts = getStoredItemCounts(stack);
 
                     for (ItemType type : boxCounts.keySet())
                     {
@@ -323,5 +344,22 @@ public class InventoryUtils
         }
 
         return map;
+    }
+
+    /**
+     * Returns the given list of items wrapped as an InventoryBasic
+     * @param items
+     * @return
+     */
+    public static IInventory getAsInventory(NonNullList<ItemStack> items)
+    {
+        InventoryBasic inv = new InventoryBasic("", false, items.size());
+
+        for (int slot = 0; slot < items.size(); ++slot)
+        {
+            inv.setInventorySlotContents(slot, items.get(slot));
+        }
+
+        return inv;
     }
 }

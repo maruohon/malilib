@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.gui.widgets;
 
-import fi.dy.masa.malilib.gui.RenderUtils;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
+import fi.dy.masa.malilib.render.RenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 
