@@ -274,19 +274,11 @@ public class KeybindMulti implements IKeybind
             }
 
             int keyCode = this.keyCodes.get(i).intValue();
+            String name = getStorageStringForKeyCode(keyCode);
 
-            if (keyCode > 0)
+            if (name != null)
             {
-                sb.append(Keyboard.getKeyName(keyCode));
-            }
-            else
-            {
-                keyCode += 100;
-
-                if (keyCode >= 0 && keyCode < Mouse.getButtonCount())
-                {
-                    sb.append(Mouse.getButtonName(keyCode));
-                }
+                sb.append(name);
             }
         }
 
@@ -424,27 +416,13 @@ public class KeybindMulti implements IKeybind
                     sb.append(" + ");
                 }
 
-                String name;
+                String name = getStorageStringForKeyCode(key);
 
-                if (key > 0)
+                if (name != null)
                 {
-                    name = Keyboard.getKeyName(key);
-                }
-                else
-                {
-                    key += 100;
-
-                    if (key >= 0)
-                    {
-                        name = Mouse.getButtonName(key);
-                    }
-                    else
-                    {
-                        name = "<unknown>";
-                    }
+                    sb.append(String.format("%s (%d)", name, key));
                 }
 
-                sb.append(String.format("%s (%d)", name, key));
                 i++;
             }
 
@@ -452,5 +430,25 @@ public class KeybindMulti implements IKeybind
         }
 
         return "<none>";
+    }
+
+    @Nullable
+    public static String getStorageStringForKeyCode(int keyCode)
+    {
+        if (keyCode > 0)
+        {
+            return Keyboard.getKeyName(keyCode);
+        }
+        else if (keyCode < 0)
+        {
+            keyCode += 100;
+
+            if (keyCode >= 0 && keyCode < Mouse.getButtonCount())
+            {
+                return Mouse.getButtonName(keyCode);
+            }
+        }
+
+        return null;
     }
 }
