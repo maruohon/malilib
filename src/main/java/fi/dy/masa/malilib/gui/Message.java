@@ -12,7 +12,7 @@ public class Message
     private final long created;
     private final int displayTime;
     private final int maxLineWidth;
-    private final List<String> message = new ArrayList<>();
+    private final List<String> messageLines = new ArrayList<>();
     private final FontRenderer fontRenderer;
 
     public Message(MessageType type, int displayTimeMs, int maxLineWidth, String message, Object... args)
@@ -33,19 +33,29 @@ public class Message
 
     public int getMessageHeight()
     {
-        return this.message.size() * (this.fontRenderer.FONT_HEIGHT + 1) - 1 + 5;
+        return this.messageLines.size() * (this.fontRenderer.FONT_HEIGHT + 1) - 1 + 5;
     }
 
     public void setMessage(String message)
     {
-        this.message.clear();
+        this.messageLines.clear();
 
-        String[] arr = message.split(" ");
-        StringBuilder sb = new StringBuilder(this.maxLineWidth + 32);
+        String[] lines = message.split("\\\\n");
+
+        for (String line : lines)
+        {
+            this.splitAndAddLine(line);
+        }
+    }
+
+    protected void splitAndAddLine(String line)
+    {
+        String[] parts = line.split(" ");
+        StringBuilder sb = new StringBuilder(256);
         final int spaceWidth = this.fontRenderer.getStringWidth(" ");
         int lineWidth = 0;
 
-        for (String str : arr)
+        for (String str : parts)
         {
             int width = this.fontRenderer.getStringWidth(str);
 
@@ -53,8 +63,8 @@ public class Message
             {
                 if (lineWidth > 0)
                 {
-                    this.message.add(sb.toString());
-                    sb = new StringBuilder(this.maxLineWidth + 32);
+                    this.messageLines.add(sb.toString());
+                    sb = new StringBuilder(256);
                     lineWidth = 0;
                 }
 
@@ -70,7 +80,7 @@ public class Message
 
                         if (lineWidth > this.maxLineWidth)
                         {
-                            this.message.add(sb.toString());
+                            this.messageLines.add(sb.toString());
                             sb = new StringBuilder(this.maxLineWidth + 32);
                             lineWidth = 0;
                         }
@@ -78,7 +88,7 @@ public class Message
                         sb.append(c);
                     }
 
-                    this.message.add(sb.toString());
+                    this.messageLines.add(sb.toString());
                     sb = new StringBuilder(this.maxLineWidth + 32);
                     lineWidth = 0;
                 }
@@ -96,7 +106,7 @@ public class Message
             }
         }
 
-        this.message.add(sb.toString());
+        this.messageLines.add(sb.toString());
     }
 
     /**
@@ -107,7 +117,7 @@ public class Message
     {
         String format = this.getFormatCode();
 
-        for (String text : this.message)
+        for (String text : this.messageLines)
         {
             this.fontRenderer.drawString(format + text + GuiBase.TXT_RST, x, y, textColor);
             y += this.fontRenderer.FONT_HEIGHT + 1;
