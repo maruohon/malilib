@@ -16,7 +16,8 @@ import net.minecraft.client.Minecraft;
 
 public class KeybindMulti implements IKeybind
 {
-    public static final ConfigBoolean KEYBIND_DEBUG = new ConfigBoolean("keybindDebugging", false, "When enabled, key presses and held keys are printed to the action bar and console");
+    public static final ConfigBoolean KEYBIND_DEBUG = new ConfigBoolean("keybindDebugging", false, "When enabled, key presses and held keys are\nprinted to the game console (and the action bar, if enabled)");
+    public static final ConfigBoolean KEYBIND_DEBUG_ACTIONBAR = new ConfigBoolean("keybindDebuggingIngame", true, "If enabled, then the messages from 'keybindDebugging'\nare also printed to the in-game action bar");
 
     private static List<Integer> pressedKeys = new ArrayList<>();
     private static int triggeredCount;
@@ -79,6 +80,9 @@ public class KeybindMulti implements IKeybind
         return this.pressed;
     }
 
+    /**
+     * NOT PUBLIC API - DO NOT CALL FROM MOD CODE!!!
+     */
     @Override
     public boolean updateIsPressed()
     {
@@ -117,8 +121,8 @@ public class KeybindMulti implements IKeybind
                          (this.keyCodes.contains(keyCodeObj) == false && allowExtraKeys == false))
                 {
                     /*
-                    System.out.printf("km fail: key: %s, ae: %s, aoo: %s, cont: %s, keys: %s, pressed: %s\n",
-                            keyCodeObj, allowExtraKeys, allowOutOfOrder, this.keyCodes.contains(keyCodeObj), this.keyCodes, pressedKeys);
+                    System.out.printf("km fail: key: %s, ae: %s, aoo: %s, cont: %s, keys: %s, pressed: %s, triggeredCount: %d\n",
+                            keyCodeObj, allowExtraKeys, allowOutOfOrder, this.keyCodes.contains(keyCodeObj), this.keyCodes, pressedKeys, triggeredCount);
                     */
                     this.pressed = false;
                     break;
@@ -137,6 +141,7 @@ public class KeybindMulti implements IKeybind
             (activateOn == KeyAction.BOTH || this.pressed == (activateOn == KeyAction.PRESS)))
         {
             boolean cancel = this.triggerKeyAction(pressedLast) && this.settings.shouldCancel();
+            //System.out.printf("triggered, cancel: %s, triggeredCount: %d\n", cancel, triggeredCount);
 
             if (cancel)
             {
@@ -340,9 +345,11 @@ public class KeybindMulti implements IKeybind
         return keyCode >= 0 && keyCode < Mouse.getButtonCount() && Mouse.isButtonDown(keyCode);
     }
 
+    /**
+     * NOT PUBLIC API - DO NOT CALL FROM MOD CODE!!!
+     */
     public static void onKeyInputPre(int keyCode, boolean state)
     {
-        reCheckPressedKeys();
         Integer valObj = Integer.valueOf(keyCode);
 
         if (state)
@@ -368,6 +375,9 @@ public class KeybindMulti implements IKeybind
         }
     }
 
+    /**
+     * NOT PUBLIC API - DO NOT CALL FROM MOD CODE!!!
+     */
     public static void onKeyInputPost()
     {
         // Clear the triggered count after all keys have been released
@@ -377,7 +387,10 @@ public class KeybindMulti implements IKeybind
         }
     }
 
-    private static void reCheckPressedKeys()
+    /**
+     * NOT PUBLIC API - DO NOT CALL FROM MOD CODE!!!
+     */
+    public static void reCheckPressedKeys()
     {
         Iterator<Integer> iter = pressedKeys.iterator();
 
@@ -395,11 +408,16 @@ public class KeybindMulti implements IKeybind
     private static void printKeybindDebugMessage(int eventKey, boolean eventKeyState)
     {
         String keyName = eventKey > 0 ? Keyboard.getKeyName(eventKey) : Mouse.getButtonName(eventKey + 100);
-        String type = eventKeyState ? "pressed" : "released";
-        String held = KeybindMulti.getActiveKeysString();
-        String msg = String.format("%s %s, held keys: %s", type, keyName, held);
-        StringUtils.printActionbarMessage(msg);
+        String type = eventKeyState ? "PRESS" : "RELEASE";
+        String held = getActiveKeysString();
+        String msg = String.format("%s %s (%d), held keys: %s", type, keyName, eventKey, held);
+
         LiteModMaLiLib.logger.info(msg);
+
+        if (KEYBIND_DEBUG_ACTIONBAR.getBooleanValue())
+        {
+            StringUtils.printActionbarMessage(msg);
+        }
     }
 
     public static String getActiveKeysString()
