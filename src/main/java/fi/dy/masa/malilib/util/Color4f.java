@@ -55,4 +55,9 @@ public class Color4f
 
         return new Color4f(r, g, b, alpha);
     }
+
+    public static Color4f fromColor(Color4f color, float alpha)
+    {
+        return new Color4f(color.r, color.g, color.b, alpha);
+    }
 }
