@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import org.lwjgl.opengl.GL11;
 import fi.dy.masa.malilib.config.HudAlignment;
+import fi.dy.masa.malilib.util.Color4f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
@@ -17,6 +18,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 
 public class RenderUtils
 {
@@ -366,6 +368,164 @@ public class RenderUtils
         }
 
         return (int) Math.ceil(posY);
+    }
+
+    /**
+     * Assumes a BufferBuilder in GL_QUADS mode has been initialized
+     */
+    public static void drawBlockBoundingBoxSidesBatched(BlockPos pos, Color4f color, double expand, BufferBuilder buffer)
+    {
+        double minX = pos.getX() - expand;
+        double minY = pos.getY() - expand;
+        double minZ = pos.getZ() - expand;
+        double maxX = pos.getX() + expand + 1;
+        double maxY = pos.getY() + expand + 1;
+        double maxZ = pos.getZ() + expand + 1;
+
+        drawBoundingBoxSidesBatchedQuads(minX, minY, minZ, maxX, maxY, maxZ, color, buffer);
+    }
+
+    /**
+     * Assumes a BufferBuilder in GL_LINES mode has been initialized
+     */
+    public static void drawBlockBoundingBoxOutlinesBatched(BlockPos pos, Color4f color, double expand, BufferBuilder buffer)
+    {
+        double minX = pos.getX() - expand;
+        double minY = pos.getY() - expand;
+        double minZ = pos.getZ() - expand;
+        double maxX = pos.getX() + expand + 1;
+        double maxY = pos.getY() + expand + 1;
+        double maxZ = pos.getZ() + expand + 1;
+
+        drawBoundingBoxOutlinesBatchedLines(minX, minY, minZ, maxX, maxY, maxZ, color, buffer);
+    }
+
+    /**
+     * Assumes a BufferBuilder in GL_QUADS mode has been initialized
+     */
+    public static void drawBoundingBoxSidesBatchedQuads(double minX, double minY, double minZ, double maxX, double maxY, double maxZ,
+            Color4f color, BufferBuilder buffer)
+    {
+        // West side
+        buffer.pos(minX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.pos(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.pos(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.pos(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+
+        // East side
+        buffer.pos(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.pos(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.pos(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.pos(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+
+        // North side
+        buffer.pos(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.pos(minX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.pos(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.pos(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+
+        // South side
+        buffer.pos(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.pos(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.pos(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.pos(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+
+        // Bottom side
+        buffer.pos(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.pos(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.pos(minX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.pos(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+
+        // Top side
+        buffer.pos(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.pos(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.pos(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.pos(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+    }
+
+    /**
+     * Assumes a BufferBuilder in GL_LINES mode has been initialized
+     */
+    public static void drawBoundingBoxOutlinesBatchedLines(double minX, double minY, double minZ, double maxX, double maxY, double maxZ,
+            Color4f color, BufferBuilder buffer)
+    {
+        // West side
+        buffer.pos(minX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.pos(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+
+        buffer.pos(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.pos(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+
+        buffer.pos(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.pos(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+
+        buffer.pos(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.pos(minX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+
+        // East side
+        buffer.pos(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.pos(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+
+        buffer.pos(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.pos(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+
+        buffer.pos(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.pos(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+
+        buffer.pos(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.pos(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+
+        // North side
+        buffer.pos(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.pos(minX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+
+        buffer.pos(minX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.pos(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+
+        buffer.pos(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.pos(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+
+        buffer.pos(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.pos(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+
+        // South side
+        buffer.pos(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.pos(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+
+        buffer.pos(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.pos(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+
+        buffer.pos(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.pos(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+
+        buffer.pos(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.pos(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+
+        // Bottom side
+        buffer.pos(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.pos(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+
+        buffer.pos(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.pos(minX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+
+        buffer.pos(minX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.pos(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+
+        buffer.pos(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.pos(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+
+        // Top side
+        buffer.pos(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.pos(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+
+        buffer.pos(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.pos(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+
+        buffer.pos(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.pos(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+
+        buffer.pos(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.pos(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
     }
 
     /*
