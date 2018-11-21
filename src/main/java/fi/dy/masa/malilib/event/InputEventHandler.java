@@ -177,7 +177,6 @@ public class InputEventHandler implements IKeybindManager
             }
         }
 
-        KeybindMulti.onKeyInputPost();
         boolean overrideCancel = this.cancelKeyInput && isGui == false;
 
         // This hacky state indicates that a mouse event was cancelled in the GUI mouse handler,
@@ -209,8 +208,6 @@ public class InputEventHandler implements IKeybindManager
                 KeybindMulti.onKeyInputPre(eventButton - 100, eventButtonState);
 
                 cancel = this.checkKeyBindsForChanges(eventButton - 100);
-
-                KeybindMulti.onKeyInputPost();
             }
 
             if (this.mouseHandlers.isEmpty() == false)

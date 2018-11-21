@@ -378,18 +378,6 @@ public class KeybindMulti implements IKeybind
     /**
      * NOT PUBLIC API - DO NOT CALL FROM MOD CODE!!!
      */
-    public static void onKeyInputPost()
-    {
-        // Clear the triggered count after all keys have been released
-        if (pressedKeys.size() == 0)
-        {
-            triggeredCount = 0;
-        }
-    }
-
-    /**
-     * NOT PUBLIC API - DO NOT CALL FROM MOD CODE!!!
-     */
     public static void reCheckPressedKeys()
     {
         Iterator<Integer> iter = pressedKeys.iterator();
@@ -402,6 +390,12 @@ public class KeybindMulti implements IKeybind
             {
                 iter.remove();
             }
+        }
+
+        // Clear the triggered count after all keys have been released
+        if (pressedKeys.size() == 0)
+        {
+            triggeredCount = 0;
         }
     }
 
