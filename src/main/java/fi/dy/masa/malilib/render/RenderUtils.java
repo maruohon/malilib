@@ -32,7 +32,7 @@ public class RenderUtils
         Gui.drawRect(x, y, x + width, y + height, colorBg);
 
         // Draw the border
-        drawOutline(x, y, width, height, colorBorder);
+        drawOutline(x - 1, y - 1, width + 2, height + 2, colorBorder);
     }
 
     public static void drawOutline(int x, int y, int width, int height, int colorBorder)
@@ -40,10 +40,10 @@ public class RenderUtils
         int right = x + width;
         int bottom = y + height;
 
-        Gui.drawRect(x - 1,  y - 1,         x, bottom + 1, colorBorder); // left edge
-        Gui.drawRect(right,  y - 1, right + 1, bottom + 1, colorBorder); // right edge
-        Gui.drawRect(    x,  y - 1,     right,          y, colorBorder); // top edge
-        Gui.drawRect(    x, bottom,     right, bottom + 1, colorBorder); // bottom edge
+        Gui.drawRect(x        ,          y, x + 1    , bottom, colorBorder); // left edge
+        Gui.drawRect(right - 1,          y, right    , bottom, colorBorder); // right edge
+        Gui.drawRect(x + 1    ,          y, right - 1,  y + 1, colorBorder); // top edge
+        Gui.drawRect(x + 1    , bottom - 1, right - 1, bottom, colorBorder); // bottom edge
     }
 
     public static void drawOutline(int x, int y, int width, int height, int borderWidth, int colorBorder)
@@ -51,10 +51,10 @@ public class RenderUtils
         int right = x + width;
         int bottom = y + height;
 
-        Gui.drawRect(x - borderWidth, y - borderWidth, x                  , bottom + borderWidth, colorBorder); // left edge
-        Gui.drawRect(right          , y - borderWidth, right + borderWidth, bottom + borderWidth, colorBorder); // right edge
-        Gui.drawRect(    x          , y - borderWidth, right              , y                   , colorBorder); // top edge
-        Gui.drawRect(    x          , bottom         , right              , bottom + borderWidth, colorBorder); // bottom edge
+        Gui.drawRect(x                  ,                    y, x + borderWidth    , bottom          , colorBorder); // left edge
+        Gui.drawRect(right - borderWidth,                    y, right              , bottom          , colorBorder); // right edge
+        Gui.drawRect(x + borderWidth    ,                    y, right - borderWidth,  y + borderWidth, colorBorder); // top edge
+        Gui.drawRect(x + borderWidth    , bottom - borderWidth, right - borderWidth, bottom          , colorBorder); // bottom edge
     }
 
     public static void drawTexturedRect(int x, int y, int u, int v, int width, int height)
