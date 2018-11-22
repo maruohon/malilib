@@ -2,10 +2,10 @@ package fi.dy.masa.malilib.config.options;
 
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.ConfigType;
-import fi.dy.masa.malilib.config.IConfigValueNotifyable;
+import fi.dy.masa.malilib.config.IConfigValueNotifiable;
 import fi.dy.masa.malilib.interfaces.IValueChangeCallback;
 
-public abstract class ConfigBase implements IConfigValueNotifyable
+public abstract class ConfigBase implements IConfigValueNotifiable
 {
     private final ConfigType type;
     private final String name;

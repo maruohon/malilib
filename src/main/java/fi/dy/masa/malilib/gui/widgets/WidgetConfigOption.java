@@ -7,8 +7,8 @@ import org.lwjgl.input.Keyboard;
 import fi.dy.masa.malilib.config.ConfigType;
 import fi.dy.masa.malilib.config.IConfigBoolean;
 import fi.dy.masa.malilib.config.IConfigOptionList;
+import fi.dy.masa.malilib.config.IConfigResettable;
 import fi.dy.masa.malilib.config.IConfigValue;
-import fi.dy.masa.malilib.config.IStringRepresentable;
 import fi.dy.masa.malilib.config.gui.ConfigOptionChangeListenerButton;
 import fi.dy.masa.malilib.config.gui.ConfigOptionChangeListenerKeybind;
 import fi.dy.masa.malilib.config.gui.ConfigOptionChangeListenerTextField;
@@ -227,7 +227,7 @@ public class WidgetConfigOption extends WidgetBase
         this.parent.addTextField(wrapper);
     }
 
-    protected void addConfigButtonEntry(int id, int xReset, int yReset, IStringRepresentable config, ButtonBase optionButton)
+    protected void addConfigButtonEntry(int id, int xReset, int yReset, IConfigValue config, ButtonBase optionButton)
     {
         ButtonGeneric resetButton = this.createResetButton(id, xReset, yReset, config);
 
@@ -238,7 +238,7 @@ public class WidgetConfigOption extends WidgetBase
         this.addButton(resetButton, listenerReset);
     }
 
-    protected void addConfigTextFieldEntry(int id, int x, int y, int resetX, int configWidth, int configHeight, IStringRepresentable config)
+    protected void addConfigTextFieldEntry(int id, int x, int y, int resetX, int configWidth, int configHeight, IConfigValue config)
     {
         GuiTextField field = this.createTextField(id++, x, y + 1, configWidth - 4, configHeight - 3);
         field.setMaxStringLength(this.maxTextfieldTextLength);
@@ -261,7 +261,7 @@ public class WidgetConfigOption extends WidgetBase
         this.addButton(button, listener);
     }
 
-    protected ButtonGeneric createResetButton(int id, int x, int y, IStringRepresentable config)
+    protected ButtonGeneric createResetButton(int id, int x, int y, IConfigResettable config)
     {
         String labelReset = I18n.format("malilib.gui.button.reset.caps");
         int w = this.mc.fontRenderer.getStringWidth(labelReset) + 10;

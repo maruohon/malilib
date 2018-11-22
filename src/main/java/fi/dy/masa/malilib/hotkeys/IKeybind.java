@@ -2,9 +2,10 @@ package fi.dy.masa.malilib.hotkeys;
 
 import java.util.Collection;
 import javax.annotation.Nullable;
+import fi.dy.masa.malilib.config.IConfigResettable;
 import fi.dy.masa.malilib.config.IStringRepresentable;
 
-public interface IKeybind extends IStringRepresentable
+public interface IKeybind extends IConfigResettable, IStringRepresentable
 {
     boolean isValid();
 

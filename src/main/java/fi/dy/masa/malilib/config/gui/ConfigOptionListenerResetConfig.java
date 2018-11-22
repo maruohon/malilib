@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.config.gui;
 
 import javax.annotation.Nullable;
+import fi.dy.masa.malilib.config.IConfigValue;
 import fi.dy.masa.malilib.config.IStringRepresentable;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
@@ -11,12 +12,12 @@ import net.minecraft.client.gui.GuiTextField;
 public class ConfigOptionListenerResetConfig implements IButtonActionListener<ButtonGeneric>
 {
     private final ConfigResetterBase reset;
-    private final IStringRepresentable config;
+    private final IConfigValue config;
     private final ButtonGeneric buttonReset;
     @Nullable
     private final ButtonPressDirtyListenerSimple<ButtonBase> dirtyListener;
 
-    public ConfigOptionListenerResetConfig(IStringRepresentable config, ConfigResetterBase reset,
+    public ConfigOptionListenerResetConfig(IConfigValue config, ConfigResetterBase reset,
             ButtonGeneric buttonReset, @Nullable ButtonPressDirtyListenerSimple<ButtonBase> dirtyListener)
     {
         this.config = config;
