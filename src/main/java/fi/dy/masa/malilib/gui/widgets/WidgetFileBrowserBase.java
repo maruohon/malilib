@@ -171,7 +171,7 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
     protected abstract void addFileEntriesToList(File dir, List<DirectoryEntry> list);
 
     @Override
-    protected WidgetDirectoryEntry createListEntryWidget(int x, int y, boolean isOdd, DirectoryEntry entry)
+    protected WidgetDirectoryEntry createListEntryWidget(int x, int y, int listIndex, boolean isOdd, DirectoryEntry entry)
     {
         return new WidgetDirectoryEntry(x, y, this.browserEntryWidth, this.getBrowserEntryHeightFor(entry),
                 this.zLevel, isOdd, entry, this.mc, this, this.iconProvider);

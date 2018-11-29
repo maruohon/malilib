@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.config.ConfigManager;
-import fi.dy.masa.malilib.config.IConfigValue;
+import fi.dy.masa.malilib.config.IConfigBase;
 import fi.dy.masa.malilib.config.gui.ButtonPressDirtyListenerSimple;
 import fi.dy.masa.malilib.config.gui.ConfigOptionChangeListenerKeybind;
 import fi.dy.masa.malilib.event.InputEventHandler;
@@ -89,6 +89,7 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
         this.dialogHandler = handler;
     }
 
+    @Override
     public String getModId()
     {
         return this.modId;
@@ -228,10 +229,10 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
     public static class ConfigOptionWrapper
     {
         private final Type type;
-        @Nullable private final IConfigValue config;
+        @Nullable private final IConfigBase config;
         @Nullable private final String label;
 
-        public ConfigOptionWrapper(IConfigValue config)
+        public ConfigOptionWrapper(IConfigBase config)
         {
             this.type = Type.CONFIG;
             this.config = config;
@@ -251,7 +252,7 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
         }
 
         @Nullable
-        public IConfigValue getConfig()
+        public IConfigBase getConfig()
         {
             return this.config;
         }
@@ -262,11 +263,11 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
             return this.label;
         }
 
-        public static List<ConfigOptionWrapper> createFor(Collection<? extends IConfigValue> configs)
+        public static List<ConfigOptionWrapper> createFor(Collection<? extends IConfigBase> configs)
         {
             ImmutableList.Builder<ConfigOptionWrapper> builder = ImmutableList.builder();
 
-            for (IConfigValue config : configs)
+            for (IConfigBase config : configs)
             {
                 builder.add(new ConfigOptionWrapper(config));
             }

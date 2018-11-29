@@ -1,14 +1,14 @@
 package fi.dy.masa.malilib.config.gui;
 
 import java.util.List;
-import fi.dy.masa.malilib.config.IConfigValue;
+import fi.dy.masa.malilib.config.IConfigBase;
 import fi.dy.masa.malilib.gui.GuiConfigsBase;
 
 public class GuiModConfigs extends GuiConfigsBase
 {
     protected final List<ConfigOptionWrapper> configs;
 
-    public GuiModConfigs(String modId, String title, List<? extends IConfigValue> configs)
+    public GuiModConfigs(String modId, String title, List<? extends IConfigBase> configs)
     {
         this(modId, title, ConfigOptionWrapper.createFor(configs), false);
     }

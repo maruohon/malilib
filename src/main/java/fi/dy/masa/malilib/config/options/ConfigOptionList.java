@@ -6,8 +6,9 @@ import fi.dy.masa.malilib.LiteModMaLiLib;
 import fi.dy.masa.malilib.config.ConfigType;
 import fi.dy.masa.malilib.config.IConfigOptionList;
 import fi.dy.masa.malilib.config.IConfigOptionListEntry;
+import fi.dy.masa.malilib.config.IStringRepresentable;
 
-public class ConfigOptionList extends ConfigBase implements IConfigOptionList
+public class ConfigOptionList extends ConfigBase implements IConfigOptionList, IStringRepresentable
 {
     private final String prettyName;
     private final IConfigOptionListEntry defaultValue;

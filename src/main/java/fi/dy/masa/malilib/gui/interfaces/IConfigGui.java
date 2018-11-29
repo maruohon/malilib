@@ -9,6 +9,12 @@ import fi.dy.masa.malilib.gui.button.ButtonBase;
 public interface IConfigGui
 {
     /**
+     * Returns the Mod ID of the mod to which the configs on this GUI belong to
+     * @return
+     */
+    String getModId();
+
+    /**
      * When called, the implementer should clear all the stored config options
      * and any associated change listeners etc.
      */

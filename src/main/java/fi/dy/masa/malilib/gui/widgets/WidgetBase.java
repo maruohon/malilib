@@ -71,7 +71,36 @@ public abstract class WidgetBase
 
     protected boolean onMouseClickedImpl(int mouseX, int mouseY, int mouseButton)
     {
-        return true;
+        return false;
+    }
+
+    public final boolean onKeyTyped(char typedChar, int keyCode)
+    {
+        boolean handled = false;
+
+        if (this.subWidgets.isEmpty() == false)
+        {
+            for (WidgetBase widget : this.subWidgets)
+            {
+                if (widget.onKeyTyped(typedChar, keyCode))
+                {
+                    // Don't call super if the key press got handled
+                    handled = true;
+                }
+            }
+        }
+
+        if (handled == false)
+        {
+            handled = this.onKeyTypedImpl(typedChar, keyCode);
+        }
+
+        return handled;
+    }
+
+    protected boolean onKeyTypedImpl(char typedChar, int keyCode)
+    {
+        return false;
     }
 
     /**

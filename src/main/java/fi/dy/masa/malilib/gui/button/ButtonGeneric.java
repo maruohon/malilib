@@ -90,11 +90,6 @@ public class ButtonGeneric extends ButtonBase
     }
 
     @Override
-    public void onMouseButtonClicked(int mouseButton)
-    {
-    }
-
-    @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks)
     {
         if (this.visible)

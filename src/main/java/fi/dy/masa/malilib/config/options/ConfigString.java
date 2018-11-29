@@ -4,8 +4,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import fi.dy.masa.malilib.LiteModMaLiLib;
 import fi.dy.masa.malilib.config.ConfigType;
+import fi.dy.masa.malilib.config.IConfigValue;
 
-public class ConfigString extends ConfigBase
+public class ConfigString extends ConfigBase implements IConfigValue
 {
     private final String defaultValue;
     private String value;

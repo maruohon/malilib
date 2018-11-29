@@ -6,9 +6,9 @@ import net.minecraft.client.gui.GuiTextField;
 
 public class ConfigOptionChangeListenerTextField
 {
-    private final IStringRepresentable config;
-    private final GuiTextField textField;
-    private final ButtonBase buttonReset;
+    protected final IStringRepresentable config;
+    protected final GuiTextField textField;
+    protected final ButtonBase buttonReset;
 
     public ConfigOptionChangeListenerTextField(IStringRepresentable config, GuiTextField textField, ButtonBase buttonReset)
     {

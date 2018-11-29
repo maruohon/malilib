@@ -1,14 +1,14 @@
 package fi.dy.masa.malilib.gui.widgets;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.Nullable;
-import org.lwjgl.input.Keyboard;
 import fi.dy.masa.malilib.config.ConfigType;
+import fi.dy.masa.malilib.config.IConfigBase;
 import fi.dy.masa.malilib.config.IConfigBoolean;
 import fi.dy.masa.malilib.config.IConfigOptionList;
 import fi.dy.masa.malilib.config.IConfigResettable;
+import fi.dy.masa.malilib.config.IConfigStringList;
 import fi.dy.masa.malilib.config.IConfigValue;
+import fi.dy.masa.malilib.config.IStringRepresentable;
 import fi.dy.masa.malilib.config.gui.ConfigOptionChangeListenerButton;
 import fi.dy.masa.malilib.config.gui.ConfigOptionChangeListenerKeybind;
 import fi.dy.masa.malilib.config.gui.ConfigOptionChangeListenerTextField;
@@ -18,66 +18,59 @@ import fi.dy.masa.malilib.config.gui.ConfigOptionListenerResetConfig.ConfigReset
 import fi.dy.masa.malilib.config.options.ConfigColor;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.GuiConfigsBase.ConfigOptionWrapper;
-import fi.dy.masa.malilib.gui.GuiTextFieldWrapper;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.ConfigButtonBoolean;
 import fi.dy.masa.malilib.gui.button.ConfigButtonKeybind;
 import fi.dy.masa.malilib.gui.button.ConfigButtonOptionList;
-import fi.dy.masa.malilib.gui.button.IButtonActionListener;
+import fi.dy.masa.malilib.gui.button.ConfigButtonStringList;
 import fi.dy.masa.malilib.gui.interfaces.IConfigInfoProvider;
 import fi.dy.masa.malilib.gui.interfaces.IKeybindConfigGui;
-import fi.dy.masa.malilib.gui.wrappers.ButtonWrapper;
 import fi.dy.masa.malilib.hotkeys.IHotkey;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
 import fi.dy.masa.malilib.hotkeys.KeybindSettings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.resources.I18n;
 
-public class WidgetConfigOption extends WidgetBase
+public class WidgetConfigOption extends WidgetConfigOptionBase
 {
-    protected final List<WidgetBase> widgets = new ArrayList<>();
-    protected final List<ButtonWrapper<? extends ButtonBase>> buttons = new ArrayList<>();
     protected final ConfigOptionWrapper wrapper;
-    protected final Minecraft mc;
     protected final IKeybindConfigGui host;
-    protected final WidgetListConfigOptions parent;
-    protected final String initialValue;
-    @Nullable
-    protected final KeybindSettings initialKeybindSettings;
-    protected GuiTextFieldWrapper textField = null;
-    /**
-     * The last applied value for any textfield-based configs.
-     * Button based (boolean, option-list) values get applied immediately upon clicking the button.
-     */
-    protected String lastAppliedValue;
-    protected int maxTextfieldTextLength = 256;
+    @Nullable protected final KeybindSettings initialKeybindSettings;
     protected int colorDisplayPosX;
 
     public WidgetConfigOption(int x, int y, int width, int height, float zLevel, int labelWidth, int configWidth,
-            ConfigOptionWrapper wrapper, IKeybindConfigGui host, Minecraft mc, WidgetListConfigOptions parent)
+            ConfigOptionWrapper wrapper, IKeybindConfigGui host, Minecraft mc, WidgetListConfigOptionsBase<?, ?> parent)
     {
-        super(x, y, width, height, zLevel);
+        super(x, y, width, height, zLevel, mc, parent);
 
         this.host = host;
-        this.mc = mc;
-        this.parent = parent;
         this.wrapper = wrapper;
 
         if (wrapper.getType() == ConfigOptionWrapper.Type.CONFIG)
         {
-            IConfigValue config = wrapper.getConfig();
-            this.initialValue = config.getStringValue();
-            this.lastAppliedValue = config.getStringValue();
-            this.initialKeybindSettings = config.getType() == ConfigType.HOTKEY ? ((IHotkey) config).getKeybind().getSettings() : null;
+            IConfigBase config = wrapper.getConfig();
+
+            if (wrapper.getConfig() instanceof IStringRepresentable)
+            {
+                IStringRepresentable configStr = (IStringRepresentable) config;
+                this.initialStringValue = configStr.getStringValue();
+                this.lastAppliedValue = configStr.getStringValue();
+                this.initialKeybindSettings = config.getType() == ConfigType.HOTKEY ? ((IHotkey) config).getKeybind().getSettings() : null;
+            }
+            else
+            {
+                this.initialStringValue = null;
+                this.lastAppliedValue = null;
+                this.initialKeybindSettings = null;
+            }
 
             this.addConfigOption(x, y, zLevel, labelWidth, configWidth, config);
         }
         else
         {
-            this.initialValue = null;
+            this.initialStringValue = null;
             this.lastAppliedValue = null;
             this.initialKeybindSettings = null;
 
@@ -85,7 +78,7 @@ public class WidgetConfigOption extends WidgetBase
         }
     }
 
-    protected void addConfigOption(int x, int y, float zLevel, int labelWidth, int configWidth, IConfigValue config)
+    protected void addConfigOption(int x, int y, float zLevel, int labelWidth, int configWidth, IConfigBase config)
     {
         ConfigType type = config.getType();
 
@@ -115,17 +108,22 @@ public class WidgetConfigOption extends WidgetBase
 
         x += labelWidth + 10;
 
-        if (type == ConfigType.BOOLEAN && (config instanceof IConfigBoolean))
+        if (type == ConfigType.BOOLEAN)
         {
             ConfigButtonBoolean optionButton = new ConfigButtonBoolean(id++, x, y, configWidth, configHeight, (IConfigBoolean) config);
-            this.addConfigButtonEntry(id++, x + configWidth + 4, y, config, optionButton);
+            this.addConfigButtonEntry(id++, x + configWidth + 4, y, (IConfigResettable) config, optionButton);
         }
-        else if (type == ConfigType.OPTION_LIST && (config instanceof IConfigOptionList))
+        else if (type == ConfigType.OPTION_LIST)
         {
             ConfigButtonOptionList optionButton = new ConfigButtonOptionList(id++, x, y, configWidth, configHeight, (IConfigOptionList) config);
-            this.addConfigButtonEntry(id++, x + configWidth + 4, y, config, optionButton);
+            this.addConfigButtonEntry(id++, x + configWidth + 4, y, (IConfigResettable) config, optionButton);
         }
-        else if (type == ConfigType.HOTKEY && (config instanceof IHotkey))
+        else if (type == ConfigType.STRING_LIST)
+        {
+            ConfigButtonStringList optionButton = new ConfigButtonStringList(id++, x, y, configWidth, configHeight, (IConfigStringList) config, this.host, this.host.getDialogHandler());
+            this.addConfigButtonEntry(id++, x + configWidth + 4, y, (IConfigResettable) config, optionButton);
+        }
+        else if (type == ConfigType.HOTKEY)
         {
             configWidth -= 25; // adjust the width to match other configs due to the settings widget
             IKeybind keybind = ((IHotkey) config).getKeybind();
@@ -151,38 +149,32 @@ public class WidgetConfigOption extends WidgetBase
                 this.colorDisplayPosX = x + configWidth + 4;
             }
 
-            this.addConfigTextFieldEntry(id++, x, y, resetX, configWidth, configHeight, config);
+            this.addConfigTextFieldEntry(id++, x, y, resetX, configWidth, configHeight, (IConfigValue) config);
         }
     }
 
+    @Override
     public boolean wasConfigModified()
     {
         if (this.wrapper.getType() == ConfigOptionWrapper.Type.CONFIG)
         {
-            IConfigValue config = this.wrapper.getConfig();
+            IConfigBase config = this.wrapper.getConfig();
             boolean modified = false;
 
-            if (this.textField != null)
+            if (this.wrapper.getConfig() instanceof IStringRepresentable)
             {
-                modified |= this.initialValue.equals(this.textField.getTextField().getText()) == false;
+                if (this.textField != null)
+                {
+                    modified |= this.initialStringValue.equals(this.textField.getTextField().getText()) == false;
+                }
+
+                if (this.initialKeybindSettings != null && this.initialKeybindSettings.equals(((IHotkey) config).getKeybind().getSettings()) == false)
+                {
+                    modified = true;
+                }
+
+                return modified || this.initialStringValue.equals(((IStringRepresentable) config).getStringValue()) == false;
             }
-
-            if (this.initialKeybindSettings != null && this.initialKeybindSettings.equals(((IHotkey) config).getKeybind().getSettings()) == false)
-            {
-                modified = true;
-            }
-
-            return modified || this.initialValue.equals(config.getStringValue()) == false;
-        }
-
-        return false;
-    }
-
-    public boolean hasPendingModifications()
-    {
-        if (this.textField != null)
-        {
-            return this.lastAppliedValue.equals(this.textField.getTextField().getText()) == false;
         }
 
         return false;
@@ -190,9 +182,9 @@ public class WidgetConfigOption extends WidgetBase
 
     public void applyNewValueToConfig()
     {
-        if (this.wrapper.getType() == ConfigOptionWrapper.Type.CONFIG)
+        if (this.wrapper.getType() == ConfigOptionWrapper.Type.CONFIG && this.wrapper.getConfig() instanceof IStringRepresentable)
         {
-            IConfigValue config = this.wrapper.getConfig();
+            IStringRepresentable config = (IStringRepresentable) this.wrapper.getConfig();
 
             if (this.textField != null && this.hasPendingModifications())
             {
@@ -203,34 +195,14 @@ public class WidgetConfigOption extends WidgetBase
         }
     }
 
-    protected <T extends ButtonBase> ButtonWrapper<T> addButton(T button, IButtonActionListener<T> listener)
-    {
-        ButtonWrapper<T> entry = new ButtonWrapper<>(button, listener);
-        this.buttons.add(entry);
-        return entry;
-    }
-
     protected void addConfigComment(int x, int y, int width, int height, String comment)
     {
         this.addWidget(new WidgetHoverInfo(x, y, width, height, comment));
     }
 
-    protected GuiTextField createTextField(int id, int x, int y, int width, int height)
-    {
-        return new GuiTextField(id, this.mc.fontRenderer, x + 2, y, width, height);
-    }
-
-    protected void addTextField(GuiTextField field, ConfigOptionChangeListenerTextField listener)
-    {
-        GuiTextFieldWrapper wrapper = new GuiTextFieldWrapper(field, listener);
-        this.textField = wrapper;
-        this.parent.addTextField(wrapper);
-    }
-
-    protected void addConfigButtonEntry(int id, int xReset, int yReset, IConfigValue config, ButtonBase optionButton)
+    protected void addConfigButtonEntry(int id, int xReset, int yReset, IConfigResettable config, ButtonBase optionButton)
     {
         ButtonGeneric resetButton = this.createResetButton(id, xReset, yReset, config);
-
         ConfigOptionChangeListenerButton<ButtonBase> listenerChange = new ConfigOptionChangeListenerButton<>(config, resetButton, null);
         ConfigOptionListenerResetConfig listenerReset = new ConfigOptionListenerResetConfig(config, new ConfigResetterButton(optionButton), resetButton, null);
 
@@ -261,86 +233,6 @@ public class WidgetConfigOption extends WidgetBase
         this.addButton(button, listener);
     }
 
-    protected ButtonGeneric createResetButton(int id, int x, int y, IConfigResettable config)
-    {
-        String labelReset = I18n.format("malilib.gui.button.reset.caps");
-        int w = this.mc.fontRenderer.getStringWidth(labelReset) + 10;
-
-        ButtonGeneric resetButton = new ButtonGeneric(id, x, y, w, 20, labelReset);
-        resetButton.enabled = config.isModified();
-
-        return resetButton;
-    }
-
-    @Override
-    protected boolean onMouseClickedImpl(int mouseX, int mouseY, int mouseButton)
-    {
-        for (ButtonWrapper<?> entry : this.buttons)
-        {
-            if (entry.mousePressed(this.mc, mouseX, mouseY, mouseButton))
-            {
-                // Don't call super if the button press got handled
-                return true;
-            }
-        }
-
-        boolean ret = false;
-
-        if (this.textField != null)
-        {
-            ret |= this.textField.getTextField().mouseClicked(mouseX, mouseY, mouseButton);
-        }
-
-        if (this.subWidgets.isEmpty() == false)
-        {
-            for (WidgetBase widget : this.subWidgets)
-            {
-                ret |= widget.isMouseOver(mouseX, mouseY) && widget.onMouseClicked(mouseX, mouseY, mouseButton);
-            }
-        }
-
-        return ret;
-    }
-
-    public boolean onKeyTyped(char typedChar, int keyCode)
-    {
-        if (this.textField != null)
-        {
-            if (keyCode == Keyboard.KEY_RETURN)
-            {
-                this.applyNewValueToConfig();
-            }
-            else
-            {
-                return this.textField.keyTyped(typedChar, keyCode);
-            }
-        }
-
-        return false;
-    }
-
-    @Override
-    public boolean canSelectAt(int mouseX, int mouseY, int mouseButton)
-    {
-        return false;
-    }
-
-    protected void drawButtons(int mouseX, int mouseY, float partialTicks)
-    {
-        for (ButtonWrapper<?> entry : this.buttons)
-        {
-            entry.draw(this.mc, mouseX, mouseY, partialTicks);
-        }
-    }
-
-    protected void drawTextFields(int mouseX, int mouseY)
-    {
-        if (this.textField != null)
-        {
-            this.textField.getTextField().drawTextBox();
-        }
-    }
-
     @Override
     public void render(int mouseX, int mouseY, boolean selected)
     {
@@ -350,7 +242,7 @@ public class WidgetConfigOption extends WidgetBase
 
         if (this.wrapper.getType() == ConfigOptionWrapper.Type.CONFIG)
         {
-            IConfigValue config = this.wrapper.getConfig();
+            IConfigBase config = this.wrapper.getConfig();
             this.drawTextFields(mouseX, mouseY);
             this.drawButtons(mouseX, mouseY, 0f);
 

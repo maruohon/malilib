@@ -214,7 +214,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetBase> extends Gu
 
         for (int index = this.scrollBar.getValue(); index < numEntries; ++index)
         {
-            WIDGET widget = this.createListEntryWidget(x, y, (index & 0x1) != 0, this.listContents.get(index));
+            WIDGET widget = this.createListEntryWidget(x, y, index, (index & 0x1) != 0, this.listContents.get(index));
 
             if ((usedHeight + widget.getHeight()) > usableHeight)
             {
@@ -232,7 +232,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetBase> extends Gu
 
     public abstract void refreshEntries();
 
-    protected abstract WIDGET createListEntryWidget(int x, int y, boolean isOdd, TYPE entry);
+    protected abstract WIDGET createListEntryWidget(int x, int y, int listIndex, boolean isOdd, TYPE entry);
 
     @Nullable
     public TYPE getSelectedEntry()

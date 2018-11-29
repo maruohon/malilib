@@ -11,13 +11,13 @@ import fi.dy.masa.malilib.config.IConfigInteger;
 import fi.dy.masa.malilib.config.IConfigOptionList;
 import fi.dy.masa.malilib.config.IConfigOptionListEntry;
 import fi.dy.masa.malilib.config.IConfigValue;
-import fi.dy.masa.malilib.config.IConfigValueNotifiable;
+import fi.dy.masa.malilib.config.IConfigNotifiable;
 import fi.dy.masa.malilib.config.IStringRepresentable;
 import fi.dy.masa.malilib.hotkeys.IHotkey;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
 import fi.dy.masa.malilib.interfaces.IValueChangeCallback;
 
-public class ConfigTypeWrapper implements IConfigBoolean, IConfigDouble, IConfigInteger, IConfigOptionList, IHotkey, IConfigValueNotifiable
+public class ConfigTypeWrapper implements IConfigBoolean, IConfigDouble, IConfigInteger, IConfigOptionList, IHotkey, IConfigNotifiable
 {
     private final ConfigType wrappedType;
     private final IConfigBase wrappedConfig;
@@ -55,18 +55,18 @@ public class ConfigTypeWrapper implements IConfigBoolean, IConfigDouble, IConfig
     @Override
     public void onValueChanged()
     {
-        if (this.wrappedConfig instanceof IConfigValueNotifiable)
+        if (this.wrappedConfig instanceof IConfigNotifiable)
         {
-            ((IConfigValueNotifiable) this.wrappedConfig).onValueChanged();
+            ((IConfigNotifiable) this.wrappedConfig).onValueChanged();
         }
     }
 
     @Override
     public void setValueChangeCallback(IValueChangeCallback callback)
     {
-        if (this.wrappedConfig instanceof IConfigValueNotifiable)
+        if (this.wrappedConfig instanceof IConfigNotifiable)
         {
-            ((IConfigValueNotifiable) this.wrappedConfig).setValueChangeCallback(callback);
+            ((IConfigNotifiable) this.wrappedConfig).setValueChangeCallback(callback);
         }
     }
 

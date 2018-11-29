@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.interfaces;
 
-import fi.dy.masa.malilib.config.IConfigValue;
+import fi.dy.masa.malilib.config.IConfigBase;
 
 public interface IValueChangeCallback
 {
@@ -8,5 +8,5 @@ public interface IValueChangeCallback
      * Called when (= after) the config's value is changed
      * @param feature
      */
-    void onValueChanged(IConfigValue config);
+    void onValueChanged(IConfigBase config);
 }

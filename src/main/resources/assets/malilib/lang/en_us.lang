@@ -29,6 +29,7 @@ malilib.gui.label.yes=yes
 
 malilib.gui.title.all_hotkeys=All registered hotkeys
 malilib.gui.title.keybind_settings.advanced=Advanced Keybind Settings for %s
+malilib.gui.title.string_list_edit=Edit string list for '%s'
 
 malilib.label.aligment.top_left=Top Left
 malilib.label.aligment.top_right=Top Right
