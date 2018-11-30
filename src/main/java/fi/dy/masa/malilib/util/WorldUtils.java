@@ -17,7 +17,7 @@ public class WorldUtils
         if (mc.isSingleplayer())
         {
             IntegratedServer server = mc.getIntegratedServer();
-            return server.getWorld(mc.world.provider.getDimensionType().getId());
+            return server.getWorld(mc.world.dimension.getType());
         }
         else
         {

@@ -21,7 +21,7 @@ public class Message
         this.created = System.currentTimeMillis();
         this.displayTime = displayTimeMs;
         this.maxLineWidth = maxLineWidth;
-        this.fontRenderer = Minecraft.getMinecraft().fontRenderer;
+        this.fontRenderer = Minecraft.getInstance().fontRenderer;
 
         this.setMessage(I18n.format(message, args));
     }

@@ -62,7 +62,7 @@ public class StringUtils
 
     public static void printActionbarMessage(String key, Object... args)
     {
-        Minecraft.getMinecraft().ingameGUI.addChatMessage(ChatType.GAME_INFO, new TextComponentTranslation(key, args));
+        Minecraft.getInstance().ingameGUI.addChatMessage(ChatType.GAME_INFO, new TextComponentTranslation(key, args));
     }
 
     public static String getClampedDisplayStringStrlen(List<String> list, final int maxWidth, String prefix, String suffix)

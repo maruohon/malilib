@@ -20,7 +20,7 @@ public class ConfigButtonOptionList extends ButtonGeneric
     {
         this.config.setOptionListValue(this.config.getOptionListValue().cycle(mouseButton == 0));
         this.updateDisplayString();
-        this.playPressSound(Minecraft.getMinecraft().getSoundHandler());
+        this.playPressSound(Minecraft.getInstance().getSoundHandler());
     }
 
     @Override

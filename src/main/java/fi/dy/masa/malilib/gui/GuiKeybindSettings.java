@@ -39,7 +39,7 @@ public class GuiKeybindSettings extends GuiDialogBase
 
     public GuiKeybindSettings(IKeybind keybind, String name, @Nullable IDialogHandler dialogHandler, GuiScreen parent)
     {
-        this.mc = Minecraft.getMinecraft();
+        this.mc = Minecraft.getInstance();
         this.keybind = keybind;
         this.keybindName = name;
         this.dialogHandler = dialogHandler;

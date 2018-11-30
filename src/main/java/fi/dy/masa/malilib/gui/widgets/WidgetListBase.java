@@ -39,7 +39,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetBase> extends Gu
 
     public WidgetListBase(int x, int y, int width, int height, @Nullable ISelectionListener<TYPE> selectionListener)
     {
-        this.mc = Minecraft.getMinecraft();
+        this.mc = Minecraft.getInstance();
         this.posX = x;
         this.posY = y;
         this.selectionListener = selectionListener;
@@ -170,7 +170,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetBase> extends Gu
         totalHeight = Math.max(totalHeight, scrollbarHeight);
 
         GlStateManager.disableLighting();
-        GlStateManager.color(1, 1, 1, 1);
+        GlStateManager.color4f(1f, 1f, 1f, 1f);
 
         this.scrollBar.drawScrollBar(mouseX, mouseY, partialTicks,
                 this.posX + this.browserWidth - 9, this.browserEntriesStartY, 8, scrollbarHeight, totalHeight);

@@ -5,8 +5,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import javax.annotation.Nullable;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
 import fi.dy.masa.malilib.LiteModMaLiLib;
 import fi.dy.masa.malilib.config.MaLiLibConfigs;
 import fi.dy.masa.malilib.config.options.ConfigBoolean;
@@ -88,7 +86,7 @@ public class KeybindMulti implements IKeybind
     {
         if (this.isValid() == false ||
             (this.settings.getContext() != KeybindSettings.Context.ANY &&
-            ((this.settings.getContext() == KeybindSettings.Context.INGAME) != (Minecraft.getMinecraft().currentScreen == null))))
+            ((this.settings.getContext() == KeybindSettings.Context.INGAME) != (Minecraft.getInstance().currentScreen == null))))
         {
             this.pressed = false;
             return false;
@@ -173,7 +171,7 @@ public class KeybindMulti implements IKeybind
             if (this.keyCodes.contains(Keyboard.KEY_F3))
             {
                 // Prevent the debug GUI from opening after the F3 key is released
-                ((IMinecraftAccessor) Minecraft.getMinecraft()).setActionKeyF3(true);
+                ((IMinecraftAccessor) Minecraft.getInstance()).setActionKeyF3(true);
             }
 
             KeyAction activateOn = this.settings.getActivateOn();

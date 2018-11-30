@@ -21,8 +21,8 @@ public class WidgetInfoIcon extends WidgetHoverInfo
     @Override
     public void render(int mouseX, int mouseY, boolean selected)
     {
-        GlStateManager.color(1, 1, 1, 1);
-        Minecraft.getMinecraft().getTextureManager().bindTexture(this.icon.getTexture());
+        GlStateManager.color4f(1f, 1f, 1f, 1f);
+        Minecraft.getInstance().getTextureManager().bindTexture(this.icon.getTexture());
 
         RenderUtils.drawTexturedRect(this.x, this.y, this.icon.getU(), this.icon.getV(), this.width, this.height, this.zLevel);
     }

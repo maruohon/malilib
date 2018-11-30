@@ -36,7 +36,7 @@ public class WidgetListConfigOptions extends WidgetListConfigOptionsBase<ConfigO
 
     public static int getMaxNameLengthWrapped(List<ConfigOptionWrapper> wrappers)
     {
-        FontRenderer font = Minecraft.getMinecraft().fontRenderer;
+        FontRenderer font = Minecraft.getInstance().fontRenderer;
         int width = 0;
 
         for (ConfigOptionWrapper wrapper : wrappers)

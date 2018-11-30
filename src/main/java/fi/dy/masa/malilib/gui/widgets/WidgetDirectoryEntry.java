@@ -72,7 +72,7 @@ public class WidgetDirectoryEntry extends WidgetBase
 
         if (icon != null)
         {
-            GlStateManager.color(1, 1, 1, 1);
+            GlStateManager.color4f(1, 1, 1, 1);
             this.mc.getTextureManager().bindTexture(icon.getTexture());
             icon.renderAt(this.x, this.y + (this.height - icon.getHeight()) / 2, this.zLevel, false, false);
         }

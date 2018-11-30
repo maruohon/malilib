@@ -1,9 +1,9 @@
 package fi.dy.masa.malilib.util;
 
 import javax.annotation.Nullable;
-import net.minecraft.block.properties.IProperty;
-import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.state.DirectionProperty;
+import net.minecraft.state.IProperty;
 import net.minecraft.util.EnumFacing;
 
 public class BlockUtils
@@ -18,11 +18,11 @@ public class BlockUtils
     @Nullable
     public static EnumFacing getFirstPropertyFacingValue(IBlockState state)
     {
-        for (IProperty<?> prop : state.getProperties().keySet())
+        for (IProperty<?> prop : state.getProperties())
         {
-            if (prop instanceof PropertyDirection)
+            if (prop instanceof DirectionProperty)
             {
-                return state.getValue((PropertyDirection) prop);
+                return state.get((DirectionProperty) prop);
             }
         }
 

@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.gui;
 
-import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.MainWindow;
 
 public class GuiDialogBase extends GuiBase
 {
@@ -30,9 +30,9 @@ public class GuiDialogBase extends GuiBase
         }
         else
         {
-            ScaledResolution res = new ScaledResolution(this.mc);
-            this.dialogLeft = res.getScaledWidth() / 2 - this.dialogWidth / 2;
-            this.dialogTop = res.getScaledHeight() / 2 - this.dialogHeight / 2;
+            MainWindow window = this.mc.mainWindow;
+            this.dialogLeft = window.getScaledWidth() / 2 - this.dialogWidth / 2;
+            this.dialogTop = window.getScaledHeight() / 2 - this.dialogHeight / 2;
         }
     }
 }

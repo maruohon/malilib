@@ -127,7 +127,7 @@ public abstract class WidgetBase
     {
         if (lines != null && lines.length >= 1)
         {
-            Minecraft mc = Minecraft.getMinecraft();
+            Minecraft mc = Minecraft.getInstance();
 
             if (width == -1)
             {

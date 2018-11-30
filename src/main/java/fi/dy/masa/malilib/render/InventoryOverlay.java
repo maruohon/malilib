@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.render;
 
 import org.lwjgl.opengl.GL11;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockBrewingStand;
 import net.minecraft.block.BlockChest;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.block.BlockFurnace;
@@ -15,7 +16,6 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.ContainerHorseChest;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.inventory.IInventory;
@@ -161,7 +161,7 @@ public class InventoryOverlay
 
     public static void renderEquipmentOverlayBackground(Minecraft mc, int x, int y, EntityLivingBase entity)
     {
-        GlStateManager.color(1, 1, 1, 1);
+        GlStateManager.color4f(1, 1, 1, 1);
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
@@ -265,10 +265,10 @@ public class InventoryOverlay
             {
                 return InventoryRenderType.HOPPER;
             }
-        }
-        else if (item == Items.BREWING_STAND)
-        {
-            return InventoryRenderType.BREWING_STAND;
+            else if (block instanceof BlockBrewingStand)
+            {
+                return InventoryRenderType.BREWING_STAND;
+            }
         }
 
         return InventoryRenderType.GENERIC;
@@ -463,18 +463,18 @@ public class InventoryOverlay
     public static void renderStackAt(ItemStack stack, float x, float y, float scale, Minecraft mc)
     {
         GlStateManager.pushMatrix();
-        GlStateManager.translate(x, y, 0);
-        GlStateManager.scale(scale, scale, 1);
+        GlStateManager.translatef(x, y, 0);
+        GlStateManager.scalef(scale, scale, 1);
         GlStateManager.disableLighting();
 
         //Gui.drawRect(0, 0, 16, 16, 0x20FFFFFF); // light background for the item
 
         RenderHelper.enableGUIStandardItemLighting();
 
-        mc.getRenderItem().zLevel += 100;
-        mc.getRenderItem().renderItemAndEffectIntoGUI(mc.player, stack, 0, 0);
-        mc.getRenderItem().renderItemOverlayIntoGUI(mc.fontRenderer, stack, 0, 0, null);
-        mc.getRenderItem().zLevel -= 100;
+        mc.getItemRenderer().zLevel += 100;
+        mc.getItemRenderer().renderItemAndEffectIntoGUI(mc.player, stack, 0, 0);
+        mc.getItemRenderer().renderItemOverlayIntoGUI(mc.fontRenderer, stack, 0, 0, null);
+        mc.getItemRenderer().zLevel -= 100;
 
         //GlStateManager.disableBlend();
         RenderHelper.disableStandardItemLighting();

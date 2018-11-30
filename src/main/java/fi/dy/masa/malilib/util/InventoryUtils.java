@@ -9,12 +9,12 @@ import net.minecraft.inventory.ContainerPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemShulkerBox;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.text.TextComponentString;
 
 public class InventoryUtils
 {
@@ -51,7 +51,7 @@ public class InventoryUtils
      */
     public static void swapSlots(Container container, int slotNum, int hotbarSlot)
     {
-        Minecraft mc = Minecraft.getMinecraft();
+        Minecraft mc = Minecraft.getInstance();
         mc.playerController.windowClick(container.windowId, slotNum, hotbarSlot, ClickType.SWAP, mc.player);
     }
 
@@ -137,7 +137,7 @@ public class InventoryUtils
     public static boolean swapItemToMainHand(ItemStack stackReference, Minecraft mc)
     {
         EntityPlayer player = mc.player;
-        boolean isCreative = player.capabilities.isCreativeMode;
+        boolean isCreative = player.abilities.isCreativeMode;
 
         // Already holding the requested item
         if (areStacksEqual(stackReference, player.getHeldItemMainhand()))
@@ -174,16 +174,16 @@ public class InventoryUtils
      */
     public static boolean shulkerBoxHasItems(ItemStack stackShulkerBox)
     {
-        NBTTagCompound nbt = stackShulkerBox.getTagCompound();
+        NBTTagCompound nbt = stackShulkerBox.getTag();
 
-        if (nbt != null && nbt.hasKey("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
+        if (nbt != null && nbt.contains("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
         {
-            NBTTagCompound tag = nbt.getCompoundTag("BlockEntityTag");
+            NBTTagCompound tag = nbt.getCompound("BlockEntityTag");
 
-            if (tag.hasKey("Items", Constants.NBT.TAG_LIST))
+            if (tag.contains("Items", Constants.NBT.TAG_LIST))
             {
-                NBTTagList tagList = tag.getTagList("Items", Constants.NBT.TAG_COMPOUND);
-                return tagList.tagCount() > 0;
+                NBTTagList tagList = tag.getList("Items", Constants.NBT.TAG_COMPOUND);
+                return tagList.size() > 0;
             }
         }
 
@@ -199,21 +199,21 @@ public class InventoryUtils
      */
     public static NonNullList<ItemStack> getStoredItems(ItemStack stackIn)
     {
-        NBTTagCompound nbt = stackIn.getTagCompound();
+        NBTTagCompound nbt = stackIn.getTag();
 
-        if (nbt != null && nbt.hasKey("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
+        if (nbt != null && nbt.contains("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
         {
-            NBTTagCompound tagBlockEntity = nbt.getCompoundTag("BlockEntityTag");
+            NBTTagCompound tagBlockEntity = nbt.getCompound("BlockEntityTag");
 
-            if (tagBlockEntity.hasKey("Items", Constants.NBT.TAG_LIST))
+            if (tagBlockEntity.contains("Items", Constants.NBT.TAG_LIST))
             {
                 NonNullList<ItemStack> items = NonNullList.create();
-                NBTTagList tagList = tagBlockEntity.getTagList("Items", Constants.NBT.TAG_COMPOUND);
-                final int count = tagList.tagCount();
+                NBTTagList tagList = tagBlockEntity.getList("Items", Constants.NBT.TAG_COMPOUND);
+                final int count = tagList.size();
 
                 for (int i = 0; i < count; ++i)
                 {
-                    ItemStack stack = new ItemStack(tagList.getCompoundTagAt(i));
+                    ItemStack stack = ItemStack.read(tagList.getCompound(i));
 
                     if (stack.isEmpty() == false)
                     {
@@ -238,23 +238,23 @@ public class InventoryUtils
      */
     public static NonNullList<ItemStack> getStoredItems(ItemStack stackIn, int slotCount)
     {
-        NBTTagCompound nbt = stackIn.getTagCompound();
+        NBTTagCompound nbt = stackIn.getTag();
 
-        if (nbt != null && nbt.hasKey("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
+        if (nbt != null && nbt.contains("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
         {
-            NBTTagCompound tagBlockEntity = nbt.getCompoundTag("BlockEntityTag");
+            NBTTagCompound tagBlockEntity = nbt.getCompound("BlockEntityTag");
 
-            if (tagBlockEntity.hasKey("Items", Constants.NBT.TAG_LIST))
+            if (tagBlockEntity.contains("Items", Constants.NBT.TAG_LIST))
             {
-                NBTTagList tagList = tagBlockEntity.getTagList("Items", Constants.NBT.TAG_COMPOUND);
-                final int count = tagList.tagCount();
+                NBTTagList tagList = tagBlockEntity.getList("Items", Constants.NBT.TAG_COMPOUND);
+                final int count = tagList.size();
                 int maxSlot = -1;
 
                 if (slotCount <= 0)
                 {
                     for (int i = 0; i < count; ++i)
                     {
-                        NBTTagCompound tag = tagList.getCompoundTagAt(i);
+                        NBTTagCompound tag = tagList.getCompound(i);
                         int slot = tag.getByte("Slot");
 
                         if (slot > maxSlot)
@@ -270,8 +270,8 @@ public class InventoryUtils
 
                 for (int i = 0; i < count; ++i)
                 {
-                    NBTTagCompound tag = tagList.getCompoundTagAt(i);
-                    ItemStack stack = new ItemStack(tag);
+                    NBTTagCompound tag = tagList.getCompound(i);
+                    ItemStack stack = ItemStack.read(tag);
                     int slot = tag.getByte("Slot");
 
                     if (slot >= 0 && slot < items.size() && stack.isEmpty() == false)
@@ -353,7 +353,7 @@ public class InventoryUtils
      */
     public static IInventory getAsInventory(NonNullList<ItemStack> items)
     {
-        InventoryBasic inv = new InventoryBasic("", false, items.size());
+        InventoryBasic inv = new InventoryBasic(new TextComponentString(""), items.size());
 
         for (int slot = 0; slot < items.size(); ++slot)
         {

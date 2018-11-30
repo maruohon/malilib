@@ -38,7 +38,7 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
     {
         super(listX, listY);
 
-        this.mc = Minecraft.getMinecraft();
+        this.mc = Minecraft.getInstance();
         this.modId = modId;
         this.parentScreen = parent;
     }

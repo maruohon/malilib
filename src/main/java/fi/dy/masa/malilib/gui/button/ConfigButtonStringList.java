@@ -28,9 +28,9 @@ public class ConfigButtonStringList extends ButtonGeneric
     @Override
     public void onMouseButtonClicked(int mouseButton)
     {
-        this.playPressSound(Minecraft.getMinecraft().getSoundHandler());
+        Minecraft mc = Minecraft.getInstance();
 
-        Minecraft mc = Minecraft.getMinecraft();
+        this.playPressSound(mc.getSoundHandler());
 
         if (this.dialogHandler != null)
         {

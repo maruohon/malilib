@@ -97,7 +97,7 @@ public class WidgetStringListEntry extends WidgetConfigOptionBase
         this.addTextField(field, listenerChange);
         this.addButton(resetButton, listenerReset);
 
-        return resetButton.x + resetButton.getButtonWidth() + 4;
+        return resetButton.x + resetButton.getWidth() + 4;
     }
 
     protected ButtonGeneric createResetButton(int id, int x, int y, GuiTextField textField)
@@ -200,7 +200,7 @@ public class WidgetStringListEntry extends WidgetConfigOptionBase
     @Override
     public void render(int mouseX, int mouseY, boolean selected)
     {
-        GlStateManager.color(1, 1, 1, 1);
+        GlStateManager.color4f(1f, 1f, 1f, 1f);
 
         if (this.isOdd)
         {
@@ -250,7 +250,7 @@ public class WidgetStringListEntry extends WidgetConfigOptionBase
         public void actionPerformed(ButtonGeneric control)
         {
             this.parent.textField.getTextField().setText(this.parent.defaultValue);
-            this.buttonReset.playPressSound(Minecraft.getMinecraft().getSoundHandler());
+            this.buttonReset.playPressSound(Minecraft.getInstance().getSoundHandler());
             this.buttonReset.enabled = this.parent.textField.getTextField().getText().equals(this.parent.defaultValue) == false;
         }
 
@@ -277,7 +277,7 @@ public class WidgetStringListEntry extends WidgetConfigOptionBase
         @Override
         public void actionPerformed(ButtonGeneric control)
         {
-            this.button.playPressSound(Minecraft.getMinecraft().getSoundHandler());
+            this.button.playPressSound(Minecraft.getInstance().getSoundHandler());
 
             if (this.type == ButtonType.ADD)
             {

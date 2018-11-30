@@ -34,7 +34,7 @@ public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEntry
         this.config = config;
         this.configGui = configGui;
         this.dialogHandler = dialogHandler;
-        this.mc = Minecraft.getMinecraft();
+        this.mc = Minecraft.getInstance();
         this.title = I18n.format("malilib.gui.title.string_list_edit", config.getName());
 
         // When we have a dialog handler, then we are inside the Liteloader config menu.
@@ -53,9 +53,8 @@ public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEntry
 
     protected void setWidthAndHeight()
     {
-        ScaledResolution sr = new ScaledResolution(this.mc);
         this.dialogWidth = 400;
-        this.dialogHeight = sr.getScaledHeight() - 90;
+        this.dialogHeight = this.mc.mainWindow.getScaledHeight() - 90;
     }
 
     protected void centerOnScreen()

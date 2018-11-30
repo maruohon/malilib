@@ -1,8 +1,8 @@
 package fi.dy.masa.malilib.util;
 
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.IRegistry;
 
 /**
  * A wrapper around ItemStack, that implements hashCode() and equals().
@@ -45,12 +45,11 @@ public class ItemType
     {
         final int prime = 31;
         int result = 1;
-        result = prime * result + this.stack.getMetadata();
         result = prime * result + this.stack.getItem().hashCode();
 
         if (this.checkNBT())
         {
-            result = prime * result + (this.stack.getTagCompound() != null ? this.stack.getTagCompound().hashCode() : 0);
+            result = prime * result + (this.stack.getTag() != null ? this.stack.getTag().hashCode() : 0);
         }
 
         return result;
@@ -77,11 +76,6 @@ public class ItemType
         }
         else
         {
-            if (this.stack.getMetadata() != other.stack.getMetadata())
-            {
-                return false;
-            }
-
             if (this.stack.getItem() != other.stack.getItem())
             {
                 return false;
@@ -98,13 +92,13 @@ public class ItemType
     {
         if (this.checkNBT())
         {
-            ResourceLocation rl = Item.REGISTRY.getNameForObject(this.stack.getItem());
-            return rl.toString() + "@" + this.stack.getMetadata() + this.stack.getTagCompound();
+            ResourceLocation rl = IRegistry.ITEM.getKey(this.stack.getItem());
+            return rl.toString() + " " + this.stack.getTag();
         }
         else
         {
-            ResourceLocation rl = Item.REGISTRY.getNameForObject(this.stack.getItem());
-            return rl.toString() + "@" + this.stack.getMetadata();
+            ResourceLocation rl = IRegistry.ITEM.getKey(this.stack.getItem());
+            return rl.toString();
         }
     }
 }

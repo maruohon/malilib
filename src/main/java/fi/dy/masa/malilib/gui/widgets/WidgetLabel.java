@@ -28,7 +28,7 @@ public class WidgetLabel extends WidgetBase
         super(x, y, width, height, zLevel);
 
         this.textColor = textColor;
-        this.fontRenderer = Minecraft.getMinecraft().fontRenderer;
+        this.fontRenderer = Minecraft.getInstance().fontRenderer;
         this.labels = new ArrayList<>();
         this.labels.addAll(Arrays.asList(text));
     }
@@ -58,7 +58,7 @@ public class WidgetLabel extends WidgetBase
         if (this.visible)
         {
             GlStateManager.enableBlend();
-            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+            GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
             this.drawLabelBackground();
 
             int fontHeight = this.fontRenderer.FONT_HEIGHT;

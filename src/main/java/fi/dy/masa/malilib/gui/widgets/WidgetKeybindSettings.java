@@ -43,7 +43,7 @@ public class WidgetKeybindSettings extends WidgetBase
     {
         if (mouseButton == 0)
         {
-            Minecraft mc = Minecraft.getMinecraft();
+            Minecraft mc = Minecraft.getInstance();
 
             if (this.dialogHandler != null)
             {
@@ -70,9 +70,9 @@ public class WidgetKeybindSettings extends WidgetBase
     @Override
     public void render(int mouseX, int mouseY, boolean selected)
     {
-        Minecraft mc = Minecraft.getMinecraft();
+        Minecraft mc = Minecraft.getInstance();
 
-        GlStateManager.color(1, 1, 1, 1);
+        GlStateManager.color4f(1f, 1f, 1f, 1f);
         mc.getTextureManager().bindTexture(TEXTURE);
 
         int w = 18;
@@ -93,7 +93,7 @@ public class WidgetKeybindSettings extends WidgetBase
         y += 1;
         float z = 0;
 
-        GlStateManager.color(1, 1, 1, 1);
+        GlStateManager.color4f(1f, 1f, 1f, 1f);
         RenderUtils.drawTexturedRect(x, y,  0, v1, w, w, z);
         RenderUtils.drawTexturedRect(x, y, 18, v2, w, w, z);
         RenderUtils.drawTexturedRect(x, y, 36, v3, w, w, z);

@@ -72,7 +72,7 @@ public class WidgetDirectoryNavigation extends WidgetBase
             RenderUtils.drawOutlinedBox(this.x + widthRoot + 2, this.y + 1, widthUp, widthUp, 0x20C0C0C0, 0xE0FFFFFF);
         }
 
-        GlStateManager.color(1f, 1f, 1f);
+        GlStateManager.color4f(1f, 1f, 1f, 1f);
 
         this.mc.getTextureManager().bindTexture(this.iconRoot.getTexture());
         this.iconRoot.renderAt(this.x                , this.y + 1, this.zLevel, false, false);

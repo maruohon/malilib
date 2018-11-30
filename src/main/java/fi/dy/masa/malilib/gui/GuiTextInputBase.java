@@ -16,7 +16,7 @@ public abstract class GuiTextInputBase extends GuiDialogBase
 
     public GuiTextInputBase(int maxTextLength, String titleKey, String defaultText, @Nullable GuiBase parent)
     {
-        this.mc = Minecraft.getMinecraft();
+        this.mc = Minecraft.getInstance();
         this.setParent(parent);
         this.title = I18n.format(titleKey);
         this.originalText = defaultText;

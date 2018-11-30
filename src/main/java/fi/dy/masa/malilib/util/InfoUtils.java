@@ -15,7 +15,7 @@ public class InfoUtils
         public void setString(String string)
         {
             TextComponentTranslation message = new TextComponentTranslation(string);
-            Minecraft.getMinecraft().ingameGUI.addChatMessage(ChatType.GAME_INFO, message);
+            Minecraft.getInstance().ingameGUI.addChatMessage(ChatType.GAME_INFO, message);
         }
     }
 }

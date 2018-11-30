@@ -480,12 +480,12 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
 
     public static int getTextWidth(String text)
     {
-        return Minecraft.getMinecraft().fontRenderer.getStringWidth(text);
+        return Minecraft.getInstance().fontRenderer.getStringWidth(text);
     }
 
     public static int getMaxNameLength(List<? extends IConfigBase> configs)
     {
-        FontRenderer font = Minecraft.getMinecraft().fontRenderer;
+        FontRenderer font = Minecraft.getInstance().fontRenderer;
         int width = 0;
 
         for (IConfigBase config : configs)

@@ -247,7 +247,7 @@ public class WidgetConfigOption extends WidgetConfigOptionBase
     @Override
     public void render(int mouseX, int mouseY, boolean selected)
     {
-        GlStateManager.color(1, 1, 1, 1);
+        GlStateManager.color4f(1, 1, 1, 1);
 
         this.drawSubWidgets(mouseX, mouseY);
 

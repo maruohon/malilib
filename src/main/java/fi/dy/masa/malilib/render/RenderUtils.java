@@ -5,10 +5,10 @@ import java.util.List;
 import org.lwjgl.opengl.GL11;
 import fi.dy.masa.malilib.config.HudAlignment;
 import fi.dy.masa.malilib.util.Color4f;
+import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -94,7 +94,7 @@ public class RenderUtils
 
     public static void drawHoverText(int x, int y, List<String> textLines)
     {
-        Minecraft mc = Minecraft.getMinecraft();
+        Minecraft mc = Minecraft.getInstance();
 
         if (textLines.isEmpty() == false && mc.currentScreen != null)
         {
@@ -102,7 +102,7 @@ public class RenderUtils
             GlStateManager.disableRescaleNormal();
             RenderHelper.disableStandardItemLighting();
             GlStateManager.disableLighting();
-            GlStateManager.disableDepth();
+            GlStateManager.disableDepthTest();
             int maxLineLength = 0;
             int maxWidth = mc.currentScreen.width;
             int maxHeight = mc.currentScreen.height;
@@ -165,7 +165,7 @@ public class RenderUtils
             }
 
             GlStateManager.enableLighting();
-            GlStateManager.enableDepth();
+            GlStateManager.enableDepthTest();
             RenderHelper.enableStandardItemLighting();
             GlStateManager.enableRescaleNormal();
         }
@@ -185,8 +185,8 @@ public class RenderUtils
 
         GlStateManager.disableTexture2D();
         GlStateManager.enableBlend();
-        GlStateManager.disableAlpha();
-        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GlStateManager.disableAlphaTest();
+        GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
         GlStateManager.shadeModel(GL11.GL_SMOOTH);
 
         Tessellator tessellator = Tessellator.getInstance();
@@ -202,7 +202,7 @@ public class RenderUtils
 
         GlStateManager.shadeModel(GL11.GL_FLAT);
         GlStateManager.disableBlend();
-        GlStateManager.enableAlpha();
+        GlStateManager.enableAlphaTest();
         GlStateManager.enableTexture2D();
     }
 
@@ -244,7 +244,7 @@ public class RenderUtils
     {
         if (texture != null)
         {
-            TextureAtlasSprite sprite = mc.getTextureMapBlocks().getAtlasSprite(texture);
+            TextureAtlasSprite sprite = mc.getTextureMap().getAtlasSprite(texture);
             GlStateManager.disableLighting();
             mc.ingameGUI.drawTexturedModalRect(x, y, sprite, width, height);
         }
@@ -266,7 +266,7 @@ public class RenderUtils
             HudAlignment alignment, boolean useBackground, boolean useShadow, List<String> lines)
     {
         FontRenderer fontRenderer = mc.fontRenderer;
-        ScaledResolution res = new ScaledResolution(mc);
+        MainWindow window = mc.mainWindow;
         final int lineHeight = fontRenderer.FONT_HEIGHT + 2;
         final int bgMargin = 2;
         double posX = xOff + bgMargin;
@@ -313,10 +313,10 @@ public class RenderUtils
         {
             case BOTTOM_LEFT:
             case BOTTOM_RIGHT:
-                posY = res.getScaledHeight() / scale - (lines.size() * lineHeight) - yOff + 2;
+                posY = window.getScaledHeight() / scale - (lines.size() * lineHeight) - yOff + 2;
                 break;
             case CENTER:
-                posY = (res.getScaledHeight() / scale / 2.0d) - (lines.size() * lineHeight / 2.0d) + yOff;
+                posY = (window.getScaledHeight() / scale / 2.0d) - (lines.size() * lineHeight / 2.0d) + yOff;
                 break;
             default:
         }
@@ -324,7 +324,7 @@ public class RenderUtils
         if (scale != 1d)
         {
             GlStateManager.pushMatrix();
-            GlStateManager.scale(scale, scale, 0);
+            GlStateManager.scaled(scale, scale, 0);
         }
 
         for (String line : lines)
@@ -335,10 +335,10 @@ public class RenderUtils
             {
                 case TOP_RIGHT:
                 case BOTTOM_RIGHT:
-                    posX = (res.getScaledWidth() / scale) - width - xOff - bgMargin;
+                    posX = (window.getScaledWidth() / scale) - width - xOff - bgMargin;
                     break;
                 case CENTER:
-                    posX = (res.getScaledWidth() / scale / 2) - (width / 2) - xOff;
+                    posX = (window.getScaledWidth() / scale / 2) - (width / 2) - xOff;
                     break;
                 default:
             }

@@ -66,7 +66,7 @@ public class PositionUtils
         }
         else if (entity.rotationPitch <= -verticalThreshold)
         {
-            return new BlockPos(entity.posX, Math.ceil(entity.getEntityBoundingBox().maxY), entity.posZ);
+            return new BlockPos(entity.posX, Math.ceil(entity.getBoundingBox().maxY), entity.posZ);
         }
 
         double y = Math.floor(entity.posY + entity.getEyeHeight());

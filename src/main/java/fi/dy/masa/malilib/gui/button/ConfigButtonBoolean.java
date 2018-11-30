@@ -21,7 +21,7 @@ public class ConfigButtonBoolean extends ButtonGeneric
     {
         this.config.setBooleanValue(! this.config.getBooleanValue());
         this.updateDisplayString();
-        this.playPressSound(Minecraft.getMinecraft().getSoundHandler());
+        this.playPressSound(Minecraft.getInstance().getSoundHandler());
     }
 
     @Override
