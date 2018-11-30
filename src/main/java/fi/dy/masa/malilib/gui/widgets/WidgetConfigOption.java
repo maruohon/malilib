@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.gui.widgets;
 
 import javax.annotation.Nullable;
+import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.config.ConfigType;
 import fi.dy.masa.malilib.config.IConfigBase;
 import fi.dy.masa.malilib.config.IConfigBoolean;
@@ -38,6 +39,7 @@ public class WidgetConfigOption extends WidgetConfigOptionBase
     protected final ConfigOptionWrapper wrapper;
     protected final IKeybindConfigGui host;
     @Nullable protected final KeybindSettings initialKeybindSettings;
+    @Nullable protected ImmutableList<String> initialStringList;
     protected int colorDisplayPosX;
 
     public WidgetConfigOption(int x, int y, int width, int height, float zLevel, int labelWidth, int configWidth,
@@ -64,6 +66,11 @@ public class WidgetConfigOption extends WidgetConfigOptionBase
                 this.initialStringValue = null;
                 this.lastAppliedValue = null;
                 this.initialKeybindSettings = null;
+
+                if (wrapper.getConfig() instanceof IConfigStringList)
+                {
+                    this.initialStringList = ImmutableList.copyOf(((IConfigStringList) wrapper.getConfig()).getStrings());
+                }
             }
 
             this.addConfigOption(x, y, zLevel, labelWidth, configWidth, config);
@@ -174,6 +181,10 @@ public class WidgetConfigOption extends WidgetConfigOptionBase
                 }
 
                 return modified || this.initialStringValue.equals(((IStringRepresentable) config).getStringValue()) == false;
+            }
+            else if (this.initialStringList != null && this.wrapper.getConfig() instanceof IConfigStringList)
+            {
+                return this.initialStringList.equals(((IConfigStringList) this.wrapper.getConfig()).getStrings()) == false;
             }
         }
 

@@ -141,6 +141,7 @@ public class WidgetStringListEntry extends WidgetConfigOptionBase
         int index = this.listIndex < 0 ? size : (this.listIndex >= size ? size : this.listIndex);
         list.add(index, "");
         this.parent.refreshEntries();
+        this.parent.markConfigsModified();
     }
 
     private void removeEntry()
@@ -152,6 +153,7 @@ public class WidgetStringListEntry extends WidgetConfigOptionBase
         {
             list.remove(this.listIndex);
             this.parent.refreshEntries();
+            this.parent.markConfigsModified();
         }
     }
 
@@ -177,6 +179,7 @@ public class WidgetStringListEntry extends WidgetConfigOptionBase
 
             if (index2 >= 0)
             {
+                this.parent.markConfigsModified();
                 this.parent.applyPendingModifications();
 
                 tmp = list.get(index1);

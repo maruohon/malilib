@@ -29,7 +29,6 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
     protected final String modId;
     protected final List<String> initialConfigValues = new ArrayList<>();
     protected ConfigButtonKeybind activeKeybindButton;
-    protected boolean configsDirty;
     protected int configWidth = 204;
     @Nullable protected GuiScreen parentScreen;
     @Nullable protected IConfigInfoProvider hoverInfoProvider;
@@ -123,6 +122,7 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
         {
             this.getListWidget().applyPendingModifications();
             this.onSettingsChanged();
+            this.getListWidget().clearConfigsModifiedFlag();
         }
 
         Keyboard.enableRepeatEvents(false);

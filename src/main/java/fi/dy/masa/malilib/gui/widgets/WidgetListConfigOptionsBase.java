@@ -131,6 +131,11 @@ public abstract class WidgetListConfigOptionsBase<TYPE, WIDGET extends WidgetCon
         }
     }
 
+    public void markConfigsModified()
+    {
+        this.configsModified = true;
+    }
+
     public boolean wereConfigsModified()
     {
         // First check the cached value, this gets updated when scrolling
@@ -150,6 +155,11 @@ public abstract class WidgetListConfigOptionsBase<TYPE, WIDGET extends WidgetCon
         }
 
         return false;
+    }
+
+    public void clearConfigsModifiedFlag()
+    {
+        this.configsModified = false;
     }
 
     public void applyPendingModifications()
