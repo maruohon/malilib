@@ -5,6 +5,7 @@ import fi.dy.masa.malilib.config.IConfigStringList;
 import fi.dy.masa.malilib.gui.GuiStringListEdit;
 import fi.dy.masa.malilib.gui.interfaces.IConfigGui;
 import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
+import fi.dy.masa.malilib.util.StringUtils;
 import net.minecraft.client.Minecraft;
 
 public class ConfigButtonStringList extends ButtonGeneric
@@ -44,8 +45,6 @@ public class ConfigButtonStringList extends ButtonGeneric
     @Override
     public void updateDisplayString()
     {
-        String valueStr = "[ ? ]";
-
-        this.displayString = valueStr;
+        this.displayString = StringUtils.getClampedDisplayStringRenderlen(this.config.getStrings(), this.width - 10, "[ ", " ]");
     }
 }
