@@ -41,11 +41,10 @@ public class WidgetStringListEntry extends WidgetConfigOptionBase
         int by = y + 4;
         int bx = textFieldX;
         int bOff = 18;
-        System.out.printf("%s - entry x: %d y: %d, tfw: %d\n", this.getClass().getSimpleName(), x, y, textFieldWidth);
 
         if (this.isDummy() == false)
         {
-            this.addLabel(x + 2, y + 4, 20, 12, 0xC0C0C0C0, String.format("%3d:", listIndex));
+            this.addLabel(x + 2, y + 4, 20, 12, 0xC0C0C0C0, String.format("%3d:", listIndex + 1));
             bx = this.addTextField(0, textFieldX, y + 1, resetX, textFieldWidth, 20, initialValue);
 
             this.addListActionButton(bx, by, ButtonType.ADD);
@@ -129,7 +128,6 @@ public class WidgetStringListEntry extends WidgetConfigOptionBase
 
             if (list.size() > this.listIndex)
             {
-                System.out.printf("%s - applyNewValueToConfig()\n", this.getClass().getSimpleName());
                 list.set(this.listIndex, value);
                 this.lastAppliedValue = value;
             }

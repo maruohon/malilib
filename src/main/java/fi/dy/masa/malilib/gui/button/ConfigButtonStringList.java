@@ -33,7 +33,7 @@ public class ConfigButtonStringList extends ButtonGeneric
 
         if (this.dialogHandler != null)
         {
-            this.dialogHandler.openDialog(new GuiStringListEdit(this.config, this.configGui, this.dialogHandler, mc.currentScreen));
+            this.dialogHandler.openDialog(new GuiStringListEdit(this.config, this.configGui, this.dialogHandler, null));
         }
         else
         {

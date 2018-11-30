@@ -42,10 +42,8 @@ public abstract class WidgetConfigOptionBase extends WidgetBase
 
     public boolean hasPendingModifications()
     {
-        System.out.printf("%s - hasPendingModifications() start\n", this.getClass().getSimpleName());
         if (this.textField != null)
         {
-            System.out.printf("%s - hasPendingModifications(): %s\n", this.getClass().getSimpleName(), this.textField.getTextField().getText().equals(this.lastAppliedValue) == false);
             return this.textField.getTextField().getText().equals(this.lastAppliedValue) == false;
         }
 

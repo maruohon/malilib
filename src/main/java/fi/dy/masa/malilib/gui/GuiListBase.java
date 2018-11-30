@@ -49,7 +49,6 @@ public abstract class GuiListBase<TYPE, WIDGET extends WidgetBase, WIDGETLIST ex
     @Override
     public GuiBase setParent(GuiScreen parent)
     {
-        this.getListWidget().setParent(parent);
         return super.setParent(parent);
     }
 

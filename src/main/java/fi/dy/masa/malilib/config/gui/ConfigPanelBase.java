@@ -11,6 +11,7 @@ import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.GuiConfigsBase;
 import fi.dy.masa.malilib.gui.GuiConfigsBase.ConfigOptionWrapper;
 import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
@@ -297,6 +298,13 @@ public abstract class ConfigPanelBase extends AbstractConfigPanel
         public void updateScreen()
         {
             this.foregroundGui.updateScreen();
+        }
+
+        @Override
+        public void setWorldAndResolution(Minecraft mc, int width, int height)
+        {
+            this.backgroundGui.setWorldAndResolution(mc, width, height);
+            this.foregroundGui.setWorldAndResolution(mc, width, height);
         }
 
         @Override

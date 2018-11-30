@@ -23,7 +23,6 @@ public class WidgetListStringList extends WidgetListConfigOptionsBase<String, Wi
     @Override
     public void refreshEntries()
     {
-        System.out.printf("WidgetListStringList#refreshEntries()\n");
         this.listContents.clear();
         this.listContents.addAll(this.parent.getConfig().getStrings());
 
@@ -54,7 +53,6 @@ public class WidgetListStringList extends WidgetListConfigOptionsBase<String, Wi
     @Override
     protected WidgetStringListEntry createListEntryWidget(int x, int y, int listIndex, boolean isOdd, String entry)
     {
-        System.out.printf("%s - createListEntryWidget() - index: %d, val: %s, bew: %d\n", this.getClass().getSimpleName(), listIndex, entry, this.browserEntryWidth);
         IConfigStringList config = this.parent.getConfig();
 
         if (listIndex >= 0 && listIndex < config.getStrings().size())

@@ -133,7 +133,6 @@ public abstract class WidgetListConfigOptionsBase<TYPE, WIDGET extends WidgetCon
 
     public boolean wereConfigsModified()
     {
-        System.out.printf("%s - wereConfigsModified()\n", this.getClass().getSimpleName());
         // First check the cached value, this gets updated when scrolling
         // the list and the widgets get re-created.
         if (this.configsModified)
@@ -150,19 +149,15 @@ public abstract class WidgetListConfigOptionsBase<TYPE, WIDGET extends WidgetCon
             }
         }
 
-        System.out.printf("%s - wereConfigsModified - FALSE\n", this.getClass().getSimpleName());
         return false;
     }
 
     public void applyPendingModifications()
     {
-        System.out.printf("%s - applyPendingModifications()\n", this.getClass().getSimpleName());
         for (WidgetConfigOptionBase widget : this.listWidgets)
         {
-            System.out.printf("%s - loop\n", this.getClass().getSimpleName());
             if (widget.hasPendingModifications())
             {
-                System.out.printf("%s - applyPendingModifications - APPLY\n", this.getClass().getSimpleName());
                 widget.applyNewValueToConfig();
                 // Cache the modified status before scrolling etc. and thus re-creating the widgets
                 this.configsModified = true;
