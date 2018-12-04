@@ -18,6 +18,7 @@ import fi.dy.masa.malilib.gui.wrappers.TextFieldWrapper;
 import fi.dy.masa.malilib.interfaces.IStringConsumer;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.KeyCodes;
+import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
@@ -132,7 +133,11 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     @Override
     public boolean mouseScrolled(double amount)
     {
-        if (amount == 0 || this.onMouseScrolled((int) this.mouseX, (int) this.mouseY, (int) amount))
+        MainWindow window = this.mc.mainWindow;
+        int mouseX = (int) (this.mc.mouseHelper.getMouseX() * (double) window.getScaledWidth() / (double) window.getWidth());
+        int mouseY = (int) (this.mc.mouseHelper.getMouseY() * (double) window.getScaledHeight() / (double) window.getHeight());
+
+        if (amount == 0 || this.onMouseScrolled(mouseX, mouseY, (int) amount))
         {
             return super.mouseScrolled(amount);
         }
@@ -165,12 +170,12 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers)
     {
-        if (this.onKeyTyped(keyCode, scanCode, modifiers) == false)
+        if (this.onKeyTyped(keyCode, scanCode, modifiers))
         {
-            return super.keyPressed(keyCode, scanCode, modifiers);
+            return true;
         }
 
-        return false;
+        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     public boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
@@ -230,7 +235,7 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
         {
             if (GuiScreen.isShiftKeyDown())
             {
-                this.mc.displayGuiScreen(null);
+                this.close();
             }
             else
             {
