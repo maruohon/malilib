@@ -123,12 +123,12 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetBase> extends Gu
     @Override
     public boolean onKeyTyped(int keyCode, int scanCode, int modifiers)
     {
-        if (keyCode == KeyCodes.KEY_UP)         this.offsetSelectionOrScrollbar(-1, true);
-        else if (keyCode == KeyCodes.KEY_DOWN)  this.offsetSelectionOrScrollbar( 1, true);
-        else if (keyCode == KeyCodes.KEY_PRIOR) this.offsetSelectionOrScrollbar(-this.maxVisibleBrowserEntries / 2, true);
-        else if (keyCode == KeyCodes.KEY_NEXT)  this.offsetSelectionOrScrollbar( this.maxVisibleBrowserEntries / 2, true);
-        else if (keyCode == KeyCodes.KEY_HOME)  this.offsetSelectionOrScrollbar(-this.listContents.size(), true);
-        else if (keyCode == KeyCodes.KEY_END)   this.offsetSelectionOrScrollbar( this.listContents.size(), true);
+        if (keyCode == KeyCodes.KEY_UP)             this.offsetSelectionOrScrollbar(-1, true);
+        else if (keyCode == KeyCodes.KEY_DOWN)      this.offsetSelectionOrScrollbar( 1, true);
+        else if (keyCode == KeyCodes.KEY_PAGE_UP)   this.offsetSelectionOrScrollbar(-this.maxVisibleBrowserEntries / 2, true);
+        else if (keyCode == KeyCodes.KEY_PAGE_DOWN) this.offsetSelectionOrScrollbar( this.maxVisibleBrowserEntries / 2, true);
+        else if (keyCode == KeyCodes.KEY_HOME)      this.offsetSelectionOrScrollbar(-this.listContents.size(), true);
+        else if (keyCode == KeyCodes.KEY_END)       this.offsetSelectionOrScrollbar( this.listContents.size(), true);
         else return false;
 
         return true;

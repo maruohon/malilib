@@ -8,6 +8,7 @@
         "MixinGameRenderer",
         "MixinGuiScreen",
         "MixinKeyboardListener",
+        "MixinMinecraft",
         "MixinMouseHelper"
     ],
     "injectors": {

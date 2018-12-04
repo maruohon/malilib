@@ -29,6 +29,14 @@ public class ConfigManager
         }
     }
 
+    public void loadAllConfigs()
+    {
+        for (IConfigHandler handler : this.configHandlers.values())
+        {
+            handler.load();
+        }
+    }
+
     public void saveAllConfigs()
     {
         for (IConfigHandler handler : this.configHandlers.values())

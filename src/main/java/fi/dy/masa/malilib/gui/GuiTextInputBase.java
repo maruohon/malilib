@@ -91,7 +91,7 @@ public abstract class GuiTextInputBase extends GuiDialogBase
     @Override
     public boolean onKeyTyped(int keyCode, int scanCode, int modifiers)
     {
-        if (keyCode == KeyCodes.KEY_RETURN)
+        if (keyCode == KeyCodes.KEY_ENTER)
         {
             // Only close the GUI if the value was successfully applied
             if (this.applyValue(this.textField.getText()))

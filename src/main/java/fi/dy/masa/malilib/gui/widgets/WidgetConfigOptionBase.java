@@ -117,7 +117,7 @@ public abstract class WidgetConfigOptionBase extends WidgetBase
     {
         if (this.textField != null)
         {
-            if (keyCode == KeyCodes.KEY_RETURN)
+            if (keyCode == KeyCodes.KEY_ENTER)
             {
                 this.applyNewValueToConfig();
             }

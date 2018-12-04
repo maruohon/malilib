@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import javax.annotation.Nullable;
-import org.lwjgl.glfw.GLFW;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.config.MaLiLibConfigs;
 import fi.dy.masa.malilib.config.options.ConfigBoolean;
@@ -13,6 +12,7 @@ import fi.dy.masa.malilib.util.IF3KeyStateSetter;
 import fi.dy.masa.malilib.util.KeyCodes;
 import fi.dy.masa.malilib.util.StringUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.util.InputMappings;
 
 public class KeybindMulti implements IKeybind
 {
@@ -302,29 +302,18 @@ public class KeybindMulti implements IKeybind
         this.clearKeys();
         String[] keys = str.split(",");
 
-        for (String key : keys)
+        for (String keyName : keys)
         {
-            key = key.trim();
+            keyName = keyName.trim();
 
-            if (key.isEmpty() == false)
+            if (keyName.isEmpty() == false)
             {
-                // FIXME
-                int keyCode = 0; //Keyboard.getKeyIndex(key);
+                int keyCode = KeyCodes.getKeyCodeFromName(keyName);
 
                 if (keyCode != KeyCodes.KEY_NONE)
                 {
                     this.addKey(keyCode);
-                    continue;
                 }
-
-                /* FIXME
-                keyCode = Mouse.getButtonIndex(key);
-
-                if (keyCode >= 0 && keyCode < Mouse.getButtonCount())
-                {
-                    this.addKey(keyCode - 100);
-                }
-                */
             }
         }
     }
@@ -336,17 +325,16 @@ public class KeybindMulti implements IKeybind
         return keybind;
     }
 
-    public static boolean isKeyDown(long window, int keyCode)
+    public static boolean isKeyDown(int keyCode)
     {
-        // FIXME?
-        if (keyCode > 0)
+        if (keyCode >= 0)
         {
-            return GLFW.glfwGetKey(window, keyCode) == 0;
+            return InputMappings.isKeyDown(keyCode);
         }
 
         keyCode += 100;
 
-        return keyCode >= 0 && GLFW.glfwGetKey(window, keyCode) == 0;
+        return keyCode >= 0 && InputMappings.isKeyDown(keyCode);
     }
 
     /**
@@ -382,7 +370,7 @@ public class KeybindMulti implements IKeybind
     /**
      * NOT PUBLIC API - DO NOT CALL FROM MOD CODE!!!
      */
-    public static void reCheckPressedKeys(long window)
+    public static void reCheckPressedKeys()
     {
         Iterator<Integer> iter = pressedKeys.iterator();
 
@@ -390,7 +378,7 @@ public class KeybindMulti implements IKeybind
         {
             int keyCode = iter.next().intValue();
 
-            if (isKeyDown(window, keyCode) == false)
+            if (isKeyDown(keyCode) == false)
             {
                 iter.remove();
             }
@@ -403,14 +391,12 @@ public class KeybindMulti implements IKeybind
         }
     }
 
-    private static void printKeybindDebugMessage(int eventKey, int scanCode, boolean eventKeyState)
+    private static void printKeybindDebugMessage(int keyCode, int scanCode, boolean keyState)
     {
-        //String keyName = eventKey > 0 ? Keyboard.getKeyName(eventKey) : Mouse.getButtonName(eventKey + 100);
-        // FIXME?
-        String keyName = GLFW.glfwGetKeyName(eventKey, scanCode);
-        String type = eventKeyState ? "PRESS" : "RELEASE";
+        String keyName = keyCode != KeyCodes.KEY_NONE ? KeyCodes.getNameForKey(keyCode) : "<unknown>";
+        String type = keyState ? "PRESS" : "RELEASE";
         String held = getActiveKeysString();
-        String msg = String.format("%s %s (%d), held keys: %s", type, keyName, eventKey, held);
+        String msg = String.format("%s %s (%d), held keys: %s", type, keyName, keyCode, held);
 
         MaLiLib.logger.info(msg);
 
@@ -453,23 +439,6 @@ public class KeybindMulti implements IKeybind
     @Nullable
     public static String getStorageStringForKeyCode(int keyCode)
     {
-        // FIXME ?
-        if (keyCode > 0)
-        {
-            int scanCode = GLFW.glfwGetKeyScancode(keyCode);
-            return GLFW.glfwGetKeyName(keyCode, scanCode);
-        }
-        else if (keyCode < 0)
-        {
-            keyCode += 100;
-
-            if (keyCode >= 0)
-            {
-                int scanCode = GLFW.glfwGetKeyScancode(keyCode);
-                return GLFW.glfwGetKeyName(keyCode, scanCode);
-            }
-        }
-
-        return null;
+        return KeyCodes.getNameForKey(keyCode);
     }
 }

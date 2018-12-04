@@ -18,15 +18,4 @@ public abstract class MixinGameRenderer
     {
         RenderEventHandler.getInstance().onRenderWorldLast(partialTicks);
     }
-
-    /*
-    @Inject(method = "updateCameraAndRender(FJZ)V", at = @At(
-            value = "INVOKE",
-            target = "Lnet/minecraft/client/gui/GuiIngame;renderGameOverlay(F)V",
-            shift = Shift.AFTER))
-    private void onRenderGameOverlayPost(float partialTicks, long nanoTime, boolean renderWorldIn, CallbackInfo ci)
-    {
-        RenderEventHandler.getInstance().onRenderGameOverlayPost(partialTicks);
-    }
-    */
 }

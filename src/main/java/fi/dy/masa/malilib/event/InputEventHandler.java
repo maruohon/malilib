@@ -3,7 +3,6 @@ package fi.dy.masa.malilib.event;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.lwjgl.glfw.GLFW;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import fi.dy.masa.malilib.hotkeys.IHotkey;
@@ -31,12 +30,12 @@ public class InputEventHandler implements IKeybindManager
 
     private InputEventHandler()
     {
-        this.modifierKeys.add(KeyCodes.KEY_LSHIFT);
-        this.modifierKeys.add(KeyCodes.KEY_RSHIFT);
-        this.modifierKeys.add(KeyCodes.KEY_LCONTROL);
-        this.modifierKeys.add(KeyCodes.KEY_RCONTROL);
-        this.modifierKeys.add(KeyCodes.KEY_LMENU);
-        this.modifierKeys.add(KeyCodes.KEY_RMENU);
+        this.modifierKeys.add(KeyCodes.KEY_LEFT_SHIFT);
+        this.modifierKeys.add(KeyCodes.KEY_RIGHT_SHIFT);
+        this.modifierKeys.add(KeyCodes.KEY_LEFT_CONTROL);
+        this.modifierKeys.add(KeyCodes.KEY_RIGHT_CONTROL);
+        this.modifierKeys.add(KeyCodes.KEY_LEFT_ALT);
+        this.modifierKeys.add(KeyCodes.KEY_RIGHT_ALT);
     }
 
     public static InputEventHandler getInstance()
@@ -85,6 +84,9 @@ public class InputEventHandler implements IKeybindManager
         this.mouseHandlers.remove(handler);
     }
 
+    /**
+     * NOT PUBLIC API - DO NOT CALL
+     */
     public void updateUsedKeys()
     {
         this.hotkeyMap.clear();
@@ -100,7 +102,7 @@ public class InputEventHandler implements IKeybindManager
         return this.allKeybinds;
     }
 
-    public boolean isModifierKey(int eventKey)
+    private boolean isModifierKey(int eventKey)
     {
         return this.modifierKeys.contains(eventKey);
     }
@@ -126,7 +128,7 @@ public class InputEventHandler implements IKeybindManager
         this.allKeybinds.add(cat);
     }
 
-    protected boolean checkKeyBindsForChanges(int eventKey)
+    private boolean checkKeyBindsForChanges(int eventKey)
     {
         boolean cancel = false;
         Collection<IKeybind> keybinds = this.hotkeyMap.get(eventKey);
@@ -143,6 +145,9 @@ public class InputEventHandler implements IKeybindManager
         return cancel;
     }
 
+    /**
+     * NOT PUBLIC API - DO NOT CALL
+     */
     public void tickKeybinds()
     {
         /*
@@ -153,6 +158,9 @@ public class InputEventHandler implements IKeybindManager
         */
     }
 
+    /**
+     * NOT PUBLIC API - DO NOT CALL
+     */
     public boolean onKeyInput(int keyCode, int scanCode, boolean eventKeyState, boolean isGui)
     {
         boolean cancel = false;
@@ -191,20 +199,19 @@ public class InputEventHandler implements IKeybindManager
         return overrideCancel || (cancel && this.isModifierKey(keyCode) == false);
     }
 
+    /**
+     * NOT PUBLIC API - DO NOT CALL
+     */
     public boolean onMouseClick(int mouseX, int mouseY, final int eventButton, final boolean eventButtonState, boolean isGui)
     {
         boolean cancel = false;
 
         if (eventButton != -1)
         {
-            if (eventButton != -1)
-            {
-                int scanCode = GLFW.glfwGetKeyScancode(eventButton); // FIXME 1.13?
-                // Update the cached pressed keys status
-                KeybindMulti.onKeyInputPre(eventButton - 100, scanCode, eventButtonState);
+            // Update the cached pressed keys status
+            KeybindMulti.onKeyInputPre(eventButton - 100, 0, eventButtonState);
 
-                cancel = this.checkKeyBindsForChanges(eventButton - 100);
-            }
+            cancel = this.checkKeyBindsForChanges(eventButton - 100);
 
             if (this.mouseHandlers.isEmpty() == false)
             {
@@ -224,6 +231,9 @@ public class InputEventHandler implements IKeybindManager
         return cancel;
     }
 
+    /**
+     * NOT PUBLIC API - DO NOT CALL
+     */
     public boolean onMouseScroll(final int mouseX, final int mouseY, final double amount, boolean isGui)
     {
         boolean cancel = false;
@@ -248,6 +258,9 @@ public class InputEventHandler implements IKeybindManager
         return cancel;
     }
 
+    /**
+     * NOT PUBLIC API - DO NOT CALL
+     */
     public void onMouseMove(final int mouseX, final int mouseY, boolean isGui)
     {
         if (this.mouseHandlers.isEmpty() == false)

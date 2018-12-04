@@ -53,12 +53,12 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
     @Override
     public boolean onKeyTyped(int keyCode, int scanCode, int modifiers)
     {
-        if ((keyCode == KeyCodes.KEY_BACK || keyCode == KeyCodes.KEY_LEFT) && this.currentDirectoryIsRoot() == false)
+        if ((keyCode == KeyCodes.KEY_BACKSPACE || keyCode == KeyCodes.KEY_LEFT) && this.currentDirectoryIsRoot() == false)
         {
             this.switchToParentDirectory();
             return true;
         }
-        else if ((keyCode == KeyCodes.KEY_RIGHT || keyCode == KeyCodes.KEY_RETURN) &&
+        else if ((keyCode == KeyCodes.KEY_RIGHT || keyCode == KeyCodes.KEY_ENTER) &&
                   this.getSelectedEntry() != null && this.getSelectedEntry().getType() == DirectoryEntryType.DIRECTORY)
         {
             this.switchToDirectory(new File(this.getSelectedEntry().getDirectory(), this.getSelectedEntry().getName()));
