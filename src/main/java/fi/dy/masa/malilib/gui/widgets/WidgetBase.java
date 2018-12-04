@@ -74,7 +74,7 @@ public abstract class WidgetBase
         return false;
     }
 
-    public final boolean onKeyTyped(char typedChar, int keyCode)
+    public final boolean onKeyTyped(int keyCode, int scanCode, int modifiers)
     {
         boolean handled = false;
 
@@ -82,7 +82,7 @@ public abstract class WidgetBase
         {
             for (WidgetBase widget : this.subWidgets)
             {
-                if (widget.onKeyTyped(typedChar, keyCode))
+                if (widget.onKeyTyped(keyCode, scanCode, modifiers))
                 {
                     // Don't call super if the key press got handled
                     handled = true;
@@ -92,13 +92,13 @@ public abstract class WidgetBase
 
         if (handled == false)
         {
-            handled = this.onKeyTypedImpl(typedChar, keyCode);
+            handled = this.onKeyTypedImpl(keyCode, scanCode, modifiers);
         }
 
         return handled;
     }
 
-    protected boolean onKeyTypedImpl(char typedChar, int keyCode)
+    protected boolean onKeyTypedImpl(int keyCode, int scanCode, int modifiers)
     {
         return false;
     }

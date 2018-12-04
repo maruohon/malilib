@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.util;
 
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import net.minecraft.block.BlockShulkerBox;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ClickType;
@@ -9,6 +10,7 @@ import net.minecraft.inventory.ContainerPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -331,7 +333,9 @@ public class InventoryUtils
             {
                 map.addTo(new ItemType(stack, false, true), stack.getCount());
 
-                if (stack.getItem() instanceof ItemShulkerBox && shulkerBoxHasItems(stack))
+                if (stack.getItem() instanceof ItemBlock &&
+                    ((ItemBlock) stack.getItem()).getBlock() instanceof BlockShulkerBox &&
+                    shulkerBoxHasItems(stack))
                 {
                     Object2IntOpenHashMap<ItemType> boxCounts = getStoredItemCounts(stack);
 

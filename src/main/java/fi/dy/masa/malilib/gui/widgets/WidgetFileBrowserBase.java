@@ -8,7 +8,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import javax.annotation.Nullable;
-import org.lwjgl.input.Keyboard;
 import fi.dy.masa.malilib.gui.interfaces.IDirectoryCache;
 import fi.dy.masa.malilib.gui.interfaces.IDirectoryNavigator;
 import fi.dy.masa.malilib.gui.interfaces.IFileBrowserIconProvider;
@@ -16,6 +15,7 @@ import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
 import fi.dy.masa.malilib.gui.widgets.WidgetFileBrowserBase.DirectoryEntry;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.FileUtils;
+import fi.dy.masa.malilib.util.KeyCodes;
 
 public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntry, WidgetDirectoryEntry> implements IDirectoryNavigator
 {
@@ -51,14 +51,14 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
     }
 
     @Override
-    public boolean onKeyTyped(char typedChar, int keyCode)
+    public boolean onKeyTyped(int keyCode, int scanCode, int modifiers)
     {
-        if ((keyCode == Keyboard.KEY_BACK || keyCode == Keyboard.KEY_LEFT) && this.currentDirectoryIsRoot() == false)
+        if ((keyCode == KeyCodes.KEY_BACK || keyCode == KeyCodes.KEY_LEFT) && this.currentDirectoryIsRoot() == false)
         {
             this.switchToParentDirectory();
             return true;
         }
-        else if ((keyCode == Keyboard.KEY_RIGHT || keyCode == Keyboard.KEY_RETURN) &&
+        else if ((keyCode == KeyCodes.KEY_RIGHT || keyCode == KeyCodes.KEY_RETURN) &&
                   this.getSelectedEntry() != null && this.getSelectedEntry().getType() == DirectoryEntryType.DIRECTORY)
         {
             this.switchToDirectory(new File(this.getSelectedEntry().getDirectory(), this.getSelectedEntry().getName()));
@@ -66,7 +66,7 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
         }
         else
         {
-            return super.onKeyTyped(typedChar, keyCode);
+            return super.onKeyTyped(keyCode, scanCode, modifiers);
         }
     }
 

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import javax.annotation.Nullable;
-import org.lwjgl.input.Keyboard;
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.config.IConfigBase;
@@ -19,6 +18,7 @@ import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
 import fi.dy.masa.malilib.gui.interfaces.IKeybindConfigGui;
 import fi.dy.masa.malilib.gui.widgets.WidgetConfigOption;
 import fi.dy.masa.malilib.gui.widgets.WidgetListConfigOptions;
+import fi.dy.masa.malilib.util.KeyCodes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 
@@ -112,7 +112,7 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
     {
         super.initGui();
 
-        Keyboard.enableRepeatEvents(true);
+        this.mc.keyboardListener.enableRepeatEvents(true);
     }
 
     @Override
@@ -125,7 +125,7 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
             this.getListWidget().clearConfigsModifiedFlag();
         }
 
-        Keyboard.enableRepeatEvents(false);
+        this.mc.keyboardListener.enableRepeatEvents(false);
     }
 
     protected void onSettingsChanged()
@@ -139,7 +139,7 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
     }
 
     @Override
-    public boolean onKeyTyped(char typedChar, int keyCode)
+    public boolean onKeyTyped(int keyCode, int scanCode, int modifiers)
     {
         if (this.activeKeybindButton != null)
         {
@@ -148,12 +148,12 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
         }
         else
         {
-            if (this.getListWidget().onKeyTyped(typedChar, keyCode))
+            if (this.getListWidget().onKeyTyped(keyCode, scanCode, modifiers))
             {
                 return true;
             }
 
-            if (keyCode == Keyboard.KEY_ESCAPE && this.parentScreen != this.mc.currentScreen)
+            if (keyCode == KeyCodes.KEY_ESCAPE && this.parentScreen != this.mc.currentScreen)
             {
                 this.mc.displayGuiScreen(this.parentScreen);
                 return true;

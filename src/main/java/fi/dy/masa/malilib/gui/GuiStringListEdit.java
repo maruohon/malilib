@@ -1,8 +1,6 @@
 package fi.dy.masa.malilib.gui;
 
-import java.io.IOException;
 import javax.annotation.Nullable;
-import org.lwjgl.input.Keyboard;
 import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.config.IConfigStringList;
 import fi.dy.masa.malilib.gui.interfaces.IConfigGui;
@@ -10,9 +8,9 @@ import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
 import fi.dy.masa.malilib.gui.widgets.WidgetListStringList;
 import fi.dy.masa.malilib.gui.widgets.WidgetStringListEntry;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.util.KeyCodes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.resources.I18n;
 
 public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEntry, WidgetListStringList>
@@ -125,14 +123,14 @@ public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEntry
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks)
+    public void render(int mouseX, int mouseY, float partialTicks)
     {
         if (this.getParent() != null)
         {
-            this.getParent().drawScreen(mouseX, mouseY, partialTicks);
+            this.getParent().render(mouseX, mouseY, partialTicks);
         }
 
-        super.drawScreen(mouseX, mouseY, partialTicks);
+        super.render(mouseX, mouseY, partialTicks);
     }
 
     @Override
@@ -148,22 +146,22 @@ public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEntry
     }
 
     @Override
-    protected void keyTyped(char typedChar, int keyCode) throws IOException
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers)
     {
-        this.onKeyTyped(typedChar, keyCode);
+        return this.onKeyTyped(keyCode, scanCode, modifiers);
     }
 
     @Override
-    public boolean onKeyTyped(char typedChar, int keyCode)
+    public boolean onKeyTyped(int keyCode, int scanCode, int modifiers)
     {
-        if (keyCode == Keyboard.KEY_ESCAPE && this.dialogHandler != null)
+        if (keyCode == KeyCodes.KEY_ESCAPE && this.dialogHandler != null)
         {
             this.dialogHandler.closeDialog();
             return true;
         }
         else
         {
-            return super.onKeyTyped(typedChar, keyCode);
+            return super.onKeyTyped(keyCode, scanCode, modifiers);
         }
     }
 }

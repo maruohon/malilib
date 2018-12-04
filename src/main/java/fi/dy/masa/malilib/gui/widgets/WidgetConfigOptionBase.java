@@ -3,7 +3,6 @@ package fi.dy.masa.malilib.gui.widgets;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
-import org.lwjgl.input.Keyboard;
 import fi.dy.masa.malilib.config.IConfigResettable;
 import fi.dy.masa.malilib.config.gui.ConfigOptionChangeListenerTextField;
 import fi.dy.masa.malilib.gui.GuiTextFieldWrapper;
@@ -11,6 +10,7 @@ import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.gui.wrappers.ButtonWrapper;
+import fi.dy.masa.malilib.util.KeyCodes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.resources.I18n;
@@ -113,17 +113,17 @@ public abstract class WidgetConfigOptionBase extends WidgetBase
     }
 
     @Override
-    public boolean onKeyTypedImpl(char typedChar, int keyCode)
+    public boolean onKeyTypedImpl(int keyCode, int scanCode, int modifiers)
     {
         if (this.textField != null)
         {
-            if (keyCode == Keyboard.KEY_RETURN)
+            if (keyCode == KeyCodes.KEY_RETURN)
             {
                 this.applyNewValueToConfig();
             }
             else
             {
-                return this.textField.keyTyped(typedChar, keyCode);
+                return this.textField.keyTyped(keyCode, scanCode, modifiers);
             }
         }
 
@@ -148,7 +148,7 @@ public abstract class WidgetConfigOptionBase extends WidgetBase
     {
         if (this.textField != null)
         {
-            this.textField.getTextField().drawTextBox();
+            this.textField.getTextField().drawTextField(mouseX, mouseY, 0f);
         }
     }
 }

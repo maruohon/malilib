@@ -1,10 +1,10 @@
 package fi.dy.masa.malilib.gui;
 
 import javax.annotation.Nullable;
-import org.lwjgl.input.Keyboard;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.util.KeyCodes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.resources.I18n;
@@ -54,7 +54,7 @@ public abstract class GuiTextInputBase extends GuiDialogBase
 
         this.createButton(x, y, buttonWidth, ButtonType.CANCEL);
 
-        Keyboard.enableRepeatEvents(true);
+        this.mc.keyboardListener.enableRepeatEvents(true);
     }
 
     protected void createButton(int x, int y, int buttonWidth, ButtonType type)
@@ -74,7 +74,7 @@ public abstract class GuiTextInputBase extends GuiDialogBase
     {
         if (this.getParent() != null)
         {
-            this.getParent().drawScreen(mouseX, mouseY, partialTicks);
+            this.getParent().render(mouseX, mouseY, partialTicks);
         }
 
         RenderUtils.drawOutlinedBox(this.dialogLeft, this.dialogTop, this.dialogWidth, this.dialogHeight, 0xB0000000, COLOR_HORIZONTAL_BAR);
@@ -83,15 +83,15 @@ public abstract class GuiTextInputBase extends GuiDialogBase
         this.drawString(this.fontRenderer, this.getTitle(), this.dialogLeft + 10, this.dialogTop + 4, COLOR_WHITE);
 
         //super.drawScreen(mouseX, mouseY, partialTicks);
-        this.textField.drawTextBox();
+        this.textField.drawTextField(mouseX, mouseY, partialTicks);
 
         this.drawButtons(mouseX, mouseY, partialTicks);
     }
 
     @Override
-    public boolean onKeyTyped(char typedChar, int keyCode)
+    public boolean onKeyTyped(int keyCode, int scanCode, int modifiers)
     {
-        if (keyCode == Keyboard.KEY_RETURN)
+        if (keyCode == KeyCodes.KEY_RETURN)
         {
             // Only close the GUI if the value was successfully applied
             if (this.applyValue(this.textField.getText()))
@@ -101,7 +101,7 @@ public abstract class GuiTextInputBase extends GuiDialogBase
 
             return true;
         }
-        else if (keyCode == Keyboard.KEY_ESCAPE)
+        else if (keyCode == KeyCodes.KEY_ESCAPE)
         {
             this.mc.displayGuiScreen(this.getParent());
             return true;
@@ -109,10 +109,10 @@ public abstract class GuiTextInputBase extends GuiDialogBase
 
         if (this.textField.isFocused())
         {
-            return this.textField.textboxKeyTyped(typedChar, keyCode);
+            return this.textField.keyPressed(keyCode, scanCode, modifiers);
         }
 
-        return super.onKeyTyped(typedChar, keyCode);
+        return super.onKeyTyped(keyCode, scanCode, modifiers);
     }
 
     @Override

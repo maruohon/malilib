@@ -2,8 +2,8 @@ package fi.dy.masa.malilib.gui.widgets;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.lwjgl.input.Keyboard;
 import fi.dy.masa.malilib.gui.GuiTextFieldWrapper;
+import fi.dy.masa.malilib.util.KeyCodes;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 
@@ -48,9 +48,9 @@ public abstract class WidgetListConfigOptionsBase<TYPE, WIDGET extends WidgetCon
     }
 
     @Override
-    public boolean onKeyTyped(char typedChar, int keyCode)
+    public boolean onKeyTyped(int keyCode, int scanCode, int modifiers)
     {
-        if (keyCode == Keyboard.KEY_TAB)
+        if (keyCode == KeyCodes.KEY_TAB)
         {
             this.applyPendingModifications();
             return this.changeTextFieldFocus(GuiScreen.isShiftKeyDown());
@@ -59,13 +59,13 @@ public abstract class WidgetListConfigOptionsBase<TYPE, WIDGET extends WidgetCon
         {
             for (WIDGET widget : this.listWidgets)
             {
-                if (widget.onKeyTyped(typedChar, keyCode))
+                if (widget.onKeyTyped(keyCode, scanCode, modifiers))
                 {
                     return true;
                 }
             }
 
-            return super.onKeyTyped(typedChar, keyCode);
+            return super.onKeyTyped(keyCode, scanCode, modifiers);
         }
     }
 

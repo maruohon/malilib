@@ -3,9 +3,15 @@ package fi.dy.masa.malilib.util;
 import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
+import net.minecraft.client.Minecraft;
 
 public class FileUtils
 {
+    public static File getConfigDirectory()
+    {
+        return new File(Minecraft.getInstance().gameDir, "config");
+    }
+
     public static File getCanonicalFileIfPossible(File file)
     {
         try

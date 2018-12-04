@@ -17,7 +17,7 @@ public class ConfigOptionChangeListenerTextField
         this.buttonReset = buttonReset;
     }
 
-    public void onKeyTyped(int keyCode)
+    public void onKeyTyped(int keyCode, int scanCode, int modifiers)
     {
         this.buttonReset.enabled = this.config.isModified(this.textField.getText());
     }

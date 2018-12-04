@@ -4,10 +4,11 @@
     "refmap": "mixins.malilib.refmap.json",
     "minVersion": "0.6",
     "client": [
-        "MixinEntityRenderer",
+        "IGuiTextField",
+        "MixinGameRenderer",
         "MixinGuiScreen",
-        "MixinMinecraft",
-        "MixinTabCompleter"
+        "MixinKeyboardListener",
+        "MixinMouseHelper"
     ],
     "injectors": {
         "defaultRequire": 1

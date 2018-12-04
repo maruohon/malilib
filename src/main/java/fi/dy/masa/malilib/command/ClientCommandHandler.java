@@ -1,17 +1,6 @@
 package fi.dy.masa.malilib.command;
 
-import java.util.List;
-import fi.dy.masa.malilib.LiteModMaLiLib;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiChat;
-import net.minecraft.command.CommandHandler;
-import net.minecraft.command.ICommand;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.TextFormatting;
-
-public class ClientCommandHandler extends CommandHandler
+public class ClientCommandHandler// extends CommandHandler
 {
     public static final ClientCommandHandler INSTANCE = new ClientCommandHandler();
 
@@ -24,6 +13,7 @@ public class ClientCommandHandler extends CommandHandler
      * 
      * @return 1 if successfully executed, -1 if no permission or wrong usage, 0 if it doesn't exist
      */
+    /*
     @Override
     public int executeCommand(ICommandSender sender, String message)
     {
@@ -121,4 +111,5 @@ public class ClientCommandHandler extends CommandHandler
     {
         return Minecraft.getMinecraft().getIntegratedServer();
     }
+    */
 }

@@ -120,7 +120,7 @@ public class StringUtils
         StringBuilder sb = new StringBuilder(128);
         sb.append(prefix);
 
-        FontRenderer font = Minecraft.getMinecraft().fontRenderer;
+        FontRenderer font = Minecraft.getInstance().fontRenderer;
         String entrySep = ", ";
         String dots = " ...";
         final int listSize = list.size();

@@ -3,16 +3,30 @@ package fi.dy.masa.malilib.hotkeys;
 public interface IMouseInputHandler
 {
     /**
-     * Called on mouse events with the key or wheel value and whether the key was pressed or released.
+     * Called on mouse button events with the key and whether the key was pressed or released.
      * @param eventButton
-     * @param dWheel
-     * @param eventKeyState
+     * @param eventButtonState
      * @return true if further processing of this mouse button event should be cancelled
      */
-    boolean onMouseInput(int eventButton, int dWheel, boolean eventButtonState);
+    default boolean onMouseClick(int mouseX, int mouseY, int eventButton, boolean eventButtonState)
+    {
+        return false;
+    }
+
+    /**
+     * Called when the mouse wheel is scrolled
+     * @param amount
+     * @return
+     */
+    default boolean onMouseScroll(int mouseX, int mouseY, double amount)
+    {
+        return false;
+    }
 
     /**
      * Called when the mouse is moved
+     * @param mouseX
+     * @param mouseY
      */
-    default void onMouseMoved() {}
+    default void onMouseMove(int mouseX, int mouseY) {}
 }

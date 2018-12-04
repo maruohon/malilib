@@ -3,8 +3,7 @@ package fi.dy.masa.malilib.event;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
+import org.lwjgl.glfw.GLFW;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import fi.dy.masa.malilib.hotkeys.IHotkey;
@@ -14,6 +13,7 @@ import fi.dy.masa.malilib.hotkeys.IKeybindProvider;
 import fi.dy.masa.malilib.hotkeys.IKeyboardInputHandler;
 import fi.dy.masa.malilib.hotkeys.IMouseInputHandler;
 import fi.dy.masa.malilib.hotkeys.KeybindMulti;
+import fi.dy.masa.malilib.util.KeyCodes;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import net.minecraft.client.resources.I18n;
 
@@ -31,12 +31,12 @@ public class InputEventHandler implements IKeybindManager
 
     private InputEventHandler()
     {
-        this.modifierKeys.add(Keyboard.KEY_LSHIFT);
-        this.modifierKeys.add(Keyboard.KEY_RSHIFT);
-        this.modifierKeys.add(Keyboard.KEY_LCONTROL);
-        this.modifierKeys.add(Keyboard.KEY_RCONTROL);
-        this.modifierKeys.add(Keyboard.KEY_LMENU);
-        this.modifierKeys.add(Keyboard.KEY_RMENU);
+        this.modifierKeys.add(KeyCodes.KEY_LSHIFT);
+        this.modifierKeys.add(KeyCodes.KEY_RSHIFT);
+        this.modifierKeys.add(KeyCodes.KEY_LCONTROL);
+        this.modifierKeys.add(KeyCodes.KEY_RCONTROL);
+        this.modifierKeys.add(KeyCodes.KEY_LMENU);
+        this.modifierKeys.add(KeyCodes.KEY_RMENU);
     }
 
     public static InputEventHandler getInstance()
@@ -153,23 +153,21 @@ public class InputEventHandler implements IKeybindManager
         */
     }
 
-    public boolean onKeyInput(boolean isGui)
+    public boolean onKeyInput(int keyCode, int scanCode, boolean eventKeyState, boolean isGui)
     {
-        int eventKey = Keyboard.getEventKey();
-        boolean eventKeyState = Keyboard.getEventKeyState();
         boolean cancel = false;
 
         // Update the cached pressed keys status
-        KeybindMulti.onKeyInputPre(eventKey, eventKeyState);
+        KeybindMulti.onKeyInputPre(keyCode, scanCode, eventKeyState);
 
-        cancel = this.checkKeyBindsForChanges(eventKey);
+        cancel = this.checkKeyBindsForChanges(keyCode);
         this.cancelKeyInput |= isGui && cancel;
 
         if (this.keyboardHandlers.isEmpty() == false)
         {
             for (IKeyboardInputHandler handler : this.keyboardHandlers)
             {
-                if (handler.onKeyInput(eventKey, eventKeyState))
+                if (handler.onKeyInput(keyCode, eventKeyState))
                 {
                     this.cancelKeyInput |= isGui;
                     return true;
@@ -190,22 +188,20 @@ public class InputEventHandler implements IKeybindManager
         // Somewhat hacky fix to prevent eating the modifier keys... >_>
         // A proper fix would likely require adding a context for the keys,
         // and only cancel if the context is currently active/valid.
-        return overrideCancel || (cancel && this.isModifierKey(eventKey) == false);
+        return overrideCancel || (cancel && this.isModifierKey(keyCode) == false);
     }
 
-    public boolean onMouseInput(boolean isGui)
+    public boolean onMouseClick(int mouseX, int mouseY, final int eventButton, final boolean eventButtonState, boolean isGui)
     {
-        final int eventButton = Mouse.getEventButton();
-        final int dWheel = Mouse.getEventDWheel();
-        final boolean eventButtonState = Mouse.getEventButtonState();
         boolean cancel = false;
 
-        if (eventButton != -1 || dWheel != 0)
+        if (eventButton != -1)
         {
             if (eventButton != -1)
             {
+                int scanCode = GLFW.glfwGetKeyScancode(eventButton); // FIXME 1.13?
                 // Update the cached pressed keys status
-                KeybindMulti.onKeyInputPre(eventButton - 100, eventButtonState);
+                KeybindMulti.onKeyInputPre(eventButton - 100, scanCode, eventButtonState);
 
                 cancel = this.checkKeyBindsForChanges(eventButton - 100);
             }
@@ -214,7 +210,7 @@ public class InputEventHandler implements IKeybindManager
             {
                 for (IMouseInputHandler handler : this.mouseHandlers)
                 {
-                    if (handler.onMouseInput(eventButton, dWheel, eventButtonState))
+                    if (handler.onMouseClick(mouseX, mouseY, eventButton, eventButtonState))
                     {
                         this.cancelKeyInput |= isGui;
                         return true;
@@ -222,17 +218,45 @@ public class InputEventHandler implements IKeybindManager
                 }
             }
         }
-        else if (this.mouseHandlers.isEmpty() == false)
+
+        this.cancelKeyInput |= isGui && cancel;
+
+        return cancel;
+    }
+
+    public boolean onMouseScroll(final int mouseX, final int mouseY, final double amount, boolean isGui)
+    {
+        boolean cancel = false;
+
+        if (amount != 0)
         {
-            for (IMouseInputHandler handler : this.mouseHandlers)
+            if (this.mouseHandlers.isEmpty() == false)
             {
-                handler.onMouseMoved();
+                for (IMouseInputHandler handler : this.mouseHandlers)
+                {
+                    if (handler.onMouseScroll(mouseX, mouseY, amount))
+                    {
+                        this.cancelKeyInput |= isGui;
+                        return true;
+                    }
+                }
             }
         }
 
         this.cancelKeyInput |= isGui && cancel;
 
         return cancel;
+    }
+
+    public void onMouseMove(final int mouseX, final int mouseY, boolean isGui)
+    {
+        if (this.mouseHandlers.isEmpty() == false)
+        {
+            for (IMouseInputHandler handler : this.mouseHandlers)
+            {
+                handler.onMouseMove(mouseX, mouseY);
+            }
+        }
     }
 
     public static class KeybindCategory implements Comparable<KeybindCategory>

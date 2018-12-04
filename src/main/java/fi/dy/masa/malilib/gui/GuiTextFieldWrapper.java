@@ -24,13 +24,13 @@ public class GuiTextFieldWrapper
         return this.listener;
     }
 
-    public boolean keyTyped(char typedChar, int keyCode)
+    public boolean keyTyped(int key, int scanCode, int modifiers)
     {
         if (this.textField.isFocused())
         {
-            boolean ret = this.textField.textboxKeyTyped(typedChar, keyCode);
+            boolean ret = this.textField.keyPressed(key, scanCode, modifiers);
 
-            this.listener.onKeyTyped(keyCode);
+            this.listener.onKeyTyped(key, scanCode, modifiers);
 
             return ret;
         }

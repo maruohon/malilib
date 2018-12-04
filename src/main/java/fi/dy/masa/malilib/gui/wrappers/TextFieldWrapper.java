@@ -32,9 +32,9 @@ public class TextFieldWrapper<T extends GuiTextField>
         }
     }
 
-    public void draw()
+    public void draw(int mouseX, int mouseY)
     {
-        this.textField.drawTextBox();
+        this.textField.drawTextField(mouseX, mouseY, 0f);
     }
 
     public boolean mouseClicked(int mouseX, int mouseY, int mouseButton)
@@ -47,9 +47,9 @@ public class TextFieldWrapper<T extends GuiTextField>
         return false;
     }
 
-    public boolean keyTyped(char typedChar, int keyCode)
+    public boolean keyTyped(int keyCode, int scanCode, int modifiers)
     {
-        if (this.textField.textboxKeyTyped(typedChar, keyCode))
+        if (this.textField.keyPressed(keyCode, scanCode, modifiers))
         {
             if (this.listener != null)
             {

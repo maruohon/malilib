@@ -1,9 +1,9 @@
 package fi.dy.masa.malilib.gui.button;
 
 import org.apache.commons.lang3.StringUtils;
-import org.lwjgl.input.Keyboard;
 import fi.dy.masa.malilib.gui.interfaces.IKeybindConfigGui;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
+import fi.dy.masa.malilib.util.KeyCodes;
 import net.minecraft.util.text.TextFormatting;
 
 public class ConfigButtonKeybind extends ButtonBase
@@ -42,7 +42,7 @@ public class ConfigButtonKeybind extends ButtonBase
     {
         if (this.selected)
         {
-            if (keyCode == Keyboard.KEY_ESCAPE)
+            if (keyCode == KeyCodes.KEY_ESCAPE)
             {
                 this.keybind.clearKeys();
                 this.host.setActiveKeybindButton(null);

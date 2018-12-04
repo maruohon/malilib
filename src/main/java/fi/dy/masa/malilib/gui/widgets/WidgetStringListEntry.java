@@ -229,7 +229,7 @@ public class WidgetStringListEntry extends WidgetConfigOptionBase
         }
 
         @Override
-        public void onKeyTyped(int keyCode)
+        public void onKeyTyped(int keyCode, int scanCode, int modifiers)
         {
             this.buttonReset.enabled = this.textField.getText().equals(this.defaultValue) == false;
         }

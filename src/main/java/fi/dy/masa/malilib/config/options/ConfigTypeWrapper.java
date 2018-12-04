@@ -2,7 +2,7 @@ package fi.dy.masa.malilib.config.options;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
-import fi.dy.masa.malilib.LiteModMaLiLib;
+import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.config.ConfigType;
 import fi.dy.masa.malilib.config.IConfigBase;
 import fi.dy.masa.malilib.config.IConfigBoolean;
@@ -136,7 +136,7 @@ public class ConfigTypeWrapper implements IConfigBoolean, IConfigDouble, IConfig
         }
         catch (Exception e)
         {
-            LiteModMaLiLib.logger.warn("Failed to read config value for {} from the JSON config", this.getName(), e);
+            MaLiLib.logger.warn("Failed to read config value for {} from the JSON config", this.getName(), e);
         }
     }
 
@@ -247,7 +247,7 @@ public class ConfigTypeWrapper implements IConfigBoolean, IConfigDouble, IConfig
         }
         catch (Exception e)
         {
-            LiteModMaLiLib.logger.warn("Failed to reset config value for {}", this.getName(), e);
+            MaLiLib.logger.warn("Failed to reset config value for {}", this.getName(), e);
         }
     }
 
@@ -375,7 +375,7 @@ public class ConfigTypeWrapper implements IConfigBoolean, IConfigDouble, IConfig
         }
         catch (Exception e)
         {
-            LiteModMaLiLib.logger.warn("Failed to read config value for {} from the JSON config", this.getName(), e);
+            MaLiLib.logger.warn("Failed to read config value for {} from the JSON config", this.getName(), e);
         }
     }
 

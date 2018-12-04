@@ -5,10 +5,12 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.LiteModMaLiLib;
+import org.lwjgl.glfw.GLFW;
+import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.config.MaLiLibConfigs;
 import fi.dy.masa.malilib.config.options.ConfigBoolean;
-import fi.dy.masa.malilib.util.IMinecraftAccessor;
+import fi.dy.masa.malilib.util.IF3KeyStateSetter;
+import fi.dy.masa.malilib.util.KeyCodes;
 import fi.dy.masa.malilib.util.StringUtils;
 import net.minecraft.client.Minecraft;
 
@@ -168,10 +170,10 @@ public class KeybindMulti implements IKeybind
         }
         else if (pressedLast == false && this.heldTime == 0)
         {
-            if (this.keyCodes.contains(Keyboard.KEY_F3))
+            if (this.keyCodes.contains(KeyCodes.KEY_F3))
             {
                 // Prevent the debug GUI from opening after the F3 key is released
-                ((IMinecraftAccessor) Minecraft.getInstance()).setActionKeyF3(true);
+                ((IF3KeyStateSetter) Minecraft.getInstance().keyboardListener).setF3KeyState(true);
             }
 
             KeyAction activateOn = this.settings.getActivateOn();
@@ -306,20 +308,23 @@ public class KeybindMulti implements IKeybind
 
             if (key.isEmpty() == false)
             {
-                int keyCode = Keyboard.getKeyIndex(key);
+                // FIXME
+                int keyCode = 0; //Keyboard.getKeyIndex(key);
 
-                if (keyCode != Keyboard.KEY_NONE)
+                if (keyCode != KeyCodes.KEY_NONE)
                 {
                     this.addKey(keyCode);
                     continue;
                 }
 
+                /* FIXME
                 keyCode = Mouse.getButtonIndex(key);
 
                 if (keyCode >= 0 && keyCode < Mouse.getButtonCount())
                 {
                     this.addKey(keyCode - 100);
                 }
+                */
             }
         }
     }
@@ -331,22 +336,23 @@ public class KeybindMulti implements IKeybind
         return keybind;
     }
 
-    public static boolean isKeyDown(int keyCode)
+    public static boolean isKeyDown(long window, int keyCode)
     {
+        // FIXME?
         if (keyCode > 0)
         {
-            return keyCode < Keyboard.getKeyCount() && Keyboard.isKeyDown(keyCode);
+            return GLFW.glfwGetKey(window, keyCode) == 0;
         }
 
         keyCode += 100;
 
-        return keyCode >= 0 && keyCode < Mouse.getButtonCount() && Mouse.isButtonDown(keyCode);
+        return keyCode >= 0 && GLFW.glfwGetKey(window, keyCode) == 0;
     }
 
     /**
      * NOT PUBLIC API - DO NOT CALL FROM MOD CODE!!!
      */
-    public static void onKeyInputPre(int keyCode, boolean state)
+    public static void onKeyInputPre(int keyCode, int scanCode, boolean state)
     {
         Integer valObj = Integer.valueOf(keyCode);
 
@@ -369,14 +375,14 @@ public class KeybindMulti implements IKeybind
 
         if (KEYBIND_DEBUG.getBooleanValue())
         {
-            printKeybindDebugMessage(keyCode, state);
+            printKeybindDebugMessage(keyCode, scanCode, state);
         }
     }
 
     /**
      * NOT PUBLIC API - DO NOT CALL FROM MOD CODE!!!
      */
-    public static void reCheckPressedKeys()
+    public static void reCheckPressedKeys(long window)
     {
         Iterator<Integer> iter = pressedKeys.iterator();
 
@@ -384,7 +390,7 @@ public class KeybindMulti implements IKeybind
         {
             int keyCode = iter.next().intValue();
 
-            if (isKeyDown(keyCode) == false)
+            if (isKeyDown(window, keyCode) == false)
             {
                 iter.remove();
             }
@@ -397,14 +403,16 @@ public class KeybindMulti implements IKeybind
         }
     }
 
-    private static void printKeybindDebugMessage(int eventKey, boolean eventKeyState)
+    private static void printKeybindDebugMessage(int eventKey, int scanCode, boolean eventKeyState)
     {
-        String keyName = eventKey > 0 ? Keyboard.getKeyName(eventKey) : Mouse.getButtonName(eventKey + 100);
+        //String keyName = eventKey > 0 ? Keyboard.getKeyName(eventKey) : Mouse.getButtonName(eventKey + 100);
+        // FIXME?
+        String keyName = GLFW.glfwGetKeyName(eventKey, scanCode);
         String type = eventKeyState ? "PRESS" : "RELEASE";
         String held = getActiveKeysString();
         String msg = String.format("%s %s (%d), held keys: %s", type, keyName, eventKey, held);
 
-        LiteModMaLiLib.logger.info(msg);
+        MaLiLib.logger.info(msg);
 
         if (KEYBIND_DEBUG_ACTIONBAR.getBooleanValue())
         {
@@ -445,17 +453,20 @@ public class KeybindMulti implements IKeybind
     @Nullable
     public static String getStorageStringForKeyCode(int keyCode)
     {
+        // FIXME ?
         if (keyCode > 0)
         {
-            return Keyboard.getKeyName(keyCode);
+            int scanCode = GLFW.glfwGetKeyScancode(keyCode);
+            return GLFW.glfwGetKeyName(keyCode, scanCode);
         }
         else if (keyCode < 0)
         {
             keyCode += 100;
 
-            if (keyCode >= 0 && keyCode < Mouse.getButtonCount())
+            if (keyCode >= 0)
             {
-                return Mouse.getButtonName(keyCode);
+                int scanCode = GLFW.glfwGetKeyScancode(keyCode);
+                return GLFW.glfwGetKeyName(keyCode, scanCode);
             }
         }
 

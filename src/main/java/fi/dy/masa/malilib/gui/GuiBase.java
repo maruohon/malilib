@@ -1,11 +1,8 @@
 package fi.dy.masa.malilib.gui;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
 import fi.dy.masa.malilib.config.IConfigBase;
 import fi.dy.masa.malilib.gui.Message.MessageType;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
@@ -20,6 +17,7 @@ import fi.dy.masa.malilib.gui.wrappers.ButtonWrapper;
 import fi.dy.masa.malilib.gui.wrappers.TextFieldWrapper;
 import fi.dy.masa.malilib.interfaces.IStringConsumer;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.util.KeyCodes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
@@ -57,6 +55,8 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     protected WidgetBase hoveredWidget = null;
     private MessageType nextMessageType = MessageType.INFO;
     protected String title = "";
+    protected double mouseX;
+    protected double mouseY;
     @Nullable
     private GuiScreen parent;
 
@@ -85,7 +85,7 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     @Override
     public void onGuiClosed()
     {
-        Keyboard.enableRepeatEvents(false);
+        Minecraft.getInstance().keyboardListener.enableRepeatEvents(false);
     }
 
     @Override
@@ -103,7 +103,7 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks)
+    public void render(int mouseX, int mouseY, float partialTicks)
     {
         this.drawScreenBackground(mouseX, mouseY);
         this.drawContents(mouseX, mouseY, partialTicks);
@@ -111,7 +111,7 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
 
         // Draw base widgets
         this.drawWidgets(mouseX, mouseY);
-        this.drawTextFields();
+        this.drawTextFields(mouseX, mouseY);
         this.drawButtons(mouseX, mouseY, partialTicks);
         //super.drawScreen(mouseX, mouseY, partialTicks);
 
@@ -121,43 +121,56 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     }
 
     @Override
-    public void handleMouseInput() throws IOException
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY)
     {
-        int mouseX = Mouse.getEventX() * this.width / this.mc.displayWidth;
-        int mouseY = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
-        int mouseWheelDelta = Mouse.getEventDWheel();
+        this.mouseX = mouseX;
+        this.mouseY = mouseY;
 
-        if (mouseWheelDelta == 0 || this.onMouseScrolled(mouseX, mouseY, mouseWheelDelta) == false)
-        {
-            super.handleMouseInput();
-        }
+        return super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
     }
 
     @Override
-    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
+    public boolean mouseScrolled(double amount)
     {
-        if (this.onMouseClicked(mouseX, mouseY, mouseButton) == false)
+        if (amount == 0 || this.onMouseScrolled((int) this.mouseX, (int) this.mouseY, (int) amount))
         {
-            super.mouseClicked(mouseX, mouseY, mouseButton);
+            return super.mouseScrolled(amount);
         }
+
+        return false;
     }
 
     @Override
-    protected void mouseReleased(int mouseX, int mouseY, int mouseButton)
+    public boolean mouseClicked(double mouseX, double mouseY, int mouseButton)
     {
-        if (this.onMouseReleased(mouseX, mouseY, mouseButton) == false)
+        if (this.onMouseClicked((int) mouseX, (int) mouseY, mouseButton) == false)
         {
-            super.mouseReleased(mouseX, mouseY, mouseButton);
+            return super.mouseClicked(mouseX, mouseY, mouseButton);
         }
+
+        return false;
     }
 
     @Override
-    protected void keyTyped(char typedChar, int keyCode) throws IOException
+    public boolean mouseReleased(double mouseX, double mouseY, int mouseButton)
     {
-        if (this.onKeyTyped(typedChar, keyCode) == false)
+        if (this.onMouseReleased((int) mouseX, (int) mouseY, mouseButton) == false)
         {
-            super.keyTyped(typedChar, keyCode);
+            return super.mouseReleased(mouseX, mouseY, mouseButton);
         }
+
+        return false;
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers)
+    {
+        if (this.onKeyTyped(keyCode, scanCode, modifiers) == false)
+        {
+            return super.keyPressed(keyCode, scanCode, modifiers);
+        }
+
+        return false;
     }
 
     public boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
@@ -211,9 +224,9 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
         return false;
     }
 
-    public boolean onKeyTyped(char typedChar, int keyCode)
+    public boolean onKeyTyped(int keyCode, int scanCode, int modifiers)
     {
-        if (keyCode == Keyboard.KEY_ESCAPE)
+        if (keyCode == KeyCodes.KEY_ESCAPE)
         {
             if (GuiScreen.isShiftKeyDown())
             {
@@ -233,13 +246,13 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
 
         for (TextFieldWrapper<?> entry : this.textFields)
         {
-            if (keyCode == Keyboard.KEY_TAB && entry.getTextField().isFocused())
+            if (keyCode == KeyCodes.KEY_TAB && entry.getTextField().isFocused())
             {
                 entry.getTextField().setFocused(false);
                 selected = i;
                 handled = true;
             }
-            else if (entry.keyTyped(typedChar, keyCode))
+            else if (entry.keyTyped(keyCode, scanCode, modifiers))
             {
                 handled = true;
             }
@@ -423,11 +436,11 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
         }
     }
 
-    protected void drawTextFields()
+    protected void drawTextFields(int mouseX, int mouseY)
     {
         for (TextFieldWrapper<?> entry : this.textFields)
         {
-            entry.draw();
+            entry.draw(mouseX, mouseY);
         }
     }
 

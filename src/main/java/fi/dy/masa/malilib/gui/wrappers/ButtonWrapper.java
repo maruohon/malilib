@@ -1,6 +1,5 @@
 package fi.dy.masa.malilib.gui.wrappers;
 
-import com.mumfrey.liteloader.modconfig.AbstractConfigPanel.ConfigOptionListener;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import net.minecraft.client.Minecraft;
@@ -21,19 +20,19 @@ public class ButtonWrapper<T extends ButtonBase>
         return this.button;
     }
 
-    public ConfigOptionListener<T> getListener()
+    public IButtonActionListener<T> getListener()
     {
         return this.listener;
     }
 
     public void draw(Minecraft minecraft, int mouseX, int mouseY, float partialTicks)
     {
-        this.button.drawButton(minecraft, mouseX, mouseY, partialTicks);
+        this.button.render(mouseX, mouseY, partialTicks);
     }
 
     public boolean mousePressed(Minecraft minecraft, int mouseX, int mouseY, int mouseButton)
     {
-        if (this.button.mousePressed(minecraft, mouseX, mouseY))
+        if (this.button.mouseClicked(mouseX, mouseY, mouseButton))
         {
             this.button.onMouseButtonClicked(mouseButton);
             this.button.playPressSound(minecraft.getSoundHandler());
@@ -49,8 +48,8 @@ public class ButtonWrapper<T extends ButtonBase>
         return false;
     }
 
-    public void mouseReleased(Minecraft minecraft, int mouseX, int mouseY)
+    public void mouseReleased(Minecraft minecraft, int mouseX, int mouseY, int mouseButton)
     {
-        this.button.mouseReleased(mouseX, mouseY);
+        this.button.mouseReleased(mouseX, mouseY, mouseButton);
     }
 }

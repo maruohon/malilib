@@ -2,7 +2,7 @@ package fi.dy.masa.malilib.config.options;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
-import fi.dy.masa.malilib.LiteModMaLiLib;
+import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.config.ConfigType;
 import fi.dy.masa.malilib.config.IConfigDouble;
 import net.minecraft.util.math.MathHelper;
@@ -105,7 +105,7 @@ public class ConfigDouble extends ConfigBase implements IConfigDouble
         }
         catch (Exception e)
         {
-            LiteModMaLiLib.logger.warn("Failed to set config value for {} from the string '{}'", this.getName(), value, e);
+            MaLiLib.logger.warn("Failed to set config value for {} from the string '{}'", this.getName(), value, e);
         }
     }
 
@@ -120,12 +120,12 @@ public class ConfigDouble extends ConfigBase implements IConfigDouble
             }
             else
             {
-                LiteModMaLiLib.logger.warn("Failed to set config value for '{}' from the JSON element '{}'", this.getName(), element);
+                MaLiLib.logger.warn("Failed to set config value for '{}' from the JSON element '{}'", this.getName(), element);
             }
         }
         catch (Exception e)
         {
-            LiteModMaLiLib.logger.warn("Failed to set config value for '{}' from the JSON element '{}'", this.getName(), element, e);
+            MaLiLib.logger.warn("Failed to set config value for '{}' from the JSON element '{}'", this.getName(), element, e);
         }
     }
 

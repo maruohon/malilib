@@ -1,0 +1,6 @@
+{
+    "id": "malilib",
+    "name": "MaLiLib",
+    "authors": [ "masa" ],
+    "listeners": [ "fi.dy.masa.malilib.MaLiLib" ]
+}

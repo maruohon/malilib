@@ -3,10 +3,10 @@ package fi.dy.masa.malilib.gui.widgets;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
-import org.lwjgl.input.Keyboard;
-import com.mumfrey.liteloader.client.gui.GuiSimpleScrollBar;
 import fi.dy.masa.malilib.gui.GuiBase;
+import fi.dy.masa.malilib.gui.GuiScrollBar;
 import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
+import fi.dy.masa.malilib.util.KeyCodes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.MathHelper;
@@ -15,7 +15,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetBase> extends Gu
 {
     protected final List<TYPE> listContents = new ArrayList<>();
     protected final List<WIDGET> listWidgets = new ArrayList<>();
-    protected final GuiSimpleScrollBar scrollBar = new GuiSimpleScrollBar();
+    protected final GuiScrollBar scrollBar = new GuiScrollBar();
     protected final int posX;
     protected final int posY;
     protected int totalWidth;
@@ -53,7 +53,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetBase> extends Gu
     {
         super.initGui();
 
-        Keyboard.enableRepeatEvents(true);
+        this.mc.keyboardListener.enableRepeatEvents(true);
         this.refreshEntries();
     }
 
@@ -62,7 +62,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetBase> extends Gu
     {
         if (mouseButton == 0 && this.scrollBar.wasMouseOver())
         {
-            this.scrollBar.setDragging(true);
+            this.scrollBar.setIsDragging(true);
             return true;
         }
 
@@ -101,7 +101,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetBase> extends Gu
     {
         if (mouseButton == 0)
         {
-            this.scrollBar.setDragging(false);
+            this.scrollBar.setIsDragging(false);
         }
 
         return super.onMouseReleased(mouseX, mouseY, mouseButton);
@@ -121,16 +121,17 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetBase> extends Gu
     }
 
     @Override
-    public boolean onKeyTyped(char typedChar, int keyCode)
+    public boolean onKeyTyped(int keyCode, int scanCode, int modifiers)
     {
-        if (keyCode == Keyboard.KEY_UP)         this.offsetSelectionOrScrollbar(-1, true);
-        else if (keyCode == Keyboard.KEY_DOWN)  this.offsetSelectionOrScrollbar( 1, true);
-        else if (keyCode == Keyboard.KEY_PRIOR) this.offsetSelectionOrScrollbar(-this.maxVisibleBrowserEntries / 2, true);
-        else if (keyCode == Keyboard.KEY_NEXT)  this.offsetSelectionOrScrollbar( this.maxVisibleBrowserEntries / 2, true);
-        else if (keyCode == Keyboard.KEY_HOME)  this.offsetSelectionOrScrollbar(-this.listContents.size(), true);
-        else if (keyCode == Keyboard.KEY_END)   this.offsetSelectionOrScrollbar( this.listContents.size(), true);
+        if (keyCode == KeyCodes.KEY_UP)         this.offsetSelectionOrScrollbar(-1, true);
+        else if (keyCode == KeyCodes.KEY_DOWN)  this.offsetSelectionOrScrollbar( 1, true);
+        else if (keyCode == KeyCodes.KEY_PRIOR) this.offsetSelectionOrScrollbar(-this.maxVisibleBrowserEntries / 2, true);
+        else if (keyCode == KeyCodes.KEY_NEXT)  this.offsetSelectionOrScrollbar( this.maxVisibleBrowserEntries / 2, true);
+        else if (keyCode == KeyCodes.KEY_HOME)  this.offsetSelectionOrScrollbar(-this.listContents.size(), true);
+        else if (keyCode == KeyCodes.KEY_END)   this.offsetSelectionOrScrollbar( this.listContents.size(), true);
+        else return false;
 
-        return false;
+        return true;
     }
 
     @Override
@@ -172,7 +173,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetBase> extends Gu
         GlStateManager.disableLighting();
         GlStateManager.color4f(1f, 1f, 1f, 1f);
 
-        this.scrollBar.drawScrollBar(mouseX, mouseY, partialTicks,
+        this.scrollBar.render(mouseX, mouseY, partialTicks,
                 this.posX + this.browserWidth - 9, this.browserEntriesStartY, 8, scrollbarHeight, totalHeight);
 
         // The value gets updated in the drawScrollBar() method above, if dragging
