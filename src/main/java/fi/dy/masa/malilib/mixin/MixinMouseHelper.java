@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.mixin;
 
+import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -43,12 +44,13 @@ public abstract class MixinMouseHelper
 
     @Inject(method = "mouseButtonCallback", cancellable = true,
             at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;IS_RUNNING_ON_MAC:Z", ordinal = 0))
-    private void onMouseClick(long handle, int button, int action, int mods, CallbackInfo ci)
+    private void onMouseClick(long handle, final int button, final int action, int mods, CallbackInfo ci)
     {
         int mouseX = (int) ((MouseHelper) (Object) this).getMouseX();
         int mouseY = (int) ((MouseHelper) (Object) this).getMouseY();
+        final boolean keyState = action == GLFW.GLFW_PRESS;
 
-        if (InputEventHandler.getInstance().onMouseClick(mouseX, mouseY, button, action == 1, this.minecraft.currentScreen != null))
+        if (InputEventHandler.getInstance().onMouseClick(mouseX, mouseY, button, keyState, this.minecraft.currentScreen != null))
         {
             ci.cancel();
         }

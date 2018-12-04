@@ -202,7 +202,7 @@ public class InputEventHandler implements IKeybindManager
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public boolean onMouseClick(int mouseX, int mouseY, final int eventButton, final boolean eventButtonState, boolean isGui)
+    public boolean onMouseClick(int mouseX, int mouseY, int eventButton, boolean eventButtonState, boolean isGui)
     {
         boolean cancel = false;
 

@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.mixin;
 
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -14,6 +15,10 @@ import net.minecraft.client.Minecraft;
 public abstract class MixinKeyboardListener implements IF3KeyStateSetter
 {
     @Shadow
+    @Final
+    private Minecraft mc;
+
+    @Shadow
     private boolean actionKeyF3;
 
     @Override
@@ -26,7 +31,7 @@ public abstract class MixinKeyboardListener implements IF3KeyStateSetter
             at = @At(value = "FIELD", target = "Lnet/minecraft/client/KeyboardListener;debugCrashKeyPressTime:J", ordinal = 0))
     private void onKeyboardInput(long windowPointer, int key, int scanCode, int action, int modifiers, CallbackInfo ci)
     {
-        if (InputEventHandler.getInstance().onKeyInput(key, scanCode, action != 0, Minecraft.getInstance().currentScreen != null))
+        if (InputEventHandler.getInstance().onKeyInput(key, scanCode, action != 0, this.mc.currentScreen != null))
         {
             ci.cancel();
         }
