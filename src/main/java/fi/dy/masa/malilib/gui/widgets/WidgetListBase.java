@@ -135,6 +135,20 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetBase> extends Gu
     }
 
     @Override
+    public boolean onCharTyped(char charIn, int modifiers)
+    {
+        for (WIDGET widget : this.listWidgets)
+        {
+            if (widget.onCharTyped(charIn, modifiers))
+            {
+                return true;
+            }
+        }
+
+        return super.onCharTyped(charIn, modifiers);
+    }
+
+    @Override
     public void drawContents(int mouseX, int mouseY, float partialTicks)
     {
         final int selected = this.selectedEntryIndex != -1 ? this.selectedEntryIndex - this.scrollBar.getValue() : -1;

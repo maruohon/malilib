@@ -116,6 +116,17 @@ public abstract class GuiTextInputBase extends GuiDialogBase
     }
 
     @Override
+    public boolean onCharTyped(char charIn, int modifiers)
+    {
+        if (this.textField.isFocused())
+        {
+            return this.textField.charTyped(charIn, modifiers);
+        }
+
+        return super.onCharTyped(charIn, modifiers);
+    }
+
+    @Override
     public boolean onMouseClicked(int mouseX, int mouseY, int button)
     {
         if (this.textField.mouseClicked(mouseX, mouseY, button))

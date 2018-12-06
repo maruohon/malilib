@@ -123,11 +123,22 @@ public abstract class WidgetConfigOptionBase extends WidgetBase
             }
             else
             {
-                return this.textField.keyTyped(keyCode, scanCode, modifiers);
+                return this.textField.onKeyTyped(keyCode, scanCode, modifiers);
             }
         }
 
         return false;
+    }
+
+    @Override
+    protected boolean onCharTypedImpl(char charIn, int modifiers)
+    {
+        if (this.textField != null && this.textField.onCharTyped(charIn, modifiers))
+        {
+            return true;
+        }
+
+        return super.onCharTypedImpl(charIn, modifiers);
     }
 
     @Override

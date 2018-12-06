@@ -103,6 +103,35 @@ public abstract class WidgetBase
         return false;
     }
 
+    public final boolean onCharTyped(char charIn, int modifiers)
+    {
+        boolean handled = false;
+
+        if (this.subWidgets.isEmpty() == false)
+        {
+            for (WidgetBase widget : this.subWidgets)
+            {
+                if (widget.onCharTyped(charIn, modifiers))
+                {
+                    // Don't call super if the key press got handled
+                    handled = true;
+                }
+            }
+        }
+
+        if (handled == false)
+        {
+            handled = this.onCharTypedImpl(charIn, modifiers);
+        }
+
+        return handled;
+    }
+
+    protected boolean onCharTypedImpl(char charIn, int modifiers)
+    {
+        return false;
+    }
+
     /**
      * Returns true if this widget can be selected by clicking at the given point
      */

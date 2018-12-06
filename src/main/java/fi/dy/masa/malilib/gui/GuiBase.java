@@ -178,6 +178,17 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
         return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
+    @Override
+    public boolean charTyped(char charIn, int modifiers)
+    {
+        if (this.onCharTyped(charIn, modifiers))
+        {
+            return true;
+        }
+
+        return super.charTyped(charIn, modifiers);
+    }
+
     public boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
         for (ButtonWrapper<?> entry : this.buttons)
@@ -257,7 +268,7 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
                 selected = i;
                 handled = true;
             }
-            else if (entry.keyTyped(keyCode, scanCode, modifiers))
+            else if (entry.onKeyTyped(keyCode, scanCode, modifiers))
             {
                 handled = true;
             }
@@ -277,6 +288,21 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
             }
 
             this.textFields.get(selected).getTextField().setFocused(true);
+        }
+
+        return handled;
+    }
+
+    public boolean onCharTyped(char charIn, int modifiers)
+    {
+        boolean handled = false;
+
+        for (TextFieldWrapper<?> entry : this.textFields)
+        {
+            if (entry.onCharTyped(charIn, modifiers))
+            {
+                handled = true;
+            }
         }
 
         return handled;

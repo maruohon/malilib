@@ -47,9 +47,24 @@ public class TextFieldWrapper<T extends GuiTextField>
         return false;
     }
 
-    public boolean keyTyped(int keyCode, int scanCode, int modifiers)
+    public boolean onKeyTyped(int keyCode, int scanCode, int modifiers)
     {
         if (this.textField.keyPressed(keyCode, scanCode, modifiers))
+        {
+            if (this.listener != null)
+            {
+                this.listener.onTextChange(this.textField);
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean onCharTyped(char charIn, int modifiers)
+    {
+        if (this.textField.charTyped(charIn, modifiers))
         {
             if (this.listener != null)
             {
