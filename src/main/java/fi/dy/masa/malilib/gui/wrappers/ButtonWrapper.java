@@ -32,7 +32,7 @@ public class ButtonWrapper<T extends ButtonBase>
 
     public boolean mousePressed(Minecraft minecraft, int mouseX, int mouseY, int mouseButton)
     {
-        if (this.button.mouseClicked(mouseX, mouseY, mouseButton))
+        if (this.button.isMouseOver(mouseX, mouseY))
         {
             this.button.onMouseButtonClicked(mouseButton);
             this.button.playPressSound(minecraft.getSoundHandler());

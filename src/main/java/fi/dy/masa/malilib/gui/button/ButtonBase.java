@@ -19,6 +19,11 @@ public abstract class ButtonBase extends GuiButton
         return this.height;
     }
 
+    public boolean isMouseOver(int mouseX, int mouseY)
+    {
+        return this.isPressable(mouseX, mouseY);
+    }
+
     public void onMouseButtonClicked(int mouseButton)
     {
     }
