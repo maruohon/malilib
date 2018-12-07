@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.render;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.lwjgl.opengl.GL11;
@@ -106,16 +107,26 @@ public class RenderUtils
             int maxLineLength = 0;
             int maxWidth = mc.currentScreen.width;
             int maxHeight = mc.currentScreen.height;
+            List<String> linesNew = new ArrayList<>();
 
-            for (String s : textLines)
+            for (String lineOrig : textLines)
             {
-                int length = font.getStringWidth(s);
+                String[] lines = lineOrig.split("\\\\n");
 
-                if (length > maxLineLength)
+                for (String line : lines)
                 {
-                    maxLineLength = length;
+                    int length = font.getStringWidth(line);
+
+                    if (length > maxLineLength)
+                    {
+                        maxLineLength = length;
+                    }
+
+                    linesNew.add(line);
                 }
             }
+
+            textLines = linesNew;
 
             int textStartX = x + 12;
             int textStartY = y - 12;
@@ -213,7 +224,13 @@ public class RenderUtils
 
     public static void drawString(FontRenderer fontRendererIn, String text, int x, int y, int color)
     {
-        fontRendererIn.drawStringWithShadow(text, (float)x, (float)y, color);
+        String[] parts = text.split("\\\\n");
+
+        for (String line : parts)
+        {
+            fontRendererIn.drawStringWithShadow(line, x, y, color);
+            y += fontRendererIn.FONT_HEIGHT + 1;
+        }
     }
 
     public static void drawHorizontalLine(int startX, int endX, int y, int color)
