@@ -106,7 +106,6 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
         this.drawScreenBackground(mouseX, mouseY);
-        this.drawContents(mouseX, mouseY, partialTicks);
         this.drawTitle(mouseX, mouseY, partialTicks);
 
         // Draw base widgets
@@ -114,6 +113,8 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
         this.drawTextFields();
         this.drawButtons(mouseX, mouseY, partialTicks);
         //super.drawScreen(mouseX, mouseY, partialTicks);
+
+        this.drawContents(mouseX, mouseY, partialTicks);
 
         this.drawButtonHoverTexts(mouseX, mouseY, partialTicks);
         this.drawHoveredWidget(mouseX, mouseY);

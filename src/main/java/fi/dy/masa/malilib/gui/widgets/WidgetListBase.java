@@ -140,6 +140,25 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetBase> extends Gu
 
         WIDGET hovered = null;
         boolean hoveredSelected = false;
+        int scrollbarHeight = this.browserHeight - 8;
+        int totalHeight = 0;
+
+        for (int i = 0; i < this.listContents.size(); ++i)
+        {
+            totalHeight += this.getBrowserEntryHeightFor(this.listContents.get(i));
+        }
+
+        totalHeight = Math.max(totalHeight, scrollbarHeight);
+
+        this.scrollBar.drawScrollBar(mouseX, mouseY, partialTicks,
+                this.posX + this.browserWidth - 9, this.browserEntriesStartY, 8, scrollbarHeight, totalHeight);
+
+        // The value gets updated in the drawScrollBar() method above, if dragging
+        if (this.scrollBar.getValue() != this.lastScrollbarPosition)
+        {
+            this.lastScrollbarPosition = this.scrollBar.getValue();
+            this.reCreateListEntryWidgets();
+        }
 
         // Draw the currently visible directory entries
         for (int i = 0; i < this.listWidgets.size(); i++)
@@ -159,28 +178,8 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetBase> extends Gu
             hovered.postRenderHovered(mouseX, mouseY, hoveredSelected);
         }
 
-        int scrollbarHeight = this.browserHeight - 8;
-        int totalHeight = 0;
-
-        for (int i = 0; i < this.listContents.size(); ++i)
-        {
-            totalHeight += this.getBrowserEntryHeightFor(this.listContents.get(i));
-        }
-
-        totalHeight = Math.max(totalHeight, scrollbarHeight);
-
         GlStateManager.disableLighting();
         GlStateManager.color(1, 1, 1, 1);
-
-        this.scrollBar.drawScrollBar(mouseX, mouseY, partialTicks,
-                this.posX + this.browserWidth - 9, this.browserEntriesStartY, 8, scrollbarHeight, totalHeight);
-
-        // The value gets updated in the drawScrollBar() method above, if dragging
-        if (this.scrollBar.getValue() != this.lastScrollbarPosition)
-        {
-            this.lastScrollbarPosition = this.scrollBar.getValue();
-            this.reCreateListEntryWidgets();
-        }
     }
 
     public void setSize(int width, int height)
