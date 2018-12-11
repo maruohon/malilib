@@ -1,14 +1,19 @@
 package fi.dy.masa.malilib.util;
 
+import java.io.File;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.command.ICommandSender;
 import net.minecraft.util.text.ChatType;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.event.ClickEvent;
 
 public class StringUtils
 {
@@ -63,6 +68,14 @@ public class StringUtils
     public static void printActionbarMessage(String key, Object... args)
     {
         Minecraft.getMinecraft().ingameGUI.addChatMessage(ChatType.GAME_INFO, new TextComponentTranslation(key, args));
+    }
+
+    public static void sendOpenFileChatMessage(ICommandSender sender, String messageKey, File file)
+    {
+        ITextComponent name = new TextComponentString(file.getName());
+        name.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, file.getAbsolutePath()));
+        name.getStyle().setUnderlined(Boolean.valueOf(true));
+        sender.sendMessage(new TextComponentTranslation(messageKey, name));
     }
 
     public static String getClampedDisplayStringStrlen(List<String> list, final int maxWidth, String prefix, String suffix)
