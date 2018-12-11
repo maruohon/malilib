@@ -206,27 +206,54 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetBase> extends Gu
         this.maxVisibleBrowserEntries = 0;
 
         final int numEntries = this.listContents.size();
-        int x = this.posX + 2;
-        int y = this.posY + 4 + this.browserEntriesOffsetY;
         int usableHeight = this.browserHeight - this.browserPaddingY - this.browserEntriesOffsetY;
         int usedHeight = 0;
+        int x = this.posX + 2;
+        int y = this.posY + 4 + this.browserEntriesOffsetY;
+        int index = this.scrollBar.getValue();
+        int height = this.createAndAddHeaderWidget(x, y, index, usableHeight, usedHeight);
 
-        for (int index = this.scrollBar.getValue(); index < numEntries; ++index)
+        if (height > 0)
         {
-            WIDGET widget = this.createListEntryWidget(x, y, index, (index & 0x1) != 0, this.listContents.get(index));
+            usedHeight += height;
+            y += height;
+        }
 
-            if ((usedHeight + widget.getHeight()) > usableHeight)
+        for ( ; index < numEntries; ++index)
+        {
+            height = this.createAndAddListEntryWidget(x, y, index, usableHeight, usedHeight);
+
+            if (height < 0)
             {
                 break;
             }
 
-            this.listWidgets.add(widget);
-            this.maxVisibleBrowserEntries++;
-            y += widget.getHeight();
-            usedHeight += widget.getHeight();
+            usedHeight += height;
+            y += height;
         }
 
         this.scrollBar.setMaxValue(this.listContents.size() - this.maxVisibleBrowserEntries);
+    }
+
+    protected int createAndAddListEntryWidget(int x, int y, int listIndex, int usableHeight, int usedHeight)
+    {
+        WIDGET widget = this.createListEntryWidget(x, y, listIndex, (listIndex & 0x1) != 0, this.listContents.get(listIndex));
+        int height = widget.getHeight();
+
+        if ((usedHeight + height) > usableHeight)
+        {
+            return -1;
+        }
+
+        this.listWidgets.add(widget);
+        this.maxVisibleBrowserEntries++;
+
+        return height;
+    }
+
+    protected int createAndAddHeaderWidget(int x, int y, int listIndexStart, int usableHeight, int usedHeight)
+    {
+        return -1;
     }
 
     public abstract void refreshEntries();
