@@ -287,7 +287,7 @@ public class RenderUtils
         ScaledResolution res = new ScaledResolution(mc);
         final int lineHeight = fontRenderer.FONT_HEIGHT + 2;
         final int bgMargin = 2;
-        final int contentHeight = lines.size() * lineHeight;
+        final int contentHeight = lines.size() * lineHeight - 2;
         double posX = xOff + bgMargin;
         double posY = yOff + bgMargin;
 
@@ -400,7 +400,7 @@ public class RenderUtils
         {
             case BOTTOM_LEFT:
             case BOTTOM_RIGHT:
-                posY = (int) (res.getScaledHeight() / scale - (contentHeight) - yOffset + 2);
+                posY = (int) (res.getScaledHeight() / scale - (contentHeight) - yOffset);
                 break;
             case CENTER:
                 posY = (int) ((res.getScaledHeight() / scale / 2.0d) - (contentHeight / 2.0d) + yOffset);
