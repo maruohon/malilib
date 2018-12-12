@@ -57,6 +57,7 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     protected WidgetBase hoveredWidget = null;
     private MessageType nextMessageType = MessageType.INFO;
     protected String title = "";
+    protected boolean useTitleHierarchy = true;
     @Nullable
     private GuiScreen parent;
 
@@ -79,7 +80,7 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
 
     public String getTitle()
     {
-        return this.parent instanceof GuiBase ? ((GuiBase) this.parent).getTitle() + " => " + this.title : this.title;
+        return (this.useTitleHierarchy && this.parent instanceof GuiBase) ? (((GuiBase) this.parent).getTitle() + " => " + this.title) : this.title;
     }
 
     @Override

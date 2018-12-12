@@ -19,6 +19,7 @@ public abstract class GuiTextInputBase extends GuiDialogBase
         this.mc = Minecraft.getMinecraft();
         this.setParent(parent);
         this.title = I18n.format(titleKey);
+        this.useTitleHierarchy = false;
         this.originalText = defaultText;
 
         this.setWidthAndHeight(260, 100);
@@ -30,13 +31,6 @@ public abstract class GuiTextInputBase extends GuiDialogBase
         this.textField.setFocused(true);
         this.textField.setText(this.originalText);
         this.textField.setCursorPositionEnd();
-    }
-
-    @Override
-    public String getTitle()
-    {
-        // Don't get the full title hierarchy that the super.getTitle() would return
-        return this.title;
     }
 
     @Override
