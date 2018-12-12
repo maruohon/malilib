@@ -16,6 +16,7 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
@@ -286,57 +287,18 @@ public class RenderUtils
         ScaledResolution res = new ScaledResolution(mc);
         final int lineHeight = fontRenderer.FONT_HEIGHT + 2;
         final int bgMargin = 2;
+        final int contentHeight = lines.size() * lineHeight;
         double posX = xOff + bgMargin;
         double posY = yOff + bgMargin;
 
         // Only Chuck Norris can divide by zero
         if (scale == 0d)
         {
-            return (int) yOff;
+            return 0;
         }
 
-        if (alignment == HudAlignment.TOP_RIGHT)
-        {
-            Collection<PotionEffect> effects = mc.player.getActivePotionEffects();
-
-            if (effects.isEmpty() == false)
-            {
-                int y1 = 0;
-                int y2 = 0;
-
-                for (PotionEffect effect : effects)
-                {
-                    Potion potion = effect.getPotion();
-
-                    if (effect.doesShowParticles() && potion.hasStatusIcon())
-                    {
-                        if (potion.isBeneficial())
-                        {
-                            y1 = 26;
-                        }
-                        else
-                        {
-                            y2 = 52;
-                            break;
-                        }
-                    }
-                }
-
-                posY += Math.max(y1, y2) / scale;
-            }
-        }
-
-        switch (alignment)
-        {
-            case BOTTOM_LEFT:
-            case BOTTOM_RIGHT:
-                posY = res.getScaledHeight() / scale - (lines.size() * lineHeight) - yOff + 2;
-                break;
-            case CENTER:
-                posY = (res.getScaledHeight() / scale / 2.0d) - (lines.size() * lineHeight / 2.0d) + yOff;
-                break;
-            default:
-        }
+        posY += getHudOffsetForPotions(alignment, scale, mc.player);
+        posY = getHudPosY((int) posY, yOff, contentHeight, scale, alignment);
 
         if (scale != 1d)
         {
@@ -384,7 +346,69 @@ public class RenderUtils
             GlStateManager.popMatrix();
         }
 
-        return (int) Math.ceil(posY);
+        return contentHeight;
+    }
+
+    public static int getHudOffsetForPotions(HudAlignment alignment, double scale, EntityPlayer player)
+    {
+        if (alignment == HudAlignment.TOP_RIGHT)
+        {
+            // Only Chuck Norris can divide by zero
+            if (scale == 0d)
+            {
+                return 0;
+            }
+
+            Collection<PotionEffect> effects = player.getActivePotionEffects();
+
+            if (effects.isEmpty() == false)
+            {
+                int y1 = 0;
+                int y2 = 0;
+
+                for (PotionEffect effect : effects)
+                {
+                    Potion potion = effect.getPotion();
+
+                    if (effect.doesShowParticles() && potion.hasStatusIcon())
+                    {
+                        if (potion.isBeneficial())
+                        {
+                            y1 = 26;
+                        }
+                        else
+                        {
+                            y2 = 52;
+                            break;
+                        }
+                    }
+                }
+
+                return (int) (Math.max(y1, y2) / scale);
+            }
+        }
+
+        return 0;
+    }
+
+    public static int getHudPosY(int yOrig, int yOffset, int contentHeight, double scale, HudAlignment alignment)
+    {
+        ScaledResolution res = new ScaledResolution(Minecraft.getMinecraft());
+        int posY = yOrig;
+
+        switch (alignment)
+        {
+            case BOTTOM_LEFT:
+            case BOTTOM_RIGHT:
+                posY = (int) (res.getScaledHeight() / scale - (contentHeight) - yOffset + 2);
+                break;
+            case CENTER:
+                posY = (int) ((res.getScaledHeight() / scale / 2.0d) - (contentHeight / 2.0d) + yOffset);
+                break;
+            default:
+        }
+
+        return posY;
     }
 
     /**
