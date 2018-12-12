@@ -31,7 +31,7 @@ public abstract class MixinMouseHelper
     }
 
     @Inject(method = "scrollCallback", cancellable = true,
-            at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;currentScreen", ordinal = 0))
+            at = @At(value = "FIELD", target = "Lnet/minecraft/client/Minecraft;currentScreen:Lnet/minecraft/client/gui/GuiScreen;", ordinal = 0))
     private void onMouseScroll(long handle, double xoffset, double yoffset, CallbackInfo ci)
     {
         MainWindow window = this.minecraft.mainWindow;
