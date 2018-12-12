@@ -23,6 +23,7 @@ targetCompatibility = 1.8
 
 repositories {
     mavenCentral()
+    maven { url 'https://www.dimdev.org/maven/' }
     maven { url 'https://www.jitpack.io' }
     maven { url 'http://repo.strezz.org/artifactory/list/Strezz-Central' }
 }
@@ -71,7 +72,7 @@ sourceSets {
 */
 
 group = config.group + "." + config.mod_id // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = config.mod_id + '-' + config.minecraft_version_out
+archivesBaseName = config.mod_file_name + '-' + config.minecraft_version_out
 version = project.minecraft.mod_version
 
 /**
