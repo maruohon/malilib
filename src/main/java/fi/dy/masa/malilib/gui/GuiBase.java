@@ -58,6 +58,7 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     protected String title = "";
     protected double mouseX;
     protected double mouseY;
+    protected boolean useTitleHierarchy = true;
     @Nullable
     private GuiScreen parent;
 
@@ -80,7 +81,7 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
 
     public String getTitle()
     {
-        return this.parent instanceof GuiBase ? ((GuiBase) this.parent).getTitle() + " => " + this.title : this.title;
+        return (this.useTitleHierarchy && this.parent instanceof GuiBase) ? (((GuiBase) this.parent).getTitle() + " => " + this.title) : this.title;
     }
 
     @Override
@@ -107,7 +108,6 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     public void render(int mouseX, int mouseY, float partialTicks)
     {
         this.drawScreenBackground(mouseX, mouseY);
-        this.drawContents(mouseX, mouseY, partialTicks);
         this.drawTitle(mouseX, mouseY, partialTicks);
 
         // Draw base widgets
@@ -115,6 +115,8 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
         this.drawTextFields(mouseX, mouseY);
         this.drawButtons(mouseX, mouseY, partialTicks);
         //super.drawScreen(mouseX, mouseY, partialTicks);
+
+        this.drawContents(mouseX, mouseY, partialTicks);
 
         this.drawButtonHoverTexts(mouseX, mouseY, partialTicks);
         this.drawHoveredWidget(mouseX, mouseY);

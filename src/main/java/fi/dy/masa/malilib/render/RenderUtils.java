@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.render;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.lwjgl.opengl.GL11;
@@ -15,6 +16,7 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.ResourceLocation;
@@ -106,16 +108,26 @@ public class RenderUtils
             int maxLineLength = 0;
             int maxWidth = mc.currentScreen.width;
             int maxHeight = mc.currentScreen.height;
+            List<String> linesNew = new ArrayList<>();
 
-            for (String s : textLines)
+            for (String lineOrig : textLines)
             {
-                int length = font.getStringWidth(s);
+                String[] lines = lineOrig.split("\\\\n");
 
-                if (length > maxLineLength)
+                for (String line : lines)
                 {
-                    maxLineLength = length;
+                    int length = font.getStringWidth(line);
+
+                    if (length > maxLineLength)
+                    {
+                        maxLineLength = length;
+                    }
+
+                    linesNew.add(line);
                 }
             }
+
+            textLines = linesNew;
 
             int textStartX = x + 12;
             int textStartY = y - 12;
@@ -213,7 +225,13 @@ public class RenderUtils
 
     public static void drawString(FontRenderer fontRendererIn, String text, int x, int y, int color)
     {
-        fontRendererIn.drawStringWithShadow(text, (float)x, (float)y, color);
+        String[] parts = text.split("\\\\n");
+
+        for (String line : parts)
+        {
+            fontRendererIn.drawStringWithShadow(line, x, y, color);
+            y += fontRendererIn.FONT_HEIGHT + 1;
+        }
     }
 
     public static void drawHorizontalLine(int startX, int endX, int y, int color)
@@ -269,57 +287,18 @@ public class RenderUtils
         MainWindow window = mc.mainWindow;
         final int lineHeight = fontRenderer.FONT_HEIGHT + 2;
         final int bgMargin = 2;
+        final int contentHeight = lines.size() * lineHeight - 2;
         double posX = xOff + bgMargin;
         double posY = yOff + bgMargin;
 
         // Only Chuck Norris can divide by zero
         if (scale == 0d)
         {
-            return (int) yOff;
+            return 0;
         }
 
-        if (alignment == HudAlignment.TOP_RIGHT)
-        {
-            Collection<PotionEffect> effects = mc.player.getActivePotionEffects();
-
-            if (effects.isEmpty() == false)
-            {
-                int y1 = 0;
-                int y2 = 0;
-
-                for (PotionEffect effect : effects)
-                {
-                    Potion potion = effect.getPotion();
-
-                    if (effect.doesShowParticles() && potion.hasStatusIcon())
-                    {
-                        if (potion.isBeneficial())
-                        {
-                            y1 = 26;
-                        }
-                        else
-                        {
-                            y2 = 52;
-                            break;
-                        }
-                    }
-                }
-
-                posY += Math.max(y1, y2) / scale;
-            }
-        }
-
-        switch (alignment)
-        {
-            case BOTTOM_LEFT:
-            case BOTTOM_RIGHT:
-                posY = window.getScaledHeight() / scale - (lines.size() * lineHeight) - yOff + 2;
-                break;
-            case CENTER:
-                posY = (window.getScaledHeight() / scale / 2.0d) - (lines.size() * lineHeight / 2.0d) + yOff;
-                break;
-            default:
-        }
+        posY += getHudOffsetForPotions(alignment, scale, mc.player);
+        posY = getHudPosY((int) posY, yOff, contentHeight, scale, alignment);
 
         if (scale != 1d)
         {
@@ -367,7 +346,69 @@ public class RenderUtils
             GlStateManager.popMatrix();
         }
 
-        return (int) Math.ceil(posY);
+        return contentHeight;
+    }
+
+    public static int getHudOffsetForPotions(HudAlignment alignment, double scale, EntityPlayer player)
+    {
+        if (alignment == HudAlignment.TOP_RIGHT)
+        {
+            // Only Chuck Norris can divide by zero
+            if (scale == 0d)
+            {
+                return 0;
+            }
+
+            Collection<PotionEffect> effects = player.getActivePotionEffects();
+
+            if (effects.isEmpty() == false)
+            {
+                int y1 = 0;
+                int y2 = 0;
+
+                for (PotionEffect effect : effects)
+                {
+                    Potion potion = effect.getPotion();
+
+                    if (effect.doesShowParticles() && potion.hasStatusIcon())
+                    {
+                        if (potion.isBeneficial())
+                        {
+                            y1 = 26;
+                        }
+                        else
+                        {
+                            y2 = 52;
+                            break;
+                        }
+                    }
+                }
+
+                return (int) (Math.max(y1, y2) / scale);
+            }
+        }
+
+        return 0;
+    }
+
+    public static int getHudPosY(int yOrig, int yOffset, int contentHeight, double scale, HudAlignment alignment)
+    {
+        MainWindow window = Minecraft.getInstance().mainWindow;
+        int posY = yOrig;
+
+        switch (alignment)
+        {
+            case BOTTOM_LEFT:
+            case BOTTOM_RIGHT:
+                posY = (int) (window.getScaledHeight() / scale - (contentHeight) - yOffset);
+                break;
+            case CENTER:
+                posY = (int) ((window.getScaledHeight() / scale / 2.0d) - (contentHeight / 2.0d) + yOffset);
+                break;
+            default:
+        }
+
+        return posY;
     }
 
     /**
