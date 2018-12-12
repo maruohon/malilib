@@ -40,7 +40,7 @@ public class Message
     {
         this.messageLines.clear();
 
-        String[] lines = message.split("\\\\n");
+        String[] lines = message.split("\\n");
 
         for (String line : lines)
         {

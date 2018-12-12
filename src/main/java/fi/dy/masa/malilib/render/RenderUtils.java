@@ -112,7 +112,7 @@ public class RenderUtils
 
             for (String lineOrig : textLines)
             {
-                String[] lines = lineOrig.split("\\\\n");
+                String[] lines = lineOrig.split("\\n");
 
                 for (String line : lines)
                 {
@@ -225,7 +225,7 @@ public class RenderUtils
 
     public static void drawString(FontRenderer fontRendererIn, String text, int x, int y, int color)
     {
-        String[] parts = text.split("\\\\n");
+        String[] parts = text.split("\\n");
 
         for (String line : parts)
         {

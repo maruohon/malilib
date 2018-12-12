@@ -136,7 +136,7 @@ public class WidgetKeybindSettings extends WidgetBase
         text.add(String.format("%s: %s", name, val));
 
         text.add("");
-        String[] parts = I18n.format("malilib.gui.label.keybind_settings.tips").split("\\\\n");
+        String[] parts = I18n.format("malilib.gui.label.keybind_settings.tips").split("\\n");
 
         for (int i = 0; i < parts.length; ++i)
         {
