@@ -3,17 +3,22 @@ package fi.dy.masa.malilib.gui.widgets;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
+import fi.dy.masa.malilib.gui.button.ButtonBase;
+import fi.dy.masa.malilib.gui.button.IButtonActionListener;
+import fi.dy.masa.malilib.gui.wrappers.ButtonWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderHelper;
 
 public abstract class WidgetBase
 {
+    protected final Minecraft mc;
     protected final int x;
     protected final int y;
     protected final int width;
     protected final int height;
     protected final float zLevel;
     protected final List<WidgetBase> subWidgets = new ArrayList<>();
+    protected final List<ButtonWrapper<?>> buttons = new ArrayList<>();
     @Nullable
     protected WidgetBase hoveredSubWidget = null;
 
@@ -24,6 +29,7 @@ public abstract class WidgetBase
         this.width = width;
         this.height = height;
         this.zLevel = zLevel;
+        this.mc = Minecraft.getMinecraft();
     }
 
     public int getWidth()
@@ -71,6 +77,15 @@ public abstract class WidgetBase
 
     protected boolean onMouseClickedImpl(int mouseX, int mouseY, int mouseButton)
     {
+        for (ButtonWrapper<?> entry : this.buttons)
+        {
+            if (entry.mousePressed(this.mc, mouseX, mouseY, mouseButton))
+            {
+                // Don't call super if the button press got handled
+                return true;
+            }
+        }
+
         return false;
     }
 
@@ -111,16 +126,14 @@ public abstract class WidgetBase
         return this.isMouseOver(mouseX, mouseY);
     }
 
-    public abstract void render(int mouseX, int mouseY, boolean selected);
-
-    public void postRenderHovered(int mouseX, int mouseY, boolean selected)
-    {
-        this.drawHoveredSubWidget(mouseX, mouseY);
-    }
-
     protected void addWidget(WidgetBase widget)
     {
         this.subWidgets.add(widget);
+    }
+
+    protected <T extends ButtonBase> void addButton(T button, IButtonActionListener<T> listener)
+    {
+        this.buttons.add(new ButtonWrapper<>(button, listener));
     }
 
     protected void addLabel(int x, int y, int width, int height, int textColor, String... lines)
@@ -140,6 +153,19 @@ public abstract class WidgetBase
             WidgetLabel label = new WidgetLabel(x, y, width, height, this.zLevel, textColor, lines);
             this.addWidget(label);
         }
+    }
+
+    public void render(int mouseX, int mouseY, boolean selected)
+    {
+        for (int i = 0; i < this.buttons.size(); ++i)
+        {
+            this.buttons.get(i).draw(this.mc, mouseX, mouseY, 0);
+        }
+    }
+
+    public void postRenderHovered(int mouseX, int mouseY, boolean selected)
+    {
+        this.drawHoveredSubWidget(mouseX, mouseY);
     }
 
     protected void drawSubWidgets(int mouseX, int mouseY)

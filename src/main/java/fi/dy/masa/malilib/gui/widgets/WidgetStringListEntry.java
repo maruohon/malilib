@@ -214,7 +214,7 @@ public class WidgetStringListEntry extends WidgetConfigOptionBase
 
         this.drawSubWidgets(mouseX, mouseY);
         this.drawTextFields(mouseX, mouseY);
-        this.drawButtons(mouseX, mouseY, 0f);
+        super.render(mouseX, mouseY, selected);
     }
 
     public static class ChangeListenerTextField extends ConfigOptionChangeListenerTextField
