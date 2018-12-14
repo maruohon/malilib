@@ -16,7 +16,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
 
-public class WidgetStringListEntry extends WidgetConfigOptionBase
+public class WidgetStringListEntry extends WidgetConfigOptionBase<String>
 {
     protected final WidgetListStringList parent;
     protected final String defaultValue;
@@ -26,7 +26,7 @@ public class WidgetStringListEntry extends WidgetConfigOptionBase
     public WidgetStringListEntry(int x, int y, int width, int height, float zLevel,
             int listIndex, boolean isOdd, String initialValue, String defaultValue, Minecraft mc, WidgetListStringList parent)
     {
-        super(x, y, width, height, zLevel, mc, parent);
+        super(x, y, width, height, zLevel, mc, parent, initialValue, listIndex);
 
         this.listIndex = listIndex;
         this.isOdd = isOdd;

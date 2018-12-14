@@ -34,7 +34,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
 
-public class WidgetConfigOption extends WidgetConfigOptionBase
+public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapper>
 {
     protected final ConfigOptionWrapper wrapper;
     protected final IKeybindConfigGui host;
@@ -43,9 +43,10 @@ public class WidgetConfigOption extends WidgetConfigOptionBase
     protected int colorDisplayPosX;
 
     public WidgetConfigOption(int x, int y, int width, int height, float zLevel, int labelWidth, int configWidth,
-            ConfigOptionWrapper wrapper, IKeybindConfigGui host, Minecraft mc, WidgetListConfigOptionsBase<?, ?> parent)
+            ConfigOptionWrapper wrapper, int listIndex, IKeybindConfigGui host, Minecraft mc,
+            WidgetListConfigOptionsBase<?, ?> parent)
     {
-        super(x, y, width, height, zLevel, mc, parent);
+        super(x, y, width, height, zLevel, mc, parent, wrapper, listIndex);
 
         this.host = host;
         this.wrapper = wrapper;

@@ -11,7 +11,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.MathHelper;
 
-public abstract class WidgetListBase<TYPE, WIDGET extends WidgetBase> extends GuiBase
+public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TYPE>> extends GuiBase
 {
     protected final List<TYPE> listContents = new ArrayList<>();
     protected final List<WIDGET> listWidgets = new ArrayList<>();
@@ -33,9 +33,8 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetBase> extends Gu
     protected int maxVisibleBrowserEntries;
     protected int selectedEntryIndex = -1;
     protected int lastScrollbarPosition = -1;
-    protected TYPE selectedEntry;
-    @Nullable
-    protected final ISelectionListener<TYPE> selectionListener;
+    @Nullable protected TYPE selectedEntry;
+    @Nullable protected final ISelectionListener<TYPE> selectionListener;
 
     public WidgetListBase(int x, int y, int width, int height, @Nullable ISelectionListener<TYPE> selectionListener)
     {
@@ -80,11 +79,11 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetBase> extends Gu
                 {
                     if (widget.canSelectAt(mouseX, mouseY, mouseButton))
                     {
-                        int entryIndex = this.scrollBar.getValue() + i;
+                        int entryIndex = widget.getListIndex();
 
-                        if (entryIndex < this.listContents.size())
+                        if (entryIndex >= 0 && entryIndex < this.listContents.size())
                         {
-                            this.setSelectedEntry(this.listContents.get(entryIndex), entryIndex);
+                            this.onEntryClicked(this.listContents.get(entryIndex), entryIndex);
                         }
                     }
 
@@ -136,8 +135,6 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetBase> extends Gu
     @Override
     public void drawContents(int mouseX, int mouseY, float partialTicks)
     {
-        final int selected = this.selectedEntryIndex != -1 ? this.selectedEntryIndex - this.scrollBar.getValue() : -1;
-
         WIDGET hovered = null;
         boolean hoveredSelected = false;
         int scrollbarHeight = this.browserHeight - 8;
@@ -164,12 +161,13 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetBase> extends Gu
         for (int i = 0; i < this.listWidgets.size(); i++)
         {
             WIDGET widget = this.listWidgets.get(i);
-            widget.render(mouseX, mouseY, i == selected);
+            boolean isSelected = widget.getEntry() == this.selectedEntry;
+            widget.render(mouseX, mouseY, isSelected);
 
             if (widget.isMouseOver(mouseX, mouseY))
             {
                 hovered = widget;
-                hoveredSelected = i == selected;
+                hoveredSelected = isSelected;
             }
         }
 
@@ -216,7 +214,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetBase> extends Gu
         if (widget != null)
         {
             this.listWidgets.add(widget);
-            this.maxVisibleBrowserEntries++;
+            //this.maxVisibleBrowserEntries++;
 
             usedHeight += widget.getHeight();
             y += widget.getHeight();
@@ -279,6 +277,12 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetBase> extends Gu
     public TYPE getSelectedEntry()
     {
         return this.selectedEntry;
+    }
+
+    protected boolean onEntryClicked(@Nullable TYPE entry, int index)
+    {
+        this.setSelectedEntry(entry, index);
+        return true;
     }
 
     public void setSelectedEntry(@Nullable TYPE entry, int index)

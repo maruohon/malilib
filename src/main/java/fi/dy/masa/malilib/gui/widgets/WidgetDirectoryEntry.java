@@ -12,7 +12,7 @@ import fi.dy.masa.malilib.util.FileUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 
-public class WidgetDirectoryEntry extends WidgetBase
+public class WidgetDirectoryEntry extends WidgetListEntryBase<DirectoryEntry>
 {
     protected final IDirectoryNavigator navigator;
     protected final DirectoryEntry entry;
@@ -21,9 +21,10 @@ public class WidgetDirectoryEntry extends WidgetBase
     protected final boolean isOdd;
 
     public WidgetDirectoryEntry(int x, int y, int width, int height, float zLevel, boolean isOdd,
-            DirectoryEntry entry, Minecraft mc, IDirectoryNavigator navigator, IFileBrowserIconProvider iconProvider)
+            DirectoryEntry entry, int listIndex, Minecraft mc,
+            IDirectoryNavigator navigator, IFileBrowserIconProvider iconProvider)
     {
-        super(x, y, width, height, zLevel);
+        super(x, y, width, height, zLevel, entry, listIndex);
 
         this.isOdd = isOdd;
         this.entry = entry;

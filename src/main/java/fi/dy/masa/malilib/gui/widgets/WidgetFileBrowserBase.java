@@ -174,7 +174,7 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
     protected WidgetDirectoryEntry createListEntryWidget(int x, int y, int listIndex, boolean isOdd, DirectoryEntry entry)
     {
         return new WidgetDirectoryEntry(x, y, this.browserEntryWidth, this.getBrowserEntryHeightFor(entry),
-                this.zLevel, isOdd, entry, this.mc, this, this.iconProvider);
+                this.zLevel, isOdd, entry, listIndex, this.mc, this, this.iconProvider);
     }
 
     protected boolean currentDirectoryIsRoot()

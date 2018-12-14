@@ -10,7 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.resources.I18n;
 
-public abstract class WidgetConfigOptionBase extends WidgetBase
+public abstract class WidgetConfigOptionBase<TYPE> extends WidgetListEntryBase<TYPE>
 {
     protected final Minecraft mc;
     protected final WidgetListConfigOptionsBase<?, ?> parent;
@@ -23,9 +23,10 @@ public abstract class WidgetConfigOptionBase extends WidgetBase
      */
     protected String lastAppliedValue;
 
-    public WidgetConfigOptionBase(int x, int y, int width, int height, float zLevel, Minecraft mc, WidgetListConfigOptionsBase<?, ?> parent)
+    public WidgetConfigOptionBase(int x, int y, int width, int height, float zLevel, Minecraft mc,
+            WidgetListConfigOptionsBase<?, ?> parent, TYPE entry, int listIndex)
     {
-        super(x, y, width, height, zLevel);
+        super(x, y, width, height, zLevel, entry, listIndex);
 
         this.mc = mc;
         this.parent = parent;

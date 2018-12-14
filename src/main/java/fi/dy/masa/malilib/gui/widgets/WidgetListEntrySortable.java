@@ -1,16 +1,17 @@
 package fi.dy.masa.malilib.gui.widgets;
 
+import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.render.RenderUtils;
 import net.minecraft.client.renderer.GlStateManager;
 
-public abstract class WidgetListEntrySortable extends WidgetBase
+public abstract class WidgetListEntrySortable<TYPE> extends WidgetListEntryBase<TYPE>
 {
     protected int columnCount = 2;
 
-    public WidgetListEntrySortable(int x, int y, int width, int height, float zLevel)
+    public WidgetListEntrySortable(int x, int y, int width, int height, float zLevel, @Nullable TYPE entry, int listIndex)
     {
-        super(x, y, width, height, zLevel);
+        super(x, y, width, height, zLevel, entry, listIndex);
     }
 
     protected abstract int getColumnPosX(int column);

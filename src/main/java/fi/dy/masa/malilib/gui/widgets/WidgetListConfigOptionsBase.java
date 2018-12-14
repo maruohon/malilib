@@ -7,7 +7,7 @@ import fi.dy.masa.malilib.gui.GuiTextFieldWrapper;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 
-public abstract class WidgetListConfigOptionsBase<TYPE, WIDGET extends WidgetConfigOptionBase> extends WidgetListBase<TYPE, WIDGET>
+public abstract class WidgetListConfigOptionsBase<TYPE, WIDGET extends WidgetConfigOptionBase<TYPE>> extends WidgetListBase<TYPE, WIDGET>
 {
     protected final List<GuiTextFieldWrapper> textFields = new ArrayList<>();
     protected boolean configsModified;
@@ -145,7 +145,7 @@ public abstract class WidgetListConfigOptionsBase<TYPE, WIDGET extends WidgetCon
             return true;
         }
 
-        for (WidgetConfigOptionBase widget : this.listWidgets)
+        for (WidgetConfigOptionBase<TYPE> widget : this.listWidgets)
         {
             if (widget.wasConfigModified())
             {
@@ -164,7 +164,7 @@ public abstract class WidgetListConfigOptionsBase<TYPE, WIDGET extends WidgetCon
 
     public void applyPendingModifications()
     {
-        for (WidgetConfigOptionBase widget : this.listWidgets)
+        for (WidgetConfigOptionBase<TYPE> widget : this.listWidgets)
         {
             if (widget.hasPendingModifications())
             {
