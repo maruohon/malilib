@@ -190,7 +190,7 @@ public class InputEventHandler implements IKeybindManager
         // Somewhat hacky fix to prevent eating the modifier keys... >_>
         // A proper fix would likely require adding a context for the keys,
         // and only cancel if the context is currently active/valid.
-        return overrideCancel || (cancel && this.isModifierKey(eventKey) == false);
+        return this.isModifierKey(eventKey) == false && (overrideCancel || cancel);
     }
 
     public boolean onMouseInput(boolean isGui)
@@ -230,7 +230,7 @@ public class InputEventHandler implements IKeybindManager
             }
         }
 
-        this.cancelKeyInput |= isGui && cancel;
+        this.cancelKeyInput = isGui && cancel;
 
         return cancel;
     }
