@@ -27,7 +27,7 @@ public abstract class MixinMouseHelper
         int mouseX = (int) (((MouseHelper) (Object) this).getMouseX() * (double) window.getScaledWidth() / (double) window.getWidth());
         int mouseY = (int) (((MouseHelper) (Object) this).getMouseY() * (double) window.getScaledHeight() / (double) window.getHeight());
 
-        InputEventHandler.getInstance().onMouseMove(mouseX, mouseY, this.minecraft.currentScreen != null);
+        InputEventHandler.getInstance().onMouseMove(mouseX, mouseY);
     }
 
     @Inject(method = "scrollCallback", cancellable = true,
@@ -39,7 +39,7 @@ public abstract class MixinMouseHelper
         int mouseY = (int) (((MouseHelper) (Object) this).getMouseY() * (double) window.getScaledHeight() / (double) window.getHeight());
         double amount = yoffset * this.minecraft.gameSettings.mouseWheelSensitivity;
 
-        if (InputEventHandler.getInstance().onMouseScroll(mouseX, mouseY, amount, this.minecraft.currentScreen != null))
+        if (InputEventHandler.getInstance().onMouseScroll(mouseX, mouseY, amount))
         {
             ci.cancel();
         }
@@ -54,7 +54,7 @@ public abstract class MixinMouseHelper
         int mouseY = (int) (((MouseHelper) (Object) this).getMouseY() * (double) window.getScaledHeight() / (double) window.getHeight());
         final boolean keyState = action == GLFW.GLFW_PRESS;
 
-        if (InputEventHandler.getInstance().onMouseClick(mouseX, mouseY, button, keyState, this.minecraft.currentScreen != null))
+        if (InputEventHandler.getInstance().onMouseClick(mouseX, mouseY, button, keyState))
         {
             ci.cancel();
         }
