@@ -1,7 +1,9 @@
 package fi.dy.masa.malilib.gui.widgets;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import com.mumfrey.liteloader.client.gui.GuiSimpleScrollBar;
@@ -16,6 +18,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
     protected final List<TYPE> listContents = new ArrayList<>();
     protected final List<WIDGET> listWidgets = new ArrayList<>();
     protected final GuiSimpleScrollBar scrollBar = new GuiSimpleScrollBar();
+    protected final Set<TYPE> selectedEntries = new HashSet<>();
     protected final int posX;
     protected final int posY;
     protected int totalWidth;
@@ -31,10 +34,11 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
     protected int browserPaddingX;
     protected int browserPaddingY;
     protected int maxVisibleBrowserEntries;
-    protected int selectedEntryIndex = -1;
+    protected int lastSelectedEntryIndex = -1;
     protected int lastScrollbarPosition = -1;
-    @Nullable protected TYPE selectedEntry;
-    @Nullable protected final ISelectionListener<TYPE> selectionListener;
+    protected boolean allowMultiSelection;
+    @Nullable private TYPE lastSelectedEntry;
+    @Nullable private final ISelectionListener<TYPE> selectionListener;
 
     public WidgetListBase(int x, int y, int width, int height, @Nullable ISelectionListener<TYPE> selectionListener)
     {
@@ -161,7 +165,8 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
         for (int i = 0; i < this.listWidgets.size(); i++)
         {
             WIDGET widget = this.listWidgets.get(i);
-            boolean isSelected = widget.getEntry() == this.selectedEntry;
+            TYPE entry = widget.getEntry();
+            boolean isSelected = this.allowMultiSelection ? this.selectedEntries.contains(entry) : entry == this.getLastSelectedEntry();
             widget.render(mouseX, mouseY, isSelected);
 
             if (widget.isMouseOver(mouseX, mouseY))
@@ -274,21 +279,38 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
     protected abstract WIDGET createListEntryWidget(int x, int y, int listIndex, boolean isOdd, TYPE entry);
 
     @Nullable
-    public TYPE getSelectedEntry()
+    public TYPE getLastSelectedEntry()
     {
-        return this.selectedEntry;
+        return this.lastSelectedEntry;
+    }
+
+    public Set<TYPE> getSelectedEntries()
+    {
+        return this.selectedEntries;
     }
 
     protected boolean onEntryClicked(@Nullable TYPE entry, int index)
     {
-        this.setSelectedEntry(entry, index);
+        this.setLastSelectedEntry(entry, index);
         return true;
     }
 
-    public void setSelectedEntry(@Nullable TYPE entry, int index)
+    public void setLastSelectedEntry(@Nullable TYPE entry, int index)
     {
-        this.selectedEntry = entry;
-        this.selectedEntryIndex = index;
+        this.lastSelectedEntry = entry;
+        this.lastSelectedEntryIndex = index;
+
+        if (this.allowMultiSelection && entry != null)
+        {
+            if (this.selectedEntries.contains(entry))
+            {
+                this.selectedEntries.remove(entry);
+            }
+            else
+            {
+                this.selectedEntries.add(entry);
+            }
+        }
 
         if (entry != null && this.selectionListener != null)
         {
@@ -298,7 +320,13 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
 
     public void clearSelection()
     {
-        this.setSelectedEntry(null, -1);
+        this.setLastSelectedEntry(null, -1);
+    }
+
+    public void clearAllSelections()
+    {
+        this.clearSelection();
+        this.selectedEntries.clear();
     }
 
     protected void offsetSelectionOrScrollbar(int amount, boolean changeSelection)
@@ -307,18 +335,18 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
         {
             this.scrollBar.offsetValue(amount);
         }
-        else if (this.selectedEntryIndex >= 0 && this.listContents.size() > 0)
+        else if (this.lastSelectedEntryIndex >= 0 && this.listContents.size() > 0)
         {
-            int index = MathHelper.clamp(this.selectedEntryIndex + amount, 0, this.listContents.size() - 1);
+            int index = MathHelper.clamp(this.lastSelectedEntryIndex + amount, 0, this.listContents.size() - 1);
 
-            if (index != this.selectedEntryIndex)
+            if (index != this.lastSelectedEntryIndex)
             {
                 if (index < this.scrollBar.getValue() || index >= this.scrollBar.getValue() + this.maxVisibleBrowserEntries)
                 {
-                    this.scrollBar.offsetValue(index - this.selectedEntryIndex);
+                    this.scrollBar.offsetValue(index - this.lastSelectedEntryIndex);
                 }
 
-                this.setSelectedEntry(this.listContents.get(index), index);
+                this.setLastSelectedEntry(this.listContents.get(index), index);
             }
         }
         else
@@ -329,7 +357,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
 
             if (index >= 0 && index < this.listContents.size())
             {
-                this.setSelectedEntry(this.listContents.get(index), index);
+                this.setLastSelectedEntry(this.listContents.get(index), index);
             }
         }
 

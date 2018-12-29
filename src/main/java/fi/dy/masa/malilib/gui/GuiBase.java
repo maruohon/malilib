@@ -83,6 +83,11 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
         return (this.useTitleHierarchy && this.parent instanceof GuiBase) ? (((GuiBase) this.parent).getTitle() + " => " + this.title) : this.title;
     }
 
+    public void setTitle(String title)
+    {
+        this.title = title;
+    }
+
     @Override
     public void onGuiClosed()
     {

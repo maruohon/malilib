@@ -59,9 +59,9 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
             return true;
         }
         else if ((keyCode == Keyboard.KEY_RIGHT || keyCode == Keyboard.KEY_RETURN) &&
-                  this.getSelectedEntry() != null && this.getSelectedEntry().getType() == DirectoryEntryType.DIRECTORY)
+                  this.getLastSelectedEntry() != null && this.getLastSelectedEntry().getType() == DirectoryEntryType.DIRECTORY)
         {
-            this.switchToDirectory(new File(this.getSelectedEntry().getDirectory(), this.getSelectedEntry().getName()));
+            this.switchToDirectory(new File(this.getLastSelectedEntry().getDirectory(), this.getLastSelectedEntry().getName()));
             return true;
         }
         else

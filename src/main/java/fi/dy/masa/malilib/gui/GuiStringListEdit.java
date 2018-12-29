@@ -7,15 +7,15 @@ import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.config.IConfigStringList;
 import fi.dy.masa.malilib.gui.interfaces.IConfigGui;
 import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
-import fi.dy.masa.malilib.gui.widgets.WidgetListStringList;
-import fi.dy.masa.malilib.gui.widgets.WidgetStringListEntry;
+import fi.dy.masa.malilib.gui.widgets.WidgetListStringListEdit;
+import fi.dy.masa.malilib.gui.widgets.WidgetStringListEditEntry;
 import fi.dy.masa.malilib.render.RenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.resources.I18n;
 
-public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEntry, WidgetListStringList>
+public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEditEntry, WidgetListStringListEdit>
 {
     protected final IConfigStringList config;
     protected final IConfigGui configGui;
@@ -107,10 +107,10 @@ public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEntry
     }
 
     @Override
-    protected WidgetListStringList createListWidget(int listX, int listY)
+    protected WidgetListStringListEdit createListWidget(int listX, int listY)
     {
         // The listX and listY are set via the constructor, which in this dialog-like GUI's case is too early to know them
-        return new WidgetListStringList(this.dialogLeft + 10, this.dialogTop + 20, this.getBrowserWidth(), this.getBrowserHeight(), this.dialogWidth - 100, this);
+        return new WidgetListStringListEdit(this.dialogLeft + 10, this.dialogTop + 20, this.getBrowserWidth(), this.getBrowserHeight(), this.dialogWidth - 100, this);
     }
 
     @Override

@@ -3,11 +3,11 @@ package fi.dy.masa.malilib.gui.widgets;
 import fi.dy.masa.malilib.config.IConfigStringList;
 import fi.dy.masa.malilib.gui.GuiStringListEdit;
 
-public class WidgetListStringList extends WidgetListConfigOptionsBase<String, WidgetStringListEntry>
+public class WidgetListStringListEdit extends WidgetListConfigOptionsBase<String, WidgetStringListEditEntry>
 {
     protected final GuiStringListEdit parent;
 
-    public WidgetListStringList(int x, int y, int width, int height, int configWidth, GuiStringListEdit parent)
+    public WidgetListStringListEdit(int x, int y, int width, int height, int configWidth, GuiStringListEdit parent)
     {
         super(x, y, width, height, configWidth);
 
@@ -51,7 +51,7 @@ public class WidgetListStringList extends WidgetListConfigOptionsBase<String, Wi
     }
 
     @Override
-    protected WidgetStringListEntry createListEntryWidget(int x, int y, int listIndex, boolean isOdd, String entry)
+    protected WidgetStringListEditEntry createListEntryWidget(int x, int y, int listIndex, boolean isOdd, String entry)
     {
         IConfigStringList config = this.parent.getConfig();
 
@@ -59,12 +59,12 @@ public class WidgetListStringList extends WidgetListConfigOptionsBase<String, Wi
         {
             String defaultValue = config.getDefaultStrings().size() > listIndex ? config.getDefaultStrings().get(listIndex) : "";
 
-            return new WidgetStringListEntry(x, y, this.browserEntryWidth, this.browserEntryHeight, this.zLevel,
+            return new WidgetStringListEditEntry(x, y, this.browserEntryWidth, this.browserEntryHeight, this.zLevel,
                     listIndex, isOdd, config.getStrings().get(listIndex), defaultValue, this.mc, this);
         }
         else
         {
-            return new WidgetStringListEntry(x, y, this.browserEntryWidth, this.browserEntryHeight, this.zLevel,
+            return new WidgetStringListEditEntry(x, y, this.browserEntryWidth, this.browserEntryHeight, this.zLevel,
                     listIndex, isOdd, "", "", this.mc, this);
         }
     }
