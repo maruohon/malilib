@@ -189,7 +189,7 @@ public class InventoryOverlay
 
         if (entity.getItemStackFromSlot(EntityEquipmentSlot.OFFHAND).isEmpty())
         {
-            String texture = "minecraft:items/empty_armor_slot_shield";
+            String texture = "minecraft:item/empty_armor_slot_shield";
             RenderUtils.renderSprite(mc, x + 28 + 1, y + 3 * 18 + 7 + 1, texture, 16, 16);
         }
 
