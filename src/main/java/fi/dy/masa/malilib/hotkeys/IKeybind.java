@@ -42,6 +42,14 @@ public interface IKeybind extends IConfigResettable, IStringRepresentable
 
     void removeKey(int keyCode);
 
+    /**
+     * Check if this keybind is only a single key, matching the given key code.
+     * This is mainly meant for checking equality against vanilla keybinds.
+     * @param keyCode
+     * @return
+     */
+    boolean matches(int keyCode);
+
     void tick();
 
     String getKeysDisplayString();

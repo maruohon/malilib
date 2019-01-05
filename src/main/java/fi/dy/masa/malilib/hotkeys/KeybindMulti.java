@@ -326,6 +326,12 @@ public class KeybindMulti implements IKeybind
         }
     }
 
+    @Override
+    public boolean matches(int keyCode)
+    {
+        return this.keyCodes.size() == 1 && this.keyCodes.get(0) == keyCode;
+    }
+
     public static KeybindMulti fromStorageString(String str, KeybindSettings settings)
     {
         KeybindMulti keybind = new KeybindMulti(str, settings);
