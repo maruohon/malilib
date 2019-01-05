@@ -27,7 +27,6 @@ public class InputEventHandler implements IKeybindManager
     private final List<IKeybindProvider> keybindProviders = new ArrayList<>();
     private final List<IKeyboardInputHandler> keyboardHandlers = new ArrayList<>();
     private final List<IMouseInputHandler> mouseHandlers = new ArrayList<>();
-    private boolean cancelKeyInput;
 
     private InputEventHandler()
     {
@@ -163,7 +162,6 @@ public class InputEventHandler implements IKeybindManager
         KeybindMulti.onKeyInputPre(eventKey, eventKeyState);
 
         cancel = this.checkKeyBindsForChanges(eventKey);
-        this.cancelKeyInput |= isGui && cancel;
 
         if (this.keyboardHandlers.isEmpty() == false)
         {
@@ -171,26 +169,12 @@ public class InputEventHandler implements IKeybindManager
             {
                 if (handler.onKeyInput(eventKey, eventKeyState))
                 {
-                    this.cancelKeyInput |= isGui;
                     return true;
                 }
             }
         }
 
-        boolean overrideCancel = this.cancelKeyInput && isGui == false;
-
-        // This hacky state indicates that a mouse event was cancelled in the GUI mouse handler,
-        // which would then cause a key press to not get handled in the GuiScreen keyboard handling code,
-        // which would let it bleed through to the non-GUI handling code (Minecraft#runTick()).
-        if (isGui == false)
-        {
-            this.cancelKeyInput = false;
-        }
-
-        // Somewhat hacky fix to prevent eating the modifier keys... >_>
-        // A proper fix would likely require adding a context for the keys,
-        // and only cancel if the context is currently active/valid.
-        return this.isModifierKey(eventKey) == false && (overrideCancel || cancel);
+        return this.isModifierKey(eventKey) == false && cancel;
     }
 
     public boolean onMouseInput(boolean isGui)
@@ -216,7 +200,6 @@ public class InputEventHandler implements IKeybindManager
                 {
                     if (handler.onMouseInput(eventButton, dWheel, eventButtonState))
                     {
-                        this.cancelKeyInput |= isGui;
                         return true;
                     }
                 }
@@ -229,8 +212,6 @@ public class InputEventHandler implements IKeybindManager
                 handler.onMouseMoved();
             }
         }
-
-        this.cancelKeyInput = isGui && cancel;
 
         return cancel;
     }
