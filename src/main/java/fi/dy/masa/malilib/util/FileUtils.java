@@ -3,9 +3,13 @@ package fi.dy.masa.malilib.util;
 import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
+import java.util.Set;
+import com.google.common.collect.ImmutableSet;
 
 public class FileUtils
 {
+    private static final Set<Character> ILLEGAL_CHARACTERS = ImmutableSet.of( '/', '\n', '\r', '\t', '\0', '\f', '`', '?', '*', '\\', '<', '>', '|', '\"', ':' );
+
     public static File getCanonicalFileIfPossible(File file)
     {
         try
@@ -66,8 +70,26 @@ public class FileUtils
         return i != -1 ? name.substring(0, i) : name;
     }
 
-    public static String generateSafeFileName(String name)
+    public static String generateSimpleSafeFileName(String name)
     {
         return name.toLowerCase(Locale.US).replaceAll("\\W", "_");
+    }
+
+    public static String generateSafeFileName(String name)
+    {
+        StringBuilder sb = new StringBuilder(name.length());
+
+        for (int i = 0; i < name.length(); ++i)
+        {
+            char c = name.charAt(i);
+
+            if (ILLEGAL_CHARACTERS.contains(c) == false)
+            {
+                sb.append(c);
+            }
+        }
+
+        // Some weird reserved windows keywords apparently... FFS >_>
+        return sb.toString().replaceAll("COM", "").replaceAll("PRN", "");
     }
 }
