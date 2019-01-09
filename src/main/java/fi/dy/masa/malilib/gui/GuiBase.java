@@ -236,22 +236,26 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
 
         boolean handled = false;
         int selected = -1;
-        int i = 0;
 
-        for (TextFieldWrapper<?> entry : this.textFields)
+        for (int i = 0; i < this.textFields.size(); ++i)
         {
-            if (keyCode == Keyboard.KEY_TAB && entry.getTextField().isFocused())
-            {
-                entry.getTextField().setFocused(false);
-                selected = i;
-                handled = true;
-            }
-            else if (entry.keyTyped(typedChar, keyCode))
-            {
-                handled = true;
-            }
+            TextFieldWrapper<?> entry = this.textFields.get(i);
 
-            i++;
+            if (entry.getTextField().isFocused())
+            {
+                if (keyCode == Keyboard.KEY_TAB)
+                {
+                    entry.getTextField().setFocused(false);
+                    selected = i;
+                }
+                else
+                {
+                    entry.keyTyped(typedChar, keyCode);
+                }
+
+                handled = true;
+                break;
+            }
         }
 
         if (selected >= 0)
