@@ -1,7 +1,6 @@
 package fi.dy.masa.malilib.gui.widgets;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import fi.dy.masa.malilib.render.RenderUtils;
 import net.minecraft.client.Minecraft;
@@ -13,7 +12,7 @@ import net.minecraft.client.resources.I18n;
 public class WidgetLabel extends WidgetBase
 {
     protected final FontRenderer fontRenderer;
-    protected final List<String> labels;
+    protected final List<String> labels = new ArrayList<>();
     protected final int textColor;
     protected boolean visible = true;
     protected boolean centered;
@@ -29,8 +28,11 @@ public class WidgetLabel extends WidgetBase
 
         this.textColor = textColor;
         this.fontRenderer = Minecraft.getMinecraft().fontRenderer;
-        this.labels = new ArrayList<>();
-        this.labels.addAll(Arrays.asList(text));
+
+        for (String str : text)
+        {
+            this.addLine(str);
+        }
     }
 
     public void addLine(String key, Object... args)
