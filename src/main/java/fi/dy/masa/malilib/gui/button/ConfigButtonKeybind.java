@@ -84,7 +84,7 @@ public class ConfigButtonKeybind extends ButtonBase
     {
         String valueStr = this.keybind.getKeysDisplayString();
 
-        if (this.keybind.isValid() == false || StringUtils.isBlank(valueStr))
+        if (this.keybind.getKeys().size() == 0 || StringUtils.isBlank(valueStr))
         {
             valueStr = "NONE";
         }

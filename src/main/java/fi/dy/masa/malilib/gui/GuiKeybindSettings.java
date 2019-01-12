@@ -28,6 +28,7 @@ public class GuiKeybindSettings extends GuiDialogBase
     protected final String keybindName;
     protected final ConfigOptionList cfgActivateOn  = new ConfigOptionList("Activate On", KeyAction.PRESS, "Does the keybind activate on press or release of the key combination");
     protected final ConfigOptionList cfgContext     = new ConfigOptionList("Context", KeybindSettings.Context.INGAME, "Where is the keybind usable");
+    protected final ConfigBoolean cfgAllowEmpty     = new ConfigBoolean("Allow Empty Keybind", false, "Is an empty keybind valid\n(will always be considered to be active)");
     protected final ConfigBoolean cfgAllowExtra     = new ConfigBoolean("Allow Extra Keys", false, "Are extra keys allowed to be pressed to activate the keybind");
     protected final ConfigBoolean cfgOrderSensitive = new ConfigBoolean("Order Sensitive", false, "Should the keybind keys be pressed in the specific order they were defined in");
     protected final ConfigBoolean cfgExclusive      = new ConfigBoolean("Exclusive", false, "If true, then no other keybinds can have been activated before\nthe keybind in question, while some keys are being pressed");
@@ -62,12 +63,13 @@ public class GuiKeybindSettings extends GuiDialogBase
 
         this.cfgActivateOn.setOptionListValue(settings.getActivateOn());
         this.cfgContext.setOptionListValue(settings.getContext());
+        this.cfgAllowEmpty.setBooleanValue(settings.getAllowEmpty());
         this.cfgAllowExtra.setBooleanValue(settings.getAllowExtraKeys());
         this.cfgOrderSensitive.setBooleanValue(settings.isOrderSensitive());
         this.cfgExclusive.setBooleanValue(settings.isExclusive());
         this.cfgCancel.setBooleanValue(settings.shouldCancel());
 
-        this.configList = ImmutableList.of(this.cfgActivateOn, this.cfgContext, this.cfgAllowExtra, this.cfgOrderSensitive, this.cfgExclusive, this.cfgCancel);
+        this.configList = ImmutableList.of(this.cfgActivateOn, this.cfgContext, this.cfgAllowEmpty, this.cfgAllowExtra, this.cfgOrderSensitive, this.cfgExclusive, this.cfgCancel);
         this.labelWidth = GuiBase.getMaxNameLength(this.configList);
         this.configWidth = 100;
 
@@ -117,12 +119,13 @@ public class GuiKeybindSettings extends GuiDialogBase
     {
         KeyAction activateOn = (KeyAction) this.cfgActivateOn.getOptionListValue();
         KeybindSettings.Context context = (KeybindSettings.Context) this.cfgContext.getOptionListValue();
+        boolean allowEmpty = this.cfgAllowEmpty.getBooleanValue();
         boolean allowExtraKeys = this.cfgAllowExtra.getBooleanValue();
         boolean orderSensitive = this.cfgOrderSensitive.getBooleanValue();
         boolean exclusive = this.cfgExclusive.getBooleanValue();
         boolean cancel = this.cfgCancel.getBooleanValue();
 
-        KeybindSettings settingsNew = KeybindSettings.create(context, activateOn, allowExtraKeys, orderSensitive, exclusive, cancel);
+        KeybindSettings settingsNew = KeybindSettings.create(context, activateOn, allowExtraKeys, orderSensitive, exclusive, cancel, allowEmpty);
         this.keybind.setSettings(settingsNew);
 
         super.onGuiClosed();

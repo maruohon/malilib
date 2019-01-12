@@ -60,7 +60,7 @@ public class KeybindMulti implements IKeybind
     @Override
     public boolean isValid()
     {
-        return this.keyCodes.isEmpty() == false;
+        return this.keyCodes.isEmpty() == false || this.settings.getAllowEmpty();
     }
 
     /**
@@ -77,7 +77,7 @@ public class KeybindMulti implements IKeybind
     @Override
     public boolean isKeybindHeld()
     {
-        return this.pressed;
+        return this.pressed || (this.settings.getAllowEmpty() && this.keyCodes.isEmpty());
     }
 
     /**
@@ -86,7 +86,7 @@ public class KeybindMulti implements IKeybind
     @Override
     public boolean updateIsPressed()
     {
-        if (this.isValid() == false ||
+        if (this.keyCodes.isEmpty() ||
             (this.settings.getContext() != KeybindSettings.Context.ANY &&
             ((this.settings.getContext() == KeybindSettings.Context.INGAME) != (Minecraft.getMinecraft().currentScreen == null))))
         {

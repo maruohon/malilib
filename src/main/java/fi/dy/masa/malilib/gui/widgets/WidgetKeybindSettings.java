@@ -115,6 +115,10 @@ public class WidgetKeybindSettings extends WidgetBase
         val = GuiBase.TXT_BLUE + this.settings.getActivateOn().name();
         text.add(String.format("%s: %s", name, val));
 
+        name = I18n.format("malilib.gui.label.keybind_settings.allow_empty_keybind");
+        val = this.settings.getAllowEmpty() ? (GuiBase.TXT_GREEN + strYes) : (GuiBase.TXT_GOLD + strNo);
+        text.add(String.format("%s: %s", name, val));
+
         name = I18n.format("malilib.gui.label.keybind_settings.allow_extra_keys");
         val = this.settings.getAllowExtraKeys() ? (GuiBase.TXT_GREEN + strYes) : (GuiBase.TXT_GOLD + strNo);
         text.add(String.format("%s: %s", name, val));
