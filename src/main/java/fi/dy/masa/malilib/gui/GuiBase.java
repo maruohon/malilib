@@ -468,7 +468,7 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
 
             if (button.hasHoverText() && button.isMouseOver())
             {
-                this.drawHoveringText(button.getHoverStrings(), mouseX, mouseY);
+                RenderUtils.drawHoverText(mouseX, mouseY, button.getHoverStrings());
             }
         }
 

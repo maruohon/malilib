@@ -75,6 +75,8 @@ public class ButtonGeneric extends ButtonBase
 
         for (String str : hoverStrings)
         {
+            str = I18n.format(str);
+
             String[] parts = str.split("\\\\n");
 
             for (String part : parts)

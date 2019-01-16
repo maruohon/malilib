@@ -129,14 +129,10 @@ public class RenderUtils
 
             textLines = linesNew;
 
+            final int lineHeight = font.FONT_HEIGHT + 1;
             int textStartX = x + 12;
             int textStartY = y - 12;
-            int textHeight = 8;
-
-            if (textLines.size() > 1)
-            {
-                textHeight += 2 + (textLines.size() - 1) * 10;
-            }
+            int textHeight = textLines.size() * lineHeight;
 
             if (textStartX + maxLineLength > maxWidth)
             {
@@ -167,13 +163,7 @@ public class RenderUtils
             {
                 String str = textLines.get(i);
                 font.drawStringWithShadow(str, textStartX, textStartY, 0xFFFFFFFF);
-
-                if (i == 0)
-                {
-                    textStartY += 2;
-                }
-
-                textStartY += 10;
+                textStartY += lineHeight;
             }
 
             GlStateManager.enableLighting();
