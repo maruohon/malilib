@@ -14,7 +14,7 @@ import fi.dy.masa.malilib.hotkeys.IMouseInputHandler;
 import fi.dy.masa.malilib.hotkeys.KeybindMulti;
 import fi.dy.masa.malilib.util.KeyCodes;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.client.resource.language.I18n;
 
 public class InputEventHandler implements IKeybindManager
 {
@@ -292,7 +292,7 @@ public class InputEventHandler implements IKeybindManager
 
         public String getCategory()
         {
-            return I18n.format(this.category);
+            return I18n.translate(this.category);
         }
 
         public List<? extends IHotkey> getHotkeys()

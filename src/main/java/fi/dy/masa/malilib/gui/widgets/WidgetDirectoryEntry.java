@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.gui.widgets;
 
 import java.io.File;
+import com.mojang.blaze3d.platform.GlStateManager;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.interfaces.IDirectoryNavigator;
 import fi.dy.masa.malilib.gui.interfaces.IFileBrowserIconProvider;
@@ -9,19 +10,18 @@ import fi.dy.masa.malilib.gui.widgets.WidgetFileBrowserBase.DirectoryEntry;
 import fi.dy.masa.malilib.gui.widgets.WidgetFileBrowserBase.DirectoryEntryType;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.FileUtils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.MinecraftClient;
 
 public class WidgetDirectoryEntry extends WidgetBase
 {
     protected final IDirectoryNavigator navigator;
     protected final DirectoryEntry entry;
-    protected final Minecraft mc;
+    protected final MinecraftClient mc;
     protected final IFileBrowserIconProvider iconProvider;
     protected final boolean isOdd;
 
     public WidgetDirectoryEntry(int x, int y, int width, int height, float zLevel, boolean isOdd,
-            DirectoryEntry entry, Minecraft mc, IDirectoryNavigator navigator, IFileBrowserIconProvider iconProvider)
+            DirectoryEntry entry, MinecraftClient mc, IDirectoryNavigator navigator, IFileBrowserIconProvider iconProvider)
     {
         super(x, y, width, height, zLevel);
 
@@ -98,8 +98,8 @@ public class WidgetDirectoryEntry extends WidgetBase
             RenderUtils.drawOutline(this.x + xOffset, this.y, this.width - iconWidth - 2, this.height, 0xEEEEEEEE);
         }
 
-        int yOffset = (this.height - this.mc.fontRenderer.FONT_HEIGHT) / 2 + 1;
-        this.mc.fontRenderer.drawString(this.getDisplayName(), this.x + xOffset + 2, this.y + yOffset, 0xFFFFFFFF);
+        int yOffset = (this.height - this.mc.fontRenderer.fontHeight) / 2 + 1;
+        this.mc.fontRenderer.draw(this.getDisplayName(), this.x + xOffset + 2, this.y + yOffset, 0xFFFFFFFF);
     }
 
     protected String getDisplayName()

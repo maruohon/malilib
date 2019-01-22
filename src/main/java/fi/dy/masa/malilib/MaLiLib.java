@@ -2,35 +2,21 @@ package fi.dy.masa.malilib;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.rift.listener.client.OverlayRenderer;
-import org.dimdev.riftloader.listener.InitializationListener;
-import org.spongepowered.asm.launch.MixinBootstrap;
-import org.spongepowered.asm.mixin.Mixins;
 import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.config.MaLiLibConfigs;
 import fi.dy.masa.malilib.event.InitializationHandler;
-import fi.dy.masa.malilib.event.RenderEventHandler;
 import fi.dy.masa.malilib.interfaces.IInitializationHandler;
 import fi.dy.masa.malilib.reference.MaLiLibReference;
-import net.minecraft.client.Minecraft;
+import net.fabricmc.api.ModInitializer;
 
-public class MaLiLib implements InitializationListener, OverlayRenderer
+public class MaLiLib implements ModInitializer
 {
     public static final Logger logger = LogManager.getLogger(MaLiLibReference.MOD_ID);
 
     @Override
-    public void onInitialization()
+    public void onInitialize()
     {
-        MixinBootstrap.init();
-        Mixins.addConfiguration("mixins.malilib.json");
-
         InitializationHandler.getInstance().registerInitializationHandler(new InitHandler());
-    }
-
-    @Override
-    public void renderOverlay()
-    {
-        RenderEventHandler.getInstance().onRenderGameOverlayPost(Minecraft.getInstance().getRenderPartialTicks());
     }
 
     private static class InitHandler implements IInitializationHandler

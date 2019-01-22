@@ -1,9 +1,9 @@
 package fi.dy.masa.malilib.gui.wrappers;
 
 import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
-import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.gui.widget.TextFieldWidget;
 
-public class TextFieldWrapper<T extends GuiTextField>
+public class TextFieldWrapper<T extends TextFieldWidget>
 {
     private final T textField;
     private final ITextFieldListener<T> listener;
@@ -34,7 +34,7 @@ public class TextFieldWrapper<T extends GuiTextField>
 
     public void draw(int mouseX, int mouseY)
     {
-        this.textField.drawTextField(mouseX, mouseY, 0f);
+        this.textField.render(mouseX, mouseY, 0f);
     }
 
     public boolean mouseClicked(int mouseX, int mouseY, int mouseButton)

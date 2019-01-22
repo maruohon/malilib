@@ -9,9 +9,9 @@ import fi.dy.masa.malilib.gui.widgets.WidgetListStringList;
 import fi.dy.masa.malilib.gui.widgets.WidgetStringListEntry;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.KeyCodes;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.resource.language.I18n;
 
 public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEntry, WidgetListStringList>
 {
@@ -25,15 +25,15 @@ public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEntry
     protected int textFieldWidth;
     @Nullable protected final IDialogHandler dialogHandler;
 
-    public GuiStringListEdit(IConfigStringList config, IConfigGui configGui, @Nullable IDialogHandler dialogHandler, GuiScreen parent)
+    public GuiStringListEdit(IConfigStringList config, IConfigGui configGui, @Nullable IDialogHandler dialogHandler, Gui parent)
     {
         super(0, 0);
 
         this.config = config;
         this.configGui = configGui;
         this.dialogHandler = dialogHandler;
-        this.mc = Minecraft.getInstance();
-        this.title = I18n.format("malilib.gui.title.string_list_edit", config.getName());
+        this.client = MinecraftClient.getInstance();
+        this.title = I18n.translate("malilib.gui.title.string_list_edit", config.getName());
 
         // When we have a dialog handler, then we are inside the Liteloader config menu.
         // In there we don't want to use the normal "GUI replacement and render parent first" trick.
@@ -52,7 +52,7 @@ public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEntry
     protected void setWidthAndHeight()
     {
         this.dialogWidth = 400;
-        this.dialogHeight = this.mc.mainWindow.getScaledHeight() - 90;
+        this.dialogHeight = this.client.window.getScaledHeight() - 90;
     }
 
     protected void centerOnScreen()
@@ -70,20 +70,20 @@ public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEntry
     }
 
     @Override
-    public void setWorldAndResolution(Minecraft mc, int width, int height)
+    public void initialize(MinecraftClient mc, int width, int height)
     {
         if (this.getParent() != null)
         {
-            this.getParent().setWorldAndResolution(mc, width, height);
+            this.getParent().initialize(mc, width, height);
         }
 
-        super.setWorldAndResolution(mc, width, height);
+        super.initialize(mc, width, height);
 
         this.setWidthAndHeight();
         this.centerOnScreen();
 
         this.reCreateListWidget();
-        this.initGui();
+        this.onInitialized();
     }
 
     public IConfigStringList getConfig()
@@ -111,7 +111,7 @@ public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEntry
     }
 
     @Override
-    public void onGuiClosed()
+    public void onClosed()
     {
         if (this.getListWidget().wereConfigsModified())
         {
@@ -119,18 +119,18 @@ public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEntry
             ConfigManager.getInstance().onConfigsChanged(this.configGui.getModId());
         }
 
-        super.onGuiClosed();
+        super.onClosed();
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTicks)
+    public void draw(int mouseX, int mouseY, float partialTicks)
     {
         if (this.getParent() != null)
         {
-            this.getParent().render(mouseX, mouseY, partialTicks);
+            this.getParent().draw(mouseX, mouseY, partialTicks);
         }
 
-        super.render(mouseX, mouseY, partialTicks);
+        super.draw(mouseX, mouseY, partialTicks);
     }
 
     @Override
@@ -142,7 +142,7 @@ public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEntry
     @Override
     protected void drawTitle(int mouseX, int mouseY, float partialTicks)
     {
-        this.drawString(this.mc.fontRenderer, this.title, this.dialogLeft + 10, this.dialogTop + 6, COLOR_WHITE);
+        this.drawString(this.client.fontRenderer, this.title, this.dialogLeft + 10, this.dialogTop + 6, COLOR_WHITE);
     }
 
     @Override

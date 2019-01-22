@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.gui;
 
-import net.minecraft.client.MainWindow;
+import net.minecraft.client.util.Window;
 
 public class GuiDialogBase extends GuiBase
 {
@@ -30,7 +30,7 @@ public class GuiDialogBase extends GuiBase
         }
         else
         {
-            MainWindow window = this.mc.mainWindow;
+            Window window = this.client.window;
             this.dialogLeft = window.getScaledWidth() / 2 - this.dialogWidth / 2;
             this.dialogTop = window.getScaledHeight() / 2 - this.dialogHeight / 2;
         }

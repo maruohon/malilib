@@ -1,26 +1,26 @@
 package fi.dy.masa.malilib.gui.widgets;
 
 import java.io.File;
+import com.mojang.blaze3d.platform.GlStateManager;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.interfaces.IDirectoryNavigator;
 import fi.dy.masa.malilib.gui.interfaces.IFileBrowserIconProvider;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.FileUtils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.MinecraftClient;
 
 public class WidgetDirectoryNavigation extends WidgetBase
 {
     protected final File currentDir;
     protected final File rootDir;
-    protected final Minecraft mc;
+    protected final MinecraftClient mc;
     protected final IDirectoryNavigator navigator;
     protected final IGuiIcon iconRoot;
     protected final IGuiIcon iconUp;
 
     public WidgetDirectoryNavigation(int x, int y, int width, int height, float zLevel,
-            File currentDir, File rootDir, Minecraft mc, IDirectoryNavigator navigator, IFileBrowserIconProvider iconProvider)
+            File currentDir, File rootDir, MinecraftClient mc, IDirectoryNavigator navigator, IFileBrowserIconProvider iconProvider)
     {
         super(x, y, width, height, zLevel);
 
@@ -86,6 +86,6 @@ public class WidgetDirectoryNavigation extends WidgetBase
         int textColor = 0xC0C0C0C0;
         int maxLen = (this.width - 40) / this.mc.fontRenderer.getStringWidth("a") - 4; // FIXME
         String path = FileUtils.getJoinedTrailingPathElements(this.currentDir, this.rootDir, maxLen, " / ");
-        this.mc.fontRenderer.drawString(path, this.x + widthRoot * 2 + 9, this.y + 3, textColor);
+        this.mc.fontRenderer.draw(path, this.x + widthRoot * 2 + 9, this.y + 3, textColor);
     }
 }

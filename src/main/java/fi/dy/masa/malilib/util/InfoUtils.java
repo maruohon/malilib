@@ -1,9 +1,10 @@
 package fi.dy.masa.malilib.util;
 
 import fi.dy.masa.malilib.interfaces.IStringConsumer;
-import net.minecraft.client.Minecraft;
-import net.minecraft.util.text.ChatType;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.sortme.ChatMessageType;
+import net.minecraft.text.TextComponent;
+import net.minecraft.text.TranslatableTextComponent;
 
 public class InfoUtils
 {
@@ -14,8 +15,8 @@ public class InfoUtils
         @Override
         public void setString(String string)
         {
-            TextComponentTranslation message = new TextComponentTranslation(string);
-            Minecraft.getInstance().ingameGUI.addChatMessage(ChatType.GAME_INFO, message);
+            TextComponent message = new TranslatableTextComponent(string);
+            MinecraftClient.getInstance().inGameHud.addChatMessage(ChatMessageType.GAME_INFO, message);
         }
     }
 }

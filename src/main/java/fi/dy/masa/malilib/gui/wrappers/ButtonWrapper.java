@@ -2,7 +2,7 @@ package fi.dy.masa.malilib.gui.wrappers;
 
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 
 public class ButtonWrapper<T extends ButtonBase>
 {
@@ -25,17 +25,17 @@ public class ButtonWrapper<T extends ButtonBase>
         return this.listener;
     }
 
-    public void draw(Minecraft minecraft, int mouseX, int mouseY, float partialTicks)
+    public void draw(MinecraftClient minecraft, int mouseX, int mouseY, float partialTicks)
     {
-        this.button.render(mouseX, mouseY, partialTicks);
+        this.button.draw(mouseX, mouseY, partialTicks);
     }
 
-    public boolean mousePressed(Minecraft minecraft, int mouseX, int mouseY, int mouseButton)
+    public boolean mousePressed(MinecraftClient minecraft, int mouseX, int mouseY, int mouseButton)
     {
         if (this.button.isMouseOver(mouseX, mouseY))
         {
             this.button.onMouseButtonClicked(mouseButton);
-            this.button.playPressSound(minecraft.getSoundHandler());
+            this.button.playPressedSound(minecraft.getSoundLoader());
 
             if (this.listener != null)
             {
@@ -48,7 +48,7 @@ public class ButtonWrapper<T extends ButtonBase>
         return false;
     }
 
-    public void mouseReleased(Minecraft minecraft, int mouseX, int mouseY, int mouseButton)
+    public void mouseReleased(MinecraftClient minecraft, int mouseX, int mouseY, int mouseButton)
     {
         this.button.mouseReleased(mouseX, mouseY, mouseButton);
     }

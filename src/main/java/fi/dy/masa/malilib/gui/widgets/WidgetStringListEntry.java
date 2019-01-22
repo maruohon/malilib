@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.gui.widgets;
 
 import java.util.List;
+import com.mojang.blaze3d.platform.GlStateManager;
 import fi.dy.masa.malilib.config.IConfigStringList;
 import fi.dy.masa.malilib.config.gui.ConfigOptionChangeListenerTextField;
 import fi.dy.masa.malilib.gui.GuiBase;
@@ -10,11 +11,10 @@ import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.reference.MaLiLibReference;
 import fi.dy.masa.malilib.render.RenderUtils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.resource.language.I18n;
+import net.minecraft.util.Identifier;
 
 public class WidgetStringListEntry extends WidgetConfigOptionBase
 {
@@ -24,7 +24,7 @@ public class WidgetStringListEntry extends WidgetConfigOptionBase
     protected final boolean isOdd;
 
     public WidgetStringListEntry(int x, int y, int width, int height, float zLevel,
-            int listIndex, boolean isOdd, String initialValue, String defaultValue, Minecraft mc, WidgetListStringList parent)
+            int listIndex, boolean isOdd, String initialValue, String defaultValue, MinecraftClient mc, WidgetListStringList parent)
     {
         super(x, y, width, height, zLevel, mc, parent);
 
@@ -79,15 +79,15 @@ public class WidgetStringListEntry extends WidgetConfigOptionBase
 
     protected void addListActionButton(int x, int y, ButtonType type)
     {
-        ButtonGeneric button = new ButtonGeneric(0, x, y, type.getIcon(), I18n.format(type.getHoverTextKey()));
+        ButtonGeneric button = new ButtonGeneric(0, x, y, type.getIcon(), I18n.translate(type.getHoverTextKey()));
         ListenerListActions listener = new ListenerListActions(type, button, this);
         this.addButton(button, listener);
     }
 
     protected int addTextField(int id, int x, int y, int resetX, int configWidth, int configHeight, String initialValue)
     {
-        GuiTextField field = this.createTextField(id++, x, y + 1, configWidth - 4, configHeight - 3);
-        field.setMaxStringLength(this.maxTextfieldTextLength);
+        TextFieldWidget field = this.createTextField(id++, x, y + 1, configWidth - 4, configHeight - 3);
+        field.setMaxLength(this.maxTextfieldTextLength);
         field.setText(initialValue);
 
         ButtonGeneric resetButton = this.createResetButton(id, resetX, y, field);
@@ -100,9 +100,9 @@ public class WidgetStringListEntry extends WidgetConfigOptionBase
         return resetButton.x + resetButton.getWidth() + 4;
     }
 
-    protected ButtonGeneric createResetButton(int id, int x, int y, GuiTextField textField)
+    protected ButtonGeneric createResetButton(int id, int x, int y, TextFieldWidget textField)
     {
-        String labelReset = I18n.format("malilib.gui.button.reset.caps");
+        String labelReset = I18n.translate("malilib.gui.button.reset.caps");
         int w = this.mc.fontRenderer.getStringWidth(labelReset) + 10;
 
         ButtonGeneric resetButton = new ButtonGeneric(id, x, y, w, 20, labelReset);
@@ -221,7 +221,7 @@ public class WidgetStringListEntry extends WidgetConfigOptionBase
     {
         protected final String defaultValue;
 
-        public ChangeListenerTextField(GuiTextField textField, ButtonBase buttonReset, String defaultValue)
+        public ChangeListenerTextField(TextFieldWidget textField, ButtonBase buttonReset, String defaultValue)
         {
             super(null, textField, buttonReset);
 
@@ -250,7 +250,7 @@ public class WidgetStringListEntry extends WidgetConfigOptionBase
         public void actionPerformed(ButtonGeneric control)
         {
             this.parent.textField.getTextField().setText(this.parent.defaultValue);
-            this.buttonReset.playPressSound(Minecraft.getInstance().getSoundHandler());
+            this.buttonReset.playPressedSound(MinecraftClient.getInstance().getSoundLoader());
             this.buttonReset.enabled = this.parent.textField.getTextField().getText().equals(this.parent.defaultValue) == false;
         }
 
@@ -277,7 +277,7 @@ public class WidgetStringListEntry extends WidgetConfigOptionBase
         @Override
         public void actionPerformed(ButtonGeneric control)
         {
-            this.button.playPressSound(Minecraft.getInstance().getSoundHandler());
+            this.button.playPressedSound(MinecraftClient.getInstance().getSoundLoader());
 
             if (this.type == ButtonType.ADD)
             {
@@ -334,7 +334,7 @@ public class WidgetStringListEntry extends WidgetConfigOptionBase
         PLUS        (108,  30, 15, 15),
         MINUS       (108,  45, 15, 15);
 
-        public static final ResourceLocation TEXTURE = new ResourceLocation(MaLiLibReference.MOD_ID, "textures/gui/gui_widgets.png");
+        public static final Identifier TEXTURE = new Identifier(MaLiLibReference.MOD_ID, "textures/gui/gui_widgets.png");
 
         private final int u;
         private final int v;
@@ -392,7 +392,7 @@ public class WidgetStringListEntry extends WidgetConfigOptionBase
         }
 
         @Override
-        public ResourceLocation getTexture()
+        public Identifier getTexture()
         {
             return TEXTURE;
         }

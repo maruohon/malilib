@@ -4,29 +4,35 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.lwjgl.opengl.GL11;
+import com.mojang.blaze3d.platform.GlStateManager;
 import fi.dy.masa.malilib.config.HudAlignment;
 import fi.dy.masa.malilib.util.Color4f;
-import net.minecraft.client.MainWindow;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.FontRenderer;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.GuiLighting;
+import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.util.Window;
+import net.minecraft.entity.effect.StatusEffect;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 
 public class RenderUtils
 {
-    public static final ResourceLocation TEXTURE_MAP_BACKGROUND = new ResourceLocation("textures/map/map_background.png");
+    public static final Identifier TEXTURE_MAP_BACKGROUND = new Identifier("textures/map/map_background.png");
     //private static final Vec3d LIGHT0_POS = (new Vec3d( 0.2D, 1.0D, -0.7D)).normalize();
     //private static final Vec3d LIGHT1_POS = (new Vec3d(-0.2D, 1.0D,  0.7D)).normalize();
+
+    public static void setupBlend()
+    {
+     // class_1033 = SourceFactor, class_1027 = DestFactor
+        GlStateManager.blendFuncSeparate(GlStateManager.class_1033.SRC_ALPHA, GlStateManager.class_1027.ONE_MINUS_SRC_ALPHA, GlStateManager.class_1033.ONE, GlStateManager.class_1027.ZERO);
+    }
 
     public static void drawOutlinedBox(int x, int y, int width, int height, int colorBg, int colorBorder)
     {
@@ -68,13 +74,13 @@ public class RenderUtils
     {
         float pixelWidth = 0.00390625F;
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
-        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+        BufferBuilder buffer = tessellator.getBufferBuilder();
+        buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_UV);
 
-        buffer.pos(x        , y + height, zLevel).tex( u          * pixelWidth, (v + height) * pixelWidth).endVertex();
-        buffer.pos(x + width, y + height, zLevel).tex((u + width) * pixelWidth, (v + height) * pixelWidth).endVertex();
-        buffer.pos(x + width, y         , zLevel).tex((u + width) * pixelWidth,  v           * pixelWidth).endVertex();
-        buffer.pos(x        , y         , zLevel).tex( u          * pixelWidth,  v           * pixelWidth).endVertex();
+        buffer.vertex(x        , y + height, zLevel).texture( u          * pixelWidth, (v + height) * pixelWidth).next();
+        buffer.vertex(x + width, y + height, zLevel).texture((u + width) * pixelWidth, (v + height) * pixelWidth).next();
+        buffer.vertex(x + width, y         , zLevel).texture((u + width) * pixelWidth,  v           * pixelWidth).next();
+        buffer.vertex(x        , y         , zLevel).texture( u          * pixelWidth,  v           * pixelWidth).next();
 
         tessellator.draw();
     }
@@ -88,26 +94,26 @@ public class RenderUtils
     {
         float pixelWidth = 0.00390625F;
 
-        buffer.pos(x        , y + height, zLevel).tex( u          * pixelWidth, (v + height) * pixelWidth).endVertex();
-        buffer.pos(x + width, y + height, zLevel).tex((u + width) * pixelWidth, (v + height) * pixelWidth).endVertex();
-        buffer.pos(x + width, y         , zLevel).tex((u + width) * pixelWidth,  v           * pixelWidth).endVertex();
-        buffer.pos(x        , y         , zLevel).tex( u          * pixelWidth,  v           * pixelWidth).endVertex();
+        buffer.vertex(x        , y + height, zLevel).texture( u          * pixelWidth, (v + height) * pixelWidth).next();
+        buffer.vertex(x + width, y + height, zLevel).texture((u + width) * pixelWidth, (v + height) * pixelWidth).next();
+        buffer.vertex(x + width, y         , zLevel).texture((u + width) * pixelWidth,  v           * pixelWidth).next();
+        buffer.vertex(x        , y         , zLevel).texture( u          * pixelWidth,  v           * pixelWidth).next();
     }
 
     public static void drawHoverText(int x, int y, List<String> textLines)
     {
-        Minecraft mc = Minecraft.getInstance();
+        MinecraftClient mc = MinecraftClient.getInstance();
 
-        if (textLines.isEmpty() == false && mc.currentScreen != null)
+        if (textLines.isEmpty() == false && mc.currentGui != null)
         {
             FontRenderer font = mc.fontRenderer;
             GlStateManager.disableRescaleNormal();
-            RenderHelper.disableStandardItemLighting();
+            GuiLighting.disable();
             GlStateManager.disableLighting();
             GlStateManager.disableDepthTest();
             int maxLineLength = 0;
-            int maxWidth = mc.currentScreen.width;
-            int maxHeight = mc.currentScreen.height;
+            int maxWidth = mc.currentGui.width;
+            int maxHeight = mc.currentGui.height;
             List<String> linesNew = new ArrayList<>();
 
             for (String lineOrig : textLines)
@@ -166,7 +172,7 @@ public class RenderUtils
             for (int i = 0; i < textLines.size(); ++i)
             {
                 String str = textLines.get(i);
-                font.drawStringWithShadow(str, textStartX, textStartY, 0xFFFFFFFF);
+                font.drawWithShadow(str, textStartX, textStartY, 0xFFFFFFFF);
 
                 if (i == 0)
                 {
@@ -178,7 +184,7 @@ public class RenderUtils
 
             GlStateManager.enableLighting();
             GlStateManager.enableDepthTest();
-            RenderHelper.enableStandardItemLighting();
+            GuiLighting.enableForItems();
             GlStateManager.enableRescaleNormal();
         }
     }
@@ -195,32 +201,32 @@ public class RenderUtils
         float eg = (float)(endColor >>  8 & 0xFF) / 255.0F;
         float eb = (float)(endColor & 0xFF) / 255.0F;
 
-        GlStateManager.disableTexture2D();
+        GlStateManager.disableTexture();
         GlStateManager.enableBlend();
         GlStateManager.disableAlphaTest();
-        GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        setupBlend();
         GlStateManager.shadeModel(GL11.GL_SMOOTH);
 
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.getBuffer();
-        bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+        BufferBuilder bufferbuilder = tessellator.getBufferBuilder();
+        bufferbuilder.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR);
 
-        bufferbuilder.pos(right, top,    zLevel).color(sr, sg, sb, sa).endVertex();
-        bufferbuilder.pos(left,  top,    zLevel).color(sr, sg, sb, sa).endVertex();
-        bufferbuilder.pos(left,  bottom, zLevel).color(er, eg, eb, ea).endVertex();
-        bufferbuilder.pos(right, bottom, zLevel).color(er, eg, eb, ea).endVertex();
+        bufferbuilder.vertex(right, top,    zLevel).color(sr, sg, sb, sa).next();
+        bufferbuilder.vertex(left,  top,    zLevel).color(sr, sg, sb, sa).next();
+        bufferbuilder.vertex(left,  bottom, zLevel).color(er, eg, eb, ea).next();
+        bufferbuilder.vertex(right, bottom, zLevel).color(er, eg, eb, ea).next();
 
         tessellator.draw();
 
         GlStateManager.shadeModel(GL11.GL_FLAT);
         GlStateManager.disableBlend();
         GlStateManager.enableAlphaTest();
-        GlStateManager.enableTexture2D();
+        GlStateManager.enableTexture();
     }
 
     public static void drawCenteredString(FontRenderer fontRendererIn, String text, int x, int y, int color)
     {
-        fontRendererIn.drawStringWithShadow(text, (float)(x - fontRendererIn.getStringWidth(text) / 2), (float)y, color);
+        fontRendererIn.drawWithShadow(text, (float)(x - fontRendererIn.getStringWidth(text) / 2), (float)y, color);
     }
 
     public static void drawString(FontRenderer fontRendererIn, String text, int x, int y, int color)
@@ -229,8 +235,8 @@ public class RenderUtils
 
         for (String line : parts)
         {
-            fontRendererIn.drawStringWithShadow(line, x, y, color);
-            y += fontRendererIn.FONT_HEIGHT + 1;
+            fontRendererIn.drawWithShadow(line, x, y, color);
+            y += fontRendererIn.fontHeight + 1;
         }
     }
 
@@ -258,13 +264,13 @@ public class RenderUtils
         Gui.drawRect(x, startY + 1, x + 1, endY, color);
     }
 
-    public static void renderSprite(Minecraft mc, int x, int y, String texture, int width, int height)
+    public static void renderSprite(MinecraftClient mc, int x, int y, String texture, int width, int height)
     {
         if (texture != null)
         {
-            TextureAtlasSprite sprite = mc.getTextureMap().getAtlasSprite(texture);
+            Sprite sprite = mc.getSpriteAtlas().getSprite(texture);
             GlStateManager.disableLighting();
-            mc.ingameGUI.drawTexturedModalRect(x, y, sprite, width, height);
+            mc.inGameHud.drawTexturedRect(x, y, sprite, width, height);
         }
     }
 
@@ -274,18 +280,18 @@ public class RenderUtils
         {
             for (String line : lines)
             {
-                font.drawString(line, x, y, color);
-                y += font.FONT_HEIGHT + 2;
+                font.draw(line, x, y, color);
+                y += font.fontHeight + 2;
             }
         }
     }
 
-    public static int renderText(Minecraft mc, int xOff, int yOff, double scale, int textColor, int bgColor,
+    public static int renderText(MinecraftClient mc, int xOff, int yOff, double scale, int textColor, int bgColor,
             HudAlignment alignment, boolean useBackground, boolean useShadow, List<String> lines)
     {
         FontRenderer fontRenderer = mc.fontRenderer;
-        MainWindow window = mc.mainWindow;
-        final int lineHeight = fontRenderer.FONT_HEIGHT + 2;
+        Window window = mc.window;
+        final int lineHeight = fontRenderer.fontHeight + 2;
         final int bgMargin = 2;
         final int contentHeight = lines.size() * lineHeight - 2;
         double posX = xOff + bgMargin;
@@ -328,16 +334,16 @@ public class RenderUtils
 
             if (useBackground)
             {
-                Gui.drawRect(x - bgMargin, y - bgMargin, x + width + bgMargin, y + fontRenderer.FONT_HEIGHT, bgColor);
+                Gui.drawRect(x - bgMargin, y - bgMargin, x + width + bgMargin, y + fontRenderer.fontHeight, bgColor);
             }
 
             if (useShadow)
             {
-                fontRenderer.drawStringWithShadow(line, x, y, textColor);
+                fontRenderer.drawWithShadow(line, x, y, textColor);
             }
             else
             {
-                fontRenderer.drawString(line, x, y, textColor);
+                fontRenderer.draw(line, x, y, textColor);
             }
         }
 
@@ -349,7 +355,7 @@ public class RenderUtils
         return contentHeight;
     }
 
-    public static int getHudOffsetForPotions(HudAlignment alignment, double scale, EntityPlayer player)
+    public static int getHudOffsetForPotions(HudAlignment alignment, double scale, PlayerEntity player)
     {
         if (alignment == HudAlignment.TOP_RIGHT)
         {
@@ -359,20 +365,20 @@ public class RenderUtils
                 return 0;
             }
 
-            Collection<PotionEffect> effects = player.getActivePotionEffects();
+            Collection<StatusEffectInstance> effects = player.getPotionEffects();
 
             if (effects.isEmpty() == false)
             {
                 int y1 = 0;
                 int y2 = 0;
 
-                for (PotionEffect effect : effects)
+                for (StatusEffectInstance effect : effects)
                 {
-                    Potion potion = effect.getPotion();
+                    StatusEffect potion = effect.getEffectType();
 
-                    if (effect.doesShowParticles() && potion.hasStatusIcon())
+                    if (effect.shouldShowParticles() && potion.hasIcon())
                     {
-                        if (potion.isBeneficial())
+                        if (potion.method_5573()) // MCP: isBeneficial()
                         {
                             y1 = 26;
                         }
@@ -393,7 +399,7 @@ public class RenderUtils
 
     public static int getHudPosY(int yOrig, int yOffset, int contentHeight, double scale, HudAlignment alignment)
     {
-        MainWindow window = Minecraft.getInstance().mainWindow;
+        Window window = MinecraftClient.getInstance().window;
         int posY = yOrig;
 
         switch (alignment)
@@ -459,28 +465,28 @@ public class RenderUtils
             Color4f color, BufferBuilder buffer)
     {
         // West side
-        buffer.pos(minX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(minX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
 
         // East side
-        buffer.pos(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
 
         // North side
-        buffer.pos(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(minX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
 
         // South side
-        buffer.pos(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
     }
 
     /**
@@ -489,10 +495,10 @@ public class RenderUtils
     public static void drawBoxTopBatchedQuads(double minX, double minZ, double maxX, double maxY, double maxZ, Color4f color, BufferBuilder buffer)
     {
         // Top side
-        buffer.pos(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
     }
 
     /**
@@ -501,10 +507,10 @@ public class RenderUtils
     public static void drawBoxBottomBatchedQuads(double minX, double minY, double minZ, double maxX, double maxZ, Color4f color, BufferBuilder buffer)
     {
         // Bottom side
-        buffer.pos(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(minX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
     }
 
     /**
@@ -514,44 +520,44 @@ public class RenderUtils
             Color4f color, BufferBuilder buffer)
     {
         // West side
-        buffer.pos(minX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(minX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
 
-        buffer.pos(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
 
-        buffer.pos(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
 
-        buffer.pos(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(minX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
 
         // East side
-        buffer.pos(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
 
-        buffer.pos(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
 
-        buffer.pos(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
 
-        buffer.pos(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
 
         // North side (don't repeat the vertical lines that are done by the east/west sides)
-        buffer.pos(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(minX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
 
-        buffer.pos(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
 
         // South side (don't repeat the vertical lines that are done by the east/west sides)
-        buffer.pos(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
 
-        buffer.pos(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.vertex(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
     }
 
     /*

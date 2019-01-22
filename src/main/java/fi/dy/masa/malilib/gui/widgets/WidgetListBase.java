@@ -3,12 +3,12 @@ package fi.dy.masa.malilib.gui.widgets;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
+import com.mojang.blaze3d.platform.GlStateManager;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.GuiScrollBar;
 import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
 import fi.dy.masa.malilib.util.KeyCodes;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.math.MathHelper;
 
 public abstract class WidgetListBase<TYPE, WIDGET extends WidgetBase> extends GuiBase
@@ -39,7 +39,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetBase> extends Gu
 
     public WidgetListBase(int x, int y, int width, int height, @Nullable ISelectionListener<TYPE> selectionListener)
     {
-        this.mc = Minecraft.getInstance();
+        this.client = MinecraftClient.getInstance();
         this.posX = x;
         this.posY = y;
         this.selectionListener = selectionListener;
@@ -49,11 +49,11 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetBase> extends Gu
     }
 
     @Override
-    public void initGui()
+    public void onInitialized()
     {
-        super.initGui();
+        super.onInitialized();
 
-        this.mc.keyboardListener.enableRepeatEvents(true);
+        this.client.keyboard.enableRepeatEvents(true);
         this.refreshEntries();
     }
 

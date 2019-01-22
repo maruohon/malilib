@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.gui.widgets;
 
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.platform.GlStateManager;
 import fi.dy.masa.malilib.config.ConfigType;
 import fi.dy.masa.malilib.config.IConfigBase;
 import fi.dy.masa.malilib.config.IConfigBoolean;
@@ -30,9 +31,8 @@ import fi.dy.masa.malilib.gui.interfaces.IKeybindConfigGui;
 import fi.dy.masa.malilib.hotkeys.IHotkey;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
 import fi.dy.masa.malilib.hotkeys.KeybindSettings;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.widget.TextFieldWidget;
 
 public class WidgetConfigOption extends WidgetConfigOptionBase
 {
@@ -43,7 +43,7 @@ public class WidgetConfigOption extends WidgetConfigOptionBase
     protected int colorDisplayPosX;
 
     public WidgetConfigOption(int x, int y, int width, int height, float zLevel, int labelWidth, int configWidth,
-            ConfigOptionWrapper wrapper, IKeybindConfigGui host, Minecraft mc, WidgetListConfigOptionsBase<?, ?> parent)
+            ConfigOptionWrapper wrapper, IKeybindConfigGui host, MinecraftClient mc, WidgetListConfigOptionsBase<?, ?> parent)
     {
         super(x, y, width, height, zLevel, mc, parent);
 
@@ -223,8 +223,8 @@ public class WidgetConfigOption extends WidgetConfigOptionBase
 
     protected void addConfigTextFieldEntry(int id, int x, int y, int resetX, int configWidth, int configHeight, IConfigValue config)
     {
-        GuiTextField field = this.createTextField(id++, x, y + 1, configWidth - 4, configHeight - 3);
-        field.setMaxStringLength(this.maxTextfieldTextLength);
+        TextFieldWidget field = this.createTextField(id++, x, y + 1, configWidth - 4, configHeight - 3);
+        field.setMaxLength(this.maxTextfieldTextLength);
         field.setText(config.getStringValue());
 
         ButtonGeneric resetButton = this.createResetButton(id, resetX, y, config);

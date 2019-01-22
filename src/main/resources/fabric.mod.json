@@ -1,0 +1,16 @@
+{
+    "id": "malilib",
+    "name": "MaLiLib",
+    "description": "A library mod required by masa's client-side mods",
+    "version": "0.10.0",
+    "side": "client",
+    "initializers": [
+        "fi.dy.masa.malilib.MaLiLib"
+    ],
+    "requires": {
+        "fabric": "*"
+    },
+    "mixins": {
+        "client": "mixins.malilib.json"
+    }
+}

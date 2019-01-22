@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
+import com.mojang.blaze3d.platform.GlStateManager;
 import fi.dy.masa.malilib.gui.LeftRight;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.resources.I18n;
+import fi.dy.masa.malilib.render.RenderUtils;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.FontRenderer;
+import net.minecraft.client.resource.language.I18n;
 
 public class ButtonGeneric extends ButtonBase
 {
@@ -79,7 +80,7 @@ public class ButtonGeneric extends ButtonBase
 
             for (String part : parts)
             {
-                this.hoverStrings.add(I18n.format(part));
+                this.hoverStrings.add(I18n.translate(part));
             }
         }
     }
@@ -90,26 +91,26 @@ public class ButtonGeneric extends ButtonBase
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTicks)
+    public void draw(int mouseX, int mouseY, float partialTicks)
     {
         if (this.visible)
         {
             this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
 
-            Minecraft mc = Minecraft.getInstance();
+            MinecraftClient mc = MinecraftClient.getInstance();
             FontRenderer fontRenderer = mc.fontRenderer;
-            int buttonStyle = this.getHoverState(this.hovered);
+            int buttonStyle = this.getTextureId(this.hovered);
 
             GlStateManager.color4f(1f, 1f, 1f, 1f);
             GlStateManager.enableBlend();
-            GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-            GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+            RenderUtils.setupBlend();
+            GlStateManager.blendFunc(GlStateManager.class_1033.SRC_ALPHA, GlStateManager.class_1027.ONE_MINUS_SRC_ALPHA);
 
             if (this.renderDefaultBackground)
             {
-                mc.getTextureManager().bindTexture(BUTTON_TEXTURES);
-                this.drawTexturedModalRect(this.x, this.y, 0, 46 + buttonStyle * 20, this.width / 2, this.height);
-                this.drawTexturedModalRect(this.x + this.width / 2, this.y, 200 - this.width / 2, 46 + buttonStyle * 20, this.width / 2, this.height);
+                mc.getTextureManager().bindTexture(WIDGET_TEX);
+                this.drawTexturedRect(this.x, this.y, 0, 46 + buttonStyle * 20, this.width / 2, this.height);
+                this.drawTexturedRect(this.x + this.width / 2, this.y, 200 - this.width / 2, 46 + buttonStyle * 20, this.width / 2, this.height);
             }
 
             if (this.icon != null)
@@ -120,10 +121,10 @@ public class ButtonGeneric extends ButtonBase
                 int u = this.icon.getU() + buttonStyle * this.icon.getWidth();
 
                 mc.getTextureManager().bindTexture(this.icon.getTexture());
-                this.drawTexturedModalRect(x, y, u, this.icon.getV(), this.icon.getWidth(), this.icon.getHeight());
+                this.drawTexturedRect(x, y, u, this.icon.getV(), this.icon.getWidth(), this.icon.getHeight());
             }
 
-            if (StringUtils.isBlank(this.displayString) == false)
+            if (StringUtils.isBlank(this.text) == false)
             {
                 int y = this.y + (this.height - 8) / 2;
                 int color = 0xE0E0E0;
@@ -139,7 +140,7 @@ public class ButtonGeneric extends ButtonBase
 
                 if (this.textCentered)
                 {
-                    this.drawCenteredString(fontRenderer, this.displayString, this.x + this.width / 2, y, color);
+                    this.drawStringCentered(fontRenderer, this.text, this.x + this.width / 2, y, color);
                 }
                 else
                 {
@@ -150,7 +151,7 @@ public class ButtonGeneric extends ButtonBase
                         x += this.icon.getWidth() + 2;
                     }
 
-                    this.drawString(fontRenderer, this.displayString, x, y, color);
+                    this.drawString(fontRenderer, this.text, x, y, color);
                 }
             }
         }

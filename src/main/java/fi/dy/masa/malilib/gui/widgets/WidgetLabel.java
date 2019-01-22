@@ -3,12 +3,12 @@ package fi.dy.masa.malilib.gui.widgets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import com.mojang.blaze3d.platform.GlStateManager;
 import fi.dy.masa.malilib.render.RenderUtils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.FontRenderer;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.client.resource.language.I18n;
 
 public class WidgetLabel extends WidgetBase
 {
@@ -28,14 +28,14 @@ public class WidgetLabel extends WidgetBase
         super(x, y, width, height, zLevel);
 
         this.textColor = textColor;
-        this.fontRenderer = Minecraft.getInstance().fontRenderer;
+        this.fontRenderer = MinecraftClient.getInstance().fontRenderer;
         this.labels = new ArrayList<>();
         this.labels.addAll(Arrays.asList(text));
     }
 
     public void addLine(String key, Object... args)
     {
-        this.labels.add(I18n.format(key, args));
+        this.labels.add(I18n.translate(key, args));
     }
 
     public void setCentered(boolean centered)
@@ -58,10 +58,10 @@ public class WidgetLabel extends WidgetBase
         if (this.visible)
         {
             GlStateManager.enableBlend();
-            GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+            RenderUtils.setupBlend();
             this.drawLabelBackground();
 
-            int fontHeight = this.fontRenderer.FONT_HEIGHT;
+            int fontHeight = this.fontRenderer.fontHeight;
             int yCenter = this.y + this.height / 2 + this.borderSize / 2;
             int yTextStart = yCenter - this.labels.size() * fontHeight / 2;
 

@@ -1,8 +1,8 @@
 package fi.dy.masa.malilib.gui.button;
 
 import fi.dy.masa.malilib.config.IConfigBoolean;
-import net.minecraft.client.Minecraft;
-import net.minecraft.util.text.TextFormatting;
+import fi.dy.masa.malilib.gui.GuiBase;
+import net.minecraft.client.MinecraftClient;
 
 public class ConfigButtonBoolean extends ButtonGeneric
 {
@@ -21,7 +21,7 @@ public class ConfigButtonBoolean extends ButtonGeneric
     {
         this.config.setBooleanValue(! this.config.getBooleanValue());
         this.updateDisplayString();
-        this.playPressSound(Minecraft.getInstance().getSoundHandler());
+        this.playPressedSound(MinecraftClient.getInstance().getSoundLoader());
     }
 
     @Override
@@ -31,11 +31,11 @@ public class ConfigButtonBoolean extends ButtonGeneric
 
         if (this.config.getBooleanValue())
         {
-            this.displayString = TextFormatting.DARK_GREEN + valueStr + TextFormatting.RESET;
+            this.text = GuiBase.TXT_DARK_GREEN + valueStr + GuiBase.TXT_RST;
         }
         else
         {
-            this.displayString = TextFormatting.DARK_RED + valueStr + TextFormatting.RESET;
+            this.text = GuiBase.TXT_DARK_RED + valueStr + GuiBase.TXT_RST;
         }
     }
 }

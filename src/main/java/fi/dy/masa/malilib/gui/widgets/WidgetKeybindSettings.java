@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.gui.widgets;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
+import com.mojang.blaze3d.platform.GlStateManager;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.GuiKeybindSettings;
 import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
@@ -10,15 +11,13 @@ import fi.dy.masa.malilib.hotkeys.IKeybind;
 import fi.dy.masa.malilib.hotkeys.KeybindSettings;
 import fi.dy.masa.malilib.reference.MaLiLibReference;
 import fi.dy.masa.malilib.render.RenderUtils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.resource.language.I18n;
+import net.minecraft.util.Identifier;
 
 public class WidgetKeybindSettings extends WidgetBase
 {
-    public static final ResourceLocation TEXTURE = new ResourceLocation(MaLiLibReference.MOD_ID, "textures/gui/gui_widgets.png");
+    public static final Identifier TEXTURE = new Identifier(MaLiLibReference.MOD_ID, "textures/gui/gui_widgets.png");
 
     protected final String keybindName;
     protected final IKeybind keybind;
@@ -43,15 +42,15 @@ public class WidgetKeybindSettings extends WidgetBase
     {
         if (mouseButton == 0)
         {
-            Minecraft mc = Minecraft.getInstance();
+            MinecraftClient mc = MinecraftClient.getInstance();
 
             if (this.dialogHandler != null)
             {
-                this.dialogHandler.openDialog(new GuiKeybindSettings(this.keybind, this.keybindName, this.dialogHandler, mc.currentScreen));
+                this.dialogHandler.openDialog(new GuiKeybindSettings(this.keybind, this.keybindName, this.dialogHandler, mc.currentGui));
             }
             else
             {
-                mc.displayGuiScreen(new GuiKeybindSettings(this.keybind, this.keybindName, null, mc.currentScreen));
+                mc.openGui(new GuiKeybindSettings(this.keybind, this.keybindName, null, mc.currentGui));
             }
 
             return true;
@@ -70,7 +69,7 @@ public class WidgetKeybindSettings extends WidgetBase
     @Override
     public void render(int mouseX, int mouseY, boolean selected)
     {
-        Minecraft mc = Minecraft.getInstance();
+        MinecraftClient mc = MinecraftClient.getInstance();
 
         GlStateManager.color4f(1f, 1f, 1f, 1f);
         mc.getTextureManager().bindTexture(TEXTURE);
@@ -106,37 +105,37 @@ public class WidgetKeybindSettings extends WidgetBase
     {
         List<String> text = new ArrayList<>();
         String name, val;
-        String strYes = I18n.format("malilib.gui.label.yes");
-        String strNo = I18n.format("malilib.gui.label.no");
+        String strYes = I18n.translate("malilib.gui.label.yes");
+        String strNo = I18n.translate("malilib.gui.label.no");
 
-        text.add(GuiBase.TXT_WHITE + TextFormatting.UNDERLINE + I18n.format("malilib.gui.label.keybind_settings.title_advanced_keybind_settings"));
+        text.add(GuiBase.TXT_WHITE + GuiBase.TXT_UNDERLINE + I18n.translate("malilib.gui.label.keybind_settings.title_advanced_keybind_settings"));
 
-        name = I18n.format("malilib.gui.label.keybind_settings.activate_on");
+        name = I18n.translate("malilib.gui.label.keybind_settings.activate_on");
         val = GuiBase.TXT_BLUE + this.settings.getActivateOn().name();
         text.add(String.format("%s: %s", name, val));
 
-        name = I18n.format("malilib.gui.label.keybind_settings.allow_extra_keys");
+        name = I18n.translate("malilib.gui.label.keybind_settings.allow_extra_keys");
         val = this.settings.getAllowExtraKeys() ? (GuiBase.TXT_GREEN + strYes) : (GuiBase.TXT_GOLD + strNo);
         text.add(String.format("%s: %s", name, val));
 
-        name = I18n.format("malilib.gui.label.keybind_settings.order_sensitive");
+        name = I18n.translate("malilib.gui.label.keybind_settings.order_sensitive");
         val = this.settings.isOrderSensitive() ? (GuiBase.TXT_GOLD + strYes) : (GuiBase.TXT_GREEN + strNo);
         text.add(String.format("%s: %s", name, val));
 
-        name = I18n.format("malilib.gui.label.keybind_settings.cancel_further");
+        name = I18n.translate("malilib.gui.label.keybind_settings.cancel_further");
         val = this.settings.shouldCancel() ? (GuiBase.TXT_GOLD + strYes) : (GuiBase.TXT_GREEN + strNo);
         text.add(String.format("%s: %s", name, val));
 
-        name = I18n.format("malilib.gui.label.keybind_settings.exclusive");
+        name = I18n.translate("malilib.gui.label.keybind_settings.exclusive");
         val = this.settings.isExclusive() ? (GuiBase.TXT_GOLD + strYes) : (GuiBase.TXT_GREEN + strNo);
         text.add(String.format("%s: %s", name, val));
 
-        name = I18n.format("malilib.gui.label.keybind_settings.context");
+        name = I18n.translate("malilib.gui.label.keybind_settings.context");
         val = GuiBase.TXT_BLUE + this.settings.getContext().name();
         text.add(String.format("%s: %s", name, val));
 
         text.add("");
-        String[] parts = I18n.format("malilib.gui.label.keybind_settings.tips").split("\\n");
+        String[] parts = I18n.translate("malilib.gui.label.keybind_settings.tips").split("\\n");
 
         for (int i = 0; i < parts.length; ++i)
         {

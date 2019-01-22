@@ -1,8 +1,8 @@
 package fi.dy.masa.malilib.util;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 
 public class PositionUtils
@@ -13,7 +13,7 @@ public class PositionUtils
      * @param entity
      * @return
      */
-    public static EnumFacing getClosestLookingDirection(Entity entity)
+    public static Direction getClosestLookingDirection(Entity entity)
     {
         return getClosestLookingDirection(entity, 60);
     }
@@ -24,15 +24,15 @@ public class PositionUtils
      * @param verticalThreshold the pitch threshold to return the up or down facing instead of horizontals
      * @return
      */
-    public static EnumFacing getClosestLookingDirection(Entity entity, float verticalThreshold)
+    public static Direction getClosestLookingDirection(Entity entity, float verticalThreshold)
     {
-        if (entity.rotationPitch >= verticalThreshold)
+        if (entity.pitch >= verticalThreshold)
         {
-            return EnumFacing.DOWN;
+            return Direction.DOWN;
         }
-        else if (entity.rotationPitch <= -verticalThreshold)
+        else if (entity.yaw <= -verticalThreshold)
         {
-            return EnumFacing.UP;
+            return Direction.UP;
         }
 
         return entity.getHorizontalFacing();
@@ -58,29 +58,29 @@ public class PositionUtils
      */
     public static BlockPos getPositionInfrontOfEntity(Entity entity, float verticalThreshold)
     {
-        BlockPos pos = new BlockPos(entity.posX, entity.posY, entity.posZ);
+        BlockPos pos = new BlockPos(entity.x, entity.y, entity.z);
 
-        if (entity.rotationPitch >= verticalThreshold)
+        if (entity.pitch >= verticalThreshold)
         {
             return pos.down();
         }
-        else if (entity.rotationPitch <= -verticalThreshold)
+        else if (entity.pitch <= -verticalThreshold)
         {
-            return new BlockPos(entity.posX, Math.ceil(entity.getBoundingBox().maxY), entity.posZ);
+            return new BlockPos(entity.x, Math.ceil(entity.getBoundingBox().maxY), entity.z);
         }
 
-        double y = Math.floor(entity.posY + entity.getEyeHeight());
+        double y = Math.floor(entity.y + entity.getEyeHeight());
 
         switch (entity.getHorizontalFacing())
         {
             case EAST:
-                return new BlockPos((int) Math.ceil( entity.posX + entity.width / 2),     (int) y, (int) Math.floor(entity.posZ));
+                return new BlockPos((int) Math.ceil( entity.x + entity.getWidth() / 2),     (int) y, (int) Math.floor(entity.z));
             case WEST:
-                return new BlockPos((int) Math.floor(entity.posX - entity.width / 2) - 1, (int) y, (int) Math.floor(entity.posZ));
+                return new BlockPos((int) Math.floor(entity.x - entity.getWidth() / 2) - 1, (int) y, (int) Math.floor(entity.z));
             case SOUTH:
-                return new BlockPos((int) Math.floor(entity.posX), (int) y, (int) Math.ceil( entity.posZ + entity.width / 2)    );
+                return new BlockPos((int) Math.floor(entity.x), (int) y, (int) Math.ceil( entity.z + entity.getWidth() / 2)    );
             case NORTH:
-                return new BlockPos((int) Math.floor(entity.posX), (int) y, (int) Math.floor(entity.posZ - entity.width / 2) - 1);
+                return new BlockPos((int) Math.floor(entity.x), (int) y, (int) Math.floor(entity.z - entity.getWidth() / 2) - 1);
             default:
         }
 
@@ -93,7 +93,7 @@ public class PositionUtils
      * @param facing
      * @return
      */
-    public static Vec3d getHitVecCenter(BlockPos basePos, EnumFacing facing)
+    public static Vec3d getHitVecCenter(BlockPos basePos, Direction facing)
     {
         int x = basePos.getX();
         int y = basePos.getY();

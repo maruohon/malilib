@@ -7,13 +7,13 @@ import fi.dy.masa.malilib.event.InputEventHandler;
 import fi.dy.masa.malilib.event.InputEventHandler.KeybindCategory;
 import fi.dy.masa.malilib.hotkeys.IHotkey;
 import fi.dy.masa.malilib.reference.MaLiLibReference;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.client.resource.language.I18n;
 
 public class ConfigPanelAllHotkeys extends GuiModConfigs
 {
     public ConfigPanelAllHotkeys()
     {
-        super(MaLiLibReference.MOD_ID, I18n.format("malilib.gui.title.all_hotkeys"), createWrappers(), false);
+        super(MaLiLibReference.MOD_ID, I18n.translate("malilib.gui.title.all_hotkeys"), createWrappers(), false);
     }
 
     protected static List<ConfigOptionWrapper> createWrappers()

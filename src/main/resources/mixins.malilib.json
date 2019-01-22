@@ -1,15 +1,14 @@
 {
     "required": true,
     "package": "fi.dy.masa.malilib.mixin",
-    "refmap": "mixins.malilib.refmap.json",
-    "minVersion": "0.6",
-    "client": [
-        "IGuiTextField",
+    "compatibilityLevel": "JAVA_8",
+    "minVersion": "0.7",
+    "mixins": [
         "MixinGameRenderer",
-        "MixinGuiScreen",
-        "MixinKeyboardListener",
-        "MixinMinecraft",
-        "MixinMouseHelper"
+        "MixinInGameHud",
+        "MixinKeyboard",
+        "MixinMinecraftClient",
+        "MixinMouse"
     ],
     "injectors": {
         "defaultRequire": 1

@@ -2,7 +2,7 @@ package fi.dy.masa.malilib.gui;
 
 import java.util.regex.Pattern;
 import com.google.common.base.Predicate;
-import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.font.FontRenderer;
 
 public class GuiTextFieldInteger extends GuiTextFieldGeneric
 {
@@ -12,7 +12,7 @@ public class GuiTextFieldInteger extends GuiTextFieldGeneric
     {
         super(id, fontrenderer, x, y, width, height);
 
-        this.setValidator(new Predicate<String>()
+        this.method_1890(new Predicate<String>() // MCP: setValidator
         {
             @Override
             public boolean apply(String input)

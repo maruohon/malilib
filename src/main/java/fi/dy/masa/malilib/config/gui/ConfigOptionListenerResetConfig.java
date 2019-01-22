@@ -6,8 +6,8 @@ import fi.dy.masa.malilib.config.IStringRepresentable;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.widget.TextFieldWidget;
 
 public class ConfigOptionListenerResetConfig implements IButtonActionListener<ButtonGeneric>
 {
@@ -30,7 +30,7 @@ public class ConfigOptionListenerResetConfig implements IButtonActionListener<Bu
     public void actionPerformed(ButtonGeneric control)
     {
         this.config.resetToDefault();
-        this.buttonReset.playPressSound(Minecraft.getInstance().getSoundHandler());
+        this.buttonReset.playPressedSound(MinecraftClient.getInstance().getSoundLoader());
         this.buttonReset.enabled = this.config.isModified();
         this.reset.resetConfigOption();
     }
@@ -70,9 +70,9 @@ public class ConfigOptionListenerResetConfig implements IButtonActionListener<Bu
     public static class ConfigResetterTextField extends ConfigResetterBase
     {
         private final IStringRepresentable config;
-        private final GuiTextField textField;
+        private final TextFieldWidget textField;
 
-        public ConfigResetterTextField(IStringRepresentable config, GuiTextField textField)
+        public ConfigResetterTextField(IStringRepresentable config, TextFieldWidget textField)
         {
             this.config = config;
             this.textField = textField;

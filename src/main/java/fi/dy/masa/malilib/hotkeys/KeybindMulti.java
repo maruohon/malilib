@@ -12,7 +12,7 @@ import fi.dy.masa.malilib.config.options.ConfigBoolean;
 import fi.dy.masa.malilib.util.IF3KeyStateSetter;
 import fi.dy.masa.malilib.util.KeyCodes;
 import fi.dy.masa.malilib.util.StringUtils;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 
 public class KeybindMulti implements IKeybind
 {
@@ -88,7 +88,7 @@ public class KeybindMulti implements IKeybind
     {
         if (this.isValid() == false ||
             (this.settings.getContext() != KeybindSettings.Context.ANY &&
-            ((this.settings.getContext() == KeybindSettings.Context.INGAME) != (Minecraft.getInstance().currentScreen == null))))
+            ((this.settings.getContext() == KeybindSettings.Context.INGAME) != (MinecraftClient.getInstance().currentGui == null))))
         {
             this.pressed = false;
             return false;
@@ -173,7 +173,7 @@ public class KeybindMulti implements IKeybind
             if (this.keyCodes.contains(KeyCodes.KEY_F3))
             {
                 // Prevent the debug GUI from opening after the F3 key is released
-                ((IF3KeyStateSetter) Minecraft.getInstance().keyboardListener).setF3KeyState(true);
+                ((IF3KeyStateSetter) MinecraftClient.getInstance().keyboard).setF3KeyState(true);
             }
 
             KeyAction activateOn = this.settings.getActivateOn();
@@ -327,7 +327,7 @@ public class KeybindMulti implements IKeybind
 
     public static boolean isKeyDown(int keyCode)
     {
-        long window = Minecraft.getInstance().mainWindow.getHandle();
+        long window = MinecraftClient.getInstance().window.getHandle();
 
         if (keyCode >= 0)
         {

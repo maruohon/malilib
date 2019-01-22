@@ -1,15 +1,24 @@
 package fi.dy.masa.malilib.gui;
 
-import fi.dy.masa.malilib.mixin.IGuiTextField;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.FontRenderer;
+import net.minecraft.client.gui.widget.TextFieldWidget;
 
-public class GuiTextFieldGeneric extends GuiTextField
+public class GuiTextFieldGeneric extends TextFieldWidget
 {
+    protected final int x;
+    protected final int y;
+    protected final int width;
+    protected final int height;
+
     public GuiTextFieldGeneric(int id, FontRenderer fontrenderer, int x, int y, int width, int height)
     {
         super(id, fontrenderer, x, y, width, height);
+
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
     }
 
     @Override
@@ -29,8 +38,8 @@ public class GuiTextFieldGeneric extends GuiTextField
 
     public boolean isMouseOver(int mouseX, int mouseY)
     {
-        return mouseX >= this.x && mouseX < this.x + this.getWidth() &&
-               mouseY >= this.y && mouseY < this.y + ((IGuiTextField) (Object) this).getHeight();
+        return mouseX >= this.x && mouseX < this.x + this.width &&
+               mouseY >= this.y && mouseY < this.y + this.height;
     }
 
     @Override
@@ -41,7 +50,7 @@ public class GuiTextFieldGeneric extends GuiTextField
 
         if (this.isFocused() != wasFocused)
         {
-            Minecraft.getInstance().keyboardListener.enableRepeatEvents(this.isFocused());
+            MinecraftClient.getInstance().keyboard.enableRepeatEvents(this.isFocused());
         }
     }
 }

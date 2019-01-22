@@ -11,13 +11,13 @@ import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.gui.wrappers.ButtonWrapper;
 import fi.dy.masa.malilib.util.KeyCodes;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.resource.language.I18n;
 
 public abstract class WidgetConfigOptionBase extends WidgetBase
 {
-    protected final Minecraft mc;
+    protected final MinecraftClient mc;
     protected final List<WidgetBase> widgets = new ArrayList<>();
     protected final List<ButtonWrapper<? extends ButtonBase>> buttons = new ArrayList<>();
     protected final WidgetListConfigOptionsBase<?, ?> parent;
@@ -30,7 +30,7 @@ public abstract class WidgetConfigOptionBase extends WidgetBase
      */
     protected String lastAppliedValue;
 
-    public WidgetConfigOptionBase(int x, int y, int width, int height, float zLevel, Minecraft mc, WidgetListConfigOptionsBase<?, ?> parent)
+    public WidgetConfigOptionBase(int x, int y, int width, int height, float zLevel, MinecraftClient mc, WidgetListConfigOptionsBase<?, ?> parent)
     {
         super(x, y, width, height, zLevel);
 
@@ -59,12 +59,12 @@ public abstract class WidgetConfigOptionBase extends WidgetBase
         return entry;
     }
 
-    protected GuiTextField createTextField(int id, int x, int y, int width, int height)
+    protected TextFieldWidget createTextField(int id, int x, int y, int width, int height)
     {
-        return new GuiTextField(id, this.mc.fontRenderer, x + 2, y, width, height);
+        return new TextFieldWidget(id, this.mc.fontRenderer, x + 2, y, width, height);
     }
 
-    protected void addTextField(GuiTextField field, ConfigOptionChangeListenerTextField listener)
+    protected void addTextField(TextFieldWidget field, ConfigOptionChangeListenerTextField listener)
     {
         GuiTextFieldWrapper wrapper = new GuiTextFieldWrapper(field, listener);
         this.textField = wrapper;
@@ -73,7 +73,7 @@ public abstract class WidgetConfigOptionBase extends WidgetBase
 
     protected ButtonGeneric createResetButton(int id, int x, int y, IConfigResettable config)
     {
-        String labelReset = I18n.format("malilib.gui.button.reset.caps");
+        String labelReset = I18n.translate("malilib.gui.button.reset.caps");
         int w = this.mc.fontRenderer.getStringWidth(labelReset) + 10;
 
         ButtonGeneric resetButton = new ButtonGeneric(id, x, y, w, 20, labelReset);
@@ -159,7 +159,7 @@ public abstract class WidgetConfigOptionBase extends WidgetBase
     {
         if (this.textField != null)
         {
-            this.textField.getTextField().drawTextField(mouseX, mouseY, 0f);
+            this.textField.getTextField().render(mouseX, mouseY, 0f);
         }
     }
 }

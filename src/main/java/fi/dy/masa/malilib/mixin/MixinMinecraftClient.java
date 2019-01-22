@@ -8,25 +8,25 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.event.InitializationHandler;
 import fi.dy.masa.malilib.hotkeys.KeybindMulti;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 
-@Mixin(Minecraft.class)
-public abstract class MixinMinecraft
+@Mixin(MinecraftClient.class)
+public abstract class MixinMinecraftClient
 {
-    @Inject(method = "init", at = @At("RETURN"))
+    @Inject(method = "init()V", at = @At("RETURN"))
     private void onInitComplete(CallbackInfo ci)
     {
         // Register all mod handlers
         InitializationHandler.getInstance().onGameInitDone();
     }
 
-    @Inject(method = "shutdown()V", at = @At("RETURN"))
-    private void onTick(CallbackInfo ci)
+    @Inject(method = "scheduleStop()V", at = @At("RETURN"))
+    private void onStop(CallbackInfo ci)
     {
         ConfigManager.getInstance().saveAllConfigs();
     }
 
-    @Inject(method = "runTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;processKeyBinds()V", shift = Shift.AFTER))
+    @Inject(method = "tick()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;method_1508()V", shift = Shift.AFTER))
     private void onPostKeyboardInput(CallbackInfo ci)
     {
         KeybindMulti.reCheckPressedKeys();

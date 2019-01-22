@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.config;
 
-import net.minecraft.client.resources.I18n;
+import net.minecraft.client.resource.language.I18n;
 
 public enum HudAlignment implements IConfigOptionListEntry
 {
@@ -28,7 +28,7 @@ public enum HudAlignment implements IConfigOptionListEntry
     @Override
     public String getDisplayName()
     {
-        return I18n.format(this.unlocName);
+        return I18n.translate(this.unlocName);
     }
 
     @Override

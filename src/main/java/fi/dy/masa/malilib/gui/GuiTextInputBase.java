@@ -5,20 +5,20 @@ import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.KeyCodes;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.resource.language.I18n;
 
 public abstract class GuiTextInputBase extends GuiDialogBase
 {
-    protected final GuiTextField textField;
+    protected final TextFieldWidget textField;
     protected final String originalText;
 
     public GuiTextInputBase(int maxTextLength, String titleKey, String defaultText, @Nullable GuiBase parent)
     {
-        this.mc = Minecraft.getInstance();
+        this.client = MinecraftClient.getInstance();
         this.setParent(parent);
-        this.title = I18n.format(titleKey);
+        this.title = I18n.translate(titleKey);
         this.useTitleHierarchy = false;
         this.originalText = defaultText;
 
@@ -26,15 +26,15 @@ public abstract class GuiTextInputBase extends GuiDialogBase
         this.centerOnScreen();
 
         int width = Math.min(maxTextLength * 10, 240);
-        this.textField = new GuiTextFieldGeneric(0, this.mc.fontRenderer, this.dialogLeft + 12, this.dialogTop + 40, width, 20);
-        this.textField.setMaxStringLength(maxTextLength);
+        this.textField = new GuiTextFieldGeneric(0, this.client.fontRenderer, this.dialogLeft + 12, this.dialogTop + 40, width, 20);
+        this.textField.setMaxLength(maxTextLength);
         this.textField.setFocused(true);
         this.textField.setText(this.originalText);
-        this.textField.setCursorPositionEnd();
+        this.textField.method_1872(); // MCP: setCursorPositionEnd
     }
 
     @Override
-    public void initGui()
+    public void onInitialized()
     {
         int x = this.dialogLeft + 10;
         int y = this.dialogTop + 70;
@@ -48,19 +48,19 @@ public abstract class GuiTextInputBase extends GuiDialogBase
 
         this.createButton(x, y, buttonWidth, ButtonType.CANCEL);
 
-        this.mc.keyboardListener.enableRepeatEvents(true);
+        this.client.keyboard.enableRepeatEvents(true);
     }
 
     protected void createButton(int x, int y, int buttonWidth, ButtonType type)
     {
-        ButtonGeneric button = new ButtonGeneric(0, x, y, buttonWidth, 20, I18n.format(type.getLabelKey()));
+        ButtonGeneric button = new ButtonGeneric(0, x, y, buttonWidth, 20, I18n.translate(type.getLabelKey()));
         this.addButton(button, this.createActionListener(type));
     }
 
     @Override
-    public boolean doesGuiPauseGame()
+    public boolean isPauseScreen()
     {
-        return this.getParent() != null && this.getParent().doesGuiPauseGame();
+        return this.getParent() != null && this.getParent().isPauseScreen();
     }
 
     @Override
@@ -68,7 +68,7 @@ public abstract class GuiTextInputBase extends GuiDialogBase
     {
         if (this.getParent() != null)
         {
-            this.getParent().render(mouseX, mouseY, partialTicks);
+            this.getParent().draw(mouseX, mouseY, partialTicks);
         }
 
         RenderUtils.drawOutlinedBox(this.dialogLeft, this.dialogTop, this.dialogWidth, this.dialogHeight, 0xB0000000, COLOR_HORIZONTAL_BAR);
@@ -77,7 +77,7 @@ public abstract class GuiTextInputBase extends GuiDialogBase
         this.drawString(this.fontRenderer, this.getTitle(), this.dialogLeft + 10, this.dialogTop + 4, COLOR_WHITE);
 
         //super.drawScreen(mouseX, mouseY, partialTicks);
-        this.textField.drawTextField(mouseX, mouseY, partialTicks);
+        this.textField.render(mouseX, mouseY, partialTicks);
 
         this.drawButtons(mouseX, mouseY, partialTicks);
     }
@@ -90,14 +90,14 @@ public abstract class GuiTextInputBase extends GuiDialogBase
             // Only close the GUI if the value was successfully applied
             if (this.applyValue(this.textField.getText()))
             {
-                this.mc.displayGuiScreen(this.getParent());
+                this.client.openGui(this.getParent());
             }
 
             return true;
         }
         else if (keyCode == KeyCodes.KEY_ESCAPE)
         {
-            this.mc.displayGuiScreen(this.getParent());
+            this.client.openGui(this.getParent());
             return true;
         }
 
@@ -157,17 +157,17 @@ public abstract class GuiTextInputBase extends GuiDialogBase
                 // Only close the GUI if the value was successfully applied
                 if (this.gui.applyValue(this.gui.textField.getText()))
                 {
-                    this.gui.mc.displayGuiScreen(this.gui.getParent());
+                    this.gui.client.openGui(this.gui.getParent());
                 }
             }
             else if (this.type == ButtonType.CANCEL)
             {
-                this.gui.mc.displayGuiScreen(this.gui.getParent());
+                this.gui.client.openGui(this.gui.getParent());
             }
             else if (this.type == ButtonType.RESET)
             {
                 this.gui.textField.setText(this.gui.originalText);
-                this.gui.textField.setCursorPosition(0);
+                this.gui.textField.setCursor(0);
                 this.gui.textField.setFocused(true);
             }
         }

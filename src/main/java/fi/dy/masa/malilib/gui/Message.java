@@ -2,9 +2,9 @@ package fi.dy.masa.malilib.gui;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.FontRenderer;
+import net.minecraft.client.resource.language.I18n;
 
 public class Message
 {
@@ -21,9 +21,9 @@ public class Message
         this.created = System.currentTimeMillis();
         this.displayTime = displayTimeMs;
         this.maxLineWidth = maxLineWidth;
-        this.fontRenderer = Minecraft.getInstance().fontRenderer;
+        this.fontRenderer = MinecraftClient.getInstance().fontRenderer;
 
-        this.setMessage(I18n.format(message, args));
+        this.setMessage(I18n.translate(message, args));
     }
 
     public boolean hasExpired()
@@ -33,7 +33,7 @@ public class Message
 
     public int getMessageHeight()
     {
-        return this.messageLines.size() * (this.fontRenderer.FONT_HEIGHT + 1) - 1 + 5;
+        return this.messageLines.size() * (this.fontRenderer.fontHeight + 1) - 1 + 5;
     }
 
     public void setMessage(String message)
@@ -119,8 +119,8 @@ public class Message
 
         for (String text : this.messageLines)
         {
-            this.fontRenderer.drawString(format + text + GuiBase.TXT_RST, x, y, textColor);
-            y += this.fontRenderer.FONT_HEIGHT + 1;
+            this.fontRenderer.draw(format + text + GuiBase.TXT_RST, x, y, textColor);
+            y += this.fontRenderer.fontHeight + 1;
         }
 
         return y + 3;

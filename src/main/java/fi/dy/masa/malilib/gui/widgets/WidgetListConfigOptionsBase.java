@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import fi.dy.masa.malilib.gui.GuiTextFieldWrapper;
 import fi.dy.masa.malilib.util.KeyCodes;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.widget.TextFieldWidget;
 
 public abstract class WidgetListConfigOptionsBase<TYPE, WIDGET extends WidgetConfigOptionBase> extends WidgetListBase<TYPE, WIDGET>
 {
@@ -53,7 +53,7 @@ public abstract class WidgetListConfigOptionsBase<TYPE, WIDGET extends WidgetCon
         if (keyCode == KeyCodes.KEY_TAB)
         {
             this.applyPendingModifications();
-            return this.changeTextFieldFocus(GuiScreen.isShiftKeyDown());
+            return this.changeTextFieldFocus(Gui.isShiftPressed());
         }
         else
         {
@@ -84,7 +84,7 @@ public abstract class WidgetListConfigOptionsBase<TYPE, WIDGET extends WidgetCon
 
             for (int i = 0; i < size; ++i)
             {
-                GuiTextField textField = this.textFields.get(i).getTextField();
+                TextFieldWidget textField = this.textFields.get(i).getTextField();
 
                 if (textField.isFocused())
                 {
@@ -121,7 +121,7 @@ public abstract class WidgetListConfigOptionsBase<TYPE, WIDGET extends WidgetCon
     {
         for (int i = 0; i < this.textFields.size(); ++i)
         {
-            GuiTextField textField = this.textFields.get(i).getTextField();
+            TextFieldWidget textField = this.textFields.get(i).getTextField();
 
             if (textField.isFocused())
             {

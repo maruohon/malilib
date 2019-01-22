@@ -16,10 +16,9 @@ import fi.dy.masa.malilib.hotkeys.KeyAction;
 import fi.dy.masa.malilib.hotkeys.KeybindSettings;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.KeyCodes;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.resource.language.I18n;
 
 public class GuiKeybindSettings extends GuiDialogBase
 {
@@ -36,9 +35,9 @@ public class GuiKeybindSettings extends GuiDialogBase
     protected int labelWidth;
     protected int configWidth;
 
-    public GuiKeybindSettings(IKeybind keybind, String name, @Nullable IDialogHandler dialogHandler, GuiScreen parent)
+    public GuiKeybindSettings(IKeybind keybind, String name, @Nullable IDialogHandler dialogHandler, Gui parent)
     {
-        this.mc = Minecraft.getInstance();
+        this.client = MinecraftClient.getInstance();
         this.keybind = keybind;
         this.keybindName = name;
         this.dialogHandler = dialogHandler;
@@ -56,7 +55,7 @@ public class GuiKeybindSettings extends GuiDialogBase
             this.setParent(parent);
         }
 
-        this.title = TextFormatting.UNDERLINE.toString() + I18n.format("malilib.gui.title.keybind_settings.advanced", this.keybindName);
+        this.title = GuiBase.TXT_UNDERLINE + I18n.translate("malilib.gui.title.keybind_settings.advanced", this.keybindName);
         KeybindSettings settings = this.keybind.getSettings();
 
         this.cfgActivateOn.setOptionListValue(settings.getActivateOn());
@@ -71,16 +70,16 @@ public class GuiKeybindSettings extends GuiDialogBase
         this.configWidth = 100;
 
         int totalWidth = this.labelWidth + this.configWidth + 30;
-        totalWidth = Math.max(totalWidth, this.mc.fontRenderer.getStringWidth(this.title) + 20);
+        totalWidth = Math.max(totalWidth, this.client.fontRenderer.getStringWidth(this.title) + 20);
 
         this.setWidthAndHeight(totalWidth, this.configList.size() * 22 + 30);
         this.centerOnScreen();
 
-        this.setWorldAndResolution(this.mc, this.dialogWidth, this.dialogHeight);
+        this.initialize(this.client, this.dialogWidth, this.dialogHeight);
     }
 
     @Override
-    public void initGui()
+    public void onInitialized()
     {
         this.clearElements();
 
@@ -112,7 +111,7 @@ public class GuiKeybindSettings extends GuiDialogBase
     }
 
     @Override
-    public void onGuiClosed()
+    public void onClosed()
     {
         KeyAction activateOn = (KeyAction) this.cfgActivateOn.getOptionListValue();
         KeybindSettings.Context context = (KeybindSettings.Context) this.cfgContext.getOptionListValue();
@@ -124,18 +123,18 @@ public class GuiKeybindSettings extends GuiDialogBase
         KeybindSettings settingsNew = KeybindSettings.create(context, activateOn, allowExtraKeys, orderSensitive, exclusive, cancel);
         this.keybind.setSettings(settingsNew);
 
-        super.onGuiClosed();
+        super.onClosed();
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTicks)
+    public void draw(int mouseX, int mouseY, float partialTicks)
     {
         if (this.getParent() != null)
         {
-            this.getParent().render(mouseX, mouseY, partialTicks);
+            this.getParent().draw(mouseX, mouseY, partialTicks);
         }
 
-        super.render(mouseX, mouseY, partialTicks);
+        super.draw(mouseX, mouseY, partialTicks);
     }
 
     @Override

@@ -4,16 +4,16 @@ import java.io.File;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.text.ChatType;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.event.ClickEvent;
+import fi.dy.masa.malilib.gui.GuiBase;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.FontRenderer;
+import net.minecraft.client.resource.language.I18n;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.sortme.ChatMessageType;
+import net.minecraft.text.StringTextComponent;
+import net.minecraft.text.TextComponent;
+import net.minecraft.text.TranslatableTextComponent;
+import net.minecraft.text.event.ClickEvent;
 
 public class StringUtils
 {
@@ -59,23 +59,23 @@ public class StringUtils
 
     public static void printBooleanConfigToggleMessage(String prettyName, boolean newValue)
     {
-        String pre = newValue ? TextFormatting.GREEN.toString() : TextFormatting.RED.toString();
-        String status = I18n.format("malilib.message.value." + (newValue ? "on" : "off"));
-        String message = I18n.format("malilib.message.toggled", prettyName, pre + status + TextFormatting.RESET);
+        String pre = newValue ? GuiBase.TXT_GREEN : GuiBase.TXT_RED;
+        String status = I18n.translate("malilib.message.value." + (newValue ? "on" : "off"));
+        String message = I18n.translate("malilib.message.toggled", prettyName, pre + status + GuiBase.TXT_RST);
         printActionbarMessage(message);
     }
 
     public static void printActionbarMessage(String key, Object... args)
     {
-        Minecraft.getInstance().ingameGUI.addChatMessage(ChatType.GAME_INFO, new TextComponentTranslation(key, args));
+        MinecraftClient.getInstance().inGameHud.addChatMessage(ChatMessageType.GAME_INFO, new TranslatableTextComponent(key, args));
     }
 
-    public static void sendOpenFileChatMessage(EntityPlayer player, String messageKey, File file)
+    public static void sendOpenFileChatMessage(PlayerEntity player, String messageKey, File file)
     {
-        ITextComponent name = new TextComponentString(file.getName());
+        TextComponent name = new StringTextComponent(file.getName());
         name.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, file.getAbsolutePath()));
-        name.getStyle().setUnderlined(Boolean.valueOf(true));
-        player.sendMessage(new TextComponentTranslation(messageKey, name));
+        name.getStyle().setUnderline(Boolean.valueOf(true));
+        player.appendCommandFeedback(new TranslatableTextComponent(messageKey, name));
     }
 
     public static String getClampedDisplayStringStrlen(List<String> list, final int maxWidth, String prefix, String suffix)
@@ -133,7 +133,7 @@ public class StringUtils
         StringBuilder sb = new StringBuilder(128);
         sb.append(prefix);
 
-        FontRenderer font = Minecraft.getInstance().fontRenderer;
+        FontRenderer font = MinecraftClient.getInstance().fontRenderer;
         String entrySep = ", ";
         String dots = " ...";
         final int listSize = list.size();

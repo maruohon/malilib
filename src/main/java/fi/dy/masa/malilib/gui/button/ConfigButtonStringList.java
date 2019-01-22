@@ -6,7 +6,7 @@ import fi.dy.masa.malilib.gui.GuiStringListEdit;
 import fi.dy.masa.malilib.gui.interfaces.IConfigGui;
 import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
 import fi.dy.masa.malilib.util.StringUtils;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 
 public class ConfigButtonStringList extends ButtonGeneric
 {
@@ -28,9 +28,9 @@ public class ConfigButtonStringList extends ButtonGeneric
     @Override
     public void onMouseButtonClicked(int mouseButton)
     {
-        Minecraft mc = Minecraft.getInstance();
+        MinecraftClient mc = MinecraftClient.getInstance();
 
-        this.playPressSound(mc.getSoundHandler());
+        this.playPressedSound(mc.getSoundLoader());
 
         if (this.dialogHandler != null)
         {
@@ -38,13 +38,13 @@ public class ConfigButtonStringList extends ButtonGeneric
         }
         else
         {
-            mc.displayGuiScreen(new GuiStringListEdit(this.config, this.configGui, null, mc.currentScreen));
+            mc.openGui(new GuiStringListEdit(this.config, this.configGui, null, mc.currentGui));
         }
     }
 
     @Override
     public void updateDisplayString()
     {
-        this.displayString = StringUtils.getClampedDisplayStringRenderlen(this.config.getStrings(), this.width - 10, "[ ", " ]");
+        this.text = StringUtils.getClampedDisplayStringRenderlen(this.config.getStrings(), this.width - 10, "[ ", " ]");
     }
 }

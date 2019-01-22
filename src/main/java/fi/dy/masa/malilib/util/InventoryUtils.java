@@ -1,26 +1,24 @@
 package fi.dy.masa.malilib.util;
 
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import net.minecraft.block.BlockShulkerBox;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.ClickType;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.ContainerPlayer;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryBasic;
-import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.block.ShulkerBoxBlock;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.container.Container;
+import net.minecraft.container.PlayerContainer;
+import net.minecraft.container.Slot;
+import net.minecraft.container.SlotActionType;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.BasicInventory;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.item.block.BlockItem;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.util.DefaultedList;
 
 public class InventoryUtils
 {
-    private static final NonNullList<ItemStack> EMPTY_LIST = NonNullList.create();
+    private static final DefaultedList<ItemStack> EMPTY_LIST = DefaultedList.create();
 
     /**
      * Check whether the stacks are identical otherwise, but ignoring the stack size
@@ -30,7 +28,7 @@ public class InventoryUtils
      */
     public static boolean areStacksEqual(ItemStack stack1, ItemStack stack2)
     {
-        return ItemStack.areItemsEqual(stack1, stack2) && ItemStack.areItemStackTagsEqual(stack1, stack2);
+        return ItemStack.areEqualIgnoreTags(stack1, stack2) && ItemStack.areTagsEqual(stack1, stack2);
     }
 
     /**
@@ -42,7 +40,7 @@ public class InventoryUtils
      */
     public static boolean areStacksEqualIgnoreDurability(ItemStack stack1, ItemStack stack2)
     {
-        return ItemStack.areItemsEqualIgnoreDurability(stack1, stack2) && ItemStack.areItemStackTagsEqual(stack1, stack2);
+        return ItemStack.areEqualIgnoreDurability(stack1, stack2) && ItemStack.areTagsEqual(stack1, stack2);
     }
 
     /**
@@ -53,8 +51,8 @@ public class InventoryUtils
      */
     public static void swapSlots(Container container, int slotNum, int hotbarSlot)
     {
-        Minecraft mc = Minecraft.getInstance();
-        mc.playerController.windowClick(container.windowId, slotNum, hotbarSlot, ClickType.SWAP, mc.player);
+        MinecraftClient mc = MinecraftClient.getInstance();
+        mc.interactionManager.method_2906(container.syncId, slotNum, hotbarSlot, SlotActionType.SWAP, mc.player);
     }
 
     /**
@@ -80,19 +78,19 @@ public class InventoryUtils
      */
     public static int findEmptySlotInPlayerInventory(Container containerPlayer, boolean allowOffhand, boolean reverse)
     {
-        final int startSlot = reverse ? containerPlayer.inventorySlots.size() - 1 : 0;
-        final int endSlot = reverse ? -1 : containerPlayer.inventorySlots.size();
+        final int startSlot = reverse ? containerPlayer.slotList.size() - 1 : 0;
+        final int endSlot = reverse ? -1 : containerPlayer.slotList.size();
         final int increment = reverse ? -1 : 1;
 
         for (int slotNum = startSlot; slotNum != endSlot; slotNum += increment)
         {
-            Slot slot = containerPlayer.inventorySlots.get(slotNum);
+            Slot slot = containerPlayer.slotList.get(slotNum);
             ItemStack stackSlot = slot.getStack();
 
             // Inventory crafting, armor and offhand slots are not valid
-            if (stackSlot.isEmpty() && isRegularInventorySlot(slot.slotNumber, allowOffhand))
+            if (stackSlot.isEmpty() && isRegularInventorySlot(slot.id, allowOffhand))
             {
-                return slot.slotNumber;
+                return slot.id;
             }
         }
 
@@ -110,19 +108,19 @@ public class InventoryUtils
      */
     public static int findSlotWithItem(Container container, ItemStack stackReference, boolean reverse)
     {
-        final int startSlot = reverse ? container.inventorySlots.size() - 1 : 0;
-        final int endSlot = reverse ? -1 : container.inventorySlots.size();
+        final int startSlot = reverse ? container.slotList.size() - 1 : 0;
+        final int endSlot = reverse ? -1 : container.slotList.size();
         final int increment = reverse ? -1 : 1;
-        final boolean isPlayerInv = container instanceof ContainerPlayer;
+        final boolean isPlayerInv = container instanceof PlayerContainer;
 
         for (int slotNum = startSlot; slotNum != endSlot; slotNum += increment)
         {
-            Slot slot = container.inventorySlots.get(slotNum);
+            Slot slot = container.slotList.get(slotNum);
 
-            if ((isPlayerInv == false || isRegularInventorySlot(slot.slotNumber, false)) &&
+            if ((isPlayerInv == false || isRegularInventorySlot(slot.id, false)) &&
                 areStacksEqualIgnoreDurability(slot.getStack(), stackReference))
             {
-                return slot.slotNumber;
+                return slot.id;
             }
         }
 
@@ -136,31 +134,31 @@ public class InventoryUtils
      * @param mc
      * @return true if an item was swapped to the main hand, false if it was already in the hand, or was not found in the inventory
      */
-    public static boolean swapItemToMainHand(ItemStack stackReference, Minecraft mc)
+    public static boolean swapItemToMainHand(ItemStack stackReference, MinecraftClient mc)
     {
-        EntityPlayer player = mc.player;
-        boolean isCreative = player.abilities.isCreativeMode;
+        PlayerEntity player = mc.player;
+        boolean isCreative = player.abilities.creativeMode;
 
         // Already holding the requested item
-        if (areStacksEqual(stackReference, player.getHeldItemMainhand()))
+        if (areStacksEqual(stackReference, player.getMainHandStack()))
         {
             return false;
         }
 
         if (isCreative)
         {
-            player.inventory.setPickedItemStack(stackReference);
-            mc.playerController.sendSlotPacket(player.getHeldItem(EnumHand.MAIN_HAND), 36 + player.inventory.currentItem);
+            player.inventory.addPickBlock(stackReference);
+            mc.interactionManager.method_2909(player.getMainHandStack(), 36 + player.inventory.selectedSlot); // sendSlotPacket
             return true;
         }
         else
         {
-            int slot = findSlotWithItem(player.inventoryContainer, stackReference, true);
+            int slot = findSlotWithItem(player.containerPlayer, stackReference, true);
 
             if (slot != -1)
             {
-                int currentHotbarSlot = player.inventory.currentItem;
-                mc.playerController.windowClick(player.inventoryContainer.windowId, slot, currentHotbarSlot, ClickType.SWAP, mc.player);
+                int currentHotbarSlot = player.inventory.selectedSlot;
+                mc.interactionManager.method_2906(player.containerPlayer.syncId, slot, currentHotbarSlot, SlotActionType.SWAP, mc.player);
                 return true;
             }
         }
@@ -176,15 +174,15 @@ public class InventoryUtils
      */
     public static boolean shulkerBoxHasItems(ItemStack stackShulkerBox)
     {
-        NBTTagCompound nbt = stackShulkerBox.getTag();
+        CompoundTag nbt = stackShulkerBox.getTag();
 
-        if (nbt != null && nbt.contains("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
+        if (nbt != null && nbt.containsKey("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
         {
-            NBTTagCompound tag = nbt.getCompound("BlockEntityTag");
+            CompoundTag tag = nbt.getCompound("BlockEntityTag");
 
-            if (tag.contains("Items", Constants.NBT.TAG_LIST))
+            if (tag.containsKey("Items", Constants.NBT.TAG_LIST))
             {
-                NBTTagList tagList = tag.getList("Items", Constants.NBT.TAG_COMPOUND);
+                ListTag tagList = tag.getList("Items", Constants.NBT.TAG_COMPOUND);
                 return tagList.size() > 0;
             }
         }
@@ -199,23 +197,23 @@ public class InventoryUtils
      * @param stackShulkerBox
      * @return
      */
-    public static NonNullList<ItemStack> getStoredItems(ItemStack stackIn)
+    public static DefaultedList<ItemStack> getStoredItems(ItemStack stackIn)
     {
-        NBTTagCompound nbt = stackIn.getTag();
+        CompoundTag nbt = stackIn.getTag();
 
-        if (nbt != null && nbt.contains("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
+        if (nbt != null && nbt.containsKey("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
         {
-            NBTTagCompound tagBlockEntity = nbt.getCompound("BlockEntityTag");
+            CompoundTag tagBlockEntity = nbt.getCompound("BlockEntityTag");
 
-            if (tagBlockEntity.contains("Items", Constants.NBT.TAG_LIST))
+            if (tagBlockEntity.containsKey("Items", Constants.NBT.TAG_LIST))
             {
-                NonNullList<ItemStack> items = NonNullList.create();
-                NBTTagList tagList = tagBlockEntity.getList("Items", Constants.NBT.TAG_COMPOUND);
+                DefaultedList<ItemStack> items = DefaultedList.create();
+                ListTag tagList = tagBlockEntity.getList("Items", Constants.NBT.TAG_COMPOUND);
                 final int count = tagList.size();
 
                 for (int i = 0; i < count; ++i)
                 {
-                    ItemStack stack = ItemStack.read(tagList.getCompound(i));
+                    ItemStack stack = ItemStack.fromTag(tagList.getCompoundTag(i));
 
                     if (stack.isEmpty() == false)
                     {
@@ -227,7 +225,7 @@ public class InventoryUtils
             }
         }
 
-        return NonNullList.create();
+        return DefaultedList.create();
     }
 
     /**
@@ -238,17 +236,17 @@ public class InventoryUtils
      * @param slotCount the maximum number of slots, and thus also the size of the list to create
      * @return
      */
-    public static NonNullList<ItemStack> getStoredItems(ItemStack stackIn, int slotCount)
+    public static DefaultedList<ItemStack> getStoredItems(ItemStack stackIn, int slotCount)
     {
-        NBTTagCompound nbt = stackIn.getTag();
+        CompoundTag nbt = stackIn.getTag();
 
-        if (nbt != null && nbt.contains("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
+        if (nbt != null && nbt.containsKey("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
         {
-            NBTTagCompound tagBlockEntity = nbt.getCompound("BlockEntityTag");
+            CompoundTag tagBlockEntity = nbt.getCompound("BlockEntityTag");
 
-            if (tagBlockEntity.contains("Items", Constants.NBT.TAG_LIST))
+            if (tagBlockEntity.containsKey("Items", Constants.NBT.TAG_LIST))
             {
-                NBTTagList tagList = tagBlockEntity.getList("Items", Constants.NBT.TAG_COMPOUND);
+                ListTag tagList = tagBlockEntity.getList("Items", Constants.NBT.TAG_COMPOUND);
                 final int count = tagList.size();
                 int maxSlot = -1;
 
@@ -256,7 +254,7 @@ public class InventoryUtils
                 {
                     for (int i = 0; i < count; ++i)
                     {
-                        NBTTagCompound tag = tagList.getCompound(i);
+                        CompoundTag tag = tagList.getCompoundTag(i);
                         int slot = tag.getByte("Slot");
 
                         if (slot > maxSlot)
@@ -268,12 +266,12 @@ public class InventoryUtils
                     slotCount = maxSlot + 1;
                 }
 
-                NonNullList<ItemStack> items = NonNullList.withSize(slotCount, ItemStack.EMPTY);
+                DefaultedList<ItemStack> items = DefaultedList.create(slotCount, ItemStack.EMPTY);
 
                 for (int i = 0; i < count; ++i)
                 {
-                    NBTTagCompound tag = tagList.getCompound(i);
-                    ItemStack stack = ItemStack.read(tag);
+                    CompoundTag tag = tagList.getCompoundTag(i);
+                    ItemStack stack = ItemStack.fromTag(tag);
                     int slot = tag.getByte("Slot");
 
                     if (slot >= 0 && slot < items.size() && stack.isEmpty() == false)
@@ -298,7 +296,7 @@ public class InventoryUtils
     public static Object2IntOpenHashMap<ItemType> getStoredItemCounts(ItemStack stackShulkerBox)
     {
         Object2IntOpenHashMap<ItemType> map = new Object2IntOpenHashMap<>();
-        NonNullList<ItemStack> items = getStoredItems(stackShulkerBox);
+        DefaultedList<ItemStack> items = getStoredItems(stackShulkerBox);
 
         for (int slot = 0; slot < items.size(); ++slot)
         {
@@ -306,7 +304,7 @@ public class InventoryUtils
 
             if (stack.isEmpty() == false)
             {
-                map.addTo(new ItemType(stack), stack.getCount());
+                map.addTo(new ItemType(stack), stack.getAmount());
             }
         }
 
@@ -320,21 +318,21 @@ public class InventoryUtils
      * @param player
      * @return
      */
-    public static Object2IntOpenHashMap<ItemType> getInventoryItemCounts(IInventory inv)
+    public static Object2IntOpenHashMap<ItemType> getInventoryItemCounts(Inventory inv)
     {
         Object2IntOpenHashMap<ItemType> map = new Object2IntOpenHashMap<>();
-        final int slots = inv.getSizeInventory();
+        final int slots = inv.getInvSize();
 
         for (int slot = 0; slot < slots; ++slot)
         {
-            ItemStack stack = inv.getStackInSlot(slot);
+            ItemStack stack = inv.getInvStack(slot);
 
             if (stack.isEmpty() == false)
             {
-                map.addTo(new ItemType(stack, false, true), stack.getCount());
+                map.addTo(new ItemType(stack, false, true), stack.getAmount());
 
-                if (stack.getItem() instanceof ItemBlock &&
-                    ((ItemBlock) stack.getItem()).getBlock() instanceof BlockShulkerBox &&
+                if (stack.getItem() instanceof BlockItem &&
+                    ((BlockItem) stack.getItem()).getBlock() instanceof ShulkerBoxBlock &&
                     shulkerBoxHasItems(stack))
                 {
                     Object2IntOpenHashMap<ItemType> boxCounts = getStoredItemCounts(stack);
@@ -355,13 +353,13 @@ public class InventoryUtils
      * @param items
      * @return
      */
-    public static IInventory getAsInventory(NonNullList<ItemStack> items)
+    public static Inventory getAsInventory(DefaultedList<ItemStack> items)
     {
-        InventoryBasic inv = new InventoryBasic(new TextComponentString(""), items.size());
+        BasicInventory inv = new BasicInventory(items.size());
 
         for (int slot = 0; slot < items.size(); ++slot)
         {
-            inv.setInventorySlotContents(slot, items.get(slot));
+            inv.setInvStack(slot, items.get(slot));
         }
 
         return inv;

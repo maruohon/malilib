@@ -3,13 +3,13 @@ package fi.dy.masa.malilib.util;
 import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 
 public class FileUtils
 {
     public static File getConfigDirectory()
     {
-        return new File(Minecraft.getInstance().gameDir, "config");
+        return new File(MinecraftClient.getInstance().runDirectory, "config");
     }
 
     public static File getCanonicalFileIfPossible(File file)

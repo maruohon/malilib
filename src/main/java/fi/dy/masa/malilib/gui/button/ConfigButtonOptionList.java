@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.gui.button;
 
 import fi.dy.masa.malilib.config.IConfigOptionList;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.MinecraftClient;
 
 public class ConfigButtonOptionList extends ButtonGeneric
 {
@@ -20,12 +20,12 @@ public class ConfigButtonOptionList extends ButtonGeneric
     {
         this.config.setOptionListValue(this.config.getOptionListValue().cycle(mouseButton == 0));
         this.updateDisplayString();
-        this.playPressSound(Minecraft.getInstance().getSoundHandler());
+        this.playPressedSound(MinecraftClient.getInstance().getSoundLoader());
     }
 
     @Override
     public void updateDisplayString()
     {
-        this.displayString = String.valueOf(this.config.getOptionListValue().getDisplayName());
+        this.text = String.valueOf(this.config.getOptionListValue().getDisplayName());
     }
 }

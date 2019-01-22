@@ -3,8 +3,8 @@ package fi.dy.masa.malilib.gui.widgets;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.GuiLighting;
 
 public abstract class WidgetBase
 {
@@ -156,7 +156,7 @@ public abstract class WidgetBase
     {
         if (lines != null && lines.length >= 1)
         {
-            Minecraft mc = Minecraft.getInstance();
+            MinecraftClient mc = MinecraftClient.getInstance();
 
             if (width == -1)
             {
@@ -195,7 +195,7 @@ public abstract class WidgetBase
         {
             this.hoveredSubWidget.postRenderHovered(mouseX, mouseY, false);
 
-            RenderHelper.disableStandardItemLighting();
+            GuiLighting.disable();
         }
     }
 }

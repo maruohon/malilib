@@ -1,10 +1,10 @@
 package fi.dy.masa.malilib.gui.button;
 
 import org.apache.commons.lang3.StringUtils;
+import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.interfaces.IKeybindConfigGui;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
 import fi.dy.masa.malilib.util.KeyCodes;
-import net.minecraft.util.text.TextFormatting;
 
 public class ConfigButtonKeybind extends ButtonBase
 {
@@ -91,11 +91,11 @@ public class ConfigButtonKeybind extends ButtonBase
 
         if (this.selected)
         {
-            this.displayString = "> " + TextFormatting.YELLOW + valueStr + TextFormatting.RESET + " <";
+            this.text = "> " + GuiBase.TXT_YELLOW + valueStr + GuiBase.TXT_RST + " <";
         }
         else
         {
-            this.displayString = valueStr;
+            this.text = valueStr;
         }
     }
 }

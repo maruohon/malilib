@@ -3,8 +3,8 @@ package fi.dy.masa.malilib.gui.widgets;
 import java.util.List;
 import fi.dy.masa.malilib.gui.GuiConfigsBase;
 import fi.dy.masa.malilib.gui.GuiConfigsBase.ConfigOptionWrapper;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.FontRenderer;
 
 public class WidgetListConfigOptions extends WidgetListConfigOptionsBase<ConfigOptionWrapper, WidgetConfigOption>
 {
@@ -30,13 +30,13 @@ public class WidgetListConfigOptions extends WidgetListConfigOptionsBase<ConfigO
     @Override
     protected WidgetConfigOption createListEntryWidget(int x, int y, int listIndex, boolean isOdd, ConfigOptionWrapper wrapper)
     {
-        return new WidgetConfigOption(x, y, this.browserEntryWidth, this.browserEntryHeight, this.zLevel,
-                this.maxLabelWidth, this.configWidth, wrapper, this.parent, this.mc, this);
+        return new WidgetConfigOption(x, y, this.browserEntryWidth, this.browserEntryHeight, this.zOffset,
+                this.maxLabelWidth, this.configWidth, wrapper, this.parent, this.client, this);
     }
 
     public static int getMaxNameLengthWrapped(List<ConfigOptionWrapper> wrappers)
     {
-        FontRenderer font = Minecraft.getInstance().fontRenderer;
+        FontRenderer font = MinecraftClient.getInstance().fontRenderer;
         int width = 0;
 
         for (ConfigOptionWrapper wrapper : wrappers)
