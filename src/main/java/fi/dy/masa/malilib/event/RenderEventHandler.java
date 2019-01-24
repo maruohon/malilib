@@ -35,6 +35,9 @@ public class RenderEventHandler implements IRenderDispatcher
         }
     }
 
+    /**
+     * NOT PUBLIC API - DO NOT CALL
+     */
     public void onRenderGameOverlayPost(float partialTicks)
     {
         if (this.overlayRenderers.isEmpty() == false)
@@ -46,6 +49,9 @@ public class RenderEventHandler implements IRenderDispatcher
         }
     }
 
+    /**
+     * NOT PUBLIC API - DO NOT CALL
+     */
     public void onRenderWorldLast(float partialTicks)
     {
         if (this.worldLastRenderers.isEmpty() == false)

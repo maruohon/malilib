@@ -166,7 +166,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
         {
             WIDGET widget = this.listWidgets.get(i);
             TYPE entry = widget.getEntry();
-            boolean isSelected = this.allowMultiSelection ? this.selectedEntries.contains(entry) : entry == this.getLastSelectedEntry();
+            boolean isSelected = this.allowMultiSelection ? this.selectedEntries.contains(entry) : entry != null && entry.equals(this.getLastSelectedEntry());
             widget.render(mouseX, mouseY, isSelected);
 
             if (widget.isMouseOver(mouseX, mouseY))

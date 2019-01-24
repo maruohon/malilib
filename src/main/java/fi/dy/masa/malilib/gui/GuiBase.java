@@ -30,6 +30,7 @@ import net.minecraft.util.text.TextFormatting;
 
 public abstract class GuiBase extends GuiScreen implements IMessageConsumer, IStringConsumer
 {
+    public static final String TXT_AQUA = TextFormatting.AQUA.toString();
     public static final String TXT_BLUE = TextFormatting.BLUE.toString();
     public static final String TXT_GRAY = TextFormatting.GRAY.toString();
     public static final String TXT_GREEN = TextFormatting.GREEN.toString();

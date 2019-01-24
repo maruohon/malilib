@@ -152,6 +152,9 @@ public class InputEventHandler implements IKeybindManager
         */
     }
 
+    /**
+     * NOT PUBLIC API - DO NOT CALL
+     */
     public boolean onKeyInput(boolean isGui)
     {
         int eventKey = Keyboard.getEventKey();
@@ -177,6 +180,9 @@ public class InputEventHandler implements IKeybindManager
         return this.isModifierKey(eventKey) == false && cancel;
     }
 
+    /**
+     * NOT PUBLIC API - DO NOT CALL
+     */
     public boolean onMouseInput(boolean isGui)
     {
         final int eventButton = Mouse.getEventButton();
