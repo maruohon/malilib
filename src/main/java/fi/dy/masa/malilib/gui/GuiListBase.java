@@ -31,6 +31,7 @@ public abstract class GuiListBase<TYPE, WIDGET extends WidgetListEntryBase<TYPE>
         return null;
     }
 
+    @Nullable
     protected WIDGETLIST getListWidget()
     {
         if (this.widget == null)
@@ -57,8 +58,11 @@ public abstract class GuiListBase<TYPE, WIDGET extends WidgetListEntryBase<TYPE>
     {
         super.initGui();
 
-        this.getListWidget().setSize(this.getBrowserWidth(), this.getBrowserHeight());
-        this.getListWidget().initGui();
+        if (this.getListWidget() != null)
+        {
+            this.getListWidget().setSize(this.getBrowserWidth(), this.getBrowserHeight());
+            this.getListWidget().initGui();
+        }
     }
 
     @Override
@@ -66,13 +70,16 @@ public abstract class GuiListBase<TYPE, WIDGET extends WidgetListEntryBase<TYPE>
     {
         super.onGuiClosed();
 
-        this.getListWidget().onGuiClosed();
+        if (this.getListWidget() != null)
+        {
+            this.getListWidget().onGuiClosed();
+        }
     }
 
     @Override
     public boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
-        if (this.getListWidget().onMouseClicked(mouseX, mouseY, mouseButton))
+        if (this.getListWidget() != null && this.getListWidget().onMouseClicked(mouseX, mouseY, mouseButton))
         {
             return true;
         }
@@ -83,7 +90,7 @@ public abstract class GuiListBase<TYPE, WIDGET extends WidgetListEntryBase<TYPE>
     @Override
     public boolean onMouseReleased(int mouseX, int mouseY, int mouseButton)
     {
-        if (this.getListWidget().onMouseReleased(mouseX, mouseY, mouseButton))
+        if (this.getListWidget() != null && this.getListWidget().onMouseReleased(mouseX, mouseY, mouseButton))
         {
             return true;
         }
@@ -94,7 +101,7 @@ public abstract class GuiListBase<TYPE, WIDGET extends WidgetListEntryBase<TYPE>
     @Override
     public boolean onMouseScrolled(int mouseX, int mouseY, int mouseWheelDelta)
     {
-        if (this.getListWidget().onMouseScrolled(mouseX, mouseY, mouseWheelDelta))
+        if (this.getListWidget() != null && this.getListWidget().onMouseScrolled(mouseX, mouseY, mouseWheelDelta))
         {
             return true;
         }
@@ -110,7 +117,7 @@ public abstract class GuiListBase<TYPE, WIDGET extends WidgetListEntryBase<TYPE>
             return true;
         }
 
-        return this.getListWidget().onKeyTyped(typedChar, keyCode);
+        return this.getListWidget() != null && this.getListWidget().onKeyTyped(typedChar, keyCode);
     }
 
     @Override
@@ -118,12 +125,18 @@ public abstract class GuiListBase<TYPE, WIDGET extends WidgetListEntryBase<TYPE>
     {
         super.setWorldAndResolution(mc, width, height);
 
-        this.getListWidget().setWorldAndResolution(mc, width, height);
+        if (this.getListWidget() != null)
+        {
+            this.getListWidget().setWorldAndResolution(mc, width, height);
+        }
     }
 
     @Override
     public void drawContents(int mouseX, int mouseY, float partialTicks)
     {
-        this.getListWidget().drawContents(mouseX, mouseY, partialTicks);
+        if (this.getListWidget() != null)
+        {
+            this.getListWidget().drawContents(mouseX, mouseY, partialTicks);
+        }
     }
 }
