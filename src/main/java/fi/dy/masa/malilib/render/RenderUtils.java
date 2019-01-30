@@ -132,7 +132,7 @@ public class RenderUtils
             final int lineHeight = font.FONT_HEIGHT + 1;
             int textStartX = x + 12;
             int textStartY = y - 12;
-            int textHeight = textLines.size() * lineHeight;
+            int textHeight = textLines.size() * lineHeight - 2;
 
             if (textStartX + maxLineLength > maxWidth)
             {

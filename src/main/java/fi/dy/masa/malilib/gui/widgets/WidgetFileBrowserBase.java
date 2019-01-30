@@ -20,7 +20,6 @@ import fi.dy.masa.malilib.util.FileUtils;
 public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntry, WidgetDirectoryEntry> implements IDirectoryNavigator
 {
     protected static final FileFilter DIRECTORY_FILTER = new FileFilterDirectories();
-    protected static final FileFilter SCHEMATIC_FILTER = new FileFilterSchematics();
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     protected final IDirectoryCache cache;
@@ -289,18 +288,6 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
         public boolean accept(File pathName)
         {
             return pathName.isDirectory();
-        }
-    }
-
-    public static class FileFilterSchematics implements FileFilter
-    {
-        @Override
-        public boolean accept(File pathName)
-        {
-            String name = pathName.getName();
-            return  name.endsWith(".litematic") ||
-                    name.endsWith(".schematic") ||
-                    name.endsWith(".nbt");
         }
     }
 }
