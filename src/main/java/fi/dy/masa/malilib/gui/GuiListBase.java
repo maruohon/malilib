@@ -9,14 +9,29 @@ import net.minecraft.client.gui.GuiScreen;
 
 public abstract class GuiListBase<TYPE, WIDGET extends WidgetListEntryBase<TYPE>, WIDGETLIST extends WidgetListBase<TYPE, WIDGET>> extends GuiBase
 {
-    private final int listX;
-    private final int listY;
+    private int listX;
+    private int listY;
     private WIDGETLIST widget;
 
     protected GuiListBase(int listX, int listY)
     {
+        this.setListPosition(listX, listY);
+    }
+
+    protected void setListPosition(int listX, int listY)
+    {
         this.listX = listX;
         this.listY = listY;
+    }
+
+    protected int getListX()
+    {
+        return this.listX;
+    }
+
+    protected int getListY()
+    {
+        return this.listY;
     }
 
     protected abstract WIDGETLIST createListWidget(int listX, int listY);

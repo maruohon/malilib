@@ -33,6 +33,11 @@ public class ButtonGeneric extends ButtonBase
 
         this.icon = icon;
 
+        if (width == -1 && icon != null)
+        {
+            this.width = Minecraft.getMinecraft().fontRenderer.getStringWidth(text) + icon.getWidth() + 12;
+        }
+
         if (hoverStrings.length > 0)
         {
             this.setHoverStrings(hoverStrings);

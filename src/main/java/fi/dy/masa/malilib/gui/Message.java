@@ -130,7 +130,7 @@ public class Message
     {
         switch (this.type)
         {
-            case INFO:      return GuiBase.TXT_GRAY;
+            case INFO:      return GuiBase.TXT_WHITE;
             case SUCCESS:   return GuiBase.TXT_GREEN;
             case WARNING:   return GuiBase.TXT_GOLD;
             case ERROR:     return GuiBase.TXT_RED;

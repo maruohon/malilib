@@ -62,9 +62,14 @@ public class WidgetCheckBox extends WidgetBase
 
     public void setChecked(boolean checked)
     {
+        this.setChecked(checked, true);
+    }
+
+    public void setChecked(boolean checked, boolean notifyListener)
+    {
         this.checked = checked;
 
-        if (this.listener != null)
+        if (notifyListener && this.listener != null)
         {
             this.listener.onSelectionChange(this);
         }
