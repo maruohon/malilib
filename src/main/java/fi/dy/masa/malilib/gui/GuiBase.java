@@ -202,6 +202,7 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
                 {
                     // Don't call super if the button press got handled
                     handled = true;
+                    break;
                 }
             }
         }
@@ -256,6 +257,19 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
 
                 handled = true;
                 break;
+            }
+        }
+
+        if (handled == false)
+        {
+            for (WidgetBase widget : this.widgets)
+            {
+                if (widget.onKeyTyped(typedChar, keyCode))
+                {
+                    // Don't call super if the button press got handled
+                    handled = true;
+                    break;
+                }
             }
         }
 

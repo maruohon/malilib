@@ -1,7 +1,9 @@
 package fi.dy.masa.malilib.gui.widgets;
 
 import java.io.File;
+import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.GuiBase;
+import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
 import fi.dy.masa.malilib.gui.interfaces.IDirectoryNavigator;
 import fi.dy.masa.malilib.gui.interfaces.IFileBrowserIconProvider;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
@@ -16,8 +18,11 @@ public class WidgetDirectoryNavigation extends WidgetBase
     protected final File rootDir;
     protected final Minecraft mc;
     protected final IDirectoryNavigator navigator;
-    protected final IGuiIcon iconRoot;
-    protected final IGuiIcon iconUp;
+    protected final Icon iconRoot;
+    protected final Icon iconUp;
+    protected final Icon iconSearch;
+    protected final GuiTextFieldGeneric searchBox;
+    protected boolean searchOpen;
 
     public WidgetDirectoryNavigation(int x, int y, int width, int height, float zLevel,
             File currentDir, File rootDir, Minecraft mc, IDirectoryNavigator navigator, IFileBrowserIconProvider iconProvider)
@@ -28,64 +33,135 @@ public class WidgetDirectoryNavigation extends WidgetBase
         this.rootDir = rootDir;
         this.mc = mc;
         this.navigator = navigator;
-        this.iconRoot = iconProvider.getIconRoot();
-        this.iconUp = iconProvider.getIconUp();
+        this.iconRoot = new Icon(x, y + 1, zLevel, iconProvider.getIconRoot(), mc);
+        this.iconUp = new Icon(x + iconProvider.getIconRoot().getWidth() + 2, y + 1, zLevel, iconProvider.getIconUp(), mc);
+        this.iconSearch = new Icon(x + width - iconProvider.getIconRoot().getWidth() - 2, y + 1, zLevel, iconProvider.getIconSearch(), mc);
+        this.searchBox = new GuiTextFieldGeneric(x + 14, y, width - 32, height, mc.fontRenderer);
+    }
+
+    public String getFilter()
+    {
+        return this.searchOpen ? this.searchBox.getText() : "";
     }
 
     @Override
     protected boolean onMouseClickedImpl(int mouseX, int mouseY, int mouseButton)
     {
-        if (this.isHoveringIcon(mouseX, mouseY, 0))
+        Icon hoveredIcon = this.getHoveredIcon(mouseX, mouseY);
+
+        if (this.searchOpen == false)
         {
-            this.navigator.switchToRootDirectory();
+            if (hoveredIcon == this.iconRoot)
+            {
+                this.navigator.switchToRootDirectory();
+                return true;
+            }
+            else if (hoveredIcon == this.iconUp)
+            {
+                this.navigator.switchToParentDirectory();
+                return true;
+            }
+        }
+
+        if (this.searchBox.mouseClicked(mouseX, mouseY, mouseButton))
+        {
             return true;
         }
-        else if (this.isHoveringIcon(mouseX, mouseY, 1))
+        else if (hoveredIcon == this.iconSearch)
         {
-            this.navigator.switchToParentDirectory();
+            this.searchOpen = ! this.searchOpen;
+
+            if (this.searchOpen)
+            {
+                this.searchBox.setFocused(true);
+            }
+
             return true;
         }
 
         return false;
     }
 
-    protected boolean isHoveringIcon(int mouseX, int mouseY, int iconIndex)
+    @Override
+    protected boolean onKeyTypedImpl(char typedChar, int keyCode)
     {
-        final int iw = iconIndex == 0 ? this.iconRoot.getWidth() : this.iconUp.getWidth();
-        return mouseY >= this.y + 1 && mouseY < this.y + this.height &&
-            mouseX >= this.x + iconIndex * (iw + 2) && mouseX < this.x + iconIndex * (iw + 2) + iw;
+        return this.searchOpen && this.searchBox.textboxKeyTyped(typedChar, keyCode);
+    }
+
+    @Nullable
+    protected Icon getHoveredIcon(int mouseX, int mouseY)
+    {
+        if (this.searchOpen == false)
+        {
+            if (this.iconRoot.isMouseOver(mouseX, mouseY))
+            {
+                return this.iconRoot;
+            }
+            else if (this.iconUp.isMouseOver(mouseX, mouseY))
+            {
+                return this.iconUp;
+            }
+        }
+
+        if (this.iconSearch.isMouseOver(mouseX, mouseY))
+        {
+            return this.iconSearch;
+        }
+
+        return null;
     }
 
     @Override
     public void render(int mouseX, int mouseY, boolean selected)
     {
-        final int widthRoot = this.iconRoot.getWidth();
-        final int widthUp = this.iconUp.getWidth();
+        Icon hoveredIcon = this.getHoveredIcon(mouseX, mouseY);
 
-        // Hovering the "to root directory" widget/icon
-        if (this.isHoveringIcon(mouseX, mouseY, 0))
+        GlStateManager.color(1f, 1f, 1f, 1f);
+        this.iconSearch.render(false, hoveredIcon == this.iconSearch);
+
+        if (this.searchOpen)
         {
-            RenderUtils.drawOutlinedBox(this.x                , this.y + 1, widthRoot, widthRoot, 0x20C0C0C0, 0xE0FFFFFF);
+            this.searchBox.drawTextBox();
         }
-        else if (this.isHoveringIcon(mouseX, mouseY, 1))
+        else
         {
-            RenderUtils.drawOutlinedBox(this.x + widthRoot + 2, this.y + 1, widthUp, widthUp, 0x20C0C0C0, 0xE0FFFFFF);
+            this.iconRoot.render(false, hoveredIcon == this.iconRoot);
+            this.iconUp.render(false, hoveredIcon == this.iconUp);
+
+            final int widthUp = this.iconUp.getWidth();
+
+            // Draw the directory path text background
+            GuiBase.drawRect(this.iconUp.x + widthUp + 6, this.y, this.x + this.width, this.y + this.height, 0x20FFFFFF);
+
+            int textColor = 0xC0C0C0C0;
+            int maxLen = (this.width - 40) / this.mc.fontRenderer.getStringWidth("a") - 4; // FIXME
+            String path = FileUtils.getJoinedTrailingPathElements(this.currentDir, this.rootDir, maxLen, " / ");
+            this.mc.fontRenderer.drawString(path, this.iconUp.x + widthUp + 9, this.y + 3, textColor);
+        }
+    }
+
+    public static class Icon extends WidgetBase
+    {
+        protected final Minecraft mc;
+        protected final IGuiIcon icon;
+
+        public Icon(int x, int y, float zLevel, IGuiIcon icon, Minecraft mc)
+        {
+            super(x, y, icon.getWidth(), icon.getHeight(), zLevel);
+
+            this.mc = mc;
+            this.icon = icon;
         }
 
-        GlStateManager.color(1f, 1f, 1f);
+        public void render(boolean enabled, boolean selected)
+        {
+            this.mc.getTextureManager().bindTexture(this.icon.getTexture());
+            this.icon.renderAt(this.x, this.y, this.zLevel, enabled, selected);
 
-        this.mc.getTextureManager().bindTexture(this.iconRoot.getTexture());
-        this.iconRoot.renderAt(this.x                , this.y + 1, this.zLevel, false, false);
-
-        this.mc.getTextureManager().bindTexture(this.iconUp.getTexture());
-        this.iconUp  .renderAt(this.x + widthRoot + 2, this.y + 1, this.zLevel, false, false);
-
-        // Draw the directory path text background
-        GuiBase.drawRect(this.x + widthRoot + widthUp + 6, this.y, this.x + this.width, this.y + this.height, 0x20FFFFFF);
-
-        int textColor = 0xC0C0C0C0;
-        int maxLen = (this.width - 40) / this.mc.fontRenderer.getStringWidth("a") - 4; // FIXME
-        String path = FileUtils.getJoinedTrailingPathElements(this.currentDir, this.rootDir, maxLen, " / ");
-        this.mc.fontRenderer.drawString(path, this.x + widthRoot * 2 + 9, this.y + 3, textColor);
+            if (selected)
+            {
+                RenderUtils.drawOutlinedBox(this.x, this.y, this.width, this.height, 0x20C0C0C0, 0xE0FFFFFF);
+            }
+        }
     }
 }

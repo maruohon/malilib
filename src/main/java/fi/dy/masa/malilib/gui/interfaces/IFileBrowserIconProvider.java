@@ -9,6 +9,8 @@ public interface IFileBrowserIconProvider
 
     IGuiIcon getIconUp();
 
+    IGuiIcon getIconSearch();
+
     IGuiIcon getIconDirectory();
 
     @Nullable

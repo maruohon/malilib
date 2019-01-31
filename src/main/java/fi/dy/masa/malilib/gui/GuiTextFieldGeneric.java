@@ -7,9 +7,9 @@ import net.minecraft.client.gui.GuiTextField;
 
 public class GuiTextFieldGeneric extends GuiTextField
 {
-    public GuiTextFieldGeneric(int id, FontRenderer fontrenderer, int x, int y, int width, int height)
+    public GuiTextFieldGeneric(int x, int y, int width, int height, FontRenderer fontrenderer)
     {
-        super(id, fontrenderer, x, y, width, height);
+        super(0, fontrenderer, x, y, width, height);
     }
 
     @Override

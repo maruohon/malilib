@@ -26,7 +26,7 @@ public abstract class GuiTextInputBase extends GuiDialogBase
         this.centerOnScreen();
 
         int width = Math.min(maxTextLength * 10, 240);
-        this.textField = new GuiTextFieldGeneric(0, this.mc.fontRenderer, this.dialogLeft + 12, this.dialogTop + 40, width, 20);
+        this.textField = new GuiTextFieldGeneric(this.dialogLeft + 12, this.dialogTop + 40, width, 20, this.mc.fontRenderer);
         this.textField.setMaxStringLength(maxTextLength);
         this.textField.setFocused(true);
         this.textField.setText(this.originalText);
