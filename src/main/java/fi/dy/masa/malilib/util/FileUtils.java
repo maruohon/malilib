@@ -32,6 +32,11 @@ public class FileUtils
     {
         String path = "";
 
+        if (maxStringLength <= 0)
+        {
+            return "...";
+        }
+
         while (file != null)
         {
             String name = file.getName();
