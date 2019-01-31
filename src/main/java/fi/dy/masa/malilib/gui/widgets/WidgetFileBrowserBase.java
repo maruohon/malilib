@@ -341,6 +341,12 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
             return this.name;
         }
 
+        @Nullable
+        public String getDisplayNamePrefix()
+        {
+            return this.displaynamePrefix;
+        }
+
         public String getDisplayName()
         {
             return this.displaynamePrefix != null ? this.displaynamePrefix + this.name : this.name;

@@ -127,12 +127,12 @@ public abstract class GuiListBase<TYPE, WIDGET extends WidgetListEntryBase<TYPE>
     @Override
     public boolean onKeyTyped(char typedChar, int keyCode)
     {
-        if (super.onKeyTyped(typedChar, keyCode))
+        if (this.getListWidget() != null && this.getListWidget().onKeyTyped(typedChar, keyCode))
         {
             return true;
         }
 
-        return this.getListWidget() != null && this.getListWidget().onKeyTyped(typedChar, keyCode);
+        return super.onKeyTyped(typedChar, keyCode);
     }
 
     @Override

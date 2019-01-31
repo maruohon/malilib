@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.gui.widgets;
 
 import java.io.File;
 import javax.annotation.Nullable;
+import org.lwjgl.input.Keyboard;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
 import fi.dy.masa.malilib.gui.interfaces.IDirectoryNavigator;
@@ -85,7 +86,39 @@ public class WidgetDirectoryNavigation extends WidgetBase
     @Override
     protected boolean onKeyTypedImpl(char typedChar, int keyCode)
     {
-        return this.searchOpen && this.searchBox.textboxKeyTyped(typedChar, keyCode);
+        if (this.searchOpen)
+        {
+            if (this.searchBox.textboxKeyTyped(typedChar, keyCode))
+            {
+                return true;
+            }
+            else if (keyCode == Keyboard.KEY_ESCAPE)
+            {
+                this.searchOpen = false;
+                return true;
+            }
+        }
+        else if (keyCode != Keyboard.KEY_ESCAPE &&
+                 keyCode != Keyboard.KEY_BACK &&
+                 keyCode != Keyboard.KEY_RETURN &&
+                 keyCode != Keyboard.KEY_LEFT &&
+                 keyCode != Keyboard.KEY_RIGHT &&
+                 keyCode != Keyboard.KEY_UP &&
+                 keyCode != Keyboard.KEY_DOWN &&
+                 keyCode != Keyboard.KEY_PRIOR &&
+                 keyCode != Keyboard.KEY_NEXT &&
+                 keyCode != Keyboard.KEY_HOME &&
+                 keyCode != Keyboard.KEY_END)
+        {
+            this.searchOpen = true;
+            this.searchBox.setFocused(true);
+            this.searchBox.setText("");
+            this.searchBox.setCursorPositionEnd();
+            this.searchBox.textboxKeyTyped(typedChar, keyCode);
+            return true;
+        }
+
+        return false;
     }
 
     @Nullable

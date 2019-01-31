@@ -222,20 +222,6 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
 
     public boolean onKeyTyped(char typedChar, int keyCode)
     {
-        if (keyCode == Keyboard.KEY_ESCAPE)
-        {
-            if (GuiScreen.isShiftKeyDown())
-            {
-                this.mc.displayGuiScreen(null);
-            }
-            else
-            {
-                this.mc.displayGuiScreen(this.parent);
-            }
-
-            return true;
-        }
-
         boolean handled = false;
         int selected = -1;
 
@@ -270,6 +256,23 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
                     handled = true;
                     break;
                 }
+            }
+        }
+
+        if (handled == false)
+        {
+            if (keyCode == Keyboard.KEY_ESCAPE)
+            {
+                if (GuiScreen.isShiftKeyDown())
+                {
+                    this.mc.displayGuiScreen(null);
+                }
+                else
+                {
+                    this.mc.displayGuiScreen(this.parent);
+                }
+
+                return true;
             }
         }
 
