@@ -32,11 +32,11 @@ malilib.gui.title.all_hotkeys=All registered hotkeys
 malilib.gui.title.keybind_settings.advanced=Advanced Keybind Settings for %s
 malilib.gui.title.string_list_edit=Edit string list for '%s'
 
-malilib.label.aligment.top_left=Top Left
-malilib.label.aligment.top_right=Top Right
-malilib.label.aligment.bottom_left=Bottom Left
-malilib.label.aligment.bottom_right=Bottom Right
-malilib.label.aligment.center=Center
+malilib.label.alignment.top_left=Top Left
+malilib.label.alignment.top_right=Top Right
+malilib.label.alignment.bottom_left=Bottom Left
+malilib.label.alignment.bottom_right=Bottom Right
+malilib.label.alignment.center=Center
 
 malilib.message.toggled=Toggled %s %s
 malilib.message.value.off=OFF

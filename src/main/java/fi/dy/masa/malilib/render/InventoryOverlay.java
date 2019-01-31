@@ -285,6 +285,8 @@ public class InventoryOverlay
      */
     public static InventoryProperties getInventoryPropsTemp(InventoryRenderType type, int totalSlots)
     {
+        INV_PROPS_TEMP.totalSlots = totalSlots;
+
         if (type == InventoryRenderType.FURNACE)
         {
             INV_PROPS_TEMP.slotsPerRow = 1;
@@ -483,6 +485,7 @@ public class InventoryOverlay
 
     public static class InventoryProperties
     {
+        public int totalSlots = 1;
         public int width = 176;
         public int height = 83;
         public int slotsPerRow = 9;
