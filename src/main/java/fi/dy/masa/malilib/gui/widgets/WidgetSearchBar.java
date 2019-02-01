@@ -1,0 +1,118 @@
+package fi.dy.masa.malilib.gui.widgets;
+
+import org.lwjgl.input.Keyboard;
+import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
+import fi.dy.masa.malilib.gui.LeftRight;
+import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
+
+public class WidgetSearchBar extends WidgetBase
+{
+    protected final WidgetIcon iconSearch;
+    protected final LeftRight iconAlignment;
+    protected final GuiTextFieldGeneric searchBox;
+    protected boolean searchOpen;
+
+    public WidgetSearchBar(int x, int y, int width, int height, float zLevel,
+            int searchBarOffsetX, IGuiIcon iconSearch, LeftRight iconAlignment, Minecraft mc)
+    {
+        super(x, y, width, height, zLevel);
+
+        int iw = iconSearch.getWidth();
+        int ix = iconAlignment == LeftRight.RIGHT ? x + width - iw - 1 : x + 2;
+        int tx = iconAlignment == LeftRight.RIGHT ? x - searchBarOffsetX + 3 : x + iw + 6 + searchBarOffsetX;
+        this.iconSearch = new WidgetIcon(ix, y + 1, zLevel, iconSearch, mc);
+        this.iconAlignment = iconAlignment;
+        this.searchBox = new GuiTextFieldGeneric(tx, y, width - iw - 8 - Math.abs(searchBarOffsetX), height, mc.fontRenderer);
+    }
+
+    public String getFilter()
+    {
+        return this.searchOpen ? this.searchBox.getText() : "";
+    }
+
+    public void setSearchOpen(boolean isOpen)
+    {
+        this.searchOpen = isOpen;
+
+        if (this.searchOpen)
+        {
+            this.searchBox.setFocused(true);
+        }
+    }
+
+    @Override
+    protected boolean onMouseClickedImpl(int mouseX, int mouseY, int mouseButton)
+    {
+        if (this.searchOpen && this.searchBox.mouseClicked(mouseX, mouseY, mouseButton))
+        {
+            return true;
+        }
+        else if (this.iconSearch.isMouseOver(mouseX, mouseY))
+        {
+            this.setSearchOpen(! this.searchOpen);
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    protected boolean onKeyTypedImpl(char typedChar, int keyCode)
+    {
+        if (this.searchOpen)
+        {
+            if (this.searchBox.textboxKeyTyped(typedChar, keyCode))
+            {
+                return true;
+            }
+            else if (keyCode == Keyboard.KEY_ESCAPE)
+            {
+                if (GuiScreen.isShiftKeyDown())
+                {
+                    this.mc.displayGuiScreen(null);
+                }
+
+                this.searchOpen = false;
+                return true;
+            }
+        }
+        else if (keyCode != Keyboard.KEY_ESCAPE &&
+                 keyCode != Keyboard.KEY_TAB &&
+                 keyCode != Keyboard.KEY_LMENU &&
+                 keyCode != Keyboard.KEY_BACK &&
+                 keyCode != Keyboard.KEY_RETURN &&
+                 keyCode != Keyboard.KEY_LEFT &&
+                 keyCode != Keyboard.KEY_RIGHT &&
+                 keyCode != Keyboard.KEY_UP &&
+                 keyCode != Keyboard.KEY_DOWN &&
+                 keyCode != Keyboard.KEY_PRIOR &&
+                 keyCode != Keyboard.KEY_NEXT &&
+                 keyCode != Keyboard.KEY_HOME &&
+                 keyCode != Keyboard.KEY_END)
+        {
+            this.searchOpen = true;
+            this.searchBox.setFocused(true);
+            this.searchBox.setText("");
+            this.searchBox.setCursorPositionEnd();
+            this.searchBox.textboxKeyTyped(typedChar, keyCode);
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public void render(int mouseX, int mouseY, boolean selected)
+    {
+        GlStateManager.color(1f, 1f, 1f, 1f);
+        this.iconSearch.render(false, this.iconSearch.isMouseOver(mouseX, mouseY));
+
+        if (this.searchOpen)
+        {
+            this.searchBox.drawTextBox();
+        }
+    }
+}

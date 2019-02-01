@@ -1,8 +1,6 @@
 package fi.dy.masa.malilib.gui.widgets;
 
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
-import fi.dy.masa.malilib.render.RenderUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 
 public class WidgetInfoIcon extends WidgetHoverInfo
@@ -21,9 +19,8 @@ public class WidgetInfoIcon extends WidgetHoverInfo
     @Override
     public void render(int mouseX, int mouseY, boolean selected)
     {
-        GlStateManager.color(1, 1, 1, 1);
-        Minecraft.getMinecraft().getTextureManager().bindTexture(this.icon.getTexture());
-
-        RenderUtils.drawTexturedRect(this.x, this.y, this.icon.getU(), this.icon.getV(), this.width, this.height, this.zLevel);
+        GlStateManager.color(1f, 1f, 1f, 1f);
+        this.mc.getTextureManager().bindTexture(this.icon.getTexture());
+        this.icon.renderAt(this.x, this.y, this.zLevel, false, selected);
     }
 }

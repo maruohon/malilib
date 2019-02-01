@@ -51,10 +51,8 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
     @Override
     public boolean onKeyTyped(char typedChar, int keyCode)
     {
-        if (this.directoryNavigationWidget != null && this.directoryNavigationWidget.onKeyTyped(typedChar, keyCode))
+        if (super.onKeyTyped(typedChar, keyCode))
         {
-            this.clearSelection();
-            this.refreshBrowserEntries();
             return true;
         }
 
@@ -69,33 +67,8 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
             this.switchToDirectory(new File(this.getLastSelectedEntry().getDirectory(), this.getLastSelectedEntry().getName()));
             return true;
         }
-        else
-        {
-            return super.onKeyTyped(typedChar, keyCode);
-        }
-    }
 
-    @Override
-    public boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
-    {
-        if (this.directoryNavigationWidget != null)
-        {
-            String filterPre = this.directoryNavigationWidget.getFilter();
-
-            if (this.directoryNavigationWidget.onMouseClickedImpl(mouseX, mouseY, mouseButton))
-            {
-                // Toggled the search bar on or off
-                if (this.directoryNavigationWidget.getFilter().equals(filterPre) == false)
-                {
-                    this.clearSelection();
-                    this.refreshBrowserEntries();
-                }
-
-                return true;
-            }
-        }
-
-        return super.onMouseClicked(mouseX, mouseY, mouseButton);
+        return false;
     }
 
     @Override
@@ -104,18 +77,14 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
         // Draw an outline around the entire file browser
         RenderUtils.drawOutlinedBox(this.posX, this.posY, this.browserWidth, this.browserHeight, 0xB0000000, COLOR_HORIZONTAL_BAR);
 
-        // Draw the root/up widget, is the current directory has that (ie. is not the root directory)
-        if (this.directoryNavigationWidget != null)
-        {
-            this.directoryNavigationWidget.render(mouseX, mouseY, false);
-        }
+        super.drawContents(mouseX, mouseY, partialTicks);
 
         this.drawAdditionalContents(mouseX, mouseY);
-
-        super.drawContents(mouseX, mouseY, partialTicks);
     }
 
-    protected abstract void drawAdditionalContents(int mouseX, int mouseY);
+    protected void drawAdditionalContents(int mouseX, int mouseY)
+    {
+    }
 
     @Override
     public void setSize(int width, int height)
@@ -139,15 +108,17 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
         this.directoryNavigationWidget = new WidgetDirectoryNavigation(x, y, this.browserEntryWidth, 14, this.zLevel,
                 this.currentDirectory, this.getRootDirectory(), this.mc, this, this.iconProvider);
         this.browserEntriesOffsetY = this.directoryNavigationWidget.getHeight() + 3;
+        this.widgetSearchBar = this.directoryNavigationWidget;
     }
 
     @Override
     public void refreshEntries()
     {
-        this.refreshBrowserEntries();
         this.updateDirectoryNavigationWidget();
+        this.refreshBrowserEntries();
     }
 
+    @Override
     protected void refreshBrowserEntries()
     {
         this.listContents.clear();
@@ -156,7 +127,7 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
 
         if (dir.isDirectory() && dir.canRead())
         {
-            String filterText = this.directoryNavigationWidget != null ? this.directoryNavigationWidget.getFilter() : "";
+            String filterText = this.getFilterText();
 
             if (filterText.isEmpty() == false)
             {
@@ -226,14 +197,16 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
         listOut.addAll(list);
     }
 
-    protected abstract File getRootDirectory();
-
-    protected FileFilter getDirectoryFilter()
+    protected void addMatchingEntriesToList(FileFilter filter, File dir, List<DirectoryEntry> list, @Nullable String filterText, @Nullable String displayNamePrefix)
     {
-        return DIRECTORY_FILTER;
+        for (File file : dir.listFiles(filter))
+        {
+            if (filterText == null || FileUtils.getNameWithoutExtension(file.getName().toLowerCase()).indexOf(filterText) != -1)
+            {
+                list.add(new DirectoryEntry(DirectoryEntryType.fromFile(file), dir, file.getName(), displayNamePrefix));
+            }
+        }
     }
-
-    protected abstract FileFilter getFileFilter();
 
     protected List<File> getSubDirectories(File dir)
     {
@@ -247,16 +220,14 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
         return dirs;
     }
 
-    protected void addMatchingEntriesToList(FileFilter filter, File dir, List<DirectoryEntry> list, @Nullable String filterText, @Nullable String displayNamePrefix)
+    protected abstract File getRootDirectory();
+
+    protected FileFilter getDirectoryFilter()
     {
-        for (File file : dir.listFiles(filter))
-        {
-            if (filterText == null || FileUtils.getNameWithoutExtension(file.getName().toLowerCase()).indexOf(filterText) != -1)
-            {
-                list.add(new DirectoryEntry(DirectoryEntryType.fromFile(file), dir, file.getName(), displayNamePrefix));
-            }
-        }
+        return DIRECTORY_FILTER;
     }
+
+    protected abstract FileFilter getFileFilter();
 
     @Override
     protected WidgetDirectoryEntry createListEntryWidget(int x, int y, int listIndex, boolean isOdd, DirectoryEntry entry)
@@ -285,7 +256,6 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
         this.cache.setCurrentDirectoryForContext(this.browserContext, dir);
 
         this.refreshEntries();
-        this.updateDirectoryNavigationWidget();
     }
 
     @Override

@@ -18,7 +18,7 @@ public class WidgetListConfigOptions extends WidgetListConfigOptionsBase<ConfigO
     }
 
     @Override
-    public void refreshEntries()
+    protected void refreshBrowserEntries()
     {
         this.listContents.clear();
         this.listContents.addAll(this.parent.getConfigs());

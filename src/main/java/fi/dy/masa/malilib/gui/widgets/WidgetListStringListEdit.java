@@ -21,7 +21,7 @@ public class WidgetListStringListEdit extends WidgetListConfigOptionsBase<String
     }
 
     @Override
-    public void refreshEntries()
+    protected void refreshBrowserEntries()
     {
         this.listContents.clear();
         this.listContents.addAll(this.parent.getConfig().getStrings());

@@ -16,7 +16,7 @@ public class WidgetListStringSelection extends WidgetListBase<String, WidgetStri
     }
 
     @Override
-    public void refreshEntries()
+    protected void refreshBrowserEntries()
     {
         this.listContents.clear();
         this.listContents.addAll(this.stringProvider.getStrings());
