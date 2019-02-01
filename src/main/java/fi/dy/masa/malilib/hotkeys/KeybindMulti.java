@@ -469,4 +469,9 @@ public class KeybindMulti implements IKeybind
 
         return null;
     }
+
+    public static int getTriggeredCount()
+    {
+        return triggeredCount;
+    }
 }
