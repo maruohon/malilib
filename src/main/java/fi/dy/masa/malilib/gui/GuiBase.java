@@ -241,7 +241,7 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
                     entry.keyTyped(typedChar, keyCode);
                 }
 
-                handled = true;
+                handled = keyCode != Keyboard.KEY_ESCAPE;
                 break;
             }
         }
