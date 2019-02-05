@@ -4,10 +4,13 @@ import java.io.File;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
@@ -191,5 +194,32 @@ public class StringUtils
         sb.append(suffix);
 
         return sb.toString();
+    }
+
+    @Nullable
+    public static String getWorldOrServerName()
+    {
+        Minecraft mc = Minecraft.getMinecraft();
+
+        if (mc.isSingleplayer())
+        {
+            IntegratedServer server = mc.getIntegratedServer();
+
+            if (server != null)
+            {
+                return server.getFolderName();
+            }
+        }
+        else
+        {
+            ServerData server = mc.getCurrentServerData();
+
+            if (server != null)
+            {
+                return server.serverIP.replace(':', '_');
+            }
+        }
+
+        return null;
     }
 }
