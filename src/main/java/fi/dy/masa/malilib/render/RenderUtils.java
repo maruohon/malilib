@@ -26,6 +26,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.gen.structure.StructureBoundingBox;
 
 public class RenderUtils
 {
@@ -547,6 +548,19 @@ public class RenderUtils
 
         buffer.pos(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
         buffer.pos(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+    }
+
+    public static void drawBox(StructureBoundingBox bb, Color4f color, BufferBuilder bufferQuads, BufferBuilder bufferLines)
+    {
+        double minX = bb.minX;
+        double minY = bb.minY;
+        double minZ = bb.minZ;
+        double maxX = bb.maxX + 1;
+        double maxY = bb.maxY + 1;
+        double maxZ = bb.maxZ + 1;
+
+        drawBoxAllSidesBatchedQuads(minX, minY, minZ, maxX, maxY, maxZ, color, bufferQuads);
+        drawBoxAllEdgesBatchedLines(minX, minY, minZ, maxX, maxY, maxZ, color, bufferLines);
     }
 
     public static void renderBlockTargetingOverlay(Entity entity, BlockPos pos, EnumFacing side, Vec3d hitVec,
