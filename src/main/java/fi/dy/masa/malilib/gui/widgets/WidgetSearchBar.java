@@ -7,6 +7,7 @@ import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.ChatAllowedCharacters;
 
 public class WidgetSearchBar extends WidgetBase
 {
@@ -79,19 +80,7 @@ public class WidgetSearchBar extends WidgetBase
                 return true;
             }
         }
-        else if (keyCode != Keyboard.KEY_ESCAPE &&
-                 keyCode != Keyboard.KEY_TAB &&
-                 keyCode != Keyboard.KEY_LMENU &&
-                 keyCode != Keyboard.KEY_BACK &&
-                 keyCode != Keyboard.KEY_RETURN &&
-                 keyCode != Keyboard.KEY_LEFT &&
-                 keyCode != Keyboard.KEY_RIGHT &&
-                 keyCode != Keyboard.KEY_UP &&
-                 keyCode != Keyboard.KEY_DOWN &&
-                 keyCode != Keyboard.KEY_PRIOR &&
-                 keyCode != Keyboard.KEY_NEXT &&
-                 keyCode != Keyboard.KEY_HOME &&
-                 keyCode != Keyboard.KEY_END)
+        else if (ChatAllowedCharacters.isAllowedCharacter(typedChar))
         {
             this.searchOpen = true;
             this.searchBox.setFocused(true);
