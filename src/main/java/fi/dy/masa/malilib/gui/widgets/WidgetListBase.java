@@ -175,6 +175,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
         {
             this.clearSelection();
             this.refreshBrowserEntries();
+            this.resetScrollbarPosition();
             return true;
         }
 
@@ -215,7 +216,6 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
         Collections.sort(this.listContents, this.getComparator());
 
         this.reCreateListEntryWidgets();
-        this.resetScrollbarPosition();
     }
 
     protected void addNonFilteredContents(Collection<TYPE> placements)
