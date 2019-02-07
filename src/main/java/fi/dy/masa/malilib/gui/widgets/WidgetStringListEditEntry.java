@@ -229,9 +229,10 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
         }
 
         @Override
-        public void onKeyTyped(int keyCode)
+        public boolean onTextChange(GuiTextField textField)
         {
             this.buttonReset.enabled = this.textField.getText().equals(this.defaultValue) == false;
+            return false;
         }
     }
 

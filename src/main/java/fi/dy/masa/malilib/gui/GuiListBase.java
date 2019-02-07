@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.gui;
 
 import javax.annotation.Nullable;
+import org.lwjgl.input.Keyboard;
 import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
 import fi.dy.masa.malilib.gui.widgets.WidgetListBase;
 import fi.dy.masa.malilib.gui.widgets.WidgetListEntryBase;
@@ -94,45 +95,57 @@ public abstract class GuiListBase<TYPE, WIDGET extends WidgetListEntryBase<TYPE>
     @Override
     public boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
-        if (this.getListWidget() != null && this.getListWidget().onMouseClicked(mouseX, mouseY, mouseButton))
+        if (super.onMouseClicked(mouseX, mouseY, mouseButton))
         {
             return true;
         }
 
-        return super.onMouseClicked(mouseX, mouseY, mouseButton);
+        return this.getListWidget() != null && this.getListWidget().onMouseClicked(mouseX, mouseY, mouseButton);
     }
 
     @Override
     public boolean onMouseReleased(int mouseX, int mouseY, int mouseButton)
     {
-        if (this.getListWidget() != null && this.getListWidget().onMouseReleased(mouseX, mouseY, mouseButton))
+        if (super.onMouseReleased(mouseX, mouseY, mouseButton))
         {
             return true;
         }
 
-        return super.onMouseReleased(mouseX, mouseY, mouseButton);
+        return this.getListWidget() != null && this.getListWidget().onMouseReleased(mouseX, mouseY, mouseButton);
     }
 
     @Override
     public boolean onMouseScrolled(int mouseX, int mouseY, int mouseWheelDelta)
     {
-        if (this.getListWidget() != null && this.getListWidget().onMouseScrolled(mouseX, mouseY, mouseWheelDelta))
+        if (super.onMouseScrolled(mouseX, mouseY, mouseWheelDelta))
         {
             return true;
         }
 
-        return super.onMouseScrolled(mouseX, mouseY, mouseWheelDelta);
+        return this.getListWidget() != null && this.getListWidget().onMouseScrolled(mouseX, mouseY, mouseWheelDelta);
     }
 
     @Override
     public boolean onKeyTyped(char typedChar, int keyCode)
     {
+        // Try to handle everything except ESC in the parent first
+        if (keyCode != Keyboard.KEY_ESCAPE && super.onKeyTyped(typedChar, keyCode))
+        {
+            return true;
+        }
+
         if (this.getListWidget() != null && this.getListWidget().onKeyTyped(typedChar, keyCode))
         {
             return true;
         }
 
-        return super.onKeyTyped(typedChar, keyCode);
+        // If the list widget or its sub widgets didn't consume the ESC, then send that to the parent (to close the GUI)
+        if (keyCode == Keyboard.KEY_ESCAPE && super.onKeyTyped(typedChar, keyCode))
+        {
+            return true;
+        }
+
+        return false;
     }
 
     @Override

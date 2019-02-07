@@ -38,6 +38,7 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
         this.browserContext = browserContext;
         this.currentDirectory = this.cache.getCurrentDirectoryForContext(this.browserContext);
         this.iconProvider = iconProvider;
+        this.allowKeyboardNavigation = true;
 
         if (this.currentDirectory == null)
         {

@@ -4,8 +4,8 @@ import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import fi.dy.masa.malilib.config.IConfigResettable;
 import fi.dy.masa.malilib.config.gui.ConfigOptionChangeListenerTextField;
-import fi.dy.masa.malilib.gui.GuiTextFieldWrapper;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
+import fi.dy.masa.malilib.gui.wrappers.TextFieldWrapper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.resources.I18n;
@@ -14,7 +14,7 @@ public abstract class WidgetConfigOptionBase<TYPE> extends WidgetListEntryBase<T
 {
     protected final Minecraft mc;
     protected final WidgetListConfigOptionsBase<?, ?> parent;
-    @Nullable protected GuiTextFieldWrapper textField = null;
+    @Nullable protected TextFieldWrapper<? extends GuiTextField> textField = null;
     @Nullable protected String initialStringValue;
     protected int maxTextfieldTextLength = 256;
     /**
@@ -53,7 +53,7 @@ public abstract class WidgetConfigOptionBase<TYPE> extends WidgetListEntryBase<T
 
     protected void addTextField(GuiTextField field, ConfigOptionChangeListenerTextField listener)
     {
-        GuiTextFieldWrapper wrapper = new GuiTextFieldWrapper(field, listener);
+        TextFieldWrapper<? extends GuiTextField> wrapper = new TextFieldWrapper<>(field, listener);
         this.textField = wrapper;
         this.parent.addTextField(wrapper);
     }
@@ -98,11 +98,12 @@ public abstract class WidgetConfigOptionBase<TYPE> extends WidgetListEntryBase<T
     @Override
     public boolean onKeyTypedImpl(char typedChar, int keyCode)
     {
-        if (this.textField != null)
+        if (this.textField != null && this.textField.isFocused())
         {
             if (keyCode == Keyboard.KEY_RETURN)
             {
                 this.applyNewValueToConfig();
+                return true;
             }
             else
             {

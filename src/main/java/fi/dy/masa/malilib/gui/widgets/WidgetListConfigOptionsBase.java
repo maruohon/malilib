@@ -3,13 +3,13 @@ package fi.dy.masa.malilib.gui.widgets;
 import java.util.ArrayList;
 import java.util.List;
 import org.lwjgl.input.Keyboard;
-import fi.dy.masa.malilib.gui.GuiTextFieldWrapper;
+import fi.dy.masa.malilib.gui.wrappers.TextFieldWrapper;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 
 public abstract class WidgetListConfigOptionsBase<TYPE, WIDGET extends WidgetConfigOptionBase<TYPE>> extends WidgetListBase<TYPE, WIDGET>
 {
-    protected final List<GuiTextFieldWrapper> textFields = new ArrayList<>();
+    protected final List<TextFieldWrapper<? extends GuiTextField>> textFields = new ArrayList<>();
     protected boolean configsModified;
     protected int maxLabelWidth;
     protected int configWidth;
@@ -52,7 +52,6 @@ public abstract class WidgetListConfigOptionsBase<TYPE, WIDGET extends WidgetCon
     {
         if (keyCode == Keyboard.KEY_TAB)
         {
-            this.applyPendingModifications();
             return this.changeTextFieldFocus(GuiScreen.isShiftKeyDown());
         }
         else
@@ -69,7 +68,7 @@ public abstract class WidgetListConfigOptionsBase<TYPE, WIDGET extends WidgetCon
         }
     }
 
-    public void addTextField(GuiTextFieldWrapper wrapper)
+    public void addTextField(TextFieldWrapper<? extends GuiTextField> wrapper)
     {
         this.textFields.add(wrapper);
     }
@@ -119,6 +118,8 @@ public abstract class WidgetListConfigOptionsBase<TYPE, WIDGET extends WidgetCon
 
     protected void clearTextFieldFocus()
     {
+        this.applyPendingModifications();
+
         for (int i = 0; i < this.textFields.size(); ++i)
         {
             GuiTextField textField = this.textFields.get(i).getTextField();

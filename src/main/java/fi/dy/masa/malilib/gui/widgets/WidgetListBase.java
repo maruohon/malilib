@@ -39,6 +39,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
     protected int maxVisibleBrowserEntries;
     protected int lastSelectedEntryIndex = -1;
     protected int lastScrollbarPosition = -1;
+    protected boolean allowKeyboardNavigation;
     protected boolean allowMultiSelection;
     @Nullable private TYPE lastSelectedEntry;
     @Nullable private final ISelectionListener<TYPE> selectionListener;
@@ -157,16 +158,24 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
     @Override
     public boolean onKeyTyped(char typedChar, int keyCode)
     {
-        if (this.onKeyTypedSearchBar(typedChar, keyCode)) return true;
-        else if (keyCode == Keyboard.KEY_UP)         this.offsetSelectionOrScrollbar(-1, true);
-        else if (keyCode == Keyboard.KEY_DOWN)  this.offsetSelectionOrScrollbar( 1, true);
-        else if (keyCode == Keyboard.KEY_PRIOR) this.offsetSelectionOrScrollbar(-this.maxVisibleBrowserEntries / 2, true);
-        else if (keyCode == Keyboard.KEY_NEXT)  this.offsetSelectionOrScrollbar( this.maxVisibleBrowserEntries / 2, true);
-        else if (keyCode == Keyboard.KEY_HOME)  this.offsetSelectionOrScrollbar(-this.listContents.size(), true);
-        else if (keyCode == Keyboard.KEY_END)   this.offsetSelectionOrScrollbar( this.listContents.size(), true);
-        else return false;
+        if (this.onKeyTypedSearchBar(typedChar, keyCode))
+        {
+            return true;
+        }
+        else if (this.allowKeyboardNavigation)
+        {
+                 if (keyCode == Keyboard.KEY_UP)    this.offsetSelectionOrScrollbar(-1, true);
+            else if (keyCode == Keyboard.KEY_DOWN)  this.offsetSelectionOrScrollbar( 1, true);
+            else if (keyCode == Keyboard.KEY_PRIOR) this.offsetSelectionOrScrollbar(-this.maxVisibleBrowserEntries / 2, true);
+            else if (keyCode == Keyboard.KEY_NEXT)  this.offsetSelectionOrScrollbar( this.maxVisibleBrowserEntries / 2, true);
+            else if (keyCode == Keyboard.KEY_HOME)  this.offsetSelectionOrScrollbar(-this.listContents.size(), true);
+            else if (keyCode == Keyboard.KEY_END)   this.offsetSelectionOrScrollbar( this.listContents.size(), true);
+            else return false;
 
-        return true;
+            return true;
+        }
+
+        return false;
     }
 
     protected boolean onKeyTypedSearchBar(char typedChar, int keyCode)

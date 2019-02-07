@@ -188,10 +188,6 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
                 // Don't call super if the button press got handled
                 handled = true;
             }
-            else
-            {
-                entry.getTextField().setFocused(false);
-            }
         }
 
         if (handled == false)
@@ -229,11 +225,11 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
         {
             TextFieldWrapper<?> entry = this.textFields.get(i);
 
-            if (entry.getTextField().isFocused())
+            if (entry.isFocused())
             {
                 if (keyCode == Keyboard.KEY_TAB)
                 {
-                    entry.getTextField().setFocused(false);
+                    entry.setFocused(false);
                     selected = i;
                 }
                 else
@@ -287,7 +283,7 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
                 selected = (selected + 1) % this.textFields.size();
             }
 
-            this.textFields.get(selected).getTextField().setFocused(true);
+            this.textFields.get(selected).setFocused(true);
         }
 
         return handled;
