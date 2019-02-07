@@ -107,6 +107,13 @@ public class WidgetDirectoryEntry extends WidgetListEntryBase<DirectoryEntry>
 
     protected String getDisplayName()
     {
-        return FileUtils.getNameWithoutExtension(this.entry.getDisplayName());
+        if (this.entry.getType() == DirectoryEntryType.DIRECTORY)
+        {
+            return this.entry.getDisplayName();
+        }
+        else
+        {
+            return FileUtils.getNameWithoutExtension(this.entry.getDisplayName());
+        }
     }
 }
