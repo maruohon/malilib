@@ -160,7 +160,7 @@ public class InputEventHandler implements IKeybindManager
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public boolean onKeyInput(int keyCode, int scanCode, boolean eventKeyState)
+    public boolean onKeyInput(int keyCode, int scanCode, int modifiers, boolean eventKeyState)
     {
         boolean cancel = false;
 
@@ -173,7 +173,7 @@ public class InputEventHandler implements IKeybindManager
         {
             for (IKeyboardInputHandler handler : this.keyboardHandlers)
             {
-                if (handler.onKeyInput(keyCode, eventKeyState))
+                if (handler.onKeyInput(keyCode, scanCode, modifiers, eventKeyState))
                 {
                     return true;
                 }
