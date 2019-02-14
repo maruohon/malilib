@@ -94,10 +94,10 @@ public class WidgetLabel extends WidgetBase
 
             Gui.drawRect(xStart, yStart, xStart + bgWidth, yStart + bgHeight, this.backgroundColor);
 
-            RenderUtils.drawHorizontalLine(xStart, xStart + bgWidth, yStart, this.borderULColor);
-            RenderUtils.drawHorizontalLine(xStart, xStart + bgWidth, yStart + bgHeight, this.borderBRColor);
-            RenderUtils.drawVerticalLine(xStart, yStart, yStart + bgHeight, this.borderULColor);
-            RenderUtils.drawVerticalLine(xStart + bgWidth, yStart, yStart + bgHeight, this.borderBRColor);
+            RenderUtils.drawHorizontalLine(xStart, yStart           , bgWidth, this.borderULColor);
+            RenderUtils.drawHorizontalLine(xStart, yStart + bgHeight, bgWidth, this.borderBRColor);
+            RenderUtils.drawVerticalLine(xStart          , yStart, bgHeight, this.borderULColor);
+            RenderUtils.drawVerticalLine(xStart + bgWidth, yStart, bgHeight, this.borderBRColor);
         }
     }
 }

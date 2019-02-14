@@ -7,6 +7,7 @@ import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.render.RenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 
 public abstract class GuiTextInputBase extends GuiDialogBase
@@ -31,6 +32,7 @@ public abstract class GuiTextInputBase extends GuiDialogBase
         this.textField.setFocused(true);
         this.textField.setText(this.originalText);
         this.textField.setCursorPositionEnd();
+        this.zLevel = 1f;
     }
 
     @Override
@@ -71,7 +73,10 @@ public abstract class GuiTextInputBase extends GuiDialogBase
             this.getParent().drawScreen(mouseX, mouseY, partialTicks);
         }
 
-        RenderUtils.drawOutlinedBox(this.dialogLeft, this.dialogTop, this.dialogWidth, this.dialogHeight, 0xB0000000, COLOR_HORIZONTAL_BAR);
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(0, 0, this.zLevel);
+
+        RenderUtils.drawOutlinedBox(this.dialogLeft, this.dialogTop, this.dialogWidth, this.dialogHeight, 0xE0000000, COLOR_HORIZONTAL_BAR);
 
         // Draw the title
         this.drawString(this.fontRenderer, this.getTitle(), this.dialogLeft + 10, this.dialogTop + 4, COLOR_WHITE);
@@ -80,6 +85,7 @@ public abstract class GuiTextInputBase extends GuiDialogBase
         this.textField.drawTextBox();
 
         this.drawButtons(mouseX, mouseY, partialTicks);
+        GlStateManager.popMatrix();
     }
 
     @Override

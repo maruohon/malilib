@@ -277,7 +277,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
 
         WIDGET hovered = null;
         boolean hoveredSelected = false;
-        int scrollbarHeight = this.browserHeight - 8;
+        int scrollbarHeight = this.browserHeight - this.browserEntriesOffsetY - 8;
         int totalHeight = 0;
 
         for (int i = 0; i < this.listContents.size(); ++i)
@@ -287,8 +287,9 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
 
         totalHeight = Math.max(totalHeight, scrollbarHeight);
 
-        this.scrollBar.drawScrollBar(mouseX, mouseY, partialTicks, this.posX + this.browserWidth - 9,
-                this.browserEntriesStartY + this.browserEntriesOffsetY, 8, scrollbarHeight, totalHeight);
+        int scrollBarX = this.posX + this.browserWidth - 9;
+        int scrollBarY = this.browserEntriesStartY + this.browserEntriesOffsetY;
+        this.scrollBar.drawScrollBar(mouseX, mouseY, partialTicks, scrollBarX, scrollBarY, 8, scrollbarHeight, totalHeight);
 
         // The value gets updated in the drawScrollBar() method above, if dragging
         if (this.scrollBar.getValue() != this.lastScrollbarPosition)

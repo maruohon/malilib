@@ -10,7 +10,6 @@ import fi.dy.masa.malilib.util.PositionUtils;
 import fi.dy.masa.malilib.util.PositionUtils.HitPart;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -36,38 +35,78 @@ public class RenderUtils
 
     public static void drawOutlinedBox(int x, int y, int width, int height, int colorBg, int colorBorder)
     {
+        drawOutlinedBox(x, y, width, height, colorBg, colorBorder, 0f);
+    }
+
+    public static void drawOutlinedBox(int x, int y, int width, int height, int colorBg, int colorBorder, float zLevel)
+    {
         // Draw the background
-        Gui.drawRect(x, y, x + width, y + height, colorBg);
+        drawRect(x, y, width, height, colorBg, zLevel);
 
         // Draw the border
-        drawOutline(x - 1, y - 1, width + 2, height + 2, colorBorder);
+        drawOutline(x - 1, y - 1, width + 2, height + 2, colorBorder, zLevel);
     }
 
     public static void drawOutline(int x, int y, int width, int height, int colorBorder)
     {
-        int right = x + width;
-        int bottom = y + height;
+        drawOutline(x, y, width, height, colorBorder, 0f);
+    }
 
-        Gui.drawRect(x        ,          y, x + 1    , bottom, colorBorder); // left edge
-        Gui.drawRect(right - 1,          y, right    , bottom, colorBorder); // right edge
-        Gui.drawRect(x + 1    ,          y, right - 1,  y + 1, colorBorder); // top edge
-        Gui.drawRect(x + 1    , bottom - 1, right - 1, bottom, colorBorder); // bottom edge
+    public static void drawOutline(int x, int y, int width, int height, int colorBorder, float zLevel)
+    {
+        drawRect(x                    , y,      1, height, colorBorder, zLevel); // left edge
+        drawRect(x + width - 1        , y,      1, height, colorBorder, zLevel); // right edge
+        drawRect(x + 1,              y, width - 2,      1, colorBorder, zLevel); // top edge
+        drawRect(x + 1, y + height - 1, width - 2,      1, colorBorder, zLevel); // bottom edge
     }
 
     public static void drawOutline(int x, int y, int width, int height, int borderWidth, int colorBorder)
     {
-        int right = x + width;
-        int bottom = y + height;
+        drawOutline(x, y, width, height, borderWidth, colorBorder, 0f);
+    }
 
-        Gui.drawRect(x                  ,                    y, x + borderWidth    , bottom          , colorBorder); // left edge
-        Gui.drawRect(right - borderWidth,                    y, right              , bottom          , colorBorder); // right edge
-        Gui.drawRect(x + borderWidth    ,                    y, right - borderWidth,  y + borderWidth, colorBorder); // top edge
-        Gui.drawRect(x + borderWidth    , bottom - borderWidth, right - borderWidth, bottom          , colorBorder); // bottom edge
+    public static void drawOutline(int x, int y, int width, int height, int borderWidth, int colorBorder, float zLevel)
+    {
+        drawRect(x                      ,                        y, borderWidth            , height     , colorBorder, zLevel); // left edge
+        drawRect(x + width - borderWidth,                        y, borderWidth            , height     , colorBorder, zLevel); // right edge
+        drawRect(x + borderWidth        ,                        y, width - 2 * borderWidth, borderWidth, colorBorder, zLevel); // top edge
+        drawRect(x + borderWidth        , y + height - borderWidth, width - 2 * borderWidth, borderWidth, colorBorder, zLevel); // bottom edge
     }
 
     public static void drawTexturedRect(int x, int y, int u, int v, int width, int height)
     {
         drawTexturedRect(x, y, u, v, width, height, 0);
+    }
+
+    public static void drawRect(int x, int y, int width, int height, int color)
+    {
+        drawRect(x, y, width, height, color, 0f);
+    }
+
+    public static void drawRect(int x, int y, int width, int height, int color, float zLevel)
+    {
+        float a = (float) (color >> 24 & 255) / 255.0F;
+        float r = (float) (color >> 16 & 255) / 255.0F;
+        float g = (float) (color >>  8 & 255) / 255.0F;
+        float b = (float) (color & 255) / 255.0F;
+
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder buffer = tessellator.getBuffer();
+
+        GlStateManager.enableBlend();
+        GlStateManager.disableTexture2D();
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GlStateManager.color(r, g, b, a);
+        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
+
+        buffer.pos(x        , y         , zLevel).endVertex();
+        buffer.pos(x        , y + height, zLevel).endVertex();
+        buffer.pos(x + width, y + height, zLevel).endVertex();
+        buffer.pos(x + width, y         , zLevel).endVertex();
+
+        tessellator.draw();
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableBlend();
     }
 
     public static void drawTexturedRect(int x, int y, int u, int v, int width, int height, float zLevel)
@@ -230,28 +269,14 @@ public class RenderUtils
         }
     }
 
-    public static void drawHorizontalLine(int startX, int endX, int y, int color)
+    public static void drawHorizontalLine(int x, int y, int width, int color)
     {
-        if (endX < startX)
-        {
-            int i = startX;
-            startX = endX;
-            endX = i;
-        }
-
-        Gui.drawRect(startX, y, endX + 1, y + 1, color);
+        drawRect(x, y, width, 1, color);
     }
 
-    public static void drawVerticalLine(int x, int startY, int endY, int color)
+    public static void drawVerticalLine(int x, int y, int height, int color)
     {
-        if (endY < startY)
-        {
-            int i = startY;
-            startY = endY;
-            endY = i;
-        }
-
-        Gui.drawRect(x, startY + 1, x + 1, endY, color);
+        drawRect(x, y, 1, height, color);
     }
 
     public static void renderSprite(Minecraft mc, int x, int y, String texture, int width, int height)
@@ -324,7 +349,7 @@ public class RenderUtils
 
             if (useBackground)
             {
-                Gui.drawRect(x - bgMargin, y - bgMargin, x + width + bgMargin, y + fontRenderer.FONT_HEIGHT, bgColor);
+                drawRect(x - bgMargin, y - bgMargin, width + bgMargin, bgMargin + fontRenderer.FONT_HEIGHT, bgColor);
             }
 
             if (useShadow)
