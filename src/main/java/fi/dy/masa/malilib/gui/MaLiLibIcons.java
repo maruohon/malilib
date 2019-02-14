@@ -12,7 +12,8 @@ public enum MaLiLibIcons implements IGuiIcon
     PLUS            (108,  30, 15, 15),
     MINUS           (108,  45, 15, 15),
     BTN_SLIDER      (153,   0, 16, 16),
-    BTN_TXTFIELD    (153,  16, 16, 16);
+    BTN_TXTFIELD    (153,  16, 16, 16),
+    SEARCH          (201,   0, 12, 12, 0, 0);
 
     public static final ResourceLocation TEXTURE = new ResourceLocation(MaLiLibReference.MOD_ID, "textures/gui/gui_widgets.png");
 
@@ -20,13 +21,22 @@ public enum MaLiLibIcons implements IGuiIcon
     private final int v;
     private final int w;
     private final int h;
+    private final int hoverOffU;
+    private final int hoverOffV;
 
     private MaLiLibIcons(int u, int v, int w, int h)
+    {
+        this(u, v, w, h, w, 0);
+    }
+
+    private MaLiLibIcons(int u, int v, int w, int h, int hoverOffU, int hoverOffV)
     {
         this.u = u;
         this.v = v;
         this.w = w;
         this.h = h;
+        this.hoverOffU = hoverOffU;
+        this.hoverOffV = hoverOffV;
     }
 
     @Override
@@ -57,18 +67,21 @@ public enum MaLiLibIcons implements IGuiIcon
     public void renderAt(int x, int y, float zLevel, boolean enabled, boolean selected)
     {
         int u = this.u;
+        int v = this.v;
 
         if (enabled)
         {
-            u += this.w;
+            u += this.hoverOffU;
+            v += this.hoverOffV;
         }
 
         if (selected)
         {
-            u += this.w;
+            u += this.hoverOffU;
+            v += this.hoverOffV;
         }
 
-        RenderUtils.drawTexturedRect(x, y, u, this.v, this.w, this.h, zLevel);
+        RenderUtils.drawTexturedRect(x, y, u, v, this.w, this.h, zLevel);
     }
 
     @Override

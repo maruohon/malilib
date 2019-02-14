@@ -65,7 +65,7 @@ public class WidgetLabel extends WidgetBase
 
             int fontHeight = this.fontRenderer.FONT_HEIGHT;
             int yCenter = this.y + this.height / 2 + this.borderSize / 2;
-            int yTextStart = yCenter - this.labels.size() * fontHeight / 2;
+            int yTextStart = yCenter - 1 - this.labels.size() * fontHeight / 2;
 
             for (int i = 0; i < this.labels.size(); ++i)
             {

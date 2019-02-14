@@ -41,6 +41,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
     protected int lastScrollbarPosition = -1;
     protected boolean allowKeyboardNavigation;
     protected boolean allowMultiSelection;
+    protected boolean shouldSortList;
     @Nullable private TYPE lastSelectedEntry;
     @Nullable private final ISelectionListener<TYPE> selectionListener;
     @Nullable protected WidgetSearchBar widgetSearchBar;
@@ -227,9 +228,17 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
             this.addNonFilteredContents(entries);
         }
 
-        Collections.sort(this.listContents, this.getComparator());
+        if (this.getShouldSortList())
+        {
+            Collections.sort(this.listContents, this.getComparator());
+        }
 
         this.reCreateListEntryWidgets();
+    }
+
+    protected boolean getShouldSortList()
+    {
+        return this.shouldSortList;
     }
 
     protected void addNonFilteredContents(Collection<TYPE> placements)
@@ -270,8 +279,8 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
 
         totalHeight = Math.max(totalHeight, scrollbarHeight);
 
-        this.scrollBar.drawScrollBar(mouseX, mouseY, partialTicks,
-                this.posX + this.browserWidth - 9, this.browserEntriesStartY, 8, scrollbarHeight, totalHeight);
+        this.scrollBar.drawScrollBar(mouseX, mouseY, partialTicks, this.posX + this.browserWidth - 9,
+                this.browserEntriesStartY + this.browserEntriesOffsetY, 8, scrollbarHeight, totalHeight);
 
         // The value gets updated in the drawScrollBar() method above, if dragging
         if (this.scrollBar.getValue() != this.lastScrollbarPosition)
