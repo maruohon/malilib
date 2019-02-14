@@ -10,13 +10,12 @@ import net.minecraft.client.gui.GuiTextField;
 
 public class ConfigOptionListenerResetConfig implements IButtonActionListener<ButtonGeneric>
 {
-    private final ConfigResetterBase reset;
     private final IConfigResettable config;
     private final ButtonGeneric buttonReset;
-    @Nullable
-    private final ButtonPressDirtyListenerSimple<ButtonBase> dirtyListener;
+    @Nullable private final ConfigResetterBase reset;
+    @Nullable private final ButtonPressDirtyListenerSimple<ButtonBase> dirtyListener;
 
-    public ConfigOptionListenerResetConfig(IConfigResettable config, ConfigResetterBase reset,
+    public ConfigOptionListenerResetConfig(IConfigResettable config, @Nullable ConfigResetterBase reset,
             ButtonGeneric buttonReset, @Nullable ButtonPressDirtyListenerSimple<ButtonBase> dirtyListener)
     {
         this.config = config;
@@ -30,7 +29,11 @@ public class ConfigOptionListenerResetConfig implements IButtonActionListener<Bu
     {
         this.config.resetToDefault();
         this.buttonReset.enabled = this.config.isModified();
-        this.reset.resetConfigOption();
+
+        if (this.reset != null)
+        {
+            this.reset.resetConfigOption();
+        }
     }
 
     @Override

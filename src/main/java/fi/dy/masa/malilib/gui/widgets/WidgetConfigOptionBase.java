@@ -4,6 +4,7 @@ import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import fi.dy.masa.malilib.config.IConfigResettable;
 import fi.dy.masa.malilib.config.gui.ConfigOptionChangeListenerTextField;
+import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.wrappers.TextFieldWrapper;
 import net.minecraft.client.Minecraft;
@@ -46,9 +47,9 @@ public abstract class WidgetConfigOptionBase<TYPE> extends WidgetListEntryBase<T
 
     public abstract void applyNewValueToConfig();
 
-    protected GuiTextField createTextField(int id, int x, int y, int width, int height)
+    protected GuiTextField createTextField(int x, int y, int width, int height)
     {
-        return new GuiTextField(id, this.mc.fontRenderer, x + 2, y, width, height);
+        return new GuiTextFieldGeneric(x + 2, y, width, height, this.mc.fontRenderer);
     }
 
     protected void addTextField(GuiTextField field, ConfigOptionChangeListenerTextField listener)
@@ -58,12 +59,12 @@ public abstract class WidgetConfigOptionBase<TYPE> extends WidgetListEntryBase<T
         this.parent.addTextField(wrapper);
     }
 
-    protected ButtonGeneric createResetButton(int id, int x, int y, IConfigResettable config)
+    protected ButtonGeneric createResetButton(int x, int y, IConfigResettable config)
     {
         String labelReset = I18n.format("malilib.gui.button.reset.caps");
         int w = this.mc.fontRenderer.getStringWidth(labelReset) + 10;
 
-        ButtonGeneric resetButton = new ButtonGeneric(id, x, y, w, 20, labelReset);
+        ButtonGeneric resetButton = new ButtonGeneric(0, x, y, w, 20, labelReset);
         resetButton.enabled = config.isModified();
 
         return resetButton;

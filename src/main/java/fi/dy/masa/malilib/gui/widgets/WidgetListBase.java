@@ -117,6 +117,11 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
             this.scrollBar.setDragging(false);
         }
 
+        for (int i = 0; i < this.listWidgets.size(); ++i)
+        {
+            this.listWidgets.get(i).onMouseReleased(mouseX, mouseY, mouseButton);
+        }
+
         return super.onMouseReleased(mouseX, mouseY, mouseButton);
     }
 

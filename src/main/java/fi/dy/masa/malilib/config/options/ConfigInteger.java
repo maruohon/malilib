@@ -13,6 +13,7 @@ public class ConfigInteger extends ConfigBase implements IConfigInteger
     protected final int maxValue;
     protected final int defaultValue;
     protected int value;
+    private boolean useSlider;
 
     public ConfigInteger(String name, int defaultValue, String comment)
     {
@@ -21,12 +22,30 @@ public class ConfigInteger extends ConfigBase implements IConfigInteger
 
     public ConfigInteger(String name, int defaultValue, int minValue, int maxValue, String comment)
     {
+        this(name, defaultValue, minValue, maxValue, false, comment);
+    }
+
+    public ConfigInteger(String name, int defaultValue, int minValue, int maxValue, boolean useSlider, String comment)
+    {
         super(ConfigType.INTEGER, name, comment);
 
         this.minValue = minValue;
         this.maxValue = maxValue;
         this.defaultValue = defaultValue;
         this.value = defaultValue;
+        this.useSlider = useSlider;
+    }
+
+    @Override
+    public boolean shouldUseSlider()
+    {
+        return this.useSlider;
+    }
+
+    @Override
+    public void toggleUseSlider()
+    {
+        this.useSlider = ! this.useSlider;
     }
 
     @Override
@@ -51,6 +70,18 @@ public class ConfigInteger extends ConfigBase implements IConfigInteger
         {
             this.onValueChanged();
         }
+    }
+
+    @Override
+    public int getMinIntegerValue()
+    {
+        return this.minValue;
+    }
+
+    @Override
+    public int getMaxIntegerValue()
+    {
+        return this.maxValue;
     }
 
     protected int getClampedValue(int value)

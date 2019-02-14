@@ -89,6 +89,23 @@ public abstract class WidgetBase
         return false;
     }
 
+    public final void onMouseReleased(int mouseX, int mouseY, int mouseButton)
+    {
+        if (this.subWidgets.isEmpty() == false)
+        {
+            for (WidgetBase widget : this.subWidgets)
+            {
+                widget.onMouseReleased(mouseX, mouseY, mouseButton);
+            }
+        }
+
+        this.onMouseReleasedImpl(mouseX, mouseY, mouseButton);
+    }
+
+    public void onMouseReleasedImpl(int mouseX, int mouseY, int mouseButton)
+    {
+    }
+
     public final boolean onKeyTyped(char typedChar, int keyCode)
     {
         boolean handled = false;

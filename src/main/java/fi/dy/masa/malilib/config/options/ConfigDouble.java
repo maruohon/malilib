@@ -13,6 +13,7 @@ public class ConfigDouble extends ConfigBase implements IConfigDouble
     private final double maxValue;
     private final double defaultValue;
     private double value;
+    private boolean useSlider;
 
     public ConfigDouble(String name, double defaultValue, String comment)
     {
@@ -21,12 +22,30 @@ public class ConfigDouble extends ConfigBase implements IConfigDouble
 
     public ConfigDouble(String name, double defaultValue, double minValue, double maxValue, String comment)
     {
+        this(name, defaultValue, minValue, maxValue, false, comment);
+    }
+
+    public ConfigDouble(String name, double defaultValue, double minValue, double maxValue, boolean useSlider, String comment)
+    {
         super(ConfigType.DOUBLE, name, comment);
 
         this.minValue = minValue;
         this.maxValue = maxValue;
         this.defaultValue = defaultValue;
         this.value = defaultValue;
+        this.useSlider = useSlider;
+    }
+
+    @Override
+    public boolean shouldUseSlider()
+    {
+        return this.useSlider;
+    }
+
+    @Override
+    public void toggleUseSlider()
+    {
+        this.useSlider = ! this.useSlider;
     }
 
     @Override
@@ -51,6 +70,18 @@ public class ConfigDouble extends ConfigBase implements IConfigDouble
         {
             this.onValueChanged();
         }
+    }
+
+    @Override
+    public double getMinDoubleValue()
+    {
+        return this.minValue;
+    }
+
+    @Override
+    public double getMaxDoubleValue()
+    {
+        return this.maxValue;
     }
 
     protected double getClampedValue(double value)

@@ -208,6 +208,11 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
 
     public boolean onMouseReleased(int mouseX, int mouseY, int mouseButton)
     {
+        for (WidgetBase widget : this.widgets)
+        {
+            widget.onMouseReleased(mouseX, mouseY, mouseButton);
+        }
+
         return false;
     }
 

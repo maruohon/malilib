@@ -4,17 +4,15 @@ import java.util.List;
 import fi.dy.masa.malilib.config.IConfigStringList;
 import fi.dy.masa.malilib.config.gui.ConfigOptionChangeListenerTextField;
 import fi.dy.masa.malilib.gui.GuiBase;
+import fi.dy.masa.malilib.gui.MaLiLibIcons;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
-import fi.dy.masa.malilib.reference.MaLiLibReference;
-import fi.dy.masa.malilib.render.RenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.ResourceLocation;
 
 public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
 {
@@ -45,7 +43,7 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
         if (this.isDummy() == false)
         {
             this.addLabel(x + 2, y + 4, 20, 12, 0xC0C0C0C0, String.format("%3d:", listIndex + 1));
-            bx = this.addTextField(0, textFieldX, y + 1, resetX, textFieldWidth, 20, initialValue);
+            bx = this.addTextField(textFieldX, y + 1, resetX, textFieldWidth, 20, initialValue);
 
             this.addListActionButton(bx, by, ButtonType.ADD);
             bx += bOff;
@@ -80,17 +78,17 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
     protected void addListActionButton(int x, int y, ButtonType type)
     {
         ButtonGeneric button = new ButtonGeneric(0, x, y, type.getIcon(), I18n.format(type.getHoverTextKey()));
-        ListenerListActions listener = new ListenerListActions(type, button, this);
+        ListenerListActions listener = new ListenerListActions(type, this);
         this.addButton(button, listener);
     }
 
-    protected int addTextField(int id, int x, int y, int resetX, int configWidth, int configHeight, String initialValue)
+    protected int addTextField(int x, int y, int resetX, int configWidth, int configHeight, String initialValue)
     {
-        GuiTextField field = this.createTextField(id++, x, y + 1, configWidth - 4, configHeight - 3);
+        GuiTextField field = this.createTextField(x, y + 1, configWidth - 4, configHeight - 3);
         field.setMaxStringLength(this.maxTextfieldTextLength);
         field.setText(initialValue);
 
-        ButtonGeneric resetButton = this.createResetButton(id, resetX, y, field);
+        ButtonGeneric resetButton = this.createResetButton(resetX, y, field);
         ChangeListenerTextField listenerChange = new ChangeListenerTextField(field, resetButton, this.defaultValue);
         ListenerResetConfig listenerReset = new ListenerResetConfig(resetButton, this);
 
@@ -100,12 +98,12 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
         return resetButton.x + resetButton.getButtonWidth() + 4;
     }
 
-    protected ButtonGeneric createResetButton(int id, int x, int y, GuiTextField textField)
+    protected ButtonGeneric createResetButton(int x, int y, GuiTextField textField)
     {
         String labelReset = I18n.format("malilib.gui.button.reset.caps");
         int w = this.mc.fontRenderer.getStringWidth(labelReset) + 10;
 
-        ButtonGeneric resetButton = new ButtonGeneric(id, x, y, w, 20, labelReset);
+        ButtonGeneric resetButton = new ButtonGeneric(0, x, y, w, 20, labelReset);
         resetButton.enabled = textField.getText().equals(this.defaultValue) == false;
 
         return resetButton;
@@ -265,12 +263,10 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
     {
         private final ButtonType type;
         private final WidgetStringListEditEntry parent;
-        private final ButtonGeneric button;
 
-        public ListenerListActions(ButtonType type, ButtonGeneric button, WidgetStringListEditEntry parent)
+        public ListenerListActions(ButtonType type, WidgetStringListEditEntry parent)
         {
             this.type = type;
-            this.button = button;
             this.parent = parent;
         }
 
@@ -300,15 +296,15 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
 
     private enum ButtonType
     {
-        ADD         (Icons.PLUS, "malilib.gui.button.hovertext.add"),
-        REMOVE      (Icons.MINUS, "malilib.gui.button.hovertext.remove"),
-        MOVE_UP     (Icons.ARROW_UP, "malilib.gui.button.hovertext.move_up"),
-        MOVE_DOWN   (Icons.ARROW_DOWN, "malilib.gui.button.hovertext.move_down");
+        ADD         (MaLiLibIcons.PLUS,         "malilib.gui.button.hovertext.add"),
+        REMOVE      (MaLiLibIcons.MINUS,        "malilib.gui.button.hovertext.remove"),
+        MOVE_UP     (MaLiLibIcons.ARROW_UP,     "malilib.gui.button.hovertext.move_up"),
+        MOVE_DOWN   (MaLiLibIcons.ARROW_DOWN,   "malilib.gui.button.hovertext.move_down");
 
-        private final Icons icon;
+        private final MaLiLibIcons icon;
         private final String hoverTextkey;
 
-        private ButtonType(Icons icon, String hoverTextkey)
+        private ButtonType(MaLiLibIcons icon, String hoverTextkey)
         {
             this.icon = icon;
             this.hoverTextkey = hoverTextkey;
@@ -322,77 +318,6 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
         public String getHoverTextKey()
         {
             return this.hoverTextkey;
-        }
-    }
-
-    private enum Icons implements IGuiIcon
-    {
-        ARROW_UP    (108,   0, 15, 15),
-        ARROW_DOWN  (108,  15, 15, 15),
-        PLUS        (108,  30, 15, 15),
-        MINUS       (108,  45, 15, 15);
-
-        public static final ResourceLocation TEXTURE = new ResourceLocation(MaLiLibReference.MOD_ID, "textures/gui/gui_widgets.png");
-
-        private final int u;
-        private final int v;
-        private final int w;
-        private final int h;
-
-        private Icons(int u, int v, int w, int h)
-        {
-            this.u = u;
-            this.v = v;
-            this.w = w;
-            this.h = h;
-        }
-
-        @Override
-        public int getWidth()
-        {
-            return this.w;
-        }
-
-        @Override
-        public int getHeight()
-        {
-            return this.h;
-        }
-
-        @Override
-        public int getU()
-        {
-            return this.u;
-        }
-
-        @Override
-        public int getV()
-        {
-            return this.v;
-        }
-
-        @Override
-        public void renderAt(int x, int y, float zLevel, boolean enabled, boolean selected)
-        {
-            int u = this.u;
-
-            if (enabled)
-            {
-                u += this.w;
-            }
-
-            if (selected)
-            {
-                u += this.w;
-            }
-
-            RenderUtils.drawTexturedRect(x, y, u, this.v, this.w, this.h, zLevel);
-        }
-
-        @Override
-        public ResourceLocation getTexture()
-        {
-            return TEXTURE;
         }
     }
 }
