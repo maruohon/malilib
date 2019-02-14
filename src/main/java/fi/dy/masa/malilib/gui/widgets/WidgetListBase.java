@@ -129,6 +129,14 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
     @Override
     public boolean onMouseScrolled(int mouseX, int mouseY, int mouseWheelDelta)
     {
+        if (super.onMouseScrolled(mouseX, mouseY, mouseWheelDelta))
+        {
+            return true;
+        }
+
+        // The scroll event could be/should be distributed to the entry widgets here
+        // It's not done (for now?) to prevent accidentally messing up stuff when scrolling over lists that have buttons
+
         if (mouseX >= this.posX && mouseX <= this.posX + this.browserWidth &&
             mouseY >= this.posY && mouseY <= this.posY + this.browserHeight)
         {

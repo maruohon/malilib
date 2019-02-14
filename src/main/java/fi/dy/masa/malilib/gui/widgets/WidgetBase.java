@@ -106,6 +106,41 @@ public abstract class WidgetBase
     {
     }
 
+    public final boolean onMouseScrolled(int mouseX, int mouseY, int mouseButton)
+    {
+        if (this.isMouseOver(mouseX, mouseY))
+        {
+            if (this.subWidgets.isEmpty() == false)
+            {
+                for (WidgetBase widget : this.subWidgets)
+                {
+                    if (widget.onMouseScrolled(mouseX, mouseY, mouseButton))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return this.onMouseScrolledImpl(mouseX, mouseY, mouseButton);
+        }
+
+        return false;
+    }
+
+    public boolean onMouseScrolledImpl(int mouseX, int mouseY, int mouseWheelDelta)
+    {
+        for (ButtonWrapper<?> entry : this.buttons)
+        {
+            if (entry.onMouseScrolled(this.mc, mouseX, mouseY, mouseWheelDelta))
+            {
+                // Don't call super if the action got handled
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public final boolean onKeyTyped(char typedChar, int keyCode)
     {
         boolean handled = false;

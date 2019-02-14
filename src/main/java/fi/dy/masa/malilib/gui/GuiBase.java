@@ -218,6 +218,24 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
 
     public boolean onMouseScrolled(int mouseX, int mouseY, int mouseWheelDelta)
     {
+        for (ButtonWrapper<?> entry : this.buttons)
+        {
+            if (entry.onMouseScrolled(this.mc, mouseX, mouseY, mouseWheelDelta))
+            {
+                // Don't call super if the button press got handled
+                return true;
+            }
+        }
+
+        for (WidgetBase widget : this.widgets)
+        {
+            if (widget.isMouseOver(mouseX, mouseY) && widget.onMouseScrolled(mouseX, mouseY, mouseWheelDelta))
+            {
+                // Don't call super if the action got handled
+                return true;
+            }
+        }
+
         return false;
     }
 

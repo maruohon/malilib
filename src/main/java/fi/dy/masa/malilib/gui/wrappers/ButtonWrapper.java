@@ -52,4 +52,22 @@ public class ButtonWrapper<T extends ButtonBase>
     {
         this.button.mouseReleased(mouseX, mouseY);
     }
+
+    public boolean onMouseScrolled(Minecraft mc, int mouseX, int mouseY, int mouseWheelDelta)
+    {
+        if (this.button.mousePressed(mc, mouseX, mouseY))
+        {
+            int mouseButton = mouseWheelDelta < 0 ? 1 : 0;
+            this.button.onMouseButtonClicked(mouseButton);
+
+            if (this.listener != null)
+            {
+                this.listener.actionPerformedWithButton(this.button, mouseButton);
+            }
+
+            return true;
+        }
+
+        return false;
+    }
 }
