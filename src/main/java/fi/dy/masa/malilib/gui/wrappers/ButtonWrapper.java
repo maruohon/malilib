@@ -36,7 +36,6 @@ public class ButtonWrapper<T extends ButtonBase>
         if (this.button.mousePressed(minecraft, mouseX, mouseY))
         {
             this.button.onMouseButtonClicked(mouseButton);
-            this.button.playPressSound(minecraft.getSoundHandler());
 
             if (this.listener != null)
             {

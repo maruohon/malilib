@@ -26,6 +26,8 @@ public class ConfigButtonKeybind extends ButtonBase
     @Override
     public void onMouseButtonClicked(int mouseButton)
     {
+        super.onMouseButtonClicked(mouseButton);
+
         if (this.selected)
         {
             this.addKey(mouseButton - 100);

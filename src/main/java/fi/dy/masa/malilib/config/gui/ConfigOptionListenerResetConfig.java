@@ -6,7 +6,6 @@ import fi.dy.masa.malilib.config.IStringRepresentable;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiTextField;
 
 public class ConfigOptionListenerResetConfig implements IButtonActionListener<ButtonGeneric>
@@ -30,7 +29,6 @@ public class ConfigOptionListenerResetConfig implements IButtonActionListener<Bu
     public void actionPerformed(ButtonGeneric control)
     {
         this.config.resetToDefault();
-        this.buttonReset.playPressSound(Minecraft.getMinecraft().getSoundHandler());
         this.buttonReset.enabled = this.config.isModified();
         this.reset.resetConfigOption();
     }

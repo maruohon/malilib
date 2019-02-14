@@ -27,6 +27,7 @@ public abstract class ButtonBase extends GuiButton
 
     public void onMouseButtonClicked(int mouseButton)
     {
+        this.playPressSound(Minecraft.getMinecraft().getSoundHandler());
     }
 
     public void updateDisplayString()

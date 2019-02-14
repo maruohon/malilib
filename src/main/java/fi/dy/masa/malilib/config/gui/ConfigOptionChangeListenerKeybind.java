@@ -5,7 +5,6 @@ import fi.dy.masa.malilib.gui.button.ConfigButtonKeybind;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.gui.interfaces.IKeybindConfigGui;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
-import net.minecraft.client.Minecraft;
 
 public class ConfigOptionChangeListenerKeybind implements IButtonActionListener<ButtonGeneric>
 {
@@ -26,7 +25,6 @@ public class ConfigOptionChangeListenerKeybind implements IButtonActionListener<
     public void actionPerformed(ButtonGeneric control)
     {
         this.keybind.resetToDefault();
-        this.buttonHotkey.playPressSound(Minecraft.getMinecraft().getSoundHandler());
         this.updateButtons();
     }
 

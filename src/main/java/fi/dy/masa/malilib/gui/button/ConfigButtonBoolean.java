@@ -1,7 +1,6 @@
 package fi.dy.masa.malilib.gui.button;
 
 import fi.dy.masa.malilib.config.IConfigBoolean;
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.TextFormatting;
 
 public class ConfigButtonBoolean extends ButtonGeneric
@@ -21,7 +20,8 @@ public class ConfigButtonBoolean extends ButtonGeneric
     {
         this.config.setBooleanValue(! this.config.getBooleanValue());
         this.updateDisplayString();
-        this.playPressSound(Minecraft.getMinecraft().getSoundHandler());
+
+        super.onMouseButtonClicked(mouseButton);
     }
 
     @Override

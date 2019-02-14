@@ -251,7 +251,6 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
         public void actionPerformed(ButtonGeneric control)
         {
             this.parent.textField.getTextField().setText(this.parent.defaultValue);
-            this.buttonReset.playPressSound(Minecraft.getMinecraft().getSoundHandler());
             this.buttonReset.enabled = this.parent.textField.getTextField().getText().equals(this.parent.defaultValue) == false;
         }
 
@@ -278,8 +277,6 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
         @Override
         public void actionPerformed(ButtonGeneric control)
         {
-            this.button.playPressSound(Minecraft.getMinecraft().getSoundHandler());
-
             if (this.type == ButtonType.ADD)
             {
                 this.parent.insertEntryBefore();
