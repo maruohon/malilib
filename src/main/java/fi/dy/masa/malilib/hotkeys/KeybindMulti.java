@@ -11,7 +11,7 @@ import fi.dy.masa.malilib.LiteModMaLiLib;
 import fi.dy.masa.malilib.config.MaLiLibConfigs;
 import fi.dy.masa.malilib.config.options.ConfigBoolean;
 import fi.dy.masa.malilib.util.IMinecraftAccessor;
-import fi.dy.masa.malilib.util.StringUtils;
+import fi.dy.masa.malilib.util.InfoUtils;
 import net.minecraft.client.Minecraft;
 
 public class KeybindMulti implements IKeybind
@@ -416,7 +416,7 @@ public class KeybindMulti implements IKeybind
 
         if (KEYBIND_DEBUG_ACTIONBAR.getBooleanValue())
         {
-            StringUtils.printActionbarMessage(msg);
+            InfoUtils.printActionbarMessage(msg);
         }
     }
 

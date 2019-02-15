@@ -41,3 +41,8 @@ malilib.label.alignment.center=Center
 malilib.message.toggled=Toggled %s %s
 malilib.message.value.off=OFF
 malilib.message.value.on=ON
+
+malilib.message.formatting_code.error=§c
+malilib.message.formatting_code.info=§f
+malilib.message.formatting_code.success=§a
+malilib.message.formatting_code.warning=§6

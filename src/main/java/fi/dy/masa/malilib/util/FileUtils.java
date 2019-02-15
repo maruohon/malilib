@@ -27,6 +27,25 @@ public class FileUtils
         return Minecraft.getMinecraft().gameDir;
     }
 
+    /**
+     * Checks that the target directory exists, and the file either doesn't exist,
+     * or the canOverwrite argument is true and the file is writable
+     * @param dir
+     * @param fileName
+     * @param canOverwrite
+     * @return
+     */
+    public static boolean canWriteToFile(File dir, String fileName, boolean canOverwrite)
+    {
+        if (dir.exists() && dir.isDirectory())
+        {
+            File file = new File(dir, fileName);
+            return file.exists() == false || (canOverwrite && file.isFile() && file.canWrite());
+        }
+
+        return false;
+    }
+
     public static File getCanonicalFileIfPossible(File file)
     {
         try

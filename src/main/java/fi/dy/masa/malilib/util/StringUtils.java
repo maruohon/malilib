@@ -8,14 +8,12 @@ import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.multiplayer.ServerData;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
 
 public class StringUtils
@@ -60,14 +58,12 @@ public class StringUtils
         );
     }
 
-    public static void printBooleanConfigToggleMessage(String prettyName, boolean newValue)
-    {
-        String pre = newValue ? TextFormatting.GREEN.toString() : TextFormatting.RED.toString();
-        String status = I18n.format("malilib.message.value." + (newValue ? "on" : "off"));
-        String message = I18n.format("malilib.message.toggled", prettyName, pre + status + TextFormatting.RESET);
-        printActionbarMessage(message);
-    }
-
+    /**
+     * @deprecated since 0.10.0. Use the same method in InfoUtils instead.
+     * @param key
+     * @param args
+     */
+    @Deprecated
     public static void printActionbarMessage(String key, Object... args)
     {
         Minecraft.getMinecraft().ingameGUI.addChatMessage(ChatType.GAME_INFO, new TextComponentTranslation(key, args));

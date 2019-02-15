@@ -128,21 +128,26 @@ public class Message
 
     public String getFormatCode()
     {
-        switch (this.type)
-        {
-            case INFO:      return GuiBase.TXT_WHITE;
-            case SUCCESS:   return GuiBase.TXT_GREEN;
-            case WARNING:   return GuiBase.TXT_GOLD;
-            case ERROR:     return GuiBase.TXT_RED;
-            default:        return GuiBase.TXT_GRAY;
-        }
+        return this.type.getFormatting();
     }
 
     public enum MessageType
     {
-        INFO,
-        SUCCESS,
-        WARNING,
-        ERROR;
+        INFO        ("malilib.message.formatting_code.info"),
+        SUCCESS     ("malilib.message.formatting_code.success"),
+        WARNING     ("malilib.message.formatting_code.warning"),
+        ERROR       ("malilib.message.formatting_code.error");
+
+        private final String translationKey;
+
+        private MessageType(String translationKey)
+        {
+            this.translationKey = translationKey;
+        }
+
+        public String getFormatting()
+        {
+            return I18n.format(this.translationKey);
+        }
     }
 }
