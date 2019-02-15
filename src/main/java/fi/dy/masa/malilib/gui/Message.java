@@ -81,7 +81,7 @@ public class Message
                         if (lineWidth > this.maxLineWidth)
                         {
                             this.messageLines.add(sb.toString());
-                            sb = new StringBuilder(this.maxLineWidth + 32);
+                            sb = new StringBuilder(256);
                             lineWidth = 0;
                         }
 
@@ -89,7 +89,7 @@ public class Message
                     }
 
                     this.messageLines.add(sb.toString());
-                    sb = new StringBuilder(this.maxLineWidth + 32);
+                    sb = new StringBuilder(256);
                     lineWidth = 0;
                 }
             }
@@ -102,7 +102,7 @@ public class Message
             if (width <= this.maxLineWidth)
             {
                 sb.append(str);
-                lineWidth += width;
+                lineWidth += width + spaceWidth;
             }
         }
 
