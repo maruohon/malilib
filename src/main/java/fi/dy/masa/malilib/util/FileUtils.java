@@ -9,6 +9,7 @@ import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableSet;
 import com.mumfrey.liteloader.core.LiteLoader;
 import fi.dy.masa.malilib.LiteModMaLiLib;
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 
@@ -19,6 +20,11 @@ public class FileUtils
     public static File getConfigDirectory()
     {
         return LiteLoader.getCommonConfigFolder();
+    }
+
+    public static File getMinecraftDirectory()
+    {
+        return Minecraft.getMinecraft().gameDir;
     }
 
     public static File getCanonicalFileIfPossible(File file)
