@@ -6,6 +6,7 @@ import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.render.RenderUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
@@ -15,7 +16,7 @@ public abstract class GuiTextInputBase extends GuiDialogBase
     protected final GuiTextField textField;
     protected final String originalText;
 
-    public GuiTextInputBase(int maxTextLength, String titleKey, String defaultText, @Nullable GuiBase parent)
+    public GuiTextInputBase(int maxTextLength, String titleKey, String defaultText, @Nullable GuiScreen parent)
     {
         this.mc = Minecraft.getMinecraft();
         this.setParent(parent);

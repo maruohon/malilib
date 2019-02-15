@@ -75,7 +75,7 @@ public class WidgetDirectoryEntry extends WidgetListEntryBase<DirectoryEntry>
         {
             GlStateManager.color(1, 1, 1, 1);
             this.mc.getTextureManager().bindTexture(icon.getTexture());
-            icon.renderAt(this.x, this.y + (this.height - icon.getHeight()) / 2, this.zLevel, false, false);
+            icon.renderAt(this.x, this.y + (this.height - icon.getHeight()) / 2, this.zLevel + 1, false, false);
         }
 
         // Draw a lighter background for the hovered and the selected entry

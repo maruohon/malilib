@@ -2,6 +2,11 @@ language.name=English
 language.region=US
 language.code=en_US
 
+
+malilib.error.failed_to_create_directory=Failed to create directory '%s'
+malilib.error.file_or_directory_already_exists=File or directory '%s' already exists
+malilib.error.invalid_directory=Invalid directory name '%s'
+
 malilib.gui.button.cancel=Cancel
 malilib.gui.button.ok=OK
 malilib.gui.button.reset=Reset
@@ -16,6 +21,8 @@ malilib.gui.label.keybind_settings.exclusive=Exclusive
 malilib.gui.label.keybind_settings.order_sensitive=Order Sensitive
 malilib.gui.label.keybind_settings.tips=- Left click to configure\n- Right click to reset to defaults
 malilib.gui.label.keybind_settings.title_advanced_keybind_settings=Advanced Keybind settings
+
+malilib.gui.title.create_directory=Create a new directory
 
 malilib.label.key_action.both=BOTH
 malilib.label.key_action.press=PRESS
@@ -38,6 +45,7 @@ malilib.label.alignment.bottom_left=Bottom Left
 malilib.label.alignment.bottom_right=Bottom Right
 malilib.label.alignment.center=Center
 
+malilib.message.directory_created=Directory '%s' created
 malilib.message.toggled=Toggled %s %s
 malilib.message.value.off=OFF
 malilib.message.value.on=ON
