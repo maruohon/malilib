@@ -141,7 +141,6 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
         }
 
         this.reCreateListEntryWidgets();
-        this.resetScrollbarPosition();
     }
 
     protected void addNonFilteredContents(File dir)

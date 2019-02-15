@@ -160,6 +160,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
                 {
                     this.clearSelection();
                     this.refreshBrowserEntries();
+                    this.resetScrollbarPosition();
                 }
 
                 return true;
