@@ -27,11 +27,24 @@ public class InfoUtils
      */
     public static void showMessage(MessageType type, String translationKey, Object... args)
     {
+        showMessage(type, 5000, translationKey, args);
+    }
+
+    /**
+     * Adds the message to the current GUI's message handler, if there is currently
+     * an IMessageConsumer GUI open. Otherwise prints the message to the action bar.
+     * @param type
+     * @param lifeTime
+     * @param translationKey
+     * @param args
+     */
+    public static void showMessage(MessageType type, int lifeTime, String translationKey, Object... args)
+    {
         GuiScreen gui = Minecraft.getMinecraft().currentScreen;
 
         if (gui instanceof IMessageConsumer)
         {
-            ((IMessageConsumer) gui).addMessage(type, translationKey, args);
+            ((IMessageConsumer) gui).addMessage(type, lifeTime, translationKey, args);
         }
         else
         {
@@ -40,14 +53,66 @@ public class InfoUtils
         }
     }
 
+    /**
+     * Adds the message to the current GUI's message handler, if there is currently
+     * an IMessageConsumer GUI open. Otherwise adds the message to the in-game message handler.
+     * @param type
+     * @param translationKey
+     * @param args
+     */
+    public static void showGuiOrInGameMessage(MessageType type, String translationKey, Object... args)
+    {
+        showGuiOrInGameMessage(type, 5000, translationKey, args);
+    }
+
+    /**
+     * Adds the message to the current GUI's message handler, if there is currently
+     * an IMessageConsumer GUI open. Otherwise adds the message to the in-game message handler.
+     * @param type
+     * @param lifeTime
+     * @param translationKey
+     * @param args
+     */
+    public static void showGuiOrInGameMessage(MessageType type, int lifeTime, String translationKey, Object... args)
+    {
+        GuiScreen gui = Minecraft.getMinecraft().currentScreen;
+
+        if (gui instanceof IMessageConsumer)
+        {
+            ((IMessageConsumer) gui).addMessage(type, lifeTime, translationKey, args);
+        }
+        else
+        {
+            printInGameMessage(type, lifeTime, translationKey, args);
+        }
+    }
+
     public static void printActionbarMessage(String key, Object... args)
     {
         Minecraft.getMinecraft().ingameGUI.addChatMessage(ChatType.GAME_INFO, new TextComponentTranslation(key, args));
     }
 
-    public static void printInGameMessage(MessageType type, String messageKey, Object... args)
+    /**
+     * Adds the message to the in-game message handler
+     * @param type
+     * @param translationKey
+     * @param args
+     */
+    public static void printInGameMessage(MessageType type, String translationKey, Object... args)
     {
-        IN_GAME_MESSAGES.addMessage(type, messageKey, 5000, args);
+        printInGameMessage(type, translationKey, 5000, args);
+    }
+
+    /**
+     * Adds the message to the in-game message handler
+     * @param type
+     * @param lifeTime
+     * @param translationKey
+     * @param args
+     */
+    public static void printInGameMessage(MessageType type, int lifeTime, String translationKey, Object... args)
+    {
+        IN_GAME_MESSAGES.addMessage(type, lifeTime, translationKey, args);
     }
 
     public static void printBooleanConfigToggleMessage(String prettyName, boolean newValue)

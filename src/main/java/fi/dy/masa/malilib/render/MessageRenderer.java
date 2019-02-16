@@ -86,12 +86,12 @@ public class MessageRenderer
         return this.nextMessageType;
     }
 
-    public void addMessage(String messageKey, int displayTimeMs, Object... args)
+    public void addMessage(int displayTimeMs, String messageKey, Object... args)
     {
-        this.addMessage(this.nextMessageType, messageKey, displayTimeMs, args);
+        this.addMessage(this.nextMessageType, displayTimeMs, messageKey, args);
     }
 
-    public void addMessage(MessageType type, String messageKey, int displayTimeMs, Object... args)
+    public void addMessage(MessageType type, int displayTimeMs, String messageKey, Object... args)
     {
         this.messages.add(new Message(type, displayTimeMs, this.messageBoxWidth - 20, messageKey, args));
     }

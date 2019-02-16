@@ -315,24 +315,24 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     @Override
     public void setString(String string)
     {
-        this.messageRenderer.addMessage(string, 3000);
-    }
-
-    @Override
-    public void addMessage(MessageType type, String messageKey)
-    {
-        this.addGuiMessage(type, messageKey, 5000);
+        this.messageRenderer.addMessage(3000, string);
     }
 
     @Override
     public void addMessage(MessageType type, String messageKey, Object... args)
     {
-        this.addGuiMessage(type, messageKey, 5000, args);
+        this.addGuiMessage(type, 5000, messageKey, args);
     }
 
-    public void addGuiMessage(MessageType type, String messageKey, int displayTimeMs, Object... args)
+    @Override
+    public void addMessage(MessageType type, int lifeTime, String messageKey, Object... args)
     {
-        this.messageRenderer.addMessage(type, messageKey, displayTimeMs, args);
+        this.addGuiMessage(type, lifeTime, messageKey, args);
+    }
+
+    public void addGuiMessage(MessageType type, int displayTimeMs, String messageKey, Object... args)
+    {
+        this.messageRenderer.addMessage(type, displayTimeMs, messageKey, args);
     }
 
     public void setNextMessageType(MessageType type)
