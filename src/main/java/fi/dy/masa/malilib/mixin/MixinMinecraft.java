@@ -6,12 +6,13 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import fi.dy.masa.malilib.event.InputEventHandler;
+import fi.dy.masa.malilib.event.TickHandler;
 import fi.dy.masa.malilib.hotkeys.KeybindMulti;
 import fi.dy.masa.malilib.util.IMinecraftAccessor;
 import net.minecraft.client.Minecraft;
 
 @Mixin(Minecraft.class)
-public class MixinMinecraft implements IMinecraftAccessor
+public abstract class MixinMinecraft implements IMinecraftAccessor
 {
     @Shadow
     private boolean actionKeyF3;
@@ -46,5 +47,11 @@ public class MixinMinecraft implements IMinecraftAccessor
     private void onPostKeyboardInput(CallbackInfo ci)
     {
         KeybindMulti.reCheckPressedKeys();
+    }
+
+    @Inject(method = "runTick()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;getSystemTime()J"))
+    private void onRunTickEnd(CallbackInfo ci)
+    {
+        TickHandler.getInstance().onClientTick((Minecraft)(Object) this);
     }
 }

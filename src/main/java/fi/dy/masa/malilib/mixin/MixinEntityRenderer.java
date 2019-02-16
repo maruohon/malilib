@@ -9,7 +9,7 @@ import fi.dy.masa.malilib.event.RenderEventHandler;
 import net.minecraft.client.renderer.EntityRenderer;
 
 @Mixin(EntityRenderer.class)
-public class MixinEntityRenderer
+public abstract class MixinEntityRenderer
 {
     @Inject(method = "renderWorldPass(IFJ)V", at = @At(
             value = "FIELD",
