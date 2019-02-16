@@ -4,14 +4,18 @@ import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.Message.MessageType;
 import fi.dy.masa.malilib.gui.interfaces.IMessageConsumer;
 import fi.dy.masa.malilib.interfaces.IStringConsumer;
+import fi.dy.masa.malilib.render.MessageRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.TextComponentTranslation;
 
 public class InfoUtils
 {
+    private static final MessageRenderer IN_GAME_MESSAGES = new MessageRenderer(0xA0000000, 0).setBackgroundStyle(true, false).setCentered(true, false).setExpandUp(true);
+
     public static final IStringConsumer INFO_MESSAGE_CONSUMER = new InfoMessageConsumer();
 
     /**
@@ -41,6 +45,11 @@ public class InfoUtils
         Minecraft.getMinecraft().ingameGUI.addChatMessage(ChatType.GAME_INFO, new TextComponentTranslation(key, args));
     }
 
+    public static void printInGameMessage(MessageType type, String messageKey, Object... args)
+    {
+        IN_GAME_MESSAGES.addMessage(type, messageKey, 5000, args);
+    }
+
     public static void printBooleanConfigToggleMessage(String prettyName, boolean newValue)
     {
         String pre = newValue ? GuiBase.TXT_GREEN : GuiBase.TXT_RED;
@@ -48,6 +57,18 @@ public class InfoUtils
         String message = I18n.format("malilib.message.toggled", prettyName, pre + status + GuiBase.TXT_RST);
 
         printActionbarMessage(message);
+    }
+
+    /**
+     * NOT PUBLIC API - DO NOT CALL
+     */
+    public static void renderInGameMessages()
+    {
+        ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
+        int x = sr.getScaledWidth() / 2;
+        int y = sr.getScaledHeight() - 76;
+
+        IN_GAME_MESSAGES.drawMessages(x, y);
     }
 
     public static class InfoMessageConsumer implements IStringConsumer

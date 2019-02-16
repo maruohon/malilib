@@ -26,9 +26,9 @@ public class Message
         this.setMessage(I18n.format(message, args));
     }
 
-    public boolean hasExpired()
+    public boolean hasExpired(long currentTime)
     {
-        return System.currentTimeMillis() > (this.created + this.displayTime);
+        return currentTime > (this.created + this.displayTime);
     }
 
     public int getMessageHeight()

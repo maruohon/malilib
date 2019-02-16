@@ -19,6 +19,7 @@ import fi.dy.masa.malilib.gui.widgets.WidgetLabel;
 import fi.dy.masa.malilib.gui.wrappers.ButtonWrapper;
 import fi.dy.masa.malilib.gui.wrappers.TextFieldWrapper;
 import fi.dy.masa.malilib.interfaces.IStringConsumer;
+import fi.dy.masa.malilib.render.MessageRenderer;
 import fi.dy.masa.malilib.render.RenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -54,9 +55,8 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     private final List<ButtonWrapper<? extends ButtonGeneric>> buttons = new ArrayList<>();
     private final List<TextFieldWrapper<? extends GuiTextField>> textFields = new ArrayList<>();
     private final List<WidgetBase> widgets = new ArrayList<>();
-    private final List<Message> messages = new ArrayList<>();
+    private final MessageRenderer messageRenderer = new MessageRenderer(0xDD000000, COLOR_HORIZONTAL_BAR);
     protected WidgetBase hoveredWidget = null;
-    private MessageType nextMessageType = MessageType.INFO;
     protected String title = "";
     protected boolean useTitleHierarchy = true;
     @Nullable
@@ -315,13 +315,13 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     @Override
     public void setString(String string)
     {
-        this.addGuiMessage(this.nextMessageType, string, 3000);
+        this.messageRenderer.addMessage(string, 3000);
     }
 
     @Override
     public void addMessage(MessageType type, String messageKey)
     {
-        this.addMessage(type, messageKey, new Object[0]);
+        this.addGuiMessage(type, messageKey, 5000);
     }
 
     @Override
@@ -332,51 +332,17 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
 
     public void addGuiMessage(MessageType type, String messageKey, int displayTimeMs, Object... args)
     {
-        this.messages.add(new Message(type, displayTimeMs, 380, messageKey, args));
+        this.messageRenderer.addMessage(type, messageKey, displayTimeMs, args);
     }
 
     public void setNextMessageType(MessageType type)
     {
-        this.nextMessageType = type;
+        this.messageRenderer.setNextMessageType(type);
     }
 
     protected void drawGuiMessages()
     {
-        if (this.messages.isEmpty() == false)
-        {
-            int boxWidth = 400;
-            int boxHeight = this.getMessagesHeight() + 20;
-            int x = this.width / 2 - boxWidth / 2;
-            int y = this.height / 2 - boxHeight / 2;
-
-            RenderUtils.drawOutlinedBox(x, y, boxWidth, boxHeight, 0xDD000000, COLOR_HORIZONTAL_BAR);
-            x += 10;
-            y += 10;
-
-            for (int i = 0; i < this.messages.size(); ++i)
-            {
-                Message message = this.messages.get(i);
-                y = message.renderAt(x, y, 0xFFFFFFFF);
-
-                if (message.hasExpired())
-                {
-                    this.messages.remove(i);
-                    --i;
-                }
-            }
-        }
-    }
-
-    protected int getMessagesHeight()
-    {
-        int height = 0;
-
-        for (int i = 0; i < this.messages.size(); ++i)
-        {
-            height += this.messages.get(i).getMessageHeight();
-        }
-
-        return height;
+        this.messageRenderer.drawMessages(this.width / 2, this.height / 2);
     }
 
     public void bindTexture(ResourceLocation texture)

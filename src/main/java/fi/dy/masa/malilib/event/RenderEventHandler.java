@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import fi.dy.masa.malilib.interfaces.IRenderDispatcher;
 import fi.dy.masa.malilib.interfaces.IRenderer;
+import fi.dy.masa.malilib.util.InfoUtils;
 
 public class RenderEventHandler implements IRenderDispatcher
 {
@@ -47,6 +48,8 @@ public class RenderEventHandler implements IRenderDispatcher
                 renderer.onRenderGameOverlayPost(partialTicks);
             }
         }
+
+        InfoUtils.renderInGameMessages();
     }
 
     /**
