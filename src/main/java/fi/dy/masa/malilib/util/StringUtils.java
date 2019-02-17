@@ -77,6 +77,79 @@ public class StringUtils
         sender.sendMessage(new TextComponentTranslation(messageKey, name));
     }
 
+    /**
+     * Splits the given string into lines up to maxLineLength long
+     * @param linesOut
+     * @param textIn
+     * @param maxLineLength
+     * @param font
+     */
+    public static void splitTextToLines(List<String> linesOut, String textIn, int maxLineLength, FontRenderer font)
+    {
+        String[] lines = textIn.split("\\\\n");
+
+        for (String line : lines)
+        {
+            String[] parts = line.split(" ");
+            StringBuilder sb = new StringBuilder(256);
+            final int spaceWidth = font.getStringWidth(" ");
+            int lineWidth = 0;
+
+            for (String str : parts)
+            {
+                int width = font.getStringWidth(str);
+
+                if ((lineWidth + width + spaceWidth) > maxLineLength)
+                {
+                    if (lineWidth > 0)
+                    {
+                        linesOut.add(sb.toString());
+                        sb = new StringBuilder(256);
+                        lineWidth = 0;
+                    }
+
+                    // Long continuous string
+                    if (width > maxLineLength)
+                    {
+                        final int chars = str.length();
+
+                        for (int i = 0; i < chars; ++i)
+                        {
+                            String c = str.substring(i, i + 1);
+                            lineWidth += font.getStringWidth(c);
+
+                            if (lineWidth > maxLineLength)
+                            {
+                                linesOut.add(sb.toString());
+                                sb = new StringBuilder(256);
+                                lineWidth = 0;
+                            }
+
+                            sb.append(c);
+                        }
+
+                        linesOut.add(sb.toString());
+                        sb = new StringBuilder(256);
+                        lineWidth = 0;
+                    }
+                }
+
+                if (lineWidth > 0)
+                {
+                    sb.append(" ");
+                }
+
+                if (width <= maxLineLength)
+                {
+                    sb.append(str);
+                    lineWidth += width + spaceWidth;
+                }
+            }
+
+            linesOut.add(sb.toString());
+        }
+    }
+
     public static String getClampedDisplayStringStrlen(List<String> list, final int maxWidth, String prefix, String suffix)
     {
         StringBuilder sb = new StringBuilder(128);
