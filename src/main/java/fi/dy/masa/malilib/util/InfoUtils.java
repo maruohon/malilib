@@ -100,7 +100,7 @@ public class InfoUtils
      */
     public static void printInGameMessage(MessageType type, String translationKey, Object... args)
     {
-        printInGameMessage(type, translationKey, 5000, args);
+        printInGameMessage(type, 5000, translationKey, args);
     }
 
     /**
