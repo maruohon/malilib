@@ -1,21 +1,27 @@
 package fi.dy.masa.malilib.gui.button;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.input.Keyboard;
+import fi.dy.masa.malilib.event.InputEventHandler;
+import fi.dy.masa.malilib.event.InputEventHandler.KeybindCategory;
+import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.interfaces.IKeybindConfigGui;
+import fi.dy.masa.malilib.hotkeys.IHotkey;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
-import net.minecraft.util.text.TextFormatting;
 
-public class ConfigButtonKeybind extends ButtonBase
+public class ConfigButtonKeybind extends ButtonGeneric
 {
-    private final IKeybindConfigGui host;
-    private final IKeybind keybind;
-    private boolean selected;
-    private boolean firstKey;
+    protected final IKeybindConfigGui host;
+    protected final IKeybind keybind;
+    protected final List<String> overlapInfo = new ArrayList<>();
+    protected boolean selected;
+    protected boolean firstKey;
 
     public ConfigButtonKeybind(int id, int x, int y, int width, int height, IKeybind keybind, IKeybindConfigGui host)
     {
-        super(id, x, y, width, height);
+        super(id, x, y, width, height, "");
 
         this.host = host;
         this.keybind = keybind;
@@ -95,13 +101,67 @@ public class ConfigButtonKeybind extends ButtonBase
             valueStr = "NONE";
         }
 
+        this.clearHoverStrings();
+
         if (this.selected)
         {
-            this.displayString = "> " + TextFormatting.YELLOW + valueStr + TextFormatting.RESET + " <";
+            this.displayString = "> " + GuiBase.TXT_YELLOW + valueStr + GuiBase.TXT_RST + " <";
         }
         else
         {
-            this.displayString = valueStr;
+            this.updateConflicts();
+
+            if (this.overlapInfo.size() > 0)
+            {
+                this.displayString = GuiBase.TXT_GOLD + valueStr + GuiBase.TXT_RST;
+            }
+            else
+            {
+                this.displayString = valueStr;
+            }
+        }
+    }
+
+    protected void updateConflicts()
+    {
+        List<KeybindCategory> categories = InputEventHandler.getInstance().getKeybindCategories();
+        List<String> names = new ArrayList<>();
+        this.overlapInfo.clear();
+
+        for (KeybindCategory category : categories)
+        {
+            List<? extends IHotkey> hotkeys = category.getHotkeys();
+
+            for (IHotkey hotkey : hotkeys)
+            {
+                if (this.keybind.overlaps(hotkey.getKeybind()))
+                {
+                    names.add(hotkey.getName());
+                }
+            }
+
+            if (names.size() > 0)
+            {
+                if (this.overlapInfo.size() > 0)
+                {
+                    this.overlapInfo.add("-----");
+                }
+
+                this.overlapInfo.add(category.getModName());
+                this.overlapInfo.add(" > " + category.getCategory());
+
+                for (String name : names)
+                {
+                    this.overlapInfo.add("    - " + name);
+                }
+
+                names.clear();
+            }
+        }
+
+        if (this.overlapInfo.size() > 0)
+        {
+            this.setHoverStrings(this.overlapInfo);
         }
     }
 }

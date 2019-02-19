@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.gui.wrappers.ButtonWrapper;
+import fi.dy.masa.malilib.render.RenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderHelper;
 
@@ -18,7 +19,7 @@ public abstract class WidgetBase
     protected final int height;
     protected final float zLevel;
     protected final List<WidgetBase> subWidgets = new ArrayList<>();
-    protected final List<ButtonWrapper<?>> buttons = new ArrayList<>();
+    protected final List<ButtonWrapper<? extends ButtonBase>> buttons = new ArrayList<>();
     @Nullable
     protected WidgetBase hoveredSubWidget = null;
 
@@ -218,6 +219,19 @@ public abstract class WidgetBase
     public void postRenderHovered(int mouseX, int mouseY, boolean selected)
     {
         this.drawHoveredSubWidget(mouseX, mouseY);
+
+        for (int i = 0; i < this.buttons.size(); ++i)
+        {
+            ButtonWrapper<? extends ButtonBase> wrapper = this.buttons.get(i);
+
+            if (wrapper.getButton().mousePressed(this.mc, mouseX, mouseY))
+            {
+                if (wrapper.getButton().hasHoverText())
+                {
+                    RenderUtils.drawHoverText(mouseX, mouseY, wrapper.getButton().getHoverStrings());
+                }
+            }
+        }
     }
 
     protected void drawSubWidgets(int mouseX, int mouseY)

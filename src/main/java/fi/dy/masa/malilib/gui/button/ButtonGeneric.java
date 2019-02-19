@@ -1,7 +1,5 @@
 package fi.dy.masa.malilib.gui.button;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import fi.dy.masa.malilib.gui.LeftRight;
@@ -9,13 +7,11 @@ import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.resources.I18n;
 
 public class ButtonGeneric extends ButtonBase
 {
     @Nullable
     protected final IGuiIcon icon;
-    protected final List<String> hoverStrings = new ArrayList<>();
     protected LeftRight alignment = LeftRight.LEFT;
     protected boolean textCentered;
     protected boolean renderDefaultBackground = true;
@@ -73,33 +69,6 @@ public class ButtonGeneric extends ButtonBase
     {
         this.renderDefaultBackground = render;
         return this;
-    }
-
-    public boolean hasHoverText()
-    {
-        return this.hoverStrings.isEmpty() == false;
-    }
-
-    public void setHoverStrings(String... hoverStrings)
-    {
-        this.hoverStrings.clear();
-
-        for (String str : hoverStrings)
-        {
-            str = I18n.format(str);
-
-            String[] parts = str.split("\\\\n");
-
-            for (String part : parts)
-            {
-                this.hoverStrings.add(I18n.format(part));
-            }
-        }
-    }
-
-    public List<String> getHoverStrings()
-    {
-        return this.hoverStrings;
     }
 
     @Override

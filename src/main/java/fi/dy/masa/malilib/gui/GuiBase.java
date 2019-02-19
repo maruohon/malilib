@@ -38,6 +38,7 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     public static final String TXT_GOLD = TextFormatting.GOLD.toString();
     public static final String TXT_RED = TextFormatting.RED.toString();
     public static final String TXT_WHITE = TextFormatting.WHITE.toString();
+    public static final String TXT_YELLOW = TextFormatting.YELLOW.toString();
     public static final String TXT_BOLD = TextFormatting.BOLD.toString();
     public static final String TXT_RST = TextFormatting.RESET.toString();
 
