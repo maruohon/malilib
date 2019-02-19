@@ -46,7 +46,11 @@ public class ConfigButtonKeybind extends ButtonBase
         {
             if (keyCode == Keyboard.KEY_ESCAPE)
             {
-                this.keybind.clearKeys();
+                if (this.firstKey)
+                {
+                    this.keybind.clearKeys();
+                }
+
                 this.host.setActiveKeybindButton(null);
             }
             else
