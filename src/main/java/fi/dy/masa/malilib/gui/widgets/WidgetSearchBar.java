@@ -34,6 +34,16 @@ public class WidgetSearchBar extends WidgetBase
         return this.searchOpen ? this.searchBox.getText() : "";
     }
 
+    public boolean hasFilter()
+    {
+        return this.searchOpen && this.searchBox.getText().isEmpty() == false;
+    }
+
+    public boolean isSearchOpen()
+    {
+        return this.searchOpen;
+    }
+
     public void setSearchOpen(boolean isOpen)
     {
         this.searchOpen = isOpen;

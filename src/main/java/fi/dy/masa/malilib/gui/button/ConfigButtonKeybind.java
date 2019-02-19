@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.gui.button;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.input.Keyboard;
 import fi.dy.masa.malilib.event.InputEventHandler;
@@ -13,13 +14,13 @@ import fi.dy.masa.malilib.hotkeys.IKeybind;
 
 public class ConfigButtonKeybind extends ButtonGeneric
 {
-    protected final IKeybindConfigGui host;
+    @Nullable protected final IKeybindConfigGui host;
     protected final IKeybind keybind;
     protected final List<String> overlapInfo = new ArrayList<>();
     protected boolean selected;
     protected boolean firstKey;
 
-    public ConfigButtonKeybind(int id, int x, int y, int width, int height, IKeybind keybind, IKeybindConfigGui host)
+    public ConfigButtonKeybind(int id, int x, int y, int width, int height, IKeybind keybind, @Nullable IKeybindConfigGui host)
     {
         super(id, x, y, width, height, "");
 
@@ -42,7 +43,11 @@ public class ConfigButtonKeybind extends ButtonGeneric
         else if (mouseButton == 0)
         {
             this.selected = true;
-            this.host.setActiveKeybindButton(this);
+
+            if (this.host != null)
+            {
+                this.host.setActiveKeybindButton(this);
+            }
         }
     }
 
@@ -57,7 +62,10 @@ public class ConfigButtonKeybind extends ButtonGeneric
                     this.keybind.clearKeys();
                 }
 
-                this.host.setActiveKeybindButton(null);
+                if (this.host != null)
+                {
+                    this.host.setActiveKeybindButton(null);
+                }
             }
             else
             {
@@ -90,6 +98,11 @@ public class ConfigButtonKeybind extends ButtonGeneric
     {
         this.selected = false;
         this.updateDisplayString();
+    }
+
+    public boolean isSelected()
+    {
+        return this.selected;
     }
 
     public void updateDisplayString()

@@ -3,11 +3,14 @@ package fi.dy.masa.malilib.gui.widgets;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import fi.dy.masa.malilib.config.ConfigType;
 import fi.dy.masa.malilib.config.IConfigBase;
 import fi.dy.masa.malilib.gui.GuiConfigsBase;
 import fi.dy.masa.malilib.gui.GuiConfigsBase.ConfigOptionWrapper;
 import fi.dy.masa.malilib.gui.LeftRight;
 import fi.dy.masa.malilib.gui.MaLiLibIcons;
+import fi.dy.masa.malilib.hotkeys.IHotkey;
+import fi.dy.masa.malilib.hotkeys.IKeybind;
 import fi.dy.masa.malilib.util.AlphaNumComparator;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -15,14 +18,26 @@ import net.minecraft.client.gui.FontRenderer;
 public class WidgetListConfigOptions extends WidgetListConfigOptionsBase<ConfigOptionWrapper, WidgetConfigOption>
 {
     protected final GuiConfigsBase parent;
+    protected final WidgetSearchBarConfigs widgetSearchConfigs;
 
-    public WidgetListConfigOptions(int x, int y, int width, int height, int configWidth, float zLevel, GuiConfigsBase parent)
+    public WidgetListConfigOptions(int x, int y, int width, int height, int configWidth, float zLevel, boolean useKeybindSearch, GuiConfigsBase parent)
     {
         super(x, y, width, height, configWidth);
 
         this.parent = parent;
-        this.widgetSearchBar = new WidgetSearchBar(x + 2, y + 4, width - 14, 14, zLevel, 0, MaLiLibIcons.SEARCH, LeftRight.LEFT, Minecraft.getMinecraft());
-        this.browserEntriesOffsetY = this.widgetSearchBar.getHeight() + 3;
+
+        if (useKeybindSearch)
+        {
+            this.widgetSearchConfigs = new WidgetSearchBarConfigs(x + 2, y + 4, width - 14, 20, zLevel, 0, MaLiLibIcons.SEARCH, LeftRight.LEFT, Minecraft.getMinecraft());
+            this.widgetSearchBar = this.widgetSearchConfigs;
+            this.browserEntriesOffsetY = 23;
+        }
+        else
+        {
+            this.widgetSearchConfigs = null;
+            this.widgetSearchBar = new WidgetSearchBar(x + 2, y + 4, width - 14, 14, zLevel, 0, MaLiLibIcons.SEARCH, LeftRight.LEFT, Minecraft.getMinecraft());
+            this.browserEntriesOffsetY = 17;
+        }
     }
 
     @Override
@@ -43,6 +58,31 @@ public class WidgetListConfigOptions extends WidgetListConfigOptionsBase<ConfigO
     {
         IConfigBase config = entry.getConfig();
         return config == null || config.getName().toLowerCase().indexOf(filterText) != -1;
+    }
+
+    @Override
+    protected void addFilteredContents(Collection<ConfigOptionWrapper> entries)
+    {
+        if (this.widgetSearchConfigs != null)
+        {
+            String filterText = this.widgetSearchConfigs.getFilter();
+            IKeybind filterKeys = this.widgetSearchConfigs.getKeybind();
+
+            for (ConfigOptionWrapper entry : entries)
+            {
+                if ((filterText.isEmpty() || this.entryMatchesFilter(entry, filterText)) &&
+                    (entry.getConfig().getType() != ConfigType.HOTKEY ||
+                     filterKeys.getKeys().size() == 0 ||
+                     filterKeys.overlaps(((IHotkey) entry.getConfig()).getKeybind())))
+                {
+                    this.listContents.add(entry);
+                }
+            }
+        }
+        else
+        {
+            super.addFilteredContents(entries);
+        }
     }
 
     @Override

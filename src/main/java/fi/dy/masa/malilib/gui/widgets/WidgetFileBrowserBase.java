@@ -128,11 +128,9 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
 
         if (dir.isDirectory() && dir.canRead())
         {
-            String filterText = this.getFilterText();
-
-            if (filterText.isEmpty() == false)
+            if (this.hasFilter())
             {
-                this.addFilteredContents(dir, filterText.toLowerCase());
+                this.addFilteredContents(dir);
             }
             else
             {
@@ -158,8 +156,9 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
         this.listContents.addAll(list);
     }
 
-    protected void addFilteredContents(File dir, String filterText)
+    protected void addFilteredContents(File dir)
     {
+        String filterText = this.widgetSearchBar.getFilter().toLowerCase();
         List<DirectoryEntry> list = new ArrayList<>();
         this.addFilteredContents(dir, filterText, list, null);
         this.listContents.addAll(list);

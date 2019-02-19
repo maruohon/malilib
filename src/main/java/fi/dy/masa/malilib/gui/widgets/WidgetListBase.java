@@ -151,12 +151,12 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
     {
         if (this.widgetSearchBar != null)
         {
-            String filterPre = this.widgetSearchBar.getFilter();
+            boolean searchOpenPre = this.widgetSearchBar.isSearchOpen();
 
             if (this.widgetSearchBar.onMouseClickedImpl(mouseX, mouseY, mouseButton))
             {
                 // Toggled the search bar on or off
-                if (this.widgetSearchBar.getFilter().equals(filterPre) == false)
+                if (this.widgetSearchBar.isSearchOpen() != searchOpenPre)
                 {
                     this.clearSelection();
                     this.refreshBrowserEntries();
@@ -225,12 +225,11 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
     {
         this.listContents.clear();
 
-        String filterText = this.getFilterText();
         Collection<TYPE> entries = this.getAllEntries();
 
-        if (filterText.isEmpty() == false)
+        if (this.hasFilter())
         {
-            this.addFilteredContents(entries, filterText);
+            this.addFilteredContents(entries);
         }
         else
         {
@@ -255,8 +254,10 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
         this.listContents.addAll(placements);
     }
 
-    protected void addFilteredContents(Collection<TYPE> entries, String filterText)
+    protected void addFilteredContents(Collection<TYPE> entries)
     {
+        String filterText = this.widgetSearchBar.getFilter();
+
         for (TYPE entry : entries)
         {
             if (filterText.isEmpty() || this.entryMatchesFilter(entry, filterText))
@@ -264,6 +265,11 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
                 this.listContents.add(entry);
             }
         }
+    }
+
+    protected boolean hasFilter()
+    {
+        return this.widgetSearchBar != null && this.widgetSearchBar.hasFilter();
     }
 
     @Override
@@ -334,11 +340,6 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
         this.browserEntriesStartX = this.posX + this.browserPaddingX;
         this.browserEntriesStartY = this.posY + this.browserPaddingY;
         this.browserEntryWidth = this.browserWidth - 14;
-    }
-
-    public String getFilterText()
-    {
-        return this.widgetSearchBar != null ? this.widgetSearchBar.getFilter() : "";
     }
 
     protected int getBrowserEntryHeightFor(@Nullable TYPE type)
