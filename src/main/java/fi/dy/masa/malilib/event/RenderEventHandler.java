@@ -5,12 +5,14 @@ import java.util.List;
 import fi.dy.masa.malilib.interfaces.IRenderDispatcher;
 import fi.dy.masa.malilib.interfaces.IRenderer;
 import fi.dy.masa.malilib.util.InfoUtils;
+import net.minecraft.item.ItemStack;
 
 public class RenderEventHandler implements IRenderDispatcher
 {
     private static final RenderEventHandler INSTANCE = new RenderEventHandler();
 
     private final List<IRenderer> overlayRenderers = new ArrayList<>();
+    private final List<IRenderer> tooltipLastRenderers = new ArrayList<>();
     private final List<IRenderer> worldLastRenderers = new ArrayList<>();
 
     public static RenderEventHandler getInstance()
@@ -24,6 +26,15 @@ public class RenderEventHandler implements IRenderDispatcher
         if (this.overlayRenderers.contains(renderer) == false)
         {
             this.overlayRenderers.add(renderer);
+        }
+    }
+
+    @Override
+    public void registerTooltipLastRenderer(IRenderer renderer)
+    {
+        if (this.tooltipLastRenderers.contains(renderer) == false)
+        {
+            this.tooltipLastRenderers.add(renderer);
         }
     }
 
@@ -50,6 +61,20 @@ public class RenderEventHandler implements IRenderDispatcher
         }
 
         InfoUtils.renderInGameMessages();
+    }
+
+    /**
+     * NOT PUBLIC API - DO NOT CALL
+     */
+    public void onRenderTooltipLast(ItemStack stack, int x, int y)
+    {
+        if (this.tooltipLastRenderers.isEmpty() == false)
+        {
+            for (IRenderer renderer : this.tooltipLastRenderers)
+            {
+                renderer.onRenderTooltipLast(stack, x, y);
+            }
+        }
     }
 
     /**

@@ -10,15 +10,23 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import fi.dy.masa.malilib.command.ClientCommandHandler;
 import fi.dy.masa.malilib.event.InputEventHandler;
+import fi.dy.masa.malilib.event.RenderEventHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.item.ItemStack;
 
 @Mixin(GuiScreen.class)
 public abstract class MixinGuiScreen extends Gui
 {
     @Shadow
     protected Minecraft mc;
+
+    @Inject(method = "renderToolTip", at = @At("RETURN"))
+    private void onRenderToolTip(ItemStack stack, int x, int y, CallbackInfo ci)
+    {
+        RenderEventHandler.getInstance().onRenderTooltipLast(stack, x, y);
+    }
 
     @Inject(method = "sendChatMessage(Ljava/lang/String;Z)V", at = @At(
             value = "INVOKE",

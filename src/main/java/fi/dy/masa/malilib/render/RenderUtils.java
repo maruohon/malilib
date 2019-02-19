@@ -3,13 +3,17 @@ package fi.dy.masa.malilib.render;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import javax.annotation.Nullable;
 import org.lwjgl.opengl.GL11;
 import fi.dy.masa.malilib.config.HudAlignment;
 import fi.dy.masa.malilib.util.Color4f;
+import fi.dy.masa.malilib.util.InventoryUtils;
 import fi.dy.masa.malilib.util.PositionUtils;
 import fi.dy.masa.malilib.util.PositionUtils.HitPart;
+import net.minecraft.block.BlockShulkerBox;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -19,13 +23,22 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.EnumDyeColor;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemMap;
+import net.minecraft.item.ItemShulkerBox;
+import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
+import net.minecraft.world.storage.MapData;
 
 public class RenderUtils
 {
@@ -710,6 +723,114 @@ public class RenderUtils
         tessellator.draw();
 
         GlStateManager.popMatrix();
+    }
+
+    public static void renderMapPreview(ItemStack stack, int x, int y, int dimensions)
+    {
+        if (stack.getItem() instanceof ItemMap && GuiScreen.isShiftKeyDown())
+        {
+            Minecraft mc = Minecraft.getMinecraft();
+
+            GlStateManager.pushMatrix();
+            GlStateManager.disableLighting();
+            GlStateManager.color(1, 1, 1, 1);
+            mc.getTextureManager().bindTexture(fi.dy.masa.malilib.render.RenderUtils.TEXTURE_MAP_BACKGROUND);
+
+            int y1 = y - dimensions - 20;
+            int y2 = y1 + dimensions;
+            int x1 = x + 8;
+            int x2 = x1 + dimensions;
+            int z = 300;
+
+            Tessellator tessellator = Tessellator.getInstance();
+            BufferBuilder buffer = tessellator.getBuffer();
+            buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+            buffer.pos(x1, y2, z).tex(0.0D, 1.0D).endVertex();
+            buffer.pos(x2, y2, z).tex(1.0D, 1.0D).endVertex();
+            buffer.pos(x2, y1, z).tex(1.0D, 0.0D).endVertex();
+            buffer.pos(x1, y1, z).tex(0.0D, 0.0D).endVertex();
+            tessellator.draw();
+
+            MapData mapdata = Items.FILLED_MAP.getMapData(stack, mc.world);
+
+            if (mapdata != null)
+            {
+                x1 += 8;
+                y1 += 8;
+                z = 310;
+                double scale = (double) (dimensions - 16) / 128.0D;
+                GlStateManager.translate(x1, y1, z);
+                GlStateManager.scale(scale, scale, 0);
+                mc.entityRenderer.getMapItemRenderer().renderMap(mapdata, false);
+            }
+
+            GlStateManager.enableLighting();
+            GlStateManager.popMatrix();
+        }
+    }
+
+    public static void renderShulkerBoxPreview(ItemStack stack, int x, int y, boolean useBgColors)
+    {
+        if (GuiScreen.isShiftKeyDown() && stack.hasTagCompound())
+        {
+            NonNullList<ItemStack> items = InventoryUtils.getStoredItems(stack, -1);
+
+            if (items.size() == 0)
+            {
+                return;
+            }
+
+            GlStateManager.pushMatrix();
+            RenderHelper.disableStandardItemLighting();
+            GlStateManager.translate(0F, 0F, 700F);
+
+            InventoryOverlay.InventoryRenderType type = InventoryOverlay.getInventoryType(stack);
+            InventoryOverlay.InventoryProperties props = InventoryOverlay.getInventoryPropsTemp(type, items.size());
+
+            x += 8;
+            y -= (props.height + 18);
+
+            if (stack.getItem() instanceof ItemShulkerBox)
+            {
+                setShulkerboxBackgroundTintColor((BlockShulkerBox) ((ItemBlock) stack.getItem()).getBlock(), useBgColors);
+            }
+            else
+            {
+                GlStateManager.color(1, 1, 1, 1);
+            }
+
+            Minecraft mc = Minecraft.getMinecraft();
+            InventoryOverlay.renderInventoryBackground(type, x, y, props.slotsPerRow, items.size(), mc);
+
+            RenderHelper.enableGUIStandardItemLighting();
+            GlStateManager.enableDepth();
+            GlStateManager.enableRescaleNormal();
+
+            IInventory inv = fi.dy.masa.malilib.util.InventoryUtils.getAsInventory(items);
+            InventoryOverlay.renderInventoryStacks(type, inv, x + props.slotOffsetX, y + props.slotOffsetY, props.slotsPerRow, 0, -1, mc);
+
+            GlStateManager.disableDepth();
+            GlStateManager.popMatrix();
+        }
+    }
+
+    /**
+     * Calls GlStateManager.color() with the dye color of the provided shulker box block's color
+     * @param block
+     * @param useBgColors
+     */
+    public static void setShulkerboxBackgroundTintColor(@Nullable BlockShulkerBox block, boolean useBgColors)
+    {
+        if (block != null && useBgColors)
+        {
+            final EnumDyeColor dye = block.getColor();
+            final float[] colors = dye.getColorComponentValues();
+            GlStateManager.color(colors[0], colors[1], colors[2]);
+        }
+        else
+        {
+            GlStateManager.color(1, 1, 1, 1);
+        }
     }
 
     /*
