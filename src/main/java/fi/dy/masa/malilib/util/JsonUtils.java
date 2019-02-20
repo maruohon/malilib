@@ -15,6 +15,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import fi.dy.masa.malilib.LiteModMaLiLib;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 
 public class JsonUtils
 {
@@ -211,6 +212,43 @@ public class JsonUtils
         return null;
     }
 
+    public static boolean hasVec3d(JsonObject obj, String name)
+    {
+        return vec3dFromJson(obj, name) != null;
+    }
+
+    public static JsonArray vec3dToJson(Vec3d vec)
+    {
+        JsonArray arr = new JsonArray();
+
+        arr.add(vec.x);
+        arr.add(vec.y);
+        arr.add(vec.z);
+
+        return arr;
+    }
+
+    @Nullable
+    public static Vec3d vec3dFromJson(JsonObject obj, String name)
+    {
+        if (hasArray(obj, name))
+        {
+            JsonArray arr = obj.getAsJsonArray(name);
+
+            if (arr.size() == 3)
+            {
+                try
+                {
+                    return new Vec3d(arr.get(0).getAsDouble(), arr.get(1).getAsDouble(), arr.get(2).getAsDouble());
+                }
+                catch (Exception e)
+                {
+                }
+            }
+        }
+
+        return null;
+    }
 
     // https://stackoverflow.com/questions/29786197/gson-jsonobject-copy-value-affected-others-jsonobject-instance
     @Nonnull
