@@ -1,0 +1,173 @@
+package fi.dy.masa.malilib.util;
+
+import fi.dy.masa.malilib.gui.GuiBase;
+import fi.dy.masa.malilib.gui.GuiTextFieldDouble;
+import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
+import fi.dy.masa.malilib.gui.GuiTextFieldInteger;
+import fi.dy.masa.malilib.gui.MaLiLibIcons;
+import fi.dy.masa.malilib.gui.button.ButtonGeneric;
+import fi.dy.masa.malilib.gui.button.IButtonActionListener;
+import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
+import fi.dy.masa.malilib.interfaces.ICoordinateValueModifier;
+import fi.dy.masa.malilib.util.PositionUtils.CoordinateType;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+
+public class GuiUtils
+{
+    public static void createBlockPosInputsVertical(int x, int y, int textFieldWidth, BlockPos pos,
+            ICoordinateValueModifier modifier, boolean addButton, GuiBase gui)
+    {
+        createBlockPosInput(x, y     , textFieldWidth, CoordinateType.X, pos, modifier, addButton, gui);
+        createBlockPosInput(x, y + 17, textFieldWidth, CoordinateType.Y, pos, modifier, addButton, gui);
+        createBlockPosInput(x, y + 34, textFieldWidth, CoordinateType.Z, pos, modifier, addButton, gui);
+    }
+
+    public static void createVec3dInputsVertical(int x, int y, int textFieldWidth, Vec3d pos,
+            ICoordinateValueModifier modifier, boolean addButton, GuiBase gui)
+    {
+        createVec3dInput(x, y     , textFieldWidth, CoordinateType.X, pos, modifier, addButton, gui);
+        createVec3dInput(x, y + 17, textFieldWidth, CoordinateType.Y, pos, modifier, addButton, gui);
+        createVec3dInput(x, y + 34, textFieldWidth, CoordinateType.Z, pos, modifier, addButton, gui);
+    }
+
+    public static void createBlockPosInput(int x, int y, int textFieldWidth, CoordinateType type, BlockPos pos,
+            ICoordinateValueModifier modifier, boolean addButton, GuiBase gui)
+    {
+        x = addLabel(x, y, type, gui);
+
+        GuiTextFieldInteger textField = new GuiTextFieldInteger(x, y + 1, textFieldWidth, 14, Minecraft.getMinecraft().fontRenderer);
+        textField.setText(getCoordinateValueString(type, pos));
+
+        addTextFieldAndButton(x + textFieldWidth + 4, y, type, modifier, textField, addButton, gui);
+    }
+
+    public static void createVec3dInput(int x, int y, int textFieldWidth, CoordinateType type, Vec3d pos,
+            ICoordinateValueModifier modifier, boolean addButton, GuiBase gui)
+    {
+        x = addLabel(x, y, type, gui);
+
+        GuiTextFieldDouble textField = new GuiTextFieldDouble(x, y + 1, textFieldWidth, 14, Minecraft.getMinecraft().fontRenderer);
+        textField.setText(getCoordinateValueString(type, pos));
+
+        addTextFieldAndButton(x + textFieldWidth + 4, y, type, modifier, textField, addButton, gui);
+    }
+
+    protected static void addTextFieldAndButton(int x, int y, CoordinateType type, ICoordinateValueModifier modifier,
+            GuiTextFieldGeneric textField, boolean addButton, GuiBase gui)
+    {
+        gui.addTextField(textField, new TextFieldListenerCoordinateInput(type, modifier));
+
+        if (addButton)
+        {
+            String hover = I18n.format("litematica.gui.button.hover.plus_minus_tip");
+            ButtonGeneric button = new ButtonGeneric(x, y, MaLiLibIcons.BTN_PLUSMINUS_16, hover);
+            gui.addButton(button, new ButtonListenerCoordinateInput(type, modifier));
+        }
+    }
+
+    public static String getCoordinateValueString(CoordinateType type, BlockPos pos)
+    {
+        switch (type)
+        {
+            case X:
+                return String.valueOf(pos.getX());
+            case Y:
+                return String.valueOf(pos.getY());
+            case Z:
+                return String.valueOf(pos.getZ());
+        }
+
+        return "";
+    }
+
+    public static String getCoordinateValueString(CoordinateType type, Vec3d pos)
+    {
+        switch (type)
+        {
+            case X:
+                return String.valueOf(pos.x);
+            case Y:
+                return String.valueOf(pos.y);
+            case Z:
+                return String.valueOf(pos.z);
+        }
+
+        return "";
+    }
+
+    protected static int addLabel(int x, int y, CoordinateType type, GuiBase gui)
+    {
+        Minecraft mc = Minecraft.getMinecraft();
+        String label = type.name() + ":";
+        int labelWidth = 0;
+
+        for (CoordinateType t : CoordinateType.values())
+        {
+            labelWidth = Math.max(labelWidth, mc.fontRenderer.getStringWidth(t.name() + ":") + 4);
+        }
+
+        gui.addLabel(x, y, labelWidth, 20, 0xFFFFFFFF, label);
+        x += labelWidth;
+
+        return x;
+    }
+
+    public static class TextFieldListenerCoordinateInput implements ITextFieldListener<GuiTextField>
+    {
+        protected final ICoordinateValueModifier modifier;
+        protected final CoordinateType type;
+
+        public TextFieldListenerCoordinateInput(CoordinateType type, ICoordinateValueModifier modifier)
+        {
+            this.modifier = modifier;
+            this.type = type;
+        }
+
+        @Override
+        public boolean onTextChange(GuiTextField textField)
+        {
+            this.modifier.setValueFromString(this.type, textField.getText());
+
+            return false;
+        }
+    }
+
+    public static class ButtonListenerCoordinateInput implements IButtonActionListener<ButtonGeneric>
+    {
+        protected final ICoordinateValueModifier modifier;
+        protected final CoordinateType type;
+
+        public ButtonListenerCoordinateInput(CoordinateType type, ICoordinateValueModifier modifier)
+        {
+            this.modifier = modifier;
+            this.type = type;
+        }
+
+        @Override
+        public void actionPerformed(ButtonGeneric control)
+        {
+        }
+
+        @Override
+        public void actionPerformedWithButton(ButtonGeneric control, int mouseButton)
+        {
+            int amount = mouseButton == 1 ? -1 : 1;
+            if (GuiScreen.isShiftKeyDown()) { amount *= 8; }
+            if (GuiScreen.isAltKeyDown())   { amount *= 4; }
+
+            this.modifier.modifyValue(this.type, amount);
+        }
+
+        public enum Type
+        {
+            NUDGE_COORD_X,
+            NUDGE_COORD_Y,
+            NUDGE_COORD_Z;
+        }
+    }
+}

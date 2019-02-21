@@ -7,6 +7,7 @@ public class Color4f
     public final float g;
     public final float b;
     public final float a;
+    public final int intValue;
 
     public Color4f(float r, float g, float b)
     {
@@ -39,6 +40,14 @@ public class Color4f
         this.g = g;
         this.b = b;
         this.a = a;
+        /*
+        this.r = MathHelper.clamp(r, 0f, 1f);
+        this.g = MathHelper.clamp(g, 0f, 1f);
+        this.b = MathHelper.clamp(b, 0f, 1f);
+        this.a = MathHelper.clamp(a, 0f, 1f);
+        */
+
+        this.intValue = (((int) (a * 0xFF)) << 24) | (((int) (r * 0xFF)) << 16) | (((int) (g * 0xFF)) << 8) | (((int) (b * 0xFF)));
     }
 
     public static Color4f fromColor(int color)

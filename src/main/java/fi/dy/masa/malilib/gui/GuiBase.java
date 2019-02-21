@@ -351,7 +351,7 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
         this.mc.getTextureManager().bindTexture(texture);
     }
 
-    protected <T extends ButtonGeneric> ButtonWrapper<T> addButton(T button, IButtonActionListener<T> listener)
+    public <T extends ButtonGeneric> ButtonWrapper<T> addButton(T button, IButtonActionListener<T> listener)
     {
         ButtonWrapper<T> entry = new ButtonWrapper<>(button, listener);
         this.buttons.add(entry);
@@ -359,17 +359,17 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
         return entry;
     }
 
-    protected <T extends GuiTextField> void addTextField(T textField, @Nullable ITextFieldListener<T> listener)
+    public <T extends GuiTextField> void addTextField(T textField, @Nullable ITextFieldListener<T> listener)
     {
         this.textFields.add(new TextFieldWrapper<>(textField, listener));
     }
 
-    protected void addWidget(WidgetBase widget)
+    public void addWidget(WidgetBase widget)
     {
         this.widgets.add(widget);
     }
 
-    protected void addLabel(int x, int y, int width, int height, int textColor, String... lines)
+    public void addLabel(int x, int y, int width, int height, int textColor, String... lines)
     {
         if (lines != null && lines.length >= 1)
         {
@@ -386,7 +386,7 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
         }
     }
 
-    protected void addCheckBox(int x, int y, int width, int height, int textColor, String text,
+    public void addCheckBox(int x, int y, int width, int height, int textColor, String text,
             IGuiIcon widgetUnchecked, IGuiIcon widgetChecked, @Nullable String hoverInfo)
     {
         WidgetCheckBox checkbox = new WidgetCheckBox(x, y, this.zLevel, widgetUnchecked, widgetChecked, text, this.mc, hoverInfo);

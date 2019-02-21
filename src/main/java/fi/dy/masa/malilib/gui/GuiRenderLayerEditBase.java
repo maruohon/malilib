@@ -21,7 +21,10 @@ public abstract class GuiRenderLayerEditBase extends GuiBase
 
     protected abstract LayerRange getLayerRange();
 
-    protected abstract IGuiIcon getValueAdjustButtonIcon();
+    protected IGuiIcon getValueAdjustButtonIcon()
+    {
+        return MaLiLibIcons.BTN_PLUSMINUS_16;
+    }
 
     protected void createLayerEditControls(int x, int y, LayerRange layerRange)
     {
@@ -29,10 +32,7 @@ public abstract class GuiRenderLayerEditBase extends GuiBase
         this.createLayerConfigButton(x, y, ButtonListenerLayerEdit.Type.AXIS, layerRange);
         y += 26;
 
-        x = 10;
-        y += this.createTextFields(x, y, 60, layerRange);
-
-        this.nextY = y;
+        this.nextY = this.createTextFields(10, y, 60, layerRange);
     }
 
     protected int createLayerConfigButton(int x, int y, ButtonListenerLayerEdit.Type type, LayerRange layerRange)
@@ -49,7 +49,10 @@ public abstract class GuiRenderLayerEditBase extends GuiBase
         return 0;
     }
 
-    protected abstract int createHotkeyCheckBoxes(int x, int y, LayerRange layerRange);
+    protected int createHotkeyCheckBoxes(int x, int y, LayerRange layerRange)
+    {
+        return y;
+    }
 
     protected int createTextFields(int x, int y, int width, LayerRange layerRange)
     {
@@ -57,10 +60,8 @@ public abstract class GuiRenderLayerEditBase extends GuiBase
 
         if (layerMode == LayerMode.ALL)
         {
-            return 0;
+            return y;
         }
-
-        int yOffset = 22;
 
         if (layerMode == LayerMode.LAYER_RANGE)
         {
@@ -73,7 +74,6 @@ public abstract class GuiRenderLayerEditBase extends GuiBase
             this.addLabel(x, y + 23, w2, 20, 0xFFFFFF, labelMin);
 
             x += Math.max(w1, w2) + 10;
-            yOffset = 45;
         }
         else
         {
@@ -110,7 +110,7 @@ public abstract class GuiRenderLayerEditBase extends GuiBase
 
         this.createLayerConfigButton(x - 1, y, ButtonListenerLayerEdit.Type.SET_HERE, layerRange);
 
-        return yOffset;
+        return y + 22;
     }
 
     protected void updateTextFieldValues(LayerRange layerRange)

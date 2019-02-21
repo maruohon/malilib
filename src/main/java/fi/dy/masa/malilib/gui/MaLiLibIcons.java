@@ -7,13 +7,14 @@ import net.minecraft.util.ResourceLocation;
 
 public enum MaLiLibIcons implements IGuiIcon
 {
-    ARROW_UP        (108,   0, 15, 15),
-    ARROW_DOWN      (108,  15, 15, 15),
-    PLUS            (108,  30, 15, 15),
-    MINUS           (108,  45, 15, 15),
-    BTN_SLIDER      (153,   0, 16, 16),
-    BTN_TXTFIELD    (153,  16, 16, 16),
-    SEARCH          (201,   0, 12, 12, 0, 0);
+    ARROW_UP            (108,   0, 15, 15),
+    ARROW_DOWN          (108,  15, 15, 15),
+    PLUS                (108,  30, 15, 15),
+    MINUS               (108,  45, 15, 15),
+    BTN_SLIDER          (153,   0, 16, 16),
+    BTN_TXTFIELD        (153,  16, 16, 16),
+    BTN_PLUSMINUS_16    (153,  32, 16, 16),
+    SEARCH              (201,   0, 12, 12, 0, 0);
 
     public static final ResourceLocation TEXTURE = new ResourceLocation(MaLiLibReference.MOD_ID, "textures/gui/gui_widgets.png");
 

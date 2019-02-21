@@ -50,7 +50,7 @@ public class ConfigColor extends ConfigInteger
     @Override
     public void setIntegerValue(int value)
     {
-        this.color = Color4f.fromColor(this.getClampedValue(value));
+        this.color = Color4f.fromColor(value);
 
         super.setIntegerValue(value); // This also calls the callback, if set
     }
