@@ -12,6 +12,9 @@ malilib.gui.button.ok=OK
 malilib.gui.button.reset=Reset
 malilib.gui.button.reset.caps=RESET
 
+malilib.gui.label_colored.off=§cOFF§r
+malilib.gui.label_colored.on=§aON§r
+
 malilib.gui.label.keybind_settings.activate_on=Activate On
 malilib.gui.label.keybind_settings.allow_empty_keybind=Allow empty keybind
 malilib.gui.label.keybind_settings.allow_extra_keys=Allow extra keys

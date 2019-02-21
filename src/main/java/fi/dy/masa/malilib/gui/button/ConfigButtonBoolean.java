@@ -7,9 +7,9 @@ public class ConfigButtonBoolean extends ButtonGeneric
 {
     private final IConfigBoolean config;
 
-    public ConfigButtonBoolean(int id, int x, int y, int width, int height, IConfigBoolean config)
+    public ConfigButtonBoolean(int x, int y, int width, int height, IConfigBoolean config)
     {
-        super(id, x, y, width, height, "");
+        super(x, y, width, height, "");
         this.config = config;
 
         this.updateDisplayString();

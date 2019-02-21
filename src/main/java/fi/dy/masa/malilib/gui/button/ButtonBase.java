@@ -11,18 +11,18 @@ public abstract class ButtonBase extends GuiButton
 {
     protected final List<String> hoverStrings = new ArrayList<>();
 
-    public ButtonBase(int id, int x, int y, int width, int height)
+    public ButtonBase(int x, int y, int width, int height)
     {
-        this(id, x, y, width, height, "");
+        this(x, y, width, height, "");
     }
 
-    public ButtonBase(int id, int x, int y, int width, int height, String text)
+    public ButtonBase(int x, int y, int width, int height, String text)
     {
-        super(id, x, y, width, height, text);
+        super(0, x, y, width, height, text);
 
         if (width == -1)
         {
-            this.width = Minecraft.getMinecraft().fontRenderer.getStringWidth(text);
+            this.width = Minecraft.getMinecraft().fontRenderer.getStringWidth(text) + 10;
         }
     }
 

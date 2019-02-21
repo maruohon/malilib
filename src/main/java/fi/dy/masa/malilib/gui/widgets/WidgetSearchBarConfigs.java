@@ -23,7 +23,7 @@ public class WidgetSearchBarConfigs extends WidgetSearchBar
 
         KeybindSettings settings = KeybindSettings.create(Context.ANY, KeyAction.BOTH, true, true, false, false, false);
         this.searchKey = KeybindMulti.fromStorageString("", settings);
-        this.button = new ConfigButtonKeybind(0, x + width - 150, y, 140, 20, this.searchKey, null);
+        this.button = new ConfigButtonKeybind(x + width - 150, y, 140, 20, this.searchKey, null);
     }
 
     public IKeybind getKeybind()

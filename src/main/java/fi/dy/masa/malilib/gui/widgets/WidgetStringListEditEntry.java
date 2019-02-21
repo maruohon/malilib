@@ -77,7 +77,7 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
 
     protected void addListActionButton(int x, int y, ButtonType type)
     {
-        ButtonGeneric button = new ButtonGeneric(0, x, y, type.getIcon(), I18n.format(type.getHoverTextKey()));
+        ButtonGeneric button = new ButtonGeneric(x, y, type.getIcon(), I18n.format(type.getHoverTextKey()));
         ListenerListActions listener = new ListenerListActions(type, this);
         this.addButton(button, listener);
     }
@@ -103,7 +103,7 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
         String labelReset = I18n.format("malilib.gui.button.reset.caps");
         int w = this.mc.fontRenderer.getStringWidth(labelReset) + 10;
 
-        ButtonGeneric resetButton = new ButtonGeneric(0, x, y, w, 20, labelReset);
+        ButtonGeneric resetButton = new ButtonGeneric(x, y, w, 20, labelReset);
         resetButton.enabled = textField.getText().equals(this.defaultValue) == false;
 
         return resetButton;

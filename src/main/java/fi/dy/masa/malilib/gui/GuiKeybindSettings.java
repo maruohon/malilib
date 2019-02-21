@@ -106,11 +106,11 @@ public class GuiKeybindSettings extends GuiDialogBase
 
         if (config instanceof ConfigBoolean)
         {
-            this.addButton(new ConfigButtonBoolean(0, x, y, configWidth, 20, (ConfigBoolean) config), listener);
+            this.addButton(new ConfigButtonBoolean(x, y, configWidth, 20, (ConfigBoolean) config), listener);
         }
         else if (config instanceof ConfigOptionList)
         {
-            this.addButton(new ConfigButtonOptionList(0, x, y, configWidth, 20, (ConfigOptionList) config), listener);
+            this.addButton(new ConfigButtonOptionList(x, y, configWidth, 20, (ConfigOptionList) config), listener);
         }
     }
 

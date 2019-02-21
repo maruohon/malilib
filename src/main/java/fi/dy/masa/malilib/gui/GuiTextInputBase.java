@@ -56,7 +56,7 @@ public abstract class GuiTextInputBase extends GuiDialogBase
 
     protected void createButton(int x, int y, int buttonWidth, ButtonType type)
     {
-        ButtonGeneric button = new ButtonGeneric(0, x, y, buttonWidth, 20, I18n.format(type.getLabelKey()));
+        ButtonGeneric button = new ButtonGeneric(x, y, buttonWidth, 20, I18n.format(type.getLabelKey()));
         this.addButton(button, this.createActionListener(type));
     }
 

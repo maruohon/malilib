@@ -20,9 +20,9 @@ public class ConfigButtonKeybind extends ButtonGeneric
     protected boolean selected;
     protected boolean firstKey;
 
-    public ConfigButtonKeybind(int id, int x, int y, int width, int height, IKeybind keybind, @Nullable IKeybindConfigGui host)
+    public ConfigButtonKeybind(int x, int y, int width, int height, IKeybind keybind, @Nullable IKeybindConfigGui host)
     {
-        super(id, x, y, width, height, "");
+        super(x, y, width, height, "");
 
         this.host = host;
         this.keybind = keybind;

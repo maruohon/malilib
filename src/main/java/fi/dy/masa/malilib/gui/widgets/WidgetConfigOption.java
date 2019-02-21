@@ -126,24 +126,24 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
 
         if (type == ConfigType.BOOLEAN)
         {
-            ConfigButtonBoolean optionButton = new ConfigButtonBoolean(0, x, y, configWidth, configHeight, (IConfigBoolean) config);
+            ConfigButtonBoolean optionButton = new ConfigButtonBoolean(x, y, configWidth, configHeight, (IConfigBoolean) config);
             this.addConfigButtonEntry(x + configWidth + 4, y, (IConfigResettable) config, optionButton);
         }
         else if (type == ConfigType.OPTION_LIST)
         {
-            ConfigButtonOptionList optionButton = new ConfigButtonOptionList(0, x, y, configWidth, configHeight, (IConfigOptionList) config);
+            ConfigButtonOptionList optionButton = new ConfigButtonOptionList(x, y, configWidth, configHeight, (IConfigOptionList) config);
             this.addConfigButtonEntry(x + configWidth + 4, y, (IConfigResettable) config, optionButton);
         }
         else if (type == ConfigType.STRING_LIST)
         {
-            ConfigButtonStringList optionButton = new ConfigButtonStringList(0, x, y, configWidth, configHeight, (IConfigStringList) config, this.host, this.host.getDialogHandler());
+            ConfigButtonStringList optionButton = new ConfigButtonStringList(x, y, configWidth, configHeight, (IConfigStringList) config, this.host, this.host.getDialogHandler());
             this.addConfigButtonEntry(x + configWidth + 4, y, (IConfigResettable) config, optionButton);
         }
         else if (type == ConfigType.HOTKEY)
         {
             configWidth -= 25; // adjust the width to match other configs due to the settings widget
             IKeybind keybind = ((IHotkey) config).getKeybind();
-            ConfigButtonKeybind keybindButton = new ConfigButtonKeybind(0, x, y, configWidth, configHeight, keybind, this.host);
+            ConfigButtonKeybind keybindButton = new ConfigButtonKeybind(x, y, configWidth, configHeight, keybind, this.host);
             x += configWidth + 4;
 
             this.addWidget(new WidgetKeybindSettings(x, y, 20, 20, zLevel, keybind, config.getName(), this.parent, this.host.getDialogHandler()));
@@ -183,7 +183,7 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
             if (config instanceof IConfigSlider)
             {
                 IGuiIcon icon = ((IConfigSlider) config).shouldUseSlider() ? MaLiLibIcons.BTN_TXTFIELD : MaLiLibIcons.BTN_SLIDER;
-                ButtonGeneric toggleBtn = new ButtonGeneric(0, this.colorDisplayPosX, y + 2, icon);
+                ButtonGeneric toggleBtn = new ButtonGeneric(this.colorDisplayPosX, y + 2, icon);
                 this.addButton(toggleBtn, new ListenerSliderToggle((IConfigSlider) config));
             }
         }

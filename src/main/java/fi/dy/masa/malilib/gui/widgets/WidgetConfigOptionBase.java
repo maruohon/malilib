@@ -64,7 +64,7 @@ public abstract class WidgetConfigOptionBase<TYPE> extends WidgetListEntryBase<T
         String labelReset = I18n.format("malilib.gui.button.reset.caps");
         int w = this.mc.fontRenderer.getStringWidth(labelReset) + 10;
 
-        ButtonGeneric resetButton = new ButtonGeneric(0, x, y, w, 20, labelReset);
+        ButtonGeneric resetButton = new ButtonGeneric(x, y, w, 20, labelReset);
         resetButton.enabled = config.isModified();
 
         return resetButton;

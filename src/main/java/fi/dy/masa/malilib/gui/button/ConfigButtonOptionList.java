@@ -6,9 +6,9 @@ public class ConfigButtonOptionList extends ButtonGeneric
 {
     private final IConfigOptionList config;
 
-    public ConfigButtonOptionList(int id, int x, int y, int width, int height, IConfigOptionList config)
+    public ConfigButtonOptionList(int x, int y, int width, int height, IConfigOptionList config)
     {
-        super(id, x, y, width, height, "");
+        super(x, y, width, height, "");
         this.config = config;
 
         this.updateDisplayString();

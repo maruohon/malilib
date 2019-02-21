@@ -74,7 +74,7 @@ public class GuiConfirmAction extends GuiDialogBase
 
     protected void createButton(int x, int y, int buttonWidth, ButtonType type)
     {
-        ButtonGeneric button = new ButtonGeneric(0, x, y, buttonWidth, 20, type.getDisplayName());
+        ButtonGeneric button = new ButtonGeneric(x, y, buttonWidth, 20, type.getDisplayName());
         this.addButton(button, this.createActionListener(type));
     }
 

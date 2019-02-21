@@ -70,7 +70,7 @@ public class GuiStringListSelection extends GuiListBase<String, WidgetStringList
             width = this.mc.fontRenderer.getStringWidth(label) + 10;
         }
 
-        ButtonGeneric button = new ButtonGeneric(0, x, y, width, 20, label);
+        ButtonGeneric button = new ButtonGeneric(x, y, width, 20, label);
         this.addButton(button, listener);
 
         return width;

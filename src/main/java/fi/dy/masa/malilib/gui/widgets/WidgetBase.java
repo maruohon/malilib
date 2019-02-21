@@ -222,14 +222,11 @@ public abstract class WidgetBase
 
         for (int i = 0; i < this.buttons.size(); ++i)
         {
-            ButtonWrapper<? extends ButtonBase> wrapper = this.buttons.get(i);
+            ButtonBase button = this.buttons.get(i).getButton();
 
-            if (wrapper.getButton().mousePressed(this.mc, mouseX, mouseY))
+            if (button.hasHoverText() && button.mousePressed(this.mc, mouseX, mouseY))
             {
-                if (wrapper.getButton().hasHoverText())
-                {
-                    RenderUtils.drawHoverText(mouseX, mouseY, wrapper.getButton().getHoverStrings());
-                }
+                RenderUtils.drawHoverText(mouseX, mouseY, button.getHoverStrings());
             }
         }
     }
