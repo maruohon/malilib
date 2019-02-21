@@ -12,6 +12,10 @@ malilib.gui.button.ok=OK
 malilib.gui.button.reset=Reset
 malilib.gui.button.reset.caps=RESET
 
+malilib.gui.button.render_layers_gui.axis=Axis: %s
+malilib.gui.button.render_layers_gui.layers=Layers: %s
+malilib.gui.button.render_layers_gui.set_here=Set Here
+
 malilib.gui.label_colored.off=§cOFF§r
 malilib.gui.label_colored.on=§aON§r
 
@@ -24,6 +28,16 @@ malilib.gui.label.keybind_settings.exclusive=Exclusive
 malilib.gui.label.keybind_settings.order_sensitive=Order Sensitive
 malilib.gui.label.keybind_settings.tips=- Left click to configure\n- Right click to reset to defaults
 malilib.gui.label.keybind_settings.title_advanced_keybind_settings=Advanced Keybind settings
+
+malilib.gui.label.layer_mode.all=All
+malilib.gui.label.layer_mode.all_above=All above
+malilib.gui.label.layer_mode.all_below=All below
+malilib.gui.label.layer_mode.layer_range=Layer Range
+malilib.gui.label.layer_mode.single_layer=Single Layer
+
+malilib.gui.label.render_layers.layer=Layer
+malilib.gui.label.render_layers.layer_max=Max layer
+malilib.gui.label.render_layers.layer_min=Min layer
 
 malilib.gui.title.create_directory=Create a new directory
 
