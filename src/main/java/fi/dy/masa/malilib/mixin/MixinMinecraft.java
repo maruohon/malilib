@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.mixin;
 
+import javax.annotation.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -7,9 +8,11 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import fi.dy.masa.malilib.event.InputEventHandler;
 import fi.dy.masa.malilib.event.TickHandler;
+import fi.dy.masa.malilib.event.WorldLoadHandler;
 import fi.dy.masa.malilib.hotkeys.KeybindMulti;
 import fi.dy.masa.malilib.util.IMinecraftAccessor;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.WorldClient;
 
 @Mixin(Minecraft.class)
 public abstract class MixinMinecraft implements IMinecraftAccessor
@@ -53,5 +56,17 @@ public abstract class MixinMinecraft implements IMinecraftAccessor
     private void onRunTickEnd(CallbackInfo ci)
     {
         TickHandler.getInstance().onClientTick((Minecraft)(Object) this);
+    }
+
+    @Inject(method = "loadWorld(Lnet/minecraft/client/multiplayer/WorldClient;Ljava/lang/String;)V", at = @At("HEAD"))
+    private void onLoadWorldPre(@Nullable WorldClient worldClientIn, String loadingMessage, CallbackInfo ci)
+    {
+        WorldLoadHandler.getInstance().onWorldLoadPre(worldClientIn, (Minecraft)(Object) this);
+    }
+
+    @Inject(method = "loadWorld(Lnet/minecraft/client/multiplayer/WorldClient;Ljava/lang/String;)V", at = @At("RETURN"))
+    private void onLoadWorldPost(@Nullable WorldClient worldClientIn, String loadingMessage, CallbackInfo ci)
+    {
+        WorldLoadHandler.getInstance().onWorldLoadPost(worldClientIn, (Minecraft)(Object) this);
     }
 }

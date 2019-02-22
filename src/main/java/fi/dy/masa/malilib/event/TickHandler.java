@@ -31,9 +31,9 @@ public class TickHandler
     {
         if (this.clientTickHandlers.isEmpty() == false)
         {
-            for (IClientTickHandler renderer : this.clientTickHandlers)
+            for (IClientTickHandler handler : this.clientTickHandlers)
             {
-                renderer.onClientTick(mc);
+                handler.onClientTick(mc);
             }
         }
     }
