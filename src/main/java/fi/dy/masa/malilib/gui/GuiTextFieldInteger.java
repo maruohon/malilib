@@ -8,9 +8,9 @@ public class GuiTextFieldInteger extends GuiTextFieldGeneric
 {
     private static final Pattern PATTER_NUMBER = Pattern.compile("-?[0-9]*");
 
-    public GuiTextFieldInteger(int x, int y, int width, int height, FontRenderer fontrenderer)
+    public GuiTextFieldInteger(int x, int y, int width, int height, FontRenderer fontRenderer)
     {
-        super(x, y, width, height, fontrenderer);
+        super(x, y, width, height, fontRenderer);
 
         this.setValidator(new Predicate<String>()
         {

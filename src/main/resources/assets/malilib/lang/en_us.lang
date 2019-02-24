@@ -16,6 +16,10 @@ malilib.gui.button.render_layers_gui.axis=Axis: %s
 malilib.gui.button.render_layers_gui.layers=Layers: %s
 malilib.gui.button.render_layers_gui.set_here=Set Here
 
+malilib.gui.label.block_snap.center=Center
+malilib.gui.label.block_snap.corner=Corner
+malilib.gui.label.block_snap.none=None
+
 malilib.gui.label_colored.off=§cOFF§r
 malilib.gui.label_colored.on=§aON§r
 
