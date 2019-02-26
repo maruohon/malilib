@@ -3,13 +3,14 @@ package fi.dy.masa.malilib.gui;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.interfaces.IStringConsumer;
 import fi.dy.masa.malilib.interfaces.IStringConsumerFeedback;
+import net.minecraft.client.gui.GuiScreen;
 
 public class GuiTextInput extends GuiTextInputBase
 {
     protected final IStringConsumer consumer;
     protected final IStringConsumerFeedback consumerFeedback;
 
-    public GuiTextInput(int maxTextLength, String titleKey, String defaultText, @Nullable GuiBase parent, IStringConsumer consumer)
+    public GuiTextInput(int maxTextLength, String titleKey, String defaultText, @Nullable GuiScreen parent, IStringConsumer consumer)
     {
         super(maxTextLength, titleKey, defaultText, parent);
 
@@ -17,7 +18,7 @@ public class GuiTextInput extends GuiTextInputBase
         this.consumerFeedback = null;
     }
 
-    public GuiTextInput(int maxTextLength, String titleKey, String defaultText, @Nullable GuiBase parent, IStringConsumerFeedback consumer)
+    public GuiTextInput(int maxTextLength, String titleKey, String defaultText, @Nullable GuiScreen parent, IStringConsumerFeedback consumer)
     {
         super(maxTextLength, titleKey, defaultText, parent);
 
