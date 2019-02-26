@@ -369,7 +369,8 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
         this.widgets.add(widget);
     }
 
-    public void addLabel(int x, int y, int width, int height, int textColor, String... lines)
+    @Nullable
+    public WidgetLabel addLabel(int x, int y, int width, int height, int textColor, String... lines)
     {
         if (lines != null && lines.length >= 1)
         {
@@ -383,14 +384,30 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
 
             WidgetLabel label = new WidgetLabel(x, y, width, height, this.zLevel, textColor, lines);
             this.addWidget(label);
+
+            return label;
         }
+
+        return null;
     }
 
-    public void addCheckBox(int x, int y, int width, int height, int textColor, String text,
+    public WidgetCheckBox addCheckBox(int x, int y, int width, int height, int textColor, String text,
             IGuiIcon widgetUnchecked, IGuiIcon widgetChecked, @Nullable String hoverInfo)
     {
         WidgetCheckBox checkbox = new WidgetCheckBox(x, y, this.zLevel, widgetUnchecked, widgetChecked, text, this.mc, hoverInfo);
         this.addWidget(checkbox);
+        return checkbox;
+    }
+
+    protected boolean removeWidget(WidgetBase widget)
+    {
+        if (widget != null && this.widgets.contains(widget))
+        {
+            this.widgets.remove(widget);
+            return true;
+        }
+
+        return false;
     }
 
     protected void clearElements()
