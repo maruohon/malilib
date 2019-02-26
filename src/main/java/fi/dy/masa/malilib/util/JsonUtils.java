@@ -75,6 +75,23 @@ public class JsonUtils
         return false;
     }
 
+    public static boolean hasLong(JsonObject obj, String name)
+    {
+        JsonElement el = obj.get(name);
+
+        if (el != null && el.isJsonPrimitive())
+        {
+            try
+            {
+                el.getAsLong();
+                return true;
+            }
+            catch (Exception e) {}
+        }
+
+        return false;
+    }
+
     public static boolean hasFloat(JsonObject obj, String name)
     {
         JsonElement el = obj.get(name);
@@ -178,6 +195,20 @@ public class JsonUtils
         return defaultValue;
     }
 
+    public static long getLongOrDefault(JsonObject obj, String name, long defaultValue)
+    {
+        if (obj.has(name) && obj.get(name).isJsonPrimitive())
+        {
+            try
+            {
+                return obj.get(name).getAsLong();
+            }
+            catch (Exception e) {}
+        }
+
+        return defaultValue;
+    }
+
     public static float getFloatOrDefault(JsonObject obj, String name, float defaultValue)
     {
         if (obj.has(name) && obj.get(name).isJsonPrimitive())
@@ -228,6 +259,11 @@ public class JsonUtils
     public static int getInteger(JsonObject obj, String name)
     {
         return getIntegerOrDefault(obj, name, 0);
+    }
+
+    public static long getLong(JsonObject obj, String name)
+    {
+        return getLongOrDefault(obj, name, 0);
     }
 
     public static float getFloat(JsonObject obj, String name)
