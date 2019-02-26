@@ -255,6 +255,7 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
         this.cache.setCurrentDirectoryForContext(this.browserContext, dir);
 
         this.refreshEntries();
+        this.resetScrollbarPosition();
     }
 
     @Override
