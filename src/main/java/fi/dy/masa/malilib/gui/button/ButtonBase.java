@@ -3,13 +3,17 @@ package fi.dy.masa.malilib.gui.button;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 
 public abstract class ButtonBase extends GuiButton
 {
     protected final List<String> hoverStrings = new ArrayList<>();
+    protected final ImmutableList<String> hoverHelp;
+    protected boolean hoverInfoRequiresShift;
 
     public ButtonBase(int x, int y, int width, int height)
     {
@@ -24,6 +28,8 @@ public abstract class ButtonBase extends GuiButton
         {
             this.width = Minecraft.getMinecraft().fontRenderer.getStringWidth(text) + 10;
         }
+
+        this.hoverHelp = ImmutableList.of(I18n.format("malilib.gui.button.hover.hold_shift_for_info"));
     }
 
     public int getButtonHeight()
@@ -43,6 +49,11 @@ public abstract class ButtonBase extends GuiButton
     public boolean hasHoverText()
     {
         return this.hoverStrings.isEmpty() == false;
+    }
+
+    public void setHoverInfoRequiresShift(boolean requireShift)
+    {
+        this.hoverInfoRequiresShift = requireShift;
     }
 
     public void setHoverStrings(String... hoverStrings)
@@ -69,6 +80,11 @@ public abstract class ButtonBase extends GuiButton
 
     public List<String> getHoverStrings()
     {
+        if (this.hoverInfoRequiresShift && GuiScreen.isShiftKeyDown() == false)
+        {
+            return this.hoverHelp;
+        }
+
         return this.hoverStrings;
     }
 
