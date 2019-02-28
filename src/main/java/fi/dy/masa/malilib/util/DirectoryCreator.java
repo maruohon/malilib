@@ -22,7 +22,7 @@ public class DirectoryCreator implements IStringConsumerFeedback
     {
         if (string.isEmpty())
         {
-            InfoUtils.showMessage(MessageType.ERROR, "malilib.error.invalid_directory", string);
+            InfoUtils.showGuiOrActionBarMessage(MessageType.ERROR, "malilib.error.invalid_directory", string);
             return false;
         }
 
@@ -30,13 +30,13 @@ public class DirectoryCreator implements IStringConsumerFeedback
 
         if (file.exists())
         {
-            InfoUtils.showMessage(MessageType.ERROR, "malilib.error.file_or_directory_already_exists", file.getAbsolutePath());
+            InfoUtils.showGuiOrActionBarMessage(MessageType.ERROR, "malilib.error.file_or_directory_already_exists", file.getAbsolutePath());
             return false;
         }
 
         if (file.mkdirs() == false)
         {
-            InfoUtils.showMessage(MessageType.ERROR, "malilib.error.failed_to_create_directory", file.getAbsolutePath());
+            InfoUtils.showGuiOrActionBarMessage(MessageType.ERROR, "malilib.error.failed_to_create_directory", file.getAbsolutePath());
             return false;
         }
 
@@ -45,7 +45,7 @@ public class DirectoryCreator implements IStringConsumerFeedback
             this.navigator.switchToDirectory(file);
         }
 
-        InfoUtils.showMessage(MessageType.SUCCESS, "malilib.message.directory_created", string);
+        InfoUtils.showGuiOrActionBarMessage(MessageType.SUCCESS, "malilib.message.directory_created", string);
 
         return true;
     }

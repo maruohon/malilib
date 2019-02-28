@@ -20,14 +20,44 @@ public class InfoUtils
 
     /**
      * Adds the message to the current GUI's message handler, if there is currently
+     * an IMessageConsumer GUI open.
+     * @param type
+     * @param translationKey
+     * @param args
+     */
+    public static void showGuiMessage(MessageType type, String translationKey, Object... args)
+    {
+        showGuiMessage(type, 5000, translationKey, args);
+    }
+
+    /**
+     * Adds the message to the current GUI's message handler, if there is currently
+     * an IMessageConsumer GUI open.
+     * @param type
+     * @param lifeTime
+     * @param translationKey
+     * @param args
+     */
+    public static void showGuiMessage(MessageType type, int lifeTime, String translationKey, Object... args)
+    {
+        GuiScreen gui = Minecraft.getMinecraft().currentScreen;
+
+        if (gui instanceof IMessageConsumer)
+        {
+            ((IMessageConsumer) gui).addMessage(type, lifeTime, translationKey, args);
+        }
+    }
+
+    /**
+     * Adds the message to the current GUI's message handler, if there is currently
      * an IMessageConsumer GUI open. Otherwise prints the message to the action bar.
      * @param type
      * @param translationKey
      * @param args
      */
-    public static void showMessage(MessageType type, String translationKey, Object... args)
+    public static void showGuiOrActionBarMessage(MessageType type, String translationKey, Object... args)
     {
-        showMessage(type, 5000, translationKey, args);
+        showGuiOrActionBarMessage(type, 5000, translationKey, args);
     }
 
     /**
@@ -38,7 +68,7 @@ public class InfoUtils
      * @param translationKey
      * @param args
      */
-    public static void showMessage(MessageType type, int lifeTime, String translationKey, Object... args)
+    public static void showGuiOrActionBarMessage(MessageType type, int lifeTime, String translationKey, Object... args)
     {
         GuiScreen gui = Minecraft.getMinecraft().currentScreen;
 
@@ -83,8 +113,36 @@ public class InfoUtils
         }
         else
         {
-            printInGameMessage(type, lifeTime, translationKey, args);
+            showInGameMessage(type, lifeTime, translationKey, args);
         }
+    }
+
+    /**
+     * Adds the message to the current GUI's message handler, if there is currently
+     * an IMessageConsumer GUI open.
+     * Also shows the message in the in-game message box.
+     * @param type
+     * @param translationKey
+     * @param args
+     */
+    public static void showGuiAndInGameMessage(MessageType type, String translationKey, Object... args)
+    {
+        showGuiAndInGameMessage(type, 5000, translationKey, args);
+    }
+
+    /**
+     * Adds the message to the current GUI's message handler, if there is currently
+     * an IMessageConsumer GUI open.
+     * Also shows the message in the in-game message box.
+     * @param type
+     * @param lifeTime
+     * @param translationKey
+     * @param args
+     */
+    public static void showGuiAndInGameMessage(MessageType type, int lifeTime, String translationKey, Object... args)
+    {
+        showGuiMessage(type, lifeTime, translationKey, args);
+        showInGameMessage(type, lifeTime, translationKey, args);
     }
 
     public static void printActionbarMessage(String key, Object... args)
@@ -98,9 +156,9 @@ public class InfoUtils
      * @param translationKey
      * @param args
      */
-    public static void printInGameMessage(MessageType type, String translationKey, Object... args)
+    public static void showInGameMessage(MessageType type, String translationKey, Object... args)
     {
-        printInGameMessage(type, 5000, translationKey, args);
+        showInGameMessage(type, 5000, translationKey, args);
     }
 
     /**
@@ -110,7 +168,7 @@ public class InfoUtils
      * @param translationKey
      * @param args
      */
-    public static void printInGameMessage(MessageType type, int lifeTime, String translationKey, Object... args)
+    public static void showInGameMessage(MessageType type, int lifeTime, String translationKey, Object... args)
     {
         IN_GAME_MESSAGES.addMessage(type, lifeTime, translationKey, args);
     }
