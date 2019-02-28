@@ -28,6 +28,7 @@ public class ConfigButtonKeybind extends ButtonGeneric
         this.keybind = keybind;
 
         this.updateDisplayString();
+        this.setHoverInfoRequiresShift(true);
     }
 
     @Override
@@ -138,7 +139,7 @@ public class ConfigButtonKeybind extends ButtonGeneric
     protected void updateConflicts()
     {
         List<KeybindCategory> categories = InputEventHandler.getInstance().getKeybindCategories();
-        List<String> names = new ArrayList<>();
+        List<IHotkey> overlaps = new ArrayList<>();
         this.overlapInfo.clear();
 
         for (KeybindCategory category : categories)
@@ -149,11 +150,11 @@ public class ConfigButtonKeybind extends ButtonGeneric
             {
                 if (this.keybind.overlaps(hotkey.getKeybind()))
                 {
-                    names.add(hotkey.getName());
+                    overlaps.add(hotkey);
                 }
             }
 
-            if (names.size() > 0)
+            if (overlaps.size() > 0)
             {
                 if (this.overlapInfo.size() > 0)
                 {
@@ -163,12 +164,13 @@ public class ConfigButtonKeybind extends ButtonGeneric
                 this.overlapInfo.add(category.getModName());
                 this.overlapInfo.add(" > " + category.getCategory());
 
-                for (String name : names)
+                for (IHotkey overlap : overlaps)
                 {
-                    this.overlapInfo.add("    - " + name);
+                    String key = " [ " + GuiBase.TXT_GOLD + overlap.getKeybind().getKeysDisplayString() + GuiBase.TXT_RST + " ]";
+                    this.overlapInfo.add("    - " + overlap.getName() + key);
                 }
 
-                names.clear();
+                overlaps.clear();
             }
         }
 
