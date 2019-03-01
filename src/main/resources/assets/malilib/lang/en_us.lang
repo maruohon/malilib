@@ -6,6 +6,7 @@ language.code=en_US
 malilib.error.failed_to_create_directory=Failed to create directory '%s'
 malilib.error.file_or_directory_already_exists=File or directory '%s' already exists
 malilib.error.invalid_directory=Invalid directory name '%s'
+malilib.error.invalid_item_blacklist_entry=Invalid item name in a black- or whitelist: '%s'
 
 malilib.gui.button.cancel=Cancel
 malilib.gui.button.ok=OK
@@ -54,6 +55,10 @@ malilib.label.key_action.release=RELEASE
 malilib.label.key_context.any=Any
 malilib.label.key_context.gui=GUI
 malilib.label.key_context.ingame=In-Game
+
+malilib.label.list_type.blacklist=Black List
+malilib.label.list_type.none=None
+malilib.label.list_type.whitelist=White List
 
 malilib.gui.label.no=no
 malilib.gui.label.yes=yes
