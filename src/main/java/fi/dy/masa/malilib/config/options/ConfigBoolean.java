@@ -6,7 +6,7 @@ import fi.dy.masa.malilib.LiteModMaLiLib;
 import fi.dy.masa.malilib.config.ConfigType;
 import fi.dy.masa.malilib.config.IConfigBoolean;
 
-public class ConfigBoolean extends ConfigBase implements IConfigBoolean
+public class ConfigBoolean extends ConfigBase<ConfigBoolean> implements IConfigBoolean
 {
     private final String prettyName;
     private final boolean defaultValue;

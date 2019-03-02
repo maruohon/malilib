@@ -33,7 +33,7 @@ public class GuiKeybindSettings extends GuiDialogBase
     protected final ConfigBoolean cfgOrderSensitive = new ConfigBoolean("Order Sensitive", false, "Should the keybind keys be pressed in the specific order they were defined in");
     protected final ConfigBoolean cfgExclusive      = new ConfigBoolean("Exclusive", false, "If true, then no other keybinds can have been activated before\nthe keybind in question, while some keys are being pressed");
     protected final ConfigBoolean cfgCancel         = new ConfigBoolean("Cancel further processing", false, "Cancel further (vanilla) processing when the keybind activates");
-    protected final List<ConfigBase> configList;
+    protected final List<ConfigBase<?>> configList;
     @Nullable protected final IDialogHandler dialogHandler;
     protected int labelWidth;
     protected int configWidth;
@@ -92,14 +92,14 @@ public class GuiKeybindSettings extends GuiDialogBase
         int x = this.dialogLeft + 10;
         int y = this.dialogTop + 24;
 
-        for (ConfigBase config : this.configList)
+        for (ConfigBase<?> config : this.configList)
         {
             this.addConfig(x, y, this.labelWidth, this.configWidth, config, listener);
             y += 22;
         }
     }
 
-    protected void addConfig(int x, int y, int labelWidth, int configWidth, ConfigBase config, Listener listener)
+    protected void addConfig(int x, int y, int labelWidth, int configWidth, ConfigBase<?> config, Listener listener)
     {
         this.addLabel(x, y + 4, labelWidth, 10, 0xFFFFFFFF, config.getName());
         x += labelWidth + 10;

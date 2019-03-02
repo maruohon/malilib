@@ -6,7 +6,7 @@ import fi.dy.masa.malilib.LiteModMaLiLib;
 import fi.dy.masa.malilib.config.ConfigType;
 import fi.dy.masa.malilib.config.IConfigValue;
 
-public class ConfigString extends ConfigBase implements IConfigValue
+public class ConfigString extends ConfigBase<ConfigString> implements IConfigValue
 {
     private final String defaultValue;
     private String value;

@@ -10,7 +10,7 @@ import fi.dy.masa.malilib.hotkeys.KeybindMulti;
 import fi.dy.masa.malilib.hotkeys.KeybindSettings;
 import fi.dy.masa.malilib.util.StringUtils;
 
-public class ConfigHotkey extends ConfigBase implements IHotkey
+public class ConfigHotkey extends ConfigBase<ConfigHotkey> implements IHotkey
 {
     private final String prettyName;
     private final IKeybind keybind;

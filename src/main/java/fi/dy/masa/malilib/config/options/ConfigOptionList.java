@@ -8,7 +8,7 @@ import fi.dy.masa.malilib.config.IConfigOptionList;
 import fi.dy.masa.malilib.config.IConfigOptionListEntry;
 import fi.dy.masa.malilib.config.IStringRepresentable;
 
-public class ConfigOptionList extends ConfigBase implements IConfigOptionList, IStringRepresentable
+public class ConfigOptionList extends ConfigBase<ConfigOptionList> implements IConfigOptionList, IStringRepresentable
 {
     private final String prettyName;
     private final IConfigOptionListEntry defaultValue;

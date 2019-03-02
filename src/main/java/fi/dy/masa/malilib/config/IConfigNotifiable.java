@@ -2,9 +2,9 @@ package fi.dy.masa.malilib.config;
 
 import fi.dy.masa.malilib.interfaces.IValueChangeCallback;
 
-public interface IConfigNotifiable
+public interface IConfigNotifiable<T extends IConfigBase>
 {
     void onValueChanged();
 
-    void setValueChangeCallback(IValueChangeCallback callback);
+    void setValueChangeCallback(IValueChangeCallback<T> callback);
 }

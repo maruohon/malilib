@@ -17,7 +17,7 @@ import fi.dy.masa.malilib.hotkeys.IHotkey;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
 import fi.dy.masa.malilib.interfaces.IValueChangeCallback;
 
-public class ConfigTypeWrapper implements IConfigBoolean, IConfigDouble, IConfigInteger, IConfigOptionList, IHotkey, IConfigNotifiable
+public class ConfigTypeWrapper implements IConfigBoolean, IConfigDouble, IConfigInteger, IConfigOptionList, IHotkey, IConfigNotifiable<IConfigBase>
 {
     private final ConfigType wrappedType;
     private final IConfigBase wrappedConfig;
@@ -80,21 +80,23 @@ public class ConfigTypeWrapper implements IConfigBoolean, IConfigDouble, IConfig
         return this.wrappedConfig.getPrettyName();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void onValueChanged()
     {
         if (this.wrappedConfig instanceof IConfigNotifiable)
         {
-            ((IConfigNotifiable) this.wrappedConfig).onValueChanged();
+            ((IConfigNotifiable<IConfigBase>) this.wrappedConfig).onValueChanged();
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public void setValueChangeCallback(IValueChangeCallback callback)
+    public void setValueChangeCallback(IValueChangeCallback<IConfigBase> callback)
     {
         if (this.wrappedConfig instanceof IConfigNotifiable)
         {
-            ((IConfigNotifiable) this.wrappedConfig).setValueChangeCallback(callback);
+            ((IConfigNotifiable<IConfigBase>) this.wrappedConfig).setValueChangeCallback(callback);
         }
     }
 

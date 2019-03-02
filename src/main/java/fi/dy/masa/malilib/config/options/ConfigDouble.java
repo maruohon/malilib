@@ -7,7 +7,7 @@ import fi.dy.masa.malilib.config.ConfigType;
 import fi.dy.masa.malilib.config.IConfigDouble;
 import net.minecraft.util.math.MathHelper;
 
-public class ConfigDouble extends ConfigBase implements IConfigDouble
+public class ConfigDouble extends ConfigBase<ConfigDouble> implements IConfigDouble
 {
     private final double minValue;
     private final double maxValue;

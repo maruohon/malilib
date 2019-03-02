@@ -7,13 +7,13 @@ import fi.dy.masa.malilib.config.IConfigNotifiable;
 import fi.dy.masa.malilib.config.IConfigResettable;
 import fi.dy.masa.malilib.interfaces.IValueChangeCallback;
 
-public abstract class ConfigBase implements IConfigBase, IConfigResettable, IConfigNotifiable
+public abstract class ConfigBase<T extends IConfigBase> implements IConfigBase, IConfigResettable, IConfigNotifiable<T>
 {
     private final ConfigType type;
     private final String name;
     private String comment;
     @Nullable
-    private IValueChangeCallback callback;
+    private IValueChangeCallback<T> callback;
 
     public ConfigBase(ConfigType type, String name, String comment)
     {
@@ -47,17 +47,18 @@ public abstract class ConfigBase implements IConfigBase, IConfigResettable, ICon
     }
 
     @Override
-    public void setValueChangeCallback(IValueChangeCallback callback)
+    public void setValueChangeCallback(IValueChangeCallback<T> callback)
     {
         this.callback = callback;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void onValueChanged()
     {
         if (this.callback != null)
         {
-            this.callback.onValueChanged(this);
+            this.callback.onValueChanged((T) this);
         }
     }
 }

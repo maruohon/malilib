@@ -7,7 +7,7 @@ import fi.dy.masa.malilib.config.ConfigType;
 import fi.dy.masa.malilib.config.IConfigInteger;
 import net.minecraft.util.math.MathHelper;
 
-public class ConfigInteger extends ConfigBase implements IConfigInteger
+public class ConfigInteger extends ConfigBase<ConfigInteger> implements IConfigInteger
 {
     protected final int minValue;
     protected final int maxValue;
