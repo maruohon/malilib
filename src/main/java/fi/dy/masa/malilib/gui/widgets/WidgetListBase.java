@@ -43,7 +43,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
     protected boolean allowMultiSelection;
     protected boolean shouldSortList;
     @Nullable private TYPE lastSelectedEntry;
-    @Nullable private final ISelectionListener<TYPE> selectionListener;
+    @Nullable private ISelectionListener<TYPE> selectionListener;
     @Nullable protected WidgetSearchBar widgetSearchBar;
 
     public WidgetListBase(int x, int y, int width, int height, @Nullable ISelectionListener<TYPE> selectionListener)
@@ -55,6 +55,11 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
         this.browserEntryHeight = 14;
 
         this.setSize(width, height);
+    }
+
+    protected void setSelectionListener(ISelectionListener<TYPE> listener)
+    {
+        this.selectionListener = listener;
     }
 
     @Override
