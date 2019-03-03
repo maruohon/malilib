@@ -165,7 +165,6 @@ public class RenderUtils
             GlStateManager.disableDepth();
             int maxLineLength = 0;
             int maxWidth = mc.currentScreen.width;
-            int maxHeight = mc.currentScreen.height;
             List<String> linesNew = new ArrayList<>();
 
             for (String lineOrig : textLines)
@@ -188,18 +187,13 @@ public class RenderUtils
             textLines = linesNew;
 
             final int lineHeight = font.FONT_HEIGHT + 1;
-            int textStartX = x + 12;
-            int textStartY = y - 12;
             int textHeight = textLines.size() * lineHeight - 2;
+            int textStartX = x + 4;
+            int textStartY = Math.max(8, y - textHeight - 6);
 
-            if (textStartX + maxLineLength > maxWidth)
+            if (textStartX + maxLineLength + 6 > maxWidth)
             {
-                textStartX -= 28 + maxLineLength;
-            }
-
-            if (textStartY + textHeight + 6 > maxHeight)
-            {
-                textStartY = maxHeight - textHeight - 6;
+                textStartX = Math.max(2, maxWidth - maxLineLength - 8);
             }
 
             double zLevel = 300;
