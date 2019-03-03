@@ -4,6 +4,7 @@ import org.lwjgl.input.Keyboard;
 import com.mumfrey.liteloader.client.overlays.IGuiTextField;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.renderer.GlStateManager;
 
 public class GuiTextFieldGeneric extends GuiTextField
 {
@@ -42,6 +43,30 @@ public class GuiTextFieldGeneric extends GuiTextField
         if (this.isFocused() != wasFocused)
         {
             Keyboard.enableRepeatEvents(this.isFocused());
+        }
+    }
+
+    public GuiTextFieldGeneric setZLevel(float zLevel)
+    {
+        this.zLevel = zLevel;
+        return this;
+    }
+
+    @Override
+    public void drawTextBox()
+    {
+        if (this.zLevel != 0)
+        {
+            GlStateManager.pushMatrix();
+            GlStateManager.translate(0, 0, this.zLevel);
+
+            super.drawTextBox();
+
+            GlStateManager.popMatrix();
+        }
+        else
+        {
+            super.drawTextBox();
         }
     }
 }

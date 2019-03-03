@@ -211,6 +211,12 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
         return false;
     }
 
+    @Nullable
+    public WidgetSearchBar getSearchBarWidget()
+    {
+        return this.widgetSearchBar;
+    }
+
     protected Collection<TYPE> getAllEntries()
     {
         return Collections.emptyList();
