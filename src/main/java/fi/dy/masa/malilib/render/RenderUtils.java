@@ -830,7 +830,8 @@ public class RenderUtils
     {
         if (block != null && useBgColors)
         {
-            final EnumDyeColor dye = block.getColor();
+            // In 1.13+ there is the uncolored Shulker Box variant, which returns null from getColor()
+            final EnumDyeColor dye = block.getColor() != null ? block.getColor() : EnumDyeColor.PURPLE;
             final float[] colors = dye.getColorComponentValues();
             GlStateManager.color(colors[0], colors[1], colors[2]);
         }
