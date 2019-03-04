@@ -11,6 +11,7 @@ import fi.dy.masa.malilib.util.InventoryUtils;
 import fi.dy.masa.malilib.util.PositionUtils;
 import fi.dy.masa.malilib.util.PositionUtils.HitPart;
 import net.minecraft.block.BlockShulkerBox;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
@@ -19,10 +20,14 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.EnumDyeColor;
@@ -37,6 +42,7 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraft.world.storage.MapData;
 
@@ -832,6 +838,104 @@ public class RenderUtils
         {
             GlStateManager.color(1, 1, 1, 1);
         }
+    }
+
+    public static void renderModelInGui(int x, int y, IBakedModel model, IBlockState state, float zLevel)
+    {
+        if (state.getBlock() == Blocks.AIR)
+        {
+            return;
+        }
+
+        Minecraft mc = Minecraft.getMinecraft();
+
+        GlStateManager.pushMatrix();
+        mc.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+        mc.getTextureManager().getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).setBlurMipmap(false, false);
+        GlStateManager.enableRescaleNormal();
+        GlStateManager.enableAlpha();
+        GlStateManager.alphaFunc(516, 0.1F);
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+
+        setupGuiTransform(x, y, model.isGui3d(), zLevel);
+        //model.getItemCameraTransforms().applyTransform(ItemCameraTransforms.TransformType.GUI);
+        GlStateManager.rotate( 30, 1, 0, 0);
+        GlStateManager.rotate(225, 0, 1, 0);
+        GlStateManager.scale(0.625, 0.625, 0.625);
+
+        renderModel(model, state);
+
+        GlStateManager.disableAlpha();
+        GlStateManager.disableRescaleNormal();
+        GlStateManager.disableLighting();
+        GlStateManager.popMatrix();
+    }
+
+    public static void setupGuiTransform(int xPosition, int yPosition, boolean isGui3d, float zLevel)
+    {
+        GlStateManager.translate(xPosition, yPosition, 100.0F + zLevel);
+        GlStateManager.translate(8.0F, 8.0F, 0.0F);
+        GlStateManager.scale(1.0F, -1.0F, 1.0F);
+        GlStateManager.scale(16.0F, 16.0F, 16.0F);
+
+        if (isGui3d)
+        {
+            GlStateManager.enableLighting();
+        }
+        else
+        {
+            GlStateManager.disableLighting();
+        }
+    }
+
+    private static void renderModel(IBakedModel model, IBlockState state)
+    {
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(-0.5F, -0.5F, -0.5F);
+        int color = 0xFFFFFFFF;
+
+        if (model.isBuiltInRenderer() == false)
+        {
+            Tessellator tessellator = Tessellator.getInstance();
+            BufferBuilder bufferbuilder = tessellator.getBuffer();
+            bufferbuilder.begin(7, DefaultVertexFormats.ITEM);
+
+            for (EnumFacing enumfacing : EnumFacing.values())
+            {
+                renderQuads(bufferbuilder, model.getQuads(state, enumfacing, 0L), color);
+            }
+
+            renderQuads(bufferbuilder, model.getQuads(state, null, 0L), color);
+            tessellator.draw();
+        }
+
+        GlStateManager.popMatrix();
+    }
+
+    private static void renderQuads(BufferBuilder renderer, List<BakedQuad> quads, int color)
+    {
+        final int quadCount = quads.size();
+
+        for (int i = 0; i < quadCount; ++i)
+        {
+            BakedQuad quad = quads.get(i);
+            renderQuad(renderer, quad, 0xFFFFFFFF);
+        }
+    }
+
+    private static void renderQuad(BufferBuilder renderer, BakedQuad quad, int color)
+    {
+        renderer.addVertexData(quad.getVertexData());
+        renderer.putColor4(color);
+        putQuadNormal(renderer, quad);
+    }
+
+    private static void putQuadNormal(BufferBuilder renderer, BakedQuad quad)
+    {
+        Vec3i direction = quad.getFace().getDirectionVec();
+        renderer.putNormal(direction.getX(), direction.getY(), direction.getZ());
     }
 
     /*
