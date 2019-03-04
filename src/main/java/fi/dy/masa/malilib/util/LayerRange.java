@@ -193,7 +193,7 @@ public class LayerRange
         if (printMessage)
         {
             String val = TextFormatting.GREEN.toString() + mode.getDisplayName();
-            InfoUtils.printActionbarMessage("litematica.message.set_layer_mode_to", val);
+            InfoUtils.printActionbarMessage("malilib.message.set_layer_mode_to", val);
         }
     }
 
@@ -203,7 +203,7 @@ public class LayerRange
 
         this.refresher.updateAll();
         String val = TextFormatting.GREEN.toString() + axis.getName();
-        InfoUtils.printActionbarMessage("litematica.message.set_layer_axis_to", val);
+        InfoUtils.printActionbarMessage("malilib.message.set_layer_axis_to", val);
     }
 
     public void setLayerSingle(int layer)
@@ -379,21 +379,21 @@ public class LayerRange
             {
                 this.setLayerSingle(this.layerSingle + amount);
                 String val = strTo + this.layerSingle;
-                InfoUtils.printActionbarMessage("litematica.message.set_layer_to", val);
+                InfoUtils.printActionbarMessage("malilib.message.set_layer_to", val);
                 break;
             }
             case ALL_ABOVE:
             {
                 this.setLayerAbove(this.layerAbove + amount);
                 String val = strTo + this.layerAbove;
-                InfoUtils.printActionbarMessage("litematica.message.moved_min_layer_to", val);
+                InfoUtils.printActionbarMessage("malilib.message.moved_min_layer_to", val);
                 break;
             }
             case ALL_BELOW:
             {
                 this.setLayerBelow(this.layerBelow + amount);
                 String val = strTo + this.layerBelow;
-                InfoUtils.printActionbarMessage("litematica.message.moved_max_layer_to", val);
+                InfoUtils.printActionbarMessage("malilib.message.moved_max_layer_to", val);
                 break;
             }
             case LAYER_RANGE:
@@ -424,12 +424,12 @@ public class LayerRange
                     {
                         if (moveMin && moveMax)
                         {
-                            InfoUtils.printActionbarMessage("litematica.message.moved_layer_range", String.valueOf(amount), axisName);
+                            InfoUtils.printActionbarMessage("malilib.message.moved_layer_range", String.valueOf(amount), axisName);
                         }
                         else
                         {
-                            String val1 = moveMin ? I18n.format("litematica.message.layer_range.range_min") : I18n.format("litematica.message.layer_range.range_max");
-                            InfoUtils.printActionbarMessage("litematica.message.moved_layer_range_boundary", val1, String.valueOf(amount), axisName);
+                            String val1 = moveMin ? I18n.format("malilib.message.layer_range.range_min") : I18n.format("malilib.message.layer_range.range_max");
+                            InfoUtils.printActionbarMessage("malilib.message.moved_layer_range_boundary", val1, String.valueOf(amount), axisName);
                         }
                     }
                 }

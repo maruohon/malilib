@@ -82,3 +82,13 @@ malilib.message.formatting_code.error=§c
 malilib.message.formatting_code.info=§f
 malilib.message.formatting_code.success=§a
 malilib.message.formatting_code.warning=§6
+
+malilib.message.layer_range.range_max=max
+malilib.message.layer_range.range_min=min
+malilib.message.moved_layer_range=Moved the entire layer range by §a%s§r on the §a%s§r axis
+malilib.message.moved_layer_range_boundary=Moved layer range §a%s§r by §a%s§r on the §a%s§r axis
+malilib.message.moved_max_layer_to=Moved max layer to %s
+malilib.message.moved_min_layer_to=Moved min layer to %s
+malilib.message.set_layer_axis_to=Set layer axis to %s
+malilib.message.set_layer_mode_to=Set layer mode to %s
+malilib.message.set_layer_to=Set layer to %s
