@@ -314,10 +314,8 @@ public class RenderUtils
         FontRenderer fontRenderer = mc.fontRenderer;
         ScaledResolution res = new ScaledResolution(mc);
         final int lineHeight = fontRenderer.FONT_HEIGHT + 2;
-        final int bgMargin = 2;
         final int contentHeight = lines.size() * lineHeight - 2;
-        double posX = xOff + bgMargin;
-        double posY = yOff + bgMargin;
+        int bgMargin = 2;
 
         // Only Chuck Norris can divide by zero
         if (scale == 0d)
@@ -325,14 +323,23 @@ public class RenderUtils
             return 0;
         }
 
-        posY += getHudOffsetForPotions(alignment, scale, mc.player);
-        posY = getHudPosY((int) posY, yOff, contentHeight, scale, alignment);
-
         if (scale != 1d)
         {
+            if (scale != 0)
+            {
+                xOff = (int) (xOff * scale);
+                yOff = (int) (yOff * scale);
+            }
+
             GlStateManager.pushMatrix();
             GlStateManager.scale(scale, scale, 0);
         }
+
+        double posX = xOff + bgMargin;
+        double posY = yOff + bgMargin;
+
+        posY = getHudPosY((int) posY, yOff, contentHeight, scale, alignment);
+        posY += getHudOffsetForPotions(alignment, scale, mc.player);
 
         for (String line : lines)
         {
@@ -352,7 +359,7 @@ public class RenderUtils
 
             final int x = (int) posX;
             final int y = (int) posY;
-            posY += (double) lineHeight;
+            posY += lineHeight;
 
             if (useBackground)
             {
@@ -374,7 +381,7 @@ public class RenderUtils
             GlStateManager.popMatrix();
         }
 
-        return contentHeight;
+        return contentHeight + bgMargin * 2;
     }
 
     public static int getHudOffsetForPotions(HudAlignment alignment, double scale, EntityPlayer player)
@@ -428,7 +435,7 @@ public class RenderUtils
         {
             case BOTTOM_LEFT:
             case BOTTOM_RIGHT:
-                posY = (int) (res.getScaledHeight() / scale - (contentHeight) - yOffset);
+                posY = (int) ((res.getScaledHeight() / scale) - contentHeight - yOffset);
                 break;
             case CENTER:
                 posY = (int) ((res.getScaledHeight() / scale / 2.0d) - (contentHeight / 2.0d) + yOffset);
