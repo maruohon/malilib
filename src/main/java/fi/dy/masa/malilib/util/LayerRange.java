@@ -442,6 +442,30 @@ public class LayerRange
         return true;
     }
 
+    public String getCurrentLayerString()
+    {
+        switch (this.layerMode)
+        {
+            case ALL:
+                return "";
+
+            case SINGLE_LAYER:
+                return String.valueOf(this.layerSingle);
+
+            case ALL_ABOVE:
+                return String.valueOf(this.layerAbove);
+
+            case ALL_BELOW:
+                return String.valueOf(this.layerBelow);
+
+            case LAYER_RANGE:
+                return String.format("%d ... %s", this.layerRangeMin, this.layerRangeMax);
+
+            default:
+                return "";
+        }
+    }
+
     protected int getWorldLimitsClampedValue(int value)
     {
         if (this.axis == EnumFacing.Axis.Y)
