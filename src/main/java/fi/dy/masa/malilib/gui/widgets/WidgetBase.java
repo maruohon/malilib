@@ -13,13 +13,13 @@ import net.minecraft.client.renderer.RenderHelper;
 public abstract class WidgetBase
 {
     protected final Minecraft mc;
-    protected final int x;
-    protected final int y;
-    protected final int width;
-    protected final int height;
-    protected final float zLevel;
     protected final List<WidgetBase> subWidgets = new ArrayList<>();
     protected final List<ButtonWrapper<? extends ButtonBase>> buttons = new ArrayList<>();
+    protected int x;
+    protected int y;
+    protected int width;
+    protected int height;
+    protected float zLevel;
     @Nullable
     protected WidgetBase hoveredSubWidget = null;
 
@@ -31,6 +31,12 @@ public abstract class WidgetBase
         this.height = height;
         this.zLevel = zLevel;
         this.mc = Minecraft.getMinecraft();
+    }
+
+    public void setPosition(int x, int y)
+    {
+        this.x = x;
+        this.y = y;
     }
 
     public int getWidth()

@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.gui.wrappers;
 
+import org.lwjgl.input.Keyboard;
 import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
 import net.minecraft.client.gui.GuiTextField;
 
@@ -59,9 +60,13 @@ public class TextFieldWrapper<T extends GuiTextField>
 
     public boolean keyTyped(char typedChar, int keyCode)
     {
+        String textPre = this.textField.getText();
+
         if (this.textField.isFocused() && this.textField.textboxKeyTyped(typedChar, keyCode))
         {
-            if (this.listener != null)
+            if (this.listener != null &&
+                (keyCode == Keyboard.KEY_RETURN || keyCode == Keyboard.KEY_TAB ||
+                 this.textField.getText().equals(textPre) == false))
             {
                 this.listener.onTextChange(typedChar, keyCode, this.textField);
             }

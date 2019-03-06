@@ -1,14 +1,9 @@
 package fi.dy.masa.malilib.config;
 
-public interface IStringRepresentable
-{
-    /**
-     * Returns the String representation of the value of this config. Used in the config GUI to
-     * fill in the text field contents.
-     * @return the String representation of the current value
-     */
-    String getStringValue();
+import fi.dy.masa.malilib.interfaces.IStringValue;
 
+public interface IStringRepresentable extends IStringValue
+{
     String getDefaultStringValue();
 
     /**
