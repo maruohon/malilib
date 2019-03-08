@@ -26,6 +26,8 @@ malilib.gui.label.block_snap.none=None
 malilib.gui.label_colored.off=§cOFF§r
 malilib.gui.label_colored.on=§aON§r
 
+malilib.gui.label.color_editor.current_color=Current color:
+
 malilib.gui.label.keybind_settings.activate_on=Activate On
 malilib.gui.label.keybind_settings.allow_empty_keybind=Allow empty keybind
 malilib.gui.label.keybind_settings.allow_extra_keys=Allow extra keys
@@ -46,6 +48,7 @@ malilib.gui.label.render_layers.layer=Layer
 malilib.gui.label.render_layers.layer_max=Max layer
 malilib.gui.label.render_layers.layer_min=Min layer
 
+malilib.gui.title.color_editor=Color Editor
 malilib.gui.title.create_directory=Create a new directory
 
 malilib.label.key_action.both=BOTH
