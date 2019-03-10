@@ -617,6 +617,32 @@ public class LayerRange
         }
     }
 
+    public boolean intersectsBox(BlockPos posMin, BlockPos posMax)
+    {
+        return this.intersectsBox(posMin.getX(), posMin.getY(), posMin.getZ(), posMax.getX(), posMax.getY(), posMax.getZ());
+    }
+
+    public boolean intersectsBox(int minX, int minY, int minZ, int maxX, int maxY, int maxZ)
+    {
+        switch (this.axis)
+        {
+            case X:
+            {
+                return (maxX < this.getLayerMin() || minX > this.getLayerMax()) == false;
+            }
+            case Y:
+            {
+                return (maxY < this.getLayerMin() || minY > this.getLayerMax()) == false;
+            }
+            case Z:
+            {
+                return (maxZ < this.getLayerMin() || minZ > this.getLayerMax()) == false;
+            }
+            default:
+                return false;
+        }
+    }
+
     public int getClampedValue(int value, EnumFacing.Axis type)
     {
         if (this.axis == type)
@@ -654,6 +680,45 @@ public class LayerRange
                 final int zMin = Math.max(box.minZ, this.getLayerMin());
                 final int zMax = Math.min(box.maxZ, this.getLayerMax());
                 return StructureBoundingBox.createProper(box.minX, box.minY, zMin, box.maxX, box.maxY, zMax);
+            }
+            default:
+                return null;
+        }
+    }
+
+    @Nullable
+    public StructureBoundingBox getClampedArea(BlockPos posMin, BlockPos posMax)
+    {
+        return this.getClampedArea(posMin.getX(), posMin.getY(), posMin.getZ(), posMax.getX(), posMax.getY(), posMax.getZ());
+    }
+
+    @Nullable
+    public StructureBoundingBox getClampedArea(int minX, int minY, int minZ, int maxX, int maxY, int maxZ)
+    {
+        if (this.intersectsBox(minX, minY, minZ, maxX, maxY, maxZ) == false)
+        {
+            return null;
+        }
+
+        switch (this.axis)
+        {
+            case X:
+            {
+                final int xMin = Math.max(minX, this.getLayerMin());
+                final int xMax = Math.min(maxX, this.getLayerMax());
+                return StructureBoundingBox.createProper(xMin, minY, minZ, xMax, maxY, maxZ);
+            }
+            case Y:
+            {
+                final int yMin = Math.max(minY, this.getLayerMin());
+                final int yMax = Math.min(maxY, this.getLayerMax());
+                return StructureBoundingBox.createProper(minX, yMin, minZ, maxX, yMax, maxZ);
+            }
+            case Z:
+            {
+                final int zMin = Math.max(minZ, this.getLayerMin());
+                final int zMax = Math.min(maxZ, this.getLayerMax());
+                return StructureBoundingBox.createProper(minX, minY, zMin, maxX, maxY, zMax);
             }
             default:
                 return null;
