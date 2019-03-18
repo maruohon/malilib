@@ -22,6 +22,7 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -905,32 +906,47 @@ public class RenderUtils
 
             for (EnumFacing enumfacing : EnumFacing.values())
             {
-                renderQuads(bufferbuilder, model.getQuads(state, enumfacing, 0L), color);
+                renderQuads(bufferbuilder, model.getQuads(state, enumfacing, 0L), state, color);
             }
 
-            renderQuads(bufferbuilder, model.getQuads(state, null, 0L), color);
+            renderQuads(bufferbuilder, model.getQuads(state, null, 0L), state, color);
             tessellator.draw();
         }
 
         GlStateManager.popMatrix();
     }
 
-    private static void renderQuads(BufferBuilder renderer, List<BakedQuad> quads, int color)
+    private static void renderQuads(BufferBuilder renderer, List<BakedQuad> quads, IBlockState state, int color)
     {
         final int quadCount = quads.size();
 
         for (int i = 0; i < quadCount; ++i)
         {
             BakedQuad quad = quads.get(i);
-            renderQuad(renderer, quad, 0xFFFFFFFF);
+            renderQuad(renderer, quad, state, 0xFFFFFFFF);
         }
     }
 
-    private static void renderQuad(BufferBuilder renderer, BakedQuad quad, int color)
+    private static void renderQuad(BufferBuilder buffer, BakedQuad quad, IBlockState state, int color)
     {
-        renderer.addVertexData(quad.getVertexData());
-        renderer.putColor4(color);
-        putQuadNormal(renderer, quad);
+        buffer.addVertexData(quad.getVertexData());
+        buffer.putColor4(color);
+
+        if (quad.hasTintIndex())
+        {
+            BlockColors blockColors = Minecraft.getMinecraft().getBlockColors();
+            int m = blockColors.colorMultiplier(state, null, null, quad.getTintIndex());
+
+            float r = (float) (m >>> 16 & 0xFF) / 255F;
+            float g = (float) (m >>>  8 & 0xFF) / 255F;
+            float b = (float) (m        & 0xFF) / 255F;
+            buffer.putColorMultiplier(r, g, b, 4);
+            buffer.putColorMultiplier(r, g, b, 3);
+            buffer.putColorMultiplier(r, g, b, 2);
+            buffer.putColorMultiplier(r, g, b, 1);
+        }
+
+        putQuadNormal(buffer, quad);
     }
 
     private static void putQuadNormal(BufferBuilder renderer, BakedQuad quad)
