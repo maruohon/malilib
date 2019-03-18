@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.util;
 
 import javax.annotation.Nullable;
+import org.apache.commons.lang3.tuple.Pair;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import fi.dy.masa.malilib.gui.GuiBase;
@@ -307,8 +308,17 @@ public class LayerRange
                 this.setLayerBelow(pos);
                 break;
             case LAYER_RANGE:
-                this.setLayerRangeMin(pos, true);
-                this.setLayerRangeMax(pos, true);
+                Pair<Boolean, Boolean> moveMinMax = this.getMoveMinMax(entity);
+
+                if (moveMinMax.getLeft())
+                {
+                    this.setLayerRangeMin(pos, true);
+                }
+
+                if (moveMinMax.getRight())
+                {
+                    this.setLayerRangeMax(pos, true);
+                }
                 break;
             default:
         }
@@ -402,36 +412,7 @@ public class LayerRange
 
                 if (player != null)
                 {
-                    double playerPos = this.axis == Axis.Y ? player.posY : (this.axis == Axis.X ? player.posX : player.posZ);
-                    double min = this.layerRangeMin + 0.5D;
-                    double max = this.layerRangeMax + 0.5D;
-                    boolean minClosest = (Math.abs(playerPos - min) < Math.abs(playerPos - max)) || playerPos < min;
-                    boolean moveMin = this.hotkeyRangeMin || (minClosest          && this.hotkeyRangeMax == false);
-                    boolean moveMax = this.hotkeyRangeMax || (minClosest == false && this.hotkeyRangeMin == false);
-                    boolean moved = false;
-
-                    if (moveMin)
-                    {
-                        moved |= this.setLayerRangeMin(this.layerRangeMin + amount);
-                    }
-
-                    if (moveMax)
-                    {
-                        moved |= this.setLayerRangeMax(this.layerRangeMax + amount);
-                    }
-
-                    if (moved)
-                    {
-                        if (moveMin && moveMax)
-                        {
-                            InfoUtils.printActionbarMessage("malilib.message.moved_layer_range", String.valueOf(amount), axisName);
-                        }
-                        else
-                        {
-                            String val1 = moveMin ? I18n.format("malilib.message.layer_range.range_min") : I18n.format("malilib.message.layer_range.range_max");
-                            InfoUtils.printActionbarMessage("malilib.message.moved_layer_range_boundary", val1, String.valueOf(amount), axisName);
-                        }
-                    }
+                    this.moveLayerRange(amount, false, player, true);
                 }
 
                 break;
@@ -440,6 +421,51 @@ public class LayerRange
         }
 
         return true;
+    }
+
+    protected void moveLayerRange(int amount, boolean force, EntityPlayer player, boolean printMessage)
+    {
+        Pair<Boolean, Boolean> moveMinMax = this.getMoveMinMax(player);
+        boolean moveMin = moveMinMax.getLeft();
+        boolean moveMax = moveMinMax.getRight();
+        boolean moved = false;
+
+        if (moveMin)
+        {
+            moved |= this.setLayerRangeMin(this.layerRangeMin + amount, force);
+        }
+
+        if (moveMax)
+        {
+            moved |= this.setLayerRangeMax(this.layerRangeMax + amount, force);
+        }
+
+        if (printMessage && moved)
+        {
+            String axisName = this.axis.getName().toLowerCase();
+
+            if (moveMin && moveMax)
+            {
+                InfoUtils.printActionbarMessage("malilib.message.moved_layer_range", String.valueOf(amount), axisName);
+            }
+            else
+            {
+                String val1 = moveMin ? I18n.format("malilib.message.layer_range.range_min") : I18n.format("malilib.message.layer_range.range_max");
+                InfoUtils.printActionbarMessage("malilib.message.moved_layer_range_boundary", val1, String.valueOf(amount), axisName);
+            }
+        }
+    }
+
+    protected Pair<Boolean, Boolean> getMoveMinMax(Entity entity)
+    {
+        double playerPos = this.axis == Axis.Y ? entity.posY : (this.axis == Axis.X ? entity.posX : entity.posZ);
+        double min = this.layerRangeMin + 0.5D;
+        double max = this.layerRangeMax + 0.5D;
+        boolean minClosest = (Math.abs(playerPos - min) < Math.abs(playerPos - max)) || playerPos < min;
+        boolean moveMin = this.hotkeyRangeMin || (minClosest          && this.hotkeyRangeMax == false);
+        boolean moveMax = this.hotkeyRangeMax || (minClosest == false && this.hotkeyRangeMin == false);
+
+        return Pair.of(moveMin,  moveMax);
     }
 
     public String getCurrentLayerString()
