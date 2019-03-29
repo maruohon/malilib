@@ -610,43 +610,22 @@ public class RenderUtils
     }
 
     public static void renderBlockTargetingOverlay(Entity entity, BlockPos pos, EnumFacing side, Vec3d hitVec,
-            double dx, double dy, double dz, Color4f color)
+            Color4f color, float partialTicks)
     {
         EnumFacing playerFacing = entity.getHorizontalFacing();
         HitPart part = PositionUtils.getHitPart(side, playerFacing, pos, hitVec);
+
+        double dx = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * partialTicks;
+        double dy = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * partialTicks;
+        double dz = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * partialTicks;
 
         double x = pos.getX() + 0.5d - dx;
         double y = pos.getY() + 0.5d - dy;
         double z = pos.getZ() + 0.5d - dz;
 
         GlStateManager.pushMatrix();
-        GlStateManager.translate(x, y, z);
 
-        switch (side)
-        {
-            case DOWN:
-                GlStateManager.rotate(180f - playerFacing.getHorizontalAngle(), 0, 1f, 0);
-                GlStateManager.rotate( 90f, 1f, 0, 0);
-                break;
-            case UP:
-                GlStateManager.rotate(180f - playerFacing.getHorizontalAngle(), 0, 1f, 0);
-                GlStateManager.rotate(-90f, 1f, 0, 0);
-                break;
-            case NORTH:
-                GlStateManager.rotate(180f, 0, 1f, 0);
-                break;
-            case SOUTH:
-                GlStateManager.rotate(   0, 0, 1f, 0);
-                break;
-            case WEST:
-                GlStateManager.rotate(-90f, 0, 1f, 0);
-                break;
-            case EAST:
-                GlStateManager.rotate( 90f, 0, 1f, 0);
-                break;
-        }
-
-        GlStateManager.translate(-x, -y, -z + 0.501);
+        blockTargetingOverlayTranslations(x, y, z, side, playerFacing);
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
@@ -731,6 +710,87 @@ public class RenderUtils
         tessellator.draw();
 
         GlStateManager.popMatrix();
+    }
+
+    public static void renderBlockTargetingOverlaySimple(Entity entity, BlockPos pos, EnumFacing side,
+            Color4f color, float partialTicks)
+    {
+        EnumFacing playerFacing = entity.getHorizontalFacing();
+
+        double dx = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * partialTicks;
+        double dy = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * partialTicks;
+        double dz = entity.lastTickPosZ + (entity.posZ - entity.lastTickPosZ) * partialTicks;
+
+        double x = pos.getX() + 0.5d - dx;
+        double y = pos.getY() + 0.5d - dy;
+        double z = pos.getZ() + 0.5d - dz;
+
+        GlStateManager.pushMatrix();
+
+        blockTargetingOverlayTranslations(x, y, z, side, playerFacing);
+
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder buffer = tessellator.getBuffer();
+
+        float a = color.a;
+        float r = color.r;
+        float g = color.g;
+        float b = color.b;
+
+        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+
+        // Simple colored quad
+        buffer.pos(x - 0.5, y - 0.5, z).color(r, g, b, a).endVertex();
+        buffer.pos(x + 0.5, y - 0.5, z).color(r, g, b, a).endVertex();
+        buffer.pos(x + 0.5, y + 0.5, z).color(r, g, b, a).endVertex();
+        buffer.pos(x - 0.5, y + 0.5, z).color(r, g, b, a).endVertex();
+
+        tessellator.draw();
+
+        GlStateManager.glLineWidth(1.6f);
+
+        buffer.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
+
+        // Middle rectangle
+        buffer.pos(x - 0.375, y - 0.375, z).color(1f, 1f, 1f, 1f).endVertex();
+        buffer.pos(x + 0.375, y - 0.375, z).color(1f, 1f, 1f, 1f).endVertex();
+        buffer.pos(x + 0.375, y + 0.375, z).color(1f, 1f, 1f, 1f).endVertex();
+        buffer.pos(x - 0.375, y + 0.375, z).color(1f, 1f, 1f, 1f).endVertex();
+
+        tessellator.draw();
+
+        GlStateManager.popMatrix();
+    }
+
+    private static void blockTargetingOverlayTranslations(double x, double y, double z, EnumFacing side, EnumFacing playerFacing)
+    {
+        GlStateManager.translate(x, y, z);
+
+        switch (side)
+        {
+            case DOWN:
+                GlStateManager.rotate(180f - playerFacing.getHorizontalAngle(), 0, 1f, 0);
+                GlStateManager.rotate( 90f, 1f, 0, 0);
+                break;
+            case UP:
+                GlStateManager.rotate(180f - playerFacing.getHorizontalAngle(), 0, 1f, 0);
+                GlStateManager.rotate(-90f, 1f, 0, 0);
+                break;
+            case NORTH:
+                GlStateManager.rotate(180f, 0, 1f, 0);
+                break;
+            case SOUTH:
+                GlStateManager.rotate(   0, 0, 1f, 0);
+                break;
+            case WEST:
+                GlStateManager.rotate(-90f, 0, 1f, 0);
+                break;
+            case EAST:
+                GlStateManager.rotate( 90f, 0, 1f, 0);
+                break;
+        }
+
+        GlStateManager.translate(-x, -y, -z + 0.501);
     }
 
     public static void renderMapPreview(ItemStack stack, int x, int y, int dimensions)
