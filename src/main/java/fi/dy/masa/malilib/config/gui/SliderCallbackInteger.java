@@ -19,7 +19,8 @@ public class SliderCallbackInteger implements ISliderCallback
     @Override
     public int getMaxSteps()
     {
-        return this.config.getMaxIntegerValue() - this.config.getMinIntegerValue() + 1;
+        int steps = this.config.getMaxIntegerValue() - this.config.getMinIntegerValue() + 1;
+        return steps > 0 ? steps : Integer.MAX_VALUE;
     }
 
     @Override
