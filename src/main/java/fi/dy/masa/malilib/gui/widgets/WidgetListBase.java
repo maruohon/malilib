@@ -529,4 +529,9 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
     {
         this.scrollBar.setValue(0);
     }
+
+    public GuiSimpleScrollBar getScrollbar()
+    {
+        return this.scrollBar;
+    }
 }
