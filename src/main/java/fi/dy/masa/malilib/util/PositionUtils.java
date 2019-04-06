@@ -286,7 +286,14 @@ public class PositionUtils
                 }
                 else
                 {
-                    return posV < 0.5d ? playerFacingH.getOpposite() : playerFacingH;
+                    if (side == EnumFacing.DOWN)
+                    {
+                        return posV > 0.5d ? playerFacingH.getOpposite() : playerFacingH;
+                    }
+                    else
+                    {
+                        return posV < 0.5d ? playerFacingH.getOpposite() : playerFacingH;
+                    }
                 }
             }
             else
