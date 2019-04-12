@@ -839,7 +839,7 @@ public class RenderUtils
 
     public static void renderShulkerBoxPreview(ItemStack stack, int x, int y, boolean useBgColors)
     {
-        if (GuiScreen.isShiftKeyDown() && stack.hasTagCompound())
+        if (stack.hasTagCompound())
         {
             NonNullList<ItemStack> items = InventoryUtils.getStoredItems(stack, -1);
 
