@@ -11,6 +11,8 @@ public class GuiTextFieldGeneric extends GuiTextField
     public GuiTextFieldGeneric(int x, int y, int width, int height, FontRenderer fontrenderer)
     {
         super(0, fontrenderer, x, y, width, height);
+
+        this.setMaxStringLength(256);
     }
 
     @Override

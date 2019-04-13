@@ -112,6 +112,7 @@ public class GuiColorEditorHSV extends GuiDialogBase
 
         this.addLabel(this.xH - 26, y + 3, 12, 12, 0xFFFFFF, "HEX:");
         this.textFieldFullColor = new GuiTextFieldGeneric(this.xH, y + 1, 68, 14, this.mc.fontRenderer);
+        this.textFieldFullColor.setMaxStringLength(12);
         this.addTextField(this.textFieldFullColor, new TextFieldListener(null, this));
 
         //String str = I18n.format("malilib.gui.label.color_editor.current_color");
