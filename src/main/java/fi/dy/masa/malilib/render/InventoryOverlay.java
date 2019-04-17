@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.render;
 
+import java.util.List;
 import org.lwjgl.opengl.GL11;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockChest;
@@ -14,6 +15,7 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.ContainerHorseChest;
@@ -32,6 +34,7 @@ import net.minecraft.tileentity.TileEntityShulkerBox;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.TextFormatting;
 
 public class InventoryOverlay
 {
@@ -481,6 +484,25 @@ public class InventoryOverlay
         //GlStateManager.disableBlend();
         RenderHelper.disableStandardItemLighting();
         GlStateManager.popMatrix();
+    }
+
+    public static void renderStackToolTip(int x, int y, ItemStack stack, Minecraft mc)
+    {
+        List<String> list = stack.getTooltip(mc.player, mc.gameSettings.advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL);
+
+        for (int i = 0; i < list.size(); ++i)
+        {
+            if (i == 0)
+            {
+                list.set(i, stack.getRarity().color + (String)list.get(i));
+            }
+            else
+            {
+                list.set(i, TextFormatting.GRAY + (String)list.get(i));
+            }
+        }
+
+        RenderUtils.drawHoverText(x, y, list);
     }
 
     public static class InventoryProperties
