@@ -113,7 +113,7 @@ public abstract class WidgetBase
     {
     }
 
-    public final boolean onMouseScrolled(int mouseX, int mouseY, int mouseButton)
+    public final boolean onMouseScrolled(int mouseX, int mouseY, int mouseWheelDelta)
     {
         if (this.isMouseOver(mouseX, mouseY))
         {
@@ -121,14 +121,14 @@ public abstract class WidgetBase
             {
                 for (WidgetBase widget : this.subWidgets)
                 {
-                    if (widget.onMouseScrolled(mouseX, mouseY, mouseButton))
+                    if (widget.onMouseScrolled(mouseX, mouseY, mouseWheelDelta))
                     {
                         return true;
                     }
                 }
             }
 
-            return this.onMouseScrolledImpl(mouseX, mouseY, mouseButton);
+            return this.onMouseScrolledImpl(mouseX, mouseY, mouseWheelDelta);
         }
 
         return false;
