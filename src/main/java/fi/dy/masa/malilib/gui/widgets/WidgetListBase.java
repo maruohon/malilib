@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Set;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
-import com.mumfrey.liteloader.client.gui.GuiSimpleScrollBar;
 import fi.dy.masa.malilib.gui.GuiBase;
+import fi.dy.masa.malilib.gui.GuiScrollBar;
 import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -20,7 +20,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
 {
     protected final List<TYPE> listContents = new ArrayList<>();
     protected final List<WIDGET> listWidgets = new ArrayList<>();
-    protected final GuiSimpleScrollBar scrollBar = new GuiSimpleScrollBar();
+    protected final GuiScrollBar scrollBar = new GuiScrollBar();
     protected final Set<TYPE> selectedEntries = new HashSet<>();
     protected final int posX;
     protected final int posY;
@@ -76,7 +76,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
     {
         if (mouseButton == 0 && this.scrollBar.wasMouseOver())
         {
-            this.scrollBar.setDragging(true);
+            this.scrollBar.setIsDragging(true);
             return true;
         }
 
@@ -120,7 +120,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
     {
         if (mouseButton == 0)
         {
-            this.scrollBar.setDragging(false);
+            this.scrollBar.setIsDragging(false);
         }
 
         for (int i = 0; i < this.listWidgets.size(); ++i)
@@ -307,7 +307,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
 
         int scrollBarX = this.posX + this.browserWidth - 9;
         int scrollBarY = this.browserEntriesStartY + this.browserEntriesOffsetY;
-        this.scrollBar.drawScrollBar(mouseX, mouseY, partialTicks, scrollBarX, scrollBarY, 8, scrollbarHeight, totalHeight);
+        this.scrollBar.render(mouseX, mouseY, partialTicks, scrollBarX, scrollBarY, 8, scrollbarHeight, totalHeight);
 
         // The value gets updated in the drawScrollBar() method above, if dragging
         if (this.scrollBar.getValue() != this.lastScrollbarPosition)
@@ -530,7 +530,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
         this.scrollBar.setValue(0);
     }
 
-    public GuiSimpleScrollBar getScrollbar()
+    public GuiScrollBar getScrollbar()
     {
         return this.scrollBar;
     }
