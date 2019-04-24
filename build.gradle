@@ -1,8 +1,7 @@
 plugins {
     id 'fabric-loom' version '0.2.2-SNAPSHOT'
+    id 'maven-publish'
 }
-
-apply plugin: 'maven-publish'
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
@@ -31,9 +30,6 @@ minecraft {
     if (mod_version.endsWith('-dev')) {
         mod_version = mod_version + "." + new Date().format('yyyyMMdd.HHmmss')
     }
-
-    //replaceIn "reference/MaLiLibReference.java"
-    //replace "@MOD_VERSION@", mod_version
 }
 
 compileJava {
@@ -79,30 +75,12 @@ task sourcesJar(type: Jar, dependsOn: classes) {
     from sourceSets.main.allSource
 }
 
-task deobfJar(type: Jar) {
-    from sourceSets.main.output
-    // This classifier is standard and should not be changed
-    classifier = 'deobf'
-}
-
-// This section enables the last two tasks
-artifacts {
-    //archives sourcesJar
-    archives deobfJar
-}
-
 tasks.publish.dependsOn build
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            // old:
             artifactId project.archivesBaseName
-            from components.java
 
-            artifact deobfJar
-            //artifact sourcesJar
-
-            // new:
             // add all the jars that should be included when publishing to maven
             artifact(jar)           { builtBy remapJar }
             artifact(sourcesJar)    { builtBy remapSourcesJar }
