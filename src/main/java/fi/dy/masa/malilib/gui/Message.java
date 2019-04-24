@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.gui;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.FontRenderer;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.resource.language.I18n;
 
 public class Message
@@ -13,7 +13,7 @@ public class Message
     private final int displayTime;
     private final int maxLineWidth;
     private final List<String> messageLines = new ArrayList<>();
-    private final FontRenderer fontRenderer;
+    private final TextRenderer textRenderer;
 
     public Message(MessageType type, int displayTimeMs, int maxLineWidth, String message, Object... args)
     {
@@ -21,7 +21,7 @@ public class Message
         this.created = System.currentTimeMillis();
         this.displayTime = displayTimeMs;
         this.maxLineWidth = maxLineWidth;
-        this.fontRenderer = MinecraftClient.getInstance().fontRenderer;
+        this.textRenderer = MinecraftClient.getInstance().textRenderer;
 
         this.setMessage(I18n.translate(message, args));
     }
@@ -33,7 +33,7 @@ public class Message
 
     public int getMessageHeight()
     {
-        return this.messageLines.size() * (this.fontRenderer.fontHeight + 1) - 1 + 5;
+        return this.messageLines.size() * (this.textRenderer.fontHeight + 1) - 1 + 5;
     }
 
     public void setMessage(String message)
@@ -52,12 +52,12 @@ public class Message
     {
         String[] parts = line.split(" ");
         StringBuilder sb = new StringBuilder(256);
-        final int spaceWidth = this.fontRenderer.getStringWidth(" ");
+        final int spaceWidth = this.textRenderer.getStringWidth(" ");
         int lineWidth = 0;
 
         for (String str : parts)
         {
-            int width = this.fontRenderer.getStringWidth(str);
+            int width = this.textRenderer.getStringWidth(str);
 
             if ((lineWidth + width + spaceWidth) > this.maxLineWidth)
             {
@@ -76,7 +76,7 @@ public class Message
                     for (int i = 0; i < chars; ++i)
                     {
                         String c = str.substring(i, i + 1);
-                        lineWidth += this.fontRenderer.getStringWidth(c);
+                        lineWidth += this.textRenderer.getStringWidth(c);
 
                         if (lineWidth > this.maxLineWidth)
                         {
@@ -119,8 +119,8 @@ public class Message
 
         for (String text : this.messageLines)
         {
-            this.fontRenderer.draw(format + text + GuiBase.TXT_RST, x, y, textColor);
-            y += this.fontRenderer.fontHeight + 1;
+            this.textRenderer.draw(format + text + GuiBase.TXT_RST, x, y, textColor);
+            y += this.textRenderer.fontHeight + 1;
         }
 
         return y + 3;

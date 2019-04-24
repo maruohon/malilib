@@ -9,7 +9,7 @@ import fi.dy.masa.malilib.gui.LeftRight;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.render.RenderUtils;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.FontRenderer;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.resource.language.I18n;
 
 public class ButtonGeneric extends ButtonBase
@@ -91,26 +91,26 @@ public class ButtonGeneric extends ButtonBase
     }
 
     @Override
-    public void draw(int mouseX, int mouseY, float partialTicks)
+    public void renderButton(int mouseX, int mouseY, float partialTicks)
     {
         if (this.visible)
         {
-            this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
+            this.isHovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
 
             MinecraftClient mc = MinecraftClient.getInstance();
-            FontRenderer fontRenderer = mc.fontRenderer;
-            int buttonStyle = this.getTextureId(this.hovered);
+            TextRenderer textRenderer = mc.textRenderer;
+            int buttonStyle = this.getYImage(this.isHovered());
 
             GlStateManager.color4f(1f, 1f, 1f, 1f);
             GlStateManager.enableBlend();
             RenderUtils.setupBlend();
-            GlStateManager.blendFunc(GlStateManager.class_1033.SRC_ALPHA, GlStateManager.class_1027.ONE_MINUS_SRC_ALPHA);
+            GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
 
             if (this.renderDefaultBackground)
             {
-                mc.getTextureManager().bindTexture(WIDGET_TEX);
-                this.drawTexturedRect(this.x, this.y, 0, 46 + buttonStyle * 20, this.width / 2, this.height);
-                this.drawTexturedRect(this.x + this.width / 2, this.y, 200 - this.width / 2, 46 + buttonStyle * 20, this.width / 2, this.height);
+                mc.getTextureManager().bindTexture(WIDGETS_LOCATION);
+                this.blit(this.x, this.y, 0, 46 + buttonStyle * 20, this.width / 2, this.height);
+                this.blit(this.x + this.width / 2, this.y, 200 - this.width / 2, 46 + buttonStyle * 20, this.width / 2, this.height);
             }
 
             if (this.icon != null)
@@ -121,26 +121,26 @@ public class ButtonGeneric extends ButtonBase
                 int u = this.icon.getU() + buttonStyle * this.icon.getWidth();
 
                 mc.getTextureManager().bindTexture(this.icon.getTexture());
-                this.drawTexturedRect(x, y, u, this.icon.getV(), this.icon.getWidth(), this.icon.getHeight());
+                this.blit(x, y, u, this.icon.getV(), this.icon.getWidth(), this.icon.getHeight());
             }
 
-            if (StringUtils.isBlank(this.text) == false)
+            if (StringUtils.isBlank(this.getMessage()) == false)
             {
                 int y = this.y + (this.height - 8) / 2;
                 int color = 0xE0E0E0;
 
-                if (this.enabled == false)
+                if (this.active == false)
                 {
                     color = 0xA0A0A0;
                 }
-                else if (this.hovered)
+                else if (this.isHovered())
                 {
                     color = 0xFFFFA0;
                 }
 
                 if (this.textCentered)
                 {
-                    this.drawStringCentered(fontRenderer, this.text, this.x + this.width / 2, y, color);
+                    this.drawCenteredString(textRenderer, this.getMessage(), this.x + this.width / 2, y, color);
                 }
                 else
                 {
@@ -151,7 +151,7 @@ public class ButtonGeneric extends ButtonBase
                         x += this.icon.getWidth() + 2;
                     }
 
-                    this.drawString(fontRenderer, this.text, x, y, color);
+                    this.drawString(textRenderer, this.getMessage(), x, y, color);
                 }
             }
         }

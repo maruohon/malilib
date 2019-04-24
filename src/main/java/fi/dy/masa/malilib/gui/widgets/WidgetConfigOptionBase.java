@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.IConfigResettable;
 import fi.dy.masa.malilib.config.gui.ConfigOptionChangeListenerTextField;
+import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
 import fi.dy.masa.malilib.gui.GuiTextFieldWrapper;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
@@ -61,7 +62,7 @@ public abstract class WidgetConfigOptionBase extends WidgetBase
 
     protected TextFieldWidget createTextField(int id, int x, int y, int width, int height)
     {
-        return new TextFieldWidget(id, this.mc.fontRenderer, x + 2, y, width, height);
+        return new GuiTextFieldGeneric(id, this.mc.textRenderer, x + 2, y, width, height);
     }
 
     protected void addTextField(TextFieldWidget field, ConfigOptionChangeListenerTextField listener)
@@ -74,10 +75,10 @@ public abstract class WidgetConfigOptionBase extends WidgetBase
     protected ButtonGeneric createResetButton(int id, int x, int y, IConfigResettable config)
     {
         String labelReset = I18n.translate("malilib.gui.button.reset.caps");
-        int w = this.mc.fontRenderer.getStringWidth(labelReset) + 10;
+        int w = this.mc.textRenderer.getStringWidth(labelReset) + 10;
 
         ButtonGeneric resetButton = new ButtonGeneric(id, x, y, w, 20, labelReset);
-        resetButton.enabled = config.isModified();
+        resetButton.active = config.isModified();
 
         return resetButton;
     }

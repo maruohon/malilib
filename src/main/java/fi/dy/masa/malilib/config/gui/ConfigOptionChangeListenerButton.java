@@ -22,7 +22,7 @@ public class ConfigOptionChangeListenerButton<T extends ButtonBase> implements I
     @Override
     public void actionPerformed(T control)
     {
-        this.buttonReset.enabled = this.config.isModified();
+        this.buttonReset.active = this.config.isModified();
     }
 
     @Override

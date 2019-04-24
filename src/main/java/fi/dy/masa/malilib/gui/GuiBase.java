@@ -19,15 +19,15 @@ import fi.dy.masa.malilib.interfaces.IStringConsumer;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.KeyCodes;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.FontRenderer;
-import net.minecraft.client.gui.Gui;
+import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.render.GuiLighting;
-import net.minecraft.client.util.Window;
 import net.minecraft.text.TextFormat;
 import net.minecraft.util.Identifier;
 
-public abstract class GuiBase extends Gui implements IMessageConsumer, IStringConsumer
+public abstract class GuiBase extends Screen implements IMessageConsumer, IStringConsumer
 {
     public static final String TXT_BLUE = TextFormat.BLUE.toString();
     public static final String TXT_GRAY = TextFormat.GRAY.toString();
@@ -56,6 +56,7 @@ public abstract class GuiBase extends Gui implements IMessageConsumer, IStringCo
     private final List<TextFieldWrapper<? extends TextFieldWidget>> textFields = new ArrayList<>();
     private final List<WidgetBase> widgets = new ArrayList<>();
     private final List<Message> messages = new ArrayList<>();
+    protected final TextRenderer textRenderer;
     protected WidgetBase hoveredWidget = null;
     private MessageType nextMessageType = MessageType.INFO;
     protected String title = "";
@@ -63,9 +64,16 @@ public abstract class GuiBase extends Gui implements IMessageConsumer, IStringCo
     protected double mouseY;
     protected boolean useTitleHierarchy = true;
     @Nullable
-    private Gui parent;
+    private Screen parent;
 
-    public GuiBase setParent(@Nullable Gui parent)
+    protected GuiBase()
+    {
+        super(null);
+
+        this.textRenderer = MinecraftClient.getInstance().textRenderer;
+    }
+
+    public GuiBase setParent(@Nullable Screen parent)
     {
         // Don't allow nesting the GUI with itself...
         if (parent == null || parent.getClass() != this.getClass())
@@ -77,18 +85,18 @@ public abstract class GuiBase extends Gui implements IMessageConsumer, IStringCo
     }
 
     @Nullable
-    public Gui getParent()
+    public Screen getParent()
     {
         return this.parent;
     }
 
-    public String getTitle()
+    public String getTitleString()
     {
-        return (this.useTitleHierarchy && this.parent instanceof GuiBase) ? (((GuiBase) this.parent).getTitle() + " => " + this.title) : this.title;
+        return (this.useTitleHierarchy && this.parent instanceof GuiBase) ? (((GuiBase) this.parent).getTitleString() + " => " + this.title) : this.title;
     }
 
     @Override
-    public void onClosed()
+    public void removed()
     {
         MinecraftClient.getInstance().keyboard.enableRepeatEvents(false);
     }
@@ -100,15 +108,15 @@ public abstract class GuiBase extends Gui implements IMessageConsumer, IStringCo
     }
 
     @Override
-    public void onInitialized()
+    public void init()
     {
-        super.onInitialized();
+        super.init();
 
         this.clearElements();
     }
 
     @Override
-    public void draw(int mouseX, int mouseY, float partialTicks)
+    public void render(int mouseX, int mouseY, float partialTicks)
     {
         this.drawScreenBackground(mouseX, mouseY);
         this.drawTitle(mouseX, mouseY, partialTicks);
@@ -136,15 +144,11 @@ public abstract class GuiBase extends Gui implements IMessageConsumer, IStringCo
     }
 
     @Override
-    public boolean mouseScrolled(double amount)
+    public boolean mouseScrolled(double mouseX, double mouseY, double amount)
     {
-        Window window = this.client.window;
-        int mouseX = (int) (this.client.mouse.getX() * (double) window.getScaledWidth() / (double) window.getWidth());
-        int mouseY = (int) (this.client.mouse.getY() * (double) window.getScaledHeight() / (double) window.getHeight());
-
-        if (amount == 0 || this.onMouseScrolled(mouseX, mouseY, (int) amount))
+        if (amount == 0 || this.onMouseScrolled((int) mouseX, (int) mouseY, (int) amount))
         {
-            return super.mouseScrolled(amount);
+            return super.mouseScrolled(mouseX, mouseY, amount);
         }
 
         return false;
@@ -198,7 +202,7 @@ public abstract class GuiBase extends Gui implements IMessageConsumer, IStringCo
     {
         for (ButtonWrapper<?> entry : this.buttons)
         {
-            if (entry.mousePressed(this.client, mouseX, mouseY, mouseButton))
+            if (entry.mousePressed(this.minecraft, mouseX, mouseY, mouseButton))
             {
                 // Don't call super if the button press got handled
                 return true;
@@ -216,7 +220,7 @@ public abstract class GuiBase extends Gui implements IMessageConsumer, IStringCo
             }
             else
             {
-                entry.getTextField().setFocused(false);
+                entry.setFocused(false);
             }
         }
 
@@ -249,13 +253,13 @@ public abstract class GuiBase extends Gui implements IMessageConsumer, IStringCo
     {
         if (keyCode == KeyCodes.KEY_ESCAPE)
         {
-            if (Gui.isShiftPressed())
+            if (Screen.hasShiftDown())
             {
-                this.close();
+                this.onClose();
             }
             else
             {
-                this.client.openGui(this.parent);
+                this.minecraft.openScreen(this.parent);
             }
 
             return true;
@@ -269,7 +273,7 @@ public abstract class GuiBase extends Gui implements IMessageConsumer, IStringCo
         {
             if (keyCode == KeyCodes.KEY_TAB && entry.getTextField().isFocused())
             {
-                entry.getTextField().setFocused(false);
+                entry.setFocused(false);
                 selected = i;
                 handled = true;
             }
@@ -283,7 +287,7 @@ public abstract class GuiBase extends Gui implements IMessageConsumer, IStringCo
 
         if (selected >= 0)
         {
-            if (Gui.isShiftPressed())
+            if (Screen.hasShiftDown())
             {
                 selected = selected > 0 ? selected - 1 : this.textFields.size() - 1;
             }
@@ -292,7 +296,7 @@ public abstract class GuiBase extends Gui implements IMessageConsumer, IStringCo
                 selected = (selected + 1) % this.textFields.size();
             }
 
-            this.textFields.get(selected).getTextField().setFocused(true);
+            this.textFields.get(selected).setFocused(true);
         }
 
         return handled;
@@ -382,7 +386,7 @@ public abstract class GuiBase extends Gui implements IMessageConsumer, IStringCo
 
     public void bindTexture(Identifier texture)
     {
-        this.client.getTextureManager().bindTexture(texture);
+        this.minecraft.getTextureManager().bindTexture(texture);
     }
 
     protected <T extends ButtonGeneric> ButtonWrapper<T> addButton(T button, IButtonActionListener<T> listener)
@@ -411,11 +415,11 @@ public abstract class GuiBase extends Gui implements IMessageConsumer, IStringCo
             {
                 for (String line : lines)
                 {
-                    width = Math.max(width, this.fontRenderer.getStringWidth(line));
+                    width = Math.max(width, this.textRenderer.getStringWidth(line));
                 }
             }
 
-            WidgetLabel label = new WidgetLabel(x, y, width, height, this.zOffset, textColor, lines);
+            WidgetLabel label = new WidgetLabel(x, y, width, height, this.blitOffset, textColor, lines);
             this.addWidget(label);
         }
     }
@@ -423,7 +427,7 @@ public abstract class GuiBase extends Gui implements IMessageConsumer, IStringCo
     protected void addCheckBox(int x, int y, int width, int height, int textColor, String text,
             IGuiIcon widgetUnchecked, IGuiIcon widgetChecked, @Nullable String hoverInfo)
     {
-        WidgetCheckBox checkbox = new WidgetCheckBox(x, y, this.zOffset, widgetUnchecked, widgetChecked, text, this.client, hoverInfo);
+        WidgetCheckBox checkbox = new WidgetCheckBox(x, y, this.blitOffset, widgetUnchecked, widgetChecked, text, this.minecraft, hoverInfo);
         this.addWidget(checkbox);
     }
 
@@ -452,12 +456,12 @@ public abstract class GuiBase extends Gui implements IMessageConsumer, IStringCo
     protected void drawScreenBackground(int mouseX, int mouseY)
     {
         // Draw the dark background
-        drawRect(0, 0, this.width, this.height, TOOLTIP_BACKGROUND);
+        DrawableHelper.fill(0, 0, this.width, this.height, TOOLTIP_BACKGROUND);
     }
 
     protected void drawTitle(int mouseX, int mouseY, float partialTicks)
     {
-        this.client.fontRenderer.draw(this.getTitle(), LEFT, TOP, COLOR_WHITE);
+        this.minecraft.textRenderer.draw(this.getTitleString(), LEFT, TOP, COLOR_WHITE);
     }
 
     protected void drawContents(int mouseX, int mouseY, float partialTicks)
@@ -468,7 +472,7 @@ public abstract class GuiBase extends Gui implements IMessageConsumer, IStringCo
     {
         for (ButtonWrapper<?> entry : this.buttons)
         {
-            entry.draw(this.client, mouseX, mouseY, partialTicks);
+            entry.draw(this.minecraft, mouseX, mouseY, partialTicks);
         }
     }
 
@@ -506,7 +510,7 @@ public abstract class GuiBase extends Gui implements IMessageConsumer, IStringCo
 
             if (button.hasHoverText() && button.isMouseOver(mouseX, mouseY))
             {
-                this.drawTooltip(button.getHoverStrings(), mouseX, mouseY);
+                this.renderTooltip(button.getHoverStrings(), mouseX, mouseY);
             }
         }
 
@@ -529,12 +533,12 @@ public abstract class GuiBase extends Gui implements IMessageConsumer, IStringCo
 
     public static int getTextWidth(String text)
     {
-        return MinecraftClient.getInstance().fontRenderer.getStringWidth(text);
+        return MinecraftClient.getInstance().textRenderer.getStringWidth(text);
     }
 
     public static int getMaxNameLength(List<? extends IConfigBase> configs)
     {
-        FontRenderer font = MinecraftClient.getInstance().fontRenderer;
+        TextRenderer font = MinecraftClient.getInstance().textRenderer;
         int width = 0;
 
         for (IConfigBase config : configs)

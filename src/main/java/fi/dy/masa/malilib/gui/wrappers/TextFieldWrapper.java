@@ -24,6 +24,11 @@ public class TextFieldWrapper<T extends TextFieldWidget>
         return this.listener;
     }
 
+    public void setFocused(boolean focused)
+    {
+        this.textField.method_1876(focused); // setFocused
+    }
+
     public void onGuiClosed()
     {
         if (this.listener != null)

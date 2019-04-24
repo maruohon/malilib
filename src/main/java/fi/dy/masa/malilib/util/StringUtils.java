@@ -6,10 +6,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import fi.dy.masa.malilib.gui.GuiBase;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.FontRenderer;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.sortme.ChatMessageType;
+import net.minecraft.text.ChatMessageType;
 import net.minecraft.text.StringTextComponent;
 import net.minecraft.text.TextComponent;
 import net.minecraft.text.TranslatableTextComponent;
@@ -75,7 +75,7 @@ public class StringUtils
         TextComponent name = new StringTextComponent(file.getName());
         name.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, file.getAbsolutePath()));
         name.getStyle().setUnderline(Boolean.valueOf(true));
-        player.appendCommandFeedback(new TranslatableTextComponent(messageKey, name));
+        player.sendMessage(new TranslatableTextComponent(messageKey, name));
     }
 
     public static String getClampedDisplayStringStrlen(List<String> list, final int maxWidth, String prefix, String suffix)
@@ -133,7 +133,7 @@ public class StringUtils
         StringBuilder sb = new StringBuilder(128);
         sb.append(prefix);
 
-        FontRenderer font = MinecraftClient.getInstance().fontRenderer;
+        TextRenderer font = MinecraftClient.getInstance().textRenderer;
         String entrySep = ", ";
         String dots = " ...";
         final int listSize = list.size();

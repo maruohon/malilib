@@ -20,7 +20,7 @@ import fi.dy.masa.malilib.gui.widgets.WidgetConfigOption;
 import fi.dy.masa.malilib.gui.widgets.WidgetListConfigOptions;
 import fi.dy.masa.malilib.util.KeyCodes;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.Screen;
 
 public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, WidgetConfigOption, WidgetListConfigOptions> implements IKeybindConfigGui
 {
@@ -30,15 +30,15 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
     protected final List<String> initialConfigValues = new ArrayList<>();
     protected ConfigButtonKeybind activeKeybindButton;
     protected int configWidth = 204;
-    @Nullable protected Gui parentScreen;
+    @Nullable protected Screen parentScreen;
     @Nullable protected IConfigInfoProvider hoverInfoProvider;
     @Nullable protected IDialogHandler dialogHandler;
 
-    public GuiConfigsBase(int listX, int listY, String modId, @Nullable Gui parent)
+    public GuiConfigsBase(int listX, int listY, String modId, @Nullable Screen parent)
     {
         super(listX, listY);
 
-        this.client = MinecraftClient.getInstance();
+        this.minecraft = MinecraftClient.getInstance();
         this.modId = modId;
         this.parentScreen = parent;
     }
@@ -60,7 +60,7 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
         return this.configWidth;
     }
 
-    public void setParentGui(Gui parent)
+    public void setParentGui(Screen parent)
     {
         this.parentScreen = parent;
     }
@@ -108,15 +108,15 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
     }
 
     @Override
-    public void onInitialized()
+    public void init()
     {
-        super.onInitialized();
+        super.init();
 
-        this.client.keyboard.enableRepeatEvents(true);
+        this.minecraft.keyboard.enableRepeatEvents(true);
     }
 
     @Override
-    public void onClosed()
+    public void removed()
     {
         if (this.getListWidget().wereConfigsModified())
         {
@@ -125,7 +125,7 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
             this.getListWidget().clearConfigsModifiedFlag();
         }
 
-        this.client.keyboard.enableRepeatEvents(false);
+        this.minecraft.keyboard.enableRepeatEvents(false);
     }
 
     protected void onSettingsChanged()
@@ -153,9 +153,9 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
                 return true;
             }
 
-            if (keyCode == KeyCodes.KEY_ESCAPE && this.parentScreen != this.client.currentGui)
+            if (keyCode == KeyCodes.KEY_ESCAPE && this.parentScreen != this.minecraft.currentScreen)
             {
-                this.client.openGui(this.parentScreen);
+                this.minecraft.openScreen(this.parentScreen);
                 return true;
             }
 

@@ -10,8 +10,8 @@ import net.minecraft.container.SlotActionType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.BasicInventory;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.block.BlockItem;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.util.DefaultedList;
@@ -148,17 +148,17 @@ public class InventoryUtils
         if (isCreative)
         {
             player.inventory.addPickBlock(stackReference);
-            mc.interactionManager.method_2909(player.getMainHandStack(), 36 + player.inventory.selectedSlot); // sendSlotPacket
+            mc.interactionManager.clickCreativeStack(player.getMainHandStack(), 36 + player.inventory.selectedSlot); // sendSlotPacket
             return true;
         }
         else
         {
-            int slot = findSlotWithItem(player.containerPlayer, stackReference, true);
+            int slot = findSlotWithItem(player.playerContainer, stackReference, true);
 
             if (slot != -1)
             {
                 int currentHotbarSlot = player.inventory.selectedSlot;
-                mc.interactionManager.method_2906(player.containerPlayer.syncId, slot, currentHotbarSlot, SlotActionType.SWAP, mc.player);
+                mc.interactionManager.method_2906(player.playerContainer.syncId, slot, currentHotbarSlot, SlotActionType.SWAP, mc.player);
                 return true;
             }
         }

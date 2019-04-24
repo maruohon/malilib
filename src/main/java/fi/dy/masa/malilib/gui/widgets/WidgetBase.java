@@ -162,7 +162,7 @@ public abstract class WidgetBase
             {
                 for (String line : lines)
                 {
-                    width = Math.max(width, mc.fontRenderer.getStringWidth(line));
+                    width = Math.max(width, mc.textRenderer.getStringWidth(line));
                 }
             }
 

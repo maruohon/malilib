@@ -27,7 +27,7 @@ public class ButtonWrapper<T extends ButtonBase>
 
     public void draw(MinecraftClient minecraft, int mouseX, int mouseY, float partialTicks)
     {
-        this.button.draw(mouseX, mouseY, partialTicks);
+        this.button.render(mouseX, mouseY, partialTicks);
     }
 
     public boolean mousePressed(MinecraftClient minecraft, int mouseX, int mouseY, int mouseButton)
@@ -35,7 +35,7 @@ public class ButtonWrapper<T extends ButtonBase>
         if (this.button.isMouseOver(mouseX, mouseY))
         {
             this.button.onMouseButtonClicked(mouseButton);
-            this.button.playPressedSound(minecraft.getSoundLoader());
+            this.button.playDownSound(minecraft.getSoundManager());
 
             if (this.listener != null)
             {

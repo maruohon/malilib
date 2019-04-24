@@ -30,8 +30,8 @@ public class ConfigOptionListenerResetConfig implements IButtonActionListener<Bu
     public void actionPerformed(ButtonGeneric control)
     {
         this.config.resetToDefault();
-        this.buttonReset.playPressedSound(MinecraftClient.getInstance().getSoundLoader());
-        this.buttonReset.enabled = this.config.isModified();
+        this.buttonReset.playDownSound(MinecraftClient.getInstance().getSoundManager());
+        this.buttonReset.active = this.config.isModified();
         this.reset.resetConfigOption();
     }
 

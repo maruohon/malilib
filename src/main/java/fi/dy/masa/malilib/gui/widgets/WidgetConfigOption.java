@@ -18,7 +18,6 @@ import fi.dy.masa.malilib.config.gui.ConfigOptionListenerResetConfig;
 import fi.dy.masa.malilib.config.gui.ConfigOptionListenerResetConfig.ConfigResetterButton;
 import fi.dy.masa.malilib.config.gui.ConfigOptionListenerResetConfig.ConfigResetterTextField;
 import fi.dy.masa.malilib.config.options.ConfigColor;
-import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.GuiConfigsBase.ConfigOptionWrapper;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
@@ -32,6 +31,7 @@ import fi.dy.masa.malilib.hotkeys.IHotkey;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
 import fi.dy.masa.malilib.hotkeys.KeybindSettings;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 
 public class WidgetConfigOption extends WidgetConfigOptionBase
@@ -260,9 +260,9 @@ public class WidgetConfigOption extends WidgetConfigOptionBase
             if (config.getType() == ConfigType.COLOR)
             {
                 int y = this.y + 1;
-                GuiBase.drawRect(this.colorDisplayPosX    , y + 0, this.colorDisplayPosX + 19, y + 19, 0xFFFFFFFF);
-                GuiBase.drawRect(this.colorDisplayPosX + 1, y + 1, this.colorDisplayPosX + 18, y + 18, 0xFF000000);
-                GuiBase.drawRect(this.colorDisplayPosX + 2, y + 2, this.colorDisplayPosX + 17, y + 17, 0xFF000000 | ((ConfigColor) config).getIntegerValue());
+                DrawableHelper.fill(this.colorDisplayPosX    , y + 0, this.colorDisplayPosX + 19, y + 19, 0xFFFFFFFF);
+                DrawableHelper.fill(this.colorDisplayPosX + 1, y + 1, this.colorDisplayPosX + 18, y + 18, 0xFF000000);
+                DrawableHelper.fill(this.colorDisplayPosX + 2, y + 2, this.colorDisplayPosX + 17, y + 17, 0xFF000000 | ((ConfigColor) config).getIntegerValue());
             }
         }
     }

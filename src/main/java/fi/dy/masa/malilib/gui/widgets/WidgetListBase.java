@@ -39,7 +39,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetBase> extends Gu
 
     public WidgetListBase(int x, int y, int width, int height, @Nullable ISelectionListener<TYPE> selectionListener)
     {
-        this.client = MinecraftClient.getInstance();
+        this.minecraft = MinecraftClient.getInstance();
         this.posX = x;
         this.posY = y;
         this.selectionListener = selectionListener;
@@ -49,11 +49,11 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetBase> extends Gu
     }
 
     @Override
-    public void onInitialized()
+    public void init()
     {
-        super.onInitialized();
+        super.init();
 
-        this.client.keyboard.enableRepeatEvents(true);
+        this.minecraft.keyboard.enableRepeatEvents(true);
         this.refreshEntries();
     }
 

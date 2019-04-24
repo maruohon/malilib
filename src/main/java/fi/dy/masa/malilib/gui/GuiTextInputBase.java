@@ -6,17 +6,16 @@ import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.KeyCodes;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.resource.language.I18n;
 
 public abstract class GuiTextInputBase extends GuiDialogBase
 {
-    protected final TextFieldWidget textField;
+    protected final GuiTextFieldGeneric textField;
     protected final String originalText;
 
     public GuiTextInputBase(int maxTextLength, String titleKey, String defaultText, @Nullable GuiBase parent)
     {
-        this.client = MinecraftClient.getInstance();
+        this.minecraft = MinecraftClient.getInstance();
         this.setParent(parent);
         this.title = I18n.translate(titleKey);
         this.useTitleHierarchy = false;
@@ -26,7 +25,7 @@ public abstract class GuiTextInputBase extends GuiDialogBase
         this.centerOnScreen();
 
         int width = Math.min(maxTextLength * 10, 240);
-        this.textField = new GuiTextFieldGeneric(0, this.client.fontRenderer, this.dialogLeft + 12, this.dialogTop + 40, width, 20);
+        this.textField = new GuiTextFieldGeneric(0, this.minecraft.textRenderer, this.dialogLeft + 12, this.dialogTop + 40, width, 20);
         this.textField.setMaxLength(maxTextLength);
         this.textField.setFocused(true);
         this.textField.setText(this.originalText);
@@ -34,7 +33,7 @@ public abstract class GuiTextInputBase extends GuiDialogBase
     }
 
     @Override
-    public void onInitialized()
+    public void init()
     {
         int x = this.dialogLeft + 10;
         int y = this.dialogTop + 70;
@@ -48,7 +47,7 @@ public abstract class GuiTextInputBase extends GuiDialogBase
 
         this.createButton(x, y, buttonWidth, ButtonType.CANCEL);
 
-        this.client.keyboard.enableRepeatEvents(true);
+        this.minecraft.keyboard.enableRepeatEvents(true);
     }
 
     protected void createButton(int x, int y, int buttonWidth, ButtonType type)
@@ -68,13 +67,13 @@ public abstract class GuiTextInputBase extends GuiDialogBase
     {
         if (this.getParent() != null)
         {
-            this.getParent().draw(mouseX, mouseY, partialTicks);
+            this.getParent().render(mouseX, mouseY, partialTicks);
         }
 
         RenderUtils.drawOutlinedBox(this.dialogLeft, this.dialogTop, this.dialogWidth, this.dialogHeight, 0xB0000000, COLOR_HORIZONTAL_BAR);
 
         // Draw the title
-        this.drawString(this.fontRenderer, this.getTitle(), this.dialogLeft + 10, this.dialogTop + 4, COLOR_WHITE);
+        this.drawString(this.textRenderer, this.getTitleString(), this.dialogLeft + 10, this.dialogTop + 4, COLOR_WHITE);
 
         //super.drawScreen(mouseX, mouseY, partialTicks);
         this.textField.render(mouseX, mouseY, partialTicks);
@@ -90,14 +89,14 @@ public abstract class GuiTextInputBase extends GuiDialogBase
             // Only close the GUI if the value was successfully applied
             if (this.applyValue(this.textField.getText()))
             {
-                this.client.openGui(this.getParent());
+                this.minecraft.openScreen(this.getParent());
             }
 
             return true;
         }
         else if (keyCode == KeyCodes.KEY_ESCAPE)
         {
-            this.client.openGui(this.getParent());
+            this.minecraft.openScreen(this.getParent());
             return true;
         }
 
@@ -157,12 +156,12 @@ public abstract class GuiTextInputBase extends GuiDialogBase
                 // Only close the GUI if the value was successfully applied
                 if (this.gui.applyValue(this.gui.textField.getText()))
                 {
-                    this.gui.client.openGui(this.gui.getParent());
+                    this.gui.minecraft.openScreen(this.gui.getParent());
                 }
             }
             else if (this.type == ButtonType.CANCEL)
             {
-                this.gui.client.openGui(this.gui.getParent());
+                this.gui.minecraft.openScreen(this.gui.getParent());
             }
             else if (this.type == ButtonType.RESET)
             {

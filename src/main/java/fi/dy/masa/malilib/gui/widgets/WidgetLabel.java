@@ -6,13 +6,13 @@ import java.util.List;
 import com.mojang.blaze3d.platform.GlStateManager;
 import fi.dy.masa.malilib.render.RenderUtils;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.FontRenderer;
-import net.minecraft.client.gui.Gui;
+import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.resource.language.I18n;
 
 public class WidgetLabel extends WidgetBase
 {
-    protected final FontRenderer fontRenderer;
+    protected final TextRenderer fontRenderer;
     protected final List<String> labels;
     protected final int textColor;
     protected boolean visible = true;
@@ -28,7 +28,7 @@ public class WidgetLabel extends WidgetBase
         super(x, y, width, height, zLevel);
 
         this.textColor = textColor;
-        this.fontRenderer = MinecraftClient.getInstance().fontRenderer;
+        this.fontRenderer = MinecraftClient.getInstance().textRenderer;
         this.labels = new ArrayList<>();
         this.labels.addAll(Arrays.asList(text));
     }
@@ -90,7 +90,7 @@ public class WidgetLabel extends WidgetBase
             int xStart = this.x - this.borderSize;
             int yStart = this.y - this.borderSize;
 
-            Gui.drawRect(xStart, yStart, xStart + bgWidth, yStart + bgHeight, this.backgroundColor);
+            DrawableHelper.fill(xStart, yStart, xStart + bgWidth, yStart + bgHeight, this.backgroundColor);
 
             RenderUtils.drawHorizontalLine(xStart, xStart + bgWidth, yStart, this.borderULColor);
             RenderUtils.drawHorizontalLine(xStart, xStart + bgWidth, yStart + bgHeight, this.borderBRColor);

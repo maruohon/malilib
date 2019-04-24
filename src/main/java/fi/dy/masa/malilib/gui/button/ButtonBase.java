@@ -1,8 +1,8 @@
 package fi.dy.masa.malilib.gui.button;
 
-import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.AbstractPressableButtonWidget;
 
-public abstract class ButtonBase extends ButtonWidget
+public abstract class ButtonBase extends AbstractPressableButtonWidget
 {
     public ButtonBase(int id, int x, int y, int width, int height)
     {
@@ -11,7 +11,7 @@ public abstract class ButtonBase extends ButtonWidget
 
     public ButtonBase(int id, int x, int y, int width, int height, String text)
     {
-        super(id, x, y, width, height, text);
+        super(x, y, width, height, text);
     }
 
     public int getButtonHeight()
@@ -19,9 +19,9 @@ public abstract class ButtonBase extends ButtonWidget
         return this.height;
     }
 
-    public boolean isMouseOver(int mouseX, int mouseY)
+    @Override
+    public void onPress()
     {
-        return this.isSelected(mouseX, mouseY);
     }
 
     public void onMouseButtonClicked(int mouseButton)

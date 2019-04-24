@@ -91,11 +91,11 @@ public class ConfigButtonKeybind extends ButtonBase
 
         if (this.selected)
         {
-            this.text = "> " + GuiBase.TXT_YELLOW + valueStr + GuiBase.TXT_RST + " <";
+            this.setMessage("> " + GuiBase.TXT_YELLOW + valueStr + GuiBase.TXT_RST + " <");
         }
         else
         {
-            this.text = valueStr;
+            this.setMessage(valueStr);
         }
     }
 }

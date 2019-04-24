@@ -88,7 +88,7 @@ public class KeybindMulti implements IKeybind
     {
         if (this.isValid() == false ||
             (this.settings.getContext() != KeybindSettings.Context.ANY &&
-            ((this.settings.getContext() == KeybindSettings.Context.INGAME) != (MinecraftClient.getInstance().currentGui == null))))
+            ((this.settings.getContext() == KeybindSettings.Context.INGAME) != (MinecraftClient.getInstance().currentScreen == null))))
         {
             this.pressed = false;
             return false;

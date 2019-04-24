@@ -5,7 +5,7 @@ import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
 import fi.dy.masa.malilib.gui.widgets.WidgetBase;
 import fi.dy.masa.malilib.gui.widgets.WidgetListBase;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.Screen;
 
 public abstract class GuiListBase<TYPE, WIDGET extends WidgetBase, WIDGETLIST extends WidgetListBase<TYPE, WIDGET>> extends GuiBase
 {
@@ -47,26 +47,26 @@ public abstract class GuiListBase<TYPE, WIDGET extends WidgetBase, WIDGETLIST ex
     }
 
     @Override
-    public GuiBase setParent(Gui parent)
+    public GuiBase setParent(Screen parent)
     {
         return super.setParent(parent);
     }
 
     @Override
-    public void onInitialized()
+    public void init()
     {
-        super.onInitialized();
+        super.init();
 
         this.getListWidget().setSize(this.getBrowserWidth(), this.getBrowserHeight());
-        this.getListWidget().onInitialized();
+        this.getListWidget().init();
     }
 
     @Override
-    public void onClosed()
+    public void removed()
     {
-        super.onClosed();
+        super.removed();
 
-        this.getListWidget().onClosed();
+        this.getListWidget().removed();
     }
 
     @Override
@@ -125,11 +125,11 @@ public abstract class GuiListBase<TYPE, WIDGET extends WidgetBase, WIDGETLIST ex
     }
 
     @Override
-    public void initialize(MinecraftClient mc, int width, int height)
+    public void init(MinecraftClient mc, int width, int height)
     {
-        super.initialize(mc, width, height);
+        super.init(mc, width, height);
 
-        this.getListWidget().initialize(mc, width, height);
+        this.getListWidget().init(mc, width, height);
     }
 
     @Override

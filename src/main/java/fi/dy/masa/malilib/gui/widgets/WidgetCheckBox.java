@@ -30,12 +30,12 @@ public class WidgetCheckBox extends WidgetBase
     public WidgetCheckBox(int x, int y, float zLevel, IGuiIcon widgetUnchecked,
             IGuiIcon widgetChecked, String text, MinecraftClient mc, @Nullable String hoverInfo)
     {
-        super(x, y, widgetUnchecked.getWidth() + 3 + mc.fontRenderer.getStringWidth(text),
-                Math.max(mc.fontRenderer.fontHeight, widgetChecked.getHeight()), zLevel);
+        super(x, y, widgetUnchecked.getWidth() + 3 + mc.textRenderer.getStringWidth(text),
+                Math.max(mc.textRenderer.fontHeight, widgetChecked.getHeight()), zLevel);
 
         this.mc = mc;
         this.displayText = text;
-        this.textWidth = mc.fontRenderer.getStringWidth(text);
+        this.textWidth = mc.textRenderer.getStringWidth(text);
         this.widgetUnchecked = widgetUnchecked;
         this.widgetChecked = widgetChecked;
 
@@ -88,10 +88,10 @@ public class WidgetCheckBox extends WidgetBase
         icon.renderAt(this.x, this.y, this.zLevel, false, false);
 
         int iw = icon.getWidth();
-        int y = this.y + (this.height - this.mc.fontRenderer.fontHeight) / 2;
+        int y = this.y + (this.height - this.mc.textRenderer.fontHeight) / 2;
         int textColor = this.checked ? 0xFFFFFFFF : 0xB0B0B0B0;
 
-        this.mc.fontRenderer.draw(this.displayText, this.x + iw + 3, y, textColor);
+        this.mc.textRenderer.draw(this.displayText, this.x + iw + 3, y, textColor);
     }
 
     @Override

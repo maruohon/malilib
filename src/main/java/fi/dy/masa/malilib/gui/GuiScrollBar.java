@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.gui;
 
-import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.util.math.MathHelper;
 
 public class GuiScrollBar
@@ -52,7 +52,7 @@ public class GuiScrollBar
 
     public void render(int mouseX, int mouseY, float partialTicks, int xPosition, int yPosition, int width, int height, int totalHeight)
     {
-        Gui.drawRect(xPosition, yPosition, xPosition + width, yPosition + height, this.backgroundColor);
+        DrawableHelper.fill(xPosition, yPosition, xPosition + width, yPosition + height, this.backgroundColor);
 
         if (totalHeight > 0)
         {
@@ -62,7 +62,7 @@ public class GuiScrollBar
             int barTravel = slideHeight - barHeight;
             int barPosition = yPosition + 1 + (this.maxValue > 0 ? (int) ((this.currentValue / (float) this.maxValue) * barTravel) : 0);
 
-            Gui.drawRect(xPosition + 1, barPosition, xPosition + width - 1, barPosition + barHeight, this.foregroundColor);
+            DrawableHelper.fill(xPosition + 1, barPosition, xPosition + width - 1, barPosition + barHeight, this.foregroundColor);
 
             this.mouseOver = mouseX > xPosition && mouseX < xPosition + width && mouseY > barPosition && mouseY < barPosition + barHeight;
             this.handleDrag(mouseY, barTravel);

@@ -21,7 +21,7 @@ public class ConfigButtonBoolean extends ButtonGeneric
     {
         this.config.setBooleanValue(! this.config.getBooleanValue());
         this.updateDisplayString();
-        this.playPressedSound(MinecraftClient.getInstance().getSoundLoader());
+        this.playDownSound(MinecraftClient.getInstance().getSoundManager());
     }
 
     @Override
@@ -31,11 +31,11 @@ public class ConfigButtonBoolean extends ButtonGeneric
 
         if (this.config.getBooleanValue())
         {
-            this.text = GuiBase.TXT_DARK_GREEN + valueStr + GuiBase.TXT_RST;
+            this.setMessage(GuiBase.TXT_DARK_GREEN + valueStr + GuiBase.TXT_RST);
         }
         else
         {
-            this.text = GuiBase.TXT_DARK_RED + valueStr + GuiBase.TXT_RST;
+            this.setMessage(GuiBase.TXT_DARK_RED + valueStr + GuiBase.TXT_RST);
         }
     }
 }

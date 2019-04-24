@@ -69,7 +69,7 @@ public class PositionUtils
             return new BlockPos(entity.x, Math.ceil(entity.getBoundingBox().maxY), entity.z);
         }
 
-        double y = Math.floor(entity.y + entity.getEyeHeight());
+        double y = Math.floor(entity.y + entity.getStandingEyeHeight());
 
         switch (entity.getHorizontalFacing())
         {

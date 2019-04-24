@@ -8,8 +8,8 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import fi.dy.masa.malilib.config.HudAlignment;
 import fi.dy.masa.malilib.util.Color4f;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.FontRenderer;
-import net.minecraft.client.gui.Gui;
+import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.GuiLighting;
 import net.minecraft.client.render.Tessellator;
@@ -30,14 +30,13 @@ public class RenderUtils
 
     public static void setupBlend()
     {
-     // class_1033 = SourceFactor, class_1027 = DestFactor
-        GlStateManager.blendFuncSeparate(GlStateManager.class_1033.SRC_ALPHA, GlStateManager.class_1027.ONE_MINUS_SRC_ALPHA, GlStateManager.class_1033.ONE, GlStateManager.class_1027.ZERO);
+        GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
     }
 
     public static void drawOutlinedBox(int x, int y, int width, int height, int colorBg, int colorBorder)
     {
         // Draw the background
-        Gui.drawRect(x, y, x + width, y + height, colorBg);
+        DrawableHelper.fill(x, y, x + width, y + height, colorBg);
 
         // Draw the border
         drawOutline(x - 1, y - 1, width + 2, height + 2, colorBorder);
@@ -48,10 +47,10 @@ public class RenderUtils
         int right = x + width;
         int bottom = y + height;
 
-        Gui.drawRect(x        ,          y, x + 1    , bottom, colorBorder); // left edge
-        Gui.drawRect(right - 1,          y, right    , bottom, colorBorder); // right edge
-        Gui.drawRect(x + 1    ,          y, right - 1,  y + 1, colorBorder); // top edge
-        Gui.drawRect(x + 1    , bottom - 1, right - 1, bottom, colorBorder); // bottom edge
+        DrawableHelper.fill(x        ,          y, x + 1    , bottom, colorBorder); // left edge
+        DrawableHelper.fill(right - 1,          y, right    , bottom, colorBorder); // right edge
+        DrawableHelper.fill(x + 1    ,          y, right - 1,  y + 1, colorBorder); // top edge
+        DrawableHelper.fill(x + 1    , bottom - 1, right - 1, bottom, colorBorder); // bottom edge
     }
 
     public static void drawOutline(int x, int y, int width, int height, int borderWidth, int colorBorder)
@@ -59,10 +58,10 @@ public class RenderUtils
         int right = x + width;
         int bottom = y + height;
 
-        Gui.drawRect(x                  ,                    y, x + borderWidth    , bottom          , colorBorder); // left edge
-        Gui.drawRect(right - borderWidth,                    y, right              , bottom          , colorBorder); // right edge
-        Gui.drawRect(x + borderWidth    ,                    y, right - borderWidth,  y + borderWidth, colorBorder); // top edge
-        Gui.drawRect(x + borderWidth    , bottom - borderWidth, right - borderWidth, bottom          , colorBorder); // bottom edge
+        DrawableHelper.fill(x                  ,                    y, x + borderWidth    , bottom          , colorBorder); // left edge
+        DrawableHelper.fill(right - borderWidth,                    y, right              , bottom          , colorBorder); // right edge
+        DrawableHelper.fill(x + borderWidth    ,                    y, right - borderWidth,  y + borderWidth, colorBorder); // top edge
+        DrawableHelper.fill(x + borderWidth    , bottom - borderWidth, right - borderWidth, bottom          , colorBorder); // bottom edge
     }
 
     public static void drawTexturedRect(int x, int y, int u, int v, int width, int height)
@@ -104,16 +103,16 @@ public class RenderUtils
     {
         MinecraftClient mc = MinecraftClient.getInstance();
 
-        if (textLines.isEmpty() == false && mc.currentGui != null)
+        if (textLines.isEmpty() == false && mc.currentScreen != null)
         {
-            FontRenderer font = mc.fontRenderer;
+            TextRenderer font = mc.textRenderer;
             GlStateManager.disableRescaleNormal();
             GuiLighting.disable();
             GlStateManager.disableLighting();
             GlStateManager.disableDepthTest();
             int maxLineLength = 0;
-            int maxWidth = mc.currentGui.width;
-            int maxHeight = mc.currentGui.height;
+            int maxWidth = mc.currentScreen.width;
+            int maxHeight = mc.currentScreen.height;
             List<String> linesNew = new ArrayList<>();
 
             for (String lineOrig : textLines)
@@ -224,19 +223,19 @@ public class RenderUtils
         GlStateManager.enableTexture();
     }
 
-    public static void drawCenteredString(FontRenderer fontRendererIn, String text, int x, int y, int color)
+    public static void drawCenteredString(TextRenderer textRenderer, String text, int x, int y, int color)
     {
-        fontRendererIn.drawWithShadow(text, (float)(x - fontRendererIn.getStringWidth(text) / 2), (float)y, color);
+        textRenderer.drawWithShadow(text, (float)(x - textRenderer.getStringWidth(text) / 2), (float)y, color);
     }
 
-    public static void drawString(FontRenderer fontRendererIn, String text, int x, int y, int color)
+    public static void drawString(TextRenderer textRenderer, String text, int x, int y, int color)
     {
         String[] parts = text.split("\\n");
 
         for (String line : parts)
         {
-            fontRendererIn.drawWithShadow(line, x, y, color);
-            y += fontRendererIn.fontHeight + 1;
+            textRenderer.drawWithShadow(line, x, y, color);
+            y += textRenderer.fontHeight + 1;
         }
     }
 
@@ -249,7 +248,7 @@ public class RenderUtils
             endX = i;
         }
 
-        Gui.drawRect(startX, y, endX + 1, y + 1, color);
+        DrawableHelper.fill(startX, y, endX + 1, y + 1, color);
     }
 
     public static void drawVerticalLine(int x, int startY, int endY, int color)
@@ -261,7 +260,7 @@ public class RenderUtils
             endY = i;
         }
 
-        Gui.drawRect(x, startY + 1, x + 1, endY, color);
+        DrawableHelper.fill(x, startY + 1, x + 1, endY, color);//Screen.drawRect(x, startY + 1, x + 1, endY, color);
     }
 
     public static void renderSprite(MinecraftClient mc, int x, int y, String texture, int width, int height)
@@ -270,11 +269,11 @@ public class RenderUtils
         {
             Sprite sprite = mc.getSpriteAtlas().getSprite(texture);
             GlStateManager.disableLighting();
-            mc.inGameHud.drawTexturedRect(x, y, sprite, width, height);
+            DrawableHelper.blit(x, y, 0, width, height, sprite);//.drawTexturedRect(x, y, sprite, width, height);
         }
     }
 
-    public static void renderText(int x, int y, int color, List<String> lines, FontRenderer font)
+    public static void renderText(int x, int y, int color, List<String> lines, TextRenderer font)
     {
         if (lines.isEmpty() == false)
         {
@@ -289,7 +288,7 @@ public class RenderUtils
     public static int renderText(MinecraftClient mc, int xOff, int yOff, double scale, int textColor, int bgColor,
             HudAlignment alignment, boolean useBackground, boolean useShadow, List<String> lines)
     {
-        FontRenderer fontRenderer = mc.fontRenderer;
+        TextRenderer fontRenderer = mc.textRenderer;
         Window window = mc.window;
         final int lineHeight = fontRenderer.fontHeight + 2;
         final int bgMargin = 2;
@@ -334,7 +333,7 @@ public class RenderUtils
 
             if (useBackground)
             {
-                Gui.drawRect(x - bgMargin, y - bgMargin, x + width + bgMargin, y + fontRenderer.fontHeight, bgColor);
+                DrawableHelper.fill(x - bgMargin, y - bgMargin, x + width + bgMargin, y + fontRenderer.fontHeight, bgColor);
             }
 
             if (useShadow)
@@ -365,20 +364,20 @@ public class RenderUtils
                 return 0;
             }
 
-            Collection<StatusEffectInstance> effects = player.getPotionEffects();
+            Collection<StatusEffectInstance> effects = player.getStatusEffects();
 
             if (effects.isEmpty() == false)
             {
                 int y1 = 0;
                 int y2 = 0;
 
-                for (StatusEffectInstance effect : effects)
+                for (StatusEffectInstance effectInstance : effects)
                 {
-                    StatusEffect potion = effect.getEffectType();
+                    StatusEffect effect = effectInstance.getEffectType();
 
-                    if (effect.shouldShowParticles() && potion.hasIcon())
+                    if (effectInstance.shouldShowParticles() && effectInstance.shouldShowIcon())
                     {
-                        if (potion.method_5573()) // MCP: isBeneficial()
+                        if (effect.method_5573()) // MCP: isBeneficial()
                         {
                             y1 = 26;
                         }

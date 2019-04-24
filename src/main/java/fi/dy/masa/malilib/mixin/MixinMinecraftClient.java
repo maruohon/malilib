@@ -2,7 +2,6 @@ package fi.dy.masa.malilib.mixin;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import fi.dy.masa.malilib.config.ConfigManager;
@@ -26,7 +25,7 @@ public abstract class MixinMinecraftClient
         ConfigManager.getInstance().saveAllConfigs();
     }
 
-    @Inject(method = "tick()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;method_1508()V", shift = Shift.AFTER))
+    @Inject(method = "tick()V", at = @At("RETURN"))
     private void onPostKeyboardInput(CallbackInfo ci)
     {
         KeybindMulti.reCheckPressedKeys();

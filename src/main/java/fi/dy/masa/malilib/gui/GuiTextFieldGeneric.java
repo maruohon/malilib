@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.gui;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.FontRenderer;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 
 public class GuiTextFieldGeneric extends TextFieldWidget
@@ -11,9 +11,9 @@ public class GuiTextFieldGeneric extends TextFieldWidget
     protected final int width;
     protected final int height;
 
-    public GuiTextFieldGeneric(int id, FontRenderer fontrenderer, int x, int y, int width, int height)
+    public GuiTextFieldGeneric(int id, TextRenderer textRenderer, int x, int y, int width, int height)
     {
-        super(id, fontrenderer, x, y, width, height);
+        super(textRenderer, x, y, width, height, "");
 
         this.x = x;
         this.y = y;

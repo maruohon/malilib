@@ -10,7 +10,7 @@ import fi.dy.masa.malilib.gui.widgets.WidgetStringListEntry;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.KeyCodes;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.Screen;
 import net.minecraft.client.resource.language.I18n;
 
 public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEntry, WidgetListStringList>
@@ -25,14 +25,14 @@ public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEntry
     protected int textFieldWidth;
     @Nullable protected final IDialogHandler dialogHandler;
 
-    public GuiStringListEdit(IConfigStringList config, IConfigGui configGui, @Nullable IDialogHandler dialogHandler, Gui parent)
+    public GuiStringListEdit(IConfigStringList config, IConfigGui configGui, @Nullable IDialogHandler dialogHandler, Screen parent)
     {
         super(0, 0);
 
         this.config = config;
         this.configGui = configGui;
         this.dialogHandler = dialogHandler;
-        this.client = MinecraftClient.getInstance();
+        this.minecraft = MinecraftClient.getInstance();
         this.title = I18n.translate("malilib.gui.title.string_list_edit", config.getName());
 
         // When we have a dialog handler, then we are inside the Liteloader config menu.
@@ -52,7 +52,7 @@ public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEntry
     protected void setWidthAndHeight()
     {
         this.dialogWidth = 400;
-        this.dialogHeight = this.client.window.getScaledHeight() - 90;
+        this.dialogHeight = this.minecraft.window.getScaledHeight() - 90;
     }
 
     protected void centerOnScreen()
@@ -70,20 +70,20 @@ public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEntry
     }
 
     @Override
-    public void initialize(MinecraftClient mc, int width, int height)
+    public void init(MinecraftClient mc, int width, int height)
     {
         if (this.getParent() != null)
         {
-            this.getParent().initialize(mc, width, height);
+            this.getParent().init(mc, width, height);
         }
 
-        super.initialize(mc, width, height);
+        super.init(mc, width, height);
 
         this.setWidthAndHeight();
         this.centerOnScreen();
 
         this.reCreateListWidget();
-        this.onInitialized();
+        this.init();
     }
 
     public IConfigStringList getConfig()
@@ -111,7 +111,7 @@ public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEntry
     }
 
     @Override
-    public void onClosed()
+    public void removed()
     {
         if (this.getListWidget().wereConfigsModified())
         {
@@ -119,18 +119,18 @@ public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEntry
             ConfigManager.getInstance().onConfigsChanged(this.configGui.getModId());
         }
 
-        super.onClosed();
+        super.removed();
     }
 
     @Override
-    public void draw(int mouseX, int mouseY, float partialTicks)
+    public void render(int mouseX, int mouseY, float partialTicks)
     {
         if (this.getParent() != null)
         {
-            this.getParent().draw(mouseX, mouseY, partialTicks);
+            this.getParent().render(mouseX, mouseY, partialTicks);
         }
 
-        super.draw(mouseX, mouseY, partialTicks);
+        super.render(mouseX, mouseY, partialTicks);
     }
 
     @Override
@@ -142,7 +142,7 @@ public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEntry
     @Override
     protected void drawTitle(int mouseX, int mouseY, float partialTicks)
     {
-        this.drawString(this.client.fontRenderer, this.title, this.dialogLeft + 10, this.dialogTop + 6, COLOR_WHITE);
+        this.drawString(this.minecraft.textRenderer, this.title, this.dialogLeft + 10, this.dialogTop + 6, COLOR_WHITE);
     }
 
     @Override

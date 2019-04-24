@@ -2,13 +2,13 @@ package fi.dy.masa.malilib.gui.widgets;
 
 import java.io.File;
 import com.mojang.blaze3d.platform.GlStateManager;
-import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.interfaces.IDirectoryNavigator;
 import fi.dy.masa.malilib.gui.interfaces.IFileBrowserIconProvider;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.FileUtils;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawableHelper;
 
 public class WidgetDirectoryNavigation extends WidgetBase
 {
@@ -81,11 +81,11 @@ public class WidgetDirectoryNavigation extends WidgetBase
         this.iconUp  .renderAt(this.x + widthRoot + 2, this.y + 1, this.zLevel, false, false);
 
         // Draw the directory path text background
-        GuiBase.drawRect(this.x + widthRoot + widthUp + 6, this.y, this.x + this.width, this.y + this.height, 0x20FFFFFF);
+        DrawableHelper.fill(this.x + widthRoot + widthUp + 6, this.y, this.x + this.width, this.y + this.height, 0x20FFFFFF);
 
         int textColor = 0xC0C0C0C0;
-        int maxLen = (this.width - 40) / this.mc.fontRenderer.getStringWidth("a") - 4; // FIXME
+        int maxLen = (this.width - 40) / this.mc.textRenderer.getStringWidth("a") - 4; // FIXME
         String path = FileUtils.getJoinedTrailingPathElements(this.currentDir, this.rootDir, maxLen, " / ");
-        this.mc.fontRenderer.draw(path, this.x + widthRoot * 2 + 9, this.y + 3, textColor);
+        this.mc.textRenderer.draw(path, this.x + widthRoot * 2 + 9, this.y + 3, textColor);
     }
 }

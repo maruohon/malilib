@@ -27,11 +27,11 @@ public abstract class MixinMouse
         int mouseX = (int) (((Mouse) (Object) this).getX() * (double) window.getScaledWidth() / (double) window.getWidth());
         int mouseY = (int) (((Mouse) (Object) this).getY() * (double) window.getScaledHeight() / (double) window.getHeight());
 
-        InputEventHandler.getInstance().onMouseMove(mouseX, mouseY, this.client.currentGui != null);
+        InputEventHandler.getInstance().onMouseMove(mouseX, mouseY, this.client.currentScreen != null);
     }
 
     @Inject(method = "onMouseScroll", cancellable = true,
-            at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;currentGui:Lnet/minecraft/client/gui/Gui;", ordinal = 0))
+            at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;currentScreen:Lnet/minecraft/client/gui/Screen;", ordinal = 0))
     private void hookOnMouseScroll(long handle, double xoffset, double yoffset, CallbackInfo ci)
     {
         Window window = this.client.window;
@@ -39,14 +39,14 @@ public abstract class MixinMouse
         int mouseY = (int) (((Mouse) (Object) this).getY() * (double) window.getScaledHeight() / (double) window.getHeight());
         double amount = yoffset * this.client.options.mouseWheelSensitivity;
 
-        if (InputEventHandler.getInstance().onMouseScroll(mouseX, mouseY, amount, this.client.currentGui != null))
+        if (InputEventHandler.getInstance().onMouseScroll(mouseX, mouseY, amount, this.client.currentScreen != null))
         {
             ci.cancel();
         }
     }
 
     @Inject(method = "onMouseButton", cancellable = true,
-            at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;isSystemMac:Z", ordinal = 0))
+            at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;IS_SYSTEM_MAC:Z", ordinal = 0))
     private void hookOnMouseClick(long handle, final int button, final int action, int mods, CallbackInfo ci)
     {
         Window window = this.client.window;
@@ -54,7 +54,7 @@ public abstract class MixinMouse
         int mouseY = (int) (((Mouse) (Object) this).getY() * (double) window.getScaledHeight() / (double) window.getHeight());
         final boolean keyState = action == GLFW.GLFW_PRESS;
 
-        if (InputEventHandler.getInstance().onMouseClick(mouseX, mouseY, button, keyState, this.client.currentGui != null))
+        if (InputEventHandler.getInstance().onMouseClick(mouseX, mouseY, button, keyState, this.client.currentScreen != null))
         {
             ci.cancel();
         }

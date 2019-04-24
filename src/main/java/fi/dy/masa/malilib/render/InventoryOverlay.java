@@ -20,14 +20,14 @@ import net.minecraft.client.render.GuiLighting;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.container.DoubleLockableContainer;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.BasicInventory;
+import net.minecraft.inventory.DoubleInventory;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.block.BlockItem;
 import net.minecraft.util.DefaultedList;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
@@ -211,7 +211,7 @@ public class InventoryOverlay
         {
             return InventoryRenderType.FIXED_27;
         }
-        else if (inv instanceof DoubleLockableContainer)
+        else if (inv instanceof DoubleInventory)
         {
             return InventoryRenderType.FIXED_54;
         }
@@ -467,13 +467,13 @@ public class InventoryOverlay
         GlStateManager.scalef(scale, scale, 1);
         GlStateManager.disableLighting();
 
-        //Gui.drawRect(0, 0, 16, 16, 0x20FFFFFF); // light background for the item
+        //Screen.drawRect(0, 0, 16, 16, 0x20FFFFFF); // light background for the item
 
         GuiLighting.enableForItems();
 
         mc.getItemRenderer().zOffset += 100;
-        mc.getItemRenderer().renderItemInGui(mc.player, stack, 0, 0);
-        mc.getItemRenderer().renderItemOverlaysInGUIWithText(mc.fontRenderer, stack, 0, 0, null);
+        mc.getItemRenderer().renderGuiItem(mc.player, stack, 0, 0);
+        mc.getItemRenderer().renderGuiItemOverlay(mc.textRenderer, stack, 0, 0, null);
         mc.getItemRenderer().zOffset -= 100;
 
         //GlStateManager.disableBlend();

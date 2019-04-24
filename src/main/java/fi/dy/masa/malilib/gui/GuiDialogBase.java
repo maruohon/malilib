@@ -30,7 +30,7 @@ public class GuiDialogBase extends GuiBase
         }
         else
         {
-            Window window = this.client.window;
+            Window window = this.minecraft.window;
             this.dialogLeft = window.getScaledWidth() / 2 - this.dialogWidth / 2;
             this.dialogTop = window.getScaledHeight() / 2 - this.dialogHeight / 2;
         }

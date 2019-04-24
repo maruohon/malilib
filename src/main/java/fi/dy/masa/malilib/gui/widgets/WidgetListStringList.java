@@ -59,13 +59,13 @@ public class WidgetListStringList extends WidgetListConfigOptionsBase<String, Wi
         {
             String defaultValue = config.getDefaultStrings().size() > listIndex ? config.getDefaultStrings().get(listIndex) : "";
 
-            return new WidgetStringListEntry(x, y, this.browserEntryWidth, this.browserEntryHeight, this.zOffset,
-                    listIndex, isOdd, config.getStrings().get(listIndex), defaultValue, this.client, this);
+            return new WidgetStringListEntry(x, y, this.browserEntryWidth, this.browserEntryHeight, this.blitOffset,
+                    listIndex, isOdd, config.getStrings().get(listIndex), defaultValue, this.minecraft, this);
         }
         else
         {
-            return new WidgetStringListEntry(x, y, this.browserEntryWidth, this.browserEntryHeight, this.zOffset,
-                    listIndex, isOdd, "", "", this.client, this);
+            return new WidgetStringListEntry(x, y, this.browserEntryWidth, this.browserEntryHeight, this.blitOffset,
+                    listIndex, isOdd, "", "", this.minecraft, this);
         }
     }
 }

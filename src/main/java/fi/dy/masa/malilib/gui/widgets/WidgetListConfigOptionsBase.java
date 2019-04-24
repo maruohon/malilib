@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import fi.dy.masa.malilib.gui.GuiTextFieldWrapper;
 import fi.dy.masa.malilib.util.KeyCodes;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.gui.Screen;
 
 public abstract class WidgetListConfigOptionsBase<TYPE, WIDGET extends WidgetConfigOptionBase> extends WidgetListBase<TYPE, WIDGET>
 {
@@ -53,7 +52,7 @@ public abstract class WidgetListConfigOptionsBase<TYPE, WIDGET extends WidgetCon
         if (keyCode == KeyCodes.KEY_TAB)
         {
             this.applyPendingModifications();
-            return this.changeTextFieldFocus(Gui.isShiftPressed());
+            return this.changeTextFieldFocus(Screen.hasShiftDown());
         }
         else
         {
@@ -84,12 +83,12 @@ public abstract class WidgetListConfigOptionsBase<TYPE, WIDGET extends WidgetCon
 
             for (int i = 0; i < size; ++i)
             {
-                TextFieldWidget textField = this.textFields.get(i).getTextField();
+                GuiTextFieldWrapper wrapper = this.textFields.get(i);
 
-                if (textField.isFocused())
+                if (wrapper.getTextField().isFocused())
                 {
                     currentIndex = i;
-                    textField.setFocused(false);
+                    wrapper.setFocused(false);
                     break;
                 }
             }
@@ -107,7 +106,7 @@ public abstract class WidgetListConfigOptionsBase<TYPE, WIDGET extends WidgetCon
                     newIndex = size - 1;
                 }
 
-                this.textFields.get(newIndex).getTextField().setFocused(true);
+                this.textFields.get(newIndex).setFocused(true);
                 this.applyPendingModifications();
 
                 return true;
@@ -121,11 +120,11 @@ public abstract class WidgetListConfigOptionsBase<TYPE, WIDGET extends WidgetCon
     {
         for (int i = 0; i < this.textFields.size(); ++i)
         {
-            TextFieldWidget textField = this.textFields.get(i).getTextField();
+            GuiTextFieldWrapper wrapper = this.textFields.get(i);
 
-            if (textField.isFocused())
+            if (wrapper.getTextField().isFocused())
             {
-                textField.setFocused(false);
+                wrapper.setFocused(false);
                 break;
             }
         }

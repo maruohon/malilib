@@ -24,6 +24,11 @@ public class GuiTextFieldWrapper
         return this.listener;
     }
 
+    public void setFocused(boolean focused)
+    {
+        this.textField.method_1876(focused); // setFocused
+    }
+
     public boolean onKeyTyped(int key, int scanCode, int modifiers)
     {
         if (this.textField.isFocused())

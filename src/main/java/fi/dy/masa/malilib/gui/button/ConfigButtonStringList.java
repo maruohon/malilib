@@ -30,7 +30,7 @@ public class ConfigButtonStringList extends ButtonGeneric
     {
         MinecraftClient mc = MinecraftClient.getInstance();
 
-        this.playPressedSound(mc.getSoundLoader());
+        this.playDownSound(mc.getSoundManager());
 
         if (this.dialogHandler != null)
         {
@@ -38,13 +38,13 @@ public class ConfigButtonStringList extends ButtonGeneric
         }
         else
         {
-            mc.openGui(new GuiStringListEdit(this.config, this.configGui, null, mc.currentGui));
+            mc.openScreen(new GuiStringListEdit(this.config, this.configGui, null, mc.currentScreen));
         }
     }
 
     @Override
     public void updateDisplayString()
     {
-        this.text = StringUtils.getClampedDisplayStringRenderlen(this.config.getStrings(), this.width - 10, "[ ", " ]");
+        this.setMessage(StringUtils.getClampedDisplayStringRenderlen(this.config.getStrings(), this.width - 10, "[ ", " ]"));
     }
 }

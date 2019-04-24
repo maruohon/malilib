@@ -12,6 +12,7 @@ import fi.dy.masa.malilib.hotkeys.KeybindSettings;
 import fi.dy.masa.malilib.reference.MaLiLibReference;
 import fi.dy.masa.malilib.render.RenderUtils;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.util.Identifier;
 
@@ -46,11 +47,11 @@ public class WidgetKeybindSettings extends WidgetBase
 
             if (this.dialogHandler != null)
             {
-                this.dialogHandler.openDialog(new GuiKeybindSettings(this.keybind, this.keybindName, this.dialogHandler, mc.currentGui));
+                this.dialogHandler.openDialog(new GuiKeybindSettings(this.keybind, this.keybindName, this.dialogHandler, mc.currentScreen));
             }
             else
             {
-                mc.openGui(new GuiKeybindSettings(this.keybind, this.keybindName, null, mc.currentGui));
+                mc.openScreen(new GuiKeybindSettings(this.keybind, this.keybindName, null, mc.currentScreen));
             }
 
             return true;
@@ -85,8 +86,8 @@ public class WidgetKeybindSettings extends WidgetBase
         int y = this.y;
 
         int edgeColor = this.keybind.areSettingsModified() ? 0xFFFFBB33 : 0xFFFFFFFF;
-        GuiBase.drawRect(x    , y + 0, x + 20, y + 20, edgeColor);
-        GuiBase.drawRect(x + 1, y + 1, x + 19, y + 19, 0xFF000000);
+        DrawableHelper.fill(x    , y + 0, x + 20, y + 20, edgeColor);
+        DrawableHelper.fill(x + 1, y + 1, x + 19, y + 19, 0xFF000000);
 
         x += 1;
         y += 1;

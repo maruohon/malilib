@@ -3,7 +3,7 @@
     "package": "fi.dy.masa.malilib.mixin",
     "compatibilityLevel": "JAVA_8",
     "minVersion": "0.7",
-    "mixins": [
+    "client": [
         "MixinGameRenderer",
         "MixinInGameHud",
         "MixinKeyboard",

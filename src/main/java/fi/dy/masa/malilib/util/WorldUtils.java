@@ -47,7 +47,7 @@ public class WorldUtils
         if (mc.world != null && server != null)
         {
             ServerWorld world = server.getWorld(mc.world.dimension.getType());
-            chunk = world.method_16177(chunkX, chunkZ, false).getNow(null);
+            chunk = world.getChunkFutureSyncOnMainThread(chunkX, chunkZ, false).getNow(null);
         }
 
         if (chunk != null)
@@ -55,6 +55,6 @@ public class WorldUtils
             return chunk;
         }
 
-        return mc.world.getWorldChunk(chunkX, chunkZ);
+        return mc.world.method_8497(chunkX, chunkZ);
     }
 }

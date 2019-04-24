@@ -2,7 +2,6 @@ package fi.dy.masa.malilib.gui.widgets;
 
 import java.io.File;
 import com.mojang.blaze3d.platform.GlStateManager;
-import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.interfaces.IDirectoryNavigator;
 import fi.dy.masa.malilib.gui.interfaces.IFileBrowserIconProvider;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
@@ -11,6 +10,7 @@ import fi.dy.masa.malilib.gui.widgets.WidgetFileBrowserBase.DirectoryEntryType;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.FileUtils;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawableHelper;
 
 public class WidgetDirectoryEntry extends WidgetBase
 {
@@ -80,16 +80,16 @@ public class WidgetDirectoryEntry extends WidgetBase
         // Draw a lighter background for the hovered and the selected entry
         if (selected || this.isMouseOver(mouseX, mouseY))
         {
-            GuiBase.drawRect(this.x + xOffset, this.y, this.x + this.width, this.y + this.height, 0x70FFFFFF);
+            DrawableHelper.fill(this.x + xOffset, this.y, this.x + this.width, this.y + this.height, 0x70FFFFFF);
         }
         else if (this.isOdd)
         {
-            GuiBase.drawRect(this.x + xOffset, this.y, this.x + this.width, this.y + this.height, 0x20FFFFFF);
+            DrawableHelper.fill(this.x + xOffset, this.y, this.x + this.width, this.y + this.height, 0x20FFFFFF);
         }
         // Draw a slightly lighter background for even entries
         else
         {
-            GuiBase.drawRect(this.x + xOffset, this.y, this.x + this.width, this.y + this.height, 0x38FFFFFF);
+            DrawableHelper.fill(this.x + xOffset, this.y, this.x + this.width, this.y + this.height, 0x38FFFFFF);
         }
 
         // Draw an outline if this is the currently selected entry
@@ -98,8 +98,8 @@ public class WidgetDirectoryEntry extends WidgetBase
             RenderUtils.drawOutline(this.x + xOffset, this.y, this.width - iconWidth - 2, this.height, 0xEEEEEEEE);
         }
 
-        int yOffset = (this.height - this.mc.fontRenderer.fontHeight) / 2 + 1;
-        this.mc.fontRenderer.draw(this.getDisplayName(), this.x + xOffset + 2, this.y + yOffset, 0xFFFFFFFF);
+        int yOffset = (this.height - this.mc.textRenderer.fontHeight) / 2 + 1;
+        this.mc.textRenderer.draw(this.getDisplayName(), this.x + xOffset + 2, this.y + yOffset, 0xFFFFFFFF);
     }
 
     protected String getDisplayName()

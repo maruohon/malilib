@@ -26,7 +26,7 @@ public class ConfigOptionChangeListenerKeybind implements IButtonActionListener<
     public void actionPerformed(ButtonGeneric control)
     {
         this.keybind.resetToDefault();
-        this.buttonHotkey.playPressedSound(MinecraftClient.getInstance().getSoundLoader());
+        this.buttonHotkey.playDownSound(MinecraftClient.getInstance().getSoundManager());
         this.updateButtons();
     }
 
@@ -39,7 +39,7 @@ public class ConfigOptionChangeListenerKeybind implements IButtonActionListener<
 
     public void updateButtons()
     {
-        this.button.enabled = this.keybind.isModified();
+        this.button.active = this.keybind.isModified();
         this.buttonHotkey.updateDisplayString();
     }
 }

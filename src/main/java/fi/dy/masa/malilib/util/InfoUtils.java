@@ -2,7 +2,7 @@ package fi.dy.masa.malilib.util;
 
 import fi.dy.masa.malilib.interfaces.IStringConsumer;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.sortme.ChatMessageType;
+import net.minecraft.text.ChatMessageType;
 import net.minecraft.text.TextComponent;
 import net.minecraft.text.TranslatableTextComponent;
 
