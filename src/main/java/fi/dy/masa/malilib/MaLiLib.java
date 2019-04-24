@@ -9,7 +9,6 @@ import fi.dy.masa.malilib.hotkeys.IHotkeyCallback;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
 import fi.dy.masa.malilib.hotkeys.KeyAction;
 import fi.dy.masa.malilib.interfaces.IInitializationHandler;
-import fi.dy.masa.malilib.reference.MaLiLibReference;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.MinecraftClient;
 

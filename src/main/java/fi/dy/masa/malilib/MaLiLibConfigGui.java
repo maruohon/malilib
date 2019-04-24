@@ -8,7 +8,6 @@ import fi.dy.masa.malilib.gui.GuiConfigsBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.hotkeys.KeybindMulti;
-import fi.dy.masa.malilib.reference.MaLiLibReference;
 import net.minecraft.client.resource.language.I18n;
 
 public class MaLiLibConfigGui extends GuiConfigsBase

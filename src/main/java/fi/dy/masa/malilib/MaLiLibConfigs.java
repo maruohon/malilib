@@ -8,7 +8,6 @@ import fi.dy.masa.malilib.config.ConfigUtils;
 import fi.dy.masa.malilib.config.IConfigHandler;
 import fi.dy.masa.malilib.config.IConfigValue;
 import fi.dy.masa.malilib.config.options.ConfigHotkey;
-import fi.dy.masa.malilib.reference.MaLiLibReference;
 import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.JsonUtils;
 
