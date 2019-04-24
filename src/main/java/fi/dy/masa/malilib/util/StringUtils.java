@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import fi.dy.masa.malilib.gui.GuiBase;
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.resource.language.I18n;
@@ -17,6 +19,19 @@ import net.minecraft.text.event.ClickEvent;
 
 public class StringUtils
 {
+    public static String getModVersionString(String modId)
+    {
+        for (ModContainer container : FabricLoader.getInstance().getAllMods())
+        {
+            if (container.getMetadata().getId().equals(modId))
+            {
+                return container.getMetadata().getVersion().getFriendlyString();
+            }
+        }
+
+        return "?";
+    }
+
     /**
      * Parses the given string as a hexadecimal value, if it begins with '#' or '0x'.
      * Otherwise tries to parse it as a regular base 10 integer.
