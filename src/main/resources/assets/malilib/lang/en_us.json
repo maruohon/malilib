@@ -13,6 +13,8 @@
     "malilib.gui.label.keybind_settings.tips": "- Left click to configure\n- Right click to reset to defaults",
     "malilib.gui.label.keybind_settings.title_advanced_keybind_settings": "Advanced Keybind settings",
 
+    "malilib.hotkeys.category.generic_hotkeys": "Generic",
+
     "malilib.label.key_action.both": "BOTH",
     "malilib.label.key_action.press": "PRESS",
     "malilib.label.key_action.release": "RELEASE",
@@ -21,10 +23,14 @@
     "malilib.label.key_context.gui": "GUI",
     "malilib.label.key_context.ingame": "In-Game",
 
+    "malilib.gui.button.config_gui.debug": "Debug",
+    "malilib.gui.button.config_gui.generic": "Generic",
+
     "malilib.gui.label.no": "no",
     "malilib.gui.label.yes": "yes",
 
     "malilib.gui.title.all_hotkeys": "All registered hotkeys",
+    "malilib.gui.title.configs": "Configs",
     "malilib.gui.title.keybind_settings.advanced": "Advanced Keybind Settings for %s",
     "malilib.gui.title.string_list_edit": "Edit string list for '%s'",
 

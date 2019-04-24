@@ -7,7 +7,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 import org.lwjgl.glfw.GLFW;
 import fi.dy.masa.malilib.MaLiLib;
-import fi.dy.masa.malilib.config.MaLiLibConfigs;
+import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.config.options.ConfigBoolean;
 import fi.dy.masa.malilib.util.IF3KeyStateSetter;
 import fi.dy.masa.malilib.util.KeyCodes;

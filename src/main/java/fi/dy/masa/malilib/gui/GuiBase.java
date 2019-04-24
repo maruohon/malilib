@@ -24,6 +24,8 @@ import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.render.GuiLighting;
+import net.minecraft.text.StringTextComponent;
+import net.minecraft.text.TextComponent;
 import net.minecraft.text.TextFormat;
 import net.minecraft.util.Identifier;
 
@@ -93,6 +95,12 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
     public String getTitleString()
     {
         return (this.useTitleHierarchy && this.parent instanceof GuiBase) ? (((GuiBase) this.parent).getTitleString() + " => " + this.title) : this.title;
+    }
+
+    @Override
+    public TextComponent getTitle()
+    {
+        return new StringTextComponent(this.getTitleString());
     }
 
     @Override
