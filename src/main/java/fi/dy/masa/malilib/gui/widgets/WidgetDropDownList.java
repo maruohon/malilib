@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.gui.widgets;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
-import com.mumfrey.liteloader.client.gui.GuiSimpleScrollBar;
+import fi.dy.masa.malilib.gui.GuiScrollBar;
 import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
 import fi.dy.masa.malilib.gui.MaLiLibIcons;
 import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
@@ -25,7 +25,7 @@ import net.minecraft.client.renderer.GlStateManager;
  */
 public class WidgetDropDownList<T> extends WidgetBase
 {
-    protected final GuiSimpleScrollBar scrollBar = new GuiSimpleScrollBar();
+    protected final GuiScrollBar scrollBar = new GuiScrollBar();
     protected final List<T> entries;
     protected final List<T> filteredEntries;
     protected final TextFieldWrapper<GuiTextFieldGeneric> searchBar;
@@ -150,7 +150,7 @@ public class WidgetDropDownList<T> extends WidgetBase
                     this.scrollBar.handleDrag(mouseY, 123);
                 }
 
-                this.scrollBar.setDragging(true);
+                this.scrollBar.setIsDragging(true);
             }
         }
 
@@ -171,7 +171,7 @@ public class WidgetDropDownList<T> extends WidgetBase
     @Override
     public void onMouseReleasedImpl(int mouseX, int mouseY, int mouseButton)
     {
-        this.scrollBar.setDragging(false);
+        this.scrollBar.setIsDragging(false);
     }
 
     @Override
@@ -299,7 +299,7 @@ public class WidgetDropDownList<T> extends WidgetBase
             int h = visibleEntries * this.height;
             int totalHeight = Math.max(h, list.size() * this.height);
 
-            this.scrollBar.drawScrollBar(mouseX, mouseY, 0, x, y, this.scrollbarWidth, h, totalHeight);
+            this.scrollBar.render(mouseX, mouseY, 0, x, y, this.scrollbarWidth, h, totalHeight);
         }
         else
         {
