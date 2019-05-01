@@ -18,7 +18,7 @@ public class ConfigButtonBoolean extends ButtonGeneric
     @Override
     public void onMouseButtonClicked(int mouseButton)
     {
-        this.config.setBooleanValue(! this.config.getBooleanValue());
+        this.config.toggleBooleanValue();
         this.updateDisplayString();
 
         super.onMouseButtonClicked(mouseButton);

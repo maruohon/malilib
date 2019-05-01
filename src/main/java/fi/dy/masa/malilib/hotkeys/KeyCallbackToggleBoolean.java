@@ -14,7 +14,7 @@ public class KeyCallbackToggleBoolean implements IHotkeyCallback
     @Override
     public boolean onKeyAction(KeyAction action, IKeybind key)
     {
-        this.config.setBooleanValue(! this.config.getBooleanValue());
+        this.config.toggleBooleanValue();
         return true;
     }
 }
