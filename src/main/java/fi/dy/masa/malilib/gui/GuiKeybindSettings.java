@@ -13,6 +13,7 @@ import fi.dy.masa.malilib.gui.button.ConfigButtonBoolean;
 import fi.dy.masa.malilib.gui.button.ConfigButtonOptionList;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
+import fi.dy.masa.malilib.gui.widgets.WidgetHoverInfo;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
 import fi.dy.masa.malilib.hotkeys.KeyAction;
 import fi.dy.masa.malilib.hotkeys.KeybindSettings;
@@ -20,19 +21,18 @@ import fi.dy.masa.malilib.render.RenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.text.TextFormatting;
 
 public class GuiKeybindSettings extends GuiDialogBase
 {
     protected final IKeybind keybind;
     protected final String keybindName;
-    protected final ConfigOptionList cfgActivateOn  = new ConfigOptionList("Activate On", KeyAction.PRESS, "Does the keybind activate on press or release of the key combination");
-    protected final ConfigOptionList cfgContext     = new ConfigOptionList("Context", KeybindSettings.Context.INGAME, "Where is the keybind usable");
-    protected final ConfigBoolean cfgAllowEmpty     = new ConfigBoolean("Allow Empty Keybind", false, "Is an empty keybind valid\n(will always be considered to be active)");
-    protected final ConfigBoolean cfgAllowExtra     = new ConfigBoolean("Allow Extra Keys", false, "Are extra keys allowed to be pressed to activate the keybind");
-    protected final ConfigBoolean cfgOrderSensitive = new ConfigBoolean("Order Sensitive", false, "Should the keybind keys be pressed in the specific order they were defined in");
-    protected final ConfigBoolean cfgExclusive      = new ConfigBoolean("Exclusive", false, "If true, then no other keybinds can have been activated before\nthe keybind in question, while some keys are being pressed");
-    protected final ConfigBoolean cfgCancel         = new ConfigBoolean("Cancel further processing", false, "Cancel further (vanilla) processing when the keybind activates");
+    protected final ConfigOptionList cfgActivateOn  = new ConfigOptionList("malilib.gui.label.keybind_settings.activate_on", KeyAction.PRESS, "malilib.config.comment.keybind_settings.activate_on");
+    protected final ConfigOptionList cfgContext     = new ConfigOptionList("malilib.gui.label.keybind_settings.context", KeybindSettings.Context.INGAME, "malilib.config.comment.keybind_settings.context");
+    protected final ConfigBoolean cfgAllowEmpty     = new ConfigBoolean("malilib.gui.label.keybind_settings.allow_empty_keybind", false, "malilib.config.comment.keybind_settings.allow_empty_keybind");
+    protected final ConfigBoolean cfgAllowExtra     = new ConfigBoolean("malilib.gui.label.keybind_settings.allow_extra_keys", false, "malilib.config.comment.keybind_settings.allow_extra_keys");
+    protected final ConfigBoolean cfgOrderSensitive = new ConfigBoolean("malilib.gui.label.keybind_settings.order_sensitive", false, "malilib.config.comment.keybind_settings.order_sensitive");
+    protected final ConfigBoolean cfgExclusive      = new ConfigBoolean("malilib.gui.label.keybind_settings.exclusive", false, "malilib.config.comment.keybind_settings.exclusive");
+    protected final ConfigBoolean cfgCancel         = new ConfigBoolean("malilib.gui.label.keybind_settings.cancel_further", false, "malilib.config.comment.keybind_settings.cancel_further");
     protected final List<ConfigBase<?>> configList;
     @Nullable protected final IDialogHandler dialogHandler;
     protected int labelWidth;
@@ -58,7 +58,7 @@ public class GuiKeybindSettings extends GuiDialogBase
             this.setParent(parent);
         }
 
-        this.title = TextFormatting.UNDERLINE.toString() + I18n.format("malilib.gui.title.keybind_settings.advanced", this.keybindName);
+        this.title = GuiBase.TXT_BOLD + I18n.format("malilib.gui.title.keybind_settings.advanced", this.keybindName) + GuiBase.TXT_RST;
         KeybindSettings settings = this.keybind.getSettings();
 
         this.cfgActivateOn.setOptionListValue(settings.getActivateOn());
@@ -70,7 +70,7 @@ public class GuiKeybindSettings extends GuiDialogBase
         this.cfgCancel.setBooleanValue(settings.shouldCancel());
 
         this.configList = ImmutableList.of(this.cfgActivateOn, this.cfgContext, this.cfgAllowEmpty, this.cfgAllowExtra, this.cfgOrderSensitive, this.cfgExclusive, this.cfgCancel);
-        this.labelWidth = GuiBase.getMaxNameLength(this.configList);
+        this.labelWidth = GuiBase.getMaxPrettyNameLength(this.configList);
         this.configWidth = 100;
 
         int totalWidth = this.labelWidth + this.configWidth + 30;
@@ -101,7 +101,8 @@ public class GuiKeybindSettings extends GuiDialogBase
 
     protected void addConfig(int x, int y, int labelWidth, int configWidth, ConfigBase<?> config, Listener listener)
     {
-        this.addLabel(x, y + 4, labelWidth, 10, 0xFFFFFFFF, config.getName());
+        this.addLabel(x, y + 4, labelWidth, 10, 0xFFFFFFFF, I18n.format(config.getPrettyName()));
+        this.addWidget(new WidgetHoverInfo(x, y + 2, labelWidth, 12, config.getComment()));
         x += labelWidth + 10;
 
         if (config instanceof ConfigBoolean)

@@ -12,7 +12,6 @@ import fi.dy.masa.malilib.util.StringUtils;
 
 public class ConfigHotkey extends ConfigBase<ConfigHotkey> implements IHotkey
 {
-    private final String prettyName;
     private final IKeybind keybind;
 
     public ConfigHotkey(String name, String defaultStorageString, String comment)
@@ -32,16 +31,9 @@ public class ConfigHotkey extends ConfigBase<ConfigHotkey> implements IHotkey
 
     public ConfigHotkey(String name, String defaultStorageString, KeybindSettings settings, String comment, String prettyName)
     {
-        super(ConfigType.HOTKEY, name, comment);
+        super(ConfigType.HOTKEY, name, comment, prettyName);
 
-        this.prettyName = prettyName;
         this.keybind = KeybindMulti.fromStorageString(defaultStorageString, settings);
-    }
-
-    @Override
-    public String getPrettyName()
-    {
-        return this.prettyName;
     }
 
     @Override

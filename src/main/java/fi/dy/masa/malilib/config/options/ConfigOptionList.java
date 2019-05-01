@@ -10,7 +10,6 @@ import fi.dy.masa.malilib.config.IStringRepresentable;
 
 public class ConfigOptionList extends ConfigBase<ConfigOptionList> implements IConfigOptionList, IStringRepresentable
 {
-    private final String prettyName;
     private final IConfigOptionListEntry defaultValue;
     private IConfigOptionListEntry value;
 
@@ -21,16 +20,10 @@ public class ConfigOptionList extends ConfigBase<ConfigOptionList> implements IC
 
     public ConfigOptionList(String name, IConfigOptionListEntry defaultValue, String comment, String prettyName)
     {
-        super(ConfigType.OPTION_LIST, name, comment);
+        super(ConfigType.OPTION_LIST, name, comment, prettyName);
 
-        this.prettyName = prettyName;
         this.defaultValue = defaultValue;
         this.value = defaultValue;
-    }
-
-    public String getPrettyName()
-    {
-        return this.prettyName;
     }
 
     @Override

@@ -3,6 +3,14 @@ language.region=US
 language.code=en_US
 
 
+malilib.config.comment.keybind_settings.activate_on=Does the keybind activate on press or release of the key combination
+malilib.config.comment.keybind_settings.allow_empty_keybind=Is an empty keybind valid\n(will always be considered to be active)
+malilib.config.comment.keybind_settings.allow_extra_keys=Are extra keys allowed to be held to still activate the keybind
+malilib.config.comment.keybind_settings.cancel_further=Cancel further (vanilla) processing of the\nlast pressed key, when the keybind activates
+malilib.config.comment.keybind_settings.context=Can the keybind be activated in-game or inside a GUI
+malilib.config.comment.keybind_settings.exclusive=If true, then no other keybinds can have\nbeen activated before the keybind in question.\nThis check resets when all keys are released.
+malilib.config.comment.keybind_settings.order_sensitive=Should the keybind keys be pressed\nin the specific order they were defined in
+
 malilib.error.failed_to_create_directory=Failed to create directory '%s'
 malilib.error.file_or_directory_already_exists=File or directory '%s' already exists
 malilib.error.invalid_directory=Invalid directory name '%s'
@@ -31,7 +39,7 @@ malilib.gui.label.color_editor.current_color=Current color:
 malilib.gui.label.keybind_settings.activate_on=Activate On
 malilib.gui.label.keybind_settings.allow_empty_keybind=Allow empty keybind
 malilib.gui.label.keybind_settings.allow_extra_keys=Allow extra keys
-malilib.gui.label.keybind_settings.cancel_further=Cancel further
+malilib.gui.label.keybind_settings.cancel_further=Cancel further processing
 malilib.gui.label.keybind_settings.context=Context
 malilib.gui.label.keybind_settings.exclusive=Exclusive
 malilib.gui.label.keybind_settings.order_sensitive=Order Sensitive

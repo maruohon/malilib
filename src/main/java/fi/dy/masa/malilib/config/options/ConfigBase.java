@@ -11,14 +11,21 @@ public abstract class ConfigBase<T extends IConfigBase> implements IConfigBase, 
 {
     private final ConfigType type;
     private final String name;
+    private final String prettyName;
     private String comment;
     @Nullable
     private IValueChangeCallback<T> callback;
 
     public ConfigBase(ConfigType type, String name, String comment)
     {
+        this(type, name, comment, name);
+    }
+
+    public ConfigBase(ConfigType type, String name, String comment, String prettyName)
+    {
         this.type = type;
         this.name = name;
+        this.prettyName = prettyName;
         this.comment = comment;
     }
 
@@ -35,10 +42,16 @@ public abstract class ConfigBase<T extends IConfigBase> implements IConfigBase, 
     }
 
     @Override
+    public String getPrettyName()
+    {
+        return net.minecraft.client.resources.I18n.format(this.prettyName);
+    }
+
+    @Override
     @Nullable
     public String getComment()
     {
-        return comment;
+        return net.minecraft.client.resources.I18n.format(this.comment);
     }
 
     public void setComment(String comment)
