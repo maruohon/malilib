@@ -1,8 +1,10 @@
 package fi.dy.masa.malilib.gui.widgets;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.config.ConfigType;
 import fi.dy.masa.malilib.config.IConfigBase;
 import fi.dy.masa.malilib.gui.GuiConfigsBase;
@@ -54,10 +56,16 @@ public class WidgetListConfigOptions extends WidgetListConfigOptionsBase<ConfigO
     }
 
     @Override
-    protected boolean entryMatchesFilter(ConfigOptionWrapper entry, String filterText)
+    protected List<String> getEntryStringsForFilter(ConfigOptionWrapper entry)
     {
         IConfigBase config = entry.getConfig();
-        return config == null || config.getName().toLowerCase().indexOf(filterText) != -1;
+
+        if (config != null)
+        {
+            return ImmutableList.of(config.getName().toLowerCase());
+        }
+
+        return Collections.emptyList();
     }
 
     @Override

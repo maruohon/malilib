@@ -211,6 +211,16 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
         return false;
     }
 
+    protected boolean getShouldSortList()
+    {
+        return this.shouldSortList;
+    }
+
+    protected boolean hasFilter()
+    {
+        return this.widgetSearchBar != null && this.widgetSearchBar.hasFilter();
+    }
+
     @Nullable
     public WidgetSearchBar getSearchBarWidget()
     {
@@ -225,11 +235,6 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
     protected Comparator<TYPE> getComparator()
     {
         return null;
-    }
-
-    protected boolean entryMatchesFilter(TYPE entry, String filterText)
-    {
-        return false;
     }
 
     protected void refreshBrowserEntries()
@@ -255,9 +260,67 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
         this.reCreateListEntryWidgets();
     }
 
-    protected boolean getShouldSortList()
+    protected boolean filterMatchesEmptyEntry(TYPE entry)
     {
-        return this.shouldSortList;
+        return true;
+    }
+
+    protected String getFilterText()
+    {
+        return this.widgetSearchBar != null ? this.widgetSearchBar.getFilter().toLowerCase() : "";
+    }
+
+    protected boolean entryMatchesFilter(TYPE entry, String filterText)
+    {
+        List<String> entryStrings = this.getEntryStringsForFilter(entry);
+
+        if (entryStrings.isEmpty())
+        {
+            return this.filterMatchesEmptyEntry(entry);
+        }
+
+        return this.matchesFilter(entryStrings, filterText);
+    }
+
+    protected boolean matchesFilter(List<String> entryStrings, String filterText)
+    {
+        if (filterText.isEmpty())
+        {
+            return true;
+        }
+
+        for (String str : entryStrings)
+        {
+            if (this.matchesFilter(str, filterText))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    protected boolean matchesFilter(String entryString, String filterText)
+    {
+        if (filterText.isEmpty())
+        {
+            return true;
+        }
+
+        for (String filter : filterText.split("\\|"))
+        {
+            if (entryString.indexOf(filter) != -1)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    protected List<String> getEntryStringsForFilter(TYPE entry)
+    {
+        return Collections.emptyList();
     }
 
     protected void addNonFilteredContents(Collection<TYPE> placements)
@@ -267,7 +330,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
 
     protected void addFilteredContents(Collection<TYPE> entries)
     {
-        String filterText = this.widgetSearchBar.getFilter();
+        String filterText = this.getFilterText();
 
         for (TYPE entry : entries)
         {
@@ -276,11 +339,6 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
                 this.listContents.add(entry);
             }
         }
-    }
-
-    protected boolean hasFilter()
-    {
-        return this.widgetSearchBar != null && this.widgetSearchBar.hasFilter();
     }
 
     @Override

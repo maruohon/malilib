@@ -200,7 +200,9 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
     {
         for (File file : dir.listFiles(filter))
         {
-            if (filterText == null || FileUtils.getNameWithoutExtension(file.getName().toLowerCase()).indexOf(filterText) != -1)
+            String name = FileUtils.getNameWithoutExtension(file.getName().toLowerCase());
+
+            if (filterText == null || this.matchesFilter(name, filterText))
             {
                 list.add(new DirectoryEntry(DirectoryEntryType.fromFile(file), dir, file.getName(), displayNamePrefix));
             }
