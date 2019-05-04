@@ -495,6 +495,29 @@ public class RenderUtils
     }
 
     /**
+     * Draws a box with outlines around the given corner positions.
+     * Takes in buffers initialized for GL_QUADS and GL_LINES modes.
+     * @param posMin
+     * @param posMax
+     * @param colorLines
+     * @param colorSides
+     * @param bufferQuads
+     * @param bufferLines
+     */
+    public static void drawBoxWithEdgesBatched(BlockPos posMin, BlockPos posMax, Color4f colorLines, Color4f colorSides, BufferBuilder bufferQuads, BufferBuilder bufferLines)
+    {
+        final double x1 = posMin.getX();
+        final double y1 = posMin.getY();
+        final double z1 = posMin.getZ();
+        final double x2 = posMax.getX() + 1;
+        final double y2 = posMax.getY() + 1;
+        final double z2 = posMax.getZ() + 1;
+
+        fi.dy.masa.malilib.render.RenderUtils.drawBoxAllSidesBatchedQuads(x1, y1, z1, x2, y2, z2, colorSides, bufferQuads);
+        fi.dy.masa.malilib.render.RenderUtils.drawBoxAllEdgesBatchedLines(x1, y1, z1, x2, y2, z2, colorLines, bufferLines);
+    }
+
+    /**
      * Assumes a BufferBuilder in GL_QUADS mode has been initialized
      */
     public static void drawBoxHorizontalSidesBatchedQuads(double minX, double minY, double minZ, double maxX, double maxY, double maxZ,
@@ -607,6 +630,112 @@ public class RenderUtils
 
         drawBoxAllSidesBatchedQuads(minX, minY, minZ, maxX, maxY, maxZ, color, bufferQuads);
         drawBoxAllEdgesBatchedLines(minX, minY, minZ, maxX, maxY, maxZ, color, bufferLines);
+    }
+
+    /**
+     * Renders a text plate/billboard, similar to the player name plate.<br>
+     * The plate will always face towards the viewer.
+     * @param text
+     * @param x
+     * @param y
+     * @param z
+     * @param scale
+     * @param mc
+     */
+    public static void drawTextPlate(List<String> text, double x, double y, double z, float scale, Minecraft mc)
+    {
+        drawTextPlate(text, x, y, z, mc.player.rotationYaw, mc.player.rotationPitch, scale, 0xFFFFFFFF, 0x40000000, true, mc);
+    }
+
+    public static void drawTextPlate(List<String> text, double x, double y, double z, float yaw, float pitch,
+            float scale, int textColor, int bgColor, boolean disableDepth, Minecraft mc)
+    {
+        FontRenderer textRenderer = mc.fontRenderer;
+
+        GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(x, y, z);
+        GlStateManager.glNormal3f(0.0F, 1.0F, 0.0F);
+
+        GlStateManager.rotate(-yaw, 0.0F, 1.0F, 0.0F);
+        GlStateManager.rotate(pitch, 1.0F, 0.0F, 0.0F);
+
+        GlStateManager.scale(-scale, -scale, scale);
+        GlStateManager.disableLighting();
+        GlStateManager.disableCull();
+
+        if (disableDepth)
+        {
+            GlStateManager.depthMask(false);
+            GlStateManager.disableDepth();
+        }
+
+        //GlStateManager.enableAlpha();
+        GlStateManager.enableBlend();
+        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GlStateManager.disableTexture2D();
+
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder buffer = tessellator.getBuffer();
+        int maxLineLen = 0;
+
+        for (String line : text)
+        {
+            maxLineLen = Math.max(maxLineLen, textRenderer.getStringWidth(line));
+        }
+
+        int strLenHalf = maxLineLen / 2;
+        int textHeight = textRenderer.FONT_HEIGHT * text.size() - 1;
+        float bga = ((bgColor >>> 24) & 0xFF) * 255f;
+        float bgr = ((bgColor >>> 16) & 0xFF) * 255f;
+        float bgg = ((bgColor >>>  8) & 0xFF) * 255f;
+        float bgb = (bgColor          & 0xFF) * 255f;
+
+        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+        buffer.pos(-strLenHalf - 1,          -1, 0.0D).color(bgr, bgg, bgb, bga).endVertex();
+        buffer.pos(-strLenHalf - 1,  textHeight, 0.0D).color(bgr, bgg, bgb, bga).endVertex();
+        buffer.pos( strLenHalf    ,  textHeight, 0.0D).color(bgr, bgg, bgb, bga).endVertex();
+        buffer.pos( strLenHalf    ,          -1, 0.0D).color(bgr, bgg, bgb, bga).endVertex();
+        tessellator.draw();
+
+        GlStateManager.enableTexture2D();
+        int textY = 0;
+
+        // translate the text a bit infront of the background
+        if (disableDepth == false)
+        {
+            GlStateManager.enablePolygonOffset();
+            GlStateManager.doPolygonOffset(-0.6f, -1.2f);
+            //GlStateManager.translate(0, 0, -0.02);
+        }
+
+        for (String line : text)
+        {
+            if (disableDepth)
+            {
+                GlStateManager.depthMask(false);
+                GlStateManager.disableDepth();
+            }
+
+            textRenderer.drawString(line, -strLenHalf, textY, 0x20000000 | (textColor & 0xFFFFFF));
+
+            GlStateManager.enableDepth();
+            GlStateManager.depthMask(true);
+
+            textRenderer.drawString(line, -strLenHalf, textY, textColor);
+            textY += textRenderer.FONT_HEIGHT;
+        }
+
+        if (disableDepth == false)
+        {
+            GlStateManager.doPolygonOffset(0f, 0f);
+            GlStateManager.disablePolygonOffset();
+        }
+
+        GlStateManager.enableCull();
+        GlStateManager.disableBlend();
+        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.popMatrix();
     }
 
     public static void renderBlockTargetingOverlay(Entity entity, BlockPos pos, EnumFacing side, Vec3d hitVec,
