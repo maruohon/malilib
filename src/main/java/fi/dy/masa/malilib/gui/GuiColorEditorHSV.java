@@ -48,6 +48,12 @@ public class GuiColorEditorHSV extends GuiDialogBase
     protected int widthSlider;
     protected int heightSlider;
     protected int gapSlider;
+    protected float relH;
+    protected float relS;
+    protected float relV;
+    protected float relR;
+    protected float relG;
+    protected float relB;
 
     public GuiColorEditorHSV(IConfigInteger config, @Nullable IDialogHandler dialogHandler, GuiScreen parent)
     {
@@ -69,7 +75,6 @@ public class GuiColorEditorHSV extends GuiDialogBase
         }
 
         this.title = I18n.format("malilib.gui.title.color_editor");
-        this.color = config.getIntegerValue();
 
         this.setWidthAndHeight(300, 160);
         this.centerOnScreen();
@@ -118,7 +123,7 @@ public class GuiColorEditorHSV extends GuiDialogBase
         //String str = I18n.format("malilib.gui.label.color_editor.current_color");
         //this.addLabel(this.xHS, this.yHS + this.sizeHS + 10, 60, 12, 0xFFFFFF, str);
 
-        this.setColor(this.color); // Set the text field values
+        this.setColor(this.config.getIntegerValue()); // Set the text field values
     }
 
     protected int createComponentElements(int x, int y, int xLabel, Element element)
@@ -146,7 +151,7 @@ public class GuiColorEditorHSV extends GuiDialogBase
     @Override
     public void onGuiClosed()
     {
-        this.config.setIntegerValue(0);
+        this.config.setIntegerValue(this.color);
 
         super.onGuiClosed();
     }
@@ -226,88 +231,13 @@ public class GuiColorEditorHSV extends GuiDialogBase
         return super.onMouseReleased(mouseX, mouseY, mouseButton);
     }
 
-    protected void updateColorFromMouseInput(Element element, int mouseX, int mouseY)
+    protected float[] getCurrentColorHSV()
     {
-        int colorOld = this.color;
-        int colorNew = colorOld;
-        float[] hsv = this.getColorHSV();
-
-        int r = ((colorOld >>> 16) & 0xFF);
-        int g = ((colorOld >>>  8) & 0xFF);
-        int b = (colorOld          & 0xFF);
-
-        if (element == Element.HS)
-        {
-            mouseX = MathHelper.clamp(mouseX, this.xHS, this.xHS + this.sizeHS);
-            mouseY = MathHelper.clamp(mouseY, this.yHS, this.yHS + this.sizeHS);
-            int relX = mouseX - this.xHS;
-            int relY = mouseY - this.yHS;
-            float saturation = 1f - ((float) relY / (float) this.sizeHS);
-            float value = (float) relX / (float) this.sizeHS;
-            colorNew = Color.HSBtoRGB(hsv[0], saturation, value);
-        }
-        else if (element == Element.H_FULL_SV)
-        {
-            mouseY = MathHelper.clamp(mouseY, this.yHS, this.yHS + this.sizeHS);
-            int relY = mouseY - this.yHS;
-            float value = 1f - ((float) relY / (float) this.sizeHS);
-            colorNew = Color.HSBtoRGB(value, hsv[1], hsv[2]);
-        }
-        else
-        {
-            mouseX = MathHelper.clamp(mouseX, this.xH, this.xH + this.widthSlider);
-            int relX = mouseX - this.xH;
-            float relVal = (float) relX / (float) this.widthSlider;
-
-            switch (element)
-            {
-                case H:
-                {
-                    colorNew = Color.HSBtoRGB(relVal, hsv[1], hsv[2]);
-                    break;
-                }
-                case S:
-                {
-                    colorNew = Color.HSBtoRGB(hsv[0], relVal, hsv[2]);
-                    break;
-                }
-                case V:
-                {
-                    colorNew = Color.HSBtoRGB(hsv[0], hsv[1], relVal);
-                    break;
-                }
-                case R:
-                {
-                    r = (int) (relVal * 255f);
-                    colorNew = (r << 16) | (g << 8) | b;
-                    break;
-                }
-                case G:
-                {
-                    g = (int) (relVal * 255f);
-                    colorNew = (r << 16) | (g << 8) | b;
-                    break;
-                }
-                case B:
-                {
-                    b = (int) (relVal * 255f);
-                    colorNew = (r << 16) | (g << 8) | b;
-                    break;
-                }
-                default:
-            }
-        }
-
-        if (colorNew != colorOld)
-        {
-            this.setColor(colorNew);
-        }
+        return this.getColorHSV(this.color);
     }
 
-    protected float[] getColorHSV()
+    protected float[] getColorHSV(int color)
     {
-        int color = this.color;
-
         int r = ((color >>> 16) & 0xFF);
         int g = ((color >>>  8) & 0xFF);
         int b = ( color         & 0xFF);
@@ -322,30 +252,203 @@ public class GuiColorEditorHSV extends GuiDialogBase
     {
         this.color = color;
 
-        float[] hsv = this.getColorHSV();
-        int r = ((color >>> 16) & 0xFF);
-        int g = ((color >>>  8) & 0xFF);
-        int b = ( color         & 0xFF);
-
-        // Don't update the text field that is currently being written into, as that would
-        // make it impossible to type in properly
-
-        if (this.currentTextInputElement != Element.HEX)
-            this.textFieldFullColor.setText(String.format("#%08X", color));
-        if (this.currentTextInputElement != Element.H)
-            this.textFieldH.setText(String.valueOf((int) (hsv[0] * 360)));
-        if (this.currentTextInputElement != Element.S)
-            this.textFieldS.setText(String.valueOf((int) (hsv[1] * 100)));
-        if (this.currentTextInputElement != Element.V)
-            this.textFieldV.setText(String.valueOf((int) (hsv[2] * 100)));
-        if (this.currentTextInputElement != Element.R)
-            this.textFieldR.setText(String.valueOf(r));
-        if (this.currentTextInputElement != Element.G)
-            this.textFieldG.setText(String.valueOf(g));
-        if (this.currentTextInputElement != Element.B)
-            this.textFieldB.setText(String.valueOf(b));
+        this.setHSVFromRGB(color);
+        this.setRGBFromHSV();
 
         this.currentTextInputElement = null;
+    }
+
+    protected void setHSVFromRGB()
+    {
+        this.setHSVFromRGB(this.relR, this.relG, this.relB);
+    }
+
+    protected void setHSVFromRGB(float r, float g, float b)
+    {
+        float[] hsv = new float[3];
+
+        int ri = (int) (r * 255);
+        int gi = (int) (g * 255);
+        int bi = (int) (b * 255);
+
+        Color.RGBtoHSB(ri, gi, bi, hsv);
+
+        this.relH = hsv[0];
+        this.relS = hsv[1];
+        this.relV = hsv[2];
+
+        this.color = (ri << 16) | (gi << 8) | bi;
+
+        this.updateTextFieldsHSV(this.relH, this.relS, this.relV);
+    }
+
+    protected void setHSVFromRGB(int rgb)
+    {
+        float[] hsv = this.getColorHSV(rgb);
+
+        this.relH = hsv[0];
+        this.relS = hsv[1];
+        this.relV = hsv[2];
+
+        this.updateTextFieldsHSV(this.relH, this.relS, this.relV);
+    }
+
+    protected void setRGBFromHSV()
+    {
+        this.setRGBFromHSV(this.relH, this.relS, this.relV);
+    }
+
+    protected void setRGBFromHSV(float h, float s, float v)
+    {
+        int rgb = Color.HSBtoRGB(h, s, v);
+
+        this.color = rgb;
+
+        this.relR = (float) ((rgb >>> 16) & 0xFF) / 255f;
+        this.relG = (float) ((rgb >>>  8) & 0xFF) / 255f;
+        this.relB = (float) ((rgb       ) & 0xFF) / 255f;
+
+        this.updateTextFieldsRGB();
+    }
+
+    protected void updateColorFromMouseInput(Element element, int mouseX, int mouseY)
+    {
+        if (element == Element.SV)
+        {
+            mouseX = MathHelper.clamp(mouseX, this.xHS, this.xHS + this.sizeHS);
+            mouseY = MathHelper.clamp(mouseY, this.yHS, this.yHS + this.sizeHS);
+            int relX = mouseX - this.xHS;
+            int relY = mouseY - this.yHS;
+            float saturation = 1f - ((float) relY / (float) this.sizeHS);
+            float value = (float) relX / (float) this.sizeHS;
+
+            this.relS = saturation;
+            this.relV = value;
+
+            this.setRGBFromHSV();
+            this.updateTextField(Element.S);
+            this.updateTextField(Element.V);
+        }
+        else if (element == Element.H_FULL_SV)
+        {
+            mouseY = MathHelper.clamp(mouseY, this.yHS, this.yHS + this.sizeHS);
+            int relY = mouseY - this.yHS;
+            float hue = 1f - ((float) relY / (float) this.sizeHS);
+
+            this.relH = hue;
+            this.setRGBFromHSV();
+            this.updateTextField(Element.H);
+        }
+        else
+        {
+            mouseX = MathHelper.clamp(mouseX, this.xH, this.xH + this.widthSlider);
+            int relX = mouseX - this.xH;
+            float relVal = (float) relX / (float) this.widthSlider;
+
+            switch (element)
+            {
+                case H:
+                {
+                    this.relH = relVal;
+                    this.setRGBFromHSV();
+                    this.updateTextField(Element.H);
+                    break;
+                }
+                case S:
+                {
+                    this.relS = relVal;
+                    this.setRGBFromHSV();
+                    this.updateTextField(Element.S);
+                    break;
+                }
+                case V:
+                {
+                    this.relV = relVal;
+                    this.setRGBFromHSV();
+                    this.updateTextField(Element.V);
+                    break;
+                }
+                case R:
+                {
+                    this.relR = relVal;
+                    this.setHSVFromRGB();
+                    this.updateTextField(Element.R);
+                    break;
+                }
+                case G:
+                {
+                    this.relG = relVal;
+                    this.setHSVFromRGB();
+                    this.updateTextField(Element.G);
+                    break;
+                }
+                case B:
+                {
+                    this.relB = relVal;
+                    this.setHSVFromRGB();
+                    this.updateTextField(Element.B);
+                    break;
+                }
+                default:
+            }
+        }
+    }
+
+    protected void updateTextFieldsHSV(float h, float s, float v)
+    {
+        this.updateTextField(Element.HEX);
+        this.updateTextField(Element.H);
+        this.updateTextField(Element.S);
+        this.updateTextField(Element.V);
+    }
+
+    protected void updateTextFieldsRGB()
+    {
+        this.updateTextField(Element.HEX);
+        this.updateTextField(Element.R);
+        this.updateTextField(Element.G);
+        this.updateTextField(Element.B);
+    }
+
+    protected void updateTextField(Element type)
+    {
+        // Don't update the text field that is currently being written into, as that would
+        // make it impossible to type in properly
+        if (this.currentTextInputElement != type)
+        {
+            switch (type)
+            {
+                case HEX:
+                    this.textFieldFullColor.setText(String.format("#%08X", this.color));
+                    break;
+
+                case H:
+                    this.textFieldH.setText(String.valueOf((int) (this.relH * 360)));
+                    break;
+
+                case S:
+                    this.textFieldS.setText(String.valueOf((int) (this.relS * 100)));
+                    break;
+
+                case V:
+                    this.textFieldV.setText(String.valueOf((int) (this.relV * 100)));
+                    break;
+
+                case R:
+                    this.textFieldR.setText(String.valueOf((int) (this.relR * 255)));
+                    break;
+
+                case G:
+                    this.textFieldG.setText(String.valueOf((int) (this.relG * 255)));
+                    break;
+
+                case B:
+                    this.textFieldB.setText(String.valueOf((int) (this.relB * 255)));
+                    break;
+
+                default:
+            }
+        }
     }
 
     protected void drawColorSelector()
@@ -394,30 +497,12 @@ public class GuiColorEditorHSV extends GuiDialogBase
         GlStateManager.shadeModel(GL11.GL_SMOOTH);
         GlStateManager.alphaFunc(GL11.GL_GREATER, 0.01F);
 
-        int color = this.color;
-
-        int ri = ((color >>> 16) & 0xFF);
-        int gi = ((color >>>  8) & 0xFF);
-        int bi = (color          & 0xFF);
-
-        float r = ri / 255f;
-        float g = gi / 255f;
-        float b = bi / 255f;
-
-        float[] hsv = new float[3];
-        Color.RGBtoHSB(ri, gi, bi, hsv);
-
         GlStateManager.color(1, 1, 1, 1);
 
-        //GlStateManager.glLineWidth(2f);
-        //buffer.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
-        //renderHSSelector(x, y, z, w, h, hsv[0], buffer);
-        //tessellator.draw();
+        GL20.glUseProgram(SHADER_HUE.getProgram());
+        GL20.glUniform1f(GL20.glGetUniformLocation(SHADER_HUE.getProgram(), "hue_value"), this.relH);
 
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-
-        GL20.glUseProgram(SHADER_HUE.getProgram());
-        GL20.glUniform1f(GL20.glGetUniformLocation(SHADER_HUE.getProgram(), "hue_value"), hsv[0]);
 
         buffer.pos(x    , y    , z).tex(1, 0).endVertex();
         buffer.pos(x    , y + h, z).tex(0, 0).endVertex();
@@ -428,29 +513,11 @@ public class GuiColorEditorHSV extends GuiDialogBase
 
         GL20.glUseProgram(0);
 
-        /*
-        // Use the current hue, but full saturation and value to get the color of the top right corner
-        int colorHue = Color.HSBtoRGB(hsv[0], 1f, 1f);
-
-        ri = ((colorHue >>> 16) & 0xFF);
-        gi = ((colorHue >>>  8) & 0xFF);
-        bi = (colorHue          & 0xFF);
-
-        float rc = ri / 255f;
-        float gc = gi / 255f;
-        float bc = bi / 255f;
-
-        // Main SV selector
-
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
 
-        buffer.pos(x    , y    , z).color(0, 0, 0, 1f).endVertex();
-        buffer.pos(x    , y + h, z).color(0, 0, 0, 1f).endVertex();
-        buffer.pos(x + w, y + h, z).color(1, 1, 1, 1f).endVertex();
-        buffer.pos(x + w, y    , z).color(rc, gc, bc, 1f).endVertex();
-        */
-
-        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+        float r = this.relR;
+        float g = this.relG;
+        float b = this.relB;
 
         // Current color indicator
         buffer.pos(cx     , cy     , z).color(r, g, b, 1f).endVertex();
@@ -459,14 +526,14 @@ public class GuiColorEditorHSV extends GuiDialogBase
         buffer.pos(cx + cw, cy     , z).color(r, g, b, 1f).endVertex();
 
         // SV selection marker for saturation, horizontal marker, vertical range
-        int yt = y + (int) ((1 - hsv[1]) * h);
+        int yt = y + (int) ((1 - this.relS) * h);
         buffer.pos(x - 1    , yt    , z).color(1, 1, 1, 1f).endVertex();
         buffer.pos(x - 1    , yt + 1, z).color(1, 1, 1, 1f).endVertex();
         buffer.pos(x + w + 1, yt + 1, z).color(1, 1, 1, 1f).endVertex();
         buffer.pos(x + w + 1, yt    , z).color(1, 1, 1, 1f).endVertex();
 
         // SV selection marker for value, vertical marker, horizontal range
-        int xt = x + (int) (hsv[2] * w);
+        int xt = x + (int) (this.relV * w);
         buffer.pos(xt    , y - 1    , z).color(1, 1, 1, 1f).endVertex();
         buffer.pos(xt    , y + h + 1, z).color(1, 1, 1, 1f).endVertex();
         buffer.pos(xt + 1, y + h + 1, z).color(1, 1, 1, 1f).endVertex();
@@ -479,44 +546,44 @@ public class GuiColorEditorHSV extends GuiDialogBase
 
         // Full value Saturation & Value, Hue slider
         renderHueBarVertical(this.xHFullSV + 1, this.yHS, z, this.widthHFullSV - 2, this.sizeHS, 1f, 1f, buffer);
-        renderBarMarkerVerticalBar(this.xHFullSV, this.yHS, z, this.widthHFullSV, this.sizeHS, hsv[0], buffer);
+        renderBarMarkerVerticalBar(this.xHFullSV, this.yHS, z, this.widthHFullSV, this.sizeHS, this.relH, buffer);
 
         // Hue slider
-        renderHueBarHorizontal(x, y, z, w, h, hsv[1], hsv[2], buffer);
-        renderBarMarkerHorizontalBar(x, y, z, w, h, hsv[0], buffer);
+        renderHueBarHorizontal(x, y, z, w, h, this.relS, this.relV, buffer);
+        renderBarMarkerHorizontalBar(x, y, z, w, h, this.relH, buffer);
         y += yd;
 
         // Saturation slider
-        int color1 = Color.HSBtoRGB(hsv[0], 0, hsv[2]);
-        int color2 = Color.HSBtoRGB(hsv[0], 1, hsv[2]);
+        int color1 = Color.HSBtoRGB(this.relH, 0, this.relV);
+        int color2 = Color.HSBtoRGB(this.relH, 1, this.relV);
         renderGradientColorBar(x, y, z, w, h, color1, color2, buffer);
-        renderBarMarkerHorizontalBar(x, y, z, w, h, hsv[1], buffer);
+        renderBarMarkerHorizontalBar(x, y, z, w, h, this.relS, buffer);
         y += yd;
 
         // Value/Brightness slider
-        color1 = Color.HSBtoRGB(hsv[0], hsv[1], 0);
-        color2 = Color.HSBtoRGB(hsv[0], hsv[1], 1);
+        color1 = Color.HSBtoRGB(this.relH, this.relS, 0);
+        color2 = Color.HSBtoRGB(this.relH, this.relS, 1);
         renderGradientColorBar(x, y, z, w, h, color1, color2, buffer);
-        renderBarMarkerHorizontalBar(x, y, z, w, h, hsv[2], buffer);
+        renderBarMarkerHorizontalBar(x, y, z, w, h, this.relV, buffer);
         y += yd;
 
         // Red slider
-        color1 = color & 0x00FFFF;
-        color2 = color | 0xFF0000;
+        color1 = this.color & 0x00FFFF;
+        color2 = this.color | 0xFF0000;
         renderGradientColorBar(x, y, z, w, h, color1, color2, buffer);
         renderBarMarkerHorizontalBar(x, y, z, w, h, r, buffer);
         y += yd;
 
         // Green slider
-        color1 = color & 0xFF00FF;
-        color2 = color | 0x00FF00;
+        color1 = this.color & 0xFF00FF;
+        color2 = this.color | 0x00FF00;
         renderGradientColorBar(x, y, z, w, h, color1, color2, buffer);
         renderBarMarkerHorizontalBar(x, y, z, w, h, g, buffer);
         y += yd;
 
         // Blue slider
-        color1 = color & 0xFFFF00;
-        color2 = color | 0x0000FF;
+        color1 = this.color & 0xFFFF00;
+        color2 = this.color | 0x0000FF;
         renderGradientColorBar(x, y, z, w, h, color1, color2, buffer);
         renderBarMarkerHorizontalBar(x, y, z, w, h, b, buffer);
         y += yd;
@@ -680,7 +747,7 @@ public class GuiColorEditorHSV extends GuiDialogBase
         if (mouseX >= this.xHS && mouseX <= this.xHS + this.sizeHS &&
             mouseY >= this.yHS && mouseY <= this.yHS + this.sizeHS)
         {
-            return Element.HS;
+            return Element.SV;
         }
         else if (mouseX >= this.xHFullSV && mouseX <= this.xHFullSV + this.widthHFullSV &&
                  mouseY >= this.yHS && mouseY <= this.yHS + this.sizeHS)
@@ -733,7 +800,7 @@ public class GuiColorEditorHSV extends GuiDialogBase
                 try
                 {
                     int val = Integer.parseInt(textField.getText());
-                    float[] hsv = this.gui.getColorHSV();
+                    float[] hsv = this.gui.getCurrentColorHSV();
                     int colorNew = colorOld;
 
                     switch (this.type)
@@ -794,7 +861,7 @@ public class GuiColorEditorHSV extends GuiDialogBase
         R,
         G,
         B,
-        HS,
+        SV,
         H_FULL_SV,
         HEX
     }
