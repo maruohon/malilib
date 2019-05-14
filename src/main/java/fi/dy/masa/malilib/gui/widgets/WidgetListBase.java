@@ -351,7 +351,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
             this.widgetSearchBar.render(mouseX, mouseY, false);
         }
 
-        WIDGET hovered = null;
+        WidgetBase hovered = null;
         boolean hoveredSelected = false;
         int scrollbarHeight = this.browserHeight - this.browserEntriesOffsetY - 8;
         int totalHeight = 0;
@@ -387,6 +387,11 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
                 hovered = widget;
                 hoveredSelected = isSelected;
             }
+        }
+
+        if (hovered == null && this.widgetSearchBar != null && this.widgetSearchBar.isMouseOver(mouseX, mouseY))
+        {
+            hovered = this.widgetSearchBar;
         }
 
         if (hovered != null)

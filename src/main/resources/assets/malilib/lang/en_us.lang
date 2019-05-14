@@ -25,6 +25,9 @@ malilib.gui.button.render_layers_gui.axis=Axis: %s
 malilib.gui.button.render_layers_gui.layers=Layers: %s
 malilib.gui.button.render_layers_gui.set_here=Set Here
 
+malilib.gui.button.hover.directory_widget.create_directory=Create a new directory
+malilib.gui.button.hover.directory_widget.root=To root/base directory
+malilib.gui.button.hover.directory_widget.up=Up to parent directory
 malilib.gui.button.hover.hold_shift_for_info=§oHold Shift for more information§r
 
 malilib.gui.label.block_snap.center=Center

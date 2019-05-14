@@ -1,15 +1,19 @@
 package fi.dy.masa.malilib.gui.widgets;
 
 import java.io.File;
+import java.util.Arrays;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.GuiTextInputFeedback;
 import fi.dy.masa.malilib.gui.LeftRight;
 import fi.dy.masa.malilib.gui.interfaces.IDirectoryNavigator;
 import fi.dy.masa.malilib.gui.interfaces.IFileBrowserIconProvider;
+import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.DirectoryCreator;
 import fi.dy.masa.malilib.util.FileUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.resources.I18n;
 
 public class WidgetDirectoryNavigation extends WidgetSearchBar
 {
@@ -113,6 +117,32 @@ public class WidgetDirectoryNavigation extends WidgetSearchBar
             int maxLen = (this.width - 40) / this.mc.fontRenderer.getStringWidth("a") - 4; // FIXME
             String path = FileUtils.getJoinedTrailingPathElements(this.currentDir, this.rootDir, maxLen, " / ");
             this.mc.fontRenderer.drawString(path, pathStartX + 3, this.y + 3, textColor);
+        }
+    }
+
+    @Override
+    public void postRenderHovered(int mouseX, int mouseY, boolean selected)
+    {
+        super.postRenderHovered(mouseX, mouseY, selected);
+
+        if (this.searchOpen == false)
+        {
+            WidgetIcon hoveredIcon = this.getHoveredIcon(mouseX, mouseY);
+
+            if (hoveredIcon == this.iconRoot)
+            {
+                RenderUtils.drawHoverText(mouseX, mouseY, Arrays.asList(I18n.format("malilib.gui.button.hover.directory_widget.root")));
+            }
+            else if (hoveredIcon == this.iconUp)
+            {
+                RenderUtils.drawHoverText(mouseX, mouseY, Arrays.asList(I18n.format("malilib.gui.button.hover.directory_widget.up")));
+            }
+            else if (hoveredIcon == this.iconCreateDir)
+            {
+                RenderUtils.drawHoverText(mouseX, mouseY, Arrays.asList(I18n.format("malilib.gui.button.hover.directory_widget.create_directory")));
+            }
+
+            RenderHelper.disableStandardItemLighting();
         }
     }
 }
