@@ -81,7 +81,7 @@ public class WidgetListConfigOptions extends WidgetListConfigOptionsBase<ConfigO
                 if ((filterText.isEmpty() || this.entryMatchesFilter(entry, filterText)) &&
                     (entry.getConfig().getType() != ConfigType.HOTKEY ||
                      filterKeys.getKeys().size() == 0 ||
-                     filterKeys.overlaps(((IHotkey) entry.getConfig()).getKeybind())))
+                     ((IHotkey) entry.getConfig()).getKeybind().overlaps(filterKeys)))
                 {
                     this.listContents.add(entry);
                 }

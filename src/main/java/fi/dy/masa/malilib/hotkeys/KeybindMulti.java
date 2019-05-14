@@ -337,7 +337,7 @@ public class KeybindMulti implements IKeybind
     @Override
     public boolean overlaps(IKeybind other)
     {
-        if (other == this)// || other.getKeys().size() < this.getKeys().size())
+        if (other == this || other.getKeys().size() > this.getKeys().size())
         {
             return false;
         }
