@@ -6,7 +6,6 @@
     "client": [
         "IGuiTextField",
         "MixinGameRenderer",
-        "MixinGuiScreen",
         "MixinKeyboardListener",
         "MixinMinecraft",
         "MixinMouseHelper"
