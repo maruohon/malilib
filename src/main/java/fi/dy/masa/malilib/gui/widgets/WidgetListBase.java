@@ -227,6 +227,11 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
         return this.widgetSearchBar;
     }
 
+    public List<TYPE> getCurrentEntries()
+    {
+        return this.listContents;
+    }
+
     protected Collection<TYPE> getAllEntries()
     {
         return Collections.emptyList();
