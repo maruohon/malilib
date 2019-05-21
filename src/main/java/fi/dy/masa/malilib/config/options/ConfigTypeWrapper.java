@@ -80,6 +80,12 @@ public class ConfigTypeWrapper implements IConfigBoolean, IConfigDouble, IConfig
         return this.wrappedConfig.getPrettyName();
     }
 
+    @Override
+    public String getConfigGuiDisplayName()
+    {
+        return this.wrappedConfig.getConfigGuiDisplayName();
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public void onValueChanged()

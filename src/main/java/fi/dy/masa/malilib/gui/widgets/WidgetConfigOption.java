@@ -103,7 +103,7 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
         y += 1;
         int configHeight = 20;
 
-        this.addLabel(x, y + 7, labelWidth, 8, 0xFFFFFFFF, config.getName());
+        this.addLabel(x, y + 7, labelWidth, 8, 0xFFFFFFFF, config.getConfigGuiDisplayName());
 
         String comment = null;
         IConfigInfoProvider infoProvider = this.host.getHoverInfoProvider();

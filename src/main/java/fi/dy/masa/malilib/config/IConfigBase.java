@@ -37,6 +37,15 @@ public interface IConfigBase
     }
 
     /**
+     * Returns the display name used for this config in the config GUIs
+     * @return
+     */
+    default String getConfigGuiDisplayName()
+    {
+        return this.getName();
+    }
+
+    /**
      * Set the value of this config option from a JSON element (is possible)
      * @param element
      */
