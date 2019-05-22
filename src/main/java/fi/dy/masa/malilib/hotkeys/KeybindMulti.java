@@ -15,6 +15,7 @@ import fi.dy.masa.malilib.hotkeys.KeybindSettings.Context;
 import fi.dy.masa.malilib.util.IMinecraftAccessor;
 import fi.dy.masa.malilib.util.InfoUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.settings.KeyBinding;
 
 public class KeybindMulti implements IKeybind
 {
@@ -332,6 +333,11 @@ public class KeybindMulti implements IKeybind
     public boolean matches(int keyCode)
     {
         return this.keyCodes.size() == 1 && this.keyCodes.get(0) == keyCode;
+    }
+
+    public static boolean hotkeyMatchesKeybind(IHotkey hotkey, KeyBinding keybind)
+    {
+        return hotkey.getKeybind().matches(keybind.getKeyCode());
     }
 
     @Override
