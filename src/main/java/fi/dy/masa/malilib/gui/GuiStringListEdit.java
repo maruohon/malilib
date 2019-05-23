@@ -10,7 +10,7 @@ import fi.dy.masa.malilib.gui.widgets.WidgetStringListEntry;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.KeyCodes;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.Screen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resource.language.I18n;
 
 public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEntry, WidgetListStringList>

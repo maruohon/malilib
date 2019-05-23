@@ -2,9 +2,9 @@ package fi.dy.masa.malilib.util;
 
 import fi.dy.masa.malilib.interfaces.IStringConsumer;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.ChatMessageType;
-import net.minecraft.text.TextComponent;
-import net.minecraft.text.TranslatableTextComponent;
+import net.minecraft.network.chat.ChatMessageType;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 
 public class InfoUtils
 {
@@ -15,7 +15,7 @@ public class InfoUtils
         @Override
         public void setString(String string)
         {
-            TextComponent message = new TranslatableTextComponent(string);
+            Component message = new TranslatableComponent(string);
             MinecraftClient.getInstance().inGameHud.addChatMessage(ChatMessageType.GAME_INFO, message);
         }
     }

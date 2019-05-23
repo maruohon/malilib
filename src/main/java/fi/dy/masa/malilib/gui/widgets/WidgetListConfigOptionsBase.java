@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import fi.dy.masa.malilib.gui.GuiTextFieldWrapper;
 import fi.dy.masa.malilib.util.KeyCodes;
-import net.minecraft.client.gui.Screen;
+import net.minecraft.client.gui.screen.Screen;
 
 public abstract class WidgetListConfigOptionsBase<TYPE, WIDGET extends WidgetConfigOptionBase> extends WidgetListBase<TYPE, WIDGET>
 {

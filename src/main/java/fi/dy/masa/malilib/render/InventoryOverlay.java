@@ -187,7 +187,7 @@ public class InventoryOverlay
 
         mc.getTextureManager().bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
 
-        if (entity.getEquippedStack(EquipmentSlot.HAND_OFF).isEmpty())
+        if (entity.getEquippedStack(EquipmentSlot.OFFHAND).isEmpty())
         {
             String texture = "minecraft:item/empty_armor_slot_shield";
             RenderUtils.renderSprite(mc, x + 28 + 1, y + 3 * 18 + 7 + 1, texture, 16, 16);
@@ -415,14 +415,14 @@ public class InventoryOverlay
             }
         }
 
-        ItemStack stack = entity.getEquippedStack(EquipmentSlot.HAND_MAIN);
+        ItemStack stack = entity.getEquippedStack(EquipmentSlot.MAINHAND);
 
         if (stack.isEmpty() == false)
         {
             renderStackAt(stack, x + 28, y + 2 * 18 + 7 + 1, 1, mc);
         }
 
-        stack = entity.getEquippedStack(EquipmentSlot.HAND_OFF);
+        stack = entity.getEquippedStack(EquipmentSlot.OFFHAND);
 
         if (stack.isEmpty() == false)
         {

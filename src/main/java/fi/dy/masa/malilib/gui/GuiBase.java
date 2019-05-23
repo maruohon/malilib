@@ -18,33 +18,33 @@ import fi.dy.masa.malilib.gui.wrappers.TextFieldWrapper;
 import fi.dy.masa.malilib.interfaces.IStringConsumer;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.KeyCodes;
+import net.minecraft.ChatFormat;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.gui.Screen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.render.GuiLighting;
-import net.minecraft.text.StringTextComponent;
-import net.minecraft.text.TextComponent;
-import net.minecraft.text.TextFormat;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.util.Identifier;
 
 public abstract class GuiBase extends Screen implements IMessageConsumer, IStringConsumer
 {
-    public static final String TXT_BLUE = TextFormat.BLUE.toString();
-    public static final String TXT_GRAY = TextFormat.GRAY.toString();
-    public static final String TXT_GREEN = TextFormat.GREEN.toString();
-    public static final String TXT_GOLD = TextFormat.GOLD.toString();
-    public static final String TXT_RED = TextFormat.RED.toString();
-    public static final String TXT_WHITE = TextFormat.WHITE.toString();
-    public static final String TXT_YELLOW = TextFormat.YELLOW.toString();
+    public static final String TXT_BLUE = ChatFormat.BLUE.toString();
+    public static final String TXT_GRAY = ChatFormat.GRAY.toString();
+    public static final String TXT_GREEN = ChatFormat.GREEN.toString();
+    public static final String TXT_GOLD = ChatFormat.GOLD.toString();
+    public static final String TXT_RED = ChatFormat.RED.toString();
+    public static final String TXT_WHITE = ChatFormat.WHITE.toString();
+    public static final String TXT_YELLOW = ChatFormat.YELLOW.toString();
 
-    public static final String TXT_BOLD = TextFormat.BOLD.toString();
-    public static final String TXT_RST = TextFormat.RESET.toString();
-    public static final String TXT_UNDERLINE = TextFormat.UNDERLINE.toString();
+    public static final String TXT_BOLD = ChatFormat.BOLD.toString();
+    public static final String TXT_RST = ChatFormat.RESET.toString();
+    public static final String TXT_UNDERLINE = ChatFormat.UNDERLINE.toString();
 
-    public static final String TXT_DARK_GREEN = TextFormat.DARK_GREEN.toString();
-    public static final String TXT_DARK_RED = TextFormat.DARK_RED.toString();
+    public static final String TXT_DARK_GREEN = ChatFormat.DARK_GREEN.toString();
+    public static final String TXT_DARK_RED = ChatFormat.DARK_RED.toString();
 
     protected static final String BUTTON_LABEL_ADD = TXT_DARK_GREEN + "+" + TXT_RST;
     protected static final String BUTTON_LABEL_REMOVE = TXT_DARK_RED + "-" + TXT_RST;
@@ -98,9 +98,9 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
     }
 
     @Override
-    public TextComponent getTitle()
+    public Component getTitle()
     {
-        return new StringTextComponent(this.getTitleString());
+        return new TextComponent(this.getTitleString());
     }
 
     @Override

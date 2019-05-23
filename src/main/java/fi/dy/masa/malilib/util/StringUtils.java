@@ -11,11 +11,10 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.text.ChatMessageType;
-import net.minecraft.text.StringTextComponent;
-import net.minecraft.text.TextComponent;
-import net.minecraft.text.TranslatableTextComponent;
-import net.minecraft.text.event.ClickEvent;
+import net.minecraft.network.chat.ChatMessageType;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 
 public class StringUtils
 {
@@ -82,15 +81,15 @@ public class StringUtils
 
     public static void printActionbarMessage(String key, Object... args)
     {
-        MinecraftClient.getInstance().inGameHud.addChatMessage(ChatMessageType.GAME_INFO, new TranslatableTextComponent(key, args));
+        MinecraftClient.getInstance().inGameHud.addChatMessage(ChatMessageType.GAME_INFO, new TranslatableComponent(key, args));
     }
 
     public static void sendOpenFileChatMessage(PlayerEntity player, String messageKey, File file)
     {
-        TextComponent name = new StringTextComponent(file.getName());
+        TextComponent name = new TextComponent(file.getName());
         name.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, file.getAbsolutePath()));
         name.getStyle().setUnderline(Boolean.valueOf(true));
-        player.sendMessage(new TranslatableTextComponent(messageKey, name));
+        player.sendMessage(new TranslatableComponent(messageKey, name));
     }
 
     public static String getClampedDisplayStringStrlen(List<String> list, final int maxWidth, String prefix, String suffix)
