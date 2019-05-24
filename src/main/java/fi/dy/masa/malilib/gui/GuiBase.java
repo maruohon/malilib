@@ -8,7 +8,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import fi.dy.masa.malilib.config.IConfigBase;
 import fi.dy.masa.malilib.gui.Message.MessageType;
-import fi.dy.masa.malilib.gui.button.ButtonGeneric;
+import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.gui.interfaces.IMessageConsumer;
@@ -16,7 +16,6 @@ import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
 import fi.dy.masa.malilib.gui.widgets.WidgetBase;
 import fi.dy.masa.malilib.gui.widgets.WidgetCheckBox;
 import fi.dy.masa.malilib.gui.widgets.WidgetLabel;
-import fi.dy.masa.malilib.gui.wrappers.ButtonWrapper;
 import fi.dy.masa.malilib.gui.wrappers.TextFieldWrapper;
 import fi.dy.masa.malilib.interfaces.IStringConsumer;
 import fi.dy.masa.malilib.render.MessageRenderer;
@@ -53,9 +52,9 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     public static final int COLOR_HORIZONTAL_BAR = 0xFF999999;
     protected static final int LEFT         = 20;
     protected static final int TOP          = 10;
-    private final List<ButtonWrapper<? extends ButtonGeneric>> buttons = new ArrayList<>();
-    private final List<TextFieldWrapper<? extends GuiTextField>> textFields = new ArrayList<>();
+    private final List<ButtonBase> buttons = new ArrayList<>();
     private final List<WidgetBase> widgets = new ArrayList<>();
+    private final List<TextFieldWrapper<? extends GuiTextField>> textFields = new ArrayList<>();
     private final MessageRenderer messageRenderer = new MessageRenderer(0xDD000000, COLOR_HORIZONTAL_BAR);
     protected WidgetBase hoveredWidget = null;
     protected String title = "";
@@ -171,9 +170,9 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
 
     public boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
-        for (ButtonWrapper<?> entry : this.buttons)
+        for (ButtonBase button : this.buttons)
         {
-            if (entry.mousePressed(this.mc, mouseX, mouseY, mouseButton))
+            if (button.onMouseClicked(mouseX, mouseY, mouseButton))
             {
                 // Don't call super if the button press got handled
                 return true;
@@ -217,11 +216,11 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
         return false;
     }
 
-    public boolean onMouseScrolled(int mouseX, int mouseY, int mouseWheelDelta)
+    public boolean onMouseScrolled(int mouseX, int mouseY, double mouseWheelDelta)
     {
-        for (ButtonWrapper<?> entry : this.buttons)
+        for (ButtonBase button : this.buttons)
         {
-            if (entry.onMouseScrolled(this.mc, mouseX, mouseY, mouseWheelDelta))
+            if (button.onMouseScrolled(mouseX, mouseY, mouseWheelDelta))
             {
                 // Don't call super if the button press got handled
                 return true;
@@ -230,7 +229,7 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
 
         for (WidgetBase widget : this.widgets)
         {
-            if (widget.isMouseOver(mouseX, mouseY) && widget.onMouseScrolled(mouseX, mouseY, mouseWheelDelta))
+            if (widget.onMouseScrolled(mouseX, mouseY, mouseWheelDelta))
             {
                 // Don't call super if the action got handled
                 return true;
@@ -351,12 +350,12 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
         this.mc.getTextureManager().bindTexture(texture);
     }
 
-    public <T extends ButtonGeneric> ButtonWrapper<T> addButton(T button, IButtonActionListener<T> listener)
+    public ButtonBase addButton(ButtonBase button, IButtonActionListener listener)
     {
-        ButtonWrapper<T> entry = new ButtonWrapper<>(button, listener);
-        this.buttons.add(entry);
+        button.setActionListener(listener);
+        this.buttons.add(button);
 
-        return entry;
+        return button;
     }
 
     public <T extends GuiTextField> void addTextField(T textField, @Nullable ITextFieldListener<T> listener)
@@ -449,9 +448,9 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
 
     protected void drawButtons(int mouseX, int mouseY, float partialTicks)
     {
-        for (ButtonWrapper<?> entry : this.buttons)
+        for (ButtonBase button : this.buttons)
         {
-            entry.draw(this.mc, mouseX, mouseY, partialTicks);
+            button.render(mouseX, mouseY, button.isMouseOver());
         }
     }
 
@@ -483,10 +482,8 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
 
     protected void drawButtonHoverTexts(int mouseX, int mouseY, float partialTicks)
     {
-        for (ButtonWrapper<? extends ButtonGeneric> entry : this.buttons)
+        for (ButtonBase button : this.buttons)
         {
-            ButtonGeneric button = entry.getButton();
-
             if (button.hasHoverText() && button.isMouseOver())
             {
                 RenderUtils.drawHoverText(mouseX, mouseY, button.getHoverStrings());

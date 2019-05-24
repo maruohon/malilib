@@ -95,7 +95,7 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
         this.addTextField(field, listenerChange);
         this.addButton(resetButton, listenerReset);
 
-        return resetButton.x + resetButton.getButtonWidth() + 4;
+        return resetButton.x + resetButton.getWidth() + 4;
     }
 
     protected ButtonGeneric createResetButton(int x, int y, GuiTextField textField)
@@ -104,7 +104,7 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
         int w = this.mc.fontRenderer.getStringWidth(labelReset) + 10;
 
         ButtonGeneric resetButton = new ButtonGeneric(x, y, w, 20, labelReset);
-        resetButton.enabled = textField.getText().equals(this.defaultValue) == false;
+        resetButton.setEnabled(textField.getText().equals(this.defaultValue) == false);
 
         return resetButton;
     }
@@ -229,12 +229,12 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
         @Override
         public boolean onTextChange(GuiTextField textField)
         {
-            this.buttonReset.enabled = this.textField.getText().equals(this.defaultValue) == false;
+            this.buttonReset.setEnabled(this.textField.getText().equals(this.defaultValue) == false);
             return false;
         }
     }
 
-    private static class ListenerResetConfig implements IButtonActionListener<ButtonGeneric>
+    private static class ListenerResetConfig implements IButtonActionListener
     {
         private final WidgetStringListEditEntry parent;
         private final ButtonGeneric buttonReset;
@@ -246,20 +246,14 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
         }
 
         @Override
-        public void actionPerformed(ButtonGeneric control)
+        public void actionPerformedWithButton(ButtonBase button, int mouseButton)
         {
             this.parent.textField.getTextField().setText(this.parent.defaultValue);
-            this.buttonReset.enabled = this.parent.textField.getTextField().getText().equals(this.parent.defaultValue) == false;
-        }
-
-        @Override
-        public void actionPerformedWithButton(ButtonGeneric control, int mouseButton)
-        {
-            this.actionPerformed(control);
+            this.buttonReset.setEnabled(this.parent.textField.getTextField().getText().equals(this.parent.defaultValue) == false);
         }
     }
 
-    private static class ListenerListActions implements IButtonActionListener<ButtonGeneric>
+    private static class ListenerListActions implements IButtonActionListener
     {
         private final ButtonType type;
         private final WidgetStringListEditEntry parent;
@@ -271,7 +265,7 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
         }
 
         @Override
-        public void actionPerformed(ButtonGeneric control)
+        public void actionPerformedWithButton(ButtonBase button, int mouseButton)
         {
             if (this.type == ButtonType.ADD)
             {
@@ -285,12 +279,6 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
             {
                 this.parent.moveEntry(this.type == ButtonType.MOVE_DOWN);
             }
-        }
-
-        @Override
-        public void actionPerformedWithButton(ButtonGeneric control, int mouseButton)
-        {
-            this.actionPerformed(control);
         }
     }
 

@@ -175,7 +175,7 @@ public class WidgetDropDownList<T> extends WidgetBase
     }
 
     @Override
-    public boolean onMouseScrolledImpl(int mouseX, int mouseY, int mouseWheelDelta)
+    public boolean onMouseScrolledImpl(int mouseX, int mouseY, double mouseWheelDelta)
     {
         if (this.isOpen)
         {

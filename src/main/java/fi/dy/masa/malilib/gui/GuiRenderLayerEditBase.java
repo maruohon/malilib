@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.gui;
 
+import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
@@ -43,7 +44,7 @@ public abstract class GuiRenderLayerEditBase extends GuiBase
             ButtonGeneric button = new ButtonGeneric(x, y, -1, 20, type.getDisplayName(layerRange));
             this.addButton(button, listener);
 
-            return button.getButtonWidth() + 2;
+            return button.getWidth() + 2;
         }
 
         return 0;
@@ -134,7 +135,7 @@ public abstract class GuiRenderLayerEditBase extends GuiBase
         this.addButton(button, listener);
     }
 
-    protected static class ButtonListenerLayerEdit implements IButtonActionListener<ButtonGeneric>
+    protected static class ButtonListenerLayerEdit implements IButtonActionListener
     {
         protected final GuiRenderLayerEditBase parent;
         protected final LayerRange layerRange;
@@ -148,12 +149,7 @@ public abstract class GuiRenderLayerEditBase extends GuiBase
         }
 
         @Override
-        public void actionPerformed(ButtonGeneric control)
-        {
-        }
-
-        @Override
-        public void actionPerformedWithButton(ButtonGeneric control, int mouseButton)
+        public void actionPerformedWithButton(ButtonBase button, int mouseButton)
         {
             if (this.type == Type.MODE)
             {
@@ -202,7 +198,7 @@ public abstract class GuiRenderLayerEditBase extends GuiBase
         }
     }
 
-    protected static class ButtonListenerChangeValue implements IButtonActionListener<ButtonGeneric>
+    protected static class ButtonListenerChangeValue implements IButtonActionListener
     {
         protected final GuiRenderLayerEditBase parent;
         protected final LayerRange layerRange;
@@ -218,12 +214,7 @@ public abstract class GuiRenderLayerEditBase extends GuiBase
         }
 
         @Override
-        public void actionPerformed(ButtonGeneric control)
-        {
-        }
-
-        @Override
-        public void actionPerformedWithButton(ButtonGeneric control, int mouseButton)
+        public void actionPerformedWithButton(ButtonBase button, int mouseButton)
         {
             int change = mouseButton == 1 ? -1 : 1;
 

@@ -65,7 +65,7 @@ public abstract class WidgetConfigOptionBase<TYPE> extends WidgetListEntryBase<T
         int w = this.mc.fontRenderer.getStringWidth(labelReset) + 10;
 
         ButtonGeneric resetButton = new ButtonGeneric(x, y, w, 20, labelReset);
-        resetButton.enabled = config.isModified();
+        resetButton.setEnabled(config.isModified());
 
         return resetButton;
     }

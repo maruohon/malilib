@@ -37,7 +37,7 @@ public class SliderCallbackInteger implements ISliderCallback
 
         if (this.buttonReset != null)
         {
-            this.buttonReset.enabled = this.config.isModified();
+            this.buttonReset.setEnabled(this.config.isModified());
         }
     }
 

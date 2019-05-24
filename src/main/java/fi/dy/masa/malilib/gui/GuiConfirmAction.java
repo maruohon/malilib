@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import fi.dy.masa.malilib.gui.Message.MessageType;
+import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.gui.interfaces.IMessageConsumer;
@@ -150,7 +151,7 @@ public class GuiConfirmAction extends GuiDialogBase implements ICompletionListen
         }
     }
 
-    protected static class ButtonListener implements IButtonActionListener<ButtonGeneric>
+    protected static class ButtonListener implements IButtonActionListener
     {
         private final GuiConfirmAction gui;
         private final ButtonType type;
@@ -162,7 +163,7 @@ public class GuiConfirmAction extends GuiDialogBase implements ICompletionListen
         }
 
         @Override
-        public void actionPerformed(ButtonGeneric control)
+        public void actionPerformedWithButton(ButtonBase button, int mouseButton)
         {
             if (this.type == ButtonType.OK)
             {
@@ -174,12 +175,6 @@ public class GuiConfirmAction extends GuiDialogBase implements ICompletionListen
             }
 
             this.gui.mc.displayGuiScreen(this.gui.getParent());
-        }
-
-        @Override
-        public void actionPerformedWithButton(ButtonGeneric control, int mouseButton)
-        {
-            this.actionPerformed(control);
         }
     }
 

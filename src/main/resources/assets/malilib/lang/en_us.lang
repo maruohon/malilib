@@ -29,6 +29,7 @@ malilib.gui.button.hover.directory_widget.create_directory=Create a new director
 malilib.gui.button.hover.directory_widget.root=To root/base directory
 malilib.gui.button.hover.directory_widget.up=Up to parent directory
 malilib.gui.button.hover.hold_shift_for_info=§oHold Shift for more information§r
+malilib.gui.button.hover.plus_minus_tip=Left click to increase\nRight click to decrease\nShift and/or Alt to increase the step size
 
 malilib.gui.label.block_snap.center=Center
 malilib.gui.label.block_snap.corner=Corner

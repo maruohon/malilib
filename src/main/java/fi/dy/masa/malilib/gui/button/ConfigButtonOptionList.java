@@ -24,12 +24,12 @@ public class ConfigButtonOptionList extends ButtonGeneric
     }
 
     @Override
-    public void onMouseButtonClicked(int mouseButton)
+    protected boolean onMouseClickedImpl(int mouseX, int mouseY, int mouseButton)
     {
         this.config.setOptionListValue(this.config.getOptionListValue().cycle(mouseButton == 0));
         this.updateDisplayString();
 
-        super.onMouseButtonClicked(mouseButton);
+        return super.onMouseClickedImpl(mouseX, mouseY, mouseButton);
     }
 
     @Override

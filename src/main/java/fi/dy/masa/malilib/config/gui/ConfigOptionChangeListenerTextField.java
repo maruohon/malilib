@@ -21,7 +21,7 @@ public class ConfigOptionChangeListenerTextField implements ITextFieldListener<G
     @Override
     public boolean onTextChange(GuiTextField textField)
     {
-        this.buttonReset.enabled = this.config.isModified(this.textField.getText());
+        this.buttonReset.setEnabled(this.config.isModified(this.textField.getText()));
         return false;
     }
 }

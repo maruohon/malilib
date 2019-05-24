@@ -132,7 +132,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
     }
 
     @Override
-    public boolean onMouseScrolled(int mouseX, int mouseY, int mouseWheelDelta)
+    public boolean onMouseScrolled(int mouseX, int mouseY, double mouseWheelDelta)
     {
         if (super.onMouseScrolled(mouseX, mouseY, mouseWheelDelta))
         {

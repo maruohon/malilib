@@ -36,7 +36,7 @@ public class SliderCallbackDouble implements ISliderCallback
 
         if (this.resetButton != null)
         {
-            this.resetButton.enabled = this.config.isModified();
+            this.resetButton.setEnabled(this.config.isModified());
         }
     }
 

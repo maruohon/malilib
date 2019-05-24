@@ -8,10 +8,8 @@ import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.config.options.ConfigBase;
 import fi.dy.masa.malilib.config.options.ConfigBoolean;
 import fi.dy.masa.malilib.config.options.ConfigOptionList;
-import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.ConfigButtonBoolean;
 import fi.dy.masa.malilib.gui.button.ConfigButtonOptionList;
-import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
 import fi.dy.masa.malilib.gui.widgets.WidgetHoverInfo;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
@@ -87,19 +85,17 @@ public class GuiKeybindSettings extends GuiDialogBase
     {
         this.clearElements();
 
-        Listener listener = new Listener(); // dummy
-
         int x = this.dialogLeft + 10;
         int y = this.dialogTop + 24;
 
         for (ConfigBase<?> config : this.configList)
         {
-            this.addConfig(x, y, this.labelWidth, this.configWidth, config, listener);
+            this.addConfig(x, y, this.labelWidth, this.configWidth, config);
             y += 22;
         }
     }
 
-    protected void addConfig(int x, int y, int labelWidth, int configWidth, ConfigBase<?> config, Listener listener)
+    protected void addConfig(int x, int y, int labelWidth, int configWidth, ConfigBase<?> config)
     {
         this.addLabel(x, y + 4, labelWidth, 10, 0xFFFFFFFF, I18n.format(config.getPrettyName()));
         this.addWidget(new WidgetHoverInfo(x, y + 2, labelWidth, 12, config.getComment()));
@@ -107,11 +103,11 @@ public class GuiKeybindSettings extends GuiDialogBase
 
         if (config instanceof ConfigBoolean)
         {
-            this.addButton(new ConfigButtonBoolean(x, y, configWidth, 20, (ConfigBoolean) config), listener);
+            this.addWidget(new ConfigButtonBoolean(x, y, configWidth, 20, (ConfigBoolean) config));
         }
         else if (config instanceof ConfigOptionList)
         {
-            this.addButton(new ConfigButtonOptionList(x, y, configWidth, 20, (ConfigOptionList) config), listener);
+            this.addWidget(new ConfigButtonOptionList(x, y, configWidth, 20, (ConfigOptionList) config));
         }
     }
 
@@ -172,19 +168,6 @@ public class GuiKeybindSettings extends GuiDialogBase
         else
         {
             return super.onKeyTyped(typedChar, keyCode);
-        }
-    }
-
-    protected static class Listener implements IButtonActionListener<ButtonGeneric>
-    {
-        @Override
-        public void actionPerformed(ButtonGeneric control)
-        {
-        }
-
-        @Override
-        public void actionPerformedWithButton(ButtonGeneric control, int mouseButton)
-        {
         }
     }
 }

@@ -243,7 +243,7 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
     protected void addConfigButtonEntry(int xReset, int yReset, IConfigResettable config, ButtonBase optionButton)
     {
         ButtonGeneric resetButton = this.createResetButton(xReset, yReset, config);
-        ConfigOptionChangeListenerButton<ButtonBase> listenerChange = new ConfigOptionChangeListenerButton<>(config, resetButton, null);
+        ConfigOptionChangeListenerButton listenerChange = new ConfigOptionChangeListenerButton(config, resetButton, null);
         ConfigOptionListenerResetConfig listenerReset = new ConfigOptionListenerResetConfig(config, new ConfigResetterButton(optionButton), resetButton, null);
 
         this.addButton(optionButton, listenerChange);
@@ -321,7 +321,7 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
         }
     }
 
-    public static class ListenerSliderToggle implements IButtonActionListener<ButtonGeneric>
+    public static class ListenerSliderToggle implements IButtonActionListener
     {
         protected final IConfigSlider config;
 
@@ -331,7 +331,7 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
         }
 
         @Override
-        public void actionPerformed(ButtonGeneric control)
+        public void actionPerformedWithButton(ButtonBase button, int mouseButton)
         {
             this.config.toggleUseSlider();
 
@@ -341,12 +341,6 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
             {
                 gui.initGui();
             }
-        }
-
-        @Override
-        public void actionPerformedWithButton(ButtonGeneric control, int mouseButton)
-        {
-            this.actionPerformed(control);
         }
     }
 }

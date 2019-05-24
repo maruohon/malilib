@@ -326,7 +326,7 @@ public abstract class ConfigPanelBase extends AbstractConfigPanel
         }
 
         @Override
-        public boolean onMouseScrolled(int mouseX, int mouseY, int mouseWheelDelta)
+        public boolean onMouseScrolled(int mouseX, int mouseY, double mouseWheelDelta)
         {
             return this.foregroundGui.onMouseScrolled(mouseX, mouseY, mouseWheelDelta);
         }

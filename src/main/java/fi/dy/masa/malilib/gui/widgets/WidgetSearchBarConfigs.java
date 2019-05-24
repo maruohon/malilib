@@ -42,10 +42,10 @@ public class WidgetSearchBarConfigs extends WidgetSearchBar
     {
         if (this.searchOpen)
         {
-            if (this.button.mousePressed(this.mc, mouseX, mouseY))
+            if (this.button.isMouseOver(mouseX, mouseY))
             {
                 boolean selectedPre = this.button.isSelected();
-                this.button.onMouseButtonClicked(mouseButton);
+                this.button.onMouseClicked(mouseX, mouseY, mouseButton);
 
                 if (selectedPre == false)
                 {
@@ -89,7 +89,7 @@ public class WidgetSearchBarConfigs extends WidgetSearchBar
 
         if (this.searchOpen)
         {
-            this.button.drawButton(this.mc, mouseX, mouseY, 0);
+            this.button.render(mouseX, mouseY, false);
         }
     }
 }

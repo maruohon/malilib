@@ -2,7 +2,7 @@ package fi.dy.masa.malilib.gui.widgets;
 
 import javax.annotation.Nullable;
 
-public class WidgetListEntryBase<TYPE> extends WidgetBase
+public class WidgetListEntryBase<TYPE> extends WidgetContainer
 {
     @Nullable protected final TYPE entry;
     protected final int listIndex;

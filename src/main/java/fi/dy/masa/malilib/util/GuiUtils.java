@@ -5,6 +5,7 @@ import fi.dy.masa.malilib.gui.GuiTextFieldDouble;
 import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
 import fi.dy.masa.malilib.gui.GuiTextFieldInteger;
 import fi.dy.masa.malilib.gui.MaLiLibIcons;
+import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
@@ -64,7 +65,7 @@ public class GuiUtils
 
         if (addButton)
         {
-            String hover = I18n.format("litematica.gui.button.hover.plus_minus_tip");
+            String hover = I18n.format("malilib.gui.button.hover.plus_minus_tip");
             ButtonGeneric button = new ButtonGeneric(x, y, MaLiLibIcons.BTN_PLUSMINUS_16, hover);
             gui.addButton(button, new ButtonListenerCoordinateInput(type, modifier));
         }
@@ -137,7 +138,7 @@ public class GuiUtils
         }
     }
 
-    public static class ButtonListenerCoordinateInput implements IButtonActionListener<ButtonGeneric>
+    public static class ButtonListenerCoordinateInput implements IButtonActionListener
     {
         protected final ICoordinateValueModifier modifier;
         protected final CoordinateType type;
@@ -149,12 +150,7 @@ public class GuiUtils
         }
 
         @Override
-        public void actionPerformed(ButtonGeneric control)
-        {
-        }
-
-        @Override
-        public void actionPerformedWithButton(ButtonGeneric control, int mouseButton)
+        public void actionPerformedWithButton(ButtonBase button, int mouseButton)
         {
             int amount = mouseButton == 1 ? -1 : 1;
             if (GuiScreen.isShiftKeyDown()) { amount *= 8; }

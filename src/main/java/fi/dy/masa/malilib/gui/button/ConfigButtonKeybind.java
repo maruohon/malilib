@@ -32,9 +32,9 @@ public class ConfigButtonKeybind extends ButtonGeneric
     }
 
     @Override
-    public void onMouseButtonClicked(int mouseButton)
+    protected boolean onMouseClickedImpl(int mouseX, int mouseY, int mouseButton)
     {
-        super.onMouseButtonClicked(mouseButton);
+        super.onMouseClickedImpl(mouseX, mouseY, mouseButton);
 
         if (this.selected)
         {
@@ -50,6 +50,8 @@ public class ConfigButtonKeybind extends ButtonGeneric
                 this.host.setActiveKeybindButton(this);
             }
         }
+
+        return true;
     }
 
     public void onKeyPressed(int keyCode)

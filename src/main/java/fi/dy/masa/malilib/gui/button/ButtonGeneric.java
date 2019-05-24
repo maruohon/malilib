@@ -4,13 +4,17 @@ import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import fi.dy.masa.malilib.gui.LeftRight;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
+import fi.dy.masa.malilib.render.RenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.util.ResourceLocation;
 
 public class ButtonGeneric extends ButtonBase
 {
+    protected static final ResourceLocation BUTTON_TEXTURES = new ResourceLocation("minecraft", "textures/gui/widgets.png");
+
     @Nullable
     protected final IGuiIcon icon;
     protected LeftRight alignment = LeftRight.LEFT;
@@ -48,6 +52,13 @@ public class ButtonGeneric extends ButtonBase
         this.setRenderDefaultBackground(false);
     }
 
+    @Override
+    public ButtonGeneric setActionListener(@Nullable IButtonActionListener actionListener)
+    {
+        this.actionListener = actionListener;
+        return this;
+    }
+
     public ButtonGeneric setTextCentered(boolean centered)
     {
         this.textCentered = centered;
@@ -73,14 +84,14 @@ public class ButtonGeneric extends ButtonBase
     }
 
     @Override
-    public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks)
+    public void render(int mouseX, int mouseY, boolean selected)
     {
         if (this.visible)
         {
             this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
 
-            FontRenderer fontRenderer = mc.fontRenderer;
-            int buttonStyle = this.getHoverState(this.hovered);
+            FontRenderer fontRenderer = this.mc.fontRenderer;
+            int buttonStyle = this.getTextureOffset(this.hovered);
 
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             GlStateManager.enableBlend();
@@ -89,12 +100,10 @@ public class ButtonGeneric extends ButtonBase
 
             if (this.renderDefaultBackground)
             {
-                mc.getTextureManager().bindTexture(BUTTON_TEXTURES);
-                this.drawTexturedModalRect(this.x, this.y, 0, 46 + buttonStyle * 20, this.width / 2, this.height);
-                this.drawTexturedModalRect(this.x + this.width / 2, this.y, 200 - this.width / 2, 46 + buttonStyle * 20, this.width / 2, this.height);
+                this.mc.getTextureManager().bindTexture(BUTTON_TEXTURES);
+                RenderUtils.drawTexturedRect(this.x, this.y, 0, 46 + buttonStyle * 20, this.width / 2, this.height);
+                RenderUtils.drawTexturedRect(this.x + this.width / 2, this.y, 200 - this.width / 2, 46 + buttonStyle * 20, this.width / 2, this.height);
             }
-
-            this.mouseDragged(mc, mouseX, mouseY);
 
             if (this.icon != null)
             {
@@ -103,8 +112,8 @@ public class ButtonGeneric extends ButtonBase
                 int y = this.y + (this.height - this.icon.getHeight()) / 2;
                 int u = this.icon.getU() + buttonStyle * this.icon.getWidth();
 
-                mc.getTextureManager().bindTexture(this.icon.getTexture());
-                this.drawTexturedModalRect(x, y, u, this.icon.getV(), this.icon.getWidth(), this.icon.getHeight());
+                this.mc.getTextureManager().bindTexture(this.icon.getTexture());
+                RenderUtils.drawTexturedRect(x, y, u, this.icon.getV(), this.icon.getWidth(), this.icon.getHeight());
             }
 
             if (StringUtils.isBlank(this.displayString) == false)
@@ -123,7 +132,7 @@ public class ButtonGeneric extends ButtonBase
 
                 if (this.textCentered)
                 {
-                    this.drawCenteredString(fontRenderer, this.displayString, this.x + this.width / 2, y, color);
+                    RenderUtils.drawCenteredString(fontRenderer, this.displayString, this.x + this.width / 2, y, color);
                 }
                 else
                 {
@@ -134,7 +143,7 @@ public class ButtonGeneric extends ButtonBase
                         x += this.icon.getWidth() + 2;
                     }
 
-                    this.drawString(fontRenderer, this.displayString, x, y, color);
+                    RenderUtils.drawString(fontRenderer, this.displayString, x, y, color);
                 }
             }
         }

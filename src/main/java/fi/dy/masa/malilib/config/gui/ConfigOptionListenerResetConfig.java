@@ -8,15 +8,15 @@ import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import net.minecraft.client.gui.GuiTextField;
 
-public class ConfigOptionListenerResetConfig implements IButtonActionListener<ButtonGeneric>
+public class ConfigOptionListenerResetConfig implements IButtonActionListener
 {
     private final IConfigResettable config;
     private final ButtonGeneric buttonReset;
     @Nullable private final ConfigResetterBase reset;
-    @Nullable private final ButtonPressDirtyListenerSimple<ButtonBase> dirtyListener;
+    @Nullable private final ButtonPressDirtyListenerSimple dirtyListener;
 
     public ConfigOptionListenerResetConfig(IConfigResettable config, @Nullable ConfigResetterBase reset,
-            ButtonGeneric buttonReset, @Nullable ButtonPressDirtyListenerSimple<ButtonBase> dirtyListener)
+            ButtonGeneric buttonReset, @Nullable ButtonPressDirtyListenerSimple dirtyListener)
     {
         this.config = config;
         this.reset = reset;
@@ -25,25 +25,19 @@ public class ConfigOptionListenerResetConfig implements IButtonActionListener<Bu
     }
 
     @Override
-    public void actionPerformed(ButtonGeneric control)
+    public void actionPerformedWithButton(ButtonBase button, int mouseButton)
     {
         this.config.resetToDefault();
-        this.buttonReset.enabled = this.config.isModified();
+        this.buttonReset.setEnabled(this.config.isModified());
 
         if (this.reset != null)
         {
             this.reset.resetConfigOption();
         }
-    }
-
-    @Override
-    public void actionPerformedWithButton(ButtonGeneric control, int mouseButton)
-    {
-        this.actionPerformed(control);
 
         if (this.dirtyListener != null)
         {
-            this.dirtyListener.actionPerformedWithButton(control, mouseButton);
+            this.dirtyListener.actionPerformedWithButton(button, mouseButton);
         }
     }
 

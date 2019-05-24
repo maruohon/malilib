@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.gui;
 
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
+import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.render.RenderUtils;
@@ -134,7 +135,7 @@ public abstract class GuiTextInputBase extends GuiDialogBase
 
     protected abstract boolean applyValue(String string);
 
-    protected static class ButtonListener implements IButtonActionListener<ButtonGeneric>
+    protected static class ButtonListener implements IButtonActionListener
     {
         private final GuiTextInputBase gui;
         private final ButtonType type;
@@ -146,7 +147,7 @@ public abstract class GuiTextInputBase extends GuiDialogBase
         }
 
         @Override
-        public void actionPerformed(ButtonGeneric control)
+        public void actionPerformedWithButton(ButtonBase button, int mouseButton)
         {
             if (this.type == ButtonType.OK)
             {
@@ -166,12 +167,6 @@ public abstract class GuiTextInputBase extends GuiDialogBase
                 this.gui.textField.setCursorPosition(0);
                 this.gui.textField.setFocused(true);
             }
-        }
-
-        @Override
-        public void actionPerformedWithButton(ButtonGeneric control, int mouseButton)
-        {
-            this.actionPerformed(control);
         }
     }
 

@@ -3,17 +3,29 @@ package fi.dy.masa.malilib.gui.button;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
+import fi.dy.masa.malilib.gui.widgets.WidgetBase;
+import fi.dy.masa.malilib.render.RenderUtils;
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.init.SoundEvents;
+import net.minecraft.util.ResourceLocation;
 
-public abstract class ButtonBase extends GuiButton
+public abstract class ButtonBase extends WidgetBase
 {
+    protected static final ResourceLocation BUTTON_TEXTURES = new ResourceLocation("minecraft", "textures/gui/widgets.png");
+
     protected final List<String> hoverStrings = new ArrayList<>();
     protected final ImmutableList<String> hoverHelp;
+    protected String displayString;
+    protected boolean enabled = true;
+    protected boolean visible = true;
+    protected boolean hovered;
     protected boolean hoverInfoRequiresShift;
+    @Nullable protected IButtonActionListener actionListener;
 
     public ButtonBase(int x, int y, int width, int height)
     {
@@ -22,24 +34,72 @@ public abstract class ButtonBase extends GuiButton
 
     public ButtonBase(int x, int y, int width, int height, String text)
     {
-        super(0, x, y, width, height, text);
+        this(x, y, width, height, text, null);
+    }
+
+    public ButtonBase(int x, int y, int width, int height, String text, @Nullable IButtonActionListener actionListener)
+    {
+        super(x, y, width, height, 0f);
 
         if (width == -1)
         {
-            this.width = Minecraft.getMinecraft().fontRenderer.getStringWidth(text) + 10;
+            this.width = this.mc.fontRenderer.getStringWidth(text) + 10;
         }
+        else
+        {
+            this.width = width;
+        }
+
+        this.displayString = text;
 
         this.hoverHelp = ImmutableList.of(I18n.format("malilib.gui.button.hover.hold_shift_for_info"));
     }
 
-    public int getButtonHeight()
+    public ButtonBase setActionListener(@Nullable IButtonActionListener actionListener)
     {
-        return this.height;
+        this.actionListener = actionListener;
+        return this;
     }
 
-    public void onMouseButtonClicked(int mouseButton)
+    public void setEnabled(boolean enabled)
     {
-        this.playPressSound(Minecraft.getMinecraft().getSoundHandler());
+        this.enabled = enabled;
+    }
+
+    public void setDisplayString(String text)
+    {
+        this.displayString = text;
+    }
+
+    public boolean isMouseOver()
+    {
+        return this.hovered;
+    }
+
+    @Override
+    protected boolean onMouseClickedImpl(int mouseX, int mouseY, int mouseButton)
+    {
+        this.mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+
+        if (this.actionListener != null)
+        {
+            this.actionListener.actionPerformedWithButton(this, mouseButton);
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean onMouseScrolledImpl(int mouseX, int mouseY, double mouseWheelDelta)
+    {
+        int mouseButton = mouseWheelDelta < 0 ? 1 : 0;
+        return this.onMouseClickedImpl(mouseX, mouseY, mouseButton);
+    }
+
+    @Override
+    public boolean isMouseOver(int mouseX, int mouseY)
+    {
+        return this.enabled && this.visible && super.isMouseOver(mouseX, mouseY);
     }
 
     public void updateDisplayString()
@@ -91,5 +151,20 @@ public abstract class ButtonBase extends GuiButton
     public void clearHoverStrings()
     {
         this.hoverStrings.clear();
+    }
+
+    protected int getTextureOffset(boolean isMouseOver)
+    {
+        return (this.enabled == false) ? 0 : (isMouseOver ? 2 : 1);
+    }
+
+    @Override
+    public void postRenderHovered(int mouseX, int mouseY, boolean selected)
+    {
+        if (this.hasHoverText() && this.isMouseOver())
+        {
+            RenderUtils.drawHoverText(mouseX, mouseY, this.getHoverStrings());
+            RenderHelper.disableStandardItemLighting();
+        }
     }
 }

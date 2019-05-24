@@ -1,8 +1,6 @@
 package fi.dy.masa.malilib.gui.button;
 
-import com.mumfrey.liteloader.modconfig.AbstractConfigPanel.ConfigOptionListener;
-
-public interface IButtonActionListener<T extends ButtonBase> extends ConfigOptionListener<T>
+public interface IButtonActionListener
 {
-    void actionPerformedWithButton(T control, int mouseButton);
+    void actionPerformedWithButton(ButtonBase button, int mouseButton);
 }
