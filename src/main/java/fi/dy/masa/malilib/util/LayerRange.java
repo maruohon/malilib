@@ -214,25 +214,34 @@ public class LayerRange
 
         if (layer != old)
         {
-            
+            this.markAffectedLayersForRenderUpdate();
+            this.layerSingle = layer;
+            this.markAffectedLayersForRenderUpdate();
         }
-        this.markAffectedLayersForRenderUpdate();
-        this.layerSingle = this.getWorldLimitsClampedValue(layer);
-        this.markAffectedLayersForRenderUpdate();
     }
 
     public void setLayerAbove(int layer)
     {
-        this.markAffectedLayersForRenderUpdate();
-        this.layerAbove = this.getWorldLimitsClampedValue(layer);
-        this.markAffectedLayersForRenderUpdate();
+        int old = this.layerAbove;
+        layer = this.getWorldLimitsClampedValue(layer);
+
+        if (layer != old)
+        {
+            this.layerAbove = layer;
+            this.updateLayersBetween(old, layer);
+        }
     }
 
     public void setLayerBelow(int layer)
     {
-        this.markAffectedLayersForRenderUpdate();
-        this.layerBelow = this.getWorldLimitsClampedValue(layer);
-        this.markAffectedLayersForRenderUpdate();
+        int old = this.layerBelow;
+        layer = this.getWorldLimitsClampedValue(layer);
+
+        if (layer != old)
+        {
+            this.layerBelow = layer;
+            this.updateLayersBetween(old, layer);
+        }
     }
 
     public boolean setLayerRangeMin(int layer)
@@ -240,43 +249,47 @@ public class LayerRange
         return this.setLayerRangeMin(layer, false);
     }
 
-    protected boolean setLayerRangeMin(int layer, boolean force)
-    {
-        int old = this.layerRangeMin;
-
-        this.markAffectedLayersForRenderUpdate();
-        this.layerRangeMin = this.getWorldLimitsClampedValue(layer);
-
-        if (force == false)
-        {
-            this.layerRangeMin = MathHelper.clamp(this.layerRangeMin, this.layerRangeMin, this.layerRangeMax);
-        }
-
-        this.markAffectedLayersForRenderUpdate();
-
-        return this.layerRangeMin != old;
-    }
-
     public boolean setLayerRangeMax(int layer)
     {
         return this.setLayerRangeMax(layer, false);
     }
 
-    protected boolean setLayerRangeMax(int layer, boolean force)
+    protected boolean setLayerRangeMin(int layer, boolean force)
     {
-        int old = this.layerRangeMax;
-
-        this.markAffectedLayersForRenderUpdate();
-        this.layerRangeMax = this.getWorldLimitsClampedValue(layer);
+        int old = this.layerRangeMin;
+        layer = this.getWorldLimitsClampedValue(layer);
 
         if (force == false)
         {
-            this.layerRangeMax = MathHelper.clamp(this.layerRangeMax, this.layerRangeMin, this.layerRangeMax);
+            layer = Math.min(layer, this.layerRangeMax);
         }
 
-        this.markAffectedLayersForRenderUpdate();
+        if (layer != old)
+        {
+            this.layerRangeMin = layer;
+            this.updateLayersBetween(old, layer);
+        }
 
-        return this.layerRangeMax != old;
+        return layer != old;
+    }
+
+    protected boolean setLayerRangeMax(int layer, boolean force)
+    {
+        int old = this.layerRangeMax;
+        layer = this.getWorldLimitsClampedValue(layer);
+
+        if (force == false)
+        {
+            layer = Math.max(layer, this.layerRangeMin);
+        }
+
+        if (layer != old)
+        {
+            this.layerRangeMax = layer;
+            this.updateLayersBetween(old, layer);
+        }
+
+        return layer != old;
     }
 
     public void setToPosition(Entity entity)
@@ -336,42 +349,50 @@ public class LayerRange
                 return;
             case SINGLE_LAYER:
             {
-                val1 = this.layerSingle - 1;
-                val2 = this.layerSingle + 1;
+                val1 = this.layerSingle;
+                val2 = this.layerSingle;
                 break;
             }
             case ALL_ABOVE:
             {
-                val1 = this.layerAbove - 1;
+                val1 = this.layerAbove;
                 val2 = this.axis == EnumFacing.Axis.Y ? WORLD_VERTICAL_SIZE_MAX : WORLD_HORIZONTAL_SIZE_MAX;
                 break;
             }
             case ALL_BELOW:
             {
                 val1 = this.axis == EnumFacing.Axis.Y ? WORLD_VERTICAL_SIZE_MIN : WORLD_HORIZONTAL_SIZE_MIN;
-                val2 = this.layerBelow + 1;
+                val2 = this.layerBelow;
                 break;
             }
             case LAYER_RANGE:
             {
-                val1 = this.layerRangeMin - 1;
-                val2 = this.layerRangeMax + 1;
+                val1 = this.layerRangeMin;
+                val2 = this.layerRangeMax;
                 break;
             }
             default:
                 return;
         }
 
+        this.updateLayersBetween(val1, val2);
+    }
+
+    protected void updateLayersBetween(int layer1, int layer2)
+    {
+        int layerMin = Math.min(layer1, layer2);
+        int layerMax = Math.max(layer1, layer2);
+
         switch (this.axis)
         {
             case X:
-                this.refresher.updateBetweenX(val1, val2);
+                this.refresher.updateBetweenX(layerMin, layerMax);
                 break;
             case Y:
-                this.refresher.updateBetweenY(val1, val2);
+                this.refresher.updateBetweenY(layerMin, layerMax);
                 break;
             case Z:
-                this.refresher.updateBetweenZ(val1, val2);
+                this.refresher.updateBetweenZ(layerMin, layerMax);
                 break;
         }
     }
