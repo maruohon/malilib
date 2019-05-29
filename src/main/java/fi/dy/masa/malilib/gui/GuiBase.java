@@ -10,11 +10,9 @@ import fi.dy.masa.malilib.config.IConfigBase;
 import fi.dy.masa.malilib.gui.Message.MessageType;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
-import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.gui.interfaces.IMessageConsumer;
 import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
 import fi.dy.masa.malilib.gui.widgets.WidgetBase;
-import fi.dy.masa.malilib.gui.widgets.WidgetCheckBox;
 import fi.dy.masa.malilib.gui.widgets.WidgetLabel;
 import fi.dy.masa.malilib.gui.wrappers.TextFieldWrapper;
 import fi.dy.masa.malilib.interfaces.IStringConsumer;
@@ -52,6 +50,8 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     public static final int COLOR_HORIZONTAL_BAR = 0xFF999999;
     protected static final int LEFT         = 20;
     protected static final int TOP          = 10;
+    protected final Minecraft mc = Minecraft.getMinecraft();
+    protected final FontRenderer textRenderer = Minecraft.getMinecraft().fontRenderer;
     private final List<ButtonBase> buttons = new ArrayList<>();
     private final List<WidgetBase> widgets = new ArrayList<>();
     private final List<TextFieldWrapper<? extends GuiTextField>> textFields = new ArrayList<>();
@@ -377,25 +377,17 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
             {
                 for (String line : lines)
                 {
-                    width = Math.max(width, this.fontRenderer.getStringWidth(line));
+                    width = Math.max(width, this.getStringWidth(line));
                 }
             }
 
-            WidgetLabel label = new WidgetLabel(x, y, width, height, this.zLevel, textColor, lines);
+            WidgetLabel label = new WidgetLabel(x, y, width, height, textColor, lines);
             this.addWidget(label);
 
             return label;
         }
 
         return null;
-    }
-
-    public WidgetCheckBox addCheckBox(int x, int y, int width, int height, int textColor, String text,
-            IGuiIcon widgetUnchecked, IGuiIcon widgetChecked, @Nullable String hoverInfo)
-    {
-        WidgetCheckBox checkbox = new WidgetCheckBox(x, y, this.zLevel, widgetUnchecked, widgetChecked, text, this.mc, hoverInfo);
-        this.addWidget(checkbox);
-        return checkbox;
     }
 
     protected boolean removeWidget(WidgetBase widget)
@@ -439,7 +431,7 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
 
     protected void drawTitle(int mouseX, int mouseY, float partialTicks)
     {
-        this.mc.fontRenderer.drawString(this.getTitle(), LEFT, TOP, COLOR_WHITE);
+        this.drawString(this.getTitle(), LEFT, TOP, COLOR_WHITE);
     }
 
     protected void drawContents(int mouseX, int mouseY, float partialTicks)
@@ -507,32 +499,28 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
         return mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + height;
     }
 
-    public static int getTextWidth(String text)
+    public int getStringWidth(String text)
     {
-        return Minecraft.getMinecraft().fontRenderer.getStringWidth(text);
+        return this.textRenderer.getStringWidth(text);
     }
 
-    public static int getMaxNameLength(List<? extends IConfigBase> configs)
+    public void drawString(String text, int x, int y, int color)
     {
-        FontRenderer font = Minecraft.getMinecraft().fontRenderer;
+        this.textRenderer.drawString(text, x, y, color);
+    }
+
+    public void drawStringWithShadow(String text, int x, int y, int color)
+    {
+        this.textRenderer.drawStringWithShadow(text, x, y, color);
+    }
+
+    public int getMaxPrettyNameLength(List<? extends IConfigBase> configs)
+    {
         int width = 0;
 
         for (IConfigBase config : configs)
         {
-            width = Math.max(width, font.getStringWidth(config.getName()));
-        }
-
-        return width;
-    }
-
-    public static int getMaxPrettyNameLength(List<? extends IConfigBase> configs)
-    {
-        FontRenderer font = Minecraft.getMinecraft().fontRenderer;
-        int width = 0;
-
-        for (IConfigBase config : configs)
-        {
-            width = Math.max(width, font.getStringWidth(config.getPrettyName()));
+            width = Math.max(width, this.getStringWidth(config.getPrettyName()));
         }
 
         return width;

@@ -7,13 +7,11 @@ import fi.dy.masa.malilib.config.gui.ConfigOptionChangeListenerTextField;
 import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.wrappers.TextFieldWrapper;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.resources.I18n;
 
 public abstract class WidgetConfigOptionBase<TYPE> extends WidgetListEntryBase<TYPE>
 {
-    protected final Minecraft mc;
     protected final WidgetListConfigOptionsBase<?, ?> parent;
     @Nullable protected TextFieldWrapper<? extends GuiTextField> textField = null;
     @Nullable protected String initialStringValue;
@@ -24,12 +22,11 @@ public abstract class WidgetConfigOptionBase<TYPE> extends WidgetListEntryBase<T
      */
     protected String lastAppliedValue;
 
-    public WidgetConfigOptionBase(int x, int y, int width, int height, float zLevel, Minecraft mc,
+    public WidgetConfigOptionBase(int x, int y, int width, int height,
             WidgetListConfigOptionsBase<?, ?> parent, TYPE entry, int listIndex)
     {
-        super(x, y, width, height, zLevel, entry, listIndex);
+        super(x, y, width, height, entry, listIndex);
 
-        this.mc = mc;
         this.parent = parent;
     }
 
@@ -49,7 +46,7 @@ public abstract class WidgetConfigOptionBase<TYPE> extends WidgetListEntryBase<T
 
     protected GuiTextField createTextField(int x, int y, int width, int height)
     {
-        return new GuiTextFieldGeneric(x + 2, y, width, height, this.mc.fontRenderer);
+        return new GuiTextFieldGeneric(x + 2, y, width, height, this.textRenderer);
     }
 
     protected void addTextField(GuiTextField field, ConfigOptionChangeListenerTextField listener)
@@ -62,7 +59,7 @@ public abstract class WidgetConfigOptionBase<TYPE> extends WidgetListEntryBase<T
     protected ButtonGeneric createResetButton(int x, int y, IConfigResettable config)
     {
         String labelReset = I18n.format("malilib.gui.button.reset.caps");
-        int w = this.mc.fontRenderer.getStringWidth(labelReset) + 10;
+        int w = this.getStringWidth(labelReset) + 10;
 
         ButtonGeneric resetButton = new ButtonGeneric(x, y, w, 20, labelReset);
         resetButton.setEnabled(config.isModified());

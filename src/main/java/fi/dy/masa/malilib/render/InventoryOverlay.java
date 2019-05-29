@@ -58,7 +58,7 @@ public class InventoryOverlay
 
         if (type == InventoryRenderType.FURNACE)
         {
-            mc.getTextureManager().bindTexture(TEXTURE_FURNACE);
+            RenderUtils.bindTexture(TEXTURE_FURNACE);
             RenderUtils.drawTexturedRectBatched(x     , y     ,   0,   0,   4,  64, buffer); // left (top)
             RenderUtils.drawTexturedRectBatched(x +  4, y     ,  84,   0,  92,   4, buffer); // top (right)
             RenderUtils.drawTexturedRectBatched(x     , y + 64,   0, 162,  92,   4, buffer); // bottom (left)
@@ -67,7 +67,7 @@ public class InventoryOverlay
         }
         else if (type == InventoryRenderType.BREWING_STAND)
         {
-            mc.getTextureManager().bindTexture(TEXTURE_BREWING_STAND);
+            RenderUtils.bindTexture(TEXTURE_BREWING_STAND);
             RenderUtils.drawTexturedRectBatched(x      , y     ,   0,   0,   4,  68, buffer); // left (top)
             RenderUtils.drawTexturedRectBatched(x +   4, y     ,  63,   0, 113,   4, buffer); // top (right)
             RenderUtils.drawTexturedRectBatched(x      , y + 68,   0, 162, 113,   4, buffer); // bottom (left)
@@ -76,7 +76,7 @@ public class InventoryOverlay
         }
         else if (type == InventoryRenderType.DISPENSER)
         {
-            mc.getTextureManager().bindTexture(TEXTURE_DISPENSER);
+            RenderUtils.bindTexture(TEXTURE_DISPENSER);
             RenderUtils.drawTexturedRectBatched(x     , y     ,   0,   0,   7,  61, buffer); // left (top)
             RenderUtils.drawTexturedRectBatched(x +  7, y     , 115,   0,  61,   7, buffer); // top (right)
             RenderUtils.drawTexturedRectBatched(x     , y + 61,   0, 159,  61,   7, buffer); // bottom (left)
@@ -85,7 +85,7 @@ public class InventoryOverlay
         }
         else if (type == InventoryRenderType.HOPPER)
         {
-            mc.getTextureManager().bindTexture(TEXTURE_HOPPER);
+            RenderUtils.bindTexture(TEXTURE_HOPPER);
             RenderUtils.drawTexturedRectBatched(x      , y     ,   0,   0,   7,  25, buffer); // left (top)
             RenderUtils.drawTexturedRectBatched(x +   7, y     ,  79,   0,  97,   7, buffer); // top (right)
             RenderUtils.drawTexturedRectBatched(x      , y + 25,   0, 126,  97,   7, buffer); // bottom (left)
@@ -95,7 +95,7 @@ public class InventoryOverlay
         // Most likely a Villager, or possibly a Llama
         else if (type == InventoryRenderType.VILLAGER)
         {
-            mc.getTextureManager().bindTexture(TEXTURE_DOUBLE_CHEST);
+            RenderUtils.bindTexture(TEXTURE_DOUBLE_CHEST);
             RenderUtils.drawTexturedRectBatched(x     , y     ,   0,   0,   7,  79, buffer); // left (top)
             RenderUtils.drawTexturedRectBatched(x +  7, y     , 133,   0,  43,   7, buffer); // top (right)
             RenderUtils.drawTexturedRectBatched(x     , y + 79,   0, 215,  43,   7, buffer); // bottom (left)
@@ -112,7 +112,7 @@ public class InventoryOverlay
         }
         else
         {
-            mc.getTextureManager().bindTexture(TEXTURE_DOUBLE_CHEST);
+            RenderUtils.bindTexture(TEXTURE_DOUBLE_CHEST);
 
             // Draw the slot backgrounds according to how many slots there actually are
             int rows = (int) (Math.ceil((double) totalSlots / (double) slotsPerRow));
@@ -144,7 +144,7 @@ public class InventoryOverlay
 
     public static void renderInventoryBackground27(int x, int y, BufferBuilder buffer, Minecraft mc)
     {
-        mc.getTextureManager().bindTexture(TEXTURE_SINGLE_CHEST);
+        RenderUtils.bindTexture(TEXTURE_SINGLE_CHEST);
         RenderUtils.drawTexturedRectBatched(x      , y     ,   0,   0,   7,  61, buffer); // left (top)
         RenderUtils.drawTexturedRectBatched(x +   7, y     ,   7,   0, 169,   7, buffer); // top (right)
         RenderUtils.drawTexturedRectBatched(x      , y + 61,   0, 159, 169,   7, buffer); // bottom (left)
@@ -154,7 +154,7 @@ public class InventoryOverlay
 
     public static void renderInventoryBackground54(int x, int y, BufferBuilder buffer, Minecraft mc)
     {
-        mc.getTextureManager().bindTexture(TEXTURE_DOUBLE_CHEST);
+        RenderUtils.bindTexture(TEXTURE_DOUBLE_CHEST);
         RenderUtils.drawTexturedRectBatched(x      , y      ,   0,   0,   7, 115, buffer); // left (top)
         RenderUtils.drawTexturedRectBatched(x +   7, y      ,   7,   0, 169,   7, buffer); // top (right)
         RenderUtils.drawTexturedRectBatched(x      , y + 115,   0, 215, 169,   7, buffer); // bottom (left)
@@ -170,7 +170,7 @@ public class InventoryOverlay
         BufferBuilder buffer = tessellator.getBuffer();
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
 
-        mc.getTextureManager().bindTexture(TEXTURE_DISPENSER);
+        RenderUtils.bindTexture(TEXTURE_DISPENSER);
 
         RenderUtils.drawTexturedRectBatched(x     , y     ,   0,   0, 50, 83, buffer); // top-left (main part)
         RenderUtils.drawTexturedRectBatched(x + 50, y     , 173,   0,  3, 83, buffer); // right edge top
@@ -188,7 +188,7 @@ public class InventoryOverlay
 
         tessellator.draw();
 
-        mc.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+        RenderUtils.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 
         if (entity.getItemStackFromSlot(EntityEquipmentSlot.OFFHAND).isEmpty())
         {

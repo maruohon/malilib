@@ -1,18 +1,41 @@
 package fi.dy.masa.malilib.gui.button;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.I18n;
 
 public class ButtonOnOff extends ButtonGeneric
 {
     protected final String translationKey;
 
-    public ButtonOnOff(int x, int y, int width, int height, String translationKey, boolean isCurrentlyOn, String... hoverStrings)
+    /**
+     * Pass -1 as the <b>width</b> to automatically set the width
+     * to a value where the ON and OFF buttons are the same width,
+     * using the given translation key.
+     * @param x
+     * @param y
+     * @param width
+     * @param rightAlign
+     * @param translationKey
+     * @param isCurrentlyOn
+     * @param hoverStrings
+     */
+    public ButtonOnOff(int x, int y, int width, boolean rightAlign, String translationKey, boolean isCurrentlyOn, String... hoverStrings)
     {
-        super(x, y, width, height, "", hoverStrings);
+        super(x, y, width, 20, "", hoverStrings);
 
         this.translationKey = translationKey;
         this.updateDisplayString(isCurrentlyOn);
+
+        if (width < 0)
+        {
+            int w1 = this.getStringWidth(ButtonOnOff.getDisplayStringForStatus(translationKey, true));
+            int w2 = this.getStringWidth(ButtonOnOff.getDisplayStringForStatus(translationKey, false));
+            this.width = Math.max(w1, w2) + 10;
+        }
+
+        if (rightAlign)
+        {
+            this.x = x - this.width;
+        }
     }
 
     public void updateDisplayString(boolean isCurrentlyOn)
@@ -24,32 +47,5 @@ public class ButtonOnOff extends ButtonGeneric
     {
         String strStatus = "malilib.gui.label_colored." + (isCurrentlyOn ? "on" : "off");
         return I18n.format(translationKey, I18n.format(strStatus));
-    }
-
-    /**
-     * Creates a button. Pass -1 as the <b>btnWidth</b> to automatically set the width
-     * to a value where the ON and OFF buttons are the same width, using the given translation key.
-     * @param x
-     * @param y
-     * @param btnWidth
-     * @param labelKey
-     * @return
-     */
-    public static ButtonOnOff createOnOff(int x, int y, int btnWidth, boolean rightAlign, String translationKey, boolean isCurrentlyOn, String... hoverStrings)
-    {
-        if (btnWidth < 0)
-        {
-            Minecraft mc = Minecraft.getMinecraft();
-            int w1 = mc.fontRenderer.getStringWidth(ButtonOnOff.getDisplayStringForStatus(translationKey, true));
-            int w2 = mc.fontRenderer.getStringWidth(ButtonOnOff.getDisplayStringForStatus(translationKey, false));
-            btnWidth = Math.max(w1, w2) + 10;
-        }
-
-        if (rightAlign)
-        {
-            x -= btnWidth;
-        }
-
-        return new ButtonOnOff(x, y, btnWidth, 20, translationKey, isCurrentlyOn, hoverStrings);
     }
 }

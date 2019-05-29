@@ -11,7 +11,7 @@ public class WidgetHoverInfo extends WidgetBase
 
     public WidgetHoverInfo(int x, int y, int width, int height, String key, Object... args)
     {
-        super(x, y, width, height, height);
+        super(x, y, width, height);
 
         this.setInfoLines(key, args);
     }

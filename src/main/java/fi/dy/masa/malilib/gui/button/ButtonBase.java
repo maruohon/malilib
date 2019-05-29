@@ -39,19 +39,14 @@ public abstract class ButtonBase extends WidgetBase
 
     public ButtonBase(int x, int y, int width, int height, String text, @Nullable IButtonActionListener actionListener)
     {
-        super(x, y, width, height, 0f);
+        super(x, y, width, height);
 
-        if (width == -1)
+        if (width < 0)
         {
-            this.width = this.mc.fontRenderer.getStringWidth(text) + 10;
-        }
-        else
-        {
-            this.width = width;
+            this.width = this.getStringWidth(text) + 10;
         }
 
         this.displayString = text;
-
         this.hoverHelp = ImmutableList.of(I18n.format("malilib.gui.button.hover.hold_shift_for_info"));
     }
 

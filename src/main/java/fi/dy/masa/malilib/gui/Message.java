@@ -14,7 +14,7 @@ public class Message
     private final int displayTime;
     private final int maxLineLength;
     private final List<String> messageLines = new ArrayList<>();
-    private final FontRenderer fontRenderer;
+    private final FontRenderer textRenderer;
 
     public Message(MessageType type, int displayTimeMs, int maxLineLength, String message, Object... args)
     {
@@ -22,7 +22,7 @@ public class Message
         this.created = System.currentTimeMillis();
         this.displayTime = displayTimeMs;
         this.maxLineLength = maxLineLength;
-        this.fontRenderer = Minecraft.getMinecraft().fontRenderer;
+        this.textRenderer = Minecraft.getMinecraft().fontRenderer;
 
         this.setMessage(I18n.format(message, args));
     }
@@ -34,13 +34,13 @@ public class Message
 
     public int getMessageHeight()
     {
-        return this.messageLines.size() * (this.fontRenderer.FONT_HEIGHT + 1) - 1 + 5;
+        return this.messageLines.size() * (this.textRenderer.FONT_HEIGHT + 1) - 1 + 5;
     }
 
     public void setMessage(String message)
     {
         this.messageLines.clear();
-        StringUtils.splitTextToLines(this.messageLines, message, this.maxLineLength, this.fontRenderer);
+        StringUtils.splitTextToLines(this.messageLines, message, this.maxLineLength, this.textRenderer);
     }
 
     /**
@@ -53,8 +53,8 @@ public class Message
 
         for (String text : this.messageLines)
         {
-            this.fontRenderer.drawString(format + text + GuiBase.TXT_RST, x, y, textColor);
-            y += this.fontRenderer.FONT_HEIGHT + 1;
+            this.textRenderer.drawString(format + text + GuiBase.TXT_RST, x, y, textColor);
+            y += this.textRenderer.FONT_HEIGHT + 1;
         }
 
         return y + 3;

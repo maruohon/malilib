@@ -9,17 +9,16 @@ import fi.dy.masa.malilib.hotkeys.KeyAction;
 import fi.dy.masa.malilib.hotkeys.KeybindMulti;
 import fi.dy.masa.malilib.hotkeys.KeybindSettings;
 import fi.dy.masa.malilib.hotkeys.KeybindSettings.Context;
-import net.minecraft.client.Minecraft;
 
 public class WidgetSearchBarConfigs extends WidgetSearchBar
 {
     protected final KeybindMulti searchKey;
     protected final ConfigButtonKeybind button;
 
-    public WidgetSearchBarConfigs(int x, int y, int width, int height, float zLevel, int searchBarOffsetX,
-            IGuiIcon iconSearch, LeftRight iconAlignment, Minecraft mc)
+    public WidgetSearchBarConfigs(int x, int y, int width, int height, int searchBarOffsetX,
+            IGuiIcon iconSearch, LeftRight iconAlignment)
     {
-        super(x, y + 3, width - 160, 14, zLevel, searchBarOffsetX, iconSearch, iconAlignment, mc);
+        super(x, y + 3, width - 160, 14, searchBarOffsetX, iconSearch, iconAlignment);
 
         KeybindSettings settings = KeybindSettings.create(Context.ANY, KeyAction.BOTH, true, true, false, false, false);
         this.searchKey = KeybindMulti.fromStorageString("", settings);

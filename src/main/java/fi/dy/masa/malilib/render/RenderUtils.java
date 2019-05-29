@@ -53,6 +53,11 @@ public class RenderUtils
     //private static final Vec3d LIGHT0_POS = (new Vec3d( 0.2D, 1.0D, -0.7D)).normalize();
     //private static final Vec3d LIGHT1_POS = (new Vec3d(-0.2D, 1.0D,  0.7D)).normalize();
 
+    public static void bindTexture(ResourceLocation texture)
+    {
+        Minecraft.getMinecraft().getTextureManager().bindTexture(texture);
+    }
+
     public static void drawOutlinedBox(int x, int y, int width, int height, int colorBg, int colorBorder)
     {
         drawOutlinedBox(x, y, width, height, colorBg, colorBorder, 0f);
@@ -931,7 +936,7 @@ public class RenderUtils
             GlStateManager.pushMatrix();
             GlStateManager.disableLighting();
             GlStateManager.color(1, 1, 1, 1);
-            mc.getTextureManager().bindTexture(fi.dy.masa.malilib.render.RenderUtils.TEXTURE_MAP_BACKGROUND);
+            bindTexture(fi.dy.masa.malilib.render.RenderUtils.TEXTURE_MAP_BACKGROUND);
 
             int y1 = y - dimensions - 20;
             int y2 = y1 + dimensions;
@@ -1041,7 +1046,7 @@ public class RenderUtils
         Minecraft mc = Minecraft.getMinecraft();
 
         GlStateManager.pushMatrix();
-        mc.getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+        bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
         mc.getTextureManager().getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).setBlurMipmap(false, false);
         GlStateManager.enableRescaleNormal();
         GlStateManager.enableAlpha();
@@ -1091,7 +1096,7 @@ public class RenderUtils
         {
             Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder bufferbuilder = tessellator.getBuffer();
-            bufferbuilder.begin(7, DefaultVertexFormats.ITEM);
+            bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.ITEM);
 
             for (EnumFacing enumfacing : EnumFacing.values())
             {

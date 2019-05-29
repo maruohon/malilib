@@ -9,26 +9,22 @@ import fi.dy.masa.malilib.gui.widgets.WidgetFileBrowserBase.DirectoryEntry;
 import fi.dy.masa.malilib.gui.widgets.WidgetFileBrowserBase.DirectoryEntryType;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.FileUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 
 public class WidgetDirectoryEntry extends WidgetListEntryBase<DirectoryEntry>
 {
     protected final IDirectoryNavigator navigator;
     protected final DirectoryEntry entry;
-    protected final Minecraft mc;
     protected final IFileBrowserIconProvider iconProvider;
     protected final boolean isOdd;
 
-    public WidgetDirectoryEntry(int x, int y, int width, int height, float zLevel, boolean isOdd,
-            DirectoryEntry entry, int listIndex, Minecraft mc,
-            IDirectoryNavigator navigator, IFileBrowserIconProvider iconProvider)
+    public WidgetDirectoryEntry(int x, int y, int width, int height, boolean isOdd, DirectoryEntry entry,
+            int listIndex, IDirectoryNavigator navigator, IFileBrowserIconProvider iconProvider)
     {
-        super(x, y, width, height, zLevel, entry, listIndex);
+        super(x, y, width, height, entry, listIndex);
 
         this.isOdd = isOdd;
         this.entry = entry;
-        this.mc = mc;
         this.navigator = navigator;
         this.iconProvider = iconProvider;
     }
@@ -74,7 +70,7 @@ public class WidgetDirectoryEntry extends WidgetListEntryBase<DirectoryEntry>
         if (icon != null)
         {
             GlStateManager.color(1, 1, 1, 1);
-            this.mc.getTextureManager().bindTexture(icon.getTexture());
+            this.bindTexture(icon.getTexture());
             icon.renderAt(this.x, this.y + (this.height - icon.getHeight()) / 2, this.zLevel + 1, false, false);
         }
 
@@ -99,8 +95,8 @@ public class WidgetDirectoryEntry extends WidgetListEntryBase<DirectoryEntry>
             RenderUtils.drawOutline(this.x, this.y, this.width, this.height, 0xEEEEEEEE);
         }
 
-        int yOffset = (this.height - this.mc.fontRenderer.FONT_HEIGHT) / 2 + 1;
-        this.mc.fontRenderer.drawString(this.getDisplayName(), this.x + xOffset + 2, this.y + yOffset, 0xFFFFFFFF);
+        int yOffset = (this.height - this.textRenderer.FONT_HEIGHT) / 2 + 1;
+        this.drawString(this.getDisplayName(), this.x + xOffset + 2, this.y + yOffset, 0xFFFFFFFF);
 
         super.render(mouseX, mouseY, selected);
     }

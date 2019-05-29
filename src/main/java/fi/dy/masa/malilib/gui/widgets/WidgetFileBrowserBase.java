@@ -106,8 +106,8 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
         int x = this.posX + 2;
         int y = this.posY + 4;
 
-        this.directoryNavigationWidget = new WidgetDirectoryNavigation(x, y, this.browserEntryWidth, 14, this.zLevel,
-                this.currentDirectory, this.getRootDirectory(), this.mc, this, this.iconProvider);
+        this.directoryNavigationWidget = new WidgetDirectoryNavigation(x, y, this.browserEntryWidth, 14,
+                this.currentDirectory, this.getRootDirectory(), this, this.iconProvider);
         this.browserEntriesOffsetY = this.directoryNavigationWidget.getHeight() + 3;
         this.widgetSearchBar = this.directoryNavigationWidget;
     }
@@ -234,7 +234,7 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
     protected WidgetDirectoryEntry createListEntryWidget(int x, int y, int listIndex, boolean isOdd, DirectoryEntry entry)
     {
         return new WidgetDirectoryEntry(x, y, this.browserEntryWidth, this.getBrowserEntryHeightFor(entry),
-                this.zLevel, isOdd, entry, listIndex, this.mc, this, this.iconProvider);
+                isOdd, entry, listIndex, this, this.iconProvider);
     }
 
     protected boolean currentDirectoryIsRoot()

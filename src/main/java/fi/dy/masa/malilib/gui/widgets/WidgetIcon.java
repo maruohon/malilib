@@ -2,26 +2,23 @@ package fi.dy.masa.malilib.gui.widgets;
 
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.render.RenderUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 
 public class WidgetIcon extends WidgetBase
 {
-    protected final Minecraft mc;
     protected final IGuiIcon icon;
 
-    public WidgetIcon(int x, int y, float zLevel, IGuiIcon icon, Minecraft mc)
+    public WidgetIcon(int x, int y, IGuiIcon icon)
     {
-        super(x, y, icon.getWidth(), icon.getHeight(), zLevel);
+        super(x, y, icon.getWidth(), icon.getHeight());
 
-        this.mc = mc;
         this.icon = icon;
     }
 
     public void render(boolean enabled, boolean selected)
     {
         GlStateManager.color(1f, 1f, 1f, 1f);
-        this.mc.getTextureManager().bindTexture(this.icon.getTexture());
+        this.bindTexture(this.icon.getTexture());
         this.icon.renderAt(this.x, this.y, this.zLevel, enabled, selected);
 
         if (selected)

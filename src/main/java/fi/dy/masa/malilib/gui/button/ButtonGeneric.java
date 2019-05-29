@@ -5,8 +5,6 @@ import org.apache.commons.lang3.StringUtils;
 import fi.dy.masa.malilib.gui.LeftRight;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.render.RenderUtils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;
@@ -20,6 +18,16 @@ public class ButtonGeneric extends ButtonBase
     protected LeftRight alignment = LeftRight.LEFT;
     protected boolean textCentered;
     protected boolean renderDefaultBackground = true;
+
+    public ButtonGeneric(int x, int y, int width, boolean rightAlign, String translationKey, Object... args)
+    {
+        this(x, y, width, 20, I18n.format(translationKey, args));
+
+        if (rightAlign)
+        {
+            this.x = x - this.width;
+        }
+    }
 
     public ButtonGeneric(int x, int y, int width, int height, String text, String... hoverStrings)
     {
@@ -90,7 +98,6 @@ public class ButtonGeneric extends ButtonBase
         {
             this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
 
-            FontRenderer fontRenderer = this.mc.fontRenderer;
             int buttonStyle = this.getTextureOffset(this.hovered);
 
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
@@ -100,7 +107,7 @@ public class ButtonGeneric extends ButtonBase
 
             if (this.renderDefaultBackground)
             {
-                this.mc.getTextureManager().bindTexture(BUTTON_TEXTURES);
+                this.bindTexture(BUTTON_TEXTURES);
                 RenderUtils.drawTexturedRect(this.x, this.y, 0, 46 + buttonStyle * 20, this.width / 2, this.height);
                 RenderUtils.drawTexturedRect(this.x + this.width / 2, this.y, 200 - this.width / 2, 46 + buttonStyle * 20, this.width / 2, this.height);
             }
@@ -112,7 +119,7 @@ public class ButtonGeneric extends ButtonBase
                 int y = this.y + (this.height - this.icon.getHeight()) / 2;
                 int u = this.icon.getU() + buttonStyle * this.icon.getWidth();
 
-                this.mc.getTextureManager().bindTexture(this.icon.getTexture());
+                this.bindTexture(this.icon.getTexture());
                 RenderUtils.drawTexturedRect(x, y, u, this.icon.getV(), this.icon.getWidth(), this.icon.getHeight());
             }
 
@@ -132,7 +139,7 @@ public class ButtonGeneric extends ButtonBase
 
                 if (this.textCentered)
                 {
-                    RenderUtils.drawCenteredString(fontRenderer, this.displayString, this.x + this.width / 2, y, color);
+                    RenderUtils.drawCenteredString(this.textRenderer, this.displayString, this.x + this.width / 2, y, color);
                 }
                 else
                 {
@@ -143,27 +150,9 @@ public class ButtonGeneric extends ButtonBase
                         x += this.icon.getWidth() + 2;
                     }
 
-                    RenderUtils.drawString(fontRenderer, this.displayString, x, y, color);
+                    this.drawStringWithShadow(this.displayString, x, y, color);
                 }
             }
         }
-    }
-
-    public static ButtonGeneric createGeneric(int x, int y, int width, boolean rightAlign, String translationKey, Object... args)
-    {
-        String label = I18n.format(translationKey, args);
-
-        if (width < 0)
-        {
-            Minecraft mc = Minecraft.getMinecraft();
-            width = mc.fontRenderer.getStringWidth(label) + 10;
-        }
-
-        if (rightAlign)
-        {
-            x -= width;
-        }
-
-        return new ButtonGeneric(x, y, width, 20, label);
     }
 }

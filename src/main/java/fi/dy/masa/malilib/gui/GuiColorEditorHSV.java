@@ -12,7 +12,6 @@ import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.shader.ShaderProgram;
 import fi.dy.masa.malilib.util.StringUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -57,7 +56,6 @@ public class GuiColorEditorHSV extends GuiDialogBase
 
     public GuiColorEditorHSV(IConfigInteger config, @Nullable IDialogHandler dialogHandler, GuiScreen parent)
     {
-        this.mc = Minecraft.getMinecraft();
         this.config = config;
         this.dialogHandler = dialogHandler;
 
@@ -116,7 +114,7 @@ public class GuiColorEditorHSV extends GuiDialogBase
         y += this.createComponentElements(xTextField, y, xLabel, Element.B);
 
         this.addLabel(this.xH - 26, y + 3, 12, 12, 0xFFFFFF, "HEX:");
-        this.textFieldFullColor = new GuiTextFieldGeneric(this.xH, y + 1, 68, 14, this.mc.fontRenderer);
+        this.textFieldFullColor = new GuiTextFieldGeneric(this.xH, y + 1, 68, 14, this.textRenderer);
         this.textFieldFullColor.setMaxStringLength(12);
         this.addTextField(this.textFieldFullColor, new TextFieldListener(null, this));
 
@@ -129,7 +127,7 @@ public class GuiColorEditorHSV extends GuiDialogBase
     protected int createComponentElements(int x, int y, int xLabel, Element element)
     {
         TextFieldListener listener = new TextFieldListener(element, this);
-        GuiTextFieldInteger textField = new GuiTextFieldInteger(x, y, 32, 12, this.mc.fontRenderer);
+        GuiTextFieldInteger textField = new GuiTextFieldInteger(x, y, 32, 12, this.textRenderer);
 
         switch (element)
         {
@@ -186,7 +184,7 @@ public class GuiColorEditorHSV extends GuiDialogBase
     @Override
     protected void drawTitle(int mouseX, int mouseY, float partialTicks)
     {
-        this.drawString(this.fontRenderer, this.title, this.dialogLeft + 10, this.dialogTop + 6, COLOR_WHITE);
+        this.drawStringWithShadow(this.title, this.dialogLeft + 10, this.dialogTop + 6, COLOR_WHITE);
     }
 
     @Override

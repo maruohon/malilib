@@ -91,7 +91,7 @@ public class GuiScrollBar
             if (this.barTexture != null && barHeight >= 4)
             {
                 GlStateManager.color(1f, 1f, 1f, 1f);
-                this.mc.getTextureManager().bindTexture(this.barTexture.getTexture());
+                RenderUtils.bindTexture(this.barTexture.getTexture());
                 int u = this.barTexture.getU();
                 int v = this.barTexture.getV();
                 int w = this.barTexture.getWidth();

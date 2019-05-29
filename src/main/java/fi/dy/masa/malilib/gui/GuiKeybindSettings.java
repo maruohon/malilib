@@ -16,7 +16,6 @@ import fi.dy.masa.malilib.hotkeys.IKeybind;
 import fi.dy.masa.malilib.hotkeys.KeyAction;
 import fi.dy.masa.malilib.hotkeys.KeybindSettings;
 import fi.dy.masa.malilib.render.RenderUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 
@@ -38,7 +37,6 @@ public class GuiKeybindSettings extends GuiDialogBase
 
     public GuiKeybindSettings(IKeybind keybind, String name, @Nullable IDialogHandler dialogHandler, GuiScreen parent)
     {
-        this.mc = Minecraft.getMinecraft();
         this.keybind = keybind;
         this.keybindName = name;
         this.dialogHandler = dialogHandler;
@@ -68,11 +66,11 @@ public class GuiKeybindSettings extends GuiDialogBase
         this.cfgCancel.setBooleanValue(settings.shouldCancel());
 
         this.configList = ImmutableList.of(this.cfgActivateOn, this.cfgContext, this.cfgAllowEmpty, this.cfgAllowExtra, this.cfgOrderSensitive, this.cfgExclusive, this.cfgCancel);
-        this.labelWidth = GuiBase.getMaxPrettyNameLength(this.configList);
+        this.labelWidth = this.getMaxPrettyNameLength(this.configList);
         this.configWidth = 100;
 
         int totalWidth = this.labelWidth + this.configWidth + 30;
-        totalWidth = Math.max(totalWidth, this.mc.fontRenderer.getStringWidth(this.title) + 20);
+        totalWidth = Math.max(totalWidth, this.getStringWidth(this.title) + 20);
 
         this.setWidthAndHeight(totalWidth, this.configList.size() * 22 + 30);
         this.centerOnScreen();
@@ -148,7 +146,7 @@ public class GuiKeybindSettings extends GuiDialogBase
     @Override
     protected void drawTitle(int mouseX, int mouseY, float partialTicks)
     {
-        this.drawString(this.fontRenderer, this.title, this.dialogLeft + 10, this.dialogTop + 6, COLOR_WHITE);
+        this.drawStringWithShadow(this.title, this.dialogLeft + 10, this.dialogTop + 6, COLOR_WHITE);
     }
 
     @Override

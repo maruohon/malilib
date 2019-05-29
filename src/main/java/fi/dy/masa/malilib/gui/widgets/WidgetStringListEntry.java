@@ -8,9 +8,9 @@ public class WidgetStringListEntry extends WidgetListEntryBase<String>
 {
     private final boolean isOdd;
 
-    public WidgetStringListEntry(int x, int y, int width, int height, float zLevel, boolean isOdd, String entry, int listIndex)
+    public WidgetStringListEntry(int x, int y, int width, int height, boolean isOdd, String entry, int listIndex)
     {
-        super(x, y, width, height, zLevel, entry, listIndex);
+        super(x, y, width, height, entry, listIndex);
 
         this.isOdd = isOdd;
     }
@@ -40,8 +40,8 @@ public class WidgetStringListEntry extends WidgetListEntryBase<String>
             RenderUtils.drawOutline(this.x, this.y, this.width, this.height, 0xFF90D0F0);
         }
 
-        int yOffset = (this.height - this.mc.fontRenderer.FONT_HEIGHT) / 2 + 1;
-        this.mc.fontRenderer.drawString(this.entry, this.x + 2, this.y + yOffset, 0xFFFFFFFF);
+        int yOffset = (this.height - this.textRenderer.FONT_HEIGHT) / 2 + 1;
+        this.drawStringWithShadow(this.entry, this.x + 2, this.y + yOffset, 0xFFFFFFFF);
 
         super.render(mouseX, mouseY, selected);
     }

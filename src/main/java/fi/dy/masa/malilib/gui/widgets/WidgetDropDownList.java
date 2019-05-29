@@ -39,24 +39,23 @@ public class WidgetDropDownList<T> extends WidgetBase
     @Nullable protected T selectedEntry;
 
     public WidgetDropDownList(int x, int y, int width, int height, int maxHeight,
-            int maxVisibleEntries, float zLevel, List<T> entries)
+            int maxVisibleEntries, List<T> entries)
     {
-        this(x, y, width, height, maxHeight, maxVisibleEntries, zLevel, entries, null);
+        this(x, y, width, height, maxHeight, maxVisibleEntries, entries, null);
     }
 
     public WidgetDropDownList(int x, int y, int width, int height, int maxHeight,
-            int maxVisibleEntries, float zLevel, List<T> entries, @Nullable IStringRetriever<T> stringRetriever)
+            int maxVisibleEntries, List<T> entries, @Nullable IStringRetriever<T> stringRetriever)
     {
-        super(x, y, width, height, zLevel);
+        super(x, y, width, height);
 
-        Minecraft mc = Minecraft.getMinecraft();
-        this.width = this.getRequiredWidth(width, entries, mc);
+        this.width = this.getRequiredWidth(width, entries, this.mc);
         this.maxHeight = maxHeight;
         this.entries = entries;
         this.filteredEntries = new ArrayList<>();
         this.stringRetriever = stringRetriever;
 
-        ScaledResolution sr = new ScaledResolution(mc);
+        ScaledResolution sr = new ScaledResolution(this.mc);
         int v = Math.min(maxVisibleEntries, entries.size());
         v = Math.min(v, maxHeight / height);
         v = Math.min(v, (sr.getScaledHeight() - y) / height);
@@ -67,7 +66,7 @@ public class WidgetDropDownList<T> extends WidgetBase
         this.scrollBar.setMaxValue(entries.size() - this.maxVisibleEntries);
 
         TextFieldListener listener = new TextFieldListener(this);
-        this.searchBar = new TextFieldWrapper<>(new GuiTextFieldGeneric(x + 1, y - 18, this.width - 2, 16, mc.fontRenderer), listener);
+        this.searchBar = new TextFieldWrapper<>(new GuiTextFieldGeneric(x + 1, y - 18, this.width - 2, 16, this.textRenderer), listener);
         this.searchBar.getTextField().setFocused(true);
 
         this.updateFilteredEntries();
@@ -90,7 +89,7 @@ public class WidgetDropDownList<T> extends WidgetBase
 
             for (int i = 0; i < entries.size(); ++i)
             {
-                width = Math.max(width, mc.fontRenderer.getStringWidth(this.getDisplayString(entries.get(i))) + 20);
+                width = Math.max(width, this.getStringWidth(this.getDisplayString(entries.get(i))) + 20);
             }
         }
 
@@ -257,10 +256,10 @@ public class WidgetDropDownList<T> extends WidgetBase
         RenderUtils.drawOutlinedBox(this.x + 1, this.y, this.width - 2, this.height - 1, 0xFF101010, 0xFFC0C0C0);
 
         String str = this.getDisplayString(this.getSelectedEntry());
-        int fh = this.mc.fontRenderer.FONT_HEIGHT;
+        int fh = this.textRenderer.FONT_HEIGHT;
         int txtX = this.x + 4;
         int txtY = this.y + this.height / 2 - fh / 2;
-        this.mc.fontRenderer.drawString(str, txtX, txtY, 0xFFE0E0E0);
+        this.drawString(str, txtX, txtY, 0xFFE0E0E0);
         txtY += this.height + 1;
         int scrollWidth = 10;
 
@@ -289,7 +288,7 @@ public class WidgetDropDownList<T> extends WidgetBase
 
                 RenderUtils.drawRect(this.x, y, this.width - scrollWidth, this.height, bg);
                 str = this.getDisplayString(list.get(i));
-                this.mc.fontRenderer.drawString(str, txtX, txtY, 0xFFE0E0E0);
+                this.drawString(str, txtX, txtY, 0xFFE0E0E0);
                 y += this.height;
                 txtY += this.height;
             }
@@ -303,7 +302,7 @@ public class WidgetDropDownList<T> extends WidgetBase
         }
         else
         {
-            this.mc.getTextureManager().bindTexture(MaLiLibIcons.TEXTURE);
+            this.bindTexture(MaLiLibIcons.TEXTURE);
             MaLiLibIcons i = MaLiLibIcons.ARROW_DOWN;
             RenderUtils.drawTexturedRect(this.x + this.width - 16, this.y + 2, i.getU() + i.getWidth(), i.getV(), i.getWidth(), i.getHeight());
         }

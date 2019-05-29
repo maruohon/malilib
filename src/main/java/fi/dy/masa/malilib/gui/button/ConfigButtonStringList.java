@@ -35,7 +35,7 @@ public class ConfigButtonStringList extends ButtonGeneric
         }
         else
         {
-            this.mc.displayGuiScreen(new GuiStringListEdit(this.config, this.configGui, null, mc.currentScreen));
+            this.mc.displayGuiScreen(new GuiStringListEdit(this.config, this.configGui, null, this.mc.currentScreen));
         }
 
         return true;

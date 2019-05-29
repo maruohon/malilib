@@ -9,7 +9,6 @@ import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
@@ -21,10 +20,10 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
     protected final int listIndex;
     protected final boolean isOdd;
 
-    public WidgetStringListEditEntry(int x, int y, int width, int height, float zLevel,
-            int listIndex, boolean isOdd, String initialValue, String defaultValue, Minecraft mc, WidgetListStringListEdit parent)
+    public WidgetStringListEditEntry(int x, int y, int width, int height,
+            int listIndex, boolean isOdd, String initialValue, String defaultValue, WidgetListStringListEdit parent)
     {
-        super(x, y, width, height, zLevel, mc, parent, initialValue, listIndex);
+        super(x, y, width, height, parent, initialValue, listIndex);
 
         this.listIndex = listIndex;
         this.isOdd = isOdd;
@@ -101,7 +100,7 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
     protected ButtonGeneric createResetButton(int x, int y, GuiTextField textField)
     {
         String labelReset = I18n.format("malilib.gui.button.reset.caps");
-        int w = this.mc.fontRenderer.getStringWidth(labelReset) + 10;
+        int w = this.getStringWidth(labelReset) + 10;
 
         ButtonGeneric resetButton = new ButtonGeneric(x, y, w, 20, labelReset);
         resetButton.setEnabled(textField.getText().equals(this.defaultValue) == false);

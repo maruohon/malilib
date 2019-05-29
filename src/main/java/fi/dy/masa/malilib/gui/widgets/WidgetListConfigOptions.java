@@ -14,8 +14,6 @@ import fi.dy.masa.malilib.gui.MaLiLibIcons;
 import fi.dy.masa.malilib.hotkeys.IHotkey;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
 import fi.dy.masa.malilib.util.AlphaNumComparator;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 
 public class WidgetListConfigOptions extends WidgetListConfigOptionsBase<ConfigOptionWrapper, WidgetConfigOption>
 {
@@ -30,14 +28,14 @@ public class WidgetListConfigOptions extends WidgetListConfigOptionsBase<ConfigO
 
         if (useKeybindSearch)
         {
-            this.widgetSearchConfigs = new WidgetSearchBarConfigs(x + 2, y + 4, width - 14, 20, zLevel, 0, MaLiLibIcons.SEARCH, LeftRight.LEFT, Minecraft.getMinecraft());
+            this.widgetSearchConfigs = new WidgetSearchBarConfigs(x + 2, y + 4, width - 14, 20, 0, MaLiLibIcons.SEARCH, LeftRight.LEFT);
             this.widgetSearchBar = this.widgetSearchConfigs;
             this.browserEntriesOffsetY = 23;
         }
         else
         {
             this.widgetSearchConfigs = null;
-            this.widgetSearchBar = new WidgetSearchBar(x + 2, y + 4, width - 14, 14, zLevel, 0, MaLiLibIcons.SEARCH, LeftRight.LEFT, Minecraft.getMinecraft());
+            this.widgetSearchBar = new WidgetSearchBar(x + 2, y + 4, width - 14, 14, 0, MaLiLibIcons.SEARCH, LeftRight.LEFT);
             this.browserEntriesOffsetY = 17;
         }
     }
@@ -51,7 +49,7 @@ public class WidgetListConfigOptions extends WidgetListConfigOptionsBase<ConfigO
     @Override
     protected void reCreateListEntryWidgets()
     {
-        this.maxLabelWidth = getMaxNameLengthWrapped(this.listContents);
+        this.maxLabelWidth = this.getMaxNameLengthWrapped(this.listContents);
         super.reCreateListEntryWidgets();
     }
 
@@ -102,20 +100,19 @@ public class WidgetListConfigOptions extends WidgetListConfigOptionsBase<ConfigO
     @Override
     protected WidgetConfigOption createListEntryWidget(int x, int y, int listIndex, boolean isOdd, ConfigOptionWrapper wrapper)
     {
-        return new WidgetConfigOption(x, y, this.browserEntryWidth, this.browserEntryHeight, this.zLevel,
-                this.maxLabelWidth, this.configWidth, wrapper, listIndex, this.parent, this.mc, this);
+        return new WidgetConfigOption(x, y, this.browserEntryWidth, this.browserEntryHeight,
+                this.maxLabelWidth, this.configWidth, wrapper, listIndex, this.parent, this);
     }
 
-    public static int getMaxNameLengthWrapped(List<ConfigOptionWrapper> wrappers)
+    public int getMaxNameLengthWrapped(List<ConfigOptionWrapper> wrappers)
     {
-        FontRenderer font = Minecraft.getMinecraft().fontRenderer;
         int width = 0;
 
         for (ConfigOptionWrapper wrapper : wrappers)
         {
             if (wrapper.getType() == ConfigOptionWrapper.Type.CONFIG)
             {
-                width = Math.max(width, font.getStringWidth(wrapper.getConfig().getName()));
+                width = Math.max(width, this.getStringWidth(wrapper.getConfig().getName()));
             }
         }
 

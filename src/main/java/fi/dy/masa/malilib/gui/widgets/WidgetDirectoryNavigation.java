@@ -11,7 +11,6 @@ import fi.dy.masa.malilib.gui.interfaces.IFileBrowserIconProvider;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.DirectoryCreator;
 import fi.dy.masa.malilib.util.FileUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
 
@@ -19,28 +18,26 @@ public class WidgetDirectoryNavigation extends WidgetSearchBar
 {
     protected final File currentDir;
     protected final File rootDir;
-    protected final Minecraft mc;
     protected final IDirectoryNavigator navigator;
     protected final WidgetIcon iconRoot;
     protected final WidgetIcon iconUp;
     protected final WidgetIcon iconCreateDir;
 
-    public WidgetDirectoryNavigation(int x, int y, int width, int height, float zLevel,
-            File currentDir, File rootDir, Minecraft mc, IDirectoryNavigator navigator, IFileBrowserIconProvider iconProvider)
+    public WidgetDirectoryNavigation(int x, int y, int width, int height,
+            File currentDir, File rootDir, IDirectoryNavigator navigator, IFileBrowserIconProvider iconProvider)
     {
-        super(x, y, width, height, zLevel, - iconProvider.getIconRoot().getWidth(), iconProvider.getIconSearch(), LeftRight.RIGHT, mc);
+        super(x, y, width, height, - iconProvider.getIconRoot().getWidth(), iconProvider.getIconSearch(), LeftRight.RIGHT);
 
         this.currentDir = currentDir;
         this.rootDir = rootDir;
-        this.mc = mc;
         this.navigator = navigator;
-        this.iconRoot = new WidgetIcon(x, y + 1, zLevel, iconProvider.getIconRoot(), mc);
+        this.iconRoot = new WidgetIcon(x, y + 1, iconProvider.getIconRoot());
         x += this.iconRoot.getWidth() + 2;
 
-        this.iconUp = new WidgetIcon(x, y + 1, zLevel, iconProvider.getIconUp(), mc);
+        this.iconUp = new WidgetIcon(x, y + 1, iconProvider.getIconUp());
         x += this.iconUp.getWidth() + 2;
 
-        this.iconCreateDir = new WidgetIcon(x, y + 1, zLevel, iconProvider.getIconCreateDirectory(), mc);
+        this.iconCreateDir = new WidgetIcon(x, y + 1, iconProvider.getIconCreateDirectory());
     }
 
     @Override
@@ -114,9 +111,9 @@ public class WidgetDirectoryNavigation extends WidgetSearchBar
             GuiBase.drawRect(pathStartX, this.y, this.x + this.width, this.y + this.height, 0x20FFFFFF);
 
             int textColor = 0xC0C0C0C0;
-            int maxLen = (this.width - 40) / this.mc.fontRenderer.getStringWidth("a") - 4; // FIXME
+            int maxLen = (this.width - 40) / this.getStringWidth("a") - 4; // FIXME
             String path = FileUtils.getJoinedTrailingPathElements(this.currentDir, this.rootDir, maxLen, " / ");
-            this.mc.fontRenderer.drawString(path, pathStartX + 3, this.y + 3, textColor);
+            this.drawString(path, pathStartX + 3, this.y + 3, textColor);
         }
     }
 

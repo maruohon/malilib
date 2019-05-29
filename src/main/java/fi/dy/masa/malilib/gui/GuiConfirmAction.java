@@ -13,7 +13,6 @@ import fi.dy.masa.malilib.interfaces.ICompletionListener;
 import fi.dy.masa.malilib.interfaces.IConfirmationListener;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
@@ -26,14 +25,13 @@ public class GuiConfirmAction extends GuiDialogBase implements ICompletionListen
 
     public GuiConfirmAction(int width, String titleKey, IConfirmationListener listener, @Nullable GuiScreen parent, String messageKey, Object... args)
     {
-        this.mc = Minecraft.getMinecraft();
         this.setParent(parent);
         this.title = I18n.format(titleKey);
         this.listener = listener;
         this.useTitleHierarchy = false;
         this.zLevel = 1f;
 
-        StringUtils.splitTextToLines(this.messageLines, I18n.format(messageKey, args), width - 30, this.mc.fontRenderer);
+        StringUtils.splitTextToLines(this.messageLines, I18n.format(messageKey, args), width - 30, this.textRenderer);
 
         this.setWidthAndHeight(width, this.getMessageHeight() + 50);
         this.centerOnScreen();
@@ -61,7 +59,7 @@ public class GuiConfirmAction extends GuiDialogBase implements ICompletionListen
 
     public int getMessageHeight()
     {
-        return this.messageLines.size() * (this.mc.fontRenderer.FONT_HEIGHT + 1) - 1 + 5;
+        return this.messageLines.size() * (this.textRenderer.FONT_HEIGHT + 1) - 1 + 5;
     }
 
     protected int getButtonWidth()
@@ -70,7 +68,7 @@ public class GuiConfirmAction extends GuiDialogBase implements ICompletionListen
 
         for (ButtonType type : ButtonType.values())
         {
-            width = Math.max(width, this.mc.fontRenderer.getStringWidth(type.getDisplayName()) + 10);
+            width = Math.max(width, this.getStringWidth(type.getDisplayName()) + 10);
         }
 
         return width;
@@ -102,13 +100,13 @@ public class GuiConfirmAction extends GuiDialogBase implements ICompletionListen
         RenderUtils.drawOutlinedBox(this.dialogLeft, this.dialogTop, this.dialogWidth, this.dialogHeight, 0xF0000000, COLOR_HORIZONTAL_BAR);
 
         // Draw the title
-        this.drawString(this.fontRenderer, this.getTitle(), this.dialogLeft + 10, this.dialogTop + 4, COLOR_WHITE);
+        this.drawStringWithShadow(this.getTitle(), this.dialogLeft + 10, this.dialogTop + 4, COLOR_WHITE);
         int y = this.dialogTop + 20;
 
         for (String text : this.messageLines)
         {
-            this.fontRenderer.drawString(text, this.dialogLeft + 10, y, this.textColor);
-            y += this.fontRenderer.FONT_HEIGHT + 1;
+            this.drawString(text, this.dialogLeft + 10, y, this.textColor);
+            y += this.textRenderer.FONT_HEIGHT + 1;
         }
 
         this.drawButtons(mouseX, mouseY, partialTicks);

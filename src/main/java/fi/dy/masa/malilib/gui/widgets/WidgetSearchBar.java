@@ -4,7 +4,6 @@ import org.lwjgl.input.Keyboard;
 import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
 import fi.dy.masa.malilib.gui.LeftRight;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ChatAllowedCharacters;
@@ -16,18 +15,18 @@ public class WidgetSearchBar extends WidgetBase
     protected final GuiTextFieldGeneric searchBox;
     protected boolean searchOpen;
 
-    public WidgetSearchBar(int x, int y, int width, int height, float zLevel,
-            int searchBarOffsetX, IGuiIcon iconSearch, LeftRight iconAlignment, Minecraft mc)
+    public WidgetSearchBar(int x, int y, int width, int height,
+            int searchBarOffsetX, IGuiIcon iconSearch, LeftRight iconAlignment)
     {
-        super(x, y, width, height, zLevel);
+        super(x, y, width, height);
 
         int iw = iconSearch.getWidth();
         int ix = iconAlignment == LeftRight.RIGHT ? x + width - iw - 1 : x + 2;
         int tx = iconAlignment == LeftRight.RIGHT ? x - searchBarOffsetX + 3 : x + iw + 6 + searchBarOffsetX;
-        this.iconSearch = new WidgetIcon(ix, y + 1, zLevel, iconSearch, mc);
+        this.iconSearch = new WidgetIcon(ix, y + 1, iconSearch);
         this.iconAlignment = iconAlignment;
-        this.searchBox = new GuiTextFieldGeneric(tx, y, width - iw - 8 - Math.abs(searchBarOffsetX), height, mc.fontRenderer);
-        this.searchBox.setZLevel(zLevel);
+        this.searchBox = new GuiTextFieldGeneric(tx, y, width - iw - 8 - Math.abs(searchBarOffsetX), height, this.textRenderer);
+        this.searchBox.setZLevel(this.zLevel);
     }
 
     public String getFilter()

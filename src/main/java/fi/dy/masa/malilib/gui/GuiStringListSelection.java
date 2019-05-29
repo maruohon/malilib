@@ -67,7 +67,7 @@ public class GuiStringListSelection extends GuiListBase<String, WidgetStringList
 
         if (width == -1)
         {
-            width = this.mc.fontRenderer.getStringWidth(label) + 10;
+            width = this.getStringWidth(label) + 10;
         }
 
         ButtonGeneric button = new ButtonGeneric(x, y, width, 20, label);

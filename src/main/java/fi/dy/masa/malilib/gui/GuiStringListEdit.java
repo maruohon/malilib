@@ -34,7 +34,6 @@ public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEditE
         this.config = config;
         this.configGui = configGui;
         this.dialogHandler = dialogHandler;
-        this.mc = Minecraft.getMinecraft();
         this.title = I18n.format("malilib.gui.title.string_list_edit", config.getName());
 
         // When we have a dialog handler, then we are inside the Liteloader config menu.
@@ -145,7 +144,7 @@ public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEditE
     @Override
     protected void drawTitle(int mouseX, int mouseY, float partialTicks)
     {
-        this.drawString(this.mc.fontRenderer, this.title, this.dialogLeft + 10, this.dialogTop + 6, COLOR_WHITE);
+        this.drawStringWithShadow(this.title, this.dialogLeft + 10, this.dialogTop + 6, COLOR_WHITE);
     }
 
     @Override

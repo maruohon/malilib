@@ -15,9 +15,9 @@ public class WidgetSlider extends WidgetBase
     protected int lastMouseX;
     protected boolean dragging;
 
-    public WidgetSlider(int x, int y, int width, int height, float zLevel, ISliderCallback callback)
+    public WidgetSlider(int x, int y, int width, int height, ISliderCallback callback)
     {
-        super(x, y, width, height, zLevel);
+        super(x, y, width, height);
 
         this.callback = callback;
         int usableWidth = this.width - 4;
@@ -49,7 +49,7 @@ public class WidgetSlider extends WidgetBase
             this.lastMouseX = mouseX;
         }
 
-        this.mc.getTextureManager().bindTexture(VANILLA_WIDGETS);
+        this.bindTexture(VANILLA_WIDGETS);
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 
         RenderUtils.drawTexturedRect(this.x + 1             , this.y,   0, 46, this.width - 6, 20);
@@ -64,8 +64,8 @@ public class WidgetSlider extends WidgetBase
         RenderUtils.drawTexturedRect(this.x + 2 + (int) (relPos * usableWidth) + s, this.y, 200 - s, 66, s, 20);
 
         String str = this.callback.getFormattedDisplayValue();
-        int w = this.mc.fontRenderer.getStringWidth(str);
-        this.mc.fontRenderer.drawString(str, this.x + (this.width / 2) - w / 2, this.y + 6, 0xFFFFFFA0);
+        int w = this.getStringWidth(str);
+        this.drawString(str, this.x + (this.width / 2) - w / 2, this.y + 6, 0xFFFFFFA0);
     }
 
     protected double getRelativePosition(int mouseX)

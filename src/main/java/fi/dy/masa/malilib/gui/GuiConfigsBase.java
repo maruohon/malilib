@@ -18,7 +18,6 @@ import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
 import fi.dy.masa.malilib.gui.interfaces.IKeybindConfigGui;
 import fi.dy.masa.malilib.gui.widgets.WidgetConfigOption;
 import fi.dy.masa.malilib.gui.widgets.WidgetListConfigOptions;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 
 public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, WidgetConfigOption, WidgetListConfigOptions> implements IKeybindConfigGui
@@ -37,7 +36,6 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
     {
         super(listX, listY);
 
-        this.mc = Minecraft.getMinecraft();
         this.modId = modId;
         this.parentScreen = parent;
     }

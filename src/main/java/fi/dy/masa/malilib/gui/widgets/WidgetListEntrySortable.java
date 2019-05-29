@@ -9,9 +9,9 @@ public abstract class WidgetListEntrySortable<TYPE> extends WidgetListEntryBase<
 {
     protected int columnCount = 2;
 
-    public WidgetListEntrySortable(int x, int y, int width, int height, float zLevel, @Nullable TYPE entry, int listIndex)
+    public WidgetListEntrySortable(int x, int y, int width, int height, @Nullable TYPE entry, int listIndex)
     {
-        super(x, y, width, height, zLevel, entry, listIndex);
+        super(x, y, width, height, entry, listIndex);
     }
 
     protected abstract int getColumnPosX(int column);
@@ -54,7 +54,7 @@ public abstract class WidgetListEntrySortable<TYPE> extends WidgetListEntryBase<
 
         GlStateManager.color(1f, 1f, 1f, 1f);
         IGuiIcon icon = reverse ? iconReverse : iconNatural;
-        this.mc.getTextureManager().bindTexture(icon.getTexture());
+        this.bindTexture(icon.getTexture());
         icon.renderAt(iconX, this.y + 3, this.zLevel, true, sortColumn == mouseOverColumn);
 
         for (int i = 0; i < this.getColumnCount(); ++i)

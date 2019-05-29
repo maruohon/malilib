@@ -5,7 +5,6 @@ import java.util.List;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderHelper;
 
 public abstract class WidgetContainer extends WidgetBase
@@ -13,37 +12,39 @@ public abstract class WidgetContainer extends WidgetBase
     protected final List<WidgetBase> subWidgets = new ArrayList<>();
     @Nullable protected WidgetBase hoveredSubWidget = null;
 
-    public WidgetContainer(int x, int y, int width, int height, float zLevel)
+    public WidgetContainer(int x, int y, int width, int height)
     {
-        super(x, y, width, height, zLevel);
+        super(x, y, width, height);
     }
 
-    protected void addWidget(WidgetBase widget)
+    protected <T extends WidgetBase> T addWidget(T widget)
     {
         this.subWidgets.add(widget);
+
+        return widget;
     }
 
-    protected void addButton(ButtonBase button, IButtonActionListener listener)
+    protected <T extends ButtonBase> T addButton(T button, IButtonActionListener listener)
     {
         button.setActionListener(listener);
         this.addWidget(button);
+
+        return button;
     }
 
     protected void addLabel(int x, int y, int width, int height, int textColor, String... lines)
     {
         if (lines != null && lines.length >= 1)
         {
-            Minecraft mc = Minecraft.getMinecraft();
-
             if (width == -1)
             {
                 for (String line : lines)
                 {
-                    width = Math.max(width, mc.fontRenderer.getStringWidth(line));
+                    width = Math.max(width, this.getStringWidth(line));
                 }
             }
 
-            WidgetLabel label = new WidgetLabel(x, y, width, height, this.zLevel, textColor, lines);
+            WidgetLabel label = new WidgetLabel(x, y, width, height, textColor, lines);
             this.addWidget(label);
         }
     }

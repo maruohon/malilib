@@ -27,6 +27,6 @@ public class WidgetListStringSelection extends WidgetListBase<String, WidgetStri
     @Override
     protected WidgetStringListEntry createListEntryWidget(int x, int y, int listIndex, boolean isOdd, String entry)
     {
-        return new WidgetStringListEntry(x, y, this.browserEntryWidth, this.getBrowserEntryHeightFor(entry), this.zLevel, isOdd, entry, listIndex);
+        return new WidgetStringListEntry(x, y, this.browserEntryWidth, this.getBrowserEntryHeightFor(entry), isOdd, entry, listIndex);
     }
 }
