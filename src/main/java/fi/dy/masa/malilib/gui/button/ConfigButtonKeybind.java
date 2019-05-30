@@ -1,31 +1,42 @@
 package fi.dy.masa.malilib.gui.button;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
+import fi.dy.masa.malilib.event.InputEventHandler;
+import fi.dy.masa.malilib.event.InputEventHandler.KeybindCategory;
+import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.interfaces.IKeybindConfigGui;
+import fi.dy.masa.malilib.hotkeys.IHotkey;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
 import fi.dy.masa.malilib.util.KeyCodes;
-import net.minecraft.util.text.TextFormatting;
 
-public class ConfigButtonKeybind extends ButtonBase
+
+public class ConfigButtonKeybind extends ButtonGeneric
 {
-    private final IKeybindConfigGui host;
-    private final IKeybind keybind;
-    private boolean selected;
-    private boolean firstKey;
+    @Nullable protected final IKeybindConfigGui host;
+    protected final IKeybind keybind;
+    protected final List<String> overlapInfo = new ArrayList<>();
+    protected boolean selected;
+    protected boolean firstKey;
 
-    public ConfigButtonKeybind(int id, int x, int y, int width, int height, IKeybind keybind, IKeybindConfigGui host)
+    public ConfigButtonKeybind(int x, int y, int width, int height, IKeybind keybind, @Nullable IKeybindConfigGui host)
     {
-        super(id, x, y, width, height);
+        super(x, y, width, height, "");
 
         this.host = host;
         this.keybind = keybind;
 
         this.updateDisplayString();
+        this.setHoverInfoRequiresShift(true);
     }
 
     @Override
-    public void onMouseButtonClicked(int mouseButton)
+    protected boolean onMouseClickedImpl(int mouseX, int mouseY, int mouseButton)
     {
+        super.onMouseClickedImpl(mouseX, mouseY, mouseButton);
+
         if (this.selected)
         {
             this.addKey(mouseButton - 100);
@@ -34,8 +45,14 @@ public class ConfigButtonKeybind extends ButtonBase
         else if (mouseButton == 0)
         {
             this.selected = true;
-            this.host.setActiveKeybindButton(this);
+
+            if (this.host != null)
+            {
+                this.host.setActiveKeybindButton(this);
+            }
         }
+
+        return true;
     }
 
     public void onKeyPressed(int keyCode)
@@ -44,8 +61,15 @@ public class ConfigButtonKeybind extends ButtonBase
         {
             if (keyCode == KeyCodes.KEY_ESCAPE)
             {
-                this.keybind.clearKeys();
-                this.host.setActiveKeybindButton(null);
+                if (this.firstKey)
+                {
+                    this.keybind.clearKeys();
+                }
+
+                if (this.host != null)
+                {
+                    this.host.setActiveKeybindButton(null);
+                }
             }
             else
             {
@@ -80,22 +104,82 @@ public class ConfigButtonKeybind extends ButtonBase
         this.updateDisplayString();
     }
 
+    public boolean isSelected()
+    {
+        return this.selected;
+    }
+
     public void updateDisplayString()
     {
         String valueStr = this.keybind.getKeysDisplayString();
 
-        if (this.keybind.isValid() == false || StringUtils.isBlank(valueStr))
+        if (this.keybind.getKeys().size() == 0 || StringUtils.isBlank(valueStr))
         {
             valueStr = "NONE";
         }
 
+        this.clearHoverStrings();
+
         if (this.selected)
         {
-            this.displayString = "> " + TextFormatting.YELLOW + valueStr + TextFormatting.RESET + " <";
+            this.displayString = "> " + GuiBase.TXT_YELLOW + valueStr + GuiBase.TXT_RST + " <";
         }
         else
         {
-            this.displayString = valueStr;
+            this.updateConflicts();
+
+            if (this.overlapInfo.size() > 0)
+            {
+                this.displayString = GuiBase.TXT_GOLD + valueStr + GuiBase.TXT_RST;
+            }
+            else
+            {
+                this.displayString = valueStr;
+            }
+        }
+    }
+
+    protected void updateConflicts()
+    {
+        List<KeybindCategory> categories = InputEventHandler.getInstance().getKeybindCategories();
+        List<IHotkey> overlaps = new ArrayList<>();
+        this.overlapInfo.clear();
+
+        for (KeybindCategory category : categories)
+        {
+            List<? extends IHotkey> hotkeys = category.getHotkeys();
+
+            for (IHotkey hotkey : hotkeys)
+            {
+                if (this.keybind.overlaps(hotkey.getKeybind()))
+                {
+                    overlaps.add(hotkey);
+                }
+            }
+
+            if (overlaps.size() > 0)
+            {
+                if (this.overlapInfo.size() > 0)
+                {
+                    this.overlapInfo.add("-----");
+                }
+
+                this.overlapInfo.add(category.getModName());
+                this.overlapInfo.add(" > " + category.getCategory());
+
+                for (IHotkey overlap : overlaps)
+                {
+                    String key = " [ " + GuiBase.TXT_GOLD + overlap.getKeybind().getKeysDisplayString() + GuiBase.TXT_RST + " ]";
+                    this.overlapInfo.add("    - " + overlap.getName() + key);
+                }
+
+                overlaps.clear();
+            }
+        }
+
+        if (this.overlapInfo.size() > 0)
+        {
+            this.setHoverStrings(this.overlapInfo);
         }
     }
 }

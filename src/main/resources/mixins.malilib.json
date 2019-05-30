@@ -5,7 +5,9 @@
     "minVersion": "0.6",
     "client": [
         "IGuiTextField",
+        "IMixinKeyBinding",
         "MixinGameRenderer",
+        "MixinGuiScreen",
         "MixinKeyboardListener",
         "MixinMinecraft",
         "MixinMouseHelper"

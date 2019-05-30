@@ -9,6 +9,25 @@ import net.minecraft.util.EnumFacing;
 public class BlockUtils
 {
     /**
+     * Returns the first PropertyDirection property from the provided state, if any.
+     * @param state
+     * @return the first PropertyDirection, or null if there are no such properties
+     */
+    @Nullable
+    public static DirectionProperty getFirstDirectionProperty(IBlockState state)
+    {
+        for (IProperty<?> prop : state.getProperties())
+        {
+            if (prop instanceof DirectionProperty)
+            {
+                return (DirectionProperty) prop;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Returns the EnumFacing value of the first found PropertyDirection
      * type blockstate property in the given state, if any.
      * If there are no PropertyDirection properties, then null is returned.
@@ -18,14 +37,7 @@ public class BlockUtils
     @Nullable
     public static EnumFacing getFirstPropertyFacingValue(IBlockState state)
     {
-        for (IProperty<?> prop : state.getProperties())
-        {
-            if (prop instanceof DirectionProperty)
-            {
-                return state.get((DirectionProperty) prop);
-            }
-        }
-
-        return null;
+        DirectionProperty prop = getFirstDirectionProperty(state);
+        return prop != null ? state.get(prop) : null;
     }
 }

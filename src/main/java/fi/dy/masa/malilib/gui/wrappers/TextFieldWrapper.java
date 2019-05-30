@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.gui.wrappers;
 
 import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
+import fi.dy.masa.malilib.util.KeyCodes;
 import net.minecraft.client.gui.GuiTextField;
 
 public class TextFieldWrapper<T extends GuiTextField>
@@ -22,6 +23,16 @@ public class TextFieldWrapper<T extends GuiTextField>
     public ITextFieldListener<T> getListener()
     {
         return this.listener;
+    }
+
+    public boolean isFocused()
+    {
+        return this.textField.isFocused();
+    }
+
+    public void setFocused(boolean isFocused)
+    {
+        this.textField.setFocused(isFocused);
     }
 
     public void onGuiClosed()
@@ -49,9 +60,13 @@ public class TextFieldWrapper<T extends GuiTextField>
 
     public boolean onKeyTyped(int keyCode, int scanCode, int modifiers)
     {
-        if (this.textField.keyPressed(keyCode, scanCode, modifiers))
+        String textPre = this.textField.getText();
+
+        if (this.textField.isFocused() && this.textField.keyPressed(keyCode, scanCode, modifiers))
         {
-            if (this.listener != null)
+            if (this.listener != null &&
+                (keyCode == KeyCodes.KEY_ENTER || keyCode == KeyCodes.KEY_TAB ||
+                 this.textField.getText().equals(textPre) == false))
             {
                 this.listener.onTextChange(this.textField);
             }
@@ -64,9 +79,11 @@ public class TextFieldWrapper<T extends GuiTextField>
 
     public boolean onCharTyped(char charIn, int modifiers)
     {
-        if (this.textField.charTyped(charIn, modifiers))
+        String textPre = this.textField.getText();
+
+        if (this.textField.isFocused() && this.textField.charTyped(charIn, modifiers))
         {
-            if (this.listener != null)
+            if (this.listener != null && this.textField.getText().equals(textPre) == false)
             {
                 this.listener.onTextChange(this.textField);
             }

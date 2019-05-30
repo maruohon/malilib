@@ -6,7 +6,6 @@ import fi.dy.masa.malilib.gui.GuiStringListEdit;
 import fi.dy.masa.malilib.gui.interfaces.IConfigGui;
 import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
 import fi.dy.masa.malilib.util.StringUtils;
-import net.minecraft.client.Minecraft;
 
 public class ConfigButtonStringList extends ButtonGeneric
 {
@@ -14,9 +13,9 @@ public class ConfigButtonStringList extends ButtonGeneric
     private final IConfigGui configGui;
     @Nullable private final IDialogHandler dialogHandler;
 
-    public ConfigButtonStringList(int id, int x, int y, int width, int height, IConfigStringList config, IConfigGui configGui, @Nullable IDialogHandler dialogHandler)
+    public ConfigButtonStringList(int x, int y, int width, int height, IConfigStringList config, IConfigGui configGui, @Nullable IDialogHandler dialogHandler)
     {
-        super(id, x, y, width, height, "");
+        super(x, y, width, height, "");
 
         this.config = config;
         this.configGui = configGui;
@@ -26,11 +25,9 @@ public class ConfigButtonStringList extends ButtonGeneric
     }
 
     @Override
-    public void onMouseButtonClicked(int mouseButton)
+    protected boolean onMouseClickedImpl(int mouseX, int mouseY, int mouseButton)
     {
-        Minecraft mc = Minecraft.getInstance();
-
-        this.playPressSound(mc.getSoundHandler());
+        super.onMouseClickedImpl(mouseX, mouseY, mouseButton);
 
         if (this.dialogHandler != null)
         {
@@ -38,8 +35,10 @@ public class ConfigButtonStringList extends ButtonGeneric
         }
         else
         {
-            mc.displayGuiScreen(new GuiStringListEdit(this.config, this.configGui, null, mc.currentScreen));
+            this.mc.displayGuiScreen(new GuiStringListEdit(this.config, this.configGui, null, this.mc.currentScreen));
         }
+
+        return true;
     }
 
     @Override

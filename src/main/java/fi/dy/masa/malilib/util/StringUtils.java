@@ -4,15 +4,16 @@ import java.io.File;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
 
 public class StringUtils
@@ -57,14 +58,12 @@ public class StringUtils
         );
     }
 
-    public static void printBooleanConfigToggleMessage(String prettyName, boolean newValue)
-    {
-        String pre = newValue ? TextFormatting.GREEN.toString() : TextFormatting.RED.toString();
-        String status = I18n.format("malilib.message.value." + (newValue ? "on" : "off"));
-        String message = I18n.format("malilib.message.toggled", prettyName, pre + status + TextFormatting.RESET);
-        printActionbarMessage(message);
-    }
-
+    /**
+     * @deprecated since 0.10.0. Use the same method in InfoUtils instead.
+     * @param key
+     * @param args
+     */
+    @Deprecated
     public static void printActionbarMessage(String key, Object... args)
     {
         Minecraft.getInstance().ingameGUI.addChatMessage(ChatType.GAME_INFO, new TextComponentTranslation(key, args));
@@ -76,6 +75,79 @@ public class StringUtils
         name.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, file.getAbsolutePath()));
         name.getStyle().setUnderlined(Boolean.valueOf(true));
         player.sendMessage(new TextComponentTranslation(messageKey, name));
+    }
+
+    /**
+     * Splits the given string into lines up to maxLineLength long
+     * @param linesOut
+     * @param textIn
+     * @param maxLineLength
+     * @param font
+     */
+    public static void splitTextToLines(List<String> linesOut, String textIn, int maxLineLength, FontRenderer font)
+    {
+        String[] lines = textIn.split("\\\\n");
+
+        for (String line : lines)
+        {
+            String[] parts = line.split(" ");
+            StringBuilder sb = new StringBuilder(256);
+            final int spaceWidth = font.getStringWidth(" ");
+            int lineWidth = 0;
+
+            for (String str : parts)
+            {
+                int width = font.getStringWidth(str);
+
+                if ((lineWidth + width + spaceWidth) > maxLineLength)
+                {
+                    if (lineWidth > 0)
+                    {
+                        linesOut.add(sb.toString());
+                        sb = new StringBuilder(256);
+                        lineWidth = 0;
+                    }
+
+                    // Long continuous string
+                    if (width > maxLineLength)
+                    {
+                        final int chars = str.length();
+
+                        for (int i = 0; i < chars; ++i)
+                        {
+                            String c = str.substring(i, i + 1);
+                            lineWidth += font.getStringWidth(c);
+
+                            if (lineWidth > maxLineLength)
+                            {
+                                linesOut.add(sb.toString());
+                                sb = new StringBuilder(256);
+                                lineWidth = 0;
+                            }
+
+                            sb.append(c);
+                        }
+
+                        linesOut.add(sb.toString());
+                        sb = new StringBuilder(256);
+                        lineWidth = 0;
+                    }
+                }
+
+                if (lineWidth > 0)
+                {
+                    sb.append(" ");
+                }
+
+                if (width <= maxLineLength)
+                {
+                    sb.append(str);
+                    lineWidth += width + spaceWidth;
+                }
+            }
+
+            linesOut.add(sb.toString());
+        }
     }
 
     public static String getClampedDisplayStringStrlen(List<String> list, final int maxWidth, String prefix, String suffix)
@@ -191,5 +263,32 @@ public class StringUtils
         sb.append(suffix);
 
         return sb.toString();
+    }
+
+    @Nullable
+    public static String getWorldOrServerName()
+    {
+        Minecraft mc = Minecraft.getInstance();
+
+        if (mc.isSingleplayer())
+        {
+            IntegratedServer server = mc.getIntegratedServer();
+
+            if (server != null)
+            {
+                return server.getFolderName();
+            }
+        }
+        else
+        {
+            ServerData server = mc.getCurrentServerData();
+
+            if (server != null)
+            {
+                return server.serverIP.replace(':', '_');
+            }
+        }
+
+        return null;
     }
 }

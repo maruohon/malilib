@@ -6,19 +6,17 @@ import fi.dy.masa.malilib.config.IStringRepresentable;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiTextField;
 
-public class ConfigOptionListenerResetConfig implements IButtonActionListener<ButtonGeneric>
+public class ConfigOptionListenerResetConfig implements IButtonActionListener
 {
-    private final ConfigResetterBase reset;
     private final IConfigResettable config;
     private final ButtonGeneric buttonReset;
-    @Nullable
-    private final ButtonPressDirtyListenerSimple<ButtonBase> dirtyListener;
+    @Nullable private final ConfigResetterBase reset;
+    @Nullable private final ButtonPressDirtyListenerSimple dirtyListener;
 
-    public ConfigOptionListenerResetConfig(IConfigResettable config, ConfigResetterBase reset,
-            ButtonGeneric buttonReset, @Nullable ButtonPressDirtyListenerSimple<ButtonBase> dirtyListener)
+    public ConfigOptionListenerResetConfig(IConfigResettable config, @Nullable ConfigResetterBase reset,
+            ButtonGeneric buttonReset, @Nullable ButtonPressDirtyListenerSimple dirtyListener)
     {
         this.config = config;
         this.reset = reset;
@@ -27,22 +25,19 @@ public class ConfigOptionListenerResetConfig implements IButtonActionListener<Bu
     }
 
     @Override
-    public void actionPerformed(ButtonGeneric control)
+    public void actionPerformedWithButton(ButtonBase button, int mouseButton)
     {
         this.config.resetToDefault();
-        this.buttonReset.playPressSound(Minecraft.getInstance().getSoundHandler());
-        this.buttonReset.enabled = this.config.isModified();
-        this.reset.resetConfigOption();
-    }
+        this.buttonReset.setEnabled(this.config.isModified());
 
-    @Override
-    public void actionPerformedWithButton(ButtonGeneric control, int mouseButton)
-    {
-        this.actionPerformed(control);
+        if (this.reset != null)
+        {
+            this.reset.resetConfigOption();
+        }
 
         if (this.dirtyListener != null)
         {
-            this.dirtyListener.actionPerformedWithButton(control, mouseButton);
+            this.dirtyListener.actionPerformedWithButton(button, mouseButton);
         }
     }
 

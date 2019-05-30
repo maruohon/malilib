@@ -5,15 +5,15 @@ import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.config.IConfigStringList;
 import fi.dy.masa.malilib.gui.interfaces.IConfigGui;
 import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
-import fi.dy.masa.malilib.gui.widgets.WidgetListStringList;
-import fi.dy.masa.malilib.gui.widgets.WidgetStringListEntry;
+import fi.dy.masa.malilib.gui.widgets.WidgetListStringListEdit;
+import fi.dy.masa.malilib.gui.widgets.WidgetStringListEditEntry;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.KeyCodes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 
-public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEntry, WidgetListStringList>
+public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEditEntry, WidgetListStringListEdit>
 {
     protected final IConfigStringList config;
     protected final IConfigGui configGui;
@@ -32,7 +32,6 @@ public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEntry
         this.config = config;
         this.configGui = configGui;
         this.dialogHandler = dialogHandler;
-        this.mc = Minecraft.getInstance();
         this.title = I18n.format("malilib.gui.title.string_list_edit", config.getName());
 
         // When we have a dialog handler, then we are inside the Liteloader config menu.
@@ -104,10 +103,10 @@ public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEntry
     }
 
     @Override
-    protected WidgetListStringList createListWidget(int listX, int listY)
+    protected WidgetListStringListEdit createListWidget(int listX, int listY)
     {
         // The listX and listY are set via the constructor, which in this dialog-like GUI's case is too early to know them
-        return new WidgetListStringList(this.dialogLeft + 10, this.dialogTop + 20, this.getBrowserWidth(), this.getBrowserHeight(), this.dialogWidth - 100, this);
+        return new WidgetListStringListEdit(this.dialogLeft + 10, this.dialogTop + 20, this.getBrowserWidth(), this.getBrowserHeight(), this.dialogWidth - 100, this);
     }
 
     @Override
@@ -142,7 +141,7 @@ public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEntry
     @Override
     protected void drawTitle(int mouseX, int mouseY, float partialTicks)
     {
-        this.drawString(this.mc.fontRenderer, this.title, this.dialogLeft + 10, this.dialogTop + 6, COLOR_WHITE);
+        this.drawStringWithShadow(this.title, this.dialogLeft + 10, this.dialogTop + 6, COLOR_WHITE);
     }
 
     @Override

@@ -20,16 +20,13 @@ import fi.dy.masa.malilib.util.KeyCodes;
 public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntry, WidgetDirectoryEntry> implements IDirectoryNavigator
 {
     protected static final FileFilter DIRECTORY_FILTER = new FileFilterDirectories();
-    protected static final FileFilter SCHEMATIC_FILTER = new FileFilterSchematics();
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     protected final IDirectoryCache cache;
     protected File currentDirectory;
     protected final String browserContext;
     protected final IFileBrowserIconProvider iconProvider;
-
-    @Nullable
-    protected WidgetDirectoryNavigation directoryNavigationWidget;
+    @Nullable protected WidgetDirectoryNavigation directoryNavigationWidget;
 
     public WidgetFileBrowserBase(int x, int y, int width, int height,
             IDirectoryCache cache, String browserContext, File defaultDirectory,
@@ -41,6 +38,7 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
         this.browserContext = browserContext;
         this.currentDirectory = this.cache.getCurrentDirectoryForContext(this.browserContext);
         this.iconProvider = iconProvider;
+        this.allowKeyboardNavigation = true;
 
         if (this.currentDirectory == null)
         {
@@ -48,37 +46,30 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
         }
 
         this.setSize(width, height);
+        this.updateDirectoryNavigationWidget();
     }
 
     @Override
     public boolean onKeyTyped(int keyCode, int scanCode, int modifiers)
     {
+        if (super.onKeyTyped(keyCode, scanCode, modifiers))
+        {
+            return true;
+        }
+
         if ((keyCode == KeyCodes.KEY_BACKSPACE || keyCode == KeyCodes.KEY_LEFT) && this.currentDirectoryIsRoot() == false)
         {
             this.switchToParentDirectory();
             return true;
         }
         else if ((keyCode == KeyCodes.KEY_RIGHT || keyCode == KeyCodes.KEY_ENTER) &&
-                  this.getSelectedEntry() != null && this.getSelectedEntry().getType() == DirectoryEntryType.DIRECTORY)
+                  this.getLastSelectedEntry() != null && this.getLastSelectedEntry().getType() == DirectoryEntryType.DIRECTORY)
         {
-            this.switchToDirectory(new File(this.getSelectedEntry().getDirectory(), this.getSelectedEntry().getName()));
-            return true;
-        }
-        else
-        {
-            return super.onKeyTyped(keyCode, scanCode, modifiers);
-        }
-    }
-
-    @Override
-    public boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
-    {
-        if (this.directoryNavigationWidget != null && this.directoryNavigationWidget.onMouseClickedImpl(mouseX, mouseY, mouseButton))
-        {
+            this.switchToDirectory(new File(this.getLastSelectedEntry().getDirectory(), this.getLastSelectedEntry().getName()));
             return true;
         }
 
-        return super.onMouseClicked(mouseX, mouseY, mouseButton);
+        return false;
     }
 
     @Override
@@ -87,18 +78,14 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
         // Draw an outline around the entire file browser
         RenderUtils.drawOutlinedBox(this.posX, this.posY, this.browserWidth, this.browserHeight, 0xB0000000, COLOR_HORIZONTAL_BAR);
 
-        // Draw the root/up widget, is the current directory has that (ie. is not the root directory)
-        if (this.directoryNavigationWidget != null)
-        {
-            this.directoryNavigationWidget.render(mouseX, mouseY, false);
-        }
+        super.drawContents(mouseX, mouseY, partialTicks);
 
         this.drawAdditionalContents(mouseX, mouseY);
-
-        super.drawContents(mouseX, mouseY, partialTicks);
     }
 
-    protected abstract void drawAdditionalContents(int mouseX, int mouseY);
+    protected void drawAdditionalContents(int mouseX, int mouseY)
+    {
+    }
 
     @Override
     public void setSize(int width, int height)
@@ -116,24 +103,24 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
 
     protected void updateDirectoryNavigationWidget()
     {
-        if (this.currentDirectoryIsRoot() == false)
-        {
-            int x = this.posX + 2;
-            int y = this.posY + 4;
+        int x = this.posX + 2;
+        int y = this.posY + 4;
 
-            this.directoryNavigationWidget = new WidgetDirectoryNavigation(x, y, this.browserEntryWidth, 14, this.zLevel,
-                    this.currentDirectory, this.getRootDirectory(), this.mc, this, this.iconProvider);
-            this.browserEntriesOffsetY = this.directoryNavigationWidget.getHeight() + 2;
-        }
-        else
-        {
-            this.directoryNavigationWidget = null;
-            this.browserEntriesOffsetY = 0;
-        }
+        this.directoryNavigationWidget = new WidgetDirectoryNavigation(x, y, this.browserEntryWidth, 14,
+                this.currentDirectory, this.getRootDirectory(), this, this.iconProvider);
+        this.browserEntriesOffsetY = this.directoryNavigationWidget.getHeight() + 3;
+        this.widgetSearchBar = this.directoryNavigationWidget;
     }
 
     @Override
     public void refreshEntries()
+    {
+        this.updateDirectoryNavigationWidget();
+        this.refreshBrowserEntries();
+    }
+
+    @Override
+    protected void refreshBrowserEntries()
     {
         this.listContents.clear();
 
@@ -141,40 +128,113 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
 
         if (dir.isDirectory() && dir.canRead())
         {
-            List<DirectoryEntry> list = new ArrayList<>();
-
-            this.addDirectoryEntriesToList(dir, list);
-            this.listContents.addAll(list);
-            list.clear();
-
-            this.addFileEntriesToList(dir, list);
-            this.listContents.addAll(list);
+            if (this.hasFilter())
+            {
+                this.addFilteredContents(dir);
+            }
+            else
+            {
+                this.addNonFilteredContents(dir);
+            }
         }
 
-        this.updateDirectoryNavigationWidget();
         this.reCreateListEntryWidgets();
+    }
+
+    protected void addNonFilteredContents(File dir)
+    {
+        List<DirectoryEntry> list = new ArrayList<>();
+
+        // Show directories at the top
+        this.addMatchingEntriesToList(this.getDirectoryFilter(), dir, list, null, null);
+        Collections.sort(list);
+        this.listContents.addAll(list);
+        list.clear();
+
+        this.addMatchingEntriesToList(this.getFileFilter(), dir, list, null, null);
+        Collections.sort(list);
+        this.listContents.addAll(list);
+    }
+
+    protected void addFilteredContents(File dir)
+    {
+        String filterText = this.widgetSearchBar.getFilter().toLowerCase();
+        List<DirectoryEntry> list = new ArrayList<>();
+        this.addFilteredContents(dir, filterText, list, null);
+        this.listContents.addAll(list);
+    }
+
+    protected void addFilteredContents(File dir, String filterText, List<DirectoryEntry> listOut, @Nullable String prefix)
+    {
+        List<DirectoryEntry> list = new ArrayList<>();
+        this.addMatchingEntriesToList(this.getDirectoryFilter(), dir, list, filterText, prefix);
+        Collections.sort(list);
+        listOut.addAll(list);
+        list.clear();
+
+        for (File subDir : this.getSubDirectories(dir))
+        {
+            String pre;
+
+            if (prefix != null)
+            {
+                pre = prefix + subDir.getName() + "/";
+            }
+            else
+            {
+                pre = subDir.getName() + "/";
+            }
+
+            this.addFilteredContents(subDir, filterText, list, pre);
+            Collections.sort(list);
+            listOut.addAll(list);
+            list.clear();
+        }
+
+        this.addMatchingEntriesToList(this.getFileFilter(), dir, list, filterText, prefix);
+        Collections.sort(list);
+        listOut.addAll(list);
+    }
+
+    protected void addMatchingEntriesToList(FileFilter filter, File dir, List<DirectoryEntry> list, @Nullable String filterText, @Nullable String displayNamePrefix)
+    {
+        for (File file : dir.listFiles(filter))
+        {
+            String name = FileUtils.getNameWithoutExtension(file.getName().toLowerCase());
+
+            if (filterText == null || this.matchesFilter(name, filterText))
+            {
+                list.add(new DirectoryEntry(DirectoryEntryType.fromFile(file), dir, file.getName(), displayNamePrefix));
+            }
+        }
+    }
+
+    protected List<File> getSubDirectories(File dir)
+    {
+        List<File> dirs = new ArrayList<>();
+
+        for (File file : dir.listFiles(DIRECTORY_FILTER))
+        {
+            dirs.add(file);
+        }
+
+        return dirs;
     }
 
     protected abstract File getRootDirectory();
 
-    protected void addDirectoryEntriesToList(File dir, List<DirectoryEntry> list)
+    protected FileFilter getDirectoryFilter()
     {
-        // Show directories at the top
-        for (File file : dir.listFiles(DIRECTORY_FILTER))
-        {
-            list.add(new DirectoryEntry(DirectoryEntryType.fromFile(file), dir, file.getName()));
-        }
-
-        Collections.sort(list);
+        return DIRECTORY_FILTER;
     }
 
-    protected abstract void addFileEntriesToList(File dir, List<DirectoryEntry> list);
+    protected abstract FileFilter getFileFilter();
 
     @Override
     protected WidgetDirectoryEntry createListEntryWidget(int x, int y, int listIndex, boolean isOdd, DirectoryEntry entry)
     {
         return new WidgetDirectoryEntry(x, y, this.browserEntryWidth, this.getBrowserEntryHeightFor(entry),
-                this.zLevel, isOdd, entry, this.mc, this, this.iconProvider);
+                isOdd, entry, listIndex, this, this.iconProvider);
     }
 
     protected boolean currentDirectoryIsRoot()
@@ -197,6 +257,7 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
         this.cache.setCurrentDirectoryForContext(this.browserContext, dir);
 
         this.refreshEntries();
+        this.resetScrollbarPosition();
     }
 
     @Override
@@ -210,7 +271,9 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
     {
         File parent = this.currentDirectory.getParentFile();
 
-        if (parent != null)
+        if (this.currentDirectoryIsRoot() == false &&
+            parent != null &&
+            this.currentDirectory.getAbsolutePath().contains(this.getRootDirectory().getAbsolutePath()))
         {
             this.switchToDirectory(parent);
         }
@@ -225,12 +288,14 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
         private final DirectoryEntryType type;
         private final File dir;
         private final String name;
+        @Nullable private final String displaynamePrefix;
 
-        public DirectoryEntry(DirectoryEntryType type, File dir, String name)
+        public DirectoryEntry(DirectoryEntryType type, File dir, String name, @Nullable String displaynamePrefix)
         {
             this.type = type;
             this.dir = dir;
             this.name = name;
+            this.displaynamePrefix = displaynamePrefix;
         }
 
         public DirectoryEntryType getType()
@@ -246,6 +311,17 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
         public String getName()
         {
             return this.name;
+        }
+
+        @Nullable
+        public String getDisplayNamePrefix()
+        {
+            return this.displaynamePrefix;
+        }
+
+        public String getDisplayName()
+        {
+            return this.displaynamePrefix != null ? this.displaynamePrefix + this.name : this.name;
         }
 
         public File getFullPath()
@@ -288,19 +364,7 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
         @Override
         public boolean accept(File pathName)
         {
-            return pathName.isDirectory();
-        }
-    }
-
-    public static class FileFilterSchematics implements FileFilter
-    {
-        @Override
-        public boolean accept(File pathName)
-        {
-            String name = pathName.getName();
-            return  name.endsWith(".litematic") ||
-                    name.endsWith(".schematic") ||
-                    name.endsWith(".nbt");
+            return pathName.isDirectory() && pathName.getName().startsWith(".") == false;
         }
     }
 }

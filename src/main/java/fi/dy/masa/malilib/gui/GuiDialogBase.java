@@ -23,16 +23,21 @@ public class GuiDialogBase extends GuiBase
 
     public void centerOnScreen()
     {
+        int left;
+        int top;
+
         if (this.getParent() != null)
         {
-            this.dialogLeft = this.getParent().width / 2 - this.dialogWidth / 2;
-            this.dialogTop = this.getParent().height / 2 - this.dialogHeight / 2;
+            left = this.getParent().width / 2 - this.dialogWidth / 2;
+            top = this.getParent().height / 2 - this.dialogHeight / 2;
         }
         else
         {
             MainWindow window = this.mc.mainWindow;
-            this.dialogLeft = window.getScaledWidth() / 2 - this.dialogWidth / 2;
-            this.dialogTop = window.getScaledHeight() / 2 - this.dialogHeight / 2;
+            left = window.getScaledWidth() / 2 - this.dialogWidth / 2;
+            top = window.getScaledHeight() / 2 - this.dialogHeight / 2;
         }
+
+        this.setPosition(left, top);
     }
 }

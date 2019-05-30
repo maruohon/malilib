@@ -7,6 +7,6 @@ import net.minecraft.client.gui.GuiTextField;
 @Mixin(GuiTextField.class)
 public interface IGuiTextField
 {
-    @Accessor
+    @Accessor("height")
     int getHeight();
 }

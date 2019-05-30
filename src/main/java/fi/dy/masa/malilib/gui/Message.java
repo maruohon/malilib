@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.gui;
 
 import java.util.ArrayList;
 import java.util.List;
+import fi.dy.masa.malilib.util.StringUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.resources.I18n;
@@ -11,102 +12,35 @@ public class Message
     private final MessageType type;
     private final long created;
     private final int displayTime;
-    private final int maxLineWidth;
+    private final int maxLineLength;
     private final List<String> messageLines = new ArrayList<>();
-    private final FontRenderer fontRenderer;
+    private final FontRenderer textRenderer;
 
-    public Message(MessageType type, int displayTimeMs, int maxLineWidth, String message, Object... args)
+    public Message(MessageType type, int displayTimeMs, int maxLineLength, String message, Object... args)
     {
         this.type = type;
         this.created = System.currentTimeMillis();
         this.displayTime = displayTimeMs;
-        this.maxLineWidth = maxLineWidth;
-        this.fontRenderer = Minecraft.getInstance().fontRenderer;
+        this.maxLineLength = maxLineLength;
+        this.textRenderer = Minecraft.getInstance().fontRenderer;
 
         this.setMessage(I18n.format(message, args));
     }
 
-    public boolean hasExpired()
+    public boolean hasExpired(long currentTime)
     {
-        return System.currentTimeMillis() > (this.created + this.displayTime);
+        return currentTime > (this.created + this.displayTime);
     }
 
     public int getMessageHeight()
     {
-        return this.messageLines.size() * (this.fontRenderer.FONT_HEIGHT + 1) - 1 + 5;
+        return this.messageLines.size() * (this.textRenderer.FONT_HEIGHT + 1) - 1 + 5;
     }
 
     public void setMessage(String message)
     {
         this.messageLines.clear();
-
-        String[] lines = message.split("\\n");
-
-        for (String line : lines)
-        {
-            this.splitAndAddLine(line);
-        }
-    }
-
-    protected void splitAndAddLine(String line)
-    {
-        String[] parts = line.split(" ");
-        StringBuilder sb = new StringBuilder(256);
-        final int spaceWidth = this.fontRenderer.getStringWidth(" ");
-        int lineWidth = 0;
-
-        for (String str : parts)
-        {
-            int width = this.fontRenderer.getStringWidth(str);
-
-            if ((lineWidth + width + spaceWidth) > this.maxLineWidth)
-            {
-                if (lineWidth > 0)
-                {
-                    this.messageLines.add(sb.toString());
-                    sb = new StringBuilder(256);
-                    lineWidth = 0;
-                }
-
-                // Long continuous string
-                if (width > this.maxLineWidth)
-                {
-                    final int chars = str.length();
-
-                    for (int i = 0; i < chars; ++i)
-                    {
-                        String c = str.substring(i, i + 1);
-                        lineWidth += this.fontRenderer.getStringWidth(c);
-
-                        if (lineWidth > this.maxLineWidth)
-                        {
-                            this.messageLines.add(sb.toString());
-                            sb = new StringBuilder(this.maxLineWidth + 32);
-                            lineWidth = 0;
-                        }
-
-                        sb.append(c);
-                    }
-
-                    this.messageLines.add(sb.toString());
-                    sb = new StringBuilder(this.maxLineWidth + 32);
-                    lineWidth = 0;
-                }
-            }
-
-            if (lineWidth > 0)
-            {
-                sb.append(" ");
-            }
-
-            if (width <= this.maxLineWidth)
-            {
-                sb.append(str);
-                lineWidth += width;
-            }
-        }
-
-        this.messageLines.add(sb.toString());
+        StringUtils.splitTextToLines(this.messageLines, message, this.maxLineLength, this.textRenderer);
     }
 
     /**
@@ -119,8 +53,8 @@ public class Message
 
         for (String text : this.messageLines)
         {
-            this.fontRenderer.drawString(format + text + GuiBase.TXT_RST, x, y, textColor);
-            y += this.fontRenderer.FONT_HEIGHT + 1;
+            this.textRenderer.drawString(format + text + GuiBase.TXT_RST, x, y, textColor);
+            y += this.textRenderer.FONT_HEIGHT + 1;
         }
 
         return y + 3;
@@ -128,21 +62,26 @@ public class Message
 
     public String getFormatCode()
     {
-        switch (this.type)
-        {
-            case INFO:      return GuiBase.TXT_GRAY;
-            case SUCCESS:   return GuiBase.TXT_GREEN;
-            case WARNING:   return GuiBase.TXT_GOLD;
-            case ERROR:     return GuiBase.TXT_RED;
-            default:        return GuiBase.TXT_GRAY;
-        }
+        return this.type.getFormatting();
     }
 
     public enum MessageType
     {
-        INFO,
-        SUCCESS,
-        WARNING,
-        ERROR;
+        INFO        ("malilib.message.formatting_code.info"),
+        SUCCESS     ("malilib.message.formatting_code.success"),
+        WARNING     ("malilib.message.formatting_code.warning"),
+        ERROR       ("malilib.message.formatting_code.error");
+
+        private final String translationKey;
+
+        private MessageType(String translationKey)
+        {
+            this.translationKey = translationKey;
+        }
+
+        public String getFormatting()
+        {
+            return I18n.format(this.translationKey);
+        }
     }
 }

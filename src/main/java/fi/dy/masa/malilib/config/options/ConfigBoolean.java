@@ -6,9 +6,8 @@ import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.config.ConfigType;
 import fi.dy.masa.malilib.config.IConfigBoolean;
 
-public class ConfigBoolean extends ConfigBase implements IConfigBoolean
+public class ConfigBoolean extends ConfigBase<ConfigBoolean> implements IConfigBoolean
 {
-    private final String prettyName;
     private final boolean defaultValue;
     private boolean value;
 
@@ -19,17 +18,10 @@ public class ConfigBoolean extends ConfigBase implements IConfigBoolean
 
     public ConfigBoolean(String name, boolean defaultValue, String comment, String prettyName)
     {
-        super(ConfigType.BOOLEAN, name, comment);
+        super(ConfigType.BOOLEAN, name, comment, prettyName);
 
-        this.prettyName = prettyName;
         this.defaultValue = defaultValue;
         this.value = defaultValue;
-    }
-
-    @Override
-    public String getPrettyName()
-    {
-        return this.prettyName;
     }
 
     @Override

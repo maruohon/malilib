@@ -1,27 +1,19 @@
 package fi.dy.masa.malilib.gui.widgets;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.IConfigResettable;
 import fi.dy.masa.malilib.config.gui.ConfigOptionChangeListenerTextField;
-import fi.dy.masa.malilib.gui.GuiTextFieldWrapper;
-import fi.dy.masa.malilib.gui.button.ButtonBase;
+import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
-import fi.dy.masa.malilib.gui.button.IButtonActionListener;
-import fi.dy.masa.malilib.gui.wrappers.ButtonWrapper;
+import fi.dy.masa.malilib.gui.wrappers.TextFieldWrapper;
 import fi.dy.masa.malilib.util.KeyCodes;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.resources.I18n;
 
-public abstract class WidgetConfigOptionBase extends WidgetBase
+public abstract class WidgetConfigOptionBase<TYPE> extends WidgetListEntryBase<TYPE>
 {
-    protected final Minecraft mc;
-    protected final List<WidgetBase> widgets = new ArrayList<>();
-    protected final List<ButtonWrapper<? extends ButtonBase>> buttons = new ArrayList<>();
     protected final WidgetListConfigOptionsBase<?, ?> parent;
-    @Nullable protected GuiTextFieldWrapper textField = null;
+    @Nullable protected TextFieldWrapper<? extends GuiTextField> textField = null;
     @Nullable protected String initialStringValue;
     protected int maxTextfieldTextLength = 256;
     /**
@@ -30,11 +22,11 @@ public abstract class WidgetConfigOptionBase extends WidgetBase
      */
     protected String lastAppliedValue;
 
-    public WidgetConfigOptionBase(int x, int y, int width, int height, float zLevel, Minecraft mc, WidgetListConfigOptionsBase<?, ?> parent)
+    public WidgetConfigOptionBase(int x, int y, int width, int height,
+            WidgetListConfigOptionsBase<?, ?> parent, TYPE entry, int listIndex)
     {
-        super(x, y, width, height, zLevel);
+        super(x, y, width, height, entry, listIndex);
 
-        this.mc = mc;
         this.parent = parent;
     }
 
@@ -52,32 +44,25 @@ public abstract class WidgetConfigOptionBase extends WidgetBase
 
     public abstract void applyNewValueToConfig();
 
-    protected <T extends ButtonBase> ButtonWrapper<T> addButton(T button, IButtonActionListener<T> listener)
+    protected GuiTextField createTextField(int x, int y, int width, int height)
     {
-        ButtonWrapper<T> entry = new ButtonWrapper<>(button, listener);
-        this.buttons.add(entry);
-        return entry;
-    }
-
-    protected GuiTextField createTextField(int id, int x, int y, int width, int height)
-    {
-        return new GuiTextField(id, this.mc.fontRenderer, x + 2, y, width, height);
+        return new GuiTextFieldGeneric(x + 2, y, width, height, this.textRenderer);
     }
 
     protected void addTextField(GuiTextField field, ConfigOptionChangeListenerTextField listener)
     {
-        GuiTextFieldWrapper wrapper = new GuiTextFieldWrapper(field, listener);
+        TextFieldWrapper<? extends GuiTextField> wrapper = new TextFieldWrapper<>(field, listener);
         this.textField = wrapper;
         this.parent.addTextField(wrapper);
     }
 
-    protected ButtonGeneric createResetButton(int id, int x, int y, IConfigResettable config)
+    protected ButtonGeneric createResetButton(int x, int y, IConfigResettable config)
     {
         String labelReset = I18n.format("malilib.gui.button.reset.caps");
-        int w = this.mc.fontRenderer.getStringWidth(labelReset) + 10;
+        int w = this.getStringWidth(labelReset) + 10;
 
-        ButtonGeneric resetButton = new ButtonGeneric(id, x, y, w, 20, labelReset);
-        resetButton.enabled = config.isModified();
+        ButtonGeneric resetButton = new ButtonGeneric(x, y, w, 20, labelReset);
+        resetButton.setEnabled(config.isModified());
 
         return resetButton;
     }
@@ -85,13 +70,9 @@ public abstract class WidgetConfigOptionBase extends WidgetBase
     @Override
     protected boolean onMouseClickedImpl(int mouseX, int mouseY, int mouseButton)
     {
-        for (ButtonWrapper<?> entry : this.buttons)
+        if (super.onMouseClickedImpl(mouseX, mouseY, mouseButton))
         {
-            if (entry.mousePressed(this.mc, mouseX, mouseY, mouseButton))
-            {
-                // Don't call super if the button press got handled
-                return true;
-            }
+            return true;
         }
 
         boolean ret = false;
@@ -115,11 +96,12 @@ public abstract class WidgetConfigOptionBase extends WidgetBase
     @Override
     public boolean onKeyTypedImpl(int keyCode, int scanCode, int modifiers)
     {
-        if (this.textField != null)
+        if (this.textField != null && this.textField.isFocused())
         {
             if (keyCode == KeyCodes.KEY_ENTER)
             {
                 this.applyNewValueToConfig();
+                return true;
             }
             else
             {
@@ -145,14 +127,6 @@ public abstract class WidgetConfigOptionBase extends WidgetBase
     public boolean canSelectAt(int mouseX, int mouseY, int mouseButton)
     {
         return false;
-    }
-
-    protected void drawButtons(int mouseX, int mouseY, float partialTicks)
-    {
-        for (ButtonWrapper<?> entry : this.buttons)
-        {
-            entry.draw(this.mc, mouseX, mouseY, partialTicks);
-        }
     }
 
     protected void drawTextFields(int mouseX, int mouseY)

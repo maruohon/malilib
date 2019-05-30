@@ -7,18 +7,25 @@ import fi.dy.masa.malilib.config.IConfigNotifiable;
 import fi.dy.masa.malilib.config.IConfigResettable;
 import fi.dy.masa.malilib.interfaces.IValueChangeCallback;
 
-public abstract class ConfigBase implements IConfigBase, IConfigResettable, IConfigNotifiable
+public abstract class ConfigBase<T extends IConfigBase> implements IConfigBase, IConfigResettable, IConfigNotifiable<T>
 {
     private final ConfigType type;
     private final String name;
+    private final String prettyName;
     private String comment;
     @Nullable
-    private IValueChangeCallback callback;
+    private IValueChangeCallback<T> callback;
 
     public ConfigBase(ConfigType type, String name, String comment)
     {
+        this(type, name, comment, name);
+    }
+
+    public ConfigBase(ConfigType type, String name, String comment, String prettyName)
+    {
         this.type = type;
         this.name = name;
+        this.prettyName = prettyName;
         this.comment = comment;
     }
 
@@ -35,10 +42,16 @@ public abstract class ConfigBase implements IConfigBase, IConfigResettable, ICon
     }
 
     @Override
+    public String getPrettyName()
+    {
+        return net.minecraft.client.resources.I18n.format(this.prettyName);
+    }
+
+    @Override
     @Nullable
     public String getComment()
     {
-        return comment;
+        return net.minecraft.client.resources.I18n.format(this.comment);
     }
 
     public void setComment(String comment)
@@ -47,17 +60,18 @@ public abstract class ConfigBase implements IConfigBase, IConfigResettable, ICon
     }
 
     @Override
-    public void setValueChangeCallback(IValueChangeCallback callback)
+    public void setValueChangeCallback(IValueChangeCallback<T> callback)
     {
         this.callback = callback;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void onValueChanged()
     {
         if (this.callback != null)
         {
-            this.callback.onValueChanged(this);
+            this.callback.onValueChanged((T) this);
         }
     }
 }

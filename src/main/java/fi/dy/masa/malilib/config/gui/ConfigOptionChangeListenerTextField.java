@@ -2,9 +2,10 @@ package fi.dy.masa.malilib.config.gui;
 
 import fi.dy.masa.malilib.config.IStringRepresentable;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
+import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
 import net.minecraft.client.gui.GuiTextField;
 
-public class ConfigOptionChangeListenerTextField
+public class ConfigOptionChangeListenerTextField implements ITextFieldListener<GuiTextField>
 {
     protected final IStringRepresentable config;
     protected final GuiTextField textField;
@@ -17,8 +18,10 @@ public class ConfigOptionChangeListenerTextField
         this.buttonReset = buttonReset;
     }
 
-    public void onKeyTyped(int keyCode, int scanCode, int modifiers)
+    @Override
+    public boolean onTextChange(GuiTextField textField)
     {
-        this.buttonReset.enabled = this.config.isModified(this.textField.getText());
+        this.buttonReset.setEnabled(this.config.isModified(this.textField.getText()));
+        return false;
     }
 }

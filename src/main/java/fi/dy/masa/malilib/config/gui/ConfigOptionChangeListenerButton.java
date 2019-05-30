@@ -5,14 +5,14 @@ import fi.dy.masa.malilib.config.IConfigResettable;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 
-public class ConfigOptionChangeListenerButton<T extends ButtonBase> implements IButtonActionListener<T>
+public class ConfigOptionChangeListenerButton implements IButtonActionListener
 {
     private final IConfigResettable config;
     private final ButtonBase buttonReset;
     @Nullable
-    private final ButtonPressDirtyListenerSimple<T> dirtyListener;
+    private final ButtonPressDirtyListenerSimple dirtyListener;
 
-    public ConfigOptionChangeListenerButton(IConfigResettable config, T buttonReset, @Nullable ButtonPressDirtyListenerSimple<T> dirtyListener)
+    public ConfigOptionChangeListenerButton(IConfigResettable config, ButtonBase buttonReset, @Nullable ButtonPressDirtyListenerSimple dirtyListener)
     {
         this.config = config;
         this.dirtyListener = dirtyListener;
@@ -20,20 +20,14 @@ public class ConfigOptionChangeListenerButton<T extends ButtonBase> implements I
     }
 
     @Override
-    public void actionPerformed(T control)
+    public void actionPerformedWithButton(ButtonBase button, int mouseButton)
     {
-        this.buttonReset.enabled = this.config.isModified();
-    }
-
-    @Override
-    public void actionPerformedWithButton(T control, int mouseButton)
-    {
-        this.actionPerformed(control);
+        this.buttonReset.setEnabled(this.config.isModified());
 
         if (this.dirtyListener != null)
         {
             // Call the dirty listener to know if the configs should be saved when the GUI is closed
-            this.dirtyListener.actionPerformedWithButton(control, mouseButton);
+            this.dirtyListener.actionPerformedWithButton(button, mouseButton);
         }
     }
 }
