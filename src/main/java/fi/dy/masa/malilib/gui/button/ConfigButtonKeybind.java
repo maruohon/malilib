@@ -5,13 +5,12 @@ import java.util.List;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import fi.dy.masa.malilib.event.InputEventHandler;
-import fi.dy.masa.malilib.event.InputEventHandler.KeybindCategory;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.interfaces.IKeybindConfigGui;
 import fi.dy.masa.malilib.hotkeys.IHotkey;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
+import fi.dy.masa.malilib.hotkeys.KeybindCategory;
 import fi.dy.masa.malilib.util.KeyCodes;
-
 
 public class ConfigButtonKeybind extends ButtonGeneric
 {
@@ -141,7 +140,7 @@ public class ConfigButtonKeybind extends ButtonGeneric
 
     protected void updateConflicts()
     {
-        List<KeybindCategory> categories = InputEventHandler.getInstance().getKeybindCategories();
+        List<KeybindCategory> categories = InputEventHandler.getKeybindManager().getKeybindCategories();
         List<IHotkey> overlaps = new ArrayList<>();
         this.overlapInfo.clear();
 

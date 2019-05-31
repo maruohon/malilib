@@ -15,6 +15,6 @@ public abstract class MixinGuiScreen extends Gui
     @Inject(method = "renderToolTip", at = @At("RETURN"))
     private void onRenderToolTip(ItemStack stack, int x, int y, CallbackInfo ci)
     {
-        RenderEventHandler.getInstance().onRenderTooltipLast(stack, x, y);
+        ((RenderEventHandler) RenderEventHandler.getInstance()).onRenderTooltipLast(stack, x, y);
     }
 }

@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.config.options;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.config.ConfigType;
@@ -8,6 +9,7 @@ import fi.dy.masa.malilib.hotkeys.IHotkey;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
 import fi.dy.masa.malilib.hotkeys.KeybindMulti;
 import fi.dy.masa.malilib.hotkeys.KeybindSettings;
+import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class ConfigHotkey extends ConfigBase<ConfigHotkey> implements IHotkey
@@ -83,7 +85,22 @@ public class ConfigHotkey extends ConfigBase<ConfigHotkey> implements IHotkey
     {
         try
         {
-            if (element.isJsonPrimitive())
+            if (element.isJsonObject())
+            {
+                JsonObject obj = element.getAsJsonObject();
+
+                if (JsonUtils.hasString(obj, "keys"))
+                {
+                    this.keybind.setValueFromString(obj.get("keys").getAsString());
+                }
+
+                if (JsonUtils.hasObject(obj, "settings"))
+                {
+                    this.keybind.setSettings(KeybindSettings.fromJson(obj.getAsJsonObject("settings")));
+                }
+            }
+            // Backwards compatibility with some old hotkeys
+            else if (element.isJsonPrimitive())
             {
                 this.keybind.setValueFromString(element.getAsString());
             }
@@ -101,6 +118,9 @@ public class ConfigHotkey extends ConfigBase<ConfigHotkey> implements IHotkey
     @Override
     public JsonElement getAsJsonElement()
     {
-        return new JsonPrimitive(this.keybind.getStringValue());
+        JsonObject obj = new JsonObject();
+        obj.add("keys", new JsonPrimitive(this.getKeybind().getStringValue()));
+        obj.add("settings", this.getKeybind().getSettings().toJson());
+        return obj;
     }
 }

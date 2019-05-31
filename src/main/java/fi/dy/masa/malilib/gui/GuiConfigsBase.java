@@ -137,7 +137,7 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
 
         if (this.hotkeyChangeListeners.size() > 0)
         {
-            InputEventHandler.getInstance().updateUsedKeys();
+            InputEventHandler.getKeybindManager().updateUsedKeys();
         }
     }
 

@@ -1,0 +1,73 @@
+package fi.dy.masa.malilib.hotkeys;
+
+import java.util.List;
+import net.minecraft.client.resources.I18n;
+
+public class KeybindCategory implements Comparable<KeybindCategory>
+{
+    private final String modName;
+    private final String categoryName;
+    private final List<? extends IHotkey> hotkeys;
+
+    public KeybindCategory(String modName, String categoryName, List<? extends IHotkey> hotkeys)
+    {
+        this.modName = modName;
+        this.categoryName = categoryName;
+        this.hotkeys = hotkeys;
+    }
+
+    public String getModName()
+    {
+        return this.modName;
+    }
+
+    public String getCategory()
+    {
+        return I18n.format(this.categoryName);
+    }
+
+    public List<? extends IHotkey> getHotkeys()
+    {
+        return this.hotkeys;
+    }
+
+    @Override
+    public int compareTo(KeybindCategory other)
+    {
+        int val = this.modName.compareTo(other.modName);
+
+        if (val != 0)
+        {
+            return val;
+        }
+
+        return this.categoryName.compareTo(other.categoryName);
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        KeybindCategory other = (KeybindCategory) obj;
+        if (categoryName == null)
+        {
+            if (other.categoryName != null)
+                return false;
+        }
+        else if (!categoryName.equals(other.categoryName))
+            return false;
+        if (modName == null)
+        {
+            if (other.modName != null)
+                return false;
+        }
+        else if (!modName.equals(other.modName))
+            return false;
+        return true;
+    }
+}

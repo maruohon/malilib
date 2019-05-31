@@ -15,6 +15,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.world.World;
 
 public class StringUtils
 {
@@ -290,5 +291,36 @@ public class StringUtils
         }
 
         return null;
+    }
+
+    /**
+     * Returns a file name based on the current server or world name.
+     * If <b>globalData</b> is false, the the name will also include the current dimension ID.
+     * @param globalData
+     * @param prefix
+     * @param suffix
+     * @param defaultName the default file name, if getting a per-server/world name fails
+     * @return
+     */
+    public static String getStorageFileName(boolean globalData, String prefix, String suffix, String defaultName)
+    {
+        String name = getWorldOrServerName();
+
+        if (name != null)
+        {
+            if (globalData)
+            {
+                return prefix + name + suffix;
+            }
+
+            World world = Minecraft.getInstance().world;
+
+            if (world != null)
+            {
+                return prefix + name + "_dim" + WorldUtils.getDimensionId(world) + suffix;
+            }
+        }
+
+        return prefix + defaultName + suffix;
     }
 }

@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.mixin;
 
 import javax.annotation.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -17,17 +18,22 @@ import net.minecraft.client.multiplayer.WorldClient;
 @Mixin(Minecraft.class)
 public abstract class MixinMinecraft
 {
+    @Shadow
+    public WorldClient world;
+
+    private WorldClient worldBefore;
+
     @Inject(method = "init", at = @At("RETURN"))
     private void onInitComplete(CallbackInfo ci)
     {
         // Register all mod handlers
-        InitializationHandler.getInstance().onGameInitDone();
+        ((InitializationHandler) InitializationHandler.getInstance()).onGameInitDone();
     }
 
     @Inject(method = "shutdown()V", at = @At("RETURN"))
     private void onTick(CallbackInfo ci)
     {
-        ConfigManager.getInstance().saveAllConfigs();
+        ((ConfigManager) ConfigManager.getInstance()).saveAllConfigs();
     }
 
     @Inject(method = "runTick", at = @At(
@@ -50,7 +56,8 @@ public abstract class MixinMinecraft
             at = @At("HEAD"))
     private void onLoadWorldPre(@Nullable WorldClient worldClientIn, GuiScreen gui, CallbackInfo ci)
     {
-        WorldLoadHandler.getInstance().onWorldLoadPre(worldClientIn, (Minecraft)(Object) this);
+        this.worldBefore = this.world;
+        ((WorldLoadHandler) WorldLoadHandler.getInstance()).onWorldLoadPre(this.world, worldClientIn, (Minecraft)(Object) this);
     }
 
     @Inject(method = "loadWorld(" +
@@ -59,6 +66,7 @@ public abstract class MixinMinecraft
             at = @At("RETURN"))
     private void onLoadWorldPost(@Nullable WorldClient worldClientIn, GuiScreen gui, CallbackInfo ci)
     {
-        WorldLoadHandler.getInstance().onWorldLoadPost(worldClientIn, (Minecraft)(Object) this);
+        ((WorldLoadHandler) WorldLoadHandler.getInstance()).onWorldLoadPost(this.worldBefore, worldClientIn, (Minecraft)(Object) this);
+        this.worldBefore = null;
     }
 }
