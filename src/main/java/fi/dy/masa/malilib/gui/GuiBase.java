@@ -58,6 +58,7 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     protected WidgetBase hoveredWidget = null;
     protected String title = "";
     protected boolean useTitleHierarchy = true;
+    private int keyInputCount;
     @Nullable
     private GuiScreen parent;
 
@@ -166,6 +167,8 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers)
     {
+        this.keyInputCount++;
+
         if (this.onKeyTyped(keyCode, scanCode, modifiers))
         {
             return true;
@@ -177,6 +180,14 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     @Override
     public boolean charTyped(char charIn, int modifiers)
     {
+        // This is an ugly fix for the issue that the key press from the hotkey that
+        // opens a GUI would then also get into any text fields or search bars, as the
+        // charTyped() event always fires after the keyPressed() event in any case >_>
+        if (this.keyInputCount <= 0)
+        {
+            return true;
+        }
+
         if (this.onCharTyped(charIn, modifiers))
         {
             return true;
