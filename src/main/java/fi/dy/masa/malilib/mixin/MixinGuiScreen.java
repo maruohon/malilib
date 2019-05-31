@@ -25,7 +25,7 @@ public abstract class MixinGuiScreen extends Gui
     @Inject(method = "renderToolTip", at = @At("RETURN"))
     private void onRenderToolTip(ItemStack stack, int x, int y, CallbackInfo ci)
     {
-        RenderEventHandler.getInstance().onRenderTooltipLast(stack, x, y);
+        ((RenderEventHandler) RenderEventHandler.getInstance()).onRenderTooltipLast(stack, x, y);
     }
 
     @Inject(method = "sendChatMessage(Ljava/lang/String;Z)V", at = @At(
@@ -44,12 +44,14 @@ public abstract class MixinGuiScreen extends Gui
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiScreen;handleKeyboardInput()V"))
     private void onKeyboardInputGui(CallbackInfo ci) throws IOException
     {
-        if (InputEventHandler.getInstance().onKeyInput(true))
+        InputEventHandler handler = (InputEventHandler) InputEventHandler.getInputManager();
+
+        if (handler.onKeyInput(true))
         {
             // Use up the rest of the events
             while (Keyboard.next())
             {
-                if (InputEventHandler.getInstance().onKeyInput(true) == false)
+                if (handler.onKeyInput(true) == false)
                 {
                     ((GuiScreen) (Object) this).handleKeyboardInput();
                 }
@@ -63,12 +65,14 @@ public abstract class MixinGuiScreen extends Gui
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiScreen;handleMouseInput()V"))
     private void onMouseInputGui(CallbackInfo ci) throws IOException
     {
-        if (InputEventHandler.getInstance().onMouseInput(true))
+        InputEventHandler handler = (InputEventHandler) InputEventHandler.getInputManager();
+
+        if (handler.onMouseInput(true))
         {
             // Use up the rest of the events
             while (Mouse.next())
             {
-                if (InputEventHandler.getInstance().onMouseInput(true) == false)
+                if (handler.onMouseInput(true) == false)
                 {
                     ((GuiScreen) (Object) this).handleMouseInput();
                 }
@@ -79,7 +83,7 @@ public abstract class MixinGuiScreen extends Gui
             // and these events would then leak to the non-GUI handling code in Minecraft#runTick())
             while (Keyboard.next())
             {
-                if (InputEventHandler.getInstance().onKeyInput(true) == false)
+                if (handler.onKeyInput(true) == false)
                 {
                     ((GuiScreen) (Object) this).handleKeyboardInput();
                 }

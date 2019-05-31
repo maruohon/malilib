@@ -30,7 +30,7 @@ public abstract class MixinMinecraft implements IMinecraftAccessor
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;dispatchKeypresses()V"))
     private void onKeyboardInput(CallbackInfo ci)
     {
-        if (InputEventHandler.getInstance().onKeyInput(false))
+        if (((InputEventHandler) InputEventHandler.getInputManager()).onKeyInput(false))
         {
             ci.cancel();
         }
@@ -40,7 +40,7 @@ public abstract class MixinMinecraft implements IMinecraftAccessor
             at = @At(value = "INVOKE", target = "Lorg/lwjgl/input/Mouse;getEventButton()I", remap = false))
     private void onMouseInput(CallbackInfo ci)
     {
-        if (InputEventHandler.getInstance().onMouseInput(false))
+        if (((InputEventHandler) InputEventHandler.getInputManager()).onMouseInput(false))
         {
             ci.cancel();
         }

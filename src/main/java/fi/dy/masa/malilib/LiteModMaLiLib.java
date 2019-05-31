@@ -57,7 +57,7 @@ public class LiteModMaLiLib implements Configurable, LiteMod, InitCompleteListen
     @Override
     public void onInitCompleted(Minecraft minecraft, LiteLoader loader)
     {
-        InputEventHandler.getInstance().updateUsedKeys();
+        InputEventHandler.getKeybindManager().updateUsedKeys();
     }
 
     /*
