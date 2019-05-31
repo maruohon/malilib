@@ -18,7 +18,12 @@ import net.minecraft.client.multiplayer.WorldClient;
 public abstract class MixinMinecraft implements IMinecraftAccessor
 {
     @Shadow
+    public WorldClient world;
+
+    @Shadow
     private boolean actionKeyF3;
+
+    private WorldClient worldBefore;
 
     @Override
     public void setActionKeyF3(boolean value)
@@ -61,12 +66,14 @@ public abstract class MixinMinecraft implements IMinecraftAccessor
     @Inject(method = "loadWorld(Lnet/minecraft/client/multiplayer/WorldClient;Ljava/lang/String;)V", at = @At("HEAD"))
     private void onLoadWorldPre(@Nullable WorldClient worldClientIn, String loadingMessage, CallbackInfo ci)
     {
-        WorldLoadHandler.getInstance().onWorldLoadPre(worldClientIn, (Minecraft)(Object) this);
+        this.worldBefore = this.world;
+        ((WorldLoadHandler) WorldLoadHandler.getInstance()).onWorldLoadPre(this.world, worldClientIn, (Minecraft)(Object) this);
     }
 
     @Inject(method = "loadWorld(Lnet/minecraft/client/multiplayer/WorldClient;Ljava/lang/String;)V", at = @At("RETURN"))
     private void onLoadWorldPost(@Nullable WorldClient worldClientIn, String loadingMessage, CallbackInfo ci)
     {
-        WorldLoadHandler.getInstance().onWorldLoadPost(worldClientIn, (Minecraft)(Object) this);
+        ((WorldLoadHandler) WorldLoadHandler.getInstance()).onWorldLoadPost(this.worldBefore, worldClientIn, (Minecraft)(Object) this);
+        this.worldBefore = null;
     }
 }

@@ -7,18 +7,19 @@ import fi.dy.masa.malilib.interfaces.IWorldLoadListener;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 
-public class WorldLoadHandler
+public class WorldLoadHandler implements IWorldLoadManager
 {
     private static final WorldLoadHandler INSTANCE = new WorldLoadHandler();
 
     private final List<IWorldLoadListener> worldLoadPreHandlers = new ArrayList<>();
     private final List<IWorldLoadListener> worldLoadPostHandlers = new ArrayList<>();
 
-    public static WorldLoadHandler getInstance()
+    public static IWorldLoadManager getInstance()
     {
         return INSTANCE;
     }
 
+    @Override
     public void registerWorldLoadPreHandler(IWorldLoadListener listener)
     {
         if (this.worldLoadPreHandlers.contains(listener) == false)
@@ -27,6 +28,13 @@ public class WorldLoadHandler
         }
     }
 
+    @Override
+    public void unregisterWorldLoadPreHandler(IWorldLoadListener listener)
+    {
+        this.worldLoadPreHandlers.remove(listener);
+    }
+
+    @Override
     public void registerWorldLoadPostHandler(IWorldLoadListener listener)
     {
         if (this.worldLoadPostHandlers.contains(listener) == false)
@@ -35,16 +43,22 @@ public class WorldLoadHandler
         }
     }
 
+    @Override
+    public void unregisterWorldLoadPostHandler(IWorldLoadListener listener)
+    {
+        this.worldLoadPostHandlers.remove(listener);
+    }
+
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public void onWorldLoadPre(@Nullable WorldClient world, Minecraft mc)
+    public void onWorldLoadPre(@Nullable WorldClient worldBefore, @Nullable WorldClient worldAfter, Minecraft mc)
     {
         if (this.worldLoadPreHandlers.isEmpty() == false)
         {
             for (IWorldLoadListener listener : this.worldLoadPreHandlers)
             {
-                listener.onWorldLoadPre(world, mc);
+                listener.onWorldLoadPre(worldBefore, worldAfter, mc);
             }
         }
     }
@@ -52,13 +66,13 @@ public class WorldLoadHandler
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public void onWorldLoadPost(@Nullable WorldClient world, Minecraft mc)
+    public void onWorldLoadPost(@Nullable WorldClient worldBefore, @Nullable WorldClient worldAfter, Minecraft mc)
     {
         if (this.worldLoadPostHandlers.isEmpty() == false)
         {
             for (IWorldLoadListener listener : this.worldLoadPostHandlers)
             {
-                listener.onWorldLoadPost(world, mc);
+                listener.onWorldLoadPost(worldBefore, worldAfter, mc);
             }
         }
     }
