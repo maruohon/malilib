@@ -2,11 +2,11 @@ package fi.dy.masa.malilib.config.gui;
 
 import java.util.List;
 import com.google.common.collect.ImmutableList;
+import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.event.InputEventHandler;
 import fi.dy.masa.malilib.hotkeys.IHotkey;
 import fi.dy.masa.malilib.hotkeys.KeybindCategory;
-import fi.dy.masa.malilib.reference.MaLiLibReference;
 import net.minecraft.client.resources.I18n;
 
 public class ConfigPanelAllHotkeys extends GuiModConfigs

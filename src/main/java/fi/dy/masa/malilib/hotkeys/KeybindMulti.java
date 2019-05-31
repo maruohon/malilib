@@ -9,8 +9,7 @@ import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import fi.dy.masa.malilib.LiteModMaLiLib;
-import fi.dy.masa.malilib.config.MaLiLibConfigs;
-import fi.dy.masa.malilib.config.options.ConfigBoolean;
+import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.hotkeys.KeybindSettings.Context;
 import fi.dy.masa.malilib.util.IMinecraftAccessor;
 import fi.dy.masa.malilib.util.InfoUtils;
@@ -19,9 +18,6 @@ import net.minecraft.client.settings.KeyBinding;
 
 public class KeybindMulti implements IKeybind
 {
-    public static final ConfigBoolean KEYBIND_DEBUG = new ConfigBoolean("keybindDebugging", false, "When enabled, key presses and held keys are\nprinted to the game console (and the action bar, if enabled)");
-    public static final ConfigBoolean KEYBIND_DEBUG_ACTIONBAR = new ConfigBoolean("keybindDebuggingIngame", true, "If enabled, then the messages from 'keybindDebugging'\nare also printed to the in-game action bar");
-
     private static List<Integer> pressedKeys = new ArrayList<>();
     private static int triggeredCount;
 
@@ -447,7 +443,7 @@ public class KeybindMulti implements IKeybind
             pressedKeys.remove(valObj);
         }
 
-        if (KEYBIND_DEBUG.getBooleanValue())
+        if (MaLiLibConfigs.Debug.KEYBIND_DEBUG.getBooleanValue())
         {
             printKeybindDebugMessage(keyCode, state);
         }
@@ -486,7 +482,7 @@ public class KeybindMulti implements IKeybind
 
         LiteModMaLiLib.logger.info(msg);
 
-        if (KEYBIND_DEBUG_ACTIONBAR.getBooleanValue())
+        if (MaLiLibConfigs.Debug.KEYBIND_DEBUG_ACTIONBAR.getBooleanValue())
         {
             InfoUtils.printActionbarMessage(msg);
         }

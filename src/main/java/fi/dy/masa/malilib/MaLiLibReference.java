@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.reference;
+package fi.dy.masa.malilib;
 
 public class MaLiLibReference
 {
