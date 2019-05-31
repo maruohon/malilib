@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.event;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
+import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.interfaces.IWorldLoadListener;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
@@ -68,6 +69,18 @@ public class WorldLoadHandler implements IWorldLoadManager
      */
     public void onWorldLoadPost(@Nullable WorldClient worldBefore, @Nullable WorldClient worldAfter, Minecraft mc)
     {
+        // Save all the configs when exiting a world
+        if (worldAfter == null)
+        {
+            ((ConfigManager) ConfigManager.getInstance()).saveAllConfigs();
+        }
+        // (Re-)Load all the configs from file when entering a world
+        else
+        {
+            ((ConfigManager) ConfigManager.getInstance()).loadAllConfigs();
+            InputEventHandler.getKeybindManager().updateUsedKeys();
+        }
+
         if (this.worldLoadPostHandlers.isEmpty() == false)
         {
             for (IWorldLoadListener listener : this.worldLoadPostHandlers)

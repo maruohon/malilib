@@ -71,6 +71,6 @@ public class LiteModMaLiLib implements Configurable, LiteMod, InitCompleteListen
     @Override
     public void onShutDown()
     {
-        ConfigManager.getInstance().saveAllConfigs();
+        ((ConfigManager) ConfigManager.getInstance()).saveAllConfigs();
     }
 }

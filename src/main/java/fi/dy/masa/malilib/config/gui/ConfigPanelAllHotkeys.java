@@ -48,7 +48,7 @@ public class ConfigPanelAllHotkeys extends GuiModConfigs
     @Override
     protected void onSettingsChanged()
     {
-        ConfigManager.getInstance().saveAllConfigs();
+        ((ConfigManager) ConfigManager.getInstance()).saveAllConfigs();
         InputEventHandler.getKeybindManager().updateUsedKeys();
     }
 }
