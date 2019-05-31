@@ -15,7 +15,7 @@ public class RenderEventHandler implements IRenderDispatcher
     private final List<IRenderer> tooltipLastRenderers = new ArrayList<>();
     private final List<IRenderer> worldLastRenderers = new ArrayList<>();
 
-    public static RenderEventHandler getInstance()
+    public static IRenderDispatcher getInstance()
     {
         return INSTANCE;
     }

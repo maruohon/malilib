@@ -17,7 +17,7 @@ public abstract class MixinEntityRenderer
         ))
     private void onRenderWorldLast(int pass, float partialTicks, long finishTimeNano, CallbackInfo ci)
     {
-        RenderEventHandler.getInstance().onRenderWorldLast(partialTicks);
+        ((RenderEventHandler) RenderEventHandler.getInstance()).onRenderWorldLast(partialTicks);
     }
 
     @Inject(method = "updateCameraAndRender(FJ)V", at = @At(
@@ -26,6 +26,6 @@ public abstract class MixinEntityRenderer
             shift = Shift.AFTER))
     private void onRenderGameOverlayPost(float partialTicks, long nanoTime, CallbackInfo ci)
     {
-        RenderEventHandler.getInstance().onRenderGameOverlayPost(partialTicks);
+        ((RenderEventHandler) RenderEventHandler.getInstance()).onRenderGameOverlayPost(partialTicks);
     }
 }
