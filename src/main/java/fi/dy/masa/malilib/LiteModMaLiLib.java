@@ -10,10 +10,7 @@ import com.mumfrey.liteloader.ShutdownListener;
 import com.mumfrey.liteloader.core.LiteLoader;
 import com.mumfrey.liteloader.modconfig.ConfigPanel;
 import fi.dy.masa.malilib.config.ConfigManager;
-import fi.dy.masa.malilib.event.InputEventHandler;
-import fi.dy.masa.malilib.hotkeys.IHotkeyCallback;
-import fi.dy.masa.malilib.hotkeys.IKeybind;
-import fi.dy.masa.malilib.hotkeys.KeyAction;
+import fi.dy.masa.malilib.event.InitializationHandler;
 import net.minecraft.client.Minecraft;
 
 public class LiteModMaLiLib implements Configurable, LiteMod, InitCompleteListener, ShutdownListener
@@ -45,12 +42,7 @@ public class LiteModMaLiLib implements Configurable, LiteMod, InitCompleteListen
     @Override
     public void init(File configPath)
     {
-        MaLiLibConfigs.loadFromFile();
-
-        ConfigManager.getInstance().registerConfigHandler(MaLiLibReference.MOD_ID, new MaLiLibConfigs());
-        InputEventHandler.getKeybindManager().registerKeybindProvider(MaLiLibInputHandler.getInstance());
-
-        MaLiLibConfigs.Generic.OPEN_GUI_CONFIGS.getKeybind().setCallback(new CallbackOpenConfigGui());
+        InitializationHandler.getInstance().registerInitializationHandler(new MaLiLibInitHandler());
     }
 
     @Override
@@ -61,30 +53,13 @@ public class LiteModMaLiLib implements Configurable, LiteMod, InitCompleteListen
     @Override
     public void onInitCompleted(Minecraft minecraft, LiteLoader loader)
     {
-        InputEventHandler.getKeybindManager().updateUsedKeys();
+        // Dispatch the init calls to all the registered handlers
+        ((InitializationHandler) InitializationHandler.getInstance()).onGameInitDone();
     }
-
-    /*
-    @Override
-    public void onTick(Minecraft mc, float partialTicks, boolean inGame, boolean clock)
-    {
-        InputEventHandler.getInstance().tickKeybinds();
-    }
-    */
 
     @Override
     public void onShutDown()
     {
         ((ConfigManager) ConfigManager.getInstance()).saveAllConfigs();
-    }
-
-    private static class CallbackOpenConfigGui implements IHotkeyCallback
-    {
-        @Override
-        public boolean onKeyAction(KeyAction action, IKeybind key)
-        {
-            Minecraft.getMinecraft().displayGuiScreen(new MaLiLibConfigGui());
-            return true;
-        }
     }
 }
