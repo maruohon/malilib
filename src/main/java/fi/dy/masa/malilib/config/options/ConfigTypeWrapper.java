@@ -428,7 +428,7 @@ public class ConfigTypeWrapper implements IConfigBoolean, IConfigDouble, IConfig
                     option.setOptionListValue(option.getOptionListValue().fromString(element.getAsString()));
                     break;
                 case HOTKEY:
-                    ((IHotkey) this.wrappedConfig).getKeybind().setValueFromString(element.getAsString());
+                    ((IHotkey) this.wrappedConfig).setValueFromJsonElement(element);
                     break;
                 default:
             }
@@ -457,7 +457,7 @@ public class ConfigTypeWrapper implements IConfigBoolean, IConfigDouble, IConfig
             case OPTION_LIST:
                 return new JsonPrimitive(((IConfigOptionList) this.wrappedConfig).getOptionListValue().getStringValue());
             case HOTKEY:
-                return new JsonPrimitive(((IHotkey) this.wrappedConfig).getKeybind().getStringValue());
+                return ((IHotkey) this.wrappedConfig).getAsJsonElement();
             default:
                 return new JsonPrimitive(this.getStringValue());
         }
