@@ -10,7 +10,6 @@ import org.lwjgl.glfw.GLFW;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.hotkeys.KeybindSettings.Context;
-import fi.dy.masa.malilib.mixin.IMixinKeyBinding;
 import fi.dy.masa.malilib.util.IF3KeyStateSetter;
 import fi.dy.masa.malilib.util.InfoUtils;
 import fi.dy.masa.malilib.util.KeyCodes;
@@ -328,7 +327,7 @@ public class KeybindMulti implements IKeybind
 
     public static int getKeyCode(KeyBinding keybind)
     {
-        Input input = ((IMixinKeyBinding) keybind).getInput();
+        Input input = InputMappings.getInputByName(keybind.getTranslationKey());
         return input.getType() == InputMappings.Type.MOUSE ? input.getKeyCode() - 100 : input.getKeyCode();
     }
 
