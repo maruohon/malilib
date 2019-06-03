@@ -15,7 +15,17 @@ public class BlockRestriction extends UsageRestriction<Block>
     {
         for (String name : names)
         {
-            Block block = IRegistry.BLOCK.get(new ResourceLocation(name));
+            ResourceLocation rl = null;
+
+            try
+            {
+                rl = new ResourceLocation(name);
+            }
+            catch (Exception e)
+            {
+            }
+
+            Block block = rl != null ? IRegistry.BLOCK.get(rl) : null;
 
             if (block != null)
             {

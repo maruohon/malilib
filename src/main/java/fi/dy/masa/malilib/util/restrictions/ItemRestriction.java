@@ -15,7 +15,17 @@ public class ItemRestriction extends UsageRestriction<Item>
     {
         for (String name : names)
         {
-            Item item = IRegistry.ITEM.get(new ResourceLocation(name));
+            ResourceLocation rl = null;
+
+            try
+            {
+                rl = new ResourceLocation(name);
+            }
+            catch (Exception e)
+            {
+            }
+
+            Item item = rl != null ? IRegistry.ITEM.get(rl) : null;
 
             if (item != null)
             {
