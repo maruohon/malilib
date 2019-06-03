@@ -68,6 +68,20 @@ public abstract class WidgetListConfigOptionsBase<TYPE, WIDGET extends WidgetCon
         }
     }
 
+    @Override
+    public boolean onCharTyped(char charIn, int modifiers)
+    {
+        for (WIDGET widget : this.listWidgets)
+        {
+            if (widget.onCharTyped(charIn, modifiers))
+            {
+                return true;
+            }
+        }
+
+        return super.onCharTyped(charIn, modifiers);
+    }
+
     public void addTextField(TextFieldWrapper<? extends GuiTextField> wrapper)
     {
         this.textFields.add(wrapper);

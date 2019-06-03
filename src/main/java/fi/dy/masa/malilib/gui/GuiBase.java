@@ -349,6 +349,20 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
             if (entry.onCharTyped(charIn, modifiers))
             {
                 handled = true;
+                break;
+            }
+        }
+
+        if (handled == false)
+        {
+            for (WidgetBase widget : this.widgets)
+            {
+                if (widget.onCharTyped(charIn, modifiers))
+                {
+                    // Don't call super if the button press got handled
+                    handled = true;
+                    break;
+                }
             }
         }
 

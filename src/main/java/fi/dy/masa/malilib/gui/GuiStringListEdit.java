@@ -145,12 +145,6 @@ public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEditE
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers)
-    {
-        return this.onKeyTyped(keyCode, scanCode, modifiers);
-    }
-
-    @Override
     public boolean onKeyTyped(int keyCode, int scanCode, int modifiers)
     {
         if (keyCode == KeyCodes.KEY_ESCAPE && this.dialogHandler != null)

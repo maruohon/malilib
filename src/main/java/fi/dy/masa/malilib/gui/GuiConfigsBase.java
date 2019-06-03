@@ -175,6 +175,11 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
             return true;
         }
 
+        if (this.getListWidget().onCharTyped(charIn, modifiers))
+        {
+            return true;
+        }
+
         return super.onCharTyped(charIn, modifiers);
     }
 

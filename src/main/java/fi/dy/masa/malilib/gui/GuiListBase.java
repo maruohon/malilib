@@ -162,7 +162,7 @@ public abstract class GuiListBase<TYPE, WIDGET extends WidgetListEntryBase<TYPE>
             return true;
         }
 
-        return false;
+        return super.onCharTyped(charIn, modifiers);
     }
 
     @Override
