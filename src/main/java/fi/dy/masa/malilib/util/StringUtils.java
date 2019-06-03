@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.util;
 
 import java.io.File;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.Nullable;
@@ -49,7 +50,7 @@ public class StringUtils
     // https://stackoverflow.com/questions/2559759/how-do-i-convert-camelcase-into-human-readable-names-in-java
     public static String splitCamelCase(String str)
     {
-        return str.replaceAll(
+        str = str.replaceAll(
            String.format("%s|%s|%s",
               "(?<=[A-Z])(?=[A-Z][a-z])",
               "(?<=[^A-Z])(?=[A-Z])",
@@ -57,6 +58,13 @@ public class StringUtils
            ),
            " "
         );
+
+        if (str.length() > 1 && str.charAt(0) > 'Z')
+        {
+            str = str.substring(0, 1).toUpperCase(Locale.ROOT) + str.substring(1);
+        }
+
+        return str;
     }
 
     /**
