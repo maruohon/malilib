@@ -65,6 +65,10 @@
     "malilib.gui.title.color_editor": "Color Editor",
     "malilib.gui.title.create_directory": "Create a new directory",
 
+    "malilib.label.active_mode.always": "Always",
+    "malilib.label.active_mode.never": "Never",
+    "malilib.label.active_mode.with_key": "With Key",
+
     "malilib.label.key_action.both": "BOTH",
     "malilib.label.key_action.press": "PRESS",
     "malilib.label.key_action.release": "RELEASE",
