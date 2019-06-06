@@ -2,20 +2,23 @@ package fi.dy.masa.malilib.util;
 
 import java.io.File;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import fi.dy.masa.malilib.gui.GuiBase;
+import javax.annotation.Nullable;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.resource.language.I18n;
+import net.minecraft.client.options.ServerEntry;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.text.ChatMessageType;
 import net.minecraft.text.StringTextComponent;
 import net.minecraft.text.TextComponent;
 import net.minecraft.text.TranslatableTextComponent;
 import net.minecraft.text.event.ClickEvent;
+import net.minecraft.world.World;
 
 public class StringUtils
 {
@@ -62,7 +65,7 @@ public class StringUtils
     // https://stackoverflow.com/questions/2559759/how-do-i-convert-camelcase-into-human-readable-names-in-java
     public static String splitCamelCase(String str)
     {
-        return str.replaceAll(
+        str = str.replaceAll(
            String.format("%s|%s|%s",
               "(?<=[A-Z])(?=[A-Z][a-z])",
               "(?<=[^A-Z])(?=[A-Z])",
@@ -70,16 +73,21 @@ public class StringUtils
            ),
            " "
         );
+
+        if (str.length() > 1 && str.charAt(0) > 'Z')
+        {
+            str = str.substring(0, 1).toUpperCase(Locale.ROOT) + str.substring(1);
+        }
+
+        return str;
     }
 
-    public static void printBooleanConfigToggleMessage(String prettyName, boolean newValue)
-    {
-        String pre = newValue ? GuiBase.TXT_GREEN : GuiBase.TXT_RED;
-        String status = I18n.translate("malilib.message.value." + (newValue ? "on" : "off"));
-        String message = I18n.translate("malilib.message.toggled", prettyName, pre + status + GuiBase.TXT_RST);
-        printActionbarMessage(message);
-    }
-
+    /**
+     * @deprecated since 0.10.0. Use the same method in InfoUtils instead.
+     * @param key
+     * @param args
+     */
+    @Deprecated
     public static void printActionbarMessage(String key, Object... args)
     {
         MinecraftClient.getInstance().inGameHud.addChatMessage(ChatMessageType.GAME_INFO, new TranslatableTextComponent(key, args));
@@ -91,6 +99,79 @@ public class StringUtils
         name.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, file.getAbsolutePath()));
         name.getStyle().setUnderline(Boolean.valueOf(true));
         player.sendMessage(new TranslatableTextComponent(messageKey, name));
+    }
+
+    /**
+     * Splits the given string into lines up to maxLineLength long
+     * @param linesOut
+     * @param textIn
+     * @param maxLineLength
+     * @param font
+     */
+    public static void splitTextToLines(List<String> linesOut, String textIn, int maxLineLength, TextRenderer font)
+    {
+        String[] lines = textIn.split("\\\\n");
+
+        for (String line : lines)
+        {
+            String[] parts = line.split(" ");
+            StringBuilder sb = new StringBuilder(256);
+            final int spaceWidth = font.getStringWidth(" ");
+            int lineWidth = 0;
+
+            for (String str : parts)
+            {
+                int width = font.getStringWidth(str);
+
+                if ((lineWidth + width + spaceWidth) > maxLineLength)
+                {
+                    if (lineWidth > 0)
+                    {
+                        linesOut.add(sb.toString());
+                        sb = new StringBuilder(256);
+                        lineWidth = 0;
+                    }
+
+                    // Long continuous string
+                    if (width > maxLineLength)
+                    {
+                        final int chars = str.length();
+
+                        for (int i = 0; i < chars; ++i)
+                        {
+                            String c = str.substring(i, i + 1);
+                            lineWidth += font.getStringWidth(c);
+
+                            if (lineWidth > maxLineLength)
+                            {
+                                linesOut.add(sb.toString());
+                                sb = new StringBuilder(256);
+                                lineWidth = 0;
+                            }
+
+                            sb.append(c);
+                        }
+
+                        linesOut.add(sb.toString());
+                        sb = new StringBuilder(256);
+                        lineWidth = 0;
+                    }
+                }
+
+                if (lineWidth > 0)
+                {
+                    sb.append(" ");
+                }
+
+                if (width <= maxLineLength)
+                {
+                    sb.append(str);
+                    lineWidth += width + spaceWidth;
+                }
+            }
+
+            linesOut.add(sb.toString());
+        }
     }
 
     public static String getClampedDisplayStringStrlen(List<String> list, final int maxWidth, String prefix, String suffix)
@@ -206,5 +287,63 @@ public class StringUtils
         sb.append(suffix);
 
         return sb.toString();
+    }
+
+    @Nullable
+    public static String getWorldOrServerName()
+    {
+        MinecraftClient mc = MinecraftClient.getInstance();
+
+        if (mc.isIntegratedServerRunning())
+        {
+            IntegratedServer server = mc.getServer();
+
+            if (server != null)
+            {
+                return server.getLevelName();
+            }
+        }
+        else
+        {
+            ServerEntry server = mc.getCurrentServerEntry();
+
+            if (server != null)
+            {
+                return server.address.replace(':', '_');
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns a file name based on the current server or world name.
+     * If <b>globalData</b> is false, the the name will also include the current dimension ID.
+     * @param globalData
+     * @param prefix
+     * @param suffix
+     * @param defaultName the default file name, if getting a per-server/world name fails
+     * @return
+     */
+    public static String getStorageFileName(boolean globalData, String prefix, String suffix, String defaultName)
+    {
+        String name = getWorldOrServerName();
+
+        if (name != null)
+        {
+            if (globalData)
+            {
+                return prefix + name + suffix;
+            }
+
+            World world = MinecraftClient.getInstance().world;
+
+            if (world != null)
+            {
+                return prefix + name + "_dim" + WorldUtils.getDimensionId(world) + suffix;
+            }
+        }
+
+        return prefix + defaultName + suffix;
     }
 }

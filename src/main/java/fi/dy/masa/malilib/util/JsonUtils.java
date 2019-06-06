@@ -15,6 +15,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import fi.dy.masa.malilib.MaLiLib;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 
 public class JsonUtils
 {
@@ -66,6 +67,57 @@ public class JsonUtils
             try
             {
                 el.getAsInt();
+                return true;
+            }
+            catch (Exception e) {}
+        }
+
+        return false;
+    }
+
+    public static boolean hasLong(JsonObject obj, String name)
+    {
+        JsonElement el = obj.get(name);
+
+        if (el != null && el.isJsonPrimitive())
+        {
+            try
+            {
+                el.getAsLong();
+                return true;
+            }
+            catch (Exception e) {}
+        }
+
+        return false;
+    }
+
+    public static boolean hasFloat(JsonObject obj, String name)
+    {
+        JsonElement el = obj.get(name);
+
+        if (el != null && el.isJsonPrimitive())
+        {
+            try
+            {
+                el.getAsFloat();
+                return true;
+            }
+            catch (Exception e) {}
+        }
+
+        return false;
+    }
+
+    public static boolean hasDouble(JsonObject obj, String name)
+    {
+        JsonElement el = obj.get(name);
+
+        if (el != null && el.isJsonPrimitive())
+        {
+            try
+            {
+                el.getAsDouble();
                 return true;
             }
             catch (Exception e) {}
@@ -143,6 +195,48 @@ public class JsonUtils
         return defaultValue;
     }
 
+    public static long getLongOrDefault(JsonObject obj, String name, long defaultValue)
+    {
+        if (obj.has(name) && obj.get(name).isJsonPrimitive())
+        {
+            try
+            {
+                return obj.get(name).getAsLong();
+            }
+            catch (Exception e) {}
+        }
+
+        return defaultValue;
+    }
+
+    public static float getFloatOrDefault(JsonObject obj, String name, float defaultValue)
+    {
+        if (obj.has(name) && obj.get(name).isJsonPrimitive())
+        {
+            try
+            {
+                return obj.get(name).getAsFloat();
+            }
+            catch (Exception e) {}
+        }
+
+        return defaultValue;
+    }
+
+    public static double getDoubleOrDefault(JsonObject obj, String name, double defaultValue)
+    {
+        if (obj.has(name) && obj.get(name).isJsonPrimitive())
+        {
+            try
+            {
+                return obj.get(name).getAsDouble();
+            }
+            catch (Exception e) {}
+        }
+
+        return defaultValue;
+    }
+
     public static String getStringOrDefault(JsonObject obj, String name, String defaultValue)
     {
         if (obj.has(name) && obj.get(name).isJsonPrimitive())
@@ -165,6 +259,21 @@ public class JsonUtils
     public static int getInteger(JsonObject obj, String name)
     {
         return getIntegerOrDefault(obj, name, 0);
+    }
+
+    public static long getLong(JsonObject obj, String name)
+    {
+        return getLongOrDefault(obj, name, 0);
+    }
+
+    public static float getFloat(JsonObject obj, String name)
+    {
+        return getFloatOrDefault(obj, name, 0);
+    }
+
+    public static double getDouble(JsonObject obj, String name)
+    {
+        return getDoubleOrDefault(obj, name, 0);
     }
 
     @Nullable
@@ -211,6 +320,43 @@ public class JsonUtils
         return null;
     }
 
+    public static boolean hasVec3d(JsonObject obj, String name)
+    {
+        return vec3dFromJson(obj, name) != null;
+    }
+
+    public static JsonArray vec3dToJson(Vec3d vec)
+    {
+        JsonArray arr = new JsonArray();
+
+        arr.add(vec.x);
+        arr.add(vec.y);
+        arr.add(vec.z);
+
+        return arr;
+    }
+
+    @Nullable
+    public static Vec3d vec3dFromJson(JsonObject obj, String name)
+    {
+        if (hasArray(obj, name))
+        {
+            JsonArray arr = obj.getAsJsonArray(name);
+
+            if (arr.size() == 3)
+            {
+                try
+                {
+                    return new Vec3d(arr.get(0).getAsDouble(), arr.get(1).getAsDouble(), arr.get(2).getAsDouble());
+                }
+                catch (Exception e)
+                {
+                }
+            }
+        }
+
+        return null;
+    }
 
     // https://stackoverflow.com/questions/29786197/gson-jsonobject-copy-value-affected-others-jsonobject-instance
     @Nonnull

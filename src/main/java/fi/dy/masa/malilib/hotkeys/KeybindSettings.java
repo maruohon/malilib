@@ -14,14 +14,17 @@ public class KeybindSettings
     public static final KeybindSettings RELEASE_EXCLUSIVE           = new KeybindSettings(Context.INGAME, KeyAction.RELEASE, false, true, true, true);
     public static final KeybindSettings NOCANCEL                    = new KeybindSettings(Context.INGAME, KeyAction.PRESS, false, true, false, false);
     public static final KeybindSettings PRESS_ALLOWEXTRA            = new KeybindSettings(Context.INGAME, KeyAction.PRESS, true, true, false, true);
+    public static final KeybindSettings PRESS_ALLOWEXTRA_EMPTY      = new KeybindSettings(Context.INGAME, KeyAction.PRESS, true, true, false, true, true);
     public static final KeybindSettings PRESS_NON_ORDER_SENSITIVE   = new KeybindSettings(Context.INGAME, KeyAction.PRESS, false, false, false, true);
     public static final KeybindSettings INGAME_BOTH                 = new KeybindSettings(Context.INGAME, KeyAction.BOTH, false, true, false, true);
     public static final KeybindSettings MODIFIER_INGAME             = new KeybindSettings(Context.INGAME, KeyAction.PRESS, true, false, false, false);
+    public static final KeybindSettings MODIFIER_INGAME_EMPTY       = new KeybindSettings(Context.INGAME, KeyAction.PRESS, true, false, false, false, true);
     public static final KeybindSettings MODIFIER_GUI                = new KeybindSettings(Context.GUI,    KeyAction.PRESS, true, false, false, false);
     public static final KeybindSettings GUI                         = new KeybindSettings(Context.GUI,    KeyAction.PRESS, false, true, false, true);
 
     private final Context context;
     private final KeyAction activateOn;
+    private final boolean allowEmpty;
     private final boolean allowExtraKeys;
     private final boolean orderSensitive;
     private final boolean exclusive;
@@ -29,17 +32,28 @@ public class KeybindSettings
 
     private KeybindSettings(Context context, KeyAction activateOn, boolean allowExtraKeys, boolean orderSensitive, boolean exclusive, boolean cancel)
     {
+        this(context, activateOn, allowExtraKeys, orderSensitive, exclusive, cancel, false);
+    }
+
+    private KeybindSettings(Context context, KeyAction activateOn, boolean allowExtraKeys, boolean orderSensitive, boolean exclusive, boolean cancel, boolean allowEmpty)
+    {
         this.context = context;
         this.activateOn = activateOn;
         this.allowExtraKeys = allowExtraKeys;
         this.orderSensitive = orderSensitive;
         this.exclusive = exclusive;
         this.cancel = cancel;
+        this.allowEmpty = allowEmpty;
     }
 
     public static KeybindSettings create(Context context, KeyAction activateOn, boolean allowExtraKeys, boolean orderSensitive, boolean exclusive, boolean cancel)
     {
-        return new KeybindSettings(context, activateOn, allowExtraKeys, orderSensitive, exclusive, cancel);
+        return create(context, activateOn, allowExtraKeys, orderSensitive, exclusive, cancel, false);
+    }
+
+    public static KeybindSettings create(Context context, KeyAction activateOn, boolean allowExtraKeys, boolean orderSensitive, boolean exclusive, boolean cancel, boolean allowEmpty)
+    {
+        return new KeybindSettings(context, activateOn, allowExtraKeys, orderSensitive, exclusive, cancel, allowEmpty);
     }
 
     public Context getContext()
@@ -50,6 +64,11 @@ public class KeybindSettings
     public KeyAction getActivateOn()
     {
         return this.activateOn;
+    }
+
+    public boolean getAllowEmpty()
+    {
+        return this.allowEmpty;
     }
 
     public boolean getAllowExtraKeys()
@@ -78,6 +97,7 @@ public class KeybindSettings
 
         obj.addProperty("activate_on", this.activateOn.name());
         obj.addProperty("context", this.context.name());
+        obj.addProperty("allow_empty", this.allowEmpty);
         obj.addProperty("allow_extra_keys", this.allowExtraKeys);
         obj.addProperty("order_sensitive", this.orderSensitive);
         obj.addProperty("exclusive", this.exclusive);
@@ -117,12 +137,13 @@ public class KeybindSettings
             }
         }
 
+        boolean allowEmpty = JsonUtils.getBoolean(obj, "allow_empty");
         boolean allowExtraKeys = JsonUtils.getBoolean(obj, "allow_extra_keys");
-        boolean orderSensitive = JsonUtils.getBoolean(obj, "order_sensitive");
-        boolean exclusive = JsonUtils.getBoolean(obj, "exclusive");
-        boolean cancel = JsonUtils.getBoolean(obj, "cancel");
+        boolean orderSensitive = JsonUtils.getBooleanOrDefault(obj, "order_sensitive", true);
+        boolean exclusive = JsonUtils.getBooleanOrDefault(obj, "exclusive", true);
+        boolean cancel = JsonUtils.getBooleanOrDefault(obj, "cancel", true);
 
-        return create(context, activateOn, allowExtraKeys, orderSensitive, exclusive, cancel);
+        return create(context, activateOn, allowExtraKeys, orderSensitive, exclusive, cancel, allowEmpty);
     }
 
     @Override
@@ -138,6 +159,8 @@ public class KeybindSettings
         if (activateOn != other.activateOn)
             return false;
         if (context != other.context)
+            return false;
+        if (allowEmpty != other.allowEmpty)
             return false;
         if (allowExtraKeys != other.allowExtraKeys)
             return false;

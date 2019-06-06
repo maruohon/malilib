@@ -5,8 +5,8 @@ import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.event.InputEventHandler;
-import fi.dy.masa.malilib.event.InputEventHandler.KeybindCategory;
 import fi.dy.masa.malilib.hotkeys.IHotkey;
+import fi.dy.masa.malilib.hotkeys.KeybindCategory;
 import net.minecraft.client.resource.language.I18n;
 
 public class ConfigPanelAllHotkeys extends GuiModConfigs
@@ -18,7 +18,7 @@ public class ConfigPanelAllHotkeys extends GuiModConfigs
 
     protected static List<ConfigOptionWrapper> createWrappers()
     {
-        List<KeybindCategory> categories = InputEventHandler.getInstance().getKeybindCategories();
+        List<KeybindCategory> categories = InputEventHandler.getKeybindManager().getKeybindCategories();
         ImmutableList.Builder<ConfigOptionWrapper> builder = ImmutableList.builder();
         boolean first = true;
 
@@ -48,7 +48,7 @@ public class ConfigPanelAllHotkeys extends GuiModConfigs
     @Override
     protected void onSettingsChanged()
     {
-        ConfigManager.getInstance().saveAllConfigs();
-        InputEventHandler.getInstance().updateUsedKeys();
+        ((ConfigManager) ConfigManager.getInstance()).saveAllConfigs();
+        InputEventHandler.getKeybindManager().updateUsedKeys();
     }
 }

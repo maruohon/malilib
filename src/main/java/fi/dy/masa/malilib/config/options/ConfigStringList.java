@@ -10,7 +10,7 @@ import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.config.ConfigType;
 import fi.dy.masa.malilib.config.IConfigStringList;
 
-public class ConfigStringList extends ConfigBase implements IConfigStringList
+public class ConfigStringList extends ConfigBase<ConfigStringList> implements IConfigStringList
 {
     private final ImmutableList<String> defaultValue;
     private final List<String> strings = new ArrayList<>();

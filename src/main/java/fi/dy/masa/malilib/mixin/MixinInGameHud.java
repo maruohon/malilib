@@ -13,6 +13,6 @@ public abstract class MixinInGameHud
     @Inject(method = "draw", at = @At("RETURN"))
     private void onGameOverlayPost(float partialTicks, CallbackInfo ci)
     {
-        RenderEventHandler.getInstance().onRenderGameOverlayPost(partialTicks);
+        ((RenderEventHandler) RenderEventHandler.getInstance()).onRenderGameOverlayPost(partialTicks);
     }
 }

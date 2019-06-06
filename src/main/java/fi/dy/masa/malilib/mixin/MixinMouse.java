@@ -27,7 +27,7 @@ public abstract class MixinMouse
         int mouseX = (int) (((Mouse) (Object) this).getX() * (double) window.getScaledWidth() / (double) window.getWidth());
         int mouseY = (int) (((Mouse) (Object) this).getY() * (double) window.getScaledHeight() / (double) window.getHeight());
 
-        InputEventHandler.getInstance().onMouseMove(mouseX, mouseY);
+        ((InputEventHandler) InputEventHandler.getInputManager()).onMouseMove(mouseX, mouseY);
     }
 
     @Inject(method = "onMouseScroll", cancellable = true,
@@ -39,7 +39,7 @@ public abstract class MixinMouse
         int mouseY = (int) (((Mouse) (Object) this).getY() * (double) window.getScaledHeight() / (double) window.getHeight());
         double amount = yoffset * this.client.options.mouseWheelSensitivity;
 
-        if (InputEventHandler.getInstance().onMouseScroll(mouseX, mouseY, amount))
+        if (((InputEventHandler) InputEventHandler.getInputManager()).onMouseScroll(mouseX, mouseY, amount))
         {
             ci.cancel();
         }
@@ -54,7 +54,7 @@ public abstract class MixinMouse
         int mouseY = (int) (((Mouse) (Object) this).getY() * (double) window.getScaledHeight() / (double) window.getHeight());
         final boolean keyState = action == GLFW.GLFW_PRESS;
 
-        if (InputEventHandler.getInstance().onMouseClick(mouseX, mouseY, button, keyState))
+        if (((InputEventHandler) InputEventHandler.getInputManager()).onMouseClick(mouseX, mouseY, button, keyState))
         {
             ci.cancel();
         }

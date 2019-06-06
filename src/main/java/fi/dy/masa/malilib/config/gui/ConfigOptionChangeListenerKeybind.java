@@ -1,13 +1,13 @@
 package fi.dy.masa.malilib.config.gui;
 
+import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.ConfigButtonKeybind;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.gui.interfaces.IKeybindConfigGui;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
-import net.minecraft.client.MinecraftClient;
 
-public class ConfigOptionChangeListenerKeybind implements IButtonActionListener<ButtonGeneric>
+public class ConfigOptionChangeListenerKeybind implements IButtonActionListener
 {
     private final IKeybindConfigGui host;
     private final ConfigButtonKeybind buttonHotkey;
@@ -23,23 +23,16 @@ public class ConfigOptionChangeListenerKeybind implements IButtonActionListener<
     }
 
     @Override
-    public void actionPerformed(ButtonGeneric control)
+    public void actionPerformedWithButton(ButtonBase button, int mouseButton)
     {
         this.keybind.resetToDefault();
-        this.buttonHotkey.playDownSound(MinecraftClient.getInstance().getSoundManager());
         this.updateButtons();
-    }
-
-    @Override
-    public void actionPerformedWithButton(ButtonGeneric control, int mouseButton)
-    {
-        this.actionPerformed(control);
-        this.host.getButtonPressListener().actionPerformedWithButton(control, mouseButton);
+        this.host.getButtonPressListener().actionPerformedWithButton(button, mouseButton);
     }
 
     public void updateButtons()
     {
-        this.button.active = this.keybind.isModified();
+        this.button.setEnabled(this.keybind.isModified());
         this.buttonHotkey.updateDisplayString();
     }
 }

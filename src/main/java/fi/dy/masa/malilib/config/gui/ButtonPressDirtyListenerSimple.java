@@ -3,20 +3,14 @@ package fi.dy.masa.malilib.config.gui;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 
-public class ButtonPressDirtyListenerSimple<T extends ButtonBase> implements IButtonActionListener<T>
+public class ButtonPressDirtyListenerSimple implements IButtonActionListener
 {
     private boolean dirty;
 
     @Override
-    public void actionPerformed(T control)
+    public void actionPerformedWithButton(ButtonBase button, int mouseButton)
     {
         this.dirty = true;
-    }
-
-    @Override
-    public void actionPerformedWithButton(T control, int mouseButton)
-    {
-        this.actionPerformed(control);
     }
 
     public boolean isDirty()

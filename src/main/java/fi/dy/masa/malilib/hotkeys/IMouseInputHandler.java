@@ -4,6 +4,8 @@ public interface IMouseInputHandler
 {
     /**
      * Called on mouse button events with the key and whether the key was pressed or released.
+     * @param mouseX
+     * @param mouseY
      * @param eventButton
      * @param eventButtonState
      * @return true if further processing of this mouse button event should be cancelled
@@ -15,6 +17,8 @@ public interface IMouseInputHandler
 
     /**
      * Called when the mouse wheel is scrolled
+     * @param mouseX
+     * @param mouseY
      * @param amount
      * @return
      */

@@ -16,6 +16,6 @@ public abstract class MixinGameRenderer
         ))
     private void onRenderWorldLast(float partialTicks, long finishTimeNano, CallbackInfo ci)
     {
-        RenderEventHandler.getInstance().onRenderWorldLast(partialTicks);
+        ((RenderEventHandler) RenderEventHandler.getInstance()).onRenderWorldLast(partialTicks);
     }
 }

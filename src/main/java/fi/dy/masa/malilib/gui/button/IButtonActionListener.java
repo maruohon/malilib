@@ -1,8 +1,6 @@
 package fi.dy.masa.malilib.gui.button;
 
-public interface IButtonActionListener<T extends ButtonBase>
+public interface IButtonActionListener
 {
-    void actionPerformed(T control);
-
-    void actionPerformedWithButton(T control, int mouseButton);
+    void actionPerformedWithButton(ButtonBase button, int mouseButton);
 }

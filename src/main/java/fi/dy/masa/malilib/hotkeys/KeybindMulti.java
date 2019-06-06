@@ -2,23 +2,23 @@ package fi.dy.masa.malilib.hotkeys;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import javax.annotation.Nullable;
 import org.lwjgl.glfw.GLFW;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.MaLiLibConfigs;
-import fi.dy.masa.malilib.config.options.ConfigBoolean;
+import fi.dy.masa.malilib.hotkeys.KeybindSettings.Context;
 import fi.dy.masa.malilib.util.IF3KeyStateSetter;
+import fi.dy.masa.malilib.util.InfoUtils;
 import fi.dy.masa.malilib.util.KeyCodes;
-import fi.dy.masa.malilib.util.StringUtils;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.options.KeyBinding;
+import net.minecraft.client.util.InputUtil;
 
 public class KeybindMulti implements IKeybind
 {
-    public static final ConfigBoolean KEYBIND_DEBUG = new ConfigBoolean("keybindDebugging", false, "When enabled, key presses and held keys are\nprinted to the game console (and the action bar, if enabled)");
-    public static final ConfigBoolean KEYBIND_DEBUG_ACTIONBAR = new ConfigBoolean("keybindDebuggingIngame", true, "If enabled, then the messages from 'keybindDebugging'\nare also printed to the in-game action bar");
-
     private static final ArrayList<Integer> PRESSED_KEYS = new ArrayList<>();
     private static int triggeredCount;
 
@@ -60,7 +60,7 @@ public class KeybindMulti implements IKeybind
     @Override
     public boolean isValid()
     {
-        return this.keyCodes.isEmpty() == false;
+        return this.keyCodes.isEmpty() == false || this.settings.getAllowEmpty();
     }
 
     /**
@@ -77,7 +77,7 @@ public class KeybindMulti implements IKeybind
     @Override
     public boolean isKeybindHeld()
     {
-        return this.pressed;
+        return this.pressed || (this.settings.getAllowEmpty() && this.keyCodes.isEmpty());
     }
 
     /**
@@ -86,7 +86,7 @@ public class KeybindMulti implements IKeybind
     @Override
     public boolean updateIsPressed()
     {
-        if (this.isValid() == false ||
+        if (this.keyCodes.isEmpty() ||
             (this.settings.getContext() != KeybindSettings.Context.ANY &&
             ((this.settings.getContext() == KeybindSettings.Context.INGAME) != (MinecraftClient.getInstance().currentScreen == null))))
         {
@@ -222,7 +222,7 @@ public class KeybindMulti implements IKeybind
     }
 
     @Override
-    public Collection<Integer> getKeys()
+    public List<Integer> getKeys()
     {
         return this.keyCodes;
     }
@@ -318,6 +318,88 @@ public class KeybindMulti implements IKeybind
         }
     }
 
+    @Override
+    public boolean matches(int keyCode)
+    {
+        return this.keyCodes.size() == 1 && this.keyCodes.get(0) == keyCode;
+    }
+
+    public static int getKeyCode(KeyBinding keybind)
+    {
+        InputUtil.KeyCode input = InputUtil.fromName(keybind.getName());
+        return input.getCategory() == InputUtil.Type.MOUSE ? input.getKeyCode() - 100 : input.getKeyCode();
+    }
+
+    public static boolean hotkeyMatchesKeybind(IHotkey hotkey, KeyBinding keybind)
+    {
+        int keyCode = getKeyCode(keybind);
+        return hotkey.getKeybind().matches(keyCode);
+    }
+
+    @Override
+    public boolean overlaps(IKeybind other)
+    {
+        if (other == this || other.getKeys().size() > this.getKeys().size())
+        {
+            return false;
+        }
+
+        if (this.contextOverlaps(other))
+        {
+            KeybindSettings settingsOther = other.getSettings();
+            boolean o1 = this.settings.isOrderSensitive();
+            boolean o2 = settingsOther.isOrderSensitive();
+            List<Integer> keys1 = this.getKeys();
+            List<Integer> keys2 = other.getKeys();
+            int l1 = keys1.size();
+            int l2 = keys2.size();
+
+            if (l1 == 0 || l2 == 0)
+            {
+                return false;
+            }
+
+            if ((this.settings.getAllowExtraKeys() == false && l1 < l2 && keys1.get(0) != keys2.get(0)) ||
+                (settingsOther.getAllowExtraKeys() == false && l2 < l1 && keys1.get(0) != keys2.get(0)))
+            {
+                return false;
+            }
+
+            // Both are order sensitive, try to "slide the shorter sequence over the longer sequence" to find a match
+            if (o1 && o2)
+            {
+                return l1 < l2 ? Collections.indexOfSubList(keys2, keys1) != -1 : Collections.indexOfSubList(keys1, keys2) != -1;
+            }
+            // At least one of the keybinds is not order sensitive
+            else
+            {
+                return l1 <= l2 ? keys2.containsAll(keys1) : keys1.containsAll(keys2);
+            }
+        }
+
+        return false;
+    }
+
+    public boolean contextOverlaps(IKeybind other)
+    {
+        KeybindSettings settingsOther = other.getSettings();
+        Context c1 = this.settings.getContext();
+        Context c2 = settingsOther.getContext();
+
+        if (c1 == Context.ANY || c2 == Context.ANY || c1 == c2)
+        {
+            KeyAction a1 = this.settings.getActivateOn();
+            KeyAction a2 = settingsOther.getActivateOn();
+
+            if (a1 == KeyAction.BOTH || a2 == KeyAction.BOTH || a1 == a2)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public static KeybindMulti fromStorageString(String str, KeybindSettings settings)
     {
         KeybindMulti keybind = new KeybindMulti(str, settings);
@@ -363,7 +445,7 @@ public class KeybindMulti implements IKeybind
             PRESSED_KEYS.remove(valObj);
         }
 
-        if (KEYBIND_DEBUG.getBooleanValue())
+        if (MaLiLibConfigs.Debug.KEYBIND_DEBUG.getBooleanValue())
         {
             printKeybindDebugMessage(keyCode, scanCode, state);
         }
@@ -402,9 +484,9 @@ public class KeybindMulti implements IKeybind
 
         MaLiLib.logger.info(msg);
 
-        if (KEYBIND_DEBUG_ACTIONBAR.getBooleanValue())
+        if (MaLiLibConfigs.Debug.KEYBIND_DEBUG_ACTIONBAR.getBooleanValue())
         {
-            StringUtils.printActionbarMessage(msg);
+            InfoUtils.printActionbarMessage(msg);
         }
     }
 
@@ -442,5 +524,10 @@ public class KeybindMulti implements IKeybind
     public static String getStorageStringForKeyCode(int keyCode)
     {
         return KeyCodes.getNameForKey(keyCode);
+    }
+
+    public static int getTriggeredCount()
+    {
+        return triggeredCount;
     }
 }

@@ -2,13 +2,14 @@ package fi.dy.masa.malilib.gui.widgets;
 
 import java.util.ArrayList;
 import java.util.List;
-import fi.dy.masa.malilib.gui.GuiTextFieldWrapper;
+import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
+import fi.dy.masa.malilib.gui.wrappers.TextFieldWrapper;
 import fi.dy.masa.malilib.util.KeyCodes;
 import net.minecraft.client.gui.Screen;
 
-public abstract class WidgetListConfigOptionsBase<TYPE, WIDGET extends WidgetConfigOptionBase> extends WidgetListBase<TYPE, WIDGET>
+public abstract class WidgetListConfigOptionsBase<TYPE, WIDGET extends WidgetConfigOptionBase<TYPE>> extends WidgetListBase<TYPE, WIDGET>
 {
-    protected final List<GuiTextFieldWrapper> textFields = new ArrayList<>();
+    protected final List<TextFieldWrapper<? extends GuiTextFieldGeneric>> textFields = new ArrayList<>();
     protected boolean configsModified;
     protected int maxLabelWidth;
     protected int configWidth;
@@ -51,7 +52,6 @@ public abstract class WidgetListConfigOptionsBase<TYPE, WIDGET extends WidgetCon
     {
         if (keyCode == KeyCodes.KEY_TAB)
         {
-            this.applyPendingModifications();
             return this.changeTextFieldFocus(Screen.hasShiftDown());
         }
         else
@@ -68,7 +68,21 @@ public abstract class WidgetListConfigOptionsBase<TYPE, WIDGET extends WidgetCon
         }
     }
 
-    public void addTextField(GuiTextFieldWrapper wrapper)
+    @Override
+    public boolean onCharTyped(char charIn, int modifiers)
+    {
+        for (WIDGET widget : this.listWidgets)
+        {
+            if (widget.onCharTyped(charIn, modifiers))
+            {
+                return true;
+            }
+        }
+
+        return super.onCharTyped(charIn, modifiers);
+    }
+
+    public void addTextField(TextFieldWrapper<? extends GuiTextFieldGeneric> wrapper)
     {
         this.textFields.add(wrapper);
     }
@@ -83,12 +97,12 @@ public abstract class WidgetListConfigOptionsBase<TYPE, WIDGET extends WidgetCon
 
             for (int i = 0; i < size; ++i)
             {
-                GuiTextFieldWrapper wrapper = this.textFields.get(i);
+                GuiTextFieldGeneric textField = this.textFields.get(i).getTextField();
 
-                if (wrapper.getTextField().isFocused())
+                if (textField.isFocused())
                 {
                     currentIndex = i;
-                    wrapper.setFocused(false);
+                    textField.setFocused(false);
                     break;
                 }
             }
@@ -106,7 +120,7 @@ public abstract class WidgetListConfigOptionsBase<TYPE, WIDGET extends WidgetCon
                     newIndex = size - 1;
                 }
 
-                this.textFields.get(newIndex).setFocused(true);
+                this.textFields.get(newIndex).getTextField().setFocused(true);
                 this.applyPendingModifications();
 
                 return true;
@@ -118,13 +132,15 @@ public abstract class WidgetListConfigOptionsBase<TYPE, WIDGET extends WidgetCon
 
     protected void clearTextFieldFocus()
     {
+        this.applyPendingModifications();
+
         for (int i = 0; i < this.textFields.size(); ++i)
         {
-            GuiTextFieldWrapper wrapper = this.textFields.get(i);
+            GuiTextFieldGeneric textField = this.textFields.get(i).getTextField();
 
-            if (wrapper.getTextField().isFocused())
+            if (textField.isFocused())
             {
-                wrapper.setFocused(false);
+                textField.setFocused(false);
                 break;
             }
         }
@@ -144,7 +160,7 @@ public abstract class WidgetListConfigOptionsBase<TYPE, WIDGET extends WidgetCon
             return true;
         }
 
-        for (WidgetConfigOptionBase widget : this.listWidgets)
+        for (WidgetConfigOptionBase<TYPE> widget : this.listWidgets)
         {
             if (widget.wasConfigModified())
             {
@@ -163,7 +179,7 @@ public abstract class WidgetListConfigOptionsBase<TYPE, WIDGET extends WidgetCon
 
     public void applyPendingModifications()
     {
-        for (WidgetConfigOptionBase widget : this.listWidgets)
+        for (WidgetConfigOptionBase<TYPE> widget : this.listWidgets)
         {
             if (widget.hasPendingModifications())
             {

@@ -1,11 +1,13 @@
 package fi.dy.masa.malilib.gui;
 
 import javax.annotation.Nullable;
+import com.mojang.blaze3d.platform.GlStateManager;
+import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.KeyCodes;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.Screen;
 import net.minecraft.client.resource.language.I18n;
 
 public abstract class GuiTextInputBase extends GuiDialogBase
@@ -13,9 +15,8 @@ public abstract class GuiTextInputBase extends GuiDialogBase
     protected final GuiTextFieldGeneric textField;
     protected final String originalText;
 
-    public GuiTextInputBase(int maxTextLength, String titleKey, String defaultText, @Nullable GuiBase parent)
+    public GuiTextInputBase(int maxTextLength, String titleKey, String defaultText, @Nullable Screen parent)
     {
-        this.minecraft = MinecraftClient.getInstance();
         this.setParent(parent);
         this.title = I18n.translate(titleKey);
         this.useTitleHierarchy = false;
@@ -25,11 +26,12 @@ public abstract class GuiTextInputBase extends GuiDialogBase
         this.centerOnScreen();
 
         int width = Math.min(maxTextLength * 10, 240);
-        this.textField = new GuiTextFieldGeneric(0, this.minecraft.textRenderer, this.dialogLeft + 12, this.dialogTop + 40, width, 20);
+        this.textField = new GuiTextFieldGeneric(this.dialogLeft + 12, this.dialogTop + 40, width, 20, this.textRenderer);
         this.textField.setMaxLength(maxTextLength);
         this.textField.setFocused(true);
         this.textField.setText(this.originalText);
-        this.textField.method_1872(); // MCP: setCursorPositionEnd
+        this.textField.method_1872(); //setCursorPositionEnd();
+        this.blitOffset = 1;
     }
 
     @Override
@@ -47,12 +49,12 @@ public abstract class GuiTextInputBase extends GuiDialogBase
 
         this.createButton(x, y, buttonWidth, ButtonType.CANCEL);
 
-        this.minecraft.keyboard.enableRepeatEvents(true);
+        this.mc.keyboard.enableRepeatEvents(true);
     }
 
     protected void createButton(int x, int y, int buttonWidth, ButtonType type)
     {
-        ButtonGeneric button = new ButtonGeneric(0, x, y, buttonWidth, 20, I18n.translate(type.getLabelKey()));
+        ButtonGeneric button = new ButtonGeneric(x, y, buttonWidth, 20, I18n.translate(type.getLabelKey()));
         this.addButton(button, this.createActionListener(type));
     }
 
@@ -70,15 +72,19 @@ public abstract class GuiTextInputBase extends GuiDialogBase
             this.getParent().render(mouseX, mouseY, partialTicks);
         }
 
-        RenderUtils.drawOutlinedBox(this.dialogLeft, this.dialogTop, this.dialogWidth, this.dialogHeight, 0xB0000000, COLOR_HORIZONTAL_BAR);
+        GlStateManager.pushMatrix();
+        GlStateManager.translatef(0, 0, this.blitOffset);
+
+        RenderUtils.drawOutlinedBox(this.dialogLeft, this.dialogTop, this.dialogWidth, this.dialogHeight, 0xE0000000, COLOR_HORIZONTAL_BAR);
 
         // Draw the title
-        this.drawString(this.textRenderer, this.getTitleString(), this.dialogLeft + 10, this.dialogTop + 4, COLOR_WHITE);
+        this.drawStringWithShadow(this.getTitleString(), this.dialogLeft + 10, this.dialogTop + 4, COLOR_WHITE);
 
         //super.drawScreen(mouseX, mouseY, partialTicks);
         this.textField.render(mouseX, mouseY, partialTicks);
 
         this.drawButtons(mouseX, mouseY, partialTicks);
+        GlStateManager.popMatrix();
     }
 
     @Override
@@ -89,14 +95,14 @@ public abstract class GuiTextInputBase extends GuiDialogBase
             // Only close the GUI if the value was successfully applied
             if (this.applyValue(this.textField.getText()))
             {
-                this.minecraft.openScreen(this.getParent());
+                this.mc.openScreen(this.getParent());
             }
 
             return true;
         }
         else if (keyCode == KeyCodes.KEY_ESCAPE)
         {
-            this.minecraft.openScreen(this.getParent());
+            this.mc.openScreen(this.getParent());
             return true;
         }
 
@@ -137,7 +143,7 @@ public abstract class GuiTextInputBase extends GuiDialogBase
 
     protected abstract boolean applyValue(String string);
 
-    protected static class ButtonListener implements IButtonActionListener<ButtonGeneric>
+    protected static class ButtonListener implements IButtonActionListener
     {
         private final GuiTextInputBase gui;
         private final ButtonType type;
@@ -149,32 +155,26 @@ public abstract class GuiTextInputBase extends GuiDialogBase
         }
 
         @Override
-        public void actionPerformed(ButtonGeneric control)
+        public void actionPerformedWithButton(ButtonBase button, int mouseButton)
         {
             if (this.type == ButtonType.OK)
             {
                 // Only close the GUI if the value was successfully applied
                 if (this.gui.applyValue(this.gui.textField.getText()))
                 {
-                    this.gui.minecraft.openScreen(this.gui.getParent());
+                    this.gui.mc.openScreen(this.gui.getParent());
                 }
             }
             else if (this.type == ButtonType.CANCEL)
             {
-                this.gui.minecraft.openScreen(this.gui.getParent());
+                this.gui.mc.openScreen(this.gui.getParent());
             }
             else if (this.type == ButtonType.RESET)
             {
                 this.gui.textField.setText(this.gui.originalText);
-                this.gui.textField.setCursor(0);
+                this.gui.textField.method_1870(); // setCursorPositionZero
                 this.gui.textField.setFocused(true);
             }
-        }
-
-        @Override
-        public void actionPerformedWithButton(ButtonGeneric control, int mouseButton)
-        {
-            this.actionPerformed(control);
         }
     }
 

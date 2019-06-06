@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.hotkeys;
 
-import java.util.Collection;
+import java.util.List;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.IConfigResettable;
 import fi.dy.masa.malilib.config.IStringRepresentable;
@@ -42,11 +42,21 @@ public interface IKeybind extends IConfigResettable, IStringRepresentable
 
     void removeKey(int keyCode);
 
+    /**
+     * Check if this keybind is only a single key, matching the given key code.
+     * This is mainly meant for checking equality against vanilla keybinds.
+     * @param keyCode
+     * @return
+     */
+    boolean matches(int keyCode);
+
+    boolean overlaps(IKeybind other);
+
     void tick();
 
     String getKeysDisplayString();
 
-    Collection<Integer> getKeys();
+    List<Integer> getKeys();
 
     void setCallback(@Nullable IHotkeyCallback callback);
 
