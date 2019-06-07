@@ -281,7 +281,7 @@ public abstract class ConfigPanelBase extends AbstractConfigPanel
         public GuiConfigsWrapper(String modId, String title, List<ConfigOptionWrapper> wrappers,
                 GuiScreen backgroundGui, GuiBase foregroundGui)
         {
-            super(modId, title, wrappers, false);
+            super(modId, wrappers, false, title);
 
             this.backgroundGui = backgroundGui;
             this.foregroundGui = foregroundGui;

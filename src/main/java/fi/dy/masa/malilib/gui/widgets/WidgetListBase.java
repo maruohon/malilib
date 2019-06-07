@@ -12,6 +12,7 @@ import org.lwjgl.input.Keyboard;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.GuiScrollBar;
 import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
+import fi.dy.masa.malilib.render.RenderUtils;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.MathHelper;
 
@@ -347,7 +348,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
     @Override
     public void drawContents(int mouseX, int mouseY, float partialTicks)
     {
-        GlStateManager.color(1f, 1f, 1f, 1f);
+        RenderUtils.color(1f, 1f, 1f, 1f);
 
         if (this.widgetSearchBar != null)
         {
@@ -403,7 +404,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
         }
 
         GlStateManager.disableLighting();
-        GlStateManager.color(1f, 1f, 1f, 1f);
+        RenderUtils.color(1f, 1f, 1f, 1f);
     }
 
     public void setSize(int width, int height)

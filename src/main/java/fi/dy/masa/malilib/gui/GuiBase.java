@@ -21,8 +21,6 @@ import fi.dy.masa.malilib.render.RenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 
@@ -36,11 +34,15 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     public static final String TXT_RED = TextFormatting.RED.toString();
     public static final String TXT_WHITE = TextFormatting.WHITE.toString();
     public static final String TXT_YELLOW = TextFormatting.YELLOW.toString();
+
     public static final String TXT_BOLD = TextFormatting.BOLD.toString();
     public static final String TXT_RST = TextFormatting.RESET.toString();
+    public static final String TXT_UNDERLINE = TextFormatting.UNDERLINE.toString();
 
     public static final String TXT_DARK_GREEN = TextFormatting.DARK_GREEN.toString();
     public static final String TXT_DARK_RED = TextFormatting.DARK_RED.toString();
+
+    public static final String TXT_LIGHT_PURPLE = TextFormatting.LIGHT_PURPLE.toString();
 
     protected static final String BUTTON_LABEL_ADD = TextFormatting.DARK_GREEN + "+" + TextFormatting.RESET;
     protected static final String BUTTON_LABEL_REMOVE = TextFormatting.DARK_RED + "-" + TextFormatting.RESET;
@@ -50,11 +52,12 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     public static final int COLOR_HORIZONTAL_BAR = 0xFF999999;
     protected static final int LEFT         = 20;
     protected static final int TOP          = 10;
-    protected final Minecraft mc = Minecraft.getMinecraft();
-    protected final FontRenderer textRenderer = Minecraft.getMinecraft().fontRenderer;
+    public final Minecraft mc = Minecraft.getMinecraft();
+    public final FontRenderer textRenderer = this.mc.fontRenderer;
+    public final int fontHeight = this.textRenderer.FONT_HEIGHT;
     private final List<ButtonBase> buttons = new ArrayList<>();
     private final List<WidgetBase> widgets = new ArrayList<>();
-    private final List<TextFieldWrapper<? extends GuiTextField>> textFields = new ArrayList<>();
+    private final List<TextFieldWrapper<? extends GuiTextFieldGeneric>> textFields = new ArrayList<>();
     private final MessageRenderer messageRenderer = new MessageRenderer(0xDD000000, COLOR_HORIZONTAL_BAR);
     protected WidgetBase hoveredWidget = null;
     protected String title = "";
@@ -107,6 +110,18 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
         super.initGui();
 
         this.clearElements();
+    }
+
+    protected void closeGui(boolean showParent)
+    {
+        if (showParent)
+        {
+            this.mc.displayGuiScreen(this.parent);
+        }
+        else
+        {
+            this.mc.displayGuiScreen(null);
+        }
     }
 
     @Override
@@ -282,14 +297,7 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
         {
             if (keyCode == Keyboard.KEY_ESCAPE)
             {
-                if (GuiScreen.isShiftKeyDown())
-                {
-                    this.mc.displayGuiScreen(null);
-                }
-                else
-                {
-                    this.mc.displayGuiScreen(this.parent);
-                }
+                this.closeGui(isShiftDown() == false);
 
                 return true;
             }
@@ -297,7 +305,7 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
 
         if (selected >= 0)
         {
-            if (GuiScreen.isShiftKeyDown())
+            if (isShiftDown())
             {
                 selected = selected > 0 ? selected - 1 : this.textFields.size() - 1;
             }
@@ -358,7 +366,7 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
         return button;
     }
 
-    public <T extends GuiTextField> void addTextField(T textField, @Nullable ITextFieldListener<T> listener)
+    public <T extends GuiTextFieldGeneric> void addTextField(T textField, @Nullable ITextFieldListener<T> listener)
     {
         this.textFields.add(new TextFieldWrapper<>(textField, listener));
     }
@@ -482,7 +490,7 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
             }
         }
 
-        RenderHelper.disableStandardItemLighting();
+        RenderUtils.disableItemLighting();
     }
 
     protected void drawHoveredWidget(int mouseX, int mouseY)
@@ -490,7 +498,7 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
         if (this.hoveredWidget != null)
         {
             this.hoveredWidget.postRenderHovered(mouseX, mouseY, false);
-            RenderHelper.disableStandardItemLighting();
+            RenderUtils.disableItemLighting();
         }
     }
 
@@ -524,5 +532,25 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
         }
 
         return width;
+    }
+
+    public static void openGui(GuiScreen gui)
+    {
+        Minecraft.getMinecraft().displayGuiScreen(gui);
+    }
+
+    public static boolean isShiftDown()
+    {
+        return isShiftKeyDown();
+    }
+
+    public static boolean isCtrlDown()
+    {
+        return isCtrlKeyDown();
+    }
+
+    public static boolean isAltDown()
+    {
+        return isAltKeyDown();
     }
 }

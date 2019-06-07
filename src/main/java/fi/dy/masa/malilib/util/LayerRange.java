@@ -7,7 +7,6 @@ import com.google.gson.JsonPrimitive;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.interfaces.IRangeChangeListener;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;
@@ -471,7 +470,7 @@ public class LayerRange
             }
             else
             {
-                String val1 = moveMin ? I18n.format("malilib.message.layer_range.range_min") : I18n.format("malilib.message.layer_range.range_max");
+                String val1 = moveMin ? StringUtils.translate("malilib.message.layer_range.range_min") : StringUtils.translate("malilib.message.layer_range.range_max");
                 InfoUtils.printActionbarMessage("malilib.message.moved_layer_range_boundary", val1, String.valueOf(amount), axisName);
             }
         }

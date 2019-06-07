@@ -1,7 +1,6 @@
 package fi.dy.masa.malilib.gui.widgets;
 
 import java.io.File;
-import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.interfaces.IDirectoryNavigator;
 import fi.dy.masa.malilib.gui.interfaces.IFileBrowserIconProvider;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
@@ -9,7 +8,6 @@ import fi.dy.masa.malilib.gui.widgets.WidgetFileBrowserBase.DirectoryEntry;
 import fi.dy.masa.malilib.gui.widgets.WidgetFileBrowserBase.DirectoryEntryType;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.FileUtils;
-import net.minecraft.client.renderer.GlStateManager;
 
 public class WidgetDirectoryEntry extends WidgetListEntryBase<DirectoryEntry>
 {
@@ -69,7 +67,7 @@ public class WidgetDirectoryEntry extends WidgetListEntryBase<DirectoryEntry>
 
         if (icon != null)
         {
-            GlStateManager.color(1, 1, 1, 1);
+            RenderUtils.color(1f, 1f, 1f, 1f);
             this.bindTexture(icon.getTexture());
             icon.renderAt(this.x, this.y + (this.height - icon.getHeight()) / 2, this.zLevel + 1, false, false);
         }
@@ -77,16 +75,16 @@ public class WidgetDirectoryEntry extends WidgetListEntryBase<DirectoryEntry>
         // Draw a lighter background for the hovered and the selected entry
         if (selected || this.isMouseOver(mouseX, mouseY))
         {
-            GuiBase.drawRect(this.x, this.y, this.x + this.width, this.y + this.height, 0x70FFFFFF);
+            RenderUtils.drawRect(this.x, this.y, this.width, this.height, 0x70FFFFFF);
         }
         else if (this.isOdd)
         {
-            GuiBase.drawRect(this.x, this.y, this.x + this.width, this.y + this.height, 0x20FFFFFF);
+            RenderUtils.drawRect(this.x, this.y, this.width, this.height, 0x20FFFFFF);
         }
         // Draw a slightly lighter background for even entries
         else
         {
-            GuiBase.drawRect(this.x, this.y, this.x + this.width, this.y + this.height, 0x38FFFFFF);
+            RenderUtils.drawRect(this.x, this.y, this.width, this.height, 0x38FFFFFF);
         }
 
         // Draw an outline if this is the currently selected entry
@@ -95,8 +93,8 @@ public class WidgetDirectoryEntry extends WidgetListEntryBase<DirectoryEntry>
             RenderUtils.drawOutline(this.x, this.y, this.width, this.height, 0xEEEEEEEE);
         }
 
-        int yOffset = (this.height - this.textRenderer.FONT_HEIGHT) / 2 + 1;
-        this.drawString(this.getDisplayName(), this.x + xOffset + 2, this.y + yOffset, 0xFFFFFFFF);
+        int yOffset = (this.height - this.getFontHeight()) / 2 + 1;
+        this.drawString(this.x + xOffset + 2, this.y + yOffset, 0xFFFFFFFF, this.getDisplayName());
 
         super.render(mouseX, mouseY, selected);
     }

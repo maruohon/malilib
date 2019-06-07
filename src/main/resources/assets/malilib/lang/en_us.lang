@@ -56,12 +56,21 @@ malilib.gui.label.layer_mode.all_below=All below
 malilib.gui.label.layer_mode.layer_range=Layer Range
 malilib.gui.label.layer_mode.single_layer=Single Layer
 
+malilib.gui.label.no=no
+malilib.gui.label.yes=yes
+
 malilib.gui.label.render_layers.layer=Layer
 malilib.gui.label.render_layers.layer_max=Max layer
 malilib.gui.label.render_layers.layer_min=Min layer
 
+malilib.gui.title.all_hotkeys=All registered hotkeys
 malilib.gui.title.color_editor=Color Editor
+malilib.gui.title.configs=malilib Configs
 malilib.gui.title.create_directory=Create a new directory
+malilib.gui.title.debug=Debug
+malilib.gui.title.generic=Generic
+malilib.gui.title.keybind_settings.advanced=Advanced Keybind Settings for %s
+malilib.gui.title.string_list_edit=Edit string list for '%s'
 
 malilib.label.active_mode.always=Always
 malilib.label.active_mode.never=Never
@@ -78,13 +87,6 @@ malilib.label.key_context.ingame=In-Game
 malilib.label.list_type.blacklist=Black List
 malilib.label.list_type.none=None
 malilib.label.list_type.whitelist=White List
-
-malilib.gui.label.no=no
-malilib.gui.label.yes=yes
-
-malilib.gui.title.all_hotkeys=All registered hotkeys
-malilib.gui.title.keybind_settings.advanced=Advanced Keybind Settings for %s
-malilib.gui.title.string_list_edit=Edit string list for '%s'
 
 malilib.label.alignment.top_left=Top Left
 malilib.label.alignment.top_right=Top Right

@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.hotkeys;
 
 import java.util.List;
-import net.minecraft.client.resources.I18n;
+import fi.dy.masa.malilib.util.StringUtils;
 
 public class KeybindCategory implements Comparable<KeybindCategory>
 {
@@ -23,7 +23,7 @@ public class KeybindCategory implements Comparable<KeybindCategory>
 
     public String getCategory()
     {
-        return I18n.format(this.categoryName);
+        return StringUtils.translate(this.categoryName);
     }
 
     public List<? extends IHotkey> getHotkeys()

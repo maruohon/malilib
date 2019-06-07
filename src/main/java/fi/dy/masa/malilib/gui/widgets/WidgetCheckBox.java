@@ -6,7 +6,6 @@ import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
 import fi.dy.masa.malilib.render.RenderUtils;
-import net.minecraft.client.renderer.GlStateManager;
 
 public class WidgetCheckBox extends WidgetBase
 {
@@ -38,7 +37,7 @@ public class WidgetCheckBox extends WidgetBase
 
         if (hoverInfo != null)
         {
-            //hoverInfo = I18n.format(hoverInfo);
+            //hoverInfo = StringUtils.translate(hoverInfo);
             String[] parts = hoverInfo.split("\\n");
             this.hoverInfo = ImmutableList.copyOf(parts);
         }
@@ -91,15 +90,15 @@ public class WidgetCheckBox extends WidgetBase
     {
         IGuiIcon icon = this.checked ? this.widgetChecked : this.widgetUnchecked;
 
-        GlStateManager.color(1f, 1f, 1f);
+        RenderUtils.color(1f, 1f, 1f, 1f);
         this.bindTexture(icon.getTexture());
         icon.renderAt(this.x, this.y, this.zLevel, false, false);
 
         int iw = icon.getWidth();
-        int y = this.y + 1 + (this.height - this.textRenderer.FONT_HEIGHT) / 2;
+        int y = this.y + 1 + (this.height - this.getFontHeight()) / 2;
         int textColor = this.checked ? 0xFFFFFFFF : 0xB0B0B0B0;
 
-        this.drawStringWithShadow(this.displayText, this.x + iw + 3, y, textColor);
+        this.drawStringWithShadow(this.x + iw + 3, y, textColor, this.displayText);
     }
 
     @Override

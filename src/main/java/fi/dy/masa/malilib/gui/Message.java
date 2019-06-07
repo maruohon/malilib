@@ -5,7 +5,6 @@ import java.util.List;
 import fi.dy.masa.malilib.util.StringUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.resources.I18n;
 
 public class Message
 {
@@ -24,7 +23,7 @@ public class Message
         this.maxLineLength = maxLineLength;
         this.textRenderer = Minecraft.getMinecraft().fontRenderer;
 
-        this.setMessage(I18n.format(message, args));
+        this.setMessage(StringUtils.translate(message, args));
     }
 
     public boolean hasExpired(long currentTime)
@@ -81,7 +80,7 @@ public class Message
 
         public String getFormatting()
         {
-            return I18n.format(this.translationKey);
+            return StringUtils.translate(this.translationKey);
         }
     }
 }

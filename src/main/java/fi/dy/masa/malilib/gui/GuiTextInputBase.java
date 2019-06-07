@@ -6,10 +6,10 @@ import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.util.StringUtils;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.resources.I18n;
 
 public abstract class GuiTextInputBase extends GuiDialogBase
 {
@@ -19,7 +19,7 @@ public abstract class GuiTextInputBase extends GuiDialogBase
     public GuiTextInputBase(int maxTextLength, String titleKey, String defaultText, @Nullable GuiScreen parent)
     {
         this.setParent(parent);
-        this.title = I18n.format(titleKey);
+        this.title = StringUtils.translate(titleKey);
         this.useTitleHierarchy = false;
         this.originalText = defaultText;
 
@@ -40,23 +40,19 @@ public abstract class GuiTextInputBase extends GuiDialogBase
     {
         int x = this.dialogLeft + 10;
         int y = this.dialogTop + 70;
-        int buttonWidth = 80;
 
-        this.createButton(x, y, buttonWidth, ButtonType.OK);
-        x += buttonWidth + 2;
-
-        this.createButton(x, y, buttonWidth, ButtonType.RESET);
-        x += buttonWidth + 2;
-
-        this.createButton(x, y, buttonWidth, ButtonType.CANCEL);
+        x += this.createButton(x, y, ButtonType.OK) + 2;
+        x += this.createButton(x, y, ButtonType.RESET) + 2;
+        x += this.createButton(x, y, ButtonType.CANCEL) + 2;
 
         Keyboard.enableRepeatEvents(true);
     }
 
-    protected void createButton(int x, int y, int buttonWidth, ButtonType type)
+    protected int createButton(int x, int y, ButtonType type)
     {
-        ButtonGeneric button = new ButtonGeneric(x, y, buttonWidth, 20, I18n.format(type.getLabelKey()));
-        this.addButton(button, this.createActionListener(type));
+        ButtonGeneric button = new ButtonGeneric(x, y, -1, 20, type.getDisplayName());
+        button.setWidth(Math.max(40, button.getWidth()));
+        return this.addButton(button, this.createActionListener(type)).getWidth();
     }
 
     @Override
@@ -181,9 +177,9 @@ public abstract class GuiTextInputBase extends GuiDialogBase
             this.labelKey = labelKey;
         }
 
-        public String getLabelKey()
+        public String getDisplayName()
         {
-            return this.labelKey;
+            return StringUtils.translate(this.labelKey);
         }
     }
 }
