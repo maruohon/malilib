@@ -9,6 +9,7 @@ import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.multiplayer.ServerData;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.util.text.ChatType;
@@ -330,5 +331,32 @@ public class StringUtils
         }
 
         return prefix + defaultName + suffix;
+    }
+
+    // Some MCP vs. Yarn vs. MC versions compatibility/wrapper stuff below this
+
+    /**
+     * Just a wrapper around I18n, to reduce the number of changed lines between MCP/Yarn versions of mods
+     * @param translationKey
+     * @param args
+     * @return
+     */
+    public static String translate(String translationKey, Object... args)
+    {
+        return I18n.format(translationKey, args);
+    }
+
+    /**
+     * Just a wrapper to get the font height from the Font/TextRenderer
+     * @return
+     */
+    public static int getFontHeight()
+    {
+        return Minecraft.getInstance().fontRenderer.FONT_HEIGHT;
+    }
+
+    public static int getStringWidth(String text)
+    {
+        return Minecraft.getInstance().fontRenderer.getStringWidth(text);
     }
 }

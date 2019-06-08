@@ -1,10 +1,10 @@
 package fi.dy.masa.malilib.gui.wrappers;
 
+import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
 import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
 import fi.dy.masa.malilib.util.KeyCodes;
-import net.minecraft.client.gui.GuiTextField;
 
-public class TextFieldWrapper<T extends GuiTextField>
+public class TextFieldWrapper<T extends GuiTextFieldGeneric>
 {
     private final T textField;
     private final ITextFieldListener<T> listener;

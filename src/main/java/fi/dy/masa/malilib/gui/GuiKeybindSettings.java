@@ -15,8 +15,8 @@ import fi.dy.masa.malilib.hotkeys.KeyAction;
 import fi.dy.masa.malilib.hotkeys.KeybindSettings;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.KeyCodes;
+import fi.dy.masa.malilib.util.StringUtils;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.resources.I18n;
 
 public class GuiKeybindSettings extends GuiDialogBase
 {
@@ -53,7 +53,7 @@ public class GuiKeybindSettings extends GuiDialogBase
             this.setParent(parent);
         }
 
-        this.title = GuiBase.TXT_BOLD + I18n.format("malilib.gui.title.keybind_settings.advanced", this.keybindName) + GuiBase.TXT_RST;
+        this.title = GuiBase.TXT_BOLD + StringUtils.translate("malilib.gui.title.keybind_settings.advanced", this.keybindName) + GuiBase.TXT_RST;
         KeybindSettings settings = this.keybind.getSettings();
 
         this.cfgActivateOn.setOptionListValue(settings.getActivateOn());
@@ -94,7 +94,7 @@ public class GuiKeybindSettings extends GuiDialogBase
 
     protected void addConfig(int x, int y, int labelWidth, int configWidth, ConfigBase<?> config)
     {
-        this.addLabel(x, y + 4, labelWidth, 10, 0xFFFFFFFF, I18n.format(config.getPrettyName()));
+        this.addLabel(x, y + 4, labelWidth, 10, 0xFFFFFFFF, StringUtils.translate(config.getPrettyName()));
         this.addWidget(new WidgetHoverInfo(x, y + 2, labelWidth, 12, config.getComment()));
         x += labelWidth + 10;
 

@@ -8,16 +8,15 @@ public class GuiModConfigs extends GuiConfigsBase
 {
     protected final List<ConfigOptionWrapper> configs;
 
-    public GuiModConfigs(String modId, String title, List<? extends IConfigBase> configs)
+    public GuiModConfigs(String modId, List<? extends IConfigBase> configs, String titleKey, Object... args)
     {
-        this(modId, title, ConfigOptionWrapper.createFor(configs), false);
+        this(modId, ConfigOptionWrapper.createFor(configs), false, titleKey, args);
     }
 
-    public GuiModConfigs(String modId, String title, List<ConfigOptionWrapper> wrappers, boolean unused)
+    public GuiModConfigs(String modId, List<ConfigOptionWrapper> wrappers, boolean unused, String titleKey, Object... args)
     {
-        super(10, 0, modId, null);
+        super(10, 0, modId, null, titleKey, args);
 
-        this.title = title;
         this.configs = wrappers;
     }
 

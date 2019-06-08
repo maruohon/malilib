@@ -2,7 +2,7 @@ package fi.dy.masa.malilib.gui.button;
 
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.IConfigOptionList;
-import net.minecraft.client.resources.I18n;
+import fi.dy.masa.malilib.util.StringUtils;
 
 public class ConfigButtonOptionList extends ButtonGeneric
 {
@@ -37,7 +37,7 @@ public class ConfigButtonOptionList extends ButtonGeneric
     {
         if (this.prefixTranslationKey != null)
         {
-            this.displayString = I18n.format(this.prefixTranslationKey, this.config.getOptionListValue().getDisplayName());
+            this.displayString = StringUtils.translate(this.prefixTranslationKey, this.config.getOptionListValue().getDisplayName());
         }
         else
         {

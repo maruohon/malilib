@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import fi.dy.masa.malilib.config.IConfigOptionListEntry;
-import net.minecraft.client.resources.I18n;
+import fi.dy.masa.malilib.util.StringUtils;
 
 public abstract class UsageRestriction<TYPE>
 {
@@ -83,7 +83,7 @@ public abstract class UsageRestriction<TYPE>
         @Override
         public String getDisplayName()
         {
-            return I18n.format(this.translationKey);
+            return StringUtils.translate(this.translationKey);
         }
 
         @Override

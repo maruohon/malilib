@@ -13,7 +13,6 @@ import net.minecraft.block.BlockShulkerBox;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -166,7 +165,7 @@ public class InventoryOverlay
 
     public static void renderEquipmentOverlayBackground(Minecraft mc, int x, int y, EntityLivingBase entity)
     {
-        GlStateManager.color4f(1, 1, 1, 1);
+        RenderUtils.color(1f, 1f, 1f, 1f);
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
@@ -474,9 +473,7 @@ public class InventoryOverlay
         GlStateManager.scalef(scale, scale, 1);
         GlStateManager.disableLighting();
 
-        //Gui.drawRect(0, 0, 16, 16, 0x20FFFFFF); // light background for the item
-
-        RenderHelper.enableGUIStandardItemLighting();
+        RenderUtils.enableGuiItemLighting();
 
         mc.getItemRenderer().zLevel += 100;
         mc.getItemRenderer().renderItemAndEffectIntoGUI(mc.player, stack, 0, 0);
@@ -484,7 +481,7 @@ public class InventoryOverlay
         mc.getItemRenderer().zLevel -= 100;
 
         //GlStateManager.disableBlend();
-        RenderHelper.disableStandardItemLighting();
+        RenderUtils.disableItemLighting();
         GlStateManager.popMatrix();
     }
 

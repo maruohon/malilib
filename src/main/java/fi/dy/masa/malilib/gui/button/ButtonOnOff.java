@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.gui.button;
 
-import net.minecraft.client.resources.I18n;
+import fi.dy.masa.malilib.util.StringUtils;
 
 public class ButtonOnOff extends ButtonGeneric
 {
@@ -45,7 +45,7 @@ public class ButtonOnOff extends ButtonGeneric
 
     public static String getDisplayStringForStatus(String translationKey, boolean isCurrentlyOn)
     {
-        String strStatus = "malilib.gui.label_colored." + (isCurrentlyOn ? "on" : "off");
-        return I18n.format(translationKey, I18n.format(strStatus));
+        String strStatus = isCurrentlyOn ? "malilib.gui.label_colored.on" : "malilib.gui.label_colored.off";
+        return StringUtils.translate(translationKey, StringUtils.translate(strStatus));
     }
 }

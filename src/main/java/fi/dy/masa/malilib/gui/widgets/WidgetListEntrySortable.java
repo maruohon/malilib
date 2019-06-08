@@ -3,7 +3,6 @@ package fi.dy.masa.malilib.gui.widgets;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.render.RenderUtils;
-import net.minecraft.client.renderer.GlStateManager;
 
 public abstract class WidgetListEntrySortable<TYPE> extends WidgetListEntryBase<TYPE>
 {
@@ -52,7 +51,7 @@ public abstract class WidgetListEntrySortable<TYPE> extends WidgetListEntryBase<
         boolean reverse = this.getSortInReverse();
         int iconX = this.getColumnPosX(sortColumn + 1) - 21; // align to the right edge
 
-        GlStateManager.color4f(1f, 1f, 1f, 1f);
+        RenderUtils.color(1f, 1f, 1f, 1f);
         IGuiIcon icon = reverse ? iconReverse : iconNatural;
         this.bindTexture(icon.getTexture());
         icon.renderAt(iconX, this.y + 3, this.zLevel, true, sortColumn == mouseOverColumn);

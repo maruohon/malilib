@@ -16,7 +16,6 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.util.math.MathHelper;
 
 public class GuiColorEditorHSV extends GuiDialogBase
@@ -71,7 +70,7 @@ public class GuiColorEditorHSV extends GuiDialogBase
             this.setParent(parent);
         }
 
-        this.title = I18n.format("malilib.gui.title.color_editor");
+        this.title = StringUtils.translate("malilib.gui.title.color_editor");
 
         this.setWidthAndHeight(300, 160);
         this.centerOnScreen();
@@ -117,7 +116,7 @@ public class GuiColorEditorHSV extends GuiDialogBase
         this.textFieldFullColor.setMaxStringLength(12);
         this.addTextField(this.textFieldFullColor, new TextFieldListener(null, this));
 
-        //String str = I18n.format("malilib.gui.label.color_editor.current_color");
+        //String str = StringUtils.translate("malilib.gui.label.color_editor.current_color");
         //this.addLabel(this.xHS, this.yHS + this.sizeHS + 10, 60, 12, 0xFFFFFF, str);
 
         this.setColor(this.config.getIntegerValue()); // Set the text field values
@@ -494,7 +493,7 @@ public class GuiColorEditorHSV extends GuiDialogBase
         GlStateManager.shadeModel(GL11.GL_SMOOTH);
         GlStateManager.alphaFunc(GL11.GL_GREATER, 0.01F);
 
-        GlStateManager.color4f(1, 1, 1, 1);
+        RenderUtils.color(1, 1, 1, 1);
 
         GL20.glUseProgram(SHADER_HUE.getProgram());
         GL20.glUniform1f(GL20.glGetUniformLocation(SHADER_HUE.getProgram(), "hue_value"), this.relH);

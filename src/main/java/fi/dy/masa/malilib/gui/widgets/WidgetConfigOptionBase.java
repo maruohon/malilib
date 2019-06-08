@@ -7,13 +7,12 @@ import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.wrappers.TextFieldWrapper;
 import fi.dy.masa.malilib.util.KeyCodes;
-import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.resources.I18n;
+import fi.dy.masa.malilib.util.StringUtils;
 
 public abstract class WidgetConfigOptionBase<TYPE> extends WidgetListEntryBase<TYPE>
 {
     protected final WidgetListConfigOptionsBase<?, ?> parent;
-    @Nullable protected TextFieldWrapper<? extends GuiTextField> textField = null;
+    @Nullable protected TextFieldWrapper<? extends GuiTextFieldGeneric> textField = null;
     @Nullable protected String initialStringValue;
     protected int maxTextfieldTextLength = 256;
     /**
@@ -44,24 +43,22 @@ public abstract class WidgetConfigOptionBase<TYPE> extends WidgetListEntryBase<T
 
     public abstract void applyNewValueToConfig();
 
-    protected GuiTextField createTextField(int x, int y, int width, int height)
+    protected GuiTextFieldGeneric createTextField(int x, int y, int width, int height)
     {
         return new GuiTextFieldGeneric(x + 2, y, width, height, this.textRenderer);
     }
 
-    protected void addTextField(GuiTextField field, ConfigOptionChangeListenerTextField listener)
+    protected void addTextField(GuiTextFieldGeneric field, ConfigOptionChangeListenerTextField listener)
     {
-        TextFieldWrapper<? extends GuiTextField> wrapper = new TextFieldWrapper<>(field, listener);
+        TextFieldWrapper<? extends GuiTextFieldGeneric> wrapper = new TextFieldWrapper<>(field, listener);
         this.textField = wrapper;
         this.parent.addTextField(wrapper);
     }
 
     protected ButtonGeneric createResetButton(int x, int y, IConfigResettable config)
     {
-        String labelReset = I18n.format("malilib.gui.button.reset.caps");
-        int w = this.getStringWidth(labelReset) + 10;
-
-        ButtonGeneric resetButton = new ButtonGeneric(x, y, w, 20, labelReset);
+        String labelReset = StringUtils.translate("malilib.gui.button.reset.caps");
+        ButtonGeneric resetButton = new ButtonGeneric(x, y, -1, 20, labelReset);
         resetButton.setEnabled(config.isModified());
 
         return resetButton;

@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.hotkeys;
 
 import fi.dy.masa.malilib.config.IConfigOptionListEntry;
-import net.minecraft.client.resources.I18n;
+import fi.dy.masa.malilib.util.StringUtils;
 
 public enum KeyAction implements IConfigOptionListEntry
 {
@@ -27,7 +27,7 @@ public enum KeyAction implements IConfigOptionListEntry
     @Override
     public String getDisplayName()
     {
-        return I18n.format(this.translationKey);
+        return StringUtils.translate(this.translationKey);
     }
 
     @Override

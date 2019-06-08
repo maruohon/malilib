@@ -5,12 +5,11 @@ import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
+import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.widgets.WidgetBase;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.util.StringUtils;
 import net.minecraft.client.audio.SimpleSound;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 
@@ -47,7 +46,7 @@ public abstract class ButtonBase extends WidgetBase
         }
 
         this.displayString = text;
-        this.hoverHelp = ImmutableList.of(I18n.format("malilib.gui.button.hover.hold_shift_for_info"));
+        this.hoverHelp = ImmutableList.of(StringUtils.translate("malilib.gui.button.hover.hold_shift_for_info"));
     }
 
     public ButtonBase setActionListener(@Nullable IButtonActionListener actionListener)
@@ -122,20 +121,20 @@ public abstract class ButtonBase extends WidgetBase
 
         for (String str : hoverStrings)
         {
-            str = I18n.format(str);
+            str = StringUtils.translate(str);
 
             String[] parts = str.split("\\\\n");
 
             for (String part : parts)
             {
-                this.hoverStrings.add(I18n.format(part));
+                this.hoverStrings.add(StringUtils.translate(part));
             }
         }
     }
 
     public List<String> getHoverStrings()
     {
-        if (this.hoverInfoRequiresShift && GuiScreen.isShiftKeyDown() == false)
+        if (this.hoverInfoRequiresShift && GuiBase.isShiftDown() == false)
         {
             return this.hoverHelp;
         }
@@ -159,7 +158,7 @@ public abstract class ButtonBase extends WidgetBase
         if (this.hasHoverText() && this.isMouseOver())
         {
             RenderUtils.drawHoverText(mouseX, mouseY, this.getHoverStrings());
-            RenderHelper.disableStandardItemLighting();
+            RenderUtils.disableItemLighting();
         }
     }
 }

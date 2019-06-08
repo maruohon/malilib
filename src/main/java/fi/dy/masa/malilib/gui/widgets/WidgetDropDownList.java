@@ -257,7 +257,7 @@ public class WidgetDropDownList<T> extends WidgetBase
     @Override
     public void render(int mouseX, int mouseY, boolean selected)
     {
-        GlStateManager.color4f(1f, 1f, 1f, 1f);
+        RenderUtils.color(1f, 1f, 1f, 1f);
 
         GlStateManager.pushMatrix();
         GlStateManager.translatef(0, 0, 1);
@@ -267,10 +267,9 @@ public class WidgetDropDownList<T> extends WidgetBase
         RenderUtils.drawOutlinedBox(this.x + 1, this.y, this.width - 2, this.height - 1, 0xFF101010, 0xFFC0C0C0);
 
         String str = this.getDisplayString(this.getSelectedEntry());
-        int fh = this.textRenderer.FONT_HEIGHT;
         int txtX = this.x + 4;
-        int txtY = this.y + this.height / 2 - fh / 2;
-        this.drawString(str, txtX, txtY, 0xFFE0E0E0);
+        int txtY = this.y + this.height / 2 - this.getFontHeight() / 2;
+        this.drawString(txtX, txtY, 0xFFE0E0E0, str);
         txtY += this.height + 1;
         int scrollWidth = 10;
 
@@ -299,7 +298,7 @@ public class WidgetDropDownList<T> extends WidgetBase
 
                 RenderUtils.drawRect(this.x, y, this.width - scrollWidth, this.height, bg);
                 str = this.getDisplayString(list.get(i));
-                this.drawString(str, txtX, txtY, 0xFFE0E0E0);
+                this.drawString(txtX, txtY, 0xFFE0E0E0, str);
                 y += this.height;
                 txtY += this.height;
             }

@@ -9,15 +9,13 @@ import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
 import fi.dy.masa.malilib.gui.widgets.WidgetCheckBox;
 import fi.dy.masa.malilib.util.LayerMode;
 import fi.dy.masa.malilib.util.LayerRange;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.resources.I18n;
+import fi.dy.masa.malilib.util.StringUtils;
 import net.minecraft.util.EnumFacing;
 
 public abstract class GuiRenderLayerEditBase extends GuiBase
 {
-    protected GuiTextField textField1;
-    protected GuiTextField textField2;
+    protected GuiTextFieldGeneric textField1;
+    protected GuiTextFieldGeneric textField2;
     protected int nextY;
 
     protected abstract LayerRange getLayerRange();
@@ -66,8 +64,8 @@ public abstract class GuiRenderLayerEditBase extends GuiBase
 
         if (layerMode == LayerMode.LAYER_RANGE)
         {
-            String labelMin = I18n.format("malilib.gui.label.render_layers.layer_min") + ":";
-            String labelMax = I18n.format("malilib.gui.label.render_layers.layer_max") + ":";
+            String labelMin = StringUtils.translate("malilib.gui.label.render_layers.layer_min") + ":";
+            String labelMax = StringUtils.translate("malilib.gui.label.render_layers.layer_max") + ":";
             int w1 = this.getStringWidth(labelMin);
             int w2 = this.getStringWidth(labelMax);
 
@@ -78,7 +76,7 @@ public abstract class GuiRenderLayerEditBase extends GuiBase
         }
         else
         {
-            String label = I18n.format("malilib.gui.label.render_layers.layer") + ":";
+            String label = StringUtils.translate("malilib.gui.label.render_layers.layer") + ":";
             int w = this.getStringWidth(label);
             this.addLabel(x, y, w, 20, 0xFFFFFF, label);
 
@@ -187,12 +185,12 @@ public abstract class GuiRenderLayerEditBase extends GuiBase
             {
                 if (this == SET_HERE)
                 {
-                    return I18n.format(this.translationKey);
+                    return StringUtils.translate(this.translationKey);
                 }
                 else
                 {
                     String valueStr = this == MODE ? layerRange.getLayerMode().getDisplayName() : layerRange.getAxis().name();
-                    return I18n.format(this.translationKey, valueStr);
+                    return StringUtils.translate(this.translationKey, valueStr);
                 }
             }
         }
@@ -218,12 +216,12 @@ public abstract class GuiRenderLayerEditBase extends GuiBase
         {
             int change = mouseButton == 1 ? -1 : 1;
 
-            if (GuiScreen.isShiftKeyDown())
+            if (GuiBase.isShiftDown())
             {
                 change *= 16;
             }
 
-            if (GuiScreen.isCtrlKeyDown())
+            if (GuiBase.isCtrlDown())
             {
                 change *= 64;
             }
@@ -248,7 +246,7 @@ public abstract class GuiRenderLayerEditBase extends GuiBase
         }
     }
 
-    protected static class TextFieldListener implements ITextFieldListener<GuiTextField>
+    protected static class TextFieldListener implements ITextFieldListener<GuiTextFieldGeneric>
     {
         protected final LayerRange layerRange;
         protected final LayerMode mode;
@@ -262,7 +260,7 @@ public abstract class GuiRenderLayerEditBase extends GuiBase
         }
 
         @Override
-        public boolean onTextChange(GuiTextField textField)
+        public boolean onTextChange(GuiTextFieldGeneric textField)
         {
             int value = 0;
 

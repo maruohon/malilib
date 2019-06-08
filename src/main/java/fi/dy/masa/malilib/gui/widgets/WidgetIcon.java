@@ -2,7 +2,6 @@ package fi.dy.masa.malilib.gui.widgets;
 
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.render.RenderUtils;
-import net.minecraft.client.renderer.GlStateManager;
 
 public class WidgetIcon extends WidgetBase
 {
@@ -17,7 +16,7 @@ public class WidgetIcon extends WidgetBase
 
     public void render(boolean enabled, boolean selected)
     {
-        GlStateManager.color4f(1f, 1f, 1f, 1f);
+        RenderUtils.color(1f, 1f, 1f, 1f);
         this.bindTexture(this.icon.getTexture());
         this.icon.renderAt(this.x, this.y, this.zLevel, enabled, selected);
 

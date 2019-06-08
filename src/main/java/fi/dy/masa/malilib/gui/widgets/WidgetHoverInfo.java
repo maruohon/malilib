@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.gui.widgets;
 import java.util.ArrayList;
 import java.util.List;
 import fi.dy.masa.malilib.render.RenderUtils;
-import net.minecraft.client.resources.I18n;
+import fi.dy.masa.malilib.util.StringUtils;
 
 public class WidgetHoverInfo extends WidgetBase
 {
@@ -18,7 +18,7 @@ public class WidgetHoverInfo extends WidgetBase
 
     protected void setInfoLines(String key, Object... args)
     {
-        String[] split = I18n.format(key, args).split("\\n");
+        String[] split = StringUtils.translate(key, args).split("\\n");
 
         for (String str : split)
         {
@@ -35,7 +35,7 @@ public class WidgetHoverInfo extends WidgetBase
     {
         for (String line : lines)
         {
-            line = I18n.format(line);
+            line = StringUtils.translate(line);
             String[] split = line.split("\\n");
 
             for (String str : split)

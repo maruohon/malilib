@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.util.restrictions;
 import java.util.List;
 import java.util.Set;
 import fi.dy.masa.malilib.MaLiLib;
-import net.minecraft.client.resources.I18n;
+import fi.dy.masa.malilib.util.StringUtils;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.IRegistry;
@@ -33,7 +33,7 @@ public class ItemRestriction extends UsageRestriction<Item>
             }
             else
             {
-                MaLiLib.logger.warn(I18n.format("malilib.error.invalid_item_blacklist_entry", name));
+                MaLiLib.logger.warn(StringUtils.translate("malilib.error.invalid_item_blacklist_entry", name));
             }
         }
     }

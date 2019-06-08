@@ -12,9 +12,6 @@ import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
 import fi.dy.masa.malilib.interfaces.ICoordinateValueModifier;
 import fi.dy.masa.malilib.util.PositionUtils.CoordinateType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
@@ -65,7 +62,7 @@ public class GuiUtils
 
         if (addButton)
         {
-            String hover = I18n.format("malilib.gui.button.hover.plus_minus_tip");
+            String hover = StringUtils.translate("malilib.gui.button.hover.plus_minus_tip");
             ButtonGeneric button = new ButtonGeneric(x, y, MaLiLibIcons.BTN_PLUSMINUS_16, hover);
             gui.addButton(button, new ButtonListenerCoordinateInput(type, modifier));
         }
@@ -103,13 +100,12 @@ public class GuiUtils
 
     protected static int addLabel(int x, int y, CoordinateType type, GuiBase gui)
     {
-        Minecraft mc = Minecraft.getInstance();
         String label = type.name() + ":";
         int labelWidth = 0;
 
         for (CoordinateType t : CoordinateType.values())
         {
-            labelWidth = Math.max(labelWidth, mc.fontRenderer.getStringWidth(t.name() + ":") + 4);
+            labelWidth = Math.max(labelWidth, StringUtils.getStringWidth(t.name() + ":") + 4);
         }
 
         gui.addLabel(x, y, labelWidth, 20, 0xFFFFFFFF, label);
@@ -118,7 +114,7 @@ public class GuiUtils
         return x;
     }
 
-    public static class TextFieldListenerCoordinateInput implements ITextFieldListener<GuiTextField>
+    public static class TextFieldListenerCoordinateInput implements ITextFieldListener<GuiTextFieldGeneric>
     {
         protected final ICoordinateValueModifier modifier;
         protected final CoordinateType type;
@@ -130,7 +126,7 @@ public class GuiUtils
         }
 
         @Override
-        public boolean onTextChange(GuiTextField textField)
+        public boolean onTextChange(GuiTextFieldGeneric textField)
         {
             this.modifier.setValueFromString(this.type, textField.getText());
 
@@ -153,8 +149,8 @@ public class GuiUtils
         public void actionPerformedWithButton(ButtonBase button, int mouseButton)
         {
             int amount = mouseButton == 1 ? -1 : 1;
-            if (GuiScreen.isShiftKeyDown()) { amount *= 8; }
-            if (GuiScreen.isAltKeyDown())   { amount *= 4; }
+            if (GuiBase.isShiftDown()) { amount *= 8; }
+            if (GuiBase.isAltDown())   { amount *= 4; }
 
             this.modifier.modifyValue(this.type, amount);
         }

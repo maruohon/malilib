@@ -14,7 +14,6 @@ import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.resources.I18n;
 
 public class GuiConfirmAction extends GuiDialogBase implements ICompletionListener
 {
@@ -25,12 +24,12 @@ public class GuiConfirmAction extends GuiDialogBase implements ICompletionListen
     public GuiConfirmAction(int width, String titleKey, IConfirmationListener listener, @Nullable GuiScreen parent, String messageKey, Object... args)
     {
         this.setParent(parent);
-        this.title = I18n.format(titleKey);
+        this.title = StringUtils.translate(titleKey);
         this.listener = listener;
         this.useTitleHierarchy = false;
         this.zLevel = 1f;
 
-        StringUtils.splitTextToLines(this.messageLines, I18n.format(messageKey, args), width - 30, this.textRenderer);
+        StringUtils.splitTextToLines(this.messageLines, StringUtils.translate(messageKey, args), width - 30, this.textRenderer);
 
         this.setWidthAndHeight(width, this.getMessageHeight() + 50);
         this.centerOnScreen();
@@ -189,7 +188,7 @@ public class GuiConfirmAction extends GuiDialogBase implements ICompletionListen
 
         public String getDisplayName()
         {
-            return (this == ButtonType.OK ? GuiBase.TXT_GREEN : GuiBase.TXT_RED) + I18n.format(this.labelKey) + GuiBase.TXT_RST;
+            return (this == ButtonType.OK ? GuiBase.TXT_GREEN : GuiBase.TXT_RED) + StringUtils.translate(this.labelKey) + GuiBase.TXT_RST;
         }
     }
 }

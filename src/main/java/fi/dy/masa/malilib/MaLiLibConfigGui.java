@@ -7,7 +7,7 @@ import fi.dy.masa.malilib.gui.GuiConfigsBase;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
-import net.minecraft.client.resources.I18n;
+import fi.dy.masa.malilib.util.StringUtils;
 
 public class MaLiLibConfigGui extends GuiConfigsBase
 {
@@ -15,9 +15,7 @@ public class MaLiLibConfigGui extends GuiConfigsBase
 
     public MaLiLibConfigGui()
     {
-        super(10, 50, MaLiLibReference.MOD_ID, null);
-
-        this.title = I18n.format("malilib.gui.title.configs");
+        super(10, 50, MaLiLibReference.MOD_ID, null, "malilib.gui.title.configs");
     }
 
     @Override
@@ -103,8 +101,8 @@ public class MaLiLibConfigGui extends GuiConfigsBase
 
     public enum ConfigGuiTab
     {
-        GENERIC ("malilib.gui.button.config_gui.generic"),
-        DEBUG   ("malilib.gui.button.config_gui.debug");
+        GENERIC ("malilib.gui.title.generic"),
+        DEBUG   ("malilib.gui.title.debug");
 
         private final String translationKey;
 
@@ -115,7 +113,7 @@ public class MaLiLibConfigGui extends GuiConfigsBase
 
         public String getDisplayName()
         {
-            return I18n.format(this.translationKey);
+            return StringUtils.translate(this.translationKey);
         }
     }
 }

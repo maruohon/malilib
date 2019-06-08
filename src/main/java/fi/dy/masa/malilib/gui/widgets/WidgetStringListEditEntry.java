@@ -3,15 +3,15 @@ package fi.dy.masa.malilib.gui.widgets;
 import java.util.List;
 import fi.dy.masa.malilib.config.IConfigStringList;
 import fi.dy.masa.malilib.config.gui.ConfigOptionChangeListenerTextField;
-import fi.dy.masa.malilib.gui.GuiBase;
+import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
 import fi.dy.masa.malilib.gui.MaLiLibIcons;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
+import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.util.StringUtils;
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.resources.I18n;
 
 public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
 {
@@ -76,14 +76,14 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
 
     protected void addListActionButton(int x, int y, ButtonType type)
     {
-        ButtonGeneric button = new ButtonGeneric(x, y, type.getIcon(), I18n.format(type.getHoverTextKey()));
+        ButtonGeneric button = new ButtonGeneric(x, y, type.getIcon(), type.getDisplayName());
         ListenerListActions listener = new ListenerListActions(type, this);
         this.addButton(button, listener);
     }
 
     protected int addTextField(int x, int y, int resetX, int configWidth, int configHeight, String initialValue)
     {
-        GuiTextField field = this.createTextField(x, y + 1, configWidth - 4, configHeight - 3);
+        GuiTextFieldGeneric field = this.createTextField(x, y + 1, configWidth - 4, configHeight - 3);
         field.setMaxStringLength(this.maxTextfieldTextLength);
         field.setText(initialValue);
 
@@ -99,10 +99,8 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
 
     protected ButtonGeneric createResetButton(int x, int y, GuiTextField textField)
     {
-        String labelReset = I18n.format("malilib.gui.button.reset.caps");
-        int w = this.getStringWidth(labelReset) + 10;
-
-        ButtonGeneric resetButton = new ButtonGeneric(x, y, w, 20, labelReset);
+        String labelReset = StringUtils.translate("malilib.gui.button.reset.caps");
+        ButtonGeneric resetButton = new ButtonGeneric(x, y, -1, 20, labelReset);
         resetButton.setEnabled(textField.getText().equals(this.defaultValue) == false);
 
         return resetButton;
@@ -197,16 +195,16 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
     @Override
     public void render(int mouseX, int mouseY, boolean selected)
     {
-        GlStateManager.color4f(1f, 1f, 1f, 1f);
+        RenderUtils.color(1f, 1f, 1f, 1f);
 
         if (this.isOdd)
         {
-            GuiBase.drawRect(this.x, this.y, this.x + this.width, this.y + this.height, 0x20FFFFFF);
+            RenderUtils.drawRect(this.x, this.y, this.width, this.height, 0x20FFFFFF);
         }
         // Draw a slightly lighter background for even entries
         else
         {
-            GuiBase.drawRect(this.x, this.y, this.x + this.width, this.y + this.height, 0x30FFFFFF);
+            RenderUtils.drawRect(this.x, this.y, this.width, this.height, 0x30FFFFFF);
         }
 
         this.drawSubWidgets(mouseX, mouseY);
@@ -218,7 +216,7 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
     {
         protected final String defaultValue;
 
-        public ChangeListenerTextField(GuiTextField textField, ButtonBase buttonReset, String defaultValue)
+        public ChangeListenerTextField(GuiTextFieldGeneric textField, ButtonBase buttonReset, String defaultValue)
         {
             super(null, textField, buttonReset);
 
@@ -226,7 +224,7 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
         }
 
         @Override
-        public boolean onTextChange(GuiTextField textField)
+        public boolean onTextChange(GuiTextFieldGeneric textField)
         {
             this.buttonReset.setEnabled(this.textField.getText().equals(this.defaultValue) == false);
             return false;
@@ -302,9 +300,9 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
             return this.icon;
         }
 
-        public String getHoverTextKey()
+        public String getDisplayName()
         {
-            return this.hoverTextkey;
+            return StringUtils.translate(this.hoverTextkey);
         }
     }
 }

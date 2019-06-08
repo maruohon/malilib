@@ -7,6 +7,7 @@ import java.util.Random;
 import javax.annotation.Nullable;
 import org.lwjgl.opengl.GL11;
 import fi.dy.masa.malilib.config.HudAlignment;
+import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.util.Color4f;
 import fi.dy.masa.malilib.util.InventoryUtils;
 import fi.dy.masa.malilib.util.PositionUtils;
@@ -16,7 +17,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -54,9 +54,35 @@ public class RenderUtils
     //private static final Vec3d LIGHT0_POS = (new Vec3d( 0.2D, 1.0D, -0.7D)).normalize();
     //private static final Vec3d LIGHT1_POS = (new Vec3d(-0.2D, 1.0D,  0.7D)).normalize();
 
+    public static void setupBlend()
+    {
+        GlStateManager.enableBlend();
+        GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+    }
+
     public static void bindTexture(ResourceLocation texture)
     {
-        Minecraft.getInstance().getTextureManager().bindTexture(texture);
+        mc().getTextureManager().bindTexture(texture);
+    }
+
+    public static void color(float r, float g, float b, float a)
+    {
+        GlStateManager.color4f(r, g, b, a);
+    }
+
+    public static void disableItemLighting()
+    {
+        RenderHelper.disableStandardItemLighting();
+    }
+
+    public static void enableItemLighting()
+    {
+        RenderHelper.enableStandardItemLighting();
+    }
+
+    public static void enableGuiItemLighting()
+    {
+        RenderHelper.enableGUIStandardItemLighting();
     }
 
     public static void drawOutlinedBox(int x, int y, int width, int height, int colorBg, int colorBorder)
@@ -119,10 +145,10 @@ public class RenderUtils
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
 
-        GlStateManager.enableBlend();
+        setupBlend();
         GlStateManager.disableTexture2D();
-        GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        GlStateManager.color4f(r, g, b, a);
+        color(r, g, b, a);
+
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
 
         buffer.pos(x        , y         , zLevel).endVertex();
@@ -131,6 +157,7 @@ public class RenderUtils
         buffer.pos(x + width, y         , zLevel).endVertex();
 
         tessellator.draw();
+
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();
     }
@@ -140,6 +167,7 @@ public class RenderUtils
         float pixelWidth = 0.00390625F;
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
+
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
 
         buffer.pos(x        , y + height, zLevel).tex( u          * pixelWidth, (v + height) * pixelWidth).endVertex();
@@ -167,13 +195,13 @@ public class RenderUtils
 
     public static void drawHoverText(int x, int y, List<String> textLines)
     {
-        Minecraft mc = Minecraft.getInstance();
+        Minecraft mc = mc();
 
         if (textLines.isEmpty() == false && mc.currentScreen != null)
         {
             FontRenderer font = mc.fontRenderer;
             GlStateManager.disableRescaleNormal();
-            RenderHelper.disableStandardItemLighting();
+            disableItemLighting();
             GlStateManager.disableLighting();
             GlStateManager.disableDepthTest();
             int maxLineLength = 0;
@@ -251,19 +279,18 @@ public class RenderUtils
         float eb = (float)(endColor & 0xFF) / 255.0F;
 
         GlStateManager.disableTexture2D();
-        GlStateManager.enableBlend();
         GlStateManager.disableAlphaTest();
-        GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        setupBlend();
         GlStateManager.shadeModel(GL11.GL_SMOOTH);
 
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.getBuffer();
-        bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+        BufferBuilder buffer = tessellator.getBuffer();
+        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
 
-        bufferbuilder.pos(right, top,    zLevel).color(sr, sg, sb, sa).endVertex();
-        bufferbuilder.pos(left,  top,    zLevel).color(sr, sg, sb, sa).endVertex();
-        bufferbuilder.pos(left,  bottom, zLevel).color(er, eg, eb, ea).endVertex();
-        bufferbuilder.pos(right, bottom, zLevel).color(er, eg, eb, ea).endVertex();
+        buffer.pos(right, top,    zLevel).color(sr, sg, sb, sa).endVertex();
+        buffer.pos(left,  top,    zLevel).color(sr, sg, sb, sa).endVertex();
+        buffer.pos(left,  bottom, zLevel).color(er, eg, eb, ea).endVertex();
+        buffer.pos(right, bottom, zLevel).color(er, eg, eb, ea).endVertex();
 
         tessellator.draw();
 
@@ -273,20 +300,10 @@ public class RenderUtils
         GlStateManager.enableTexture2D();
     }
 
-    public static void drawCenteredString(FontRenderer fontRendererIn, String text, int x, int y, int color)
+    public static void drawCenteredString(int x, int y, int color, String text)
     {
-        fontRendererIn.drawStringWithShadow(text, (float)(x - fontRendererIn.getStringWidth(text) / 2), (float)y, color);
-    }
-
-    public static void drawString(FontRenderer fontRendererIn, String text, int x, int y, int color)
-    {
-        String[] parts = text.split("\\n");
-
-        for (String line : parts)
-        {
-            fontRendererIn.drawStringWithShadow(line, x, y, color);
-            y += fontRendererIn.FONT_HEIGHT + 1;
-        }
+        FontRenderer textRenderer = mc().fontRenderer;
+        textRenderer.drawStringWithShadow(text, x - textRenderer.getStringWidth(text) / 2, y, color);
     }
 
     public static void drawHorizontalLine(int x, int y, int width, int color)
@@ -309,23 +326,37 @@ public class RenderUtils
         }
     }
 
-    public static void renderText(int x, int y, int color, List<String> lines, FontRenderer font)
+    public static void renderText(int x, int y, int color, String text)
+    {
+        String[] parts = text.split("\\\\n");
+        FontRenderer textRenderer = mc().fontRenderer;
+
+        for (String line : parts)
+        {
+            textRenderer.drawStringWithShadow(line, x, y, color);
+            y += textRenderer.FONT_HEIGHT + 1;
+        }
+    }
+
+    public static void renderText(int x, int y, int color, List<String> lines)
     {
         if (lines.isEmpty() == false)
         {
+            FontRenderer textRenderer = mc().fontRenderer;
+
             for (String line : lines)
             {
-                font.drawString(line, x, y, color);
-                y += font.FONT_HEIGHT + 2;
+                textRenderer.drawString(line, x, y, color);
+                y += textRenderer.FONT_HEIGHT + 2;
             }
         }
     }
 
-    public static int renderText(Minecraft mc, int xOff, int yOff, double scale, int textColor, int bgColor,
+    public static int renderText(int xOff, int yOff, double scale, int textColor, int bgColor,
             HudAlignment alignment, boolean useBackground, boolean useShadow, List<String> lines)
     {
-        FontRenderer fontRenderer = mc.fontRenderer;
-        MainWindow window = mc.mainWindow;
+        FontRenderer fontRenderer = mc().fontRenderer;
+        MainWindow window = mc().mainWindow;
         final int lineHeight = fontRenderer.FONT_HEIGHT + 2;
         final int contentHeight = lines.size() * lineHeight - 2;
         int bgMargin = 2;
@@ -352,7 +383,7 @@ public class RenderUtils
         double posY = yOff + bgMargin;
 
         posY = getHudPosY((int) posY, yOff, contentHeight, scale, alignment);
-        posY += getHudOffsetForPotions(alignment, scale, mc.player);
+        posY += getHudOffsetForPotions(alignment, scale, mc().player);
 
         for (String line : lines)
         {
@@ -441,7 +472,7 @@ public class RenderUtils
 
     public static int getHudPosY(int yOrig, int yOffset, int contentHeight, double scale, HudAlignment alignment)
     {
-        MainWindow window = Minecraft.getInstance().mainWindow;
+        MainWindow window = mc().mainWindow;
         int posY = yOrig;
 
         switch (alignment)
@@ -648,15 +679,20 @@ public class RenderUtils
      * @param scale
      * @param mc
      */
-    public static void drawTextPlate(List<String> text, double x, double y, double z, float scale, Minecraft mc)
+    public static void drawTextPlate(List<String> text, double x, double y, double z, float scale)
     {
-        drawTextPlate(text, x, y, z, mc.player.rotationYaw, mc.player.rotationPitch, scale, 0xFFFFFFFF, 0x40000000, true, mc);
+        Entity entity = mc().getRenderViewEntity();
+
+        if (entity != null)
+        {
+            drawTextPlate(text, x, y, z, entity.rotationYaw, entity.rotationPitch, scale, 0xFFFFFFFF, 0x40000000, true);
+        }
     }
 
     public static void drawTextPlate(List<String> text, double x, double y, double z, float yaw, float pitch,
-            float scale, int textColor, int bgColor, boolean disableDepth, Minecraft mc)
+            float scale, int textColor, int bgColor, boolean disableDepth)
     {
-        FontRenderer textRenderer = mc.fontRenderer;
+        FontRenderer textRenderer = mc().fontRenderer;
 
         GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
         GlStateManager.pushMatrix();
@@ -676,9 +712,7 @@ public class RenderUtils
             GlStateManager.disableDepthTest();
         }
 
-        //GlStateManager.enableAlpha();
-        GlStateManager.enableBlend();
-        GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        setupBlend();
         GlStateManager.disableTexture2D();
 
         Tessellator tessellator = Tessellator.getInstance();
@@ -740,7 +774,7 @@ public class RenderUtils
 
         GlStateManager.enableCull();
         GlStateManager.disableBlend();
-        GlStateManager.color4f(1f, 1f, 1f, 1f);
+        color(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.popMatrix();
     }
 
@@ -930,14 +964,11 @@ public class RenderUtils
 
     public static void renderMapPreview(ItemStack stack, int x, int y, int dimensions)
     {
-        if (stack.getItem() instanceof ItemMap && GuiScreen.isShiftKeyDown())
+        if (stack.getItem() instanceof ItemMap && GuiBase.isShiftDown())
         {
-            Minecraft mc = Minecraft.getInstance();
-
             GlStateManager.pushMatrix();
             GlStateManager.disableLighting();
-            GlStateManager.color4f(1f, 1f, 1f, 1f);
-            bindTexture(fi.dy.masa.malilib.render.RenderUtils.TEXTURE_MAP_BACKGROUND);
+            color(1f, 1f, 1f, 1f);
 
             int y1 = y - dimensions - 20;
             int y2 = y1 + dimensions;
@@ -945,16 +976,20 @@ public class RenderUtils
             int x2 = x1 + dimensions;
             int z = 300;
 
+            bindTexture(fi.dy.masa.malilib.render.RenderUtils.TEXTURE_MAP_BACKGROUND);
+
             Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder buffer = tessellator.getBuffer();
+
             buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
             buffer.pos(x1, y2, z).tex(0.0D, 1.0D).endVertex();
             buffer.pos(x2, y2, z).tex(1.0D, 1.0D).endVertex();
             buffer.pos(x2, y1, z).tex(1.0D, 0.0D).endVertex();
             buffer.pos(x1, y1, z).tex(0.0D, 0.0D).endVertex();
+
             tessellator.draw();
 
-            MapData mapdata = ItemMap.getMapData(stack, mc.world);
+            MapData mapdata = ItemMap.getMapData(stack, mc().world);
 
             if (mapdata != null)
             {
@@ -964,7 +999,7 @@ public class RenderUtils
                 double scale = (double) (dimensions - 16) / 128.0D;
                 GlStateManager.translatef(x1, y1, z);
                 GlStateManager.scaled(scale, scale, 0);
-                mc.gameRenderer.getMapItemRenderer().renderMap(mapdata, false);
+                mc().gameRenderer.getMapItemRenderer().renderMap(mapdata, false);
             }
 
             GlStateManager.enableLighting();
@@ -984,7 +1019,7 @@ public class RenderUtils
             }
 
             GlStateManager.pushMatrix();
-            RenderHelper.disableStandardItemLighting();
+            disableItemLighting();
             GlStateManager.translatef(0F, 0F, 700F);
 
             InventoryOverlay.InventoryRenderType type = InventoryOverlay.getInventoryType(stack);
@@ -999,18 +1034,17 @@ public class RenderUtils
             }
             else
             {
-                GlStateManager.color4f(1f, 1f, 1f, 1f);
+                color(1f, 1f, 1f, 1f);
             }
 
-            Minecraft mc = Minecraft.getInstance();
-            InventoryOverlay.renderInventoryBackground(type, x, y, props.slotsPerRow, items.size(), mc);
+            InventoryOverlay.renderInventoryBackground(type, x, y, props.slotsPerRow, items.size(), mc());
 
-            RenderHelper.enableGUIStandardItemLighting();
+            enableGuiItemLighting();
             GlStateManager.enableDepthTest();
             GlStateManager.enableRescaleNormal();
 
             IInventory inv = fi.dy.masa.malilib.util.InventoryUtils.getAsInventory(items);
-            InventoryOverlay.renderInventoryStacks(type, inv, x + props.slotOffsetX, y + props.slotOffsetY, props.slotsPerRow, 0, -1, mc);
+            InventoryOverlay.renderInventoryStacks(type, inv, x + props.slotOffsetX, y + props.slotOffsetY, props.slotsPerRow, 0, -1, mc());
 
             GlStateManager.disableDepthTest();
             GlStateManager.popMatrix();
@@ -1018,7 +1052,7 @@ public class RenderUtils
     }
 
     /**
-     * Calls GlStateManager.color() with the dye color of the provided shulker box block's color
+     * Calls RenderUtils.color() with the dye color of the provided shulker box block's color
      * @param block
      * @param useBgColors
      */
@@ -1029,11 +1063,11 @@ public class RenderUtils
             // In 1.13+ there is the uncolored Shulker Box variant, which returns null from getColor()
             final EnumDyeColor dye = block.getColor() != null ? block.getColor() : EnumDyeColor.PURPLE;
             final float[] colors = dye.getColorComponentValues();
-            GlStateManager.color3f(colors[0], colors[1], colors[2]);
+            color(colors[0], colors[1], colors[2], 1f);
         }
         else
         {
-            GlStateManager.color4f(1f, 1f, 1f, 1f);
+            color(1f, 1f, 1f, 1f);
         }
     }
 
@@ -1044,17 +1078,17 @@ public class RenderUtils
             return;
         }
 
-        Minecraft mc = Minecraft.getInstance();
-
         GlStateManager.pushMatrix();
+
         bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-        mc.getTextureManager().getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).setBlurMipmap(false, false);
+        mc().getTextureManager().getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).setBlurMipmap(false, false);
+
         GlStateManager.enableRescaleNormal();
         GlStateManager.enableAlphaTest();
         GlStateManager.alphaFunc(516, 0.1F);
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-        GlStateManager.color4f(1f, 1f, 1f, 1f);
+        color(1f, 1f, 1f, 1f);
 
         setupGuiTransform(x, y, model.isGui3d(), zLevel);
         //model.getItemCameraTransforms().applyTransform(ItemCameraTransforms.TransformType.GUI);
@@ -1131,7 +1165,7 @@ public class RenderUtils
 
         if (quad.hasTintIndex())
         {
-            BlockColors blockColors = Minecraft.getInstance().getBlockColors();
+            BlockColors blockColors = mc().getBlockColors();
             int m = blockColors.getColor(state, null, null, quad.getTintIndex());
 
             float r = (float) (m >>> 16 & 0xFF) / 255F;
@@ -1152,6 +1186,11 @@ public class RenderUtils
         renderer.putNormal(direction.getX(), direction.getY(), direction.getZ());
     }
 
+    private static Minecraft mc()
+    {
+        return Minecraft.getInstance();
+    }
+
     /*
     public static void enableGUIStandardItemLighting(float scale)
     {
@@ -1170,7 +1209,7 @@ public class RenderUtils
         GlStateManager.enableLight(0);
         GlStateManager.enableLight(1);
         GlStateManager.enableColorMaterial();
-        GlStateManager.colorMaterial(GL11.GL_FRONT_AND_BACK, GL11.GL_AMBIENT_AND_DIFFUSE);
+        RenderUtils.colorMaterial(GL11.GL_FRONT_AND_BACK, GL11.GL_AMBIENT_AND_DIFFUSE);
         GlStateManager.glLight(GL11.GL_LIGHT0, GL11.GL_POSITION, RenderHelper.setColorBuffer((float) LIGHT0_POS.x, (float) LIGHT0_POS.y, (float) LIGHT0_POS.z, 0.0f));
 
         float lightStrength = 0.3F * scale;
