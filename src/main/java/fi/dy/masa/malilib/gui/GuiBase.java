@@ -26,25 +26,32 @@ import net.minecraft.util.text.TextFormatting;
 public abstract class GuiBase extends GuiScreen implements IMessageConsumer, IStringConsumer
 {
     public static final String TXT_AQUA = TextFormatting.AQUA.toString();
+    public static final String TXT_BLACK = TextFormatting.BLACK.toString();
     public static final String TXT_BLUE = TextFormatting.BLUE.toString();
+    public static final String TXT_GOLD = TextFormatting.GOLD.toString();
     public static final String TXT_GRAY = TextFormatting.GRAY.toString();
     public static final String TXT_GREEN = TextFormatting.GREEN.toString();
-    public static final String TXT_GOLD = TextFormatting.GOLD.toString();
     public static final String TXT_RED = TextFormatting.RED.toString();
     public static final String TXT_WHITE = TextFormatting.WHITE.toString();
     public static final String TXT_YELLOW = TextFormatting.YELLOW.toString();
 
     public static final String TXT_BOLD = TextFormatting.BOLD.toString();
+    public static final String TXT_ITALIC = TextFormatting.ITALIC.toString();
     public static final String TXT_RST = TextFormatting.RESET.toString();
+    public static final String TXT_STRIKETHROUGH = TextFormatting.STRIKETHROUGH.toString();
     public static final String TXT_UNDERLINE = TextFormatting.UNDERLINE.toString();
 
+    public static final String TXT_DARK_AQUA = TextFormatting.DARK_AQUA.toString();
+    public static final String TXT_DARK_BLUE = TextFormatting.DARK_BLUE.toString();
+    public static final String TXT_DARK_GRAY = TextFormatting.DARK_GRAY.toString();
     public static final String TXT_DARK_GREEN = TextFormatting.DARK_GREEN.toString();
+    public static final String TXT_DARK_PURPLE = TextFormatting.DARK_PURPLE.toString();
     public static final String TXT_DARK_RED = TextFormatting.DARK_RED.toString();
 
     public static final String TXT_LIGHT_PURPLE = TextFormatting.LIGHT_PURPLE.toString();
 
-    protected static final String BUTTON_LABEL_ADD = TextFormatting.DARK_GREEN + "+" + TextFormatting.RESET;
-    protected static final String BUTTON_LABEL_REMOVE = TextFormatting.DARK_RED + "-" + TextFormatting.RESET;
+    protected static final String BUTTON_LABEL_ADD = TXT_DARK_GREEN + "+" + TXT_RST;
+    protected static final String BUTTON_LABEL_REMOVE = TXT_DARK_RED + "-" + TXT_RST;
 
     public static final int COLOR_WHITE          = 0xFFFFFFFF;
     public static final int TOOLTIP_BACKGROUND   = 0xB0000000;

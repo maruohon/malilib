@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.gui.widgets;
 import java.io.File;
 import java.util.Arrays;
 import javax.annotation.Nullable;
+import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.GuiTextInputFeedback;
 import fi.dy.masa.malilib.gui.LeftRight;
 import fi.dy.masa.malilib.gui.interfaces.IDirectoryNavigator;
@@ -60,7 +61,7 @@ public class WidgetDirectoryNavigation extends WidgetSearchBar
                 String title = "malilib.gui.title.create_directory";
                 DirectoryCreator creator = new DirectoryCreator(this.currentDir, this.navigator);
                 GuiTextInputFeedback gui = new GuiTextInputFeedback(256, title, "", this.mc.currentScreen, creator);
-                this.openGui(gui);
+                GuiBase.openGui(gui);
                 return true;
             }
         }

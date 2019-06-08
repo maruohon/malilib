@@ -46,7 +46,7 @@ public class WidgetKeybindSettings extends WidgetBase
             }
             else
             {
-                this.openGui(new GuiKeybindSettings(this.keybind, this.keybindName, null, this.mc.currentScreen));
+                GuiBase.openGui(new GuiKeybindSettings(this.keybind, this.keybindName, null, this.mc.currentScreen));
             }
 
             return true;
