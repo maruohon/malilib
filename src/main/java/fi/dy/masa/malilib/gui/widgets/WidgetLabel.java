@@ -56,7 +56,7 @@ public class WidgetLabel extends WidgetBase
             RenderUtils.setupBlend();
             this.drawLabelBackground();
 
-            int fontHeight = this.textRenderer.FONT_HEIGHT;
+            int fontHeight = this.fontHeight;
             int yCenter = this.y + this.height / 2 + this.borderSize / 2;
             int yTextStart = yCenter - 1 - this.labels.size() * fontHeight / 2;
 

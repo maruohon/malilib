@@ -144,8 +144,8 @@ public class RenderUtils
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
 
-        setupBlend();
         GlStateManager.disableTexture2D();
+        setupBlend();
         color(r, g, b, a);
 
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
@@ -315,13 +315,13 @@ public class RenderUtils
         drawRect(x, y, 1, height, color);
     }
 
-    public static void renderSprite(Minecraft mc, int x, int y, String texture, int width, int height)
+    public static void renderSprite(int x, int y, int width, int height, String texture)
     {
         if (texture != null)
         {
-            TextureAtlasSprite sprite = mc.getTextureMapBlocks().getAtlasSprite(texture);
             GlStateManager.disableLighting();
-            mc.ingameGUI.drawTexturedModalRect(x, y, sprite, width, height);
+            TextureAtlasSprite sprite = mc().getTextureMapBlocks().getAtlasSprite(texture);
+            mc().ingameGUI.drawTexturedModalRect(x, y, sprite, width, height);
         }
     }
 
@@ -771,9 +771,9 @@ public class RenderUtils
             GlStateManager.disablePolygonOffset();
         }
 
+        color(1f, 1f, 1f, 1f);
         GlStateManager.enableCull();
         GlStateManager.disableBlend();
-        color(1.0F, 1.0F, 1.0F, 1.0F);
         GlStateManager.popMatrix();
     }
 

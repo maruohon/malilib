@@ -29,9 +29,9 @@ public class WidgetCheckBox extends WidgetBase
         super(x, y, 40, 20);
 
         this.displayText = text;
-        this.width = widgetUnchecked.getWidth() + 3 + this.textRenderer.getStringWidth(text);
-        this.height = Math.max(this.textRenderer.FONT_HEIGHT, widgetChecked.getHeight());
-        this.textWidth = this.textRenderer.getStringWidth(text);
+        this.width = widgetUnchecked.getWidth() + 3 + this.getStringWidth(text);
+        this.height = Math.max(this.fontHeight, widgetChecked.getHeight());
+        this.textWidth = this.getStringWidth(text);
         this.widgetUnchecked = widgetUnchecked;
         this.widgetChecked = widgetChecked;
 
@@ -95,7 +95,7 @@ public class WidgetCheckBox extends WidgetBase
         icon.renderAt(this.x, this.y, this.zLevel, false, false);
 
         int iw = icon.getWidth();
-        int y = this.y + 1 + (this.height - this.getFontHeight()) / 2;
+        int y = this.y + 1 + (this.height - this.fontHeight) / 2;
         int textColor = this.checked ? 0xFFFFFFFF : 0xB0B0B0B0;
 
         this.drawStringWithShadow(this.x + iw + 3, y, textColor, this.displayText);

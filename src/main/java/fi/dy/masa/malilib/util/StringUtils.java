@@ -6,18 +6,6 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.Nullable;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.multiplayer.ServerData;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.command.ICommandSender;
-import net.minecraft.server.integrated.IntegratedServer;
-import net.minecraft.util.text.ChatType;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.util.text.event.ClickEvent;
-import net.minecraft.world.World;
 
 public class StringUtils
 {
@@ -68,23 +56,12 @@ public class StringUtils
         return str;
     }
 
-    /**
-     * @deprecated since 0.10.0. Use the same method in InfoUtils instead.
-     * @param key
-     * @param args
-     */
-    @Deprecated
-    public static void printActionbarMessage(String key, Object... args)
+    public static void sendOpenFileChatMessage(net.minecraft.command.ICommandSender sender, String messageKey, File file)
     {
-        Minecraft.getMinecraft().ingameGUI.addChatMessage(ChatType.GAME_INFO, new TextComponentTranslation(key, args));
-    }
-
-    public static void sendOpenFileChatMessage(ICommandSender sender, String messageKey, File file)
-    {
-        ITextComponent name = new TextComponentString(file.getName());
-        name.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, file.getAbsolutePath()));
+        net.minecraft.util.text.TextComponentString name = new net.minecraft.util.text.TextComponentString(file.getName());
+        name.getStyle().setClickEvent(new net.minecraft.util.text.event.ClickEvent(net.minecraft.util.text.event.ClickEvent.Action.OPEN_FILE, file.getAbsolutePath()));
         name.getStyle().setUnderlined(Boolean.valueOf(true));
-        sender.sendMessage(new TextComponentTranslation(messageKey, name));
+        sender.sendMessage(new net.minecraft.util.text.TextComponentTranslation(messageKey, name));
     }
 
     /**
@@ -94,7 +71,7 @@ public class StringUtils
      * @param maxLineLength
      * @param font
      */
-    public static void splitTextToLines(List<String> linesOut, String textIn, int maxLineLength, FontRenderer font)
+    public static void splitTextToLines(List<String> linesOut, String textIn, int maxLineLength)
     {
         String[] lines = textIn.split("\\\\n");
 
@@ -102,12 +79,12 @@ public class StringUtils
         {
             String[] parts = line.split(" ");
             StringBuilder sb = new StringBuilder(256);
-            final int spaceWidth = font.getStringWidth(" ");
+            final int spaceWidth = getStringWidth(" ");
             int lineWidth = 0;
 
             for (String str : parts)
             {
-                int width = font.getStringWidth(str);
+                int width = getStringWidth(str);
 
                 if ((lineWidth + width + spaceWidth) > maxLineLength)
                 {
@@ -126,7 +103,7 @@ public class StringUtils
                         for (int i = 0; i < chars; ++i)
                         {
                             String c = str.substring(i, i + 1);
-                            lineWidth += font.getStringWidth(c);
+                            lineWidth += getStringWidth(c);
 
                             if (lineWidth > maxLineLength)
                             {
@@ -215,13 +192,12 @@ public class StringUtils
         StringBuilder sb = new StringBuilder(128);
         sb.append(prefix);
 
-        FontRenderer font = Minecraft.getMinecraft().fontRenderer;
         String entrySep = ", ";
         String dots = " ...";
         final int listSize = list.size();
-        final int widthSep = font.getStringWidth(entrySep);
-        final int widthDots = font.getStringWidth(dots);
-        int width = font.getStringWidth(prefix) + font.getStringWidth(suffix);
+        final int widthSep = getStringWidth(entrySep);
+        final int widthDots = getStringWidth(dots);
+        int width = getStringWidth(prefix) + getStringWidth(suffix);
 
         if (listSize > 0)
         {
@@ -234,7 +210,7 @@ public class StringUtils
                 }
 
                 String str = list.get(listIndex);
-                final int len = font.getStringWidth(str);
+                final int len = getStringWidth(str);
 
                 if ((width + len) <= maxWidth)
                 {
@@ -246,7 +222,7 @@ public class StringUtils
                     for (int i = 0; i < str.length(); ++i)
                     {
                         String c = str.substring(i, i + 1);
-                        final int charWidth = font.getStringWidth(c);
+                        final int charWidth = getStringWidth(c);
 
                         if ((width + charWidth + widthDots) <= maxWidth)
                         {
@@ -278,11 +254,11 @@ public class StringUtils
     @Nullable
     public static String getWorldOrServerName()
     {
-        Minecraft mc = Minecraft.getMinecraft();
+        net.minecraft.client.Minecraft mc = net.minecraft.client.Minecraft.getMinecraft();
 
         if (mc.isSingleplayer())
         {
-            IntegratedServer server = mc.getIntegratedServer();
+            net.minecraft.server.integrated.IntegratedServer server = mc.getIntegratedServer();
 
             if (server != null)
             {
@@ -291,7 +267,7 @@ public class StringUtils
         }
         else
         {
-            ServerData server = mc.getCurrentServerData();
+            net.minecraft.client.multiplayer.ServerData server = mc.getCurrentServerData();
 
             if (server != null)
             {
@@ -322,7 +298,7 @@ public class StringUtils
                 return prefix + name + suffix;
             }
 
-            World world = Minecraft.getMinecraft().world;
+            net.minecraft.world.World world = net.minecraft.client.Minecraft.getMinecraft().world;
 
             if (world != null)
             {
@@ -343,7 +319,7 @@ public class StringUtils
      */
     public static String translate(String translationKey, Object... args)
     {
-        return I18n.format(translationKey, args);
+        return net.minecraft.client.resources.I18n.format(translationKey, args);
     }
 
     /**
@@ -352,11 +328,16 @@ public class StringUtils
      */
     public static int getFontHeight()
     {
-        return Minecraft.getMinecraft().fontRenderer.FONT_HEIGHT;
+        return net.minecraft.client.Minecraft.getMinecraft().fontRenderer.FONT_HEIGHT;
     }
 
     public static int getStringWidth(String text)
     {
-        return Minecraft.getMinecraft().fontRenderer.getStringWidth(text);
+        return net.minecraft.client.Minecraft.getMinecraft().fontRenderer.getStringWidth(text);
+    }
+
+    public static void drawString(int x, int y, int color, String text)
+    {
+        net.minecraft.client.Minecraft.getMinecraft().fontRenderer.drawString(text, x, y, color);
     }
 }

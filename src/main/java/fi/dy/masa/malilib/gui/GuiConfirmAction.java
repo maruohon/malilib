@@ -30,7 +30,7 @@ public class GuiConfirmAction extends GuiDialogBase implements ICompletionListen
         this.useTitleHierarchy = false;
         this.zLevel = 1f;
 
-        StringUtils.splitTextToLines(this.messageLines, StringUtils.translate(messageKey, args), width - 30, this.textRenderer);
+        StringUtils.splitTextToLines(this.messageLines, StringUtils.translate(messageKey, args), width - 30);
 
         this.setWidthAndHeight(width, this.getMessageHeight() + 50);
         this.centerOnScreen();
@@ -58,7 +58,7 @@ public class GuiConfirmAction extends GuiDialogBase implements ICompletionListen
 
     public int getMessageHeight()
     {
-        return this.messageLines.size() * (this.textRenderer.FONT_HEIGHT + 1) - 1 + 5;
+        return this.messageLines.size() * (this.fontHeight + 1) - 1 + 5;
     }
 
     protected int getButtonWidth()
@@ -105,7 +105,7 @@ public class GuiConfirmAction extends GuiDialogBase implements ICompletionListen
         for (String text : this.messageLines)
         {
             this.drawString(text, this.dialogLeft + 10, y, this.textColor);
-            y += this.textRenderer.FONT_HEIGHT + 1;
+            y += this.fontHeight + 1;
         }
 
         this.drawButtons(mouseX, mouseY, partialTicks);

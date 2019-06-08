@@ -161,7 +161,7 @@ public class InventoryOverlay
         RenderUtils.drawTexturedRectBatched(x +   7, y +   7,   7,  17, 162, 108, buffer); // middle
     }
 
-    public static void renderEquipmentOverlayBackground(Minecraft mc, int x, int y, EntityLivingBase entity)
+    public static void renderEquipmentOverlayBackground(int x, int y, EntityLivingBase entity)
     {
         RenderUtils.color(1f, 1f, 1f, 1f);
 
@@ -192,7 +192,7 @@ public class InventoryOverlay
         if (entity.getItemStackFromSlot(EntityEquipmentSlot.OFFHAND).isEmpty())
         {
             String texture = "minecraft:items/empty_armor_slot_shield";
-            RenderUtils.renderSprite(mc, x + 28 + 1, y + 3 * 18 + 7 + 1, texture, 16, 16);
+            RenderUtils.renderSprite(x + 28 + 1, y + 3 * 18 + 7 + 1, 16, 16, texture);
         }
 
         for (int i = 0, xOff = 7, yOff = 7; i < 4; ++i, yOff += 18)
@@ -202,7 +202,7 @@ public class InventoryOverlay
             if (entity.getItemStackFromSlot(eqSlot).isEmpty())
             {
                 String texture = ItemArmor.EMPTY_SLOT_NAMES[eqSlot.getIndex()];
-                RenderUtils.renderSprite(mc, x + xOff + 1, y + yOff + 1, texture, 16, 16);
+                RenderUtils.renderSprite(x + xOff + 1, y + yOff + 1, 16, 16, texture);
             }
         }
     }

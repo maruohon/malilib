@@ -38,7 +38,7 @@ public class WidgetStringListEntry extends WidgetListEntryBase<String>
             RenderUtils.drawOutline(this.x, this.y, this.width, this.height, 0xFF90D0F0);
         }
 
-        int yOffset = (this.height - this.textRenderer.FONT_HEIGHT) / 2 + 1;
+        int yOffset = (this.height - this.fontHeight) / 2 + 1;
         this.drawStringWithShadow(this.x + 2, this.y + yOffset, 0xFFFFFFFF, this.entry);
 
         super.render(mouseX, mouseY, selected);

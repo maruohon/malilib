@@ -3,7 +3,6 @@ package fi.dy.masa.malilib.gui.widgets;
 import fi.dy.masa.malilib.render.RenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ResourceLocation;
 
 public abstract class WidgetBase
@@ -147,11 +146,6 @@ public abstract class WidgetBase
         RenderUtils.bindTexture(texture);
     }
 
-    public int getFontHeight()
-    {
-        return this.textRenderer.FONT_HEIGHT;
-    }
-
     public int getStringWidth(String text)
     {
         return this.textRenderer.getStringWidth(text);
@@ -175,11 +169,6 @@ public abstract class WidgetBase
     public void drawCenteredStringWithShadow(int x, int y, int color, String text)
     {
         this.textRenderer.drawStringWithShadow(text, x - this.getStringWidth(text) / 2, y, color);
-    }
-
-    public void openGui(GuiScreen gui)
-    {
-        this.mc.displayGuiScreen(gui);
     }
 
     public void render(int mouseX, int mouseY, boolean selected)
