@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.gui.widgets;
 
 import org.lwjgl.input.Keyboard;
+import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
 import fi.dy.masa.malilib.gui.LeftRight;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
@@ -83,7 +84,7 @@ public class WidgetSearchBar extends WidgetBase
             {
                 if (GuiScreen.isShiftKeyDown())
                 {
-                    this.mc.displayGuiScreen(null);
+                    GuiBase.openGui(null);
                 }
 
                 this.searchOpen = false;

@@ -11,6 +11,7 @@ import fi.dy.masa.malilib.gui.interfaces.IFileBrowserIconProvider;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.DirectoryCreator;
 import fi.dy.masa.malilib.util.FileUtils;
+import fi.dy.masa.malilib.util.GuiUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class WidgetDirectoryNavigation extends WidgetSearchBar
@@ -60,7 +61,7 @@ public class WidgetDirectoryNavigation extends WidgetSearchBar
             {
                 String title = "malilib.gui.title.create_directory";
                 DirectoryCreator creator = new DirectoryCreator(this.currentDir, this.navigator);
-                GuiTextInputFeedback gui = new GuiTextInputFeedback(256, title, "", this.mc.currentScreen, creator);
+                GuiTextInputFeedback gui = new GuiTextInputFeedback(256, title, "", GuiUtils.getCurrentScreen(), creator);
                 GuiBase.openGui(gui);
                 return true;
             }

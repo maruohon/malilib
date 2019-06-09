@@ -11,10 +11,10 @@ import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.GuiConfigsBase;
 import fi.dy.masa.malilib.gui.GuiConfigsBase.ConfigOptionWrapper;
 import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
+import fi.dy.masa.malilib.util.GuiUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.ScaledResolution;
 
 public abstract class ConfigPanelBase extends AbstractConfigPanel
 {
@@ -211,7 +211,7 @@ public abstract class ConfigPanelBase extends AbstractConfigPanel
         if (panel != null)
         {
             this.selectedSubPanel = panel;
-            this.selectedSubPanel.setParentGui(this.mc.currentScreen);
+            this.selectedSubPanel.setParentGui(GuiUtils.getCurrentScreen());
             this.selectedSubPanel.setDialogHandler(new DialogHandler(this.selectedSubPanel));
             this.updateSubPanelSize(this.selectedSubPanel);
         }
@@ -224,9 +224,8 @@ public abstract class ConfigPanelBase extends AbstractConfigPanel
     protected void updateSubPanelSize(GuiConfigsBase panel)
     {
         // Liteloader panel margins and offsets...
-        ScaledResolution sr = new ScaledResolution(this.mc);
-        int width = sr.getScaledWidth() - 80 - 12 - 10;
-        int height = sr.getScaledHeight();
+        int width = GuiUtils.getScaledWindowWidth() - 80 - 12 - 10;
+        int height = GuiUtils.getScaledWindowHeight();
 
         panel.setWorldAndResolution(this.mc, width, height);
     }

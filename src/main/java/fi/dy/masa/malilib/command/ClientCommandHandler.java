@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.command;
 
 import java.util.List;
 import fi.dy.masa.malilib.LiteModMaLiLib;
+import fi.dy.masa.malilib.util.GuiUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.command.CommandHandler;
@@ -84,10 +85,9 @@ public class ClientCommandHandler extends CommandHandler
         {
             leftOfCursor = leftOfCursor.substring(1);
 
-            Minecraft mc = Minecraft.getMinecraft();
-
-            if (mc.currentScreen instanceof GuiChat)
+            if (GuiUtils.getCurrentScreen() instanceof GuiChat)
             {
+                Minecraft mc = Minecraft.getMinecraft();
                 List<String> commands = this.getTabCompletions(mc.player, leftOfCursor, mc.player.getPosition());
 
                 if (commands.isEmpty() == false)

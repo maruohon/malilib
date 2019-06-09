@@ -18,6 +18,7 @@ import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
 import fi.dy.masa.malilib.gui.interfaces.IKeybindConfigGui;
 import fi.dy.masa.malilib.gui.widgets.WidgetConfigOption;
 import fi.dy.masa.malilib.gui.widgets.WidgetListConfigOptions;
+import fi.dy.masa.malilib.util.GuiUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 import net.minecraft.client.gui.GuiScreen;
 
@@ -158,9 +159,9 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
                 return true;
             }
 
-            if (keyCode == Keyboard.KEY_ESCAPE && this.parentScreen != this.mc.currentScreen)
+            if (keyCode == Keyboard.KEY_ESCAPE && this.parentScreen != GuiUtils.getCurrentScreen())
             {
-                this.mc.displayGuiScreen(this.parentScreen);
+                GuiBase.openGui(this.parentScreen);
                 return true;
             }
 

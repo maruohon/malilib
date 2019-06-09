@@ -96,7 +96,7 @@ public class GuiStringListSelection extends GuiListBase<String, WidgetStringList
             }
             else
             {
-                this.parent.mc.displayGuiScreen(this.parent.getParent());
+                GuiBase.openGui(this.parent.getParent());
             }
         }
 

@@ -92,14 +92,14 @@ public abstract class GuiTextInputBase extends GuiDialogBase
             // Only close the GUI if the value was successfully applied
             if (this.applyValue(this.textField.getText()))
             {
-                this.mc.displayGuiScreen(this.getParent());
+                GuiBase.openGui(this.getParent());
             }
 
             return true;
         }
         else if (keyCode == Keyboard.KEY_ESCAPE)
         {
-            this.mc.displayGuiScreen(this.getParent());
+            GuiBase.openGui(this.getParent());
             return true;
         }
 
@@ -148,12 +148,12 @@ public abstract class GuiTextInputBase extends GuiDialogBase
                 // Only close the GUI if the value was successfully applied
                 if (this.gui.applyValue(this.gui.textField.getText()))
                 {
-                    this.gui.mc.displayGuiScreen(this.gui.getParent());
+                    GuiBase.openGui(this.gui.getParent());
                 }
             }
             else if (this.type == ButtonType.CANCEL)
             {
-                this.gui.mc.displayGuiScreen(this.gui.getParent());
+                GuiBase.openGui(this.gui.getParent());
             }
             else if (this.type == ButtonType.RESET)
             {

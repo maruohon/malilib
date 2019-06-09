@@ -10,6 +10,7 @@ import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
 import fi.dy.masa.malilib.hotkeys.KeybindSettings;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.util.GuiUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 import net.minecraft.util.ResourceLocation;
 
@@ -42,11 +43,11 @@ public class WidgetKeybindSettings extends WidgetBase
         {
             if (this.dialogHandler != null)
             {
-                this.dialogHandler.openDialog(new GuiKeybindSettings(this.keybind, this.keybindName, this.dialogHandler, this.mc.currentScreen));
+                this.dialogHandler.openDialog(new GuiKeybindSettings(this.keybind, this.keybindName, this.dialogHandler, GuiUtils.getCurrentScreen()));
             }
             else
             {
-                GuiBase.openGui(new GuiKeybindSettings(this.keybind, this.keybindName, null, this.mc.currentScreen));
+                GuiBase.openGui(new GuiKeybindSettings(this.keybind, this.keybindName, null, GuiUtils.getCurrentScreen()));
             }
 
             return true;

@@ -40,7 +40,7 @@ import fi.dy.masa.malilib.hotkeys.IHotkey;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
 import fi.dy.masa.malilib.hotkeys.KeybindSettings;
 import fi.dy.masa.malilib.render.RenderUtils;
-import net.minecraft.client.Minecraft;
+import fi.dy.masa.malilib.util.GuiUtils;
 import net.minecraft.client.gui.GuiScreen;
 
 public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapper>
@@ -333,7 +333,7 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
         {
             this.config.toggleUseSlider();
 
-            GuiScreen gui = Minecraft.getMinecraft().currentScreen;
+            GuiScreen gui = GuiUtils.getCurrentScreen();
 
             if (gui != null)
             {

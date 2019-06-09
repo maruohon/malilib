@@ -11,6 +11,7 @@ import org.lwjgl.input.Mouse;
 import fi.dy.masa.malilib.LiteModMaLiLib;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.hotkeys.KeybindSettings.Context;
+import fi.dy.masa.malilib.util.GuiUtils;
 import fi.dy.masa.malilib.util.IMinecraftAccessor;
 import fi.dy.masa.malilib.util.InfoUtils;
 import net.minecraft.client.Minecraft;
@@ -87,7 +88,7 @@ public class KeybindMulti implements IKeybind
     {
         if (this.keyCodes.isEmpty() ||
             (this.settings.getContext() != KeybindSettings.Context.ANY &&
-            ((this.settings.getContext() == KeybindSettings.Context.INGAME) != (Minecraft.getMinecraft().currentScreen == null))))
+            ((this.settings.getContext() == KeybindSettings.Context.INGAME) != (GuiUtils.getCurrentScreen() == null))))
         {
             this.pressed = false;
             return false;

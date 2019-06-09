@@ -6,8 +6,6 @@ import fi.dy.masa.malilib.gui.interfaces.IMessageConsumer;
 import fi.dy.masa.malilib.interfaces.IStringConsumer;
 import fi.dy.masa.malilib.render.MessageRenderer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.TextComponentTranslation;
 
@@ -39,11 +37,9 @@ public class InfoUtils
      */
     public static void showGuiMessage(MessageType type, int lifeTime, String translationKey, Object... args)
     {
-        GuiScreen gui = Minecraft.getMinecraft().currentScreen;
-
-        if (gui instanceof IMessageConsumer)
+        if (GuiUtils.getCurrentScreen() instanceof IMessageConsumer)
         {
-            ((IMessageConsumer) gui).addMessage(type, lifeTime, translationKey, args);
+            ((IMessageConsumer) GuiUtils.getCurrentScreen()).addMessage(type, lifeTime, translationKey, args);
         }
     }
 
@@ -69,11 +65,9 @@ public class InfoUtils
      */
     public static void showGuiOrActionBarMessage(MessageType type, int lifeTime, String translationKey, Object... args)
     {
-        GuiScreen gui = Minecraft.getMinecraft().currentScreen;
-
-        if (gui instanceof IMessageConsumer)
+        if (GuiUtils.getCurrentScreen() instanceof IMessageConsumer)
         {
-            ((IMessageConsumer) gui).addMessage(type, lifeTime, translationKey, args);
+            ((IMessageConsumer) GuiUtils.getCurrentScreen()).addMessage(type, lifeTime, translationKey, args);
         }
         else
         {
@@ -104,11 +98,9 @@ public class InfoUtils
      */
     public static void showGuiOrInGameMessage(MessageType type, int lifeTime, String translationKey, Object... args)
     {
-        GuiScreen gui = Minecraft.getMinecraft().currentScreen;
-
-        if (gui instanceof IMessageConsumer)
+        if (GuiUtils.getCurrentScreen() instanceof IMessageConsumer)
         {
-            ((IMessageConsumer) gui).addMessage(type, lifeTime, translationKey, args);
+            ((IMessageConsumer) GuiUtils.getCurrentScreen()).addMessage(type, lifeTime, translationKey, args);
         }
         else
         {
@@ -186,9 +178,8 @@ public class InfoUtils
      */
     public static void renderInGameMessages()
     {
-        ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
-        int x = sr.getScaledWidth() / 2;
-        int y = sr.getScaledHeight() - 76;
+        int x = GuiUtils.getScaledWindowWidth() / 2;
+        int y = GuiUtils.getScaledWindowHeight() - 76;
 
         IN_GAME_MESSAGES.drawMessages(x, y);
     }
