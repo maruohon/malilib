@@ -5,7 +5,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
-import net.minecraft.client.render.GuiLighting;
+import fi.dy.masa.malilib.render.RenderUtils;
 
 public abstract class WidgetContainer extends WidgetBase
 {
@@ -198,8 +198,7 @@ public abstract class WidgetContainer extends WidgetBase
         if (this.hoveredSubWidget != null)
         {
             this.hoveredSubWidget.postRenderHovered(mouseX, mouseY, false);
-
-            GuiLighting.disable();
+            RenderUtils.disableItemLighting();
         }
     }
 }

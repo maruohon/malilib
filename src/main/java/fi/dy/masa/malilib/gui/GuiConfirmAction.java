@@ -14,7 +14,6 @@ import fi.dy.masa.malilib.interfaces.IConfirmationListener;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 import net.minecraft.client.gui.Screen;
-import net.minecraft.client.resource.language.I18n;
 
 public class GuiConfirmAction extends GuiDialogBase implements ICompletionListener
 {
@@ -25,12 +24,12 @@ public class GuiConfirmAction extends GuiDialogBase implements ICompletionListen
     public GuiConfirmAction(int width, String titleKey, IConfirmationListener listener, @Nullable Screen parent, String messageKey, Object... args)
     {
         this.setParent(parent);
-        this.title = I18n.translate(titleKey);
+        this.title = StringUtils.translate(titleKey);
         this.listener = listener;
         this.useTitleHierarchy = false;
         this.blitOffset = 1;
 
-        StringUtils.splitTextToLines(this.messageLines, I18n.translate(messageKey, args), width - 30, this.textRenderer);
+        StringUtils.splitTextToLines(this.messageLines, StringUtils.translate(messageKey, args), width - 30);
 
         this.setWidthAndHeight(width, this.getMessageHeight() + 50);
         this.centerOnScreen();
@@ -58,7 +57,7 @@ public class GuiConfirmAction extends GuiDialogBase implements ICompletionListen
 
     public int getMessageHeight()
     {
-        return this.messageLines.size() * (this.textRenderer.fontHeight + 1) - 1 + 5;
+        return this.messageLines.size() * (this.fontHeight + 1) - 1 + 5;
     }
 
     protected int getButtonWidth()
@@ -105,7 +104,7 @@ public class GuiConfirmAction extends GuiDialogBase implements ICompletionListen
         for (String text : this.messageLines)
         {
             this.drawString(text, this.dialogLeft + 10, y, this.textColor);
-            y += this.textRenderer.fontHeight + 1;
+            y += this.fontHeight + 1;
         }
 
         this.drawButtons(mouseX, mouseY, partialTicks);
@@ -171,7 +170,7 @@ public class GuiConfirmAction extends GuiDialogBase implements ICompletionListen
                 this.gui.listener.onActionCancelled();
             }
 
-            this.gui.mc.openScreen(this.gui.getParent());
+            GuiBase.openGui(this.gui.getParent());
         }
     }
 
@@ -189,7 +188,7 @@ public class GuiConfirmAction extends GuiDialogBase implements ICompletionListen
 
         public String getDisplayName()
         {
-            return (this == ButtonType.OK ? GuiBase.TXT_GREEN : GuiBase.TXT_RED) + I18n.translate(this.labelKey) + GuiBase.TXT_RST;
+            return (this == ButtonType.OK ? GuiBase.TXT_GREEN : GuiBase.TXT_RED) + StringUtils.translate(this.labelKey) + GuiBase.TXT_RST;
         }
     }
 }

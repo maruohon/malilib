@@ -6,9 +6,6 @@ import fi.dy.masa.malilib.gui.interfaces.IMessageConsumer;
 import fi.dy.masa.malilib.interfaces.IStringConsumer;
 import fi.dy.masa.malilib.render.MessageRenderer;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.Screen;
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.client.util.Window;
 import net.minecraft.text.ChatMessageType;
 import net.minecraft.text.TextComponent;
 import net.minecraft.text.TranslatableTextComponent;
@@ -41,11 +38,9 @@ public class InfoUtils
      */
     public static void showGuiMessage(MessageType type, int lifeTime, String translationKey, Object... args)
     {
-        Screen gui = MinecraftClient.getInstance().currentScreen;
-
-        if (gui instanceof IMessageConsumer)
+        if (GuiUtils.getCurrentScreen() instanceof IMessageConsumer)
         {
-            ((IMessageConsumer) gui).addMessage(type, lifeTime, translationKey, args);
+            ((IMessageConsumer) GuiUtils.getCurrentScreen()).addMessage(type, lifeTime, translationKey, args);
         }
     }
 
@@ -71,15 +66,13 @@ public class InfoUtils
      */
     public static void showGuiOrActionBarMessage(MessageType type, int lifeTime, String translationKey, Object... args)
     {
-        Screen gui = MinecraftClient.getInstance().currentScreen;
-
-        if (gui instanceof IMessageConsumer)
+        if (GuiUtils.getCurrentScreen() instanceof IMessageConsumer)
         {
-            ((IMessageConsumer) gui).addMessage(type, lifeTime, translationKey, args);
+            ((IMessageConsumer) GuiUtils.getCurrentScreen()).addMessage(type, lifeTime, translationKey, args);
         }
         else
         {
-            String msg = type.getFormatting() + I18n.translate(translationKey, args) + GuiBase.TXT_RST;
+            String msg = type.getFormatting() + StringUtils.translate(translationKey, args) + GuiBase.TXT_RST;
             printActionbarMessage(msg);
         }
     }
@@ -106,11 +99,9 @@ public class InfoUtils
      */
     public static void showGuiOrInGameMessage(MessageType type, int lifeTime, String translationKey, Object... args)
     {
-        Screen gui = MinecraftClient.getInstance().currentScreen;
-
-        if (gui instanceof IMessageConsumer)
+        if (GuiUtils.getCurrentScreen() instanceof IMessageConsumer)
         {
-            ((IMessageConsumer) gui).addMessage(type, lifeTime, translationKey, args);
+            ((IMessageConsumer) GuiUtils.getCurrentScreen()).addMessage(type, lifeTime, translationKey, args);
         }
         else
         {
@@ -177,8 +168,8 @@ public class InfoUtils
     public static void printBooleanConfigToggleMessage(String prettyName, boolean newValue)
     {
         String pre = newValue ? GuiBase.TXT_GREEN : GuiBase.TXT_RED;
-        String status = I18n.translate("malilib.message.value." + (newValue ? "on" : "off"));
-        String message = I18n.translate("malilib.message.toggled", prettyName, pre + status + GuiBase.TXT_RST);
+        String status = StringUtils.translate("malilib.message.value." + (newValue ? "on" : "off"));
+        String message = StringUtils.translate("malilib.message.toggled", prettyName, pre + status + GuiBase.TXT_RST);
 
         printActionbarMessage(message);
     }
@@ -188,9 +179,8 @@ public class InfoUtils
      */
     public static void renderInGameMessages()
     {
-        Window window = MinecraftClient.getInstance().window;
-        int x = window.getScaledWidth() / 2;
-        int y = window.getScaledHeight() - 76;
+        int x = GuiUtils.getScaledWindowWidth() / 2;
+        int y = GuiUtils.getScaledWindowHeight() - 76;
 
         IN_GAME_MESSAGES.drawMessages(x, y);
     }

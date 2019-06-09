@@ -1,7 +1,6 @@
 package fi.dy.masa.malilib.gui;
 
 import javax.annotation.Nullable;
-import com.mojang.blaze3d.platform.GlStateManager;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.render.RenderUtils;
 import net.minecraft.client.MinecraftClient;
@@ -90,7 +89,7 @@ public class GuiScrollBar
 
             if (this.barTexture != null && barHeight >= 4)
             {
-                GlStateManager.color4f(1f, 1f, 1f, 1f);
+                RenderUtils.color(1f, 1f, 1f, 1f);
                 RenderUtils.bindTexture(this.barTexture.getTexture());
                 int u = this.barTexture.getU();
                 int v = this.barTexture.getV();

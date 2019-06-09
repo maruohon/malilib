@@ -19,7 +19,6 @@ import fi.dy.masa.malilib.util.KeyCodes;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Screen;
-import net.minecraft.client.render.GuiLighting;
 import net.minecraft.text.StringTextComponent;
 import net.minecraft.text.TextComponent;
 import net.minecraft.text.TextFormat;
@@ -28,20 +27,29 @@ import net.minecraft.util.Identifier;
 public abstract class GuiBase extends Screen implements IMessageConsumer, IStringConsumer
 {
     public static final String TXT_AQUA = TextFormat.AQUA.toString();
+    public static final String TXT_BLACK = TextFormat.BLACK.toString();
     public static final String TXT_BLUE = TextFormat.BLUE.toString();
+    public static final String TXT_GOLD = TextFormat.GOLD.toString();
     public static final String TXT_GRAY = TextFormat.GRAY.toString();
     public static final String TXT_GREEN = TextFormat.GREEN.toString();
-    public static final String TXT_GOLD = TextFormat.GOLD.toString();
     public static final String TXT_RED = TextFormat.RED.toString();
     public static final String TXT_WHITE = TextFormat.WHITE.toString();
     public static final String TXT_YELLOW = TextFormat.YELLOW.toString();
 
     public static final String TXT_BOLD = TextFormat.BOLD.toString();
+    public static final String TXT_ITALIC = TextFormat.ITALIC.toString();
     public static final String TXT_RST = TextFormat.RESET.toString();
+    public static final String TXT_STRIKETHROUGH = TextFormat.STRIKETHROUGH.toString();
     public static final String TXT_UNDERLINE = TextFormat.UNDERLINE.toString();
 
+    public static final String TXT_DARK_AQUA = TextFormat.DARK_AQUA.toString();
+    public static final String TXT_DARK_BLUE = TextFormat.DARK_BLUE.toString();
+    public static final String TXT_DARK_GRAY = TextFormat.DARK_GRAY.toString();
     public static final String TXT_DARK_GREEN = TextFormat.DARK_GREEN.toString();
+    public static final String TXT_DARK_PURPLE = TextFormat.DARK_PURPLE.toString();
     public static final String TXT_DARK_RED = TextFormat.DARK_RED.toString();
+
+    public static final String TXT_LIGHT_PURPLE = TextFormat.LIGHT_PURPLE.toString();
 
     protected static final String BUTTON_LABEL_ADD = TXT_DARK_GREEN + "+" + TXT_RST;
     protected static final String BUTTON_LABEL_REMOVE = TXT_DARK_RED + "-" + TXT_RST;
@@ -51,8 +59,9 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
     public static final int COLOR_HORIZONTAL_BAR = 0xFF999999;
     protected static final int LEFT         = 20;
     protected static final int TOP          = 10;
-    protected final MinecraftClient mc;
-    protected final TextRenderer textRenderer;
+    public final MinecraftClient mc = MinecraftClient.getInstance();
+    public final TextRenderer textRenderer = this.mc.textRenderer;
+    public final int fontHeight = this.textRenderer.fontHeight;
     private final List<ButtonBase> buttons = new ArrayList<>();
     private final List<WidgetBase> widgets = new ArrayList<>();
     private final List<TextFieldWrapper<? extends GuiTextFieldGeneric>> textFields = new ArrayList<>();
@@ -66,10 +75,7 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
 
     protected GuiBase()
     {
-        super(null);
-
-        this.mc = MinecraftClient.getInstance();
-        this.textRenderer = this.mc.textRenderer;
+        super(new StringTextComponent(""));
     }
 
     public GuiBase setParent(@Nullable Screen parent)
@@ -123,6 +129,18 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
         super.init();
 
         this.clearElements();
+    }
+
+    protected void closeGui(boolean showParent)
+    {
+        if (showParent)
+        {
+            this.mc.openScreen(this.parent);
+        }
+        else
+        {
+            this.onClose();
+        }
     }
 
     @Override
@@ -322,14 +340,7 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
         {
             if (keyCode == KeyCodes.KEY_ESCAPE)
             {
-                if (Screen.hasShiftDown())
-                {
-                    this.onClose();
-                }
-                else
-                {
-                    this.mc.openScreen(this.parent);
-                }
+                this.closeGui(isShiftDown() == false);
 
                 return true;
             }
@@ -337,7 +348,7 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
 
         if (selected >= 0)
         {
-            if (Screen.hasShiftDown())
+            if (isShiftDown())
             {
                 selected = selected > 0 ? selected - 1 : this.textFields.size() - 1;
             }
@@ -551,7 +562,7 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
             }
         }
 
-        GuiLighting.disable();
+        RenderUtils.disableItemLighting();
     }
 
     protected void drawHoveredWidget(int mouseX, int mouseY)
@@ -559,7 +570,7 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
         if (this.hoveredWidget != null)
         {
             this.hoveredWidget.postRenderHovered(mouseX, mouseY, false);
-            GuiLighting.disable();
+            RenderUtils.disableItemLighting();
         }
     }
 
@@ -593,5 +604,25 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
         }
 
         return width;
+    }
+
+    public static void openGui(Screen gui)
+    {
+        MinecraftClient.getInstance().openScreen(gui);
+    }
+
+    public static boolean isShiftDown()
+    {
+        return hasShiftDown();
+    }
+
+    public static boolean isCtrlDown()
+    {
+        return hasControlDown();
+    }
+
+    public static boolean isAltDown()
+    {
+        return hasAltDown();
     }
 }

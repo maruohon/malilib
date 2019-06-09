@@ -3,7 +3,6 @@ package fi.dy.masa.malilib.gui.widgets;
 import java.util.List;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.platform.GlStateManager;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
 import fi.dy.masa.malilib.render.RenderUtils;
@@ -30,15 +29,15 @@ public class WidgetCheckBox extends WidgetBase
         super(x, y, 40, 20);
 
         this.displayText = text;
-        this.width = widgetUnchecked.getWidth() + 3 + this.textRenderer.getStringWidth(text);
-        this.height = Math.max(this.textRenderer.fontHeight, widgetChecked.getHeight());
-        this.textWidth = this.textRenderer.getStringWidth(text);
+        this.width = widgetUnchecked.getWidth() + 3 + this.getStringWidth(text);
+        this.height = Math.max(this.fontHeight, widgetChecked.getHeight());
+        this.textWidth = this.getStringWidth(text);
         this.widgetUnchecked = widgetUnchecked;
         this.widgetChecked = widgetChecked;
 
         if (hoverInfo != null)
         {
-            //hoverInfo = I18n.format(hoverInfo);
+            //hoverInfo = StringUtils.translate(hoverInfo);
             String[] parts = hoverInfo.split("\\n");
             this.hoverInfo = ImmutableList.copyOf(parts);
         }
@@ -91,15 +90,15 @@ public class WidgetCheckBox extends WidgetBase
     {
         IGuiIcon icon = this.checked ? this.widgetChecked : this.widgetUnchecked;
 
-        GlStateManager.color4f(1f, 1f, 1f, 1f);
+        RenderUtils.color(1f, 1f, 1f, 1f);
         this.bindTexture(icon.getTexture());
         icon.renderAt(this.x, this.y, this.zLevel, false, false);
 
         int iw = icon.getWidth();
-        int y = this.y + 1 + (this.height - this.textRenderer.fontHeight) / 2;
+        int y = this.y + 1 + (this.height - this.fontHeight) / 2;
         int textColor = this.checked ? 0xFFFFFFFF : 0xB0B0B0B0;
 
-        this.drawStringWithShadow(this.displayText, this.x + iw + 3, y, textColor);
+        this.drawStringWithShadow(this.x + iw + 3, y, textColor, this.displayText);
     }
 
     @Override

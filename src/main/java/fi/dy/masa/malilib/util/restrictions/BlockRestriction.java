@@ -3,8 +3,8 @@ package fi.dy.masa.malilib.util.restrictions;
 import java.util.List;
 import java.util.Set;
 import fi.dy.masa.malilib.MaLiLib;
+import fi.dy.masa.malilib.util.StringUtils;
 import net.minecraft.block.Block;
-import net.minecraft.client.resource.language.I18n;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -33,7 +33,7 @@ public class BlockRestriction extends UsageRestriction<Block>
             }
             else
             {
-                MaLiLib.logger.warn(I18n.translate("malilib.error.invalid_block_blacklist_entry", name));
+                MaLiLib.logger.warn(StringUtils.translate("malilib.error.invalid_block_blacklist_entry", name));
             }
         }
     }

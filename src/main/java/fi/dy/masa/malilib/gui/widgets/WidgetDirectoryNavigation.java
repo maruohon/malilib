@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.gui.widgets;
 import java.io.File;
 import java.util.Arrays;
 import javax.annotation.Nullable;
+import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.GuiTextInputFeedback;
 import fi.dy.masa.malilib.gui.LeftRight;
 import fi.dy.masa.malilib.gui.interfaces.IDirectoryNavigator;
@@ -10,8 +11,8 @@ import fi.dy.masa.malilib.gui.interfaces.IFileBrowserIconProvider;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.DirectoryCreator;
 import fi.dy.masa.malilib.util.FileUtils;
-import net.minecraft.client.render.GuiLighting;
-import net.minecraft.client.resource.language.I18n;
+import fi.dy.masa.malilib.util.GuiUtils;
+import fi.dy.masa.malilib.util.StringUtils;
 
 public class WidgetDirectoryNavigation extends WidgetSearchBar
 {
@@ -25,7 +26,7 @@ public class WidgetDirectoryNavigation extends WidgetSearchBar
     public WidgetDirectoryNavigation(int x, int y, int width, int height,
             File currentDir, File rootDir, IDirectoryNavigator navigator, IFileBrowserIconProvider iconProvider)
     {
-        super(x, y, width, height, - iconProvider.getIconRoot().getWidth(), iconProvider.getIconSearch(), LeftRight.RIGHT);
+        super(x, y, width, height, 0, iconProvider.getIconSearch(), LeftRight.RIGHT);
 
         this.currentDir = currentDir;
         this.rootDir = rootDir;
@@ -60,8 +61,8 @@ public class WidgetDirectoryNavigation extends WidgetSearchBar
             {
                 String title = "malilib.gui.title.create_directory";
                 DirectoryCreator creator = new DirectoryCreator(this.currentDir, this.navigator);
-                GuiTextInputFeedback gui = new GuiTextInputFeedback(256, title, "", this.mc.currentScreen, creator);
-                this.mc.openScreen(gui);
+                GuiTextInputFeedback gui = new GuiTextInputFeedback(256, title, "", GuiUtils.getCurrentScreen(), creator);
+                GuiBase.openGui(gui);
                 return true;
             }
         }
@@ -107,12 +108,12 @@ public class WidgetDirectoryNavigation extends WidgetSearchBar
             int pathStartX = this.iconCreateDir.x + this.iconCreateDir.getWidth() + 6;
 
             // Draw the directory path text background
-            RenderUtils.drawRect(pathStartX, this.y, this.width, this.height, 0x20FFFFFF);
+            RenderUtils.drawRect(pathStartX, this.y, this.width - pathStartX - 2, this.height, 0x20FFFFFF);
 
             int textColor = 0xC0C0C0C0;
             int maxLen = (this.width - 40) / this.getStringWidth("a") - 4; // FIXME
             String path = FileUtils.getJoinedTrailingPathElements(this.currentDir, this.rootDir, maxLen, " / ");
-            this.drawString(path, pathStartX + 3, this.y + 3, textColor);
+            this.drawString(pathStartX + 3, this.y + 3, textColor, path);
         }
     }
 
@@ -127,18 +128,18 @@ public class WidgetDirectoryNavigation extends WidgetSearchBar
 
             if (hoveredIcon == this.iconRoot)
             {
-                RenderUtils.drawHoverText(mouseX, mouseY, Arrays.asList(I18n.translate("malilib.gui.button.hover.directory_widget.root")));
+                RenderUtils.drawHoverText(mouseX, mouseY, Arrays.asList(StringUtils.translate("malilib.gui.button.hover.directory_widget.root")));
             }
             else if (hoveredIcon == this.iconUp)
             {
-                RenderUtils.drawHoverText(mouseX, mouseY, Arrays.asList(I18n.translate("malilib.gui.button.hover.directory_widget.up")));
+                RenderUtils.drawHoverText(mouseX, mouseY, Arrays.asList(StringUtils.translate("malilib.gui.button.hover.directory_widget.up")));
             }
             else if (hoveredIcon == this.iconCreateDir)
             {
-                RenderUtils.drawHoverText(mouseX, mouseY, Arrays.asList(I18n.translate("malilib.gui.button.hover.directory_widget.create_directory")));
+                RenderUtils.drawHoverText(mouseX, mouseY, Arrays.asList(StringUtils.translate("malilib.gui.button.hover.directory_widget.create_directory")));
             }
 
-            GuiLighting.disable();
+            RenderUtils.disableItemLighting();
         }
     }
 }

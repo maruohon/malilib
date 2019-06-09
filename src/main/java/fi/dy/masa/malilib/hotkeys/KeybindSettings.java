@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.hotkeys;
 import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.config.IConfigOptionListEntry;
 import fi.dy.masa.malilib.util.JsonUtils;
-import net.minecraft.client.resource.language.I18n;
+import fi.dy.masa.malilib.util.StringUtils;
 
 public class KeybindSettings
 {
@@ -197,7 +197,7 @@ public class KeybindSettings
         @Override
         public String getDisplayName()
         {
-            return I18n.translate(this.translationKey);
+            return StringUtils.translate(this.translationKey);
         }
 
         @Override

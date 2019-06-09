@@ -7,13 +7,11 @@ import com.google.gson.JsonPrimitive;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.interfaces.IRangeChangeListener;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.resource.language.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Direction.Axis;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.MutableIntBoundingBox;
 
 public class LayerRange
 {
@@ -469,7 +467,7 @@ public class LayerRange
             }
             else
             {
-                String val1 = moveMin ? I18n.translate("malilib.message.layer_range.range_min") : I18n.translate("malilib.message.layer_range.range_max");
+                String val1 = moveMin ? StringUtils.translate("malilib.message.layer_range.range_min") : StringUtils.translate("malilib.message.layer_range.range_max");
                 InfoUtils.printActionbarMessage("malilib.message.moved_layer_range_boundary", val1, String.valueOf(amount), axisName);
             }
         }
@@ -641,7 +639,7 @@ public class LayerRange
         }
     }
 
-    public boolean intersects(MutableIntBoundingBox box)
+    public boolean intersects(IntBoundingBox box)
     {
         switch (this.axis)
         {
@@ -699,7 +697,7 @@ public class LayerRange
     }
 
     @Nullable
-    public MutableIntBoundingBox getClampedRenderBoundingBox(MutableIntBoundingBox box)
+    public IntBoundingBox getClampedRenderBoundingBox(IntBoundingBox box)
     {
         if (this.intersects(box) == false)
         {
@@ -712,19 +710,19 @@ public class LayerRange
             {
                 final int xMin = Math.max(box.minX, this.getLayerMin());
                 final int xMax = Math.min(box.maxX, this.getLayerMax());
-                return MutableIntBoundingBox.create(xMin, box.minY, box.minZ, xMax, box.maxY, box.maxZ);
+                return IntBoundingBox.createProper(xMin, box.minY, box.minZ, xMax, box.maxY, box.maxZ);
             }
             case Y:
             {
                 final int yMin = Math.max(box.minY, this.getLayerMin());
                 final int yMax = Math.min(box.maxY, this.getLayerMax());
-                return MutableIntBoundingBox.create(box.minX, yMin, box.minZ, box.maxX, yMax, box.maxZ);
+                return IntBoundingBox.createProper(box.minX, yMin, box.minZ, box.maxX, yMax, box.maxZ);
             }
             case Z:
             {
                 final int zMin = Math.max(box.minZ, this.getLayerMin());
                 final int zMax = Math.min(box.maxZ, this.getLayerMax());
-                return MutableIntBoundingBox.create(box.minX, box.minY, zMin, box.maxX, box.maxY, zMax);
+                return IntBoundingBox.createProper(box.minX, box.minY, zMin, box.maxX, box.maxY, zMax);
             }
             default:
                 return null;
@@ -732,13 +730,13 @@ public class LayerRange
     }
 
     @Nullable
-    public MutableIntBoundingBox getClampedArea(BlockPos posMin, BlockPos posMax)
+    public IntBoundingBox getClampedArea(BlockPos posMin, BlockPos posMax)
     {
         return this.getClampedArea(posMin.getX(), posMin.getY(), posMin.getZ(), posMax.getX(), posMax.getY(), posMax.getZ());
     }
 
     @Nullable
-    public MutableIntBoundingBox getClampedArea(int minX, int minY, int minZ, int maxX, int maxY, int maxZ)
+    public IntBoundingBox getClampedArea(int minX, int minY, int minZ, int maxX, int maxY, int maxZ)
     {
         if (this.intersectsBox(minX, minY, minZ, maxX, maxY, maxZ) == false)
         {
@@ -751,19 +749,19 @@ public class LayerRange
             {
                 final int xMin = Math.max(minX, this.getLayerMin());
                 final int xMax = Math.min(maxX, this.getLayerMax());
-                return MutableIntBoundingBox.create(xMin, minY, minZ, xMax, maxY, maxZ);
+                return IntBoundingBox.createProper(xMin, minY, minZ, xMax, maxY, maxZ);
             }
             case Y:
             {
                 final int yMin = Math.max(minY, this.getLayerMin());
                 final int yMax = Math.min(maxY, this.getLayerMax());
-                return MutableIntBoundingBox.create(minX, yMin, minZ, maxX, yMax, maxZ);
+                return IntBoundingBox.createProper(minX, yMin, minZ, maxX, yMax, maxZ);
             }
             case Z:
             {
                 final int zMin = Math.max(minZ, this.getLayerMin());
                 final int zMax = Math.min(maxZ, this.getLayerMax());
-                return MutableIntBoundingBox.create(minX, minY, zMin, maxX, maxY, zMax);
+                return IntBoundingBox.createProper(minX, minY, zMin, maxX, maxY, zMax);
             }
             default:
                 return null;

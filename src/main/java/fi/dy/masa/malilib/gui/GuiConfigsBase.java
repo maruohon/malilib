@@ -17,7 +17,9 @@ import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
 import fi.dy.masa.malilib.gui.interfaces.IKeybindConfigGui;
 import fi.dy.masa.malilib.gui.widgets.WidgetConfigOption;
 import fi.dy.masa.malilib.gui.widgets.WidgetListConfigOptions;
+import fi.dy.masa.malilib.util.GuiUtils;
 import fi.dy.masa.malilib.util.KeyCodes;
+import fi.dy.masa.malilib.util.StringUtils;
 import net.minecraft.client.gui.Screen;
 
 public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, WidgetConfigOption, WidgetListConfigOptions> implements IKeybindConfigGui
@@ -32,12 +34,13 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
     @Nullable protected IConfigInfoProvider hoverInfoProvider;
     @Nullable protected IDialogHandler dialogHandler;
 
-    public GuiConfigsBase(int listX, int listY, String modId, @Nullable Screen parent)
+    public GuiConfigsBase(int listX, int listY, String modId, @Nullable Screen parent, String titleKey, Object... args)
     {
         super(listX, listY);
 
         this.modId = modId;
         this.parentScreen = parent;
+        this.title = StringUtils.translate(titleKey, args);
     }
 
     @Override
@@ -156,9 +159,9 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
                 return true;
             }
 
-            if (keyCode == KeyCodes.KEY_ESCAPE && this.parentScreen != this.minecraft.currentScreen)
+            if (keyCode == KeyCodes.KEY_ESCAPE && this.parentScreen != GuiUtils.getCurrentScreen())
             {
-                this.minecraft.openScreen(this.parentScreen);
+                GuiBase.openGui(this.parentScreen);
                 return true;
             }
 

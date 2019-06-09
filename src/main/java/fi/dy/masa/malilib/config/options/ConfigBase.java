@@ -6,7 +6,7 @@ import fi.dy.masa.malilib.config.IConfigBase;
 import fi.dy.masa.malilib.config.IConfigNotifiable;
 import fi.dy.masa.malilib.config.IConfigResettable;
 import fi.dy.masa.malilib.interfaces.IValueChangeCallback;
-import net.minecraft.client.resource.language.I18n;
+import fi.dy.masa.malilib.util.StringUtils;
 
 public abstract class ConfigBase<T extends IConfigBase> implements IConfigBase, IConfigResettable, IConfigNotifiable<T>
 {
@@ -45,14 +45,14 @@ public abstract class ConfigBase<T extends IConfigBase> implements IConfigBase, 
     @Override
     public String getPrettyName()
     {
-        return I18n.translate(this.prettyName);
+        return StringUtils.translate(this.prettyName);
     }
 
     @Override
     @Nullable
     public String getComment()
     {
-        return I18n.translate(this.comment);
+        return StringUtils.translate(this.comment);
     }
 
     public void setComment(String comment)

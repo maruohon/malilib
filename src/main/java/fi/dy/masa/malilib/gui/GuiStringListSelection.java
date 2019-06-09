@@ -9,7 +9,7 @@ import fi.dy.masa.malilib.gui.interfaces.IStringListConsumer;
 import fi.dy.masa.malilib.gui.widgets.WidgetListStringSelection;
 import fi.dy.masa.malilib.gui.widgets.WidgetStringListEntry;
 import fi.dy.masa.malilib.interfaces.IStringListProvider;
-import net.minecraft.client.resource.language.I18n;
+import fi.dy.masa.malilib.util.StringUtils;
 
 public class GuiStringListSelection extends GuiListBase<String, WidgetStringListEntry, WidgetListStringSelection> implements IStringListProvider
 {
@@ -96,7 +96,7 @@ public class GuiStringListSelection extends GuiListBase<String, WidgetStringList
             }
             else
             {
-                this.parent.mc.openScreen(this.parent.getParent());
+                GuiBase.openGui(this.parent.getParent());
             }
         }
 
@@ -114,7 +114,7 @@ public class GuiStringListSelection extends GuiListBase<String, WidgetStringList
 
             public String getDisplayName(Object... args)
             {
-                return I18n.translate(this.translationKey, args);
+                return StringUtils.translate(this.translationKey, args);
             }
         }
     }

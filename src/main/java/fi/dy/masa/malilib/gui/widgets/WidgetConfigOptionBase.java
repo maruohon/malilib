@@ -7,7 +7,7 @@ import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.wrappers.TextFieldWrapper;
 import fi.dy.masa.malilib.util.KeyCodes;
-import net.minecraft.client.resource.language.I18n;
+import fi.dy.masa.malilib.util.StringUtils;
 
 public abstract class WidgetConfigOptionBase<TYPE> extends WidgetListEntryBase<TYPE>
 {
@@ -50,17 +50,15 @@ public abstract class WidgetConfigOptionBase<TYPE> extends WidgetListEntryBase<T
 
     protected void addTextField(GuiTextFieldGeneric field, ConfigOptionChangeListenerTextField listener)
     {
-        TextFieldWrapper<GuiTextFieldGeneric> wrapper = new TextFieldWrapper<>(field, listener);
+        TextFieldWrapper<? extends GuiTextFieldGeneric> wrapper = new TextFieldWrapper<>(field, listener);
         this.textField = wrapper;
         this.parent.addTextField(wrapper);
     }
 
     protected ButtonGeneric createResetButton(int x, int y, IConfigResettable config)
     {
-        String labelReset = I18n.translate("malilib.gui.button.reset.caps");
-        int w = this.getStringWidth(labelReset) + 10;
-
-        ButtonGeneric resetButton = new ButtonGeneric(x, y, w, 20, labelReset);
+        String labelReset = StringUtils.translate("malilib.gui.button.reset.caps");
+        ButtonGeneric resetButton = new ButtonGeneric(x, y, -1, 20, labelReset);
         resetButton.setEnabled(config.isModified());
 
         return resetButton;

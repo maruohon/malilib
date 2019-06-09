@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.util;
 
+import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.GuiTextFieldDouble;
 import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
@@ -13,12 +14,37 @@ import fi.dy.masa.malilib.interfaces.ICoordinateValueModifier;
 import fi.dy.masa.malilib.util.PositionUtils.CoordinateType;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Screen;
-import net.minecraft.client.resource.language.I18n;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 public class GuiUtils
 {
+    public static int getScaledWindowWidth()
+    {
+        return MinecraftClient.getInstance().window.getScaledWidth();
+    }
+
+    public static int getScaledWindowHeight()
+    {
+        return MinecraftClient.getInstance().window.getScaledHeight();
+    }
+
+    public static int getDisplayWidth()
+    {
+        return MinecraftClient.getInstance().window.getWidth();
+    }
+
+    public static int getDisplayHeight()
+    {
+        return MinecraftClient.getInstance().window.getHeight();
+    }
+
+    @Nullable
+    public static Screen getCurrentScreen()
+    {
+        return MinecraftClient.getInstance().currentScreen;
+    }
+
     public static void createBlockPosInputsVertical(int x, int y, int textFieldWidth, BlockPos pos,
             ICoordinateValueModifier modifier, boolean addButton, GuiBase gui)
     {
@@ -64,7 +90,7 @@ public class GuiUtils
 
         if (addButton)
         {
-            String hover = I18n.translate("malilib.gui.button.hover.plus_minus_tip");
+            String hover = StringUtils.translate("malilib.gui.button.hover.plus_minus_tip");
             ButtonGeneric button = new ButtonGeneric(x, y, MaLiLibIcons.BTN_PLUSMINUS_16, hover);
             gui.addButton(button, new ButtonListenerCoordinateInput(type, modifier));
         }
@@ -102,13 +128,12 @@ public class GuiUtils
 
     protected static int addLabel(int x, int y, CoordinateType type, GuiBase gui)
     {
-        MinecraftClient mc = MinecraftClient.getInstance();
         String label = type.name() + ":";
         int labelWidth = 0;
 
         for (CoordinateType t : CoordinateType.values())
         {
-            labelWidth = Math.max(labelWidth, mc.textRenderer.getStringWidth(t.name() + ":") + 4);
+            labelWidth = Math.max(labelWidth, StringUtils.getStringWidth(t.name() + ":") + 4);
         }
 
         gui.addLabel(x, y, labelWidth, 20, 0xFFFFFFFF, label);
@@ -152,8 +177,8 @@ public class GuiUtils
         public void actionPerformedWithButton(ButtonBase button, int mouseButton)
         {
             int amount = mouseButton == 1 ? -1 : 1;
-            if (Screen.hasShiftDown()) { amount *= 8; }
-            if (Screen.hasAltDown())   { amount *= 4; }
+            if (GuiBase.isShiftDown()) { amount *= 8; }
+            if (GuiBase.isAltDown())   { amount *= 4; }
 
             this.modifier.modifyValue(this.type, amount);
         }

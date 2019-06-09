@@ -8,10 +8,11 @@ import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
 import fi.dy.masa.malilib.gui.widgets.WidgetListStringListEdit;
 import fi.dy.masa.malilib.gui.widgets.WidgetStringListEditEntry;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.util.GuiUtils;
 import fi.dy.masa.malilib.util.KeyCodes;
+import fi.dy.masa.malilib.util.StringUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Screen;
-import net.minecraft.client.resource.language.I18n;
 
 public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEditEntry, WidgetListStringListEdit>
 {
@@ -32,7 +33,7 @@ public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEditE
         this.config = config;
         this.configGui = configGui;
         this.dialogHandler = dialogHandler;
-        this.title = I18n.translate("malilib.gui.title.string_list_edit", config.getName());
+        this.title = StringUtils.translate("malilib.gui.title.string_list_edit", config.getName());
 
         // When we have a dialog handler, then we are inside the Liteloader config menu.
         // In there we don't want to use the normal "GUI replacement and render parent first" trick.
@@ -51,7 +52,7 @@ public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEditE
     protected void setWidthAndHeight()
     {
         this.dialogWidth = 400;
-        this.dialogHeight = this.minecraft.window.getScaledHeight() - 90;
+        this.dialogHeight = GuiUtils.getScaledWindowHeight() - 90;
     }
 
     protected void centerOnScreen()

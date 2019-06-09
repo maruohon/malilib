@@ -1,6 +1,5 @@
 package fi.dy.masa.malilib.gui.widgets;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import fi.dy.masa.malilib.gui.interfaces.ISliderCallback;
 import fi.dy.masa.malilib.render.RenderUtils;
 import net.minecraft.util.Identifier;
@@ -50,7 +49,7 @@ public class WidgetSlider extends WidgetBase
         }
 
         this.bindTexture(VANILLA_WIDGETS);
-        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderUtils.color(1f, 1f, 1f, 1f);
 
         RenderUtils.drawTexturedRect(this.x + 1             , this.y,   0, 46, this.width - 6, 20);
         RenderUtils.drawTexturedRect(this.x + this.width - 5, this.y, 196, 46,              4, 20);
@@ -65,7 +64,7 @@ public class WidgetSlider extends WidgetBase
 
         String str = this.callback.getFormattedDisplayValue();
         int w = this.getStringWidth(str);
-        this.drawString(str, this.x + (this.width / 2) - w / 2, this.y + 6, 0xFFFFFFA0);
+        this.drawString(this.x + (this.width / 2) - w / 2, this.y + 6, 0xFFFFFFA0, str);
     }
 
     protected double getRelativePosition(int mouseX)

@@ -1,7 +1,6 @@
 package fi.dy.masa.malilib.gui.widgets;
 
 import java.io.File;
-import com.mojang.blaze3d.platform.GlStateManager;
 import fi.dy.masa.malilib.gui.interfaces.IDirectoryNavigator;
 import fi.dy.masa.malilib.gui.interfaces.IFileBrowserIconProvider;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
@@ -68,7 +67,7 @@ public class WidgetDirectoryEntry extends WidgetListEntryBase<DirectoryEntry>
 
         if (icon != null)
         {
-            GlStateManager.color4f(1f, 1f, 1f, 1f);
+            RenderUtils.color(1f, 1f, 1f, 1f);
             this.bindTexture(icon.getTexture());
             icon.renderAt(this.x, this.y + (this.height - icon.getHeight()) / 2, this.zLevel + 1, false, false);
         }
@@ -94,8 +93,8 @@ public class WidgetDirectoryEntry extends WidgetListEntryBase<DirectoryEntry>
             RenderUtils.drawOutline(this.x, this.y, this.width, this.height, 0xEEEEEEEE);
         }
 
-        int yOffset = (this.height - this.textRenderer.fontHeight) / 2 + 1;
-        this.drawString(this.getDisplayName(), this.x + xOffset + 2, this.y + yOffset, 0xFFFFFFFF);
+        int yOffset = (this.height - this.fontHeight) / 2 + 1;
+        this.drawString(this.x + xOffset + 2, this.y + yOffset, 0xFFFFFFFF, this.getDisplayName());
 
         super.render(mouseX, mouseY, selected);
     }

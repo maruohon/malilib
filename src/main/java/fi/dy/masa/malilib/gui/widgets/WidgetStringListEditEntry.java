@@ -1,7 +1,6 @@
 package fi.dy.masa.malilib.gui.widgets;
 
 import java.util.List;
-import com.mojang.blaze3d.platform.GlStateManager;
 import fi.dy.masa.malilib.config.IConfigStringList;
 import fi.dy.masa.malilib.config.gui.ConfigOptionChangeListenerTextField;
 import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
@@ -11,7 +10,7 @@ import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.render.RenderUtils;
-import net.minecraft.client.resource.language.I18n;
+import fi.dy.masa.malilib.util.StringUtils;
 
 public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
 {
@@ -76,7 +75,7 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
 
     protected void addListActionButton(int x, int y, ButtonType type)
     {
-        ButtonGeneric button = new ButtonGeneric(x, y, type.getIcon(), I18n.translate(type.getHoverTextKey()));
+        ButtonGeneric button = new ButtonGeneric(x, y, type.getIcon(), type.getDisplayName());
         ListenerListActions listener = new ListenerListActions(type, this);
         this.addButton(button, listener);
     }
@@ -99,10 +98,8 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
 
     protected ButtonGeneric createResetButton(int x, int y, GuiTextFieldGeneric textField)
     {
-        String labelReset = I18n.translate("malilib.gui.button.reset.caps");
-        int w = this.getStringWidth(labelReset) + 10;
-
-        ButtonGeneric resetButton = new ButtonGeneric(x, y, w, 20, labelReset);
+        String labelReset = StringUtils.translate("malilib.gui.button.reset.caps");
+        ButtonGeneric resetButton = new ButtonGeneric(x, y, -1, 20, labelReset);
         resetButton.setEnabled(textField.getText().equals(this.defaultValue) == false);
 
         return resetButton;
@@ -197,7 +194,7 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
     @Override
     public void render(int mouseX, int mouseY, boolean selected)
     {
-        GlStateManager.color4f(1f, 1f, 1f, 1f);
+        RenderUtils.color(1f, 1f, 1f, 1f);
 
         if (this.isOdd)
         {
@@ -302,9 +299,9 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
             return this.icon;
         }
 
-        public String getHoverTextKey()
+        public String getDisplayName()
         {
-            return this.hoverTextkey;
+            return StringUtils.translate(this.hoverTextkey);
         }
     }
 }

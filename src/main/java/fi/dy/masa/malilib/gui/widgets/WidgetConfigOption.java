@@ -2,7 +2,6 @@ package fi.dy.masa.malilib.gui.widgets;
 
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.platform.GlStateManager;
 import fi.dy.masa.malilib.config.ConfigType;
 import fi.dy.masa.malilib.config.IConfigBase;
 import fi.dy.masa.malilib.config.IConfigBoolean;
@@ -42,7 +41,7 @@ import fi.dy.masa.malilib.hotkeys.IHotkey;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
 import fi.dy.masa.malilib.hotkeys.KeybindSettings;
 import fi.dy.masa.malilib.render.RenderUtils;
-import net.minecraft.client.MinecraftClient;
+import fi.dy.masa.malilib.util.GuiUtils;
 import net.minecraft.client.gui.Screen;
 
 public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapper>
@@ -301,7 +300,7 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
     @Override
     public void render(int mouseX, int mouseY, boolean selected)
     {
-        GlStateManager.color4f(1, 1, 1, 1);
+        RenderUtils.color(1f, 1f, 1f, 1f);
 
         this.drawSubWidgets(mouseX, mouseY);
 
@@ -335,7 +334,7 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
         {
             this.config.toggleUseSlider();
 
-            Screen gui = MinecraftClient.getInstance().currentScreen;
+            Screen gui = GuiUtils.getCurrentScreen();
 
             if (gui instanceof GuiBase)
             {

@@ -2,9 +2,8 @@ package fi.dy.masa.malilib.gui.widgets;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.mojang.blaze3d.platform.GlStateManager;
 import fi.dy.masa.malilib.render.RenderUtils;
-import net.minecraft.client.resource.language.I18n;
+import fi.dy.masa.malilib.util.StringUtils;
 
 public class WidgetLabel extends WidgetBase
 {
@@ -32,7 +31,7 @@ public class WidgetLabel extends WidgetBase
 
     public void addLine(String key, Object... args)
     {
-        this.labels.add(I18n.translate(key, args));
+        this.labels.add(StringUtils.translate(key, args));
     }
 
     public void setCentered(boolean centered)
@@ -54,11 +53,10 @@ public class WidgetLabel extends WidgetBase
     {
         if (this.visible)
         {
-            GlStateManager.enableBlend();
-            GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+            RenderUtils.setupBlend();
             this.drawLabelBackground();
 
-            int fontHeight = this.textRenderer.fontHeight;
+            int fontHeight = this.fontHeight;
             int yCenter = this.y + this.height / 2 + this.borderSize / 2;
             int yTextStart = yCenter - 1 - this.labels.size() * fontHeight / 2;
 
@@ -68,11 +66,11 @@ public class WidgetLabel extends WidgetBase
 
                 if (this.centered)
                 {
-                    RenderUtils.drawCenteredString(this.textRenderer, text, this.x + this.width / 2, yTextStart + i * fontHeight, this.textColor);
+                    this.drawCenteredStringWithShadow(this.x + this.width / 2, yTextStart + i * fontHeight, this.textColor, text);
                 }
                 else
                 {
-                    this.drawStringWithShadow(text, this.x, yTextStart + i * fontHeight, this.textColor);
+                    this.drawStringWithShadow(this.x, yTextStart + i * fontHeight, this.textColor, text);
                 }
             }
         }

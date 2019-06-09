@@ -3,7 +3,6 @@ package fi.dy.masa.malilib.gui.widgets;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
-import com.mojang.blaze3d.platform.GlStateManager;
 import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.GuiKeybindSettings;
@@ -11,8 +10,8 @@ import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
 import fi.dy.masa.malilib.hotkeys.KeybindSettings;
 import fi.dy.masa.malilib.render.RenderUtils;
-import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.resource.language.I18n;
+import fi.dy.masa.malilib.util.GuiUtils;
+import fi.dy.masa.malilib.util.StringUtils;
 import net.minecraft.util.Identifier;
 
 public class WidgetKeybindSettings extends WidgetBase
@@ -44,11 +43,11 @@ public class WidgetKeybindSettings extends WidgetBase
         {
             if (this.dialogHandler != null)
             {
-                this.dialogHandler.openDialog(new GuiKeybindSettings(this.keybind, this.keybindName, this.dialogHandler, this.mc.currentScreen));
+                this.dialogHandler.openDialog(new GuiKeybindSettings(this.keybind, this.keybindName, this.dialogHandler, GuiUtils.getCurrentScreen()));
             }
             else
             {
-                this.mc.openScreen(new GuiKeybindSettings(this.keybind, this.keybindName, null, this.mc.currentScreen));
+                GuiBase.openGui(new GuiKeybindSettings(this.keybind, this.keybindName, null, GuiUtils.getCurrentScreen()));
             }
 
             return true;
@@ -67,7 +66,7 @@ public class WidgetKeybindSettings extends WidgetBase
     @Override
     public void render(int mouseX, int mouseY, boolean selected)
     {
-        GlStateManager.color4f(1f, 1f, 1f, 1f);
+        RenderUtils.color(1f, 1f, 1f, 1f);
         this.bindTexture(TEXTURE);
 
         int w = 18;
@@ -81,14 +80,15 @@ public class WidgetKeybindSettings extends WidgetBase
         int y = this.y;
 
         int edgeColor = this.keybind.areSettingsModified() ? 0xFFFFBB33 : 0xFFFFFFFF;
-        DrawableHelper.fill(x    , y + 0, x + 20, y + 20, edgeColor);
-        DrawableHelper.fill(x + 1, y + 1, x + 19, y + 19, 0xFF000000);
+        RenderUtils.drawRect(x    , y + 0, 20, 20, edgeColor);
+        RenderUtils.drawRect(x + 1, y + 1, 18, 18, 0xFF000000);
 
         x += 1;
         y += 1;
         float z = 0;
 
-        GlStateManager.color4f(1f, 1f, 1f, 1f);
+        RenderUtils.color(1f, 1f, 1f, 1f);
+
         RenderUtils.drawTexturedRect(x, y,  0, v1, w, w, z);
         RenderUtils.drawTexturedRect(x, y, 18, v2, w, w, z);
         RenderUtils.drawTexturedRect(x, y, 36, v3, w, w, z);
@@ -101,41 +101,41 @@ public class WidgetKeybindSettings extends WidgetBase
     {
         List<String> text = new ArrayList<>();
         String name, val;
-        String strYes = I18n.translate("malilib.gui.label.yes");
-        String strNo = I18n.translate("malilib.gui.label.no");
+        String strYes = StringUtils.translate("malilib.gui.label.yes");
+        String strNo = StringUtils.translate("malilib.gui.label.no");
 
-        text.add(GuiBase.TXT_WHITE + GuiBase.TXT_UNDERLINE + I18n.translate("malilib.gui.label.keybind_settings.title_advanced_keybind_settings"));
+        text.add(GuiBase.TXT_WHITE + GuiBase.TXT_UNDERLINE + StringUtils.translate("malilib.gui.label.keybind_settings.title_advanced_keybind_settings"));
 
-        name = I18n.translate("malilib.gui.label.keybind_settings.activate_on");
+        name = StringUtils.translate("malilib.gui.label.keybind_settings.activate_on");
         val = GuiBase.TXT_BLUE + this.settings.getActivateOn().name();
         text.add(String.format("%s: %s", name, val));
 
-        name = I18n.translate("malilib.gui.label.keybind_settings.allow_empty_keybind");
+        name = StringUtils.translate("malilib.gui.label.keybind_settings.allow_empty_keybind");
         val = this.settings.getAllowEmpty() ? (GuiBase.TXT_GREEN + strYes) : (GuiBase.TXT_GOLD + strNo);
         text.add(String.format("%s: %s", name, val));
 
-        name = I18n.translate("malilib.gui.label.keybind_settings.allow_extra_keys");
+        name = StringUtils.translate("malilib.gui.label.keybind_settings.allow_extra_keys");
         val = this.settings.getAllowExtraKeys() ? (GuiBase.TXT_GREEN + strYes) : (GuiBase.TXT_GOLD + strNo);
         text.add(String.format("%s: %s", name, val));
 
-        name = I18n.translate("malilib.gui.label.keybind_settings.order_sensitive");
+        name = StringUtils.translate("malilib.gui.label.keybind_settings.order_sensitive");
         val = this.settings.isOrderSensitive() ? (GuiBase.TXT_GOLD + strYes) : (GuiBase.TXT_GREEN + strNo);
         text.add(String.format("%s: %s", name, val));
 
-        name = I18n.translate("malilib.gui.label.keybind_settings.cancel_further");
+        name = StringUtils.translate("malilib.gui.label.keybind_settings.cancel_further");
         val = this.settings.shouldCancel() ? (GuiBase.TXT_GOLD + strYes) : (GuiBase.TXT_GREEN + strNo);
         text.add(String.format("%s: %s", name, val));
 
-        name = I18n.translate("malilib.gui.label.keybind_settings.exclusive");
+        name = StringUtils.translate("malilib.gui.label.keybind_settings.exclusive");
         val = this.settings.isExclusive() ? (GuiBase.TXT_GOLD + strYes) : (GuiBase.TXT_GREEN + strNo);
         text.add(String.format("%s: %s", name, val));
 
-        name = I18n.translate("malilib.gui.label.keybind_settings.context");
+        name = StringUtils.translate("malilib.gui.label.keybind_settings.context");
         val = GuiBase.TXT_BLUE + this.settings.getContext().name();
         text.add(String.format("%s: %s", name, val));
 
         text.add("");
-        String[] parts = I18n.translate("malilib.gui.label.keybind_settings.tips").split("\\n");
+        String[] parts = StringUtils.translate("malilib.gui.label.keybind_settings.tips").split("\\n");
 
         for (int i = 0; i < parts.length; ++i)
         {
