@@ -23,10 +23,10 @@ public class WidgetSearchBar extends WidgetBase
 
         int iw = iconSearch.getWidth();
         int ix = iconAlignment == LeftRight.RIGHT ? x + width - iw - 1 : x + 2;
-        int tx = iconAlignment == LeftRight.RIGHT ? x - searchBarOffsetX + 3 : x + iw + 6 + searchBarOffsetX;
+        int tx = iconAlignment == LeftRight.RIGHT ? x - searchBarOffsetX + 1 : x + iw + 6 + searchBarOffsetX;
         this.iconSearch = new WidgetIcon(ix, y + 1, iconSearch);
         this.iconAlignment = iconAlignment;
-        this.searchBox = new GuiTextFieldGeneric(tx, y, width - iw - 8 - Math.abs(searchBarOffsetX), height, this.textRenderer);
+        this.searchBox = new GuiTextFieldGeneric(tx, y, width - iw - 7 - Math.abs(searchBarOffsetX), height, this.textRenderer);
         this.searchBox.setZLevel(this.zLevel);
     }
 
