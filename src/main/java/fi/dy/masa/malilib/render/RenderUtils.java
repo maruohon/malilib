@@ -9,12 +9,12 @@ import org.lwjgl.opengl.GL11;
 import fi.dy.masa.malilib.config.HudAlignment;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.util.Color4f;
+import fi.dy.masa.malilib.util.GuiUtils;
 import fi.dy.masa.malilib.util.InventoryUtils;
 import fi.dy.masa.malilib.util.PositionUtils;
 import fi.dy.masa.malilib.util.PositionUtils.HitPart;
 import net.minecraft.block.BlockShulkerBox;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -197,7 +197,7 @@ public class RenderUtils
     {
         Minecraft mc = mc();
 
-        if (textLines.isEmpty() == false && mc.currentScreen != null)
+        if (textLines.isEmpty() == false && GuiUtils.getCurrentScreen() != null)
         {
             FontRenderer font = mc.fontRenderer;
             GlStateManager.disableRescaleNormal();
@@ -205,7 +205,7 @@ public class RenderUtils
             GlStateManager.disableLighting();
             GlStateManager.disableDepthTest();
             int maxLineLength = 0;
-            int maxWidth = mc.currentScreen.width;
+            int maxWidth = GuiUtils.getCurrentScreen().width;
             List<String> linesNew = new ArrayList<>();
 
             for (String lineOrig : textLines)
@@ -356,7 +356,7 @@ public class RenderUtils
             HudAlignment alignment, boolean useBackground, boolean useShadow, List<String> lines)
     {
         FontRenderer fontRenderer = mc().fontRenderer;
-        MainWindow window = mc().mainWindow;
+        final int scaledWidth = GuiUtils.getScaledWindowWidth();
         final int lineHeight = fontRenderer.FONT_HEIGHT + 2;
         final int contentHeight = lines.size() * lineHeight - 2;
         int bgMargin = 2;
@@ -393,10 +393,10 @@ public class RenderUtils
             {
                 case TOP_RIGHT:
                 case BOTTOM_RIGHT:
-                    posX = (window.getScaledWidth() / scale) - width - xOff - bgMargin;
+                    posX = (scaledWidth / scale) - width - xOff - bgMargin;
                     break;
                 case CENTER:
-                    posX = (window.getScaledWidth() / scale / 2) - (width / 2) - xOff;
+                    posX = (scaledWidth / scale / 2) - (width / 2) - xOff;
                     break;
                 default:
             }
@@ -472,17 +472,17 @@ public class RenderUtils
 
     public static int getHudPosY(int yOrig, int yOffset, int contentHeight, double scale, HudAlignment alignment)
     {
-        MainWindow window = mc().mainWindow;
+        int scaledHeight = GuiUtils.getScaledWindowHeight();
         int posY = yOrig;
 
         switch (alignment)
         {
             case BOTTOM_LEFT:
             case BOTTOM_RIGHT:
-                posY = (int) ((window.getScaledHeight() / scale) - contentHeight - yOffset);
+                posY = (int) ((scaledHeight / scale) - contentHeight - yOffset);
                 break;
             case CENTER:
-                posY = (int) ((window.getScaledHeight() / scale / 2.0d) - (contentHeight / 2.0d) + yOffset);
+                posY = (int) ((scaledHeight / scale / 2.0d) - (contentHeight / 2.0d) + yOffset);
                 break;
             default:
         }

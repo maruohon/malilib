@@ -11,7 +11,7 @@ import fi.dy.masa.malilib.gui.wrappers.TextFieldWrapper;
 import fi.dy.masa.malilib.interfaces.IStringRetriever;
 import fi.dy.masa.malilib.interfaces.IStringValue;
 import fi.dy.masa.malilib.render.RenderUtils;
-import net.minecraft.client.MainWindow;
+import fi.dy.masa.malilib.util.GuiUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 
@@ -55,10 +55,9 @@ public class WidgetDropDownList<T> extends WidgetBase
         this.filteredEntries = new ArrayList<>();
         this.stringRetriever = stringRetriever;
 
-        MainWindow window = this.mc.mainWindow;
         int v = Math.min(maxVisibleEntries, entries.size());
         v = Math.min(v, maxHeight / height);
-        v = Math.min(v, (window.getScaledHeight() - y) / height);
+        v = Math.min(v, (GuiUtils.getScaledWindowHeight() - y) / height);
         v = Math.max(v, 1);
 
         this.maxVisibleEntries = v;

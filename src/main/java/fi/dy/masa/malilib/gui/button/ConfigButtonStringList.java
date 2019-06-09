@@ -2,9 +2,11 @@ package fi.dy.masa.malilib.gui.button;
 
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.IConfigStringList;
+import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.GuiStringListEdit;
 import fi.dy.masa.malilib.gui.interfaces.IConfigGui;
 import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
+import fi.dy.masa.malilib.util.GuiUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class ConfigButtonStringList extends ButtonGeneric
@@ -35,7 +37,7 @@ public class ConfigButtonStringList extends ButtonGeneric
         }
         else
         {
-            this.mc.displayGuiScreen(new GuiStringListEdit(this.config, this.configGui, null, this.mc.currentScreen));
+            GuiBase.openGui(new GuiStringListEdit(this.config, this.configGui, null, GuiUtils.getCurrentScreen()));
         }
 
         return true;

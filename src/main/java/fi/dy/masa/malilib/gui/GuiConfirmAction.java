@@ -170,7 +170,7 @@ public class GuiConfirmAction extends GuiDialogBase implements ICompletionListen
                 this.gui.listener.onActionCancelled();
             }
 
-            this.gui.mc.displayGuiScreen(this.gui.getParent());
+            GuiBase.openGui(this.gui.getParent());
         }
     }
 

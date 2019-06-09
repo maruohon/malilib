@@ -10,6 +10,7 @@ import org.lwjgl.glfw.GLFW;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.hotkeys.KeybindSettings.Context;
+import fi.dy.masa.malilib.util.GuiUtils;
 import fi.dy.masa.malilib.util.IF3KeyStateSetter;
 import fi.dy.masa.malilib.util.InfoUtils;
 import fi.dy.masa.malilib.util.KeyCodes;
@@ -89,7 +90,7 @@ public class KeybindMulti implements IKeybind
     {
         if (this.keyCodes.isEmpty() ||
             (this.settings.getContext() != KeybindSettings.Context.ANY &&
-            ((this.settings.getContext() == KeybindSettings.Context.INGAME) != (Minecraft.getInstance().currentScreen == null))))
+            ((this.settings.getContext() == KeybindSettings.Context.INGAME) != (GuiUtils.getCurrentScreen() == null))))
         {
             this.pressed = false;
             return false;

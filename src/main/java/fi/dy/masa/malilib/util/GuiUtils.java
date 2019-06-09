@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.util;
 
+import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.GuiTextFieldDouble;
 import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
@@ -12,11 +13,38 @@ import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
 import fi.dy.masa.malilib.interfaces.ICoordinateValueModifier;
 import fi.dy.masa.malilib.util.PositionUtils.CoordinateType;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 public class GuiUtils
 {
+    public static int getScaledWindowWidth()
+    {
+        return Minecraft.getInstance().mainWindow.getScaledWidth();
+    }
+
+    public static int getScaledWindowHeight()
+    {
+        return Minecraft.getInstance().mainWindow.getScaledHeight();
+    }
+
+    public static int getDisplayWidth()
+    {
+        return Minecraft.getInstance().mainWindow.getWidth();
+    }
+
+    public static int getDisplayHeight()
+    {
+        return Minecraft.getInstance().mainWindow.getHeight();
+    }
+
+    @Nullable
+    public static GuiScreen getCurrentScreen()
+    {
+        return Minecraft.getInstance().currentScreen;
+    }
+
     public static void createBlockPosInputsVertical(int x, int y, int textFieldWidth, BlockPos pos,
             ICoordinateValueModifier modifier, boolean addButton, GuiBase gui)
     {

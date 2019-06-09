@@ -15,8 +15,8 @@ import fi.dy.masa.malilib.gui.wrappers.TextFieldWrapper;
 import fi.dy.masa.malilib.interfaces.IStringConsumer;
 import fi.dy.masa.malilib.render.MessageRenderer;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.util.InputUtils;
 import fi.dy.masa.malilib.util.KeyCodes;
-import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
@@ -152,9 +152,8 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     @Override
     public boolean mouseScrolled(double amount)
     {
-        MainWindow window = this.mc.mainWindow;
-        int mouseX = (int) (this.mc.mouseHelper.getMouseX() * (double) window.getScaledWidth() / (double) window.getWidth());
-        int mouseY = (int) (this.mc.mouseHelper.getMouseY() * (double) window.getScaledHeight() / (double) window.getHeight());
+        int mouseX = InputUtils.getMouseX();
+        int mouseY = InputUtils.getMouseY();
 
         if (amount == 0 || this.onMouseScrolled((int) mouseX, (int) mouseY, amount))
         {

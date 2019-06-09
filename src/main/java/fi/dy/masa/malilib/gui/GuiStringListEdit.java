@@ -8,6 +8,7 @@ import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
 import fi.dy.masa.malilib.gui.widgets.WidgetListStringListEdit;
 import fi.dy.masa.malilib.gui.widgets.WidgetStringListEditEntry;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.util.GuiUtils;
 import fi.dy.masa.malilib.util.KeyCodes;
 import fi.dy.masa.malilib.util.StringUtils;
 import net.minecraft.client.Minecraft;
@@ -51,7 +52,7 @@ public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEditE
     protected void setWidthAndHeight()
     {
         this.dialogWidth = 400;
-        this.dialogHeight = this.mc.mainWindow.getScaledHeight() - 90;
+        this.dialogHeight = GuiUtils.getScaledWindowHeight() - 90;
     }
 
     protected void centerOnScreen()
