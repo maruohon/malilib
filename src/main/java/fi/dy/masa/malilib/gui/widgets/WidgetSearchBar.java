@@ -6,7 +6,6 @@ import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
 import fi.dy.masa.malilib.gui.LeftRight;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.render.RenderUtils;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ChatAllowedCharacters;
 
 public class WidgetSearchBar extends WidgetBase
@@ -82,7 +81,7 @@ public class WidgetSearchBar extends WidgetBase
             }
             else if (keyCode == Keyboard.KEY_ESCAPE)
             {
-                if (GuiScreen.isShiftKeyDown())
+                if (GuiBase.isShiftDown())
                 {
                     GuiBase.openGui(null);
                 }
