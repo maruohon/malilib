@@ -165,7 +165,7 @@ public abstract class GuiRenderLayerEditBase extends GuiBase
                 this.layerRange.setToPosition(this.parent.mc.player);
             }
 
-            this.parent.init();
+            this.parent.initGui();
         }
 
         public enum Type

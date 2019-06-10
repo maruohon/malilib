@@ -83,7 +83,7 @@ public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEditE
         this.centerOnScreen();
 
         this.reCreateListWidget();
-        this.init();
+        this.initGui();
     }
 
     public IConfigStringList getConfig()

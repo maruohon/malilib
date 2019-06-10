@@ -338,7 +338,7 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
 
             if (gui instanceof GuiBase)
             {
-                ((GuiBase) gui).init();
+                ((GuiBase) gui).initGui();
             }
         }
     }

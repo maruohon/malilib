@@ -19,9 +19,9 @@ public class MaLiLibConfigGui extends GuiConfigsBase
     }
 
     @Override
-    public void init()
+    public void initGui()
     {
-        super.init();
+        super.initGui();
 
         this.clearOptions();
 
@@ -96,7 +96,7 @@ public class MaLiLibConfigGui extends GuiConfigsBase
 
             this.parent.reCreateListWidget(); // apply the new config width
             this.parent.getListWidget().resetScrollbarPosition();
-            this.parent.init();
+            this.parent.initGui();
         }
     }
 

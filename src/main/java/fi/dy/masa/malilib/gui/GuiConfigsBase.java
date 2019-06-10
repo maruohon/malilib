@@ -114,9 +114,9 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
     }
 
     @Override
-    public void init()
+    public void initGui()
     {
-        super.init();
+        super.initGui();
 
         this.minecraft.keyboard.enableRepeatEvents(true);
     }

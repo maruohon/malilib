@@ -96,7 +96,7 @@ public class GuiColorEditorHSV extends GuiDialogBase
     }
 
     @Override
-    public void init()
+    public void initGui()
     {
         this.clearElements();
 

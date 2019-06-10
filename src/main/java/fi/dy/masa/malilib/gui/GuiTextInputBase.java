@@ -35,7 +35,7 @@ public abstract class GuiTextInputBase extends GuiDialogBase
     }
 
     @Override
-    public void init()
+    public void initGui()
     {
         int x = this.dialogLeft + 10;
         int y = this.dialogTop + 70;

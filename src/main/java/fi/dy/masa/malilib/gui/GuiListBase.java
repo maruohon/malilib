@@ -63,14 +63,14 @@ public abstract class GuiListBase<TYPE, WIDGET extends WidgetListEntryBase<TYPE>
     }
 
     @Override
-    public void init()
+    public void initGui()
     {
-        super.init();
+        super.initGui();
 
         if (this.getListWidget() != null)
         {
             this.getListWidget().setSize(this.getBrowserWidth(), this.getBrowserHeight());
-            this.getListWidget().init();
+            this.getListWidget().initGui();
         }
     }
 

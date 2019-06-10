@@ -128,6 +128,11 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
     {
         super.init();
 
+        this.initGui();
+    }
+
+    public void initGui()
+    {
         this.clearElements();
     }
 

@@ -62,9 +62,9 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
     }
 
     @Override
-    public void init()
+    public void initGui()
     {
-        super.init();
+        super.initGui();
 
         this.mc.keyboard.enableRepeatEvents(true);
         this.refreshEntries();

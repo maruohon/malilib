@@ -36,7 +36,7 @@ public class GuiConfirmAction extends GuiDialogBase implements ICompletionListen
     }
 
     @Override
-    public void init()
+    public void initGui()
     {
         int x = this.dialogLeft + 10;
         int y = this.dialogTop + this.dialogHeight - 24;

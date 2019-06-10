@@ -49,9 +49,9 @@ public class GuiStringListSelection extends GuiListBase<String, WidgetStringList
     }
 
     @Override
-    public void init()
+    public void initGui()
     {
-        super.init();
+        super.initGui();
 
         int x = 12;
         int y = this.height - 32;
