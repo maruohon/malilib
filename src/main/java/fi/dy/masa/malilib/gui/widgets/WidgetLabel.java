@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.gui.widgets;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
@@ -19,11 +20,16 @@ public class WidgetLabel extends WidgetBase
 
     public WidgetLabel(int x, int y, int width, int height, int textColor, String... text)
     {
+        this(x, y, width, height, textColor, Arrays.asList(text));
+    }
+
+    public WidgetLabel(int x, int y, int width, int height, int textColor, List<String> lines)
+    {
         super(x, y, width, height);
 
         this.textColor = textColor;
 
-        for (String str : text)
+        for (String str : lines)
         {
             this.addLine(str);
         }

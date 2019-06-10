@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.gui;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
@@ -365,28 +366,34 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
         this.mc.getTextureManager().bindTexture(texture);
     }
 
-    public ButtonBase addButton(ButtonBase button, IButtonActionListener listener)
+    public <T extends ButtonBase> T addButton(T button, IButtonActionListener listener)
     {
         button.setActionListener(listener);
         this.buttons.add(button);
-
         return button;
     }
 
-    public <T extends GuiTextFieldGeneric> void addTextField(T textField, @Nullable ITextFieldListener<T> listener)
+    public <T extends GuiTextFieldGeneric> TextFieldWrapper<T> addTextField(T textField, @Nullable ITextFieldListener<T> listener)
     {
-        this.textFields.add(new TextFieldWrapper<>(textField, listener));
+        TextFieldWrapper<T> wrapper = new TextFieldWrapper<>(textField, listener);
+        this.textFields.add(wrapper);
+        return wrapper;
     }
 
-    public void addWidget(WidgetBase widget)
+    public <T extends WidgetBase> T addWidget(T widget)
     {
         this.widgets.add(widget);
+        return widget;
     }
 
-    @Nullable
     public WidgetLabel addLabel(int x, int y, int width, int height, int textColor, String... lines)
     {
-        if (lines != null && lines.length >= 1)
+        return this.addLabel(x, y, width, height, textColor, Arrays.asList(lines));
+    }
+
+    public WidgetLabel addLabel(int x, int y, int width, int height, int textColor, List<String> lines)
+    {
+        if (lines.size() > 0)
         {
             if (width == -1)
             {
@@ -395,14 +402,9 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
                     width = Math.max(width, this.getStringWidth(line));
                 }
             }
-
-            WidgetLabel label = new WidgetLabel(x, y, width, height, textColor, lines);
-            this.addWidget(label);
-
-            return label;
         }
 
-        return null;
+        return this.addWidget(new WidgetLabel(x, y, width, height, textColor, lines));
     }
 
     protected boolean removeWidget(WidgetBase widget)
