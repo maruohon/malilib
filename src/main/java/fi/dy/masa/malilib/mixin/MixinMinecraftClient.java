@@ -12,6 +12,7 @@ import fi.dy.masa.malilib.event.TickHandler;
 import fi.dy.masa.malilib.event.WorldLoadHandler;
 import fi.dy.masa.malilib.hotkeys.KeybindMulti;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.Screen;
 import net.minecraft.client.world.ClientWorld;
 
 @Mixin(MinecraftClient.class)
@@ -53,6 +54,20 @@ public abstract class MixinMinecraftClient
     private void onLoadWorldPost(@Nullable ClientWorld worldClientIn, CallbackInfo ci)
     {
         ((WorldLoadHandler) WorldLoadHandler.getInstance()).onWorldLoadPost(this.worldBefore, worldClientIn, (MinecraftClient)(Object) this);
+        this.worldBefore = null;
+    }
+
+    @Inject(method = "disconnect(Lnet/minecraft/client/gui/Screen;)V", at = @At("HEAD"))
+    private void onDisconnectPre(Screen screen, CallbackInfo ci)
+    {
+        this.worldBefore = this.world;
+        ((WorldLoadHandler) WorldLoadHandler.getInstance()).onWorldLoadPre(this.world, null, (MinecraftClient)(Object) this);
+    }
+
+    @Inject(method = "disconnect(Lnet/minecraft/client/gui/Screen;)V", at = @At("RETURN"))
+    private void onDisconnectPost(Screen screen, CallbackInfo ci)
+    {
+        ((WorldLoadHandler) WorldLoadHandler.getInstance()).onWorldLoadPost(this.worldBefore, null, (MinecraftClient)(Object) this);
         this.worldBefore = null;
     }
 }
