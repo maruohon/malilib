@@ -1103,6 +1103,8 @@ public class RenderUtils
 
         renderModel(model, state);
 
+        mc().getTextureManager().getTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX).popFilter();
+
         GlStateManager.disableAlphaTest();
         GlStateManager.disableRescaleNormal();
         GlStateManager.disableLighting();
