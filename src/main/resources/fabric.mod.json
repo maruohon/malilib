@@ -28,6 +28,6 @@
   ],
 
   "depends": {
-    "fabric": "*"
+    "fabric-resource-loader-v0": "*"
   }
 }
