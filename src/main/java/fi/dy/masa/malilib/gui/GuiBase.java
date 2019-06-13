@@ -98,7 +98,7 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
 
     public String getTitleString()
     {
-        return (this.useTitleHierarchy && this.parent instanceof GuiBase) ? (((GuiBase) this.parent).getTitle() + " => " + this.title) : this.title;
+        return (this.useTitleHierarchy && this.parent instanceof GuiBase) ? (((GuiBase) this.parent).getTitleString() + " => " + this.title) : this.title;
     }
 
     @Override
