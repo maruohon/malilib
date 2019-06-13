@@ -6,17 +6,18 @@ import java.util.List;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import fi.dy.masa.malilib.hotkeys.IHotkey;
+import fi.dy.masa.malilib.hotkeys.IInputManager;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
 import fi.dy.masa.malilib.hotkeys.IKeybindManager;
 import fi.dy.masa.malilib.hotkeys.IKeybindProvider;
 import fi.dy.masa.malilib.hotkeys.IKeyboardInputHandler;
 import fi.dy.masa.malilib.hotkeys.IMouseInputHandler;
+import fi.dy.masa.malilib.hotkeys.KeybindCategory;
 import fi.dy.masa.malilib.hotkeys.KeybindMulti;
 import fi.dy.masa.malilib.util.KeyCodes;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
-import net.minecraft.client.resource.language.I18n;
 
-public class InputEventHandler implements IKeybindManager
+public class InputEventHandler implements IKeybindManager, IInputManager
 {
     private static final InputEventHandler INSTANCE = new InputEventHandler();
 
@@ -37,11 +38,17 @@ public class InputEventHandler implements IKeybindManager
         this.modifierKeys.add(KeyCodes.KEY_RIGHT_ALT);
     }
 
-    public static InputEventHandler getInstance()
+    public static IKeybindManager getKeybindManager()
     {
         return INSTANCE;
     }
 
+    public static IInputManager getInputManager()
+    {
+        return INSTANCE;
+    }
+
+    @Override
     public void registerKeybindProvider(IKeybindProvider provider)
     {
         if (this.keybindProviders.contains(provider) == false)
@@ -52,40 +59,19 @@ public class InputEventHandler implements IKeybindManager
         provider.addHotkeys(this);
     }
 
+    @Override
     public void unregisterKeybindProvider(IKeybindProvider provider)
     {
         this.keybindProviders.remove(provider);
     }
 
-    public void registerKeyboardInputHandler(IKeyboardInputHandler handler)
+    @Override
+    public List<KeybindCategory> getKeybindCategories()
     {
-        if (this.keyboardHandlers.contains(handler) == false)
-        {
-            this.keyboardHandlers.add(handler);
-        }
+        return this.allKeybinds;
     }
 
-    public void unregisterKeyboardInputHandler(IKeyboardInputHandler handler)
-    {
-        this.keyboardHandlers.remove(handler);
-    }
-
-    public void registerMouseInputHandler(IMouseInputHandler handler)
-    {
-        if (this.mouseHandlers.contains(handler) == false)
-        {
-            this.mouseHandlers.add(handler);
-        }
-    }
-
-    public void unregisterMouseInputHandler(IMouseInputHandler handler)
-    {
-        this.mouseHandlers.remove(handler);
-    }
-
-    /**
-     * NOT PUBLIC API - DO NOT CALL
-     */
+    @Override
     public void updateUsedKeys()
     {
         this.hotkeyMap.clear();
@@ -94,16 +80,6 @@ public class InputEventHandler implements IKeybindManager
         {
             handler.addKeysToMap(this);
         }
-    }
-
-    public List<KeybindCategory> getKeybindCategories()
-    {
-        return this.allKeybinds;
-    }
-
-    private boolean isModifierKey(int eventKey)
-    {
-        return this.modifierKeys.contains(eventKey);
     }
 
     @Override
@@ -127,34 +103,34 @@ public class InputEventHandler implements IKeybindManager
         this.allKeybinds.add(cat);
     }
 
-    private boolean checkKeyBindsForChanges(int eventKey)
+    @Override
+    public void registerKeyboardInputHandler(IKeyboardInputHandler handler)
     {
-        boolean cancel = false;
-        Collection<IKeybind> keybinds = this.hotkeyMap.get(eventKey);
-
-        if (keybinds.isEmpty() == false)
+        if (this.keyboardHandlers.contains(handler) == false)
         {
-            for (IKeybind keybind : keybinds)
-            {
-                // Note: isPressed() has to get called for key releases too, to reset the state
-                cancel |= keybind.updateIsPressed();
-            }
+            this.keyboardHandlers.add(handler);
         }
-
-        return cancel;
     }
 
-    /**
-     * NOT PUBLIC API - DO NOT CALL
-     */
-    public void tickKeybinds()
+    @Override
+    public void unregisterKeyboardInputHandler(IKeyboardInputHandler handler)
     {
-        /*
-        for (IKeybind keybind : this.hotkeyMap.values())
+        this.keyboardHandlers.remove(handler);
+    }
+
+    @Override
+    public void registerMouseInputHandler(IMouseInputHandler handler)
+    {
+        if (this.mouseHandlers.contains(handler) == false)
         {
-            keybind.tick();
+            this.mouseHandlers.add(handler);
         }
-        */
+    }
+
+    @Override
+    public void unregisterMouseInputHandler(IMouseInputHandler handler)
+    {
+        this.mouseHandlers.remove(handler);
     }
 
     /**
@@ -162,12 +138,10 @@ public class InputEventHandler implements IKeybindManager
      */
     public boolean onKeyInput(int keyCode, int scanCode, int modifiers, boolean eventKeyState)
     {
-        boolean cancel = false;
-
         // Update the cached pressed keys status
         KeybindMulti.onKeyInputPre(keyCode, scanCode, eventKeyState);
 
-        cancel = this.checkKeyBindsForChanges(keyCode);
+        boolean cancel = this.checkKeyBindsForChanges(keyCode);
 
         if (this.keyboardHandlers.isEmpty() == false)
         {
@@ -253,72 +227,25 @@ public class InputEventHandler implements IKeybindManager
         }
     }
 
-    public static class KeybindCategory implements Comparable<KeybindCategory>
+    private boolean isModifierKey(int eventKey)
     {
-        private final String modName;
-        private final String category;
-        private final List<? extends IHotkey> hotkeys;
+        return this.modifierKeys.contains(eventKey);
+    }
 
-        public KeybindCategory(String modName, String category, List<? extends IHotkey> hotkeys)
+    private boolean checkKeyBindsForChanges(int eventKey)
+    {
+        boolean cancel = false;
+        Collection<IKeybind> keybinds = this.hotkeyMap.get(eventKey);
+
+        if (keybinds.isEmpty() == false)
         {
-            this.modName = modName;
-            this.category = category;
-            this.hotkeys = hotkeys;
-        }
-
-        public String getModName()
-        {
-            return this.modName;
-        }
-
-        public String getCategory()
-        {
-            return I18n.translate(this.category);
-        }
-
-        public List<? extends IHotkey> getHotkeys()
-        {
-            return this.hotkeys;
-        }
-
-        @Override
-        public int compareTo(KeybindCategory other)
-        {
-            int val = this.modName.compareTo(other.modName);
-
-            if (val != 0)
+            for (IKeybind keybind : keybinds)
             {
-                return val;
+                // Note: isPressed() has to get called for key releases too, to reset the state
+                cancel |= keybind.updateIsPressed();
             }
-
-            return this.category.compareTo(other.category);
         }
 
-        @Override
-        public boolean equals(Object obj)
-        {
-            if (this == obj)
-                return true;
-            if (obj == null)
-                return false;
-            if (getClass() != obj.getClass())
-                return false;
-            KeybindCategory other = (KeybindCategory) obj;
-            if (category == null)
-            {
-                if (other.category != null)
-                    return false;
-            }
-            else if (!category.equals(other.category))
-                return false;
-            if (modName == null)
-            {
-                if (other.modName != null)
-                    return false;
-            }
-            else if (!modName.equals(other.modName))
-                return false;
-            return true;
-        }
+        return cancel;
     }
 }

@@ -12,7 +12,7 @@ public class InitializationHandler implements IInitializationDispatcher
 
     private final List<IInitializationHandler> handlers = new ArrayList<>();
 
-    public static InitializationHandler getInstance()
+    public static IInitializationDispatcher getInstance()
     {
         return INSTANCE;
     }
@@ -39,7 +39,7 @@ public class InitializationHandler implements IInitializationDispatcher
             }
         }
 
-        ConfigManager.getInstance().loadAllConfigs();
-        InputEventHandler.getInstance().updateUsedKeys();
+        ((ConfigManager) ConfigManager.getInstance()).loadAllConfigs();
+        InputEventHandler.getKeybindManager().updateUsedKeys();
     }
 }

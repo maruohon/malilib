@@ -3,15 +3,12 @@ package fi.dy.masa.malilib.gui.widgets;
 import java.util.List;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.platform.GlStateManager;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
 import fi.dy.masa.malilib.render.RenderUtils;
-import net.minecraft.client.MinecraftClient;
 
 public class WidgetCheckBox extends WidgetBase
 {
-    protected final MinecraftClient mc;
     protected final String displayText;
     protected final IGuiIcon widgetUnchecked;
     protected final IGuiIcon widgetChecked;
@@ -21,27 +18,26 @@ public class WidgetCheckBox extends WidgetBase
     @Nullable
     protected ISelectionListener<WidgetCheckBox> listener;
 
-    public WidgetCheckBox(int x, int y, float zLevel, IGuiIcon widgetUnchecked,
-            IGuiIcon widgetChecked, String text, MinecraftClient mc)
+    public WidgetCheckBox(int x, int y, IGuiIcon widgetUnchecked, IGuiIcon widgetChecked, String text)
     {
-        this(x, y, zLevel, widgetUnchecked, widgetChecked, text, mc, null);
+        this(x, y, widgetUnchecked, widgetChecked, text, null);
     }
 
-    public WidgetCheckBox(int x, int y, float zLevel, IGuiIcon widgetUnchecked,
-            IGuiIcon widgetChecked, String text, MinecraftClient mc, @Nullable String hoverInfo)
+    public WidgetCheckBox(int x, int y, IGuiIcon widgetUnchecked, IGuiIcon widgetChecked,
+            String text, @Nullable String hoverInfo)
     {
-        super(x, y, widgetUnchecked.getWidth() + 3 + mc.textRenderer.getStringWidth(text),
-                Math.max(mc.textRenderer.fontHeight, widgetChecked.getHeight()), zLevel);
+        super(x, y, 40, 20);
 
-        this.mc = mc;
         this.displayText = text;
-        this.textWidth = mc.textRenderer.getStringWidth(text);
+        this.width = widgetUnchecked.getWidth() + 3 + this.getStringWidth(text);
+        this.height = Math.max(this.fontHeight, widgetChecked.getHeight());
+        this.textWidth = this.getStringWidth(text);
         this.widgetUnchecked = widgetUnchecked;
         this.widgetChecked = widgetChecked;
 
         if (hoverInfo != null)
         {
-            //hoverInfo = I18n.format(hoverInfo);
+            //hoverInfo = StringUtils.translate(hoverInfo);
             String[] parts = hoverInfo.split("\\n");
             this.hoverInfo = ImmutableList.copyOf(parts);
         }
@@ -63,9 +59,20 @@ public class WidgetCheckBox extends WidgetBase
 
     public void setChecked(boolean checked)
     {
+        this.setChecked(checked, true);
+    }
+
+    /**
+     * Set the current checked value
+     * @param checked
+     * @param notifyListener If true, then the change listener (if set) will be notified.
+     * If false, then the listener will not be notified
+     */
+    public void setChecked(boolean checked, boolean notifyListener)
+    {
         this.checked = checked;
 
-        if (this.listener != null)
+        if (notifyListener && this.listener != null)
         {
             this.listener.onSelectionChange(this);
         }
@@ -83,15 +90,15 @@ public class WidgetCheckBox extends WidgetBase
     {
         IGuiIcon icon = this.checked ? this.widgetChecked : this.widgetUnchecked;
 
-        GlStateManager.color4f(1f, 1f, 1f, 1f);
-        this.mc.getTextureManager().bindTexture(icon.getTexture());
+        RenderUtils.color(1f, 1f, 1f, 1f);
+        this.bindTexture(icon.getTexture());
         icon.renderAt(this.x, this.y, this.zLevel, false, false);
 
         int iw = icon.getWidth();
-        int y = this.y + (this.height - this.mc.textRenderer.fontHeight) / 2;
+        int y = this.y + 1 + (this.height - this.fontHeight) / 2;
         int textColor = this.checked ? 0xFFFFFFFF : 0xB0B0B0B0;
 
-        this.mc.textRenderer.draw(this.displayText, this.x + iw + 3, y, textColor);
+        this.drawStringWithShadow(this.x + iw + 3, y, textColor, this.displayText);
     }
 
     @Override

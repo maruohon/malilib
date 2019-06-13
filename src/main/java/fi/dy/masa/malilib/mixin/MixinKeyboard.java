@@ -31,7 +31,7 @@ public abstract class MixinKeyboard implements IF3KeyStateSetter
             at = @At(value = "FIELD", target = "Lnet/minecraft/client/Keyboard;debugCrashStartTime:J", ordinal = 0))
     private void onKeyboardInput(long windowPointer, int key, int scanCode, int action, int modifiers, CallbackInfo ci)
     {
-        if (InputEventHandler.getInstance().onKeyInput(key, scanCode, modifiers, action != 0))
+        if (((InputEventHandler) InputEventHandler.getInputManager()).onKeyInput(key, scanCode, modifiers, action != 0))
         {
             ci.cancel();
         }

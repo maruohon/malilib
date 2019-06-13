@@ -1,14 +1,14 @@
 package fi.dy.masa.malilib.config;
 
-import net.minecraft.client.resource.language.I18n;
+import fi.dy.masa.malilib.util.StringUtils;
 
 public enum HudAlignment implements IConfigOptionListEntry
 {
-    TOP_LEFT        ("top_left",        "malilib.label.aligment.top_left"),
-    TOP_RIGHT       ("top_right",       "malilib.label.aligment.top_right"),
-    BOTTOM_LEFT     ("bottom_left",     "malilib.label.aligment.bottom_left"),
-    BOTTOM_RIGHT    ("bottom_right",    "malilib.label.aligment.bottom_right"),
-    CENTER          ("center",          "malilib.label.aligment.center");
+    TOP_LEFT        ("top_left",        "malilib.label.alignment.top_left"),
+    TOP_RIGHT       ("top_right",       "malilib.label.alignment.top_right"),
+    BOTTOM_LEFT     ("bottom_left",     "malilib.label.alignment.bottom_left"),
+    BOTTOM_RIGHT    ("bottom_right",    "malilib.label.alignment.bottom_right"),
+    CENTER          ("center",          "malilib.label.alignment.center");
 
     private final String configString;
     private final String unlocName;
@@ -28,7 +28,7 @@ public enum HudAlignment implements IConfigOptionListEntry
     @Override
     public String getDisplayName()
     {
-        return I18n.translate(this.unlocName);
+        return StringUtils.translate(this.unlocName);
     }
 
     @Override

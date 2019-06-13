@@ -1,24 +1,27 @@
 package fi.dy.masa.malilib.config.gui;
 
 import fi.dy.masa.malilib.config.IStringRepresentable;
+import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
-import net.minecraft.client.gui.widget.TextFieldWidget;
+import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
 
-public class ConfigOptionChangeListenerTextField
+public class ConfigOptionChangeListenerTextField implements ITextFieldListener<GuiTextFieldGeneric>
 {
     protected final IStringRepresentable config;
-    protected final TextFieldWidget textField;
+    protected final GuiTextFieldGeneric textField;
     protected final ButtonBase buttonReset;
 
-    public ConfigOptionChangeListenerTextField(IStringRepresentable config, TextFieldWidget textField, ButtonBase buttonReset)
+    public ConfigOptionChangeListenerTextField(IStringRepresentable config, GuiTextFieldGeneric textField, ButtonBase buttonReset)
     {
         this.config = config;
         this.textField = textField;
         this.buttonReset = buttonReset;
     }
 
-    public void onKeyTyped(int keyCode, int scanCode, int modifiers)
+    @Override
+    public boolean onTextChange(GuiTextFieldGeneric textField)
     {
-        this.buttonReset.active = this.config.isModified(this.textField.getText());
+        this.buttonReset.setEnabled(this.config.isModified(this.textField.getText()));
+        return false;
     }
 }

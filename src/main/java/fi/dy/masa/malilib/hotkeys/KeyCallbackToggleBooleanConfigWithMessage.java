@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.hotkeys;
 
 import fi.dy.masa.malilib.config.IConfigBoolean;
-import fi.dy.masa.malilib.util.StringUtils;
+import fi.dy.masa.malilib.util.InfoUtils;
 
 public class KeyCallbackToggleBooleanConfigWithMessage extends KeyCallbackToggleBoolean
 {
@@ -15,7 +15,7 @@ public class KeyCallbackToggleBooleanConfigWithMessage extends KeyCallbackToggle
     {
         super.onKeyAction(action, key);
 
-        StringUtils.printBooleanConfigToggleMessage(this.config.getPrettyName(), this.config.getBooleanValue());
+        InfoUtils.printBooleanConfigToggleMessage(this.config.getPrettyName(), this.config.getBooleanValue());
 
         return true;
     }

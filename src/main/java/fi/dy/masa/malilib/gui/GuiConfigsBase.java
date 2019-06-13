@@ -11,21 +11,21 @@ import fi.dy.masa.malilib.config.gui.ButtonPressDirtyListenerSimple;
 import fi.dy.masa.malilib.config.gui.ConfigOptionChangeListenerKeybind;
 import fi.dy.masa.malilib.event.InputEventHandler;
 import fi.dy.masa.malilib.gui.GuiConfigsBase.ConfigOptionWrapper;
-import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ConfigButtonKeybind;
 import fi.dy.masa.malilib.gui.interfaces.IConfigInfoProvider;
 import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
 import fi.dy.masa.malilib.gui.interfaces.IKeybindConfigGui;
 import fi.dy.masa.malilib.gui.widgets.WidgetConfigOption;
 import fi.dy.masa.malilib.gui.widgets.WidgetListConfigOptions;
+import fi.dy.masa.malilib.util.GuiUtils;
 import fi.dy.masa.malilib.util.KeyCodes;
-import net.minecraft.client.MinecraftClient;
+import fi.dy.masa.malilib.util.StringUtils;
 import net.minecraft.client.gui.screen.Screen;
 
 public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, WidgetConfigOption, WidgetListConfigOptions> implements IKeybindConfigGui
 {
     protected final List<ConfigOptionChangeListenerKeybind> hotkeyChangeListeners = new ArrayList<>();
-    protected final ButtonPressDirtyListenerSimple<ButtonBase> dirtyListener = new ButtonPressDirtyListenerSimple<>();
+    protected final ButtonPressDirtyListenerSimple dirtyListener = new ButtonPressDirtyListenerSimple();
     protected final String modId;
     protected final List<String> initialConfigValues = new ArrayList<>();
     protected ConfigButtonKeybind activeKeybindButton;
@@ -34,13 +34,13 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
     @Nullable protected IConfigInfoProvider hoverInfoProvider;
     @Nullable protected IDialogHandler dialogHandler;
 
-    public GuiConfigsBase(int listX, int listY, String modId, @Nullable Screen parent)
+    public GuiConfigsBase(int listX, int listY, String modId, @Nullable Screen parent, String titleKey, Object... args)
     {
         super(listX, listY);
 
-        this.minecraft = MinecraftClient.getInstance();
         this.modId = modId;
         this.parentScreen = parent;
+        this.title = StringUtils.translate(titleKey, args);
     }
 
     @Override
@@ -53,6 +53,11 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
     protected int getBrowserHeight()
     {
         return this.height - 80;
+    }
+
+    protected boolean useKeybindSearch()
+    {
+        return false;
     }
 
     protected int getConfigWidth()
@@ -104,13 +109,14 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
     @Override
     protected WidgetListConfigOptions createListWidget(int listX, int listY)
     {
-        return new WidgetListConfigOptions(listX, listY, this.getBrowserWidth(), this.getBrowserHeight(), this.getConfigWidth(), this);
+        return new WidgetListConfigOptions(listX, listY,
+                this.getBrowserWidth(), this.getBrowserHeight(), this.getConfigWidth(), this.blitOffset, this.useKeybindSearch(), this);
     }
 
     @Override
-    public void init()
+    public void initGui()
     {
-        super.init();
+        super.initGui();
 
         this.minecraft.keyboard.enableRepeatEvents(true);
     }
@@ -134,7 +140,7 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
 
         if (this.hotkeyChangeListeners.size() > 0)
         {
-            InputEventHandler.getInstance().updateUsedKeys();
+            InputEventHandler.getKeybindManager().updateUsedKeys();
         }
     }
 
@@ -153,14 +159,31 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
                 return true;
             }
 
-            if (keyCode == KeyCodes.KEY_ESCAPE && this.parentScreen != this.minecraft.currentScreen)
+            if (keyCode == KeyCodes.KEY_ESCAPE && this.parentScreen != GuiUtils.getCurrentScreen())
             {
-                this.minecraft.openScreen(this.parentScreen);
+                GuiBase.openGui(this.parentScreen);
                 return true;
             }
 
             return false;
         }
+    }
+
+    @Override
+    public boolean onCharTyped(char charIn, int modifiers)
+    {
+        if (this.activeKeybindButton != null)
+        {
+            // Prevents the chars leaking into the search box, if we didn't pretend to handle them here
+            return true;
+        }
+
+        if (this.getListWidget().onCharTyped(charIn, modifiers))
+        {
+            return true;
+        }
+
+        return super.onCharTyped(charIn, modifiers);
     }
 
     @Override
@@ -196,7 +219,7 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
     }
 
     @Override
-    public ButtonPressDirtyListenerSimple<ButtonBase> getButtonPressListener()
+    public ButtonPressDirtyListenerSimple getButtonPressListener()
     {
         return this.dirtyListener;
     }

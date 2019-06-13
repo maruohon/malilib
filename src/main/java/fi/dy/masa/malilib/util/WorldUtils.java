@@ -9,6 +9,11 @@ import net.minecraft.world.chunk.WorldChunk;
 
 public class WorldUtils
 {
+    public static int getDimensionId(World world)
+    {
+        return world.dimension.getType().getRawId();
+    }
+
     /**
      * Best name. Returns the integrated server world for the current dimension
      * in single player, otherwise just the client world.

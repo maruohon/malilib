@@ -1,7 +1,10 @@
 package fi.dy.masa.malilib.render;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.lwjgl.opengl.GL11;
 import com.mojang.blaze3d.platform.GlStateManager;
+import fi.dy.masa.malilib.gui.GuiBase;
 import net.minecraft.block.Block;
 import net.minecraft.block.BrewingStandBlock;
 import net.minecraft.block.ChestBlock;
@@ -15,8 +18,8 @@ import net.minecraft.block.entity.FurnaceBlockEntity;
 import net.minecraft.block.entity.HopperBlockEntity;
 import net.minecraft.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.GuiLighting;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.texture.SpriteAtlasTexture;
@@ -28,6 +31,7 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.DefaultedList;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
@@ -55,7 +59,7 @@ public class InventoryOverlay
 
         if (type == InventoryRenderType.FURNACE)
         {
-            mc.getTextureManager().bindTexture(TEXTURE_FURNACE);
+            RenderUtils.bindTexture(TEXTURE_FURNACE);
             RenderUtils.drawTexturedRectBatched(x     , y     ,   0,   0,   4,  64, buffer); // left (top)
             RenderUtils.drawTexturedRectBatched(x +  4, y     ,  84,   0,  92,   4, buffer); // top (right)
             RenderUtils.drawTexturedRectBatched(x     , y + 64,   0, 162,  92,   4, buffer); // bottom (left)
@@ -64,7 +68,7 @@ public class InventoryOverlay
         }
         else if (type == InventoryRenderType.BREWING_STAND)
         {
-            mc.getTextureManager().bindTexture(TEXTURE_BREWING_STAND);
+            RenderUtils.bindTexture(TEXTURE_BREWING_STAND);
             RenderUtils.drawTexturedRectBatched(x      , y     ,   0,   0,   4,  68, buffer); // left (top)
             RenderUtils.drawTexturedRectBatched(x +   4, y     ,  63,   0, 113,   4, buffer); // top (right)
             RenderUtils.drawTexturedRectBatched(x      , y + 68,   0, 162, 113,   4, buffer); // bottom (left)
@@ -73,7 +77,7 @@ public class InventoryOverlay
         }
         else if (type == InventoryRenderType.DISPENSER)
         {
-            mc.getTextureManager().bindTexture(TEXTURE_DISPENSER);
+            RenderUtils.bindTexture(TEXTURE_DISPENSER);
             RenderUtils.drawTexturedRectBatched(x     , y     ,   0,   0,   7,  61, buffer); // left (top)
             RenderUtils.drawTexturedRectBatched(x +  7, y     , 115,   0,  61,   7, buffer); // top (right)
             RenderUtils.drawTexturedRectBatched(x     , y + 61,   0, 159,  61,   7, buffer); // bottom (left)
@@ -82,7 +86,7 @@ public class InventoryOverlay
         }
         else if (type == InventoryRenderType.HOPPER)
         {
-            mc.getTextureManager().bindTexture(TEXTURE_HOPPER);
+            RenderUtils.bindTexture(TEXTURE_HOPPER);
             RenderUtils.drawTexturedRectBatched(x      , y     ,   0,   0,   7,  25, buffer); // left (top)
             RenderUtils.drawTexturedRectBatched(x +   7, y     ,  79,   0,  97,   7, buffer); // top (right)
             RenderUtils.drawTexturedRectBatched(x      , y + 25,   0, 126,  97,   7, buffer); // bottom (left)
@@ -92,7 +96,7 @@ public class InventoryOverlay
         // Most likely a Villager, or possibly a Llama
         else if (type == InventoryRenderType.VILLAGER)
         {
-            mc.getTextureManager().bindTexture(TEXTURE_DOUBLE_CHEST);
+            RenderUtils.bindTexture(TEXTURE_DOUBLE_CHEST);
             RenderUtils.drawTexturedRectBatched(x     , y     ,   0,   0,   7,  79, buffer); // left (top)
             RenderUtils.drawTexturedRectBatched(x +  7, y     , 133,   0,  43,   7, buffer); // top (right)
             RenderUtils.drawTexturedRectBatched(x     , y + 79,   0, 215,  43,   7, buffer); // bottom (left)
@@ -109,7 +113,7 @@ public class InventoryOverlay
         }
         else
         {
-            mc.getTextureManager().bindTexture(TEXTURE_DOUBLE_CHEST);
+            RenderUtils.bindTexture(TEXTURE_DOUBLE_CHEST);
 
             // Draw the slot backgrounds according to how many slots there actually are
             int rows = (int) (Math.ceil((double) totalSlots / (double) slotsPerRow));
@@ -141,7 +145,7 @@ public class InventoryOverlay
 
     public static void renderInventoryBackground27(int x, int y, BufferBuilder buffer, MinecraftClient mc)
     {
-        mc.getTextureManager().bindTexture(TEXTURE_SINGLE_CHEST);
+        RenderUtils.bindTexture(TEXTURE_SINGLE_CHEST);
         RenderUtils.drawTexturedRectBatched(x      , y     ,   0,   0,   7,  61, buffer); // left (top)
         RenderUtils.drawTexturedRectBatched(x +   7, y     ,   7,   0, 169,   7, buffer); // top (right)
         RenderUtils.drawTexturedRectBatched(x      , y + 61,   0, 159, 169,   7, buffer); // bottom (left)
@@ -151,7 +155,7 @@ public class InventoryOverlay
 
     public static void renderInventoryBackground54(int x, int y, BufferBuilder buffer, MinecraftClient mc)
     {
-        mc.getTextureManager().bindTexture(TEXTURE_DOUBLE_CHEST);
+        RenderUtils.bindTexture(TEXTURE_DOUBLE_CHEST);
         RenderUtils.drawTexturedRectBatched(x      , y      ,   0,   0,   7, 115, buffer); // left (top)
         RenderUtils.drawTexturedRectBatched(x +   7, y      ,   7,   0, 169,   7, buffer); // top (right)
         RenderUtils.drawTexturedRectBatched(x      , y + 115,   0, 215, 169,   7, buffer); // bottom (left)
@@ -159,15 +163,15 @@ public class InventoryOverlay
         RenderUtils.drawTexturedRectBatched(x +   7, y +   7,   7,  17, 162, 108, buffer); // middle
     }
 
-    public static void renderEquipmentOverlayBackground(MinecraftClient mc, int x, int y, LivingEntity entity)
+    public static void renderEquipmentOverlayBackground(int x, int y, LivingEntity entity)
     {
-        GlStateManager.color4f(1, 1, 1, 1);
+        RenderUtils.color(1f, 1f, 1f, 1f);
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBufferBuilder();
         buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_UV);
 
-        mc.getTextureManager().bindTexture(TEXTURE_DISPENSER);
+        RenderUtils.bindTexture(TEXTURE_DISPENSER);
 
         RenderUtils.drawTexturedRectBatched(x     , y     ,   0,   0, 50, 83, buffer); // top-left (main part)
         RenderUtils.drawTexturedRectBatched(x + 50, y     , 173,   0,  3, 83, buffer); // right edge top
@@ -185,12 +189,12 @@ public class InventoryOverlay
 
         tessellator.draw();
 
-        mc.getTextureManager().bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
+        RenderUtils.bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
 
         if (entity.getEquippedStack(EquipmentSlot.OFFHAND).isEmpty())
         {
             String texture = "minecraft:item/empty_armor_slot_shield";
-            RenderUtils.renderSprite(mc, x + 28 + 1, y + 3 * 18 + 7 + 1, texture, 16, 16);
+            RenderUtils.renderSprite(x + 28 + 1, y + 3 * 18 + 7 + 1, 16, 16, texture);
         }
 
         for (int i = 0, xOff = 7, yOff = 7; i < 4; ++i, yOff += 18)
@@ -200,7 +204,7 @@ public class InventoryOverlay
             if (entity.getEquippedStack(eqSlot).isEmpty())
             {
                 String texture = EMPTY_SLOT_TEXTURES[eqSlot.getEntitySlotId()];
-                RenderUtils.renderSprite(mc, x + xOff + 1, y + yOff + 1, texture, 16, 16);
+                RenderUtils.renderSprite(x + xOff + 1, y + yOff + 1, 16, 16, texture);
             }
         }
     }
@@ -285,6 +289,8 @@ public class InventoryOverlay
      */
     public static InventoryProperties getInventoryPropsTemp(InventoryRenderType type, int totalSlots)
     {
+        INV_PROPS_TEMP.totalSlots = totalSlots;
+
         if (type == InventoryRenderType.FURNACE)
         {
             INV_PROPS_TEMP.slotsPerRow = 1;
@@ -467,9 +473,7 @@ public class InventoryOverlay
         GlStateManager.scalef(scale, scale, 1);
         GlStateManager.disableLighting();
 
-        //Screen.drawRect(0, 0, 16, 16, 0x20FFFFFF); // light background for the item
-
-        GuiLighting.enableForItems();
+        RenderUtils.enableGuiItemLighting();
 
         mc.getItemRenderer().zOffset += 100;
         mc.getItemRenderer().renderGuiItem(mc.player, stack, 0, 0);
@@ -477,12 +481,33 @@ public class InventoryOverlay
         mc.getItemRenderer().zOffset -= 100;
 
         //GlStateManager.disableBlend();
-        GuiLighting.disable();
+        RenderUtils.disableItemLighting();
         GlStateManager.popMatrix();
+    }
+
+    public static void renderStackToolTip(int x, int y, ItemStack stack, MinecraftClient mc)
+    {
+        List<Component> list = stack.getTooltipText(mc.player, mc.options.advancedItemTooltips ? TooltipContext.Default.ADVANCED : TooltipContext.Default.NORMAL);
+        List<String> lines = new ArrayList<>();
+
+        for (int i = 0; i < list.size(); ++i)
+        {
+            if (i == 0)
+            {
+                lines.add(stack.getRarity().formatting + list.get(i).getString());
+            }
+            else
+            {
+                lines.add(GuiBase.TXT_GRAY + list.get(i).getString());
+            }
+        }
+
+        RenderUtils.drawHoverText(x, y, lines);
     }
 
     public static class InventoryProperties
     {
+        public int totalSlots = 1;
         public int width = 176;
         public int height = 83;
         public int slotsPerRow = 9;

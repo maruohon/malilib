@@ -4,7 +4,10 @@ import net.minecraft.client.gui.widget.TextFieldWidget;
 
 public interface ITextFieldListener<T extends TextFieldWidget>
 {
-    boolean onGuiClosed(T textField);
+    default boolean onGuiClosed(T textField)
+    {
+        return false;
+    }
 
     boolean onTextChange(T textField);
 }

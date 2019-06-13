@@ -4,7 +4,6 @@ import java.util.List;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.gui.ButtonPressDirtyListenerSimple;
 import fi.dy.masa.malilib.gui.GuiConfigsBase.ConfigOptionWrapper;
-import fi.dy.masa.malilib.gui.button.ButtonBase;
 
 public interface IConfigGui
 {
@@ -32,7 +31,7 @@ public interface IConfigGui
      * as dirty, if the listener saw even one button press.
      * @return
      */
-    ButtonPressDirtyListenerSimple<ButtonBase> getButtonPressListener();
+    ButtonPressDirtyListenerSimple getButtonPressListener();
 
     /**
      * Get the "dialog window" handler for this GUI, if any.

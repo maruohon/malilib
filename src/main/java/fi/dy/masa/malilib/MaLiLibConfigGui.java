@@ -2,58 +2,45 @@ package fi.dy.masa.malilib;
 
 import java.util.Collections;
 import java.util.List;
-import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.config.IConfigBase;
 import fi.dy.masa.malilib.gui.GuiConfigsBase;
+import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
-import fi.dy.masa.malilib.hotkeys.KeybindMulti;
-import net.minecraft.client.resource.language.I18n;
+import fi.dy.masa.malilib.util.StringUtils;
 
 public class MaLiLibConfigGui extends GuiConfigsBase
 {
     private static ConfigGuiTab tab = ConfigGuiTab.GENERIC;
-    private int id;
 
     public MaLiLibConfigGui()
     {
-        super(10, 50, MaLiLibReference.MOD_ID, null);
-
-        this.title = I18n.translate("malilib.gui.title.configs");
+        super(10, 50, MaLiLibReference.MOD_ID, null, "malilib.gui.title.configs");
     }
 
     @Override
-    public void init()
+    public void initGui()
     {
-        super.init();
+        super.initGui();
+
         this.clearOptions();
 
-        this.id = 0;
         int x = 10;
         int y = 26;
 
         for (ConfigGuiTab tab : ConfigGuiTab.values())
         {
-            x += this.createButton(x, y, -1, tab) + 4;
+            x += this.createButton(x, y, -1, tab) + 2;
         }
     }
 
     private int createButton(int x, int y, int width, ConfigGuiTab tab)
     {
-        ButtonListener listener = new ButtonListener(tab, this);
-        boolean enabled = MaLiLibConfigGui.tab != tab;
-        String label = tab.getDisplayName();
+        ButtonGeneric button = new ButtonGeneric(x, y, width, 20, tab.getDisplayName());
+        button.setEnabled(MaLiLibConfigGui.tab != tab);
+        this.addButton(button, new ButtonListener(tab, this));
 
-        if (width < 0)
-        {
-            width = this.textRenderer.getStringWidth(label) + 10;
-        }
-
-        ButtonGeneric button = new ButtonGeneric(this.id++, x, y, width, 20, label);
-        button.active = enabled;
-        this.addButton(button, listener);
-
-        return width;
+        return button.getWidth();
     }
 
     @Override
@@ -81,7 +68,7 @@ public class MaLiLibConfigGui extends GuiConfigsBase
         }
         else if (tab == ConfigGuiTab.DEBUG)
         {
-            configs = ImmutableList.of(KeybindMulti.KEYBIND_DEBUG, KeybindMulti.KEYBIND_DEBUG_ACTIONBAR);
+            configs = MaLiLibConfigs.Debug.OPTIONS;
         }
         else
         {
@@ -91,7 +78,7 @@ public class MaLiLibConfigGui extends GuiConfigsBase
         return ConfigOptionWrapper.createFor(configs);
     }
 
-    private static class ButtonListener implements IButtonActionListener<ButtonGeneric>
+    private static class ButtonListener implements IButtonActionListener
     {
         private final MaLiLibConfigGui parent;
         private final ConfigGuiTab tab;
@@ -103,25 +90,20 @@ public class MaLiLibConfigGui extends GuiConfigsBase
         }
 
         @Override
-        public void actionPerformed(ButtonGeneric control)
-        {
-        }
-
-        @Override
-        public void actionPerformedWithButton(ButtonGeneric control, int mouseButton)
+        public void actionPerformedWithButton(ButtonBase button, int mouseButton)
         {
             MaLiLibConfigGui.tab = this.tab;
 
             this.parent.reCreateListWidget(); // apply the new config width
             this.parent.getListWidget().resetScrollbarPosition();
-            this.parent.init();
+            this.parent.initGui();
         }
     }
 
     public enum ConfigGuiTab
     {
-        GENERIC ("malilib.gui.button.config_gui.generic"),
-        DEBUG   ("malilib.gui.button.config_gui.debug");
+        GENERIC ("malilib.gui.title.generic"),
+        DEBUG   ("malilib.gui.title.debug");
 
         private final String translationKey;
 
@@ -132,7 +114,7 @@ public class MaLiLibConfigGui extends GuiConfigsBase
 
         public String getDisplayName()
         {
-            return I18n.translate(this.translationKey);
+            return StringUtils.translate(this.translationKey);
         }
     }
 }

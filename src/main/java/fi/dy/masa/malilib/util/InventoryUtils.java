@@ -1,7 +1,13 @@
 package fi.dy.masa.malilib.util;
 
+import javax.annotation.Nullable;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.ChestBlock;
 import net.minecraft.block.ShulkerBoxBlock;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.ChestBlockEntity;
+import net.minecraft.block.enums.ChestType;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.container.Container;
 import net.minecraft.container.PlayerContainer;
@@ -9,12 +15,15 @@ import net.minecraft.container.Slot;
 import net.minecraft.container.SlotActionType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.BasicInventory;
+import net.minecraft.inventory.DoubleInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.util.DefaultedList;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 public class InventoryUtils
 {
@@ -164,6 +173,62 @@ public class InventoryUtils
         }
 
         return false;
+    }
+
+    /**
+     * Gets the inventory at the given position, if any.
+     * Combines chest inventories into double chest inventories when applicable.
+     * @param world
+     * @param pos
+     * @return
+     */
+    @Nullable
+    public static Inventory getInventory(World world, BlockPos pos)
+    {
+        if (world.isBlockLoaded(pos) == false)
+        {
+            return null;
+        }
+
+        // The method in World now checks that the caller is from the same thread...
+        BlockEntity te = world.getWorldChunk(pos).getBlockEntity(pos);
+
+        if (te instanceof Inventory)
+        {
+            Inventory inv = (Inventory) te;
+            BlockState state = world.getBlockState(pos);
+
+            if (state.getBlock() instanceof ChestBlock && te instanceof ChestBlockEntity)
+            {
+                ChestType type = state.get(ChestBlock.CHEST_TYPE);
+
+                if (type != ChestType.SINGLE)
+                {
+                    BlockPos posAdj = pos.offset(ChestBlock.getFacing(state));
+
+                    if (world.isBlockLoaded(posAdj))
+                    {
+                        BlockState stateAdj = world.getBlockState(posAdj);
+                        // The method in World now checks that the caller is from the same thread...
+                        BlockEntity te2 = world.getWorldChunk(posAdj).getBlockEntity(posAdj);
+
+                        if (stateAdj.getBlock() == state.getBlock() &&
+                            te2 instanceof ChestBlockEntity &&
+                            stateAdj.get(ChestBlock.CHEST_TYPE) != ChestType.SINGLE &&
+                            stateAdj.get(ChestBlock.FACING) == state.get(ChestBlock.FACING))
+                        {
+                            Inventory invRight = type == ChestType.RIGHT ?             inv : (Inventory) te2;
+                            Inventory invLeft  = type == ChestType.RIGHT ? (Inventory) te2 :             inv;
+                            inv = new DoubleInventory(invRight, invLeft);
+                        }
+                    }
+                }
+            }
+
+            return inv;
+        }
+
+        return null;
     }
 
     /**

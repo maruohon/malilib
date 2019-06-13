@@ -1,15 +1,48 @@
 package fi.dy.masa.malilib.util;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Locale;
+import java.util.Set;
+import javax.annotation.Nullable;
+import com.google.common.collect.ImmutableSet;
+import fi.dy.masa.malilib.MaLiLib;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtIo;
 
 public class FileUtils
 {
+    private static final Set<Character> ILLEGAL_CHARACTERS = ImmutableSet.of( '/', '\n', '\r', '\t', '\0', '\f', '`', '?', '*', '\\', '<', '>', '|', '\"', ':' );
+
     public static File getConfigDirectory()
     {
         return new File(MinecraftClient.getInstance().runDirectory, "config");
+    }
+
+    public static File getMinecraftDirectory()
+    {
+        return MinecraftClient.getInstance().runDirectory;
+    }
+
+    /**
+     * Checks that the target directory exists, and the file either doesn't exist,
+     * or the canOverwrite argument is true and the file is writable
+     * @param dir
+     * @param fileName
+     * @param canOverwrite
+     * @return
+     */
+    public static boolean canWriteToFile(File dir, String fileName, boolean canOverwrite)
+    {
+        if (dir.exists() && dir.isDirectory())
+        {
+            File file = new File(dir, fileName);
+            return file.exists() == false || (canOverwrite && file.isFile() && file.canWrite());
+        }
+
+        return false;
     }
 
     public static File getCanonicalFileIfPossible(File file)
@@ -33,6 +66,11 @@ public class FileUtils
     public static String getJoinedTrailingPathElements(File file, File rootPath, int maxStringLength, String separator)
     {
         String path = "";
+
+        if (maxStringLength <= 0)
+        {
+            return "...";
+        }
 
         while (file != null)
         {
@@ -72,8 +110,47 @@ public class FileUtils
         return i != -1 ? name.substring(0, i) : name;
     }
 
-    public static String generateSafeFileName(String name)
+    public static String generateSimpleSafeFileName(String name)
     {
         return name.toLowerCase(Locale.US).replaceAll("\\W", "_");
+    }
+
+    public static String generateSafeFileName(String name)
+    {
+        StringBuilder sb = new StringBuilder(name.length());
+
+        for (int i = 0; i < name.length(); ++i)
+        {
+            char c = name.charAt(i);
+
+            if (ILLEGAL_CHARACTERS.contains(c) == false)
+            {
+                sb.append(c);
+            }
+        }
+
+        // Some weird reserved windows keywords apparently... FFS >_>
+        return sb.toString().replaceAll("COM", "").replaceAll("PRN", "");
+    }
+
+    @Nullable
+    public static CompoundTag readNBTFile(File file)
+    {
+        if (file.exists() && file.isFile() && file.canRead())
+        {
+            try
+            {
+                FileInputStream is = new FileInputStream(file);
+                CompoundTag nbt = NbtIo.readCompressed(is);
+                is.close();
+                return nbt;
+            }
+            catch (Exception e)
+            {
+                MaLiLib.logger.warn("Failed to read NBT data from file '{}'", file.getAbsolutePath());
+            }
+        }
+
+        return null;
     }
 }

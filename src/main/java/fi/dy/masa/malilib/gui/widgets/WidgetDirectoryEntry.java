@@ -1,7 +1,6 @@
 package fi.dy.masa.malilib.gui.widgets;
 
 import java.io.File;
-import com.mojang.blaze3d.platform.GlStateManager;
 import fi.dy.masa.malilib.gui.interfaces.IDirectoryNavigator;
 import fi.dy.masa.malilib.gui.interfaces.IFileBrowserIconProvider;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
@@ -9,25 +8,21 @@ import fi.dy.masa.malilib.gui.widgets.WidgetFileBrowserBase.DirectoryEntry;
 import fi.dy.masa.malilib.gui.widgets.WidgetFileBrowserBase.DirectoryEntryType;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.FileUtils;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawableHelper;
 
-public class WidgetDirectoryEntry extends WidgetBase
+public class WidgetDirectoryEntry extends WidgetListEntryBase<DirectoryEntry>
 {
     protected final IDirectoryNavigator navigator;
     protected final DirectoryEntry entry;
-    protected final MinecraftClient mc;
     protected final IFileBrowserIconProvider iconProvider;
     protected final boolean isOdd;
 
-    public WidgetDirectoryEntry(int x, int y, int width, int height, float zLevel, boolean isOdd,
-            DirectoryEntry entry, MinecraftClient mc, IDirectoryNavigator navigator, IFileBrowserIconProvider iconProvider)
+    public WidgetDirectoryEntry(int x, int y, int width, int height, boolean isOdd, DirectoryEntry entry,
+            int listIndex, IDirectoryNavigator navigator, IFileBrowserIconProvider iconProvider)
     {
-        super(x, y, width, height, zLevel);
+        super(x, y, width, height, entry, listIndex);
 
         this.isOdd = isOdd;
         this.entry = entry;
-        this.mc = mc;
         this.navigator = navigator;
         this.iconProvider = iconProvider;
     }
@@ -72,38 +67,47 @@ public class WidgetDirectoryEntry extends WidgetBase
 
         if (icon != null)
         {
-            GlStateManager.color4f(1, 1, 1, 1);
-            this.mc.getTextureManager().bindTexture(icon.getTexture());
-            icon.renderAt(this.x, this.y + (this.height - icon.getHeight()) / 2, this.zLevel, false, false);
+            RenderUtils.color(1f, 1f, 1f, 1f);
+            this.bindTexture(icon.getTexture());
+            icon.renderAt(this.x, this.y + (this.height - icon.getHeight()) / 2, this.zLevel + 1, false, false);
         }
 
         // Draw a lighter background for the hovered and the selected entry
         if (selected || this.isMouseOver(mouseX, mouseY))
         {
-            DrawableHelper.fill(this.x + xOffset, this.y, this.x + this.width, this.y + this.height, 0x70FFFFFF);
+            RenderUtils.drawRect(this.x, this.y, this.width, this.height, 0x70FFFFFF);
         }
         else if (this.isOdd)
         {
-            DrawableHelper.fill(this.x + xOffset, this.y, this.x + this.width, this.y + this.height, 0x20FFFFFF);
+            RenderUtils.drawRect(this.x, this.y, this.width, this.height, 0x20FFFFFF);
         }
         // Draw a slightly lighter background for even entries
         else
         {
-            DrawableHelper.fill(this.x + xOffset, this.y, this.x + this.width, this.y + this.height, 0x38FFFFFF);
+            RenderUtils.drawRect(this.x, this.y, this.width, this.height, 0x38FFFFFF);
         }
 
         // Draw an outline if this is the currently selected entry
         if (selected)
         {
-            RenderUtils.drawOutline(this.x + xOffset, this.y, this.width - iconWidth - 2, this.height, 0xEEEEEEEE);
+            RenderUtils.drawOutline(this.x, this.y, this.width, this.height, 0xEEEEEEEE);
         }
 
-        int yOffset = (this.height - this.mc.textRenderer.fontHeight) / 2 + 1;
-        this.mc.textRenderer.draw(this.getDisplayName(), this.x + xOffset + 2, this.y + yOffset, 0xFFFFFFFF);
+        int yOffset = (this.height - this.fontHeight) / 2 + 1;
+        this.drawString(this.x + xOffset + 2, this.y + yOffset, 0xFFFFFFFF, this.getDisplayName());
+
+        super.render(mouseX, mouseY, selected);
     }
 
     protected String getDisplayName()
     {
-        return FileUtils.getNameWithoutExtension(this.entry.getName());
+        if (this.entry.getType() == DirectoryEntryType.DIRECTORY)
+        {
+            return this.entry.getDisplayName();
+        }
+        else
+        {
+            return FileUtils.getNameWithoutExtension(this.entry.getDisplayName());
+        }
     }
 }

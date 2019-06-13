@@ -1,21 +1,21 @@
 package fi.dy.masa.malilib.gui;
 
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
-import com.google.common.base.Predicate;
 import net.minecraft.client.font.TextRenderer;
 
 public class GuiTextFieldInteger extends GuiTextFieldGeneric
 {
     private static final Pattern PATTER_NUMBER = Pattern.compile("-?[0-9]*");
 
-    public GuiTextFieldInteger(int id, int x, int y, int width, int height, TextRenderer textRenderer)
+    public GuiTextFieldInteger(int x, int y, int width, int height, TextRenderer fontRenderer)
     {
-        super(id, textRenderer, x, y, width, height);
+        super(x, y, width, height, fontRenderer);
 
-        this.method_1890(new Predicate<String>() // MCP: setValidator
+        this.method_1890(new Predicate<String>()
         {
             @Override
-            public boolean apply(String input)
+            public boolean test(String input)
             {
                 if (input.length() > 0 && PATTER_NUMBER.matcher(input).matches() == false)
                 {
@@ -26,5 +26,4 @@ public class GuiTextFieldInteger extends GuiTextFieldGeneric
             }
         });
     }
-
 }

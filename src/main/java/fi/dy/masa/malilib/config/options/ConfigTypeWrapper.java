@@ -8,16 +8,16 @@ import fi.dy.masa.malilib.config.IConfigBase;
 import fi.dy.masa.malilib.config.IConfigBoolean;
 import fi.dy.masa.malilib.config.IConfigDouble;
 import fi.dy.masa.malilib.config.IConfigInteger;
+import fi.dy.masa.malilib.config.IConfigNotifiable;
 import fi.dy.masa.malilib.config.IConfigOptionList;
 import fi.dy.masa.malilib.config.IConfigOptionListEntry;
 import fi.dy.masa.malilib.config.IConfigValue;
-import fi.dy.masa.malilib.config.IConfigNotifiable;
 import fi.dy.masa.malilib.config.IStringRepresentable;
 import fi.dy.masa.malilib.hotkeys.IHotkey;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
 import fi.dy.masa.malilib.interfaces.IValueChangeCallback;
 
-public class ConfigTypeWrapper implements IConfigBoolean, IConfigDouble, IConfigInteger, IConfigOptionList, IHotkey, IConfigNotifiable
+public class ConfigTypeWrapper implements IConfigBoolean, IConfigDouble, IConfigInteger, IConfigOptionList, IHotkey, IConfigNotifiable<IConfigBase>
 {
     private final ConfigType wrappedType;
     private final IConfigBase wrappedConfig;
@@ -26,6 +26,34 @@ public class ConfigTypeWrapper implements IConfigBoolean, IConfigDouble, IConfig
     {
         this.wrappedType = wrappedType;
         this.wrappedConfig = wrappedConfig;
+    }
+
+    @Override
+    public boolean shouldUseSlider()
+    {
+        if (this.wrappedConfig instanceof IConfigInteger)
+        {
+            return ((IConfigInteger) this.wrappedConfig).shouldUseSlider();
+        }
+        else if (this.wrappedConfig instanceof IConfigDouble)
+        {
+            return ((IConfigDouble) this.wrappedConfig).shouldUseSlider();
+        }
+
+        return false;
+    }
+
+    @Override
+    public void toggleUseSlider()
+    {
+        if (this.wrappedConfig instanceof IConfigInteger)
+        {
+            ((IConfigInteger) this.wrappedConfig).toggleUseSlider();;
+        }
+        else if (this.wrappedConfig instanceof IConfigDouble)
+        {
+            ((IConfigDouble) this.wrappedConfig).toggleUseSlider();;
+        }
     }
 
     @Override
@@ -53,20 +81,28 @@ public class ConfigTypeWrapper implements IConfigBoolean, IConfigDouble, IConfig
     }
 
     @Override
+    public String getConfigGuiDisplayName()
+    {
+        return this.wrappedConfig.getConfigGuiDisplayName();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
     public void onValueChanged()
     {
         if (this.wrappedConfig instanceof IConfigNotifiable)
         {
-            ((IConfigNotifiable) this.wrappedConfig).onValueChanged();
+            ((IConfigNotifiable<IConfigBase>) this.wrappedConfig).onValueChanged();
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public void setValueChangeCallback(IValueChangeCallback callback)
+    public void setValueChangeCallback(IValueChangeCallback<IConfigBase> callback)
     {
         if (this.wrappedConfig instanceof IConfigNotifiable)
         {
-            ((IConfigNotifiable) this.wrappedConfig).setValueChangeCallback(callback);
+            ((IConfigNotifiable<IConfigBase>) this.wrappedConfig).setValueChangeCallback(callback);
         }
     }
 
@@ -294,6 +330,18 @@ public class ConfigTypeWrapper implements IConfigBoolean, IConfigDouble, IConfig
     }
 
     @Override
+    public int getMinIntegerValue()
+    {
+        return this.wrappedType == ConfigType.INTEGER ? ((IConfigInteger) this.wrappedConfig).getMinIntegerValue() : 0;
+    }
+
+    @Override
+    public int getMaxIntegerValue()
+    {
+        return this.wrappedType == ConfigType.INTEGER ? ((IConfigInteger) this.wrappedConfig).getMaxIntegerValue() : 0;
+    }
+
+    @Override
     public double getDoubleValue()
     {
         return this.wrappedType == ConfigType.DOUBLE ? ((IConfigDouble) this.wrappedConfig).getDoubleValue() : 0;
@@ -312,6 +360,18 @@ public class ConfigTypeWrapper implements IConfigBoolean, IConfigDouble, IConfig
         {
             ((IConfigDouble) this.wrappedConfig).setDoubleValue(value);
         }
+    }
+
+    @Override
+    public double getMinDoubleValue()
+    {
+        return this.wrappedType == ConfigType.DOUBLE ? ((IConfigDouble) this.wrappedConfig).getMinDoubleValue() : 0;
+    }
+
+    @Override
+    public double getMaxDoubleValue()
+    {
+        return this.wrappedType == ConfigType.DOUBLE ? ((IConfigDouble) this.wrappedConfig).getMaxDoubleValue() : 0;
     }
 
     @Override
@@ -368,7 +428,7 @@ public class ConfigTypeWrapper implements IConfigBoolean, IConfigDouble, IConfig
                     option.setOptionListValue(option.getOptionListValue().fromString(element.getAsString()));
                     break;
                 case HOTKEY:
-                    ((IHotkey) this.wrappedConfig).getKeybind().setValueFromString(element.getAsString());
+                    ((IHotkey) this.wrappedConfig).setValueFromJsonElement(element);
                     break;
                 default:
             }
@@ -397,7 +457,7 @@ public class ConfigTypeWrapper implements IConfigBoolean, IConfigDouble, IConfig
             case OPTION_LIST:
                 return new JsonPrimitive(((IConfigOptionList) this.wrappedConfig).getOptionListValue().getStringValue());
             case HOTKEY:
-                return new JsonPrimitive(((IHotkey) this.wrappedConfig).getKeybind().getStringValue());
+                return ((IHotkey) this.wrappedConfig).getAsJsonElement();
             default:
                 return new JsonPrimitive(this.getStringValue());
         }

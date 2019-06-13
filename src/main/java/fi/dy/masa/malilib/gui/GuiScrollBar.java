@@ -1,18 +1,40 @@
 package fi.dy.masa.malilib.gui;
 
-import net.minecraft.client.gui.DrawableHelper;
+import javax.annotation.Nullable;
+import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
+import fi.dy.masa.malilib.render.RenderUtils;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.math.MathHelper;
 
 public class GuiScrollBar
 {
+    @Nullable protected final IGuiIcon barTexture;
+    protected final MinecraftClient mc = MinecraftClient.getInstance();
     protected boolean mouseOver = false;
     protected boolean dragging = false;
+    protected boolean renderScrollbarBackground = true;
     protected int currentValue = 0;
     protected int maxValue = 100;
     protected int backgroundColor = 0x44FFFFFF;
     protected int foregroundColor = 0xFFFFFFFF;
     protected int dragStartValue = 0;
     protected int dragStartY = 0;
+
+    public GuiScrollBar()
+    {
+        this(null);
+    }
+
+    public GuiScrollBar(@Nullable IGuiIcon barTexture)
+    {
+        this.barTexture = barTexture;
+    }
+
+    public GuiScrollBar setRenderBarBackground(boolean render)
+    {
+        this.renderScrollbarBackground = render;
+        return this;
+    }
 
     public int getValue()
     {
@@ -52,7 +74,10 @@ public class GuiScrollBar
 
     public void render(int mouseX, int mouseY, float partialTicks, int xPosition, int yPosition, int width, int height, int totalHeight)
     {
-        DrawableHelper.fill(xPosition, yPosition, xPosition + width, yPosition + height, this.backgroundColor);
+        if (this.renderScrollbarBackground)
+        {
+            RenderUtils.drawRect(xPosition, yPosition, width, height, this.backgroundColor);
+        }
 
         if (totalHeight > 0)
         {
@@ -62,7 +87,22 @@ public class GuiScrollBar
             int barTravel = slideHeight - barHeight;
             int barPosition = yPosition + 1 + (this.maxValue > 0 ? (int) ((this.currentValue / (float) this.maxValue) * barTravel) : 0);
 
-            DrawableHelper.fill(xPosition + 1, barPosition, xPosition + width - 1, barPosition + barHeight, this.foregroundColor);
+            if (this.barTexture != null && barHeight >= 4)
+            {
+                RenderUtils.color(1f, 1f, 1f, 1f);
+                RenderUtils.bindTexture(this.barTexture.getTexture());
+                int u = this.barTexture.getU();
+                int v = this.barTexture.getV();
+                int w = this.barTexture.getWidth();
+                int h = this.barTexture.getHeight();
+
+                RenderUtils.drawTexturedRect(xPosition + 1, barPosition                , u, v        , w, barHeight - 2);
+                RenderUtils.drawTexturedRect(xPosition + 1, barPosition + barHeight - 2, u, v + h - 2, w, 2            );
+            }
+            else
+            {
+                RenderUtils.drawRect(xPosition + 1, barPosition, width - 2, barHeight, this.foregroundColor);
+            }
 
             this.mouseOver = mouseX > xPosition && mouseX < xPosition + width && mouseY > barPosition && mouseY < barPosition + barHeight;
             this.handleDrag(mouseY, barTravel);
