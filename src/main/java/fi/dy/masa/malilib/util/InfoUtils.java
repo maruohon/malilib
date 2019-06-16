@@ -161,7 +161,10 @@ public class InfoUtils
      */
     public static void showInGameMessage(MessageType type, int lifeTime, String translationKey, Object... args)
     {
-        IN_GAME_MESSAGES.addMessage(type, lifeTime, translationKey, args);
+        synchronized (IN_GAME_MESSAGES)
+        {
+            IN_GAME_MESSAGES.addMessage(type, lifeTime, translationKey, args);
+        }
     }
 
     public static void printBooleanConfigToggleMessage(String prettyName, boolean newValue)
@@ -181,7 +184,10 @@ public class InfoUtils
         int x = GuiUtils.getScaledWindowWidth() / 2;
         int y = GuiUtils.getScaledWindowHeight() - 76;
 
-        IN_GAME_MESSAGES.drawMessages(x, y);
+        synchronized (IN_GAME_MESSAGES)
+        {
+            IN_GAME_MESSAGES.drawMessages(x, y);
+        }
     }
 
     public static class InfoMessageConsumer implements IStringConsumer
