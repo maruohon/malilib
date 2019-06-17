@@ -6,6 +6,7 @@
     "client": [
         "MixinGameRenderer",
         "MixinInGameHud",
+        "MixinClientPlayNetworkHandler",
         "MixinKeyboard",
         "MixinMinecraftClient",
         "MixinMouse",
