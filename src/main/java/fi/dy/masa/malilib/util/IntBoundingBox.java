@@ -80,4 +80,41 @@ public class IntBoundingBox
             return new IntBoundingBox(0, 0, 0, 0, 0, 0);
         }
     }
+
+    @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + this.maxX;
+        result = prime * result + this.maxY;
+        result = prime * result + this.maxZ;
+        result = prime * result + this.minX;
+        result = prime * result + this.minY;
+        result = prime * result + this.minZ;
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj)
+        {
+            return true;
+        }
+
+        if (obj == null || this.getClass() != obj.getClass())
+        {
+            return false;
+        }
+
+        IntBoundingBox other = (IntBoundingBox) obj;
+
+        return this.maxX == other.maxX &&
+               this.maxY == other.maxY &&
+               this.maxZ == other.maxZ &&
+               this.minX == other.minX &&
+               this.minY == other.minY &&
+               this.minZ == other.minZ;
+    }
 }
