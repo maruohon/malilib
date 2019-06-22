@@ -5,10 +5,6 @@ import java.util.Map;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.tuple.Pair;
-import io.netty.buffer.Unpooled;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.impl.network.CustomPayloadC2SPacketAccessor;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.packet.CustomPayloadS2CPacket;
 import net.minecraft.network.listener.ClientPlayPacketListener;
@@ -17,6 +13,9 @@ import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.packet.CustomPayloadC2SPacket;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
+import io.netty.buffer.Unpooled;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 /**
  * Network packet splitter code from QuickCarpet by skyrising
@@ -71,6 +70,7 @@ public class PacketSplitter
         packet.release();
     }
 
+    /*
     @Nullable
     public static PacketByteBuf receive(ServerPlayNetworkHandler networkHandler, CustomPayloadC2SPacket message)
     {
@@ -85,6 +85,7 @@ public class PacketSplitter
 
         return READING_SESSIONS.computeIfAbsent(key, ReadingSession::new).receive(messageAccessor.getData(), maxLength);
     }
+    */
 
     @Nullable
     public static PacketByteBuf receive(ClientPlayPacketListener networkHandler, CustomPayloadS2CPacket message)
