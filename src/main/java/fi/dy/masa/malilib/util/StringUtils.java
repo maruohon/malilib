@@ -1,19 +1,18 @@
 package fi.dy.masa.malilib.util;
 
 import java.io.File;
+import java.net.SocketAddress;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.Nullable;
-import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.ModContainer;
 
 public class StringUtils
 {
     public static String getModVersionString(String modId)
     {
-        for (ModContainer container : FabricLoader.getInstance().getAllMods())
+        for (net.fabricmc.loader.api.ModContainer container : net.fabricmc.loader.api.FabricLoader.getInstance().getAllMods())
         {
             if (container.getMetadata().getId().equals(modId))
             {
@@ -288,6 +287,14 @@ public class StringUtils
             {
                 return server.address.replace(':', '_');
             }
+
+            net.minecraft.client.network.ClientPlayNetworkHandler handler = mc.getNetworkHandler();
+            net.minecraft.network.ClientConnection connection = handler != null ? handler.getClientConnection() : null;
+
+            if (connection != null)
+            {
+                return stringifyAddress(connection.getAddress());
+            }
         }
 
         return null;
@@ -322,6 +329,18 @@ public class StringUtils
         }
 
         return prefix + defaultName + suffix;
+    }
+
+    public static String stringifyAddress(SocketAddress address)
+    {
+        String str = address.toString();
+
+        if (str.contains("/"))
+        {
+            str = str.substring(str.indexOf('/') + 1);
+        }
+
+        return str.replace(':', '_');
     }
 
     // Some MCP vs. Yarn vs. MC versions compatibility/wrapper stuff below this
