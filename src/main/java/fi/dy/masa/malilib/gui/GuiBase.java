@@ -4,6 +4,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Nullable;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
 import fi.dy.masa.malilib.config.IConfigBase;
 import fi.dy.masa.malilib.gui.Message.MessageType;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
@@ -17,40 +24,33 @@ import fi.dy.masa.malilib.interfaces.IStringConsumer;
 import fi.dy.masa.malilib.render.MessageRenderer;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.KeyCodes;
-import net.minecraft.ChatFormat;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.util.Identifier;
 
 public abstract class GuiBase extends Screen implements IMessageConsumer, IStringConsumer
 {
-    public static final String TXT_AQUA = ChatFormat.AQUA.toString();
-    public static final String TXT_BLACK = ChatFormat.BLACK.toString();
-    public static final String TXT_BLUE = ChatFormat.BLUE.toString();
-    public static final String TXT_GOLD = ChatFormat.GOLD.toString();
-    public static final String TXT_GRAY = ChatFormat.GRAY.toString();
-    public static final String TXT_GREEN = ChatFormat.GREEN.toString();
-    public static final String TXT_RED = ChatFormat.RED.toString();
-    public static final String TXT_WHITE = ChatFormat.WHITE.toString();
-    public static final String TXT_YELLOW = ChatFormat.YELLOW.toString();
+    public static final String TXT_AQUA = Formatting.AQUA.toString();
+    public static final String TXT_BLACK = Formatting.BLACK.toString();
+    public static final String TXT_BLUE = Formatting.BLUE.toString();
+    public static final String TXT_GOLD = Formatting.GOLD.toString();
+    public static final String TXT_GRAY = Formatting.GRAY.toString();
+    public static final String TXT_GREEN = Formatting.GREEN.toString();
+    public static final String TXT_RED = Formatting.RED.toString();
+    public static final String TXT_WHITE = Formatting.WHITE.toString();
+    public static final String TXT_YELLOW = Formatting.YELLOW.toString();
 
-    public static final String TXT_BOLD = ChatFormat.BOLD.toString();
-    public static final String TXT_ITALIC = ChatFormat.ITALIC.toString();
-    public static final String TXT_RST = ChatFormat.RESET.toString();
-    public static final String TXT_STRIKETHROUGH = ChatFormat.STRIKETHROUGH.toString();
-    public static final String TXT_UNDERLINE = ChatFormat.UNDERLINE.toString();
+    public static final String TXT_BOLD = Formatting.BOLD.toString();
+    public static final String TXT_ITALIC = Formatting.ITALIC.toString();
+    public static final String TXT_RST = Formatting.RESET.toString();
+    public static final String TXT_STRIKETHROUGH = Formatting.STRIKETHROUGH.toString();
+    public static final String TXT_UNDERLINE = Formatting.UNDERLINE.toString();
 
-    public static final String TXT_DARK_AQUA = ChatFormat.DARK_AQUA.toString();
-    public static final String TXT_DARK_BLUE = ChatFormat.DARK_BLUE.toString();
-    public static final String TXT_DARK_GRAY = ChatFormat.DARK_GRAY.toString();
-    public static final String TXT_DARK_GREEN = ChatFormat.DARK_GREEN.toString();
-    public static final String TXT_DARK_PURPLE = ChatFormat.DARK_PURPLE.toString();
-    public static final String TXT_DARK_RED = ChatFormat.DARK_RED.toString();
+    public static final String TXT_DARK_AQUA = Formatting.DARK_AQUA.toString();
+    public static final String TXT_DARK_BLUE = Formatting.DARK_BLUE.toString();
+    public static final String TXT_DARK_GRAY = Formatting.DARK_GRAY.toString();
+    public static final String TXT_DARK_GREEN = Formatting.DARK_GREEN.toString();
+    public static final String TXT_DARK_PURPLE = Formatting.DARK_PURPLE.toString();
+    public static final String TXT_DARK_RED = Formatting.DARK_RED.toString();
 
-    public static final String TXT_LIGHT_PURPLE = ChatFormat.LIGHT_PURPLE.toString();
+    public static final String TXT_LIGHT_PURPLE = Formatting.LIGHT_PURPLE.toString();
 
     protected static final String BUTTON_LABEL_ADD = TXT_DARK_GREEN + "+" + TXT_RST;
     protected static final String BUTTON_LABEL_REMOVE = TXT_DARK_RED + "-" + TXT_RST;
@@ -76,7 +76,7 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
 
     protected GuiBase()
     {
-        super(new TextComponent(""));
+        super(new LiteralText(""));
     }
 
     public GuiBase setParent(@Nullable Screen parent)
@@ -102,9 +102,9 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
     }
 
     @Override
-    public Component getTitle()
+    public Text getTitle()
     {
-        return new TextComponent(this.getTitleString());
+        return new LiteralText(this.getTitleString());
     }
 
     public void setTitle(String title)

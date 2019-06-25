@@ -72,10 +72,10 @@ public class StringUtils
 
     public static void sendOpenFileChatMessage(net.minecraft.entity.Entity sender, String messageKey, File file)
     {
-        net.minecraft.network.chat.TextComponent name = new net.minecraft.network.chat.TextComponent(file.getName());
-        name.getStyle().setClickEvent(new net.minecraft.network.chat.ClickEvent(net.minecraft.network.chat.ClickEvent.Action.OPEN_FILE, file.getAbsolutePath()));
+        net.minecraft.text.Text name = new net.minecraft.text.LiteralText(file.getName());
+        name.getStyle().setClickEvent(new net.minecraft.text.ClickEvent(net.minecraft.text.ClickEvent.Action.OPEN_FILE, file.getAbsolutePath()));
         name.getStyle().setUnderline(Boolean.valueOf(true));
-        sender.sendMessage(new net.minecraft.network.chat.TranslatableComponent(messageKey, name));
+        sender.sendMessage(new net.minecraft.text.TranslatableText(messageKey, name));
     }
 
     /**

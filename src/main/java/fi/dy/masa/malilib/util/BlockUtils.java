@@ -5,13 +5,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.gui.GuiBase;
 import net.minecraft.block.BlockState;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;
-import net.minecraft.state.property.IntegerProperty;
+import net.minecraft.state.property.IntProperty;
 import net.minecraft.state.property.Property;
 import net.minecraft.util.math.Direction;
+import fi.dy.masa.malilib.gui.GuiBase;
 
 public class BlockUtils
 {
@@ -74,7 +74,7 @@ public class BlockUtils
                 {
                     lines.add(prop.getName() + separator + GuiBase.TXT_GOLD + val.toString());
                 }
-                else if (prop instanceof IntegerProperty)
+                else if (prop instanceof IntProperty)
                 {
                     lines.add(prop.getName() + separator + GuiBase.TXT_AQUA + val.toString());
                 }

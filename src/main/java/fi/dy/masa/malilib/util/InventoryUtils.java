@@ -1,7 +1,6 @@
 package fi.dy.masa.malilib.util;
 
 import javax.annotation.Nullable;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ChestBlock;
 import net.minecraft.block.ShulkerBoxBlock;
@@ -24,6 +23,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.util.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
 public class InventoryUtils
 {
@@ -37,7 +37,7 @@ public class InventoryUtils
      */
     public static boolean areStacksEqual(ItemStack stack1, ItemStack stack2)
     {
-        return ItemStack.areEqualIgnoreTags(stack1, stack2) && ItemStack.areTagsEqual(stack1, stack2);
+        return ItemStack.areItemsEqual(stack1, stack2) && ItemStack.areTagsEqual(stack1, stack2);
     }
 
     /**
@@ -49,7 +49,7 @@ public class InventoryUtils
      */
     public static boolean areStacksEqualIgnoreDurability(ItemStack stack1, ItemStack stack2)
     {
-        return ItemStack.areEqualIgnoreDurability(stack1, stack2) && ItemStack.areTagsEqual(stack1, stack2);
+        return ItemStack.areItemsEqualIgnoreDamage(stack1, stack2) && ItemStack.areTagsEqual(stack1, stack2);
     }
 
     /**
@@ -369,7 +369,7 @@ public class InventoryUtils
 
             if (stack.isEmpty() == false)
             {
-                map.addTo(new ItemType(stack), stack.getAmount());
+                map.addTo(new ItemType(stack), stack.getCount());
             }
         }
 
@@ -394,7 +394,7 @@ public class InventoryUtils
 
             if (stack.isEmpty() == false)
             {
-                map.addTo(new ItemType(stack, false, true), stack.getAmount());
+                map.addTo(new ItemType(stack, false, true), stack.getCount());
 
                 if (stack.getItem() instanceof BlockItem &&
                     ((BlockItem) stack.getItem()).getBlock() instanceof ShulkerBoxBlock &&

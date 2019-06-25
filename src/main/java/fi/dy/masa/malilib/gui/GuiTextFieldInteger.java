@@ -12,7 +12,7 @@ public class GuiTextFieldInteger extends GuiTextFieldGeneric
     {
         super(x, y, width, height, fontRenderer);
 
-        this.method_1890(new Predicate<String>()
+        this.setTextPredicate(new Predicate<String>()
         {
             @Override
             public boolean test(String input)

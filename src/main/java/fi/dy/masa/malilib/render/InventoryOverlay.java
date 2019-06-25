@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.lwjgl.opengl.GL11;
 import com.mojang.blaze3d.platform.GlStateManager;
-import fi.dy.masa.malilib.gui.GuiBase;
 import net.minecraft.block.Block;
 import net.minecraft.block.BrewingStandBlock;
 import net.minecraft.block.ChestBlock;
@@ -31,10 +30,11 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.chat.Component;
+import net.minecraft.text.Text;
 import net.minecraft.util.DefaultedList;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
+import fi.dy.masa.malilib.gui.GuiBase;
 
 public class InventoryOverlay
 {
@@ -487,7 +487,7 @@ public class InventoryOverlay
 
     public static void renderStackToolTip(int x, int y, ItemStack stack, MinecraftClient mc)
     {
-        List<Component> list = stack.getTooltipText(mc.player, mc.options.advancedItemTooltips ? TooltipContext.Default.ADVANCED : TooltipContext.Default.NORMAL);
+        List<Text> list = stack.getTooltip(mc.player, mc.options.advancedItemTooltips ? TooltipContext.Default.ADVANCED : TooltipContext.Default.NORMAL);
         List<String> lines = new ArrayList<>();
 
         for (int i = 0; i < list.size(); ++i)
