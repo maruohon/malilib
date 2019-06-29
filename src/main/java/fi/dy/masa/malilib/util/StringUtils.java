@@ -7,6 +7,7 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.Nullable;
+import fi.dy.masa.malilib.MaLiLibConfigs;
 
 public class StringUtils
 {
@@ -288,12 +289,21 @@ public class StringUtils
                 return server.address.replace(':', '_');
             }
 
-            net.minecraft.client.network.ClientPlayNetworkHandler handler = mc.getNetworkHandler();
-            net.minecraft.network.ClientConnection connection = handler != null ? handler.getClientConnection() : null;
+            // If the server entry was null, then that most likely means we are on a Realms server
 
-            if (connection != null)
+            if (MaLiLibConfigs.Generic.REALMS_COMMON_CONFIG.getBooleanValue())
             {
-                return stringifyAddress(connection.getAddress());
+                return "realms";
+            }
+            else
+            {
+                net.minecraft.client.network.ClientPlayNetworkHandler handler = mc.getNetworkHandler();
+                net.minecraft.network.ClientConnection connection = handler != null ? handler.getClientConnection() : null;
+
+                if (connection != null)
+                {
+                    return "realms_" + stringifyAddress(connection.getAddress());
+                }
             }
         }
 
