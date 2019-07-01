@@ -309,6 +309,21 @@ public class StringUtils
         return prefix + defaultName + suffix;
     }
 
+    public static String getStackString(net.minecraft.item.ItemStack stack)
+    {
+        if (stack.isEmpty() == false)
+        {
+            net.minecraft.util.ResourceLocation rl = net.minecraft.item.Item.REGISTRY.getNameForObject(stack.getItem());
+
+            return String.format("[%s @ %d - display: %s - NBT: %s] (%s)",
+                    rl != null ? rl.toString() : "null", stack.getMetadata(), stack.getDisplayName(),
+                    stack.getTagCompound() != null ? stack.getTagCompound().toString() : "<no NBT>",
+                    stack.toString());
+        }
+
+        return "<empty>";
+    }
+
     // Some MCP vs. Yarn vs. MC versions compatibility/wrapper stuff below this
 
     /**
