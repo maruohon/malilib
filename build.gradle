@@ -82,8 +82,8 @@ publishing {
             artifactId project.archivesBaseName
 
             // add all the jars that should be included when publishing to maven
-            artifact(jar)           { builtBy remapJar }
-            artifact(sourcesJar)    { builtBy remapSourcesJar }
+            artifact(jar.archivePath)   { builtBy remapJar }
+            artifact(sourcesJar)        { builtBy remapSourcesJar }
         }
     }
 
