@@ -63,6 +63,11 @@ public abstract class GuiListBase<TYPE, WIDGET extends WidgetListEntryBase<TYPE>
         this.widget = this.createListWidget(this.listX, this.listY);
     }
 
+    public boolean isSearchOpen()
+    {
+        return this.getListWidget().isSearchOpen();
+    }
+
     @Override
     public GuiBase setParent(GuiScreen parent)
     {

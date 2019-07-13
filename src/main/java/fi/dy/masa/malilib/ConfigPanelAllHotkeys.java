@@ -6,6 +6,7 @@ import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.config.gui.GuiModConfigs;
 import fi.dy.masa.malilib.event.InputEventHandler;
 import fi.dy.masa.malilib.gui.GuiBase;
+import fi.dy.masa.malilib.gui.GuiListBase;
 import fi.dy.masa.malilib.gui.interfaces.IConfigInfoProvider;
 import fi.dy.masa.malilib.hotkeys.IHotkey;
 import fi.dy.masa.malilib.hotkeys.KeybindCategory;
@@ -19,7 +20,7 @@ public class ConfigPanelAllHotkeys extends GuiModConfigs
         this.setHoverInfoProvider(new HoverInfoProvider(this));
     }
 
-    protected static List<ConfigOptionWrapper> createWrappers()
+    public static List<ConfigOptionWrapper> createWrappers()
     {
         List<KeybindCategory> categories = InputEventHandler.getKeybindManager().getKeybindCategories();
         ImmutableList.Builder<ConfigOptionWrapper> builder = ImmutableList.builder();
@@ -62,11 +63,11 @@ public class ConfigPanelAllHotkeys extends GuiModConfigs
         return true;
     }
 
-    private static class HoverInfoProvider implements IConfigInfoProvider
+    public static class HoverInfoProvider implements IConfigInfoProvider
     {
-        private final ConfigPanelAllHotkeys gui;
+        protected final GuiListBase<?, ?, ?> gui;
 
-        private HoverInfoProvider(ConfigPanelAllHotkeys gui)
+        public HoverInfoProvider(GuiListBase<?, ?, ?> gui)
         {
             this.gui = gui;
         }
@@ -76,7 +77,7 @@ public class ConfigPanelAllHotkeys extends GuiModConfigs
         {
             String comment = wrapper.getConfig().getComment();
 
-            if (this.gui.getListWidget().isSearchOpen())
+            if (this.gui.isSearchOpen())
             {
                 String prefix = wrapper.getLabelPrefix();
 

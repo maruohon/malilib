@@ -171,10 +171,7 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
             x += this.createTabButton(x, y, width, tab);
         }
 
-        if (rows > 1)
-        {
-            this.updateListPosition(this.getListX(), 50 + (rows - 1) * 22);
-        }
+        this.updateListPosition(this.getListX(), 50 + (rows - 1) * 22);
     }
 
     protected int createTabButton(int x, int y, int width, IConfigGuiTab tab)

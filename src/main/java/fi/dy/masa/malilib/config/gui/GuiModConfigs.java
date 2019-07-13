@@ -9,7 +9,7 @@ import fi.dy.masa.malilib.gui.interfaces.IConfigGuiTab;
 
 public class GuiModConfigs extends GuiConfigsBase
 {
-    protected final List<ConfigOptionWrapper> configs;
+    protected final List<ConfigOptionWrapper> configWrappers;
 
     public GuiModConfigs(String modId, List<? extends IConfigBase> configs, String titleKey, Object... args)
     {
@@ -20,7 +20,7 @@ public class GuiModConfigs extends GuiConfigsBase
     {
         super(10, 0, modId, null, ImmutableList.of(), titleKey, args);
 
-        this.configs = wrappers;
+        this.configWrappers = wrappers;
     }
 
     @Override
@@ -51,7 +51,7 @@ public class GuiModConfigs extends GuiConfigsBase
     @Override
     public List<ConfigOptionWrapper> getConfigs()
     {
-        return this.configs;
+        return this.configWrappers;
     }
 
     @Override

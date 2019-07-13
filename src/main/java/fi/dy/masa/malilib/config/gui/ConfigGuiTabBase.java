@@ -20,14 +20,13 @@ public class ConfigGuiTabBase implements IConfigGuiTab
 
     public ConfigGuiTabBase(String translationKey, int configWidth, boolean useKeybindSearch, List<? extends IConfigBase> configs)
     {
-        this(translationKey.substring(translationKey.lastIndexOf(".") + 1),
-                translationKey, configWidth, useKeybindSearch, configs, (tab, gui) -> new ButtonListenerConfigGuiTab(tab, gui));
+        this(translationKey, configWidth, useKeybindSearch, configs, (tab, gui) -> new ButtonListenerConfigGuiTab(tab, gui));
     }
 
-    public ConfigGuiTabBase(String name, String translationKey, int configWidth, boolean useKeybindSearch,
+    public ConfigGuiTabBase(String translationKey, int configWidth, boolean useKeybindSearch,
             List<? extends IConfigBase> configs, BiFunction<IConfigGuiTab, GuiConfigsBase, IButtonActionListener> listenerFactory)
     {
-        this.name = name;
+        this.name = translationKey.substring(translationKey.lastIndexOf(".") + 1);
         this.translationKey = translationKey;
         this.configWidth = configWidth;
         this.useKeybindSearch = useKeybindSearch;
