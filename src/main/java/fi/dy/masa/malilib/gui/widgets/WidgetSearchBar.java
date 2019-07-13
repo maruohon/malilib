@@ -3,26 +3,26 @@ package fi.dy.masa.malilib.gui.widgets;
 import org.lwjgl.input.Keyboard;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
-import fi.dy.masa.malilib.gui.LeftRight;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.util.HorizontalAlignment;
 import net.minecraft.util.ChatAllowedCharacters;
 
 public class WidgetSearchBar extends WidgetBase
 {
     protected final WidgetIcon iconSearch;
-    protected final LeftRight iconAlignment;
+    protected final HorizontalAlignment iconAlignment;
     protected final GuiTextFieldGeneric searchBox;
     protected boolean searchOpen;
 
     public WidgetSearchBar(int x, int y, int width, int height,
-            int searchBarOffsetX, IGuiIcon iconSearch, LeftRight iconAlignment)
+            int searchBarOffsetX, IGuiIcon iconSearch, HorizontalAlignment iconAlignment)
     {
         super(x, y, width, height);
 
         int iw = iconSearch.getWidth();
-        int ix = iconAlignment == LeftRight.RIGHT ? x + width - iw - 1 : x + 2;
-        int tx = iconAlignment == LeftRight.RIGHT ? x - searchBarOffsetX + 1 : x + iw + 6 + searchBarOffsetX;
+        int ix = iconAlignment == HorizontalAlignment.RIGHT ? x + width - iw - 1 : x + 2;
+        int tx = iconAlignment == HorizontalAlignment.RIGHT ? x - searchBarOffsetX + 1 : x + iw + 6 + searchBarOffsetX;
         this.iconSearch = new WidgetIcon(ix, y + 1, iconSearch);
         this.iconAlignment = iconAlignment;
         this.searchBox = new GuiTextFieldGeneric(tx, y, width - iw - 7 - Math.abs(searchBarOffsetX), height, this.textRenderer);

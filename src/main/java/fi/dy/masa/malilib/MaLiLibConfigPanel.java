@@ -1,8 +1,7 @@
 package fi.dy.masa.malilib;
 
-import fi.dy.masa.malilib.config.gui.ConfigPanelAllHotkeys;
-import fi.dy.masa.malilib.config.gui.ConfigPanelBase;
 import fi.dy.masa.malilib.config.gui.GuiModConfigs;
+import fi.dy.masa.malilib.config.gui.liteloader.ConfigPanelBase;
 
 public class MaLiLibConfigPanel extends ConfigPanelBase
 {

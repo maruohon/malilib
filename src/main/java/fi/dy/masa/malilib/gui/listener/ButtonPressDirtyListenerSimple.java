@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.config.gui;
+package fi.dy.masa.malilib.gui.listener;
 
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;

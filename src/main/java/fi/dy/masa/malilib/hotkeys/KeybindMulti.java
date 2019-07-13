@@ -8,12 +8,16 @@ import java.util.List;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+import fi.dy.masa.malilib.IMinecraftAccessor;
 import fi.dy.masa.malilib.LiteModMaLiLib;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.hotkeys.KeybindSettings.Context;
 import fi.dy.masa.malilib.util.GuiUtils;
-import fi.dy.masa.malilib.util.IMinecraftAccessor;
 import fi.dy.masa.malilib.util.InfoUtils;
+import fi.dy.masa.malilib.util.JsonUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 
@@ -26,6 +30,7 @@ public class KeybindMulti implements IKeybind
     private final KeybindSettings defaultSettings;
     private List<Integer> keyCodes = new ArrayList<>(4);
     private KeybindSettings settings;
+    private String lastSavedStorageString;
     private boolean pressed;
     private boolean pressedLast;
     private int heldTime;
@@ -35,6 +40,7 @@ public class KeybindMulti implements IKeybind
     private KeybindMulti(String defaultStorageString, KeybindSettings settings)
     {
         this.defaultStorageString = defaultStorageString;
+        this.lastSavedStorageString = defaultStorageString;
         this.defaultSettings = settings;
         this.settings = settings;
     }
@@ -249,6 +255,12 @@ public class KeybindMulti implements IKeybind
     }
 
     @Override
+    public boolean isDirty()
+    {
+        return this.lastSavedStorageString.equals(this.getStringValue()) == false;
+    }
+
+    @Override
     public void resetToDefault()
     {
         this.setValueFromString(this.defaultStorageString);
@@ -399,6 +411,55 @@ public class KeybindMulti implements IKeybind
         }
 
         return false;
+    }
+
+    @Override
+    public void setValueFromJsonElement(JsonElement element, String hotkeyName)
+    {
+        try
+        {
+            if (element.isJsonObject())
+            {
+                JsonObject obj = element.getAsJsonObject();
+
+                if (JsonUtils.hasString(obj, "keys"))
+                {
+                    this.setValueFromString(obj.get("keys").getAsString());
+                }
+
+                if (JsonUtils.hasObject(obj, "settings"))
+                {
+                    this.setSettings(KeybindSettings.fromJson(obj.getAsJsonObject("settings")));
+                }
+            }
+            // Backwards compatibility with some old hotkeys
+            else if (element.isJsonPrimitive())
+            {
+                this.setValueFromString(element.getAsString());
+            }
+            else
+            {
+                LiteModMaLiLib.logger.warn("Failed to set the hotkey '{}' from the JSON element '{}'", hotkeyName, element);
+            }
+        }
+        catch (Exception e)
+        {
+            LiteModMaLiLib.logger.warn("Failed to set the hotkey '{}' from the JSON element '{}'", hotkeyName, element, e);
+        }
+
+        this.lastSavedStorageString = this.getStringValue();
+    }
+
+    @Override
+    public JsonElement getAsJsonElement()
+    {
+        String str = this.getStringValue();
+        this.lastSavedStorageString = str;
+
+        JsonObject obj = new JsonObject();
+        obj.add("keys", new JsonPrimitive(str));
+        obj.add("settings", this.getSettings().toJson());
+        return obj;
     }
 
     public static KeybindMulti fromStorageString(String str, KeybindSettings settings)

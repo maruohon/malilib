@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.util;
+package fi.dy.masa.malilib;
 
 public interface IMinecraftAccessor
 {

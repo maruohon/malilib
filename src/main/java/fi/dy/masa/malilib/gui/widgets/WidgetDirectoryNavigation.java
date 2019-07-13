@@ -5,13 +5,13 @@ import java.util.Arrays;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.GuiTextInputFeedback;
-import fi.dy.masa.malilib.gui.LeftRight;
 import fi.dy.masa.malilib.gui.interfaces.IDirectoryNavigator;
 import fi.dy.masa.malilib.gui.interfaces.IFileBrowserIconProvider;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.DirectoryCreator;
 import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.GuiUtils;
+import fi.dy.masa.malilib.util.HorizontalAlignment;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class WidgetDirectoryNavigation extends WidgetSearchBar
@@ -26,7 +26,7 @@ public class WidgetDirectoryNavigation extends WidgetSearchBar
     public WidgetDirectoryNavigation(int x, int y, int width, int height,
             File currentDir, File rootDir, IDirectoryNavigator navigator, IFileBrowserIconProvider iconProvider)
     {
-        super(x, y, width, height, 0, iconProvider.getIconSearch(), LeftRight.RIGHT);
+        super(x, y, width, height, 0, iconProvider.getIconSearch(), HorizontalAlignment.RIGHT);
 
         this.currentDir = currentDir;
         this.rootDir = rootDir;

@@ -1,4 +1,6 @@
-package fi.dy.masa.malilib.config;
+package fi.dy.masa.malilib.config.options;
+
+import fi.dy.masa.malilib.config.IConfigOptionListEntry;
 
 public interface IConfigOptionList
 {

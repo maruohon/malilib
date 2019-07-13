@@ -2,16 +2,16 @@ package fi.dy.masa.malilib.gui.button;
 
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
-import fi.dy.masa.malilib.gui.LeftRight;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.util.HorizontalAlignment;
 import net.minecraft.client.renderer.GlStateManager;
 
 public class ButtonGeneric extends ButtonBase
 {
     @Nullable
     protected final IGuiIcon icon;
-    protected LeftRight alignment = LeftRight.LEFT;
+    protected HorizontalAlignment alignment = HorizontalAlignment.LEFT;
     protected boolean textCentered;
     protected boolean renderDefaultBackground = true;
 
@@ -75,7 +75,7 @@ public class ButtonGeneric extends ButtonBase
      * @param alignment
      * @return
      */
-    public ButtonGeneric setIconAlignment(LeftRight alignment)
+    public ButtonGeneric setIconAlignment(HorizontalAlignment alignment)
     {
         this.alignment = alignment;
         return this;
@@ -110,7 +110,7 @@ public class ButtonGeneric extends ButtonBase
             if (this.icon != null)
             {
                 int offset = this.renderDefaultBackground ? 4 : 0;
-                int x = this.alignment == LeftRight.LEFT ? this.x + offset : this.x + this.width - this.icon.getWidth() - offset;
+                int x = this.alignment == HorizontalAlignment.LEFT ? this.x + offset : this.x + this.width - this.icon.getWidth() - offset;
                 int y = this.y + (this.height - this.icon.getHeight()) / 2;
                 int u = this.icon.getU() + buttonStyle * this.icon.getWidth();
 
@@ -140,7 +140,7 @@ public class ButtonGeneric extends ButtonBase
                 {
                     int x = this.x + 6;
 
-                    if (this.icon != null && this.alignment == LeftRight.LEFT)
+                    if (this.icon != null && this.alignment == HorizontalAlignment.LEFT)
                     {
                         x += this.icon.getWidth() + 2;
                     }

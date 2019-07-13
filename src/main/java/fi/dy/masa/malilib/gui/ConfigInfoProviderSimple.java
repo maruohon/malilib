@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.gui;
 
-import fi.dy.masa.malilib.config.IConfigBase;
+import fi.dy.masa.malilib.config.options.IConfigBase;
 import fi.dy.masa.malilib.gui.interfaces.IConfigInfoProvider;
 
 public class ConfigInfoProviderSimple implements IConfigInfoProvider

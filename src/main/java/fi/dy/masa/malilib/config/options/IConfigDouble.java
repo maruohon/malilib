@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.config;
+package fi.dy.masa.malilib.config.options;
 
 public interface IConfigDouble extends IConfigValue, IConfigSlider
 {

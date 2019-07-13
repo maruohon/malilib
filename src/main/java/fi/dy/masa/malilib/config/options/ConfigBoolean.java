@@ -4,12 +4,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import fi.dy.masa.malilib.LiteModMaLiLib;
 import fi.dy.masa.malilib.config.ConfigType;
-import fi.dy.masa.malilib.config.IConfigBoolean;
 
 public class ConfigBoolean extends ConfigBase<ConfigBoolean> implements IConfigBoolean
 {
     private final boolean defaultValue;
     private boolean value;
+    private boolean lastSavedValue;
 
     public ConfigBoolean(String name, boolean defaultValue, String comment)
     {
@@ -22,6 +22,7 @@ public class ConfigBoolean extends ConfigBase<ConfigBoolean> implements IConfigB
 
         this.defaultValue = defaultValue;
         this.value = defaultValue;
+        this.lastSavedValue = defaultValue;
     }
 
     @Override
@@ -61,6 +62,12 @@ public class ConfigBoolean extends ConfigBase<ConfigBoolean> implements IConfigB
     }
 
     @Override
+    public boolean isDirty()
+    {
+        return this.lastSavedValue != this.value;
+    }
+
+    @Override
     public void resetToDefault()
     {
         this.value = this.defaultValue;
@@ -85,28 +92,30 @@ public class ConfigBoolean extends ConfigBase<ConfigBoolean> implements IConfigB
     }
 
     @Override
-    public void setValueFromJsonElement(JsonElement element)
+    public void setValueFromJsonElement(JsonElement element, String configName)
     {
         try
         {
             if (element.isJsonPrimitive())
             {
                 this.value = element.getAsBoolean();
+                this.lastSavedValue = this.value;
             }
             else
             {
-                LiteModMaLiLib.logger.warn("Failed to set config value for '{}' from the JSON element '{}'", this.getName(), element);
+                LiteModMaLiLib.logger.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element);
             }
         }
         catch (Exception e)
         {
-            LiteModMaLiLib.logger.warn("Failed to set config value for '{}' from the JSON element '{}'", this.getName(), element, e);
+            LiteModMaLiLib.logger.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
         }
     }
 
     @Override
     public JsonElement getAsJsonElement()
     {
+        this.lastSavedValue = this.value;
         return new JsonPrimitive(this.value);
     }
 }

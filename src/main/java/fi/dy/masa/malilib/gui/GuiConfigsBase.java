@@ -2,20 +2,23 @@ package fi.dy.masa.malilib.gui;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.config.ConfigManager;
-import fi.dy.masa.malilib.config.IConfigBase;
-import fi.dy.masa.malilib.config.gui.ButtonPressDirtyListenerSimple;
-import fi.dy.masa.malilib.config.gui.ConfigOptionChangeListenerKeybind;
+import fi.dy.masa.malilib.config.options.IConfigBase;
 import fi.dy.masa.malilib.event.InputEventHandler;
 import fi.dy.masa.malilib.gui.GuiConfigsBase.ConfigOptionWrapper;
+import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.ConfigButtonKeybind;
+import fi.dy.masa.malilib.gui.interfaces.IConfigGuiTab;
 import fi.dy.masa.malilib.gui.interfaces.IConfigInfoProvider;
 import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
 import fi.dy.masa.malilib.gui.interfaces.IKeybindConfigGui;
+import fi.dy.masa.malilib.gui.listener.ButtonPressDirtyListenerSimple;
+import fi.dy.masa.malilib.gui.listener.ConfigOptionChangeListenerKeybind;
 import fi.dy.masa.malilib.gui.widgets.WidgetConfigOption;
 import fi.dy.masa.malilib.gui.widgets.WidgetListConfigOptions;
 import fi.dy.masa.malilib.util.GuiUtils;
@@ -28,19 +31,21 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
     protected final ButtonPressDirtyListenerSimple dirtyListener = new ButtonPressDirtyListenerSimple();
     protected final String modId;
     protected final List<String> initialConfigValues = new ArrayList<>();
+    protected final List<IConfigGuiTab> configTabs;
     protected ConfigButtonKeybind activeKeybindButton;
     protected int configWidth = 204;
     @Nullable protected GuiScreen parentScreen;
     @Nullable protected IConfigInfoProvider hoverInfoProvider;
     @Nullable protected IDialogHandler dialogHandler;
 
-    public GuiConfigsBase(int listX, int listY, String modId, @Nullable GuiScreen parent, String titleKey, Object... args)
+    public GuiConfigsBase(int listX, int listY, String modId, @Nullable GuiScreen parent, List<IConfigGuiTab> configTabs, String titleKey, Object... args)
     {
         super(listX, listY);
 
         this.modId = modId;
         this.parentScreen = parent;
         this.title = StringUtils.translate(titleKey, args);
+        this.configTabs = configTabs;
     }
 
     @Override
@@ -55,19 +60,30 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
         return this.height - 80;
     }
 
+    public void setParentGui(GuiScreen parent)
+    {
+        this.parentScreen = parent;
+    }
+
+    public abstract void setCurrentTab(IConfigGuiTab tab);
+
+    @Nullable
+    public abstract IConfigGuiTab getCurrentTab();
+
     protected boolean useKeybindSearch()
     {
-        return false;
+        return this.getCurrentTab() != null ? this.getCurrentTab().useKeybindSearch() : false;
     }
 
     protected int getConfigWidth()
     {
-        return this.configWidth;
+        return this.getCurrentTab() != null ? this.getCurrentTab().getConfigWidth() : this.configWidth;
     }
 
-    public void setParentGui(GuiScreen parent)
+    @Override
+    public List<ConfigOptionWrapper> getConfigs()
     {
-        this.parentScreen = parent;
+        return this.getCurrentTab() != null ? ConfigOptionWrapper.createFor(this.getCurrentTab().getConfigOptions()) : Collections.emptyList();
     }
 
     public GuiConfigsBase setConfigWidth(int configWidth)
@@ -80,6 +96,17 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
     {
         this.hoverInfoProvider = provider;
         return this;
+    }
+
+    @Nullable
+    public WidgetListConfigOptions getConfigsListWidget()
+    {
+        return super.getListWidget();
+    }
+
+    public void reCreateConfigWidgets()
+    {
+        super.reCreateListWidget();
     }
 
     @Override
@@ -118,7 +145,45 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
     {
         super.initGui();
 
+        this.clearOptions();
+        this.createTabButtons();
+
         Keyboard.enableRepeatEvents(true);
+    }
+
+    protected void createTabButtons()
+    {
+        int x = 10;
+        int y = 26;
+        int rows = 1;
+
+        for (IConfigGuiTab tab : this.configTabs)
+        {
+            int width = this.getStringWidth(tab.getDisplayName()) + 10;
+
+            if (x >= this.width - width - 10)
+            {
+                x = 10;
+                y += 22;
+                rows++;
+            }
+
+            x += this.createTabButton(x, y, width, tab);
+        }
+
+        if (rows > 1)
+        {
+            this.updateListPosition(this.getListX(), 50 + (rows - 1) * 22);
+        }
+    }
+
+    protected int createTabButton(int x, int y, int width, IConfigGuiTab tab)
+    {
+        ButtonGeneric button = new ButtonGeneric(x, y, width, 20, tab.getDisplayName());
+        button.setEnabled(this.getCurrentTab() != tab);
+        this.addButton(button, tab.getButtonActionListener(this));
+
+        return button.getWidth() + 2;
     }
 
     @Override

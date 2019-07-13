@@ -4,15 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import fi.dy.masa.malilib.LiteModMaLiLib;
 import fi.dy.masa.malilib.config.ConfigType;
-import fi.dy.masa.malilib.config.IConfigBase;
-import fi.dy.masa.malilib.config.IConfigBoolean;
-import fi.dy.masa.malilib.config.IConfigDouble;
-import fi.dy.masa.malilib.config.IConfigInteger;
-import fi.dy.masa.malilib.config.IConfigNotifiable;
-import fi.dy.masa.malilib.config.IConfigOptionList;
 import fi.dy.masa.malilib.config.IConfigOptionListEntry;
-import fi.dy.masa.malilib.config.IConfigValue;
-import fi.dy.masa.malilib.config.IStringRepresentable;
 import fi.dy.masa.malilib.hotkeys.IHotkey;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
 import fi.dy.masa.malilib.interfaces.IValueChangeCallback;
@@ -48,11 +40,11 @@ public class ConfigTypeWrapper implements IConfigBoolean, IConfigDouble, IConfig
     {
         if (this.wrappedConfig instanceof IConfigInteger)
         {
-            ((IConfigInteger) this.wrappedConfig).toggleUseSlider();;
+            ((IConfigInteger) this.wrappedConfig).toggleUseSlider();
         }
         else if (this.wrappedConfig instanceof IConfigDouble)
         {
-            ((IConfigDouble) this.wrappedConfig).toggleUseSlider();;
+            ((IConfigDouble) this.wrappedConfig).toggleUseSlider();
         }
     }
 
@@ -238,6 +230,12 @@ public class ConfigTypeWrapper implements IConfigBoolean, IConfigDouble, IConfig
     }
 
     @Override
+    public boolean isDirty()
+    {
+        return this.wrappedConfig.isDirty();
+    }
+
+    @Override
     public void resetToDefault()
     {
         try
@@ -402,7 +400,7 @@ public class ConfigTypeWrapper implements IConfigBoolean, IConfigDouble, IConfig
     }
 
     @Override
-    public void setValueFromJsonElement(JsonElement element)
+    public void setValueFromJsonElement(JsonElement element, String configName)
     {
         try
         {
@@ -428,20 +426,26 @@ public class ConfigTypeWrapper implements IConfigBoolean, IConfigDouble, IConfig
                     option.setOptionListValue(option.getOptionListValue().fromString(element.getAsString()));
                     break;
                 case HOTKEY:
-                    ((IHotkey) this.wrappedConfig).setValueFromJsonElement(element);
+                    ((IHotkey) this.wrappedConfig).getKeybind().setValueFromJsonElement(element, configName);
                     break;
                 default:
             }
         }
         catch (Exception e)
         {
-            LiteModMaLiLib.logger.warn("Failed to read config value for {} from the JSON config", this.getName(), e);
+            LiteModMaLiLib.logger.warn("Failed to read config value for {} from the JSON config", configName, e);
         }
+
+        // This causes the last saved value to be cached
+        this.wrappedConfig.getAsJsonElement();
     }
 
     @Override
     public JsonElement getAsJsonElement()
     {
+        // This causes the last saved value to be cached
+        this.wrappedConfig.getAsJsonElement();
+
         switch (this.wrappedType)
         {
             case BOOLEAN:
@@ -457,7 +461,7 @@ public class ConfigTypeWrapper implements IConfigBoolean, IConfigDouble, IConfig
             case OPTION_LIST:
                 return new JsonPrimitive(((IConfigOptionList) this.wrappedConfig).getOptionListValue().getStringValue());
             case HOTKEY:
-                return ((IHotkey) this.wrappedConfig).getAsJsonElement();
+                return ((IHotkey) this.wrappedConfig).getKeybind().getAsJsonElement();
             default:
                 return new JsonPrimitive(this.getStringValue());
         }

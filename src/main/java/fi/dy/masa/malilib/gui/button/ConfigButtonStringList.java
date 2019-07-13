@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.gui.button;
 
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.config.IConfigStringList;
+import fi.dy.masa.malilib.config.options.IConfigStringList;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.GuiStringListEdit;
 import fi.dy.masa.malilib.gui.interfaces.IConfigGui;

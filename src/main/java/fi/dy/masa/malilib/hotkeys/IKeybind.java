@@ -2,10 +2,12 @@ package fi.dy.masa.malilib.hotkeys;
 
 import java.util.List;
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.config.IConfigResettable;
-import fi.dy.masa.malilib.config.IStringRepresentable;
+import com.google.gson.JsonElement;
+import fi.dy.masa.malilib.config.options.IConfigResettable;
+import fi.dy.masa.malilib.config.options.IConfigSavable;
+import fi.dy.masa.malilib.config.options.IStringRepresentable;
 
-public interface IKeybind extends IConfigResettable, IStringRepresentable
+public interface IKeybind extends IConfigResettable, IConfigSavable, IStringRepresentable
 {
     boolean isValid();
 
@@ -63,4 +65,8 @@ public interface IKeybind extends IConfigResettable, IStringRepresentable
     boolean areSettingsModified();
 
     void resetSettingsToDefaults();
+
+    void setValueFromJsonElement(JsonElement element, String hotkeyName);
+
+    JsonElement getAsJsonElement();
 }

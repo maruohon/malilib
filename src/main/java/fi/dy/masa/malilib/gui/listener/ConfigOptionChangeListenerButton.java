@@ -1,7 +1,7 @@
-package fi.dy.masa.malilib.config.gui;
+package fi.dy.masa.malilib.gui.listener;
 
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.config.IConfigResettable;
+import fi.dy.masa.malilib.config.options.IConfigResettable;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 

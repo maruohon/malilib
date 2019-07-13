@@ -2,8 +2,8 @@ package fi.dy.masa.malilib.gui.interfaces;
 
 import java.util.List;
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.config.gui.ButtonPressDirtyListenerSimple;
 import fi.dy.masa.malilib.gui.GuiConfigsBase.ConfigOptionWrapper;
+import fi.dy.masa.malilib.gui.listener.ButtonPressDirtyListenerSimple;
 
 public interface IConfigGui
 {

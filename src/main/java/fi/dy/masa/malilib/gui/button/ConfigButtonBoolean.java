@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.gui.button;
 
-import fi.dy.masa.malilib.config.IConfigBoolean;
+import fi.dy.masa.malilib.config.options.IConfigBoolean;
 import fi.dy.masa.malilib.gui.GuiBase;
 
 public class ConfigButtonBoolean extends ButtonGeneric

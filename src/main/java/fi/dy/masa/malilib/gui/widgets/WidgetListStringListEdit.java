@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.gui.widgets;
 
-import fi.dy.masa.malilib.config.IConfigStringList;
+import fi.dy.masa.malilib.config.options.IConfigStringList;
 import fi.dy.masa.malilib.gui.GuiStringListEdit;
 
 public class WidgetListStringListEdit extends WidgetListConfigOptionsBase<String, WidgetStringListEditEntry>

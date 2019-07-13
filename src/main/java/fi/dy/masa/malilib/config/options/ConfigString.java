@@ -4,12 +4,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import fi.dy.masa.malilib.LiteModMaLiLib;
 import fi.dy.masa.malilib.config.ConfigType;
-import fi.dy.masa.malilib.config.IConfigValue;
 
 public class ConfigString extends ConfigBase<ConfigString> implements IConfigValue
 {
     private final String defaultValue;
     private String value;
+    private String lastSavedValue;
 
     public ConfigString(String name, String defaultValue, String comment)
     {
@@ -62,28 +62,36 @@ public class ConfigString extends ConfigBase<ConfigString> implements IConfigVal
     }
 
     @Override
-    public void setValueFromJsonElement(JsonElement element)
+    public boolean isDirty()
+    {
+        return this.lastSavedValue != this.value;
+    }
+
+    @Override
+    public void setValueFromJsonElement(JsonElement element, String configName)
     {
         try
         {
             if (element.isJsonPrimitive())
             {
                 this.value = element.getAsString();
+                this.lastSavedValue = this.value;
             }
             else
             {
-                LiteModMaLiLib.logger.warn("Failed to set config value for '{}' from the JSON element '{}'", this.getName(), element);
+                LiteModMaLiLib.logger.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element);
             }
         }
         catch (Exception e)
         {
-            LiteModMaLiLib.logger.warn("Failed to set config value for '{}' from the JSON element '{}'", this.getName(), element, e);
+            LiteModMaLiLib.logger.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
         }
     }
 
     @Override
     public JsonElement getAsJsonElement()
     {
+        this.lastSavedValue = this.value;
         return new JsonPrimitive(this.value);
     }
 }

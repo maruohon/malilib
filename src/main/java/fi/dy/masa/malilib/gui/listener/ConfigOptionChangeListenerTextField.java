@@ -1,6 +1,6 @@
-package fi.dy.masa.malilib.config.gui;
+package fi.dy.masa.malilib.gui.listener;
 
-import fi.dy.masa.malilib.config.IStringRepresentable;
+import fi.dy.masa.malilib.config.options.IStringRepresentable;
 import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;

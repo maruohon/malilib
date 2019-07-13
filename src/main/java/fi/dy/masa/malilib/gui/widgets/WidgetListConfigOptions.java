@@ -5,15 +5,15 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import com.google.common.collect.ImmutableList;
+import fi.dy.masa.malilib.MaLiLibIcons;
 import fi.dy.masa.malilib.config.ConfigType;
-import fi.dy.masa.malilib.config.IConfigBase;
+import fi.dy.masa.malilib.config.options.IConfigBase;
 import fi.dy.masa.malilib.gui.GuiConfigsBase;
 import fi.dy.masa.malilib.gui.GuiConfigsBase.ConfigOptionWrapper;
-import fi.dy.masa.malilib.gui.LeftRight;
-import fi.dy.masa.malilib.gui.MaLiLibIcons;
 import fi.dy.masa.malilib.hotkeys.IHotkey;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
 import fi.dy.masa.malilib.util.AlphaNumComparator;
+import fi.dy.masa.malilib.util.HorizontalAlignment;
 
 public class WidgetListConfigOptions extends WidgetListConfigOptionsBase<ConfigOptionWrapper, WidgetConfigOption>
 {
@@ -28,14 +28,14 @@ public class WidgetListConfigOptions extends WidgetListConfigOptionsBase<ConfigO
 
         if (useKeybindSearch)
         {
-            this.widgetSearchConfigs = new WidgetSearchBarConfigs(x + 2, y + 4, width - 14, 20, 0, MaLiLibIcons.SEARCH, LeftRight.LEFT);
+            this.widgetSearchConfigs = new WidgetSearchBarConfigs(x + 2, y + 4, width - 14, 20, 0, MaLiLibIcons.SEARCH, HorizontalAlignment.LEFT);
             this.widgetSearchBar = this.widgetSearchConfigs;
             this.browserEntriesOffsetY = 23;
         }
         else
         {
             this.widgetSearchConfigs = null;
-            this.widgetSearchBar = new WidgetSearchBar(x + 2, y + 4, width - 14, 14, 0, MaLiLibIcons.SEARCH, LeftRight.LEFT);
+            this.widgetSearchBar = new WidgetSearchBar(x + 2, y + 4, width - 14, 14, 0, MaLiLibIcons.SEARCH, HorizontalAlignment.LEFT);
             this.browserEntriesOffsetY = 17;
         }
     }

@@ -1,6 +1,6 @@
-package fi.dy.masa.malilib.config;
+package fi.dy.masa.malilib.util;
 
-import fi.dy.masa.malilib.util.StringUtils;
+import fi.dy.masa.malilib.config.IConfigOptionListEntry;
 
 public enum HudAlignment implements IConfigOptionListEntry
 {

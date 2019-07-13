@@ -1,8 +1,8 @@
 package fi.dy.masa.malilib.gui.interfaces;
 
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.config.gui.ConfigOptionChangeListenerKeybind;
 import fi.dy.masa.malilib.gui.button.ConfigButtonKeybind;
+import fi.dy.masa.malilib.gui.listener.ConfigOptionChangeListenerKeybind;
 
 public interface IKeybindConfigGui extends IConfigGui
 {

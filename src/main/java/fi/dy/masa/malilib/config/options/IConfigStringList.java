@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.config;
+package fi.dy.masa.malilib.config.options;
 
 import java.util.List;
 import com.google.common.collect.ImmutableList;

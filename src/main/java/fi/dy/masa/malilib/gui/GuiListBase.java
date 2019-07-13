@@ -69,6 +69,15 @@ public abstract class GuiListBase<TYPE, WIDGET extends WidgetListEntryBase<TYPE>
         return super.setParent(parent);
     }
 
+    protected void updateListPosition(int listX, int listY)
+    {
+        int scrollbarPosition = this.getListWidget().getScrollbar().getValue();
+        this.setListPosition(listX, listY);
+        this.reCreateListWidget();
+        this.getListWidget().getScrollbar().setValue(scrollbarPosition);
+        this.getListWidget().refreshEntries();
+    }
+
     @Override
     public void initGui()
     {

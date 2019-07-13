@@ -1,6 +1,5 @@
-package fi.dy.masa.malilib.gui;
+package fi.dy.masa.malilib;
 
-import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.render.RenderUtils;
 import net.minecraft.util.ResourceLocation;

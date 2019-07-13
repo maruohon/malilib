@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.gui;
 
+import fi.dy.masa.malilib.MaLiLibIcons;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;

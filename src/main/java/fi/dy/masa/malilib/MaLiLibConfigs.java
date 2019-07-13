@@ -1,21 +1,17 @@
 package fi.dy.masa.malilib;
 
-import java.io.File;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import com.google.common.collect.ImmutableList;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import fi.dy.masa.malilib.config.ConfigUtils;
 import fi.dy.masa.malilib.config.IConfigHandler;
-import fi.dy.masa.malilib.config.IConfigValue;
 import fi.dy.masa.malilib.config.options.ConfigBoolean;
 import fi.dy.masa.malilib.config.options.ConfigHotkey;
-import fi.dy.masa.malilib.util.FileUtils;
-import fi.dy.masa.malilib.util.JsonUtils;
+import fi.dy.masa.malilib.config.options.IConfigBase;
+import fi.dy.masa.malilib.config.options.IConfigValue;
 
 public class MaLiLibConfigs implements IConfigHandler
 {
-    private static final String CONFIG_FILE_NAME = MaLiLibReference.MOD_ID + ".json";
-
     public static class Generic
     {
         public static final ConfigHotkey IGNORED_KEYS       = new ConfigHotkey("ignoredKeys", "", "Any keys set here will be completely ignored");
@@ -38,53 +34,26 @@ public class MaLiLibConfigs implements IConfigHandler
         );
     }
 
-    public static void loadFromFile()
+    @Override
+    public String getConfigFileName()
     {
-        File configFile = new File(FileUtils.getConfigDirectory(), CONFIG_FILE_NAME);
-
-        if (configFile.exists() && configFile.isFile() && configFile.canRead())
-        {
-            JsonElement element = JsonUtils.parseJsonFile(configFile);
-
-            if (element != null && element.isJsonObject())
-            {
-                JsonObject root = element.getAsJsonObject();
-
-                ConfigUtils.readConfigBase(root, "Generic", Generic.OPTIONS);
-            }
-        }
-    }
-
-    public static void saveToFile()
-    {
-        File dir = FileUtils.getConfigDirectory();
-
-        if ((dir.exists() && dir.isDirectory()) || dir.mkdirs())
-        {
-            JsonObject root = new JsonObject();
-
-            ConfigUtils.writeConfigBase(root, "Generic", Generic.OPTIONS);
-
-            JsonUtils.writeJsonToFile(root, new File(dir, CONFIG_FILE_NAME));
-        }
+        return MaLiLibReference.MOD_ID + ".json";
     }
 
     @Override
-    public void onConfigsChanged()
+    public Map<String, List<? extends IConfigBase>> getConfigsPerCategories()
     {
-        saveToFile();
-        loadFromFile();
+        Map<String, List<? extends IConfigBase>> map = new LinkedHashMap<>();
+
+        map.put("Generic",  Generic.OPTIONS);
+        map.put("Debug",    Debug.OPTIONS);
+
+        return map;
     }
 
     @Override
-    public void load()
+    public boolean shouldSaveCategoryToFile(String category)
     {
-        loadFromFile();
-    }
-
-    @Override
-    public void save()
-    {
-        saveToFile();
+        return category.equals("Debug") == false;
     }
 }

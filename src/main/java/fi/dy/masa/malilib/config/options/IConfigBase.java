@@ -1,7 +1,8 @@
-package fi.dy.masa.malilib.config;
+package fi.dy.masa.malilib.config.options;
 
 import javax.annotation.Nullable;
 import com.google.gson.JsonElement;
+import fi.dy.masa.malilib.config.ConfigType;
 
 public interface IConfigBase
 {
@@ -46,10 +47,18 @@ public interface IConfigBase
     }
 
     /**
+     * Returns true if the value of this config has been changed since
+     * it was last requested as a JSON element.
+     * @return
+     */
+    boolean isDirty();
+
+    /**
      * Set the value of this config option from a JSON element (is possible)
      * @param element
+     * @param configName
      */
-    void setValueFromJsonElement(JsonElement element);
+    void setValueFromJsonElement(JsonElement element, String configName);
 
     /**
      * Return the value of this config option as a JSON element, for saving into a config file.

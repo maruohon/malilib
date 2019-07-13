@@ -1,8 +1,11 @@
 package fi.dy.masa.malilib.config.gui;
 
 import java.util.List;
-import fi.dy.masa.malilib.config.IConfigBase;
+import javax.annotation.Nullable;
+import com.google.common.collect.ImmutableList;
+import fi.dy.masa.malilib.config.options.IConfigBase;
 import fi.dy.masa.malilib.gui.GuiConfigsBase;
+import fi.dy.masa.malilib.gui.interfaces.IConfigGuiTab;
 
 public class GuiModConfigs extends GuiConfigsBase
 {
@@ -15,7 +18,7 @@ public class GuiModConfigs extends GuiConfigsBase
 
     public GuiModConfigs(String modId, List<ConfigOptionWrapper> wrappers, boolean unused, String titleKey, Object... args)
     {
-        super(10, 0, modId, null, titleKey, args);
+        super(10, 0, modId, null, ImmutableList.of(), titleKey, args);
 
         this.configs = wrappers;
     }
@@ -24,6 +27,25 @@ public class GuiModConfigs extends GuiConfigsBase
     protected int getBrowserHeight()
     {
         return this.height - 70;
+    }
+
+    @Override
+    @Nullable
+    public IConfigGuiTab getCurrentTab()
+    {
+        return null;
+    }
+
+    @Override
+    public void setCurrentTab(IConfigGuiTab tab)
+    {
+        // NO-OP
+    }
+
+    @Override
+    protected void createTabButtons()
+    {
+        // NO-OP
     }
 
     @Override

@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.config.gui;
 
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.config.IConfigDouble;
+import fi.dy.masa.malilib.config.options.IConfigDouble;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.interfaces.ISliderCallback;
 

@@ -1,9 +1,9 @@
-package fi.dy.masa.malilib.config.gui;
+package fi.dy.masa.malilib;
 
 import java.util.List;
 import com.google.common.collect.ImmutableList;
-import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.config.ConfigManager;
+import fi.dy.masa.malilib.config.gui.GuiModConfigs;
 import fi.dy.masa.malilib.event.InputEventHandler;
 import fi.dy.masa.malilib.hotkeys.IHotkey;
 import fi.dy.masa.malilib.hotkeys.KeybindCategory;

@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.hotkeys;
 
-import fi.dy.masa.malilib.config.IConfigValue;
+import fi.dy.masa.malilib.config.options.IConfigValue;
 
 public interface IHotkey extends IConfigValue
 {

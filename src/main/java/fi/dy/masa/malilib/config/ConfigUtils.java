@@ -3,11 +3,10 @@ package fi.dy.masa.malilib.config;
 import java.util.List;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import fi.dy.masa.malilib.config.options.ConfigTypeWrapper;
+import fi.dy.masa.malilib.config.options.IConfigBase;
+import fi.dy.masa.malilib.config.options.IConfigValue;
 import fi.dy.masa.malilib.hotkeys.IHotkey;
-import fi.dy.masa.malilib.hotkeys.IKeybind;
-import fi.dy.masa.malilib.hotkeys.KeybindSettings;
 import fi.dy.masa.malilib.util.JsonUtils;
 
 public class ConfigUtils
@@ -18,11 +17,13 @@ public class ConfigUtils
 
         if (obj != null)
         {
-            for (IConfigBase option : options)
+            for (IConfigBase config : options)
             {
-                if (obj.has(option.getName()))
+                String name = config.getName();
+
+                if (obj.has(name))
                 {
-                    option.setValueFromJsonElement(obj.get(option.getName()));
+                    config.setValueFromJsonElement(obj.get(name), name);
                 }
             }
         }
@@ -36,46 +37,13 @@ public class ConfigUtils
         {
             for (IHotkey hotkey : hotkeys)
             {
-                String keyVal = null;
-                IKeybind keybind = hotkey.getKeybind();
-                JsonObject objKeybind = JsonUtils.getNestedObject(objHotkeys, hotkey.getName(), false);
+                String name = hotkey.getName();
 
-                if (objKeybind != null)
+                if (objHotkeys.has(name))
                 {
-                    if (JsonUtils.hasString(objKeybind, "keys"))
-                    {
-                        keyVal = objKeybind.get("keys").getAsString();
-                    }
-
-                    if (JsonUtils.hasObject(objKeybind, "settings"))
-                    {
-                        keybind.setSettings(KeybindSettings.fromJson(objKeybind.getAsJsonObject("settings")));
-                    }
-                }
-                // Backwards compatibility for reading the old simple keybinds
-                else if (JsonUtils.hasString(objHotkeys, hotkey.getName()))
-                {
-                    keyVal = JsonUtils.getString(objHotkeys, hotkey.getName());
-                }
-
-                if (keyVal != null)
-                {
-                    hotkey.getKeybind().setValueFromString(keyVal);
+                    hotkey.getKeybind().setValueFromJsonElement(objHotkeys.get(name), name);
                 }
             }
-        }
-    }
-
-    public static void readHotkeyToggleOptions(JsonObject root, String keyHotkey, String keyBoolean, List<? extends IHotkeyTogglable> options)
-    {
-        if (JsonUtils.hasObject(root, keyHotkey))
-        {
-            readHotkeys(root, keyHotkey, options);
-        }
-
-        if (JsonUtils.hasObject(root, keyBoolean))
-        {
-            readConfigBase(root, keyBoolean, options);
         }
     }
 
@@ -95,18 +63,8 @@ public class ConfigUtils
 
         for (IHotkey hotkey : hotkeys)
         {
-            JsonObject obj = new JsonObject();
-            obj.add("keys", new JsonPrimitive(hotkey.getKeybind().getStringValue()));
-            obj.add("settings", hotkey.getKeybind().getSettings().toJson());
-
-            objHotkeys.add(hotkey.getName(), obj);
+            objHotkeys.add(hotkey.getName(), hotkey.getKeybind().getAsJsonElement());
         }
-    }
-
-    public static void writeHotkeyToggleOptions(JsonObject root, String keyHotkey, String keyBoolean, List<? extends IHotkeyTogglable> options)
-    {
-        writeConfigBase(root, keyBoolean, options);
-        writeHotkeys(root, keyHotkey, options);
     }
 
     /**

@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.config;
 
 import java.util.HashMap;
 import java.util.Map;
+import javax.annotation.Nullable;
 
 public class ConfigManager implements IConfigManager
 {
@@ -18,6 +19,13 @@ public class ConfigManager implements IConfigManager
     public void registerConfigHandler(String modId, IConfigHandler handler)
     {
         this.configHandlers.put(modId, handler);
+    }
+
+    @Override
+    @Nullable
+    public IConfigHandler getConfigHandler(String modId)
+    {
+        return this.configHandlers.get(modId);
     }
 
     @Override
@@ -49,7 +57,7 @@ public class ConfigManager implements IConfigManager
     {
         for (IConfigHandler handler : this.configHandlers.values())
         {
-            handler.save();
+            handler.saveIfDirty();
         }
     }
 }
