@@ -76,7 +76,8 @@ public class WidgetListConfigOptions extends WidgetListConfigOptionsBase<ConfigO
 
             for (ConfigOptionWrapper entry : entries)
             {
-                if ((filterText.isEmpty() || this.entryMatchesFilter(entry, filterText)) &&
+                if (entry.getType() == ConfigOptionWrapper.Type.CONFIG &&
+                    (filterText.isEmpty() || this.entryMatchesFilter(entry, filterText)) &&
                     (entry.getConfig().getType() != ConfigType.HOTKEY ||
                      filterKeys.getKeys().size() == 0 ||
                      ((IHotkey) entry.getConfig()).getKeybind().overlaps(filterKeys)))
@@ -124,6 +125,16 @@ public class WidgetListConfigOptions extends WidgetListConfigOptionsBase<ConfigO
         @Override
         public int compare(ConfigOptionWrapper config1, ConfigOptionWrapper config2)
         {
+            if (config1.getType() != ConfigOptionWrapper.Type.CONFIG)
+            {
+                return 1;
+            }
+
+            if (config2.getType() != ConfigOptionWrapper.Type.CONFIG)
+            {
+                return -1;
+            }
+
             return this.compare(config1.getConfig().getName(), config2.getConfig().getName());
         }
     }

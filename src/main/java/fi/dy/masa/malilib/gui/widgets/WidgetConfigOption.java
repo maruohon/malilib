@@ -63,7 +63,7 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
         {
             IConfigBase config = wrapper.getConfig();
 
-            if (wrapper.getConfig() instanceof IStringRepresentable)
+            if (config instanceof IStringRepresentable)
             {
                 IStringRepresentable configStr = (IStringRepresentable) config;
                 this.initialStringValue = configStr.getStringValue();
@@ -76,13 +76,13 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
                 this.lastAppliedValue = null;
                 this.initialKeybindSettings = null;
 
-                if (wrapper.getConfig() instanceof IConfigStringList)
+                if (config instanceof IConfigStringList)
                 {
-                    this.initialStringList = ImmutableList.copyOf(((IConfigStringList) wrapper.getConfig()).getStrings());
+                    this.initialStringList = ImmutableList.copyOf(((IConfigStringList) config).getStrings());
                 }
             }
 
-            this.addConfigOption(x, y, zLevel, labelWidth, configWidth, config);
+            this.addConfigOption(x, y, zLevel, labelWidth, configWidth, wrapper);
         }
         else
         {
@@ -94,8 +94,9 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
         }
     }
 
-    protected void addConfigOption(int x, int y, float zLevel, int labelWidth, int configWidth, IConfigBase config)
+    protected void addConfigOption(int x, int y, float zLevel, int labelWidth, int configWidth, ConfigOptionWrapper wrapper)
     {
+        IConfigBase config = wrapper.getConfig();
         ConfigType type = config.getType();
 
         y += 1;
@@ -108,7 +109,7 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
 
         if (infoProvider != null)
         {
-            comment = infoProvider.getHoverInfo(config);
+            comment = infoProvider.getHoverInfo(wrapper);
         }
         else
         {

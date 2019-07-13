@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.gui;
 
-import fi.dy.masa.malilib.config.options.IConfigBase;
+import fi.dy.masa.malilib.gui.GuiConfigsBase.ConfigOptionWrapper;
 import fi.dy.masa.malilib.gui.interfaces.IConfigInfoProvider;
 
 public class ConfigInfoProviderSimple implements IConfigInfoProvider
@@ -15,8 +15,8 @@ public class ConfigInfoProviderSimple implements IConfigInfoProvider
     }
 
     @Override
-    public String getHoverInfo(IConfigBase config)
+    public String getHoverInfo(ConfigOptionWrapper wrapper)
     {
-        return this.prefix + config.getPrettyName() + this.suffix;
+        return this.prefix + wrapper.getConfig().getPrettyName() + this.suffix;
     }
 }

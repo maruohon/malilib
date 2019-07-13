@@ -3,8 +3,8 @@ package fi.dy.masa.malilib;
 import java.util.List;
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.hotkeys.IHotkey;
-import fi.dy.masa.malilib.hotkeys.IKeybindManager;
 import fi.dy.masa.malilib.hotkeys.IKeybindProvider;
+import fi.dy.masa.malilib.hotkeys.KeybindCategory;
 
 public class MaLiLibInputHandler implements IKeybindProvider
 {
@@ -21,15 +21,14 @@ public class MaLiLibInputHandler implements IKeybindProvider
     }
 
     @Override
-    public void addKeysToMap(IKeybindManager manager)
+    public List<? extends IHotkey> getAllHotkeys()
     {
-        manager.addKeybindToMap(MaLiLibConfigs.Generic.OPEN_GUI_CONFIGS.getKeybind());
+        return ImmutableList.of(MaLiLibConfigs.Generic.OPEN_GUI_CONFIGS);
     }
 
     @Override
-    public void addHotkeys(IKeybindManager manager)
+    public List<KeybindCategory> getHotkeyCategoriesForCombinedView()
     {
-        List<? extends IHotkey> hotkeys = ImmutableList.of( MaLiLibConfigs.Generic.OPEN_GUI_CONFIGS );
-        manager.addHotkeysForCategory(MaLiLibReference.MOD_NAME, "malilib.hotkeys.category.generic_hotkeys", hotkeys);
+        return ImmutableList.of(new KeybindCategory(MaLiLibReference.MOD_NAME, "malilib.hotkeys.category.generic_hotkeys", this.getAllHotkeys()));
     }
 }

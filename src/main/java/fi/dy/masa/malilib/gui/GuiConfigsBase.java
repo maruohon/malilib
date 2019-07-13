@@ -301,13 +301,20 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
     {
         private final Type type;
         @Nullable private final IConfigBase config;
+        @Nullable private final String labelPrefix;
         @Nullable private final String label;
 
         public ConfigOptionWrapper(IConfigBase config)
         {
+            this(null, config);
+        }
+
+        public ConfigOptionWrapper(String labelPrefix, IConfigBase config)
+        {
             this.type = Type.CONFIG;
             this.config = config;
             this.label = null;
+            this.labelPrefix = labelPrefix;
         }
 
         public ConfigOptionWrapper(String label)
@@ -315,6 +322,7 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
             this.type = Type.LABEL;
             this.config = null;
             this.label = label;
+            this.labelPrefix = null;
         }
 
         public Type getType()
@@ -326,6 +334,12 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
         public IConfigBase getConfig()
         {
             return this.config;
+        }
+
+        @Nullable
+        public String getLabelPrefix()
+        {
+            return this.labelPrefix;
         }
 
         @Nullable

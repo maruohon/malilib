@@ -1,21 +1,23 @@
 package fi.dy.masa.malilib.hotkeys;
 
+import java.util.List;
+
 public interface IKeybindProvider
 {
     /**
-     * Called when the keybind map is refreshed/recreated.
-     * Classes implementing this interface should add all of their keybinds
-     * using the {@link IKeybindManager#addKeybindToMap(IKeybind)} method when this method is called.
-     * Assume any previously added keybinds have been cleared just before this method is called.
-     * @param manager
+     * Returns a list of all hotkeys that should be registered.
+     * This is called when the master hotkey list in malilib is being rebuilt,
+     * so any hotkeys not on the returned list, will not function.
+     * @return
      */
-    void addKeysToMap(IKeybindManager manager);
+    List<? extends IHotkey> getAllHotkeys();
 
     /**
-     * Called when the event handler is registered.
-     * Any mod that wants all their keybinds to appear in the master/combined list of all
-     * keybinds, should add them here using the {@link IKeybindManager#addHotkeysForCategory(String, String, java.util.List)} method).
-     * @param manager
+     * Returns a list of all the hotkeys, per categories, that should appear
+     * on the combined list of all hotkeys from all mods using the malilib hotkey system.
+     * Keys/categories not on this list will simply not appear on the combined list,
+     * the hotkeys will still function normally.
+     * @return
      */
-    void addHotkeys(IKeybindManager manager);
+    List<KeybindCategory> getHotkeyCategoriesForCombinedView();
 }

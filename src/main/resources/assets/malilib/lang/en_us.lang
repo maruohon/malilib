@@ -72,6 +72,8 @@ malilib.gui.title.generic=Generic
 malilib.gui.title.keybind_settings.advanced=Advanced Keybind Settings for %s
 malilib.gui.title.string_list_edit=Edit string list for '%s'
 
+malilib.hotkeys.category.generic_hotkeys=Generic hotkeys
+
 malilib.label.active_mode.always=Always
 malilib.label.active_mode.never=Never
 malilib.label.active_mode.with_key=With Key

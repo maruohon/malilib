@@ -220,6 +220,11 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
         return this.widgetSearchBar != null && this.widgetSearchBar.hasFilter();
     }
 
+    public boolean isSearchOpen()
+    {
+        return this.widgetSearchBar != null && this.widgetSearchBar.isSearchOpen();
+    }
+
     @Nullable
     public WidgetSearchBar getSearchBarWidget()
     {

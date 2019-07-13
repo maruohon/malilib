@@ -75,7 +75,7 @@ public class WorldLoadHandler implements IWorldLoadManager
             ((ConfigManager) ConfigManager.getInstance()).saveAllConfigs();
         }
         // (Re-)Load all the configs from file when entering a world
-        else
+        else if (worldBefore == null)
         {
             ((ConfigManager) ConfigManager.getInstance()).loadAllConfigs();
             InputEventHandler.getKeybindManager().updateUsedKeys();

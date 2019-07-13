@@ -57,7 +57,10 @@ public class InputEventHandler implements IKeybindManager, IInputManager
             this.keybindProviders.add(provider);
         }
 
-        provider.addHotkeys(this);
+        for (KeybindCategory category : provider.getHotkeyCategoriesForCombinedView())
+        {
+            this.addHotkeysForCategory(category);
+        }
     }
 
     @Override
@@ -79,12 +82,14 @@ public class InputEventHandler implements IKeybindManager, IInputManager
 
         for (IKeybindProvider handler : this.keybindProviders)
         {
-            handler.addKeysToMap(this);
+            for (IHotkey hotkey : handler.getAllHotkeys())
+            {
+                this.addKeybindToMap(hotkey.getKeybind());
+            }
         }
     }
 
-    @Override
-    public void addKeybindToMap(IKeybind keybind)
+    private void addKeybindToMap(IKeybind keybind)
     {
         Collection<Integer> keys = keybind.getKeys();
 
@@ -94,14 +99,11 @@ public class InputEventHandler implements IKeybindManager, IInputManager
         }
     }
 
-    @Override
-    public void addHotkeysForCategory(String modName, String keyCategory, List<? extends IHotkey> hotkeys)
+    private void addHotkeysForCategory(KeybindCategory category)
     {
-        KeybindCategory cat = new KeybindCategory(modName, keyCategory, hotkeys);
-
         // Remove a previous entry, if any (matched based on the modName and keyCategory only!)
-        this.allKeybinds.remove(cat);
-        this.allKeybinds.add(cat);
+        this.allKeybinds.remove(category);
+        this.allKeybinds.add(category);
     }
 
     @Override
