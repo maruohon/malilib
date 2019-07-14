@@ -23,7 +23,8 @@ public class ConfigOptionList extends ConfigBase<ConfigOptionList> implements IC
 
         this.defaultValue = defaultValue;
         this.value = defaultValue;
-        this.lastSavedValue = defaultValue;
+
+        this.cacheSavedValue();
     }
 
     @Override
@@ -77,6 +78,12 @@ public class ConfigOptionList extends ConfigBase<ConfigOptionList> implements IC
     }
 
     @Override
+    public void cacheSavedValue()
+    {
+        this.lastSavedValue = this.value;
+    }
+
+    @Override
     public void resetToDefault()
     {
         this.value = this.defaultValue;
@@ -108,7 +115,6 @@ public class ConfigOptionList extends ConfigBase<ConfigOptionList> implements IC
             if (element.isJsonPrimitive())
             {
                 this.setValueFromString(element.getAsString());
-                this.lastSavedValue = this.value;
             }
             else
             {
@@ -119,12 +125,13 @@ public class ConfigOptionList extends ConfigBase<ConfigOptionList> implements IC
         {
             LiteModMaLiLib.logger.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
         }
+
+        this.cacheSavedValue();
     }
 
     @Override
     public JsonElement getAsJsonElement()
     {
-        this.lastSavedValue = this.value;
         return new JsonPrimitive(this.getStringValue());
     }
 }

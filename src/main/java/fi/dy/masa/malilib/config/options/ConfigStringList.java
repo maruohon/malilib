@@ -21,7 +21,8 @@ public class ConfigStringList extends ConfigBase<ConfigStringList> implements IC
 
         this.defaultValue = defaultValue;
         this.strings.addAll(defaultValue);
-        this.lastSavedStrings.addAll(defaultValue);
+
+        this.cacheSavedValue();
     }
 
     @Override
@@ -71,6 +72,13 @@ public class ConfigStringList extends ConfigBase<ConfigStringList> implements IC
     }
 
     @Override
+    public void cacheSavedValue()
+    {
+        this.lastSavedStrings.clear();
+        this.lastSavedStrings.addAll(this.strings);
+    }
+
+    @Override
     public void setValueFromJsonElement(JsonElement element, String configName)
     {
         this.strings.clear();
@@ -97,8 +105,7 @@ public class ConfigStringList extends ConfigBase<ConfigStringList> implements IC
             LiteModMaLiLib.logger.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
         }
 
-        this.lastSavedStrings.clear();
-        this.lastSavedStrings.addAll(this.strings);
+        this.cacheSavedValue();
     }
 
     @Override
@@ -110,9 +117,6 @@ public class ConfigStringList extends ConfigBase<ConfigStringList> implements IC
         {
             arr.add(new JsonPrimitive(str));
         }
-
-        this.lastSavedStrings.clear();
-        this.lastSavedStrings.addAll(this.strings);
 
         return arr;
     }

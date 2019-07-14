@@ -31,6 +31,7 @@ public class KeybindMulti implements IKeybind
     private List<Integer> keyCodes = new ArrayList<>(4);
     private KeybindSettings settings;
     private String lastSavedStorageString;
+    private KeybindSettings lastSavedSettings;
     private boolean pressed;
     private boolean pressedLast;
     private int heldTime;
@@ -40,9 +41,10 @@ public class KeybindMulti implements IKeybind
     private KeybindMulti(String defaultStorageString, KeybindSettings settings)
     {
         this.defaultStorageString = defaultStorageString;
-        this.lastSavedStorageString = defaultStorageString;
         this.defaultSettings = settings;
         this.settings = settings;
+
+        this.cacheSavedValue();
     }
 
     @Override
@@ -257,7 +259,15 @@ public class KeybindMulti implements IKeybind
     @Override
     public boolean isDirty()
     {
-        return this.lastSavedStorageString.equals(this.getStringValue()) == false;
+        return this.lastSavedStorageString.equals(this.getStringValue()) == false ||
+               this.lastSavedSettings.equals(this.settings) == false;
+    }
+
+    @Override
+    public void cacheSavedValue()
+    {
+        this.lastSavedStorageString = this.getStringValue();
+        this.lastSavedSettings = this.settings;
     }
 
     @Override
@@ -447,14 +457,13 @@ public class KeybindMulti implements IKeybind
             LiteModMaLiLib.logger.warn("Failed to set the hotkey '{}' from the JSON element '{}'", hotkeyName, element, e);
         }
 
-        this.lastSavedStorageString = this.getStringValue();
+        this.cacheSavedValue();
     }
 
     @Override
     public JsonElement getAsJsonElement()
     {
         String str = this.getStringValue();
-        this.lastSavedStorageString = str;
 
         JsonObject obj = new JsonObject();
         obj.add("keys", new JsonPrimitive(str));

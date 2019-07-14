@@ -22,7 +22,8 @@ public class ConfigBoolean extends ConfigBase<ConfigBoolean> implements IConfigB
 
         this.defaultValue = defaultValue;
         this.value = defaultValue;
-        this.lastSavedValue = defaultValue;
+
+        this.cacheSavedValue();
     }
 
     @Override
@@ -68,6 +69,12 @@ public class ConfigBoolean extends ConfigBase<ConfigBoolean> implements IConfigB
     }
 
     @Override
+    public void cacheSavedValue()
+    {
+        this.lastSavedValue = this.value;
+    }
+
+    @Override
     public void resetToDefault()
     {
         this.value = this.defaultValue;
@@ -99,7 +106,6 @@ public class ConfigBoolean extends ConfigBase<ConfigBoolean> implements IConfigB
             if (element.isJsonPrimitive())
             {
                 this.value = element.getAsBoolean();
-                this.lastSavedValue = this.value;
             }
             else
             {
@@ -110,12 +116,13 @@ public class ConfigBoolean extends ConfigBase<ConfigBoolean> implements IConfigB
         {
             LiteModMaLiLib.logger.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
         }
+
+        this.cacheSavedValue();
     }
 
     @Override
     public JsonElement getAsJsonElement()
     {
-        this.lastSavedValue = this.value;
         return new JsonPrimitive(this.value);
     }
 }

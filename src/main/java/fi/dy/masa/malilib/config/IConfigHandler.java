@@ -56,8 +56,6 @@ public interface IConfigHandler
 
     /**
      * Returns true if at least some of the config values have changed since last saving to disk.
-     * The caching is by default done in the getAsJsonElement() method, which should normally
-     * only be called when saving the configs to a file.
      * @return
      */
     default boolean areConfigsDirty()

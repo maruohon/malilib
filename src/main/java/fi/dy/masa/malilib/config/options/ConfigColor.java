@@ -88,6 +88,8 @@ public class ConfigColor extends ConfigInteger
         {
             LiteModMaLiLib.logger.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
         }
+
+        this.cacheSavedValue();
     }
 
     @Override

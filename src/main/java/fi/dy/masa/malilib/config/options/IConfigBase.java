@@ -4,7 +4,7 @@ import javax.annotation.Nullable;
 import com.google.gson.JsonElement;
 import fi.dy.masa.malilib.config.ConfigType;
 
-public interface IConfigBase
+public interface IConfigBase extends IConfigSavable
 {
     /**
      * Returns the type of this config. Used by the config GUI to determine what kind of control
@@ -45,13 +45,6 @@ public interface IConfigBase
     {
         return this.getName();
     }
-
-    /**
-     * Returns true if the value of this config has been changed since
-     * it was last requested as a JSON element.
-     * @return
-     */
-    boolean isDirty();
 
     /**
      * Set the value of this config option from a JSON element (is possible)

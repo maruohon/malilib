@@ -236,6 +236,12 @@ public class ConfigTypeWrapper implements IConfigBoolean, IConfigDouble, IConfig
     }
 
     @Override
+    public void cacheSavedValue()
+    {
+        this.wrappedConfig.cacheSavedValue();
+    }
+
+    @Override
     public void resetToDefault()
     {
         try
@@ -436,16 +442,12 @@ public class ConfigTypeWrapper implements IConfigBoolean, IConfigDouble, IConfig
             LiteModMaLiLib.logger.warn("Failed to read config value for {} from the JSON config", configName, e);
         }
 
-        // This causes the last saved value to be cached
-        this.wrappedConfig.getAsJsonElement();
+        this.wrappedConfig.cacheSavedValue();
     }
 
     @Override
     public JsonElement getAsJsonElement()
     {
-        // This causes the last saved value to be cached
-        this.wrappedConfig.getAsJsonElement();
-
         switch (this.wrappedType)
         {
             case BOOLEAN:

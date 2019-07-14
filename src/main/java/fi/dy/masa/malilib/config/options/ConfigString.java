@@ -17,6 +17,8 @@ public class ConfigString extends ConfigBase<ConfigString> implements IConfigVal
 
         this.defaultValue = defaultValue;
         this.value = defaultValue;
+
+        this.cacheSavedValue();
     }
 
     @Override
@@ -68,6 +70,12 @@ public class ConfigString extends ConfigBase<ConfigString> implements IConfigVal
     }
 
     @Override
+    public void cacheSavedValue()
+    {
+        this.lastSavedValue = this.value;
+    }
+
+    @Override
     public void setValueFromJsonElement(JsonElement element, String configName)
     {
         try
@@ -75,7 +83,6 @@ public class ConfigString extends ConfigBase<ConfigString> implements IConfigVal
             if (element.isJsonPrimitive())
             {
                 this.value = element.getAsString();
-                this.lastSavedValue = this.value;
             }
             else
             {
@@ -86,12 +93,13 @@ public class ConfigString extends ConfigBase<ConfigString> implements IConfigVal
         {
             LiteModMaLiLib.logger.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
         }
+
+        this.cacheSavedValue();
     }
 
     @Override
     public JsonElement getAsJsonElement()
     {
-        this.lastSavedValue = this.value;
         return new JsonPrimitive(this.value);
     }
 }

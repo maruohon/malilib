@@ -34,6 +34,8 @@ public class ConfigInteger extends ConfigBase<ConfigInteger> implements IConfigI
         this.defaultValue = defaultValue;
         this.value = defaultValue;
         this.useSlider = useSlider;
+
+        this.cacheSavedValue();
     }
 
     @Override
@@ -116,6 +118,12 @@ public class ConfigInteger extends ConfigBase<ConfigInteger> implements IConfigI
     }
 
     @Override
+    public void cacheSavedValue()
+    {
+        this.lastSavedValue = this.value;
+    }
+
+    @Override
     public void resetToDefault()
     {
         this.value = this.defaultValue;
@@ -154,7 +162,6 @@ public class ConfigInteger extends ConfigBase<ConfigInteger> implements IConfigI
             if (element.isJsonPrimitive())
             {
                 this.value = this.getClampedValue(element.getAsInt());
-                this.lastSavedValue = this.value;
             }
             else
             {
@@ -165,12 +172,13 @@ public class ConfigInteger extends ConfigBase<ConfigInteger> implements IConfigI
         {
             LiteModMaLiLib.logger.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
         }
+
+        this.cacheSavedValue();
     }
 
     @Override
     public JsonElement getAsJsonElement()
     {
-        this.lastSavedValue = this.value;
         return new JsonPrimitive(this.value);
     }
 }

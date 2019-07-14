@@ -54,6 +54,7 @@ public class ConfigUtils
         for (IConfigBase option : options)
         {
             obj.add(option.getName(), option.getAsJsonElement());
+            option.cacheSavedValue();
         }
     }
 

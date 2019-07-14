@@ -77,6 +77,12 @@ public class ConfigHotkey extends ConfigBase<ConfigHotkey> implements IHotkey
     }
 
     @Override
+    public void cacheSavedValue()
+    {
+        this.keybind.cacheSavedValue();
+    }
+
+    @Override
     public void resetToDefault()
     {
         this.keybind.resetToDefault();
