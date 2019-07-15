@@ -193,6 +193,15 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
 
     public boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
+        for (WidgetBase widget : this.widgets)
+        {
+            if (widget.isMouseOver(mouseX, mouseY) && widget.onMouseClicked(mouseX, mouseY, mouseButton))
+            {
+                // Don't call super if the button press got handled
+                return true;
+            }
+        }
+
         for (ButtonBase button : this.buttons)
         {
             if (button.onMouseClicked(mouseX, mouseY, mouseButton))
@@ -210,19 +219,6 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
             {
                 // Don't call super if the button press got handled
                 handled = true;
-            }
-        }
-
-        if (handled == false)
-        {
-            for (WidgetBase widget : this.widgets)
-            {
-                if (widget.isMouseOver(mouseX, mouseY) && widget.onMouseClicked(mouseX, mouseY, mouseButton))
-                {
-                    // Don't call super if the button press got handled
-                    handled = true;
-                    break;
-                }
             }
         }
 

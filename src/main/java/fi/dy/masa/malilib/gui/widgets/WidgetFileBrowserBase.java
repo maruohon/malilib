@@ -110,6 +110,8 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
                 this.currentDirectory, this.getRootDirectory(), this, this.iconProvider);
         this.browserEntriesOffsetY = this.directoryNavigationWidget.getHeight() + 3;
         this.widgetSearchBar = this.directoryNavigationWidget;
+
+        this.updateScrollbarPosition();
     }
 
     @Override

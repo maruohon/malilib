@@ -13,6 +13,8 @@ public enum MaLiLibIcons implements IGuiIcon
     BTN_SLIDER          (153,   0, 16, 16),
     BTN_TXTFIELD        (153,  16, 16, 16),
     BTN_PLUSMINUS_16    (153,  32, 16, 16),
+    SMALL_ARROW_UP      (213,   0,  8,  8),
+    SMALL_ARROW_DOWN    (213,   8,  8,  8),
     SEARCH              (201,   0, 12, 12, 0, 0);
 
     public static final ResourceLocation TEXTURE = new ResourceLocation(MaLiLibReference.MOD_ID, "textures/gui/gui_widgets.png");

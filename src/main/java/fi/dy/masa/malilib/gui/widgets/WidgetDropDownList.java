@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.MaLiLibIcons;
-import fi.dy.masa.malilib.gui.GuiScrollBar;
 import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
+import fi.dy.masa.malilib.gui.WidgetScrollBar;
 import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
 import fi.dy.masa.malilib.gui.wrappers.TextFieldWrapper;
 import fi.dy.masa.malilib.interfaces.IStringRetriever;
@@ -25,7 +25,7 @@ import net.minecraft.client.renderer.GlStateManager;
  */
 public class WidgetDropDownList<T> extends WidgetBase
 {
-    protected final GuiScrollBar scrollBar = new GuiScrollBar();
+    protected final WidgetScrollBar scrollBar;
     protected final List<T> entries;
     protected final List<T> filteredEntries;
     protected final TextFieldWrapper<GuiTextFieldGeneric> searchBar;
@@ -34,7 +34,6 @@ public class WidgetDropDownList<T> extends WidgetBase
     protected final int totalHeight;
     protected boolean isOpen;
     protected int selectedIndex;
-    protected int scrollbarWidth = 10;
     @Nullable protected final IStringRetriever<T> stringRetriever;
     @Nullable protected T selectedEntry;
 
@@ -62,7 +61,12 @@ public class WidgetDropDownList<T> extends WidgetBase
 
         this.maxVisibleEntries = v;
         this.totalHeight = (v + 1) * height;
+
+        int scrollbarWidth = 8;
+        int scrollbarHeight = this.maxVisibleEntries * height;
+        this.scrollBar = new WidgetScrollBar(x + width - scrollbarWidth - 1, y + height + 1, scrollbarWidth, scrollbarHeight);
         this.scrollBar.setMaxValue(entries.size() - this.maxVisibleEntries);
+        this.scrollBar.setArrowTextures(MaLiLibIcons.SMALL_ARROW_UP, MaLiLibIcons.SMALL_ARROW_DOWN);
 
         TextFieldListener listener = new TextFieldListener(this);
         this.searchBar = new TextFieldWrapper<>(new GuiTextFieldGeneric(x + 1, y - 18, this.width - 2, 16, this.textRenderer), listener);
@@ -131,28 +135,21 @@ public class WidgetDropDownList<T> extends WidgetBase
     {
         if (this.isOpen && mouseY > this.y + this.height)
         {
-            if (mouseX < this.x + this.width - this.scrollbarWidth)
+            if (mouseX < this.x + this.width - this.scrollBar.getWidth())
             {
                 int relIndex = (mouseY - this.y - this.height) / this.height;
                 this.setSelectedEntry(this.scrollBar.getValue() + relIndex);
             }
             else
             {
-                if (this.scrollBar.wasMouseOver() == false)
+                if (this.scrollBar.onMouseClicked(mouseX, mouseY, mouseButton))
                 {
-                    int relY = mouseY - this.y - this.height;
-                    int ddHeight = this.height * this.maxVisibleEntries;
-                    int newPos = (int) (((double) relY / (double) ddHeight) * this.scrollBar.getMaxValue());
-
-                    this.scrollBar.setValue(newPos);
-                    this.scrollBar.handleDrag(mouseY, 123);
+                    return true;
                 }
-
-                this.scrollBar.setIsDragging(true);
             }
         }
 
-        if (this.isOpen == false || (mouseX < this.x + this.width - this.scrollbarWidth || mouseY < this.y + this.height))
+        if (this.isOpen == false || (mouseX < this.x + this.width - this.scrollBar.getWidth() || mouseY < this.y + this.height))
         {
             this.isOpen = ! this.isOpen;
 
@@ -169,7 +166,7 @@ public class WidgetDropDownList<T> extends WidgetBase
     @Override
     public void onMouseReleasedImpl(int mouseX, int mouseY, int mouseButton)
     {
-        this.scrollBar.setIsDragging(false);
+        this.scrollBar.onMouseReleased(mouseX, mouseY, mouseButton);
     }
 
     @Override
@@ -259,7 +256,7 @@ public class WidgetDropDownList<T> extends WidgetBase
         int txtY = this.y + this.height / 2 - this.fontHeight / 2;
         this.drawString(txtX, txtY, 0xFFE0E0E0, str);
         txtY += this.height + 1;
-        int scrollWidth = 10;
+        int scrollWidth = this.scrollBar.getWidth();
 
         if (this.isOpen)
         {
@@ -284,19 +281,17 @@ public class WidgetDropDownList<T> extends WidgetBase
                     bg = 0x60FFFFFF;
                 }
 
-                RenderUtils.drawRect(this.x, y, this.width - scrollWidth, this.height, bg);
+                RenderUtils.drawRect(this.x, y, this.width - scrollWidth - 1, this.height, bg);
                 str = this.getDisplayString(list.get(i));
                 this.drawString(txtX, txtY, 0xFFE0E0E0, str);
                 y += this.height;
                 txtY += this.height;
             }
 
-            int x = this.x + this.width - this.scrollbarWidth - 1;
-            y = this.y + this.height + 1;
             int h = visibleEntries * this.height;
             int totalHeight = Math.max(h, list.size() * this.height);
 
-            this.scrollBar.render(mouseX, mouseY, 0, x, y, this.scrollbarWidth, h, totalHeight);
+            this.scrollBar.render(mouseX, mouseY, h, totalHeight);
         }
         else
         {
