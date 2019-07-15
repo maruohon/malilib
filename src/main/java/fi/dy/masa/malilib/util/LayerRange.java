@@ -431,7 +431,7 @@ public class LayerRange
 
                 if (player != null)
                 {
-                    this.moveLayerRange(amount, false, player, true);
+                    this.moveLayerRange(amount, true, player, true);
                 }
 
                 break;
