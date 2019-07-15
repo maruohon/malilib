@@ -297,13 +297,13 @@ public class LayerRange
         switch (this.axis)
         {
             case X:
-                pos = (int) entity.posX;
+                pos = MathHelper.floor(entity.posX);
                 break;
             case Y:
-                pos = (int) entity.posY;
+                pos = MathHelper.floor(entity.posY);
                 break;
             case Z:
-                pos = (int) entity.posZ;
+                pos = MathHelper.floor(entity.posZ);
                 break;
         }
 
