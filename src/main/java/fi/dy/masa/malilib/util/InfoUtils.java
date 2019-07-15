@@ -14,6 +14,7 @@ public class InfoUtils
     private static final MessageRenderer IN_GAME_MESSAGES = new MessageRenderer(0xA0000000, 0).setBackgroundStyle(true, false).setCentered(true, false).setExpandUp(true);
 
     public static final IStringConsumer INFO_MESSAGE_CONSUMER = new InfoMessageConsumer();
+    public static final IMessageConsumer INGAME_MESSAGE_CONSUMER = new InGameMessageConsumer();
 
     /**
      * Adds the message to the current GUI's message handler, if there is currently
@@ -197,6 +198,15 @@ public class InfoUtils
         {
             TextComponentTranslation message = new TextComponentTranslation(string);
             Minecraft.getMinecraft().ingameGUI.addChatMessage(ChatType.GAME_INFO, message);
+        }
+    }
+
+    public static class InGameMessageConsumer implements IMessageConsumer
+    {
+        @Override
+        public void addMessage(MessageType type, int lifeTime, String translationKey, Object... args)
+        {
+            InfoUtils.showInGameMessage(type, lifeTime, translationKey, args);
         }
     }
 }
