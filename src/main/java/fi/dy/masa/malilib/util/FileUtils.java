@@ -134,6 +134,27 @@ public class FileUtils
         return sb.toString().replaceAll("COM", "").replaceAll("PRN", "");
     }
 
+    /**
+     * Checks if the given filename contains characters or strings that would be invalid in file names.
+     * Most of these are just invalid on Windows...
+     * @param filename
+     * @return
+     */
+    public static boolean doesFilenameContainIllegalCharacters(String filename)
+    {
+        for (int i = 0; i < filename.length(); ++i)
+        {
+            char c = filename.charAt(i);
+
+            if (ILLEGAL_CHARACTERS.contains(c))
+            {
+                return true;
+            }
+        }
+
+        return filename.indexOf("COM") != -1 || filename.indexOf("PRN") != -1;
+    }
+
     @Nullable
     public static NBTTagCompound readNBTFile(File file)
     {
