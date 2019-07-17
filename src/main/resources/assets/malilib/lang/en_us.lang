@@ -78,6 +78,11 @@ malilib.label.active_mode.always=Always
 malilib.label.active_mode.never=Never
 malilib.label.active_mode.with_key=With Key
 
+malilib.label.info_type.chat=Chat
+malilib.label.info_type.hotbar=Hotbar
+malilib.label.info_type.message=Message Overlay
+malilib.label.info_type.none=None
+
 malilib.label.key_action.both=BOTH
 malilib.label.key_action.press=PRESS
 malilib.label.key_action.release=RELEASE

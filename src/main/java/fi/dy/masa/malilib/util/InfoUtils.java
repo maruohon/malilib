@@ -16,6 +16,30 @@ public class InfoUtils
     public static final IStringConsumer INFO_MESSAGE_CONSUMER = new InfoMessageConsumer();
     public static final IMessageConsumer INGAME_MESSAGE_CONSUMER = new InGameMessageConsumer();
 
+    public static void showMessage(InfoType outputType, MessageType messageType, String translationKey, Object... args)
+    {
+        showMessage(outputType, messageType, 5000, translationKey, args);
+    }
+
+    public static void showMessage(InfoType outputType, MessageType messageType, int lifeTime, String translationKey, Object... args)
+    {
+        if (outputType != InfoType.NONE)
+        {
+            if (outputType == InfoType.MESSAGE_OVERLAY)
+            {
+                showGuiOrInGameMessage(messageType, lifeTime, translationKey, args);
+            }
+            else if (outputType == InfoType.HOTBAR)
+            {
+                printActionbarMessage(translationKey, args);
+            }
+            else if (outputType == InfoType.CHAT)
+            {
+                Minecraft.getMinecraft().ingameGUI.addChatMessage(ChatType.CHAT, new TextComponentTranslation(translationKey, args));
+            }
+        }
+    }
+
     /**
      * Adds the message to the current GUI's message handler, if there is currently
      * an IMessageConsumer GUI open.
