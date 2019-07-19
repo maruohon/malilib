@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.event.forge;
 
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -11,7 +12,10 @@ public class ForgeRenderEventHandler
     @SubscribeEvent
     public void onRenderGameOverlayPost(RenderGameOverlayEvent.Post event)
     {
-        ((RenderEventHandler) RenderEventHandler.getInstance()).onRenderGameOverlayPost(event.getPartialTicks());
+        if (event.getType() == ElementType.ALL)
+        {
+            ((RenderEventHandler) RenderEventHandler.getInstance()).onRenderGameOverlayPost(event.getPartialTicks());
+        }
     }
 
     @SubscribeEvent
