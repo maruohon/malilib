@@ -1,13 +1,11 @@
 {
     "required": true,
-    "package": "fi.dy.masa.malilib.mixin",
+    "package": "fi.dy.masa.malilib.core.mixin",
     "refmap": "mixins.malilib.refmap.json",
-    "minVersion": "0.6",
+    "minVersion": "0.7",
+    "compatibilityLevel": "JAVA_8",
     "client": [
-        "MixinEntityRenderer",
-        "MixinGuiScreen",
-        "MixinMinecraft",
-        "MixinTabCompleter"
+        "MixinMinecraft"
     ],
     "injectors": {
         "defaultRequire": 1

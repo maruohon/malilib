@@ -1,7 +1,6 @@
 package fi.dy.masa.malilib.gui;
 
 import org.lwjgl.input.Keyboard;
-import com.mumfrey.liteloader.client.overlays.IGuiTextField;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
@@ -33,7 +32,7 @@ public class GuiTextFieldGeneric extends GuiTextField
     public boolean isMouseOver(int mouseX, int mouseY)
     {
         return mouseX >= this.x && mouseX < this.x + this.getWidth() &&
-               mouseY >= this.y && mouseY < this.y + ((IGuiTextField) (Object) this).getHeight();
+               mouseY >= this.y && mouseY < this.y + this.height;
     }
 
     @Override

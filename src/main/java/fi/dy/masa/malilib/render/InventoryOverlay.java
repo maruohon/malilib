@@ -33,7 +33,7 @@ import net.minecraft.tileentity.TileEntityShulkerBox;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.TextFormatting;
+import fi.dy.masa.malilib.gui.GuiBase;
 
 public class InventoryOverlay
 {
@@ -491,11 +491,11 @@ public class InventoryOverlay
         {
             if (i == 0)
             {
-                list.set(i, stack.getRarity().color + (String)list.get(i));
+                list.set(i, stack.getItem().getForgeRarity(stack).getColor() + list.get(i));
             }
             else
             {
-                list.set(i, TextFormatting.GRAY + (String)list.get(i));
+                list.set(i, GuiBase.TXT_GRAY + list.get(i));
             }
         }
 

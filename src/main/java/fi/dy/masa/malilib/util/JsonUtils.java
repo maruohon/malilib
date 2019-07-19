@@ -13,7 +13,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import fi.dy.masa.malilib.LiteModMaLiLib;
+import fi.dy.masa.malilib.MaLiLib;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
@@ -425,7 +425,7 @@ public class JsonUtils
             }
             catch (Exception e)
             {
-                LiteModMaLiLib.logger.error("Failed to parse the JSON file '{}'", fileName, e);
+                MaLiLib.logger.error("Failed to parse the JSON file '{}'", fileName, e);
             }
         }
 
@@ -446,7 +446,7 @@ public class JsonUtils
         }
         catch (IOException e)
         {
-            LiteModMaLiLib.logger.warn("Failed to write JSON data to file '{}'", file.getAbsolutePath(), e);
+            MaLiLib.logger.warn("Failed to write JSON data to file '{}'", file.getAbsolutePath(), e);
         }
         finally
         {
@@ -459,7 +459,7 @@ public class JsonUtils
             }
             catch (Exception e)
             {
-                LiteModMaLiLib.logger.warn("Failed to close JSON file", e);
+                MaLiLib.logger.warn("Failed to close JSON file", e);
             }
         }
 

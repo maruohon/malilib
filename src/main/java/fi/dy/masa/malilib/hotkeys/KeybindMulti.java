@@ -12,7 +12,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import fi.dy.masa.malilib.IMinecraftAccessor;
-import fi.dy.masa.malilib.LiteModMaLiLib;
+import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.hotkeys.KeybindSettings.Context;
 import fi.dy.masa.malilib.util.GuiUtils;
@@ -449,12 +449,12 @@ public class KeybindMulti implements IKeybind
             }
             else
             {
-                LiteModMaLiLib.logger.warn("Failed to set the hotkey '{}' from the JSON element '{}'", hotkeyName, element);
+                MaLiLib.logger.warn("Failed to set the hotkey '{}' from the JSON element '{}'", hotkeyName, element);
             }
         }
         catch (Exception e)
         {
-            LiteModMaLiLib.logger.warn("Failed to set the hotkey '{}' from the JSON element '{}'", hotkeyName, element, e);
+            MaLiLib.logger.warn("Failed to set the hotkey '{}' from the JSON element '{}'", hotkeyName, element, e);
         }
 
         this.cacheSavedValue();
@@ -551,7 +551,7 @@ public class KeybindMulti implements IKeybind
         String held = getActiveKeysString();
         String msg = String.format("%s %s (%d), held keys: %s", type, keyName, eventKey, held);
 
-        LiteModMaLiLib.logger.info(msg);
+        MaLiLib.logger.info(msg);
 
         if (MaLiLibConfigs.Debug.KEYBIND_DEBUG_ACTIONBAR.getBooleanValue())
         {

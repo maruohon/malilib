@@ -139,7 +139,7 @@ public class InputEventHandler implements IKeybindManager, IInputManager
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public boolean onKeyInput(boolean isGui)
+    public boolean onKeyInput()
     {
         int eventKey = Keyboard.getEventKey();
         boolean eventKeyState = Keyboard.getEventKeyState();
@@ -166,7 +166,7 @@ public class InputEventHandler implements IKeybindManager, IInputManager
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public boolean onMouseInput(boolean isGui)
+    public boolean onMouseInput()
     {
         final int eventButton = Mouse.getEventButton();
         final int dWheel = Mouse.getEventDWheel();

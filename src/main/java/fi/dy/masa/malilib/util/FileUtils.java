@@ -7,11 +7,10 @@ import java.util.Locale;
 import java.util.Set;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableSet;
-import com.mumfrey.liteloader.core.LiteLoader;
-import fi.dy.masa.malilib.LiteModMaLiLib;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
+import fi.dy.masa.malilib.MaLiLib;
 
 public class FileUtils
 {
@@ -19,7 +18,7 @@ public class FileUtils
 
     public static File getConfigDirectory()
     {
-        return LiteLoader.getCommonConfigFolder();
+        return new File(getMinecraftDirectory(), "config");
     }
 
     public static File getMinecraftDirectory()
@@ -169,7 +168,7 @@ public class FileUtils
             }
             catch (Exception e)
             {
-                LiteModMaLiLib.logger.warn("Failed to read NBT data from file '{}'", file.getAbsolutePath());
+                MaLiLib.logger.warn("Failed to read NBT data from file '{}'", file.getAbsolutePath());
             }
         }
 
