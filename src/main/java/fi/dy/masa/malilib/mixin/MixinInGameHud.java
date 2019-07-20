@@ -10,7 +10,7 @@ import net.minecraft.client.gui.hud.InGameHud;
 @Mixin(InGameHud.class)
 public abstract class MixinInGameHud
 {
-    @Inject(method = "draw", at = @At("RETURN"))
+    @Inject(method = "render", at = @At("RETURN"))
     private void onGameOverlayPost(float partialTicks, CallbackInfo ci)
     {
         ((RenderEventHandler) RenderEventHandler.getInstance()).onRenderGameOverlayPost(partialTicks);

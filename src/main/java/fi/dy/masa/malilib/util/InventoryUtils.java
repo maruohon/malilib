@@ -27,7 +27,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
 public class InventoryUtils
 {
-    private static final DefaultedList<ItemStack> EMPTY_LIST = DefaultedList.create();
+    private static final DefaultedList<ItemStack> EMPTY_LIST = DefaultedList.of();
 
     /**
      * Check whether the stacks are identical otherwise, but ignoring the stack size
@@ -272,7 +272,7 @@ public class InventoryUtils
 
             if (tagBlockEntity.containsKey("Items", Constants.NBT.TAG_LIST))
             {
-                DefaultedList<ItemStack> items = DefaultedList.create();
+                DefaultedList<ItemStack> items = DefaultedList.of();
                 ListTag tagList = tagBlockEntity.getList("Items", Constants.NBT.TAG_COMPOUND);
                 final int count = tagList.size();
 
@@ -290,7 +290,7 @@ public class InventoryUtils
             }
         }
 
-        return DefaultedList.create();
+        return DefaultedList.of();
     }
 
     /**
@@ -331,7 +331,7 @@ public class InventoryUtils
                     slotCount = maxSlot + 1;
                 }
 
-                DefaultedList<ItemStack> items = DefaultedList.create(slotCount, ItemStack.EMPTY);
+                DefaultedList<ItemStack> items = DefaultedList.ofSize(slotCount, ItemStack.EMPTY);
 
                 for (int i = 0; i < count; ++i)
                 {

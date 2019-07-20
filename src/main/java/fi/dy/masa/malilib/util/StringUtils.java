@@ -298,7 +298,7 @@ public class StringUtils
             else
             {
                 net.minecraft.client.network.ClientPlayNetworkHandler handler = mc.getNetworkHandler();
-                net.minecraft.network.ClientConnection connection = handler != null ? handler.getClientConnection() : null;
+                net.minecraft.network.ClientConnection connection = handler != null ? handler.getConnection() : null;
 
                 if (connection != null)
                 {
