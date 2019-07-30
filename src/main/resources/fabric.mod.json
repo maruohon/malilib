@@ -29,5 +29,9 @@
 
   "depends": {
     "fabric-resource-loader-v0": "*"
+  },
+
+  "custom": {
+    "modmenu:api": true
   }
 }
