@@ -1,17 +1,19 @@
-package fi.dy.masa.malilib.util;
+package fi.dy.masa.malilib.config.values;
 
 import fi.dy.masa.malilib.config.IConfigOptionListEntry;
+import fi.dy.masa.malilib.util.StringUtils;
 
-public enum BlockSnap implements IConfigOptionListEntry
+public enum InfoType implements IConfigOptionListEntry
 {
-    NONE        ("none",    "malilib.gui.label.block_snap.none"),
-    CENTER      ("center",  "malilib.gui.label.block_snap.center"),
-    CORNER      ("corner",  "malilib.gui.label.block_snap.corner");
+    NONE            ("none",    "malilib.label.info_type.none"),
+    CHAT            ("chat",    "malilib.label.info_type.chat"),
+    HOTBAR          ("hotbar",  "malilib.label.info_type.hotbar"),
+    MESSAGE_OVERLAY ("message", "malilib.label.info_type.message");
 
     private final String configString;
     private final String translationKey;
 
-    BlockSnap(String configString, String translationKey)
+    private InfoType(String configString, String translationKey)
     {
         this.configString = configString;
         this.translationKey = translationKey;
@@ -52,21 +54,22 @@ public enum BlockSnap implements IConfigOptionListEntry
         return values()[id % values().length];
     }
 
-    public BlockSnap fromString(String name)
+    @Override
+    public InfoType fromString(String name)
     {
         return fromStringStatic(name);
     }
 
-    public static BlockSnap fromStringStatic(String name)
+    public static InfoType fromStringStatic(String name)
     {
-        for (BlockSnap val : BlockSnap.values())
+        for (InfoType aligment : InfoType.values())
         {
-            if (val.name().equalsIgnoreCase(name))
+            if (aligment.configString.equalsIgnoreCase(name))
             {
-                return val;
+                return aligment;
             }
         }
 
-        return BlockSnap.NONE;
+        return InfoType.MESSAGE_OVERLAY;
     }
 }

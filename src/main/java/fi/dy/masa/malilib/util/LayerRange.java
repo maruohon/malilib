@@ -4,6 +4,7 @@ import javax.annotation.Nullable;
 import org.apache.commons.lang3.tuple.Pair;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import fi.dy.masa.malilib.config.values.LayerMode;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.interfaces.IRangeChangeListener;
 import net.minecraft.client.Minecraft;

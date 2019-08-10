@@ -1,17 +1,18 @@
-package fi.dy.masa.malilib.util;
+package fi.dy.masa.malilib.config.values;
 
 import fi.dy.masa.malilib.config.IConfigOptionListEntry;
+import fi.dy.masa.malilib.util.StringUtils;
 
-public enum ActiveMode implements IConfigOptionListEntry
+public enum BlockSnap implements IConfigOptionListEntry
 {
-    NEVER       ("never",       "malilib.label.active_mode.never"),
-    WITH_KEY    ("with_key",    "malilib.label.active_mode.with_key"),
-    ALWAYS      ("always",      "malilib.label.active_mode.always");
+    NONE        ("none",    "malilib.gui.label.block_snap.none"),
+    CENTER      ("center",  "malilib.gui.label.block_snap.center"),
+    CORNER      ("corner",  "malilib.gui.label.block_snap.corner");
 
     private final String configString;
     private final String translationKey;
 
-    private ActiveMode(String configString, String translationKey)
+    BlockSnap(String configString, String translationKey)
     {
         this.configString = configString;
         this.translationKey = translationKey;
@@ -52,22 +53,21 @@ public enum ActiveMode implements IConfigOptionListEntry
         return values()[id % values().length];
     }
 
-    @Override
-    public ActiveMode fromString(String name)
+    public BlockSnap fromString(String name)
     {
         return fromStringStatic(name);
     }
 
-    public static ActiveMode fromStringStatic(String name)
+    public static BlockSnap fromStringStatic(String name)
     {
-        for (ActiveMode mode : ActiveMode.values())
+        for (BlockSnap val : BlockSnap.values())
         {
-            if (mode.configString.equalsIgnoreCase(name))
+            if (val.name().equalsIgnoreCase(name))
             {
-                return mode;
+                return val;
             }
         }
 
-        return ActiveMode.NEVER;
+        return BlockSnap.NONE;
     }
 }

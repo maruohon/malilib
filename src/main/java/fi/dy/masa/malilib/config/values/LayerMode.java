@@ -1,6 +1,7 @@
-package fi.dy.masa.malilib.util;
+package fi.dy.masa.malilib.config.values;
 
 import fi.dy.masa.malilib.config.IConfigOptionListEntry;
+import fi.dy.masa.malilib.util.StringUtils;
 
 public enum LayerMode implements IConfigOptionListEntry
 {
