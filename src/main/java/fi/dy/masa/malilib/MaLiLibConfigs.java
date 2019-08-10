@@ -35,6 +35,12 @@ public class MaLiLibConfigs implements IConfigHandler
     }
 
     @Override
+    public String getModName()
+    {
+        return MaLiLibReference.MOD_NAME;
+    }
+
+    @Override
     public String getConfigFileName()
     {
         return MaLiLibReference.MOD_ID + ".json";

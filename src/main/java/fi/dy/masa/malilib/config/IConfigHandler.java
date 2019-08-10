@@ -22,6 +22,14 @@ public interface IConfigHandler
     }
 
     /**
+     * Returns a human-friendly mod name owning the configs of this handler.
+     * This is used in things like the hotkey info toast/popup for
+     * showing which which hotkey from which mod was triggered.
+     * @return
+     */
+    String getModName();
+
+    /**
      * Returns the filename for the configs
      * @return
      */
