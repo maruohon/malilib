@@ -5,14 +5,6 @@ import java.util.Collection;
 import java.util.List;
 import javax.annotation.Nullable;
 import org.lwjgl.opengl.GL11;
-import fi.dy.masa.malilib.config.values.HudAlignment;
-import fi.dy.masa.malilib.gui.GuiBase;
-import fi.dy.masa.malilib.util.Color4f;
-import fi.dy.masa.malilib.util.GuiUtils;
-import fi.dy.masa.malilib.util.IntBoundingBox;
-import fi.dy.masa.malilib.util.InventoryUtils;
-import fi.dy.masa.malilib.util.PositionUtils;
-import fi.dy.masa.malilib.util.PositionUtils.HitPart;
 import net.minecraft.block.BlockShulkerBox;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -47,6 +39,14 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraft.world.storage.MapData;
+import fi.dy.masa.malilib.config.values.HudAlignment;
+import fi.dy.masa.malilib.gui.GuiBase;
+import fi.dy.masa.malilib.util.Color4f;
+import fi.dy.masa.malilib.util.GuiUtils;
+import fi.dy.masa.malilib.util.IntBoundingBox;
+import fi.dy.masa.malilib.util.InventoryUtils;
+import fi.dy.masa.malilib.util.PositionUtils;
+import fi.dy.masa.malilib.util.PositionUtils.HitPart;
 
 public class RenderUtils
 {
@@ -164,16 +164,12 @@ public class RenderUtils
 
     public static void drawTexturedRect(int x, int y, int u, int v, int width, int height, float zLevel)
     {
-        float pixelWidth = 0.00390625F;
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
 
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
 
-        buffer.pos(x        , y + height, zLevel).tex( u          * pixelWidth, (v + height) * pixelWidth).endVertex();
-        buffer.pos(x + width, y + height, zLevel).tex((u + width) * pixelWidth, (v + height) * pixelWidth).endVertex();
-        buffer.pos(x + width, y         , zLevel).tex((u + width) * pixelWidth,  v           * pixelWidth).endVertex();
-        buffer.pos(x        , y         , zLevel).tex( u          * pixelWidth,  v           * pixelWidth).endVertex();
+        drawTexturedRectBatched(x, y, u, v, width, height, zLevel, buffer);
 
         tessellator.draw();
     }
@@ -324,6 +320,102 @@ public class RenderUtils
             TextureAtlasSprite sprite = mc().getTextureMapBlocks().getAtlasSprite(texture);
             mc().ingameGUI.drawTexturedModalRect(x, y, sprite, width, height);
         }
+    }
+
+    public static void draw9SplicedTexture(int x, int y, int u, int v, int width, int height, int texWidth, int texHeight, int edgeThickness, float zLevel)
+    {
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder buffer = tessellator.getBuffer();
+        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+
+        int e = edgeThickness;
+        
+        RenderUtils.drawTexturedRectBatched(x, y             , u, v                , e, e, zLevel, buffer); // top left
+        RenderUtils.drawTexturedRectBatched(x, y + height - e, u, v + texHeight - e, e, e, zLevel, buffer); // bottom left
+
+        RenderUtils.drawTexturedRectBatched(x + width - e, y             , u + texWidth - e, v                , e, e, zLevel, buffer); // top right
+        RenderUtils.drawTexturedRectBatched(x + width - e, y + height - e, u + texWidth - e, v + texHeight - e, e, e, zLevel, buffer); // bottom right
+
+        // Texture is smaller than the requested width, repeat stuff horizontally
+        if (texWidth < width)
+        {
+            final int repeatableWidth = texWidth - 2 * e;
+            final int requiredWidth = width - 2 * e;
+
+            for (int doneWidth = 0, tmpX = x + e, tmpW = 0; doneWidth < requiredWidth; )
+            {
+                tmpW = Math.min(repeatableWidth, requiredWidth - doneWidth);
+
+                RenderUtils.drawTexturedRectBatched(tmpX, y             , u + e, v                , tmpW, e, zLevel, buffer); // top center
+                RenderUtils.drawTexturedRectBatched(tmpX, y + height - e, u + e, v + texHeight - e, tmpW, e, zLevel, buffer); // bottom center
+
+                tmpX += tmpW;
+                doneWidth += tmpW;
+            }
+        }
+        // Texture is wide enough, no need to repeat horizontally
+        else
+        {
+            RenderUtils.drawTexturedRectBatched(x + e, y             , u + e, v                , width - 2 * e, e, zLevel, buffer); // top center
+            RenderUtils.drawTexturedRectBatched(x + e, y + height - e, u + e, v + texHeight - e, width - 2 * e, e, zLevel, buffer); // bottom center
+        }
+
+        // Texture is smaller than the requested height, repeat stuff vertically
+        if (texHeight < height)
+        {
+            final int repeatableHeight = texHeight - 2 * e;
+            final int requiredHeight = height - 2 * e;
+
+            for (int doneHeight = 0, tmpY = y + e, tmpH = 0; doneHeight < requiredHeight; )
+            {
+                tmpH = Math.min(repeatableHeight, requiredHeight - doneHeight);
+
+                RenderUtils.drawTexturedRectBatched(x            , tmpY, u               , v + e, e, tmpH, zLevel, buffer); // left center
+                RenderUtils.drawTexturedRectBatched(x + width - e, tmpY, u + texWidth - e, v + e, e, tmpH, zLevel, buffer); // right center
+
+                tmpY += tmpH;
+                doneHeight += tmpH;
+            }
+        }
+        // Texture is tall enough, no need to repeat vertically
+        else
+        {
+            RenderUtils.drawTexturedRectBatched(x            , y + e, u               , v + e, e, height - 2 * e, zLevel, buffer); // left center
+            RenderUtils.drawTexturedRectBatched(x + width - e, y + e, u + texWidth - e, v + e, e, height - 2 * e, zLevel, buffer); // right center
+        }
+
+        // The center part needs to be repeated
+        if (texWidth < width || texHeight < height)
+        {
+            final int repeatableWidth = texWidth - 2 * e;
+            final int requiredWidth = width - 2 * e;
+
+            for (int doneWidth = 0, tmpX = x + e, tmpW = 0; doneWidth < requiredWidth; )
+            {
+                final int repeatableHeight = texHeight - 2 * e;
+                final int requiredHeight = height - 2 * e;
+                tmpW = Math.min(repeatableWidth, requiredWidth - doneWidth);
+
+                for (int doneHeight = 0, tmpY = y + e, tmpH = 0; doneHeight < requiredHeight; )
+                {
+                    tmpH = Math.min(repeatableHeight, requiredHeight - doneHeight);
+
+                    RenderUtils.drawTexturedRectBatched(tmpX, tmpY, u + e, v + e, tmpW, tmpH, zLevel, buffer); // center
+
+                    tmpY += tmpH;
+                    doneHeight += tmpH;
+                }
+
+                tmpX += tmpW;
+                doneWidth += tmpW;
+            }
+        }
+        else
+        {
+            RenderUtils.drawTexturedRectBatched(x + e, y + e, u + e, v + e, width - 2 * e, height - 2 * e, zLevel, buffer); // center
+        }
+
+        tessellator.draw();
     }
 
     public static void renderText(int x, int y, int color, String text)
