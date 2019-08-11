@@ -64,6 +64,18 @@ public class StringUtils
         sender.sendMessage(new net.minecraft.util.text.TextComponentTranslation(messageKey, name));
     }
 
+    public static int getMaxStringRenderWidth(List<String> lines)
+    {
+        int width = 0;
+
+        for (String line : lines)
+        {
+            width = Math.max(width, getStringWidth(line));
+        }
+
+        return width;
+    }
+
     /**
      * Splits the given string into lines up to maxLineLength long
      * @param linesOut

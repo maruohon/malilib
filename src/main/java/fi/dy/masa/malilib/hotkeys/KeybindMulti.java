@@ -11,15 +11,19 @@ import org.lwjgl.input.Mouse;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.settings.KeyBinding;
 import fi.dy.masa.malilib.IMinecraftAccessor;
 import fi.dy.masa.malilib.LiteModMaLiLib;
 import fi.dy.masa.malilib.MaLiLibConfigs;
+import fi.dy.masa.malilib.config.values.HudAlignment;
+import fi.dy.masa.malilib.config.values.KeybindDisplayMode;
+import fi.dy.masa.malilib.gui.widgets.WidgetToast;
 import fi.dy.masa.malilib.hotkeys.KeybindSettings.Context;
 import fi.dy.masa.malilib.util.GuiUtils;
 import fi.dy.masa.malilib.util.InfoUtils;
 import fi.dy.masa.malilib.util.JsonUtils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.settings.KeyBinding;
+import fi.dy.masa.malilib.util.StringUtils;
 
 public class KeybindMulti implements IKeybind
 {
@@ -172,8 +176,6 @@ public class KeybindMulti implements IKeybind
 
     private boolean triggerKeyAction(boolean pressedLast)
     {
-        boolean cancel = false;
-
         if (this.pressed == false)
         {
             this.heldTime = 0;
@@ -181,7 +183,7 @@ public class KeybindMulti implements IKeybind
 
             if (pressedLast && this.callback != null && (activateOn == KeyAction.RELEASE || activateOn == KeyAction.BOTH))
             {
-                cancel = this.callback.onKeyAction(KeyAction.RELEASE, this);
+                return this.triggerKeyCallback(KeyAction.RELEASE);
             }
         }
         else if (pressedLast == false && this.heldTime == 0)
@@ -196,8 +198,36 @@ public class KeybindMulti implements IKeybind
 
             if (this.callback != null && (activateOn == KeyAction.PRESS || activateOn == KeyAction.BOTH))
             {
-                cancel = this.callback.onKeyAction(KeyAction.PRESS, this);
+                return this.triggerKeyCallback(KeyAction.PRESS);
             }
+        }
+
+        return false;
+    }
+
+    private boolean triggerKeyCallback(KeyAction action)
+    {
+        boolean cancel = this.callback.onKeyAction(action, this);
+        KeybindDisplayMode val = (KeybindDisplayMode) MaLiLibConfigs.Generic.KEYBIND_DISPLAY.getOptionListValue();
+
+        if (val != KeybindDisplayMode.NONE &&
+                (MaLiLibConfigs.Generic.KEYBIND_DISPLAY_CANCEL_ONLY.getBooleanValue() == false ||
+                 this.settings.shouldCancel()))
+        {
+            List<String> lines = new ArrayList<>();
+
+            if (val == KeybindDisplayMode.KEYS || val == KeybindDisplayMode.KEYS_ACTIONS)
+            {
+                lines.add(StringUtils.translate("malilib.toast.keybind_display.keys", this.getKeysDisplayString()));
+            }
+
+            if (val == KeybindDisplayMode.ACTIONS || val == KeybindDisplayMode.KEYS_ACTIONS)
+            {
+                lines.add(StringUtils.translate("malilib.toast.keybind_display.action", this.modName, this.name));
+            }
+
+            HudAlignment align = (HudAlignment) MaLiLibConfigs.Generic.KEYBIND_DISPLAY_ALIGNMENT.getOptionListValue();
+            WidgetToast.updateOrAddToast(align, lines, MaLiLibConfigs.Generic.KEYBIND_DISPLAY_DURATION.getIntegerValue());
         }
 
         return cancel;

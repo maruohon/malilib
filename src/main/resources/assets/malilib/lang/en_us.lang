@@ -40,6 +40,11 @@ malilib.gui.label_colored.on=§aON§r
 
 malilib.gui.label.color_editor.current_color=Current color:
 
+malilib.gui.label.keybind_display.actions=Actions
+malilib.gui.label.keybind_display.keys=Keys
+malilib.gui.label.keybind_display.keys_and_actions=Keys & Actions
+malilib.gui.label.keybind_display.none=None
+
 malilib.gui.label.keybind_settings.activate_on=Activate On
 malilib.gui.label.keybind_settings.allow_empty_keybind=Allow empty keybind
 malilib.gui.label.keybind_settings.allow_extra_keys=Allow extra keys
@@ -120,3 +125,6 @@ malilib.message.moved_min_layer_to=Moved min layer to %s
 malilib.message.set_layer_axis_to=Set layer axis to %s
 malilib.message.set_layer_mode_to=Set layer mode to %s
 malilib.message.set_layer_to=Set layer to %s
+
+malilib.toast.keybind_display.keys=§eKeys:§r §6%s§r
+malilib.toast.keybind_display.action=Action: §b%s : %s§r
