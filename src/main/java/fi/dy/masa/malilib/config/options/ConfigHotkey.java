@@ -10,7 +10,7 @@ import fi.dy.masa.malilib.util.StringUtils;
 
 public class ConfigHotkey extends ConfigBase<ConfigHotkey> implements IHotkey
 {
-    private final IKeybind keybind;
+    private final KeybindMulti keybind;
 
     public ConfigHotkey(String name, String defaultStorageString, String comment)
     {
@@ -31,7 +31,15 @@ public class ConfigHotkey extends ConfigBase<ConfigHotkey> implements IHotkey
     {
         super(ConfigType.HOTKEY, name, comment, prettyName);
 
-        this.keybind = KeybindMulti.fromStorageString(defaultStorageString, settings);
+        this.keybind = KeybindMulti.fromStorageString(name, defaultStorageString, settings);
+    }
+
+    @Override
+    public void setModName(String modName)
+    {
+        super.setModName(modName);
+
+        this.keybind.setModName(modName);
     }
 
     @Override

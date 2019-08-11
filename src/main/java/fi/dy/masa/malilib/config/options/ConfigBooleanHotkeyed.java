@@ -25,7 +25,7 @@ public class ConfigBooleanHotkeyed extends ConfigBoolean implements IHotkey
     {
         super(name, defaultValue, comment, prettyName);
 
-        this.keybind = KeybindMulti.fromStorageString(defaultHotkey, settings);
+        this.keybind = KeybindMulti.fromStorageString(name, defaultHotkey, settings);
         this.keybind.setCallback(new KeyCallbackToggleBooleanConfigWithMessage(this));
     }
 

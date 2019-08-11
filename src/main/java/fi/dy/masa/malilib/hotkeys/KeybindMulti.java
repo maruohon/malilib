@@ -26,8 +26,10 @@ public class KeybindMulti implements IKeybind
     private static List<Integer> pressedKeys = new ArrayList<>();
     private static int triggeredCount;
 
+    private final String name;
     private final String defaultStorageString;
     private final KeybindSettings defaultSettings;
+    private String modName = "";
     private List<Integer> keyCodes = new ArrayList<>(4);
     private KeybindSettings settings;
     private String lastSavedStorageString;
@@ -38,13 +40,19 @@ public class KeybindMulti implements IKeybind
     @Nullable
     private IHotkeyCallback callback;
 
-    private KeybindMulti(String defaultStorageString, KeybindSettings settings)
+    private KeybindMulti(String name, String defaultStorageString, KeybindSettings settings)
     {
+        this.name = name;
         this.defaultStorageString = defaultStorageString;
         this.defaultSettings = settings;
         this.settings = settings;
 
         this.cacheSavedValue();
+    }
+
+    public void setModName(String modName)
+    {
+        this.modName = modName;
     }
 
     @Override
@@ -471,10 +479,10 @@ public class KeybindMulti implements IKeybind
         return obj;
     }
 
-    public static KeybindMulti fromStorageString(String str, KeybindSettings settings)
+    public static KeybindMulti fromStorageString(String name, String storageString, KeybindSettings settings)
     {
-        KeybindMulti keybind = new KeybindMulti(str, settings);
-        keybind.setValueFromString(str);
+        KeybindMulti keybind = new KeybindMulti(name, storageString, settings);
+        keybind.setValueFromString(storageString);
         return keybind;
     }
 

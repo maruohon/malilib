@@ -18,6 +18,9 @@ public class ConfigManager implements IConfigManager
     @Override
     public void registerConfigHandler(String modId, IConfigHandler handler)
     {
+        String modName = handler.getModName();
+        handler.getConfigsPerCategories().values().forEach((list) -> { list.forEach((config) -> { config.setModName(modName); } ); } );
+
         this.configHandlers.put(modId, handler);
     }
 

@@ -38,6 +38,19 @@ public interface IConfigBase extends IConfigSavable
     }
 
     /**
+     * Returns the mod name owning this config.
+     * @return
+     */
+    String getModName();
+
+    /**
+     * Sets the mod name owning this config.
+     * This is used for example for the hotkey toast popups.
+     * @param modName
+     */
+    void setModName(String modName);
+
+    /**
      * Returns the display name used for this config in the config GUIs
      * @return
      */

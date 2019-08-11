@@ -17,7 +17,7 @@ public class MaLiLibConfigs implements IConfigHandler
         public static final ConfigHotkey IGNORED_KEYS       = new ConfigHotkey("ignoredKeys", "", "Any keys set here will be completely ignored");
         public static final ConfigHotkey OPEN_GUI_CONFIGS   = new ConfigHotkey("openGuiConfigs", "A,C", "Open the in-game malilib config GUI");
 
-        public static final ImmutableList<IConfigValue> OPTIONS = ImmutableList.of(
+        public static final ImmutableList<IConfigBase> OPTIONS = ImmutableList.of(
                 IGNORED_KEYS,
                 OPEN_GUI_CONFIGS
         );
@@ -28,7 +28,7 @@ public class MaLiLibConfigs implements IConfigHandler
         public static final ConfigBoolean KEYBIND_DEBUG             = new ConfigBoolean("keybindDebugging", false, "When enabled, key presses and held keys are\nprinted to the game console (and the action bar, if enabled)");
         public static final ConfigBoolean KEYBIND_DEBUG_ACTIONBAR   = new ConfigBoolean("keybindDebuggingIngame", true, "If enabled, then the messages from 'keybindDebugging'\nare also printed to the in-game action bar");
 
-        public static final ImmutableList<IConfigValue> OPTIONS = ImmutableList.of(
+        public static final ImmutableList<IConfigBase> OPTIONS = ImmutableList.of(
                 KEYBIND_DEBUG,
                 KEYBIND_DEBUG_ACTIONBAR
         );
