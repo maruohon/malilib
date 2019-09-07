@@ -5,10 +5,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
-import com.mojang.blaze3d.platform.GLX;
-import fi.dy.masa.malilib.MaLiLib;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Identifier;
+import fi.dy.masa.malilib.MaLiLib;
 
 /**
  * This class has been directly taken from Schematica by Lunatrius & contributors
@@ -36,12 +35,6 @@ public class ShaderProgram
 
     private void init(final String domain, final String vertShaderFilename, final String fragShaderFilename)
     {
-        if (GLX.usePostProcess == false)
-        {
-            this.program = 0;
-            return;
-        }
-
         this.program = GL20.glCreateProgram();
 
         final int vertShader = this.loadAndCompileShader(domain, vertShaderFilename, GL20.GL_VERTEX_SHADER);

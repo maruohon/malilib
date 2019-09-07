@@ -282,7 +282,7 @@ public class StringUtils
         }
         else
         {
-            net.minecraft.client.options.ServerEntry server = mc.getCurrentServerEntry();
+            net.minecraft.client.network.ServerInfo server = mc.getCurrentServerEntry();
 
             if (server != null)
             {

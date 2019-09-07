@@ -2,13 +2,13 @@ package fi.dy.masa.malilib.gui;
 
 import javax.annotation.Nullable;
 import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.gui.screen.Screen;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.KeyCodes;
 import fi.dy.masa.malilib.util.StringUtils;
-import net.minecraft.client.gui.screen.Screen;
 
 public abstract class GuiTextInputBase extends GuiDialogBase
 {
@@ -30,7 +30,6 @@ public abstract class GuiTextInputBase extends GuiDialogBase
         this.textField.setMaxLength(maxTextLength);
         this.textField.setFocused(true);
         this.textField.setText(this.originalText);
-        this.textField.method_1872(); //setCursorPositionEnd();
         this.blitOffset = 1;
     }
 
@@ -168,7 +167,6 @@ public abstract class GuiTextInputBase extends GuiDialogBase
             else if (this.type == ButtonType.RESET)
             {
                 this.gui.textField.setText(this.gui.originalText);
-                this.gui.textField.method_1870(); // setCursorPositionZero
                 this.gui.textField.setFocused(true);
             }
         }

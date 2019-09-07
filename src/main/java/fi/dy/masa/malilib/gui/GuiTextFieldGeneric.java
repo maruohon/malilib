@@ -84,17 +84,17 @@ public class GuiTextFieldGeneric extends TextFieldWidget
 
     public void setCursorPosition(int pos)
     {
-        this.method_1883(pos);
+        this.setCursor(pos);
     }
 
     public void setCursorPositionZero()
     {
-        this.method_1870();
+        this.setCursorToStart();
     }
 
     public void setCursorPositionEnd()
     {
-        this.method_1872();
+        this.setCursorToEnd();
     }
 
     public GuiTextFieldGeneric setZLevel(int zLevel)

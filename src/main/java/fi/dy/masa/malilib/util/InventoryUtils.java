@@ -185,7 +185,7 @@ public class InventoryUtils
     @Nullable
     public static Inventory getInventory(World world, BlockPos pos)
     {
-        if (world.isBlockLoaded(pos) == false)
+        if (world.method_22340(pos) == false) // isBlockLoaded
         {
             return null;
         }
@@ -206,7 +206,7 @@ public class InventoryUtils
                 {
                     BlockPos posAdj = pos.offset(ChestBlock.getFacing(state));
 
-                    if (world.isBlockLoaded(posAdj))
+                    if (world.method_22340(posAdj)) // isBlockLoaded
                     {
                         BlockState stateAdj = world.getBlockState(posAdj);
                         // The method in World now checks that the caller is from the same thread...
