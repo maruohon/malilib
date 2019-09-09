@@ -25,6 +25,8 @@ dependencies {
 
     modCompile "net.fabricmc.fabric-api:fabric-resource-loader-v0:" + config.fabric_resource_loader_version
     include "net.fabricmc.fabric-api:fabric-resource-loader-v0:" + config.fabric_resource_loader_version
+
+    modCompile "io.github.prospector:modmenu:" + config.mod_menu_version
 }
 
 minecraft {
