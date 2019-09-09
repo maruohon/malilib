@@ -18,12 +18,12 @@ public class WidgetToast extends WidgetBase
     protected int lifeTime;
     protected boolean active;
 
-    public WidgetToast(int x, int y, int width, int height, List<String> text)
+    public WidgetToast(int x, int y, int width, int height, List<String> text, int lifeTime)
     {
         super(x, y, width, height);
 
         this.text = new ArrayList<>();
-        this.setText(text, 5000);
+        this.setText(text, lifeTime);
     }
 
     public boolean hasExpired()
@@ -64,23 +64,23 @@ public class WidgetToast extends WidgetBase
         RenderUtils.renderText(x + 10, y + 8, 0xFFFFFFFF, this.text);
     }
 
-    public static void updateOrAddToast(HudAlignment alignment, List<String> text, int lifetime)
+    public static void updateOrAddToast(HudAlignment alignment, List<String> text, int lifeTime)
     {
         WidgetToast toast = ToastRenderer.INSTANCE.getToast(alignment, WidgetToast.class);
 
         if (toast != null)
         {
-            toast.setText(text, lifetime);
+            toast.setText(text, lifeTime);
         }
         else
         {
-            addToast(alignment, text, lifetime);
+            addToast(alignment, text, lifeTime);
         }
     }
 
-    public static void addToast(HudAlignment alignment, List<String> text, int lifetime)
+    public static void addToast(HudAlignment alignment, List<String> text, int lifeTime)
     {
         // The position and dimensions get update in the constructor and before rendering
-        ToastRenderer.INSTANCE.addToast(alignment, new WidgetToast(0, 0, 32, 32, text));
+        ToastRenderer.INSTANCE.addToast(alignment, new WidgetToast(0, 0, 32, 32, text, lifeTime));
     }
 }
