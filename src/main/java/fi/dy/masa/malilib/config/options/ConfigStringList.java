@@ -55,8 +55,7 @@ public class ConfigStringList extends ConfigBase<ConfigStringList> implements IC
     @Override
     public void resetToDefault()
     {
-        this.strings.clear();
-        this.strings.addAll(this.defaultValue);
+        this.setStrings(this.defaultValue);
     }
 
     @Override
