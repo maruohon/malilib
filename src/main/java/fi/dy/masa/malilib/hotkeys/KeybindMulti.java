@@ -181,7 +181,7 @@ public class KeybindMulti implements IKeybind
             this.heldTime = 0;
             KeyAction activateOn = this.settings.getActivateOn();
 
-            if (pressedLast && this.callback != null && (activateOn == KeyAction.RELEASE || activateOn == KeyAction.BOTH))
+            if (pressedLast && (activateOn == KeyAction.RELEASE || activateOn == KeyAction.BOTH))
             {
                 return this.triggerKeyCallback(KeyAction.RELEASE);
             }
@@ -196,7 +196,7 @@ public class KeybindMulti implements IKeybind
 
             KeyAction activateOn = this.settings.getActivateOn();
 
-            if (this.callback != null && (activateOn == KeyAction.PRESS || activateOn == KeyAction.BOTH))
+            if (activateOn == KeyAction.PRESS || activateOn == KeyAction.BOTH)
             {
                 return this.triggerKeyCallback(KeyAction.PRESS);
             }
@@ -207,6 +207,11 @@ public class KeybindMulti implements IKeybind
 
     private boolean triggerKeyCallback(KeyAction action)
     {
+        if (this.callback == null)
+        {
+            return this.settings.shouldCancel() && action == KeyAction.PRESS;
+        }
+
         boolean cancel = this.callback.onKeyAction(action, this);
         KeybindDisplayMode val = (KeybindDisplayMode) MaLiLibConfigs.Generic.KEYBIND_DISPLAY.getOptionListValue();
 
