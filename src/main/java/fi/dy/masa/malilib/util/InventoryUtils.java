@@ -61,7 +61,7 @@ public class InventoryUtils
     public static void swapSlots(Container container, int slotNum, int hotbarSlot)
     {
         MinecraftClient mc = MinecraftClient.getInstance();
-        mc.interactionManager.method_2906(container.syncId, slotNum, hotbarSlot, SlotActionType.SWAP, mc.player);
+        mc.interactionManager.clickSlot(container.syncId, slotNum, hotbarSlot, SlotActionType.SWAP, mc.player);
     }
 
     /**
@@ -167,7 +167,7 @@ public class InventoryUtils
             if (slot != -1)
             {
                 int currentHotbarSlot = player.inventory.selectedSlot;
-                mc.interactionManager.method_2906(player.playerContainer.syncId, slot, currentHotbarSlot, SlotActionType.SWAP, mc.player);
+                mc.interactionManager.clickSlot(player.playerContainer.syncId, slot, currentHotbarSlot, SlotActionType.SWAP, mc.player);
                 return true;
             }
         }
@@ -185,7 +185,7 @@ public class InventoryUtils
     @Nullable
     public static Inventory getInventory(World world, BlockPos pos)
     {
-        if (world.method_22340(pos) == false) // isBlockLoaded
+        if (world.isChunkLoaded(pos) == false)
         {
             return null;
         }
@@ -206,7 +206,7 @@ public class InventoryUtils
                 {
                     BlockPos posAdj = pos.offset(ChestBlock.getFacing(state));
 
-                    if (world.method_22340(posAdj)) // isBlockLoaded
+                    if (world.isChunkLoaded(posAdj))
                     {
                         BlockState stateAdj = world.getBlockState(posAdj);
                         // The method in World now checks that the caller is from the same thread...

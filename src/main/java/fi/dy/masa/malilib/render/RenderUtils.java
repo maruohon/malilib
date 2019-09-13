@@ -35,9 +35,9 @@ import net.minecraft.item.map.MapState;
 import net.minecraft.util.DefaultedList;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.MutableIntBoundingBox;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import fi.dy.masa.malilib.config.HudAlignment;
@@ -677,7 +677,7 @@ public class RenderUtils
         drawBoxAllEdgesBatchedLines(minX, minY, minZ, maxX, maxY, maxZ, color, bufferLines);
     }
 
-    public static void drawBox(MutableIntBoundingBox bb, Color4f color, BufferBuilder bufferQuads, BufferBuilder bufferLines)
+    public static void drawBox(BlockBox bb, Color4f color, BufferBuilder bufferQuads, BufferBuilder bufferLines)
     {
         double minX = bb.minX;
         double minY = bb.minY;
