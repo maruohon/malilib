@@ -101,7 +101,7 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
     @Nullable
     public WidgetListConfigOptions getConfigsListWidget()
     {
-        return super.getListWidget();
+        return this.getListWidget();
     }
 
     public void reCreateConfigWidgets()
