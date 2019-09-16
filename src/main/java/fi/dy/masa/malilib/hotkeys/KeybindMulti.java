@@ -217,7 +217,7 @@ public class KeybindMulti implements IKeybind
 
         if (val != KeybindDisplayMode.NONE &&
                 (MaLiLibConfigs.Generic.KEYBIND_DISPLAY_CANCEL_ONLY.getBooleanValue() == false ||
-                 this.settings.shouldCancel()))
+                 (cancel && this.settings.shouldCancel())))
         {
             List<String> lines = new ArrayList<>();
 
