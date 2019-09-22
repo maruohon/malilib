@@ -9,6 +9,12 @@ import fi.dy.masa.malilib.config.options.IStringRepresentable;
 
 public interface IKeybind extends IConfigResettable, IConfigSavable, IStringRepresentable
 {
+    /**
+     * Sets the mod name owning this keybind. Used for the popup toast rendering.
+     * @param modName
+     */
+    void setModName(String modName);
+
     boolean isValid();
 
     /**

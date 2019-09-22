@@ -54,6 +54,7 @@ public class KeybindMulti implements IKeybind
         this.cacheSavedValue();
     }
 
+    @Override
     public void setModName(String modName)
     {
         this.modName = modName;
