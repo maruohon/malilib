@@ -27,7 +27,7 @@ public class GuiConfirmAction extends GuiDialogBase implements ICompletionListen
         this.title = StringUtils.translate(titleKey);
         this.listener = listener;
         this.useTitleHierarchy = false;
-        this.blitOffset = 1;
+        this.setBlitOffset(1);
 
         StringUtils.splitTextToLines(this.messageLines, StringUtils.translate(messageKey, args), width - 30);
 
@@ -93,7 +93,7 @@ public class GuiConfirmAction extends GuiDialogBase implements ICompletionListen
         }
 
         GlStateManager.pushMatrix();
-        GlStateManager.translatef(0, 0, this.blitOffset);
+        GlStateManager.translatef(0, 0, this.getBlitOffset());
 
         RenderUtils.drawOutlinedBox(this.dialogLeft, this.dialogTop, this.dialogWidth, this.dialogHeight, 0xF0000000, COLOR_HORIZONTAL_BAR);
 

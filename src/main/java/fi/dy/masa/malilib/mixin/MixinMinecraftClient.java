@@ -7,6 +7,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.RunArgs;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.world.ClientWorld;
 import fi.dy.masa.malilib.config.ConfigManager;
@@ -23,8 +24,8 @@ public abstract class MixinMinecraftClient
 
     private ClientWorld worldBefore;
 
-    @Inject(method = "init()V", at = @At("RETURN"))
-    private void onInitComplete(CallbackInfo ci)
+    @Inject(method = "<init>(Lnet/minecraft/client/RunArgs;)V", at = @At("RETURN"))
+    private void onInitComplete(RunArgs args, CallbackInfo ci)
     {
         // Register all mod handlers
         ((InitializationHandler) InitializationHandler.getInstance()).onGameInitDone();

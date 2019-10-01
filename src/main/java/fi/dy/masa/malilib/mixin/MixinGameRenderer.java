@@ -10,7 +10,7 @@ import net.minecraft.client.render.GameRenderer;
 @Mixin(GameRenderer.class)
 public abstract class MixinGameRenderer
 {
-    @Inject(method = "renderCenter(FJ)V", at = @At(
+    @Inject(method = "renderWorld(FJ)V", at = @At(
             value = "FIELD",
             target = "Lnet/minecraft/client/render/GameRenderer;renderHand:Z"
         ))

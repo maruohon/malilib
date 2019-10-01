@@ -8,14 +8,14 @@ public class InputUtils
     public static int getMouseX()
     {
         MinecraftClient mc = MinecraftClient.getInstance();
-        Window window = mc.window;
+        Window window = mc.method_22683(); // getWindow
         return (int) (mc.mouse.getX() * (double) window.getScaledWidth() / (double) window.getWidth());
     }
 
     public static int getMouseY()
     {
         MinecraftClient mc = MinecraftClient.getInstance();
-        Window window = mc.window;
+        Window window = mc.method_22683(); // getWindow
         return (int) (mc.mouse.getY() * (double) window.getScaledHeight() / (double) window.getHeight());
     }
 }

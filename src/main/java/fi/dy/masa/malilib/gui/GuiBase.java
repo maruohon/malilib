@@ -433,7 +433,7 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
 
     public void bindTexture(Identifier texture)
     {
-        this.mc.getTextureManager().bindTexture(texture);
+        fi.dy.masa.malilib.render.RenderUtils.bindTexture(texture);
     }
 
     public <T extends ButtonBase> T addButton(T button, IButtonActionListener listener)

@@ -1,6 +1,10 @@
 package fi.dy.masa.malilib.util;
 
 import javax.annotation.Nullable;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.GuiTextFieldDouble;
 import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
@@ -12,31 +16,27 @@ import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
 import fi.dy.masa.malilib.interfaces.ICoordinateValueModifier;
 import fi.dy.masa.malilib.util.PositionUtils.CoordinateType;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 
 public class GuiUtils
 {
     public static int getScaledWindowWidth()
     {
-        return MinecraftClient.getInstance().window.getScaledWidth();
+        return MinecraftClient.getInstance().method_22683().getScaledWidth();
     }
 
     public static int getScaledWindowHeight()
     {
-        return MinecraftClient.getInstance().window.getScaledHeight();
+        return MinecraftClient.getInstance().method_22683().getScaledHeight();
     }
 
     public static int getDisplayWidth()
     {
-        return MinecraftClient.getInstance().window.getWidth();
+        return MinecraftClient.getInstance().method_22683().getWidth();
     }
 
     public static int getDisplayHeight()
     {
-        return MinecraftClient.getInstance().window.getHeight();
+        return MinecraftClient.getInstance().method_22683().getHeight();
     }
 
     @Nullable

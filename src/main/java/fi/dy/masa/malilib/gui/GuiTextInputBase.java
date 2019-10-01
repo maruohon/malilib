@@ -30,7 +30,7 @@ public abstract class GuiTextInputBase extends GuiDialogBase
         this.textField.setMaxLength(maxTextLength);
         this.textField.setFocused(true);
         this.textField.setText(this.originalText);
-        this.blitOffset = 1;
+        this.setBlitOffset(1);
     }
 
     @Override
@@ -68,7 +68,7 @@ public abstract class GuiTextInputBase extends GuiDialogBase
         }
 
         GlStateManager.pushMatrix();
-        GlStateManager.translatef(0, 0, this.blitOffset);
+        GlStateManager.translatef(0, 0, this.getBlitOffset());
 
         RenderUtils.drawOutlinedBox(this.dialogLeft, this.dialogTop, this.dialogWidth, this.dialogHeight, 0xE0000000, COLOR_HORIZONTAL_BAR);
 
