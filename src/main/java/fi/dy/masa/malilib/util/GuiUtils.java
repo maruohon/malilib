@@ -21,22 +21,22 @@ public class GuiUtils
 {
     public static int getScaledWindowWidth()
     {
-        return MinecraftClient.getInstance().method_22683().getScaledWidth();
+        return MinecraftClient.getInstance().getWindow().getScaledWidth();
     }
 
     public static int getScaledWindowHeight()
     {
-        return MinecraftClient.getInstance().method_22683().getScaledHeight();
+        return MinecraftClient.getInstance().getWindow().getScaledHeight();
     }
 
     public static int getDisplayWidth()
     {
-        return MinecraftClient.getInstance().method_22683().getWidth();
+        return MinecraftClient.getInstance().getWindow().getWidth();
     }
 
     public static int getDisplayHeight()
     {
-        return MinecraftClient.getInstance().method_22683().getHeight();
+        return MinecraftClient.getInstance().getWindow().getHeight();
     }
 
     @Nullable

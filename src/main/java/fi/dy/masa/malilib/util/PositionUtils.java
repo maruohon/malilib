@@ -123,7 +123,7 @@ public class PositionUtils
 
         if (entity.pitch >= verticalThreshold)
         {
-            return pos.down();
+            return pos.down(1);
         }
         else if (entity.pitch <= -verticalThreshold)
         {

@@ -23,7 +23,7 @@ public abstract class MixinMouse
             at = @At(value = "FIELD", target = "Lnet/minecraft/client/Mouse;hasResolutionChanged:Z", ordinal = 0))
     private void hookOnMouseMove(long handle, double xpos, double ypos, CallbackInfo ci)
     {
-        Window window = this.client.method_22683(); // getWindow
+        Window window = this.client.getWindow();
         int mouseX = (int) (((Mouse) (Object) this).getX() * (double) window.getScaledWidth() / (double) window.getWidth());
         int mouseY = (int) (((Mouse) (Object) this).getY() * (double) window.getScaledHeight() / (double) window.getHeight());
 
@@ -34,7 +34,7 @@ public abstract class MixinMouse
             at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;currentScreen:Lnet/minecraft/client/gui/screen/Screen;", ordinal = 0))
     private void hookOnMouseScroll(long handle, double xoffset, double yoffset, CallbackInfo ci)
     {
-        Window window = this.client.method_22683(); // getWindow
+        Window window = this.client.getWindow();
         int mouseX = (int) (((Mouse) (Object) this).getX() * (double) window.getScaledWidth() / (double) window.getWidth());
         int mouseY = (int) (((Mouse) (Object) this).getY() * (double) window.getScaledHeight() / (double) window.getHeight());
         double amount = yoffset * this.client.options.mouseWheelSensitivity;
@@ -49,7 +49,7 @@ public abstract class MixinMouse
             at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;IS_SYSTEM_MAC:Z", ordinal = 0))
     private void hookOnMouseClick(long handle, final int button, final int action, int mods, CallbackInfo ci)
     {
-        Window window = this.client.method_22683(); // getWindow
+        Window window = this.client.getWindow();
         int mouseX = (int) (((Mouse) (Object) this).getX() * (double) window.getScaledWidth() / (double) window.getWidth());
         int mouseY = (int) (((Mouse) (Object) this).getY() * (double) window.getScaledHeight() / (double) window.getHeight());
         final boolean keyState = action == GLFW.GLFW_PRESS;

@@ -27,9 +27,9 @@ public class NBTUtils
     public static BlockPos readBlockPos(@Nullable CompoundTag tag)
     {
         if (tag != null &&
-            tag.containsKey("x", Constants.NBT.TAG_INT) &&
-            tag.containsKey("y", Constants.NBT.TAG_INT) &&
-            tag.containsKey("z", Constants.NBT.TAG_INT))
+            tag.contains("x", Constants.NBT.TAG_INT) &&
+            tag.contains("y", Constants.NBT.TAG_INT) &&
+            tag.contains("z", Constants.NBT.TAG_INT))
         {
             return new BlockPos(tag.getInt("x"), tag.getInt("y"), tag.getInt("z"));
         }
@@ -49,9 +49,9 @@ public class NBTUtils
     {
         ListTag posList = new ListTag();
 
-        posList.add(new DoubleTag(pos.x));
-        posList.add(new DoubleTag(pos.y));
-        posList.add(new DoubleTag(pos.z));
+        posList.add(DoubleTag.of(pos.x));
+        posList.add(DoubleTag.of(pos.y));
+        posList.add(DoubleTag.of(pos.z));
         tag.put("Pos", posList);
 
         return tag;
@@ -61,9 +61,9 @@ public class NBTUtils
     public static Vec3d readVec3d(@Nullable CompoundTag tag)
     {
         if (tag != null &&
-            tag.containsKey("dx", Constants.NBT.TAG_DOUBLE) &&
-            tag.containsKey("dy", Constants.NBT.TAG_DOUBLE) &&
-            tag.containsKey("dz", Constants.NBT.TAG_DOUBLE))
+            tag.contains("dx", Constants.NBT.TAG_DOUBLE) &&
+            tag.contains("dy", Constants.NBT.TAG_DOUBLE) &&
+            tag.contains("dz", Constants.NBT.TAG_DOUBLE))
         {
             return new Vec3d(tag.getDouble("dx"), tag.getDouble("dy"), tag.getDouble("dz"));
         }
@@ -74,11 +74,11 @@ public class NBTUtils
     @Nullable
     public static Vec3d readEntityPositionFromTag(@Nullable CompoundTag tag)
     {
-        if (tag != null && tag.containsKey("Pos", Constants.NBT.TAG_LIST))
+        if (tag != null && tag.contains("Pos", Constants.NBT.TAG_LIST))
         {
             ListTag tagList = tag.getList("Pos", Constants.NBT.TAG_DOUBLE);
 
-            if (tagList.getListType() == Constants.NBT.TAG_DOUBLE && tagList.size() == 3)
+            if (tagList.getType() == Constants.NBT.TAG_DOUBLE && tagList.size() == 3)
             {
                 return new Vec3d(tagList.getDouble(0), tagList.getDouble(1), tagList.getDouble(2));
             }

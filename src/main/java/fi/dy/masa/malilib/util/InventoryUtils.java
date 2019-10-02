@@ -241,11 +241,11 @@ public class InventoryUtils
     {
         CompoundTag nbt = stackShulkerBox.getTag();
 
-        if (nbt != null && nbt.containsKey("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
+        if (nbt != null && nbt.contains("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
         {
             CompoundTag tag = nbt.getCompound("BlockEntityTag");
 
-            if (tag.containsKey("Items", Constants.NBT.TAG_LIST))
+            if (tag.contains("Items", Constants.NBT.TAG_LIST))
             {
                 ListTag tagList = tag.getList("Items", Constants.NBT.TAG_COMPOUND);
                 return tagList.size() > 0;
@@ -266,11 +266,11 @@ public class InventoryUtils
     {
         CompoundTag nbt = stackIn.getTag();
 
-        if (nbt != null && nbt.containsKey("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
+        if (nbt != null && nbt.contains("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
         {
             CompoundTag tagBlockEntity = nbt.getCompound("BlockEntityTag");
 
-            if (tagBlockEntity.containsKey("Items", Constants.NBT.TAG_LIST))
+            if (tagBlockEntity.contains("Items", Constants.NBT.TAG_LIST))
             {
                 DefaultedList<ItemStack> items = DefaultedList.of();
                 ListTag tagList = tagBlockEntity.getList("Items", Constants.NBT.TAG_COMPOUND);
@@ -278,7 +278,7 @@ public class InventoryUtils
 
                 for (int i = 0; i < count; ++i)
                 {
-                    ItemStack stack = ItemStack.fromTag(tagList.getCompoundTag(i));
+                    ItemStack stack = ItemStack.fromTag(tagList.getCompound(i));
 
                     if (stack.isEmpty() == false)
                     {
@@ -305,11 +305,11 @@ public class InventoryUtils
     {
         CompoundTag nbt = stackIn.getTag();
 
-        if (nbt != null && nbt.containsKey("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
+        if (nbt != null && nbt.contains("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
         {
             CompoundTag tagBlockEntity = nbt.getCompound("BlockEntityTag");
 
-            if (tagBlockEntity.containsKey("Items", Constants.NBT.TAG_LIST))
+            if (tagBlockEntity.contains("Items", Constants.NBT.TAG_LIST))
             {
                 ListTag tagList = tagBlockEntity.getList("Items", Constants.NBT.TAG_COMPOUND);
                 final int count = tagList.size();
@@ -319,7 +319,7 @@ public class InventoryUtils
                 {
                     for (int i = 0; i < count; ++i)
                     {
-                        CompoundTag tag = tagList.getCompoundTag(i);
+                        CompoundTag tag = tagList.getCompound(i);
                         int slot = tag.getByte("Slot");
 
                         if (slot > maxSlot)
@@ -335,7 +335,7 @@ public class InventoryUtils
 
                 for (int i = 0; i < count; ++i)
                 {
-                    CompoundTag tag = tagList.getCompoundTag(i);
+                    CompoundTag tag = tagList.getCompound(i);
                     ItemStack stack = ItemStack.fromTag(tag);
                     int slot = tag.getByte("Slot");
 
