@@ -1013,7 +1013,7 @@ public class RenderUtils
                 double scale = (double) (dimensions - 16) / 128.0D;
                 GlStateManager.translatef(x1, y1, z);
                 GlStateManager.scaled(scale, scale, 0);
-                mc().gameRenderer.getMapRenderer().draw(new class_4587(), MinecraftClient.getInstance().method_22940().method_23000(), mapdata, false);
+                mc().gameRenderer.getMapRenderer().draw(new class_4587(), MinecraftClient.getInstance().method_22940().method_23000(), mapdata, false, 0xF000F0);
             }
 
             GlStateManager.enableLighting();
@@ -1094,7 +1094,7 @@ public class RenderUtils
 
         GlStateManager.pushMatrix();
         bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
-        mc().getTextureManager().getTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX).pushFilter(false, false);
+        mc().getTextureManager().getTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX).setFilter(false, false);
 
         GlStateManager.enableRescaleNormal();
         GlStateManager.enableAlphaTest();
@@ -1111,8 +1111,6 @@ public class RenderUtils
         GlStateManager.scalef(0.625f, 0.625f, 0.625f);
 
         renderModel(model, state);
-
-        mc().getTextureManager().getTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX).popFilter();
 
         GlStateManager.disableAlphaTest();
         GlStateManager.disableRescaleNormal();
