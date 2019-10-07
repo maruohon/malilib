@@ -80,6 +80,9 @@ public class WidgetDropDownList<T> extends WidgetBase
     {
         super.setPosition(x, y);
 
+        int scrollbarWidth = 8;
+        this.scrollBar.setPosition(x + this.width - scrollbarWidth - 1, y + this.height + 1);
+
         this.searchBar.getTextField().x = x + 1;
         this.searchBar.getTextField().y = y - 18;
     }
