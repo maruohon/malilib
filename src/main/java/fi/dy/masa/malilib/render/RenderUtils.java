@@ -1163,10 +1163,11 @@ public class RenderUtils
      */
     public static void setShulkerboxBackgroundTintColor(@Nullable BlockShulkerBox block, boolean useBgColors)
     {
-        if (block != null && useBgColors)
+        // In 1.13+ there is the separate uncolored Shulker Box variant, which returns null from getColor().
+        // In that case don't tint the background.
+        if (useBgColors && block != null && block.getColor() != null)
         {
-            // In 1.13+ there is the uncolored Shulker Box variant, which returns null from getColor()
-            final EnumDyeColor dye = block.getColor() != null ? block.getColor() : EnumDyeColor.PURPLE;
+            final EnumDyeColor dye = block.getColor();
             final float[] colors = dye.getColorComponentValues();
             color(colors[0], colors[1], colors[2], 1f);
         }
