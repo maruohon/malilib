@@ -432,7 +432,7 @@ public class LayerRange
 
                 if (player != null)
                 {
-                    this.moveLayerRange(amount, true, player, true);
+                    this.moveLayerRange(amount, player, true);
                 }
 
                 break;
@@ -443,12 +443,13 @@ public class LayerRange
         return true;
     }
 
-    protected void moveLayerRange(int amount, boolean force, EntityPlayer player, boolean printMessage)
+    protected void moveLayerRange(int amount, EntityPlayer player, boolean printMessage)
     {
         Pair<Boolean, Boolean> moveMinMax = this.getMoveMinMax(player);
         boolean moveMin = moveMinMax.getLeft();
         boolean moveMax = moveMinMax.getRight();
         boolean moved = false;
+        boolean force = moveMin && moveMax;
 
         if (moveMin)
         {
