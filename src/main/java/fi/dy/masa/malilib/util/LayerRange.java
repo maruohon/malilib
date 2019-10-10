@@ -4,9 +4,6 @@ import javax.annotation.Nullable;
 import org.apache.commons.lang3.tuple.Pair;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import fi.dy.masa.malilib.config.values.LayerMode;
-import fi.dy.masa.malilib.gui.GuiBase;
-import fi.dy.masa.malilib.interfaces.IRangeChangeListener;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,6 +12,9 @@ import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
+import fi.dy.masa.malilib.config.values.LayerMode;
+import fi.dy.masa.malilib.gui.GuiBase;
+import fi.dy.masa.malilib.interfaces.IRangeChangeListener;
 
 public class LayerRange
 {
@@ -644,23 +644,7 @@ public class LayerRange
 
     public boolean intersects(IntBoundingBox box)
     {
-        switch (this.axis)
-        {
-            case X:
-            {
-                return (box.maxX < this.getLayerMin() || box.minX > this.getLayerMax()) == false;
-            }
-            case Y:
-            {
-                return (box.maxY < this.getLayerMin() || box.minY > this.getLayerMax()) == false;
-            }
-            case Z:
-            {
-                return (box.maxZ < this.getLayerMin() || box.minZ > this.getLayerMax()) == false;
-            }
-            default:
-                return false;
-        }
+        return this.intersectsBox(box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ);
     }
 
     public boolean intersectsBox(BlockPos posMin, BlockPos posMax)
@@ -699,45 +683,33 @@ public class LayerRange
         return MathHelper.clamp(value, getWorldMinValueForAxis(type), getWorldMaxValueForAxis(type));
     }
 
+    /**
+     * Clamps the given box to the layer range bounds.
+     * @param box
+     * @return the clamped box, or null, if the range does not intersect the original box
+     */
     @Nullable
-    public IntBoundingBox getClampedRenderBoundingBox(IntBoundingBox box)
+    public IntBoundingBox getClampedBox(IntBoundingBox box)
     {
-        if (this.intersects(box) == false)
-        {
-            return null;
-        }
-
-        switch (this.axis)
-        {
-            case X:
-            {
-                final int xMin = Math.max(box.minX, this.getLayerMin());
-                final int xMax = Math.min(box.maxX, this.getLayerMax());
-                return IntBoundingBox.createProper(xMin, box.minY, box.minZ, xMax, box.maxY, box.maxZ);
-            }
-            case Y:
-            {
-                final int yMin = Math.max(box.minY, this.getLayerMin());
-                final int yMax = Math.min(box.maxY, this.getLayerMax());
-                return IntBoundingBox.createProper(box.minX, yMin, box.minZ, box.maxX, yMax, box.maxZ);
-            }
-            case Z:
-            {
-                final int zMin = Math.max(box.minZ, this.getLayerMin());
-                final int zMax = Math.min(box.maxZ, this.getLayerMax());
-                return IntBoundingBox.createProper(box.minX, box.minY, zMin, box.maxX, box.maxY, zMax);
-            }
-            default:
-                return null;
-        }
+        return this.getClampedArea(box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ);
     }
 
+    /**
+     * Clamps the given box to the layer range bounds.
+     * @param box
+     * @return the clamped box, or null, if the range does not intersect the original box
+     */
     @Nullable
     public IntBoundingBox getClampedArea(BlockPos posMin, BlockPos posMax)
     {
         return this.getClampedArea(posMin.getX(), posMin.getY(), posMin.getZ(), posMax.getX(), posMax.getY(), posMax.getZ());
     }
 
+    /**
+     * Clamps the given box to the layer range bounds.
+     * @param box
+     * @return the clamped box, or null, if the range does not intersect the original box
+     */
     @Nullable
     public IntBoundingBox getClampedArea(int minX, int minY, int minZ, int maxX, int maxY, int maxZ)
     {
@@ -750,25 +722,42 @@ public class LayerRange
         {
             case X:
             {
-                final int xMin = Math.max(minX, this.getLayerMin());
-                final int xMax = Math.min(maxX, this.getLayerMax());
-                return IntBoundingBox.createProper(xMin, minY, minZ, xMax, maxY, maxZ);
+                final int clampedMinX = Math.max(minX, this.getLayerMin());
+                final int clampedMaxX = Math.min(maxX, this.getLayerMax());
+                return IntBoundingBox.createProper(clampedMinX, minY, minZ, clampedMaxX, maxY, maxZ);
             }
             case Y:
             {
-                final int yMin = Math.max(minY, this.getLayerMin());
-                final int yMax = Math.min(maxY, this.getLayerMax());
-                return IntBoundingBox.createProper(minX, yMin, minZ, maxX, yMax, maxZ);
+                final int clampedMinY = Math.max(minY, this.getLayerMin());
+                final int clampedMaxY = Math.min(maxY, this.getLayerMax());
+                return IntBoundingBox.createProper(minX, clampedMinY, minZ, maxX, clampedMaxY, maxZ);
             }
             case Z:
             {
-                final int zMin = Math.max(minZ, this.getLayerMin());
-                final int zMax = Math.min(maxZ, this.getLayerMax());
-                return IntBoundingBox.createProper(minX, minY, zMin, maxX, maxY, zMax);
+                final int clampedMinZ = Math.max(minZ, this.getLayerMin());
+                final int clampedMaxZ = Math.min(maxZ, this.getLayerMax());
+                return IntBoundingBox.createProper(minX, minY, clampedMinZ, maxX, maxY, clampedMaxZ);
             }
             default:
                 return null;
         }
+    }
+
+    public LayerRange copy()
+    {
+        LayerRange newRange = new LayerRange(this.refresher);
+
+        newRange.layerMode = this.layerMode;
+        newRange.axis = this.axis;
+        newRange.layerSingle = this.layerSingle;
+        newRange.layerAbove = this.layerAbove;
+        newRange.layerBelow = this.layerBelow;
+        newRange.layerRangeMin = this.layerRangeMin;
+        newRange.layerRangeMax = this.layerRangeMax;
+        newRange.hotkeyRangeMin = this.hotkeyRangeMin;
+        newRange.hotkeyRangeMax = this.hotkeyRangeMax;
+
+        return newRange;
     }
 
     public JsonObject toJson()
