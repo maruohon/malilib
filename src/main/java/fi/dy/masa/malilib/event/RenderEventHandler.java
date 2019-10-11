@@ -5,6 +5,7 @@ import java.util.List;
 import fi.dy.masa.malilib.interfaces.IRenderDispatcher;
 import fi.dy.masa.malilib.interfaces.IRenderer;
 import fi.dy.masa.malilib.util.InfoUtils;
+import net.minecraft.class_4587;
 import net.minecraft.item.ItemStack;
 
 public class RenderEventHandler implements IRenderDispatcher
@@ -80,13 +81,13 @@ public class RenderEventHandler implements IRenderDispatcher
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public void onRenderWorldLast(float partialTicks)
+    public void onRenderWorldLast(class_4587 matrixQueue, float partialTicks)
     {
         if (this.worldLastRenderers.isEmpty() == false)
         {
             for (IRenderer renderer : this.worldLastRenderers)
             {
-                renderer.onRenderWorldLast(partialTicks);
+                renderer.onRenderWorldLast(partialTicks, matrixQueue);
             }
         }
     }

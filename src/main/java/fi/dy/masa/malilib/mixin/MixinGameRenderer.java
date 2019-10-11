@@ -15,8 +15,8 @@ public abstract class MixinGameRenderer
             value = "FIELD",
             target = "Lnet/minecraft/client/render/GameRenderer;renderHand:Z"
         ))
-    private void onRenderWorldLast(float partialTicks, long finishTimeNano, class_4587 foo, CallbackInfo ci)
+    private void onRenderWorldLast(float partialTicks, long finishTimeNano, class_4587 matrixQueue, CallbackInfo ci)
     {
-        ((RenderEventHandler) RenderEventHandler.getInstance()).onRenderWorldLast(partialTicks);
+        ((RenderEventHandler) RenderEventHandler.getInstance()).onRenderWorldLast(matrixQueue, partialTicks);
     }
 }
