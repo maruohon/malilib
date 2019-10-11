@@ -515,10 +515,10 @@ public class GuiColorEditorHSV extends GuiDialogBase
         float b = this.relB;
 
         // Current color indicator
-        buffer.vertex(cx     , cy     , z).method_22915(r, g, b, 1f).next();
-        buffer.vertex(cx     , cy + ch, z).method_22915(r, g, b, 1f).next();
-        buffer.vertex(cx + cw, cy + ch, z).method_22915(r, g, b, 1f).next();
-        buffer.vertex(cx + cw, cy     , z).method_22915(r, g, b, 1f).next();
+        buffer.vertex(cx     , cy     , z).color(r, g, b, 1f).next();
+        buffer.vertex(cx     , cy + ch, z).color(r, g, b, 1f).next();
+        buffer.vertex(cx + cw, cy + ch, z).color(r, g, b, 1f).next();
+        buffer.vertex(cx + cw, cy     , z).color(r, g, b, 1f).next();
 
         // SV selection marker for saturation, horizontal marker, vertical range
         int yt = y + (int) ((1 - this.relS) * h);

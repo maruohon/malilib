@@ -119,7 +119,11 @@ public class PositionUtils
      */
     public static BlockPos getPositionInfrontOfEntity(Entity entity, float verticalThreshold)
     {
-        BlockPos pos = new BlockPos(entity.x, entity.y, entity.z);
+        double x = entity.getX();
+        double y = entity.getY();
+        double z = entity.getZ();
+        double w = entity.getWidth();
+        BlockPos pos = new BlockPos(x, y, z);
 
         if (entity.pitch >= verticalThreshold)
         {
@@ -127,21 +131,21 @@ public class PositionUtils
         }
         else if (entity.pitch <= -verticalThreshold)
         {
-            return new BlockPos(entity.x, Math.ceil(entity.getBoundingBox().maxY), entity.z);
+            return new BlockPos(x, Math.ceil(entity.getBoundingBox().maxY), z);
         }
 
-        double y = Math.floor(entity.y + entity.getStandingEyeHeight());
+        y = Math.floor(y + entity.getStandingEyeHeight());
 
         switch (entity.getHorizontalFacing())
         {
             case EAST:
-                return new BlockPos((int) Math.ceil( entity.x + entity.getWidth() / 2),     (int) y, (int) Math.floor(entity.z));
+                return new BlockPos((int) Math.ceil( x + w / 2),     (int) y, (int) Math.floor(z));
             case WEST:
-                return new BlockPos((int) Math.floor(entity.x - entity.getWidth() / 2) - 1, (int) y, (int) Math.floor(entity.z));
+                return new BlockPos((int) Math.floor(x - w / 2) - 1, (int) y, (int) Math.floor(z));
             case SOUTH:
-                return new BlockPos((int) Math.floor(entity.x), (int) y, (int) Math.ceil( entity.z + entity.getWidth() / 2)    );
+                return new BlockPos((int) Math.floor(x), (int) y, (int) Math.ceil( z + w / 2)    );
             case NORTH:
-                return new BlockPos((int) Math.floor(entity.x), (int) y, (int) Math.floor(entity.z - entity.getWidth() / 2) - 1);
+                return new BlockPos((int) Math.floor(x), (int) y, (int) Math.floor(z - w / 2) - 1);
             default:
         }
 

@@ -1,8 +1,5 @@
 package fi.dy.masa.malilib.interfaces;
 
-import net.minecraft.class_4587;
-import net.minecraft.item.ItemStack;
-
 public interface IRenderer
 {
     /**
@@ -15,10 +12,10 @@ public interface IRenderer
      * Called after vanilla world rendering
      * @param partialTicks
      */
-    default void onRenderWorldLast(float partialTicks, class_4587 matrixQueue) {}
+    default void onRenderWorldLast(float partialTicks, net.minecraft.util.math.MatrixStack matrixStack) {}
 
     /**
      * Called after the tooltip text of an item has been rendered
      */
-    default void onRenderTooltipLast(ItemStack stack, int x, int y) {}
+    default void onRenderTooltipLast(net.minecraft.item.ItemStack stack, int x, int y) {}
 }

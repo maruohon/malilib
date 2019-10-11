@@ -8,7 +8,6 @@ import javax.annotation.Nullable;
 import org.lwjgl.opengl.GL11;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.class_4587;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ShulkerBoxBlock;
@@ -38,6 +37,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.MatrixStack;
 import net.minecraft.util.math.Vec3d;
 import fi.dy.masa.malilib.config.HudAlignment;
 import fi.dy.masa.malilib.gui.GuiBase;
@@ -85,12 +85,14 @@ public class RenderUtils
 
     public static void enableItemLighting()
     {
-        GuiLighting.enable();
+        MatrixStack matrixStack = new MatrixStack();
+        GuiLighting.enable(matrixStack.peek());
     }
 
     public static void enableGuiItemLighting()
     {
-        GuiLighting.enableForItems();
+        MatrixStack matrixStack = new MatrixStack();
+        GuiLighting.enableForItems(matrixStack.peek());
     }
 
     public static void drawOutlinedBox(int x, int y, int width, int height, int colorBg, int colorBorder)
@@ -268,7 +270,8 @@ public class RenderUtils
 
             GlStateManager.enableLighting();
             GlStateManager.enableDepthTest();
-            GuiLighting.enableForItems();
+            MatrixStack matrixStack = new MatrixStack();
+            GuiLighting.enableForItems(matrixStack.peek());
             GlStateManager.enableRescaleNormal();
         }
     }
@@ -568,28 +571,28 @@ public class RenderUtils
             Color4f color, BufferBuilder buffer)
     {
         // West side
-        buffer.vertex(minX, minY, minZ).method_22915(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(minX, minY, maxZ).method_22915(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(minX, maxY, maxZ).method_22915(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(minX, maxY, minZ).method_22915(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
 
         // East side
-        buffer.vertex(maxX, minY, maxZ).method_22915(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(maxX, minY, minZ).method_22915(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(maxX, maxY, minZ).method_22915(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(maxX, maxY, maxZ).method_22915(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
 
         // North side
-        buffer.vertex(maxX, minY, minZ).method_22915(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(minX, minY, minZ).method_22915(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(minX, maxY, minZ).method_22915(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(maxX, maxY, minZ).method_22915(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
 
         // South side
-        buffer.vertex(minX, minY, maxZ).method_22915(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(maxX, minY, maxZ).method_22915(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(maxX, maxY, maxZ).method_22915(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(minX, maxY, maxZ).method_22915(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
     }
 
     /**
@@ -598,10 +601,10 @@ public class RenderUtils
     public static void drawBoxTopBatchedQuads(double minX, double minZ, double maxX, double maxY, double maxZ, Color4f color, BufferBuilder buffer)
     {
         // Top side
-        buffer.vertex(minX, maxY, maxZ).method_22915(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(maxX, maxY, maxZ).method_22915(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(maxX, maxY, minZ).method_22915(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(minX, maxY, minZ).method_22915(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
     }
 
     /**
@@ -610,10 +613,10 @@ public class RenderUtils
     public static void drawBoxBottomBatchedQuads(double minX, double minY, double minZ, double maxX, double maxZ, Color4f color, BufferBuilder buffer)
     {
         // Bottom side
-        buffer.vertex(maxX, minY, maxZ).method_22915(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(minX, minY, maxZ).method_22915(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(minX, minY, minZ).method_22915(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(maxX, minY, minZ).method_22915(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
     }
 
     /**
@@ -623,44 +626,44 @@ public class RenderUtils
             Color4f color, BufferBuilder buffer)
     {
         // West side
-        buffer.vertex(minX, minY, minZ).method_22915(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(minX, minY, maxZ).method_22915(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
 
-        buffer.vertex(minX, minY, maxZ).method_22915(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(minX, maxY, maxZ).method_22915(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
 
-        buffer.vertex(minX, maxY, maxZ).method_22915(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(minX, maxY, minZ).method_22915(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
 
-        buffer.vertex(minX, maxY, minZ).method_22915(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(minX, minY, minZ).method_22915(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
 
         // East side
-        buffer.vertex(maxX, minY, maxZ).method_22915(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(maxX, minY, minZ).method_22915(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
 
-        buffer.vertex(maxX, minY, minZ).method_22915(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(maxX, maxY, minZ).method_22915(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
 
-        buffer.vertex(maxX, maxY, minZ).method_22915(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(maxX, maxY, maxZ).method_22915(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
 
-        buffer.vertex(maxX, maxY, maxZ).method_22915(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(maxX, minY, maxZ).method_22915(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
 
         // North side (don't repeat the vertical lines that are done by the east/west sides)
-        buffer.vertex(maxX, minY, minZ).method_22915(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(minX, minY, minZ).method_22915(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, minY, minZ).color(color.r, color.g, color.b, color.a).next();
 
-        buffer.vertex(minX, maxY, minZ).method_22915(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(maxX, maxY, minZ).method_22915(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).next();
 
         // South side (don't repeat the vertical lines that are done by the east/west sides)
-        buffer.vertex(minX, minY, maxZ).method_22915(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(maxX, minY, maxZ).method_22915(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).next();
 
-        buffer.vertex(maxX, maxY, maxZ).method_22915(color.r, color.g, color.b, color.a).next();
-        buffer.vertex(minX, maxY, maxZ).method_22915(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
+        buffer.vertex(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
     }
 
     public static void drawBox(IntBoundingBox bb, Color4f color, BufferBuilder bufferQuads, BufferBuilder bufferLines)
@@ -1013,7 +1016,7 @@ public class RenderUtils
                 double scale = (double) (dimensions - 16) / 128.0D;
                 GlStateManager.translatef(x1, y1, z);
                 GlStateManager.scaled(scale, scale, 0);
-                mc().gameRenderer.getMapRenderer().draw(new class_4587(), MinecraftClient.getInstance().method_22940().method_23000(), mapdata, false, 0xF000F0);
+                mc().gameRenderer.getMapRenderer().draw(new MatrixStack(), MinecraftClient.getInstance().method_22940().method_23000(), mapdata, false, 0xF000F0);
             }
 
             GlStateManager.enableLighting();
