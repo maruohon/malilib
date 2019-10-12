@@ -7,6 +7,11 @@ import java.util.List;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextFormatting;
 import fi.dy.masa.malilib.config.options.IConfigBase;
 import fi.dy.masa.malilib.gui.Message.MessageType;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
@@ -19,11 +24,7 @@ import fi.dy.masa.malilib.gui.wrappers.TextFieldWrapper;
 import fi.dy.masa.malilib.interfaces.IStringConsumer;
 import fi.dy.masa.malilib.render.MessageRenderer;
 import fi.dy.masa.malilib.render.RenderUtils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextFormatting;
+import fi.dy.masa.malilib.util.StringUtils;
 
 public abstract class GuiBase extends GuiScreen implements IMessageConsumer, IStringConsumer
 {
@@ -395,7 +396,7 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
             {
                 for (String line : lines)
                 {
-                    width = Math.max(width, this.getStringWidth(line));
+                    width = Math.max(width, this.getStringWidth(StringUtils.translate(line)));
                 }
             }
         }
