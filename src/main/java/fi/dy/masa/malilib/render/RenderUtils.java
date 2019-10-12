@@ -585,7 +585,7 @@ public class RenderUtils
     /**
      * Assumes a BufferBuilder in GL_QUADS mode has been initialized
      */
-    public static void drawBlockBoundingBoxSidesBatchedQuads(BlockPos pos, Color4f color, double expand, BufferBuilder buffer)
+    public static void drawBlockSpaceAllSidesBatchedQuads(BlockPos pos, Color4f color, double expand, BufferBuilder buffer)
     {
         double minX = pos.getX() - expand;
         double minY = pos.getY() - expand;
@@ -600,7 +600,7 @@ public class RenderUtils
     /**
      * Assumes a BufferBuilder in GL_LINES mode has been initialized
      */
-    public static void drawBlockBoundingBoxOutlinesBatchedLines(BlockPos pos, Color4f color, double expand, BufferBuilder buffer)
+    public static void drawBlockSpaceAllOutlinesBatchedLines(BlockPos pos, Color4f color, double expand, BufferBuilder buffer)
     {
         double minX = pos.getX() - expand;
         double minY = pos.getY() - expand;
@@ -746,6 +746,64 @@ public class RenderUtils
 
         buffer.pos(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
         buffer.pos(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+    }
+
+    /**
+     * Assumes a BufferBuilder in GL_QUADS mode has been initialized
+     */
+    public static void drawBlockSpaceSideBatchedQuads(BlockPos pos, EnumFacing side, Color4f color, double expand, BufferBuilder buffer)
+    {
+        double minX = pos.getX() - expand;
+        double minY = pos.getY() - expand;
+        double minZ = pos.getZ() - expand;
+        double maxX = pos.getX() + expand + 1;
+        double maxY = pos.getY() + expand + 1;
+        double maxZ = pos.getZ() + expand + 1;
+
+        switch (side)
+        {
+            case DOWN:
+                buffer.pos(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+                buffer.pos(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+                buffer.pos(minX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+                buffer.pos(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+                break;
+
+            case UP:
+                buffer.pos(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+                buffer.pos(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+                buffer.pos(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+                buffer.pos(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+                break;
+
+            case NORTH:
+                buffer.pos(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+                buffer.pos(minX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+                buffer.pos(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+                buffer.pos(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+                break;
+
+            case SOUTH:
+                buffer.pos(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+                buffer.pos(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+                buffer.pos(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+                buffer.pos(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+                break;
+
+            case WEST:
+                buffer.pos(minX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+                buffer.pos(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+                buffer.pos(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+                buffer.pos(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+                break;
+
+            case EAST:
+                buffer.pos(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+                buffer.pos(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+                buffer.pos(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
+                buffer.pos(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
+                break;
+        }
     }
 
     public static void drawBox(IntBoundingBox bb, Color4f color, BufferBuilder bufferQuads, BufferBuilder bufferLines)
