@@ -2,11 +2,11 @@ package fi.dy.masa.malilib.gui.widgets;
 
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
+import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.MaLiLibIcons;
 import fi.dy.masa.malilib.config.ConfigType;
 import fi.dy.masa.malilib.config.gui.SliderCallbackDouble;
 import fi.dy.masa.malilib.config.gui.SliderCallbackInteger;
-import fi.dy.masa.malilib.config.options.ConfigColor;
 import fi.dy.masa.malilib.config.options.IConfigBase;
 import fi.dy.masa.malilib.config.options.IConfigBoolean;
 import fi.dy.masa.malilib.config.options.IConfigDouble;
@@ -41,7 +41,6 @@ import fi.dy.masa.malilib.hotkeys.IKeybind;
 import fi.dy.masa.malilib.hotkeys.KeybindSettings;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.GuiUtils;
-import net.minecraft.client.gui.GuiScreen;
 
 public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapper>
 {
@@ -162,6 +161,7 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
             {
                 configWidth -= 24; // adjust the width to match other configs due to the color display
                 this.colorDisplayPosX = x + configWidth + 4;
+                this.addWidget(new WidgetColorIndicator(this.colorDisplayPosX, y, 19, 19, (IConfigInteger) config));
             }
             else if (type == ConfigType.INTEGER || type == ConfigType.DOUBLE)
             {
@@ -179,7 +179,7 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
                 this.addConfigTextFieldEntry(x, y, resetX, configWidth, configHeight, (IConfigValue) config);
             }
 
-            if (config instanceof IConfigSlider)
+            if (type != ConfigType.COLOR && (config instanceof IConfigSlider))
             {
                 IGuiIcon icon = ((IConfigSlider) config).shouldUseSlider() ? MaLiLibIcons.BTN_TXTFIELD : MaLiLibIcons.BTN_SLIDER;
                 ButtonGeneric toggleBtn = new ButtonGeneric(this.colorDisplayPosX, y + 2, icon);
@@ -306,17 +306,8 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
 
         if (this.wrapper.getType() == ConfigOptionWrapper.Type.CONFIG)
         {
-            IConfigBase config = this.wrapper.getConfig();
             this.drawTextFields(mouseX, mouseY);
             super.render(mouseX, mouseY, selected);
-
-            if (config.getType() == ConfigType.COLOR)
-            {
-                int y = this.y + 1;
-                RenderUtils.drawRect(this.colorDisplayPosX    , y + 0, 19, 19, 0xFFFFFFFF);
-                RenderUtils.drawRect(this.colorDisplayPosX + 1, y + 1, 17, 17, 0xFF000000);
-                RenderUtils.drawRect(this.colorDisplayPosX + 2, y + 2, 15, 15, 0xFF000000 | ((ConfigColor) config).getIntegerValue());
-            }
         }
     }
 
