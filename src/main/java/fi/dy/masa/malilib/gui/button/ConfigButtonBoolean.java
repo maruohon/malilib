@@ -25,17 +25,10 @@ public class ConfigButtonBoolean extends ButtonGeneric
     }
 
     @Override
-    public void updateDisplayString()
+    protected String generateDisplayString()
     {
         String valueStr = String.valueOf(this.config.getBooleanValue());
 
-        if (this.config.getBooleanValue())
-        {
-            this.displayString = GuiBase.TXT_DARK_GREEN + valueStr + GuiBase.TXT_RST;
-        }
-        else
-        {
-            this.displayString = GuiBase.TXT_DARK_RED + valueStr + GuiBase.TXT_RST;
-        }
+        return (this.config.getBooleanValue() ? GuiBase.TXT_DARK_GREEN : GuiBase.TXT_DARK_RED) + valueStr + GuiBase.TXT_RST;
     }
 }

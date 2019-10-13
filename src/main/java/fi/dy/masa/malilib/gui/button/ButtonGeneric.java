@@ -2,10 +2,10 @@ package fi.dy.masa.malilib.gui.button;
 
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
+import net.minecraft.client.renderer.GlStateManager;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.HorizontalAlignment;
-import net.minecraft.client.renderer.GlStateManager;
 
 public class ButtonGeneric extends ButtonBase
 {
@@ -38,7 +38,7 @@ public class ButtonGeneric extends ButtonBase
 
         this.icon = icon;
 
-        if (width == -1 && icon != null)
+        if (this.automaticWidth && icon != null)
         {
             this.width += icon.getWidth() + 8;
         }

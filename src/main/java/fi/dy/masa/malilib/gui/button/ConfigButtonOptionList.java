@@ -17,6 +17,7 @@ public class ConfigButtonOptionList extends ButtonGeneric
     public ConfigButtonOptionList(int x, int y, int width, int height, IConfigOptionList config, @Nullable String prefixTranslationKey)
     {
         super(x, y, width, height, "");
+
         this.config = config;
         this.prefixTranslationKey = prefixTranslationKey;
 
@@ -33,15 +34,15 @@ public class ConfigButtonOptionList extends ButtonGeneric
     }
 
     @Override
-    public void updateDisplayString()
+    protected String generateDisplayString()
     {
         if (this.prefixTranslationKey != null)
         {
-            this.displayString = StringUtils.translate(this.prefixTranslationKey, this.config.getOptionListValue().getDisplayName());
+            return StringUtils.translate(this.prefixTranslationKey, this.config.getOptionListValue().getDisplayName());
         }
         else
         {
-            this.displayString = this.config.getOptionListValue().getDisplayName();
+            return this.config.getOptionListValue().getDisplayName();
         }
     }
 }

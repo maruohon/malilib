@@ -44,8 +44,8 @@ public class ConfigButtonStringList extends ButtonGeneric
     }
 
     @Override
-    public void updateDisplayString()
+    protected String generateDisplayString()
     {
-        this.displayString = StringUtils.getClampedDisplayStringRenderlen(this.config.getStrings(), this.width - 10, "[ ", " ]");
+        return StringUtils.getClampedDisplayStringRenderlen(this.config.getStrings(), this.width - 10, "[ ", " ]");
     }
 }
