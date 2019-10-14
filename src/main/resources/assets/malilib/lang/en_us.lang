@@ -23,7 +23,7 @@ malilib.gui.button.reset.caps=RESET
 
 malilib.gui.button.render_layers_gui.axis=Axis: %s
 malilib.gui.button.render_layers_gui.layers=Layers: %s
-malilib.gui.button.render_layers_gui.set_here=Set Here
+malilib.gui.button.render_layers_gui.set_to_player=Set to player
 
 malilib.gui.button.hover.directory_widget.create_directory=Create a new directory
 malilib.gui.button.hover.directory_widget.root=To root/base directory

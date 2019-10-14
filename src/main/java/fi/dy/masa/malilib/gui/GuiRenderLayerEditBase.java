@@ -28,11 +28,13 @@ public abstract class GuiRenderLayerEditBase extends GuiBase
 
     protected void createLayerEditControls(int x, int y, LayerRange layerRange)
     {
+        int origX = x;
+
         x += this.createLayerConfigButton(x, y, ButtonListenerLayerEdit.Type.MODE, layerRange);
         this.createLayerConfigButton(x, y, ButtonListenerLayerEdit.Type.AXIS, layerRange);
         y += 26;
 
-        this.nextY = this.createTextFields(10, y, 60, layerRange);
+        this.nextY = this.createTextFields(origX, y, 60, layerRange);
     }
 
     protected int createLayerConfigButton(int x, int y, ButtonListenerLayerEdit.Type type, LayerRange layerRange)
@@ -108,7 +110,7 @@ public abstract class GuiRenderLayerEditBase extends GuiBase
 
         this.updateTextFieldValues(layerRange);
 
-        this.createLayerConfigButton(x - 1, y, ButtonListenerLayerEdit.Type.SET_HERE, layerRange);
+        this.createLayerConfigButton(x - 1, y, ButtonListenerLayerEdit.Type.SET_TO_PLAYER, layerRange);
 
         return y + 22;
     }
@@ -161,7 +163,7 @@ public abstract class GuiRenderLayerEditBase extends GuiBase
                 axis = EnumFacing.Axis.values()[next % 3];
                 this.layerRange.setAxis(axis);
             }
-            else if (this.type == Type.SET_HERE)
+            else if (this.type == Type.SET_TO_PLAYER)
             {
                 this.layerRange.setToPosition(this.parent.mc.player);
             }
@@ -171,9 +173,9 @@ public abstract class GuiRenderLayerEditBase extends GuiBase
 
         public enum Type
         {
-            MODE        ("malilib.gui.button.render_layers_gui.layers"),
-            AXIS        ("malilib.gui.button.render_layers_gui.axis"),
-            SET_HERE    ("malilib.gui.button.render_layers_gui.set_here");
+            MODE            ("malilib.gui.button.render_layers_gui.layers"),
+            AXIS            ("malilib.gui.button.render_layers_gui.axis"),
+            SET_TO_PLAYER   ("malilib.gui.button.render_layers_gui.set_to_player");
 
             private final String translationKey;
 
@@ -184,7 +186,7 @@ public abstract class GuiRenderLayerEditBase extends GuiBase
 
             public String getDisplayName(LayerRange layerRange)
             {
-                if (this == SET_HERE)
+                if (this == SET_TO_PLAYER)
                 {
                     return StringUtils.translate(this.translationKey);
                 }
