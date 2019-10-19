@@ -5,7 +5,6 @@ import java.util.List;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.MaLiLibIcons;
 import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
-import fi.dy.masa.malilib.gui.WidgetScrollBar;
 import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
 import fi.dy.masa.malilib.gui.wrappers.TextFieldWrapper;
 import fi.dy.masa.malilib.interfaces.IStringRetriever;
