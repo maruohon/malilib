@@ -7,7 +7,7 @@ public class KeyCallbackAdjustable implements IHotkeyCallback
 {
     protected static boolean valueChanged;
 
-    protected final IConfigBoolean config;
+    @Nullable protected final IConfigBoolean config;
     @Nullable protected final IHotkeyCallback callback;
 
     public static void setValueChanged()
@@ -15,7 +15,17 @@ public class KeyCallbackAdjustable implements IHotkeyCallback
         valueChanged = true;
     }
 
-    public KeyCallbackAdjustable(IConfigBoolean config, @Nullable IHotkeyCallback callback)
+    /**
+     * Creates a wrapper callback, which has special behavior for the ActivateOn value of BOTH, such that
+     * it will only call the provided callback on RELEASE, if there was no config value adjusted while
+     * the keybind was active. If the ActivateOn value is PRESS or RELEASE, then there is no special behavior
+     * and the provided callback is called directly.
+     * The hotkey callback has priority over the boolean callback, if both are provided.
+     * So it only makes sense to provide one. 
+     * @param config
+     * @param callback
+     */
+    public KeyCallbackAdjustable(@Nullable IConfigBoolean config, @Nullable IHotkeyCallback callback)
     {
         this.config = config;
         this.callback = callback;
@@ -39,24 +49,22 @@ public class KeyCallbackAdjustable implements IHotkeyCallback
             if (valueChanged)
             {
                 valueChanged = false;
-
                 return true;
             }
         }
-        else if (valueChanged)
-        {
-            valueChanged = false;
-        }
+
+        valueChanged = false;
 
         if (this.callback != null)
         {
             return this.callback.onKeyAction(action, key);
         }
-        else
+        else if (this.config != null)
         {
             this.config.toggleBooleanValue();
-
             return true;
         }
+
+        return false;
     }
 }
