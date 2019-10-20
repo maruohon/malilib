@@ -2,14 +2,14 @@ package fi.dy.masa.malilib.gui.widgets;
 
 import java.util.ArrayList;
 import java.util.List;
+import fi.dy.masa.malilib.gui.GuiBase;
+import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
 import fi.dy.masa.malilib.gui.wrappers.TextFieldWrapper;
 import fi.dy.masa.malilib.util.KeyCodes;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.GuiTextField;
 
 public abstract class WidgetListConfigOptionsBase<TYPE, WIDGET extends WidgetConfigOptionBase<TYPE>> extends WidgetListBase<TYPE, WIDGET>
 {
-    protected final List<TextFieldWrapper<? extends GuiTextField>> textFields = new ArrayList<>();
+    protected final List<TextFieldWrapper<? extends GuiTextFieldGeneric>> textFields = new ArrayList<>();
     protected boolean configsModified;
     protected int maxLabelWidth;
     protected int configWidth;
@@ -52,7 +52,7 @@ public abstract class WidgetListConfigOptionsBase<TYPE, WIDGET extends WidgetCon
     {
         if (keyCode == KeyCodes.KEY_TAB)
         {
-            return this.changeTextFieldFocus(GuiScreen.isShiftKeyDown());
+            return this.changeTextFieldFocus(GuiBase.isShiftDown());
         }
         else
         {
@@ -82,7 +82,7 @@ public abstract class WidgetListConfigOptionsBase<TYPE, WIDGET extends WidgetCon
         return super.onCharTyped(charIn, modifiers);
     }
 
-    public void addTextField(TextFieldWrapper<? extends GuiTextField> wrapper)
+    public void addTextField(TextFieldWrapper<? extends GuiTextFieldGeneric> wrapper)
     {
         this.textFields.add(wrapper);
     }
@@ -97,7 +97,7 @@ public abstract class WidgetListConfigOptionsBase<TYPE, WIDGET extends WidgetCon
 
             for (int i = 0; i < size; ++i)
             {
-                GuiTextField textField = this.textFields.get(i).getTextField();
+                GuiTextFieldGeneric textField = this.textFields.get(i).getTextField();
 
                 if (textField.isFocused())
                 {
@@ -136,7 +136,7 @@ public abstract class WidgetListConfigOptionsBase<TYPE, WIDGET extends WidgetCon
 
         for (int i = 0; i < this.textFields.size(); ++i)
         {
-            GuiTextField textField = this.textFields.get(i).getTextField();
+            GuiTextFieldGeneric textField = this.textFields.get(i).getTextField();
 
             if (textField.isFocused())
             {

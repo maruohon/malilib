@@ -1,22 +1,21 @@
 package fi.dy.masa.malilib.util;
 
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import net.minecraft.block.BlockShulkerBox;
+import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.ClickType;
-import net.minecraft.inventory.Container;
-import net.minecraft.inventory.ContainerPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryBasic;
-import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.container.ClickType;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.PlayerContainer;
+import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.EnumHand;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.TextComponentString;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
 public class InventoryUtils
 {
@@ -113,7 +112,7 @@ public class InventoryUtils
         final int startSlot = reverse ? container.inventorySlots.size() - 1 : 0;
         final int endSlot = reverse ? -1 : container.inventorySlots.size();
         final int increment = reverse ? -1 : 1;
-        final boolean isPlayerInv = container instanceof ContainerPlayer;
+        final boolean isPlayerInv = container instanceof PlayerContainer;
 
         for (int slotNum = startSlot; slotNum != endSlot; slotNum += increment)
         {
@@ -138,7 +137,7 @@ public class InventoryUtils
      */
     public static boolean swapItemToMainHand(ItemStack stackReference, Minecraft mc)
     {
-        EntityPlayer player = mc.player;
+        PlayerEntity player = mc.player;
         boolean isCreative = player.abilities.isCreativeMode;
 
         // Already holding the requested item
@@ -150,17 +149,17 @@ public class InventoryUtils
         if (isCreative)
         {
             player.inventory.setPickedItemStack(stackReference);
-            mc.playerController.sendSlotPacket(player.getHeldItem(EnumHand.MAIN_HAND), 36 + player.inventory.currentItem);
+            mc.playerController.sendSlotPacket(player.getHeldItem(Hand.MAIN_HAND), 36 + player.inventory.currentItem);
             return true;
         }
         else
         {
-            int slot = findSlotWithItem(player.inventoryContainer, stackReference, true);
+            int slot = findSlotWithItem(player.container, stackReference, true);
 
             if (slot != -1)
             {
                 int currentHotbarSlot = player.inventory.currentItem;
-                mc.playerController.windowClick(player.inventoryContainer.windowId, slot, currentHotbarSlot, ClickType.SWAP, mc.player);
+                mc.playerController.windowClick(player.container.windowId, slot, currentHotbarSlot, ClickType.SWAP, mc.player);
                 return true;
             }
         }
@@ -176,15 +175,15 @@ public class InventoryUtils
      */
     public static boolean shulkerBoxHasItems(ItemStack stackShulkerBox)
     {
-        NBTTagCompound nbt = stackShulkerBox.getTag();
+        CompoundNBT nbt = stackShulkerBox.getTag();
 
         if (nbt != null && nbt.contains("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
         {
-            NBTTagCompound tag = nbt.getCompound("BlockEntityTag");
+            CompoundNBT tag = nbt.getCompound("BlockEntityTag");
 
             if (tag.contains("Items", Constants.NBT.TAG_LIST))
             {
-                NBTTagList tagList = tag.getList("Items", Constants.NBT.TAG_COMPOUND);
+                ListNBT tagList = tag.getList("Items", Constants.NBT.TAG_COMPOUND);
                 return tagList.size() > 0;
             }
         }
@@ -201,16 +200,16 @@ public class InventoryUtils
      */
     public static NonNullList<ItemStack> getStoredItems(ItemStack stackIn)
     {
-        NBTTagCompound nbt = stackIn.getTag();
+        CompoundNBT nbt = stackIn.getTag();
 
         if (nbt != null && nbt.contains("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
         {
-            NBTTagCompound tagBlockEntity = nbt.getCompound("BlockEntityTag");
+            CompoundNBT tagBlockEntity = nbt.getCompound("BlockEntityTag");
 
             if (tagBlockEntity.contains("Items", Constants.NBT.TAG_LIST))
             {
                 NonNullList<ItemStack> items = NonNullList.create();
-                NBTTagList tagList = tagBlockEntity.getList("Items", Constants.NBT.TAG_COMPOUND);
+                ListNBT tagList = tagBlockEntity.getList("Items", Constants.NBT.TAG_COMPOUND);
                 final int count = tagList.size();
 
                 for (int i = 0; i < count; ++i)
@@ -240,15 +239,15 @@ public class InventoryUtils
      */
     public static NonNullList<ItemStack> getStoredItems(ItemStack stackIn, int slotCount)
     {
-        NBTTagCompound nbt = stackIn.getTag();
+        CompoundNBT nbt = stackIn.getTag();
 
         if (nbt != null && nbt.contains("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
         {
-            NBTTagCompound tagBlockEntity = nbt.getCompound("BlockEntityTag");
+            CompoundNBT tagBlockEntity = nbt.getCompound("BlockEntityTag");
 
             if (tagBlockEntity.contains("Items", Constants.NBT.TAG_LIST))
             {
-                NBTTagList tagList = tagBlockEntity.getList("Items", Constants.NBT.TAG_COMPOUND);
+                ListNBT tagList = tagBlockEntity.getList("Items", Constants.NBT.TAG_COMPOUND);
                 final int count = tagList.size();
                 int maxSlot = -1;
 
@@ -256,7 +255,7 @@ public class InventoryUtils
                 {
                     for (int i = 0; i < count; ++i)
                     {
-                        NBTTagCompound tag = tagList.getCompound(i);
+                        CompoundNBT tag = tagList.getCompound(i);
                         int slot = tag.getByte("Slot");
 
                         if (slot > maxSlot)
@@ -272,7 +271,7 @@ public class InventoryUtils
 
                 for (int i = 0; i < count; ++i)
                 {
-                    NBTTagCompound tag = tagList.getCompound(i);
+                    CompoundNBT tag = tagList.getCompound(i);
                     ItemStack stack = ItemStack.read(tag);
                     int slot = tag.getByte("Slot");
 
@@ -333,8 +332,8 @@ public class InventoryUtils
             {
                 map.addTo(new ItemType(stack, false, true), stack.getCount());
 
-                if (stack.getItem() instanceof ItemBlock &&
-                    ((ItemBlock) stack.getItem()).getBlock() instanceof BlockShulkerBox &&
+                if (stack.getItem() instanceof BlockItem &&
+                    ((BlockItem) stack.getItem()).getBlock() instanceof ShulkerBoxBlock &&
                     shulkerBoxHasItems(stack))
                 {
                     Object2IntOpenHashMap<ItemType> boxCounts = getStoredItemCounts(stack);
@@ -357,7 +356,7 @@ public class InventoryUtils
      */
     public static IInventory getAsInventory(NonNullList<ItemStack> items)
     {
-        InventoryBasic inv = new InventoryBasic(new TextComponentString(""), items.size());
+        Inventory inv = new Inventory(items.size());
 
         for (int slot = 0; slot < items.size(); ++slot)
         {

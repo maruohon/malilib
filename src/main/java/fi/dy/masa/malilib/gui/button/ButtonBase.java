@@ -5,13 +5,13 @@ import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
+import net.minecraft.client.audio.SimpleSound;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvents;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.widgets.WidgetBase;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
-import net.minecraft.client.audio.SimpleSound;
-import net.minecraft.init.SoundEvents;
-import net.minecraft.util.ResourceLocation;
 
 public abstract class ButtonBase extends WidgetBase
 {

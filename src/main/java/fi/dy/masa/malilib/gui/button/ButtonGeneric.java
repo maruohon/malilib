@@ -2,10 +2,10 @@ package fi.dy.masa.malilib.gui.button;
 
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
+import com.mojang.blaze3d.platform.GlStateManager;
 import fi.dy.masa.malilib.gui.LeftRight;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.render.RenderUtils;
-import net.minecraft.client.renderer.GlStateManager;
 
 public class ButtonGeneric extends ButtonBase
 {

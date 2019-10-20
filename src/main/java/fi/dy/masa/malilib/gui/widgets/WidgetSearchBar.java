@@ -1,12 +1,12 @@
 package fi.dy.masa.malilib.gui.widgets;
 
+import net.minecraft.util.SharedConstants;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
 import fi.dy.masa.malilib.gui.LeftRight;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.KeyCodes;
-import net.minecraft.util.SharedConstants;
 
 public class WidgetSearchBar extends WidgetBase
 {
@@ -83,7 +83,7 @@ public class WidgetSearchBar extends WidgetBase
             {
                 if (GuiBase.isShiftDown())
                 {
-                    this.mc.currentScreen.close();
+                    this.mc.currentScreen.onClose();
                 }
 
                 this.searchOpen = false;
@@ -127,7 +127,7 @@ public class WidgetSearchBar extends WidgetBase
 
         if (this.searchOpen)
         {
-            this.searchBox.drawTextField(mouseX, mouseY, 0);
+            this.searchBox.render(mouseX, mouseY, 0);
         }
     }
 }

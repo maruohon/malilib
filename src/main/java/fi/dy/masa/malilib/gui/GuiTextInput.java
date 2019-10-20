@@ -1,19 +1,19 @@
 package fi.dy.masa.malilib.gui;
 
 import javax.annotation.Nullable;
+import net.minecraft.client.gui.screen.Screen;
 import fi.dy.masa.malilib.gui.Message.MessageType;
 import fi.dy.masa.malilib.gui.interfaces.IMessageConsumer;
 import fi.dy.masa.malilib.interfaces.ICompletionListener;
 import fi.dy.masa.malilib.interfaces.IStringConsumer;
 import fi.dy.masa.malilib.interfaces.IStringConsumerFeedback;
-import net.minecraft.client.gui.GuiScreen;
 
 public class GuiTextInput extends GuiTextInputBase implements ICompletionListener
 {
     protected final IStringConsumer consumer;
     protected final IStringConsumerFeedback consumerFeedback;
 
-    public GuiTextInput(int maxTextLength, String titleKey, String defaultText, @Nullable GuiScreen parent, IStringConsumer consumer)
+    public GuiTextInput(int maxTextLength, String titleKey, String defaultText, @Nullable Screen parent, IStringConsumer consumer)
     {
         super(maxTextLength, titleKey, defaultText, parent);
 
@@ -21,7 +21,7 @@ public class GuiTextInput extends GuiTextInputBase implements ICompletionListene
         this.consumerFeedback = null;
     }
 
-    public GuiTextInput(int maxTextLength, String titleKey, String defaultText, @Nullable GuiScreen parent, IStringConsumerFeedback consumer)
+    public GuiTextInput(int maxTextLength, String titleKey, String defaultText, @Nullable Screen parent, IStringConsumerFeedback consumer)
     {
         super(maxTextLength, titleKey, defaultText, parent);
 

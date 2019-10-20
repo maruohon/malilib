@@ -1,21 +1,21 @@
 package fi.dy.masa.malilib.gui;
 
 import javax.annotation.Nullable;
+import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.gui.screen.Screen;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.KeyCodes;
 import fi.dy.masa.malilib.util.StringUtils;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.GlStateManager;
 
 public abstract class GuiTextInputBase extends GuiDialogBase
 {
     protected final GuiTextFieldGeneric textField;
     protected final String originalText;
 
-    public GuiTextInputBase(int maxTextLength, String titleKey, String defaultText, @Nullable GuiScreen parent)
+    public GuiTextInputBase(int maxTextLength, String titleKey, String defaultText, @Nullable Screen parent)
     {
         this.setParent(parent);
         this.title = StringUtils.translate(titleKey);
@@ -31,7 +31,7 @@ public abstract class GuiTextInputBase extends GuiDialogBase
         this.textField.setFocused(true);
         this.textField.setText(this.originalText);
         this.textField.setCursorPositionEnd();
-        this.zLevel = 1f;
+        this.blitOffset = 1;
     }
 
     @Override
@@ -55,9 +55,9 @@ public abstract class GuiTextInputBase extends GuiDialogBase
     }
 
     @Override
-    public boolean doesGuiPauseGame()
+    public boolean isPauseScreen()
     {
-        return this.getParent() != null && this.getParent().doesGuiPauseGame();
+        return this.getParent() != null && this.getParent().isPauseScreen();
     }
 
     @Override
@@ -69,15 +69,15 @@ public abstract class GuiTextInputBase extends GuiDialogBase
         }
 
         GlStateManager.pushMatrix();
-        GlStateManager.translatef(0, 0, this.zLevel);
+        GlStateManager.translatef(0, 0, this.blitOffset);
 
         RenderUtils.drawOutlinedBox(this.dialogLeft, this.dialogTop, this.dialogWidth, this.dialogHeight, 0xE0000000, COLOR_HORIZONTAL_BAR);
 
         // Draw the title
-        this.drawStringWithShadow(this.getTitle(), this.dialogLeft + 10, this.dialogTop + 4, COLOR_WHITE);
+        this.drawStringWithShadow(this.getTitleString(), this.dialogLeft + 10, this.dialogTop + 4, COLOR_WHITE);
 
         //super.drawScreen(mouseX, mouseY, partialTicks);
-        this.textField.drawTextField(mouseX, mouseY, partialTicks);
+        this.textField.render(mouseX, mouseY, partialTicks);
 
         this.drawButtons(mouseX, mouseY, partialTicks);
         GlStateManager.popMatrix();

@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.gui;
 import java.util.List;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
+import net.minecraft.client.gui.screen.Screen;
 import fi.dy.masa.malilib.config.options.ConfigBase;
 import fi.dy.masa.malilib.config.options.ConfigBoolean;
 import fi.dy.masa.malilib.config.options.ConfigOptionList;
@@ -16,7 +17,6 @@ import fi.dy.masa.malilib.hotkeys.KeybindSettings;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.KeyCodes;
 import fi.dy.masa.malilib.util.StringUtils;
-import net.minecraft.client.gui.GuiScreen;
 
 public class GuiKeybindSettings extends GuiDialogBase
 {
@@ -34,7 +34,7 @@ public class GuiKeybindSettings extends GuiDialogBase
     protected int labelWidth;
     protected int configWidth;
 
-    public GuiKeybindSettings(IKeybind keybind, String name, @Nullable IDialogHandler dialogHandler, GuiScreen parent)
+    public GuiKeybindSettings(IKeybind keybind, String name, @Nullable IDialogHandler dialogHandler, Screen parent)
     {
         this.keybind = keybind;
         this.keybindName = name;
@@ -74,7 +74,7 @@ public class GuiKeybindSettings extends GuiDialogBase
         this.setWidthAndHeight(totalWidth, this.configList.size() * 22 + 30);
         this.centerOnScreen();
 
-        this.setWorldAndResolution(this.mc, this.dialogWidth, this.dialogHeight);
+        this.init(this.mc, this.dialogWidth, this.dialogHeight);
     }
 
     @Override
@@ -109,7 +109,7 @@ public class GuiKeybindSettings extends GuiDialogBase
     }
 
     @Override
-    public void onGuiClosed()
+    public void removed()
     {
         KeyAction activateOn = (KeyAction) this.cfgActivateOn.getOptionListValue();
         KeybindSettings.Context context = (KeybindSettings.Context) this.cfgContext.getOptionListValue();
@@ -122,7 +122,7 @@ public class GuiKeybindSettings extends GuiDialogBase
         KeybindSettings settingsNew = KeybindSettings.create(context, activateOn, allowExtraKeys, orderSensitive, exclusive, cancel, allowEmpty);
         this.keybind.setSettings(settingsNew);
 
-        super.onGuiClosed();
+        super.removed();
     }
 
     @Override

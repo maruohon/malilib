@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.gui;
 
+import net.minecraft.util.Direction;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
@@ -10,7 +11,6 @@ import fi.dy.masa.malilib.gui.widgets.WidgetCheckBox;
 import fi.dy.masa.malilib.util.LayerMode;
 import fi.dy.masa.malilib.util.LayerRange;
 import fi.dy.masa.malilib.util.StringUtils;
-import net.minecraft.util.EnumFacing;
 
 public abstract class GuiRenderLayerEditBase extends GuiBase
 {
@@ -155,9 +155,9 @@ public abstract class GuiRenderLayerEditBase extends GuiBase
             }
             else if (this.type == Type.AXIS)
             {
-                EnumFacing.Axis axis = this.layerRange.getAxis();
+                Direction.Axis axis = this.layerRange.getAxis();
                 int next = mouseButton == 0 ? ((axis.ordinal() + 1) % 3) : (axis.ordinal() == 0 ? 2 : axis.ordinal() - 1);
-                axis = EnumFacing.Axis.values()[next % 3];
+                axis = Direction.Axis.values()[next % 3];
                 this.layerRange.setAxis(axis);
             }
             else if (this.type == Type.SET_HERE)

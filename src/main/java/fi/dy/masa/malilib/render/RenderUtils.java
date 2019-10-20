@@ -6,6 +6,40 @@ import java.util.List;
 import java.util.Random;
 import javax.annotation.Nullable;
 import org.lwjgl.opengl.GL11;
+import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.ShulkerBoxBlock;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.AbstractGui;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.color.BlockColors;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.DyeColor;
+import net.minecraft.item.FilledMapItem;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.MapItem;
+import net.minecraft.potion.Effect;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.util.Direction;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MutableBoundingBox;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
+import net.minecraft.world.storage.MapData;
 import fi.dy.masa.malilib.config.HudAlignment;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.util.Color4f;
@@ -14,38 +48,7 @@ import fi.dy.masa.malilib.util.IntBoundingBox;
 import fi.dy.masa.malilib.util.InventoryUtils;
 import fi.dy.masa.malilib.util.PositionUtils;
 import fi.dy.masa.malilib.util.PositionUtils.HitPart;
-import net.minecraft.block.BlockShulkerBox;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.color.BlockColors;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.EnumDyeColor;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemMap;
-import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.storage.MapData;
+import net.minecraftforge.client.model.data.EmptyModelData;
 
 public class RenderUtils
 {
@@ -146,7 +149,7 @@ public class RenderUtils
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
 
-        GlStateManager.disableTexture2D();
+        GlStateManager.disableTexture();
         setupBlend();
         color(r, g, b, a);
 
@@ -159,7 +162,7 @@ public class RenderUtils
 
         tessellator.draw();
 
-        GlStateManager.enableTexture2D();
+        GlStateManager.enableTexture();
         GlStateManager.disableBlend();
     }
 
@@ -279,7 +282,7 @@ public class RenderUtils
         float eg = (float)(endColor >>  8 & 0xFF) / 255.0F;
         float eb = (float)(endColor & 0xFF) / 255.0F;
 
-        GlStateManager.disableTexture2D();
+        GlStateManager.disableTexture();
         GlStateManager.disableAlphaTest();
         setupBlend();
         GlStateManager.shadeModel(GL11.GL_SMOOTH);
@@ -298,7 +301,7 @@ public class RenderUtils
         GlStateManager.shadeModel(GL11.GL_FLAT);
         GlStateManager.disableBlend();
         GlStateManager.enableAlphaTest();
-        GlStateManager.enableTexture2D();
+        GlStateManager.enableTexture();
     }
 
     public static void drawCenteredString(int x, int y, int color, String text)
@@ -323,7 +326,7 @@ public class RenderUtils
         {
             GlStateManager.disableLighting();
             TextureAtlasSprite sprite = mc().getTextureMap().getAtlasSprite(texture);
-            mc().ingameGUI.drawTexturedModalRect(x, y, sprite, width, height);
+            AbstractGui.blit(x, y, 0, width, height, sprite);
         }
     }
 
@@ -429,7 +432,7 @@ public class RenderUtils
         return contentHeight + bgMargin * 2;
     }
 
-    public static int getHudOffsetForPotions(HudAlignment alignment, double scale, EntityPlayer player)
+    public static int getHudOffsetForPotions(HudAlignment alignment, double scale, PlayerEntity player)
     {
         if (alignment == HudAlignment.TOP_RIGHT)
         {
@@ -439,20 +442,20 @@ public class RenderUtils
                 return 0;
             }
 
-            Collection<PotionEffect> effects = player.getActivePotionEffects();
+            Collection<EffectInstance> effects = player.getActivePotionEffects();
 
             if (effects.isEmpty() == false)
             {
                 int y1 = 0;
                 int y2 = 0;
 
-                for (PotionEffect effect : effects)
+                for (EffectInstance effectInstance : effects)
                 {
-                    Potion potion = effect.getPotion();
+                    Effect effect = effectInstance.getPotion();
 
-                    if (effect.doesShowParticles() && potion.hasStatusIcon())
+                    if (effectInstance.doesShowParticles() && effectInstance.isShowIcon())
                     {
-                        if (potion.isBeneficial())
+                        if (effect.isBeneficial())
                         {
                             y1 = 26;
                         }
@@ -727,7 +730,7 @@ public class RenderUtils
         }
 
         setupBlend();
-        GlStateManager.disableTexture2D();
+        GlStateManager.disableTexture();
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
@@ -752,7 +755,7 @@ public class RenderUtils
         buffer.pos( strLenHalf    ,          -1, 0.0D).color(bgr, bgg, bgb, bga).endVertex();
         tessellator.draw();
 
-        GlStateManager.enableTexture2D();
+        GlStateManager.enableTexture();
         int textY = 0;
 
         // translate the text a bit infront of the background
@@ -792,10 +795,10 @@ public class RenderUtils
         GlStateManager.popMatrix();
     }
 
-    public static void renderBlockTargetingOverlay(Entity entity, BlockPos pos, EnumFacing side, Vec3d hitVec,
+    public static void renderBlockTargetingOverlay(Entity entity, BlockPos pos, Direction side, Vec3d hitVec,
             Color4f color, float partialTicks)
     {
-        EnumFacing playerFacing = entity.getHorizontalFacing();
+        Direction playerFacing = entity.getHorizontalFacing();
         HitPart part = PositionUtils.getHitPart(side, playerFacing, pos, hitVec);
 
         double dx = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * partialTicks;
@@ -895,10 +898,10 @@ public class RenderUtils
         GlStateManager.popMatrix();
     }
 
-    public static void renderBlockTargetingOverlaySimple(Entity entity, BlockPos pos, EnumFacing side,
+    public static void renderBlockTargetingOverlaySimple(Entity entity, BlockPos pos, Direction side,
             Color4f color, float partialTicks)
     {
-        EnumFacing playerFacing = entity.getHorizontalFacing();
+        Direction playerFacing = entity.getHorizontalFacing();
 
         double dx = entity.lastTickPosX + (entity.posX - entity.lastTickPosX) * partialTicks;
         double dy = entity.lastTickPosY + (entity.posY - entity.lastTickPosY) * partialTicks;
@@ -945,7 +948,7 @@ public class RenderUtils
         GlStateManager.popMatrix();
     }
 
-    private static void blockTargetingOverlayTranslations(double x, double y, double z, EnumFacing side, EnumFacing playerFacing)
+    private static void blockTargetingOverlayTranslations(double x, double y, double z, Direction side, Direction playerFacing)
     {
         GlStateManager.translated(x, y, z);
 
@@ -978,7 +981,7 @@ public class RenderUtils
 
     public static void renderMapPreview(ItemStack stack, int x, int y, int dimensions)
     {
-        if (stack.getItem() instanceof ItemMap && GuiBase.isShiftDown())
+        if (stack.getItem() instanceof MapItem && GuiBase.isShiftDown())
         {
             GlStateManager.pushMatrix();
             GlStateManager.disableLighting();
@@ -1003,7 +1006,7 @@ public class RenderUtils
 
             tessellator.draw();
 
-            MapData mapdata = ItemMap.getMapData(stack, mc().world);
+            MapData mapdata = FilledMapItem.getMapData(stack, mc().world);
 
             if (mapdata != null)
             {
@@ -1042,9 +1045,9 @@ public class RenderUtils
             x += 8;
             y -= (props.height + 18);
 
-            if (stack.getItem() instanceof ItemBlock && ((ItemBlock) stack.getItem()).getBlock() instanceof BlockShulkerBox)
+            if (stack.getItem() instanceof BlockItem && ((BlockItem) stack.getItem()).getBlock() instanceof ShulkerBoxBlock)
             {
-                setShulkerboxBackgroundTintColor((BlockShulkerBox) ((ItemBlock) stack.getItem()).getBlock(), useBgColors);
+                setShulkerboxBackgroundTintColor((ShulkerBoxBlock) ((BlockItem) stack.getItem()).getBlock(), useBgColors);
             }
             else
             {
@@ -1070,12 +1073,12 @@ public class RenderUtils
      * @param block
      * @param useBgColors
      */
-    public static void setShulkerboxBackgroundTintColor(@Nullable BlockShulkerBox block, boolean useBgColors)
+    public static void setShulkerboxBackgroundTintColor(@Nullable ShulkerBoxBlock block, boolean useBgColors)
     {
         if (block != null && useBgColors)
         {
             // In 1.13+ there is the uncolored Shulker Box variant, which returns null from getColor()
-            final EnumDyeColor dye = block.getColor() != null ? block.getColor() : EnumDyeColor.PURPLE;
+            final DyeColor dye = block.getColor() != null ? block.getColor() : DyeColor.PURPLE;
             final float[] colors = dye.getColorComponentValues();
             color(colors[0], colors[1], colors[2], 1f);
         }
@@ -1085,7 +1088,7 @@ public class RenderUtils
         }
     }
 
-    public static void renderModelInGui(int x, int y, IBakedModel model, IBlockState state, float zLevel)
+    public static void renderModelInGui(int x, int y, IBakedModel model, BlockState state, float zLevel)
     {
         if (state.getBlock() == Blocks.AIR)
         {
@@ -1094,8 +1097,8 @@ public class RenderUtils
 
         GlStateManager.pushMatrix();
 
-        bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-        mc().getTextureManager().getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).setBlurMipmap(false, false);
+        bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+        mc().getTextureManager().getTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE).setBlurMipmap(false, false);
 
         GlStateManager.enableRescaleNormal();
         GlStateManager.enableAlphaTest();
@@ -1135,7 +1138,7 @@ public class RenderUtils
         }
     }
 
-    private static void renderModel(IBakedModel model, IBlockState state)
+    private static void renderModel(IBakedModel model, BlockState state)
     {
         GlStateManager.pushMatrix();
         GlStateManager.translatef(-0.5F, -0.5F, -0.5F);
@@ -1147,21 +1150,21 @@ public class RenderUtils
             BufferBuilder bufferbuilder = tessellator.getBuffer();
             bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.ITEM);
 
-            for (EnumFacing enumfacing : EnumFacing.values())
+            for (Direction enumfacing : Direction.values())
             {
                 RAND.setSeed(0);
-                renderQuads(bufferbuilder, model.getQuads(state, enumfacing, RAND), state, color);
+                renderQuads(bufferbuilder, model.getQuads(state, enumfacing, RAND, EmptyModelData.INSTANCE), state, color);
             }
 
             RAND.setSeed(0);
-            renderQuads(bufferbuilder, model.getQuads(state, null, RAND), state, color);
+            renderQuads(bufferbuilder, model.getQuads(state, null, RAND, EmptyModelData.INSTANCE), state, color);
             tessellator.draw();
         }
 
         GlStateManager.popMatrix();
     }
 
-    private static void renderQuads(BufferBuilder renderer, List<BakedQuad> quads, IBlockState state, int color)
+    private static void renderQuads(BufferBuilder renderer, List<BakedQuad> quads, BlockState state, int color)
     {
         final int quadCount = quads.size();
 
@@ -1172,7 +1175,7 @@ public class RenderUtils
         }
     }
 
-    private static void renderQuad(BufferBuilder buffer, BakedQuad quad, IBlockState state, int color)
+    private static void renderQuad(BufferBuilder buffer, BakedQuad quad, BlockState state, int color)
     {
         buffer.addVertexData(quad.getVertexData());
         buffer.putColor4(color);

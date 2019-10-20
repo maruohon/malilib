@@ -7,10 +7,10 @@ import java.util.Locale;
 import java.util.Set;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableSet;
-import fi.dy.masa.malilib.MaLiLib;
 import net.minecraft.client.Minecraft;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTTagCompound;
+import fi.dy.masa.malilib.MaLiLib;
 
 public class FileUtils
 {
@@ -134,14 +134,14 @@ public class FileUtils
     }
 
     @Nullable
-    public static NBTTagCompound readNBTFile(File file)
+    public static CompoundNBT readNBTFile(File file)
     {
         if (file.exists() && file.isFile() && file.canRead())
         {
             try
             {
                 FileInputStream is = new FileInputStream(file);
-                NBTTagCompound nbt = CompressedStreamTools.readCompressed(is);
+                CompoundNBT nbt = CompressedStreamTools.readCompressed(is);
                 is.close();
                 return nbt;
             }

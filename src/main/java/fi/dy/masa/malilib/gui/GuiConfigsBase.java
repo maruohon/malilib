@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
+import net.minecraft.client.gui.screen.Screen;
 import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.config.IConfigBase;
 import fi.dy.masa.malilib.config.gui.ButtonPressDirtyListenerSimple;
@@ -20,7 +21,6 @@ import fi.dy.masa.malilib.gui.widgets.WidgetListConfigOptions;
 import fi.dy.masa.malilib.util.GuiUtils;
 import fi.dy.masa.malilib.util.KeyCodes;
 import fi.dy.masa.malilib.util.StringUtils;
-import net.minecraft.client.gui.GuiScreen;
 
 public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, WidgetConfigOption, WidgetListConfigOptions> implements IKeybindConfigGui
 {
@@ -30,11 +30,11 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
     protected final List<String> initialConfigValues = new ArrayList<>();
     protected ConfigButtonKeybind activeKeybindButton;
     protected int configWidth = 204;
-    @Nullable protected GuiScreen parentScreen;
+    @Nullable protected Screen parentScreen;
     @Nullable protected IConfigInfoProvider hoverInfoProvider;
     @Nullable protected IDialogHandler dialogHandler;
 
-    public GuiConfigsBase(int listX, int listY, String modId, @Nullable GuiScreen parent, String titleKey, Object... args)
+    public GuiConfigsBase(int listX, int listY, String modId, @Nullable Screen parent, String titleKey, Object... args)
     {
         super(listX, listY);
 
@@ -65,7 +65,7 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
         return this.configWidth;
     }
 
-    public void setParentGui(GuiScreen parent)
+    public void setParentGui(Screen parent)
     {
         this.parentScreen = parent;
     }
@@ -110,7 +110,7 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
     protected WidgetListConfigOptions createListWidget(int listX, int listY)
     {
         return new WidgetListConfigOptions(listX, listY,
-                this.getBrowserWidth(), this.getBrowserHeight(), this.getConfigWidth(), this.zLevel, this.useKeybindSearch(), this);
+                this.getBrowserWidth(), this.getBrowserHeight(), this.getConfigWidth(), this.blitOffset, this.useKeybindSearch(), this);
     }
 
     @Override
@@ -122,7 +122,7 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
     }
 
     @Override
-    public void onGuiClosed()
+    public void removed()
     {
         if (this.getListWidget().wereConfigsModified())
         {

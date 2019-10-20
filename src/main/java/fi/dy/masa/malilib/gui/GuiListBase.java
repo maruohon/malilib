@@ -1,12 +1,12 @@
 package fi.dy.masa.malilib.gui;
 
 import javax.annotation.Nullable;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screen.Screen;
 import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
 import fi.dy.masa.malilib.gui.widgets.WidgetListBase;
 import fi.dy.masa.malilib.gui.widgets.WidgetListEntryBase;
 import fi.dy.masa.malilib.util.KeyCodes;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
 
 public abstract class GuiListBase<TYPE, WIDGET extends WidgetListEntryBase<TYPE>, WIDGETLIST extends WidgetListBase<TYPE, WIDGET>> extends GuiBase
 {
@@ -64,7 +64,7 @@ public abstract class GuiListBase<TYPE, WIDGET extends WidgetListEntryBase<TYPE>
     }
 
     @Override
-    public GuiBase setParent(GuiScreen parent)
+    public GuiBase setParent(Screen parent)
     {
         return super.setParent(parent);
     }
@@ -82,13 +82,13 @@ public abstract class GuiListBase<TYPE, WIDGET extends WidgetListEntryBase<TYPE>
     }
 
     @Override
-    public void onGuiClosed()
+    public void removed()
     {
-        super.onGuiClosed();
+        super.removed();
 
         if (this.getListWidget() != null)
         {
-            this.getListWidget().onGuiClosed();
+            this.getListWidget().removed();
         }
     }
 
@@ -166,13 +166,13 @@ public abstract class GuiListBase<TYPE, WIDGET extends WidgetListEntryBase<TYPE>
     }
 
     @Override
-    public void setWorldAndResolution(Minecraft mc, int width, int height)
+    public void init(Minecraft mc, int width, int height)
     {
-        super.setWorldAndResolution(mc, width, height);
+        super.init(mc, width, height);
 
         if (this.getListWidget() != null)
         {
-            this.getListWidget().setWorldAndResolution(mc, width, height);
+            this.getListWidget().init(mc, width, height);
         }
     }
 

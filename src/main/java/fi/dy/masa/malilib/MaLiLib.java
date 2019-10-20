@@ -2,30 +2,31 @@ package fi.dy.masa.malilib;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dimdev.rift.listener.client.OverlayRenderer;
-import org.dimdev.riftloader.listener.InitializationListener;
-import org.spongepowered.asm.launch.MixinBootstrap;
-import org.spongepowered.asm.mixin.Mixins;
 import fi.dy.masa.malilib.event.InitializationHandler;
-import fi.dy.masa.malilib.event.RenderEventHandler;
-import net.minecraft.client.Minecraft;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-public class MaLiLib implements InitializationListener, OverlayRenderer
+@Mod(MaLiLibReference.MOD_ID)
+public class MaLiLib
 {
     public static final Logger logger = LogManager.getLogger(MaLiLibReference.MOD_ID);
 
-    @Override
-    public void onInitialization()
+    public MaLiLib()
     {
-        MixinBootstrap.init();
-        Mixins.addConfiguration("mixins.malilib.json");
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onClientSetup);
+
+        MinecraftForge.EVENT_BUS.register(new ForgeInputEventHandler());
+        MinecraftForge.EVENT_BUS.register(new ForgeRenderEventHandler());
+        MinecraftForge.EVENT_BUS.register(new ForgeTickEventHandler());
+        MinecraftForge.EVENT_BUS.register(new ForgeWorldEventHandler());
 
         InitializationHandler.getInstance().registerInitializationHandler(new MaLiLibInitHandler());
     }
 
-    @Override
-    public void renderOverlay()
+    private void onClientSetup(final FMLClientSetupEvent event)
     {
-        ((RenderEventHandler) RenderEventHandler.getInstance()).onRenderGameOverlayPost(Minecraft.getInstance().getRenderPartialTicks());
+        ((InitializationHandler) InitializationHandler.getInstance()).onGameInitDone();
     }
 }

@@ -1,6 +1,8 @@
 package fi.dy.masa.malilib.gui;
 
 import javax.annotation.Nullable;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screen.Screen;
 import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.config.IConfigStringList;
 import fi.dy.masa.malilib.gui.interfaces.IConfigGui;
@@ -11,8 +13,6 @@ import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.GuiUtils;
 import fi.dy.masa.malilib.util.KeyCodes;
 import fi.dy.masa.malilib.util.StringUtils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
 
 public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEditEntry, WidgetListStringListEdit>
 {
@@ -26,7 +26,7 @@ public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEditE
     protected int textFieldWidth;
     @Nullable protected final IDialogHandler dialogHandler;
 
-    public GuiStringListEdit(IConfigStringList config, IConfigGui configGui, @Nullable IDialogHandler dialogHandler, GuiScreen parent)
+    public GuiStringListEdit(IConfigStringList config, IConfigGui configGui, @Nullable IDialogHandler dialogHandler, Screen parent)
     {
         super(0, 0);
 
@@ -70,14 +70,14 @@ public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEditE
     }
 
     @Override
-    public void setWorldAndResolution(Minecraft mc, int width, int height)
+    public void init(Minecraft mc, int width, int height)
     {
         if (this.getParent() != null)
         {
-            this.getParent().setWorldAndResolution(mc, width, height);
+            this.getParent().init(mc, width, height);
         }
 
-        super.setWorldAndResolution(mc, width, height);
+        super.init(mc, width, height);
 
         this.setWidthAndHeight();
         this.centerOnScreen();
@@ -111,7 +111,7 @@ public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEditE
     }
 
     @Override
-    public void onGuiClosed()
+    public void removed()
     {
         if (this.getListWidget().wereConfigsModified())
         {
@@ -119,7 +119,7 @@ public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEditE
             ConfigManager.getInstance().onConfigsChanged(this.configGui.getModId());
         }
 
-        super.onGuiClosed();
+        super.removed();
     }
 
     @Override

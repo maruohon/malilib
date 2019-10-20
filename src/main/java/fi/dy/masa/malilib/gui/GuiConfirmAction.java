@@ -3,6 +3,8 @@ package fi.dy.masa.malilib.gui;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
+import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.gui.screen.Screen;
 import fi.dy.masa.malilib.gui.Message.MessageType;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
@@ -12,8 +14,6 @@ import fi.dy.masa.malilib.interfaces.ICompletionListener;
 import fi.dy.masa.malilib.interfaces.IConfirmationListener;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.GlStateManager;
 
 public class GuiConfirmAction extends GuiDialogBase implements ICompletionListener
 {
@@ -21,13 +21,13 @@ public class GuiConfirmAction extends GuiDialogBase implements ICompletionListen
     protected final IConfirmationListener listener;
     protected int textColor = 0xFFC0C0C0;
 
-    public GuiConfirmAction(int width, String titleKey, IConfirmationListener listener, @Nullable GuiScreen parent, String messageKey, Object... args)
+    public GuiConfirmAction(int width, String titleKey, IConfirmationListener listener, @Nullable Screen parent, String messageKey, Object... args)
     {
         this.setParent(parent);
         this.title = StringUtils.translate(titleKey);
         this.listener = listener;
         this.useTitleHierarchy = false;
-        this.zLevel = 1f;
+        this.blitOffset = 1;
 
         StringUtils.splitTextToLines(this.messageLines, StringUtils.translate(messageKey, args), width - 30);
 
@@ -79,9 +79,9 @@ public class GuiConfirmAction extends GuiDialogBase implements ICompletionListen
     }
 
     @Override
-    public boolean doesGuiPauseGame()
+    public boolean isPauseScreen()
     {
-        return this.getParent() != null && this.getParent().doesGuiPauseGame();
+        return this.getParent() != null && this.getParent().isPauseScreen();
     }
 
     @Override
@@ -93,12 +93,12 @@ public class GuiConfirmAction extends GuiDialogBase implements ICompletionListen
         }
 
         GlStateManager.pushMatrix();
-        GlStateManager.translatef(0, 0, this.zLevel);
+        GlStateManager.translatef(0, 0, this.blitOffset);
 
         RenderUtils.drawOutlinedBox(this.dialogLeft, this.dialogTop, this.dialogWidth, this.dialogHeight, 0xF0000000, COLOR_HORIZONTAL_BAR);
 
         // Draw the title
-        this.drawStringWithShadow(this.getTitle(), this.dialogLeft + 10, this.dialogTop + 4, COLOR_WHITE);
+        this.drawStringWithShadow(this.getTitleString(), this.dialogLeft + 10, this.dialogTop + 4, COLOR_WHITE);
         int y = this.dialogTop + 20;
 
         for (String text : this.messageLines)

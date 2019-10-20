@@ -5,13 +5,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.gui.GuiBase;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.IProperty;
 import net.minecraft.state.IntegerProperty;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
+import fi.dy.masa.malilib.gui.GuiBase;
 
 public class BlockUtils
 {
@@ -21,7 +21,7 @@ public class BlockUtils
      * @return the first PropertyDirection, or null if there are no such properties
      */
     @Nullable
-    public static DirectionProperty getFirstDirectionProperty(IBlockState state)
+    public static DirectionProperty getFirstDirectionProperty(BlockState state)
     {
         for (IProperty<?> prop : state.getProperties())
         {
@@ -42,18 +42,18 @@ public class BlockUtils
      * @return
      */
     @Nullable
-    public static EnumFacing getFirstPropertyFacingValue(IBlockState state)
+    public static Direction getFirstPropertyFacingValue(BlockState state)
     {
         DirectionProperty prop = getFirstDirectionProperty(state);
         return prop != null ? state.get(prop) : null;
     }
 
-    public static List<String> getFormattedBlockStateProperties(IBlockState state)
+    public static List<String> getFormattedBlockStateProperties(BlockState state)
     {
         return getFormattedBlockStateProperties(state, ": ");
     }
 
-    public static List<String> getFormattedBlockStateProperties(IBlockState state, String separator)
+    public static List<String> getFormattedBlockStateProperties(BlockState state, String separator)
     {
         Collection<IProperty<?>> properties = state.getProperties();
 

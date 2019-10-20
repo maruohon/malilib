@@ -14,7 +14,7 @@ public abstract class WidgetBase
     protected int y;
     protected int width;
     protected int height;
-    protected float zLevel;
+    protected int zLevel;
 
     public WidgetBase(int x, int y, int width, int height)
     {
@@ -53,7 +53,7 @@ public abstract class WidgetBase
         this.y = y;
     }
 
-    public void setZLevel(float zLevel)
+    public void setZLevel(int zLevel)
     {
         this.zLevel = zLevel;
     }

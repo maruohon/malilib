@@ -4,6 +4,12 @@ import java.awt.Color;
 import javax.annotation.Nullable;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
+import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.config.IConfigInteger;
 import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
 import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
@@ -11,12 +17,6 @@ import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.shader.ShaderProgram;
 import fi.dy.masa.malilib.util.KeyCodes;
 import fi.dy.masa.malilib.util.StringUtils;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.math.MathHelper;
 
 public class GuiColorEditorHSV extends GuiDialogBase
 {
@@ -52,7 +52,7 @@ public class GuiColorEditorHSV extends GuiDialogBase
     protected float relG;
     protected float relB;
 
-    public GuiColorEditorHSV(IConfigInteger config, @Nullable IDialogHandler dialogHandler, GuiScreen parent)
+    public GuiColorEditorHSV(IConfigInteger config, @Nullable IDialogHandler dialogHandler, Screen parent)
     {
         this.config = config;
         this.dialogHandler = dialogHandler;
@@ -75,7 +75,7 @@ public class GuiColorEditorHSV extends GuiDialogBase
         this.setWidthAndHeight(300, 160);
         this.centerOnScreen();
 
-        this.setWorldAndResolution(this.mc, this.dialogWidth, this.dialogHeight);
+        this.init(this.mc, this.dialogWidth, this.dialogHeight);
     }
 
     @Override
@@ -145,11 +145,11 @@ public class GuiColorEditorHSV extends GuiDialogBase
     }
 
     @Override
-    public void onGuiClosed()
+    public void removed()
     {
         this.config.setIntegerValue(this.color);
 
-        super.onGuiClosed();
+        super.removed();
     }
 
     @Override
@@ -453,7 +453,7 @@ public class GuiColorEditorHSV extends GuiDialogBase
         int y = this.yH - 1;
         int w = this.widthSlider + 2;
         int h = this.heightSlider + 2;
-        float z = this.zLevel;
+        int z = this.blitOffset;
         int yd = this.heightSlider + this.gapSlider;
         int cx = this.xHS;
         int cy = this.yHS + this.sizeHS + 8;
@@ -485,7 +485,7 @@ public class GuiColorEditorHSV extends GuiDialogBase
         BufferBuilder buffer = tessellator.getBuffer();
 
         GlStateManager.enableBlend();
-        GlStateManager.disableTexture2D();
+        GlStateManager.disableTexture();
         GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 
         GlStateManager.disableRescaleNormal();
@@ -591,7 +591,7 @@ public class GuiColorEditorHSV extends GuiDialogBase
         GlStateManager.enableRescaleNormal();
 
         GlStateManager.disableBlend();
-        GlStateManager.enableTexture2D();
+        GlStateManager.enableTexture();
     }
 
     public static void renderGradientColorBar(int x, int y, float z, int width, int height, int colorStart, int colorEnd, BufferBuilder buffer)

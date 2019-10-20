@@ -4,16 +4,15 @@ import javax.annotation.Nullable;
 import org.apache.commons.lang3.tuple.Pair;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import fi.dy.masa.malilib.gui.GuiBase;
-import fi.dy.masa.malilib.interfaces.IRangeChangeListener;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
+import fi.dy.masa.malilib.gui.GuiBase;
+import fi.dy.masa.malilib.interfaces.IRangeChangeListener;
 
 public class LayerRange
 {
@@ -24,7 +23,7 @@ public class LayerRange
 
     protected final IRangeChangeListener refresher;
     protected LayerMode layerMode = LayerMode.ALL;
-    protected EnumFacing.Axis axis = EnumFacing.Axis.Y;
+    protected Direction.Axis axis = Direction.Axis.Y;
     protected int layerSingle = 0;
     protected int layerAbove = 0;
     protected int layerBelow = 0;
@@ -43,7 +42,7 @@ public class LayerRange
         return this.layerMode;
     }
 
-    public EnumFacing.Axis getAxis()
+    public Direction.Axis getAxis()
     {
         return this.axis;
     }
@@ -152,7 +151,7 @@ public class LayerRange
         }
     }
 
-    public static int getWorldMinValueForAxis(EnumFacing.Axis axis)
+    public static int getWorldMinValueForAxis(Direction.Axis axis)
     {
         switch (axis)
         {
@@ -165,7 +164,7 @@ public class LayerRange
         }
     }
 
-    public static int getWorldMaxValueForAxis(EnumFacing.Axis axis)
+    public static int getWorldMaxValueForAxis(Direction.Axis axis)
     {
         switch (axis)
         {
@@ -196,7 +195,7 @@ public class LayerRange
         }
     }
 
-    public void setAxis(EnumFacing.Axis axis)
+    public void setAxis(Direction.Axis axis)
     {
         this.axis = axis;
 
@@ -354,12 +353,12 @@ public class LayerRange
             case ALL_ABOVE:
             {
                 val1 = this.layerAbove;
-                val2 = this.axis == EnumFacing.Axis.Y ? WORLD_VERTICAL_SIZE_MAX : WORLD_HORIZONTAL_SIZE_MAX;
+                val2 = this.axis == Direction.Axis.Y ? WORLD_VERTICAL_SIZE_MAX : WORLD_HORIZONTAL_SIZE_MAX;
                 break;
             }
             case ALL_BELOW:
             {
-                val1 = this.axis == EnumFacing.Axis.Y ? WORLD_VERTICAL_SIZE_MIN : WORLD_HORIZONTAL_SIZE_MIN;
+                val1 = this.axis == Direction.Axis.Y ? WORLD_VERTICAL_SIZE_MIN : WORLD_HORIZONTAL_SIZE_MIN;
                 val2 = this.layerBelow;
                 break;
             }
@@ -427,7 +426,7 @@ public class LayerRange
             }
             case LAYER_RANGE:
             {
-                EntityPlayer player = Minecraft.getInstance().player;
+                Entity player = Minecraft.getInstance().player;
 
                 if (player != null)
                 {
@@ -442,7 +441,7 @@ public class LayerRange
         return true;
     }
 
-    protected void moveLayerRange(int amount, boolean force, EntityPlayer player, boolean printMessage)
+    protected void moveLayerRange(int amount, boolean force, Entity player, boolean printMessage)
     {
         Pair<Boolean, Boolean> moveMinMax = this.getMoveMinMax(player);
         boolean moveMin = moveMinMax.getLeft();
@@ -513,7 +512,7 @@ public class LayerRange
 
     protected int getWorldLimitsClampedValue(int value)
     {
-        if (this.axis == EnumFacing.Axis.Y)
+        if (this.axis == Direction.Axis.Y)
         {
             return MathHelper.clamp(value, WORLD_VERTICAL_SIZE_MIN, WORLD_VERTICAL_SIZE_MAX);
         }
@@ -599,16 +598,16 @@ public class LayerRange
         return false;
     }
 
-    public boolean isPositionAtRenderEdgeOnSide(BlockPos pos, EnumFacing side)
+    public boolean isPositionAtRenderEdgeOnSide(BlockPos pos, Direction side)
     {
         switch (this.axis)
         {
             case X:
-                return (side == EnumFacing.WEST && pos.getX() == this.getLayerMin()) || (side == EnumFacing.EAST && pos.getX() == this.getLayerMax());
+                return (side == Direction.WEST && pos.getX() == this.getLayerMin()) || (side == Direction.EAST && pos.getX() == this.getLayerMax());
             case Y:
-                return (side == EnumFacing.DOWN && pos.getY() == this.getLayerMin()) || (side == EnumFacing.UP && pos.getY() == this.getLayerMax());
+                return (side == Direction.DOWN && pos.getY() == this.getLayerMin()) || (side == Direction.UP && pos.getY() == this.getLayerMax());
             case Z:
-                return (side == EnumFacing.NORTH && pos.getZ() == this.getLayerMin()) || (side == EnumFacing.SOUTH && pos.getZ() == this.getLayerMax());
+                return (side == Direction.NORTH && pos.getZ() == this.getLayerMin()) || (side == Direction.SOUTH && pos.getZ() == this.getLayerMax());
             default:
                 return false;
         }
@@ -688,7 +687,7 @@ public class LayerRange
         }
     }
 
-    public int getClampedValue(int value, EnumFacing.Axis type)
+    public int getClampedValue(int value, Direction.Axis type)
     {
         if (this.axis == type)
         {
@@ -797,8 +796,8 @@ public class LayerRange
     public void fromJson(JsonObject obj)
     {
         this.layerMode = LayerMode.fromStringStatic(JsonUtils.getString(obj, "mode"));
-        this.axis = EnumFacing.Axis.byName(JsonUtils.getString(obj, "axis"));
-        if (this.axis == null) { this.axis = EnumFacing.Axis.Y; }
+        this.axis = Direction.Axis.byName(JsonUtils.getString(obj, "axis"));
+        if (this.axis == null) { this.axis = Direction.Axis.Y; }
 
         this.layerSingle = JsonUtils.getInteger(obj, "layer_single");
         this.layerAbove = JsonUtils.getInteger(obj, "layer_above");

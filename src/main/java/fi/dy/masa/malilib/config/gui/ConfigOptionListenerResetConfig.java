@@ -3,10 +3,10 @@ package fi.dy.masa.malilib.config.gui;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.IConfigResettable;
 import fi.dy.masa.malilib.config.IStringRepresentable;
+import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
-import net.minecraft.client.gui.GuiTextField;
 
 public class ConfigOptionListenerResetConfig implements IButtonActionListener
 {
@@ -65,9 +65,9 @@ public class ConfigOptionListenerResetConfig implements IButtonActionListener
     public static class ConfigResetterTextField extends ConfigResetterBase
     {
         private final IStringRepresentable config;
-        private final GuiTextField textField;
+        private final GuiTextFieldGeneric textField;
 
-        public ConfigResetterTextField(IStringRepresentable config, GuiTextField textField)
+        public ConfigResetterTextField(IStringRepresentable config, GuiTextFieldGeneric textField)
         {
             this.config = config;
             this.textField = textField;

@@ -11,7 +11,6 @@ import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
-import net.minecraft.client.gui.GuiTextField;
 
 public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
 {
@@ -97,7 +96,7 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
         return resetButton.x + resetButton.getWidth() + 4;
     }
 
-    protected ButtonGeneric createResetButton(int x, int y, GuiTextField textField)
+    protected ButtonGeneric createResetButton(int x, int y, GuiTextFieldGeneric textField)
     {
         String labelReset = StringUtils.translate("malilib.gui.button.reset.caps");
         ButtonGeneric resetButton = new ButtonGeneric(x, y, -1, 20, labelReset);

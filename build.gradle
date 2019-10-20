@@ -1,35 +1,21 @@
 
 buildscript {
     repositories {
+        maven { url = 'https://files.minecraftforge.net/maven' }
         jcenter()
-        maven { url 'http://files.minecraftforge.net/maven' }
-        maven { url 'http://repo.spongepowered.org/maven' }
-        maven { url 'https://www.jitpack.io' }
+        mavenCentral()
     }
-
     dependencies {
-        classpath 'com.github.Chocohead:ForgeGradle:jitpack-SNAPSHOT'
-        classpath 'org.spongepowered:mixingradle:0.6-SNAPSHOT'
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
     }
 }
 
-apply plugin: 'net.minecraftforge.gradle.tweaker-client'
-apply plugin: 'org.spongepowered.mixin'
+apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'java'
 apply plugin: 'maven-publish'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
-
-repositories {
-    mavenCentral()
-    maven { url 'https://www.dimdev.org/maven/' }
-    maven { url 'https://www.jitpack.io' }
-}
-
-dependencies {
-    implementation 'com.github.Chocohead:Rift:jitpack-SNAPSHOT:dev'
-}
 
 ext.configFile = file "build.properties"
 
@@ -40,11 +26,9 @@ configFile.withReader {
 }
 
 minecraft {
-    version = config.minecraft_version
-    mappings = config.mappings_version
-    runDir = 'minecraft'
-    makeObfSourceJar = false
-    tweakClass = 'org.dimdev.riftloader.launch.RiftLoaderClientTweaker'
+    mappings channel: 'snapshot', version: '20191019-1.14.3'
+
+    //makeObfSourceJar = false
 
     ext.mod_version = config.mod_version
 
@@ -52,8 +36,12 @@ minecraft {
         mod_version = mod_version + "." + new Date().format('yyyyMMdd.HHmmss')
     }
 
-    replaceIn "MaLiLibReference.java"
-    replace "@MOD_VERSION@", mod_version
+    //replaceIn "MaLiLibReference.java"
+    //replace "@MOD_VERSION@", mod_version
+}
+
+dependencies {
+    minecraft 'net.minecraftforge:forge:' + config.minecraft_version + '-' + config.forge_version
 }
 
 compileJava {
@@ -75,26 +63,6 @@ archivesBaseName = config.mod_file_name + '-' + config.minecraft_version_out
 version = project.minecraft.mod_version
 
 /**
- * This section allows you to customise the generated riftmod.json file
- */
-/*
-riftmod {
-    json {
-        id = config.mod_id
-        name = config.mod_name
-        version = config.mod_version
-        authors = [ config.author ]
-
-        // Uncomment any of the following lines and fill in your own details as required
-        //dependsOn = [ 'modid', 'othermod' ]
-        //requiredAPIs = [ 'someapi' ]
-        //tweakClass = 'name.of.tweaker.here'
-        mixinConfigs = [ 'mixins.' + config.mod_id + '.json' ]
-    }
-}
-*/
-
-/**
  * This section allows you to customise your generated jar (litemod) file. By
  * default it includes the generated litemod.json file, however if you prefer to
  * include your own file from resources, simply remove the line below.
@@ -105,24 +73,25 @@ jar {
     // Don't append a 'mod-' filename prefix >_>
     baseName = archivesBaseName
 
-    //from litemod.outputs
-
-    /*
-    manifest.mainAttributes (
-        'Built-By': System.properties['user.name'],
-        'Created-By': System.properties['java.vm.version'] + " (" + System.properties['java.vm.vendor'] + ")",
-        'Implementation-Title': config.mod_id,
-        'Implementation-Version': project.version
-    )
-    */
+    manifest {
+        attributes([
+            "Specification-Title": "${config.mod_id}",
+            "Specification-Vendor": "${config.author}",
+            "Specification-Version": "1", // We are version 1 of ourselves
+            "Implementation-Title": "${config.mod_name}",
+            "Implementation-Version": "${config.mod_version}",
+            "Implementation-Vendor": "${config.author}",
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
 }
 
+/*
 mixin {
     defaultObfuscationEnv notch
     add sourceSets.main, 'mixins.' + config.mod_id + '.refmap.json'
 }
-
-//tasks.withType(Jar)*.baseName = archivesBaseName
+*/
 
 processResources
 {
@@ -156,7 +125,7 @@ task deobfJar(type: Jar) {
 
 // This section enables the last two tasks
 artifacts {
-    //archives sourcesJar
+    //archives sourceJar
     archives deobfJar
 }
 
@@ -168,7 +137,7 @@ publishing {
             from components.java
 
             artifact deobfJar
-            artifact sourceJar
+            //artifact sourceJar
         }
     }
 

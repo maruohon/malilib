@@ -1,13 +1,13 @@
 package fi.dy.masa.malilib.util;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.text.ChatType;
+import net.minecraft.util.text.TranslationTextComponent;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.Message.MessageType;
 import fi.dy.masa.malilib.gui.interfaces.IMessageConsumer;
 import fi.dy.masa.malilib.interfaces.IStringConsumer;
 import fi.dy.masa.malilib.render.MessageRenderer;
-import net.minecraft.client.Minecraft;
-import net.minecraft.util.text.ChatType;
-import net.minecraft.util.text.TextComponentTranslation;
 
 public class InfoUtils
 {
@@ -138,7 +138,7 @@ public class InfoUtils
 
     public static void printActionbarMessage(String key, Object... args)
     {
-        Minecraft.getInstance().ingameGUI.addChatMessage(ChatType.GAME_INFO, new TextComponentTranslation(key, args));
+        Minecraft.getInstance().ingameGUI.addChatMessage(ChatType.GAME_INFO, new TranslationTextComponent(key, args));
     }
 
     /**
@@ -189,7 +189,7 @@ public class InfoUtils
         @Override
         public void setString(String string)
         {
-            TextComponentTranslation message = new TextComponentTranslation(string);
+            TranslationTextComponent message = new TranslationTextComponent(string);
             Minecraft.getInstance().ingameGUI.addChatMessage(ChatType.GAME_INFO, message);
         }
     }

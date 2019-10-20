@@ -130,7 +130,7 @@ public abstract class WidgetConfigOptionBase<TYPE> extends WidgetListEntryBase<T
     {
         if (this.textField != null)
         {
-            this.textField.getTextField().drawTextField(mouseX, mouseY, 0f);
+            this.textField.getTextField().render(mouseX, mouseY, 0f);
         }
     }
 }

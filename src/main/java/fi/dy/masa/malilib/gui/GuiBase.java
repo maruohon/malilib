@@ -4,6 +4,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Nullable;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
 import fi.dy.masa.malilib.config.IConfigBase;
 import fi.dy.masa.malilib.gui.Message.MessageType;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
@@ -16,15 +23,9 @@ import fi.dy.masa.malilib.gui.wrappers.TextFieldWrapper;
 import fi.dy.masa.malilib.interfaces.IStringConsumer;
 import fi.dy.masa.malilib.render.MessageRenderer;
 import fi.dy.masa.malilib.render.RenderUtils;
-import fi.dy.masa.malilib.util.InputUtils;
 import fi.dy.masa.malilib.util.KeyCodes;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextFormatting;
 
-public abstract class GuiBase extends GuiScreen implements IMessageConsumer, IStringConsumer
+public abstract class GuiBase extends Screen implements IMessageConsumer, IStringConsumer
 {
     public static final String TXT_AQUA = TextFormatting.AQUA.toString();
     public static final String TXT_BLACK = TextFormatting.BLACK.toString();
@@ -71,9 +72,14 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     protected boolean useTitleHierarchy = true;
     private int keyInputCount;
     @Nullable
-    private GuiScreen parent;
+    private Screen parent;
 
-    public GuiBase setParent(@Nullable GuiScreen parent)
+    protected GuiBase()
+    {
+        super(new StringTextComponent(""));
+    }
+
+    public GuiBase setParent(@Nullable Screen parent)
     {
         // Don't allow nesting the GUI with itself...
         if (parent == null || parent.getClass() != this.getClass())
@@ -85,14 +91,20 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     }
 
     @Nullable
-    public GuiScreen getParent()
+    public Screen getParent()
     {
         return this.parent;
     }
 
-    public String getTitle()
+    public String getTitleString()
     {
         return (this.useTitleHierarchy && this.parent instanceof GuiBase) ? (((GuiBase) this.parent).getTitle() + " => " + this.title) : this.title;
+    }
+
+    @Override
+    public ITextComponent getTitle()
+    {
+        return new StringTextComponent(this.getTitleString());
     }
 
     public void setTitle(String title)
@@ -101,22 +113,27 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     }
 
     @Override
-    public void onGuiClosed()
+    public void removed()
     {
         Minecraft.getInstance().keyboardListener.enableRepeatEvents(false);
     }
 
     @Override
-    public boolean doesGuiPauseGame()
+    public boolean isPauseScreen()
     {
         return false;
     }
 
     @Override
+    protected void init()
+    {
+        super.init();
+
+        this.initGui();
+    }
+
     public void initGui()
     {
-        super.initGui();
-
         this.clearElements();
     }
 
@@ -128,7 +145,7 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
         }
         else
         {
-            this.close();
+            this.onClose();
         }
     }
 
@@ -151,14 +168,11 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     }
 
     @Override
-    public boolean mouseScrolled(double amount)
+    public boolean mouseScrolled(double mouseX, double mouseY, double amount)
     {
-        int mouseX = InputUtils.getMouseX();
-        int mouseY = InputUtils.getMouseY();
-
         if (amount == 0 || this.onMouseScrolled((int) mouseX, (int) mouseY, amount))
         {
-            return super.mouseScrolled(amount);
+            return super.mouseScrolled(mouseX, mouseY, amount);
         }
 
         return false;
@@ -499,12 +513,12 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     protected void drawScreenBackground(int mouseX, int mouseY)
     {
         // Draw the dark background
-        drawRect(0, 0, this.width, this.height, TOOLTIP_BACKGROUND);
+        RenderUtils.drawRect(0, 0, this.width, this.height, TOOLTIP_BACKGROUND);
     }
 
     protected void drawTitle(int mouseX, int mouseY, float partialTicks)
     {
-        this.drawString(this.getTitle(), LEFT, TOP, COLOR_WHITE);
+        this.drawString(this.getTitleString(), LEFT, TOP, COLOR_WHITE);
     }
 
     protected void drawContents(int mouseX, int mouseY, float partialTicks)
@@ -599,23 +613,23 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
         return width;
     }
 
-    public static void openGui(GuiScreen gui)
+    public static void openGui(Screen gui)
     {
         Minecraft.getInstance().displayGuiScreen(gui);
     }
 
     public static boolean isShiftDown()
     {
-        return isShiftKeyDown();
+        return hasShiftDown();
     }
 
     public static boolean isCtrlDown()
     {
-        return isCtrlKeyDown();
+        return hasControlDown();
     }
 
     public static boolean isAltDown()
     {
-        return isAltKeyDown();
+        return hasAltDown();
     }
 }

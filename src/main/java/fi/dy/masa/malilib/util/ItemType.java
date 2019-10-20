@@ -2,7 +2,7 @@ package fi.dy.masa.malilib.util;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.IRegistry;
+import net.minecraftforge.registries.ForgeRegistries;
 
 /**
  * A wrapper around ItemStack, that implements hashCode() and equals().
@@ -92,12 +92,12 @@ public class ItemType
     {
         if (this.checkNBT())
         {
-            ResourceLocation rl = IRegistry.ITEM.getKey(this.stack.getItem());
+            ResourceLocation rl = ForgeRegistries.ITEMS.getKey(this.stack.getItem());
             return rl.toString() + " " + this.stack.getTag();
         }
         else
         {
-            ResourceLocation rl = IRegistry.ITEM.getKey(this.stack.getItem());
+            ResourceLocation rl = ForgeRegistries.ITEMS.getKey(this.stack.getItem());
             return rl.toString();
         }
     }

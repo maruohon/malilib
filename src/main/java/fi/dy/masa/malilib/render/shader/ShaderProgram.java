@@ -5,10 +5,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
-import fi.dy.masa.malilib.MaLiLib;
+import com.mojang.blaze3d.platform.GLX;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.util.ResourceLocation;
+import fi.dy.masa.malilib.MaLiLib;
 
 /**
  * This class has been directly taken from Schematica by Lunatrius & contributors
@@ -36,7 +36,7 @@ public class ShaderProgram
 
     private void init(final String domain, final String vertShaderFilename, final String fragShaderFilename)
     {
-        if (OpenGlHelper.shadersSupported == false)
+        if (GLX.usePostProcess == false)
         {
             this.program = 0;
             return;
