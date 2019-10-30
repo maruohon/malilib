@@ -80,7 +80,7 @@ public class RenderEventHandler implements IRenderDispatcher
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public void onRenderWorldLast(net.minecraft.util.math.MatrixStack matrixStack, float partialTicks)
+    public void onRenderWorldLast(net.minecraft.client.util.math.MatrixStack matrixStack, float partialTicks)
     {
         if (this.worldLastRenderers.isEmpty() == false)
         {

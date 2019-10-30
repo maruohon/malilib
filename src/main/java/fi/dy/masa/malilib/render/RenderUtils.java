@@ -22,6 +22,7 @@ import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -37,7 +38,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.MatrixStack;
 import net.minecraft.util.math.Vec3d;
 import fi.dy.masa.malilib.config.HudAlignment;
 import fi.dy.masa.malilib.gui.GuiBase;
@@ -60,12 +60,12 @@ public class RenderUtils
     {
         GlStateManager.enableBlend();
         //GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-        RenderSystem.blendFuncSeparate(GlStateManager.class_4535.SRC_ALPHA, GlStateManager.class_4534.ONE_MINUS_SRC_ALPHA, GlStateManager.class_4535.ONE, GlStateManager.class_4534.ZERO);
+        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
     }
 
     public static void setupBlendSimple()
     {
-        RenderSystem.blendFunc(GlStateManager.class_4535.SRC_ALPHA, GlStateManager.class_4534.ONE_MINUS_SRC_ALPHA);
+        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
     }
 
     public static void bindTexture(Identifier texture)
@@ -1016,7 +1016,7 @@ public class RenderUtils
                 double scale = (double) (dimensions - 16) / 128.0D;
                 GlStateManager.translatef(x1, y1, z);
                 GlStateManager.scaled(scale, scale, 0);
-                mc().gameRenderer.getMapRenderer().draw(new MatrixStack(), MinecraftClient.getInstance().method_22940().method_23000(), mapdata, false, 0xF000F0);
+                mc().gameRenderer.getMapRenderer().draw(new MatrixStack(), MinecraftClient.getInstance().getBufferBuilderStorage().getGeneralDrawer(), mapdata, false, 0xF000F0);
             }
 
             GlStateManager.enableLighting();

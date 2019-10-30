@@ -12,7 +12,7 @@ public interface IRenderer
      * Called after vanilla world rendering
      * @param partialTicks
      */
-    default void onRenderWorldLast(float partialTicks, net.minecraft.util.math.MatrixStack matrixStack) {}
+    default void onRenderWorldLast(float partialTicks, net.minecraft.client.util.math.MatrixStack matrixStack) {}
 
     /**
      * Called after the tooltip text of an item has been rendered
