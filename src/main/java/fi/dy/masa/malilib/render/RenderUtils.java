@@ -177,6 +177,8 @@ public class RenderUtils
         float pixelWidth = 0.00390625F;
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBufferBuilder();
+
+        setupBlend();
         buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_UV);
 
         buffer.vertex(x        , y + height, zLevel).texture( u          * pixelWidth, (v + height) * pixelWidth).next();
