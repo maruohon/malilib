@@ -160,6 +160,8 @@ public class RenderUtils
 
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();
+
+        color(1f, 1f, 1f, 1f);
     }
 
     public static void drawTexturedRect(int x, int y, int u, int v, int width, int height, float zLevel)
@@ -1167,6 +1169,8 @@ public class RenderUtils
 
             GlStateManager.enableLighting();
             GlStateManager.popMatrix();
+
+            color(1f, 1f, 1f, 1f);
         }
     }
 
@@ -1211,6 +1215,8 @@ public class RenderUtils
 
             GlStateManager.disableDepth();
             GlStateManager.popMatrix();
+
+            color(1f, 1f, 1f, 1f);
         }
     }
 
@@ -1266,6 +1272,8 @@ public class RenderUtils
         GlStateManager.disableRescaleNormal();
         GlStateManager.disableLighting();
         GlStateManager.popMatrix();
+
+        color(1f, 1f, 1f, 1f);
     }
 
     public static void setupGuiTransform(int xPosition, int yPosition, boolean isGui3d, float zLevel)
