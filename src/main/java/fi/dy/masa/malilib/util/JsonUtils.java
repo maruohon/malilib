@@ -13,9 +13,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import fi.dy.masa.malilib.LiteModMaLiLib;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import fi.dy.masa.malilib.LiteModMaLiLib;
 
 public class JsonUtils
 {
@@ -432,14 +432,19 @@ public class JsonUtils
         return null;
     }
 
-    public static boolean writeJsonToFile(JsonObject root, File file)
+    public static boolean writeJsonToFile(JsonElement root, File file)
+    {
+        return writeJsonToFile(GSON, root, file);
+    }
+
+    public static boolean writeJsonToFile(Gson gson, JsonElement root, File file)
     {
         FileWriter writer = null;
 
         try
         {
             writer = new FileWriter(file);
-            writer.write(GSON.toJson(root));
+            writer.write(gson.toJson(root));
             writer.close();
 
             return true;
