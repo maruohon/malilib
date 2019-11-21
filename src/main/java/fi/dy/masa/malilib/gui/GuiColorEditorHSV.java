@@ -482,7 +482,7 @@ public class GuiColorEditorHSV extends GuiDialogBase
         RenderUtils.drawOutline(this.xHFullSV, y - 1, this.widthHFullSV, this.sizeHS + 2, 0xC0FFFFFF, z); // Hue vertical/full value
 
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBufferBuilder();
+        BufferBuilder buffer = tessellator.getBuffer();
 
         GlStateManager.disableTexture();
         RenderUtils.setupBlend();
@@ -497,7 +497,7 @@ public class GuiColorEditorHSV extends GuiDialogBase
         GL20.glUseProgram(SHADER_HUE.getProgram());
         GL20.glUniform1f(GL20.glGetUniformLocation(SHADER_HUE.getProgram(), "hue_value"), this.relH);
 
-        buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_UV);
+        buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_TEXTURE);
 
         buffer.vertex(x    , y    , z).texture(1, 0).next();
         buffer.vertex(x    , y + h, z).texture(0, 0).next();

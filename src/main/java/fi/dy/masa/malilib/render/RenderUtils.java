@@ -86,13 +86,13 @@ public class RenderUtils
     public static void enableItemLighting()
     {
         MatrixStack matrixStack = new MatrixStack();
-        GuiLighting.enable(matrixStack.peek());
+        GuiLighting.enable(matrixStack.peek().getModel());
     }
 
     public static void enableGuiItemLighting()
     {
         MatrixStack matrixStack = new MatrixStack();
-        GuiLighting.enableForItems(matrixStack.peek());
+        GuiLighting.enableForItems(matrixStack.peek().getModel());
     }
 
     public static void drawOutlinedBox(int x, int y, int width, int height, int colorBg, int colorBorder)
@@ -153,7 +153,7 @@ public class RenderUtils
         float b = (float) (color & 255) / 255.0F;
 
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBufferBuilder();
+        BufferBuilder buffer = tessellator.getBuffer();
 
         GlStateManager.disableTexture();
         setupBlend();
@@ -176,10 +176,10 @@ public class RenderUtils
     {
         float pixelWidth = 0.00390625F;
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBufferBuilder();
+        BufferBuilder buffer = tessellator.getBuffer();
 
         setupBlend();
-        buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_UV);
+        buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_TEXTURE);
 
         buffer.vertex(x        , y + height, zLevel).texture( u          * pixelWidth, (v + height) * pixelWidth).next();
         buffer.vertex(x + width, y + height, zLevel).texture((u + width) * pixelWidth, (v + height) * pixelWidth).next();
@@ -272,8 +272,7 @@ public class RenderUtils
 
             GlStateManager.enableLighting();
             GlStateManager.enableDepthTest();
-            MatrixStack matrixStack = new MatrixStack();
-            GuiLighting.enableForItems(matrixStack.peek());
+            enableGuiItemLighting();
             GlStateManager.enableRescaleNormal();
         }
     }
@@ -296,7 +295,7 @@ public class RenderUtils
         GlStateManager.shadeModel(GL11.GL_SMOOTH);
 
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBufferBuilder();
+        BufferBuilder buffer = tessellator.getBuffer();
         buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR);
 
         buffer.vertex(right, top,    zLevel).color(sr, sg, sb, sa).next();
@@ -741,7 +740,7 @@ public class RenderUtils
         GlStateManager.disableTexture();
 
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBufferBuilder();
+        BufferBuilder buffer = tessellator.getBuffer();
         int maxLineLen = 0;
 
         for (String line : text)
@@ -819,7 +818,7 @@ public class RenderUtils
         blockTargetingOverlayTranslations(x, y, z, side, playerFacing);
 
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBufferBuilder();
+        BufferBuilder buffer = tessellator.getBuffer();
         int quadAlpha = (int) (0.18f * 255f);
         int hr = (int) (color.r * 255f);
         int hg = (int) (color.g * 255f);
@@ -919,7 +918,7 @@ public class RenderUtils
         blockTargetingOverlayTranslations(x, y, z, side, playerFacing);
 
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBufferBuilder();
+        BufferBuilder buffer = tessellator.getBuffer();
 
         int a = (int) (color.a * 255f);
         int r = (int) (color.r * 255f);
@@ -1000,8 +999,8 @@ public class RenderUtils
             bindTexture(fi.dy.masa.malilib.render.RenderUtils.TEXTURE_MAP_BACKGROUND);
 
             Tessellator tessellator = Tessellator.getInstance();
-            BufferBuilder buffer = tessellator.getBufferBuilder();
-            buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_UV);
+            BufferBuilder buffer = tessellator.getBuffer();
+            buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_TEXTURE);
             buffer.vertex(x1, y2, z).texture(0.0f, 1.0f).next();
             buffer.vertex(x2, y2, z).texture(1.0f, 1.0f).next();
             buffer.vertex(x2, y1, z).texture(1.0f, 0.0f).next();
@@ -1018,7 +1017,7 @@ public class RenderUtils
                 double scale = (double) (dimensions - 16) / 128.0D;
                 GlStateManager.translatef(x1, y1, z);
                 GlStateManager.scaled(scale, scale, 0);
-                mc().gameRenderer.getMapRenderer().draw(new MatrixStack(), MinecraftClient.getInstance().getBufferBuilderStorage().getGeneralDrawer(), mapdata, false, 0xF000F0);
+                mc().gameRenderer.getMapRenderer().draw(new MatrixStack(), MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers(), mapdata, false, 0xF000F0);
             }
 
             GlStateManager.enableLighting();
@@ -1149,8 +1148,8 @@ public class RenderUtils
         if (model.isBuiltin() == false)
         {
             Tessellator tessellator = Tessellator.getInstance();
-            BufferBuilder bufferbuilder = tessellator.getBufferBuilder();
-            bufferbuilder.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR_UV_NORMAL);
+            BufferBuilder bufferbuilder = tessellator.getBuffer();
+            bufferbuilder.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL);
 
             for (Direction face : Direction.values())
             {

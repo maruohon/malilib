@@ -131,7 +131,7 @@ public class PositionUtils
         }
         else if (entity.pitch <= -verticalThreshold)
         {
-            return new BlockPos(x, Math.ceil(entity.getBoundingBox().maxY), z);
+            return new BlockPos(x, Math.ceil(entity.getBoundingBox().y2), z);
         }
 
         y = Math.floor(y + entity.getStandingEyeHeight());
