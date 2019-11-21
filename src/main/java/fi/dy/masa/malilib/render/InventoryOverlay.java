@@ -22,6 +22,7 @@ import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.container.PlayerContainer;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.BasicInventory;
@@ -46,10 +47,14 @@ public class InventoryOverlay
     public static final Identifier TEXTURE_PLAYER_INV       = new Identifier("textures/gui/container/hopper.png");
     public static final Identifier TEXTURE_SINGLE_CHEST     = new Identifier("textures/gui/container/shulker_box.png");
 
+    private static final EquipmentSlot[] VALID_EQUIPMENT_SLOTS = new EquipmentSlot[] { EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET };
     public static final InventoryProperties INV_PROPS_TEMP = new InventoryProperties();
 
-    private static final String[] EMPTY_SLOT_TEXTURES = new String[] { "item/empty_armor_slot_boots", "item/empty_armor_slot_leggings", "item/empty_armor_slot_chestplate", "item/empty_armor_slot_helmet" };
-    private static final EquipmentSlot[] VALID_EQUIPMENT_SLOTS = new EquipmentSlot[] { EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET };
+    private static final Identifier[] EMPTY_SLOT_TEXTURES = new Identifier[] {
+            new Identifier("item/empty_armor_slot_boots"),
+            new Identifier("item/empty_armor_slot_leggings"),
+            new Identifier("item/empty_armor_slot_chestplate"),
+            new Identifier("item/empty_armor_slot_helmet") };
 
     public static void renderInventoryBackground(InventoryRenderType type, int x, int y, int slotsPerRow, int totalSlots, MinecraftClient mc)
     {
@@ -193,8 +198,8 @@ public class InventoryOverlay
 
         if (entity.getEquippedStack(EquipmentSlot.OFFHAND).isEmpty())
         {
-            String texture = "minecraft:item/empty_armor_slot_shield";
-            RenderUtils.renderSprite(x + 28 + 1, y + 3 * 18 + 7 + 1, 16, 16, texture);
+            Identifier texture = new Identifier("minecraft:item/empty_armor_slot_shield");
+            RenderUtils.renderSprite(x + 28 + 1, y + 3 * 18 + 7 + 1, 16, 16, PlayerContainer.field_21668, texture);
         }
 
         for (int i = 0, xOff = 7, yOff = 7; i < 4; ++i, yOff += 18)
@@ -203,8 +208,8 @@ public class InventoryOverlay
 
             if (entity.getEquippedStack(eqSlot).isEmpty())
             {
-                String texture = EMPTY_SLOT_TEXTURES[eqSlot.getEntitySlotId()];
-                RenderUtils.renderSprite(x + xOff + 1, y + yOff + 1, 16, 16, texture);
+                Identifier texture = EMPTY_SLOT_TEXTURES[eqSlot.getEntitySlotId()];
+                RenderUtils.renderSprite(x + xOff + 1, y + yOff + 1, 16, 16, PlayerContainer.field_21668, texture);
             }
         }
     }

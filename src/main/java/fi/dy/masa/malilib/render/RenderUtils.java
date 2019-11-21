@@ -327,11 +327,11 @@ public class RenderUtils
         drawRect(x, y, 1, height, color);
     }
 
-    public static void renderSprite(int x, int y, int width, int height, String texture)
+    public static void renderSprite(int x, int y, int width, int height, Identifier atlas, Identifier texture)
     {
         if (texture != null)
         {
-            Sprite sprite = mc().getSpriteAtlas().getSprite(texture);
+            Sprite sprite = mc().getSpriteAtlas(atlas).apply(texture);
             GlStateManager.disableLighting();
             DrawableHelper.blit(x, y, 0, width, height, sprite);//.drawTexturedRect(x, y, sprite, width, height);
         }
