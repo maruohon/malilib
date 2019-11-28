@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.gui;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.widget.TextFieldWidget;
@@ -108,12 +108,12 @@ public class GuiTextFieldGeneric extends TextFieldWidget
     {
         if (this.getBlitOffset() != 0)
         {
-            GlStateManager.pushMatrix();
-            GlStateManager.translatef(0, 0, this.getBlitOffset());
+            RenderSystem.pushMatrix();
+            RenderSystem.translatef(0, 0, this.getBlitOffset());
 
             super.render(mouseX, mouseY, partialTicks);
 
-            GlStateManager.popMatrix();
+            RenderSystem.popMatrix();
         }
         else
         {

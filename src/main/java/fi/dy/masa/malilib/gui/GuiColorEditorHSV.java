@@ -4,7 +4,7 @@ import java.awt.Color;
 import javax.annotation.Nullable;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
@@ -484,13 +484,13 @@ public class GuiColorEditorHSV extends GuiDialogBase
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
 
-        GlStateManager.disableTexture();
+        RenderSystem.disableTexture();
         RenderUtils.setupBlend();
 
-        GlStateManager.disableRescaleNormal();
-        GlStateManager.disableAlphaTest();
-        GlStateManager.shadeModel(GL11.GL_SMOOTH);
-        GlStateManager.alphaFunc(GL11.GL_GREATER, 0.01F);
+        RenderSystem.disableRescaleNormal();
+        RenderSystem.disableAlphaTest();
+        RenderSystem.shadeModel(GL11.GL_SMOOTH);
+        RenderSystem.alphaFunc(GL11.GL_GREATER, 0.01F);
 
         RenderUtils.color(1, 1, 1, 1);
 
@@ -586,12 +586,12 @@ public class GuiColorEditorHSV extends GuiDialogBase
 
         tessellator.draw();
 
-        GlStateManager.shadeModel(GL11.GL_FLAT);
-        GlStateManager.enableAlphaTest();
-        GlStateManager.enableRescaleNormal();
+        RenderSystem.shadeModel(GL11.GL_FLAT);
+        RenderSystem.enableAlphaTest();
+        RenderSystem.enableRescaleNormal();
 
-        GlStateManager.disableBlend();
-        GlStateManager.enableTexture();
+        RenderSystem.disableBlend();
+        RenderSystem.enableTexture();
     }
 
     public static void renderGradientColorBar(int x, int y, float z, int width, int height, int colorStart, int colorEnd, BufferBuilder buffer)

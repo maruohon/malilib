@@ -58,8 +58,7 @@ public class RenderUtils
 
     public static void setupBlend()
     {
-        GlStateManager.enableBlend();
-        //GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        RenderSystem.enableBlend();
         RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
     }
 
@@ -75,7 +74,7 @@ public class RenderUtils
 
     public static void color(float r, float g, float b, float a)
     {
-        GlStateManager.color4f(r, g, b, a);
+        RenderSystem.color4f(r, g, b, a);
     }
 
     public static void disableItemLighting()
@@ -155,7 +154,7 @@ public class RenderUtils
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
 
-        GlStateManager.disableTexture();
+        RenderSystem.disableTexture();
         setupBlend();
         color(r, g, b, a);
 
@@ -168,8 +167,8 @@ public class RenderUtils
 
         tessellator.draw();
 
-        GlStateManager.enableTexture();
-        GlStateManager.disableBlend();
+        RenderSystem.enableTexture();
+        RenderSystem.disableBlend();
     }
 
     public static void drawTexturedRect(int x, int y, int u, int v, int width, int height, float zLevel)
@@ -211,10 +210,10 @@ public class RenderUtils
         if (textLines.isEmpty() == false && GuiUtils.getCurrentScreen() != null)
         {
             TextRenderer font = mc.textRenderer;
-            GlStateManager.disableRescaleNormal();
+            RenderSystem.disableRescaleNormal();
             disableItemLighting();
-            GlStateManager.disableLighting();
-            GlStateManager.disableDepthTest();
+            RenderSystem.disableLighting();
+            RenderSystem.disableDepthTest();
             int maxLineLength = 0;
             int maxWidth = GuiUtils.getCurrentScreen().width;
             List<String> linesNew = new ArrayList<>();
@@ -270,10 +269,10 @@ public class RenderUtils
                 textStartY += lineHeight;
             }
 
-            GlStateManager.enableLighting();
-            GlStateManager.enableDepthTest();
+            RenderSystem.enableLighting();
+            RenderSystem.enableDepthTest();
             enableGuiItemLighting();
-            GlStateManager.enableRescaleNormal();
+            RenderSystem.enableRescaleNormal();
         }
     }
 
@@ -289,10 +288,10 @@ public class RenderUtils
         int eg = (endColor >>  8 & 0xFF);
         int eb = (endColor & 0xFF);
 
-        GlStateManager.disableTexture();
-        GlStateManager.disableAlphaTest();
+        RenderSystem.disableTexture();
+        RenderSystem.disableAlphaTest();
         setupBlend();
-        GlStateManager.shadeModel(GL11.GL_SMOOTH);
+        RenderSystem.shadeModel(GL11.GL_SMOOTH);
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
@@ -305,10 +304,10 @@ public class RenderUtils
 
         tessellator.draw();
 
-        GlStateManager.shadeModel(GL11.GL_FLAT);
-        GlStateManager.disableBlend();
-        GlStateManager.enableAlphaTest();
-        GlStateManager.enableTexture();
+        RenderSystem.shadeModel(GL11.GL_FLAT);
+        RenderSystem.disableBlend();
+        RenderSystem.enableAlphaTest();
+        RenderSystem.enableTexture();
     }
 
     public static void drawCenteredString(int x, int y, int color, String text)
@@ -332,7 +331,7 @@ public class RenderUtils
         if (texture != null)
         {
             Sprite sprite = mc().getSpriteAtlas(atlas).apply(texture);
-            GlStateManager.disableLighting();
+            RenderSystem.disableLighting();
             DrawableHelper.blit(x, y, 0, width, height, sprite);//.drawTexturedRect(x, y, sprite, width, height);
         }
     }
@@ -386,8 +385,8 @@ public class RenderUtils
                 yOff = (int) (yOff * scale);
             }
 
-            GlStateManager.pushMatrix();
-            GlStateManager.scaled(scale, scale, 0);
+            RenderSystem.pushMatrix();
+            RenderSystem.scaled(scale, scale, 0);
         }
 
         double posX = xOff + bgMargin;
@@ -433,7 +432,7 @@ public class RenderUtils
 
         if (scale != 1d)
         {
-            GlStateManager.popMatrix();
+            RenderSystem.popMatrix();
         }
 
         return contentHeight + bgMargin * 2;
@@ -718,26 +717,26 @@ public class RenderUtils
     {
         TextRenderer textRenderer = mc().textRenderer;
 
-        GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
-        GlStateManager.pushMatrix();
+        RenderSystem.alphaFunc(GL11.GL_GREATER, 0.1F);
+        RenderSystem.pushMatrix();
         RenderSystem.translatef((float) x, (float) y, (float) z);
-        GlStateManager.normal3f(0.0F, 1.0F, 0.0F);
+        RenderSystem.normal3f(0.0F, 1.0F, 0.0F);
 
-        GlStateManager.rotatef(-yaw, 0.0F, 1.0F, 0.0F);
-        GlStateManager.rotatef(pitch, 1.0F, 0.0F, 0.0F);
+        RenderSystem.rotatef(-yaw, 0.0F, 1.0F, 0.0F);
+        RenderSystem.rotatef(pitch, 1.0F, 0.0F, 0.0F);
 
-        GlStateManager.scalef(-scale, -scale, scale);
-        GlStateManager.disableLighting();
-        GlStateManager.disableCull();
+        RenderSystem.scalef(-scale, -scale, scale);
+        RenderSystem.disableLighting();
+        RenderSystem.disableCull();
 
         if (disableDepth)
         {
-            GlStateManager.depthMask(false);
-            GlStateManager.disableDepthTest();
+            RenderSystem.depthMask(false);
+            RenderSystem.disableDepthTest();
         }
 
         setupBlend();
-        GlStateManager.disableTexture();
+        RenderSystem.disableTexture();
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
@@ -762,29 +761,29 @@ public class RenderUtils
         buffer.vertex( strLenHalf    ,          -1, 0.0D).color(bgr, bgg, bgb, bga).next();
         tessellator.draw();
 
-        GlStateManager.enableTexture();
+        RenderSystem.enableTexture();
         int textY = 0;
 
         // translate the text a bit infront of the background
         if (disableDepth == false)
         {
-            GlStateManager.enablePolygonOffset();
-            GlStateManager.polygonOffset(-0.6f, -1.2f);
-            //GlStateManager.translate(0, 0, -0.02);
+            RenderSystem.enablePolygonOffset();
+            RenderSystem.polygonOffset(-0.6f, -1.2f);
+            //RenderSystem.translate(0, 0, -0.02);
         }
 
         for (String line : text)
         {
             if (disableDepth)
             {
-                GlStateManager.depthMask(false);
-                GlStateManager.disableDepthTest();
+                RenderSystem.depthMask(false);
+                RenderSystem.disableDepthTest();
             }
 
             textRenderer.draw(line, -strLenHalf, textY, 0x20000000 | (textColor & 0xFFFFFF));
 
-            GlStateManager.enableDepthTest();
-            GlStateManager.depthMask(true);
+            RenderSystem.enableDepthTest();
+            RenderSystem.depthMask(true);
 
             textRenderer.draw(line, -strLenHalf, textY, textColor);
             textY += textRenderer.fontHeight;
@@ -792,14 +791,14 @@ public class RenderUtils
 
         if (disableDepth == false)
         {
-            GlStateManager.polygonOffset(0f, 0f);
-            GlStateManager.disablePolygonOffset();
+            RenderSystem.polygonOffset(0f, 0f);
+            RenderSystem.disablePolygonOffset();
         }
 
         color(1f, 1f, 1f, 1f);
-        GlStateManager.enableCull();
-        GlStateManager.disableBlend();
-        GlStateManager.popMatrix();
+        RenderSystem.enableCull();
+        RenderSystem.disableBlend();
+        RenderSystem.popMatrix();
     }
 
     public static void renderBlockTargetingOverlay(Entity entity, BlockPos pos, Direction side, Vec3d hitVec,
@@ -813,7 +812,7 @@ public class RenderUtils
         double y = pos.getY() + 0.5d - cameraPos.y;
         double z = pos.getZ() + 0.5d - cameraPos.z;
 
-        GlStateManager.pushMatrix();
+        RenderSystem.pushMatrix();
 
         blockTargetingOverlayTranslations(x, y, z, side, playerFacing);
 
@@ -871,7 +870,7 @@ public class RenderUtils
 
         tessellator.draw();
 
-        GlStateManager.lineWidth(1.6f);
+        RenderSystem.lineWidth(1.6f);
 
         buffer.begin(GL11.GL_LINE_LOOP, VertexFormats.POSITION_COLOR);
 
@@ -900,7 +899,7 @@ public class RenderUtils
         buffer.vertex(x + 0.25, y + 0.25, z).color(c, c, c, c).next();
         tessellator.draw();
 
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 
     public static void renderBlockTargetingOverlaySimple(Entity entity, BlockPos pos, Direction side,
@@ -913,7 +912,7 @@ public class RenderUtils
         double y = pos.getY() + 0.5d - cameraPos.y;
         double z = pos.getZ() + 0.5d - cameraPos.z;
 
-        GlStateManager.pushMatrix();
+        RenderSystem.pushMatrix();
 
         blockTargetingOverlayTranslations(x, y, z, side, playerFacing);
 
@@ -936,7 +935,7 @@ public class RenderUtils
 
         tessellator.draw();
 
-        GlStateManager.lineWidth(1.6f);
+        RenderSystem.lineWidth(1.6f);
 
         buffer.begin(GL11.GL_LINE_LOOP, VertexFormats.POSITION_COLOR);
 
@@ -948,7 +947,7 @@ public class RenderUtils
 
         tessellator.draw();
 
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 
     private static void blockTargetingOverlayTranslations(double x, double y, double z, Direction side, Direction playerFacing)
@@ -958,24 +957,24 @@ public class RenderUtils
         switch (side)
         {
             case DOWN:
-                GlStateManager.rotatef(180f - playerFacing.asRotation(), 0, 1f, 0);
-                GlStateManager.rotatef( 90f, 1f, 0, 0);
+                RenderSystem.rotatef(180f - playerFacing.asRotation(), 0, 1f, 0);
+                RenderSystem.rotatef( 90f, 1f, 0, 0);
                 break;
             case UP:
-                GlStateManager.rotatef(180f - playerFacing.asRotation(), 0, 1f, 0);
-                GlStateManager.rotatef(-90f, 1f, 0, 0);
+                RenderSystem.rotatef(180f - playerFacing.asRotation(), 0, 1f, 0);
+                RenderSystem.rotatef(-90f, 1f, 0, 0);
                 break;
             case NORTH:
-                GlStateManager.rotatef(180f, 0, 1f, 0);
+                RenderSystem.rotatef(180f, 0, 1f, 0);
                 break;
             case SOUTH:
-                GlStateManager.rotatef(   0, 0, 1f, 0);
+                RenderSystem.rotatef(   0, 0, 1f, 0);
                 break;
             case WEST:
-                GlStateManager.rotatef(-90f, 0, 1f, 0);
+                RenderSystem.rotatef(-90f, 0, 1f, 0);
                 break;
             case EAST:
-                GlStateManager.rotatef( 90f, 0, 1f, 0);
+                RenderSystem.rotatef( 90f, 0, 1f, 0);
                 break;
         }
 
@@ -986,8 +985,8 @@ public class RenderUtils
     {
         if (stack.getItem() instanceof FilledMapItem && GuiBase.isShiftDown())
         {
-            GlStateManager.pushMatrix();
-            GlStateManager.disableLighting();
+            RenderSystem.pushMatrix();
+            RenderSystem.disableLighting();
             color(1f, 1f, 1f, 1f);
 
             int y1 = y - dimensions - 20;
@@ -1015,13 +1014,13 @@ public class RenderUtils
                 y1 += 8;
                 z = 310;
                 double scale = (double) (dimensions - 16) / 128.0D;
-                GlStateManager.translatef(x1, y1, z);
-                GlStateManager.scaled(scale, scale, 0);
+                RenderSystem.translatef(x1, y1, z);
+                RenderSystem.scaled(scale, scale, 0);
                 mc().gameRenderer.getMapRenderer().draw(new MatrixStack(), MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers(), mapdata, false, 0xF000F0);
             }
 
-            GlStateManager.enableLighting();
-            GlStateManager.popMatrix();
+            RenderSystem.enableLighting();
+            RenderSystem.popMatrix();
         }
     }
 
@@ -1096,53 +1095,52 @@ public class RenderUtils
             return;
         }
 
-        GlStateManager.pushMatrix();
+        RenderSystem.pushMatrix();
         bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
         mc().getTextureManager().getTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX).setFilter(false, false);
 
-        GlStateManager.enableRescaleNormal();
-        GlStateManager.enableAlphaTest();
-        GlStateManager.alphaFunc(516, 0.1F);
-        GlStateManager.enableBlend();
-        //GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        RenderSystem.enableRescaleNormal();
+        RenderSystem.enableAlphaTest();
+        RenderSystem.alphaFunc(516, 0.1F);
+        RenderSystem.enableBlend();
         setupBlendSimple();
         color(1f, 1f, 1f, 1f);
 
         setupGuiTransform(x, y, model.hasDepthInGui(), zLevel);
         //model.getItemCameraTransforms().applyTransform(ItemCameraTransforms.TransformType.GUI);
-        GlStateManager.rotatef( 30, 1, 0, 0);
-        GlStateManager.rotatef(225, 0, 1, 0);
-        GlStateManager.scalef(0.625f, 0.625f, 0.625f);
+        RenderSystem.rotatef( 30, 1, 0, 0);
+        RenderSystem.rotatef(225, 0, 1, 0);
+        RenderSystem.scalef(0.625f, 0.625f, 0.625f);
 
         renderModel(model, state);
 
-        GlStateManager.disableAlphaTest();
-        GlStateManager.disableRescaleNormal();
-        GlStateManager.disableLighting();
-        GlStateManager.popMatrix();
+        RenderSystem.disableAlphaTest();
+        RenderSystem.disableRescaleNormal();
+        RenderSystem.disableLighting();
+        RenderSystem.popMatrix();
     }
 
     public static void setupGuiTransform(int xPosition, int yPosition, boolean isGui3d, float zLevel)
     {
-        GlStateManager.translatef(xPosition, yPosition, 100.0F + zLevel);
-        GlStateManager.translatef(8.0F, 8.0F, 0.0F);
-        GlStateManager.scalef(1.0F, -1.0F, 1.0F);
-        GlStateManager.scalef(16.0F, 16.0F, 16.0F);
+        RenderSystem.translatef(xPosition, yPosition, 100.0F + zLevel);
+        RenderSystem.translatef(8.0F, 8.0F, 0.0F);
+        RenderSystem.scalef(1.0F, -1.0F, 1.0F);
+        RenderSystem.scalef(16.0F, 16.0F, 16.0F);
 
         if (isGui3d)
         {
-            GlStateManager.enableLighting();
+            RenderSystem.enableLighting();
         }
         else
         {
-            GlStateManager.disableLighting();
+            RenderSystem.disableLighting();
         }
     }
 
     private static void renderModel(BakedModel model, BlockState state)
     {
-        GlStateManager.pushMatrix();
-        GlStateManager.translatef(-0.5F, -0.5F, -0.5F);
+        RenderSystem.pushMatrix();
+        RenderSystem.translatef(-0.5F, -0.5F, -0.5F);
         int color = 0xFFFFFFFF;
 
         if (model.isBuiltin() == false)
@@ -1162,7 +1160,7 @@ public class RenderUtils
             tessellator.draw();
         }
 
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 
     private static void renderQuads(BufferBuilder renderer, List<BakedQuad> quads, BlockState state, int color)
@@ -1214,37 +1212,37 @@ public class RenderUtils
     /*
     public static void enableGUIStandardItemLighting(float scale)
     {
-        GlStateManager.pushMatrix();
-        GlStateManager.rotate(-30.0F, 0.0F, 1.0F, 0.0F);
-        GlStateManager.rotate(165.0F, 1.0F, 0.0F, 0.0F);
+        RenderSystem.pushMatrix();
+        RenderSystem.rotate(-30.0F, 0.0F, 1.0F, 0.0F);
+        RenderSystem.rotate(165.0F, 1.0F, 0.0F, 0.0F);
 
         enableStandardItemLighting(scale);
 
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 
     public static void enableStandardItemLighting(float scale)
     {
-        GlStateManager.enableLighting();
-        GlStateManager.enableLight(0);
-        GlStateManager.enableLight(1);
-        GlStateManager.enableColorMaterial();
+        RenderSystem.enableLighting();
+        RenderSystem.enableLight(0);
+        RenderSystem.enableLight(1);
+        RenderSystem.enableColorMaterial();
         RenderUtils.colorMaterial(GL11.GL_FRONT_AND_BACK, GL11.GL_AMBIENT_AND_DIFFUSE);
-        GlStateManager.glLight(GL11.GL_LIGHT0, GL11.GL_POSITION, RenderHelper.setColorBuffer((float) LIGHT0_POS.x, (float) LIGHT0_POS.y, (float) LIGHT0_POS.z, 0.0f));
+        RenderSystem.glLight(GL11.GL_LIGHT0, GL11.GL_POSITION, RenderHelper.setColorBuffer((float) LIGHT0_POS.x, (float) LIGHT0_POS.y, (float) LIGHT0_POS.z, 0.0f));
 
         float lightStrength = 0.3F * scale;
-        GlStateManager.glLight(GL11.GL_LIGHT0, GL11.GL_DIFFUSE, RenderHelper.setColorBuffer(lightStrength, lightStrength, lightStrength, 1.0F));
-        GlStateManager.glLight(GL11.GL_LIGHT0, GL11.GL_AMBIENT, RenderHelper.setColorBuffer(0.0F, 0.0F, 0.0F, 1.0F));
-        GlStateManager.glLight(GL11.GL_LIGHT0, GL11.GL_SPECULAR, RenderHelper.setColorBuffer(0.0F, 0.0F, 0.0F, 1.0F));
-        GlStateManager.glLight(GL11.GL_LIGHT1, GL11.GL_POSITION, RenderHelper.setColorBuffer((float) LIGHT1_POS.x, (float) LIGHT1_POS.y, (float) LIGHT1_POS.z, 0.0f));
-        GlStateManager.glLight(GL11.GL_LIGHT1, GL11.GL_DIFFUSE, RenderHelper.setColorBuffer(lightStrength, lightStrength, lightStrength, 1.0F));
-        GlStateManager.glLight(GL11.GL_LIGHT1, GL11.GL_AMBIENT, RenderHelper.setColorBuffer(0.0F, 0.0F, 0.0F, 1.0F));
-        GlStateManager.glLight(GL11.GL_LIGHT1, GL11.GL_SPECULAR, RenderHelper.setColorBuffer(0.0F, 0.0F, 0.0F, 1.0F));
+        RenderSystem.glLight(GL11.GL_LIGHT0, GL11.GL_DIFFUSE, RenderHelper.setColorBuffer(lightStrength, lightStrength, lightStrength, 1.0F));
+        RenderSystem.glLight(GL11.GL_LIGHT0, GL11.GL_AMBIENT, RenderHelper.setColorBuffer(0.0F, 0.0F, 0.0F, 1.0F));
+        RenderSystem.glLight(GL11.GL_LIGHT0, GL11.GL_SPECULAR, RenderHelper.setColorBuffer(0.0F, 0.0F, 0.0F, 1.0F));
+        RenderSystem.glLight(GL11.GL_LIGHT1, GL11.GL_POSITION, RenderHelper.setColorBuffer((float) LIGHT1_POS.x, (float) LIGHT1_POS.y, (float) LIGHT1_POS.z, 0.0f));
+        RenderSystem.glLight(GL11.GL_LIGHT1, GL11.GL_DIFFUSE, RenderHelper.setColorBuffer(lightStrength, lightStrength, lightStrength, 1.0F));
+        RenderSystem.glLight(GL11.GL_LIGHT1, GL11.GL_AMBIENT, RenderHelper.setColorBuffer(0.0F, 0.0F, 0.0F, 1.0F));
+        RenderSystem.glLight(GL11.GL_LIGHT1, GL11.GL_SPECULAR, RenderHelper.setColorBuffer(0.0F, 0.0F, 0.0F, 1.0F));
 
-        GlStateManager.shadeModel(GL11.GL_FLAT);
+        RenderSystem.shadeModel(GL11.GL_FLAT);
 
         float ambientLightStrength = 0.4F;
-        GlStateManager.glLightModel(GL11.GL_LIGHT_MODEL_AMBIENT, RenderHelper.setColorBuffer(ambientLightStrength, ambientLightStrength, ambientLightStrength, 1.0F));
+        RenderSystem.glLightModel(GL11.GL_LIGHT_MODEL_AMBIENT, RenderHelper.setColorBuffer(ambientLightStrength, ambientLightStrength, ambientLightStrength, 1.0F));
     }
     */
 }
