@@ -1036,9 +1036,9 @@ public class RenderUtils
                 return;
             }
 
-            GlStateManager.pushMatrix();
+            RenderSystem.pushMatrix();
             disableItemLighting();
-            GlStateManager.translatef(0F, 0F, 700F);
+            RenderSystem.translatef(0F, 0F, 400F);
 
             InventoryOverlay.InventoryRenderType type = InventoryOverlay.getInventoryType(stack);
             InventoryOverlay.InventoryProperties props = InventoryOverlay.getInventoryPropsTemp(type, items.size());
@@ -1058,14 +1058,14 @@ public class RenderUtils
             InventoryOverlay.renderInventoryBackground(type, x, y, props.slotsPerRow, items.size(), mc());
 
             enableGuiItemLighting();
-            GlStateManager.enableDepthTest();
-            GlStateManager.enableRescaleNormal();
+            RenderSystem.enableDepthTest();
+            RenderSystem.enableRescaleNormal();
 
             Inventory inv = fi.dy.masa.malilib.util.InventoryUtils.getAsInventory(items);
             InventoryOverlay.renderInventoryStacks(type, inv, x + props.slotOffsetX, y + props.slotOffsetY, props.slotsPerRow, 0, -1, mc());
 
-            GlStateManager.disableDepthTest();
-            GlStateManager.popMatrix();
+            RenderSystem.disableDepthTest();
+            RenderSystem.popMatrix();
         }
     }
 

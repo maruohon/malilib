@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.render;
 import java.util.ArrayList;
 import java.util.List;
 import org.lwjgl.opengl.GL11;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.block.Block;
 import net.minecraft.block.BrewingStandBlock;
 import net.minecraft.block.ChestBlock;
@@ -473,21 +473,24 @@ public class InventoryOverlay
 
     public static void renderStackAt(ItemStack stack, float x, float y, float scale, MinecraftClient mc)
     {
-        GlStateManager.pushMatrix();
-        GlStateManager.translatef(x, y, 0);
-        GlStateManager.scalef(scale, scale, 1);
-        GlStateManager.disableLighting();
+        RenderSystem.pushMatrix();
+        RenderSystem.translatef(x, y, 0);
+        RenderSystem.scalef(scale, scale, 1);
+        RenderSystem.disableLighting();
+        RenderSystem.enableRescaleNormal();
 
         RenderUtils.enableGuiItemLighting();
+        RenderUtils.color(1f, 1f, 1f, 1f);
 
         mc.getItemRenderer().zOffset += 100;
         mc.getItemRenderer().renderGuiItem(mc.player, stack, 0, 0);
+
+        RenderUtils.color(1f, 1f, 1f, 1f);
         mc.getItemRenderer().renderGuiItemOverlay(mc.textRenderer, stack, 0, 0, null);
         mc.getItemRenderer().zOffset -= 100;
 
-        //GlStateManager.disableBlend();
         RenderUtils.disableItemLighting();
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 
     public static void renderStackToolTip(int x, int y, ItemStack stack, MinecraftClient mc)
