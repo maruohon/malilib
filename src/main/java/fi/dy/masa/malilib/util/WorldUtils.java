@@ -52,7 +52,7 @@ public class WorldUtils
         if (mc.world != null && server != null)
         {
             ServerWorld world = server.getWorld(mc.world.dimension.getType());
-            chunk = world.method_8497(chunkX, chunkZ); // getChunk()
+            chunk = world.getChunk(chunkX, chunkZ);
         }
 
         if (chunk != null)
@@ -60,6 +60,6 @@ public class WorldUtils
             return chunk;
         }
 
-        return mc.world.method_8497(chunkX, chunkZ);
+        return mc.world.getChunk(chunkX, chunkZ);
     }
 }
