@@ -23,6 +23,7 @@ import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -802,7 +803,7 @@ public class RenderUtils
     }
 
     public static void renderBlockTargetingOverlay(Entity entity, BlockPos pos, Direction side, Vec3d hitVec,
-            Color4f color, MinecraftClient mc)
+            Color4f color, net.minecraft.client.util.math.MatrixStack matrixStack, MinecraftClient mc)
     {
         Direction playerFacing = entity.getHorizontalFacing();
         HitPart part = PositionUtils.getHitPart(side, playerFacing, pos, hitVec);
@@ -814,7 +815,10 @@ public class RenderUtils
 
         RenderSystem.pushMatrix();
 
-        blockTargetingOverlayTranslations(x, y, z, side, playerFacing);
+        matrixStack.push();
+        blockTargetingOverlayTranslations(x, y, z, side, playerFacing, matrixStack);
+        RenderSystem.multMatrix(matrixStack.peek().getModel());
+        matrixStack.pop();
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
@@ -903,7 +907,7 @@ public class RenderUtils
     }
 
     public static void renderBlockTargetingOverlaySimple(Entity entity, BlockPos pos, Direction side,
-            Color4f color, MinecraftClient mc)
+            Color4f color, net.minecraft.client.util.math.MatrixStack matrixStack, MinecraftClient mc)
     {
         Direction playerFacing = entity.getHorizontalFacing();
         Vec3d cameraPos = mc.gameRenderer.getCamera().getPos();
@@ -914,7 +918,10 @@ public class RenderUtils
 
         RenderSystem.pushMatrix();
 
-        blockTargetingOverlayTranslations(x, y, z, side, playerFacing);
+        matrixStack.push();
+        blockTargetingOverlayTranslations(x, y, z, side, playerFacing, matrixStack);
+        RenderSystem.multMatrix(matrixStack.peek().getModel());
+        matrixStack.pop();
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
@@ -950,35 +957,35 @@ public class RenderUtils
         RenderSystem.popMatrix();
     }
 
-    private static void blockTargetingOverlayTranslations(double x, double y, double z, Direction side, Direction playerFacing)
+    private static void blockTargetingOverlayTranslations(double x, double y, double z,
+            Direction side, Direction playerFacing, net.minecraft.client.util.math.MatrixStack matrixStack)
     {
-        RenderSystem.translatef((float) x, (float) y, (float) z);
+        matrixStack.translate(x, y, z);
 
         switch (side)
         {
             case DOWN:
-                RenderSystem.rotatef(180f - playerFacing.asRotation(), 0, 1f, 0);
-                RenderSystem.rotatef( 90f, 1f, 0, 0);
+                matrixStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(180f - playerFacing.asRotation()));
+                matrixStack.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(90f));
                 break;
             case UP:
-                RenderSystem.rotatef(180f - playerFacing.asRotation(), 0, 1f, 0);
-                RenderSystem.rotatef(-90f, 1f, 0, 0);
+                matrixStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(180f - playerFacing.asRotation()));
+                matrixStack.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(-90f));
                 break;
             case NORTH:
-                RenderSystem.rotatef(180f, 0, 1f, 0);
+                matrixStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(180f));
                 break;
             case SOUTH:
-                RenderSystem.rotatef(   0, 0, 1f, 0);
                 break;
             case WEST:
-                RenderSystem.rotatef(-90f, 0, 1f, 0);
+                matrixStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(-90f));
                 break;
             case EAST:
-                RenderSystem.rotatef( 90f, 0, 1f, 0);
+                matrixStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(90f));
                 break;
         }
 
-        RenderSystem.translatef((float) -x, (float) -y, (float) -z + 0.501f);
+        matrixStack.translate(-x, -y, -z + 0.501);
     }
 
     public static void renderMapPreview(ItemStack stack, int x, int y, int dimensions)
