@@ -479,7 +479,7 @@ public class InventoryOverlay
         RenderSystem.disableLighting();
         RenderSystem.enableRescaleNormal();
 
-        RenderUtils.enableGuiItemLighting();
+        RenderUtils.enableDiffuseLightingGui3D();
         RenderUtils.color(1f, 1f, 1f, 1f);
 
         mc.getItemRenderer().zOffset += 100;
@@ -489,7 +489,7 @@ public class InventoryOverlay
         mc.getItemRenderer().renderGuiItemOverlay(mc.textRenderer, stack, 0, 0, null);
         mc.getItemRenderer().zOffset -= 100;
 
-        RenderUtils.disableItemLighting();
+        RenderUtils.disableDiffuseLighting();
         RenderSystem.popMatrix();
     }
 

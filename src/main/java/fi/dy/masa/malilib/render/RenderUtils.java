@@ -15,7 +15,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.GuiLighting;
+import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.model.BakedModel;
@@ -60,12 +60,12 @@ public class RenderUtils
     public static void setupBlend()
     {
         RenderSystem.enableBlend();
-        RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        RenderSystem.blendFuncSeparate(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SrcFactor.ONE, GlStateManager.DstFactor.ZERO);
     }
 
     public static void setupBlendSimple()
     {
-        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA);
     }
 
     public static void bindTexture(Identifier texture)
@@ -78,21 +78,21 @@ public class RenderUtils
         RenderSystem.color4f(r, g, b, a);
     }
 
-    public static void disableItemLighting()
+    public static void disableDiffuseLighting()
     {
-        GuiLighting.disable();
+        // FIXME 1.15-pre4+
+        DiffuseLighting.disable();
     }
 
-    public static void enableItemLighting()
+    public static void enableDiffuseLightingForLevel(MatrixStack matrixStack)
     {
-        MatrixStack matrixStack = new MatrixStack();
-        GuiLighting.enable(matrixStack.peek().getModel());
+        DiffuseLighting.enableForLevel(matrixStack.peek().getModel());
     }
 
-    public static void enableGuiItemLighting()
+    public static void enableDiffuseLightingGui3D()
     {
-        MatrixStack matrixStack = new MatrixStack();
-        GuiLighting.enableForItems(matrixStack.peek().getModel());
+        // FIXME 1.15-pre4+
+        DiffuseLighting.method_24211();
     }
 
     public static void drawOutlinedBox(int x, int y, int width, int height, int colorBg, int colorBorder)
@@ -212,7 +212,7 @@ public class RenderUtils
         {
             TextRenderer font = mc.textRenderer;
             RenderSystem.disableRescaleNormal();
-            disableItemLighting();
+            disableDiffuseLighting();
             RenderSystem.disableLighting();
             RenderSystem.disableDepthTest();
             int maxLineLength = 0;
@@ -272,7 +272,7 @@ public class RenderUtils
 
             RenderSystem.enableLighting();
             RenderSystem.enableDepthTest();
-            enableGuiItemLighting();
+            enableDiffuseLightingGui3D();
             RenderSystem.enableRescaleNormal();
         }
     }
@@ -1043,7 +1043,7 @@ public class RenderUtils
             }
 
             RenderSystem.pushMatrix();
-            disableItemLighting();
+            disableDiffuseLighting();
             RenderSystem.translatef(0F, 0F, 400F);
 
             InventoryOverlay.InventoryRenderType type = InventoryOverlay.getInventoryType(stack);
@@ -1063,7 +1063,7 @@ public class RenderUtils
 
             InventoryOverlay.renderInventoryBackground(type, x, y, props.slotsPerRow, items.size(), mc());
 
-            enableGuiItemLighting();
+            enableDiffuseLightingGui3D();
             RenderSystem.enableDepthTest();
             RenderSystem.enableRescaleNormal();
 
