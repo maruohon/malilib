@@ -19,7 +19,7 @@ class ForgeRenderEventHandler
     }
 
     @SubscribeEvent
-    public void onRenderTooltipPost(RenderTooltipEvent.PostText event)
+    public void onRenderTooltipPost(RenderTooltipEvent.Pre event)
     {
         ((RenderEventHandler) RenderEventHandler.getInstance()).onRenderTooltipLast(event.getStack(), event.getX(), event.getY());
     }
