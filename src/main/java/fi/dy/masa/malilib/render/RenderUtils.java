@@ -29,7 +29,6 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.FilledMapItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.MapItem;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.Direction;
@@ -981,7 +980,7 @@ public class RenderUtils
 
     public static void renderMapPreview(ItemStack stack, int x, int y, int dimensions)
     {
-        if (stack.getItem() instanceof MapItem && GuiBase.isShiftDown())
+        if (stack.getItem() instanceof FilledMapItem && GuiBase.isShiftDown())
         {
             GlStateManager.pushMatrix();
             GlStateManager.disableLighting();
