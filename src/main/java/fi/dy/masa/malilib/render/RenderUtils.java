@@ -92,7 +92,7 @@ public class RenderUtils
     public static void enableDiffuseLightingGui3D()
     {
         // FIXME 1.15-pre4+
-        DiffuseLighting.method_24211();
+        DiffuseLighting.enableGuiDepthLighting();
     }
 
     public static void drawOutlinedBox(int x, int y, int width, int height, int colorBg, int colorBorder)
