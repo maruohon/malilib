@@ -5,13 +5,13 @@ import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
+import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.init.SoundEvents;
+import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.widgets.WidgetBase;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
-import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.init.SoundEvents;
-import net.minecraft.util.ResourceLocation;
 
 public abstract class ButtonBase extends WidgetBase
 {
@@ -24,6 +24,7 @@ public abstract class ButtonBase extends WidgetBase
     protected boolean visible = true;
     protected boolean hovered;
     protected boolean hoverInfoRequiresShift;
+    protected boolean automaticWidth;
     @Nullable protected IButtonActionListener actionListener;
 
     public ButtonBase(int x, int y, int width, int height)
@@ -40,13 +41,14 @@ public abstract class ButtonBase extends WidgetBase
     {
         super(x, y, width, height);
 
-        if (width < 0)
-        {
-            this.width = this.getStringWidth(text) + 10;
-        }
-
         this.displayString = text;
         this.hoverHelp = ImmutableList.of(StringUtils.translate("malilib.gui.button.hover.hold_shift_for_info"));
+
+        if (width < 0)
+        {
+            this.automaticWidth = true;
+            this.autoCalculateWidth(text);
+        }
     }
 
     public ButtonBase setActionListener(@Nullable IButtonActionListener actionListener)
@@ -63,6 +65,11 @@ public abstract class ButtonBase extends WidgetBase
     public void setDisplayString(String text)
     {
         this.displayString = text;
+    }
+
+    protected void autoCalculateWidth(String text)
+    {
+        this.width = this.getStringWidth(text) + 10;
     }
 
     public boolean isMouseOver()
@@ -98,6 +105,17 @@ public abstract class ButtonBase extends WidgetBase
 
     public void updateDisplayString()
     {
+        this.displayString = this.generateDisplayString();
+
+        if (this.automaticWidth)
+        {
+            this.autoCalculateWidth(this.displayString);
+        }
+    }
+
+    protected String generateDisplayString()
+    {
+        return this.displayString;
     }
 
     public boolean hasHoverText()

@@ -1,6 +1,8 @@
 package fi.dy.masa.malilib.gui.widgets;
 
+import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.client.gui.GuiTextField;
 import fi.dy.masa.malilib.MaLiLibIcons;
 import fi.dy.masa.malilib.config.options.IConfigStringList;
 import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
@@ -11,7 +13,6 @@ import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.gui.listener.ConfigOptionChangeListenerTextField;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
-import net.minecraft.client.gui.GuiTextField;
 
 public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
 {
@@ -118,35 +119,56 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
         if (this.isDummy() == false)
         {
             IConfigStringList config = this.parent.getParent().getConfig();
-            List<String> list = config.getStrings();
+            List<String> list = new ArrayList<>(config.getStrings());
             String value = this.textField.getTextField().getText();
 
-            if (list.size() > this.listIndex)
+            if (this.listIndex < list.size())
             {
                 list.set(this.listIndex, value);
+                config.setStrings(list);
                 this.lastAppliedValue = value;
             }
         }
     }
 
-    private void insertEntryBefore()
+    private void insertEntry(boolean before)
     {
-        List<String> list = this.parent.getParent().getConfig().getStrings();
-        final int size = list.size();
-        int index = this.listIndex < 0 ? size : (this.listIndex >= size ? size : this.listIndex);
+        IConfigStringList config = this.parent.getParent().getConfig();
+        List<String> list = config.getStrings();
+        int index = this.getInsertionIndex(list, before);
+
+        // Adding a new empty entry purposefully does not update the config by setting a new list,
+        // so that the empty value does not get applied until it has been set to something valid.
         list.add(index, "");
+
         this.parent.refreshEntries();
         this.parent.markConfigsModified();
     }
 
+    protected int getInsertionIndex(List<String> list, boolean before)
+    {
+        final int size = list.size();
+        int index = this.listIndex < 0 ? size : (this.listIndex >= size ? size : this.listIndex);
+
+        if (before == false)
+        {
+            ++index;
+        }
+
+        return Math.max(0, Math.min(size, index));
+    }
+
     private void removeEntry()
     {
-        List<String> list = this.parent.getParent().getConfig().getStrings();
+        IConfigStringList config = this.parent.getParent().getConfig();
+        List<String> list = new ArrayList<>(config.getStrings());
         final int size = list.size();
 
         if (this.listIndex >= 0 && this.listIndex < size)
         {
             list.remove(this.listIndex);
+            config.setStrings(list);
+
             this.parent.refreshEntries();
             this.parent.markConfigsModified();
         }
@@ -154,7 +176,8 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
 
     private void moveEntry(boolean down)
     {
-        List<String> list = this.parent.getParent().getConfig().getStrings();
+        IConfigStringList config = this.parent.getParent().getConfig();
+        List<String> list = new ArrayList<>(config.getStrings());
         final int size = list.size();
 
         if (this.listIndex >= 0 && this.listIndex < size)
@@ -174,13 +197,15 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
 
             if (index2 >= 0)
             {
-                this.parent.markConfigsModified();
                 this.parent.applyPendingModifications();
 
                 tmp = list.get(index1);
                 list.set(index1, list.get(index2));
                 list.set(index2, tmp);
+                config.setStrings(list);
+
                 this.parent.refreshEntries();
+                this.parent.markConfigsModified();
             }
         }
     }
@@ -266,7 +291,7 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
         {
             if (this.type == ButtonType.ADD)
             {
-                this.parent.insertEntryBefore();
+                this.parent.insertEntry(false);
             }
             else if (this.type == ButtonType.REMOVE)
             {

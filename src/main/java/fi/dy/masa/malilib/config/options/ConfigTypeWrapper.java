@@ -73,6 +73,18 @@ public class ConfigTypeWrapper implements IConfigBoolean, IConfigDouble, IConfig
     }
 
     @Override
+    public String getModName()
+    {
+        return this.wrappedConfig.getModName();
+    }
+
+    @Override
+    public void setModName(String modName)
+    {
+        this.wrappedConfig.setModName(modName);
+    }
+
+    @Override
     public String getConfigGuiDisplayName()
     {
         return this.wrappedConfig.getConfigGuiDisplayName();

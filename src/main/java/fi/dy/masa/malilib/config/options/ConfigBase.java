@@ -11,6 +11,7 @@ public abstract class ConfigBase<T extends IConfigBase> implements IConfigBase, 
     private final String name;
     private final String prettyName;
     private String comment;
+    private String modName = "";
     @Nullable
     private IValueChangeCallback<T> callback;
 
@@ -55,6 +56,18 @@ public abstract class ConfigBase<T extends IConfigBase> implements IConfigBase, 
     public void setComment(String comment)
     {
         this.comment = comment;
+    }
+
+    @Override
+    public String getModName()
+    {
+        return this.modName;
+    }
+
+    @Override
+    public void setModName(String modName)
+    {
+        this.modName = modName;
     }
 
     @Override

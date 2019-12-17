@@ -23,13 +23,15 @@ malilib.gui.button.reset.caps=RESET
 
 malilib.gui.button.render_layers_gui.axis=Axis: %s
 malilib.gui.button.render_layers_gui.layers=Layers: %s
-malilib.gui.button.render_layers_gui.set_here=Set Here
+malilib.gui.button.render_layers_gui.set_to_player=Set to player
 
 malilib.gui.button.hover.directory_widget.create_directory=Create a new directory
 malilib.gui.button.hover.directory_widget.root=To root/base directory
 malilib.gui.button.hover.directory_widget.up=Up to parent directory
 malilib.gui.button.hover.hold_shift_for_info=§oHold Shift for more information§r
 malilib.gui.button.hover.plus_minus_tip=Left click to increase\nRight click to decrease\nShift and/or Alt to increase the step size
+
+malilib.gui.hover.open_color_editor=Open color editor
 
 malilib.gui.label.block_snap.center=Center
 malilib.gui.label.block_snap.corner=Corner
@@ -39,6 +41,11 @@ malilib.gui.label_colored.off=§cOFF§r
 malilib.gui.label_colored.on=§aON§r
 
 malilib.gui.label.color_editor.current_color=Current color:
+
+malilib.gui.label.keybind_display.actions=Actions
+malilib.gui.label.keybind_display.keys=Keys
+malilib.gui.label.keybind_display.keys_and_actions=Keys & Actions
+malilib.gui.label.keybind_display.none=None
 
 malilib.gui.label.keybind_settings.activate_on=Activate On
 malilib.gui.label.keybind_settings.allow_empty_keybind=Allow empty keybind
@@ -120,3 +127,6 @@ malilib.message.moved_min_layer_to=Moved min layer to %s
 malilib.message.set_layer_axis_to=Set layer axis to %s
 malilib.message.set_layer_mode_to=Set layer mode to %s
 malilib.message.set_layer_to=Set layer to %s
+
+malilib.toast.keybind_display.keys=§eKeys:§r §6%s§r
+malilib.toast.keybind_display.action=Action: §b%s : %s§r

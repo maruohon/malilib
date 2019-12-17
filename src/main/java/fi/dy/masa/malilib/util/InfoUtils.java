@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.util;
 
+import fi.dy.masa.malilib.config.values.InfoType;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.Message.MessageType;
 import fi.dy.masa.malilib.gui.interfaces.IMessageConsumer;

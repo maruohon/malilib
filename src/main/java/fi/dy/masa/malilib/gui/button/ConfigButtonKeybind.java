@@ -108,7 +108,8 @@ public class ConfigButtonKeybind extends ButtonGeneric
         return this.selected;
     }
 
-    public void updateDisplayString()
+    @Override
+    protected String generateDisplayString()
     {
         String valueStr = this.keybind.getKeysDisplayString();
 
@@ -121,7 +122,7 @@ public class ConfigButtonKeybind extends ButtonGeneric
 
         if (this.selected)
         {
-            this.displayString = "> " + GuiBase.TXT_YELLOW + valueStr + GuiBase.TXT_RST + " <";
+            return "> " + GuiBase.TXT_YELLOW + valueStr + GuiBase.TXT_RST + " <";
         }
         else
         {
@@ -129,11 +130,11 @@ public class ConfigButtonKeybind extends ButtonGeneric
 
             if (this.overlapInfo.size() > 0)
             {
-                this.displayString = GuiBase.TXT_GOLD + valueStr + GuiBase.TXT_RST;
+                return GuiBase.TXT_GOLD + valueStr + GuiBase.TXT_RST;
             }
             else
             {
-                this.displayString = valueStr;
+                return valueStr;
             }
         }
     }

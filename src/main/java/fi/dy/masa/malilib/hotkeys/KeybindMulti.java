@@ -11,23 +11,29 @@ import org.lwjgl.input.Mouse;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.settings.KeyBinding;
 import fi.dy.masa.malilib.IMinecraftAccessor;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.MaLiLibConfigs;
+import fi.dy.masa.malilib.config.values.HudAlignment;
+import fi.dy.masa.malilib.config.values.KeybindDisplayMode;
+import fi.dy.masa.malilib.gui.widgets.WidgetToast;
 import fi.dy.masa.malilib.hotkeys.KeybindSettings.Context;
 import fi.dy.masa.malilib.util.GuiUtils;
 import fi.dy.masa.malilib.util.InfoUtils;
 import fi.dy.masa.malilib.util.JsonUtils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.settings.KeyBinding;
+import fi.dy.masa.malilib.util.StringUtils;
 
 public class KeybindMulti implements IKeybind
 {
     private static List<Integer> pressedKeys = new ArrayList<>();
     private static int triggeredCount;
 
+    private final String name;
     private final String defaultStorageString;
     private final KeybindSettings defaultSettings;
+    private String modName = "";
     private List<Integer> keyCodes = new ArrayList<>(4);
     private KeybindSettings settings;
     private String lastSavedStorageString;
@@ -38,13 +44,20 @@ public class KeybindMulti implements IKeybind
     @Nullable
     private IHotkeyCallback callback;
 
-    private KeybindMulti(String defaultStorageString, KeybindSettings settings)
+    private KeybindMulti(String name, String defaultStorageString, KeybindSettings settings)
     {
+        this.name = name;
         this.defaultStorageString = defaultStorageString;
         this.defaultSettings = settings;
         this.settings = settings;
 
         this.cacheSavedValue();
+    }
+
+    @Override
+    public void setModName(String modName)
+    {
+        this.modName = modName;
     }
 
     @Override
@@ -164,16 +177,14 @@ public class KeybindMulti implements IKeybind
 
     private boolean triggerKeyAction(boolean pressedLast)
     {
-        boolean cancel = false;
-
         if (this.pressed == false)
         {
             this.heldTime = 0;
             KeyAction activateOn = this.settings.getActivateOn();
 
-            if (pressedLast && this.callback != null && (activateOn == KeyAction.RELEASE || activateOn == KeyAction.BOTH))
+            if (pressedLast && (activateOn == KeyAction.RELEASE || activateOn == KeyAction.BOTH))
             {
-                cancel = this.callback.onKeyAction(KeyAction.RELEASE, this);
+                return this.triggerKeyCallback(KeyAction.RELEASE);
             }
         }
         else if (pressedLast == false && this.heldTime == 0)
@@ -186,10 +197,43 @@ public class KeybindMulti implements IKeybind
 
             KeyAction activateOn = this.settings.getActivateOn();
 
-            if (this.callback != null && (activateOn == KeyAction.PRESS || activateOn == KeyAction.BOTH))
+            if (activateOn == KeyAction.PRESS || activateOn == KeyAction.BOTH)
             {
-                cancel = this.callback.onKeyAction(KeyAction.PRESS, this);
+                return this.triggerKeyCallback(KeyAction.PRESS);
             }
+        }
+
+        return false;
+    }
+
+    private boolean triggerKeyCallback(KeyAction action)
+    {
+        if (this.callback == null)
+        {
+            return this.settings.shouldCancel() && action == KeyAction.PRESS;
+        }
+
+        boolean cancel = this.callback.onKeyAction(action, this);
+        KeybindDisplayMode val = (KeybindDisplayMode) MaLiLibConfigs.Generic.KEYBIND_DISPLAY.getOptionListValue();
+
+        if (val != KeybindDisplayMode.NONE &&
+                (MaLiLibConfigs.Generic.KEYBIND_DISPLAY_CANCEL_ONLY.getBooleanValue() == false ||
+                 (cancel && this.settings.shouldCancel())))
+        {
+            List<String> lines = new ArrayList<>();
+
+            if (val == KeybindDisplayMode.KEYS || val == KeybindDisplayMode.KEYS_ACTIONS)
+            {
+                lines.add(StringUtils.translate("malilib.toast.keybind_display.keys", this.getKeysDisplayString()));
+            }
+
+            if (val == KeybindDisplayMode.ACTIONS || val == KeybindDisplayMode.KEYS_ACTIONS)
+            {
+                lines.add(StringUtils.translate("malilib.toast.keybind_display.action", this.modName, this.name));
+            }
+
+            HudAlignment align = (HudAlignment) MaLiLibConfigs.Generic.KEYBIND_DISPLAY_ALIGNMENT.getOptionListValue();
+            WidgetToast.updateOrAddToast(align, lines, MaLiLibConfigs.Generic.KEYBIND_DISPLAY_DURATION.getIntegerValue());
         }
 
         return cancel;
@@ -471,10 +515,10 @@ public class KeybindMulti implements IKeybind
         return obj;
     }
 
-    public static KeybindMulti fromStorageString(String str, KeybindSettings settings)
+    public static KeybindMulti fromStorageString(String name, String storageString, KeybindSettings settings)
     {
-        KeybindMulti keybind = new KeybindMulti(str, settings);
-        keybind.setValueFromString(str);
+        KeybindMulti keybind = new KeybindMulti(name, storageString, settings);
+        keybind.setValueFromString(storageString);
         return keybind;
     }
 

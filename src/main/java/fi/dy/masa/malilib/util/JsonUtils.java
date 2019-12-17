@@ -432,14 +432,19 @@ public class JsonUtils
         return null;
     }
 
-    public static boolean writeJsonToFile(JsonObject root, File file)
+    public static boolean writeJsonToFile(JsonElement root, File file)
+    {
+        return writeJsonToFile(GSON, root, file);
+    }
+
+    public static boolean writeJsonToFile(Gson gson, JsonElement root, File file)
     {
         FileWriter writer = null;
 
         try
         {
             writer = new FileWriter(file);
-            writer.write(GSON.toJson(root));
+            writer.write(gson.toJson(root));
             writer.close();
 
             return true;

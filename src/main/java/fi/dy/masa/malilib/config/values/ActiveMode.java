@@ -1,18 +1,18 @@
-package fi.dy.masa.malilib.util;
+package fi.dy.masa.malilib.config.values;
 
 import fi.dy.masa.malilib.config.IConfigOptionListEntry;
+import fi.dy.masa.malilib.util.StringUtils;
 
-public enum InfoType implements IConfigOptionListEntry
+public enum ActiveMode implements IConfigOptionListEntry
 {
-    NONE            ("none",    "malilib.label.info_type.none"),
-    CHAT            ("chat",    "malilib.label.info_type.chat"),
-    HOTBAR          ("hotbar",  "malilib.label.info_type.hotbar"),
-    MESSAGE_OVERLAY ("message", "malilib.label.info_type.message");
+    NEVER       ("never",       "malilib.label.active_mode.never"),
+    WITH_KEY    ("with_key",    "malilib.label.active_mode.with_key"),
+    ALWAYS      ("always",      "malilib.label.active_mode.always");
 
     private final String configString;
     private final String translationKey;
 
-    private InfoType(String configString, String translationKey)
+    private ActiveMode(String configString, String translationKey)
     {
         this.configString = configString;
         this.translationKey = translationKey;
@@ -54,21 +54,21 @@ public enum InfoType implements IConfigOptionListEntry
     }
 
     @Override
-    public InfoType fromString(String name)
+    public ActiveMode fromString(String name)
     {
         return fromStringStatic(name);
     }
 
-    public static InfoType fromStringStatic(String name)
+    public static ActiveMode fromStringStatic(String name)
     {
-        for (InfoType aligment : InfoType.values())
+        for (ActiveMode mode : ActiveMode.values())
         {
-            if (aligment.configString.equalsIgnoreCase(name))
+            if (mode.configString.equalsIgnoreCase(name))
             {
-                return aligment;
+                return mode;
             }
         }
 
-        return InfoType.MESSAGE_OVERLAY;
+        return ActiveMode.NEVER;
     }
 }

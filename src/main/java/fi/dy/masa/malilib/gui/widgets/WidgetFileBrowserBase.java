@@ -160,7 +160,7 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
 
     protected void addFilteredContents(File dir)
     {
-        String filterText = this.widgetSearchBar.getFilter().toLowerCase();
+        String filterText = this.getSearchBarWidget().getFilter().toLowerCase();
         List<DirectoryEntry> list = new ArrayList<>();
         this.addFilteredContents(dir, filterText, list, null);
         this.listContents.addAll(list);

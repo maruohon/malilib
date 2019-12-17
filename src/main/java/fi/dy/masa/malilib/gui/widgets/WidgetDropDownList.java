@@ -5,7 +5,6 @@ import java.util.List;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.MaLiLibIcons;
 import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
-import fi.dy.masa.malilib.gui.WidgetScrollBar;
 import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
 import fi.dy.masa.malilib.gui.wrappers.TextFieldWrapper;
 import fi.dy.masa.malilib.interfaces.IStringRetriever;
@@ -79,6 +78,9 @@ public class WidgetDropDownList<T> extends WidgetBase
     public void setPosition(int x, int y)
     {
         super.setPosition(x, y);
+
+        int scrollbarWidth = 8;
+        this.scrollBar.setPosition(x + this.width - scrollbarWidth - 1, y + this.height + 1);
 
         this.searchBar.getTextField().x = x + 1;
         this.searchBar.getTextField().y = y - 18;

@@ -3,6 +3,8 @@ package fi.dy.masa.malilib.util;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.AxisDirection;
+import net.minecraft.util.Mirror;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
@@ -66,6 +68,54 @@ public class PositionUtils
         }
 
         return valueIn;
+    }
+
+    public static Rotation cycleRotation(Rotation rotation, boolean reverse)
+    {
+        int ordinal = rotation.ordinal();
+
+        if (reverse)
+        {
+            ordinal = ordinal == 0 ? Rotation.values().length - 1 : ordinal - 1;
+        }
+        else
+        {
+            ordinal = ordinal >= Rotation.values().length - 1 ? 0 : ordinal + 1;
+        }
+
+        return Rotation.values()[ordinal];
+    }
+
+    public static Mirror cycleMirror(Mirror mirror, boolean reverse)
+    {
+        int ordinal = mirror.ordinal();
+
+        if (reverse)
+        {
+            ordinal = ordinal == 0 ? Mirror.values().length - 1 : ordinal - 1;
+        }
+        else
+        {
+            ordinal = ordinal >= Mirror.values().length - 1 ? 0 : ordinal + 1;
+        }
+
+        return Mirror.values()[ordinal];
+    }
+
+    public static EnumFacing cycleDirection(EnumFacing direction, boolean reverse)
+    {
+        int index = direction.getIndex();
+
+        if (reverse)
+        {
+            index = index == 0 ? 5 : index - 1;
+        }
+        else
+        {
+            index = index >= 5 ? 0 : index + 1;
+        }
+
+        return EnumFacing.byIndex(index);
     }
 
     /**

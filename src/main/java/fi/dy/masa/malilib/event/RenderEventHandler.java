@@ -2,10 +2,11 @@ package fi.dy.masa.malilib.event;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.item.ItemStack;
 import fi.dy.masa.malilib.interfaces.IRenderDispatcher;
 import fi.dy.masa.malilib.interfaces.IRenderer;
+import fi.dy.masa.malilib.render.ToastRenderer;
 import fi.dy.masa.malilib.util.InfoUtils;
-import net.minecraft.item.ItemStack;
 
 public class RenderEventHandler implements IRenderDispatcher
 {
@@ -61,6 +62,7 @@ public class RenderEventHandler implements IRenderDispatcher
         }
 
         InfoUtils.renderInGameMessages();
+        ToastRenderer.INSTANCE.render();
     }
 
     /**

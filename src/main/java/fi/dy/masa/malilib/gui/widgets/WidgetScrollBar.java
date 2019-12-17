@@ -1,8 +1,8 @@
-package fi.dy.masa.malilib.gui;
+package fi.dy.masa.malilib.gui.widgets;
 
 import javax.annotation.Nullable;
+import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
-import fi.dy.masa.malilib.gui.widgets.WidgetBase;
 import fi.dy.masa.malilib.render.RenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.math.MathHelper;
