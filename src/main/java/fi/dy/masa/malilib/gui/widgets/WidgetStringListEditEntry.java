@@ -306,18 +306,18 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
 
     private enum ButtonType
     {
-        ADD         (MaLiLibIcons.PLUS,         "malilib.gui.button.hovertext.add"),
-        REMOVE      (MaLiLibIcons.MINUS,        "malilib.gui.button.hovertext.remove"),
-        MOVE_UP     (MaLiLibIcons.ARROW_UP,     "malilib.gui.button.hovertext.move_up"),
-        MOVE_DOWN   (MaLiLibIcons.ARROW_DOWN,   "malilib.gui.button.hovertext.move_down");
+        ADD         (MaLiLibIcons.PLUS,         "malilib.gui.button.hover.list.add_after"),
+        REMOVE      (MaLiLibIcons.MINUS,        "malilib.gui.button.hover.list.remove"),
+        MOVE_UP     (MaLiLibIcons.ARROW_UP,     "malilib.gui.button.hover.list.move_up"),
+        MOVE_DOWN   (MaLiLibIcons.ARROW_DOWN,   "malilib.gui.button.hover.list.move_down");
 
         private final MaLiLibIcons icon;
-        private final String hoverTextkey;
+        private final String translationKey;
 
-        private ButtonType(MaLiLibIcons icon, String hoverTextkey)
+        private ButtonType(MaLiLibIcons icon, String translationKey)
         {
             this.icon = icon;
-            this.hoverTextkey = hoverTextkey;
+            this.translationKey = translationKey;
         }
 
         public IGuiIcon getIcon()
@@ -327,7 +327,7 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
 
         public String getDisplayName()
         {
-            return StringUtils.translate(this.hoverTextkey);
+            return StringUtils.translate(this.translationKey);
         }
     }
 }
