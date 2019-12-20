@@ -985,7 +985,7 @@ public class RenderUtils
                 break;
         }
 
-        matrixStack.translate(-x, -y, -z + 0.501);
+        matrixStack.translate(-x, -y, -z + 0.505);
     }
 
     public static void renderMapPreview(ItemStack stack, int x, int y, int dimensions)
