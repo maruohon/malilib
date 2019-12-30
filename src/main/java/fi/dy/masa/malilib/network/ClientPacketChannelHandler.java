@@ -1,10 +1,10 @@
 package fi.dy.masa.malilib.network;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 import com.google.common.base.Charsets;
+import com.google.common.collect.ArrayListMultimap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.network.PacketBuffer;
@@ -22,7 +22,7 @@ public class ClientPacketChannelHandler implements IClientPacketChannelHandler
 
     private static final ClientPacketChannelHandler INSTANCE = new ClientPacketChannelHandler();
 
-    private final HashMap<ResourceLocation, IPluginChannelHandler> handlers;
+    private final ArrayListMultimap<ResourceLocation, IPluginChannelHandler> handlers = ArrayListMultimap.create();
 
     public static IClientPacketChannelHandler getInstance()
     {
@@ -31,7 +31,6 @@ public class ClientPacketChannelHandler implements IClientPacketChannelHandler
 
     private ClientPacketChannelHandler()
     {
-        this.handlers = new HashMap<>();
     }
 
     @Override
@@ -41,7 +40,7 @@ public class ClientPacketChannelHandler implements IClientPacketChannelHandler
 
         for (ResourceLocation channel : handler.getChannels())
         {
-            if (this.handlers.containsKey(channel) == false)
+            if (this.handlers.containsEntry(channel, handler) == false)
             {
                 this.handlers.put(channel, handler);
                 toRegister.add(channel);
@@ -79,16 +78,21 @@ public class ClientPacketChannelHandler implements IClientPacketChannelHandler
     public boolean processPacketFromServer(SPacketCustomPayload packet, NetHandlerPlayClient netHandler)
     {
         ResourceLocation channel = new ResourceLocation(packet.getChannelName());
-        IPluginChannelHandler handler = this.handlers.get(channel);
+        List<IPluginChannelHandler> handlers = this.handlers.get(channel);
 
-        if (handler != null)
+        if (handlers.isEmpty() == false)
         {
             PacketBuffer buf = PacketSplitter.receive(netHandler, packet);
 
             // Finished the complete packet
             if (buf != null)
             {
-                handler.onPacketReceived(buf);
+                for (IPluginChannelHandler handler : handlers)
+                {
+                    buf.readerIndex(0);
+                    handler.onPacketReceived(buf);
+                    buf.readerIndex(0);
+                }
             }
 
             return true;
