@@ -18,7 +18,14 @@ public interface IConfigHandler
      */
     default File getConfigDirectory()
     {
-        return FileUtils.getConfigDirectory();
+        File dir = FileUtils.getConfigDirectory();
+
+        if (dir.exists() == false && dir.mkdirs() == false)
+        {
+            LiteModMaLiLib.logger.warn("Failed to create config directory '{}'", dir.getAbsolutePath());
+        }
+
+        return dir;
     }
 
     /**
