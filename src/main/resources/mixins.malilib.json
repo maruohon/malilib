@@ -7,6 +7,7 @@
         "MixinEntityRenderer",
         "MixinGuiScreen",
         "MixinMinecraft",
+        "MixinNetHandlerPlayClient",
         "MixinTabCompleter"
     ],
     "injectors": {
