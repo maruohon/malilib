@@ -3,6 +3,78 @@ package fi.dy.masa.malilib.util;
 public class MathUtils
 {
     /**
+     * Returns the average value of the elements in the given array
+     * @param arr
+     * @return
+     */
+    public static double average(int[] arr)
+    {
+        final int size = arr.length;
+
+        if (size == 0)
+        {
+            return 0;
+        }
+
+        long sum = 0;
+
+        for (int i = 0; i < size; ++i)
+        {
+            sum += arr[i];
+        }
+
+        return (double) sum / (double) size;
+    }
+
+    /**
+     * Returns the average value of the elements in the given array
+     * @param arr
+     * @return
+     */
+    public static double average(long[] arr)
+    {
+        final int size = arr.length;
+
+        if (size == 0)
+        {
+            return 0;
+        }
+
+        long sum = 0;
+
+        for (int i = 0; i < size; ++i)
+        {
+            sum += arr[i];
+        }
+
+        return (double) sum / (double) size;
+    }
+
+    /**
+     * Returns the average value of the elements in the given array
+     * @param arr
+     * @return
+     */
+    public static double average(double[] arr)
+    {
+        final int size = arr.length;
+
+        if (size == 0)
+        {
+            return 0;
+        }
+
+        double sum = 0;
+
+        for (int i = 0; i < size; ++i)
+        {
+            sum += arr[i];
+        }
+
+        return sum / (double) size;
+    }
+
+    /**
      * Returns the minimum value from the given array
      * @param arr
      * @return
