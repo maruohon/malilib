@@ -125,19 +125,19 @@ public class DataDump
 
     public void addHeader(String... data)
     {
-        //this.checkData(data);
+        this.checkHeaderData(data);
         this.headers.add(new Row(data));
     }
 
     public void addHeader(int index, String... data)
     {
-        //this.checkData(data);
+        this.checkHeaderData(data);
         this.headers.add(index, new Row(data));
     }
 
     public void addFooter(String... data)
     {
-        //this.checkData(data);
+        this.checkHeaderData(data);
         this.footers.add(new Row(data));
     }
 
