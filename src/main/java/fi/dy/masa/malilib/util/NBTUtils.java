@@ -1,8 +1,12 @@
 package fi.dy.masa.malilib.util;
 
+import java.io.File;
+import java.io.FileInputStream;
 import javax.annotation.Nullable;
+import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagDouble;
+import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -24,6 +28,19 @@ public class NBTUtils
     }
 
     @Nullable
+    public static NBTTagCompound writeBlockPosToListTag(Vec3i pos, NBTTagCompound tag, String tagName)
+    {
+        NBTTagList tagList = new NBTTagList();
+
+        tagList.appendTag(new NBTTagInt(pos.getX()));
+        tagList.appendTag(new NBTTagInt(pos.getY()));
+        tagList.appendTag(new NBTTagInt(pos.getZ()));
+        tag.setTag(tagName, tagList);
+
+        return tag;
+    }
+
+    @Nullable
     public static BlockPos readBlockPos(@Nullable NBTTagCompound tag)
     {
         if (tag != null &&
@@ -32,6 +49,22 @@ public class NBTUtils
             tag.hasKey("z", Constants.NBT.TAG_INT))
         {
             return new BlockPos(tag.getInteger("x"), tag.getInteger("y"), tag.getInteger("z"));
+        }
+
+        return null;
+    }
+
+    @Nullable
+    public static BlockPos readBlockPosFromListTag(@Nullable NBTTagCompound tag, String tagName)
+    {
+        if (tag != null && tag.hasKey(tagName, Constants.NBT.TAG_LIST))
+        {
+            NBTTagList tagList = tag.getTagList(tagName, Constants.NBT.TAG_INT);
+
+            if (tagList.tagCount() == 3)
+            {
+                return new BlockPos(tagList.getIntAt(0), tagList.getIntAt(1), tagList.getIntAt(2));
+            }
         }
 
         return null;
@@ -82,6 +115,29 @@ public class NBTUtils
             {
                 return new Vec3d(tagList.getDoubleAt(0), tagList.getDoubleAt(1), tagList.getDoubleAt(2));
             }
+        }
+
+        return null;
+    }
+
+    @Nullable
+    public static NBTTagCompound readNbtFromFile(File file)
+    {
+        if (file.exists() == false || file.canRead() == false)
+        {
+            return null;
+        }
+
+        try
+        {
+            FileInputStream is = new FileInputStream(file);
+            NBTTagCompound nbt = CompressedStreamTools.readCompressed(is);
+            is.close();
+
+            return nbt;
+        }
+        catch (Exception e)
+        {
         }
 
         return null;
