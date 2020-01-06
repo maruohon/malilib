@@ -14,6 +14,7 @@ public class WidgetDirectoryEntry extends WidgetListEntryBase<DirectoryEntry>
     protected final IDirectoryNavigator navigator;
     protected final DirectoryEntry entry;
     protected final IFileBrowserIconProvider iconProvider;
+    protected final IGuiIcon icon;
     protected final boolean isOdd;
 
     public WidgetDirectoryEntry(int x, int y, int width, int height, boolean isOdd, DirectoryEntry entry,
@@ -25,6 +26,15 @@ public class WidgetDirectoryEntry extends WidgetListEntryBase<DirectoryEntry>
         this.entry = entry;
         this.navigator = navigator;
         this.iconProvider = iconProvider;
+
+        if (this.entry.getType() == DirectoryEntryType.DIRECTORY)
+        {
+            this.icon = this.iconProvider.getIconDirectory();
+        }
+        else
+        {
+            this.icon = this.iconProvider.getIconForFile(this.entry.getFullPath());
+        }
     }
 
     public DirectoryEntry getDirectoryEntry()
@@ -50,17 +60,7 @@ public class WidgetDirectoryEntry extends WidgetListEntryBase<DirectoryEntry>
     @Override
     public void render(int mouseX, int mouseY, boolean selected)
     {
-        IGuiIcon icon = null;
-
-        switch (this.entry.getType())
-        {
-            case DIRECTORY:
-                icon = this.iconProvider.getIconDirectory();
-                break;
-
-            default:
-                icon = this.iconProvider.getIconForFile(this.entry.getFullPath());
-        }
+        IGuiIcon icon = this.icon;
 
         int iconWidth = icon != null ? icon.getWidth() : 0;
         int xOffset = iconWidth + 2;
