@@ -41,6 +41,16 @@ public class NBTUtils
     }
 
     @Nullable
+    public static NBTTagCompound writeBlockPosToArrayTag(Vec3i pos, NBTTagCompound tag, String tagName)
+    {
+        int[] arr = new int[] { pos.getX(), pos.getY(), pos.getZ() };
+
+        tag.setIntArray(tagName, arr);
+
+        return tag;
+    }
+
+    @Nullable
     public static BlockPos readBlockPos(@Nullable NBTTagCompound tag)
     {
         if (tag != null &&
@@ -55,15 +65,31 @@ public class NBTUtils
     }
 
     @Nullable
-    public static BlockPos readBlockPosFromListTag(@Nullable NBTTagCompound tag, String tagName)
+    public static BlockPos readBlockPosFromListTag(NBTTagCompound tag, String tagName)
     {
-        if (tag != null && tag.hasKey(tagName, Constants.NBT.TAG_LIST))
+        if (tag.hasKey(tagName, Constants.NBT.TAG_LIST))
         {
             NBTTagList tagList = tag.getTagList(tagName, Constants.NBT.TAG_INT);
 
             if (tagList.tagCount() == 3)
             {
                 return new BlockPos(tagList.getIntAt(0), tagList.getIntAt(1), tagList.getIntAt(2));
+            }
+        }
+
+        return null;
+    }
+
+    @Nullable
+    public static BlockPos readBlockPosFromArrayTag(NBTTagCompound tag, String tagName)
+    {
+        if (tag.hasKey(tagName, Constants.NBT.TAG_INT_ARRAY))
+        {
+            int[] pos = tag.getIntArray("Pos");
+
+            if (pos.length == 3)
+            {
+                return new BlockPos(pos[0], pos[1], pos[2]);
             }
         }
 

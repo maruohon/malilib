@@ -1,14 +1,15 @@
 package fi.dy.masa.malilib.util;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.text.ChatType;
+import net.minecraft.util.text.TextComponentTranslation;
+import fi.dy.masa.malilib.LiteModMaLiLib;
 import fi.dy.masa.malilib.config.values.InfoType;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.Message.MessageType;
 import fi.dy.masa.malilib.gui.interfaces.IMessageConsumer;
 import fi.dy.masa.malilib.interfaces.IStringConsumer;
 import fi.dy.masa.malilib.render.MessageRenderer;
-import net.minecraft.client.Minecraft;
-import net.minecraft.util.text.ChatType;
-import net.minecraft.util.text.TextComponentTranslation;
 
 public class InfoUtils
 {
@@ -191,6 +192,18 @@ public class InfoUtils
         {
             IN_GAME_MESSAGES.addMessage(type, lifeTime, translationKey, args);
         }
+    }
+
+    /**
+     * Prints an error message both to the in-game or GUI messages, and to the game console
+     * @param translationKey
+     * @param args
+     */
+    public static void printErrorMessage(String translationKey, Object... args)
+    {
+        String msg = StringUtils.translate(translationKey, args);
+        showGuiOrInGameMessage(MessageType.ERROR, msg);
+        LiteModMaLiLib.logger.error(msg);
     }
 
     public static void printBooleanConfigToggleMessage(String prettyName, boolean newValue)
