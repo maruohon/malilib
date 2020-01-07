@@ -53,7 +53,7 @@ public class WidgetDirectoryEntry extends WidgetListEntryBase<DirectoryEntry>
     {
         @Nullable IGuiIcon icon = this.iconProvider.getIconForEntry(this.entry);
 
-        int iconWidth = icon != null ? icon.getWidth() : 0;
+        int iconWidth = this.iconProvider.getEntryIconWidth(this.entry);
         int xOffset = iconWidth + 2;
 
         if (icon != null)

@@ -45,6 +45,23 @@ public interface IFileBrowserIconProvider
     }
 
     /**
+     * Returns the expected width of the icons, for proper text alignment
+     * @param entry
+     * @return
+     */
+    default int getEntryIconWidth(DirectoryEntry entry)
+    {
+        IGuiIcon icon = this.getIconForEntry(entry);
+
+        if (icon != null)
+        {
+            return icon.getWidth();
+        }
+
+        return 0;
+    }
+
+    /**
      * Returns the icon for a directory
      * @return
      */
