@@ -32,6 +32,23 @@ public class StringUtils
     }
 
     /**
+     * Removes the string <b>extension</b> from the end of <b>str</b>,
+     * if <b>str</b> ends in <b>extension</b>
+     * @param str
+     * @param extension
+     * @return
+     */
+    public static String stripExtensionIfMatches(String str, String extension)
+    {
+        if (str.endsWith(extension) && str.length() > extension.length())
+        {
+            return str.substring(0, str.length() - extension.length());
+        }
+
+        return str;
+    }
+
+    /**
      * Splits the given camel-case string into parts separated by a space
      * @param str
      * @return
