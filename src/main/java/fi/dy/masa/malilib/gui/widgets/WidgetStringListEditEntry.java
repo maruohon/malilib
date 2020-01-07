@@ -3,7 +3,6 @@ package fi.dy.masa.malilib.gui.widgets;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.gui.GuiTextField;
-import fi.dy.masa.malilib.MaLiLibIcons;
 import fi.dy.masa.malilib.config.options.IConfigStringList;
 import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
@@ -11,6 +10,7 @@ import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.gui.listener.ConfigOptionChangeListenerTextField;
+import fi.dy.masa.malilib.gui.util.GuiIconBase;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 
@@ -131,7 +131,7 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
         }
     }
 
-    private void insertEntry(boolean before)
+    protected void insertEntry(boolean before)
     {
         IConfigStringList config = this.parent.getParent().getConfig();
         List<String> list = config.getStrings();
@@ -158,7 +158,7 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
         return Math.max(0, Math.min(size, index));
     }
 
-    private void removeEntry()
+    protected void removeEntry()
     {
         IConfigStringList config = this.parent.getParent().getConfig();
         List<String> list = new ArrayList<>(config.getStrings());
@@ -174,7 +174,7 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
         }
     }
 
-    private void moveEntry(boolean down)
+    protected void moveEntry(boolean down)
     {
         IConfigStringList config = this.parent.getParent().getConfig();
         List<String> list = new ArrayList<>(config.getStrings());
@@ -210,7 +210,7 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
         }
     }
 
-    private boolean canBeMoved(boolean down)
+    protected boolean canBeMoved(boolean down)
     {
         final int size = this.parent.getParent().getConfig().getStrings().size();
         return (this.listIndex >= 0 && this.listIndex < size) &&
@@ -256,10 +256,10 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
         }
     }
 
-    private static class ListenerResetConfig implements IButtonActionListener
+    protected static class ListenerResetConfig implements IButtonActionListener
     {
-        private final WidgetStringListEditEntry parent;
-        private final ButtonGeneric buttonReset;
+        protected final WidgetStringListEditEntry parent;
+        protected final ButtonGeneric buttonReset;
 
         public ListenerResetConfig(ButtonGeneric buttonReset, WidgetStringListEditEntry parent)
         {
@@ -275,10 +275,10 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
         }
     }
 
-    private static class ListenerListActions implements IButtonActionListener
+    protected static class ListenerListActions implements IButtonActionListener
     {
-        private final ButtonType type;
-        private final WidgetStringListEditEntry parent;
+        protected final ButtonType type;
+        protected final WidgetStringListEditEntry parent;
 
         public ListenerListActions(ButtonType type, WidgetStringListEditEntry parent)
         {
@@ -304,17 +304,17 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
         }
     }
 
-    private enum ButtonType
+    protected enum ButtonType
     {
-        ADD         (MaLiLibIcons.PLUS,         "malilib.gui.button.hover.list.add_after"),
-        REMOVE      (MaLiLibIcons.MINUS,        "malilib.gui.button.hover.list.remove"),
-        MOVE_UP     (MaLiLibIcons.ARROW_UP,     "malilib.gui.button.hover.list.move_up"),
-        MOVE_DOWN   (MaLiLibIcons.ARROW_DOWN,   "malilib.gui.button.hover.list.move_down");
+        ADD         (GuiIconBase.PLUS,         "malilib.gui.button.hover.list.add_after"),
+        REMOVE      (GuiIconBase.MINUS,        "malilib.gui.button.hover.list.remove"),
+        MOVE_UP     (GuiIconBase.ARROW_UP,     "malilib.gui.button.hover.list.move_up"),
+        MOVE_DOWN   (GuiIconBase.ARROW_DOWN,   "malilib.gui.button.hover.list.move_down");
 
-        private final MaLiLibIcons icon;
-        private final String translationKey;
+        protected final GuiIconBase icon;
+        protected final String translationKey;
 
-        private ButtonType(MaLiLibIcons icon, String translationKey)
+        private ButtonType(GuiIconBase icon, String translationKey)
         {
             this.icon = icon;
             this.translationKey = translationKey;

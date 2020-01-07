@@ -1,7 +1,11 @@
-package fi.dy.masa.malilib.util;
+package fi.dy.masa.malilib.gui.util;
 
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.MaLiLibIcons;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.GuiTextFieldDouble;
 import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
@@ -12,11 +16,7 @@ import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
 import fi.dy.masa.malilib.interfaces.ICoordinateValueModifier;
 import fi.dy.masa.malilib.util.PositionUtils.CoordinateType;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import fi.dy.masa.malilib.util.StringUtils;
 
 public class GuiUtils
 {
@@ -94,7 +94,7 @@ public class GuiUtils
         if (addButton)
         {
             String hover = StringUtils.translate("malilib.gui.button.hover.plus_minus_tip");
-            ButtonGeneric button = new ButtonGeneric(x, y, MaLiLibIcons.BTN_PLUSMINUS_16, hover);
+            ButtonGeneric button = new ButtonGeneric(x, y, GuiIconBase.BTN_PLUSMINUS_16, hover);
             gui.addButton(button, new ButtonListenerCoordinateInput(type, modifier));
         }
     }

@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.gui;
+package fi.dy.masa.malilib.gui.util;
 
 import fi.dy.masa.malilib.gui.GuiConfigsBase.ConfigOptionWrapper;
 import fi.dy.masa.malilib.gui.interfaces.IConfigInfoProvider;

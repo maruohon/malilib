@@ -2,8 +2,8 @@ package fi.dy.masa.malilib.util;
 
 import java.io.File;
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.gui.Message.MessageType;
 import fi.dy.masa.malilib.gui.interfaces.IDirectoryNavigator;
+import fi.dy.masa.malilib.gui.util.Message.MessageType;
 import fi.dy.masa.malilib.interfaces.IStringConsumerFeedback;
 
 public class DirectoryCreator implements IStringConsumerFeedback

@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.gui;
 
-import fi.dy.masa.malilib.util.GuiUtils;
+import fi.dy.masa.malilib.gui.util.GuiUtils;
 
 public class GuiDialogBase extends GuiBase
 {

@@ -2,8 +2,8 @@ package fi.dy.masa.malilib.render;
 
 import java.util.ArrayList;
 import java.util.List;
-import fi.dy.masa.malilib.gui.Message;
-import fi.dy.masa.malilib.gui.Message.MessageType;
+import fi.dy.masa.malilib.gui.util.Message;
+import fi.dy.masa.malilib.gui.util.Message.MessageType;
 
 public class MessageRenderer
 {

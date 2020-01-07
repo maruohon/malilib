@@ -11,9 +11,9 @@ import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.MathHelper;
-import fi.dy.masa.malilib.MaLiLibIcons;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
+import fi.dy.masa.malilib.gui.util.GuiIconBase;
 import fi.dy.masa.malilib.render.RenderUtils;
 
 public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TYPE>> extends GuiBase
@@ -55,7 +55,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
 
         // The positions gets updated in setSize()
         this.scrollBar = new WidgetScrollBar(0, 0, 8, height);
-        this.scrollBar.setArrowTextures(MaLiLibIcons.SMALL_ARROW_UP, MaLiLibIcons.SMALL_ARROW_DOWN);
+        this.scrollBar.setArrowTextures(GuiIconBase.SMALL_ARROW_UP, GuiIconBase.SMALL_ARROW_DOWN);
 
         this.setSize(width, height);
     }

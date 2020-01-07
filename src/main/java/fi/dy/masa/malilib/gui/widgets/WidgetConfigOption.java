@@ -3,7 +3,6 @@ package fi.dy.masa.malilib.gui.widgets;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.gui.GuiScreen;
-import fi.dy.masa.malilib.MaLiLibIcons;
 import fi.dy.masa.malilib.config.ConfigType;
 import fi.dy.masa.malilib.config.gui.SliderCallbackDouble;
 import fi.dy.masa.malilib.config.gui.SliderCallbackInteger;
@@ -36,11 +35,12 @@ import fi.dy.masa.malilib.gui.listener.ConfigOptionChangeListenerTextField;
 import fi.dy.masa.malilib.gui.listener.ConfigOptionListenerResetConfig;
 import fi.dy.masa.malilib.gui.listener.ConfigOptionListenerResetConfig.ConfigResetterButton;
 import fi.dy.masa.malilib.gui.listener.ConfigOptionListenerResetConfig.ConfigResetterTextField;
+import fi.dy.masa.malilib.gui.util.GuiIconBase;
+import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.hotkeys.IHotkey;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
 import fi.dy.masa.malilib.hotkeys.KeybindSettings;
 import fi.dy.masa.malilib.render.RenderUtils;
-import fi.dy.masa.malilib.util.GuiUtils;
 
 public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapper>
 {
@@ -181,7 +181,7 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
 
             if (type != ConfigType.COLOR && (config instanceof IConfigSlider))
             {
-                IGuiIcon icon = ((IConfigSlider) config).shouldUseSlider() ? MaLiLibIcons.BTN_TXTFIELD : MaLiLibIcons.BTN_SLIDER;
+                IGuiIcon icon = ((IConfigSlider) config).shouldUseSlider() ? GuiIconBase.BTN_TXTFIELD : GuiIconBase.BTN_SLIDER;
                 ButtonGeneric toggleBtn = new ButtonGeneric(this.colorDisplayPosX, y + 2, icon);
                 this.addButton(toggleBtn, new ListenerSliderToggle((IConfigSlider) config));
             }

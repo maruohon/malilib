@@ -2,7 +2,7 @@ package fi.dy.masa.malilib.command;
 
 import java.util.List;
 import fi.dy.masa.malilib.LiteModMaLiLib;
-import fi.dy.masa.malilib.util.GuiUtils;
+import fi.dy.masa.malilib.gui.util.GuiUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.command.CommandHandler;

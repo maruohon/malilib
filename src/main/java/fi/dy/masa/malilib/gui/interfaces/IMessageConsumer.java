@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.gui.interfaces;
 
-import fi.dy.masa.malilib.gui.Message.MessageType;
+import fi.dy.masa.malilib.gui.util.Message.MessageType;
 
 public interface IMessageConsumer
 {

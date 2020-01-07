@@ -3,14 +3,14 @@ package fi.dy.masa.malilib.gui.widgets;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.MaLiLibIcons;
 import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
 import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
+import fi.dy.masa.malilib.gui.util.GuiIconBase;
+import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.wrappers.TextFieldWrapper;
 import fi.dy.masa.malilib.interfaces.IStringRetriever;
 import fi.dy.masa.malilib.interfaces.IStringValue;
 import fi.dy.masa.malilib.render.RenderUtils;
-import fi.dy.masa.malilib.util.GuiUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 
@@ -65,7 +65,7 @@ public class WidgetDropDownList<T> extends WidgetBase
         int scrollbarHeight = this.maxVisibleEntries * height;
         this.scrollBar = new WidgetScrollBar(x + width - scrollbarWidth - 1, y + height + 1, scrollbarWidth, scrollbarHeight);
         this.scrollBar.setMaxValue(entries.size() - this.maxVisibleEntries);
-        this.scrollBar.setArrowTextures(MaLiLibIcons.SMALL_ARROW_UP, MaLiLibIcons.SMALL_ARROW_DOWN);
+        this.scrollBar.setArrowTextures(GuiIconBase.SMALL_ARROW_UP, GuiIconBase.SMALL_ARROW_DOWN);
 
         TextFieldListener listener = new TextFieldListener(this);
         this.searchBar = new TextFieldWrapper<>(new GuiTextFieldGeneric(x + 1, y - 18, this.width - 2, 16, this.textRenderer), listener);
@@ -297,8 +297,8 @@ public class WidgetDropDownList<T> extends WidgetBase
         }
         else
         {
-            this.bindTexture(MaLiLibIcons.TEXTURE);
-            MaLiLibIcons i = MaLiLibIcons.ARROW_DOWN;
+            this.bindTexture(GuiIconBase.MALILIB_GUI_TEXTURES);
+            GuiIconBase i = GuiIconBase.ARROW_DOWN;
             RenderUtils.drawTexturedRect(this.x + this.width - 16, this.y + 2, i.getU() + i.getWidth(), i.getV(), i.getWidth(), i.getHeight());
         }
 

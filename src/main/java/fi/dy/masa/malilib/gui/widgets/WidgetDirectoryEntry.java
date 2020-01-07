@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.gui.widgets;
 
 import java.io.File;
+import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.interfaces.IDirectoryNavigator;
 import fi.dy.masa.malilib.gui.interfaces.IFileBrowserIconProvider;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
@@ -14,7 +15,6 @@ public class WidgetDirectoryEntry extends WidgetListEntryBase<DirectoryEntry>
     protected final IDirectoryNavigator navigator;
     protected final DirectoryEntry entry;
     protected final IFileBrowserIconProvider iconProvider;
-    protected final IGuiIcon icon;
     protected final boolean isOdd;
 
     public WidgetDirectoryEntry(int x, int y, int width, int height, boolean isOdd, DirectoryEntry entry,
@@ -26,15 +26,6 @@ public class WidgetDirectoryEntry extends WidgetListEntryBase<DirectoryEntry>
         this.entry = entry;
         this.navigator = navigator;
         this.iconProvider = iconProvider;
-
-        if (this.entry.getType() == DirectoryEntryType.DIRECTORY)
-        {
-            this.icon = this.iconProvider.getIconDirectory();
-        }
-        else
-        {
-            this.icon = this.iconProvider.getIconForFile(this.entry.getFullPath());
-        }
     }
 
     public DirectoryEntry getDirectoryEntry()
@@ -60,15 +51,13 @@ public class WidgetDirectoryEntry extends WidgetListEntryBase<DirectoryEntry>
     @Override
     public void render(int mouseX, int mouseY, boolean selected)
     {
-        IGuiIcon icon = this.icon;
+        @Nullable IGuiIcon icon = this.iconProvider.getIconForEntry(this.entry);
 
         int iconWidth = icon != null ? icon.getWidth() : 0;
         int xOffset = iconWidth + 2;
 
         if (icon != null)
         {
-            RenderUtils.color(1f, 1f, 1f, 1f);
-            this.bindTexture(icon.getTexture());
             icon.renderAt(this.x, this.y + (this.height - icon.getHeight()) / 2, this.zLevel + 1, false, false);
         }
 

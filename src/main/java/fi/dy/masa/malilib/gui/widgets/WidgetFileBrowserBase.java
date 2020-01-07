@@ -13,6 +13,7 @@ import fi.dy.masa.malilib.gui.interfaces.IDirectoryCache;
 import fi.dy.masa.malilib.gui.interfaces.IDirectoryNavigator;
 import fi.dy.masa.malilib.gui.interfaces.IFileBrowserIconProvider;
 import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
+import fi.dy.masa.malilib.gui.util.FileBrowserIconProviderBase;
 import fi.dy.masa.malilib.gui.widgets.WidgetFileBrowserBase.DirectoryEntry;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.FileUtils;
@@ -23,21 +24,20 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     protected final IDirectoryCache cache;
-    protected File currentDirectory;
     protected final String browserContext;
-    protected final IFileBrowserIconProvider iconProvider;
+    protected final IFileBrowserIconProvider iconProvider = new FileBrowserIconProviderBase();
+    protected File currentDirectory;
     @Nullable protected WidgetDirectoryNavigation directoryNavigationWidget;
 
     public WidgetFileBrowserBase(int x, int y, int width, int height,
             IDirectoryCache cache, String browserContext, File defaultDirectory,
-            @Nullable ISelectionListener<DirectoryEntry> selectionListener, IFileBrowserIconProvider iconProvider)
+            @Nullable ISelectionListener<DirectoryEntry> selectionListener)
     {
         super(x, y, width, height, selectionListener);
 
         this.cache = cache;
         this.browserContext = browserContext;
         this.currentDirectory = this.cache.getCurrentDirectoryForContext(this.browserContext);
-        this.iconProvider = iconProvider;
         this.allowKeyboardNavigation = true;
 
         if (this.currentDirectory == null)
@@ -83,6 +83,11 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
         this.drawAdditionalContents(mouseX, mouseY);
     }
 
+    protected IFileBrowserIconProvider getIconProvider()
+    {
+        return this.iconProvider;
+    }
+
     protected void drawAdditionalContents(int mouseX, int mouseY)
     {
     }
@@ -107,7 +112,7 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
         int y = this.posY + 4;
 
         this.directoryNavigationWidget = new WidgetDirectoryNavigation(x, y, this.browserEntryWidth, 14,
-                this.currentDirectory, this.getRootDirectory(), this, this.iconProvider);
+                this.currentDirectory, this.getRootDirectory(), this, this.getIconProvider());
         this.browserEntriesOffsetY = this.directoryNavigationWidget.getHeight() + 3;
         this.widgetSearchBar = this.directoryNavigationWidget;
 
@@ -236,7 +241,7 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
     protected WidgetDirectoryEntry createListEntryWidget(int x, int y, int listIndex, boolean isOdd, DirectoryEntry entry)
     {
         return new WidgetDirectoryEntry(x, y, this.browserEntryWidth, this.getBrowserEntryHeightFor(entry),
-                isOdd, entry, listIndex, this, this.iconProvider);
+                isOdd, entry, listIndex, this, this.getIconProvider());
     }
 
     protected boolean currentDirectoryIsRoot()

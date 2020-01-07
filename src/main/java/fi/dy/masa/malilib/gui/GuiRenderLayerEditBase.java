@@ -1,6 +1,5 @@
 package fi.dy.masa.malilib.gui;
 
-import fi.dy.masa.malilib.MaLiLibIcons;
 import fi.dy.masa.malilib.config.values.LayerMode;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
@@ -8,6 +7,7 @@ import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
 import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
+import fi.dy.masa.malilib.gui.util.GuiIconBase;
 import fi.dy.masa.malilib.gui.widgets.WidgetCheckBox;
 import fi.dy.masa.malilib.util.LayerRange;
 import fi.dy.masa.malilib.util.StringUtils;
@@ -23,7 +23,7 @@ public abstract class GuiRenderLayerEditBase extends GuiBase
 
     protected IGuiIcon getValueAdjustButtonIcon()
     {
-        return MaLiLibIcons.BTN_PLUSMINUS_16;
+        return GuiIconBase.BTN_PLUSMINUS_16;
     }
 
     protected void createLayerEditControls(int x, int y, LayerRange layerRange)

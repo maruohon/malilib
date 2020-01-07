@@ -1,7 +1,8 @@
-package fi.dy.masa.malilib.gui;
+package fi.dy.masa.malilib.gui.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class Message
