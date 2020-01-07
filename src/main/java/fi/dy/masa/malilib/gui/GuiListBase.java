@@ -2,11 +2,11 @@ package fi.dy.masa.malilib.gui;
 
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
 import fi.dy.masa.malilib.gui.widgets.WidgetListBase;
 import fi.dy.masa.malilib.gui.widgets.WidgetListEntryBase;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
 
 public abstract class GuiListBase<TYPE, WIDGET extends WidgetListEntryBase<TYPE>, WIDGETLIST extends WidgetListBase<TYPE, WIDGET>> extends GuiBase
 {
@@ -60,7 +60,7 @@ public abstract class GuiListBase<TYPE, WIDGET extends WidgetListEntryBase<TYPE>
 
     protected void reCreateListWidget()
     {
-        this.widget = this.createListWidget(this.listX, this.listY);
+        this.widget = this.createListWidget(this.getListX(), this.getListY());
     }
 
     public boolean isSearchOpen()
