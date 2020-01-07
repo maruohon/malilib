@@ -3,7 +3,11 @@ package fi.dy.masa.malilib.gui.widgets;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
+import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
+import fi.dy.masa.malilib.gui.interfaces.IIconProvider;
 import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
 import fi.dy.masa.malilib.gui.util.GuiIconBase;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
@@ -11,8 +15,6 @@ import fi.dy.masa.malilib.gui.wrappers.TextFieldWrapper;
 import fi.dy.masa.malilib.interfaces.IStringRetriever;
 import fi.dy.masa.malilib.interfaces.IStringValue;
 import fi.dy.masa.malilib.render.RenderUtils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
 
 /**
  * A dropdown selection widget for entries in the given list.
@@ -24,16 +26,18 @@ import net.minecraft.client.renderer.GlStateManager;
  */
 public class WidgetDropDownList<T> extends WidgetBase
 {
-    protected final WidgetScrollBar scrollBar;
     protected final List<T> entries;
     protected final List<T> filteredEntries;
-    protected final TextFieldWrapper<GuiTextFieldGeneric> searchBar;
+    @Nullable protected final IStringRetriever<T> stringRetriever;
     protected final int maxHeight;
     protected final int maxVisibleEntries;
     protected final int totalHeight;
+
+    protected WidgetScrollBar scrollBar;
+    protected TextFieldWrapper<GuiTextFieldGeneric> searchBar;
+    @Nullable protected IIconProvider<T> iconProvider;
     protected boolean isOpen;
     protected int selectedIndex;
-    @Nullable protected final IStringRetriever<T> stringRetriever;
     @Nullable protected T selectedEntry;
 
     public WidgetDropDownList(int x, int y, int width, int height, int maxHeight,
@@ -42,12 +46,23 @@ public class WidgetDropDownList<T> extends WidgetBase
         this(x, y, width, height, maxHeight, maxVisibleEntries, entries, null);
     }
 
+    /**
+     * A dropdown selection widget for entries in the given list.
+     * This constructor uses the provided string retriever to get the display string for each entry.
+     * @param x
+     * @param y
+     * @param width
+     * @param height
+     * @param maxHeight
+     * @param maxVisibleEntries
+     * @param entries
+     * @param stringRetriever
+     */
     public WidgetDropDownList(int x, int y, int width, int height, int maxHeight,
             int maxVisibleEntries, List<T> entries, @Nullable IStringRetriever<T> stringRetriever)
     {
         super(x, y, width, height);
 
-        this.width = this.getRequiredWidth(width, entries, this.mc);
         this.maxHeight = maxHeight;
         this.entries = entries;
         this.filteredEntries = new ArrayList<>();
@@ -61,29 +76,29 @@ public class WidgetDropDownList<T> extends WidgetBase
         this.maxVisibleEntries = v;
         this.totalHeight = (v + 1) * height;
 
-        int scrollbarWidth = 8;
-        int scrollbarHeight = this.maxVisibleEntries * height;
-        this.scrollBar = new WidgetScrollBar(x + width - scrollbarWidth - 1, y + height + 1, scrollbarWidth, scrollbarHeight);
-        this.scrollBar.setMaxValue(entries.size() - this.maxVisibleEntries);
-        this.scrollBar.setArrowTextures(GuiIconBase.SMALL_ARROW_UP, GuiIconBase.SMALL_ARROW_DOWN);
-
-        TextFieldListener listener = new TextFieldListener(this);
-        this.searchBar = new TextFieldWrapper<>(new GuiTextFieldGeneric(x + 1, y - 18, this.width - 2, 16, this.textRenderer), listener);
-        this.searchBar.getTextField().setFocused(true);
-
+        this.updateWidth();
         this.updateFilteredEntries();
     }
 
-    @Override
-    public void setPosition(int x, int y)
+    public void setIconProvider(@Nullable IIconProvider<T> iconProvider)
     {
-        super.setPosition(x, y);
+        this.iconProvider = iconProvider;
+        this.updateWidth();
+    }
+
+    protected void updateWidth()
+    {
+        this.width = this.getRequiredWidth(-1, this.entries, this.mc);
 
         int scrollbarWidth = 8;
-        this.scrollBar.setPosition(x + this.width - scrollbarWidth - 1, y + this.height + 1);
+        int scrollbarHeight = this.maxVisibleEntries * height;
+        this.scrollBar = new WidgetScrollBar(this.x + this.width - scrollbarWidth - 1, this.y + this.height + 1, scrollbarWidth, scrollbarHeight);
+        this.scrollBar.setMaxValue(this.entries.size() - this.maxVisibleEntries);
+        this.scrollBar.setArrowTextures(GuiIconBase.SMALL_ARROW_UP, GuiIconBase.SMALL_ARROW_DOWN);
 
-        this.searchBar.getTextField().x = x + 1;
-        this.searchBar.getTextField().y = y - 18;
+        TextFieldListener listener = new TextFieldListener(this);
+        this.searchBar = new TextFieldWrapper<>(new GuiTextFieldGeneric(this.x + 1, this.y - 18, this.width - 2, 16, this.textRenderer), listener);
+        this.searchBar.getTextField().setFocused(true);
     }
 
     protected int getRequiredWidth(int width, List<T> entries, Minecraft mc)
@@ -96,9 +111,26 @@ public class WidgetDropDownList<T> extends WidgetBase
             {
                 width = Math.max(width, this.getStringWidth(this.getDisplayString(entries.get(i))) + 20);
             }
+
+            if (this.iconProvider != null)
+            {
+                width += this.iconProvider.getExpectedWidth() + 4;
+            }
         }
 
         return width;
+    }
+
+    @Override
+    public void setPosition(int x, int y)
+    {
+        super.setPosition(x, y);
+
+        int scrollbarWidth = 8;
+        this.scrollBar.setPosition(x + this.width - scrollbarWidth - 1, y + this.height + 1);
+
+        this.searchBar.getTextField().x = x + 1;
+        this.searchBar.getTextField().y = y - 18;
     }
 
     @Nullable
@@ -247,16 +279,28 @@ public class WidgetDropDownList<T> extends WidgetBase
         RenderUtils.color(1f, 1f, 1f, 1f);
 
         GlStateManager.pushMatrix();
-        GlStateManager.translate(0, 0, 1);
+        GlStateManager.translate(0, 0, this.zLevel + 40);
         List<T> list = this.filteredEntries;
         int visibleEntries = Math.min(this.maxVisibleEntries, list.size());
 
         RenderUtils.drawOutlinedBox(this.x + 1, this.y, this.width - 2, this.height - 1, 0xFF101010, 0xFFC0C0C0);
 
+        T entry = this.getSelectedEntry();
         String str = this.getDisplayString(this.getSelectedEntry());
-        int txtX = this.x + 4;
+        IGuiIcon icon = this.iconProvider != null && entry != null ? this.iconProvider.getIconFor(entry) : null;
+        int iconWidth = icon != null ? icon.getWidth() + 2 : (this.iconProvider != null ? this.iconProvider.getExpectedWidth() + 2 : 0);
+        int iconHeight = icon != null ? icon.getHeight() : (this.iconProvider != null ? this.iconProvider.getExpectedWidth() : 0);
+        int iconOffY = (this.height - iconHeight) / 2;
+        int txtX = this.x + iconWidth + 6;
         int txtY = this.y + this.height / 2 - this.fontHeight / 2;
+
+        if (icon != null)
+        {
+            icon.renderAt(this.x + 4, this.y + iconOffY, this.zLevel, true, false);
+        }
+
         this.drawString(txtX, txtY, 0xFFE0E0E0, str);
+
         txtY += this.height + 1;
         int scrollWidth = this.scrollBar.getWidth();
 
@@ -276,19 +320,36 @@ public class WidgetDropDownList<T> extends WidgetBase
             for (int i = startIndex; i < max; ++i)
             {
                 int bg = (i & 0x1) != 0 ? 0x20FFFFFF : 0x30FFFFFF;
+                boolean hovered = false;
 
                 if (mouseX >= this.x && mouseX < this.x + this.width - scrollWidth &&
                     mouseY >= y && mouseY < y + this.height)
                 {
                     bg = 0x60FFFFFF;
+                    hovered = true;
                 }
 
+                entry = list.get(i);
+                icon = this.iconProvider != null && entry != null ? this.iconProvider.getIconFor(entry) : null;
+                iconWidth = icon != null ? icon.getWidth() + 2 : (this.iconProvider != null ? this.iconProvider.getExpectedWidth() + 2 : 0);
+
                 RenderUtils.drawRect(this.x, y, this.width - scrollWidth - 1, this.height, bg);
-                str = this.getDisplayString(list.get(i));
+
+                if (icon != null)
+                {
+                    icon.renderAt(this.x + 4, y + iconOffY, this.zLevel, true, hovered);
+                }
+
+                txtX = this.x + iconWidth + 6;
+                str = this.getDisplayString(entry);
                 this.drawString(txtX, txtY, 0xFFE0E0E0, str);
+
                 y += this.height;
                 txtY += this.height;
             }
+
+            icon = GuiIconBase.ARROW_UP;
+            icon.renderAt(this.x + this.width - 16, this.y + (this.height - icon.getHeight()) / 2, this.zLevel, false, true);
 
             int h = visibleEntries * this.height;
             int totalHeight = Math.max(h, list.size() * this.height);
@@ -297,9 +358,8 @@ public class WidgetDropDownList<T> extends WidgetBase
         }
         else
         {
-            this.bindTexture(GuiIconBase.MALILIB_GUI_TEXTURES);
-            GuiIconBase i = GuiIconBase.ARROW_DOWN;
-            RenderUtils.drawTexturedRect(this.x + this.width - 16, this.y + 2, i.getU() + i.getWidth(), i.getV(), i.getWidth(), i.getHeight());
+            icon = GuiIconBase.ARROW_DOWN;
+            icon.renderAt(this.x + this.width - 16, this.y + (this.height - icon.getHeight()) / 2, this.zLevel, false, true);
         }
 
         GlStateManager.popMatrix();
