@@ -96,6 +96,14 @@ public class NBTUtils
         return null;
     }
 
+    public static NBTTagCompound removeBlockPosFromTag(NBTTagCompound tag)
+    {
+        tag.removeTag("x");
+        tag.removeTag("y");
+        tag.removeTag("z");
+        return tag;
+    }
+
     public static NBTTagCompound writeVec3dToTag(Vec3d vec, NBTTagCompound tag)
     {
         tag.setDouble("dx", vec.x);
