@@ -74,6 +74,28 @@ public class MathUtils
         return sum / (double) size;
     }
 
+    public static long roundUp(long number, long interval)
+    {
+        if (interval == 0)
+        {
+            return 0;
+        }
+        else if (number == 0)
+        {
+            return interval;
+        }
+        else
+        {
+            if (number < 0)
+            {
+                interval *= -1;
+            }
+
+            long i = number % interval;
+            return i == 0 ? number : number + interval - i;
+        }
+    }
+
     /**
      * Returns the minimum value from the given array
      * @param arr
