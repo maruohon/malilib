@@ -112,7 +112,7 @@ public class ConfigDouble extends ConfigBase<ConfigDouble> implements IConfigDou
     @Override
     public void resetToDefault()
     {
-        this.value = this.defaultValue;
+        this.setDoubleValue(this.defaultValue);
     }
 
     @Override

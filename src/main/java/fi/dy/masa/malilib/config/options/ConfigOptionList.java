@@ -73,7 +73,7 @@ public class ConfigOptionList extends ConfigBase<ConfigOptionList> implements IC
     @Override
     public void resetToDefault()
     {
-        this.value = this.defaultValue;
+        this.setOptionListValue(this.defaultValue);
     }
 
     @Override

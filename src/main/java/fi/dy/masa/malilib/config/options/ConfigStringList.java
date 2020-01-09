@@ -38,14 +38,10 @@ public class ConfigStringList extends ConfigBase<ConfigStringList> implements IC
     @Override
     public void setStrings(List<String> strings)
     {
-        List<String> oldStrings = new ArrayList<>();
-        oldStrings.addAll(this.strings);
-
-        this.strings.clear();
-        this.strings.addAll(strings);
-
-        if (oldStrings.equals(this.strings) == false)
+        if (this.strings.equals(strings) == false)
         {
+            this.strings.clear();
+            this.strings.addAll(strings);
             this.onValueChanged();
         }
     }
@@ -53,8 +49,7 @@ public class ConfigStringList extends ConfigBase<ConfigStringList> implements IC
     @Override
     public void resetToDefault()
     {
-        this.strings.clear();
-        this.strings.addAll(this.defaultValue);
+        this.setStrings(this.defaultValue);
     }
 
     @Override
