@@ -104,22 +104,19 @@ public class NBTUtils
         return tag;
     }
 
-    public static NBTTagCompound writeVec3dToTag(Vec3d vec, NBTTagCompound tag)
+    public static NBTTagCompound writeVec3dToListTag(Vec3d pos, NBTTagCompound tag)
     {
-        tag.setDouble("dx", vec.x);
-        tag.setDouble("dy", vec.y);
-        tag.setDouble("dz", vec.z);
-        return tag;
+        return writeVec3dToListTag(pos, tag, "Pos");
     }
 
-    public static NBTTagCompound writeEntityPositionToTag(Vec3d pos, NBTTagCompound tag)
+    public static NBTTagCompound writeVec3dToListTag(Vec3d pos, NBTTagCompound tag, String tagName)
     {
         NBTTagList posList = new NBTTagList();
 
         posList.appendTag(new NBTTagDouble(pos.x));
         posList.appendTag(new NBTTagDouble(pos.y));
         posList.appendTag(new NBTTagDouble(pos.z));
-        tag.setTag("Pos", posList);
+        tag.setTag(tagName, posList);
 
         return tag;
     }
@@ -139,11 +136,17 @@ public class NBTUtils
     }
 
     @Nullable
-    public static Vec3d readEntityPositionFromTag(@Nullable NBTTagCompound tag)
+    public static Vec3d readVec3dFromListTag(@Nullable NBTTagCompound tag)
     {
-        if (tag != null && tag.hasKey("Pos", Constants.NBT.TAG_LIST))
+        return readVec3dFromListTag(tag, "Pos");
+    }
+
+    @Nullable
+    public static Vec3d readVec3dFromListTag(@Nullable NBTTagCompound tag, String tagName)
+    {
+        if (tag != null && tag.hasKey(tagName, Constants.NBT.TAG_LIST))
         {
-            NBTTagList tagList = tag.getTagList("Pos", Constants.NBT.TAG_DOUBLE);
+            NBTTagList tagList = tag.getTagList(tagName, Constants.NBT.TAG_DOUBLE);
 
             if (tagList.getTagType() == Constants.NBT.TAG_DOUBLE && tagList.tagCount() == 3)
             {
