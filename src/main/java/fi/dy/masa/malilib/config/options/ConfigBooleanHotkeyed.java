@@ -34,4 +34,12 @@ public class ConfigBooleanHotkeyed extends ConfigBoolean implements IHotkey
     {
         return this.keybind;
     }
+
+    @Override
+    public void resetToDefault()
+    {
+        super.resetToDefault();
+
+        this.keybind.resetToDefault();
+    }
 }

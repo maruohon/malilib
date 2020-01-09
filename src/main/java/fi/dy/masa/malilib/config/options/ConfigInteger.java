@@ -2,9 +2,9 @@ package fi.dy.masa.malilib.config.options;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
+import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.LiteModMaLiLib;
 import fi.dy.masa.malilib.config.ConfigType;
-import net.minecraft.util.math.MathHelper;
 
 public class ConfigInteger extends ConfigBase<ConfigInteger> implements IConfigInteger
 {
@@ -126,7 +126,7 @@ public class ConfigInteger extends ConfigBase<ConfigInteger> implements IConfigI
     @Override
     public void resetToDefault()
     {
-        this.value = this.defaultValue;
+        this.setIntegerValue(this.defaultValue);
     }
 
     @Override

@@ -48,7 +48,7 @@ public class ConfigString extends ConfigBase<ConfigString> implements IConfigVal
     @Override
     public void resetToDefault()
     {
-        this.value = this.defaultValue;
+        this.setValueFromString(this.defaultValue);
     }
 
     @Override

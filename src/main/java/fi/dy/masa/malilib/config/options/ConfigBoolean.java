@@ -77,7 +77,7 @@ public class ConfigBoolean extends ConfigBase<ConfigBoolean> implements IConfigB
     @Override
     public void resetToDefault()
     {
-        this.value = this.defaultValue;
+        this.setBooleanValue(this.defaultValue);
     }
 
     @Override
