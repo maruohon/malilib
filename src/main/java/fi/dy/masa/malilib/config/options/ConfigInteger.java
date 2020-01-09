@@ -112,7 +112,7 @@ public class ConfigInteger extends ConfigBase<ConfigInteger> implements IConfigI
     @Override
     public void resetToDefault()
     {
-        this.value = this.defaultValue;
+        this.setIntegerValue(this.defaultValue);
     }
 
     @Override
