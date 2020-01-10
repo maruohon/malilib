@@ -117,6 +117,19 @@ malilib.label.alignment.bottom_left=Bottom Left
 malilib.label.alignment.bottom_right=Bottom Right
 malilib.label.alignment.center=Center
 
+malilib.label.colored.false=§cfalse§r
+malilib.label.colored.no=§cno§r
+malilib.label.colored.off=§coff§r
+malilib.label.colored.on=§aon§r
+malilib.label.colored.true=§atrue§r
+malilib.label.colored.yes=§ayes§r
+malilib.label.false=false
+malilib.label.no=no
+malilib.label.off=off
+malilib.label.on=on
+malilib.label.true=true
+malilib.label.yes=yes
+
 malilib.message.directory_created=Directory '%s' created
 malilib.message.toggled=Toggled %s %s
 malilib.message.value.off=OFF
