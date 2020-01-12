@@ -2,7 +2,6 @@ package fi.dy.masa.malilib.gui.button;
 
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
-import net.minecraft.client.renderer.GlStateManager;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.HorizontalAlignment;
@@ -13,7 +12,10 @@ public class ButtonGeneric extends ButtonBase
     protected final IGuiIcon icon;
     protected HorizontalAlignment alignment = HorizontalAlignment.LEFT;
     protected boolean textCentered;
+    protected boolean customIconOffset;
     protected boolean renderDefaultBackground = true;
+    protected int iconOffsetX;
+    protected int iconOffsetY;
 
     public ButtonGeneric(int x, int y, int width, boolean rightAlign, String translationKey, Object... args)
     {
@@ -69,6 +71,14 @@ public class ButtonGeneric extends ButtonBase
         return this;
     }
 
+    public ButtonGeneric setIconOffset(int offX, int offY)
+    {
+        this.iconOffsetX = offX;
+        this.iconOffsetY = offY;
+        this.customIconOffset = true;
+        return this;
+    }
+
     /**
      * Set the icon aligment.<br>
      * Note: Only LEFT and RIGHT alignments work properly.
@@ -95,10 +105,10 @@ public class ButtonGeneric extends ButtonBase
             this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
 
             int buttonStyle = this.getTextureOffset(this.hovered);
+            boolean textBlank = StringUtils.isBlank(this.displayString);
 
             RenderUtils.color(1f, 1f, 1f, 1f);
-            RenderUtils.setupBlend();
-            GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+            RenderUtils.setupBlendSimple();
 
             if (this.renderDefaultBackground)
             {
@@ -109,16 +119,32 @@ public class ButtonGeneric extends ButtonBase
 
             if (this.icon != null)
             {
-                int offset = this.renderDefaultBackground ? 4 : 0;
-                int x = this.alignment == HorizontalAlignment.LEFT ? this.x + offset : this.x + this.width - this.icon.getWidth() - offset;
-                int y = this.y + (this.height - this.icon.getHeight()) / 2;
+                int offX;
+
+                if (this.customIconOffset)
+                {
+                    offX = this.iconOffsetX;
+                }
+                // With icon-only buttons, center it horizontally
+                else if (textBlank)
+                {
+                    offX = (this.width - this.icon.getWidth()) / 2;
+                }
+                else
+                {
+                    offX = this.renderDefaultBackground ? 4 : 0;
+                }
+
+                int offY = this.customIconOffset ? this.iconOffsetY : (this.height - this.icon.getHeight()) / 2;
+                int x = this.alignment == HorizontalAlignment.LEFT ? this.x + offX : this.x + this.width - this.icon.getWidth() - offX;
+                int y = this.y + offY;
                 int u = this.icon.getU() + buttonStyle * this.icon.getWidth();
 
                 this.bindTexture(this.icon.getTexture());
                 RenderUtils.drawTexturedRect(x, y, u, this.icon.getV(), this.icon.getWidth(), this.icon.getHeight());
             }
 
-            if (StringUtils.isBlank(this.displayString) == false)
+            if (textBlank == false)
             {
                 int y = this.y + (this.height - 8) / 2;
                 int color = 0xE0E0E0;
