@@ -6,6 +6,7 @@ import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.util.StringUtils;
 
 public class WidgetCheckBox extends WidgetBase
 {
@@ -37,7 +38,7 @@ public class WidgetCheckBox extends WidgetBase
 
         if (hoverInfo != null)
         {
-            //hoverInfo = StringUtils.translate(hoverInfo);
+            hoverInfo = StringUtils.translate(hoverInfo);
             String[] parts = hoverInfo.split("\\n");
             this.hoverInfo = ImmutableList.copyOf(parts);
         }
