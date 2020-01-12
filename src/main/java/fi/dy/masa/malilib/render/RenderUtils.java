@@ -236,9 +236,21 @@ public class RenderUtils
             int textStartX = x + 4;
             int textStartY = Math.max(8, y - textHeight - 6);
 
+            // The text can't fit from the cursor to the right edge of the screen
             if (textStartX + maxLineLength + 6 > maxWidth)
             {
-                textStartX = Math.max(2, maxWidth - maxLineLength - 8);
+                int leftX = x - maxLineLength - 8;
+
+                // If the text fits from the cursor to the left edge of the screen...
+                if (leftX >= 2)
+                {
+                    textStartX = leftX;
+                }
+                // otherwise move it to touching the edge of the screen that the cursor is closest to
+                else
+                {
+                    textStartX = x < (maxWidth / 2) ? 2 : Math.max(2, maxWidth - maxLineLength - 6);
+                }
             }
 
             double zLevel = 300;
