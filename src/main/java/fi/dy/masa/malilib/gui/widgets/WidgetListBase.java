@@ -259,17 +259,21 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
             this.addNonFilteredContents(entries);
         }
 
+        this.sortEntryList(this.listContents);
+        this.reCreateListEntryWidgets();
+    }
+
+    protected void sortEntryList(List<TYPE> list)
+    {
         if (this.getShouldSortList())
         {
             Comparator<TYPE> comparator = this.getComparator();
 
             if (comparator != null)
             {
-                Collections.sort(this.listContents, comparator);
+                Collections.sort(list, comparator);
             }
         }
-
-        this.reCreateListEntryWidgets();
     }
 
     protected boolean filterMatchesEmptyEntry(TYPE entry)

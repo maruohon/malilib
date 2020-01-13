@@ -5,10 +5,12 @@ import java.io.FileFilter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
+import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.gui.interfaces.IDirectoryCache;
 import fi.dy.masa.malilib.gui.interfaces.IDirectoryNavigator;
 import fi.dy.masa.malilib.gui.interfaces.IFileBrowserIconProvider;
@@ -39,6 +41,7 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
         this.browserContext = browserContext;
         this.currentDirectory = this.cache.getCurrentDirectoryForContext(this.browserContext);
         this.allowKeyboardNavigation = true;
+        this.shouldSortList = true;
 
         if (this.currentDirectory == null)
         {
@@ -83,7 +86,7 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
         this.drawAdditionalContents(mouseX, mouseY);
     }
 
-    protected IFileBrowserIconProvider getIconProvider()
+    public IFileBrowserIconProvider getIconProvider()
     {
         return this.iconProvider;
     }
@@ -148,6 +151,12 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
         this.reCreateListEntryWidgets();
     }
 
+    @Override
+    protected Comparator<DirectoryEntry> getComparator()
+    {
+        return (e1, e2) -> e1.compareTo(e2);
+    }
+
     protected void addNonFilteredContents(File dir)
     {
         List<DirectoryEntry> list = new ArrayList<>();
@@ -159,7 +168,7 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
         list.clear();
 
         this.addMatchingEntriesToList(this.getFileFilter(), dir, list, null, null);
-        Collections.sort(list);
+        this.sortEntryList(list);
         this.listContents.addAll(list);
     }
 
@@ -193,13 +202,13 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
             }
 
             this.addFilteredContents(subDir, filterText, list, pre);
-            Collections.sort(list);
+            this.sortEntryList(list);
             listOut.addAll(list);
             list.clear();
         }
 
         this.addMatchingEntriesToList(this.getFileFilter(), dir, list, filterText, prefix);
-        Collections.sort(list);
+        this.sortEntryList(list);
         listOut.addAll(list);
     }
 
@@ -207,13 +216,19 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
     {
         for (File file : dir.listFiles(filter))
         {
-            String name = FileUtils.getNameWithoutExtension(file.getName().toLowerCase());
+            DirectoryEntry entry = new DirectoryEntry(DirectoryEntryType.fromFile(file), dir, file.getName(), displayNamePrefix);
 
-            if (filterText == null || this.matchesFilter(name, filterText))
+            if (filterText == null || this.matchesFilter(this.getEntryStringsForFilter(entry), filterText))
             {
-                list.add(new DirectoryEntry(DirectoryEntryType.fromFile(file), dir, file.getName(), displayNamePrefix));
+                list.add(entry);
             }
         }
+    }
+
+    @Override
+    protected List<String> getEntryStringsForFilter(DirectoryEntry entry)
+    {
+        return ImmutableList.of(FileUtils.getNameWithoutExtension(entry.getName().toLowerCase()));
     }
 
     protected List<File> getSubDirectories(File dir)
