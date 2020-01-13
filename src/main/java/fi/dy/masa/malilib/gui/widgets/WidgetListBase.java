@@ -151,11 +151,13 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
         if (this.getSearchBarWidget() != null)
         {
             boolean searchOpenPre = this.getSearchBarWidget().isSearchOpen();
+            String filterPre = this.getSearchBarWidget().getFilter();
 
             if (this.getSearchBarWidget().onMouseClickedImpl(mouseX, mouseY, mouseButton))
             {
-                // Toggled the search bar on or off
-                if (this.getSearchBarWidget().isSearchOpen() != searchOpenPre)
+                // Toggled the search bar on or off, or cleared the filter with a right click
+                if (this.getSearchBarWidget().isSearchOpen() != searchOpenPre ||
+                    filterPre.equals(this.getSearchBarWidget().getFilter()) == false)
                 {
                     this.clearSelection();
                     this.refreshBrowserEntries();
