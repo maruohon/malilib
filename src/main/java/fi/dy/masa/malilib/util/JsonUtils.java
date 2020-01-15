@@ -15,6 +15,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3i;
 import fi.dy.masa.malilib.LiteModMaLiLib;
 
 public class JsonUtils
@@ -287,7 +288,7 @@ public class JsonUtils
         return blockPosFromJson(obj, name) != null;
     }
 
-    public static JsonArray blockPosToJson(BlockPos pos)
+    public static JsonArray blockPosToJson(Vec3i pos)
     {
         JsonArray arr = new JsonArray();
 

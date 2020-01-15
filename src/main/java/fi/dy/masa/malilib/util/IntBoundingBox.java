@@ -1,8 +1,11 @@
 package fi.dy.masa.malilib.util;
 
+import javax.annotation.Nullable;
+import com.google.gson.JsonArray;
 import net.minecraft.nbt.NBTTagIntArray;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
+import fi.dy.masa.malilib.LiteModMaLiLib;
 
 public class IntBoundingBox
 {
@@ -51,6 +54,44 @@ public class IntBoundingBox
     public NBTTagIntArray toNBTIntArray()
     {
         return new NBTTagIntArray(new int[] { this.minX, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ });
+    }
+
+    public JsonArray toJson()
+    {
+        JsonArray arr = new JsonArray();
+
+        arr.add(this.minX);
+        arr.add(this.minY);
+        arr.add(this.minZ);
+        arr.add(this.maxX);
+        arr.add(this.maxY);
+        arr.add(this.maxZ);
+
+        return arr;
+    }
+
+    @Nullable
+    public static IntBoundingBox fromJson(JsonArray arr)
+    {
+        if (arr.size() == 6)
+        {
+            try
+            {
+                return new IntBoundingBox(
+                        arr.get(0).getAsInt(),
+                        arr.get(1).getAsInt(),
+                        arr.get(2).getAsInt(),
+                        arr.get(3).getAsInt(),
+                        arr.get(4).getAsInt(),
+                        arr.get(5).getAsInt());
+            }
+            catch (Exception e)
+            {
+                LiteModMaLiLib.logger.warn("Failed to read an IntBoundingBox from JSON '" + arr.toString() + "'");
+            }
+        }
+
+        return null;
     }
 
     public static IntBoundingBox fromVanillaBox(StructureBoundingBox box)
