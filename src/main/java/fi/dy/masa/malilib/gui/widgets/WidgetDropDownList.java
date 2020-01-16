@@ -109,12 +109,12 @@ public class WidgetDropDownList<T> extends WidgetBase
 
             for (int i = 0; i < entries.size(); ++i)
             {
-                width = Math.max(width, this.getStringWidth(this.getDisplayString(entries.get(i))) + 20);
+                width = Math.max(width, this.getStringWidth(this.getDisplayString(entries.get(i))) + 24);
             }
 
             if (this.iconProvider != null)
             {
-                width += this.iconProvider.getExpectedWidth() + 4;
+                width += this.iconProvider.getExpectedWidth() + 8;
             }
         }
 
