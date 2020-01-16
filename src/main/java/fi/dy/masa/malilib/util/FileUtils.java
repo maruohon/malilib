@@ -108,10 +108,16 @@ public class FileUtils
         return path;
     }
 
+    public static String getFileNameExtension(String name)
+    {
+        int i = name.lastIndexOf(".");
+        return i != -1 && name.length() > 1 ? name.substring(i + 1) : name;
+    }
+
     public static String getNameWithoutExtension(String name)
     {
         int i = name.lastIndexOf(".");
-        return i != -1 ? name.substring(0, i) : name;
+        return i != -1 && i != 0 ? name.substring(0, i) : name;
     }
 
     public static String generateSimpleSafeFileName(String name)
