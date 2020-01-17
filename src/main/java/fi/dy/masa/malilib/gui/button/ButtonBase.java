@@ -20,11 +20,13 @@ public abstract class ButtonBase extends WidgetBase
     protected final List<String> hoverStrings = new ArrayList<>();
     protected final ImmutableList<String> hoverHelp;
     protected String displayString;
+    protected boolean automaticWidth;
     protected boolean enabled = true;
-    protected boolean visible = true;
     protected boolean hovered;
     protected boolean hoverInfoRequiresShift;
-    protected boolean automaticWidth;
+    protected boolean rightAlign;
+    protected boolean visible = true;
+    protected int xRight;
     @Nullable protected IButtonActionListener actionListener;
 
     public ButtonBase(int x, int y, int width, int height)
@@ -41,13 +43,13 @@ public abstract class ButtonBase extends WidgetBase
     {
         super(x, y, width, height);
 
-        this.displayString = text;
+        this.displayString = StringUtils.translate(text);
         this.hoverHelp = ImmutableList.of(StringUtils.translate("malilib.gui.button.hover.hold_shift_for_info"));
 
         if (width < 0)
         {
             this.automaticWidth = true;
-            this.autoCalculateWidth(text);
+            this.autoCalculateWidth(this.displayString);
         }
     }
 
@@ -67,9 +69,36 @@ public abstract class ButtonBase extends WidgetBase
         this.displayString = text;
     }
 
-    protected void autoCalculateWidth(String text)
+    @Override
+    public void setWidth(int width)
     {
-        this.width = this.getStringWidth(text) + 10;
+        super.setWidth(width);
+        this.updatePositionIfRightAligned();
+    }
+
+    public void setRightAlign(boolean rightAlign, int xRight)
+    {
+        this.rightAlign = rightAlign;
+
+        if (rightAlign)
+        {
+            this.xRight = xRight;
+            this.updatePositionIfRightAligned();
+        }
+    }
+
+    protected void updatePositionIfRightAligned()
+    {
+        if (this.rightAlign)
+        {
+            this.x = this.xRight - this.width;
+        }
+    }
+
+    protected int autoCalculateWidth(String text)
+    {
+        this.setWidth(this.getStringWidth(text) + 10);
+        return this.width;
     }
 
     public boolean isMouseOver()
