@@ -462,7 +462,7 @@ public class RenderUtils
 
                     if (effectInstance.shouldShowParticles() && effectInstance.shouldShowIcon())
                     {
-                        if (effect.method_5573()) // MCP: isBeneficial()
+                        if (effect.isBeneficial())
                         {
                             y1 = 26;
                         }
@@ -1113,7 +1113,7 @@ public class RenderUtils
         setupBlendSimple();
         color(1f, 1f, 1f, 1f);
 
-        setupGuiTransform(x, y, model.hasDepthInGui(), zLevel);
+        setupGuiTransform(x, y, model.hasDepth(), zLevel);
         //model.getItemCameraTransforms().applyTransform(ItemCameraTransforms.TransformType.GUI);
         RenderSystem.rotatef( 30, 1, 0, 0);
         RenderSystem.rotatef(225, 0, 1, 0);
