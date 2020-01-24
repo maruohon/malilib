@@ -143,24 +143,15 @@ public class RenderUtils
 
     public static void drawRect(int x, int y, int width, int height, int color, float zLevel)
     {
-        float a = (float) (color >> 24 & 255) / 255.0F;
-        float r = (float) (color >> 16 & 255) / 255.0F;
-        float g = (float) (color >>  8 & 255) / 255.0F;
-        float b = (float) (color & 255) / 255.0F;
-
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
 
         GlStateManager.disableTexture2D();
         setupBlend();
-        color(r, g, b, a);
 
-        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
+        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
 
-        buffer.pos(x        , y         , zLevel).endVertex();
-        buffer.pos(x        , y + height, zLevel).endVertex();
-        buffer.pos(x + width, y + height, zLevel).endVertex();
-        buffer.pos(x + width, y         , zLevel).endVertex();
+        drawRectBatched(x, y, width, height, color, zLevel, buffer);
 
         tessellator.draw();
 
@@ -168,6 +159,24 @@ public class RenderUtils
         GlStateManager.disableBlend();
 
         color(1f, 1f, 1f, 1f);
+    }
+
+    public static void drawRectBatched(int x, int y, int width, int height, int color, BufferBuilder buffer)
+    {
+        drawRectBatched(x, y, width, height, color, 0f, buffer);
+    }
+
+    public static void drawRectBatched(int x, int y, int width, int height, int color, float zLevel, BufferBuilder buffer)
+    {
+        float a = (float) (color >> 24 & 255) / 255.0F;
+        float r = (float) (color >> 16 & 255) / 255.0F;
+        float g = (float) (color >>  8 & 255) / 255.0F;
+        float b = (float) (color & 255) / 255.0F;
+
+        buffer.pos(x        , y         , zLevel).color(r, g, b, a).endVertex();
+        buffer.pos(x        , y + height, zLevel).color(r, g, b, a).endVertex();
+        buffer.pos(x + width, y + height, zLevel).color(r, g, b, a).endVertex();
+        buffer.pos(x + width, y         , zLevel).color(r, g, b, a).endVertex();
     }
 
     public static void drawTexturedRect(int x, int y, int u, int v, int width, int height, float zLevel)
