@@ -898,12 +898,6 @@ public class RenderUtils
         GlStateManager.disableLighting();
         GlStateManager.disableCull();
 
-        if (disableDepth)
-        {
-            GlStateManager.depthMask(false);
-            GlStateManager.disableDepth();
-        }
-
         setupBlend();
         GlStateManager.disableTexture2D();
 
@@ -923,6 +917,12 @@ public class RenderUtils
         float bgg = ((bgColor >>>  8) & 0xFF) * 255f;
         float bgb = (bgColor          & 0xFF) * 255f;
 
+        if (disableDepth)
+        {
+            GlStateManager.depthMask(false);
+            GlStateManager.disableDepth();
+        }
+
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
         buffer.pos(-strLenHalf - 1,          -1, 0.0D).color(bgr, bgg, bgb, bga).endVertex();
         buffer.pos(-strLenHalf - 1,  textHeight, 0.0D).color(bgr, bgg, bgb, bga).endVertex();
@@ -939,6 +939,9 @@ public class RenderUtils
             GlStateManager.enablePolygonOffset();
             GlStateManager.doPolygonOffset(-0.6f, -1.2f);
             //GlStateManager.translate(0, 0, -0.02);
+
+            GlStateManager.enableDepth();
+            GlStateManager.depthMask(true);
         }
 
         for (String line : text)
@@ -947,13 +950,15 @@ public class RenderUtils
             {
                 GlStateManager.depthMask(false);
                 GlStateManager.disableDepth();
+
+                // Render the faint version that will also show through blocks
+                textRenderer.drawString(line, -strLenHalf, textY, 0x20000000 | (textColor & 0xFFFFFF));
+
+                GlStateManager.enableDepth();
+                GlStateManager.depthMask(true);
             }
 
-            textRenderer.drawString(line, -strLenHalf, textY, 0x20000000 | (textColor & 0xFFFFFF));
-
-            GlStateManager.enableDepth();
-            GlStateManager.depthMask(true);
-
+            // Render the actual fully opaque text, that will not show through blocks
             textRenderer.drawString(line, -strLenHalf, textY, textColor);
             textY += textRenderer.FONT_HEIGHT;
         }
