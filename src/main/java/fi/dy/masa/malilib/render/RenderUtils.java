@@ -17,11 +17,13 @@ import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.client.util.math.AffineTransformation;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.entity.Entity;
@@ -719,20 +721,19 @@ public class RenderUtils
      * @param y
      * @param z
      * @param scale
-     * @param mc
      */
-    public static void drawTextPlate(List<String> text, double x, double y, double z, float scale, MatrixStack matrixStack)
+    public static void drawTextPlate(List<String> text, double x, double y, double z, float scale)
     {
         Entity entity = mc().getCameraEntity();
 
         if (entity != null)
         {
-            drawTextPlate(text, x, y, z, entity.yaw, entity.pitch, scale, 0xFFFFFFFF, 0x40000000, true, matrixStack);
+            drawTextPlate(text, x, y, z, entity.yaw, entity.pitch, scale, 0xFFFFFFFF, 0x40000000, true);
         }
     }
 
     public static void drawTextPlate(List<String> text, double x, double y, double z, float yaw, float pitch,
-            float scale, int textColor, int bgColor, boolean disableDepth, MatrixStack matrixStack)
+            float scale, int textColor, int bgColor, boolean disableDepth)
     {
         TextRenderer textRenderer = mc().textRenderer;
 
@@ -747,12 +748,6 @@ public class RenderUtils
         RenderSystem.scalef(-scale, -scale, scale);
         RenderSystem.disableLighting();
         RenderSystem.disableCull();
-
-        if (disableDepth)
-        {
-            RenderSystem.depthMask(false);
-            RenderSystem.disableDepthTest();
-        }
 
         setupBlend();
         RenderSystem.disableTexture();
@@ -773,6 +768,12 @@ public class RenderUtils
         int bgg = ((bgColor >>>  8) & 0xFF);
         int bgb = (bgColor          & 0xFF);
 
+        if (disableDepth)
+        {
+            RenderSystem.depthMask(false);
+            RenderSystem.disableDepthTest();
+        }
+
         buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR);
         buffer.vertex(-strLenHalf - 1,          -1, 0.0D).color(bgr, bgg, bgb, bga).next();
         buffer.vertex(-strLenHalf - 1,  textHeight, 0.0D).color(bgr, bgg, bgb, bga).next();
@@ -788,23 +789,24 @@ public class RenderUtils
         {
             RenderSystem.enablePolygonOffset();
             RenderSystem.polygonOffset(-0.6f, -1.2f);
-            //RenderSystem.translate(0, 0, -0.02);
         }
 
         for (String line : text)
         {
             if (disableDepth)
             {
-                RenderSystem.depthMask(false);
-                RenderSystem.disableDepthTest();
+                RenderSystem.enableAlphaTest();
+                VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(buffer);
+                textRenderer.draw(line, -strLenHalf, textY, 0x20000000 | (textColor & 0xFFFFFF), false, AffineTransformation.identity().getMatrix(), immediate, true, 0, 15728880);
+                immediate.draw();
+                RenderSystem.enableDepthTest();
+                RenderSystem.depthMask(true);
             }
 
-            textRenderer.draw(matrixStack, line, -strLenHalf, textY, 0x20000000 | (textColor & 0xFFFFFF));
-
-            RenderSystem.enableDepthTest();
-            RenderSystem.depthMask(true);
-
-            textRenderer.draw(matrixStack, line, -strLenHalf, textY, textColor);
+            RenderSystem.enableAlphaTest();
+            VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(buffer);
+            textRenderer.draw(line, -strLenHalf, textY, textColor, false, AffineTransformation.identity().getMatrix(), immediate, true, 0, 15728880);
+            immediate.draw();
             textY += textRenderer.fontHeight;
         }
 
