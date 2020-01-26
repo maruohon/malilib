@@ -1,20 +1,27 @@
 package fi.dy.masa.malilib.gui.widgets;
 
-import fi.dy.masa.malilib.render.RenderUtils;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.util.ResourceLocation;
+import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.util.StringUtils;
 
 public abstract class WidgetBase
 {
     protected final Minecraft mc;
     protected final FontRenderer textRenderer;
+    protected final List<String> hoverStrings = new ArrayList<>();
     protected final int fontHeight;
     protected int x;
     protected int y;
+    protected int xRight;
     protected int width;
     protected int height;
     protected float zLevel;
+    protected boolean rightAlign;
 
     public WidgetBase(int x, int y, int width, int height)
     {
@@ -53,6 +60,25 @@ public abstract class WidgetBase
         this.y = y;
     }
 
+    public void setRightAlign(boolean rightAlign, int xRight)
+    {
+        this.rightAlign = rightAlign;
+
+        if (rightAlign)
+        {
+            this.xRight = xRight;
+            this.updatePositionIfRightAligned();
+        }
+    }
+
+    protected void updatePositionIfRightAligned()
+    {
+        if (this.rightAlign)
+        {
+            this.x = this.xRight - this.width;
+        }
+    }
+
     public void setZLevel(float zLevel)
     {
         this.zLevel = zLevel;
@@ -71,6 +97,7 @@ public abstract class WidgetBase
     public void setWidth(int width)
     {
         this.width = width;
+        this.updatePositionIfRightAligned();
     }
 
     public void setHeight(int height)
@@ -141,6 +168,43 @@ public abstract class WidgetBase
         return this.isMouseOver(mouseX, mouseY);
     }
 
+    public boolean hasHoverText()
+    {
+        return this.hoverStrings.isEmpty() == false;
+    }
+
+    public void clearHoverStrings()
+    {
+        this.hoverStrings.clear();
+    }
+
+    public void setHoverStrings(String... hoverStrings)
+    {
+        this.setHoverStrings(Arrays.asList(hoverStrings));
+    }
+
+    public void setHoverStrings(List<String> hoverStrings)
+    {
+        this.hoverStrings.clear();
+
+        for (String str : hoverStrings)
+        {
+            str = StringUtils.translate(str);
+
+            String[] parts = str.split("\\\\n");
+
+            for (String part : parts)
+            {
+                this.hoverStrings.add(StringUtils.translate(part));
+            }
+        }
+    }
+
+    public List<String> getHoverStrings()
+    {
+        return this.hoverStrings;
+    }
+
     public void bindTexture(ResourceLocation texture)
     {
         RenderUtils.bindTexture(texture);
@@ -177,5 +241,10 @@ public abstract class WidgetBase
 
     public void postRenderHovered(int mouseX, int mouseY, boolean selected)
     {
+        if (this.hasHoverText() && this.isMouseOver(mouseX, mouseY))
+        {
+            RenderUtils.drawHoverText(mouseX, mouseY, this.getHoverStrings());
+            RenderUtils.disableItemLighting();
+        }
     }
 }

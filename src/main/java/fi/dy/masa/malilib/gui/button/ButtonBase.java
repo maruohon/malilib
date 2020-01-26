@@ -1,7 +1,5 @@
 package fi.dy.masa.malilib.gui.button;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
@@ -10,23 +8,19 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.widgets.WidgetBase;
-import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public abstract class ButtonBase extends WidgetBase
 {
     protected static final ResourceLocation BUTTON_TEXTURES = new ResourceLocation("minecraft", "textures/gui/widgets.png");
 
-    protected final List<String> hoverStrings = new ArrayList<>();
     protected final ImmutableList<String> hoverHelp;
     protected String displayString;
     protected boolean automaticWidth;
     protected boolean enabled = true;
     protected boolean hovered;
     protected boolean hoverInfoRequiresShift;
-    protected boolean rightAlign;
     protected boolean visible = true;
-    protected int xRight;
     @Nullable protected IButtonActionListener actionListener;
 
     public ButtonBase(int x, int y, int width, int height)
@@ -67,32 +61,6 @@ public abstract class ButtonBase extends WidgetBase
     public void setDisplayString(String text)
     {
         this.displayString = text;
-    }
-
-    @Override
-    public void setWidth(int width)
-    {
-        super.setWidth(width);
-        this.updatePositionIfRightAligned();
-    }
-
-    public void setRightAlign(boolean rightAlign, int xRight)
-    {
-        this.rightAlign = rightAlign;
-
-        if (rightAlign)
-        {
-            this.xRight = xRight;
-            this.updatePositionIfRightAligned();
-        }
-    }
-
-    protected void updatePositionIfRightAligned()
-    {
-        if (this.rightAlign)
-        {
-            this.x = this.xRight - this.width;
-        }
     }
 
     protected int autoCalculateWidth(String text)
@@ -147,38 +115,12 @@ public abstract class ButtonBase extends WidgetBase
         return this.displayString;
     }
 
-    public boolean hasHoverText()
-    {
-        return this.hoverStrings.isEmpty() == false;
-    }
-
     public void setHoverInfoRequiresShift(boolean requireShift)
     {
         this.hoverInfoRequiresShift = requireShift;
     }
 
-    public void setHoverStrings(String... hoverStrings)
-    {
-        this.setHoverStrings(Arrays.asList(hoverStrings));
-    }
-
-    public void setHoverStrings(List<String> hoverStrings)
-    {
-        this.hoverStrings.clear();
-
-        for (String str : hoverStrings)
-        {
-            str = StringUtils.translate(str);
-
-            String[] parts = str.split("\\\\n");
-
-            for (String part : parts)
-            {
-                this.hoverStrings.add(StringUtils.translate(part));
-            }
-        }
-    }
-
+    @Override
     public List<String> getHoverStrings()
     {
         if (this.hoverInfoRequiresShift && GuiBase.isShiftDown() == false)
@@ -186,26 +128,11 @@ public abstract class ButtonBase extends WidgetBase
             return this.hoverHelp;
         }
 
-        return this.hoverStrings;
-    }
-
-    public void clearHoverStrings()
-    {
-        this.hoverStrings.clear();
+        return super.getHoverStrings();
     }
 
     protected int getTextureOffset(boolean isMouseOver)
     {
         return (this.enabled == false) ? 0 : (isMouseOver ? 2 : 1);
-    }
-
-    @Override
-    public void postRenderHovered(int mouseX, int mouseY, boolean selected)
-    {
-        if (this.hasHoverText() && this.isMouseOver())
-        {
-            RenderUtils.drawHoverText(mouseX, mouseY, this.getHoverStrings());
-            RenderUtils.disableItemLighting();
-        }
     }
 }
