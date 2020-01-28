@@ -11,6 +11,15 @@ public interface IHotkey extends IConfigValue
     IKeybind getKeybind();
 
     /**
+     * Convenience method for checking if the keybind is currently held/active
+     * @return
+     */
+    default boolean isHeld()
+    {
+        return this.getKeybind().isKeybindHeld();
+    }
+
+    /**
      * Returns the String representation of the value of this config. Used in the config GUI to
      * fill in the text field contents.
      * @return the String representation of the current value
