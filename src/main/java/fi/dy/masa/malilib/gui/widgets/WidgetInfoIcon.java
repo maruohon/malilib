@@ -1,7 +1,6 @@
 package fi.dy.masa.malilib.gui.widgets;
 
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
-import fi.dy.masa.malilib.render.RenderUtils;
 
 public class WidgetInfoIcon extends WidgetHoverInfo
 {
@@ -17,8 +16,6 @@ public class WidgetInfoIcon extends WidgetHoverInfo
     @Override
     public void render(int mouseX, int mouseY, boolean selected)
     {
-        RenderUtils.color(1f, 1f, 1f, 1f);
-        this.bindTexture(this.icon.getTexture());
         this.icon.renderAt(this.x, this.y, this.zLevel, false, selected);
     }
 }

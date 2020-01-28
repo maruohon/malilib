@@ -178,24 +178,30 @@ public abstract class WidgetBase
         this.hoverStrings.clear();
     }
 
-    public void setHoverStrings(String... hoverStrings)
+    public void addHoverStrings(String... hoverStrings)
     {
-        this.setHoverStrings(Arrays.asList(hoverStrings));
+        this.addHoverStrings(Arrays.asList(hoverStrings));
     }
 
-    public void setHoverStrings(List<String> hoverStrings)
+    public void addHoverStrings(List<String> hoverStrings)
     {
-        this.hoverStrings.clear();
-
         for (String str : hoverStrings)
         {
-            str = StringUtils.translate(str);
+            this.addHoverString(str);
+        }
+    }
+
+    public void addHoverString(@Nullable String translationKey, Object... args)
+    {
+        if (translationKey != null)
+        {
+            String str = StringUtils.translate(translationKey, args);
 
             String[] parts = str.split("\\\\n");
 
             for (String part : parts)
             {
-                this.hoverStrings.add(StringUtils.translate(part));
+                this.hoverStrings.add(part);
             }
         }
     }
@@ -239,9 +245,14 @@ public abstract class WidgetBase
     {
     }
 
+    public boolean shouldRenderHoverInfo(int mouseX, int mouseY)
+    {
+        return this.canSelectAt(mouseX, mouseY, 0);
+    }
+
     public void postRenderHovered(int mouseX, int mouseY, boolean selected)
     {
-        if (this.hasHoverText() && this.isMouseOver(mouseX, mouseY))
+        if (this.hasHoverText() && this.shouldRenderHoverInfo(mouseX, mouseY))
         {
             RenderUtils.drawHoverText(mouseX, mouseY, this.getHoverStrings());
             RenderUtils.disableItemLighting();

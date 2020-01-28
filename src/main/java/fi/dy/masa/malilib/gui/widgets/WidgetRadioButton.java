@@ -40,7 +40,7 @@ public class WidgetRadioButton<T extends Enum<T>> extends WidgetBase
         }
 
         this.textWidth = width;
-        this.setHoverStrings(hoverInfoKey);
+        this.addHoverString(hoverInfoKey);
         this.setIconProvider(new IconProvider());
     }
 

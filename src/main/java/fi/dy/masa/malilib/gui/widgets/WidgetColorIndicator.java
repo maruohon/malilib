@@ -1,7 +1,5 @@
 package fi.dy.masa.malilib.gui.widgets;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.IntConsumer;
 import fi.dy.masa.malilib.config.options.ConfigInteger;
 import fi.dy.masa.malilib.config.options.IConfigInteger;
@@ -15,7 +13,6 @@ import fi.dy.masa.malilib.util.StringUtils;
 public class WidgetColorIndicator extends WidgetBase
 {
     protected final IConfigInteger config;
-    protected List<String> hoverInfo = new ArrayList<>();
 
     public WidgetColorIndicator(int x, int y, int width, int height, Color4f color, IntConsumer consumer)
     {
@@ -29,7 +26,7 @@ public class WidgetColorIndicator extends WidgetBase
         super(x, y, width, height);
 
         this.config = config;
-        this.hoverInfo.add(StringUtils.translate("malilib.gui.hover.open_color_editor"));
+        this.addHoverString(StringUtils.translate("malilib.gui.hover.open_color_editor"));
     }
 
     @Override
@@ -46,11 +43,5 @@ public class WidgetColorIndicator extends WidgetBase
         RenderUtils.drawRect(this.x    , this.y + 0, this.width    , this.height    , 0xFFFFFFFF);
         RenderUtils.drawRect(this.x + 1, this.y + 1, this.width - 2, this.height - 2, 0xFF000000);
         RenderUtils.drawRect(this.x + 2, this.y + 2, this.width - 4, this.height - 4, 0xFF000000 | this.config.getIntegerValue());
-    }
-
-    @Override
-    public void postRenderHovered(int mouseX, int mouseY, boolean selected)
-    {
-        RenderUtils.drawHoverText(mouseX, mouseY, this.hoverInfo);
     }
 }

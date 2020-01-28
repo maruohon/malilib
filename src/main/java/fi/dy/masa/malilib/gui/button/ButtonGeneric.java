@@ -47,7 +47,7 @@ public class ButtonGeneric extends ButtonBase
 
         if (hoverStrings.length > 0)
         {
-            this.setHoverStrings(hoverStrings);
+            this.addHoverStrings(hoverStrings);
         }
     }
 

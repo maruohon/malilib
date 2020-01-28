@@ -1,51 +1,36 @@
 package fi.dy.masa.malilib.gui.widgets;
 
-import java.util.List;
 import javax.annotation.Nullable;
-import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
 import fi.dy.masa.malilib.render.RenderUtils;
-import fi.dy.masa.malilib.util.StringUtils;
 
 public class WidgetCheckBox extends WidgetBase
 {
     protected final String displayText;
     protected final IGuiIcon widgetUnchecked;
     protected final IGuiIcon widgetChecked;
-    protected final List<String> hoverInfo;
     protected final int textWidth;
     protected boolean checked;
-    @Nullable
-    protected ISelectionListener<WidgetCheckBox> listener;
+    @Nullable protected ISelectionListener<WidgetCheckBox> listener;
 
-    public WidgetCheckBox(int x, int y, IGuiIcon widgetUnchecked, IGuiIcon widgetChecked, String text)
-    {
-        this(x, y, widgetUnchecked, widgetChecked, text, null);
-    }
-
-    public WidgetCheckBox(int x, int y, IGuiIcon widgetUnchecked, IGuiIcon widgetChecked,
-            String text, @Nullable String hoverInfo)
+    public WidgetCheckBox(int x, int y, IGuiIcon iconUnchecked, IGuiIcon iconChecked, String text)
     {
         super(x, y, 40, 20);
 
         this.displayText = text;
-        this.width = widgetUnchecked.getWidth() + 3 + this.getStringWidth(text);
-        this.height = Math.max(this.fontHeight, widgetChecked.getHeight());
+        this.width = iconUnchecked.getWidth() + 3 + this.getStringWidth(text);
+        this.height = Math.max(this.fontHeight, iconChecked.getHeight());
         this.textWidth = this.getStringWidth(text);
-        this.widgetUnchecked = widgetUnchecked;
-        this.widgetChecked = widgetChecked;
+        this.widgetUnchecked = iconUnchecked;
+        this.widgetChecked = iconChecked;
+    }
 
-        if (hoverInfo != null)
-        {
-            hoverInfo = StringUtils.translate(hoverInfo);
-            String[] parts = hoverInfo.split("\\n");
-            this.hoverInfo = ImmutableList.copyOf(parts);
-        }
-        else
-        {
-            this.hoverInfo = ImmutableList.of();
-        }
+    public WidgetCheckBox(int x, int y, IGuiIcon iconUnchecked, IGuiIcon iconChecked, String text, @Nullable String hoverInfo)
+    {
+        this(x, y, iconUnchecked, iconChecked, text);
+
+        this.addHoverString(hoverInfo);
     }
 
     public void setListener(@Nullable ISelectionListener<WidgetCheckBox> listener)
@@ -100,14 +85,5 @@ public class WidgetCheckBox extends WidgetBase
         int textColor = this.checked ? 0xFFFFFFFF : 0xB0B0B0B0;
 
         this.drawStringWithShadow(this.x + iw + 3, y, textColor, this.displayText);
-    }
-
-    @Override
-    public void postRenderHovered(int mouseX, int mouseY, boolean selected)
-    {
-        if (this.hoverInfo.isEmpty() == false)
-        {
-            RenderUtils.drawHoverText(mouseX, mouseY, this.hoverInfo);
-        }
     }
 }

@@ -179,7 +179,7 @@ public class ConfigButtonKeybind extends ButtonGeneric
 
         if (this.overlapInfo.size() > 0)
         {
-            this.setHoverStrings(this.overlapInfo);
+            this.addHoverStrings(this.overlapInfo);
         }
     }
 }

@@ -206,91 +206,6 @@ public class RenderUtils
         buffer.pos(x        , y         , zLevel).tex( u          * pixelWidth,  v           * pixelWidth).endVertex();
     }
 
-    public static void drawHoverText(int x, int y, List<String> textLines)
-    {
-        Minecraft mc = mc();
-
-        if (textLines.isEmpty() == false && GuiUtils.getCurrentScreen() != null)
-        {
-            FontRenderer font = mc.fontRenderer;
-            GlStateManager.disableRescaleNormal();
-            disableItemLighting();
-            GlStateManager.disableLighting();
-            GlStateManager.disableDepth();
-            int maxLineLength = 0;
-            int maxWidth = GuiUtils.getCurrentScreen().width;
-            List<String> linesNew = new ArrayList<>();
-
-            for (String lineOrig : textLines)
-            {
-                String[] lines = lineOrig.split("\\\\n");
-
-                for (String line : lines)
-                {
-                    int length = font.getStringWidth(line);
-
-                    if (length > maxLineLength)
-                    {
-                        maxLineLength = length;
-                    }
-
-                    linesNew.add(line);
-                }
-            }
-
-            textLines = linesNew;
-
-            final int lineHeight = font.FONT_HEIGHT + 1;
-            int textHeight = textLines.size() * lineHeight - 2;
-            int textStartX = x + 4;
-            int textStartY = Math.max(8, y - textHeight - 6);
-
-            // The text can't fit from the cursor to the right edge of the screen
-            if (textStartX + maxLineLength + 6 > maxWidth)
-            {
-                int leftX = x - maxLineLength - 8;
-
-                // If the text fits from the cursor to the left edge of the screen...
-                if (leftX >= 2)
-                {
-                    textStartX = leftX;
-                }
-                // otherwise move it to touching the edge of the screen that the cursor is closest to
-                else
-                {
-                    textStartX = x < (maxWidth / 2) ? 2 : Math.max(2, maxWidth - maxLineLength - 6);
-                }
-            }
-
-            double zLevel = 300;
-            int borderColor = 0xF0100010;
-            drawGradientRect(textStartX - 3, textStartY - 4, textStartX + maxLineLength + 3, textStartY - 3, zLevel, borderColor, borderColor);
-            drawGradientRect(textStartX - 3, textStartY + textHeight + 3, textStartX + maxLineLength + 3, textStartY + textHeight + 4, zLevel, borderColor, borderColor);
-            drawGradientRect(textStartX - 3, textStartY - 3, textStartX + maxLineLength + 3, textStartY + textHeight + 3, zLevel, borderColor, borderColor);
-            drawGradientRect(textStartX - 4, textStartY - 3, textStartX - 3, textStartY + textHeight + 3, zLevel, borderColor, borderColor);
-            drawGradientRect(textStartX + maxLineLength + 3, textStartY - 3, textStartX + maxLineLength + 4, textStartY + textHeight + 3, zLevel, borderColor, borderColor);
-
-            int fillColor1 = 0x505000FF;
-            int fillColor2 = 0x5028007F;
-            drawGradientRect(textStartX - 3, textStartY - 3 + 1, textStartX - 3 + 1, textStartY + textHeight + 3 - 1, zLevel, fillColor1, fillColor2);
-            drawGradientRect(textStartX + maxLineLength + 2, textStartY - 3 + 1, textStartX + maxLineLength + 3, textStartY + textHeight + 3 - 1, zLevel, fillColor1, fillColor2);
-            drawGradientRect(textStartX - 3, textStartY - 3, textStartX + maxLineLength + 3, textStartY - 3 + 1, zLevel, fillColor1, fillColor1);
-            drawGradientRect(textStartX - 3, textStartY + textHeight + 2, textStartX + maxLineLength + 3, textStartY + textHeight + 3, zLevel, fillColor2, fillColor2);
-
-            for (int i = 0; i < textLines.size(); ++i)
-            {
-                String str = textLines.get(i);
-                font.drawStringWithShadow(str, textStartX, textStartY, 0xFFFFFFFF);
-                textStartY += lineHeight;
-            }
-
-            GlStateManager.enableLighting();
-            GlStateManager.enableDepth();
-            RenderHelper.enableStandardItemLighting();
-            GlStateManager.enableRescaleNormal();
-        }
-    }
-
     public static void drawGradientRect(int left, int top, int right, int bottom, double zLevel, int startColor, int endColor)
     {
         float sa = (float)(startColor >> 24 & 0xFF) / 255.0F;
@@ -323,12 +238,6 @@ public class RenderUtils
         GlStateManager.disableBlend();
         GlStateManager.enableAlpha();
         GlStateManager.enableTexture2D();
-    }
-
-    public static void drawCenteredString(int x, int y, int color, String text)
-    {
-        FontRenderer textRenderer = mc().fontRenderer;
-        textRenderer.drawStringWithShadow(text, x - textRenderer.getStringWidth(text) / 2, y, color);
     }
 
     public static void drawHorizontalLine(int x, int y, int width, int color)
@@ -454,7 +363,7 @@ public class RenderUtils
 
         for (String line : parts)
         {
-            textRenderer.drawStringWithShadow(line, x, y, color);
+            textRenderer.drawString(line, x, y, color);
             y += textRenderer.FONT_HEIGHT + 1;
         }
     }
@@ -547,6 +456,91 @@ public class RenderUtils
         }
 
         return contentHeight + bgMargin * 2;
+    }
+
+    public static void drawHoverText(int x, int y, List<String> textLines)
+    {
+        Minecraft mc = mc();
+
+        if (textLines.isEmpty() == false && GuiUtils.getCurrentScreen() != null)
+        {
+            FontRenderer font = mc.fontRenderer;
+            GlStateManager.disableRescaleNormal();
+            disableItemLighting();
+            GlStateManager.disableLighting();
+            GlStateManager.disableDepth();
+            int maxLineLength = 0;
+            int maxWidth = GuiUtils.getCurrentScreen().width;
+            List<String> linesNew = new ArrayList<>();
+
+            for (String lineOrig : textLines)
+            {
+                String[] lines = lineOrig.split("\\\\n");
+
+                for (String line : lines)
+                {
+                    int length = font.getStringWidth(line);
+
+                    if (length > maxLineLength)
+                    {
+                        maxLineLength = length;
+                    }
+
+                    linesNew.add(line);
+                }
+            }
+
+            textLines = linesNew;
+
+            final int lineHeight = font.FONT_HEIGHT + 1;
+            int textHeight = textLines.size() * lineHeight - 2;
+            int textStartX = x + 4;
+            int textStartY = Math.max(8, y - textHeight - 6);
+
+            // The text can't fit from the cursor to the right edge of the screen
+            if (textStartX + maxLineLength + 6 > maxWidth)
+            {
+                int leftX = x - maxLineLength - 8;
+
+                // If the text fits from the cursor to the left edge of the screen...
+                if (leftX >= 2)
+                {
+                    textStartX = leftX;
+                }
+                // otherwise move it to touching the edge of the screen that the cursor is closest to
+                else
+                {
+                    textStartX = x < (maxWidth / 2) ? 2 : Math.max(2, maxWidth - maxLineLength - 6);
+                }
+            }
+
+            double zLevel = 300;
+            int borderColor = 0xF0100010;
+            drawGradientRect(textStartX - 3, textStartY - 4, textStartX + maxLineLength + 3, textStartY - 3, zLevel, borderColor, borderColor);
+            drawGradientRect(textStartX - 3, textStartY + textHeight + 3, textStartX + maxLineLength + 3, textStartY + textHeight + 4, zLevel, borderColor, borderColor);
+            drawGradientRect(textStartX - 3, textStartY - 3, textStartX + maxLineLength + 3, textStartY + textHeight + 3, zLevel, borderColor, borderColor);
+            drawGradientRect(textStartX - 4, textStartY - 3, textStartX - 3, textStartY + textHeight + 3, zLevel, borderColor, borderColor);
+            drawGradientRect(textStartX + maxLineLength + 3, textStartY - 3, textStartX + maxLineLength + 4, textStartY + textHeight + 3, zLevel, borderColor, borderColor);
+
+            int fillColor1 = 0x505000FF;
+            int fillColor2 = 0x5028007F;
+            drawGradientRect(textStartX - 3, textStartY - 3 + 1, textStartX - 3 + 1, textStartY + textHeight + 3 - 1, zLevel, fillColor1, fillColor2);
+            drawGradientRect(textStartX + maxLineLength + 2, textStartY - 3 + 1, textStartX + maxLineLength + 3, textStartY + textHeight + 3 - 1, zLevel, fillColor1, fillColor2);
+            drawGradientRect(textStartX - 3, textStartY - 3, textStartX + maxLineLength + 3, textStartY - 3 + 1, zLevel, fillColor1, fillColor1);
+            drawGradientRect(textStartX - 3, textStartY + textHeight + 2, textStartX + maxLineLength + 3, textStartY + textHeight + 3, zLevel, fillColor2, fillColor2);
+
+            for (int i = 0; i < textLines.size(); ++i)
+            {
+                String str = textLines.get(i);
+                font.drawStringWithShadow(str, textStartX, textStartY, 0xFFFFFFFF);
+                textStartY += lineHeight;
+            }
+
+            GlStateManager.enableLighting();
+            GlStateManager.enableDepth();
+            RenderHelper.enableStandardItemLighting();
+            GlStateManager.enableRescaleNormal();
+        }
     }
 
     public static int getHudOffsetForPotions(HudAlignment alignment, double scale, EntityPlayer player)
