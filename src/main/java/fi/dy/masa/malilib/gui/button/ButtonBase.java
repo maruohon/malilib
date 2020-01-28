@@ -20,6 +20,7 @@ public abstract class ButtonBase extends WidgetBase
     protected boolean enabled = true;
     protected boolean hovered;
     protected boolean hoverInfoRequiresShift;
+    protected boolean playClickSound = true;
     protected boolean visible = true;
     @Nullable protected IButtonActionListener actionListener;
 
@@ -58,6 +59,11 @@ public abstract class ButtonBase extends WidgetBase
         this.enabled = enabled;
     }
 
+    public void setPlayClickSound(boolean playSound)
+    {
+        this.playClickSound = playSound;
+    }
+
     public void setDisplayString(String text)
     {
         this.displayString = text;
@@ -77,7 +83,10 @@ public abstract class ButtonBase extends WidgetBase
     @Override
     protected boolean onMouseClickedImpl(int mouseX, int mouseY, int mouseButton)
     {
-        this.mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+        if (this.playClickSound)
+        {
+            this.mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+        }
 
         if (this.actionListener != null)
         {
