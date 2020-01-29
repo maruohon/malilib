@@ -23,12 +23,16 @@ public class MaLiLibInputHandler implements IKeybindProvider
     @Override
     public List<? extends IHotkey> getAllHotkeys()
     {
-        return ImmutableList.of(MaLiLibConfigs.Generic.OPEN_GUI_CONFIGS);
+        return ImmutableList.of(MaLiLibConfigs.Debug.GUI_DEBUG_KEY, MaLiLibConfigs.Generic.OPEN_GUI_CONFIGS);
     }
 
     @Override
     public List<KeybindCategory> getHotkeyCategoriesForCombinedView()
     {
-        return ImmutableList.of(new KeybindCategory(MaLiLibReference.MOD_NAME, "malilib.hotkeys.category.generic_hotkeys", this.getAllHotkeys()));
+        String mod = MaLiLibReference.MOD_NAME;
+
+        return ImmutableList.of(
+                new KeybindCategory(mod, "malilib.hotkeys.category.debug_hotkeys"  , ImmutableList.of(MaLiLibConfigs.Debug.GUI_DEBUG_KEY)),
+                new KeybindCategory(mod, "malilib.hotkeys.category.generic_hotkeys", ImmutableList.of(MaLiLibConfigs.Generic.OPEN_GUI_CONFIGS)));
     }
 }

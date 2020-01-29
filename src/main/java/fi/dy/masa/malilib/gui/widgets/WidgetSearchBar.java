@@ -1,17 +1,17 @@
 package fi.dy.masa.malilib.gui.widgets;
 
 import org.lwjgl.input.Keyboard;
+import net.minecraft.util.ChatAllowedCharacters;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
+import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
+import fi.dy.masa.malilib.gui.util.GuiIconBase;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.HorizontalAlignment;
-import net.minecraft.util.ChatAllowedCharacters;
 
-public class WidgetSearchBar extends WidgetBase
+public class WidgetSearchBar extends WidgetContainer
 {
-    protected final WidgetIcon iconSearch;
-    protected final HorizontalAlignment iconAlignment;
     protected final GuiTextFieldGeneric searchBox;
     protected boolean searchOpen;
 
@@ -23,8 +23,16 @@ public class WidgetSearchBar extends WidgetBase
         int iw = iconSearch.getWidth();
         int ix = iconAlignment == HorizontalAlignment.RIGHT ? x + width - iw - 1 : x + 2;
         int tx = iconAlignment == HorizontalAlignment.RIGHT ? x - searchBarOffsetX + 1 : x + iw + 6 + searchBarOffsetX;
-        this.iconSearch = new WidgetIcon(ix, y + 1, iconSearch);
-        this.iconAlignment = iconAlignment;
+
+        ButtonGeneric button = new ButtonGeneric(ix, y, GuiIconBase.SEARCH);
+        button.setRenderDefaultBackground(false);
+        button.setPlayClickSound(false);
+        button.setRenderOutline(true);
+        button.setOutlineColorNormal(0x00000000);
+        button.setWidth(GuiIconBase.SEARCH.getWidth() + 2);
+        button.setHeight(GuiIconBase.SEARCH.getHeight() + 2);
+        this.addButton(button, (btn, mbtn) -> this.toggleSearchOpen());
+
         this.searchBox = new GuiTextFieldGeneric(tx, y, width - iw - 7 - Math.abs(searchBarOffsetX), height, this.textRenderer);
         this.searchBox.setZLevel(this.zLevel);
     }
@@ -44,6 +52,11 @@ public class WidgetSearchBar extends WidgetBase
         return this.searchOpen;
     }
 
+    public void toggleSearchOpen()
+    {
+        this.setSearchOpen(! this.searchOpen);
+    }
+
     public void setSearchOpen(boolean isOpen)
     {
         this.searchOpen = isOpen;
@@ -61,13 +74,8 @@ public class WidgetSearchBar extends WidgetBase
         {
             return true;
         }
-        else if (this.iconSearch.isMouseOver(mouseX, mouseY))
-        {
-            this.setSearchOpen(! this.searchOpen);
-            return true;
-        }
 
-        return false;
+        return super.onMouseClickedImpl(mouseX, mouseY, mouseButton);
     }
 
     @Override
@@ -100,18 +108,27 @@ public class WidgetSearchBar extends WidgetBase
             return true;
         }
 
-        return false;
+        return super.onKeyTypedImpl(typedChar, keyCode);
     }
 
     @Override
     public void render(int mouseX, int mouseY, boolean selected)
     {
         RenderUtils.color(1f, 1f, 1f, 1f);
-        this.iconSearch.render(false, this.iconSearch.isMouseOver(mouseX, mouseY));
 
         if (this.searchOpen)
         {
             this.searchBox.drawTextBox();
         }
+
+        super.render(mouseX, mouseY, selected);
+    }
+
+    @Override
+    public void renderDebug(int mouseX, int mouseY, boolean hovered, boolean renderAll, boolean infoAlways)
+    {
+        super.renderDebug(mouseX, mouseY, hovered, renderAll, infoAlways);
+
+        GuiBase.renderTextFieldDebug(this.searchBox, mouseX, mouseY, this.zLevel, renderAll, infoAlways);
     }
 }

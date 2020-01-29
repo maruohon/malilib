@@ -28,15 +28,13 @@ public class WidgetListConfigOptions extends WidgetListConfigOptionsBase<ConfigO
 
         if (useKeybindSearch)
         {
-            this.widgetSearchConfigs = new WidgetSearchBarConfigs(x + 2, y + 4, width - 14, 20, 0, GuiIconBase.SEARCH, HorizontalAlignment.LEFT);
-            this.widgetSearchBar = this.widgetSearchConfigs;
-            this.browserEntriesOffsetY = 23;
+            this.widgetSearchConfigs = new WidgetSearchBarConfigs(x + 2, y + 1, width - 14, 20, 0, GuiIconBase.SEARCH, HorizontalAlignment.LEFT);
+            this.addSearchBarWidget(this.widgetSearchConfigs);
         }
         else
         {
             this.widgetSearchConfigs = null;
-            this.widgetSearchBar = new WidgetSearchBar(x + 2, y + 4, width - 14, 14, 0, GuiIconBase.SEARCH, HorizontalAlignment.LEFT);
-            this.browserEntriesOffsetY = 17;
+            this.addSearchBarWidget(new WidgetSearchBar(x + 2, y + 4, width - 14, 14, 0, GuiIconBase.SEARCH, HorizontalAlignment.LEFT));
         }
     }
 

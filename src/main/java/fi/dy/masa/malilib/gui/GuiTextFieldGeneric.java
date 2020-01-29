@@ -30,7 +30,7 @@ public class GuiTextFieldGeneric extends GuiTextField
         return ret;
     }
 
-    public int getHeight()
+    public int getWidgetHeight()
     {
         return ((IGuiTextField) this).getHeight();
     }
@@ -38,7 +38,7 @@ public class GuiTextFieldGeneric extends GuiTextField
     public boolean isMouseOver(int mouseX, int mouseY)
     {
         return mouseX >= this.x && mouseX < this.x + this.getWidth() &&
-               mouseY >= this.y && mouseY < this.y + this.getHeight();
+               mouseY >= this.y && mouseY < this.y + this.getWidgetHeight();
     }
 
     @Override

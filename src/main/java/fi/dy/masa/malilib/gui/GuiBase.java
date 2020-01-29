@@ -12,6 +12,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
+import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.config.options.IConfigBase;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
@@ -150,6 +151,13 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
         this.drawButtonHoverTexts(mouseX, mouseY, partialTicks);
         this.drawHoveredWidget(mouseX, mouseY);
         this.drawGuiMessages();
+
+        if (MaLiLibConfigs.Debug.GUI_DEBUG.getBooleanValue() && MaLiLibConfigs.Debug.GUI_DEBUG_KEY.isHeld())
+        {
+            this.renderDebug(mouseX, mouseY);
+        }
+
+        WidgetBase.renderDebugTextAndClear();
     }
 
     @Override
@@ -476,9 +484,10 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
         {
             for (WidgetBase widget : this.widgets)
             {
-                widget.render(mouseX, mouseY, false);
+                boolean hovered = widget.isMouseOver(mouseX, mouseY);
+                widget.render(mouseX, mouseY, hovered);
 
-                if (widget.isMouseOver(mouseX, mouseY))
+                if (hovered)
                 {
                     this.hoveredWidget = widget;
                 }
@@ -558,5 +567,60 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     public static boolean isAltDown()
     {
         return isAltKeyDown();
+    }
+
+    public void renderDebug(int mouseX, int mouseY)
+    {
+        boolean renderAll = MaLiLibConfigs.Debug.GUI_DEBUG_ALL.getBooleanValue();
+        boolean infoAlways = MaLiLibConfigs.Debug.GUI_DEBUG_INFO_ALWAYS.getBooleanValue();
+
+        renderWidgetDebug(this.buttons, mouseX, mouseY, renderAll, infoAlways);
+        renderWidgetDebug(this.widgets, mouseX, mouseY, renderAll, infoAlways);
+        renderTextFieldDebug(this.textFields, mouseX, mouseY, this.zLevel + 1, renderAll, infoAlways);
+    }
+
+    public static void renderWidgetDebug(List<? extends WidgetBase> widgets, int mouseX, int mouseY, boolean renderAll, boolean infoAlways)
+    {
+        if (widgets.isEmpty() == false)
+        {
+            for (WidgetBase widget : widgets)
+            {
+                boolean hovered = widget.isMouseOver(mouseX, mouseY);
+                widget.renderDebug(mouseX, mouseY, hovered, renderAll, infoAlways);
+            }
+        }
+    }
+
+    public static void renderTextFieldDebug(List<TextFieldWrapper<?>> textFields, int mouseX, int mouseY, float z, boolean renderAll, boolean infoAlways)
+    {
+        if (textFields.isEmpty() == false)
+        {
+            for (TextFieldWrapper<?> textField : textFields)
+            {
+                renderTextFieldDebug(textField.getTextField(), mouseX, mouseY, z, renderAll, infoAlways);
+            }
+        }
+    }
+
+    public static void renderTextFieldDebug(GuiTextFieldGeneric textField, int mouseX, int mouseY, float z, boolean renderAll, boolean infoAlways)
+    {
+        int x = textField.x;
+        int y = textField.y;
+        int w = textField.getWidth();
+        int h = textField.getWidgetHeight();
+        int color = 0xFFFF4040;
+        boolean hovered = textField.isMouseOver(mouseX, mouseY);
+
+        if (hovered || renderAll)
+        {
+            WidgetBase.renderDebugOutline(x, y, z, w, h, color, hovered);
+        }
+
+        if (hovered || infoAlways)
+        {
+            int px = infoAlways ? x : mouseX;
+            int py = infoAlways ? y - 12 : mouseY;
+            WidgetBase.addDebugText(px, py, x, y, z, w, h, color, textField.getClass().getName());
+        }
     }
 }

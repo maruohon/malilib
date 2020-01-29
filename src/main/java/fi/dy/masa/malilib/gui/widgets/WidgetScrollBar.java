@@ -171,12 +171,12 @@ public class WidgetScrollBar extends WidgetBase
                 downArH = this.arrowTextureDown.getHeight();
             }
 
-            int slideHeight = Math.max(0, height - upArH - downArH - 2);
-            totalHeight = Math.max(0, totalHeight - upArH - downArH - 2);
+            int slideHeight = Math.max(0, height - upArH - downArH);
+            totalHeight = Math.max(0, totalHeight - upArH - downArH);
             float relative = Math.min(1.0F, (float) slideHeight / (float) totalHeight);
             int barHeight = (int) (relative * slideHeight);
             int barTravel = slideHeight - barHeight;
-            int barPosition = this.y + 1 + upArH + (this.maxValue > 0 ? (int) ((this.currentValue / (float) this.maxValue) * barTravel) : 0);
+            int barPosition = this.y + upArH + (this.maxValue > 0 ? (int) ((this.currentValue / (float) this.maxValue) * barTravel) : 0);
 
             RenderUtils.color(1f, 1f, 1f, 1f);
 

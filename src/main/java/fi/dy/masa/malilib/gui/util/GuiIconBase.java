@@ -7,6 +7,8 @@ import fi.dy.masa.malilib.render.RenderUtils;
 
 public class GuiIconBase implements IGuiIcon
 {
+    public static final GuiIconBase EMPTY                   = new GuiIconBase(0, 0, 0, 0, 0, 0);
+
     public static final GuiIconBase ARROW_UP                = new GuiIconBase(108,   0, 15, 15);
     public static final GuiIconBase ARROW_DOWN              = new GuiIconBase(108,  15, 15, 15);
     public static final GuiIconBase PLUS                    = new GuiIconBase(108,  30, 15, 15);
@@ -80,6 +82,11 @@ public class GuiIconBase implements IGuiIcon
     @Override
     public void renderAt(int x, int y, float zLevel, boolean enabled, boolean selected)
     {
+        if (this.w == 0 || this.h == 0)
+        {
+            return;
+        }
+
         int u = this.u;
         int v = this.v;
 

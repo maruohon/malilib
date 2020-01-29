@@ -3,14 +3,25 @@ package fi.dy.masa.malilib.gui.widgets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import javax.annotation.Nullable;
+import org.lwjgl.opengl.GL11;
+import com.google.common.collect.ArrayListMultimap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
+import fi.dy.masa.malilib.gui.interfaces.IBackgroundRenderer;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public abstract class WidgetBase
 {
+    private static final ArrayListMultimap<Long, String> DEBUG_STRINGS = ArrayListMultimap.create();
+    public static final IBackgroundRenderer DEBUG_TEXT_BG_RENDERER = (x, y, w, h) -> { RenderUtils.drawOutlinedBox(x - 2, y - 2, w + 4, h + 4, 0xC0000000, 0xFFC0C0C0); };
+
     protected final Minecraft mc;
     protected final FontRenderer textRenderer;
     protected final List<String> hoverStrings = new ArrayList<>();
@@ -46,8 +57,8 @@ public abstract class WidgetBase
 
     public void setPosition(int x, int y)
     {
-        this.x = x;
-        this.y = y;
+        this.setX(x);
+        this.setY(y);
     }
 
     public void setX(int x)
@@ -60,14 +71,19 @@ public abstract class WidgetBase
         this.y = y;
     }
 
+    public void setRightX(int x)
+    {
+        this.xRight = x;
+        this.updatePositionIfRightAligned();
+    }
+
     public void setRightAlign(boolean rightAlign, int xRight)
     {
         this.rightAlign = rightAlign;
 
         if (rightAlign)
         {
-            this.xRight = xRight;
-            this.updatePositionIfRightAligned();
+            this.setRightX(xRight);
         }
     }
 
@@ -76,6 +92,12 @@ public abstract class WidgetBase
         if (this.rightAlign)
         {
             this.x = this.xRight - this.width;
+
+            if (this.x < 0)
+            {
+                this.xRight += -this.x;
+                this.x = 0;
+            }
         }
     }
 
@@ -165,7 +187,7 @@ public abstract class WidgetBase
      */
     public boolean canSelectAt(int mouseX, int mouseY, int mouseButton)
     {
-        return this.isMouseOver(mouseX, mouseY);
+        return true;
     }
 
     public boolean hasHoverText()
@@ -255,6 +277,79 @@ public abstract class WidgetBase
         if (this.hasHoverText() && this.shouldRenderHoverInfo(mouseX, mouseY))
         {
             RenderUtils.drawHoverText(mouseX, mouseY, this.getHoverStrings());
+            RenderUtils.disableItemLighting();
+        }
+    }
+
+    public void renderDebug(int mouseX, int mouseY, boolean hovered, boolean renderAll, boolean infoAlways)
+    {
+        int x = this.x;
+        int y = this.y;
+        double z = this.zLevel;
+        int w = this.width;
+        int h = this.height;
+        int color = 0xFFFF4040;
+
+        if (hovered || renderAll)
+        {
+            renderDebugOutline(x, y, z, w, h, color, hovered);
+        }
+
+        if (hovered || infoAlways)
+        {
+            int posX = infoAlways ? x      : mouseX;
+            int posY = infoAlways ? y - 12 : mouseY;
+            addDebugText(posX, posY, x, y, z, w, h, color, this.getClass().getName());
+        }
+    }
+
+    public static void renderDebugOutline(double x, double y, double z, double w, double h, int color, boolean hovered)
+    {
+        float a = (float) (color >> 24 & 255) / 255.0F;
+        float r = (float) (color >> 16 & 255) / 255.0F;
+        float g = (float) (color >>  8 & 255) / 255.0F;
+        float b = (float) (color & 255) / 255.0F;
+        float lineWidth = hovered ? 2f : 1.0f;
+
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder buffer = tessellator.getBuffer();
+
+        GlStateManager.disableTexture2D();
+        GlStateManager.glLineWidth(lineWidth);
+
+        buffer.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
+
+        buffer.pos(x    , y    , z).color(r, g, b, a).endVertex();
+        buffer.pos(x    , y + h, z).color(r, g, b, a).endVertex();
+        buffer.pos(x + w, y + h, z).color(r, g, b, a).endVertex();
+        buffer.pos(x + w, y    , z).color(r, g, b, a).endVertex();
+
+        tessellator.draw();
+
+        GlStateManager.enableTexture2D();
+    }
+
+    public static void addDebugText(int mouseX, int mouseY, int x, int y, double z, int w, int h, int color, String text)
+    {
+        String str = String.format("x: %d .. %d, y: %d .. %d, z: %.1f w: %d, h: %d - %s", x, x + w - 1, y, y + h - 1, z, w, h, text);
+        int posY = mouseY - 2;
+
+        Long posLong = Long.valueOf((long) posY << 32 | (long) mouseX);
+        DEBUG_STRINGS.put(posLong, str);
+    }
+
+    public static void renderDebugTextAndClear()
+    {
+        if (DEBUG_STRINGS.isEmpty() == false)
+        {
+            for (Long posLong : DEBUG_STRINGS.keySet())
+            {
+                int x = (int) (posLong.longValue() & 0xFFFFFFFF);
+                int y = (int) ((posLong.longValue() >>> 32) & 0xFFFFFFFF);
+                RenderUtils.drawHoverText(x, y, DEBUG_STRINGS.get(posLong), 0xFFFF4040, DEBUG_TEXT_BG_RENDERER);
+            }
+
+            DEBUG_STRINGS.clear();
             RenderUtils.disableItemLighting();
         }
     }

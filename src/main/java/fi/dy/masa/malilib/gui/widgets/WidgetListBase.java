@@ -16,16 +16,12 @@ import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
 import fi.dy.masa.malilib.gui.util.GuiIconBase;
 import fi.dy.masa.malilib.render.RenderUtils;
 
-public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TYPE>> extends GuiBase
+public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TYPE>> extends WidgetContainer
 {
     protected final List<TYPE> listContents = new ArrayList<>();
     protected final List<WIDGET> listWidgets = new ArrayList<>();
     protected final WidgetScrollBar scrollBar;
     protected final Set<TYPE> selectedEntries = new HashSet<>();
-    protected final int posX;
-    protected final int posY;
-    protected int totalWidth;
-    protected int totalHeight;
     protected int browserWidth;
     protected int browserHeight;
     protected int entryHeight;
@@ -38,24 +34,26 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
     protected int browserPaddingY;
     protected int maxVisibleBrowserEntries;
     protected int lastSelectedEntryIndex = -1;
-    protected int lastScrollbarPosition = -1;
+    protected int lastScrollbarPosition;
     protected boolean allowKeyboardNavigation;
     protected boolean allowMultiSelection;
     protected boolean shouldSortList;
     @Nullable private TYPE lastSelectedEntry;
     @Nullable private ISelectionListener<TYPE> selectionListener;
-    @Nullable protected WidgetSearchBar widgetSearchBar;
+    @Nullable private WidgetSearchBar widgetSearchBar;
+    @Nullable private net.minecraft.client.gui.GuiScreen parentGui;
 
     public WidgetListBase(int x, int y, int width, int height, @Nullable ISelectionListener<TYPE> selectionListener)
     {
-        this.posX = x;
-        this.posY = y;
+        super(x, y, width, height);
+
         this.selectionListener = selectionListener;
         this.browserEntryHeight = 14;
 
         // The positions gets updated in setSize()
         this.scrollBar = new WidgetScrollBar(0, 0, 8, height);
         this.scrollBar.setArrowTextures(GuiIconBase.SMALL_ARROW_UP, GuiIconBase.SMALL_ARROW_DOWN);
+        this.addWidget(this.scrollBar);
 
         this.setSize(width, height);
     }
@@ -65,15 +63,31 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
         this.selectionListener = listener;
     }
 
-    @Override
+    protected WidgetSearchBar addSearchBarWidget(WidgetSearchBar searchBar)
+    {
+        this.widgetSearchBar = this.addWidget(searchBar);
+        this.browserEntriesOffsetY = searchBar.getHeight() + 3;
+        return this.widgetSearchBar;
+    }
+
     public void initGui()
     {
-        super.initGui();
-
-        this.addWidget(this.scrollBar);
         this.refreshEntries();
-
         Keyboard.enableRepeatEvents(true);
+    }
+
+    public void onGuiClosed()
+    {
+    }
+
+    public void setParentGui(net.minecraft.client.gui.GuiScreen parentGui)
+    {
+        this.parentGui = parentGui;
+    }
+
+    public net.minecraft.client.gui.GuiScreen getParentGui()
+    {
+        return this.parentGui;
     }
 
     @Override
@@ -115,19 +129,24 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
     }
 
     @Override
-    public boolean onMouseReleased(int mouseX, int mouseY, int mouseButton)
+    public void onMouseReleased(int mouseX, int mouseY, int mouseButton)
     {
         for (int i = 0; i < this.listWidgets.size(); ++i)
         {
             this.listWidgets.get(i).onMouseReleased(mouseX, mouseY, mouseButton);
         }
 
-        return super.onMouseReleased(mouseX, mouseY, mouseButton);
+        super.onMouseReleased(mouseX, mouseY, mouseButton);
     }
 
     @Override
     public boolean onMouseScrolled(int mouseX, int mouseY, double mouseWheelDelta)
     {
+        if (this.getSearchBarWidget() != null && this.getSearchBarWidget().onMouseScrolled(mouseX, mouseY, mouseWheelDelta))
+        {
+            return true;
+        }
+
         if (super.onMouseScrolled(mouseX, mouseY, mouseWheelDelta))
         {
             return true;
@@ -136,8 +155,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
         // The scroll event could be/should be distributed to the entry widgets here
         // It's not done (for now?) to prevent accidentally messing up stuff when scrolling over lists that have buttons
 
-        if (mouseX >= this.posX && mouseX <= this.posX + this.browserWidth &&
-            mouseY >= this.posY && mouseY <= this.posY + this.browserHeight)
+        if (GuiBase.isMouseOver(mouseX, mouseY, this.x, this.y, this.browserWidth, this.browserHeight))
         {
             this.offsetSelectionOrScrollbar(mouseWheelDelta < 0 ? 3 : -3, false);
             return true;
@@ -148,16 +166,17 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
 
     protected boolean onMouseClickedSearchBar(int mouseX, int mouseY, int mouseButton)
     {
-        if (this.getSearchBarWidget() != null)
-        {
-            boolean searchOpenPre = this.getSearchBarWidget().isSearchOpen();
-            String filterPre = this.getSearchBarWidget().getFilter();
+        WidgetSearchBar widget = this.getSearchBarWidget();
 
-            if (this.getSearchBarWidget().onMouseClickedImpl(mouseX, mouseY, mouseButton))
+        if (widget != null)
+        {
+            boolean searchOpenPre = widget.isSearchOpen();
+            String filterPre = widget.getFilter();
+
+            if (widget.onMouseClicked(mouseX, mouseY, mouseButton))
             {
                 // Toggled the search bar on or off, or cleared the filter with a right click
-                if (this.getSearchBarWidget().isSearchOpen() != searchOpenPre ||
-                    filterPre.equals(this.getSearchBarWidget().getFilter()) == false)
+                if (widget.isSearchOpen() != searchOpenPre || filterPre.equals(widget.getFilter()) == false)
                 {
                     this.clearSelection();
                     this.refreshBrowserEntries();
@@ -339,9 +358,9 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
         return Collections.emptyList();
     }
 
-    protected void addNonFilteredContents(Collection<TYPE> placements)
+    protected void addNonFilteredContents(Collection<TYPE> entries)
     {
-        this.listContents.addAll(placements);
+        this.listContents.addAll(entries);
     }
 
     protected void addFilteredContents(Collection<TYPE> entries)
@@ -357,7 +376,6 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
         }
     }
 
-    @Override
     public void drawContents(int mouseX, int mouseY, float partialTicks)
     {
         RenderUtils.color(1f, 1f, 1f, 1f);
@@ -417,16 +435,23 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
         RenderUtils.color(1f, 1f, 1f, 1f);
     }
 
+    @Override
+    public void renderDebug(int mouseX, int mouseY, boolean hovered, boolean renderAll, boolean infoAlways)
+    {
+        super.renderDebug(mouseX, mouseY, hovered, renderAll, infoAlways);
+        GuiBase.renderWidgetDebug(this.listWidgets, mouseX, mouseY, renderAll, infoAlways);
+    }
+
     public void setSize(int width, int height)
     {
-        this.totalWidth = width;
-        this.totalHeight = height;
+        this.width = width;
+        this.height = height;
         this.browserWidth = width;
         this.browserHeight = height;
         this.browserPaddingX = 3;
         this.browserPaddingY = 4;
-        this.browserEntriesStartX = this.posX + this.browserPaddingX;
-        this.browserEntriesStartY = this.posY + this.browserPaddingY;
+        this.browserEntriesStartX = this.x + this.browserPaddingX;
+        this.browserEntriesStartY = this.y + this.browserPaddingY;
         this.browserEntryWidth = this.browserWidth - 14;
 
         this.updateScrollbarPosition();
@@ -434,7 +459,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
 
     protected void updateScrollbarPosition()
     {
-        int scrollBarX = this.posX + this.browserWidth - 9;
+        int scrollBarX = this.x + this.browserWidth - 9;
         int scrollBarY = this.browserEntriesStartY + this.browserEntriesOffsetY;
 
         this.scrollBar.setPosition(scrollBarX, scrollBarY);
@@ -454,8 +479,8 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
         final int numEntries = this.listContents.size();
         int usableHeight = this.browserHeight - this.browserPaddingY - this.browserEntriesOffsetY;
         int usedHeight = 0;
-        int x = this.posX + 2;
-        int y = this.posY + 4 + this.browserEntriesOffsetY;
+        int x = this.x + 2;
+        int y = this.y + 4 + this.browserEntriesOffsetY;
         int index = this.scrollBar.getValue();
         WIDGET widget = this.createHeaderWidget(x, y, index, usableHeight, usedHeight);
 

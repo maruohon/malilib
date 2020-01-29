@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.gui.widgets;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
+import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.render.RenderUtils;
@@ -47,6 +48,27 @@ public abstract class WidgetContainer extends WidgetBase
             WidgetLabel label = new WidgetLabel(x, y, width, height, textColor, lines);
             this.addWidget(label);
         }
+    }
+
+    @Override
+    public boolean isMouseOver(int mouseX, int mouseY)
+    {
+        if (super.isMouseOver(mouseX, mouseY))
+        {
+            return true;
+        }
+
+        // Let the sub widgets check if the mouse is over them,
+        // in case they extend beyond the bounds of this container widget.
+        for (WidgetBase widget : this.subWidgets)
+        {
+            if (widget.isMouseOver(mouseX, mouseY))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     @Override
@@ -147,6 +169,7 @@ public abstract class WidgetContainer extends WidgetBase
     @Override
     public void postRenderHovered(int mouseX, int mouseY, boolean selected)
     {
+        super.postRenderHovered(mouseX, mouseY, selected);
         this.drawHoveredSubWidget(mouseX, mouseY);
     }
 
@@ -158,9 +181,10 @@ public abstract class WidgetContainer extends WidgetBase
         {
             for (WidgetBase widget : this.subWidgets)
             {
-                widget.render(mouseX, mouseY, false);
+                boolean hovered = widget.isMouseOver(mouseX, mouseY);
+                widget.render(mouseX, mouseY, hovered);
 
-                if (widget.isMouseOver(mouseX, mouseY))
+                if (hovered)
                 {
                     this.hoveredSubWidget = widget;
                 }
@@ -175,5 +199,12 @@ public abstract class WidgetContainer extends WidgetBase
             this.hoveredSubWidget.postRenderHovered(mouseX, mouseY, false);
             RenderUtils.disableItemLighting();
         }
+    }
+
+    @Override
+    public void renderDebug(int mouseX, int mouseY, boolean hovered, boolean renderAll, boolean infoAlways)
+    {
+        super.renderDebug(mouseX, mouseY, hovered, renderAll, infoAlways);
+        GuiBase.renderWidgetDebug(this.subWidgets, mouseX, mouseY, renderAll, infoAlways);
     }
 }

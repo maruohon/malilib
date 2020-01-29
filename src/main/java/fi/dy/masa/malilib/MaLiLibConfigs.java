@@ -12,6 +12,8 @@ import fi.dy.masa.malilib.config.options.ConfigOptionList;
 import fi.dy.masa.malilib.config.options.IConfigBase;
 import fi.dy.masa.malilib.config.values.HudAlignment;
 import fi.dy.masa.malilib.config.values.KeybindDisplayMode;
+import fi.dy.masa.malilib.hotkeys.KeyAction;
+import fi.dy.masa.malilib.hotkeys.KeybindSettings;
 
 public class MaLiLibConfigs implements IConfigHandler
 {
@@ -36,10 +38,20 @@ public class MaLiLibConfigs implements IConfigHandler
 
     public static class Debug
     {
+        public static final KeybindSettings DBG_KS = KeybindSettings.create(KeybindSettings.Context.GUI, KeyAction.PRESS, true, false, false, false, true);
+
+        public static final ConfigBoolean GUI_DEBUG                 = new ConfigBoolean("guiDebug", false, "When enabled, all GUI widgets will draw outlines and\nwhen hovered their position and dimension and widget class name");
+        public static final ConfigBoolean GUI_DEBUG_ALL             = new ConfigBoolean("guiDebugAll", true, "If true, then all widgets will render the debug outline,\notherwise only the hovered widget will render it");
+        public static final ConfigBoolean GUI_DEBUG_INFO_ALWAYS     = new ConfigBoolean("guiDebugInfoAlways", false, "When enabled, the debug position info is always rendered,\neven without hovering the widgets");
+        public static final ConfigHotkey  GUI_DEBUG_KEY             = new ConfigHotkey("guiDebugKey", "LMENU", DBG_KS, "If this is set, then the GUI debug only renders\nwhile this key is held down");
         public static final ConfigBoolean KEYBIND_DEBUG             = new ConfigBoolean("keybindDebugging", false, "When enabled, key presses and held keys are\nprinted to the game console (and the action bar, if enabled)");
         public static final ConfigBoolean KEYBIND_DEBUG_ACTIONBAR   = new ConfigBoolean("keybindDebuggingIngame", true, "If enabled, then the messages from 'keybindDebugging'\nare also printed to the in-game action bar");
 
         public static final ImmutableList<IConfigBase> OPTIONS = ImmutableList.of(
+                GUI_DEBUG,
+                GUI_DEBUG_ALL,
+                GUI_DEBUG_INFO_ALWAYS,
+                GUI_DEBUG_KEY,
                 KEYBIND_DEBUG,
                 KEYBIND_DEBUG_ACTIONBAR
         );

@@ -15,7 +15,7 @@ public class WidgetListStringListEdit extends WidgetListConfigOptionsBase<String
     }
 
     @Override
-    public GuiStringListEdit getParent()
+    public GuiStringListEdit getParentGui()
     {
         return this.parent;
     }
@@ -38,8 +38,8 @@ public class WidgetListStringListEdit extends WidgetListConfigOptionsBase<String
             this.listWidgets.clear();
             this.maxVisibleBrowserEntries = 1;
 
-            int x = this.posX + 2;
-            int y = this.posY + 4 + this.browserEntriesOffsetY;
+            int x = this.x + 2;
+            int y = this.y + 4 + this.browserEntriesOffsetY;
 
             this.listWidgets.add(this.createListEntryWidget(x, y, -1, false, ""));
             this.scrollBar.setMaxValue(0);

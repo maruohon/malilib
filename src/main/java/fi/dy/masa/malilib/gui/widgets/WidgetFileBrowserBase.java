@@ -11,6 +11,7 @@ import java.util.Locale;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import com.google.common.collect.ImmutableList;
+import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.interfaces.IDirectoryCache;
 import fi.dy.masa.malilib.gui.interfaces.IDirectoryNavigator;
 import fi.dy.masa.malilib.gui.interfaces.IFileBrowserIconProvider;
@@ -29,7 +30,6 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
     protected final String browserContext;
     protected final IFileBrowserIconProvider iconProvider = new FileBrowserIconProviderBase();
     protected File currentDirectory;
-    @Nullable protected WidgetDirectoryNavigation directoryNavigationWidget;
 
     public WidgetFileBrowserBase(int x, int y, int width, int height,
             IDirectoryCache cache, String browserContext, File defaultDirectory,
@@ -79,7 +79,7 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
     public void drawContents(int mouseX, int mouseY, float partialTicks)
     {
         // Draw an outline around the entire file browser
-        RenderUtils.drawOutlinedBox(this.posX, this.posY, this.browserWidth, this.browserHeight, 0xB0000000, COLOR_HORIZONTAL_BAR);
+        RenderUtils.drawOutlinedBox(this.x, this.y, this.browserWidth, this.browserHeight, 0xB0000000, GuiBase.COLOR_HORIZONTAL_BAR);
 
         super.drawContents(mouseX, mouseY, partialTicks);
 
@@ -106,18 +106,17 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
 
     protected int getBrowserWidthForTotalWidth(int width)
     {
-        return width - 6;
+        return width;
     }
 
     protected void updateDirectoryNavigationWidget()
     {
-        int x = this.posX + 2;
-        int y = this.posY + 4;
+        int x = this.x + 2;
+        int y = this.y + 4;
 
-        this.directoryNavigationWidget = new WidgetDirectoryNavigation(x, y, this.browserEntryWidth, 14,
+        WidgetDirectoryNavigation widget = new WidgetDirectoryNavigation(x, y, this.browserEntryWidth, 14,
                 this.currentDirectory, this.getRootDirectory(), this, this.getIconProvider());
-        this.browserEntriesOffsetY = this.directoryNavigationWidget.getHeight() + 3;
-        this.widgetSearchBar = this.directoryNavigationWidget;
+        this.addSearchBarWidget(widget);
 
         this.updateScrollbarPosition();
     }
@@ -188,7 +187,7 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
         listOut.addAll(list);
         list.clear();
 
-        for (File subDir : this.getSubDirectories(dir))
+        for (File subDir : getSubDirectories(dir))
         {
             String pre;
 
@@ -231,7 +230,7 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
         return ImmutableList.of(FileUtils.getNameWithoutExtension(entry.getName().toLowerCase()));
     }
 
-    protected List<File> getSubDirectories(File dir)
+    public static List<File> getSubDirectories(File dir)
     {
         List<File> dirs = new ArrayList<>();
 

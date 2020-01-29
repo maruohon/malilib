@@ -124,11 +124,9 @@ public class ButtonGeneric extends ButtonBase
             int y = this.y;
             int width = this.width;
             int height = this.height;
+            boolean textBlank = StringUtils.isBlank(this.displayString);
 
             this.hovered = mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
-
-            int buttonStyle = this.getTextureOffset(this.hovered);
-            boolean textBlank = StringUtils.isBlank(this.displayString);
 
             RenderUtils.color(1f, 1f, 1f, 1f);
 
@@ -146,6 +144,8 @@ public class ButtonGeneric extends ButtonBase
                 int w1 = width / 2;
                 // Account for odd widths
                 int w2 = (width % 2) != 0 ? w1 + 1 : w1;
+                int buttonStyle = this.getTextureOffset(this.hovered);
+
                 RenderUtils.drawTexturedRect(x     , y,        0, 46 + buttonStyle * 20, w1, height);
                 RenderUtils.drawTexturedRect(x + w1, y, 200 - w2, 46 + buttonStyle * 20, w2, height);
             }
@@ -171,10 +171,8 @@ public class ButtonGeneric extends ButtonBase
                 int offY = this.customIconOffset ? this.iconOffsetY : (height - this.icon.getHeight()) / 2;
                 x = this.alignment == HorizontalAlignment.LEFT ? this.x + offX : this.x + width - this.icon.getWidth() - offX;
                 y = this.y + offY;
-                int u = this.icon.getU() + buttonStyle * this.icon.getWidth();
 
-                this.bindTexture(this.icon.getTexture());
-                RenderUtils.drawTexturedRect(x, y, u, this.icon.getV(), this.icon.getWidth(), this.icon.getHeight());
+                this.icon.renderAt(x, y, this.zLevel, this.enabled, this.hovered);
             }
 
             if (textBlank == false)

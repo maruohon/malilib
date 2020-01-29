@@ -41,6 +41,7 @@ import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraft.world.storage.MapData;
 import fi.dy.masa.malilib.config.values.HudAlignment;
 import fi.dy.masa.malilib.gui.GuiBase;
+import fi.dy.masa.malilib.gui.interfaces.IBackgroundRenderer;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.util.Color4f;
 import fi.dy.masa.malilib.util.IntBoundingBox;
@@ -460,6 +461,11 @@ public class RenderUtils
 
     public static void drawHoverText(int x, int y, List<String> textLines)
     {
+        drawHoverText(x, y, textLines, 0xFFC0C0C0 , RenderUtils::renderHoverTextBackground);
+    }
+
+    public static void drawHoverText(int x, int y, List<String> textLines, int textColor, IBackgroundRenderer backgroundRenderer)
+    {
         Minecraft mc = mc();
 
         if (textLines.isEmpty() == false && GuiUtils.getCurrentScreen() != null)
@@ -503,36 +509,23 @@ public class RenderUtils
                 int leftX = x - maxLineLength - 8;
 
                 // If the text fits from the cursor to the left edge of the screen...
-                if (leftX >= 2)
+                if (leftX >= 4)
                 {
                     textStartX = leftX;
                 }
                 // otherwise move it to touching the edge of the screen that the cursor is closest to
                 else
                 {
-                    textStartX = x < (maxWidth / 2) ? 2 : Math.max(2, maxWidth - maxLineLength - 6);
+                    textStartX = x < (maxWidth / 2) ? 4 : Math.max(4, maxWidth - maxLineLength - 6);
                 }
             }
 
-            double zLevel = 300;
-            int borderColor = 0xF0100010;
-            drawGradientRect(textStartX - 3, textStartY - 4, textStartX + maxLineLength + 3, textStartY - 3, zLevel, borderColor, borderColor);
-            drawGradientRect(textStartX - 3, textStartY + textHeight + 3, textStartX + maxLineLength + 3, textStartY + textHeight + 4, zLevel, borderColor, borderColor);
-            drawGradientRect(textStartX - 3, textStartY - 3, textStartX + maxLineLength + 3, textStartY + textHeight + 3, zLevel, borderColor, borderColor);
-            drawGradientRect(textStartX - 4, textStartY - 3, textStartX - 3, textStartY + textHeight + 3, zLevel, borderColor, borderColor);
-            drawGradientRect(textStartX + maxLineLength + 3, textStartY - 3, textStartX + maxLineLength + 4, textStartY + textHeight + 3, zLevel, borderColor, borderColor);
-
-            int fillColor1 = 0x505000FF;
-            int fillColor2 = 0x5028007F;
-            drawGradientRect(textStartX - 3, textStartY - 3 + 1, textStartX - 3 + 1, textStartY + textHeight + 3 - 1, zLevel, fillColor1, fillColor2);
-            drawGradientRect(textStartX + maxLineLength + 2, textStartY - 3 + 1, textStartX + maxLineLength + 3, textStartY + textHeight + 3 - 1, zLevel, fillColor1, fillColor2);
-            drawGradientRect(textStartX - 3, textStartY - 3, textStartX + maxLineLength + 3, textStartY - 3 + 1, zLevel, fillColor1, fillColor1);
-            drawGradientRect(textStartX - 3, textStartY + textHeight + 2, textStartX + maxLineLength + 3, textStartY + textHeight + 3, zLevel, fillColor2, fillColor2);
+            backgroundRenderer.renderBackground(textStartX, textStartY, maxLineLength, textHeight);
 
             for (int i = 0; i < textLines.size(); ++i)
             {
                 String str = textLines.get(i);
-                font.drawStringWithShadow(str, textStartX, textStartY, 0xFFFFFFFF);
+                font.drawStringWithShadow(str, textStartX, textStartY, textColor);
                 textStartY += lineHeight;
             }
 
@@ -541,6 +534,24 @@ public class RenderUtils
             RenderHelper.enableStandardItemLighting();
             GlStateManager.enableRescaleNormal();
         }
+    }
+
+    public static void renderHoverTextBackground(int x, int y, int width, int height)
+    {
+        double zLevel = 300;
+        int borderColor = 0xF0100010;
+        drawGradientRect(x - 3, y - 4, x + width + 3, y - 3, zLevel, borderColor, borderColor);
+        drawGradientRect(x - 3, y + height + 3, x + width + 3, y + height + 4, zLevel, borderColor, borderColor);
+        drawGradientRect(x - 3, y - 3, x + width + 3, y + height + 3, zLevel, borderColor, borderColor);
+        drawGradientRect(x - 4, y - 3, x - 3, y + height + 3, zLevel, borderColor, borderColor);
+        drawGradientRect(x + width + 3, y - 3, x + width + 4, y + height + 3, zLevel, borderColor, borderColor);
+
+        int fillColor1 = 0x505000FF;
+        int fillColor2 = 0x5028007F;
+        drawGradientRect(x - 3, y - 3 + 1, x - 3 + 1, y + height + 3 - 1, zLevel, fillColor1, fillColor2);
+        drawGradientRect(x + width + 2, y - 3 + 1, x + width + 3, y + height + 3 - 1, zLevel, fillColor1, fillColor2);
+        drawGradientRect(x - 3, y - 3, x + width + 3, y - 3 + 1, zLevel, fillColor1, fillColor1);
+        drawGradientRect(x - 3, y + height + 2, x + width + 3, y + height + 3, zLevel, fillColor2, fillColor2);
     }
 
     public static int getHudOffsetForPotions(HudAlignment alignment, double scale, EntityPlayer player)

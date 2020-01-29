@@ -59,14 +59,16 @@ public abstract class ButtonBase extends WidgetBase
         this.enabled = enabled;
     }
 
-    public void setPlayClickSound(boolean playSound)
+    public ButtonBase setPlayClickSound(boolean playSound)
     {
         this.playClickSound = playSound;
+        return this;
     }
 
-    public void setDisplayString(String text)
+    public ButtonBase setDisplayString(String text)
     {
         this.displayString = text;
+        return this;
     }
 
     protected int autoCalculateWidth(String text)
@@ -83,14 +85,17 @@ public abstract class ButtonBase extends WidgetBase
     @Override
     protected boolean onMouseClickedImpl(int mouseX, int mouseY, int mouseButton)
     {
-        if (this.playClickSound)
+        if (this.enabled && this.visible)
         {
-            this.mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
-        }
+            if (this.playClickSound)
+            {
+                this.mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+            }
 
-        if (this.actionListener != null)
-        {
-            this.actionListener.actionPerformedWithButton(this, mouseButton);
+            if (this.actionListener != null)
+            {
+                this.actionListener.actionPerformedWithButton(this, mouseButton);
+            }
         }
 
         return true;
@@ -101,12 +106,6 @@ public abstract class ButtonBase extends WidgetBase
     {
         int mouseButton = mouseWheelDelta < 0 ? 1 : 0;
         return this.onMouseClickedImpl(mouseX, mouseY, mouseButton);
-    }
-
-    @Override
-    public boolean isMouseOver(int mouseX, int mouseY)
-    {
-        return this.enabled && this.visible && super.isMouseOver(mouseX, mouseY);
     }
 
     public void updateDisplayString()

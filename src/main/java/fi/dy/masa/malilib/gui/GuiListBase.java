@@ -2,8 +2,8 @@ package fi.dy.masa.malilib.gui;
 
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
 import fi.dy.masa.malilib.gui.widgets.WidgetListBase;
 import fi.dy.masa.malilib.gui.widgets.WidgetListEntryBase;
@@ -65,7 +65,7 @@ public abstract class GuiListBase<TYPE, WIDGET extends WidgetListEntryBase<TYPE>
 
     public boolean isSearchOpen()
     {
-        return this.getListWidget().isSearchOpen();
+        return this.getListWidget() != null && this.getListWidget().isSearchOpen();
     }
 
     @Override
@@ -76,11 +76,19 @@ public abstract class GuiListBase<TYPE, WIDGET extends WidgetListEntryBase<TYPE>
 
     protected void updateListPosition(int listX, int listY)
     {
-        int scrollbarPosition = this.getListWidget().getScrollbar().getValue();
-        this.setListPosition(listX, listY);
-        this.reCreateListWidget();
-        this.getListWidget().getScrollbar().setValue(scrollbarPosition);
-        this.getListWidget().refreshEntries();
+        WIDGETLIST listWidget = this.getListWidget();
+
+        if (listWidget != null)
+        {
+            int scrollbarPosition = listWidget.getScrollbar().getValue();
+            this.setListPosition(listX, listY);
+            this.reCreateListWidget();
+
+            // Fetch the new reference...
+            listWidget = this.getListWidget();
+            listWidget.getScrollbar().setValue(scrollbarPosition);
+            listWidget.refreshEntries();
+        }
     }
 
     @Override
@@ -88,10 +96,12 @@ public abstract class GuiListBase<TYPE, WIDGET extends WidgetListEntryBase<TYPE>
     {
         super.initGui();
 
-        if (this.getListWidget() != null)
+        WIDGETLIST listWidget = this.getListWidget();
+
+        if (listWidget != null)
         {
-            this.getListWidget().setSize(this.getBrowserWidth(), this.getBrowserHeight());
-            this.getListWidget().initGui();
+            listWidget.setSize(this.getBrowserWidth(), this.getBrowserHeight());
+            listWidget.initGui();
         }
     }
 
@@ -125,7 +135,12 @@ public abstract class GuiListBase<TYPE, WIDGET extends WidgetListEntryBase<TYPE>
             return true;
         }
 
-        return this.getListWidget() != null && this.getListWidget().onMouseReleased(mouseX, mouseY, mouseButton);
+        if (this.getListWidget() != null)
+        {
+            this.getListWidget().onMouseReleased(mouseX, mouseY, mouseButton);
+        }
+
+        return false;
     }
 
     @Override
@@ -163,22 +178,27 @@ public abstract class GuiListBase<TYPE, WIDGET extends WidgetListEntryBase<TYPE>
     }
 
     @Override
-    public void setWorldAndResolution(Minecraft mc, int width, int height)
-    {
-        super.setWorldAndResolution(mc, width, height);
-
-        if (this.getListWidget() != null)
-        {
-            this.getListWidget().setWorldAndResolution(mc, width, height);
-        }
-    }
-
-    @Override
     public void drawContents(int mouseX, int mouseY, float partialTicks)
     {
         if (this.getListWidget() != null)
         {
             this.getListWidget().drawContents(mouseX, mouseY, partialTicks);
+        }
+    }
+
+    @Override
+    public void renderDebug(int mouseX, int mouseY)
+    {
+        super.renderDebug(mouseX, mouseY);
+
+        WIDGETLIST widget = this.getListWidget();
+
+        if (widget != null)
+        {
+            boolean renderAll = MaLiLibConfigs.Debug.GUI_DEBUG_ALL.getBooleanValue();
+            boolean infoAlways = MaLiLibConfigs.Debug.GUI_DEBUG_INFO_ALWAYS.getBooleanValue();
+
+            widget.renderDebug(mouseX, mouseY, widget.isMouseOver(mouseX, mouseY), renderAll, infoAlways);
         }
     }
 }
