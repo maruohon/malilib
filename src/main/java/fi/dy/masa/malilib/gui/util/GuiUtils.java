@@ -139,7 +139,7 @@ public class GuiUtils
             labelWidth = Math.max(labelWidth, StringUtils.getStringWidth(t.name() + ":") + 4);
         }
 
-        gui.addLabel(x, y, labelWidth, 20, 0xFFFFFFFF, label);
+        gui.addLabel(x, y + 4, labelWidth, 8, 0xFFFFFFFF, label);
         x += labelWidth;
 
         return x;

@@ -15,7 +15,7 @@ public class WidgetScrollBar extends WidgetBase
     protected final Minecraft mc = Minecraft.getMinecraft();
     protected boolean mouseOver = false;
     protected boolean dragging = false;
-    protected boolean renderScrollbarBackground = true;
+    protected boolean renderScrollbarBackgroundColor = true;
     protected int currentValue = 0;
     protected int maxValue = 100;
     protected int backgroundColor = 0x55FFFFFF;
@@ -35,9 +35,9 @@ public class WidgetScrollBar extends WidgetBase
         this.barTexture = barTexture;
     }
 
-    public WidgetScrollBar setRenderBarBackground(boolean render)
+    public WidgetScrollBar setRenderBackgroundColor(boolean render)
     {
-        this.renderScrollbarBackground = render;
+        this.renderScrollbarBackgroundColor = render;
         return this;
     }
 
@@ -154,7 +154,7 @@ public class WidgetScrollBar extends WidgetBase
     {
         this.height = height;
 
-        if (this.renderScrollbarBackground)
+        if (this.renderScrollbarBackgroundColor)
         {
             RenderUtils.drawRect(this.x, this.y, this.width, height, this.backgroundColor);
         }

@@ -69,21 +69,21 @@ public abstract class GuiRenderLayerEditBase extends GuiBase
         {
             String labelMin = StringUtils.translate("malilib.gui.label.render_layers.layer_min") + ":";
             String labelMax = StringUtils.translate("malilib.gui.label.render_layers.layer_max") + ":";
-            int w1 = this.getStringWidth(labelMin);
-            int w2 = this.getStringWidth(labelMax);
+            int w1 = this.getStringWidth(labelMax);
+            int w2 = this.getStringWidth(labelMin);
 
-            this.addLabel(x, y     , w1, 20, 0xFFFFFF, labelMax);
-            this.addLabel(x, y + 23, w2, 20, 0xFFFFFF, labelMin);
+            this.addLabel(x, y +  5, w1, 8, 0xFFFFFF, labelMax);
+            this.addLabel(x, y + 28, w2, 8, 0xFFFFFF, labelMin);
 
-            x += Math.max(w1, w2) + 10;
+            x += Math.max(w1, w2) + 4;
         }
         else
         {
             String label = StringUtils.translate("malilib.gui.label.render_layers.layer") + ":";
             int w = this.getStringWidth(label);
-            this.addLabel(x, y, w, 20, 0xFFFFFF, label);
+            this.addLabel(x, y + 5, w, 8, 0xFFFFFF, label);
 
-            x += w + 10;
+            x += w + 4;
         }
 
         IGuiIcon valueAdjustIcon = this.getValueAdjustButtonIcon();

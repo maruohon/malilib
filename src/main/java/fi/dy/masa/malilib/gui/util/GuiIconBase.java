@@ -25,11 +25,17 @@ public class GuiIconBase implements IGuiIcon
 
     public static final GuiIconBase SMALL_ARROW_UP          = new GuiIconBase(213,   0,  8,  8);
     public static final GuiIconBase SMALL_ARROW_DOWN        = new GuiIconBase(213,   8,  8,  8);
+    public static final GuiIconBase SMALL_ARROW_RIGHT       = new GuiIconBase(213,  16,  8,  8);
+    public static final GuiIconBase SMALL_ARROW_LEFT        = new GuiIconBase(213,  24,  8,  8);
+    public static final GuiIconBase MEDIUM_ARROW_RIGHT      = new GuiIconBase(213,  32,  8,  8);
+    public static final GuiIconBase MEDIUM_ARROW_LEFT       = new GuiIconBase(213,  40,  8,  8);
+    public static final GuiIconBase THIN_DOUBLE_ARROW_LEFT  = new GuiIconBase(213,  48,  8,  8);
+    public static final GuiIconBase SMALL_DOUBLE_ARROW_LEFT = new GuiIconBase(213,  56,  8,  8);
 
-    public static final GuiIconBase RADIO_BUTTON_UNSELECTED_NORMAL = new GuiIconBase(213,  16, 8, 8, 0, 0);
-    public static final GuiIconBase RADIO_BUTTON_SELECTED_NORMAL   = new GuiIconBase(213,  24, 8, 8, 0, 0);
-    public static final GuiIconBase RADIO_BUTTON_UNSELECTED_HOVER  = new GuiIconBase(213,  32, 8, 8, 0, 0);
-    public static final GuiIconBase RADIO_BUTTON_SELECTED_HOVER    = new GuiIconBase(213,  40, 8, 8, 0, 0);
+    public static final GuiIconBase RADIO_BUTTON_UNSELECTED_NORMAL = new GuiIconBase(237,   0, 8, 8, 0, 0);
+    public static final GuiIconBase RADIO_BUTTON_SELECTED_NORMAL   = new GuiIconBase(237,   8, 8, 8, 0, 0);
+    public static final GuiIconBase RADIO_BUTTON_UNSELECTED_HOVER  = new GuiIconBase(237,  16, 8, 8, 0, 0);
+    public static final GuiIconBase RADIO_BUTTON_SELECTED_HOVER    = new GuiIconBase(237,  24, 8, 8, 0, 0);
 
     public static final ResourceLocation MALILIB_GUI_TEXTURES = new ResourceLocation(MaLiLibReference.MOD_ID, "textures/gui/gui_widgets.png");
 

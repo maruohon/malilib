@@ -1,10 +1,13 @@
 package fi.dy.masa.malilib.util;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.client.Minecraft;
@@ -18,7 +21,8 @@ import fi.dy.masa.malilib.interfaces.IStringConsumerFeedback;
 
 public class FileUtils
 {
-    private static final Set<Character> ILLEGAL_CHARACTERS = ImmutableSet.of( '/', '\n', '\r', '\t', '\0', '\f', '`', '?', '*', '\\', '<', '>', '|', '\"', ':' );
+    public static final FileFilter DIRECTORY_FILTER = (file) -> { return file.isDirectory() && file.getName().equals(".") == false && file.getName().equals("..") == false; };
+    public static final ImmutableSet<Character> ILLEGAL_CHARACTERS = ImmutableSet.of( '/', '\n', '\r', '\t', '\0', '\f', '`', '?', '*', '\\', '<', '>', '|', '\"', ':' );
 
     public static File getConfigDirectory()
     {
@@ -106,6 +110,52 @@ public class FileUtils
         }
 
         return path;
+    }
+
+    public static List<File> getSubDirectories(File dir)
+    {
+        List<File> dirs = new ArrayList<>();
+
+        for (File file : dir.listFiles(DIRECTORY_FILTER))
+        {
+            dirs.add(file);
+        }
+
+        return dirs;
+    }
+
+    public static List<File> getDirsForRootPath(File dir, File root)
+    {
+        List<File> dirs = new ArrayList<>();
+        int rootPathStrLen = root.getAbsolutePath().length();
+
+        while (dir != null && dir.getAbsolutePath().length() >= rootPathStrLen)
+        {
+            dirs.add(dir);
+
+            if (root.equals(dir))
+            {
+                break;
+            }
+
+            dir = dir.getParentFile();
+        }
+
+        return dirs;
+    }
+
+    public static List<File> getSiblingDirs(File dir)
+    {
+        List<File> dirs = new ArrayList<>();
+        File parent = dir.getParentFile();
+
+        if (parent != null)
+        {
+            dirs.addAll(getSubDirectories(parent));
+            Collections.sort(dirs, (d1, d2) -> d1.getName().compareTo(d2.getName()));
+        }
+
+        return dirs;
     }
 
     public static String getFileNameExtension(String name)

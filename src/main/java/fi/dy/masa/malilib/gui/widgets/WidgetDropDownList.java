@@ -2,12 +2,16 @@ package fi.dy.masa.malilib.gui.widgets;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 import javax.annotation.Nullable;
+import org.lwjgl.input.Keyboard;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
+import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.gui.interfaces.IIconProvider;
+import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
 import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
 import fi.dy.masa.malilib.gui.util.GuiIconBase;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
@@ -15,6 +19,7 @@ import fi.dy.masa.malilib.gui.wrappers.TextFieldWrapper;
 import fi.dy.masa.malilib.interfaces.IStringRetriever;
 import fi.dy.masa.malilib.interfaces.IStringValue;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.util.LeftRight;
 
 /**
  * A dropdown selection widget for entries in the given list.
@@ -24,20 +29,29 @@ import fi.dy.masa.malilib.render.RenderUtils;
  *
  * @param <T>
  */
-public class WidgetDropDownList<T> extends WidgetBase
+public class WidgetDropDownList<T> extends WidgetContainer
 {
     protected final List<T> entries;
     protected final List<T> filteredEntries;
     @Nullable protected final IStringRetriever<T> stringRetriever;
     protected final int maxHeight;
     protected final int maxVisibleEntries;
-    protected final int totalHeight;
+    protected final int lineHeight;
 
     protected WidgetScrollBar scrollBar;
-    protected TextFieldWrapper<GuiTextFieldGeneric> searchBar;
-    @Nullable protected IIconProvider<T> iconProvider;
+    protected TextFieldWrapper<GuiTextFieldGeneric> searchField;
+    protected LeftRight openIconSide = LeftRight.RIGHT;
     protected boolean isOpen;
+    protected boolean noCurrentEntryBar;
+    protected int dropdownHeight;
+    protected int dropdownTopY;
     protected int selectedIndex;
+    protected int textColor = 0xFFE0E0E0;
+    protected int totalHeight;
+    @Nullable protected WidgetSelectionBar<T> widgetSelectionBar;
+    @Nullable protected ButtonGeneric buttonOpenClose;
+    @Nullable protected IIconProvider<T> iconProvider;
+    @Nullable protected ISelectionListener<T> selectionListener;
     @Nullable protected T selectedEntry;
 
     public WidgetDropDownList(int x, int y, int width, int height, int maxHeight,
@@ -63,6 +77,7 @@ public class WidgetDropDownList<T> extends WidgetBase
     {
         super(x, y, width, height);
 
+        this.lineHeight = height;
         this.maxHeight = maxHeight;
         this.entries = entries;
         this.filteredEntries = new ArrayList<>();
@@ -74,31 +89,116 @@ public class WidgetDropDownList<T> extends WidgetBase
         v = Math.max(v, 1);
 
         this.maxVisibleEntries = v;
-        this.totalHeight = (v + 1) * height;
+        this.dropdownHeight = v * this.lineHeight;
+        this.dropdownTopY = y + this.lineHeight;
+        this.totalHeight = this.dropdownHeight + this.lineHeight;
 
-        this.updateWidth();
-        this.updateFilteredEntries();
+        int scrollbarWidth = 8;
+        int scrollbarHeight = this.maxVisibleEntries * this.lineHeight;
+        // The position gets updated in updateSubElementPositions
+        this.scrollBar = new WidgetScrollBar(0, 0, scrollbarWidth, scrollbarHeight);
+        this.scrollBar.setMaxValue(this.entries.size() - this.maxVisibleEntries);
+        this.scrollBar.setArrowTextures(GuiIconBase.SMALL_ARROW_UP, GuiIconBase.SMALL_ARROW_DOWN);
+
+        this.updateWidth(false); // This creates the search text field, which needs to be set before calling updateFilteredEntries
+
+        this.widgetSelectionBar = new WidgetSelectionBar<T>(x, y, this.width, height, this.textColor, this);
+        this.widgetSelectionBar.setZLevel(this.getZLevel());
+
+        this.recreateSubElements();
+        this.updateFilteredEntries(); // This must be called after the search text field has been created in recreateSubElements
     }
 
     public void setIconProvider(@Nullable IIconProvider<T> iconProvider)
     {
         this.iconProvider = iconProvider;
-        this.updateWidth();
+        this.updateWidth(true);
     }
 
-    protected void updateWidth()
+    public void setSelectionListener(@Nullable ISelectionListener<T> selectionListener)
+    {
+        this.selectionListener = selectionListener;
+    }
+
+    public void setNoBarWhenClosed(int buttonX, int buttonY, Supplier<IGuiIcon> iconSupplier)
+    {
+        this.noCurrentEntryBar = true;
+        this.buttonOpenClose = ButtonGeneric.createIconOnly(buttonX, buttonY, iconSupplier);
+        this.buttonOpenClose.setRenderOutline(false);
+        this.buttonOpenClose.setActionListener((btn, mbtn) -> this.toggleOpen());
+
+        this.recreateSubElements();
+    }
+
+    @Override
+    public void setPosition(int x, int y)
+    {
+        super.setPosition(x, y);
+        this.updateSubElementPositions();
+    }
+
+    @Override
+    public void setRightAlign(boolean rightAlign, int xRight)
+    {
+        super.setRightAlign(rightAlign, xRight);
+        this.updateSubElementPositions();
+    }
+
+    protected void updateWidth(boolean updateSubWidgets)
     {
         this.width = this.getRequiredWidth(-1, this.entries, this.mc);
+        this.updatePositionIfRightAligned();
 
-        int scrollbarWidth = 8;
-        int scrollbarHeight = this.maxVisibleEntries * height;
-        this.scrollBar = new WidgetScrollBar(this.x + this.width - scrollbarWidth - 1, this.y + this.height + 1, scrollbarWidth, scrollbarHeight);
-        this.scrollBar.setMaxValue(this.entries.size() - this.maxVisibleEntries);
-        this.scrollBar.setArrowTextures(GuiIconBase.SMALL_ARROW_UP, GuiIconBase.SMALL_ARROW_DOWN);
+        if (updateSubWidgets)
+        {
+            this.recreateSubElements();
+        }
+    }
+
+    protected void recreateSubElements()
+    {
+        this.clearWidgets();
+
+        if (this.isOpen && this.scrollBar != null)
+        {
+            this.addWidget(this.scrollBar);
+        }
+
+        if (this.noCurrentEntryBar && this.buttonOpenClose != null)
+        {
+            this.addWidget(this.buttonOpenClose);
+        }
+
+        if (this.noCurrentEntryBar == false && this.widgetSelectionBar != null)
+        {
+            this.addWidget(this.widgetSelectionBar);
+        }
 
         TextFieldListener listener = new TextFieldListener(this);
-        this.searchBar = new TextFieldWrapper<>(new GuiTextFieldGeneric(this.x + 1, this.y - 18, this.width - 2, 16, this.textRenderer), listener);
-        this.searchBar.getTextField().setFocused(true);
+        this.searchField = new TextFieldWrapper<>(new GuiTextFieldGeneric(this.x + 1, this.y - 18, this.width - 2, 16, this.textRenderer), listener);
+        this.searchField.getTextField().setFocused(true);
+
+        this.updateSubElementPositions();
+    }
+
+    protected void updateSubElementPositions()
+    {
+        int yOff = this.noCurrentEntryBar ? 0 : this.lineHeight;
+
+        this.dropdownTopY = this.y + yOff;
+        this.totalHeight = this.dropdownHeight + yOff;
+
+        int scrollbarWidth = 8;
+        this.scrollBar.setPosition(this.x + this.width - scrollbarWidth - 1, this.y + yOff + 1);
+
+        if (this.widgetSelectionBar != null)
+        {
+            this.widgetSelectionBar.setPosition(this.x, this.y);
+            this.widgetSelectionBar.update(this);
+        }
+
+        this.searchField.getTextField().x = this.x + 1;
+        this.searchField.getTextField().y = this.y - 18;
     }
 
     protected int getRequiredWidth(int width, List<T> entries, Minecraft mc)
@@ -106,10 +206,12 @@ public class WidgetDropDownList<T> extends WidgetBase
         if (width == -1)
         {
             width = 0;
+            int right = this.lineHeight + 4;
 
             for (int i = 0; i < entries.size(); ++i)
             {
-                width = Math.max(width, this.getStringWidth(this.getDisplayString(entries.get(i))) + 24);
+                // + right => leave room for a square icon on the right for the open/close arrow
+                width = Math.max(width, this.getStringWidth(this.getDisplayString(entries.get(i))) + right);
             }
 
             if (this.iconProvider != null)
@@ -119,18 +221,6 @@ public class WidgetDropDownList<T> extends WidgetBase
         }
 
         return width;
-    }
-
-    @Override
-    public void setPosition(int x, int y)
-    {
-        super.setPosition(x, y);
-
-        int scrollbarWidth = 8;
-        this.scrollBar.setPosition(x + this.width - scrollbarWidth - 1, y + this.height + 1);
-
-        this.searchBar.getTextField().x = x + 1;
-        this.searchBar.getTextField().y = y - 18;
     }
 
     @Nullable
@@ -144,35 +234,122 @@ public class WidgetDropDownList<T> extends WidgetBase
         if (this.entries.contains(entry))
         {
             this.selectedEntry = entry;
+            this.updateSelectionBar();
         }
 
         return this;
     }
 
-    protected void setSelectedEntry(int index)
+    protected boolean setSelectedEntry(int index)
     {
         if (index >= 0 && index < this.filteredEntries.size())
         {
-            this.selectedEntry = this.filteredEntries.get(index);
+            this.setSelectedEntry(this.filteredEntries.get(index));
+
+            if (this.selectionListener != null)
+            {
+                this.selectionListener.onSelectionChange(this.selectedEntry);
+            }
+
+            return true;
         }
+
+        return false;
+    }
+
+    public boolean isOpen()
+    {
+        return this.isOpen;
+    }
+
+    protected void toggleOpen()
+    {
+        this.isOpen = ! this.isOpen;
+
+        if (this.isOpen == false)
+        {
+            this.searchField.getTextField().setText("");
+            this.updateFilteredEntries();
+        }
+
+        // Add/remove the sub widgets as needed
+        this.recreateSubElements();
+
+        if (this.noCurrentEntryBar == false)
+        {
+            this.updateSelectionBar();
+        }
+    }
+
+    protected void updateSelectionBar()
+    {
+        if (this.widgetSelectionBar != null)
+        {
+            this.widgetSelectionBar.update(this);
+        }
+    }
+
+    @Override
+    public int getHeight()
+    {
+        if (this.isOpen)
+        {
+            return this.totalHeight;
+        }
+
+        return this.noCurrentEntryBar ? 0 : this.lineHeight;
     }
 
     @Override
     public boolean isMouseOver(int mouseX, int mouseY)
     {
-        int maxY = this.isOpen ? this.y + this.totalHeight : this.y + this.height;
-        return mouseX >= this.x && mouseX < this.x + this.width && mouseY >= this.y && mouseY < maxY;
+        if (this.noCurrentEntryBar && this.isOpen == false)
+        {
+            return this.buttonOpenClose != null && this.buttonOpenClose.isMouseOver(mouseX, mouseY);
+        }
+
+        return mouseX >= this.x && mouseX < this.x + this.getWidth() &&
+               mouseY >= this.y && mouseY < this.y + this.getHeight();
+    }
+
+    @Override
+    public boolean getShouldReceiveOutsideClicks()
+    {
+        return true;
     }
 
     @Override
     protected boolean onMouseClickedImpl(int mouseX, int mouseY, int mouseButton)
     {
-        if (this.isOpen && mouseY > this.y + this.height)
+        // Close the dropdown when clicking outside of it
+        if (this.isMouseOver(mouseX, mouseY) == false)
+        {
+            if (this.isOpen)
+            {
+                this.toggleOpen();
+                return true;
+            }
+
+            return false;
+        }
+
+        // This handles the open/close button in the no-entry-bar case, plus the entry bar clicks 
+        if (super.onMouseClickedImpl(mouseX, mouseY, mouseButton))
+        {
+            return true;
+        }
+
+        if (this.isOpen && mouseY >= this.dropdownTopY)
         {
             if (mouseX < this.x + this.width - this.scrollBar.getWidth())
             {
-                int relIndex = (mouseY - this.y - this.height) / this.height;
-                this.setSelectedEntry(this.scrollBar.getValue() + relIndex);
+                int relIndex = (mouseY - this.dropdownTopY) / this.lineHeight;
+
+                if (this.setSelectedEntry(this.scrollBar.getValue() + relIndex))
+                {
+                    this.toggleOpen();
+                    return true;
+                }
             }
             else
             {
@@ -180,17 +357,6 @@ public class WidgetDropDownList<T> extends WidgetBase
                 {
                     return true;
                 }
-            }
-        }
-
-        if (this.isOpen == false || (mouseX < this.x + this.width - this.scrollBar.getWidth() || mouseY < this.y + this.height))
-        {
-            this.isOpen = ! this.isOpen;
-
-            if (this.isOpen == false)
-            {
-                this.searchBar.getTextField().setText("");
-                this.updateFilteredEntries();
             }
         }
 
@@ -220,7 +386,21 @@ public class WidgetDropDownList<T> extends WidgetBase
     {
         if (this.isOpen)
         {
-            return this.searchBar.keyTyped(typedChar, keyCode);
+            if (keyCode == Keyboard.KEY_ESCAPE)
+            {
+                if (this.searchField.getTextField().isFocused()
+                    && this.searchField.getTextField().getText().isEmpty() == false)
+                {
+                    this.searchField.getTextField().setText("");
+                    this.updateFilteredEntries();
+                    return true;
+                }
+
+                this.toggleOpen();
+                return true;
+            }
+
+            return this.searchField.keyTyped(typedChar, keyCode);
         }
 
         return false;
@@ -229,7 +409,7 @@ public class WidgetDropDownList<T> extends WidgetBase
     protected void updateFilteredEntries()
     {
         this.filteredEntries.clear();
-        String filterText = this.searchBar.getTextField().getText();
+        String filterText = this.searchField.getTextField().getText();
 
         if (this.isOpen && filterText.isEmpty() == false)
         {
@@ -258,6 +438,11 @@ public class WidgetDropDownList<T> extends WidgetBase
         return filterText.isEmpty() || this.getDisplayString(entry).toLowerCase().indexOf(filterText) != -1;
     }
 
+    public String getCurrentEntryDisplayString()
+    {
+        return this.getDisplayString(this.getSelectedEntry());
+    }
+
     protected String getDisplayString(T entry)
     {
         if (entry != null)
@@ -276,93 +461,126 @@ public class WidgetDropDownList<T> extends WidgetBase
     @Override
     public void render(int mouseX, int mouseY, boolean selected)
     {
-        RenderUtils.color(1f, 1f, 1f, 1f);
+        super.render(mouseX, mouseY, selected);
 
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(0, 0, this.zLevel + 40);
-        List<T> list = this.filteredEntries;
-        int visibleEntries = Math.min(this.maxVisibleEntries, list.size());
-
-        RenderUtils.drawOutlinedBox(this.x + 1, this.y, this.width - 2, this.height - 1, 0xFF101010, 0xFFC0C0C0);
-
-        T entry = this.getSelectedEntry();
-        String str = this.getDisplayString(this.getSelectedEntry());
-        IGuiIcon icon = this.iconProvider != null && entry != null ? this.iconProvider.getIconFor(entry) : null;
-        int iconWidth = icon != null ? icon.getWidth() + 2 : (this.iconProvider != null ? this.iconProvider.getExpectedWidth() + 2 : 0);
-        int iconHeight = icon != null ? icon.getHeight() : (this.iconProvider != null ? this.iconProvider.getExpectedWidth() : 0);
-        int iconOffY = (this.height - iconHeight) / 2;
-        int txtX = this.x + iconWidth + 6;
-        int txtY = this.y + this.height / 2 - this.fontHeight / 2;
-
-        if (icon != null)
-        {
-            icon.renderAt(this.x + 4, this.y + iconOffY, this.zLevel, true, false);
-        }
-
-        this.drawString(txtX, txtY, 0xFFE0E0E0, str);
-
-        txtY += this.height + 1;
-        int scrollWidth = this.scrollBar.getWidth();
-
+        // Render the open dropdown list
         if (this.isOpen)
         {
-            if (this.searchBar.getTextField().getText().isEmpty() == false)
+            RenderUtils.color(1f, 1f, 1f, 1f);
+
+            GlStateManager.pushMatrix();
+            GlStateManager.translate(0, 0, this.getZLevel() + 40);
+
+            if (this.searchField.getTextField().getText().isEmpty() == false)
             {
-                this.searchBar.draw();
+                this.searchField.draw();
             }
 
-            RenderUtils.drawOutline(this.x, this.y + this.height, this.width, visibleEntries * this.height + 2, 0xFFE0E0E0);
+            List<T> list = this.filteredEntries;
+            int visibleEntries = Math.min(this.maxVisibleEntries, list.size());
+            int height = visibleEntries * this.lineHeight;
+            int totalHeight = Math.max(visibleEntries, list.size()) * this.lineHeight;
 
-            int y = this.y + this.height + 1;
-            int startIndex = Math.max(0, this.scrollBar.getValue());
-            int max = Math.min(startIndex + this.maxVisibleEntries, list.size());
+            RenderUtils.drawOutlinedBox(this.x, this.dropdownTopY, this.width, height + 2, 0xD0000000, 0xFFE0E0E0);
 
-            for (int i = startIndex; i < max; ++i)
-            {
-                int bg = (i & 0x1) != 0 ? 0x20FFFFFF : 0x30FFFFFF;
-                boolean hovered = false;
+            boolean mouseOverListOnX = mouseX >= this.x && mouseX < this.x + this.width - this.scrollBar.getWidth();
+            int txtY = this.dropdownTopY + this.lineHeight / 2 - this.fontHeight / 2 + 1;
+            this.renderListContents(txtY, mouseX, mouseY, mouseOverListOnX);
 
-                if (mouseX >= this.x && mouseX < this.x + this.width - scrollWidth &&
-                    mouseY >= y && mouseY < y + this.height)
-                {
-                    bg = 0x60FFFFFF;
-                    hovered = true;
-                }
+            this.scrollBar.render(mouseX, mouseY, height, totalHeight);
 
-                entry = list.get(i);
-                icon = this.iconProvider != null && entry != null ? this.iconProvider.getIconFor(entry) : null;
-                iconWidth = icon != null ? icon.getWidth() + 2 : (this.iconProvider != null ? this.iconProvider.getExpectedWidth() + 2 : 0);
-
-                RenderUtils.drawRect(this.x, y, this.width - scrollWidth - 1, this.height, bg);
-
-                if (icon != null)
-                {
-                    icon.renderAt(this.x + 4, y + iconOffY, this.zLevel, true, hovered);
-                }
-
-                txtX = this.x + iconWidth + 6;
-                str = this.getDisplayString(entry);
-                this.drawString(txtX, txtY, 0xFFE0E0E0, str);
-
-                y += this.height;
-                txtY += this.height;
-            }
-
-            icon = GuiIconBase.ARROW_UP;
-            icon.renderAt(this.x + this.width - 16, this.y + (this.height - icon.getHeight()) / 2, this.zLevel, false, true);
-
-            int h = visibleEntries * this.height;
-            int totalHeight = Math.max(h, list.size() * this.height);
-
-            this.scrollBar.render(mouseX, mouseY, h, totalHeight);
+            GlStateManager.popMatrix();
         }
-        else
+        else if (this.noCurrentEntryBar && this.buttonOpenClose != null)
         {
-            icon = GuiIconBase.ARROW_DOWN;
-            icon.renderAt(this.x + this.width - 16, this.y + (this.height - icon.getHeight()) / 2, this.zLevel, false, true);
+            //this.buttonOpenClose.render(mouseX, mouseY, selected);
+        }
+    }
+
+    protected void renderListContents(int txtY, int mouseX, int mouseY, boolean mouseOverListOnX)
+    {
+        List<T> list = this.filteredEntries;
+        int height = this.lineHeight;
+        int y = this.dropdownTopY + 1;
+        int startIndex = Math.max(0, this.scrollBar.getValue());
+        int max = Math.min(startIndex + this.maxVisibleEntries, list.size());
+        int scrollWidth = this.scrollBar.getWidth();
+        int defaultIconWidth = this.iconProvider != null ? this.iconProvider.getExpectedWidth() + 2 : 0;
+
+        for (int i = startIndex; i < max; ++i)
+        {
+            int bg = (i & 0x1) != 0 ? 0x20FFFFFF : 0x30FFFFFF;
+            boolean hovered = false;
+
+            if (mouseOverListOnX && mouseY >= y && mouseY < y + height)
+            {
+                bg = 0x60FFFFFF;
+                hovered = true;
+            }
+
+            T entry = list.get(i);
+            IGuiIcon icon = this.iconProvider != null && entry != null ? this.iconProvider.getIconFor(entry) : null;
+            int iconWidth = defaultIconWidth;
+
+            RenderUtils.drawRect(this.x, y, this.width - scrollWidth - 1, height, bg);
+
+            if (icon != null)
+            {
+                iconWidth = icon.getWidth() + 2;
+                int iconOffY = (height - icon.getHeight()) / 2;
+                icon.renderAt(this.x + 4, y + iconOffY, this.getZLevel(), true, hovered);
+            }
+
+            int txtX = this.x + iconWidth + 6;
+            this.drawString(txtX, txtY, this.textColor, this.getDisplayString(entry));
+
+            y += height;
+            txtY += height;
+        }
+    }
+
+    public static class WidgetSelectionBar<T> extends WidgetClickable
+    {
+        protected final WidgetLabel widgetLabel;
+        protected WidgetIcon widgetOpenCloseIcon;
+        protected WidgetIcon widgetEntryIcon;
+
+        public WidgetSelectionBar(int x, int y, int width, int height, int textColor, WidgetDropDownList<T> dropdown)
+        {
+            super(x, y, width, height, dropdown::toggleOpen);
+
+            this.widgetLabel = new WidgetLabel(0, 0, width - 1, height, textColor, dropdown.getCurrentEntryDisplayString());
+            this.widgetLabel.setZLevel(this.getZLevel() + 1);
+            this.widgetLabel.setTextOffsetXY(5).setUseTextShadow(false);
+            this.widgetLabel.setBackgroundProperties(1, 0xB0101010, 0xFFC0C0C0, 0xFFC0C0C0);
+
+            this.update(dropdown);
         }
 
-        GlStateManager.popMatrix();
+        public void update(WidgetDropDownList<T> dropdown)
+        {
+            this.setWidth(dropdown.getWidth());
+
+            IGuiIcon icon = dropdown.isOpen() ? GuiIconBase.ARROW_UP : GuiIconBase.ARROW_DOWN;
+            this.widgetOpenCloseIcon = new WidgetIcon(this.x + this.width - icon.getWidth() - 2, this.y + (this.height - icon.getHeight()) / 2 + 1, icon);
+            this.widgetOpenCloseIcon.setEnabled(true).setDoHilight(true).setZLevel(this.widgetLabel.getZLevel() + 1);
+            this.widgetLabel.setPosition(this.x, this.y);
+            this.widgetLabel.setWidth(this.getWidth() - 1);
+            this.widgetLabel.setText(dropdown.getCurrentEntryDisplayString());
+
+            this.clearWidgets();
+            this.addWidget(this.widgetLabel);
+            this.addWidget(this.widgetOpenCloseIcon);
+
+            T entry = dropdown.getSelectedEntry();
+            icon = dropdown.iconProvider != null && entry != null ? dropdown.iconProvider.getIconFor(entry) : null;
+
+            if (icon != null)
+            {
+                this.widgetLabel.setTextOffsetX(icon.getWidth() + 7);
+                this.addWidget(new WidgetIcon(this.x + 4, this.y + (this.height - icon.getHeight()) / 2 + 1, icon));
+            }
+        }
     }
 
     protected static class TextFieldListener implements ITextFieldListener<GuiTextFieldGeneric>

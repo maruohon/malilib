@@ -119,8 +119,11 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
                             this.onEntryClicked(this.listContents.get(entryIndex), entryIndex);
                         }
                     }
+                }
 
-                    return widget.onMouseClicked(mouseX, mouseY, mouseButton);
+                if (widget.onMouseClicked(mouseX, mouseY, mouseButton))
+                {
+                    return true;
                 }
             }
         }

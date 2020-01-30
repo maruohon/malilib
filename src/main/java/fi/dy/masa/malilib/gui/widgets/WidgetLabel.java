@@ -3,20 +3,24 @@ package fi.dy.masa.malilib.gui.widgets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import fi.dy.masa.malilib.gui.interfaces.ITextRenderer;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class WidgetLabel extends WidgetBase
 {
     protected final List<String> labels = new ArrayList<>();
-    protected final int textColor;
-    protected boolean visible = true;
-    protected boolean centered;
     protected boolean backgroundEnabled;
+    protected boolean centered;
+    protected boolean useTextShadow = true;
+    protected boolean visible = true;
     protected int backgroundColor;
-    protected int borderULColor;
-    protected int borderBRColor;
+    protected int borderColorBR;
+    protected int borderColorUL;
     protected int borderSize;
+    protected int textOffsetX;
+    protected int textOffsetY;
+    protected int textColor;
 
     public WidgetLabel(int x, int y, int width, int height, int textColor, String... text)
     {
@@ -35,23 +39,69 @@ public class WidgetLabel extends WidgetBase
         }
     }
 
-    public void addLine(String key, Object... args)
+    public WidgetLabel addLine(String translationKey, Object... args)
     {
-        this.labels.add(StringUtils.translate(key, args));
+        this.labels.add(StringUtils.translate(translationKey, args));
+        return this;
     }
 
-    public void setCentered(boolean centered)
+    public WidgetLabel setText(String translationKey, Object... args)
+    {
+        this.labels.clear();
+        return this.addLine(translationKey, args);
+    }
+
+    public WidgetLabel setVisible(boolean visible)
+    {
+        this.visible = visible;
+        return this;
+    }
+
+    public WidgetLabel setCentered(boolean centered)
     {
         this.centered = centered;
+        return this;
     }
 
-    public void setBackgroundProperties(int borderSize, int backgroundColor, int borderULColor, int borderBRColor)
+    public WidgetLabel setUseTextShadow(boolean useShadow)
+    {
+        this.useTextShadow = useShadow;
+        return this;
+    }
+
+    public WidgetLabel setTextColor(int color)
+    {
+        this.textColor = color;
+        return this;
+    }
+
+    public WidgetLabel setBackgroundProperties(int borderSize, int backgroundColor, int borderULColor, int borderBRColor)
     {
         this.borderSize = borderSize;
         this.backgroundColor = backgroundColor;
-        this.borderULColor = borderULColor;
-        this.borderBRColor = borderBRColor;
+        this.borderColorUL = borderULColor;
+        this.borderColorBR = borderBRColor;
         this.backgroundEnabled = true;
+        return this;
+    }
+
+    public WidgetLabel setTextOffsetX(int offsetX)
+    {
+        this.textOffsetX = offsetX;
+        return this;
+    }
+
+    public WidgetLabel setTextOffsetY(int offsetY)
+    {
+        this.textOffsetY = offsetY;
+        return this;
+    }
+
+    public WidgetLabel setTextOffsetXY(int offset)
+    {
+        this.textOffsetX = offset;
+        this.textOffsetY = offset;
+        return this;
     }
 
     @Override
@@ -59,26 +109,23 @@ public class WidgetLabel extends WidgetBase
     {
         if (this.visible)
         {
+            RenderUtils.color(1f, 1f, 1f, 1f);
             RenderUtils.setupBlend();
             this.drawLabelBackground();
 
+            int x = this.x + this.textOffsetX + this.borderSize;
+            int y = this.y + this.textOffsetY + this.borderSize;
             int fontHeight = this.fontHeight;
-            int yCenter = this.y + this.height / 2 + this.borderSize / 2;
-            int yTextStart = yCenter - 1 - this.labels.size() * fontHeight / 2;
+            ITextRenderer renderer = this.getTextRenderer(this.useTextShadow, this.centered);
 
             for (int i = 0; i < this.labels.size(); ++i)
             {
                 String text = this.labels.get(i);
-
-                if (this.centered)
-                {
-                    this.drawCenteredStringWithShadow(this.x + this.width / 2, yTextStart + i * fontHeight, this.textColor, text);
-                }
-                else
-                {
-                    this.drawStringWithShadow(this.x, yTextStart + i * fontHeight, this.textColor, text);
-                }
+                renderer.renderText(x, y, this.textColor, text);
+                y += fontHeight + 1;
             }
+
+            RenderUtils.color(1f, 1f, 1f, 1f);
         }
     }
 
@@ -86,17 +133,18 @@ public class WidgetLabel extends WidgetBase
     {
         if (this.backgroundEnabled)
         {
-            int bgWidth = this.width + this.borderSize * 2;
-            int bgHeight = this.height + this.borderSize * 2;
-            int xStart = this.x - this.borderSize;
-            int yStart = this.y - this.borderSize;
+            int x = this.x;
+            int y = this.y;
+            int w = this.width;
+            int h = this.height;
+            int bs = this.borderSize;
 
-            RenderUtils.drawRect(xStart, yStart, bgWidth, bgHeight, this.backgroundColor);
+            RenderUtils.drawRect(x + bs, y + bs, w - bs * 2 + 1, h - bs * 2 + 1, this.backgroundColor);
 
-            RenderUtils.drawHorizontalLine(xStart, yStart           , bgWidth, this.borderULColor);
-            RenderUtils.drawHorizontalLine(xStart, yStart + bgHeight, bgWidth, this.borderBRColor);
-            RenderUtils.drawVerticalLine(xStart          , yStart, bgHeight, this.borderULColor);
-            RenderUtils.drawVerticalLine(xStart + bgWidth, yStart, bgHeight, this.borderBRColor);
+            RenderUtils.drawHorizontalLine(x, y    , w, this.borderColorUL);
+            RenderUtils.drawHorizontalLine(x, y + h, w, this.borderColorBR);
+            RenderUtils.drawVerticalLine(x    , y, h    , this.borderColorUL);
+            RenderUtils.drawVerticalLine(x + w, y, h + 1, this.borderColorBR);
         }
     }
 }

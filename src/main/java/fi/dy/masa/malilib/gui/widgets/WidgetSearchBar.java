@@ -6,13 +6,13 @@ import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
-import fi.dy.masa.malilib.gui.util.GuiIconBase;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.HorizontalAlignment;
 
 public class WidgetSearchBar extends WidgetContainer
 {
     protected final GuiTextFieldGeneric searchBox;
+    protected final ButtonGeneric buttonSearchToggle;
     protected boolean searchOpen;
 
     public WidgetSearchBar(int x, int y, int width, int height,
@@ -21,17 +21,11 @@ public class WidgetSearchBar extends WidgetContainer
         super(x, y, width, height);
 
         int iw = iconSearch.getWidth();
-        int ix = iconAlignment == HorizontalAlignment.RIGHT ? x + width - iw - 1 : x + 2;
+        int ix = iconAlignment == HorizontalAlignment.RIGHT ? x + width - iw - 1 : x + 1;
         int tx = iconAlignment == HorizontalAlignment.RIGHT ? x - searchBarOffsetX + 1 : x + iw + 6 + searchBarOffsetX;
 
-        ButtonGeneric button = new ButtonGeneric(ix, y, GuiIconBase.SEARCH);
-        button.setRenderDefaultBackground(false);
-        button.setPlayClickSound(false);
-        button.setRenderOutline(true);
-        button.setOutlineColorNormal(0x00000000);
-        button.setWidth(GuiIconBase.SEARCH.getWidth() + 2);
-        button.setHeight(GuiIconBase.SEARCH.getHeight() + 2);
-        this.addButton(button, (btn, mbtn) -> this.toggleSearchOpen());
+        this.buttonSearchToggle = ButtonGeneric.createIconOnly(ix, y, iconSearch);
+        this.addButton(this.buttonSearchToggle, (btn, mbtn) -> this.toggleSearchOpen());
 
         this.searchBox = new GuiTextFieldGeneric(tx, y, width - iw - 7 - Math.abs(searchBarOffsetX), height, this.textRenderer);
         this.searchBox.setZLevel(this.zLevel);
@@ -65,6 +59,15 @@ public class WidgetSearchBar extends WidgetContainer
         {
             this.searchBox.setFocused(true);
         }
+
+        this.updateSubWidgets();
+    }
+
+    protected void updateSubWidgets()
+    {
+        this.clearWidgets();
+
+        this.addWidget(this.buttonSearchToggle);
     }
 
     @Override

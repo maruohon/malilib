@@ -23,12 +23,12 @@ import fi.dy.masa.malilib.util.FileUtils;
 
 public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntry, WidgetDirectoryEntry> implements IDirectoryNavigator
 {
-    protected static final FileFilter DIRECTORY_FILTER = new FileFilterDirectories();
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     protected final IDirectoryCache cache;
     protected final String browserContext;
     protected final IFileBrowserIconProvider iconProvider = new FileBrowserIconProviderBase();
+    protected WidgetDirectoryNavigation widgetNavigation;
     protected File currentDirectory;
 
     public WidgetFileBrowserBase(int x, int y, int width, int height,
@@ -91,6 +91,11 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
         return this.iconProvider;
     }
 
+    protected int getBrowserWidthForTotalWidth(int width)
+    {
+        return width;
+    }
+
     protected void drawAdditionalContents(int mouseX, int mouseY)
     {
     }
@@ -102,29 +107,23 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
 
         this.browserWidth = this.getBrowserWidthForTotalWidth(width);
         this.browserEntryWidth = this.browserWidth - 14;
+
+        if (this.widgetNavigation != null)
+        {
+            this.widgetNavigation.setWidth(this.browserEntryWidth);
+        }
     }
 
-    protected int getBrowserWidthForTotalWidth(int width)
+    @Override
+    public void initGui()
     {
-        return width;
-    }
-
-    protected void updateDirectoryNavigationWidget()
-    {
-        int x = this.x + 2;
-        int y = this.y + 4;
-
-        WidgetDirectoryNavigation widget = new WidgetDirectoryNavigation(x, y, this.browserEntryWidth, 14,
-                this.currentDirectory, this.getRootDirectory(), this, this.getIconProvider());
-        this.addSearchBarWidget(widget);
-
-        this.updateScrollbarPosition();
+        super.initGui();
+        this.updateDirectoryNavigationWidget();
     }
 
     @Override
     public void refreshEntries()
     {
-        this.updateDirectoryNavigationWidget();
         this.refreshBrowserEntries();
     }
 
@@ -154,6 +153,21 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
     protected Comparator<DirectoryEntry> getComparator()
     {
         return (e1, e2) -> e1.compareTo(e2);
+    }
+
+    protected void updateDirectoryNavigationWidget()
+    {
+        // Remove the old widget, if any, from the sub widgets list
+        if (this.widgetNavigation != null)
+        {
+            this.removeWidget(this.widgetNavigation);
+        }
+
+        this.widgetNavigation = new WidgetDirectoryNavigation(this.x + 2, this.y + 4, this.browserEntryWidth, 14,
+                this.currentDirectory, this.getRootDirectory(), this, this.getIconProvider());
+        this.addSearchBarWidget(this.widgetNavigation);
+
+        this.updateScrollbarPosition();
     }
 
     protected void addNonFilteredContents(File dir)
@@ -187,7 +201,7 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
         listOut.addAll(list);
         list.clear();
 
-        for (File subDir : getSubDirectories(dir))
+        for (File subDir : FileUtils.getSubDirectories(dir))
         {
             String pre;
 
@@ -230,23 +244,11 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
         return ImmutableList.of(FileUtils.getNameWithoutExtension(entry.getName().toLowerCase()));
     }
 
-    public static List<File> getSubDirectories(File dir)
-    {
-        List<File> dirs = new ArrayList<>();
-
-        for (File file : dir.listFiles(DIRECTORY_FILTER))
-        {
-            dirs.add(file);
-        }
-
-        return dirs;
-    }
-
     protected abstract File getRootDirectory();
 
     protected FileFilter getDirectoryFilter()
     {
-        return DIRECTORY_FILTER;
+        return FileUtils.DIRECTORY_FILTER;
     }
 
     protected abstract FileFilter getFileFilter();
@@ -278,6 +280,7 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
         this.cache.setCurrentDirectoryForContext(this.browserContext, dir);
 
         this.refreshEntries();
+        this.updateDirectoryNavigationWidget();
         this.resetScrollbarPosition();
     }
 
@@ -292,8 +295,7 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
     {
         File parent = this.currentDirectory.getParentFile();
 
-        if (this.currentDirectoryIsRoot() == false &&
-            parent != null &&
+        if (this.currentDirectoryIsRoot() == false && parent != null &&
             this.currentDirectory.getAbsolutePath().contains(this.getRootDirectory().getAbsolutePath()))
         {
             this.switchToDirectory(parent);
@@ -377,15 +379,6 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
             {
                 return FILE;
             }
-        }
-    }
-
-    public static class FileFilterDirectories implements FileFilter
-    {
-        @Override
-        public boolean accept(File pathName)
-        {
-            return pathName.isDirectory() && pathName.getName().startsWith(".") == false;
         }
     }
 }

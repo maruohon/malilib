@@ -101,7 +101,7 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
         y += 1;
         int configHeight = 20;
 
-        this.addLabel(x, y + 7, labelWidth, 8, 0xFFFFFFFF, config.getConfigGuiDisplayName());
+        this.addLabel(x, y + 6, labelWidth, 8, 0xFFFFFFFF, config.getConfigGuiDisplayName());
 
         String comment = null;
         IConfigInfoProvider infoProvider = this.host.getHoverInfoProvider();
@@ -117,7 +117,7 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
 
         if (comment != null)
         {
-            this.addConfigComment(x, y + 5, labelWidth, 12, comment);
+            this.addConfigComment(x, y + 2, labelWidth, 18, comment);
         }
 
         x += labelWidth + 10;

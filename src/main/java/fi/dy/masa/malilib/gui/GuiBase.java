@@ -204,7 +204,7 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     {
         for (WidgetBase widget : this.widgets)
         {
-            if (widget.isMouseOver(mouseX, mouseY) && widget.onMouseClicked(mouseX, mouseY, mouseButton))
+            if (widget.onMouseClicked(mouseX, mouseY, mouseButton))
             {
                 // Don't call super if the button press got handled
                 return true;
@@ -608,19 +608,18 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
         int y = textField.y;
         int w = textField.getWidth();
         int h = textField.getWidgetHeight();
-        int color = 0xFFFF4040;
         boolean hovered = textField.isMouseOver(mouseX, mouseY);
 
         if (hovered || renderAll)
         {
-            WidgetBase.renderDebugOutline(x, y, z, w, h, color, hovered);
+            WidgetBase.renderDebugOutline(x, y, z, w, h, hovered);
         }
 
         if (hovered || infoAlways)
         {
             int px = infoAlways ? x : mouseX;
             int py = infoAlways ? y - 12 : mouseY;
-            WidgetBase.addDebugText(px, py, x, y, z, w, h, color, textField.getClass().getName());
+            WidgetBase.addDebugText(px, py, x, y, z, w, h, textField.getClass().getName());
         }
     }
 }

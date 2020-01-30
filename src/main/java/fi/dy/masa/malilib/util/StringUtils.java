@@ -280,6 +280,71 @@ public class StringUtils
         return sb.toString();
     }
 
+    /**
+     * Shrinks the given string until it can fit into the provided maximum width,
+     * and adds the provided clamping indicator to indicate that the string is longer than what is shown.
+     * @param text
+     * @param maxWidth
+     * @param side the side from which to shrink the string
+     * @param indicator the appended shrinkage indicator, for example "..."
+     * @return
+     */
+    public static String clampTextToRenderLength(String text, final int maxWidth, LeftRight side, String indicator)
+    {
+        // The entire string fits, just return it as-is
+        if (getStringWidth(text) <= maxWidth)
+        {
+            return text;
+        }
+
+        StringBuilder sb = new StringBuilder(128);
+
+        final int indicatorWidth = getStringWidth(indicator);
+        final int stringLen = text.length();
+        int usedWidth = indicatorWidth;
+        int index = 0;
+        int lastIndex = stringLen - 1;
+        int indexIncrement = 1;
+
+        // Shrink from the left, so append/build from the right
+        if (side == LeftRight.LEFT)
+        {
+            index = stringLen - 1;
+            lastIndex = 0;
+            indexIncrement = -1;
+        }
+
+        while (usedWidth < maxWidth)
+        {
+            String chr = text.substring(index, index + 1);
+            int charWidth = getStringWidth(chr);
+
+            if (usedWidth + charWidth > maxWidth)
+            {
+                break;
+            }
+
+            sb.append(chr);
+            usedWidth += charWidth;
+
+            if (index == lastIndex)
+            {
+                break;
+            }
+
+            index += indexIncrement;
+        }
+
+        if (side == LeftRight.LEFT)
+        {
+            return indicator + sb.reverse().toString();
+        }
+
+        sb.append(indicator);
+
+        return sb.toString();
+    }
+
     @Nullable
     public static String getWorldOrServerName()
     {
@@ -375,6 +440,11 @@ public class StringUtils
         return net.minecraft.client.Minecraft.getMinecraft().fontRenderer.FONT_HEIGHT;
     }
 
+    /**
+     * Returns the render width of the given string
+     * @param text
+     * @return
+     */
     public static int getStringWidth(String text)
     {
         return net.minecraft.client.Minecraft.getMinecraft().fontRenderer.getStringWidth(text);

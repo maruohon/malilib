@@ -45,9 +45,18 @@ public abstract class WidgetContainer extends WidgetBase
                 }
             }
 
-            WidgetLabel label = new WidgetLabel(x, y, width, height, textColor, lines);
-            this.addWidget(label);
+            this.addWidget(new WidgetLabel(x, y, width, height, textColor, lines));
         }
+    }
+
+    protected void removeWidget(WidgetBase widget)
+    {
+        this.subWidgets.remove(widget);
+    }
+
+    protected void clearWidgets()
+    {
+        this.subWidgets.clear();
     }
 
     @Override
@@ -74,29 +83,19 @@ public abstract class WidgetContainer extends WidgetBase
     @Override
     public boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
-        boolean handled = false;
-
-        if (this.isMouseOver(mouseX, mouseY))
+        if (this.subWidgets.isEmpty() == false)
         {
-            if (this.subWidgets.isEmpty() == false)
+            for (WidgetBase widget : this.subWidgets)
             {
-                for (WidgetBase widget : this.subWidgets)
+                if (widget.onMouseClicked(mouseX, mouseY, mouseButton))
                 {
-                    if (widget.isMouseOver(mouseX, mouseY) && widget.onMouseClicked(mouseX, mouseY, mouseButton))
-                    {
-                        // Don't call super if the button press got handled
-                        handled = true;
-                    }
+                    // Don't call super if the button press got handled
+                    return true;
                 }
-            }
-
-            if (handled == false)
-            {
-                handled = this.onMouseClickedImpl(mouseX, mouseY, mouseButton);
             }
         }
 
-        return handled;
+        return super.onMouseClicked(mouseX, mouseY, mouseButton);
     }
 
     @Override
@@ -116,30 +115,23 @@ public abstract class WidgetContainer extends WidgetBase
     @Override
     public boolean onMouseScrolled(int mouseX, int mouseY, double mouseWheelDelta)
     {
-        if (this.isMouseOver(mouseX, mouseY))
+        if (this.subWidgets.isEmpty() == false)
         {
-            if (this.subWidgets.isEmpty() == false)
+            for (WidgetBase widget : this.subWidgets)
             {
-                for (WidgetBase widget : this.subWidgets)
+                if (widget.onMouseScrolled(mouseX, mouseY, mouseWheelDelta))
                 {
-                    if (widget.onMouseScrolled(mouseX, mouseY, mouseWheelDelta))
-                    {
-                        return true;
-                    }
+                    return true;
                 }
             }
-
-            return this.onMouseScrolledImpl(mouseX, mouseY, mouseWheelDelta);
         }
 
-        return false;
+        return super.onMouseScrolled(mouseX, mouseY, mouseWheelDelta);
     }
 
     @Override
     public boolean onKeyTyped(char typedChar, int keyCode)
     {
-        boolean handled = false;
-
         if (this.subWidgets.isEmpty() == false)
         {
             for (WidgetBase widget : this.subWidgets)
@@ -147,17 +139,12 @@ public abstract class WidgetContainer extends WidgetBase
                 if (widget.onKeyTyped(typedChar, keyCode))
                 {
                     // Don't call super if the key press got handled
-                    handled = true;
+                    return true;
                 }
             }
         }
 
-        if (handled == false)
-        {
-            handled = this.onKeyTypedImpl(typedChar, keyCode);
-        }
-
-        return handled;
+        return this.onKeyTypedImpl(typedChar, keyCode);
     }
 
     @Override

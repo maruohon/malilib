@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.gui.widgets;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -14,13 +15,16 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.gui.interfaces.IBackgroundRenderer;
+import fi.dy.masa.malilib.gui.interfaces.ITextRenderer;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public abstract class WidgetBase
 {
     private static final ArrayListMultimap<Long, String> DEBUG_STRINGS = ArrayListMultimap.create();
-    public static final IBackgroundRenderer DEBUG_TEXT_BG_RENDERER = (x, y, w, h) -> { RenderUtils.drawOutlinedBox(x - 2, y - 2, w + 4, h + 4, 0xC0000000, 0xFFC0C0C0); };
+    private static int lastDebugOutlineColor;
+
+    public static final IBackgroundRenderer DEBUG_TEXT_BG_RENDERER = (x, y, w, h) -> { RenderUtils.drawOutlinedBox(x - 2, y - 2, w + 4, h + 4, 0xE0000000, 0xFFC0C0C0); };
 
     protected final Minecraft mc;
     protected final FontRenderer textRenderer;
@@ -31,7 +35,7 @@ public abstract class WidgetBase
     protected int xRight;
     protected int width;
     protected int height;
-    protected float zLevel;
+    protected int zLevel;
     protected boolean rightAlign;
 
     public WidgetBase(int x, int y, int width, int height)
@@ -53,6 +57,11 @@ public abstract class WidgetBase
     public int getY()
     {
         return this.y;
+    }
+
+    public int getZLevel()
+    {
+        return this.zLevel;
     }
 
     public void setPosition(int x, int y)
@@ -95,15 +104,10 @@ public abstract class WidgetBase
 
             if (this.x < 0)
             {
-                this.xRight += -this.x;
-                this.x = 0;
+                this.xRight += -this.x + 4;
+                this.x = 4;
             }
         }
-    }
-
-    public void setZLevel(float zLevel)
-    {
-        this.zLevel = zLevel;
     }
 
     public int getWidth()
@@ -127,15 +131,34 @@ public abstract class WidgetBase
         this.height = height;
     }
 
+    public WidgetBase setZLevel(int zLevel)
+    {
+        this.zLevel = zLevel;
+        return this;
+    }
+
     public boolean isMouseOver(int mouseX, int mouseY)
     {
-        return mouseX >= this.x && mouseX < this.x + this.width &&
-               mouseY >= this.y && mouseY < this.y + this.height;
+        int x = this.getX();
+        int y = this.getY();
+
+        return mouseX >= x && mouseX < x + this.getWidth() &&
+               mouseY >= y && mouseY < y + this.getHeight();
+    }
+
+    public boolean getShouldReceiveOutsideClicks()
+    {
+        return false;
+    }
+
+    public boolean getShouldReceiveOutsideScrolls()
+    {
+        return false;
     }
 
     public boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
-        if (this.isMouseOver(mouseX, mouseY))
+        if (this.isMouseOver(mouseX, mouseY) || this.getShouldReceiveOutsideClicks())
         {
             return this.onMouseClickedImpl(mouseX, mouseY, mouseButton);
         }
@@ -159,7 +182,7 @@ public abstract class WidgetBase
 
     public boolean onMouseScrolled(int mouseX, int mouseY, double mouseWheelDelta)
     {
-        if (this.isMouseOver(mouseX, mouseY))
+        if (this.isMouseOver(mouseX, mouseY) || this.getShouldReceiveOutsideScrolls())
         {
             return this.onMouseScrolledImpl(mouseX, mouseY, mouseWheelDelta);
         }
@@ -263,6 +286,18 @@ public abstract class WidgetBase
         this.textRenderer.drawStringWithShadow(text, x - this.getStringWidth(text) / 2, y, color);
     }
 
+    public ITextRenderer getTextRenderer(boolean useTextShadow, boolean centered)
+    {
+        if (centered)
+        {
+            return useTextShadow ? this::drawCenteredStringWithShadow : this::drawCenteredString;
+        }
+        else
+        {
+            return useTextShadow ? this::drawStringWithShadow : this::drawString;
+        }
+    }
+
     public void render(int mouseX, int mouseY, boolean selected)
     {
     }
@@ -283,33 +318,35 @@ public abstract class WidgetBase
 
     public void renderDebug(int mouseX, int mouseY, boolean hovered, boolean renderAll, boolean infoAlways)
     {
-        int x = this.x;
-        int y = this.y;
+        int x = this.getX();
+        int y = this.getY();
         double z = this.zLevel;
-        int w = this.width;
-        int h = this.height;
-        int color = 0xFFFF4040;
+        int w = this.getWidth();
+        int h = this.getHeight();
 
         if (hovered || renderAll)
         {
-            renderDebugOutline(x, y, z, w, h, color, hovered);
+            renderDebugOutline(x, y, z, w, h, hovered);
         }
 
         if (hovered || infoAlways)
         {
             int posX = infoAlways ? x      : mouseX;
             int posY = infoAlways ? y - 12 : mouseY;
-            addDebugText(posX, posY, x, y, z, w, h, color, this.getClass().getName());
+            addDebugText(posX, posY, x, y, z, w, h, this.getClass().getName());
         }
     }
 
-    public static void renderDebugOutline(double x, double y, double z, double w, double h, int color, boolean hovered)
+    public static void renderDebugOutline(double x, double y, double z, double w, double h, boolean hovered)
     {
+        int color = 0xFF000000 | (Color.HSBtoRGB((float) (lastDebugOutlineColor % 360) / 360f, 1f, 1f) & 0x00FFFFFF);
+        lastDebugOutlineColor += 40;
+
         float a = (float) (color >> 24 & 255) / 255.0F;
         float r = (float) (color >> 16 & 255) / 255.0F;
         float g = (float) (color >>  8 & 255) / 255.0F;
         float b = (float) (color & 255) / 255.0F;
-        float lineWidth = hovered ? 2f : 1.0f;
+        float lineWidth = hovered ? 3f : 1.0f;
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
@@ -329,9 +366,9 @@ public abstract class WidgetBase
         GlStateManager.enableTexture2D();
     }
 
-    public static void addDebugText(int mouseX, int mouseY, int x, int y, double z, int w, int h, int color, String text)
+    public static void addDebugText(int mouseX, int mouseY, int x, int y, double z, int w, int h, String text)
     {
-        String str = String.format("x: %d .. %d, y: %d .. %d, z: %.1f w: %d, h: %d - %s", x, x + w - 1, y, y + h - 1, z, w, h, text);
+        String str = String.format("§7x: §6%d ... %d§7, y: §6%d ... %d§7, z: §d%.1f§7 w: §a%d§7, h: §a%d§7 - §3%s", x, x + w - 1, y, y + h - 1, z, w, h, text);
         int posY = mouseY - 2;
 
         Long posLong = Long.valueOf((long) posY << 32 | (long) mouseX);
@@ -352,5 +389,7 @@ public abstract class WidgetBase
             DEBUG_STRINGS.clear();
             RenderUtils.disableItemLighting();
         }
+
+        lastDebugOutlineColor = 0;
     }
 }

@@ -42,7 +42,7 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
 
         if (this.isDummy() == false)
         {
-            this.addLabel(x + 2, y + 6, 20, 12, 0xC0C0C0C0, String.format("%3d:", listIndex + 1));
+            this.addLabel(x + 2, y + 7, 20, 8, 0xC0C0C0C0, String.format("%3d:", listIndex + 1));
             bx = this.addTextField(textFieldX, y + 1, resetX, textFieldWidth, 20, initialValue);
 
             this.addListActionButton(bx, by, ButtonType.ADD);
@@ -77,9 +77,9 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
 
     protected void addListActionButton(int x, int y, ButtonType type)
     {
-        ButtonGeneric button = new ButtonGeneric(x, y, type.getIcon(), type.getDisplayName());
-        ListenerListActions listener = new ListenerListActions(type, this);
-        this.addButton(button, listener);
+        ButtonGeneric button = new ButtonGeneric(x, y, type.getIcon(), type.getHoverKey());
+        button.setRenderOutline(true);
+        this.addButton(button, new ListenerListActions(type, this));
     }
 
     protected int addTextField(int x, int y, int resetX, int configWidth, int configHeight, String initialValue)
@@ -118,7 +118,7 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
     {
         if (this.isDummy() == false)
         {
-            IConfigStringList config = this.parent.getParent().getConfig();
+            IConfigStringList config = this.parent.getParentGui().getConfig();
             List<String> list = new ArrayList<>(config.getStrings());
             String value = this.textField.getTextField().getText();
 
@@ -133,7 +133,7 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
 
     protected void insertEntry(boolean before)
     {
-        IConfigStringList config = this.parent.getParent().getConfig();
+        IConfigStringList config = this.parent.getParentGui().getConfig();
         List<String> list = config.getStrings();
         int index = this.getInsertionIndex(list, before);
 
@@ -160,7 +160,7 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
 
     protected void removeEntry()
     {
-        IConfigStringList config = this.parent.getParent().getConfig();
+        IConfigStringList config = this.parent.getParentGui().getConfig();
         List<String> list = new ArrayList<>(config.getStrings());
         final int size = list.size();
 
@@ -176,7 +176,7 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
 
     protected void moveEntry(boolean down)
     {
-        IConfigStringList config = this.parent.getParent().getConfig();
+        IConfigStringList config = this.parent.getParentGui().getConfig();
         List<String> list = new ArrayList<>(config.getStrings());
         final int size = list.size();
 
@@ -212,7 +212,7 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
 
     protected boolean canBeMoved(boolean down)
     {
-        final int size = this.parent.getParent().getConfig().getStrings().size();
+        final int size = this.parent.getParentGui().getConfig().getStrings().size();
         return (this.listIndex >= 0 && this.listIndex < size) &&
                 ((down && this.listIndex < (size - 1)) || (down == false && this.listIndex > 0));
     }
@@ -312,12 +312,12 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
         MOVE_DOWN   (GuiIconBase.ARROW_DOWN,   "malilib.gui.button.hover.list.move_down");
 
         protected final GuiIconBase icon;
-        protected final String translationKey;
+        protected final String hoverKey;
 
         private ButtonType(GuiIconBase icon, String translationKey)
         {
             this.icon = icon;
-            this.translationKey = translationKey;
+            this.hoverKey = translationKey;
         }
 
         public IGuiIcon getIcon()
@@ -325,9 +325,9 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
             return this.icon;
         }
 
-        public String getDisplayName()
+        public String getHoverKey()
         {
-            return StringUtils.translate(this.translationKey);
+            return this.hoverKey;
         }
     }
 }

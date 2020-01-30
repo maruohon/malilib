@@ -1,11 +1,12 @@
 package fi.dy.masa.malilib.gui.widgets;
 
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
-import fi.dy.masa.malilib.render.RenderUtils;
 
 public class WidgetIcon extends WidgetBase
 {
     protected final IGuiIcon icon;
+    protected boolean doHilight;
+    protected boolean enabled;
 
     public WidgetIcon(int x, int y, IGuiIcon icon)
     {
@@ -14,15 +15,21 @@ public class WidgetIcon extends WidgetBase
         this.icon = icon;
     }
 
-    public void render(boolean enabled, boolean selected)
+    public WidgetIcon setEnabled(boolean enabled)
     {
-        RenderUtils.color(1f, 1f, 1f, 1f);
-        this.bindTexture(this.icon.getTexture());
-        this.icon.renderAt(this.x, this.y, this.zLevel, enabled, selected);
+        this.enabled = enabled;
+        return this;
+    }
 
-        if (selected)
-        {
-            RenderUtils.drawOutlinedBox(this.x, this.y, this.width, this.height, 0x20C0C0C0, 0xE0FFFFFF);
-        }
+    public WidgetIcon setDoHilight(boolean doHilight)
+    {
+        this.doHilight = doHilight;
+        return this;
+    }
+
+    @Override
+    public void render(int mouseX, int mouseY, boolean selected)
+    {
+        this.icon.renderAt(this.x, this.y, this.zLevel, this.enabled, this.doHilight && this.isMouseOver(mouseX, mouseY));
     }
 }

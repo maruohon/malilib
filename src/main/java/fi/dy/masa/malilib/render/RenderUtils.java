@@ -108,15 +108,12 @@ public class RenderUtils
 
     public static void drawOutline(int x, int y, int width, int height, int colorBorder)
     {
-        drawOutline(x, y, width, height, colorBorder, 0f);
+        drawOutline(x, y, width, height, 1, colorBorder, 0);
     }
 
     public static void drawOutline(int x, int y, int width, int height, int colorBorder, float zLevel)
     {
-        drawRect(x                    , y,      1, height, colorBorder, zLevel); // left edge
-        drawRect(x + width - 1        , y,      1, height, colorBorder, zLevel); // right edge
-        drawRect(x + 1,              y, width - 2,      1, colorBorder, zLevel); // top edge
-        drawRect(x + 1, y + height - 1, width - 2,      1, colorBorder, zLevel); // bottom edge
+        drawOutline(x, y, width, height, 1, colorBorder, zLevel);
     }
 
     public static void drawOutline(int x, int y, int width, int height, int borderWidth, int colorBorder)
@@ -126,10 +123,25 @@ public class RenderUtils
 
     public static void drawOutline(int x, int y, int width, int height, int borderWidth, int colorBorder, float zLevel)
     {
-        drawRect(x                      ,                        y, borderWidth            , height     , colorBorder, zLevel); // left edge
-        drawRect(x + width - borderWidth,                        y, borderWidth            , height     , colorBorder, zLevel); // right edge
-        drawRect(x + borderWidth        ,                        y, width - 2 * borderWidth, borderWidth, colorBorder, zLevel); // top edge
-        drawRect(x + borderWidth        , y + height - borderWidth, width - 2 * borderWidth, borderWidth, colorBorder, zLevel); // bottom edge
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder buffer = tessellator.getBuffer();
+
+        GlStateManager.disableTexture2D();
+        setupBlend();
+
+        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+
+        drawRectBatched(x                      ,                        y, borderWidth            , height     , colorBorder, zLevel, buffer); // left edge
+        drawRectBatched(x + width - borderWidth,                        y, borderWidth            , height     , colorBorder, zLevel, buffer); // right edge
+        drawRectBatched(x + borderWidth        ,                        y, width - 2 * borderWidth, borderWidth, colorBorder, zLevel, buffer); // top edge
+        drawRectBatched(x + borderWidth        , y + height - borderWidth, width - 2 * borderWidth, borderWidth, colorBorder, zLevel, buffer); // bottom edge
+
+        tessellator.draw();
+
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableBlend();
+
+        color(1f, 1f, 1f, 1f);
     }
 
     public static void drawTexturedRect(int x, int y, int u, int v, int width, int height)
@@ -518,6 +530,14 @@ public class RenderUtils
                 {
                     textStartX = x < (maxWidth / 2) ? 4 : Math.max(4, maxWidth - maxLineLength - 6);
                 }
+            }
+
+            // The hover info would overlap the cursor vertically
+            // (because the hover info was clamped to the top of the screen),
+            // move it below the cursor instead
+            if (textStartY < y && y < textStartY + textHeight)
+            {
+                textStartY = y + 16;
             }
 
             backgroundRenderer.renderBackground(textStartX, textStartY, maxLineLength, textHeight);
