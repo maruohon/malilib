@@ -131,17 +131,7 @@ public class GuiUtils
 
     protected static int addLabel(int x, int y, CoordinateType type, GuiBase gui)
     {
-        String label = type.name() + ":";
-        int labelWidth = 0;
-
-        for (CoordinateType t : CoordinateType.values())
-        {
-            labelWidth = Math.max(labelWidth, StringUtils.getStringWidth(t.name() + ":") + 4);
-        }
-
-        gui.addLabel(x, y + 4, labelWidth, 8, 0xFFFFFFFF, label);
-        x += labelWidth;
-
+        x += gui.addLabel(x, y + 4, 0xFFFFFFFF, type.name() + ":").getWidth() + 4;
         return x;
     }
 

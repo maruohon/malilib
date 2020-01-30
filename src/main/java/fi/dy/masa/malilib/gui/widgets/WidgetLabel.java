@@ -37,6 +37,23 @@ public class WidgetLabel extends WidgetBase
         {
             this.addLine(str);
         }
+
+        if (width < 0)
+        {
+            width = 0;
+
+            for (String line : this.labels)
+            {
+                width = Math.max(width, this.getStringWidth(line));
+            }
+
+            this.width = width;
+        }
+
+        if (height < 0)
+        {
+            this.height = (this.textRenderer.FONT_HEIGHT + 1) * this.labels.size() - 2;
+        }
     }
 
     public WidgetLabel addLine(String translationKey, Object... args)

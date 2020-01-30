@@ -89,7 +89,7 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
             this.lastAppliedValue = null;
             this.initialKeybindSettings = null;
 
-            this.addLabel(x, y + 7, labelWidth, 8, 0xFFFFFFFF, wrapper.getLabel());
+            this.addLabel(x, y + 7, labelWidth, -1, 0xFFFFFFFF, wrapper.getLabel());
         }
     }
 
@@ -101,7 +101,7 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
         y += 1;
         int configHeight = 20;
 
-        this.addLabel(x, y + 6, labelWidth, 8, 0xFFFFFFFF, config.getConfigGuiDisplayName());
+        this.addLabel(x, y + 6, labelWidth, -1, 0xFFFFFFFF, config.getConfigGuiDisplayName());
 
         String comment = null;
         IConfigInfoProvider infoProvider = this.host.getHoverInfoProvider();

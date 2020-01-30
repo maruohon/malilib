@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.gui;
 
+import net.minecraft.util.EnumFacing;
 import fi.dy.masa.malilib.config.values.LayerMode;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
@@ -11,7 +12,6 @@ import fi.dy.masa.malilib.gui.util.GuiIconBase;
 import fi.dy.masa.malilib.gui.widgets.WidgetCheckBox;
 import fi.dy.masa.malilib.util.LayerRange;
 import fi.dy.masa.malilib.util.StringUtils;
-import net.minecraft.util.EnumFacing;
 
 public abstract class GuiRenderLayerEditBase extends GuiBase
 {
@@ -69,21 +69,15 @@ public abstract class GuiRenderLayerEditBase extends GuiBase
         {
             String labelMin = StringUtils.translate("malilib.gui.label.render_layers.layer_min") + ":";
             String labelMax = StringUtils.translate("malilib.gui.label.render_layers.layer_max") + ":";
-            int w1 = this.getStringWidth(labelMax);
-            int w2 = this.getStringWidth(labelMin);
-
-            this.addLabel(x, y +  5, w1, 8, 0xFFFFFF, labelMax);
-            this.addLabel(x, y + 28, w2, 8, 0xFFFFFF, labelMin);
+            int w1 = this.addLabel(x, y +  5, 0xFFFFFF, labelMax).getWidth();
+            int w2 = this.addLabel(x, y + 28, 0xFFFFFF, labelMin).getWidth();
 
             x += Math.max(w1, w2) + 4;
         }
         else
         {
             String label = StringUtils.translate("malilib.gui.label.render_layers.layer") + ":";
-            int w = this.getStringWidth(label);
-            this.addLabel(x, y + 5, w, 8, 0xFFFFFF, label);
-
-            x += w + 4;
+            x += this.addLabel(x, y + 5, 0xFFFFFF, label).getWidth() + 4;
         }
 
         IGuiIcon valueAdjustIcon = this.getValueAdjustButtonIcon();

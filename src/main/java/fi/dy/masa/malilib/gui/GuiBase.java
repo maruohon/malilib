@@ -25,7 +25,6 @@ import fi.dy.masa.malilib.gui.wrappers.TextFieldWrapper;
 import fi.dy.masa.malilib.interfaces.IStringConsumer;
 import fi.dy.masa.malilib.render.MessageRenderer;
 import fi.dy.masa.malilib.render.RenderUtils;
-import fi.dy.masa.malilib.util.StringUtils;
 
 public abstract class GuiBase extends GuiScreen implements IMessageConsumer, IStringConsumer
 {
@@ -391,6 +390,16 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
         return widget;
     }
 
+    public WidgetLabel addLabel(int x, int y, int textColor, String... lines)
+    {
+        return this.addLabel(x, y, -1, -1, textColor, Arrays.asList(lines));
+    }
+
+    public WidgetLabel addLabel(int x, int y, int textColor, List<String> lines)
+    {
+        return this.addLabel(x, y, -1, -1, textColor, lines);
+    }
+
     public WidgetLabel addLabel(int x, int y, int width, int height, int textColor, String... lines)
     {
         return this.addLabel(x, y, width, height, textColor, Arrays.asList(lines));
@@ -398,17 +407,6 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
 
     public WidgetLabel addLabel(int x, int y, int width, int height, int textColor, List<String> lines)
     {
-        if (lines.size() > 0)
-        {
-            if (width == -1)
-            {
-                for (String line : lines)
-                {
-                    width = Math.max(width, this.getStringWidth(StringUtils.translate(line)));
-                }
-            }
-        }
-
         return this.addWidget(new WidgetLabel(x, y, width, height, textColor, lines));
     }
 

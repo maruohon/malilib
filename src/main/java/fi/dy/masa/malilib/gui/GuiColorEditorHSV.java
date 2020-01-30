@@ -117,7 +117,7 @@ public class GuiColorEditorHSV extends GuiDialogBase
 
         String str = "HEX:";
         int w = this.getStringWidth(str);
-        this.addLabel(this.xH - w - 4, y + 3, w, 8, 0xFFFFFF, str);
+        this.addLabel(this.xH - w - 4, y + 4, 0xFFFFFF, str);
         this.textFieldFullColor = new GuiTextFieldGeneric(this.xH, y + 1, 68, 14, this.textRenderer);
         this.textFieldFullColor.setMaxStringLength(12);
         this.addTextField(this.textFieldFullColor, new TextFieldListener(null, this));
@@ -145,7 +145,7 @@ public class GuiColorEditorHSV extends GuiDialogBase
             default:
         }
 
-        this.addLabel(xLabel, y + 2, 12, 8, 0xFFFFFF, element.name() + ":");
+        this.addLabel(xLabel, y + 2, 0xFFFFFF, element.name() + ":");
         this.addTextField(textField, listener);
 
         return this.heightSlider + this.gapSlider;

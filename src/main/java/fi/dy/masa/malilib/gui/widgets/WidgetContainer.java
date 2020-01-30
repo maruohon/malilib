@@ -33,20 +33,14 @@ public abstract class WidgetContainer extends WidgetBase
         return button;
     }
 
+    protected void addLabel(int x, int y, int textColor, String... lines)
+    {
+        this.addLabel(x, y, -1, -1, textColor, lines);
+    }
+
     protected void addLabel(int x, int y, int width, int height, int textColor, String... lines)
     {
-        if (lines != null && lines.length >= 1)
-        {
-            if (width == -1)
-            {
-                for (String line : lines)
-                {
-                    width = Math.max(width, this.getStringWidth(line));
-                }
-            }
-
-            this.addWidget(new WidgetLabel(x, y, width, height, textColor, lines));
-        }
+        this.addWidget(new WidgetLabel(x, y, width, height, textColor, lines));
     }
 
     protected void removeWidget(WidgetBase widget)
