@@ -464,7 +464,7 @@ public class RenderUtils
 
                     if (effectInstance.shouldShowParticles() && effectInstance.shouldShowIcon())
                     {
-                        if (effect.method_5573()) // MCP: isBeneficial()
+                        if (effect.isBeneficial())
                         {
                             y1 = 26;
                         }
@@ -988,7 +988,7 @@ public class RenderUtils
                 break;
         }
 
-        matrixStack.translate(-x, -y, -z + 0.501);
+        matrixStack.translate(-x, -y, -z + 0.505);
     }
 
     public static void renderMapPreview(ItemStack stack, int x, int y, int dimensions)
@@ -1116,7 +1116,7 @@ public class RenderUtils
         setupBlendSimple();
         color(1f, 1f, 1f, 1f);
 
-        setupGuiTransform(x, y, model.hasDepthInGui(), zLevel);
+        setupGuiTransform(x, y, model.hasDepth(), zLevel);
         //model.getItemCameraTransforms().applyTransform(ItemCameraTransforms.TransformType.GUI);
         RenderSystem.rotatef( 30, 1, 0, 0);
         RenderSystem.rotatef(225, 0, 1, 0);
