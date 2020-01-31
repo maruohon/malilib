@@ -10,6 +10,7 @@ public class ConfigString extends ConfigBase<ConfigString> implements IConfigVal
 {
     private final String defaultValue;
     private String value;
+    private String previousValue;
 
     public ConfigString(String name, String defaultValue, String comment)
     {
@@ -17,6 +18,7 @@ public class ConfigString extends ConfigBase<ConfigString> implements IConfigVal
 
         this.defaultValue = defaultValue;
         this.value = defaultValue;
+        this.previousValue = defaultValue;
     }
 
     @Override
@@ -31,13 +33,18 @@ public class ConfigString extends ConfigBase<ConfigString> implements IConfigVal
         return this.defaultValue;
     }
 
+    public String getOldStringValue()
+    {
+        return this.previousValue;
+    }
+
     @Override
     public void setValueFromString(String value)
     {
-        String oldValue = this.value;
+        this.previousValue = this.value;
         this.value = value;
 
-        if (oldValue.equals(this.value) == false)
+        if (this.previousValue.equals(this.value) == false)
         {
             this.onValueChanged();
         }
@@ -46,7 +53,7 @@ public class ConfigString extends ConfigBase<ConfigString> implements IConfigVal
     @Override
     public void resetToDefault()
     {
-        this.value = this.defaultValue;
+        this.setValueFromString(this.defaultValue);
     }
 
     @Override
@@ -69,6 +76,7 @@ public class ConfigString extends ConfigBase<ConfigString> implements IConfigVal
             if (element.isJsonPrimitive())
             {
                 this.value = element.getAsString();
+                this.previousValue = this.value;
             }
             else
             {
