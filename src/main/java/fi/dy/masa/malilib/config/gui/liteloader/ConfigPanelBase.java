@@ -5,6 +5,9 @@ import java.util.List;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
 import com.mumfrey.liteloader.modconfig.AbstractConfigPanel;
 import com.mumfrey.liteloader.modconfig.ConfigPanelHost;
 import fi.dy.masa.malilib.config.gui.GuiModConfigs;
@@ -13,9 +16,6 @@ import fi.dy.masa.malilib.gui.GuiConfigsBase;
 import fi.dy.masa.malilib.gui.GuiConfigsBase.ConfigOptionWrapper;
 import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
 
 public abstract class ConfigPanelBase extends AbstractConfigPanel
 {
@@ -212,7 +212,7 @@ public abstract class ConfigPanelBase extends AbstractConfigPanel
         if (panel != null)
         {
             this.selectedSubPanel = panel;
-            this.selectedSubPanel.setParentGui(GuiUtils.getCurrentScreen());
+            this.selectedSubPanel.setParent(GuiUtils.getCurrentScreen());
             this.selectedSubPanel.setDialogHandler(new DialogHandler(this.selectedSubPanel));
             this.updateSubPanelSize(this.selectedSubPanel);
         }
@@ -262,6 +262,7 @@ public abstract class ConfigPanelBase extends AbstractConfigPanel
             String modId = this.selectedPanel.getModId();
             String title = this.selectedPanel.getTitle();
             List<ConfigOptionWrapper> wrappers = this.selectedPanel.getConfigs();
+            gui.setPopupGuiZLevelBasedOn(GuiUtils.getCurrentScreen());
 
             ConfigPanelBase.this.setSelectedSubPanel(new GuiConfigsWrapper(modId, title, wrappers, this.selectedPanel, gui));
         }

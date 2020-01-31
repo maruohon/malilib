@@ -74,7 +74,7 @@ public abstract class ButtonBase extends WidgetBase
     protected int autoCalculateWidth(String text)
     {
         this.setWidth(this.getStringWidth(text) + 10);
-        return this.width;
+        return this.getWidth();
     }
 
     public boolean isMouseOver()

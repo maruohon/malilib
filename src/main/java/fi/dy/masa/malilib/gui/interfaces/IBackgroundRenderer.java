@@ -9,6 +9,7 @@ public interface IBackgroundRenderer
      * @param y
      * @param width
      * @param height
+     * @param zLevel
      */
-    void renderBackground(int x, int y, int width, int height);
+    void renderBackground(int x, int y, int width, int height, int zLevel);
 }

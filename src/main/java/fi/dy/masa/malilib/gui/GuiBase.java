@@ -10,6 +10,7 @@ import org.lwjgl.input.Mouse;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import fi.dy.masa.malilib.MaLiLibConfigs;
@@ -18,6 +19,7 @@ import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.gui.interfaces.IMessageConsumer;
 import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
+import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.util.Message.MessageType;
 import fi.dy.masa.malilib.gui.widgets.WidgetBase;
 import fi.dy.masa.malilib.gui.widgets.WidgetLabel;
@@ -370,8 +372,41 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
         this.mc.getTextureManager().bindTexture(texture);
     }
 
+    public GuiBase setZLevel(float zLevel)
+    {
+        int diff = (int) (zLevel - this.zLevel);
+        this.zLevel = zLevel;
+
+        for (WidgetBase widget : this.buttons)
+        {
+            widget.setZLevel(widget.getZLevel() + diff);
+        }
+
+        for (WidgetBase widget : this.widgets)
+        {
+            widget.setZLevel(widget.getZLevel() + diff);
+        }
+
+        return this;
+    }
+
+    public GuiBase setPopupGuiZLevelBasedOn(@Nullable GuiScreen gui)
+    {
+        if (gui instanceof GuiBase)
+        {
+            this.setZLevel(((GuiBase) gui).zLevel + 20);
+        }
+
+        return this;
+    }
+
     public <T extends ButtonBase> T addButton(T button, IButtonActionListener listener)
     {
+        if (button.getZLevel() == 0)
+        {
+            button.setZLevel((int) this.zLevel + 2);
+        }
+
         button.setActionListener(listener);
         this.buttons.add(button);
         return button;
@@ -386,6 +421,11 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
 
     public <T extends WidgetBase> T addWidget(T widget)
     {
+        if (widget.getZLevel() == 0)
+        {
+            widget.setZLevel((int) this.zLevel + 2);
+        }
+
         this.widgets.add(widget);
         return widget;
     }
@@ -451,7 +491,7 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
 
     protected void drawTitle(int mouseX, int mouseY, float partialTicks)
     {
-        this.drawString(this.getTitle(), LEFT, TOP, COLOR_WHITE);
+        this.drawStringWithShadow(this.getTitle(), LEFT, TOP, COLOR_WHITE);
     }
 
     protected void drawContents(int mouseX, int mouseY, float partialTicks)
@@ -499,7 +539,7 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
         {
             if (button.hasHoverText() && button.isMouseOver())
             {
-                RenderUtils.drawHoverText(mouseX, mouseY, button.getHoverStrings());
+                RenderUtils.drawHoverText(mouseX, mouseY, (int) this.zLevel, button.getHoverStrings());
             }
         }
 
@@ -527,12 +567,22 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
 
     public void drawString(String text, int x, int y, int color)
     {
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(0f, 0f, this.zLevel + 0.1f);
+
         this.textRenderer.drawString(text, x, y, color);
+
+        GlStateManager.popMatrix();
     }
 
     public void drawStringWithShadow(String text, int x, int y, int color)
     {
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(0f, 0f, this.zLevel + 0.1f);
+
         this.textRenderer.drawStringWithShadow(text, x, y, color);
+
+        GlStateManager.popMatrix();
     }
 
     public int getMaxPrettyNameLength(List<? extends IConfigBase> configs)
@@ -547,8 +597,25 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
         return width;
     }
 
-    public static void openGui(GuiScreen gui)
+    public static void openGui(@Nullable GuiScreen gui)
     {
+        Minecraft.getMinecraft().displayGuiScreen(gui);
+    }
+
+    /**
+     * Opens a popup GUI, which is meant to open on top of another GUI.
+     * This will set the Z level on that GUI based on the current GUI
+     * @param gui
+     */
+    public static void openPopupGui(GuiBase gui)
+    {
+        GuiScreen oldGui = GuiUtils.getCurrentScreen();
+
+        if (oldGui instanceof GuiBase)
+        {
+            gui.setZLevel(((GuiBase) oldGui).zLevel + 20);
+        }
+
         Minecraft.getMinecraft().displayGuiScreen(gui);
     }
 

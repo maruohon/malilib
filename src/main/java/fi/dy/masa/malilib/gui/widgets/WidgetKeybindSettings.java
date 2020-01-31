@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.gui.widgets;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
+import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.GuiKeybindSettings;
@@ -12,7 +13,6 @@ import fi.dy.masa.malilib.hotkeys.IKeybind;
 import fi.dy.masa.malilib.hotkeys.KeybindSettings;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
-import net.minecraft.util.ResourceLocation;
 
 public class WidgetKeybindSettings extends WidgetBase
 {
@@ -47,7 +47,7 @@ public class WidgetKeybindSettings extends WidgetBase
             }
             else
             {
-                GuiBase.openGui(new GuiKeybindSettings(this.keybind, this.keybindName, null, GuiUtils.getCurrentScreen()));
+                GuiBase.openPopupGui(new GuiKeybindSettings(this.keybind, this.keybindName, null, GuiUtils.getCurrentScreen()));
             }
 
             return true;
@@ -76,16 +76,16 @@ public class WidgetKeybindSettings extends WidgetBase
         int v4 = this.settings.isExclusive() ? w : 0;
         int v5 = this.settings.shouldCancel() ? w : 0;
 
-        int x = this.x;
-        int y = this.y;
-
+        int x = this.getX();
+        int y = this.getY();
+        int z = this.getZLevel();
         int edgeColor = this.keybind.areSettingsModified() ? 0xFFFFBB33 : 0xFFFFFFFF;
-        RenderUtils.drawRect(x    , y + 0, 20, 20, edgeColor);
-        RenderUtils.drawRect(x + 1, y + 1, 18, 18, 0xFF000000);
+
+        RenderUtils.drawRect(x    , y + 0, 20, 20, edgeColor, z);
+        RenderUtils.drawRect(x + 1, y + 1, 18, 18, 0xFF000000, z);
 
         x += 1;
         y += 1;
-        float z = 0;
 
         RenderUtils.color(1f, 1f, 1f, 1f);
 
@@ -142,6 +142,6 @@ public class WidgetKeybindSettings extends WidgetBase
             text.add(parts[i]);
         }
 
-        RenderUtils.drawHoverText(mouseX + 10, mouseY, text);
+        RenderUtils.drawHoverText(mouseX + 10, mouseY, this.getZLevel(), text);
     }
 }

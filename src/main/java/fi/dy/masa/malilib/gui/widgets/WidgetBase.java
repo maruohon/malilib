@@ -24,19 +24,19 @@ public abstract class WidgetBase
     private static final ArrayListMultimap<Long, String> DEBUG_STRINGS = ArrayListMultimap.create();
     private static int lastDebugOutlineColor;
 
-    public static final IBackgroundRenderer DEBUG_TEXT_BG_RENDERER = (x, y, w, h) -> { RenderUtils.drawOutlinedBox(x - 2, y - 2, w + 4, h + 4, 0xE0000000, 0xFFC0C0C0); };
+    public static final IBackgroundRenderer DEBUG_TEXT_BG_RENDERER = (x, y, w, h, z) -> { RenderUtils.drawOutlinedBox(x - 2, y - 2, w + 4, h + 4, 0xE0000000, 0xFFC0C0C0, z); };
 
     protected final Minecraft mc;
     protected final FontRenderer textRenderer;
     protected final List<String> hoverStrings = new ArrayList<>();
     protected final int fontHeight;
-    protected int x;
-    protected int y;
-    protected int xRight;
-    protected int width;
-    protected int height;
-    protected int zLevel;
-    protected boolean rightAlign;
+    private int x;
+    private int y;
+    private int xRight;
+    private int width;
+    private int height;
+    private int zLevel;
+    private boolean rightAlign;
 
     public WidgetBase(int x, int y, int width, int height)
     {
@@ -59,17 +59,6 @@ public abstract class WidgetBase
         return this.y;
     }
 
-    public int getZLevel()
-    {
-        return this.zLevel;
-    }
-
-    public void setPosition(int x, int y)
-    {
-        this.setX(x);
-        this.setY(y);
-    }
-
     public void setX(int x)
     {
         this.x = x;
@@ -78,6 +67,44 @@ public abstract class WidgetBase
     public void setY(int y)
     {
         this.y = y;
+    }
+
+    public int getZLevel()
+    {
+        return this.zLevel;
+    }
+
+    public WidgetBase setZLevel(int zLevel)
+    {
+        this.zLevel = zLevel;
+        return this;
+    }
+
+    public int getWidth()
+    {
+        return this.width;
+    }
+
+    public int getHeight()
+    {
+        return this.height;
+    }
+
+    public void setWidth(int width)
+    {
+        this.width = width;
+        this.updatePositionIfRightAligned();
+    }
+
+    public void setHeight(int height)
+    {
+        this.height = height;
+    }
+
+    public void setPosition(int x, int y)
+    {
+        this.setX(x);
+        this.setY(y);
     }
 
     public void setRightX(int x)
@@ -110,31 +137,9 @@ public abstract class WidgetBase
         }
     }
 
-    public int getWidth()
+    protected int getCenteredTextOffsetY()
     {
-        return this.width;
-    }
-
-    public int getHeight()
-    {
-        return this.height;
-    }
-
-    public void setWidth(int width)
-    {
-        this.width = width;
-        this.updatePositionIfRightAligned();
-    }
-
-    public void setHeight(int height)
-    {
-        this.height = height;
-    }
-
-    public WidgetBase setZLevel(int zLevel)
-    {
-        this.zLevel = zLevel;
-        return this;
+        return (this.getHeight() - this.fontHeight) / 2 + 1;
     }
 
     public boolean isMouseOver(int mouseX, int mouseY)
@@ -268,22 +273,42 @@ public abstract class WidgetBase
 
     public void drawString(int x, int y, int color, String text)
     {
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(0f, 0f, this.zLevel + 0.1f);
+
         this.textRenderer.drawString(text, x, y, color);
+
+        GlStateManager.popMatrix();
     }
 
     public void drawCenteredString(int x, int y, int color, String text)
     {
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(0f, 0f, this.zLevel + 0.1f);
+
         this.textRenderer.drawString(text, x - this.getStringWidth(text) / 2, y, color);
+
+        GlStateManager.popMatrix();
     }
 
     public void drawStringWithShadow(int x, int y, int color, String text)
     {
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(0f, 0f, this.zLevel + 0.1f);
+
         this.textRenderer.drawStringWithShadow(text, x, y, color);
+
+        GlStateManager.popMatrix();
     }
 
     public void drawCenteredStringWithShadow(int x, int y, int color, String text)
     {
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(0f, 0f, this.zLevel + 0.1f);
+
         this.textRenderer.drawStringWithShadow(text, x - this.getStringWidth(text) / 2, y, color);
+
+        GlStateManager.popMatrix();
     }
 
     public ITextRenderer getTextRenderer(boolean useTextShadow, boolean centered)
@@ -311,7 +336,7 @@ public abstract class WidgetBase
     {
         if (this.hasHoverText() && this.shouldRenderHoverInfo(mouseX, mouseY))
         {
-            RenderUtils.drawHoverText(mouseX, mouseY, this.getHoverStrings());
+            RenderUtils.drawHoverText(mouseX, mouseY, this.getZLevel(), this.getHoverStrings());
             RenderUtils.disableItemLighting();
         }
     }
@@ -320,7 +345,7 @@ public abstract class WidgetBase
     {
         int x = this.getX();
         int y = this.getY();
-        double z = this.zLevel;
+        double z = this.getZLevel();
         int w = this.getWidth();
         int h = this.getHeight();
 
@@ -383,7 +408,7 @@ public abstract class WidgetBase
             {
                 int x = (int) (posLong.longValue() & 0xFFFFFFFF);
                 int y = (int) ((posLong.longValue() >>> 32) & 0xFFFFFFFF);
-                RenderUtils.drawHoverText(x, y, DEBUG_STRINGS.get(posLong), 0xFFFF4040, DEBUG_TEXT_BG_RENDERER);
+                RenderUtils.drawHoverText(x, y, 10, DEBUG_STRINGS.get(posLong), 0xFFFF4040, DEBUG_TEXT_BG_RENDERER);
             }
 
             DEBUG_STRINGS.clear();

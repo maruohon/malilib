@@ -18,28 +18,33 @@ public class WidgetStringListEntry extends WidgetListEntryBase<String>
     {
         RenderUtils.color(1f, 1f, 1f, 1f);
 
+        int x = this.getX();
+        int y = this.getY();
+        int z = this.getZLevel();
+        int width = this.getWidth();
+        int height = this.getHeight();
+
         // Draw a lighter background for the hovered and the selected entry
         if (selected || this.isMouseOver(mouseX, mouseY))
         {
-            RenderUtils.drawRect(this.x, this.y, this.width, this.height, 0xA0707070);
+            RenderUtils.drawRect(x, y, width, height, 0xA0707070, z);
         }
         else if (this.isOdd)
         {
-            RenderUtils.drawRect(this.x, this.y, this.width, this.height, 0xA0101010);
+            RenderUtils.drawRect(x, y, width, height, 0xA0101010, z);
         }
         // Draw a slightly lighter background for even entries
         else
         {
-            RenderUtils.drawRect(this.x, this.y, this.width, this.height, 0xA0303030);
+            RenderUtils.drawRect(x, y, width, height, 0xA0303030, z);
         }
 
         if (selected)
         {
-            RenderUtils.drawOutline(this.x, this.y, this.width, this.height, 0xFF90D0F0);
+            RenderUtils.drawOutline(x, y, width, height, 1, 0xFF90D0F0, z);
         }
 
-        int yOffset = (this.height - this.fontHeight) / 2 + 1;
-        this.drawStringWithShadow(this.x + 2, this.y + yOffset, 0xFFFFFFFF, this.entry);
+        this.drawStringWithShadow(x + 2, y + this.getCenteredTextOffsetY(), 0xFFFFFFFF, this.entry);
 
         super.render(mouseX, mouseY, selected);
     }

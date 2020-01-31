@@ -3,6 +3,8 @@ package fi.dy.masa.malilib.gui;
 import java.io.IOException;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.config.options.IConfigStringList;
 import fi.dy.masa.malilib.gui.interfaces.IConfigGui;
@@ -12,8 +14,6 @@ import fi.dy.masa.malilib.gui.widgets.WidgetListStringListEdit;
 import fi.dy.masa.malilib.gui.widgets.WidgetStringListEditEntry;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
 
 public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEditEntry, WidgetListStringListEdit>
 {
@@ -108,7 +108,9 @@ public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEditE
     protected WidgetListStringListEdit createListWidget(int listX, int listY)
     {
         // The listX and listY are set via the constructor, which in this dialog-like GUI's case is too early to know them
-        return new WidgetListStringListEdit(this.dialogLeft + 10, this.dialogTop + 20, this.getBrowserWidth(), this.getBrowserHeight(), this.dialogWidth - 100, this);
+        WidgetListStringListEdit widget = new WidgetListStringListEdit(this.dialogLeft + 10, this.dialogTop + 20, this.getBrowserWidth(), this.getBrowserHeight(), this.dialogWidth - 100, this);
+        widget.setZLevel((int) this.zLevel + 2);
+        return widget;
     }
 
     @Override
@@ -137,7 +139,7 @@ public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEditE
     @Override
     protected void drawScreenBackground(int mouseX, int mouseY)
     {
-        RenderUtils.drawOutlinedBox(this.dialogLeft, this.dialogTop, this.dialogWidth, this.dialogHeight, 0xFF000000, COLOR_HORIZONTAL_BAR);
+        RenderUtils.drawOutlinedBox(this.dialogLeft, this.dialogTop, this.dialogWidth, this.dialogHeight, 0xFF000000, COLOR_HORIZONTAL_BAR, (int) this.zLevel);
     }
 
     @Override

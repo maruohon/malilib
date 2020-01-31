@@ -79,7 +79,7 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
     public void drawContents(int mouseX, int mouseY, float partialTicks)
     {
         // Draw an outline around the entire file browser
-        RenderUtils.drawOutlinedBox(this.x, this.y, this.browserWidth, this.browserHeight, 0xB0000000, GuiBase.COLOR_HORIZONTAL_BAR);
+        RenderUtils.drawOutlinedBox(this.getX(), this.getY(), this.browserWidth, this.browserHeight, 0xB0000000, GuiBase.COLOR_HORIZONTAL_BAR, this.getZLevel());
 
         super.drawContents(mouseX, mouseY, partialTicks);
 
@@ -163,7 +163,7 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
             this.removeWidget(this.widgetNavigation);
         }
 
-        this.widgetNavigation = new WidgetDirectoryNavigation(this.x + 2, this.y + 4, this.browserEntryWidth, 14,
+        this.widgetNavigation = new WidgetDirectoryNavigation(this.getX() + 2, this.getY() + 4, this.browserEntryWidth, 14,
                 this.currentDirectory, this.getRootDirectory(), this, this.getIconProvider());
         this.addSearchBarWidget(this.widgetNavigation);
 

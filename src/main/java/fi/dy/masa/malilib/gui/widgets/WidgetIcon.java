@@ -30,6 +30,6 @@ public class WidgetIcon extends WidgetBase
     @Override
     public void render(int mouseX, int mouseY, boolean selected)
     {
-        this.icon.renderAt(this.x, this.y, this.zLevel, this.enabled, this.doHilight && this.isMouseOver(mouseX, mouseY));
+        this.icon.renderAt(this.getX(), this.getY(), this.getZLevel(), this.enabled, this.doHilight && this.isMouseOver(mouseX, mouseY));
     }
 }

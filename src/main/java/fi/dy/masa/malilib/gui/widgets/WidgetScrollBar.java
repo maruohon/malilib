@@ -1,11 +1,11 @@
 package fi.dy.masa.malilib.gui.widgets;
 
 import javax.annotation.Nullable;
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.render.RenderUtils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.util.math.MathHelper;
 
 public class WidgetScrollBar extends WidgetBase
 {
@@ -120,7 +120,7 @@ public class WidgetScrollBar extends WidgetBase
         }
         else
         {
-            float relVal = (float) (mouseY - this.y) / (float) Math.max(1, this.height);
+            float relVal = (float) (mouseY - this.getY()) / (float) Math.max(1, this.getHeight());
             this.setValue((int) (relVal * this.maxValue));
         }
 
@@ -138,25 +138,45 @@ public class WidgetScrollBar extends WidgetBase
 
     public boolean isMouseOverUpArrow(int mouseX, int mouseY)
     {
-        return this.getRenderArrows() &&
-                mouseX >= this.x && mouseX < this.x + this.width &&
-                mouseY >= this.y && mouseY < this.y + this.arrowTextureUp.getHeight();
+        if (this.getRenderArrows())
+        {
+            int x = this.getX();
+            int y = this.getY();
+            int width = this.getWidth();
+
+            return mouseX >= x && mouseX < x + width &&
+                   mouseY >= y && mouseY < y + this.arrowTextureUp.getHeight();
+        }
+
+        return false;
     }
 
     public boolean isMouseOverDownArrow(int mouseX, int mouseY)
     {
-        return this.getRenderArrows() &&
-                mouseX >= this.x && mouseX < this.x + this.width &&
-                mouseY >= this.y + this.height - this.arrowTextureDown.getHeight() && mouseY < this.y + this.height;
+        if (this.getRenderArrows())
+        {
+            int x = this.getX();
+            int y = this.getY();
+            int height = this.getHeight();
+
+            return mouseX >= x && mouseX < x + this.getWidth() &&
+                   mouseY >= y + height - this.arrowTextureDown.getHeight() && mouseY < y + height;
+        }
+
+        return false;
     }
 
     public void render(int mouseX, int mouseY, int height, int totalHeight)
     {
-        this.height = height;
+        this.setHeight(height); // FIXME?
+
+        int x = this.getX();
+        int y = this.getY();
+        int width = this.getWidth();
 
         if (this.renderScrollbarBackgroundColor)
         {
-            RenderUtils.drawRect(this.x, this.y, this.width, height, this.backgroundColor);
+            RenderUtils.drawRect(x, y, width, height, this.backgroundColor, this.getZLevel());
         }
 
         if (totalHeight > 0)
@@ -176,17 +196,14 @@ public class WidgetScrollBar extends WidgetBase
             float relative = Math.min(1.0F, (float) slideHeight / (float) totalHeight);
             int barHeight = (int) (relative * slideHeight);
             int barTravel = slideHeight - barHeight;
-            int barPosition = this.y + upArH + (this.maxValue > 0 ? (int) ((this.currentValue / (float) this.maxValue) * barTravel) : 0);
+            int barPosition = y + upArH + (this.maxValue > 0 ? (int) ((this.currentValue / (float) this.maxValue) * barTravel) : 0);
 
             RenderUtils.color(1f, 1f, 1f, 1f);
 
             if (useArrows)
             {
-                RenderUtils.bindTexture(this.arrowTextureUp.getTexture());
-                this.arrowTextureUp.renderAt(this.x, this.y, this.zLevel, false, this.isMouseOverUpArrow(mouseX, mouseY));
-
-                RenderUtils.bindTexture(this.arrowTextureDown.getTexture());
-                this.arrowTextureDown.renderAt(this.x, this.y + this.height - downArH, this.zLevel, false, this.isMouseOverDownArrow(mouseX, mouseY));
+                this.arrowTextureUp.renderAt(x, y, this.getZLevel(), false, this.isMouseOverUpArrow(mouseX, mouseY));
+                this.arrowTextureDown.renderAt(x, y + this.getHeight() - downArH, this.getZLevel(), false, this.isMouseOverDownArrow(mouseX, mouseY));
             }
 
             if (this.barTexture != null && barHeight >= 4)
@@ -196,16 +213,19 @@ public class WidgetScrollBar extends WidgetBase
                 int v = this.barTexture.getV();
                 int w = this.barTexture.getWidth();
                 int h = this.barTexture.getHeight();
+                int z = this.getZLevel();
 
-                RenderUtils.drawTexturedRect(this.x + 1, barPosition                , u, v        , w, barHeight - 2);
-                RenderUtils.drawTexturedRect(this.x + 1, barPosition + barHeight - 2, u, v + h - 2, w, 2            );
+                RenderUtils.drawTexturedRect(x + 1, barPosition                , u, v        , w, barHeight - 2, z);
+                RenderUtils.drawTexturedRect(x + 1, barPosition + barHeight - 2, u, v + h - 2, w, 2            , z);
             }
             else
             {
-                RenderUtils.drawRect(this.x + 1, barPosition, this.width - 2, barHeight, this.foregroundColor);
+                RenderUtils.drawRect(x + 1, barPosition, width - 2, barHeight, this.foregroundColor, this.getZLevel());
             }
 
-            this.mouseOver = mouseX > this.x && mouseX < this.x + this.width && mouseY > barPosition && mouseY < barPosition + barHeight;
+            // FIXME?
+            this.mouseOver = mouseX > x && mouseX < x + width && mouseY > barPosition && mouseY < barPosition + barHeight;
+
             this.handleDrag(mouseY, barTravel);
         }
     }

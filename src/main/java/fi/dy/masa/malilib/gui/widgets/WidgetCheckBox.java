@@ -10,20 +10,22 @@ public class WidgetCheckBox extends WidgetBase
     protected final String displayText;
     protected final IGuiIcon widgetUnchecked;
     protected final IGuiIcon widgetChecked;
-    protected final int textWidth;
+    protected int textColorChecked = 0xFFFFFFFF;
+    protected int textColorUnchecked = 0xB0B0B0B0;
     protected boolean checked;
     @Nullable protected ISelectionListener<WidgetCheckBox> listener;
 
     public WidgetCheckBox(int x, int y, IGuiIcon iconUnchecked, IGuiIcon iconChecked, String text)
     {
-        super(x, y, 40, 20);
+        super(x, y, 0, 0);
 
         this.displayText = text;
-        this.width = iconUnchecked.getWidth() + 3 + this.getStringWidth(text);
-        this.height = Math.max(this.fontHeight, iconChecked.getHeight());
-        this.textWidth = this.getStringWidth(text);
         this.widgetUnchecked = iconUnchecked;
         this.widgetChecked = iconChecked;
+
+        int sw = this.getStringWidth(text);
+        this.setWidth(iconUnchecked.getWidth() + (sw > 0 ? sw + 3 : 0));
+        this.setHeight(Math.max(this.fontHeight, iconChecked.getHeight()));
     }
 
     public WidgetCheckBox(int x, int y, IGuiIcon iconUnchecked, IGuiIcon iconChecked, String text, @Nullable String hoverInfo)
@@ -46,6 +48,18 @@ public class WidgetCheckBox extends WidgetBase
     public void setChecked(boolean checked)
     {
         this.setChecked(checked, true);
+    }
+
+    public WidgetCheckBox setTextColorChecked(int color)
+    {
+        this.textColorChecked = color;
+        return this;
+    }
+
+    public WidgetCheckBox setTextColorUnchecked(int color)
+    {
+        this.textColorUnchecked = color;
+        return this;
     }
 
     /**
@@ -78,12 +92,14 @@ public class WidgetCheckBox extends WidgetBase
 
         RenderUtils.color(1f, 1f, 1f, 1f);
         this.bindTexture(icon.getTexture());
-        icon.renderAt(this.x, this.y, this.zLevel, false, false);
 
+        int x = this.getX();
+        int y = this.getY();
         int iw = icon.getWidth();
-        int y = this.y + 1 + (this.height - this.fontHeight) / 2;
-        int textColor = this.checked ? 0xFFFFFFFF : 0xB0B0B0B0;
+        int textColor = this.checked ? this.textColorChecked : this.textColorUnchecked;
 
-        this.drawStringWithShadow(this.x + iw + 3, y, textColor, this.displayText);
+        icon.renderAt(x, y, this.getZLevel(), false, false);
+
+        this.drawStringWithShadow(x + iw + 3, y + this.getCenteredTextOffsetY(), textColor, this.displayText);
     }
 }

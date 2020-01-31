@@ -102,8 +102,8 @@ public class WidgetDropDownList<T> extends WidgetContainer
 
         this.updateWidth(false); // This creates the search text field, which needs to be set before calling updateFilteredEntries
 
-        this.widgetSelectionBar = new WidgetSelectionBar<T>(x, y, this.width, height, this.textColor, this);
-        this.widgetSelectionBar.setZLevel(this.getZLevel());
+        this.widgetSelectionBar = new WidgetSelectionBar<T>(x, y, this.getWidth(), height, this.textColor, this);
+        this.widgetSelectionBar.setZLevel(this.getZLevel() + 2);
 
         this.recreateSubElements();
         this.updateFilteredEntries(); // This must be called after the search text field has been created in recreateSubElements
@@ -146,7 +146,7 @@ public class WidgetDropDownList<T> extends WidgetContainer
 
     protected void updateWidth(boolean updateSubWidgets)
     {
-        this.width = this.getRequiredWidth(-1, this.entries, this.mc);
+        this.setWidth(this.getRequiredWidth(-1, this.entries, this.mc));
         this.updatePositionIfRightAligned();
 
         if (updateSubWidgets)
@@ -175,7 +175,7 @@ public class WidgetDropDownList<T> extends WidgetContainer
         }
 
         TextFieldListener listener = new TextFieldListener(this);
-        this.searchField = new TextFieldWrapper<>(new GuiTextFieldGeneric(this.x + 1, this.y - 18, this.width - 2, 16, this.textRenderer), listener);
+        this.searchField = new TextFieldWrapper<>(new GuiTextFieldGeneric(this.getX() + 1, this.getY() - 18, this.getWidth() - 2, 16, this.textRenderer), listener);
         this.searchField.getTextField().setFocused(true);
 
         this.updateSubElementPositions();
@@ -185,20 +185,22 @@ public class WidgetDropDownList<T> extends WidgetContainer
     {
         int yOff = this.noCurrentEntryBar ? 0 : this.lineHeight;
 
-        this.dropdownTopY = this.y + yOff;
+        this.dropdownTopY = this.getY() + yOff;
         this.totalHeight = this.dropdownHeight + yOff;
 
+        int x = this.getX();
+        int y = this.getY();
         int scrollbarWidth = 8;
-        this.scrollBar.setPosition(this.x + this.width - scrollbarWidth - 1, this.y + yOff + 1);
+        this.scrollBar.setPosition(x + this.getWidth() - scrollbarWidth - 1, y + yOff + 1);
 
         if (this.widgetSelectionBar != null)
         {
-            this.widgetSelectionBar.setPosition(this.x, this.y);
+            this.widgetSelectionBar.setPosition(x, y);
             this.widgetSelectionBar.update(this);
         }
 
-        this.searchField.getTextField().x = this.x + 1;
-        this.searchField.getTextField().y = this.y - 18;
+        this.searchField.getTextField().x = x + 1;
+        this.searchField.getTextField().y = y - 18;
     }
 
     protected int getRequiredWidth(int width, List<T> entries, Minecraft mc)
@@ -308,8 +310,8 @@ public class WidgetDropDownList<T> extends WidgetContainer
             return this.buttonOpenClose != null && this.buttonOpenClose.isMouseOver(mouseX, mouseY);
         }
 
-        return mouseX >= this.x && mouseX < this.x + this.getWidth() &&
-               mouseY >= this.y && mouseY < this.y + this.getHeight();
+        return mouseX >= this.getX() && mouseX < this.getX() + this.getWidth() &&
+               mouseY >= this.getY() && mouseY < this.getY() + this.getHeight();
     }
 
     @Override
@@ -341,7 +343,7 @@ public class WidgetDropDownList<T> extends WidgetContainer
 
         if (this.isOpen && mouseY >= this.dropdownTopY)
         {
-            if (mouseX < this.x + this.width - this.scrollBar.getWidth())
+            if (mouseX < this.getX() + this.getWidth() - this.scrollBar.getWidth())
             {
                 int relIndex = (mouseY - this.dropdownTopY) / this.lineHeight;
 
@@ -480,10 +482,12 @@ public class WidgetDropDownList<T> extends WidgetContainer
             int visibleEntries = Math.min(this.maxVisibleEntries, list.size());
             int height = visibleEntries * this.lineHeight;
             int totalHeight = Math.max(visibleEntries, list.size()) * this.lineHeight;
+            int x = this.getX();
+            int width = this.getWidth();
 
-            RenderUtils.drawOutlinedBox(this.x, this.dropdownTopY, this.width, height + 2, 0xD0000000, 0xFFE0E0E0);
+            RenderUtils.drawOutlinedBox(x, this.dropdownTopY, width, height + 2, 0xD0000000, 0xFFE0E0E0, this.getZLevel());
 
-            boolean mouseOverListOnX = mouseX >= this.x && mouseX < this.x + this.width - this.scrollBar.getWidth();
+            boolean mouseOverListOnX = mouseX >= x && mouseX < x + width - this.scrollBar.getWidth();
             int txtY = this.dropdownTopY + this.lineHeight / 2 - this.fontHeight / 2 + 1;
             this.renderListContents(txtY, mouseX, mouseY, mouseOverListOnX);
 
@@ -521,17 +525,19 @@ public class WidgetDropDownList<T> extends WidgetContainer
             T entry = list.get(i);
             IGuiIcon icon = this.iconProvider != null && entry != null ? this.iconProvider.getIconFor(entry) : null;
             int iconWidth = defaultIconWidth;
+            int x = this.getX();
+            int width = this.getWidth();
 
-            RenderUtils.drawRect(this.x, y, this.width - scrollWidth - 1, height, bg);
+            RenderUtils.drawRect(x, y, width - scrollWidth - 1, height, bg, this.getZLevel());
 
             if (icon != null)
             {
                 iconWidth = icon.getWidth() + 2;
                 int iconOffY = (height - icon.getHeight()) / 2;
-                icon.renderAt(this.x + 4, y + iconOffY, this.getZLevel(), true, hovered);
+                icon.renderAt(x + 4, y + iconOffY, this.getZLevel(), true, hovered);
             }
 
-            int txtX = this.x + iconWidth + 6;
+            int txtX = x + iconWidth + 6;
             this.drawString(txtX, txtY, this.textColor, this.getDisplayString(entry));
 
             y += height;
@@ -562,9 +568,14 @@ public class WidgetDropDownList<T> extends WidgetContainer
             this.setWidth(dropdown.getWidth());
 
             IGuiIcon icon = dropdown.isOpen() ? GuiIconBase.ARROW_UP : GuiIconBase.ARROW_DOWN;
-            this.widgetOpenCloseIcon = new WidgetIcon(this.x + this.width - icon.getWidth() - 2, this.y + (this.height - icon.getHeight()) / 2 + 1, icon);
-            this.widgetOpenCloseIcon.setEnabled(true).setDoHilight(true).setZLevel(this.widgetLabel.getZLevel() + 1);
-            this.widgetLabel.setPosition(this.x, this.y);
+            int x = this.getX();
+            int y = this.getY();
+            int width = this.getWidth();
+            int height = this.getHeight();
+
+            this.widgetOpenCloseIcon = new WidgetIcon(x + width - icon.getWidth() - 2, y + (height - icon.getHeight()) / 2 + 1, icon);
+            this.widgetOpenCloseIcon.setEnabled(true).setDoHilight(true).setZLevel(this.widgetLabel.getZLevel() + 2);
+            this.widgetLabel.setPosition(x, y);
             this.widgetLabel.setWidth(this.getWidth() - 1);
             this.widgetLabel.setText(dropdown.getCurrentEntryDisplayString());
 
@@ -578,7 +589,7 @@ public class WidgetDropDownList<T> extends WidgetContainer
             if (icon != null)
             {
                 this.widgetLabel.setTextOffsetX(icon.getWidth() + 7);
-                this.addWidget(new WidgetIcon(this.x + 4, this.y + (this.height - icon.getHeight()) / 2 + 1, icon));
+                this.addWidget(new WidgetIcon(x + 4, y + (height - icon.getHeight()) / 2 + 1, icon));
             }
         }
     }

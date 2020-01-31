@@ -33,15 +33,21 @@ public class WidgetColorIndicator extends WidgetBase
     protected boolean onMouseClickedImpl(int mouseX, int mouseY, int mouseButton)
     {
         GuiColorEditorHSV gui = new GuiColorEditorHSV(this.config, null, GuiUtils.getCurrentScreen());
-        GuiBase.openGui(gui);
+        GuiBase.openPopupGui(gui);
         return true;
     }
 
     @Override
     public void render(int mouseX, int mouseY, boolean selected)
     {
-        RenderUtils.drawRect(this.x    , this.y + 0, this.width    , this.height    , 0xFFFFFFFF);
-        RenderUtils.drawRect(this.x + 1, this.y + 1, this.width - 2, this.height - 2, 0xFF000000);
-        RenderUtils.drawRect(this.x + 2, this.y + 2, this.width - 4, this.height - 4, 0xFF000000 | this.config.getIntegerValue());
+        int x = this.getX();
+        int y = this.getY();
+        int z = this.getZLevel();
+        int width = this.getWidth();
+        int height = this.getHeight();
+
+        RenderUtils.drawRect(x    , y + 0, width    , height    , 0xFFFFFFFF, z);
+        RenderUtils.drawRect(x + 1, y + 1, width - 2, height - 2, 0xFF000000, z);
+        RenderUtils.drawRect(x + 2, y + 2, width - 4, height - 4, 0xFF000000 | this.config.getIntegerValue(), z);
     }
 }

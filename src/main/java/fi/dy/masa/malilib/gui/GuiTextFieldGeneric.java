@@ -53,7 +53,7 @@ public class GuiTextFieldGeneric extends GuiTextField
         }
     }
 
-    public GuiTextFieldGeneric setZLevel(float zLevel)
+    public GuiTextFieldGeneric setZLevel(int zLevel)
     {
         this.zLevel = zLevel;
         return this;

@@ -37,7 +37,7 @@ public class ConfigButtonStringList extends ButtonGeneric
         }
         else
         {
-            GuiBase.openGui(new GuiStringListEdit(this.config, this.configGui, null, GuiUtils.getCurrentScreen()));
+            GuiBase.openPopupGui(new GuiStringListEdit(this.config, this.configGui, null, GuiUtils.getCurrentScreen()));
         }
 
         return true;
@@ -46,6 +46,6 @@ public class ConfigButtonStringList extends ButtonGeneric
     @Override
     protected String generateDisplayString()
     {
-        return StringUtils.getClampedDisplayStringRenderlen(this.config.getStrings(), this.width - 10, "[ ", " ]");
+        return StringUtils.getClampedDisplayStringRenderlen(this.config.getStrings(), this.getWidth() - 10, "[ ", " ]");
     }
 }

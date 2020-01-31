@@ -29,8 +29,10 @@ public abstract class WidgetListEntrySortable<TYPE> extends WidgetListEntryBase<
         int numColumns = this.getColumnCount();
         int x1 = this.getColumnPosX(0);
         int xEnd = this.getColumnPosX(numColumns);
+        int y = this.getY();
+        int height = this.getHeight();
 
-        if (mouseY >= this.y && mouseY <= this.y + this.height && mouseX >= x1 && mouseX < xEnd)
+        if (mouseY >= y && mouseY <= y + height && mouseX >= x1 && mouseX < xEnd)
         {
             for (int column = 1; column <= numColumns; ++column)
             {
@@ -50,9 +52,11 @@ public abstract class WidgetListEntrySortable<TYPE> extends WidgetListEntryBase<
         int sortColumn = this.getCurrentSortColumn();
         boolean reverse = this.getSortInReverse();
         int iconX = this.getColumnPosX(sortColumn + 1) - 21; // align to the right edge
+        int y = this.getY();
+        int height = this.getHeight();
 
         IGuiIcon icon = reverse ? iconReverse : iconNatural;
-        icon.renderAt(iconX, this.y + 3, this.zLevel, true, sortColumn == mouseOverColumn);
+        icon.renderAt(iconX, y + 3, this.getZLevel(), true, sortColumn == mouseOverColumn);
 
         for (int i = 0; i < this.getColumnCount(); ++i)
         {
@@ -60,7 +64,7 @@ public abstract class WidgetListEntrySortable<TYPE> extends WidgetListEntryBase<
             int xStart = this.getColumnPosX(i);
             int xEnd = this.getColumnPosX(i + 1);
 
-            RenderUtils.drawOutline(xStart - 3, this.y + 1, xEnd - xStart - 2, this.height - 2, outlineColor);
+            RenderUtils.drawOutline(xStart - 3, y + 1, xEnd - xStart - 2, height - 2, 1, outlineColor, this.getZLevel());
         }
     }
 }

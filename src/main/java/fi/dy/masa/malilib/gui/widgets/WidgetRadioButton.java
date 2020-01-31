@@ -58,12 +58,13 @@ public class WidgetRadioButton<T extends Enum<T>> extends WidgetBase
     protected void updateSizes()
     {
         IGuiIcon icon = this.iconProvider.getIconFor(IconType.UNSELECTED);
-        int width = icon != null ? icon.getWidth() : this.iconProvider.getExpectedWidth();
-        int height = icon != null ? icon.getHeight() : this.fontHeight + 1;
+        int iconWidth = icon != null ? icon.getWidth() : this.iconProvider.getExpectedWidth();
+        int iconHeight = icon != null ? icon.getHeight() : this.fontHeight + 1;
 
-        this.width = this.textWidth + width + 3;
-        this.entryHeight = Math.max((this.fontHeight + 1), height);
-        this.height = this.entryHeight * this.options.size();
+        this.entryHeight = Math.max((this.fontHeight + 1), iconHeight);
+
+        this.setWidth(this.textWidth + iconWidth + 3);
+        this.setHeight(this.entryHeight * this.options.size());
     }
 
     @Nullable
@@ -85,7 +86,7 @@ public class WidgetRadioButton<T extends Enum<T>> extends WidgetBase
     @Override
     protected boolean onMouseClickedImpl(int mouseX, int mouseY, int mouseButton)
     {
-        int entryIndex = (mouseY - this.y) / this.entryHeight;
+        int entryIndex = (mouseY - this.getY()) / this.entryHeight;
 
         if (entryIndex >= 0 && entryIndex < this.options.size())
         {
@@ -97,7 +98,7 @@ public class WidgetRadioButton<T extends Enum<T>> extends WidgetBase
 
     protected IconType getIconTypeFor(int mouseX, int mouseY, T entry, int y, boolean selected)
     {
-        boolean hovered = GuiBase.isMouseOver(mouseX, mouseY, this.x, y, this.width, this.entryHeight);
+        boolean hovered = GuiBase.isMouseOver(mouseX, mouseY, this.getX(), y, this.getWidth(), this.entryHeight);
 
         if (selected)
         {
@@ -114,7 +115,8 @@ public class WidgetRadioButton<T extends Enum<T>> extends WidgetBase
     {
         RenderUtils.color(1f, 1f, 1f, 1f);
 
-        int y = this.y;
+        int x = this.getX();
+        int y = this.getY();
 
         for (T entry : this.options)
         {
@@ -127,14 +129,14 @@ public class WidgetRadioButton<T extends Enum<T>> extends WidgetBase
                 iconWidth = icon.getWidth() + 3;
                 int iconHeight = icon.getHeight();
                 int iconY = y + (this.entryHeight - iconHeight) / 2;
-                icon.renderAt(this.x, iconY, this.zLevel, false, false);
+                icon.renderAt(x, iconY, this.getZLevel(), false, false);
             }
 
             int textY = y + 1 + (this.entryHeight - this.fontHeight) / 2;
             int textColor = entrySelected ? 0xFFFFFFFF : 0xB0B0B0B0;
 
             String displayString = this.displayStringFunction.apply(entry);
-            this.drawStringWithShadow(this.x + iconWidth, textY, textColor, displayString);
+            this.drawStringWithShadow(x + iconWidth, textY, textColor, displayString);
 
             y += this.entryHeight;
         }

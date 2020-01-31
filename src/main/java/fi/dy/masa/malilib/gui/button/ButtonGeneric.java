@@ -55,7 +55,7 @@ public class ButtonGeneric extends ButtonBase
 
         if (this.automaticWidth && icon != null)
         {
-            this.setWidth(this.width + icon.getWidth() + 8);
+            this.setWidth(this.getWidth() + icon.getWidth() + 8);
         }
 
         if (hoverStrings.length > 0)
@@ -169,10 +169,11 @@ public class ButtonGeneric extends ButtonBase
     {
         if (this.visible)
         {
-            int x = this.x;
-            int y = this.y;
-            int width = this.width;
-            int height = this.height;
+            int x = this.getX();
+            int y = this.getY();
+            int z = this.getZLevel();
+            int width = this.getWidth();
+            int height = this.getHeight();
             boolean textBlank = StringUtils.isBlank(this.displayString);
 
             this.hovered = mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
@@ -183,7 +184,7 @@ public class ButtonGeneric extends ButtonBase
             if (this.renderOutline)
             {
                 int color = this.hovered ? this.outlineColorHover : this.outlineColorNormal;
-                RenderUtils.drawOutline(x, y, width, height, color);
+                RenderUtils.drawOutline(x, y, width, height, 1, color, z);
             }
 
             if (this.renderDefaultBackground)
@@ -194,8 +195,8 @@ public class ButtonGeneric extends ButtonBase
                 int w2 = (width % 2) != 0 ? w1 + 1 : w1;
                 int buttonStyle = this.getTextureOffset(this.hovered);
 
-                RenderUtils.drawTexturedRect(x     , y,        0, 46 + buttonStyle * 20, w1, height);
-                RenderUtils.drawTexturedRect(x + w1, y, 200 - w2, 46 + buttonStyle * 20, w2, height);
+                RenderUtils.drawTexturedRect(x     , y,        0, 46 + buttonStyle * 20, w1, height, z);
+                RenderUtils.drawTexturedRect(x + w1, y, 200 - w2, 46 + buttonStyle * 20, w2, height, z);
             }
 
             int iconClearing = 0;
@@ -222,24 +223,24 @@ public class ButtonGeneric extends ButtonBase
                 }
 
                 int offY = this.customIconOffset ? this.iconOffsetY : (height - icon.getHeight()) / 2;
-                x = this.alignment == HorizontalAlignment.LEFT ? this.x + offX : this.x + width - iconWidth - offX;
-                y = this.y + offY;
+                int ix = this.alignment == HorizontalAlignment.LEFT ? x + offX : x + width - iconWidth - offX;
+                int iy = y + offY;
 
-                icon.renderAt(x, y, this.zLevel, this.enabled, this.hovered);
+                icon.renderAt(ix, iy, this.getZLevel(), this.enabled, this.hovered);
             }
 
             if (textBlank == false)
             {
-                x = this.textCentered ? this.x + width / 2 : this.x + this.textOffsetX;
-                y = this.y + (height - 8) / 2 + this.textOffsetY;
+                int tx = this.textCentered ? x + width / 2 : x + this.textOffsetX;
+                int ty = y + (height - 8) / 2 + this.textOffsetY;
 
                 if (this.alignment == HorizontalAlignment.LEFT)
                 {
-                    x += iconClearing;
+                    tx += iconClearing;
                 }
 
                 int color = this.enabled == false ? this.textColorDisabled : (this.hovered ? this.textColorHovered : this.textColorNormal);
-                this.getTextRenderer(this.useTextShadow, textCentered).renderText(x, y, color, this.displayString);
+                this.getTextRenderer(this.useTextShadow, textCentered).renderText(tx, ty, color, this.displayString);
             }
         }
     }

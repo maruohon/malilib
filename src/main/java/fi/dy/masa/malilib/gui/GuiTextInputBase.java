@@ -2,14 +2,14 @@ package fi.dy.masa.malilib.gui;
 
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.renderer.GlStateManager;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.renderer.GlStateManager;
 
 public abstract class GuiTextInputBase extends GuiDialogBase
 {
@@ -72,7 +72,7 @@ public abstract class GuiTextInputBase extends GuiDialogBase
         GlStateManager.pushMatrix();
         GlStateManager.translate(0, 0, this.zLevel);
 
-        RenderUtils.drawOutlinedBox(this.dialogLeft, this.dialogTop, this.dialogWidth, this.dialogHeight, 0xE0000000, COLOR_HORIZONTAL_BAR);
+        RenderUtils.drawOutlinedBox(this.dialogLeft, this.dialogTop, this.dialogWidth, this.dialogHeight, 0xE0000000, COLOR_HORIZONTAL_BAR, (int) this.zLevel);
 
         // Draw the title
         this.drawStringWithShadow(this.getTitle(), this.dialogLeft + 10, this.dialogTop + 4, COLOR_WHITE);

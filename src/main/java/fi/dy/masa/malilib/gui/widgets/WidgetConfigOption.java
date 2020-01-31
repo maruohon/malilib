@@ -81,7 +81,7 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
                 }
             }
 
-            this.addConfigOption(x, y, zLevel, labelWidth, configWidth, wrapper);
+            this.addConfigOption(x, y, this.getZLevel(), labelWidth, configWidth, wrapper);
         }
         else
         {
@@ -93,7 +93,7 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
         }
     }
 
-    protected void addConfigOption(int x, int y, float zLevel, int labelWidth, int configWidth, ConfigOptionWrapper wrapper)
+    protected void addConfigOption(int x, int y, int zLevel, int labelWidth, int configWidth, ConfigOptionWrapper wrapper)
     {
         IConfigBase config = wrapper.getConfig();
         ConfigType type = config.getType();

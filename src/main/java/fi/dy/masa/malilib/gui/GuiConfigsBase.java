@@ -34,7 +34,6 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
     protected final List<IConfigGuiTab> configTabs;
     protected ConfigButtonKeybind activeKeybindButton;
     protected int configWidth = 204;
-    @Nullable protected GuiScreen parentScreen;
     @Nullable protected IConfigInfoProvider hoverInfoProvider;
     @Nullable protected IDialogHandler dialogHandler;
 
@@ -43,9 +42,9 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
         super(listX, listY);
 
         this.modId = modId;
-        this.parentScreen = parent;
         this.title = StringUtils.translate(titleKey, args);
         this.configTabs = configTabs;
+        this.setParent(parent);
     }
 
     @Override
@@ -58,11 +57,6 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
     protected int getBrowserHeight()
     {
         return this.height - 80;
-    }
-
-    public void setParentGui(GuiScreen parent)
-    {
-        this.parentScreen = parent;
     }
 
     public abstract void setCurrentTab(IConfigGuiTab tab);
@@ -221,9 +215,9 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
                 return true;
             }
 
-            if (keyCode == Keyboard.KEY_ESCAPE && this.parentScreen != GuiUtils.getCurrentScreen())
+            if (keyCode == Keyboard.KEY_ESCAPE && this.getParent() != GuiUtils.getCurrentScreen())
             {
-                GuiBase.openGui(this.parentScreen);
+                GuiBase.openGui(this.getParent());
                 return true;
             }
 

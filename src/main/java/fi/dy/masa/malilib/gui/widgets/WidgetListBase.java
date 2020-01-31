@@ -158,7 +158,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
         // The scroll event could be/should be distributed to the entry widgets here
         // It's not done (for now?) to prevent accidentally messing up stuff when scrolling over lists that have buttons
 
-        if (GuiBase.isMouseOver(mouseX, mouseY, this.x, this.y, this.browserWidth, this.browserHeight))
+        if (GuiBase.isMouseOver(mouseX, mouseY, this.getX(), this.getY(), this.browserWidth, this.browserHeight))
         {
             this.offsetSelectionOrScrollbar(mouseWheelDelta < 0 ? 3 : -3, false);
             return true;
@@ -447,14 +447,14 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
 
     public void setSize(int width, int height)
     {
-        this.width = width;
-        this.height = height;
+        this.setWidth(width);
+        this.setHeight(height);
         this.browserWidth = width;
         this.browserHeight = height;
         this.browserPaddingX = 3;
         this.browserPaddingY = 4;
-        this.browserEntriesStartX = this.x + this.browserPaddingX;
-        this.browserEntriesStartY = this.y + this.browserPaddingY;
+        this.browserEntriesStartX = this.getX() + this.browserPaddingX;
+        this.browserEntriesStartY = this.getY() + this.browserPaddingY;
         this.browserEntryWidth = this.browserWidth - 14;
 
         this.updateScrollbarPosition();
@@ -462,7 +462,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
 
     protected void updateScrollbarPosition()
     {
-        int scrollBarX = this.x + this.browserWidth - 9;
+        int scrollBarX = this.getX() + this.browserWidth - 9;
         int scrollBarY = this.browserEntriesStartY + this.browserEntriesOffsetY;
 
         this.scrollBar.setPosition(scrollBarX, scrollBarY);
@@ -482,13 +482,14 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
         final int numEntries = this.listContents.size();
         int usableHeight = this.browserHeight - this.browserPaddingY - this.browserEntriesOffsetY;
         int usedHeight = 0;
-        int x = this.x + 2;
-        int y = this.y + 4 + this.browserEntriesOffsetY;
+        int x = this.getX() + 2;
+        int y = this.getY() + 4 + this.browserEntriesOffsetY;
         int index = this.scrollBar.getValue();
         WIDGET widget = this.createHeaderWidget(x, y, index, usableHeight, usedHeight);
 
         if (widget != null)
         {
+            this.onWidgetAdded(widget);
             this.listWidgets.add(widget);
             //this.maxVisibleBrowserEntries++;
 
@@ -505,6 +506,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
                 break;
             }
 
+            this.onWidgetAdded(widget);
             this.listWidgets.add(widget);
             this.maxVisibleBrowserEntries++;
 

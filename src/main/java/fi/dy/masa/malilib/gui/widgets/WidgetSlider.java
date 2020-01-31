@@ -1,9 +1,9 @@
 package fi.dy.masa.malilib.gui.widgets;
 
-import fi.dy.masa.malilib.gui.interfaces.ISliderCallback;
-import fi.dy.masa.malilib.render.RenderUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import fi.dy.masa.malilib.gui.interfaces.ISliderCallback;
+import fi.dy.masa.malilib.render.RenderUtils;
 
 public class WidgetSlider extends WidgetBase
 {
@@ -19,7 +19,7 @@ public class WidgetSlider extends WidgetBase
         super(x, y, width, height);
 
         this.callback = callback;
-        int usableWidth = this.width - 4;
+        int usableWidth = this.getWidth() - 4;
         this.sliderWidth = MathHelper.clamp(usableWidth / callback.getMaxSteps(), 8, usableWidth / 2);
     }
 
@@ -48,28 +48,33 @@ public class WidgetSlider extends WidgetBase
             this.lastMouseX = mouseX;
         }
 
+        int x = this.getX();
+        int y = this.getY();
+        int z = this.getZLevel();
+        int width = this.getWidth();
+
         this.bindTexture(VANILLA_WIDGETS);
         RenderUtils.color(1f, 1f, 1f, 1f);
 
-        RenderUtils.drawTexturedRect(this.x + 1             , this.y,   0, 46, this.width - 6, 20);
-        RenderUtils.drawTexturedRect(this.x + this.width - 5, this.y, 196, 46,              4, 20);
+        RenderUtils.drawTexturedRect(x + 1        , y,   0, 46, width - 6, 20, z);
+        RenderUtils.drawTexturedRect(x + width - 5, y, 196, 46,         4, 20, z);
 
         double relPos = this.callback.getValueRelative();
         int sw = this.sliderWidth;
-        int usableWidth = this.width - 4 - sw;
+        int usableWidth = width - 4 - sw;
         int s = sw / 2;
 
-        RenderUtils.drawTexturedRect(this.x + 2 + (int) (relPos * usableWidth)    , this.y,       0, 66, s, 20);
-        RenderUtils.drawTexturedRect(this.x + 2 + (int) (relPos * usableWidth) + s, this.y, 200 - s, 66, s, 20);
+        RenderUtils.drawTexturedRect(x + 2 + (int) (relPos * usableWidth)    , y,       0, 66, s, 20, z);
+        RenderUtils.drawTexturedRect(x + 2 + (int) (relPos * usableWidth) + s, y, 200 - s, 66, s, 20, z);
 
         String str = this.callback.getFormattedDisplayValue();
-        int w = this.getStringWidth(str);
-        this.drawString(this.x + (this.width / 2) - w / 2, this.y + 6, 0xFFFFFFA0, str);
+        int tw = this.getStringWidth(str);
+        this.drawString(x + (width / 2) - tw / 2, y + this.getCenteredTextOffsetY(), 0xFFFFFFA0, str);
     }
 
     protected double getRelativePosition(int mouseX)
     {
-        int relPos = mouseX - this.x - this.sliderWidth / 2;
-        return MathHelper.clamp((double) relPos / (double) (this.width - this.sliderWidth - 4), 0, 1);
+        int relPos = mouseX - this.getX() - this.sliderWidth / 2;
+        return MathHelper.clamp((double) relPos / (double) (this.getWidth() - this.sliderWidth - 4), 0, 1);
     }
 }

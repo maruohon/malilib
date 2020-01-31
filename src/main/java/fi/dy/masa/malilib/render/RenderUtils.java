@@ -1,7 +1,6 @@
 package fi.dy.masa.malilib.render;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import javax.annotation.Nullable;
 import org.lwjgl.opengl.GL11;
@@ -20,7 +19,6 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
@@ -29,8 +27,6 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemMap;
 import net.minecraft.item.ItemShulkerBox;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -92,33 +88,13 @@ public class RenderUtils
         RenderHelper.enableGUIStandardItemLighting();
     }
 
-    public static void drawOutlinedBox(int x, int y, int width, int height, int colorBg, int colorBorder)
-    {
-        drawOutlinedBox(x, y, width, height, colorBg, colorBorder, 0f);
-    }
-
     public static void drawOutlinedBox(int x, int y, int width, int height, int colorBg, int colorBorder, float zLevel)
     {
         // Draw the background
         drawRect(x, y, width, height, colorBg, zLevel);
 
         // Draw the border
-        drawOutline(x - 1, y - 1, width + 2, height + 2, colorBorder, zLevel);
-    }
-
-    public static void drawOutline(int x, int y, int width, int height, int colorBorder)
-    {
-        drawOutline(x, y, width, height, 1, colorBorder, 0);
-    }
-
-    public static void drawOutline(int x, int y, int width, int height, int colorBorder, float zLevel)
-    {
-        drawOutline(x, y, width, height, 1, colorBorder, zLevel);
-    }
-
-    public static void drawOutline(int x, int y, int width, int height, int borderWidth, int colorBorder)
-    {
-        drawOutline(x, y, width, height, borderWidth, colorBorder, 0f);
+        drawOutline(x - 1, y - 1, width + 2, height + 2, 1, colorBorder, zLevel);
     }
 
     public static void drawOutline(int x, int y, int width, int height, int borderWidth, int colorBorder, float zLevel)
@@ -144,16 +120,6 @@ public class RenderUtils
         color(1f, 1f, 1f, 1f);
     }
 
-    public static void drawTexturedRect(int x, int y, int u, int v, int width, int height)
-    {
-        drawTexturedRect(x, y, u, v, width, height, 0);
-    }
-
-    public static void drawRect(int x, int y, int width, int height, int color)
-    {
-        drawRect(x, y, width, height, color, 0f);
-    }
-
     public static void drawRect(int x, int y, int width, int height, int color, float zLevel)
     {
         Tessellator tessellator = Tessellator.getInstance();
@@ -172,11 +138,6 @@ public class RenderUtils
         GlStateManager.disableBlend();
 
         color(1f, 1f, 1f, 1f);
-    }
-
-    public static void drawRectBatched(int x, int y, int width, int height, int color, BufferBuilder buffer)
-    {
-        drawRectBatched(x, y, width, height, color, 0f, buffer);
     }
 
     public static void drawRectBatched(int x, int y, int width, int height, int color, float zLevel, BufferBuilder buffer)
@@ -202,11 +163,6 @@ public class RenderUtils
         drawTexturedRectBatched(x, y, u, v, width, height, zLevel, buffer);
 
         tessellator.draw();
-    }
-
-    public static void drawTexturedRectBatched(int x, int y, int u, int v, int width, int height, BufferBuilder buffer)
-    {
-        drawTexturedRectBatched(x, y, u, v, width, height, 0, buffer);
     }
 
     public static void drawTexturedRectBatched(int x, int y, int u, int v, int width, int height, float zLevel, BufferBuilder buffer)
@@ -253,27 +209,33 @@ public class RenderUtils
         GlStateManager.enableTexture2D();
     }
 
-    public static void drawHorizontalLine(int x, int y, int width, int color)
+    public static void drawHorizontalLine(int x, int y, int width, int color, float zLevel)
     {
-        drawRect(x, y, width, 1, color);
+        drawRect(x, y, width, 1, color, zLevel);
     }
 
-    public static void drawVerticalLine(int x, int y, int height, int color)
+    public static void drawVerticalLine(int x, int y, int height, int color, float zLevel)
     {
-        drawRect(x, y, 1, height, color);
+        drawRect(x, y, 1, height, color, zLevel);
     }
 
-    public static void renderSprite(int x, int y, int width, int height, String texture)
+    public static void renderSprite(int x, int y, int width, int height, int zLevel, String texture)
     {
         if (texture != null)
         {
+            GlStateManager.pushMatrix();
+            GlStateManager.translate(0f, 0f, zLevel);
+
             GlStateManager.disableLighting();
             TextureAtlasSprite sprite = mc().getTextureMapBlocks().getAtlasSprite(texture);
             mc().ingameGUI.drawTexturedModalRect(x, y, sprite, width, height);
+
+            GlStateManager.popMatrix();
         }
     }
 
-    public static void draw9SplicedTexture(int x, int y, int u, int v, int width, int height, int texWidth, int texHeight, int edgeThickness, float zLevel)
+    public static void draw9SplicedTexture(int x, int y, int u, int v, int width, int height,
+            int texWidth, int texHeight, int edgeThickness, int zLevel)
     {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
@@ -395,7 +357,7 @@ public class RenderUtils
         }
     }
 
-    public static int renderText(int xOff, int yOff, double scale, int textColor, int bgColor,
+    public static int renderText(int xOff, int yOff, int zLevel, double scale, int textColor, int bgColor,
             HudAlignment alignment, boolean useBackground, boolean useShadow, List<String> lines)
     {
         FontRenderer fontRenderer = mc().fontRenderer;
@@ -425,8 +387,8 @@ public class RenderUtils
         double posX = xOff + bgMargin;
         double posY = yOff + bgMargin;
 
-        posY = getHudPosY((int) posY, yOff, contentHeight, scale, alignment);
-        posY += getHudOffsetForPotions(alignment, scale, mc().player);
+        posY = GuiUtils.getHudPosY((int) posY, yOff, contentHeight, scale, alignment);
+        posY += GuiUtils.getHudOffsetForPotions(alignment, scale, mc().player);
 
         for (String line : lines)
         {
@@ -450,7 +412,7 @@ public class RenderUtils
 
             if (useBackground)
             {
-                drawRect(x - bgMargin, y - bgMargin, width + bgMargin, bgMargin + fontRenderer.FONT_HEIGHT, bgColor);
+                drawRect(x - bgMargin, y - bgMargin, width + bgMargin, bgMargin + fontRenderer.FONT_HEIGHT, bgColor, zLevel);
             }
 
             if (useShadow)
@@ -471,25 +433,20 @@ public class RenderUtils
         return contentHeight + bgMargin * 2;
     }
 
-    public static void drawHoverText(int x, int y, List<String> textLines)
+    public static void drawHoverText(int x, int y, int zLevel, List<String> textLines)
     {
-        drawHoverText(x, y, textLines, 0xFFC0C0C0 , RenderUtils::renderHoverTextBackground);
+        drawHoverText(x, y, zLevel, textLines, 0xFFC0C0C0 , RenderUtils::renderHoverTextBackground);
     }
 
-    public static void drawHoverText(int x, int y, List<String> textLines, int textColor, IBackgroundRenderer backgroundRenderer)
+    public static void drawHoverText(int x, int y, int zLevel, List<String> textLines, int textColor, IBackgroundRenderer backgroundRenderer)
     {
         Minecraft mc = mc();
 
         if (textLines.isEmpty() == false && GuiUtils.getCurrentScreen() != null)
         {
-            FontRenderer font = mc.fontRenderer;
-            GlStateManager.disableRescaleNormal();
-            disableItemLighting();
-            GlStateManager.disableLighting();
-            GlStateManager.disableDepth();
-            int maxLineLength = 0;
-            int maxWidth = GuiUtils.getCurrentScreen().width;
             List<String> linesNew = new ArrayList<>();
+            FontRenderer font = mc.fontRenderer;
+            int maxLineLength = 0;
 
             for (String lineOrig : textLines)
             {
@@ -511,6 +468,7 @@ public class RenderUtils
             textLines = linesNew;
 
             final int lineHeight = font.FONT_HEIGHT + 1;
+            int maxWidth = GuiUtils.getCurrentScreen().width;
             int textHeight = textLines.size() * lineHeight - 2;
             int textStartX = x + 4;
             int textStartY = Math.max(8, y - textHeight - 6);
@@ -540,7 +498,12 @@ public class RenderUtils
                 textStartY = y + 16;
             }
 
-            backgroundRenderer.renderBackground(textStartX, textStartY, maxLineLength, textHeight);
+            GlStateManager.disableRescaleNormal();
+            disableItemLighting();
+            GlStateManager.disableLighting();
+            GlStateManager.disableDepth();
+
+            backgroundRenderer.renderBackground(textStartX, textStartY, maxLineLength, textHeight, zLevel);
 
             for (int i = 0; i < textLines.size(); ++i)
             {
@@ -556,84 +519,21 @@ public class RenderUtils
         }
     }
 
-    public static void renderHoverTextBackground(int x, int y, int width, int height)
+    public static void renderHoverTextBackground(int x, int y, int width, int height, int zLevel)
     {
-        double zLevel = 300;
         int borderColor = 0xF0100010;
-        drawGradientRect(x - 3, y - 4, x + width + 3, y - 3, zLevel, borderColor, borderColor);
-        drawGradientRect(x - 3, y + height + 3, x + width + 3, y + height + 4, zLevel, borderColor, borderColor);
-        drawGradientRect(x - 3, y - 3, x + width + 3, y + height + 3, zLevel, borderColor, borderColor);
-        drawGradientRect(x - 4, y - 3, x - 3, y + height + 3, zLevel, borderColor, borderColor);
-        drawGradientRect(x + width + 3, y - 3, x + width + 4, y + height + 3, zLevel, borderColor, borderColor);
+        drawGradientRect(x - 3        , y - 4         , x + width + 3, y - 3         , zLevel, borderColor, borderColor);
+        drawGradientRect(x - 3        , y + height + 3, x + width + 3, y + height + 4, zLevel, borderColor, borderColor);
+        drawGradientRect(x - 3        , y - 3         , x + width + 3, y + height + 3, zLevel, borderColor, borderColor);
+        drawGradientRect(x - 4        , y - 3         , x - 3        , y + height + 3, zLevel, borderColor, borderColor);
+        drawGradientRect(x + width + 3, y - 3         , x + width + 4, y + height + 3, zLevel, borderColor, borderColor);
 
         int fillColor1 = 0x505000FF;
         int fillColor2 = 0x5028007F;
-        drawGradientRect(x - 3, y - 3 + 1, x - 3 + 1, y + height + 3 - 1, zLevel, fillColor1, fillColor2);
-        drawGradientRect(x + width + 2, y - 3 + 1, x + width + 3, y + height + 3 - 1, zLevel, fillColor1, fillColor2);
-        drawGradientRect(x - 3, y - 3, x + width + 3, y - 3 + 1, zLevel, fillColor1, fillColor1);
-        drawGradientRect(x - 3, y + height + 2, x + width + 3, y + height + 3, zLevel, fillColor2, fillColor2);
-    }
-
-    public static int getHudOffsetForPotions(HudAlignment alignment, double scale, EntityPlayer player)
-    {
-        if (alignment == HudAlignment.TOP_RIGHT)
-        {
-            // Only Chuck Norris can divide by zero
-            if (scale == 0d)
-            {
-                return 0;
-            }
-
-            Collection<PotionEffect> effects = player.getActivePotionEffects();
-
-            if (effects.isEmpty() == false)
-            {
-                int y1 = 0;
-                int y2 = 0;
-
-                for (PotionEffect effect : effects)
-                {
-                    Potion potion = effect.getPotion();
-
-                    if (effect.doesShowParticles() && potion.hasStatusIcon())
-                    {
-                        if (potion.isBeneficial())
-                        {
-                            y1 = 26;
-                        }
-                        else
-                        {
-                            y2 = 52;
-                            break;
-                        }
-                    }
-                }
-
-                return (int) (Math.max(y1, y2) / scale);
-            }
-        }
-
-        return 0;
-    }
-
-    public static int getHudPosY(int yOrig, int yOffset, int contentHeight, double scale, HudAlignment alignment)
-    {
-        int scaledHeight = GuiUtils.getScaledWindowHeight();
-        int posY = yOrig;
-
-        switch (alignment)
-        {
-            case BOTTOM_LEFT:
-            case BOTTOM_RIGHT:
-                posY = (int) ((scaledHeight / scale) - contentHeight - yOffset);
-                break;
-            case CENTER:
-                posY = (int) ((scaledHeight / scale / 2.0d) - (contentHeight / 2.0d) + yOffset);
-                break;
-            default:
-        }
-
-        return posY;
+        drawGradientRect(x - 3        , y - 3 + 1     , x - 3 + 1    , y + height + 3 - 1, zLevel, fillColor1, fillColor2);
+        drawGradientRect(x + width + 2, y - 3 + 1     , x + width + 3, y + height + 3 - 1, zLevel, fillColor1, fillColor2);
+        drawGradientRect(x - 3        , y - 3         , x + width + 3, y - 3 + 1         , zLevel, fillColor1, fillColor1);
+        drawGradientRect(x - 3        , y + height + 2, x + width + 3, y + height + 3    , zLevel, fillColor2, fillColor2);
     }
 
     /**
@@ -1244,11 +1144,12 @@ public class RenderUtils
 
             GlStateManager.pushMatrix();
             disableItemLighting();
-            GlStateManager.translate(0F, 0F, 700F);
+            GlStateManager.translate(0F, 0F, 300F);
 
             InventoryOverlay.InventoryRenderType type = InventoryOverlay.getInventoryType(stack);
             InventoryOverlay.InventoryProperties props = InventoryOverlay.getInventoryPropsTemp(type, items.size());
 
+            int z = 0;
             x += 8;
             y -= (props.height + 18);
 
@@ -1261,14 +1162,14 @@ public class RenderUtils
                 color(1f, 1f, 1f, 1f);
             }
 
-            InventoryOverlay.renderInventoryBackground(type, x, y, props.slotsPerRow, items.size(), mc());
+            InventoryOverlay.renderInventoryBackground(type, x, y, z, props.slotsPerRow, items.size(), mc());
 
             enableGuiItemLighting();
             GlStateManager.enableDepth();
             GlStateManager.enableRescaleNormal();
 
             IInventory inv = fi.dy.masa.malilib.util.InventoryUtils.getAsInventory(items);
-            InventoryOverlay.renderInventoryStacks(type, inv, x + props.slotOffsetX, y + props.slotOffsetY, props.slotsPerRow, 0, -1, mc());
+            InventoryOverlay.renderInventoryStacks(type, inv, x + props.slotOffsetX, y + props.slotOffsetY, z + 1, props.slotsPerRow, 0, -1, mc());
 
             GlStateManager.disableDepth();
             GlStateManager.popMatrix();
@@ -1298,7 +1199,7 @@ public class RenderUtils
         }
     }
 
-    public static void renderModelInGui(int x, int y, IBakedModel model, IBlockState state, float zLevel)
+    public static void renderModelInGui(int x, int y, int zLevel, IBakedModel model, IBlockState state)
     {
         if (state.getBlock() == Blocks.AIR)
         {
@@ -1312,9 +1213,8 @@ public class RenderUtils
 
         GlStateManager.enableRescaleNormal();
         GlStateManager.enableAlpha();
-        GlStateManager.alphaFunc(516, 0.1F);
-        GlStateManager.enableBlend();
-        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        GlStateManager.alphaFunc(GL11.GL_GREATER, 0.01F);
+        setupBlendSimple();
         color(1f, 1f, 1f, 1f);
 
         setupGuiTransform(x, y, model.isGui3d(), zLevel);
@@ -1323,7 +1223,7 @@ public class RenderUtils
         GlStateManager.rotate(225, 0, 1, 0);
         GlStateManager.scale(0.625, 0.625, 0.625);
 
-        renderModel(model, state);
+        renderModel(model, state, zLevel);
 
         GlStateManager.disableAlpha();
         GlStateManager.disableRescaleNormal();
@@ -1350,7 +1250,7 @@ public class RenderUtils
         }
     }
 
-    private static void renderModel(IBakedModel model, IBlockState state)
+    private static void renderModel(IBakedModel model, IBlockState state, int zLevel)
     {
         GlStateManager.pushMatrix();
         GlStateManager.translate(-0.5F, -0.5F, -0.5F);

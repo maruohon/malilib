@@ -37,8 +37,8 @@ public class WidgetToast extends WidgetBase
         this.text.addAll(text);
 
         this.lifeTime = lifeTime;
-        this.width = StringUtils.getMaxStringRenderWidth(text) + 20;
-        this.height = (text.size() * (StringUtils.getFontHeight() + 2)) + 12;
+        this.setWidth(StringUtils.getMaxStringRenderWidth(text) + 20);
+        this.setHeight((text.size() * (this.fontHeight + 2)) + 12);
 
         this.resetLifeTime();
     }
@@ -59,7 +59,7 @@ public class WidgetToast extends WidgetBase
         RenderUtils.color(1f, 1f, 1f, 1f);
         this.bindTexture(TEXTURE);
 
-        RenderUtils.draw9SplicedTexture(x, y, 0, 0, this.width, this.height, 256, 32, 6, this.zLevel);
+        RenderUtils.draw9SplicedTexture(x, y, 0, 0, this.getWidth(), this.getHeight(), 256, 32, 6, this.getZLevel());
 
         RenderUtils.renderText(x + 10, y + 8, 0xFFFFFFFF, this.text);
     }

@@ -137,7 +137,7 @@ public class MessageRenderer
 
             if (this.useBorder)
             {
-                RenderUtils.drawOutline(x, y, boxWidth, boxHeight, this.borderColor, this.zLevel);
+                RenderUtils.drawOutline(x, y, boxWidth, boxHeight, 1, this.borderColor, this.zLevel);
             }
 
             x += 10;

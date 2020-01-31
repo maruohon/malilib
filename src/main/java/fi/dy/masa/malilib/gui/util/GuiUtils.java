@@ -1,11 +1,16 @@
 package fi.dy.masa.malilib.gui.util;
 
+import java.util.Collection;
 import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import fi.dy.masa.malilib.config.values.HudAlignment;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.GuiTextFieldDouble;
 import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
@@ -133,6 +138,68 @@ public class GuiUtils
     {
         x += gui.addLabel(x, y + 4, 0xFFFFFFFF, type.name() + ":").getWidth() + 4;
         return x;
+    }
+
+    public static int getHudOffsetForPotions(HudAlignment alignment, double scale, EntityPlayer player)
+    {
+        if (alignment == HudAlignment.TOP_RIGHT)
+        {
+            // Only Chuck Norris can divide by zero
+            if (scale == 0d)
+            {
+                return 0;
+            }
+
+            Collection<PotionEffect> effects = player.getActivePotionEffects();
+
+            if (effects.isEmpty() == false)
+            {
+                int y1 = 0;
+                int y2 = 0;
+
+                for (PotionEffect effect : effects)
+                {
+                    Potion potion = effect.getPotion();
+
+                    if (effect.doesShowParticles() && potion.hasStatusIcon())
+                    {
+                        if (potion.isBeneficial())
+                        {
+                            y1 = 26;
+                        }
+                        else
+                        {
+                            y2 = 52;
+                            break;
+                        }
+                    }
+                }
+
+                return (int) (Math.max(y1, y2) / scale);
+            }
+        }
+
+        return 0;
+    }
+
+    public static int getHudPosY(int yOrig, int yOffset, int contentHeight, double scale, HudAlignment alignment)
+    {
+        int scaledHeight = GuiUtils.getScaledWindowHeight();
+        int posY = yOrig;
+
+        switch (alignment)
+        {
+            case BOTTOM_LEFT:
+            case BOTTOM_RIGHT:
+                posY = (int) ((scaledHeight / scale) - contentHeight - yOffset);
+                break;
+            case CENTER:
+                posY = (int) ((scaledHeight / scale / 2.0d) - (contentHeight / 2.0d) + yOffset);
+                break;
+            default:
+        }
+
+        return posY;
     }
 
     public static class TextFieldListenerCoordinateInput implements ITextFieldListener<GuiTextFieldGeneric>

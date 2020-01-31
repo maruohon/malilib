@@ -6,18 +6,18 @@ import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
-import fi.dy.masa.malilib.config.options.IConfigInteger;
-import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
-import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
-import fi.dy.masa.malilib.render.RenderUtils;
-import fi.dy.masa.malilib.render.shader.ShaderProgram;
-import fi.dy.masa.malilib.util.StringUtils;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.math.MathHelper;
+import fi.dy.masa.malilib.config.options.IConfigInteger;
+import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
+import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
+import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.render.shader.ShaderProgram;
+import fi.dy.masa.malilib.util.StringUtils;
 
 public class GuiColorEditorHSV extends GuiDialogBase
 {
@@ -183,7 +183,7 @@ public class GuiColorEditorHSV extends GuiDialogBase
     @Override
     protected void drawScreenBackground(int mouseX, int mouseY)
     {
-        RenderUtils.drawOutlinedBox(this.dialogLeft, this.dialogTop, this.dialogWidth, this.dialogHeight, 0xFF000000, COLOR_HORIZONTAL_BAR);
+        RenderUtils.drawOutlinedBox(this.dialogLeft, this.dialogTop, this.dialogWidth, this.dialogHeight, 0xFF000000, COLOR_HORIZONTAL_BAR, (int) this.zLevel);
     }
 
     @Override
@@ -476,35 +476,35 @@ public class GuiColorEditorHSV extends GuiDialogBase
         int y = this.yH - 1;
         int w = this.widthSlider + 2;
         int h = this.heightSlider + 2;
-        float z = this.zLevel;
+        int z = (int) this.zLevel;
         int yd = this.heightSlider + this.gapSlider;
         int cx = this.xHS;
         int cy = this.yHS + this.sizeHS + 8;
         int cw = this.sizeHS;
         int ch = 16;
 
-        RenderUtils.drawOutline(x, y, w, h, 0xC0FFFFFF, z); // H
+        RenderUtils.drawOutline(x, y, w, h, 1, 0xC0FFFFFF, z); // H
         y += yd;
-        RenderUtils.drawOutline(x, y, w, h, 0xC0FFFFFF, z); // S
+        RenderUtils.drawOutline(x, y, w, h, 1, 0xC0FFFFFF, z); // S
         y += yd;
-        RenderUtils.drawOutline(x, y, w, h, 0xC0FFFFFF, z); // V
+        RenderUtils.drawOutline(x, y, w, h, 1, 0xC0FFFFFF, z); // V
         y += yd;
-        RenderUtils.drawOutline(x, y, w, h, 0xC0FFFFFF, z); // R
+        RenderUtils.drawOutline(x, y, w, h, 1, 0xC0FFFFFF, z); // R
         y += yd;
-        RenderUtils.drawOutline(x, y, w, h, 0xC0FFFFFF, z); // G
+        RenderUtils.drawOutline(x, y, w, h, 1, 0xC0FFFFFF, z); // G
         y += yd;
-        RenderUtils.drawOutline(x, y, w, h, 0xC0FFFFFF, z); // B
+        RenderUtils.drawOutline(x, y, w, h, 1, 0xC0FFFFFF, z); // B
         y += yd;
-        RenderUtils.drawOutline(x, y, w, h, 0xC0FFFFFF, z); // A
+        RenderUtils.drawOutline(x, y, w, h, 1, 0xC0FFFFFF, z); // A
 
         x = this.xHS;
         y = this.yHS;
         w = this.sizeHS;
         h = this.sizeHS;
 
-        RenderUtils.drawOutline(x - 1, y - 1, w + 2, h + 2, 0xC0FFFFFF, z); // main color selector
-        RenderUtils.drawOutline(cx - 1, cy - 1, cw + 2, ch + 2, 0xC0FFFFFF, z); // current color indicator
-        RenderUtils.drawOutline(this.xHFullSV, y - 1, this.widthHFullSV, this.sizeHS + 2, 0xC0FFFFFF, z); // Hue vertical/full value
+        RenderUtils.drawOutline(x - 1 , y - 1 , w + 2 , h + 2 , 1, 0xC0FFFFFF, z); // main color selector
+        RenderUtils.drawOutline(cx - 1, cy - 1, cw + 2, ch + 2, 1, 0xC0FFFFFF, z); // current color indicator
+        RenderUtils.drawOutline(this.xHFullSV, y - 1, this.widthHFullSV, this.sizeHS + 2, 1, 0xC0FFFFFF, z); // Hue vertical/full value
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();

@@ -57,7 +57,7 @@ public class WidgetDirectoryNavigation extends WidgetSearchBar
             {
                 DirectoryCreator creator = new DirectoryCreator(this.getCurrentDirectory(), this.navigator);
                 GuiTextInputFeedback gui = new GuiTextInputFeedback(256, "malilib.gui.title.create_directory", "", GuiUtils.getCurrentScreen(), creator);
-                GuiBase.openGui(gui);
+                GuiBase.openPopupGui(gui);
             }
         });
         this.pathStartX = this.buttonCreateDir.getX() + this.buttonCreateDir.getWidth() + 6;
@@ -91,7 +91,7 @@ public class WidgetDirectoryNavigation extends WidgetSearchBar
             this.addWidget(this.buttonUp);
             this.addWidget(this.buttonCreateDir);
 
-            this.placePathElements(this.pathStartX, this.y, this.generatePathElements());
+            this.placePathElements(this.pathStartX, this.getY(), this.generatePathElements());
         }
     }
 
@@ -105,7 +105,7 @@ public class WidgetDirectoryNavigation extends WidgetSearchBar
         else
         {
             // Draw the directory path text background
-            RenderUtils.drawRect(this.pathStartX, this.y, this.width - this.pathStartX - 2, this.height, 0x20FFFFFF);
+            RenderUtils.drawRect(this.pathStartX, this.getY(), this.getWidth() - this.pathStartX - 2, this.getHeight(), 0x20FFFFFF, this.getZLevel());
         }
 
         super.render(mouseX, mouseY, selected);
@@ -164,7 +164,7 @@ public class WidgetDirectoryNavigation extends WidgetSearchBar
     protected List<PathElement> generatePathElements()
     {
         ArrayList<PathElement> list = new ArrayList<>();
-        int maxWidth = this.width - 75;
+        int maxWidth = this.getWidth() - 75;
         File root = this.rootDir;
         File dir = this.currentDir;
         int usedWidth = 0;

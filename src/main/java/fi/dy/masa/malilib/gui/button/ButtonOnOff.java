@@ -29,13 +29,10 @@ public class ButtonOnOff extends ButtonGeneric
         {
             int w1 = this.getStringWidth(ButtonOnOff.getDisplayStringForStatus(translationKey, true));
             int w2 = this.getStringWidth(ButtonOnOff.getDisplayStringForStatus(translationKey, false));
-            this.width = Math.max(w1, w2) + 10;
+            this.setWidth(Math.max(w1, w2) + 10);
         }
 
-        if (rightAlign)
-        {
-            this.x = x - this.width;
-        }
+        this.setRightAlign(rightAlign, x);
     }
 
     public void updateDisplayString(boolean isCurrentlyOn)

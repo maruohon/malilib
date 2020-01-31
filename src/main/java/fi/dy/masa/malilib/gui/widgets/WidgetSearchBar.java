@@ -28,7 +28,7 @@ public class WidgetSearchBar extends WidgetContainer
         this.addButton(this.buttonSearchToggle, (btn, mbtn) -> this.toggleSearchOpen());
 
         this.searchBox = new GuiTextFieldGeneric(tx, y, width - iw - 7 - Math.abs(searchBarOffsetX), height, this.textRenderer);
-        this.searchBox.setZLevel(this.zLevel);
+        this.searchBox.setZLevel(this.getZLevel());
     }
 
     public String getFilter()
@@ -132,6 +132,6 @@ public class WidgetSearchBar extends WidgetContainer
     {
         super.renderDebug(mouseX, mouseY, hovered, renderAll, infoAlways);
 
-        GuiBase.renderTextFieldDebug(this.searchBox, mouseX, mouseY, this.zLevel, renderAll, infoAlways);
+        GuiBase.renderTextFieldDebug(this.searchBox, mouseX, mouseY, this.getZLevel(), renderAll, infoAlways);
     }
 }

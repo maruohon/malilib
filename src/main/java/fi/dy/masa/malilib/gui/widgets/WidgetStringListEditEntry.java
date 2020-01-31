@@ -95,7 +95,7 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
         this.addTextField(field, listenerChange);
         this.addButton(resetButton, listenerReset);
 
-        return resetButton.x + resetButton.getWidth() + 4;
+        return resetButton.getX() + resetButton.getWidth() + 4;
     }
 
     protected ButtonGeneric createResetButton(int x, int y, GuiTextField textField)
@@ -224,16 +224,17 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
 
         if (this.isOdd)
         {
-            RenderUtils.drawRect(this.x, this.y, this.width, this.height, 0x20FFFFFF);
+            RenderUtils.drawRect(this.getX(), this.getY(), this.getWidth(), this.getHeight(), 0x20FFFFFF, this.getZLevel());
         }
         // Draw a slightly lighter background for even entries
         else
         {
-            RenderUtils.drawRect(this.x, this.y, this.width, this.height, 0x30FFFFFF);
+            RenderUtils.drawRect(this.getX(), this.getY(), this.getWidth(), this.getHeight(), 0x30FFFFFF, this.getZLevel());
         }
 
         this.drawSubWidgets(mouseX, mouseY);
         this.drawTextFields(mouseX, mouseY);
+
         super.render(mouseX, mouseY, selected);
     }
 
