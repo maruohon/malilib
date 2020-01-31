@@ -20,8 +20,8 @@ public abstract class WidgetContainer extends WidgetBase
 
     protected <T extends WidgetBase> T addWidget(T widget)
     {
-        this.onWidgetAdded(widget);
         this.subWidgets.add(widget);
+        this.onSubWidgetAdded(widget);
 
         return widget;
     }
@@ -54,22 +54,17 @@ public abstract class WidgetContainer extends WidgetBase
         this.subWidgets.clear();
     }
 
-    protected void onWidgetAdded(WidgetBase widget)
+    protected void onSubWidgetAdded(WidgetBase widget)
     {
-        if (widget.getZLevel() == 0)
-        {
-            widget.setZLevel(this.getZLevel() + 2);
-        }
+        widget.onWidgetAdded(this.getZLevel());
     }
 
     @Override
     public WidgetBase setZLevel(int zLevel)
     {
-        int diff = zLevel - this.getZLevel();
-
         for (WidgetBase widget : this.subWidgets)
         {
-            widget.setZLevel(widget.getZLevel() + diff);
+            widget.setZLevelBasedOnParent(zLevel);
         }
 
         return super.setZLevel(zLevel);

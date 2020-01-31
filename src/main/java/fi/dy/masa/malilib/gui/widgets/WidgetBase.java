@@ -80,6 +80,29 @@ public abstract class WidgetBase
         return this;
     }
 
+    public WidgetBase setZLevelBasedOnParent(int parentZLevel)
+    {
+        this.setZLevel(parentZLevel + this.getSubWidgetZLevelIncrement());
+        return this;
+    }
+
+    /**
+     * This method is called whenever a widget gets added to its parent widget or GUI.
+     * By default it updates the widget's own rendering Z-level based on the parent's Z-level.
+     * @param parentZLevel
+     * @return
+     */
+    public WidgetBase onWidgetAdded(int parentZLevel)
+    {
+        this.setZLevelBasedOnParent(parentZLevel);
+        return this;
+    }
+
+    protected int getSubWidgetZLevelIncrement()
+    {
+        return 5;
+    }
+
     public int getWidth()
     {
         return this.width;
@@ -274,7 +297,7 @@ public abstract class WidgetBase
     public void drawString(int x, int y, int color, String text)
     {
         GlStateManager.pushMatrix();
-        GlStateManager.translate(0f, 0f, this.zLevel + 0.1f);
+        GlStateManager.translate(0f, 0f, this.getZLevel() + 0.1f);
 
         this.textRenderer.drawString(text, x, y, color);
 
@@ -284,7 +307,7 @@ public abstract class WidgetBase
     public void drawCenteredString(int x, int y, int color, String text)
     {
         GlStateManager.pushMatrix();
-        GlStateManager.translate(0f, 0f, this.zLevel + 0.1f);
+        GlStateManager.translate(0f, 0f, this.getZLevel() + 0.1f);
 
         this.textRenderer.drawString(text, x - this.getStringWidth(text) / 2, y, color);
 
@@ -294,7 +317,7 @@ public abstract class WidgetBase
     public void drawStringWithShadow(int x, int y, int color, String text)
     {
         GlStateManager.pushMatrix();
-        GlStateManager.translate(0f, 0f, this.zLevel + 0.1f);
+        GlStateManager.translate(0f, 0f, this.getZLevel() + 0.1f);
 
         this.textRenderer.drawStringWithShadow(text, x, y, color);
 
@@ -304,7 +327,7 @@ public abstract class WidgetBase
     public void drawCenteredStringWithShadow(int x, int y, int color, String text)
     {
         GlStateManager.pushMatrix();
-        GlStateManager.translate(0f, 0f, this.zLevel + 0.1f);
+        GlStateManager.translate(0f, 0f, this.getZLevel() + 0.1f);
 
         this.textRenderer.drawStringWithShadow(text, x - this.getStringWidth(text) / 2, y, color);
 

@@ -103,6 +103,11 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
         this.title = title;
     }
 
+    protected int getPopupGuiZLevelIncrement()
+    {
+        return 200;
+    }
+
     @Override
     public void onGuiClosed()
     {
@@ -374,17 +379,17 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
 
     public GuiBase setZLevel(float zLevel)
     {
-        int diff = (int) (zLevel - this.zLevel);
         this.zLevel = zLevel;
+        int parentZLevel = (int) this.zLevel;
 
         for (WidgetBase widget : this.buttons)
         {
-            widget.setZLevel(widget.getZLevel() + diff);
+            widget.setZLevelBasedOnParent(parentZLevel);
         }
 
         for (WidgetBase widget : this.widgets)
         {
-            widget.setZLevel(widget.getZLevel() + diff);
+            widget.setZLevelBasedOnParent(parentZLevel);
         }
 
         return this;
@@ -394,7 +399,7 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     {
         if (gui instanceof GuiBase)
         {
-            this.setZLevel(((GuiBase) gui).zLevel + 20);
+            this.setZLevel(((GuiBase) gui).zLevel + this.getPopupGuiZLevelIncrement());
         }
 
         return this;
@@ -402,13 +407,9 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
 
     public <T extends ButtonBase> T addButton(T button, IButtonActionListener listener)
     {
-        if (button.getZLevel() == 0)
-        {
-            button.setZLevel((int) this.zLevel + 2);
-        }
-
         button.setActionListener(listener);
         this.buttons.add(button);
+        button.onWidgetAdded((int) this.zLevel);
         return button;
     }
 
@@ -421,12 +422,8 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
 
     public <T extends WidgetBase> T addWidget(T widget)
     {
-        if (widget.getZLevel() == 0)
-        {
-            widget.setZLevel((int) this.zLevel + 2);
-        }
-
         this.widgets.add(widget);
+        widget.onWidgetAdded((int) this.zLevel);
         return widget;
     }
 
@@ -609,13 +606,7 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
      */
     public static void openPopupGui(GuiBase gui)
     {
-        GuiScreen oldGui = GuiUtils.getCurrentScreen();
-
-        if (oldGui instanceof GuiBase)
-        {
-            gui.setZLevel(((GuiBase) oldGui).zLevel + 20);
-        }
-
+        gui.setPopupGuiZLevelBasedOn(GuiUtils.getCurrentScreen());
         Minecraft.getMinecraft().displayGuiScreen(gui);
     }
 

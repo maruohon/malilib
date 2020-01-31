@@ -489,7 +489,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
 
         if (widget != null)
         {
-            this.onWidgetAdded(widget);
+            this.onSubWidgetAdded(widget);
             this.listWidgets.add(widget);
             //this.maxVisibleBrowserEntries++;
 
@@ -506,7 +506,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
                 break;
             }
 
-            this.onWidgetAdded(widget);
+            this.onSubWidgetAdded(widget);
             this.listWidgets.add(widget);
             this.maxVisibleBrowserEntries++;
 
