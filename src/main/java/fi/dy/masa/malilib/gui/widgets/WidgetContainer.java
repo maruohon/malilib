@@ -8,7 +8,7 @@ import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.render.RenderUtils;
 
-public abstract class WidgetContainer extends WidgetBase
+public abstract class WidgetContainer extends WidgetBackground
 {
     protected final List<WidgetBase> subWidgets = new ArrayList<>();
     @Nullable protected WidgetBase hoveredSubWidget = null;
@@ -161,6 +161,7 @@ public abstract class WidgetContainer extends WidgetBase
     @Override
     public void render(int mouseX, int mouseY, boolean selected)
     {
+        this.renderBackground();
         this.drawSubWidgets(mouseX, mouseY);
     }
 

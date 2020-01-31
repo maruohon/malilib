@@ -5,10 +5,12 @@ import fi.dy.masa.malilib.render.RenderUtils;
 public class WidgetBackground extends WidgetBase
 {
     protected boolean backgroundEnabled;
-    protected int backgroundColor;
-    protected int borderColorBR;
-    protected int borderColorUL;
-    protected int borderWidth;
+    protected int backgroundColor = 0xB0101010;
+    protected int borderColorBR = 0xFFC0C0C0;
+    protected int borderColorUL = 0xFFC0C0C0;
+    protected int borderWidth = 1;
+    protected int paddingX;
+    protected int paddingY;
 
     public WidgetBackground(int x, int y, int width, int height)
     {
@@ -18,12 +20,16 @@ public class WidgetBackground extends WidgetBase
     public WidgetBackground setBackgroundEnabled(boolean enabled)
     {
         this.backgroundEnabled = enabled;
+        this.updateWidth();
+        this.updateHeight();
         return this;
     }
 
     public WidgetBackground setBorderWidth(int borderWidth)
     {
         this.borderWidth = borderWidth;
+        this.updateWidth();
+        this.updateHeight();
         return this;
     }
 
@@ -42,34 +48,60 @@ public class WidgetBackground extends WidgetBase
 
     public WidgetBackground setBackgroundProperties(int borderWidth, int backgroundColor, int borderColorUL, int borderColorBR)
     {
-        this.borderWidth = borderWidth;
         this.backgroundColor = backgroundColor;
         this.borderColorUL = borderColorUL;
         this.borderColorBR = borderColorBR;
         this.backgroundEnabled = true;
+        this.setBorderWidth(borderWidth);
         return this;
     }
 
-    protected void drawBackground()
+    public WidgetBackground setPaddingX(int offsetX)
+    {
+        this.paddingX = offsetX;
+        this.updateWidth();
+        return this;
+    }
+
+    public WidgetBackground setPaddingY(int offsetY)
+    {
+        this.paddingY = offsetY;
+        this.updateHeight();
+        return this;
+    }
+
+    public WidgetBackground setPaddingXY(int offset)
+    {
+        this.setPaddingX(offset);
+        this.setPaddingY(offset);
+        return this;
+    }
+
+    protected void renderBackground()
     {
         if (this.backgroundEnabled)
         {
+            RenderUtils.color(1f, 1f, 1f, 1f);
+            RenderUtils.setupBlend();
+
             int x = this.getX();
             int y = this.getY();
             int z = this.getZLevel();
             int w = this.getWidth();
             int h = this.getHeight();
-            int bs = this.borderWidth;
+            int bw = this.borderWidth;
+            int b2 = bw * 2;
 
-            RenderUtils.drawRect(x + bs, y + bs, w - bs * 2 + 1, h - bs * 2 + 1, this.backgroundColor, z);
+            // Background
+            RenderUtils.drawRect(x + bw, y + bw, w - b2 , h - b2, this.backgroundColor, z);
 
             // Horizontal lines/borders
-            RenderUtils.drawRect(x, y         , w, bs, this.borderColorUL, z);
-            RenderUtils.drawRect(x, y + h - bs, w, bs, this.borderColorBR, z);
+            RenderUtils.drawRect(x, y         , w, bw, this.borderColorUL, z);
+            RenderUtils.drawRect(x, y + h - bw, w, bw, this.borderColorBR, z);
 
             // Vertical lines/borders
-            RenderUtils.drawRect(x + bs        , y + bs, bs, h - bs * 2, this.borderColorUL, z);
-            RenderUtils.drawRect(x + w - bs * 2, y + bs, bs, h - bs * 2, this.borderColorBR, z);
+            RenderUtils.drawRect(x         , y + bw, bw, h - b2, this.borderColorUL, z);
+            RenderUtils.drawRect(x + w - bw, y + bw, bw, h - b2, this.borderColorBR, z);
         }
     }
 }

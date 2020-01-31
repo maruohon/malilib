@@ -13,9 +13,12 @@ public class WidgetLabel extends WidgetBackground
     protected boolean centered;
     protected boolean useTextShadow = true;
     protected boolean visible = true;
-    protected int textOffsetX;
-    protected int textOffsetY;
     protected int textColor;
+
+    public WidgetLabel(int x, int y, int textColor, String... text)
+    {
+        this(textColor, y, -1, -1, textColor, text);
+    }
 
     public WidgetLabel(int x, int y, int width, int height, int textColor, String... text)
     {
@@ -28,32 +31,20 @@ public class WidgetLabel extends WidgetBackground
 
         this.textColor = textColor;
 
-        for (String str : lines)
+        for (String line : lines)
         {
-            this.addLine(str);
+            this.labels.add(StringUtils.translate(line));
         }
 
-        if (width < 0)
-        {
-            width = 0;
-
-            for (String line : this.labels)
-            {
-                width = Math.max(width, this.getStringWidth(line));
-            }
-
-            this.setWidth(width);
-        }
-
-        if (height < 0)
-        {
-            this.setHeight((this.fontHeight + 1) * this.labels.size() - 2);
-        }
+        this.updateWidth();
+        this.updateHeight();
     }
 
     public WidgetLabel addLine(String translationKey, Object... args)
     {
         this.labels.add(StringUtils.translate(translationKey, args));
+        this.updateWidth();
+        this.updateHeight();
         return this;
     }
 
@@ -87,23 +78,53 @@ public class WidgetLabel extends WidgetBackground
         return this;
     }
 
-    public WidgetLabel setTextOffsetX(int offsetX)
+    @Override
+    public int updateWidth()
     {
-        this.textOffsetX = offsetX;
-        return this;
+        if (this.automaticWidth)
+        {
+            int width = 0;
+
+            for (String line : this.labels)
+            {
+                width = Math.max(width, this.getStringWidth(line));
+            }
+
+            if (this.backgroundEnabled)
+            {
+                width += this.borderWidth * 2 + this.paddingX * 2;
+            }
+            else
+            {
+                width += this.paddingX * 2;
+            }
+
+            this.setWidth(width);
+        }
+
+        return this.getWidth();
     }
 
-    public WidgetLabel setTextOffsetY(int offsetY)
+    @Override
+    public int updateHeight()
     {
-        this.textOffsetY = offsetY;
-        return this;
-    }
+        if (this.automaticHeight)
+        {
+            int height = (this.fontHeight + 1) * this.labels.size() - 2;
 
-    public WidgetLabel setTextOffsetXY(int offset)
-    {
-        this.textOffsetX = offset;
-        this.textOffsetY = offset;
-        return this;
+            if (this.backgroundEnabled)
+            {
+                height += this.borderWidth * 2 + this.paddingY * 2;
+            }
+            else
+            {
+                height += this.paddingY * 2;
+            }
+
+            this.setHeight(height);
+        }
+
+        return this.getHeight();
     }
 
     @Override
@@ -111,12 +132,10 @@ public class WidgetLabel extends WidgetBackground
     {
         if (this.visible)
         {
-            RenderUtils.color(1f, 1f, 1f, 1f);
-            RenderUtils.setupBlend();
-            this.drawBackground();
+            this.renderBackground();
 
-            int x = this.getX() + this.textOffsetX + this.borderWidth;
-            int y = this.getY() + this.textOffsetY + this.borderWidth;
+            int x = this.getX() + this.paddingX + this.borderWidth;
+            int y = this.getY() + this.paddingY + this.borderWidth;
             int fontHeight = this.fontHeight;
             ITextRenderer renderer = this.getTextRenderer(this.useTextShadow, this.centered);
 

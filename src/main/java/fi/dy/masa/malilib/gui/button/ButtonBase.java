@@ -16,7 +16,6 @@ public abstract class ButtonBase extends WidgetBase
 
     protected final ImmutableList<String> hoverHelp;
     protected String displayString;
-    protected boolean automaticWidth;
     protected boolean enabled = true;
     protected boolean hovered;
     protected boolean hoverInfoRequiresShift;
@@ -41,11 +40,7 @@ public abstract class ButtonBase extends WidgetBase
         this.displayString = StringUtils.translate(text);
         this.hoverHelp = ImmutableList.of(StringUtils.translate("malilib.gui.button.hover.hold_shift_for_info"));
 
-        if (width < 0)
-        {
-            this.automaticWidth = true;
-            this.autoCalculateWidth(this.displayString);
-        }
+        this.updateWidth();
     }
 
     public ButtonBase setActionListener(@Nullable IButtonActionListener actionListener)
@@ -71,9 +66,14 @@ public abstract class ButtonBase extends WidgetBase
         return this;
     }
 
-    protected int autoCalculateWidth(String text)
+    @Override
+    public int updateWidth()
     {
-        this.setWidth(this.getStringWidth(text) + 10);
+        if (this.automaticWidth)
+        {
+            this.setWidth(this.getStringWidth(this.displayString) + 10);
+        }
+
         return this.getWidth();
     }
 
@@ -111,11 +111,7 @@ public abstract class ButtonBase extends WidgetBase
     public void updateDisplayString()
     {
         this.displayString = this.generateDisplayString();
-
-        if (this.automaticWidth)
-        {
-            this.autoCalculateWidth(this.displayString);
-        }
+        this.updateWidth();
     }
 
     protected String generateDisplayString()

@@ -91,10 +91,10 @@ public class RenderUtils
     public static void drawOutlinedBox(int x, int y, int width, int height, int colorBg, int colorBorder, float zLevel)
     {
         // Draw the background
-        drawRect(x, y, width, height, colorBg, zLevel);
+        drawRect(x + 1, y + 1, width - 2, height - 2, colorBg, zLevel);
 
         // Draw the border
-        drawOutline(x - 1, y - 1, width + 2, height + 2, 1, colorBorder, zLevel);
+        drawOutline(x, y, width, height, 1, colorBorder, zLevel);
     }
 
     public static void drawOutline(int x, int y, int width, int height, int borderWidth, int colorBorder, float zLevel)

@@ -548,49 +548,63 @@ public class WidgetDropDownList<T> extends WidgetContainer
     public static class WidgetSelectionBar<T> extends WidgetClickable
     {
         protected final WidgetLabel widgetLabel;
-        protected WidgetIcon widgetOpenCloseIcon;
-        protected WidgetIcon widgetEntryIcon;
+        protected final WidgetIcon widgetOpenCloseIcon;
+        protected final WidgetIcon widgetEntryIcon;
 
         public WidgetSelectionBar(int x, int y, int width, int height, int textColor, WidgetDropDownList<T> dropdown)
         {
             super(x, y, width, height, dropdown::toggleOpen);
 
-            this.widgetLabel = new WidgetLabel(0, 0, width - 1, height, textColor, dropdown.getCurrentEntryDisplayString());
-            this.widgetLabel.setZLevel(this.getZLevel() + 1);
-            this.widgetLabel.setTextOffsetXY(5).setUseTextShadow(false);
-            this.widgetLabel.setBackgroundProperties(1, 0xB0101010, 0xFFC0C0C0, 0xFFC0C0C0);
+            this.setBackgroundEnabled(true);
+
+            // The positions of these widgets are updated in update()
+            this.widgetLabel = new WidgetLabel(0, 0, textColor, dropdown.getCurrentEntryDisplayString());
+            this.widgetLabel.setUseTextShadow(false);
+
+            IGuiIcon iconOpen = dropdown.isOpen() ? GuiIconBase.ARROW_UP : GuiIconBase.ARROW_DOWN;
+            this.widgetOpenCloseIcon = new WidgetIcon(0, 0, iconOpen);
+            this.widgetOpenCloseIcon.setEnabled(true).setDoHighlight(true);
+
+            this.widgetEntryIcon = new WidgetIcon(0, 0, GuiIconBase.EMPTY);
 
             this.update(dropdown);
         }
 
         public void update(WidgetDropDownList<T> dropdown)
         {
+            this.clearWidgets();
             this.setWidth(dropdown.getWidth());
 
-            IGuiIcon icon = dropdown.isOpen() ? GuiIconBase.ARROW_UP : GuiIconBase.ARROW_DOWN;
+            T entry = dropdown.getSelectedEntry();
+            IGuiIcon entryIcon = dropdown.iconProvider != null && entry != null ? dropdown.iconProvider.getIconFor(entry) : null;
+            IGuiIcon iconOpen = dropdown.isOpen() ? GuiIconBase.ARROW_UP : GuiIconBase.ARROW_DOWN;
+
+            this.widgetOpenCloseIcon.setIcon(iconOpen);
+            this.widgetLabel.setText(dropdown.getCurrentEntryDisplayString());
+
             int x = this.getX();
             int y = this.getY();
             int width = this.getWidth();
             int height = this.getHeight();
+            int labelX = x + 4;
+            int labelY = y + (height - this.widgetLabel.getHeight()) / 2;
+            int openIconX = x + width - iconOpen.getWidth() - 2;
+            int openIconY = y + (height - iconOpen.getHeight()) / 2 + 1;
 
-            this.widgetOpenCloseIcon = new WidgetIcon(x + width - icon.getWidth() - 2, y + (height - icon.getHeight()) / 2 + 1, icon);
-            this.widgetOpenCloseIcon.setEnabled(true).setDoHilight(true).setZLevel(this.widgetLabel.getZLevel() + 2);
-            this.widgetLabel.setPosition(x, y);
-            this.widgetLabel.setWidth(this.getWidth() - 1);
-            this.widgetLabel.setText(dropdown.getCurrentEntryDisplayString());
+            this.widgetEntryIcon.setIcon(entryIcon);
 
-            this.clearWidgets();
+            if (entryIcon != null)
+            {
+                labelX += this.widgetEntryIcon.getWidth() + 4;
+                this.widgetEntryIcon.setPosition(x + 4, y + (height - entryIcon.getHeight()) / 2);
+                this.addWidget(this.widgetEntryIcon);
+            }
+
+            this.widgetLabel.setPosition(labelX, labelY);
+            this.widgetOpenCloseIcon.setPosition(openIconX, openIconY);
+
             this.addWidget(this.widgetLabel);
             this.addWidget(this.widgetOpenCloseIcon);
-
-            T entry = dropdown.getSelectedEntry();
-            icon = dropdown.iconProvider != null && entry != null ? dropdown.iconProvider.getIconFor(entry) : null;
-
-            if (icon != null)
-            {
-                this.widgetLabel.setTextOffsetX(icon.getWidth() + 7);
-                this.addWidget(new WidgetIcon(x + 4, y + (height - icon.getHeight()) / 2 + 1, icon));
-            }
         }
     }
 

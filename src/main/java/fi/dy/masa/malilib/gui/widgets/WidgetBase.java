@@ -24,7 +24,7 @@ public abstract class WidgetBase
     private static final ArrayListMultimap<Long, String> DEBUG_STRINGS = ArrayListMultimap.create();
     private static int lastDebugOutlineColor;
 
-    public static final IBackgroundRenderer DEBUG_TEXT_BG_RENDERER = (x, y, w, h, z) -> { RenderUtils.drawOutlinedBox(x - 2, y - 2, w + 4, h + 4, 0xE0000000, 0xFFC0C0C0, z); };
+    public static final IBackgroundRenderer DEBUG_TEXT_BG_RENDERER = (x, y, w, h, z) -> { RenderUtils.drawOutlinedBox(x - 3, y - 3, w + 6, h + 6, 0xE0000000, 0xFFC0C0C0, z); };
 
     protected final Minecraft mc;
     protected final FontRenderer textRenderer;
@@ -36,6 +36,8 @@ public abstract class WidgetBase
     private int width;
     private int height;
     private int zLevel;
+    protected boolean automaticHeight;
+    protected boolean automaticWidth;
     private boolean rightAlign;
 
     public WidgetBase(int x, int y, int width, int height)
@@ -47,6 +49,16 @@ public abstract class WidgetBase
         this.mc = Minecraft.getMinecraft();
         this.textRenderer = this.mc.fontRenderer;
         this.fontHeight = this.textRenderer.FONT_HEIGHT;
+
+        if (width < 0)
+        {
+            this.automaticWidth = true;
+        }
+
+        if (height < 0)
+        {
+            this.automaticHeight = true;
+        }
     }
 
     public int getX()
@@ -124,6 +136,16 @@ public abstract class WidgetBase
         this.height = height;
     }
 
+    public int updateWidth()
+    {
+        return this.getWidth();
+    }
+
+    public int updateHeight()
+    {
+        return this.getHeight();
+
+    }
     public void setPosition(int x, int y)
     {
         this.setX(x);
@@ -402,12 +424,16 @@ public abstract class WidgetBase
         GlStateManager.disableTexture2D();
         GlStateManager.glLineWidth(lineWidth);
 
+        double x1 = x -     lineWidth / 4;
+        double x2 = x + w + lineWidth / 4;
+        double y1 = y -     lineWidth / 4;
+        double y2 = y + h + lineWidth / 4;
         buffer.begin(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR);
 
-        buffer.pos(x    , y    , z).color(r, g, b, a).endVertex();
-        buffer.pos(x    , y + h, z).color(r, g, b, a).endVertex();
-        buffer.pos(x + w, y + h, z).color(r, g, b, a).endVertex();
-        buffer.pos(x + w, y    , z).color(r, g, b, a).endVertex();
+        buffer.pos(x1, y1, z).color(r, g, b, a).endVertex();
+        buffer.pos(x1, y2, z).color(r, g, b, a).endVertex();
+        buffer.pos(x2, y2, z).color(r, g, b, a).endVertex();
+        buffer.pos(x2, y1, z).color(r, g, b, a).endVertex();
 
         tessellator.draw();
 
