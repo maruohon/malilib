@@ -83,7 +83,7 @@ public class WidgetItemStack extends WidgetBackground
     @Override
     public void render(int mouseX, int mouseY, boolean selected)
     {
-        this.renderBackground();
+        this.renderWidgetBackground();
 
         int x = this.getX();
         int y = this.getY();

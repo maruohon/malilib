@@ -87,7 +87,7 @@ public class WidgetIcon extends WidgetBackground
     {
         if (this.icon != null)
         {
-            this.renderBackground();
+            this.renderWidgetBackground();
 
             int x = this.getX();
             int y = this.getY();

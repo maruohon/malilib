@@ -161,7 +161,7 @@ public abstract class WidgetContainer extends WidgetBackground
     @Override
     public void render(int mouseX, int mouseY, boolean selected)
     {
-        this.renderBackground();
+        this.renderWidgetBackground();
         this.drawSubWidgets(mouseX, mouseY);
     }
 

@@ -77,7 +77,41 @@ public class WidgetBackground extends WidgetBase
         return this;
     }
 
-    protected void renderBackground()
+    protected void renderWidgetBackground()
+    {
+        if (this.backgroundEnabled)
+        {
+            this.renderBackgroundOnly();
+            this.renderBorder();
+        }
+    }
+
+    protected void renderBorder()
+    {
+        if (this.backgroundEnabled)
+        {
+            RenderUtils.color(1f, 1f, 1f, 1f);
+            RenderUtils.setupBlend();
+
+            int x = this.getX();
+            int y = this.getY();
+            int z = this.getZLevel();
+            int w = this.getWidth();
+            int h = this.getHeight();
+            int bw = this.borderWidth;
+            int b2 = bw * 2;
+
+            // Horizontal lines/borders
+            RenderUtils.drawRect(x, y         , w, bw, this.borderColorUL, z);
+            RenderUtils.drawRect(x, y + h - bw, w, bw, this.borderColorBR, z);
+
+            // Vertical lines/borders
+            RenderUtils.drawRect(x         , y + bw, bw, h - b2, this.borderColorUL, z);
+            RenderUtils.drawRect(x + w - bw, y + bw, bw, h - b2, this.borderColorBR, z);
+        }
+    }
+
+    protected void renderBackgroundOnly()
     {
         if (this.backgroundEnabled)
         {
@@ -94,14 +128,6 @@ public class WidgetBackground extends WidgetBase
 
             // Background
             RenderUtils.drawRect(x + bw, y + bw, w - b2 , h - b2, this.backgroundColor, z);
-
-            // Horizontal lines/borders
-            RenderUtils.drawRect(x, y         , w, bw, this.borderColorUL, z);
-            RenderUtils.drawRect(x, y + h - bw, w, bw, this.borderColorBR, z);
-
-            // Vertical lines/borders
-            RenderUtils.drawRect(x         , y + bw, bw, h - b2, this.borderColorUL, z);
-            RenderUtils.drawRect(x + w - bw, y + bw, bw, h - b2, this.borderColorBR, z);
         }
     }
 }

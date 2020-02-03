@@ -132,7 +132,7 @@ public class WidgetLabel extends WidgetBackground
     {
         if (this.visible)
         {
-            this.renderBackground();
+            this.renderWidgetBackground();
 
             int x = this.getX() + this.paddingX + this.borderWidth;
             int y = this.getY() + this.paddingY + this.borderWidth;
