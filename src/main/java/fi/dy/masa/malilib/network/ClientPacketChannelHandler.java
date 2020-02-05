@@ -5,15 +5,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 import com.google.common.base.Charsets;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
+import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.PacketByteBuf;
 import fi.dy.masa.malilib.MaLiLib;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.client.network.packet.CustomPayloadS2CPacket;
-import net.minecraft.server.network.packet.CustomPayloadC2SPacket;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.PacketByteBuf;
 
 public class ClientPacketChannelHandler implements IClientPacketChannelHandler
 {

@@ -87,13 +87,13 @@ public class InventoryUtils
      */
     public static int findEmptySlotInPlayerInventory(Container containerPlayer, boolean allowOffhand, boolean reverse)
     {
-        final int startSlot = reverse ? containerPlayer.slotList.size() - 1 : 0;
-        final int endSlot = reverse ? -1 : containerPlayer.slotList.size();
+        final int startSlot = reverse ? containerPlayer.slots.size() - 1 : 0;
+        final int endSlot = reverse ? -1 : containerPlayer.slots.size();
         final int increment = reverse ? -1 : 1;
 
         for (int slotNum = startSlot; slotNum != endSlot; slotNum += increment)
         {
-            Slot slot = containerPlayer.slotList.get(slotNum);
+            Slot slot = containerPlayer.slots.get(slotNum);
             ItemStack stackSlot = slot.getStack();
 
             // Inventory crafting, armor and offhand slots are not valid
@@ -117,14 +117,14 @@ public class InventoryUtils
      */
     public static int findSlotWithItem(Container container, ItemStack stackReference, boolean reverse)
     {
-        final int startSlot = reverse ? container.slotList.size() - 1 : 0;
-        final int endSlot = reverse ? -1 : container.slotList.size();
+        final int startSlot = reverse ? container.slots.size() - 1 : 0;
+        final int endSlot = reverse ? -1 : container.slots.size();
         final int increment = reverse ? -1 : 1;
         final boolean isPlayerInv = container instanceof PlayerContainer;
 
         for (int slotNum = startSlot; slotNum != endSlot; slotNum += increment)
         {
-            Slot slot = container.slotList.get(slotNum);
+            Slot slot = container.slots.get(slotNum);
 
             if ((isPlayerInv == false || isRegularInventorySlot(slot.id, false)) &&
                 areStacksEqualIgnoreDurability(slot.getStack(), stackReference))
