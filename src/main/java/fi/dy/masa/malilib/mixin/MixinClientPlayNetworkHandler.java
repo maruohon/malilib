@@ -8,9 +8,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.client.network.packet.CustomPayloadS2CPacket;
-import net.minecraft.client.network.packet.GameJoinS2CPacket;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
+import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
 import fi.dy.masa.malilib.event.WorldLoadHandler;
 import fi.dy.masa.malilib.network.ClientPacketChannelHandler;
 
@@ -48,7 +48,7 @@ public abstract class MixinClientPlayNetworkHandler
 
     @Inject(method = "onCustomPayload", cancellable = true,
                 at = @At(value = "INVOKE",
-                         target = "Lnet/minecraft/client/network/packet/CustomPayloadS2CPacket;getChannel()Lnet/minecraft/util/Identifier;"))
+                         target = "Lnet/minecraft/network/packet/s2c/play/CustomPayloadS2CPacket;getChannel()Lnet/minecraft/util/Identifier;"))
     private void onCustomPayload(CustomPayloadS2CPacket packet, CallbackInfo ci)
     {
         if (((ClientPacketChannelHandler) ClientPacketChannelHandler.getInstance()).processPacketFromServer(packet, (ClientPlayNetworkHandler)(Object) this))
