@@ -3,17 +3,17 @@ package fi.dy.masa.malilib.gui;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
+import fi.dy.masa.malilib.gui.widgets.WidgetTextFieldBase;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public abstract class GuiTextInputBase extends GuiDialogBase
 {
-    protected final GuiTextField textField;
+    protected final WidgetTextFieldBase textField;
     protected final String originalText;
 
     public GuiTextInputBase(int maxTextLength, String titleKey, String defaultText, @Nullable GuiScreen parent)
@@ -27,11 +27,9 @@ public abstract class GuiTextInputBase extends GuiDialogBase
         this.centerOnScreen();
 
         int width = Math.min(maxTextLength * 10, 240);
-        this.textField = new GuiTextFieldGeneric(this.dialogLeft + 12, this.dialogTop + 40, width, 20, this.textRenderer);
-        this.textField.setMaxStringLength(maxTextLength);
+        this.textField = new WidgetTextFieldBase(this.dialogLeft + 12, this.dialogTop + 40, width, 20, this.originalText);
         this.textField.setFocused(true);
-        this.textField.setText(this.originalText);
-        this.textField.setCursorPositionEnd();
+        this.textField.setCursorToEnd();
         this.zLevel = 1f;
     }
 
@@ -78,7 +76,7 @@ public abstract class GuiTextInputBase extends GuiDialogBase
         this.drawStringWithShadow(this.getTitle(), this.dialogLeft + 10, this.dialogTop + 4, COLOR_WHITE);
 
         //super.drawScreen(mouseX, mouseY, partialTicks);
-        this.textField.drawTextBox();
+        this.textField.render(mouseX, mouseY, true);
 
         this.drawButtons(mouseX, mouseY, partialTicks);
         GlStateManager.popMatrix();
@@ -105,7 +103,7 @@ public abstract class GuiTextInputBase extends GuiDialogBase
 
         if (this.textField.isFocused())
         {
-            return this.textField.textboxKeyTyped(typedChar, keyCode);
+            return this.textField.onKeyTyped(typedChar, keyCode);
         }
 
         return super.onKeyTyped(typedChar, keyCode);
@@ -114,7 +112,7 @@ public abstract class GuiTextInputBase extends GuiDialogBase
     @Override
     public boolean onMouseClicked(int mouseX, int mouseY, int button)
     {
-        if (this.textField.mouseClicked(mouseX, mouseY, button))
+        if (this.textField.onMouseClicked(mouseX, mouseY, button))
         {
             return true;
         }
@@ -158,7 +156,7 @@ public abstract class GuiTextInputBase extends GuiDialogBase
             else if (this.type == ButtonType.RESET)
             {
                 this.gui.textField.setText(this.gui.originalText);
-                this.gui.textField.setCursorPosition(0);
+                this.gui.textField.setCursorToStart();
                 this.gui.textField.setFocused(true);
             }
         }

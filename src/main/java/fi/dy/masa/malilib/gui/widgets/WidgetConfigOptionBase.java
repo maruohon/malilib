@@ -3,18 +3,14 @@ package fi.dy.masa.malilib.gui.widgets;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import fi.dy.masa.malilib.config.options.IConfigResettable;
-import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
-import fi.dy.masa.malilib.gui.listener.ConfigOptionChangeListenerTextField;
-import fi.dy.masa.malilib.gui.wrappers.TextFieldWrapper;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public abstract class WidgetConfigOptionBase<TYPE> extends WidgetListEntryBase<TYPE>
 {
     protected final WidgetListConfigOptionsBase<?, ?> parent;
-    @Nullable protected TextFieldWrapper<? extends GuiTextFieldGeneric> textField = null;
+    @Nullable protected WidgetTextFieldBase textField = null;
     @Nullable protected String initialStringValue;
-    protected int maxTextfieldTextLength = 256;
     /**
      * The last applied value for any textfield-based configs.
      * Button based (boolean, option-list) values get applied immediately upon clicking the button.
@@ -35,25 +31,13 @@ public abstract class WidgetConfigOptionBase<TYPE> extends WidgetListEntryBase<T
     {
         if (this.textField != null)
         {
-            return this.textField.getTextField().getText().equals(this.lastAppliedValue) == false;
+            return this.textField.getText().equals(this.lastAppliedValue) == false;
         }
 
         return false;
     }
 
     public abstract void applyNewValueToConfig();
-
-    protected GuiTextFieldGeneric createTextField(int x, int y, int width, int height)
-    {
-        return new GuiTextFieldGeneric(x + 2, y, width, height, this.textRenderer);
-    }
-
-    protected void addTextField(GuiTextFieldGeneric field, ConfigOptionChangeListenerTextField listener)
-    {
-        TextFieldWrapper<? extends GuiTextFieldGeneric> wrapper = new TextFieldWrapper<>(field, listener);
-        this.textField = wrapper;
-        this.parent.addTextField(wrapper);
-    }
 
     protected ButtonGeneric createResetButton(int x, int y, IConfigResettable config)
     {
@@ -65,48 +49,15 @@ public abstract class WidgetConfigOptionBase<TYPE> extends WidgetListEntryBase<T
     }
 
     @Override
-    protected boolean onMouseClickedImpl(int mouseX, int mouseY, int mouseButton)
+    public boolean onKeyTypedImpl(char typedChar, int keyCode)
     {
-        if (super.onMouseClickedImpl(mouseX, mouseY, mouseButton))
+        if (keyCode == Keyboard.KEY_RETURN && this.textField != null && this.textField.isFocused())
         {
+            this.applyNewValueToConfig();
             return true;
         }
 
-        boolean ret = false;
-
-        if (this.textField != null)
-        {
-            ret |= this.textField.getTextField().mouseClicked(mouseX, mouseY, mouseButton);
-        }
-
-        if (this.subWidgets.isEmpty() == false)
-        {
-            for (WidgetBase widget : this.subWidgets)
-            {
-                ret |= widget.isMouseOver(mouseX, mouseY) && widget.onMouseClicked(mouseX, mouseY, mouseButton);
-            }
-        }
-
-        return ret;
-    }
-
-    @Override
-    public boolean onKeyTypedImpl(char typedChar, int keyCode)
-    {
-        if (this.textField != null && this.textField.isFocused())
-        {
-            if (keyCode == Keyboard.KEY_RETURN)
-            {
-                this.applyNewValueToConfig();
-                return true;
-            }
-            else
-            {
-                return this.textField.keyTyped(typedChar, keyCode);
-            }
-        }
-
-        return false;
+        return super.onKeyTypedImpl(typedChar, keyCode);
     }
 
     @Override
@@ -119,7 +70,7 @@ public abstract class WidgetConfigOptionBase<TYPE> extends WidgetListEntryBase<T
     {
         if (this.textField != null)
         {
-            this.textField.getTextField().drawTextBox();
+            this.textField.render(mouseX, mouseY, this.textField.isMouseOver(mouseX, mouseY));
         }
     }
 }

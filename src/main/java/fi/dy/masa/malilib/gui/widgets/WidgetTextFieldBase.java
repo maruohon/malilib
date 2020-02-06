@@ -1,12 +1,17 @@
 package fi.dy.masa.malilib.gui.widgets;
 
+import java.util.List;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.gui.GuiBase;
+import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
+import fi.dy.masa.malilib.gui.interfaces.ITextFieldValidator;
 import fi.dy.masa.malilib.gui.util.TextRegion;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.HorizontalAlignment;
@@ -15,17 +20,30 @@ import fi.dy.masa.malilib.util.StringUtils;
 
 public class WidgetTextFieldBase extends WidgetBackground
 {
+    public static final Pattern PATTERN_HEX_COLOR = Pattern.compile("^(#|0x)[0-9a-fA-F]{8}$");
+
+    public static final ITextFieldValidator VALIDATOR_HEX_COLOR         = (str) -> PATTERN_HEX_COLOR.matcher(str).matches();
+    public static final ITextFieldValidator VALIDATOR_DOUBLE            = (str) -> { try { Double.parseDouble(str); return true; } catch (Exception e) { return false; } };
+    public static final ITextFieldValidator VALIDATOR_DOUBLE_POSITIVE   = (str) -> { try { return Double.parseDouble(str) > 0.0; } catch (Exception e) { return false; } };
+    public static final ITextFieldValidator VALIDATOR_INTEGER           = (str) -> { try { Integer.parseInt(str); return true; } catch (Exception e) { return false; } };
+    public static final ITextFieldValidator VALIDATOR_INTEGER_POSITIVE  = (str) -> { try { return Integer.parseInt(str) > 0; } catch (Exception e) { return false; } };
+
     protected final TextRegion visibleText = new TextRegion();
     private String text = "";
+    protected String lastNotifiedText = "";
     @Nullable protected IInputCharacterValidator inputValidator;
+    @Nullable protected ITextFieldValidator textValidator;
+    @Nullable protected ITextFieldListener listener;
     protected int currentlyVisibleTextStartIndex;
-    protected int colorError;
-    protected int colorFocused = 0xFFC0C0C0;
+    protected int colorError = 0xFFE04040;
+    protected int colorFocused = 0xFFD0D0D0;
     protected int colorUnfocused = 0xFFA0A0A0;
     protected int colorWarning;
     protected int cursorPosition;
     protected int selectionStartPosition = -1;
     protected boolean isFocused;
+    protected boolean isValidInput = true;
+    protected boolean updateListenerAlways;
     protected boolean visibleTextNeedsUpdate;
 
     public WidgetTextFieldBase(int x, int y, int width, int height)
@@ -38,10 +56,13 @@ public class WidgetTextFieldBase extends WidgetBackground
         super(x, y, width, height);
 
         this.setBackgroundColor(0xFF000000);
+        this.setBorderColor(this.colorUnfocused);
         this.setBackgroundEnabled(true);
         this.setPaddingX(4);
 
         this.visibleText.setMaxWidth(this.getMaxTextWidth());
+        this.lastNotifiedText = text;
+
         this.setText(text);
     }
 
@@ -58,17 +79,58 @@ public class WidgetTextFieldBase extends WidgetBackground
         return this.text;
     }
 
+    @Override
+    public List<WidgetTextFieldBase> getAllTextFields()
+    {
+        return ImmutableList.of(this);
+    }
+
+    public WidgetTextFieldBase setColorError(int color)
+    {
+        this.colorError = color;
+        return this;
+    }
+
+    public WidgetTextFieldBase setColorFocused(int color)
+    {
+        this.colorFocused = color;
+        return this;
+    }
+
+    public WidgetTextFieldBase setColorUnfocused(int color)
+    {
+        this.colorUnfocused = color;
+        return this;
+    }
+
+    public WidgetTextFieldBase setColorWarning(int color)
+    {
+        this.colorWarning = color;
+        return this;
+    }
+
     public WidgetTextFieldBase setText(String newText)
     {
+        // Set the cached string first to avoid a notification here
+        this.lastNotifiedText = newText;
+
         this.setTextInternal(newText);
         this.setCursorToEnd();
+
         return this;
     }
 
     protected WidgetTextFieldBase setTextInternal(String newText)
     {
         this.text = newText != null ? newText : "";
+        this.isValidInput = this.isValidText(this.text);
         this.setVisibleTextNeedsUpdate();
+
+        if (this.updateListenerAlways)
+        {
+            this.notifyListenerIfNeeded();
+        }
+
         return this;
     }
 
@@ -79,9 +141,17 @@ public class WidgetTextFieldBase extends WidgetBackground
 
     public WidgetTextFieldBase setFocused(boolean isFocused)
     {
+        boolean wasFocused = this.isFocused;
+
         this.isFocused = isFocused;
         this.setBorderColor(isFocused ? this.colorFocused : this.colorUnfocused);
         Keyboard.enableRepeatEvents(this.isFocused);
+
+        if (wasFocused && this.isFocused == false)
+        {
+            this.notifyListenerIfNeeded();
+        }
+
         return this;
     }
 
@@ -89,6 +159,57 @@ public class WidgetTextFieldBase extends WidgetBackground
     {
         this.inputValidator = inputValidator;
         return this;
+    }
+
+    public WidgetTextFieldBase setTextValidator(@Nullable ITextFieldValidator validator)
+    {
+        this.textValidator = validator;
+        return this;
+    }
+
+    /**
+     * Set the text change listener to use, if any.
+     * <br><br>
+     * <b>Note:</b> By default the listener is only notified when Enter is pressed,
+     * or the text field loses focus.
+     * If the listener should be notified on every change (characters written or removed etc.),
+     * then call {@link setUpdateListenerAlways(true)}
+     * @param listener
+     * @return
+     */
+    public WidgetTextFieldBase setListener(@Nullable ITextFieldListener listener)
+    {
+        this.listener = listener;
+        return this;
+    }
+
+    /**
+     * Set whether or not to update the listener on every text change or not.
+     * If this is set to false, then the listener is only notified
+     * when Enter is pressed or the text field loses focus.
+     * @param updateAlways
+     * @return
+     */
+    public WidgetTextFieldBase setUpdateListenerAlways(boolean updateAlways)
+    {
+        this.updateListenerAlways = updateAlways;
+        return this;
+    }
+
+    protected boolean isValidText(String text)
+    {
+        return this.textValidator == null || this.textValidator.isValidInput(text);
+    }
+
+    protected void notifyListenerIfNeeded()
+    {
+        if (this.listener != null &&
+            this.text.equals(this.lastNotifiedText) == false &&
+            this.isValidText(this.text))
+        {
+            this.listener.onTextChange(this.text);
+            this.lastNotifiedText = this.text;
+        }
     }
 
     public int getCursorPosition()
@@ -195,7 +316,12 @@ public class WidgetTextFieldBase extends WidgetBackground
         //return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9');
     }
 
-    public WidgetTextFieldBase setCursorToBeginning()
+    public WidgetTextFieldBase setCursorPosition(int position)
+    {
+        return this.setCursorPosition(position, false);
+    }
+
+    public WidgetTextFieldBase setCursorToStart()
     {
         return this.setCursorPosition(0, false);
     }
@@ -243,8 +369,25 @@ public class WidgetTextFieldBase extends WidgetBackground
             return 0;
         }
 
-        String textLeftOfCursor = StringUtils.clampTextToRenderLength(this.visibleText.getText(), relX, LeftRight.RIGHT, "");
-        return textLeftOfCursor.length() + this.visibleText.getStartIndex();
+        String visibleText = this.visibleText.getText();
+        String textLeftOfCursor = StringUtils.clampTextToRenderLength(visibleText, relX, LeftRight.RIGHT, "");
+        int textLeftLength = textLeftOfCursor.length();
+        int index = textLeftLength + this.visibleText.getStartIndex();
+
+        // Set the click position to the right of the clicked character,
+        // if the click position is on the right half of the character.
+        if (visibleText.length() > textLeftLength)
+        {
+            int xPosInChar = relX - this.getStringWidth(textLeftOfCursor);
+            int charWidth = this.getStringWidth(visibleText.substring(textLeftLength, textLeftLength + 1));
+
+            if (xPosInChar >= charWidth / 2)
+            {
+                index += 1;
+            }
+        }
+
+        return index;
     }
 
     protected int getTextStartRelativeX()
@@ -449,9 +592,17 @@ public class WidgetTextFieldBase extends WidgetBackground
                 this.setFocused(true);
             }
 
-            int clickedIndex = this.getClickedTextIndex(mouseX, mouseY);
-            boolean selectText = GuiBase.isShiftDown();
-            this.setCursorPosition(clickedIndex, selectText);
+            // Clear the text field on right click
+            if (mouseButton == 1)
+            {
+                this.setText("");
+            }
+            else
+            {
+                int clickedIndex = this.getClickedTextIndex(mouseX, mouseY);
+                boolean selectText = GuiBase.isShiftDown();
+                this.setCursorPosition(clickedIndex, selectText);
+            }
 
             return true;
         }
@@ -500,7 +651,11 @@ public class WidgetTextFieldBase extends WidgetBackground
             }
             else if (keyCode == Keyboard.KEY_RETURN || keyCode == Keyboard.KEY_TAB)
             {
-                // TODO call the listener
+                if (keyCode == Keyboard.KEY_RETURN)
+                {
+                    this.notifyListenerIfNeeded();
+                }
+
                 return keyCode != Keyboard.KEY_TAB; // Don't cancel on tab input, to allow the container to handle focus change
             }
             else if (keyCode == Keyboard.KEY_LEFT)
@@ -653,13 +808,30 @@ public class WidgetTextFieldBase extends WidgetBackground
         this.renderBorder();
         this.renderBackgroundOnly();
 
-        int color = this.isFocused() ? this.colorFocused : this.colorUnfocused;
+        int color;
+
+        if (this.isValidInput)
+        {
+            color = this.isFocused() ? this.colorFocused : this.colorUnfocused;
+        }
+        else
+        {
+            color = this.colorError;
+        }
+
         int x = this.getX() + this.getTextStartRelativeX();
         int y = this.getY();
 
         if (this.text.isEmpty() == false)
         {
-            this.renderVisibleText(x, y + this.getCenteredTextOffsetY(), color);
+            int offset = (this.getHeight() - this.fontHeight) / 2 + 1;
+
+            if ((offset & 0x1) == 0)
+            {
+                offset += 1;
+            }
+
+            this.renderVisibleText(x, y + offset, color);
         }
 
         if (this.isFocused())

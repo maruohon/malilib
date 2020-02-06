@@ -7,15 +7,12 @@ import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
-import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.gui.interfaces.IIconProvider;
 import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
-import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
 import fi.dy.masa.malilib.gui.util.GuiIconBase;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
-import fi.dy.masa.malilib.gui.wrappers.TextFieldWrapper;
 import fi.dy.masa.malilib.interfaces.IStringRetriever;
 import fi.dy.masa.malilib.interfaces.IStringValue;
 import fi.dy.masa.malilib.render.RenderUtils;
@@ -33,15 +30,16 @@ public class WidgetDropDownList<T> extends WidgetContainer
 {
     protected final List<T> entries;
     protected final List<T> filteredEntries;
+    protected final WidgetTextFieldBase searchField;
     @Nullable protected final IStringRetriever<T> stringRetriever;
     protected final int maxHeight;
     protected final int maxVisibleEntries;
     protected final int lineHeight;
 
     protected WidgetScrollBar scrollBar;
-    protected TextFieldWrapper<GuiTextFieldGeneric> searchField;
     protected LeftRight openIconSide = LeftRight.RIGHT;
     protected boolean isOpen;
+    protected boolean searchOpen;
     protected boolean noCurrentEntryBar;
     protected int dropdownHeight;
     protected int dropdownTopY;
@@ -105,6 +103,11 @@ public class WidgetDropDownList<T> extends WidgetContainer
         this.widgetSelectionBar = new WidgetSelectionBar<T>(x, y, this.getWidth(), height, this.textColor, this);
         this.widgetSelectionBar.setZLevel(this.getZLevel() + 2);
 
+        this.searchField = new WidgetTextFieldBase(x, y - 16, this.getWidth(), 16);
+        this.searchField.setUpdateListenerAlways(true);
+        this.searchField.setListener((newText) -> this.updateFilteredEntries());
+        this.searchField.setFocused(true);
+
         this.recreateSubElements();
         this.updateFilteredEntries(); // This must be called after the search text field has been created in recreateSubElements
     }
@@ -159,9 +162,17 @@ public class WidgetDropDownList<T> extends WidgetContainer
     {
         this.clearWidgets();
 
-        if (this.isOpen && this.scrollBar != null)
+        if (this.isOpen)
         {
-            this.addWidget(this.scrollBar);
+            if (this.searchOpen)
+            {
+                this.addWidget(this.searchField);
+            }
+
+            if (this.scrollBar != null)
+            {
+                this.addWidget(this.scrollBar);
+            }
         }
 
         if (this.noCurrentEntryBar && this.buttonOpenClose != null)
@@ -173,10 +184,6 @@ public class WidgetDropDownList<T> extends WidgetContainer
         {
             this.addWidget(this.widgetSelectionBar);
         }
-
-        TextFieldListener listener = new TextFieldListener(this);
-        this.searchField = new TextFieldWrapper<>(new GuiTextFieldGeneric(this.getX() + 1, this.getY() - 18, this.getWidth() - 2, 16, this.textRenderer), listener);
-        this.searchField.getTextField().setFocused(true);
 
         this.updateSubElementPositions();
     }
@@ -199,8 +206,10 @@ public class WidgetDropDownList<T> extends WidgetContainer
             this.widgetSelectionBar.update(this);
         }
 
-        this.searchField.getTextField().x = x + 1;
-        this.searchField.getTextField().y = y - 18;
+        if (this.searchOpen)
+        {
+            this.searchField.setPosition(x, y - this.searchField.getHeight());
+        }
     }
 
     protected int getRequiredWidth(int width, List<T> entries, Minecraft mc)
@@ -270,7 +279,8 @@ public class WidgetDropDownList<T> extends WidgetContainer
 
         if (this.isOpen == false)
         {
-            this.searchField.getTextField().setText("");
+            this.searchOpen = false;
+            this.searchField.setText("");
             this.updateFilteredEntries();
         }
 
@@ -308,6 +318,11 @@ public class WidgetDropDownList<T> extends WidgetContainer
         if (this.noCurrentEntryBar && this.isOpen == false)
         {
             return this.buttonOpenClose != null && this.buttonOpenClose.isMouseOver(mouseX, mouseY);
+        }
+
+        if (this.isOpen && this.searchOpen && this.searchField.isMouseOver(mouseX, mouseY))
+        {
+            return true;
         }
 
         return mouseX >= this.getX() && mouseX < this.getX() + this.getWidth() &&
@@ -376,8 +391,16 @@ public class WidgetDropDownList<T> extends WidgetContainer
     {
         if (this.isOpen)
         {
-            int amount = mouseWheelDelta < 0 ? 1 : -1;
-            this.scrollBar.offsetValue(amount);
+            if (this.searchOpen && this.searchField.isMouseOver(mouseX, mouseY))
+            {
+                return this.searchField.onMouseScrolled(mouseX, mouseY, mouseWheelDelta);
+            }
+            else
+            {
+                int amount = mouseWheelDelta < 0 ? 1 : -1;
+                this.scrollBar.offsetValue(amount);
+                return true;
+            }
         }
 
         return false;
@@ -390,10 +413,11 @@ public class WidgetDropDownList<T> extends WidgetContainer
         {
             if (keyCode == Keyboard.KEY_ESCAPE)
             {
-                if (this.searchField.getTextField().isFocused()
-                    && this.searchField.getTextField().getText().isEmpty() == false)
+                if (this.searchOpen && this.searchField.isFocused() && this.searchField.getText().isEmpty() == false)
                 {
-                    this.searchField.getTextField().setText("");
+                    this.searchOpen = false;
+                    this.searchField.setText("");
+                    this.recreateSubElements();
                     this.updateFilteredEntries();
                     return true;
                 }
@@ -402,7 +426,14 @@ public class WidgetDropDownList<T> extends WidgetContainer
                 return true;
             }
 
-            return this.searchField.keyTyped(typedChar, keyCode);
+            if (this.searchOpen == false && this.searchField.isUsableCharacter(typedChar, 0))
+            {
+                this.searchOpen = true;
+                this.searchField.setFocused(true);
+                this.recreateSubElements();
+            }
+
+            return this.searchField.onKeyTyped(typedChar, keyCode);
         }
 
         return false;
@@ -411,9 +442,9 @@ public class WidgetDropDownList<T> extends WidgetContainer
     protected void updateFilteredEntries()
     {
         this.filteredEntries.clear();
-        String filterText = this.searchField.getTextField().getText();
+        String filterText = this.searchField.getText();
 
-        if (this.isOpen && filterText.isEmpty() == false)
+        if (this.searchOpen && filterText.isEmpty() == false)
         {
             for (int i = 0; i < this.entries.size(); ++i)
             {
@@ -473,9 +504,9 @@ public class WidgetDropDownList<T> extends WidgetContainer
             GlStateManager.pushMatrix();
             GlStateManager.translate(0, 0, this.getZLevel() + 40);
 
-            if (this.searchField.getTextField().getText().isEmpty() == false)
+            if (this.searchField.getText().isEmpty() == false)
             {
-                this.searchField.draw();
+                this.searchField.render(mouseX, mouseY, this.searchField.isMouseOver(mouseX, mouseY));
             }
 
             List<T> list = this.filteredEntries;
@@ -605,23 +636,6 @@ public class WidgetDropDownList<T> extends WidgetContainer
 
             this.addWidget(this.widgetLabel);
             this.addWidget(this.widgetOpenCloseIcon);
-        }
-    }
-
-    protected static class TextFieldListener implements ITextFieldListener<GuiTextFieldGeneric>
-    {
-        protected final WidgetDropDownList<?> widget;
-
-        protected TextFieldListener(WidgetDropDownList<?> widget)
-        {
-            this.widget = widget;
-        }
-
-        @Override
-        public boolean onTextChange(GuiTextFieldGeneric textField)
-        {
-            this.widget.updateFilteredEntries();
-            return true;
         }
     }
 }

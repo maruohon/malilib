@@ -83,15 +83,20 @@ public class WidgetDirectoryNavigation extends WidgetSearchBar
     @Override
     protected void updateSubWidgets()
     {
-        super.updateSubWidgets();
-
         if (this.isSearchOpen() == false)
         {
+            this.clearWidgets();
+
+            this.addWidget(this.buttonSearchToggle);
             this.addWidget(this.buttonRoot);
             this.addWidget(this.buttonUp);
             this.addWidget(this.buttonCreateDir);
 
             this.placePathElements(this.pathStartX, this.getY(), this.generatePathElements());
+        }
+        else
+        {
+            super.updateSubWidgets();
         }
     }
 
@@ -100,7 +105,7 @@ public class WidgetDirectoryNavigation extends WidgetSearchBar
     {
         if (this.searchOpen)
         {
-            this.searchBox.drawTextBox();
+            this.searchBox.render(mouseX, mouseY, this.searchBox.isMouseOver(mouseX, mouseY));
         }
         else
         {

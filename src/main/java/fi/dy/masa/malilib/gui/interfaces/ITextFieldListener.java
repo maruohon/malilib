@@ -1,18 +1,6 @@
 package fi.dy.masa.malilib.gui.interfaces;
 
-import net.minecraft.client.gui.GuiTextField;
-
-public interface ITextFieldListener<T extends GuiTextField>
+public interface ITextFieldListener
 {
-    default boolean onGuiClosed(T textField)
-    {
-        return false;
-    }
-
-    default void onTextChange(char typedChar, int keyCode, T textField)
-    {
-        this.onTextChange(textField);
-    }
-
-    boolean onTextChange(T textField);
+    void onTextChange(String newText);
 }

@@ -10,13 +10,14 @@ import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
 import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
 import fi.dy.masa.malilib.gui.util.GuiIconBase;
 import fi.dy.masa.malilib.gui.widgets.WidgetCheckBox;
+import fi.dy.masa.malilib.gui.widgets.WidgetTextFieldBase;
 import fi.dy.masa.malilib.util.LayerRange;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public abstract class GuiRenderLayerEditBase extends GuiBase
 {
-    protected GuiTextFieldGeneric textField1;
-    protected GuiTextFieldGeneric textField2;
+    protected WidgetTextFieldBase textField1;
+    protected WidgetTextFieldBase textField2;
     protected int nextY;
 
     protected abstract LayerRange getLayerRange();
@@ -84,8 +85,10 @@ public abstract class GuiRenderLayerEditBase extends GuiBase
 
         if (layerMode == LayerMode.LAYER_RANGE)
         {
-            this.textField2 = new GuiTextFieldInteger(x, y, width, 20, this.textRenderer);
-            this.addTextField(this.textField2, new TextFieldListener(layerMode, layerRange, true));
+            this.textField2 = new WidgetTextFieldBase(x, y, width, 20);
+            this.textField2.setTextValidator(WidgetTextFieldBase.VALIDATOR_INTEGER);
+            this.textField2.setListener(new TextFieldListener(layerMode, layerRange, true));
+            this.addWidget(this.textField2);
 
             this.createHotkeyCheckBoxes(x + width + 24, y, layerRange);
 
@@ -97,8 +100,10 @@ public abstract class GuiRenderLayerEditBase extends GuiBase
             this.textField2 = null;
         }
 
-        this.textField1 = new GuiTextFieldInteger(x, y, width, 20, this.textRenderer);
-        this.addTextField(this.textField1, new TextFieldListener(layerMode, layerRange, false));
+        this.textField1 = new WidgetTextFieldBase(x, y, width, 20);
+        this.textField1.setTextValidator(WidgetTextFieldBase.VALIDATOR_INTEGER);
+        this.textField1.setListener(new TextFieldListener(layerMode, layerRange, false));
+        this.addWidget(this.textField1);
         this.createValueAdjustButton(x + width + 3, y, false, layerRange, valueAdjustIcon);
         y += 23;
 
@@ -243,7 +248,7 @@ public abstract class GuiRenderLayerEditBase extends GuiBase
         }
     }
 
-    protected static class TextFieldListener implements ITextFieldListener<GuiTextFieldGeneric>
+    protected static class TextFieldListener implements ITextFieldListener
     {
         protected final LayerRange layerRange;
         protected final LayerMode mode;
@@ -257,17 +262,17 @@ public abstract class GuiRenderLayerEditBase extends GuiBase
         }
 
         @Override
-        public boolean onTextChange(GuiTextFieldGeneric textField)
+        public void onTextChange(String newText)
         {
             int value = 0;
 
             try
             {
-                value = Integer.parseInt(textField.getText());
+                value = Integer.parseInt(newText);
             }
             catch (NumberFormatException e)
             {
-                return false;
+                return;
             }
 
             switch (this.mode)
@@ -297,8 +302,6 @@ public abstract class GuiRenderLayerEditBase extends GuiBase
 
                 default:
             }
-
-            return true;
         }
     }
 

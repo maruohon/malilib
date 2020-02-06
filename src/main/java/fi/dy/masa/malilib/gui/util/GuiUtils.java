@@ -12,13 +12,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import fi.dy.masa.malilib.config.values.HudAlignment;
 import fi.dy.masa.malilib.gui.GuiBase;
-import fi.dy.masa.malilib.gui.GuiTextFieldDouble;
-import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
-import fi.dy.masa.malilib.gui.GuiTextFieldInteger;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
-import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
+import fi.dy.masa.malilib.gui.widgets.WidgetTextFieldBase;
 import fi.dy.masa.malilib.interfaces.ICoordinateValueModifier;
 import fi.dy.masa.malilib.util.PositionUtils.CoordinateType;
 import fi.dy.masa.malilib.util.StringUtils;
@@ -74,9 +71,9 @@ public class GuiUtils
     {
         x = addLabel(x, y, type, gui);
 
-        GuiTextFieldInteger textField = new GuiTextFieldInteger(x, y + 1, textFieldWidth, 14, Minecraft.getMinecraft().fontRenderer);
-        textField.setText(getCoordinateValueString(type, pos));
-
+        WidgetTextFieldBase textField = new WidgetTextFieldBase(x, y + 1, textFieldWidth, 14, getCoordinateValueString(type, pos));
+        textField.setTextValidator(WidgetTextFieldBase.VALIDATOR_INTEGER);
+        textField.setUpdateListenerAlways(true);
         addTextFieldAndButton(x + textFieldWidth + 4, y, type, modifier, textField, addButton, gui);
     }
 
@@ -85,16 +82,17 @@ public class GuiUtils
     {
         x = addLabel(x, y, type, gui);
 
-        GuiTextFieldDouble textField = new GuiTextFieldDouble(x, y + 1, textFieldWidth, 14, Minecraft.getMinecraft().fontRenderer);
-        textField.setText(getCoordinateValueString(type, pos));
-
+        WidgetTextFieldBase textField = new WidgetTextFieldBase(x, y + 1, textFieldWidth, 14, getCoordinateValueString(type, pos));
+        textField.setTextValidator(WidgetTextFieldBase.VALIDATOR_DOUBLE);
+        textField.setUpdateListenerAlways(true);
         addTextFieldAndButton(x + textFieldWidth + 4, y, type, modifier, textField, addButton, gui);
     }
 
     protected static void addTextFieldAndButton(int x, int y, CoordinateType type, ICoordinateValueModifier modifier,
-            GuiTextFieldGeneric textField, boolean addButton, GuiBase gui)
+            WidgetTextFieldBase textField, boolean addButton, GuiBase gui)
     {
-        gui.addTextField(textField, new TextFieldListenerCoordinateInput(type, modifier));
+        textField.setListener((newText) -> modifier.setValueFromString(type, newText));
+        gui.addWidget(textField);
 
         if (addButton)
         {
@@ -200,26 +198,6 @@ public class GuiUtils
         }
 
         return posY;
-    }
-
-    public static class TextFieldListenerCoordinateInput implements ITextFieldListener<GuiTextFieldGeneric>
-    {
-        protected final ICoordinateValueModifier modifier;
-        protected final CoordinateType type;
-
-        public TextFieldListenerCoordinateInput(CoordinateType type, ICoordinateValueModifier modifier)
-        {
-            this.modifier = modifier;
-            this.type = type;
-        }
-
-        @Override
-        public boolean onTextChange(GuiTextFieldGeneric textField)
-        {
-            this.modifier.setValueFromString(this.type, textField.getText());
-
-            return false;
-        }
     }
 
     public static class ButtonListenerCoordinateInput implements IButtonActionListener

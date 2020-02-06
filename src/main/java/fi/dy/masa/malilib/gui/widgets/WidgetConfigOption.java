@@ -17,7 +17,6 @@ import fi.dy.masa.malilib.config.options.IConfigStringList;
 import fi.dy.masa.malilib.config.options.IConfigValue;
 import fi.dy.masa.malilib.config.options.IStringRepresentable;
 import fi.dy.masa.malilib.gui.GuiConfigsBase.ConfigOptionWrapper;
-import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.ConfigButtonBoolean;
@@ -29,9 +28,7 @@ import fi.dy.masa.malilib.gui.interfaces.IConfigInfoProvider;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.gui.interfaces.IKeybindConfigGui;
 import fi.dy.masa.malilib.gui.interfaces.ISliderCallback;
-import fi.dy.masa.malilib.gui.listener.ConfigOptionChangeListenerButton;
 import fi.dy.masa.malilib.gui.listener.ConfigOptionChangeListenerKeybind;
-import fi.dy.masa.malilib.gui.listener.ConfigOptionChangeListenerTextField;
 import fi.dy.masa.malilib.gui.listener.ConfigOptionListenerResetConfig;
 import fi.dy.masa.malilib.gui.listener.ConfigOptionListenerResetConfig.ConfigResetterButton;
 import fi.dy.masa.malilib.gui.listener.ConfigOptionListenerResetConfig.ConfigResetterTextField;
@@ -200,7 +197,7 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
             {
                 if (this.textField != null)
                 {
-                    modified |= this.initialStringValue.equals(this.textField.getTextField().getText()) == false;
+                    modified |= this.initialStringValue.equals(this.textField.getText()) == false;
                 }
 
                 if (this.initialKeybindSettings != null && this.initialKeybindSettings.equals(((IHotkey) config).getKeybind().getSettings()) == false)
@@ -227,7 +224,7 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
 
             if (this.textField != null && this.hasPendingModifications())
             {
-                config.setValueFromString(this.textField.getTextField().getText());
+                config.setValueFromString(this.textField.getText());
             }
 
             this.lastAppliedValue = config.getStringValue();
@@ -242,24 +239,36 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
     protected void addConfigButtonEntry(int xReset, int yReset, IConfigResettable config, ButtonBase optionButton)
     {
         ButtonGeneric resetButton = this.createResetButton(xReset, yReset, config);
-        ConfigOptionChangeListenerButton listenerChange = new ConfigOptionChangeListenerButton(config, resetButton, null);
         ConfigOptionListenerResetConfig listenerReset = new ConfigOptionListenerResetConfig(config, new ConfigResetterButton(optionButton), resetButton, null);
 
-        this.addButton(optionButton, listenerChange);
+        this.addButton(optionButton, (btn, mbtn) -> resetButton.setEnabled(config.isModified()));
         this.addButton(resetButton, listenerReset);
     }
 
     protected void addConfigTextFieldEntry(int x, int y, int resetX, int configWidth, int configHeight, IConfigValue config)
     {
-        GuiTextFieldGeneric field = this.createTextField(x, y + 1, configWidth - 4, configHeight - 3);
-        field.setMaxStringLength(this.maxTextfieldTextLength);
-        field.setText(config.getStringValue());
+        WidgetTextFieldBase textField = new WidgetTextFieldBase(x + 2, y + 1, configWidth - 4, configHeight - 3, config.getStringValue());
+
+        if (config.getType() == ConfigType.COLOR)
+        {
+            textField.setTextValidator(WidgetTextFieldBase.VALIDATOR_HEX_COLOR);
+        }
+        else if (config.getType() == ConfigType.INTEGER)
+        {
+            textField.setTextValidator(WidgetTextFieldBase.VALIDATOR_INTEGER);
+        }
+        else if (config.getType() == ConfigType.DOUBLE)
+        {
+            textField.setTextValidator(WidgetTextFieldBase.VALIDATOR_DOUBLE);
+        }
 
         ButtonGeneric resetButton = this.createResetButton(resetX, y, config);
-        ConfigOptionChangeListenerTextField listenerChange = new ConfigOptionChangeListenerTextField(config, field, resetButton);
-        ConfigOptionListenerResetConfig listenerReset = new ConfigOptionListenerResetConfig(config, new ConfigResetterTextField(config, field), resetButton, null);
+        ConfigOptionListenerResetConfig listenerReset = new ConfigOptionListenerResetConfig(config, new ConfigResetterTextField(config, textField), resetButton, null);
 
-        this.addTextField(field, listenerChange);
+        this.textField = this.addTextField(textField, (newText) -> {
+            resetButton.setEnabled(config.isModified(newText));
+            config.setValueFromString(newText);
+        });
         this.addButton(resetButton, listenerReset);
     }
 

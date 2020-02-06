@@ -196,11 +196,20 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
     @Override
     public boolean onKeyTyped(char typedChar, int keyCode)
     {
+        for (WIDGET widget : this.listWidgets)
+        {
+            if (widget.onKeyTyped(typedChar, keyCode))
+            {
+                return true;
+            }
+        }
+
         if (this.onKeyTypedSearchBar(typedChar, keyCode))
         {
             return true;
         }
-        else if (this.allowKeyboardNavigation)
+
+        if (this.allowKeyboardNavigation)
         {
                  if (keyCode == Keyboard.KEY_UP)    this.offsetSelectionOrScrollbar(-1, true);
             else if (keyCode == Keyboard.KEY_DOWN)  this.offsetSelectionOrScrollbar( 1, true);
@@ -213,7 +222,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
             return true;
         }
 
-        return false;
+        return super.onKeyTyped(typedChar, keyCode);
     }
 
     protected boolean onKeyTypedSearchBar(char typedChar, int keyCode)
@@ -242,6 +251,24 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
     public boolean isSearchOpen()
     {
         return this.getSearchBarWidget() != null && this.getSearchBarWidget().isSearchOpen();
+    }
+
+    @Override
+    public List<WidgetTextFieldBase> getAllTextFields()
+    {
+        List<WidgetTextFieldBase> textFields = new ArrayList<>();
+
+        textFields.addAll(super.getAllTextFields());
+
+        if (this.listWidgets.isEmpty() == false)
+        {
+            for (WidgetBase widget : this.listWidgets)
+            {
+                textFields.addAll(widget.getAllTextFields());
+            }
+        }
+
+        return textFields;
     }
 
     @Nullable

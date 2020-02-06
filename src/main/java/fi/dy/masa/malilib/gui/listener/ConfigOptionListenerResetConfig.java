@@ -6,7 +6,7 @@ import fi.dy.masa.malilib.config.options.IStringRepresentable;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
-import net.minecraft.client.gui.GuiTextField;
+import fi.dy.masa.malilib.gui.widgets.WidgetTextFieldBase;
 
 public class ConfigOptionListenerResetConfig implements IButtonActionListener
 {
@@ -65,9 +65,9 @@ public class ConfigOptionListenerResetConfig implements IButtonActionListener
     public static class ConfigResetterTextField extends ConfigResetterBase
     {
         private final IStringRepresentable config;
-        private final GuiTextField textField;
+        private final WidgetTextFieldBase textField;
 
-        public ConfigResetterTextField(IStringRepresentable config, GuiTextField textField)
+        public ConfigResetterTextField(IStringRepresentable config, WidgetTextFieldBase textField)
         {
             this.config = config;
             this.textField = textField;

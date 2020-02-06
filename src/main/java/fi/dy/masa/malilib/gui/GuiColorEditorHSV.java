@@ -15,6 +15,7 @@ import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.config.options.IConfigInteger;
 import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
 import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
+import fi.dy.masa.malilib.gui.widgets.WidgetTextFieldBase;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.shader.ShaderProgram;
 import fi.dy.masa.malilib.util.StringUtils;
@@ -27,14 +28,14 @@ public class GuiColorEditorHSV extends GuiDialogBase
     @Nullable protected final IDialogHandler dialogHandler;
     @Nullable protected Element clickedElement;
     @Nullable protected Element currentTextInputElement;
-    protected GuiTextFieldGeneric textFieldFullColor;
-    protected GuiTextFieldGeneric textFieldH;
-    protected GuiTextFieldGeneric textFieldS;
-    protected GuiTextFieldGeneric textFieldV;
-    protected GuiTextFieldGeneric textFieldR;
-    protected GuiTextFieldGeneric textFieldG;
-    protected GuiTextFieldGeneric textFieldB;
-    protected GuiTextFieldGeneric textFieldA;
+    protected WidgetTextFieldBase textFieldFullColor;
+    protected WidgetTextFieldBase textFieldH;
+    protected WidgetTextFieldBase textFieldS;
+    protected WidgetTextFieldBase textFieldV;
+    protected WidgetTextFieldBase textFieldR;
+    protected WidgetTextFieldBase textFieldG;
+    protected WidgetTextFieldBase textFieldB;
+    protected WidgetTextFieldBase textFieldA;
     protected boolean mouseDown;
     protected int color;
     protected int xHS;
@@ -105,7 +106,7 @@ public class GuiColorEditorHSV extends GuiDialogBase
 
         int xLabel = this.dialogLeft + 148;
         int xTextField = xLabel + 110;
-        int y = this.dialogTop + 24;
+        int y = this.dialogTop + 23;
 
         y += this.createComponentElements(xTextField, y, xLabel, Element.H);
         y += this.createComponentElements(xTextField, y, xLabel, Element.S);
@@ -118,9 +119,10 @@ public class GuiColorEditorHSV extends GuiDialogBase
         String str = "HEX:";
         int w = this.getStringWidth(str);
         this.addLabel(this.xH - w - 4, y + 4, 0xFFFFFF, str);
-        this.textFieldFullColor = new GuiTextFieldGeneric(this.xH, y + 1, 68, 14, this.textRenderer);
-        this.textFieldFullColor.setMaxStringLength(12);
-        this.addTextField(this.textFieldFullColor, new TextFieldListener(null, this));
+        this.textFieldFullColor = new WidgetTextFieldBase(this.xH - 1, y + 2, 68, 14);
+        this.textFieldFullColor.setTextValidator(WidgetTextFieldBase.VALIDATOR_HEX_COLOR);
+        this.textFieldFullColor.setListener(new TextFieldListener(null, this));
+        this.addWidget(this.textFieldFullColor);
 
         //String str = StringUtils.translate("malilib.gui.label.color_editor.current_color");
         //this.addLabel(this.xHS, this.yHS + this.sizeHS + 10, 60, 12, 0xFFFFFF, str);
@@ -130,8 +132,9 @@ public class GuiColorEditorHSV extends GuiDialogBase
 
     protected int createComponentElements(int x, int y, int xLabel, Element element)
     {
-        TextFieldListener listener = new TextFieldListener(element, this);
-        GuiTextFieldInteger textField = new GuiTextFieldInteger(x, y, 32, 12, this.textRenderer);
+        WidgetTextFieldBase textField = new WidgetTextFieldBase(x, y, 32, 14);
+        textField.setTextValidator(WidgetTextFieldBase.VALIDATOR_INTEGER);
+        textField.setListener(new TextFieldListener(element, this));
 
         switch (element)
         {
@@ -146,7 +149,7 @@ public class GuiColorEditorHSV extends GuiDialogBase
         }
 
         this.addLabel(xLabel, y + 2, 0xFFFFFF, element.name() + ":");
-        this.addTextField(textField, listener);
+        this.addWidget(textField);
 
         return this.heightSlider + this.gapSlider;
     }
@@ -803,7 +806,7 @@ public class GuiColorEditorHSV extends GuiDialogBase
         return null;
     }
 
-    protected static class TextFieldListener implements ITextFieldListener<GuiTextFieldGeneric>
+    protected static class TextFieldListener implements ITextFieldListener
     {
         protected final GuiColorEditorHSV gui;
         @Nullable protected final Element type;
@@ -815,7 +818,7 @@ public class GuiColorEditorHSV extends GuiDialogBase
         }
 
         @Override
-        public boolean onTextChange(GuiTextFieldGeneric textField)
+        public void onTextChange(String newText)
         {
             int colorOld = this.gui.color;
 
@@ -823,13 +826,13 @@ public class GuiColorEditorHSV extends GuiDialogBase
             if (this.type == null)
             {
                 this.gui.currentTextInputElement = Element.HEX;
-                this.gui.setColor(StringUtils.getColor(textField.getText(), colorOld));
+                this.gui.setColor(StringUtils.getColor(newText, colorOld));
             }
             else
             {
                 try
                 {
-                    int val = Integer.parseInt(textField.getText());
+                    int val = Integer.parseInt(newText);
                     float[] hsv = this.gui.getCurrentColorHSV();
                     int colorNew = colorOld;
 
@@ -867,7 +870,7 @@ public class GuiColorEditorHSV extends GuiDialogBase
                             colorNew = (colorOld & 0x00FFFFFF) | (val << 24);
                             break;
                         default:
-                            return false;
+                            return;
                     }
 
                     if (colorNew != colorOld)
@@ -875,13 +878,9 @@ public class GuiColorEditorHSV extends GuiDialogBase
                         this.gui.currentTextInputElement = this.type;
                         this.gui.setColor(colorNew);
                     }
-
-                    return true;
                 }
                 catch (Exception e) {}
             }
-
-            return false;
         }
     }
 

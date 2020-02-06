@@ -23,7 +23,7 @@ import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.util.Message.MessageType;
 import fi.dy.masa.malilib.gui.widgets.WidgetBase;
 import fi.dy.masa.malilib.gui.widgets.WidgetLabel;
-import fi.dy.masa.malilib.gui.wrappers.TextFieldWrapper;
+import fi.dy.masa.malilib.gui.widgets.WidgetTextFieldBase;
 import fi.dy.masa.malilib.interfaces.IStringConsumer;
 import fi.dy.masa.malilib.render.MessageRenderer;
 import fi.dy.masa.malilib.render.RenderUtils;
@@ -68,7 +68,6 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     public final int fontHeight = this.textRenderer.FONT_HEIGHT;
     private final List<ButtonBase> buttons = new ArrayList<>();
     private final List<WidgetBase> widgets = new ArrayList<>();
-    private final List<TextFieldWrapper<? extends GuiTextFieldGeneric>> textFields = new ArrayList<>();
     private final MessageRenderer messageRenderer = new MessageRenderer(0xDD000000, COLOR_HORIZONTAL_BAR);
     protected WidgetBase hoveredWidget = null;
     protected String title = "";
@@ -148,7 +147,6 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
 
         // Draw base widgets
         this.drawWidgets(mouseX, mouseY);
-        this.drawTextFields();
         this.drawButtons(mouseX, mouseY, partialTicks);
         //super.drawScreen(mouseX, mouseY, partialTicks);
 
@@ -208,13 +206,31 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
 
     public boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
+        List<WidgetTextFieldBase> textFields = this.getAllTextFields();
+        WidgetBase clickedWidget = null;
+
         for (WidgetBase widget : this.widgets)
         {
             if (widget.onMouseClicked(mouseX, mouseY, mouseButton))
             {
-                // Don't call super if the button press got handled
-                return true;
+                clickedWidget = widget;
+                break;
             }
+        }
+
+        // Clear the focus from all but the text field that was just clicked
+        for (WidgetTextFieldBase tf : textFields)
+        {
+            if (tf != clickedWidget)
+            {
+                tf.setFocused(false);
+            }
+        }
+
+        // A widget handled the click, abort
+        if (clickedWidget != null)
+        {
+            return true;
         }
 
         for (ButtonBase button : this.buttons)
@@ -226,18 +242,7 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
             }
         }
 
-        boolean handled = false;
-
-        for (TextFieldWrapper<?> entry : this.textFields)
-        {
-            if (entry.mouseClicked(mouseX, mouseY, mouseButton))
-            {
-                // Don't call super if the button press got handled
-                handled = true;
-            }
-        }
-
-        return handled;
+        return false;
     }
 
     public boolean onMouseReleased(int mouseX, int mouseY, int mouseButton)
@@ -275,68 +280,87 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
 
     public boolean onKeyTyped(char typedChar, int keyCode)
     {
-        boolean handled = false;
-        int selected = -1;
-
-        for (int i = 0; i < this.textFields.size(); ++i)
+        if (keyCode == Keyboard.KEY_TAB && changeTextFieldFocus(this.getAllTextFields(), isShiftDown()))
         {
-            TextFieldWrapper<?> entry = this.textFields.get(i);
-
-            if (entry.isFocused())
-            {
-                if (keyCode == Keyboard.KEY_TAB)
-                {
-                    entry.setFocused(false);
-                    selected = i;
-                }
-                else
-                {
-                    entry.keyTyped(typedChar, keyCode);
-                }
-
-                handled = keyCode != Keyboard.KEY_ESCAPE;
-                break;
-            }
+            return true;
         }
 
-        if (handled == false)
+        if (this.widgets.isEmpty() == false)
         {
             for (WidgetBase widget : this.widgets)
             {
                 if (widget.onKeyTyped(typedChar, keyCode))
                 {
                     // Don't call super if the button press got handled
-                    handled = true;
-                    break;
+                    return true;
                 }
             }
         }
 
-        if (handled == false)
+        if (keyCode == Keyboard.KEY_ESCAPE)
         {
-            if (keyCode == Keyboard.KEY_ESCAPE)
+            this.closeGui(isShiftDown() == false);
+            return true;
+        }
+
+        return false;
+    }
+
+    public static boolean changeTextFieldFocus(List<WidgetTextFieldBase> textFields, boolean reverse)
+    {
+        final int size = textFields.size();
+
+        if (size > 1)
+        {
+            int currentIndex = -1;
+
+            for (int i = 0; i < size; ++i)
             {
-                this.closeGui(isShiftDown() == false);
+                WidgetTextFieldBase textField = textFields.get(i);
+
+                if (textField.isFocused())
+                {
+                    currentIndex = i;
+                    textField.setFocused(false);
+                    break;
+                }
+            }
+
+            if (currentIndex != -1)
+            {
+                int newIndex = currentIndex + (reverse ? -1 : 1);
+
+                if (newIndex >= size)
+                {
+                    newIndex = 0;
+                }
+                else if (newIndex < 0)
+                {
+                    newIndex = size - 1;
+                }
+
+                textFields.get(newIndex).setFocused(true);
 
                 return true;
             }
         }
 
-        if (selected >= 0)
-        {
-            if (isShiftDown())
-            {
-                selected = selected > 0 ? selected - 1 : this.textFields.size() - 1;
-            }
-            else
-            {
-                selected = (selected + 1) % this.textFields.size();
-            }
+        return false;
+    }
 
-            this.textFields.get(selected).setFocused(true);
+    protected List<WidgetTextFieldBase> getAllTextFields()
+    {
+        List<WidgetTextFieldBase> textFields = new ArrayList<>();
+
+        if (this.widgets.isEmpty() == false)
+        {
+            for (WidgetBase widget : this.widgets)
+            {
+                textFields.addAll(widget.getAllTextFields());
+            }
         }
 
-        return handled;
+        return textFields;
     }
 
     @Override
@@ -413,17 +437,17 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
         return button;
     }
 
-    public <T extends GuiTextFieldGeneric> TextFieldWrapper<T> addTextField(T textField, @Nullable ITextFieldListener<T> listener)
-    {
-        TextFieldWrapper<T> wrapper = new TextFieldWrapper<>(textField, listener);
-        this.textFields.add(wrapper);
-        return wrapper;
-    }
-
     public <T extends WidgetBase> T addWidget(T widget)
     {
         this.widgets.add(widget);
         widget.onWidgetAdded((int) this.zLevel);
+        return widget;
+    }
+
+    public <T extends WidgetTextFieldBase> T addTextField(T widget, ITextFieldListener listener)
+    {
+        widget.setListener(listener);
+        this.addWidget(widget);
         return widget;
     }
 
@@ -462,7 +486,6 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     {
         this.clearWidgets();
         this.clearButtons();
-        this.clearTextFields();
     }
 
     protected void clearWidgets()
@@ -473,11 +496,6 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     protected void clearButtons()
     {
         this.buttons.clear();
-    }
-
-    protected void clearTextFields()
-    {
-        this.textFields.clear();
     }
 
     protected void drawScreenBackground(int mouseX, int mouseY)
@@ -497,17 +515,12 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
 
     protected void drawButtons(int mouseX, int mouseY, float partialTicks)
     {
-        for (ButtonBase button : this.buttons)
+        if (this.buttons.isEmpty() == false)
         {
-            button.render(mouseX, mouseY, button.isMouseOver());
-        }
-    }
-
-    protected void drawTextFields()
-    {
-        for (TextFieldWrapper<?> entry : this.textFields)
-        {
-            entry.draw();
+            for (ButtonBase button : this.buttons)
+            {
+                button.render(mouseX, mouseY, button.isMouseOver());
+            }
         }
     }
 
@@ -536,7 +549,7 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
         {
             if (button.hasHoverText() && button.isMouseOver())
             {
-                RenderUtils.drawHoverText(mouseX, mouseY, (int) this.zLevel, button.getHoverStrings());
+                RenderUtils.drawHoverText(mouseX, mouseY, button.getZLevel() + 1, button.getHoverStrings());
             }
         }
 
@@ -632,7 +645,6 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
 
         renderWidgetDebug(this.buttons, mouseX, mouseY, renderAll, infoAlways);
         renderWidgetDebug(this.widgets, mouseX, mouseY, renderAll, infoAlways);
-        renderTextFieldDebug(this.textFields, mouseX, mouseY, this.zLevel + 1, renderAll, infoAlways);
     }
 
     public static void renderWidgetDebug(List<? extends WidgetBase> widgets, int mouseX, int mouseY, boolean renderAll, boolean infoAlways)
@@ -644,38 +656,6 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
                 boolean hovered = widget.isMouseOver(mouseX, mouseY);
                 widget.renderDebug(mouseX, mouseY, hovered, renderAll, infoAlways);
             }
-        }
-    }
-
-    public static void renderTextFieldDebug(List<TextFieldWrapper<?>> textFields, int mouseX, int mouseY, float z, boolean renderAll, boolean infoAlways)
-    {
-        if (textFields.isEmpty() == false)
-        {
-            for (TextFieldWrapper<?> textField : textFields)
-            {
-                renderTextFieldDebug(textField.getTextField(), mouseX, mouseY, z, renderAll, infoAlways);
-            }
-        }
-    }
-
-    public static void renderTextFieldDebug(GuiTextFieldGeneric textField, int mouseX, int mouseY, float z, boolean renderAll, boolean infoAlways)
-    {
-        int x = textField.x;
-        int y = textField.y;
-        int w = textField.getWidth();
-        int h = textField.getWidgetHeight();
-        boolean hovered = textField.isMouseOver(mouseX, mouseY);
-
-        if (hovered || renderAll)
-        {
-            WidgetBase.renderDebugOutline(x, y, z, w, h, hovered);
-        }
-
-        if (hovered || infoAlways)
-        {
-            int px = infoAlways ? x : mouseX;
-            int py = infoAlways ? y - 12 : mouseY;
-            WidgetBase.addDebugText(px, py, x, y, z, w, h, textField.getClass().getName());
         }
     }
 }

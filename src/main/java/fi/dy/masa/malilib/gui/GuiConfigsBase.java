@@ -221,7 +221,7 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
                 return true;
             }
 
-            return false;
+            return super.onKeyTyped(typedChar, keyCode);
         }
     }
 

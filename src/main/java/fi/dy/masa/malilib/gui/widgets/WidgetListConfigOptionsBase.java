@@ -1,15 +1,7 @@
 package fi.dy.masa.malilib.gui.widgets;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.lwjgl.input.Keyboard;
-import net.minecraft.client.gui.GuiScreen;
-import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
-import fi.dy.masa.malilib.gui.wrappers.TextFieldWrapper;
-
 public abstract class WidgetListConfigOptionsBase<TYPE, WIDGET extends WidgetConfigOptionBase<TYPE>> extends WidgetListBase<TYPE, WIDGET>
 {
-    protected final List<TextFieldWrapper<? extends GuiTextFieldGeneric>> textFields = new ArrayList<>();
     protected boolean configsModified;
     protected int maxLabelWidth;
     protected int configWidth;
@@ -35,101 +27,7 @@ public abstract class WidgetListConfigOptionsBase<TYPE, WIDGET extends WidgetCon
             this.wereConfigsModified();
         }
 
-        this.textFields.clear();
         super.reCreateListEntryWidgets();
-    }
-
-    @Override
-    public boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
-    {
-        this.clearTextFieldFocus();
-
-        return super.onMouseClicked(mouseX, mouseY, mouseButton);
-    }
-
-    @Override
-    public boolean onKeyTyped(char typedChar, int keyCode)
-    {
-        if (keyCode == Keyboard.KEY_TAB)
-        {
-            return this.changeTextFieldFocus(GuiScreen.isShiftKeyDown());
-        }
-        else
-        {
-            for (WIDGET widget : this.listWidgets)
-            {
-                if (widget.onKeyTyped(typedChar, keyCode))
-                {
-                    return true;
-                }
-            }
-
-            return super.onKeyTyped(typedChar, keyCode);
-        }
-    }
-
-    public void addTextField(TextFieldWrapper<? extends GuiTextFieldGeneric> wrapper)
-    {
-        this.textFields.add(wrapper);
-    }
-
-    protected boolean changeTextFieldFocus(boolean reverse)
-    {
-        final int size = this.textFields.size();
-
-        if (size > 1)
-        {
-            int currentIndex = -1;
-
-            for (int i = 0; i < size; ++i)
-            {
-                GuiTextFieldGeneric textField = this.textFields.get(i).getTextField();
-
-                if (textField.isFocused())
-                {
-                    currentIndex = i;
-                    textField.setFocused(false);
-                    break;
-                }
-            }
-
-            if (currentIndex != -1)
-            {
-                int newIndex = currentIndex + (reverse ? -1 : 1);
-
-                if (newIndex >= size)
-                {
-                    newIndex = 0;
-                }
-                else if (newIndex < 0)
-                {
-                    newIndex = size - 1;
-                }
-
-                this.textFields.get(newIndex).getTextField().setFocused(true);
-                this.applyPendingModifications();
-
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    protected void clearTextFieldFocus()
-    {
-        this.applyPendingModifications();
-
-        for (int i = 0; i < this.textFields.size(); ++i)
-        {
-            GuiTextFieldGeneric textField = this.textFields.get(i).getTextField();
-
-            if (textField.isFocused())
-            {
-                textField.setFocused(false);
-                break;
-            }
-        }
     }
 
     public void markConfigsModified()

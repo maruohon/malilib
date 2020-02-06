@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
+import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
 import fi.dy.masa.malilib.render.RenderUtils;
 
 public abstract class WidgetContainer extends WidgetBackground
@@ -30,8 +31,14 @@ public abstract class WidgetContainer extends WidgetBackground
     {
         button.setActionListener(listener);
         this.addWidget(button);
-
         return button;
+    }
+
+    protected <T extends WidgetTextFieldBase> T addTextField(T widget, ITextFieldListener listener)
+    {
+        widget.setListener(listener);
+        this.addWidget(widget);
+        return widget;
     }
 
     protected void addLabel(int x, int y, int textColor, String... lines)
@@ -170,6 +177,22 @@ public abstract class WidgetContainer extends WidgetBackground
     {
         super.postRenderHovered(mouseX, mouseY, selected);
         this.drawHoveredSubWidget(mouseX, mouseY);
+    }
+
+    @Override
+    public List<WidgetTextFieldBase> getAllTextFields()
+    {
+        List<WidgetTextFieldBase> textFields = new ArrayList<>();
+
+        if (this.subWidgets.isEmpty() == false)
+        {
+            for (WidgetBase widget : this.subWidgets)
+            {
+                textFields.addAll(widget.getAllTextFields());
+            }
+        }
+
+        return textFields;
     }
 
     protected void drawSubWidgets(int mouseX, int mouseY)

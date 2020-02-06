@@ -1,5 +1,7 @@
 package fi.dy.masa.malilib.gui;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import net.minecraft.client.gui.GuiScreen;
@@ -7,6 +9,7 @@ import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
 import fi.dy.masa.malilib.gui.widgets.WidgetListBase;
 import fi.dy.masa.malilib.gui.widgets.WidgetListEntryBase;
+import fi.dy.masa.malilib.gui.widgets.WidgetTextFieldBase;
 
 public abstract class GuiListBase<TYPE, WIDGET extends WidgetListEntryBase<TYPE>, WIDGETLIST extends WidgetListBase<TYPE, WIDGET>> extends GuiBase
 {
@@ -89,6 +92,22 @@ public abstract class GuiListBase<TYPE, WIDGET extends WidgetListEntryBase<TYPE>
             listWidget.getScrollbar().setValue(scrollbarPosition);
             listWidget.refreshEntries();
         }
+    }
+
+    @Override
+    protected List<WidgetTextFieldBase> getAllTextFields()
+    {
+        List<WidgetTextFieldBase> textFields = new ArrayList<>();
+        WIDGETLIST listWidget = this.getListWidget();
+
+        textFields.addAll(super.getAllTextFields());
+
+        if (listWidget != null)
+        {
+            textFields.addAll(listWidget.getAllTextFields());
+        }
+
+        return textFields;
     }
 
     @Override
