@@ -1,7 +1,25 @@
+buildscript {
+    repositories {
+        jcenter()    
+        maven {
+            name = "Fabric"
+            url = "https://maven.fabricmc.net/"
+        }
+    }
+    dependencies {
+        classpath 'net.fabricmc:fabric-loom:0.2.6-SNAPSHOT'
+    }
+}
+
+apply plugin: "fabric-loom"
+apply plugin: "maven-publish"
+
+/*
 plugins {
     id 'fabric-loom' version '0.2.4-SNAPSHOT'
     id 'maven-publish'
 }
+*/
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
