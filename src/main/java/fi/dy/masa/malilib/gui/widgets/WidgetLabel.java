@@ -17,7 +17,12 @@ public class WidgetLabel extends WidgetBackground
 
     public WidgetLabel(int x, int y, int textColor, String... text)
     {
-        this(textColor, y, -1, -1, textColor, text);
+        this(x, y, -1, -1, textColor, Arrays.asList(text));
+    }
+
+    public WidgetLabel(int x, int y, int textColor, List<String> lines)
+    {
+        this(x, y, -1, -1, textColor, lines);
     }
 
     public WidgetLabel(int x, int y, int width, int height, int textColor, String... text)

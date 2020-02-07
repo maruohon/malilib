@@ -56,7 +56,7 @@ public class WidgetDirectoryNavigation extends WidgetSearchBar
             if (this.searchOpen == false)
             {
                 DirectoryCreator creator = new DirectoryCreator(this.getCurrentDirectory(), this.navigator);
-                GuiTextInputFeedback gui = new GuiTextInputFeedback(256, "malilib.gui.title.create_directory", "", GuiUtils.getCurrentScreen(), creator);
+                GuiTextInputFeedback gui = new GuiTextInputFeedback("malilib.gui.title.create_directory", "", GuiUtils.getCurrentScreen(), creator);
                 GuiBase.openPopupGui(gui);
             }
         });

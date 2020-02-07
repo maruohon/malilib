@@ -1,7 +1,6 @@
 package fi.dy.masa.malilib.gui;
 
 import java.awt.Color;
-import java.io.IOException;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -163,15 +162,8 @@ public class GuiColorEditorHSV extends GuiDialogBase
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks)
+    protected void drawContents(int mouseX, int mouseY, float partialTicks)
     {
-        if (this.getParent() != null)
-        {
-            this.getParent().drawScreen(mouseX, mouseY, partialTicks);
-        }
-
-        super.drawScreen(mouseX, mouseY, partialTicks);
-
         if (this.mouseDown)
         {
             if (this.clickedElement != null)
@@ -181,24 +173,6 @@ public class GuiColorEditorHSV extends GuiDialogBase
         }
 
         this.drawColorSelector();
-    }
-
-    @Override
-    protected void drawScreenBackground(int mouseX, int mouseY)
-    {
-        RenderUtils.drawOutlinedBox(this.dialogLeft, this.dialogTop, this.dialogWidth, this.dialogHeight, 0xFF000000, COLOR_HORIZONTAL_BAR, (int) this.zLevel);
-    }
-
-    @Override
-    protected void drawTitle(int mouseX, int mouseY, float partialTicks)
-    {
-        this.drawStringWithShadow(this.title, this.dialogLeft + 10, this.dialogTop + 6, COLOR_WHITE);
-    }
-
-    @Override
-    protected void keyTyped(char typedChar, int keyCode) throws IOException
-    {
-        this.onKeyTyped(typedChar, keyCode);
     }
 
     @Override

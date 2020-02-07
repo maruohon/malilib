@@ -3,17 +3,14 @@ package fi.dy.masa.malilib.gui;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
-import org.lwjgl.input.Keyboard;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.GlStateManager;
-import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.gui.interfaces.IMessageConsumer;
 import fi.dy.masa.malilib.gui.util.Message.MessageType;
+import fi.dy.masa.malilib.gui.widgets.WidgetLabel;
 import fi.dy.masa.malilib.interfaces.ICompletionListener;
 import fi.dy.masa.malilib.interfaces.IConfirmationListener;
-import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class GuiConfirmAction extends GuiDialogBase implements ICompletionListener
@@ -39,16 +36,25 @@ public class GuiConfirmAction extends GuiDialogBase implements ICompletionListen
     @Override
     public void initGui()
     {
-        int x = this.dialogLeft + 10;
-        int y = this.dialogTop + this.dialogHeight - 24;
-        int buttonWidth = this.getButtonWidth();
+        super.initGui();
 
-        this.createButton(x, y, buttonWidth, ButtonType.OK);
+        int x = this.dialogLeft + 10;
+
+        this.addWidget(new WidgetLabel(x, this.dialogTop + 20, this.textColor, this.messageLines));
+
+        int buttonWidth = this.getButtonWidth();
+        int y = this.dialogTop + this.dialogHeight - 26;
+
+        this.createButton(x, y, buttonWidth, ButtonType.OK, (btn, mbtn) -> {
+            this.listener.onActionConfirmed();
+            GuiBase.openGui(this.getParent());
+        });
         x += buttonWidth + 10;
 
-        this.createButton(x, y, buttonWidth, ButtonType.CANCEL);
-
-        Keyboard.enableRepeatEvents(true);
+        this.createButton(x, y, buttonWidth, ButtonType.CANCEL, (btn, mbtn) -> {
+            this.listener.onActionCancelled();
+            GuiBase.openGui(this.getParent());
+        });
     }
 
     public void setTextColor(int textColor)
@@ -73,48 +79,10 @@ public class GuiConfirmAction extends GuiDialogBase implements ICompletionListen
         return width;
     }
 
-    protected void createButton(int x, int y, int buttonWidth, ButtonType type)
+    protected void createButton(int x, int y, int buttonWidth, ButtonType type, IButtonActionListener listener)
     {
         ButtonGeneric button = new ButtonGeneric(x, y, buttonWidth, 20, type.getDisplayName());
-        this.addButton(button, this.createActionListener(type));
-    }
-
-    @Override
-    public boolean doesGuiPauseGame()
-    {
-        return this.getParent() != null && this.getParent().doesGuiPauseGame();
-    }
-
-    @Override
-    public void drawContents(int mouseX, int mouseY, float partialTicks)
-    {
-        if (this.getParent() != null)
-        {
-            this.getParent().drawScreen(mouseX, mouseY, partialTicks);
-        }
-
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(0, 0, this.zLevel);
-
-        RenderUtils.drawOutlinedBox(this.dialogLeft, this.dialogTop, this.dialogWidth, this.dialogHeight, 0xF0000000, COLOR_HORIZONTAL_BAR, 0);
-
-        // Draw the title
-        this.drawStringWithShadow(this.getTitle(), this.dialogLeft + 10, this.dialogTop + 4, COLOR_WHITE);
-        int y = this.dialogTop + 20;
-
-        for (String text : this.messageLines)
-        {
-            this.drawString(text, this.dialogLeft + 10, y, this.textColor);
-            y += this.fontHeight + 1;
-        }
-
-        this.drawButtons(mouseX, mouseY, partialTicks);
-        GlStateManager.popMatrix();
-    }
-
-    protected ButtonListener createActionListener(ButtonType type)
-    {
-        return new ButtonListener(type, this);
+        this.addButton(button, listener);
     }
 
     @Override
@@ -145,33 +113,6 @@ public class GuiConfirmAction extends GuiDialogBase implements ICompletionListen
         if (this.getParent() instanceof ICompletionListener)
         {
             ((ICompletionListener) this.getParent()).onTaskAborted();
-        }
-    }
-
-    protected static class ButtonListener implements IButtonActionListener
-    {
-        private final GuiConfirmAction gui;
-        private final ButtonType type;
-
-        public ButtonListener(ButtonType type, GuiConfirmAction gui)
-        {
-            this.type = type;
-            this.gui = gui;
-        }
-
-        @Override
-        public void actionPerformedWithButton(ButtonBase button, int mouseButton)
-        {
-            if (this.type == ButtonType.OK)
-            {
-                this.gui.listener.onActionConfirmed();
-            }
-            else if (this.type == ButtonType.CANCEL)
-            {
-                this.gui.listener.onActionCancelled();
-            }
-
-            GuiBase.openGui(this.gui.getParent());
         }
     }
 

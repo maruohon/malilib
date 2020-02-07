@@ -1,6 +1,5 @@
 package fi.dy.masa.malilib.gui;
 
-import java.io.IOException;
 import java.util.List;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
@@ -16,7 +15,6 @@ import fi.dy.masa.malilib.gui.widgets.WidgetHoverInfo;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
 import fi.dy.masa.malilib.hotkeys.KeyAction;
 import fi.dy.masa.malilib.hotkeys.KeybindSettings;
-import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class GuiKeybindSettings extends GuiDialogBase
@@ -124,35 +122,6 @@ public class GuiKeybindSettings extends GuiDialogBase
         this.keybind.setSettings(settingsNew);
 
         super.onGuiClosed();
-    }
-
-    @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks)
-    {
-        if (this.getParent() != null)
-        {
-            this.getParent().drawScreen(mouseX, mouseY, partialTicks);
-        }
-
-        super.drawScreen(mouseX, mouseY, partialTicks);
-    }
-
-    @Override
-    protected void drawScreenBackground(int mouseX, int mouseY)
-    {
-        RenderUtils.drawOutlinedBox(this.dialogLeft, this.dialogTop, this.dialogWidth, this.dialogHeight, 0xFF000000, COLOR_HORIZONTAL_BAR, (int) this.zLevel);
-    }
-
-    @Override
-    protected void drawTitle(int mouseX, int mouseY, float partialTicks)
-    {
-        this.drawStringWithShadow(this.title, this.dialogLeft + 10, this.dialogTop + 6, COLOR_WHITE);
-    }
-
-    @Override
-    protected void keyTyped(char typedChar, int keyCode) throws IOException
-    {
-        this.onKeyTyped(typedChar, keyCode);
     }
 
     @Override

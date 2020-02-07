@@ -1,29 +1,29 @@
 package fi.dy.masa.malilib.gui;
 
 import javax.annotation.Nullable;
+import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.gui.interfaces.IMessageConsumer;
 import fi.dy.masa.malilib.gui.util.Message.MessageType;
 import fi.dy.masa.malilib.interfaces.ICompletionListener;
 import fi.dy.masa.malilib.interfaces.IStringConsumer;
 import fi.dy.masa.malilib.interfaces.IStringConsumerFeedback;
-import net.minecraft.client.gui.GuiScreen;
 
 public class GuiTextInput extends GuiTextInputBase implements ICompletionListener
 {
     protected final IStringConsumer consumer;
     protected final IStringConsumerFeedback consumerFeedback;
 
-    public GuiTextInput(int maxTextLength, String titleKey, String defaultText, @Nullable GuiScreen parent, IStringConsumer consumer)
+    public GuiTextInput(String titleKey, String defaultText, @Nullable GuiScreen parent, IStringConsumer consumer)
     {
-        super(maxTextLength, titleKey, defaultText, parent);
+        super(titleKey, defaultText, parent);
 
         this.consumer = consumer;
         this.consumerFeedback = null;
     }
 
-    public GuiTextInput(int maxTextLength, String titleKey, String defaultText, @Nullable GuiScreen parent, IStringConsumerFeedback consumer)
+    public GuiTextInput(String titleKey, String defaultText, @Nullable GuiScreen parent, IStringConsumerFeedback consumer)
     {
-        super(maxTextLength, titleKey, defaultText, parent);
+        super(titleKey, defaultText, parent);
 
         this.consumer = null;
         this.consumerFeedback = consumer;

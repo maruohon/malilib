@@ -61,8 +61,8 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     public static final int COLOR_WHITE          = 0xFFFFFFFF;
     public static final int TOOLTIP_BACKGROUND   = 0xB0000000;
     public static final int COLOR_HORIZONTAL_BAR = 0xFF999999;
-    protected static final int LEFT         = 20;
-    protected static final int TOP          = 10;
+    protected static final int LEFT         = 10;
+    protected static final int TOP          = 6;
     public final Minecraft mc = Minecraft.getMinecraft();
     public final FontRenderer textRenderer = this.mc.fontRenderer;
     public final int fontHeight = this.textRenderer.FONT_HEIGHT;
@@ -501,7 +501,7 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     protected void drawScreenBackground(int mouseX, int mouseY)
     {
         // Draw the dark background
-        drawRect(0, 0, this.width, this.height, TOOLTIP_BACKGROUND);
+        RenderUtils.drawRect(0, 0, this.width, this.height, TOOLTIP_BACKGROUND, this.zLevel);
     }
 
     protected void drawTitle(int mouseX, int mouseY, float partialTicks)

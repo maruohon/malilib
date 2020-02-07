@@ -3,12 +3,10 @@ package fi.dy.masa.malilib.gui;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.GlStateManager;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.gui.widgets.WidgetTextFieldBase;
-import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public abstract class GuiTextInputBase extends GuiDialogBase
@@ -16,7 +14,7 @@ public abstract class GuiTextInputBase extends GuiDialogBase
     protected final WidgetTextFieldBase textField;
     protected final String originalText;
 
-    public GuiTextInputBase(int maxTextLength, String titleKey, String defaultText, @Nullable GuiScreen parent)
+    public GuiTextInputBase(String titleKey, String defaultText, @Nullable GuiScreen parent)
     {
         this.setParent(parent);
         this.title = StringUtils.translate(titleKey);
@@ -26,18 +24,20 @@ public abstract class GuiTextInputBase extends GuiDialogBase
         this.setWidthAndHeight(260, 100);
         this.centerOnScreen();
 
-        int width = Math.min(maxTextLength * 10, 240);
-        this.textField = new WidgetTextFieldBase(this.dialogLeft + 12, this.dialogTop + 40, width, 20, this.originalText);
+        this.textField = new WidgetTextFieldBase(this.dialogLeft + 12, this.dialogTop + 40, 240, 20, this.originalText);
         this.textField.setFocused(true);
-        this.textField.setCursorToEnd();
-        this.zLevel = 1f;
     }
 
     @Override
     public void initGui()
     {
+        super.initGui();
+
         int x = this.dialogLeft + 10;
         int y = this.dialogTop + 70;
+
+        this.textField.setPosition(this.dialogLeft + 12, this.dialogTop + 40);
+        this.addWidget(this.textField);
 
         x += this.createButton(x, y, ButtonType.OK) + 2;
         x += this.createButton(x, y, ButtonType.RESET) + 2;
@@ -50,36 +50,7 @@ public abstract class GuiTextInputBase extends GuiDialogBase
     {
         ButtonGeneric button = new ButtonGeneric(x, y, -1, 20, type.getDisplayName());
         button.setWidth(Math.max(40, button.getWidth()));
-        return this.addButton(button, this.createActionListener(type)).getWidth();
-    }
-
-    @Override
-    public boolean doesGuiPauseGame()
-    {
-        return this.getParent() != null && this.getParent().doesGuiPauseGame();
-    }
-
-    @Override
-    public void drawContents(int mouseX, int mouseY, float partialTicks)
-    {
-        if (this.getParent() != null)
-        {
-            this.getParent().drawScreen(mouseX, mouseY, partialTicks);
-        }
-
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(0, 0, this.zLevel);
-
-        RenderUtils.drawOutlinedBox(this.dialogLeft, this.dialogTop, this.dialogWidth, this.dialogHeight, 0xE0000000, COLOR_HORIZONTAL_BAR, (int) this.zLevel);
-
-        // Draw the title
-        this.drawStringWithShadow(this.getTitle(), this.dialogLeft + 10, this.dialogTop + 4, COLOR_WHITE);
-
-        //super.drawScreen(mouseX, mouseY, partialTicks);
-        this.textField.render(mouseX, mouseY, true);
-
-        this.drawButtons(mouseX, mouseY, partialTicks);
-        GlStateManager.popMatrix();
+        return this.addButton(button, new ButtonListener(type, this)).getWidth();
     }
 
     @Override
@@ -101,28 +72,7 @@ public abstract class GuiTextInputBase extends GuiDialogBase
             return true;
         }
 
-        if (this.textField.isFocused())
-        {
-            return this.textField.onKeyTyped(typedChar, keyCode);
-        }
-
         return super.onKeyTyped(typedChar, keyCode);
-    }
-
-    @Override
-    public boolean onMouseClicked(int mouseX, int mouseY, int button)
-    {
-        if (this.textField.onMouseClicked(mouseX, mouseY, button))
-        {
-            return true;
-        }
-
-        return super.onMouseClicked(mouseX, mouseY, button);
-    }
-
-    protected ButtonListener createActionListener(ButtonType type)
-    {
-        return new ButtonListener(type, this);
     }
 
     protected abstract boolean applyValue(String string);
