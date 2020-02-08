@@ -1,5 +1,7 @@
 package fi.dy.masa.malilib.util;
 
+import java.awt.Color;
+
 public class Color4f
 {
     public static final Color4f ZERO = new Color4f(0F, 0F, 0F, 0F);
@@ -68,5 +70,10 @@ public class Color4f
     public static Color4f fromColor(Color4f color, float alpha)
     {
         return new Color4f(color.r, color.g, color.b, alpha);
+    }
+
+    public static int getColorFromHue(int hue)
+    {
+        return 0xFF000000 | (Color.HSBtoRGB((float) (hue % 360) / 360f, 1f, 1f) & 0x00FFFFFF);
     }
 }

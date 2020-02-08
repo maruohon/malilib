@@ -1,6 +1,5 @@
 package fi.dy.masa.malilib.gui.widgets;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -18,12 +17,13 @@ import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.gui.interfaces.IBackgroundRenderer;
 import fi.dy.masa.malilib.gui.interfaces.ITextRenderer;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.util.Color4f;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public abstract class WidgetBase
 {
     private static final ArrayListMultimap<Long, String> DEBUG_STRINGS = ArrayListMultimap.create();
-    private static int lastDebugOutlineColor;
+    private static int lastDebugOutlineColorHue;
 
     public static final IBackgroundRenderer DEBUG_TEXT_BG_RENDERER = (x, y, w, h, z) -> { RenderUtils.drawOutlinedBox(x - 3, y - 3, w + 6, h + 6, 0xE0000000, 0xFFC0C0C0, z); };
 
@@ -413,8 +413,8 @@ public abstract class WidgetBase
 
     public static void renderDebugOutline(double x, double y, double z, double w, double h, boolean hovered)
     {
-        int color = 0xFF000000 | (Color.HSBtoRGB((float) (lastDebugOutlineColor % 360) / 360f, 1f, 1f) & 0x00FFFFFF);
-        lastDebugOutlineColor += 40;
+        int color = Color4f.getColorFromHue(lastDebugOutlineColorHue);
+        lastDebugOutlineColorHue += 40;
 
         float a = (float) (color >> 24 & 255) / 255.0F;
         float r = (float) (color >> 16 & 255) / 255.0F;
@@ -468,6 +468,6 @@ public abstract class WidgetBase
             RenderUtils.disableItemLighting();
         }
 
-        lastDebugOutlineColor = 0;
+        lastDebugOutlineColorHue = 0;
     }
 }
