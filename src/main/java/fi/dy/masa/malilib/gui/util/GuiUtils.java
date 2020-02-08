@@ -16,6 +16,8 @@ import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.gui.widgets.WidgetTextFieldBase;
+import fi.dy.masa.malilib.gui.widgets.WidgetTextFieldDouble;
+import fi.dy.masa.malilib.gui.widgets.WidgetTextFieldInteger;
 import fi.dy.masa.malilib.interfaces.ICoordinateValueModifier;
 import fi.dy.masa.malilib.util.PositionUtils.CoordinateType;
 import fi.dy.masa.malilib.util.StringUtils;
@@ -71,8 +73,7 @@ public class GuiUtils
     {
         x = addLabel(x, y, type, gui);
 
-        WidgetTextFieldBase textField = new WidgetTextFieldBase(x, y + 1, textFieldWidth, 14, getCoordinateValueString(type, pos));
-        textField.setTextValidator(WidgetTextFieldBase.VALIDATOR_INTEGER);
+        WidgetTextFieldInteger textField = new WidgetTextFieldInteger(x, y, textFieldWidth, 16, getCoordinateValue(type, pos));
         textField.setUpdateListenerAlways(true);
         addTextFieldAndButton(x + textFieldWidth + 4, y, type, modifier, textField, addButton, gui);
     }
@@ -82,8 +83,7 @@ public class GuiUtils
     {
         x = addLabel(x, y, type, gui);
 
-        WidgetTextFieldBase textField = new WidgetTextFieldBase(x, y + 1, textFieldWidth, 14, getCoordinateValueString(type, pos));
-        textField.setTextValidator(WidgetTextFieldBase.VALIDATOR_DOUBLE);
+        WidgetTextFieldDouble textField = new WidgetTextFieldDouble(x, y, textFieldWidth, 16, getCoordinateValue(type, pos));
         textField.setUpdateListenerAlways(true);
         addTextFieldAndButton(x + textFieldWidth + 4, y, type, modifier, textField, addButton, gui);
     }
@@ -102,34 +102,28 @@ public class GuiUtils
         }
     }
 
-    public static String getCoordinateValueString(CoordinateType type, BlockPos pos)
+    public static int getCoordinateValue(CoordinateType type, BlockPos pos)
     {
         switch (type)
         {
-            case X:
-                return String.valueOf(pos.getX());
-            case Y:
-                return String.valueOf(pos.getY());
-            case Z:
-                return String.valueOf(pos.getZ());
+            case X: return pos.getX();
+            case Y: return pos.getY();
+            case Z: return pos.getZ();
         }
 
-        return "";
+        return 0;
     }
 
-    public static String getCoordinateValueString(CoordinateType type, Vec3d pos)
+    public static double getCoordinateValue(CoordinateType type, Vec3d pos)
     {
         switch (type)
         {
-            case X:
-                return String.valueOf(pos.x);
-            case Y:
-                return String.valueOf(pos.y);
-            case Z:
-                return String.valueOf(pos.z);
+            case X: return pos.x;
+            case Y: return pos.y;
+            case Z: return pos.z;
         }
 
-        return "";
+        return 0;
     }
 
     protected static int addLabel(int x, int y, CoordinateType type, GuiBase gui)

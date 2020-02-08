@@ -67,14 +67,12 @@ public abstract class ButtonBase extends WidgetBase
     }
 
     @Override
-    public int updateWidth()
+    public void updateWidth()
     {
         if (this.automaticWidth)
         {
             this.setWidth(this.getStringWidth(this.displayString) + 10);
         }
-
-        return this.getWidth();
     }
 
     public boolean isMouseOver()

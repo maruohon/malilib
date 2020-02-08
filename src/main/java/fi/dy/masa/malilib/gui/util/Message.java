@@ -7,11 +7,11 @@ import fi.dy.masa.malilib.util.StringUtils;
 
 public class Message
 {
+    private final List<String> messageLines = new ArrayList<>();
     private final MessageType type;
     private final long created;
     private final int displayTime;
     private final int maxLineLength;
-    private final List<String> messageLines = new ArrayList<>();
 
     public Message(MessageType type, int displayTimeMs, int maxLineLength, String message, Object... args)
     {
@@ -20,40 +20,32 @@ public class Message
         this.displayTime = displayTimeMs;
         this.maxLineLength = maxLineLength;
 
-        this.setMessage(StringUtils.translate(message, args));
+        StringUtils.splitTextToLines(this.messageLines, StringUtils.translate(message, args), this.maxLineLength);
     }
 
     public boolean hasExpired(long currentTime)
     {
-        return currentTime > (this.created + this.displayTime);
+        return currentTime > (this.created + (long) this.displayTime);
     }
 
-    public int getMessageHeight()
+    public int getLineCount()
     {
-        return this.messageLines.size() * (StringUtils.getFontHeight() + 1) - 1 + 5;
-    }
-
-    public void setMessage(String message)
-    {
-        this.messageLines.clear();
-        StringUtils.splitTextToLines(this.messageLines, message, this.maxLineLength);
+        return this.messageLines.size();
     }
 
     /**
      * Renders the lines for this message
      * @return the y coordinate of the next message
      */
-    public int renderAt(int x, int y, int textColor)
+    public void renderAt(int x, int y, int textColor, int lineSpacing)
     {
         String format = this.getFormatCode();
 
         for (String text : this.messageLines)
         {
             StringUtils.drawString(x, y, textColor, format + text + GuiBase.TXT_RST);
-            y += StringUtils.getFontHeight() + 1;
+            y += lineSpacing;
         }
-
-        return y + 3;
     }
 
     public String getFormatCode()

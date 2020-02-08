@@ -12,7 +12,10 @@ import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
 import fi.dy.masa.malilib.gui.interfaces.ITextFieldValidator;
+import fi.dy.masa.malilib.gui.util.GuiUtils;
+import fi.dy.masa.malilib.gui.util.Message.MessageType;
 import fi.dy.masa.malilib.gui.util.TextRegion;
+import fi.dy.masa.malilib.render.MessageRenderer;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.HorizontalAlignment;
 import fi.dy.masa.malilib.util.LeftRight;
@@ -20,15 +23,18 @@ import fi.dy.masa.malilib.util.StringUtils;
 
 public class WidgetTextFieldBase extends WidgetBackground
 {
-    public static final Pattern PATTERN_HEX_COLOR = Pattern.compile("^(#|0x)[0-9a-fA-F]{8}$");
+    public static final Pattern PATTERN_HEX_COLOR_6_8 = Pattern.compile("^(#|0x)([0-9a-fA-F]{6}|[0-9a-fA-F]{8})$");
+    public static final Pattern PATTERN_HEX_COLOR_8 = Pattern.compile("^(#|0x)[0-9a-fA-F]{8}$");
 
-    public static final ITextFieldValidator VALIDATOR_HEX_COLOR         = (str) -> PATTERN_HEX_COLOR.matcher(str).matches();
-    public static final ITextFieldValidator VALIDATOR_DOUBLE            = (str) -> { try { Double.parseDouble(str); return true; } catch (Exception e) { return false; } };
-    public static final ITextFieldValidator VALIDATOR_DOUBLE_POSITIVE   = (str) -> { try { return Double.parseDouble(str) > 0.0; } catch (Exception e) { return false; } };
-    public static final ITextFieldValidator VALIDATOR_INTEGER           = (str) -> { try { Integer.parseInt(str); return true; } catch (Exception e) { return false; } };
-    public static final ITextFieldValidator VALIDATOR_INTEGER_POSITIVE  = (str) -> { try { return Integer.parseInt(str) > 0; } catch (Exception e) { return false; } };
+    public static final ITextFieldValidator VALIDATOR_HEX_COLOR_6_8     = (str) -> PATTERN_HEX_COLOR_6_8.matcher(str).matches();
+    public static final ITextFieldValidator VALIDATOR_HEX_COLOR_8       = (str) -> PATTERN_HEX_COLOR_8.matcher(str).matches();
+    public static final ITextFieldValidator VALIDATOR_DOUBLE            = new WidgetTextFieldDouble.DoubleValidator(Double.MIN_VALUE, Double.MAX_VALUE);
+    public static final ITextFieldValidator VALIDATOR_DOUBLE_POSITIVE   = new WidgetTextFieldDouble.DoubleValidator(+0.0, Double.MAX_VALUE);
+    public static final ITextFieldValidator VALIDATOR_INTEGER           = new WidgetTextFieldInteger.IntValidator(Integer.MIN_VALUE, Integer.MAX_VALUE);
+    public static final ITextFieldValidator VALIDATOR_INTEGER_POSITIVE  = new WidgetTextFieldInteger.IntValidator(1, Integer.MAX_VALUE);
 
     protected final TextRegion visibleText = new TextRegion();
+    protected MessageRenderer messageRenderer = new MessageRenderer();
     private String text = "";
     protected String lastNotifiedText = "";
     @Nullable protected IInputCharacterValidator inputValidator;
@@ -60,6 +66,7 @@ public class WidgetTextFieldBase extends WidgetBackground
         this.setBackgroundEnabled(true);
         this.setPaddingX(4);
 
+        this.messageRenderer.setWidth(Math.max(this.getWidth(), 220));
         this.visibleText.setMaxWidth(this.getMaxTextWidth());
         this.lastNotifiedText = text;
 
@@ -72,6 +79,13 @@ public class WidgetTextFieldBase extends WidgetBackground
         super.setWidth(width);
 
         this.visibleText.setMaxWidth(this.getMaxTextWidth());
+    }
+
+    @Override
+    public WidgetBase setZLevel(int zLevel)
+    {
+        this.messageRenderer.setZLevel(zLevel + 20);
+        return super.setZLevel(zLevel);
     }
 
     public String getText()
@@ -131,7 +145,55 @@ public class WidgetTextFieldBase extends WidgetBackground
             this.notifyListenerIfNeeded();
         }
 
+        this.addErrorMessage();
+
         return this;
+    }
+
+    protected void addErrorMessage()
+    {
+        if (this.isValidInput)
+        {
+            this.messageRenderer.clearMessages();
+        }
+        else if (this.textValidator != null && this.text.isEmpty() == false)
+        {
+            String message = this.textValidator.getErrorMessage(this.text);
+
+            if (message != null)
+            {
+                this.messageRenderer.addMessage(MessageType.ERROR, 3000, message);
+                this.updateMessageRendererPosition();
+            }
+        }
+    }
+
+    protected void updateMessageRendererPosition()
+    {
+        int x = this.getX();
+        int y = this.getY();
+        int height = this.getHeight();
+        int messagesWidth = this.messageRenderer.getWidth();
+        int messagesHeight = this.messageRenderer.getHeight();
+        int scaledWidth = GuiUtils.getScaledWindowWidth();
+
+        if (x + messagesWidth > scaledWidth)
+        {
+            this.messageRenderer.setX(scaledWidth - messagesWidth - 2);
+        }
+        else
+        {
+            this.messageRenderer.setX(x);
+        }
+
+        if (y + height + messagesHeight > GuiUtils.getScaledWindowHeight())
+        {
+            this.messageRenderer.setY(y - messagesHeight);
+        }
+        else
+        {
+            this.messageRenderer.setY(y + height);
+        }
     }
 
     public boolean isFocused()
@@ -145,11 +207,15 @@ public class WidgetTextFieldBase extends WidgetBackground
 
         this.isFocused = isFocused;
         this.setBorderColor(isFocused ? this.colorFocused : this.colorUnfocused);
-        Keyboard.enableRepeatEvents(this.isFocused);
 
         if (wasFocused && this.isFocused == false)
         {
             this.notifyListenerIfNeeded();
+        }
+
+        if (this.isFocused)
+        {
+            Keyboard.enableRepeatEvents(true);
         }
 
         return this;
@@ -725,7 +791,7 @@ public class WidgetTextFieldBase extends WidgetBackground
             String visibleText = this.visibleText.getText();
 
             // The cursor is at the end of the text, use an underscore cursor
-            if (this.cursorPosition == this.text.length())
+            if (this.cursorPosition == this.text.length() && this.selectionStartPosition == -1)
             {
                 int offX = this.getStringWidth(visibleText);
                 this.drawString(x + offX, y + this.getCenteredTextOffsetY(), color, "_");
@@ -788,7 +854,7 @@ public class WidgetTextFieldBase extends WidgetBackground
                 x += selWidth;
 
                 // Non-selected text at the start
-                if (selEnd < end)
+                if (selEnd <= end)
                 {
                     str = visibleText.substring(selEnd - start, visLen);
                     this.drawString(x, y, textColor, str);
@@ -805,8 +871,11 @@ public class WidgetTextFieldBase extends WidgetBackground
     @Override
     public void render(int mouseX, int mouseY, boolean selected)
     {
-        this.renderBorder();
-        this.renderBackgroundOnly();
+        int x = this.getX();
+        int y = this.getY();
+
+        this.renderBorder(x, y);
+        this.renderBackgroundOnly(x, y);
 
         int color;
 
@@ -819,8 +888,7 @@ public class WidgetTextFieldBase extends WidgetBackground
             color = this.colorError;
         }
 
-        int x = this.getX() + this.getTextStartRelativeX();
-        int y = this.getY();
+        x += this.getTextStartRelativeX();
 
         if (this.text.isEmpty() == false)
         {
@@ -837,6 +905,15 @@ public class WidgetTextFieldBase extends WidgetBackground
         if (this.isFocused())
         {
             this.renderCursor(x, y, color);
+        }
+
+        int messagesHeightPre = this.messageRenderer.getHeight();
+        this.messageRenderer.drawMessages(this.messageRenderer.getX(), this.messageRenderer.getY());
+
+        // Update the position when old messages are removed
+        if (this.messageRenderer.getHeight() != messagesHeightPre)
+        {
+            this.updateMessageRendererPosition();
         }
     }
 

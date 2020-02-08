@@ -15,6 +15,7 @@ import fi.dy.masa.malilib.config.options.IConfigInteger;
 import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
 import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
 import fi.dy.masa.malilib.gui.widgets.WidgetTextFieldBase;
+import fi.dy.masa.malilib.gui.widgets.WidgetTextFieldInteger;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.shader.ShaderProgram;
 import fi.dy.masa.malilib.util.StringUtils;
@@ -119,7 +120,7 @@ public class GuiColorEditorHSV extends GuiDialogBase
         int w = this.getStringWidth(str);
         this.addLabel(this.xH - w - 4, y + 4, 0xFFFFFF, str);
         this.textFieldFullColor = new WidgetTextFieldBase(this.xH - 1, y + 2, 68, 14);
-        this.textFieldFullColor.setTextValidator(WidgetTextFieldBase.VALIDATOR_HEX_COLOR);
+        this.textFieldFullColor.setTextValidator(WidgetTextFieldBase.VALIDATOR_HEX_COLOR_8);
         this.textFieldFullColor.setListener(new TextFieldListener(null, this));
         this.addWidget(this.textFieldFullColor);
 
@@ -132,18 +133,39 @@ public class GuiColorEditorHSV extends GuiDialogBase
     protected int createComponentElements(int x, int y, int xLabel, Element element)
     {
         WidgetTextFieldBase textField = new WidgetTextFieldBase(x, y, 32, 14);
-        textField.setTextValidator(WidgetTextFieldBase.VALIDATOR_INTEGER);
         textField.setListener(new TextFieldListener(element, this));
+        textField.setUpdateListenerAlways(true);
 
         switch (element)
         {
-            case H: this.textFieldH = textField; break;
-            case S: this.textFieldS = textField; break;
-            case V: this.textFieldV = textField; break;
-            case R: this.textFieldR = textField; break;
-            case G: this.textFieldG = textField; break;
-            case B: this.textFieldB = textField; break;
-            case A: this.textFieldA = textField; break;
+            case H:
+                this.textFieldH = textField;
+                textField.setTextValidator(new WidgetTextFieldInteger.IntValidator(0, 360));
+                break;
+            case S:
+                this.textFieldS = textField;
+                textField.setTextValidator(new WidgetTextFieldInteger.IntValidator(0, 100));
+                break;
+            case V:
+                this.textFieldV = textField;
+                textField.setTextValidator(new WidgetTextFieldInteger.IntValidator(0, 100));
+                break;
+            case R:
+                this.textFieldR = textField;
+                textField.setTextValidator(new WidgetTextFieldInteger.IntValidator(0, 255));
+                break;
+            case G:
+                this.textFieldG = textField;
+                textField.setTextValidator(new WidgetTextFieldInteger.IntValidator(0, 255));
+                break;
+            case B:
+                this.textFieldB = textField;
+                textField.setTextValidator(new WidgetTextFieldInteger.IntValidator(0, 255));
+                break;
+            case A:
+                this.textFieldA = textField;
+                textField.setTextValidator(new WidgetTextFieldInteger.IntValidator(0, 255));
+                break;
             default:
         }
 

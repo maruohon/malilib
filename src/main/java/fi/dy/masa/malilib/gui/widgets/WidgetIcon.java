@@ -39,7 +39,7 @@ public class WidgetIcon extends WidgetBackground
     }
 
     @Override
-    public int updateWidth()
+    public void updateWidth()
     {
         if (this.icon != null)
         {
@@ -56,12 +56,10 @@ public class WidgetIcon extends WidgetBackground
         {
             this.setWidth(0);
         }
-
-        return this.getWidth();
     }
 
     @Override
-    public int updateHeight()
+    public void updateHeight()
     {
         if (this.icon != null)
         {
@@ -78,8 +76,6 @@ public class WidgetIcon extends WidgetBackground
         {
             this.setHeight(0);
         }
-
-        return this.getHeight();
     }
 
     @Override

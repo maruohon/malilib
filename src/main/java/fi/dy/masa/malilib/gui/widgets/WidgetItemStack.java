@@ -51,7 +51,7 @@ public class WidgetItemStack extends WidgetBackground
     }
 
     @Override
-    public int updateWidth()
+    public void updateWidth()
     {
         int width = 16;
 
@@ -61,12 +61,10 @@ public class WidgetItemStack extends WidgetBackground
         }
 
         this.setWidth(width);
-
-        return this.getWidth();
     }
 
     @Override
-    public int updateHeight()
+    public void updateHeight()
     {
         int height = 16;
 
@@ -76,8 +74,6 @@ public class WidgetItemStack extends WidgetBackground
         }
 
         this.setHeight(height);
-
-        return this.getHeight();
     }
 
     @Override

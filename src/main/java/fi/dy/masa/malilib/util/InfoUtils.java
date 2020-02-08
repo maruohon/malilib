@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.TextComponentTranslation;
 import fi.dy.masa.malilib.LiteModMaLiLib;
+import fi.dy.masa.malilib.config.values.HudAlignment;
 import fi.dy.masa.malilib.config.values.InfoType;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.interfaces.IMessageConsumer;
@@ -14,10 +15,21 @@ import fi.dy.masa.malilib.render.MessageRenderer;
 
 public class InfoUtils
 {
-    private static final MessageRenderer IN_GAME_MESSAGES = new MessageRenderer(0xA0000000, 0).setBackgroundStyle(true, false).setCentered(true, false).setExpandUp(true);
+    private static final MessageRenderer IN_GAME_MESSAGES_CENTER = createMainMessageRenderer();
+    private static final MessageRenderer IN_GAME_MESSAGES_TOP_LEFT     = new MessageRenderer();
+    private static final MessageRenderer IN_GAME_MESSAGES_TOP_RIGHT    = new MessageRenderer();
+    private static final MessageRenderer IN_GAME_MESSAGES_BOTTOM_LEFT  = (new MessageRenderer()).setExpandUp(true);
+    private static final MessageRenderer IN_GAME_MESSAGES_BOTTOM_RIGHT = (new MessageRenderer()).setExpandUp(true);
 
     public static final IStringConsumer INFO_MESSAGE_CONSUMER = new InfoMessageConsumer();
     public static final IMessageConsumer INGAME_MESSAGE_CONSUMER = new InGameMessageConsumer();
+
+    private static MessageRenderer createMainMessageRenderer()
+    {
+        MessageRenderer renderer = new MessageRenderer();
+        renderer.setCentered(true, false).setExpandUp(true);
+        return renderer;
+    }
 
     public static void showMessage(InfoType outputType, MessageType messageType, String translationKey, Object... args)
     {
@@ -126,6 +138,15 @@ public class InfoUtils
      */
     public static void showGuiOrInGameMessage(MessageType type, int lifeTime, String translationKey, Object... args)
     {
+        /*
+        // For debugging
+        showInGameMessage(HudAlignment.CENTER, type, lifeTime, translationKey, args);
+        showInGameMessage(HudAlignment.TOP_LEFT, type, lifeTime, translationKey, args);
+        showInGameMessage(HudAlignment.TOP_RIGHT, type, lifeTime, translationKey, args);
+        showInGameMessage(HudAlignment.BOTTOM_LEFT, type, lifeTime, translationKey, args);
+        showInGameMessage(HudAlignment.BOTTOM_RIGHT, type, lifeTime, translationKey, args);
+        */
+
         if (GuiUtils.getCurrentScreen() instanceof IMessageConsumer)
         {
             ((IMessageConsumer) GuiUtils.getCurrentScreen()).addMessage(type, lifeTime, translationKey, args);
@@ -189,9 +210,47 @@ public class InfoUtils
      */
     public static void showInGameMessage(MessageType type, int lifeTime, String translationKey, Object... args)
     {
-        synchronized (IN_GAME_MESSAGES)
+        synchronized (IN_GAME_MESSAGES_CENTER)
         {
-            IN_GAME_MESSAGES.addMessage(type, lifeTime, translationKey, args);
+            IN_GAME_MESSAGES_CENTER.addMessage(type, lifeTime, translationKey, args);
+        }
+    }
+
+    /**
+     * Adds a message to one of the specific message renderers that are aligned to different
+     * parts of the screen.
+     * @param renderer
+     * @param type
+     * @param lifeTime
+     * @param translationKey
+     * @param args
+     */
+    public static void showInGameMessage(HudAlignment renderer, MessageType type, int lifeTime, String translationKey, Object... args)
+    {
+        synchronized (IN_GAME_MESSAGES_CENTER)
+        {
+            switch (renderer)
+            {
+                case CENTER:
+                    IN_GAME_MESSAGES_CENTER.addMessage(type, lifeTime, translationKey, args);
+                    break;
+
+                case TOP_LEFT:
+                    IN_GAME_MESSAGES_TOP_LEFT.addMessage(type, lifeTime, translationKey, args);
+                    break;
+
+                case TOP_RIGHT:
+                    IN_GAME_MESSAGES_TOP_RIGHT.addMessage(type, lifeTime, translationKey, args);
+                    break;
+
+                case BOTTOM_LEFT:
+                    IN_GAME_MESSAGES_BOTTOM_LEFT.addMessage(type, lifeTime, translationKey, args);
+                    break;
+
+                case BOTTOM_RIGHT:
+                    IN_GAME_MESSAGES_BOTTOM_RIGHT.addMessage(type, lifeTime, translationKey, args);
+                    break;
+            }
         }
     }
 
@@ -221,12 +280,18 @@ public class InfoUtils
      */
     public static void renderInGameMessages()
     {
-        int x = GuiUtils.getScaledWindowWidth() / 2;
-        int y = GuiUtils.getScaledWindowHeight() - 76;
+        int width = GuiUtils.getScaledWindowWidth();
+        int height = GuiUtils.getScaledWindowHeight();
+        int x = width / 2;
+        int y = height - 76;
 
-        synchronized (IN_GAME_MESSAGES)
+        synchronized (IN_GAME_MESSAGES_CENTER)
         {
-            IN_GAME_MESSAGES.drawMessages(x, y);
+            IN_GAME_MESSAGES_CENTER.drawMessages(x, y);
+            IN_GAME_MESSAGES_TOP_LEFT.drawMessages(4, 4);
+            IN_GAME_MESSAGES_TOP_RIGHT.drawMessages(width - IN_GAME_MESSAGES_TOP_RIGHT.getWidth() - 4, 4);
+            IN_GAME_MESSAGES_BOTTOM_LEFT.drawMessages(4, height - 4);
+            IN_GAME_MESSAGES_BOTTOM_RIGHT.drawMessages(width - IN_GAME_MESSAGES_BOTTOM_RIGHT.getWidth() - 4, height - 4);
         }
     }
 

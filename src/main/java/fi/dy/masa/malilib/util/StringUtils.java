@@ -428,7 +428,14 @@ public class StringUtils
      */
     public static String translate(String translationKey, Object... args)
     {
-        return net.minecraft.client.resources.I18n.format(translationKey, args);
+        try
+        {
+            return net.minecraft.client.resources.I18n.format(translationKey, args);
+        }
+        catch (Exception e)
+        {
+            return translationKey;
+        }
     }
 
     /**

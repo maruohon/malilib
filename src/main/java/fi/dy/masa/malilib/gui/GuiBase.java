@@ -68,12 +68,20 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     public final int fontHeight = this.textRenderer.FONT_HEIGHT;
     private final List<ButtonBase> buttons = new ArrayList<>();
     private final List<WidgetBase> widgets = new ArrayList<>();
-    private final MessageRenderer messageRenderer = new MessageRenderer(0xDD000000, COLOR_HORIZONTAL_BAR);
+    private final MessageRenderer messageRenderer;
     protected WidgetBase hoveredWidget = null;
     protected String title = "";
     protected boolean useTitleHierarchy = true;
     @Nullable
     private GuiScreen parent;
+
+    public GuiBase()
+    {
+        this.messageRenderer = new MessageRenderer();
+        this.messageRenderer.setBackgroundColor(0xDD000000).setBorderColor(COLOR_HORIZONTAL_BAR);
+        this.messageRenderer.setCentered(true, true);
+        this.messageRenderer.setZLevel(100);
+    }
 
     public GuiBase setParent(@Nullable GuiScreen parent)
     {
@@ -415,6 +423,8 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
         {
             widget.setZLevelBasedOnParent(parentZLevel);
         }
+
+        this.messageRenderer.setZLevel((int) this.zLevel + 100);
 
         return this;
     }

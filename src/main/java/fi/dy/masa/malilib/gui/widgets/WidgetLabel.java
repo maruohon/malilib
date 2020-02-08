@@ -84,7 +84,7 @@ public class WidgetLabel extends WidgetBackground
     }
 
     @Override
-    public int updateWidth()
+    public void updateWidth()
     {
         if (this.automaticWidth)
         {
@@ -106,12 +106,10 @@ public class WidgetLabel extends WidgetBackground
 
             this.setWidth(width);
         }
-
-        return this.getWidth();
     }
 
     @Override
-    public int updateHeight()
+    public void updateHeight()
     {
         if (this.automaticHeight)
         {
@@ -128,8 +126,6 @@ public class WidgetLabel extends WidgetBackground
 
             this.setHeight(height);
         }
-
-        return this.getHeight();
     }
 
     @Override

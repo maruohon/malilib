@@ -5,6 +5,7 @@ import fi.dy.masa.malilib.render.RenderUtils;
 public class WidgetBackground extends WidgetBase
 {
     protected boolean backgroundEnabled;
+    protected boolean borderEnabled = true;
     protected int backgroundColor = 0xB0101010;
     protected int borderColorBR = 0xFFC0C0C0;
     protected int borderColorUL = 0xFFC0C0C0;
@@ -28,6 +29,7 @@ public class WidgetBackground extends WidgetBase
     public WidgetBackground setBorderWidth(int borderWidth)
     {
         this.borderWidth = borderWidth;
+        this.borderEnabled = borderWidth > 0;
         this.updateWidth();
         this.updateHeight();
         return this;
@@ -81,20 +83,21 @@ public class WidgetBackground extends WidgetBase
     {
         if (this.backgroundEnabled)
         {
-            this.renderBackgroundOnly();
-            this.renderBorder();
+            int x = this.getX();
+            int y = this.getY();
+
+            this.renderBackgroundOnly(x, y);
+            this.renderBorder(x, y);
         }
     }
 
-    protected void renderBorder()
+    protected void renderBorder(int x, int y)
     {
-        if (this.backgroundEnabled)
+        if (this.borderEnabled)
         {
             RenderUtils.color(1f, 1f, 1f, 1f);
             RenderUtils.setupBlend();
 
-            int x = this.getX();
-            int y = this.getY();
             int z = this.getZLevel();
             int w = this.getWidth();
             int h = this.getHeight();
@@ -111,15 +114,13 @@ public class WidgetBackground extends WidgetBase
         }
     }
 
-    protected void renderBackgroundOnly()
+    protected void renderBackgroundOnly(int x, int y)
     {
         if (this.backgroundEnabled)
         {
             RenderUtils.color(1f, 1f, 1f, 1f);
             RenderUtils.setupBlend();
 
-            int x = this.getX();
-            int y = this.getY();
             int z = this.getZLevel();
             int w = this.getWidth();
             int h = this.getHeight();

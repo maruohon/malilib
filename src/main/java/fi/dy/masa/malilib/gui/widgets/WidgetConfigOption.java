@@ -251,7 +251,7 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
 
         if (config.getType() == ConfigType.COLOR)
         {
-            textField.setTextValidator(WidgetTextFieldBase.VALIDATOR_HEX_COLOR);
+            textField.setTextValidator(WidgetTextFieldBase.VALIDATOR_HEX_COLOR_8);
         }
         else if (config.getType() == ConfigType.INTEGER)
         {

@@ -137,16 +137,14 @@ public abstract class WidgetBase
         this.height = height;
     }
 
-    public int updateWidth()
+    public void updateWidth()
     {
-        return this.getWidth();
     }
 
-    public int updateHeight()
+    public void updateHeight()
     {
-        return this.getHeight();
-
     }
+
     public void setPosition(int x, int y)
     {
         this.setX(x);

@@ -2,46 +2,29 @@ package fi.dy.masa.malilib.render;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.client.renderer.GlStateManager;
 import fi.dy.masa.malilib.gui.util.Message;
 import fi.dy.masa.malilib.gui.util.Message.MessageType;
+import fi.dy.masa.malilib.gui.widgets.WidgetBackground;
+import fi.dy.masa.malilib.util.StringUtils;
 
-public class MessageRenderer
+public class MessageRenderer extends WidgetBackground
 {
-    private final List<Message> messages = new ArrayList<>();
-    private MessageType nextMessageType = MessageType.INFO;
-    private boolean useBackground = true;
-    private boolean useBorder = true;
-    private int backgroundColor;
-    private int borderColor;
-    private int messageBoxWidth = 400;
-    private boolean centeredH = true;
-    private boolean centeredV = true;
-    private boolean expandUp;
-    private float zLevel;
+    protected final List<Message> messages = new ArrayList<>();
+    protected MessageType nextMessageType = MessageType.INFO;
+    protected boolean centeredH;
+    protected boolean centeredV;
+    protected boolean expandUp;
+    protected int lineSpacing = -1;
+    protected int textColor = 0xFFFFFFFF;
 
-    public MessageRenderer(int bgColor, int borderColor)
+    public MessageRenderer()
     {
-        this.setBackgroundColors(bgColor, borderColor);
-    }
+        super(0, 0, 320, -1);
 
-    public MessageRenderer setBackgroundStyle(boolean useBackground, boolean useBorder)
-    {
-        this.useBackground = useBackground;
-        this.useBorder = useBorder;
-        return this;
-    }
-
-    public MessageRenderer setBackgroundColors(int bgColor, int borderColor)
-    {
-        this.backgroundColor = bgColor;
-        this.borderColor = borderColor;
-        return this;
-    }
-
-    public MessageRenderer setMessageBoxWidth(int width)
-    {
-        this.messageBoxWidth = width;
-        return this;
+        this.setBackgroundEnabled(true);
+        this.setBackgroundColor(0xA0000000);
+        this.setBorderColor(0xFFC0C0C0);
     }
 
     /**
@@ -64,15 +47,16 @@ public class MessageRenderer
         return this;
     }
 
-    public MessageRenderer setZLevel(float zLevel)
+    public MessageRenderer setLineSpacing(int spacing)
     {
-        this.zLevel = zLevel;
+        this.lineSpacing = spacing;
         return this;
     }
 
-    public int getMessageBoxWidth()
+    public MessageRenderer setTextColor(int color)
     {
-        return this.messageBoxWidth;
+        this.textColor = color;
+        return this;
     }
 
     public MessageRenderer setNextMessageType(MessageType type)
@@ -86,6 +70,12 @@ public class MessageRenderer
         return this.nextMessageType;
     }
 
+    public void clearMessages()
+    {
+        this.messages.clear();
+        this.updateHeight();
+    }
+
     public void addMessage(int displayTimeMs, String messageKey, Object... args)
     {
         this.addMessage(this.nextMessageType, displayTimeMs, messageKey, args);
@@ -93,67 +83,100 @@ public class MessageRenderer
 
     public void addMessage(MessageType type, int displayTimeMs, String messageKey, Object... args)
     {
-        this.messages.add(new Message(type, displayTimeMs, this.messageBoxWidth - 20, messageKey, args));
+        this.messages.add(new Message(type, displayTimeMs, this.getWidth() - 8, messageKey, args));
+        this.updateHeight();
+    }
+
+    @Override
+    public void updateHeight()
+    {
+        if (this.automaticHeight)
+        {
+            this.setHeight(this.getMessagesHeight() + 12);
+        }
     }
 
     public int getMessagesHeight()
     {
-        int height = 0;
+        final int messageCount = this.messages.size();
 
-        for (int i = 0; i < this.messages.size(); ++i)
+        if (messageCount > 0)
         {
-            height += this.messages.get(i).getMessageHeight();
+            int height = 0;
+            int lineSpacing = this.getLineSpacing();
+
+            for (int i = 0; i < messageCount; ++i)
+            {
+                height += this.messages.get(i).getLineCount() * lineSpacing + 2;
+            }
+
+            return height - (lineSpacing - StringUtils.getFontHeight()) - 2;
         }
 
-        return height;
+        return 0;
+    }
+
+    protected int getLineSpacing()
+    {
+        if (this.lineSpacing < 0)
+        {
+            return StringUtils.getFontHeight() + 3;
+        }
+
+        return this.lineSpacing;
     }
 
     public void drawMessages(int x, int y)
     {
         if (this.messages.isEmpty() == false)
         {
-            int boxWidth = this.messageBoxWidth;
-            int boxHeight = this.getMessagesHeight() + 20;
+            int width = this.getWidth();
+            int height = this.getHeight();
 
             if (this.centeredH)
             {
-                x -= boxWidth / 2;
+                x -= width / 2;
             }
 
             if (this.centeredV)
             {
-                y -= boxHeight / 2;
+                y -= height / 2;
             }
             else if (this.expandUp)
             {
-                y -= boxHeight;
+                y -= height;
             }
 
-            if (this.useBackground)
-            {
-                int bw = this.useBorder ? 1 : 0;
-                RenderUtils.drawRect(x + bw, y + bw, boxWidth - 2 * bw, boxHeight - 2 * bw, this.backgroundColor, this.zLevel);
-            }
+            this.renderBackgroundOnly(x, y);
+            this.renderBorder(x, y);
 
-            if (this.useBorder)
-            {
-                RenderUtils.drawOutline(x, y, boxWidth, boxHeight, 1, this.borderColor, this.zLevel);
-            }
-
-            x += 10;
-            y += 10;
+            x += 6;
+            y += 6;
             long currentTime = System.currentTimeMillis();
+            int lineSpacing = this.getLineSpacing();
+            int countBefore = this.messages.size();
+
+            GlStateManager.pushMatrix();
+            GlStateManager.translate(0f, 0f, this.getZLevel() + 0.1f);
 
             for (int i = 0; i < this.messages.size(); ++i)
             {
                 Message message = this.messages.get(i);
-                y = message.renderAt(x, y, 0xFFFFFFFF);
+                message.renderAt(x, y, this.textColor, lineSpacing);
+                y += message.getLineCount() * lineSpacing + 2;
 
                 if (message.hasExpired(currentTime))
                 {
                     this.messages.remove(i);
                     --i;
                 }
+            }
+
+            GlStateManager.popMatrix();
+
+            if (this.messages.size() != countBefore)
+            {
+                this.updateHeight();
             }
         }
     }
