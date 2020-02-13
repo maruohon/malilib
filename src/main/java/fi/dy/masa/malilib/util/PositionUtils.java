@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.util;
 
+import javax.annotation.Nullable;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.AxisDirection;
@@ -10,6 +11,8 @@ import net.minecraft.util.math.Vec3d;
 
 public class PositionUtils
 {
+    public static final EnumFacing[] ALL_DIRECTIONS = new EnumFacing[] { EnumFacing.DOWN, EnumFacing.UP, EnumFacing.NORTH, EnumFacing.SOUTH, EnumFacing.WEST, EnumFacing.EAST };
+
     public static Vec3d modifyValue(CoordinateType type, Vec3d valueIn, double amount)
     {
         switch (type)
@@ -196,6 +199,35 @@ public class PositionUtils
         }
 
         return pos;
+    }
+
+    /**
+     * Get the rotation that will go from facingOriginal to facingRotated, if possible.
+     * If it's not possible to rotate between the given facings
+     * (at least one of them is vertical, but they are not the same), then null is returned.
+     * @param directionFrom
+     * @param directionTo
+     * @return
+     */
+    @Nullable
+    public static Rotation getRotation(EnumFacing directionFrom, EnumFacing directionTo)
+    {
+        if (directionFrom == directionTo)
+        {
+            return Rotation.NONE;
+        }
+
+        if (directionFrom.getAxis() == EnumFacing.Axis.Y || directionTo.getAxis() == EnumFacing.Axis.Y)
+        {
+            return null;
+        }
+
+        if (directionTo == directionFrom.getOpposite())
+        {
+            return Rotation.CLOCKWISE_180;
+        }
+
+        return directionTo == directionFrom.rotateY() ? Rotation.CLOCKWISE_90 : Rotation.COUNTERCLOCKWISE_90;
     }
 
     /**

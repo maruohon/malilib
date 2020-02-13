@@ -52,6 +52,11 @@ public class Color4f
         this.intValue = (((int) (a * 0xFF)) << 24) | (((int) (r * 0xFF)) << 16) | (((int) (g * 0xFF)) << 8) | (((int) (b * 0xFF)));
     }
 
+    public Color4f withAlpha(float alpha)
+    {
+        return fromColor(this.intValue, alpha);
+    }
+
     public static Color4f fromColor(int color)
     {
         float alpha = ((color & 0xFF000000) >>> 24) / 255f;

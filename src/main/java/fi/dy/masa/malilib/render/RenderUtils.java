@@ -1285,7 +1285,7 @@ public class RenderUtils
         }
     }
 
-    private static void renderQuad(BufferBuilder buffer, BakedQuad quad, IBlockState state, int color)
+    public static void renderQuad(BufferBuilder buffer, BakedQuad quad, IBlockState state, int color)
     {
         buffer.addVertexData(quad.getVertexData());
         buffer.putColor4(color);
@@ -1307,10 +1307,60 @@ public class RenderUtils
         putQuadNormal(buffer, quad);
     }
 
-    private static void putQuadNormal(BufferBuilder renderer, BakedQuad quad)
+    public static void putQuadNormal(BufferBuilder buffer, BakedQuad quad)
     {
         Vec3i direction = quad.getFace().getDirectionVec();
-        renderer.putNormal(direction.getX(), direction.getY(), direction.getZ());
+        buffer.putNormal(direction.getX(), direction.getY(), direction.getZ());
+    }
+
+    /**
+     * Renders the given model to the given vertex consumer.
+     * Needs a vertex consumer initialized with mode GL11.GL_QUADS and DefaultVertexFormats.ITEM
+     */
+    public static void renderModelBrightnessColor(IBakedModel model, Vec3d pos, BufferBuilder buffer)
+    {
+        renderModelBrightnessColor(model, pos, null, 1f, 1f, 1f, 1f, buffer);
+    }
+
+    /**
+     * Renders the given model to the given vertex consumer.
+     * Needs a vertex consumer initialized with mode GL11.GL_QUADS and DefaultVertexFormats.ITEM
+     */
+    public static void renderModelBrightnessColor(IBakedModel model, Vec3d pos, @Nullable IBlockState state, float brightness, float r, float g, float b, BufferBuilder buffer)
+    {
+        for (EnumFacing side : PositionUtils.ALL_DIRECTIONS)
+        {
+            renderQuads(model.getQuads(state, side, 0L), pos, brightness, r, g, b, buffer);
+        }
+
+        renderQuads(model.getQuads(state, null, 0L), pos, brightness, r, g, b, buffer);
+    }
+
+    /**
+     * Renders the given quads to the given vertex consumer.
+     * Needs a vertex consumer initialized with mode GL11.GL_QUADS and DefaultVertexFormats.ITEM
+     */
+    public static void renderQuads(List<BakedQuad> quads, Vec3d pos, float brightness, float red, float green, float blue, BufferBuilder buffer)
+    {
+        final int count = quads.size();
+
+        for (int i = 0; i < count; ++i)
+        {
+            BakedQuad quad = quads.get(i);
+            buffer.addVertexData(quad.getVertexData());
+
+            if (quad.hasTintIndex())
+            {
+                buffer.putColorRGB_F4(red * brightness, green * brightness, blue * brightness);
+            }
+            else
+            {
+                buffer.putColorRGB_F4(brightness, brightness, brightness);
+            }
+
+            buffer.putPosition(pos.x, pos.y, pos.z);
+            putQuadNormal(buffer, quad);
+        }
     }
 
     private static Minecraft mc()

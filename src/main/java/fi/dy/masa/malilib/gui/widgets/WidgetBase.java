@@ -394,7 +394,7 @@ public abstract class WidgetBase
     {
         int x = this.getX();
         int y = this.getY();
-        double z = this.getZLevel();
+        int z = this.getZLevel();
         int w = this.getWidth();
         int h = this.getHeight();
 
