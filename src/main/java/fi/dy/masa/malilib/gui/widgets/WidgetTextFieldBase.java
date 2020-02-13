@@ -728,7 +728,7 @@ public class WidgetTextFieldBase extends WidgetBackground
             {
                 if (GuiBase.isCtrlDown())
                 {
-                    this.moveCursorToEndOfWord(LeftRight.LEFT, GuiBase.isAltDown() == false, selectText);
+                    this.moveCursorToEndOfWord(LeftRight.LEFT, GuiBase.isAltDown(), selectText);
                 }
                 else
                 {
@@ -739,7 +739,7 @@ public class WidgetTextFieldBase extends WidgetBackground
             {
                 if (GuiBase.isCtrlDown())
                 {
-                    this.moveCursorToEndOfWord(LeftRight.RIGHT, GuiBase.isAltDown() == false, selectText);
+                    this.moveCursorToEndOfWord(LeftRight.RIGHT, GuiBase.isAltDown(), selectText);
                 }
                 else
                 {
