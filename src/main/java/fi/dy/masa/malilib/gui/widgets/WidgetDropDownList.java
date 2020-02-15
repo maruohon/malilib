@@ -112,6 +112,13 @@ public class WidgetDropDownList<T> extends WidgetContainer
         this.updateFilteredEntries(); // This must be called after the search text field has been created in recreateSubElements
     }
 
+    @Override
+    protected int getSubWidgetZLevelIncrement()
+    {
+        // Raise the z-level so it's likely to be on top of all other widgets in the same GUI
+        return 80;
+    }
+
     public void setIconProvider(@Nullable IIconProvider<T> iconProvider)
     {
         this.iconProvider = iconProvider;
@@ -492,9 +499,9 @@ public class WidgetDropDownList<T> extends WidgetContainer
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean selected)
+    public void render(int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
     {
-        super.render(mouseX, mouseY, selected);
+        super.render(mouseX, mouseY, isActiveGui, hovered);
 
         // Render the open dropdown list
         if (this.isOpen)
@@ -506,7 +513,7 @@ public class WidgetDropDownList<T> extends WidgetContainer
 
             if (this.searchField.getText().isEmpty() == false)
             {
-                this.searchField.render(mouseX, mouseY, this.searchField.isMouseOver(mouseX, mouseY));
+                this.searchField.render(mouseX, mouseY, isActiveGui, this.searchField.isHoveredForRender(mouseX, mouseY));
             }
 
             List<T> list = this.filteredEntries;
@@ -520,15 +527,11 @@ public class WidgetDropDownList<T> extends WidgetContainer
 
             boolean mouseOverListOnX = mouseX >= x && mouseX < x + width - this.scrollBar.getWidth();
             int txtY = this.dropdownTopY + this.lineHeight / 2 - this.fontHeight / 2 + 1;
-            this.renderListContents(txtY, mouseX, mouseY, mouseOverListOnX);
+            this.renderListContents(txtY, mouseX, mouseY, mouseOverListOnX && hovered);
 
             this.scrollBar.render(mouseX, mouseY, height, totalHeight);
 
             GlStateManager.popMatrix();
-        }
-        else if (this.noCurrentEntryBar && this.buttonOpenClose != null)
-        {
-            //this.buttonOpenClose.render(mouseX, mouseY, selected);
         }
     }
 
@@ -545,12 +548,11 @@ public class WidgetDropDownList<T> extends WidgetContainer
         for (int i = startIndex; i < max; ++i)
         {
             int bg = (i & 0x1) != 0 ? 0x20FFFFFF : 0x30FFFFFF;
-            boolean hovered = false;
+            boolean hovered = mouseOverListOnX && mouseY >= y && mouseY < y + height;
 
-            if (mouseOverListOnX && mouseY >= y && mouseY < y + height)
+            if (hovered)
             {
                 bg = 0x60FFFFFF;
-                hovered = true;
             }
 
             T entry = list.get(i);

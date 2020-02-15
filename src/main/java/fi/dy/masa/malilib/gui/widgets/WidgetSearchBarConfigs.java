@@ -82,13 +82,13 @@ public class WidgetSearchBarConfigs extends WidgetSearchBar
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean selected)
+    public void render(int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
     {
-        super.render(mouseX, mouseY, selected);
+        super.render(mouseX, mouseY, isActiveGui, hovered);
 
         if (this.searchOpen)
         {
-            this.button.render(mouseX, mouseY, false);
+            this.button.render(mouseX, mouseY, isActiveGui, hovered);
         }
     }
 }

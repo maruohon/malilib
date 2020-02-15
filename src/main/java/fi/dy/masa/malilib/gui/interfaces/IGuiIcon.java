@@ -12,7 +12,7 @@ public interface IGuiIcon
 
     int getV();
 
-    void renderAt(int x, int y, float zLevel, boolean enabled, boolean selected);
+    void renderAt(int x, int y, float zLevel, boolean enabled, boolean hovered);
 
     ResourceLocation getTexture();
 }

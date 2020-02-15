@@ -165,7 +165,7 @@ public class ButtonGeneric extends ButtonBase
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean selected)
+    public void render(int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
     {
         if (this.visible)
         {
@@ -176,14 +176,12 @@ public class ButtonGeneric extends ButtonBase
             int height = this.getHeight();
             boolean textBlank = StringUtils.isBlank(this.displayString);
 
-            this.hovered = mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
-
             RenderUtils.color(1f, 1f, 1f, 1f);
             RenderUtils.setupBlendSimple();
 
             if (this.renderOutline)
             {
-                int color = this.hovered ? this.outlineColorHover : this.outlineColorNormal;
+                int color = hovered ? this.outlineColorHover : this.outlineColorNormal;
                 RenderUtils.drawOutline(x, y, width, height, 1, color, z);
             }
 
@@ -193,7 +191,7 @@ public class ButtonGeneric extends ButtonBase
                 int w1 = width / 2;
                 // Account for odd widths
                 int w2 = (width % 2) != 0 ? w1 + 1 : w1;
-                int buttonStyle = this.getTextureOffset(this.hovered);
+                int buttonStyle = this.getTextureOffset(hovered);
 
                 RenderUtils.drawTexturedRect(x     , y,        0, 46 + buttonStyle * 20, w1, height, z);
                 RenderUtils.drawTexturedRect(x + w1, y, 200 - w2, 46 + buttonStyle * 20, w2, height, z);
@@ -226,7 +224,7 @@ public class ButtonGeneric extends ButtonBase
                 int ix = this.alignment == HorizontalAlignment.LEFT ? x + offX : x + width - iconWidth - offX;
                 int iy = y + offY;
 
-                icon.renderAt(ix, iy, this.getZLevel(), this.enabled, this.hovered);
+                icon.renderAt(ix, iy, this.getZLevel(), this.enabled, hovered);
             }
 
             if (textBlank == false)
@@ -239,7 +237,7 @@ public class ButtonGeneric extends ButtonBase
                     tx += iconClearing;
                 }
 
-                int color = this.enabled == false ? this.textColorDisabled : (this.hovered ? this.textColorHovered : this.textColorNormal);
+                int color = this.enabled == false ? this.textColorDisabled : (hovered ? this.textColorHovered : this.textColorNormal);
                 this.getTextRenderer(this.useTextShadow, textCentered).renderText(tx, ty, color, this.displayString);
             }
         }

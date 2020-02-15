@@ -98,7 +98,8 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
         y += 1;
         int configHeight = 20;
 
-        this.addLabel(x, y + 6, labelWidth, -1, 0xFFFFFFFF, config.getConfigGuiDisplayName());
+        WidgetLabel label = this.addLabel(x, y, labelWidth, 20, 0xFFFFFFFF, config.getConfigGuiDisplayName());
+        label.setPaddingY(5);
 
         String comment = null;
         IConfigInfoProvider infoProvider = this.host.getHoverInfoProvider();
@@ -114,7 +115,7 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
 
         if (comment != null)
         {
-            this.addConfigComment(x, y + 2, labelWidth, 18, comment);
+            label.addHoverStrings(comment);
         }
 
         x += labelWidth + 10;
@@ -231,11 +232,6 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
         }
     }
 
-    protected void addConfigComment(int x, int y, int width, int height, String comment)
-    {
-        this.addWidget(new WidgetHoverInfo(x, y, width, height, comment));
-    }
-
     protected void addConfigButtonEntry(int xReset, int yReset, IConfigResettable config, ButtonBase optionButton)
     {
         ButtonGeneric resetButton = this.createResetButton(xReset, yReset, config);
@@ -307,17 +303,19 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean selected)
+    public void render(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
     {
         RenderUtils.color(1f, 1f, 1f, 1f);
 
-        this.drawSubWidgets(mouseX, mouseY);
+        this.drawSubWidgets(mouseX, mouseY, isActiveGui, hoveredWidgetId);
 
         if (this.wrapper.getType() == ConfigOptionWrapper.Type.CONFIG)
         {
-            this.drawTextFields(mouseX, mouseY);
-            super.render(mouseX, mouseY, selected);
+            this.drawTextFields(mouseX, mouseY, isActiveGui, hoveredWidgetId);
+            super.render(mouseX, mouseY, isActiveGui, hoveredWidgetId);
         }
+
+        RenderUtils.color(1f, 1f, 1f, 1f);
     }
 
     public static class ListenerSliderToggle implements IButtonActionListener

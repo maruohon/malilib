@@ -147,8 +147,7 @@ public class MessageRenderer extends WidgetBackground
                 y -= height;
             }
 
-            this.renderBackgroundOnly(x, y);
-            this.renderBorder(x, y);
+            this.renderWidgetBackground(x, y, width, height);
 
             x += 6;
             y += 6;

@@ -101,19 +101,19 @@ public class WidgetDirectoryNavigation extends WidgetSearchBar
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean selected)
+    public void render(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
     {
         if (this.searchOpen)
         {
-            this.searchBox.render(mouseX, mouseY, this.searchBox.isMouseOver(mouseX, mouseY));
+            this.searchBox.render(mouseX, mouseY, isActiveGui, hoveredWidgetId);
         }
         else
         {
             // Draw the directory path text background
-            RenderUtils.drawRect(this.pathStartX, this.getY(), this.getWidth() - this.pathStartX - 2, this.getHeight(), 0x20FFFFFF, this.getZLevel());
+            RenderUtils.drawRect(this.pathStartX - 2, this.getY(), this.getWidth() - this.pathStartX - 2, this.getHeight(), 0xFF242424, this.getZLevel());
         }
 
-        super.render(mouseX, mouseY, selected);
+        super.render(mouseX, mouseY, isActiveGui, hoveredWidgetId);
     }
 
     protected void placePathElements(int x, int y, List<PathElement> elements)

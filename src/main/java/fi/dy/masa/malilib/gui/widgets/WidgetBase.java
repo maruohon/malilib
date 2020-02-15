@@ -24,6 +24,7 @@ public abstract class WidgetBase
 {
     private static final ArrayListMultimap<Long, String> DEBUG_STRINGS = ArrayListMultimap.create();
     private static int lastDebugOutlineColorHue;
+    private static int nextWidgetId;
 
     public static final IBackgroundRenderer DEBUG_TEXT_BG_RENDERER = (x, y, w, h, z) -> { RenderUtils.drawOutlinedBox(x - 3, y - 3, w + 6, h + 6, 0xE0000000, 0xFFC0C0C0, z); };
 
@@ -31,6 +32,7 @@ public abstract class WidgetBase
     protected final FontRenderer textRenderer;
     protected final List<String> hoverStrings = new ArrayList<>();
     protected final int fontHeight;
+    private final int id;
     private int x;
     private int y;
     private int xRight;
@@ -50,6 +52,7 @@ public abstract class WidgetBase
         this.mc = Minecraft.getMinecraft();
         this.textRenderer = this.mc.fontRenderer;
         this.fontHeight = this.textRenderer.FONT_HEIGHT;
+        this.id = nextWidgetId++;
 
         if (width < 0)
         {
@@ -87,6 +90,17 @@ public abstract class WidgetBase
         return this.zLevel;
     }
 
+    /**
+     * Returns the unique(-ish) ID of this widget.
+     * The ID is increment by one for each widget that is created (starting from 0 for each game launch).
+     * This ID is mainly meant for things like identifying the top-most hovered widget.
+     * @return
+     */
+    public int getId()
+    {
+        return this.id;
+    }
+
     public WidgetBase setZLevel(int zLevel)
     {
         this.zLevel = zLevel;
@@ -113,7 +127,7 @@ public abstract class WidgetBase
 
     protected int getSubWidgetZLevelIncrement()
     {
-        return 5;
+        return 4;
     }
 
     public int getWidth()
@@ -193,6 +207,11 @@ public abstract class WidgetBase
 
         return mouseX >= x && mouseX < x + this.getWidth() &&
                mouseY >= y && mouseY < y + this.getHeight();
+    }
+
+    public boolean isHoveredForRender(int mouseX, int mouseY)
+    {
+        return this.isMouseOver(mouseX, mouseY);
     }
 
     public boolean getShouldReceiveOutsideClicks()
@@ -291,7 +310,7 @@ public abstract class WidgetBase
         {
             String str = StringUtils.translate(translationKey, args);
 
-            String[] parts = str.split("\\\\n");
+            String[] parts = str.split("\\n");
 
             for (String part : parts)
             {
@@ -372,22 +391,53 @@ public abstract class WidgetBase
         }
     }
 
-    public void render(int mouseX, int mouseY, boolean selected)
+    public void render(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
+    {
+        this.render(mouseX, mouseY, isActiveGui, this.id == hoveredWidgetId);
+    }
+
+    public void render(int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
     {
     }
 
-    public boolean shouldRenderHoverInfo(int mouseX, int mouseY)
+    public boolean shouldRenderHoverInfo(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
     {
-        return this.canSelectAt(mouseX, mouseY, 0);
+        return this.getId() == hoveredWidgetId && this.canSelectAt(mouseX, mouseY, 0);
     }
 
-    public void postRenderHovered(int mouseX, int mouseY, boolean selected)
+    public void postRenderHovered(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
     {
-        if (this.hasHoverText() && this.shouldRenderHoverInfo(mouseX, mouseY))
+        if (this.hasHoverText() && this.shouldRenderHoverInfo(mouseX, mouseY, isActiveGui, hoveredWidgetId))
         {
             RenderUtils.drawHoverText(mouseX, mouseY, this.getZLevel(), this.getHoverStrings());
             RenderUtils.disableItemLighting();
         }
+    }
+
+    @Nullable
+    public WidgetBase getTopHoveredWidget(int mouseX, int mouseY, @Nullable WidgetBase highestFoundWidget)
+    {
+        if (this.isHoveredForRender(mouseX, mouseY) &&
+            (highestFoundWidget == null || this.getZLevel() > highestFoundWidget.getZLevel()))
+        {
+            return this;
+        }
+
+        return highestFoundWidget;
+    }
+
+    @Nullable
+    public static WidgetBase getTopHoveredWidgetFromList(List<? extends WidgetBase> widgets, int mouseX, int mouseY, @Nullable WidgetBase highestFoundWidget)
+    {
+        if (widgets.isEmpty() == false)
+        {
+            for (WidgetBase widget : widgets)
+            {
+                highestFoundWidget = widget.getTopHoveredWidget(mouseX, mouseY, highestFoundWidget);
+            }
+        }
+
+        return highestFoundWidget;
     }
 
     public void renderDebug(int mouseX, int mouseY, boolean hovered, boolean renderAll, boolean infoAlways)

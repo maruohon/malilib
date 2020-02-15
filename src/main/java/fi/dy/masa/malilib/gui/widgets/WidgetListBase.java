@@ -217,7 +217,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
             else if (keyCode == Keyboard.KEY_NEXT)  this.offsetSelectionOrScrollbar( this.maxVisibleBrowserEntries / 2, true);
             else if (keyCode == Keyboard.KEY_HOME)  this.offsetSelectionOrScrollbar(-this.listContents.size(), true);
             else if (keyCode == Keyboard.KEY_END)   this.offsetSelectionOrScrollbar( this.listContents.size(), true);
-            else return false;
+            else return super.onKeyTyped(typedChar, keyCode);
 
             return true;
         }
@@ -251,6 +251,14 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
     public boolean isSearchOpen()
     {
         return this.getSearchBarWidget() != null && this.getSearchBarWidget().isSearchOpen();
+    }
+
+    @Override
+    public WidgetBase getTopHoveredWidget(int mouseX, int mouseY, WidgetBase highestFoundWidget)
+    {
+        highestFoundWidget = super.getTopHoveredWidget(mouseX, mouseY, highestFoundWidget);
+        highestFoundWidget = WidgetBase.getTopHoveredWidgetFromList(this.listWidgets, mouseX, mouseY, highestFoundWidget);
+        return highestFoundWidget;
     }
 
     @Override
@@ -406,17 +414,16 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
         }
     }
 
-    public void drawContents(int mouseX, int mouseY, float partialTicks)
+    @Override
+    public void render(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
     {
-        RenderUtils.color(1f, 1f, 1f, 1f);
-
         if (this.getSearchBarWidget() != null)
         {
-            this.getSearchBarWidget().render(mouseX, mouseY, false);
+            this.getSearchBarWidget().render(mouseX, mouseY, isActiveGui, hoveredWidgetId);
         }
 
-        WidgetBase hovered = null;
-        boolean hoveredSelected = false;
+        super.render(mouseX, mouseY, isActiveGui, hoveredWidgetId);
+
         int scrollbarHeight = this.browserHeight - this.browserEntriesOffsetY - 6;
         int totalHeight = 0;
 
@@ -426,6 +433,8 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
         }
 
         totalHeight = Math.max(totalHeight, scrollbarHeight);
+
+        RenderUtils.color(1f, 1f, 1f, 1f);
 
         this.scrollBar.render(mouseX, mouseY, scrollbarHeight, totalHeight);
 
@@ -442,23 +451,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
             WIDGET widget = this.listWidgets.get(i);
             TYPE entry = widget.getEntry();
             boolean isSelected = this.allowMultiSelection ? this.selectedEntries.contains(entry) : entry != null && entry.equals(this.getLastSelectedEntry());
-            widget.render(mouseX, mouseY, isSelected);
-
-            if (widget.isMouseOver(mouseX, mouseY))
-            {
-                hovered = widget;
-                hoveredSelected = isSelected;
-            }
-        }
-
-        if (hovered == null && this.getSearchBarWidget() != null && this.getSearchBarWidget().isMouseOver(mouseX, mouseY))
-        {
-            hovered = this.getSearchBarWidget();
-        }
-
-        if (hovered != null)
-        {
-            hovered.postRenderHovered(mouseX, mouseY, hoveredSelected);
+            widget.render(mouseX, mouseY, isActiveGui, hoveredWidgetId, isSelected);
         }
 
         GlStateManager.disableLighting();

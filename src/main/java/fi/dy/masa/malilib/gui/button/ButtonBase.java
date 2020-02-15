@@ -17,7 +17,6 @@ public abstract class ButtonBase extends WidgetBase
     protected final ImmutableList<String> hoverHelp;
     protected String displayString;
     protected boolean enabled = true;
-    protected boolean hovered;
     protected boolean hoverInfoRequiresShift;
     protected boolean playClickSound = true;
     protected boolean visible = true;
@@ -73,11 +72,6 @@ public abstract class ButtonBase extends WidgetBase
         {
             this.setWidth(this.getStringWidth(this.displayString) + 10);
         }
-    }
-
-    public boolean isMouseOver()
-    {
-        return this.hovered;
     }
 
     @Override

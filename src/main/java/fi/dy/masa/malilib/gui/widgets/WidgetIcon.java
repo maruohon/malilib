@@ -79,11 +79,11 @@ public class WidgetIcon extends WidgetBackground
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean selected)
+    public void render(int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
     {
         if (this.icon != null)
         {
-            this.renderWidgetBackground();
+            super.render(mouseX, mouseY, isActiveGui, hovered);
 
             int x = this.getX();
             int y = this.getY();
@@ -94,7 +94,7 @@ public class WidgetIcon extends WidgetBackground
                 y += this.paddingY + this.borderWidth;
             }
 
-            this.icon.renderAt(x, y, this.getZLevel() + 0.1f, this.enabled, this.doHighlight && this.isMouseOver(mouseX, mouseY));
+            this.icon.renderAt(x, y, this.getZLevel() + 0.1f, this.enabled, this.doHighlight && this.isHoveredForRender(mouseX, mouseY));
         }
     }
 }

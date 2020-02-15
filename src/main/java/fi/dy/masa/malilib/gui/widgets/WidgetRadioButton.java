@@ -111,7 +111,7 @@ public class WidgetRadioButton<T extends Enum<T>> extends WidgetBase
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean selected)
+    public void render(int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
     {
         RenderUtils.color(1f, 1f, 1f, 1f);
 
@@ -140,6 +140,8 @@ public class WidgetRadioButton<T extends Enum<T>> extends WidgetBase
 
             y += this.entryHeight;
         }
+
+        RenderUtils.color(1f, 1f, 1f, 1f);
     }
 
     public enum IconType

@@ -66,11 +66,11 @@ public abstract class WidgetConfigOptionBase<TYPE> extends WidgetListEntryBase<T
         return false;
     }
 
-    protected void drawTextFields(int mouseX, int mouseY)
+    protected void drawTextFields(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
     {
         if (this.textField != null)
         {
-            this.textField.render(mouseX, mouseY, this.textField.isMouseOver(mouseX, mouseY));
+            this.textField.render(mouseX, mouseY, isActiveGui, hoveredWidgetId);
         }
     }
 }

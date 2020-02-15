@@ -18,7 +18,6 @@ import fi.dy.masa.malilib.gui.interfaces.IFileBrowserIconProvider;
 import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
 import fi.dy.masa.malilib.gui.util.FileBrowserIconProviderBase;
 import fi.dy.masa.malilib.gui.widgets.WidgetFileBrowserBase.DirectoryEntry;
-import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.FileUtils;
 
 public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntry, WidgetDirectoryEntry> implements IDirectoryNavigator
@@ -48,6 +47,10 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
             this.currentDirectory = defaultDirectory;
         }
 
+        this.setBackgroundColor(0xB0000000);
+        this.setBorderColor(GuiBase.COLOR_HORIZONTAL_BAR);
+        this.setBackgroundEnabled(true);
+
         this.setSize(width, height);
         this.updateDirectoryNavigationWidget();
     }
@@ -76,12 +79,21 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
     }
 
     @Override
-    public void drawContents(int mouseX, int mouseY, float partialTicks)
+    protected int getBackgroundWidth()
     {
-        // Draw an outline around the entire file browser
-        RenderUtils.drawOutlinedBox(this.getX(), this.getY(), this.browserWidth, this.browserHeight, 0xB0000000, GuiBase.COLOR_HORIZONTAL_BAR, this.getZLevel());
+        return this.browserWidth;
+    }
 
-        super.drawContents(mouseX, mouseY, partialTicks);
+    @Override
+    protected int getBackgroundHeight()
+    {
+        return this.browserHeight;
+    }
+
+    @Override
+    public void render(int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
+    {
+        super.render(mouseX, mouseY, isActiveGui, hovered);
 
         this.drawAdditionalContents(mouseX, mouseY);
     }

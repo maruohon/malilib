@@ -11,7 +11,6 @@ import fi.dy.masa.malilib.config.options.ConfigOptionList;
 import fi.dy.masa.malilib.gui.button.ConfigButtonBoolean;
 import fi.dy.masa.malilib.gui.button.ConfigButtonOptionList;
 import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
-import fi.dy.masa.malilib.gui.widgets.WidgetHoverInfo;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
 import fi.dy.masa.malilib.hotkeys.KeyAction;
 import fi.dy.masa.malilib.hotkeys.KeybindSettings;
@@ -93,8 +92,8 @@ public class GuiKeybindSettings extends GuiDialogBase
 
     protected void addConfig(int x, int y, int labelWidth, int configWidth, ConfigBase<?> config)
     {
-        this.addLabel(x, y + 5, 0xFFFFFFFF, StringUtils.translate(config.getPrettyName()));
-        this.addWidget(new WidgetHoverInfo(x, y, labelWidth, 18, config.getComment()));
+        this.addLabel(x, y, labelWidth, 20, 0xFFFFFFFF, StringUtils.translate(config.getPrettyName()))
+            .setPaddingY(5).addHoverStrings(config.getComment());
         x += labelWidth + 10;
 
         if (config instanceof ConfigBoolean)

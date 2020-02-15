@@ -49,7 +49,7 @@ public class WidgetDirectoryEntry extends WidgetListEntryBase<DirectoryEntry>
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean selected)
+    public void render(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId, boolean selected)
     {
         @Nullable IGuiIcon icon = this.iconProvider != null ? this.iconProvider.getIconForEntry(this.entry) : null;
         int xOffset = 0;
@@ -60,9 +60,13 @@ public class WidgetDirectoryEntry extends WidgetListEntryBase<DirectoryEntry>
         int height = this.getHeight();
 
         // Draw a lighter background for the hovered and the selected entry
-        if (selected || this.isMouseOver(mouseX, mouseY))
+        if (selected)
         {
             RenderUtils.drawRect(x, y, width, height, 0x70FFFFFF, z);
+        }
+        else if (isActiveGui && this.getId() == hoveredWidgetId)
+        {
+            RenderUtils.drawRect(x, y, width, height, 0x60FFFFFF, z);
         }
         else if (this.isOdd)
         {
@@ -89,7 +93,7 @@ public class WidgetDirectoryEntry extends WidgetListEntryBase<DirectoryEntry>
         int yOffset = (height - this.fontHeight) / 2 + 1;
         this.drawString(x + xOffset + 2, y + yOffset, 0xFFFFFFFF, this.getDisplayName());
 
-        super.render(mouseX, mouseY, selected);
+        super.render(mouseX, mouseY, isActiveGui, hoveredWidgetId, selected);
     }
 
     protected String getDisplayName()

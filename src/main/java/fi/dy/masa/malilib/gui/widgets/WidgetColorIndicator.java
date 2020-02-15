@@ -38,7 +38,7 @@ public class WidgetColorIndicator extends WidgetBase
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean selected)
+    public void render(int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
     {
         int x = this.getX();
         int y = this.getY();

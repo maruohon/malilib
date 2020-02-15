@@ -86,7 +86,7 @@ public class GuiIconBase implements IGuiIcon
     }
 
     @Override
-    public void renderAt(int x, int y, float zLevel, boolean enabled, boolean selected)
+    public void renderAt(int x, int y, float zLevel, boolean enabled, boolean hovered)
     {
         if (this.w == 0 || this.h == 0)
         {
@@ -102,7 +102,7 @@ public class GuiIconBase implements IGuiIcon
             v += this.hoverOffV;
         }
 
-        if (selected)
+        if (hovered)
         {
             u += this.hoverOffU;
             v += this.hoverOffV;

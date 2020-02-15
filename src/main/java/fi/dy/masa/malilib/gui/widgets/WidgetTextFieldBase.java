@@ -869,14 +869,12 @@ public class WidgetTextFieldBase extends WidgetBackground
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean selected)
+    public void render(int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
     {
+        super.render(mouseX, mouseY, isActiveGui, hovered);
+
         int x = this.getX();
         int y = this.getY();
-
-        this.renderBorder(x, y);
-        this.renderBackgroundOnly(x, y);
-
         int color;
 
         if (this.isValidInput)
@@ -915,6 +913,8 @@ public class WidgetTextFieldBase extends WidgetBackground
         {
             this.updateMessageRendererPosition();
         }
+
+        RenderUtils.color(1f, 1f, 1f, 1f);
     }
 
     public interface IInputCharacterValidator

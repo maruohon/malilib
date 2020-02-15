@@ -129,11 +129,11 @@ public class WidgetLabel extends WidgetBackground
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean selected)
+    public void render(int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
     {
         if (this.visible)
         {
-            this.renderWidgetBackground();
+            super.render(mouseX, mouseY, isActiveGui, hovered);
 
             int x = this.getX() + this.paddingX + this.borderWidth;
             int y = this.getY() + this.paddingY + this.borderWidth;

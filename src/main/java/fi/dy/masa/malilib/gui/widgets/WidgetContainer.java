@@ -12,7 +12,6 @@ import fi.dy.masa.malilib.render.RenderUtils;
 public abstract class WidgetContainer extends WidgetBackground
 {
     protected final List<WidgetBase> subWidgets = new ArrayList<>();
-    @Nullable protected WidgetBase hoveredSubWidget = null;
 
     public WidgetContainer(int x, int y, int width, int height)
     {
@@ -41,14 +40,14 @@ public abstract class WidgetContainer extends WidgetBackground
         return widget;
     }
 
-    protected void addLabel(int x, int y, int textColor, String... lines)
+    protected WidgetLabel addLabel(int x, int y, int textColor, String... lines)
     {
-        this.addLabel(x, y, -1, -1, textColor, lines);
+        return this.addLabel(x, y, -1, -1, textColor, lines);
     }
 
-    protected void addLabel(int x, int y, int width, int height, int textColor, String... lines)
+    protected WidgetLabel addLabel(int x, int y, int width, int height, int textColor, String... lines)
     {
-        this.addWidget(new WidgetLabel(x, y, width, height, textColor, lines));
+        return this.addWidget(new WidgetLabel(x, y, width, height, textColor, lines));
     }
 
     protected void removeWidget(WidgetBase widget)
@@ -166,17 +165,11 @@ public abstract class WidgetContainer extends WidgetBackground
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean selected)
+    @Nullable
+    public WidgetBase getTopHoveredWidget(int mouseX, int mouseY, @Nullable WidgetBase highestFoundWidget)
     {
-        this.renderWidgetBackground();
-        this.drawSubWidgets(mouseX, mouseY);
-    }
-
-    @Override
-    public void postRenderHovered(int mouseX, int mouseY, boolean selected)
-    {
-        super.postRenderHovered(mouseX, mouseY, selected);
-        this.drawHoveredSubWidget(mouseX, mouseY);
+        highestFoundWidget = super.getTopHoveredWidget(mouseX, mouseY, highestFoundWidget);
+        return WidgetBase.getTopHoveredWidgetFromList(this.subWidgets, mouseX, mouseY, highestFoundWidget);
     }
 
     @Override
@@ -195,31 +188,23 @@ public abstract class WidgetContainer extends WidgetBackground
         return textFields;
     }
 
-    protected void drawSubWidgets(int mouseX, int mouseY)
+    @Override
+    public void render(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
     {
-        this.hoveredSubWidget = null;
+        this.render(mouseX, mouseY, isActiveGui, this.getId() == hoveredWidgetId);
+        this.drawSubWidgets(mouseX, mouseY, isActiveGui, hoveredWidgetId);
 
+        RenderUtils.color(1f, 1f, 1f, 1f);
+    }
+
+    protected void drawSubWidgets(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
+    {
         if (this.subWidgets.isEmpty() == false)
         {
             for (WidgetBase widget : this.subWidgets)
             {
-                boolean hovered = widget.isMouseOver(mouseX, mouseY);
-                widget.render(mouseX, mouseY, hovered);
-
-                if (hovered)
-                {
-                    this.hoveredSubWidget = widget;
-                }
+                widget.render(mouseX, mouseY, isActiveGui, hoveredWidgetId);
             }
-        }
-    }
-
-    protected void drawHoveredSubWidget(int mouseX, int mouseY)
-    {
-        if (this.hoveredSubWidget != null)
-        {
-            this.hoveredSubWidget.postRenderHovered(mouseX, mouseY, false);
-            RenderUtils.disableItemLighting();
         }
     }
 

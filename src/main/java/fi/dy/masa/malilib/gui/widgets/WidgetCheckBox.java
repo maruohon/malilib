@@ -86,7 +86,7 @@ public class WidgetCheckBox extends WidgetBase
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean selected)
+    public void render(int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
     {
         IGuiIcon icon = this.checked ? this.widgetChecked : this.widgetUnchecked;
 
@@ -101,5 +101,7 @@ public class WidgetCheckBox extends WidgetBase
         icon.renderAt(x, y, this.getZLevel(), false, false);
 
         this.drawStringWithShadow(x + iw + 3, y + this.getCenteredTextOffsetY(), textColor, this.displayText);
+
+        RenderUtils.color(1f, 1f, 1f, 1f);
     }
 }

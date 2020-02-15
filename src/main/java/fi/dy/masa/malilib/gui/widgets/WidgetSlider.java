@@ -40,7 +40,7 @@ public class WidgetSlider extends WidgetBase
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean selected)
+    public void render(int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
     {
         if (this.dragging && mouseX != this.lastMouseX)
         {
@@ -70,6 +70,8 @@ public class WidgetSlider extends WidgetBase
         String str = this.callback.getFormattedDisplayValue();
         int tw = this.getStringWidth(str);
         this.drawString(x + (width / 2) - tw / 2, y + this.getCenteredTextOffsetY(), 0xFFFFFFA0, str);
+
+        RenderUtils.color(1f, 1f, 1f, 1f);
     }
 
     protected double getRelativePosition(int mouseX)

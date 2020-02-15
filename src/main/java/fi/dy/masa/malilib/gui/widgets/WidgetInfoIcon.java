@@ -14,8 +14,8 @@ public class WidgetInfoIcon extends WidgetHoverInfo
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean selected)
+    public void render(int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
     {
-        this.icon.renderAt(this.getX(), this.getY(), this.getZLevel(), false, selected);
+        this.icon.renderAt(this.getX(), this.getY(), this.getZLevel(), false, hovered);
     }
 }

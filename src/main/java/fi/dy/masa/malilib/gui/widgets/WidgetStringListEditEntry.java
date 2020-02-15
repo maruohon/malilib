@@ -215,7 +215,7 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean selected)
+    public void render(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
     {
         RenderUtils.color(1f, 1f, 1f, 1f);
 
@@ -229,10 +229,10 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
             RenderUtils.drawRect(this.getX(), this.getY(), this.getWidth(), this.getHeight(), 0x30FFFFFF, this.getZLevel());
         }
 
-        this.drawSubWidgets(mouseX, mouseY);
-        this.drawTextFields(mouseX, mouseY);
+        this.drawSubWidgets(mouseX, mouseY, isActiveGui, hoveredWidgetId);
+        this.drawTextFields(mouseX, mouseY, isActiveGui, hoveredWidgetId);
 
-        super.render(mouseX, mouseY, selected);
+        super.render(mouseX, mouseY, isActiveGui, hoveredWidgetId);
     }
 
     protected static class ListenerResetConfig implements IButtonActionListener

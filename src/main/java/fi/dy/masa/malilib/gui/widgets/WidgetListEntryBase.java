@@ -25,4 +25,9 @@ public class WidgetListEntryBase<TYPE> extends WidgetContainer
     {
         return this.listIndex;
     }
+
+    public void render(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId, boolean selected)
+    {
+        this.render(mouseX, mouseY, isActiveGui, hoveredWidgetId);
+    }
 }

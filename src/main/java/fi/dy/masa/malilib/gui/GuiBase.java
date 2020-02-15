@@ -147,21 +147,32 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
         }
     }
 
+    protected WidgetBase getTopHoveredWidget(int mouseX, int mouseY, @Nullable WidgetBase highestFoundWidget)
+    {
+        highestFoundWidget = WidgetBase.getTopHoveredWidgetFromList(this.buttons, mouseX, mouseY, highestFoundWidget);
+        highestFoundWidget = WidgetBase.getTopHoveredWidgetFromList(this.widgets, mouseX, mouseY, highestFoundWidget);
+        return highestFoundWidget;
+    }
+
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
+        boolean isActiveGui = GuiUtils.getCurrentScreen() == this;
+
+        this.hoveredWidget = isActiveGui ? this.getTopHoveredWidget(mouseX, mouseY, null) : null;
+
+        int hoveredWidgetId = isActiveGui && this.hoveredWidget != null ? this.hoveredWidget.getId() : -1;
+
         this.drawScreenBackground(mouseX, mouseY);
         this.drawTitle(mouseX, mouseY, partialTicks);
 
         // Draw base widgets
-        this.drawWidgets(mouseX, mouseY);
-        this.drawButtons(mouseX, mouseY, partialTicks);
+        this.drawWidgets(mouseX, mouseY, isActiveGui, hoveredWidgetId);
         //super.drawScreen(mouseX, mouseY, partialTicks);
 
         this.drawContents(mouseX, mouseY, partialTicks);
 
-        this.drawButtonHoverTexts(mouseX, mouseY, partialTicks);
-        this.drawHoveredWidget(mouseX, mouseY);
+        this.drawHoveredWidget(mouseX, mouseY, isActiveGui, hoveredWidgetId);
         this.drawGuiMessages();
 
         if (MaLiLibConfigs.Debug.GUI_DEBUG.getBooleanValue() && MaLiLibConfigs.Debug.GUI_DEBUG_KEY.isHeld())
@@ -523,54 +534,30 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     {
     }
 
-    protected void drawButtons(int mouseX, int mouseY, float partialTicks)
+    protected void drawWidgets(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
     {
-        if (this.buttons.isEmpty() == false)
-        {
-            for (ButtonBase button : this.buttons)
-            {
-                button.render(mouseX, mouseY, button.isMouseOver());
-            }
-        }
-    }
-
-    protected void drawWidgets(int mouseX, int mouseY)
-    {
-        this.hoveredWidget = null;
-
         if (this.widgets.isEmpty() == false)
         {
             for (WidgetBase widget : this.widgets)
             {
-                boolean hovered = widget.isMouseOver(mouseX, mouseY);
-                widget.render(mouseX, mouseY, hovered);
-
-                if (hovered)
-                {
-                    this.hoveredWidget = widget;
-                }
+                widget.render(mouseX, mouseY, isActiveGui, hoveredWidgetId);
             }
         }
-    }
 
-    protected void drawButtonHoverTexts(int mouseX, int mouseY, float partialTicks)
-    {
-        for (ButtonBase button : this.buttons)
+        if (this.buttons.isEmpty() == false)
         {
-            if (button.hasHoverText() && button.isMouseOver())
+            for (ButtonBase button : this.buttons)
             {
-                RenderUtils.drawHoverText(mouseX, mouseY, button.getZLevel() + 1, button.getHoverStrings());
+                button.render(mouseX, mouseY, isActiveGui, hoveredWidgetId);
             }
         }
-
-        RenderUtils.disableItemLighting();
     }
 
-    protected void drawHoveredWidget(int mouseX, int mouseY)
+    protected void drawHoveredWidget(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
     {
         if (this.hoveredWidget != null)
         {
-            this.hoveredWidget.postRenderHovered(mouseX, mouseY, false);
+            this.hoveredWidget.postRenderHovered(mouseX, mouseY, isActiveGui, hoveredWidgetId);
             RenderUtils.disableItemLighting();
         }
     }

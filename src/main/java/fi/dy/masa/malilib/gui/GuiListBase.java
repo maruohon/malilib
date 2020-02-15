@@ -7,6 +7,8 @@ import org.lwjgl.input.Keyboard;
 import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
+import fi.dy.masa.malilib.gui.util.GuiUtils;
+import fi.dy.masa.malilib.gui.widgets.WidgetBase;
 import fi.dy.masa.malilib.gui.widgets.WidgetListBase;
 import fi.dy.masa.malilib.gui.widgets.WidgetListEntryBase;
 import fi.dy.masa.malilib.gui.widgets.WidgetTextFieldBase;
@@ -92,6 +94,20 @@ public abstract class GuiListBase<TYPE, WIDGET extends WidgetListEntryBase<TYPE>
             listWidget.getScrollbar().setValue(scrollbarPosition);
             listWidget.refreshEntries();
         }
+    }
+
+    @Override
+    protected WidgetBase getTopHoveredWidget(int mouseX, int mouseY, @Nullable WidgetBase highestFoundWidget)
+    {
+        highestFoundWidget = super.getTopHoveredWidget(mouseX, mouseY, highestFoundWidget);
+        WIDGETLIST listWidget = this.getListWidget();
+
+        if (listWidget != null)
+        {
+            highestFoundWidget = listWidget.getTopHoveredWidget(mouseX, mouseY, highestFoundWidget);
+        }
+
+        return highestFoundWidget;
     }
 
     @Override
@@ -201,7 +217,9 @@ public abstract class GuiListBase<TYPE, WIDGET extends WidgetListEntryBase<TYPE>
     {
         if (this.getListWidget() != null)
         {
-            this.getListWidget().drawContents(mouseX, mouseY, partialTicks);
+            boolean isActiveGui = GuiUtils.getCurrentScreen() == this;
+            int hoveredId = isActiveGui && this.hoveredWidget != null ? this.hoveredWidget.getId() : -1;
+            this.getListWidget().render(mouseX, mouseY, isActiveGui, hoveredId);
         }
     }
 

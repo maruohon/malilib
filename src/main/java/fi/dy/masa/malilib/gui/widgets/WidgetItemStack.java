@@ -77,9 +77,9 @@ public class WidgetItemStack extends WidgetBackground
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean selected)
+    public void render(int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
     {
-        this.renderWidgetBackground();
+        super.render(mouseX, mouseY, isActiveGui, hovered);
 
         int x = this.getX();
         int y = this.getY();
@@ -93,7 +93,7 @@ public class WidgetItemStack extends WidgetBackground
             y += this.paddingY + this.borderWidth;
         }
 
-        if (this.doHighlight && this.isMouseOver(mouseX, mouseY))
+        if (this.doHighlight && this.isHoveredForRender(mouseX, mouseY))
         {
             RenderUtils.drawRect(x, y, width, height, this.highlightColor, z);
         }

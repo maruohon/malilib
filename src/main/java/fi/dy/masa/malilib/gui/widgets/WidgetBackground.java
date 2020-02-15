@@ -79,19 +79,32 @@ public class WidgetBackground extends WidgetBase
         return this;
     }
 
-    protected void renderWidgetBackground()
+    protected int getBackgroundWidth()
+    {
+        return this.getWidth();
+    }
+
+    protected int getBackgroundHeight()
+    {
+        return this.getHeight();
+    }
+
+    @Override
+    public void render(int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
+    {
+        this.renderWidgetBackground(this.getX(), this.getY(), this.getBackgroundWidth(), this.getBackgroundHeight());
+    }
+
+    protected void renderWidgetBackground(int x, int y, int width, int height)
     {
         if (this.backgroundEnabled)
         {
-            int x = this.getX();
-            int y = this.getY();
-
-            this.renderBackgroundOnly(x, y);
-            this.renderBorder(x, y);
+            this.renderBackgroundOnly(x, y, width, height);
+            this.renderBorder(x, y, width, height);
         }
     }
 
-    protected void renderBorder(int x, int y)
+    protected void renderBorder(int x, int y, int width, int height)
     {
         if (this.borderEnabled)
         {
@@ -99,8 +112,8 @@ public class WidgetBackground extends WidgetBase
             RenderUtils.setupBlend();
 
             int z = this.getZLevel();
-            int w = this.getWidth();
-            int h = this.getHeight();
+            int w = width;
+            int h = height;
             int bw = this.borderWidth;
             int b2 = bw * 2;
 
@@ -114,7 +127,7 @@ public class WidgetBackground extends WidgetBase
         }
     }
 
-    protected void renderBackgroundOnly(int x, int y)
+    protected void renderBackgroundOnly(int x, int y, int width, int height)
     {
         if (this.backgroundEnabled)
         {
@@ -122,13 +135,11 @@ public class WidgetBackground extends WidgetBase
             RenderUtils.setupBlend();
 
             int z = this.getZLevel();
-            int w = this.getWidth();
-            int h = this.getHeight();
             int bw = this.borderWidth;
             int b2 = bw * 2;
 
             // Background
-            RenderUtils.drawRect(x + bw, y + bw, w - b2 , h - b2, this.backgroundColor, z);
+            RenderUtils.drawRect(x + bw, y + bw, width - b2 , height - b2, this.backgroundColor, z);
         }
     }
 }

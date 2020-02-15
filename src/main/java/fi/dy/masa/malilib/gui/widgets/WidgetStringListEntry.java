@@ -14,7 +14,7 @@ public class WidgetStringListEntry extends WidgetListEntryBase<String>
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean selected)
+    public void render(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId, boolean selected)
     {
         RenderUtils.color(1f, 1f, 1f, 1f);
 
@@ -24,8 +24,8 @@ public class WidgetStringListEntry extends WidgetListEntryBase<String>
         int width = this.getWidth();
         int height = this.getHeight();
 
-        // Draw a lighter background for the hovered and the selected entry
-        if (selected || this.isMouseOver(mouseX, mouseY))
+        // Draw a lighter background for the hovered entry
+        if (selected || (isActiveGui && this.getId() == hoveredWidgetId))
         {
             RenderUtils.drawRect(x, y, width, height, 0xA0707070, z);
         }
@@ -39,13 +39,8 @@ public class WidgetStringListEntry extends WidgetListEntryBase<String>
             RenderUtils.drawRect(x, y, width, height, 0xA0303030, z);
         }
 
-        if (selected)
-        {
-            RenderUtils.drawOutline(x, y, width, height, 1, 0xFF90D0F0, z);
-        }
-
         this.drawStringWithShadow(x + 2, y + this.getCenteredTextOffsetY(), 0xFFFFFFFF, this.entry);
 
-        super.render(mouseX, mouseY, selected);
+        super.render(mouseX, mouseY, isActiveGui, hoveredWidgetId, selected);
     }
 }
