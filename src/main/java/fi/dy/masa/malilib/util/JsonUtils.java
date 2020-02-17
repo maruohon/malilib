@@ -408,6 +408,21 @@ public class JsonUtils
     }
 
     @Nullable
+    public static JsonElement parseJsonFromString(String str)
+    {
+        try
+        {
+            JsonParser parser = new JsonParser();
+            return parser.parse(str);
+        }
+        catch (Exception e)
+        {
+        }
+
+        return null;
+    }
+
+    @Nullable
     public static JsonElement parseJsonFile(File file)
     {
         if (file != null && file.exists() && file.isFile() && file.canRead())
@@ -431,6 +446,19 @@ public class JsonUtils
         }
 
         return null;
+    }
+
+    /**
+     * Converts the given JsonElement tree into its string representation.
+     * If <b>compact</b> is true, then it's written in one line without spaces or line breaks.
+     * @param root
+     * @param compact
+     * @return
+     */
+    public static String jsonToString(JsonElement element, boolean compact)
+    {
+        Gson gson = compact ? new Gson() : GSON;
+        return gson.toJson(element);
     }
 
     public static boolean writeJsonToFile(JsonElement root, File file)
