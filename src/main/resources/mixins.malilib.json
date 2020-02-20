@@ -4,13 +4,13 @@
     "compatibilityLevel": "JAVA_8",
     "minVersion": "0.7",
     "client": [
-        "MixinGameRenderer",
-        "MixinInGameHud",
         "MixinClientPlayNetworkHandler",
+        "MixinInGameHud",
         "MixinKeyboard",
         "MixinMinecraftClient",
         "MixinMouse",
-        "MixinScreen"
+        "MixinScreen",
+        "MixinWorldRenderer"
     ],
     "injectors": {
         "defaultRequire": 1
