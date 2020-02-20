@@ -172,7 +172,16 @@ public class FileUtils
 
     public static String generateSimpleSafeFileName(String name)
     {
-        return name.toLowerCase(Locale.US).replaceAll("\\W", "_");
+        boolean endsInUnderscore = name.length() >= 1 && name.charAt(name.length() - 1) == '_';
+        name = name.toLowerCase(Locale.US).replaceAll("\\W", "_").replaceAll("__", "_");
+
+        // Remove the generated trailing underscore, if any
+        if (endsInUnderscore == false && name.length() >= 2 && name.charAt(name.length() - 1) == '_')
+        {
+            name = name.substring(0, name.length() - 1);
+        }
+
+        return name;
     }
 
     public static String generateSafeFileName(String name)
