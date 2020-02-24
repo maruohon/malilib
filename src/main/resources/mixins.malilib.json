@@ -7,13 +7,13 @@
         "MixinClientPlayerEntity",
         "MixinClientPlayNetworkHandler",
         "MixinCommandSuggestor",
-        "MixinGameRenderer",
         "MixinInGameHud",
         "MixinKeyboard",
         "MixinMinecraftClient",
         "MixinMouse",
         "MixinScreen",
-        "MixinTextFieldWidget"
+        "MixinTextFieldWidget",
+        "MixinWorldRenderer"
     ],
     "injectors": {
         "defaultRequire": 1
