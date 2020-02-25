@@ -10,7 +10,7 @@ import fi.dy.masa.malilib.event.RenderEventHandler;
 public abstract class MixinWorldRenderer
 {
     @Inject(method = "render",
-            at = @At(value = "INVOKE_STRING", args = "ldc=blockentities",
+            at = @At(value = "INVOKE_STRING", args = "ldc=weather",
                      target = "Lnet/minecraft/util/profiler/Profiler;swap(Ljava/lang/String;)V"))
     private void onRenderWorldLast(
             net.minecraft.client.util.math.MatrixStack matrices,

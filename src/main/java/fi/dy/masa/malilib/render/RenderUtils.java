@@ -25,7 +25,6 @@ import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.util.math.Rotation3;
-import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -818,10 +817,7 @@ public class RenderUtils
 
         RenderSystem.pushMatrix();
 
-        matrixStack.push();
-        blockTargetingOverlayTranslations(x, y, z, side, playerFacing, matrixStack);
-        RenderSystem.multMatrix(matrixStack.peek().getModel());
-        matrixStack.pop();
+        blockTargetingOverlayTranslations(x, y, z, side, playerFacing);
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
@@ -921,10 +917,7 @@ public class RenderUtils
 
         RenderSystem.pushMatrix();
 
-        matrixStack.push();
-        blockTargetingOverlayTranslations(x, y, z, side, playerFacing, matrixStack);
-        RenderSystem.multMatrix(matrixStack.peek().getModel());
-        matrixStack.pop();
+        blockTargetingOverlayTranslations(x, y, z, side, playerFacing);
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
@@ -961,34 +954,35 @@ public class RenderUtils
     }
 
     private static void blockTargetingOverlayTranslations(double x, double y, double z,
-            Direction side, Direction playerFacing, net.minecraft.client.util.math.MatrixStack matrixStack)
+            Direction side, Direction playerFacing)
     {
-        matrixStack.translate(x, y, z);
+        RenderSystem.translated(x, y, z);
 
         switch (side)
         {
             case DOWN:
-                matrixStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(180f - playerFacing.asRotation()));
-                matrixStack.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(90f));
+                RenderSystem.rotatef(180f - playerFacing.asRotation(), 0, 1, 0);
+                RenderSystem.rotatef(90f, 1, 0, 0);
                 break;
             case UP:
-                matrixStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(180f - playerFacing.asRotation()));
-                matrixStack.multiply(Vector3f.POSITIVE_X.getDegreesQuaternion(-90f));
+                RenderSystem.rotatef(180f - playerFacing.asRotation(), 0, 1, 0);
+                RenderSystem.rotatef(-90f, 1, 0, 0);
                 break;
             case NORTH:
-                matrixStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(180f));
+                RenderSystem.rotatef(180f, 0, 1, 0);
                 break;
             case SOUTH:
+                RenderSystem.rotatef(0, 0, 1, 0);
                 break;
             case WEST:
-                matrixStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(-90f));
+                RenderSystem.rotatef(-90f, 0, 1, 0);
                 break;
             case EAST:
-                matrixStack.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion(90f));
+                RenderSystem.rotatef(90f, 0, 1, 0);
                 break;
         }
 
-        matrixStack.translate(-x, -y, -z + 0.505);
+        RenderSystem.translated(-x, -y, -z + 0.505);
     }
 
     public static void renderMapPreview(ItemStack stack, int x, int y, int dimensions)
