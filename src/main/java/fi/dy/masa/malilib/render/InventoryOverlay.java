@@ -506,7 +506,7 @@ public class InventoryOverlay
             }
             else
             {
-                lines.add(GuiBase.TXT_GRAY + list.get(i).getString());
+                lines.add(GuiBase.TXT_DARK_GRAY + list.get(i).getString());
             }
         }
 
