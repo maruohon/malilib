@@ -161,7 +161,7 @@ public class KeybindMulti implements IKeybind
             (triggeredCount == 0 || this.settings.isExclusive() == false) &&
             (activateOn == KeyAction.BOTH || this.pressed == (activateOn == KeyAction.PRESS)))
         {
-            boolean cancel = this.triggerKeyAction(pressedLast) && this.settings.shouldCancel();
+            boolean cancel = this.triggerKeyAction(pressedLast);
             //System.out.printf("triggered, cancel: %s, triggeredCount: %d\n", cancel, triggeredCount);
 
             if (cancel)
@@ -208,17 +208,31 @@ public class KeybindMulti implements IKeybind
 
     private boolean triggerKeyCallback(KeyAction action)
     {
+        boolean cancel;
+
         if (this.callback == null)
         {
-            return this.settings.shouldCancel() && action == KeyAction.PRESS;
+            cancel = action == KeyAction.PRESS && this.settings.shouldCancel();
+            this.addToastMessage(false, cancel);
+        }
+        else
+        {
+            cancel = this.callback.onKeyAction(action, this) && this.settings.shouldCancel();
+            this.addToastMessage(true, cancel);
         }
 
-        boolean cancel = this.callback.onKeyAction(action, this);
+        return cancel;
+    }
+
+    private void addToastMessage(boolean hasCallback, boolean cancelled)
+    {
         KeybindDisplayMode val = (KeybindDisplayMode) MaLiLibConfigs.Generic.KEYBIND_DISPLAY.getOptionListValue();
+        boolean showCallbackOnly = MaLiLibConfigs.Generic.KEYBIND_DISPLAY_CALLBACK_ONLY.getBooleanValue();
+        boolean showCancelledOnly = MaLiLibConfigs.Generic.KEYBIND_DISPLAY_CANCEL_ONLY.getBooleanValue();
 
         if (val != KeybindDisplayMode.NONE &&
-                (MaLiLibConfigs.Generic.KEYBIND_DISPLAY_CANCEL_ONLY.getBooleanValue() == false ||
-                 (cancel && this.settings.shouldCancel())))
+            (showCancelledOnly == false || cancelled) &&
+            (showCallbackOnly == false || hasCallback))
         {
             List<String> lines = new ArrayList<>();
 
@@ -235,8 +249,6 @@ public class KeybindMulti implements IKeybind
             HudAlignment align = (HudAlignment) MaLiLibConfigs.Generic.KEYBIND_DISPLAY_ALIGNMENT.getOptionListValue();
             WidgetToast.updateOrAddToast(align, lines, MaLiLibConfigs.Generic.KEYBIND_DISPLAY_DURATION.getIntegerValue());
         }
-
-        return cancel;
     }
 
     @Override
