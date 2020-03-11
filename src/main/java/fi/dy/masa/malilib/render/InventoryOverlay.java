@@ -22,7 +22,6 @@ import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.container.PlayerContainer;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.BasicInventory;
@@ -31,6 +30,7 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.text.Text;
 import net.minecraft.util.DefaultedList;
 import net.minecraft.util.Identifier;
@@ -199,7 +199,7 @@ public class InventoryOverlay
         if (entity.getEquippedStack(EquipmentSlot.OFFHAND).isEmpty())
         {
             Identifier texture = new Identifier("minecraft:item/empty_armor_slot_shield");
-            RenderUtils.renderSprite(x + 28 + 1, y + 3 * 18 + 7 + 1, 16, 16, PlayerContainer.BLOCK_ATLAS_TEXTURE, texture);
+            RenderUtils.renderSprite(x + 28 + 1, y + 3 * 18 + 7 + 1, 16, 16, PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, texture);
         }
 
         for (int i = 0, xOff = 7, yOff = 7; i < 4; ++i, yOff += 18)
@@ -209,7 +209,7 @@ public class InventoryOverlay
             if (entity.getEquippedStack(eqSlot).isEmpty())
             {
                 Identifier texture = EMPTY_SLOT_TEXTURES[eqSlot.getEntitySlotId()];
-                RenderUtils.renderSprite(x + xOff + 1, y + yOff + 1, 16, 16, PlayerContainer.BLOCK_ATLAS_TEXTURE, texture);
+                RenderUtils.renderSprite(x + xOff + 1, y + yOff + 1, 16, 16, PlayerScreenHandler.BLOCK_ATLAS_TEXTURE, texture);
             }
         }
     }

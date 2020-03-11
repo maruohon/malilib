@@ -453,7 +453,7 @@ public class GuiColorEditorHSV extends GuiDialogBase
         int y = this.yH - 1;
         int w = this.widthSlider + 2;
         int h = this.heightSlider + 2;
-        int z = this.getBlitOffset();
+        int z = this.getZOffset();
         int yd = this.heightSlider + this.gapSlider;
         int cx = this.xHS;
         int cy = this.yHS + this.sizeHS + 8;

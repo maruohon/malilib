@@ -110,7 +110,7 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
     protected WidgetListConfigOptions createListWidget(int listX, int listY)
     {
         return new WidgetListConfigOptions(listX, listY,
-                this.getBrowserWidth(), this.getBrowserHeight(), this.getConfigWidth(), this.getBlitOffset(), this.useKeybindSearch(), this);
+                this.getBrowserWidth(), this.getBrowserHeight(), this.getConfigWidth(), this.getZOffset(), this.useKeybindSearch(), this);
     }
 
     @Override
@@ -118,7 +118,7 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
     {
         super.initGui();
 
-        this.minecraft.keyboard.enableRepeatEvents(true);
+        this.client.keyboard.enableRepeatEvents(true);
     }
 
     @Override
@@ -131,7 +131,7 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
             this.getListWidget().clearConfigsModifiedFlag();
         }
 
-        this.minecraft.keyboard.enableRepeatEvents(false);
+        this.client.keyboard.enableRepeatEvents(false);
     }
 
     protected void onSettingsChanged()

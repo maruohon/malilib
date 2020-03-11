@@ -99,17 +99,17 @@ public class GuiTextFieldGeneric extends TextFieldWidget
 
     public GuiTextFieldGeneric setZLevel(int zLevel)
     {
-        this.setBlitOffset(zLevel);
+        this.setZOffset(zLevel);
         return this;
     }
 
     @Override
     public void render(int mouseX, int mouseY, float partialTicks)
     {
-        if (this.getBlitOffset() != 0)
+        if (this.getZOffset() != 0)
         {
             RenderSystem.pushMatrix();
-            RenderSystem.translatef(0, 0, this.getBlitOffset());
+            RenderSystem.translatef(0, 0, this.getZOffset());
 
             super.render(mouseX, mouseY, partialTicks);
 

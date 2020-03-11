@@ -8,10 +8,6 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.block.enums.ChestType;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.container.Container;
-import net.minecraft.container.PlayerContainer;
-import net.minecraft.container.Slot;
-import net.minecraft.container.SlotActionType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.BasicInventory;
 import net.minecraft.inventory.DoubleInventory;
@@ -20,6 +16,10 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.screen.PlayerScreenHandler;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.screen.slot.Slot;
+import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.util.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -58,7 +58,7 @@ public class InventoryUtils
      * @param slot
      * @param hotbarSlot
      */
-    public static void swapSlots(Container container, int slotNum, int hotbarSlot)
+    public static void swapSlots(ScreenHandler container, int slotNum, int hotbarSlot)
     {
         MinecraftClient mc = MinecraftClient.getInstance();
         mc.interactionManager.clickSlot(container.syncId, slotNum, hotbarSlot, SlotActionType.SWAP, mc.player);
@@ -85,7 +85,7 @@ public class InventoryUtils
      * @param reverse
      * @return the slot number, or -1 if none were found
      */
-    public static int findEmptySlotInPlayerInventory(Container containerPlayer, boolean allowOffhand, boolean reverse)
+    public static int findEmptySlotInPlayerInventory(ScreenHandler containerPlayer, boolean allowOffhand, boolean reverse)
     {
         final int startSlot = reverse ? containerPlayer.slots.size() - 1 : 0;
         final int endSlot = reverse ? -1 : containerPlayer.slots.size();
@@ -115,12 +115,12 @@ public class InventoryUtils
      * @param reverse
      * @return the slot number, or -1 if none were found
      */
-    public static int findSlotWithItem(Container container, ItemStack stackReference, boolean reverse)
+    public static int findSlotWithItem(ScreenHandler container, ItemStack stackReference, boolean reverse)
     {
         final int startSlot = reverse ? container.slots.size() - 1 : 0;
         final int endSlot = reverse ? -1 : container.slots.size();
         final int increment = reverse ? -1 : 1;
-        final boolean isPlayerInv = container instanceof PlayerContainer;
+        final boolean isPlayerInv = container instanceof PlayerScreenHandler;
 
         for (int slotNum = startSlot; slotNum != endSlot; slotNum += increment)
         {
@@ -162,12 +162,12 @@ public class InventoryUtils
         }
         else
         {
-            int slot = findSlotWithItem(player.playerContainer, stackReference, true);
+            int slot = findSlotWithItem(player.playerScreenHandler, stackReference, true);
 
             if (slot != -1)
             {
                 int currentHotbarSlot = player.inventory.selectedSlot;
-                mc.interactionManager.clickSlot(player.playerContainer.syncId, slot, currentHotbarSlot, SlotActionType.SWAP, mc.player);
+                mc.interactionManager.clickSlot(player.playerScreenHandler.syncId, slot, currentHotbarSlot, SlotActionType.SWAP, mc.player);
                 return true;
             }
         }
