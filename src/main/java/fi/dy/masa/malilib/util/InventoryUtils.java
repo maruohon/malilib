@@ -1,6 +1,5 @@
 package fi.dy.masa.malilib.util;
 
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ClickType;
@@ -13,8 +12,8 @@ import net.minecraft.item.ItemShulkerBox;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
 public class InventoryUtils
 {
@@ -32,8 +31,20 @@ public class InventoryUtils
     }
 
     /**
-     * Checks whether the stacks are identical otherwise, but ignoring the stack size,
-     * and if the item is damageable, then ignoring the durability too.
+     * Check whether the stacks are identical otherwise, but ignoring the stack size,
+     * and optionally ignoring the NBT data
+     * @param stack1
+     * @param stack2
+     * @param ignoreNbt
+     * @return
+     */
+    public static boolean areStacksEqual(ItemStack stack1, ItemStack stack2, boolean ignoreNbt)
+    {
+        return ItemStack.areItemsEqual(stack1, stack2) && (ignoreNbt || ItemStack.areItemStackTagsEqual(stack1, stack2));
+    }
+
+    /**
+     * Checks whether the given stacks are identical, ignoring the stack size and the durability of damageable items.
      * @param stack1
      * @param stack2
      * @return
@@ -41,6 +52,18 @@ public class InventoryUtils
     public static boolean areStacksEqualIgnoreDurability(ItemStack stack1, ItemStack stack2)
     {
         return ItemStack.areItemsEqualIgnoreDurability(stack1, stack2) && ItemStack.areItemStackTagsEqual(stack1, stack2);
+    }
+
+    /**
+     * Checks whether the given stacks are identical, ignoring the stack size and the durability of damageable items.
+     * Also optionally ignores the NBT data.
+     * @param stack1
+     * @param stack2
+     * @return
+     */
+    public static boolean areStacksEqualIgnoreDurability(ItemStack stack1, ItemStack stack2, boolean ignoreNbt)
+    {
+        return ItemStack.areItemsEqualIgnoreDurability(stack1, stack2) && (ignoreNbt || ItemStack.areItemStackTagsEqual(stack1, stack2));
     }
 
     /**
@@ -98,27 +121,46 @@ public class InventoryUtils
     }
 
     /**
-     * Finds a slot with an identical item than <b>stackReference</b>, ignoring the durability
-     * of damageable items. Does not allow crafting or armor slots or the offhand slot
-     * in the ContainerPlayer container.
+     * Finds a slot with an identical item to <b>stackReference</b> from the regular player inventory,
+     * ignoring the durability of damageable items.
+     * Does not allow crafting or armor slots or the off hand slot.
      * @param container
      * @param stackReference
-     * @param reverse
+     * @param reverse if true, then the slots are iterated in reverse order
      * @return the slot number, or -1 if none were found
      */
-    public static int findSlotWithItem(Container container, ItemStack stackReference, boolean reverse)
+    public static int findPlayerInventorySlotWithItem(Container container, ItemStack stackReference, boolean reverse)
     {
+        return findPlayerInventorySlotWithItem(container, stackReference, false, reverse);
+    }
+
+    /**
+     * Finds a slot with an identical item to <b>stackReference</b> from the regular player inventory,
+     * ignoring the durability of damageable items and optionally ignoring NBT data.
+     * Does not allow crafting or armor slots or the off hand slot.
+     * @param container
+     * @param stackReference
+     * @param ignoreNbt
+     * @param reverse if true, then the slots are iterated in reverse order
+     * @return the slot number, or -1 if none were found
+     */
+    public static int findPlayerInventorySlotWithItem(Container container, ItemStack stackReference, boolean ignoreNbt, boolean reverse)
+    {
+        if ((container instanceof ContainerPlayer) == false)
+        {
+            return -1;
+        }
+
         final int startSlot = reverse ? container.inventorySlots.size() - 1 : 0;
         final int endSlot = reverse ? -1 : container.inventorySlots.size();
         final int increment = reverse ? -1 : 1;
-        final boolean isPlayerInv = container instanceof ContainerPlayer;
 
         for (int slotNum = startSlot; slotNum != endSlot; slotNum += increment)
         {
             Slot slot = container.inventorySlots.get(slotNum);
 
-            if ((isPlayerInv == false || isRegularInventorySlot(slot.slotNumber, false)) &&
-                areStacksEqualIgnoreDurability(slot.getStack(), stackReference))
+            if (isRegularInventorySlot(slot.slotNumber, false) &&
+                areStacksEqualIgnoreDurability(slot.getStack(), stackReference, ignoreNbt))
             {
                 return slot.slotNumber;
             }
@@ -128,14 +170,24 @@ public class InventoryUtils
     }
 
     /**
-     * Swap the given item to the player's main hand, if that item is found
-     * in the player's inventory.
+     * Swap the given item to the player's main hand, if that item is found in the player's inventory.
      * @param stackReference
-     * @param mc
      * @return true if an item was swapped to the main hand, false if it was already in the hand, or was not found in the inventory
      */
-    public static boolean swapItemToMainHand(ItemStack stackReference, Minecraft mc)
+    public static boolean swapItemToMainHand(ItemStack stackReference)
     {
+        return swapItemToMainHand(stackReference, false);
+    }
+
+    /**
+     * Swap the given item to the player's main hand, if that item is found in the player's inventory.
+     * @param stackReference
+     * @param ignoreNbt
+     * @return true if an item was swapped to the main hand, false if it was already in the hand, or was not found in the inventory
+     */
+    public static boolean swapItemToMainHand(ItemStack stackReference, boolean ignoreNbt)
+    {
+        Minecraft mc = Minecraft.getMinecraft();
         EntityPlayer player = mc.player;
         boolean isCreative = player.capabilities.isCreativeMode;
 
@@ -147,13 +199,13 @@ public class InventoryUtils
 
         if (isCreative)
         {
-            player.inventory.setPickedItemStack(stackReference);
-            mc.playerController.sendSlotPacket(player.getHeldItem(EnumHand.MAIN_HAND), 36 + player.inventory.currentItem);
+            player.inventory.setPickedItemStack(stackReference.copy());
+            mc.playerController.sendSlotPacket(stackReference.copy(), 36 + player.inventory.currentItem);
             return true;
         }
         else
         {
-            int slot = findSlotWithItem(player.inventoryContainer, stackReference, true);
+            int slot = findPlayerInventorySlotWithItem(player.inventoryContainer, stackReference, true);
 
             if (slot != -1)
             {
