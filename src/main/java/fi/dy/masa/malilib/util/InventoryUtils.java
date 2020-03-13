@@ -12,6 +12,7 @@ import net.minecraft.item.ItemShulkerBox;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
@@ -216,6 +217,56 @@ public class InventoryUtils
         }
 
         return false;
+    }
+
+    /**
+     * Re-stocks more items to the stack in the player's current hotbar slot.
+     * @param player
+     * @param hand
+     * @param threshold the number of items at or below which the re-stocking will happen
+     * @param allowHotbar whether or not to allow taking items from other hotbar slots
+     */
+    public static void preRestockHand(EntityPlayer player, EnumHand hand, int threshold, boolean allowHotbar)
+    {
+        final ItemStack stackHand = player.getHeldItem(hand);
+        final int count = stackHand.getCount();
+        final int max = stackHand.getMaxStackSize();
+
+        if (stackHand.isEmpty() == false &&
+            player.openContainer == player.inventoryContainer &&
+            player.inventory.getItemStack().isEmpty() &&
+            (count <= threshold && count < max && max > 1))
+        {
+            Minecraft mc = Minecraft.getMinecraft();
+            Container container = player.inventoryContainer;
+            int endSlot = allowHotbar ? 44 : 35;
+            int currentMainHandSlot = player.inventory.currentItem + 36;
+            int currentSlot = hand == EnumHand.MAIN_HAND ? currentMainHandSlot : 45;
+
+            for (int slotNum = 9; slotNum <= endSlot; ++slotNum)
+            {
+                if (slotNum == currentMainHandSlot)
+                {
+                    continue;
+                }
+
+                Slot slot = container.inventorySlots.get(slotNum);
+                ItemStack stackSlot = slot.getStack();
+
+                if (areStacksEqualIgnoreDurability(stackSlot, stackHand))
+                {
+                    // If all the items from the found slot can fit into the current
+                    // stack in hand, then left click, otherwise right click to split the stack
+                    int button = stackSlot.getCount() + count <= max ? 0 : 1;
+
+                    mc.playerController.windowClick(container.windowId, slot.slotNumber, button, ClickType.PICKUP, player);
+                    mc.playerController.windowClick(container.windowId, currentSlot, 0, ClickType.PICKUP, player);
+
+                    break;
+                }
+            }
+        }
+
     }
 
     /**
