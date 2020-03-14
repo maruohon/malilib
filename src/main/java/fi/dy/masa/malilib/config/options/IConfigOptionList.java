@@ -2,11 +2,16 @@ package fi.dy.masa.malilib.config.options;
 
 import fi.dy.masa.malilib.config.IConfigOptionListEntry;
 
-public interface IConfigOptionList
+public interface IConfigOptionList<T extends IConfigOptionListEntry<T>>
 {
-    IConfigOptionListEntry getOptionListValue();
+    T getOptionListValue();
 
-    IConfigOptionListEntry getDefaultOptionListValue();
+    T getDefaultOptionListValue();
 
-    void setOptionListValue(IConfigOptionListEntry value);
+    void setOptionListValue(T value);
+
+    default void cycleValue(boolean forward)
+    {
+        this.setOptionListValue(this.getOptionListValue().cycle(forward));
+    }
 }

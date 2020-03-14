@@ -1,12 +1,11 @@
 package fi.dy.masa.malilib.interfaces;
 
-import fi.dy.masa.malilib.config.options.IConfigBase;
-
-public interface IValueChangeCallback<T extends IConfigBase>
+public interface IValueChangeCallback<T>
 {
     /**
-     * Called when (= after) the config's value is changed
-     * @param feature
+     * Called when (= after) a config's value changes
+     * @param newValue the new value that is being set
+     * @param oldValue the old value before the value was changed
      */
-    void onValueChanged(T config);
+    void onValueChanged(T newValue, T oldValue);
 }

@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.config.values;
 import fi.dy.masa.malilib.config.IConfigOptionListEntry;
 import fi.dy.masa.malilib.util.StringUtils;
 
-public enum LayerMode implements IConfigOptionListEntry
+public enum LayerMode implements IConfigOptionListEntry<LayerMode>
 {
     ALL             ("all",             "malilib.gui.label.layer_mode.all"),
     SINGLE_LAYER    ("single_layer",    "malilib.gui.label.layer_mode.single_layer"),
@@ -33,7 +33,7 @@ public enum LayerMode implements IConfigOptionListEntry
     }
 
     @Override
-    public IConfigOptionListEntry cycle(boolean forward)
+    public LayerMode cycle(boolean forward)
     {
         int id = this.ordinal();
 

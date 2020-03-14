@@ -173,7 +173,7 @@ public class KeybindSettings
         return true;
     }
 
-    public enum Context implements IConfigOptionListEntry
+    public enum Context implements IConfigOptionListEntry<Context>
     {
         INGAME  ("ingame",  "malilib.label.key_context.ingame"),
         GUI     ("gui",     "malilib.label.key_context.gui"),
@@ -201,7 +201,7 @@ public class KeybindSettings
         }
 
         @Override
-        public IConfigOptionListEntry cycle(boolean forward)
+        public Context cycle(boolean forward)
         {
             int id = this.ordinal();
 

@@ -20,8 +20,8 @@ public class GuiKeybindSettings extends GuiDialogBase
 {
     protected final IKeybind keybind;
     protected final String keybindName;
-    protected final ConfigOptionList cfgActivateOn  = new ConfigOptionList("malilib.gui.label.keybind_settings.activate_on", KeyAction.PRESS, "malilib.config.comment.keybind_settings.activate_on");
-    protected final ConfigOptionList cfgContext     = new ConfigOptionList("malilib.gui.label.keybind_settings.context", KeybindSettings.Context.INGAME, "malilib.config.comment.keybind_settings.context");
+    protected final ConfigOptionList<KeyAction> cfgActivateOn = new ConfigOptionList<KeyAction>("malilib.gui.label.keybind_settings.activate_on", KeyAction.PRESS, "malilib.config.comment.keybind_settings.activate_on");
+    protected final ConfigOptionList<KeybindSettings.Context> cfgContext = new ConfigOptionList<KeybindSettings.Context>("malilib.gui.label.keybind_settings.context", KeybindSettings.Context.INGAME, "malilib.config.comment.keybind_settings.context");
     protected final ConfigBoolean cfgAllowEmpty     = new ConfigBoolean("malilib.gui.label.keybind_settings.allow_empty_keybind", false, "malilib.config.comment.keybind_settings.allow_empty_keybind");
     protected final ConfigBoolean cfgAllowExtra     = new ConfigBoolean("malilib.gui.label.keybind_settings.allow_extra_keys", false, "malilib.config.comment.keybind_settings.allow_extra_keys");
     protected final ConfigBoolean cfgOrderSensitive = new ConfigBoolean("malilib.gui.label.keybind_settings.order_sensitive", false, "malilib.config.comment.keybind_settings.order_sensitive");
@@ -102,15 +102,15 @@ public class GuiKeybindSettings extends GuiDialogBase
         }
         else if (config instanceof ConfigOptionList)
         {
-            this.addWidget(new ConfigButtonOptionList(x, y, configWidth, 20, (ConfigOptionList) config));
+            this.addWidget(new ConfigButtonOptionList(x, y, configWidth, 20, (ConfigOptionList<?>) config));
         }
     }
 
     @Override
     public void onGuiClosed()
     {
-        KeyAction activateOn = (KeyAction) this.cfgActivateOn.getOptionListValue();
-        KeybindSettings.Context context = (KeybindSettings.Context) this.cfgContext.getOptionListValue();
+        KeyAction activateOn = this.cfgActivateOn.getOptionListValue();
+        KeybindSettings.Context context = this.cfgContext.getOptionListValue();
         boolean allowEmpty = this.cfgAllowEmpty.getBooleanValue();
         boolean allowExtraKeys = this.cfgAllowExtra.getBooleanValue();
         boolean orderSensitive = this.cfgOrderSensitive.getBooleanValue();

@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.config.values;
 import fi.dy.masa.malilib.config.IConfigOptionListEntry;
 import fi.dy.masa.malilib.util.StringUtils;
 
-public enum ActiveMode implements IConfigOptionListEntry
+public enum ActiveMode implements IConfigOptionListEntry<ActiveMode>
 {
     NEVER       ("never",       "malilib.label.active_mode.never"),
     WITH_KEY    ("with_key",    "malilib.label.active_mode.with_key"),
@@ -31,7 +31,7 @@ public enum ActiveMode implements IConfigOptionListEntry
     }
 
     @Override
-    public IConfigOptionListEntry cycle(boolean forward)
+    public ActiveMode cycle(boolean forward)
     {
         int id = this.ordinal();
 

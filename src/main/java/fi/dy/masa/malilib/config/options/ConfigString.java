@@ -5,7 +5,7 @@ import com.google.gson.JsonPrimitive;
 import fi.dy.masa.malilib.LiteModMaLiLib;
 import fi.dy.masa.malilib.config.ConfigType;
 
-public class ConfigString extends ConfigBase<ConfigString> implements IConfigValue
+public class ConfigString extends ConfigBase<String> implements IConfigValue
 {
     private final String defaultValue;
     private String value;
@@ -41,7 +41,7 @@ public class ConfigString extends ConfigBase<ConfigString> implements IConfigVal
 
         if (oldValue.equals(this.value) == false)
         {
-            this.onValueChanged();
+            this.onValueChanged(value, oldValue);
         }
     }
 

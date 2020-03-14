@@ -6,18 +6,18 @@ import fi.dy.masa.malilib.LiteModMaLiLib;
 import fi.dy.masa.malilib.config.ConfigType;
 import fi.dy.masa.malilib.config.IConfigOptionListEntry;
 
-public class ConfigOptionList extends ConfigBase<ConfigOptionList> implements IConfigOptionList, IStringRepresentable
+public class ConfigOptionList<T extends IConfigOptionListEntry<T>> extends ConfigBase<T> implements IConfigOptionList<T>, IStringRepresentable
 {
-    private final IConfigOptionListEntry defaultValue;
-    private IConfigOptionListEntry value;
-    private IConfigOptionListEntry lastSavedValue;
+    private final T defaultValue;
+    private T value;
+    private T lastSavedValue;
 
-    public ConfigOptionList(String name, IConfigOptionListEntry defaultValue, String comment)
+    public ConfigOptionList(String name, T defaultValue, String comment)
     {
         this(name, defaultValue, comment, name);
     }
 
-    public ConfigOptionList(String name, IConfigOptionListEntry defaultValue, String comment, String prettyName)
+    public ConfigOptionList(String name, T defaultValue, String comment, String prettyName)
     {
         super(ConfigType.OPTION_LIST, name, comment, prettyName);
 
@@ -28,26 +28,26 @@ public class ConfigOptionList extends ConfigBase<ConfigOptionList> implements IC
     }
 
     @Override
-    public IConfigOptionListEntry getOptionListValue()
+    public T getOptionListValue()
     {
         return this.value;
     }
 
     @Override
-    public IConfigOptionListEntry getDefaultOptionListValue()
+    public T getDefaultOptionListValue()
     {
         return this.defaultValue;
     }
 
     @Override
-    public void setOptionListValue(IConfigOptionListEntry value)
+    public void setOptionListValue(T value)
     {
-        IConfigOptionListEntry oldValue = this.value;
+        T oldValue = this.value;
         this.value = value;
 
         if (oldValue != this.value)
         {
-            this.onValueChanged();
+            this.onValueChanged(value, oldValue);
         }
     }
 

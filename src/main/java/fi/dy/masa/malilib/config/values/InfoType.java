@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.config.values;
 import fi.dy.masa.malilib.config.IConfigOptionListEntry;
 import fi.dy.masa.malilib.util.StringUtils;
 
-public enum InfoType implements IConfigOptionListEntry
+public enum InfoType implements IConfigOptionListEntry<InfoType>
 {
     NONE            ("none",    "malilib.label.info_type.none"),
     CHAT            ("chat",    "malilib.label.info_type.chat"),
@@ -32,7 +32,7 @@ public enum InfoType implements IConfigOptionListEntry
     }
 
     @Override
-    public IConfigOptionListEntry cycle(boolean forward)
+    public InfoType cycle(boolean forward)
     {
         int id = this.ordinal();
 

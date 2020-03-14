@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.config.values;
 import fi.dy.masa.malilib.config.IConfigOptionListEntry;
 import fi.dy.masa.malilib.util.StringUtils;
 
-public enum BlockSnap implements IConfigOptionListEntry
+public enum BlockSnap implements IConfigOptionListEntry<BlockSnap>
 {
     NONE        ("none",    "malilib.gui.label.block_snap.none"),
     CENTER      ("center",  "malilib.gui.label.block_snap.center"),
@@ -31,7 +31,7 @@ public enum BlockSnap implements IConfigOptionListEntry
     }
 
     @Override
-    public IConfigOptionListEntry cycle(boolean forward)
+    public BlockSnap cycle(boolean forward)
     {
         int id = this.ordinal();
 

@@ -59,7 +59,7 @@ public abstract class UsageRestriction<TYPE>
         }
     }
 
-    public enum ListType implements IConfigOptionListEntry
+    public enum ListType implements IConfigOptionListEntry<ListType>
     {
         NONE        ("none",        "malilib.label.list_type.none"),
         BLACKLIST   ("blacklist",   "malilib.label.list_type.blacklist"),
@@ -87,7 +87,7 @@ public abstract class UsageRestriction<TYPE>
         }
 
         @Override
-        public IConfigOptionListEntry cycle(boolean forward)
+        public ListType cycle(boolean forward)
         {
             int id = this.ordinal();
 

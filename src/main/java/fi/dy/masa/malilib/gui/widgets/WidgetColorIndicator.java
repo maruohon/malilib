@@ -18,7 +18,7 @@ public class WidgetColorIndicator extends WidgetBase
     {
         this(x, y, width, height, new ConfigInteger("", color.intValue, ""));
 
-        ((ConfigInteger) this.config).setValueChangeCallback((cfg) -> consumer.accept(cfg.getIntegerValue()) );
+        ((ConfigInteger) this.config).setValueChangeCallback((newValue, oldValue) -> consumer.accept(newValue) );
     }
 
     public WidgetColorIndicator(int x, int y, int width, int height, IConfigInteger config)

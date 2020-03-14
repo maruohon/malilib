@@ -5,7 +5,7 @@ import com.google.common.collect.ImmutableList;
 
 public interface IConfigStringList extends IConfigBase
 {
-    List<String> getStrings();
+    ImmutableList<String> getStrings();
 
     ImmutableList<String> getDefaultStrings();
 

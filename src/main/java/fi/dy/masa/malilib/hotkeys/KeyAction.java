@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.hotkeys;
 import fi.dy.masa.malilib.config.IConfigOptionListEntry;
 import fi.dy.masa.malilib.util.StringUtils;
 
-public enum KeyAction implements IConfigOptionListEntry
+public enum KeyAction implements IConfigOptionListEntry<KeyAction>
 {
     PRESS   ("press",   "malilib.label.key_action.press"),
     RELEASE ("release", "malilib.label.key_action.release"),
@@ -31,7 +31,7 @@ public enum KeyAction implements IConfigOptionListEntry
     }
 
     @Override
-    public IConfigOptionListEntry cycle(boolean forward)
+    public KeyAction cycle(boolean forward)
     {
         int id = this.ordinal();
 

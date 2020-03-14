@@ -1,12 +1,12 @@
 package fi.dy.masa.malilib.config;
 
-public interface IConfigOptionListEntry
+public interface IConfigOptionListEntry<T extends IConfigOptionListEntry<T>>
 {
     String getStringValue();
 
     String getDisplayName();
 
-    IConfigOptionListEntry cycle(boolean forward);
+    T cycle(boolean forward);
 
-    IConfigOptionListEntry fromString(String value);
+    T fromString(String value);
 }

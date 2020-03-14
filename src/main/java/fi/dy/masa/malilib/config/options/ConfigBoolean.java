@@ -5,7 +5,7 @@ import com.google.gson.JsonPrimitive;
 import fi.dy.masa.malilib.LiteModMaLiLib;
 import fi.dy.masa.malilib.config.ConfigType;
 
-public class ConfigBoolean extends ConfigBase<ConfigBoolean> implements IConfigBoolean
+public class ConfigBoolean extends ConfigBase<Boolean> implements IConfigBoolean
 {
     private final boolean defaultValue;
     private boolean value;
@@ -46,7 +46,7 @@ public class ConfigBoolean extends ConfigBase<ConfigBoolean> implements IConfigB
 
         if (oldValue != this.value)
         {
-            this.onValueChanged();
+            this.onValueChanged(value, oldValue);
         }
     }
 

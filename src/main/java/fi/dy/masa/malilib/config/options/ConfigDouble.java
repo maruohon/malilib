@@ -6,7 +6,7 @@ import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.LiteModMaLiLib;
 import fi.dy.masa.malilib.config.ConfigType;
 
-public class ConfigDouble extends ConfigBase<ConfigDouble> implements IConfigDouble
+public class ConfigDouble extends ConfigBase<Double> implements IConfigDouble
 {
     private final double minValue;
     private final double maxValue;
@@ -70,7 +70,7 @@ public class ConfigDouble extends ConfigBase<ConfigDouble> implements IConfigDou
 
         if (oldValue != this.value)
         {
-            this.onValueChanged();
+            this.onValueChanged(value, oldValue);
         }
     }
 

@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.config.values;
 import fi.dy.masa.malilib.config.IConfigOptionListEntry;
 import fi.dy.masa.malilib.util.StringUtils;
 
-public enum KeybindDisplayMode implements IConfigOptionListEntry
+public enum KeybindDisplayMode implements IConfigOptionListEntry<KeybindDisplayMode>
 {
     NONE            ("none",                "malilib.gui.label.keybind_display.none"),
     KEYS            ("keys",                "malilib.gui.label.keybind_display.keys"),
@@ -32,7 +32,7 @@ public enum KeybindDisplayMode implements IConfigOptionListEntry
     }
 
     @Override
-    public IConfigOptionListEntry cycle(boolean forward)
+    public KeybindDisplayMode cycle(boolean forward)
     {
         int id = this.ordinal();
 

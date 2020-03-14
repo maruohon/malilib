@@ -5,7 +5,7 @@ import java.util.List;
 import fi.dy.masa.malilib.config.IConfigOptionListEntry;
 import fi.dy.masa.malilib.util.StringUtils;
 
-public class ConfigOptionListEntryBase  <T extends ConfigOptionListEntryBase<T>> implements IConfigOptionListEntry
+public class ConfigOptionListEntryBase <T extends ConfigOptionListEntryBase<T>> implements IConfigOptionListEntry<T>
 {
     protected final List<T> values;
     protected final String configString;

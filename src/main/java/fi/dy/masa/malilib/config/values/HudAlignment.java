@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.config.values;
 import fi.dy.masa.malilib.config.IConfigOptionListEntry;
 import fi.dy.masa.malilib.util.StringUtils;
 
-public enum HudAlignment implements IConfigOptionListEntry
+public enum HudAlignment implements IConfigOptionListEntry<HudAlignment>
 {
     TOP_LEFT        ("top_left",        "malilib.label.alignment.top_left"),
     TOP_RIGHT       ("top_right",       "malilib.label.alignment.top_right"),
@@ -33,7 +33,7 @@ public enum HudAlignment implements IConfigOptionListEntry
     }
 
     @Override
-    public IConfigOptionListEntry cycle(boolean forward)
+    public HudAlignment cycle(boolean forward)
     {
         int id = this.ordinal();
 

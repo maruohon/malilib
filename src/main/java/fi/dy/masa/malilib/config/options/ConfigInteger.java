@@ -6,7 +6,7 @@ import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.LiteModMaLiLib;
 import fi.dy.masa.malilib.config.ConfigType;
 
-public class ConfigInteger extends ConfigBase<ConfigInteger> implements IConfigInteger
+public class ConfigInteger extends ConfigBase<Integer> implements IConfigInteger
 {
     protected final int minValue;
     protected final int maxValue;
@@ -70,7 +70,7 @@ public class ConfigInteger extends ConfigBase<ConfigInteger> implements IConfigI
 
         if (oldValue != this.value)
         {
-            this.onValueChanged();
+            this.onValueChanged(value, oldValue);
         }
     }
 

@@ -1,6 +1,5 @@
 package fi.dy.masa.malilib.config.options;
 
-import java.util.ArrayList;
 import java.util.List;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonArray;
@@ -9,24 +8,24 @@ import com.google.gson.JsonPrimitive;
 import fi.dy.masa.malilib.LiteModMaLiLib;
 import fi.dy.masa.malilib.config.ConfigType;
 
-public class ConfigStringList extends ConfigBase<ConfigStringList> implements IConfigStringList, IConfigSavable
+public class ConfigStringList extends ConfigBase<ImmutableList<String>> implements IConfigStringList, IConfigSavable
 {
     private final ImmutableList<String> defaultValue;
-    private final List<String> strings = new ArrayList<>();
-    private final List<String> lastSavedStrings = new ArrayList<>();
+    private ImmutableList<String> strings;
+    private ImmutableList<String> lastSavedStrings;
 
     public ConfigStringList(String name, ImmutableList<String> defaultValue, String comment)
     {
         super(ConfigType.STRING_LIST, name, comment);
 
         this.defaultValue = defaultValue;
-        this.strings.addAll(defaultValue);
+        this.strings = ImmutableList.copyOf(defaultValue);
 
         this.cacheSavedValue();
     }
 
     @Override
-    public List<String> getStrings()
+    public ImmutableList<String> getStrings()
     {
         return this.strings;
     }
@@ -38,17 +37,13 @@ public class ConfigStringList extends ConfigBase<ConfigStringList> implements IC
     }
 
     @Override
-    public void setStrings(List<String> strings)
+    public void setStrings(List<String> newStrings)
     {
-        List<String> oldStrings = new ArrayList<>();
-        oldStrings.addAll(this.strings);
-
-        this.strings.clear();
-        this.strings.addAll(strings);
-
-        if (oldStrings.equals(this.strings) == false)
+        if (this.strings.equals(newStrings) == false)
         {
-            this.onValueChanged();
+            ImmutableList<String> oldStrings = this.strings;
+            this.strings = ImmutableList.copyOf(newStrings);
+            this.onValueChanged(this.strings, oldStrings);
         }
     }
 
@@ -73,34 +68,38 @@ public class ConfigStringList extends ConfigBase<ConfigStringList> implements IC
     @Override
     public void cacheSavedValue()
     {
-        this.lastSavedStrings.clear();
-        this.lastSavedStrings.addAll(this.strings);
+        this.lastSavedStrings = this.strings;
     }
 
     @Override
     public void setValueFromJsonElement(JsonElement element, String configName)
     {
-        this.strings.clear();
-
         try
         {
             if (element.isJsonArray())
             {
+                ImmutableList.Builder<String> builder = ImmutableList.builder();
                 JsonArray arr = element.getAsJsonArray();
                 final int count = arr.size();
 
                 for (int i = 0; i < count; ++i)
                 {
-                    this.strings.add(arr.get(i).getAsString());
+                    builder.add(arr.get(i).getAsString());
                 }
+
+                this.strings = builder.build();
             }
             else
             {
+                // Make sure to clear the old value in any case
+                this.strings = ImmutableList.of();
                 LiteModMaLiLib.logger.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element);
             }
         }
         catch (Exception e)
         {
+            // Make sure to clear the old value in any case
+            this.strings = ImmutableList.of();
             LiteModMaLiLib.logger.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
         }
 

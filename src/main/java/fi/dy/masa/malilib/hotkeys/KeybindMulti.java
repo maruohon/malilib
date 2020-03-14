@@ -226,7 +226,7 @@ public class KeybindMulti implements IKeybind
 
     private void addToastMessage(boolean hasCallback, boolean cancelled)
     {
-        KeybindDisplayMode val = (KeybindDisplayMode) MaLiLibConfigs.Generic.KEYBIND_DISPLAY.getOptionListValue();
+        KeybindDisplayMode val = MaLiLibConfigs.Generic.KEYBIND_DISPLAY.getOptionListValue();
         boolean showCallbackOnly = MaLiLibConfigs.Generic.KEYBIND_DISPLAY_CALLBACK_ONLY.getBooleanValue();
         boolean showCancelledOnly = MaLiLibConfigs.Generic.KEYBIND_DISPLAY_CANCEL_ONLY.getBooleanValue();
 
@@ -246,7 +246,7 @@ public class KeybindMulti implements IKeybind
                 lines.add(StringUtils.translate("malilib.toast.keybind_display.action", this.modName, this.name));
             }
 
-            HudAlignment align = (HudAlignment) MaLiLibConfigs.Generic.KEYBIND_DISPLAY_ALIGNMENT.getOptionListValue();
+            HudAlignment align = MaLiLibConfigs.Generic.KEYBIND_DISPLAY_ALIGNMENT.getOptionListValue();
             WidgetToast.updateOrAddToast(align, lines, MaLiLibConfigs.Generic.KEYBIND_DISPLAY_DURATION.getIntegerValue());
         }
     }

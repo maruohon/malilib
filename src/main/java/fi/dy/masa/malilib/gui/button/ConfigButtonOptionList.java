@@ -6,15 +6,15 @@ import fi.dy.masa.malilib.util.StringUtils;
 
 public class ConfigButtonOptionList extends ButtonGeneric
 {
-    private final IConfigOptionList config;
+    private final IConfigOptionList<?> config;
     @Nullable private final String prefixTranslationKey;
 
-    public ConfigButtonOptionList(int x, int y, int width, int height, IConfigOptionList config)
+    public ConfigButtonOptionList(int x, int y, int width, int height, IConfigOptionList<?> config)
     {
         this(x, y, width, height, config, null);
     }
 
-    public ConfigButtonOptionList(int x, int y, int width, int height, IConfigOptionList config, @Nullable String prefixTranslationKey)
+    public ConfigButtonOptionList(int x, int y, int width, int height, IConfigOptionList<?> config, @Nullable String prefixTranslationKey)
     {
         super(x, y, width, height, "");
 
@@ -27,7 +27,7 @@ public class ConfigButtonOptionList extends ButtonGeneric
     @Override
     protected boolean onMouseClickedImpl(int mouseX, int mouseY, int mouseButton)
     {
-        this.config.setOptionListValue(this.config.getOptionListValue().cycle(mouseButton == 0));
+        this.config.cycleValue(mouseButton == 0);
         this.updateDisplayString();
 
         return super.onMouseClickedImpl(mouseX, mouseY, mouseButton);
