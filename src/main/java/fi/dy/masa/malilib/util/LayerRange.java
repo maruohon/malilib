@@ -648,8 +648,10 @@ public class LayerRange
         return this.intersectsBox(box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ);
     }
 
-    public boolean intersectsBox(BlockPos posMin, BlockPos posMax)
+    public boolean intersectsBox(BlockPos pos1, BlockPos pos2)
     {
+        BlockPos posMin = PositionUtils.getMinCorner(pos1, pos2);
+        BlockPos posMax = PositionUtils.getMaxCorner(pos1, pos2);
         return this.intersectsBox(posMin.getX(), posMin.getY(), posMin.getZ(), posMax.getX(), posMax.getY(), posMax.getZ());
     }
 

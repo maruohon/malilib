@@ -13,6 +13,23 @@ public class PositionUtils
 {
     public static final EnumFacing[] ALL_DIRECTIONS = new EnumFacing[] { EnumFacing.DOWN, EnumFacing.UP, EnumFacing.NORTH, EnumFacing.SOUTH, EnumFacing.WEST, EnumFacing.EAST };
 
+    public static BlockPos getMinCorner(BlockPos pos1, BlockPos pos2)
+    {
+        return new BlockPos(Math.min(pos1.getX(), pos2.getX()), Math.min(pos1.getY(), pos2.getY()), Math.min(pos1.getZ(), pos2.getZ()));
+    }
+
+    public static BlockPos getMaxCorner(BlockPos pos1, BlockPos pos2)
+    {
+        return new BlockPos(Math.max(pos1.getX(), pos2.getX()), Math.max(pos1.getY(), pos2.getY()), Math.max(pos1.getZ(), pos2.getZ()));
+    }
+
+    public static boolean isPositionInsideArea(BlockPos pos, BlockPos posMin, BlockPos posMax)
+    {
+        return pos.getX() >= posMin.getX() && pos.getX() <= posMax.getX() &&
+               pos.getY() >= posMin.getY() && pos.getY() <= posMax.getY() &&
+               pos.getZ() >= posMin.getZ() && pos.getZ() <= posMax.getZ();
+    }
+
     public static Vec3d modifyValue(CoordinateType type, Vec3d valueIn, double amount)
     {
         switch (type)
