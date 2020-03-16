@@ -411,6 +411,33 @@ public class PositionUtils
         return side;
     }
 
+    /**
+     * Adjusts the (usually ray traced) position so that the provided entity
+     * will not clip inside the presumable block side.
+     * @param pos
+     * @param entity
+     * @param side
+     * @return
+     */
+    public static Vec3d adjustPositionToSideOfEntity(Vec3d pos, Entity entity, EnumFacing side)
+    {
+        double x = pos.x;
+        double y = pos.y;
+        double z = pos.z;
+
+        if (side == EnumFacing.DOWN)
+        {
+            y -= entity.height;
+        }
+        else if (side.getAxis().isHorizontal())
+        {
+            x += side.getXOffset() * (entity.width / 2 + 1.0E-4D);
+            z += side.getZOffset() * (entity.width / 2 + 1.0E-4D);
+        }
+
+        return new Vec3d(x, y, z);
+    }
+
     public enum HitPart
     {
         CENTER,
