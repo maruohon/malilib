@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.util;
 
+import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ClickType;
@@ -89,7 +90,7 @@ public class InventoryUtils
      */
     public static boolean isRegularInventorySlot(int slotNumber, boolean allowOffhand)
     {
-        return slotNumber > 8 && (allowOffhand || slotNumber < 45);
+        return slotNumber > 8 && (slotNumber < 45 || (allowOffhand && slotNumber == 45));
     }
 
     /**
@@ -162,6 +163,60 @@ public class InventoryUtils
 
             if (isRegularInventorySlot(slot.slotNumber, false) &&
                 areStacksEqualIgnoreDurability(slot.getStack(), stackReference, ignoreNbt))
+            {
+                return slot.slotNumber;
+            }
+        }
+
+        return -1;
+    }
+
+    /**
+     * Tries to find a slot with the given item for pick-blocking.
+     * Prefers the hotbar to the rest of the inventory.
+     * @param container
+     * @param stackReference
+     * @param ignoreNbt
+     * @param reverse
+     * @return
+     */
+    public static int findSlotWithItemToPickBlock(Container container, ItemStack stackReference, boolean ignoreNbt)
+    {
+        if ((container instanceof ContainerPlayer) == false)
+        {
+            return -1;
+        }
+
+        // Hotbar
+        int slot = findSlotWithItem(container, stackReference, SlotRange.of(36, 9), true, ignoreNbt);
+
+        if (slot != -1)
+        {
+            return slot;
+        }
+
+        // Regular player inventory and offhand
+        return findSlotWithItem(container, stackReference, SlotRange.of(9, 27 + 1), true, ignoreNbt);
+    }
+
+    public static int findSlotWithItem(Container container, ItemStack stackReference,
+            SlotRange slotRange, boolean ignoreDurability, boolean ignoreNbt)
+    {
+        final int startSlot = slotRange.getFirst();
+        final int endSlot = slotRange.getLast();
+        List<Slot> slots = container.inventorySlots;
+
+        if (startSlot < 0 || endSlot >= slots.size())
+        {
+            return -1;
+        }
+
+        for (int slotNum = startSlot; slotNum <= endSlot; ++slotNum)
+        {
+            Slot slot = slots.get(slotNum);
+
+            if ((ignoreDurability          && areStacksEqualIgnoreDurability(slot.getStack(), stackReference, ignoreNbt)) ||
+                (ignoreDurability == false && areStacksEqual(slot.getStack(), stackReference, ignoreNbt)))
             {
                 return slot.slotNumber;
             }
