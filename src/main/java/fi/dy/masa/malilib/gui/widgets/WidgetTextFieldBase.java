@@ -288,20 +288,34 @@ public class WidgetTextFieldBase extends WidgetBackground
         this.visibleTextNeedsUpdate = true;
     }
 
+    protected void moveCursor(LeftRight direction, boolean selectText)
+    {
+        int newPos;
+
+        // Nudging the position left or right while there was a selection,
+        // remove the selection and move the cursor to the appropriate end of the selection
+        if (this.selectionStartPosition != -1 && selectText == false)
+        {
+            int p1 = this.cursorPosition;
+            int p2 = this.selectionStartPosition;
+            newPos = direction == LeftRight.LEFT ? Math.min(p1, p2) : Math.max(p1, p2);
+            this.selectionStartPosition = -1;
+        }
+        else
+        {
+            newPos = this.cursorPosition + (direction == LeftRight.LEFT ? -1 : 1);
+        }
+
+        this.setCursorPosition(newPos, selectText);
+    }
+
     protected WidgetTextFieldBase setCursorPosition(int position, boolean selectText)
     {
         int oldPosition = this.cursorPosition;
 
         if (selectText == false)
         {
-            int oldSelection = this.selectionStartPosition;
             this.selectionStartPosition = -1;
-
-            // Don't change the cursor position when removing a selection region
-            if (oldSelection >= 0)
-            {
-                return this;
-            }
         }
         else if (this.selectionStartPosition < 0)
         {
@@ -709,11 +723,29 @@ public class WidgetTextFieldBase extends WidgetBackground
 
             if (keyCode == Keyboard.KEY_BACK)
             {
-                this.deleteSelectionOrCharacter(false);
+                if (GuiBase.isCtrlDown())
+                {
+                    this.selectionStartPosition = -1;
+                    this.moveCursorToEndOfWord(LeftRight.LEFT, GuiBase.isAltDown(), true);
+                    this.deleteSelectionOrCharacter(false);
+                }
+                else
+                {
+                    this.deleteSelectionOrCharacter(false);
+                }
             }
             else if (keyCode == Keyboard.KEY_DELETE)
             {
-                this.deleteSelectionOrCharacter(true);
+                if (GuiBase.isCtrlDown())
+                {
+                    this.selectionStartPosition = -1;
+                    this.moveCursorToEndOfWord(LeftRight.RIGHT, GuiBase.isAltDown(), true);
+                    this.deleteSelectionOrCharacter(true);
+                }
+                else
+                {
+                    this.deleteSelectionOrCharacter(true);
+                }
             }
             else if (keyCode == Keyboard.KEY_RETURN || keyCode == Keyboard.KEY_TAB)
             {
@@ -732,7 +764,7 @@ public class WidgetTextFieldBase extends WidgetBackground
                 }
                 else
                 {
-                    this.setCursorPosition(this.cursorPosition - 1, selectText);
+                    this.moveCursor(LeftRight.LEFT, selectText);
                 }
             }
             else if (keyCode == Keyboard.KEY_RIGHT)
@@ -743,7 +775,7 @@ public class WidgetTextFieldBase extends WidgetBackground
                 }
                 else
                 {
-                    this.setCursorPosition(this.cursorPosition + 1, selectText);
+                    this.moveCursor(LeftRight.RIGHT, selectText);
                 }
             }
             else if (keyCode == Keyboard.KEY_HOME)
@@ -753,6 +785,11 @@ public class WidgetTextFieldBase extends WidgetBackground
             else if (keyCode == Keyboard.KEY_END)
             {
                 this.setCursorToEnd(selectText);
+            }
+            else if (GuiScreen.isKeyComboCtrlA(keyCode))
+            {
+                this.setCursorToBeginning(false);
+                this.setCursorToEnd(true);
             }
             else if (GuiScreen.isKeyComboCtrlX(keyCode))
             {
