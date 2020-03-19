@@ -170,6 +170,27 @@ public class PositionUtils
     }
 
     /**
+     * Returns the closest side direction to the entity's yaw facing that is 90 degrees from the entity's forward direction
+     * @param entity
+     * @return
+     */
+    public static EnumFacing getClosestSideDirection(Entity entity)
+    {
+        EnumFacing forwardDirection = entity.getHorizontalFacing();
+        float entityYaw = ((entity.rotationYaw % 360.0F) + 360.0F) % 360.0F;
+        float forwardYaw = forwardDirection.getHorizontalAngle();
+
+        if (entityYaw < forwardYaw || (forwardYaw == 0.0F && entityYaw > 270.0F))
+        {
+            return forwardDirection.rotateYCCW();
+        }
+        else
+        {
+            return forwardDirection.rotateY();
+        }
+    }
+
+    /**
      * Returns the closest block position directly infront of the
      * given entity that is not colliding with it.
      * @param entity
