@@ -3,12 +3,13 @@ package fi.dy.masa.malilib.config.gui;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.options.IConfigDouble;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
-import fi.dy.masa.malilib.gui.interfaces.ISliderCallback;
+import fi.dy.masa.malilib.gui.interfaces.ISliderCallbackSteps;
 
-public class SliderCallbackDouble implements ISliderCallback
+public class SliderCallbackDouble implements ISliderCallbackSteps
 {
     protected final IConfigDouble config;
     protected final ButtonBase resetButton;
+    protected double stepSize = 0.0009765625; // 1 / 1024
 
     public SliderCallbackDouble(IConfigDouble config, @Nullable ButtonBase resetButton)
     {
@@ -32,12 +33,32 @@ public class SliderCallbackDouble implements ISliderCallback
     public void setValueRelative(double relativeValue)
     {
         double relValue = relativeValue * (this.config.getMaxDoubleValue() - this.config.getMinDoubleValue());
-        this.config.setDoubleValue(relValue + this.config.getMinDoubleValue());
+        double value = relValue + this.config.getMinDoubleValue();
+        double step = this.stepSize;
+
+        if (step > 0)
+        {
+            value = value - ((value + step) % step);
+        }
+
+        this.config.setDoubleValue(value);
 
         if (this.resetButton != null)
         {
             this.resetButton.setEnabled(this.config.isModified());
         }
+    }
+
+    @Override
+    public double getStepSize()
+    {
+        return this.stepSize;
+    }
+
+    @Override
+    public void setStepSize(double step)
+    {
+        this.stepSize = step;
     }
 
     @Override
