@@ -103,6 +103,7 @@ public class StringUtils
     public static void splitTextToLines(List<String> linesOut, String textIn, int maxLineLength)
     {
         String[] lines = textIn.split("\\\\n");
+        @Nullable String activeColor = null;
 
         for (String line : lines)
         {
@@ -132,6 +133,15 @@ public class StringUtils
                         for (int i = 0; i < chars; ++i)
                         {
                             String c = str.substring(i, i + 1);
+
+                            if (c.equals("§") && i < (chars - 1))
+                            {
+                                activeColor = str.substring(i, i + 2);
+                                sb.append(activeColor);
+                                ++i;
+                                continue;
+                            }
+
                             lineWidth += getStringWidth(c);
 
                             if (lineWidth > maxLineLength)
@@ -139,6 +149,11 @@ public class StringUtils
                                 linesOut.add(sb.toString());
                                 sb = new StringBuilder(256);
                                 lineWidth = 0;
+
+                                if (activeColor != null)
+                                {
+                                    sb.append(activeColor);
+                                }
                             }
 
                             sb.append(c);
