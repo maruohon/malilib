@@ -277,7 +277,9 @@ public class StringUtils
 
             if (server != null)
             {
-                return server.getLevelName();
+                // This used to be just MinecraftServer::getLevelName().
+                // Getting the name would now require an @Accessor for MinecraftServer.field_23784
+                return server.method_27050().getFileName().toString(); 
             }
         }
         else

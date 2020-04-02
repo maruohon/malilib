@@ -386,11 +386,11 @@ public class InventoryUtils
     public static Object2IntOpenHashMap<ItemType> getInventoryItemCounts(Inventory inv)
     {
         Object2IntOpenHashMap<ItemType> map = new Object2IntOpenHashMap<>();
-        final int slots = inv.getInvSize();
+        final int slots = inv.size();
 
         for (int slot = 0; slot < slots; ++slot)
         {
-            ItemStack stack = inv.getInvStack(slot);
+            ItemStack stack = inv.getStack(slot);
 
             if (stack.isEmpty() == false)
             {
@@ -424,7 +424,7 @@ public class InventoryUtils
 
         for (int slot = 0; slot < items.size(); ++slot)
         {
-            inv.setInvStack(slot, items.get(slot));
+            inv.setStack(slot, items.get(slot));
         }
 
         return inv;

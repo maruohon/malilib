@@ -370,21 +370,21 @@ public class InventoryOverlay
     {
         if (type == InventoryRenderType.FURNACE)
         {
-            renderStackAt(inv.getInvStack(0), startX +   8, startY +  8, 1, mc);
-            renderStackAt(inv.getInvStack(1), startX +   8, startY + 44, 1, mc);
-            renderStackAt(inv.getInvStack(2), startX +  68, startY + 26, 1, mc);
+            renderStackAt(inv.getStack(0), startX +   8, startY +  8, 1, mc);
+            renderStackAt(inv.getStack(1), startX +   8, startY + 44, 1, mc);
+            renderStackAt(inv.getStack(2), startX +  68, startY + 26, 1, mc);
         }
         else if (type == InventoryRenderType.BREWING_STAND)
         {
-            renderStackAt(inv.getInvStack(0), startX +  47, startY + 42, 1, mc);
-            renderStackAt(inv.getInvStack(1), startX +  70, startY + 49, 1, mc);
-            renderStackAt(inv.getInvStack(2), startX +  93, startY + 42, 1, mc);
-            renderStackAt(inv.getInvStack(3), startX +  70, startY +  8, 1, mc);
-            renderStackAt(inv.getInvStack(4), startX +   8, startY +  8, 1, mc);
+            renderStackAt(inv.getStack(0), startX +  47, startY + 42, 1, mc);
+            renderStackAt(inv.getStack(1), startX +  70, startY + 49, 1, mc);
+            renderStackAt(inv.getStack(2), startX +  93, startY + 42, 1, mc);
+            renderStackAt(inv.getStack(3), startX +  70, startY +  8, 1, mc);
+            renderStackAt(inv.getStack(4), startX +   8, startY +  8, 1, mc);
         }
         else
         {
-            final int slots = inv.getInvSize();
+            final int slots = inv.size();
             int x = startX;
             int y = startY;
 
@@ -397,7 +397,7 @@ public class InventoryOverlay
             {
                 for (int column = 0; column < slotsPerRow && slot < slots && i < maxSlots; ++column, ++slot, ++i)
                 {
-                    ItemStack stack = inv.getInvStack(slot);
+                    ItemStack stack = inv.getStack(slot);
 
                     if (stack.isEmpty() == false)
                     {
