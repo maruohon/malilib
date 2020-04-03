@@ -164,7 +164,7 @@ public class RayTraceUtils
 
                 if (blockCollidable || fluidCollidable)
                 {
-                    RayTraceResult traceTmp = state.collisionRayTrace(world, data.blockPosMutable, data.start, data.end);
+                    RayTraceResult traceTmp = state.collisionRayTrace(world, data.blockPosMutable.toImmutable(), data.start, data.end);
 
                     if (traceTmp != null)
                     {
