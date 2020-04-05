@@ -4,13 +4,16 @@ import net.minecraft.util.EnumFacing;
 import fi.dy.masa.malilib.config.values.LayerMode;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
+import fi.dy.masa.malilib.gui.button.ButtonOnOff;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
 import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
+import fi.dy.masa.malilib.gui.listener.TextFieldListenerInteger;
 import fi.dy.masa.malilib.gui.util.GuiIconBase;
 import fi.dy.masa.malilib.gui.widgets.WidgetCheckBox;
 import fi.dy.masa.malilib.gui.widgets.WidgetTextFieldBase;
+import fi.dy.masa.malilib.gui.widgets.WidgetTextFieldInteger;
 import fi.dy.masa.malilib.util.LayerRange;
 import fi.dy.masa.malilib.util.StringUtils;
 
@@ -19,6 +22,7 @@ public abstract class GuiRenderLayerEditBase extends GuiBase
     protected WidgetTextFieldBase textField1;
     protected WidgetTextFieldBase textField2;
     protected int nextY;
+    protected boolean addPlayerFollowingOptions;
 
     protected abstract LayerRange getLayerRange();
 
@@ -57,8 +61,9 @@ public abstract class GuiRenderLayerEditBase extends GuiBase
         return y;
     }
 
-    protected int createTextFields(int x, int y, int width, LayerRange layerRange)
+    protected int createTextFields(int x, int y, int width, final LayerRange layerRange)
     {
+        int origX = x;
         LayerMode layerMode = layerRange.getLayerMode();
 
         if (layerMode == LayerMode.ALL)
@@ -110,8 +115,40 @@ public abstract class GuiRenderLayerEditBase extends GuiBase
         this.updateTextFieldValues(layerRange);
 
         this.createLayerConfigButton(x - 1, y, ButtonListenerLayerEdit.Type.SET_TO_PLAYER, layerRange);
+        y += 22;
 
-        return y + 22;
+        if (this.addPlayerFollowingOptions)
+        {
+            String strLabel = "malilib.gui.button.render_layers_gui.follow_player";
+            String strHover = "malilib.gui.button.hover.render_layers_gui.follow_player";
+            final ButtonOnOff button = new ButtonOnOff(origX, y, -1, false, strLabel, layerRange.shouldFollowPlayer(), strHover);
+            this.addButton(button, (btn, mbtn) -> {
+                layerRange.toggleShouldFollowPlayer();
+                button.updateDisplayString(layerRange.shouldFollowPlayer());
+            });
+            y += 24;
+
+            String label = StringUtils.translate("malilib.gui.label.render_layers.player_follow_offset") + ":";
+            int w = this.addLabel(origX, y + 5, 0xFFFFFF, label).getWidth();
+
+            final WidgetTextFieldInteger textField = new WidgetTextFieldInteger(origX + w + 4, y, 40, 18, layerRange.getPlayerFollowOffset());
+            textField.setUpdateListenerAlways(true);
+            textField.setListener(new TextFieldListenerInteger((val) -> layerRange.setPlayerFollowOffset(val)));
+            this.addWidget(textField);
+
+            int bx = textField.getX() + textField.getWidth() + 3;
+            ButtonGeneric button2 = new ButtonGeneric(bx, y + 1, this.getValueAdjustButtonIcon());
+
+            this.addButton(button2, (btn, mbtn) -> {
+                int change = mbtn == 1 ? -1 : 1;
+                if (GuiBase.isShiftDown()) { change *= 2; }
+                if (GuiBase.isCtrlDown())  { change *= 4; }
+                layerRange.setPlayerFollowOffset(layerRange.getPlayerFollowOffset() + change);
+                this.initGui();
+            });
+        }
+
+        return y;
     }
 
     protected void updateTextFieldValues(LayerRange layerRange)
@@ -164,7 +201,7 @@ public abstract class GuiRenderLayerEditBase extends GuiBase
             }
             else if (this.type == Type.SET_TO_PLAYER)
             {
-                this.layerRange.setToPosition(this.parent.mc.player);
+                this.layerRange.setSingleBoundaryToPosition(this.parent.mc.player);
             }
 
             this.parent.initGui();

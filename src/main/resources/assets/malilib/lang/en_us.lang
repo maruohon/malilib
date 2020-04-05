@@ -31,6 +31,7 @@ malilib.gui.button.reset=Reset
 malilib.gui.button.reset.caps=RESET
 
 malilib.gui.button.render_layers_gui.axis=Axis: %s
+malilib.gui.button.render_layers_gui.follow_player=Follow Player: %s
 malilib.gui.button.render_layers_gui.layers=Layers: %s
 malilib.gui.button.render_layers_gui.set_to_player=Set to player
 
@@ -39,6 +40,7 @@ malilib.gui.button.hover.directory_widget.root=To root/base directory
 malilib.gui.button.hover.directory_widget.up=Up to parent directory
 malilib.gui.button.hover.hold_shift_for_info=§oHold Shift for more information§r
 malilib.gui.button.hover.plus_minus_tip=Left click to increase\nRight click to decrease\nShift and/or Alt to increase the step size
+malilib.gui.button.hover.render_layers_gui.follow_player=If enabled, then the render layer follows the player
 
 malilib.gui.button.hover.list.add_after=Add an entry after
 malilib.gui.button.hover.list.move_down=Move Down
@@ -83,6 +85,7 @@ malilib.gui.label.yes=yes
 malilib.gui.label.render_layers.layer=Layer
 malilib.gui.label.render_layers.layer_max=Max layer
 malilib.gui.label.render_layers.layer_min=Min layer
+malilib.gui.label.render_layers.player_follow_offset=Offset
 
 malilib.gui.title.all_hotkeys=All registered hotkeys
 malilib.gui.title.color_editor=Color Editor

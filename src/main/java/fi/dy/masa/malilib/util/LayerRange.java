@@ -31,8 +31,10 @@ public class LayerRange
     protected int layerBelow = 0;
     protected int layerRangeMin = 0;
     protected int layerRangeMax = 0;
+    protected int playerFollowOffset = 0;
     protected boolean hotkeyRangeMin;
     protected boolean hotkeyRangeMax;
+    protected boolean followPlayer;
 
     public LayerRange(IRangeChangeListener refresher)
     {
@@ -59,6 +61,11 @@ public class LayerRange
         return this.hotkeyRangeMax;
     }
 
+    public boolean shouldFollowPlayer()
+    {
+        return this.followPlayer;
+    }
+
     public void toggleHotkeyMoveRangeMin()
     {
         this.hotkeyRangeMin = ! this.hotkeyRangeMin;
@@ -67,6 +74,16 @@ public class LayerRange
     public void toggleHotkeyMoveRangeMax()
     {
         this.hotkeyRangeMax = ! this.hotkeyRangeMax;
+    }
+
+    public void toggleShouldFollowPlayer()
+    {
+        this.followPlayer = ! this.followPlayer;
+    }
+
+    public int getPlayerFollowOffset()
+    {
+        return this.playerFollowOffset;
     }
 
     public int getLayerSingle()
@@ -206,6 +223,11 @@ public class LayerRange
         InfoUtils.printActionbarMessage("malilib.message.set_layer_axis_to", val);
     }
 
+    public void setPlayerFollowOffset(int offset)
+    {
+        this.playerFollowOffset = offset;
+    }
+
     public void setLayerSingle(int layer)
     {
         int old = this.layerSingle;
@@ -291,7 +313,7 @@ public class LayerRange
         return layer != old;
     }
 
-    public void setToPosition(Entity entity)
+    protected int getPositionFromEntity(Entity entity)
     {
         int pos = 0;
 
@@ -308,6 +330,17 @@ public class LayerRange
                 break;
         }
 
+        return pos;
+    }
+
+    public void setSingleBoundaryToPosition(Entity entity)
+    {
+        int pos = this.getPositionFromEntity(entity);
+        this.setSingleBoundaryToPosition(pos, entity);
+    }
+
+    protected void setSingleBoundaryToPosition(int pos, Entity entity)
+    {
         switch (this.layerMode)
         {
             case SINGLE_LAYER:
@@ -319,20 +352,35 @@ public class LayerRange
             case ALL_BELOW:
                 this.setLayerBelow(pos);
                 break;
-            case LAYER_RANGE:
-                Pair<Boolean, Boolean> moveMinMax = this.getMoveMinMax(entity);
-
-                if (moveMinMax.getLeft())
-                {
-                    this.setLayerRangeMin(pos, true);
-                }
-
-                if (moveMinMax.getRight())
-                {
-                    this.setLayerRangeMax(pos, true);
-                }
-                break;
             default:
+        }
+    }
+
+    public void followPlayerIfEnabled(Entity entity)
+    {
+        if (this.followPlayer)
+        {
+            int newPos = this.getPositionFromEntity(entity) + this.playerFollowOffset;
+
+            if (this.layerMode == LayerMode.LAYER_RANGE)
+            {
+                int rangeSize = this.layerRangeMax - this.layerRangeMin;
+
+                if (this.layerRangeIsMinClosest(entity))
+                {
+                    this.setLayerRangeMax(newPos + rangeSize, true);
+                    this.setLayerRangeMin(newPos, true);
+                }
+                else
+                {
+                    this.setLayerRangeMin(newPos - rangeSize, true);
+                    this.setLayerRangeMax(newPos, true);
+                }
+            }
+            else
+            {
+                this.setSingleBoundaryToPosition(newPos, entity);
+            }
         }
     }
 
@@ -479,14 +527,20 @@ public class LayerRange
 
     protected Pair<Boolean, Boolean> getMoveMinMax(Entity entity)
     {
-        double playerPos = this.axis == Axis.Y ? entity.posY : (this.axis == Axis.X ? entity.posX : entity.posZ);
-        double min = this.layerRangeMin + 0.5D;
-        double max = this.layerRangeMax + 0.5D;
-        boolean minClosest = (Math.abs(playerPos - min) < Math.abs(playerPos - max)) || playerPos < min;
+        boolean minClosest = this.layerRangeIsMinClosest(entity);
         boolean moveMin = this.hotkeyRangeMin || (minClosest          && this.hotkeyRangeMax == false);
         boolean moveMax = this.hotkeyRangeMax || (minClosest == false && this.hotkeyRangeMin == false);
 
         return Pair.of(moveMin,  moveMax);
+    }
+
+    protected boolean layerRangeIsMinClosest(Entity entity)
+    {
+        double playerPos = this.axis == Axis.Y ? entity.posY : (this.axis == Axis.X ? entity.posX : entity.posZ);
+        double min = this.layerRangeMin + 0.5D;
+        double max = this.layerRangeMax + 0.5D;
+
+        return playerPos < min || (Math.abs(playerPos - min) < Math.abs(playerPos - max));
     }
 
     public String getCurrentLayerString()
@@ -769,11 +823,13 @@ public class LayerRange
 
         obj.add("mode", new JsonPrimitive(this.layerMode.name()));
         obj.add("axis", new JsonPrimitive(this.axis.name()));
+        obj.add("follow_player", new JsonPrimitive(this.followPlayer));
         obj.add("layer_single", new JsonPrimitive(this.layerSingle));
         obj.add("layer_above", new JsonPrimitive(this.layerAbove));
         obj.add("layer_below", new JsonPrimitive(this.layerBelow));
         obj.add("layer_range_min", new JsonPrimitive(this.layerRangeMin));
         obj.add("layer_range_max", new JsonPrimitive(this.layerRangeMax));
+        obj.add("player_follow_offset", new JsonPrimitive(this.playerFollowOffset));
         obj.add("hotkey_range_min", new JsonPrimitive(this.hotkeyRangeMin));
         obj.add("hotkey_range_max", new JsonPrimitive(this.hotkeyRangeMax));
 
@@ -793,11 +849,13 @@ public class LayerRange
         this.axis = EnumFacing.Axis.byName(JsonUtils.getString(obj, "axis"));
         if (this.axis == null) { this.axis = EnumFacing.Axis.Y; }
 
+        this.followPlayer = JsonUtils.getBoolean(obj, "follow_player");
         this.layerSingle = JsonUtils.getInteger(obj, "layer_single");
         this.layerAbove = JsonUtils.getInteger(obj, "layer_above");
         this.layerBelow = JsonUtils.getInteger(obj, "layer_below");
         this.layerRangeMin = JsonUtils.getInteger(obj, "layer_range_min");
         this.layerRangeMax = JsonUtils.getInteger(obj, "layer_range_max");
+        this.playerFollowOffset = JsonUtils.getInteger(obj, "player_follow_offset");
         this.hotkeyRangeMin = JsonUtils.getBoolean(obj, "hotkey_range_min");
         this.hotkeyRangeMax = JsonUtils.getBoolean(obj, "hotkey_range_max");
     }
