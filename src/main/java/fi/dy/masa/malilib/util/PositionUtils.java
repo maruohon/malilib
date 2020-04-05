@@ -12,6 +12,7 @@ import net.minecraft.util.math.Vec3d;
 public class PositionUtils
 {
     public static final EnumFacing[] ALL_DIRECTIONS = new EnumFacing[] { EnumFacing.DOWN, EnumFacing.UP, EnumFacing.NORTH, EnumFacing.SOUTH, EnumFacing.WEST, EnumFacing.EAST };
+    public static final EnumFacing[] HORIZONTAL_DIRECTIONS = new EnumFacing[] { EnumFacing.NORTH, EnumFacing.SOUTH, EnumFacing.WEST, EnumFacing.EAST };
 
     public static BlockPos getMinCorner(BlockPos pos1, BlockPos pos2)
     {
