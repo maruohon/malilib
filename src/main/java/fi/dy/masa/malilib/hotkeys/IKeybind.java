@@ -38,6 +38,8 @@ public interface IKeybind extends IConfigResettable, IConfigSavable, IStringRepr
 
     KeybindSettings getSettings();
 
+    KeybindSettings getDefaultSettings();
+
     /**
      * Set the settings for this keybind.
      * @param settings

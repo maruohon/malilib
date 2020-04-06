@@ -115,7 +115,7 @@ public class ConfigButtonKeybind extends ButtonGeneric
 
         if (this.keybind.getKeys().size() == 0 || StringUtils.isBlank(valueStr))
         {
-            valueStr = "NONE";
+            valueStr = fi.dy.masa.malilib.util.StringUtils.translate("malilib.gui.button.none.caps");
         }
 
         this.clearHoverStrings();
@@ -161,7 +161,7 @@ public class ConfigButtonKeybind extends ButtonGeneric
             {
                 if (this.overlapInfo.size() > 0)
                 {
-                    this.overlapInfo.add("-----");
+                    this.overlapInfo.add("--------");
                 }
 
                 this.overlapInfo.add(category.getModName());
@@ -177,8 +177,32 @@ public class ConfigButtonKeybind extends ButtonGeneric
             }
         }
 
+        boolean modified = this.keybind.isModified();
+
+        if (modified)
+        {
+            String label = fi.dy.masa.malilib.util.StringUtils.translate("malilib.gui.button.default");
+            String defaultStr = this.keybind.getDefaultStringValue();
+
+            if (StringUtils.isBlank(defaultStr))
+            {
+                defaultStr = fi.dy.masa.malilib.util.StringUtils.translate("malilib.gui.button.none.caps");
+            }
+            else
+            {
+                defaultStr = defaultStr.replaceAll(",", " + ");
+            }
+
+            this.addHoverStrings(label + ": " + defaultStr);
+        }
+
         if (this.overlapInfo.size() > 0)
         {
+            if (modified)
+            {
+                this.addHoverStrings("--------");
+            }
+
             this.addHoverStrings(this.overlapInfo);
         }
     }

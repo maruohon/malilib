@@ -14,19 +14,20 @@ import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
 import fi.dy.masa.malilib.hotkeys.KeyAction;
 import fi.dy.masa.malilib.hotkeys.KeybindSettings;
+import fi.dy.masa.malilib.interfaces.IValueChangeCallback;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class GuiKeybindSettings extends GuiDialogBase
 {
     protected final IKeybind keybind;
     protected final String keybindName;
-    protected final ConfigOptionList<KeyAction> cfgActivateOn = new ConfigOptionList<KeyAction>("malilib.gui.label.keybind_settings.activate_on", KeyAction.PRESS, "malilib.config.comment.keybind_settings.activate_on");
-    protected final ConfigOptionList<KeybindSettings.Context> cfgContext = new ConfigOptionList<KeybindSettings.Context>("malilib.gui.label.keybind_settings.context", KeybindSettings.Context.INGAME, "malilib.config.comment.keybind_settings.context");
-    protected final ConfigBoolean cfgAllowEmpty     = new ConfigBoolean("malilib.gui.label.keybind_settings.allow_empty_keybind", false, "malilib.config.comment.keybind_settings.allow_empty_keybind");
-    protected final ConfigBoolean cfgAllowExtra     = new ConfigBoolean("malilib.gui.label.keybind_settings.allow_extra_keys", false, "malilib.config.comment.keybind_settings.allow_extra_keys");
-    protected final ConfigBoolean cfgOrderSensitive = new ConfigBoolean("malilib.gui.label.keybind_settings.order_sensitive", false, "malilib.config.comment.keybind_settings.order_sensitive");
-    protected final ConfigBoolean cfgExclusive      = new ConfigBoolean("malilib.gui.label.keybind_settings.exclusive", false, "malilib.config.comment.keybind_settings.exclusive");
-    protected final ConfigBoolean cfgCancel         = new ConfigBoolean("malilib.gui.label.keybind_settings.cancel_further", false, "malilib.config.comment.keybind_settings.cancel_further");
+    protected final ConfigOptionList<KeyAction> cfgActivateOn;
+    protected final ConfigOptionList<KeybindSettings.Context> cfgContext;
+    protected final ConfigBoolean cfgAllowEmpty;
+    protected final ConfigBoolean cfgAllowExtra;
+    protected final ConfigBoolean cfgOrderSensitive;
+    protected final ConfigBoolean cfgExclusive;
+    protected final ConfigBoolean cfgCancel;
     protected final List<ConfigBase<?>> configList;
     @Nullable protected final IDialogHandler dialogHandler;
     protected int labelWidth;
@@ -52,8 +53,17 @@ public class GuiKeybindSettings extends GuiDialogBase
         }
 
         this.title = GuiBase.TXT_BOLD + StringUtils.translate("malilib.gui.title.keybind_settings.advanced", this.keybindName) + GuiBase.TXT_RST;
-        KeybindSettings settings = this.keybind.getSettings();
 
+        KeybindSettings defaultSettings = this.keybind.getDefaultSettings();
+        this.cfgActivateOn     = new ConfigOptionList<KeyAction>("malilib.gui.label.keybind_settings.activate_on", defaultSettings.getActivateOn(), "malilib.config.comment.keybind_settings.activate_on");
+        this.cfgContext        = new ConfigOptionList<KeybindSettings.Context>("malilib.gui.label.keybind_settings.context", defaultSettings.getContext(), "malilib.config.comment.keybind_settings.context");
+        this.cfgAllowEmpty     = new ConfigBoolean("malilib.gui.label.keybind_settings.allow_empty_keybind", defaultSettings.getAllowEmpty(), "malilib.config.comment.keybind_settings.allow_empty_keybind");
+        this.cfgAllowExtra     = new ConfigBoolean("malilib.gui.label.keybind_settings.allow_extra_keys", defaultSettings.getAllowExtraKeys(), "malilib.config.comment.keybind_settings.allow_extra_keys");
+        this.cfgOrderSensitive = new ConfigBoolean("malilib.gui.label.keybind_settings.order_sensitive", defaultSettings.isOrderSensitive(), "malilib.config.comment.keybind_settings.order_sensitive");
+        this.cfgExclusive      = new ConfigBoolean("malilib.gui.label.keybind_settings.exclusive", defaultSettings.isExclusive(), "malilib.config.comment.keybind_settings.exclusive");
+        this.cfgCancel         = new ConfigBoolean("malilib.gui.label.keybind_settings.cancel_further_processing", defaultSettings.shouldCancel(), "malilib.config.comment.keybind_settings.cancel_further");
+
+        KeybindSettings settings = this.keybind.getSettings();
         this.cfgActivateOn.setOptionListValue(settings.getActivateOn());
         this.cfgContext.setOptionListValue(settings.getContext());
         this.cfgAllowEmpty.setBooleanValue(settings.getAllowEmpty());
@@ -61,6 +71,15 @@ public class GuiKeybindSettings extends GuiDialogBase
         this.cfgOrderSensitive.setBooleanValue(settings.isOrderSensitive());
         this.cfgExclusive.setBooleanValue(settings.isExclusive());
         this.cfgCancel.setBooleanValue(settings.shouldCancel());
+
+        this.cfgActivateOn.setValueChangeCallback((nv, ov) -> this.initGui());
+        this.cfgContext.setValueChangeCallback((nv, ov) -> this.initGui());
+        IValueChangeCallback<Boolean> cbb = (nv, ov) -> this.initGui();
+        this.cfgAllowEmpty.setValueChangeCallback(cbb);
+        this.cfgAllowExtra.setValueChangeCallback(cbb);
+        this.cfgOrderSensitive.setValueChangeCallback(cbb);
+        this.cfgExclusive.setValueChangeCallback(cbb);
+        this.cfgCancel.setValueChangeCallback(cbb);
 
         this.configList = ImmutableList.of(this.cfgActivateOn, this.cfgContext, this.cfgAllowEmpty, this.cfgAllowExtra, this.cfgOrderSensitive, this.cfgExclusive, this.cfgCancel);
         this.labelWidth = this.getMaxPrettyNameLength(this.configList);
@@ -92,7 +111,8 @@ public class GuiKeybindSettings extends GuiDialogBase
 
     protected void addConfig(int x, int y, int labelWidth, int configWidth, ConfigBase<?> config)
     {
-        this.addLabel(x, y, labelWidth, 20, 0xFFFFFFFF, StringUtils.translate(config.getPrettyName()))
+        int color = config.isModified() ? 0xFFFFFF55 : 0xFFAAAAAA;
+        this.addLabel(x, y, labelWidth, 20, color, StringUtils.translate(config.getPrettyName()))
             .setPaddingY(5).addHoverStrings(config.getComment());
         x += labelWidth + 10;
 
