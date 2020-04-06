@@ -38,6 +38,7 @@ malilib.gui.button.render_layers_gui.layers=Layers: %s
 malilib.gui.button.render_layers_gui.set_to_player=Set to player
 
 malilib.gui.button.hover.directory_widget.create_directory=Create a new directory
+malilib.gui.button.hover.directory_widget.hold_shift_to_open_directory=You can shift click the directory path elements\nto open the directory in the system file manager
 malilib.gui.button.hover.directory_widget.root=To root/base directory
 malilib.gui.button.hover.directory_widget.up=Up to parent directory
 malilib.gui.button.hover.hold_shift_for_info=§oHold Shift for more information§r

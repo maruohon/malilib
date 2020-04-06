@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import net.minecraft.client.renderer.OpenGlHelper;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.GuiTextInputFeedback;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
@@ -11,6 +12,7 @@ import fi.dy.masa.malilib.gui.interfaces.IDirectoryNavigator;
 import fi.dy.masa.malilib.gui.interfaces.IFileBrowserIconProvider;
 import fi.dy.masa.malilib.gui.interfaces.IFileBrowserIconProvider.FileBrowserIconType;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
+import fi.dy.masa.malilib.gui.util.GuiIconBase;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.DirectoryCreator;
@@ -26,6 +28,7 @@ public class WidgetDirectoryNavigation extends WidgetSearchBar
     protected final ButtonGeneric buttonRoot;
     protected final ButtonGeneric buttonUp;
     protected final ButtonGeneric buttonCreateDir;
+    protected final WidgetInfoIcon infoWidget;
     protected final File rootDir;
     protected final int pathStartX;
     protected File currentDir;
@@ -62,6 +65,13 @@ public class WidgetDirectoryNavigation extends WidgetSearchBar
         });
         this.pathStartX = this.buttonCreateDir.getX() + this.buttonCreateDir.getWidth() + 6;
 
+        // Make room for the info widget
+        x = this.buttonSearchToggle.getX();
+        this.buttonSearchToggle.setX(x - 14);
+        this.searchBox.setWidth(this.searchBox.getWidth() - 14);
+
+        this.infoWidget = new WidgetInfoIcon(x + 2, y + 1, GuiIconBase.INFO_ICON_11, "malilib.gui.button.hover.directory_widget.hold_shift_to_open_directory");
+
         this.updateSubWidgets();
     }
 
@@ -87,6 +97,7 @@ public class WidgetDirectoryNavigation extends WidgetSearchBar
         {
             this.clearWidgets();
 
+            this.addWidget(this.infoWidget);
             this.addWidget(this.buttonSearchToggle);
             this.addWidget(this.buttonRoot);
             this.addWidget(this.buttonUp);
@@ -110,7 +121,7 @@ public class WidgetDirectoryNavigation extends WidgetSearchBar
         else
         {
             // Draw the directory path text background
-            RenderUtils.drawRect(this.pathStartX - 2, this.getY(), this.getWidth() - this.pathStartX - 2, this.getHeight(), 0xFF242424, this.getZLevel());
+            RenderUtils.drawRect(this.pathStartX - 2, this.getY(), this.getWidth() - this.pathStartX - 12, this.getHeight(), 0xFF242424, this.getZLevel());
         }
 
         super.render(mouseX, mouseY, isActiveGui, hoveredWidgetId);
@@ -118,7 +129,7 @@ public class WidgetDirectoryNavigation extends WidgetSearchBar
 
     protected void placePathElements(int x, int y, List<PathElement> elements)
     {
-        for (PathElement el : elements)
+        for (final PathElement el : elements)
         {
             if (el.type == PathElement.Type.DIR)
             {
@@ -128,7 +139,17 @@ public class WidgetDirectoryNavigation extends WidgetSearchBar
                 button.setPlayClickSound(false);
                 button.setUseTextShadow(false);
                 button.setTextColorHovered(0xFFFFFF);
-                this.addButton(button, (btn, mbtn) -> this.navigator.switchToDirectory(el.dir));
+
+                this.addButton(button, (btn, mbtn) -> {
+                    if (GuiBase.isShiftDown())
+                    {
+                        OpenGlHelper.openFile(el.dir);
+                    }
+                    else
+                    {
+                        this.navigator.switchToDirectory(el.dir);
+                    }
+                });
 
                 List<File> dirs = FileUtils.getSubDirectories(el.dir);
 
