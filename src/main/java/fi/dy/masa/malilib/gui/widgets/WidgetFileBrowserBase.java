@@ -179,6 +179,12 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
         return (e1, e2) -> e1.compareTo(e2);
     }
 
+    @Nullable
+    protected String getRootDirectoryDisplayName()
+    {
+        return null;
+    }
+
     protected void updateDirectoryNavigationWidget()
     {
         // Remove the old widget, if any, from the sub widgets list
@@ -188,7 +194,7 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
         }
 
         this.widgetNavigation = new WidgetDirectoryNavigation(this.getX() + 2, this.getY() + 4, this.browserEntryWidth, 14,
-                this.currentDirectory, this.getRootDirectory(), this, this.getIconProvider());
+                this.currentDirectory, this.getRootDirectory(), this, this.getIconProvider(), this.getRootDirectoryDisplayName());
         this.addSearchBarWidget(this.widgetNavigation);
 
         this.updateScrollbarPosition();

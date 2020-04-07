@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import javax.annotation.Nullable;
 import net.minecraft.client.renderer.OpenGlHelper;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.GuiTextInputFeedback;
@@ -14,6 +15,7 @@ import fi.dy.masa.malilib.gui.interfaces.IFileBrowserIconProvider.FileBrowserIco
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.gui.util.GuiIconBase;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
+import fi.dy.masa.malilib.interfaces.IStringRetriever;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.DirectoryCreator;
 import fi.dy.masa.malilib.util.FileUtils;
@@ -31,10 +33,17 @@ public class WidgetDirectoryNavigation extends WidgetSearchBar
     protected final WidgetInfoIcon infoWidget;
     protected final File rootDir;
     protected final int pathStartX;
+    @Nullable protected final String rootDirDisplayName;
     protected File currentDir;
 
     public WidgetDirectoryNavigation(int x, int y, int width, int height,
             File currentDir, File rootDir, IDirectoryNavigator navigator, IFileBrowserIconProvider iconProvider)
+    {
+        this(x, y, width, height, currentDir, rootDir, navigator, iconProvider, null);
+    }
+
+    public WidgetDirectoryNavigation(int x, int y, int width, int height,
+            File currentDir, File rootDir, IDirectoryNavigator navigator, IFileBrowserIconProvider iconProvider, @Nullable String rootDirDisplayName)
     {
         super(x, y, width, height, 0, iconProvider.getIcon(FileBrowserIconType.SEARCH), HorizontalAlignment.RIGHT);
 
@@ -42,6 +51,7 @@ public class WidgetDirectoryNavigation extends WidgetSearchBar
         this.rootDir = rootDir;
         this.navigator = navigator;
         this.iconProvider = iconProvider;
+        this.rootDirDisplayName = rootDirDisplayName;
 
         this.buttonRoot = ButtonGeneric.createIconOnly(x, y, iconProvider.getIcon(FileBrowserIconType.ROOT));
         this.buttonRoot.addHoverString("malilib.gui.button.hover.directory_widget.root");
@@ -129,6 +139,19 @@ public class WidgetDirectoryNavigation extends WidgetSearchBar
 
     protected void placePathElements(int x, int y, List<PathElement> elements)
     {
+        IStringRetriever<File> displayNameFactory;
+
+        if (this.rootDirDisplayName != null)
+        {
+            final File rootDir = this.rootDir;
+            final String overriddenName = this.rootDirDisplayName;
+            displayNameFactory = (file) -> { return file.equals(rootDir) ? overriddenName : file.getName(); };
+        }
+        else
+        {
+            displayNameFactory = (file) -> file.getName();
+        }
+
         for (final PathElement el : elements)
         {
             if (el.type == PathElement.Type.DIR)
@@ -155,7 +178,7 @@ public class WidgetDirectoryNavigation extends WidgetSearchBar
 
                 if (dirs.isEmpty() == false)
                 {
-                    WidgetDirectorySelection dropdown = new WidgetDirectorySelection(x + el.totalWidth, y + 16, dirs);
+                    final WidgetDirectorySelection dropdown = new WidgetDirectorySelection(x + el.totalWidth, y + 16, dirs, displayNameFactory);
                     dropdown.setNoBarWhenClosed(x + el.totalWidth - 12, y + 2, () -> {
                         return this.getNavBarIconSubdirs(dropdown.isOpen());
                     });
@@ -167,7 +190,7 @@ public class WidgetDirectoryNavigation extends WidgetSearchBar
             else
             {
                 List<File> dirs = FileUtils.getDirsForRootPath(el.dir, this.rootDir);
-                WidgetDirectorySelection dropdown = new WidgetDirectorySelection(x, y + 16, dirs);
+                final WidgetDirectorySelection dropdown = new WidgetDirectorySelection(x, y + 16, dirs, displayNameFactory);
                 dropdown.setNoBarWhenClosed(x, y + 2, () -> {
                     return this.getNavBarIconRoot(dropdown.isOpen());
                 });
@@ -181,9 +204,9 @@ public class WidgetDirectoryNavigation extends WidgetSearchBar
 
     public static class WidgetDirectorySelection extends WidgetDropDownList<File>
     {
-        public WidgetDirectorySelection(int x, int y, List<File> entries)
+        public WidgetDirectorySelection(int x, int y, List<File> entries, IStringRetriever<File> displayNameFactory)
         {
-            super(x, y, -1, 12, 120, 10, entries, (file) -> file.getName());
+            super(x, y, -1, 12, 120, 10, entries, displayNameFactory);
         }
     }
 
@@ -198,7 +221,7 @@ public class WidgetDirectoryNavigation extends WidgetSearchBar
 
         while (dir != null)
         {
-            String name = dir.getName();
+            String name = this.rootDirDisplayName != null && root.equals(dir) ? this.rootDirDisplayName : dir.getName();
             int nameWidth = this.getStringWidth(name);
             int entryWidth = nameWidth + adjDirsIconWidth + 8;
 
