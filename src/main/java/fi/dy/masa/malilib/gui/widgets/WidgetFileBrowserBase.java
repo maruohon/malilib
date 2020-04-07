@@ -24,21 +24,23 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
 {
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    protected final IDirectoryCache cache;
-    protected final String browserContext;
+    @Nullable protected final IDirectoryCache cache;
     protected final IFileBrowserIconProvider iconProvider = new FileBrowserIconProviderBase();
+    protected final File rootDirectory;
+    protected String browserContext = "";
     protected WidgetDirectoryNavigation widgetNavigation;
     protected File currentDirectory;
 
-    public WidgetFileBrowserBase(int x, int y, int width, int height,
-            IDirectoryCache cache, String browserContext, File defaultDirectory,
+    public WidgetFileBrowserBase(int x, int y, int width, int height, File defaultDirectory, File rootDirectory,
+            @Nullable IDirectoryCache cache, @Nullable String browserContext,
             @Nullable ISelectionListener<DirectoryEntry> selectionListener)
     {
         super(x, y, width, height, selectionListener);
 
+        this.rootDirectory = rootDirectory;
         this.cache = cache;
-        this.browserContext = browserContext;
-        this.currentDirectory = this.cache.getCurrentDirectoryForContext(this.browserContext);
+        this.browserContext = browserContext != null ? browserContext : "";
+        this.currentDirectory = cache != null ? cache.getCurrentDirectoryForContext(this.browserContext) : null;
         this.allowKeyboardNavigation = true;
         this.shouldSortList = true;
 
@@ -256,7 +258,10 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
         return ImmutableList.of(FileUtils.getNameWithoutExtension(entry.getName().toLowerCase()));
     }
 
-    protected abstract File getRootDirectory();
+    protected File getRootDirectory()
+    {
+        return this.rootDirectory;
+    }
 
     protected FileFilter getDirectoryFilter()
     {
@@ -289,7 +294,11 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
         this.clearSelection();
 
         this.currentDirectory = FileUtils.getCanonicalFileIfPossible(dir);
-        this.cache.setCurrentDirectoryForContext(this.browserContext, dir);
+
+        if (this.cache != null)
+        {
+            this.cache.setCurrentDirectoryForContext(this.browserContext, dir);
+        }
 
         this.refreshEntries();
         this.updateDirectoryNavigationWidget();

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
-import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
@@ -71,12 +70,6 @@ public abstract class GuiListBase<TYPE, WIDGET extends WidgetListEntryBase<TYPE>
     public boolean isSearchOpen()
     {
         return this.getListWidget() != null && this.getListWidget().isSearchOpen();
-    }
-
-    @Override
-    public GuiBase setParent(GuiScreen parent)
-    {
-        return super.setParent(parent);
     }
 
     protected void updateListPosition(int listX, int listY)

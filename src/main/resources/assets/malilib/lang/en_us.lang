@@ -31,6 +31,7 @@ malilib.gui.button.none.caps=NONE
 malilib.gui.button.ok=OK
 malilib.gui.button.reset=Reset
 malilib.gui.button.reset.caps=RESET
+malilib.gui.button.select_directory=Select Directory
 
 malilib.gui.button.render_layers_gui.axis=Axis: %s
 malilib.gui.button.render_layers_gui.follow_player=Follow Player: %s
@@ -44,6 +45,7 @@ malilib.gui.button.hover.directory_widget.up=Up to parent directory
 malilib.gui.button.hover.hold_shift_for_info=§oHold Shift for more information§r
 malilib.gui.button.hover.plus_minus_tip=Left click to increase\nRight click to decrease\nShift and/or Alt to increase the step size
 malilib.gui.button.hover.render_layers_gui.follow_player=If enabled, then the render layer follows the player
+malilib.gui.button.hover.select_directory_value=Current directory:\n§3%s§r
 
 malilib.gui.button.hover.list.add_after=Add an entry after
 malilib.gui.button.hover.list.move_down=Move Down
@@ -97,6 +99,7 @@ malilib.gui.title.color_editor=Color Editor
 malilib.gui.title.configs=malilib Configs
 malilib.gui.title.create_directory=Create a new directory
 malilib.gui.title.debug=Debug
+malilib.gui.title.directory_browser=Directory Browser
 malilib.gui.title.generic=Generic
 malilib.gui.title.keybind_settings.advanced=Advanced Keybind Settings for %s
 malilib.gui.title.string_list_edit=Edit string list for '%s'

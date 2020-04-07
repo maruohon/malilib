@@ -1,11 +1,14 @@
 package fi.dy.masa.malilib.gui.widgets;
 
+import java.io.File;
+import java.util.ArrayList;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.config.ConfigType;
 import fi.dy.masa.malilib.config.gui.SliderCallbackDouble;
 import fi.dy.masa.malilib.config.gui.SliderCallbackInteger;
+import fi.dy.masa.malilib.config.options.ConfigFile;
 import fi.dy.masa.malilib.config.options.IConfigBase;
 import fi.dy.masa.malilib.config.options.IConfigBoolean;
 import fi.dy.masa.malilib.config.options.IConfigDouble;
@@ -16,7 +19,9 @@ import fi.dy.masa.malilib.config.options.IConfigSlider;
 import fi.dy.masa.malilib.config.options.IConfigStringList;
 import fi.dy.masa.malilib.config.options.IConfigValue;
 import fi.dy.masa.malilib.config.options.IStringRepresentable;
+import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.GuiConfigsBase.ConfigOptionWrapper;
+import fi.dy.masa.malilib.gui.GuiDirectorySelector;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.ConfigButtonBoolean;
@@ -38,6 +43,7 @@ import fi.dy.masa.malilib.hotkeys.IHotkey;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
 import fi.dy.masa.malilib.hotkeys.KeybindSettings;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.util.StringUtils;
 
 public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapper>
 {
@@ -183,6 +189,29 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
                 ButtonGeneric toggleBtn = new ButtonGeneric(this.colorDisplayPosX, y + 2, icon);
                 this.addButton(toggleBtn, new ListenerSliderToggle((IConfigSlider) config));
             }
+        }
+        else if (type == ConfigType.DIRECTORY)
+        {
+            final ConfigFile cfg = (ConfigFile) config;
+            final File dir = ((ConfigFile) config).getFile();
+            final String path = dir.getAbsolutePath();
+
+            ArrayList<String> lines = new ArrayList<>();
+            StringUtils.splitTextToLines(lines, StringUtils.translate("malilib.gui.button.hover.select_directory_value", path), 320);
+
+            ButtonGeneric button = new ButtonGeneric(x, y, configWidth, configHeight, "malilib.gui.button.select_directory");
+            button.addHoverStrings(lines);
+
+            ButtonGeneric resetButton = this.createResetButton(x + configWidth + 4, y, cfg);
+            ConfigOptionListenerResetConfig listenerReset = new ConfigOptionListenerResetConfig(cfg, new ConfigResetterButton(button), resetButton, null);
+
+            this.addButton(button, (btn, mbtn) -> {
+                    final File rootDirectory = new File("/");
+                    final GuiDirectorySelector gui = new GuiDirectorySelector(dir, rootDirectory, (d) -> cfg.setValueFromString(d.getAbsolutePath()));
+                    gui.setParent(GuiUtils.getCurrentScreen());
+                    GuiBase.openGui(gui);
+            });
+            this.addButton(resetButton, listenerReset);
         }
     }
 

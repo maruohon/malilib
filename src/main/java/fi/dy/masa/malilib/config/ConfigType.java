@@ -9,5 +9,7 @@ public enum ConfigType
     STRING,
     STRING_LIST,
     OPTION_LIST,
-    HOTKEY;
+    HOTKEY,
+    FILE,
+    DIRECTORY;
 }
