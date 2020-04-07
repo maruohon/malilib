@@ -42,4 +42,24 @@ public interface IConfigGuiTab
      * @return
      */
     IButtonActionListener getButtonActionListener(GuiConfigsBase gui);
+
+    /**
+     * Returns the tab by the given name from the provided list
+     * @param tabName
+     * @param list
+     * @param defaultTab the default value to return, if no matches are found in the provided list
+     * @return the first found tab by the given name, or the provided default tab if there were no matches
+     */
+    public static IConfigGuiTab getTabByNameOrDefault(String tabName, List<IConfigGuiTab> list, IConfigGuiTab defaultTab)
+    {
+        for (IConfigGuiTab tab : list)
+        {
+            if (tabName.equalsIgnoreCase(tab.getName()))
+            {
+                return tab;
+            }
+        }
+
+        return defaultTab;
+    }
 }
