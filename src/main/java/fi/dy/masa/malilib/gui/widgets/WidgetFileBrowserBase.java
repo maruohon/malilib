@@ -12,12 +12,15 @@ import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.gui.GuiBase;
+import fi.dy.masa.malilib.gui.GuiTextInputFeedback;
 import fi.dy.masa.malilib.gui.interfaces.IDirectoryCache;
 import fi.dy.masa.malilib.gui.interfaces.IDirectoryNavigator;
 import fi.dy.masa.malilib.gui.interfaces.IFileBrowserIconProvider;
 import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
 import fi.dy.masa.malilib.gui.util.FileBrowserIconProviderBase;
+import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widgets.WidgetFileBrowserBase.DirectoryEntry;
+import fi.dy.masa.malilib.util.DirectoryCreator;
 import fi.dy.masa.malilib.util.FileUtils;
 
 public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntry, WidgetDirectoryEntry> implements IDirectoryNavigator
@@ -74,6 +77,13 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
                   this.getLastSelectedEntry() != null && this.getLastSelectedEntry().getType() == DirectoryEntryType.DIRECTORY)
         {
             this.switchToDirectory(new File(this.getLastSelectedEntry().getDirectory(), this.getLastSelectedEntry().getName()));
+            return true;
+        }
+        else if (keyCode == Keyboard.KEY_N && GuiBase.isCtrlDown() && GuiBase.isShiftDown())
+        {
+            DirectoryCreator creator = new DirectoryCreator(this.getCurrentDirectory(), this);
+            GuiTextInputFeedback gui = new GuiTextInputFeedback("malilib.gui.title.create_directory", "", GuiUtils.getCurrentScreen(), creator);
+            GuiBase.openPopupGui(gui);
             return true;
         }
 
