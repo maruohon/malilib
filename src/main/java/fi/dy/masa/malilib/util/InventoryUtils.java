@@ -384,7 +384,7 @@ public class InventoryUtils
      * @param player
      * @return
      */
-    public static Object2IntOpenHashMap<ItemType> getInventoryItemCounts(Inventory inv)
+    public static Object2IntOpenHashMap<ItemType> getInventoryItemCounts(IInventory inv)
     {
         Object2IntOpenHashMap<ItemType> map = new Object2IntOpenHashMap<>();
         final int slots = inv.getSizeInventory();
@@ -419,7 +419,7 @@ public class InventoryUtils
      * @param items
      * @return
      */
-    public static Inventory getAsInventory(NonNullList<ItemStack> items)
+    public static IInventory getAsInventory(NonNullList<ItemStack> items)
     {
         Inventory inv = new Inventory(items.size());
 

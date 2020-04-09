@@ -91,7 +91,7 @@ public class PositionUtils
         {
             return Direction.DOWN;
         }
-        else if (entity.rotationYaw <= -verticalThreshold)
+        else if (entity.rotationPitch <= -verticalThreshold)
         {
             return Direction.UP;
         }

@@ -25,6 +25,10 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.BrewingStandTileEntity;
+import net.minecraft.tileentity.DispenserTileEntity;
+import net.minecraft.tileentity.FurnaceTileEntity;
+import net.minecraft.tileentity.HopperTileEntity;
 import net.minecraft.tileentity.ShulkerBoxTileEntity;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -215,19 +219,19 @@ public class InventoryOverlay
         {
             return InventoryRenderType.FIXED_54;
         }
-        else if (inv instanceof DoubleSidedInventory)
+        else if (inv instanceof FurnaceTileEntity)
         {
             return InventoryRenderType.FURNACE;
         }
-        else if (inv instanceof DoubleSidedInventory)
+        else if (inv instanceof BrewingStandTileEntity)
         {
             return InventoryRenderType.BREWING_STAND;
         }
-        else if (inv instanceof DoubleSidedInventory) // this includes the Dropper as a sub class
+        else if (inv instanceof DispenserTileEntity) // this includes the Dropper as a sub class
         {
             return InventoryRenderType.DISPENSER;
         }
-        else if (inv instanceof DoubleSidedInventory)
+        else if (inv instanceof HopperTileEntity)
         {
             return InventoryRenderType.HOPPER;
         }
@@ -357,7 +361,7 @@ public class InventoryOverlay
         return INV_PROPS_TEMP;
     }
 
-    public static void renderInventoryStacks(InventoryRenderType type, Inventory inv, int startX, int startY, int slotsPerRow, int startSlot, int maxSlots, Minecraft mc)
+    public static void renderInventoryStacks(InventoryRenderType type, IInventory inv, int startX, int startY, int slotsPerRow, int startSlot, int maxSlots, Minecraft mc)
     {
         if (type == InventoryRenderType.FURNACE)
         {

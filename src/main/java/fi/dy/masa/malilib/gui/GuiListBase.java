@@ -159,7 +159,7 @@ public abstract class GuiListBase<TYPE, WIDGET extends WidgetListEntryBase<TYPE>
     }
 
     @Override
-    public void init(Minecraft minecraftClient_1, int width, int height)
+    public void init(Minecraft mc, int width, int height)
     {
         super.init(mc, width, height);
 

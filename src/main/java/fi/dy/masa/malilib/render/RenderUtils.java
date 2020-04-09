@@ -24,7 +24,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.FilledMapItem;
@@ -1050,7 +1050,7 @@ public class RenderUtils
             GlStateManager.enableDepthTest();
             GlStateManager.enableRescaleNormal();
 
-            Inventory inv = fi.dy.masa.malilib.util.InventoryUtils.getAsInventory(items);
+            IInventory inv = fi.dy.masa.malilib.util.InventoryUtils.getAsInventory(items);
             InventoryOverlay.renderInventoryStacks(type, inv, x + props.slotOffsetX, y + props.slotOffsetY, props.slotsPerRow, 0, -1, mc());
 
             GlStateManager.disableDepthTest();
@@ -1139,7 +1139,7 @@ public class RenderUtils
         {
             Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder bufferbuilder = tessellator.getBuffer();
-            bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR_NORMAL);
+            bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.ITEM);
 
             for (Direction face : Direction.values())
             {
@@ -1191,7 +1191,7 @@ public class RenderUtils
     private static void putQuadNormal(BufferBuilder renderer, BakedQuad quad)
     {
         Vec3i direction = quad.getFace().getDirectionVec();
-        renderer.normal(direction.getX(), direction.getY(), direction.getZ());
+        renderer.putNormal(direction.getX(), direction.getY(), direction.getZ());
     }
 
     private static Minecraft mc()
