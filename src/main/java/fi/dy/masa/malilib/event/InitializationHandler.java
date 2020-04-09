@@ -20,9 +20,12 @@ public class InitializationHandler implements IInitializationDispatcher
     @Override
     public void registerInitializationHandler(IInitializationHandler handler)
     {
-        if (this.handlers.contains(handler) == false)
+        synchronized (this.handlers)
         {
-            this.handlers.add(handler);
+            if (this.handlers.contains(handler) == false)
+            {
+                this.handlers.add(handler);
+            }
         }
     }
 

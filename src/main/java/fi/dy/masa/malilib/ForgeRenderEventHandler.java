@@ -11,11 +11,14 @@ class ForgeRenderEventHandler
     @SubscribeEvent
     public void onRenderGameOverlayPost(RenderGameOverlayEvent.Post event)
     {
-        ((RenderEventHandler) RenderEventHandler.getInstance()).onRenderGameOverlayPost(event.getPartialTicks());
+        if (event.getType() == RenderGameOverlayEvent.ElementType.ALL)
+        {
+            ((RenderEventHandler) RenderEventHandler.getInstance()).onRenderGameOverlayPost(event.getPartialTicks());
+        }
     }
 
     @SubscribeEvent
-    public void onRenderTooltipPost(RenderTooltipEvent.PostText event)
+    public void onRenderTooltipPost(RenderTooltipEvent.Pre event)
     {
         ((RenderEventHandler) RenderEventHandler.getInstance()).onRenderTooltipLast(event.getStack(), event.getX(), event.getY());
     }

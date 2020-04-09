@@ -26,7 +26,7 @@ public class WorldUtils
         if (mc.isSingleplayer() && mc.world != null)
         {
             IntegratedServer server = mc.getIntegratedServer();
-            return server.func_71218_a(mc.world.dimension.getType()); // getWorld
+            return server.getWorld(mc.world.dimension.getType());
         }
         else
         {
@@ -50,7 +50,7 @@ public class WorldUtils
 
         if (mc.world != null && server != null)
         {
-            ServerWorld world = server.func_71218_a(mc.world.dimension.getType());
+            ServerWorld world = server.getWorld(mc.world.dimension.getType());
             chunk = world.getChunk(chunkX, chunkZ); // getChunk()
         }
 

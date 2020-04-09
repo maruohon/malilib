@@ -26,14 +26,14 @@ configFile.withReader {
 }
 
 minecraft {
-    mappings channel: 'stable', version: "${project.mappings_version}"
+    mappings channel: config.mcp_mappings_channel, version: config.mcp_mappings_version
 
     //makeObfSourceJar = false
 
     ext.mod_version = config.mod_version
 
-    if (mod_version.endsWith('-dev')) {
-        mod_version = mod_version + "." + new Date().format('yyyyMMdd.HHmmss')
+    if (config.mod_version.endsWith('-dev')) {
+        config.mod_version = config.mod_version + "." + new Date().format('yyyyMMdd.HHmmss')
     }
 
     //replaceIn "MaLiLibReference.java"
@@ -41,7 +41,7 @@ minecraft {
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:${project.forge_version}"
+    minecraft 'net.minecraftforge:forge:' + config.minecraft_version + '-' + config.forge_version
 }
 
 compileJava {
@@ -60,7 +60,7 @@ sourceSets {
 
 group = config.group + "." + config.mod_id // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = config.mod_file_name + '-' + config.minecraft_version_out
-version = project.minecraft.mod_version
+version = project.config.mod_version
 
 /**
  * This section allows you to customise your generated jar (litemod) file. By
@@ -100,21 +100,8 @@ processResources
     exclude '**/xcf'
 
     // this will ensure that this task is redone when the versions change.
-    inputs.property "mod_version", project.minecraft.mod_version
+    inputs.property "mod_version", project.config.mod_version
     inputs.property "minecraft_version", project.config.minecraft_version
-
-    // replace stuff in mcmod.info, nothing else
-    from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info'
-                
-        // replace version and mcversion
-        expand 'mod_version': project.minecraft.mod_version, 'minecraft_version': project.config.minecraft_version
-    }
-      
-    // copy everything else, thats not the mcmod.info
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
-    }
 }
 
 task deobfJar(type: Jar) {
