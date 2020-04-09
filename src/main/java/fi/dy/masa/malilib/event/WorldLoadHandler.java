@@ -3,10 +3,10 @@ package fi.dy.masa.malilib.event;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.world.ClientWorld;
 import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.interfaces.IWorldLoadListener;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.world.ClientWorld;
 
 public class WorldLoadHandler implements IWorldLoadManager
 {
@@ -53,7 +53,7 @@ public class WorldLoadHandler implements IWorldLoadManager
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public void onWorldLoadPre(@Nullable ClientWorld worldBefore, @Nullable ClientWorld worldAfter, MinecraftClient mc)
+    public void onWorldLoadPre(@Nullable ClientWorld worldBefore, @Nullable ClientWorld worldAfter, Minecraft mc)
     {
         if (this.worldLoadPreHandlers.isEmpty() == false)
         {
@@ -67,7 +67,7 @@ public class WorldLoadHandler implements IWorldLoadManager
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public void onWorldLoadPost(@Nullable ClientWorld worldBefore, @Nullable ClientWorld worldAfter, MinecraftClient mc)
+    public void onWorldLoadPost(@Nullable ClientWorld worldBefore, @Nullable ClientWorld worldAfter, Minecraft mc)
     {
         // Save all the configs when exiting a world
         if (worldAfter == null)

@@ -1,17 +1,17 @@
 package fi.dy.masa.malilib.util;
 
 import javax.annotation.Nullable;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.server.integrated.IntegratedServer;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.WorldChunk;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.server.ServerWorld;
 
 public class WorldUtils
 {
     public static int getDimensionId(World world)
     {
-        return world.dimension.getType().getRawId();
+        return world.dimension.getType().getId();
     }
 
     /**
@@ -21,13 +21,12 @@ public class WorldUtils
      * @return
      */
     @Nullable
-    public static World getBestWorld(MinecraftClient mc)
+    public static World getBestWorld(Minecraft mc)
     {
-        IntegratedServer server = mc.getServer();
-
-        if (mc.world != null && server != null)
+        if (mc.isSingleplayer() && mc.world != null)
         {
-            return server.getWorld(mc.world.dimension.getType());
+            IntegratedServer server = mc.getIntegratedServer();
+            return server.func_71218_a(mc.world.dimension.getType()); // getWorld
         }
         else
         {
@@ -44,15 +43,15 @@ public class WorldUtils
      * @return
      */
     @Nullable
-    public static WorldChunk getBestChunk(int chunkX, int chunkZ, MinecraftClient mc)
+    public static Chunk getBestChunk(int chunkX, int chunkZ, Minecraft mc)
     {
-        IntegratedServer server = mc.getServer();
-        WorldChunk chunk = null;
+        IntegratedServer server = mc.getIntegratedServer();
+        Chunk chunk = null;
 
         if (mc.world != null && server != null)
         {
-            ServerWorld world = server.getWorld(mc.world.dimension.getType());
-            chunk = world.method_8497(chunkX, chunkZ); // getChunk()
+            ServerWorld world = server.func_71218_a(mc.world.dimension.getType());
+            chunk = world.getChunk(chunkX, chunkZ); // getChunk()
         }
 
         if (chunk != null)
@@ -60,6 +59,6 @@ public class WorldUtils
             return chunk;
         }
 
-        return mc.world.method_8497(chunkX, chunkZ);
+        return mc.world.getChunk(chunkX, chunkZ);
     }
 }

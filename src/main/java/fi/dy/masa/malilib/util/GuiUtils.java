@@ -1,6 +1,10 @@
 package fi.dy.masa.malilib.util;
 
 import javax.annotation.Nullable;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.GuiTextFieldDouble;
 import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
@@ -12,37 +16,33 @@ import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
 import fi.dy.masa.malilib.interfaces.ICoordinateValueModifier;
 import fi.dy.masa.malilib.util.PositionUtils.CoordinateType;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 
 public class GuiUtils
 {
     public static int getScaledWindowWidth()
     {
-        return MinecraftClient.getInstance().window.getScaledWidth();
+        return Minecraft.getInstance().mainWindow.getScaledWidth();
     }
 
     public static int getScaledWindowHeight()
     {
-        return MinecraftClient.getInstance().window.getScaledHeight();
+        return Minecraft.getInstance().mainWindow.getScaledHeight();
     }
 
     public static int getDisplayWidth()
     {
-        return MinecraftClient.getInstance().window.getWidth();
+        return Minecraft.getInstance().mainWindow.getWidth();
     }
 
     public static int getDisplayHeight()
     {
-        return MinecraftClient.getInstance().window.getHeight();
+        return Minecraft.getInstance().mainWindow.getHeight();
     }
 
     @Nullable
     public static Screen getCurrentScreen()
     {
-        return MinecraftClient.getInstance().currentScreen;
+        return Minecraft.getInstance().currentScreen;
     }
 
     public static void createBlockPosInputsVertical(int x, int y, int textFieldWidth, BlockPos pos,
@@ -66,7 +66,7 @@ public class GuiUtils
     {
         x = addLabel(x, y, type, gui);
 
-        GuiTextFieldInteger textField = new GuiTextFieldInteger(x, y + 1, textFieldWidth, 14, MinecraftClient.getInstance().textRenderer);
+        GuiTextFieldInteger textField = new GuiTextFieldInteger(x, y + 1, textFieldWidth, 14, Minecraft.getInstance().fontRenderer);
         textField.setText(getCoordinateValueString(type, pos));
 
         addTextFieldAndButton(x + textFieldWidth + 4, y, type, modifier, textField, addButton, gui);
@@ -77,7 +77,7 @@ public class GuiUtils
     {
         x = addLabel(x, y, type, gui);
 
-        GuiTextFieldDouble textField = new GuiTextFieldDouble(x, y + 1, textFieldWidth, 14, MinecraftClient.getInstance().textRenderer);
+        GuiTextFieldDouble textField = new GuiTextFieldDouble(x, y + 1, textFieldWidth, 14, Minecraft.getInstance().fontRenderer);
         textField.setText(getCoordinateValueString(type, pos));
 
         addTextFieldAndButton(x + textFieldWidth + 4, y, type, modifier, textField, addButton, gui);

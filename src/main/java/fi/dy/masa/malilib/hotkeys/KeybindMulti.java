@@ -7,6 +7,9 @@ import java.util.Iterator;
 import java.util.List;
 import javax.annotation.Nullable;
 import org.lwjgl.glfw.GLFW;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.client.util.InputMappings;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.hotkeys.KeybindSettings.Context;
@@ -14,9 +17,6 @@ import fi.dy.masa.malilib.util.GuiUtils;
 import fi.dy.masa.malilib.util.IF3KeyStateSetter;
 import fi.dy.masa.malilib.util.InfoUtils;
 import fi.dy.masa.malilib.util.KeyCodes;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.options.KeyBinding;
-import net.minecraft.client.util.InputUtil;
 
 public class KeybindMulti implements IKeybind
 {
@@ -174,7 +174,7 @@ public class KeybindMulti implements IKeybind
             if (this.keyCodes.contains(KeyCodes.KEY_F3))
             {
                 // Prevent the debug GUI from opening after the F3 key is released
-                ((IF3KeyStateSetter) MinecraftClient.getInstance().keyboard).setF3KeyState(true);
+                ((IF3KeyStateSetter) Minecraft.getInstance().keyboardListener).setF3KeyState(true);
             }
 
             KeyAction activateOn = this.settings.getActivateOn();
@@ -327,8 +327,8 @@ public class KeybindMulti implements IKeybind
 
     public static int getKeyCode(KeyBinding keybind)
     {
-        InputUtil.KeyCode input = InputUtil.fromName(keybind.getName());
-        return input.getCategory() == InputUtil.Type.MOUSE ? input.getKeyCode() - 100 : input.getKeyCode();
+        InputMappings.Input input = InputMappings.getInputByName(keybind.getTranslationKey());
+        return input.getType() == InputMappings.Type.MOUSE ? input.getKeyCode() - 100 : input.getKeyCode();
     }
 
     public static boolean hotkeyMatchesKeybind(IHotkey hotkey, KeyBinding keybind)
@@ -410,7 +410,7 @@ public class KeybindMulti implements IKeybind
 
     public static boolean isKeyDown(int keyCode)
     {
-        long window = MinecraftClient.getInstance().window.getHandle();
+        long window = Minecraft.getInstance().mainWindow.getHandle();
 
         if (keyCode >= 0)
         {

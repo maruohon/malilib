@@ -1,7 +1,8 @@
 package fi.dy.masa.malilib.util;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.text.ChatType;
+import net.minecraft.util.text.TranslationTextComponent;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.Message.MessageType;
 import fi.dy.masa.malilib.gui.interfaces.IMessageConsumer;
@@ -137,7 +138,7 @@ public class InfoUtils
 
     public static void printActionbarMessage(String key, Object... args)
     {
-        MinecraftClient.getInstance().inGameHud.addChatMessage(net.minecraft.network.MessageType.GAME_INFO, new TranslatableText(key, args));
+        Minecraft.getInstance().ingameGUI.addChatMessage(ChatType.GAME_INFO, new TranslationTextComponent(key, args));
     }
 
     /**
@@ -188,8 +189,8 @@ public class InfoUtils
         @Override
         public void setString(String string)
         {
-            TranslatableText message = new TranslatableText(string);
-            MinecraftClient.getInstance().inGameHud.addChatMessage(net.minecraft.network.MessageType.GAME_INFO, message);
+            TranslationTextComponent message = new TranslationTextComponent(string);
+            Minecraft.getInstance().ingameGUI.addChatMessage(ChatType.GAME_INFO, message);
         }
     }
 }

@@ -5,17 +5,17 @@ import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
+import net.minecraft.client.audio.SimpleSound;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvents;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.widgets.WidgetBase;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
-import net.minecraft.client.sound.PositionedSoundInstance;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.Identifier;
 
 public abstract class ButtonBase extends WidgetBase
 {
-    protected static final Identifier BUTTON_TEXTURES = new Identifier("minecraft", "textures/gui/widgets.png");
+    protected static final ResourceLocation BUTTON_TEXTURES = new ResourceLocation("minecraft", "textures/gui/widgets.png");
 
     protected final List<String> hoverStrings = new ArrayList<>();
     protected final ImmutableList<String> hoverHelp;
@@ -73,7 +73,7 @@ public abstract class ButtonBase extends WidgetBase
     @Override
     protected boolean onMouseClickedImpl(int mouseX, int mouseY, int mouseButton)
     {
-        this.mc.getSoundManager().play(PositionedSoundInstance.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+        this.mc.getSoundHandler().play(SimpleSound.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
 
         if (this.actionListener != null)
         {

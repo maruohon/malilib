@@ -1,8 +1,8 @@
 package fi.dy.masa.malilib.util;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.registries.ForgeRegistries;
 
 /**
  * A wrapper around ItemStack, that implements hashCode() and equals().
@@ -81,7 +81,7 @@ public class ItemType
                 return false;
             }
 
-            return this.checkNBT() == false || ItemStack.areTagsEqual(this.stack, other.stack);
+            return this.checkNBT() == false || ItemStack.areItemStackTagsEqual(this.stack, other.stack);
         }
 
         return true;
@@ -92,12 +92,12 @@ public class ItemType
     {
         if (this.checkNBT())
         {
-            Identifier rl = Registry.ITEM.getId(this.stack.getItem());
+            ResourceLocation rl = ForgeRegistries.ITEMS.getKey(this.stack.getItem());
             return rl.toString() + " " + this.stack.getTag();
         }
         else
         {
-            Identifier rl = Registry.ITEM.getId(this.stack.getItem());
+            ResourceLocation rl = ForgeRegistries.ITEMS.getKey(this.stack.getItem());
             return rl.toString();
         }
     }

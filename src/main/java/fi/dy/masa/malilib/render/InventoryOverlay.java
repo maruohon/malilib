@@ -11,51 +11,47 @@ import net.minecraft.block.DispenserBlock;
 import net.minecraft.block.FurnaceBlock;
 import net.minecraft.block.HopperBlock;
 import net.minecraft.block.ShulkerBoxBlock;
-import net.minecraft.block.entity.BrewingStandBlockEntity;
-import net.minecraft.block.entity.DispenserBlockEntity;
-import net.minecraft.block.entity.FurnaceBlockEntity;
-import net.minecraft.block.entity.HopperBlockEntity;
-import net.minecraft.block.entity.ShulkerBoxBlockEntity;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.AtlasTexture;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.inventory.BasicInventory;
-import net.minecraft.inventory.DoubleInventory;
+import net.minecraft.inventory.DoubleSidedInventory;
+import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.DefaultedList;
-import net.minecraft.util.Identifier;
+import net.minecraft.tileentity.ShulkerBoxTileEntity;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.ITextComponent;
 import fi.dy.masa.malilib.gui.GuiBase;
 
 public class InventoryOverlay
 {
-    public static final Identifier TEXTURE_BREWING_STAND    = new Identifier("textures/gui/container/brewing_stand.png");
-    public static final Identifier TEXTURE_DISPENSER        = new Identifier("textures/gui/container/dispenser.png");
-    public static final Identifier TEXTURE_DOUBLE_CHEST     = new Identifier("textures/gui/container/generic_54.png");
-    public static final Identifier TEXTURE_FURNACE          = new Identifier("textures/gui/container/furnace.png");
-    public static final Identifier TEXTURE_HOPPER           = new Identifier("textures/gui/container/hopper.png");
-    public static final Identifier TEXTURE_PLAYER_INV       = new Identifier("textures/gui/container/hopper.png");
-    public static final Identifier TEXTURE_SINGLE_CHEST     = new Identifier("textures/gui/container/shulker_box.png");
+    public static final ResourceLocation TEXTURE_BREWING_STAND    = new ResourceLocation("textures/gui/container/brewing_stand.png");
+    public static final ResourceLocation TEXTURE_DISPENSER        = new ResourceLocation("textures/gui/container/dispenser.png");
+    public static final ResourceLocation TEXTURE_DOUBLE_CHEST     = new ResourceLocation("textures/gui/container/generic_54.png");
+    public static final ResourceLocation TEXTURE_FURNACE          = new ResourceLocation("textures/gui/container/furnace.png");
+    public static final ResourceLocation TEXTURE_HOPPER           = new ResourceLocation("textures/gui/container/hopper.png");
+    public static final ResourceLocation TEXTURE_PLAYER_INV       = new ResourceLocation("textures/gui/container/hopper.png");
+    public static final ResourceLocation TEXTURE_SINGLE_CHEST     = new ResourceLocation("textures/gui/container/shulker_box.png");
 
     public static final InventoryProperties INV_PROPS_TEMP = new InventoryProperties();
 
     private static final String[] EMPTY_SLOT_TEXTURES = new String[] { "item/empty_armor_slot_boots", "item/empty_armor_slot_leggings", "item/empty_armor_slot_chestplate", "item/empty_armor_slot_helmet" };
-    private static final EquipmentSlot[] VALID_EQUIPMENT_SLOTS = new EquipmentSlot[] { EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET };
+    private static final EquipmentSlotType[] VALID_EQUIPMENT_SLOTS = new EquipmentSlotType[] { EquipmentSlotType.HEAD, EquipmentSlotType.CHEST, EquipmentSlotType.LEGS, EquipmentSlotType.FEET };
 
-    public static void renderInventoryBackground(InventoryRenderType type, int x, int y, int slotsPerRow, int totalSlots, MinecraftClient mc)
+    public static void renderInventoryBackground(InventoryRenderType type, int x, int y, int slotsPerRow, int totalSlots, Minecraft mc)
     {
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBufferBuilder();
-        buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_UV);
+        BufferBuilder buffer = tessellator.getBuffer();
+        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
 
         if (type == InventoryRenderType.FURNACE)
         {
@@ -143,7 +139,7 @@ public class InventoryOverlay
         tessellator.draw();
     }
 
-    public static void renderInventoryBackground27(int x, int y, BufferBuilder buffer, MinecraftClient mc)
+    public static void renderInventoryBackground27(int x, int y, BufferBuilder buffer, Minecraft mc)
     {
         RenderUtils.bindTexture(TEXTURE_SINGLE_CHEST);
         RenderUtils.drawTexturedRectBatched(x      , y     ,   0,   0,   7,  61, buffer); // left (top)
@@ -153,7 +149,7 @@ public class InventoryOverlay
         RenderUtils.drawTexturedRectBatched(x +   7, y +  7,   7,  17, 162,  54, buffer); // middle
     }
 
-    public static void renderInventoryBackground54(int x, int y, BufferBuilder buffer, MinecraftClient mc)
+    public static void renderInventoryBackground54(int x, int y, BufferBuilder buffer, Minecraft mc)
     {
         RenderUtils.bindTexture(TEXTURE_DOUBLE_CHEST);
         RenderUtils.drawTexturedRectBatched(x      , y      ,   0,   0,   7, 115, buffer); // left (top)
@@ -168,8 +164,8 @@ public class InventoryOverlay
         RenderUtils.color(1f, 1f, 1f, 1f);
 
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBufferBuilder();
-        buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_UV);
+        BufferBuilder buffer = tessellator.getBuffer();
+        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
 
         RenderUtils.bindTexture(TEXTURE_DISPENSER);
 
@@ -189,9 +185,9 @@ public class InventoryOverlay
 
         tessellator.draw();
 
-        RenderUtils.bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
+        RenderUtils.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
 
-        if (entity.getEquippedStack(EquipmentSlot.OFFHAND).isEmpty())
+        if (entity.getItemStackFromSlot(EquipmentSlotType.OFFHAND).isEmpty())
         {
             String texture = "minecraft:item/empty_armor_slot_shield";
             RenderUtils.renderSprite(x + 28 + 1, y + 3 * 18 + 7 + 1, 16, 16, texture);
@@ -199,43 +195,43 @@ public class InventoryOverlay
 
         for (int i = 0, xOff = 7, yOff = 7; i < 4; ++i, yOff += 18)
         {
-            final EquipmentSlot eqSlot = VALID_EQUIPMENT_SLOTS[i];
+            final EquipmentSlotType eqSlot = VALID_EQUIPMENT_SLOTS[i];
 
-            if (entity.getEquippedStack(eqSlot).isEmpty())
+            if (entity.getItemStackFromSlot(eqSlot).isEmpty())
             {
-                String texture = EMPTY_SLOT_TEXTURES[eqSlot.getEntitySlotId()];
+                String texture = EMPTY_SLOT_TEXTURES[eqSlot.getIndex()];
                 RenderUtils.renderSprite(x + xOff + 1, y + yOff + 1, 16, 16, texture);
             }
         }
     }
 
-    public static InventoryRenderType getInventoryType(Inventory inv)
+    public static InventoryRenderType getInventoryType(IInventory inv)
     {
-        if (inv instanceof ShulkerBoxBlockEntity)
+        if (inv instanceof ShulkerBoxTileEntity)
         {
             return InventoryRenderType.FIXED_27;
         }
-        else if (inv instanceof DoubleInventory)
+        else if (inv instanceof DoubleSidedInventory)
         {
             return InventoryRenderType.FIXED_54;
         }
-        else if (inv instanceof FurnaceBlockEntity)
+        else if (inv instanceof DoubleSidedInventory)
         {
             return InventoryRenderType.FURNACE;
         }
-        else if (inv instanceof BrewingStandBlockEntity)
+        else if (inv instanceof DoubleSidedInventory)
         {
             return InventoryRenderType.BREWING_STAND;
         }
-        else if (inv instanceof DispenserBlockEntity) // this includes the Dropper as a sub class
+        else if (inv instanceof DoubleSidedInventory) // this includes the Dropper as a sub class
         {
             return InventoryRenderType.DISPENSER;
         }
-        else if (inv instanceof HopperBlockEntity)
+        else if (inv instanceof DoubleSidedInventory)
         {
             return InventoryRenderType.HOPPER;
         }
-        else if (inv.getClass() == BasicInventory.class) // FIXME
+        else if (inv.getClass() == Inventory.class) // FIXME
         {
             return InventoryRenderType.HORSE;
         }
@@ -361,25 +357,25 @@ public class InventoryOverlay
         return INV_PROPS_TEMP;
     }
 
-    public static void renderInventoryStacks(InventoryRenderType type, Inventory inv, int startX, int startY, int slotsPerRow, int startSlot, int maxSlots, MinecraftClient mc)
+    public static void renderInventoryStacks(InventoryRenderType type, Inventory inv, int startX, int startY, int slotsPerRow, int startSlot, int maxSlots, Minecraft mc)
     {
         if (type == InventoryRenderType.FURNACE)
         {
-            renderStackAt(inv.getInvStack(0), startX +   8, startY +  8, 1, mc);
-            renderStackAt(inv.getInvStack(1), startX +   8, startY + 44, 1, mc);
-            renderStackAt(inv.getInvStack(2), startX +  68, startY + 26, 1, mc);
+            renderStackAt(inv.getStackInSlot(0), startX +   8, startY +  8, 1, mc);
+            renderStackAt(inv.getStackInSlot(1), startX +   8, startY + 44, 1, mc);
+            renderStackAt(inv.getStackInSlot(2), startX +  68, startY + 26, 1, mc);
         }
         else if (type == InventoryRenderType.BREWING_STAND)
         {
-            renderStackAt(inv.getInvStack(0), startX +  47, startY + 42, 1, mc);
-            renderStackAt(inv.getInvStack(1), startX +  70, startY + 49, 1, mc);
-            renderStackAt(inv.getInvStack(2), startX +  93, startY + 42, 1, mc);
-            renderStackAt(inv.getInvStack(3), startX +  70, startY +  8, 1, mc);
-            renderStackAt(inv.getInvStack(4), startX +   8, startY +  8, 1, mc);
+            renderStackAt(inv.getStackInSlot(0), startX +  47, startY + 42, 1, mc);
+            renderStackAt(inv.getStackInSlot(1), startX +  70, startY + 49, 1, mc);
+            renderStackAt(inv.getStackInSlot(2), startX +  93, startY + 42, 1, mc);
+            renderStackAt(inv.getStackInSlot(3), startX +  70, startY +  8, 1, mc);
+            renderStackAt(inv.getStackInSlot(4), startX +   8, startY +  8, 1, mc);
         }
         else
         {
-            final int slots = inv.getInvSize();
+            final int slots = inv.getSizeInventory();
             int x = startX;
             int y = startY;
 
@@ -392,7 +388,7 @@ public class InventoryOverlay
             {
                 for (int column = 0; column < slotsPerRow && slot < slots && i < maxSlots; ++column, ++slot, ++i)
                 {
-                    ItemStack stack = inv.getInvStack(slot);
+                    ItemStack stack = inv.getStackInSlot(slot);
 
                     if (stack.isEmpty() == false)
                     {
@@ -408,12 +404,12 @@ public class InventoryOverlay
         }
     }
 
-    public static void renderEquipmentStacks(LivingEntity entity, int x, int y, MinecraftClient mc)
+    public static void renderEquipmentStacks(LivingEntity entity, int x, int y, Minecraft mc)
     {
         for (int i = 0, xOff = 7, yOff = 7; i < 4; ++i, yOff += 18)
         {
-            final EquipmentSlot eqSlot = VALID_EQUIPMENT_SLOTS[i];
-            ItemStack stack = entity.getEquippedStack(eqSlot);
+            final EquipmentSlotType eqSlot = VALID_EQUIPMENT_SLOTS[i];
+            ItemStack stack = entity.getItemStackFromSlot(eqSlot);
 
             if (stack.isEmpty() == false)
             {
@@ -421,14 +417,14 @@ public class InventoryOverlay
             }
         }
 
-        ItemStack stack = entity.getEquippedStack(EquipmentSlot.MAINHAND);
+        ItemStack stack = entity.getItemStackFromSlot(EquipmentSlotType.MAINHAND);
 
         if (stack.isEmpty() == false)
         {
             renderStackAt(stack, x + 28, y + 2 * 18 + 7 + 1, 1, mc);
         }
 
-        stack = entity.getEquippedStack(EquipmentSlot.OFFHAND);
+        stack = entity.getItemStackFromSlot(EquipmentSlotType.OFFHAND);
 
         if (stack.isEmpty() == false)
         {
@@ -436,7 +432,7 @@ public class InventoryOverlay
         }
     }
 
-    public static void renderItemStacks(DefaultedList<ItemStack> items, int startX, int startY, int slotsPerRow, int startSlot, int maxSlots, MinecraftClient mc)
+    public static void renderItemStacks(NonNullList<ItemStack> items, int startX, int startY, int slotsPerRow, int startSlot, int maxSlots, Minecraft mc)
     {
         final int slots = items.size();
         int x = startX;
@@ -466,7 +462,7 @@ public class InventoryOverlay
         }
     }
 
-    public static void renderStackAt(ItemStack stack, float x, float y, float scale, MinecraftClient mc)
+    public static void renderStackAt(ItemStack stack, float x, float y, float scale, Minecraft mc)
     {
         GlStateManager.pushMatrix();
         GlStateManager.translatef(x, y, 0);
@@ -475,26 +471,26 @@ public class InventoryOverlay
 
         RenderUtils.enableGuiItemLighting();
 
-        mc.getItemRenderer().zOffset += 100;
-        mc.getItemRenderer().renderGuiItem(mc.player, stack, 0, 0);
-        mc.getItemRenderer().renderGuiItemOverlay(mc.textRenderer, stack, 0, 0, null);
-        mc.getItemRenderer().zOffset -= 100;
+        mc.getItemRenderer().zLevel += 100;
+        mc.getItemRenderer().renderItemAndEffectIntoGUI(mc.player, stack, 0, 0);
+        mc.getItemRenderer().renderItemOverlayIntoGUI(mc.fontRenderer, stack, 0, 0, null);
+        mc.getItemRenderer().zLevel -= 100;
 
         //GlStateManager.disableBlend();
         RenderUtils.disableItemLighting();
         GlStateManager.popMatrix();
     }
 
-    public static void renderStackToolTip(int x, int y, ItemStack stack, MinecraftClient mc)
+    public static void renderStackToolTip(int x, int y, ItemStack stack, Minecraft mc)
     {
-        List<Text> list = stack.getTooltip(mc.player, mc.options.advancedItemTooltips ? TooltipContext.Default.ADVANCED : TooltipContext.Default.NORMAL);
+        List<ITextComponent> list = stack.getTooltip(mc.player, mc.gameSettings.advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL);
         List<String> lines = new ArrayList<>();
 
         for (int i = 0; i < list.size(); ++i)
         {
             if (i == 0)
             {
-                lines.add(stack.getRarity().formatting + list.get(i).getString());
+                lines.add(stack.getRarity().color + list.get(i).getString());
             }
             else
             {

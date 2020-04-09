@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.gui;
 import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.render.RenderUtils;
-import net.minecraft.util.Identifier;
+import net.minecraft.util.ResourceLocation;
 
 public enum MaLiLibIcons implements IGuiIcon
 {
@@ -16,7 +16,7 @@ public enum MaLiLibIcons implements IGuiIcon
     BTN_PLUSMINUS_16    (153,  32, 16, 16),
     SEARCH              (201,   0, 12, 12, 0, 0);
 
-    public static final Identifier TEXTURE = new Identifier(MaLiLibReference.MOD_ID, "textures/gui/gui_widgets.png");
+    public static final ResourceLocation TEXTURE = new ResourceLocation(MaLiLibReference.MOD_ID, "textures/gui/gui_widgets.png");
 
     private final int u;
     private final int v;
@@ -86,7 +86,7 @@ public enum MaLiLibIcons implements IGuiIcon
     }
 
     @Override
-    public Identifier getTexture()
+    public ResourceLocation getTexture()
     {
         return TEXTURE;
     }

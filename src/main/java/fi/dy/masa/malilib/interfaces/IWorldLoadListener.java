@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.interfaces;
 
 import javax.annotation.Nullable;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.world.ClientWorld;
 
 public interface IWorldLoadListener
@@ -13,7 +13,7 @@ public interface IWorldLoadListener
      * @param worldAfter the new world reference that is going to get assigned
      * @param mc
      */
-    default void onWorldLoadPre(@Nullable ClientWorld worldBefore, @Nullable ClientWorld worldAfter, MinecraftClient mc) {}
+    default void onWorldLoadPre(@Nullable ClientWorld worldBefore, @Nullable ClientWorld worldAfter, Minecraft mc) {}
 
     /**
      * Called after the client world reference has been changed
@@ -21,5 +21,5 @@ public interface IWorldLoadListener
      * @param worldAfter the new world reference that is going to get assigned
      * @param mc
      */
-    default void onWorldLoadPost(@Nullable ClientWorld worldBefore, @Nullable ClientWorld worldAfter, MinecraftClient mc) {}
+    default void onWorldLoadPost(@Nullable ClientWorld worldBefore, @Nullable ClientWorld worldAfter, Minecraft mc) {}
 }

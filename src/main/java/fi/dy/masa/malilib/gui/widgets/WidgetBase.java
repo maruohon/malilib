@@ -1,14 +1,14 @@
 package fi.dy.masa.malilib.gui.widgets;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.render.RenderUtils;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.util.Identifier;
 
 public abstract class WidgetBase
 {
-    protected final MinecraftClient mc;
-    protected final TextRenderer textRenderer;
+    protected final Minecraft mc;
+    protected final FontRenderer textRenderer;
     protected final int fontHeight;
     protected int x;
     protected int y;
@@ -22,9 +22,9 @@ public abstract class WidgetBase
         this.y = y;
         this.width = width;
         this.height = height;
-        this.mc = MinecraftClient.getInstance();
-        this.textRenderer = this.mc.textRenderer;
-        this.fontHeight = this.textRenderer.fontHeight;
+        this.mc = Minecraft.getInstance();
+        this.textRenderer = this.mc.fontRenderer;
+        this.fontHeight = this.textRenderer.FONT_HEIGHT;
     }
 
     public int getX()
@@ -151,7 +151,7 @@ public abstract class WidgetBase
         return this.isMouseOver(mouseX, mouseY);
     }
 
-    public void bindTexture(Identifier texture)
+    public void bindTexture(ResourceLocation texture)
     {
         RenderUtils.bindTexture(texture);
     }
@@ -163,22 +163,22 @@ public abstract class WidgetBase
 
     public void drawString(int x, int y, int color, String text)
     {
-        this.textRenderer.draw(text, x, y, color);
+        this.textRenderer.drawString(text, x, y, color);
     }
 
     public void drawCenteredString(int x, int y, int color, String text)
     {
-        this.textRenderer.draw(text, x - this.getStringWidth(text) / 2, y, color);
+        this.textRenderer.drawString(text, x - this.getStringWidth(text) / 2, y, color);
     }
 
     public void drawStringWithShadow(int x, int y, int color, String text)
     {
-        this.textRenderer.drawWithShadow(text, x, y, color);
+        this.textRenderer.drawStringWithShadow(text, x, y, color);
     }
 
     public void drawCenteredStringWithShadow(int x, int y, int color, String text)
     {
-        this.textRenderer.drawWithShadow(text, x - this.getStringWidth(text) / 2, y, color);
+        this.textRenderer.drawStringWithShadow(text, x - this.getStringWidth(text) / 2, y, color);
     }
 
     public void render(int mouseX, int mouseY, boolean selected)

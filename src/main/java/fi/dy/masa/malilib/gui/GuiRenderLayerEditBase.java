@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.gui;
 
+import net.minecraft.util.Direction;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
@@ -10,7 +11,6 @@ import fi.dy.masa.malilib.gui.widgets.WidgetCheckBox;
 import fi.dy.masa.malilib.util.LayerMode;
 import fi.dy.masa.malilib.util.LayerRange;
 import fi.dy.masa.malilib.util.StringUtils;
-import net.minecraft.util.math.Direction;
 
 public abstract class GuiRenderLayerEditBase extends GuiBase
 {

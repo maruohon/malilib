@@ -1,9 +1,9 @@
 package fi.dy.masa.malilib.util;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.AxisDirection;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Direction.AxisDirection;
 import net.minecraft.util.math.Vec3d;
 
 public class PositionUtils
@@ -87,11 +87,11 @@ public class PositionUtils
      */
     public static Direction getClosestLookingDirection(Entity entity, float verticalThreshold)
     {
-        if (entity.pitch >= verticalThreshold)
+        if (entity.rotationPitch >= verticalThreshold)
         {
             return Direction.DOWN;
         }
-        else if (entity.yaw <= -verticalThreshold)
+        else if (entity.rotationYaw <= -verticalThreshold)
         {
             return Direction.UP;
         }
@@ -119,29 +119,29 @@ public class PositionUtils
      */
     public static BlockPos getPositionInfrontOfEntity(Entity entity, float verticalThreshold)
     {
-        BlockPos pos = new BlockPos(entity.x, entity.y, entity.z);
+        BlockPos pos = new BlockPos(entity.posX, entity.posY, entity.posZ);
 
-        if (entity.pitch >= verticalThreshold)
+        if (entity.rotationPitch >= verticalThreshold)
         {
             return pos.down();
         }
-        else if (entity.pitch <= -verticalThreshold)
+        else if (entity.rotationPitch <= -verticalThreshold)
         {
-            return new BlockPos(entity.x, Math.ceil(entity.getBoundingBox().maxY), entity.z);
+            return new BlockPos(entity.posX, Math.ceil(entity.getBoundingBox().maxY), entity.posZ);
         }
 
-        double y = Math.floor(entity.y + entity.getStandingEyeHeight());
+        double y = Math.floor(entity.posY + entity.getEyeHeight());
 
         switch (entity.getHorizontalFacing())
         {
             case EAST:
-                return new BlockPos((int) Math.ceil( entity.x + entity.getWidth() / 2),     (int) y, (int) Math.floor(entity.z));
+                return new BlockPos((int) Math.ceil( entity.posX + entity.getWidth() / 2),     (int) y, (int) Math.floor(entity.posZ));
             case WEST:
-                return new BlockPos((int) Math.floor(entity.x - entity.getWidth() / 2) - 1, (int) y, (int) Math.floor(entity.z));
+                return new BlockPos((int) Math.floor(entity.posX - entity.getWidth() / 2) - 1, (int) y, (int) Math.floor(entity.posZ));
             case SOUTH:
-                return new BlockPos((int) Math.floor(entity.x), (int) y, (int) Math.ceil( entity.z + entity.getWidth() / 2)    );
+                return new BlockPos((int) Math.floor(entity.posX), (int) y, (int) Math.ceil( entity.posZ + entity.getWidth() / 2)    );
             case NORTH:
-                return new BlockPos((int) Math.floor(entity.x), (int) y, (int) Math.floor(entity.z - entity.getWidth() / 2) - 1);
+                return new BlockPos((int) Math.floor(entity.posX), (int) y, (int) Math.floor(entity.posZ - entity.getWidth() / 2) - 1);
             default:
         }
 
@@ -247,12 +247,12 @@ public class PositionUtils
                 break;
             case NORTH:
             case SOUTH:
-                posH = originalSide.getDirection() == AxisDirection.POSITIVE ? x : 1.0d - x;
+                posH = originalSide.getAxisDirection() == AxisDirection.POSITIVE ? x : 1.0d - x;
                 posV = y;
                 break;
             case WEST:
             case EAST:
-                posH = originalSide.getDirection() == AxisDirection.NEGATIVE ? z : 1.0d - z;
+                posH = originalSide.getAxisDirection() == AxisDirection.NEGATIVE ? z : 1.0d - z;
                 posV = y;
                 break;
         }
@@ -282,7 +282,7 @@ public class PositionUtils
             {
                 if (offH > offV)
                 {
-                    return posH < 0.5d ? playerFacingH.rotateYCounterclockwise() : playerFacingH.rotateYClockwise();
+                    return posH < 0.5d ? playerFacingH.rotateYCCW() : playerFacingH.rotateY();
                 }
                 else
                 {
@@ -300,7 +300,7 @@ public class PositionUtils
             {
                 if (offH > offV)
                 {
-                    return posH < 0.5d ? side.rotateYClockwise() : side.rotateYCounterclockwise();
+                    return posH < 0.5d ? side.rotateY() : side.rotateYCCW();
                 }
                 else
                 {

@@ -2,8 +2,8 @@ package fi.dy.masa.malilib.event;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.client.Minecraft;
 import fi.dy.masa.malilib.interfaces.IClientTickHandler;
-import net.minecraft.client.MinecraftClient;
 
 public class TickHandler
 {
@@ -27,7 +27,7 @@ public class TickHandler
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public void onClientTick(MinecraftClient mc)
+    public void onClientTick(Minecraft mc)
     {
         if (this.clientTickHandlers.isEmpty() == false)
         {

@@ -12,11 +12,11 @@ import fi.dy.masa.malilib.hotkeys.KeybindSettings;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.GuiUtils;
 import fi.dy.masa.malilib.util.StringUtils;
-import net.minecraft.util.Identifier;
+import net.minecraft.util.ResourceLocation;
 
 public class WidgetKeybindSettings extends WidgetBase
 {
-    public static final Identifier TEXTURE = new Identifier(MaLiLibReference.MOD_ID, "textures/gui/gui_widgets.png");
+    public static final ResourceLocation TEXTURE = new ResourceLocation(MaLiLibReference.MOD_ID, "textures/gui/gui_widgets.png");
 
     protected final String keybindName;
     protected final IKeybind keybind;

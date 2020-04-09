@@ -5,7 +5,7 @@ import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
 import fi.dy.masa.malilib.gui.widgets.WidgetListBase;
 import fi.dy.masa.malilib.gui.widgets.WidgetListEntryBase;
 import fi.dy.masa.malilib.util.KeyCodes;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 
 public abstract class GuiListBase<TYPE, WIDGET extends WidgetListEntryBase<TYPE>, WIDGETLIST extends WidgetListBase<TYPE, WIDGET>> extends GuiBase
 {
@@ -159,7 +159,7 @@ public abstract class GuiListBase<TYPE, WIDGET extends WidgetListEntryBase<TYPE>
     }
 
     @Override
-    public void init(MinecraftClient minecraftClient_1, int width, int height)
+    public void init(Minecraft minecraftClient_1, int width, int height)
     {
         super.init(mc, width, height);
 

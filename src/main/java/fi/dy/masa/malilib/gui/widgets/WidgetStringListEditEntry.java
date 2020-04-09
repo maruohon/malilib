@@ -83,7 +83,7 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
     protected int addTextField(int x, int y, int resetX, int configWidth, int configHeight, String initialValue)
     {
         GuiTextFieldGeneric field = this.createTextField(x, y + 1, configWidth - 4, configHeight - 3);
-        field.setMaxLength(this.maxTextfieldTextLength);
+        field.setMaxStringLength(this.maxTextfieldTextLength);
         field.setText(initialValue);
 
         ButtonGeneric resetButton = this.createResetButton(resetX, y, field);

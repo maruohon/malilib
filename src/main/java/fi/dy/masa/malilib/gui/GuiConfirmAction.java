@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
 import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.gui.screen.Screen;
 import fi.dy.masa.malilib.gui.Message.MessageType;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
@@ -13,7 +14,6 @@ import fi.dy.masa.malilib.interfaces.ICompletionListener;
 import fi.dy.masa.malilib.interfaces.IConfirmationListener;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
-import net.minecraft.client.gui.screen.Screen;
 
 public class GuiConfirmAction extends GuiDialogBase implements ICompletionListener
 {
@@ -47,7 +47,7 @@ public class GuiConfirmAction extends GuiDialogBase implements ICompletionListen
 
         this.createButton(x, y, buttonWidth, ButtonType.CANCEL);
 
-        this.mc.keyboard.enableRepeatEvents(true);
+        this.mc.keyboardListener.enableRepeatEvents(true);
     }
 
     public void setTextColor(int textColor)

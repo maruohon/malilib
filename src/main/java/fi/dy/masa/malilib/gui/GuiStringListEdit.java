@@ -11,7 +11,7 @@ import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.GuiUtils;
 import fi.dy.masa.malilib.util.KeyCodes;
 import fi.dy.masa.malilib.util.StringUtils;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 
 public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEditEntry, WidgetListStringListEdit>
@@ -70,7 +70,7 @@ public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEditE
     }
 
     @Override
-    public void init(MinecraftClient mc, int width, int height)
+    public void init(Minecraft mc, int width, int height)
     {
         if (this.getParent() != null)
         {

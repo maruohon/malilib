@@ -7,8 +7,8 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import com.mojang.blaze3d.platform.GLX;
 import fi.dy.masa.malilib.MaLiLib;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.ResourceLocation;
 
 /**
  * This class has been directly taken from Schematica by Lunatrius & contributors
@@ -16,12 +16,12 @@ import net.minecraft.util.Identifier;
  */
 public class ShaderProgram
 {
-    private final MinecraftClient mc;
+    private final Minecraft mc;
     private int program;
 
     public ShaderProgram(final String domain, final String vertShaderFilename, final String fragShaderFilename)
     {
-        this.mc = MinecraftClient.getInstance();
+        this.mc = Minecraft.getInstance();
 
         try
         {
@@ -92,7 +92,7 @@ public class ShaderProgram
             return 0;
         }
 
-        final String code = loadFile(new Identifier(domain, filename));
+        final String code = loadFile(new ResourceLocation(domain, filename));
 
         if (code == null)
         {
@@ -113,7 +113,7 @@ public class ShaderProgram
         return handle;
     }
 
-    private String loadFile(final Identifier resourceLocation)
+    private String loadFile(final ResourceLocation resourceLocation)
     {
         try
         {

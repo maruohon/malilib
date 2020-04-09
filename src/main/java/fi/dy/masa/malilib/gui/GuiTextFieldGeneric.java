@@ -1,8 +1,8 @@
 package fi.dy.masa.malilib.gui;
 
 import com.mojang.blaze3d.platform.GlStateManager;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 
 public class GuiTextFieldGeneric extends TextFieldWidget
@@ -12,7 +12,7 @@ public class GuiTextFieldGeneric extends TextFieldWidget
     protected int width;
     protected int height;
 
-    public GuiTextFieldGeneric(int x, int y, int width, int height, TextRenderer textRenderer)
+    public GuiTextFieldGeneric(int x, int y, int width, int height, FontRenderer textRenderer)
     {
         super(textRenderer, x, y, width, height, "");
 
@@ -21,7 +21,7 @@ public class GuiTextFieldGeneric extends TextFieldWidget
         this.width = width;
         this.height = height;
 
-        this.setMaxLength(256);
+        this.setMaxStringLength(256);
     }
 
     @Override
@@ -73,28 +73,8 @@ public class GuiTextFieldGeneric extends TextFieldWidget
 
         if (this.isFocused() != wasFocused)
         {
-            MinecraftClient.getInstance().keyboard.enableRepeatEvents(this.isFocused());
+            Minecraft.getInstance().keyboardListener.enableRepeatEvents(this.isFocused());
         }
-    }
-
-    public int getCursorPosition()
-    {
-        return this.getCursor();
-    }
-
-    public void setCursorPosition(int pos)
-    {
-        this.method_1883(pos);
-    }
-
-    public void setCursorPositionZero()
-    {
-        this.method_1870();
-    }
-
-    public void setCursorPositionEnd()
-    {
-        this.method_1872();
     }
 
     public GuiTextFieldGeneric setZLevel(int zLevel)

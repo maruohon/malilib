@@ -6,11 +6,11 @@ import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nullable;
 import net.minecraft.block.BlockState;
-import net.minecraft.state.property.BooleanProperty;
-import net.minecraft.state.property.DirectionProperty;
-import net.minecraft.state.property.IntProperty;
-import net.minecraft.state.property.Property;
-import net.minecraft.util.math.Direction;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.DirectionProperty;
+import net.minecraft.state.IProperty;
+import net.minecraft.state.IntegerProperty;
+import net.minecraft.util.Direction;
 import fi.dy.masa.malilib.gui.GuiBase;
 
 public class BlockUtils
@@ -23,7 +23,7 @@ public class BlockUtils
     @Nullable
     public static DirectionProperty getFirstDirectionProperty(BlockState state)
     {
-        for (Property<?> prop : state.getProperties())
+        for (IProperty<?> prop : state.getProperties())
         {
             if (prop instanceof DirectionProperty)
             {
@@ -55,13 +55,13 @@ public class BlockUtils
 
     public static List<String> getFormattedBlockStateProperties(BlockState state, String separator)
     {
-        Collection<Property<?>> properties = state.getProperties();
+        Collection<IProperty<?>> properties = state.getProperties();
 
         if (properties.size() > 0)
         {
             List<String> lines = new ArrayList<>();
 
-            for (Property<?> prop : properties)
+            for (IProperty<?> prop : properties)
             {
                 Comparable<?> val = state.get(prop);
 
@@ -74,7 +74,7 @@ public class BlockUtils
                 {
                     lines.add(prop.getName() + separator + GuiBase.TXT_GOLD + val.toString());
                 }
-                else if (prop instanceof IntProperty)
+                else if (prop instanceof IntegerProperty)
                 {
                     lines.add(prop.getName() + separator + GuiBase.TXT_AQUA + val.toString());
                 }

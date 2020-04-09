@@ -2,12 +2,12 @@ package fi.dy.masa.malilib.gui.widgets;
 
 import fi.dy.masa.malilib.gui.interfaces.ISliderCallback;
 import fi.dy.masa.malilib.render.RenderUtils;
-import net.minecraft.util.Identifier;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
 public class WidgetSlider extends WidgetBase
 {
-    public static final Identifier VANILLA_WIDGETS = new Identifier("textures/gui/widgets.png");
+    public static final ResourceLocation VANILLA_WIDGETS = new ResourceLocation("textures/gui/widgets.png");
 
     protected final ISliderCallback callback;
     protected int sliderWidth;

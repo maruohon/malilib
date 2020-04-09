@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.gui.interfaces;
 
-import net.minecraft.util.Identifier;
+import net.minecraft.util.ResourceLocation;
 
 public interface IGuiIcon
 {
@@ -14,5 +14,5 @@ public interface IGuiIcon
 
     void renderAt(int x, int y, float zLevel, boolean enabled, boolean selected);
 
-    Identifier getTexture();
+    ResourceLocation getTexture();
 }

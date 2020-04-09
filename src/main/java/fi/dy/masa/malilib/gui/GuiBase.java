@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Nullable;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
 import fi.dy.masa.malilib.config.IConfigBase;
 import fi.dy.masa.malilib.gui.Message.MessageType;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
@@ -27,30 +27,30 @@ import fi.dy.masa.malilib.util.KeyCodes;
 
 public abstract class GuiBase extends Screen implements IMessageConsumer, IStringConsumer
 {
-    public static final String TXT_AQUA = Formatting.AQUA.toString();
-    public static final String TXT_BLACK = Formatting.BLACK.toString();
-    public static final String TXT_BLUE = Formatting.BLUE.toString();
-    public static final String TXT_GOLD = Formatting.GOLD.toString();
-    public static final String TXT_GRAY = Formatting.GRAY.toString();
-    public static final String TXT_GREEN = Formatting.GREEN.toString();
-    public static final String TXT_RED = Formatting.RED.toString();
-    public static final String TXT_WHITE = Formatting.WHITE.toString();
-    public static final String TXT_YELLOW = Formatting.YELLOW.toString();
+    public static final String TXT_AQUA = TextFormatting.AQUA.toString();
+    public static final String TXT_BLACK = TextFormatting.BLACK.toString();
+    public static final String TXT_BLUE = TextFormatting.BLUE.toString();
+    public static final String TXT_GOLD = TextFormatting.GOLD.toString();
+    public static final String TXT_GRAY = TextFormatting.GRAY.toString();
+    public static final String TXT_GREEN = TextFormatting.GREEN.toString();
+    public static final String TXT_RED = TextFormatting.RED.toString();
+    public static final String TXT_WHITE = TextFormatting.WHITE.toString();
+    public static final String TXT_YELLOW = TextFormatting.YELLOW.toString();
 
-    public static final String TXT_BOLD = Formatting.BOLD.toString();
-    public static final String TXT_ITALIC = Formatting.ITALIC.toString();
-    public static final String TXT_RST = Formatting.RESET.toString();
-    public static final String TXT_STRIKETHROUGH = Formatting.STRIKETHROUGH.toString();
-    public static final String TXT_UNDERLINE = Formatting.UNDERLINE.toString();
+    public static final String TXT_BOLD = TextFormatting.BOLD.toString();
+    public static final String TXT_ITALIC = TextFormatting.ITALIC.toString();
+    public static final String TXT_RST = TextFormatting.RESET.toString();
+    public static final String TXT_STRIKETHROUGH = TextFormatting.STRIKETHROUGH.toString();
+    public static final String TXT_UNDERLINE = TextFormatting.UNDERLINE.toString();
 
-    public static final String TXT_DARK_AQUA = Formatting.DARK_AQUA.toString();
-    public static final String TXT_DARK_BLUE = Formatting.DARK_BLUE.toString();
-    public static final String TXT_DARK_GRAY = Formatting.DARK_GRAY.toString();
-    public static final String TXT_DARK_GREEN = Formatting.DARK_GREEN.toString();
-    public static final String TXT_DARK_PURPLE = Formatting.DARK_PURPLE.toString();
-    public static final String TXT_DARK_RED = Formatting.DARK_RED.toString();
+    public static final String TXT_DARK_AQUA = TextFormatting.DARK_AQUA.toString();
+    public static final String TXT_DARK_BLUE = TextFormatting.DARK_BLUE.toString();
+    public static final String TXT_DARK_GRAY = TextFormatting.DARK_GRAY.toString();
+    public static final String TXT_DARK_GREEN = TextFormatting.DARK_GREEN.toString();
+    public static final String TXT_DARK_PURPLE = TextFormatting.DARK_PURPLE.toString();
+    public static final String TXT_DARK_RED = TextFormatting.DARK_RED.toString();
 
-    public static final String TXT_LIGHT_PURPLE = Formatting.LIGHT_PURPLE.toString();
+    public static final String TXT_LIGHT_PURPLE = TextFormatting.LIGHT_PURPLE.toString();
 
     protected static final String BUTTON_LABEL_ADD = TXT_DARK_GREEN + "+" + TXT_RST;
     protected static final String BUTTON_LABEL_REMOVE = TXT_DARK_RED + "-" + TXT_RST;
@@ -60,9 +60,9 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
     public static final int COLOR_HORIZONTAL_BAR = 0xFF999999;
     protected static final int LEFT         = 20;
     protected static final int TOP          = 10;
-    public final MinecraftClient mc = MinecraftClient.getInstance();
-    public final TextRenderer textRenderer = this.mc.textRenderer;
-    public final int fontHeight = this.textRenderer.fontHeight;
+    public final Minecraft mc = Minecraft.getInstance();
+    public final FontRenderer textRenderer = this.mc.fontRenderer;
+    public final int fontHeight = this.textRenderer.FONT_HEIGHT;
     private final List<ButtonBase> buttons = new ArrayList<>();
     private final List<WidgetBase> widgets = new ArrayList<>();
     private final List<TextFieldWrapper<? extends GuiTextFieldGeneric>> textFields = new ArrayList<>();
@@ -76,7 +76,7 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
 
     protected GuiBase()
     {
-        super(new LiteralText(""));
+        super(new StringTextComponent(""));
     }
 
     public GuiBase setParent(@Nullable Screen parent)
@@ -102,9 +102,9 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
     }
 
     @Override
-    public Text getTitle()
+    public ITextComponent getTitle()
     {
-        return new LiteralText(this.getTitleString());
+        return new StringTextComponent(this.getTitleString());
     }
 
     public void setTitle(String title)
@@ -115,7 +115,7 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
     @Override
     public void removed()
     {
-        this.mc.keyboard.enableRepeatEvents(false);
+        this.mc.keyboardListener.enableRepeatEvents(false);
     }
 
     @Override
@@ -141,7 +141,7 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
     {
         if (showParent)
         {
-            this.mc.openScreen(this.parent);
+            this.mc.displayGuiScreen(this.parent);
         }
         else
         {
@@ -431,7 +431,7 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
         this.messageRenderer.drawMessages(this.width / 2, this.height / 2);
     }
 
-    public void bindTexture(Identifier texture)
+    public void bindTexture(ResourceLocation texture)
     {
         this.mc.getTextureManager().bindTexture(texture);
     }
@@ -593,12 +593,12 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
 
     public void drawString(String text, int x, int y, int color)
     {
-        this.textRenderer.draw(text, x, y, color);
+        this.textRenderer.drawString(text, x, y, color);
     }
 
     public void drawStringWithShadow(String text, int x, int y, int color)
     {
-        this.textRenderer.drawWithShadow(text, x, y, color);
+        this.textRenderer.drawStringWithShadow(text, x, y, color);
     }
 
     public int getMaxPrettyNameLength(List<? extends IConfigBase> configs)
@@ -615,7 +615,7 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
 
     public static void openGui(Screen gui)
     {
-        MinecraftClient.getInstance().openScreen(gui);
+        Minecraft.getInstance().displayGuiScreen(gui);
     }
 
     public static boolean isShiftDown()

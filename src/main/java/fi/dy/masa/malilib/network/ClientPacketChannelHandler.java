@@ -5,24 +5,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 import com.google.common.base.Charsets;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.network.play.ClientPlayNetHandler;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.play.client.CCustomPayloadPacket;
+import net.minecraft.network.play.server.SCustomPayloadPlayPacket;
+import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.MaLiLib;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.client.network.packet.CustomPayloadS2CPacket;
-import net.minecraft.server.network.packet.CustomPayloadC2SPacket;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.PacketByteBuf;
 
 public class ClientPacketChannelHandler implements IClientPacketChannelHandler
 {
-    public static final Identifier REGISTER = new Identifier("minecraft:register");
-    public static final Identifier UNREGISTER = new Identifier("minecraft:unregister");
+    public static final ResourceLocation REGISTER = new ResourceLocation("minecraft:register");
+    public static final ResourceLocation UNREGISTER = new ResourceLocation("minecraft:unregister");
 
     private static final ClientPacketChannelHandler INSTANCE = new ClientPacketChannelHandler();
 
-    private final HashMap<Identifier, IPluginChannelHandler> handlers;
+    private final HashMap<ResourceLocation, IPluginChannelHandler> handlers;
 
     public static IClientPacketChannelHandler getInstance()
     {
@@ -37,9 +37,9 @@ public class ClientPacketChannelHandler implements IClientPacketChannelHandler
     @Override
     public void registerClientChannelHandler(IPluginChannelHandler handler)
     {
-        List<Identifier> toRegister = new ArrayList<>();
+        List<ResourceLocation> toRegister = new ArrayList<>();
 
-        for (Identifier channel : handler.getChannels())
+        for (ResourceLocation channel : handler.getChannels())
         {
             if (this.handlers.containsKey(channel) == false)
             {
@@ -57,9 +57,9 @@ public class ClientPacketChannelHandler implements IClientPacketChannelHandler
     @Override
     public void unregisterClientChannelHandler(IPluginChannelHandler handler)
     {
-        List<Identifier> toUnRegister = new ArrayList<>();
+        List<ResourceLocation> toUnRegister = new ArrayList<>();
 
-        for (Identifier channel : handler.getChannels())
+        for (ResourceLocation channel : handler.getChannels())
         {
             if (this.handlers.remove(channel, handler))
             {
@@ -76,14 +76,14 @@ public class ClientPacketChannelHandler implements IClientPacketChannelHandler
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public boolean processPacketFromServer(CustomPayloadS2CPacket packet, ClientPlayNetworkHandler netHandler)
+    public boolean processPacketFromServer(SCustomPayloadPlayPacket packet, ClientPlayNetHandler netHandler)
     {
-        Identifier channel = packet.getChannel();
+        ResourceLocation channel = packet.getChannelName();
         IPluginChannelHandler handler = this.handlers.get(channel);
 
         if (handler != null)
         {
-            PacketByteBuf buf = PacketSplitter.receive(netHandler, packet);
+            PacketBuffer buf = PacketSplitter.receive(netHandler, packet);
 
             // Finished the complete packet
             if (buf != null)
@@ -97,13 +97,13 @@ public class ClientPacketChannelHandler implements IClientPacketChannelHandler
         return false;
     }
 
-    private void sendRegisterPacket(Identifier type, List<Identifier> channels)
+    private void sendRegisterPacket(ResourceLocation type, List<ResourceLocation> channels)
     {
-        String joinedChannels = channels.stream().map(Identifier::toString).collect(Collectors.joining("\0"));
+        String joinedChannels = channels.stream().map(ResourceLocation::toString).collect(Collectors.joining("\0"));
         ByteBuf payload = Unpooled.wrappedBuffer(joinedChannels.getBytes(Charsets.UTF_8));
-        CustomPayloadC2SPacket packet = new CustomPayloadC2SPacket(type, new PacketByteBuf(payload));
+        CCustomPayloadPacket packet = new CCustomPayloadPacket(type, new PacketBuffer(payload));
 
-        ClientPlayNetworkHandler handler = MinecraftClient.getInstance().getNetworkHandler();
+        ClientPlayNetHandler handler = Minecraft.getInstance().getConnection();
 
         if (handler != null)
         {

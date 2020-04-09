@@ -5,6 +5,11 @@ import javax.annotation.Nullable;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.config.IConfigInteger;
 import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
 import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
@@ -12,11 +17,6 @@ import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.shader.ShaderProgram;
 import fi.dy.masa.malilib.util.KeyCodes;
 import fi.dy.masa.malilib.util.StringUtils;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormats;
-import net.minecraft.util.math.MathHelper;
 
 public class GuiColorEditorHSV extends GuiDialogBase
 {
@@ -113,7 +113,7 @@ public class GuiColorEditorHSV extends GuiDialogBase
 
         this.addLabel(this.xH - 26, y + 3, 12, 12, 0xFFFFFF, "HEX:");
         this.textFieldFullColor = new GuiTextFieldGeneric(this.xH, y + 1, 68, 14, this.textRenderer);
-        this.textFieldFullColor.setMaxLength(12);
+        this.textFieldFullColor.setMaxStringLength(12);
         this.addTextField(this.textFieldFullColor, new TextFieldListener(null, this));
 
         //String str = StringUtils.translate("malilib.gui.label.color_editor.current_color");
@@ -482,7 +482,7 @@ public class GuiColorEditorHSV extends GuiDialogBase
         RenderUtils.drawOutline(this.xHFullSV, y - 1, this.widthHFullSV, this.sizeHS + 2, 0xC0FFFFFF, z); // Hue vertical/full value
 
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBufferBuilder();
+        BufferBuilder buffer = tessellator.getBuffer();
 
         GlStateManager.disableTexture();
         RenderUtils.setupBlend();
@@ -497,42 +497,42 @@ public class GuiColorEditorHSV extends GuiDialogBase
         GL20.glUseProgram(SHADER_HUE.getProgram());
         GL20.glUniform1f(GL20.glGetUniformLocation(SHADER_HUE.getProgram(), "hue_value"), this.relH);
 
-        buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_UV);
+        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
 
-        buffer.vertex(x    , y    , z).texture(1, 0).next();
-        buffer.vertex(x    , y + h, z).texture(0, 0).next();
-        buffer.vertex(x + w, y + h, z).texture(0, 1).next();
-        buffer.vertex(x + w, y    , z).texture(1, 1).next();
+        buffer.pos(x    , y    , z).tex(1, 0).endVertex();
+        buffer.pos(x    , y + h, z).tex(0, 0).endVertex();
+        buffer.pos(x + w, y + h, z).tex(0, 1).endVertex();
+        buffer.pos(x + w, y    , z).tex(1, 1).endVertex();
 
         tessellator.draw();
 
         GL20.glUseProgram(0);
 
-        buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR);
+        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
 
         float r = this.relR;
         float g = this.relG;
         float b = this.relB;
 
         // Current color indicator
-        buffer.vertex(cx     , cy     , z).color(r, g, b, 1f).next();
-        buffer.vertex(cx     , cy + ch, z).color(r, g, b, 1f).next();
-        buffer.vertex(cx + cw, cy + ch, z).color(r, g, b, 1f).next();
-        buffer.vertex(cx + cw, cy     , z).color(r, g, b, 1f).next();
+        buffer.pos(cx     , cy     , z).color(r, g, b, 1f).endVertex();
+        buffer.pos(cx     , cy + ch, z).color(r, g, b, 1f).endVertex();
+        buffer.pos(cx + cw, cy + ch, z).color(r, g, b, 1f).endVertex();
+        buffer.pos(cx + cw, cy     , z).color(r, g, b, 1f).endVertex();
 
         // SV selection marker for saturation, horizontal marker, vertical range
         int yt = y + (int) ((1 - this.relS) * h);
-        buffer.vertex(x - 1    , yt    , z).color(1, 1, 1, 1f).next();
-        buffer.vertex(x - 1    , yt + 1, z).color(1, 1, 1, 1f).next();
-        buffer.vertex(x + w + 1, yt + 1, z).color(1, 1, 1, 1f).next();
-        buffer.vertex(x + w + 1, yt    , z).color(1, 1, 1, 1f).next();
+        buffer.pos(x - 1    , yt    , z).color(1, 1, 1, 1f).endVertex();
+        buffer.pos(x - 1    , yt + 1, z).color(1, 1, 1, 1f).endVertex();
+        buffer.pos(x + w + 1, yt + 1, z).color(1, 1, 1, 1f).endVertex();
+        buffer.pos(x + w + 1, yt    , z).color(1, 1, 1, 1f).endVertex();
 
         // SV selection marker for value, vertical marker, horizontal range
         int xt = x + (int) (this.relV * w);
-        buffer.vertex(xt    , y - 1    , z).color(1, 1, 1, 1f).next();
-        buffer.vertex(xt    , y + h + 1, z).color(1, 1, 1, 1f).next();
-        buffer.vertex(xt + 1, y + h + 1, z).color(1, 1, 1, 1f).next();
-        buffer.vertex(xt + 1, y - 1    , z).color(1, 1, 1, 1f).next();
+        buffer.pos(xt    , y - 1    , z).color(1, 1, 1, 1f).endVertex();
+        buffer.pos(xt    , y + h + 1, z).color(1, 1, 1, 1f).endVertex();
+        buffer.pos(xt + 1, y + h + 1, z).color(1, 1, 1, 1f).endVertex();
+        buffer.pos(xt + 1, y - 1    , z).color(1, 1, 1, 1f).endVertex();
 
         x = this.xH;
         w = this.widthSlider;
@@ -602,10 +602,10 @@ public class GuiColorEditorHSV extends GuiDialogBase
         float g2 = ((colorEnd >>>  8) & 0xFF) / 255f;
         float b2 = (colorEnd          & 0xFF) / 255f;
 
-        buffer.vertex(x        , y         , z).color(r1, g1, b1, 1).next();
-        buffer.vertex(x        , y + height, z).color(r1, g1, b1, 1).next();
-        buffer.vertex(x + width, y + height, z).color(r2, g2, b2, 1).next();
-        buffer.vertex(x + width, y         , z).color(r2, g2, b2, 1).next();
+        buffer.pos(x        , y         , z).color(r1, g1, b1, 1).endVertex();
+        buffer.pos(x        , y + height, z).color(r1, g1, b1, 1).endVertex();
+        buffer.pos(x + width, y + height, z).color(r2, g2, b2, 1).endVertex();
+        buffer.pos(x + width, y         , z).color(r2, g2, b2, 1).endVertex();
     }
 
     public static void renderHueBarHorizontal(int x, int y, float z, int width, int height, float saturation, float value, BufferBuilder buffer)
@@ -666,10 +666,10 @@ public class GuiColorEditorHSV extends GuiDialogBase
         float g2 = ((color2 >>>  8) & 0xFF) / 255f;
         float b2 = ( color2         & 0xFF) / 255f;
 
-        buffer.vertex(x                       , y + segmentHeight         , z).color(r1, g1, b1, 1).next();
-        buffer.vertex(x + width               , y + height + segmentHeight, z).color(r1, g1, b1, 1).next();
-        buffer.vertex(x + width + segmentWidth, y + height                , z).color(r2, g2, b2, 1).next();
-        buffer.vertex(x + segmentWidth        , y                         , z).color(r2, g2, b2, 1).next();
+        buffer.pos(x                       , y + segmentHeight         , z).color(r1, g1, b1, 1).endVertex();
+        buffer.pos(x + width               , y + height + segmentHeight, z).color(r1, g1, b1, 1).endVertex();
+        buffer.pos(x + width + segmentWidth, y + height                , z).color(r2, g2, b2, 1).endVertex();
+        buffer.pos(x + segmentWidth        , y                         , z).color(r2, g2, b2, 1).endVertex();
     }
 
     public static void renderHSSelector(int xStart, int yStart, float z, int width, int height, float hue, BufferBuilder buffer)
@@ -688,8 +688,8 @@ public class GuiColorEditorHSV extends GuiDialogBase
             float g2 = ((color2 >>>  8) & 0xFF) / 255f;
             float b2 = ( color2         & 0xFF) / 255f;
 
-            buffer.vertex(xStart, y, z).color(r1, g1, b1, 1).next();
-            buffer.vertex(x2    , y, z).color(r2, g2, b2, 1).next();
+            buffer.pos(xStart, y, z).color(r1, g1, b1, 1).endVertex();
+            buffer.pos(x2    , y, z).color(r2, g2, b2, 1).endVertex();
         }
     }
 
@@ -699,23 +699,23 @@ public class GuiColorEditorHSV extends GuiDialogBase
         int s = 2;
 
         /*
-        buffer.vertex(x - 1, y - 2            , z).color(1, 1, 1, 1f).next();
-        buffer.vertex(x - 1, y + barHeight + 2, z).color(1, 1, 1, 1f).next();
-        buffer.vertex(x + 1, y + barHeight + 2, z).color(1, 1, 1, 1f).next();
-        buffer.vertex(x + 1, y - 2            , z).color(1, 1, 1, 1f).next();
+        buffer.pos(x - 1, y - 2            , z).color(1, 1, 1, 1f).endVertex();
+        buffer.pos(x - 1, y + barHeight + 2, z).color(1, 1, 1, 1f).endVertex();
+        buffer.pos(x + 1, y + barHeight + 2, z).color(1, 1, 1, 1f).endVertex();
+        buffer.pos(x + 1, y - 2            , z).color(1, 1, 1, 1f).endVertex();
         */
 
-        buffer.vertex(x - s, y - s, z).color(1, 1, 1, 1f).next();
-        buffer.vertex(x    , y + s, z).color(1, 1, 1, 1f).next();
-        buffer.vertex(x    , y + s, z).color(1, 1, 1, 1f).next();
-        buffer.vertex(x + s, y - s, z).color(1, 1, 1, 1f).next();
+        buffer.pos(x - s, y - s, z).color(1, 1, 1, 1f).endVertex();
+        buffer.pos(x    , y + s, z).color(1, 1, 1, 1f).endVertex();
+        buffer.pos(x    , y + s, z).color(1, 1, 1, 1f).endVertex();
+        buffer.pos(x + s, y - s, z).color(1, 1, 1, 1f).endVertex();
 
         y += barHeight;
 
-        buffer.vertex(x - s, y + s, z).color(1, 1, 1, 1f).next();
-        buffer.vertex(x + s, y + s, z).color(1, 1, 1, 1f).next();
-        buffer.vertex(x    , y - s, z).color(1, 1, 1, 1f).next();
-        buffer.vertex(x    , y - s, z).color(1, 1, 1, 1f).next();
+        buffer.pos(x - s, y + s, z).color(1, 1, 1, 1f).endVertex();
+        buffer.pos(x + s, y + s, z).color(1, 1, 1, 1f).endVertex();
+        buffer.pos(x    , y - s, z).color(1, 1, 1, 1f).endVertex();
+        buffer.pos(x    , y - s, z).color(1, 1, 1, 1f).endVertex();
     }
 
     public static void renderBarMarkerVerticalBar(int x, int y, float z, int barWidth, int barHeight, float value, BufferBuilder buffer)
@@ -723,17 +723,17 @@ public class GuiColorEditorHSV extends GuiDialogBase
         y += (int) (barHeight * (1f - value));
         int s = 2;
 
-        buffer.vertex(x - s, y - s, z).color(1, 1, 1, 1f).next();
-        buffer.vertex(x - s, y + s, z).color(1, 1, 1, 1f).next();
-        buffer.vertex(x + s, y    , z).color(1, 1, 1, 1f).next();
-        buffer.vertex(x + s, y    , z).color(1, 1, 1, 1f).next();
+        buffer.pos(x - s, y - s, z).color(1, 1, 1, 1f).endVertex();
+        buffer.pos(x - s, y + s, z).color(1, 1, 1, 1f).endVertex();
+        buffer.pos(x + s, y    , z).color(1, 1, 1, 1f).endVertex();
+        buffer.pos(x + s, y    , z).color(1, 1, 1, 1f).endVertex();
 
         x += barWidth;
 
-        buffer.vertex(x + s, y - s, z).color(1, 1, 1, 1f).next();
-        buffer.vertex(x - s, y    , z).color(1, 1, 1, 1f).next();
-        buffer.vertex(x - s, y    , z).color(1, 1, 1, 1f).next();
-        buffer.vertex(x + s, y + s, z).color(1, 1, 1, 1f).next();
+        buffer.pos(x + s, y - s, z).color(1, 1, 1, 1f).endVertex();
+        buffer.pos(x - s, y    , z).color(1, 1, 1, 1f).endVertex();
+        buffer.pos(x - s, y    , z).color(1, 1, 1, 1f).endVertex();
+        buffer.pos(x + s, y + s, z).color(1, 1, 1, 1f).endVertex();
     }
 
     @Nullable

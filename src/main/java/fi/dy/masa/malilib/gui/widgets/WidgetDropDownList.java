@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
 import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.Minecraft;
 import fi.dy.masa.malilib.gui.GuiScrollBar;
 import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
 import fi.dy.masa.malilib.gui.MaLiLibIcons;
@@ -13,7 +14,6 @@ import fi.dy.masa.malilib.interfaces.IStringRetriever;
 import fi.dy.masa.malilib.interfaces.IStringValue;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.GuiUtils;
-import net.minecraft.client.MinecraftClient;
 
 /**
  * A dropdown selection widget for entries in the given list.
@@ -80,7 +80,7 @@ public class WidgetDropDownList<T> extends WidgetBase
         this.searchBar.getTextField().setY(y - 18);
     }
 
-    protected int getRequiredWidth(int width, List<T> entries, MinecraftClient mc)
+    protected int getRequiredWidth(int width, List<T> entries, Minecraft mc)
     {
         if (width == -1)
         {

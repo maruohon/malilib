@@ -4,14 +4,14 @@ import javax.annotation.Nullable;
 import org.apache.commons.lang3.tuple.Pair;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.interfaces.IRangeChangeListener;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Direction.Axis;
-import net.minecraft.util.math.MathHelper;
 
 public class LayerRange
 {
@@ -295,13 +295,13 @@ public class LayerRange
         switch (this.axis)
         {
             case X:
-                pos = (int) entity.x;
+                pos = (int) entity.posX;
                 break;
             case Y:
-                pos = (int) entity.y;
+                pos = (int) entity.posY;
                 break;
             case Z:
-                pos = (int) entity.z;
+                pos = (int) entity.posZ;
                 break;
         }
 
@@ -425,7 +425,7 @@ public class LayerRange
             }
             case LAYER_RANGE:
             {
-                Entity entity = MinecraftClient.getInstance().player;
+                Entity entity = Minecraft.getInstance().player;
 
                 if (entity != null)
                 {
@@ -475,7 +475,7 @@ public class LayerRange
 
     protected Pair<Boolean, Boolean> getMoveMinMax(Entity entity)
     {
-        double playerPos = this.axis == Axis.Y ? entity.y : (this.axis == Axis.X ? entity.x : entity.z);
+        double playerPos = this.axis == Axis.Y ? entity.posY : (this.axis == Axis.X ? entity.posX : entity.posZ);
         double min = this.layerRangeMin + 0.5D;
         double max = this.layerRangeMax + 0.5D;
         boolean minClosest = (Math.abs(playerPos - min) < Math.abs(playerPos - max)) || playerPos < min;
@@ -795,7 +795,7 @@ public class LayerRange
     public void fromJson(JsonObject obj)
     {
         this.layerMode = LayerMode.fromStringStatic(JsonUtils.getString(obj, "mode"));
-        this.axis = Direction.Axis.fromName(JsonUtils.getString(obj, "axis"));
+        this.axis = Direction.Axis.byName(JsonUtils.getString(obj, "axis"));
         if (this.axis == null) { this.axis = Direction.Axis.Y; }
 
         this.layerSingle = JsonUtils.getInteger(obj, "layer_single");

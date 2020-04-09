@@ -11,6 +11,7 @@ import fi.dy.masa.malilib.MaLiLibConfigs;
 
 public class StringUtils
 {
+    /*
     public static String getModVersionString(String modId)
     {
         for (net.fabricmc.loader.api.ModContainer container : net.fabricmc.loader.api.FabricLoader.getInstance().getAllMods())
@@ -23,6 +24,7 @@ public class StringUtils
 
         return "?";
     }
+    */
 
     /**
      * Parses the given string as a hexadecimal value, if it begins with '#' or '0x'.
@@ -73,10 +75,10 @@ public class StringUtils
 
     public static void sendOpenFileChatMessage(net.minecraft.entity.Entity sender, String messageKey, File file)
     {
-        net.minecraft.text.Text name = new net.minecraft.text.LiteralText(file.getName());
-        name.getStyle().setClickEvent(new net.minecraft.text.ClickEvent(net.minecraft.text.ClickEvent.Action.OPEN_FILE, file.getAbsolutePath()));
-        name.getStyle().setUnderline(Boolean.valueOf(true));
-        sender.sendMessage(new net.minecraft.text.TranslatableText(messageKey, name));
+        net.minecraft.util.text.StringTextComponent name = new net.minecraft.util.text.StringTextComponent(file.getName());
+        name.getStyle().setClickEvent(new net.minecraft.util.text.event.ClickEvent(net.minecraft.util.text.event.ClickEvent.Action.OPEN_FILE, file.getAbsolutePath()));
+        name.getStyle().setUnderlined(Boolean.valueOf(true));
+        sender.sendMessage(new net.minecraft.util.text.TranslationTextComponent(messageKey, name));
     }
 
     /**
@@ -269,24 +271,24 @@ public class StringUtils
     @Nullable
     public static String getWorldOrServerName()
     {
-        net.minecraft.client.MinecraftClient mc = net.minecraft.client.MinecraftClient.getInstance();
+        net.minecraft.client.Minecraft mc = net.minecraft.client.Minecraft.getInstance();
 
         if (mc.isIntegratedServerRunning())
         {
-            net.minecraft.server.integrated.IntegratedServer server = mc.getServer();
+            net.minecraft.server.integrated.IntegratedServer server = mc.getIntegratedServer();
 
             if (server != null)
             {
-                return server.getLevelName();
+                return server.getFolderName();
             }
         }
         else
         {
-            net.minecraft.client.options.ServerEntry server = mc.getCurrentServerEntry();
+            net.minecraft.client.multiplayer.ServerData server = mc.getCurrentServerData();
 
             if (server != null)
             {
-                return server.address.replace(':', '_');
+                return server.serverIP.replace(':', '_');
             }
 
             // If the server entry was null, then that most likely means we are on a Realms server
@@ -297,12 +299,12 @@ public class StringUtils
             }
             else
             {
-                net.minecraft.client.network.ClientPlayNetworkHandler handler = mc.getNetworkHandler();
-                net.minecraft.network.ClientConnection connection = handler != null ? handler.getConnection() : null;
+                net.minecraft.client.network.play.ClientPlayNetHandler handler = mc.getConnection();
+                net.minecraft.network.NetworkManager connection = handler != null ? handler.getNetworkManager() : null;
 
                 if (connection != null)
                 {
-                    return "realms_" + stringifyAddress(connection.getAddress());
+                    return "realms_" + stringifyAddress(connection.getRemoteAddress());
                 }
             }
         }
@@ -330,7 +332,7 @@ public class StringUtils
                 return prefix + name + suffix;
             }
 
-            net.minecraft.world.World world = net.minecraft.client.MinecraftClient.getInstance().world;
+            net.minecraft.world.World world = net.minecraft.client.Minecraft.getInstance().world;
 
             if (world != null)
             {
@@ -363,7 +365,7 @@ public class StringUtils
      */
     public static String translate(String translationKey, Object... args)
     {
-        return net.minecraft.client.resource.language.I18n.translate(translationKey, args);
+        return net.minecraft.client.resources.I18n.format(translationKey, args);
     }
 
     /**
@@ -372,16 +374,16 @@ public class StringUtils
      */
     public static int getFontHeight()
     {
-        return net.minecraft.client.MinecraftClient.getInstance().textRenderer.fontHeight;
+        return net.minecraft.client.Minecraft.getInstance().fontRenderer.FONT_HEIGHT;
     }
 
     public static int getStringWidth(String text)
     {
-        return net.minecraft.client.MinecraftClient.getInstance().textRenderer.getStringWidth(text);
+        return net.minecraft.client.Minecraft.getInstance().fontRenderer.getStringWidth(text);
     }
 
     public static void drawString(int x, int y, int color, String text)
     {
-        net.minecraft.client.MinecraftClient.getInstance().textRenderer.draw(text, x, y, color);
+        net.minecraft.client.Minecraft.getInstance().fontRenderer.drawString(text, x, y, color);
     }
 }
