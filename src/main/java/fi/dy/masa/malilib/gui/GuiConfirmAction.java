@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.gui;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.Screen;
 import fi.dy.masa.malilib.gui.Message.MessageType;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
@@ -27,7 +27,7 @@ public class GuiConfirmAction extends GuiDialogBase implements ICompletionListen
         this.title = StringUtils.translate(titleKey);
         this.listener = listener;
         this.useTitleHierarchy = false;
-        this.blitOffset = 1;
+        this.setBlitOffset(1);
 
         StringUtils.splitTextToLines(this.messageLines, StringUtils.translate(messageKey, args), width - 30);
 
@@ -92,8 +92,8 @@ public class GuiConfirmAction extends GuiDialogBase implements ICompletionListen
             this.getParent().render(mouseX, mouseY, partialTicks);
         }
 
-        GlStateManager.pushMatrix();
-        GlStateManager.translatef(0, 0, this.blitOffset);
+        RenderSystem.pushMatrix();
+        RenderSystem.translatef(0, 0, this.getBlitOffset());
 
         RenderUtils.drawOutlinedBox(this.dialogLeft, this.dialogTop, this.dialogWidth, this.dialogHeight, 0xF0000000, COLOR_HORIZONTAL_BAR);
 
@@ -108,7 +108,7 @@ public class GuiConfirmAction extends GuiDialogBase implements ICompletionListen
         }
 
         this.drawButtons(mouseX, mouseY, partialTicks);
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 
     protected ButtonListener createActionListener(ButtonType type)

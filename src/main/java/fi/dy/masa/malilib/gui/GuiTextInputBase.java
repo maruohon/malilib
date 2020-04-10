@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.gui;
 
 import javax.annotation.Nullable;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.Screen;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
@@ -30,8 +30,7 @@ public abstract class GuiTextInputBase extends GuiDialogBase
         this.textField.setMaxStringLength(maxTextLength);
         this.textField.setFocused(true);
         this.textField.setText(this.originalText);
-        this.textField.setCursorPositionEnd();
-        this.blitOffset = 1;
+        this.setBlitOffset(1);
     }
 
     @Override
@@ -68,8 +67,8 @@ public abstract class GuiTextInputBase extends GuiDialogBase
             this.getParent().render(mouseX, mouseY, partialTicks);
         }
 
-        GlStateManager.pushMatrix();
-        GlStateManager.translatef(0, 0, this.blitOffset);
+        RenderSystem.pushMatrix();
+        RenderSystem.translatef(0, 0, this.getBlitOffset());
 
         RenderUtils.drawOutlinedBox(this.dialogLeft, this.dialogTop, this.dialogWidth, this.dialogHeight, 0xE0000000, COLOR_HORIZONTAL_BAR);
 
@@ -80,7 +79,7 @@ public abstract class GuiTextInputBase extends GuiDialogBase
         this.textField.render(mouseX, mouseY, partialTicks);
 
         this.drawButtons(mouseX, mouseY, partialTicks);
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 
     @Override
@@ -168,7 +167,6 @@ public abstract class GuiTextInputBase extends GuiDialogBase
             else if (this.type == ButtonType.RESET)
             {
                 this.gui.textField.setText(this.gui.originalText);
-                this.gui.textField.setCursorPositionZero();
                 this.gui.textField.setFocused(true);
             }
         }

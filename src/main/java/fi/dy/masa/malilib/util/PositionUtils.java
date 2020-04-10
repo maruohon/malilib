@@ -119,29 +119,33 @@ public class PositionUtils
      */
     public static BlockPos getPositionInfrontOfEntity(Entity entity, float verticalThreshold)
     {
-        BlockPos pos = new BlockPos(entity.posX, entity.posY, entity.posZ);
+        double x = entity.getPosX();
+        double y = entity.getPosY();
+        double z = entity.getPosZ();
+        double w = entity.getWidth();
+        BlockPos pos = new BlockPos(x, y, z);
 
         if (entity.rotationPitch >= verticalThreshold)
         {
-            return pos.down();
+            return pos.down(1);
         }
         else if (entity.rotationPitch <= -verticalThreshold)
         {
-            return new BlockPos(entity.posX, Math.ceil(entity.getBoundingBox().maxY), entity.posZ);
+            return new BlockPos(x, Math.ceil(entity.getBoundingBox().maxY), z);
         }
 
-        double y = Math.floor(entity.posY + entity.getEyeHeight());
+        y = Math.floor(y + entity.getEyeHeight());
 
         switch (entity.getHorizontalFacing())
         {
             case EAST:
-                return new BlockPos((int) Math.ceil( entity.posX + entity.getWidth() / 2),     (int) y, (int) Math.floor(entity.posZ));
+                return new BlockPos((int) Math.ceil( x + w / 2),     (int) y, (int) Math.floor(z));
             case WEST:
-                return new BlockPos((int) Math.floor(entity.posX - entity.getWidth() / 2) - 1, (int) y, (int) Math.floor(entity.posZ));
+                return new BlockPos((int) Math.floor(x - w / 2) - 1, (int) y, (int) Math.floor(z));
             case SOUTH:
-                return new BlockPos((int) Math.floor(entity.posX), (int) y, (int) Math.ceil( entity.posZ + entity.getWidth() / 2)    );
+                return new BlockPos((int) Math.floor(x), (int) y, (int) Math.ceil( z + w / 2)    );
             case NORTH:
-                return new BlockPos((int) Math.floor(entity.posX), (int) y, (int) Math.floor(entity.posZ - entity.getWidth() / 2) - 1);
+                return new BlockPos((int) Math.floor(x), (int) y, (int) Math.floor(z - w / 2) - 1);
             default:
         }
 

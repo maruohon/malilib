@@ -433,7 +433,7 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
 
     public void bindTexture(ResourceLocation texture)
     {
-        this.mc.getTextureManager().bindTexture(texture);
+        fi.dy.masa.malilib.render.RenderUtils.bindTexture(texture);
     }
 
     public <T extends ButtonBase> T addButton(T button, IButtonActionListener listener)
@@ -569,7 +569,7 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
             }
         }
 
-        RenderUtils.disableItemLighting();
+        RenderUtils.disableDiffuseLighting();
     }
 
     protected void drawHoveredWidget(int mouseX, int mouseY)
@@ -577,7 +577,7 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
         if (this.hoveredWidget != null)
         {
             this.hoveredWidget.postRenderHovered(mouseX, mouseY, false);
-            RenderUtils.disableItemLighting();
+            RenderUtils.disableDiffuseLighting();
         }
     }
 

@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.interfaces;
 
-import net.minecraft.item.ItemStack;
+import com.mojang.blaze3d.matrix.MatrixStack;
 
 public interface IRenderer
 {
@@ -14,10 +14,10 @@ public interface IRenderer
      * Called after vanilla world rendering
      * @param partialTicks
      */
-    default void onRenderWorldLast(float partialTicks) {}
+    default void onRenderWorldLast(float partialTicks, MatrixStack matrixStack) {}
 
     /**
      * Called after the tooltip text of an item has been rendered
      */
-    default void onRenderTooltipLast(ItemStack stack, int x, int y) {}
+    default void onRenderTooltipLast(net.minecraft.item.ItemStack stack, int x, int y) {}
 }

@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.gui;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.TextFieldWidget;
@@ -79,21 +79,21 @@ public class GuiTextFieldGeneric extends TextFieldWidget
 
     public GuiTextFieldGeneric setZLevel(int zLevel)
     {
-        this.blitOffset = zLevel;
+        this.setBlitOffset(zLevel);
         return this;
     }
 
     @Override
     public void render(int mouseX, int mouseY, float partialTicks)
     {
-        if (this.blitOffset != 0)
+        if (this.getBlitOffset() != 0)
         {
-            GlStateManager.pushMatrix();
-            GlStateManager.translatef(0, 0, this.blitOffset);
+            RenderSystem.pushMatrix();
+            RenderSystem.translatef(0, 0, this.getBlitOffset());
 
             super.render(mouseX, mouseY, partialTicks);
 
-            GlStateManager.popMatrix();
+            RenderSystem.popMatrix();
         }
         else
         {

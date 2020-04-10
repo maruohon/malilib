@@ -295,13 +295,13 @@ public class LayerRange
         switch (this.axis)
         {
             case X:
-                pos = (int) entity.posX;
+                pos = (int) entity.getPosX();
                 break;
             case Y:
-                pos = (int) entity.posY;
+                pos = (int) entity.getPosY();
                 break;
             case Z:
-                pos = (int) entity.posZ;
+                pos = (int) entity.getPosZ();
                 break;
         }
 
@@ -475,7 +475,7 @@ public class LayerRange
 
     protected Pair<Boolean, Boolean> getMoveMinMax(Entity entity)
     {
-        double playerPos = this.axis == Axis.Y ? entity.posY : (this.axis == Axis.X ? entity.posX : entity.posZ);
+        double playerPos = this.axis == Axis.Y ? entity.getPosY() : (this.axis == Axis.X ? entity.getPosX() : entity.getPosZ());
         double min = this.layerRangeMin + 0.5D;
         double max = this.layerRangeMax + 0.5D;
         boolean minClosest = (Math.abs(playerPos - min) < Math.abs(playerPos - max)) || playerPos < min;

@@ -23,9 +23,10 @@ public class WorldUtils
     @Nullable
     public static World getBestWorld(Minecraft mc)
     {
-        if (mc.isSingleplayer() && mc.world != null)
+        IntegratedServer server = mc.getIntegratedServer();
+
+        if (mc.world != null && server != null)
         {
-            IntegratedServer server = mc.getIntegratedServer();
             return server.getWorld(mc.world.dimension.getType());
         }
         else
@@ -51,7 +52,7 @@ public class WorldUtils
         if (mc.world != null && server != null)
         {
             ServerWorld world = server.getWorld(mc.world.dimension.getType());
-            chunk = world.getChunk(chunkX, chunkZ); // getChunk()
+            chunk = world.getChunk(chunkX, chunkZ);
         }
 
         if (chunk != null)

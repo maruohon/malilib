@@ -410,7 +410,7 @@ public class KeybindMulti implements IKeybind
 
     public static boolean isKeyDown(int keyCode)
     {
-        long window = Minecraft.getInstance().mainWindow.getHandle();
+        long window = Minecraft.getInstance().getMainWindow().getHandle();
 
         if (keyCode >= 0)
         {

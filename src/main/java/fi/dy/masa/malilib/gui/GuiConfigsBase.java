@@ -110,7 +110,7 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
     protected WidgetListConfigOptions createListWidget(int listX, int listY)
     {
         return new WidgetListConfigOptions(listX, listY,
-                this.getBrowserWidth(), this.getBrowserHeight(), this.getConfigWidth(), this.blitOffset, this.useKeybindSearch(), this);
+                this.getBrowserWidth(), this.getBrowserHeight(), this.getConfigWidth(), this.getBlitOffset(), this.useKeybindSearch(), this);
     }
 
     @Override

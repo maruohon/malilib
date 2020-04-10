@@ -139,7 +139,7 @@ public class WidgetDirectoryNavigation extends WidgetSearchBar
                 RenderUtils.drawHoverText(mouseX, mouseY, Arrays.asList(StringUtils.translate("malilib.gui.button.hover.directory_widget.create_directory")));
             }
 
-            RenderUtils.disableItemLighting();
+            RenderUtils.disableDiffuseLighting();
         }
     }
 }

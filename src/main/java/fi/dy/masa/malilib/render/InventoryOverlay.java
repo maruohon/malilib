@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.render;
 import java.util.ArrayList;
 import java.util.List;
 import org.lwjgl.opengl.GL11;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.block.Block;
 import net.minecraft.block.BrewingStandBlock;
 import net.minecraft.block.ChestBlock;
@@ -14,7 +14,6 @@ import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.LivingEntity;
@@ -22,6 +21,7 @@ import net.minecraft.inventory.DoubleSidedInventory;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -46,10 +46,14 @@ public class InventoryOverlay
     public static final ResourceLocation TEXTURE_PLAYER_INV       = new ResourceLocation("textures/gui/container/hopper.png");
     public static final ResourceLocation TEXTURE_SINGLE_CHEST     = new ResourceLocation("textures/gui/container/shulker_box.png");
 
+    private static final EquipmentSlotType[] VALID_EQUIPMENT_SLOTS = new EquipmentSlotType[] { EquipmentSlotType.HEAD, EquipmentSlotType.CHEST, EquipmentSlotType.LEGS, EquipmentSlotType.FEET };
     public static final InventoryProperties INV_PROPS_TEMP = new InventoryProperties();
 
-    private static final String[] EMPTY_SLOT_TEXTURES = new String[] { "item/empty_armor_slot_boots", "item/empty_armor_slot_leggings", "item/empty_armor_slot_chestplate", "item/empty_armor_slot_helmet" };
-    private static final EquipmentSlotType[] VALID_EQUIPMENT_SLOTS = new EquipmentSlotType[] { EquipmentSlotType.HEAD, EquipmentSlotType.CHEST, EquipmentSlotType.LEGS, EquipmentSlotType.FEET };
+    private static final ResourceLocation[] EMPTY_SLOT_TEXTURES = new ResourceLocation[] {
+            new ResourceLocation("item/empty_armor_slot_boots"),
+            new ResourceLocation("item/empty_armor_slot_leggings"),
+            new ResourceLocation("item/empty_armor_slot_chestplate"),
+            new ResourceLocation("item/empty_armor_slot_helmet") };
 
     public static void renderInventoryBackground(InventoryRenderType type, int x, int y, int slotsPerRow, int totalSlots, Minecraft mc)
     {
@@ -189,12 +193,12 @@ public class InventoryOverlay
 
         tessellator.draw();
 
-        RenderUtils.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+        RenderUtils.bindTexture(PlayerContainer.LOCATION_BLOCKS_TEXTURE);
 
         if (entity.getItemStackFromSlot(EquipmentSlotType.OFFHAND).isEmpty())
         {
-            String texture = "minecraft:item/empty_armor_slot_shield";
-            RenderUtils.renderSprite(x + 28 + 1, y + 3 * 18 + 7 + 1, 16, 16, texture);
+            ResourceLocation texture = new ResourceLocation("minecraft:item/empty_armor_slot_shield");
+            RenderUtils.renderSprite(x + 28 + 1, y + 3 * 18 + 7 + 1, 16, 16, PlayerContainer.LOCATION_BLOCKS_TEXTURE, texture);
         }
 
         for (int i = 0, xOff = 7, yOff = 7; i < 4; ++i, yOff += 18)
@@ -203,8 +207,8 @@ public class InventoryOverlay
 
             if (entity.getItemStackFromSlot(eqSlot).isEmpty())
             {
-                String texture = EMPTY_SLOT_TEXTURES[eqSlot.getIndex()];
-                RenderUtils.renderSprite(x + xOff + 1, y + yOff + 1, 16, 16, texture);
+                ResourceLocation texture = EMPTY_SLOT_TEXTURES[eqSlot.getIndex()];
+                RenderUtils.renderSprite(x + xOff + 1, y + yOff + 1, 16, 16, PlayerContainer.LOCATION_BLOCKS_TEXTURE, texture);
             }
         }
     }
@@ -468,21 +472,24 @@ public class InventoryOverlay
 
     public static void renderStackAt(ItemStack stack, float x, float y, float scale, Minecraft mc)
     {
-        GlStateManager.pushMatrix();
-        GlStateManager.translatef(x, y, 0);
-        GlStateManager.scalef(scale, scale, 1);
-        GlStateManager.disableLighting();
+        RenderSystem.pushMatrix();
+        RenderSystem.translatef(x, y, 0);
+        RenderSystem.scalef(scale, scale, 1);
+        RenderSystem.disableLighting();
+        RenderSystem.enableRescaleNormal();
 
-        RenderUtils.enableGuiItemLighting();
+        RenderUtils.enableDiffuseLightingGui3D();
+        RenderUtils.color(1f, 1f, 1f, 1f);
 
         mc.getItemRenderer().zLevel += 100;
         mc.getItemRenderer().renderItemAndEffectIntoGUI(mc.player, stack, 0, 0);
+
+        RenderUtils.color(1f, 1f, 1f, 1f);
         mc.getItemRenderer().renderItemOverlayIntoGUI(mc.fontRenderer, stack, 0, 0, null);
         mc.getItemRenderer().zLevel -= 100;
 
-        //GlStateManager.disableBlend();
-        RenderUtils.disableItemLighting();
-        GlStateManager.popMatrix();
+        RenderUtils.disableDiffuseLighting();
+        RenderSystem.popMatrix();
     }
 
     public static void renderStackToolTip(int x, int y, ItemStack stack, Minecraft mc)
@@ -498,7 +505,7 @@ public class InventoryOverlay
             }
             else
             {
-                lines.add(GuiBase.TXT_GRAY + list.get(i).getString());
+                lines.add(GuiBase.TXT_DARK_GRAY + list.get(i).getString());
             }
         }
 

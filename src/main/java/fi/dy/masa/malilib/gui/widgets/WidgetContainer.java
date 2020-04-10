@@ -198,7 +198,7 @@ public abstract class WidgetContainer extends WidgetBase
         if (this.hoveredSubWidget != null)
         {
             this.hoveredSubWidget.postRenderHovered(mouseX, mouseY, false);
-            RenderUtils.disableItemLighting();
+            RenderUtils.disableDiffuseLighting();
         }
     }
 }

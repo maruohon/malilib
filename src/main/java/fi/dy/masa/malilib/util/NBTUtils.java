@@ -49,9 +49,9 @@ public class NBTUtils
     {
         ListNBT posList = new ListNBT();
 
-        posList.add(new DoubleNBT(pos.x));
-        posList.add(new DoubleNBT(pos.y));
-        posList.add(new DoubleNBT(pos.z));
+        posList.add(DoubleNBT.valueOf(pos.x));
+        posList.add(DoubleNBT.valueOf(pos.y));
+        posList.add(DoubleNBT.valueOf(pos.z));
         tag.put("Pos", posList);
 
         return tag;

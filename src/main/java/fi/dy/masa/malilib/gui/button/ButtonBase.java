@@ -158,7 +158,7 @@ public abstract class ButtonBase extends WidgetBase
         if (this.hasHoverText() && this.isMouseOver())
         {
             RenderUtils.drawHoverText(mouseX, mouseY, this.getHoverStrings());
-            RenderUtils.disableItemLighting();
+            RenderUtils.disableDiffuseLighting();
         }
     }
 }

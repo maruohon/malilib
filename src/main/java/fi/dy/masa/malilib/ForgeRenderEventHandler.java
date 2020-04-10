@@ -26,6 +26,6 @@ class ForgeRenderEventHandler
     @SubscribeEvent
     public void onRenderWorldLast(RenderWorldLastEvent event)
     {
-        ((RenderEventHandler) RenderEventHandler.getInstance()).onRenderWorldLast(event.getPartialTicks());
+        ((RenderEventHandler) RenderEventHandler.getInstance()).onRenderWorldLast(event.getMatrixStack(), event.getPartialTicks());
     }
 }
