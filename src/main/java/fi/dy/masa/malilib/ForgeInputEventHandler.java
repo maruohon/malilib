@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib;
 
+import net.minecraft.client.Minecraft;
 import fi.dy.masa.malilib.event.InputEventHandler;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.InputEvent;
@@ -10,9 +11,12 @@ class ForgeInputEventHandler
     @SubscribeEvent
     public void onKeyboardInput(InputEvent.KeyInputEvent event)
     {
-        // This event isn't cancellable, and is fired after vanilla key handling >_>
-        // So this one needs to be handled with a Mixin
-        ((InputEventHandler) InputEventHandler.getInputManager()).onKeyInput(event.getKey(), event.getScanCode(), event.getModifiers(), event.getAction() != 0);
+        if (Minecraft.getInstance().currentScreen == null)
+        {
+            // This event isn't cancellable, and is fired after vanilla key handling >_>
+            // So this one needs to be handled with a Mixin
+            ((InputEventHandler) InputEventHandler.getInputManager()).onKeyInput(event.getKey(), event.getScanCode(), event.getModifiers(), event.getAction() != 0);
+        }
     }
 
     @SubscribeEvent
@@ -22,7 +26,8 @@ class ForgeInputEventHandler
         int mouseY = 0;
 
         // This event isn't cancellable, so it needs to be handled by a Mixin
-        if (((InputEventHandler) InputEventHandler.getInputManager()).onMouseClick(mouseX, mouseY, event.getButton(), true))
+        if (Minecraft.getInstance().currentScreen == null &&
+            ((InputEventHandler) InputEventHandler.getInputManager()).onMouseClick(mouseX, mouseY, event.getButton(), true))
         {
             //event.setCanceled(true);
         }
