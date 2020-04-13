@@ -803,7 +803,7 @@ public class RenderUtils
     }
 
     public static void renderBlockTargetingOverlay(Entity entity, BlockPos pos, Direction side, Vec3d hitVec,
-            Color4f color, net.minecraft.client.util.math.MatrixStack matrixStack, MinecraftClient mc)
+            Color4f color, MatrixStack matrixStack, MinecraftClient mc)
     {
         Direction playerFacing = entity.getHorizontalFacing();
         HitPart part = PositionUtils.getHitPart(side, playerFacing, pos, hitVec);
@@ -815,10 +815,9 @@ public class RenderUtils
 
         RenderSystem.pushMatrix();
 
-        matrixStack.push();
-        blockTargetingOverlayTranslations(x, y, z, side, playerFacing, matrixStack);
-        RenderSystem.multMatrix(matrixStack.peek().getModel());
-        matrixStack.pop();
+        MatrixStack matrixStackTmp = new MatrixStack();
+        blockTargetingOverlayTranslations(x, y, z, side, playerFacing, matrixStackTmp);
+        RenderSystem.multMatrix(matrixStackTmp.peek().getModel());
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
@@ -907,7 +906,7 @@ public class RenderUtils
     }
 
     public static void renderBlockTargetingOverlaySimple(Entity entity, BlockPos pos, Direction side,
-            Color4f color, net.minecraft.client.util.math.MatrixStack matrixStack, MinecraftClient mc)
+            Color4f color, MatrixStack matrixStack, MinecraftClient mc)
     {
         Direction playerFacing = entity.getHorizontalFacing();
         Vec3d cameraPos = mc.gameRenderer.getCamera().getPos();
@@ -918,10 +917,9 @@ public class RenderUtils
 
         RenderSystem.pushMatrix();
 
-        matrixStack.push();
-        blockTargetingOverlayTranslations(x, y, z, side, playerFacing, matrixStack);
-        RenderSystem.multMatrix(matrixStack.peek().getModel());
-        matrixStack.pop();
+        MatrixStack matrixStackTmp = new MatrixStack();
+        blockTargetingOverlayTranslations(x, y, z, side, playerFacing, matrixStackTmp);
+        RenderSystem.multMatrix(matrixStackTmp.peek().getModel());
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
@@ -958,7 +956,7 @@ public class RenderUtils
     }
 
     private static void blockTargetingOverlayTranslations(double x, double y, double z,
-            Direction side, Direction playerFacing, net.minecraft.client.util.math.MatrixStack matrixStack)
+            Direction side, Direction playerFacing, MatrixStack matrixStack)
     {
         matrixStack.translate(x, y, z);
 
@@ -985,7 +983,7 @@ public class RenderUtils
                 break;
         }
 
-        matrixStack.translate(-x, -y, -z + 0.505);
+        matrixStack.translate(-x, -y, -z + 0.510);
     }
 
     public static void renderMapPreview(ItemStack stack, int x, int y, int dimensions)

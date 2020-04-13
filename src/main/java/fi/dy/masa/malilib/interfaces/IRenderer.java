@@ -1,5 +1,7 @@
 package fi.dy.masa.malilib.interfaces;
 
+import java.util.function.Supplier;
+
 public interface IRenderer
 {
     /**
@@ -18,4 +20,13 @@ public interface IRenderer
      * Called after the tooltip text of an item has been rendered
      */
     default void onRenderTooltipLast(net.minecraft.item.ItemStack stack, int x, int y) {}
+
+    /**
+     * Returns a supplier for the profiler section name that should be used for this renderer
+     * @return
+     */
+    default Supplier<String> getProfilerSectionSupplier()
+    {
+        return () -> this.getClass().getName();
+    }
 }
