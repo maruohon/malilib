@@ -76,7 +76,7 @@ public class StringUtils
         net.minecraft.text.Text name = new net.minecraft.text.LiteralText(file.getName());
         name.getStyle().setClickEvent(new net.minecraft.text.ClickEvent(net.minecraft.text.ClickEvent.Action.OPEN_FILE, file.getAbsolutePath()));
         name.getStyle().setUnderline(Boolean.valueOf(true));
-        sender.sendMessage(new net.minecraft.text.TranslatableText(messageKey, name));
+        sender.sendSystemMessage(new net.minecraft.text.TranslatableText(messageKey, name));
     }
 
     /**
