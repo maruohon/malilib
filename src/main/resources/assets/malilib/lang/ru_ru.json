@@ -1,5 +1,3 @@
-//Переводил kyrtion, мой ВК - vk.com/kyrtion. || Translated by kyrtion, my VK - vk.com/kyrtion
-//Версия перевода(ru_ru) v1.0 - в переводе возможно имеются ошибки. Пожалуйста, поддержите проект! || Version translate(ru_ru) v1.0 - this translate might be have mistake. Please, support this project!
 {
     "malilib.config.comment.keybind_settings.activate_on": "Активируется ли связка клавиш при нажатии или отпускании комбинации клавиш",
     "malilib.config.comment.keybind_settings.allow_empty_keybind": "Является ли пустой набор ключей действительным\n(всегда будет считаться активным)",
