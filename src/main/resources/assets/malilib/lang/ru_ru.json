@@ -20,7 +20,7 @@
 
     "malilib.gui.button.render_layers_gui.axis": "Ось: %s",
     "malilib.gui.button.render_layers_gui.layers": "Слои: %s",
-    "malilib.gui.button.render_layers_gui.set_here": "Установить",
+    "malilib.gui.button.render_layers_gui.set_here": "Установить в текущем высота",
 
     "malilib.gui.button.hover.directory_widget.create_directory": "Создать новый каталог",
     "malilib.gui.button.hover.directory_widget.root": "В корневой/базовый каталог",
