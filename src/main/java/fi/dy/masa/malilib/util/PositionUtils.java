@@ -8,6 +8,10 @@ import net.minecraft.util.math.Vec3d;
 
 public class PositionUtils
 {
+    public static final Direction[] ALL_DIRECTIONS = new Direction[] { Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST };
+    public static final Direction[] HORIZONTAL_DIRECTIONS = new Direction[] { Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST };
+    public static final Direction[] VERTICAL_DIRECTIONS = new Direction[] { Direction.DOWN, Direction.UP };
+
     public static Vec3d modifyValue(CoordinateType type, Vec3d valueIn, double amount)
     {
         switch (type)

@@ -36,7 +36,6 @@ import net.minecraft.item.map.MapState;
 import net.minecraft.util.DefaultedList;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
@@ -521,12 +520,26 @@ public class RenderUtils
      */
     public static void drawBlockBoundingBoxOutlinesBatchedLines(BlockPos pos, Color4f color, double expand, BufferBuilder buffer)
     {
-        double minX = pos.getX() - expand;
-        double minY = pos.getY() - expand;
-        double minZ = pos.getZ() - expand;
-        double maxX = pos.getX() + expand + 1;
-        double maxY = pos.getY() + expand + 1;
-        double maxZ = pos.getZ() + expand + 1;
+        drawBlockBoundingBoxOutlinesBatchedLines(pos, Vec3d.ZERO, color, expand, buffer);
+    }
+
+    /**
+     * Assumes a BufferBuilder in GL_LINES mode has been initialized.
+     * The cameraPos value will be subtracted from the absolute coordinate values of the passed in BlockPos.
+     * @param pos
+     * @param cameraPos
+     * @param color
+     * @param expand
+     * @param buffer
+     */
+    public static void drawBlockBoundingBoxOutlinesBatchedLines(BlockPos pos, Vec3d cameraPos, Color4f color, double expand, BufferBuilder buffer)
+    {
+        double minX = pos.getX() - expand - cameraPos.x;
+        double minY = pos.getY() - expand - cameraPos.y;
+        double minZ = pos.getZ() - expand - cameraPos.z;
+        double maxX = pos.getX() + expand - cameraPos.x + 1;
+        double maxY = pos.getY() + expand - cameraPos.y + 1;
+        double maxZ = pos.getZ() + expand - cameraPos.z + 1;
 
         drawBoxAllEdgesBatchedLines(minX, minY, minZ, maxX, maxY, maxZ, color, buffer);
     }
@@ -554,12 +567,29 @@ public class RenderUtils
      */
     public static void drawBoxWithEdgesBatched(BlockPos posMin, BlockPos posMax, Color4f colorLines, Color4f colorSides, BufferBuilder bufferQuads, BufferBuilder bufferLines)
     {
-        final double x1 = posMin.getX();
-        final double y1 = posMin.getY();
-        final double z1 = posMin.getZ();
-        final double x2 = posMax.getX() + 1;
-        final double y2 = posMax.getY() + 1;
-        final double z2 = posMax.getZ() + 1;
+        drawBoxWithEdgesBatched(posMin, posMax, Vec3d.ZERO, colorLines, colorSides, bufferQuads, bufferLines);
+    }
+
+    /**
+     * Draws a box with outlines around the given corner positions.
+     * Takes in buffers initialized for GL_QUADS and GL_LINES modes.
+     * The cameraPos value will be subtracted from the absolute coordinate values of the passed in block positions.
+     * @param posMin
+     * @param posMax
+     * @param cameraPos
+     * @param colorLines
+     * @param colorSides
+     * @param bufferQuads
+     * @param bufferLines
+     */
+    public static void drawBoxWithEdgesBatched(BlockPos posMin, BlockPos posMax, Vec3d cameraPos, Color4f colorLines, Color4f colorSides, BufferBuilder bufferQuads, BufferBuilder bufferLines)
+    {
+        final double x1 = posMin.getX() - cameraPos.x;
+        final double y1 = posMin.getY() - cameraPos.y;
+        final double z1 = posMin.getZ() - cameraPos.z;
+        final double x2 = posMax.getX() + 1 - cameraPos.x;
+        final double y2 = posMax.getY() + 1 - cameraPos.y;
+        final double z2 = posMax.getZ() + 1 - cameraPos.z;
 
         fi.dy.masa.malilib.render.RenderUtils.drawBoxAllSidesBatchedQuads(x1, y1, z1, x2, y2, z2, colorSides, bufferQuads);
         fi.dy.masa.malilib.render.RenderUtils.drawBoxAllEdgesBatchedLines(x1, y1, z1, x2, y2, z2, colorLines, bufferLines);
@@ -667,27 +697,14 @@ public class RenderUtils
         buffer.vertex(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).next();
     }
 
-    public static void drawBox(IntBoundingBox bb, Color4f color, BufferBuilder bufferQuads, BufferBuilder bufferLines)
+    public static void drawBox(IntBoundingBox bb, Vec3d cameraPos, Color4f color, BufferBuilder bufferQuads, BufferBuilder bufferLines)
     {
-        double minX = bb.minX;
-        double minY = bb.minY;
-        double minZ = bb.minZ;
-        double maxX = bb.maxX + 1;
-        double maxY = bb.maxY + 1;
-        double maxZ = bb.maxZ + 1;
-
-        drawBoxAllSidesBatchedQuads(minX, minY, minZ, maxX, maxY, maxZ, color, bufferQuads);
-        drawBoxAllEdgesBatchedLines(minX, minY, minZ, maxX, maxY, maxZ, color, bufferLines);
-    }
-
-    public static void drawBox(BlockBox bb, Color4f color, BufferBuilder bufferQuads, BufferBuilder bufferLines)
-    {
-        double minX = bb.minX;
-        double minY = bb.minY;
-        double minZ = bb.minZ;
-        double maxX = bb.maxX + 1;
-        double maxY = bb.maxY + 1;
-        double maxZ = bb.maxZ + 1;
+        double minX = bb.minX - cameraPos.x;
+        double minY = bb.minY - cameraPos.y;
+        double minZ = bb.minZ - cameraPos.z;
+        double maxX = bb.maxX + 1 - cameraPos.x;
+        double maxY = bb.maxY + 1 - cameraPos.y;
+        double maxZ = bb.maxZ + 1 - cameraPos.z;
 
         drawBoxAllSidesBatchedQuads(minX, minY, minZ, maxX, maxY, maxZ, color, bufferQuads);
         drawBoxAllEdgesBatchedLines(minX, minY, minZ, maxX, maxY, maxZ, color, bufferLines);
