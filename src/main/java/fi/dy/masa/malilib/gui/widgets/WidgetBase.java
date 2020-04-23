@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.gui.widgets;
 import fi.dy.masa.malilib.render.RenderUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 
 public abstract class WidgetBase
@@ -161,31 +162,31 @@ public abstract class WidgetBase
         return this.textRenderer.getStringWidth(text);
     }
 
-    public void drawString(int x, int y, int color, String text)
+    public void drawString(int x, int y, int color, String text, MatrixStack matrixStack)
     {
-        this.textRenderer.draw(text, x, y, color);
+        this.textRenderer.draw(matrixStack, text, x, y, color);
     }
 
-    public void drawCenteredString(int x, int y, int color, String text)
+    public void drawCenteredString(int x, int y, int color, String text, MatrixStack matrixStack)
     {
-        this.textRenderer.draw(text, x - this.getStringWidth(text) / 2, y, color);
+        this.textRenderer.draw(matrixStack, text, x - this.getStringWidth(text) / 2, y, color);
     }
 
-    public void drawStringWithShadow(int x, int y, int color, String text)
+    public void drawStringWithShadow(int x, int y, int color, String text, MatrixStack matrixStack)
     {
-        this.textRenderer.drawWithShadow(text, x, y, color);
+        this.textRenderer.drawWithShadow(matrixStack, text, x, y, color);
     }
 
-    public void drawCenteredStringWithShadow(int x, int y, int color, String text)
+    public void drawCenteredStringWithShadow(int x, int y, int color, String text, MatrixStack matrixStack)
     {
-        this.textRenderer.drawWithShadow(text, x - this.getStringWidth(text) / 2, y, color);
+        this.textRenderer.drawWithShadow(matrixStack, text, x - this.getStringWidth(text) / 2, y, color);
     }
 
-    public void render(int mouseX, int mouseY, boolean selected)
+    public void render(int mouseX, int mouseY, boolean selected, MatrixStack matrixStack)
     {
     }
 
-    public void postRenderHovered(int mouseX, int mouseY, boolean selected)
+    public void postRenderHovered(int mouseX, int mouseY, boolean selected, MatrixStack matrixStack)
     {
     }
 }

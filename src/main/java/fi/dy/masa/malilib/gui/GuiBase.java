@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -150,21 +151,21 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTicks)
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
     {
         this.drawScreenBackground(mouseX, mouseY);
-        this.drawTitle(mouseX, mouseY, partialTicks);
+        this.drawTitle(matrixStack, mouseX, mouseY, partialTicks);
 
         // Draw base widgets
-        this.drawWidgets(mouseX, mouseY);
-        this.drawTextFields(mouseX, mouseY);
-        this.drawButtons(mouseX, mouseY, partialTicks);
+        this.drawWidgets(mouseX, mouseY, matrixStack);
+        this.drawTextFields(mouseX, mouseY, matrixStack);
+        this.drawButtons(mouseX, mouseY, partialTicks, matrixStack);
 
-        this.drawContents(mouseX, mouseY, partialTicks);
+        this.drawContents(matrixStack, mouseX, mouseY, partialTicks);
 
-        this.drawButtonHoverTexts(mouseX, mouseY, partialTicks);
-        this.drawHoveredWidget(mouseX, mouseY);
-        this.drawGuiMessages();
+        this.drawButtonHoverTexts(mouseX, mouseY, partialTicks, matrixStack);
+        this.drawHoveredWidget(mouseX, mouseY, matrixStack);
+        this.drawGuiMessages(matrixStack);
     }
 
     @Override
@@ -426,9 +427,9 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
         this.messageRenderer.setNextMessageType(type);
     }
 
-    protected void drawGuiMessages()
+    protected void drawGuiMessages(MatrixStack matrixStack)
     {
-        this.messageRenderer.drawMessages(this.width / 2, this.height / 2);
+        this.messageRenderer.drawMessages(this.width / 2, this.height / 2, matrixStack);
     }
 
     public void bindTexture(Identifier texture)
@@ -516,32 +517,32 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
         RenderUtils.drawRect(0, 0, this.width, this.height, TOOLTIP_BACKGROUND);
     }
 
-    protected void drawTitle(int mouseX, int mouseY, float partialTicks)
+    protected void drawTitle(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
     {
-        this.drawString(this.getTitleString(), LEFT, TOP, COLOR_WHITE);
+        this.drawString(matrixStack, this.getTitleString(), LEFT, TOP, COLOR_WHITE);
     }
 
-    protected void drawContents(int mouseX, int mouseY, float partialTicks)
+    protected void drawContents(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
     {
     }
 
-    protected void drawButtons(int mouseX, int mouseY, float partialTicks)
+    protected void drawButtons(int mouseX, int mouseY, float partialTicks, MatrixStack matrixStack)
     {
         for (ButtonBase button : this.buttons)
         {
-            button.render(mouseX, mouseY, button.isMouseOver());
+            button.render(mouseX, mouseY, button.isMouseOver(), matrixStack);
         }
     }
 
-    protected void drawTextFields(int mouseX, int mouseY)
+    protected void drawTextFields(int mouseX, int mouseY, MatrixStack matrixStack)
     {
         for (TextFieldWrapper<?> entry : this.textFields)
         {
-            entry.draw(mouseX, mouseY);
+            entry.draw(mouseX, mouseY, matrixStack);
         }
     }
 
-    protected void drawWidgets(int mouseX, int mouseY)
+    protected void drawWidgets(int mouseX, int mouseY, MatrixStack matrixStack)
     {
         this.hoveredWidget = null;
 
@@ -549,7 +550,7 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
         {
             for (WidgetBase widget : this.widgets)
             {
-                widget.render(mouseX, mouseY, false);
+                widget.render(mouseX, mouseY, false, matrixStack);
 
                 if (widget.isMouseOver(mouseX, mouseY))
                 {
@@ -559,24 +560,24 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
         }
     }
 
-    protected void drawButtonHoverTexts(int mouseX, int mouseY, float partialTicks)
+    protected void drawButtonHoverTexts(int mouseX, int mouseY, float partialTicks, MatrixStack matrixStack)
     {
         for (ButtonBase button : this.buttons)
         {
             if (button.hasHoverText() && button.isMouseOver())
             {
-                RenderUtils.drawHoverText(mouseX, mouseY, button.getHoverStrings());
+                RenderUtils.drawHoverText(mouseX, mouseY, button.getHoverStrings(), matrixStack);
             }
         }
 
         RenderUtils.disableDiffuseLighting();
     }
 
-    protected void drawHoveredWidget(int mouseX, int mouseY)
+    protected void drawHoveredWidget(int mouseX, int mouseY, MatrixStack matrixStack)
     {
         if (this.hoveredWidget != null)
         {
-            this.hoveredWidget.postRenderHovered(mouseX, mouseY, false);
+            this.hoveredWidget.postRenderHovered(mouseX, mouseY, false, matrixStack);
             RenderUtils.disableDiffuseLighting();
         }
     }
@@ -591,14 +592,14 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
         return this.textRenderer.getStringWidth(text);
     }
 
-    public void drawString(String text, int x, int y, int color)
+    public void drawString(MatrixStack matrixStack, String text, int x, int y, int color)
     {
-        this.textRenderer.draw(text, x, y, color);
+        this.textRenderer.draw(matrixStack, text, x, y, color);
     }
 
-    public void drawStringWithShadow(String text, int x, int y, int color)
+    public void drawStringWithShadow(MatrixStack matrixStack, String text, int x, int y, int color)
     {
-        this.textRenderer.drawWithShadow(text, x, y, color);
+        this.textRenderer.drawWithShadow(matrixStack, text, x, y, color);
     }
 
     public int getMaxPrettyNameLength(List<? extends IConfigBase> configs)

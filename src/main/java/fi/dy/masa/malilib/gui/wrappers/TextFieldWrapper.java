@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.gui.wrappers;
 import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
 import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
 import fi.dy.masa.malilib.util.KeyCodes;
+import net.minecraft.client.util.math.MatrixStack;
 
 public class TextFieldWrapper<T extends GuiTextFieldGeneric>
 {
@@ -43,9 +44,9 @@ public class TextFieldWrapper<T extends GuiTextFieldGeneric>
         }
     }
 
-    public void draw(int mouseX, int mouseY)
+    public void draw(int mouseX, int mouseY, MatrixStack matrixStack)
     {
-        this.textField.render(mouseX, mouseY, 0f);
+        this.textField.render(matrixStack, mouseX, mouseY, 0f);
     }
 
     public boolean mouseClicked(int mouseX, int mouseY, int mouseButton)

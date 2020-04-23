@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.compat.modmenu;
 
-import java.util.function.Function;
+/*import java.util.function.Function;
 import net.minecraft.client.gui.screen.Screen;
 import fi.dy.masa.malilib.MaLiLibConfigGui;
 import fi.dy.masa.malilib.MaLiLibReference;
@@ -23,4 +23,4 @@ public class ModMenuImpl implements ModMenuApi
             return gui;
         };
     }
-}
+}*/

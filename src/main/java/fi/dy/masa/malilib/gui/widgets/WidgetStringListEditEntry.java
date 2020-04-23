@@ -11,6 +11,7 @@ import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
+import net.minecraft.client.util.math.MatrixStack;
 
 public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
 {
@@ -192,7 +193,7 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean selected)
+    public void render(int mouseX, int mouseY, boolean selected, MatrixStack matrixStack)
     {
         RenderUtils.color(1f, 1f, 1f, 1f);
 
@@ -206,9 +207,9 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
             RenderUtils.drawRect(this.x, this.y, this.width, this.height, 0x30FFFFFF);
         }
 
-        this.drawSubWidgets(mouseX, mouseY);
-        this.drawTextFields(mouseX, mouseY);
-        super.render(mouseX, mouseY, selected);
+        this.drawSubWidgets(mouseX, mouseY, matrixStack);
+        this.drawTextFields(mouseX, mouseY, matrixStack);
+        super.render(mouseX, mouseY, selected, matrixStack);
     }
 
     public static class ChangeListenerTextField extends ConfigOptionChangeListenerTextField

@@ -8,6 +8,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.MaLiLibConfigs;
+import net.minecraft.class_5218;
+import net.minecraft.class_5250;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.util.Formatting;
 
 public class StringUtils
 {
@@ -73,9 +77,9 @@ public class StringUtils
 
     public static void sendOpenFileChatMessage(net.minecraft.entity.Entity sender, String messageKey, File file)
     {
-        net.minecraft.text.Text name = new net.minecraft.text.LiteralText(file.getName());
+        class_5250 name = new net.minecraft.text.LiteralText(file.getName());
         name.getStyle().setClickEvent(new net.minecraft.text.ClickEvent(net.minecraft.text.ClickEvent.Action.OPEN_FILE, file.getAbsolutePath()));
-        name.getStyle().setUnderline(Boolean.valueOf(true));
+        name.method_27692(Formatting.UNDERLINE);
         sender.sendSystemMessage(new net.minecraft.text.TranslatableText(messageKey, name));
     }
 
@@ -279,7 +283,7 @@ public class StringUtils
             {
                 // This used to be just MinecraftServer::getLevelName().
                 // Getting the name would now require an @Accessor for MinecraftServer.field_23784
-                return server.method_27050().getFileName().toString(); 
+                return server.method_27050(class_5218.field_24188).getFileName().toString(); 
             }
         }
         else
@@ -382,8 +386,8 @@ public class StringUtils
         return net.minecraft.client.MinecraftClient.getInstance().textRenderer.getStringWidth(text);
     }
 
-    public static void drawString(int x, int y, int color, String text)
+    public static void drawString(int x, int y, int color, String text, MatrixStack matrixStack)
     {
-        net.minecraft.client.MinecraftClient.getInstance().textRenderer.draw(text, x, y, color);
+        net.minecraft.client.MinecraftClient.getInstance().textRenderer.draw(matrixStack, text, x, y, color);
     }
 }

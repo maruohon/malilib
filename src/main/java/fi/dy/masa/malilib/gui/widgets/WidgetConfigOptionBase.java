@@ -8,6 +8,7 @@ import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.wrappers.TextFieldWrapper;
 import fi.dy.masa.malilib.util.KeyCodes;
 import fi.dy.masa.malilib.util.StringUtils;
+import net.minecraft.client.util.math.MatrixStack;
 
 public abstract class WidgetConfigOptionBase<TYPE> extends WidgetListEntryBase<TYPE>
 {
@@ -126,11 +127,11 @@ public abstract class WidgetConfigOptionBase<TYPE> extends WidgetListEntryBase<T
         return false;
     }
 
-    protected void drawTextFields(int mouseX, int mouseY)
+    protected void drawTextFields(int mouseX, int mouseY, MatrixStack matrixStack)
     {
         if (this.textField != null)
         {
-            this.textField.getTextField().render(mouseX, mouseY, 0f);
+            this.textField.getTextField().render(matrixStack, mouseX, mouseY, 0f);
         }
     }
 }

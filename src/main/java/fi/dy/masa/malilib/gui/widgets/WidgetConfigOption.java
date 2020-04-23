@@ -43,6 +43,7 @@ import fi.dy.masa.malilib.hotkeys.KeybindSettings;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.GuiUtils;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.util.math.MatrixStack;
 
 public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapper>
 {
@@ -298,17 +299,17 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean selected)
+    public void render(int mouseX, int mouseY, boolean selected, MatrixStack matrixStack)
     {
         RenderUtils.color(1f, 1f, 1f, 1f);
 
-        this.drawSubWidgets(mouseX, mouseY);
+        this.drawSubWidgets(mouseX, mouseY, matrixStack);
 
         if (this.wrapper.getType() == ConfigOptionWrapper.Type.CONFIG)
         {
             IConfigBase config = this.wrapper.getConfig();
-            this.drawTextFields(mouseX, mouseY);
-            super.render(mouseX, mouseY, selected);
+            this.drawTextFields(mouseX, mouseY, matrixStack);
+            super.render(mouseX, mouseY, selected, matrixStack);
 
             if (config.getType() == ConfigType.COLOR)
             {

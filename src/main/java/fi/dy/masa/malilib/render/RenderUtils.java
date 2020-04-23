@@ -204,7 +204,7 @@ public class RenderUtils
         buffer.vertex(x        , y         , zLevel).texture( u          * pixelWidth,  v           * pixelWidth).next();
     }
 
-    public static void drawHoverText(int x, int y, List<String> textLines)
+    public static void drawHoverText(int x, int y, List<String> textLines, MatrixStack matrixStack)
     {
         MinecraftClient mc = mc();
 
@@ -266,7 +266,7 @@ public class RenderUtils
             for (int i = 0; i < textLines.size(); ++i)
             {
                 String str = textLines.get(i);
-                font.drawWithShadow(str, textStartX, textStartY, 0xFFFFFFFF);
+                font.drawWithShadow(matrixStack, str, textStartX, textStartY, 0xFFFFFFFF);
                 textStartY += lineHeight;
             }
 
@@ -311,10 +311,10 @@ public class RenderUtils
         RenderSystem.enableTexture();
     }
 
-    public static void drawCenteredString(int x, int y, int color, String text)
+    public static void drawCenteredString(int x, int y, int color, String text, MatrixStack matrixStack)
     {
         TextRenderer textRenderer = mc().textRenderer;
-        textRenderer.drawWithShadow(text, x - textRenderer.getStringWidth(text) / 2, y, color);
+        textRenderer.drawWithShadow(matrixStack, text, x - textRenderer.getStringWidth(text) / 2, y, color);
     }
 
     public static void drawHorizontalLine(int x, int y, int width, int color)
@@ -327,29 +327,29 @@ public class RenderUtils
         drawRect(x, y, 1, height, color);
     }
 
-    public static void renderSprite(int x, int y, int width, int height, Identifier atlas, Identifier texture)
+    public static void renderSprite(int x, int y, int width, int height, Identifier atlas, Identifier texture, MatrixStack matrixStack)
     {
         if (texture != null)
         {
             Sprite sprite = mc().getSpriteAtlas(atlas).apply(texture);
             RenderSystem.disableLighting();
-            DrawableHelper.drawSprite(x, y, 0, width, height, sprite);//.drawTexturedRect(x, y, sprite, width, height);
+            DrawableHelper.drawSprite(matrixStack, x, y, 0, width, height, sprite);//.drawTexturedRect(x, y, sprite, width, height);
         }
     }
 
-    public static void renderText(int x, int y, int color, String text)
+    public static void renderText(int x, int y, int color, String text, MatrixStack matrixStack)
     {
         String[] parts = text.split("\\\\n");
         TextRenderer textRenderer = mc().textRenderer;
 
         for (String line : parts)
         {
-            textRenderer.drawWithShadow(line, x, y, color);
+            textRenderer.drawWithShadow(matrixStack, line, x, y, color);
             y += textRenderer.fontHeight + 1;
         }
     }
 
-    public static void renderText(int x, int y, int color, List<String> lines)
+    public static void renderText(int x, int y, int color, List<String> lines, MatrixStack matrixStack)
     {
         if (lines.isEmpty() == false)
         {
@@ -357,14 +357,15 @@ public class RenderUtils
 
             for (String line : lines)
             {
-                textRenderer.draw(line, x, y, color);
+                textRenderer.draw(matrixStack, line, x, y, color);
                 y += textRenderer.fontHeight + 2;
             }
         }
     }
 
     public static int renderText(int xOff, int yOff, double scale, int textColor, int bgColor,
-            HudAlignment alignment, boolean useBackground, boolean useShadow, List<String> lines)
+            HudAlignment alignment, boolean useBackground, boolean useShadow, List<String> lines,
+            MatrixStack matrixStack)
     {
         TextRenderer fontRenderer = mc().textRenderer;
         final int scaledWidth = GuiUtils.getScaledWindowWidth();
@@ -423,11 +424,11 @@ public class RenderUtils
 
             if (useShadow)
             {
-                fontRenderer.drawWithShadow(line, x, y, textColor);
+                fontRenderer.drawWithShadow(matrixStack, line, x, y, textColor);
             }
             else
             {
-                fontRenderer.draw(line, x, y, textColor);
+                fontRenderer.draw(matrixStack, line, x, y, textColor);
             }
         }
 
@@ -703,18 +704,18 @@ public class RenderUtils
      * @param scale
      * @param mc
      */
-    public static void drawTextPlate(List<String> text, double x, double y, double z, float scale)
+    public static void drawTextPlate(List<String> text, double x, double y, double z, float scale, MatrixStack matrixStack)
     {
         Entity entity = mc().getCameraEntity();
 
         if (entity != null)
         {
-            drawTextPlate(text, x, y, z, entity.yaw, entity.pitch, scale, 0xFFFFFFFF, 0x40000000, true);
+            drawTextPlate(text, x, y, z, entity.yaw, entity.pitch, scale, 0xFFFFFFFF, 0x40000000, true, matrixStack);
         }
     }
 
     public static void drawTextPlate(List<String> text, double x, double y, double z, float yaw, float pitch,
-            float scale, int textColor, int bgColor, boolean disableDepth)
+            float scale, int textColor, int bgColor, boolean disableDepth, MatrixStack matrixStack)
     {
         TextRenderer textRenderer = mc().textRenderer;
 
@@ -781,12 +782,12 @@ public class RenderUtils
                 RenderSystem.disableDepthTest();
             }
 
-            textRenderer.draw(line, -strLenHalf, textY, 0x20000000 | (textColor & 0xFFFFFF));
+            textRenderer.draw(matrixStack, line, -strLenHalf, textY, 0x20000000 | (textColor & 0xFFFFFF));
 
             RenderSystem.enableDepthTest();
             RenderSystem.depthMask(true);
 
-            textRenderer.draw(line, -strLenHalf, textY, textColor);
+            textRenderer.draw(matrixStack, line, -strLenHalf, textY, textColor);
             textY += textRenderer.fontHeight;
         }
 

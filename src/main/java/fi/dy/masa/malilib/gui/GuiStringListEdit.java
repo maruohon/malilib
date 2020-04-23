@@ -13,6 +13,7 @@ import fi.dy.masa.malilib.util.KeyCodes;
 import fi.dy.masa.malilib.util.StringUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.util.math.MatrixStack;
 
 public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEditEntry, WidgetListStringListEdit>
 {
@@ -123,14 +124,14 @@ public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEditE
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTicks)
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
     {
         if (this.getParent() != null)
         {
-            this.getParent().render(mouseX, mouseY, partialTicks);
+            this.getParent().render(matrixStack, mouseX, mouseY, partialTicks);
         }
 
-        super.render(mouseX, mouseY, partialTicks);
+        super.render(matrixStack, mouseX, mouseY, partialTicks);
     }
 
     @Override
@@ -140,9 +141,9 @@ public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEditE
     }
 
     @Override
-    protected void drawTitle(int mouseX, int mouseY, float partialTicks)
+    protected void drawTitle(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
     {
-        this.drawStringWithShadow(this.title, this.dialogLeft + 10, this.dialogTop + 6, COLOR_WHITE);
+        this.drawStringWithShadow(matrixStack, this.title, this.dialogLeft + 10, this.dialogTop + 6, COLOR_WHITE);
     }
 
     @Override

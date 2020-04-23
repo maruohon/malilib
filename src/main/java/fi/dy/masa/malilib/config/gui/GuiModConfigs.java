@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.config.gui;
 import java.util.List;
 import fi.dy.masa.malilib.config.IConfigBase;
 import fi.dy.masa.malilib.gui.GuiConfigsBase;
+import net.minecraft.client.util.math.MatrixStack;
 
 public class GuiModConfigs extends GuiConfigsBase
 {
@@ -33,7 +34,7 @@ public class GuiModConfigs extends GuiConfigsBase
     }
 
     @Override
-    protected void drawTitle(int mouseX, int mouseY, float partialTicks)
+    protected void drawTitle(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
     {
         // NO-OP
     }

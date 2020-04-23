@@ -8,7 +8,7 @@ public interface IRenderer
      * Called after the vanilla overlays have been rendered
      * @param partialTicks
      */
-    default void onRenderGameOverlayPost(float partialTicks) {}
+    default void onRenderGameOverlayPost(float partialTicks, net.minecraft.client.util.math.MatrixStack matrixStack) {}
 
     /**
      * Called after vanilla world rendering

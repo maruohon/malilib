@@ -49,7 +49,7 @@ public class RenderEventHandler implements IRenderDispatcher
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public void onRenderGameOverlayPost(net.minecraft.client.MinecraftClient mc, float partialTicks)
+    public void onRenderGameOverlayPost(net.minecraft.client.MinecraftClient mc, float partialTicks, net.minecraft.client.util.math.MatrixStack matrixStack)
     {
         mc.getProfiler().push("malilib_rendergameoverlaypost");
 
@@ -58,13 +58,13 @@ public class RenderEventHandler implements IRenderDispatcher
             for (IRenderer renderer : this.overlayRenderers)
             {
                 mc.getProfiler().push(renderer.getProfilerSectionSupplier());
-                renderer.onRenderGameOverlayPost(partialTicks);
+                renderer.onRenderGameOverlayPost(partialTicks, matrixStack);
                 mc.getProfiler().pop();
             }
         }
 
         mc.getProfiler().push("malilib_ingamemessages");
-        InfoUtils.renderInGameMessages();
+        InfoUtils.renderInGameMessages(matrixStack);
         mc.getProfiler().pop();
 
         mc.getProfiler().pop();
@@ -73,7 +73,7 @@ public class RenderEventHandler implements IRenderDispatcher
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public void onRenderTooltipLast(net.minecraft.item.ItemStack stack, int x, int y)
+    public void onRenderTooltipLast(net.minecraft.client.util.math.MatrixStack matrixStack, net.minecraft.item.ItemStack stack, int x, int y)
     {
         if (this.tooltipLastRenderers.isEmpty() == false)
         {

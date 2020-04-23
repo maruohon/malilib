@@ -10,6 +10,7 @@ import fi.dy.masa.malilib.gui.widgets.WidgetBase;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 import net.minecraft.client.sound.PositionedSoundInstance;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 
@@ -153,11 +154,11 @@ public abstract class ButtonBase extends WidgetBase
     }
 
     @Override
-    public void postRenderHovered(int mouseX, int mouseY, boolean selected)
+    public void postRenderHovered(int mouseX, int mouseY, boolean selected, MatrixStack matrixStack)
     {
         if (this.hasHoverText() && this.isMouseOver())
         {
-            RenderUtils.drawHoverText(mouseX, mouseY, this.getHoverStrings());
+            RenderUtils.drawHoverText(mouseX, mouseY, this.getHoverStrings(), matrixStack);
             RenderUtils.disableDiffuseLighting();
         }
     }

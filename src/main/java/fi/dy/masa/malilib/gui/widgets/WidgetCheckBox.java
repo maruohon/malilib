@@ -6,6 +6,7 @@ import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
 import fi.dy.masa.malilib.render.RenderUtils;
+import net.minecraft.client.util.math.MatrixStack;
 
 public class WidgetCheckBox extends WidgetBase
 {
@@ -86,7 +87,7 @@ public class WidgetCheckBox extends WidgetBase
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean selected)
+    public void render(int mouseX, int mouseY, boolean selected, MatrixStack matrixStack)
     {
         IGuiIcon icon = this.checked ? this.widgetChecked : this.widgetUnchecked;
 
@@ -98,15 +99,15 @@ public class WidgetCheckBox extends WidgetBase
         int y = this.y + 1 + (this.height - this.fontHeight) / 2;
         int textColor = this.checked ? 0xFFFFFFFF : 0xB0B0B0B0;
 
-        this.drawStringWithShadow(this.x + iw + 3, y, textColor, this.displayText);
+        this.drawStringWithShadow(this.x + iw + 3, y, textColor, this.displayText, matrixStack);
     }
 
     @Override
-    public void postRenderHovered(int mouseX, int mouseY, boolean selected)
+    public void postRenderHovered(int mouseX, int mouseY, boolean selected, MatrixStack matrixStack)
     {
         if (this.hoverInfo.isEmpty() == false)
         {
-            RenderUtils.drawHoverText(mouseX, mouseY, this.hoverInfo);
+            RenderUtils.drawHoverText(mouseX, mouseY, this.hoverInfo, matrixStack);
         }
     }
 }

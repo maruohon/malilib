@@ -9,6 +9,7 @@ import fi.dy.masa.malilib.hotkeys.KeybindMulti;
 import fi.dy.masa.malilib.hotkeys.KeybindSettings;
 import fi.dy.masa.malilib.hotkeys.KeybindSettings.Context;
 import fi.dy.masa.malilib.util.KeyCodes;
+import net.minecraft.client.util.math.MatrixStack;
 
 public class WidgetSearchBarConfigs extends WidgetSearchBar
 {
@@ -82,13 +83,13 @@ public class WidgetSearchBarConfigs extends WidgetSearchBar
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean selected)
+    public void render(int mouseX, int mouseY, boolean selected, MatrixStack matrixStack)
     {
-        super.render(mouseX, mouseY, selected);
+        super.render(mouseX, mouseY, selected, matrixStack);
 
         if (this.searchOpen)
         {
-            this.button.render(mouseX, mouseY, false);
+            this.button.render(mouseX, mouseY, false, matrixStack);
         }
     }
 }

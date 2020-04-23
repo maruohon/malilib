@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.gui.widgets;
 
 import fi.dy.masa.malilib.render.RenderUtils;
+import net.minecraft.client.util.math.MatrixStack;
 
 public class WidgetStringListEntry extends WidgetListEntryBase<String>
 {
@@ -14,7 +15,7 @@ public class WidgetStringListEntry extends WidgetListEntryBase<String>
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean selected)
+    public void render(int mouseX, int mouseY, boolean selected, MatrixStack matrixStack)
     {
         RenderUtils.color(1f, 1f, 1f, 1f);
 
@@ -39,8 +40,8 @@ public class WidgetStringListEntry extends WidgetListEntryBase<String>
         }
 
         int yOffset = (this.height - this.fontHeight) / 2 + 1;
-        this.drawStringWithShadow(this.x + 2, this.y + yOffset, 0xFFFFFFFF, this.entry);
+        this.drawStringWithShadow(this.x + 2, this.y + yOffset, 0xFFFFFFFF, this.entry, matrixStack);
 
-        super.render(mouseX, mouseY, selected);
+        super.render(mouseX, mouseY, selected, matrixStack);
     }
 }
