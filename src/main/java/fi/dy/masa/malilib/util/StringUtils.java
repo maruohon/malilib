@@ -8,7 +8,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.MaLiLibConfigs;
-import net.minecraft.class_5218;
 import net.minecraft.class_5250;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Formatting;
@@ -283,7 +282,7 @@ public class StringUtils
             {
                 // This used to be just MinecraftServer::getLevelName().
                 // Getting the name would now require an @Accessor for MinecraftServer.field_23784
-                return server.method_27050(class_5218.field_24188).getFileName().toString(); 
+                return server.method_27728().getLevelName(); 
             }
         }
         else

@@ -81,10 +81,10 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
 
         super.drawContents(matrixStack, mouseX, mouseY, partialTicks);
 
-        this.drawAdditionalContents(mouseX, mouseY);
+        this.drawAdditionalContents(mouseX, mouseY, matrixStack);
     }
 
-    protected void drawAdditionalContents(int mouseX, int mouseY)
+    protected void drawAdditionalContents(int mouseX, int mouseY, MatrixStack matrixStack)
     {
     }
 
