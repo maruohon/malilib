@@ -10,7 +10,7 @@ import fi.dy.masa.malilib.gui.widget.WidgetFileBrowserBase.DirectoryEntryType;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.FileUtils;
 
-public class WidgetDirectoryEntry extends WidgetListEntryBase<DirectoryEntry>
+public class WidgetDirectoryEntry extends WidgetListDataEntryBase<DirectoryEntry>
 {
     protected final IDirectoryNavigator navigator;
     protected final DirectoryEntry entry;
@@ -20,7 +20,7 @@ public class WidgetDirectoryEntry extends WidgetListEntryBase<DirectoryEntry>
     public WidgetDirectoryEntry(int x, int y, int width, int height, boolean isOdd, DirectoryEntry entry,
             int listIndex, IDirectoryNavigator navigator, @Nullable IFileBrowserIconProvider iconProvider)
     {
-        super(x, y, width, height, entry, listIndex);
+        super(x, y, width, height, listIndex, entry);
 
         this.isOdd = isOdd;
         this.entry = entry;

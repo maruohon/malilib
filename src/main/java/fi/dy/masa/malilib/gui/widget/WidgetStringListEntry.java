@@ -2,13 +2,13 @@ package fi.dy.masa.malilib.gui.widget;
 
 import fi.dy.masa.malilib.render.RenderUtils;
 
-public class WidgetStringListEntry extends WidgetListEntryBase<String>
+public class WidgetStringListEntry extends WidgetListDataEntryBase<String>
 {
     private final boolean isOdd;
 
-    public WidgetStringListEntry(int x, int y, int width, int height, boolean isOdd, String entry, int listIndex)
+    public WidgetStringListEntry(int x, int y, int width, int height, boolean isOdd, int listIndex, String entry)
     {
-        super(x, y, width, height, entry, listIndex);
+        super(x, y, width, height, listIndex, entry);
 
         this.isOdd = isOdd;
     }
@@ -39,7 +39,7 @@ public class WidgetStringListEntry extends WidgetListEntryBase<String>
             RenderUtils.drawRect(x, y, width, height, 0xA0303030, z);
         }
 
-        this.drawStringWithShadow(x + 2, y + this.getCenteredTextOffsetY(), 0xFFFFFFFF, this.entry);
+        this.drawStringWithShadow(x + 2, y + this.getCenteredTextOffsetY(), 0xFFFFFFFF, this.data);
 
         super.render(mouseX, mouseY, isActiveGui, hoveredWidgetId, selected);
     }

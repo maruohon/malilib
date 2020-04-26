@@ -5,18 +5,16 @@ import java.util.List;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import fi.dy.masa.malilib.MaLiLibConfigs;
-import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.WidgetBase;
 import fi.dy.masa.malilib.gui.widget.WidgetListBase;
-import fi.dy.masa.malilib.gui.widget.WidgetListEntryBase;
 import fi.dy.masa.malilib.gui.widget.WidgetTextFieldBase;
 
-public abstract class GuiListBase<TYPE, WIDGET extends WidgetListEntryBase<TYPE>, WIDGETLIST extends WidgetListBase<TYPE, WIDGET>> extends GuiBase
+public abstract class GuiListBase<LISTWIDGET extends WidgetListBase> extends GuiBase
 {
     private int listX;
     private int listY;
-    private WIDGETLIST widget;
+    private LISTWIDGET widget;
 
     protected GuiListBase(int listX, int listY)
     {
@@ -39,20 +37,14 @@ public abstract class GuiListBase<TYPE, WIDGET extends WidgetListEntryBase<TYPE>
         return this.listY;
     }
 
-    protected abstract WIDGETLIST createListWidget(int listX, int listY);
+    protected abstract LISTWIDGET createListWidget(int listX, int listY);
 
     protected abstract int getBrowserWidth();
 
     protected abstract int getBrowserHeight();
 
     @Nullable
-    protected ISelectionListener<TYPE> getSelectionListener()
-    {
-        return null;
-    }
-
-    @Nullable
-    protected WIDGETLIST getListWidget()
+    protected LISTWIDGET getListWidget()
     {
         if (this.widget == null)
         {
@@ -74,7 +66,7 @@ public abstract class GuiListBase<TYPE, WIDGET extends WidgetListEntryBase<TYPE>
 
     protected void updateListPosition(int listX, int listY)
     {
-        WIDGETLIST listWidget = this.getListWidget();
+        WidgetListBase listWidget = this.getListWidget();
 
         if (listWidget != null)
         {
@@ -93,7 +85,7 @@ public abstract class GuiListBase<TYPE, WIDGET extends WidgetListEntryBase<TYPE>
     protected WidgetBase getTopHoveredWidget(int mouseX, int mouseY, @Nullable WidgetBase highestFoundWidget)
     {
         highestFoundWidget = super.getTopHoveredWidget(mouseX, mouseY, highestFoundWidget);
-        WIDGETLIST listWidget = this.getListWidget();
+        WidgetListBase listWidget = this.getListWidget();
 
         if (listWidget != null)
         {
@@ -107,7 +99,7 @@ public abstract class GuiListBase<TYPE, WIDGET extends WidgetListEntryBase<TYPE>
     protected List<WidgetTextFieldBase> getAllTextFields()
     {
         List<WidgetTextFieldBase> textFields = new ArrayList<>();
-        WIDGETLIST listWidget = this.getListWidget();
+        WidgetListBase listWidget = this.getListWidget();
 
         textFields.addAll(super.getAllTextFields());
 
@@ -124,7 +116,7 @@ public abstract class GuiListBase<TYPE, WIDGET extends WidgetListEntryBase<TYPE>
     {
         super.initGui();
 
-        WIDGETLIST listWidget = this.getListWidget();
+        WidgetListBase listWidget = this.getListWidget();
 
         if (listWidget != null)
         {
@@ -221,7 +213,7 @@ public abstract class GuiListBase<TYPE, WIDGET extends WidgetListEntryBase<TYPE>
     {
         super.renderDebug(mouseX, mouseY);
 
-        WIDGETLIST widget = this.getListWidget();
+        WidgetListBase widget = this.getListWidget();
 
         if (widget != null)
         {

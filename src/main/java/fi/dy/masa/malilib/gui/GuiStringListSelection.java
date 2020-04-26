@@ -7,11 +7,11 @@ import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.gui.interfaces.IStringListConsumer;
-import fi.dy.masa.malilib.gui.widget.WidgetListStringSelection;
-import fi.dy.masa.malilib.gui.widget.WidgetStringListEntry;
+import fi.dy.masa.malilib.gui.widget.WidgetDataListBase;
+import fi.dy.masa.malilib.interfaces.IStringListProvider;
 import fi.dy.masa.malilib.util.StringUtils;
 
-public class GuiStringListSelection extends GuiListBase<String, WidgetStringListEntry, WidgetListStringSelection>
+public class GuiStringListSelection extends GuiListBase<WidgetDataListBase<String>> implements IStringListProvider
 {
     protected final ImmutableList<String> strings;
     protected final IStringListConsumer consumer;
@@ -42,9 +42,9 @@ public class GuiStringListSelection extends GuiListBase<String, WidgetStringList
     }
 
     @Override
-    protected WidgetListStringSelection createListWidget(int listX, int listY)
+    protected WidgetDataListBase<String> createListWidget(int listX, int listY)
     {
-        return new WidgetListStringSelection(listX, listY, this.getBrowserWidth(), this.getBrowserHeight(), this::getStrings);
+        return new WidgetDataListBase<String>(listX, listY, this.getBrowserWidth(), this.getBrowserHeight(), this::getStrings, null);
     }
 
     @Override

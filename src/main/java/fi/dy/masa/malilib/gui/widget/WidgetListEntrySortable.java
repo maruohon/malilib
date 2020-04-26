@@ -4,13 +4,13 @@ import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.render.RenderUtils;
 
-public abstract class WidgetListEntrySortable<TYPE> extends WidgetListEntryBase<TYPE>
+public abstract class WidgetListEntrySortable<TYPE> extends WidgetListDataEntryBase<TYPE>
 {
     protected int columnCount = 2;
 
-    public WidgetListEntrySortable(int x, int y, int width, int height, @Nullable TYPE entry, int listIndex)
+    public WidgetListEntrySortable(int x, int y, int width, int height, int listIndex, @Nullable TYPE entry)
     {
-        super(x, y, width, height, entry, listIndex);
+        super(x, y, width, height, listIndex, entry);
     }
 
     protected abstract int getColumnPosX(int column);

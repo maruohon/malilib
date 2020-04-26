@@ -14,6 +14,7 @@ import fi.dy.masa.malilib.util.StringUtils;
 public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
 {
     protected final WidgetListStringListEdit parent;
+    protected final IConfigStringList config;
     protected final String defaultValue;
     protected final int listIndex;
     protected final boolean isOdd;
@@ -21,7 +22,7 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
     public WidgetStringListEditEntry(int x, int y, int width, int height,
             int listIndex, boolean isOdd, String initialValue, String defaultValue, WidgetListStringListEdit parent)
     {
-        super(x, y, width, height, parent, initialValue, listIndex);
+        super(x, y, width, height, parent, listIndex, initialValue);
 
         this.listIndex = listIndex;
         this.isOdd = isOdd;

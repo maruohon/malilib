@@ -1,27 +1,27 @@
 package fi.dy.masa.malilib.gui.widget;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.gui.GuiBase;
-import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
-import fi.dy.masa.malilib.gui.util.BaseGuiIcon;
+import fi.dy.masa.malilib.gui.util.GuiIconBase;
+import fi.dy.masa.malilib.gui.widget.util.IListEntryWidgetFactory;
+import fi.dy.masa.malilib.gui.widget.util.WidgetSelectionHandler;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.util.HorizontalAlignment;
 
-public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TYPE>> extends WidgetContainer
+public class WidgetListBase extends WidgetContainer
 {
-    protected final List<TYPE> listContents = new ArrayList<>();
-    protected final List<WIDGET> listWidgets = new ArrayList<>();
+    @Nullable private net.minecraft.client.gui.GuiScreen parentGui;
+    @Nullable private WidgetSearchBar widgetSearchBar;
+    @Nullable protected IListEntryWidgetFactory widgetFactory;
     protected final WidgetScrollBar scrollBar;
-    protected final Set<TYPE> selectedEntries = new HashSet<>();
+    protected final List<WidgetListEntryBase> listWidgets = new ArrayList<>();
+    protected int totalEntryCount;
     protected int browserWidth;
     protected int browserHeight;
     protected int entryHeight;
@@ -29,28 +29,26 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
     protected int browserEntriesStartY;
     protected int browserEntriesOffsetY;
     protected int browserEntryWidth;
-    protected int browserEntryHeight;
+    protected int browserEntryHeight = 22;
     protected int browserPaddingX;
     protected int browserPaddingY;
     protected int maxVisibleBrowserEntries;
-    protected int lastSelectedEntryIndex = -1;
     protected int lastScrollbarPosition;
     protected boolean allowKeyboardNavigation;
-    protected boolean allowMultiSelection;
     protected boolean shouldSortList;
-    @Nullable private TYPE lastSelectedEntry;
-    @Nullable private ISelectionListener<TYPE> selectionListener;
-    @Nullable private WidgetSearchBar widgetSearchBar;
-    @Nullable private net.minecraft.client.gui.GuiScreen parentGui;
 
-    public WidgetListBase(int x, int y, int width, int height, @Nullable ISelectionListener<TYPE> selectionListener)
+    public WidgetListBase(int x, int y, int width, int height)
+    {
+        this(x, y, width, height, null);
+    }
+
+    public WidgetListBase(int x, int y, int width, int height, @Nullable IListEntryWidgetFactory widgetFactory)
     {
         super(x, y, width, height);
 
-        this.selectionListener = selectionListener;
-        this.browserEntryHeight = 14;
+        this.widgetFactory = widgetFactory;
 
-        // The positions gets updated in setSize()
+        // The position gets updated in setSize()
         this.scrollBar = new WidgetScrollBar(0, 0, 8, height);
         this.scrollBar.setArrowTextures(BaseGuiIcon.SMALL_ARROW_UP, BaseGuiIcon.SMALL_ARROW_DOWN);
         this.addWidget(this.scrollBar);
@@ -58,9 +56,15 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
         this.setSize(width, height);
     }
 
-    protected void setSelectionListener(ISelectionListener<TYPE> listener)
+    public void setWidgetFactory(IListEntryWidgetFactory widgetFactory)
     {
-        this.selectionListener = listener;
+        this.widgetFactory = widgetFactory;
+    }
+
+    public WidgetListBase setShouldSortList(boolean shouldSort)
+    {
+        this.shouldSortList = shouldSort;
+        return this;
     }
 
     protected WidgetSearchBar addSearchBarWidget(WidgetSearchBar searchBar)
@@ -68,6 +72,11 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
         this.widgetSearchBar = this.addWidget(searchBar);
         this.browserEntriesOffsetY = searchBar.getHeight() + 3;
         return this.widgetSearchBar;
+    }
+
+    public WidgetSearchBar addDefaultSearchBar()
+    {
+        return this.addSearchBarWidget(new WidgetSearchBar(this.getX() + 2, this.getY() + 4, this.getWidth() - 14, 14, 0, GuiIconBase.SEARCH, HorizontalAlignment.LEFT));
     }
 
     public void initGui()
@@ -80,14 +89,21 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
     {
     }
 
-    public void setParentGui(net.minecraft.client.gui.GuiScreen parentGui)
+    public WidgetListBase setParentGui(GuiScreen parentGui)
     {
         this.parentGui = parentGui;
+        return this;
     }
 
-    public net.minecraft.client.gui.GuiScreen getParentGui()
+    public GuiScreen getParentGui()
     {
         return this.parentGui;
+    }
+
+    public WidgetListBase setBrowserEntryHeight(int height)
+    {
+        this.browserEntryHeight = height;
+        return this;
     }
 
     @Override
@@ -106,22 +122,10 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
         {
             for (int i = 0; i < this.listWidgets.size(); ++i)
             {
-                WIDGET widget = this.listWidgets.get(i);
+                WidgetListEntryBase widget = this.listWidgets.get(i);
 
-                if (widget.isMouseOver(mouseX, mouseY))
-                {
-                    if (widget.canSelectAt(mouseX, mouseY, mouseButton))
-                    {
-                        int entryIndex = widget.getListIndex();
-
-                        if (entryIndex >= 0 && entryIndex < this.listContents.size())
-                        {
-                            this.onEntryClicked(this.listContents.get(entryIndex), entryIndex);
-                        }
-                    }
-                }
-
-                if (widget.onMouseClicked(mouseX, mouseY, mouseButton))
+                if (widget.isMouseOver(mouseX, mouseY) &&
+                    this.onEntryWidgetClicked(widget, mouseX, mouseY, mouseButton))
                 {
                     return true;
                 }
@@ -167,6 +171,26 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
         return false;
     }
 
+    protected boolean getShouldSortList()
+    {
+        return this.shouldSortList;
+    }
+
+    protected int getTotalEntryCount()
+    {
+        return this.totalEntryCount;
+    }
+
+    protected boolean onEntryWidgetClicked(WidgetListEntryBase widget, int mouseX, int mouseY, int mouseButton)
+    {
+        if (widget.onMouseClicked(mouseX, mouseY, mouseButton))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
     protected boolean onMouseClickedSearchBar(int mouseX, int mouseY, int mouseButton)
     {
         WidgetSearchBar widget = this.getSearchBarWidget();
@@ -181,7 +205,6 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
                 // Toggled the search bar on or off, or cleared the filter with a right click
                 if (widget.isSearchOpen() != searchOpenPre || filterPre.equals(widget.getFilter()) == false)
                 {
-                    this.clearSelection();
                     this.refreshBrowserEntries();
                     this.resetScrollbarPosition();
                 }
@@ -196,7 +219,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
     @Override
     public boolean onKeyTyped(char typedChar, int keyCode)
     {
-        for (WIDGET widget : this.listWidgets)
+        for (WidgetListEntryBase widget : this.listWidgets)
         {
             if (widget.onKeyTyped(typedChar, keyCode))
             {
@@ -215,8 +238,8 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
             else if (keyCode == Keyboard.KEY_DOWN)  this.offsetSelectionOrScrollbar( 1, true);
             else if (keyCode == Keyboard.KEY_PRIOR) this.offsetSelectionOrScrollbar(-this.maxVisibleBrowserEntries / 2, true);
             else if (keyCode == Keyboard.KEY_NEXT)  this.offsetSelectionOrScrollbar( this.maxVisibleBrowserEntries / 2, true);
-            else if (keyCode == Keyboard.KEY_HOME)  this.offsetSelectionOrScrollbar(-this.listContents.size(), true);
-            else if (keyCode == Keyboard.KEY_END)   this.offsetSelectionOrScrollbar( this.listContents.size(), true);
+            else if (keyCode == Keyboard.KEY_HOME)  this.offsetSelectionOrScrollbar(-this.getTotalEntryCount(), true);
+            else if (keyCode == Keyboard.KEY_END)   this.offsetSelectionOrScrollbar( this.getTotalEntryCount(), true);
             else return super.onKeyTyped(typedChar, keyCode);
 
             return true;
@@ -229,18 +252,12 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
     {
         if (this.getSearchBarWidget() != null && this.getSearchBarWidget().onKeyTyped(typedChar, keyCode))
         {
-            this.clearSelection();
             this.refreshBrowserEntries();
             this.resetScrollbarPosition();
             return true;
         }
 
         return false;
-    }
-
-    protected boolean getShouldSortList()
-    {
-        return this.shouldSortList;
     }
 
     protected boolean hasFilter()
@@ -251,6 +268,23 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
     public boolean isSearchOpen()
     {
         return this.getSearchBarWidget() != null && this.getSearchBarWidget().isSearchOpen();
+    }
+
+    @Nullable
+    public WidgetSearchBar getSearchBarWidget()
+    {
+        return this.widgetSearchBar;
+    }
+
+    @Nullable
+    public WidgetSelectionHandler<?> getWidgetSelectionHandler()
+    {
+        return null;
+    }
+
+    protected String getFilterText()
+    {
+        return this.getSearchBarWidget() != null ? this.getSearchBarWidget().getFilter().toLowerCase() : "";
     }
 
     @Override
@@ -279,192 +313,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
         return textFields;
     }
 
-    @Nullable
-    public WidgetSearchBar getSearchBarWidget()
-    {
-        return this.widgetSearchBar;
-    }
-
-    public List<TYPE> getCurrentEntries()
-    {
-        return this.listContents;
-    }
-
-    protected Collection<TYPE> getAllEntries()
-    {
-        return Collections.emptyList();
-    }
-
-    @Nullable
-    protected Comparator<TYPE> getComparator()
-    {
-        return null;
-    }
-
-    protected void refreshBrowserEntries()
-    {
-        this.listContents.clear();
-
-        Collection<TYPE> entries = this.getAllEntries();
-
-        if (this.hasFilter())
-        {
-            this.addFilteredContents(entries);
-        }
-        else
-        {
-            this.addNonFilteredContents(entries);
-        }
-
-        this.sortEntryList(this.listContents);
-        this.reCreateListEntryWidgets();
-    }
-
-    protected void sortEntryList(List<TYPE> list)
-    {
-        if (this.getShouldSortList())
-        {
-            Comparator<TYPE> comparator = this.getComparator();
-
-            if (comparator != null)
-            {
-                Collections.sort(list, comparator);
-            }
-        }
-    }
-
-    protected boolean filterMatchesEmptyEntry(TYPE entry)
-    {
-        return true;
-    }
-
-    protected String getFilterText()
-    {
-        return this.getSearchBarWidget() != null ? this.getSearchBarWidget().getFilter().toLowerCase() : "";
-    }
-
-    protected boolean entryMatchesFilter(TYPE entry, String filterText)
-    {
-        List<String> entryStrings = this.getEntryStringsForFilter(entry);
-
-        if (entryStrings.isEmpty())
-        {
-            return this.filterMatchesEmptyEntry(entry);
-        }
-
-        return this.matchesFilter(entryStrings, filterText);
-    }
-
-    protected boolean matchesFilter(List<String> entryStrings, String filterText)
-    {
-        if (filterText.isEmpty())
-        {
-            return true;
-        }
-
-        for (String str : entryStrings)
-        {
-            if (this.matchesFilter(str, filterText))
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    protected boolean matchesFilter(String entryString, String filterText)
-    {
-        if (filterText.isEmpty())
-        {
-            return true;
-        }
-
-        for (String filter : filterText.split("\\|"))
-        {
-            if (entryString.indexOf(filter) != -1)
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    protected List<String> getEntryStringsForFilter(TYPE entry)
-    {
-        return Collections.emptyList();
-    }
-
-    protected void addNonFilteredContents(Collection<TYPE> entries)
-    {
-        this.listContents.addAll(entries);
-    }
-
-    protected void addFilteredContents(Collection<TYPE> entries)
-    {
-        String filterText = this.getFilterText();
-
-        for (TYPE entry : entries)
-        {
-            if (filterText.isEmpty() || this.entryMatchesFilter(entry, filterText))
-            {
-                this.listContents.add(entry);
-            }
-        }
-    }
-
     @Override
-    public void render(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
-    {
-        if (this.getSearchBarWidget() != null)
-        {
-            this.getSearchBarWidget().render(mouseX, mouseY, isActiveGui, hoveredWidgetId);
-        }
-
-        super.render(mouseX, mouseY, isActiveGui, hoveredWidgetId);
-
-        int scrollbarHeight = this.browserHeight - this.browserEntriesOffsetY - 6;
-        int totalHeight = 0;
-
-        for (int i = 0; i < this.listContents.size(); ++i)
-        {
-            totalHeight += this.getBrowserEntryHeightFor(this.listContents.get(i));
-        }
-
-        totalHeight = Math.max(totalHeight, scrollbarHeight);
-
-        RenderUtils.color(1f, 1f, 1f, 1f);
-
-        this.scrollBar.render(mouseX, mouseY, scrollbarHeight, totalHeight);
-
-        // The value gets updated in the drawScrollBar() method above, if dragging
-        if (this.scrollBar.getValue() != this.lastScrollbarPosition)
-        {
-            this.lastScrollbarPosition = this.scrollBar.getValue();
-            this.reCreateListEntryWidgets();
-        }
-
-        // Draw the currently visible directory entries
-        for (int i = 0; i < this.listWidgets.size(); i++)
-        {
-            WIDGET widget = this.listWidgets.get(i);
-            TYPE entry = widget.getEntry();
-            boolean isSelected = this.allowMultiSelection ? this.selectedEntries.contains(entry) : entry != null && entry.equals(this.getLastSelectedEntry());
-            widget.render(mouseX, mouseY, isActiveGui, hoveredWidgetId, isSelected);
-        }
-
-        GlStateManager.disableLighting();
-        RenderUtils.color(1f, 1f, 1f, 1f);
-    }
-
-    @Override
-    public void renderDebug(int mouseX, int mouseY, boolean hovered, boolean renderAll, boolean infoAlways)
-    {
-        super.renderDebug(mouseX, mouseY, hovered, renderAll, infoAlways);
-        GuiBase.renderWidgetDebug(this.listWidgets, mouseX, mouseY, renderAll, infoAlways);
-    }
-
     public void setSize(int width, int height)
     {
         this.setWidth(width);
@@ -489,9 +338,34 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
         this.scrollBar.setHeight(this.browserHeight - this.browserEntriesOffsetY);
     }
 
-    protected int getBrowserEntryHeightFor(@Nullable TYPE type)
+    protected void updateScrollbarHeight()
+    {
+        final int count = this.getTotalEntryCount();
+        int scrollbarHeight = this.browserHeight - this.browserEntriesOffsetY - 6;
+        int totalHeight = 0;
+
+        for (int i = 0; i < count; ++i)
+        {
+            totalHeight += this.getHeightForListEntryWidget(i);
+        }
+
+        this.scrollBar.setTotalheight(Math.max(totalHeight, scrollbarHeight));
+    }
+
+    protected int getHeightForListEntryWidget(int listIndex)
     {
         return this.browserEntryHeight;
+    }
+
+    public void refreshEntries()
+    {
+        this.refreshBrowserEntries();
+    }
+
+    protected void refreshBrowserEntries()
+    {
+        // TODO
+        this.updateScrollbarHeight();
     }
 
     protected void reCreateListEntryWidgets()
@@ -499,13 +373,13 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
         this.listWidgets.clear();
         this.maxVisibleBrowserEntries = 0;
 
-        final int numEntries = this.listContents.size();
         int usableHeight = this.browserHeight - this.browserPaddingY - this.browserEntriesOffsetY;
         int usedHeight = 0;
         int x = this.getX() + 2;
         int y = this.getY() + 4 + this.browserEntriesOffsetY;
         int index = this.scrollBar.getValue();
-        WIDGET widget = this.createHeaderWidget(x, y, index, usableHeight, usedHeight);
+        final int totalEntryCount = this.getTotalEntryCount();
+        WidgetListEntryBase widget = this.createHeaderWidget(x, y, index, usableHeight, usedHeight);
 
         if (widget != null)
         {
@@ -517,7 +391,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
             y += widget.getHeight();
         }
 
-        for ( ; index < numEntries; ++index)
+        for ( ; index < totalEntryCount; ++index)
         {
             widget = this.createListEntryWidgetIfSpace(x, y, index, usableHeight, usedHeight);
 
@@ -534,21 +408,20 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
             y += widget.getHeight();
         }
 
-        this.scrollBar.setMaxValue(this.listContents.size() - this.maxVisibleBrowserEntries);
+        this.scrollBar.setMaxValue(totalEntryCount - this.maxVisibleBrowserEntries);
     }
 
     @Nullable
-    protected WIDGET createListEntryWidgetIfSpace(int x, int y, int listIndex, int usableHeight, int usedHeight)
+    protected WidgetListEntryBase createListEntryWidgetIfSpace(int x, int y, int listIndex, int usableHeight, int usedHeight)
     {
-        TYPE entry = this.listContents.get(listIndex);
-        int height = this.getBrowserEntryHeightFor(entry);
+        int height = this.getHeightForListEntryWidget(listIndex);
 
         if ((usedHeight + height) > usableHeight)
         {
             return null;
         }
 
-        return this.createListEntryWidget(x, y, listIndex, (listIndex & 0x1) != 0, entry);
+        return this.createListEntryWidget(x, y, listIndex, (listIndex & 0x1) != 0);
     }
 
     /**
@@ -562,101 +435,73 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
      * @return the created header widget, or null if there is no separate header widget
      */
     @Nullable
-    protected WIDGET createHeaderWidget(int x, int y, int listIndexStart, int usableHeight, int usedHeight)
+    protected WidgetListEntryBase createHeaderWidget(int x, int y, int listIndexStart, int usableHeight, int usedHeight)
     {
         return null;
     }
 
-    public void refreshEntries()
-    {
-        this.refreshBrowserEntries();
-    }
-
-    protected abstract WIDGET createListEntryWidget(int x, int y, int listIndex, boolean isOdd, TYPE entry);
-
     @Nullable
-    public TYPE getLastSelectedEntry()
+    protected WidgetListEntryBase createListEntryWidget(int x, int y, int listIndex, boolean isOdd)
     {
-        return this.lastSelectedEntry;
-    }
-
-    public Set<TYPE> getSelectedEntries()
-    {
-        return this.selectedEntries;
-    }
-
-    protected boolean onEntryClicked(@Nullable TYPE entry, int index)
-    {
-        this.setLastSelectedEntry(entry, index);
-        return true;
-    }
-
-    public void setLastSelectedEntry(@Nullable TYPE entry, int index)
-    {
-        this.lastSelectedEntry = entry;
-        this.lastSelectedEntryIndex = index;
-
-        if (this.allowMultiSelection && entry != null)
+        if (this.widgetFactory != null)
         {
-            if (this.selectedEntries.contains(entry))
-            {
-                this.selectedEntries.remove(entry);
-            }
-            else
-            {
-                this.selectedEntries.add(entry);
-            }
+            int width = this.browserEntryWidth;
+            int height = this.getHeightForListEntryWidget(listIndex);
+            this.widgetFactory.create(x, y, width, height, listIndex, isOdd);
         }
 
-        if (entry != null && this.selectionListener != null)
+        return null;
+    }
+
+    public void setLastSelectedEntry(int listIndex)
+    {
+        if (this.getWidgetSelectionHandler() != null)
         {
-            this.selectionListener.onSelectionChange(entry);
+            int index = listIndex >= 0 && listIndex < this.getTotalEntryCount() ? listIndex : -1;
+            this.getWidgetSelectionHandler().setLastSelectedEntry(index);
         }
     }
 
     public void clearSelection()
     {
-        this.setLastSelectedEntry(null, -1);
-    }
-
-    public void clearAllSelections()
-    {
-        this.clearSelection();
-        this.selectedEntries.clear();
+        this.setLastSelectedEntry(-1);
     }
 
     protected void offsetSelectionOrScrollbar(int amount, boolean changeSelection)
     {
+        final int totalEntryCount = this.getTotalEntryCount();
+        final int lastSelectedEntryIndex = this.getWidgetSelectionHandler() != null ? this.getWidgetSelectionHandler().getLastSelectedEntryIndex() : -1;
+
         if (changeSelection == false)
         {
             this.scrollBar.offsetValue(amount);
         }
-        else if (this.lastSelectedEntryIndex >= 0 && this.listContents.size() > 0)
+        else if (lastSelectedEntryIndex >= 0 && totalEntryCount > 0)
         {
-            int index = MathHelper.clamp(this.lastSelectedEntryIndex + amount, 0, this.listContents.size() - 1);
+            int index = MathHelper.clamp(lastSelectedEntryIndex + amount, 0, totalEntryCount - 1);
 
-            if (index != this.lastSelectedEntryIndex)
+            if (index != lastSelectedEntryIndex)
             {
                 if (index < this.scrollBar.getValue() || index >= this.scrollBar.getValue() + this.maxVisibleBrowserEntries)
                 {
-                    this.scrollBar.offsetValue(index - this.lastSelectedEntryIndex);
+                    this.scrollBar.offsetValue(index - lastSelectedEntryIndex);
                 }
 
-                this.setLastSelectedEntry(this.listContents.get(index), index);
+                this.setLastSelectedEntry(index);
             }
         }
         else
         {
-            if (this.lastSelectedEntryIndex >= 0)
+            if (lastSelectedEntryIndex >= 0)
             {
                 this.scrollBar.offsetValue(amount);
             }
 
             int index = this.scrollBar.getValue();
 
-            if (index >= 0 && index < this.listContents.size())
+            if (index >= 0 && index < totalEntryCount)
             {
-                this.setLastSelectedEntry(this.listContents.get(index), index);
+                this.setLastSelectedEntry(index);
             }
         }
 
@@ -671,5 +516,50 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
     public WidgetScrollBar getScrollbar()
     {
         return this.scrollBar;
+    }
+
+    @Override
+    public void render(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
+    {
+        if (this.getSearchBarWidget() != null)
+        {
+            this.getSearchBarWidget().render(mouseX, mouseY, isActiveGui, hoveredWidgetId);
+        }
+
+        super.render(mouseX, mouseY, isActiveGui, hoveredWidgetId);
+
+        RenderUtils.color(1f, 1f, 1f, 1f);
+
+        int scrollbarHeight = this.browserHeight - this.browserEntriesOffsetY - 6;
+        this.scrollBar.render(mouseX, mouseY, scrollbarHeight);
+
+        // The value gets updated in the drawScrollBar() method above, if dragging
+        if (this.scrollBar.getValue() != this.lastScrollbarPosition)
+        {
+            this.lastScrollbarPosition = this.scrollBar.getValue();
+            this.reCreateListEntryWidgets();
+        }
+
+        // Draw the currently visible widgets
+        for (int i = 0; i < this.listWidgets.size(); i++)
+        {
+            this.renderWidget(i, mouseX, mouseY, isActiveGui, hoveredWidgetId);
+        }
+
+        GlStateManager.disableLighting();
+        RenderUtils.color(1f, 1f, 1f, 1f);
+    }
+
+    protected void renderWidget(int widgetIndex, int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
+    {
+        WidgetListEntryBase widget = this.listWidgets.get(widgetIndex);
+        widget.render(mouseX, mouseY, isActiveGui, hoveredWidgetId, false);
+    }
+
+    @Override
+    public void renderDebug(int mouseX, int mouseY, boolean hovered, boolean renderAll, boolean infoAlways)
+    {
+        super.renderDebug(mouseX, mouseY, hovered, renderAll, infoAlways);
+        GuiBase.renderWidgetDebug(this.listWidgets, mouseX, mouseY, renderAll, infoAlways);
     }
 }

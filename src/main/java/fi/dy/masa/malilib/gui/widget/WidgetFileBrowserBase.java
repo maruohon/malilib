@@ -23,7 +23,7 @@ import fi.dy.masa.malilib.gui.widget.WidgetFileBrowserBase.DirectoryEntry;
 import fi.dy.masa.malilib.util.DirectoryCreator;
 import fi.dy.masa.malilib.util.FileUtils;
 
-public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntry, WidgetDirectoryEntry> implements IDirectoryNavigator
+public abstract class WidgetFileBrowserBase extends WidgetDataListBase<DirectoryEntry> implements IDirectoryNavigator
 {
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -38,7 +38,7 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
             @Nullable IDirectoryCache cache, @Nullable String browserContext,
             @Nullable ISelectionListener<DirectoryEntry> selectionListener)
     {
-        super(x, y, width, height, selectionListener);
+        super(x, y, width, height, null, selectionListener);
 
         this.rootDirectory = rootDirectory;
         this.cache = cache;
@@ -287,9 +287,18 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
     protected abstract FileFilter getFileFilter();
 
     @Override
-    protected WidgetDirectoryEntry createListEntryWidget(int x, int y, int listIndex, boolean isOdd, DirectoryEntry entry)
+    protected int getHeightForListEntryWidget(int listIndex)
     {
-        return new WidgetDirectoryEntry(x, y, this.browserEntryWidth, this.getBrowserEntryHeightFor(entry),
+        DirectoryEntry entry = this.listContents.get(listIndex);
+        return entry.getType() == DirectoryEntryType.DIRECTORY ? 14 : this.browserEntryHeight;
+    }
+
+    @Override
+    protected WidgetListEntryBase createListEntryWidget(int x, int y, int listIndex, boolean isOdd)
+    {
+        DirectoryEntry entry = this.listContents.get(listIndex);
+
+        return new WidgetDirectoryEntry(x, y, this.browserEntryWidth, this.getHeightForListEntryWidget(listIndex),
                 isOdd, entry, listIndex, this, this.getIconProvider());
     }
 

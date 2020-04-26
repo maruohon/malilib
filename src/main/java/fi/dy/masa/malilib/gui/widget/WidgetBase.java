@@ -151,6 +151,12 @@ public abstract class WidgetBase
         this.height = height;
     }
 
+    public void setSize(int width, int height)
+    {
+        this.setHeight(height);
+        this.setWidth(width);
+    }
+
     public void updateWidth()
     {
     }

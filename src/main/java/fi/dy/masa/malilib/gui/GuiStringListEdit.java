@@ -11,11 +11,10 @@ import fi.dy.masa.malilib.gui.interfaces.IConfigGui;
 import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.WidgetListStringListEdit;
-import fi.dy.masa.malilib.gui.widget.WidgetStringListEditEntry;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 
-public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEditEntry, WidgetListStringListEdit>
+public class GuiStringListEdit extends GuiListBase<WidgetListStringListEdit>
 {
     protected final StringListConfig config;
     protected final IConfigGui configGui;

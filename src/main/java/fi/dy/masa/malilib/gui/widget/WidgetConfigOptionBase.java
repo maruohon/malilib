@@ -6,9 +6,9 @@ import fi.dy.masa.malilib.config.option.IConfigResettable;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.util.StringUtils;
 
-public abstract class WidgetConfigOptionBase<TYPE> extends WidgetListEntryBase<TYPE>
+public abstract class WidgetConfigOptionBase<TYPE> extends WidgetListDataEntryBase<TYPE>
 {
-    protected final WidgetListConfigOptionsBase<?, ?> parent;
+    protected final WidgetListConfigOptionsBase<?> parent;
     @Nullable protected WidgetTextFieldBase textField = null;
     @Nullable protected String initialStringValue;
     /**
@@ -18,9 +18,9 @@ public abstract class WidgetConfigOptionBase<TYPE> extends WidgetListEntryBase<T
     protected String lastAppliedValue;
 
     public WidgetConfigOptionBase(int x, int y, int width, int height,
-            WidgetListConfigOptionsBase<?, ?> parent, TYPE entry, int listIndex)
+            WidgetListConfigOptionsBase<?> parent, int listIndex, TYPE entry)
     {
-        super(x, y, width, height, entry, listIndex);
+        super(x, y, width, height, listIndex, entry);
 
         this.parent = parent;
     }

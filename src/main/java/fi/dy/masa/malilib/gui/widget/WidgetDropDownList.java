@@ -45,6 +45,7 @@ public class WidgetDropDownList<T> extends WidgetContainer
     protected int selectedIndex;
     protected int textColor = 0xFFE0E0E0;
     protected int totalHeight;
+    protected int visibleEntries;
     @Nullable protected WidgetSelectionBar<T> widgetSelectionBar;
     @Nullable protected ButtonGeneric buttonOpenClose;
     @Nullable protected IIconProvider<T> iconProvider;
@@ -470,6 +471,14 @@ public class WidgetDropDownList<T> extends WidgetContainer
         }
 
         this.scrollBar.setMaxValue(this.filteredEntries.size() - this.maxVisibleEntries);
+        this.updateScrollbarHeight();
+    }
+
+    protected void updateScrollbarHeight()
+    {
+        this.visibleEntries = Math.min(this.maxVisibleEntries, this.filteredEntries.size());
+        int totalHeight = Math.max(this.visibleEntries, this.filteredEntries.size()) * this.lineHeight;
+        this.scrollBar.setTotalheight(totalHeight);
     }
 
     protected boolean entryMatchesFilter(T entry, String filterText)
@@ -515,12 +524,9 @@ public class WidgetDropDownList<T> extends WidgetContainer
                 this.searchField.render(mouseX, mouseY, isActiveGui, this.searchField.isHoveredForRender(mouseX, mouseY));
             }
 
-            List<T> list = this.filteredEntries;
-            int visibleEntries = Math.min(this.maxVisibleEntries, list.size());
-            int height = visibleEntries * this.lineHeight;
-            int totalHeight = Math.max(visibleEntries, list.size()) * this.lineHeight;
             int x = this.getX();
             int width = this.getWidth();
+            int height = this.visibleEntries * this.lineHeight;
 
             RenderUtils.drawOutlinedBox(x, this.dropdownTopY, width, height + 2, 0xD0000000, 0xFFE0E0E0, this.getZLevel());
 
@@ -528,7 +534,7 @@ public class WidgetDropDownList<T> extends WidgetContainer
             int txtY = this.dropdownTopY + this.lineHeight / 2 - this.fontHeight / 2 + 1;
             this.renderListContents(txtY, mouseX, mouseY, mouseOverListOnX && hovered);
 
-            this.scrollBar.render(mouseX, mouseY, height, totalHeight);
+            this.scrollBar.render(mouseX, mouseY, height);
 
             GlStateManager.popMatrix();
         }

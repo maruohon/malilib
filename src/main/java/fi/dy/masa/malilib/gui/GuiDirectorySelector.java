@@ -2,14 +2,11 @@ package fi.dy.masa.malilib.gui;
 
 import java.io.File;
 import java.util.function.Consumer;
-import javax.annotation.Nullable;
-import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
 import fi.dy.masa.malilib.gui.widget.WidgetDirectoryBrowser;
-import fi.dy.masa.malilib.gui.widget.WidgetDirectoryEntry;
-import fi.dy.masa.malilib.gui.widget.WidgetFileBrowserBase.DirectoryEntry;
+import fi.dy.masa.malilib.gui.widgets.WidgetDirectoryBrowser;
 import fi.dy.masa.malilib.util.StringUtils;
 
-public class GuiDirectorySelector extends GuiListBase<DirectoryEntry, WidgetDirectoryEntry, WidgetDirectoryBrowser>
+public class GuiDirectorySelector extends GuiListBase<WidgetDirectoryBrowser>
 {
     protected final File rootDirectory;
     protected final File currentDirectory;
@@ -31,13 +28,6 @@ public class GuiDirectorySelector extends GuiListBase<DirectoryEntry, WidgetDire
         super.onGuiClosed();
 
         this.directoryConsumer.accept(this.getListWidget().getCurrentDirectory());
-    }
-
-    @Override
-    @Nullable
-    protected ISelectionListener<DirectoryEntry> getSelectionListener()
-    {
-        return null;
     }
 
     @Override

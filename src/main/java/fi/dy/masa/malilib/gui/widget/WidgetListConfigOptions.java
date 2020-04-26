@@ -15,7 +15,7 @@ import fi.dy.masa.malilib.input.IKeyBind;
 import fi.dy.masa.malilib.util.AlphaNumComparator;
 import fi.dy.masa.malilib.util.data.HorizontalAlignment;
 
-public class WidgetListConfigOptions extends WidgetListConfigOptionsBase<ConfigOptionWrapper, WidgetConfigOption>
+public class WidgetListConfigOptions extends WidgetListConfigOptionsBase<ConfigOptionWrapper>
 {
     protected final GuiConfigsBase parent;
     protected final WidgetSearchBarConfigs widgetSearchConfigs;

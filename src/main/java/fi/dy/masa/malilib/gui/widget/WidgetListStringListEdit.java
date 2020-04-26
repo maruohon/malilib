@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.gui.widget;
 import fi.dy.masa.malilib.config.option.StringListConfig;
 import fi.dy.masa.malilib.gui.GuiStringListEdit;
 
-public class WidgetListStringListEdit extends WidgetListConfigOptionsBase<String, WidgetStringListEditEntry>
+public class WidgetListStringListEdit extends WidgetListConfigOptionsBase<String>
 {
     protected final GuiStringListEdit parent;
 
@@ -12,12 +12,6 @@ public class WidgetListStringListEdit extends WidgetListConfigOptionsBase<String
         super(x, y, width, height, configWidth);
 
         this.parent = parent;
-    }
-
-    @Override
-    public GuiStringListEdit getParentGui()
-    {
-        return this.parent;
     }
 
     @Override
@@ -33,7 +27,7 @@ public class WidgetListStringListEdit extends WidgetListConfigOptionsBase<String
     protected void reCreateListEntryWidgets()
     {
         // Add a dummy entry that allows adding the first actual string to the list
-        if (this.listContents.size() == 0)
+        if (this.getTotalEntryCount() == 0)
         {
             this.listWidgets.clear();
             this.maxVisibleBrowserEntries = 1;
@@ -41,7 +35,7 @@ public class WidgetListStringListEdit extends WidgetListConfigOptionsBase<String
             int x = this.getX() + 2;
             int y = this.getY() + 4 + this.browserEntriesOffsetY;
 
-            this.listWidgets.add(this.createListEntryWidget(x, y, -1, false, ""));
+            this.listWidgets.add(this.createListEntryWidget(x, y, -1, false));
             this.scrollBar.setMaxValue(0);
         }
         else
@@ -51,7 +45,7 @@ public class WidgetListStringListEdit extends WidgetListConfigOptionsBase<String
     }
 
     @Override
-    protected WidgetStringListEditEntry createListEntryWidget(int x, int y, int listIndex, boolean isOdd, String entry)
+    protected WidgetStringListEditEntry createListEntryWidget(int x, int y, int listIndex, boolean isOdd)
     {
         StringListConfig config = this.parent.getConfig();
 

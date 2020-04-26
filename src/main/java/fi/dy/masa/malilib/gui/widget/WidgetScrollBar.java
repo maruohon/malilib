@@ -22,6 +22,7 @@ public class WidgetScrollBar extends WidgetBase
     protected int foregroundColor = 0xFFFFFFFF;
     protected int dragStartValue = 0;
     protected int dragStartY = 0;
+    protected int totalHeight;
 
     public WidgetScrollBar(int x, int y, int width, int height)
     {
@@ -91,6 +92,11 @@ public class WidgetScrollBar extends WidgetBase
     {
         this.maxValue = Math.max(0, maxValue);
         this.currentValue = Math.min(this.currentValue, this.maxValue);
+    }
+
+    public void setTotalheight(int totalHeight)
+    {
+        this.totalHeight = totalHeight;
     }
 
     public boolean wasMouseOver()
@@ -166,13 +172,14 @@ public class WidgetScrollBar extends WidgetBase
         return false;
     }
 
-    public void render(int mouseX, int mouseY, int height, int totalHeight)
+    public void render(int mouseX, int mouseY, int height)
     {
         this.setHeight(height); // FIXME?
 
         int x = this.getX();
         int y = this.getY();
         int width = this.getWidth();
+        int totalHeight = this.totalHeight;
 
         if (this.renderScrollbarBackgroundColor)
         {

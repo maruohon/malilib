@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.gui.widget;
 
-public abstract class WidgetListConfigOptionsBase<TYPE, WIDGET extends WidgetConfigOptionBase<TYPE>> extends WidgetListBase<TYPE, WIDGET>
+public abstract class WidgetListConfigOptionsBase<TYPE> extends WidgetDataListBase<TYPE>
 {
     protected boolean configsModified;
     protected int maxLabelWidth;
@@ -8,10 +8,9 @@ public abstract class WidgetListConfigOptionsBase<TYPE, WIDGET extends WidgetCon
 
     public WidgetListConfigOptionsBase(int x, int y, int width, int height, int configWidth)
     {
-        super(x, y, width, height, null);
+        super(x, y, width, height, null, null);
 
         this.configWidth = configWidth;
-        this.browserEntryHeight = 22;
     }
 
     @Override
