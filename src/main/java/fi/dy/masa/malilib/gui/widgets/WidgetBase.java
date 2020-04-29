@@ -159,7 +159,7 @@ public abstract class WidgetBase
 
     public int getStringWidth(String text)
     {
-        return this.textRenderer.getStringWidth(text);
+        return this.textRenderer.getWidth(text);
     }
 
     public void drawString(int x, int y, int color, String text, MatrixStack matrixStack)

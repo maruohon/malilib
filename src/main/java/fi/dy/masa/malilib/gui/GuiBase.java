@@ -589,7 +589,7 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
 
     public int getStringWidth(String text)
     {
-        return this.textRenderer.getStringWidth(text);
+        return this.textRenderer.getWidth(text);
     }
 
     public void drawString(MatrixStack matrixStack, String text, int x, int y, int color)

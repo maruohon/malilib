@@ -36,7 +36,6 @@ import net.minecraft.item.map.MapState;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
@@ -225,7 +224,7 @@ public class RenderUtils
 
                 for (String line : lines)
                 {
-                    int length = font.getStringWidth(line);
+                    int length = font.getWidth(line);
 
                     if (length > maxLineLength)
                     {
@@ -314,7 +313,7 @@ public class RenderUtils
     public static void drawCenteredString(int x, int y, int color, String text, MatrixStack matrixStack)
     {
         TextRenderer textRenderer = mc().textRenderer;
-        textRenderer.drawWithShadow(matrixStack, text, x - textRenderer.getStringWidth(text) / 2, y, color);
+        textRenderer.drawWithShadow(matrixStack, text, x - textRenderer.getWidth(text) / 2, y, color);
     }
 
     public static void drawHorizontalLine(int x, int y, int width, int color)
@@ -399,7 +398,7 @@ public class RenderUtils
 
         for (String line : lines)
         {
-            final int width = fontRenderer.getStringWidth(line);
+            final int width = fontRenderer.getWidth(line);
 
             switch (alignment)
             {
@@ -764,7 +763,7 @@ public class RenderUtils
 
         for (String line : text)
         {
-            maxLineLen = Math.max(maxLineLen, textRenderer.getStringWidth(line));
+            maxLineLen = Math.max(maxLineLen, textRenderer.getWidth(line));
         }
 
         int strLenHalf = maxLineLen / 2;

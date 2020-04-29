@@ -8,9 +8,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.MaLiLibConfigs;
-import net.minecraft.class_5250;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Formatting;
 
 public class StringUtils
 {
@@ -76,9 +73,12 @@ public class StringUtils
 
     public static void sendOpenFileChatMessage(net.minecraft.entity.Entity sender, String messageKey, File file)
     {
-        class_5250 name = new net.minecraft.text.LiteralText(file.getName());
-        name.getStyle().setClickEvent(new net.minecraft.text.ClickEvent(net.minecraft.text.ClickEvent.Action.OPEN_FILE, file.getAbsolutePath()));
-        name.method_27692(Formatting.UNDERLINE);
+        net.minecraft.text.Text name = (new net.minecraft.text.LiteralText(file.getName()))
+            .formatted(net.minecraft.util.Formatting.UNDERLINE)
+            .styled((style) -> {
+                return style.withClickEvent(new net.minecraft.text.ClickEvent(net.minecraft.text.ClickEvent.Action.OPEN_FILE, file.getAbsolutePath()));
+            });
+
         sender.sendSystemMessage(new net.minecraft.text.TranslatableText(messageKey, name));
     }
 
@@ -382,10 +382,10 @@ public class StringUtils
 
     public static int getStringWidth(String text)
     {
-        return net.minecraft.client.MinecraftClient.getInstance().textRenderer.getStringWidth(text);
+        return net.minecraft.client.MinecraftClient.getInstance().textRenderer.getWidth(text);
     }
 
-    public static void drawString(int x, int y, int color, String text, MatrixStack matrixStack)
+    public static void drawString(int x, int y, int color, String text, net.minecraft.client.util.math.MatrixStack matrixStack)
     {
         net.minecraft.client.MinecraftClient.getInstance().textRenderer.draw(matrixStack, text, x, y, color);
     }
