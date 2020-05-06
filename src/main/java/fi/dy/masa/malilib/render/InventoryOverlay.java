@@ -484,7 +484,7 @@ public class InventoryOverlay
         RenderUtils.color(1f, 1f, 1f, 1f);
 
         mc.getItemRenderer().zOffset += 100;
-        mc.getItemRenderer().renderGuiItem(mc.player, stack, 0, 0);
+        mc.getItemRenderer().renderGuiItem(stack, 0, 0);
 
         RenderUtils.color(1f, 1f, 1f, 1f);
         mc.getItemRenderer().renderGuiItemOverlay(mc.textRenderer, stack, 0, 0, null);
