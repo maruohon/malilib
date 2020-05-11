@@ -34,7 +34,7 @@ public class RayTraceUtils
         Vec3d rangedLookRot = entity.getLook(1f).scale(range);
         Vec3d lookEndPos = eyesPos.add(rangedLookRot);
 
-        RayTraceResult result = rayTraceBlocks(world, eyesPos, lookEndPos, fluidHandling, true, false, null, 1000);
+        RayTraceResult result = rayTraceBlocks(world, eyesPos, lookEndPos, fluidHandling, false, false, null, 1000);
 
         if (includeEntities)
         {
@@ -157,7 +157,8 @@ public class RayTraceUtils
             IBlockState state = world.getBlockState(data.blockPosMutable);
 
             if (data.isValidBlock(state) &&
-                (ignoreNonCollidable == false || state.getCollisionBoundingBox(world, data.blockPosMutable) != Block.NULL_AABB))
+                ((ignoreNonCollidable == false && state.getMaterial() != Material.AIR)
+                    || state.getCollisionBoundingBox(world, data.blockPosMutable) != Block.NULL_AABB))
             {
                 boolean blockCollidable = state.getBlock().canCollideCheck(state, false);
                 boolean fluidCollidable = data.fluidMode.handled(state);
