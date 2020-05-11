@@ -14,7 +14,7 @@ public class ConfigString extends ConfigStringBase<String>
     @Override
     public void setValueFromString(String value)
     {
-        if (this.value.equals(this.value) == false)
+        if (this.value.equals(value) == false)
         {
             String oldValue = this.value;
             this.value = value;
