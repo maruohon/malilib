@@ -7,6 +7,9 @@ import java.util.Iterator;
 import java.util.List;
 import javax.annotation.Nullable;
 import org.lwjgl.glfw.GLFW;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.options.KeyBinding;
+import net.minecraft.client.util.InputUtil;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.hotkeys.KeybindSettings.Context;
@@ -14,9 +17,6 @@ import fi.dy.masa.malilib.util.GuiUtils;
 import fi.dy.masa.malilib.util.IF3KeyStateSetter;
 import fi.dy.masa.malilib.util.InfoUtils;
 import fi.dy.masa.malilib.util.KeyCodes;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.options.KeyBinding;
-import net.minecraft.client.util.InputUtil;
 
 public class KeybindMulti implements IKeybind
 {
@@ -327,8 +327,8 @@ public class KeybindMulti implements IKeybind
 
     public static int getKeyCode(KeyBinding keybind)
     {
-        InputUtil.KeyCode input = InputUtil.fromName(keybind.getName());
-        return input.getCategory() == InputUtil.Type.MOUSE ? input.getKeyCode() - 100 : input.getKeyCode();
+        InputUtil.Key input = InputUtil.fromTranslationKey(keybind.getBoundKeyTranslationKey());
+        return input.getCategory() == InputUtil.Type.MOUSE ? input.getCode() - 100 : input.getCode();
     }
 
     public static boolean hotkeyMatchesKeybind(IHotkey hotkey, KeyBinding keybind)

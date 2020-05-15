@@ -11,7 +11,7 @@ public class WorldUtils
 {
     public static int getDimensionId(World world)
     {
-        return world.dimension.getType().getRawId();
+        return world.method_27983().getRawId();
     }
 
     /**
@@ -27,7 +27,7 @@ public class WorldUtils
 
         if (mc.world != null && server != null)
         {
-            return server.getWorld(mc.world.dimension.getType());
+            return server.getWorld(mc.world.method_27983());
         }
         else
         {
@@ -51,7 +51,7 @@ public class WorldUtils
 
         if (mc.world != null && server != null)
         {
-            ServerWorld world = server.getWorld(mc.world.dimension.getType());
+            ServerWorld world = server.getWorld(mc.world.method_27983());
             chunk = world.getChunk(chunkX, chunkZ);
         }
 
