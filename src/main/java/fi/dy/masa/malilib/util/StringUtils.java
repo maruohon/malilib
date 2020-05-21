@@ -79,7 +79,7 @@ public class StringUtils
                 return style.withClickEvent(new net.minecraft.text.ClickEvent(net.minecraft.text.ClickEvent.Action.OPEN_FILE, file.getAbsolutePath()));
             });
 
-        sender.sendSystemMessage(new net.minecraft.text.TranslatableText(messageKey, name));
+        sender.sendSystemMessage(new net.minecraft.text.TranslatableText(messageKey, name), sender.getUuid());
     }
 
     /**
@@ -87,7 +87,6 @@ public class StringUtils
      * @param linesOut
      * @param textIn
      * @param maxLineLength
-     * @param font
      */
     public static void splitTextToLines(List<String> linesOut, String textIn, int maxLineLength)
     {
@@ -339,7 +338,7 @@ public class StringUtils
 
             if (world != null)
             {
-                return prefix + name + "_dim" + WorldUtils.getDimensionId(world) + suffix;
+                return prefix + name + "_dim_" + WorldUtils.getDimensionId(world) + suffix;
             }
         }
 

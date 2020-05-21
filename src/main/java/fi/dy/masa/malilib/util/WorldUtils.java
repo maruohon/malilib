@@ -1,17 +1,20 @@
 package fi.dy.masa.malilib.util;
 
 import javax.annotation.Nullable;
+import net.minecraft.class_5318;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.WorldChunk;
 
 public class WorldUtils
 {
-    public static int getDimensionId(World world)
+    public static String getDimensionId(World world)
     {
-        return world.method_27983().getRawId();
+        Identifier id = class_5318.method_29117().method_29116().getId(world.getDimension());
+        return id != null ? id.getNamespace() + "_" + id.getPath() : "__fallback";
     }
 
     /**
@@ -52,7 +55,11 @@ public class WorldUtils
         if (mc.world != null && server != null)
         {
             ServerWorld world = server.getWorld(mc.world.method_27983());
-            chunk = world.getChunk(chunkX, chunkZ);
+
+            if (world != null)
+            {
+                chunk = world.getChunk(chunkX, chunkZ);
+            }
         }
 
         if (chunk != null)
@@ -60,6 +67,6 @@ public class WorldUtils
             return chunk;
         }
 
-        return mc.world.getChunk(chunkX, chunkZ);
+        return mc.world != null ? mc.world.getChunk(chunkX, chunkZ) : null;
     }
 }

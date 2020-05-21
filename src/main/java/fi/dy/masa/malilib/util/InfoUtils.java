@@ -1,8 +1,5 @@
 package fi.dy.masa.malilib.util;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.TranslatableText;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.Message.MessageType;
 import fi.dy.masa.malilib.gui.interfaces.IMessageConsumer;
@@ -138,7 +135,12 @@ public class InfoUtils
 
     public static void printActionbarMessage(String key, Object... args)
     {
-        MinecraftClient.getInstance().inGameHud.addChatMessage(net.minecraft.network.MessageType.GAME_INFO, new TranslatableText(key, args));
+        net.minecraft.client.MinecraftClient mc = net.minecraft.client.MinecraftClient.getInstance();
+
+        if (mc.player != null)
+        {
+            mc.inGameHud.addChatMessage(net.minecraft.network.MessageType.GAME_INFO, new net.minecraft.text.TranslatableText(key, args), mc.player.getUuid());
+        }
     }
 
     /**
@@ -176,7 +178,7 @@ public class InfoUtils
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public static void renderInGameMessages(MatrixStack matrixStack)
+    public static void renderInGameMessages(net.minecraft.client.util.math.MatrixStack matrixStack)
     {
         int x = GuiUtils.getScaledWindowWidth() / 2;
         int y = GuiUtils.getScaledWindowHeight() - 76;
@@ -189,8 +191,12 @@ public class InfoUtils
         @Override
         public void setString(String string)
         {
-            TranslatableText message = new TranslatableText(string);
-            MinecraftClient.getInstance().inGameHud.addChatMessage(net.minecraft.network.MessageType.GAME_INFO, message);
+            net.minecraft.client.MinecraftClient mc = net.minecraft.client.MinecraftClient.getInstance();
+
+            if (mc.player != null)
+            {
+                mc.inGameHud.addChatMessage(net.minecraft.network.MessageType.GAME_INFO, new net.minecraft.text.TranslatableText(string), mc.player.getUuid());
+            }
         }
     }
 }
