@@ -131,37 +131,47 @@ public class BlockUtils
         return getFormattedBlockStateProperties(state, ": ");
     }
 
-    public static List<String> getFormattedBlockStateProperties(IBlockState state, String separator)
+    public static <T extends Comparable<T>> List<String> getFormattedBlockStateProperties(IBlockState state, String separator)
     {
         if (state.getProperties().size() > 0)
         {
             List<String> lines = new ArrayList<>();
-            UnmodifiableIterator<Map.Entry<IProperty<?>, Comparable<?>>> iter = state.getProperties().entrySet().iterator();
 
-            while (iter.hasNext())
+            try
             {
-                Map.Entry<IProperty<?>, Comparable<?>> entry = iter.next();
-                IProperty<?> key = entry.getKey();
-                Comparable<?> val = entry.getValue();
+                ImmutableMap<IProperty<?>, Comparable<?>> properties = state.getProperties();
 
-                if (key instanceof PropertyBool)
+                for (Map.Entry<IProperty<?>, Comparable<?>> entry : properties.entrySet())
                 {
-                    String pre = val.equals(Boolean.TRUE) ? GuiBase.TXT_GREEN : GuiBase.TXT_RED;
-                    lines.add(key.getName() + separator + pre + val.toString());
-                }
-                else if (key instanceof PropertyDirection)
-                {
-                    lines.add(key.getName() + separator + GuiBase.TXT_GOLD + val.toString());
-                }
-                else if (key instanceof PropertyInteger)
-                {
-                    lines.add(key.getName() + separator + GuiBase.TXT_AQUA + val.toString());
-                }
-                else
-                {
-                    lines.add(key.getName() + separator + val.toString());
+                    @SuppressWarnings("unchecked")
+                    IProperty<T> prop = (IProperty<T>) entry.getKey();
+                    @SuppressWarnings("unchecked")
+                    Comparable<T> val = (Comparable<T>) entry.getValue();
+
+                    String propName = prop.getName();
+                    @SuppressWarnings("unchecked")
+                    String valStr = prop.getName((T) val);
+
+                    if (prop instanceof PropertyBool)
+                    {
+                        String pre = val.equals(Boolean.TRUE) ? GuiBase.TXT_GREEN : GuiBase.TXT_RED;
+                        lines.add(propName + separator + pre + valStr);
+                    }
+                    else if (prop instanceof PropertyDirection)
+                    {
+                        lines.add(propName + separator + GuiBase.TXT_GOLD + valStr);
+                    }
+                    else if (prop instanceof PropertyInteger)
+                    {
+                        lines.add(propName + separator + GuiBase.TXT_AQUA + valStr);
+                    }
+                    else
+                    {
+                        lines.add(propName + separator + valStr);
+                    }
                 }
             }
+            catch (Exception ignore) {}
 
             return lines;
         }
