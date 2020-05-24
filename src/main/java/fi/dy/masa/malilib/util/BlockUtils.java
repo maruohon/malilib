@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
 import com.google.common.base.Splitter;
-import com.google.common.collect.UnmodifiableIterator;
+import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
@@ -15,6 +15,7 @@ import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.gui.GuiBase;
@@ -79,6 +80,59 @@ public class BlockUtils
         }
 
         return null;
+    }
+
+    /**
+     * Parses the provided string into a compound tag representing the block state.<br>
+     * The tag is in the format that the vanilla util class uses for reading/writing states to NBT
+     * data, for example inthe Chunk block state palette.<br>
+     * The string should be in either one of the following formats:<br>
+     * 'minecraft:stone' or 'minecraft:smooth_stone_slab[half=top,waterlogged=false]'.<br>
+     * None of the values are checked for validity here, and this can be used for
+     * parsing strings for states from another Minecraft version, such as 1.12 <-> 1.13+.
+     * @param stateString
+     * @return
+     */
+    public static NBTTagCompound getBlockStateTagFromString(String stateString)
+    {
+        int index = stateString.indexOf("["); // [f=b]
+        String blockName = index != -1 ? stateString.substring(0, index) : stateString;
+        NBTTagCompound tag = new NBTTagCompound();
+
+        tag.setString("Name", blockName);
+
+        if (index != -1 && stateString.length() > (index + 4) && stateString.charAt(stateString.length() - 1) == ']')
+        {
+            NBTTagCompound propsTag = new NBTTagCompound();
+            String propStr = stateString.substring(index + 1, stateString.length() - 1);
+            Iterator<String> propIter = COMMA_SPLITTER.split(propStr).iterator();
+
+            while (propIter.hasNext())
+            {
+                String propAndVal = propIter.next();
+                Iterator<String> valIter = EQUAL_SPLITTER.split(propAndVal).iterator();
+
+                if (valIter.hasNext() == false)
+                {
+                    continue;
+                }
+
+                String propName = valIter.next();
+
+                if (valIter.hasNext() == false)
+                {
+                    continue;
+                }
+
+                String valStr = valIter.next();
+
+                propsTag.setString(propName, valStr);
+            }
+
+            tag.setTag("Properties", propsTag);
+        }
+
+        return tag;
     }
 
     @SuppressWarnings("unchecked")
