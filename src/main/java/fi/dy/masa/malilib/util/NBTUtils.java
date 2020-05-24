@@ -14,6 +14,23 @@ import net.minecraft.util.math.Vec3i;
 
 public class NBTUtils
 {
+    public static NBTTagCompound getOrCreateCompound(NBTTagCompound tagIn, String tagName)
+    {
+        NBTTagCompound nbt;
+
+        if (tagIn.hasKey(tagName, Constants.NBT.TAG_COMPOUND))
+        {
+            nbt = tagIn.getCompoundTag(tagName);
+        }
+        else
+        {
+            nbt = new NBTTagCompound();
+            tagIn.setTag(tagName, nbt);
+        }
+
+        return nbt;
+    }
+
     public static NBTTagCompound createBlockPosTag(Vec3i pos)
     {
         return writeBlockPosToTag(pos, new NBTTagCompound());
