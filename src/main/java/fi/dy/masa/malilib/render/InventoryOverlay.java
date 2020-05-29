@@ -21,13 +21,12 @@ import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.inventory.BasicInventory;
 import net.minecraft.inventory.DoubleInventory;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -195,7 +194,7 @@ public class InventoryOverlay
 
         tessellator.draw();
 
-        RenderUtils.bindTexture(SpriteAtlasTexture.BLOCK_ATLAS_TEX);
+        RenderUtils.bindTexture(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
 
         if (entity.getEquippedStack(EquipmentSlot.OFFHAND).isEmpty())
         {
@@ -241,7 +240,7 @@ public class InventoryOverlay
         {
             return InventoryRenderType.HOPPER;
         }
-        else if (inv.getClass() == BasicInventory.class) // FIXME
+        else if (inv.getClass() == SimpleInventory.class) // FIXME
         {
             return InventoryRenderType.HORSE;
         }

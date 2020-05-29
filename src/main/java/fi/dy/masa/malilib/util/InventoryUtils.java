@@ -9,9 +9,9 @@ import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.block.enums.ChestType;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.BasicInventory;
 import net.minecraft.inventory.DoubleInventory;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
@@ -55,7 +55,7 @@ public class InventoryUtils
     /**
      * Swaps the stack from the slot <b>slotNum</b> to the given hotbar slot <b>hotbarSlot</b>
      * @param container
-     * @param slot
+     * @param slotNum
      * @param hotbarSlot
      */
     public static void swapSlots(ScreenHandler container, int slotNum, int hotbarSlot)
@@ -259,7 +259,7 @@ public class InventoryUtils
      * Returns the list of items currently stored in the given Shulker Box
      * (or other storage item with the same NBT data structure).
      * Does not keep empty slots.
-     * @param stackShulkerBox
+     * @param stackIn The item holding the inventory contents
      * @return
      */
     public static DefaultedList<ItemStack> getStoredItems(ItemStack stackIn)
@@ -297,7 +297,7 @@ public class InventoryUtils
      * Returns the list of items currently stored in the given Shulker Box
      * (or other storage item with the same NBT data structure).
      * Preserves empty slots.
-     * @param stackShulkerBox
+     * @param stackIn The item holding the inventory contents
      * @param slotCount the maximum number of slots, and thus also the size of the list to create
      * @return
      */
@@ -380,7 +380,7 @@ public class InventoryUtils
      * Returns a map of the stored item counts in the given inventory.
      * This also counts the contents of any Shulker Boxes
      * (or other storage item with the same NBT data structure).
-     * @param player
+     * @param inv
      * @return
      */
     public static Object2IntOpenHashMap<ItemType> getInventoryItemCounts(Inventory inv)
@@ -420,7 +420,7 @@ public class InventoryUtils
      */
     public static Inventory getAsInventory(DefaultedList<ItemStack> items)
     {
-        BasicInventory inv = new BasicInventory(items.size());
+        SimpleInventory inv = new SimpleInventory(items.size());
 
         for (int slot = 0; slot < items.size(); ++slot)
         {

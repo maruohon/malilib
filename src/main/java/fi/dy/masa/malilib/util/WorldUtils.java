@@ -1,19 +1,19 @@
 package fi.dy.masa.malilib.util;
 
 import javax.annotation.Nullable;
-import net.minecraft.class_5318;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.WorldChunk;
+import net.minecraft.world.dimension.DimensionTracker;
 
 public class WorldUtils
 {
     public static String getDimensionId(World world)
     {
-        Identifier id = class_5318.method_29117().method_29116().getId(world.getDimension());
+        Identifier id = DimensionTracker.create().getRegistry().getId(world.getDimension()); // FIXME 20w21a+ ?
         return id != null ? id.getNamespace() + "_" + id.getPath() : "__fallback";
     }
 
