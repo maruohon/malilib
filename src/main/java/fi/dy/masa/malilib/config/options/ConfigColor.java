@@ -76,7 +76,7 @@ public class ConfigColor extends ConfigInteger
         {
             if (element.isJsonPrimitive())
             {
-                this.value = this.getClampedValue(StringUtils.getColor(element.getAsString(), 0));
+                this.setIntegerValue(this.getClampedValue(StringUtils.getColor(element.getAsString(), 0)));
                 this.color = Color4f.fromColor(this.value);
             }
             else

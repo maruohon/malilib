@@ -68,7 +68,7 @@ public class ConfigString extends ConfigBase<ConfigString> implements IConfigVal
         {
             if (element.isJsonPrimitive())
             {
-                this.value = element.getAsString();
+                this.setValueFromString(element.getAsString());
             }
             else
             {

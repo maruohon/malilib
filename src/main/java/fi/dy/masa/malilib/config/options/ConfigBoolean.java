@@ -91,7 +91,7 @@ public class ConfigBoolean extends ConfigBase<ConfigBoolean> implements IConfigB
         {
             if (element.isJsonPrimitive())
             {
-                this.value = element.getAsBoolean();
+                this.setBooleanValue(element.getAsBoolean());
             }
             else
             {

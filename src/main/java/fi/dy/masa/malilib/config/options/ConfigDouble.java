@@ -147,7 +147,7 @@ public class ConfigDouble extends ConfigBase<ConfigDouble> implements IConfigDou
         {
             if (element.isJsonPrimitive())
             {
-                this.value = this.getClampedValue(element.getAsDouble());
+                this.setDoubleValue(this.getClampedValue(element.getAsDouble()));
             }
             else
             {
