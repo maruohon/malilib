@@ -5,15 +5,15 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.RegistryTracker;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.WorldChunk;
-import net.minecraft.world.dimension.DimensionTracker;
 
 public class WorldUtils
 {
     public static String getDimensionId(World world)
     {
-        Identifier id = DimensionTracker.create().getRegistry().getId(world.getDimension()); // FIXME 20w21a+ ?
+        Identifier id = RegistryTracker.create().getDimensionTypeRegistry().getId(world.getDimension()); // FIXME 20w21a+ ?
         return id != null ? id.getNamespace() + "_" + id.getPath() : "__fallback";
     }
 
@@ -30,7 +30,7 @@ public class WorldUtils
 
         if (mc.world != null && server != null)
         {
-            return server.getWorld(mc.world.method_27983());
+            return server.getWorld(mc.world.getRegistryKey());
         }
         else
         {
@@ -54,7 +54,7 @@ public class WorldUtils
 
         if (mc.world != null && server != null)
         {
-            ServerWorld world = server.getWorld(mc.world.method_27983());
+            ServerWorld world = server.getWorld(mc.world.getRegistryKey());
 
             if (world != null)
             {
