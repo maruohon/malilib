@@ -74,6 +74,29 @@ public class MathUtils
         return sum / (double) size;
     }
 
+    public static double roundUp(double value, double interval)
+    {
+        if (interval == 0.0)
+        {
+            return 0.0;
+        }
+        else if (value == 0.0)
+        {
+            return interval;
+        }
+        else
+        {
+            if (value < 0.0)
+            {
+                interval *= -1.0;
+            }
+
+            double remainder = value % interval;
+
+            return remainder == 0.0 ? value : value + interval - remainder;
+        }
+    }
+
     public static long roundUp(long number, long interval)
     {
         if (interval == 0)

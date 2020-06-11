@@ -2,10 +2,12 @@ package fi.dy.masa.malilib.util;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
+import org.apache.commons.lang3.tuple.Pair;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.Block;
@@ -85,7 +87,7 @@ public class BlockUtils
     /**
      * Parses the provided string into a compound tag representing the block state.<br>
      * The tag is in the format that the vanilla util class uses for reading/writing states to NBT
-     * data, for example inthe Chunk block state palette.<br>
+     * data, for example in the Chunk block state palette.<br>
      * The string should be in either one of the following formats:<br>
      * 'minecraft:stone' or 'minecraft:smooth_stone_slab[half=top,waterlogged=false]'.<br>
      * None of the values are checked for validity here, and this can be used for
@@ -133,6 +135,56 @@ public class BlockUtils
         }
 
         return tag;
+    }
+
+    /**
+     * Parses the input tag representing a block state, and produces a string
+     * in the same format as the toString() method in the vanilla block state.
+     * This string format is what the Sponge schematic format uses in the palette.
+     * @param stateTag
+     * @return an equivalent of IBlockState.toString() of the given tag representing a block state
+     */
+    public static String getBlockStateStringFromTag(NBTTagCompound stateTag)
+    {
+        String name = stateTag.getString("Name");
+
+        if (stateTag.hasKey("Properties", Constants.NBT.TAG_COMPOUND) == false)
+        {
+            return name;
+        }
+
+        NBTTagCompound propTag = stateTag.getCompoundTag("Properties");
+        ArrayList<Pair<String, String>> props = new ArrayList<>();
+
+        for (String key : propTag.getKeySet())
+        {
+            props.add(Pair.of(key, propTag.getString(key)));
+        }
+
+        final int size = props.size();
+
+        if (size > 0)
+        {
+            props.sort(Comparator.comparing(Pair::getLeft));
+
+            StringBuilder sb = new StringBuilder();
+            sb.append(name).append('[');
+            Pair<String, String> pair = props.get(0);
+
+            sb.append(pair.getLeft()).append('=').append(pair.getRight());
+
+            for (int i = 1; i < size; ++i)
+            {
+                pair = props.get(i);
+                sb.append(',').append(pair.getLeft()).append('=').append(pair.getRight());
+            }
+
+            sb.append(']');
+
+            return sb.toString();
+        }
+
+        return name;
     }
 
     @SuppressWarnings("unchecked")
