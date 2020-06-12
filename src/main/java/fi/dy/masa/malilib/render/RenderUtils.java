@@ -846,7 +846,6 @@ public class RenderUtils
      * @param y
      * @param z
      * @param scale
-     * @param mc
      */
     public static void drawTextPlate(List<String> text, double x, double y, double z, float scale)
     {
@@ -1261,7 +1260,6 @@ public class RenderUtils
         GlStateManager.pushMatrix();
 
         bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-        mc().getTextureManager().getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).setBlurMipmap(false, false);
 
         GlStateManager.enableRescaleNormal();
         GlStateManager.enableAlpha();
