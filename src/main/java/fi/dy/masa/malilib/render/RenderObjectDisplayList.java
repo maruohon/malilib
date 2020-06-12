@@ -5,7 +5,6 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.WorldVertexBufferUploader;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 
 public class RenderObjectDisplayList extends RenderObjectBase
@@ -14,14 +13,9 @@ public class RenderObjectDisplayList extends RenderObjectBase
 
     protected final int baseDisplayList;
 
-    public RenderObjectDisplayList(int glMode)
+    public RenderObjectDisplayList(int glMode, VertexFormat vertexFormat)
     {
-        this(glMode, DefaultVertexFormats.POSITION_COLOR);
-    }
-
-    public RenderObjectDisplayList(int glMode, VertexFormat format)
-    {
-        super(glMode, format);
+        super(glMode, vertexFormat);
 
         this.baseDisplayList = GLAllocation.generateDisplayLists(1);
     }
@@ -30,20 +24,30 @@ public class RenderObjectDisplayList extends RenderObjectBase
     public void uploadData(BufferBuilder buffer)
     {
         GlStateManager.glNewList(this.baseDisplayList, GL11.GL_COMPILE);
-        GlStateManager.pushMatrix();
 
         VERTEX_UPLOADER.draw(buffer);
 
-        GlStateManager.popMatrix();
         GlStateManager.glEndList();
     }
 
     @Override
     public void draw()
     {
-        GlStateManager.pushMatrix();
+        if (this.hasTexture)
+        {
+            GlStateManager.enableTexture2D();
+        }
+        else
+        {
+            GlStateManager.disableTexture2D();
+        }
+
         GlStateManager.callList(this.baseDisplayList);
-        GlStateManager.popMatrix();
+
+        if (this.hasTexture)
+        {
+            GlStateManager.disableTexture2D();
+        }
     }
 
     @Override

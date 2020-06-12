@@ -2,16 +2,32 @@ package fi.dy.masa.malilib.render;
 
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraft.client.renderer.vertex.VertexFormatElement;
 
 public abstract class RenderObjectBase
 {
     private final VertexFormat vertexFormat;
     private final int glMode;
+    protected final boolean hasTexture;
 
-    public RenderObjectBase(int glMode, VertexFormat format)
+    public RenderObjectBase(int glMode, VertexFormat vertexFormat)
     {
         this.glMode = glMode;
-        this.vertexFormat = format;
+        this.vertexFormat = vertexFormat;
+
+        boolean hasTexture = false;
+
+        // This isn't really that nice and clean, but it'll do for now...
+        for (VertexFormatElement el : this.vertexFormat.getElements())
+        {
+            if (el.getUsage() == VertexFormatElement.EnumUsage.UV)
+            {
+                hasTexture = true;
+                break;
+            }
+        }
+
+        this.hasTexture = hasTexture;
     }
 
     public int getGlMode()
