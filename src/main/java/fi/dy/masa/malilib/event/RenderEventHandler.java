@@ -2,6 +2,8 @@ package fi.dy.masa.malilib.event;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gl.Framebuffer;
 import fi.dy.masa.malilib.interfaces.IRenderDispatcher;
 import fi.dy.masa.malilib.interfaces.IRenderer;
 import fi.dy.masa.malilib.util.InfoUtils;
@@ -93,11 +95,23 @@ public class RenderEventHandler implements IRenderDispatcher
         {
             mc.getProfiler().swap("malilib_renderworldlast");
 
+            Framebuffer fb = MinecraftClient.isFabulousGraphicsOrBetter() ? mc.worldRenderer.getTranslucentFramebuffer() : null;
+
+            if (fb != null)
+            {
+                fb.beginWrite(false);
+            }
+
             for (IRenderer renderer : this.worldLastRenderers)
             {
                 mc.getProfiler().push(renderer.getProfilerSectionSupplier());
                 renderer.onRenderWorldLast(partialTicks, matrixStack);
                 mc.getProfiler().pop();
+            }
+
+            if (fb != null)
+            {
+                mc.getFramebuffer().beginWrite(false);
             }
         }
     }
