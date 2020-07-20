@@ -55,7 +55,7 @@ public class InventoryUtils
     /**
      * Swaps the stack from the slot <b>slotNum</b> to the given hotbar slot <b>hotbarSlot</b>
      * @param container
-     * @param slot
+     * @param slotNum
      * @param hotbarSlot
      */
     public static void swapSlots(Container container, int slotNum, int hotbarSlot)
@@ -87,13 +87,13 @@ public class InventoryUtils
      */
     public static int findEmptySlotInPlayerInventory(Container containerPlayer, boolean allowOffhand, boolean reverse)
     {
-        final int startSlot = reverse ? containerPlayer.slotList.size() - 1 : 0;
-        final int endSlot = reverse ? -1 : containerPlayer.slotList.size();
+        final int startSlot = reverse ? containerPlayer.slots.size() - 1 : 0;
+        final int endSlot = reverse ? -1 : containerPlayer.slots.size();
         final int increment = reverse ? -1 : 1;
 
         for (int slotNum = startSlot; slotNum != endSlot; slotNum += increment)
         {
-            Slot slot = containerPlayer.slotList.get(slotNum);
+            Slot slot = containerPlayer.slots.get(slotNum);
             ItemStack stackSlot = slot.getStack();
 
             // Inventory crafting, armor and offhand slots are not valid
@@ -117,14 +117,14 @@ public class InventoryUtils
      */
     public static int findSlotWithItem(Container container, ItemStack stackReference, boolean reverse)
     {
-        final int startSlot = reverse ? container.slotList.size() - 1 : 0;
-        final int endSlot = reverse ? -1 : container.slotList.size();
+        final int startSlot = reverse ? container.slots.size() - 1 : 0;
+        final int endSlot = reverse ? -1 : container.slots.size();
         final int increment = reverse ? -1 : 1;
         final boolean isPlayerInv = container instanceof PlayerContainer;
 
         for (int slotNum = startSlot; slotNum != endSlot; slotNum += increment)
         {
-            Slot slot = container.slotList.get(slotNum);
+            Slot slot = container.slots.get(slotNum);
 
             if ((isPlayerInv == false || isRegularInventorySlot(slot.id, false)) &&
                 areStacksEqualIgnoreDurability(slot.getStack(), stackReference))
@@ -241,11 +241,11 @@ public class InventoryUtils
     {
         CompoundTag nbt = stackShulkerBox.getTag();
 
-        if (nbt != null && nbt.containsKey("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
+        if (nbt != null && nbt.contains("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
         {
             CompoundTag tag = nbt.getCompound("BlockEntityTag");
 
-            if (tag.containsKey("Items", Constants.NBT.TAG_LIST))
+            if (tag.contains("Items", Constants.NBT.TAG_LIST))
             {
                 ListTag tagList = tag.getList("Items", Constants.NBT.TAG_COMPOUND);
                 return tagList.size() > 0;
@@ -259,18 +259,18 @@ public class InventoryUtils
      * Returns the list of items currently stored in the given Shulker Box
      * (or other storage item with the same NBT data structure).
      * Does not keep empty slots.
-     * @param stackShulkerBox
+     * @param stackIn
      * @return
      */
     public static DefaultedList<ItemStack> getStoredItems(ItemStack stackIn)
     {
         CompoundTag nbt = stackIn.getTag();
 
-        if (nbt != null && nbt.containsKey("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
+        if (nbt != null && nbt.contains("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
         {
             CompoundTag tagBlockEntity = nbt.getCompound("BlockEntityTag");
 
-            if (tagBlockEntity.containsKey("Items", Constants.NBT.TAG_LIST))
+            if (tagBlockEntity.contains("Items", Constants.NBT.TAG_LIST))
             {
                 DefaultedList<ItemStack> items = DefaultedList.of();
                 ListTag tagList = tagBlockEntity.getList("Items", Constants.NBT.TAG_COMPOUND);
@@ -278,7 +278,7 @@ public class InventoryUtils
 
                 for (int i = 0; i < count; ++i)
                 {
-                    ItemStack stack = ItemStack.fromTag(tagList.getCompoundTag(i));
+                    ItemStack stack = ItemStack.fromTag(tagList.getCompound(i));
 
                     if (stack.isEmpty() == false)
                     {
@@ -297,7 +297,7 @@ public class InventoryUtils
      * Returns the list of items currently stored in the given Shulker Box
      * (or other storage item with the same NBT data structure).
      * Preserves empty slots.
-     * @param stackShulkerBox
+     * @param stackIn
      * @param slotCount the maximum number of slots, and thus also the size of the list to create
      * @return
      */
@@ -305,11 +305,11 @@ public class InventoryUtils
     {
         CompoundTag nbt = stackIn.getTag();
 
-        if (nbt != null && nbt.containsKey("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
+        if (nbt != null && nbt.contains("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
         {
             CompoundTag tagBlockEntity = nbt.getCompound("BlockEntityTag");
 
-            if (tagBlockEntity.containsKey("Items", Constants.NBT.TAG_LIST))
+            if (tagBlockEntity.contains("Items", Constants.NBT.TAG_LIST))
             {
                 ListTag tagList = tagBlockEntity.getList("Items", Constants.NBT.TAG_COMPOUND);
                 final int count = tagList.size();
@@ -319,7 +319,7 @@ public class InventoryUtils
                 {
                     for (int i = 0; i < count; ++i)
                     {
-                        CompoundTag tag = tagList.getCompoundTag(i);
+                        CompoundTag tag = tagList.getCompound(i);
                         int slot = tag.getByte("Slot");
 
                         if (slot > maxSlot)
@@ -335,7 +335,7 @@ public class InventoryUtils
 
                 for (int i = 0; i < count; ++i)
                 {
-                    CompoundTag tag = tagList.getCompoundTag(i);
+                    CompoundTag tag = tagList.getCompound(i);
                     ItemStack stack = ItemStack.fromTag(tag);
                     int slot = tag.getByte("Slot");
 
@@ -380,7 +380,7 @@ public class InventoryUtils
      * Returns a map of the stored item counts in the given inventory.
      * This also counts the contents of any Shulker Boxes
      * (or other storage item with the same NBT data structure).
-     * @param player
+     * @param inv 
      * @return
      */
     public static Object2IntOpenHashMap<ItemType> getInventoryItemCounts(Inventory inv)

@@ -54,8 +54,8 @@ public class InventoryOverlay
     public static void renderInventoryBackground(InventoryRenderType type, int x, int y, int slotsPerRow, int totalSlots, MinecraftClient mc)
     {
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBufferBuilder();
-        buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_UV);
+        BufferBuilder buffer = tessellator.getBuffer();
+        buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_TEXTURE);
 
         if (type == InventoryRenderType.FURNACE)
         {
@@ -168,8 +168,8 @@ public class InventoryOverlay
         RenderUtils.color(1f, 1f, 1f, 1f);
 
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBufferBuilder();
-        buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_UV);
+        BufferBuilder buffer = tessellator.getBuffer();
+        buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_TEXTURE);
 
         RenderUtils.bindTexture(TEXTURE_DISPENSER);
 

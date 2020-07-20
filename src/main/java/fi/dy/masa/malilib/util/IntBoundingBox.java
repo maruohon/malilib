@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.util;
 
 import net.minecraft.nbt.IntArrayTag;
-import net.minecraft.util.math.MutableIntBoundingBox;
+import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.Vec3i;
 
 public class IntBoundingBox
@@ -43,9 +43,9 @@ public class IntBoundingBox
                this.minY <= box.maxY;
     }
 
-    public MutableIntBoundingBox toVanillaBox()
+    public BlockBox toVanillaBox()
     {
-        return new MutableIntBoundingBox(this.minX, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ);
+        return new BlockBox(this.minX, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ);
     }
 
     public IntArrayTag toNBTIntArray()
@@ -53,7 +53,7 @@ public class IntBoundingBox
         return new IntArrayTag(new int[] { this.minX, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ });
     }
 
-    public static IntBoundingBox fromVanillaBox(MutableIntBoundingBox box)
+    public static IntBoundingBox fromVanillaBox(BlockBox box)
     {
         return createProper(box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ);
     }

@@ -7,14 +7,6 @@ import java.util.Random;
 import javax.annotation.Nullable;
 import org.lwjgl.opengl.GL11;
 import com.mojang.blaze3d.platform.GlStateManager;
-import fi.dy.masa.malilib.config.HudAlignment;
-import fi.dy.masa.malilib.gui.GuiBase;
-import fi.dy.masa.malilib.util.Color4f;
-import fi.dy.masa.malilib.util.GuiUtils;
-import fi.dy.masa.malilib.util.IntBoundingBox;
-import fi.dy.masa.malilib.util.InventoryUtils;
-import fi.dy.masa.malilib.util.PositionUtils;
-import fi.dy.masa.malilib.util.PositionUtils.HitPart;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.ShulkerBoxBlock;
@@ -23,7 +15,7 @@ import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.GuiLighting;
+import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.model.BakedModel;
@@ -42,11 +34,19 @@ import net.minecraft.item.map.MapState;
 import net.minecraft.util.DefaultedList;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.MutableIntBoundingBox;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
+import fi.dy.masa.malilib.config.HudAlignment;
+import fi.dy.masa.malilib.gui.GuiBase;
+import fi.dy.masa.malilib.util.Color4f;
+import fi.dy.masa.malilib.util.GuiUtils;
+import fi.dy.masa.malilib.util.IntBoundingBox;
+import fi.dy.masa.malilib.util.InventoryUtils;
+import fi.dy.masa.malilib.util.PositionUtils;
+import fi.dy.masa.malilib.util.PositionUtils.HitPart;
 
 public class RenderUtils
 {
@@ -74,17 +74,17 @@ public class RenderUtils
 
     public static void disableItemLighting()
     {
-        GuiLighting.disable();
+        DiffuseLighting.disable();
     }
 
     public static void enableItemLighting()
     {
-        GuiLighting.enable();
+        DiffuseLighting.enable();
     }
 
     public static void enableGuiItemLighting()
     {
-        GuiLighting.enableForItems();
+        DiffuseLighting.enableForItems();
     }
 
     public static void drawOutlinedBox(int x, int y, int width, int height, int colorBg, int colorBorder)
@@ -145,7 +145,7 @@ public class RenderUtils
         float b = (float) (color & 255) / 255.0F;
 
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBufferBuilder();
+        BufferBuilder buffer = tessellator.getBuffer();
 
         GlStateManager.disableTexture();
         setupBlend();
@@ -168,8 +168,8 @@ public class RenderUtils
     {
         float pixelWidth = 0.00390625F;
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBufferBuilder();
-        buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_UV);
+        BufferBuilder buffer = tessellator.getBuffer();
+        buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_TEXTURE);
 
         buffer.vertex(x        , y + height, zLevel).texture( u          * pixelWidth, (v + height) * pixelWidth).next();
         buffer.vertex(x + width, y + height, zLevel).texture((u + width) * pixelWidth, (v + height) * pixelWidth).next();
@@ -262,7 +262,7 @@ public class RenderUtils
 
             GlStateManager.enableLighting();
             GlStateManager.enableDepthTest();
-            GuiLighting.enableForItems();
+            DiffuseLighting.enableForItems();
             GlStateManager.enableRescaleNormal();
         }
     }
@@ -285,7 +285,7 @@ public class RenderUtils
         GlStateManager.shadeModel(GL11.GL_SMOOTH);
 
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBufferBuilder();
+        BufferBuilder buffer = tessellator.getBuffer();
         buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR);
 
         buffer.vertex(right, top,    zLevel).color(sr, sg, sb, sa).next();
@@ -670,7 +670,7 @@ public class RenderUtils
         drawBoxAllEdgesBatchedLines(minX, minY, minZ, maxX, maxY, maxZ, color, bufferLines);
     }
 
-    public static void drawBox(MutableIntBoundingBox bb, Color4f color, BufferBuilder bufferQuads, BufferBuilder bufferLines)
+    public static void drawBox(BlockBox bb, Color4f color, BufferBuilder bufferQuads, BufferBuilder bufferLines)
     {
         double minX = bb.minX;
         double minY = bb.minY;
@@ -691,7 +691,6 @@ public class RenderUtils
      * @param y
      * @param z
      * @param scale
-     * @param mc
      */
     public static void drawTextPlate(List<String> text, double x, double y, double z, float scale)
     {
@@ -730,7 +729,7 @@ public class RenderUtils
         GlStateManager.disableTexture();
 
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBufferBuilder();
+        BufferBuilder buffer = tessellator.getBuffer();
         int maxLineLen = 0;
 
         for (String line : text)
@@ -808,7 +807,7 @@ public class RenderUtils
         blockTargetingOverlayTranslations(x, y, z, side, playerFacing);
 
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBufferBuilder();
+        BufferBuilder buffer = tessellator.getBuffer();
         float quadAlpha = 0.18f;
         float ha = color.a;
         float hr = color.r;
@@ -907,7 +906,7 @@ public class RenderUtils
         blockTargetingOverlayTranslations(x, y, z, side, playerFacing);
 
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBufferBuilder();
+        BufferBuilder buffer = tessellator.getBuffer();
 
         float a = color.a;
         float r = color.r;
@@ -987,8 +986,8 @@ public class RenderUtils
             bindTexture(fi.dy.masa.malilib.render.RenderUtils.TEXTURE_MAP_BACKGROUND);
 
             Tessellator tessellator = Tessellator.getInstance();
-            BufferBuilder buffer = tessellator.getBufferBuilder();
-            buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_UV);
+            BufferBuilder buffer = tessellator.getBuffer();
+            buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_TEXTURE);
             buffer.vertex(x1, y2, z).texture(0.0D, 1.0D).next();
             buffer.vertex(x2, y2, z).texture(1.0D, 1.0D).next();
             buffer.vertex(x2, y1, z).texture(1.0D, 0.0D).next();
@@ -1095,7 +1094,7 @@ public class RenderUtils
         GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
         color(1f, 1f, 1f, 1f);
 
-        setupGuiTransform(x, y, model.hasDepthInGui(), zLevel);
+        setupGuiTransform(x, y, model.hasDepth(), zLevel);
         //model.getItemCameraTransforms().applyTransform(ItemCameraTransforms.TransformType.GUI);
         GlStateManager.rotatef( 30, 1, 0, 0);
         GlStateManager.rotatef(225, 0, 1, 0);
@@ -1137,8 +1136,8 @@ public class RenderUtils
         if (model.isBuiltin() == false)
         {
             Tessellator tessellator = Tessellator.getInstance();
-            BufferBuilder bufferbuilder = tessellator.getBufferBuilder();
-            bufferbuilder.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR_UV_NORMAL);
+            BufferBuilder bufferbuilder = tessellator.getBuffer();
+            bufferbuilder.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL);
 
             for (Direction face : Direction.values())
             {
@@ -1173,7 +1172,7 @@ public class RenderUtils
         if (quad.hasColor())
         {
             BlockColors blockColors = mc().getBlockColorMap();
-            int m = blockColors.getColorMultiplier(state, null, null, quad.getColorIndex());
+            int m = blockColors.getColor(state, null, null, quad.getColorIndex());
 
             float r = (float) (m >>> 16 & 0xFF) / 255F;
             float g = (float) (m >>>  8 & 0xFF) / 255F;
