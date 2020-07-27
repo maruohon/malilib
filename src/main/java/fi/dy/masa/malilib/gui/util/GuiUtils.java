@@ -10,15 +10,15 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import fi.dy.masa.malilib.config.values.HudAlignment;
+import fi.dy.masa.malilib.config.value.HudAlignment;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
-import fi.dy.masa.malilib.gui.widgets.WidgetTextFieldBase;
-import fi.dy.masa.malilib.gui.widgets.WidgetTextFieldDouble;
-import fi.dy.masa.malilib.gui.widgets.WidgetTextFieldInteger;
-import fi.dy.masa.malilib.interfaces.ICoordinateValueModifier;
+import fi.dy.masa.malilib.gui.widget.WidgetTextFieldBase;
+import fi.dy.masa.malilib.gui.widget.WidgetTextFieldDouble;
+import fi.dy.masa.malilib.gui.widget.WidgetTextFieldInteger;
+import fi.dy.masa.malilib.util.position.ICoordinateValueModifier;
 import fi.dy.masa.malilib.util.PositionUtils.CoordinateType;
 import fi.dy.masa.malilib.util.StringUtils;
 
@@ -97,7 +97,7 @@ public class GuiUtils
         if (addButton)
         {
             String hover = StringUtils.translate("malilib.gui.button.hover.plus_minus_tip");
-            ButtonGeneric button = new ButtonGeneric(x, y, GuiIconBase.BTN_PLUSMINUS_16, hover);
+            ButtonGeneric button = new ButtonGeneric(x, y, BaseGuiIcon.BTN_PLUSMINUS_16, hover);
             gui.addButton(button, new ButtonListenerCoordinateInput(type, modifier));
         }
     }

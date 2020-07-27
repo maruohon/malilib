@@ -10,14 +10,15 @@ import java.util.List;
 import java.util.Locale;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableSet;
+import com.mumfrey.liteloader.core.LiteLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
-import com.mumfrey.liteloader.core.LiteLoader;
 import fi.dy.masa.malilib.LiteModMaLiLib;
-import fi.dy.masa.malilib.gui.util.Message.MessageType;
-import fi.dy.masa.malilib.interfaces.IConfirmationListener;
-import fi.dy.masa.malilib.interfaces.IStringConsumerFeedback;
+import fi.dy.masa.malilib.util.consumer.IStringConsumer;
+import fi.dy.masa.malilib.listener.IConfirmationListener;
+import fi.dy.masa.malilib.message.MessageType;
+import fi.dy.masa.malilib.message.MessageUtils;
 
 public class FileUtils
 {
@@ -244,7 +245,7 @@ public class FileUtils
         return null;
     }
 
-    public static class FileRenamer implements IStringConsumerFeedback
+    public static class FileRenamer implements IStringConsumer
     {
         protected final File dir;
         protected final String oldName;
@@ -256,11 +257,11 @@ public class FileUtils
         }
 
         @Override
-        public boolean setString(String string)
+        public boolean consumeString(String string)
         {
             if (FileUtils.doesFilenameContainIllegalCharacters(string))
             {
-                InfoUtils.showGuiOrInGameMessage(MessageType.ERROR, "malilib.error.illegal_characters_in_file_name", string);
+                MessageUtils.showGuiOrInGameMessage(MessageType.ERROR, "malilib.error.illegal_characters_in_file_name", string);
                 return false;
             }
 
@@ -285,12 +286,12 @@ public class FileUtils
                 }
                 else
                 {
-                    InfoUtils.showGuiOrInGameMessage(MessageType.ERROR, "malilib.error.file_rename.rename_failed", this.oldName, newName);
+                    MessageUtils.showGuiOrInGameMessage(MessageType.ERROR, "malilib.error.file_rename.rename_failed", this.oldName, newName);
                 }
             }
             else
             {
-                InfoUtils.showGuiOrInGameMessage(MessageType.ERROR, "malilib.error.file_rename.file_already_exists", newName);
+                MessageUtils.showGuiOrInGameMessage(MessageType.ERROR, "malilib.error.file_rename.file_already_exists", newName);
             }
 
             return false;
@@ -322,7 +323,7 @@ public class FileUtils
             }
             catch (Exception e)
             {
-                InfoUtils.showGuiOrInGameMessage(MessageType.ERROR, "malilib.error.file_delete_failed", this.file.getAbsolutePath());
+                MessageUtils.showGuiOrInGameMessage(MessageType.ERROR, "malilib.error.file_delete_failed", this.file.getAbsolutePath());
             }
 
             return false;

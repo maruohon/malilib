@@ -6,13 +6,13 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import fi.dy.masa.malilib.IMinecraftAccessor;
-import fi.dy.masa.malilib.event.InputEventHandler;
-import fi.dy.masa.malilib.event.TickHandler;
-import fi.dy.masa.malilib.event.WorldLoadHandler;
-import fi.dy.masa.malilib.hotkeys.KeybindMulti;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
+import fi.dy.masa.malilib.IMinecraftAccessor;
+import fi.dy.masa.malilib.event.dispatch.InputEventDispatcher;
+import fi.dy.masa.malilib.event.dispatch.TickEventDispatcher;
+import fi.dy.masa.malilib.event.dispatch.ClientWorldChangeEventDispatcher;
+import fi.dy.masa.malilib.input.KeyBindMulti;
 
 @Mixin(Minecraft.class)
 public abstract class MixinMinecraft implements IMinecraftAccessor
@@ -35,7 +35,7 @@ public abstract class MixinMinecraft implements IMinecraftAccessor
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;dispatchKeypresses()V"))
     private void onKeyboardInput(CallbackInfo ci)
     {
-        if (((InputEventHandler) InputEventHandler.getInputManager()).onKeyInput(false))
+        if (((InputEventDispatcher) InputEventDispatcher.getInputManager()).onKeyInput())
         {
             ci.cancel();
         }
@@ -45,7 +45,7 @@ public abstract class MixinMinecraft implements IMinecraftAccessor
             at = @At(value = "INVOKE", target = "Lorg/lwjgl/input/Mouse;getEventButton()I", remap = false))
     private void onMouseInput(CallbackInfo ci)
     {
-        if (((InputEventHandler) InputEventHandler.getInputManager()).onMouseInput(false))
+        if (((InputEventDispatcher) InputEventDispatcher.getInputManager()).onMouseInput())
         {
             ci.cancel();
         }
@@ -54,26 +54,26 @@ public abstract class MixinMinecraft implements IMinecraftAccessor
     @Inject(method = "runTick", at = @At("RETURN"))
     private void onPostKeyboardInput(CallbackInfo ci)
     {
-        KeybindMulti.reCheckPressedKeys();
+        KeyBindMulti.reCheckPressedKeys();
     }
 
     @Inject(method = "runTick()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;getSystemTime()J"))
     private void onRunTickEnd(CallbackInfo ci)
     {
-        TickHandler.getInstance().onClientTick((Minecraft)(Object) this);
+        ((TickEventDispatcher) TickEventDispatcher.INSTANCE).onClientTick((Minecraft)(Object) this);
     }
 
     @Inject(method = "loadWorld(Lnet/minecraft/client/multiplayer/WorldClient;Ljava/lang/String;)V", at = @At("HEAD"))
     private void onLoadWorldPre(@Nullable WorldClient worldClientIn, String loadingMessage, CallbackInfo ci)
     {
         this.worldBefore = this.world;
-        ((WorldLoadHandler) WorldLoadHandler.getInstance()).onWorldLoadPre(this.world, worldClientIn, (Minecraft)(Object) this);
+        ((ClientWorldChangeEventDispatcher) ClientWorldChangeEventDispatcher.INSTANCE).onWorldLoadPre(this.world, worldClientIn, (Minecraft)(Object) this);
     }
 
     @Inject(method = "loadWorld(Lnet/minecraft/client/multiplayer/WorldClient;Ljava/lang/String;)V", at = @At("RETURN"))
     private void onLoadWorldPost(@Nullable WorldClient worldClientIn, String loadingMessage, CallbackInfo ci)
     {
-        ((WorldLoadHandler) WorldLoadHandler.getInstance()).onWorldLoadPost(this.worldBefore, worldClientIn, (Minecraft)(Object) this);
+        ((ClientWorldChangeEventDispatcher) ClientWorldChangeEventDispatcher.INSTANCE).onWorldLoadPost(this.worldBefore, worldClientIn, (Minecraft)(Object) this);
         this.worldBefore = null;
     }
 }

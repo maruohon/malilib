@@ -3,8 +3,8 @@ package fi.dy.masa.malilib;
 import java.util.Collections;
 import java.util.List;
 import com.google.common.collect.ImmutableList;
-import fi.dy.masa.malilib.config.gui.ConfigGuiTabBase;
-import fi.dy.masa.malilib.gui.GuiConfigsBase;
+import fi.dy.masa.malilib.gui.config.ConfigGuiTabBase;
+import fi.dy.masa.malilib.gui.config.GuiConfigsBase;
 import fi.dy.masa.malilib.gui.interfaces.IConfigGuiTab;
 
 public class MaLiLibConfigGui extends GuiConfigsBase

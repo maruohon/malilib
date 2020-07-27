@@ -3,10 +3,10 @@ package fi.dy.masa.malilib.config;
 import java.util.List;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonObject;
-import fi.dy.masa.malilib.config.options.ConfigTypeWrapper;
-import fi.dy.masa.malilib.config.options.IConfigBase;
-import fi.dy.masa.malilib.config.options.IConfigValue;
-import fi.dy.masa.malilib.hotkeys.IHotkey;
+import fi.dy.masa.malilib.config.option.ConfigTypeWrapper;
+import fi.dy.masa.malilib.config.option.IConfigBase;
+import fi.dy.masa.malilib.config.option.IConfigValue;
+import fi.dy.masa.malilib.input.IHotkey;
 import fi.dy.masa.malilib.util.JsonUtils;
 
 public class ConfigUtils
@@ -41,7 +41,7 @@ public class ConfigUtils
 
                 if (objHotkeys.has(name))
                 {
-                    hotkey.getKeybind().setValueFromJsonElement(objHotkeys.get(name), name);
+                    hotkey.getKeyBind().setValueFromJsonElement(objHotkeys.get(name), name);
                 }
             }
         }
@@ -64,7 +64,7 @@ public class ConfigUtils
 
         for (IHotkey hotkey : hotkeys)
         {
-            objHotkeys.add(hotkey.getName(), hotkey.getKeybind().getAsJsonElement());
+            objHotkeys.add(hotkey.getName(), hotkey.getKeyBind().getAsJsonElement());
         }
     }
 

@@ -15,6 +15,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import fi.dy.masa.malilib.util.position.LayerRange;
 
 public class RayTraceUtils
 {
@@ -92,8 +93,8 @@ public class RayTraceUtils
      */
     @Nullable
     public static RayTraceResult rayTraceBlocks(World world, Vec3d start, Vec3d end,
-            RayTraceFluidHandling fluidMode, boolean ignoreNonCollidable,
-            boolean returnLastUncollidableBlock, @Nullable LayerRange layerRange, int maxSteps)
+                                                RayTraceFluidHandling fluidMode, boolean ignoreNonCollidable,
+                                                boolean returnLastUncollidableBlock, @Nullable LayerRange layerRange, int maxSteps)
     {
         return rayTraceBlocks(world, start, end, RayTraceUtils::checkRayCollision, fluidMode, BLOCK_FILTER_ANY,
                 ignoreNonCollidable, returnLastUncollidableBlock, layerRange, maxSteps);

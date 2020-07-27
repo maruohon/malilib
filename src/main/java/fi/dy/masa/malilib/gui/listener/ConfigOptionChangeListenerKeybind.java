@@ -5,16 +5,16 @@ import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.ConfigButtonKeybind;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.gui.interfaces.IKeybindConfigGui;
-import fi.dy.masa.malilib.hotkeys.IKeybind;
+import fi.dy.masa.malilib.input.IKeyBind;
 
 public class ConfigOptionChangeListenerKeybind implements IButtonActionListener
 {
     private final IKeybindConfigGui host;
     private final ConfigButtonKeybind buttonHotkey;
     private final ButtonGeneric button;
-    private final IKeybind keybind;
+    private final IKeyBind keybind;
 
-    public ConfigOptionChangeListenerKeybind(IKeybind keybind, ConfigButtonKeybind buttonHotkey, ButtonGeneric button, IKeybindConfigGui host)
+    public ConfigOptionChangeListenerKeybind(IKeyBind keybind, ConfigButtonKeybind buttonHotkey, ButtonGeneric button, IKeybindConfigGui host)
     {
         this.buttonHotkey = buttonHotkey;
         this.button = button;

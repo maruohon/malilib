@@ -7,7 +7,7 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.gui.GuiBase;
-import fi.dy.masa.malilib.gui.widgets.WidgetBase;
+import fi.dy.masa.malilib.gui.widget.WidgetBase;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public abstract class ButtonBase extends WidgetBase

@@ -5,22 +5,22 @@ import java.util.List;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.input.Keyboard;
-import fi.dy.masa.malilib.event.InputEventHandler;
+import fi.dy.masa.malilib.event.dispatch.InputEventDispatcher;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.interfaces.IKeybindConfigGui;
-import fi.dy.masa.malilib.hotkeys.IHotkey;
-import fi.dy.masa.malilib.hotkeys.IKeybind;
-import fi.dy.masa.malilib.hotkeys.KeybindCategory;
+import fi.dy.masa.malilib.input.IHotkey;
+import fi.dy.masa.malilib.input.IKeyBind;
+import fi.dy.masa.malilib.input.KeyBindCategory;
 
 public class ConfigButtonKeybind extends ButtonGeneric
 {
     @Nullable protected final IKeybindConfigGui host;
-    protected final IKeybind keybind;
+    protected final IKeyBind keybind;
     protected final List<String> overlapInfo = new ArrayList<>();
     protected boolean selected;
     protected boolean firstKey;
 
-    public ConfigButtonKeybind(int x, int y, int width, int height, IKeybind keybind, @Nullable IKeybindConfigGui host)
+    public ConfigButtonKeybind(int x, int y, int width, int height, IKeyBind keybind, @Nullable IKeybindConfigGui host)
     {
         super(x, y, width, height, "");
 
@@ -141,17 +141,17 @@ public class ConfigButtonKeybind extends ButtonGeneric
 
     protected void updateConflicts()
     {
-        List<KeybindCategory> categories = InputEventHandler.getKeybindManager().getKeybindCategories();
+        List<KeyBindCategory> categories = InputEventDispatcher.getKeyBindManager().getKeyBindCategories();
         List<IHotkey> overlaps = new ArrayList<>();
         this.overlapInfo.clear();
 
-        for (KeybindCategory category : categories)
+        for (KeyBindCategory category : categories)
         {
             List<? extends IHotkey> hotkeys = category.getHotkeys();
 
             for (IHotkey hotkey : hotkeys)
             {
-                if (this.keybind.overlaps(hotkey.getKeybind()))
+                if (this.keybind.overlaps(hotkey.getKeyBind()))
                 {
                     overlaps.add(hotkey);
                 }
@@ -165,11 +165,11 @@ public class ConfigButtonKeybind extends ButtonGeneric
                 }
 
                 this.overlapInfo.add(category.getModName());
-                this.overlapInfo.add(" > " + category.getCategory());
+                this.overlapInfo.add(" > " + category.getCategoryName());
 
                 for (IHotkey overlap : overlaps)
                 {
-                    String key = " [ " + GuiBase.TXT_GOLD + overlap.getKeybind().getKeysDisplayString() + GuiBase.TXT_RST + " ]";
+                    String key = " [ " + GuiBase.TXT_GOLD + overlap.getKeyBind().getKeysDisplayString() + GuiBase.TXT_RST + " ]";
                     this.overlapInfo.add("    - " + overlap.getName() + key);
                 }
 

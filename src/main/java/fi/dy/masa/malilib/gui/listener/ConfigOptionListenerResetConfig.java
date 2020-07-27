@@ -1,12 +1,12 @@
 package fi.dy.masa.malilib.gui.listener;
 
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.config.options.IConfigResettable;
-import fi.dy.masa.malilib.config.options.IStringRepresentable;
+import fi.dy.masa.malilib.config.option.IConfigResettable;
+import fi.dy.masa.malilib.config.option.IStringRepresentable;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
-import fi.dy.masa.malilib.gui.widgets.WidgetTextFieldBase;
+import fi.dy.masa.malilib.gui.widget.WidgetTextFieldBase;
 
 public class ConfigOptionListenerResetConfig implements IButtonActionListener
 {

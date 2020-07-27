@@ -6,14 +6,9 @@ import javax.annotation.Nullable;
 
 public class ConfigManager implements IConfigManager
 {
-    private static final ConfigManager INSTANCE = new ConfigManager();
+    public static final IConfigManager INSTANCE = new ConfigManager();
 
     private final Map<String, IConfigHandler> configHandlers = new HashMap<>();
-
-    public static IConfigManager getInstance()
-    {
-        return INSTANCE;
-    }
 
     @Override
     public void registerConfigHandler(String modId, IConfigHandler handler)

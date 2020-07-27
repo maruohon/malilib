@@ -14,17 +14,17 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import fi.dy.masa.malilib.MaLiLibConfigs;
-import fi.dy.masa.malilib.config.options.IConfigBase;
+import fi.dy.masa.malilib.config.option.IConfigBase;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
-import fi.dy.masa.malilib.gui.interfaces.IMessageConsumer;
 import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
-import fi.dy.masa.malilib.gui.util.Message.MessageType;
-import fi.dy.masa.malilib.gui.widgets.WidgetBase;
-import fi.dy.masa.malilib.gui.widgets.WidgetLabel;
-import fi.dy.masa.malilib.gui.widgets.WidgetTextFieldBase;
-import fi.dy.masa.malilib.interfaces.IStringConsumer;
+import fi.dy.masa.malilib.gui.widget.WidgetBase;
+import fi.dy.masa.malilib.gui.widget.WidgetLabel;
+import fi.dy.masa.malilib.gui.widget.WidgetTextFieldBase;
+import fi.dy.masa.malilib.util.consumer.IStringConsumer;
+import fi.dy.masa.malilib.message.IMessageConsumer;
+import fi.dy.masa.malilib.message.MessageType;
 import fi.dy.masa.malilib.render.MessageRenderer;
 import fi.dy.masa.malilib.render.RenderUtils;
 
@@ -383,9 +383,10 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
     }
 
     @Override
-    public void setString(String string)
+    public boolean consumeString(String string)
     {
         this.messageRenderer.addMessage(3000, string);
+        return true;
     }
 
     @Override

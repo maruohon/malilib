@@ -6,6 +6,7 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.Nullable;
+import fi.dy.masa.malilib.util.data.LeftRight;
 
 public class StringUtils
 {

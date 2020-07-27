@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.gui;
 
 import net.minecraft.util.EnumFacing;
-import fi.dy.masa.malilib.config.values.LayerMode;
+import fi.dy.masa.malilib.config.value.LayerMode;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.ButtonOnOff;
@@ -10,11 +10,11 @@ import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
 import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
 import fi.dy.masa.malilib.gui.listener.TextFieldListenerInteger;
-import fi.dy.masa.malilib.gui.util.GuiIconBase;
-import fi.dy.masa.malilib.gui.widgets.WidgetCheckBox;
-import fi.dy.masa.malilib.gui.widgets.WidgetTextFieldBase;
-import fi.dy.masa.malilib.gui.widgets.WidgetTextFieldInteger;
-import fi.dy.masa.malilib.util.LayerRange;
+import fi.dy.masa.malilib.gui.util.BaseGuiIcon;
+import fi.dy.masa.malilib.gui.widget.WidgetCheckBox;
+import fi.dy.masa.malilib.gui.widget.WidgetTextFieldBase;
+import fi.dy.masa.malilib.gui.widget.WidgetTextFieldInteger;
+import fi.dy.masa.malilib.util.position.LayerRange;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public abstract class GuiRenderLayerEditBase extends GuiBase
@@ -28,7 +28,7 @@ public abstract class GuiRenderLayerEditBase extends GuiBase
 
     protected IGuiIcon getValueAdjustButtonIcon()
     {
-        return GuiIconBase.BTN_PLUSMINUS_16;
+        return BaseGuiIcon.BTN_PLUSMINUS_16;
     }
 
     protected void createLayerEditControls(int x, int y, LayerRange layerRange)

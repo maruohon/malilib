@@ -19,6 +19,7 @@ malilib.error.file_rename.rename_failed=Failed to rename the file '%s' to '%s'
 malilib.error.illegal_characters_in_file_name=Invalid characters in the given file name '%s'.\nFor example slashes are not allowed, and on Windows also\nmany other special characters are not valid for file names!
 malilib.error.invalid_directory=Invalid directory name '%s'
 malilib.error.invalid_item_blacklist_entry=Invalid item name in a black- or whitelist: '%s'
+malilib.error.invalid_registry_name=Invalid registry name in a black- or whitelist: '%s'
 
 malilib.error.textfield.invalid_value_floating_point_number='%s' is not a floating point number
 malilib.error.textfield.invalid_value_int='%s' is not an integer number

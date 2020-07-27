@@ -6,12 +6,12 @@ import org.lwjgl.input.Keyboard;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.config.ConfigManager;
-import fi.dy.masa.malilib.config.options.IConfigStringList;
+import fi.dy.masa.malilib.config.option.IConfigStringList;
 import fi.dy.masa.malilib.gui.interfaces.IConfigGui;
 import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
-import fi.dy.masa.malilib.gui.widgets.WidgetListStringListEdit;
-import fi.dy.masa.malilib.gui.widgets.WidgetStringListEditEntry;
+import fi.dy.masa.malilib.gui.widget.WidgetListStringListEdit;
+import fi.dy.masa.malilib.gui.widget.WidgetStringListEditEntry;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 
@@ -119,7 +119,7 @@ public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEditE
         if (this.getListWidget().wereConfigsModified())
         {
             this.getListWidget().applyPendingModifications();
-            ConfigManager.getInstance().onConfigsChanged(this.configGui.getModId());
+            ConfigManager.INSTANCE.onConfigsChanged(this.configGui.getModId());
         }
 
         super.onGuiClosed();

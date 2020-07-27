@@ -21,6 +21,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.gui.GuiBase;
+import fi.dy.masa.malilib.util.data.Constants;
 
 public class BlockUtils
 {

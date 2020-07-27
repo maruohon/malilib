@@ -6,11 +6,11 @@ import javax.annotation.Nullable;
 import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
-import fi.dy.masa.malilib.gui.interfaces.IMessageConsumer;
-import fi.dy.masa.malilib.gui.util.Message.MessageType;
-import fi.dy.masa.malilib.gui.widgets.WidgetLabel;
-import fi.dy.masa.malilib.interfaces.ICompletionListener;
-import fi.dy.masa.malilib.interfaces.IConfirmationListener;
+import fi.dy.masa.malilib.message.IMessageConsumer;
+import fi.dy.masa.malilib.message.MessageType;
+import fi.dy.masa.malilib.gui.widget.WidgetLabel;
+import fi.dy.masa.malilib.listener.ICompletionListener;
+import fi.dy.masa.malilib.listener.IConfirmationListener;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class GuiConfirmAction extends GuiDialogBase implements ICompletionListener

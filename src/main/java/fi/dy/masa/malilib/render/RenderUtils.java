@@ -35,13 +35,14 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraft.world.storage.MapData;
-import fi.dy.masa.malilib.config.values.HudAlignment;
+import fi.dy.masa.malilib.config.value.HudAlignment;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.interfaces.IBackgroundRenderer;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
-import fi.dy.masa.malilib.util.Color4f;
-import fi.dy.masa.malilib.util.IntBoundingBox;
-import fi.dy.masa.malilib.util.InventoryUtils;
+import fi.dy.masa.malilib.render.overlay.InventoryOverlay;
+import fi.dy.masa.malilib.util.data.Color4f;
+import fi.dy.masa.malilib.util.data.IntBoundingBox;
+import fi.dy.masa.malilib.util.inventory.InventoryUtils;
 import fi.dy.masa.malilib.util.PositionUtils;
 import fi.dy.masa.malilib.util.PositionUtils.HitPart;
 
@@ -1219,7 +1220,7 @@ public class RenderUtils
             GlStateManager.enableDepth();
             GlStateManager.enableRescaleNormal();
 
-            IInventory inv = fi.dy.masa.malilib.util.InventoryUtils.getAsInventory(items);
+            IInventory inv = InventoryUtils.getAsInventory(items);
             InventoryOverlay.renderInventoryStacks(type, inv, x + props.slotOffsetX, y + props.slotOffsetY, z + 1, props.slotsPerRow, 0, -1, mc());
 
             GlStateManager.disableDepth();

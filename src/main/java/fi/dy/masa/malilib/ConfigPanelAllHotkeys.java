@@ -3,13 +3,13 @@ package fi.dy.masa.malilib;
 import java.util.List;
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.config.ConfigManager;
-import fi.dy.masa.malilib.config.gui.GuiModConfigs;
-import fi.dy.masa.malilib.event.InputEventHandler;
+import fi.dy.masa.malilib.gui.config.GuiModConfigs;
+import fi.dy.masa.malilib.event.dispatch.InputEventDispatcher;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.GuiListBase;
 import fi.dy.masa.malilib.gui.interfaces.IConfigInfoProvider;
-import fi.dy.masa.malilib.hotkeys.IHotkey;
-import fi.dy.masa.malilib.hotkeys.KeybindCategory;
+import fi.dy.masa.malilib.input.IHotkey;
+import fi.dy.masa.malilib.input.KeyBindCategory;
 
 public class ConfigPanelAllHotkeys extends GuiModConfigs
 {
@@ -22,14 +22,14 @@ public class ConfigPanelAllHotkeys extends GuiModConfigs
 
     public static List<ConfigOptionWrapper> createWrappers()
     {
-        List<KeybindCategory> categories = InputEventHandler.getKeybindManager().getKeybindCategories();
+        List<KeyBindCategory> categories = InputEventDispatcher.getKeyBindManager().getKeyBindCategories();
         ImmutableList.Builder<ConfigOptionWrapper> builder = ImmutableList.builder();
         boolean first = true;
 
-        for (KeybindCategory category : categories)
+        for (KeyBindCategory category : categories)
         {
             // Category header
-            String header = category.getModName() + " - " + category.getCategory();
+            String header = category.getModName() + " - " + category.getCategoryName();
 
             if (first == false)
             {
@@ -42,7 +42,7 @@ public class ConfigPanelAllHotkeys extends GuiModConfigs
 
             for (IHotkey hotkey : category.getHotkeys())
             {
-                String prefix = GuiBase.TXT_YELLOW + category.getModName() + " -> " + category.getCategory() + " -> " + hotkey.getName() + "\n";
+                String prefix = GuiBase.TXT_YELLOW + category.getModName() + " -> " + category.getCategoryName() + " -> " + hotkey.getName() + "\n";
                 builder.add(new ConfigOptionWrapper(prefix, hotkey));
             }
         }
@@ -53,8 +53,8 @@ public class ConfigPanelAllHotkeys extends GuiModConfigs
     @Override
     protected void onSettingsChanged()
     {
-        ((ConfigManager) ConfigManager.getInstance()).saveAllConfigs();
-        InputEventHandler.getKeybindManager().updateUsedKeys();
+        ((ConfigManager) ConfigManager.INSTANCE).saveAllConfigs();
+        InputEventDispatcher.getKeyBindManager().updateUsedKeys();
     }
 
     @Override

@@ -6,7 +6,7 @@ import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
-import fi.dy.masa.malilib.gui.widgets.WidgetTextFieldBase;
+import fi.dy.masa.malilib.gui.widget.WidgetTextFieldBase;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public abstract class GuiTextInputBase extends GuiDialogBase
@@ -120,7 +120,7 @@ public abstract class GuiTextInputBase extends GuiDialogBase
 
         private final String labelKey;
 
-        private ButtonType(String labelKey)
+        ButtonType(String labelKey)
         {
             this.labelKey = labelKey;
         }

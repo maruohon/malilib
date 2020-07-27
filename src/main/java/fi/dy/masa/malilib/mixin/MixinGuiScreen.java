@@ -8,13 +8,13 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import fi.dy.masa.malilib.command.ClientCommandHandler;
-import fi.dy.masa.malilib.event.InputEventHandler;
-import fi.dy.masa.malilib.event.RenderEventHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.item.ItemStack;
+import fi.dy.masa.malilib.command.ClientCommandHandler;
+import fi.dy.masa.malilib.event.dispatch.InputEventDispatcher;
+import fi.dy.masa.malilib.event.dispatch.RenderEventDispatcher;
 
 @Mixin(GuiScreen.class)
 public abstract class MixinGuiScreen extends Gui
@@ -25,7 +25,7 @@ public abstract class MixinGuiScreen extends Gui
     @Inject(method = "renderToolTip", at = @At("RETURN"))
     private void onRenderToolTip(ItemStack stack, int x, int y, CallbackInfo ci)
     {
-        ((RenderEventHandler) RenderEventHandler.getInstance()).onRenderTooltipLast(stack, x, y);
+        ((RenderEventDispatcher) RenderEventDispatcher.INSTANCE).onRenderTooltipPost(stack, x, y);
     }
 
     @Inject(method = "sendChatMessage(Ljava/lang/String;Z)V", at = @At(
@@ -44,14 +44,14 @@ public abstract class MixinGuiScreen extends Gui
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiScreen;handleKeyboardInput()V"))
     private void onKeyboardInputGui(CallbackInfo ci) throws IOException
     {
-        InputEventHandler handler = (InputEventHandler) InputEventHandler.getInputManager();
+        InputEventDispatcher handler = (InputEventDispatcher) InputEventDispatcher.getInputManager();
 
-        if (handler.onKeyInput(true))
+        if (handler.onKeyInput())
         {
             // Use up the rest of the events
             while (Keyboard.next())
             {
-                if (handler.onKeyInput(true) == false)
+                if (handler.onKeyInput() == false)
                 {
                     ((GuiScreen) (Object) this).handleKeyboardInput();
                 }
@@ -65,14 +65,14 @@ public abstract class MixinGuiScreen extends Gui
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiScreen;handleMouseInput()V"))
     private void onMouseInputGui(CallbackInfo ci) throws IOException
     {
-        InputEventHandler handler = (InputEventHandler) InputEventHandler.getInputManager();
+        InputEventDispatcher handler = (InputEventDispatcher) InputEventDispatcher.getInputManager();
 
-        if (handler.onMouseInput(true))
+        if (handler.onMouseInput())
         {
             // Use up the rest of the events
             while (Mouse.next())
             {
-                if (handler.onMouseInput(true) == false)
+                if (handler.onMouseInput() == false)
                 {
                     ((GuiScreen) (Object) this).handleMouseInput();
                 }
@@ -83,7 +83,7 @@ public abstract class MixinGuiScreen extends Gui
             // and these events would then leak to the non-GUI handling code in Minecraft#runTick())
             while (Keyboard.next())
             {
-                if (handler.onKeyInput(true) == false)
+                if (handler.onKeyInput() == false)
                 {
                     ((GuiScreen) (Object) this).handleKeyboardInput();
                 }

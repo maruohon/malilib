@@ -5,15 +5,15 @@ import java.util.List;
 import java.util.Map;
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.config.IConfigHandler;
-import fi.dy.masa.malilib.config.options.ConfigBoolean;
-import fi.dy.masa.malilib.config.options.ConfigHotkey;
-import fi.dy.masa.malilib.config.options.ConfigInteger;
-import fi.dy.masa.malilib.config.options.ConfigOptionList;
-import fi.dy.masa.malilib.config.options.IConfigBase;
-import fi.dy.masa.malilib.config.values.HudAlignment;
-import fi.dy.masa.malilib.config.values.KeybindDisplayMode;
-import fi.dy.masa.malilib.hotkeys.KeyAction;
-import fi.dy.masa.malilib.hotkeys.KeybindSettings;
+import fi.dy.masa.malilib.config.option.ConfigBoolean;
+import fi.dy.masa.malilib.config.option.ConfigHotkey;
+import fi.dy.masa.malilib.config.option.ConfigInteger;
+import fi.dy.masa.malilib.config.option.ConfigOptionList;
+import fi.dy.masa.malilib.config.option.IConfigBase;
+import fi.dy.masa.malilib.config.value.HudAlignment;
+import fi.dy.masa.malilib.config.value.KeybindDisplayMode;
+import fi.dy.masa.malilib.input.KeyAction;
+import fi.dy.masa.malilib.input.KeyBindSettings;
 
 public class MaLiLibConfigs implements IConfigHandler
 {
@@ -41,7 +41,7 @@ public class MaLiLibConfigs implements IConfigHandler
 
     public static class Debug
     {
-        public static final KeybindSettings DBG_KS = KeybindSettings.create(KeybindSettings.Context.GUI, KeyAction.PRESS, true, false, false, false, true);
+        public static final KeyBindSettings DBG_KS = KeyBindSettings.create(KeyBindSettings.Context.GUI, KeyAction.PRESS, true, false, false, false, true);
 
         public static final ConfigBoolean GUI_DEBUG                 = new ConfigBoolean("guiDebug", false, "When enabled, all GUI widgets will draw outlines and\nwhen hovered their position and dimension and widget class name");
         public static final ConfigBoolean GUI_DEBUG_ALL             = new ConfigBoolean("guiDebugAll", true, "If true, then all widgets will render the debug outline,\notherwise only the hovered widget will render it");

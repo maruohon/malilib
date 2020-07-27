@@ -3,9 +3,9 @@ package fi.dy.masa.malilib.render;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.renderer.GlStateManager;
-import fi.dy.masa.malilib.gui.util.Message;
-import fi.dy.masa.malilib.gui.util.Message.MessageType;
-import fi.dy.masa.malilib.gui.widgets.WidgetBackground;
+import fi.dy.masa.malilib.gui.widget.WidgetBackground;
+import fi.dy.masa.malilib.message.Message;
+import fi.dy.masa.malilib.message.MessageType;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class MessageRenderer extends WidgetBackground
@@ -30,7 +30,7 @@ public class MessageRenderer extends WidgetBackground
     /**
      * Sets whether the rendered box should get centered to the given x and y coordinates, or expand
      * to a given direction from that point.
-     * If centeredV is false, then the value set in {@link setExpandUp()} determines whether the box expands up or down.
+     * If centeredV is false, then the value set in {@link #setExpandUp(boolean)} determines whether the box expands up or down.
      * @param centeredH
      * @param centeredV
      */
@@ -105,9 +105,9 @@ public class MessageRenderer extends WidgetBackground
             int height = 0;
             int lineSpacing = this.getLineSpacing();
 
-            for (int i = 0; i < messageCount; ++i)
+            for (Message message : this.messages)
             {
-                height += this.messages.get(i).getLineCount() * lineSpacing + 2;
+                height += message.getLineCount() * lineSpacing + 2;
             }
 
             return height - (lineSpacing - StringUtils.getFontHeight()) - 2;

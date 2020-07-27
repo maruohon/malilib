@@ -1,8 +1,8 @@
 package fi.dy.masa.malilib.gui.interfaces;
 
 import java.util.List;
-import fi.dy.masa.malilib.config.options.IConfigBase;
-import fi.dy.masa.malilib.gui.GuiConfigsBase;
+import fi.dy.masa.malilib.config.option.IConfigBase;
+import fi.dy.masa.malilib.gui.config.GuiConfigsBase;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 
 public interface IConfigGuiTab

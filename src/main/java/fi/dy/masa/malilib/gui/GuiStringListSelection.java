@@ -1,17 +1,17 @@
 package fi.dy.masa.malilib.gui;
 
 import java.util.Collection;
+import java.util.List;
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.gui.interfaces.IStringListConsumer;
-import fi.dy.masa.malilib.gui.widgets.WidgetListStringSelection;
-import fi.dy.masa.malilib.gui.widgets.WidgetStringListEntry;
-import fi.dy.masa.malilib.interfaces.IStringListProvider;
+import fi.dy.masa.malilib.gui.widget.WidgetListStringSelection;
+import fi.dy.masa.malilib.gui.widget.WidgetStringListEntry;
 import fi.dy.masa.malilib.util.StringUtils;
 
-public class GuiStringListSelection extends GuiListBase<String, WidgetStringListEntry, WidgetListStringSelection> implements IStringListProvider
+public class GuiStringListSelection extends GuiListBase<String, WidgetStringListEntry, WidgetListStringSelection>
 {
     protected final ImmutableList<String> strings;
     protected final IStringListConsumer consumer;
@@ -36,8 +36,7 @@ public class GuiStringListSelection extends GuiListBase<String, WidgetStringList
         return this.height - 60;
     }
 
-    @Override
-    public Collection<String> getStrings()
+    public List<String> getStrings()
     {
         return this.strings;
     }
@@ -45,7 +44,7 @@ public class GuiStringListSelection extends GuiListBase<String, WidgetStringList
     @Override
     protected WidgetListStringSelection createListWidget(int listX, int listY)
     {
-        return new WidgetListStringSelection(listX, listY, this.getBrowserWidth(), this.getBrowserHeight(), this);
+        return new WidgetListStringSelection(listX, listY, this.getBrowserWidth(), this.getBrowserHeight(), this::getStrings);
     }
 
     @Override

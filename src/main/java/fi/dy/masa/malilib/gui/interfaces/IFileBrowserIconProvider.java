@@ -2,9 +2,9 @@ package fi.dy.masa.malilib.gui.interfaces;
 
 import java.io.File;
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.gui.util.GuiIconBase;
-import fi.dy.masa.malilib.gui.widgets.WidgetFileBrowserBase.DirectoryEntry;
-import fi.dy.masa.malilib.gui.widgets.WidgetFileBrowserBase.DirectoryEntryType;
+import fi.dy.masa.malilib.gui.util.BaseGuiIcon;
+import fi.dy.masa.malilib.gui.widget.WidgetFileBrowserBase.DirectoryEntry;
+import fi.dy.masa.malilib.gui.widget.WidgetFileBrowserBase.DirectoryEntryType;
 
 public interface IFileBrowserIconProvider
 {
@@ -16,18 +16,18 @@ public interface IFileBrowserIconProvider
     {
         switch (type)
         {
-            case ROOT:                      return GuiIconBase.FILE_BROWSER_DIR_ROOT;
-            case UP:                        return GuiIconBase.FILE_BROWSER_DIR_UP;
-            case CREATE_DIR:                return GuiIconBase.FILE_BROWSER_CREATE_DIR;
-            case SEARCH:                    return GuiIconBase.SEARCH;
-            case DIRECTORY:                 return GuiIconBase.FILE_BROWSER_DIR;
-            case NAVBAR_ROOT_PATH_CLOSED:   return GuiIconBase.MEDIUM_ARROW_LEFT;
-            case NAVBAR_ROOT_PATH_OPEN:     return GuiIconBase.SMALL_ARROW_DOWN;
-            case NAVBAR_SUBDIRS_CLOSED:     return GuiIconBase.SMALL_ARROW_RIGHT;
-            case NAVBAR_SUBDIRS_OPEN:       return GuiIconBase.SMALL_ARROW_DOWN;
+            case ROOT:                      return BaseGuiIcon.FILE_BROWSER_DIR_ROOT;
+            case UP:                        return BaseGuiIcon.FILE_BROWSER_DIR_UP;
+            case CREATE_DIR:                return BaseGuiIcon.FILE_BROWSER_CREATE_DIR;
+            case SEARCH:                    return BaseGuiIcon.SEARCH;
+            case DIRECTORY:                 return BaseGuiIcon.FILE_BROWSER_DIR;
+            case NAVBAR_ROOT_PATH_CLOSED:   return BaseGuiIcon.MEDIUM_ARROW_LEFT;
+            case NAVBAR_SUBDIRS_CLOSED:     return BaseGuiIcon.SMALL_ARROW_RIGHT;
+            case NAVBAR_ROOT_PATH_OPEN:
+            case NAVBAR_SUBDIRS_OPEN:       return BaseGuiIcon.SMALL_ARROW_DOWN;
         }
 
-        return GuiIconBase.EMPTY;
+        return BaseGuiIcon.EMPTY;
     }
 
     /**
@@ -43,8 +43,9 @@ public interface IFileBrowserIconProvider
 
     /**
      * Returns the icon that should be used for the given directory entry.
-     * Usually this would just call either {@link getIconDirectory()} or {@link getIconForFile(File file)}
-     * based on whether the entry is a directory or a file.
+     * Usually this would just call either {@link #getIcon(FileBrowserIconType)} with
+     * the <b>{@code FileBrowserIconType.DIRECTORY}</b> argument if the entry is a directory,
+     * or {@link #getIconForFile(File)} if the entry is a file.
      * @param entry
      * @return
      */
@@ -78,7 +79,7 @@ public interface IFileBrowserIconProvider
         return 0;
     }
 
-    public enum FileBrowserIconType
+    enum FileBrowserIconType
     {
         ROOT,
         UP,

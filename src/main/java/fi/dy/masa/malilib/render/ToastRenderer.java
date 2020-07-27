@@ -9,8 +9,8 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.util.math.MathHelper;
-import fi.dy.masa.malilib.config.values.HudAlignment;
-import fi.dy.masa.malilib.gui.widgets.WidgetToast;
+import fi.dy.masa.malilib.config.value.HudAlignment;
+import fi.dy.masa.malilib.gui.widget.WidgetToast;
 
 public class ToastRenderer
 {
