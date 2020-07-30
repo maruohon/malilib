@@ -1,13 +1,13 @@
 package fi.dy.masa.malilib.input;
 
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.config.option.IConfigBoolean;
+import fi.dy.masa.malilib.config.option.BooleanConfig;
 
 public class KeyCallbackAdjustable implements IHotkeyCallback
 {
     protected static boolean valueChanged;
 
-    @Nullable protected final IConfigBoolean config;
+    @Nullable protected final BooleanConfig config;
     @Nullable protected final IHotkeyCallback callback;
 
     public static void setValueChanged()
@@ -25,7 +25,7 @@ public class KeyCallbackAdjustable implements IHotkeyCallback
      * @param config
      * @param callback
      */
-    public KeyCallbackAdjustable(@Nullable IConfigBoolean config, @Nullable IHotkeyCallback callback)
+    public KeyCallbackAdjustable(@Nullable BooleanConfig config, @Nullable IHotkeyCallback callback)
     {
         this.config = config;
         this.callback = callback;

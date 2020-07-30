@@ -1,18 +1,18 @@
 package fi.dy.masa.malilib.gui.callback;
 
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.config.option.IConfigDouble;
+import fi.dy.masa.malilib.config.option.DoubleConfig;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.interfaces.ISliderCallbackSteps;
 
 public class SliderCallbackDouble implements ISliderCallbackSteps
 {
-    protected final IConfigDouble config;
+    protected final DoubleConfig config;
     protected final ButtonBase resetButton;
     protected double stepSize = 0.0009765625; // 1 / 1024
     protected int maxSteps = Integer.MAX_VALUE;
 
-    public SliderCallbackDouble(IConfigDouble config, @Nullable ButtonBase resetButton)
+    public SliderCallbackDouble(DoubleConfig config, @Nullable ButtonBase resetButton)
     {
         this.config = config;
         this.resetButton = resetButton;

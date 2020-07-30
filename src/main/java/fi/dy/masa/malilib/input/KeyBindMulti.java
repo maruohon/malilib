@@ -27,14 +27,14 @@ import fi.dy.masa.malilib.util.StringUtils;
 
 public class KeyBindMulti implements IKeyBind
 {
-    private static List<Integer> pressedKeys = new ArrayList<>();
+    private static final List<Integer> PRESSED_KEYS = new ArrayList<>();
     private static int triggeredCount;
 
     private final String name;
     private final String defaultStorageString;
     private final KeyBindSettings defaultSettings;
+    private final List<Integer> keyCodes = new ArrayList<>(4);
     private String modName = "";
-    private List<Integer> keyCodes = new ArrayList<>(4);
     private KeyBindSettings settings;
     private String lastSavedStorageString;
     private KeyBindSettings lastSavedSettings;
@@ -124,18 +124,16 @@ public class KeyBindMulti implements IKeyBind
         boolean allowExtraKeys = this.settings.getAllowExtraKeys();
         boolean allowOutOfOrder = this.settings.isOrderSensitive() == false;
         boolean pressedLast = this.pressed;
-        final int sizePressed = pressedKeys.size();
+        final int sizePressed = PRESSED_KEYS.size();
         final int sizeRequired = this.keyCodes.size();
 
         if (sizePressed >= sizeRequired && (allowExtraKeys || sizePressed == sizeRequired))
         {
             int keyCodeIndex = 0;
-            this.pressed = pressedKeys.containsAll(this.keyCodes);
+            this.pressed = PRESSED_KEYS.containsAll(this.keyCodes);
 
-            for (int i = 0; i < sizePressed; ++i)
+            for (Integer keyCodeObj : PRESSED_KEYS)
             {
-                Integer keyCodeObj = pressedKeys.get(i);
-
                 if (this.keyCodes.get(keyCodeIndex).equals(keyCodeObj))
                 {
                     // Fully matched keybind
@@ -145,7 +143,7 @@ public class KeyBindMulti implements IKeyBind
                     }
                 }
                 else if ((allowOutOfOrder == false && (keyCodeIndex > 0 || sizePressed == sizeRequired)) ||
-                         (this.keyCodes.contains(keyCodeObj) == false && allowExtraKeys == false))
+                                 (this.keyCodes.contains(keyCodeObj) == false && allowExtraKeys == false))
                 {
                     /*
                     System.out.printf("km fail: key: %s, ae: %s, aoo: %s, cont: %s, keys: %s, pressed: %s, triggeredCount: %d\n",
@@ -561,19 +559,19 @@ public class KeyBindMulti implements IKeyBind
 
         if (state)
         {
-            if (pressedKeys.contains(valObj) == false)
+            if (PRESSED_KEYS.contains(valObj) == false)
             {
                 Collection<Integer> ignored = MaLiLibConfigs.Generic.IGNORED_KEYS.getKeyBind().getKeys();
 
                 if (ignored.size() == 0 || ignored.contains(valObj) == false)
                 {
-                    pressedKeys.add(valObj);
+                    PRESSED_KEYS.add(valObj);
                 }
             }
         }
         else
         {
-            pressedKeys.remove(valObj);
+            PRESSED_KEYS.remove(valObj);
         }
 
         if (MaLiLibConfigs.Debug.KEYBIND_DEBUG.getBooleanValue())
@@ -587,7 +585,7 @@ public class KeyBindMulti implements IKeyBind
      */
     public static void reCheckPressedKeys()
     {
-        Iterator<Integer> iter = pressedKeys.iterator();
+        Iterator<Integer> iter = PRESSED_KEYS.iterator();
 
         while (iter.hasNext())
         {
@@ -600,7 +598,7 @@ public class KeyBindMulti implements IKeyBind
         }
 
         // Clear the triggered count after all keys have been released
-        if (pressedKeys.size() == 0)
+        if (PRESSED_KEYS.size() == 0)
         {
             triggeredCount = 0;
         }
@@ -623,12 +621,12 @@ public class KeyBindMulti implements IKeyBind
 
     public static String getActiveKeysString()
     {
-        if (pressedKeys.isEmpty() == false)
+        if (PRESSED_KEYS.isEmpty() == false)
         {
             StringBuilder sb = new StringBuilder(128);
             int i = 0;
 
-            for (int key : pressedKeys)
+            for (int key : PRESSED_KEYS)
             {
                 if (i > 0)
                 {

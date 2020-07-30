@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.gui.button;
 
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.config.option.IConfigStringList;
+import fi.dy.masa.malilib.config.option.StringListConfig;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.GuiStringListEdit;
 import fi.dy.masa.malilib.gui.interfaces.IConfigGui;
@@ -11,11 +11,11 @@ import fi.dy.masa.malilib.util.StringUtils;
 
 public class ConfigButtonStringList extends ButtonGeneric
 {
-    private final IConfigStringList config;
+    private final StringListConfig config;
     private final IConfigGui configGui;
     @Nullable private final IDialogHandler dialogHandler;
 
-    public ConfigButtonStringList(int x, int y, int width, int height, IConfigStringList config, IConfigGui configGui, @Nullable IDialogHandler dialogHandler)
+    public ConfigButtonStringList(int x, int y, int width, int height, StringListConfig config, IConfigGui configGui, @Nullable IDialogHandler dialogHandler)
     {
         super(x, y, width, height, "");
 

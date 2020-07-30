@@ -3,14 +3,14 @@ package fi.dy.masa.malilib.gui.config;
 import java.util.List;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
-import fi.dy.masa.malilib.config.option.IConfigBase;
+import fi.dy.masa.malilib.config.option.ConfigOption;
 import fi.dy.masa.malilib.gui.interfaces.IConfigGuiTab;
 
 public class GuiModConfigs extends GuiConfigsBase
 {
     protected final List<ConfigOptionWrapper> configWrappers;
 
-    public GuiModConfigs(String modId, List<? extends IConfigBase> configs, String titleKey, Object... args)
+    public GuiModConfigs(String modId, List<? extends ConfigOption> configs, String titleKey, Object... args)
     {
         this(modId, ConfigOptionWrapper.createFor(configs), false, titleKey, args);
     }

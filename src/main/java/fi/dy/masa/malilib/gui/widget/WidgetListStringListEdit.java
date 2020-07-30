@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.gui.widget;
 
-import fi.dy.masa.malilib.config.option.IConfigStringList;
+import fi.dy.masa.malilib.config.option.StringListConfig;
 import fi.dy.masa.malilib.gui.GuiStringListEdit;
 
 public class WidgetListStringListEdit extends WidgetListConfigOptionsBase<String, WidgetStringListEditEntry>
@@ -53,7 +53,7 @@ public class WidgetListStringListEdit extends WidgetListConfigOptionsBase<String
     @Override
     protected WidgetStringListEditEntry createListEntryWidget(int x, int y, int listIndex, boolean isOdd, String entry)
     {
-        IConfigStringList config = this.parent.getConfig();
+        StringListConfig config = this.parent.getConfig();
 
         if (listIndex >= 0 && listIndex < config.getStrings().size())
         {

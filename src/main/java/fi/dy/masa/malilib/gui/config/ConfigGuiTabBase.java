@@ -2,7 +2,7 @@ package fi.dy.masa.malilib.gui.config;
 
 import java.util.List;
 import java.util.function.BiFunction;
-import fi.dy.masa.malilib.config.option.IConfigBase;
+import fi.dy.masa.malilib.config.option.ConfigOption;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.gui.interfaces.IConfigGuiTab;
 import fi.dy.masa.malilib.gui.listener.ButtonListenerConfigGuiTab;
@@ -14,16 +14,16 @@ public class ConfigGuiTabBase implements IConfigGuiTab
     private final String translationKey;
     private final int configWidth;
     private final boolean useKeybindSearch;
-    private final List<? extends IConfigBase> configs;
+    private final List<? extends ConfigOption> configs;
     private final BiFunction<IConfigGuiTab, GuiConfigsBase, IButtonActionListener> listenerFactory;
 
-    public ConfigGuiTabBase(String translationKey, int configWidth, boolean useKeybindSearch, List<? extends IConfigBase> configs)
+    public ConfigGuiTabBase(String translationKey, int configWidth, boolean useKeybindSearch, List<? extends ConfigOption> configs)
     {
         this(translationKey, configWidth, useKeybindSearch, configs, (tab, gui) -> new ButtonListenerConfigGuiTab(tab, gui));
     }
 
     public ConfigGuiTabBase(String translationKey, int configWidth, boolean useKeybindSearch,
-            List<? extends IConfigBase> configs, BiFunction<IConfigGuiTab, GuiConfigsBase, IButtonActionListener> listenerFactory)
+                            List<? extends ConfigOption> configs, BiFunction<IConfigGuiTab, GuiConfigsBase, IButtonActionListener> listenerFactory)
     {
         this.name = translationKey.substring(translationKey.lastIndexOf(".") + 1);
         this.translationKey = translationKey;
@@ -58,7 +58,7 @@ public class ConfigGuiTabBase implements IConfigGuiTab
     }
 
     @Override
-    public List<? extends IConfigBase> getConfigOptions()
+    public List<? extends ConfigOption> getConfigOptions()
     {
         return this.configs;
     }

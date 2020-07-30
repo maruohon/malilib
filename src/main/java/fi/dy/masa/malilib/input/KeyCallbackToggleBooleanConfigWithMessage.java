@@ -1,11 +1,11 @@
 package fi.dy.masa.malilib.input;
 
-import fi.dy.masa.malilib.config.option.IConfigBoolean;
+import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.message.MessageUtils;
 
 public class KeyCallbackToggleBooleanConfigWithMessage extends KeyCallbackToggleBoolean
 {
-    public KeyCallbackToggleBooleanConfigWithMessage(IConfigBoolean config)
+    public KeyCallbackToggleBooleanConfigWithMessage(BooleanConfig config)
     {
         super(config);
     }

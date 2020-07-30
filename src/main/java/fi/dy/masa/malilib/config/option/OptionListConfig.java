@@ -4,21 +4,22 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import fi.dy.masa.malilib.LiteModMaLiLib;
 import fi.dy.masa.malilib.config.ConfigType;
+import fi.dy.masa.malilib.config.value.IConfigOptionListEntry;
 
-public class ConfigBoolean extends ConfigBase<Boolean> implements IConfigBoolean
+public class OptionListConfig<T extends IConfigOptionListEntry<T>> extends BaseConfig<T>
 {
-    private final boolean defaultValue;
-    private boolean value;
-    private boolean lastSavedValue;
+    protected final T defaultValue;
+    protected T value;
+    protected T lastSavedValue;
 
-    public ConfigBoolean(String name, boolean defaultValue, String comment)
+    public OptionListConfig(String name, T defaultValue, String comment)
     {
         this(name, defaultValue, comment, name);
     }
 
-    public ConfigBoolean(String name, boolean defaultValue, String comment, String prettyName)
+    public OptionListConfig(String name, T defaultValue, String comment, String prettyName)
     {
-        super(ConfigType.BOOLEAN, name, comment, prettyName);
+        super(ConfigType.OPTION_LIST, name, comment, prettyName);
 
         this.defaultValue = defaultValue;
         this.value = defaultValue;
@@ -26,22 +27,19 @@ public class ConfigBoolean extends ConfigBase<Boolean> implements IConfigBoolean
         this.cacheSavedValue();
     }
 
-    @Override
-    public boolean getBooleanValue()
+    public T getOptionListValue()
     {
         return this.value;
     }
 
-    @Override
-    public boolean getDefaultBooleanValue()
+    public T getDefaultOptionListValue()
     {
         return this.defaultValue;
     }
 
-    @Override
-    public void setBooleanValue(boolean value)
+    public void setOptionListValue(T value)
     {
-        boolean oldValue = this.value;
+        T oldValue = this.value;
         this.value = value;
 
         if (oldValue != this.value)
@@ -50,16 +48,15 @@ public class ConfigBoolean extends ConfigBase<Boolean> implements IConfigBoolean
         }
     }
 
+    public void cycleValue(boolean forward)
+    {
+        this.setOptionListValue(this.value.cycle(forward));
+    }
+
     @Override
     public boolean isModified()
     {
         return this.value != this.defaultValue;
-    }
-
-    @Override
-    public boolean isModified(String newValue)
-    {
-        return Boolean.parseBoolean(newValue) != this.defaultValue;
     }
 
     @Override
@@ -77,25 +74,7 @@ public class ConfigBoolean extends ConfigBase<Boolean> implements IConfigBoolean
     @Override
     public void resetToDefault()
     {
-        this.setBooleanValue(this.defaultValue);
-    }
-
-    @Override
-    public String getStringValue()
-    {
-        return String.valueOf(this.value);
-    }
-
-    @Override
-    public String getDefaultStringValue()
-    {
-        return String.valueOf(this.defaultValue);
-    }
-
-    @Override
-    public void setValueFromString(String value)
-    {
-        this.value = Boolean.parseBoolean(value);
+        this.setOptionListValue(this.defaultValue);
     }
 
     @Override
@@ -105,7 +84,8 @@ public class ConfigBoolean extends ConfigBase<Boolean> implements IConfigBoolean
         {
             if (element.isJsonPrimitive())
             {
-                this.value = element.getAsBoolean();
+                this.value = this.value.fromString(element.getAsString());
+                this.onValueLoaded(this.value);
             }
             else
             {
@@ -123,6 +103,6 @@ public class ConfigBoolean extends ConfigBase<Boolean> implements IConfigBoolean
     @Override
     public JsonElement getAsJsonElement()
     {
-        return new JsonPrimitive(this.value);
+        return new JsonPrimitive(this.value.getStringValue());
     }
 }

@@ -8,8 +8,8 @@ import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.config.ConfigType;
 import fi.dy.masa.malilib.gui.callback.SliderCallbackDouble;
 import fi.dy.masa.malilib.gui.callback.SliderCallbackInteger;
-import fi.dy.masa.malilib.config.option.ConfigFile;
-import fi.dy.masa.malilib.config.option.IConfigBase;
+import fi.dy.masa.malilib.config.option.FileConfig;
+import fi.dy.masa.malilib.config.option.ConfigOption;
 import fi.dy.masa.malilib.config.option.IConfigBoolean;
 import fi.dy.masa.malilib.config.option.IConfigDouble;
 import fi.dy.masa.malilib.config.option.IConfigInteger;
@@ -63,7 +63,7 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
 
         if (wrapper.getType() == ConfigOptionWrapper.Type.CONFIG)
         {
-            IConfigBase config = wrapper.getConfig();
+            ConfigOption config = wrapper.getConfig();
 
             if (config instanceof IStringRepresentable)
             {
@@ -98,7 +98,7 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
 
     protected void addConfigOption(int x, int y, int zLevel, int labelWidth, int configWidth, ConfigOptionWrapper wrapper)
     {
-        IConfigBase config = wrapper.getConfig();
+        ConfigOption config = wrapper.getConfig();
         ConfigType type = config.getType();
 
         y += 1;
@@ -192,8 +192,8 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
         }
         else if (type == ConfigType.DIRECTORY)
         {
-            final ConfigFile cfg = (ConfigFile) config;
-            final File dir = ((ConfigFile) config).getFile();
+            final FileConfig cfg = (FileConfig) config;
+            final File dir = ((FileConfig) config).getFile();
             final String path = dir.getAbsolutePath();
 
             ArrayList<String> lines = new ArrayList<>();
@@ -220,7 +220,7 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
     {
         if (this.wrapper.getType() == ConfigOptionWrapper.Type.CONFIG)
         {
-            IConfigBase config = this.wrapper.getConfig();
+            ConfigOption config = this.wrapper.getConfig();
             boolean modified = false;
 
             if (this.wrapper.getConfig() instanceof IStringRepresentable)

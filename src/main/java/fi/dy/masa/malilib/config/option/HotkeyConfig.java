@@ -8,30 +8,30 @@ import fi.dy.masa.malilib.input.KeyBindMulti;
 import fi.dy.masa.malilib.input.KeyBindSettings;
 import fi.dy.masa.malilib.util.StringUtils;
 
-public class ConfigHotkey extends ConfigBase<ConfigHotkey> implements IHotkey
+public class HotkeyConfig extends BaseConfig<HotkeyConfig> implements IHotkey
 {
-    private final KeyBindMulti keybind;
+    protected final KeyBindMulti keyBind;
 
-    public ConfigHotkey(String name, String defaultStorageString, String comment)
+    public HotkeyConfig(String name, String defaultStorageString, String comment)
     {
         this(name, defaultStorageString, comment, name);
     }
 
-    public ConfigHotkey(String name, String defaultStorageString, KeyBindSettings settings, String comment)
+    public HotkeyConfig(String name, String defaultStorageString, KeyBindSettings settings, String comment)
     {
         this(name, defaultStorageString, settings, comment, StringUtils.splitCamelCase(name));
     }
 
-    public ConfigHotkey(String name, String defaultStorageString, String comment, String prettyName)
+    public HotkeyConfig(String name, String defaultStorageString, String comment, String prettyName)
     {
         this(name, defaultStorageString, KeyBindSettings.DEFAULT, comment, prettyName);
     }
 
-    public ConfigHotkey(String name, String defaultStorageString, KeyBindSettings settings, String comment, String prettyName)
+    public HotkeyConfig(String name, String defaultStorageString, KeyBindSettings settings, String comment, String prettyName)
     {
         super(ConfigType.HOTKEY, name, comment, prettyName);
 
-        this.keybind = KeyBindMulti.fromStorageString(name, defaultStorageString, settings);
+        this.keyBind = KeyBindMulti.fromStorageString(name, defaultStorageString, settings);
     }
 
     @Override
@@ -39,72 +39,72 @@ public class ConfigHotkey extends ConfigBase<ConfigHotkey> implements IHotkey
     {
         super.setModName(modName);
 
-        this.keybind.setModName(modName);
+        this.keyBind.setModName(modName);
     }
 
     @Override
     public IKeyBind getKeyBind()
     {
-        return this.keybind;
+        return this.keyBind;
     }
 
     @Override
     public String getStringValue()
     {
-        return this.keybind.getStringValue();
+        return this.keyBind.getStringValue();
     }
 
     @Override
     public String getDefaultStringValue()
     {
-        return this.keybind.getDefaultStringValue();
+        return this.keyBind.getDefaultStringValue();
     }
 
     @Override
     public void setValueFromString(String value)
     {
-        this.keybind.setValueFromString(value);
+        this.keyBind.setValueFromString(value);
     }
 
     @Override
     public boolean isModified()
     {
-        return this.keybind.isModified();
+        return this.keyBind.isModified();
     }
 
     @Override
     public boolean isModified(String newValue)
     {
-        return this.keybind.isModified(newValue);
+        return this.keyBind.isModified(newValue);
     }
 
     @Override
     public boolean isDirty()
     {
-        return this.keybind.isDirty();
+        return this.keyBind.isDirty();
     }
 
     @Override
     public void cacheSavedValue()
     {
-        this.keybind.cacheSavedValue();
+        this.keyBind.cacheSavedValue();
     }
 
     @Override
     public void resetToDefault()
     {
-        this.keybind.resetToDefault();
+        this.keyBind.resetToDefault();
     }
 
     @Override
     public void setValueFromJsonElement(JsonElement element, String configName)
     {
-        this.keybind.setValueFromJsonElement(element, configName);
+        this.keyBind.setValueFromJsonElement(element, configName);
     }
 
     @Override
     public JsonElement getAsJsonElement()
     {
-        return this.keybind.getAsJsonElement();
+        return this.keyBind.getAsJsonElement();
     }
 }

@@ -6,7 +6,7 @@ import java.util.Map;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.LiteModMaLiLib;
-import fi.dy.masa.malilib.config.option.IConfigBase;
+import fi.dy.masa.malilib.config.option.ConfigOption;
 import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.JsonUtils;
 
@@ -46,7 +46,7 @@ public interface IConfigHandler
      * Returns all the configs grouped by their categories
      * @return
      */
-    Map<String, List<? extends IConfigBase>> getConfigsPerCategories();
+    Map<String, List<? extends ConfigOption<?>>> getConfigsPerCategories();
 
     /**
      * Whether or not the configs in this category should be shown on the config GUIs,
@@ -75,9 +75,9 @@ public interface IConfigHandler
      */
     default boolean areConfigsDirty()
     {
-        for (List<? extends IConfigBase> list : this.getConfigsPerCategories().values())
+        for (List<? extends ConfigOption<?>> list : this.getConfigsPerCategories().values())
         {
-            for (IConfigBase config : list)
+            for (ConfigOption<?> config : list)
             {
                 if (config.isDirty())
                 {
@@ -112,7 +112,7 @@ public interface IConfigHandler
             {
                 JsonObject root = element.getAsJsonObject();
 
-                for (Map.Entry<String, List<? extends IConfigBase>> entry : this.getConfigsPerCategories().entrySet())
+                for (Map.Entry<String, List<? extends ConfigOption<?>>> entry : this.getConfigsPerCategories().entrySet())
                 {
                     ConfigUtils.readConfigBase(root, entry.getKey(), entry.getValue());
                 }
@@ -146,7 +146,7 @@ public interface IConfigHandler
         {
             JsonObject root = new JsonObject();
 
-            for (Map.Entry<String, List<? extends IConfigBase>> entry : this.getConfigsPerCategories().entrySet())
+            for (Map.Entry<String, List<? extends ConfigOption<?>>> entry : this.getConfigsPerCategories().entrySet())
             {
                 ConfigUtils.writeConfigBase(root, entry.getKey(), entry.getValue());
             }

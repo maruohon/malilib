@@ -3,11 +3,8 @@ package fi.dy.masa.malilib.input;
 import java.util.List;
 import javax.annotation.Nullable;
 import com.google.gson.JsonElement;
-import fi.dy.masa.malilib.config.option.IConfigResettable;
-import fi.dy.masa.malilib.config.option.IConfigSavable;
-import fi.dy.masa.malilib.config.option.IStringRepresentable;
 
-public interface IKeyBind extends IConfigResettable, IConfigSavable, IStringRepresentable
+public interface IKeyBind
 {
     /**
      * Sets the mod name owning this keybind. Used for the popup toast rendering.

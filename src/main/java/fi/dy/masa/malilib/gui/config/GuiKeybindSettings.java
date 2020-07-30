@@ -5,9 +5,9 @@ import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.gui.GuiScreen;
-import fi.dy.masa.malilib.config.option.ConfigBase;
-import fi.dy.masa.malilib.config.option.ConfigBoolean;
-import fi.dy.masa.malilib.config.option.ConfigOptionList;
+import fi.dy.masa.malilib.config.option.BaseConfig;
+import fi.dy.masa.malilib.config.option.BooleanConfig;
+import fi.dy.masa.malilib.config.option.OptionListConfig;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.GuiDialogBase;
 import fi.dy.masa.malilib.gui.button.ConfigButtonBoolean;
@@ -23,14 +23,14 @@ public class GuiKeybindSettings extends GuiDialogBase
 {
     protected final IKeyBind keybind;
     protected final String keybindName;
-    protected final ConfigOptionList<KeyAction> cfgActivateOn;
-    protected final ConfigOptionList<KeyBindSettings.Context> cfgContext;
-    protected final ConfigBoolean cfgAllowEmpty;
-    protected final ConfigBoolean cfgAllowExtra;
-    protected final ConfigBoolean cfgOrderSensitive;
-    protected final ConfigBoolean cfgExclusive;
-    protected final ConfigBoolean cfgCancel;
-    protected final List<ConfigBase<?>> configList;
+    protected final OptionListConfig<KeyAction> cfgActivateOn;
+    protected final OptionListConfig<KeyBindSettings.Context> cfgContext;
+    protected final BooleanConfig cfgAllowEmpty;
+    protected final BooleanConfig cfgAllowExtra;
+    protected final BooleanConfig cfgOrderSensitive;
+    protected final BooleanConfig cfgExclusive;
+    protected final BooleanConfig cfgCancel;
+    protected final List<BaseConfig<?>> configList;
     @Nullable protected final IDialogHandler dialogHandler;
     protected int labelWidth;
     protected int configWidth;
@@ -57,13 +57,13 @@ public class GuiKeybindSettings extends GuiDialogBase
         this.title = GuiBase.TXT_BOLD + StringUtils.translate("malilib.gui.title.keybind_settings.advanced", this.keybindName) + GuiBase.TXT_RST;
 
         KeyBindSettings defaultSettings = this.keybind.getDefaultSettings();
-        this.cfgActivateOn     = new ConfigOptionList<>("malilib.gui.label.keybind_settings.activate_on", defaultSettings.getActivateOn(), "malilib.config.comment.keybind_settings.activate_on");
-        this.cfgContext        = new ConfigOptionList<>("malilib.gui.label.keybind_settings.context", defaultSettings.getContext(), "malilib.config.comment.keybind_settings.context");
-        this.cfgAllowEmpty     = new ConfigBoolean("malilib.gui.label.keybind_settings.allow_empty_keybind", defaultSettings.getAllowEmpty(), "malilib.config.comment.keybind_settings.allow_empty_keybind");
-        this.cfgAllowExtra     = new ConfigBoolean("malilib.gui.label.keybind_settings.allow_extra_keys", defaultSettings.getAllowExtraKeys(), "malilib.config.comment.keybind_settings.allow_extra_keys");
-        this.cfgOrderSensitive = new ConfigBoolean("malilib.gui.label.keybind_settings.order_sensitive", defaultSettings.isOrderSensitive(), "malilib.config.comment.keybind_settings.order_sensitive");
-        this.cfgExclusive      = new ConfigBoolean("malilib.gui.label.keybind_settings.exclusive", defaultSettings.isExclusive(), "malilib.config.comment.keybind_settings.exclusive");
-        this.cfgCancel         = new ConfigBoolean("malilib.gui.label.keybind_settings.cancel_further_processing", defaultSettings.shouldCancel(), "malilib.config.comment.keybind_settings.cancel_further");
+        this.cfgActivateOn     = new OptionListConfig<>("malilib.gui.label.keybind_settings.activate_on", defaultSettings.getActivateOn(), "malilib.config.comment.keybind_settings.activate_on");
+        this.cfgContext        = new OptionListConfig<>("malilib.gui.label.keybind_settings.context", defaultSettings.getContext(), "malilib.config.comment.keybind_settings.context");
+        this.cfgAllowEmpty     = new BooleanConfig("malilib.gui.label.keybind_settings.allow_empty_keybind", defaultSettings.getAllowEmpty(), "malilib.config.comment.keybind_settings.allow_empty_keybind");
+        this.cfgAllowExtra     = new BooleanConfig("malilib.gui.label.keybind_settings.allow_extra_keys", defaultSettings.getAllowExtraKeys(), "malilib.config.comment.keybind_settings.allow_extra_keys");
+        this.cfgOrderSensitive = new BooleanConfig("malilib.gui.label.keybind_settings.order_sensitive", defaultSettings.isOrderSensitive(), "malilib.config.comment.keybind_settings.order_sensitive");
+        this.cfgExclusive      = new BooleanConfig("malilib.gui.label.keybind_settings.exclusive", defaultSettings.isExclusive(), "malilib.config.comment.keybind_settings.exclusive");
+        this.cfgCancel         = new BooleanConfig("malilib.gui.label.keybind_settings.cancel_further_processing", defaultSettings.shouldCancel(), "malilib.config.comment.keybind_settings.cancel_further");
 
         KeyBindSettings settings = this.keybind.getSettings();
         this.cfgActivateOn.setOptionListValue(settings.getActivateOn());
@@ -104,27 +104,27 @@ public class GuiKeybindSettings extends GuiDialogBase
         int x = this.dialogLeft + 10;
         int y = this.dialogTop + 24;
 
-        for (ConfigBase<?> config : this.configList)
+        for (BaseConfig<?> config : this.configList)
         {
             this.addConfig(x, y, this.labelWidth, this.configWidth, config);
             y += 22;
         }
     }
 
-    protected void addConfig(int x, int y, int labelWidth, int configWidth, ConfigBase<?> config)
+    protected void addConfig(int x, int y, int labelWidth, int configWidth, BaseConfig<?> config)
     {
         int color = config.isModified() ? 0xFFFFFF55 : 0xFFAAAAAA;
         this.addLabel(x, y, labelWidth, 20, color, StringUtils.translate(config.getPrettyName()))
             .setPaddingY(5).addHoverStrings(config.getComment());
         x += labelWidth + 10;
 
-        if (config instanceof ConfigBoolean)
+        if (config instanceof BooleanConfig)
         {
-            this.addWidget(new ConfigButtonBoolean(x, y, configWidth, 20, (ConfigBoolean) config));
+            this.addWidget(new ConfigButtonBoolean(x, y, configWidth, 20, (BooleanConfig) config));
         }
-        else if (config instanceof ConfigOptionList)
+        else if (config instanceof OptionListConfig)
         {
-            this.addWidget(new ConfigButtonOptionList(x, y, configWidth, 20, (ConfigOptionList<?>) config));
+            this.addWidget(new ConfigButtonOptionList(x, y, configWidth, 20, (OptionListConfig<?>) config));
         }
     }
 

@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.gui;
 
-import java.awt.Color;
+import java.awt.*;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.math.MathHelper;
-import fi.dy.masa.malilib.config.option.IConfigInteger;
+import fi.dy.masa.malilib.config.option.IntegerConfig;
 import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
 import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
 import fi.dy.masa.malilib.gui.widget.WidgetTextFieldBase;
@@ -24,7 +24,7 @@ public class GuiColorEditorHSV extends GuiDialogBase
 {
     protected static final ShaderProgram SHADER_HUE = new ShaderProgram("malilib", null, "shaders/sv_selector.frag");
 
-    protected final IConfigInteger config;
+    protected final IntegerConfig config;
     @Nullable protected final IDialogHandler dialogHandler;
     @Nullable protected Element clickedElement;
     @Nullable protected Element currentTextInputElement;
@@ -56,7 +56,7 @@ public class GuiColorEditorHSV extends GuiDialogBase
     protected float relB;
     protected float relA;
 
-    public GuiColorEditorHSV(IConfigInteger config, @Nullable IDialogHandler dialogHandler, GuiScreen parent)
+    public GuiColorEditorHSV(IntegerConfig config, @Nullable IDialogHandler dialogHandler, GuiScreen parent)
     {
         this.config = config;
         this.dialogHandler = dialogHandler;

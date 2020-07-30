@@ -8,13 +8,13 @@ import com.google.gson.JsonPrimitive;
 import fi.dy.masa.malilib.LiteModMaLiLib;
 import fi.dy.masa.malilib.config.ConfigType;
 
-public class ConfigStringList extends ConfigBase<ImmutableList<String>> implements IConfigStringList, IConfigSavable
+public class StringListConfig extends BaseConfig<ImmutableList<String>>
 {
-    private final ImmutableList<String> defaultValue;
-    private ImmutableList<String> strings;
-    private ImmutableList<String> lastSavedStrings;
+    protected final ImmutableList<String> defaultValue;
+    protected ImmutableList<String> strings;
+    protected ImmutableList<String> lastSavedStrings;
 
-    public ConfigStringList(String name, ImmutableList<String> defaultValue, String comment)
+    public StringListConfig(String name, ImmutableList<String> defaultValue, String comment)
     {
         super(ConfigType.STRING_LIST, name, comment);
 
@@ -24,19 +24,16 @@ public class ConfigStringList extends ConfigBase<ImmutableList<String>> implemen
         this.cacheSavedValue();
     }
 
-    @Override
     public ImmutableList<String> getStrings()
     {
         return this.strings;
     }
 
-    @Override
     public ImmutableList<String> getDefaultStrings()
     {
         return this.defaultValue;
     }
 
-    @Override
     public void setStrings(List<String> newStrings)
     {
         if (this.strings.equals(newStrings) == false)
@@ -95,6 +92,8 @@ public class ConfigStringList extends ConfigBase<ImmutableList<String>> implemen
                 this.strings = ImmutableList.of();
                 LiteModMaLiLib.logger.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element);
             }
+
+            this.onValueLoaded(this.strings);
         }
         catch (Exception e)
         {

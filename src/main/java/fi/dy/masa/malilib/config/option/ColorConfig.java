@@ -7,11 +7,11 @@ import fi.dy.masa.malilib.config.ConfigType;
 import fi.dy.masa.malilib.util.data.Color4f;
 import fi.dy.masa.malilib.util.StringUtils;
 
-public class ConfigColor extends ConfigInteger
+public class ColorConfig extends IntegerConfig
 {
-    private Color4f color;
+    protected Color4f color;
 
-    public ConfigColor(String name, String defaultValue, String comment)
+    public ColorConfig(String name, String defaultValue, String comment)
     {
         super(name, StringUtils.getColor(defaultValue, 0), comment);
 
@@ -62,7 +62,7 @@ public class ConfigColor extends ConfigInteger
         {
             return StringUtils.getColor(newValue, 0) != this.getDefaultIntegerValue();
         }
-        catch (Exception e)
+        catch (Exception ignore)
         {
         }
 
@@ -78,6 +78,7 @@ public class ConfigColor extends ConfigInteger
             {
                 this.value = this.getClampedValue(StringUtils.getColor(element.getAsString(), 0));
                 this.color = Color4f.fromColor(this.value);
+                this.onValueLoaded(this.value);
             }
             else
             {

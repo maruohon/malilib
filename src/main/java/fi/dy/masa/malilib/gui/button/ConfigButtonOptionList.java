@@ -1,20 +1,20 @@
 package fi.dy.masa.malilib.gui.button;
 
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.config.option.IConfigOptionList;
+import fi.dy.masa.malilib.config.option.OptionListConfig;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class ConfigButtonOptionList extends ButtonGeneric
 {
-    private final IConfigOptionList<?> config;
+    private final OptionListConfig<?> config;
     @Nullable private final String prefixTranslationKey;
 
-    public ConfigButtonOptionList(int x, int y, int width, int height, IConfigOptionList<?> config)
+    public ConfigButtonOptionList(int x, int y, int width, int height, OptionListConfig<?> config)
     {
         this(x, y, width, height, config, null);
     }
 
-    public ConfigButtonOptionList(int x, int y, int width, int height, IConfigOptionList<?> config, @Nullable String prefixTranslationKey)
+    public ConfigButtonOptionList(int x, int y, int width, int height, OptionListConfig<?> config, @Nullable String prefixTranslationKey)
     {
         super(x, y, width, height, "");
 

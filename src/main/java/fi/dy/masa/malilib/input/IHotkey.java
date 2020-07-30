@@ -1,9 +1,9 @@
 package fi.dy.masa.malilib.input;
 
-import fi.dy.masa.malilib.config.option.IConfigValue;
-
-public interface IHotkey extends IConfigValue
+public interface IHotkey
 {
+    String getName();
+
     /**
      * Returns the keybind used by this hotkey
      * @return
@@ -24,13 +24,11 @@ public interface IHotkey extends IConfigValue
      * fill in the text field contents.
      * @return the String representation of the current value
      */
-    @Override
     default String getStringValue()
     {
         return this.getKeyBind().getStringValue();
     }
 
-    @Override
     default String getDefaultStringValue()
     {
         return this.getKeyBind().getDefaultStringValue();
@@ -41,7 +39,6 @@ public interface IHotkey extends IConfigValue
      * the config GUI textfield.
      * @param value
      */
-    @Override
     default void setValueFromString(String value)
     {
         this.getKeyBind().setValueFromString(value);
@@ -51,7 +48,6 @@ public interface IHotkey extends IConfigValue
      * Returns true if the value has been changed from the default value
      * @return
      */
-    @Override
     default boolean isModified()
     {
         return this.getKeyBind().isModified();
@@ -62,7 +58,6 @@ public interface IHotkey extends IConfigValue
      * @param newValue
      * @return
      */
-    @Override
     default boolean isModified(String newValue)
     {
         return this.getKeyBind().isModified(newValue);
@@ -71,7 +66,6 @@ public interface IHotkey extends IConfigValue
     /**
      * Resets the value back to the default value
      */
-    @Override
     default void resetToDefault()
     {
         this.getKeyBind().resetToDefault();

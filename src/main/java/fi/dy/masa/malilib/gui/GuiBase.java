@@ -14,7 +14,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import fi.dy.masa.malilib.MaLiLibConfigs;
-import fi.dy.masa.malilib.config.option.IConfigBase;
+import fi.dy.masa.malilib.config.option.ConfigOption;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
@@ -593,11 +593,11 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
         GlStateManager.popMatrix();
     }
 
-    public int getMaxPrettyNameLength(List<? extends IConfigBase> configs)
+    public int getMaxPrettyNameLength(List<? extends ConfigOption> configs)
     {
         int width = 0;
 
-        for (IConfigBase config : configs)
+        for (ConfigOption config : configs)
         {
             width = Math.max(width, this.getStringWidth(config.getPrettyName()));
         }

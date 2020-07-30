@@ -6,7 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.config.ConfigType;
-import fi.dy.masa.malilib.config.option.IConfigBase;
+import fi.dy.masa.malilib.config.option.ConfigOption;
 import fi.dy.masa.malilib.gui.config.GuiConfigsBase;
 import fi.dy.masa.malilib.gui.config.GuiConfigsBase.ConfigOptionWrapper;
 import fi.dy.masa.malilib.gui.util.BaseGuiIcon;
@@ -54,7 +54,7 @@ public class WidgetListConfigOptions extends WidgetListConfigOptionsBase<ConfigO
     @Override
     protected List<String> getEntryStringsForFilter(ConfigOptionWrapper entry)
     {
-        IConfigBase config = entry.getConfig();
+        ConfigOption config = entry.getConfig();
 
         if (config != null)
         {

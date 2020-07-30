@@ -6,7 +6,7 @@ import org.lwjgl.input.Keyboard;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.config.ConfigManager;
-import fi.dy.masa.malilib.config.option.IConfigStringList;
+import fi.dy.masa.malilib.config.option.StringListConfig;
 import fi.dy.masa.malilib.gui.interfaces.IConfigGui;
 import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
@@ -17,7 +17,7 @@ import fi.dy.masa.malilib.util.StringUtils;
 
 public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEditEntry, WidgetListStringListEdit>
 {
-    protected final IConfigStringList config;
+    protected final StringListConfig config;
     protected final IConfigGui configGui;
     protected int dialogWidth;
     protected int dialogHeight;
@@ -27,7 +27,7 @@ public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEditE
     protected int textFieldWidth;
     @Nullable protected final IDialogHandler dialogHandler;
 
-    public GuiStringListEdit(IConfigStringList config, IConfigGui configGui, @Nullable IDialogHandler dialogHandler, GuiScreen parent)
+    public GuiStringListEdit(StringListConfig config, IConfigGui configGui, @Nullable IDialogHandler dialogHandler, GuiScreen parent)
     {
         super(0, 0);
 
@@ -87,7 +87,7 @@ public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEditE
         this.initGui();
     }
 
-    public IConfigStringList getConfig()
+    public StringListConfig getConfig()
     {
         return this.config;
     }

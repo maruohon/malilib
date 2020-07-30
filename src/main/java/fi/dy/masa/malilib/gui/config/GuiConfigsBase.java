@@ -9,7 +9,7 @@ import org.lwjgl.input.Keyboard;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.config.ConfigManager;
-import fi.dy.masa.malilib.config.option.IConfigBase;
+import fi.dy.masa.malilib.config.option.ConfigOption;
 import fi.dy.masa.malilib.event.dispatch.InputEventDispatcher;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.GuiListBase;
@@ -294,16 +294,16 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
     public static class ConfigOptionWrapper
     {
         private final Type type;
-        @Nullable private final IConfigBase config;
+        @Nullable private final ConfigOption config;
         @Nullable private final String labelPrefix;
         @Nullable private final String label;
 
-        public ConfigOptionWrapper(IConfigBase config)
+        public ConfigOptionWrapper(ConfigOption config)
         {
             this(null, config);
         }
 
-        public ConfigOptionWrapper(@Nullable String labelPrefix, @Nullable IConfigBase config)
+        public ConfigOptionWrapper(@Nullable String labelPrefix, @Nullable ConfigOption config)
         {
             this.type = Type.CONFIG;
             this.config = config;
@@ -325,7 +325,7 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
         }
 
         @Nullable
-        public IConfigBase getConfig()
+        public ConfigOption getConfig()
         {
             return this.config;
         }
@@ -342,11 +342,11 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
             return this.label;
         }
 
-        public static List<ConfigOptionWrapper> createFor(Collection<? extends IConfigBase> configs)
+        public static List<ConfigOptionWrapper> createFor(Collection<? extends ConfigOption> configs)
         {
             ImmutableList.Builder<ConfigOptionWrapper> builder = ImmutableList.builder();
 
-            for (IConfigBase config : configs)
+            for (ConfigOption config : configs)
             {
                 builder.add(new ConfigOptionWrapper(config));
             }

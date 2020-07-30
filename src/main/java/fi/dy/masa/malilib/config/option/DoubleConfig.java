@@ -6,26 +6,26 @@ import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.LiteModMaLiLib;
 import fi.dy.masa.malilib.config.ConfigType;
 
-public class ConfigDouble extends ConfigBase<Double> implements IConfigDouble
+public class DoubleConfig extends BaseConfig<Double>
 {
-    private final double minValue;
-    private final double maxValue;
-    private final double defaultValue;
-    private double value;
-    private double lastSavedValue;
-    private boolean useSlider;
+    protected final double minValue;
+    protected final double maxValue;
+    protected final double defaultValue;
+    protected double value;
+    protected double lastSavedValue;
+    protected boolean useSlider;
 
-    public ConfigDouble(String name, double defaultValue, String comment)
+    public DoubleConfig(String name, double defaultValue, String comment)
     {
         this(name, defaultValue, Double.MIN_VALUE, Double.MAX_VALUE, comment);
     }
 
-    public ConfigDouble(String name, double defaultValue, double minValue, double maxValue, String comment)
+    public DoubleConfig(String name, double defaultValue, double minValue, double maxValue, String comment)
     {
         this(name, defaultValue, minValue, maxValue, false, comment);
     }
 
-    public ConfigDouble(String name, double defaultValue, double minValue, double maxValue, boolean useSlider, String comment)
+    public DoubleConfig(String name, double defaultValue, double minValue, double maxValue, boolean useSlider, String comment)
     {
         super(ConfigType.DOUBLE, name, comment);
 
@@ -38,31 +38,31 @@ public class ConfigDouble extends ConfigBase<Double> implements IConfigDouble
         this.cacheSavedValue();
     }
 
-    @Override
     public boolean shouldUseSlider()
     {
         return this.useSlider;
     }
 
-    @Override
     public void toggleUseSlider()
     {
         this.useSlider = ! this.useSlider;
     }
 
-    @Override
     public double getDoubleValue()
     {
         return this.value;
     }
 
-    @Override
+    public float getFloatValue()
+    {
+        return (float) this.getDoubleValue();
+    }
+
     public double getDefaultDoubleValue()
     {
         return this.defaultValue;
     }
 
-    @Override
     public void setDoubleValue(double value)
     {
         double oldValue = this.value;
@@ -74,13 +74,11 @@ public class ConfigDouble extends ConfigBase<Double> implements IConfigDouble
         }
     }
 
-    @Override
     public double getMinDoubleValue()
     {
         return this.minValue;
     }
 
-    @Override
     public double getMaxDoubleValue()
     {
         return this.maxValue;
@@ -97,14 +95,13 @@ public class ConfigDouble extends ConfigBase<Double> implements IConfigDouble
         return this.value != this.defaultValue;
     }
 
-    @Override
     public boolean isModified(String newValue)
     {
         try
         {
             return Double.parseDouble(newValue) != this.defaultValue;
         }
-        catch (Exception e)
+        catch (Exception ignore)
         {
         }
 
@@ -129,19 +126,16 @@ public class ConfigDouble extends ConfigBase<Double> implements IConfigDouble
         this.setDoubleValue(this.defaultValue);
     }
 
-    @Override
     public String getStringValue()
     {
         return String.valueOf(this.value);
     }
 
-    @Override
     public String getDefaultStringValue()
     {
         return String.valueOf(this.defaultValue);
     }
 
-    @Override
     public void setValueFromString(String value)
     {
         try
@@ -162,6 +156,7 @@ public class ConfigDouble extends ConfigBase<Double> implements IConfigDouble
             if (element.isJsonPrimitive())
             {
                 this.value = this.getClampedValue(element.getAsDouble());
+                this.onValueLoaded(this.value);
             }
             else
             {

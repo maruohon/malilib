@@ -4,13 +4,13 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import fi.dy.masa.malilib.config.ConfigType;
 
-public abstract class ConfigStringBase<T> extends ConfigBase<T> implements IConfigValue
+public abstract class BaseStringConfig<T> extends BaseConfig<T>
 {
     protected final String defaultValue;
     protected String value;
     protected String lastSavedValue;
 
-    protected ConfigStringBase(ConfigType type, String name, String defaultValue, String comment)
+    protected BaseStringConfig(ConfigType type, String name, String defaultValue, String comment)
     {
         super(type, name, comment);
 
@@ -20,17 +20,17 @@ public abstract class ConfigStringBase<T> extends ConfigBase<T> implements IConf
         this.cacheSavedValue();
     }
 
-    @Override
     public String getStringValue()
     {
         return this.value;
     }
 
-    @Override
     public String getDefaultStringValue()
     {
         return this.defaultValue;
     }
+
+    public abstract void setValueFromString(String newValue);
 
     @Override
     public void resetToDefault()
@@ -44,7 +44,6 @@ public abstract class ConfigStringBase<T> extends ConfigBase<T> implements IConf
         return this.value.equals(this.defaultValue) == false;
     }
 
-    @Override
     public boolean isModified(String newValue)
     {
         return this.defaultValue.equals(newValue) == false;

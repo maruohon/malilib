@@ -1,16 +1,16 @@
 package fi.dy.masa.malilib.gui.callback;
 
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.config.option.IConfigInteger;
+import fi.dy.masa.malilib.config.option.IntegerConfig;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.interfaces.ISliderCallback;
 
 public class SliderCallbackInteger implements ISliderCallback
 {
-    protected final IConfigInteger config;
+    protected final IntegerConfig config;
     protected final ButtonBase buttonReset;
 
-    public SliderCallbackInteger(IConfigInteger config, @Nullable ButtonBase buttonReset)
+    public SliderCallbackInteger(IntegerConfig config, @Nullable ButtonBase buttonReset)
     {
         this.config = config;
         this.buttonReset = buttonReset;

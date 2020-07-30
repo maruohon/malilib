@@ -6,26 +6,26 @@ import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.LiteModMaLiLib;
 import fi.dy.masa.malilib.config.ConfigType;
 
-public class ConfigInteger extends ConfigBase<Integer> implements IConfigInteger
+public class IntegerConfig extends BaseConfig<Integer>
 {
     protected final int minValue;
     protected final int maxValue;
     protected final int defaultValue;
     protected int value;
     protected int lastSavedValue;
-    private boolean useSlider;
+    protected boolean useSlider;
 
-    public ConfigInteger(String name, int defaultValue, String comment)
+    public IntegerConfig(String name, int defaultValue, String comment)
     {
         this(name, defaultValue, Integer.MIN_VALUE, Integer.MAX_VALUE, comment);
     }
 
-    public ConfigInteger(String name, int defaultValue, int minValue, int maxValue, String comment)
+    public IntegerConfig(String name, int defaultValue, int minValue, int maxValue, String comment)
     {
         this(name, defaultValue, minValue, maxValue, false, comment);
     }
 
-    public ConfigInteger(String name, int defaultValue, int minValue, int maxValue, boolean useSlider, String comment)
+    public IntegerConfig(String name, int defaultValue, int minValue, int maxValue, boolean useSlider, String comment)
     {
         super(ConfigType.INTEGER, name, comment);
 
@@ -38,31 +38,26 @@ public class ConfigInteger extends ConfigBase<Integer> implements IConfigInteger
         this.cacheSavedValue();
     }
 
-    @Override
     public boolean shouldUseSlider()
     {
         return this.useSlider;
     }
 
-    @Override
     public void toggleUseSlider()
     {
         this.useSlider = ! this.useSlider;
     }
 
-    @Override
     public int getIntegerValue()
     {
         return this.value;
     }
 
-    @Override
     public int getDefaultIntegerValue()
     {
         return this.defaultValue;
     }
 
-    @Override
     public void setIntegerValue(int value)
     {
         int oldValue = this.value;
@@ -74,13 +69,11 @@ public class ConfigInteger extends ConfigBase<Integer> implements IConfigInteger
         }
     }
 
-    @Override
     public int getMinIntegerValue()
     {
         return this.minValue;
     }
 
-    @Override
     public int getMaxIntegerValue()
     {
         return this.maxValue;
@@ -97,14 +90,13 @@ public class ConfigInteger extends ConfigBase<Integer> implements IConfigInteger
         return this.value != this.defaultValue;
     }
 
-    @Override
     public boolean isModified(String newValue)
     {
         try
         {
             return Integer.parseInt(newValue) != this.defaultValue;
         }
-        catch (Exception e)
+        catch (Exception ignore)
         {
         }
 
@@ -129,19 +121,16 @@ public class ConfigInteger extends ConfigBase<Integer> implements IConfigInteger
         this.setIntegerValue(this.defaultValue);
     }
 
-    @Override
     public String getStringValue()
     {
         return String.valueOf(this.value);
     }
 
-    @Override
     public String getDefaultStringValue()
     {
         return String.valueOf(this.defaultValue);
     }
 
-    @Override
     public void setValueFromString(String value)
     {
         try
@@ -162,6 +151,7 @@ public class ConfigInteger extends ConfigBase<Integer> implements IConfigInteger
             if (element.isJsonPrimitive())
             {
                 this.value = this.getClampedValue(element.getAsInt());
+                this.onValueLoaded(this.value);
             }
             else
             {

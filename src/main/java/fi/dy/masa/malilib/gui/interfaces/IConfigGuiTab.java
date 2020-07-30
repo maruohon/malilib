@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.gui.interfaces;
 
 import java.util.List;
-import fi.dy.masa.malilib.config.option.IConfigBase;
+import fi.dy.masa.malilib.config.option.ConfigOption;
 import fi.dy.masa.malilib.gui.config.GuiConfigsBase;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 
@@ -35,7 +35,7 @@ public interface IConfigGuiTab
      * Returns the list of config options to display on this tab/in this category
      * @return
      */
-    List<? extends IConfigBase> getConfigOptions();
+    List<? extends ConfigOption> getConfigOptions();
 
     /**
      * Returns the button action listener that should be used for this tab's selection button

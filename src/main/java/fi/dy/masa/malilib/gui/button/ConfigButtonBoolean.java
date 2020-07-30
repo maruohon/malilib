@@ -1,13 +1,13 @@
 package fi.dy.masa.malilib.gui.button;
 
-import fi.dy.masa.malilib.config.option.IConfigBoolean;
+import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.gui.GuiBase;
 
 public class ConfigButtonBoolean extends ButtonGeneric
 {
-    private final IConfigBoolean config;
+    private final BooleanConfig config;
 
-    public ConfigButtonBoolean(int x, int y, int width, int height, IConfigBoolean config)
+    public ConfigButtonBoolean(int x, int y, int width, int height, BooleanConfig config)
     {
         super(x, y, width, height, "");
         this.config = config;

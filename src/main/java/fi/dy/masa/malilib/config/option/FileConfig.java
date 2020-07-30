@@ -1,14 +1,29 @@
 package fi.dy.masa.malilib.config.option;
 
+import java.io.File;
 import com.google.gson.JsonElement;
 import fi.dy.masa.malilib.LiteModMaLiLib;
 import fi.dy.masa.malilib.config.ConfigType;
 
-public class ConfigString extends ConfigStringBase<String>
+public class FileConfig extends BaseStringConfig<File>
 {
-    public ConfigString(String name, String defaultValue, String comment)
+    protected File file;
+
+    public FileConfig(String name, File defaultValue, String comment)
     {
-        super(ConfigType.STRING, name, defaultValue, comment);
+        this(ConfigType.FILE, name, defaultValue, comment);
+    }
+
+    protected FileConfig(ConfigType type, String name, File defaultValue, String comment)
+    {
+        super(type, name, defaultValue.getAbsolutePath(), comment);
+
+        this.file = defaultValue;
+    }
+
+    public File getFile()
+    {
+        return this.file;
     }
 
     @Override
@@ -16,9 +31,10 @@ public class ConfigString extends ConfigStringBase<String>
     {
         if (this.value.equals(value) == false)
         {
-            String oldValue = this.value;
+            File oldFile = this.file;
             this.value = value;
-            this.onValueChanged(value, oldValue);
+            this.file = new File(value);
+            this.onValueChanged(this.file, oldFile);
         }
     }
 
@@ -30,6 +46,8 @@ public class ConfigString extends ConfigStringBase<String>
             if (element.isJsonPrimitive())
             {
                 this.value = element.getAsString();
+                this.file = new File(this.value);
+                this.onValueLoaded(this.file);
             }
             else
             {

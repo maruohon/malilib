@@ -7,21 +7,21 @@ import fi.dy.masa.malilib.input.KeyBindMulti;
 import fi.dy.masa.malilib.input.KeyBindSettings;
 import fi.dy.masa.malilib.util.StringUtils;
 
-public class ConfigBooleanHotkeyed extends ConfigBoolean implements IHotkey
+public class HotkeyedBooleanConfig extends BooleanConfig implements IHotkey
 {
     protected final IKeyBind keybind;
 
-    public ConfigBooleanHotkeyed(String name, boolean defaultValue, String defaultHotkey, String comment)
+    public HotkeyedBooleanConfig(String name, boolean defaultValue, String defaultHotkey, String comment)
     {
         this(name, defaultValue, defaultHotkey, comment, StringUtils.splitCamelCase(name));
     }
 
-    public ConfigBooleanHotkeyed(String name, boolean defaultValue, String defaultHotkey, String comment, String prettyName)
+    public HotkeyedBooleanConfig(String name, boolean defaultValue, String defaultHotkey, String comment, String prettyName)
     {
         this(name, defaultValue, defaultHotkey, KeyBindSettings.DEFAULT, comment, prettyName);
     }
 
-    public ConfigBooleanHotkeyed(String name, boolean defaultValue, String defaultHotkey, KeyBindSettings settings, String comment, String prettyName)
+    public HotkeyedBooleanConfig(String name, boolean defaultValue, String defaultHotkey, KeyBindSettings settings, String comment, String prettyName)
     {
         super(name, defaultValue, comment, prettyName);
 

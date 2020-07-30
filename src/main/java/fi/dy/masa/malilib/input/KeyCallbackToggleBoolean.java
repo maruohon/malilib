@@ -1,12 +1,12 @@
 package fi.dy.masa.malilib.input;
 
-import fi.dy.masa.malilib.config.option.IConfigBoolean;
+import fi.dy.masa.malilib.config.option.BooleanConfig;
 
 public class KeyCallbackToggleBoolean implements IHotkeyCallback
 {
-    protected final IConfigBoolean config;
+    protected final BooleanConfig config;
 
-    public KeyCallbackToggleBoolean(IConfigBoolean config)
+    public KeyCallbackToggleBoolean(BooleanConfig config)
     {
         this.config = config;
     }

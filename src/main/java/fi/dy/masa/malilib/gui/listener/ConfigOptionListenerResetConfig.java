@@ -1,8 +1,7 @@
 package fi.dy.masa.malilib.gui.listener;
 
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.config.option.IConfigResettable;
-import fi.dy.masa.malilib.config.option.IStringRepresentable;
+import fi.dy.masa.malilib.config.option.ConfigOption;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
@@ -10,12 +9,12 @@ import fi.dy.masa.malilib.gui.widget.WidgetTextFieldBase;
 
 public class ConfigOptionListenerResetConfig implements IButtonActionListener
 {
-    private final IConfigResettable config;
+    private final ConfigOption<?> config;
     private final ButtonGeneric buttonReset;
     @Nullable private final ConfigResetterBase reset;
     @Nullable private final ButtonPressDirtyListenerSimple dirtyListener;
 
-    public ConfigOptionListenerResetConfig(IConfigResettable config, @Nullable ConfigResetterBase reset,
+    public ConfigOptionListenerResetConfig(ConfigOption<?> config, @Nullable ConfigResetterBase reset,
             ButtonGeneric buttonReset, @Nullable ButtonPressDirtyListenerSimple dirtyListener)
     {
         this.config = config;
@@ -64,10 +63,10 @@ public class ConfigOptionListenerResetConfig implements IButtonActionListener
 
     public static class ConfigResetterTextField extends ConfigResetterBase
     {
-        private final IStringRepresentable config;
+        private final ConfigOption<?> config;
         private final WidgetTextFieldBase textField;
 
-        public ConfigResetterTextField(IStringRepresentable config, WidgetTextFieldBase textField)
+        public ConfigResetterTextField(ConfigOption<?> config, WidgetTextFieldBase textField)
         {
             this.config = config;
             this.textField = textField;
