@@ -280,9 +280,9 @@ public abstract class WidgetBase
     }
 
     /**
-     * Returns true if this widget can be selected by clicking at the given point
+     * Returns true if this widget can be hovered (for hover info etc.) at the given point
      */
-    public boolean canSelectAt(int mouseX, int mouseY, int mouseButton)
+    public boolean canHoverAt(int mouseX, int mouseY, int mouseButton)
     {
         return true;
     }
@@ -408,7 +408,7 @@ public abstract class WidgetBase
 
     public boolean shouldRenderHoverInfo(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
     {
-        return this.getId() == hoveredWidgetId && this.canSelectAt(mouseX, mouseY, 0);
+        return this.getId() == hoveredWidgetId && this.canHoverAt(mouseX, mouseY, 0);
     }
 
     public void postRenderHovered(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)

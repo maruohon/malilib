@@ -15,6 +15,12 @@ public class WidgetListStringListEdit extends WidgetListConfigOptionsBase<String
     }
 
     @Override
+    public GuiStringListEdit getParentScreen()
+    {
+        return this.parent;
+    }
+
+    @Override
     protected void refreshBrowserEntries()
     {
         this.listContents.clear();
@@ -27,15 +33,15 @@ public class WidgetListStringListEdit extends WidgetListConfigOptionsBase<String
     protected void reCreateListEntryWidgets()
     {
         // Add a dummy entry that allows adding the first actual string to the list
-        if (this.getTotalEntryCount() == 0)
+        if (this.getTotalListEntryCount() == 0)
         {
             this.listWidgets.clear();
-            this.maxVisibleBrowserEntries = 1;
+            this.visibleListEntries = 1;
 
             int x = this.getX() + 2;
-            int y = this.getY() + 4 + this.browserEntriesOffsetY;
+            int y = this.getY() + 4 + this.entryWidgetsStartY;
 
-            this.listWidgets.add(this.createListEntryWidget(x, y, -1, false));
+            this.listWidgets.add(this.createListEntryWidget(x, y, -1));
             this.scrollBar.setMaxValue(0);
         }
         else
@@ -45,7 +51,7 @@ public class WidgetListStringListEdit extends WidgetListConfigOptionsBase<String
     }
 
     @Override
-    protected WidgetStringListEditEntry createListEntryWidget(int x, int y, int listIndex, boolean isOdd)
+    protected WidgetStringListEditEntry createListEntryWidget(int x, int y, int listIndex)
     {
         StringListConfig config = this.parent.getConfig();
 
@@ -53,13 +59,13 @@ public class WidgetListStringListEdit extends WidgetListConfigOptionsBase<String
         {
             String defaultValue = config.getDefaultStrings().size() > listIndex ? config.getDefaultStrings().get(listIndex) : "";
 
-            return new WidgetStringListEditEntry(x, y, this.browserEntryWidth, this.browserEntryHeight,
-                    listIndex, isOdd, config.getStrings().get(listIndex), defaultValue, this);
+            return new WidgetStringListEditEntry(x, y, this.entryWidgetWidth, this.entryWidgetFixedHeight,
+                                                 listIndex, config.getStrings().get(listIndex), defaultValue, this);
         }
         else
         {
-            return new WidgetStringListEditEntry(x, y, this.browserEntryWidth, this.browserEntryHeight,
-                    listIndex, isOdd, "", "", this);
+            return new WidgetStringListEditEntry(x, y, this.entryWidgetWidth, this.entryWidgetFixedHeight,
+                                                 listIndex, "", "", this);
         }
     }
 }

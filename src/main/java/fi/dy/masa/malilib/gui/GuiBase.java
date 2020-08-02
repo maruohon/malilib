@@ -22,11 +22,11 @@ import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.WidgetBase;
 import fi.dy.masa.malilib.gui.widget.WidgetLabel;
 import fi.dy.masa.malilib.gui.widget.WidgetTextFieldBase;
-import fi.dy.masa.malilib.util.consumer.IStringConsumer;
 import fi.dy.masa.malilib.message.IMessageConsumer;
 import fi.dy.masa.malilib.message.MessageType;
 import fi.dy.masa.malilib.render.MessageRenderer;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.util.consumer.IStringConsumer;
 
 public abstract class GuiBase extends GuiScreen implements IMessageConsumer, IStringConsumer
 {
@@ -561,11 +561,6 @@ public abstract class GuiBase extends GuiScreen implements IMessageConsumer, ISt
             this.hoveredWidget.postRenderHovered(mouseX, mouseY, isActiveGui, hoveredWidgetId);
             RenderUtils.disableItemLighting();
         }
-    }
-
-    public static boolean isMouseOver(int mouseX, int mouseY, int x, int y, int width, int height)
-    {
-        return mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + height;
     }
 
     public int getStringWidth(String text)

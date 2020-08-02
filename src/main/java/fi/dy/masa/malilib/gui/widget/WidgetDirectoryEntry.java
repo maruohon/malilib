@@ -14,15 +14,13 @@ public class WidgetDirectoryEntry extends WidgetListDataEntryBase<DirectoryEntry
 {
     protected final IDirectoryNavigator navigator;
     protected final DirectoryEntry entry;
-    protected final boolean isOdd;
     @Nullable protected final IFileBrowserIconProvider iconProvider;
 
-    public WidgetDirectoryEntry(int x, int y, int width, int height, boolean isOdd, DirectoryEntry entry,
-            int listIndex, IDirectoryNavigator navigator, @Nullable IFileBrowserIconProvider iconProvider)
+    public WidgetDirectoryEntry(int x, int y, int width, int height, int listIndex, DirectoryEntry entry,
+            IDirectoryNavigator navigator, @Nullable IFileBrowserIconProvider iconProvider)
     {
         super(x, y, width, height, listIndex, entry);
 
-        this.isOdd = isOdd;
         this.entry = entry;
         this.navigator = navigator;
         this.iconProvider = iconProvider;

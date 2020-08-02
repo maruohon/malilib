@@ -9,7 +9,7 @@ public class WidgetDirectoryBrowser extends WidgetFileBrowserBase
 
     public WidgetDirectoryBrowser(int x, int y, int width, int height, File defaultDirectory, File rootDirectory)
     {
-        super(x, y, width, height, defaultDirectory, rootDirectory, null, null, null);
+        super(x, y, width, height, defaultDirectory, rootDirectory, null, null);
     }
 
     @Override

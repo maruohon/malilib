@@ -14,22 +14,21 @@ import fi.dy.masa.malilib.util.StringUtils;
 public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
 {
     protected final WidgetListStringListEdit parent;
-    protected final IConfigStringList config;
+    protected final StringListConfig config;
     protected final String defaultValue;
     protected final int listIndex;
-    protected final boolean isOdd;
 
     public WidgetStringListEditEntry(int x, int y, int width, int height,
-            int listIndex, boolean isOdd, String initialValue, String defaultValue, WidgetListStringListEdit parent)
+            int listIndex, String initialValue, String defaultValue, WidgetListStringListEdit parent)
     {
         super(x, y, width, height, parent, listIndex, initialValue);
 
         this.listIndex = listIndex;
-        this.isOdd = isOdd;
         this.defaultValue = defaultValue;
         this.lastAppliedValue = initialValue;
         this.initialStringValue = initialValue;
         this.parent = parent;
+        this.config = parent.getParentScreen().getConfig();
 
         int textFieldX = x + 20;
         int textFieldWidth = width - 160;
@@ -115,7 +114,7 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
     {
         if (this.isDummy() == false)
         {
-            StringListConfig config = this.parent.getParentGui().getConfig();
+            StringListConfig config = this.config;
             List<String> list = new ArrayList<>(config.getStrings());
             String value = this.textField.getText();
 
@@ -130,7 +129,7 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
 
     protected void insertEntry(boolean before)
     {
-        StringListConfig config = this.parent.getParentGui().getConfig();
+        StringListConfig config = this.config;
         List<String> list = config.getStrings();
         int index = this.getInsertionIndex(list, before);
 
@@ -157,7 +156,7 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
 
     protected void removeEntry()
     {
-        StringListConfig config = this.parent.getParentGui().getConfig();
+        StringListConfig config = this.config;
         List<String> list = new ArrayList<>(config.getStrings());
         final int size = list.size();
 
@@ -173,7 +172,7 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
 
     protected void moveEntry(boolean down)
     {
-        StringListConfig config = this.parent.getParentGui().getConfig();
+        StringListConfig config = this.config;
         List<String> list = new ArrayList<>(config.getStrings());
         final int size = list.size();
 
@@ -209,7 +208,7 @@ public class WidgetStringListEditEntry extends WidgetConfigOptionBase<String>
 
     protected boolean canBeMoved(boolean down)
     {
-        final int size = this.parent.getParentGui().getConfig().getStrings().size();
+        final int size = this.config.getStrings().size();
         return (this.listIndex >= 0 && this.listIndex < size) &&
                 ((down && this.listIndex < (size - 1)) || (down == false && this.listIndex > 0));
     }

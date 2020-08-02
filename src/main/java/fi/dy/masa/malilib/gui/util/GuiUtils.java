@@ -52,6 +52,11 @@ public class GuiUtils
         return Minecraft.getMinecraft().currentScreen;
     }
 
+    public static boolean isMouseInRegion(int mouseX, int mouseY, int x, int y, int width, int height)
+    {
+        return mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + height;
+    }
+
     public static void createBlockPosInputsVertical(int x, int y, int textFieldWidth, BlockPos pos,
             ICoordinateValueModifier modifier, boolean addButton, GuiBase gui)
     {

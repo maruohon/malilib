@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.gui.widget;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nullable;
 import net.minecraft.util.ResourceLocation;
@@ -20,22 +21,22 @@ public class WidgetKeybindSettings extends WidgetBase
 {
     public static final ResourceLocation TEXTURE = new ResourceLocation(MaLiLibReference.MOD_ID, "textures/gui/gui_widgets.png");
 
-    protected final String keybindName;
-    protected final IKeyBind keybind;
+    protected final String keyBindName;
+    protected final IKeyBind keyBind;
     protected final KeyBindSettings settings;
     protected final KeyBindSettings defaultSettings;
-    protected final WidgetListBase<?, ?> widgetList;
+    protected final WidgetListData<?> widgetList;
     @Nullable protected final IDialogHandler dialogHandler;
 
     public WidgetKeybindSettings(int x, int y, int width, int height,
-                                 IKeyBind keybind, String keybindName, WidgetListBase<?, ?> widgetList, @Nullable IDialogHandler dialogHandler)
+                                 IKeyBind keyBind, String keyBindName, WidgetListData<?> widgetList, @Nullable IDialogHandler dialogHandler)
     {
         super(x, y, width, height);
 
-        this.keybind = keybind;
-        this.keybindName = keybindName;
-        this.settings = keybind.getSettings();
-        this.defaultSettings = keybind.getDefaultSettings();
+        this.keyBind = keyBind;
+        this.keyBindName = keyBindName;
+        this.settings = keyBind.getSettings();
+        this.defaultSettings = keyBind.getDefaultSettings();
         this.widgetList = widgetList;
         this.dialogHandler = dialogHandler;
     }
@@ -47,11 +48,11 @@ public class WidgetKeybindSettings extends WidgetBase
         {
             if (this.dialogHandler != null)
             {
-                this.dialogHandler.openDialog(new GuiKeybindSettings(this.keybind, this.keybindName, this.dialogHandler, GuiUtils.getCurrentScreen()));
+                this.dialogHandler.openDialog(new GuiKeybindSettings(this.keyBind, this.keyBindName, this.dialogHandler, GuiUtils.getCurrentScreen()));
             }
             else
             {
-                GuiBase.openPopupGui(new GuiKeybindSettings(this.keybind, this.keybindName, null, GuiUtils.getCurrentScreen()));
+                GuiBase.openPopupGui(new GuiKeybindSettings(this.keyBind, this.keyBindName, null, GuiUtils.getCurrentScreen()));
             }
 
             return true;
@@ -59,7 +60,7 @@ public class WidgetKeybindSettings extends WidgetBase
         // Reset the settings to defaults on right click
         else if (mouseButton == 1)
         {
-            this.keybind.resetSettingsToDefaults();
+            this.keyBind.resetSettingsToDefaults();
             this.widgetList.refreshEntries();
             return true;
         }
@@ -85,9 +86,9 @@ public class WidgetKeybindSettings extends WidgetBase
         int x = this.getX();
         int y = this.getY();
         int z = this.getZLevel();
-        int edgeColor = this.keybind.areSettingsModified() ? 0xFFFFBB33 : 0xFFFFFFFF;
+        int edgeColor = this.keyBind.areSettingsModified() ? 0xFFFFBB33 : 0xFFFFFFFF;
 
-        RenderUtils.drawRect(x    , y + 0, 20, 20, edgeColor, z);
+        RenderUtils.drawRect(x    , y    , 20, 20, edgeColor, z);
         RenderUtils.drawRect(x + 1, y + 1, 18, 18, 0xFF000000, z);
 
         x += 1;
@@ -135,10 +136,7 @@ public class WidgetKeybindSettings extends WidgetBase
         text.add("");
         String[] parts = StringUtils.translate("malilib.gui.label.keybind_settings.tips").split("\\\\n");
 
-        for (int i = 0; i < parts.length; ++i)
-        {
-            text.add(parts[i]);
-        }
+        Collections.addAll(text, parts);
 
         RenderUtils.drawHoverText(mouseX + 10, mouseY, this.getZLevel(), text);
     }

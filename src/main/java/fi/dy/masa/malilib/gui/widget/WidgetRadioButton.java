@@ -3,11 +3,11 @@ package fi.dy.masa.malilib.gui.widget;
 import java.util.List;
 import java.util.function.Function;
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.gui.interfaces.IIconProvider;
 import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
 import fi.dy.masa.malilib.gui.util.BaseGuiIcon;
+import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.render.RenderUtils;
 
 public class WidgetRadioButton<T extends Enum<T>> extends WidgetBase
@@ -98,7 +98,7 @@ public class WidgetRadioButton<T extends Enum<T>> extends WidgetBase
 
     protected IconType getIconTypeFor(int mouseX, int mouseY, T entry, int y, boolean selected)
     {
-        boolean hovered = GuiBase.isMouseOver(mouseX, mouseY, this.getX(), y, this.getWidth(), this.entryHeight);
+        boolean hovered = GuiUtils.isMouseInRegion(mouseX, mouseY, this.getX(), y, this.getWidth(), this.entryHeight);
 
         if (selected)
         {

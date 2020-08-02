@@ -99,8 +99,8 @@ public class WidgetListConfigOptions extends WidgetListConfigOptionsBase<ConfigO
     @Override
     protected WidgetConfigOption createListEntryWidget(int x, int y, int listIndex, boolean isOdd, ConfigOptionWrapper wrapper)
     {
-        return new WidgetConfigOption(x, y, this.browserEntryWidth, this.browserEntryHeight,
-                this.maxLabelWidth, this.configWidth, wrapper, listIndex, this.parent, this);
+        return new WidgetConfigOption(x, y, this.entryWidgetWidth, this.entryWidgetFixedHeight,
+                                      this.maxLabelWidth, this.configWidth, wrapper, listIndex, this.parent, this);
     }
 
     public int getMaxNameLengthWrapped(List<ConfigOptionWrapper> wrappers)

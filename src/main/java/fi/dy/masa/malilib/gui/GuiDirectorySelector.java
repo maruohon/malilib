@@ -3,7 +3,6 @@ package fi.dy.masa.malilib.gui;
 import java.io.File;
 import java.util.function.Consumer;
 import fi.dy.masa.malilib.gui.widget.WidgetDirectoryBrowser;
-import fi.dy.masa.malilib.gui.widgets.WidgetDirectoryBrowser;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class GuiDirectorySelector extends GuiListBase<WidgetDirectoryBrowser>
@@ -47,7 +46,7 @@ public class GuiDirectorySelector extends GuiListBase<WidgetDirectoryBrowser>
     {
         WidgetDirectoryBrowser widget = new WidgetDirectoryBrowser(listX, listY,
                 this.getBrowserWidth(), this.getBrowserHeight(), this.currentDirectory, this.rootDirectory);
-        widget.setParentGui(this.getParent());
+        widget.setParentScreen(this.getParent());
         return widget;
     }
 }

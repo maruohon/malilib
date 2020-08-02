@@ -98,10 +98,8 @@ public abstract class GuiListBase<LISTWIDGET extends WidgetListBase> extends Gui
     @Override
     protected List<WidgetTextFieldBase> getAllTextFields()
     {
-        List<WidgetTextFieldBase> textFields = new ArrayList<>();
+        List<WidgetTextFieldBase> textFields = new ArrayList<>(super.getAllTextFields());
         WidgetListBase listWidget = this.getListWidget();
-
-        textFields.addAll(super.getAllTextFields());
 
         if (listWidget != null)
         {
@@ -121,7 +119,7 @@ public abstract class GuiListBase<LISTWIDGET extends WidgetListBase> extends Gui
         if (listWidget != null)
         {
             listWidget.setSize(this.getBrowserWidth(), this.getBrowserHeight());
-            listWidget.initGui();
+            listWidget.initWidget();
         }
     }
 
@@ -189,12 +187,7 @@ public abstract class GuiListBase<LISTWIDGET extends WidgetListBase> extends Gui
         }
 
         // If the list widget or its sub widgets didn't consume the ESC, then send that to the parent (to close the GUI)
-        if (keyCode == Keyboard.KEY_ESCAPE && super.onKeyTyped(typedChar, keyCode))
-        {
-            return true;
-        }
-
-        return false;
+        return keyCode == Keyboard.KEY_ESCAPE && super.onKeyTyped(typedChar, keyCode);
     }
 
     @Override

@@ -94,7 +94,7 @@ public class WidgetScrollBar extends WidgetBase
         this.currentValue = Math.min(this.currentValue, this.maxValue);
     }
 
-    public void setTotalheight(int totalHeight)
+    public void setTotalHeight(int totalHeight)
     {
         this.totalHeight = totalHeight;
     }

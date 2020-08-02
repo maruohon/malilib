@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.gui.widgets;
+package fi.dy.masa.malilib.gui.widget;
 
 import javax.annotation.Nullable;
 

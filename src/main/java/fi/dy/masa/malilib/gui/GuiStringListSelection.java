@@ -7,11 +7,10 @@ import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.gui.interfaces.IStringListConsumer;
-import fi.dy.masa.malilib.gui.widget.WidgetDataListBase;
-import fi.dy.masa.malilib.interfaces.IStringListProvider;
+import fi.dy.masa.malilib.gui.widget.WidgetListData;
 import fi.dy.masa.malilib.util.StringUtils;
 
-public class GuiStringListSelection extends GuiListBase<WidgetDataListBase<String>> implements IStringListProvider
+public class GuiStringListSelection extends GuiListBase<WidgetListData<String>>
 {
     protected final ImmutableList<String> strings;
     protected final IStringListConsumer consumer;
@@ -42,9 +41,9 @@ public class GuiStringListSelection extends GuiListBase<WidgetDataListBase<Strin
     }
 
     @Override
-    protected WidgetDataListBase<String> createListWidget(int listX, int listY)
+    protected WidgetListData<String> createListWidget(int listX, int listY)
     {
-        return new WidgetDataListBase<String>(listX, listY, this.getBrowserWidth(), this.getBrowserHeight(), this::getStrings, null);
+        return new WidgetListData<>(listX, listY, this.getBrowserWidth(), this.getBrowserHeight(), this::getStrings);
     }
 
     @Override
@@ -55,19 +54,15 @@ public class GuiStringListSelection extends GuiListBase<WidgetDataListBase<Strin
         int x = 12;
         int y = this.height - 32;
 
-        x += this.createButton(x, y, -1, ButtonListener.Type.OK) + 2;
-        x += this.createButton(x, y, -1, ButtonListener.Type.CANCEL) + 2;
+        x += this.createButton(x, y, ButtonListener.Type.OK) + 2;
+        this.createButton(x, y, ButtonListener.Type.CANCEL);
     }
 
-    private int createButton(int x, int y, int width, ButtonListener.Type type)
+    private int createButton(int x, int y, ButtonListener.Type type)
     {
         ButtonListener listener = new ButtonListener(type, this);
         String label = type.getDisplayName();
-
-        if (width == -1)
-        {
-            width = this.getStringWidth(label) + 10;
-        }
+        int width = this.getStringWidth(label) + 10;
 
         ButtonGeneric button = new ButtonGeneric(x, y, width, 20, label);
         this.addButton(button, listener);
@@ -91,7 +86,7 @@ public class GuiStringListSelection extends GuiListBase<WidgetDataListBase<Strin
         {
             if (this.type == Type.OK)
             {
-                this.parent.consumer.consume(this.parent.getListWidget().getSelectedEntries());
+                this.parent.consumer.consume(this.parent.getListWidget().getEntrySelectionHandler().getSelectedEntries());
             }
             else
             {
@@ -106,7 +101,7 @@ public class GuiStringListSelection extends GuiListBase<WidgetDataListBase<Strin
 
             private final String translationKey;
 
-            private Type(String translationKey)
+            Type(String translationKey)
             {
                 this.translationKey = translationKey;
             }

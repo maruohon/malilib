@@ -61,7 +61,7 @@ public abstract class WidgetConfigOptionBase<TYPE> extends WidgetListDataEntryBa
     }
 
     @Override
-    public boolean canSelectAt(int mouseX, int mouseY, int mouseButton)
+    public boolean canHoverAt(int mouseX, int mouseY, int mouseButton)
     {
         return false;
     }

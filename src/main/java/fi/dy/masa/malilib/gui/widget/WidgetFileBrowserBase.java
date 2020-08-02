@@ -16,29 +16,27 @@ import fi.dy.masa.malilib.gui.GuiTextInput;
 import fi.dy.masa.malilib.gui.interfaces.IDirectoryCache;
 import fi.dy.masa.malilib.gui.interfaces.IDirectoryNavigator;
 import fi.dy.masa.malilib.gui.interfaces.IFileBrowserIconProvider;
-import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
 import fi.dy.masa.malilib.gui.util.DefaultFileBrowserIconProvider;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.WidgetFileBrowserBase.DirectoryEntry;
 import fi.dy.masa.malilib.util.DirectoryCreator;
 import fi.dy.masa.malilib.util.FileUtils;
 
-public abstract class WidgetFileBrowserBase extends WidgetDataListBase<DirectoryEntry> implements IDirectoryNavigator
+public abstract class WidgetFileBrowserBase extends WidgetListData<DirectoryEntry> implements IDirectoryNavigator
 {
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    @Nullable protected final IDirectoryCache cache;
     protected final IFileBrowserIconProvider iconProvider = new DefaultFileBrowserIconProvider();
     protected final File rootDirectory;
-    protected String browserContext = "";
+    @Nullable protected final IDirectoryCache cache;
     protected WidgetDirectoryNavigation widgetNavigation;
+    protected String browserContext;
     protected File currentDirectory;
 
     public WidgetFileBrowserBase(int x, int y, int width, int height, File defaultDirectory, File rootDirectory,
-            @Nullable IDirectoryCache cache, @Nullable String browserContext,
-            @Nullable ISelectionListener<DirectoryEntry> selectionListener)
+            @Nullable IDirectoryCache cache, @Nullable String browserContext)
     {
-        super(x, y, width, height, null, selectionListener);
+        super(x, y, width, height, null);
 
         this.rootDirectory = rootDirectory;
         this.cache = cache;
@@ -46,11 +44,15 @@ public abstract class WidgetFileBrowserBase extends WidgetDataListBase<Directory
         this.currentDirectory = cache != null ? cache.getCurrentDirectoryForContext(this.browserContext) : null;
         this.allowKeyboardNavigation = true;
         this.shouldSortList = true;
+        this.entryWidgetFixedHeight = 14;
 
         if (this.currentDirectory == null)
         {
             this.currentDirectory = defaultDirectory;
         }
+
+        this.setEntryWidgetFactory((wx, wy, ww, wh, li, entry, lw) ->
+                                    new WidgetDirectoryEntry(wx, wy, ww, wh, li, entry, this, this.iconProvider));
 
         this.setBackgroundColor(0xB0000000);
         this.setBorderColor(GuiBase.COLOR_HORIZONTAL_BAR);
@@ -91,18 +93,6 @@ public abstract class WidgetFileBrowserBase extends WidgetDataListBase<Directory
     }
 
     @Override
-    protected int getBackgroundWidth()
-    {
-        return this.browserWidth;
-    }
-
-    @Override
-    protected int getBackgroundHeight()
-    {
-        return this.browserHeight;
-    }
-
-    @Override
     public void render(int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
     {
         super.render(mouseX, mouseY, isActiveGui, hovered);
@@ -129,19 +119,19 @@ public abstract class WidgetFileBrowserBase extends WidgetDataListBase<Directory
     {
         super.setSize(width, height);
 
-        this.browserWidth = this.getBrowserWidthForTotalWidth(width);
-        this.browserEntryWidth = this.browserWidth - 14;
+        this.listWidth = this.getBrowserWidthForTotalWidth(width);
+        this.entryWidgetWidth = this.listWidth - 14;
 
         if (this.widgetNavigation != null)
         {
-            this.widgetNavigation.setWidth(this.browserEntryWidth);
+            this.widgetNavigation.setWidth(this.entryWidgetWidth);
         }
     }
 
     @Override
-    public void initGui()
+    public void initWidget()
     {
-        super.initGui();
+        super.initWidget();
         this.updateDirectoryNavigationWidget();
     }
 
@@ -176,7 +166,7 @@ public abstract class WidgetFileBrowserBase extends WidgetDataListBase<Directory
     @Override
     protected Comparator<DirectoryEntry> getComparator()
     {
-        return (e1, e2) -> e1.compareTo(e2);
+        return Comparator.naturalOrder();
     }
 
     @Nullable
@@ -193,8 +183,8 @@ public abstract class WidgetFileBrowserBase extends WidgetDataListBase<Directory
             this.removeWidget(this.widgetNavigation);
         }
 
-        this.widgetNavigation = new WidgetDirectoryNavigation(this.getX() + 2, this.getY() + 4, this.browserEntryWidth, 14,
-                this.currentDirectory, this.getRootDirectory(), this, this.getIconProvider(), this.getRootDirectoryDisplayName());
+        this.widgetNavigation = new WidgetDirectoryNavigation(this.getX() + 2, this.getY() + 4, this.entryWidgetWidth, 14,
+                                                              this.currentDirectory, this.getRootDirectory(), this, this.getIconProvider(), this.getRootDirectoryDisplayName());
         this.addSearchBarWidget(this.widgetNavigation);
 
         this.updateScrollbarPosition();
@@ -290,16 +280,7 @@ public abstract class WidgetFileBrowserBase extends WidgetDataListBase<Directory
     protected int getHeightForListEntryWidget(int listIndex)
     {
         DirectoryEntry entry = this.listContents.get(listIndex);
-        return entry.getType() == DirectoryEntryType.DIRECTORY ? 14 : this.browserEntryHeight;
-    }
-
-    @Override
-    protected WidgetListEntryBase createListEntryWidget(int x, int y, int listIndex, boolean isOdd)
-    {
-        DirectoryEntry entry = this.listContents.get(listIndex);
-
-        return new WidgetDirectoryEntry(x, y, this.browserEntryWidth, this.getHeightForListEntryWidget(listIndex),
-                isOdd, entry, listIndex, this, this.getIconProvider());
+        return entry.getType() == DirectoryEntryType.DIRECTORY ? 14 : this.entryWidgetFixedHeight;
     }
 
     protected boolean currentDirectoryIsRoot()

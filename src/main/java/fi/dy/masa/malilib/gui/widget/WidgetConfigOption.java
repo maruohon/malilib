@@ -6,10 +6,8 @@ import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.config.ConfigType;
-import fi.dy.masa.malilib.gui.callback.SliderCallbackDouble;
-import fi.dy.masa.malilib.gui.callback.SliderCallbackInteger;
-import fi.dy.masa.malilib.config.option.FileConfig;
 import fi.dy.masa.malilib.config.option.ConfigOption;
+import fi.dy.masa.malilib.config.option.FileConfig;
 import fi.dy.masa.malilib.config.option.IConfigBoolean;
 import fi.dy.masa.malilib.config.option.IConfigDouble;
 import fi.dy.masa.malilib.config.option.IConfigInteger;
@@ -20,7 +18,6 @@ import fi.dy.masa.malilib.config.option.IConfigStringList;
 import fi.dy.masa.malilib.config.option.IConfigValue;
 import fi.dy.masa.malilib.config.option.IStringRepresentable;
 import fi.dy.masa.malilib.gui.GuiBase;
-import fi.dy.masa.malilib.gui.config.GuiConfigsBase.ConfigOptionWrapper;
 import fi.dy.masa.malilib.gui.GuiDirectorySelector;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
@@ -29,6 +26,9 @@ import fi.dy.masa.malilib.gui.button.ConfigButtonKeybind;
 import fi.dy.masa.malilib.gui.button.ConfigButtonOptionList;
 import fi.dy.masa.malilib.gui.button.ConfigButtonStringList;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
+import fi.dy.masa.malilib.gui.callback.SliderCallbackDouble;
+import fi.dy.masa.malilib.gui.callback.SliderCallbackInteger;
+import fi.dy.masa.malilib.gui.config.GuiConfigsBase.ConfigOptionWrapper;
 import fi.dy.masa.malilib.gui.interfaces.IConfigInfoProvider;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.gui.interfaces.IKeybindConfigGui;
@@ -54,9 +54,9 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
     protected int colorDisplayPosX;
 
     public WidgetConfigOption(int x, int y, int width, int height, int labelWidth, int configWidth,
-            ConfigOptionWrapper wrapper, int listIndex, IKeybindConfigGui host, WidgetListConfigOptionsBase<?, ?> parent)
+            ConfigOptionWrapper wrapper, int listIndex, IKeybindConfigGui host, WidgetListConfigOptionsBase<?> parent)
     {
-        super(x, y, width, height, parent, wrapper, listIndex);
+        super(x, y, width, height, parent, listIndex, wrapper);
 
         this.host = host;
         this.wrapper = wrapper;

@@ -478,7 +478,7 @@ public class WidgetDropDownList<T> extends WidgetContainer
     {
         this.visibleEntries = Math.min(this.maxVisibleEntries, this.filteredEntries.size());
         int totalHeight = Math.max(this.visibleEntries, this.filteredEntries.size()) * this.lineHeight;
-        this.scrollBar.setTotalheight(totalHeight);
+        this.scrollBar.setTotalHeight(totalHeight);
     }
 
     protected boolean entryMatchesFilter(T entry, String filterText)
