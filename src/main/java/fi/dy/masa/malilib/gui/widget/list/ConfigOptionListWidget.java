@@ -42,14 +42,14 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
 
         @Override
         @Nullable
-        public BaseConfigOptionWidget createWidget(int x, int y, int width, int height, int listIndex,
-                                                   C config, DataListWidget<C> listWidget)
+        public BaseConfigOptionWidget<C> createWidget(int x, int y, int width, int height, int listIndex, 
+                                                      C config, DataListWidget<C> listWidget)
         {
             List<C> list = this.entrySupplier.get();
 
             if (listIndex >= 0 && listIndex < list.size())
             {
-                ConfigOptionWidgetFactory factory = ConfigTypeRegistry.INSTANCE.getWidgetFactory(config);
+                ConfigOptionWidgetFactory<C> factory = ConfigTypeRegistry.INSTANCE.getWidgetFactory(config);
                 return factory.create(x, y, width, height, listIndex, config, this.gui);
             }
 

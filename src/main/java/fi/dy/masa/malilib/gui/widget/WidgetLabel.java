@@ -140,9 +140,8 @@ public class WidgetLabel extends WidgetBackground
             int fontHeight = this.fontHeight;
             ITextRenderer renderer = this.getTextRenderer(this.useTextShadow, this.centered);
 
-            for (int i = 0; i < this.labels.size(); ++i)
+            for (String text : this.labels)
             {
-                String text = this.labels.get(i);
                 renderer.renderText(x, y, this.textColor, text);
                 y += fontHeight + 1;
             }

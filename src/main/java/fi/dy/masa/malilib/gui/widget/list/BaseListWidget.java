@@ -458,7 +458,7 @@ public abstract class BaseListWidget extends WidgetContainer
         this.listWidgets.clear();
         this.visibleListEntries = 0;
 
-        int usableHeight = this.listHeight - this.entryWidgetsStartY;
+        int usableHeight = this.listHeight;
         int usedHeight = this.usedHeight;
         int x = this.entryWidgetsStartX;
         int y = this.entryWidgetsStartY + usedHeight;
@@ -470,6 +470,7 @@ public abstract class BaseListWidget extends WidgetContainer
         {
             BaseListEntryWidget widget = this.createListEntryWidget(x, y, listIndex);
 
+            //System.out.printf("i: %d, usable: %d, used: %d, lh: %d, sy: %d\n", listIndex, usableHeight, usedHeight, this.listHeight, this.entryWidgetsStartY);
             if (widget == null || usedHeight + widget.getHeight() > usableHeight)
             {
                 break;
