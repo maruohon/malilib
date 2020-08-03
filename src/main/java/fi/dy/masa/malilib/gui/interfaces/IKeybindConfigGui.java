@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.gui.interfaces;
 
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.gui.button.ConfigButtonKeybind;
+import fi.dy.masa.malilib.gui.button.ConfigButtonKeyBind;
 import fi.dy.masa.malilib.gui.listener.ConfigOptionChangeListenerKeybind;
 
 public interface IKeybindConfigGui extends IConfigGui
@@ -20,5 +20,5 @@ public interface IKeybindConfigGui extends IConfigGui
      * and for updating the button appearance when gaining or losing the focus.
      * @param button
      */
-    void setActiveKeybindButton(@Nullable ConfigButtonKeybind button);
+    void setActiveKeyBindButton(@Nullable ConfigButtonKeyBind button);
 }

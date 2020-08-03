@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.gui.widget;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.gui.GuiBase;
+import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
@@ -18,7 +18,7 @@ public abstract class WidgetContainer extends WidgetBackground
         super(x, y, width, height);
     }
 
-    protected <T extends WidgetBase> T addWidget(T widget)
+    public  <T extends WidgetBase> T addWidget(T widget)
     {
         this.subWidgets.add(widget);
         this.onSubWidgetAdded(widget);
@@ -26,41 +26,41 @@ public abstract class WidgetContainer extends WidgetBackground
         return widget;
     }
 
-    protected <T extends ButtonBase> T addButton(T button, IButtonActionListener listener)
+    public  <T extends ButtonBase> T addButton(T button, IButtonActionListener listener)
     {
         button.setActionListener(listener);
         this.addWidget(button);
         return button;
     }
 
-    protected <T extends WidgetTextFieldBase> T addTextField(T widget, ITextFieldListener listener)
+    public  <T extends WidgetTextFieldBase> T addTextField(T widget, ITextFieldListener listener)
     {
         widget.setListener(listener);
         this.addWidget(widget);
         return widget;
     }
 
-    protected WidgetLabel addLabel(int x, int y, int textColor, String... lines)
+    public WidgetLabel addLabel(int x, int y, int textColor, String... lines)
     {
         return this.addLabel(x, y, -1, -1, textColor, lines);
     }
 
-    protected WidgetLabel addLabel(int x, int y, int width, int height, int textColor, String... lines)
+    public WidgetLabel addLabel(int x, int y, int width, int height, int textColor, String... lines)
     {
         return this.addWidget(new WidgetLabel(x, y, width, height, textColor, lines));
     }
 
-    protected void removeWidget(WidgetBase widget)
+    public void removeWidget(WidgetBase widget)
     {
         this.subWidgets.remove(widget);
     }
 
-    protected void clearWidgets()
+    public void clearWidgets()
     {
         this.subWidgets.clear();
     }
 
-    protected void onSubWidgetAdded(WidgetBase widget)
+    public void onSubWidgetAdded(WidgetBase widget)
     {
         widget.onWidgetAdded(this.getZLevel());
     }
@@ -212,6 +212,6 @@ public abstract class WidgetContainer extends WidgetBackground
     public void renderDebug(int mouseX, int mouseY, boolean hovered, boolean renderAll, boolean infoAlways)
     {
         super.renderDebug(mouseX, mouseY, hovered, renderAll, infoAlways);
-        GuiBase.renderWidgetDebug(this.subWidgets, mouseX, mouseY, renderAll, infoAlways);
+        BaseScreen.renderWidgetDebug(this.subWidgets, mouseX, mouseY, renderAll, infoAlways);
     }
 }

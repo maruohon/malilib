@@ -13,7 +13,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagLong;
 import net.minecraft.nbt.NBTTagShort;
 import net.minecraft.nbt.NBTTagString;
-import fi.dy.masa.malilib.gui.GuiBase;
+import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.mixin.IMixinNBTTagLongArray;
 import fi.dy.masa.malilib.util.data.Constants;
 
@@ -24,10 +24,10 @@ public abstract class NbtStringifierBase
     protected final boolean useNumberSuffix;
 
     protected String tagNameQuote = "\"";
-    protected String keyColor = GuiBase.TXT_YELLOW;
-    protected String numberColor = GuiBase.TXT_GOLD;
-    protected String numberTypeColor = GuiBase.TXT_RED;
-    protected String stringColor = GuiBase.TXT_GREEN;
+    protected String keyColor = BaseScreen.TXT_YELLOW;
+    protected String numberColor = BaseScreen.TXT_GOLD;
+    protected String numberTypeColor = BaseScreen.TXT_RED;
+    protected String stringColor = BaseScreen.TXT_GREEN;
 
     public NbtStringifierBase(boolean useNumberSuffix)
     {

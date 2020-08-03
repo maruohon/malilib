@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.gui.widget.util;
 
-import fi.dy.masa.malilib.gui.widget.WidgetDataListHeader;
-import fi.dy.masa.malilib.gui.widget.WidgetListData;
+import fi.dy.masa.malilib.gui.widget.list.entry.DataListHeaderWidget;
+import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 
 public interface ListHeaderWidgetFactory<DATATYPE>
 {
@@ -14,5 +14,5 @@ public interface ListHeaderWidgetFactory<DATATYPE>
      * @param listWidget The parent list widget that is creating this widget.
      * @return
      */
-    WidgetDataListHeader createWidget(int x, int y, int width, int height, WidgetListData<DATATYPE> listWidget);
+    DataListHeaderWidget createWidget(int x, int y, int width, int height, DataListWidget<DATATYPE> listWidget);
 }

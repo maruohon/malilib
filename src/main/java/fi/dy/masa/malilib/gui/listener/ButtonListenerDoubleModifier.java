@@ -2,7 +2,7 @@ package fi.dy.masa.malilib.gui.listener;
 
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
-import fi.dy.masa.malilib.gui.GuiBase;
+import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 
@@ -33,9 +33,9 @@ public class ButtonListenerDoubleModifier implements IButtonActionListener
     {
         int amount = mouseButton == 1 ? -1 : 1;
 
-        if (GuiBase.isShiftDown()) { amount *= this.modifierShift; }
-        if (GuiBase.isCtrlDown())  { amount *= this.modifierControl; }
-        if (GuiBase.isAltDown())   { amount *= this.modifierAlt; }
+        if (BaseScreen.isShiftDown()) { amount *= this.modifierShift; }
+        if (BaseScreen.isCtrlDown())  { amount *= this.modifierControl; }
+        if (BaseScreen.isAltDown())   { amount *= this.modifierAlt; }
 
         this.consumer.accept(this.supplier.getAsDouble() + amount);
     }

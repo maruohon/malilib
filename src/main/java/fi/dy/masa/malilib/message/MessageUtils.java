@@ -6,7 +6,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 import fi.dy.masa.malilib.LiteModMaLiLib;
 import fi.dy.masa.malilib.config.value.HudAlignment;
 import fi.dy.masa.malilib.config.value.InfoType;
-import fi.dy.masa.malilib.gui.GuiBase;
+import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.render.MessageRenderer;
 import fi.dy.masa.malilib.util.StringUtils;
@@ -110,7 +110,7 @@ public class MessageUtils
         }
         else
         {
-            String msg = type.getFormatting() + StringUtils.translate(translationKey, args) + GuiBase.TXT_RST;
+            String msg = type.getFormatting() + StringUtils.translate(translationKey, args) + BaseScreen.TXT_RST;
             printActionbarMessage(msg);
         }
     }
@@ -267,9 +267,9 @@ public class MessageUtils
 
     public static void printBooleanConfigToggleMessage(String prettyName, boolean newValue)
     {
-        String pre = newValue ? GuiBase.TXT_GREEN : GuiBase.TXT_RED;
+        String pre = newValue ? BaseScreen.TXT_GREEN : BaseScreen.TXT_RED;
         String status = StringUtils.translate("malilib.message.value." + (newValue ? "on" : "off"));
-        String message = StringUtils.translate("malilib.message.toggled", prettyName, pre + status + GuiBase.TXT_RST);
+        String message = StringUtils.translate("malilib.message.toggled", prettyName, pre + status + BaseScreen.TXT_RST);
 
         printActionbarMessage(message);
     }

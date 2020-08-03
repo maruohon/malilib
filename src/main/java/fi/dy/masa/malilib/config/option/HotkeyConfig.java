@@ -35,11 +35,11 @@ public class HotkeyConfig extends BaseConfig<HotkeyConfig> implements IHotkey
     }
 
     @Override
-    public void setModName(String modName)
+    public void setModId(String modId)
     {
-        super.setModName(modName);
+        super.setModId(modId);
 
-        this.keyBind.setModName(modName);
+        this.keyBind.setModId(modId);
     }
 
     @Override
@@ -70,12 +70,6 @@ public class HotkeyConfig extends BaseConfig<HotkeyConfig> implements IHotkey
     public boolean isModified()
     {
         return this.keyBind.isModified();
-    }
-
-    @Override
-    public boolean isModified(String newValue)
-    {
-        return this.keyBind.isModified(newValue);
     }
 
     @Override

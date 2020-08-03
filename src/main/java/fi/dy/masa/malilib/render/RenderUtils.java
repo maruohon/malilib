@@ -36,7 +36,7 @@ import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraft.world.storage.MapData;
 import fi.dy.masa.malilib.config.value.HudAlignment;
-import fi.dy.masa.malilib.gui.GuiBase;
+import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.interfaces.IBackgroundRenderer;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.render.overlay.InventoryOverlay;
@@ -1138,7 +1138,7 @@ public class RenderUtils
 
     public static void renderMapPreview(ItemStack stack, int x, int y, int dimensions)
     {
-        if (stack.getItem() instanceof ItemMap && GuiBase.isShiftDown())
+        if (stack.getItem() instanceof ItemMap && BaseScreen.isShiftDown())
         {
             GlStateManager.pushMatrix();
             GlStateManager.disableLighting();

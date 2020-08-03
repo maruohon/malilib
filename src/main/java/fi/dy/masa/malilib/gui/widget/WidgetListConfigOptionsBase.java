@@ -1,7 +1,8 @@
 package fi.dy.masa.malilib.gui.widget;
 
-public abstract class WidgetListConfigOptionsBase<TYPE> extends WidgetListData<TYPE>
+public abstract class WidgetListConfigOptionsBase<TYPE>// extends DataListWidget<TYPE>
 {
+    /*
     protected boolean configsModified;
     protected int maxLabelWidth;
     protected int configWidth;
@@ -72,4 +73,5 @@ public abstract class WidgetListConfigOptionsBase<TYPE> extends WidgetListData<T
             }
         }
     }
+    */
 }

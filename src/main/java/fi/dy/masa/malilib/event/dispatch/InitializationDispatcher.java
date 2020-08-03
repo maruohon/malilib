@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.event.dispatch;
 
 import java.util.ArrayList;
 import java.util.List;
+import fi.dy.masa.malilib.config.ConfigManagerImpl;
 import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.event.IInitializationHandler;
 
@@ -33,7 +34,7 @@ public class InitializationDispatcher implements IInitializationDispatcher
             }
         }
 
-        ((ConfigManager) ConfigManager.INSTANCE).loadAllConfigs();
+        ((ConfigManagerImpl) ConfigManager.INSTANCE).loadAllConfigs();
         InputEventDispatcher.getKeyBindManager().updateUsedKeys();
     }
 }

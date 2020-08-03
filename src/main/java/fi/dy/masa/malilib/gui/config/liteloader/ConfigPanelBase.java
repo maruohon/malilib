@@ -5,22 +5,22 @@ import java.util.List;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import com.mumfrey.liteloader.modconfig.AbstractConfigPanel;
+import com.mumfrey.liteloader.modconfig.ConfigPanelHost;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-import com.mumfrey.liteloader.modconfig.AbstractConfigPanel;
-import com.mumfrey.liteloader.modconfig.ConfigPanelHost;
+import fi.dy.masa.malilib.config.option.ConfigInfo;
+import fi.dy.masa.malilib.gui.BaseScreen;
+import fi.dy.masa.malilib.gui.config.BaseConfigScreen;
 import fi.dy.masa.malilib.gui.config.GuiModConfigs;
-import fi.dy.masa.malilib.gui.GuiBase;
-import fi.dy.masa.malilib.gui.config.GuiConfigsBase;
-import fi.dy.masa.malilib.gui.config.GuiConfigsBase.ConfigOptionWrapper;
 import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 
 public abstract class ConfigPanelBase extends AbstractConfigPanel
 {
-    private final List<GuiConfigsBase> subPanels = new ArrayList<>();
-    private GuiConfigsBase selectedSubPanel;
+    private final List<BaseConfigScreen> subPanels = new ArrayList<>();
+    private BaseConfigScreen selectedSubPanel;
     protected int subPanelButtonWidth = 300;
     protected int subPanelButtonHeight = 20;
     protected int subPanelButtonsStartY = 10;
@@ -67,7 +67,7 @@ public abstract class ConfigPanelBase extends AbstractConfigPanel
 
         for (int i = 0; i < this.subPanels.size(); i++)
         {
-            GuiConfigsBase subPanel = this.subPanels.get(i);
+            BaseConfigScreen subPanel = this.subPanels.get(i);
             ButtonListenerPanelSelection<GuiButton> listener = new ButtonListenerPanelSelection<>(subPanel);
             this.addControl(new GuiButton(i, x, y, buttonWidth, buttonHeight, subPanel.getTitle()), listener);
             y += this.subPanelButtonHeight + 1;
@@ -196,13 +196,13 @@ public abstract class ConfigPanelBase extends AbstractConfigPanel
         }
     }
 
-    protected void addSubPanel(GuiConfigsBase panel)
+    protected void addSubPanel(BaseConfigScreen panel)
     {
         this.updateSubPanelSize(panel);
         this.subPanels.add(panel);
     }
 
-    public void setSelectedSubPanel(@Nullable GuiConfigsBase panel)
+    public void setSelectedSubPanel(@Nullable BaseConfigScreen panel)
     {
         if (this.selectedSubPanel != null)
         {
@@ -222,7 +222,7 @@ public abstract class ConfigPanelBase extends AbstractConfigPanel
         }
     }
 
-    protected void updateSubPanelSize(GuiConfigsBase panel)
+    protected void updateSubPanelSize(BaseConfigScreen panel)
     {
         // Liteloader panel margins and offsets...
         int width = GuiUtils.getScaledWindowWidth() - 80 - 12 - 10;
@@ -233,9 +233,9 @@ public abstract class ConfigPanelBase extends AbstractConfigPanel
 
     private class ButtonListenerPanelSelection<T extends GuiButton> implements ConfigOptionListener<T>
     {
-        private final GuiConfigsBase panel;
+        private final BaseConfigScreen panel;
 
-        public ButtonListenerPanelSelection(GuiConfigsBase panel)
+        public ButtonListenerPanelSelection(BaseConfigScreen panel)
         {
             this.panel = panel;
         }
@@ -249,22 +249,22 @@ public abstract class ConfigPanelBase extends AbstractConfigPanel
 
     private class DialogHandler implements IDialogHandler
     {
-        @Nullable private final GuiConfigsBase selectedPanel;
+        @Nullable private final BaseConfigScreen selectedPanel;
 
-        private DialogHandler(@Nullable GuiConfigsBase selectedPanel)
+        private DialogHandler(@Nullable BaseConfigScreen selectedPanel)
         {
             this.selectedPanel = selectedPanel;
         }
 
         @Override
-        public void openDialog(GuiBase gui)
+        public void openDialog(BaseScreen gui)
         {
             String modId = this.selectedPanel.getModId();
             String title = this.selectedPanel.getTitle();
-            List<ConfigOptionWrapper> wrappers = this.selectedPanel.getConfigs();
             gui.setPopupGuiZLevelBasedOn(GuiUtils.getCurrentScreen());
 
-            ConfigPanelBase.this.setSelectedSubPanel(new GuiConfigsWrapper(modId, title, wrappers, this.selectedPanel, gui));
+            ConfigPanelBase.this.setSelectedSubPanel(
+                    new GuiConfigsWrapper(modId, title, this.selectedPanel.getConfigs(), this.selectedPanel, gui));
         }
 
         @Override
@@ -277,12 +277,12 @@ public abstract class ConfigPanelBase extends AbstractConfigPanel
     public static class GuiConfigsWrapper extends GuiModConfigs
     {
         protected final GuiScreen backgroundGui;
-        protected final GuiBase foregroundGui;
+        protected final BaseScreen foregroundGui;
 
-        public GuiConfigsWrapper(String modId, String title, List<ConfigOptionWrapper> wrappers,
-                GuiScreen backgroundGui, GuiBase foregroundGui)
+        public GuiConfigsWrapper(String modId, String title, List<? extends ConfigInfo> configs,
+                GuiScreen backgroundGui, BaseScreen foregroundGui)
         {
-            super(modId, wrappers, false, title);
+            super(modId, configs, title);
 
             this.backgroundGui = backgroundGui;
             this.foregroundGui = foregroundGui;

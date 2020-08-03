@@ -9,7 +9,7 @@ import fi.dy.masa.malilib.util.StringUtils;
 
 public class HotkeyedBooleanConfig extends BooleanConfig implements IHotkey
 {
-    protected final IKeyBind keybind;
+    protected final IKeyBind keyBind;
 
     public HotkeyedBooleanConfig(String name, boolean defaultValue, String defaultHotkey, String comment)
     {
@@ -25,14 +25,14 @@ public class HotkeyedBooleanConfig extends BooleanConfig implements IHotkey
     {
         super(name, defaultValue, comment, prettyName);
 
-        this.keybind = KeyBindMulti.fromStorageString(name, defaultHotkey, settings);
-        this.keybind.setCallback(new KeyCallbackToggleBooleanConfigWithMessage(this));
+        this.keyBind = KeyBindMulti.fromStorageString(name, defaultHotkey, settings);
+        this.keyBind.setCallback(new KeyCallbackToggleBooleanConfigWithMessage(this));
     }
 
     @Override
     public IKeyBind getKeyBind()
     {
-        return this.keybind;
+        return this.keyBind;
     }
 
     @Override
@@ -40,6 +40,6 @@ public class HotkeyedBooleanConfig extends BooleanConfig implements IHotkey
     {
         super.resetToDefault();
 
-        this.keybind.resetToDefault();
+        this.keyBind.resetToDefault();
     }
 }

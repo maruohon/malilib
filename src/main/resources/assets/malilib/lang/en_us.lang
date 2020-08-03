@@ -64,6 +64,8 @@ malilib.gui.label_colored.on=§aON§r
 
 malilib.gui.label.color_editor.current_color=Current color:
 
+malilib.gui.label_error.no_element_placer_for_config_type=§cUnknown config type '%s' (no screen element placer registered)§r
+
 malilib.gui.label.keybind_display.actions=Actions
 malilib.gui.label.keybind_display.keys=Keys
 malilib.gui.label.keybind_display.keys_and_actions=Keys & Actions

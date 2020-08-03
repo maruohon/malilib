@@ -1,16 +1,16 @@
 package fi.dy.masa.malilib.gui.listener;
 
-import fi.dy.masa.malilib.gui.config.GuiConfigsBase;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
-import fi.dy.masa.malilib.gui.interfaces.IConfigGuiTab;
+import fi.dy.masa.malilib.gui.config.BaseConfigScreen;
+import fi.dy.masa.malilib.gui.config.ConfigTab;
 
 public class ButtonListenerConfigGuiTab implements IButtonActionListener
 {
-    private final GuiConfigsBase gui;
-    private final IConfigGuiTab tab;
+    private final BaseConfigScreen gui;
+    private final ConfigTab tab;
 
-    public ButtonListenerConfigGuiTab(IConfigGuiTab tab, GuiConfigsBase gui)
+    public ButtonListenerConfigGuiTab(ConfigTab tab, BaseConfigScreen gui)
     {
         this.tab = tab;
         this.gui = gui;
@@ -21,7 +21,7 @@ public class ButtonListenerConfigGuiTab implements IButtonActionListener
     {
         this.gui.setCurrentTab(this.tab);
         this.gui.reCreateConfigWidgets(); // apply the new config width
-        this.gui.getConfigsListWidget().resetScrollbarPosition();
+        //this.gui.getConfigsListWidget().resetScrollbarPosition(); // TODO config refactor
         this.gui.initGui();
     }
 }

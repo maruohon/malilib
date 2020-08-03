@@ -3,8 +3,8 @@ package fi.dy.masa.malilib.gui.interfaces;
 import java.io.File;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.util.BaseGuiIcon;
-import fi.dy.masa.malilib.gui.widget.WidgetFileBrowserBase.DirectoryEntry;
-import fi.dy.masa.malilib.gui.widget.WidgetFileBrowserBase.DirectoryEntryType;
+import fi.dy.masa.malilib.gui.widget.list.BaseFileBrowserWidget.DirectoryEntry;
+import fi.dy.masa.malilib.gui.widget.list.BaseFileBrowserWidget.DirectoryEntryType;
 
 public interface IFileBrowserIconProvider
 {

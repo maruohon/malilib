@@ -9,7 +9,7 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraft.util.math.MathHelper;
-import fi.dy.masa.malilib.gui.GuiBase;
+import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
 import fi.dy.masa.malilib.gui.interfaces.ITextFieldValidator;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
@@ -680,7 +680,7 @@ public class WidgetTextFieldBase extends WidgetBackground
             else
             {
                 int clickedIndex = this.getClickedTextIndex(mouseX, mouseY);
-                boolean selectText = GuiBase.isShiftDown();
+                boolean selectText = BaseScreen.isShiftDown();
                 this.setCursorPosition(clickedIndex, selectText);
             }
 
@@ -701,7 +701,7 @@ public class WidgetTextFieldBase extends WidgetBackground
         // Allow selecting text or moving the cursor by scrolling
         if (this.isFocused() && this.text.length() > 0)
         {
-            boolean selectText = GuiBase.isShiftDown();
+            boolean selectText = BaseScreen.isShiftDown();
             this.setCursorPosition(this.cursorPosition + (mouseWheelDelta < 0 ? 1 : -1), selectText);
             return true;
         }
@@ -719,14 +719,14 @@ public class WidgetTextFieldBase extends WidgetBackground
     {
         if (this.isFocused())
         {
-            boolean selectText = GuiBase.isShiftDown();
+            boolean selectText = BaseScreen.isShiftDown();
 
             if (keyCode == Keyboard.KEY_BACK)
             {
-                if (GuiBase.isCtrlDown())
+                if (BaseScreen.isCtrlDown())
                 {
                     this.selectionStartPosition = -1;
-                    this.moveCursorToEndOfWord(LeftRight.LEFT, GuiBase.isAltDown(), true);
+                    this.moveCursorToEndOfWord(LeftRight.LEFT, BaseScreen.isAltDown(), true);
                     this.deleteSelectionOrCharacter(false);
                 }
                 else
@@ -736,10 +736,10 @@ public class WidgetTextFieldBase extends WidgetBackground
             }
             else if (keyCode == Keyboard.KEY_DELETE)
             {
-                if (GuiBase.isCtrlDown())
+                if (BaseScreen.isCtrlDown())
                 {
                     this.selectionStartPosition = -1;
-                    this.moveCursorToEndOfWord(LeftRight.RIGHT, GuiBase.isAltDown(), true);
+                    this.moveCursorToEndOfWord(LeftRight.RIGHT, BaseScreen.isAltDown(), true);
                     this.deleteSelectionOrCharacter(true);
                 }
                 else
@@ -758,9 +758,9 @@ public class WidgetTextFieldBase extends WidgetBackground
             }
             else if (keyCode == Keyboard.KEY_LEFT)
             {
-                if (GuiBase.isCtrlDown())
+                if (BaseScreen.isCtrlDown())
                 {
-                    this.moveCursorToEndOfWord(LeftRight.LEFT, GuiBase.isAltDown(), selectText);
+                    this.moveCursorToEndOfWord(LeftRight.LEFT, BaseScreen.isAltDown(), selectText);
                 }
                 else
                 {
@@ -769,9 +769,9 @@ public class WidgetTextFieldBase extends WidgetBackground
             }
             else if (keyCode == Keyboard.KEY_RIGHT)
             {
-                if (GuiBase.isCtrlDown())
+                if (BaseScreen.isCtrlDown())
                 {
-                    this.moveCursorToEndOfWord(LeftRight.RIGHT, GuiBase.isAltDown(), selectText);
+                    this.moveCursorToEndOfWord(LeftRight.RIGHT, BaseScreen.isAltDown(), selectText);
                 }
                 else
                 {

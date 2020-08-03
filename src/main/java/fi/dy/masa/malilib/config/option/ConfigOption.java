@@ -2,39 +2,25 @@ package fi.dy.masa.malilib.config.option;
 
 import javax.annotation.Nullable;
 import com.google.gson.JsonElement;
-import fi.dy.masa.malilib.config.ConfigType;
-import fi.dy.masa.malilib.config.IValueChangeCallback;
-import fi.dy.masa.malilib.config.IValueLoadedCallback;
+import fi.dy.masa.malilib.config.ValueChangeCallback;
+import fi.dy.masa.malilib.config.ValueLoadedCallback;
+import fi.dy.masa.malilib.util.StringUtils;
 
-public interface ConfigOption<T>
+public interface ConfigOption<T> extends ConfigInfo
 {
     /**
-     * Returns the type of this config. Used by the config GUI to determine what kind of control
-     * to use for this config.
-     * @return the type of this config
-     */
-    ConfigType getType();
-
-    /**
-     * Returns the config name to display in the config GUIs
-     * @return the name of this config
-     */
-    String getName();
-
-    /**
-     * Returns the comment displayed when hovering over the config name in the config GUI.
-     * Newlines can be added with "\n". Can be null if there is no comment for this config.
-     * @return the comment, or null if no comment has been set
-     */
-    @Nullable
-    String getComment();
-
-    /**
-     * Returns the raw translation key for the comment.
+     * Returns the mod ID owning this config.
      * @return
      */
-    @Nullable
-    String getCommentTranslationKey();
+    String getModId();
+
+    /**
+     * Sets the mod ID owning this config.
+     * This is used for generating the default config localization key
+     * strings and also for example for the hotkey toast popups and some config screen tooltips.
+     * @param modId
+     */
+    void setModId(String modId);
 
     /**
      * Returns the "pretty name" for this config.
@@ -43,50 +29,8 @@ public interface ConfigOption<T>
      */
     default String getPrettyName()
     {
-        return this.getName();
+        return StringUtils.translate(this.getConfigNameTranslationKey());
     }
-
-    /**
-     * Returns the mod name owning this config.
-     * @return
-     */
-    String getModName();
-
-    /**
-     * Sets the mod name owning this config.
-     * This is used for example for the hotkey toast popups.
-     * @param modName
-     */
-    void setModName(String modName);
-
-    /**
-     * Returns the display name used for this config in the config GUIs
-     * @return
-     */
-    default String getConfigGuiDisplayName()
-    {
-        return this.getName();
-    }
-
-    /**
-     * Returns the current value of the config.<br><br>
-     * <b>NOTE:</b> The primitive config types will have separate
-     * type-specific getters and setters that you should use instead.
-     * This generic getter is mostly used for some config menu things,
-     * where the boxing overhead doesn't matter.
-     * @return
-     */
-    //T getValue();
-
-    /**
-     * Sets the current config value.<br><br>
-     * <b>NOTE:</b> The primitive config types will have separate
-     * type-specific getters and setters that you should use instead.
-     * This generic setter is mostly used for some config menu things,
-     * where the boxing overhead doesn't matter.
-     * @param newValue
-     */
-    //void setValue(T newValue);
 
     /**
      * Returns true if the value has been changed from the default value
@@ -129,13 +73,13 @@ public interface ConfigOption<T>
      * Set the value change callback. Can be null.
      * @param callback
      */
-    void setValueChangeCallback(@Nullable IValueChangeCallback<T> callback);
+    void setValueChangeCallback(@Nullable ValueChangeCallback<T> callback);
 
     /**
      * Set the value load callback. Can be null.
      * @param callback
      */
-    void setValueLoadCallback(@Nullable IValueLoadedCallback<T> callback);
+    void setValueLoadCallback(@Nullable ValueLoadedCallback<T> callback);
 
     /**
      * Set the value of this config option from a JSON element (is possible)

@@ -10,6 +10,7 @@ import com.mumfrey.liteloader.ShutdownListener;
 import com.mumfrey.liteloader.core.LiteLoader;
 import com.mumfrey.liteloader.modconfig.ConfigPanel;
 import net.minecraft.client.Minecraft;
+import fi.dy.masa.malilib.config.ConfigManagerImpl;
 import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.event.dispatch.InitializationDispatcher;
 
@@ -60,6 +61,6 @@ public class LiteModMaLiLib implements Configurable, LiteMod, InitCompleteListen
     @Override
     public void onShutDown()
     {
-        ((ConfigManager) ConfigManager.INSTANCE).saveAllConfigs();
+        ((ConfigManagerImpl) ConfigManager.INSTANCE).saveAllConfigs();
     }
 }

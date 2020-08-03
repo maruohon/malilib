@@ -1,26 +1,12 @@
 package fi.dy.masa.malilib.gui.widget;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import com.google.common.collect.ImmutableList;
-import fi.dy.masa.malilib.config.ConfigType;
-import fi.dy.masa.malilib.config.option.ConfigOption;
-import fi.dy.masa.malilib.gui.config.GuiConfigsBase;
-import fi.dy.masa.malilib.gui.config.GuiConfigsBase.ConfigOptionWrapper;
-import fi.dy.masa.malilib.gui.util.BaseGuiIcon;
-import fi.dy.masa.malilib.input.IHotkey;
-import fi.dy.masa.malilib.input.IKeyBind;
-import fi.dy.masa.malilib.util.AlphaNumComparator;
-import fi.dy.masa.malilib.util.data.HorizontalAlignment;
-
-public class WidgetListConfigOptions extends WidgetListConfigOptionsBase<ConfigOptionWrapper>
+public class WidgetListConfigOptions// extends WidgetListConfigOptionsBase<ConfigOptionWrapper>
 {
-    protected final GuiConfigsBase parent;
+    /*
+    protected final BaseConfigScreen parent;
     protected final WidgetSearchBarConfigs widgetSearchConfigs;
 
-    public WidgetListConfigOptions(int x, int y, int width, int height, int configWidth, float zLevel, boolean useKeybindSearch, GuiConfigsBase parent)
+    public WidgetListConfigOptions(int x, int y, int width, int height, int configWidth, float zLevel, boolean useKeybindSearch, BaseConfigScreen parent)
     {
         super(x, y, width, height, configWidth);
 
@@ -136,4 +122,5 @@ public class WidgetListConfigOptions extends WidgetListConfigOptionsBase<ConfigO
             return this.compare(config1.getConfig().getName(), config2.getConfig().getName());
         }
     }
+    */
 }

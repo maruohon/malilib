@@ -54,16 +54,6 @@ public interface IHotkey
     }
 
     /**
-     * Checks whether or not the given value would be modified from the default value.
-     * @param newValue
-     * @return
-     */
-    default boolean isModified(String newValue)
-    {
-        return this.getKeyBind().isModified(newValue);
-    }
-
-    /**
      * Resets the value back to the default value
      */
     default void resetToDefault()

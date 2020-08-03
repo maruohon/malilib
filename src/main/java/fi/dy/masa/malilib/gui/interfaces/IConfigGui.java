@@ -2,7 +2,8 @@ package fi.dy.masa.malilib.gui.interfaces;
 
 import java.util.List;
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.gui.config.GuiConfigsBase.ConfigOptionWrapper;
+import fi.dy.masa.malilib.config.option.ConfigInfo;
+import fi.dy.masa.malilib.gui.config.ConfigInfoProvider;
 import fi.dy.masa.malilib.gui.listener.ButtonPressDirtyListenerSimple;
 
 public interface IConfigGui
@@ -24,7 +25,7 @@ public interface IConfigGui
      * that the widget list can use.
      * @return
      */
-    List<ConfigOptionWrapper> getConfigs();
+    List<? extends ConfigInfo> getConfigs();
 
     /**
      * Returns a simple dirty listener for button presses. The configs will be interpreted
@@ -48,5 +49,5 @@ public interface IConfigGui
      * @return
      */
     @Nullable
-    IConfigInfoProvider getHoverInfoProvider();
+    ConfigInfoProvider getHoverInfoProvider();
 }

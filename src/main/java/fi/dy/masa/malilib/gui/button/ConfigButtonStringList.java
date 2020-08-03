@@ -2,11 +2,8 @@ package fi.dy.masa.malilib.gui.button;
 
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.option.StringListConfig;
-import fi.dy.masa.malilib.gui.GuiBase;
-import fi.dy.masa.malilib.gui.GuiStringListEdit;
 import fi.dy.masa.malilib.gui.interfaces.IConfigGui;
 import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
-import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class ConfigButtonStringList extends ButtonGeneric
@@ -31,14 +28,17 @@ public class ConfigButtonStringList extends ButtonGeneric
     {
         super.onMouseClickedImpl(mouseX, mouseY, mouseButton);
 
+        // TODO config refactor
+        /*
         if (this.dialogHandler != null)
         {
-            this.dialogHandler.openDialog(new GuiStringListEdit(this.config, this.configGui, this.dialogHandler, null));
+            this.dialogHandler.openDialog(new StringListEditScreen(this.config, this.configGui, this.dialogHandler, null));
         }
         else
         {
-            GuiBase.openPopupGui(new GuiStringListEdit(this.config, this.configGui, null, GuiUtils.getCurrentScreen()));
+            BaseScreen.openPopupGui(new StringListEditScreen(this.config, this.configGui, null, GuiUtils.getCurrentScreen()));
         }
+        */
 
         return true;
     }

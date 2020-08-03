@@ -3,23 +3,24 @@ package fi.dy.masa.malilib;
 import java.util.Collections;
 import java.util.List;
 import com.google.common.collect.ImmutableList;
-import fi.dy.masa.malilib.gui.config.ConfigGuiTabBase;
-import fi.dy.masa.malilib.gui.config.GuiConfigsBase;
-import fi.dy.masa.malilib.gui.interfaces.IConfigGuiTab;
+import fi.dy.masa.malilib.config.option.ConfigInfo;
+import fi.dy.masa.malilib.gui.config.BaseConfigScreen;
+import fi.dy.masa.malilib.gui.config.BaseConfigTab;
+import fi.dy.masa.malilib.gui.config.ConfigTab;
 
-public class MaLiLibConfigGui extends GuiConfigsBase
+public class MaLiLibConfigGui extends BaseConfigScreen
 {
-    private static final ConfigGuiTabBase GENERIC       = new ConfigGuiTabBase("malilib.gui.title.generic",     204, true,  MaLiLibConfigs.Generic.OPTIONS);
-    private static final ConfigGuiTabBase DEBUG         = new ConfigGuiTabBase("malilib.gui.title.debug",        80, false, MaLiLibConfigs.Debug.OPTIONS);
-    private static final ConfigGuiTabBase ALL_HOTKEYS   = new ConfigGuiTabBase("malilib.gui.title.all_hotkeys", 204, true,  Collections.emptyList());
+    private static final BaseConfigTab GENERIC       = new BaseConfigTab("malilib.gui.title.generic", 204, true, MaLiLibConfigs.Generic.OPTIONS);
+    private static final BaseConfigTab DEBUG         = new BaseConfigTab("malilib.gui.title.debug", 80, false, MaLiLibConfigs.Debug.OPTIONS);
+    private static final BaseConfigTab ALL_HOTKEYS   = new BaseConfigTab("malilib.gui.title.all_hotkeys", 204, true, Collections.emptyList());
 
-    private static final ImmutableList<IConfigGuiTab> TABS = ImmutableList.of(
+    private static final ImmutableList<ConfigTab> TABS = ImmutableList.of(
             GENERIC,
             DEBUG,
             ALL_HOTKEYS
     );
 
-    private static IConfigGuiTab tab = GENERIC;
+    private static ConfigTab tab = GENERIC;
 
     public MaLiLibConfigGui()
     {
@@ -29,23 +30,23 @@ public class MaLiLibConfigGui extends GuiConfigsBase
     }
 
     @Override
-    public IConfigGuiTab getCurrentTab()
+    public ConfigTab getCurrentTab()
     {
         return tab;
     }
 
     @Override
-    public void setCurrentTab(IConfigGuiTab tab)
+    public void setCurrentTab(ConfigTab tab)
     {
         MaLiLibConfigGui.tab = tab;
     }
 
     @Override
-    public List<ConfigOptionWrapper> getConfigs()
+    public List<? extends ConfigInfo> getConfigs()
     {
         if (this.getCurrentTab() == ALL_HOTKEYS)
         {
-            return ConfigPanelAllHotkeys.createWrappers();
+            //return ConfigPanelAllHotkeys.createWrappers(); // TODO config refactor
         }
 
         return super.getConfigs();

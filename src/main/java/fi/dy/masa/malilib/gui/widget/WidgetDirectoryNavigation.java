@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.function.Function;
 import javax.annotation.Nullable;
 import net.minecraft.client.renderer.OpenGlHelper;
-import fi.dy.masa.malilib.gui.GuiBase;
-import fi.dy.masa.malilib.gui.GuiTextInput;
+import fi.dy.masa.malilib.gui.BaseScreen;
+import fi.dy.masa.malilib.gui.TextInputScreen;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.interfaces.IDirectoryNavigator;
 import fi.dy.masa.malilib.gui.interfaces.IFileBrowserIconProvider;
@@ -69,8 +69,8 @@ public class WidgetDirectoryNavigation extends WidgetSearchBar
             if (this.searchOpen == false)
             {
                 DirectoryCreator creator = new DirectoryCreator(this.getCurrentDirectory(), this.navigator);
-                GuiTextInput gui = new GuiTextInput("malilib.gui.title.create_directory", "", GuiUtils.getCurrentScreen(), creator);
-                GuiBase.openPopupGui(gui);
+                TextInputScreen gui = new TextInputScreen("malilib.gui.title.create_directory", "", GuiUtils.getCurrentScreen(), creator);
+                BaseScreen.openPopupGui(gui);
             }
         });
         this.pathStartX = this.buttonCreateDir.getX() + this.buttonCreateDir.getWidth() + 6;
@@ -164,7 +164,7 @@ public class WidgetDirectoryNavigation extends WidgetSearchBar
                 button.setTextColorHovered(0xFFFFFF);
 
                 this.addButton(button, (btn, mbtn) -> {
-                    if (GuiBase.isShiftDown())
+                    if (BaseScreen.isShiftDown())
                     {
                         OpenGlHelper.openFile(el.dir);
                     }

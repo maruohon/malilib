@@ -3,23 +3,17 @@ package fi.dy.masa.malilib.gui.config;
 import java.util.List;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
-import fi.dy.masa.malilib.config.option.ConfigOption;
-import fi.dy.masa.malilib.gui.interfaces.IConfigGuiTab;
+import fi.dy.masa.malilib.config.option.ConfigInfo;
 
-public class GuiModConfigs extends GuiConfigsBase
+public class GuiModConfigs extends BaseConfigScreen
 {
-    protected final List<ConfigOptionWrapper> configWrappers;
+    protected final List<? extends ConfigInfo> configs;
 
-    public GuiModConfigs(String modId, List<? extends ConfigOption> configs, String titleKey, Object... args)
-    {
-        this(modId, ConfigOptionWrapper.createFor(configs), false, titleKey, args);
-    }
-
-    public GuiModConfigs(String modId, List<ConfigOptionWrapper> wrappers, boolean unused, String titleKey, Object... args)
+    public GuiModConfigs(String modId, List<? extends ConfigInfo> configs, String titleKey, Object... args)
     {
         super(10, 0, modId, null, ImmutableList.of(), titleKey, args);
 
-        this.configWrappers = wrappers;
+        this.configs = configs;
     }
 
     @Override
@@ -30,13 +24,13 @@ public class GuiModConfigs extends GuiConfigsBase
 
     @Override
     @Nullable
-    public IConfigGuiTab getCurrentTab()
+    public ConfigTab getCurrentTab()
     {
         return null;
     }
 
     @Override
-    public void setCurrentTab(IConfigGuiTab tab)
+    public void setCurrentTab(ConfigTab tab)
     {
         // NO-OP
     }
@@ -48,9 +42,9 @@ public class GuiModConfigs extends GuiConfigsBase
     }
 
     @Override
-    public List<ConfigOptionWrapper> getConfigs()
+    public List<? extends ConfigInfo> getConfigs()
     {
-        return this.configWrappers;
+        return this.configs;
     }
 
     @Override

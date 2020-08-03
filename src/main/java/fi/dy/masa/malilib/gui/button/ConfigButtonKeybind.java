@@ -6,13 +6,13 @@ import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.input.Keyboard;
 import fi.dy.masa.malilib.event.dispatch.InputEventDispatcher;
-import fi.dy.masa.malilib.gui.GuiBase;
+import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.interfaces.IKeybindConfigGui;
 import fi.dy.masa.malilib.input.IHotkey;
 import fi.dy.masa.malilib.input.IKeyBind;
 import fi.dy.masa.malilib.input.KeyBindCategory;
 
-public class ConfigButtonKeybind extends ButtonGeneric
+public class ConfigButtonKeyBind extends ButtonGeneric
 {
     @Nullable protected final IKeybindConfigGui host;
     protected final IKeyBind keybind;
@@ -20,7 +20,7 @@ public class ConfigButtonKeybind extends ButtonGeneric
     protected boolean selected;
     protected boolean firstKey;
 
-    public ConfigButtonKeybind(int x, int y, int width, int height, IKeyBind keybind, @Nullable IKeybindConfigGui host)
+    public ConfigButtonKeyBind(int x, int y, int width, int height, IKeyBind keybind, @Nullable IKeybindConfigGui host)
     {
         super(x, y, width, height, "");
 
@@ -47,7 +47,7 @@ public class ConfigButtonKeybind extends ButtonGeneric
 
             if (this.host != null)
             {
-                this.host.setActiveKeybindButton(this);
+                this.host.setActiveKeyBindButton(this);
             }
         }
 
@@ -67,7 +67,7 @@ public class ConfigButtonKeybind extends ButtonGeneric
 
                 if (this.host != null)
                 {
-                    this.host.setActiveKeybindButton(null);
+                    this.host.setActiveKeyBindButton(null);
                 }
             }
             else
@@ -122,7 +122,7 @@ public class ConfigButtonKeybind extends ButtonGeneric
 
         if (this.selected)
         {
-            return "> " + GuiBase.TXT_YELLOW + valueStr + GuiBase.TXT_RST + " <";
+            return "> " + BaseScreen.TXT_YELLOW + valueStr + BaseScreen.TXT_RST + " <";
         }
         else
         {
@@ -130,7 +130,7 @@ public class ConfigButtonKeybind extends ButtonGeneric
 
             if (this.overlapInfo.size() > 0)
             {
-                return GuiBase.TXT_GOLD + valueStr + GuiBase.TXT_RST;
+                return BaseScreen.TXT_GOLD + valueStr + BaseScreen.TXT_RST;
             }
             else
             {
@@ -169,7 +169,7 @@ public class ConfigButtonKeybind extends ButtonGeneric
 
                 for (IHotkey overlap : overlaps)
                 {
-                    String key = " [ " + GuiBase.TXT_GOLD + overlap.getKeyBind().getKeysDisplayString() + GuiBase.TXT_RST + " ]";
+                    String key = " [ " + BaseScreen.TXT_GOLD + overlap.getKeyBind().getKeysDisplayString() + BaseScreen.TXT_RST + " ]";
                     this.overlapInfo.add("    - " + overlap.getName() + key);
                 }
 

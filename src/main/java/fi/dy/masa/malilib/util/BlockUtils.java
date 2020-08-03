@@ -20,7 +20,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-import fi.dy.masa.malilib.gui.GuiBase;
+import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.util.data.Constants;
 
 public class BlockUtils
@@ -261,16 +261,16 @@ public class BlockUtils
 
                     if (prop instanceof PropertyBool)
                     {
-                        String pre = val.equals(Boolean.TRUE) ? GuiBase.TXT_GREEN : GuiBase.TXT_RED;
+                        String pre = val.equals(Boolean.TRUE) ? BaseScreen.TXT_GREEN : BaseScreen.TXT_RED;
                         lines.add(propName + separator + pre + valStr);
                     }
                     else if (prop instanceof PropertyDirection)
                     {
-                        lines.add(propName + separator + GuiBase.TXT_GOLD + valStr);
+                        lines.add(propName + separator + BaseScreen.TXT_GOLD + valStr);
                     }
                     else if (prop instanceof PropertyInteger)
                     {
-                        lines.add(propName + separator + GuiBase.TXT_AQUA + valStr);
+                        lines.add(propName + separator + BaseScreen.TXT_AQUA + valStr);
                     }
                     else
                     {

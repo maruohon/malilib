@@ -6,10 +6,11 @@ import java.util.List;
 import javax.annotation.Nullable;
 import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.MaLiLibReference;
-import fi.dy.masa.malilib.gui.GuiBase;
-import fi.dy.masa.malilib.gui.config.GuiKeybindSettings;
+import fi.dy.masa.malilib.gui.BaseScreen;
+import fi.dy.masa.malilib.gui.config.KeybindSettingsScreen;
 import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
+import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.input.IKeyBind;
 import fi.dy.masa.malilib.input.KeyAction;
 import fi.dy.masa.malilib.input.KeyBindSettings;
@@ -25,11 +26,11 @@ public class WidgetKeybindSettings extends WidgetBase
     protected final IKeyBind keyBind;
     protected final KeyBindSettings settings;
     protected final KeyBindSettings defaultSettings;
-    protected final WidgetListData<?> widgetList;
+    protected final DataListWidget<?> widgetList;
     @Nullable protected final IDialogHandler dialogHandler;
 
     public WidgetKeybindSettings(int x, int y, int width, int height,
-                                 IKeyBind keyBind, String keyBindName, WidgetListData<?> widgetList, @Nullable IDialogHandler dialogHandler)
+                                 IKeyBind keyBind, String keyBindName, DataListWidget<?> widgetList, @Nullable IDialogHandler dialogHandler)
     {
         super(x, y, width, height);
 
@@ -48,11 +49,11 @@ public class WidgetKeybindSettings extends WidgetBase
         {
             if (this.dialogHandler != null)
             {
-                this.dialogHandler.openDialog(new GuiKeybindSettings(this.keyBind, this.keyBindName, this.dialogHandler, GuiUtils.getCurrentScreen()));
+                this.dialogHandler.openDialog(new KeybindSettingsScreen(this.keyBind, this.keyBindName, this.dialogHandler, GuiUtils.getCurrentScreen()));
             }
             else
             {
-                GuiBase.openPopupGui(new GuiKeybindSettings(this.keyBind, this.keyBindName, null, GuiUtils.getCurrentScreen()));
+                BaseScreen.openPopupGui(new KeybindSettingsScreen(this.keyBind, this.keyBindName, null, GuiUtils.getCurrentScreen()));
             }
 
             return true;
@@ -112,19 +113,19 @@ public class WidgetKeybindSettings extends WidgetBase
         String name, val, nameColor;
         boolean modified;
 
-        text.add(GuiBase.TXT_WHITE + GuiBase.TXT_UNDERLINE + StringUtils.translate("malilib.gui.label.keybind_settings.title_advanced_keybind_settings"));
+        text.add(BaseScreen.TXT_WHITE + BaseScreen.TXT_UNDERLINE + StringUtils.translate("malilib.gui.label.keybind_settings.title_advanced_keybind_settings"));
 
         name = StringUtils.translate("malilib.gui.label.keybind_settings.activate_on");
         KeyAction action = this.settings.getActivateOn();
         modified = action != this.defaultSettings.getActivateOn();
-        nameColor = modified ? GuiBase.TXT_YELLOW : GuiBase.TXT_GRAY;
-        val = GuiBase.TXT_BLUE + action.name();
+        nameColor = modified ? BaseScreen.TXT_YELLOW : BaseScreen.TXT_GRAY;
+        val = BaseScreen.TXT_BLUE + action.name();
         text.add(String.format("%s%s: %s", nameColor, name, val));
 
         name = StringUtils.translate("malilib.gui.label.keybind_settings.context");
         Context context = this.settings.getContext();
-        val = GuiBase.TXT_BLUE + context.name();
-        nameColor = context != this.defaultSettings.getContext() ? GuiBase.TXT_YELLOW : GuiBase.TXT_GRAY;
+        val = BaseScreen.TXT_BLUE + context.name();
+        nameColor = context != this.defaultSettings.getContext() ? BaseScreen.TXT_YELLOW : BaseScreen.TXT_GRAY;
         text.add(String.format("%s%s: %s", nameColor, name, val));
 
         this.addBooleanOptionText(text, "malilib.gui.label.keybind_settings.allow_empty_keybind", this.settings.getAllowEmpty(), this.defaultSettings.getAllowEmpty());
@@ -147,10 +148,10 @@ public class WidgetKeybindSettings extends WidgetBase
         String name = StringUtils.translate(translationKey);
         String strYes = StringUtils.translate("malilib.gui.label.yes");
         String strNo = StringUtils.translate("malilib.gui.label.no");
-        String valStr = value ? (GuiBase.TXT_GREEN + strYes) : (GuiBase.TXT_RED + strNo);
-        String defaultValStr = defaultValue ? (GuiBase.TXT_GREEN + strYes) : (GuiBase.TXT_RED + strNo);
-        String nameColor = modified ? GuiBase.TXT_YELLOW : GuiBase.TXT_GRAY;
-        String gray = GuiBase.TXT_GRAY;
+        String valStr = value ? (BaseScreen.TXT_GREEN + strYes) : (BaseScreen.TXT_RED + strNo);
+        String defaultValStr = defaultValue ? (BaseScreen.TXT_GREEN + strYes) : (BaseScreen.TXT_RED + strNo);
+        String nameColor = modified ? BaseScreen.TXT_YELLOW : BaseScreen.TXT_GRAY;
+        String gray = BaseScreen.TXT_GRAY;
         String def = StringUtils.translate("malilib.gui.label.keybind_settings.default");
         String defaultValueFull = modified ? String.format(" %s[%s: %s%s]", gray, def, defaultValStr, gray) : "";
 

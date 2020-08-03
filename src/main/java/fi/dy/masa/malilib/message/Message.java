@@ -2,7 +2,7 @@ package fi.dy.masa.malilib.message;
 
 import java.util.ArrayList;
 import java.util.List;
-import fi.dy.masa.malilib.gui.GuiBase;
+import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class Message
@@ -43,7 +43,7 @@ public class Message
 
         for (String text : this.messageLines)
         {
-            StringUtils.drawString(x, y, textColor, format + text + GuiBase.TXT_RST);
+            StringUtils.drawString(x, y, textColor, format + text + BaseScreen.TXT_RST);
             y += lineSpacing;
         }
     }

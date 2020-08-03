@@ -1,52 +1,8 @@
 package fi.dy.masa.malilib.gui.widget;
 
-import java.io.File;
-import java.util.ArrayList;
-import javax.annotation.Nullable;
-import com.google.common.collect.ImmutableList;
-import net.minecraft.client.gui.GuiScreen;
-import fi.dy.masa.malilib.config.ConfigType;
-import fi.dy.masa.malilib.config.option.ConfigOption;
-import fi.dy.masa.malilib.config.option.FileConfig;
-import fi.dy.masa.malilib.config.option.IConfigBoolean;
-import fi.dy.masa.malilib.config.option.IConfigDouble;
-import fi.dy.masa.malilib.config.option.IConfigInteger;
-import fi.dy.masa.malilib.config.option.IConfigOptionList;
-import fi.dy.masa.malilib.config.option.IConfigResettable;
-import fi.dy.masa.malilib.config.option.IConfigSlider;
-import fi.dy.masa.malilib.config.option.IConfigStringList;
-import fi.dy.masa.malilib.config.option.IConfigValue;
-import fi.dy.masa.malilib.config.option.IStringRepresentable;
-import fi.dy.masa.malilib.gui.GuiBase;
-import fi.dy.masa.malilib.gui.GuiDirectorySelector;
-import fi.dy.masa.malilib.gui.button.ButtonBase;
-import fi.dy.masa.malilib.gui.button.ButtonGeneric;
-import fi.dy.masa.malilib.gui.button.ConfigButtonBoolean;
-import fi.dy.masa.malilib.gui.button.ConfigButtonKeybind;
-import fi.dy.masa.malilib.gui.button.ConfigButtonOptionList;
-import fi.dy.masa.malilib.gui.button.ConfigButtonStringList;
-import fi.dy.masa.malilib.gui.button.IButtonActionListener;
-import fi.dy.masa.malilib.gui.callback.SliderCallbackDouble;
-import fi.dy.masa.malilib.gui.callback.SliderCallbackInteger;
-import fi.dy.masa.malilib.gui.config.GuiConfigsBase.ConfigOptionWrapper;
-import fi.dy.masa.malilib.gui.interfaces.IConfigInfoProvider;
-import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
-import fi.dy.masa.malilib.gui.interfaces.IKeybindConfigGui;
-import fi.dy.masa.malilib.gui.interfaces.ISliderCallback;
-import fi.dy.masa.malilib.gui.listener.ConfigOptionChangeListenerKeybind;
-import fi.dy.masa.malilib.gui.listener.ConfigOptionListenerResetConfig;
-import fi.dy.masa.malilib.gui.listener.ConfigOptionListenerResetConfig.ConfigResetterButton;
-import fi.dy.masa.malilib.gui.listener.ConfigOptionListenerResetConfig.ConfigResetterTextField;
-import fi.dy.masa.malilib.gui.util.BaseGuiIcon;
-import fi.dy.masa.malilib.gui.util.GuiUtils;
-import fi.dy.masa.malilib.input.IHotkey;
-import fi.dy.masa.malilib.input.IKeyBind;
-import fi.dy.masa.malilib.input.KeyBindSettings;
-import fi.dy.masa.malilib.render.RenderUtils;
-import fi.dy.masa.malilib.util.StringUtils;
-
-public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapper>
+public class WidgetConfigOption// extends WidgetConfigOptionBase<ConfigOptionWrapper>
 {
+    /*
     protected final ConfigOptionWrapper wrapper;
     protected final IKeybindConfigGui host;
     @Nullable protected final KeyBindSettings initialKeybindSettings;
@@ -104,11 +60,11 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
         y += 1;
         int configHeight = 20;
 
-        WidgetLabel label = this.addLabel(x, y, labelWidth, 20, 0xFFFFFFFF, config.getConfigGuiDisplayName());
+        WidgetLabel label = this.addLabel(x, y, labelWidth, 20, 0xFFFFFFFF, config.getDisplayName());
         label.setPaddingY(5);
 
         String comment = null;
-        IConfigInfoProvider infoProvider = this.host.getHoverInfoProvider();
+        ConfigInfoProvider infoProvider = this.host.getHoverInfoProvider();
 
         if (infoProvider != null)
         {
@@ -145,7 +101,7 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
         {
             configWidth -= 25; // adjust the width to match other configs due to the settings widget
             IKeyBind keybind = ((IHotkey) config).getKeyBind();
-            ConfigButtonKeybind keybindButton = new ConfigButtonKeybind(x, y, configWidth, configHeight, keybind, this.host);
+            ConfigButtonKeyBind keybindButton = new ConfigButtonKeyBind(x, y, configWidth, configHeight, keybind, this.host);
             x += configWidth + 4;
 
             this.addWidget(new WidgetKeybindSettings(x, y, 20, 20, keybind, config.getName(), this.parent, this.host.getDialogHandler()));
@@ -207,9 +163,9 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
 
             this.addButton(button, (btn, mbtn) -> {
                     final File rootDirectory = new File("/");
-                    final GuiDirectorySelector gui = new GuiDirectorySelector(dir, rootDirectory, (d) -> cfg.setValueFromString(d.getAbsolutePath()));
+                    final DirectorySelectorScreen gui = new DirectorySelectorScreen(dir, rootDirectory, (d) -> cfg.setValueFromString(d.getAbsolutePath()));
                     gui.setParent(GuiUtils.getCurrentScreen());
-                    GuiBase.openGui(gui);
+                    BaseScreen.openGui(gui);
             });
             this.addButton(resetButton, listenerReset);
         }
@@ -322,7 +278,7 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
         this.addButton(resetButton, listenerReset);
     }
 
-    protected void addKeybindResetButton(int x, int y, IKeyBind keybind, ConfigButtonKeybind buttonHotkey)
+    protected void addKeybindResetButton(int x, int y, IKeyBind keybind, ConfigButtonKeyBind buttonHotkey)
     {
         ButtonGeneric button = this.createResetButton(x, y, keybind);
 
@@ -369,4 +325,5 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
             }
         }
     }
+    */
 }

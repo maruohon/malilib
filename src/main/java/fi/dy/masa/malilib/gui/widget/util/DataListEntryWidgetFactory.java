@@ -1,7 +1,8 @@
 package fi.dy.masa.malilib.gui.widget.util;
 
-import fi.dy.masa.malilib.gui.widget.WidgetListData;
-import fi.dy.masa.malilib.gui.widget.WidgetListEntryBase;
+import javax.annotation.Nullable;
+import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
+import fi.dy.masa.malilib.gui.widget.list.entry.BaseListEntryWidget;
 
 public interface DataListEntryWidgetFactory<DATATYPE>
 {
@@ -16,5 +17,6 @@ public interface DataListEntryWidgetFactory<DATATYPE>
      * @param listWidget The parent list widget that is creating this widget.
      * @return
      */
-    WidgetListEntryBase createWidget(int x, int y, int width, int height, int listIndex, DATATYPE data, WidgetListData<DATATYPE> listWidget);
+    @Nullable
+    BaseListEntryWidget createWidget(int x, int y, int width, int height, int listIndex, DATATYPE data, DataListWidget<DATATYPE> listWidget);
 }

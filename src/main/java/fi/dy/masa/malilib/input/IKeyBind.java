@@ -8,9 +8,9 @@ public interface IKeyBind
 {
     /**
      * Sets the mod name owning this keybind. Used for the popup toast rendering.
-     * @param modName
+     * @param modId
      */
-    void setModName(String modName);
+    void setModId(String modId);
 
     boolean isValid();
 
@@ -43,9 +43,23 @@ public interface IKeyBind
      */
     void setSettings(KeyBindSettings settings);
 
+    boolean isModified();
+
+    boolean isDirty();
+
+    void cacheSavedValue();
+
     void clearKeys();
 
+    void resetToDefault();
+
     void addKey(int keyCode);
+
+    String getStringValue();
+
+    String getDefaultStringValue();
+
+    void setValueFromString(String str);
 
     void removeKey(int keyCode);
 

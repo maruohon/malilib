@@ -2,8 +2,8 @@ package fi.dy.masa.malilib.gui.widget;
 
 import java.util.function.IntConsumer;
 import fi.dy.masa.malilib.config.option.IntegerConfig;
-import fi.dy.masa.malilib.gui.GuiBase;
-import fi.dy.masa.malilib.gui.GuiColorEditorHSV;
+import fi.dy.masa.malilib.gui.BaseScreen;
+import fi.dy.masa.malilib.gui.ColorEditorHSVScreen;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
@@ -31,8 +31,8 @@ public class WidgetColorIndicator extends WidgetBase
     @Override
     protected boolean onMouseClickedImpl(int mouseX, int mouseY, int mouseButton)
     {
-        GuiColorEditorHSV gui = new GuiColorEditorHSV(this.config, null, GuiUtils.getCurrentScreen());
-        GuiBase.openPopupGui(gui);
+        ColorEditorHSVScreen gui = new ColorEditorHSVScreen(this.config, null, GuiUtils.getCurrentScreen());
+        BaseScreen.openPopupGui(gui);
         return true;
     }
 

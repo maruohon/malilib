@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.gui.widget;
 
 import org.lwjgl.input.Keyboard;
-import fi.dy.masa.malilib.gui.button.ConfigButtonKeybind;
+import fi.dy.masa.malilib.gui.button.ConfigButtonKeyBind;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.input.IKeyBind;
 import fi.dy.masa.malilib.input.KeyAction;
@@ -13,7 +13,7 @@ import fi.dy.masa.malilib.util.data.HorizontalAlignment;
 public class WidgetSearchBarConfigs extends WidgetSearchBar
 {
     protected final KeyBindMulti searchKey;
-    protected final ConfigButtonKeybind button;
+    protected final ConfigButtonKeyBind button;
 
     public WidgetSearchBarConfigs(int x, int y, int width, int height, int searchBarOffsetX,
             IGuiIcon iconSearch, HorizontalAlignment iconAlignment)
@@ -22,7 +22,7 @@ public class WidgetSearchBarConfigs extends WidgetSearchBar
 
         KeyBindSettings settings = KeyBindSettings.create(Context.ANY, KeyAction.BOTH, true, true, false, false, false);
         this.searchKey = KeyBindMulti.fromStorageString("", "", settings);
-        this.button = new ConfigButtonKeybind(x + width - 150, y, 140, 20, this.searchKey, null);
+        this.button = new ConfigButtonKeyBind(x + width - 150, y, 140, 20, this.searchKey, null);
     }
 
     public IKeyBind getKeybind()

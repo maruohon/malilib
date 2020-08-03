@@ -14,7 +14,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 import fi.dy.masa.malilib.config.value.ConfigOptionListEntry;
 import fi.dy.masa.malilib.config.value.LayerMode;
-import fi.dy.masa.malilib.gui.GuiBase;
+import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.listener.ILayerRangeChangeListener;
 import fi.dy.masa.malilib.message.MessageUtils;
 import fi.dy.masa.malilib.util.JsonUtils;
@@ -453,7 +453,7 @@ public class LayerRange
     public boolean moveLayer(int amount)
     {
         String axisName = this.axis.getName().toLowerCase();
-        String strTo = GuiBase.TXT_GREEN + axisName + " = ";
+        String strTo = BaseScreen.TXT_GREEN + axisName + " = ";
 
         switch (this.layerMode)
         {

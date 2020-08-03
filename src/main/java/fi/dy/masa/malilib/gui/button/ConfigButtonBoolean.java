@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.gui.button;
 
 import fi.dy.masa.malilib.config.option.BooleanConfig;
-import fi.dy.masa.malilib.gui.GuiBase;
+import fi.dy.masa.malilib.gui.BaseScreen;
 
 public class ConfigButtonBoolean extends ButtonGeneric
 {
@@ -29,6 +29,6 @@ public class ConfigButtonBoolean extends ButtonGeneric
     {
         String valueStr = String.valueOf(this.config.getBooleanValue());
 
-        return (this.config.getBooleanValue() ? GuiBase.TXT_DARK_GREEN : GuiBase.TXT_DARK_RED) + valueStr + GuiBase.TXT_RST;
+        return (this.config.getBooleanValue() ? BaseScreen.TXT_DARK_GREEN : BaseScreen.TXT_DARK_RED) + valueStr + BaseScreen.TXT_RST;
     }
 }

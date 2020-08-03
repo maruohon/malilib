@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.gui.widget;
 import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.math.MathHelper;
-import fi.dy.masa.malilib.gui.GuiBase;
+import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.render.RenderUtils;
 
@@ -114,11 +114,11 @@ public class WidgetScrollBar extends WidgetBase
     {
         if (this.isMouseOverUpArrow(mouseX, mouseY))
         {
-            this.setValue(this.getValue() - (GuiBase.isShiftDown() ? 5 : 1));
+            this.setValue(this.getValue() - (BaseScreen.isShiftDown() ? 5 : 1));
         }
         else if (this.isMouseOverDownArrow(mouseX, mouseY))
         {
-            this.setValue(this.getValue() + (GuiBase.isShiftDown() ? 5 : 1));
+            this.setValue(this.getValue() + (BaseScreen.isShiftDown() ? 5 : 1));
         }
         else if (mouseButton == 0 && this.wasMouseOver())
         {

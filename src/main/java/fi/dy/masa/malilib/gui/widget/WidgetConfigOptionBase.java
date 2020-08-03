@@ -2,11 +2,9 @@ package fi.dy.masa.malilib.gui.widget;
 
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
-import fi.dy.masa.malilib.config.option.IConfigResettable;
-import fi.dy.masa.malilib.gui.button.ButtonGeneric;
-import fi.dy.masa.malilib.util.StringUtils;
+import fi.dy.masa.malilib.gui.widget.list.entry.BaseDataListEntryWidget;
 
-public abstract class WidgetConfigOptionBase<TYPE> extends WidgetListDataEntryBase<TYPE>
+public abstract class WidgetConfigOptionBase<TYPE> extends BaseDataListEntryWidget<TYPE>
 {
     protected final WidgetListConfigOptionsBase<?> parent;
     @Nullable protected WidgetTextFieldBase textField = null;
@@ -39,6 +37,7 @@ public abstract class WidgetConfigOptionBase<TYPE> extends WidgetListDataEntryBa
 
     public abstract void applyNewValueToConfig();
 
+    /*
     protected ButtonGeneric createResetButton(int x, int y, IConfigResettable config)
     {
         String labelReset = StringUtils.translate("malilib.gui.button.reset.caps");
@@ -47,6 +46,7 @@ public abstract class WidgetConfigOptionBase<TYPE> extends WidgetListDataEntryBa
 
         return resetButton;
     }
+    */
 
     @Override
     public boolean onKeyTypedImpl(char typedChar, int keyCode)

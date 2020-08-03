@@ -2,7 +2,7 @@ package fi.dy.masa.malilib.gui.widget;
 
 import org.lwjgl.input.Keyboard;
 import net.minecraft.util.ChatAllowedCharacters;
-import fi.dy.masa.malilib.gui.GuiBase;
+import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.util.data.HorizontalAlignment;
@@ -80,9 +80,9 @@ public class WidgetSearchBar extends WidgetContainer
         {
             if (keyCode == Keyboard.KEY_ESCAPE)
             {
-                if (GuiBase.isShiftDown())
+                if (BaseScreen.isShiftDown())
                 {
-                    GuiBase.openGui(null);
+                    BaseScreen.openGui(null);
                 }
 
                 this.setSearchOpen(false);

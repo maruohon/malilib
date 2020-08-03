@@ -1,25 +1,24 @@
 package fi.dy.masa.malilib;
 
-import java.util.List;
-import com.google.common.collect.ImmutableList;
+import java.util.Collections;
 import fi.dy.masa.malilib.config.ConfigManager;
-import fi.dy.masa.malilib.gui.config.GuiModConfigs;
+import fi.dy.masa.malilib.config.ConfigManagerImpl;
+import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.event.dispatch.InputEventDispatcher;
-import fi.dy.masa.malilib.gui.GuiBase;
-import fi.dy.masa.malilib.gui.GuiListBase;
-import fi.dy.masa.malilib.gui.interfaces.IConfigInfoProvider;
-import fi.dy.masa.malilib.input.IHotkey;
-import fi.dy.masa.malilib.input.KeyBindCategory;
+import fi.dy.masa.malilib.gui.BaseListScreen;
+import fi.dy.masa.malilib.gui.config.ConfigInfoProvider;
+import fi.dy.masa.malilib.gui.config.GuiModConfigs;
 
 public class ConfigPanelAllHotkeys extends GuiModConfigs
 {
     public ConfigPanelAllHotkeys()
     {
-        super(MaLiLibReference.MOD_ID, createWrappers(), false, "malilib.gui.title.all_hotkeys");
+        super(MaLiLibReference.MOD_ID, Collections.emptyList(), "malilib.gui.title.all_hotkeys");
 
         this.setHoverInfoProvider(new HoverInfoProvider(this));
     }
 
+    /*
     public static List<ConfigOptionWrapper> createWrappers()
     {
         List<KeyBindCategory> categories = InputEventDispatcher.getKeyBindManager().getKeyBindCategories();
@@ -42,18 +41,19 @@ public class ConfigPanelAllHotkeys extends GuiModConfigs
 
             for (IHotkey hotkey : category.getHotkeys())
             {
-                String prefix = GuiBase.TXT_YELLOW + category.getModName() + " -> " + category.getCategoryName() + " -> " + hotkey.getName() + "\n";
+                String prefix = BaseScreen.TXT_YELLOW + category.getModName() + " -> " + category.getCategoryName() + " -> " + hotkey.getName() + "\n";
                 builder.add(new ConfigOptionWrapper(prefix, hotkey));
             }
         }
 
         return builder.build();
     }
+    */
 
     @Override
     protected void onSettingsChanged()
     {
-        ((ConfigManager) ConfigManager.INSTANCE).saveAllConfigs();
+        ((ConfigManagerImpl) ConfigManager.INSTANCE).saveAllConfigs();
         InputEventDispatcher.getKeyBindManager().updateUsedKeys();
     }
 
@@ -63,20 +63,22 @@ public class ConfigPanelAllHotkeys extends GuiModConfigs
         return true;
     }
 
-    public static class HoverInfoProvider implements IConfigInfoProvider
+    public static class HoverInfoProvider implements ConfigInfoProvider
     {
-        protected final GuiListBase<?, ?, ?> gui;
+        protected final BaseListScreen<?> gui;
 
-        public HoverInfoProvider(GuiListBase<?, ?, ?> gui)
+        public HoverInfoProvider(BaseListScreen<?> gui)
         {
             this.gui = gui;
         }
 
         @Override
-        public String getHoverInfo(ConfigOptionWrapper wrapper)
+        public String getHoverInfo(ConfigInfo config)
         {
-            String comment = wrapper.getConfig().getComment();
+            String comment = config.getComment();
 
+            // TODO config refactor
+            /*
             if (this.gui.isSearchOpen())
             {
                 String prefix = wrapper.getLabelPrefix();
@@ -86,6 +88,7 @@ public class ConfigPanelAllHotkeys extends GuiModConfigs
                     return prefix + comment;
                 }
             }
+            */
 
             return comment;
         }

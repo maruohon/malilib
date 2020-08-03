@@ -1,16 +1,29 @@
 package fi.dy.masa.malilib.gui.config.elementplacer;
 
-import fi.dy.masa.malilib.config.option.ConfigOption;
-import fi.dy.masa.malilib.gui.config.GuiModConfigs;
-import fi.dy.masa.malilib.gui.widget.WidgetContainer;
+import javax.annotation.Nullable;
+import fi.dy.masa.malilib.config.option.ConfigInfo;
+import fi.dy.masa.malilib.gui.config.BaseConfigScreen;
+import fi.dy.masa.malilib.gui.widget.list.entry.BaseDataListEntryWidget;
 
-public interface ConfigElementPlacer<C extends ConfigOption<?>, T extends WidgetContainer>
+public interface ConfigElementPlacer<C extends ConfigInfo>
 {
-    T createContainerWidget(GuiModConfigs gui, C config);
+    void addScreenElements(C config, BaseDataListEntryWidget<C> containerWidget, BaseConfigScreen gui);
 
-    void addScreenElements(GuiModConfigs gui, C config, T containerWidget);
+    @Nullable
+    default BaseDataListEntryWidget<C> createContainerWidget(int x, int y, int width, int height, int listIndex, C config, BaseConfigScreen gui)
+    {
+        BaseDataListEntryWidget<C> widget = new BaseDataListEntryWidget<>(x, y, width, height, listIndex, config);
 
-    void updateElementsForCurrentValues(GuiModConfigs gui, C config, T containerWidget);
+        this.addScreenElements(config, widget, gui);
 
-    void updateElementPositions(GuiModConfigs gui, C config, T containerWidget);
+        return widget;
+    }
+
+    default void updateElementsForCurrentValues(C config, BaseDataListEntryWidget<C> containerWidget, BaseConfigScreen gui)
+    {
+    }
+
+    default void updateElementPositions(C config, BaseDataListEntryWidget<C> containerWidget, BaseConfigScreen gui)
+    {
+    }
 }

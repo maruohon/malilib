@@ -11,7 +11,7 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import fi.dy.masa.malilib.config.value.HudAlignment;
-import fi.dy.masa.malilib.gui.GuiBase;
+import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
@@ -58,7 +58,7 @@ public class GuiUtils
     }
 
     public static void createBlockPosInputsVertical(int x, int y, int textFieldWidth, BlockPos pos,
-            ICoordinateValueModifier modifier, boolean addButton, GuiBase gui)
+            ICoordinateValueModifier modifier, boolean addButton, BaseScreen gui)
     {
         createBlockPosInput(x, y     , textFieldWidth, CoordinateType.X, pos, modifier, addButton, gui);
         createBlockPosInput(x, y + 17, textFieldWidth, CoordinateType.Y, pos, modifier, addButton, gui);
@@ -66,7 +66,7 @@ public class GuiUtils
     }
 
     public static void createVec3dInputsVertical(int x, int y, int textFieldWidth, Vec3d pos,
-            ICoordinateValueModifier modifier, boolean addButton, GuiBase gui)
+            ICoordinateValueModifier modifier, boolean addButton, BaseScreen gui)
     {
         createVec3dInput(x, y     , textFieldWidth, CoordinateType.X, pos, modifier, addButton, gui);
         createVec3dInput(x, y + 17, textFieldWidth, CoordinateType.Y, pos, modifier, addButton, gui);
@@ -74,7 +74,7 @@ public class GuiUtils
     }
 
     public static void createBlockPosInput(int x, int y, int textFieldWidth, CoordinateType type, BlockPos pos,
-            ICoordinateValueModifier modifier, boolean addButton, GuiBase gui)
+            ICoordinateValueModifier modifier, boolean addButton, BaseScreen gui)
     {
         x = addLabel(x, y, type, gui);
 
@@ -84,7 +84,7 @@ public class GuiUtils
     }
 
     public static void createVec3dInput(int x, int y, int textFieldWidth, CoordinateType type, Vec3d pos,
-            ICoordinateValueModifier modifier, boolean addButton, GuiBase gui)
+            ICoordinateValueModifier modifier, boolean addButton, BaseScreen gui)
     {
         x = addLabel(x, y, type, gui);
 
@@ -94,7 +94,7 @@ public class GuiUtils
     }
 
     protected static void addTextFieldAndButton(int x, int y, CoordinateType type, ICoordinateValueModifier modifier,
-            WidgetTextFieldBase textField, boolean addButton, GuiBase gui)
+            WidgetTextFieldBase textField, boolean addButton, BaseScreen gui)
     {
         textField.setListener((newText) -> modifier.setValueFromString(type, newText));
         gui.addWidget(textField);
@@ -131,7 +131,7 @@ public class GuiUtils
         return 0;
     }
 
-    protected static int addLabel(int x, int y, CoordinateType type, GuiBase gui)
+    protected static int addLabel(int x, int y, CoordinateType type, BaseScreen gui)
     {
         x += gui.addLabel(x, y + 4, 0xFFFFFFFF, type.name() + ":").getWidth() + 4;
         return x;
@@ -214,8 +214,8 @@ public class GuiUtils
         public void actionPerformedWithButton(ButtonBase button, int mouseButton)
         {
             int amount = mouseButton == 1 ? -1 : 1;
-            if (GuiBase.isShiftDown()) { amount *= 8; }
-            if (GuiBase.isAltDown())   { amount *= 4; }
+            if (BaseScreen.isShiftDown()) { amount *= 8; }
+            if (BaseScreen.isAltDown())   { amount *= 4; }
 
             this.modifier.modifyValue(this.type, amount);
         }

@@ -55,9 +55,9 @@ public class KeyBindMulti implements IKeyBind
     }
 
     @Override
-    public void setModName(String modName)
+    public void setModId(String modId)
     {
-        this.modName = modName;
+        this.modName = modId;
     }
 
     @Override
@@ -308,12 +308,6 @@ public class KeyBindMulti implements IKeyBind
     public boolean isModified()
     {
         return this.getStringValue().equals(this.defaultStorageString) == false;
-    }
-
-    @Override
-    public boolean isModified(String newValue)
-    {
-        return this.defaultStorageString.equals(newValue) == false;
     }
 
     @Override
