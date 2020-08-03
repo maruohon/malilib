@@ -7,9 +7,9 @@ import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.event.dispatch.InputEventDispatcher;
 import fi.dy.masa.malilib.gui.BaseListScreen;
 import fi.dy.masa.malilib.gui.config.ConfigInfoProvider;
-import fi.dy.masa.malilib.gui.config.GuiModConfigs;
+import fi.dy.masa.malilib.gui.config.ModConfigScreen;
 
-public class ConfigPanelAllHotkeys extends GuiModConfigs
+public class ConfigPanelAllHotkeys extends ModConfigScreen
 {
     public ConfigPanelAllHotkeys()
     {

@@ -5,9 +5,9 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.gui.config.BaseConfigScreen;
-import fi.dy.masa.malilib.gui.config.elementplacer.ConfigElementPlacer;
-import fi.dy.masa.malilib.gui.config.elementplacer.ConfigTypeRegistry;
-import fi.dy.masa.malilib.gui.widget.list.entry.BaseDataListEntryWidget;
+import fi.dy.masa.malilib.gui.config.ConfigOptionWidgetFactory;
+import fi.dy.masa.malilib.gui.config.ConfigTypeRegistry;
+import fi.dy.masa.malilib.gui.widget.list.entry.config.BaseConfigOptionWidget;
 import fi.dy.masa.malilib.gui.widget.util.DataListEntryWidgetFactory;
 
 public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget<C>
@@ -20,7 +20,7 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
 
         this.gui = gui;
 
-        this.setEntryWidgetFactory(new ConfigOptionWidgetFactory<>(entrySupplier, gui));
+        this.setEntryWidgetFactory(new ConfigOptionListEntryWidgetFactory<>(entrySupplier, gui));
     }
 
     @Override
@@ -29,12 +29,12 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
         super.reCreateListEntryWidgets();
     }
 
-    public static class ConfigOptionWidgetFactory<C extends ConfigInfo> implements DataListEntryWidgetFactory<C>
+    public static class ConfigOptionListEntryWidgetFactory<C extends ConfigInfo> implements DataListEntryWidgetFactory<C>
     {
         protected final Supplier<List<C>> entrySupplier;
         protected final BaseConfigScreen gui;
 
-        public ConfigOptionWidgetFactory(Supplier<List<C>> entrySupplier, BaseConfigScreen gui)
+        public ConfigOptionListEntryWidgetFactory(Supplier<List<C>> entrySupplier, BaseConfigScreen gui)
         {
             this.entrySupplier = entrySupplier;
             this.gui = gui;
@@ -42,15 +42,15 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
 
         @Override
         @Nullable
-        public BaseDataListEntryWidget<C> createWidget(int x, int y, int width, int height, int listIndex,
-                                                    C config, DataListWidget<C> listWidget)
+        public BaseConfigOptionWidget createWidget(int x, int y, int width, int height, int listIndex,
+                                                   C config, DataListWidget<C> listWidget)
         {
             List<C> list = this.entrySupplier.get();
 
             if (listIndex >= 0 && listIndex < list.size())
             {
-                ConfigElementPlacer<C> placer = ConfigTypeRegistry.INSTANCE.getElementPlacer(config);
-                return placer.createContainerWidget(x, y, width, height, listIndex, config, this.gui);
+                ConfigOptionWidgetFactory factory = ConfigTypeRegistry.INSTANCE.getWidgetFactory(config);
+                return factory.create(x, y, width, height, listIndex, config, this.gui);
             }
 
             return null;

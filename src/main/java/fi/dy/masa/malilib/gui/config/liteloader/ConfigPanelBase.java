@@ -13,7 +13,7 @@ import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.config.BaseConfigScreen;
-import fi.dy.masa.malilib.gui.config.GuiModConfigs;
+import fi.dy.masa.malilib.gui.config.ModConfigScreen;
 import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 
@@ -274,7 +274,7 @@ public abstract class ConfigPanelBase extends AbstractConfigPanel
         }
     }
 
-    public static class GuiConfigsWrapper extends GuiModConfigs
+    public static class GuiConfigsWrapper extends ModConfigScreen
     {
         protected final GuiScreen backgroundGui;
         protected final BaseScreen foregroundGui;

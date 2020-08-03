@@ -5,11 +5,11 @@ import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 
-public class GuiModConfigs extends BaseConfigScreen
+public class ModConfigScreen extends BaseConfigScreen
 {
     protected final List<? extends ConfigInfo> configs;
 
-    public GuiModConfigs(String modId, List<? extends ConfigInfo> configs, String titleKey, Object... args)
+    public ModConfigScreen(String modId, List<? extends ConfigInfo> configs, String titleKey, Object... args)
     {
         super(10, 0, modId, null, ImmutableList.of(), titleKey, args);
 
