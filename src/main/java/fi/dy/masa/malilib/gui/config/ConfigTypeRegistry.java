@@ -4,11 +4,13 @@ import java.util.HashMap;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.config.option.DoubleConfig;
+import fi.dy.masa.malilib.config.option.HotkeyConfig;
 import fi.dy.masa.malilib.config.option.IntegerConfig;
 import fi.dy.masa.malilib.config.option.OptionListConfig;
 import fi.dy.masa.malilib.config.option.StringConfig;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.BooleanConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.DoubleConfigWidget;
+import fi.dy.masa.malilib.gui.widget.list.entry.config.HotkeyConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.IntegerConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.OptionListConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.StringConfigWidget;
@@ -46,6 +48,7 @@ public class ConfigTypeRegistry
     {
         this.registerWidgetFactory(BooleanConfig.class, BooleanConfigWidget::new);
         this.registerWidgetFactory(DoubleConfig.class, DoubleConfigWidget::new);
+        this.registerWidgetFactory(HotkeyConfig.class, HotkeyConfigWidget::new);
         this.registerWidgetFactory(IntegerConfig.class, IntegerConfigWidget::new);
         this.registerWidgetFactory(OptionListConfig.class, OptionListConfigWidget::new);
         this.registerWidgetFactory(StringConfig.class, StringConfigWidget::new);

@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.input;
 
 import java.util.List;
 import javax.annotation.Nullable;
+import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonElement;
 
 public interface IKeyBind
@@ -53,15 +54,9 @@ public interface IKeyBind
 
     void resetToDefault();
 
-    void addKey(int keyCode);
-
-    String getStringValue();
-
-    String getDefaultStringValue();
-
     void setValueFromString(String str);
 
-    void removeKey(int keyCode);
+    void setKeys(List<Integer> newKeys);
 
     /**
      * Check if this keybind is only a single key, matching the given key code.
@@ -77,7 +72,9 @@ public interface IKeyBind
 
     String getKeysDisplayString();
 
-    List<Integer> getKeys();
+    ImmutableList<Integer> getKeys();
+
+    ImmutableList<Integer> getDefaultKeys();
 
     void setCallback(@Nullable IHotkeyCallback callback);
 

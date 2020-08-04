@@ -2,7 +2,6 @@ package fi.dy.masa.malilib.config.option;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
-import fi.dy.masa.malilib.config.ConfigType;
 
 public abstract class BaseStringConfig<T> extends BaseConfig<T>
 {
@@ -10,9 +9,14 @@ public abstract class BaseStringConfig<T> extends BaseConfig<T>
     protected String value;
     protected String lastSavedValue;
 
-    protected BaseStringConfig(ConfigType type, String name, String defaultValue, String comment)
+    protected BaseStringConfig(String name, String defaultValue)
     {
-        super(type, name, comment);
+        this(name, defaultValue, name);
+    }
+
+    protected BaseStringConfig(String name, String defaultValue, String comment)
+    {
+        super(name, comment);
 
         this.defaultValue = defaultValue;
         this.value = defaultValue;

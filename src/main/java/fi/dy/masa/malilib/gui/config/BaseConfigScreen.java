@@ -19,17 +19,18 @@ import fi.dy.masa.malilib.gui.listener.ButtonPressDirtyListenerSimple;
 import fi.dy.masa.malilib.gui.listener.ConfigOptionChangeListenerKeybind;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.list.ConfigOptionListWidget;
+import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.util.StringUtils;
 
-public abstract class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<?>> implements IKeybindConfigGui
+public abstract class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<?>> implements IKeybindConfigGui, EventListener
 {
     protected final List<ConfigOptionChangeListenerKeybind> hotkeyChangeListeners = new ArrayList<>();
     protected final ButtonPressDirtyListenerSimple dirtyListener = new ButtonPressDirtyListenerSimple();
-    protected final String modId;
-    protected final List<String> initialConfigValues = new ArrayList<>();
     protected final List<ConfigTab> configTabs;
+    protected final String modId;
     protected ConfigButtonKeyBind activeKeyBindButton;
-    protected int configWidth = 204;
+    protected int configElementsWidth = 80;
+    protected int maxLabelWidth = -1;
     @Nullable protected ConfigInfoProvider hoverInfoProvider;
     @Nullable protected IDialogHandler dialogHandler;
 
@@ -60,14 +61,19 @@ public abstract class BaseConfigScreen extends BaseListScreen<ConfigOptionListWi
     @Nullable
     public abstract ConfigTab getCurrentTab();
 
-    protected boolean useKeybindSearch()
+    public boolean useKeyBindSearch()
     {
         return this.getCurrentTab() != null && this.getCurrentTab().useKeyBindSearch();
     }
 
-    protected int getConfigWidth()
+    public int getConfigElementsWidth()
     {
-        return this.getCurrentTab() != null ? this.getCurrentTab().getConfigWidth() : this.configWidth;
+        return this.getCurrentTab() != null ? this.getCurrentTab().getConfigWidth() : this.configElementsWidth;
+    }
+
+    public int getMaxLabelWidth()
+    {
+        return this.maxLabelWidth;
     }
 
     @Override
@@ -76,9 +82,29 @@ public abstract class BaseConfigScreen extends BaseListScreen<ConfigOptionListWi
         return this.getCurrentTab() != null ? this.getCurrentTab().getConfigOptions() : Collections.emptyList();
     }
 
-    public BaseConfigScreen setConfigWidth(int configWidth)
+    /**
+     * Called when the list widget refreshes the entries (applying the filter if applicable)
+     */
+    @Override
+    public void onEvent()
     {
-        this.configWidth = configWidth;
+        this.maxLabelWidth = -1;
+
+        for (ConfigInfo config : this.getListWidget().getCurrentEntries())
+        {
+            this.maxLabelWidth = Math.max(this.maxLabelWidth, this.getStringWidth(config.getDisplayName()));
+        }
+    }
+
+    /**
+     * Sets the requested config elements width for this screen.
+     * Use -1 to indicate automatic/default width decided by the widgets.
+     * @param configElementsWidth
+     * @return
+     */
+    public BaseConfigScreen setConfigElementsWidth(int configElementsWidth)
+    {
+        this.configElementsWidth = configElementsWidth;
         return this;
     }
 
@@ -229,7 +255,6 @@ public abstract class BaseConfigScreen extends BaseListScreen<ConfigOptionListWi
         // When clicking on not-a-button, clear the selection
         if (this.activeKeyBindButton != null)
         {
-            this.activeKeyBindButton.onClearSelection();
             this.setActiveKeyBindButton(null);
             return true;
         }
@@ -245,7 +270,7 @@ public abstract class BaseConfigScreen extends BaseListScreen<ConfigOptionListWi
     }
 
     @Override
-    public void addKeybindChangeListener(ConfigOptionChangeListenerKeybind listener)
+    public void addKeyBindChangeListener(ConfigOptionChangeListenerKeybind listener)
     {
         this.hotkeyChangeListeners.add(listener);
     }

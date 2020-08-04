@@ -1,6 +1,8 @@
 package fi.dy.masa.malilib.gui.interfaces;
 
-public interface ISliderCallbackSteps extends ISliderCallback
+import fi.dy.masa.malilib.gui.config.SliderCallback;
+
+public interface ISliderCallbackSteps extends SliderCallback
 {
     /**
      * Returns the step size the underlying config value should snap to

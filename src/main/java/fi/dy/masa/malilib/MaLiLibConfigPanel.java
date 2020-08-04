@@ -15,10 +15,10 @@ public class MaLiLibConfigPanel extends ConfigPanelBase
     protected void createSubPanels()
     {
         this.addSubPanel((new ModConfigScreen(MaLiLibReference.MOD_ID, MaLiLibConfigs.Generic.OPTIONS,
-                                              "malilib.gui.title.generic")).setConfigWidth(240));
+                                              "malilib.gui.title.generic")).setConfigElementsWidth(240));
 
         this.addSubPanel((new ModConfigScreen(MaLiLibReference.MOD_ID, MaLiLibConfigs.Debug.OPTIONS,
-                                              "malilib.gui.title.debug")).setConfigWidth(120));
+                                              "malilib.gui.title.debug")).setConfigElementsWidth(120));
 
         this.addSubPanel(new ConfigPanelAllHotkeys());
     }

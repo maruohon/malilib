@@ -8,6 +8,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
@@ -31,13 +32,13 @@ public class KeyBindMulti implements IKeyBind
     private static int triggeredCount;
 
     private final String name;
-    private final String defaultStorageString;
     private final KeyBindSettings defaultSettings;
-    private final List<Integer> keyCodes = new ArrayList<>(4);
-    private String modName = "";
+    private final ImmutableList<Integer> defaultKeyCodes;
+    private ImmutableList<Integer> keyCodes = ImmutableList.of();
+    private ImmutableList<Integer> lastSavedKeyCodes;
     private KeyBindSettings settings;
-    private String lastSavedStorageString;
     private KeyBindSettings lastSavedSettings;
+    private String modName = "";
     private boolean pressed;
     private boolean pressedLast;
     private int heldTime;
@@ -47,8 +48,8 @@ public class KeyBindMulti implements IKeyBind
     private KeyBindMulti(String name, String defaultStorageString, KeyBindSettings settings)
     {
         this.name = name;
-        this.defaultStorageString = defaultStorageString;
         this.defaultSettings = settings;
+        this.defaultKeyCodes = readKeysFromStorageString(defaultStorageString);
         this.settings = settings;
 
         this.cacheSavedValue();
@@ -258,18 +259,15 @@ public class KeyBindMulti implements IKeyBind
     @Override
     public void clearKeys()
     {
-        this.keyCodes.clear();
+        this.keyCodes = ImmutableList.of();
         this.pressed = false;
         this.heldTime = 0;
     }
 
     @Override
-    public void addKey(int keyCode)
+    public void setKeys(List<Integer> newKeys)
     {
-        if (this.keyCodes.contains(keyCode) == false)
-        {
-            this.keyCodes.add(keyCode);
-        }
+        this.keyCodes = ImmutableList.copyOf(newKeys);
     }
 
     @Override
@@ -284,21 +282,21 @@ public class KeyBindMulti implements IKeyBind
     }
 
     @Override
-    public void removeKey(int keyCode)
-    {
-        this.keyCodes.remove(keyCode);
-    }
-
-    @Override
-    public List<Integer> getKeys()
+    public ImmutableList<Integer> getKeys()
     {
         return this.keyCodes;
     }
 
     @Override
+    public ImmutableList<Integer> getDefaultKeys()
+    {
+        return this.defaultKeyCodes;
+    }
+
+    @Override
     public String getKeysDisplayString()
     {
-        return this.getStringValue().replaceAll(",", " + ");
+        return writeKeysToString(this.keyCodes, " + ");
     }
 
     /**
@@ -307,27 +305,27 @@ public class KeyBindMulti implements IKeyBind
     @Override
     public boolean isModified()
     {
-        return this.getStringValue().equals(this.defaultStorageString) == false;
+        return this.keyCodes.equals(this.defaultKeyCodes) == false;
     }
 
     @Override
     public boolean isDirty()
     {
-        return this.lastSavedStorageString.equals(this.getStringValue()) == false ||
+        return this.lastSavedKeyCodes.equals(this.keyCodes) == false ||
                this.lastSavedSettings.equals(this.settings) == false;
     }
 
     @Override
     public void cacheSavedValue()
     {
-        this.lastSavedStorageString = this.getStringValue();
+        this.lastSavedKeyCodes = this.keyCodes;
         this.lastSavedSettings = this.settings;
     }
 
     @Override
     public void resetToDefault()
     {
-        this.setValueFromString(this.defaultStorageString);
+        this.keyCodes = this.defaultKeyCodes;
     }
 
     @Override
@@ -343,63 +341,10 @@ public class KeyBindMulti implements IKeyBind
     }
 
     @Override
-    public String getStringValue()
-    {
-        StringBuilder sb = new StringBuilder(32);
-
-        for (int i = 0; i < this.keyCodes.size(); ++i)
-        {
-            if (i > 0)
-            {
-                sb.append(",");
-            }
-
-            int keyCode = this.keyCodes.get(i).intValue();
-            String name = getStorageStringForKeyCode(keyCode);
-
-            if (name != null)
-            {
-                sb.append(name);
-            }
-        }
-
-        return sb.toString();
-    }
-
-    @Override
-    public String getDefaultStringValue()
-    {
-        return this.defaultStorageString;
-    }
-
-    @Override
     public void setValueFromString(String str)
     {
         this.clearKeys();
-        String[] keys = str.split(",");
-
-        for (String key : keys)
-        {
-            key = key.trim();
-
-            if (key.isEmpty() == false)
-            {
-                int keyCode = Keyboard.getKeyIndex(key);
-
-                if (keyCode != Keyboard.KEY_NONE)
-                {
-                    this.addKey(keyCode);
-                    continue;
-                }
-
-                keyCode = Mouse.getButtonIndex(key);
-
-                if (keyCode >= 0 && keyCode < Mouse.getButtonCount())
-                {
-                    this.addKey(keyCode - 100);
-                }
-            }
-        }
+        this.keyCodes = readKeysFromStorageString(str);
     }
 
     @Override
@@ -408,7 +353,7 @@ public class KeyBindMulti implements IKeyBind
         return this.keyCodes.size() == 1 && this.keyCodes.get(0) == keyCode;
     }
 
-    public static boolean hotkeyMatchesKeybind(IHotkey hotkey, KeyBinding keybind)
+    public static boolean hotkeyMatchesKeyBind(IHotkey hotkey, KeyBinding keybind)
     {
         return hotkey.getKeyBind().matches(keybind.getKeyCode());
     }
@@ -517,7 +462,7 @@ public class KeyBindMulti implements IKeyBind
     @Override
     public JsonElement getAsJsonElement()
     {
-        String str = this.getStringValue();
+        String str = writeKeysToString(this.keyCodes, ",");
 
         JsonObject obj = new JsonObject();
         obj.add("keys", new JsonPrimitive(str));
@@ -527,9 +472,9 @@ public class KeyBindMulti implements IKeyBind
 
     public static KeyBindMulti fromStorageString(String name, String storageString, KeyBindSettings settings)
     {
-        KeyBindMulti keybind = new KeyBindMulti(name, storageString, settings);
-        keybind.setValueFromString(storageString);
-        return keybind;
+        KeyBindMulti keyBind = new KeyBindMulti(name, storageString, settings);
+        keyBind.setValueFromString(storageString);
+        return keyBind;
     }
 
     public static boolean isKeyDown(int keyCode)
@@ -570,7 +515,7 @@ public class KeyBindMulti implements IKeyBind
 
         if (MaLiLibConfigs.Debug.KEYBIND_DEBUG.getBooleanValue())
         {
-            printKeybindDebugMessage(keyCode, state);
+            printKeyBindDebugMessage(keyCode, state);
         }
     }
 
@@ -598,7 +543,7 @@ public class KeyBindMulti implements IKeyBind
         }
     }
 
-    private static void printKeybindDebugMessage(int eventKey, boolean eventKeyState)
+    private static void printKeyBindDebugMessage(int eventKey, boolean eventKeyState)
     {
         String keyName = eventKey > 0 ? Keyboard.getKeyName(eventKey) : Mouse.getButtonName(eventKey + 100);
         String type = eventKeyState ? "PRESS" : "RELEASE";
@@ -661,6 +606,66 @@ public class KeyBindMulti implements IKeyBind
         }
 
         return null;
+    }
+
+    public static ImmutableList<Integer> readKeysFromStorageString(String str)
+    {
+        ArrayList<Integer> keyCodes = new ArrayList<>();
+        String[] keys = str.split(",");
+
+        for (String key : keys)
+        {
+            key = key.trim();
+
+            if (key.isEmpty() == false)
+            {
+                int keyCode = Keyboard.getKeyIndex(key);
+
+                if (keyCode == Keyboard.KEY_NONE)
+                {
+                    keyCode = Mouse.getButtonIndex(key);
+
+                    if (keyCode >= 0 && keyCode < Mouse.getButtonCount())
+                    {
+                        keyCode -= 100;
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+
+                if (keyCode != Keyboard.KEY_NONE && keyCodes.contains(keyCode) == false)
+                {
+                    keyCodes.add(keyCode);
+                }
+            }
+        }
+
+        return ImmutableList.copyOf(keyCodes);
+    }
+
+    public static String writeKeysToString(List<Integer> keyCodes, String separator)
+    {
+        StringBuilder sb = new StringBuilder(32);
+
+        for (int i = 0; i < keyCodes.size(); ++i)
+        {
+            if (i > 0)
+            {
+                sb.append(separator);
+            }
+
+            int keyCode = keyCodes.get(i).intValue();
+            String name = getStorageStringForKeyCode(keyCode);
+
+            if (name != null)
+            {
+                sb.append(name);
+            }
+        }
+
+        return sb.toString();
     }
 
     public static int getTriggeredCount()

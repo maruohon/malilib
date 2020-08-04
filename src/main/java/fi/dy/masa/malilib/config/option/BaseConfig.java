@@ -2,14 +2,12 @@ package fi.dy.masa.malilib.config.option;
 
 import java.util.Locale;
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.config.ConfigType;
 import fi.dy.masa.malilib.config.ValueChangeCallback;
 import fi.dy.masa.malilib.config.ValueLoadedCallback;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public abstract class BaseConfig<T> implements ConfigOption<T>
 {
-    protected final ConfigType type;
     protected final String name;
     protected String nameTranslationKey;
     protected String prettyNameTranslationKey;
@@ -21,31 +19,24 @@ public abstract class BaseConfig<T> implements ConfigOption<T>
     @Nullable
     protected ValueLoadedCallback<T> valueLoadCallback;
 
-    public BaseConfig(ConfigType type, String name)
+    public BaseConfig(String name)
     {
-        this(type, name, name, name, name);
+        this(name, name, name, name);
     }
 
-    public BaseConfig(ConfigType type, String name, String commentTranslationKey, Object... commentArgs)
+    public BaseConfig(String name, String commentTranslationKey, Object... commentArgs)
     {
-        this(type, name, name, name, commentTranslationKey, commentArgs);
+        this(name, name, name, commentTranslationKey, commentArgs);
     }
 
-    public BaseConfig(ConfigType type, String name, String nameTranslationKey,
-                      String prettyNameTranslationKey, String commentTranslationKey, Object... commentArgs)
+    public BaseConfig(String name, String nameTranslationKey, String prettyNameTranslationKey,
+                      String commentTranslationKey, Object... commentArgs)
     {
-        this.type = type;
         this.name = name;
         this.nameTranslationKey = nameTranslationKey;
         this.prettyNameTranslationKey = prettyNameTranslationKey;
         this.commentTranslationKey = commentTranslationKey;
         this.commentArgs = commentArgs;
-    }
-
-    @Override
-    public ConfigType getType()
-    {
-        return this.type;
     }
 
     @Override

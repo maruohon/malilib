@@ -1,18 +1,10 @@
 package fi.dy.masa.malilib.config.option;
 
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.config.ConfigType;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public interface ConfigInfo
 {
-    /**
-     * Returns the type of this config. Used by the config GUI to determine what kind of control
-     * to use for this config.
-     * @return the type of this config
-     */
-    ConfigType getType();
-
     /**
      * Returns the name of this config option, used in the config files
      * @return the internal name of this config
@@ -31,7 +23,11 @@ public interface ConfigInfo
      */
     default String getDisplayName()
     {
-        return StringUtils.translate(this.getConfigNameTranslationKey());
+        String key = this.getConfigNameTranslationKey();
+        String name = StringUtils.translate(key);
+
+        // If there is no translation for the config name, then show the actual base name
+        return name.equals(key) ? this.getName() : name;
     }
 
     /**

@@ -58,7 +58,7 @@ public class ConfigPanelAllHotkeys extends ModConfigScreen
     }
 
     @Override
-    protected boolean useKeybindSearch()
+    public boolean useKeyBindSearch()
     {
         return true;
     }

@@ -3,20 +3,19 @@ package fi.dy.masa.malilib.config.option;
 import java.io.File;
 import com.google.gson.JsonElement;
 import fi.dy.masa.malilib.LiteModMaLiLib;
-import fi.dy.masa.malilib.config.ConfigType;
 
 public class FileConfig extends BaseStringConfig<File>
 {
     protected File file;
 
-    public FileConfig(String name, File defaultValue, String comment)
+    public FileConfig(String name, File defaultValue)
     {
-        this(ConfigType.FILE, name, defaultValue, comment);
+        this(name, defaultValue, name);
     }
 
-    protected FileConfig(ConfigType type, String name, File defaultValue, String comment)
+    public FileConfig(String name, File defaultValue, String comment)
     {
-        super(type, name, defaultValue.getAbsolutePath(), comment);
+        super(name, defaultValue.getAbsolutePath(), comment);
 
         this.file = defaultValue;
     }

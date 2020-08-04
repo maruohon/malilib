@@ -239,7 +239,7 @@ public class WidgetTextFieldBase extends WidgetBackground
      * <b>Note:</b> By default the listener is only notified when Enter is pressed,
      * or the text field loses focus.
      * If the listener should be notified on every change (characters written or removed etc.),
-     * then call {@link setUpdateListenerAlways(true)}
+     * then call {@link WidgetTextFieldBase#setUpdateListenerAlways(boolean)}
      * @param listener
      * @return
      */

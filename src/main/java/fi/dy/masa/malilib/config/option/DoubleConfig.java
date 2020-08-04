@@ -4,9 +4,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.LiteModMaLiLib;
-import fi.dy.masa.malilib.config.ConfigType;
 
-public class DoubleConfig extends BaseConfig<Double>
+public class DoubleConfig extends BaseConfig<Double> implements SliderConfig
 {
     protected final double minValue;
     protected final double maxValue;
@@ -14,6 +13,11 @@ public class DoubleConfig extends BaseConfig<Double>
     protected double value;
     protected double lastSavedValue;
     protected boolean useSlider;
+
+    public DoubleConfig(String name, double defaultValue)
+    {
+        this(name, defaultValue, name);
+    }
 
     public DoubleConfig(String name, double defaultValue, String comment)
     {
@@ -27,7 +31,7 @@ public class DoubleConfig extends BaseConfig<Double>
 
     public DoubleConfig(String name, double defaultValue, double minValue, double maxValue, boolean useSlider, String comment)
     {
-        super(ConfigType.DOUBLE, name, comment);
+        super(name, comment);
 
         this.minValue = minValue;
         this.maxValue = maxValue;
@@ -38,11 +42,13 @@ public class DoubleConfig extends BaseConfig<Double>
         this.cacheSavedValue();
     }
 
+    @Override
     public boolean shouldUseSlider()
     {
         return this.useSlider;
     }
 
+    @Override
     public void toggleUseSlider()
     {
         this.useSlider = ! this.useSlider;

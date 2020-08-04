@@ -20,31 +20,6 @@ public interface IHotkey
     }
 
     /**
-     * Returns the String representation of the value of this config. Used in the config GUI to
-     * fill in the text field contents.
-     * @return the String representation of the current value
-     */
-    default String getStringValue()
-    {
-        return this.getKeyBind().getStringValue();
-    }
-
-    default String getDefaultStringValue()
-    {
-        return this.getKeyBind().getDefaultStringValue();
-    }
-
-    /**
-     * Parses the value of this config from a String. Used for example to get the new value from
-     * the config GUI textfield.
-     * @param value
-     */
-    default void setValueFromString(String value)
-    {
-        this.getKeyBind().setValueFromString(value);
-    }
-
-    /**
      * Returns true if the value has been changed from the default value
      * @return
      */

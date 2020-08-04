@@ -19,14 +19,14 @@ public class MaLiLibConfigs implements ConfigHandler
 {
     public static class Generic
     {
-        public static final OptionListConfig<KeybindDisplayMode> KEYBIND_DISPLAY        = new OptionListConfig<>("keybindDisplay", KeybindDisplayMode.NONE, "Whether or not to display a small indicator/toast\nfor pressed keys and triggered hotkeys/actions");
-        public static final OptionListConfig<HudAlignment> KEYBIND_DISPLAY_ALIGNMENT    = new OptionListConfig<>("keybindDisplayAlignment", HudAlignment.BOTTOM_RIGHT, "The alignment for the keybind display toast messages");
+        public static final OptionListConfig<KeybindDisplayMode> KEYBIND_DISPLAY        = new OptionListConfig<>("keybindDisplay", KeybindDisplayMode.NONE);
+        public static final OptionListConfig<HudAlignment> KEYBIND_DISPLAY_ALIGNMENT    = new OptionListConfig<>("keybindDisplayAlignment", HudAlignment.BOTTOM_RIGHT);
 
-        public static final HotkeyConfig IGNORED_KEYS                   = new HotkeyConfig("ignoredKeys", "", "Any keys set here will be completely ignored");
-        public static final BooleanConfig KEYBIND_DISPLAY_CALLBACK_ONLY = new BooleanConfig("keybindDisplayCallbackOnly", true, "If enabled, then only keybinds that have a defined action callback\nwill be displayed on the keybind display toast.");
-        public static final BooleanConfig KEYBIND_DISPLAY_CANCEL_ONLY   = new BooleanConfig("keybindDisplayCancelOnly", true, "If enabled, then only keybinds that are set to cancel\nfurther processing will be displayed on the\nkeybind display toast. This prevents \"modifier\" keys from\nspamming the display.");
-        public static final IntegerConfig KEYBIND_DISPLAY_DURATION      = new IntegerConfig("keybindDisplayDuration", 5000, 0, 120000, "The duration (in milliseconds) the keybind display toasts are shown");
-        public static final HotkeyConfig OPEN_GUI_CONFIGS               = new HotkeyConfig("openGuiConfigs", "A,C", "Open the in-game malilib config GUI");
+        public static final HotkeyConfig IGNORED_KEYS                   = new HotkeyConfig("ignoredKeys", "");
+        public static final BooleanConfig KEYBIND_DISPLAY_CALLBACK_ONLY = new BooleanConfig("keybindDisplayCallbackOnly", true);
+        public static final BooleanConfig KEYBIND_DISPLAY_CANCEL_ONLY   = new BooleanConfig("keybindDisplayCancelOnly", true);
+        public static final IntegerConfig KEYBIND_DISPLAY_DURATION      = new IntegerConfig("keybindDisplayDuration", 5000, 0, 120000);
+        public static final HotkeyConfig OPEN_GUI_CONFIGS               = new HotkeyConfig("openGuiConfigs", "A,C");
 
         public static final ImmutableList<ConfigOption<?>> OPTIONS = ImmutableList.of(
                 IGNORED_KEYS,
@@ -43,12 +43,12 @@ public class MaLiLibConfigs implements ConfigHandler
     {
         public static final KeyBindSettings DBG_KS = KeyBindSettings.create(KeyBindSettings.Context.GUI, KeyAction.PRESS, true, false, false, false, true);
 
-        public static final BooleanConfig GUI_DEBUG                 = new BooleanConfig("guiDebug", false, "When enabled, all GUI widgets will draw outlines and\nwhen hovered their position and dimension and widget class name");
-        public static final BooleanConfig GUI_DEBUG_ALL             = new BooleanConfig("guiDebugAll", true, "If true, then all widgets will render the debug outline,\notherwise only the hovered widget will render it");
-        public static final BooleanConfig GUI_DEBUG_INFO_ALWAYS     = new BooleanConfig("guiDebugInfoAlways", false, "When enabled, the debug position info is always rendered,\neven without hovering the widgets");
-        public static final HotkeyConfig GUI_DEBUG_KEY              = new HotkeyConfig("guiDebugKey", "LMENU", DBG_KS, "If this is set, then the GUI debug only renders\nwhile this key is held down");
-        public static final BooleanConfig KEYBIND_DEBUG             = new BooleanConfig("keybindDebugging", false, "When enabled, key presses and held keys are\nprinted to the game console (and the action bar, if enabled)");
-        public static final BooleanConfig KEYBIND_DEBUG_ACTIONBAR   = new BooleanConfig("keybindDebuggingIngame", true, "If enabled, then the messages from 'keybindDebugging'\nare also printed to the in-game action bar");
+        public static final BooleanConfig GUI_DEBUG                 = new BooleanConfig("guiDebug", false);
+        public static final BooleanConfig GUI_DEBUG_ALL             = new BooleanConfig("guiDebugAll", true);
+        public static final BooleanConfig GUI_DEBUG_INFO_ALWAYS     = new BooleanConfig("guiDebugInfoAlways", false);
+        public static final HotkeyConfig GUI_DEBUG_KEY              = new HotkeyConfig("guiDebugKey", "LMENU", DBG_KS);
+        public static final BooleanConfig KEYBIND_DEBUG             = new BooleanConfig("keybindDebugging", false);
+        public static final BooleanConfig KEYBIND_DEBUG_ACTIONBAR   = new BooleanConfig("keybindDebuggingIngame", true);
 
         public static final ImmutableList<ConfigOption<?>> OPTIONS = ImmutableList.of(
                 GUI_DEBUG,

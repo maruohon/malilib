@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.gui.widget.list.entry.config;
 
 import fi.dy.masa.malilib.config.option.StringConfig;
+import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.config.BaseConfigScreen;
 import fi.dy.masa.malilib.gui.widget.WidgetTextFieldBase;
 
@@ -16,12 +17,33 @@ public class StringConfigWidget extends BaseConfigOptionWidget<StringConfig>
         this.config = config;
         this.initialValue = this.config.getStringValue();
 
-        // TODO config refactor
-        WidgetTextFieldBase textField = new WidgetTextFieldBase(x + 120, y + 3, 120, 16, this.initialValue);
-        this.addTextField(textField, (newText) -> {
-            //resetButton.setEnabled(config.isModified(newText));
-            this.config.setValueFromString(newText);
+        this.reCreateWidgets(x, y);
+    }
+
+    @Override
+    protected void reCreateWidgets(int x, int y)
+    {
+        super.reCreateWidgets(x, y);
+
+        int xOff = this.getMaxLabelWidth() + 10;
+        int elementWidth = this.gui.getConfigElementsWidth();
+        WidgetTextFieldBase textField = new WidgetTextFieldBase(x + xOff, y + 3, elementWidth, 16, this.initialValue);
+
+        textField.setListener((str) -> {
+            this.config.setValueFromString(str);
+            this.resetButton.setEnabled(this.config.isModified());
         });
+
+        final ButtonGeneric resetButton = this.createResetButton(x + xOff + elementWidth + 4, y + 1, this.config);
+        this.resetButton = resetButton;
+
+        resetButton.setActionListener((btn, mbtn) -> {
+            this.config.resetToDefault();
+            this.resetButton.setEnabled(this.config.isModified());
+        });
+
+        this.addWidget(textField);
+        this.addWidget(resetButton);
     }
 
     @Override

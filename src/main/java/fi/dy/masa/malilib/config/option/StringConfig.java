@@ -2,13 +2,17 @@ package fi.dy.masa.malilib.config.option;
 
 import com.google.gson.JsonElement;
 import fi.dy.masa.malilib.LiteModMaLiLib;
-import fi.dy.masa.malilib.config.ConfigType;
 
 public class StringConfig extends BaseStringConfig<String>
 {
+    public StringConfig(String name, String defaultValue)
+    {
+        this(name, defaultValue, name);
+    }
+
     public StringConfig(String name, String defaultValue, String comment)
     {
-        super(ConfigType.STRING, name, defaultValue, comment);
+        super(name, defaultValue, comment);
     }
 
     @Override

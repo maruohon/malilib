@@ -6,7 +6,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import fi.dy.masa.malilib.LiteModMaLiLib;
-import fi.dy.masa.malilib.config.ConfigType;
 
 public class StringListConfig extends BaseConfig<ImmutableList<String>>
 {
@@ -14,9 +13,14 @@ public class StringListConfig extends BaseConfig<ImmutableList<String>>
     protected ImmutableList<String> strings;
     protected ImmutableList<String> lastSavedStrings;
 
+    public StringListConfig(String name, ImmutableList<String> defaultValue)
+    {
+        this(name, defaultValue, name);
+    }
+
     public StringListConfig(String name, ImmutableList<String> defaultValue, String comment)
     {
-        super(ConfigType.STRING_LIST, name, comment);
+        super(name, comment);
 
         this.defaultValue = defaultValue;
         this.strings = ImmutableList.copyOf(defaultValue);

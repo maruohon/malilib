@@ -12,7 +12,7 @@ public interface IKeybindConfigGui extends IConfigGui
      * for updating the hotkey config buttons in the GUI.
      * @param listener
      */
-    void addKeybindChangeListener(ConfigOptionChangeListenerKeybind listener);
+    void addKeyBindChangeListener(ConfigOptionChangeListenerKeybind listener);
 
     /**
      * Sets or clears the currently active/selected hotkey config button.

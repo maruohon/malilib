@@ -44,7 +44,7 @@ public abstract class BaseListScreen<LISTWIDGET extends BaseListWidget> extends 
     protected abstract int getBrowserHeight();
 
     @Nullable
-    protected LISTWIDGET getListWidget()
+    public LISTWIDGET getListWidget()
     {
         if (this.widget == null)
         {

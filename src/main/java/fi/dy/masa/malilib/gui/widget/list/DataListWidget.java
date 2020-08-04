@@ -180,6 +180,7 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
             this.sortEntryList(this.listContents);
         }
 
+        this.onEntriesRefreshed();
         this.reCreateListEntryWidgets();
     }
 

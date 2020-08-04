@@ -1,6 +1,6 @@
-package fi.dy.masa.malilib.gui.interfaces;
+package fi.dy.masa.malilib.gui.config;
 
-public interface ISliderCallback
+public interface SliderCallback
 {
     /**
      * Maximum number of values/steps the underlying data can have.

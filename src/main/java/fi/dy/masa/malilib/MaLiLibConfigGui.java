@@ -10,9 +10,9 @@ import fi.dy.masa.malilib.gui.config.ConfigTab;
 
 public class MaLiLibConfigGui extends BaseConfigScreen
 {
-    private static final BaseConfigTab GENERIC       = new BaseConfigTab("malilib.gui.title.generic", 204, true, MaLiLibConfigs.Generic.OPTIONS);
-    private static final BaseConfigTab DEBUG         = new BaseConfigTab("malilib.gui.title.debug", 80, false, MaLiLibConfigs.Debug.OPTIONS);
-    private static final BaseConfigTab ALL_HOTKEYS   = new BaseConfigTab("malilib.gui.title.all_hotkeys", 204, true, Collections.emptyList());
+    private static final BaseConfigTab GENERIC       = new BaseConfigTab("malilib.gui.title.generic", 100, true, MaLiLibConfigs.Generic.OPTIONS);
+    private static final BaseConfigTab DEBUG         = new BaseConfigTab("malilib.gui.title.debug", 100, false, MaLiLibConfigs.Debug.OPTIONS);
+    private static final BaseConfigTab ALL_HOTKEYS   = new BaseConfigTab("malilib.gui.title.all_hotkeys", 200, true, Collections.emptyList());
 
     private static final ImmutableList<ConfigTab> TABS = ImmutableList.of(
             GENERIC,

@@ -17,8 +17,19 @@ public class OptionListConfigWidget extends BaseConfigOptionWidget<OptionListCon
         this.config = config;
         this.initialValue = this.config.getOptionListValue();
 
-        // TODO config refactor
-        this.addWidget(new ConfigButtonOptionList(x + 120, y + 1, 80, 20, config));
+        this.reCreateWidgets(x, y);
+    }
+
+    @Override
+    protected void reCreateWidgets(int x, int y)
+    {
+        super.reCreateWidgets(x, y);
+
+        int xOff = this.getMaxLabelWidth() + 10;
+        int elementWidth = this.gui.getConfigElementsWidth();
+        final ConfigButtonOptionList configButton = new ConfigButtonOptionList(x + xOff, y + 1, elementWidth, 20, this.config);
+
+        this.addButtonsForButtonBasedConfigs(x + xOff + elementWidth + 4, y + 1, this.config, configButton);
     }
 
     @Override

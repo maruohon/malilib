@@ -3,7 +3,6 @@ package fi.dy.masa.malilib.config.option;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import fi.dy.masa.malilib.LiteModMaLiLib;
-import fi.dy.masa.malilib.config.ConfigType;
 import fi.dy.masa.malilib.config.value.IConfigOptionListEntry;
 
 public class OptionListConfig<T extends IConfigOptionListEntry<T>> extends BaseConfig<T>
@@ -12,14 +11,19 @@ public class OptionListConfig<T extends IConfigOptionListEntry<T>> extends BaseC
     protected T value;
     protected T lastSavedValue;
 
-    public OptionListConfig(String name, T defaultValue, String comment)
+    public OptionListConfig(String name, T defaultValue)
     {
-        this(name, defaultValue, comment, name);
+        this(name, defaultValue, name);
     }
 
-    public OptionListConfig(String name, T defaultValue, String comment, String prettyName)
+    public OptionListConfig(String name, T defaultValue, String comment)
     {
-        super(ConfigType.OPTION_LIST, name, comment, prettyName);
+        this(name, defaultValue, name, comment);
+    }
+
+    public OptionListConfig(String name, T defaultValue, String prettyName, String comment)
+    {
+        super(name, name, prettyName, comment);
 
         this.defaultValue = defaultValue;
         this.value = defaultValue;

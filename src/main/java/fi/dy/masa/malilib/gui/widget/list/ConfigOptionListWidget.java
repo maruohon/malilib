@@ -21,6 +21,7 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
         this.gui = gui;
 
         this.setEntryWidgetFactory(new ConfigOptionListEntryWidgetFactory<>(entrySupplier, gui));
+        this.setEntryRefreshListener(gui);
     }
 
     @Override

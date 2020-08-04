@@ -17,6 +17,7 @@ import fi.dy.masa.malilib.gui.widget.WidgetScrollBar;
 import fi.dy.masa.malilib.gui.widget.WidgetSearchBar;
 import fi.dy.masa.malilib.gui.widget.WidgetTextFieldBase;
 import fi.dy.masa.malilib.gui.widget.list.entry.BaseListEntryWidget;
+import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.data.HorizontalAlignment;
 
@@ -25,6 +26,7 @@ public abstract class BaseListWidget extends WidgetContainer
     @Nullable protected BaseScreen parentScreen;
     @Nullable protected WidgetSearchBar searchBarWidget;
     @Nullable protected WidgetContainer headerWidget;
+    @Nullable protected EventListener entryRefreshListener;
     protected final WidgetScrollBar scrollBar;
     protected final ArrayList<BaseListEntryWidget> listWidgets = new ArrayList<>();
     protected final Padding listPosition = new Padding();
@@ -162,6 +164,11 @@ public abstract class BaseListWidget extends WidgetContainer
     public WidgetSearchBar getSearchBarWidget()
     {
         return this.searchBarWidget;
+    }
+
+    public void setEntryRefreshListener(@Nullable EventListener entryRefreshListener)
+    {
+        this.entryRefreshListener = entryRefreshListener;
     }
 
     public BaseListWidget setParentScreen(GuiScreen parent)
@@ -440,6 +447,14 @@ public abstract class BaseListWidget extends WidgetContainer
     public void refreshEntries()
     {
         this.reCreateListEntryWidgets();
+    }
+
+    protected void onEntriesRefreshed()
+    {
+        if (this.entryRefreshListener != null)
+        {
+            this.entryRefreshListener.onEvent();
+        }
     }
 
     protected void createAndAddHeaderWidget(int x, int y)

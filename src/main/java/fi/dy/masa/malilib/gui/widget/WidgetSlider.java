@@ -2,19 +2,19 @@ package fi.dy.masa.malilib.gui.widget;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import fi.dy.masa.malilib.gui.interfaces.ISliderCallback;
+import fi.dy.masa.malilib.gui.config.SliderCallback;
 import fi.dy.masa.malilib.render.RenderUtils;
 
 public class WidgetSlider extends WidgetBase
 {
     public static final ResourceLocation VANILLA_WIDGETS = new ResourceLocation("textures/gui/widgets.png");
 
-    protected final ISliderCallback callback;
+    protected final SliderCallback callback;
     protected int sliderWidth;
     protected int lastMouseX;
     protected boolean dragging;
 
-    public WidgetSlider(int x, int y, int width, int height, ISliderCallback callback)
+    public WidgetSlider(int x, int y, int width, int height, SliderCallback callback)
     {
         super(x, y, width, height);
 

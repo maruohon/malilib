@@ -3,7 +3,6 @@ package fi.dy.masa.malilib.config.option;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import fi.dy.masa.malilib.LiteModMaLiLib;
-import fi.dy.masa.malilib.config.ConfigType;
 
 public class BooleanConfig extends BaseConfig<Boolean>
 {
@@ -11,14 +10,19 @@ public class BooleanConfig extends BaseConfig<Boolean>
     protected boolean value;
     protected boolean lastSavedValue;
 
+    public BooleanConfig(String name, boolean defaultValue)
+    {
+        this(name, defaultValue, name);
+    }
+
     public BooleanConfig(String name, boolean defaultValue, String comment)
     {
         this(name, defaultValue, comment, name);
     }
 
-    public BooleanConfig(String name, boolean defaultValue, String comment, String prettyName)
+    public BooleanConfig(String name, boolean defaultValue, String prettyName, String comment)
     {
-        super(ConfigType.BOOLEAN, name, comment, prettyName);
+        super(name, name, prettyName, comment);
 
         this.defaultValue = defaultValue;
         this.value = defaultValue;

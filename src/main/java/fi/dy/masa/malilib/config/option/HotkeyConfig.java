@@ -1,7 +1,6 @@
 package fi.dy.masa.malilib.config.option;
 
 import com.google.gson.JsonElement;
-import fi.dy.masa.malilib.config.ConfigType;
 import fi.dy.masa.malilib.input.IHotkey;
 import fi.dy.masa.malilib.input.IKeyBind;
 import fi.dy.masa.malilib.input.KeyBindMulti;
@@ -12,24 +11,34 @@ public class HotkeyConfig extends BaseConfig<HotkeyConfig> implements IHotkey
 {
     protected final KeyBindMulti keyBind;
 
+    public HotkeyConfig(String name, String defaultStorageString)
+    {
+        this(name, defaultStorageString, name);
+    }
+
     public HotkeyConfig(String name, String defaultStorageString, String comment)
     {
-        this(name, defaultStorageString, comment, name);
+        this(name, defaultStorageString, name, comment);
+    }
+
+    public HotkeyConfig(String name, String defaultStorageString, KeyBindSettings settings)
+    {
+        this(name, defaultStorageString, settings, name);
     }
 
     public HotkeyConfig(String name, String defaultStorageString, KeyBindSettings settings, String comment)
     {
-        this(name, defaultStorageString, settings, comment, StringUtils.splitCamelCase(name));
+        this(name, defaultStorageString, settings, StringUtils.splitCamelCase(name), comment);
     }
 
-    public HotkeyConfig(String name, String defaultStorageString, String comment, String prettyName)
+    public HotkeyConfig(String name, String defaultStorageString, String prettyName, String comment)
     {
-        this(name, defaultStorageString, KeyBindSettings.DEFAULT, comment, prettyName);
+        this(name, defaultStorageString, KeyBindSettings.DEFAULT, prettyName, comment);
     }
 
-    public HotkeyConfig(String name, String defaultStorageString, KeyBindSettings settings, String comment, String prettyName)
+    public HotkeyConfig(String name, String defaultStorageString, KeyBindSettings settings, String prettyName, String comment)
     {
-        super(ConfigType.HOTKEY, name, comment, prettyName);
+        super(name, name, prettyName, comment);
 
         this.keyBind = KeyBindMulti.fromStorageString(name, defaultStorageString, settings);
     }
@@ -46,24 +55,6 @@ public class HotkeyConfig extends BaseConfig<HotkeyConfig> implements IHotkey
     public IKeyBind getKeyBind()
     {
         return this.keyBind;
-    }
-
-    @Override
-    public String getStringValue()
-    {
-        return this.keyBind.getStringValue();
-    }
-
-    @Override
-    public String getDefaultStringValue()
-    {
-        return this.keyBind.getDefaultStringValue();
-    }
-
-    @Override
-    public void setValueFromString(String value)
-    {
-        this.keyBind.setValueFromString(value);
     }
 
     @Override

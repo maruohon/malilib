@@ -3,12 +3,12 @@ package fi.dy.masa.malilib.gui.callback;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.option.IntegerConfig;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
-import fi.dy.masa.malilib.gui.interfaces.ISliderCallback;
+import fi.dy.masa.malilib.gui.config.SliderCallback;
 
-public class SliderCallbackInteger implements ISliderCallback
+public class SliderCallbackInteger implements SliderCallback
 {
     protected final IntegerConfig config;
-    protected final ButtonBase buttonReset;
+    @Nullable protected final ButtonBase buttonReset;
 
     public SliderCallbackInteger(IntegerConfig config, @Nullable ButtonBase buttonReset)
     {

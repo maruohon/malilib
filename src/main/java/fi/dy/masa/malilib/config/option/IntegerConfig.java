@@ -4,9 +4,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.LiteModMaLiLib;
-import fi.dy.masa.malilib.config.ConfigType;
 
-public class IntegerConfig extends BaseConfig<Integer>
+public class IntegerConfig extends BaseConfig<Integer> implements SliderConfig
 {
     protected final int minValue;
     protected final int maxValue;
@@ -15,9 +14,19 @@ public class IntegerConfig extends BaseConfig<Integer>
     protected int lastSavedValue;
     protected boolean useSlider;
 
+    public IntegerConfig(String name, int defaultValue)
+    {
+        this(name, defaultValue, Integer.MIN_VALUE, Integer.MAX_VALUE, name);
+    }
+
     public IntegerConfig(String name, int defaultValue, String comment)
     {
         this(name, defaultValue, Integer.MIN_VALUE, Integer.MAX_VALUE, comment);
+    }
+
+    public IntegerConfig(String name, int defaultValue, int minValue, int maxValue)
+    {
+        this(name, defaultValue, minValue, maxValue, name);
     }
 
     public IntegerConfig(String name, int defaultValue, int minValue, int maxValue, String comment)
@@ -27,7 +36,7 @@ public class IntegerConfig extends BaseConfig<Integer>
 
     public IntegerConfig(String name, int defaultValue, int minValue, int maxValue, boolean useSlider, String comment)
     {
-        super(ConfigType.INTEGER, name, comment);
+        super(name, comment);
 
         this.minValue = minValue;
         this.maxValue = maxValue;
@@ -38,11 +47,13 @@ public class IntegerConfig extends BaseConfig<Integer>
         this.cacheSavedValue();
     }
 
+    @Override
     public boolean shouldUseSlider()
     {
         return this.useSlider;
     }
 
+    @Override
     public void toggleUseSlider()
     {
         this.useSlider = ! this.useSlider;
