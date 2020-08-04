@@ -12,26 +12,26 @@ import fi.dy.masa.malilib.util.data.Color4f;
 public class WidgetColorIndicator extends WidgetBase
 {
     protected final IntegerConfig config;
+    protected final IntConsumer valueConsumer;
 
     public WidgetColorIndicator(int x, int y, int width, int height, Color4f color, IntConsumer consumer)
     {
-        this(x, y, width, height, new IntegerConfig("", color.intValue, ""));
-
-        this.config.setValueChangeCallback((newValue, oldValue) -> consumer.accept(newValue) );
+        this(x, y, width, height, new IntegerConfig("", color.intValue), consumer);
     }
 
-    public WidgetColorIndicator(int x, int y, int width, int height, IntegerConfig config)
+    public WidgetColorIndicator(int x, int y, int width, int height, IntegerConfig config, IntConsumer consumer)
     {
         super(x, y, width, height);
 
         this.config = config;
+        this.valueConsumer = consumer;
         this.addHoverString(StringUtils.translate("malilib.gui.hover.open_color_editor"));
     }
 
     @Override
     protected boolean onMouseClickedImpl(int mouseX, int mouseY, int mouseButton)
     {
-        ColorEditorHSVScreen gui = new ColorEditorHSVScreen(this.config, null, GuiUtils.getCurrentScreen());
+        ColorEditorHSVScreen gui = new ColorEditorHSVScreen(this.config.getIntegerValue(), this.valueConsumer, null, GuiUtils.getCurrentScreen());
         BaseScreen.openPopupGui(gui);
         return true;
     }

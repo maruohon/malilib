@@ -34,7 +34,7 @@ public class DoubleConfigWidget extends BaseConfigOptionWidget<DoubleConfig>
 
         if (this.config.shouldUseSlider())
         {
-            WidgetSlider slider = new WidgetSlider(x, y, elementWidth, 20, new SliderCallbackDouble(this.config, resetButton));
+            WidgetSlider slider = new WidgetSlider(x, y + 1, elementWidth, 20, new SliderCallbackDouble(this.config, this.resetButton));
             x += slider.getWidth() + 2;
             this.addWidget(slider);
         }

@@ -34,7 +34,7 @@ public class IntegerConfigWidget extends BaseConfigOptionWidget<IntegerConfig>
 
         if (this.config.shouldUseSlider())
         {
-            WidgetSlider slider = new WidgetSlider(x, y, elementWidth, 20, new SliderCallbackInteger(this.config, this.resetButton));
+            WidgetSlider slider = new WidgetSlider(x, y + 1, elementWidth, 20, new SliderCallbackInteger(this.config, this.resetButton));
             x += slider.getWidth() + 2;
             this.addWidget(slider);
         }

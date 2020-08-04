@@ -27,7 +27,7 @@ public class StringConfigWidget extends BaseConfigOptionWidget<StringConfig>
 
         int xOff = this.getMaxLabelWidth() + 10;
         int elementWidth = this.gui.getConfigElementsWidth();
-        WidgetTextFieldBase textField = new WidgetTextFieldBase(x + xOff, y + 3, elementWidth, 16, this.initialValue);
+        WidgetTextFieldBase textField = new WidgetTextFieldBase(x + xOff, y + 3, elementWidth, 16, this.config.getStringValue());
 
         textField.setListener((str) -> {
             this.config.setValueFromString(str);
@@ -39,7 +39,7 @@ public class StringConfigWidget extends BaseConfigOptionWidget<StringConfig>
 
         resetButton.setActionListener((btn, mbtn) -> {
             this.config.resetToDefault();
-            this.resetButton.setEnabled(this.config.isModified());
+            this.reCreateWidgets(this.getX(), this.getY());
         });
 
         this.addWidget(textField);

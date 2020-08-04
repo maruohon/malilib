@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.gui.callback;
 
 import javax.annotation.Nullable;
+import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.config.option.IntegerConfig;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.config.SliderCallback;
@@ -19,21 +20,21 @@ public class SliderCallbackInteger implements SliderCallback
     @Override
     public int getMaxSteps()
     {
-        int steps = this.config.getMaxIntegerValue() - this.config.getMinIntegerValue() + 1;
-        return steps > 0 ? steps : Integer.MAX_VALUE;
+        long steps = (long) this.config.getMaxIntegerValue() - (long) this.config.getMinIntegerValue() + 1L;
+        return steps > 0 ? (int) MathHelper.clamp(steps, 1, 8192) : 8192;
     }
 
     @Override
     public double getValueRelative()
     {
-        return (double) (this.config.getIntegerValue() - this.config.getMinIntegerValue()) / (double) (this.config.getMaxIntegerValue() - this.config.getMinIntegerValue());
+        return ((double) this.config.getIntegerValue() - (double) this.config.getMinIntegerValue()) / ((double) this.config.getMaxIntegerValue() - (double) this.config.getMinIntegerValue());
     }
 
     @Override
     public void setValueRelative(double relativeValue)
     {
-        int relValue = (int) (relativeValue * (this.config.getMaxIntegerValue() - this.config.getMinIntegerValue()));
-        this.config.setIntegerValue(relValue + this.config.getMinIntegerValue());
+        long relValue = (long) (relativeValue * ((long) this.config.getMaxIntegerValue() - (long) this.config.getMinIntegerValue()));
+        this.config.setIntegerValue((int) (relValue + this.config.getMinIntegerValue()));
 
         if (this.buttonReset != null)
         {

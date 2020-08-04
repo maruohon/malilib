@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.gui;
 
 import java.awt.*;
+import java.util.function.IntConsumer;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -11,7 +12,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.math.MathHelper;
-import fi.dy.masa.malilib.config.option.IntegerConfig;
 import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
 import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
 import fi.dy.masa.malilib.gui.widget.WidgetTextFieldBase;
@@ -24,7 +24,8 @@ public class ColorEditorHSVScreen extends DialogBaseScreen
 {
     protected static final ShaderProgram SHADER_HUE = new ShaderProgram("malilib", null, "shaders/sv_selector.frag");
 
-    protected final IntegerConfig config;
+    protected final IntConsumer valueConsumer;
+    protected final int initialValue;
     @Nullable protected final IDialogHandler dialogHandler;
     @Nullable protected Element clickedElement;
     @Nullable protected Element currentTextInputElement;
@@ -56,9 +57,10 @@ public class ColorEditorHSVScreen extends DialogBaseScreen
     protected float relB;
     protected float relA;
 
-    public ColorEditorHSVScreen(IntegerConfig config, @Nullable IDialogHandler dialogHandler, GuiScreen parent)
+    public ColorEditorHSVScreen(int initialValue, IntConsumer valueConsumer, @Nullable IDialogHandler dialogHandler, GuiScreen parent)
     {
-        this.config = config;
+        this.initialValue = initialValue;
+        this.valueConsumer = valueConsumer;
         this.dialogHandler = dialogHandler;
 
         // When we have a dialog handler, then we are inside the Liteloader config menu.
@@ -127,7 +129,7 @@ public class ColorEditorHSVScreen extends DialogBaseScreen
         //String str = StringUtils.translate("malilib.gui.label.color_editor.current_color");
         //this.addLabel(this.xHS, this.yHS + this.sizeHS + 10, 60, 12, 0xFFFFFF, str);
 
-        this.setColor(this.config.getIntegerValue()); // Set the text field values
+        this.setColor(this.initialValue); // Set the text field values
     }
 
     protected int createComponentElements(int x, int y, int xLabel, Element element)
@@ -178,7 +180,7 @@ public class ColorEditorHSVScreen extends DialogBaseScreen
     @Override
     public void onGuiClosed()
     {
-        this.config.setIntegerValue(this.color);
+        this.valueConsumer.accept(this.color);
 
         super.onGuiClosed();
     }
