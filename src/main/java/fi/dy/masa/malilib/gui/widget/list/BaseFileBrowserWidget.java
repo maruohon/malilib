@@ -18,20 +18,24 @@ import fi.dy.masa.malilib.gui.interfaces.IDirectoryNavigator;
 import fi.dy.masa.malilib.gui.interfaces.IFileBrowserIconProvider;
 import fi.dy.masa.malilib.gui.util.DefaultFileBrowserIconProvider;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
-import fi.dy.masa.malilib.gui.widget.list.entry.DirectoryEntryWidget;
 import fi.dy.masa.malilib.gui.widget.WidgetDirectoryNavigation;
 import fi.dy.masa.malilib.gui.widget.list.BaseFileBrowserWidget.DirectoryEntry;
+import fi.dy.masa.malilib.gui.widget.list.entry.DirectoryEntryWidget;
 import fi.dy.masa.malilib.util.DirectoryCreator;
 import fi.dy.masa.malilib.util.FileUtils;
 
-public abstract class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implements IDirectoryNavigator
+public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implements IDirectoryNavigator
 {
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+    public static final FileFilter ALWAYS_FALSE_FILE_FILTER = (file) -> false;
+    public static final FileFilter ALWAYS_TRUE_FILE_FILTER = (file) -> true;
 
     protected final IFileBrowserIconProvider iconProvider = new DefaultFileBrowserIconProvider();
     protected final File rootDirectory;
     @Nullable protected final IDirectoryCache cache;
     protected WidgetDirectoryNavigation widgetNavigation;
+    protected FileFilter fileFilter;
     protected String browserContext;
     protected File currentDirectory;
 
@@ -159,6 +163,11 @@ public abstract class BaseFileBrowserWidget extends DataListWidget<DirectoryEntr
         this.reCreateListEntryWidgets();
     }
 
+    public void setFileFilter(FileFilter filter)
+    {
+        this.fileFilter = filter;
+    }
+
     @Override
     protected Comparator<DirectoryEntry> getComparator()
     {
@@ -270,7 +279,10 @@ public abstract class BaseFileBrowserWidget extends DataListWidget<DirectoryEntr
         return FileUtils.DIRECTORY_FILTER;
     }
 
-    protected abstract FileFilter getFileFilter();
+    protected FileFilter getFileFilter()
+    {
+        return this.fileFilter != null ? this.fileFilter : ALWAYS_FALSE_FILE_FILTER;
+    }
 
     @Override
     protected int getHeightForListEntryWidget(int listIndex)

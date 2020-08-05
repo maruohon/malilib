@@ -55,13 +55,20 @@ malilib.error.textfield.invalid_value_int='%s' is not an integer number
 malilib.error.textfield.value_above_max='%s' is above the maximum value '%s'
 malilib.error.textfield.value_below_min='%s' is below the minimum value '%s'
 
+malilib.gui.button.config.select_directory=Select Directory
+malilib.gui.button.config.select_file=Select File
+malilib.gui.button.config.use_current_directory=Use current directory
+malilib.gui.button.config.use_selected_file=Select file
+
+malilib.gui.button.config.hover.selected_directory=Current directory:\n§3%s§r
+malilib.gui.button.config.hover.selected_file=Current file:\n§3%s§r
+
 malilib.gui.button.cancel=Cancel
 malilib.gui.button.default=Default
 malilib.gui.button.none.caps=NONE
 malilib.gui.button.ok=OK
 malilib.gui.button.reset=Reset
 malilib.gui.button.reset.caps=RESET
-malilib.gui.button.select_directory=Select Directory
 
 malilib.gui.button.render_layers_gui.axis=Axis: %s
 malilib.gui.button.render_layers_gui.follow_player=Follow Player: %s
@@ -75,7 +82,6 @@ malilib.gui.button.hover.directory_widget.up=Up to parent directory
 malilib.gui.button.hover.hold_shift_for_info=§oHold Shift for more information§r
 malilib.gui.button.hover.plus_minus_tip=Left click to increase\nRight click to decrease\nShift and/or Alt to increase the step size
 malilib.gui.button.hover.render_layers_gui.follow_player=If enabled, then the render layer follows the player
-malilib.gui.button.hover.select_directory_value=Current directory:\n§3%s§r
 malilib.gui.button.hover.text_field_slider_toggle=Toggle between a text field and a slider
 
 malilib.gui.button.hover.list.add_after=Add an entry after
