@@ -94,7 +94,10 @@ public class ConfigButtonKeyBind extends ButtonGeneric
             this.firstKey = false;
         }
 
-        this.newKeys.add(keyCode);
+        if (this.newKeys.contains(keyCode) == false)
+        {
+            this.newKeys.add(keyCode);
+        }
     }
 
     public void onSelected()
