@@ -90,6 +90,12 @@ public class WidgetDirectoryNavigation extends WidgetSearchBar
         return this.currentDir;
     }
 
+    public void setCurrentDirectory(File dir)
+    {
+        this.currentDir = dir;
+        this.updateSubWidgets();
+    }
+
     public IGuiIcon getNavBarIconRoot(boolean isOpen)
     {
         return this.iconProvider.getIcon(isOpen ? FileBrowserIconType.NAVBAR_ROOT_PATH_OPEN : FileBrowserIconType.NAVBAR_ROOT_PATH_CLOSED);
@@ -181,7 +187,7 @@ public class WidgetDirectoryNavigation extends WidgetSearchBar
                     final WidgetDirectorySelection dropdown = new WidgetDirectorySelection(x + el.totalWidth, y + 16, dirs, displayNameFactory);
                     dropdown.setNoBarWhenClosed(x + el.totalWidth - 12, y + 2, () -> this.getNavBarIconSubdirs(dropdown.isOpen()));
                     dropdown.setSelectionListener(this.navigator::switchToDirectory);
-                    dropdown.setRightAlign(true, x + el.totalWidth);
+                    dropdown.setRightAlign(true, x + el.totalWidth, true);
                     this.addWidget(dropdown);
                 }
             }

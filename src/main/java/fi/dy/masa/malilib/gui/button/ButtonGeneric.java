@@ -31,7 +31,7 @@ public class ButtonGeneric extends ButtonBase
     {
         this(x, y, width, 20, fi.dy.masa.malilib.util.StringUtils.translate(translationKey, args));
 
-        this.setRightAlign(rightAlign, x);
+        this.setRightAlign(rightAlign, x, true);
     }
 
     public ButtonGeneric(int x, int y, int width, int height, String text, String... hoverStrings)

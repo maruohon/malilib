@@ -7,6 +7,18 @@ public class Padding
     protected int topPadding;
     protected int bottomPadding;
 
+    public Padding()
+    {
+    }
+
+    public Padding(int topPadding, int rightPadding, int bottomPadding, int leftPadding)
+    {
+        this.topPadding = topPadding;
+        this.rightPadding = rightPadding;
+        this.bottomPadding = bottomPadding;
+        this.leftPadding = leftPadding;
+    }
+
     public int getLeftPadding()
     {
         return leftPadding;

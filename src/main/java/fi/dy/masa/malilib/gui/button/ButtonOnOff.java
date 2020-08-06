@@ -32,7 +32,7 @@ public class ButtonOnOff extends ButtonGeneric
             this.setWidth(Math.max(w1, w2) + 10);
         }
 
-        this.setRightAlign(rightAlign, x);
+        this.setRightAlign(rightAlign, x, true);
     }
 
     public void updateDisplayString(boolean isCurrentlyOn)

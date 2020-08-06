@@ -45,13 +45,13 @@ public abstract class BaseConfigScreen extends BaseListScreen<ConfigOptionListWi
     }
 
     @Override
-    protected int getBrowserWidth()
+    protected int getListWidth()
     {
         return this.width - 20;
     }
 
     @Override
-    protected int getBrowserHeight()
+    protected int getListHeight()
     {
         return this.height - 80;
     }
@@ -145,10 +145,9 @@ public abstract class BaseConfigScreen extends BaseListScreen<ConfigOptionListWi
     }
 
     @Override
-    protected ConfigOptionListWidget<?> createListWidget(int listX, int listY)
+    protected ConfigOptionListWidget<?> createListWidget(int listX, int listY, int listWidth, int listHeight)
     {
-        return new ConfigOptionListWidget<>(listX, listY,
-                this.getBrowserWidth(), this.getBrowserHeight(), this::getConfigs, this);
+        return new ConfigOptionListWidget<>(listX, listY, listWidth, listHeight, this::getConfigs, this);
     }
 
     @Override
@@ -182,7 +181,10 @@ public abstract class BaseConfigScreen extends BaseListScreen<ConfigOptionListWi
             x += this.createTabButton(x, y, width, tab);
         }
 
-        this.updateListPosition(this.getListX(), 50 + (rows - 1) * 22);
+        if (rows > 1)
+        {
+            this.updateListPosition(this.getListX(), 50 + (rows - 1) * 22);
+        }
     }
 
     protected int createTabButton(int x, int y, int width, ConfigTab tab)

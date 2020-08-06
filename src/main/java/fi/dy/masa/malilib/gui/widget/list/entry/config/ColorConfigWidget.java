@@ -1,7 +1,6 @@
 package fi.dy.masa.malilib.gui.widget.list.entry.config;
 
 import fi.dy.masa.malilib.config.option.ColorConfig;
-import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.config.BaseConfigScreen;
 import fi.dy.masa.malilib.gui.widget.WidgetColorIndicator;
 import fi.dy.masa.malilib.gui.widget.WidgetTextFieldBase;
@@ -9,6 +8,8 @@ import fi.dy.masa.malilib.gui.widget.WidgetTextFieldBase;
 public class ColorConfigWidget extends BaseConfigOptionWidget<ColorConfig>
 {
     protected final ColorConfig config;
+    protected final WidgetColorIndicator colorIndicatorWidget;
+    protected final WidgetTextFieldBase textField;
     protected final int initialValue;
 
     public ColorConfigWidget(int x, int y, int width, int height, int listIndex, ColorConfig config, BaseConfigScreen gui)
@@ -18,41 +19,39 @@ public class ColorConfigWidget extends BaseConfigOptionWidget<ColorConfig>
         this.config = config;
         this.initialValue = this.config.getIntegerValue();
 
-        this.reCreateWidgets(x, y);
-    }
-
-    @Override
-    protected void reCreateWidgets(int x, int y)
-    {
-        super.reCreateWidgets(x, y);
-
-        x += this.getMaxLabelWidth() + 10;
-        int elementWidth = this.gui.getConfigElementsWidth();
-
-        final ButtonGeneric resetButton = this.createResetButton(x + elementWidth + 4, y + 1, this.config);
-        this.resetButton = resetButton;
-
-        WidgetColorIndicator colorWidget = new WidgetColorIndicator(x, y + 1, 19, 19, this.config, (newValue) -> {
+        this.colorIndicatorWidget = new WidgetColorIndicator(x, y, 18, 18, this.config, (newValue) -> {
             this.config.setIntegerValue(newValue);
-            this.reCreateWidgets(this.getX(), this.getY());
+            this.reAddSubWidgets();
         });
-        this.addWidget(colorWidget);
 
-        x += colorWidget.getWidth() + 4;
-        WidgetTextFieldBase textField = new WidgetTextFieldBase(x, y + 3, 80, 16, this.config.getStringValue());
-
-        textField.setListener((str) -> {
+        this.textField = new WidgetTextFieldBase(x, y, 80, 16, this.config.getStringValue());
+        this.textField.setListener((str) -> {
             this.config.setValueFromString(str);
             this.resetButton.setEnabled(this.config.isModified());
         });
 
-        resetButton.setActionListener((btn, mbtn) -> {
+        this.resetButton.setActionListener((btn, mbtn) -> {
             this.config.resetToDefault();
-            this.reCreateWidgets(this.getX(), this.getY());
+            this.reAddSubWidgets();
         });
+    }
 
-        this.addWidget(textField);
-        this.addWidget(resetButton);
+    @Override
+    public void reAddSubWidgets()
+    {
+        super.reAddSubWidgets();
+
+        int x = this.getX() + this.getMaxLabelWidth() + 10;
+        int y = this.getY();
+        int elementWidth = this.gui.getConfigElementsWidth();
+
+        this.colorIndicatorWidget.setPosition(x, y + 2);
+        this.textField.setPosition(x + this.colorIndicatorWidget.getWidth() + 4, y + 3);
+        this.updateResetButton(x + elementWidth + 4, y + 1, this.config);
+
+        this.addWidget(this.colorIndicatorWidget);
+        this.addWidget(this.textField);
+        this.addWidget(this.resetButton);
     }
 
     @Override

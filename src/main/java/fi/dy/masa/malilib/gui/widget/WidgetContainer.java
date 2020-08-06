@@ -18,6 +18,48 @@ public abstract class WidgetContainer extends WidgetBackground
         super(x, y, width, height);
     }
 
+    /**
+     * This method should be overridden to add any widgets from
+     * (final) fields to the ContainerWidget lists.
+     * This should be called whenever the collection of (active)
+     * sub widgets should change for whatever reason (such as a widget
+     * becoming active or inactive and maybe covering other widgets).
+     */
+    public void reAddSubWidgets()
+    {
+        this.clearWidgets();
+    }
+
+    /**
+     * This method should be overridden to update any sub widget
+     * positions to the current position of this container widget,
+     * or to any other changes such as width or height changes.
+     */
+    public void updateSubWidgetPositions()
+    {
+    }
+
+    @Override
+    protected void onPositionChanged(int oldX, int oldY)
+    {
+        super.onPositionChanged(oldX, oldY);
+        this.updateSubWidgetPositions();
+    }
+
+    @Override
+    protected void onSizeChanged()
+    {
+        super.onSizeChanged();
+        this.updateSubWidgetPositions();
+    }
+
+    @Override
+    protected void onPositionOrSizeChanged()
+    {
+        super.onPositionOrSizeChanged();
+        this.updateSubWidgetPositions();
+    }
+
     public  <T extends WidgetBase> T addWidget(T widget)
     {
         this.subWidgets.add(widget);

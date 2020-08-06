@@ -9,6 +9,7 @@ public class OptionListConfigWidget extends BaseConfigOptionWidget<OptionListCon
 {
     protected final OptionListConfig<?> config;
     protected final IConfigOptionListEntry<?> initialValue;
+    protected final ConfigButtonOptionList optionListButton;
 
     public OptionListConfigWidget(int x, int y, int width, int height, int listIndex, OptionListConfig<?> config, BaseConfigScreen gui)
     {
@@ -17,19 +18,32 @@ public class OptionListConfigWidget extends BaseConfigOptionWidget<OptionListCon
         this.config = config;
         this.initialValue = this.config.getOptionListValue();
 
-        this.reCreateWidgets(x, y);
+        this.optionListButton = new ConfigButtonOptionList(x, y, 80, 20, this.config);
+        this.optionListButton.setActionListener((btn, mbtn) -> this.resetButton.setEnabled(this.config.isModified()));
+
+        this.resetButton.setActionListener((btn, mbtn) -> {
+            this.config.resetToDefault();
+            this.optionListButton.updateDisplayString();
+            this.resetButton.setEnabled(this.config.isModified());
+        });
     }
 
     @Override
-    protected void reCreateWidgets(int x, int y)
+    public void reAddSubWidgets()
     {
-        super.reCreateWidgets(x, y);
+        super.reAddSubWidgets();
 
-        int xOff = this.getMaxLabelWidth() + 10;
+        int x = this.getX() + this.getMaxLabelWidth() + 10;
+        int y = this.getY() + 1;
         int elementWidth = this.gui.getConfigElementsWidth();
-        final ConfigButtonOptionList configButton = new ConfigButtonOptionList(x + xOff, y + 1, elementWidth, 20, this.config);
 
-        this.addButtonsForButtonBasedConfigs(x + xOff + elementWidth + 4, y + 1, this.config, configButton);
+        this.optionListButton.setPosition(x, y);
+        this.optionListButton.setWidth(elementWidth);
+
+        this.updateResetButton(x + elementWidth + 4, y, this.config);
+
+        this.addWidget(this.optionListButton);
+        this.addWidget(this.resetButton);
     }
 
     @Override

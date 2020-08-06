@@ -87,7 +87,7 @@ public class WidgetDropDownList<T> extends WidgetContainer
         v = Math.max(v, 1);
 
         this.maxVisibleEntries = v;
-        this.dropdownHeight = v * this.lineHeight;
+        this.dropdownHeight = v * this.lineHeight + 2;
         this.dropdownTopY = y + this.lineHeight;
         this.totalHeight = this.dropdownHeight + this.lineHeight;
 
@@ -100,7 +100,7 @@ public class WidgetDropDownList<T> extends WidgetContainer
 
         this.updateWidth(false); // This creates the search text field, which needs to be set before calling updateFilteredEntries
 
-        this.widgetSelectionBar = new WidgetSelectionBar<T>(x, y, this.getWidth(), height, this.textColor, this);
+        this.widgetSelectionBar = new WidgetSelectionBar<>(x, y, this.getWidth(), height, this.textColor, this);
         this.widgetSelectionBar.setZLevel(this.getZLevel() + 2);
 
         this.searchField = new WidgetTextFieldBase(x, y - 16, this.getWidth(), 16);
@@ -140,24 +140,10 @@ public class WidgetDropDownList<T> extends WidgetContainer
         this.recreateSubElements();
     }
 
-    @Override
-    public void setPosition(int x, int y)
-    {
-        super.setPosition(x, y);
-        this.updateSubElementPositions();
-    }
-
-    @Override
-    public void setRightAlign(boolean rightAlign, int xRight)
-    {
-        super.setRightAlign(rightAlign, xRight);
-        this.updateSubElementPositions();
-    }
-
     protected void updateWidth(boolean updateSubWidgets)
     {
         this.setWidth(this.getRequiredWidth(-1, this.entries, this.mc));
-        this.updatePositionIfRightAligned();
+        this.updateHorizontalPositionIfRightAligned();
 
         if (updateSubWidgets)
         {
@@ -192,10 +178,11 @@ public class WidgetDropDownList<T> extends WidgetContainer
             this.addWidget(this.widgetSelectionBar);
         }
 
-        this.updateSubElementPositions();
+        this.updateSubWidgetPositions();
     }
 
-    protected void updateSubElementPositions()
+    @Override
+    public void updateSubWidgetPositions()
     {
         int yOff = this.noCurrentEntryBar ? 0 : this.lineHeight;
 
@@ -471,13 +458,14 @@ public class WidgetDropDownList<T> extends WidgetContainer
         }
 
         this.scrollBar.setMaxValue(this.filteredEntries.size() - this.maxVisibleEntries);
-        this.updateScrollbarHeight();
+        this.updateScrollBarHeight();
     }
 
-    protected void updateScrollbarHeight()
+    protected void updateScrollBarHeight()
     {
         this.visibleEntries = Math.min(this.maxVisibleEntries, this.filteredEntries.size());
         int totalHeight = Math.max(this.visibleEntries, this.filteredEntries.size()) * this.lineHeight;
+        this.scrollBar.setHeight(this.visibleEntries * this.lineHeight);
         this.scrollBar.setTotalHeight(totalHeight);
     }
 
@@ -534,7 +522,7 @@ public class WidgetDropDownList<T> extends WidgetContainer
             int txtY = this.dropdownTopY + this.lineHeight / 2 - this.fontHeight / 2 + 1;
             this.renderListContents(txtY, mouseX, mouseY, mouseOverListOnX && hovered);
 
-            this.scrollBar.render(mouseX, mouseY, height);
+            this.scrollBar.render(mouseX, mouseY);
 
             GlStateManager.popMatrix();
         }

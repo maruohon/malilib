@@ -67,28 +67,22 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
         if (this.entryWidgetFactory != null && listIndex < this.getCurrentEntries().size())
         {
             DATATYPE data = this.getCurrentEntries().get(listIndex);
-            return this.entryWidgetFactory.createWidget(x, y, this.entryWidgetWidth, -1, listIndex, data, this);
+            int height = this.areEntriesFixedHeight ? this.entryWidgetFixedHeight : this.getHeightForListEntryWidget(listIndex);
+            return this.entryWidgetFactory.createWidget(x, y, this.entryWidgetWidth, height, listIndex, data, this);
         }
 
         return null;
     }
 
-    /**
-     * Creates a header widget, that will be displayed before the first entry of the list.
-     * @param x
-     * @param y
-     * @return the created header widget, or null if there is no separate header widget
-     */
     @Override
-    @Nullable
-    protected DataListHeaderWidget createHeaderWidget(int x, int y)
+    protected void createHeaderWidget()
     {
         if (this.headerWidgetFactory != null)
         {
-            return this.headerWidgetFactory.createWidget(x, y, this.entryWidgetWidth, -1, this);
+            int x = this.getX() + this.listPosition.getLeftPadding();
+            int y = this.getY();
+            this.headerWidget = this.headerWidgetFactory.createWidget(x, y, this.entryWidgetWidth, -1, this);
         }
-
-        return null;
     }
 
     @Override

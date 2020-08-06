@@ -37,11 +37,11 @@ public abstract class BaseListScreen<LISTWIDGET extends BaseListWidget> extends 
         return this.listY;
     }
 
-    protected abstract LISTWIDGET createListWidget(int listX, int listY);
+    protected abstract LISTWIDGET createListWidget(int listX, int listY, int listWidth, int listHeight);
 
-    protected abstract int getBrowserWidth();
+    protected abstract int getListWidth();
 
-    protected abstract int getBrowserHeight();
+    protected abstract int getListHeight();
 
     @Nullable
     public LISTWIDGET getListWidget()
@@ -56,7 +56,8 @@ public abstract class BaseListScreen<LISTWIDGET extends BaseListWidget> extends 
 
     protected void reCreateListWidget()
     {
-        this.widget = this.createListWidget(this.getListX(), this.getListY());
+        this.widget = this.createListWidget(this.getListX(), this.getListY(), this.getListWidth(), this.getListHeight());
+        this.widget.initWidget();
     }
 
     public boolean isSearchOpen()
@@ -67,18 +68,14 @@ public abstract class BaseListScreen<LISTWIDGET extends BaseListWidget> extends 
 
     protected void updateListPosition(int listX, int listY)
     {
-        BaseListWidget listWidget = this.getListWidget();
+        this.setListPosition(listX, listY);
 
-        if (listWidget != null)
+        // Only update the widget if it has already been created.
+        // Using the getter method would force the widget to be created now,
+        // and that would lead to duplicated call to the setPositionAndSize() method.
+        if (this.widget != null)
         {
-            int scrollbarPosition = listWidget.getScrollbar().getValue();
-            this.setListPosition(listX, listY);
-            this.reCreateListWidget();
-
-            // Fetch the new reference...
-            listWidget = this.getListWidget();
-            listWidget.getScrollbar().setValue(scrollbarPosition);
-            listWidget.refreshEntries();
+            this.widget.setPositionAndSize(listX, listY, this.getListWidth(), this.getListHeight());
         }
     }
 
@@ -119,8 +116,7 @@ public abstract class BaseListScreen<LISTWIDGET extends BaseListWidget> extends 
 
         if (listWidget != null)
         {
-            listWidget.setSize(this.getBrowserWidth(), this.getBrowserHeight());
-            listWidget.initWidget();
+            listWidget.setPositionAndSize(this.getListX(), this.getListY(), this.getListWidth(), this.getListHeight());
         }
     }
 

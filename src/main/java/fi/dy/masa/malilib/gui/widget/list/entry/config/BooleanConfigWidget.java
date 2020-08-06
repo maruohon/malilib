@@ -7,6 +7,7 @@ import fi.dy.masa.malilib.gui.config.BaseConfigScreen;
 public class BooleanConfigWidget extends BaseConfigOptionWidget<BooleanConfig>
 {
     protected final BooleanConfig config;
+    protected final ConfigButtonBoolean booleanButton;
     protected final boolean initialValue;
 
     public BooleanConfigWidget(int x, int y, int width, int height, int listIndex, BooleanConfig config, BaseConfigScreen gui)
@@ -16,19 +17,33 @@ public class BooleanConfigWidget extends BaseConfigOptionWidget<BooleanConfig>
         this.config = config;
         this.initialValue = this.config.getBooleanValue();
 
-        this.reCreateWidgets(x, y);
+        this.booleanButton = new ConfigButtonBoolean(x, y, 60, 20, this.config);
+        this.booleanButton.setActionListener((btn, mbtn) -> this.resetButton.setEnabled(this.config.isModified()));
+
+        this.resetButton.setActionListener((btn, mbtn) -> {
+            this.config.resetToDefault();
+            this.booleanButton.updateDisplayString();
+            this.resetButton.setEnabled(this.config.isModified());
+        });
     }
 
     @Override
-    protected void reCreateWidgets(int x, int y)
+    public void reAddSubWidgets()
     {
-        super.reCreateWidgets(x, y);
+        super.reAddSubWidgets();
 
+        int x = this.getX();
+        int y = this.getY() + 1;
         int xOff = this.getMaxLabelWidth() + 10;
         int elementWidth = this.gui.getConfigElementsWidth();
-        final ConfigButtonBoolean configButton = new ConfigButtonBoolean(x + xOff, y + 1, elementWidth, 20, this.config);
 
-        this.addButtonsForButtonBasedConfigs(x + xOff + elementWidth + 4, y + 1, this.config, configButton);
+        this.booleanButton.setPosition(x + xOff, y);
+        this.booleanButton.setWidth(elementWidth);
+
+        this.updateResetButton(x + xOff + elementWidth + 4, y, this.config);
+
+        this.addWidget(this.booleanButton);
+        this.addWidget(this.resetButton);
     }
 
     @Override

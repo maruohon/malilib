@@ -13,13 +13,13 @@ import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
 import fi.dy.masa.malilib.gui.interfaces.ITextFieldValidator;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
-import fi.dy.masa.malilib.message.MessageType;
 import fi.dy.masa.malilib.gui.util.TextRegion;
+import fi.dy.masa.malilib.message.MessageType;
 import fi.dy.masa.malilib.render.MessageRenderer;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.HorizontalAlignment;
 import fi.dy.masa.malilib.util.data.LeftRight;
-import fi.dy.masa.malilib.util.StringUtils;
 
 public class WidgetTextFieldBase extends WidgetBackground
 {
@@ -74,10 +74,9 @@ public class WidgetTextFieldBase extends WidgetBackground
     }
 
     @Override
-    public void setWidth(int width)
+    protected void onSizeChanged()
     {
-        super.setWidth(width);
-
+        super.onSizeChanged();
         this.visibleText.setMaxWidth(this.getMaxTextWidth());
     }
 
@@ -491,12 +490,8 @@ public class WidgetTextFieldBase extends WidgetBackground
             return false;
         }
 
-        if (this.inputValidator != null && this.inputValidator.canWriteCharacter(this.cursorPosition, this.text, typedChar, modifiers) == false)
-        {
-            return false;
-        }
-
-        return true;
+        return this.inputValidator == null ||
+               this.inputValidator.canWriteCharacter(this.cursorPosition, this.text, typedChar, modifiers);
     }
 
     protected void writeCharacter(char typedChar, int modifiers)
@@ -516,7 +511,7 @@ public class WidgetTextFieldBase extends WidgetBackground
 
         if (this.cursorPosition > 0)
         {
-            sb.append(this.text.substring(0, this.cursorPosition));
+            sb.append(this.text, 0, this.cursorPosition);
         }
 
         sb.append(text);
@@ -727,12 +722,9 @@ public class WidgetTextFieldBase extends WidgetBackground
                 {
                     this.selectionStartPosition = -1;
                     this.moveCursorToEndOfWord(LeftRight.LEFT, BaseScreen.isAltDown(), true);
-                    this.deleteSelectionOrCharacter(false);
                 }
-                else
-                {
-                    this.deleteSelectionOrCharacter(false);
-                }
+
+                this.deleteSelectionOrCharacter(false);
             }
             else if (keyCode == Keyboard.KEY_DELETE)
             {
@@ -740,12 +732,9 @@ public class WidgetTextFieldBase extends WidgetBackground
                 {
                     this.selectionStartPosition = -1;
                     this.moveCursorToEndOfWord(LeftRight.RIGHT, BaseScreen.isAltDown(), true);
-                    this.deleteSelectionOrCharacter(true);
                 }
-                else
-                {
-                    this.deleteSelectionOrCharacter(true);
-                }
+
+                this.deleteSelectionOrCharacter(true);
             }
             else if (keyCode == Keyboard.KEY_RETURN || keyCode == Keyboard.KEY_TAB)
             {

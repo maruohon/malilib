@@ -16,14 +16,15 @@ public class FileConfigWidget extends BaseConfigOptionWidget<FileConfig>
 
         this.config = config;
         this.initialValue = this.config.getFile();
-
-        this.reCreateWidgets(x, y);
     }
 
     @Override
-    protected void reCreateWidgets(int x, int y)
+    public void reAddSubWidgets()
     {
-        super.reCreateWidgets(x, y);
+        super.reAddSubWidgets();
+
+        int x = this.getX();
+        int y = this.getY();
 
         File file = this.config.getFile().getAbsoluteFile();
         final File rootDir = new File("/");

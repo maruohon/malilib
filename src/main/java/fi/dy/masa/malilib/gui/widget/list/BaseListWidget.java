@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.util.BaseGuiIcon;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
@@ -27,18 +28,16 @@ public abstract class BaseListWidget extends WidgetContainer
     @Nullable protected WidgetSearchBar searchBarWidget;
     @Nullable protected WidgetContainer headerWidget;
     @Nullable protected EventListener entryRefreshListener;
-    protected final WidgetScrollBar scrollBar;
     protected final ArrayList<BaseListEntryWidget> listWidgets = new ArrayList<>();
-    protected final Padding listPosition = new Padding();
+    protected final Padding listPosition = new Padding(2, 2, 2, 2);
+    protected final WidgetScrollBar scrollBar;
 
-    protected int entryWidgetsStartX;
-    protected int entryWidgetsStartY;
+    protected int entryWidgetStartX;
+    protected int entryWidgetStartY;
     protected int entryWidgetFixedHeight = 22;
     protected int entryWidgetWidth;
     protected int lastScrollbarPosition;
     protected int listHeight;
-    protected int listWidth;
-    protected int usedHeight;
     protected int visibleListEntries;
 
     protected boolean allowKeyboardNavigation;
@@ -51,8 +50,6 @@ public abstract class BaseListWidget extends WidgetContainer
         // The position gets updated in setSize()
         this.scrollBar = new WidgetScrollBar(0, 0, 8, height);
         this.scrollBar.setArrowTextures(BaseGuiIcon.SMALL_ARROW_UP, BaseGuiIcon.SMALL_ARROW_DOWN);
-
-        this.setSize(width, height);
     }
 
     public abstract int getTotalListEntryCount();
@@ -60,57 +57,112 @@ public abstract class BaseListWidget extends WidgetContainer
     @Nullable
     protected abstract BaseListEntryWidget createListEntryWidget(int x, int y, int listIndex);
 
+    protected void createSearchBarWidget()
+    {
+    }
+
     /**
      * Creates a header widget, that will be displayed before the first entry of the list.
-     * @param x
-     * @param y
-     * @return the created header widget, or null if there is no separate header widget
      */
-    @Nullable
-    protected abstract WidgetContainer createHeaderWidget(int x, int y);
+    protected void createHeaderWidget()
+    {
+    }
 
     @Override
-    public void setSize(int width, int height)
+    protected void onSizeChanged()
     {
-        this.setWidth(width);
-        this.setHeight(height);
+        this.updateEntryWidgetPositioning();
+        this.updateSubWidgetPositions();
+        this.refreshEntries();
+    }
 
-        this.listWidth = width;
-        this.listHeight = height;
+    @Override
+    public void reAddSubWidgets()
+    {
+        super.reAddSubWidgets();
+
+        this.addWidget(this.scrollBar);
+
+        if (this.searchBarWidget != null)
+        {
+            this.addWidget(this.searchBarWidget);
+        }
+
+        if (this.headerWidget != null)
+        {
+            this.addWidget(this.headerWidget);
+        }
+    }
+
+    public void initWidget()
+    {
+        this.clearWidgets();
+
+        this.createSearchBarWidget();
+        this.createHeaderWidget();
 
         this.updateEntryWidgetPositioning();
-        this.updateScrollbarPosition();
+        this.updateSubWidgetPositions();
+
+        this.reAddSubWidgets();
+        this.refreshEntries();
+
+        Keyboard.enableRepeatEvents(true);
     }
 
     protected void updateEntryWidgetPositioning()
     {
         int leftPadding = this.listPosition.getLeftPadding();
+        int rightPadding = this.listPosition.getRightPadding();
         int topPadding = this.listPosition.getTopPadding();
-        int offY = 0;
+        int bottomPadding = this.listPosition.getBottomPadding();
 
-        WidgetSearchBar sb = this.getSearchBarWidget();
+        WidgetSearchBar search = this.searchBarWidget;
         WidgetContainer header = this.headerWidget;
-        if (sb != null) { offY += sb.getHeight(); }
+        int x = this.getX();
+        int y = this.getY();
+        int offY = 0;
+        if (search != null) { offY += search.getY() - y + search.getHeight(); }
         if (header != null) { offY += header.getHeight(); }
 
-        this.entryWidgetsStartX = this.getX() + leftPadding;
-        this.entryWidgetsStartY = this.getY() + topPadding + offY;
-        this.entryWidgetWidth = this.listWidth - leftPadding - this.listPosition.getRightPadding();
+        this.entryWidgetStartX = x + leftPadding;
+        this.entryWidgetStartY = y + topPadding + offY;
+        int listWidth = this.getListMaxWidthForTotalWidth(this.getWidth());
+        this.entryWidgetWidth = x + listWidth - this.entryWidgetStartX - rightPadding - this.scrollBar.getWidth();
+        this.listHeight = y + this.getHeight() - this.entryWidgetStartY - bottomPadding;
     }
 
-    protected void updateScrollbarPosition()
+    @Override
+    public void updateSubWidgetPositions()
     {
-        int scrollBarX = this.getX() + this.listWidth - 9;
-        int scrollBarY = this.entryWidgetsStartY;
+        int bw = this.borderEnabled ? this.borderWidth : 0;
+        int x = this.getX() + bw;
+        int y = this.getY() + bw;
+        int listWidth = this.getListMaxWidthForTotalWidth(this.getWidth());
+        int scrollBarX = x + listWidth - this.scrollBar.getWidth() - bw - 2;
+        int scrollBarY = this.entryWidgetStartY;
+        int entriesWidth = listWidth - this.listPosition.getLeftPadding() - this.listPosition.getRightPadding();
 
         this.scrollBar.setPosition(scrollBarX, scrollBarY);
-        this.scrollBar.setHeight(this.listHeight - (this.getY() - this.entryWidgetsStartY));
+        this.scrollBar.setHeight(this.listHeight);
+
+        if (this.searchBarWidget != null)
+        {
+            this.searchBarWidget.setPosition(x, y);
+            this.searchBarWidget.setWidth(entriesWidth);
+            y += this.searchBarWidget.getHeight() + 2;
+        }
+
+        if (this.headerWidget != null)
+        {
+            this.headerWidget.setPosition(x, y);
+            this.headerWidget.setWidth(entriesWidth);
+        }
     }
 
-    protected void updateScrollbarHeight()
+    protected void updateScrollBarHeight()
     {
         final int count = this.getTotalListEntryCount();
-        int scrollbarHeight = this.listHeight - (this.getY() - this.entryWidgetsStartY) - 6;
         int totalHeight = 0;
 
         if (this.visibleListEntries < count)
@@ -126,7 +178,12 @@ public abstract class BaseListWidget extends WidgetContainer
             }
         }
 
-        this.scrollBar.setTotalHeight(Math.max(totalHeight, scrollbarHeight));
+        this.scrollBar.setTotalHeight(Math.max(totalHeight, this.scrollBar.getHeight()));
+    }
+
+    protected int getListMaxWidthForTotalWidth(int width)
+    {
+        return width;
     }
 
     public boolean isSearchOpen()
@@ -183,7 +240,8 @@ public abstract class BaseListWidget extends WidgetContainer
 
     protected WidgetSearchBar addSearchBarWidget(WidgetSearchBar searchBar)
     {
-        this.searchBarWidget = this.addWidget(searchBar);
+        this.searchBarWidget = searchBar;
+        this.addWidget(searchBar);
         return this.searchBarWidget;
     }
 
@@ -191,21 +249,6 @@ public abstract class BaseListWidget extends WidgetContainer
     {
         return this.addSearchBarWidget(new WidgetSearchBar(this.getX() + 2, this.getY() + 4,
                                                            this.getWidth() - 14, 14, 0, BaseGuiIcon.SEARCH, HorizontalAlignment.LEFT));
-    }
-
-    public void initWidget()
-    {
-        this.clearWidgets();
-
-        this.usedHeight = 0;
-        int x = this.getX();
-        int y = this.getY();
-
-        this.addWidget(this.scrollBar);
-        this.createAndAddHeaderWidget(x, y);
-
-        this.refreshEntries();
-        Keyboard.enableRepeatEvents(true);
     }
 
     public void onGuiClosed()
@@ -276,9 +319,10 @@ public abstract class BaseListWidget extends WidgetContainer
         // The scroll event could be/should be distributed to the entry widgets here
         // It's not done (for now?) to prevent accidentally messing up stuff when scrolling over lists that have buttons
 
-        if (GuiUtils.isMouseInRegion(mouseX, mouseY, this.getX(), this.getY(), this.listWidth, this.listHeight))
+        if (GuiUtils.isMouseInRegion(mouseX, mouseY, this.getX(), this.getY(), this.entryWidgetWidth, this.listHeight))
         {
-            this.offsetSelectionOrScrollbar(mouseWheelDelta < 0 ? 3 : -3, false);
+            int amount = MathHelper.clamp(3, 1, this.visibleListEntries);
+            this.offsetSelectionOrScrollbar(mouseWheelDelta < 0 ? amount : -amount, false);
             return true;
         }
 
@@ -381,11 +425,11 @@ public abstract class BaseListWidget extends WidgetContainer
     @Nullable
     protected BaseListEntryWidget getHoveredListWidget(int mouseX, int mouseY)
     {
-        final int relativeY = mouseY - this.entryWidgetsStartY;
+        final int relativeY = mouseY - this.entryWidgetStartY;
 
-        if (relativeY >= 0 && mouseY <= this.getY() + this.listHeight &&
-            mouseX >= this.entryWidgetsStartX &&
-            mouseX < this.entryWidgetsStartX + this.entryWidgetWidth)
+        if (relativeY >= 0 && mouseY <= this.entryWidgetStartY + this.listHeight &&
+            mouseX >= this.entryWidgetStartX &&
+            mouseX < this.entryWidgetStartX + this.entryWidgetWidth)
         {
 
             if (this.areEntriesFixedHeight)
@@ -457,26 +501,15 @@ public abstract class BaseListWidget extends WidgetContainer
         }
     }
 
-    protected void createAndAddHeaderWidget(int x, int y)
-    {
-        this.headerWidget = this.createHeaderWidget(x, y);
-
-        if (this.headerWidget != null)
-        {
-            this.addWidget(this.headerWidget);
-            this.usedHeight += this.headerWidget.getHeight();
-        }
-    }
-
     protected void reCreateListEntryWidgets()
     {
         this.listWidgets.clear();
         this.visibleListEntries = 0;
 
         int usableHeight = this.listHeight;
-        int usedHeight = this.usedHeight;
-        int x = this.entryWidgetsStartX;
-        int y = this.entryWidgetsStartY + usedHeight;
+        int usedHeight = 0;
+        int x = this.entryWidgetStartX;
+        int y = this.entryWidgetStartY;
         int listIndex = this.scrollBar.getValue();
 
         final int totalEntryCount = this.getTotalListEntryCount();
@@ -485,19 +518,27 @@ public abstract class BaseListWidget extends WidgetContainer
         {
             BaseListEntryWidget widget = this.createListEntryWidget(x, y, listIndex);
 
-            //System.out.printf("i: %d, usable: %d, used: %d, lh: %d, sy: %d\n", listIndex, usableHeight, usedHeight, this.listHeight, this.entryWidgetsStartY);
-            if (widget == null || usedHeight + widget.getHeight() > usableHeight)
+            if (widget == null)
             {
                 break;
             }
 
+            int widgetHeight = widget.getHeight();
+
+            //System.out.printf("i: %d, usable: %d, used: %d, lh: %d, sy: %d\n", listIndex, usableHeight, usedHeight, this.listHeight, this.entryWidgetsStartY);
+            if (usedHeight + widgetHeight > usableHeight)
+            {
+                break;
+            }
+
+            widget.reAddSubWidgets();
             widget.setIsOdd((listIndex & 0x1) != 0);
             this.onSubWidgetAdded(widget);
             this.listWidgets.add(widget);
             ++this.visibleListEntries;
 
-            usedHeight += widget.getHeight();
-            y += widget.getHeight();
+            usedHeight += widgetHeight;
+            y += widgetHeight;
         }
 
         this.onListEntryWidgetsCreated();
@@ -509,7 +550,7 @@ public abstract class BaseListWidget extends WidgetContainer
     protected void onListEntryWidgetsCreated()
     {
         this.scrollBar.setMaxValue(this.getTotalListEntryCount() - this.visibleListEntries);
-        this.updateScrollbarHeight();
+        this.updateScrollBarHeight();
     }
 
     @Override
@@ -524,8 +565,7 @@ public abstract class BaseListWidget extends WidgetContainer
 
         RenderUtils.color(1f, 1f, 1f, 1f);
 
-        int scrollbarHeight = this.listHeight - (this.getY() - this.entryWidgetsStartY) - 6;
-        this.scrollBar.render(mouseX, mouseY, scrollbarHeight);
+        this.scrollBar.render(mouseX, mouseY);
 
         // The value gets updated in the drawScrollBar() method above, if dragging
         if (this.scrollBar.getValue() != this.lastScrollbarPosition)

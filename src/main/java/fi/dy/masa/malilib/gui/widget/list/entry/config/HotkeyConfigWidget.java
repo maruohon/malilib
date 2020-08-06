@@ -9,6 +9,7 @@ public class HotkeyConfigWidget extends BaseConfigOptionWidget<HotkeyConfig>
 {
     protected final HotkeyConfig config;
     protected final ImmutableList<Integer> initialValue;
+    protected final ConfigButtonKeyBind keybindButton;
 
     public HotkeyConfigWidget(int x, int y, int width, int height, int listIndex, HotkeyConfig config, BaseConfigScreen gui)
     {
@@ -17,21 +18,33 @@ public class HotkeyConfigWidget extends BaseConfigOptionWidget<HotkeyConfig>
         this.config = config;
         this.initialValue = this.config.getKeyBind().getKeys();
 
-        this.reCreateWidgets(x, y);
+        this.keybindButton = new ConfigButtonKeyBind(x, y, 120, 20, this.config.getKeyBind(), this.gui);
+        this.keybindButton.setActionListener((btn, mbtn) -> this.resetButton.setEnabled(this.config.isModified()));
+        this.keybindButton.setValueChangeListener(() -> this.resetButton.setEnabled(this.config.isModified()));
+
+        this.resetButton.setActionListener((btn, mbtn) -> {
+            this.config.resetToDefault();
+            this.keybindButton.updateDisplayString();
+            this.resetButton.setEnabled(this.config.isModified());
+        });
     }
 
     @Override
-    protected void reCreateWidgets(int x, int y)
+    public void reAddSubWidgets()
     {
-        super.reCreateWidgets(x, y);
+        super.reAddSubWidgets();
 
-        int xOff = this.getMaxLabelWidth() + 10;
+        int x = this.getX() + this.getMaxLabelWidth() + 10;
+        int y = this.getY() + 1;
         int elementWidth = this.gui.getConfigElementsWidth();
-        final ConfigButtonKeyBind configButton = new ConfigButtonKeyBind(x + xOff, y + 1, elementWidth, 20, this.config.getKeyBind(), this.gui);
 
-        this.addButtonsForButtonBasedConfigs(x + xOff + elementWidth + 4, y + 1, this.config, configButton);
+        this.keybindButton.setPosition(x, y);
+        this.keybindButton.setWidth(elementWidth);
 
-        configButton.setValueChangeListener(() -> this.resetButton.setEnabled(this.config.isModified()));
+        this.updateResetButton(x + elementWidth + 4, y, this.config);
+
+        this.addWidget(this.keybindButton);
+        this.addWidget(this.resetButton);
     }
 
     @Override

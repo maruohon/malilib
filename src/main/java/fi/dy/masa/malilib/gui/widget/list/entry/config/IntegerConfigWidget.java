@@ -4,56 +4,33 @@ import fi.dy.masa.malilib.config.option.IntegerConfig;
 import fi.dy.masa.malilib.gui.callback.SliderCallbackInteger;
 import fi.dy.masa.malilib.gui.config.BaseConfigScreen;
 import fi.dy.masa.malilib.gui.widget.WidgetSlider;
-import fi.dy.masa.malilib.gui.widget.WidgetTextFieldBase;
 import fi.dy.masa.malilib.gui.widget.WidgetTextFieldInteger;
 
-public class IntegerConfigWidget extends BaseConfigOptionWidget<IntegerConfig>
+public class IntegerConfigWidget extends NumericConfigWidget<IntegerConfig>
 {
-    protected final IntegerConfig config;
+    protected final IntegerConfig integerConfig;
     protected final int initialValue;
 
     public IntegerConfigWidget(int x, int y, int width, int height, int listIndex, IntegerConfig config, BaseConfigScreen gui)
     {
         super(x, y, width, 22, listIndex, config, gui);
 
-        this.config = config;
+        this.integerConfig = config;
         this.initialValue = this.config.getIntegerValue();
 
-        this.reCreateWidgets(x, y);
+        this.sliderWidget = new WidgetSlider(x, y, 60, 20, new SliderCallbackInteger(this.integerConfig, this.resetButton));
+
+        this.textField.setTextValidator(new WidgetTextFieldInteger.IntValidator(this.config.getMinIntegerValue(), this.config.getMaxIntegerValue()));
+        this.textField.setListener((str) -> {
+            this.config.setValueFromString(str);
+            this.resetButton.setEnabled(this.config.isModified());
+        });
     }
 
     @Override
-    protected void reCreateWidgets(int x, int y)
+    protected String getCurrentValueAsString()
     {
-        super.reCreateWidgets(x, y);
-
-        x += this.getMaxLabelWidth() + 10;
-        int elementWidth = this.gui.getConfigElementsWidth() - 18;
-
-        this.addGenericResetButton(x + elementWidth + 22, y + 1, this.config);
-
-        if (this.config.shouldUseSlider())
-        {
-            WidgetSlider slider = new WidgetSlider(x, y + 1, elementWidth, 20, new SliderCallbackInteger(this.config, this.resetButton));
-            x += slider.getWidth() + 2;
-            this.addWidget(slider);
-        }
-        else
-        {
-            WidgetTextFieldInteger textField = new WidgetTextFieldInteger(x, y + 3, elementWidth, 16, this.config.getIntegerValue(),
-                                                                          this.config.getMinIntegerValue(), this.config.getMaxIntegerValue());
-            textField.setTextValidator(WidgetTextFieldBase.VALIDATOR_INTEGER);
-
-            textField.setListener((str) -> {
-                this.config.setValueFromString(str);
-                this.resetButton.setEnabled(this.config.isModified());
-            });
-
-            x += textField.getWidth() + 2;
-            this.addWidget(textField);
-        }
-
-        this.addSliderToggleButton(x, y + 3, this.config);
+        return String.valueOf(this.integerConfig.getIntegerValue());
     }
 
     @Override

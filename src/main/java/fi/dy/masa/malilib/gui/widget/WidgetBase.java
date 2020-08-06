@@ -17,8 +17,8 @@ import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.gui.interfaces.IBackgroundRenderer;
 import fi.dy.masa.malilib.gui.interfaces.ITextRenderer;
 import fi.dy.masa.malilib.render.RenderUtils;
-import fi.dy.masa.malilib.util.data.Color4f;
 import fi.dy.masa.malilib.util.StringUtils;
+import fi.dy.masa.malilib.util.data.Color4f;
 
 public abstract class WidgetBase
 {
@@ -39,9 +39,10 @@ public abstract class WidgetBase
     private int width;
     private int height;
     private int zLevel;
+    private boolean keepOnScreen;
+    private boolean rightAlign;
     protected boolean automaticHeight;
     protected boolean automaticWidth;
-    private boolean rightAlign;
 
     public WidgetBase(int x, int y, int width, int height)
     {
@@ -65,24 +66,158 @@ public abstract class WidgetBase
         }
     }
 
-    public int getX()
+    public final int getX()
     {
         return this.x;
     }
 
-    public int getY()
+    public final int getY()
     {
         return this.y;
     }
 
-    public void setX(int x)
+    public final void setX(int x)
     {
+        int oldX = this.x;
+        int oldY = this.y;
+
         this.x = x;
+
+        this.onPositionChanged(oldX, oldY);
     }
 
-    public void setY(int y)
+    public final void setY(int y)
     {
+        int oldX = this.x;
+        int oldY = this.y;
+
         this.y = y;
+
+        this.onPositionChanged(oldX, oldY);
+    }
+
+    public final void setPosition(int x, int y)
+    {
+        int oldX = this.x;
+        int oldY = this.y;
+
+        this.x = x;
+        this.y = y;
+
+        this.onPositionChanged(oldX, oldY);
+    }
+
+    public final void setPositionAndSize(int x, int y, int width, int height)
+    {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+
+        this.onPositionOrSizeChanged();
+    }
+
+    public void setRightX(int x)
+    {
+        this.xRight = x;
+        this.updateHorizontalPositionIfRightAligned();
+    }
+
+    public void setRightAlign(boolean rightAlign, int xRight, boolean keepOnScreen)
+    {
+        this.rightAlign = rightAlign;
+        this.keepOnScreen = keepOnScreen;
+
+        if (rightAlign)
+        {
+            this.setRightX(xRight);
+        }
+    }
+
+    protected void updateHorizontalPositionIfRightAligned()
+    {
+        if (this.rightAlign)
+        {
+            int oldX = this.x;
+            int oldY = this.y;
+
+            this.x = this.xRight - this.width;
+
+            if (this.keepOnScreen && this.x < 0)
+            {
+                this.xRight += -this.x + 4;
+                this.x = 4;
+            }
+
+            this.onPositionChanged(oldX, oldY);
+        }
+    }
+
+    /**
+     * This method is called after the widget position is changed
+     * @param oldX the x position before the position was changed
+     * @param oldY the y position before the position was changed
+     */
+    protected void onPositionChanged(int oldX, int oldY)
+    {
+        this.onPositionOrSizeChanged();
+    }
+
+    /**
+     * This method is called after the widget size is changed
+     */
+    protected void onSizeChanged()
+    {
+        this.onPositionOrSizeChanged();
+    }
+
+    /**
+     * This method is called after either the widget position or size is changed.
+     * This is meant for cases where it's necessary or beneficial to avoid the
+     * calls for both size and position changes separately.
+     */
+    protected void onPositionOrSizeChanged()
+    {
+    }
+
+    public int getWidth()
+    {
+        return this.width;
+    }
+
+    public int getHeight()
+    {
+        return this.height;
+    }
+
+    public void setWidth(int width)
+    {
+        this.width = width;
+        this.updateHorizontalPositionIfRightAligned();
+        this.onSizeChanged();
+    }
+
+    public void setHeight(int height)
+    {
+        this.height = height;
+        this.onSizeChanged();
+    }
+
+    public void setSize(int width, int height)
+    {
+        this.width = width;
+        this.height = height;
+
+        this.updateHorizontalPositionIfRightAligned();
+        this.onSizeChanged();
+    }
+
+    public void updateWidth()
+    {
+    }
+
+    public void updateHeight()
+    {
     }
 
     public int getZLevel()
@@ -128,77 +263,6 @@ public abstract class WidgetBase
     protected int getSubWidgetZLevelIncrement()
     {
         return 4;
-    }
-
-    public int getWidth()
-    {
-        return this.width;
-    }
-
-    public int getHeight()
-    {
-        return this.height;
-    }
-
-    public void setWidth(int width)
-    {
-        this.width = width;
-        this.updatePositionIfRightAligned();
-    }
-
-    public void setHeight(int height)
-    {
-        this.height = height;
-    }
-
-    public void setSize(int width, int height)
-    {
-        this.setHeight(height);
-        this.setWidth(width);
-    }
-
-    public void updateWidth()
-    {
-    }
-
-    public void updateHeight()
-    {
-    }
-
-    public void setPosition(int x, int y)
-    {
-        this.setX(x);
-        this.setY(y);
-    }
-
-    public void setRightX(int x)
-    {
-        this.xRight = x;
-        this.updatePositionIfRightAligned();
-    }
-
-    public void setRightAlign(boolean rightAlign, int xRight)
-    {
-        this.rightAlign = rightAlign;
-
-        if (rightAlign)
-        {
-            this.setRightX(xRight);
-        }
-    }
-
-    protected void updatePositionIfRightAligned()
-    {
-        if (this.rightAlign)
-        {
-            this.x = this.xRight - this.width;
-
-            if (this.x < 0)
-            {
-                this.xRight += -this.x + 4;
-                this.x = 4;
-            }
-        }
     }
 
     protected int getCenteredTextOffsetY()

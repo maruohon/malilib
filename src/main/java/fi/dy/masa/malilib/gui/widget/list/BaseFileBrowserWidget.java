@@ -29,12 +29,12 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public static final FileFilter ALWAYS_FALSE_FILE_FILTER = (file) -> false;
-    public static final FileFilter ALWAYS_TRUE_FILE_FILTER = (file) -> true;
+    public static final FileFilter ALWAYS_TRUE_FILE_FILTER = File::isFile;
 
     protected final IFileBrowserIconProvider iconProvider = new DefaultFileBrowserIconProvider();
+    protected final WidgetDirectoryNavigation navigationWidget;
     protected final File rootDirectory;
     @Nullable protected final IDirectoryCache cache;
-    protected WidgetDirectoryNavigation widgetNavigation;
     protected FileFilter fileFilter;
     protected String browserContext;
     protected File currentDirectory;
@@ -57,14 +57,24 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
             this.currentDirectory = defaultDirectory;
         }
 
+        this.navigationWidget = new WidgetDirectoryNavigation(this.getX() + 2, this.getY() + 4, this.entryWidgetWidth, 14,
+                                                              this.currentDirectory, rootDirectory, this, this.getIconProvider(), this.getRootDirectoryDisplayName());
+
         this.setEntryWidgetFactory((wx, wy, ww, wh, li, entry, lw) ->
                                     new DirectoryEntryWidget(wx, wy, ww, wh, li, entry, this, this.iconProvider));
 
         this.setBackgroundColor(0xB0000000);
         this.setBorderColor(BaseScreen.COLOR_HORIZONTAL_BAR);
         this.setBackgroundEnabled(true);
+        this.listPosition.setRightPadding(4);
+    }
 
-        this.setSize(width, height);
+    @Override
+    public void initWidget()
+    {
+        super.initWidget();
+
+        this.addSearchBarWidget(this.navigationWidget);
         this.updateDirectoryNavigationWidget();
     }
 
@@ -111,34 +121,8 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         return this.iconProvider;
     }
 
-    protected int getBrowserWidthForTotalWidth(int width)
-    {
-        return width;
-    }
-
     protected void drawAdditionalContents(int mouseX, int mouseY)
     {
-    }
-
-    @Override
-    public void setSize(int width, int height)
-    {
-        super.setSize(width, height);
-
-        this.listWidth = this.getBrowserWidthForTotalWidth(width);
-        this.entryWidgetWidth = this.listWidth - 14;
-
-        if (this.widgetNavigation != null)
-        {
-            this.widgetNavigation.setWidth(this.entryWidgetWidth);
-        }
-    }
-
-    @Override
-    public void initWidget()
-    {
-        super.initWidget();
-        this.updateDirectoryNavigationWidget();
     }
 
     @Override
@@ -182,17 +166,8 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
 
     protected void updateDirectoryNavigationWidget()
     {
-        // Remove the old widget, if any, from the sub widgets list
-        if (this.widgetNavigation != null)
-        {
-            this.removeWidget(this.widgetNavigation);
-        }
-
-        this.widgetNavigation = new WidgetDirectoryNavigation(this.getX() + 2, this.getY() + 4, this.entryWidgetWidth, 14,
-                                                              this.currentDirectory, this.getRootDirectory(), this, this.getIconProvider(), this.getRootDirectoryDisplayName());
-        this.addSearchBarWidget(this.widgetNavigation);
-
-        this.updateScrollbarPosition();
+        this.navigationWidget.setWidth(this.entryWidgetWidth);
+        this.navigationWidget.setCurrentDirectory(this.currentDirectory);
     }
 
     protected void addNonFilteredContents(File dir)

@@ -47,24 +47,22 @@ public class DirectorySelectorScreen extends BaseListScreen<BaseFileBrowserWidge
     }
 
     @Override
-    protected int getBrowserWidth()
+    protected int getListWidth()
     {
         return this.width - 20;
     }
 
     @Override
-    protected int getBrowserHeight()
+    protected int getListHeight()
     {
         return this.height - 60;
     }
 
     @Override
-    protected BaseFileBrowserWidget createListWidget(int listX, int listY)
+    protected BaseFileBrowserWidget createListWidget(int listX, int listY, int listWidth, int listHeight)
     {
-        BaseFileBrowserWidget widget = new BaseFileBrowserWidget(listX, listY,
-                                                                 this.getBrowserWidth(), this.getBrowserHeight(),
-                                                                 this.currentDirectory, this.rootDirectory,
-                                                                 null, null);
+        BaseFileBrowserWidget widget = new BaseFileBrowserWidget(listX, listY, listWidth, listHeight,
+                                                                 this.currentDirectory, this.rootDirectory, null, null);
         widget.setParentScreen(this.getParent());
         widget.setFileFilter(this.getFileFilter());
 

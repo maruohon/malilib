@@ -17,7 +17,7 @@ public class ModConfigScreen extends BaseConfigScreen
     }
 
     @Override
-    protected int getBrowserHeight()
+    protected int getListHeight()
     {
         return this.height - 70;
     }

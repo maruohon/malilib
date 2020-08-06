@@ -24,13 +24,13 @@ public class StringListSelectionScreen extends BaseListScreen<DataListWidget<Str
     }
 
     @Override
-    protected int getBrowserWidth()
+    protected int getListWidth()
     {
         return this.width - 20;
     }
 
     @Override
-    protected int getBrowserHeight()
+    protected int getListHeight()
     {
         return this.height - 60;
     }
@@ -41,9 +41,9 @@ public class StringListSelectionScreen extends BaseListScreen<DataListWidget<Str
     }
 
     @Override
-    protected DataListWidget<String> createListWidget(int listX, int listY)
+    protected DataListWidget<String> createListWidget(int listX, int listY, int listWidth, int listHeight)
     {
-        return new DataListWidget<>(listX, listY, this.getBrowserWidth(), this.getBrowserHeight(), this::getStrings);
+        return new DataListWidget<>(listX, listY, listWidth, listHeight, this::getStrings);
     }
 
     @Override

@@ -19,7 +19,7 @@ public class WidgetScrollBar extends WidgetBase
     protected int currentValue = 0;
     protected int maxValue = 100;
     protected int backgroundColor = 0x55FFFFFF;
-    protected int foregroundColor = 0xFFFFFFFF;
+    protected int scrollBarColor = 0xFFFFFFFF;
     protected int dragStartValue = 0;
     protected int dragStartY = 0;
     protected int totalHeight;
@@ -39,6 +39,12 @@ public class WidgetScrollBar extends WidgetBase
     public WidgetScrollBar setRenderBackgroundColor(boolean render)
     {
         this.renderScrollbarBackgroundColor = render;
+        return this;
+    }
+
+    public WidgetScrollBar setScrollBarColor(int color)
+    {
+        this.scrollBarColor = color;
         return this;
     }
 
@@ -114,11 +120,11 @@ public class WidgetScrollBar extends WidgetBase
     {
         if (this.isMouseOverUpArrow(mouseX, mouseY))
         {
-            this.setValue(this.getValue() - (BaseScreen.isShiftDown() ? 5 : 1));
+            this.setValue(this.getValue() - this.getMoveAmountForArrowClick());
         }
         else if (this.isMouseOverDownArrow(mouseX, mouseY))
         {
-            this.setValue(this.getValue() + (BaseScreen.isShiftDown() ? 5 : 1));
+            this.setValue(this.getValue() + this.getMoveAmountForArrowClick());
         }
         else if (mouseButton == 0 && this.wasMouseOver())
         {
@@ -131,6 +137,28 @@ public class WidgetScrollBar extends WidgetBase
         }
 
         return true;
+    }
+
+    /**
+     * Returns the move amount for clicking on the up or down
+     * arrows, based on whether or not shift and/or ctrl are held
+     * @return
+     */
+    protected int getMoveAmountForArrowClick()
+    {
+        int amount = 1;
+
+        if (BaseScreen.isShiftDown())
+        {
+            amount *= 5;
+        }
+
+        if (BaseScreen.isCtrlDown())
+        {
+            amount *= 4;
+        }
+
+        return amount;
     }
 
     @Override
@@ -172,13 +200,12 @@ public class WidgetScrollBar extends WidgetBase
         return false;
     }
 
-    public void render(int mouseX, int mouseY, int height)
+    public void render(int mouseX, int mouseY)
     {
-        this.setHeight(height); // FIXME?
-
         int x = this.getX();
         int y = this.getY();
         int width = this.getWidth();
+        int height = this.getHeight();
         int totalHeight = this.totalHeight;
 
         if (this.renderScrollbarBackgroundColor)
@@ -227,7 +254,7 @@ public class WidgetScrollBar extends WidgetBase
             }
             else
             {
-                RenderUtils.drawRect(x + 1, barPosition, width - 2, barHeight, this.foregroundColor, this.getZLevel());
+                RenderUtils.drawRect(x + 1, barPosition, width - 2, barHeight, this.scrollBarColor, this.getZLevel());
             }
 
             // FIXME?
