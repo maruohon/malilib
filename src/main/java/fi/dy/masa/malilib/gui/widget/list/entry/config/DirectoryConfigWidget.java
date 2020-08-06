@@ -31,8 +31,10 @@ public class DirectoryConfigWidget extends BaseConfigOptionWidget<DirectoryConfi
         final File rootDir = new File("/");
         final File dir = file == null || file.isDirectory() == false ? (file != null ? file.getParentFile() : rootDir) : file;
 
-        FileSelectorScreenFactory factory = () -> new DirectorySelectorScreen(dir, rootDir,
-                                                      (d) -> this.config.setValueFromString(d.getAbsolutePath()));
+        FileSelectorScreenFactory factory = () -> new DirectorySelectorScreen(dir, rootDir, (d) -> {
+            this.config.setValueFromString(d.getAbsolutePath());
+            this.reAddSubWidgets();
+        });
 
         this.createFileSelectorWidgets(x, y, this.config, factory,
                                        "malilib.gui.button.config.select_directory",

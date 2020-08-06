@@ -139,6 +139,7 @@ malilib.gui.title.configs=malilib Configs
 malilib.gui.title.create_directory=Create a new directory
 malilib.gui.title.debug=Debug
 malilib.gui.title.directory_browser=Directory Browser
+malilib.gui.title.file_browser=File Browser
 malilib.gui.title.generic=Generic
 malilib.gui.title.keybind_settings.advanced=Advanced Keybind Settings for %s
 malilib.gui.title.string_list_edit=Edit string list for '%s'
