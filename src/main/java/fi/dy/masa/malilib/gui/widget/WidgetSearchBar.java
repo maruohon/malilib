@@ -29,6 +29,19 @@ public class WidgetSearchBar extends WidgetContainer
         this.searchBox.setUpdateListenerAlways(true);
     }
 
+    @Override
+    public void reAddSubWidgets()
+    {
+        super.reAddSubWidgets();
+
+        this.addWidget(this.buttonSearchToggle);
+
+        if (this.searchOpen)
+        {
+            this.addWidget(this.searchBox);
+        }
+    }
+
     public String getFilter()
     {
         return this.searchOpen ? this.searchBox.getText() : "";
@@ -58,19 +71,7 @@ public class WidgetSearchBar extends WidgetContainer
             this.searchBox.setFocused(true);
         }
 
-        this.updateSubWidgets();
-    }
-
-    protected void updateSubWidgets()
-    {
-        this.clearWidgets();
-
-        this.addWidget(this.buttonSearchToggle);
-
-        if (this.searchOpen)
-        {
-            this.addWidget(this.searchBox);
-        }
+        this.reAddSubWidgets();
     }
 
     @Override

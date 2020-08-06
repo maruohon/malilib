@@ -35,29 +35,39 @@ public abstract class WidgetContainer extends WidgetBackground
      * positions to the current position of this container widget,
      * or to any other changes such as width or height changes.
      */
-    public void updateSubWidgetPositions()
+    public void updateSubWidgetPositions(int oldX, int oldY)
     {
+        int diffX = this.getX() - oldX;
+        int diffY = this.getY() - oldY;
+
+        if (diffX != 0 || diffY != 0)
+        {
+            for (WidgetBase widget : this.subWidgets)
+            {
+                widget.setPosition(widget.getX() + diffX, widget.getY() + diffY);
+            }
+        }
     }
 
     @Override
     protected void onPositionChanged(int oldX, int oldY)
     {
         super.onPositionChanged(oldX, oldY);
-        this.updateSubWidgetPositions();
+        this.updateSubWidgetPositions(oldX, oldY);
     }
 
     @Override
     protected void onSizeChanged()
     {
         super.onSizeChanged();
-        this.updateSubWidgetPositions();
+        this.updateSubWidgetPositions(this.getX(), this.getY());
     }
 
     @Override
-    protected void onPositionOrSizeChanged()
+    protected void onPositionOrSizeChanged(int oldX, int oldY)
     {
-        super.onPositionOrSizeChanged();
-        this.updateSubWidgetPositions();
+        super.onPositionOrSizeChanged(oldX, oldY);
+        this.updateSubWidgetPositions(oldX, oldY);
     }
 
     public  <T extends WidgetBase> T addWidget(T widget)

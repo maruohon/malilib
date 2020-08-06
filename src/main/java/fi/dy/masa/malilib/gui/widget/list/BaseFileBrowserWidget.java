@@ -57,7 +57,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
             this.currentDirectory = defaultDirectory;
         }
 
-        this.navigationWidget = new WidgetDirectoryNavigation(this.getX() + 2, this.getY() + 4, this.entryWidgetWidth, 14,
+        this.navigationWidget = new WidgetDirectoryNavigation(this.getX() + 2, this.getY() + 3, width, 14,
                                                               this.currentDirectory, rootDirectory, this, this.getIconProvider(), this.getRootDirectoryDisplayName());
 
         this.setEntryWidgetFactory((wx, wy, ww, wh, li, entry, lw) ->
@@ -66,16 +66,21 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         this.setBackgroundColor(0xB0000000);
         this.setBorderColor(BaseScreen.COLOR_HORIZONTAL_BAR);
         this.setBackgroundEnabled(true);
-        this.listPosition.setRightPadding(4);
+        this.listPosition.setRightPadding(3);
     }
 
     @Override
-    public void initWidget()
+    public void reAddSubWidgets()
     {
-        super.initWidget();
-
-        this.addSearchBarWidget(this.navigationWidget);
+        super.reAddSubWidgets();
+        this.navigationWidget.reAddSubWidgets();
         this.updateDirectoryNavigationWidget();
+    }
+
+    @Override
+    protected void createSearchBarWidget()
+    {
+        this.searchBarWidget = this.navigationWidget;
     }
 
     @Override
@@ -166,7 +171,6 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
 
     protected void updateDirectoryNavigationWidget()
     {
-        this.navigationWidget.setWidth(this.entryWidgetWidth);
         this.navigationWidget.setCurrentDirectory(this.currentDirectory);
     }
 

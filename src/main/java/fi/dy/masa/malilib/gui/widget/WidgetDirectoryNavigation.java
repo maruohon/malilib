@@ -75,14 +75,55 @@ public class WidgetDirectoryNavigation extends WidgetSearchBar
         });
         this.pathStartX = this.buttonCreateDir.getX() + this.buttonCreateDir.getWidth() + 6;
 
-        // Make room for the info widget
-        x = this.buttonSearchToggle.getX();
-        this.buttonSearchToggle.setX(x - 14);
-        this.searchBox.setWidth(this.searchBox.getWidth() - 14);
+        IGuiIcon icon = BaseGuiIcon.INFO_ICON_11;
+        int iw = icon.getWidth();
 
-        this.infoWidget = new WidgetInfoIcon(x + 2, y + 1, BaseGuiIcon.INFO_ICON_11, "malilib.gui.button.hover.directory_widget.hold_shift_to_open_directory");
+        x = this.getX();
+        this.infoWidget = new WidgetInfoIcon(x + width - iw - 2, y + 1, icon, "malilib.gui.button.hover.directory_widget.hold_shift_to_open_directory");
 
-        this.updateSubWidgets();
+        this.buttonSearchToggle.setX(x + width - this.buttonSearchToggle.getWidth() - iw - 4);
+        this.searchBox.setWidth(this.getWidth() - this.buttonSearchToggle.getWidth() - iw - 8);
+    }
+
+    @Override
+    public void reAddSubWidgets()
+    {
+        super.reAddSubWidgets();
+
+        if (this.isSearchOpen() == false)
+        {
+            this.addWidget(this.infoWidget);
+            this.addWidget(this.buttonSearchToggle);
+            this.addWidget(this.buttonRoot);
+            this.addWidget(this.buttonUp);
+            this.addWidget(this.buttonCreateDir);
+
+            this.placePathElements(this.pathStartX, this.getY(), this.generatePathElements());
+        }
+    }
+
+    @Override
+    public void updateSubWidgetPositions(int oldX, int oldY)
+    {
+        super.updateSubWidgetPositions(oldX, oldY);
+
+        int x = this.getX();
+        int y = this.getY();
+
+        this.buttonRoot.setPosition(x, y);
+
+        x += this.buttonRoot.getWidth() + 2;
+        this.buttonUp.setPosition(x, y);
+
+        x += this.buttonUp.getWidth() + 2;
+        this.buttonCreateDir.setPosition(x, y);
+
+        int xRight = this.getX() + this.getWidth();
+        int iw = this.infoWidget.getWidth();
+        this.buttonSearchToggle.setPosition(xRight - this.buttonSearchToggle.getWidth() - iw - 4, y);
+        this.infoWidget.setPosition(xRight - iw - 2, y + 1);
+
+        this.searchBox.setWidth(this.getWidth() - this.buttonSearchToggle.getWidth() - iw - 8);
     }
 
     public File getCurrentDirectory()
@@ -93,7 +134,7 @@ public class WidgetDirectoryNavigation extends WidgetSearchBar
     public void setCurrentDirectory(File dir)
     {
         this.currentDir = dir;
-        this.updateSubWidgets();
+        this.reAddSubWidgets();
     }
 
     public IGuiIcon getNavBarIconRoot(boolean isOpen)
@@ -107,27 +148,6 @@ public class WidgetDirectoryNavigation extends WidgetSearchBar
     }
 
     @Override
-    protected void updateSubWidgets()
-    {
-        if (this.isSearchOpen() == false)
-        {
-            this.clearWidgets();
-
-            this.addWidget(this.infoWidget);
-            this.addWidget(this.buttonSearchToggle);
-            this.addWidget(this.buttonRoot);
-            this.addWidget(this.buttonUp);
-            this.addWidget(this.buttonCreateDir);
-
-            this.placePathElements(this.pathStartX, this.getY(), this.generatePathElements());
-        }
-        else
-        {
-            super.updateSubWidgets();
-        }
-    }
-
-    @Override
     public void render(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
     {
         if (this.searchOpen)
@@ -137,26 +157,37 @@ public class WidgetDirectoryNavigation extends WidgetSearchBar
         else
         {
             // Draw the directory path text background
-            RenderUtils.drawRect(this.pathStartX - 2, this.getY(), this.getWidth() - this.pathStartX - 12, this.getHeight(), 0xFF242424, this.getZLevel());
+            RenderUtils.drawRect(this.pathStartX - 2, this.getY(), this.getWidth() - this.pathStartX - 18, this.getHeight(), 0xFF242424, this.getZLevel());
         }
 
         super.render(mouseX, mouseY, isActiveGui, hoveredWidgetId);
     }
 
-    protected void placePathElements(int x, int y, List<PathElement> elements)
+    protected String getDisplayNameForDirectory(File dir)
     {
-        Function<File, String> displayNameFactory;
+        String name;
 
-        if (this.rootDirDisplayName != null)
+        if (this.rootDirDisplayName != null && this.rootDir.equals(dir))
         {
-            final File rootDir = this.rootDir;
-            final String overriddenName = this.rootDirDisplayName;
-            displayNameFactory = (file) -> file.equals(rootDir) ? overriddenName : file.getName();
+            name = this.rootDirDisplayName;
         }
         else
         {
-            displayNameFactory = File::getName;
+            name = dir.getName();
         }
+
+        // The partition root on windows returns an empty string... ('C:\' -> '')
+        if (name.length() == 0)
+        {
+            name = dir.toString();
+        }
+
+        return name;
+    }
+
+    protected void placePathElements(int x, int y, List<PathElement> elements)
+    {
+        Function<File, String> displayNameFactory = this::getDisplayNameForDirectory;
 
         for (final PathElement el : elements)
         {
@@ -204,14 +235,6 @@ public class WidgetDirectoryNavigation extends WidgetSearchBar
         }
     }
 
-    public static class WidgetDirectorySelection extends WidgetDropDownList<File>
-    {
-        public WidgetDirectorySelection(int x, int y, List<File> entries, Function<File, String> displayNameFactory)
-        {
-            super(x, y, -1, 12, 120, 10, entries, displayNameFactory);
-        }
-    }
-
     protected List<PathElement> generatePathElements()
     {
         ArrayList<PathElement> list = new ArrayList<>();
@@ -223,7 +246,7 @@ public class WidgetDirectoryNavigation extends WidgetSearchBar
 
         while (dir != null)
         {
-            String name = this.rootDirDisplayName != null && root.equals(dir) ? this.rootDirDisplayName : dir.getName();
+            String name = this.getDisplayNameForDirectory(dir);
             int nameWidth = this.getStringWidth(name);
             int entryWidth = nameWidth + adjDirsIconWidth + 8;
 
@@ -268,6 +291,14 @@ public class WidgetDirectoryNavigation extends WidgetSearchBar
         Collections.reverse(list);
 
         return list;
+    }
+
+    public static class WidgetDirectorySelection extends WidgetDropDownList<File>
+    {
+        public WidgetDirectorySelection(int x, int y, List<File> entries, Function<File, String> displayNameFactory)
+        {
+            super(x, y, -1, 12, 120, 10, entries, displayNameFactory);
+        }
     }
 
     public static class PathElement

@@ -109,12 +109,15 @@ public abstract class WidgetBase
 
     public final void setPositionAndSize(int x, int y, int width, int height)
     {
+        int oldX = this.x;
+        int oldY = this.y;
+
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
 
-        this.onPositionOrSizeChanged();
+        this.onPositionOrSizeChanged(oldX, oldY);
     }
 
     public void setRightX(int x)
@@ -160,7 +163,7 @@ public abstract class WidgetBase
      */
     protected void onPositionChanged(int oldX, int oldY)
     {
-        this.onPositionOrSizeChanged();
+        this.onPositionOrSizeChanged(oldX, oldY);
     }
 
     /**
@@ -168,7 +171,7 @@ public abstract class WidgetBase
      */
     protected void onSizeChanged()
     {
-        this.onPositionOrSizeChanged();
+        this.onPositionOrSizeChanged(this.getX(), this.getY());
     }
 
     /**
@@ -176,7 +179,7 @@ public abstract class WidgetBase
      * This is meant for cases where it's necessary or beneficial to avoid the
      * calls for both size and position changes separately.
      */
-    protected void onPositionOrSizeChanged()
+    protected void onPositionOrSizeChanged(int oldX, int oldY)
     {
     }
 

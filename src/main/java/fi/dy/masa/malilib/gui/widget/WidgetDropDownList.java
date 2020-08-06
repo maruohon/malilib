@@ -178,11 +178,11 @@ public class WidgetDropDownList<T> extends WidgetContainer
             this.addWidget(this.widgetSelectionBar);
         }
 
-        this.updateSubWidgetPositions();
+        this.updateSubWidgetPositions(this.getX(), this.getY());
     }
 
     @Override
-    public void updateSubWidgetPositions()
+    public void updateSubWidgetPositions(int oldX, int oldY)
     {
         int yOff = this.noCurrentEntryBar ? 0 : this.lineHeight;
 

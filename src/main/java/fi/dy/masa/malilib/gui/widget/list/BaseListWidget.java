@@ -72,7 +72,7 @@ public abstract class BaseListWidget extends WidgetContainer
     protected void onSizeChanged()
     {
         this.updateEntryWidgetPositioning();
-        this.updateSubWidgetPositions();
+        this.updateSubWidgetPositions(this.getX(), this.getY());
         this.refreshEntries();
     }
 
@@ -102,7 +102,7 @@ public abstract class BaseListWidget extends WidgetContainer
         this.createHeaderWidget();
 
         this.updateEntryWidgetPositioning();
-        this.updateSubWidgetPositions();
+        this.updateSubWidgetPositions(this.getX(), this.getY());
 
         this.reAddSubWidgets();
         this.refreshEntries();
@@ -133,7 +133,7 @@ public abstract class BaseListWidget extends WidgetContainer
     }
 
     @Override
-    public void updateSubWidgetPositions()
+    public void updateSubWidgetPositions(int oldX, int oldY)
     {
         int bw = this.borderEnabled ? this.borderWidth : 0;
         int x = this.getX() + bw;
@@ -141,22 +141,21 @@ public abstract class BaseListWidget extends WidgetContainer
         int listWidth = this.getListMaxWidthForTotalWidth(this.getWidth());
         int scrollBarX = x + listWidth - this.scrollBar.getWidth() - bw - 2;
         int scrollBarY = this.entryWidgetStartY;
-        int entriesWidth = listWidth - this.listPosition.getLeftPadding() - this.listPosition.getRightPadding();
 
         this.scrollBar.setPosition(scrollBarX, scrollBarY);
         this.scrollBar.setHeight(this.listHeight);
 
         if (this.searchBarWidget != null)
         {
-            this.searchBarWidget.setPosition(x, y);
-            this.searchBarWidget.setWidth(entriesWidth);
-            y += this.searchBarWidget.getHeight() + 2;
+            this.searchBarWidget.setPosition(x, y + 2);
+            this.searchBarWidget.setWidth(listWidth - bw * 2);
+            y = this.searchBarWidget.getY() + this.searchBarWidget.getHeight() + 2;
         }
 
         if (this.headerWidget != null)
         {
             this.headerWidget.setPosition(x, y);
-            this.headerWidget.setWidth(entriesWidth);
+            this.headerWidget.setWidth(this.entryWidgetWidth);
         }
     }
 
@@ -238,17 +237,10 @@ public abstract class BaseListWidget extends WidgetContainer
         return this;
     }
 
-    protected WidgetSearchBar addSearchBarWidget(WidgetSearchBar searchBar)
+    public void addDefaultSearchBar()
     {
-        this.searchBarWidget = searchBar;
-        this.addWidget(searchBar);
-        return this.searchBarWidget;
-    }
-
-    public WidgetSearchBar addDefaultSearchBar()
-    {
-        return this.addSearchBarWidget(new WidgetSearchBar(this.getX() + 2, this.getY() + 4,
-                                                           this.getWidth() - 14, 14, 0, BaseGuiIcon.SEARCH, HorizontalAlignment.LEFT));
+        this.searchBarWidget = new WidgetSearchBar(this.getX() + 2, this.getY() + 4,
+                                                   this.getWidth() - 14, 14, 0, BaseGuiIcon.SEARCH, HorizontalAlignment.LEFT);
     }
 
     public void onGuiClosed()
