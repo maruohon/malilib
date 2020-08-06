@@ -52,7 +52,7 @@ public abstract class BaseListWidget extends WidgetContainer
         this.scrollBar.setArrowTextures(BaseGuiIcon.SMALL_ARROW_UP, BaseGuiIcon.SMALL_ARROW_DOWN);
     }
 
-    public abstract int getTotalListEntryCount();
+    public abstract int getFilteredListEntryCount();
 
     @Nullable
     protected abstract BaseListEntryWidget createListEntryWidget(int x, int y, int listIndex);
@@ -161,7 +161,7 @@ public abstract class BaseListWidget extends WidgetContainer
 
     protected void updateScrollBarHeight()
     {
-        final int count = this.getTotalListEntryCount();
+        final int count = this.getFilteredListEntryCount();
         int totalHeight = 0;
 
         if (this.visibleListEntries < count)
@@ -220,6 +220,11 @@ public abstract class BaseListWidget extends WidgetContainer
     public WidgetSearchBar getSearchBarWidget()
     {
         return this.searchBarWidget;
+    }
+
+    public void setListEntryWidgetFixedHeight(int height)
+    {
+        this.entryWidgetFixedHeight = height;
     }
 
     public void setEntryRefreshListener(@Nullable EventListener entryRefreshListener)
@@ -378,8 +383,8 @@ public abstract class BaseListWidget extends WidgetContainer
             else if (keyCode == Keyboard.KEY_DOWN)  this.offsetSelectionOrScrollbar( 1, true);
             else if (keyCode == Keyboard.KEY_PRIOR) this.offsetSelectionOrScrollbar(-this.visibleListEntries / 2, true);
             else if (keyCode == Keyboard.KEY_NEXT)  this.offsetSelectionOrScrollbar(this.visibleListEntries / 2, true);
-            else if (keyCode == Keyboard.KEY_HOME)  this.offsetSelectionOrScrollbar(-this.getTotalListEntryCount(), true);
-            else if (keyCode == Keyboard.KEY_END)   this.offsetSelectionOrScrollbar(this.getTotalListEntryCount(), true);
+            else if (keyCode == Keyboard.KEY_HOME)  this.offsetSelectionOrScrollbar(-this.getFilteredListEntryCount(), true);
+            else if (keyCode == Keyboard.KEY_END)   this.offsetSelectionOrScrollbar(this.getFilteredListEntryCount(), true);
             else return super.onKeyTyped(typedChar, keyCode);
 
             return true;
@@ -504,7 +509,7 @@ public abstract class BaseListWidget extends WidgetContainer
         int y = this.entryWidgetStartY;
         int listIndex = this.scrollBar.getValue();
 
-        final int totalEntryCount = this.getTotalListEntryCount();
+        final int totalEntryCount = this.getFilteredListEntryCount();
 
         for ( ; listIndex < totalEntryCount; ++listIndex)
         {
@@ -541,7 +546,7 @@ public abstract class BaseListWidget extends WidgetContainer
      */
     protected void onListEntryWidgetsCreated()
     {
-        this.scrollBar.setMaxValue(this.getTotalListEntryCount() - this.visibleListEntries);
+        this.scrollBar.setMaxValue(this.getFilteredListEntryCount() - this.visibleListEntries);
         this.updateScrollBarHeight();
     }
 

@@ -181,7 +181,7 @@ public class ButtonGeneric extends ButtonBase
 
             if (this.renderOutline)
             {
-                int color = hovered ? this.outlineColorHover : this.outlineColorNormal;
+                int color = hovered && this.enabled ? this.outlineColorHover : this.outlineColorNormal;
                 RenderUtils.drawOutline(x, y, width, height, 1, color, z);
             }
 

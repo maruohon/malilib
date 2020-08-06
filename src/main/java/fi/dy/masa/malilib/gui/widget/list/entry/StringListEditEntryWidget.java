@@ -1,134 +1,141 @@
 package fi.dy.masa.malilib.gui.widget.list.entry;
 
-public class StringListEditEntryWidget// extends WidgetConfigOptionBase<String>
-{
-    /*
-    protected final StringListWidget parent;
-    protected final StringListConfig config;
-    protected final String defaultValue;
-    protected final int listIndex;
+import java.util.List;
+import java.util.function.Consumer;
+import fi.dy.masa.malilib.gui.button.ButtonGeneric;
+import fi.dy.masa.malilib.gui.button.IButtonActionListener;
+import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
+import fi.dy.masa.malilib.gui.util.BaseGuiIcon;
+import fi.dy.masa.malilib.gui.widget.WidgetLabel;
+import fi.dy.masa.malilib.gui.widget.WidgetTextFieldBase;
+import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
+import fi.dy.masa.malilib.render.RenderUtils;
 
-    public StringListEditEntryWidget(int x, int y, int width, int height,
-                                     int listIndex, String initialValue, String defaultValue, StringListWidget parent)
+public class StringListEditEntryWidget extends BaseDataListEntryWidget<String>
+{
+    protected final DataListWidget<String> parent;
+    protected final List<String> stringList;
+    protected final String defaultValue;
+    protected final String initialValue;
+    protected final int listIndex;
+    protected final WidgetLabel labelWidget;
+    protected final WidgetTextFieldBase textField;
+    protected final ButtonGeneric addButton;
+    protected final ButtonGeneric removeButton;
+    protected final ButtonGeneric upButton;
+    protected final ButtonGeneric downButton;
+    protected final ButtonGeneric resetButton;
+
+    public StringListEditEntryWidget(int x, int y, int width, int height, int listIndex,
+                                     String initialValue, String defaultValue, DataListWidget<String> parent)
     {
-        super(x, y, width, height, parent, listIndex, initialValue);
+        super(x, y, width, height, listIndex, initialValue);
 
         this.listIndex = listIndex;
         this.defaultValue = defaultValue;
-        this.lastAppliedValue = initialValue;
-        this.initialStringValue = initialValue;
+        this.initialValue = initialValue;
         this.parent = parent;
-        this.config = parent.getParentScreen().getConfig();
 
-        int textFieldX = x + 20;
-        int textFieldWidth = width - 160;
-        int resetX = textFieldX + textFieldWidth + 2;
-        int by = y + 4;
-        int bx = textFieldX;
-        int bOff = 18;
+        // This is a reference to the current entries list, which can be modified
+        this.stringList = parent.getCurrentEntries();
 
-        if (this.isDummy() == false)
-        {
-            this.addLabel(x + 2, y + 7, 0xC0C0C0C0, String.format("%3d:", listIndex + 1));
-            bx = this.addTextField(textFieldX, y + 1, resetX, textFieldWidth, 20, initialValue);
+        int textFieldWidth = width - 142;
 
-            this.addListActionButton(bx, by, ButtonType.ADD);
-            bx += bOff;
+        this.labelWidget = new WidgetLabel(x + 2, y + 7, 0xC0C0C0C0, String.format("%5d:", listIndex + 1));
+        this.textField = new WidgetTextFieldBase(x + 28, y + 2, textFieldWidth, 16, initialValue);
 
-            this.addListActionButton(bx, by, ButtonType.REMOVE);
-            bx += bOff;
+        this.addButton    = this.createListActionButton(x, y, ButtonType.ADD);
+        this.removeButton = this.createListActionButton(x, y, ButtonType.REMOVE);
+        this.upButton     = this.createListActionButton(x, y, ButtonType.MOVE_UP);
+        this.downButton   = this.createListActionButton(x, y, ButtonType.MOVE_DOWN);
 
-            if (this.canBeMoved(true))
+        this.resetButton = new ButtonGeneric(x, y, -1, 16,"malilib.gui.button.reset.caps");
+        this.resetButton.setRenderDefaultBackground(false);
+        this.resetButton.setRenderOutline(true);
+        this.resetButton.setOutlineColorNormal(0xFF404040);
+        this.resetButton.setTextColorDisabled(0xFF505050);
+
+        this.resetButton.setEnabled(initialValue.equals(this.defaultValue) == false);
+        this.resetButton.setActionListener((btn, mbtn) -> {
+            this.textField.setText(this.defaultValue);
+
+            if (this.listIndex < this.stringList.size())
             {
-                this.addListActionButton(bx, by, ButtonType.MOVE_DOWN);
+                this.stringList.set(this.listIndex, this.defaultValue);
             }
 
-            bx += bOff;
+            this.resetButton.setEnabled(this.textField.getText().equals(this.defaultValue) == false);
+        });
 
-            if (this.canBeMoved(false))
+        this.textField.setUpdateListenerAlways(true);
+        this.textField.setListener((newText) -> {
+            if (this.listIndex < this.stringList.size())
             {
-                this.addListActionButton(bx, by, ButtonType.MOVE_UP);
+                this.stringList.set(this.listIndex, newText);
             }
-        }
-        else
-        {
-            this.addListActionButton(bx, by, ButtonType.ADD);
-        }
+
+            this.resetButton.setEnabled(newText.equals(this.defaultValue) == false);
+        });
     }
 
-    protected boolean isDummy()
+    @Override
+    public void reAddSubWidgets()
     {
-        return this.listIndex < 0;
+        super.reAddSubWidgets();
+
+        this.addWidget(this.labelWidget);
+        this.addWidget(this.textField);
+        this.addWidget(this.addButton);
+        this.addWidget(this.removeButton);
+
+        if (this.canBeMoved(true))
+        {
+            this.addWidget(this.downButton);
+        }
+
+        if (this.canBeMoved(false))
+        {
+            this.addWidget(this.upButton);
+        }
+
+        this.addWidget(this.resetButton);
+
+        this.updateSubWidgetPositions(this.getX(), this.getY());
     }
 
-    protected void addListActionButton(int x, int y, ButtonType type)
+    @Override
+    public void updateSubWidgetPositions(int oldX, int oldY)
+    {
+        super.updateSubWidgetPositions(oldX, oldY);
+
+        int x = this.getX();
+        int y = this.getY();
+
+        this.labelWidget.setPosition(x + 1, y + 6);
+        this.textField.setPosition(x + 30, y + 2);
+
+        x = this.textField.getRight() + 2;
+        this.addButton.setPosition(x, y + 2);
+
+        x = this.addButton.getRight() + 2;
+        this.removeButton.setPosition(x, y + 2);
+
+        x = this.removeButton.getRight() + 2;
+        this.upButton.setPosition(x, y + 2);
+
+        x = this.upButton.getRight() + 2;
+        this.downButton.setPosition(x, y + 2);
+
+        x = this.downButton.getRight() + 2;
+        this.resetButton.setPosition(x, y + 2);
+    }
+
+    protected ButtonGeneric createListActionButton(int x, int y, ButtonType type)
     {
         ButtonGeneric button = new ButtonGeneric(x, y, type.getIcon(), type.getHoverKey());
         button.setRenderOutline(true);
-        this.addButton(button, new ListenerListActions(type, this));
-    }
-
-    protected int addTextField(int x, int y, int resetX, int configWidth, int configHeight, String initialValue)
-    {
-        ButtonGeneric resetButton = this.createResetButton(resetX, y, initialValue);
-        this.textField = new WidgetTextFieldBase(x + 2, y + 1, configWidth - 4, configHeight - 3, initialValue);
-        this.textField.setUpdateListenerAlways(true);
-
-        this.addTextField(this.textField, (newText) -> resetButton.setEnabled(this.textField.getText().equals(this.defaultValue) == false));
-
-        this.addButton(resetButton, (btn, mbtn) -> {
-            this.textField.setText(this.defaultValue);
-            resetButton.setEnabled(this.textField.getText().equals(this.defaultValue) == false);
-        });
-
-        return resetButton.getX() + resetButton.getWidth() + 4;
-    }
-
-    protected ButtonGeneric createResetButton(int x, int y, String initialValue)
-    {
-        String labelReset = StringUtils.translate("malilib.gui.button.reset.caps");
-        ButtonGeneric resetButton = new ButtonGeneric(x, y, -1, 20, labelReset);
-        resetButton.setEnabled(initialValue.equals(this.defaultValue) == false);
-
-        return resetButton;
-    }
-
-    @Override
-    public boolean wasConfigModified()
-    {
-        return this.isDummy() == false && this.textField.getText().equals(this.initialStringValue) == false;
-    }
-
-    @Override
-    public void applyNewValueToConfig()
-    {
-        if (this.isDummy() == false)
-        {
-            StringListConfig config = this.config;
-            List<String> list = new ArrayList<>(config.getStrings());
-            String value = this.textField.getText();
-
-            if (this.listIndex < list.size())
-            {
-                list.set(this.listIndex, value);
-                config.setStrings(list);
-                this.lastAppliedValue = value;
-            }
-        }
-    }
-
-    protected void insertEntry(boolean before)
-    {
-        StringListConfig config = this.config;
-        List<String> list = config.getStrings();
-        int index = this.getInsertionIndex(list, before);
-
-        // Adding a new empty entry purposefully does not update the config by setting a new list,
-        // so that the empty value does not get applied until it has been set to something valid.
-        list.add(index, "");
-
-        this.parent.refreshEntries();
-        this.parent.markConfigsModified();
+        button.setActionListener(type.createListener(this));
+        return button;
     }
 
     protected int getInsertionIndex(List<String> list, boolean before)
@@ -144,26 +151,27 @@ public class StringListEditEntryWidget// extends WidgetConfigOptionBase<String>
         return Math.max(0, Math.min(size, index));
     }
 
+    protected void insertEntry(boolean before)
+    {
+        int index = this.getInsertionIndex(this.stringList, before);
+        this.stringList.add(index, "");
+        this.parent.refreshEntries();
+    }
+
     protected void removeEntry()
     {
-        StringListConfig config = this.config;
-        List<String> list = new ArrayList<>(config.getStrings());
-        final int size = list.size();
+        final int size = this.stringList.size();
 
         if (this.listIndex >= 0 && this.listIndex < size)
         {
-            list.remove(this.listIndex);
-            config.setStrings(list);
-
+            this.stringList.remove(this.listIndex);
             this.parent.refreshEntries();
-            this.parent.markConfigsModified();
         }
     }
 
     protected void moveEntry(boolean down)
     {
-        StringListConfig config = this.config;
-        List<String> list = new ArrayList<>(config.getStrings());
+        List<String> list = this.stringList;
         final int size = list.size();
 
         if (this.listIndex >= 0 && this.listIndex < size)
@@ -183,22 +191,18 @@ public class StringListEditEntryWidget// extends WidgetConfigOptionBase<String>
 
             if (index2 >= 0)
             {
-                this.parent.applyPendingModifications();
-
                 tmp = list.get(index1);
                 list.set(index1, list.get(index2));
                 list.set(index2, tmp);
-                config.setStrings(list);
 
                 this.parent.refreshEntries();
-                this.parent.markConfigsModified();
             }
         }
     }
 
     protected boolean canBeMoved(boolean down)
     {
-        final int size = this.config.getStrings().size();
+        final int size = this.stringList.size();
         return (this.listIndex >= 0 && this.listIndex < size) &&
                 ((down && this.listIndex < (size - 1)) || (down == false && this.listIndex > 0));
     }
@@ -218,74 +222,25 @@ public class StringListEditEntryWidget// extends WidgetConfigOptionBase<String>
             RenderUtils.drawRect(this.getX(), this.getY(), this.getWidth(), this.getHeight(), 0x30FFFFFF, this.getZLevel());
         }
 
-        this.drawSubWidgets(mouseX, mouseY, isActiveGui, hoveredWidgetId);
-        this.drawTextFields(mouseX, mouseY, isActiveGui, hoveredWidgetId);
-
         super.render(mouseX, mouseY, isActiveGui, hoveredWidgetId);
-    }
-
-    protected static class ListenerResetConfig implements IButtonActionListener
-    {
-        protected final StringListEditEntryWidget parent;
-        protected final ButtonGeneric buttonReset;
-
-        public ListenerResetConfig(ButtonGeneric buttonReset, StringListEditEntryWidget parent)
-        {
-            this.buttonReset = buttonReset;
-            this.parent = parent;
-        }
-
-        @Override
-        public void actionPerformedWithButton(ButtonBase button, int mouseButton)
-        {
-            this.parent.textField.setText(this.parent.defaultValue);
-            this.buttonReset.setEnabled(this.parent.textField.getText().equals(this.parent.defaultValue) == false);
-        }
-    }
-
-    protected static class ListenerListActions implements IButtonActionListener
-    {
-        protected final ButtonType type;
-        protected final StringListEditEntryWidget parent;
-
-        public ListenerListActions(ButtonType type, StringListEditEntryWidget parent)
-        {
-            this.type = type;
-            this.parent = parent;
-        }
-
-        @Override
-        public void actionPerformedWithButton(ButtonBase button, int mouseButton)
-        {
-            if (this.type == ButtonType.ADD)
-            {
-                this.parent.insertEntry(false);
-            }
-            else if (this.type == ButtonType.REMOVE)
-            {
-                this.parent.removeEntry();
-            }
-            else
-            {
-                this.parent.moveEntry(this.type == ButtonType.MOVE_DOWN);
-            }
-        }
     }
 
     protected enum ButtonType
     {
-        ADD         (BaseGuiIcon.PLUS, "malilib.gui.button.hover.list.add_after"),
-        REMOVE      (BaseGuiIcon.MINUS, "malilib.gui.button.hover.list.remove"),
-        MOVE_UP     (BaseGuiIcon.ARROW_UP, "malilib.gui.button.hover.list.move_up"),
-        MOVE_DOWN   (BaseGuiIcon.ARROW_DOWN, "malilib.gui.button.hover.list.move_down");
+        ADD         (BaseGuiIcon.PLUS, "malilib.gui.button.hover.list.add_after", (w) -> w.insertEntry(false)),
+        REMOVE      (BaseGuiIcon.MINUS, "malilib.gui.button.hover.list.remove", StringListEditEntryWidget::removeEntry),
+        MOVE_UP     (BaseGuiIcon.ARROW_UP, "malilib.gui.button.hover.list.move_up", (w) -> w.moveEntry(false)),
+        MOVE_DOWN   (BaseGuiIcon.ARROW_DOWN, "malilib.gui.button.hover.list.move_down", (w) -> w.moveEntry(true));
 
         protected final BaseGuiIcon icon;
-        protected final String hoverKey;
+        protected final String translationKey;
+        protected final Consumer<StringListEditEntryWidget> action;
 
-        ButtonType(BaseGuiIcon icon, String translationKey)
+        ButtonType(BaseGuiIcon icon, String translationKey, Consumer<StringListEditEntryWidget> action)
         {
             this.icon = icon;
-            this.hoverKey = translationKey;
+            this.translationKey = translationKey;
+            this.action = action;
         }
 
         public IGuiIcon getIcon()
@@ -295,8 +250,12 @@ public class StringListEditEntryWidget// extends WidgetConfigOptionBase<String>
 
         public String getHoverKey()
         {
-            return this.hoverKey;
+            return this.translationKey;
+        }
+
+        public IButtonActionListener createListener(final StringListEditEntryWidget widget)
+        {
+            return (btn, mbtn) -> this.action.accept(widget);
         }
     }
-    */
 }

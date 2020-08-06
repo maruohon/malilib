@@ -10,7 +10,6 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.gui.widget.list.entry.BaseListEntryWidget;
-import fi.dy.masa.malilib.gui.widget.list.entry.DataListHeaderWidget;
 import fi.dy.masa.malilib.gui.widget.util.DataListEntrySelectionHandler;
 import fi.dy.masa.malilib.gui.widget.util.DataListEntryWidgetFactory;
 import fi.dy.masa.malilib.gui.widget.util.ListHeaderWidgetFactory;
@@ -18,7 +17,8 @@ import fi.dy.masa.malilib.gui.widget.util.ListHeaderWidgetFactory;
 public class DataListWidget<DATATYPE> extends BaseListWidget
 {
     protected final Supplier<List<DATATYPE>> entrySupplier;
-    protected final List<DATATYPE> listContents = new ArrayList<>();
+    protected final List<DATATYPE> currentContents;
+    protected final List<DATATYPE> filteredContents = new ArrayList<>();
     @Nullable protected ListHeaderWidgetFactory<DATATYPE> headerWidgetFactory;
     @Nullable protected DataListEntryWidgetFactory<DATATYPE> entryWidgetFactory;
     @Nullable protected DataListEntrySelectionHandler<DATATYPE> selectionHandler;
@@ -32,7 +32,8 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
         super(x, y, width, height);
 
         this.entrySupplier = entrySupplier;
-        this.selectionHandler = new DataListEntrySelectionHandler<>(this::getCurrentEntries);
+        this.currentContents = new ArrayList<>(entrySupplier.get());
+        this.selectionHandler = new DataListEntrySelectionHandler<>(this::getFilteredEntries);
     }
 
     public DataListWidget<DATATYPE> setHeaderWidgetFactory(@Nullable ListHeaderWidgetFactory<DATATYPE> headerWidgetFactory)
@@ -64,9 +65,9 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
     @Nullable
     protected BaseListEntryWidget createListEntryWidget(int x, int y, int listIndex)
     {
-        if (this.entryWidgetFactory != null && listIndex < this.getCurrentEntries().size())
+        if (this.entryWidgetFactory != null && listIndex < this.getFilteredEntries().size())
         {
-            DATATYPE data = this.getCurrentEntries().get(listIndex);
+            DATATYPE data = this.getFilteredEntries().get(listIndex);
             int height = this.areEntriesFixedHeight ? this.entryWidgetFixedHeight : this.getHeightForListEntryWidget(listIndex);
             return this.entryWidgetFactory.createWidget(x, y, this.entryWidgetWidth, height, listIndex, data, this);
         }
@@ -92,7 +93,7 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
         {
             int listIndex = widget.getListIndex();
 
-            if (listIndex >= 0 && listIndex < this.getTotalListEntryCount())
+            if (listIndex >= 0 && listIndex < this.getFilteredListEntryCount())
             {
                 this.setLastSelectedEntry(listIndex);
             }
@@ -107,19 +108,30 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
     }
 
     @Override
-    public int getTotalListEntryCount()
+    public int getFilteredListEntryCount()
     {
-        return this.listContents.size();
+        return this.getFilteredEntries().size();
     }
 
+    /**
+     * Returns the current full list of data entries.
+     * This may be different from the original list of data,
+     * if this list widget/screen allows modifying the contents.
+     * @return
+     */
     public List<DATATYPE> getCurrentEntries()
     {
-        return this.listContents;
+        return this.currentContents;
     }
 
-    protected List<DATATYPE> getAllEntries()
+    /**
+     * Returns the current list of data entries that is shown,
+     * meaning that any possible search/filter effects have been applied.
+     * @return
+     */
+    public List<DATATYPE> getFilteredEntries()
     {
-        return this.entrySupplier != null ? this.entrySupplier.get() : Collections.emptyList();
+        return this.hasFilter() ? this.filteredContents : this.getCurrentEntries();
     }
 
     @Nullable
@@ -156,9 +168,9 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
     @Override
     public void refreshEntries()
     {
-        this.listContents.clear();
+        this.filteredContents.clear();
 
-        Collection<DATATYPE> entries = this.getAllEntries();
+        Collection<DATATYPE> entries = this.getCurrentEntries();
 
         if (this.hasFilter())
         {
@@ -171,7 +183,7 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
 
         if (this.shouldSortList())
         {
-            this.sortEntryList(this.listContents);
+            this.sortEntryList(this.filteredContents);
         }
 
         this.onEntriesRefreshed();
@@ -200,7 +212,7 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
 
     protected void addNonFilteredContents(Collection<DATATYPE> entries)
     {
-        this.listContents.addAll(entries);
+        this.filteredContents.addAll(entries);
     }
 
     protected void addFilteredContents(Collection<DATATYPE> entries)
@@ -211,7 +223,7 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
         {
             if (filterText.isEmpty() || this.entryMatchesFilter(entry, filterText))
             {
-                this.listContents.add(entry);
+                this.filteredContents.add(entry);
             }
         }
     }
@@ -278,7 +290,7 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
 
     public void setLastSelectedEntry(int listIndex)
     {
-        int index = listIndex >= 0 && listIndex < this.getTotalListEntryCount() ? listIndex : -1;
+        int index = listIndex >= 0 && listIndex < this.getFilteredListEntryCount() ? listIndex : -1;
 
         if (this.getEntrySelectionHandler() != null)
         {
@@ -300,7 +312,7 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
         }
         else
         {
-            final int totalEntryCount = this.getTotalListEntryCount();
+            final int totalEntryCount = this.getFilteredListEntryCount();
             final int lastSelectedEntryIndex = this.getLastSelectedEntryIndex();
 
             if (lastSelectedEntryIndex >= 0 && totalEntryCount > 0)
@@ -340,7 +352,7 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
     protected void renderWidget(int widgetIndex, int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
     {
         BaseListEntryWidget widget = this.listWidgets.get(widgetIndex);
-        DATATYPE entry = this.listContents.get(widget.getListIndex());
+        DATATYPE entry = this.filteredContents.get(widget.getListIndex());
         boolean isSelected = this.getEntrySelectionHandler() != null && this.getEntrySelectionHandler().isEntrySelected(entry);
 
         this.listWidgets.get(widgetIndex).render(mouseX, mouseY, isActiveGui, hoveredWidgetId, isSelected);

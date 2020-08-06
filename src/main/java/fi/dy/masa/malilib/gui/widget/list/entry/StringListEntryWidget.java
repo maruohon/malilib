@@ -4,13 +4,9 @@ import fi.dy.masa.malilib.render.RenderUtils;
 
 public class StringListEntryWidget extends BaseDataListEntryWidget<String>
 {
-    private final boolean isOdd;
-
-    public StringListEntryWidget(int x, int y, int width, int height, boolean isOdd, int listIndex, String entry)
+    public StringListEntryWidget(int x, int y, int width, int height, int listIndex, String entry)
     {
         super(x, y, width, height, listIndex, entry);
-
-        this.isOdd = isOdd;
     }
 
     @Override

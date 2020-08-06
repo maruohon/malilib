@@ -42,7 +42,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     public BaseFileBrowserWidget(int x, int y, int width, int height, File defaultDirectory, File rootDirectory,
                                  @Nullable IDirectoryCache cache, @Nullable String browserContext)
     {
-        super(x, y, width, height, null);
+        super(x, y, width, height, Collections::emptyList);
 
         this.rootDirectory = rootDirectory;
         this.cache = cache;
@@ -133,7 +133,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     @Override
     public void refreshEntries()
     {
-        this.listContents.clear();
+        this.filteredContents.clear();
 
         File dir = this.currentDirectory;
 
@@ -181,12 +181,12 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         // Show directories at the top
         this.addMatchingEntriesToList(this.getDirectoryFilter(), dir, list, null, null);
         Collections.sort(list);
-        this.listContents.addAll(list);
+        this.filteredContents.addAll(list);
         list.clear();
 
         this.addMatchingEntriesToList(this.getFileFilter(), dir, list, null, null);
         this.sortEntryList(list);
-        this.listContents.addAll(list);
+        this.filteredContents.addAll(list);
     }
 
     protected void addFilteredContents(File dir)
@@ -194,7 +194,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         String filterText = this.getSearchBarWidget().getFilter().toLowerCase();
         List<DirectoryEntry> list = new ArrayList<>();
         this.addFilteredContents(dir, filterText, list, null);
-        this.listContents.addAll(list);
+        this.filteredContents.addAll(list);
     }
 
     protected void addFilteredContents(File dir, String filterText, List<DirectoryEntry> listOut, @Nullable String prefix)
@@ -266,7 +266,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     @Override
     protected int getHeightForListEntryWidget(int listIndex)
     {
-        DirectoryEntry entry = this.listContents.get(listIndex);
+        DirectoryEntry entry = this.filteredContents.get(listIndex);
         return entry.getType() == DirectoryEntryType.DIRECTORY ? 14 : this.entryWidgetFixedHeight;
     }
 

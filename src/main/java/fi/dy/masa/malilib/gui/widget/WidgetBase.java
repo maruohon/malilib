@@ -76,6 +76,16 @@ public abstract class WidgetBase
         return this.y;
     }
 
+    public final int getRight()
+    {
+        return this.getX() + this.getWidth();
+    }
+
+    public final int getBottom()
+    {
+        return this.getY() + this.getHeight();
+    }
+
     public final void setX(int x)
     {
         int oldX = this.x;

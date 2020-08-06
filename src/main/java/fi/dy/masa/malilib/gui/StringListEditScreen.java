@@ -1,25 +1,41 @@
 package fi.dy.masa.malilib.gui;
 
-public class StringListEditScreen// extends BaseListScreen<StringListWidget>
+import java.util.List;
+import javax.annotation.Nullable;
+import org.lwjgl.input.Keyboard;
+import com.google.common.collect.ImmutableList;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
+import fi.dy.masa.malilib.config.option.StringListConfig;
+import fi.dy.masa.malilib.gui.interfaces.IConfigGui;
+import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
+import fi.dy.masa.malilib.gui.util.GuiUtils;
+import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
+import fi.dy.masa.malilib.gui.widget.list.entry.StringListEditEntryWidget;
+import fi.dy.masa.malilib.listener.EventListener;
+import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.util.StringUtils;
+
+public class StringListEditScreen extends BaseListScreen<DataListWidget<String>>
 {
-    /*
     protected final StringListConfig config;
     protected final IConfigGui configGui;
     protected int dialogWidth;
     protected int dialogHeight;
     protected int dialogLeft;
     protected int dialogTop;
-    protected int labelWidth;
-    protected int textFieldWidth;
     @Nullable protected final IDialogHandler dialogHandler;
+    @Nullable protected final EventListener saveListener;
 
-    public StringListEditScreen(StringListConfig config, IConfigGui configGui, @Nullable IDialogHandler dialogHandler, GuiScreen parent)
+    public StringListEditScreen(StringListConfig config, IConfigGui configGui,
+                                @Nullable IDialogHandler dialogHandler, GuiScreen parent, @Nullable EventListener saveListener)
     {
         super(0, 0);
 
         this.config = config;
         this.configGui = configGui;
         this.dialogHandler = dialogHandler;
+        this.saveListener = saveListener;
         this.title = StringUtils.translate("malilib.gui.title.string_list_edit", config.getName());
 
         // When we have a dialog handler, then we are inside the Liteloader config menu.
@@ -54,6 +70,55 @@ public class StringListEditScreen// extends BaseListScreen<StringListWidget>
             this.dialogLeft = 20;
             this.dialogTop = 20;
         }
+
+        this.setListPosition(this.dialogLeft + 8, this.dialogTop + 20);
+    }
+
+    @Override
+    protected int getListWidth()
+    {
+        return this.dialogWidth - 14;
+    }
+
+    @Override
+    protected int getListHeight()
+    {
+        return this.dialogHeight - 25;
+    }
+
+    public StringListConfig getConfig()
+    {
+        return this.config;
+    }
+
+    @Override
+    public void onGuiClosed()
+    {
+        this.config.setStrings(ImmutableList.copyOf(this.getListWidget().getCurrentEntries()));
+
+        if (this.saveListener != null)
+        {
+            this.saveListener.onEvent();
+        }
+
+        super.onGuiClosed();
+    }
+
+    @Override
+    protected DataListWidget<String> createListWidget(int listX, int listY, int listWidth, int listHeight)
+    {
+        DataListWidget<String> widget = new DataListWidget<>(listX, listY, listWidth, listHeight, this.config::getStrings);
+
+        widget.setZLevel((int) this.zLevel + 2);
+        widget.setListEntryWidgetFixedHeight(20);
+
+        widget.setEntryWidgetFactory((wx, wy, ww, wh, li, entry, lw) -> {
+            List<String> defaultList = this.config.getDefaultStrings();
+            String defaultValue = li < defaultList.size() ? defaultList.get(li) : "";
+            return new StringListEditEntryWidget(wx, wy, ww, wh, li, entry, defaultValue, lw);
+        });
+
+        return widget;
     }
 
     @Override
@@ -64,51 +129,10 @@ public class StringListEditScreen// extends BaseListScreen<StringListWidget>
             this.getParent().setWorldAndResolution(mc, width, height);
         }
 
-        super.setWorldAndResolution(mc, width, height);
-
         this.setWidthAndHeight();
         this.centerOnScreen();
 
-        this.reCreateListWidget();
-        this.initGui();
-    }
-
-    public StringListConfig getConfig()
-    {
-        return this.config;
-    }
-
-    @Override
-    protected int getBrowserWidth()
-    {
-        return this.dialogWidth - 14;
-    }
-
-    @Override
-    protected int getBrowserHeight()
-    {
-        return this.dialogHeight - 30;
-    }
-
-    @Override
-    protected StringListWidget createListWidget(int listX, int listY)
-    {
-        // The listX and listY are set via the constructor, which in this dialog-like GUI's case is too early to know them
-        StringListWidget widget = new StringListWidget(this.dialogLeft + 10, this.dialogTop + 20, this.getBrowserWidth(), this.getBrowserHeight(), this.dialogWidth - 100, this);
-        widget.setZLevel((int) this.zLevel + 2);
-        return widget;
-    }
-
-    @Override
-    public void onGuiClosed()
-    {
-        if (this.getListWidget().wereConfigsModified())
-        {
-            this.getListWidget().applyPendingModifications();
-            ConfigManager.INSTANCE.onConfigsChanged(this.configGui.getModId());
-        }
-
-        super.onGuiClosed();
+        super.setWorldAndResolution(mc, width, height);
     }
 
     @Override
@@ -135,7 +159,7 @@ public class StringListEditScreen// extends BaseListScreen<StringListWidget>
     }
 
     @Override
-    protected void keyTyped(char typedChar, int keyCode) throws IOException
+    protected void keyTyped(char typedChar, int keyCode)
     {
         this.onKeyTyped(typedChar, keyCode);
     }
@@ -153,5 +177,4 @@ public class StringListEditScreen// extends BaseListScreen<StringListWidget>
             return super.onKeyTyped(typedChar, keyCode);
         }
     }
-    */
 }

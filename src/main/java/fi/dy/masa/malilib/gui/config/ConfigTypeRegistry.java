@@ -12,6 +12,7 @@ import fi.dy.masa.malilib.config.option.HotkeyedBooleanConfig;
 import fi.dy.masa.malilib.config.option.IntegerConfig;
 import fi.dy.masa.malilib.config.option.OptionListConfig;
 import fi.dy.masa.malilib.config.option.StringConfig;
+import fi.dy.masa.malilib.config.option.StringListConfig;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.BooleanConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.ColorConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.DirectoryConfigWidget;
@@ -22,6 +23,7 @@ import fi.dy.masa.malilib.gui.widget.list.entry.config.HotkeyedBooleanConfigWidg
 import fi.dy.masa.malilib.gui.widget.list.entry.config.IntegerConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.OptionListConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.StringConfigWidget;
+import fi.dy.masa.malilib.gui.widget.list.entry.config.StringListConfigWidget;
 
 public class ConfigTypeRegistry
 {
@@ -64,5 +66,6 @@ public class ConfigTypeRegistry
         this.registerWidgetFactory(IntegerConfig.class, IntegerConfigWidget::new);
         this.registerWidgetFactory(OptionListConfig.class, OptionListConfigWidget::new);
         this.registerWidgetFactory(StringConfig.class, StringConfigWidget::new);
+        this.registerWidgetFactory(StringListConfig.class, StringListConfigWidget::new);
     }
 }
