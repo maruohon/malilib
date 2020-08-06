@@ -5,7 +5,8 @@ import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import javax.annotation.Nullable;
@@ -15,14 +16,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import fi.dy.masa.malilib.LiteModMaLiLib;
-import fi.dy.masa.malilib.util.consumer.IStringConsumer;
 import fi.dy.masa.malilib.listener.IConfirmationListener;
 import fi.dy.masa.malilib.message.MessageType;
 import fi.dy.masa.malilib.message.MessageUtils;
+import fi.dy.masa.malilib.util.consumer.IStringConsumer;
 
 public class FileUtils
 {
-    public static final FileFilter DIRECTORY_FILTER = (file) -> { return file.isDirectory() && file.getName().equals(".") == false && file.getName().equals("..") == false; };
+    public static final FileFilter DIRECTORY_FILTER = (file) -> file.isDirectory() && file.getName().equals(".") == false && file.getName().equals("..") == false;
     public static final ImmutableSet<Character> ILLEGAL_CHARACTERS = ImmutableSet.of( '/', '\n', '\r', '\t', '\0', '\f', '`', '?', '*', '\\', '<', '>', '|', '\"', ':' );
 
     public static File getConfigDirectory()
@@ -65,7 +66,7 @@ public class FileUtils
                 file = fileCan;
             }
         }
-        catch (IOException e)
+        catch (IOException ignore)
         {
         }
 
@@ -74,7 +75,7 @@ public class FileUtils
 
     public static String getJoinedTrailingPathElements(File file, File rootPath, int maxStringLength, String separator)
     {
-        String path = "";
+        StringBuilder path = new StringBuilder();
 
         if (maxStringLength <= 0)
         {
@@ -85,20 +86,20 @@ public class FileUtils
         {
             String name = file.getName();
 
-            if (path.isEmpty() == false)
+            if ((path.length() == 0) == false)
             {
-                path = name + separator + path;
+                path.insert(0, name + separator);
             }
             else
             {
-                path = name;
+                path = new StringBuilder(name);
             }
 
             int len = path.length();
 
             if (len > maxStringLength)
             {
-                path = "... " + path.substring(len - maxStringLength, len);
+                path = new StringBuilder("... " + path.substring(len - maxStringLength, len));
                 break;
             }
 
@@ -110,19 +111,12 @@ public class FileUtils
             file = file.getParentFile();
         }
 
-        return path;
+        return path.toString();
     }
 
     public static List<File> getSubDirectories(File dir)
     {
-        List<File> dirs = new ArrayList<>();
-
-        for (File file : dir.listFiles(DIRECTORY_FILTER))
-        {
-            dirs.add(file);
-        }
-
-        return dirs;
+        return Arrays.asList(dir.listFiles(DIRECTORY_FILTER));
     }
 
     public static List<File> getDirsForRootPath(File dir, File root)
@@ -153,7 +147,7 @@ public class FileUtils
         if (parent != null)
         {
             dirs.addAll(getSubDirectories(parent));
-            Collections.sort(dirs, (d1, d2) -> d1.getName().compareTo(d2.getName()));
+            dirs.sort(Comparator.comparing(File::getName));
         }
 
         return dirs;
@@ -221,7 +215,7 @@ public class FileUtils
             }
         }
 
-        return filename.indexOf("COM") != -1 || filename.indexOf("PRN") != -1;
+        return filename.contains("COM") || filename.contains("PRN");
     }
 
     @Nullable
@@ -318,8 +312,7 @@ public class FileUtils
         {
             try
             {
-                this.file.delete();
-                return true;
+                return this.file.delete();
             }
             catch (Exception e)
             {
