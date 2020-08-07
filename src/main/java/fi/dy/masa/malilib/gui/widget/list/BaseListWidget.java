@@ -250,6 +250,10 @@ public abstract class BaseListWidget extends WidgetContainer
 
     public void onGuiClosed()
     {
+        for (BaseListEntryWidget widget : this.listWidgets)
+        {
+            widget.onAboutToDestroy();
+        }
     }
 
     @Override
@@ -500,6 +504,11 @@ public abstract class BaseListWidget extends WidgetContainer
 
     protected void reCreateListEntryWidgets()
     {
+        for (BaseListEntryWidget widget : this.listWidgets)
+        {
+            widget.onAboutToDestroy();
+        }
+
         this.listWidgets.clear();
         this.visibleListEntries = 0;
 

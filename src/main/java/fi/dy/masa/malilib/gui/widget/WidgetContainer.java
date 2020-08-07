@@ -68,6 +68,7 @@ public abstract class WidgetContainer extends WidgetBackground
     {
         super.onPositionOrSizeChanged(oldX, oldY);
         this.updateSubWidgetPositions(oldX, oldY);
+        this.onSizeChanged();
     }
 
     public  <T extends WidgetBase> T addWidget(T widget)

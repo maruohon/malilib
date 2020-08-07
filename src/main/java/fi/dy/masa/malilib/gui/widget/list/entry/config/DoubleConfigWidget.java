@@ -10,6 +10,7 @@ public class DoubleConfigWidget extends NumericConfigWidget<DoubleConfig>
 {
     protected final DoubleConfig doubleConfig;
     protected final double initialValue;
+    protected final String initialStringValue;
 
     public DoubleConfigWidget(int x, int y, int width, int height, int listIndex, DoubleConfig config, BaseConfigScreen gui)
     {
@@ -17,6 +18,7 @@ public class DoubleConfigWidget extends NumericConfigWidget<DoubleConfig>
 
         this.doubleConfig = config;
         this.initialValue = this.config.getDoubleValue();
+        this.initialStringValue = String.valueOf(this.initialValue);
 
         this.sliderWidget = new WidgetSlider(x, y, 60, 20, new SliderCallbackDouble(this.doubleConfig, this.resetButton));
 
@@ -31,6 +33,17 @@ public class DoubleConfigWidget extends NumericConfigWidget<DoubleConfig>
     protected String getCurrentValueAsString()
     {
         return String.valueOf(this.doubleConfig.getDoubleValue());
+    }
+
+    @Override
+    public void onAboutToDestroy()
+    {
+        String text = this.textField.getText();
+
+        if (text.equals(this.initialStringValue) == false)
+        {
+            this.config.setValueFromString(text);
+        }
     }
 
     @Override

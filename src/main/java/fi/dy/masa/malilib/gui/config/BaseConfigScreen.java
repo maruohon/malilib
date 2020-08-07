@@ -199,15 +199,7 @@ public abstract class BaseConfigScreen extends BaseListScreen<ConfigOptionListWi
     @Override
     public void onGuiClosed()
     {
-        /*
-        if (this.getListWidget().wereConfigsModified())
-        {
-            this.getListWidget().applyPendingModifications();
-            this.onSettingsChanged();
-            this.getListWidget().clearConfigsModifiedFlag();
-        }
-        */
-
+        super.onGuiClosed();
         Keyboard.enableRepeatEvents(false);
     }
 

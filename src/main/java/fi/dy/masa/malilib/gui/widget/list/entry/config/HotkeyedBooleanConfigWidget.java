@@ -10,9 +10,9 @@ public class HotkeyedBooleanConfigWidget extends BaseConfigOptionWidget<Hotkeyed
 {
     protected final HotkeyedBooleanConfig config;
     protected final ImmutableList<Integer> initialHotkeyValue;
-    protected final boolean initialBooleanValue;
     protected final ConfigButtonBoolean booleanButton;
     protected final ConfigButtonKeyBind hotkeyButton;
+    protected final boolean initialBooleanValue;
 
     public HotkeyedBooleanConfigWidget(int x, int y, int width, int height, int listIndex, HotkeyedBooleanConfig config, BaseConfigScreen gui)
     {

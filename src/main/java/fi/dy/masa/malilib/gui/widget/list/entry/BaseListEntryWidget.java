@@ -25,6 +25,15 @@ public class BaseListEntryWidget extends WidgetContainer
     }
 
     /**
+     * This gets called from BaseListWidget before the widgets
+     * are cleared before being re-created. This allows for example
+     * config widgets to save their changes before being destroyed.
+     */
+    public void onAboutToDestroy()
+    {
+    }
+
+    /**
      * Returns true if this widget can be selected by clicking at the given point
      */
     public boolean canSelectAt(int mouseX, int mouseY, int mouseButton)

@@ -11,6 +11,7 @@ public class ColorConfigWidget extends BaseConfigOptionWidget<ColorConfig>
     protected final WidgetColorIndicator colorIndicatorWidget;
     protected final WidgetTextFieldBase textField;
     protected final int initialValue;
+    protected final String initialStringValue;
 
     public ColorConfigWidget(int x, int y, int width, int height, int listIndex, ColorConfig config, BaseConfigScreen gui)
     {
@@ -18,6 +19,7 @@ public class ColorConfigWidget extends BaseConfigOptionWidget<ColorConfig>
 
         this.config = config;
         this.initialValue = this.config.getIntegerValue();
+        this.initialStringValue = String.valueOf(this.initialValue);
 
         this.colorIndicatorWidget = new WidgetColorIndicator(x, y, 18, 18, this.config, (newValue) -> {
             this.config.setIntegerValue(newValue);
@@ -52,6 +54,17 @@ public class ColorConfigWidget extends BaseConfigOptionWidget<ColorConfig>
         this.addWidget(this.colorIndicatorWidget);
         this.addWidget(this.textField);
         this.addWidget(this.resetButton);
+    }
+
+    @Override
+    public void onAboutToDestroy()
+    {
+        String text = this.textField.getText();
+
+        if (text.equals(this.initialStringValue) == false)
+        {
+            this.config.setValueFromString(text);
+        }
     }
 
     @Override

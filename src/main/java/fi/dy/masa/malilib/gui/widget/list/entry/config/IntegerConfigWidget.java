@@ -10,6 +10,7 @@ public class IntegerConfigWidget extends NumericConfigWidget<IntegerConfig>
 {
     protected final IntegerConfig integerConfig;
     protected final int initialValue;
+    protected final String initialStringValue;
 
     public IntegerConfigWidget(int x, int y, int width, int height, int listIndex, IntegerConfig config, BaseConfigScreen gui)
     {
@@ -17,6 +18,7 @@ public class IntegerConfigWidget extends NumericConfigWidget<IntegerConfig>
 
         this.integerConfig = config;
         this.initialValue = this.config.getIntegerValue();
+        this.initialStringValue = String.valueOf(this.initialValue);
 
         this.sliderWidget = new WidgetSlider(x, y, 60, 20, new SliderCallbackInteger(this.integerConfig, this.resetButton));
 
@@ -31,6 +33,17 @@ public class IntegerConfigWidget extends NumericConfigWidget<IntegerConfig>
     protected String getCurrentValueAsString()
     {
         return String.valueOf(this.integerConfig.getIntegerValue());
+    }
+
+    @Override
+    public void onAboutToDestroy()
+    {
+        String text = this.textField.getText();
+
+        if (text.equals(this.initialStringValue) == false)
+        {
+            this.config.setValueFromString(text);
+        }
     }
 
     @Override

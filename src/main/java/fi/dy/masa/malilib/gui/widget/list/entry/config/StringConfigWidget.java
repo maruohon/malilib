@@ -49,6 +49,16 @@ public class StringConfigWidget extends BaseConfigOptionWidget<StringConfig>
     }
 
     @Override
+    public void onAboutToDestroy()
+    {
+        String text = this.textField.getText();
+
+        if (text.equals(this.initialValue) == false)
+        {
+            this.config.setValueFromString(text);
+        }
+    }
+    @Override
     public boolean wasModified()
     {
         return this.config.getStringValue().equals(this.initialValue) == false;
