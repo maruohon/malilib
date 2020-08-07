@@ -5,6 +5,7 @@ import fi.dy.masa.malilib.config.option.HotkeyedBooleanConfig;
 import fi.dy.masa.malilib.gui.button.BooleanConfigButton;
 import fi.dy.masa.malilib.gui.button.KeyBindConfigButton;
 import fi.dy.masa.malilib.gui.config.BaseConfigScreen;
+import fi.dy.masa.malilib.gui.widget.KeybindSettingsWidget;
 
 public class HotkeyedBooleanConfigWidget extends BaseConfigOptionWidget<HotkeyedBooleanConfig>
 {
@@ -12,6 +13,7 @@ public class HotkeyedBooleanConfigWidget extends BaseConfigOptionWidget<Hotkeyed
     protected final ImmutableList<Integer> initialHotkeyValue;
     protected final BooleanConfigButton booleanButton;
     protected final KeyBindConfigButton hotkeyButton;
+    protected final KeybindSettingsWidget settingsWidget;
     protected final boolean initialBooleanValue;
 
     public HotkeyedBooleanConfigWidget(int x, int y, int width, int height, int listIndex,
@@ -28,6 +30,9 @@ public class HotkeyedBooleanConfigWidget extends BaseConfigOptionWidget<Hotkeyed
 
         this.hotkeyButton = new KeyBindConfigButton(x, y + 1, 120, 20, this.config.getKeyBind(), this.gui);
         this.hotkeyButton.setValueChangeListener(() -> this.resetButton.setEnabled(this.config.isModified()));
+
+        this.settingsWidget = new KeybindSettingsWidget(x, y, 20, 20, config.getKeyBind(),
+                                                        config.getDisplayName(), gui.getDialogHandler());
 
         this.resetButton.setActionListener((btn, mbtn) -> {
             this.config.resetToDefault();
@@ -50,13 +55,17 @@ public class HotkeyedBooleanConfigWidget extends BaseConfigOptionWidget<Hotkeyed
 
         x += 62;
         this.hotkeyButton.setPosition(x, y);
-        this.hotkeyButton.setWidth(elementWidth - 62);
+        this.hotkeyButton.setWidth(elementWidth - 84);
 
-        x += this.hotkeyButton.getWidth() + 4;
+        x += this.hotkeyButton.getWidth() + 2;
+        this.settingsWidget.setPosition(x, y);
+
+        x += this.settingsWidget.getWidth() + 4;
         this.updateResetButton(x, y, this.config);
 
         this.addWidget(this.booleanButton);
         this.addWidget(this.hotkeyButton);
+        this.addWidget(this.settingsWidget);
         this.addWidget(this.resetButton);
     }
 

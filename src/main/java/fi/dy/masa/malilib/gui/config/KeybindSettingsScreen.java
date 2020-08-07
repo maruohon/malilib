@@ -5,18 +5,18 @@ import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.gui.GuiScreen;
+import fi.dy.masa.malilib.config.ValueChangeCallback;
 import fi.dy.masa.malilib.config.option.BaseConfig;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.config.option.OptionListConfig;
-import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.BaseDialogScreen;
+import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.button.BooleanConfigButton;
 import fi.dy.masa.malilib.gui.button.OptionListConfigButton;
 import fi.dy.masa.malilib.gui.util.DialogHandler;
-import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.input.KeyAction;
+import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.input.KeyBindSettings;
-import fi.dy.masa.malilib.config.ValueChangeCallback;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class KeybindSettingsScreen extends BaseDialogScreen
@@ -57,13 +57,13 @@ public class KeybindSettingsScreen extends BaseDialogScreen
         this.title = BaseScreen.TXT_BOLD + StringUtils.translate("malilib.gui.title.keybind_settings.advanced", this.keybindName) + BaseScreen.TXT_RST;
 
         KeyBindSettings defaultSettings = this.keybind.getDefaultSettings();
-        this.cfgActivateOn     = new OptionListConfig<>("malilib.gui.label.keybind_settings.activate_on", defaultSettings.getActivateOn(), "malilib.config.comment.keybind_settings.activate_on");
-        this.cfgContext        = new OptionListConfig<>("malilib.gui.label.keybind_settings.context", defaultSettings.getContext(), "malilib.config.comment.keybind_settings.context");
-        this.cfgAllowEmpty     = new BooleanConfig("malilib.gui.label.keybind_settings.allow_empty_keybind", defaultSettings.getAllowEmpty(), "malilib.config.comment.keybind_settings.allow_empty_keybind");
-        this.cfgAllowExtra     = new BooleanConfig("malilib.gui.label.keybind_settings.allow_extra_keys", defaultSettings.getAllowExtraKeys(), "malilib.config.comment.keybind_settings.allow_extra_keys");
-        this.cfgOrderSensitive = new BooleanConfig("malilib.gui.label.keybind_settings.order_sensitive", defaultSettings.isOrderSensitive(), "malilib.config.comment.keybind_settings.order_sensitive");
-        this.cfgExclusive      = new BooleanConfig("malilib.gui.label.keybind_settings.exclusive", defaultSettings.isExclusive(), "malilib.config.comment.keybind_settings.exclusive");
-        this.cfgCancel         = new BooleanConfig("malilib.gui.label.keybind_settings.cancel_further_processing", defaultSettings.shouldCancel(), "malilib.config.comment.keybind_settings.cancel_further");
+        this.cfgActivateOn     = new OptionListConfig<>("", defaultSettings.getActivateOn(),"malilib.gui.label.keybind_settings.activate_on",               "malilib.config.comment.keybind_settings.activate_on");
+        this.cfgContext        = new OptionListConfig<>("", defaultSettings.getContext(),   "malilib.gui.label.keybind_settings.context",                   "malilib.config.comment.keybind_settings.context");
+        this.cfgAllowEmpty     = new BooleanConfig("", defaultSettings.getAllowEmpty(),     "malilib.gui.label.keybind_settings.allow_empty_keybind",       "malilib.config.comment.keybind_settings.allow_empty_keybind");
+        this.cfgAllowExtra     = new BooleanConfig("", defaultSettings.getAllowExtraKeys(), "malilib.gui.label.keybind_settings.allow_extra_keys",          "malilib.config.comment.keybind_settings.allow_extra_keys");
+        this.cfgOrderSensitive = new BooleanConfig("", defaultSettings.isOrderSensitive(),  "malilib.gui.label.keybind_settings.order_sensitive",           "malilib.config.comment.keybind_settings.order_sensitive");
+        this.cfgExclusive      = new BooleanConfig("", defaultSettings.isExclusive(),       "malilib.gui.label.keybind_settings.exclusive",                 "malilib.config.comment.keybind_settings.exclusive");
+        this.cfgCancel         = new BooleanConfig("", defaultSettings.shouldCancel(),      "malilib.gui.label.keybind_settings.cancel_further_processing", "malilib.config.comment.keybind_settings.cancel_further");
 
         KeyBindSettings settings = this.keybind.getSettings();
         this.cfgActivateOn.setOptionListValue(settings.getActivateOn());
@@ -111,10 +111,22 @@ public class KeybindSettingsScreen extends BaseDialogScreen
         }
     }
 
+    public int getMaxPrettyNameLength(List<BaseConfig<?>> configs)
+    {
+        int width = 0;
+
+        for (BaseConfig<?> config : configs)
+        {
+            width = Math.max(width, this.getStringWidth(config.getPrettyName()));
+        }
+
+        return width;
+    }
+
     protected void addConfig(int x, int y, int labelWidth, int configWidth, BaseConfig<?> config)
     {
         int color = config.isModified() ? 0xFFFFFF55 : 0xFFAAAAAA;
-        this.addLabel(x, y, labelWidth, 20, color, StringUtils.translate(config.getPrettyName()))
+        this.addLabel(x, y, labelWidth, 20, color, config.getPrettyName())
             .setPaddingY(5).addHoverStrings(config.getComment());
         x += labelWidth + 10;
 

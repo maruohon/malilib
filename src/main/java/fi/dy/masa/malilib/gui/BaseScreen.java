@@ -14,18 +14,17 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import fi.dy.masa.malilib.MaLiLibConfigs;
-import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.gui.button.BaseButton;
 import fi.dy.masa.malilib.gui.button.ButtonActionListener;
-import fi.dy.masa.malilib.listener.TextChangeListener;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
+import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.BaseWidget;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
-import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
-import fi.dy.masa.malilib.render.message.MessageConsumer;
-import fi.dy.masa.malilib.render.message.MessageType;
-import fi.dy.masa.malilib.render.message.MessageRenderer;
+import fi.dy.masa.malilib.listener.TextChangeListener;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.render.message.MessageConsumer;
+import fi.dy.masa.malilib.render.message.MessageRenderer;
+import fi.dy.masa.malilib.render.message.MessageType;
 import fi.dy.masa.malilib.util.consumer.StringConsumer;
 
 public abstract class BaseScreen extends GuiScreen implements MessageConsumer, StringConsumer
@@ -586,18 +585,6 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
         this.textRenderer.drawStringWithShadow(text, x, y, color);
 
         GlStateManager.popMatrix();
-    }
-
-    public int getMaxPrettyNameLength(List<? extends ConfigInfo> configs)
-    {
-        int width = 0;
-
-        for (ConfigInfo config : configs)
-        {
-            width = Math.max(width, this.getStringWidth(config.getDisplayName()));
-        }
-
-        return width;
     }
 
     public static void openGui(@Nullable GuiScreen gui)

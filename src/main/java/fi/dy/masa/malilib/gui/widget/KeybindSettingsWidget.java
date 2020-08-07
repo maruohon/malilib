@@ -10,9 +10,8 @@ import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.config.KeybindSettingsScreen;
 import fi.dy.masa.malilib.gui.util.DialogHandler;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
-import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
-import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.input.KeyAction;
+import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.input.KeyBindSettings;
 import fi.dy.masa.malilib.input.KeyBindSettings.Context;
 import fi.dy.masa.malilib.render.RenderUtils;
@@ -24,21 +23,15 @@ public class KeybindSettingsWidget extends BaseWidget
 
     protected final String keyBindName;
     protected final KeyBind keyBind;
-    protected final KeyBindSettings settings;
-    protected final KeyBindSettings defaultSettings;
-    protected final DataListWidget<?> widgetList;
     @Nullable protected final DialogHandler dialogHandler;
 
-    public KeybindSettingsWidget(int x, int y, int width, int height,
-                                 KeyBind keyBind, String keyBindName, DataListWidget<?> widgetList, @Nullable DialogHandler dialogHandler)
+    public KeybindSettingsWidget(int x, int y, int width, int height, KeyBind keyBind,
+                                 String keyBindName, @Nullable DialogHandler dialogHandler)
     {
         super(x, y, width, height);
 
         this.keyBind = keyBind;
         this.keyBindName = keyBindName;
-        this.settings = keyBind.getSettings();
-        this.defaultSettings = keyBind.getDefaultSettings();
-        this.widgetList = widgetList;
         this.dialogHandler = dialogHandler;
     }
 
@@ -62,7 +55,6 @@ public class KeybindSettingsWidget extends BaseWidget
         else if (mouseButton == 1)
         {
             this.keyBind.resetSettingsToDefaults();
-            this.widgetList.refreshEntries();
             return true;
         }
 
@@ -75,14 +67,16 @@ public class KeybindSettingsWidget extends BaseWidget
         RenderUtils.color(1f, 1f, 1f, 1f);
         this.bindTexture(TEXTURE);
 
+        KeyBindSettings settings = this.keyBind.getSettings();
+
         int w = 18;
-        int v1 = this.settings.getActivateOn().ordinal() * w;
-        int v2 = this.settings.getAllowExtraKeys() ? w : 0;
-        int v3 = this.settings.isOrderSensitive() ? w : 0;
-        int v4 = this.settings.isExclusive() ? w : 0;
-        int v5 = this.settings.shouldCancel() ? w : 0;
-        int v6 = this.settings.getAllowEmpty() ? w : 0;
-        int v7 = this.settings.getContext().ordinal() * w + 54;
+        int v1 = settings.getActivateOn().ordinal() * w;
+        int v2 = settings.getAllowExtraKeys() ? w : 0;
+        int v3 = settings.isOrderSensitive() ? w : 0;
+        int v4 = settings.isExclusive() ? w : 0;
+        int v5 = settings.shouldCancel() ? w : 0;
+        int v6 = settings.getAllowEmpty() ? w : 0;
+        int v7 = settings.getContext().ordinal() * w + 54;
 
         int x = this.getX();
         int y = this.getY();
@@ -111,28 +105,30 @@ public class KeybindSettingsWidget extends BaseWidget
     {
         List<String> text = new ArrayList<>();
         String name, val, nameColor;
+        KeyBindSettings settings = this.keyBind.getSettings();
+        KeyBindSettings defaultSettings = this.keyBind.getDefaultSettings();
         boolean modified;
 
         text.add(BaseScreen.TXT_WHITE + BaseScreen.TXT_UNDERLINE + StringUtils.translate("malilib.gui.label.keybind_settings.title_advanced_keybind_settings"));
 
         name = StringUtils.translate("malilib.gui.label.keybind_settings.activate_on");
-        KeyAction action = this.settings.getActivateOn();
-        modified = action != this.defaultSettings.getActivateOn();
+        KeyAction action = settings.getActivateOn();
+        modified = action != defaultSettings.getActivateOn();
         nameColor = modified ? BaseScreen.TXT_YELLOW : BaseScreen.TXT_GRAY;
         val = BaseScreen.TXT_BLUE + action.name();
         text.add(String.format("%s%s: %s", nameColor, name, val));
 
         name = StringUtils.translate("malilib.gui.label.keybind_settings.context");
-        Context context = this.settings.getContext();
+        Context context = settings.getContext();
         val = BaseScreen.TXT_BLUE + context.name();
-        nameColor = context != this.defaultSettings.getContext() ? BaseScreen.TXT_YELLOW : BaseScreen.TXT_GRAY;
+        nameColor = context != defaultSettings.getContext() ? BaseScreen.TXT_YELLOW : BaseScreen.TXT_GRAY;
         text.add(String.format("%s%s: %s", nameColor, name, val));
 
-        this.addBooleanOptionText(text, "malilib.gui.label.keybind_settings.allow_empty_keybind", this.settings.getAllowEmpty(), this.defaultSettings.getAllowEmpty());
-        this.addBooleanOptionText(text, "malilib.gui.label.keybind_settings.allow_extra_keys", this.settings.getAllowExtraKeys(), this.defaultSettings.getAllowExtraKeys());
-        this.addBooleanOptionText(text, "malilib.gui.label.keybind_settings.order_sensitive", this.settings.isOrderSensitive(), this.defaultSettings.isOrderSensitive());
-        this.addBooleanOptionText(text, "malilib.gui.label.keybind_settings.exclusive", this.settings.isExclusive(), this.defaultSettings.isExclusive());
-        this.addBooleanOptionText(text, "malilib.gui.label.keybind_settings.cancel_further", this.settings.shouldCancel(), this.defaultSettings.shouldCancel());
+        this.addBooleanOptionText(text, "malilib.gui.label.keybind_settings.allow_empty_keybind", settings.getAllowEmpty(), defaultSettings.getAllowEmpty());
+        this.addBooleanOptionText(text, "malilib.gui.label.keybind_settings.allow_extra_keys", settings.getAllowExtraKeys(), defaultSettings.getAllowExtraKeys());
+        this.addBooleanOptionText(text, "malilib.gui.label.keybind_settings.order_sensitive", settings.isOrderSensitive(), defaultSettings.isOrderSensitive());
+        this.addBooleanOptionText(text, "malilib.gui.label.keybind_settings.exclusive", settings.isExclusive(), defaultSettings.isExclusive());
+        this.addBooleanOptionText(text, "malilib.gui.label.keybind_settings.cancel_further", settings.shouldCancel(), defaultSettings.shouldCancel());
 
         text.add("");
         String[] parts = StringUtils.translate("malilib.gui.label.keybind_settings.tips").split("\\\\n");
