@@ -81,4 +81,14 @@ public class Color4f
     {
         return 0xFF000000 | (Color.HSBtoRGB((float) (hue % 360) / 360f, 1f, 1f) & 0x00FFFFFF);
     }
+
+    /**
+     * Returns the hex color string with a hashtag in front (in the format "#30505050")
+     * @param color
+     * @return
+     */
+    public static String getHexColorString(int color)
+    {
+        return String.format("#%08X", color);
+    }
 }

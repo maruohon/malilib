@@ -30,13 +30,13 @@ public class ColorConfig extends IntegerConfig
     @Override
     public String getStringValue()
     {
-        return String.format("#%08X", this.getIntegerValue());
+        return Color4f.getHexColorString(this.getIntegerValue());
     }
 
     @Override
     public String getDefaultStringValue()
     {
-        return String.format("#%08X", this.getDefaultIntegerValue());
+        return Color4f.getHexColorString(this.getDefaultIntegerValue());
     }
 
     @Override

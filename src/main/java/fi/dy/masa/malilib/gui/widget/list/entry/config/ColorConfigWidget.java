@@ -2,8 +2,9 @@ package fi.dy.masa.malilib.gui.widget.list.entry.config;
 
 import fi.dy.masa.malilib.config.option.ColorConfig;
 import fi.dy.masa.malilib.gui.config.BaseConfigScreen;
-import fi.dy.masa.malilib.gui.widget.ColorIndicatorWidget;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
+import fi.dy.masa.malilib.gui.widget.ColorIndicatorWidget;
+import fi.dy.masa.malilib.util.data.Color4f;
 
 public class ColorConfigWidget extends BaseConfigOptionWidget<ColorConfig>
 {
@@ -20,7 +21,7 @@ public class ColorConfigWidget extends BaseConfigOptionWidget<ColorConfig>
 
         this.config = config;
         this.initialValue = this.config.getIntegerValue();
-        this.initialStringValue = String.valueOf(this.initialValue);
+        this.initialStringValue = Color4f.getHexColorString(this.initialValue);
 
         this.colorIndicatorWidget = new ColorIndicatorWidget(x, y, 18, 18, this.config, (newValue) -> {
             this.config.setIntegerValue(newValue);

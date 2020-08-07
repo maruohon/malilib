@@ -35,8 +35,6 @@ public class SearchBarWidget extends ContainerWidget
 
         this.textField = new BaseTextFieldWidget(tx, y, width - iw - 7 - Math.abs(searchBarOffsetX), height);
         this.textField.setUpdateListenerAlways(true);
-
-        this.reAddSubWidgets();
     }
 
     @Override
@@ -67,6 +65,8 @@ public class SearchBarWidget extends ContainerWidget
         this.buttonSearchToggle.setPosition(ix, y);
         this.textField.setPosition(tx, y);
         this.textField.setWidth(this.getWidth() -  iw - 7 - Math.abs(offX));
+
+        this.reAddSubWidgets();
     }
 
     public void setTextFieldListener(@Nullable TextChangeListener listener)
