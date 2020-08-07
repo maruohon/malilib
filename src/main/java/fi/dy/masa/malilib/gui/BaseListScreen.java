@@ -218,7 +218,7 @@ public abstract class BaseListScreen<LISTWIDGET extends BaseListWidget> extends 
 
         BaseListWidget widget = this.getListWidget();
 
-        if (widget != null)
+        if (widget != null && GuiUtils.getCurrentScreen() == this)
         {
             boolean renderAll = MaLiLibConfigs.Debug.GUI_DEBUG_ALL.getBooleanValue();
             boolean infoAlways = MaLiLibConfigs.Debug.GUI_DEBUG_INFO_ALWAYS.getBooleanValue();

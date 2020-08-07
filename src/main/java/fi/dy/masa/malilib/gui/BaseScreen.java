@@ -633,11 +633,14 @@ public abstract class BaseScreen extends GuiScreen implements IMessageConsumer, 
 
     public void renderDebug(int mouseX, int mouseY)
     {
-        boolean renderAll = MaLiLibConfigs.Debug.GUI_DEBUG_ALL.getBooleanValue();
-        boolean infoAlways = MaLiLibConfigs.Debug.GUI_DEBUG_INFO_ALWAYS.getBooleanValue();
+        if (GuiUtils.getCurrentScreen() == this)
+        {
+            boolean renderAll = MaLiLibConfigs.Debug.GUI_DEBUG_ALL.getBooleanValue();
+            boolean infoAlways = MaLiLibConfigs.Debug.GUI_DEBUG_INFO_ALWAYS.getBooleanValue();
 
-        renderWidgetDebug(this.buttons, mouseX, mouseY, renderAll, infoAlways);
-        renderWidgetDebug(this.widgets, mouseX, mouseY, renderAll, infoAlways);
+            renderWidgetDebug(this.buttons, mouseX, mouseY, renderAll, infoAlways);
+            renderWidgetDebug(this.widgets, mouseX, mouseY, renderAll, infoAlways);
+        }
     }
 
     public static void renderWidgetDebug(List<? extends WidgetBase> widgets, int mouseX, int mouseY, boolean renderAll, boolean infoAlways)
