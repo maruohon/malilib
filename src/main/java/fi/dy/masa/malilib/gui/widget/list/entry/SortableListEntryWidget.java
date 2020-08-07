@@ -8,9 +8,10 @@ public abstract class SortableListEntryWidget<TYPE> extends BaseDataListEntryWid
 {
     protected int columnCount = 2;
 
-    public SortableListEntryWidget(int x, int y, int width, int height, int listIndex, @Nullable TYPE entry)
+    public SortableListEntryWidget(int x, int y, int width, int height, int listIndex,
+                                   int originalListIndex, @Nullable TYPE entry)
     {
-        super(x, y, width, height, listIndex, entry);
+        super(x, y, width, height, listIndex, originalListIndex, entry);
     }
 
     protected abstract int getColumnPosX(int column);

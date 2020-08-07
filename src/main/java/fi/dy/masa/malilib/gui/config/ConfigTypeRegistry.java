@@ -50,7 +50,6 @@ public class ConfigTypeRegistry
     @SuppressWarnings("unchecked")
     public <C extends ConfigInfo> ConfigOptionWidgetFactory<C> getWidgetFactory(C config)
     {
-        this.registerDefaultPlacers(); // TODO config refactor XXX remove!!
         return (ConfigOptionWidgetFactory<C>) this.widgetFactories.getOrDefault(config.getClass(), this.missingTypeFactory);
     }
 

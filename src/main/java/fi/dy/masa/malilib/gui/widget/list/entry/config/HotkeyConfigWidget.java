@@ -11,9 +11,10 @@ public class HotkeyConfigWidget extends BaseConfigOptionWidget<HotkeyConfig>
     protected final ImmutableList<Integer> initialValue;
     protected final ConfigButtonKeyBind keybindButton;
 
-    public HotkeyConfigWidget(int x, int y, int width, int height, int listIndex, HotkeyConfig config, BaseConfigScreen gui)
+    public HotkeyConfigWidget(int x, int y, int width, int height, int listIndex,
+                              int originalListIndex, HotkeyConfig config, BaseConfigScreen gui)
     {
-        super(x, y, width, 22, listIndex, config, gui);
+        super(x, y, width, 22, listIndex, originalListIndex, config, gui);
 
         this.config = config;
         this.initialValue = this.config.getKeyBind().getKeys();

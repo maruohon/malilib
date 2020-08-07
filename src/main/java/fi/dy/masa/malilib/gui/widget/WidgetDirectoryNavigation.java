@@ -82,7 +82,7 @@ public class WidgetDirectoryNavigation extends WidgetSearchBar
         this.infoWidget = new WidgetInfoIcon(x + width - iw - 2, y + 1, icon, "malilib.gui.button.hover.directory_widget.hold_shift_to_open_directory");
 
         this.buttonSearchToggle.setX(x + width - this.buttonSearchToggle.getWidth() - iw - 4);
-        this.searchBox.setWidth(this.getWidth() - this.buttonSearchToggle.getWidth() - iw - 8);
+        this.textField.setWidth(this.getWidth() - this.buttonSearchToggle.getWidth() - iw - 8);
     }
 
     @Override
@@ -123,7 +123,7 @@ public class WidgetDirectoryNavigation extends WidgetSearchBar
         this.buttonSearchToggle.setPosition(xRight - this.buttonSearchToggle.getWidth() - iw - 4, y);
         this.infoWidget.setPosition(xRight - iw - 2, y + 1);
 
-        this.searchBox.setWidth(this.getWidth() - this.buttonSearchToggle.getWidth() - iw - 8);
+        this.textField.setWidth(this.getWidth() - this.buttonSearchToggle.getWidth() - iw - 8);
     }
 
     public File getCurrentDirectory()
@@ -152,7 +152,7 @@ public class WidgetDirectoryNavigation extends WidgetSearchBar
     {
         if (this.searchOpen)
         {
-            this.searchBox.render(mouseX, mouseY, isActiveGui, hoveredWidgetId);
+            this.textField.render(mouseX, mouseY, isActiveGui, hoveredWidgetId);
         }
         else
         {

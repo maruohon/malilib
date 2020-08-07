@@ -10,9 +10,10 @@ public class FileConfigWidget extends BaseConfigOptionWidget<FileConfig>
     protected final FileConfig config;
     protected final File initialValue;
 
-    public FileConfigWidget(int x, int y, int width, int height, int listIndex, FileConfig config, BaseConfigScreen gui)
+    public FileConfigWidget(int x, int y, int width, int height, int listIndex,
+                            int originalListIndex, FileConfig config, BaseConfigScreen gui)
     {
-        super(x, y, width, 22, listIndex, config, gui);
+        super(x, y, width, 22, listIndex, originalListIndex, config, gui);
 
         this.config = config;
         this.initialValue = this.config.getFile();

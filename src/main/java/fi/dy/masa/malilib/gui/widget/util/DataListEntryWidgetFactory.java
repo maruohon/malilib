@@ -12,11 +12,13 @@ public interface DataListEntryWidgetFactory<DATATYPE>
      * @param y The screen y position this widget will be created at.
      * @param width The width of the created widget
      * @param height The height of the created widget. Note: -1 is used to indicate automatic height, decided by the widget itself.
-     * @param listIndex The list index of the data entry that this widget is being created for.
+     * @param listIndex The list index of the data entry that this widget is being created for, from the filtered list.
+     * @param originalListIndex The list index of the data entry that this widget is being created for, from the original non-filtered list.
      * @param data the data entry for this widget
      * @param listWidget The parent list widget that is creating this widget.
      * @return
      */
     @Nullable
-    BaseListEntryWidget createWidget(int x, int y, int width, int height, int listIndex, DATATYPE data, DataListWidget<DATATYPE> listWidget);
+    BaseListEntryWidget createWidget(int x, int y, int width, int height, int listIndex, int originalListIndex,
+                                     DATATYPE data, DataListWidget<DATATYPE> listWidget);
 }

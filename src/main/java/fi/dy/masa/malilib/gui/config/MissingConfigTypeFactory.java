@@ -7,16 +7,18 @@ import fi.dy.masa.malilib.util.StringUtils;
 public class MissingConfigTypeFactory implements ConfigOptionWidgetFactory<ConfigInfo>
 {
     @Override
-    public BaseConfigOptionWidget<ConfigInfo> create(int x, int y, int width, int height, int listIndex, ConfigInfo config, BaseConfigScreen gui)
+    public BaseConfigOptionWidget<ConfigInfo> create(int x, int y, int width, int height, int listIndex,
+                                                     int originalListIndex, ConfigInfo config, BaseConfigScreen gui)
     {
-        return new MissingConfigOptionWidget(x, y, width, 22, listIndex, config, gui);
+        return new MissingConfigOptionWidget(x, y, width, 22, listIndex, originalListIndex, config, gui);
     }
 
     public static class MissingConfigOptionWidget extends BaseConfigOptionWidget<ConfigInfo>
     {
-        public MissingConfigOptionWidget(int x, int y, int width, int height, int listIndex, ConfigInfo config, BaseConfigScreen gui)
+        public MissingConfigOptionWidget(int x, int y, int width, int height, int listIndex,
+                                         int originalListIndex, ConfigInfo config, BaseConfigScreen gui)
         {
-            super(x, y, width, height, listIndex, config, gui);
+            super(x, y, width, height, listIndex, originalListIndex, config, gui);
         }
 
         @Override

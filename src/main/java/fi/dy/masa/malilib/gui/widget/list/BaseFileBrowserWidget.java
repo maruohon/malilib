@@ -60,8 +60,8 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         this.navigationWidget = new WidgetDirectoryNavigation(this.getX() + 2, this.getY() + 3, width, 14,
                                                               this.currentDirectory, rootDirectory, this, this.getIconProvider(), this.getRootDirectoryDisplayName());
 
-        this.setEntryWidgetFactory((wx, wy, ww, wh, li, entry, lw) ->
-                                    new DirectoryEntryWidget(wx, wy, ww, wh, li, entry, this, this.iconProvider));
+        this.setEntryWidgetFactory((wx, wy, ww, wh, li, oi, entry, lw) ->
+                                    new DirectoryEntryWidget(wx, wy, ww, wh, li, oi, entry, this, this.iconProvider));
 
         this.setBackgroundColor(0xB0000000);
         this.setBorderColor(BaseScreen.COLOR_HORIZONTAL_BAR);
@@ -235,7 +235,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         {
             DirectoryEntry entry = new DirectoryEntry(DirectoryEntryType.fromFile(file), dir, file.getName(), displayNamePrefix);
 
-            if (filterText == null || this.matchesFilter(this.getEntryStringsForFilter(entry), filterText))
+            if (filterText == null || this.matchesFilter(this.getFilterTargetStringsForEntry(entry), filterText))
             {
                 list.add(entry);
             }
@@ -243,7 +243,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     }
 
     @Override
-    protected List<String> getEntryStringsForFilter(DirectoryEntry entry)
+    protected List<String> getFilterTargetStringsForEntry(DirectoryEntry entry)
     {
         return ImmutableList.of(FileUtils.getNameWithoutExtension(entry.getName().toLowerCase()));
     }

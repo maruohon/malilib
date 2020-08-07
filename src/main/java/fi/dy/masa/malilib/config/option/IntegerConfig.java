@@ -150,7 +150,7 @@ public class IntegerConfig extends BaseConfig<Integer> implements SliderConfig
         }
         catch (Exception e)
         {
-            LiteModMaLiLib.logger.warn("Failed to set config value for {} from the string '{}'", this.getName(), value, e);
+            LiteModMaLiLib.logger.warn("Failed to set config value for {} from the string '{}'", this.getName(), value);
         }
     }
 

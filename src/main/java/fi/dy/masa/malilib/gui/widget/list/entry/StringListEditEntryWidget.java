@@ -17,7 +17,6 @@ public class StringListEditEntryWidget extends BaseDataListEntryWidget<String>
     protected final List<String> stringList;
     protected final String defaultValue;
     protected final String initialValue;
-    protected final int listIndex;
     protected final WidgetLabel labelWidget;
     protected final WidgetTextFieldBase textField;
     protected final ButtonGeneric addButton;
@@ -26,12 +25,11 @@ public class StringListEditEntryWidget extends BaseDataListEntryWidget<String>
     protected final ButtonGeneric downButton;
     protected final ButtonGeneric resetButton;
 
-    public StringListEditEntryWidget(int x, int y, int width, int height, int listIndex,
+    public StringListEditEntryWidget(int x, int y, int width, int height, int listIndex, int originalListIndex,
                                      String initialValue, String defaultValue, DataListWidget<String> parent)
     {
-        super(x, y, width, height, listIndex, initialValue);
+        super(x, y, width, height, listIndex, originalListIndex, initialValue);
 
-        this.listIndex = listIndex;
         this.defaultValue = defaultValue;
         this.initialValue = initialValue;
         this.parent = parent;
@@ -41,7 +39,7 @@ public class StringListEditEntryWidget extends BaseDataListEntryWidget<String>
 
         int textFieldWidth = width - 142;
 
-        this.labelWidget = new WidgetLabel(x + 2, y + 7, 0xC0C0C0C0, String.format("%5d:", listIndex + 1));
+        this.labelWidget = new WidgetLabel(x + 2, y + 7, 0xC0C0C0C0, String.format("%5d:", originalListIndex + 1));
         this.textField = new WidgetTextFieldBase(x + 28, y + 2, textFieldWidth, 16, initialValue);
 
         this.addButton    = this.createListActionButton(x, y, ButtonType.ADD);
@@ -59,9 +57,9 @@ public class StringListEditEntryWidget extends BaseDataListEntryWidget<String>
         this.resetButton.setActionListener((btn, mbtn) -> {
             this.textField.setText(this.defaultValue);
 
-            if (this.listIndex < this.stringList.size())
+            if (this.originalListIndex < this.stringList.size())
             {
-                this.stringList.set(this.listIndex, this.defaultValue);
+                this.stringList.set(this.originalListIndex, this.defaultValue);
             }
 
             this.resetButton.setEnabled(this.textField.getText().equals(this.defaultValue) == false);
@@ -69,9 +67,9 @@ public class StringListEditEntryWidget extends BaseDataListEntryWidget<String>
 
         this.textField.setUpdateListenerAlways(true);
         this.textField.setListener((newText) -> {
-            if (this.listIndex < this.stringList.size())
+            if (this.originalListIndex < this.stringList.size())
             {
-                this.stringList.set(this.listIndex, newText);
+                this.stringList.set(this.originalListIndex, newText);
             }
 
             this.resetButton.setEnabled(newText.equals(this.defaultValue) == false);
@@ -141,7 +139,7 @@ public class StringListEditEntryWidget extends BaseDataListEntryWidget<String>
     protected int getInsertionIndex(List<String> list, boolean before)
     {
         final int size = list.size();
-        int index = this.listIndex < 0 ? size : (Math.min(this.listIndex, size));
+        int index = this.originalListIndex < 0 ? size : (Math.min(this.originalListIndex, size));
 
         if (before == false)
         {
@@ -162,9 +160,9 @@ public class StringListEditEntryWidget extends BaseDataListEntryWidget<String>
     {
         final int size = this.stringList.size();
 
-        if (this.listIndex >= 0 && this.listIndex < size)
+        if (this.originalListIndex >= 0 && this.originalListIndex < size)
         {
-            this.stringList.remove(this.listIndex);
+            this.stringList.remove(this.originalListIndex);
             this.parent.refreshEntries();
         }
     }
@@ -174,17 +172,17 @@ public class StringListEditEntryWidget extends BaseDataListEntryWidget<String>
         List<String> list = this.stringList;
         final int size = list.size();
 
-        if (this.listIndex >= 0 && this.listIndex < size)
+        if (this.originalListIndex >= 0 && this.originalListIndex < size)
         {
             String tmp;
-            int index1 = this.listIndex;
+            int index1 = this.originalListIndex;
             int index2 = -1;
 
-            if (down && this.listIndex < (size - 1))
+            if (down && this.originalListIndex < (size - 1))
             {
                 index2 = index1 + 1;
             }
-            else if (down == false && this.listIndex > 0)
+            else if (down == false && this.originalListIndex > 0)
             {
                 index2 = index1 - 1;
             }
@@ -203,8 +201,8 @@ public class StringListEditEntryWidget extends BaseDataListEntryWidget<String>
     protected boolean canBeMoved(boolean down)
     {
         final int size = this.stringList.size();
-        return (this.listIndex >= 0 && this.listIndex < size) &&
-                ((down && this.listIndex < (size - 1)) || (down == false && this.listIndex > 0));
+        return (this.originalListIndex >= 0 && this.originalListIndex < size) &&
+                ((down && this.originalListIndex < (size - 1)) || (down == false && this.originalListIndex > 0));
     }
 
     @Override

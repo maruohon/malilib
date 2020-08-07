@@ -12,9 +12,10 @@ public class IntegerConfigWidget extends NumericConfigWidget<IntegerConfig>
     protected final int initialValue;
     protected final String initialStringValue;
 
-    public IntegerConfigWidget(int x, int y, int width, int height, int listIndex, IntegerConfig config, BaseConfigScreen gui)
+    public IntegerConfigWidget(int x, int y, int width, int height, int listIndex,
+                               int originalListIndex, IntegerConfig config, BaseConfigScreen gui)
     {
-        super(x, y, width, 22, listIndex, config, gui);
+        super(x, y, width, 22, listIndex, originalListIndex, config, gui);
 
         this.integerConfig = config;
         this.initialValue = this.config.getIntegerValue();

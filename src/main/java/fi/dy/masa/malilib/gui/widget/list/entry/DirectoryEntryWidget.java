@@ -16,10 +16,10 @@ public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry
     protected final DirectoryEntry entry;
     @Nullable protected final IFileBrowserIconProvider iconProvider;
 
-    public DirectoryEntryWidget(int x, int y, int width, int height, int listIndex, DirectoryEntry entry,
+    public DirectoryEntryWidget(int x, int y, int width, int height, int listIndex, int originalListIndex, DirectoryEntry entry,
                                 IDirectoryNavigator navigator, @Nullable IFileBrowserIconProvider iconProvider)
     {
-        super(x, y, width, height, listIndex, entry);
+        super(x, y, width, height, listIndex, originalListIndex, entry);
 
         this.entry = entry;
         this.navigator = navigator;

@@ -11,9 +11,10 @@ public class OptionListConfigWidget extends BaseConfigOptionWidget<OptionListCon
     protected final IConfigOptionListEntry<?> initialValue;
     protected final ConfigButtonOptionList optionListButton;
 
-    public OptionListConfigWidget(int x, int y, int width, int height, int listIndex, OptionListConfig<?> config, BaseConfigScreen gui)
+    public OptionListConfigWidget(int x, int y, int width, int height, int listIndex,
+                                  int originalListIndex, OptionListConfig<?> config, BaseConfigScreen gui)
     {
-        super(x, y, width, 22, listIndex, config, gui);
+        super(x, y, width, 22, listIndex, originalListIndex, config, gui);
 
         this.config = config;
         this.initialValue = this.config.getOptionListValue();

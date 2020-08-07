@@ -12,9 +12,10 @@ public class DoubleConfigWidget extends NumericConfigWidget<DoubleConfig>
     protected final double initialValue;
     protected final String initialStringValue;
 
-    public DoubleConfigWidget(int x, int y, int width, int height, int listIndex, DoubleConfig config, BaseConfigScreen gui)
+    public DoubleConfigWidget(int x, int y, int width, int height, int listIndex,
+                              int originalListIndex, DoubleConfig config, BaseConfigScreen gui)
     {
-        super(x, y, width, 22, listIndex, config, gui);
+        super(x, y, width, 22, listIndex, originalListIndex, config, gui);
 
         this.doubleConfig = config;
         this.initialValue = this.config.getDoubleValue();

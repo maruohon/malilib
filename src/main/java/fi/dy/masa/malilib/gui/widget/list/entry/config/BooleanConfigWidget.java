@@ -10,9 +10,10 @@ public class BooleanConfigWidget extends BaseConfigOptionWidget<BooleanConfig>
     protected final ConfigButtonBoolean booleanButton;
     protected final boolean initialValue;
 
-    public BooleanConfigWidget(int x, int y, int width, int height, int listIndex, BooleanConfig config, BaseConfigScreen gui)
+    public BooleanConfigWidget(int x, int y, int width, int height, int listIndex,
+                               int originalListIndex, BooleanConfig config, BaseConfigScreen gui)
     {
-        super(x, y, width, 22, listIndex, config, gui);
+        super(x, y, width, 22, listIndex, originalListIndex, config, gui);
 
         this.config = config;
         this.initialValue = this.config.getBooleanValue();

@@ -10,9 +10,10 @@ public class StringConfigWidget extends BaseConfigOptionWidget<StringConfig>
     protected final String initialValue;
     protected final WidgetTextFieldBase textField;
 
-    public StringConfigWidget(int x, int y, int width, int height, int listIndex, StringConfig config, BaseConfigScreen gui)
+    public StringConfigWidget(int x, int y, int width, int height, int listIndex,
+                              int originalListIndex, StringConfig config, BaseConfigScreen gui)
     {
-        super(x, y, width, 22, listIndex, config, gui);
+        super(x, y, width, 22, listIndex, originalListIndex, config, gui);
 
         this.config = config;
         this.initialValue = this.config.getStringValue();

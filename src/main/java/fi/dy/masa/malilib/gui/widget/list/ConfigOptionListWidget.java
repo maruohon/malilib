@@ -43,11 +43,11 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
 
         @Override
         @Nullable
-        public BaseConfigOptionWidget<C> createWidget(int x, int y, int width, int height, int listIndex, 
+        public BaseConfigOptionWidget<C> createWidget(int x, int y, int width, int height, int listIndex, int originalListIndex,
                                                       C config, DataListWidget<C> listWidget)
         {
             ConfigOptionWidgetFactory<C> factory = ConfigTypeRegistry.INSTANCE.getWidgetFactory(config);
-            return factory.create(x, y, width, height, listIndex, config, this.gui);
+            return factory.create(x, y, width, height, listIndex, originalListIndex, config, this.gui);
         }
     }
 }

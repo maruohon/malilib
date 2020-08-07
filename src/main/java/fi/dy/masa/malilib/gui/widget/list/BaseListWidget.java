@@ -77,6 +77,14 @@ public abstract class BaseListWidget extends WidgetContainer
     }
 
     @Override
+    protected void onPositionOrSizeChanged(int oldX, int oldY)
+    {
+        this.updateEntryWidgetPositioning();
+        this.updateSubWidgetPositions(this.getX(), this.getY());
+        this.refreshEntries();
+    }
+
+    @Override
     public void reAddSubWidgets()
     {
         super.reAddSubWidgets();
@@ -244,8 +252,9 @@ public abstract class BaseListWidget extends WidgetContainer
 
     public void addDefaultSearchBar()
     {
-        this.searchBarWidget = new WidgetSearchBar(this.getX() + 2, this.getY() + 4,
-                                                   this.getWidth() - 14, 14, 0, BaseGuiIcon.SEARCH, HorizontalAlignment.LEFT);
+        this.searchBarWidget = new WidgetSearchBar(this.getX() + 2, this.getY() + 3,
+                                                   this.getWidth() - 14, 14, 0, BaseGuiIcon.SEARCH,
+                                                   HorizontalAlignment.LEFT);
     }
 
     public void onGuiClosed()

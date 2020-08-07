@@ -111,11 +111,12 @@ public class StringListEditScreen extends BaseListScreen<DataListWidget<String>>
 
         widget.setZLevel((int) this.zLevel + 2);
         widget.setListEntryWidgetFixedHeight(20);
+        widget.addDefaultSearchBar();
 
-        widget.setEntryWidgetFactory((wx, wy, ww, wh, li, entry, lw) -> {
+        widget.setEntryWidgetFactory((wx, wy, ww, wh, li, oi, entry, lw) -> {
             List<String> defaultList = this.config.getDefaultStrings();
             String defaultValue = li < defaultList.size() ? defaultList.get(li) : "";
-            return new StringListEditEntryWidget(wx, wy, ww, wh, li, entry, defaultValue, lw);
+            return new StringListEditEntryWidget(wx, wy, ww, wh, li, oi, entry, defaultValue, lw);
         });
 
         return widget;

@@ -15,9 +15,10 @@ public abstract class NumericConfigWidget<T extends ConfigOption<?> & SliderConf
     protected final ButtonGeneric sliderToggleButton;
     protected WidgetSlider sliderWidget;
 
-    public NumericConfigWidget(int x, int y, int width, int height, int listIndex, T config, BaseConfigScreen gui)
+    public NumericConfigWidget(int x, int y, int width, int height, int listIndex,
+                               int originalListIndex, T config, BaseConfigScreen gui)
     {
-        super(x, y, width, 22, listIndex, config, gui);
+        super(x, y, width, 22, listIndex, originalListIndex, config, gui);
 
         this.config = config;
 

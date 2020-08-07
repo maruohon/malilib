@@ -12,9 +12,10 @@ public class StringListConfigWidget extends BaseConfigOptionWidget<StringListCon
     protected final StringListEditButton button;
     protected final ImmutableList<String> initialValue;
 
-    public StringListConfigWidget(int x, int y, int width, int height, int listIndex, StringListConfig config, BaseConfigScreen gui)
+    public StringListConfigWidget(int x, int y, int width, int height, int listIndex,
+                                  int originalListIndex, StringListConfig config, BaseConfigScreen gui)
     {
-        super(x, y, width, 22, listIndex, config, gui);
+        super(x, y, width, 22, listIndex, originalListIndex, config, gui);
 
         this.config = config;
         this.initialValue = this.config.getStrings();

@@ -11,9 +11,10 @@ public class DirectoryConfigWidget extends BaseConfigOptionWidget<DirectoryConfi
     protected final DirectoryConfig config;
     protected final File initialValue;
 
-    public DirectoryConfigWidget(int x, int y, int width, int height, int listIndex, DirectoryConfig config, BaseConfigScreen gui)
+    public DirectoryConfigWidget(int x, int y, int width, int height, int listIndex,
+                                 int originalListIndex, DirectoryConfig config, BaseConfigScreen gui)
     {
-        super(x, y, width, 22, listIndex, config, gui);
+        super(x, y, width, 22, listIndex, originalListIndex, config, gui);
 
         this.config = config;
         this.initialValue = this.config.getFile();

@@ -6,9 +6,9 @@ public class BaseDataListEntryWidget<TYPE> extends BaseListEntryWidget
 {
     @Nullable protected final TYPE data;
 
-    public BaseDataListEntryWidget(int x, int y, int width, int height, int listIndex, @Nullable TYPE data)
+    public BaseDataListEntryWidget(int x, int y, int width, int height, int listIndex, int originalListIndex, @Nullable TYPE data)
     {
-        super(x, y, width, height, listIndex);
+        super(x, y, width, height, listIndex, originalListIndex);
 
         this.data = data;
     }

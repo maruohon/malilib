@@ -14,9 +14,10 @@ public class HotkeyedBooleanConfigWidget extends BaseConfigOptionWidget<Hotkeyed
     protected final ConfigButtonKeyBind hotkeyButton;
     protected final boolean initialBooleanValue;
 
-    public HotkeyedBooleanConfigWidget(int x, int y, int width, int height, int listIndex, HotkeyedBooleanConfig config, BaseConfigScreen gui)
+    public HotkeyedBooleanConfigWidget(int x, int y, int width, int height, int listIndex,
+                                       int originalListIndex, HotkeyedBooleanConfig config, BaseConfigScreen gui)
     {
-        super(x, y, width, 22, listIndex, config, gui);
+        super(x, y, width, 22, listIndex, originalListIndex, config, gui);
 
         this.config = config;
         this.initialBooleanValue = this.config.getBooleanValue();

@@ -4,9 +4,9 @@ import fi.dy.masa.malilib.render.RenderUtils;
 
 public class StringListEntryWidget extends BaseDataListEntryWidget<String>
 {
-    public StringListEntryWidget(int x, int y, int width, int height, int listIndex, String entry)
+    public StringListEntryWidget(int x, int y, int width, int height, int listIndex, int originalListIndex, String entry)
     {
-        super(x, y, width, height, listIndex, entry);
+        super(x, y, width, height, listIndex, originalListIndex, entry);
     }
 
     @Override

@@ -7,7 +7,6 @@ import fi.dy.masa.malilib.config.option.ConfigOption;
 import fi.dy.masa.malilib.config.option.FileConfig;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.DirectorySelectorScreen;
-import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.config.BaseConfigScreen;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
@@ -22,9 +21,10 @@ public abstract class BaseConfigOptionWidget<C extends ConfigInfo> extends BaseD
     protected final ButtonGeneric resetButton;
     protected final WidgetLabel labelWidget;
 
-    public BaseConfigOptionWidget(int x, int y, int width, int height, int listIndex, C config, BaseConfigScreen gui)
+    public BaseConfigOptionWidget(int x, int y, int width, int height, int listIndex,
+                                  int originalListIndex, C config, BaseConfigScreen gui)
     {
-        super(x, y, width, height, listIndex, config);
+        super(x, y, width, height, listIndex, originalListIndex, config);
 
         this.gui = gui;
 

@@ -5,13 +5,15 @@ import fi.dy.masa.malilib.gui.widget.WidgetContainer;
 public class BaseListEntryWidget extends WidgetContainer
 {
     protected final int listIndex;
+    protected final int originalListIndex;
     protected boolean isOdd;
 
-    public BaseListEntryWidget(int x, int y, int width, int height, int listIndex)
+    public BaseListEntryWidget(int x, int y, int width, int height, int listIndex, int originalListIndex)
     {
         super(x, y, width, height);
 
         this.listIndex = listIndex;
+        this.originalListIndex = originalListIndex;
     }
 
     public void setIsOdd(boolean isOdd)
