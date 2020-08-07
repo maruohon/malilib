@@ -37,7 +37,6 @@ import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraft.world.storage.MapData;
 import fi.dy.masa.malilib.config.value.HudAlignment;
 import fi.dy.masa.malilib.gui.BaseScreen;
-import fi.dy.masa.malilib.gui.interfaces.IBackgroundRenderer;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.render.overlay.InventoryOverlay;
 import fi.dy.masa.malilib.util.data.Color4f;
@@ -439,7 +438,7 @@ public class RenderUtils
         drawHoverText(x, y, zLevel, textLines, 0xFFC0C0C0 , RenderUtils::renderHoverTextBackground);
     }
 
-    public static void drawHoverText(int x, int y, int zLevel, List<String> textLines, int textColor, IBackgroundRenderer backgroundRenderer)
+    public static void drawHoverText(int x, int y, int zLevel, List<String> textLines, int textColor, RectangleRenderer backgroundRenderer)
     {
         Minecraft mc = mc();
 
@@ -504,7 +503,7 @@ public class RenderUtils
             GlStateManager.disableLighting();
             GlStateManager.disableDepth();
 
-            backgroundRenderer.renderBackground(textStartX, textStartY, maxLineLength, textHeight, zLevel);
+            backgroundRenderer.render(textStartX, textStartY, maxLineLength, textHeight, zLevel);
 
             for (int i = 0; i < textLines.size(); ++i)
             {

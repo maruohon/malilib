@@ -6,29 +6,28 @@ import fi.dy.masa.malilib.gui.button.BaseButton;
 import fi.dy.masa.malilib.gui.button.GenericButton;
 import fi.dy.masa.malilib.gui.button.OnOffButton;
 import fi.dy.masa.malilib.gui.button.ButtonActionListener;
-import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
-import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
-import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
-import fi.dy.masa.malilib.gui.listener.TextFieldListenerInteger;
-import fi.dy.masa.malilib.gui.util.BaseGuiIcon;
-import fi.dy.masa.malilib.gui.widget.WidgetCheckBox;
-import fi.dy.masa.malilib.gui.widget.WidgetTextFieldBase;
-import fi.dy.masa.malilib.gui.widget.WidgetTextFieldInteger;
+import fi.dy.masa.malilib.gui.icon.Icon;
+import fi.dy.masa.malilib.gui.widget.list.entry.SelectionListener;
+import fi.dy.masa.malilib.gui.listener.IntegerTextFieldListener;
+import fi.dy.masa.malilib.gui.icon.BaseIcon;
+import fi.dy.masa.malilib.gui.widget.CheckBoxWidget;
+import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
+import fi.dy.masa.malilib.gui.widget.IntegerTextFieldWidget;
 import fi.dy.masa.malilib.util.position.LayerRange;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public abstract class BaseRenderLayerEditScreen extends BaseScreen
 {
-    protected WidgetTextFieldBase textField1;
-    protected WidgetTextFieldBase textField2;
+    protected BaseTextFieldWidget textField1;
+    protected BaseTextFieldWidget textField2;
     protected int nextY;
     protected boolean addPlayerFollowingOptions;
 
     protected abstract LayerRange getLayerRange();
 
-    protected IGuiIcon getValueAdjustButtonIcon()
+    protected Icon getValueAdjustButtonIcon()
     {
-        return BaseGuiIcon.BTN_PLUSMINUS_16;
+        return BaseIcon.BTN_PLUSMINUS_16;
     }
 
     protected void createLayerEditControls(int x, int y, LayerRange layerRange)
@@ -86,13 +85,13 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
             x += this.addLabel(x, y + 5, 0xFFFFFF, label).getWidth() + 4;
         }
 
-        IGuiIcon valueAdjustIcon = this.getValueAdjustButtonIcon();
+        Icon valueAdjustIcon = this.getValueAdjustButtonIcon();
 
         if (layerMode == LayerMode.LAYER_RANGE)
         {
-            this.textField2 = new WidgetTextFieldBase(x, y, width, 20);
-            this.textField2.setTextValidator(WidgetTextFieldBase.VALIDATOR_INTEGER);
-            this.textField2.setListener(new TextFieldListener(layerMode, layerRange, true));
+            this.textField2 = new BaseTextFieldWidget(x, y, width, 20);
+            this.textField2.setTextValidator(BaseTextFieldWidget.VALIDATOR_INTEGER);
+            this.textField2.setListener(new TextChangeListener(layerMode, layerRange, true));
             this.addWidget(this.textField2);
 
             this.createHotkeyCheckBoxes(x + width + 24, y, layerRange);
@@ -105,9 +104,9 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
             this.textField2 = null;
         }
 
-        this.textField1 = new WidgetTextFieldBase(x, y, width, 20);
-        this.textField1.setTextValidator(WidgetTextFieldBase.VALIDATOR_INTEGER);
-        this.textField1.setListener(new TextFieldListener(layerMode, layerRange, false));
+        this.textField1 = new BaseTextFieldWidget(x, y, width, 20);
+        this.textField1.setTextValidator(BaseTextFieldWidget.VALIDATOR_INTEGER);
+        this.textField1.setListener(new TextChangeListener(layerMode, layerRange, false));
         this.addWidget(this.textField1);
         this.createValueAdjustButton(x + width + 3, y, false, layerRange, valueAdjustIcon);
         y += 23;
@@ -131,9 +130,9 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
             String label = StringUtils.translate("malilib.gui.label.render_layers.player_follow_offset") + ":";
             int w = this.addLabel(origX, y + 5, 0xFFFFFF, label).getWidth();
 
-            final WidgetTextFieldInteger textField = new WidgetTextFieldInteger(origX + w + 4, y, 40, 18, layerRange.getPlayerFollowOffset());
+            final IntegerTextFieldWidget textField = new IntegerTextFieldWidget(origX + w + 4, y, 40, 18, layerRange.getPlayerFollowOffset());
             textField.setUpdateListenerAlways(true);
-            textField.setListener(new TextFieldListenerInteger((val) -> layerRange.setPlayerFollowOffset(val)));
+            textField.setListener(new IntegerTextFieldListener((val) -> layerRange.setPlayerFollowOffset(val)));
             this.addWidget(textField);
 
             int bx = textField.getX() + textField.getWidth() + 3;
@@ -164,7 +163,7 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
         }
     }
 
-    protected void createValueAdjustButton(int x, int y, boolean isSecondValue, LayerRange layerRange, IGuiIcon icon)
+    protected void createValueAdjustButton(int x, int y, boolean isSecondValue, LayerRange layerRange, Icon icon)
     {
         LayerMode layerMode = layerRange.getLayerMode();
         ButtonListenerChangeValue listener = new ButtonListenerChangeValue(layerMode, layerRange, isSecondValue, this);
@@ -285,13 +284,13 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
         }
     }
 
-    protected static class TextFieldListener implements ITextFieldListener
+    protected static class TextChangeListener implements fi.dy.masa.malilib.listener.TextChangeListener
     {
         protected final LayerRange layerRange;
         protected final LayerMode mode;
         protected final boolean isSecondLimit;
 
-        protected TextFieldListener(LayerMode mode, LayerRange layerRange, boolean isSecondLimit)
+        protected TextChangeListener(LayerMode mode, LayerRange layerRange, boolean isSecondLimit)
         {
             this.mode = mode;
             this.layerRange = layerRange;
@@ -342,7 +341,7 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
         }
     }
 
-    public static class RangeHotkeyListener implements ISelectionListener<WidgetCheckBox>
+    public static class RangeHotkeyListener implements SelectionListener<CheckBoxWidget>
     {
         protected final LayerRange layerRange;
         protected final boolean isMax;
@@ -354,7 +353,7 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
         }
 
         @Override
-        public void onSelectionChange(WidgetCheckBox entry)
+        public void onSelectionChange(CheckBoxWidget entry)
         {
             if (this.isMax)
             {

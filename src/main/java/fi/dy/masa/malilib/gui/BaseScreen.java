@@ -17,14 +17,14 @@ import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.gui.button.BaseButton;
 import fi.dy.masa.malilib.gui.button.ButtonActionListener;
-import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
+import fi.dy.masa.malilib.listener.TextChangeListener;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
-import fi.dy.masa.malilib.gui.widget.WidgetBase;
-import fi.dy.masa.malilib.gui.widget.WidgetLabel;
-import fi.dy.masa.malilib.gui.widget.WidgetTextFieldBase;
-import fi.dy.masa.malilib.message.MessageConsumer;
-import fi.dy.masa.malilib.message.MessageType;
-import fi.dy.masa.malilib.render.MessageRenderer;
+import fi.dy.masa.malilib.gui.widget.BaseWidget;
+import fi.dy.masa.malilib.gui.widget.LabelWidget;
+import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
+import fi.dy.masa.malilib.render.message.MessageConsumer;
+import fi.dy.masa.malilib.render.message.MessageType;
+import fi.dy.masa.malilib.render.message.MessageRenderer;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.consumer.StringConsumer;
 
@@ -67,9 +67,9 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
     public final FontRenderer textRenderer = this.mc.fontRenderer;
     public final int fontHeight = this.textRenderer.FONT_HEIGHT;
     private final List<BaseButton> buttons = new ArrayList<>();
-    private final List<WidgetBase> widgets = new ArrayList<>();
+    private final List<BaseWidget> widgets = new ArrayList<>();
     private final MessageRenderer messageRenderer;
-    protected WidgetBase hoveredWidget = null;
+    protected BaseWidget hoveredWidget = null;
     protected String title = "";
     protected boolean useTitleHierarchy = true;
     @Nullable
@@ -147,10 +147,10 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
         }
     }
 
-    protected WidgetBase getTopHoveredWidget(int mouseX, int mouseY, @Nullable WidgetBase highestFoundWidget)
+    protected BaseWidget getTopHoveredWidget(int mouseX, int mouseY, @Nullable BaseWidget highestFoundWidget)
     {
-        highestFoundWidget = WidgetBase.getTopHoveredWidgetFromList(this.buttons, mouseX, mouseY, highestFoundWidget);
-        highestFoundWidget = WidgetBase.getTopHoveredWidgetFromList(this.widgets, mouseX, mouseY, highestFoundWidget);
+        highestFoundWidget = BaseWidget.getTopHoveredWidgetFromList(this.buttons, mouseX, mouseY, highestFoundWidget);
+        highestFoundWidget = BaseWidget.getTopHoveredWidgetFromList(this.widgets, mouseX, mouseY, highestFoundWidget);
         return highestFoundWidget;
     }
 
@@ -180,7 +180,7 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
             this.renderDebug(mouseX, mouseY);
         }
 
-        WidgetBase.renderDebugTextAndClear();
+        BaseWidget.renderDebugTextAndClear();
     }
 
     @Override
@@ -225,10 +225,10 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
 
     public boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
-        List<WidgetTextFieldBase> textFields = this.getAllTextFields();
-        WidgetBase clickedWidget = null;
+        List<BaseTextFieldWidget> textFields = this.getAllTextFields();
+        BaseWidget clickedWidget = null;
 
-        for (WidgetBase widget : this.widgets)
+        for (BaseWidget widget : this.widgets)
         {
             if (widget.onMouseClicked(mouseX, mouseY, mouseButton))
             {
@@ -238,7 +238,7 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
         }
 
         // Clear the focus from all but the text field that was just clicked
-        for (WidgetTextFieldBase tf : textFields)
+        for (BaseTextFieldWidget tf : textFields)
         {
             if (tf != clickedWidget)
             {
@@ -266,7 +266,7 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
 
     public boolean onMouseReleased(int mouseX, int mouseY, int mouseButton)
     {
-        for (WidgetBase widget : this.widgets)
+        for (BaseWidget widget : this.widgets)
         {
             widget.onMouseReleased(mouseX, mouseY, mouseButton);
         }
@@ -285,7 +285,7 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
             }
         }
 
-        for (WidgetBase widget : this.widgets)
+        for (BaseWidget widget : this.widgets)
         {
             if (widget.onMouseScrolled(mouseX, mouseY, mouseWheelDelta))
             {
@@ -306,7 +306,7 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
 
         if (this.widgets.isEmpty() == false)
         {
-            for (WidgetBase widget : this.widgets)
+            for (BaseWidget widget : this.widgets)
             {
                 if (widget.onKeyTyped(typedChar, keyCode))
                 {
@@ -325,7 +325,7 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
         return false;
     }
 
-    public static boolean changeTextFieldFocus(List<WidgetTextFieldBase> textFields, boolean reverse)
+    public static boolean changeTextFieldFocus(List<BaseTextFieldWidget> textFields, boolean reverse)
     {
         final int size = textFields.size();
 
@@ -335,7 +335,7 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
 
             for (int i = 0; i < size; ++i)
             {
-                WidgetTextFieldBase textField = textFields.get(i);
+                BaseTextFieldWidget textField = textFields.get(i);
 
                 if (textField.isFocused())
                 {
@@ -367,13 +367,13 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
         return false;
     }
 
-    protected List<WidgetTextFieldBase> getAllTextFields()
+    protected List<BaseTextFieldWidget> getAllTextFields()
     {
-        List<WidgetTextFieldBase> textFields = new ArrayList<>();
+        List<BaseTextFieldWidget> textFields = new ArrayList<>();
 
         if (this.widgets.isEmpty() == false)
         {
-            for (WidgetBase widget : this.widgets)
+            for (BaseWidget widget : this.widgets)
             {
                 textFields.addAll(widget.getAllTextFields());
             }
@@ -426,12 +426,12 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
         this.zLevel = zLevel;
         int parentZLevel = (int) this.zLevel;
 
-        for (WidgetBase widget : this.buttons)
+        for (BaseWidget widget : this.buttons)
         {
             widget.setZLevelBasedOnParent(parentZLevel);
         }
 
-        for (WidgetBase widget : this.widgets)
+        for (BaseWidget widget : this.widgets)
         {
             widget.setZLevelBasedOnParent(parentZLevel);
         }
@@ -459,41 +459,41 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
         return button;
     }
 
-    public <T extends WidgetBase> T addWidget(T widget)
+    public <T extends BaseWidget> T addWidget(T widget)
     {
         this.widgets.add(widget);
         widget.onWidgetAdded((int) this.zLevel);
         return widget;
     }
 
-    public <T extends WidgetTextFieldBase> T addTextField(T widget, ITextFieldListener listener)
+    public <T extends BaseTextFieldWidget> T addTextField(T widget, TextChangeListener listener)
     {
         widget.setListener(listener);
         this.addWidget(widget);
         return widget;
     }
 
-    public WidgetLabel addLabel(int x, int y, int textColor, String... lines)
+    public LabelWidget addLabel(int x, int y, int textColor, String... lines)
     {
         return this.addLabel(x, y, -1, -1, textColor, Arrays.asList(lines));
     }
 
-    public WidgetLabel addLabel(int x, int y, int textColor, List<String> lines)
+    public LabelWidget addLabel(int x, int y, int textColor, List<String> lines)
     {
         return this.addLabel(x, y, -1, -1, textColor, lines);
     }
 
-    public WidgetLabel addLabel(int x, int y, int width, int height, int textColor, String... lines)
+    public LabelWidget addLabel(int x, int y, int width, int height, int textColor, String... lines)
     {
         return this.addLabel(x, y, width, height, textColor, Arrays.asList(lines));
     }
 
-    public WidgetLabel addLabel(int x, int y, int width, int height, int textColor, List<String> lines)
+    public LabelWidget addLabel(int x, int y, int width, int height, int textColor, List<String> lines)
     {
-        return this.addWidget(new WidgetLabel(x, y, width, height, textColor, lines));
+        return this.addWidget(new LabelWidget(x, y, width, height, textColor, lines));
     }
 
-    protected boolean removeWidget(WidgetBase widget)
+    protected boolean removeWidget(BaseWidget widget)
     {
         if (widget != null && this.widgets.contains(widget))
         {
@@ -539,7 +539,7 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
     {
         if (this.widgets.isEmpty() == false)
         {
-            for (WidgetBase widget : this.widgets)
+            for (BaseWidget widget : this.widgets)
             {
                 widget.render(mouseX, mouseY, isActiveGui, hoveredWidgetId);
             }
@@ -643,11 +643,11 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
         }
     }
 
-    public static void renderWidgetDebug(List<? extends WidgetBase> widgets, int mouseX, int mouseY, boolean renderAll, boolean infoAlways)
+    public static void renderWidgetDebug(List<? extends BaseWidget> widgets, int mouseX, int mouseY, boolean renderAll, boolean infoAlways)
     {
         if (widgets.isEmpty() == false)
         {
-            for (WidgetBase widget : widgets)
+            for (BaseWidget widget : widgets)
             {
                 boolean hovered = widget.isMouseOver(mouseX, mouseY);
                 widget.renderDebug(mouseX, mouseY, hovered, renderAll, infoAlways);

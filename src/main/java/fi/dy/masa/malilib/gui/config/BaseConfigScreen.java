@@ -1,6 +1,5 @@
 package fi.dy.masa.malilib.gui.config;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nullable;
@@ -13,26 +12,21 @@ import fi.dy.masa.malilib.gui.BaseListScreen;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.button.GenericButton;
 import fi.dy.masa.malilib.gui.button.KeyBindConfigButton;
-import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
-import fi.dy.masa.malilib.gui.interfaces.IKeybindConfigGui;
-import fi.dy.masa.malilib.gui.listener.ButtonPressDirtyListenerSimple;
-import fi.dy.masa.malilib.gui.listener.ConfigOptionChangeListenerKeybind;
+import fi.dy.masa.malilib.gui.util.DialogHandler;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.list.ConfigOptionListWidget;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.util.StringUtils;
 
-public abstract class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<?>> implements IKeybindConfigGui, EventListener
+public abstract class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<?>> implements KeybindEditingScreen, EventListener
 {
-    protected final List<ConfigOptionChangeListenerKeybind> hotkeyChangeListeners = new ArrayList<>();
-    protected final ButtonPressDirtyListenerSimple dirtyListener = new ButtonPressDirtyListenerSimple();
     protected final List<ConfigTab> configTabs;
     protected final String modId;
-    protected KeyBindConfigButton activeKeyBindButton;
+    @Nullable protected KeyBindConfigButton activeKeyBindButton;
+    @Nullable protected ConfigInfoProvider hoverInfoProvider;
+    @Nullable protected DialogHandler dialogHandler;
     protected int configElementsWidth = 80;
     protected int maxLabelWidth = -1;
-    @Nullable protected ConfigInfoProvider hoverInfoProvider;
-    @Nullable protected IDialogHandler dialogHandler;
 
     public BaseConfigScreen(int listX, int listY, String modId, @Nullable GuiScreen parent, List<ConfigTab> configTabs, String titleKey, Object... args)
     {
@@ -121,12 +115,12 @@ public abstract class BaseConfigScreen extends BaseListScreen<ConfigOptionListWi
 
     @Override
     @Nullable
-    public IDialogHandler getDialogHandler()
+    public DialogHandler getDialogHandler()
     {
         return this.dialogHandler;
     }
 
-    public void setDialogHandler(@Nullable IDialogHandler handler)
+    public void setDialogHandler(@Nullable DialogHandler handler)
     {
         this.dialogHandler = handler;
     }
@@ -207,7 +201,8 @@ public abstract class BaseConfigScreen extends BaseListScreen<ConfigOptionListWi
     {
         ConfigManager.INSTANCE.onConfigsChanged(this.modId);
 
-        if (this.hotkeyChangeListeners.size() > 0)
+        // FIXME config refactor
+        //if (this.hotkeyChangeListeners.size() > 0)
         {
             KeyBindManager.INSTANCE.updateUsedKeys();
         }
@@ -260,19 +255,6 @@ public abstract class BaseConfigScreen extends BaseListScreen<ConfigOptionListWi
     public void clearOptions()
     {
         this.setActiveKeyBindButton(null);
-        this.hotkeyChangeListeners.clear();
-    }
-
-    @Override
-    public void addKeyBindChangeListener(ConfigOptionChangeListenerKeybind listener)
-    {
-        this.hotkeyChangeListeners.add(listener);
-    }
-
-    @Override
-    public ButtonPressDirtyListenerSimple getButtonPressListener()
-    {
-        return this.dirtyListener;
     }
 
     @Override
@@ -281,7 +263,6 @@ public abstract class BaseConfigScreen extends BaseListScreen<ConfigOptionListWi
         if (this.activeKeyBindButton != null)
         {
             this.activeKeyBindButton.onClearSelection();
-            this.updateKeybindButtons();
         }
 
         this.activeKeyBindButton = button;
@@ -289,14 +270,6 @@ public abstract class BaseConfigScreen extends BaseListScreen<ConfigOptionListWi
         if (this.activeKeyBindButton != null)
         {
             this.activeKeyBindButton.onSelected();
-        }
-    }
-
-    protected void updateKeybindButtons()
-    {
-        for (ConfigOptionChangeListenerKeybind listener : this.hotkeyChangeListeners)
-        {
-            listener.updateButtons();
         }
     }
 }

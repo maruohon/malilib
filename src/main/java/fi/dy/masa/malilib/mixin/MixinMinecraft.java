@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
-import fi.dy.masa.malilib.IMinecraftAccessor;
+import fi.dy.masa.malilib.MinecraftClientAccessor;
 import fi.dy.masa.malilib.event.dispatch.ClientWorldChangeEventDispatcher;
 import fi.dy.masa.malilib.event.dispatch.ClientWorldChangeEventDispatcherImpl;
 import fi.dy.masa.malilib.event.dispatch.InputDispatcher;
@@ -18,7 +18,7 @@ import fi.dy.masa.malilib.event.dispatch.TickEventDispatcherImpl;
 import fi.dy.masa.malilib.input.KeyBindImpl;
 
 @Mixin(Minecraft.class)
-public abstract class MixinMinecraft implements IMinecraftAccessor
+public abstract class MixinMinecraft implements MinecraftClientAccessor
 {
     @Shadow
     public WorldClient world;

@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.gui.widget.list.entry;
 
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
+import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.render.RenderUtils;
 
 public abstract class SortableListEntryWidget<TYPE> extends BaseDataListEntryWidget<TYPE>
@@ -47,7 +47,7 @@ public abstract class SortableListEntryWidget<TYPE> extends BaseDataListEntryWid
         return -1;
     }
 
-    protected void renderColumnHeader(int mouseX, int mouseY, IGuiIcon iconNatural, IGuiIcon iconReverse)
+    protected void renderColumnHeader(int mouseX, int mouseY, Icon iconNatural, Icon iconReverse)
     {
         int mouseOverColumn = this.getMouseOverColumn(mouseX, mouseY);
         int sortColumn = this.getCurrentSortColumn();
@@ -56,7 +56,7 @@ public abstract class SortableListEntryWidget<TYPE> extends BaseDataListEntryWid
         int y = this.getY();
         int height = this.getHeight();
 
-        IGuiIcon icon = reverse ? iconReverse : iconNatural;
+        Icon icon = reverse ? iconReverse : iconNatural;
         icon.renderAt(iconX, y + 3, this.getZLevel(), true, sortColumn == mouseOverColumn);
 
         for (int i = 0; i < this.getColumnCount(); ++i)

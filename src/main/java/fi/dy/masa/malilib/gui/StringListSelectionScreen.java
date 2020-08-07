@@ -2,20 +2,20 @@ package fi.dy.masa.malilib.gui;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Consumer;
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.gui.button.BaseButton;
-import fi.dy.masa.malilib.gui.button.GenericButton;
 import fi.dy.masa.malilib.gui.button.ButtonActionListener;
-import fi.dy.masa.malilib.gui.interfaces.IStringListConsumer;
+import fi.dy.masa.malilib.gui.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class StringListSelectionScreen extends BaseListScreen<DataListWidget<String>>
 {
     protected final ImmutableList<String> strings;
-    protected final IStringListConsumer consumer;
+    protected final Consumer<List<String>> consumer;
 
-    public StringListSelectionScreen(Collection<String> strings, IStringListConsumer consumer)
+    public StringListSelectionScreen(Collection<String> strings, Consumer<List<String>> consumer)
     {
         super(10, 30);
 
@@ -86,7 +86,7 @@ public class StringListSelectionScreen extends BaseListScreen<DataListWidget<Str
         {
             if (this.type == Type.OK)
             {
-                this.parent.consumer.consume(this.parent.getListWidget().getEntrySelectionHandler().getSelectedEntries());
+                this.parent.consumer.accept(this.parent.getListWidget().getEntrySelectionHandler().getSelectedEntries());
             }
             else
             {

@@ -2,9 +2,9 @@ package fi.dy.masa.malilib.gui.widget.list.entry;
 
 import java.io.File;
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.gui.interfaces.IDirectoryNavigator;
-import fi.dy.masa.malilib.gui.interfaces.IFileBrowserIconProvider;
-import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
+import fi.dy.masa.malilib.gui.widget.util.DirectoryNavigator;
+import fi.dy.masa.malilib.gui.icon.FileBrowserIconProvider;
+import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.widget.list.BaseFileBrowserWidget.DirectoryEntry;
 import fi.dy.masa.malilib.gui.widget.list.BaseFileBrowserWidget.DirectoryEntryType;
 import fi.dy.masa.malilib.render.RenderUtils;
@@ -12,12 +12,12 @@ import fi.dy.masa.malilib.util.FileUtils;
 
 public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry>
 {
-    protected final IDirectoryNavigator navigator;
+    protected final DirectoryNavigator navigator;
     protected final DirectoryEntry entry;
-    @Nullable protected final IFileBrowserIconProvider iconProvider;
+    @Nullable protected final FileBrowserIconProvider iconProvider;
 
     public DirectoryEntryWidget(int x, int y, int width, int height, int listIndex, int originalListIndex, DirectoryEntry entry,
-                                IDirectoryNavigator navigator, @Nullable IFileBrowserIconProvider iconProvider)
+                                DirectoryNavigator navigator, @Nullable FileBrowserIconProvider iconProvider)
     {
         super(x, y, width, height, listIndex, originalListIndex, entry);
 
@@ -49,7 +49,7 @@ public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry
     @Override
     public void render(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId, boolean selected)
     {
-        @Nullable IGuiIcon icon = this.iconProvider != null ? this.iconProvider.getIconForEntry(this.entry) : null;
+        @Nullable Icon icon = this.iconProvider != null ? this.iconProvider.getIconForEntry(this.entry) : null;
         int xOffset = 0;
         int x = this.getX();
         int y = this.getY();

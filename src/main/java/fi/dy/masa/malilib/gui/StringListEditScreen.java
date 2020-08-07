@@ -7,8 +7,8 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.config.option.StringListConfig;
-import fi.dy.masa.malilib.gui.interfaces.IConfigGui;
-import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
+import fi.dy.masa.malilib.gui.config.ConfigScreen;
+import fi.dy.masa.malilib.gui.util.DialogHandler;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.StringListEditEntryWidget;
@@ -19,16 +19,16 @@ import fi.dy.masa.malilib.util.StringUtils;
 public class StringListEditScreen extends BaseListScreen<DataListWidget<String>>
 {
     protected final StringListConfig config;
-    protected final IConfigGui configGui;
+    protected final ConfigScreen configGui;
     protected int dialogWidth;
     protected int dialogHeight;
     protected int dialogLeft;
     protected int dialogTop;
-    @Nullable protected final IDialogHandler dialogHandler;
+    @Nullable protected final DialogHandler dialogHandler;
     @Nullable protected final EventListener saveListener;
 
-    public StringListEditScreen(StringListConfig config, IConfigGui configGui,
-                                @Nullable IDialogHandler dialogHandler, GuiScreen parent, @Nullable EventListener saveListener)
+    public StringListEditScreen(StringListConfig config, ConfigScreen configGui,
+                                @Nullable DialogHandler dialogHandler, GuiScreen parent, @Nullable EventListener saveListener)
     {
         super(0, 0);
 

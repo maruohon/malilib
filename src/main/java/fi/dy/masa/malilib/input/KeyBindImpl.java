@@ -14,16 +14,16 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
-import fi.dy.masa.malilib.IMinecraftAccessor;
+import fi.dy.masa.malilib.MinecraftClientAccessor;
 import fi.dy.masa.malilib.LiteModMaLiLib;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.config.value.HudAlignment;
 import fi.dy.masa.malilib.config.value.KeybindDisplayMode;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
-import fi.dy.masa.malilib.gui.widget.WidgetToast;
+import fi.dy.masa.malilib.gui.widget.ToastWidget;
 import fi.dy.masa.malilib.input.KeyBindSettings.Context;
 import fi.dy.masa.malilib.input.callback.HotkeyCallback;
-import fi.dy.masa.malilib.message.MessageUtils;
+import fi.dy.masa.malilib.render.message.MessageUtils;
 import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 
@@ -198,7 +198,7 @@ public class KeyBindImpl implements KeyBind
             if (this.keyCodes.contains(Keyboard.KEY_F3))
             {
                 // Prevent the debug GUI from opening after the F3 key is released
-                ((IMinecraftAccessor) Minecraft.getMinecraft()).setActionKeyF3(true);
+                ((MinecraftClientAccessor) Minecraft.getMinecraft()).setActionKeyF3(true);
             }
 
             KeyAction activateOn = this.settings.getActivateOn();
@@ -253,7 +253,7 @@ public class KeyBindImpl implements KeyBind
             }
 
             HudAlignment align = MaLiLibConfigs.Generic.KEYBIND_DISPLAY_ALIGNMENT.getOptionListValue();
-            WidgetToast.updateOrAddToast(align, lines, MaLiLibConfigs.Generic.KEYBIND_DISPLAY_DURATION.getIntegerValue());
+            ToastWidget.updateOrAddToast(align, lines, MaLiLibConfigs.Generic.KEYBIND_DISPLAY_DURATION.getIntegerValue());
         }
     }
 

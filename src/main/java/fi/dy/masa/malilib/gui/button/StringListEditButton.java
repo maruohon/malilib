@@ -4,8 +4,8 @@ import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.option.StringListConfig;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.StringListEditScreen;
-import fi.dy.masa.malilib.gui.interfaces.IConfigGui;
-import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
+import fi.dy.masa.malilib.gui.config.ConfigScreen;
+import fi.dy.masa.malilib.gui.util.DialogHandler;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.util.StringUtils;
@@ -13,12 +13,12 @@ import fi.dy.masa.malilib.util.StringUtils;
 public class StringListEditButton extends GenericButton
 {
     private final StringListConfig config;
-    private final IConfigGui configGui;
-    @Nullable private final IDialogHandler dialogHandler;
+    private final ConfigScreen configGui;
+    @Nullable private final DialogHandler dialogHandler;
     @Nullable protected final EventListener saveListener;
 
     public StringListEditButton(int x, int y, int width, int height,
-                                StringListConfig config, IConfigGui configGui, @Nullable EventListener saveListener)
+                                StringListConfig config, ConfigScreen configGui, @Nullable EventListener saveListener)
     {
         super(x, y, width, height, "");
 

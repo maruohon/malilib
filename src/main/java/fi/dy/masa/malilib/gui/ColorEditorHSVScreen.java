@@ -12,10 +12,9 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.math.MathHelper;
-import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
-import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
-import fi.dy.masa.malilib.gui.widget.WidgetTextFieldBase;
-import fi.dy.masa.malilib.gui.widget.WidgetTextFieldInteger;
+import fi.dy.masa.malilib.gui.util.DialogHandler;
+import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
+import fi.dy.masa.malilib.gui.widget.IntegerTextFieldWidget;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.shader.ShaderProgram;
 import fi.dy.masa.malilib.util.StringUtils;
@@ -26,17 +25,17 @@ public class ColorEditorHSVScreen extends BaseDialogScreen
 
     protected final IntConsumer valueConsumer;
     protected final int initialValue;
-    @Nullable protected final IDialogHandler dialogHandler;
+    @Nullable protected final DialogHandler dialogHandler;
     @Nullable protected Element clickedElement;
     @Nullable protected Element currentTextInputElement;
-    protected WidgetTextFieldBase textFieldFullColor;
-    protected WidgetTextFieldBase textFieldH;
-    protected WidgetTextFieldBase textFieldS;
-    protected WidgetTextFieldBase textFieldV;
-    protected WidgetTextFieldBase textFieldR;
-    protected WidgetTextFieldBase textFieldG;
-    protected WidgetTextFieldBase textFieldB;
-    protected WidgetTextFieldBase textFieldA;
+    protected BaseTextFieldWidget textFieldFullColor;
+    protected BaseTextFieldWidget textFieldH;
+    protected BaseTextFieldWidget textFieldS;
+    protected BaseTextFieldWidget textFieldV;
+    protected BaseTextFieldWidget textFieldR;
+    protected BaseTextFieldWidget textFieldG;
+    protected BaseTextFieldWidget textFieldB;
+    protected BaseTextFieldWidget textFieldA;
     protected boolean mouseDown;
     protected int color;
     protected int xHS;
@@ -57,7 +56,7 @@ public class ColorEditorHSVScreen extends BaseDialogScreen
     protected float relB;
     protected float relA;
 
-    public ColorEditorHSVScreen(int initialValue, IntConsumer valueConsumer, @Nullable IDialogHandler dialogHandler, GuiScreen parent)
+    public ColorEditorHSVScreen(int initialValue, IntConsumer valueConsumer, @Nullable DialogHandler dialogHandler, GuiScreen parent)
     {
         this.initialValue = initialValue;
         this.valueConsumer = valueConsumer;
@@ -121,9 +120,9 @@ public class ColorEditorHSVScreen extends BaseDialogScreen
         String str = "HEX:";
         int w = this.getStringWidth(str);
         this.addLabel(this.xH - w - 4, y + 4, 0xFFFFFF, str);
-        this.textFieldFullColor = new WidgetTextFieldBase(this.xH - 1, y + 2, 68, 14);
-        this.textFieldFullColor.setTextValidator(WidgetTextFieldBase.VALIDATOR_HEX_COLOR_8);
-        this.textFieldFullColor.setListener(new TextFieldListener(null, this));
+        this.textFieldFullColor = new BaseTextFieldWidget(this.xH - 1, y + 2, 68, 14);
+        this.textFieldFullColor.setTextValidator(BaseTextFieldWidget.VALIDATOR_HEX_COLOR_8);
+        this.textFieldFullColor.setListener(new TextChangeListener(null, this));
         this.addWidget(this.textFieldFullColor);
 
         //String str = StringUtils.translate("malilib.gui.label.color_editor.current_color");
@@ -134,39 +133,39 @@ public class ColorEditorHSVScreen extends BaseDialogScreen
 
     protected int createComponentElements(int x, int y, int xLabel, Element element)
     {
-        WidgetTextFieldBase textField = new WidgetTextFieldBase(x, y, 32, 14);
-        textField.setListener(new TextFieldListener(element, this));
+        BaseTextFieldWidget textField = new BaseTextFieldWidget(x, y, 32, 14);
+        textField.setListener(new TextChangeListener(element, this));
         textField.setUpdateListenerAlways(true);
 
         switch (element)
         {
             case H:
                 this.textFieldH = textField;
-                textField.setTextValidator(new WidgetTextFieldInteger.IntValidator(0, 360));
+                textField.setTextValidator(new IntegerTextFieldWidget.IntValidator(0, 360));
                 break;
             case S:
                 this.textFieldS = textField;
-                textField.setTextValidator(new WidgetTextFieldInteger.IntValidator(0, 100));
+                textField.setTextValidator(new IntegerTextFieldWidget.IntValidator(0, 100));
                 break;
             case V:
                 this.textFieldV = textField;
-                textField.setTextValidator(new WidgetTextFieldInteger.IntValidator(0, 100));
+                textField.setTextValidator(new IntegerTextFieldWidget.IntValidator(0, 100));
                 break;
             case R:
                 this.textFieldR = textField;
-                textField.setTextValidator(new WidgetTextFieldInteger.IntValidator(0, 255));
+                textField.setTextValidator(new IntegerTextFieldWidget.IntValidator(0, 255));
                 break;
             case G:
                 this.textFieldG = textField;
-                textField.setTextValidator(new WidgetTextFieldInteger.IntValidator(0, 255));
+                textField.setTextValidator(new IntegerTextFieldWidget.IntValidator(0, 255));
                 break;
             case B:
                 this.textFieldB = textField;
-                textField.setTextValidator(new WidgetTextFieldInteger.IntValidator(0, 255));
+                textField.setTextValidator(new IntegerTextFieldWidget.IntValidator(0, 255));
                 break;
             case A:
                 this.textFieldA = textField;
-                textField.setTextValidator(new WidgetTextFieldInteger.IntValidator(0, 255));
+                textField.setTextValidator(new IntegerTextFieldWidget.IntValidator(0, 255));
                 break;
             default:
         }
@@ -804,12 +803,12 @@ public class ColorEditorHSVScreen extends BaseDialogScreen
         return null;
     }
 
-    protected static class TextFieldListener implements ITextFieldListener
+    protected static class TextChangeListener implements fi.dy.masa.malilib.listener.TextChangeListener
     {
         protected final ColorEditorHSVScreen gui;
         @Nullable protected final Element type;
 
-        protected TextFieldListener(@Nullable Element type, ColorEditorHSVScreen gui)
+        protected TextChangeListener(@Nullable Element type, ColorEditorHSVScreen gui)
         {
             this.gui = gui;
             this.type = type;

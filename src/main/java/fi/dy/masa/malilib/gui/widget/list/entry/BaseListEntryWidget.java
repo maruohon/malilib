@@ -1,8 +1,8 @@
 package fi.dy.masa.malilib.gui.widget.list.entry;
 
-import fi.dy.masa.malilib.gui.widget.WidgetContainer;
+import fi.dy.masa.malilib.gui.widget.ContainerWidget;
 
-public class BaseListEntryWidget extends WidgetContainer
+public class BaseListEntryWidget extends ContainerWidget
 {
     protected final int listIndex;
     protected final int originalListIndex;

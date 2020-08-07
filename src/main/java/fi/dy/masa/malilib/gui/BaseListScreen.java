@@ -6,8 +6,8 @@ import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
-import fi.dy.masa.malilib.gui.widget.WidgetBase;
-import fi.dy.masa.malilib.gui.widget.WidgetTextFieldBase;
+import fi.dy.masa.malilib.gui.widget.BaseWidget;
+import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.list.BaseListWidget;
 
 public abstract class BaseListScreen<LISTWIDGET extends BaseListWidget> extends BaseScreen
@@ -80,7 +80,7 @@ public abstract class BaseListScreen<LISTWIDGET extends BaseListWidget> extends 
     }
 
     @Override
-    protected WidgetBase getTopHoveredWidget(int mouseX, int mouseY, @Nullable WidgetBase highestFoundWidget)
+    protected BaseWidget getTopHoveredWidget(int mouseX, int mouseY, @Nullable BaseWidget highestFoundWidget)
     {
         highestFoundWidget = super.getTopHoveredWidget(mouseX, mouseY, highestFoundWidget);
         BaseListWidget listWidget = this.getListWidget();
@@ -94,9 +94,9 @@ public abstract class BaseListScreen<LISTWIDGET extends BaseListWidget> extends 
     }
 
     @Override
-    protected List<WidgetTextFieldBase> getAllTextFields()
+    protected List<BaseTextFieldWidget> getAllTextFields()
     {
-        List<WidgetTextFieldBase> textFields = new ArrayList<>(super.getAllTextFields());
+        List<BaseTextFieldWidget> textFields = new ArrayList<>(super.getAllTextFields());
         BaseListWidget listWidget = this.getListWidget();
 
         if (listWidget != null)

@@ -10,7 +10,7 @@ import fi.dy.masa.malilib.gui.DirectorySelectorScreen;
 import fi.dy.masa.malilib.gui.button.GenericButton;
 import fi.dy.masa.malilib.gui.config.BaseConfigScreen;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
-import fi.dy.masa.malilib.gui.widget.WidgetLabel;
+import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.BaseDataListEntryWidget;
 import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.StringUtils;
@@ -19,7 +19,7 @@ public abstract class BaseConfigOptionWidget<C extends ConfigInfo> extends BaseD
 {
     protected final BaseConfigScreen gui;
     protected final GenericButton resetButton;
-    protected final WidgetLabel labelWidget;
+    protected final LabelWidget labelWidget;
 
     public BaseConfigOptionWidget(int x, int y, int width, int height, int listIndex,
                                   int originalListIndex, C config, BaseConfigScreen gui)
@@ -28,7 +28,7 @@ public abstract class BaseConfigOptionWidget<C extends ConfigInfo> extends BaseD
 
         this.gui = gui;
 
-        this.labelWidget = new WidgetLabel(x + 2, y + 6, 0xFFFFFFFF, this.data.getDisplayName());
+        this.labelWidget = new LabelWidget(x + 2, y + 6, 0xFFFFFFFF, this.data.getDisplayName());
         this.labelWidget.addHoverStrings(this.data.getComment());
 
         this.resetButton = new GenericButton(x, y, -1, 20, StringUtils.translate("malilib.gui.button.reset.caps"));

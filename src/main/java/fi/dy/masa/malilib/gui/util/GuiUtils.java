@@ -15,9 +15,10 @@ import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.button.BaseButton;
 import fi.dy.masa.malilib.gui.button.GenericButton;
 import fi.dy.masa.malilib.gui.button.ButtonActionListener;
-import fi.dy.masa.malilib.gui.widget.WidgetTextFieldBase;
-import fi.dy.masa.malilib.gui.widget.WidgetTextFieldDouble;
-import fi.dy.masa.malilib.gui.widget.WidgetTextFieldInteger;
+import fi.dy.masa.malilib.gui.icon.BaseIcon;
+import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
+import fi.dy.masa.malilib.gui.widget.DoubleTextFieldWidget;
+import fi.dy.masa.malilib.gui.widget.IntegerTextFieldWidget;
 import fi.dy.masa.malilib.util.position.CoordinateValueModifier;
 import fi.dy.masa.malilib.util.PositionUtils.CoordinateType;
 import fi.dy.masa.malilib.util.StringUtils;
@@ -78,7 +79,7 @@ public class GuiUtils
     {
         x = addLabel(x, y, type, gui);
 
-        WidgetTextFieldInteger textField = new WidgetTextFieldInteger(x, y, textFieldWidth, 16, getCoordinateValue(type, pos));
+        IntegerTextFieldWidget textField = new IntegerTextFieldWidget(x, y, textFieldWidth, 16, getCoordinateValue(type, pos));
         textField.setUpdateListenerAlways(true);
         addTextFieldAndButton(x + textFieldWidth + 4, y, type, modifier, textField, addButton, gui);
     }
@@ -88,13 +89,13 @@ public class GuiUtils
     {
         x = addLabel(x, y, type, gui);
 
-        WidgetTextFieldDouble textField = new WidgetTextFieldDouble(x, y, textFieldWidth, 16, getCoordinateValue(type, pos));
+        DoubleTextFieldWidget textField = new DoubleTextFieldWidget(x, y, textFieldWidth, 16, getCoordinateValue(type, pos));
         textField.setUpdateListenerAlways(true);
         addTextFieldAndButton(x + textFieldWidth + 4, y, type, modifier, textField, addButton, gui);
     }
 
     protected static void addTextFieldAndButton(int x, int y, CoordinateType type, CoordinateValueModifier modifier,
-            WidgetTextFieldBase textField, boolean addButton, BaseScreen gui)
+                                                BaseTextFieldWidget textField, boolean addButton, BaseScreen gui)
     {
         textField.setListener((newText) -> modifier.setValueFromString(type, newText));
         gui.addWidget(textField);
@@ -102,7 +103,7 @@ public class GuiUtils
         if (addButton)
         {
             String hover = StringUtils.translate("malilib.gui.button.hover.plus_minus_tip");
-            GenericButton button = new GenericButton(x, y, BaseGuiIcon.BTN_PLUSMINUS_16, hover);
+            GenericButton button = new GenericButton(x, y, BaseIcon.BTN_PLUSMINUS_16, hover);
             gui.addButton(button, new ButtonListenerCoordinateInput(type, modifier));
         }
     }

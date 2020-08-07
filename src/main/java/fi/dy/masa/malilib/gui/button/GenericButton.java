@@ -3,14 +3,14 @@ package fi.dy.masa.malilib.gui.button;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
-import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
+import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.render.RenderUtils;
-import fi.dy.masa.malilib.gui.util.HorizontalAlignment;
+import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 
 public class GenericButton extends BaseButton
 {
     @Nullable
-    protected final Supplier<IGuiIcon> iconSupplier;
+    protected final Supplier<Icon> iconSupplier;
     protected HorizontalAlignment alignment = HorizontalAlignment.LEFT;
     protected boolean textCentered;
     protected boolean customIconOffset;
@@ -36,22 +36,22 @@ public class GenericButton extends BaseButton
 
     public GenericButton(int x, int y, int width, int height, String text, String... hoverStrings)
     {
-        this(x, y, width, height, text, (Supplier<IGuiIcon>) null, hoverStrings);
+        this(x, y, width, height, text, (Supplier<Icon>) null, hoverStrings);
 
         this.textCentered = true;
     }
 
-    public GenericButton(int x, int y, int width, int height, String text, IGuiIcon icon, String... hoverStrings)
+    public GenericButton(int x, int y, int width, int height, String text, Icon icon, String... hoverStrings)
     {
         this(x, y, width, height, text, () -> icon, hoverStrings);
     }
 
-    public GenericButton(int x, int y, int width, int height, String text, Supplier<IGuiIcon> iconSupplier, String... hoverStrings)
+    public GenericButton(int x, int y, int width, int height, String text, Supplier<Icon> iconSupplier, String... hoverStrings)
     {
         super(x, y, width, height, text);
 
         this.iconSupplier = iconSupplier;
-        IGuiIcon icon = iconSupplier != null ? iconSupplier.get() : null;
+        Icon icon = iconSupplier != null ? iconSupplier.get() : null;
 
         if (this.automaticWidth && icon != null)
         {
@@ -64,12 +64,12 @@ public class GenericButton extends BaseButton
         }
     }
 
-    public GenericButton(int x, int y, IGuiIcon icon, String... hoverStrings)
+    public GenericButton(int x, int y, Icon icon, String... hoverStrings)
     {
         this(x, y, () -> icon, hoverStrings);
     }
 
-    public GenericButton(int x, int y, Supplier<IGuiIcon> iconSupplier, String... hoverStrings)
+    public GenericButton(int x, int y, Supplier<Icon> iconSupplier, String... hoverStrings)
     {
         this(x, y, iconSupplier.get().getWidth(), iconSupplier.get().getHeight(), "", iconSupplier, hoverStrings);
 
@@ -198,7 +198,7 @@ public class GenericButton extends BaseButton
             }
 
             int iconClearing = 0;
-            IGuiIcon icon = this.iconSupplier != null ? this.iconSupplier.get() : null;
+            Icon icon = this.iconSupplier != null ? this.iconSupplier.get() : null;
 
             if (icon != null)
             {
@@ -243,18 +243,18 @@ public class GenericButton extends BaseButton
         }
     }
 
-    public static GenericButton createIconOnly(int x, int y, IGuiIcon icon)
+    public static GenericButton createIconOnly(int x, int y, Icon icon)
     {
         return createIconOnly(x, y, icon.getWidth() + 2, icon.getHeight() + 2, () -> icon);
     }
 
-    public static GenericButton createIconOnly(int x, int y, Supplier<IGuiIcon> iconSupplier)
+    public static GenericButton createIconOnly(int x, int y, Supplier<Icon> iconSupplier)
     {
-        IGuiIcon icon = iconSupplier.get();
+        Icon icon = iconSupplier.get();
         return createIconOnly(x, y, icon.getWidth() + 2, icon.getHeight() + 2, iconSupplier);
     }
 
-    public static GenericButton createIconOnly(int x, int y, int width, int height, Supplier<IGuiIcon> iconSupplier)
+    public static GenericButton createIconOnly(int x, int y, int width, int height, Supplier<Icon> iconSupplier)
     {
         GenericButton button = new GenericButton(x, y, iconSupplier);
 

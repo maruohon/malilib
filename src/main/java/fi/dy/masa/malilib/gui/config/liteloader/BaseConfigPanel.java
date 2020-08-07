@@ -14,7 +14,6 @@ import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.config.BaseConfigScreen;
 import fi.dy.masa.malilib.gui.config.ModConfigScreen;
-import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 
 public abstract class BaseConfigPanel extends AbstractConfigPanel
@@ -247,7 +246,7 @@ public abstract class BaseConfigPanel extends AbstractConfigPanel
         }
     }
 
-    private class DialogHandler implements IDialogHandler
+    private class DialogHandler implements fi.dy.masa.malilib.gui.util.DialogHandler
     {
         @Nullable private final BaseConfigScreen selectedPanel;
 

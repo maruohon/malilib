@@ -13,34 +13,34 @@ import org.lwjgl.input.Keyboard;
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.TextInputScreen;
-import fi.dy.masa.malilib.gui.interfaces.IDirectoryCache;
-import fi.dy.masa.malilib.gui.interfaces.IDirectoryNavigator;
-import fi.dy.masa.malilib.gui.interfaces.IFileBrowserIconProvider;
-import fi.dy.masa.malilib.gui.util.DefaultFileBrowserIconProvider;
+import fi.dy.masa.malilib.gui.widget.util.DirectoryCache;
+import fi.dy.masa.malilib.gui.widget.util.DirectoryNavigator;
+import fi.dy.masa.malilib.gui.icon.FileBrowserIconProvider;
+import fi.dy.masa.malilib.gui.icon.DefaultFileBrowserIconProvider;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
-import fi.dy.masa.malilib.gui.widget.WidgetDirectoryNavigation;
+import fi.dy.masa.malilib.gui.widget.DirectoryNavigationWidget;
 import fi.dy.masa.malilib.gui.widget.list.BaseFileBrowserWidget.DirectoryEntry;
 import fi.dy.masa.malilib.gui.widget.list.entry.DirectoryEntryWidget;
 import fi.dy.masa.malilib.util.DirectoryCreator;
 import fi.dy.masa.malilib.util.FileUtils;
 
-public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implements IDirectoryNavigator
+public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implements DirectoryNavigator
 {
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public static final FileFilter ALWAYS_FALSE_FILE_FILTER = (file) -> false;
     public static final FileFilter ALWAYS_TRUE_FILE_FILTER = File::isFile;
 
-    protected final IFileBrowserIconProvider iconProvider = new DefaultFileBrowserIconProvider();
-    protected final WidgetDirectoryNavigation navigationWidget;
+    protected final FileBrowserIconProvider iconProvider = new DefaultFileBrowserIconProvider();
+    protected final DirectoryNavigationWidget navigationWidget;
     protected final File rootDirectory;
-    @Nullable protected final IDirectoryCache cache;
+    @Nullable protected final DirectoryCache cache;
     protected FileFilter fileFilter;
     protected String browserContext;
     protected File currentDirectory;
 
     public BaseFileBrowserWidget(int x, int y, int width, int height, File defaultDirectory, File rootDirectory,
-                                 @Nullable IDirectoryCache cache, @Nullable String browserContext)
+                                 @Nullable DirectoryCache cache, @Nullable String browserContext)
     {
         super(x, y, width, height, Collections::emptyList);
 
@@ -57,7 +57,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
             this.currentDirectory = defaultDirectory;
         }
 
-        this.navigationWidget = new WidgetDirectoryNavigation(this.getX() + 2, this.getY() + 3, width, 14,
+        this.navigationWidget = new DirectoryNavigationWidget(this.getX() + 2, this.getY() + 3, width, 14,
                                                               this.currentDirectory, rootDirectory, this, this.getIconProvider(), this.getRootDirectoryDisplayName());
 
         this.setEntryWidgetFactory((wx, wy, ww, wh, li, oi, entry, lw) ->
@@ -121,7 +121,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         this.drawAdditionalContents(mouseX, mouseY);
     }
 
-    public IFileBrowserIconProvider getIconProvider()
+    public FileBrowserIconProvider getIconProvider()
     {
         return this.iconProvider;
     }

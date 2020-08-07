@@ -4,10 +4,10 @@ import java.util.List;
 import java.util.function.Consumer;
 import fi.dy.masa.malilib.gui.button.GenericButton;
 import fi.dy.masa.malilib.gui.button.ButtonActionListener;
-import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
-import fi.dy.masa.malilib.gui.util.BaseGuiIcon;
-import fi.dy.masa.malilib.gui.widget.WidgetLabel;
-import fi.dy.masa.malilib.gui.widget.WidgetTextFieldBase;
+import fi.dy.masa.malilib.gui.icon.Icon;
+import fi.dy.masa.malilib.gui.icon.BaseIcon;
+import fi.dy.masa.malilib.gui.widget.LabelWidget;
+import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.render.RenderUtils;
 
@@ -17,8 +17,8 @@ public class StringListEditEntryWidget extends BaseDataListEntryWidget<String>
     protected final List<String> stringList;
     protected final String defaultValue;
     protected final String initialValue;
-    protected final WidgetLabel labelWidget;
-    protected final WidgetTextFieldBase textField;
+    protected final LabelWidget labelWidget;
+    protected final BaseTextFieldWidget textField;
     protected final GenericButton addButton;
     protected final GenericButton removeButton;
     protected final GenericButton upButton;
@@ -39,8 +39,8 @@ public class StringListEditEntryWidget extends BaseDataListEntryWidget<String>
 
         int textFieldWidth = width - 142;
 
-        this.labelWidget = new WidgetLabel(x + 2, y + 7, 0xC0C0C0C0, String.format("%5d:", originalListIndex + 1));
-        this.textField = new WidgetTextFieldBase(x + 28, y + 2, textFieldWidth, 16, initialValue);
+        this.labelWidget = new LabelWidget(x + 2, y + 7, 0xC0C0C0C0, String.format("%5d:", originalListIndex + 1));
+        this.textField = new BaseTextFieldWidget(x + 28, y + 2, textFieldWidth, 16, initialValue);
 
         this.addButton    = this.createListActionButton(x, y, ButtonType.ADD);
         this.removeButton = this.createListActionButton(x, y, ButtonType.REMOVE);
@@ -225,23 +225,23 @@ public class StringListEditEntryWidget extends BaseDataListEntryWidget<String>
 
     protected enum ButtonType
     {
-        ADD         (BaseGuiIcon.PLUS, "malilib.gui.button.hover.list.add_after", (w) -> w.insertEntry(false)),
-        REMOVE      (BaseGuiIcon.MINUS, "malilib.gui.button.hover.list.remove", StringListEditEntryWidget::removeEntry),
-        MOVE_UP     (BaseGuiIcon.ARROW_UP, "malilib.gui.button.hover.list.move_up", (w) -> w.moveEntry(false)),
-        MOVE_DOWN   (BaseGuiIcon.ARROW_DOWN, "malilib.gui.button.hover.list.move_down", (w) -> w.moveEntry(true));
+        ADD         (BaseIcon.PLUS, "malilib.gui.button.hover.list.add_after", (w) -> w.insertEntry(false)),
+        REMOVE      (BaseIcon.MINUS, "malilib.gui.button.hover.list.remove", StringListEditEntryWidget::removeEntry),
+        MOVE_UP     (BaseIcon.ARROW_UP, "malilib.gui.button.hover.list.move_up", (w) -> w.moveEntry(false)),
+        MOVE_DOWN   (BaseIcon.ARROW_DOWN, "malilib.gui.button.hover.list.move_down", (w) -> w.moveEntry(true));
 
-        protected final BaseGuiIcon icon;
+        protected final BaseIcon icon;
         protected final String translationKey;
         protected final Consumer<StringListEditEntryWidget> action;
 
-        ButtonType(BaseGuiIcon icon, String translationKey, Consumer<StringListEditEntryWidget> action)
+        ButtonType(BaseIcon icon, String translationKey, Consumer<StringListEditEntryWidget> action)
         {
             this.icon = icon;
             this.translationKey = translationKey;
             this.action = action;
         }
 
-        public IGuiIcon getIcon()
+        public Icon getIcon()
         {
             return this.icon;
         }

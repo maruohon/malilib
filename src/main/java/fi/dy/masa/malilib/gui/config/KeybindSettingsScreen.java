@@ -12,7 +12,7 @@ import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.BaseDialogScreen;
 import fi.dy.masa.malilib.gui.button.BooleanConfigButton;
 import fi.dy.masa.malilib.gui.button.OptionListConfigButton;
-import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
+import fi.dy.masa.malilib.gui.util.DialogHandler;
 import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.input.KeyAction;
 import fi.dy.masa.malilib.input.KeyBindSettings;
@@ -31,11 +31,11 @@ public class KeybindSettingsScreen extends BaseDialogScreen
     protected final BooleanConfig cfgExclusive;
     protected final BooleanConfig cfgCancel;
     protected final List<BaseConfig<?>> configList;
-    @Nullable protected final IDialogHandler dialogHandler;
+    @Nullable protected final DialogHandler dialogHandler;
     protected int labelWidth;
     protected int configWidth;
 
-    public KeybindSettingsScreen(KeyBind keybind, String name, @Nullable IDialogHandler dialogHandler, GuiScreen parent)
+    public KeybindSettingsScreen(KeyBind keybind, String name, @Nullable DialogHandler dialogHandler, GuiScreen parent)
     {
         this.keybind = keybind;
         this.keybindName = name;

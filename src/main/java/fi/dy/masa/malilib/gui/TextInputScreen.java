@@ -3,8 +3,8 @@ package fi.dy.masa.malilib.gui;
 import javax.annotation.Nullable;
 import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.listener.TaskCompletionListener;
-import fi.dy.masa.malilib.message.MessageConsumer;
-import fi.dy.masa.malilib.message.MessageType;
+import fi.dy.masa.malilib.render.message.MessageConsumer;
+import fi.dy.masa.malilib.render.message.MessageType;
 import fi.dy.masa.malilib.util.consumer.StringConsumer;
 
 public class TextInputScreen extends BaseTextInputScreen implements TaskCompletionListener

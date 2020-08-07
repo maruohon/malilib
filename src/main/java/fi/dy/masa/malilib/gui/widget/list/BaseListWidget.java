@@ -9,28 +9,28 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.gui.BaseScreen;
-import fi.dy.masa.malilib.gui.util.BaseGuiIcon;
+import fi.dy.masa.malilib.gui.icon.BaseIcon;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
-import fi.dy.masa.malilib.gui.util.Padding;
-import fi.dy.masa.malilib.gui.widget.WidgetBase;
-import fi.dy.masa.malilib.gui.widget.WidgetContainer;
-import fi.dy.masa.malilib.gui.widget.WidgetScrollBar;
-import fi.dy.masa.malilib.gui.widget.WidgetSearchBar;
-import fi.dy.masa.malilib.gui.widget.WidgetTextFieldBase;
+import fi.dy.masa.malilib.gui.position.Padding;
+import fi.dy.masa.malilib.gui.widget.BaseWidget;
+import fi.dy.masa.malilib.gui.widget.ContainerWidget;
+import fi.dy.masa.malilib.gui.widget.ScrollBarWidget;
+import fi.dy.masa.malilib.gui.widget.SearchBarWidget;
+import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.BaseListEntryWidget;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.render.RenderUtils;
-import fi.dy.masa.malilib.gui.util.HorizontalAlignment;
+import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 
-public abstract class BaseListWidget extends WidgetContainer
+public abstract class BaseListWidget extends ContainerWidget
 {
     @Nullable protected BaseScreen parentScreen;
-    @Nullable protected WidgetSearchBar searchBarWidget;
-    @Nullable protected WidgetContainer headerWidget;
+    @Nullable protected SearchBarWidget searchBarWidget;
+    @Nullable protected ContainerWidget headerWidget;
     @Nullable protected EventListener entryRefreshListener;
     protected final ArrayList<BaseListEntryWidget> listWidgets = new ArrayList<>();
     protected final Padding listPosition = new Padding(2, 2, 2, 2);
-    protected final WidgetScrollBar scrollBar;
+    protected final ScrollBarWidget scrollBar;
 
     protected int entryWidgetStartX;
     protected int entryWidgetStartY;
@@ -48,8 +48,8 @@ public abstract class BaseListWidget extends WidgetContainer
         super(x, y, width, height);
 
         // The position gets updated in setSize()
-        this.scrollBar = new WidgetScrollBar(0, 0, 8, height);
-        this.scrollBar.setArrowTextures(BaseGuiIcon.SMALL_ARROW_UP, BaseGuiIcon.SMALL_ARROW_DOWN);
+        this.scrollBar = new ScrollBarWidget(0, 0, 8, height);
+        this.scrollBar.setArrowTextures(BaseIcon.SMALL_ARROW_UP, BaseIcon.SMALL_ARROW_DOWN);
     }
 
     public abstract int getFilteredListEntryCount();
@@ -125,8 +125,8 @@ public abstract class BaseListWidget extends WidgetContainer
         int topPadding = this.listPosition.getTopPadding();
         int bottomPadding = this.listPosition.getBottomPadding();
 
-        WidgetSearchBar search = this.searchBarWidget;
-        WidgetContainer header = this.headerWidget;
+        SearchBarWidget search = this.searchBarWidget;
+        ContainerWidget header = this.headerWidget;
         int x = this.getX();
         int y = this.getY();
         int offY = 0;
@@ -219,13 +219,13 @@ public abstract class BaseListWidget extends WidgetContainer
         return listPosition;
     }
 
-    public WidgetScrollBar getScrollbar()
+    public ScrollBarWidget getScrollbar()
     {
         return this.scrollBar;
     }
 
     @Nullable
-    public WidgetSearchBar getSearchBarWidget()
+    public SearchBarWidget getSearchBarWidget()
     {
         return this.searchBarWidget;
     }
@@ -252,8 +252,8 @@ public abstract class BaseListWidget extends WidgetContainer
 
     public void addDefaultSearchBar()
     {
-        this.searchBarWidget = new WidgetSearchBar(this.getX() + 2, this.getY() + 3,
-                                                   this.getWidth() - 14, 14, 0, BaseGuiIcon.SEARCH,
+        this.searchBarWidget = new SearchBarWidget(this.getX() + 2, this.getY() + 3,
+                                                   this.getWidth() - 14, 14, 0, BaseIcon.SEARCH,
                                                    HorizontalAlignment.LEFT);
     }
 
@@ -346,7 +346,7 @@ public abstract class BaseListWidget extends WidgetContainer
 
     protected boolean onMouseClickedSearchBar(int mouseX, int mouseY, int mouseButton)
     {
-        WidgetSearchBar widget = this.getSearchBarWidget();
+        SearchBarWidget widget = this.getSearchBarWidget();
 
         if (widget != null)
         {
@@ -463,21 +463,21 @@ public abstract class BaseListWidget extends WidgetContainer
     }
 
     @Override
-    public WidgetBase getTopHoveredWidget(int mouseX, int mouseY, WidgetBase highestFoundWidget)
+    public BaseWidget getTopHoveredWidget(int mouseX, int mouseY, BaseWidget highestFoundWidget)
     {
         highestFoundWidget = super.getTopHoveredWidget(mouseX, mouseY, highestFoundWidget);
-        highestFoundWidget = WidgetBase.getTopHoveredWidgetFromList(this.listWidgets, mouseX, mouseY, highestFoundWidget);
+        highestFoundWidget = BaseWidget.getTopHoveredWidgetFromList(this.listWidgets, mouseX, mouseY, highestFoundWidget);
         return highestFoundWidget;
     }
 
     @Override
-    public List<WidgetTextFieldBase> getAllTextFields()
+    public List<BaseTextFieldWidget> getAllTextFields()
     {
-        List<WidgetTextFieldBase> textFields = new ArrayList<>(super.getAllTextFields());
+        List<BaseTextFieldWidget> textFields = new ArrayList<>(super.getAllTextFields());
 
         if (this.listWidgets.isEmpty() == false)
         {
-            for (WidgetBase widget : this.listWidgets)
+            for (BaseWidget widget : this.listWidgets)
             {
                 textFields.addAll(widget.getAllTextFields());
             }

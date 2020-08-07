@@ -2,17 +2,17 @@ package fi.dy.masa.malilib.util;
 
 import java.io.File;
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.gui.interfaces.IDirectoryNavigator;
+import fi.dy.masa.malilib.gui.widget.util.DirectoryNavigator;
 import fi.dy.masa.malilib.util.consumer.StringConsumer;
-import fi.dy.masa.malilib.message.MessageType;
-import fi.dy.masa.malilib.message.MessageUtils;
+import fi.dy.masa.malilib.render.message.MessageType;
+import fi.dy.masa.malilib.render.message.MessageUtils;
 
 public class DirectoryCreator implements StringConsumer
 {
     protected final File dir;
-    @Nullable protected final IDirectoryNavigator navigator;
+    @Nullable protected final DirectoryNavigator navigator;
 
-    public DirectoryCreator(File dir, @Nullable IDirectoryNavigator navigator)
+    public DirectoryCreator(File dir, @Nullable DirectoryNavigator navigator)
     {
         this.dir = dir;
         this.navigator = navigator;

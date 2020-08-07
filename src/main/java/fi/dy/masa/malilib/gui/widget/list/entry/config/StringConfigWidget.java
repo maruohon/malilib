@@ -2,13 +2,13 @@ package fi.dy.masa.malilib.gui.widget.list.entry.config;
 
 import fi.dy.masa.malilib.config.option.StringConfig;
 import fi.dy.masa.malilib.gui.config.BaseConfigScreen;
-import fi.dy.masa.malilib.gui.widget.WidgetTextFieldBase;
+import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 
 public class StringConfigWidget extends BaseConfigOptionWidget<StringConfig>
 {
     protected final StringConfig config;
     protected final String initialValue;
-    protected final WidgetTextFieldBase textField;
+    protected final BaseTextFieldWidget textField;
 
     public StringConfigWidget(int x, int y, int width, int height, int listIndex,
                               int originalListIndex, StringConfig config, BaseConfigScreen gui)
@@ -18,7 +18,7 @@ public class StringConfigWidget extends BaseConfigOptionWidget<StringConfig>
         this.config = config;
         this.initialValue = this.config.getStringValue();
 
-        this.textField = new WidgetTextFieldBase(x, y, 20, 16, this.config.getStringValue());
+        this.textField = new BaseTextFieldWidget(x, y, 20, 16, this.config.getStringValue());
         this.textField.setListener((str) -> {
             this.config.setValueFromString(str);
             this.resetButton.setEnabled(this.config.isModified());

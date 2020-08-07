@@ -2,14 +2,14 @@ package fi.dy.masa.malilib.gui.widget.list.entry.config;
 
 import fi.dy.masa.malilib.config.option.ColorConfig;
 import fi.dy.masa.malilib.gui.config.BaseConfigScreen;
-import fi.dy.masa.malilib.gui.widget.WidgetColorIndicator;
-import fi.dy.masa.malilib.gui.widget.WidgetTextFieldBase;
+import fi.dy.masa.malilib.gui.widget.ColorIndicatorWidget;
+import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 
 public class ColorConfigWidget extends BaseConfigOptionWidget<ColorConfig>
 {
     protected final ColorConfig config;
-    protected final WidgetColorIndicator colorIndicatorWidget;
-    protected final WidgetTextFieldBase textField;
+    protected final ColorIndicatorWidget colorIndicatorWidget;
+    protected final BaseTextFieldWidget textField;
     protected final int initialValue;
     protected final String initialStringValue;
 
@@ -22,12 +22,12 @@ public class ColorConfigWidget extends BaseConfigOptionWidget<ColorConfig>
         this.initialValue = this.config.getIntegerValue();
         this.initialStringValue = String.valueOf(this.initialValue);
 
-        this.colorIndicatorWidget = new WidgetColorIndicator(x, y, 18, 18, this.config, (newValue) -> {
+        this.colorIndicatorWidget = new ColorIndicatorWidget(x, y, 18, 18, this.config, (newValue) -> {
             this.config.setIntegerValue(newValue);
             this.reAddSubWidgets();
         });
 
-        this.textField = new WidgetTextFieldBase(x, y, 80, 16, this.config.getStringValue());
+        this.textField = new BaseTextFieldWidget(x, y, 80, 16, this.config.getStringValue());
         this.textField.setListener((str) -> {
             this.config.setValueFromString(str);
             this.resetButton.setEnabled(this.config.isModified());

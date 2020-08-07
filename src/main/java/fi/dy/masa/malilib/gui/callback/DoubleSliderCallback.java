@@ -3,9 +3,8 @@ package fi.dy.masa.malilib.gui.callback;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.option.DoubleConfig;
 import fi.dy.masa.malilib.gui.button.BaseButton;
-import fi.dy.masa.malilib.gui.interfaces.ISliderCallbackSteps;
 
-public class DoubleSliderCallback implements ISliderCallbackSteps
+public class DoubleSliderCallback implements SteppedSliderCallback
 {
     protected final DoubleConfig config;
     protected final BaseButton resetButton;

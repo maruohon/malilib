@@ -6,12 +6,12 @@ import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.gui.button.BaseButton;
 import fi.dy.masa.malilib.gui.button.GenericButton;
 import fi.dy.masa.malilib.gui.button.ButtonActionListener;
-import fi.dy.masa.malilib.gui.widget.WidgetTextFieldBase;
+import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public abstract class BaseTextInputScreen extends BaseDialogScreen
 {
-    protected final WidgetTextFieldBase textField;
+    protected final BaseTextFieldWidget textField;
     protected final String originalText;
 
     public BaseTextInputScreen(String titleKey, String defaultText, @Nullable GuiScreen parent)
@@ -24,7 +24,7 @@ public abstract class BaseTextInputScreen extends BaseDialogScreen
         this.setWidthAndHeight(260, 100);
         this.centerOnScreen();
 
-        this.textField = new WidgetTextFieldBase(this.dialogLeft + 12, this.dialogTop + 40, 240, 20, this.originalText);
+        this.textField = new BaseTextFieldWidget(this.dialogLeft + 12, this.dialogTop + 40, 240, 20, this.originalText);
         this.textField.setFocused(true);
     }
 

@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.function.BiFunction;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.gui.button.ButtonActionListener;
-import fi.dy.masa.malilib.gui.listener.ButtonListenerConfigGuiTab;
+import fi.dy.masa.malilib.gui.listener.ConfigScreenTabButtonListener;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class BaseConfigTab implements ConfigTab
@@ -18,7 +18,7 @@ public class BaseConfigTab implements ConfigTab
 
     public BaseConfigTab(String translationKey, int configWidth, boolean useKeyBindSearch, List<? extends ConfigInfo> configs)
     {
-        this(translationKey, configWidth, useKeyBindSearch, configs, ButtonListenerConfigGuiTab::new);
+        this(translationKey, configWidth, useKeyBindSearch, configs, ConfigScreenTabButtonListener::new);
     }
 
     public BaseConfigTab(String translationKey, int configWidth, boolean useKeyBindSearch,

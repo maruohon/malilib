@@ -14,7 +14,7 @@ public class MaLiLibInitHandler implements InitializationHandler
     public void registerModHandlers()
     {
         ConfigManager.INSTANCE.registerConfigHandler(new MaLiLibConfigs());
-        KeyBindManager.INSTANCE.registerKeyBindProvider(MaLiLibInputHandler.getInstance());
+        KeyBindManager.INSTANCE.registerKeyBindProvider(MaLiLibKeyBindProvider.INSTANCE);
 
         MaLiLibConfigs.Generic.OPEN_GUI_CONFIGS.getKeyBind().setCallback(new CallbackOpenConfigGui());
     }
@@ -24,7 +24,7 @@ public class MaLiLibInitHandler implements InitializationHandler
         @Override
         public boolean onKeyAction(KeyAction action, KeyBind key)
         {
-            BaseScreen.openGui(new MaLiLibConfigGui());
+            BaseScreen.openGui(new MaLiLibConfigScreen());
             return true;
         }
     }

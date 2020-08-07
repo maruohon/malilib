@@ -6,9 +6,9 @@ import javax.annotation.Nullable;
 import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.gui.button.GenericButton;
 import fi.dy.masa.malilib.gui.button.ButtonActionListener;
-import fi.dy.masa.malilib.message.MessageConsumer;
-import fi.dy.masa.malilib.message.MessageType;
-import fi.dy.masa.malilib.gui.widget.WidgetLabel;
+import fi.dy.masa.malilib.render.message.MessageConsumer;
+import fi.dy.masa.malilib.render.message.MessageType;
+import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.listener.TaskCompletionListener;
 import fi.dy.masa.malilib.listener.ConfirmationListener;
 import fi.dy.masa.malilib.util.StringUtils;
@@ -40,7 +40,7 @@ public class ConfirmActionScreen extends BaseDialogScreen implements TaskComplet
 
         int x = this.dialogLeft + 10;
 
-        this.addWidget(new WidgetLabel(x, this.dialogTop + 20, this.textColor, this.messageLines));
+        this.addWidget(new LabelWidget(x, this.dialogTop + 20, this.textColor, this.messageLines));
 
         int buttonWidth = this.getButtonWidth();
         int y = this.dialogTop + this.dialogHeight - 26;

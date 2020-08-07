@@ -5,15 +5,22 @@ import fi.dy.masa.malilib.util.StringUtils;
 
 public class KeyBindCategory implements Comparable<KeyBindCategory>
 {
+    private final String modId;
     private final String modName;
     private final String categoryName;
     private final List<? extends Hotkey> hotkeys;
 
-    public KeyBindCategory(String modName, String categoryName, List<? extends Hotkey> hotkeys)
+    public KeyBindCategory(String modId, String modName, String categoryName, List<? extends Hotkey> hotkeys)
     {
+        this.modId = modId;
         this.modName = modName;
         this.categoryName = categoryName;
         this.hotkeys = hotkeys;
+    }
+
+    public String getModId()
+    {
+        return this.modId;
     }
 
     public String getModName()
@@ -34,7 +41,7 @@ public class KeyBindCategory implements Comparable<KeyBindCategory>
     @Override
     public int compareTo(KeyBindCategory other)
     {
-        int val = this.modName.compareTo(other.modName);
+        int val = this.modId.compareTo(other.modId);
 
         if (val != 0)
         {
@@ -61,12 +68,12 @@ public class KeyBindCategory implements Comparable<KeyBindCategory>
         }
         else if (!categoryName.equals(other.categoryName))
             return false;
-        if (modName == null)
+        if (modId == null)
         {
-            if (other.modName != null)
+            if (other.modId != null)
                 return false;
         }
-        else if (!modName.equals(other.modName))
+        else if (!modId.equals(other.modId))
             return false;
         return true;
     }

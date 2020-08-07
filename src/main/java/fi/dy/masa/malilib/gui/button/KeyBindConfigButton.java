@@ -7,7 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.input.Keyboard;
 import fi.dy.masa.malilib.event.dispatch.KeyBindManager;
 import fi.dy.masa.malilib.gui.BaseScreen;
-import fi.dy.masa.malilib.gui.interfaces.IKeybindConfigGui;
+import fi.dy.masa.malilib.gui.config.KeybindEditingScreen;
 import fi.dy.masa.malilib.input.Hotkey;
 import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.input.KeyBindCategory;
@@ -16,7 +16,7 @@ import fi.dy.masa.malilib.listener.EventListener;
 
 public class KeyBindConfigButton extends GenericButton
 {
-    @Nullable protected final IKeybindConfigGui host;
+    @Nullable protected final KeybindEditingScreen host;
     @Nullable protected EventListener valueChangeListener;
     protected final List<String> overlapInfo = new ArrayList<>();
     protected final List<Integer> newKeys = new ArrayList<>();
@@ -24,7 +24,7 @@ public class KeyBindConfigButton extends GenericButton
     protected boolean selected;
     protected boolean firstKey;
 
-    public KeyBindConfigButton(int x, int y, int width, int height, KeyBind keyBind, @Nullable IKeybindConfigGui host)
+    public KeyBindConfigButton(int x, int y, int width, int height, KeyBind keyBind, @Nullable KeybindEditingScreen host)
     {
         super(x, y, width, height, "");
 
