@@ -13,14 +13,14 @@ import org.lwjgl.input.Keyboard;
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.TextInputScreen;
-import fi.dy.masa.malilib.gui.widget.util.DirectoryCache;
-import fi.dy.masa.malilib.gui.widget.util.DirectoryNavigator;
-import fi.dy.masa.malilib.gui.icon.FileBrowserIconProvider;
 import fi.dy.masa.malilib.gui.icon.DefaultFileBrowserIconProvider;
+import fi.dy.masa.malilib.gui.icon.FileBrowserIconProvider;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.DirectoryNavigationWidget;
 import fi.dy.masa.malilib.gui.widget.list.BaseFileBrowserWidget.DirectoryEntry;
 import fi.dy.masa.malilib.gui.widget.list.entry.DirectoryEntryWidget;
+import fi.dy.masa.malilib.gui.widget.util.DirectoryCache;
+import fi.dy.masa.malilib.gui.widget.util.DirectoryNavigator;
 import fi.dy.masa.malilib.util.DirectoryCreator;
 import fi.dy.masa.malilib.util.FileUtils;
 
@@ -70,63 +70,14 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     }
 
     @Override
-    public void reAddSubWidgets()
-    {
-        super.reAddSubWidgets();
-        this.updateDirectoryNavigationWidget();
-    }
-
-    @Override
     protected void createSearchBarWidget()
     {
         this.searchBarWidget = this.navigationWidget;
     }
 
-    @Override
-    public boolean onKeyTyped(char typedChar, int keyCode)
-    {
-        if (super.onKeyTyped(typedChar, keyCode))
-        {
-            return true;
-        }
-
-        if ((keyCode == Keyboard.KEY_BACK || keyCode == Keyboard.KEY_LEFT) && this.currentDirectoryIsRoot() == false)
-        {
-            this.switchToParentDirectory();
-            return true;
-        }
-        else if ((keyCode == Keyboard.KEY_RIGHT || keyCode == Keyboard.KEY_RETURN) &&
-                  this.getLastSelectedEntry() != null && this.getLastSelectedEntry().getType() == DirectoryEntryType.DIRECTORY)
-        {
-            this.switchToDirectory(new File(this.getLastSelectedEntry().getDirectory(), this.getLastSelectedEntry().getName()));
-            return true;
-        }
-        else if (keyCode == Keyboard.KEY_N && BaseScreen.isCtrlDown() && BaseScreen.isShiftDown())
-        {
-            DirectoryCreator creator = new DirectoryCreator(this.getCurrentDirectory(), this);
-            TextInputScreen gui = new TextInputScreen("malilib.gui.title.create_directory", "", GuiUtils.getCurrentScreen(), creator);
-            BaseScreen.openPopupGui(gui);
-            return true;
-        }
-
-        return false;
-    }
-
-    @Override
-    public void render(int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
-    {
-        super.render(mouseX, mouseY, isActiveGui, hovered);
-
-        this.drawAdditionalContents(mouseX, mouseY);
-    }
-
     public FileBrowserIconProvider getIconProvider()
     {
         return this.iconProvider;
-    }
-
-    protected void drawAdditionalContents(int mouseX, int mouseY)
-    {
     }
 
     @Override
@@ -171,6 +122,12 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     protected void updateDirectoryNavigationWidget()
     {
         this.navigationWidget.setCurrentDirectory(this.currentDirectory);
+    }
+
+    @Override
+    public List<DirectoryEntry> getFilteredEntries()
+    {
+        return this.filteredContents;
     }
 
     protected void addNonFilteredContents(File dir)
@@ -317,6 +274,48 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         {
             this.switchToRootDirectory();
         }
+    }
+
+    @Override
+    public boolean onKeyTyped(char typedChar, int keyCode)
+    {
+        if (super.onKeyTyped(typedChar, keyCode))
+        {
+            return true;
+        }
+
+        if ((keyCode == Keyboard.KEY_BACK || keyCode == Keyboard.KEY_LEFT) && this.currentDirectoryIsRoot() == false)
+        {
+            this.switchToParentDirectory();
+            return true;
+        }
+        else if ((keyCode == Keyboard.KEY_RIGHT || keyCode == Keyboard.KEY_RETURN) &&
+                         this.getLastSelectedEntry() != null && this.getLastSelectedEntry().getType() == DirectoryEntryType.DIRECTORY)
+        {
+            this.switchToDirectory(new File(this.getLastSelectedEntry().getDirectory(), this.getLastSelectedEntry().getName()));
+            return true;
+        }
+        else if (keyCode == Keyboard.KEY_N && BaseScreen.isCtrlDown() && BaseScreen.isShiftDown())
+        {
+            DirectoryCreator creator = new DirectoryCreator(this.getCurrentDirectory(), this);
+            TextInputScreen gui = new TextInputScreen("malilib.gui.title.create_directory", "", GuiUtils.getCurrentScreen(), creator);
+            BaseScreen.openPopupGui(gui);
+            return true;
+        }
+
+        return false;
+    }
+
+    protected void drawAdditionalContents(int mouseX, int mouseY)
+    {
+    }
+
+    @Override
+    public void render(int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
+    {
+        super.render(mouseX, mouseY, isActiveGui, hovered);
+
+        this.drawAdditionalContents(mouseX, mouseY);
     }
 
     public static class DirectoryEntry implements Comparable<DirectoryEntry>
