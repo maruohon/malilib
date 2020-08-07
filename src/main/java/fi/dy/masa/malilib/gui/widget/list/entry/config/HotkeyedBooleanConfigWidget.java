@@ -31,7 +31,9 @@ public class HotkeyedBooleanConfigWidget extends BaseConfigOptionWidget<Hotkeyed
 
         this.resetButton.setActionListener((btn, mbtn) -> {
             this.config.resetToDefault();
-            this.reAddSubWidgets();
+            this.resetButton.setEnabled(this.config.isModified());
+            this.booleanButton.updateDisplayString();
+            this.hotkeyButton.updateDisplayString();
         });
     }
 

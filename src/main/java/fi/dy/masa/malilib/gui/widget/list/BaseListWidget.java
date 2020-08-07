@@ -69,18 +69,27 @@ public abstract class BaseListWidget extends ContainerWidget
     }
 
     @Override
+    protected void onPositionChanged(int oldX, int oldY)
+    {
+        this.updatePositioningAndElements();
+    }
+
+    @Override
     protected void onSizeChanged()
     {
-        this.updateEntryWidgetPositioning();
-        this.updateSubWidgetPositions(this.getX(), this.getY());
-        this.refreshEntries();
+        this.updatePositioningAndElements();
     }
 
     @Override
     protected void onPositionOrSizeChanged(int oldX, int oldY)
     {
+        this.updatePositioningAndElements();
+    }
+
+    protected void updatePositioningAndElements()
+    {
         this.updateEntryWidgetPositioning();
-        this.updateSubWidgetPositions(this.getX(), this.getY());
+        this.updateSubWidgetsToGeometryChanges();
         this.refreshEntries();
     }
 
@@ -110,9 +119,10 @@ public abstract class BaseListWidget extends ContainerWidget
         this.createHeaderWidget();
 
         this.updateEntryWidgetPositioning();
-        this.updateSubWidgetPositions(this.getX(), this.getY());
 
+        this.updateSubWidgetsToGeometryChanges();
         this.reAddSubWidgets();
+
         this.refreshEntries();
 
         Keyboard.enableRepeatEvents(true);
@@ -141,8 +151,10 @@ public abstract class BaseListWidget extends ContainerWidget
     }
 
     @Override
-    public void updateSubWidgetPositions(int oldX, int oldY)
+    public void updateSubWidgetsToGeometryChanges()
     {
+        super.updateSubWidgetsToGeometryChanges();
+
         int bw = this.borderEnabled ? this.borderWidth : 0;
         int x = this.getX() + bw;
         int y = this.getY() + bw;

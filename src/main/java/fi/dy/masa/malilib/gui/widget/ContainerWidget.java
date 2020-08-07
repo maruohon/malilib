@@ -30,43 +30,67 @@ public abstract class ContainerWidget extends BackgroundWidget
         this.clearWidgets();
     }
 
-    /**
-     * This method should be overridden to update any sub widget
-     * positions to the current position of this container widget,
-     * or to any other changes such as width or height changes.
-     */
-    public void updateSubWidgetPositions(int oldX, int oldY)
+    @Override
+    protected void onPositionChanged(int oldX, int oldY)
     {
         int diffX = this.getX() - oldX;
         int diffY = this.getY() - oldY;
 
         if (diffX != 0 || diffY != 0)
         {
-            for (BaseWidget widget : this.subWidgets)
-            {
-                widget.setPosition(widget.getX() + diffX, widget.getY() + diffY);
-            }
+            this.moveSubWidgets(diffX, diffY);
         }
-    }
-
-    @Override
-    protected void onPositionChanged(int oldX, int oldY)
-    {
-        super.onPositionChanged(oldX, oldY);
-        this.updateSubWidgetPositions(oldX, oldY);
     }
 
     @Override
     protected void onSizeChanged()
     {
-        super.onSizeChanged();
-        this.updateSubWidgetPositions(this.getX(), this.getY());
+        this.updateSubWidgetsToGeometryChanges();
     }
 
     @Override
     protected void onPositionOrSizeChanged(int oldX, int oldY)
     {
-        this.updateSubWidgetPositions(oldX, oldY);
+        int diffX = this.getX() - oldX;
+        int diffY = this.getY() - oldY;
+
+        if (diffX != 0 || diffY != 0)
+        {
+            this.moveSubWidgets(diffX, diffY);
+        }
+        else
+        {
+            this.updateSubWidgetsToGeometryChanges();
+        }
+    }
+
+    /**
+     * Moves all the sub widgets by the specified amount.
+     * Used for example when the window is resized or maybe some
+     * widgets are dragged around.
+     * @param diffX
+     * @param diffY
+     */
+    public void moveSubWidgets(int diffX, int diffY)
+    {
+        for (BaseWidget widget : this.subWidgets)
+        {
+            widget.setPosition(widget.getX() + diffX, widget.getY() + diffY);
+        }
+    }
+
+    /**
+     *
+     * This method should be overridden to update any sub widget
+     * positions to the current position of this container widget,
+     * or to any other changes such as width or height changes.
+     */
+    public void updateSubWidgetsToGeometryChanges()
+    {
+        for (BaseWidget widget : this.subWidgets)
+        {
+            widget.onContainerGeometryChanged();
+        }
     }
 
     public  <T extends BaseWidget> T addWidget(T widget)
@@ -121,6 +145,7 @@ public abstract class ContainerWidget extends BackgroundWidget
     {
         super.onWidgetAdded(parentZLevel);
         this.reAddSubWidgets();
+        this.updateSubWidgetsToGeometryChanges();
         return this;
     }
 

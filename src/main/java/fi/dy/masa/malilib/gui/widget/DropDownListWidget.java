@@ -93,12 +93,13 @@ public class DropDownListWidget<T> extends ContainerWidget
 
         int scrollbarWidth = 8;
         int scrollbarHeight = this.maxVisibleEntries * this.lineHeight;
-        // The position gets updated in updateSubElementPositions
+
+        // The position gets updated in updateSubWidgetsToGeometryChanges
         this.scrollBar = new ScrollBarWidget(0, 0, scrollbarWidth, scrollbarHeight);
         this.scrollBar.setMaxValue(this.entries.size() - this.maxVisibleEntries);
         this.scrollBar.setArrowTextures(BaseIcon.SMALL_ARROW_UP, BaseIcon.SMALL_ARROW_DOWN);
 
-        this.updateWidth(false); // This creates the search text field, which needs to be set before calling updateFilteredEntries
+        this.updateWidth(false);
 
         this.widgetSelectionBar = new SelectionBarWidget<>(x, y, this.getWidth(), height, this.textColor, this);
         this.widgetSelectionBar.setZLevel(this.getZLevel() + 2);
@@ -144,8 +145,7 @@ public class DropDownListWidget<T> extends ContainerWidget
 
         if (updateSubWidgets)
         {
-            this.updateSubWidgetPositions(this.getX(), this.getY());
-            this.reAddSubWidgets();
+            this.updateSubWidgetsToGeometryChanges();
         }
     }
 
@@ -179,27 +179,30 @@ public class DropDownListWidget<T> extends ContainerWidget
     }
 
     @Override
-    public void updateSubWidgetPositions(int oldX, int oldY)
+    public void updateSubWidgetsToGeometryChanges()
     {
-        int yOff = this.noCurrentEntryBar ? 0 : this.lineHeight;
-
-        this.dropdownTopY = this.getY() + yOff;
-        this.totalHeight = this.dropdownHeight + yOff;
+        super.updateSubWidgetsToGeometryChanges();
 
         int x = this.getX();
         int y = this.getY();
+        int width = this.getWidth();
+        int yOff = this.noCurrentEntryBar ? 0 : this.lineHeight;
         int scrollbarWidth = 8;
-        this.scrollBar.setPosition(x + this.getWidth() - scrollbarWidth - 1, y + yOff + 1);
+
+        this.dropdownTopY = y + yOff;
+        this.totalHeight = this.dropdownHeight + yOff;
+
+        this.scrollBar.setPosition(x + width - scrollbarWidth - 1, y + yOff + 1);
 
         if (this.widgetSelectionBar != null)
         {
-            this.widgetSelectionBar.setPositionAndSize(x, y, this.getWidth(), this.lineHeight);
+            this.widgetSelectionBar.setPositionAndSize(x, y, width, this.lineHeight);
             this.widgetSelectionBar.update(this);
         }
 
         if (this.searchOpen)
         {
-            this.searchField.setPositionAndSize(x, y - 16, this.getWidth(), 16);
+            this.searchField.setPositionAndSize(x, y - 16, width, 16);
         }
     }
 

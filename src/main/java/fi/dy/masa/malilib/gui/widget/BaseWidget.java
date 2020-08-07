@@ -15,8 +15,8 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.render.RectangleRenderer;
-import fi.dy.masa.malilib.render.TextRenderer;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.render.TextRenderer;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.Color4f;
 
@@ -173,7 +173,6 @@ public abstract class BaseWidget
      */
     protected void onPositionChanged(int oldX, int oldY)
     {
-        this.onPositionOrSizeChanged(oldX, oldY);
     }
 
     /**
@@ -181,7 +180,6 @@ public abstract class BaseWidget
      */
     protected void onSizeChanged()
     {
-        this.onPositionOrSizeChanged(this.getX(), this.getY());
     }
 
     /**
@@ -223,6 +221,15 @@ public abstract class BaseWidget
 
         this.updateHorizontalPositionIfRightAligned();
         this.onSizeChanged();
+    }
+
+    /**
+     * This is called when the container widget or screen
+     * changes its geometry, in case this widget wants to somehow
+     * react to that change and maybe update its sub widget positions.
+     */
+    public void onContainerGeometryChanged()
+    {
     }
 
     public void updateWidth()
@@ -395,10 +402,7 @@ public abstract class BaseWidget
 
             String[] parts = str.split("\\n");
 
-            for (String part : parts)
-            {
-                this.hoverStrings.add(part);
-            }
+            Collections.addAll(this.hoverStrings, parts);
         }
     }
 

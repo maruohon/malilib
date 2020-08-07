@@ -51,9 +51,9 @@ public class SearchBarWidget extends ContainerWidget
     }
 
     @Override
-    public void updateSubWidgetPositions(int oldX, int oldY)
+    public void updateSubWidgetsToGeometryChanges()
     {
-        super.updateSubWidgetPositions(oldX, oldY);
+        super.updateSubWidgetsToGeometryChanges();
 
         int x = this.getX();
         int y = this.getY();

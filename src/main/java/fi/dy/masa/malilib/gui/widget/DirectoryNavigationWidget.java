@@ -102,9 +102,9 @@ public class DirectoryNavigationWidget extends SearchBarWidget
     }
 
     @Override
-    public void updateSubWidgetPositions(int oldX, int oldY)
+    public void updateSubWidgetsToGeometryChanges()
     {
-        super.updateSubWidgetPositions(oldX, oldY);
+        super.updateSubWidgetsToGeometryChanges();
 
         int x = this.getX();
         int y = this.getY();
@@ -123,6 +123,8 @@ public class DirectoryNavigationWidget extends SearchBarWidget
         this.infoWidget.setPosition(xRight - iw - 2, y + 1);
 
         this.textField.setWidth(this.getWidth() - this.buttonSearchToggle.getWidth() - iw - 8);
+
+        this.reAddSubWidgets();
     }
 
     public File getCurrentDirectory()
@@ -146,6 +148,11 @@ public class DirectoryNavigationWidget extends SearchBarWidget
         return this.iconProvider.getIcon(isOpen ? FileBrowserIconType.NAVBAR_SUBDIRS_OPEN : FileBrowserIconType.NAVBAR_SUBDIRS_CLOSED);
     }
 
+    protected int getMaxPathBarWidth()
+    {
+        return this.getWidth() - this.pathStartX - 30;
+    }
+
     @Override
     public void render(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
     {
@@ -156,7 +163,7 @@ public class DirectoryNavigationWidget extends SearchBarWidget
         else
         {
             // Draw the directory path text background
-            RenderUtils.drawRect(this.pathStartX - 2, this.getY(), this.getWidth() - this.pathStartX - 18, this.getHeight(), 0xFF242424, this.getZLevel());
+            RenderUtils.drawRect(this.pathStartX - 2, this.getY(), this.getMaxPathBarWidth() + 4, this.getHeight(), 0xFF242424, this.getZLevel());
         }
 
         super.render(mouseX, mouseY, isActiveGui, hoveredWidgetId);
@@ -237,9 +244,9 @@ public class DirectoryNavigationWidget extends SearchBarWidget
     protected List<PathElement> generatePathElements()
     {
         ArrayList<PathElement> list = new ArrayList<>();
-        int maxWidth = this.getWidth() - 75;
         File root = this.rootDir;
         File dir = this.currentDir;
+        int maxWidth = this.getMaxPathBarWidth();
         int usedWidth = 0;
         int adjDirsIconWidth = this.getNavBarIconSubdirs(false).getWidth();
 
