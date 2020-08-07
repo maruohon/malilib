@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.config.value;
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.util.StringUtils;
 
-public enum HudAlignment implements IConfigOptionListEntry<HudAlignment>
+public enum HudAlignment implements ConfigOptionListEntry<HudAlignment>
 {
     TOP_LEFT        ("top_left",        "malilib.label.alignment.top_left"),
     TOP_RIGHT       ("top_right",       "malilib.label.alignment.top_right"),
@@ -37,12 +37,12 @@ public enum HudAlignment implements IConfigOptionListEntry<HudAlignment>
     @Override
     public HudAlignment cycle(boolean forward)
     {
-        return ConfigOptionListEntry.cycleValue(VALUES, this.ordinal(), forward);
+        return BaseConfigOptionListEntry.cycleValue(VALUES, this.ordinal(), forward);
     }
 
     @Override
     public HudAlignment fromString(String name)
     {
-        return ConfigOptionListEntry.findValueByName(name, VALUES);
+        return BaseConfigOptionListEntry.findValueByName(name, VALUES);
     }
 }

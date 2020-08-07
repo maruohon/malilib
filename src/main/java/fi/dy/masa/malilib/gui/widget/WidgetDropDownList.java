@@ -8,7 +8,7 @@ import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
-import fi.dy.masa.malilib.gui.button.ButtonGeneric;
+import fi.dy.masa.malilib.gui.button.GenericButton;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.gui.interfaces.IIconProvider;
 import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
@@ -47,7 +47,7 @@ public class WidgetDropDownList<T> extends WidgetContainer
     protected int totalHeight;
     protected int visibleEntries;
     @Nullable protected WidgetSelectionBar<T> widgetSelectionBar;
-    @Nullable protected ButtonGeneric buttonOpenClose;
+    @Nullable protected GenericButton buttonOpenClose;
     @Nullable protected IIconProvider<T> iconProvider;
     @Nullable protected ISelectionListener<T> selectionListener;
     @Nullable protected T selectedEntry;
@@ -133,7 +133,7 @@ public class WidgetDropDownList<T> extends WidgetContainer
     public void setNoBarWhenClosed(int buttonX, int buttonY, Supplier<IGuiIcon> iconSupplier)
     {
         this.noCurrentEntryBar = true;
-        this.buttonOpenClose = ButtonGeneric.createIconOnly(buttonX, buttonY, iconSupplier);
+        this.buttonOpenClose = GenericButton.createIconOnly(buttonX, buttonY, iconSupplier);
         this.buttonOpenClose.setRenderOutline(false);
         this.buttonOpenClose.setActionListener((btn, mbtn) -> this.toggleOpen());
 

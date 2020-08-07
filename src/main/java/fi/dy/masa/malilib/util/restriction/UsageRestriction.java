@@ -8,8 +8,8 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.RegistryNamespaced;
 import fi.dy.masa.malilib.LiteModMaLiLib;
+import fi.dy.masa.malilib.config.value.BaseConfigOptionListEntry;
 import fi.dy.masa.malilib.config.value.ConfigOptionListEntry;
-import fi.dy.masa.malilib.config.value.IConfigOptionListEntry;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class UsageRestriction<TYPE>
@@ -161,7 +161,7 @@ public class UsageRestriction<TYPE>
         }
     }
 
-    public enum ListType implements IConfigOptionListEntry<ListType>
+    public enum ListType implements ConfigOptionListEntry<ListType>
     {
         NONE        ("none",        "malilib.label.list_type.none"),
         BLACKLIST   ("blacklist",   "malilib.label.list_type.blacklist"),
@@ -193,13 +193,13 @@ public class UsageRestriction<TYPE>
         @Override
         public ListType cycle(boolean forward)
         {
-            return ConfigOptionListEntry.cycleValue(VALUES, this.ordinal(), forward);
+            return BaseConfigOptionListEntry.cycleValue(VALUES, this.ordinal(), forward);
         }
 
         @Override
         public ListType fromString(String name)
         {
-            return ConfigOptionListEntry.findValueByName(name, VALUES);
+            return BaseConfigOptionListEntry.findValueByName(name, VALUES);
         }
     }
 }

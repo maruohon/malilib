@@ -10,7 +10,7 @@ public interface ConfigManager
      * Registers a config handler
      * @param handler
      */
-    void registerConfigHandler(ConfigHandler handler);
+    void registerConfigHandler(ModConfig handler);
 
     /**
      * Get the config handler for the given mod ID
@@ -18,7 +18,7 @@ public interface ConfigManager
      * @return
      */
     @Nullable
-    ConfigHandler getConfigHandler(String modId);
+    ModConfig getConfigHandler(String modId);
 
     /**
      * Can be called to save and reload the configs for the given mod.

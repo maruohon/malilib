@@ -2,14 +2,14 @@ package fi.dy.masa.malilib.gui.widget.list.entry.config;
 
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.config.option.HotkeyConfig;
-import fi.dy.masa.malilib.gui.button.ConfigButtonKeyBind;
+import fi.dy.masa.malilib.gui.button.KeyBindConfigButton;
 import fi.dy.masa.malilib.gui.config.BaseConfigScreen;
 
 public class HotkeyConfigWidget extends BaseConfigOptionWidget<HotkeyConfig>
 {
     protected final HotkeyConfig config;
     protected final ImmutableList<Integer> initialValue;
-    protected final ConfigButtonKeyBind keybindButton;
+    protected final KeyBindConfigButton keybindButton;
 
     public HotkeyConfigWidget(int x, int y, int width, int height, int listIndex,
                               int originalListIndex, HotkeyConfig config, BaseConfigScreen gui)
@@ -19,7 +19,7 @@ public class HotkeyConfigWidget extends BaseConfigOptionWidget<HotkeyConfig>
         this.config = config;
         this.initialValue = this.config.getKeyBind().getKeys();
 
-        this.keybindButton = new ConfigButtonKeyBind(x, y, 120, 20, this.config.getKeyBind(), this.gui);
+        this.keybindButton = new KeyBindConfigButton(x, y, 120, 20, this.config.getKeyBind(), this.gui);
         this.keybindButton.setActionListener((btn, mbtn) -> this.resetButton.setEnabled(this.config.isModified()));
         this.keybindButton.setValueChangeListener(() -> this.resetButton.setEnabled(this.config.isModified()));
 

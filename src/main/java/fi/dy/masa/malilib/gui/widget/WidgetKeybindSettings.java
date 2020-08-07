@@ -11,7 +11,7 @@ import fi.dy.masa.malilib.gui.config.KeybindSettingsScreen;
 import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
-import fi.dy.masa.malilib.input.IKeyBind;
+import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.input.KeyAction;
 import fi.dy.masa.malilib.input.KeyBindSettings;
 import fi.dy.masa.malilib.input.KeyBindSettings.Context;
@@ -23,14 +23,14 @@ public class WidgetKeybindSettings extends WidgetBase
     public static final ResourceLocation TEXTURE = new ResourceLocation(MaLiLibReference.MOD_ID, "textures/gui/gui_widgets.png");
 
     protected final String keyBindName;
-    protected final IKeyBind keyBind;
+    protected final KeyBind keyBind;
     protected final KeyBindSettings settings;
     protected final KeyBindSettings defaultSettings;
     protected final DataListWidget<?> widgetList;
     @Nullable protected final IDialogHandler dialogHandler;
 
     public WidgetKeybindSettings(int x, int y, int width, int height,
-                                 IKeyBind keyBind, String keyBindName, DataListWidget<?> widgetList, @Nullable IDialogHandler dialogHandler)
+                                 KeyBind keyBind, String keyBindName, DataListWidget<?> widgetList, @Nullable IDialogHandler dialogHandler)
     {
         super(x, y, width, height);
 

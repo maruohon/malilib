@@ -1,36 +1,15 @@
 package fi.dy.masa.malilib.event.dispatch;
 
-import java.util.ArrayList;
-import java.util.List;
-import net.minecraft.client.Minecraft;
-import fi.dy.masa.malilib.event.IClientTickHandler;
+import fi.dy.masa.malilib.event.ClientTickHandler;
 
-public class TickEventDispatcher implements ITickEventDispatcher
+public interface TickEventDispatcher
 {
-    public static final ITickEventDispatcher INSTANCE = new TickEventDispatcher();
-
-    private final List<IClientTickHandler> clientTickHandlers = new ArrayList<>();
-
-    @Override
-    public void registerClientTickHandler(IClientTickHandler handler)
-    {
-        if (this.clientTickHandlers.contains(handler) == false)
-        {
-            this.clientTickHandlers.add(handler);
-        }
-    }
+    TickEventDispatcher INSTANCE = new TickEventDispatcherImpl();
 
     /**
-     * NOT PUBLIC API - DO NOT CALL
+     * Registers a client tick handler, which will have its {@link ClientTickHandler#onClientTick(net.minecraft.client.Minecraft)} method
+     * called at the end of the client world ticking phase.
+     * @param handler
      */
-    public void onClientTick(Minecraft mc)
-    {
-        if (this.clientTickHandlers.isEmpty() == false)
-        {
-            for (IClientTickHandler handler : this.clientTickHandlers)
-            {
-                handler.onClientTick(mc);
-            }
-        }
-    }
+    void registerClientTickHandler(ClientTickHandler handler);
 }

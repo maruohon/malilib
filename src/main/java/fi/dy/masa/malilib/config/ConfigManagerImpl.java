@@ -6,10 +6,14 @@ import javax.annotation.Nullable;
 
 public class ConfigManagerImpl implements ConfigManager
 {
-    private final Map<String, ConfigHandler> configHandlers = new HashMap<>();
+    private final Map<String, ModConfig> configHandlers = new HashMap<>();
+
+    ConfigManagerImpl()
+    {
+    }
 
     @Override
-    public void registerConfigHandler(ConfigHandler handler)
+    public void registerConfigHandler(ModConfig handler)
     {
         final String modId = handler.getModId();
 
@@ -25,7 +29,7 @@ public class ConfigManagerImpl implements ConfigManager
 
     @Override
     @Nullable
-    public ConfigHandler getConfigHandler(String modId)
+    public ModConfig getConfigHandler(String modId)
     {
         return this.configHandlers.get(modId);
     }
@@ -33,7 +37,7 @@ public class ConfigManagerImpl implements ConfigManager
     @Override
     public void onConfigsChanged(String modId)
     {
-        ConfigHandler handler = this.configHandlers.get(modId);
+        ModConfig handler = this.configHandlers.get(modId);
 
         if (handler != null)
         {
@@ -46,7 +50,7 @@ public class ConfigManagerImpl implements ConfigManager
      */
     public void loadAllConfigs()
     {
-        for (ConfigHandler handler : this.configHandlers.values())
+        for (ModConfig handler : this.configHandlers.values())
         {
             handler.load();
         }
@@ -57,7 +61,7 @@ public class ConfigManagerImpl implements ConfigManager
      */
     public void saveAllConfigs()
     {
-        for (ConfigHandler handler : this.configHandlers.values())
+        for (ModConfig handler : this.configHandlers.values())
         {
             handler.saveIfDirty();
         }

@@ -8,9 +8,13 @@ public class BlockPlacementPositionHandler
 {
     public static final BlockPlacementPositionHandler INSTANCE = new BlockPlacementPositionHandler();
 
-    private ArrayList<IBlockPlacementPositionProvider> providers = new ArrayList<>();
+    private final ArrayList<BlockPlacementPositionProvider> providers = new ArrayList<>();
 
-    public void registerPositionProvider(IBlockPlacementPositionProvider provider)
+    private BlockPlacementPositionHandler()
+    {
+    }
+
+    public void registerPositionProvider(BlockPlacementPositionProvider provider)
     {
         if (this.providers.contains(provider) == false)
         {
@@ -18,7 +22,7 @@ public class BlockPlacementPositionHandler
         }
     }
 
-    public void unregisterPositionProvider(IBlockPlacementPositionProvider provider)
+    public void unregisterPositionProvider(BlockPlacementPositionProvider provider)
     {
         this.providers.remove(provider);
     }
@@ -34,7 +38,7 @@ public class BlockPlacementPositionHandler
     {
         if (this.providers.isEmpty() == false)
         {
-            for (IBlockPlacementPositionProvider provider : this.providers)
+            for (BlockPlacementPositionProvider provider : this.providers)
             {
                 BlockPos pos = provider.getPlacementPosition();
 

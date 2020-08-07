@@ -1,15 +1,15 @@
 package fi.dy.masa.malilib.gui.widget.list.entry.config;
 
 import fi.dy.masa.malilib.config.option.OptionListConfig;
-import fi.dy.masa.malilib.config.value.IConfigOptionListEntry;
-import fi.dy.masa.malilib.gui.button.ConfigButtonOptionList;
+import fi.dy.masa.malilib.config.value.ConfigOptionListEntry;
+import fi.dy.masa.malilib.gui.button.OptionListConfigButton;
 import fi.dy.masa.malilib.gui.config.BaseConfigScreen;
 
 public class OptionListConfigWidget extends BaseConfigOptionWidget<OptionListConfig>
 {
     protected final OptionListConfig<?> config;
-    protected final IConfigOptionListEntry<?> initialValue;
-    protected final ConfigButtonOptionList optionListButton;
+    protected final ConfigOptionListEntry<?> initialValue;
+    protected final OptionListConfigButton optionListButton;
 
     public OptionListConfigWidget(int x, int y, int width, int height, int listIndex,
                                   int originalListIndex, OptionListConfig<?> config, BaseConfigScreen gui)
@@ -19,7 +19,7 @@ public class OptionListConfigWidget extends BaseConfigOptionWidget<OptionListCon
         this.config = config;
         this.initialValue = this.config.getOptionListValue();
 
-        this.optionListButton = new ConfigButtonOptionList(x, y, 80, 20, this.config);
+        this.optionListButton = new OptionListConfigButton(x, y, 80, 20, this.config);
         this.optionListButton.setActionListener((btn, mbtn) -> this.resetButton.setEnabled(this.config.isModified()));
 
         this.resetButton.setActionListener((btn, mbtn) -> {

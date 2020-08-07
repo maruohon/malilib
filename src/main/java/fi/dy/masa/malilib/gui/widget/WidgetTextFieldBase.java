@@ -18,7 +18,7 @@ import fi.dy.masa.malilib.message.MessageType;
 import fi.dy.masa.malilib.render.MessageRenderer;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
-import fi.dy.masa.malilib.util.data.HorizontalAlignment;
+import fi.dy.masa.malilib.gui.util.HorizontalAlignment;
 import fi.dy.masa.malilib.util.data.LeftRight;
 
 public class WidgetTextFieldBase extends WidgetBackground

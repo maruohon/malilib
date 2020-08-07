@@ -3,11 +3,11 @@ package fi.dy.masa.malilib.util;
 import java.io.File;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.interfaces.IDirectoryNavigator;
-import fi.dy.masa.malilib.util.consumer.IStringConsumer;
+import fi.dy.masa.malilib.util.consumer.StringConsumer;
 import fi.dy.masa.malilib.message.MessageType;
 import fi.dy.masa.malilib.message.MessageUtils;
 
-public class DirectoryCreator implements IStringConsumer
+public class DirectoryCreator implements StringConsumer
 {
     protected final File dir;
     @Nullable protected final IDirectoryNavigator navigator;

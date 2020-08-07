@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.config.value;
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.util.StringUtils;
 
-public enum InfoType implements IConfigOptionListEntry<InfoType>
+public enum InfoType implements ConfigOptionListEntry<InfoType>
 {
     MESSAGE_OVERLAY ("message", "malilib.label.info_type.message"),
     HOTBAR          ("hotbar",  "malilib.label.info_type.hotbar"),
@@ -36,12 +36,12 @@ public enum InfoType implements IConfigOptionListEntry<InfoType>
     @Override
     public InfoType cycle(boolean forward)
     {
-        return ConfigOptionListEntry.cycleValue(VALUES, this.ordinal(), forward);
+        return BaseConfigOptionListEntry.cycleValue(VALUES, this.ordinal(), forward);
     }
 
     @Override
     public InfoType fromString(String name)
     {
-        return ConfigOptionListEntry.findValueByName(name, VALUES);
+        return BaseConfigOptionListEntry.findValueByName(name, VALUES);
     }
 }

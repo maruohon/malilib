@@ -3,10 +3,10 @@ package fi.dy.masa.malilib.gui.listener;
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
 import fi.dy.masa.malilib.gui.BaseScreen;
-import fi.dy.masa.malilib.gui.button.ButtonBase;
-import fi.dy.masa.malilib.gui.button.IButtonActionListener;
+import fi.dy.masa.malilib.gui.button.BaseButton;
+import fi.dy.masa.malilib.gui.button.ButtonActionListener;
 
-public class ButtonListenerIntModifier implements IButtonActionListener
+public class ButtonListenerIntModifier implements ButtonActionListener
 {
     protected final IntSupplier supplier;
     protected final IntConsumer consumer;
@@ -29,7 +29,7 @@ public class ButtonListenerIntModifier implements IButtonActionListener
     }
 
     @Override
-    public void actionPerformedWithButton(ButtonBase button, int mouseButton)
+    public void actionPerformedWithButton(BaseButton button, int mouseButton)
     {
         int amount = mouseButton == 1 ? -1 : 1;
 

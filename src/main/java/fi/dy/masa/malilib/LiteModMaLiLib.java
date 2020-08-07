@@ -13,6 +13,7 @@ import net.minecraft.client.Minecraft;
 import fi.dy.masa.malilib.config.ConfigManagerImpl;
 import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.event.dispatch.InitializationDispatcher;
+import fi.dy.masa.malilib.event.dispatch.InitializationDispatcherImpl;
 
 public class LiteModMaLiLib implements Configurable, LiteMod, InitCompleteListener, ShutdownListener
 {
@@ -55,7 +56,7 @@ public class LiteModMaLiLib implements Configurable, LiteMod, InitCompleteListen
     public void onInitCompleted(Minecraft minecraft, LiteLoader loader)
     {
         // Dispatch the init calls to all the registered handlers
-        ((InitializationDispatcher) InitializationDispatcher.INSTANCE).onGameInitDone();
+        ((InitializationDispatcherImpl) InitializationDispatcher.INSTANCE).onGameInitDone();
     }
 
     @Override

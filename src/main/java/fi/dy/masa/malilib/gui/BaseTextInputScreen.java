@@ -3,13 +3,13 @@ package fi.dy.masa.malilib.gui;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import net.minecraft.client.gui.GuiScreen;
-import fi.dy.masa.malilib.gui.button.ButtonBase;
-import fi.dy.masa.malilib.gui.button.ButtonGeneric;
-import fi.dy.masa.malilib.gui.button.IButtonActionListener;
+import fi.dy.masa.malilib.gui.button.BaseButton;
+import fi.dy.masa.malilib.gui.button.GenericButton;
+import fi.dy.masa.malilib.gui.button.ButtonActionListener;
 import fi.dy.masa.malilib.gui.widget.WidgetTextFieldBase;
 import fi.dy.masa.malilib.util.StringUtils;
 
-public abstract class BaseTextInputScreen extends DialogBaseScreen
+public abstract class BaseTextInputScreen extends BaseDialogScreen
 {
     protected final WidgetTextFieldBase textField;
     protected final String originalText;
@@ -48,7 +48,7 @@ public abstract class BaseTextInputScreen extends DialogBaseScreen
 
     protected int createButton(int x, int y, ButtonType type)
     {
-        ButtonGeneric button = new ButtonGeneric(x, y, -1, 20, type.getDisplayName());
+        GenericButton button = new GenericButton(x, y, -1, 20, type.getDisplayName());
         button.setWidth(Math.max(40, button.getWidth()));
         return this.addButton(button, new ButtonListener(type, this)).getWidth();
     }
@@ -77,7 +77,7 @@ public abstract class BaseTextInputScreen extends DialogBaseScreen
 
     protected abstract boolean applyValue(String string);
 
-    protected static class ButtonListener implements IButtonActionListener
+    protected static class ButtonListener implements ButtonActionListener
     {
         private final BaseTextInputScreen gui;
         private final ButtonType type;
@@ -89,7 +89,7 @@ public abstract class BaseTextInputScreen extends DialogBaseScreen
         }
 
         @Override
-        public void actionPerformedWithButton(ButtonBase button, int mouseButton)
+        public void actionPerformedWithButton(BaseButton button, int mouseButton)
         {
             if (this.type == ButtonType.OK)
             {

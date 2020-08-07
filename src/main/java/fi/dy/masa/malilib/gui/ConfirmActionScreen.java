@@ -4,22 +4,22 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
 import net.minecraft.client.gui.GuiScreen;
-import fi.dy.masa.malilib.gui.button.ButtonGeneric;
-import fi.dy.masa.malilib.gui.button.IButtonActionListener;
-import fi.dy.masa.malilib.message.IMessageConsumer;
+import fi.dy.masa.malilib.gui.button.GenericButton;
+import fi.dy.masa.malilib.gui.button.ButtonActionListener;
+import fi.dy.masa.malilib.message.MessageConsumer;
 import fi.dy.masa.malilib.message.MessageType;
 import fi.dy.masa.malilib.gui.widget.WidgetLabel;
-import fi.dy.masa.malilib.listener.ICompletionListener;
-import fi.dy.masa.malilib.listener.IConfirmationListener;
+import fi.dy.masa.malilib.listener.TaskCompletionListener;
+import fi.dy.masa.malilib.listener.ConfirmationListener;
 import fi.dy.masa.malilib.util.StringUtils;
 
-public class ConfirmActionScreen extends DialogBaseScreen implements ICompletionListener
+public class ConfirmActionScreen extends BaseDialogScreen implements TaskCompletionListener
 {
     protected final List<String> messageLines = new ArrayList<>();
-    protected final IConfirmationListener listener;
+    protected final ConfirmationListener listener;
     protected int textColor = 0xFFC0C0C0;
 
-    public ConfirmActionScreen(int width, String titleKey, IConfirmationListener listener, @Nullable GuiScreen parent, String messageKey, Object... args)
+    public ConfirmActionScreen(int width, String titleKey, ConfirmationListener listener, @Nullable GuiScreen parent, String messageKey, Object... args)
     {
         this.setParent(parent);
         this.title = StringUtils.translate(titleKey);
@@ -79,18 +79,18 @@ public class ConfirmActionScreen extends DialogBaseScreen implements ICompletion
         return width;
     }
 
-    protected void createButton(int x, int y, int buttonWidth, ButtonType type, IButtonActionListener listener)
+    protected void createButton(int x, int y, int buttonWidth, ButtonType type, ButtonActionListener listener)
     {
-        ButtonGeneric button = new ButtonGeneric(x, y, buttonWidth, 20, type.getDisplayName());
+        GenericButton button = new GenericButton(x, y, buttonWidth, 20, type.getDisplayName());
         this.addButton(button, listener);
     }
 
     @Override
     public void addMessage(MessageType type, int lifeTime, String messageKey, Object... args)
     {
-        if (this.getParent() instanceof IMessageConsumer)
+        if (this.getParent() instanceof MessageConsumer)
         {
-            ((IMessageConsumer) this.getParent()).addMessage(type, lifeTime, messageKey, args);
+            ((MessageConsumer) this.getParent()).addMessage(type, lifeTime, messageKey, args);
         }
         else
         {
@@ -101,18 +101,18 @@ public class ConfirmActionScreen extends DialogBaseScreen implements ICompletion
     @Override
     public void onTaskCompleted()
     {
-        if (this.getParent() instanceof ICompletionListener)
+        if (this.getParent() instanceof TaskCompletionListener)
         {
-            ((ICompletionListener) this.getParent()).onTaskCompleted();
+            ((TaskCompletionListener) this.getParent()).onTaskCompleted();
         }
     }
 
     @Override
     public void onTaskAborted()
     {
-        if (this.getParent() instanceof ICompletionListener)
+        if (this.getParent() instanceof TaskCompletionListener)
         {
-            ((ICompletionListener) this.getParent()).onTaskAborted();
+            ((TaskCompletionListener) this.getParent()).onTaskAborted();
         }
     }
 

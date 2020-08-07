@@ -3,9 +3,9 @@ package fi.dy.masa.malilib.gui;
 import java.util.Collection;
 import java.util.List;
 import com.google.common.collect.ImmutableList;
-import fi.dy.masa.malilib.gui.button.ButtonBase;
-import fi.dy.masa.malilib.gui.button.ButtonGeneric;
-import fi.dy.masa.malilib.gui.button.IButtonActionListener;
+import fi.dy.masa.malilib.gui.button.BaseButton;
+import fi.dy.masa.malilib.gui.button.GenericButton;
+import fi.dy.masa.malilib.gui.button.ButtonActionListener;
 import fi.dy.masa.malilib.gui.interfaces.IStringListConsumer;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.util.StringUtils;
@@ -64,13 +64,13 @@ public class StringListSelectionScreen extends BaseListScreen<DataListWidget<Str
         String label = type.getDisplayName();
         int width = this.getStringWidth(label) + 10;
 
-        ButtonGeneric button = new ButtonGeneric(x, y, width, 20, label);
+        GenericButton button = new GenericButton(x, y, width, 20, label);
         this.addButton(button, listener);
 
         return width;
     }
 
-    private static class ButtonListener implements IButtonActionListener
+    private static class ButtonListener implements ButtonActionListener
     {
         private final StringListSelectionScreen parent;
         private final Type type;
@@ -82,7 +82,7 @@ public class StringListSelectionScreen extends BaseListScreen<DataListWidget<Str
         }
 
         @Override
-        public void actionPerformedWithButton(ButtonBase button, int mouseButton)
+        public void actionPerformedWithButton(BaseButton button, int mouseButton)
         {
             if (this.type == Type.OK)
             {

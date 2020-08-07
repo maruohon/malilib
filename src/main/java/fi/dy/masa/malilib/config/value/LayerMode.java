@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.config.value;
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.util.StringUtils;
 
-public enum LayerMode implements IConfigOptionListEntry<LayerMode>
+public enum LayerMode implements ConfigOptionListEntry<LayerMode>
 {
     ALL             ("all",             "malilib.gui.label.layer_mode.all"),
     SINGLE_LAYER    ("single_layer",    "malilib.gui.label.layer_mode.single_layer"),
@@ -37,12 +37,12 @@ public enum LayerMode implements IConfigOptionListEntry<LayerMode>
     @Override
     public LayerMode cycle(boolean forward)
     {
-        return ConfigOptionListEntry.cycleValue(VALUES, this.ordinal(), forward);
+        return BaseConfigOptionListEntry.cycleValue(VALUES, this.ordinal(), forward);
     }
 
     @Override
     public LayerMode fromString(String name)
     {
-        return ConfigOptionListEntry.findValueByName(name, VALUES);
+        return BaseConfigOptionListEntry.findValueByName(name, VALUES);
     }
 }

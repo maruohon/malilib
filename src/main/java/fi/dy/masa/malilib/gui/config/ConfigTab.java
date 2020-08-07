@@ -2,7 +2,7 @@ package fi.dy.masa.malilib.gui.config;
 
 import java.util.List;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
-import fi.dy.masa.malilib.gui.button.IButtonActionListener;
+import fi.dy.masa.malilib.gui.button.ButtonActionListener;
 
 public interface ConfigTab
 {
@@ -40,7 +40,7 @@ public interface ConfigTab
      * Returns the button action listener that should be used for this tab's selection button
      * @return
      */
-    IButtonActionListener getButtonActionListener(BaseConfigScreen gui);
+    ButtonActionListener getButtonActionListener(BaseConfigScreen gui);
 
     /**
      * Returns the tab by the given name from the provided list

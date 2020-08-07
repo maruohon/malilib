@@ -20,7 +20,7 @@ import fi.dy.masa.malilib.gui.widget.WidgetTextFieldBase;
 import fi.dy.masa.malilib.gui.widget.list.entry.BaseListEntryWidget;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.render.RenderUtils;
-import fi.dy.masa.malilib.util.data.HorizontalAlignment;
+import fi.dy.masa.malilib.gui.util.HorizontalAlignment;
 
 public abstract class BaseListWidget extends WidgetContainer
 {

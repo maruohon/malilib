@@ -2,8 +2,8 @@ package fi.dy.masa.malilib.input;
 
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonObject;
+import fi.dy.masa.malilib.config.value.BaseConfigOptionListEntry;
 import fi.dy.masa.malilib.config.value.ConfigOptionListEntry;
-import fi.dy.masa.malilib.config.value.IConfigOptionListEntry;
 import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 
@@ -175,7 +175,7 @@ public class KeyBindSettings
         return true;
     }
 
-    public enum Context implements IConfigOptionListEntry<Context>
+    public enum Context implements ConfigOptionListEntry<Context>
     {
         INGAME  ("ingame",  "malilib.label.key_context.ingame"),
         GUI     ("gui",     "malilib.label.key_context.gui"),
@@ -207,13 +207,13 @@ public class KeyBindSettings
         @Override
         public Context cycle(boolean forward)
         {
-            return ConfigOptionListEntry.cycleValue(VALUES, this.ordinal(), forward);
+            return BaseConfigOptionListEntry.cycleValue(VALUES, this.ordinal(), forward);
         }
 
         @Override
         public Context fromString(String name)
         {
-            return ConfigOptionListEntry.findValueByName(name, VALUES);
+            return BaseConfigOptionListEntry.findValueByName(name, VALUES);
         }
     }
 }

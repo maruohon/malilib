@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.BaseScreen;
-import fi.dy.masa.malilib.gui.button.ButtonBase;
-import fi.dy.masa.malilib.gui.button.IButtonActionListener;
+import fi.dy.masa.malilib.gui.button.BaseButton;
+import fi.dy.masa.malilib.gui.button.ButtonActionListener;
 import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
 import fi.dy.masa.malilib.render.RenderUtils;
 
@@ -77,7 +77,7 @@ public abstract class WidgetContainer extends WidgetBackground
         return widget;
     }
 
-    public  <T extends ButtonBase> T addButton(T button, IButtonActionListener listener)
+    public  <T extends BaseButton> T addButton(T button, ButtonActionListener listener)
     {
         button.setActionListener(listener);
         this.addWidget(button);

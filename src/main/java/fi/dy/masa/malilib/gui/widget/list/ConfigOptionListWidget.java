@@ -8,7 +8,7 @@ import fi.dy.masa.malilib.gui.config.BaseConfigScreen;
 import fi.dy.masa.malilib.gui.config.ConfigOptionWidgetFactory;
 import fi.dy.masa.malilib.gui.config.ConfigTypeRegistry;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.BaseConfigOptionWidget;
-import fi.dy.masa.malilib.gui.widget.util.DataListEntryWidgetFactory;
+import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetFactory;
 
 public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget<C>
 {
@@ -24,11 +24,13 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
         this.setEntryRefreshListener(gui);
     }
 
+    /*
     @Override
     protected void reCreateListEntryWidgets()
     {
         super.reCreateListEntryWidgets();
     }
+    */
 
     public static class ConfigOptionListEntryWidgetFactory<C extends ConfigInfo> implements DataListEntryWidgetFactory<C>
     {

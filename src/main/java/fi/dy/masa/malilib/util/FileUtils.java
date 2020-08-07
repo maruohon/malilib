@@ -16,10 +16,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import fi.dy.masa.malilib.LiteModMaLiLib;
-import fi.dy.masa.malilib.listener.IConfirmationListener;
+import fi.dy.masa.malilib.listener.ConfirmationListener;
 import fi.dy.masa.malilib.message.MessageType;
 import fi.dy.masa.malilib.message.MessageUtils;
-import fi.dy.masa.malilib.util.consumer.IStringConsumer;
+import fi.dy.masa.malilib.util.consumer.StringConsumer;
 
 public class FileUtils
 {
@@ -239,7 +239,7 @@ public class FileUtils
         return null;
     }
 
-    public static class FileRenamer implements IStringConsumer
+    public static class FileRenamer implements StringConsumer
     {
         protected final File dir;
         protected final String oldName;
@@ -292,7 +292,7 @@ public class FileUtils
         }
     }
 
-    public static class FileDeleter implements IConfirmationListener
+    public static class FileDeleter implements ConfirmationListener
     {
         protected final File file;
 

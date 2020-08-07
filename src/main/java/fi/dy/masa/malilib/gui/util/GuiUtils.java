@@ -12,13 +12,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import fi.dy.masa.malilib.config.value.HudAlignment;
 import fi.dy.masa.malilib.gui.BaseScreen;
-import fi.dy.masa.malilib.gui.button.ButtonBase;
-import fi.dy.masa.malilib.gui.button.ButtonGeneric;
-import fi.dy.masa.malilib.gui.button.IButtonActionListener;
+import fi.dy.masa.malilib.gui.button.BaseButton;
+import fi.dy.masa.malilib.gui.button.GenericButton;
+import fi.dy.masa.malilib.gui.button.ButtonActionListener;
 import fi.dy.masa.malilib.gui.widget.WidgetTextFieldBase;
 import fi.dy.masa.malilib.gui.widget.WidgetTextFieldDouble;
 import fi.dy.masa.malilib.gui.widget.WidgetTextFieldInteger;
-import fi.dy.masa.malilib.util.position.ICoordinateValueModifier;
+import fi.dy.masa.malilib.util.position.CoordinateValueModifier;
 import fi.dy.masa.malilib.util.PositionUtils.CoordinateType;
 import fi.dy.masa.malilib.util.StringUtils;
 
@@ -58,7 +58,7 @@ public class GuiUtils
     }
 
     public static void createBlockPosInputsVertical(int x, int y, int textFieldWidth, BlockPos pos,
-            ICoordinateValueModifier modifier, boolean addButton, BaseScreen gui)
+                                                    CoordinateValueModifier modifier, boolean addButton, BaseScreen gui)
     {
         createBlockPosInput(x, y     , textFieldWidth, CoordinateType.X, pos, modifier, addButton, gui);
         createBlockPosInput(x, y + 17, textFieldWidth, CoordinateType.Y, pos, modifier, addButton, gui);
@@ -66,7 +66,7 @@ public class GuiUtils
     }
 
     public static void createVec3dInputsVertical(int x, int y, int textFieldWidth, Vec3d pos,
-            ICoordinateValueModifier modifier, boolean addButton, BaseScreen gui)
+                                                 CoordinateValueModifier modifier, boolean addButton, BaseScreen gui)
     {
         createVec3dInput(x, y     , textFieldWidth, CoordinateType.X, pos, modifier, addButton, gui);
         createVec3dInput(x, y + 17, textFieldWidth, CoordinateType.Y, pos, modifier, addButton, gui);
@@ -74,7 +74,7 @@ public class GuiUtils
     }
 
     public static void createBlockPosInput(int x, int y, int textFieldWidth, CoordinateType type, BlockPos pos,
-            ICoordinateValueModifier modifier, boolean addButton, BaseScreen gui)
+                                           CoordinateValueModifier modifier, boolean addButton, BaseScreen gui)
     {
         x = addLabel(x, y, type, gui);
 
@@ -84,7 +84,7 @@ public class GuiUtils
     }
 
     public static void createVec3dInput(int x, int y, int textFieldWidth, CoordinateType type, Vec3d pos,
-            ICoordinateValueModifier modifier, boolean addButton, BaseScreen gui)
+                                        CoordinateValueModifier modifier, boolean addButton, BaseScreen gui)
     {
         x = addLabel(x, y, type, gui);
 
@@ -93,7 +93,7 @@ public class GuiUtils
         addTextFieldAndButton(x + textFieldWidth + 4, y, type, modifier, textField, addButton, gui);
     }
 
-    protected static void addTextFieldAndButton(int x, int y, CoordinateType type, ICoordinateValueModifier modifier,
+    protected static void addTextFieldAndButton(int x, int y, CoordinateType type, CoordinateValueModifier modifier,
             WidgetTextFieldBase textField, boolean addButton, BaseScreen gui)
     {
         textField.setListener((newText) -> modifier.setValueFromString(type, newText));
@@ -102,7 +102,7 @@ public class GuiUtils
         if (addButton)
         {
             String hover = StringUtils.translate("malilib.gui.button.hover.plus_minus_tip");
-            ButtonGeneric button = new ButtonGeneric(x, y, BaseGuiIcon.BTN_PLUSMINUS_16, hover);
+            GenericButton button = new GenericButton(x, y, BaseGuiIcon.BTN_PLUSMINUS_16, hover);
             gui.addButton(button, new ButtonListenerCoordinateInput(type, modifier));
         }
     }
@@ -199,19 +199,19 @@ public class GuiUtils
         return posY;
     }
 
-    public static class ButtonListenerCoordinateInput implements IButtonActionListener
+    public static class ButtonListenerCoordinateInput implements ButtonActionListener
     {
-        protected final ICoordinateValueModifier modifier;
+        protected final CoordinateValueModifier modifier;
         protected final CoordinateType type;
 
-        public ButtonListenerCoordinateInput(CoordinateType type, ICoordinateValueModifier modifier)
+        public ButtonListenerCoordinateInput(CoordinateType type, CoordinateValueModifier modifier)
         {
             this.modifier = modifier;
             this.type = type;
         }
 
         @Override
-        public void actionPerformedWithButton(ButtonBase button, int mouseButton)
+        public void actionPerformedWithButton(BaseButton button, int mouseButton)
         {
             int amount = mouseButton == 1 ? -1 : 1;
             if (BaseScreen.isShiftDown()) { amount *= 8; }

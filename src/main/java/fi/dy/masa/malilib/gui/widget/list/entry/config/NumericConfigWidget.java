@@ -2,7 +2,7 @@ package fi.dy.masa.malilib.gui.widget.list.entry.config;
 
 import fi.dy.masa.malilib.config.option.ConfigOption;
 import fi.dy.masa.malilib.config.option.SliderConfig;
-import fi.dy.masa.malilib.gui.button.ButtonGeneric;
+import fi.dy.masa.malilib.gui.button.GenericButton;
 import fi.dy.masa.malilib.gui.config.BaseConfigScreen;
 import fi.dy.masa.malilib.gui.util.BaseGuiIcon;
 import fi.dy.masa.malilib.gui.widget.WidgetSlider;
@@ -12,7 +12,7 @@ public abstract class NumericConfigWidget<T extends ConfigOption<?> & SliderConf
 {
     protected final T config;
     protected final WidgetTextFieldBase textField;
-    protected final ButtonGeneric sliderToggleButton;
+    protected final GenericButton sliderToggleButton;
     protected WidgetSlider sliderWidget;
 
     public NumericConfigWidget(int x, int y, int width, int height, int listIndex,
@@ -24,7 +24,7 @@ public abstract class NumericConfigWidget<T extends ConfigOption<?> & SliderConf
 
         this.textField = new WidgetTextFieldBase(x, y, 60, 16);
 
-        this.sliderToggleButton = new ButtonGeneric(x, y, () -> this.config.shouldUseSlider() ? BaseGuiIcon.BTN_TXTFIELD : BaseGuiIcon.BTN_SLIDER);
+        this.sliderToggleButton = new GenericButton(x, y, () -> this.config.shouldUseSlider() ? BaseGuiIcon.BTN_TXTFIELD : BaseGuiIcon.BTN_SLIDER);
         this.sliderToggleButton.addHoverStrings("malilib.gui.button.hover.text_field_slider_toggle");
         this.sliderToggleButton.setActionListener((btn, mbtn) -> {
             this.config.toggleUseSlider();

@@ -11,8 +11,7 @@ import javax.annotation.Nullable;
 import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.gui.widget.list.entry.BaseListEntryWidget;
 import fi.dy.masa.malilib.gui.widget.util.DataListEntrySelectionHandler;
-import fi.dy.masa.malilib.gui.widget.util.DataListEntryWidgetFactory;
-import fi.dy.masa.malilib.gui.widget.util.ListHeaderWidgetFactory;
+import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetFactory;
 
 public class DataListWidget<DATATYPE> extends BaseListWidget
 {

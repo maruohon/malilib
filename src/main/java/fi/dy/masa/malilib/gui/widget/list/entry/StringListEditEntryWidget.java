@@ -2,8 +2,8 @@ package fi.dy.masa.malilib.gui.widget.list.entry;
 
 import java.util.List;
 import java.util.function.Consumer;
-import fi.dy.masa.malilib.gui.button.ButtonGeneric;
-import fi.dy.masa.malilib.gui.button.IButtonActionListener;
+import fi.dy.masa.malilib.gui.button.GenericButton;
+import fi.dy.masa.malilib.gui.button.ButtonActionListener;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.gui.util.BaseGuiIcon;
 import fi.dy.masa.malilib.gui.widget.WidgetLabel;
@@ -19,11 +19,11 @@ public class StringListEditEntryWidget extends BaseDataListEntryWidget<String>
     protected final String initialValue;
     protected final WidgetLabel labelWidget;
     protected final WidgetTextFieldBase textField;
-    protected final ButtonGeneric addButton;
-    protected final ButtonGeneric removeButton;
-    protected final ButtonGeneric upButton;
-    protected final ButtonGeneric downButton;
-    protected final ButtonGeneric resetButton;
+    protected final GenericButton addButton;
+    protected final GenericButton removeButton;
+    protected final GenericButton upButton;
+    protected final GenericButton downButton;
+    protected final GenericButton resetButton;
 
     public StringListEditEntryWidget(int x, int y, int width, int height, int listIndex, int originalListIndex,
                                      String initialValue, String defaultValue, DataListWidget<String> parent)
@@ -47,7 +47,7 @@ public class StringListEditEntryWidget extends BaseDataListEntryWidget<String>
         this.upButton     = this.createListActionButton(x, y, ButtonType.MOVE_UP);
         this.downButton   = this.createListActionButton(x, y, ButtonType.MOVE_DOWN);
 
-        this.resetButton = new ButtonGeneric(x, y, -1, 16,"malilib.gui.button.reset.caps");
+        this.resetButton = new GenericButton(x, y, -1, 16, "malilib.gui.button.reset.caps");
         this.resetButton.setRenderDefaultBackground(false);
         this.resetButton.setRenderOutline(true);
         this.resetButton.setOutlineColorNormal(0xFF404040);
@@ -128,9 +128,9 @@ public class StringListEditEntryWidget extends BaseDataListEntryWidget<String>
         this.resetButton.setPosition(x, y + 2);
     }
 
-    protected ButtonGeneric createListActionButton(int x, int y, ButtonType type)
+    protected GenericButton createListActionButton(int x, int y, ButtonType type)
     {
-        ButtonGeneric button = new ButtonGeneric(x, y, type.getIcon(), type.getHoverKey());
+        GenericButton button = new GenericButton(x, y, type.getIcon(), type.getHoverKey());
         button.setRenderOutline(true);
         button.setActionListener(type.createListener(this));
         return button;
@@ -251,7 +251,7 @@ public class StringListEditEntryWidget extends BaseDataListEntryWidget<String>
             return this.translationKey;
         }
 
-        public IButtonActionListener createListener(final StringListEditEntryWidget widget)
+        public ButtonActionListener createListener(final StringListEditEntryWidget widget)
         {
             return (btn, mbtn) -> this.action.accept(widget);
         }

@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.config.value;
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.util.StringUtils;
 
-public enum ActiveMode implements IConfigOptionListEntry<ActiveMode>
+public enum ActiveMode implements ConfigOptionListEntry<ActiveMode>
 {
     NEVER       ("never",       "malilib.label.active_mode.never"),
     WITH_KEY    ("with_key",    "malilib.label.active_mode.with_key"),
@@ -35,12 +35,12 @@ public enum ActiveMode implements IConfigOptionListEntry<ActiveMode>
     @Override
     public ActiveMode cycle(boolean forward)
     {
-        return ConfigOptionListEntry.cycleValue(VALUES, this.ordinal(), forward);
+        return BaseConfigOptionListEntry.cycleValue(VALUES, this.ordinal(), forward);
     }
 
     @Override
     public ActiveMode fromString(String name)
     {
-        return ConfigOptionListEntry.findValueByName(name, VALUES);
+        return BaseConfigOptionListEntry.findValueByName(name, VALUES);
     }
 }

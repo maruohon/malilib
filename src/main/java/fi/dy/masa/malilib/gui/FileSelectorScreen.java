@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.gui;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.function.Consumer;
-import fi.dy.masa.malilib.gui.button.ButtonGeneric;
+import fi.dy.masa.malilib.gui.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.BaseFileBrowserWidget;
 import fi.dy.masa.malilib.util.StringUtils;
 
@@ -25,7 +25,7 @@ public class FileSelectorScreen extends DirectorySelectorScreen
     @Override
     protected void addConfirmationButton()
     {
-        ButtonGeneric button = new ButtonGeneric(10, this.height - 26, -1, 20, "malilib.gui.button.config.use_selected_file");
+        GenericButton button = new GenericButton(10, this.height - 26, -1, 20, "malilib.gui.button.config.use_selected_file");
 
         this.addButton(button, (btn, mbtn) -> {
             BaseFileBrowserWidget.DirectoryEntry entry = this.getListWidget().getEntrySelectionHandler().getLastSelectedEntry();

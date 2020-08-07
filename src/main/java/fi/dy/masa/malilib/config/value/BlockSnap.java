@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.config.value;
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.util.StringUtils;
 
-public enum BlockSnap implements IConfigOptionListEntry<BlockSnap>
+public enum BlockSnap implements ConfigOptionListEntry<BlockSnap>
 {
     NONE        ("none",    "malilib.gui.label.block_snap.none"),
     CENTER      ("center",  "malilib.gui.label.block_snap.center"),
@@ -35,12 +35,12 @@ public enum BlockSnap implements IConfigOptionListEntry<BlockSnap>
     @Override
     public BlockSnap cycle(boolean forward)
     {
-        return ConfigOptionListEntry.cycleValue(VALUES, this.ordinal(), forward);
+        return BaseConfigOptionListEntry.cycleValue(VALUES, this.ordinal(), forward);
     }
 
     @Override
     public BlockSnap fromString(String name)
     {
-        return ConfigOptionListEntry.findValueByName(name, VALUES);
+        return BaseConfigOptionListEntry.findValueByName(name, VALUES);
     }
 }

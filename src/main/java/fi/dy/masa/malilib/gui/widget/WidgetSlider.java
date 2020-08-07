@@ -2,7 +2,7 @@ package fi.dy.masa.malilib.gui.widget;
 
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import fi.dy.masa.malilib.gui.config.SliderCallback;
+import fi.dy.masa.malilib.gui.callback.SliderCallback;
 import fi.dy.masa.malilib.render.RenderUtils;
 
 public class WidgetSlider extends WidgetBase

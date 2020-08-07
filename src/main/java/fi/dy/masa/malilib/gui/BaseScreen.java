@@ -15,20 +15,20 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
-import fi.dy.masa.malilib.gui.button.ButtonBase;
-import fi.dy.masa.malilib.gui.button.IButtonActionListener;
+import fi.dy.masa.malilib.gui.button.BaseButton;
+import fi.dy.masa.malilib.gui.button.ButtonActionListener;
 import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.WidgetBase;
 import fi.dy.masa.malilib.gui.widget.WidgetLabel;
 import fi.dy.masa.malilib.gui.widget.WidgetTextFieldBase;
-import fi.dy.masa.malilib.message.IMessageConsumer;
+import fi.dy.masa.malilib.message.MessageConsumer;
 import fi.dy.masa.malilib.message.MessageType;
 import fi.dy.masa.malilib.render.MessageRenderer;
 import fi.dy.masa.malilib.render.RenderUtils;
-import fi.dy.masa.malilib.util.consumer.IStringConsumer;
+import fi.dy.masa.malilib.util.consumer.StringConsumer;
 
-public abstract class BaseScreen extends GuiScreen implements IMessageConsumer, IStringConsumer
+public abstract class BaseScreen extends GuiScreen implements MessageConsumer, StringConsumer
 {
     public static final String TXT_AQUA = TextFormatting.AQUA.toString();
     public static final String TXT_BLACK = TextFormatting.BLACK.toString();
@@ -66,7 +66,7 @@ public abstract class BaseScreen extends GuiScreen implements IMessageConsumer, 
     public final Minecraft mc = Minecraft.getMinecraft();
     public final FontRenderer textRenderer = this.mc.fontRenderer;
     public final int fontHeight = this.textRenderer.FONT_HEIGHT;
-    private final List<ButtonBase> buttons = new ArrayList<>();
+    private final List<BaseButton> buttons = new ArrayList<>();
     private final List<WidgetBase> widgets = new ArrayList<>();
     private final MessageRenderer messageRenderer;
     protected WidgetBase hoveredWidget = null;
@@ -252,7 +252,7 @@ public abstract class BaseScreen extends GuiScreen implements IMessageConsumer, 
             return true;
         }
 
-        for (ButtonBase button : this.buttons)
+        for (BaseButton button : this.buttons)
         {
             if (button.onMouseClicked(mouseX, mouseY, mouseButton))
             {
@@ -276,7 +276,7 @@ public abstract class BaseScreen extends GuiScreen implements IMessageConsumer, 
 
     public boolean onMouseScrolled(int mouseX, int mouseY, double mouseWheelDelta)
     {
-        for (ButtonBase button : this.buttons)
+        for (BaseButton button : this.buttons)
         {
             if (button.onMouseScrolled(mouseX, mouseY, mouseWheelDelta))
             {
@@ -451,7 +451,7 @@ public abstract class BaseScreen extends GuiScreen implements IMessageConsumer, 
         return this;
     }
 
-    public <T extends ButtonBase> T addButton(T button, IButtonActionListener listener)
+    public <T extends BaseButton> T addButton(T button, ButtonActionListener listener)
     {
         button.setActionListener(listener);
         this.buttons.add(button);
@@ -547,7 +547,7 @@ public abstract class BaseScreen extends GuiScreen implements IMessageConsumer, 
 
         if (this.buttons.isEmpty() == false)
         {
-            for (ButtonBase button : this.buttons)
+            for (BaseButton button : this.buttons)
             {
                 button.render(mouseX, mouseY, isActiveGui, hoveredWidgetId);
             }

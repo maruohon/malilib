@@ -4,15 +4,15 @@ import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import net.minecraft.util.ChatAllowedCharacters;
 import fi.dy.masa.malilib.gui.BaseScreen;
-import fi.dy.masa.malilib.gui.button.ButtonGeneric;
+import fi.dy.masa.malilib.gui.button.GenericButton;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
-import fi.dy.masa.malilib.util.data.HorizontalAlignment;
+import fi.dy.masa.malilib.gui.util.HorizontalAlignment;
 
 public class WidgetSearchBar extends WidgetContainer
 {
     protected final WidgetTextFieldBase textField;
-    protected final ButtonGeneric buttonSearchToggle;
+    protected final GenericButton buttonSearchToggle;
     protected final IGuiIcon toggleButtonIcon;
     protected final HorizontalAlignment toggleButtonAlignment;
     protected final int searchBarOffsetX;
@@ -30,7 +30,7 @@ public class WidgetSearchBar extends WidgetContainer
         this.toggleButtonIcon = toggleButtonIcon;
         this.toggleButtonAlignment = toggleButtonAlignment;
         this.searchBarOffsetX = searchBarOffsetX;
-        this.buttonSearchToggle = ButtonGeneric.createIconOnly(ix, y, toggleButtonIcon);
+        this.buttonSearchToggle = GenericButton.createIconOnly(ix, y, toggleButtonIcon);
         this.buttonSearchToggle.setActionListener((btn, mbtn) -> this.toggleSearchOpen());
 
         this.textField = new WidgetTextFieldBase(tx, y, width - iw - 7 - Math.abs(searchBarOffsetX), height);

@@ -8,11 +8,11 @@ import org.lwjgl.input.Keyboard;
 import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
-import fi.dy.masa.malilib.event.dispatch.InputEventDispatcher;
+import fi.dy.masa.malilib.event.dispatch.InputDispatcherImpl;
 import fi.dy.masa.malilib.gui.BaseListScreen;
 import fi.dy.masa.malilib.gui.BaseScreen;
-import fi.dy.masa.malilib.gui.button.ButtonGeneric;
-import fi.dy.masa.malilib.gui.button.ConfigButtonKeyBind;
+import fi.dy.masa.malilib.gui.button.GenericButton;
+import fi.dy.masa.malilib.gui.button.KeyBindConfigButton;
 import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
 import fi.dy.masa.malilib.gui.interfaces.IKeybindConfigGui;
 import fi.dy.masa.malilib.gui.listener.ButtonPressDirtyListenerSimple;
@@ -28,7 +28,7 @@ public abstract class BaseConfigScreen extends BaseListScreen<ConfigOptionListWi
     protected final ButtonPressDirtyListenerSimple dirtyListener = new ButtonPressDirtyListenerSimple();
     protected final List<ConfigTab> configTabs;
     protected final String modId;
-    protected ConfigButtonKeyBind activeKeyBindButton;
+    protected KeyBindConfigButton activeKeyBindButton;
     protected int configElementsWidth = 80;
     protected int maxLabelWidth = -1;
     @Nullable protected ConfigInfoProvider hoverInfoProvider;
@@ -189,7 +189,7 @@ public abstract class BaseConfigScreen extends BaseListScreen<ConfigOptionListWi
 
     protected int createTabButton(int x, int y, int width, ConfigTab tab)
     {
-        ButtonGeneric button = new ButtonGeneric(x, y, width, 20, tab.getDisplayName());
+        GenericButton button = new GenericButton(x, y, width, 20, tab.getDisplayName());
         button.setEnabled(this.getCurrentTab() != tab);
         this.addButton(button, tab.getButtonActionListener(this));
 
@@ -209,7 +209,7 @@ public abstract class BaseConfigScreen extends BaseListScreen<ConfigOptionListWi
 
         if (this.hotkeyChangeListeners.size() > 0)
         {
-            InputEventDispatcher.getKeyBindManager().updateUsedKeys();
+            InputDispatcherImpl.getKeyBindManager().updateUsedKeys();
         }
     }
 
@@ -276,7 +276,7 @@ public abstract class BaseConfigScreen extends BaseListScreen<ConfigOptionListWi
     }
 
     @Override
-    public void setActiveKeyBindButton(@Nullable ConfigButtonKeyBind button)
+    public void setActiveKeyBindButton(@Nullable KeyBindConfigButton button)
     {
         if (this.activeKeyBindButton != null)
         {

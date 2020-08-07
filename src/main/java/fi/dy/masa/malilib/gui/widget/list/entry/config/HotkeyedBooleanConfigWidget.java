@@ -2,16 +2,16 @@ package fi.dy.masa.malilib.gui.widget.list.entry.config;
 
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.config.option.HotkeyedBooleanConfig;
-import fi.dy.masa.malilib.gui.button.ConfigButtonBoolean;
-import fi.dy.masa.malilib.gui.button.ConfigButtonKeyBind;
+import fi.dy.masa.malilib.gui.button.BooleanConfigButton;
+import fi.dy.masa.malilib.gui.button.KeyBindConfigButton;
 import fi.dy.masa.malilib.gui.config.BaseConfigScreen;
 
 public class HotkeyedBooleanConfigWidget extends BaseConfigOptionWidget<HotkeyedBooleanConfig>
 {
     protected final HotkeyedBooleanConfig config;
     protected final ImmutableList<Integer> initialHotkeyValue;
-    protected final ConfigButtonBoolean booleanButton;
-    protected final ConfigButtonKeyBind hotkeyButton;
+    protected final BooleanConfigButton booleanButton;
+    protected final KeyBindConfigButton hotkeyButton;
     protected final boolean initialBooleanValue;
 
     public HotkeyedBooleanConfigWidget(int x, int y, int width, int height, int listIndex,
@@ -23,10 +23,10 @@ public class HotkeyedBooleanConfigWidget extends BaseConfigOptionWidget<Hotkeyed
         this.initialBooleanValue = this.config.getBooleanValue();
         this.initialHotkeyValue = this.config.getKeyBind().getKeys();
 
-        this.booleanButton = new ConfigButtonBoolean(x, y + 1, 60, 20, this.config);
+        this.booleanButton = new BooleanConfigButton(x, y + 1, 60, 20, this.config);
         this.booleanButton.setActionListener((btn, mbtn) -> this.resetButton.setEnabled(this.config.isModified()));
 
-        this.hotkeyButton = new ConfigButtonKeyBind(x, y + 1, 120, 20, this.config.getKeyBind(), this.gui);
+        this.hotkeyButton = new KeyBindConfigButton(x, y + 1, 120, 20, this.config.getKeyBind(), this.gui);
         this.hotkeyButton.setValueChangeListener(() -> this.resetButton.setEnabled(this.config.isModified()));
 
         this.resetButton.setActionListener((btn, mbtn) -> {

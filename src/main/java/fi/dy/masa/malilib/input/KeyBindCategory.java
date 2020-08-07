@@ -7,9 +7,9 @@ public class KeyBindCategory implements Comparable<KeyBindCategory>
 {
     private final String modName;
     private final String categoryName;
-    private final List<? extends IHotkey> hotkeys;
+    private final List<? extends Hotkey> hotkeys;
 
-    public KeyBindCategory(String modName, String categoryName, List<? extends IHotkey> hotkeys)
+    public KeyBindCategory(String modName, String categoryName, List<? extends Hotkey> hotkeys)
     {
         this.modName = modName;
         this.categoryName = categoryName;
@@ -26,7 +26,7 @@ public class KeyBindCategory implements Comparable<KeyBindCategory>
         return StringUtils.translate(this.categoryName);
     }
 
-    public List<? extends IHotkey> getHotkeys()
+    public List<? extends Hotkey> getHotkeys()
     {
         return this.hotkeys;
     }

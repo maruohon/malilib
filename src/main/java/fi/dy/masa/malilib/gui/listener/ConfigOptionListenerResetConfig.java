@@ -2,20 +2,20 @@ package fi.dy.masa.malilib.gui.listener;
 
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.option.ConfigOption;
-import fi.dy.masa.malilib.gui.button.ButtonBase;
-import fi.dy.masa.malilib.gui.button.ButtonGeneric;
-import fi.dy.masa.malilib.gui.button.IButtonActionListener;
+import fi.dy.masa.malilib.gui.button.BaseButton;
+import fi.dy.masa.malilib.gui.button.GenericButton;
+import fi.dy.masa.malilib.gui.button.ButtonActionListener;
 import fi.dy.masa.malilib.gui.widget.WidgetTextFieldBase;
 
-public class ConfigOptionListenerResetConfig implements IButtonActionListener
+public class ConfigOptionListenerResetConfig implements ButtonActionListener
 {
     private final ConfigOption<?> config;
-    private final ButtonGeneric buttonReset;
+    private final GenericButton buttonReset;
     @Nullable private final ConfigResetterBase reset;
     @Nullable private final ButtonPressDirtyListenerSimple dirtyListener;
 
     public ConfigOptionListenerResetConfig(ConfigOption<?> config, @Nullable ConfigResetterBase reset,
-            ButtonGeneric buttonReset, @Nullable ButtonPressDirtyListenerSimple dirtyListener)
+                                           GenericButton buttonReset, @Nullable ButtonPressDirtyListenerSimple dirtyListener)
     {
         this.config = config;
         this.reset = reset;
@@ -24,7 +24,7 @@ public class ConfigOptionListenerResetConfig implements IButtonActionListener
     }
 
     @Override
-    public void actionPerformedWithButton(ButtonBase button, int mouseButton)
+    public void actionPerformedWithButton(BaseButton button, int mouseButton)
     {
         this.config.resetToDefault();
         this.buttonReset.setEnabled(this.config.isModified());
@@ -47,9 +47,9 @@ public class ConfigOptionListenerResetConfig implements IButtonActionListener
 
     public static class ConfigResetterButton extends ConfigResetterBase
     {
-        private final ButtonBase button;
+        private final BaseButton button;
 
-        public ConfigResetterButton(ButtonBase button)
+        public ConfigResetterButton(BaseButton button)
         {
             this.button = button;
         }

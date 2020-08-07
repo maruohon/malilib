@@ -10,7 +10,7 @@ import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.util.StringUtils;
 
-public class StringListEditButton extends ButtonGeneric
+public class StringListEditButton extends GenericButton
 {
     private final StringListConfig config;
     private final IConfigGui configGui;

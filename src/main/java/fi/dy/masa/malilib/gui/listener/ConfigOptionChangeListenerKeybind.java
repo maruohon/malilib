@@ -1,20 +1,20 @@
 package fi.dy.masa.malilib.gui.listener;
 
-import fi.dy.masa.malilib.gui.button.ButtonBase;
-import fi.dy.masa.malilib.gui.button.ButtonGeneric;
-import fi.dy.masa.malilib.gui.button.ConfigButtonKeyBind;
-import fi.dy.masa.malilib.gui.button.IButtonActionListener;
+import fi.dy.masa.malilib.gui.button.BaseButton;
+import fi.dy.masa.malilib.gui.button.GenericButton;
+import fi.dy.masa.malilib.gui.button.KeyBindConfigButton;
+import fi.dy.masa.malilib.gui.button.ButtonActionListener;
 import fi.dy.masa.malilib.gui.interfaces.IKeybindConfigGui;
-import fi.dy.masa.malilib.input.IKeyBind;
+import fi.dy.masa.malilib.input.KeyBind;
 
-public class ConfigOptionChangeListenerKeybind implements IButtonActionListener
+public class ConfigOptionChangeListenerKeybind implements ButtonActionListener
 {
     private final IKeybindConfigGui host;
-    private final ConfigButtonKeyBind buttonHotkey;
-    private final ButtonGeneric button;
-    private final IKeyBind keybind;
+    private final KeyBindConfigButton buttonHotkey;
+    private final GenericButton button;
+    private final KeyBind keybind;
 
-    public ConfigOptionChangeListenerKeybind(IKeyBind keybind, ConfigButtonKeyBind buttonHotkey, ButtonGeneric button, IKeybindConfigGui host)
+    public ConfigOptionChangeListenerKeybind(KeyBind keybind, KeyBindConfigButton buttonHotkey, GenericButton button, IKeybindConfigGui host)
     {
         this.buttonHotkey = buttonHotkey;
         this.button = button;
@@ -23,7 +23,7 @@ public class ConfigOptionChangeListenerKeybind implements IButtonActionListener
     }
 
     @Override
-    public void actionPerformedWithButton(ButtonBase button, int mouseButton)
+    public void actionPerformedWithButton(BaseButton button, int mouseButton)
     {
         this.keybind.resetToDefault();
         this.updateButtons();

@@ -2,10 +2,10 @@ package fi.dy.masa.malilib.gui;
 
 import net.minecraft.util.EnumFacing;
 import fi.dy.masa.malilib.config.value.LayerMode;
-import fi.dy.masa.malilib.gui.button.ButtonBase;
-import fi.dy.masa.malilib.gui.button.ButtonGeneric;
-import fi.dy.masa.malilib.gui.button.ButtonOnOff;
-import fi.dy.masa.malilib.gui.button.IButtonActionListener;
+import fi.dy.masa.malilib.gui.button.BaseButton;
+import fi.dy.masa.malilib.gui.button.GenericButton;
+import fi.dy.masa.malilib.gui.button.OnOffButton;
+import fi.dy.masa.malilib.gui.button.ButtonActionListener;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
 import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
@@ -47,7 +47,7 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
         if (type == ButtonListenerLayerEdit.Type.MODE || layerRange.getLayerMode() != LayerMode.ALL)
         {
             ButtonListenerLayerEdit listener = new ButtonListenerLayerEdit(type, layerRange, this);
-            ButtonGeneric button = new ButtonGeneric(x, y, -1, 20, type.getDisplayName(layerRange));
+            GenericButton button = new GenericButton(x, y, -1, 20, type.getDisplayName(layerRange));
             this.addButton(button, listener);
 
             return button.getWidth() + 2;
@@ -121,7 +121,7 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
         {
             String strLabel = "malilib.gui.button.render_layers_gui.follow_player";
             String strHover = "malilib.gui.button.hover.render_layers_gui.follow_player";
-            final ButtonOnOff button = new ButtonOnOff(origX, y, -1, false, strLabel, layerRange.shouldFollowPlayer(), strHover);
+            final OnOffButton button = new OnOffButton(origX, y, -1, false, strLabel, layerRange.shouldFollowPlayer(), strHover);
             this.addButton(button, (btn, mbtn) -> {
                 layerRange.toggleShouldFollowPlayer();
                 button.updateDisplayString(layerRange.shouldFollowPlayer());
@@ -137,7 +137,7 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
             this.addWidget(textField);
 
             int bx = textField.getX() + textField.getWidth() + 3;
-            ButtonGeneric button2 = new ButtonGeneric(bx, y + 1, this.getValueAdjustButtonIcon());
+            GenericButton button2 = new GenericButton(bx, y + 1, this.getValueAdjustButtonIcon());
 
             this.addButton(button2, (btn, mbtn) -> {
                 int change = mbtn == 1 ? -1 : 1;
@@ -168,11 +168,11 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
     {
         LayerMode layerMode = layerRange.getLayerMode();
         ButtonListenerChangeValue listener = new ButtonListenerChangeValue(layerMode, layerRange, isSecondValue, this);
-        ButtonGeneric button = new ButtonGeneric(x, y + 2, icon);
+        GenericButton button = new GenericButton(x, y + 2, icon);
         this.addButton(button, listener);
     }
 
-    protected static class ButtonListenerLayerEdit implements IButtonActionListener
+    protected static class ButtonListenerLayerEdit implements ButtonActionListener
     {
         protected final BaseRenderLayerEditScreen parent;
         protected final LayerRange layerRange;
@@ -186,7 +186,7 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
         }
 
         @Override
-        public void actionPerformedWithButton(ButtonBase button, int mouseButton)
+        public void actionPerformedWithButton(BaseButton button, int mouseButton)
         {
             if (this.type == Type.MODE)
             {
@@ -235,7 +235,7 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
         }
     }
 
-    protected static class ButtonListenerChangeValue implements IButtonActionListener
+    protected static class ButtonListenerChangeValue implements ButtonActionListener
     {
         protected final BaseRenderLayerEditScreen parent;
         protected final LayerRange layerRange;
@@ -251,7 +251,7 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
         }
 
         @Override
-        public void actionPerformedWithButton(ButtonBase button, int mouseButton)
+        public void actionPerformedWithButton(BaseButton button, int mouseButton)
         {
             int change = mouseButton == 1 ? -1 : 1;
 

@@ -1,11 +1,11 @@
 package fi.dy.masa.malilib.gui.listener;
 
-import fi.dy.masa.malilib.gui.button.ButtonBase;
-import fi.dy.masa.malilib.gui.button.IButtonActionListener;
+import fi.dy.masa.malilib.gui.button.BaseButton;
+import fi.dy.masa.malilib.gui.button.ButtonActionListener;
 import fi.dy.masa.malilib.gui.config.BaseConfigScreen;
 import fi.dy.masa.malilib.gui.config.ConfigTab;
 
-public class ButtonListenerConfigGuiTab implements IButtonActionListener
+public class ButtonListenerConfigGuiTab implements ButtonActionListener
 {
     private final BaseConfigScreen gui;
     private final ConfigTab tab;
@@ -17,7 +17,7 @@ public class ButtonListenerConfigGuiTab implements IButtonActionListener
     }
 
     @Override
-    public void actionPerformedWithButton(ButtonBase button, int mouseButton)
+    public void actionPerformedWithButton(BaseButton button, int mouseButton)
     {
         this.gui.setCurrentTab(this.tab);
         this.gui.reCreateConfigWidgets(); // apply the new config width

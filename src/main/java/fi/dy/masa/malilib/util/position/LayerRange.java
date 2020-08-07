@@ -12,10 +12,10 @@ import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
-import fi.dy.masa.malilib.config.value.ConfigOptionListEntry;
+import fi.dy.masa.malilib.config.value.BaseConfigOptionListEntry;
 import fi.dy.masa.malilib.config.value.LayerMode;
 import fi.dy.masa.malilib.gui.BaseScreen;
-import fi.dy.masa.malilib.listener.ILayerRangeChangeListener;
+import fi.dy.masa.malilib.listener.LayerRangeChangeListener;
 import fi.dy.masa.malilib.message.MessageUtils;
 import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.PositionUtils;
@@ -29,7 +29,7 @@ public class LayerRange
     public static final int WORLD_VERTICAL_SIZE_MAX = 255;
     public static final int WORLD_VERTICAL_SIZE_MIN = 0;
 
-    protected final ILayerRangeChangeListener refresher;
+    protected final LayerRangeChangeListener refresher;
     protected LayerMode layerMode = LayerMode.ALL;
     protected EnumFacing.Axis axis = EnumFacing.Axis.Y;
     protected int layerSingle = 0;
@@ -42,7 +42,7 @@ public class LayerRange
     protected boolean hotkeyRangeMax;
     protected boolean followPlayer;
 
-    public LayerRange(ILayerRangeChangeListener refresher)
+    public LayerRange(LayerRangeChangeListener refresher)
     {
         this.refresher = refresher;
     }
@@ -840,7 +840,7 @@ public class LayerRange
         return obj;
     }
 
-    public static LayerRange createFromJson(JsonObject obj, ILayerRangeChangeListener refresher)
+    public static LayerRange createFromJson(JsonObject obj, LayerRangeChangeListener refresher)
     {
         LayerRange range = new LayerRange(refresher);
         range.fromJson(obj);
@@ -849,7 +849,7 @@ public class LayerRange
 
     public void fromJson(JsonObject obj)
     {
-        this.layerMode = ConfigOptionListEntry.findValueByName(JsonUtils.getString(obj, "mode"), LayerMode.VALUES);
+        this.layerMode = BaseConfigOptionListEntry.findValueByName(JsonUtils.getString(obj, "mode"), LayerMode.VALUES);
         this.axis = EnumFacing.Axis.byName(JsonUtils.getString(obj, "axis"));
         if (this.axis == null) { this.axis = EnumFacing.Axis.Y; }
 

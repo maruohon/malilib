@@ -9,7 +9,7 @@ import javax.annotation.Nullable;
 import net.minecraft.client.renderer.OpenGlHelper;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.TextInputScreen;
-import fi.dy.masa.malilib.gui.button.ButtonGeneric;
+import fi.dy.masa.malilib.gui.button.GenericButton;
 import fi.dy.masa.malilib.gui.interfaces.IDirectoryNavigator;
 import fi.dy.masa.malilib.gui.interfaces.IFileBrowserIconProvider;
 import fi.dy.masa.malilib.gui.interfaces.IFileBrowserIconProvider.FileBrowserIconType;
@@ -20,16 +20,16 @@ import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.DirectoryCreator;
 import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.StringUtils;
-import fi.dy.masa.malilib.util.data.HorizontalAlignment;
+import fi.dy.masa.malilib.gui.util.HorizontalAlignment;
 import fi.dy.masa.malilib.util.data.LeftRight;
 
 public class WidgetDirectoryNavigation extends WidgetSearchBar
 {
     protected final IDirectoryNavigator navigator;
     protected final IFileBrowserIconProvider iconProvider;
-    protected final ButtonGeneric buttonRoot;
-    protected final ButtonGeneric buttonUp;
-    protected final ButtonGeneric buttonCreateDir;
+    protected final GenericButton buttonRoot;
+    protected final GenericButton buttonUp;
+    protected final GenericButton buttonCreateDir;
     protected final WidgetInfoIcon infoWidget;
     protected final File rootDir;
     protected final int pathStartX;
@@ -53,17 +53,17 @@ public class WidgetDirectoryNavigation extends WidgetSearchBar
         this.iconProvider = iconProvider;
         this.rootDirDisplayName = rootDirDisplayName;
 
-        this.buttonRoot = ButtonGeneric.createIconOnly(x, y, iconProvider.getIcon(FileBrowserIconType.ROOT));
+        this.buttonRoot = GenericButton.createIconOnly(x, y, iconProvider.getIcon(FileBrowserIconType.ROOT));
         this.buttonRoot.addHoverString("malilib.gui.button.hover.directory_widget.root");
         this.buttonRoot.setActionListener((btn, mbtn) -> { if (this.searchOpen == false) this.navigator.switchToRootDirectory(); });
         x += this.buttonRoot.getWidth() + 2;
 
-        this.buttonUp = ButtonGeneric.createIconOnly(x, y, iconProvider.getIcon(FileBrowserIconType.UP));
+        this.buttonUp = GenericButton.createIconOnly(x, y, iconProvider.getIcon(FileBrowserIconType.UP));
         this.buttonUp.addHoverString("malilib.gui.button.hover.directory_widget.up");
         this.buttonUp.setActionListener((btn, mbtn) -> { if (this.searchOpen == false) this.navigator.switchToParentDirectory(); });
         x += this.buttonUp.getWidth() + 2;
 
-        this.buttonCreateDir = ButtonGeneric.createIconOnly(x, y, iconProvider.getIcon(FileBrowserIconType.CREATE_DIR));
+        this.buttonCreateDir = GenericButton.createIconOnly(x, y, iconProvider.getIcon(FileBrowserIconType.CREATE_DIR));
         this.buttonCreateDir.addHoverString("malilib.gui.button.hover.directory_widget.create_directory");
         this.buttonCreateDir.setActionListener((btn, mbtn) -> {
             if (this.searchOpen == false)
@@ -193,7 +193,7 @@ public class WidgetDirectoryNavigation extends WidgetSearchBar
         {
             if (el.type == PathElement.Type.DIR)
             {
-                ButtonGeneric button = new ButtonGeneric(x, y, el.nameWidth + 4, 14, el.displayName);
+                GenericButton button = new GenericButton(x, y, el.nameWidth + 4, 14, el.displayName);
                 button.setRenderDefaultBackground(false);
                 button.setRenderOutline(true);
                 button.setPlayClickSound(false);

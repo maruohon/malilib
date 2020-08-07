@@ -7,7 +7,7 @@ import fi.dy.masa.malilib.config.option.ConfigOption;
 import fi.dy.masa.malilib.config.option.FileConfig;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.DirectorySelectorScreen;
-import fi.dy.masa.malilib.gui.button.ButtonGeneric;
+import fi.dy.masa.malilib.gui.button.GenericButton;
 import fi.dy.masa.malilib.gui.config.BaseConfigScreen;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.WidgetLabel;
@@ -18,7 +18,7 @@ import fi.dy.masa.malilib.util.StringUtils;
 public abstract class BaseConfigOptionWidget<C extends ConfigInfo> extends BaseDataListEntryWidget<C>
 {
     protected final BaseConfigScreen gui;
-    protected final ButtonGeneric resetButton;
+    protected final GenericButton resetButton;
     protected final WidgetLabel labelWidget;
 
     public BaseConfigOptionWidget(int x, int y, int width, int height, int listIndex,
@@ -31,7 +31,7 @@ public abstract class BaseConfigOptionWidget<C extends ConfigInfo> extends BaseD
         this.labelWidget = new WidgetLabel(x + 2, y + 6, 0xFFFFFFFF, this.data.getDisplayName());
         this.labelWidget.addHoverStrings(this.data.getComment());
 
-        this.resetButton = new ButtonGeneric(x, y, -1, 20, StringUtils.translate("malilib.gui.button.reset.caps"));
+        this.resetButton = new GenericButton(x, y, -1, 20, StringUtils.translate("malilib.gui.button.reset.caps"));
     }
 
     @Override
@@ -47,8 +47,8 @@ public abstract class BaseConfigOptionWidget<C extends ConfigInfo> extends BaseD
         this.resetButton.setEnabled(config.isModified());
     }
 
-    protected ButtonGeneric createFileSelectorWidgets(int x, int y, final FileConfig config,
-                                             final FileSelectorScreenFactory screenFactory, String buttonText, String hoverTextKey)
+    protected GenericButton createFileSelectorWidgets(int x, int y, final FileConfig config,
+                                                      final FileSelectorScreenFactory screenFactory, String buttonText, String hoverTextKey)
     {
         x += this.getMaxLabelWidth() + 10;
         int elementWidth = this.gui.getConfigElementsWidth();
@@ -57,7 +57,7 @@ public abstract class BaseConfigOptionWidget<C extends ConfigInfo> extends BaseD
         ArrayList<String> lines = new ArrayList<>();
         StringUtils.splitTextToLines(lines, StringUtils.translate(hoverTextKey, file.getAbsolutePath()), 280);
 
-        ButtonGeneric button = new ButtonGeneric(x, y + 1, elementWidth, 20, buttonText);
+        GenericButton button = new GenericButton(x, y + 1, elementWidth, 20, buttonText);
         button.addHoverStrings(lines);
 
         this.addButton(button, (btn, mbtn) -> {

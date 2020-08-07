@@ -4,17 +4,17 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import fi.dy.masa.malilib.LiteModMaLiLib;
-import fi.dy.masa.malilib.input.IHotkey;
-import fi.dy.masa.malilib.input.IKeyBind;
-import fi.dy.masa.malilib.input.KeyBindMulti;
+import fi.dy.masa.malilib.input.Hotkey;
+import fi.dy.masa.malilib.input.KeyBind;
+import fi.dy.masa.malilib.input.KeyBindImpl;
 import fi.dy.masa.malilib.input.KeyBindSettings;
-import fi.dy.masa.malilib.input.KeyCallbackToggleBooleanConfigWithMessage;
+import fi.dy.masa.malilib.input.callback.ToggleBooleanWithMessageKeyCallback;
 import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 
-public class HotkeyedBooleanConfig extends BooleanConfig implements IHotkey
+public class HotkeyedBooleanConfig extends BooleanConfig implements Hotkey
 {
-    protected final IKeyBind keyBind;
+    protected final KeyBind keyBind;
 
     public HotkeyedBooleanConfig(String name, boolean defaultValue, String defaultHotkey)
     {
@@ -35,14 +35,14 @@ public class HotkeyedBooleanConfig extends BooleanConfig implements IHotkey
     {
         super(name, defaultValue, prettyName, comment);
 
-        this.keyBind = KeyBindMulti.fromStorageString(name, defaultHotkey, settings);
-        this.keyBind.setCallback(new KeyCallbackToggleBooleanConfigWithMessage(this));
+        this.keyBind = KeyBindImpl.fromStorageString(name, defaultHotkey, settings);
+        this.keyBind.setCallback(new ToggleBooleanWithMessageKeyCallback(this));
 
         this.cacheSavedValue();
     }
 
     @Override
-    public IKeyBind getKeyBind()
+    public KeyBind getKeyBind()
     {
         return this.keyBind;
     }

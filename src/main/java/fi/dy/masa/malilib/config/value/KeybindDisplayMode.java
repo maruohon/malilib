@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.config.value;
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.util.StringUtils;
 
-public enum KeybindDisplayMode implements IConfigOptionListEntry<KeybindDisplayMode>
+public enum KeybindDisplayMode implements ConfigOptionListEntry<KeybindDisplayMode>
 {
     NONE            ("none",                "malilib.gui.label.keybind_display.none"),
     KEYS            ("keys",                "malilib.gui.label.keybind_display.keys"),
@@ -36,12 +36,12 @@ public enum KeybindDisplayMode implements IConfigOptionListEntry<KeybindDisplayM
     @Override
     public KeybindDisplayMode cycle(boolean forward)
     {
-        return ConfigOptionListEntry.cycleValue(VALUES, this.ordinal(), forward);
+        return BaseConfigOptionListEntry.cycleValue(VALUES, this.ordinal(), forward);
     }
 
     @Override
     public KeybindDisplayMode fromString(String name)
     {
-        return ConfigOptionListEntry.findValueByName(name, VALUES);
+        return BaseConfigOptionListEntry.findValueByName(name, VALUES);
     }
 }

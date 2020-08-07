@@ -2,16 +2,16 @@ package fi.dy.masa.malilib.gui;
 
 import javax.annotation.Nullable;
 import net.minecraft.client.gui.GuiScreen;
-import fi.dy.masa.malilib.listener.ICompletionListener;
-import fi.dy.masa.malilib.message.IMessageConsumer;
+import fi.dy.masa.malilib.listener.TaskCompletionListener;
+import fi.dy.masa.malilib.message.MessageConsumer;
 import fi.dy.masa.malilib.message.MessageType;
-import fi.dy.masa.malilib.util.consumer.IStringConsumer;
+import fi.dy.masa.malilib.util.consumer.StringConsumer;
 
-public class TextInputScreen extends BaseTextInputScreen implements ICompletionListener
+public class TextInputScreen extends BaseTextInputScreen implements TaskCompletionListener
 {
-    protected final IStringConsumer stringConsumer;
+    protected final StringConsumer stringConsumer;
 
-    public TextInputScreen(String titleKey, String defaultText, @Nullable GuiScreen parent, IStringConsumer stringConsumer)
+    public TextInputScreen(String titleKey, String defaultText, @Nullable GuiScreen parent, StringConsumer stringConsumer)
     {
         super(titleKey, defaultText, parent);
 
@@ -27,27 +27,27 @@ public class TextInputScreen extends BaseTextInputScreen implements ICompletionL
     @Override
     public void onTaskCompleted()
     {
-        if (this.getParent() instanceof ICompletionListener)
+        if (this.getParent() instanceof TaskCompletionListener)
         {
-            ((ICompletionListener) this.getParent()).onTaskCompleted();
+            ((TaskCompletionListener) this.getParent()).onTaskCompleted();
         }
     }
 
     @Override
     public void onTaskAborted()
     {
-        if (this.getParent() instanceof ICompletionListener)
+        if (this.getParent() instanceof TaskCompletionListener)
         {
-            ((ICompletionListener) this.getParent()).onTaskAborted();
+            ((TaskCompletionListener) this.getParent()).onTaskAborted();
         }
     }
 
     @Override
     public void addMessage(MessageType type, int lifeTime, String messageKey, Object... args)
     {
-        if (this.getParent() instanceof IMessageConsumer)
+        if (this.getParent() instanceof MessageConsumer)
         {
-            ((IMessageConsumer) this.getParent()).addMessage(type, lifeTime, messageKey, args);
+            ((MessageConsumer) this.getParent()).addMessage(type, lifeTime, messageKey, args);
         }
         else
         {

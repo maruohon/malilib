@@ -13,8 +13,9 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.item.ItemStack;
 import fi.dy.masa.malilib.command.ClientCommandHandler;
-import fi.dy.masa.malilib.event.dispatch.InputEventDispatcher;
+import fi.dy.masa.malilib.event.dispatch.InputDispatcherImpl;
 import fi.dy.masa.malilib.event.dispatch.RenderEventDispatcher;
+import fi.dy.masa.malilib.event.dispatch.RenderEventDispatcherImpl;
 
 @Mixin(GuiScreen.class)
 public abstract class MixinGuiScreen extends Gui
@@ -25,7 +26,7 @@ public abstract class MixinGuiScreen extends Gui
     @Inject(method = "renderToolTip", at = @At("RETURN"))
     private void onRenderToolTip(ItemStack stack, int x, int y, CallbackInfo ci)
     {
-        ((RenderEventDispatcher) RenderEventDispatcher.INSTANCE).onRenderTooltipPost(stack, x, y);
+        ((RenderEventDispatcherImpl) RenderEventDispatcher.INSTANCE).onRenderTooltipPost(stack, x, y);
     }
 
     @Inject(method = "sendChatMessage(Ljava/lang/String;Z)V", at = @At(
@@ -44,7 +45,7 @@ public abstract class MixinGuiScreen extends Gui
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiScreen;handleKeyboardInput()V"))
     private void onKeyboardInputGui(CallbackInfo ci) throws IOException
     {
-        InputEventDispatcher handler = (InputEventDispatcher) InputEventDispatcher.getInputManager();
+        InputDispatcherImpl handler = (InputDispatcherImpl) InputDispatcherImpl.getInputManager();
 
         if (handler.onKeyInput())
         {
@@ -65,7 +66,7 @@ public abstract class MixinGuiScreen extends Gui
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiScreen;handleMouseInput()V"))
     private void onMouseInputGui(CallbackInfo ci) throws IOException
     {
-        InputEventDispatcher handler = (InputEventDispatcher) InputEventDispatcher.getInputManager();
+        InputDispatcherImpl handler = (InputDispatcherImpl) InputDispatcherImpl.getInputManager();
 
         if (handler.onMouseInput())
         {

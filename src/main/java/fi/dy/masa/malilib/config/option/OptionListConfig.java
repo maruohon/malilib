@@ -3,9 +3,9 @@ package fi.dy.masa.malilib.config.option;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import fi.dy.masa.malilib.LiteModMaLiLib;
-import fi.dy.masa.malilib.config.value.IConfigOptionListEntry;
+import fi.dy.masa.malilib.config.value.ConfigOptionListEntry;
 
-public class OptionListConfig<T extends IConfigOptionListEntry<T>> extends BaseConfig<T>
+public class OptionListConfig<T extends ConfigOptionListEntry<T>> extends BaseConfig<T>
 {
     protected final T defaultValue;
     protected T value;

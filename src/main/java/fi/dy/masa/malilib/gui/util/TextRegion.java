@@ -1,6 +1,5 @@
 package fi.dy.masa.malilib.gui.util;
 
-import fi.dy.masa.malilib.util.data.HorizontalAlignment;
 import fi.dy.masa.malilib.util.data.LeftRight;
 import fi.dy.masa.malilib.util.StringUtils;
 

@@ -10,7 +10,7 @@ import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.render.MessageRenderer;
 import fi.dy.masa.malilib.util.StringUtils;
-import fi.dy.masa.malilib.util.consumer.IStringConsumer;
+import fi.dy.masa.malilib.util.consumer.StringConsumer;
 
 public class MessageUtils
 {
@@ -20,8 +20,8 @@ public class MessageUtils
     private static final MessageRenderer IN_GAME_MESSAGES_BOTTOM_LEFT  = (new MessageRenderer()).setExpandUp(true);
     private static final MessageRenderer IN_GAME_MESSAGES_BOTTOM_RIGHT = (new MessageRenderer()).setExpandUp(true);
 
-    public static final IStringConsumer INFO_MESSAGE_CONSUMER = new InfoMessageConsumer();
-    public static final IMessageConsumer INGAME_MESSAGE_CONSUMER = new InGameMessageConsumer();
+    public static final StringConsumer INFO_MESSAGE_CONSUMER = new InfoMessageConsumer();
+    public static final MessageConsumer INGAME_MESSAGE_CONSUMER = new InGameMessageConsumer();
 
     private static MessageRenderer createMainMessageRenderer()
     {
@@ -76,9 +76,9 @@ public class MessageUtils
      */
     public static void showGuiMessage(MessageType type, int lifeTime, String translationKey, Object... args)
     {
-        if (GuiUtils.getCurrentScreen() instanceof IMessageConsumer)
+        if (GuiUtils.getCurrentScreen() instanceof MessageConsumer)
         {
-            ((IMessageConsumer) GuiUtils.getCurrentScreen()).addMessage(type, lifeTime, translationKey, args);
+            ((MessageConsumer) GuiUtils.getCurrentScreen()).addMessage(type, lifeTime, translationKey, args);
         }
     }
 
@@ -104,9 +104,9 @@ public class MessageUtils
      */
     public static void showGuiOrActionBarMessage(MessageType type, int lifeTime, String translationKey, Object... args)
     {
-        if (GuiUtils.getCurrentScreen() instanceof IMessageConsumer)
+        if (GuiUtils.getCurrentScreen() instanceof MessageConsumer)
         {
-            ((IMessageConsumer) GuiUtils.getCurrentScreen()).addMessage(type, lifeTime, translationKey, args);
+            ((MessageConsumer) GuiUtils.getCurrentScreen()).addMessage(type, lifeTime, translationKey, args);
         }
         else
         {
@@ -146,9 +146,9 @@ public class MessageUtils
         showInGameMessage(HudAlignment.BOTTOM_RIGHT, type, lifeTime, translationKey, args);
         */
 
-        if (GuiUtils.getCurrentScreen() instanceof IMessageConsumer)
+        if (GuiUtils.getCurrentScreen() instanceof MessageConsumer)
         {
-            ((IMessageConsumer) GuiUtils.getCurrentScreen()).addMessage(type, lifeTime, translationKey, args);
+            ((MessageConsumer) GuiUtils.getCurrentScreen()).addMessage(type, lifeTime, translationKey, args);
         }
         else
         {
@@ -294,7 +294,7 @@ public class MessageUtils
         }
     }
 
-    public static class InfoMessageConsumer implements IStringConsumer
+    public static class InfoMessageConsumer implements StringConsumer
     {
         @Override
         public boolean consumeString(String string)
@@ -305,7 +305,7 @@ public class MessageUtils
         }
     }
 
-    public static class InGameMessageConsumer implements IMessageConsumer
+    public static class InGameMessageConsumer implements MessageConsumer
     {
         @Override
         public void addMessage(MessageType type, int lifeTime, String translationKey, Object... args)

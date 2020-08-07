@@ -9,19 +9,19 @@ import fi.dy.masa.malilib.config.option.BaseConfig;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.config.option.OptionListConfig;
 import fi.dy.masa.malilib.gui.BaseScreen;
-import fi.dy.masa.malilib.gui.DialogBaseScreen;
-import fi.dy.masa.malilib.gui.button.ConfigButtonBoolean;
-import fi.dy.masa.malilib.gui.button.ConfigButtonOptionList;
+import fi.dy.masa.malilib.gui.BaseDialogScreen;
+import fi.dy.masa.malilib.gui.button.BooleanConfigButton;
+import fi.dy.masa.malilib.gui.button.OptionListConfigButton;
 import fi.dy.masa.malilib.gui.interfaces.IDialogHandler;
-import fi.dy.masa.malilib.input.IKeyBind;
+import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.input.KeyAction;
 import fi.dy.masa.malilib.input.KeyBindSettings;
 import fi.dy.masa.malilib.config.ValueChangeCallback;
 import fi.dy.masa.malilib.util.StringUtils;
 
-public class KeybindSettingsScreen extends DialogBaseScreen
+public class KeybindSettingsScreen extends BaseDialogScreen
 {
-    protected final IKeyBind keybind;
+    protected final KeyBind keybind;
     protected final String keybindName;
     protected final OptionListConfig<KeyAction> cfgActivateOn;
     protected final OptionListConfig<KeyBindSettings.Context> cfgContext;
@@ -35,7 +35,7 @@ public class KeybindSettingsScreen extends DialogBaseScreen
     protected int labelWidth;
     protected int configWidth;
 
-    public KeybindSettingsScreen(IKeyBind keybind, String name, @Nullable IDialogHandler dialogHandler, GuiScreen parent)
+    public KeybindSettingsScreen(KeyBind keybind, String name, @Nullable IDialogHandler dialogHandler, GuiScreen parent)
     {
         this.keybind = keybind;
         this.keybindName = name;
@@ -120,11 +120,11 @@ public class KeybindSettingsScreen extends DialogBaseScreen
 
         if (config instanceof BooleanConfig)
         {
-            this.addWidget(new ConfigButtonBoolean(x, y, configWidth, 20, (BooleanConfig) config));
+            this.addWidget(new BooleanConfigButton(x, y, configWidth, 20, (BooleanConfig) config));
         }
         else if (config instanceof OptionListConfig)
         {
-            this.addWidget(new ConfigButtonOptionList(x, y, configWidth, 20, (OptionListConfig<?>) config));
+            this.addWidget(new OptionListConfigButton(x, y, configWidth, 20, (OptionListConfig<?>) config));
         }
     }
 

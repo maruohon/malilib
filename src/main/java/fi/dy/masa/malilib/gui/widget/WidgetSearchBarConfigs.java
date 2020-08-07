@@ -1,19 +1,19 @@
 package fi.dy.masa.malilib.gui.widget;
 
 import org.lwjgl.input.Keyboard;
-import fi.dy.masa.malilib.gui.button.ConfigButtonKeyBind;
+import fi.dy.masa.malilib.gui.button.KeyBindConfigButton;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
-import fi.dy.masa.malilib.input.IKeyBind;
+import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.input.KeyAction;
-import fi.dy.masa.malilib.input.KeyBindMulti;
+import fi.dy.masa.malilib.input.KeyBindImpl;
 import fi.dy.masa.malilib.input.KeyBindSettings;
 import fi.dy.masa.malilib.input.KeyBindSettings.Context;
-import fi.dy.masa.malilib.util.data.HorizontalAlignment;
+import fi.dy.masa.malilib.gui.util.HorizontalAlignment;
 
 public class WidgetSearchBarConfigs extends WidgetSearchBar
 {
-    protected final KeyBindMulti searchKey;
-    protected final ConfigButtonKeyBind button;
+    protected final KeyBindImpl searchKey;
+    protected final KeyBindConfigButton button;
 
     public WidgetSearchBarConfigs(int x, int y, int width, int height, int searchBarOffsetX,
             IGuiIcon iconSearch, HorizontalAlignment iconAlignment)
@@ -21,11 +21,11 @@ public class WidgetSearchBarConfigs extends WidgetSearchBar
         super(x, y + 3, width - 160, 14, searchBarOffsetX, iconSearch, iconAlignment);
 
         KeyBindSettings settings = KeyBindSettings.create(Context.ANY, KeyAction.BOTH, true, true, false, false, false);
-        this.searchKey = KeyBindMulti.fromStorageString("", "", settings);
-        this.button = new ConfigButtonKeyBind(x + width - 150, y, 140, 20, this.searchKey, null);
+        this.searchKey = KeyBindImpl.fromStorageString("", "", settings);
+        this.button = new KeyBindConfigButton(x + width - 150, y, 140, 20, this.searchKey, null);
     }
 
-    public IKeyBind getKeybind()
+    public KeyBind getKeybind()
     {
         return this.searchKey;
     }

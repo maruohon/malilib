@@ -1,15 +1,15 @@
 package fi.dy.masa.malilib.config.option;
 
 import com.google.gson.JsonElement;
-import fi.dy.masa.malilib.input.IHotkey;
-import fi.dy.masa.malilib.input.IKeyBind;
-import fi.dy.masa.malilib.input.KeyBindMulti;
+import fi.dy.masa.malilib.input.Hotkey;
+import fi.dy.masa.malilib.input.KeyBind;
+import fi.dy.masa.malilib.input.KeyBindImpl;
 import fi.dy.masa.malilib.input.KeyBindSettings;
 import fi.dy.masa.malilib.util.StringUtils;
 
-public class HotkeyConfig extends BaseConfig<HotkeyConfig> implements IHotkey
+public class HotkeyConfig extends BaseConfig<HotkeyConfig> implements Hotkey
 {
-    protected final KeyBindMulti keyBind;
+    protected final KeyBindImpl keyBind;
 
     public HotkeyConfig(String name, String defaultStorageString)
     {
@@ -40,7 +40,7 @@ public class HotkeyConfig extends BaseConfig<HotkeyConfig> implements IHotkey
     {
         super(name, name, prettyName, comment);
 
-        this.keyBind = KeyBindMulti.fromStorageString(name, defaultStorageString, settings);
+        this.keyBind = KeyBindImpl.fromStorageString(name, defaultStorageString, settings);
     }
 
     @Override
@@ -52,7 +52,7 @@ public class HotkeyConfig extends BaseConfig<HotkeyConfig> implements IHotkey
     }
 
     @Override
-    public IKeyBind getKeyBind()
+    public KeyBind getKeyBind()
     {
         return this.keyBind;
     }

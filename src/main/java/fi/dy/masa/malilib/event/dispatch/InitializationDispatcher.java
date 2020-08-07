@@ -1,40 +1,15 @@
 package fi.dy.masa.malilib.event.dispatch;
 
-import java.util.ArrayList;
-import java.util.List;
-import fi.dy.masa.malilib.config.ConfigManagerImpl;
-import fi.dy.masa.malilib.config.ConfigManager;
-import fi.dy.masa.malilib.event.IInitializationHandler;
+import fi.dy.masa.malilib.event.InitializationHandler;
 
-public class InitializationDispatcher implements IInitializationDispatcher
+public interface InitializationDispatcher
 {
-    public static final IInitializationDispatcher INSTANCE = new InitializationDispatcher();
-
-    private final List<IInitializationHandler> handlers = new ArrayList<>();
-
-    @Override
-    public void registerInitializationHandler(IInitializationHandler handler)
-    {
-        if (this.handlers.contains(handler) == false)
-        {
-            this.handlers.add(handler);
-        }
-    }
+    InitializationDispatcher INSTANCE = new InitializationDispatcherImpl();
 
     /**
-     * NOT PUBLIC API - DO NOT CALL
+     * Register an initialization handler, which will get called once the game has been initialized
+     * and set up, and things are ready to be accessed and initialized by mods. 
+     * @param handler
      */
-    public void onGameInitDone()
-    {
-        if (this.handlers.isEmpty() == false)
-        {
-            for (IInitializationHandler handler : this.handlers)
-            {
-                handler.registerModHandlers();
-            }
-        }
-
-        ((ConfigManagerImpl) ConfigManager.INSTANCE).loadAllConfigs();
-        InputEventDispatcher.getKeyBindManager().updateUsedKeys();
-    }
+    void registerInitializationHandler(InitializationHandler handler);
 }

@@ -1,11 +1,11 @@
 package fi.dy.masa.malilib.input;
 
 import com.google.common.collect.ImmutableList;
+import fi.dy.masa.malilib.config.value.BaseConfigOptionListEntry;
 import fi.dy.masa.malilib.config.value.ConfigOptionListEntry;
-import fi.dy.masa.malilib.config.value.IConfigOptionListEntry;
 import fi.dy.masa.malilib.util.StringUtils;
 
-public enum KeyAction implements IConfigOptionListEntry<KeyAction>
+public enum KeyAction implements ConfigOptionListEntry<KeyAction>
 {
     PRESS   ("press",   "malilib.label.key_action.press"),
     RELEASE ("release", "malilib.label.key_action.release"),
@@ -37,12 +37,12 @@ public enum KeyAction implements IConfigOptionListEntry<KeyAction>
     @Override
     public KeyAction cycle(boolean forward)
     {
-        return ConfigOptionListEntry.cycleValue(VALUES, this.ordinal(), forward);
+        return BaseConfigOptionListEntry.cycleValue(VALUES, this.ordinal(), forward);
     }
 
     @Override
     public KeyAction fromString(String name)
     {
-        return ConfigOptionListEntry.findValueByName(name, VALUES);
+        return BaseConfigOptionListEntry.findValueByName(name, VALUES);
     }
 }

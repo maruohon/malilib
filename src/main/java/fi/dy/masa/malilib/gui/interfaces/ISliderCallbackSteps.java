@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.gui.interfaces;
 
-import fi.dy.masa.malilib.gui.config.SliderCallback;
+import fi.dy.masa.malilib.gui.callback.SliderCallback;
 
 public interface ISliderCallbackSteps extends SliderCallback
 {

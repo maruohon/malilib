@@ -1,9 +1,9 @@
 package fi.dy.masa.malilib;
 
 import fi.dy.masa.malilib.gui.config.ModConfigScreen;
-import fi.dy.masa.malilib.gui.config.liteloader.ConfigPanelBase;
+import fi.dy.masa.malilib.gui.config.liteloader.BaseConfigPanel;
 
-public class MaLiLibConfigPanel extends ConfigPanelBase
+public class MaLiLibConfigPanel extends BaseConfigPanel
 {
     @Override
     protected String getPanelTitlePrefix()

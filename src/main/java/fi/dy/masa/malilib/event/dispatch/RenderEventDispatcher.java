@@ -1,91 +1,31 @@
 package fi.dy.masa.malilib.event.dispatch;
 
-import java.util.ArrayList;
-import java.util.List;
-import net.minecraft.item.ItemStack;
-import fi.dy.masa.malilib.event.IPostGameOverlayRenderer;
-import fi.dy.masa.malilib.event.IPostItemTooltipRenderer;
-import fi.dy.masa.malilib.event.IPostWorldRenderer;
-import fi.dy.masa.malilib.message.MessageUtils;
-import fi.dy.masa.malilib.render.ToastRenderer;
+import fi.dy.masa.malilib.event.PostGameOverlayRenderer;
+import fi.dy.masa.malilib.event.PostItemTooltipRenderer;
+import fi.dy.masa.malilib.event.PostWorldRenderer;
 
-public class RenderEventDispatcher implements IRenderEventDispatcher
+public interface RenderEventDispatcher
 {
-    public static final IRenderEventDispatcher INSTANCE = new RenderEventDispatcher();
-
-    private final List<IPostGameOverlayRenderer> overlayRenderers = new ArrayList<>();
-    private final List<IPostItemTooltipRenderer> tooltipLastRenderers = new ArrayList<>();
-    private final List<IPostWorldRenderer> worldLastRenderers = new ArrayList<>();
-
-    @Override
-    public void registerGameOverlayRenderer(IPostGameOverlayRenderer renderer)
-    {
-        if (this.overlayRenderers.contains(renderer) == false)
-        {
-            this.overlayRenderers.add(renderer);
-        }
-    }
-
-    @Override
-    public void registerTooltipPostRenderer(IPostItemTooltipRenderer renderer)
-    {
-        if (this.tooltipLastRenderers.contains(renderer) == false)
-        {
-            this.tooltipLastRenderers.add(renderer);
-        }
-    }
-
-    @Override
-    public void registerWorldPostRenderer(IPostWorldRenderer renderer)
-    {
-        if (this.worldLastRenderers.contains(renderer) == false)
-        {
-            this.worldLastRenderers.add(renderer);
-        }
-    }
+    RenderEventDispatcher INSTANCE = new RenderEventDispatcherImpl();
 
     /**
-     * NOT PUBLIC API - DO NOT CALL
+     * Registers a renderer which will have its {@link PostGameOverlayRenderer#onPostGameOverlayRender(float)}
+     * method called after the vanilla game overlay rendering is done.
+     * @param renderer
      */
-    public void onRenderGameOverlayPost(float partialTicks)
-    {
-        if (this.overlayRenderers.isEmpty() == false)
-        {
-            for (IPostGameOverlayRenderer renderer : this.overlayRenderers)
-            {
-                renderer.onPostGameOverlayRender(partialTicks);
-            }
-        }
-
-        MessageUtils.renderInGameMessages();
-        ToastRenderer.INSTANCE.render();
-    }
+    void registerGameOverlayRenderer(PostGameOverlayRenderer renderer);
 
     /**
-     * NOT PUBLIC API - DO NOT CALL
+     * Registers a renderer which will have its {@link PostItemTooltipRenderer#onPostRenderItemTooltip(net.minecraft.item.ItemStack, int, int)}
+     * method called after the vanilla ItemStack tooltip text has been rendered.
+     * @param renderer
      */
-    public void onRenderTooltipPost(ItemStack stack, int x, int y)
-    {
-        if (this.tooltipLastRenderers.isEmpty() == false)
-        {
-            for (IPostItemTooltipRenderer renderer : this.tooltipLastRenderers)
-            {
-                renderer.onPostRenderItemTooltip(stack, x, y);
-            }
-        }
-    }
+    void registerTooltipPostRenderer(PostItemTooltipRenderer renderer);
 
     /**
-     * NOT PUBLIC API - DO NOT CALL
+     * Registers a renderer which will have its {@link PostWorldRenderer#onPostWorldRender(float)}
+     * method called after the vanilla world rendering is done.
+     * @param renderer
      */
-    public void onRenderWorldPost(float partialTicks)
-    {
-        if (this.worldLastRenderers.isEmpty() == false)
-        {
-            for (IPostWorldRenderer renderer : this.worldLastRenderers)
-            {
-                renderer.onPostWorldRender(partialTicks);
-            }
-        }
-    }
+    void registerWorldPostRenderer(PostWorldRenderer renderer);
 }

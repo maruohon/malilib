@@ -20,7 +20,7 @@ import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.shader.ShaderProgram;
 import fi.dy.masa.malilib.util.StringUtils;
 
-public class ColorEditorHSVScreen extends DialogBaseScreen
+public class ColorEditorHSVScreen extends BaseDialogScreen
 {
     protected static final ShaderProgram SHADER_HUE = new ShaderProgram("malilib", null, "shaders/sv_selector.frag");
 

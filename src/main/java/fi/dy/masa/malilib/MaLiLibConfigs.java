@@ -4,7 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import com.google.common.collect.ImmutableList;
-import fi.dy.masa.malilib.config.ConfigHandler;
+import fi.dy.masa.malilib.config.ModConfig;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.config.option.ConfigOption;
 import fi.dy.masa.malilib.config.option.HotkeyConfig;
@@ -15,7 +15,7 @@ import fi.dy.masa.malilib.config.value.KeybindDisplayMode;
 import fi.dy.masa.malilib.input.KeyAction;
 import fi.dy.masa.malilib.input.KeyBindSettings;
 
-public class MaLiLibConfigs implements ConfigHandler
+public class MaLiLibConfigs implements ModConfig
 {
     public static class Generic
     {
