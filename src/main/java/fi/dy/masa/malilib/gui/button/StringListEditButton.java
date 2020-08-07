@@ -50,6 +50,6 @@ public class StringListEditButton extends ButtonGeneric
     @Override
     protected String generateDisplayString()
     {
-        return StringUtils.getClampedDisplayStringRenderlen(this.config.getStrings(), this.getWidth() - 10, "'", "[ ", " ]");
+        return StringUtils.getDisplayStringForList(this.config.getStrings(), this.getWidth() - 10, "'", "[ ", " ]");
     }
 }

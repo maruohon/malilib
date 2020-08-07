@@ -78,7 +78,7 @@ public class StringUtils
     {
         net.minecraft.util.text.TextComponentString name = new net.minecraft.util.text.TextComponentString(file.getName());
         name.getStyle().setClickEvent(new net.minecraft.util.text.event.ClickEvent(net.minecraft.util.text.event.ClickEvent.Action.OPEN_FILE, file.getAbsolutePath()));
-        name.getStyle().setUnderlined(Boolean.valueOf(true));
+        name.getStyle().setUnderlined(Boolean.TRUE);
         sender.sendMessage(new net.minecraft.util.text.TextComponentTranslation(messageKey, name));
     }
 
@@ -99,7 +99,6 @@ public class StringUtils
      * @param linesOut
      * @param textIn
      * @param maxLineLength
-     * @param font
      */
     public static void splitTextToLines(List<String> linesOut, String textIn, int maxLineLength)
     {
@@ -209,7 +208,7 @@ public class StringUtils
 
                     if (end >= 1)
                     {
-                        sb.append(str.substring(0, end));
+                        sb.append(str, 0, end);
                     }
 
                     sb.append("...");
@@ -232,7 +231,8 @@ public class StringUtils
         return sb.toString();
     }
 
-    public static String getClampedDisplayStringRenderlen(List<String> list, final int maxWidth, String prefix, String suffix)
+    public static String getDisplayStringForList(List<String> list, final int maxWidth,
+                                                 String quote, String prefix, String suffix)
     {
         StringBuilder sb = new StringBuilder(128);
         sb.append(prefix);
@@ -240,8 +240,10 @@ public class StringUtils
         String entrySep = ", ";
         String dots = " ...";
         final int listSize = list.size();
+        final int widthQuotes = getStringWidth(quote) * 2;
         final int widthSep = getStringWidth(entrySep);
         final int widthDots = getStringWidth(dots);
+        final int widthNextMin = widthSep + widthDots;
         int width = getStringWidth(prefix) + getStringWidth(suffix);
 
         if (listSize > 0)
@@ -255,33 +257,41 @@ public class StringUtils
                 }
 
                 String str = list.get(listIndex);
-                final int len = getStringWidth(str);
+                final int len = getStringWidth(str) + widthQuotes;
+                int widthNext = listIndex < listSize - 1 ? widthNextMin : 0;
 
-                if ((width + len) <= maxWidth)
+                if ((width + len + widthNext) <= maxWidth)
                 {
-                    sb.append(str);
+                    sb.append(quote).append(str).append(quote);
                     width += len;
                 }
                 else
                 {
-                    for (int i = 0; i < str.length(); ++i)
+                    if ((width + getStringWidth(str.substring(0, 1)) + widthDots) <= maxWidth)
                     {
-                        String c = str.substring(i, i + 1);
-                        final int charWidth = getStringWidth(c);
+                        sb.append(quote);
+                        width += widthQuotes;
 
-                        if ((width + charWidth + widthDots) <= maxWidth)
+                        for (int i = 0; i < str.length(); ++i)
                         {
-                            sb.append(c);
-                            width += charWidth;
+                            String c = str.substring(i, i + 1);
+                            final int charWidth = getStringWidth(c);
+
+                            if ((width + charWidth + widthDots) <= maxWidth)
+                            {
+                                sb.append(c);
+                                width += charWidth;
+                            }
+                            else
+                            {
+                                break;
+                            }
                         }
-                        else
-                        {
-                            break;
-                        }
+
+                        sb.append(quote);
                     }
 
                     sb.append(dots);
-                    width += widthDots;
                     break;
                 }
             }

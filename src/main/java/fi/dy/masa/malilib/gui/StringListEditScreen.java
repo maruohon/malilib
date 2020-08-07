@@ -86,11 +86,6 @@ public class StringListEditScreen extends BaseListScreen<DataListWidget<String>>
         return this.dialogHeight - 25;
     }
 
-    public StringListConfig getConfig()
-    {
-        return this.config;
-    }
-
     @Override
     public void onGuiClosed()
     {
