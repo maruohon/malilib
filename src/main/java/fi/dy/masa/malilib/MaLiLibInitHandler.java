@@ -2,11 +2,11 @@ package fi.dy.masa.malilib;
 
 import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.event.InitializationHandler;
-import fi.dy.masa.malilib.event.dispatch.InputDispatcherImpl;
+import fi.dy.masa.malilib.event.dispatch.KeyBindManager;
 import fi.dy.masa.malilib.gui.BaseScreen;
-import fi.dy.masa.malilib.input.callback.HotkeyCallback;
-import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.input.KeyAction;
+import fi.dy.masa.malilib.input.KeyBind;
+import fi.dy.masa.malilib.input.callback.HotkeyCallback;
 
 public class MaLiLibInitHandler implements InitializationHandler
 {
@@ -14,7 +14,7 @@ public class MaLiLibInitHandler implements InitializationHandler
     public void registerModHandlers()
     {
         ConfigManager.INSTANCE.registerConfigHandler(new MaLiLibConfigs());
-        InputDispatcherImpl.getKeyBindManager().registerKeyBindProvider(MaLiLibInputHandler.getInstance());
+        KeyBindManager.INSTANCE.registerKeyBindProvider(MaLiLibInputHandler.getInstance());
 
         MaLiLibConfigs.Generic.OPEN_GUI_CONFIGS.getKeyBind().setCallback(new CallbackOpenConfigGui());
     }

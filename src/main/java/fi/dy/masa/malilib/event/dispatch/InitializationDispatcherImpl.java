@@ -37,6 +37,6 @@ public class InitializationDispatcherImpl implements InitializationDispatcher
         }
 
         ((ConfigManagerImpl) ConfigManager.INSTANCE).loadAllConfigs();
-        InputDispatcherImpl.getKeyBindManager().updateUsedKeys();
+        KeyBindManager.INSTANCE.updateUsedKeys();
     }
 }

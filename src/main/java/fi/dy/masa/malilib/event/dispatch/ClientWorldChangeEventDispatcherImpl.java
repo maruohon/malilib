@@ -60,7 +60,7 @@ public class ClientWorldChangeEventDispatcherImpl implements ClientWorldChangeEv
         else if (worldBefore == null)
         {
             ((ConfigManagerImpl) ConfigManager.INSTANCE).loadAllConfigs();
-            InputDispatcherImpl.getKeyBindManager().updateUsedKeys();
+            KeyBindManager.INSTANCE.updateUsedKeys();
         }
 
         if (this.worldChangeHandlers.isEmpty() == false)

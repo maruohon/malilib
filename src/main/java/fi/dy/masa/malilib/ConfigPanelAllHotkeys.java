@@ -4,7 +4,7 @@ import java.util.Collections;
 import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.config.ConfigManagerImpl;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
-import fi.dy.masa.malilib.event.dispatch.InputDispatcherImpl;
+import fi.dy.masa.malilib.event.dispatch.KeyBindManager;
 import fi.dy.masa.malilib.gui.BaseListScreen;
 import fi.dy.masa.malilib.gui.config.ConfigInfoProvider;
 import fi.dy.masa.malilib.gui.config.ModConfigScreen;
@@ -54,7 +54,7 @@ public class ConfigPanelAllHotkeys extends ModConfigScreen
     protected void onSettingsChanged()
     {
         ((ConfigManagerImpl) ConfigManager.INSTANCE).saveAllConfigs();
-        InputDispatcherImpl.getKeyBindManager().updateUsedKeys();
+        KeyBindManager.INSTANCE.updateUsedKeys();
     }
 
     @Override

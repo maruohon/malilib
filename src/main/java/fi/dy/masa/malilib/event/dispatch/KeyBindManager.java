@@ -1,14 +1,16 @@
 package fi.dy.masa.malilib.event.dispatch;
 
 import java.util.List;
-import fi.dy.masa.malilib.input.KeyBindProvider;
 import fi.dy.masa.malilib.input.KeyBindCategory;
+import fi.dy.masa.malilib.input.KeyBindProvider;
 
 public interface KeyBindManager
 {
+    KeyBindManager INSTANCE = new KeyBindManagerImpl();
     /**
+     * 
      * Registers a keybind provider, which will want to register
-     * some keybinds whenever the key to keybind maps need to be rebuilt.
+     * some keybinds whenever the key -> keybinds maps need to be rebuilt.
      * @param provider
      */
     void registerKeyBindProvider(KeyBindProvider provider);
@@ -26,7 +28,7 @@ public interface KeyBindManager
     List<KeyBindCategory> getKeyBindCategories();
 
     /**
-     * Forces the keys -> keybinds map to be rebuilt for all registered hotkeys.
+     * Causes the key -> keybinds map to be rebuilt for all registered hotkeys.
      */
     void updateUsedKeys();
 }

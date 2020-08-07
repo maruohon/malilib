@@ -5,7 +5,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.input.Keyboard;
-import fi.dy.masa.malilib.event.dispatch.InputDispatcherImpl;
+import fi.dy.masa.malilib.event.dispatch.KeyBindManager;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.interfaces.IKeybindConfigGui;
 import fi.dy.masa.malilib.input.Hotkey;
@@ -165,7 +165,7 @@ public class KeyBindConfigButton extends GenericButton
 
     protected void updateConflicts()
     {
-        List<KeyBindCategory> categories = InputDispatcherImpl.getKeyBindManager().getKeyBindCategories();
+        List<KeyBindCategory> categories = KeyBindManager.INSTANCE.getKeyBindCategories();
         List<Hotkey> overlaps = new ArrayList<>();
         this.overlapInfo.clear();
 

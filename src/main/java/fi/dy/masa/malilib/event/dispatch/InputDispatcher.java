@@ -5,6 +5,8 @@ import fi.dy.masa.malilib.input.MouseInputHandler;
 
 public interface InputDispatcher
 {
+    InputDispatcher INSTANCE = new InputDispatcherImpl();
+
     /**
      * Registers a keyboard input handler, which will receive
      * the raw key presses.

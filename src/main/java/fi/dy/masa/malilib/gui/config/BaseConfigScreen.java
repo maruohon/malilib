@@ -8,7 +8,7 @@ import org.lwjgl.input.Keyboard;
 import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
-import fi.dy.masa.malilib.event.dispatch.InputDispatcherImpl;
+import fi.dy.masa.malilib.event.dispatch.KeyBindManager;
 import fi.dy.masa.malilib.gui.BaseListScreen;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.button.GenericButton;
@@ -209,7 +209,7 @@ public abstract class BaseConfigScreen extends BaseListScreen<ConfigOptionListWi
 
         if (this.hotkeyChangeListeners.size() > 0)
         {
-            InputDispatcherImpl.getKeyBindManager().updateUsedKeys();
+            KeyBindManager.INSTANCE.updateUsedKeys();
         }
     }
 

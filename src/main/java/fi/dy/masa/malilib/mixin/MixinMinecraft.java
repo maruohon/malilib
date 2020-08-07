@@ -10,10 +10,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 import fi.dy.masa.malilib.IMinecraftAccessor;
 import fi.dy.masa.malilib.event.dispatch.ClientWorldChangeEventDispatcher;
+import fi.dy.masa.malilib.event.dispatch.ClientWorldChangeEventDispatcherImpl;
+import fi.dy.masa.malilib.event.dispatch.InputDispatcher;
 import fi.dy.masa.malilib.event.dispatch.InputDispatcherImpl;
 import fi.dy.masa.malilib.event.dispatch.TickEventDispatcher;
 import fi.dy.masa.malilib.event.dispatch.TickEventDispatcherImpl;
-import fi.dy.masa.malilib.event.dispatch.ClientWorldChangeEventDispatcherImpl;
 import fi.dy.masa.malilib.input.KeyBindImpl;
 
 @Mixin(Minecraft.class)
@@ -37,7 +38,7 @@ public abstract class MixinMinecraft implements IMinecraftAccessor
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;dispatchKeypresses()V"))
     private void onKeyboardInput(CallbackInfo ci)
     {
-        if (((InputDispatcherImpl) InputDispatcherImpl.getInputManager()).onKeyInput())
+        if (((InputDispatcherImpl) InputDispatcher.INSTANCE).onKeyInput())
         {
             ci.cancel();
         }
@@ -47,7 +48,7 @@ public abstract class MixinMinecraft implements IMinecraftAccessor
             at = @At(value = "INVOKE", target = "Lorg/lwjgl/input/Mouse;getEventButton()I", remap = false))
     private void onMouseInput(CallbackInfo ci)
     {
-        if (((InputDispatcherImpl) InputDispatcherImpl.getInputManager()).onMouseInput())
+        if (((InputDispatcherImpl) InputDispatcher.INSTANCE).onMouseInput())
         {
             ci.cancel();
         }
