@@ -6,8 +6,8 @@ import net.minecraft.util.ChatAllowedCharacters;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.button.GenericButton;
 import fi.dy.masa.malilib.gui.icon.Icon;
-import fi.dy.masa.malilib.listener.TextChangeListener;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
+import fi.dy.masa.malilib.listener.TextChangeListener;
 
 public class SearchBarWidget extends ContainerWidget
 {
@@ -65,8 +65,6 @@ public class SearchBarWidget extends ContainerWidget
         this.buttonSearchToggle.setPosition(ix, y);
         this.textField.setPosition(tx, y);
         this.textField.setWidth(this.getWidth() -  iw - 7 - Math.abs(offX));
-
-        this.reAddSubWidgets();
     }
 
     public void setTextFieldListener(@Nullable TextChangeListener listener)

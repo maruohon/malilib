@@ -6,14 +6,13 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import fi.dy.masa.malilib.gui.button.GenericButton;
+import fi.dy.masa.malilib.gui.icon.BaseIcon;
 import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.icon.IconProvider;
-import fi.dy.masa.malilib.gui.widget.list.entry.SelectionListener;
-import fi.dy.masa.malilib.gui.icon.BaseIcon;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
+import fi.dy.masa.malilib.gui.widget.list.entry.SelectionListener;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.data.LeftRight;
 
@@ -30,12 +29,18 @@ public class DropDownListWidget<T> extends ContainerWidget
     protected final List<T> entries;
     protected final List<T> filteredEntries;
     protected final BaseTextFieldWidget searchField;
+    protected final ScrollBarWidget scrollBar;
+    protected final SelectionBarWidget<T> widgetSelectionBar;
     @Nullable protected final Function<T, String> stringFactory;
-    protected final int maxHeight;
+
     protected final int maxVisibleEntries;
+    protected final int maxHeight;
     protected final int lineHeight;
 
-    protected ScrollBarWidget scrollBar;
+    @Nullable protected GenericButton buttonOpenClose;
+    @Nullable protected IconProvider<T> iconProvider;
+    @Nullable protected SelectionListener<T> selectionListener;
+    @Nullable protected T selectedEntry;
     protected LeftRight openIconSide = LeftRight.RIGHT;
     protected boolean isOpen;
     protected boolean searchOpen;
@@ -46,11 +51,6 @@ public class DropDownListWidget<T> extends ContainerWidget
     protected int textColor = 0xFFE0E0E0;
     protected int totalHeight;
     protected int visibleEntries;
-    @Nullable protected SelectionBarWidget<T> widgetSelectionBar;
-    @Nullable protected GenericButton buttonOpenClose;
-    @Nullable protected IconProvider<T> iconProvider;
-    @Nullable protected SelectionListener<T> selectionListener;
-    @Nullable protected T selectedEntry;
 
     public DropDownListWidget(int x, int y, int width, int height, int maxHeight,
                               int maxVisibleEntries, List<T> entries)
@@ -108,8 +108,7 @@ public class DropDownListWidget<T> extends ContainerWidget
         this.searchField.setListener((newText) -> this.updateFilteredEntries());
         this.searchField.setFocused(true);
 
-        this.recreateSubElements();
-        this.updateFilteredEntries(); // This must be called after the search text field has been created in recreateSubElements
+        this.updateFilteredEntries(); // This must be called after the search text field has been created
     }
 
     @Override
@@ -122,7 +121,7 @@ public class DropDownListWidget<T> extends ContainerWidget
     public void setIconProvider(@Nullable IconProvider<T> iconProvider)
     {
         this.iconProvider = iconProvider;
-        this.updateWidth(true);
+        //this.updateWidth(true);
     }
 
     public void setSelectionListener(@Nullable SelectionListener<T> selectionListener)
@@ -136,24 +135,24 @@ public class DropDownListWidget<T> extends ContainerWidget
         this.buttonOpenClose = GenericButton.createIconOnly(buttonX, buttonY, iconSupplier);
         this.buttonOpenClose.setRenderOutline(false);
         this.buttonOpenClose.setActionListener((btn, mbtn) -> this.toggleOpen());
-
-        this.recreateSubElements();
+        //this.reAddSubWidgets();
     }
 
     protected void updateWidth(boolean updateSubWidgets)
     {
-        this.setWidth(this.getRequiredWidth(-1, this.entries, this.mc));
-        this.updateHorizontalPositionIfRightAligned();
+        this.setWidth(this.getRequiredWidth(-1, this.entries));
 
         if (updateSubWidgets)
         {
-            this.recreateSubElements();
+            this.updateSubWidgetPositions(this.getX(), this.getY());
+            this.reAddSubWidgets();
         }
     }
 
-    protected void recreateSubElements()
+    @Override
+    public void reAddSubWidgets()
     {
-        this.clearWidgets();
+        super.reAddSubWidgets();
 
         if (this.isOpen)
         {
@@ -177,8 +176,6 @@ public class DropDownListWidget<T> extends ContainerWidget
         {
             this.addWidget(this.widgetSelectionBar);
         }
-
-        this.updateSubWidgetPositions(this.getX(), this.getY());
     }
 
     @Override
@@ -196,27 +193,27 @@ public class DropDownListWidget<T> extends ContainerWidget
 
         if (this.widgetSelectionBar != null)
         {
-            this.widgetSelectionBar.setPosition(x, y);
+            this.widgetSelectionBar.setPositionAndSize(x, y, this.getWidth(), this.lineHeight);
             this.widgetSelectionBar.update(this);
         }
 
         if (this.searchOpen)
         {
-            this.searchField.setPosition(x, y - this.searchField.getHeight());
+            this.searchField.setPositionAndSize(x, y - 16, this.getWidth(), 16);
         }
     }
 
-    protected int getRequiredWidth(int width, List<T> entries, Minecraft mc)
+    protected int getRequiredWidth(int width, List<T> entries)
     {
         if (width == -1)
         {
             width = 0;
             int right = this.lineHeight + 4;
 
-            for (int i = 0; i < entries.size(); ++i)
+            for (T entry : entries)
             {
                 // + right => leave room for a square icon on the right for the open/close arrow
-                width = Math.max(width, this.getStringWidth(this.getDisplayString(entries.get(i))) + right);
+                width = Math.max(width, this.getStringWidth(this.getDisplayString(entry)) + right);
             }
 
             if (this.iconProvider != null)
@@ -273,18 +270,36 @@ public class DropDownListWidget<T> extends ContainerWidget
 
         if (this.isOpen == false)
         {
-            this.searchOpen = false;
-            this.searchField.setText("");
-            this.updateFilteredEntries();
+            this.setSearchOpen(false);
         }
-
-        // Add/remove the sub widgets as needed
-        this.recreateSubElements();
+        // setSearchOpen() already re-adds the widgets
+        else
+        {
+            // Add/remove the sub widgets as needed
+            this.reAddSubWidgets();
+        }
 
         if (this.noCurrentEntryBar == false)
         {
             this.updateSelectionBar();
         }
+    }
+
+    protected void setSearchOpen(boolean isOpen)
+    {
+        this.searchOpen = isOpen;
+
+        if (isOpen)
+        {
+            this.searchField.setFocused(true);
+        }
+        else
+        {
+            this.searchField.setText("");
+            this.updateFilteredEntries();
+        }
+
+        this.reAddSubWidgets();
     }
 
     protected void updateSelectionBar()
@@ -409,22 +424,19 @@ public class DropDownListWidget<T> extends ContainerWidget
             {
                 if (this.searchOpen && this.searchField.isFocused() && this.searchField.getText().isEmpty() == false)
                 {
-                    this.searchOpen = false;
-                    this.searchField.setText("");
-                    this.recreateSubElements();
-                    this.updateFilteredEntries();
-                    return true;
+                    this.setSearchOpen(false);
+                }
+                else
+                {
+                    this.toggleOpen();
                 }
 
-                this.toggleOpen();
                 return true;
             }
 
             if (this.searchOpen == false && this.searchField.isUsableCharacter(typedChar, 0))
             {
-                this.searchOpen = true;
-                this.searchField.setFocused(true);
-                this.recreateSubElements();
+                this.setSearchOpen(true);
             }
 
             return this.searchField.onKeyTyped(typedChar, keyCode);
@@ -440,10 +452,8 @@ public class DropDownListWidget<T> extends ContainerWidget
 
         if (this.searchOpen && filterText.isEmpty() == false)
         {
-            for (int i = 0; i < this.entries.size(); ++i)
+            for (T entry : this.entries)
             {
-                T entry = this.entries.get(i);
-
                 if (this.entryMatchesFilter(entry, filterText))
                 {
                     this.filteredEntries.add(entry);

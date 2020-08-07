@@ -10,17 +10,17 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.icon.BaseIcon;
-import fi.dy.masa.malilib.gui.util.GuiUtils;
+import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.position.Padding;
+import fi.dy.masa.malilib.gui.util.GuiUtils;
+import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.BaseWidget;
 import fi.dy.masa.malilib.gui.widget.ContainerWidget;
 import fi.dy.masa.malilib.gui.widget.ScrollBarWidget;
 import fi.dy.masa.malilib.gui.widget.SearchBarWidget;
-import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.BaseListEntryWidget;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.render.RenderUtils;
-import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 
 public abstract class BaseListWidget extends ContainerWidget
 {
@@ -546,7 +546,6 @@ public abstract class BaseListWidget extends ContainerWidget
                 break;
             }
 
-            widget.reAddSubWidgets();
             widget.setIsOdd((listIndex & 0x1) != 0);
             this.onSubWidgetAdded(widget);
             this.listWidgets.add(widget);

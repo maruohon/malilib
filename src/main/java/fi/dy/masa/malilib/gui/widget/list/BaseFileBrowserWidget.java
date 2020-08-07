@@ -73,7 +73,6 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     public void reAddSubWidgets()
     {
         super.reAddSubWidgets();
-        this.navigationWidget.reAddSubWidgets();
         this.updateDirectoryNavigationWidget();
     }
 

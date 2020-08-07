@@ -10,17 +10,17 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.TextInputScreen;
 import fi.dy.masa.malilib.gui.button.GenericButton;
-import fi.dy.masa.malilib.gui.widget.util.DirectoryNavigator;
+import fi.dy.masa.malilib.gui.icon.BaseIcon;
 import fi.dy.masa.malilib.gui.icon.FileBrowserIconProvider;
 import fi.dy.masa.malilib.gui.icon.FileBrowserIconProvider.FileBrowserIconType;
 import fi.dy.masa.malilib.gui.icon.Icon;
-import fi.dy.masa.malilib.gui.icon.BaseIcon;
+import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
+import fi.dy.masa.malilib.gui.widget.util.DirectoryNavigator;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.DirectoryCreator;
 import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.StringUtils;
-import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 import fi.dy.masa.malilib.util.data.LeftRight;
 
 public class DirectoryNavigationWidget extends SearchBarWidget
@@ -92,11 +92,10 @@ public class DirectoryNavigationWidget extends SearchBarWidget
 
         if (this.isSearchOpen() == false)
         {
-            this.addWidget(this.infoWidget);
-            this.addWidget(this.buttonSearchToggle);
             this.addWidget(this.buttonRoot);
             this.addWidget(this.buttonUp);
             this.addWidget(this.buttonCreateDir);
+            this.addWidget(this.infoWidget);
 
             this.placePathElements(this.pathStartX, this.getY(), this.generatePathElements());
         }
@@ -215,7 +214,7 @@ public class DirectoryNavigationWidget extends SearchBarWidget
 
                 if (dirs.isEmpty() == false)
                 {
-                    final DirectorySelectionWidget dropdown = new DirectorySelectionWidget(x + el.totalWidth, y + 16, dirs, displayNameFactory);
+                    final DropDownListWidget<File> dropdown = new DropDownListWidget<>(x + el.totalWidth, y + 16, -1, 12, 120, 10, dirs, displayNameFactory);
                     dropdown.setNoBarWhenClosed(x + el.totalWidth - 12, y + 2, () -> this.getNavBarIconSubdirs(dropdown.isOpen()));
                     dropdown.setSelectionListener(this.navigator::switchToDirectory);
                     dropdown.setRightAlign(true, x + el.totalWidth, true);
@@ -225,7 +224,7 @@ public class DirectoryNavigationWidget extends SearchBarWidget
             else
             {
                 List<File> dirs = FileUtils.getDirsForRootPath(el.dir, this.rootDir);
-                final DirectorySelectionWidget dropdown = new DirectorySelectionWidget(x, y + 16, dirs, displayNameFactory);
+                final DropDownListWidget<File> dropdown = new DropDownListWidget<>(x, y + 16, -1, 12, 120, 10, dirs, displayNameFactory);
                 dropdown.setNoBarWhenClosed(x, y + 2, () -> this.getNavBarIconRoot(dropdown.isOpen()));
                 dropdown.setSelectionListener(this.navigator::switchToDirectory);
                 this.addWidget(dropdown);
@@ -291,14 +290,6 @@ public class DirectoryNavigationWidget extends SearchBarWidget
         Collections.reverse(list);
 
         return list;
-    }
-
-    public static class DirectorySelectionWidget extends DropDownListWidget<File>
-    {
-        public DirectorySelectionWidget(int x, int y, List<File> entries, Function<File, String> displayNameFactory)
-        {
-            super(x, y, -1, 12, 120, 10, entries, displayNameFactory);
-        }
     }
 
     public static class PathElement
