@@ -194,18 +194,18 @@ public abstract class BaseConfigScreen extends BaseListScreen<ConfigOptionListWi
     public void onGuiClosed()
     {
         super.onGuiClosed();
+
+        if (ConfigManager.INSTANCE.saveConfigsIfChanged(this.modId))
+        {
+            this.onSettingsChanged();
+        }
+
         Keyboard.enableRepeatEvents(false);
     }
 
     protected void onSettingsChanged()
     {
-        ConfigManager.INSTANCE.onConfigsChanged(this.modId);
-
-        // FIXME config refactor
-        //if (this.hotkeyChangeListeners.size() > 0)
-        {
-            KeyBindManager.INSTANCE.updateUsedKeys();
-        }
+        KeyBindManager.INSTANCE.updateUsedKeys();
     }
 
     @Override

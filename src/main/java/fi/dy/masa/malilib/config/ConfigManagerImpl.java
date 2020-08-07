@@ -35,14 +35,16 @@ public class ConfigManagerImpl implements ConfigManager
     }
 
     @Override
-    public void onConfigsChanged(String modId)
+    public boolean saveConfigsIfChanged(String modId)
     {
         ModConfig handler = this.configHandlers.get(modId);
 
         if (handler != null)
         {
-            handler.onConfigsChanged();
+            return handler.onConfigsPotentiallyChanged();
         }
+
+        return false;
     }
 
     /**

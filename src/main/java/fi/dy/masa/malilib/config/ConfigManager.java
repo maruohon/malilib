@@ -23,6 +23,7 @@ public interface ConfigManager
     /**
      * Can be called to save and reload the configs for the given mod.
      * @param modId
+     * @return true if some setting were dirty and thus the configs got saved to file
      */
-    void onConfigsChanged(String modId);
+    boolean saveConfigsIfChanged(String modId);
 }

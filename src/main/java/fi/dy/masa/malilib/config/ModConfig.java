@@ -97,10 +97,11 @@ public interface ModConfig
 
     /**
      * Called when some settings have (potentially) been changed via some of the config GUIs
+     * @return true if some setting were dirty
      */
-    default void onConfigsChanged()
+    default boolean onConfigsPotentiallyChanged()
     {
-        this.saveIfDirty();
+        return this.saveIfDirty();
     }
 
     /**
@@ -164,11 +165,14 @@ public interface ModConfig
     /**
      * Save the configs only if at least some of them have been modified since last saving
      */
-    default void saveIfDirty()
+    default boolean saveIfDirty()
     {
         if (this.areConfigsDirty())
         {
             this.save();
+            return true;
         }
+
+        return false;
     }
 }
