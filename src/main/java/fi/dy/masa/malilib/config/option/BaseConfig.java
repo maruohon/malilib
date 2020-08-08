@@ -1,5 +1,8 @@
 package fi.dy.masa.malilib.config.option;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.ValueChangeCallback;
@@ -9,6 +12,7 @@ import fi.dy.masa.malilib.util.StringUtils;
 public abstract class BaseConfig<T> implements ConfigOption<T>
 {
     protected final String name;
+    protected final List<String> searchStrings = new ArrayList<>();
     protected String nameTranslationKey;
     protected String prettyNameTranslationKey;
     protected String commentTranslationKey;
@@ -46,6 +50,12 @@ public abstract class BaseConfig<T> implements ConfigOption<T>
     }
 
     @Override
+    public List<String> getSearchStrings()
+    {
+        return this.searchStrings;
+    }
+
+    @Override
     public void setModId(String modId)
     {
         this.modId = modId;
@@ -67,6 +77,23 @@ public abstract class BaseConfig<T> implements ConfigOption<T>
         {
             this.commentTranslationKey = modId + ".config.comment." + nameLower;
         }
+
+        if (this.searchStrings.isEmpty())
+        {
+            this.searchStrings.add(this.getPrettyName());
+        }
+    }
+
+    /**
+     * Adds additional search terms to this config.
+     * By default the pretty name is used for searching against.
+     * @param searchTerms
+     * @return
+     */
+    public BaseConfig<T> addSearchTerms(Collection<String> searchTerms)
+    {
+        this.searchStrings.addAll(searchTerms);
+        return this;
     }
 
     @Override

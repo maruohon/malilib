@@ -1,6 +1,9 @@
 package fi.dy.masa.malilib.config;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
 
@@ -22,7 +25,7 @@ public class ConfigManagerImpl implements ConfigManager
             throw new IllegalArgumentException("Tried to override an existing config handler for mod ID '" + modId + "'");
         }
 
-        handler.getConfigsPerCategories().values().forEach((list) -> list.forEach((config) -> config.setModId(modId) ));
+        handler.getConfigOptionCategories().forEach((category) -> category.getConfigOptions().forEach((config) -> config.setModId(modId)));
 
         this.configHandlers.put(modId, handler);
     }
@@ -45,6 +48,16 @@ public class ConfigManagerImpl implements ConfigManager
         }
 
         return false;
+    }
+
+    /**
+     * NOT PUBLIC API - DO NOT CALL
+     */
+    public List<ModConfig> getAllModConfigs()
+    {
+        ArrayList<ModConfig> list = new ArrayList<>(this.configHandlers.values());
+        list.sort(Comparator.comparing(ModConfig::getModName));
+        return list;
     }
 
     /**

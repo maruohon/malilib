@@ -51,13 +51,19 @@ public class BaseConfigTab implements ConfigTab
     }
 
     @Override
+    public boolean showOnConfigScreen()
+    {
+        return true;
+    }
+
+    @Override
     public boolean useKeyBindSearch()
     {
         return this.useKeyBindSearch;
     }
 
     @Override
-    public List<? extends ConfigInfo> getConfigOptions()
+    public List<? extends ConfigInfo> getConfigsForDisplay()
     {
         return this.configs;
     }

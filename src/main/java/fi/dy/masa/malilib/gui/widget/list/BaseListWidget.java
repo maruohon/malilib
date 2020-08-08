@@ -100,9 +100,11 @@ public abstract class BaseListWidget extends ContainerWidget
 
         this.addWidget(this.scrollBar);
 
-        if (this.searchBarWidget != null)
+        SearchBarWidget searchBarWidget = this.getSearchBarWidget();
+
+        if (searchBarWidget != null)
         {
-            this.addWidget(this.searchBarWidget);
+            this.addWidget(searchBarWidget);
         }
 
         if (this.headerWidget != null)
@@ -135,7 +137,7 @@ public abstract class BaseListWidget extends ContainerWidget
         int topPadding = this.listPosition.getTopPadding();
         int bottomPadding = this.listPosition.getBottomPadding();
 
-        SearchBarWidget search = this.searchBarWidget;
+        SearchBarWidget search = this.getSearchBarWidget();
         ContainerWidget header = this.headerWidget;
         int x = this.getX();
         int y = this.getY();
@@ -165,11 +167,13 @@ public abstract class BaseListWidget extends ContainerWidget
         this.scrollBar.setPosition(scrollBarX, scrollBarY);
         this.scrollBar.setHeight(this.listHeight);
 
-        if (this.searchBarWidget != null)
+        SearchBarWidget searchBarWidget = this.getSearchBarWidget();
+
+        if (searchBarWidget != null)
         {
-            this.searchBarWidget.setPosition(x, y + 2);
-            this.searchBarWidget.setWidth(listWidth - bw * 2);
-            y = this.searchBarWidget.getY() + this.searchBarWidget.getHeight() + 2;
+            searchBarWidget.setPosition(x, y + 2);
+            searchBarWidget.setWidth(listWidth - bw * 2);
+            y = searchBarWidget.getY() + searchBarWidget.getHeight() + 2;
         }
 
         if (this.headerWidget != null)

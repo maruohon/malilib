@@ -1,6 +1,5 @@
-language.name=English
-language.region=US
-language.code=en_US
+malilib.config.category.debug=Debug
+malilib.config.category.generic=Generic
 
 malilib.config.comment.keybinddisplay=Whether or not to display a small indicator/toast\nfor pressed keys and triggered hotkeys/actions
 malilib.config.comment.keybinddisplayalignment=The alignment for the keybind display toast messages
@@ -99,6 +98,10 @@ malilib.gui.label_colored.off=§cOFF§r
 malilib.gui.label_colored.on=§aON§r
 
 malilib.gui.label.color_editor.current_color=Current color:
+
+malilib.gui.label.config_scope.all_categories=From all categories in this mod
+malilib.gui.label.config_scope.all_mods=From all mods (using MaLiLib)
+malilib.gui.label.config_scope.current_category=From current category
 
 malilib.gui.label_error.no_widget_factory_for_config_type=§cUnknown config type '%s' (no widget factory registered)§r
 

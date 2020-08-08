@@ -191,7 +191,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         {
             DirectoryEntry entry = new DirectoryEntry(DirectoryEntryType.fromFile(file), dir, file.getName(), displayNamePrefix);
 
-            if (filterText == null || this.matchesFilter(this.getFilterTargetStringsForEntry(entry), filterText))
+            if (filterText == null || this.matchesFilter(this.getSearchStringsForEntry(entry), filterText))
             {
                 list.add(entry);
             }
@@ -199,7 +199,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     }
 
     @Override
-    protected List<String> getFilterTargetStringsForEntry(DirectoryEntry entry)
+    protected List<String> getSearchStringsForEntry(DirectoryEntry entry)
     {
         return ImmutableList.of(FileUtils.getNameWithoutExtension(entry.getName().toLowerCase()));
     }

@@ -9,6 +9,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import net.minecraft.util.math.MathHelper;
+import fi.dy.masa.malilib.gui.widget.list.entry.BaseDataListEntryWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.BaseListEntryWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntrySelectionHandler;
 import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetFactory;
@@ -23,7 +24,7 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
     @Nullable protected DataListEntryWidgetFactory<DATATYPE> entryWidgetFactory;
     @Nullable protected DataListEntrySelectionHandler<DATATYPE> selectionHandler;
     @Nullable protected Comparator<DATATYPE> listSortComparator;
-    protected Function<DATATYPE, List<String>> filterTargetStringFactory = (e) -> Collections.singletonList(e.toString());
+    protected Function<DATATYPE, List<String>> entryFilterStringFactory = (e) -> Collections.singletonList(e.toString());
 
     protected boolean filterMatchesEmptyEntry;
     protected boolean shouldSortList;
@@ -56,9 +57,9 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
         return this;
     }
 
-    public DataListWidget<DATATYPE> setEntryFilterTargetFactory(Function<DATATYPE, List<String>> factory)
+    public DataListWidget<DATATYPE> setEntryFilterStringFactory(Function<DATATYPE, List<String>> factory)
     {
-        this.filterTargetStringFactory = factory;
+        this.entryFilterStringFactory = factory;
         return this;
     }
 
@@ -227,9 +228,9 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
         return false;
     }
 
-    protected List<String> getFilterTargetStringsForEntry(DATATYPE entry)
+    protected List<String> getSearchStringsForEntry(DATATYPE entry)
     {
-        return this.filterTargetStringFactory.apply(entry);
+        return this.entryFilterStringFactory.apply(entry);
     }
 
     protected void addNonFilteredContents(List<DATATYPE> entries)
@@ -256,14 +257,14 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
 
     protected boolean entryMatchesFilter(DATATYPE entry, String filterText)
     {
-        List<String> filterTargets = this.getFilterTargetStringsForEntry(entry);
+        List<String> searchStrings = this.getSearchStringsForEntry(entry);
 
-        if (filterTargets.isEmpty())
+        if (searchStrings.isEmpty())
         {
             return this.filterMatchesEmptyEntry(entry);
         }
 
-        return this.matchesFilter(filterTargets, filterText);
+        return this.matchesFilter(searchStrings, filterText);
     }
 
     protected boolean matchesFilter(List<String> entryStrings, String filterText)
@@ -379,11 +380,17 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
     protected void renderWidget(int widgetIndex, int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
     {
         BaseListEntryWidget widget = this.listWidgets.get(widgetIndex);
-        List<DATATYPE> list = this.getFilteredEntries();
-        DATATYPE entry = list.size() > widget.getListIndex() ? list.get(widget.getListIndex()) : null;
-        boolean isSelected = entry != null && this.getEntrySelectionHandler() != null &&
-                             this.getEntrySelectionHandler().isEntrySelected(entry);
+        boolean isSelected = false;
 
-        this.listWidgets.get(widgetIndex).render(mouseX, mouseY, isActiveGui, hoveredWidgetId, isSelected);
+        // TODO fix this mess
+        try
+        {
+            DATATYPE entry = widget instanceof BaseDataListEntryWidget ? ((BaseDataListEntryWidget<DATATYPE>) widget).getData() : null;
+            isSelected = entry != null && this.getEntrySelectionHandler() != null &&
+                                 this.getEntrySelectionHandler().isEntrySelected(entry);
+        }
+        catch (Exception ignore) {}
+
+        widget.render(mouseX, mouseY, isActiveGui, hoveredWidgetId, isSelected);
     }
 }

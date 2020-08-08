@@ -229,7 +229,7 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
 
         for (BaseWidget widget : this.widgets)
         {
-            if (widget.onMouseClicked(mouseX, mouseY, mouseButton))
+            if (widget == this.hoveredWidget && widget.onMouseClicked(mouseX, mouseY, mouseButton))
             {
                 clickedWidget = widget;
                 break;
@@ -253,7 +253,7 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
 
         for (BaseButton button : this.buttons)
         {
-            if (button.onMouseClicked(mouseX, mouseY, mouseButton))
+            if (button == this.hoveredWidget && button.onMouseClicked(mouseX, mouseY, mouseButton))
             {
                 // Don't call super if the button press got handled
                 return true;

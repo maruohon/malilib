@@ -1,5 +1,7 @@
 package fi.dy.masa.malilib.config.option;
 
+import java.util.Collections;
+import java.util.List;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.util.StringUtils;
 
@@ -47,5 +49,17 @@ public interface ConfigInfo
     {
         String key = this.getCommentTranslationKey();
         return key != null ? StringUtils.translate(key) : null;
+    }
+
+    /**
+     * Returns a list of strings that the config screen search bar is matching against.
+     * Each string is tried until a match is found.
+     * The match is by default checked by stringInList.contains(searchTerm)
+     * where both values are first converted to lower case.
+     * @return
+     */
+    default List<String> getSearchStrings()
+    {
+        return Collections.singletonList(this.getDisplayName());
     }
 }

@@ -2,7 +2,6 @@ package fi.dy.masa.malilib.config;
 
 import java.io.File;
 import java.util.List;
-import java.util.Map;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.LiteModMaLiLib;
@@ -49,31 +48,10 @@ public interface ModConfig
     String getConfigFileName();
 
     /**
-     * Returns all the configs grouped by their categories
+     * Returns all the configs in this mod grouped by their categories
      * @return
      */
-    Map<String, List<? extends ConfigOption<?>>> getConfigsPerCategories();
-
-    /**
-     * Whether or not the configs in this category should be shown on the config GUIs,
-     * or only saved and loaded to/from the config files (internal configs/value storage).
-     * @param category
-     * @return
-     */
-    default boolean shouldShowCategoryOnConfigGuis(String category)
-    {
-        return true;
-    }
-
-    /**
-     * Whether or not the configs in this category should be saved to file
-     * @param category
-     * @return
-     */
-    default boolean shouldSaveCategoryToFile(String category)
-    {
-        return true;
-    }
+    List<ConfigOptionCategory> getConfigOptionCategories();
 
     /**
      * Returns true if at least some of the config values have changed since last saving to disk.
@@ -81,9 +59,9 @@ public interface ModConfig
      */
     default boolean areConfigsDirty()
     {
-        for (List<? extends ConfigOption<?>> list : this.getConfigsPerCategories().values())
+        for (ConfigOptionCategory category : this.getConfigOptionCategories())
         {
-            for (ConfigOption<?> config : list)
+            for (ConfigOption<?> config : category.getConfigOptions())
             {
                 if (config.isDirty())
                 {
@@ -119,9 +97,9 @@ public interface ModConfig
             {
                 JsonObject root = element.getAsJsonObject();
 
-                for (Map.Entry<String, List<? extends ConfigOption<?>>> entry : this.getConfigsPerCategories().entrySet())
+                for (ConfigOptionCategory category : this.getConfigOptionCategories())
                 {
-                    ConfigUtils.readConfigBase(root, entry.getKey(), entry.getValue());
+                    ConfigUtils.readConfigBase(root, category.getName(), category.getConfigOptions());
                 }
             }
         }
@@ -153,9 +131,9 @@ public interface ModConfig
         {
             JsonObject root = new JsonObject();
 
-            for (Map.Entry<String, List<? extends ConfigOption<?>>> entry : this.getConfigsPerCategories().entrySet())
+            for (ConfigOptionCategory category : this.getConfigOptionCategories())
             {
-                ConfigUtils.writeConfigBase(root, entry.getKey(), entry.getValue());
+                ConfigUtils.writeConfigBase(root, category.getName(), category.getConfigOptions());
             }
 
             JsonUtils.writeJsonToFile(root, new File(dir, this.getConfigFileName()));

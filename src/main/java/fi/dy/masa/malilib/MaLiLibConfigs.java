@@ -1,9 +1,9 @@
 package fi.dy.masa.malilib;
 
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import com.google.common.collect.ImmutableList;
+import fi.dy.masa.malilib.config.BaseConfigCategory;
+import fi.dy.masa.malilib.config.ConfigOptionCategory;
 import fi.dy.masa.malilib.config.ModConfig;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.config.option.ConfigOption;
@@ -60,6 +60,11 @@ public class MaLiLibConfigs implements ModConfig
         );
     }
 
+    private static final ImmutableList<ConfigOptionCategory> CATEGORIES = ImmutableList.of(
+            BaseConfigCategory.normal("Generic", "malilib.config.category.generic", Generic.OPTIONS),
+            BaseConfigCategory.normal("Debug",   "malilib.config.category.debug",   Debug.OPTIONS)
+    );
+
     @Override
     public String getModId()
     {
@@ -79,19 +84,8 @@ public class MaLiLibConfigs implements ModConfig
     }
 
     @Override
-    public Map<String, List<? extends ConfigOption<?>>> getConfigsPerCategories()
+    public List<ConfigOptionCategory> getConfigOptionCategories()
     {
-        Map<String, List<? extends ConfigOption<?>>> map = new LinkedHashMap<>();
-
-        map.put("Generic",  Generic.OPTIONS);
-        map.put("Debug",    Debug.OPTIONS);
-
-        return map;
-    }
-
-    @Override
-    public boolean shouldSaveCategoryToFile(String category)
-    {
-        return category.equals("Debug") == false;
+        return CATEGORIES;
     }
 }

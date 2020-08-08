@@ -25,7 +25,7 @@ public abstract class BaseConfigScreen extends BaseListScreen<ConfigOptionListWi
     @Nullable protected KeyBindConfigButton activeKeyBindButton;
     @Nullable protected ConfigInfoProvider hoverInfoProvider;
     @Nullable protected DialogHandler dialogHandler;
-    protected int configElementsWidth = 80;
+    protected int configElementsWidth = 120;
     protected int maxLabelWidth = -1;
 
     public BaseConfigScreen(int listX, int listY, String modId, @Nullable GuiScreen parent, List<ConfigTab> configTabs, String titleKey, Object... args)
@@ -62,6 +62,13 @@ public abstract class BaseConfigScreen extends BaseListScreen<ConfigOptionListWi
 
     public int getConfigElementsWidth()
     {
+        int overriddenWidth = this.getListWidget().getElementWidth();
+
+        if (overriddenWidth != -1)
+        {
+            return overriddenWidth;
+        }
+
         return this.getCurrentTab() != null ? this.getCurrentTab().getConfigWidth() : this.configElementsWidth;
     }
 
@@ -73,7 +80,7 @@ public abstract class BaseConfigScreen extends BaseListScreen<ConfigOptionListWi
     @Override
     public List<? extends ConfigInfo> getConfigs()
     {
-        return this.getCurrentTab() != null ? this.getCurrentTab().getConfigOptions() : Collections.emptyList();
+        return this.getCurrentTab() != null ? this.getCurrentTab().getConfigsForDisplay() : Collections.emptyList();
     }
 
     /**
