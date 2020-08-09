@@ -153,12 +153,16 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
         return highestFoundWidget;
     }
 
+    protected void updateTopHoveredWidget(int mouseX, int mouseY, boolean isActiveGui)
+    {
+        this.hoveredWidget = isActiveGui ? this.getTopHoveredWidget(mouseX, mouseY, null) : null;
+    }
+
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
         boolean isActiveGui = GuiUtils.getCurrentScreen() == this;
-
-        this.hoveredWidget = isActiveGui ? this.getTopHoveredWidget(mouseX, mouseY, null) : null;
+        //this.updateTopHoveredWidget(mouseX, mouseY, isActiveGui);
 
         int hoveredWidgetId = isActiveGui && this.hoveredWidget != null ? this.hoveredWidget.getId() : -1;
 
@@ -188,6 +192,9 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
         int mouseX = Mouse.getEventX() * this.width / this.mc.displayWidth;
         int mouseY = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
         int mouseWheelDelta = Mouse.getEventDWheel();
+
+        boolean isActiveGui = GuiUtils.getCurrentScreen() == this;
+        this.updateTopHoveredWidget(mouseX, mouseY, isActiveGui);
 
         if (mouseWheelDelta == 0 || this.onMouseScrolled(mouseX, mouseY, mouseWheelDelta) == false)
         {
@@ -227,12 +234,19 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
         List<BaseTextFieldWidget> textFields = this.getAllTextFields();
         BaseWidget clickedWidget = null;
 
-        for (BaseWidget widget : this.widgets)
+        if (this.hoveredWidget != null && this.hoveredWidget.onMouseClicked(mouseX, mouseY, mouseButton))
         {
-            if (widget == this.hoveredWidget && widget.onMouseClicked(mouseX, mouseY, mouseButton))
+            clickedWidget = this.hoveredWidget;
+        }
+        else
+        {
+            for (BaseWidget widget : this.widgets)
             {
-                clickedWidget = widget;
-                break;
+                if (widget.onMouseClicked(mouseX, mouseY, mouseButton))
+                {
+                    clickedWidget = widget;
+                    break;
+                }
             }
         }
 
@@ -253,13 +267,13 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
 
         for (BaseButton button : this.buttons)
         {
-            if (button == this.hoveredWidget && button.onMouseClicked(mouseX, mouseY, mouseButton))
+            if (button.onMouseClicked(mouseX, mouseY, mouseButton))
             {
-                // Don't call super if the button press got handled
                 return true;
             }
         }
 
+        // Only call super if the click wasn't handled
         return false;
     }
 
@@ -275,6 +289,11 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
 
     public boolean onMouseScrolled(int mouseX, int mouseY, double mouseWheelDelta)
     {
+        if (this.hoveredWidget != null && this.hoveredWidget.onMouseScrolled(mouseX, mouseY, mouseWheelDelta))
+        {
+            return true;
+        }
+
         for (BaseButton button : this.buttons)
         {
             if (button.onMouseScrolled(mouseX, mouseY, mouseWheelDelta))
