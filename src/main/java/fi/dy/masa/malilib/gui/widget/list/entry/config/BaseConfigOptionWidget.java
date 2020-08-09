@@ -8,7 +8,7 @@ import fi.dy.masa.malilib.config.option.FileConfig;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.DirectorySelectorScreen;
 import fi.dy.masa.malilib.gui.button.GenericButton;
-import fi.dy.masa.malilib.gui.config.BaseConfigScreen;
+import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.BaseDataListEntryWidget;
@@ -17,18 +17,30 @@ import fi.dy.masa.malilib.util.StringUtils;
 
 public abstract class BaseConfigOptionWidget<C extends ConfigInfo> extends BaseDataListEntryWidget<C>
 {
-    protected final BaseConfigScreen gui;
+    protected final ConfigWidgetContext ctx;
     protected final GenericButton resetButton;
     protected final LabelWidget labelWidget;
 
     public BaseConfigOptionWidget(int x, int y, int width, int height, int listIndex,
-                                  int originalListIndex, C config, BaseConfigScreen gui)
+                                  int originalListIndex, C config, ConfigWidgetContext ctx)
     {
         super(x, y, width, height, listIndex, originalListIndex, config);
 
-        this.gui = gui;
+        this.ctx = ctx;
 
-        this.labelWidget = new LabelWidget(x + 2, y + 6, 0xFFFFFFFF, this.data.getDisplayName());
+        String label = this.data.getDisplayName();
+
+        if (this.ctx.gui.getListWidget().isShowingOptionsFromOtherCategories())
+        {
+            String prefix = this.ctx.gui.getListWidget().getModNameAndCategoryPrefix(listIndex);
+
+            if (prefix != null)
+            {
+                label = prefix + label;
+            }
+        }
+
+        this.labelWidget = new LabelWidget(x + 2, y + 6, 0xFFFFFFFF, label);
         this.labelWidget.addHoverStrings(this.data.getComment());
 
         this.resetButton = new GenericButton(x, y, -1, 20, StringUtils.translate("malilib.gui.button.reset.caps"));
@@ -41,6 +53,11 @@ public abstract class BaseConfigOptionWidget<C extends ConfigInfo> extends BaseD
         this.addWidget(this.labelWidget);
     }
 
+    protected int getElementWidth()
+    {
+        return this.ctx.gui.getConfigElementsWidth();
+    }
+
     protected void updateResetButton(int x, int y, ConfigOption<?> config)
     {
         this.resetButton.setPosition(x, y);
@@ -51,7 +68,7 @@ public abstract class BaseConfigOptionWidget<C extends ConfigInfo> extends BaseD
                                                       final FileSelectorScreenFactory screenFactory, String buttonText, String hoverTextKey)
     {
         x += this.getMaxLabelWidth() + 10;
-        int elementWidth = this.gui.getConfigElementsWidth();
+        int elementWidth = this.getElementWidth();
         File file = FileUtils.getCanonicalFileIfPossible(config.getFile());
 
         ArrayList<String> lines = new ArrayList<>();
@@ -79,7 +96,7 @@ public abstract class BaseConfigOptionWidget<C extends ConfigInfo> extends BaseD
 
     public int getMaxLabelWidth()
     {
-        return this.gui.getMaxLabelWidth();
+        return this.ctx.gui.getListWidget().getMaxLabelWidth();
     }
 
     public boolean wasModified()

@@ -2,7 +2,7 @@ package fi.dy.masa.malilib.gui.widget.list.entry.config;
 
 import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.gui.button.BooleanConfigButton;
-import fi.dy.masa.malilib.gui.config.BaseConfigScreen;
+import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 
 public class BooleanConfigWidget extends BaseConfigOptionWidget<BooleanConfig>
 {
@@ -11,9 +11,9 @@ public class BooleanConfigWidget extends BaseConfigOptionWidget<BooleanConfig>
     protected final boolean initialValue;
 
     public BooleanConfigWidget(int x, int y, int width, int height, int listIndex,
-                               int originalListIndex, BooleanConfig config, BaseConfigScreen gui)
+                               int originalListIndex, BooleanConfig config, ConfigWidgetContext ctx)
     {
-        super(x, y, width, 22, listIndex, originalListIndex, config, gui);
+        super(x, y, width, 22, listIndex, originalListIndex, config, ctx);
 
         this.config = config;
         this.initialValue = this.config.getBooleanValue();
@@ -36,7 +36,7 @@ public class BooleanConfigWidget extends BaseConfigOptionWidget<BooleanConfig>
         int x = this.getX();
         int y = this.getY() + 1;
         int xOff = this.getMaxLabelWidth() + 10;
-        int elementWidth = this.gui.getConfigElementsWidth();
+        int elementWidth = this.getElementWidth();
 
         this.booleanButton.setPosition(x + xOff, y);
         this.booleanButton.setWidth(elementWidth);

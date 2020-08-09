@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.config.option.HotkeyedBooleanConfig;
 import fi.dy.masa.malilib.gui.button.BooleanConfigButton;
 import fi.dy.masa.malilib.gui.button.KeyBindConfigButton;
-import fi.dy.masa.malilib.gui.config.BaseConfigScreen;
+import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.widget.KeybindSettingsWidget;
 
 public class HotkeyedBooleanConfigWidget extends BaseConfigOptionWidget<HotkeyedBooleanConfig>
@@ -17,9 +17,9 @@ public class HotkeyedBooleanConfigWidget extends BaseConfigOptionWidget<Hotkeyed
     protected final boolean initialBooleanValue;
 
     public HotkeyedBooleanConfigWidget(int x, int y, int width, int height, int listIndex,
-                                       int originalListIndex, HotkeyedBooleanConfig config, BaseConfigScreen gui)
+                                       int originalListIndex, HotkeyedBooleanConfig config, ConfigWidgetContext ctx)
     {
-        super(x, y, width, 22, listIndex, originalListIndex, config, gui);
+        super(x, y, width, 22, listIndex, originalListIndex, config, ctx);
 
         this.config = config;
         this.initialBooleanValue = this.config.getBooleanValue();
@@ -28,11 +28,11 @@ public class HotkeyedBooleanConfigWidget extends BaseConfigOptionWidget<Hotkeyed
         this.booleanButton = new BooleanConfigButton(x, y + 1, 60, 20, this.config);
         this.booleanButton.setActionListener((btn, mbtn) -> this.resetButton.setEnabled(this.config.isModified()));
 
-        this.hotkeyButton = new KeyBindConfigButton(x, y + 1, 120, 20, this.config.getKeyBind(), this.gui);
+        this.hotkeyButton = new KeyBindConfigButton(x, y + 1, 120, 20, this.config.getKeyBind(), ctx.gui);
         this.hotkeyButton.setValueChangeListener(() -> this.resetButton.setEnabled(this.config.isModified()));
 
         this.settingsWidget = new KeybindSettingsWidget(x, y, 20, 20, config.getKeyBind(),
-                                                        config.getDisplayName(), gui.getDialogHandler());
+                                                        config.getDisplayName(), ctx.gui.getDialogHandler());
 
         this.resetButton.setActionListener((btn, mbtn) -> {
             this.config.resetToDefault();
@@ -49,7 +49,7 @@ public class HotkeyedBooleanConfigWidget extends BaseConfigOptionWidget<Hotkeyed
 
         int x = this.getX() + this.getMaxLabelWidth() + 10;
         int y = this.getY() + 1;
-        int elementWidth = this.gui.getConfigElementsWidth();
+        int elementWidth = this.getElementWidth();
 
         this.booleanButton.setPosition(x, y);
 

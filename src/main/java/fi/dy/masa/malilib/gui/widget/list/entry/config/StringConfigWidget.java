@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.gui.widget.list.entry.config;
 
 import fi.dy.masa.malilib.config.option.StringConfig;
-import fi.dy.masa.malilib.gui.config.BaseConfigScreen;
+import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 
 public class StringConfigWidget extends BaseConfigOptionWidget<StringConfig>
@@ -11,9 +11,9 @@ public class StringConfigWidget extends BaseConfigOptionWidget<StringConfig>
     protected final BaseTextFieldWidget textField;
 
     public StringConfigWidget(int x, int y, int width, int height, int listIndex,
-                              int originalListIndex, StringConfig config, BaseConfigScreen gui)
+                              int originalListIndex, StringConfig config, ConfigWidgetContext ctx)
     {
-        super(x, y, width, 22, listIndex, originalListIndex, config, gui);
+        super(x, y, width, 22, listIndex, originalListIndex, config, ctx);
 
         this.config = config;
         this.initialValue = this.config.getStringValue();
@@ -37,7 +37,7 @@ public class StringConfigWidget extends BaseConfigOptionWidget<StringConfig>
 
         int x = this.getX() + this.getMaxLabelWidth() + 10;
         int y = this.getY() + 1;
-        int elementWidth = this.gui.getConfigElementsWidth();
+        int elementWidth = this.getElementWidth();
 
         this.textField.setPosition(x, y + 2);
         this.textField.setWidth(elementWidth);

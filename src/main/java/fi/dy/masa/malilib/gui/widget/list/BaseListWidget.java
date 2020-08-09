@@ -52,7 +52,7 @@ public abstract class BaseListWidget extends ContainerWidget
         this.scrollBar.setArrowTextures(BaseIcon.SMALL_ARROW_UP, BaseIcon.SMALL_ARROW_DOWN);
     }
 
-    public abstract int getFilteredListEntryCount();
+    public abstract int getTotalListWidgetCount();
 
     @Nullable
     protected abstract BaseListEntryWidget createListEntryWidget(int x, int y, int listIndex);
@@ -185,7 +185,7 @@ public abstract class BaseListWidget extends ContainerWidget
 
     protected void updateScrollBarHeight()
     {
-        final int count = this.getFilteredListEntryCount();
+        final int count = this.getTotalListWidgetCount();
         int totalHeight = 0;
 
         if (this.visibleListEntries < count)
@@ -202,6 +202,18 @@ public abstract class BaseListWidget extends ContainerWidget
         }
 
         this.scrollBar.setTotalHeight(Math.max(totalHeight, this.scrollBar.getHeight()));
+    }
+
+    protected int getHeightForListEntryWidget(int listIndex)
+    {
+        if (this.areEntriesFixedHeight || listIndex >= this.listWidgets.size())
+        {
+            return this.entryWidgetFixedHeight;
+        }
+        else
+        {
+            return this.listWidgets.get(listIndex).getHeight();
+        }
     }
 
     protected int getListMaxWidthForTotalWidth(int width)
@@ -412,8 +424,8 @@ public abstract class BaseListWidget extends ContainerWidget
             else if (keyCode == Keyboard.KEY_DOWN)  this.offsetSelectionOrScrollbar( 1, true);
             else if (keyCode == Keyboard.KEY_PRIOR) this.offsetSelectionOrScrollbar(-this.visibleListEntries / 2, true);
             else if (keyCode == Keyboard.KEY_NEXT)  this.offsetSelectionOrScrollbar(this.visibleListEntries / 2, true);
-            else if (keyCode == Keyboard.KEY_HOME)  this.offsetSelectionOrScrollbar(-this.getFilteredListEntryCount(), true);
-            else if (keyCode == Keyboard.KEY_END)   this.offsetSelectionOrScrollbar(this.getFilteredListEntryCount(), true);
+            else if (keyCode == Keyboard.KEY_HOME)  this.offsetSelectionOrScrollbar(-this.getTotalListWidgetCount(), true);
+            else if (keyCode == Keyboard.KEY_END)   this.offsetSelectionOrScrollbar(this.getTotalListWidgetCount(), true);
             else return super.onKeyTyped(typedChar, keyCode);
 
             return true;
@@ -502,18 +514,6 @@ public abstract class BaseListWidget extends ContainerWidget
         return textFields;
     }
 
-    protected int getHeightForListEntryWidget(int listIndex)
-    {
-        if (this.areEntriesFixedHeight || listIndex >= this.listWidgets.size())
-        {
-            return this.entryWidgetFixedHeight;
-        }
-        else
-        {
-            return this.listWidgets.get(listIndex).getHeight();
-        }
-    }
-
     public void refreshEntries()
     {
         this.reCreateListEntryWidgets();
@@ -534,16 +534,18 @@ public abstract class BaseListWidget extends ContainerWidget
             widget.onAboutToDestroy();
         }
 
-        this.listWidgets.clear();
-        this.visibleListEntries = 0;
-
         int usableHeight = this.listHeight;
         int usedHeight = 0;
         int x = this.entryWidgetStartX;
         int y = this.entryWidgetStartY;
         int listIndex = this.scrollBar.getValue();
 
-        final int totalEntryCount = this.getFilteredListEntryCount();
+        this.listWidgets.clear();
+        this.visibleListEntries = 0;
+
+        this.onPreListEntryWidgetsCreation(listIndex);
+
+        final int totalEntryCount = this.getTotalListWidgetCount();
 
         for ( ; listIndex < totalEntryCount; ++listIndex)
         {
@@ -574,12 +576,16 @@ public abstract class BaseListWidget extends ContainerWidget
         this.onListEntryWidgetsCreated();
     }
 
+    protected void onPreListEntryWidgetsCreation(int firstListIndex)
+    {
+    }
+
     /**
      * Called after the list entry widgets have been (re-)created
      */
     protected void onListEntryWidgetsCreated()
     {
-        this.scrollBar.setMaxValue(this.getFilteredListEntryCount() - this.visibleListEntries);
+        this.scrollBar.setMaxValue(this.getTotalListWidgetCount() - this.visibleListEntries);
         this.updateScrollBarHeight();
     }
 

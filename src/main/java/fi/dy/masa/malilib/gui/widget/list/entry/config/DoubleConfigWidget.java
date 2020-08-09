@@ -2,9 +2,9 @@ package fi.dy.masa.malilib.gui.widget.list.entry.config;
 
 import fi.dy.masa.malilib.config.option.DoubleConfig;
 import fi.dy.masa.malilib.gui.callback.DoubleSliderCallback;
-import fi.dy.masa.malilib.gui.config.BaseConfigScreen;
-import fi.dy.masa.malilib.gui.widget.SliderWidget;
+import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.widget.DoubleTextFieldWidget;
+import fi.dy.masa.malilib.gui.widget.SliderWidget;
 
 public class DoubleConfigWidget extends NumericConfigWidget<DoubleConfig>
 {
@@ -13,9 +13,9 @@ public class DoubleConfigWidget extends NumericConfigWidget<DoubleConfig>
     protected final String initialStringValue;
 
     public DoubleConfigWidget(int x, int y, int width, int height, int listIndex,
-                              int originalListIndex, DoubleConfig config, BaseConfigScreen gui)
+                              int originalListIndex, DoubleConfig config, ConfigWidgetContext ctx)
     {
-        super(x, y, width, 22, listIndex, originalListIndex, config, gui);
+        super(x, y, width, 22, listIndex, originalListIndex, config, ctx);
 
         this.doubleConfig = config;
         this.initialValue = this.config.getDoubleValue();

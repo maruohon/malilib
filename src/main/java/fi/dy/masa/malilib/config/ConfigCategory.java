@@ -9,6 +9,12 @@ public interface ConfigCategory
     String getName();
 
     /**
+     * Returns the mod name this category belongs to
+     * @return
+     */
+    String getModName();
+
+    /**
      * Returns the display name for this config category/tab
      * @return
      */

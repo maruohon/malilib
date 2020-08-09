@@ -8,17 +8,17 @@ public class MissingConfigTypeFactory implements ConfigOptionWidgetFactory<Confi
 {
     @Override
     public BaseConfigOptionWidget<ConfigInfo> create(int x, int y, int width, int height, int listIndex,
-                                                     int originalListIndex, ConfigInfo config, BaseConfigScreen gui)
+                                                     int originalListIndex, ConfigInfo config, ConfigWidgetContext ctx)
     {
-        return new MissingConfigOptionWidget(x, y, width, 22, listIndex, originalListIndex, config, gui);
+        return new MissingConfigOptionWidget(x, y, width, 22, listIndex, originalListIndex, config, ctx);
     }
 
     public static class MissingConfigOptionWidget extends BaseConfigOptionWidget<ConfigInfo>
     {
         public MissingConfigOptionWidget(int x, int y, int width, int height, int listIndex,
-                                         int originalListIndex, ConfigInfo config, BaseConfigScreen gui)
+                                         int originalListIndex, ConfigInfo config, ConfigWidgetContext ctx)
         {
-            super(x, y, width, height, listIndex, originalListIndex, config, gui);
+            super(x, y, width, height, listIndex, originalListIndex, config, ctx);
         }
 
         @Override

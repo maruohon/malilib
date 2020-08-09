@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.gui.widget.list.entry.config;
 
 import fi.dy.masa.malilib.config.option.ColorConfig;
-import fi.dy.masa.malilib.gui.config.BaseConfigScreen;
+import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.ColorIndicatorWidget;
 import fi.dy.masa.malilib.util.data.Color4f;
@@ -15,9 +15,9 @@ public class ColorConfigWidget extends BaseConfigOptionWidget<ColorConfig>
     protected final String initialStringValue;
 
     public ColorConfigWidget(int x, int y, int width, int height, int listIndex,
-                             int originalListIndex, ColorConfig config, BaseConfigScreen gui)
+                             int originalListIndex, ColorConfig config, ConfigWidgetContext ctx)
     {
-        super(x, y, width, 22, listIndex, originalListIndex, config, gui);
+        super(x, y, width, 22, listIndex, originalListIndex, config, ctx);
 
         this.config = config;
         this.initialValue = this.config.getIntegerValue();
@@ -47,7 +47,7 @@ public class ColorConfigWidget extends BaseConfigOptionWidget<ColorConfig>
 
         int x = this.getX() + this.getMaxLabelWidth() + 10;
         int y = this.getY();
-        int elementWidth = this.gui.getConfigElementsWidth();
+        int elementWidth = this.getElementWidth();
 
         this.colorIndicatorWidget.setPosition(x, y + 2);
         this.textField.setPosition(x + this.colorIndicatorWidget.getWidth() + 4, y + 3);

@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.gui.widget.list.entry.config;
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.config.option.StringListConfig;
 import fi.dy.masa.malilib.gui.button.StringListEditButton;
-import fi.dy.masa.malilib.gui.config.BaseConfigScreen;
+import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.listener.EventListener;
 
 public class StringListConfigWidget extends BaseConfigOptionWidget<StringListConfig> implements EventListener
@@ -13,14 +13,14 @@ public class StringListConfigWidget extends BaseConfigOptionWidget<StringListCon
     protected final ImmutableList<String> initialValue;
 
     public StringListConfigWidget(int x, int y, int width, int height, int listIndex,
-                                  int originalListIndex, StringListConfig config, BaseConfigScreen gui)
+                                  int originalListIndex, StringListConfig config, ConfigWidgetContext ctx)
     {
-        super(x, y, width, 22, listIndex, originalListIndex, config, gui);
+        super(x, y, width, 22, listIndex, originalListIndex, config, ctx);
 
         this.config = config;
         this.initialValue = this.config.getStrings();
 
-        this.button = new StringListEditButton(x, y, this.gui.getConfigElementsWidth(), 20, config, gui, this);
+        this.button = new StringListEditButton(x, y, this.getElementWidth(), 20, config, ctx.gui, this);
 
         this.resetButton.setActionListener((btn, mbtn) -> {
             this.config.resetToDefault();
@@ -37,7 +37,7 @@ public class StringListConfigWidget extends BaseConfigOptionWidget<StringListCon
         int x = this.getX();
         int y = this.getY() + 1;
         int xOff = this.getMaxLabelWidth() + 10;
-        int elementWidth = this.gui.getConfigElementsWidth();
+        int elementWidth = this.getElementWidth();
 
         this.button.setPosition(x + xOff, y);
         this.button.setWidth(elementWidth);

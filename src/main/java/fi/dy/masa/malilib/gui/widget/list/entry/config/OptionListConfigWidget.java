@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.gui.widget.list.entry.config;
 import fi.dy.masa.malilib.config.option.OptionListConfig;
 import fi.dy.masa.malilib.config.value.ConfigOptionListEntry;
 import fi.dy.masa.malilib.gui.button.OptionListConfigButton;
-import fi.dy.masa.malilib.gui.config.BaseConfigScreen;
+import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 
 public class OptionListConfigWidget extends BaseConfigOptionWidget<OptionListConfig>
 {
@@ -12,9 +12,9 @@ public class OptionListConfigWidget extends BaseConfigOptionWidget<OptionListCon
     protected final OptionListConfigButton optionListButton;
 
     public OptionListConfigWidget(int x, int y, int width, int height, int listIndex,
-                                  int originalListIndex, OptionListConfig<?> config, BaseConfigScreen gui)
+                                  int originalListIndex, OptionListConfig<?> config, ConfigWidgetContext ctx)
     {
-        super(x, y, width, 22, listIndex, originalListIndex, config, gui);
+        super(x, y, width, 22, listIndex, originalListIndex, config, ctx);
 
         this.config = config;
         this.initialValue = this.config.getOptionListValue();
@@ -36,7 +36,7 @@ public class OptionListConfigWidget extends BaseConfigOptionWidget<OptionListCon
 
         int x = this.getX() + this.getMaxLabelWidth() + 10;
         int y = this.getY() + 1;
-        int elementWidth = this.gui.getConfigElementsWidth();
+        int elementWidth = this.getElementWidth();
 
         this.optionListButton.setPosition(x, y);
         this.optionListButton.setWidth(elementWidth);

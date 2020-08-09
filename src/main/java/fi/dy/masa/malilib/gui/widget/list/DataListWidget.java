@@ -114,7 +114,7 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
         {
             int listIndex = widget.getListIndex();
 
-            if (listIndex >= 0 && listIndex < this.getFilteredListEntryCount())
+            if (listIndex >= 0 && listIndex < this.getTotalListWidgetCount())
             {
                 this.setLastSelectedEntry(listIndex);
             }
@@ -129,7 +129,7 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
     }
 
     @Override
-    public int getFilteredListEntryCount()
+    public int getTotalListWidgetCount()
     {
         return this.getFilteredEntries().size();
     }
@@ -317,7 +317,7 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
 
     public void setLastSelectedEntry(int listIndex)
     {
-        int index = listIndex >= 0 && listIndex < this.getFilteredListEntryCount() ? listIndex : -1;
+        int index = listIndex >= 0 && listIndex < this.getTotalListWidgetCount() ? listIndex : -1;
 
         if (this.getEntrySelectionHandler() != null)
         {
@@ -339,7 +339,7 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
         }
         else
         {
-            final int totalEntryCount = this.getFilteredListEntryCount();
+            final int totalEntryCount = this.getTotalListWidgetCount();
             final int lastSelectedEntryIndex = this.getLastSelectedEntryIndex();
 
             if (lastSelectedEntryIndex >= 0 && totalEntryCount > 0)

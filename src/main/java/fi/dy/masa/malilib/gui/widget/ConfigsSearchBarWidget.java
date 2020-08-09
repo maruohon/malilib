@@ -69,7 +69,7 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
         int width = this.getWidth();
 
         this.sourceSelectionDropdown.setPosition(x + 18, y - 16);
-        this.button.setPosition(x + width - 100, y);
+        this.button.setPosition(x + width - 100, y + this.getHeight() - this.button.getHeight());
         this.textField.setWidth(width - 120);
     }
 

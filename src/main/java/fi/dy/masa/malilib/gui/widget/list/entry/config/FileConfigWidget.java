@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.gui.widget.list.entry.config;
 import java.io.File;
 import fi.dy.masa.malilib.config.option.FileConfig;
 import fi.dy.masa.malilib.gui.FileSelectorScreen;
-import fi.dy.masa.malilib.gui.config.BaseConfigScreen;
+import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 
 public class FileConfigWidget extends BaseConfigOptionWidget<FileConfig>
 {
@@ -11,9 +11,9 @@ public class FileConfigWidget extends BaseConfigOptionWidget<FileConfig>
     protected final File initialValue;
 
     public FileConfigWidget(int x, int y, int width, int height, int listIndex,
-                            int originalListIndex, FileConfig config, BaseConfigScreen gui)
+                            int originalListIndex, FileConfig config, ConfigWidgetContext ctx)
     {
-        super(x, y, width, 22, listIndex, originalListIndex, config, gui);
+        super(x, y, width, 22, listIndex, originalListIndex, config, ctx);
 
         this.config = config;
         this.initialValue = this.config.getFile();

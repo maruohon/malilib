@@ -15,10 +15,9 @@ import fi.dy.masa.malilib.gui.button.KeyBindConfigButton;
 import fi.dy.masa.malilib.gui.util.DialogHandler;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.list.ConfigOptionListWidget;
-import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.util.StringUtils;
 
-public abstract class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<?>> implements KeybindEditingScreen, EventListener
+public abstract class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? extends ConfigInfo>> implements KeybindEditingScreen
 {
     protected final List<ConfigTab> configTabs;
     protected final String modId;
@@ -26,7 +25,6 @@ public abstract class BaseConfigScreen extends BaseListScreen<ConfigOptionListWi
     @Nullable protected ConfigInfoProvider hoverInfoProvider;
     @Nullable protected DialogHandler dialogHandler;
     protected int configElementsWidth = 120;
-    protected int maxLabelWidth = -1;
 
     public BaseConfigScreen(int listX, int listY, String modId, @Nullable GuiScreen parent, List<ConfigTab> configTabs, String titleKey, Object... args)
     {
@@ -72,29 +70,10 @@ public abstract class BaseConfigScreen extends BaseListScreen<ConfigOptionListWi
         return this.getCurrentTab() != null ? this.getCurrentTab().getConfigWidth() : this.configElementsWidth;
     }
 
-    public int getMaxLabelWidth()
-    {
-        return this.maxLabelWidth;
-    }
-
     @Override
     public List<? extends ConfigInfo> getConfigs()
     {
         return this.getCurrentTab() != null ? this.getCurrentTab().getConfigsForDisplay() : Collections.emptyList();
-    }
-
-    /**
-     * Called when the list widget refreshes the entries (applying the filter if applicable)
-     */
-    @Override
-    public void onEvent()
-    {
-        this.maxLabelWidth = -1;
-
-        for (ConfigInfo config : this.getListWidget().getCurrentEntries())
-        {
-            this.maxLabelWidth = Math.max(this.maxLabelWidth, this.getStringWidth(config.getDisplayName()));
-        }
     }
 
     /**
@@ -146,7 +125,7 @@ public abstract class BaseConfigScreen extends BaseListScreen<ConfigOptionListWi
     }
 
     @Override
-    protected ConfigOptionListWidget<?> createListWidget(int listX, int listY, int listWidth, int listHeight)
+    protected ConfigOptionListWidget<? extends ConfigInfo> createListWidget(int listX, int listY, int listWidth, int listHeight)
     {
         return new ConfigOptionListWidget<>(listX, listY, listWidth, listHeight, this::getConfigs, this);
     }

@@ -21,7 +21,7 @@ public class ConfigScreenTabButtonListener implements ButtonActionListener
     {
         this.gui.setCurrentTab(this.tab);
         this.gui.reCreateConfigWidgets(); // apply the new config width
-        //this.gui.getConfigsListWidget().resetScrollbarPosition(); // TODO config refactor
+        this.gui.getListWidget().resetScrollbarPosition();
         this.gui.initGui();
     }
 }

@@ -3,10 +3,10 @@ package fi.dy.masa.malilib.gui.widget.list.entry.config;
 import fi.dy.masa.malilib.config.option.ConfigOption;
 import fi.dy.masa.malilib.config.option.SliderConfig;
 import fi.dy.masa.malilib.gui.button.GenericButton;
-import fi.dy.masa.malilib.gui.config.BaseConfigScreen;
+import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.icon.BaseIcon;
-import fi.dy.masa.malilib.gui.widget.SliderWidget;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
+import fi.dy.masa.malilib.gui.widget.SliderWidget;
 
 public abstract class NumericConfigWidget<T extends ConfigOption<?> & SliderConfig> extends BaseConfigOptionWidget<T>
 {
@@ -16,9 +16,9 @@ public abstract class NumericConfigWidget<T extends ConfigOption<?> & SliderConf
     protected SliderWidget sliderWidget;
 
     public NumericConfigWidget(int x, int y, int width, int height, int listIndex,
-                               int originalListIndex, T config, BaseConfigScreen gui)
+                               int originalListIndex, T config, ConfigWidgetContext ctx)
     {
-        super(x, y, width, 22, listIndex, originalListIndex, config, gui);
+        super(x, y, width, 22, listIndex, originalListIndex, config, ctx);
 
         this.config = config;
 
@@ -45,7 +45,7 @@ public abstract class NumericConfigWidget<T extends ConfigOption<?> & SliderConf
 
         int x = this.getX() + this.getMaxLabelWidth() + 10;
         int y = this.getY();
-        int elementWidth = this.gui.getConfigElementsWidth();
+        int elementWidth = this.getElementWidth();
 
         if (this.config.shouldUseSlider())
         {

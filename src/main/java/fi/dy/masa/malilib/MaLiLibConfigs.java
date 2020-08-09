@@ -61,8 +61,8 @@ public class MaLiLibConfigs implements ModConfig
     }
 
     private static final ImmutableList<ConfigOptionCategory> CATEGORIES = ImmutableList.of(
-            BaseConfigCategory.normal("Generic", "malilib.config.category.generic", Generic.OPTIONS),
-            BaseConfigCategory.normal("Debug",   "malilib.config.category.debug",   Debug.OPTIONS)
+            BaseConfigCategory.normal("Generic", "malilib.config.category.generic", MaLiLibReference.MOD_NAME, Generic.OPTIONS),
+            BaseConfigCategory.normal("Debug",   "malilib.config.category.debug",   MaLiLibReference.MOD_NAME, Debug.OPTIONS)
     );
 
     @Override

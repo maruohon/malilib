@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.gui.widget.list.entry.config;
 import java.io.File;
 import fi.dy.masa.malilib.config.option.DirectoryConfig;
 import fi.dy.masa.malilib.gui.DirectorySelectorScreen;
-import fi.dy.masa.malilib.gui.config.BaseConfigScreen;
+import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.util.FileUtils;
 
 public class DirectoryConfigWidget extends BaseConfigOptionWidget<DirectoryConfig>
@@ -12,9 +12,9 @@ public class DirectoryConfigWidget extends BaseConfigOptionWidget<DirectoryConfi
     protected final File initialValue;
 
     public DirectoryConfigWidget(int x, int y, int width, int height, int listIndex,
-                                 int originalListIndex, DirectoryConfig config, BaseConfigScreen gui)
+                                 int originalListIndex, DirectoryConfig config, ConfigWidgetContext ctx)
     {
-        super(x, y, width, 22, listIndex, originalListIndex, config, gui);
+        super(x, y, width, 22, listIndex, originalListIndex, config, ctx);
 
         this.config = config;
         this.initialValue = this.config.getFile();
