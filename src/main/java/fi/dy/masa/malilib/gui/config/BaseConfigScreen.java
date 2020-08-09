@@ -45,7 +45,7 @@ public abstract class BaseConfigScreen extends BaseListScreen<ConfigOptionListWi
     @Override
     protected int getListHeight()
     {
-        return this.height - 80;
+        return this.height - 76;
     }
 
     public abstract void setCurrentTab(ConfigTab tab);

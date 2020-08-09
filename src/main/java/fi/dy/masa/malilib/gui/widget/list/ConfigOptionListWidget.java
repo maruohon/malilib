@@ -44,6 +44,8 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
 
         this.setEntryWidgetFactory(new ConfigOptionListEntryWidgetFactory<>(entrySupplier, gui));
         this.setEntryFilterStringFactory(ConfigInfo::getSearchStrings);
+
+        this.listPosition.setTopPadding(0);
     }
 
     public int getMaxLabelWidth()
@@ -104,6 +106,8 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
 
             this.maxLabelWidth = Math.max(this.maxLabelWidth, this.getStringWidth(name));
         }
+
+        this.resetScrollbarPosition();
     }
 
     @Override

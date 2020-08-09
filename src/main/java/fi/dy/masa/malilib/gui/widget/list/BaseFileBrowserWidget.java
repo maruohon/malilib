@@ -70,6 +70,13 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         this.listPosition.setRightPadding(3);
     }
 
+    @Override
+    protected void updateSearchBarPosition(int defaultX, int defaultY, int defaultWidth)
+    {
+        this.searchBarWidget.setPosition(defaultX, defaultY + 3);
+        this.searchBarWidget.setWidth(defaultWidth);
+    }
+
     public FileBrowserIconProvider getIconProvider()
     {
         return this.iconProvider;

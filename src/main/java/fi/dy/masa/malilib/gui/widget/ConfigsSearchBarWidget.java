@@ -58,12 +58,19 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
     @Override
     public void reAddSubWidgets()
     {
-        super.reAddSubWidgets();
+        // Don't call super, so that we can add the dropdown widget before the text field,
+        // so that the dropdown can handle the mouse click first even when it overlaps the text field.
+        // Although this should now be fixed by the new input dispatch to the top hovered widget first.
+
+        this.clearWidgets();
+
+        this.addWidget(this.buttonSearchToggle);
 
         if (this.isSearchOpen())
         {
-            this.addWidget(this.hotkeySearchButton);
             this.addWidget(this.sourceSelectionDropdown);
+            this.addWidget(this.hotkeySearchButton);
+            this.addWidget(this.textField);
         }
     }
 
