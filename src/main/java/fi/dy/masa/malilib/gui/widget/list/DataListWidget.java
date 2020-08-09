@@ -371,9 +371,9 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
                     this.setLastSelectedEntry(index);
                 }
             }
-        }
 
-        this.reCreateListEntryWidgets();
+            this.reCreateListEntryWidgets();
+        }
     }
 
     @Override

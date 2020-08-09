@@ -162,8 +162,6 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
         boolean isActiveGui = GuiUtils.getCurrentScreen() == this;
-        //this.updateTopHoveredWidget(mouseX, mouseY, isActiveGui);
-
         int hoveredWidgetId = isActiveGui && this.hoveredWidget != null ? this.hoveredWidget.getId() : -1;
 
         this.drawScreenBackground(mouseX, mouseY);
@@ -200,6 +198,10 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
         {
             super.handleMouseInput();
         }
+
+        // Update again after the input is handled
+        isActiveGui = GuiUtils.getCurrentScreen() == this;
+        this.updateTopHoveredWidget(mouseX, mouseY, isActiveGui);
     }
 
     @Override

@@ -437,8 +437,13 @@ public abstract class BaseListWidget extends ContainerWidget
     {
         if (changeSelection == false)
         {
+            int old = this.scrollBar.getValue();
             this.scrollBar.offsetValue(amount);
-            this.reCreateListEntryWidgets();
+
+            if (old != this.scrollBar.getValue())
+            {
+                this.reCreateListEntryWidgets();
+            }
         }
     }
 
