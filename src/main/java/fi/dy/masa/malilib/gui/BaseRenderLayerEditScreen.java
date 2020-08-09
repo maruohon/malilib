@@ -168,6 +168,7 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
         LayerMode layerMode = layerRange.getLayerMode();
         ButtonListenerChangeValue listener = new ButtonListenerChangeValue(layerMode, layerRange, isSecondValue, this);
         GenericButton button = new GenericButton(x, y + 2, icon);
+        button.setCanScrollToClick(true);
         this.addButton(button, listener);
     }
 

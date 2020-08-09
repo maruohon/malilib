@@ -16,6 +16,7 @@ public abstract class BaseButton extends BaseWidget
 
     protected final ImmutableList<String> hoverHelp;
     protected String displayString;
+    protected boolean canScrollToClick;
     protected boolean enabled = true;
     protected boolean hoverInfoRequiresShift;
     protected boolean playClickSound = true;
@@ -51,6 +52,12 @@ public abstract class BaseButton extends BaseWidget
     public void setEnabled(boolean enabled)
     {
         this.enabled = enabled;
+    }
+
+    public BaseButton setCanScrollToClick(boolean canScroll)
+    {
+        this.canScrollToClick = canScroll;
+        return this;
     }
 
     public BaseButton setPlayClickSound(boolean playSound)
@@ -96,8 +103,13 @@ public abstract class BaseButton extends BaseWidget
     @Override
     public boolean onMouseScrolledImpl(int mouseX, int mouseY, double mouseWheelDelta)
     {
-        int mouseButton = mouseWheelDelta < 0 ? 1 : 0;
-        return this.onMouseClickedImpl(mouseX, mouseY, mouseButton);
+        if (this.canScrollToClick)
+        {
+            int mouseButton = mouseWheelDelta < 0 ? 1 : 0;
+            return this.onMouseClickedImpl(mouseX, mouseY, mouseButton);
+        }
+
+        return false;
     }
 
     public void updateDisplayString()

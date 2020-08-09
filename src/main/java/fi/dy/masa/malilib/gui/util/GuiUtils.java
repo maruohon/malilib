@@ -104,6 +104,7 @@ public class GuiUtils
         {
             String hover = StringUtils.translate("malilib.gui.button.hover.plus_minus_tip");
             GenericButton button = new GenericButton(x, y, BaseIcon.BTN_PLUSMINUS_16, hover);
+            button.setCanScrollToClick(true);
             gui.addButton(button, new ButtonListenerCoordinateInput(type, modifier));
         }
     }
