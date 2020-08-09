@@ -59,6 +59,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
 
         this.navigationWidget = new DirectoryNavigationWidget(this.getX() + 2, this.getY() + 3, width, 14,
                                                               this.currentDirectory, rootDirectory, this, this.getIconProvider(), this.getRootDirectoryDisplayName());
+        this.searchBarWidget = this.navigationWidget;
 
         this.setEntryWidgetFactory((wx, wy, ww, wh, li, oi, entry, lw) ->
                                     new DirectoryEntryWidget(wx, wy, ww, wh, li, oi, entry, this, this.iconProvider));
@@ -67,12 +68,6 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         this.setBorderColor(BaseScreen.COLOR_HORIZONTAL_BAR);
         this.setBackgroundEnabled(true);
         this.listPosition.setRightPadding(3);
-    }
-
-    @Override
-    protected void createSearchBarWidget()
-    {
-        this.searchBarWidget = this.navigationWidget;
     }
 
     public FileBrowserIconProvider getIconProvider()

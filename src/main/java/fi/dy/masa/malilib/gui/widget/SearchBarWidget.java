@@ -7,6 +7,7 @@ import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.button.GenericButton;
 import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
+import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.listener.TextChangeListener;
 
 public class SearchBarWidget extends ContainerWidget
@@ -16,6 +17,7 @@ public class SearchBarWidget extends ContainerWidget
     protected final Icon toggleButtonIcon;
     protected final HorizontalAlignment toggleButtonAlignment;
     protected final int searchBarOffsetX;
+    @Nullable protected EventListener geometryChangeListener;
     protected boolean searchOpen;
 
     public SearchBarWidget(int x, int y, int width, int height, int searchBarOffsetX,
@@ -72,6 +74,11 @@ public class SearchBarWidget extends ContainerWidget
         this.textField.setListener(listener);
     }
 
+    public void setGeometryChangeListener(@Nullable EventListener geometryChangeListener)
+    {
+        this.geometryChangeListener = geometryChangeListener;
+    }
+
     public String getFilter()
     {
         return this.searchOpen ? this.textField.getText() : "";
@@ -102,6 +109,13 @@ public class SearchBarWidget extends ContainerWidget
         }
 
         this.reAddSubWidgets();
+
+        // Update the parent or other listeners who may care about
+        // the search bar opening/closing and maybe changing in size
+        if (this.geometryChangeListener != null)
+        {
+            this.geometryChangeListener.onEvent();
+        }
     }
 
     @Override

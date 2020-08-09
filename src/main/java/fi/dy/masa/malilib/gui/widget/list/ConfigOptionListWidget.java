@@ -38,18 +38,12 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
 
         this.configsSearchBarWidget = new ConfigsSearchBarWidget(x, y, width, 32, 0,
                                                                  BaseIcon.SEARCH, HorizontalAlignment.LEFT,
-                                                                 (scope) -> this.refreshEntries());
+                                                                 (scope) -> this.refreshEntries(), gui);
+        this.configsSearchBarWidget.setGeometryChangeListener(this::updatePositioningAndElements);
+        this.searchBarWidget = this.configsSearchBarWidget;
 
         this.setEntryWidgetFactory(new ConfigOptionListEntryWidgetFactory<>(entrySupplier, gui));
         this.setEntryFilterStringFactory(ConfigInfo::getSearchStrings);
-
-        this.addDefaultSearchBar();
-    }
-
-    @Override
-    protected void createSearchBarWidget()
-    {
-        this.searchBarWidget = this.configsSearchBarWidget;
     }
 
     public int getMaxLabelWidth()
@@ -80,7 +74,7 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
             if (categories != null && listIndex < categories.size())
             {
                 ConfigCategory category = categories.get(listIndex);
-                return category.getModName() + " > " + category.getDisplayName() + " > ";
+                return category.getModName() + " > " + category.getDisplayName();
             }
         }
 
@@ -94,17 +88,18 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
 
         List<C> list = this.getCurrentEntries();
         final int size = list.size();
-        boolean hasPrefix = this.isShowingOptionsFromOtherCategories();
+        boolean showOwner = this.isShowingOptionsFromOtherCategories();
         this.maxLabelWidth = 0;
 
         for (int i = 0; i < size; ++i)
         {
             ConfigInfo config = list.get(i);
             String name = config.getDisplayName();
+            String owner = showOwner ? this.getModNameAndCategoryPrefix(i) : null;
 
-            if (hasPrefix)
+            if (owner != null)
             {
-                name = this.getModNameAndCategoryPrefix(i) + name;
+                this.maxLabelWidth = Math.max(this.maxLabelWidth, this.getStringWidth(owner));
             }
 
             this.maxLabelWidth = Math.max(this.maxLabelWidth, this.getStringWidth(name));

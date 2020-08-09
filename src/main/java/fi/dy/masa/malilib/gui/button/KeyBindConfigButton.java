@@ -21,8 +21,9 @@ public class KeyBindConfigButton extends GenericButton
     protected final List<String> overlapInfo = new ArrayList<>();
     protected final List<Integer> newKeys = new ArrayList<>();
     protected final KeyBind keyBind;
-    protected boolean selected;
     protected boolean firstKey;
+    protected boolean selected;
+    protected boolean updateImmediately;
 
     public KeyBindConfigButton(int x, int y, int width, int height, KeyBind keyBind, @Nullable KeybindEditingScreen host)
     {
@@ -38,6 +39,15 @@ public class KeyBindConfigButton extends GenericButton
     public void setValueChangeListener(@Nullable EventListener valueChangeListener)
     {
         this.valueChangeListener = valueChangeListener;
+    }
+
+    /**
+     * Makes the keybind be updated immediately after each new kay is added,
+     * rather than only updating once the button is unselected.
+     */
+    public void setUpdateKeyBindImmediately()
+    {
+        this.updateImmediately = true;
     }
 
     @Override
@@ -97,6 +107,11 @@ public class KeyBindConfigButton extends GenericButton
         if (this.newKeys.contains(keyCode) == false)
         {
             this.newKeys.add(keyCode);
+        }
+
+        if (this.updateImmediately)
+        {
+            this.keyBind.setKeys(this.newKeys);
         }
     }
 

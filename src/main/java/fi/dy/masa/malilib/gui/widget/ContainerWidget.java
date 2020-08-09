@@ -93,7 +93,17 @@ public abstract class ContainerWidget extends BackgroundWidget
         }
     }
 
-    public  <T extends BaseWidget> T addWidget(T widget)
+    public <T extends BaseWidget> T addWidgetIfNotNull(@Nullable T widget)
+    {
+        if (widget != null)
+        {
+            this.addWidget(widget);
+        }
+
+        return widget;
+    }
+
+    public <T extends BaseWidget> T addWidget(T widget)
     {
         this.subWidgets.add(widget);
         this.onSubWidgetAdded(widget);
@@ -101,14 +111,14 @@ public abstract class ContainerWidget extends BackgroundWidget
         return widget;
     }
 
-    public  <T extends BaseButton> T addButton(T button, ButtonActionListener listener)
+    public <T extends BaseButton> T addButton(T button, ButtonActionListener listener)
     {
         button.setActionListener(listener);
         this.addWidget(button);
         return button;
     }
 
-    public  <T extends BaseTextFieldWidget> T addTextField(T widget, TextChangeListener listener)
+    public <T extends BaseTextFieldWidget> T addTextField(T widget, TextChangeListener listener)
     {
         widget.setListener(listener);
         this.addWidget(widget);

@@ -19,7 +19,8 @@ public abstract class BaseConfigOptionWidget<C extends ConfigInfo> extends BaseD
 {
     protected final ConfigWidgetContext ctx;
     protected final GenericButton resetButton;
-    protected final LabelWidget labelWidget;
+    protected final LabelWidget configNameLabelWidget;
+    protected final LabelWidget configOwnerLabelWidget;
 
     public BaseConfigOptionWidget(int x, int y, int width, int height, int listIndex,
                                   int originalListIndex, C config, ConfigWidgetContext ctx)
@@ -28,20 +29,15 @@ public abstract class BaseConfigOptionWidget<C extends ConfigInfo> extends BaseD
 
         this.ctx = ctx;
 
-        String label = this.data.getDisplayName();
+        String nameLabel = this.data.getDisplayName();
+        boolean showOwner = this.ctx.gui.getListWidget().isShowingOptionsFromOtherCategories();
 
-        if (this.ctx.gui.getListWidget().isShowingOptionsFromOtherCategories())
-        {
-            String prefix = this.ctx.gui.getListWidget().getModNameAndCategoryPrefix(listIndex);
+        String ownerLabel = this.ctx.gui.getListWidget().getModNameAndCategoryPrefix(listIndex);
+        this.configOwnerLabelWidget = new LabelWidget(x + 2, y + 1, 0xFF808080, ownerLabel != null ? ownerLabel : "");
 
-            if (prefix != null)
-            {
-                label = prefix + label;
-            }
-        }
-
-        this.labelWidget = new LabelWidget(x + 2, y + 6, 0xFFFFFFFF, label);
-        this.labelWidget.addHoverStrings(this.data.getComment());
+        int nameY = showOwner ? y + 10 : y + 6;
+        this.configNameLabelWidget = new LabelWidget(x + 2, nameY, 0xFFFFFFFF, nameLabel);
+        this.configNameLabelWidget.addHoverStrings(this.data.getComment());
 
         this.resetButton = new GenericButton(x, y, -1, 20, StringUtils.translate("malilib.gui.button.reset.caps"));
     }
@@ -50,7 +46,13 @@ public abstract class BaseConfigOptionWidget<C extends ConfigInfo> extends BaseD
     public void reAddSubWidgets()
     {
         this.clearWidgets();
-        this.addWidget(this.labelWidget);
+
+        if (this.ctx.gui.getListWidget().isShowingOptionsFromOtherCategories())
+        {
+            this.addWidget(this.configOwnerLabelWidget);
+        }
+
+        this.addWidget(this.configNameLabelWidget);
     }
 
     protected int getElementWidth()

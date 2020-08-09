@@ -3,35 +3,43 @@ package fi.dy.masa.malilib.gui.widget;
 import org.lwjgl.input.Keyboard;
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.config.value.BaseConfigOptionListEntry;
-import fi.dy.masa.malilib.config.value.BlockSnap;
 import fi.dy.masa.malilib.config.value.ConfigOptionListEntry;
 import fi.dy.masa.malilib.gui.button.KeyBindConfigButton;
+import fi.dy.masa.malilib.gui.config.KeybindEditingScreen;
 import fi.dy.masa.malilib.gui.icon.Icon;
+import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.widget.list.entry.SelectionListener;
-import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.input.KeyAction;
+import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.input.KeyBindImpl;
 import fi.dy.masa.malilib.input.KeyBindSettings;
 import fi.dy.masa.malilib.input.KeyBindSettings.Context;
-import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class ConfigsSearchBarWidget extends SearchBarWidget
 {
     protected final KeyBindImpl searchKey;
-    protected final KeyBindConfigButton button;
+    protected final KeyBindConfigButton hotkeySearchButton;
     protected final DropDownListWidget<Scope> sourceSelectionDropdown;
+    protected int openedHeight;
 
-    public ConfigsSearchBarWidget(int x, int y, int width, int height, int searchBarOffsetX,
+    public ConfigsSearchBarWidget(int x, int y, int width, int openedHeight, int searchBarOffsetX,
                                   Icon iconSearch, HorizontalAlignment iconAlignment,
-                                  SelectionListener<Scope> scopeChangeListener)
+                                  SelectionListener<Scope> scopeChangeListener,
+                                  KeybindEditingScreen screen)
     {
         super(x, y + 3, width - 160, 14, searchBarOffsetX, iconSearch, iconAlignment);
+
+        this.openedHeight = openedHeight;
 
         KeyBindSettings settings = KeyBindSettings.create(Context.ANY, KeyAction.BOTH, true, true, false, false, false);
         this.searchKey = KeyBindImpl.fromStorageString("", "", settings);
 
-        this.button = new KeyBindConfigButton(x + width - 150, y, 100, 20, this.searchKey, null);
+        this.hotkeySearchButton = new KeyBindConfigButton(x + width - 150, y, 100, 20, this.searchKey, screen);
+        this.hotkeySearchButton.setUpdateKeyBindImmediately();
+        this.hotkeySearchButton.addHoverStrings("malilib.gui.button.hover.hotkey_search_button");
+        this.hotkeySearchButton.setHoverInfoRequiresShift(false);
+
         this.sourceSelectionDropdown = new DropDownListWidget<>(x, y - 16, -1, 15, 60, 3, Scope.VALUES, Scope::getDisplayName);
         this.sourceSelectionDropdown.setSelectedEntry(Scope.CURRENT_CATEGORY);
         this.sourceSelectionDropdown.setSelectionListener(scopeChangeListener);
@@ -52,9 +60,9 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
     {
         super.reAddSubWidgets();
 
-        if (this.searchOpen)
+        if (this.isSearchOpen())
         {
-            this.addWidget(this.button);
+            this.addWidget(this.hotkeySearchButton);
             this.addWidget(this.sourceSelectionDropdown);
         }
     }
@@ -67,38 +75,46 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
         int x = this.getX();
         int y = this.getY();
         int width = this.getWidth();
+        int height = this.getHeight();
 
-        this.sourceSelectionDropdown.setPosition(x + 18, y - 16);
-        this.button.setPosition(x + width - 100, y + this.getHeight() - this.button.getHeight());
+        this.sourceSelectionDropdown.setPosition(x + 18, y);
+        this.hotkeySearchButton.setPosition(x + width - this.hotkeySearchButton.getWidth() - 1, y + height - this.hotkeySearchButton.getHeight());
+        this.textField.setY(y + this.sourceSelectionDropdown.getHeight() + 2);
         this.textField.setWidth(width - 120);
+    }
+
+    @Override
+    public int getHeight()
+    {
+        return this.isSearchOpen() ? this.openedHeight : super.getHeight();
     }
 
     @Override
     public boolean hasFilter()
     {
-        return super.hasFilter() || (this.searchOpen && this.searchKey.getKeys().size() > 0);
+        return super.hasFilter() || (this.isSearchOpen() && this.searchKey.getKeys().size() > 0);
     }
 
     @Override
     protected boolean onMouseClickedImpl(int mouseX, int mouseY, int mouseButton)
     {
-        if (this.searchOpen)
+        if (this.isSearchOpen())
         {
-            if (this.button.isMouseOver(mouseX, mouseY))
+            if (this.hotkeySearchButton.isMouseOver(mouseX, mouseY))
             {
-                boolean selectedPre = this.button.isSelected();
-                this.button.onMouseClicked(mouseX, mouseY, mouseButton);
+                boolean selectedPre = this.hotkeySearchButton.isSelected();
+                this.hotkeySearchButton.onMouseClicked(mouseX, mouseY, mouseButton);
 
                 if (selectedPre == false)
                 {
-                    this.button.onSelected();
+                    this.hotkeySearchButton.onSelected();
                 }
 
                 return true;
             }
-            else if (this.button.isSelected())
+            else if (this.hotkeySearchButton.isSelected())
             {
-                this.button.onClearSelection();
+                this.hotkeySearchButton.onClearSelection();
                 return true;
             }
         }
@@ -109,13 +125,13 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
     @Override
     protected boolean onKeyTypedImpl(char typedChar, int keyCode)
     {
-        if (this.searchOpen && this.button.isSelected())
+        if (this.isSearchOpen() && this.hotkeySearchButton.isSelected())
         {
-            this.button.onKeyPressed(keyCode);
+            this.hotkeySearchButton.onKeyPressed(keyCode);
 
             if (keyCode == Keyboard.KEY_ESCAPE)
             {
-                this.button.onClearSelection();
+                this.hotkeySearchButton.onClearSelection();
             }
 
             return true;
@@ -129,9 +145,9 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
     {
         super.render(mouseX, mouseY, isActiveGui, hovered);
 
-        if (this.searchOpen)
+        if (this.isSearchOpen())
         {
-            this.button.render(mouseX, mouseY, isActiveGui, hovered);
+            this.hotkeySearchButton.render(mouseX, mouseY, isActiveGui, hovered);
         }
     }
 
