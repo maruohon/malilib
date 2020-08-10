@@ -32,7 +32,7 @@ public abstract class BaseConfigOptionWidget<C extends ConfigInfo> extends BaseD
         String nameLabel = this.data.getDisplayName();
         boolean showOwner = this.ctx.gui.getListWidget().isShowingOptionsFromOtherCategories();
 
-        String ownerLabel = this.ctx.gui.getListWidget().getModNameAndCategoryPrefix(listIndex);
+        String ownerLabel = this.ctx.gui.getListWidget().getModNameAndCategoryPrefix(originalListIndex);
         this.configOwnerLabelWidget = new LabelWidget(x + 2, y + 1, 0xFF808080, ownerLabel != null ? ownerLabel : "");
 
         int nameY = showOwner ? y + 10 : y + 6;
