@@ -133,7 +133,11 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
                 }
 
                 KeyBind kb = info.getKeyBind(config);
-                return kb != null && kb.overlaps(this.searchKey);
+
+                if (kb == null || kb.overlaps(this.searchKey) == false)
+                {
+                    return false;
+                }
             }
 
             TypeFilter type = this.typeFilterDropdown.getSelectedEntry();
