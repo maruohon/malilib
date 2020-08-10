@@ -211,7 +211,7 @@ public class DropDownListWidget<T> extends ContainerWidget
         if (width == -1)
         {
             width = 0;
-            int right = this.lineHeight + 4;
+            int right = this.lineHeight + 10;
 
             for (T entry : entries)
             {
@@ -595,6 +595,7 @@ public class DropDownListWidget<T> extends ContainerWidget
             super(x, y, width, height, dropdown::toggleOpen);
 
             this.setBackgroundEnabled(true);
+            this.setBorderWidth(1);
 
             // The positions of these widgets are updated in update()
             this.widgetLabel = new LabelWidget(0, 0, textColor, dropdown.getCurrentEntryDisplayString());
@@ -626,7 +627,7 @@ public class DropDownListWidget<T> extends ContainerWidget
             int width = this.getWidth();
             int height = this.getHeight();
             int labelX = x + 4;
-            int labelY = y + (height - this.widgetLabel.getHeight()) / 2;
+            int labelY = y + (height - this.widgetLabel.getHeight()) / 2 + 1;
             int openIconX = x + width - iconOpen.getWidth() - 2;
             int openIconY = y + (height - iconOpen.getHeight()) / 2 + 1;
 

@@ -5,11 +5,11 @@ import fi.dy.masa.malilib.render.RenderUtils;
 public class BackgroundWidget extends BaseWidget
 {
     protected boolean backgroundEnabled;
-    protected boolean borderEnabled = true;
+    protected boolean borderEnabled;
     protected int backgroundColor = 0xB0101010;
     protected int borderColorBR = 0xFFC0C0C0;
     protected int borderColorUL = 0xFFC0C0C0;
-    protected int borderWidth = 1;
+    protected int borderWidth;
     protected int paddingX;
     protected int paddingY;
 
@@ -97,11 +97,8 @@ public class BackgroundWidget extends BaseWidget
 
     protected void renderWidgetBackground(int x, int y, int width, int height)
     {
-        if (this.backgroundEnabled)
-        {
-            this.renderBackgroundOnly(x, y, width, height);
-            this.renderBorder(x, y, width, height);
-        }
+        this.renderBackgroundOnly(x, y, width, height);
+        this.renderBorder(x, y, width, height);
     }
 
     protected void renderBorder(int x, int y, int width, int height)

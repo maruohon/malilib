@@ -62,8 +62,9 @@ public class BaseTextFieldWidget extends BackgroundWidget
         super(x, y, width, height);
 
         this.setBackgroundColor(0xFF000000);
-        this.setBorderColor(this.colorUnfocused);
         this.setBackgroundEnabled(true);
+        this.setBorderColor(this.colorUnfocused);
+        this.setBorderWidth(1);
         this.setPaddingX(4);
 
         this.messageRenderer.setWidth(Math.max(this.getWidth(), 220));
