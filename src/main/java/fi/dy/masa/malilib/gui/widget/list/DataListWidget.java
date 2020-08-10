@@ -223,7 +223,7 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
         }
     }
 
-    protected boolean filterMatchesEmptyEntry(DATATYPE entry)
+    protected boolean filterMatchesEmptySearchTerms(DATATYPE entry)
     {
         return false;
     }
@@ -247,7 +247,7 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
         {
             DATATYPE entry = entries.get(i);
 
-            if (filterText.isEmpty() || this.entryMatchesFilter(entry, filterText))
+            if (this.entryMatchesFilter(entry, filterText))
             {
                 this.filteredContents.add(entry);
                 this.filteredIndices.add(i);
@@ -257,26 +257,26 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
 
     protected boolean entryMatchesFilter(DATATYPE entry, String filterText)
     {
-        List<String> searchStrings = this.getSearchStringsForEntry(entry);
-
-        if (searchStrings.isEmpty())
-        {
-            return this.filterMatchesEmptyEntry(entry);
-        }
-
-        return this.matchesFilter(searchStrings, filterText);
-    }
-
-    protected boolean matchesFilter(List<String> entryStrings, String filterText)
-    {
         if (filterText.isEmpty())
         {
             return true;
         }
 
-        for (String str : entryStrings)
+        List<String> searchStrings = this.getSearchStringsForEntry(entry);
+
+        if (searchStrings.isEmpty())
         {
-            if (this.matchesFilter(str, filterText))
+            return this.filterMatchesEmptySearchTerms(entry);
+        }
+
+        return this.searchTermsMatchFilter(searchStrings, filterText);
+    }
+
+    protected boolean searchTermsMatchFilter(List<String> searchTermsFromData, String filterText)
+    {
+        for (String str : searchTermsFromData)
+        {
+            if (this.searchTermsMatchFilter(str, filterText))
             {
                 return true;
             }
@@ -285,18 +285,13 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
         return false;
     }
 
-    protected boolean matchesFilter(String entryString, String filterText)
+    protected boolean searchTermsMatchFilter(String searchTermFromData, String filterText)
     {
-        if (filterText.isEmpty())
-        {
-            return true;
-        }
-
-        entryString = entryString.toLowerCase(Locale.ROOT);
+        searchTermFromData = searchTermFromData.toLowerCase(Locale.ROOT);
 
         for (String filter : filterText.split("\\|"))
         {
-            if (entryString.contains(filter))
+            if (searchTermFromData.contains(filter))
             {
                 return true;
             }

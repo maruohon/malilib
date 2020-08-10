@@ -1,19 +1,25 @@
 package fi.dy.masa.malilib.gui.widget;
 
+import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import com.google.common.collect.ImmutableList;
+import fi.dy.masa.malilib.config.option.BooleanConfig;
+import fi.dy.masa.malilib.config.option.ConfigInfo;
+import fi.dy.masa.malilib.config.option.HotkeyConfig;
 import fi.dy.masa.malilib.config.value.BaseConfigOptionListEntry;
 import fi.dy.masa.malilib.config.value.ConfigOptionListEntry;
 import fi.dy.masa.malilib.gui.button.KeyBindConfigButton;
+import fi.dy.masa.malilib.gui.config.ConfigSearchInfo;
+import fi.dy.masa.malilib.gui.config.ConfigTypeRegistry;
 import fi.dy.masa.malilib.gui.config.KeybindEditingScreen;
 import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
-import fi.dy.masa.malilib.gui.widget.list.entry.SelectionListener;
 import fi.dy.masa.malilib.input.KeyAction;
 import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.input.KeyBindImpl;
 import fi.dy.masa.malilib.input.KeyBindSettings;
 import fi.dy.masa.malilib.input.KeyBindSettings.Context;
+import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class ConfigsSearchBarWidget extends SearchBarWidget
@@ -21,11 +27,12 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
     protected final KeyBindImpl searchKey;
     protected final KeyBindConfigButton hotkeySearchButton;
     protected final DropDownListWidget<Scope> sourceSelectionDropdown;
+    protected final DropDownListWidget<TypeFilter> typeFilterDropdown;
     protected int openedHeight;
 
     public ConfigsSearchBarWidget(int x, int y, int width, int openedHeight, int searchBarOffsetX,
                                   Icon iconSearch, HorizontalAlignment iconAlignment,
-                                  SelectionListener<Scope> scopeChangeListener,
+                                  EventListener filterChangeListener,
                                   KeybindEditingScreen screen)
     {
         super(x, y + 3, width - 160, 14, searchBarOffsetX, iconSearch, iconAlignment);
@@ -35,14 +42,21 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
         KeyBindSettings settings = KeyBindSettings.create(Context.ANY, KeyAction.BOTH, true, true, false, false, false);
         this.searchKey = KeyBindImpl.fromStorageString("", "", settings);
 
-        this.hotkeySearchButton = new KeyBindConfigButton(x + width - 150, y, 100, 20, this.searchKey, screen);
+        this.hotkeySearchButton = new KeyBindConfigButton(x + width - 150, y, 160, 20, this.searchKey, screen);
         this.hotkeySearchButton.setUpdateKeyBindImmediately();
         this.hotkeySearchButton.addHoverStrings("malilib.gui.button.hover.hotkey_search_button");
         this.hotkeySearchButton.setHoverInfoRequiresShift(false);
+        this.hotkeySearchButton.setValueChangeListener(filterChangeListener);
 
-        this.sourceSelectionDropdown = new DropDownListWidget<>(x, y - 16, -1, 15, 60, 3, Scope.VALUES, Scope::getDisplayName);
+        final EventListener listener = filterChangeListener.chain(() -> this.textField.setFocused(true));
+
+        this.sourceSelectionDropdown = new DropDownListWidget<>(x, y - 16, -1, 15, 60, 10, Scope.VALUES, Scope::getDisplayName);
         this.sourceSelectionDropdown.setSelectedEntry(Scope.CURRENT_CATEGORY);
-        this.sourceSelectionDropdown.setSelectionListener(scopeChangeListener);
+        this.sourceSelectionDropdown.setSelectionListener((s) -> listener.onEvent());
+
+        this.typeFilterDropdown = new DropDownListWidget<>(x + 100, y - 16, -1, 15, 120, 10, TypeFilter.VALUES, TypeFilter::getDisplayName);
+        this.typeFilterDropdown.setSelectedEntry(TypeFilter.ALL);
+        this.typeFilterDropdown.setSelectionListener((s) -> listener.onEvent());
     }
 
     public KeyBind getKeybind()
@@ -69,6 +83,7 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
         if (this.isSearchOpen())
         {
             this.addWidget(this.sourceSelectionDropdown);
+            this.addWidget(this.typeFilterDropdown);
             this.addWidget(this.hotkeySearchButton);
             this.addWidget(this.textField);
         }
@@ -85,9 +100,11 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
         int height = this.getHeight();
 
         this.sourceSelectionDropdown.setPosition(x + 18, y);
+        this.typeFilterDropdown.setPosition(this.sourceSelectionDropdown.getRight() + 4, y);
+
         this.hotkeySearchButton.setPosition(x + width - this.hotkeySearchButton.getWidth() - 1, y + height - this.hotkeySearchButton.getHeight());
         this.textField.setY(y + this.sourceSelectionDropdown.getHeight() + 2);
-        this.textField.setWidth(width - 120);
+        this.textField.setWidth(width - this.hotkeySearchButton.getWidth() - 20);
     }
 
     @Override
@@ -99,7 +116,65 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
     @Override
     public boolean hasFilter()
     {
-        return super.hasFilter() || (this.isSearchOpen() && this.searchKey.getKeys().size() > 0);
+        return super.hasFilter() || (this.isSearchOpen() &&
+                                             (this.searchKey.getKeys().size() > 0 ||
+                                              this.typeFilterDropdown.getSelectedEntry() != TypeFilter.ALL));
+    }
+
+    public <C extends ConfigInfo> boolean passesFilter(C config)
+    {
+        if (this.isSearchOpen())
+        {
+            @Nullable ConfigSearchInfo<C> info = ConfigTypeRegistry.INSTANCE.getSearchInfo(config);
+
+            if (this.searchKey.getKeys().size() > 0)
+            {
+                if (info == null || info.hasHotkey == false)
+                {
+                    return false;
+                }
+
+                KeyBind kb = info.getKeyBind(config);
+                return kb != null && kb.overlaps(this.searchKey);
+            }
+
+            TypeFilter type = this.typeFilterDropdown.getSelectedEntry();
+
+            if (type != TypeFilter.ALL)
+            {
+                if (type == TypeFilter.MODIFIED)
+                {
+                    return config.isModified();
+                }
+
+                if (info == null)
+                {
+                    return false;
+                }
+
+                if (type == TypeFilter.MODIFIED_TOGGLE)
+                {
+                    return config.isModified() && info.hasToggle;
+                }
+
+                if (type == TypeFilter.MODIFIED_HOTKEY)
+                {
+                    return config.isModified() && info.hasHotkey;
+                }
+
+                if (type == TypeFilter.ENABLED_TOGGLE)
+                {
+                    return info.hasToggle && info.getToggleStatus(config);
+                }
+
+                if (type == TypeFilter.ANY_HOTKEY)
+                {
+                    return info.hasHotkey;
+                }
+            }
+        }
+
+        return true;
     }
 
     @Override
@@ -193,6 +268,49 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
 
         @Override
         public Scope fromString(String name)
+        {
+            return BaseConfigOptionListEntry.findValueByName(name, VALUES);
+        }
+    }
+
+    public enum TypeFilter implements ConfigOptionListEntry<TypeFilter>
+    {
+        ALL             ("malilib.gui.label.config_type_filter.all"),
+        MODIFIED        ("malilib.gui.label.config_type_filter.modified"),
+        ENABLED_TOGGLE  ("malilib.gui.label.config_type_filter.enabled_toggle"),
+        MODIFIED_TOGGLE ("malilib.gui.label.config_type_filter.modified_toggle"),
+        ANY_HOTKEY      ("malilib.gui.label.config_type_filter.any_hotkey"),
+        MODIFIED_HOTKEY ("malilib.gui.label.config_type_filter.modified_hotkey");
+
+        public static final ImmutableList<TypeFilter> VALUES = ImmutableList.copyOf(values());
+
+        private final String translationKey;
+
+        TypeFilter(String translationKey)
+        {
+            this.translationKey = translationKey;
+        }
+
+        @Override
+        public String getStringValue()
+        {
+            return this.translationKey;
+        }
+
+        @Override
+        public String getDisplayName()
+        {
+            return StringUtils.translate(this.translationKey);
+        }
+
+        @Override
+        public TypeFilter cycle(boolean forward)
+        {
+            return BaseConfigOptionListEntry.cycleValue(VALUES, this.ordinal(), forward);
+        }
+
+        @Override
+        public TypeFilter fromString(String name)
         {
             return BaseConfigOptionListEntry.findValueByName(name, VALUES);
         }

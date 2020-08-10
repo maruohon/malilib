@@ -62,4 +62,18 @@ public class ConfigGroup implements ConfigInfo
     {
         return this.commentTranslationKey;
     }
+
+    @Override
+    public boolean isModified()
+    {
+        for (ConfigInfo config : this.configs)
+        {
+            if (config.isModified())
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

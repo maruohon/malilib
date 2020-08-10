@@ -104,6 +104,13 @@ malilib.gui.label.config_scope.all_categories=From all categories in this mod
 malilib.gui.label.config_scope.all_mods=From all mods (using MaLiLib)
 malilib.gui.label.config_scope.current_category=From current category
 
+malilib.gui.label.config_type_filter.all=Everything
+malilib.gui.label.config_type_filter.modified=Modified settings
+malilib.gui.label.config_type_filter.enabled_toggle=Enabled toggle options
+malilib.gui.label.config_type_filter.modified_toggle=Modified toggle options
+malilib.gui.label.config_type_filter.any_hotkey=Any hotkeys
+malilib.gui.label.config_type_filter.modified_hotkey=Modified hotkeys
+
 malilib.gui.label_error.no_widget_factory_for_config_type=§cUnknown config type '%s' (no widget factory registered)§r
 
 malilib.gui.label.keybind_display.actions=Actions

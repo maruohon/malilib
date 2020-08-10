@@ -62,4 +62,10 @@ public interface ConfigInfo
     {
         return Collections.singletonList(this.getDisplayName());
     }
+
+    /**
+     * Returns true if the value has been changed from the default value
+     * @return
+     */
+    boolean isModified();
 }

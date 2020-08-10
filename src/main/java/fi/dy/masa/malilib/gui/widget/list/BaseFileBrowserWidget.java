@@ -68,6 +68,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         this.setBorderColor(BaseScreen.COLOR_HORIZONTAL_BAR);
         this.setBackgroundEnabled(true);
         this.listPosition.setRightPadding(3);
+        this.listPosition.setBottomPadding(1);
     }
 
     @Override
@@ -193,7 +194,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         {
             DirectoryEntry entry = new DirectoryEntry(DirectoryEntryType.fromFile(file), dir, file.getName(), displayNamePrefix);
 
-            if (filterText == null || this.matchesFilter(this.getSearchStringsForEntry(entry), filterText))
+            if (filterText == null || this.searchTermsMatchFilter(this.getSearchStringsForEntry(entry), filterText))
             {
                 list.add(entry);
             }

@@ -38,7 +38,7 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
 
         this.configsSearchBarWidget = new ConfigsSearchBarWidget(x, y, width, 32, 0,
                                                                  BaseIcon.SEARCH, HorizontalAlignment.LEFT,
-                                                                 (scope) -> this.refreshEntries(), gui);
+                                                                 this::refreshEntries, gui);
         this.configsSearchBarWidget.setGeometryChangeListener(this::updatePositioningAndElements);
         this.searchBarWidget = this.configsSearchBarWidget;
 
@@ -62,6 +62,12 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
     public boolean isShowingOptionsFromOtherCategories()
     {
         return this.configsSearchBarWidget.getCurrentScope() != ConfigsSearchBarWidget.Scope.CURRENT_CATEGORY;
+    }
+
+    @Override
+    protected boolean entryMatchesFilter(C entry, String filterText)
+    {
+        return super.entryMatchesFilter(entry, filterText) && this.configsSearchBarWidget.passesFilter(entry);
     }
 
     @Nullable

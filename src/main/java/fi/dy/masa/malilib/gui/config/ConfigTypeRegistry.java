@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.gui.config;
 
 import java.util.HashMap;
+import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.config.option.ColorConfig;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
@@ -30,11 +31,13 @@ public class ConfigTypeRegistry
     public static final ConfigTypeRegistry INSTANCE = new ConfigTypeRegistry();
 
     private final HashMap<Class<? extends ConfigInfo>, ConfigOptionWidgetFactory<?>> widgetFactories = new HashMap<>();
+    private final HashMap<Class<? extends ConfigInfo>, ConfigSearchInfo<?>> configSearchInfoMap = new HashMap<>();
     private final ConfigOptionWidgetFactory<?> missingTypeFactory = new MissingConfigTypeFactory();
 
     private ConfigTypeRegistry()
     {
         this.registerDefaultPlacers();
+        this.registerDefaultSearchInfos();
     }
 
     /**
@@ -47,10 +50,30 @@ public class ConfigTypeRegistry
         this.widgetFactories.put(type, factory);
     }
 
+    /**
+     * Registers a config search info provider.
+     * These are only needed if your custom config type has boolean/toggle
+     * option(s) or hotkey(s) and you want to have your custom config searchable/filterable
+     * using the dropdown widget in the search bar, using the toggle and hotkey related options there.
+     * @param type
+     * @param info
+     */
+    public <C extends ConfigInfo> void registerConfigSearchInfo(Class<C> type, ConfigSearchInfo<C> info)
+    {
+        this.configSearchInfoMap.put(type, info);
+    }
+
     @SuppressWarnings("unchecked")
     public <C extends ConfigInfo> ConfigOptionWidgetFactory<C> getWidgetFactory(C config)
     {
         return (ConfigOptionWidgetFactory<C>) this.widgetFactories.getOrDefault(config.getClass(), this.missingTypeFactory);
+    }
+
+    @Nullable
+    @SuppressWarnings("unchecked")
+    public <C extends ConfigInfo> ConfigSearchInfo<C> getSearchInfo(C config)
+    {
+        return (ConfigSearchInfo<C>) this.configSearchInfoMap.get(config.getClass());
     }
 
     private void registerDefaultPlacers()
@@ -66,5 +89,12 @@ public class ConfigTypeRegistry
         this.registerWidgetFactory(OptionListConfig.class, OptionListConfigWidget::new);
         this.registerWidgetFactory(StringConfig.class, StringConfigWidget::new);
         this.registerWidgetFactory(StringListConfig.class, StringListConfigWidget::new);
+    }
+
+    private void registerDefaultSearchInfos()
+    {
+        this.registerConfigSearchInfo(BooleanConfig.class,          new ConfigSearchInfo<BooleanConfig>(true, false).setToggleOptionGetter(BooleanConfig::getBooleanValue));
+        this.registerConfigSearchInfo(HotkeyConfig.class,           new ConfigSearchInfo<HotkeyConfig>(false, true).setKeyBindGetter(HotkeyConfig::getKeyBind));
+        this.registerConfigSearchInfo(HotkeyedBooleanConfig.class,  new ConfigSearchInfo<HotkeyedBooleanConfig>(true, true).setToggleOptionGetter(HotkeyedBooleanConfig::getBooleanValue).setKeyBindGetter(HotkeyedBooleanConfig::getKeyBind));
     }
 }

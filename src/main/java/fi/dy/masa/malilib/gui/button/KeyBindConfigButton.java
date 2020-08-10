@@ -112,6 +112,11 @@ public class KeyBindConfigButton extends GenericButton
         if (this.updateImmediately)
         {
             this.keyBind.setKeys(this.newKeys);
+
+            if (this.valueChangeListener != null)
+            {
+                this.valueChangeListener.onEvent();
+            }
         }
     }
 
