@@ -84,7 +84,7 @@ public class KeybindSettingsScreen extends BaseDialogScreen
         this.cfgCancel.setValueChangeCallback(cbb);
 
         this.configList = ImmutableList.of(this.cfgActivateOn, this.cfgContext, this.cfgAllowEmpty, this.cfgAllowExtra, this.cfgOrderSensitive, this.cfgExclusive, this.cfgCancel);
-        this.labelWidth = this.getMaxPrettyNameLength(this.configList);
+        this.labelWidth = this.getMaxDisplayNameLength(this.configList);
         this.configWidth = 100;
 
         int totalWidth = this.labelWidth + this.configWidth + 30;
@@ -111,13 +111,13 @@ public class KeybindSettingsScreen extends BaseDialogScreen
         }
     }
 
-    public int getMaxPrettyNameLength(List<BaseConfig<?>> configs)
+    public int getMaxDisplayNameLength(List<BaseConfig<?>> configs)
     {
         int width = 0;
 
         for (BaseConfig<?> config : configs)
         {
-            width = Math.max(width, this.getStringWidth(config.getPrettyName()));
+            width = Math.max(width, this.getStringWidth(config.getDisplayName()));
         }
 
         return width;
@@ -126,7 +126,7 @@ public class KeybindSettingsScreen extends BaseDialogScreen
     protected void addConfig(int x, int y, int labelWidth, int configWidth, BaseConfig<?> config)
     {
         int color = config.isModified() ? 0xFFFFFF55 : 0xFFAAAAAA;
-        this.addLabel(x, y, labelWidth, 20, color, config.getPrettyName())
+        this.addLabel(x, y, labelWidth, 20, color, config.getDisplayName())
             .setPaddingY(5).addHoverStrings(config.getComment());
         x += labelWidth + 10;
 

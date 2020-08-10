@@ -32,7 +32,7 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
 
     public ConfigsSearchBarWidget(int x, int y, int width, int openedHeight, int searchBarOffsetX,
                                   Icon iconSearch, HorizontalAlignment iconAlignment,
-                                  EventListener filterChangeListener,
+                                  final EventListener filterChangeListener,
                                   KeybindEditingScreen screen)
     {
         super(x, y + 3, width - 160, 14, searchBarOffsetX, iconSearch, iconAlignment);
@@ -48,15 +48,13 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
         this.hotkeySearchButton.setHoverInfoRequiresShift(false);
         this.hotkeySearchButton.setValueChangeListener(filterChangeListener);
 
-        final EventListener listener = filterChangeListener.chain(() -> this.textField.setFocused(true));
-
         this.sourceSelectionDropdown = new DropDownListWidget<>(x, y - 16, -1, 15, 60, 10, Scope.VALUES, Scope::getDisplayName);
         this.sourceSelectionDropdown.setSelectedEntry(Scope.CURRENT_CATEGORY);
-        this.sourceSelectionDropdown.setSelectionListener((s) -> listener.onEvent());
+        this.sourceSelectionDropdown.setSelectionListener((s) -> filterChangeListener.onEvent());
 
         this.typeFilterDropdown = new DropDownListWidget<>(x + 100, y - 16, -1, 15, 120, 10, TypeFilter.VALUES, TypeFilter::getDisplayName);
         this.typeFilterDropdown.setSelectedEntry(TypeFilter.ALL);
-        this.typeFilterDropdown.setSelectionListener((s) -> listener.onEvent());
+        this.typeFilterDropdown.setSelectionListener((s) -> filterChangeListener.onEvent());
     }
 
     public KeyBind getKeybind()

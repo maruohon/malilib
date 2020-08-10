@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.config.option;
 
+import java.util.Locale;
 import com.google.gson.JsonElement;
 import fi.dy.masa.malilib.input.Hotkey;
 import fi.dy.masa.malilib.input.KeyBind;
@@ -41,6 +42,20 @@ public class HotkeyConfig extends BaseConfig<HotkeyConfig> implements Hotkey
         super(name, name, prettyName, comment);
 
         this.keyBind = KeyBindImpl.fromStorageString(name, defaultStorageString, settings);
+    }
+
+    @Override
+    protected String createNameTranslationKey(String modId)
+    {
+        String nameLower = this.getName().toLowerCase(Locale.ROOT);
+        return modId + ".hotkey.name." + nameLower;
+    }
+
+    @Override
+    protected String createCommentTranslationKey(String modId)
+    {
+        String nameLower = this.getName().toLowerCase(Locale.ROOT);
+        return modId + ".hotkey.comment." + nameLower;
     }
 
     @Override

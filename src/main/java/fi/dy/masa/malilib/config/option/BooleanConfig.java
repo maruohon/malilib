@@ -17,7 +17,7 @@ public class BooleanConfig extends BaseConfig<Boolean>
 
     public BooleanConfig(String name, boolean defaultValue, String comment)
     {
-        this(name, defaultValue, comment, name);
+        this(name, defaultValue, name, comment);
     }
 
     public BooleanConfig(String name, boolean defaultValue, String prettyName, String comment)

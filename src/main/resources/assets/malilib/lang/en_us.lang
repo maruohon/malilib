@@ -1,18 +1,16 @@
+
 malilib.config.category.debug=Debug
 malilib.config.category.generic=Generic
 
 malilib.config.comment.keybinddisplay=Whether or not to display a small indicator/toast\nfor pressed keys and triggered hotkeys/actions
 malilib.config.comment.keybinddisplayalignment=The alignment for the keybind display toast messages
-malilib.config.comment.ignoredkeys=Any keys set here will be completely ignored from\nthe hotkey system. This can be used to blacklist\nkeys that cause issues or often get stuck for some reason.
 malilib.config.comment.keybinddisplaycallbackonly=If enabled, then only keybinds that have a defined action callback\nwill be displayed on the keybind display toast.
 malilib.config.comment.keybinddisplaycancelonly=If enabled, then only keybinds that are set to cancel\nfurther processing will be displayed on the\nkeybind display toast. This prevents so called "modifier" keys\nfrom spamming the display.
 malilib.config.comment.keybinddisplayduration=The duration (in milliseconds) the keybind display toasts are shown
-malilib.config.comment.openguiconfigs=Open the in-game malilib config menu
 
 malilib.config.comment.guidebug=When enabled, all GUI widgets will draw their outlines\nand when hovered also their position and dimension\ninfo and the widget class name.\nIf a key is set for GUI Debug Key, then that key must be held\nfor any of the debug rendering to happen.
 malilib.config.comment.guidebugall=If true, then all widgets will render the debug outline,\notherwise only the hovered widget will render it
 malilib.config.comment.guidebuginfoalways=When enabled, the debug position and dimensions text\nis always rendered, even without hovering the widgets
-malilib.config.comment.guidebugkey=If this is set, then the GUI debug only renders\nwhile this key is held down
 malilib.config.comment.keybinddebugging=When enabled, key presses and held keys are\nprinted to the game console (and the action bar, if enabled)
 malilib.config.comment.keybinddebuggingingame=If enabled, then the messages from 'Keybind Debugging'\nare also printed to the in-game action bar
 
@@ -26,18 +24,23 @@ malilib.config.comment.keybind_settings.order_sensitive=Should the keybind keys 
 
 malilib.config.name.keybinddisplay=KeyBind Display
 malilib.config.name.keybinddisplayalignment=KeyBind Display Alignment
-malilib.config.name.ignoredkeys=Ignored Keys
 malilib.config.name.keybinddisplaycallbackonly=KeyBind Display Callback Only
 malilib.config.name.keybinddisplaycancelonly=KeyBind Display Cancel Only
 malilib.config.name.keybinddisplayduration=KeyBind Display Duration
-malilib.config.name.openguiconfigs=Open Config Menu
 
 malilib.config.name.guidebug=GUI Debug
 malilib.config.name.guidebugall=GUI Debug All
 malilib.config.name.guidebuginfoalways=GUI Debug Info Always
-malilib.config.name.guidebugkey=GUI Debug Key
 malilib.config.name.keybinddebugging=KeyBind Debugging
 malilib.config.name.keybinddebuggingingame=KeyBind Debug In Action Bar
+
+malilib.hotkey.comment.guidebugkey=If this is set, then the GUI debug only renders\nwhile this key is held down
+malilib.hotkey.comment.ignoredkeys=Any keys set here will be completely ignored from\nthe hotkey system. This can be used to blacklist\nkeys that cause issues or often get stuck for some reason.
+malilib.hotkey.comment.openguiconfigs=Open the in-game malilib config menu
+
+malilib.hotkey.name.guidebugkey=GUI Debug Key
+malilib.hotkey.name.ignoredkeys=Ignored Keys
+malilib.hotkey.name.openguiconfigs=Open Config Menu
 
 malilib.error.failed_to_create_directory=Failed to create directory '%s'
 malilib.error.file_delete_failed=Failed to delete the file '%s'

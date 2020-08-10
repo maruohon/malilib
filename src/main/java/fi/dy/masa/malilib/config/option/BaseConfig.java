@@ -60,28 +60,43 @@ public abstract class BaseConfig<T> implements ConfigOption<T>
     {
         this.modId = modId;
 
-        String nameLower = this.name.toLowerCase(Locale.ROOT);
-
         // If these are still using the default values, generate the proper keys
         if (this.nameTranslationKey.equals(this.name))
         {
-            this.nameTranslationKey = modId + ".config.name." + nameLower;
+            this.nameTranslationKey = this.createNameTranslationKey(modId);
         }
 
         if (this.prettyNameTranslationKey.equals(this.name))
         {
-            this.prettyNameTranslationKey = this.nameTranslationKey;
+            this.prettyNameTranslationKey = this.createPrettyNameTranslationKey(modId);
         }
 
         if (this.commentTranslationKey.equals(this.name))
         {
-            this.commentTranslationKey = modId + ".config.comment." + nameLower;
+            this.commentTranslationKey = this.createCommentTranslationKey(modId);
         }
 
         if (this.searchStrings.isEmpty())
         {
             this.searchStrings.add(this.getPrettyName());
         }
+    }
+
+    protected String createNameTranslationKey(String modId)
+    {
+        String nameLower = this.getName().toLowerCase(Locale.ROOT);
+        return modId + ".config.name." + nameLower;
+    }
+
+    protected String createPrettyNameTranslationKey(String modId)
+    {
+        return this.createNameTranslationKey(modId);
+    }
+
+    protected String createCommentTranslationKey(String modId)
+    {
+        String nameLower = this.getName().toLowerCase(Locale.ROOT);
+        return modId + ".config.comment." + nameLower;
     }
 
     /**
