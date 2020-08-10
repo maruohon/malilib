@@ -10,7 +10,7 @@ import fi.dy.masa.malilib.util.StringUtils;
 public class LabelWidget extends BackgroundWidget
 {
     protected final List<String> labels = new ArrayList<>();
-    protected boolean centered;
+    protected boolean centerTextHorizontally;
     protected boolean useTextShadow = true;
     protected boolean visible = true;
     protected int textColor;
@@ -65,9 +65,9 @@ public class LabelWidget extends BackgroundWidget
         return this;
     }
 
-    public LabelWidget setCentered(boolean centered)
+    public LabelWidget setCenterTextHorizontally(boolean centerTextHorizontally)
     {
-        this.centered = centered;
+        this.centerTextHorizontally = centerTextHorizontally;
         return this;
     }
 
@@ -138,7 +138,7 @@ public class LabelWidget extends BackgroundWidget
             int x = this.getX() + this.paddingX + this.borderWidth;
             int y = this.getY() + this.paddingY + this.borderWidth;
             int fontHeight = this.fontHeight;
-            TextRenderer renderer = this.getTextRenderer(this.useTextShadow, this.centered);
+            TextRenderer renderer = this.getTextRenderer(this.useTextShadow, this.centerTextHorizontally);
 
             for (String text : this.labels)
             {
