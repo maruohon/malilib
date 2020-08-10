@@ -10,15 +10,15 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.gui.BaseScreen;
-import fi.dy.masa.malilib.listener.TextChangeListener;
-import fi.dy.masa.malilib.gui.widget.util.TextFieldValidator;
+import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.util.TextRegion;
-import fi.dy.masa.malilib.render.message.MessageType;
-import fi.dy.masa.malilib.render.message.MessageRenderer;
+import fi.dy.masa.malilib.gui.widget.util.TextFieldValidator;
+import fi.dy.masa.malilib.listener.TextChangeListener;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.render.message.MessageRenderer;
+import fi.dy.masa.malilib.render.message.MessageType;
 import fi.dy.masa.malilib.util.StringUtils;
-import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 import fi.dy.masa.malilib.util.data.LeftRight;
 
 public class BaseTextFieldWidget extends BackgroundWidget
@@ -50,6 +50,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
     protected boolean isFocused;
     protected boolean isValidInput = true;
     protected boolean updateListenerAlways;
+    protected boolean updateListenerFromTextSet;
     protected boolean visibleTextNeedsUpdate;
 
     public BaseTextFieldWidget(int x, int y, int width, int height)
@@ -125,10 +126,13 @@ public class BaseTextFieldWidget extends BackgroundWidget
 
     public BaseTextFieldWidget setText(String newText)
     {
-        // Set the cached string first to avoid a notification here
-        this.lastNotifiedText = newText;
+        if (this.updateListenerFromTextSet == false)
+        {
+            // Set the cached string first to avoid a notification here
+            this.lastNotifiedText = newText;
+        }
 
-        this.setTextInternal(newText);
+        this.setTextInternal(newText, this.updateListenerFromTextSet);
         this.setCursorToEnd();
 
         return this;
@@ -136,11 +140,16 @@ public class BaseTextFieldWidget extends BackgroundWidget
 
     protected BaseTextFieldWidget setTextInternal(String newText)
     {
+        return this.setTextInternal(newText, this.updateListenerAlways);
+    }
+
+    protected BaseTextFieldWidget setTextInternal(String newText, boolean updateListener)
+    {
         this.text = newText != null ? newText : "";
         this.isValidInput = this.isValidText(this.text);
         this.setVisibleTextNeedsUpdate();
 
-        if (this.updateListenerAlways)
+        if (updateListener)
         {
             this.notifyListenerIfNeeded();
         }
@@ -250,7 +259,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
     }
 
     /**
-     * Set whether or not to update the listener on every text change or not.
+     * Set whether or not to update the listener on every text change (from typing) or not.
      * If this is set to false, then the listener is only notified
      * when Enter is pressed or the text field loses focus.
      * @param updateAlways
@@ -259,6 +268,18 @@ public class BaseTextFieldWidget extends BackgroundWidget
     public BaseTextFieldWidget setUpdateListenerAlways(boolean updateAlways)
     {
         this.updateListenerAlways = updateAlways;
+        return this;
+    }
+
+    /**
+     * Set whether or not to update the listener from calls to the setText() method, such
+     * as initializing the text or changing it from right mouse button clearing etc.
+     * @param update
+     * @return
+     */
+    public BaseTextFieldWidget setUpdateListenerFromTextSet(boolean update)
+    {
+        this.updateListenerFromTextSet = update;
         return this;
     }
 

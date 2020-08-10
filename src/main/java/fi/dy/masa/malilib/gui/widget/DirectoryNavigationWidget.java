@@ -17,6 +17,7 @@ import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.util.DirectoryNavigator;
+import fi.dy.masa.malilib.listener.TextChangeListener;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.DirectoryCreator;
 import fi.dy.masa.malilib.util.FileUtils;
@@ -37,15 +38,17 @@ public class DirectoryNavigationWidget extends SearchBarWidget
     protected File currentDir;
 
     public DirectoryNavigationWidget(int x, int y, int width, int height,
-                                     File currentDir, File rootDir, DirectoryNavigator navigator, FileBrowserIconProvider iconProvider)
+                                     File currentDir, File rootDir, DirectoryNavigator navigator,
+                                     FileBrowserIconProvider iconProvider, TextChangeListener textChangeListener)
     {
-        this(x, y, width, height, currentDir, rootDir, navigator, iconProvider, null);
+        this(x, y, width, height, currentDir, rootDir, navigator, iconProvider, textChangeListener, null);
     }
 
     public DirectoryNavigationWidget(int x, int y, int width, int height,
-                                     File currentDir, File rootDir, DirectoryNavigator navigator, FileBrowserIconProvider iconProvider, @Nullable String rootDirDisplayName)
+                                     File currentDir, File rootDir, DirectoryNavigator navigator,
+                                     FileBrowserIconProvider iconProvider, TextChangeListener textChangeListener, @Nullable String rootDirDisplayName)
     {
-        super(x, y, width, height, 0, iconProvider.getIcon(FileBrowserIconType.SEARCH), HorizontalAlignment.RIGHT);
+        super(x, y, width, height, 0, iconProvider.getIcon(FileBrowserIconType.SEARCH), HorizontalAlignment.RIGHT, textChangeListener);
 
         this.currentDir = currentDir;
         this.rootDir = rootDir;

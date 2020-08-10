@@ -38,7 +38,8 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
 
         this.configsSearchBarWidget = new ConfigsSearchBarWidget(x, y, width, 32, 0,
                                                                  BaseIcon.SEARCH, HorizontalAlignment.LEFT,
-                                                                 this::refreshEntries, gui);
+                                                                 this::onSearchBarChange,
+                                                                 this::refreshEntries, this::resetFilteredConfigsToDefaults, gui);
         this.configsSearchBarWidget.setGeometryChangeListener(this::updatePositioningAndElements);
         this.searchBarWidget = this.configsSearchBarWidget;
 

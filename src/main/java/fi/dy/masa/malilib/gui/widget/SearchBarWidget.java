@@ -21,7 +21,8 @@ public class SearchBarWidget extends ContainerWidget
     protected boolean searchOpen;
 
     public SearchBarWidget(int x, int y, int width, int height, int searchBarOffsetX,
-                           Icon toggleButtonIcon, HorizontalAlignment toggleButtonAlignment)
+                           Icon toggleButtonIcon, HorizontalAlignment toggleButtonAlignment,
+                           TextChangeListener textChangeListener)
     {
         super(x, y, width, height);
 
@@ -37,6 +38,8 @@ public class SearchBarWidget extends ContainerWidget
 
         this.textField = new BaseTextFieldWidget(tx, y, width - iw - 7 - Math.abs(searchBarOffsetX), 14);
         this.textField.setUpdateListenerAlways(true);
+        this.textField.setUpdateListenerFromTextSet(true);
+        this.textField.setListener(textChangeListener);
     }
 
     @Override
@@ -129,9 +132,12 @@ public class SearchBarWidget extends ContainerWidget
                 {
                     BaseScreen.openGui(null);
                 }
+                else
+                {
+                    this.setSearchOpen(false);
+                    this.textField.setText("");
+                }
 
-                this.setSearchOpen(false);
-                this.textField.setText("");
                 return true;
             }
         }

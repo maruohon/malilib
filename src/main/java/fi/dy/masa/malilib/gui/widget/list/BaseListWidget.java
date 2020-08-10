@@ -269,7 +269,7 @@ public abstract class BaseListWidget extends ContainerWidget
     {
         this.searchBarWidget = new SearchBarWidget(this.getX() + 2, this.getY() + 3,
                                                    this.getWidth() - 14, 14, 0, BaseIcon.SEARCH,
-                                                   HorizontalAlignment.LEFT);
+                                                   HorizontalAlignment.LEFT, this::onSearchBarChange);
     }
 
     public void onGuiClosed()
@@ -384,6 +384,12 @@ public abstract class BaseListWidget extends ContainerWidget
         return false;
     }
 
+    protected void onSearchBarChange(String text)
+    {
+        this.refreshEntries();
+        this.resetScrollbarPosition();
+    }
+
     @Override
     public boolean onKeyTyped(char typedChar, int keyCode)
     {
@@ -400,11 +406,6 @@ public abstract class BaseListWidget extends ContainerWidget
             }
         }
 
-        if (this.onKeyTypedSearchBar(typedChar, keyCode))
-        {
-            return true;
-        }
-
         if (this.allowKeyboardNavigation)
         {
                  if (keyCode == Keyboard.KEY_UP)    this.offsetSelectionOrScrollbar(-1, true);
@@ -419,18 +420,6 @@ public abstract class BaseListWidget extends ContainerWidget
         }
 
         return super.onKeyTyped(typedChar, keyCode);
-    }
-
-    protected boolean onKeyTypedSearchBar(char typedChar, int keyCode)
-    {
-        if (this.getSearchBarWidget() != null && this.getSearchBarWidget().onKeyTyped(typedChar, keyCode))
-        {
-            this.refreshEntries();
-            this.resetScrollbarPosition();
-            return true;
-        }
-
-        return false;
     }
 
     protected void offsetSelectionOrScrollbar(int amount, boolean changeSelection)

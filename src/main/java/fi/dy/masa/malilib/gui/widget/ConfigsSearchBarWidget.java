@@ -8,34 +8,43 @@ import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.config.option.HotkeyConfig;
 import fi.dy.masa.malilib.config.value.BaseConfigOptionListEntry;
 import fi.dy.masa.malilib.config.value.ConfigOptionListEntry;
+import fi.dy.masa.malilib.gui.BaseScreen;
+import fi.dy.masa.malilib.gui.ConfirmActionScreen;
+import fi.dy.masa.malilib.gui.button.GenericButton;
 import fi.dy.masa.malilib.gui.button.KeyBindConfigButton;
 import fi.dy.masa.malilib.gui.config.ConfigSearchInfo;
 import fi.dy.masa.malilib.gui.config.ConfigTypeRegistry;
 import fi.dy.masa.malilib.gui.config.KeybindEditingScreen;
 import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
+import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.input.KeyAction;
 import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.input.KeyBindImpl;
 import fi.dy.masa.malilib.input.KeyBindSettings;
 import fi.dy.masa.malilib.input.KeyBindSettings.Context;
+import fi.dy.masa.malilib.listener.ConfirmationListener;
 import fi.dy.masa.malilib.listener.EventListener;
+import fi.dy.masa.malilib.listener.TextChangeListener;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class ConfigsSearchBarWidget extends SearchBarWidget
 {
     protected final KeyBindImpl searchKey;
     protected final KeyBindConfigButton hotkeySearchButton;
+    protected final GenericButton resetConfigsButton;
     protected final DropDownListWidget<Scope> sourceSelectionDropdown;
     protected final DropDownListWidget<TypeFilter> typeFilterDropdown;
     protected int openedHeight;
 
     public ConfigsSearchBarWidget(int x, int y, int width, int openedHeight, int searchBarOffsetX,
                                   Icon iconSearch, HorizontalAlignment iconAlignment,
+                                  TextChangeListener textChangeListener,
                                   final EventListener filterChangeListener,
+                                  ConfirmationListener configResetter,
                                   KeybindEditingScreen screen)
     {
-        super(x, y + 3, width - 160, 14, searchBarOffsetX, iconSearch, iconAlignment);
+        super(x, y + 3, width - 160, 14, searchBarOffsetX, iconSearch, iconAlignment, textChangeListener);
 
         this.openedHeight = openedHeight;
 
