@@ -14,6 +14,8 @@ public class BaseListEntryWidget extends ContainerWidget
 
         this.listIndex = listIndex;
         this.originalListIndex = originalListIndex;
+
+        this.setIsOdd((listIndex & 0x1) != 0);
     }
 
     public void setIsOdd(boolean isOdd)

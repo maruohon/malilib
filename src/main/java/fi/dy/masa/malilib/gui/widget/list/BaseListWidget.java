@@ -556,7 +556,6 @@ public abstract class BaseListWidget extends ContainerWidget
                 break;
             }
 
-            widget.setIsOdd((listIndex & 0x1) != 0);
             this.onSubWidgetAdded(widget);
             this.listWidgets.add(widget);
             ++this.visibleListEntries;

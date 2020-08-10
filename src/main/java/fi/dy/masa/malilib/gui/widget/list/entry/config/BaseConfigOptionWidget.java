@@ -33,13 +33,16 @@ public abstract class BaseConfigOptionWidget<C extends ConfigInfo> extends BaseD
         boolean showOwner = this.ctx.gui.getListWidget().isShowingOptionsFromOtherCategories();
 
         String ownerLabel = this.ctx.gui.getListWidget().getModNameAndCategoryPrefix(originalListIndex);
-        this.configOwnerLabelWidget = new LabelWidget(x + 2, y + 1, 0xFF808080, ownerLabel != null ? ownerLabel : "");
+        this.configOwnerLabelWidget = new LabelWidget(x + 2, y + 2, 0xFF707070, ownerLabel != null ? ownerLabel : "");
 
-        int nameY = showOwner ? y + 10 : y + 6;
+        int nameY = showOwner ? y + 11 : y + 6;
         this.configNameLabelWidget = new LabelWidget(x + 2, nameY, 0xFFFFFFFF, nameLabel);
         this.configNameLabelWidget.addHoverStrings(this.data.getComment());
 
         this.resetButton = new GenericButton(x, y, -1, 20, StringUtils.translate("malilib.gui.button.reset.caps"));
+
+        this.setBackgroundColor(this.isOdd ? 0x70606060 : 0x70909090);
+        this.setBackgroundEnabled(true);
     }
 
     @Override
