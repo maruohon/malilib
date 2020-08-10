@@ -12,5 +12,8 @@ public interface ConfirmationListener
      * Called when a task requiring confirmation is cancelled by the user
      * @return
      */
-    boolean onActionCancelled();
+    default boolean onActionCancelled()
+    {
+        return false;
+    }
 }

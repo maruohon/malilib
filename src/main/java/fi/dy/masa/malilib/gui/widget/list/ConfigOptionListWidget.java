@@ -64,10 +64,16 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
         return this.configsSearchBarWidget.getCurrentScope() != ConfigsSearchBarWidget.Scope.CURRENT_CATEGORY;
     }
 
-    @Override
-    protected boolean entryMatchesFilter(C entry, String filterText)
+    protected boolean resetFilteredConfigsToDefaults()
     {
-        return super.entryMatchesFilter(entry, filterText) && this.configsSearchBarWidget.passesFilter(entry);
+        for (C config : this.filteredContents)
+        {
+            config.resetToDefault();
+        }
+
+        this.refreshEntries();
+
+        return true;
     }
 
     @Nullable
@@ -87,6 +93,12 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
         }
 
         return null;
+    }
+
+    @Override
+    protected boolean entryMatchesFilter(C entry, String filterText)
+    {
+        return super.entryMatchesFilter(entry, filterText) && this.configsSearchBarWidget.passesFilter(entry);
     }
 
     @Override

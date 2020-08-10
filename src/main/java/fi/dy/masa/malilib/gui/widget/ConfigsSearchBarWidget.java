@@ -48,6 +48,11 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
         this.hotkeySearchButton.setHoverInfoRequiresShift(false);
         this.hotkeySearchButton.setValueChangeListener(filterChangeListener);
 
+        this.resetConfigsButton = new GenericButton(x + width - 150, y, 160, 20, "malilib.gui.button.config.reset_all_filtered");
+        this.resetConfigsButton.addHoverStrings("malilib.gui.button.hover.config.reset_all_filtered");
+        final ConfirmActionScreen confirmScreen = new ConfirmActionScreen(240, "malilib.gui.title.confirm_config_reset", configResetter, GuiUtils.getCurrentScreen(), "malilib.gui.label.confirm_config_reset");
+        this.resetConfigsButton.setActionListener((btn, mbtn) -> BaseScreen.openPopupGui(confirmScreen));
+
         this.sourceSelectionDropdown = new DropDownListWidget<>(x, y - 16, -1, 15, 60, 10, Scope.VALUES, Scope::getDisplayName);
         this.sourceSelectionDropdown.setSelectedEntry(Scope.CURRENT_CATEGORY);
         this.sourceSelectionDropdown.setSelectionListener((s) -> filterChangeListener.onEvent());
@@ -82,6 +87,7 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
         {
             this.addWidget(this.sourceSelectionDropdown);
             this.addWidget(this.typeFilterDropdown);
+            this.addWidget(this.resetConfigsButton);
             this.addWidget(this.hotkeySearchButton);
             this.addWidget(this.textField);
         }
@@ -100,7 +106,9 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
         this.sourceSelectionDropdown.setPosition(x + 18, y);
         this.typeFilterDropdown.setPosition(this.sourceSelectionDropdown.getRight() + 4, y);
 
-        this.hotkeySearchButton.setPosition(x + width - this.hotkeySearchButton.getWidth() - 1, y + height - this.hotkeySearchButton.getHeight());
+        int btnX = x + width - this.hotkeySearchButton.getWidth() - 1;
+        this.resetConfigsButton.setPosition(btnX, y - 9);
+        this.hotkeySearchButton.setPosition(btnX, y + height - this.hotkeySearchButton.getHeight());
         this.textField.setY(y + this.sourceSelectionDropdown.getHeight() + 2);
         this.textField.setWidth(width - this.hotkeySearchButton.getWidth() - 20);
     }

@@ -76,4 +76,13 @@ public class ConfigGroup implements ConfigInfo
 
         return false;
     }
+
+    @Override
+    public void resetToDefault()
+    {
+        for (ConfigInfo config : this.configs)
+        {
+            config.resetToDefault();
+        }
+    }
 }

@@ -68,4 +68,9 @@ public interface ConfigInfo
      * @return
      */
     boolean isModified();
+
+    /**
+     * Resets the config value back to the default value
+     */
+    void resetToDefault();
 }

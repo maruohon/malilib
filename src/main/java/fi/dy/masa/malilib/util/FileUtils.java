@@ -302,12 +302,6 @@ public class FileUtils
         }
 
         @Override
-        public boolean onActionCancelled()
-        {
-            return false;
-        }
-
-        @Override
         public boolean onActionConfirmed()
         {
             try

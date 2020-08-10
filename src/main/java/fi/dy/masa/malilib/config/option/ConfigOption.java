@@ -33,11 +33,6 @@ public interface ConfigOption<T> extends ConfigInfo
     }
 
     /**
-     * Resets the config value back to the default value
-     */
-    void resetToDefault();
-
-    /**
      * Returns true if the value of this config has been changed since
      * it was last saved to file.
      * @return
