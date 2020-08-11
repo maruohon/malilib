@@ -75,7 +75,7 @@ public class GuiTextFieldGeneric extends TextFieldWidget
 
         if (this.isFocused() != wasFocused)
         {
-            MinecraftClient.getInstance().keyboard.enableRepeatEvents(this.isFocused());
+            MinecraftClient.getInstance().keyboard.setRepeatEvents(this.isFocused());
         }
     }
 

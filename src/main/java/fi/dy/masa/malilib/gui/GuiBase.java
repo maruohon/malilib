@@ -116,7 +116,7 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
     @Override
     public void removed()
     {
-        this.mc.keyboard.enableRepeatEvents(false);
+        this.mc.keyboard.setRepeatEvents(false);
     }
 
     @Override

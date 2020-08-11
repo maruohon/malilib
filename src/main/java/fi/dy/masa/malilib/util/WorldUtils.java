@@ -5,7 +5,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.RegistryTracker;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.WorldChunk;
 
@@ -13,7 +12,7 @@ public class WorldUtils
 {
     public static String getDimensionId(World world)
     {
-        Identifier id = RegistryTracker.create().getDimensionTypeRegistry().getId(world.getDimension()); // FIXME 20w21a+ ?
+        Identifier id = world.getRegistryManager().getDimensionTypes().getId(world.getDimension());
         return id != null ? id.getNamespace() + "_" + id.getPath() : "__fallback";
     }
 
