@@ -7,5 +7,5 @@ public interface ValueLoadedCallback<T>
      * {@link fi.dy.masa.malilib.config.option.ConfigOption#setValueFromJsonElement(com.google.gson.JsonElement element, String configName)}
      * @param newValue
      */
-    default void onValueLoaded(T newValue) {}
+    void onValueLoaded(T newValue);
 }
