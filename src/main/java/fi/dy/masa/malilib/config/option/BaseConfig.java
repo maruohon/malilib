@@ -99,6 +99,24 @@ public abstract class BaseConfig<T> implements ConfigOption<T>
         return modId + ".config.comment." + nameLower;
     }
 
+    public BaseConfig<T> setNameTranslationKey(String key)
+    {
+        this.nameTranslationKey = key;
+        return this;
+    }
+
+    public BaseConfig<T> setPrettyNameTranslationKey(String key)
+    {
+        this.prettyNameTranslationKey = key;
+        return this;
+    }
+
+    public BaseConfig<T> setCommentTranslationKey(String key)
+    {
+        this.commentTranslationKey = key;
+        return this;
+    }
+
     /**
      * Adds additional search terms to this config.
      * By default the pretty name is used for searching against.
