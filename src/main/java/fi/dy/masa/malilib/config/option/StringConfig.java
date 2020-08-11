@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.config.option;
 
 import com.google.gson.JsonElement;
-import fi.dy.masa.malilib.LiteModMaLiLib;
+import fi.dy.masa.malilib.MaLiLib;
 
 public class StringConfig extends BaseStringConfig<String>
 {
@@ -38,12 +38,12 @@ public class StringConfig extends BaseStringConfig<String>
             }
             else
             {
-                LiteModMaLiLib.logger.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element);
+                MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element);
             }
         }
         catch (Exception e)
         {
-            LiteModMaLiLib.logger.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
+            MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
         }
 
         this.cacheSavedValue();

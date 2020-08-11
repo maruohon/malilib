@@ -11,7 +11,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.client.CPacketCustomPayload;
 import net.minecraft.network.play.server.SPacketCustomPayload;
 import net.minecraft.util.ResourceLocation;
-import fi.dy.masa.malilib.LiteModMaLiLib;
+import fi.dy.masa.malilib.MaLiLib;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -108,7 +108,7 @@ public class ClientPacketChannelHandlerImpl implements ClientPacketChannelHandle
         }
         else
         {
-            LiteModMaLiLib.logger.warn("Failed to send register channel packet - network handler was null");
+            MaLiLib.LOGGER.warn("Failed to send register channel packet - network handler was null");
         }
     }
 }

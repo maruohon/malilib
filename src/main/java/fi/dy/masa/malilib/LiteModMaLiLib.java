@@ -1,8 +1,6 @@
 package fi.dy.masa.malilib;
 
 import java.io.File;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import com.mumfrey.liteloader.Configurable;
 import com.mumfrey.liteloader.InitCompleteListener;
 import com.mumfrey.liteloader.LiteMod;
@@ -10,15 +8,13 @@ import com.mumfrey.liteloader.ShutdownListener;
 import com.mumfrey.liteloader.core.LiteLoader;
 import com.mumfrey.liteloader.modconfig.ConfigPanel;
 import net.minecraft.client.Minecraft;
-import fi.dy.masa.malilib.config.ConfigManagerImpl;
 import fi.dy.masa.malilib.config.ConfigManager;
+import fi.dy.masa.malilib.config.ConfigManagerImpl;
 import fi.dy.masa.malilib.event.dispatch.InitializationDispatcher;
 import fi.dy.masa.malilib.event.dispatch.InitializationDispatcherImpl;
 
 public class LiteModMaLiLib implements Configurable, LiteMod, InitCompleteListener, ShutdownListener
 {
-    public static final Logger logger = LogManager.getLogger(MaLiLibReference.MOD_ID);
-
     public LiteModMaLiLib()
     {
     }

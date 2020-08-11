@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.config.option;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import net.minecraft.util.math.MathHelper;
-import fi.dy.masa.malilib.LiteModMaLiLib;
+import fi.dy.masa.malilib.MaLiLib;
 
 public class DoubleConfig extends BaseConfig<Double> implements SliderConfig
 {
@@ -150,7 +150,7 @@ public class DoubleConfig extends BaseConfig<Double> implements SliderConfig
         }
         catch (Exception e)
         {
-            LiteModMaLiLib.logger.warn("Failed to set config value for {} from the string '{}'", this.getName(), value);
+            MaLiLib.LOGGER.warn("Failed to set config value for {} from the string '{}'", this.getName(), value);
         }
     }
 
@@ -166,12 +166,12 @@ public class DoubleConfig extends BaseConfig<Double> implements SliderConfig
             }
             else
             {
-                LiteModMaLiLib.logger.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element);
+                MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element);
             }
         }
         catch (Exception e)
         {
-            LiteModMaLiLib.logger.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
+            MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
         }
 
         this.cacheSavedValue();

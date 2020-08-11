@@ -5,7 +5,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
-import fi.dy.masa.malilib.LiteModMaLiLib;
+import fi.dy.masa.malilib.MaLiLib;
 
 public class StringListConfig extends BaseConfig<ImmutableList<String>>
 {
@@ -94,7 +94,7 @@ public class StringListConfig extends BaseConfig<ImmutableList<String>>
             {
                 // Make sure to clear the old value in any case
                 this.strings = ImmutableList.of();
-                LiteModMaLiLib.logger.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element);
+                MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element);
             }
 
             this.onValueLoaded(this.strings);
@@ -103,7 +103,7 @@ public class StringListConfig extends BaseConfig<ImmutableList<String>>
         {
             // Make sure to clear the old value in any case
             this.strings = ImmutableList.of();
-            LiteModMaLiLib.logger.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
+            MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
         }
 
         this.cacheSavedValue();

@@ -14,8 +14,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
+import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.MinecraftClientAccessor;
-import fi.dy.masa.malilib.LiteModMaLiLib;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.config.value.HudAlignment;
 import fi.dy.masa.malilib.config.value.KeybindDisplayMode;
@@ -449,12 +449,12 @@ public class KeyBindImpl implements KeyBind
             }
             else
             {
-                LiteModMaLiLib.logger.warn("Failed to set the hotkey '{}' from the JSON element '{}'", hotkeyName, element);
+                MaLiLib.LOGGER.warn("Failed to set the hotkey '{}' from the JSON element '{}'", hotkeyName, element);
             }
         }
         catch (Exception e)
         {
-            LiteModMaLiLib.logger.warn("Failed to set the hotkey '{}' from the JSON element '{}'", hotkeyName, element, e);
+            MaLiLib.LOGGER.warn("Failed to set the hotkey '{}' from the JSON element '{}'", hotkeyName, element, e);
         }
 
         this.cacheSavedValue();
@@ -551,7 +551,7 @@ public class KeyBindImpl implements KeyBind
         String held = getActiveKeysString();
         String msg = String.format("%s %s (%d), held keys: %s", type, keyName, eventKey, held);
 
-        LiteModMaLiLib.logger.info(msg);
+        MaLiLib.LOGGER.info(msg);
 
         if (MaLiLibConfigs.Debug.KEYBIND_DEBUG_ACTIONBAR.getBooleanValue())
         {

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
+import fi.dy.masa.malilib.MaLiLib;
 
 public class ConfigManagerImpl implements ConfigManager
 {
@@ -22,7 +23,8 @@ public class ConfigManagerImpl implements ConfigManager
 
         if (this.configHandlers.containsKey(modId))
         {
-            throw new IllegalArgumentException("Tried to override an existing config handler for mod ID '" + modId + "'");
+            MaLiLib.LOGGER.warn("Tried to override an existing config handler for mod ID '{}'", modId);
+            return;
         }
 
         handler.getConfigOptionCategories().forEach((category) -> category.getConfigOptions().forEach((config) -> config.setModId(modId)));

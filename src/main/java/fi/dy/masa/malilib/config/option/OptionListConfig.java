@@ -2,7 +2,7 @@ package fi.dy.masa.malilib.config.option;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
-import fi.dy.masa.malilib.LiteModMaLiLib;
+import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.config.value.ConfigOptionListEntry;
 
 public class OptionListConfig<T extends ConfigOptionListEntry<T>> extends BaseConfig<T>
@@ -93,12 +93,12 @@ public class OptionListConfig<T extends ConfigOptionListEntry<T>> extends BaseCo
             }
             else
             {
-                LiteModMaLiLib.logger.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element);
+                MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element);
             }
         }
         catch (Exception e)
         {
-            LiteModMaLiLib.logger.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
+            MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
         }
 
         this.cacheSavedValue();

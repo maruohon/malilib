@@ -7,7 +7,7 @@ import java.util.function.Predicate;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.RegistryNamespaced;
-import fi.dy.masa.malilib.LiteModMaLiLib;
+import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.config.value.BaseConfigOptionListEntry;
 import fi.dy.masa.malilib.config.value.ConfigOptionListEntry;
 import fi.dy.masa.malilib.util.StringUtils;
@@ -119,12 +119,12 @@ public class UsageRestriction<TYPE>
                 }
                 else
                 {
-                    LiteModMaLiLib.logger.warn(StringUtils.translate(errorTranslationKey, name));
+                    MaLiLib.LOGGER.warn(StringUtils.translate(errorTranslationKey, name));
                 }
             }
             catch (Exception e)
             {
-                LiteModMaLiLib.logger.warn(StringUtils.translate(errorTranslationKey, name));
+                MaLiLib.LOGGER.warn(StringUtils.translate(errorTranslationKey, name));
             }
         }
     }

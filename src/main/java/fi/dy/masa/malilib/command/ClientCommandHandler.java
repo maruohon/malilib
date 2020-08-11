@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.command;
 
 import java.util.List;
-import fi.dy.masa.malilib.LiteModMaLiLib;
+import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
@@ -64,7 +64,7 @@ public class ClientCommandHandler extends CommandHandler
         catch (Throwable t)
         {
             sender.sendMessage(this.format(red, "commands.generic.exception"));
-            LiteModMaLiLib.logger.error("Command '{}' threw an exception:", message, t);
+            MaLiLib.LOGGER.error("Command '{}' threw an exception:", message, t);
         }
 
         return -1;

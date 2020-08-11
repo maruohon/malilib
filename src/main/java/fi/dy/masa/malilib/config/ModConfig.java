@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.List;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import fi.dy.masa.malilib.LiteModMaLiLib;
+import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.config.option.ConfigOption;
 import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.JsonUtils;
@@ -21,7 +21,7 @@ public interface ModConfig
 
         if (dir.exists() == false && dir.mkdirs() == false)
         {
-            LiteModMaLiLib.logger.warn("Failed to create config directory '{}'", dir.getAbsolutePath());
+            MaLiLib.LOGGER.warn("Failed to create config directory '{}'", dir.getAbsolutePath());
         }
 
         return dir;
@@ -124,7 +124,7 @@ public interface ModConfig
 
         if (dir.exists() == false && dir.mkdirs() == false)
         {
-            LiteModMaLiLib.logger.error("Failed to create config directory '{}'", dir.getName());
+            MaLiLib.LOGGER.error("Failed to create config directory '{}'", dir.getName());
         }
 
         if (dir.exists() && dir.isDirectory())

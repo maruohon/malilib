@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.LiteModMaLiLib;
+import fi.dy.masa.malilib.MaLiLib;
 
 public class DataDump
 {
@@ -223,7 +223,7 @@ public class DataDump
         {
             if (data[i] == null)
             {
-                LiteModMaLiLib.logger.warn("null value at column index {} on row '{}'", i, this.rowDataToString(data));
+                MaLiLib.LOGGER.warn("null value at column index {} on row '{}'", i, this.rowDataToString(data));
                 valid = false;
             }
             else if (this.format == Format.ASCII)
@@ -541,7 +541,7 @@ public class DataDump
             }
             catch (Exception e)
             {
-                LiteModMaLiLib.logger.error("dumpDataToFile(): Failed to create the configuration directory", e);
+                MaLiLib.LOGGER.error("dumpDataToFile(): Failed to create the configuration directory", e);
                 return null;
             }
         }
@@ -560,7 +560,7 @@ public class DataDump
 
         if (outFile.exists())
         {
-            LiteModMaLiLib.logger.error("dumpDataToFile(): Failed to create data dump file '{}', one already exists", fileName);
+            MaLiLib.LOGGER.error("dumpDataToFile(): Failed to create data dump file '{}', one already exists", fileName);
             return null;
         }
 
@@ -570,7 +570,7 @@ public class DataDump
         }
         catch (IOException e)
         {
-            LiteModMaLiLib.logger.error("dumpDataToFile(): Failed to create data dump file '{}'", fileName, e);
+            MaLiLib.LOGGER.error("dumpDataToFile(): Failed to create data dump file '{}'", fileName, e);
             return null;
         }
 
@@ -589,7 +589,7 @@ public class DataDump
         }
         catch (IOException e)
         {
-            LiteModMaLiLib.logger.error("dumpDataToFile(): Exception while writing data dump to file '{}'", fileName, e);
+            MaLiLib.LOGGER.error("dumpDataToFile(): Exception while writing data dump to file '{}'", fileName, e);
         }
 
         return outFile;
@@ -601,7 +601,7 @@ public class DataDump
 
         for (int i = 0; i < size; i++)
         {
-            LiteModMaLiLib.logger.info(lines.get(i));
+            MaLiLib.LOGGER.info(lines.get(i));
         }
     }
 

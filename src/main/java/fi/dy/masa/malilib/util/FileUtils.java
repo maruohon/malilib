@@ -15,7 +15,7 @@ import com.mumfrey.liteloader.core.LiteLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
-import fi.dy.masa.malilib.LiteModMaLiLib;
+import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.listener.ConfirmationListener;
 import fi.dy.masa.malilib.render.message.MessageType;
 import fi.dy.masa.malilib.render.message.MessageUtils;
@@ -232,7 +232,7 @@ public class FileUtils
             }
             catch (Exception e)
             {
-                LiteModMaLiLib.logger.warn("Failed to read NBT data from file '{}'", file.getAbsolutePath());
+                MaLiLib.LOGGER.warn("Failed to read NBT data from file '{}'", file.getAbsolutePath());
             }
         }
 

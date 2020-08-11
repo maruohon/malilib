@@ -5,7 +5,7 @@ import com.google.gson.JsonArray;
 import net.minecraft.nbt.NBTTagIntArray;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
-import fi.dy.masa.malilib.LiteModMaLiLib;
+import fi.dy.masa.malilib.MaLiLib;
 
 public class IntBoundingBox
 {
@@ -87,7 +87,7 @@ public class IntBoundingBox
             }
             catch (Exception e)
             {
-                LiteModMaLiLib.logger.warn("Failed to read an IntBoundingBox from JSON '" + arr.toString() + "'");
+                MaLiLib.LOGGER.warn("Failed to read an IntBoundingBox from JSON '" + arr.toString() + "'");
             }
         }
 

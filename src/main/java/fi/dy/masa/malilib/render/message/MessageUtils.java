@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.render.message;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.TextComponentTranslation;
-import fi.dy.masa.malilib.LiteModMaLiLib;
+import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.config.value.HudAlignment;
 import fi.dy.masa.malilib.config.value.InfoType;
 import fi.dy.masa.malilib.gui.BaseScreen;
@@ -261,7 +261,7 @@ public class MessageUtils
     {
         String msg = StringUtils.translate(translationKey, args);
         showGuiOrInGameMessage(MessageType.ERROR, msg);
-        LiteModMaLiLib.logger.error(msg);
+        MaLiLib.LOGGER.error(msg);
     }
 
     public static void printBooleanConfigToggleMessage(String prettyName, boolean newValue)
