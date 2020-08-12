@@ -3,7 +3,6 @@ package fi.dy.masa.malilib.event;
 import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
-import fi.dy.masa.malilib.event.dispatch.ClientWorldChangeEventDispatcherImpl;
 
 public interface ClientWorldChangeHandler
 {
@@ -11,7 +10,7 @@ public interface ClientWorldChangeHandler
      * Called when the client world is going to be changed,
      * before the reference has been changed yet.
      * <br><br>
-     * The classes implementing this method should be registered to {@link ClientWorldChangeEventDispatcherImpl}
+     * The classes implementing this method should be registered to {@link fi.dy.masa.malilib.event.dispatch.ClientWorldChangeEventDispatcherImpl}
      * @param worldBefore the old world reference, before the new one gets assigned
      * @param worldAfter the new world reference that is going to be assigned
      * @param mc
@@ -21,7 +20,7 @@ public interface ClientWorldChangeHandler
     /**
      * Called after the client world reference has been changed.
      * <br><br>
-     * The classes implementing this method should be registered to {@link ClientWorldChangeEventDispatcherImpl}
+     * The classes implementing this method should be registered to {@link fi.dy.masa.malilib.event.dispatch.ClientWorldChangeEventDispatcherImpl}
      * @param worldBefore the old world reference, before the new one gets assigned
      * @param worldAfter the new world reference that is going to be assigned
      * @param mc

@@ -1,7 +1,5 @@
 package fi.dy.masa.malilib.event;
 
-import fi.dy.masa.malilib.event.dispatch.InitializationDispatcherImpl;
-
 public interface InitializationHandler
 {
     /**
@@ -11,7 +9,7 @@ public interface InitializationHandler
      * <br><br>
      * So call all your (malilib-facing) mod init stuff inside this handler!
      * <br><br>
-     * The classes implementing this method should be registered to {@link InitializationDispatcherImpl}
+     * The classes implementing this method should be registered to {@link fi.dy.masa.malilib.event.dispatch.InitializationDispatcherImpl}
      */
     void registerModHandlers();
 }
