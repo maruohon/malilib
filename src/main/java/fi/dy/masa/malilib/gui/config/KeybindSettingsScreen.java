@@ -117,7 +117,7 @@ public class KeybindSettingsScreen extends BaseDialogScreen
 
         for (BaseConfig<?> config : configs)
         {
-            width = Math.max(width, this.getStringWidth(config.getDisplayName()));
+            width = Math.max(width, this.getStringWidth(config.getPrettyName()));
         }
 
         return width;
@@ -126,7 +126,7 @@ public class KeybindSettingsScreen extends BaseDialogScreen
     protected void addConfig(int x, int y, int labelWidth, int configWidth, BaseConfig<?> config)
     {
         int color = config.isModified() ? 0xFFFFFF55 : 0xFFAAAAAA;
-        this.addLabel(x, y, labelWidth, 20, color, config.getDisplayName())
+        this.addLabel(x, y, labelWidth, 20, color, config.getPrettyName())
             .setPaddingY(5).addHoverStrings(config.getComment());
         x += labelWidth + 10;
 
