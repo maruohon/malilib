@@ -48,7 +48,13 @@ public interface ModConfig
     String getConfigFileName();
 
     /**
-     * Returns all the configs in this mod grouped by their categories
+     * Returns all the configs in this mod grouped by their categories.
+     * This method is used for the config file saving and loading related
+     * operations.
+     * <br>
+     * These categories can be different than what is shown
+     * on the config screen, if the TODO method returns a different list
+     * of categories for the config screen instead of calling this method.
      * @return
      */
     List<ConfigOptionCategory> getConfigOptionCategories();

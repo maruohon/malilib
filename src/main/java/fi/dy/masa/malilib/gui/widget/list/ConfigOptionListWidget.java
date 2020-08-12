@@ -5,15 +5,12 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.config.ConfigCategory;
-import fi.dy.masa.malilib.config.ConfigManager;
-import fi.dy.masa.malilib.config.ConfigManagerImpl;
-import fi.dy.masa.malilib.config.ConfigOptionCategory;
-import fi.dy.masa.malilib.config.ModConfig;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
-import fi.dy.masa.malilib.config.option.ConfigOption;
 import fi.dy.masa.malilib.gui.config.BaseConfigScreen;
 import fi.dy.masa.malilib.gui.config.ConfigOptionWidgetFactory;
+import fi.dy.masa.malilib.gui.config.ConfigTab;
+import fi.dy.masa.malilib.gui.config.ConfigTabProvider;
+import fi.dy.masa.malilib.gui.config.ConfigTabRegistry;
 import fi.dy.masa.malilib.gui.config.ConfigTypeRegistry;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.icon.BaseIcon;
@@ -27,7 +24,7 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
     protected final BaseConfigScreen gui;
     protected final ConfigsSearchBarWidget configsSearchBarWidget;
     protected final EnumMap<ConfigsSearchBarWidget.Scope, List<C>> cachedConfigs = new EnumMap<>(ConfigsSearchBarWidget.Scope.class);
-    protected final EnumMap<ConfigsSearchBarWidget.Scope, List<ConfigCategory>> cachedCategories = new EnumMap<>(ConfigsSearchBarWidget.Scope.class);
+    protected final EnumMap<ConfigsSearchBarWidget.Scope, List<ConfigTab>> cachedCategories = new EnumMap<>(ConfigsSearchBarWidget.Scope.class);
     protected int maxLabelWidth;
 
     public ConfigOptionListWidget(int x, int y, int width, int height, Supplier<List<C>> entrySupplier, BaseConfigScreen gui)
@@ -84,11 +81,11 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
 
         if (scope != ConfigsSearchBarWidget.Scope.CURRENT_CATEGORY)
         {
-            List<ConfigCategory> categories = this.cachedCategories.get(scope);
+            List<ConfigTab> categories = this.cachedCategories.get(scope);
 
             if (categories != null && listIndex < categories.size())
             {
-                ConfigCategory category = categories.get(listIndex);
+                ConfigTab category = categories.get(listIndex);
                 return category.getModName() + " > " + category.getDisplayName();
             }
         }
@@ -140,29 +137,33 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
 
             if (list == null)
             {
-                final ArrayList<ConfigOption<?>> configList = new ArrayList<>();
-                final ArrayList<ConfigCategory> categoryList = new ArrayList<>();
+                final ArrayList<ConfigInfo> configList = new ArrayList<>();
+                final ArrayList<ConfigTab> tabList = new ArrayList<>();
 
                 if (scope == ConfigsSearchBarWidget.Scope.ALL_MODS)
                 {
-                    List<ModConfig> allModConfigs = ((ConfigManagerImpl) ConfigManager.INSTANCE).getAllModConfigs();
-                    allModConfigs.forEach((mc) -> this.addConfigsToLists(mc, configList, categoryList));
+                    List<ConfigTab> allModTabs = ConfigTabRegistry.INSTANCE.getAllRegisteredConfigTabs();
+                    allModTabs.forEach((tab) -> this.addConfigsToLists(tab, configList, tabList));
                 }
                 else
                 {
-                    ModConfig mc = ConfigManager.INSTANCE.getConfigHandler(this.gui.getModId());
-                    this.addConfigsToLists(mc, configList, categoryList);
+                    ConfigTabProvider tabProvider = ConfigTabRegistry.INSTANCE.getConfigTabProviderFor(this.gui.getModId());
+
+                    if (tabProvider != null)
+                    {
+                        tabProvider.getConfigTabs().forEach((tab) -> this.addConfigsToLists(tab, configList, tabList));
+                    }
                 }
 
                 list = new ArrayList<>();
 
-                for (ConfigOption<?> cfg : configList)
+                for (ConfigInfo cfg : configList)
                 {
                     list.add((C) cfg);
                 }
 
                 this.cachedConfigs.put(scope, list);
-                this.cachedCategories.put(scope, categoryList);
+                this.cachedCategories.put(scope, tabList);
             }
 
             return list;
@@ -171,20 +172,14 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
         return super.getCurrentEntries();
     }
 
-    protected void addConfigsToLists(ModConfig mc, ArrayList<ConfigOption<?>> configList, ArrayList<ConfigCategory> categoryList)
+    protected void addConfigsToLists(@Nullable ConfigTab tab, ArrayList<ConfigInfo> configList, ArrayList<ConfigTab> tabList)
     {
-        if (mc != null)
+        if (tab != null && tab.showOnConfigScreen())
         {
-            for (ConfigOptionCategory category : mc.getConfigOptionCategories())
+            for (ConfigInfo cfg : tab.getConfigsForDisplay())
             {
-                if (category.showOnConfigScreen())
-                {
-                    for (ConfigOption<?> cfg : category.getConfigOptions())
-                    {
-                        configList.add(cfg);
-                        categoryList.add(category);
-                    }
-                }
+                configList.add(cfg);
+                tabList.add(tab);
             }
         }
     }

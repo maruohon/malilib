@@ -608,9 +608,10 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
         GlStateManager.popMatrix();
     }
 
-    public static void openGui(@Nullable GuiScreen gui)
+    public static boolean openGui(@Nullable GuiScreen gui)
     {
         Minecraft.getMinecraft().displayGuiScreen(gui);
+        return true;
     }
 
     /**
@@ -618,10 +619,11 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
      * This will set the Z level on that GUI based on the current GUI
      * @param gui
      */
-    public static void openPopupGui(BaseScreen gui)
+    public static boolean openPopupGui(BaseScreen gui)
     {
         gui.setPopupGuiZLevelBasedOn(GuiUtils.getCurrentScreen());
         Minecraft.getMinecraft().displayGuiScreen(gui);
+        return true;
     }
 
     public static boolean isShiftDown()

@@ -1,13 +1,43 @@
 package fi.dy.masa.malilib.gui.config;
 
 import java.util.List;
-import fi.dy.masa.malilib.config.ConfigDisplayCategory;
+import fi.dy.masa.malilib.config.ConfigCategory;
+import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.gui.button.ButtonActionListener;
 
-public interface ConfigTab extends ConfigDisplayCategory
+public interface ConfigTab extends ConfigCategory
 {
     /**
-     * Returns the width of the config options in the config GUI
+     * Returns the mod name this category belongs to.
+     * Used on the config screen when showing options from multiple categories or all mods.
+     * @return
+     */
+    String getModName();
+
+    /**
+     * Returns the display name for this config category/tab.
+     * This is used in the config screen tab buttons and also
+     * as the category name for the options when showing options
+     * from multiple categories or from all mods.
+     * @return
+     */
+    String getDisplayName();
+
+    /**
+     * Returns whether or not this category should appear on the config screen
+     * @return
+     */
+    boolean showOnConfigScreen();
+
+    /**
+     *
+     * Whether or not the config GUI tab should include the keybind search button
+     * @return
+     */
+    boolean useKeyBindSearch();
+
+    /**
+     * Returns the width of the config options on the config screen
      * @return
      */
     int getConfigWidth();
@@ -17,6 +47,13 @@ public interface ConfigTab extends ConfigDisplayCategory
      * @return
      */
     ButtonActionListener getButtonActionListener(BaseConfigScreen gui);
+
+    /**
+     * Returns the list of config options to display on this tab/in this category
+     * on the config screens.
+     * @return
+     */
+    List<? extends ConfigInfo> getConfigsForDisplay();
 
     /**
      * Returns the tab by the given name from the provided list

@@ -23,9 +23,9 @@ import fi.dy.masa.malilib.gui.config.ConfigTab;
 
 public class MaLiLibConfigScreen extends BaseConfigScreen
 {
-    private static final BaseConfigTab GENERIC       = new BaseConfigTab("malilib.gui.title.generic", MaLiLibReference.MOD_NAME, 100, true, MaLiLibConfigs.Generic.OPTIONS);
-    private static final BaseConfigTab DEBUG         = new BaseConfigTab("malilib.gui.title.debug", MaLiLibReference.MOD_NAME, 100, false, MaLiLibConfigs.Debug.OPTIONS);
-    private static final BaseConfigTab ALL_HOTKEYS   = new BaseConfigTab("malilib.gui.title.all_hotkeys", MaLiLibReference.MOD_NAME, 200, true, Collections.emptyList());
+    private static final BaseConfigTab GENERIC       = new BaseConfigTab("malilib.gui.title.generic",       MaLiLibReference.MOD_NAME, 120, true, MaLiLibConfigs.Generic.OPTIONS);
+    private static final BaseConfigTab DEBUG         = new BaseConfigTab("malilib.gui.title.debug",         MaLiLibReference.MOD_NAME, 120, false, MaLiLibConfigs.Debug.OPTIONS);
+    private static final BaseConfigTab ALL_HOTKEYS   = new BaseConfigTab("malilib.gui.title.all_hotkeys",   MaLiLibReference.MOD_NAME, 200, true, Collections.emptyList());
 
     private static final ImmutableList<ConfigTab> TABS = ImmutableList.of(
             GENERIC,
@@ -78,5 +78,10 @@ public class MaLiLibConfigScreen extends BaseConfigScreen
         }
 
         return super.getConfigs();
+    }
+
+    public static ImmutableList<ConfigTab> getConfigTabs()
+    {
+        return TABS;
     }
 }

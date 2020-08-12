@@ -28,7 +28,7 @@ public class ColorConfigWidget extends BaseConfigOptionWidget<ColorConfig>
             this.reAddSubWidgets();
         });
 
-        this.textField = new BaseTextFieldWidget(x, y, 80, 16, this.config.getStringValue());
+        this.textField = new BaseTextFieldWidget(x, y, 70, 16, this.config.getStringValue());
         this.textField.setListener((str) -> {
             this.config.setValueFromString(str);
             this.resetButton.setEnabled(this.config.isModified());

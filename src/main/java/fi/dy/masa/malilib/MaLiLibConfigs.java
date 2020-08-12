@@ -2,7 +2,7 @@ package fi.dy.masa.malilib;
 
 import java.util.List;
 import com.google.common.collect.ImmutableList;
-import fi.dy.masa.malilib.config.BaseConfigCategory;
+import fi.dy.masa.malilib.config.BaseConfigOptionCategory;
 import fi.dy.masa.malilib.config.ConfigOptionCategory;
 import fi.dy.masa.malilib.config.ModConfig;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
@@ -61,8 +61,8 @@ public class MaLiLibConfigs implements ModConfig
     }
 
     private static final ImmutableList<ConfigOptionCategory> CATEGORIES = ImmutableList.of(
-            BaseConfigCategory.normal("Generic", "malilib.config.category.generic", MaLiLibReference.MOD_NAME, Generic.OPTIONS),
-            BaseConfigCategory.normal("Debug",   "malilib.config.category.debug",   MaLiLibReference.MOD_NAME, Debug.OPTIONS)
+            BaseConfigOptionCategory.normal("Generic", Generic.OPTIONS),
+            BaseConfigOptionCategory.normal("Debug",   Debug.OPTIONS)
     );
 
     @Override
