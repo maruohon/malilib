@@ -21,6 +21,11 @@ public class HotkeyedBooleanConfig extends BooleanConfig implements Hotkey
         this(name, defaultValue, defaultHotkey, name);
     }
 
+    public HotkeyedBooleanConfig(String name, boolean defaultValue, String defaultHotkey, KeyBindSettings settings)
+    {
+        this(name, defaultValue, defaultHotkey, settings, name, name);
+    }
+
     public HotkeyedBooleanConfig(String name, boolean defaultValue, String defaultHotkey, String comment)
     {
         this(name, defaultValue, defaultHotkey, StringUtils.splitCamelCase(name), comment);

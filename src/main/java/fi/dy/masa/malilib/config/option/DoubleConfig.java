@@ -24,6 +24,11 @@ public class DoubleConfig extends BaseConfig<Double> implements SliderConfig
         this(name, defaultValue, Double.MIN_VALUE, Double.MAX_VALUE, comment);
     }
 
+    public DoubleConfig(String name, double defaultValue, double minValue, double maxValue)
+    {
+        this(name, defaultValue, minValue, maxValue, name);
+    }
+
     public DoubleConfig(String name, double defaultValue, double minValue, double maxValue, String comment)
     {
         this(name, defaultValue, minValue, maxValue, false, comment);
