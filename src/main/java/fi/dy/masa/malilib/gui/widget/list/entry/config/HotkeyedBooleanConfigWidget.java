@@ -25,7 +25,7 @@ public class HotkeyedBooleanConfigWidget extends BaseConfigOptionWidget<Hotkeyed
         this.initialBooleanValue = this.config.getBooleanValue();
         this.initialHotkeyValue = this.config.getKeyBind().getKeys();
 
-        this.booleanButton = new BooleanConfigButton(x, y + 1, 60, 20, this.config);
+        this.booleanButton = new BooleanConfigButton(x, y + 1, 40, 20, this.config);
         this.booleanButton.setActionListener((btn, mbtn) -> this.resetButton.setEnabled(this.config.isModified()));
 
         this.hotkeyButton = new KeyBindConfigButton(x, y + 1, 120, 20, this.config.getKeyBind(), ctx.gui);
@@ -53,11 +53,14 @@ public class HotkeyedBooleanConfigWidget extends BaseConfigOptionWidget<Hotkeyed
 
         this.booleanButton.setPosition(x, y);
 
-        x += 62;
+        int w = this.booleanButton.getWidth();
+        x += w + 2;
         this.hotkeyButton.setPosition(x, y);
-        this.hotkeyButton.setWidth(elementWidth - 84);
 
-        x += this.hotkeyButton.getWidth() + 2;
+        w = elementWidth - w - 20 - 4;
+        this.hotkeyButton.setWidth(w);
+
+        x += w + 2;
         this.settingsWidget.setPosition(x, y);
 
         x += this.settingsWidget.getWidth() + 4;

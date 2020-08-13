@@ -6,7 +6,6 @@ import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.ColorEditorHSVScreen;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.render.RenderUtils;
-import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.Color4f;
 
 public class ColorIndicatorWidget extends BaseWidget
@@ -25,7 +24,7 @@ public class ColorIndicatorWidget extends BaseWidget
 
         this.config = config;
         this.valueConsumer = consumer;
-        this.addHoverString(StringUtils.translate("malilib.gui.hover.open_color_editor"));
+        this.addHoverString("malilib.gui.hover.open_color_editor");
     }
 
     @Override

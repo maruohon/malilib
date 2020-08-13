@@ -3,7 +3,6 @@ package fi.dy.masa.malilib.gui.widget.list.entry.config;
 import java.io.File;
 import java.util.ArrayList;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
-import fi.dy.masa.malilib.config.option.ConfigOption;
 import fi.dy.masa.malilib.config.option.FileConfig;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.DirectorySelectorScreen;
@@ -70,7 +69,7 @@ public abstract class BaseConfigOptionWidget<C extends ConfigInfo> extends BaseD
         return this.ctx.gui.getConfigElementsWidth();
     }
 
-    protected void updateResetButton(int x, int y, ConfigOption<?> config)
+    protected void updateResetButton(int x, int y, ConfigInfo config)
     {
         this.resetButton.setPosition(x, y);
         this.resetButton.setEnabled(config.isModified());
