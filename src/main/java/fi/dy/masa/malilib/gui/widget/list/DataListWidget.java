@@ -26,6 +26,7 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
     @Nullable protected Comparator<DATATYPE> listSortComparator;
     protected Function<DATATYPE, List<String>> entryFilterStringFactory = (e) -> Collections.singletonList(e.toString());
 
+    protected boolean areContentsDynamic;
     protected boolean filterMatchesEmptyEntry;
     protected boolean shouldSortList;
     protected int lastSelectedEntryIndex = -1;
@@ -48,6 +49,24 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
     public DataListWidget<DATATYPE> setEntryWidgetFactory(DataListEntryWidgetFactory<DATATYPE> entryWidgetFactory)
     {
         this.entryWidgetFactory = entryWidgetFactory;
+        return this;
+    }
+
+    /**
+     * Marks the contents as dynamic, which means that the entrySupplier is used to re-fetch
+     * the currentContents list any time the refreshEntries method is called.<br><br>
+     * If this is false, then the entrySupplier is only used once, in the constructor,
+     * to fetch the contents to the list.<br><br>
+     * The non-dynamic case on the other hand allows the list returned
+     * by the getCurrentContents() method to be used as a backing data list for other things,
+     * for example the StringListEditEntryWidget uses the list returned by getCurrentEntries()
+     * to store the edited string list before committing the changes back to the actual underlying config.
+     * @param isDynamic
+     * @return
+     */
+    public DataListWidget<DATATYPE> setContentsAreDynamic(boolean isDynamic)
+    {
+        this.areContentsDynamic = isDynamic;
         return this;
     }
 
@@ -191,6 +210,12 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
     {
         this.filteredContents.clear();
         this.filteredIndices.clear();
+
+        if (this.areContentsDynamic)
+        {
+            this.currentContents.clear();
+            this.currentContents.addAll(this.entrySupplier.get());
+        }
 
         List<DATATYPE> entries = this.getCurrentEntries();
 
