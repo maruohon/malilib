@@ -19,7 +19,5 @@ public class MaLiLibConfigPanel extends BaseConfigPanel
 
         this.addSubPanel((new ModConfigScreen(MaLiLibReference.MOD_ID, MaLiLibConfigs.Debug.OPTIONS,
                                               "malilib.gui.title.debug")).setConfigElementsWidth(120));
-
-        this.addSubPanel(new ConfigPanelAllHotkeys());
     }
 }

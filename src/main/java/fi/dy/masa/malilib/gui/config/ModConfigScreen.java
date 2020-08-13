@@ -1,7 +1,6 @@
 package fi.dy.masa.malilib.gui.config;
 
 import java.util.List;
-import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 
@@ -11,7 +10,7 @@ public class ModConfigScreen extends BaseConfigScreen
 
     public ModConfigScreen(String modId, List<? extends ConfigInfo> configs, String titleKey, Object... args)
     {
-        super(10, 0, modId, null, ImmutableList.of(), titleKey, args);
+        super(10, 0, modId, null, ImmutableList.of(), null, titleKey, args);
 
         this.configs = configs;
     }
@@ -20,25 +19,6 @@ public class ModConfigScreen extends BaseConfigScreen
     protected int getListHeight()
     {
         return this.height - 70;
-    }
-
-    @Override
-    @Nullable
-    public ConfigTab getCurrentTab()
-    {
-        return null;
-    }
-
-    @Override
-    public void setCurrentTab(ConfigTab tab)
-    {
-        // NO-OP
-    }
-
-    @Override
-    protected void createTabButtons()
-    {
-        // NO-OP
     }
 
     @Override

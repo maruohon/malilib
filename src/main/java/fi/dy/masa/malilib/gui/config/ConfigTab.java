@@ -30,13 +30,6 @@ public interface ConfigTab extends ConfigCategory
     boolean showOnConfigScreen();
 
     /**
-     *
-     * Whether or not the config GUI tab should include the keybind search button
-     * @return
-     */
-    boolean useKeyBindSearch();
-
-    /**
      * Returns the width of the config options on the config screen
      * @return
      */

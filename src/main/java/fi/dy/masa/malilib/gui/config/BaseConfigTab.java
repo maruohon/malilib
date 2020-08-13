@@ -14,22 +14,20 @@ public class BaseConfigTab implements ConfigTab
     private final String translationKey;
     private final String modName;
     private final int configWidth;
-    private final boolean useKeyBindSearch;
     private final BiFunction<ConfigTab, BaseConfigScreen, ButtonActionListener> listenerFactory;
 
-    public BaseConfigTab(String translationKey, String modName, int configWidth, boolean useKeyBindSearch, List<? extends ConfigInfo> configs)
+    public BaseConfigTab(String translationKey, String modName, int configWidth, List<? extends ConfigInfo> configs)
     {
-        this(translationKey, modName, configWidth, useKeyBindSearch, configs, ConfigScreenTabButtonListener::new);
+        this(translationKey, modName, configWidth, configs, ConfigScreenTabButtonListener::new);
     }
 
-    public BaseConfigTab(String translationKey, String modName, int configWidth, boolean useKeyBindSearch,
+    public BaseConfigTab(String translationKey, String modName, int configWidth,
                          List<? extends ConfigInfo> configs, BiFunction<ConfigTab, BaseConfigScreen, ButtonActionListener> listenerFactory)
     {
         this.name = translationKey.substring(translationKey.lastIndexOf(".") + 1);
         this.translationKey = translationKey;
         this.modName = modName;
         this.configWidth = configWidth;
-        this.useKeyBindSearch = useKeyBindSearch;
         this.configs = configs;
         this.listenerFactory = listenerFactory;
     }
@@ -62,12 +60,6 @@ public class BaseConfigTab implements ConfigTab
     public boolean showOnConfigScreen()
     {
         return true;
-    }
-
-    @Override
-    public boolean useKeyBindSearch()
-    {
-        return this.useKeyBindSearch;
     }
 
     @Override

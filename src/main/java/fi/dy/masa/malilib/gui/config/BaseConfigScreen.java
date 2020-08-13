@@ -1,7 +1,9 @@
 package fi.dy.masa.malilib.gui.config;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import net.minecraft.client.gui.GuiScreen;
@@ -17,20 +19,25 @@ import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.list.ConfigOptionListWidget;
 import fi.dy.masa.malilib.util.StringUtils;
 
-public abstract class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? extends ConfigInfo>> implements KeybindEditingScreen
+public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? extends ConfigInfo>> implements KeybindEditingScreen
 {
+    protected static final Map<String, ConfigTab> CURRENT_TABS = new HashMap<>();
+
     protected final List<ConfigTab> configTabs;
     protected final String modId;
+    @Nullable protected ConfigTab defaultTab;
     @Nullable protected KeyBindConfigButton activeKeyBindButton;
     @Nullable protected ConfigInfoProvider hoverInfoProvider;
     @Nullable protected DialogHandler dialogHandler;
     protected int configElementsWidth = 120;
 
-    public BaseConfigScreen(int listX, int listY, String modId, @Nullable GuiScreen parent, List<ConfigTab> configTabs, String titleKey, Object... args)
+    public BaseConfigScreen(int listX, int listY, String modId, @Nullable GuiScreen parent,
+                            List<ConfigTab> configTabs, @Nullable ConfigTab defaultTab, String titleKey, Object... args)
     {
         super(listX, listY);
 
         this.modId = modId;
+        this.defaultTab = defaultTab;
         this.title = StringUtils.translate(titleKey, args);
         this.configTabs = configTabs;
         this.setParent(parent);
@@ -48,14 +55,15 @@ public abstract class BaseConfigScreen extends BaseListScreen<ConfigOptionListWi
         return this.height - 76;
     }
 
-    public abstract void setCurrentTab(ConfigTab tab);
+    public void setCurrentTab(ConfigTab tab)
+    {
+        CURRENT_TABS.put(this.modId, tab);
+    }
 
     @Nullable
-    public abstract ConfigTab getCurrentTab();
-
-    public boolean useKeyBindSearch()
+    public ConfigTab getCurrentTab()
     {
-        return this.getCurrentTab() != null && this.getCurrentTab().useKeyBindSearch();
+        return CURRENT_TABS.getOrDefault(this.modId, this.defaultTab);
     }
 
     public int getConfigElementsWidth()
