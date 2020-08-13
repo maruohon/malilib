@@ -66,6 +66,17 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
         return CURRENT_TABS.getOrDefault(this.modId, this.defaultTab);
     }
 
+    public static void setCurrentTab(String modId, ConfigTab tab)
+    {
+        CURRENT_TABS.put(modId, tab);
+    }
+
+    @Nullable
+    public static ConfigTab getCurrentTab(String modId)
+    {
+        return CURRENT_TABS.get(modId);
+    }
+
     public int getConfigElementsWidth()
     {
         int overriddenWidth = this.getListWidget().getElementWidth();
