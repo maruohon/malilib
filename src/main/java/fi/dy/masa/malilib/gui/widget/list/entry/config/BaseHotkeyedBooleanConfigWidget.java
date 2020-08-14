@@ -32,7 +32,7 @@ public abstract class BaseHotkeyedBooleanConfigWidget<C extends ConfigInfo> exte
         this.initialBooleanValue = this.booleanConfig.getBooleanValue();
         this.initialHotkeyValue = this.keyBind.getKeys();
 
-        this.booleanButton = new BooleanConfigButton(x, y + 1, 40, 20, this.booleanConfig);
+        this.booleanButton = new BooleanConfigButton(x, y + 1, -1, 20, this.booleanConfig);
         this.booleanButton.setActionListener((btn, mbtn) -> this.resetButton.setEnabled(this.config.isModified()));
 
         this.hotkeyButton = new KeyBindConfigButton(x, y + 1, 120, 20, this.keyBind, ctx.gui);
