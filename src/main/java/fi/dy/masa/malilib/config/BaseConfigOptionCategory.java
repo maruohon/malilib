@@ -8,6 +8,8 @@ public class BaseConfigOptionCategory implements ConfigOptionCategory
     protected final String name;
     protected final boolean saveToFile;
     protected final List<? extends ConfigOption<?>> configs;
+    protected ConfigSerializer serializer = ConfigOption::getAsJsonElement;
+    protected ConfigDeSerializer deSerializer = ConfigOption::setValueFromJsonElement;
 
     public BaseConfigOptionCategory(String name, boolean saveToFile, List<? extends ConfigOption<?>> configs)
     {
@@ -32,6 +34,30 @@ public class BaseConfigOptionCategory implements ConfigOptionCategory
     public List<? extends ConfigOption<?>> getConfigOptions()
     {
         return this.configs;
+    }
+
+    @Override
+    public ConfigDeSerializer getDeserializer()
+    {
+        return this.deSerializer;
+    }
+
+    @Override
+    public ConfigSerializer getSerializer()
+    {
+        return this.serializer;
+    }
+
+    public BaseConfigOptionCategory setSerializer(ConfigSerializer serializer)
+    {
+        this.serializer = serializer;
+        return this;
+    }
+
+    public BaseConfigOptionCategory setDeSerializer(ConfigDeSerializer deSerializer)
+    {
+        this.deSerializer = deSerializer;
+        return this;
     }
 
     /**

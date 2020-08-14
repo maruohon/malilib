@@ -19,4 +19,16 @@ public interface ConfigOptionCategory extends ConfigCategory
      * @return
      */
     List<? extends ConfigOption<?>> getConfigOptions();
+
+    /**
+     * Returns the config de-serializer that should be used for the configs in this category
+     * @return
+     */
+    ConfigDeSerializer getDeserializer();
+
+    /**
+     * Returns the config serializer that should be used for the configs in this category
+     * @return
+     */
+    ConfigSerializer getSerializer();
 }

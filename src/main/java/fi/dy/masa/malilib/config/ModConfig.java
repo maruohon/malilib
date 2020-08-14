@@ -89,6 +89,17 @@ public interface ModConfig
     }
 
     /**
+     * Reads the provided config category from the provided (root level) JsonObject
+     * read from the config file.
+     * @param root
+     * @param category
+     */
+    default void readConfigCategory(JsonObject root, ConfigOptionCategory category)
+    {
+        ConfigUtils.readConfig(root, category.getName(), category.getConfigOptions(), category.getDeserializer());
+    }
+
+    /**
      * Called to (re-)load all the configs from file
      */
     default void load()
@@ -105,7 +116,7 @@ public interface ModConfig
 
                 for (ConfigOptionCategory category : this.getConfigOptionCategories())
                 {
-                    ConfigUtils.readConfigBase(root, category.getName(), category.getConfigOptions());
+                    this.readConfigCategory(root, category);
                 }
             }
         }
@@ -119,6 +130,16 @@ public interface ModConfig
      */
     default void onPostLoad()
     {
+    }
+
+    /**
+     * Writes the provided config category to the provided (root level) JsonObject
+     * @param root
+     * @param category
+     */
+    default void writeConfigCategory(JsonObject root, ConfigOptionCategory category)
+    {
+        ConfigUtils.writeConfig(root, category.getName(), category.getConfigOptions(), category.getSerializer());
     }
 
     /**
@@ -139,7 +160,7 @@ public interface ModConfig
 
             for (ConfigOptionCategory category : this.getConfigOptionCategories())
             {
-                ConfigUtils.writeConfigBase(root, category.getName(), category.getConfigOptions());
+                this.writeConfigCategory(root, category);
             }
 
             JsonUtils.writeJsonToFile(root, new File(dir, this.getConfigFileName()));

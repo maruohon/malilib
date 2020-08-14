@@ -7,7 +7,12 @@ import fi.dy.masa.malilib.util.JsonUtils;
 
 public class ConfigUtils
 {
-    public static void readConfigBase(JsonObject root, String category, List<? extends ConfigOption<?>> options)
+    public static void readConfig(JsonObject root, String category, List<? extends ConfigOption<?>> options)
+    {
+        readConfig(root, category, options, ConfigOption::setValueFromJsonElement);
+    }
+
+    public static void readConfig(JsonObject root, String category, List<? extends ConfigOption<?>> options, ConfigDeSerializer deSerializer)
     {
         JsonObject obj = JsonUtils.getNestedObject(root, category, false);
 
@@ -19,20 +24,25 @@ public class ConfigUtils
 
                 if (obj.has(name))
                 {
-                    config.setValueFromJsonElement(obj.get(name), name);
+                    deSerializer.deSerializeConfig(config, obj.get(name), name);
                 }
             }
         }
     }
 
-    public static void writeConfigBase(JsonObject root, String category, List<? extends ConfigOption<?>> options)
+    public static void writeConfig(JsonObject root, String category, List<? extends ConfigOption<?>> options)
+    {
+        writeConfig(root, category, options, ConfigOption::getAsJsonElement);
+    }
+
+    public static void writeConfig(JsonObject root, String category, List<? extends ConfigOption<?>> options, ConfigSerializer serializer)
     {
         JsonObject obj = JsonUtils.getNestedObject(root, category, true);
 
-        for (ConfigOption<?> option : options)
+        for (ConfigOption<?> config : options)
         {
-            obj.add(option.getName(), option.getAsJsonElement());
-            option.cacheSavedValue();
+            obj.add(config.getName(), serializer.serialize(config));
+            config.cacheSavedValue();
         }
     }
 }
