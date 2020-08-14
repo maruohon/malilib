@@ -61,7 +61,7 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
         this.resetConfigsButton.setActionListener((btn, mbtn) -> BaseScreen.openPopupGui(confirmScreen));
 
         this.sourceSelectionDropdown = new DropDownListWidget<>(x, y - 16, -1, 15, 60, 10, Scope.VALUES, Scope::getDisplayName);
-        this.sourceSelectionDropdown.setSelectedEntry(Scope.CURRENT_CATEGORY);
+        this.sourceSelectionDropdown.setSelectedEntry(Scope.ALL_CATEGORIES);
         this.sourceSelectionDropdown.setSelectionListener((s) -> filterChangeListener.onEvent());
 
         this.typeFilterDropdown = new DropDownListWidget<>(x + 100, y - 16, -1, 15, 120, 10, TypeFilter.VALUES, TypeFilter::getDisplayName);
