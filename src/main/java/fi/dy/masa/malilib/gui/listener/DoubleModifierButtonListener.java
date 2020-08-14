@@ -3,8 +3,8 @@ package fi.dy.masa.malilib.gui.listener;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
 import fi.dy.masa.malilib.gui.BaseScreen;
-import fi.dy.masa.malilib.gui.button.BaseButton;
-import fi.dy.masa.malilib.gui.button.ButtonActionListener;
+import fi.dy.masa.malilib.gui.widget.button.BaseButton;
+import fi.dy.masa.malilib.gui.widget.button.ButtonActionListener;
 
 public class DoubleModifierButtonListener implements ButtonActionListener
 {

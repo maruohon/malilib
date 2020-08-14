@@ -7,7 +7,7 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import net.minecraft.client.renderer.GlStateManager;
-import fi.dy.masa.malilib.gui.button.GenericButton;
+import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.icon.BaseIcon;
 import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.icon.IconProvider;

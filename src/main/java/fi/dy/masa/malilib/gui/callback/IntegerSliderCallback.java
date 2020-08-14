@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.gui.callback;
 import javax.annotation.Nullable;
 import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.config.option.IntegerConfig;
-import fi.dy.masa.malilib.gui.button.BaseButton;
+import fi.dy.masa.malilib.gui.widget.button.BaseButton;
 
 public class IntegerSliderCallback implements SliderCallback
 {

@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.gui.config;
 import java.util.List;
 import java.util.function.BiFunction;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
-import fi.dy.masa.malilib.gui.button.ButtonActionListener;
+import fi.dy.masa.malilib.gui.widget.button.ButtonActionListener;
 import fi.dy.masa.malilib.gui.listener.ConfigScreenTabButtonListener;
 import fi.dy.masa.malilib.util.StringUtils;
 

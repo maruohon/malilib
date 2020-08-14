@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.gui.button;
+package fi.dy.masa.malilib.gui.widget.button;
 
 import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.gui.BaseScreen;

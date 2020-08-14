@@ -2,7 +2,7 @@ package fi.dy.masa.malilib.gui.callback;
 
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.option.DoubleConfig;
-import fi.dy.masa.malilib.gui.button.BaseButton;
+import fi.dy.masa.malilib.gui.widget.button.BaseButton;
 
 public class DoubleSliderCallback implements SteppedSliderCallback
 {

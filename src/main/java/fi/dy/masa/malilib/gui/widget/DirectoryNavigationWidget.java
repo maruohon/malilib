@@ -9,7 +9,7 @@ import javax.annotation.Nullable;
 import net.minecraft.client.renderer.OpenGlHelper;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.TextInputScreen;
-import fi.dy.masa.malilib.gui.button.GenericButton;
+import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.icon.BaseIcon;
 import fi.dy.masa.malilib.gui.icon.FileBrowserIconProvider;
 import fi.dy.masa.malilib.gui.icon.FileBrowserIconProvider.FileBrowserIconType;

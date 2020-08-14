@@ -2,7 +2,7 @@ package fi.dy.masa.malilib.gui.widget.list.entry.config;
 
 import fi.dy.masa.malilib.config.option.OptionListConfig;
 import fi.dy.masa.malilib.config.value.ConfigOptionListEntry;
-import fi.dy.masa.malilib.gui.button.OptionListConfigButton;
+import fi.dy.masa.malilib.gui.widget.button.OptionListConfigButton;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 
 public class OptionListConfigWidget extends BaseConfigOptionWidget<OptionListConfig>

@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.gui.config;
 
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.gui.button.KeyBindConfigButton;
+import fi.dy.masa.malilib.gui.widget.button.KeyBindConfigButton;
 
 public interface KeybindEditingScreen extends ConfigScreen
 {

@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.gui;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.function.Consumer;
-import fi.dy.masa.malilib.gui.button.GenericButton;
+import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.BaseFileBrowserWidget;
 import fi.dy.masa.malilib.util.StringUtils;
 

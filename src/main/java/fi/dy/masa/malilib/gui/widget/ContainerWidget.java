@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.BaseScreen;
-import fi.dy.masa.malilib.gui.button.BaseButton;
-import fi.dy.masa.malilib.gui.button.ButtonActionListener;
+import fi.dy.masa.malilib.gui.widget.button.BaseButton;
+import fi.dy.masa.malilib.gui.widget.button.ButtonActionListener;
 import fi.dy.masa.malilib.listener.TextChangeListener;
 import fi.dy.masa.malilib.render.RenderUtils;
 

@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.gui.widget.list.entry.config;
 
 import fi.dy.masa.malilib.config.option.BooleanConfig;
-import fi.dy.masa.malilib.gui.button.BooleanConfigButton;
+import fi.dy.masa.malilib.gui.widget.button.BooleanConfigButton;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 
 public class BooleanConfigWidget extends BaseConfigOptionWidget<BooleanConfig>
