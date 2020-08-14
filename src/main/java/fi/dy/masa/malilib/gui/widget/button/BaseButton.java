@@ -7,10 +7,10 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.gui.BaseScreen;
-import fi.dy.masa.malilib.gui.widget.BaseWidget;
+import fi.dy.masa.malilib.gui.widget.BackgroundWidget;
 import fi.dy.masa.malilib.util.StringUtils;
 
-public abstract class BaseButton extends BaseWidget
+public abstract class BaseButton extends BackgroundWidget
 {
     protected static final ResourceLocation BUTTON_TEXTURES = new ResourceLocation("minecraft", "textures/gui/widgets.png");
 

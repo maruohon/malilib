@@ -142,8 +142,8 @@ public class KeybindSettingsWidget extends BaseWidget
     {
         boolean modified = value != defaultValue;
         String name = StringUtils.translate(translationKey);
-        String strYes = StringUtils.translate("malilib.gui.label.yes");
-        String strNo = StringUtils.translate("malilib.gui.label.no");
+        String strYes = StringUtils.translate("malilib.label.yes");
+        String strNo = StringUtils.translate("malilib.label.no");
         String valStr = value ? (BaseScreen.TXT_GREEN + strYes) : (BaseScreen.TXT_RED + strNo);
         String defaultValStr = defaultValue ? (BaseScreen.TXT_GREEN + strYes) : (BaseScreen.TXT_RED + strNo);
         String nameColor = modified ? BaseScreen.TXT_YELLOW : BaseScreen.TXT_GRAY;

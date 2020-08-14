@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.gui.widget.button;
 
+import fi.dy.masa.malilib.render.message.MessageHelpers;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class OnOffButton extends GenericButton
@@ -42,7 +43,6 @@ public class OnOffButton extends GenericButton
 
     public static String getDisplayStringForStatus(String translationKey, boolean isCurrentlyOn)
     {
-        String strStatus = isCurrentlyOn ? "malilib.gui.label_colored.on" : "malilib.gui.label_colored.off";
-        return StringUtils.translate(translationKey, StringUtils.translate(strStatus));
+        return StringUtils.translate(translationKey, MessageHelpers.getOnOffColored(isCurrentlyOn, true));
     }
 }

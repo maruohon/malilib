@@ -48,13 +48,11 @@ public class BackgroundWidget extends BaseWidget
         return this;
     }
 
-    public BackgroundWidget setBackgroundProperties(int borderWidth, int backgroundColor, int borderColorUL, int borderColorBR)
+    public BackgroundWidget setBackgroundAndBorderColors(int backgroundColor, int borderColorUL, int borderColorBR)
     {
         this.backgroundColor = backgroundColor;
         this.borderColorUL = borderColorUL;
         this.borderColorBR = borderColorBR;
-        this.backgroundEnabled = true;
-        this.setBorderWidth(borderWidth);
         return this;
     }
 

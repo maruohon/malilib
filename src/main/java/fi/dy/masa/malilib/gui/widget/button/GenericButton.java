@@ -4,8 +4,8 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import fi.dy.masa.malilib.gui.icon.Icon;
-import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
+import fi.dy.masa.malilib.render.RenderUtils;
 
 public class GenericButton extends BaseButton
 {
@@ -14,12 +14,12 @@ public class GenericButton extends BaseButton
     protected HorizontalAlignment alignment = HorizontalAlignment.LEFT;
     protected boolean textCentered;
     protected boolean customIconOffset;
-    protected boolean renderDefaultBackground = true;
+    protected boolean renderBackground = true;
     protected boolean renderOutline;
     protected boolean useTextShadow = true;
     protected int iconOffsetX;
     protected int iconOffsetY;
-    protected int textOffsetX = 6;
+    protected int textOffsetX;
     protected int textOffsetY;
     protected int outlineColorHover = 0xFFFFFFFF;
     protected int outlineColorNormal = 0x00000000;
@@ -73,7 +73,7 @@ public class GenericButton extends BaseButton
     {
         this(x, y, iconSupplier.get().getWidth(), iconSupplier.get().getHeight(), "", iconSupplier, hoverStrings);
 
-        this.setRenderDefaultBackground(false);
+        this.setRenderBackground(false);
     }
 
     @Override
@@ -86,6 +86,12 @@ public class GenericButton extends BaseButton
     public GenericButton setTextCentered(boolean centered)
     {
         this.textCentered = centered;
+
+        if (centered == false)
+        {
+            this.textOffsetX = 6;
+        }
+
         return this;
     }
 
@@ -106,7 +112,7 @@ public class GenericButton extends BaseButton
     public GenericButton setTextOffset(int offsetX, int offsetY)
     {
         this.textOffsetX = offsetX;
-        this.textOffsetX = offsetY;
+        this.textOffsetY = offsetY;
         return this;
     }
 
@@ -140,9 +146,9 @@ public class GenericButton extends BaseButton
         return this;
     }
 
-    public GenericButton setRenderDefaultBackground(boolean render)
+    public GenericButton setRenderBackground(boolean render)
     {
-        this.renderDefaultBackground = render;
+        this.renderBackground = render;
         return this;
     }
 
@@ -164,11 +170,37 @@ public class GenericButton extends BaseButton
         return this;
     }
 
+    protected int getTextColorForRender(boolean hovered)
+    {
+        return this.enabled == false ? this.textColorDisabled : (hovered ? this.textColorHovered : this.textColorNormal);
+    }
+
+    protected int getTextStartX(int x, int width)
+    {
+        return this.textCentered ? x + width / 2 + this.textOffsetX: x + this.textOffsetX;
+    }
+
+    protected void renderButtonBackground(int x, int y, int width, int height, boolean hovered)
+    {
+        this.bindTexture(BUTTON_TEXTURES);
+
+        int w1 = width / 2;
+        // Account for odd widths
+        int w2 = (width % 2) != 0 ? w1 + 1 : w1;
+        int buttonStyle = this.getTextureOffset(hovered);
+        int z = this.getZLevel();
+
+        RenderUtils.drawTexturedRect(x     , y,        0, 46 + buttonStyle * 20, w1, height, z);
+        RenderUtils.drawTexturedRect(x + w1, y, 200 - w2, 46 + buttonStyle * 20, w2, height, z);
+    }
+
     @Override
     public void render(int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
     {
         if (this.visible)
         {
+            super.render(mouseX, mouseY, isActiveGui, hovered);
+
             int x = this.getX();
             int y = this.getY();
             int z = this.getZLevel();
@@ -185,16 +217,9 @@ public class GenericButton extends BaseButton
                 RenderUtils.drawOutline(x, y, width, height, 1, color, z);
             }
 
-            if (this.renderDefaultBackground)
+            if (this.renderBackground)
             {
-                this.bindTexture(BUTTON_TEXTURES);
-                int w1 = width / 2;
-                // Account for odd widths
-                int w2 = (width % 2) != 0 ? w1 + 1 : w1;
-                int buttonStyle = this.getTextureOffset(hovered);
-
-                RenderUtils.drawTexturedRect(x     , y,        0, 46 + buttonStyle * 20, w1, height, z);
-                RenderUtils.drawTexturedRect(x + w1, y, 200 - w2, 46 + buttonStyle * 20, w2, height, z);
+                this.renderButtonBackground(x, y, width, height, hovered);
             }
 
             int iconClearing = 0;
@@ -217,7 +242,7 @@ public class GenericButton extends BaseButton
                 }
                 else
                 {
-                    offX = this.renderDefaultBackground ? 4 : 0;
+                    offX = this.renderBackground ? 4 : 0;
                 }
 
                 int offY = this.customIconOffset ? this.iconOffsetY : (height - icon.getHeight()) / 2;
@@ -229,7 +254,7 @@ public class GenericButton extends BaseButton
 
             if (textBlank == false)
             {
-                int tx = this.textCentered ? x + width / 2 : x + this.textOffsetX;
+                int tx = this.getTextStartX(x, width);
                 int ty = y + (height - 8) / 2 + this.textOffsetY;
 
                 if (this.alignment == HorizontalAlignment.LEFT)
@@ -237,7 +262,7 @@ public class GenericButton extends BaseButton
                     tx += iconClearing;
                 }
 
-                int color = this.enabled == false ? this.textColorDisabled : (hovered ? this.textColorHovered : this.textColorNormal);
+                int color = this.getTextColorForRender(hovered);
                 this.getTextRenderer(this.useTextShadow, textCentered).renderText(tx, ty, color, this.displayString);
             }
         }
@@ -258,7 +283,7 @@ public class GenericButton extends BaseButton
     {
         GenericButton button = new GenericButton(x, y, iconSupplier);
 
-        button.setRenderDefaultBackground(false);
+        button.setRenderBackground(false);
         button.setPlayClickSound(false);
         button.setRenderOutline(true);
         button.setOutlineColorNormal(0x00000000);

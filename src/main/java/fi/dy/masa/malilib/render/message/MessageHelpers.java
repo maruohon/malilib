@@ -7,14 +7,34 @@ public class MessageHelpers
 {
     public static String getOnOff(boolean value, boolean capitalize)
     {
-        String key = value ? "malilib.label.on" : "malilib.label.off";
-        return translateAndCapitalize(key, capitalize);
+        String key;
+
+        if (capitalize)
+        {
+            key = value ? "malilib.label.on.caps" : "malilib.label.off.caps";
+        }
+        else
+        {
+            key = value ? "malilib.label.on" : "malilib.label.off";
+        }
+
+        return StringUtils.translate(key);
     }
 
     public static String getOnOffColored(boolean value, boolean capitalize)
     {
-        String key = value ? "malilib.label.colored.on" : "malilib.label.colored.off";
-        return translateAndCapitalize(key, capitalize);
+        String key;
+
+        if (capitalize)
+        {
+            key = value ? "malilib.label.colored.on.caps" : "malilib.label.colored.off.caps";
+        }
+        else
+        {
+            key = value ? "malilib.label.colored.on" : "malilib.label.colored.off";
+        }
+
+        return StringUtils.translate(key);
     }
 
     public static String getTrueFalse(boolean value, boolean capitalize)

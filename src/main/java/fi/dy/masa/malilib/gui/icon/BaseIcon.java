@@ -35,6 +35,8 @@ public class BaseIcon implements Icon
     public static final BaseIcon RADIO_BUTTON_SELECTED_NORMAL    = new BaseIcon(237, 8, 8, 8, 0, 0);
     public static final BaseIcon RADIO_BUTTON_UNSELECTED_HOVER   = new BaseIcon(237, 16, 8, 8, 0, 0);
     public static final BaseIcon RADIO_BUTTON_SELECTED_HOVER     = new BaseIcon(237, 24, 8, 8, 0, 0);
+    public static final BaseIcon SLIDER_RED                      = new BaseIcon(244, 216, 6, 40, 0, 0);
+    public static final BaseIcon SLIDER_GREEN                    = new BaseIcon(250, 216, 6, 40, 0, 0);
 
     public static final BaseIcon INFO_ICON_11                    = new BaseIcon(245, 0, 11, 11, 0, 0);
 

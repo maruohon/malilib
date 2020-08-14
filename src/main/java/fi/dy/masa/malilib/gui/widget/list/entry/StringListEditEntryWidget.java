@@ -48,7 +48,7 @@ public class StringListEditEntryWidget extends BaseDataListEntryWidget<String>
         this.downButton   = this.createListActionButton(x, y, ButtonType.MOVE_DOWN);
 
         this.resetButton = new GenericButton(x, y, -1, 16, "malilib.gui.button.reset.caps");
-        this.resetButton.setRenderDefaultBackground(false);
+        this.resetButton.setRenderBackground(false);
         this.resetButton.setRenderOutline(true);
         this.resetButton.setOutlineColorNormal(0xFF404040);
         this.resetButton.setTextColorDisabled(0xFF505050);

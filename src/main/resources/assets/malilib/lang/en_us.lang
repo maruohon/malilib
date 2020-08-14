@@ -101,9 +101,6 @@ malilib.gui.label.block_snap.center=Center
 malilib.gui.label.block_snap.corner=Corner
 malilib.gui.label.block_snap.none=None
 
-malilib.gui.label_colored.off=§cOFF§r
-malilib.gui.label_colored.on=§aON§r
-
 malilib.gui.label.color_editor.current_color=Current color:
 
 malilib.gui.label.config_scope.all_categories=From all categories in this mod
@@ -143,9 +140,6 @@ malilib.gui.label.layer_mode.all_above=All above
 malilib.gui.label.layer_mode.all_below=All below
 malilib.gui.label.layer_mode.layer_range=Layer Range
 malilib.gui.label.layer_mode.single_layer=Single Layer
-
-malilib.gui.label.no=no
-malilib.gui.label.yes=yes
 
 malilib.gui.label.render_layers.layer=Layer
 malilib.gui.label.render_layers.layer_max=Max layer
@@ -195,16 +189,27 @@ malilib.label.alignment.bottom_right=Bottom Right
 malilib.label.alignment.center=Center
 
 malilib.label.colored.false=§cfalse§r
+malilib.label.colored.true=§atrue§r
+
 malilib.label.colored.no=§cno§r
+malilib.label.colored.yes=§ayes§r
+
+malilib.label.colored.off.caps=§cOFF§r
+malilib.label.colored.on.caps=§aON§r
+
 malilib.label.colored.off=§coff§r
 malilib.label.colored.on=§aon§r
-malilib.label.colored.true=§atrue§r
-malilib.label.colored.yes=§ayes§r
-malilib.label.false=false
-malilib.label.no=no
+
 malilib.label.off=off
 malilib.label.on=on
+
+malilib.label.off.caps=OFF
+malilib.label.on.caps=ON
+
+malilib.label.false=false
 malilib.label.true=true
+
+malilib.label.no=no
 malilib.label.yes=yes
 
 malilib.message.directory_created=Directory '%s' created
