@@ -8,14 +8,14 @@ import fi.dy.masa.malilib.config.value.BaseConfigOptionListEntry;
 import fi.dy.masa.malilib.config.value.ConfigOptionListEntry;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.ConfirmActionScreen;
-import fi.dy.masa.malilib.gui.widget.button.GenericButton;
-import fi.dy.masa.malilib.gui.widget.button.KeyBindConfigButton;
 import fi.dy.masa.malilib.gui.config.ConfigSearchInfo;
 import fi.dy.masa.malilib.gui.config.ConfigTypeRegistry;
 import fi.dy.masa.malilib.gui.config.KeybindEditingScreen;
 import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
+import fi.dy.masa.malilib.gui.widget.button.GenericButton;
+import fi.dy.masa.malilib.gui.widget.button.KeyBindConfigButton;
 import fi.dy.masa.malilib.input.KeyAction;
 import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.input.KeyBindImpl;
@@ -171,12 +171,12 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
 
                 if (type == TypeFilter.MODIFIED_TOGGLE)
                 {
-                    return config.isModified() && info.hasToggle;
+                    return info.hasToggle && info.getBooleanConfig(config).isModified();
                 }
 
                 if (type == TypeFilter.MODIFIED_HOTKEY)
                 {
-                    return config.isModified() && info.hasHotkey;
+                    return info.hasHotkey && info.getKeyBind(config).isModified();
                 }
 
                 if (type == TypeFilter.ENABLED_TOGGLE)

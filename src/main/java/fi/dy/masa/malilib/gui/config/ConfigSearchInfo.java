@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.gui.config;
 
 import java.util.function.Function;
 import javax.annotation.Nullable;
+import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.input.KeyBind;
 
@@ -9,7 +10,7 @@ public class ConfigSearchInfo<C extends ConfigInfo>
 {
     public final boolean hasHotkey;
     public final boolean hasToggle;
-    protected ToggleStatusGetter<C> toggleStatusGetter = (c) -> false;
+    protected Function<C, BooleanConfig> booleanConfigGetter = (c) -> null;
     protected Function<C, KeyBind> keyBindGetter = (c) -> null;
 
     public ConfigSearchInfo(boolean hasToggle, boolean hasHotkey)
@@ -20,7 +21,14 @@ public class ConfigSearchInfo<C extends ConfigInfo>
 
     public boolean getToggleStatus(C config)
     {
-        return this.toggleStatusGetter.getToggleStatus(config);
+        BooleanConfig booleanConfig = this.booleanConfigGetter.apply(config);
+        return booleanConfig != null && booleanConfig.getBooleanValue();
+    }
+
+    @Nullable
+    public BooleanConfig getBooleanConfig(C config)
+    {
+        return this.booleanConfigGetter.apply(config);
     }
 
     @Nullable
@@ -29,9 +37,9 @@ public class ConfigSearchInfo<C extends ConfigInfo>
         return this.keyBindGetter.apply(config);
     }
 
-    public ConfigSearchInfo<C> setToggleOptionGetter(ToggleStatusGetter<C> getter)
+    public ConfigSearchInfo<C> setBooleanConfigGetter(Function<C, BooleanConfig> getter)
     {
-        this.toggleStatusGetter = getter;
+        this.booleanConfigGetter = getter;
         return this;
     }
 
