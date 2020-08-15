@@ -50,6 +50,9 @@ public class StringListEditButton extends GenericButton
     @Override
     protected String generateDisplayString()
     {
+        this.getHoverStrings().clear();
+        this.addHoverString("malilib.gui.button.hover.string_list.total_entries", this.config.getStrings().size());
+
         return StringUtils.getDisplayStringForList(this.config.getStrings(), this.getWidth() - 10, "'", "[ ", " ]");
     }
 }

@@ -12,6 +12,7 @@ import fi.dy.masa.malilib.gui.util.DialogHandler;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.StringListEditEntryWidget;
+import fi.dy.masa.malilib.gui.widget.list.header.StringListEditHeaderWidget;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
@@ -102,19 +103,21 @@ public class StringListEditScreen extends BaseListScreen<DataListWidget<String>>
     @Override
     protected DataListWidget<String> createListWidget(int listX, int listY, int listWidth, int listHeight)
     {
-        DataListWidget<String> widget = new DataListWidget<>(listX, listY, listWidth, listHeight, this.config::getStrings);
+        DataListWidget<String> listWidget = new DataListWidget<>(listX, listY, listWidth, listHeight, this.config::getStrings);
 
-        widget.setZLevel((int) this.zLevel + 2);
-        widget.setListEntryWidgetFixedHeight(20);
-        widget.addDefaultSearchBar();
+        listWidget.setZLevel((int) this.zLevel + 2);
+        listWidget.setListEntryWidgetFixedHeight(20);
+        listWidget.addDefaultSearchBar();
 
-        widget.setEntryWidgetFactory((wx, wy, ww, wh, li, oi, entry, lw) -> {
+        listWidget.setHeaderWidgetFactory(StringListEditHeaderWidget::new);
+
+        listWidget.setEntryWidgetFactory((wx, wy, ww, wh, li, oi, entry, lw) -> {
             List<String> defaultList = this.config.getDefaultStrings();
             String defaultValue = li < defaultList.size() ? defaultList.get(li) : "";
             return new StringListEditEntryWidget(wx, wy, ww, wh, li, oi, entry, defaultValue, lw);
         });
 
-        return widget;
+        return listWidget;
     }
 
     @Override
@@ -155,12 +158,6 @@ public class StringListEditScreen extends BaseListScreen<DataListWidget<String>>
     }
 
     @Override
-    protected void keyTyped(char typedChar, int keyCode)
-    {
-        this.onKeyTyped(typedChar, keyCode);
-    }
-
-    @Override
     public boolean onKeyTyped(char typedChar, int keyCode)
     {
         if (keyCode == Keyboard.KEY_ESCAPE && this.dialogHandler != null)
@@ -168,9 +165,7 @@ public class StringListEditScreen extends BaseListScreen<DataListWidget<String>>
             this.dialogHandler.closeDialog();
             return true;
         }
-        else
-        {
-            return super.onKeyTyped(typedChar, keyCode);
-        }
+
+        return super.onKeyTyped(typedChar, keyCode);
     }
 }
