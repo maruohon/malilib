@@ -15,8 +15,8 @@ import com.google.gson.JsonPrimitive;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import fi.dy.masa.malilib.MaLiLib;
-import fi.dy.masa.malilib.MinecraftClientAccessor;
 import fi.dy.masa.malilib.MaLiLibConfigs;
+import fi.dy.masa.malilib.MinecraftClientAccessor;
 import fi.dy.masa.malilib.config.value.HudAlignment;
 import fi.dy.masa.malilib.config.value.KeybindDisplayMode;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
@@ -463,11 +463,16 @@ public class KeyBindImpl implements KeyBind
     @Override
     public JsonElement getAsJsonElement()
     {
-        String str = writeKeysToString(this.keyCodes, ",");
-
         JsonObject obj = new JsonObject();
+
+        String str = writeKeysToString(this.keyCodes, ",");
         obj.add("keys", new JsonPrimitive(str));
-        obj.add("settings", this.getSettings().toJson());
+
+        if (this.areSettingsModified())
+        {
+            obj.add("settings", this.getSettings().toJson());
+        }
+
         return obj;
     }
 
