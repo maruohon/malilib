@@ -2,11 +2,13 @@ package fi.dy.masa.malilib.gui.widget.list.entry.config;
 
 import fi.dy.masa.malilib.config.option.ConfigOption;
 import fi.dy.masa.malilib.config.option.SliderConfig;
+import fi.dy.masa.malilib.gui.callback.SliderCallback;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.icon.BaseIcon;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.SliderWidget;
+import fi.dy.masa.malilib.listener.EventListener;
 
 public abstract class NumericConfigWidget<T extends ConfigOption<?> & SliderConfig> extends BaseConfigOptionWidget<T>
 {
@@ -36,6 +38,8 @@ public abstract class NumericConfigWidget<T extends ConfigOption<?> & SliderConf
             this.resetButton.setEnabled(this.config.isModified());
             this.reAddSubWidgets();
         });
+
+        this.sliderWidget = new SliderWidget(x, y, 60, 20, this.createSliderCallback(config, this::updateResetButtonState));
     }
 
     @Override
@@ -72,5 +76,12 @@ public abstract class NumericConfigWidget<T extends ConfigOption<?> & SliderConf
         this.addWidget(this.resetButton);
     }
 
+    protected void updateResetButtonState()
+    {
+        this.resetButton.setEnabled(this.config.isModified());
+    }
+
     protected abstract String getCurrentValueAsString();
+
+    protected abstract SliderCallback createSliderCallback(T config, EventListener changeListener);
 }

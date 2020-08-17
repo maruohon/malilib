@@ -2,9 +2,10 @@ package fi.dy.masa.malilib.gui.widget.list.entry.config;
 
 import fi.dy.masa.malilib.config.option.DoubleConfig;
 import fi.dy.masa.malilib.gui.callback.DoubleSliderCallback;
+import fi.dy.masa.malilib.gui.callback.SliderCallback;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.widget.DoubleTextFieldWidget;
-import fi.dy.masa.malilib.gui.widget.SliderWidget;
+import fi.dy.masa.malilib.listener.EventListener;
 
 public class DoubleConfigWidget extends NumericConfigWidget<DoubleConfig>
 {
@@ -21,13 +22,17 @@ public class DoubleConfigWidget extends NumericConfigWidget<DoubleConfig>
         this.initialValue = this.config.getDoubleValue();
         this.initialStringValue = String.valueOf(this.initialValue);
 
-        this.sliderWidget = new SliderWidget(x, y, 60, 20, new DoubleSliderCallback(this.doubleConfig, this.resetButton));
-
         this.textField.setTextValidator(new DoubleTextFieldWidget.DoubleValidator(this.config.getMinDoubleValue(), this.config.getMaxDoubleValue()));
         this.textField.setListener((str) -> {
             this.config.setValueFromString(str);
             this.resetButton.setEnabled(this.config.isModified());
         });
+    }
+
+    @Override
+    protected SliderCallback createSliderCallback(DoubleConfig config, EventListener changeListener)
+    {
+        return new DoubleSliderCallback(config, changeListener);
     }
 
     @Override

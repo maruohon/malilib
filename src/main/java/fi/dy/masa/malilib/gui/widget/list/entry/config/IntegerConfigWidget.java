@@ -2,9 +2,10 @@ package fi.dy.masa.malilib.gui.widget.list.entry.config;
 
 import fi.dy.masa.malilib.config.option.IntegerConfig;
 import fi.dy.masa.malilib.gui.callback.IntegerSliderCallback;
+import fi.dy.masa.malilib.gui.callback.SliderCallback;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.widget.IntegerTextFieldWidget;
-import fi.dy.masa.malilib.gui.widget.SliderWidget;
+import fi.dy.masa.malilib.listener.EventListener;
 
 public class IntegerConfigWidget extends NumericConfigWidget<IntegerConfig>
 {
@@ -21,13 +22,17 @@ public class IntegerConfigWidget extends NumericConfigWidget<IntegerConfig>
         this.initialValue = this.config.getIntegerValue();
         this.initialStringValue = String.valueOf(this.initialValue);
 
-        this.sliderWidget = new SliderWidget(x, y, 60, 20, new IntegerSliderCallback(this.integerConfig, this.resetButton));
-
         this.textField.setTextValidator(new IntegerTextFieldWidget.IntValidator(this.config.getMinIntegerValue(), this.config.getMaxIntegerValue()));
         this.textField.setListener((str) -> {
             this.config.setValueFromString(str);
             this.resetButton.setEnabled(this.config.isModified());
         });
+    }
+
+    @Override
+    protected SliderCallback createSliderCallback(IntegerConfig config, EventListener changeListener)
+    {
+        return new IntegerSliderCallback(config, changeListener);
     }
 
     @Override

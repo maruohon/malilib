@@ -3,17 +3,17 @@ package fi.dy.masa.malilib.gui.callback;
 import javax.annotation.Nullable;
 import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.config.option.IntegerConfig;
-import fi.dy.masa.malilib.gui.widget.button.BaseButton;
+import fi.dy.masa.malilib.listener.EventListener;
 
 public class IntegerSliderCallback implements SliderCallback
 {
     protected final IntegerConfig config;
-    @Nullable protected final BaseButton buttonReset;
+    @Nullable protected final EventListener changeListener;
 
-    public IntegerSliderCallback(IntegerConfig config, @Nullable BaseButton buttonReset)
+    public IntegerSliderCallback(IntegerConfig config, @Nullable EventListener changeListener)
     {
         this.config = config;
-        this.buttonReset = buttonReset;
+        this.changeListener = changeListener;
     }
 
     @Override
@@ -35,9 +35,9 @@ public class IntegerSliderCallback implements SliderCallback
         long relValue = (long) (relativeValue * ((long) this.config.getMaxIntegerValue() - (long) this.config.getMinIntegerValue()));
         this.config.setIntegerValue((int) (relValue + this.config.getMinIntegerValue()));
 
-        if (this.buttonReset != null)
+        if (this.changeListener != null)
         {
-            this.buttonReset.setEnabled(this.config.isModified());
+            this.changeListener.onEvent();
         }
     }
 

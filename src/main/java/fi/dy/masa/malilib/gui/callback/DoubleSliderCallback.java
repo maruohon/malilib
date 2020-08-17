@@ -2,19 +2,19 @@ package fi.dy.masa.malilib.gui.callback;
 
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.option.DoubleConfig;
-import fi.dy.masa.malilib.gui.widget.button.BaseButton;
+import fi.dy.masa.malilib.listener.EventListener;
 
 public class DoubleSliderCallback implements SteppedSliderCallback
 {
     protected final DoubleConfig config;
-    protected final BaseButton resetButton;
+    @Nullable protected final EventListener changeListener;
     protected double stepSize = 0.0009765625; // 1 / 1024
     protected int maxSteps = Integer.MAX_VALUE;
 
-    public DoubleSliderCallback(DoubleConfig config, @Nullable BaseButton resetButton)
+    public DoubleSliderCallback(DoubleConfig config, @Nullable EventListener changeListener)
     {
         this.config = config;
-        this.resetButton = resetButton;
+        this.changeListener = changeListener;
     }
 
     @Override
@@ -37,9 +37,9 @@ public class DoubleSliderCallback implements SteppedSliderCallback
 
         this.config.setDoubleValue(value);
 
-        if (this.resetButton != null)
+        if (this.changeListener != null)
         {
-            this.resetButton.setEnabled(this.config.isModified());
+            this.changeListener.onEvent();
         }
     }
 
