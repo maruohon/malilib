@@ -1,48 +1,151 @@
 package fi.dy.masa.malilib.gui.widget.button;
 
+import java.util.function.BooleanSupplier;
+import javax.annotation.Nullable;
+import fi.dy.masa.malilib.gui.icon.BaseIcon;
+import fi.dy.masa.malilib.gui.icon.Icon;
+import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.message.MessageHelpers;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class OnOffButton extends GenericButton
 {
-    protected final String translationKey;
+    @Nullable protected final String translationKey;
+    protected final BooleanSupplier statusSupplier;
+    protected OnOffStyle style;
 
     /**
      * Pass -1 as the <b>width</b> to automatically set the width
-     * to a value where the ON and OFF buttons are the same width,
-     * using the given translation key.
+     * to a value where the ON and OFF state buttons are the same width.
      * @param x
      * @param y
      * @param width
-     * @param rightAlign
-     * @param translationKey
-     * @param isCurrentlyOn
+     * @param height
+     * @param style The button style to use
+     * @param statusSupplier The supplier for the current on/off status of this button
+     * @param translationKey The translation key to use for the full button text. It should have one %s format specifier for the current status string. Pass null to use the status string directly, without any other labeling text.
      * @param hoverStrings
      */
-    public OnOffButton(int x, int y, int width, boolean rightAlign, String translationKey, boolean isCurrentlyOn, String... hoverStrings)
+    public OnOffButton(int x, int y, int width, int height, OnOffStyle style, BooleanSupplier statusSupplier,
+                       @Nullable String translationKey, String... hoverStrings)
     {
-        super(x, y, width, 20, "", hoverStrings);
+        super(x, y, width, height, "", hoverStrings);
 
         this.translationKey = translationKey;
-        this.updateDisplayString(isCurrentlyOn);
+        this.statusSupplier = statusSupplier;
 
-        if (width < 0)
+        this.setBackgroundAndBorderColors(0xFF303030, 0xFF000000, 0xFF000000);
+        this.setStyle(style);
+        this.updateWidth();
+        this.updateDisplayString();
+    }
+
+    public OnOffButton setStyle(OnOffStyle style)
+    {
+        this.style = style;
+        return this;
+    }
+
+    @Override
+    protected String generateDisplayString()
+    {
+        boolean value = this.statusSupplier.getAsBoolean();
+        boolean isSlider = this.style == OnOffStyle.SLIDER_ON_OFF;
+        String valueStr = this.getDisplayStringForState(value);
+
+        this.setBorderWidth(isSlider ? 1 : 0);
+        this.backgroundEnabled = isSlider;
+        this.textColorNormal = isSlider ? (value ? 0xFFE0E0E0 : 0xFF707070) : 0xFFE0E0E0;
+        this.textColorHovered = isSlider ? 0xFFF0F000 : 0xFFFFFFA0;
+
+        return valueStr;
+    }
+
+    @Override
+    public void updateWidth()
+    {
+        if (this.automaticWidth)
         {
-            int w1 = this.getStringWidth(OnOffButton.getDisplayStringForStatus(translationKey, true));
-            int w2 = this.getStringWidth(OnOffButton.getDisplayStringForStatus(translationKey, false));
-            this.setWidth(Math.max(w1, w2) + 10);
+            int sw1 = this.getStringWidth(this.getDisplayStringForState(false));
+            int sw2 = this.getStringWidth(this.getDisplayStringForState(true));
+            int width = Math.max(sw1, sw2) + 10;
+
+            if (this.style == OnOffStyle.SLIDER_ON_OFF)
+            {
+                width += Math.max(BaseIcon.SLIDER_GREEN.getWidth(), BaseIcon.SLIDER_RED.getWidth());
+            }
+
+            this.setWidth(width);
+        }
+    }
+
+    protected String getOnOffStringForState(boolean value)
+    {
+        String valueStr = "?";
+
+        if (this.style == OnOffStyle.SLIDER_ON_OFF)
+        {
+            valueStr = MessageHelpers.getOnOff(value, true);
+        }
+        else if (this.style == OnOffStyle.TEXT_ON_OFF)
+        {
+            valueStr = MessageHelpers.getOnOffColored(value, true);
+        }
+        else if (this.style == OnOffStyle.TEXT_TRUE_FALSE)
+        {
+            valueStr = MessageHelpers.getTrueFalseColored(value, true);
         }
 
-        this.setRightAlign(rightAlign, x, true);
+        return valueStr;
     }
 
-    public void updateDisplayString(boolean isCurrentlyOn)
+    public String getDisplayStringForState(boolean value)
     {
-        this.displayString = getDisplayStringForStatus(this.translationKey, isCurrentlyOn);
+        String valueStr = this.getOnOffStringForState(value);
+        return this.translationKey != null ? StringUtils.translate(this.translationKey, valueStr) : valueStr;
     }
 
-    public static String getDisplayStringForStatus(String translationKey, boolean isCurrentlyOn)
+    @Override
+    protected int getTextStartX(int x, int width)
     {
-        return StringUtils.translate(translationKey, MessageHelpers.getOnOffColored(isCurrentlyOn, true));
+        if (this.style == OnOffStyle.SLIDER_ON_OFF)
+        {
+            boolean value = this.statusSupplier.getAsBoolean();
+            Icon icon = value ? BaseIcon.SLIDER_GREEN : BaseIcon.SLIDER_RED;
+            int iconWidth = icon.getWidth();
+            int offX = (width - iconWidth) / 2;
+
+            return x + (value ? offX : offX + iconWidth);
+        }
+
+        return super.getTextStartX(x, width);
+    }
+
+    @Override
+    protected void renderButtonBackground(int x, int y, int width, int height, boolean hovered)
+    {
+        if (this.style == OnOffStyle.SLIDER_ON_OFF)
+        {
+            boolean value = this.statusSupplier.getAsBoolean();
+            Icon icon = value ? BaseIcon.SLIDER_GREEN : BaseIcon.SLIDER_RED;
+
+            int iconWidth = icon.getWidth();
+            int iconHeight1 = height / 2 - 1;
+            int iconHeight2 = (height % 2) != 0 ? iconHeight1 + 1 : iconHeight1; // Account for odd height
+            int sliderX = value ? x + width - iconWidth - 1 : x + 1;
+            int z = this.getZLevel();
+            int u = icon.getU();
+            int v1 = icon.getV();
+            int v2 = v1 + icon.getHeight() - iconHeight2;
+
+            this.bindTexture(icon.getTexture());
+
+            RenderUtils.drawTexturedRect(sliderX, y + 1              , u, v1, iconWidth, iconHeight1, z);
+            RenderUtils.drawTexturedRect(sliderX, y + 1 + iconHeight1, u, v2, iconWidth, iconHeight2, z);
+        }
+        else
+        {
+            super.renderButtonBackground(x, y, width, height, hovered);
+        }
     }
 }

@@ -2,19 +2,20 @@ package fi.dy.masa.malilib.gui;
 
 import net.minecraft.util.EnumFacing;
 import fi.dy.masa.malilib.config.value.LayerMode;
+import fi.dy.masa.malilib.gui.icon.BaseIcon;
+import fi.dy.masa.malilib.gui.icon.Icon;
+import fi.dy.masa.malilib.gui.listener.IntegerTextFieldListener;
+import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
+import fi.dy.masa.malilib.gui.widget.CheckBoxWidget;
+import fi.dy.masa.malilib.gui.widget.IntegerTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.button.BaseButton;
+import fi.dy.masa.malilib.gui.widget.button.ButtonActionListener;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.button.OnOffButton;
-import fi.dy.masa.malilib.gui.widget.button.ButtonActionListener;
-import fi.dy.masa.malilib.gui.icon.Icon;
+import fi.dy.masa.malilib.gui.widget.button.OnOffStyle;
 import fi.dy.masa.malilib.gui.widget.list.entry.SelectionListener;
-import fi.dy.masa.malilib.gui.listener.IntegerTextFieldListener;
-import fi.dy.masa.malilib.gui.icon.BaseIcon;
-import fi.dy.masa.malilib.gui.widget.CheckBoxWidget;
-import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
-import fi.dy.masa.malilib.gui.widget.IntegerTextFieldWidget;
-import fi.dy.masa.malilib.util.position.LayerRange;
 import fi.dy.masa.malilib.util.StringUtils;
+import fi.dy.masa.malilib.util.position.LayerRange;
 
 public abstract class BaseRenderLayerEditScreen extends BaseScreen
 {
@@ -120,10 +121,10 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
         {
             String strLabel = "malilib.gui.button.render_layers_gui.follow_player";
             String strHover = "malilib.gui.button.hover.render_layers_gui.follow_player";
-            final OnOffButton button = new OnOffButton(origX, y, -1, false, strLabel, layerRange.shouldFollowPlayer(), strHover);
+            final OnOffButton button = new OnOffButton(origX, y, -1, 20, OnOffStyle.SLIDER_ON_OFF, layerRange::shouldFollowPlayer, strLabel, strHover);
             this.addButton(button, (btn, mbtn) -> {
                 layerRange.toggleShouldFollowPlayer();
-                button.updateDisplayString(layerRange.shouldFollowPlayer());
+                btn.updateDisplayString();
             });
             y += 24;
 
@@ -132,7 +133,7 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
 
             final IntegerTextFieldWidget textField = new IntegerTextFieldWidget(origX + w + 4, y, 40, 18, layerRange.getPlayerFollowOffset());
             textField.setUpdateListenerAlways(true);
-            textField.setListener(new IntegerTextFieldListener((val) -> layerRange.setPlayerFollowOffset(val)));
+            textField.setListener(new IntegerTextFieldListener(layerRange::setPlayerFollowOffset));
             this.addWidget(textField);
 
             int bx = textField.getX() + textField.getWidth() + 3;
@@ -190,7 +191,7 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
         {
             if (this.type == Type.MODE)
             {
-                this.layerRange.setLayerMode((LayerMode) this.layerRange.getLayerMode().cycle(mouseButton == 0));
+                this.layerRange.setLayerMode(this.layerRange.getLayerMode().cycle(mouseButton == 0));
             }
             else if (this.type == Type.AXIS)
             {
@@ -301,7 +302,7 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
         @Override
         public void onTextChange(String newText)
         {
-            int value = 0;
+            int value;
 
             try
             {
