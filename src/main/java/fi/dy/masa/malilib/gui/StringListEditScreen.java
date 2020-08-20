@@ -8,8 +8,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.config.option.StringListConfig;
 import fi.dy.masa.malilib.gui.config.ConfigScreen;
+import fi.dy.masa.malilib.gui.icon.BaseIcon;
+import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.util.DialogHandler;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
+import fi.dy.masa.malilib.gui.widget.SearchBarWidget;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.StringListEditEntryWidget;
 import fi.dy.masa.malilib.gui.widget.list.header.StringListEditHeaderWidget;
@@ -37,7 +40,7 @@ public class StringListEditScreen extends BaseListScreen<DataListWidget<String>>
         this.configGui = configGui;
         this.dialogHandler = dialogHandler;
         this.saveListener = saveListener;
-        this.title = StringUtils.translate("malilib.gui.title.string_list_edit", config.getName());
+        this.title = StringUtils.translate("malilib.gui.title.string_list_edit", config.getDisplayName());
 
         // When we have a dialog handler, then we are inside the Liteloader config menu.
         // In there we don't want to use the normal "GUI replacement and render parent first" trick.
@@ -107,9 +110,19 @@ public class StringListEditScreen extends BaseListScreen<DataListWidget<String>>
 
         listWidget.setZLevel((int) this.zLevel + 2);
         listWidget.setListEntryWidgetFixedHeight(20);
-        listWidget.addDefaultSearchBar();
+        listWidget.addSearchBar(new SearchBarWidget(listWidget.getX() + 17, listWidget.getY() + 3,
+                                                    listWidget.getWidth() - 31, 14, 0, BaseIcon.SEARCH,
+                                                    HorizontalAlignment.RIGHT, listWidget::onSearchBarChange));
 
         listWidget.setHeaderWidgetFactory(StringListEditHeaderWidget::new);
+        listWidget.setSearchBarPositioner((wgt, x, y, w) -> {
+            wgt.setPosition(x + 17, y);
+            wgt.setWidth(w - 17);
+        });
+        listWidget.setHeaderWidgetPositioner((wgt, x, y, w) -> {
+            wgt.setPosition(x, y - 16);
+            wgt.setWidth(15);
+        });
 
         listWidget.setEntryWidgetFactory((wx, wy, ww, wh, li, oi, entry, lw) -> {
             List<String> defaultList = this.config.getDefaultStrings();

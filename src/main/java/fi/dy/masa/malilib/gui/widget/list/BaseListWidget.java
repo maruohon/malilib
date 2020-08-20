@@ -19,18 +19,24 @@ import fi.dy.masa.malilib.gui.widget.ContainerWidget;
 import fi.dy.masa.malilib.gui.widget.ScrollBarWidget;
 import fi.dy.masa.malilib.gui.widget.SearchBarWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.BaseListEntryWidget;
+import fi.dy.masa.malilib.gui.widget.util.DefaultWidgetPositioner;
+import fi.dy.masa.malilib.gui.widget.util.WidgetPositioner;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.render.RenderUtils;
 
 public abstract class BaseListWidget extends ContainerWidget
 {
+    protected final ArrayList<BaseListEntryWidget> listWidgets = new ArrayList<>();
+    protected final Padding listPosition = new Padding(2, 2, 2, 2);
+    protected final ScrollBarWidget scrollBar;
+
+    protected WidgetPositioner searchBarPositioner = new DefaultWidgetPositioner();
+    protected WidgetPositioner headerWidgetPositioner = new DefaultWidgetPositioner();
+
     @Nullable protected BaseScreen parentScreen;
     @Nullable protected SearchBarWidget searchBarWidget;
     @Nullable protected ContainerWidget headerWidget;
     @Nullable protected EventListener entryRefreshListener;
-    protected final ArrayList<BaseListEntryWidget> listWidgets = new ArrayList<>();
-    protected final Padding listPosition = new Padding(2, 2, 2, 2);
-    protected final ScrollBarWidget scrollBar;
 
     protected int entryWidgetStartX;
     protected int entryWidgetStartY;
@@ -137,8 +143,7 @@ public abstract class BaseListWidget extends ContainerWidget
 
         if (searchBarWidget != null)
         {
-            searchBarWidget.setPosition(defaultX, defaultY);
-            searchBarWidget.setWidth(defaultWidth);
+            this.searchBarPositioner.positionWidget(searchBarWidget, defaultX, defaultY, defaultWidth);
         }
     }
 
@@ -148,8 +153,7 @@ public abstract class BaseListWidget extends ContainerWidget
 
         if (widget != null)
         {
-            widget.setPosition(defaultX, defaultY);
-            widget.setWidth(defaultWidth);
+            this.headerWidgetPositioner.positionWidget(widget, defaultX, defaultY, defaultWidth);
         }
     }
 
@@ -255,6 +259,16 @@ public abstract class BaseListWidget extends ContainerWidget
         this.entryRefreshListener = entryRefreshListener;
     }
 
+    public void setSearchBarPositioner(WidgetPositioner positioner)
+    {
+        this.searchBarPositioner = positioner;
+    }
+
+    public void setHeaderWidgetPositioner(WidgetPositioner positioner)
+    {
+        this.headerWidgetPositioner = positioner;
+    }
+
     public BaseListWidget setParentScreen(GuiScreen parent)
     {
         if (parent instanceof BaseScreen)
@@ -263,6 +277,11 @@ public abstract class BaseListWidget extends ContainerWidget
         }
 
         return this;
+    }
+
+    public void addSearchBar(SearchBarWidget widget)
+    {
+        this.searchBarWidget = widget;
     }
 
     public void addDefaultSearchBar()
@@ -384,7 +403,7 @@ public abstract class BaseListWidget extends ContainerWidget
         return false;
     }
 
-    protected void onSearchBarChange(String text)
+    public void onSearchBarChange(String text)
     {
         this.refreshEntries();
         this.resetScrollbarPosition();

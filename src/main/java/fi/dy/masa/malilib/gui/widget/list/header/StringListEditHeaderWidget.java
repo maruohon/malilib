@@ -13,7 +13,7 @@ public class StringListEditHeaderWidget extends DataListHeaderWidget<String>
 
     public StringListEditHeaderWidget(int x, int y, int width, int height, DataListWidget<String> listWidget)
     {
-        super(x, y, width, 15, listWidget);
+        super(x, y, 15, 15, listWidget);
 
         // This is a reference to the current entries list, which can be modified
         this.stringList = listWidget.getCurrentEntries();
@@ -36,7 +36,7 @@ public class StringListEditHeaderWidget extends DataListHeaderWidget<String>
     {
         super.updateSubWidgetsToGeometryChanges();
 
-        this.addButton.setPosition(this.getX() + 4, this.getY());
+        this.addButton.setPosition(this.getX(), this.getY());
     }
 
     protected void insertEntry()
