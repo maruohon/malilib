@@ -62,16 +62,14 @@ public class BaseTextFieldWidget extends BackgroundWidget
     {
         super(x, y, width, height);
 
+        this.lastNotifiedText = text;
+
         this.setBackgroundColor(0xFF000000);
         this.setBackgroundEnabled(true);
         this.setBorderColor(this.colorUnfocused);
         this.setBorderWidth(1);
         this.setPaddingX(4);
-
-        this.messageRenderer.setWidth(Math.max(this.getWidth(), 220));
-        this.visibleText.setMaxWidth(this.getMaxTextWidth());
-        this.lastNotifiedText = text;
-
+        this.updateTextFieldSize();
         this.setText(text);
     }
 
@@ -79,13 +77,28 @@ public class BaseTextFieldWidget extends BackgroundWidget
     protected void onSizeChanged()
     {
         super.onSizeChanged();
+
+        this.updateTextFieldSize();
+    }
+
+    @Override
+    protected void onPositionOrSizeChanged(int oldX, int oldY)
+    {
+        super.onPositionOrSizeChanged(oldX, oldY);
+
+        this.updateTextFieldSize();
+    }
+
+    protected void updateTextFieldSize()
+    {
         this.visibleText.setMaxWidth(this.getMaxTextWidth());
+        this.messageRenderer.setWidth(Math.max(this.getWidth(), 220));
     }
 
     @Override
     public BaseWidget setZLevel(int zLevel)
     {
-        this.messageRenderer.setZLevel(zLevel + 20);
+        this.messageRenderer.setZLevel(zLevel + 10);
         return super.setZLevel(zLevel);
     }
 

@@ -16,6 +16,12 @@ public class IconWidget extends BackgroundWidget
         this.setIcon(icon);
     }
 
+    @Nullable
+    public Icon getIcon()
+    {
+        return this.icon;
+    }
+
     public IconWidget setIcon(@Nullable Icon icon)
     {
         this.icon = icon;

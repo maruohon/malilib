@@ -600,8 +600,6 @@ public abstract class BaseListWidget extends ContainerWidget
 
         RenderUtils.color(1f, 1f, 1f, 1f);
 
-        this.scrollBar.render(mouseX, mouseY);
-
         // The value gets updated in the drawScrollBar() method above, if dragging
         if (this.scrollBar.getValue() != this.lastScrollbarPosition)
         {

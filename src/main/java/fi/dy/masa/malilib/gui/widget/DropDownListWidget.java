@@ -6,12 +6,11 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
-import net.minecraft.client.renderer.GlStateManager;
-import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.icon.BaseIcon;
 import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.icon.IconProvider;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
+import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.entry.SelectionListener;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.data.LeftRight;
@@ -26,18 +25,18 @@ import fi.dy.masa.malilib.util.data.LeftRight;
  */
 public class DropDownListWidget<T> extends ContainerWidget
 {
+    protected final List<T> filteredEntries = new ArrayList<>();
     protected final List<T> entries;
-    protected final List<T> filteredEntries;
-    protected final BaseTextFieldWidget searchField;
     protected final ScrollBarWidget scrollBar;
-    protected final SelectionBarWidget<T> widgetSelectionBar;
+    protected final BaseTextFieldWidget searchField;
+    protected final SelectionBarWidget<T> selectionBarWidget;
     @Nullable protected final Function<T, String> stringFactory;
 
     protected final int maxVisibleEntries;
     protected final int maxHeight;
     protected final int lineHeight;
 
-    @Nullable protected GenericButton buttonOpenClose;
+    @Nullable protected GenericButton openCloseButton;
     @Nullable protected IconProvider<T> iconProvider;
     @Nullable protected SelectionListener<T> selectionListener;
     @Nullable protected T selectedEntry;
@@ -47,7 +46,6 @@ public class DropDownListWidget<T> extends ContainerWidget
     protected boolean noCurrentEntryBar;
     protected int dropdownHeight;
     protected int dropdownTopY;
-    protected int selectedIndex;
     protected int textColor = 0xFFE0E0E0;
     protected int totalHeight;
     protected int visibleEntries;
@@ -78,7 +76,6 @@ public class DropDownListWidget<T> extends ContainerWidget
         this.lineHeight = height;
         this.maxHeight = maxHeight;
         this.entries = entries;
-        this.filteredEntries = new ArrayList<>();
         this.stringFactory = stringFactory;
 
         int v = Math.min(maxVisibleEntries, entries.size());
@@ -91,6 +88,7 @@ public class DropDownListWidget<T> extends ContainerWidget
         this.dropdownTopY = y + this.lineHeight;
         this.totalHeight = this.dropdownHeight + this.lineHeight;
 
+        width = this.getRequiredWidth(-1, this.entries);
         int scrollbarWidth = 8;
         int scrollbarHeight = this.maxVisibleEntries * this.lineHeight;
 
@@ -99,16 +97,16 @@ public class DropDownListWidget<T> extends ContainerWidget
         this.scrollBar.setMaxValue(this.entries.size() - this.maxVisibleEntries);
         this.scrollBar.setArrowTextures(BaseIcon.SMALL_ARROW_UP, BaseIcon.SMALL_ARROW_DOWN);
 
-        this.updateWidth(false);
+        this.selectionBarWidget = new SelectionBarWidget<>(x, y, width, height, this.textColor, this);
+        this.selectionBarWidget.setZLevel(this.getZLevel() + 2);
 
-        this.widgetSelectionBar = new SelectionBarWidget<>(x, y, this.getWidth(), height, this.textColor, this);
-        this.widgetSelectionBar.setZLevel(this.getZLevel() + 2);
-
-        this.searchField = new BaseTextFieldWidget(x, y - 16, this.getWidth(), 16);
+        this.searchField = new BaseTextFieldWidget(x, y - 16, width, 16);
         this.searchField.setUpdateListenerAlways(true);
+        this.searchField.setUpdateListenerFromTextSet(true);
         this.searchField.setListener((newText) -> this.updateFilteredEntries());
         this.searchField.setFocused(true);
 
+        this.setWidth(width);
         this.updateFilteredEntries(); // This must be called after the search text field has been created
     }
 
@@ -122,7 +120,6 @@ public class DropDownListWidget<T> extends ContainerWidget
     public void setIconProvider(@Nullable IconProvider<T> iconProvider)
     {
         this.iconProvider = iconProvider;
-        //this.updateWidth(true);
     }
 
     public void setSelectionListener(@Nullable SelectionListener<T> selectionListener)
@@ -133,20 +130,10 @@ public class DropDownListWidget<T> extends ContainerWidget
     public void setNoBarWhenClosed(int buttonX, int buttonY, Supplier<Icon> iconSupplier)
     {
         this.noCurrentEntryBar = true;
-        this.buttonOpenClose = GenericButton.createIconOnly(buttonX, buttonY, iconSupplier);
-        this.buttonOpenClose.setRenderOutline(false);
-        this.buttonOpenClose.setActionListener((btn, mbtn) -> this.toggleOpen());
-        //this.reAddSubWidgets();
-    }
-
-    protected void updateWidth(boolean updateSubWidgets)
-    {
-        this.setWidth(this.getRequiredWidth(-1, this.entries));
-
-        if (updateSubWidgets)
-        {
-            this.updateSubWidgetsToGeometryChanges();
-        }
+        this.openCloseButton = GenericButton.createIconOnly(buttonX, buttonY, iconSupplier);
+        this.openCloseButton.setRenderOutline(false);
+        this.openCloseButton.setActionListener((btn, mbtn) -> this.toggleOpen());
+        this.reAddSubWidgets();
     }
 
     @Override
@@ -156,25 +143,22 @@ public class DropDownListWidget<T> extends ContainerWidget
 
         if (this.isOpen)
         {
+            this.addWidget(this.scrollBar);
+
             if (this.searchOpen)
             {
                 this.addWidget(this.searchField);
             }
-
-            if (this.scrollBar != null)
-            {
-                this.addWidget(this.scrollBar);
-            }
         }
 
-        if (this.noCurrentEntryBar && this.buttonOpenClose != null)
+        if (this.noCurrentEntryBar && this.openCloseButton != null)
         {
-            this.addWidget(this.buttonOpenClose);
+            this.addWidget(this.openCloseButton);
         }
 
-        if (this.noCurrentEntryBar == false && this.widgetSelectionBar != null)
+        if (this.noCurrentEntryBar == false && this.selectionBarWidget != null)
         {
-            this.addWidget(this.widgetSelectionBar);
+            this.addWidget(this.selectionBarWidget);
         }
     }
 
@@ -193,17 +177,8 @@ public class DropDownListWidget<T> extends ContainerWidget
         this.totalHeight = this.dropdownHeight + yOff;
 
         this.scrollBar.setPosition(x + width - scrollbarWidth - 1, y + yOff + 1);
-
-        if (this.widgetSelectionBar != null)
-        {
-            this.widgetSelectionBar.setPositionAndSize(x, y, width, this.lineHeight);
-            this.widgetSelectionBar.update(this);
-        }
-
-        if (this.searchOpen)
-        {
-            this.searchField.setPositionAndSize(x, y - 16, width, 16);
-        }
+        this.searchField.setPositionAndSize(x, y - 16, width, 16);
+        this.selectionBarWidget.setPositionAndSize(x, y, width, this.lineHeight);
     }
 
     protected int getRequiredWidth(int width, List<T> entries)
@@ -307,9 +282,9 @@ public class DropDownListWidget<T> extends ContainerWidget
 
     protected void updateSelectionBar()
     {
-        if (this.widgetSelectionBar != null)
+        if (this.selectionBarWidget != null)
         {
-            this.widgetSelectionBar.update(this);
+            this.selectionBarWidget.update();
         }
     }
 
@@ -329,7 +304,7 @@ public class DropDownListWidget<T> extends ContainerWidget
     {
         if (this.noCurrentEntryBar && this.isOpen == false)
         {
-            return this.buttonOpenClose != null && this.buttonOpenClose.isMouseOver(mouseX, mouseY);
+            return this.openCloseButton != null && this.openCloseButton.isMouseOver(mouseX, mouseY);
         }
 
         if (this.isOpen && this.searchOpen && this.searchField.isMouseOver(mouseX, mouseY))
@@ -425,7 +400,7 @@ public class DropDownListWidget<T> extends ContainerWidget
         {
             if (keyCode == Keyboard.KEY_ESCAPE)
             {
-                if (this.searchOpen && this.searchField.isFocused() && this.searchField.getText().isEmpty() == false)
+                if (this.searchOpen && this.searchField.isFocused())
                 {
                     this.setSearchOpen(false);
                 }
@@ -510,20 +485,10 @@ public class DropDownListWidget<T> extends ContainerWidget
     @Override
     public void render(int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
     {
-        super.render(mouseX, mouseY, isActiveGui, hovered);
-
         // Render the open dropdown list
         if (this.isOpen)
         {
             RenderUtils.color(1f, 1f, 1f, 1f);
-
-            GlStateManager.pushMatrix();
-            GlStateManager.translate(0, 0, this.getZLevel() + 40);
-
-            if (this.searchField.getText().isEmpty() == false)
-            {
-                this.searchField.render(mouseX, mouseY, isActiveGui, this.searchField.isHoveredForRender(mouseX, mouseY));
-            }
 
             int x = this.getX();
             int width = this.getWidth();
@@ -534,11 +499,9 @@ public class DropDownListWidget<T> extends ContainerWidget
             boolean mouseOverListOnX = mouseX >= x && mouseX < x + width - this.scrollBar.getWidth();
             int txtY = this.dropdownTopY + this.lineHeight / 2 - this.fontHeight / 2 + 1;
             this.renderListContents(txtY, mouseX, mouseY, mouseOverListOnX && hovered);
-
-            this.scrollBar.render(mouseX, mouseY);
-
-            GlStateManager.popMatrix();
         }
+
+        super.render(mouseX, mouseY, isActiveGui, hovered);
     }
 
     protected void renderListContents(int txtY, int mouseX, int mouseY, boolean mouseOverListOnX)
@@ -586,65 +549,82 @@ public class DropDownListWidget<T> extends ContainerWidget
 
     public static class SelectionBarWidget<T> extends ClickableWidget
     {
-        protected final LabelWidget widgetLabel;
-        protected final IconWidget widgetOpenCloseIcon;
-        protected final IconWidget widgetEntryIcon;
+        protected final DropDownListWidget<T> dropdownWidget;
+        protected final LabelWidget labelWidget;
+        protected final IconWidget openCloseIconWidget;
+        protected final IconWidget entryIconWidget;
 
         public SelectionBarWidget(int x, int y, int width, int height, int textColor, DropDownListWidget<T> dropdown)
         {
             super(x, y, width, height, dropdown::toggleOpen);
 
-            this.setBackgroundEnabled(true);
-            this.setBorderWidth(1);
+            this.dropdownWidget = dropdown;
 
             // The positions of these widgets are updated in update()
-            this.widgetLabel = new LabelWidget(0, 0, textColor, dropdown.getCurrentEntryDisplayString());
-            this.widgetLabel.setUseTextShadow(false);
+            this.labelWidget = new LabelWidget(0, 0, textColor, dropdown.getCurrentEntryDisplayString());
+            this.labelWidget.setUseTextShadow(false);
 
             Icon iconOpen = dropdown.isOpen() ? BaseIcon.ARROW_UP : BaseIcon.ARROW_DOWN;
-            this.widgetOpenCloseIcon = new IconWidget(0, 0, iconOpen);
-            this.widgetOpenCloseIcon.setEnabled(true).setDoHighlight(true);
+            this.openCloseIconWidget = new IconWidget(0, 0, iconOpen);
+            this.openCloseIconWidget.setEnabled(true).setDoHighlight(true);
 
-            this.widgetEntryIcon = new IconWidget(0, 0, BaseIcon.EMPTY);
+            this.entryIconWidget = new IconWidget(0, 0, BaseIcon.EMPTY);
 
-            this.update(dropdown);
+            this.setBackgroundEnabled(true);
+            this.setBorderWidth(1);
         }
 
-        public void update(DropDownListWidget<T> dropdown)
+        @Override
+        public void reAddSubWidgets()
         {
-            this.clearWidgets();
-            this.setWidth(dropdown.getWidth());
+            super.reAddSubWidgets();
 
+            this.addWidget(this.labelWidget);
+            this.addWidget(this.openCloseIconWidget);
+
+            if (this.entryIconWidget.getIcon() != null)
+            {
+                this.addWidget(this.entryIconWidget);
+            }
+        }
+
+        @Override
+        public void updateSubWidgetsToGeometryChanges()
+        {
+            super.updateSubWidgetsToGeometryChanges();
+
+            DropDownListWidget<T> dropdown = this.dropdownWidget;
             T entry = dropdown.getSelectedEntry();
             Icon entryIcon = dropdown.iconProvider != null && entry != null ? dropdown.iconProvider.getIconFor(entry) : null;
             Icon iconOpen = dropdown.isOpen() ? BaseIcon.ARROW_UP : BaseIcon.ARROW_DOWN;
 
-            this.widgetOpenCloseIcon.setIcon(iconOpen);
-            this.widgetLabel.setText(dropdown.getCurrentEntryDisplayString());
+            this.openCloseIconWidget.setIcon(iconOpen);
+            this.entryIconWidget.setIcon(entryIcon);
+            this.labelWidget.setText(dropdown.getCurrentEntryDisplayString());
 
             int x = this.getX();
             int y = this.getY();
             int width = this.getWidth();
             int height = this.getHeight();
             int labelX = x + 4;
-            int labelY = y + (height - this.widgetLabel.getHeight()) / 2 + 1;
+            int labelY = y + (height - this.labelWidget.getHeight()) / 2 + 1;
             int openIconX = x + width - iconOpen.getWidth() - 2;
             int openIconY = y + (height - iconOpen.getHeight()) / 2 + 1;
 
-            this.widgetEntryIcon.setIcon(entryIcon);
-
             if (entryIcon != null)
             {
-                labelX += this.widgetEntryIcon.getWidth() + 4;
-                this.widgetEntryIcon.setPosition(x + 4, y + (height - entryIcon.getHeight()) / 2);
-                this.addWidget(this.widgetEntryIcon);
+                labelX += this.entryIconWidget.getWidth() + 4;
+                this.entryIconWidget.setPosition(x + 4, y + (height - entryIcon.getHeight()) / 2);
             }
 
-            this.widgetLabel.setPosition(labelX, labelY);
-            this.widgetOpenCloseIcon.setPosition(openIconX, openIconY);
+            this.labelWidget.setPosition(labelX, labelY);
+            this.openCloseIconWidget.setPosition(openIconX, openIconY);
+        }
 
-            this.addWidget(this.widgetLabel);
-            this.addWidget(this.widgetOpenCloseIcon);
+        public void update()
+        {
+            this.updateSubWidgetsToGeometryChanges();
+            this.reAddSubWidgets();
         }
     }
 }

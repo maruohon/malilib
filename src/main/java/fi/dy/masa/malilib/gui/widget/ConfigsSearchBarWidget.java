@@ -239,17 +239,6 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
         return super.onKeyTypedImpl(typedChar, keyCode);
     }
 
-    @Override
-    public void render(int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
-    {
-        super.render(mouseX, mouseY, isActiveGui, hovered);
-
-        if (this.isSearchOpen())
-        {
-            this.hotkeySearchButton.render(mouseX, mouseY, isActiveGui, hovered);
-        }
-    }
-
     public enum Scope implements ConfigOptionListEntry<Scope>
     {
         CURRENT_CATEGORY ("malilib.gui.label.config_scope.current_category"),

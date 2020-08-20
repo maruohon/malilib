@@ -200,13 +200,16 @@ public class ScrollBarWidget extends BaseWidget
         return false;
     }
 
-    public void render(int mouseX, int mouseY)
+    @Override
+    public void render(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
     {
         int x = this.getX();
         int y = this.getY();
         int width = this.getWidth();
         int height = this.getHeight();
         int totalHeight = this.totalHeight;
+
+        RenderUtils.color(1f, 1f, 1f, 1f);
 
         if (this.renderScrollbarBackgroundColor)
         {
@@ -231,8 +234,6 @@ public class ScrollBarWidget extends BaseWidget
             int barHeight = (int) (relative * slideHeight);
             int barTravel = slideHeight - barHeight;
             int barPosition = y + upArH + (this.maxValue > 0 ? (int) ((this.currentValue / (float) this.maxValue) * barTravel) : 0);
-
-            RenderUtils.color(1f, 1f, 1f, 1f);
 
             if (useArrows)
             {
