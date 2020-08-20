@@ -93,6 +93,8 @@ malilib.gui.button.hover.text_field_slider_toggle=Toggle between a text field an
 
 malilib.gui.button.hover.list.add_after=Add an entry after
 malilib.gui.button.hover.list.add_first=Add an entry
+malilib.gui.button.hover.cycle_widgets_left=Cycle Left
+malilib.gui.button.hover.cycle_widgets_right=Cycle Right
 malilib.gui.button.hover.list.move_down=Move Down
 malilib.gui.button.hover.list.move_up=Move Up
 malilib.gui.button.hover.list.remove=Remove

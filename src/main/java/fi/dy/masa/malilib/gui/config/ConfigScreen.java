@@ -35,11 +35,4 @@ public interface ConfigScreen
     {
         return null;
     }
-
-    /**
-     * Returns an info provider to get customized hover tooltips for the configs
-     * @return
-     */
-    @Nullable
-    ConfigInfoProvider getHoverInfoProvider();
 }

@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.gui.widget.button;
 
 import java.util.List;
+import java.util.function.BooleanSupplier;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -22,6 +23,7 @@ public abstract class BaseButton extends BackgroundWidget
     protected boolean playClickSound = true;
     protected boolean visible = true;
     @Nullable protected ButtonActionListener actionListener;
+    @Nullable protected BooleanSupplier enabledStatusSupplier;
 
     public BaseButton(int x, int y, int width, int height)
     {
@@ -46,6 +48,18 @@ public abstract class BaseButton extends BackgroundWidget
     public BaseButton setActionListener(@Nullable ButtonActionListener actionListener)
     {
         this.actionListener = actionListener;
+        return this;
+    }
+
+    /**
+     * Sets a supplier that provides the enabled status for the button.
+     * The status can be refreshed by calling updateButtonState()
+     * @param enabledStatusSupplier
+     * @return
+     */
+    public BaseButton setEnabledStatusSupplier(@Nullable BooleanSupplier enabledStatusSupplier)
+    {
+        this.enabledStatusSupplier = enabledStatusSupplier;
         return this;
     }
 
@@ -110,6 +124,20 @@ public abstract class BaseButton extends BackgroundWidget
         }
 
         return false;
+    }
+
+    /**
+     * Updates the display string and the enabled status,
+     * if the enabled status supplier has been set.
+     */
+    public void updateButtonState()
+    {
+        this.updateDisplayString();
+
+        if (this.enabledStatusSupplier != null)
+        {
+            this.setEnabled(this.enabledStatusSupplier.getAsBoolean());
+        }
     }
 
     public void updateDisplayString()

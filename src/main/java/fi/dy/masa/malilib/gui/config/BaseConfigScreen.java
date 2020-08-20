@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.gui.config;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -12,22 +13,25 @@ import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.event.dispatch.KeyBindManager;
 import fi.dy.masa.malilib.gui.BaseListScreen;
 import fi.dy.masa.malilib.gui.BaseScreen;
-import fi.dy.masa.malilib.gui.widget.button.GenericButton;
-import fi.dy.masa.malilib.gui.widget.button.KeyBindConfigButton;
 import fi.dy.masa.malilib.gui.util.DialogHandler;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
+import fi.dy.masa.malilib.gui.widget.CyclableContainerWidget;
+import fi.dy.masa.malilib.gui.widget.button.BaseButton;
+import fi.dy.masa.malilib.gui.widget.button.GenericButton;
+import fi.dy.masa.malilib.gui.widget.button.KeyBindConfigButton;
 import fi.dy.masa.malilib.gui.widget.list.ConfigOptionListWidget;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? extends ConfigInfo>> implements KeybindEditingScreen
 {
-    protected static final Map<String, ConfigTab> CURRENT_TABS = new HashMap<>();
+    protected static final Map<String, ConfigScreenState> CURRENT_STATE = new HashMap<>();
 
     protected final List<ConfigTab> configTabs;
+    protected final List<BaseButton> tabButtons = new ArrayList<>();
     protected final String modId;
+    @Nullable protected CyclableContainerWidget tabButtonContainerWidget;
     @Nullable protected ConfigTab defaultTab;
     @Nullable protected KeyBindConfigButton activeKeyBindButton;
-    @Nullable protected ConfigInfoProvider hoverInfoProvider;
     @Nullable protected DialogHandler dialogHandler;
     protected int configElementsWidth = 120;
 
@@ -55,26 +59,43 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
         return this.height - 76;
     }
 
-    public void setCurrentTab(ConfigTab tab)
+    public ConfigScreenState getTabState()
     {
-        CURRENT_TABS.put(this.modId, tab);
+        return getTabState(this.modId);
+    }
+
+    public static ConfigScreenState getTabState(String modId)
+    {
+        return CURRENT_STATE.computeIfAbsent(modId, (id) -> new ConfigScreenState(null));
     }
 
     @Nullable
     public ConfigTab getCurrentTab()
     {
-        return CURRENT_TABS.getOrDefault(this.modId, this.defaultTab);
-    }
+        ConfigScreenState state = getTabState(this.modId);
 
-    public static void setCurrentTab(String modId, ConfigTab tab)
-    {
-        CURRENT_TABS.put(modId, tab);
+        if (state.currentTab == null)
+        {
+            state.currentTab = this.defaultTab;
+        }
+
+        return state.currentTab;
     }
 
     @Nullable
     public static ConfigTab getCurrentTab(String modId)
     {
-        return CURRENT_TABS.get(modId);
+        return getTabState(modId).currentTab;
+    }
+
+    public void setCurrentTab(ConfigTab tab)
+    {
+        setCurrentTab(this.modId, tab);
+    }
+
+    public static void setCurrentTab(String modId, ConfigTab tab)
+    {
+        getTabState(modId).currentTab = tab;
     }
 
     public int getConfigElementsWidth()
@@ -89,12 +110,6 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
         return this.getCurrentTab() != null ? this.getCurrentTab().getConfigWidth() : this.configElementsWidth;
     }
 
-    @Override
-    public List<? extends ConfigInfo> getConfigs()
-    {
-        return this.getCurrentTab() != null ? this.getCurrentTab().getConfigsForDisplay() : Collections.emptyList();
-    }
-
     /**
      * Sets the requested config elements width for this screen.
      * Use -1 to indicate automatic/default width decided by the widgets.
@@ -107,15 +122,10 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
         return this;
     }
 
-    public BaseConfigScreen setHoverInfoProvider(ConfigInfoProvider provider)
+    @Override
+    public List<? extends ConfigInfo> getConfigs()
     {
-        this.hoverInfoProvider = provider;
-        return this;
-    }
-
-    public void reCreateConfigWidgets()
-    {
-        super.reCreateListWidget();
+        return this.getCurrentTab() != null ? this.getCurrentTab().getConfigsForDisplay() : Collections.emptyList();
     }
 
     @Override
@@ -137,16 +147,19 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
     }
 
     @Override
-    @Nullable
-    public ConfigInfoProvider getHoverInfoProvider()
-    {
-        return this.hoverInfoProvider;
-    }
-
-    @Override
     protected ConfigOptionListWidget<? extends ConfigInfo> createListWidget(int listX, int listY, int listWidth, int listHeight)
     {
         return new ConfigOptionListWidget<>(listX, listY, listWidth, listHeight, this::getConfigs, this);
+    }
+
+    public void reCreateConfigWidgets()
+    {
+        for (BaseButton tabButton : this.tabButtons)
+        {
+            tabButton.updateButtonState();
+        }
+
+        this.reCreateListWidget();
     }
 
     @Override
@@ -155,50 +168,54 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
         super.initGui();
 
         this.clearOptions();
-        this.createTabButtons();
+        this.createTabButtonWidget();
 
         Keyboard.enableRepeatEvents(true);
     }
 
-    protected void createTabButtons()
+    protected void createTabButtonWidget()
     {
-        int x = 10;
-        int y = 26;
-        int rows = 1;
+        // This stores the value when resizing the window
+        if (this.tabButtonContainerWidget != null)
+        {
+            this.getTabState().currentTabStartIndex = this.tabButtonContainerWidget.getStartIndex();
+        }
+
+        this.tabButtonContainerWidget = new CyclableContainerWidget(10, 26, this.width - 20, 20, this.createTabButtons());
+        this.tabButtonContainerWidget.setStartIndex(this.getTabState().currentTabStartIndex);
+        this.addWidget(this.tabButtonContainerWidget);
+    }
+
+    protected List<BaseButton> createTabButtons()
+    {
+        this.tabButtons.clear();
 
         for (ConfigTab tab : this.configTabs)
         {
-            int width = this.getStringWidth(tab.getDisplayName()) + 10;
-
-            if (x >= this.width - width - 10)
-            {
-                x = 10;
-                y += 22;
-                rows++;
-            }
-
-            x += this.createTabButton(x, y, width, tab);
+            this.tabButtons.add(this.createTabButton(tab));
         }
 
-        if (rows > 1)
-        {
-            this.updateListPosition(this.getListX(), 50 + (rows - 1) * 22);
-        }
+        return this.tabButtons;
     }
 
-    protected int createTabButton(int x, int y, int width, ConfigTab tab)
+    protected GenericButton createTabButton(final ConfigTab tab)
     {
-        GenericButton button = new GenericButton(x, y, width, 20, tab.getDisplayName());
+        GenericButton button = new GenericButton(0, 0, -1, 20, tab.getDisplayName());
         button.setEnabled(this.getCurrentTab() != tab);
-        this.addButton(button, tab.getButtonActionListener(this));
-
-        return button.getWidth() + 2;
+        button.setEnabledStatusSupplier(() -> this.getCurrentTab() != tab);
+        button.setActionListener(tab.getButtonActionListener(this));
+        return button;
     }
 
     @Override
     public void onGuiClosed()
     {
         super.onGuiClosed();
+
+        if (this.tabButtonContainerWidget != null)
+        {
+            this.getTabState().currentTabStartIndex = this.tabButtonContainerWidget.getStartIndex();
+        }
 
         if (ConfigManager.INSTANCE.saveConfigsIfChanged(this.modId))
         {
