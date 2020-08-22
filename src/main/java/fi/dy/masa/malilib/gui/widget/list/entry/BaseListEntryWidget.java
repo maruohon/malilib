@@ -38,6 +38,17 @@ public class BaseListEntryWidget extends ContainerWidget
     }
 
     /**
+     * Focuses this widget.
+     * <br><br>
+     * What this means is defined by the implementation.
+     * In most cases it would be for example focusing a text field
+     * in a newly created entry widget.
+     */
+    public void focusWidget()
+    {
+    }
+
+    /**
      * Returns true if this widget can be selected by clicking at the given point
      */
     public boolean canSelectAt(int mouseX, int mouseY, int mouseButton)

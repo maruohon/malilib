@@ -519,6 +519,18 @@ public abstract class BaseListWidget extends ContainerWidget
         this.reCreateListEntryWidgets();
     }
 
+    public void focusWidget(int listIndex)
+    {
+        for (BaseListEntryWidget widget : this.listWidgets)
+        {
+            if (widget.getListIndex() == listIndex)
+            {
+                widget.focusWidget();
+                break;
+            }
+        }
+    }
+
     protected void onEntriesRefreshed()
     {
         if (this.entryRefreshListener != null)

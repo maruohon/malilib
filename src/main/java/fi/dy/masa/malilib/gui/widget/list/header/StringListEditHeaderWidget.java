@@ -43,5 +43,6 @@ public class StringListEditHeaderWidget extends DataListHeaderWidget<String>
     {
         this.stringList.add(0, "");
         this.listWidget.refreshEntries();
+        this.listWidget.focusWidget(0);
     }
 }

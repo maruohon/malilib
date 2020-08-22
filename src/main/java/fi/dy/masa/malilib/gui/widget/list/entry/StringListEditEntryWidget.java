@@ -2,12 +2,12 @@ package fi.dy.masa.malilib.gui.widget.list.entry;
 
 import java.util.List;
 import java.util.function.Consumer;
-import fi.dy.masa.malilib.gui.widget.button.GenericButton;
-import fi.dy.masa.malilib.gui.widget.button.ButtonActionListener;
-import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.icon.BaseIcon;
-import fi.dy.masa.malilib.gui.widget.LabelWidget;
+import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
+import fi.dy.masa.malilib.gui.widget.LabelWidget;
+import fi.dy.masa.malilib.gui.widget.button.ButtonActionListener;
+import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.render.RenderUtils;
 
@@ -134,6 +134,12 @@ public class StringListEditEntryWidget extends BaseDataListEntryWidget<String>
         return button;
     }
 
+    @Override
+    public void focusWidget()
+    {
+        this.textField.setFocused(true);
+    }
+
     protected int getInsertionIndex(List<String> list, boolean before)
     {
         final int size = list.size();
@@ -152,6 +158,7 @@ public class StringListEditEntryWidget extends BaseDataListEntryWidget<String>
         int index = this.getInsertionIndex(this.stringList, before);
         this.stringList.add(index, "");
         this.parent.refreshEntries();
+        this.parent.focusWidget(index);
     }
 
     protected void removeEntry()
