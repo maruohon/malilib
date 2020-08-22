@@ -1,26 +1,26 @@
 package fi.dy.masa.malilib.gui.widget.list.entry.config;
 
-import com.google.common.collect.ImmutableList;
-import fi.dy.masa.malilib.config.option.StringListConfig;
+import fi.dy.masa.malilib.config.option.BlackWhiteListConfig;
+import fi.dy.masa.malilib.config.value.BlackWhiteList;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
-import fi.dy.masa.malilib.gui.widget.button.StringListEditButton;
+import fi.dy.masa.malilib.gui.widget.button.BlackWhiteListEditButton;
 import fi.dy.masa.malilib.listener.EventListener;
 
-public class StringListConfigWidget extends BaseConfigOptionWidget<StringListConfig> implements EventListener
+public class BlackWhiteListConfigWidget extends BaseConfigOptionWidget<BlackWhiteListConfig> implements EventListener
 {
-    protected final StringListConfig config;
-    protected final StringListEditButton button;
-    protected final ImmutableList<String> initialValue;
+    protected final BlackWhiteListConfig config;
+    protected final BlackWhiteListEditButton button;
+    protected final BlackWhiteList initialValue;
 
-    public StringListConfigWidget(int x, int y, int width, int height, int listIndex,
-                                  int originalListIndex, StringListConfig config, ConfigWidgetContext ctx)
+    public BlackWhiteListConfigWidget(int x, int y, int width, int height, int listIndex, int originalListIndex,
+                                      BlackWhiteListConfig config, ConfigWidgetContext ctx)
     {
         super(x, y, width, 22, listIndex, originalListIndex, config, ctx);
 
         this.config = config;
-        this.initialValue = this.config.getStrings();
+        this.initialValue = this.config.getValue();
 
-        this.button = new StringListEditButton(x, y, this.getElementWidth(), 20, config, this, ctx.getDialogHandler());
+        this.button = new BlackWhiteListEditButton(x, y, this.getElementWidth(), 20, config, this, ctx.getDialogHandler());
 
         this.resetButton.setActionListener((btn, mbtn) -> {
             this.config.resetToDefault();
@@ -59,6 +59,6 @@ public class StringListConfigWidget extends BaseConfigOptionWidget<StringListCon
     @Override
     public boolean wasModified()
     {
-        return this.config.getStrings().equals(this.initialValue) == false;
+        return this.config.getValue().equals(this.initialValue) == false;
     }
 }

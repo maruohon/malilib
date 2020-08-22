@@ -9,6 +9,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.RegistryNamespaced;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.config.value.BaseConfigOptionListEntry;
+import fi.dy.masa.malilib.config.value.BlackWhiteList;
 import fi.dy.masa.malilib.config.value.ConfigOptionListEntry;
 import fi.dy.masa.malilib.util.StringUtils;
 
@@ -44,27 +45,28 @@ public class UsageRestriction<TYPE>
      * If this method is used, then the class should be extended and the
      * {@link #setValuesForList(Set, List)}
      * method should be overridden to handle the names to objects conversion and adding to the Set.
-     * @param namesBlacklist
-     * @param namesWhitelist
+     * @param list
      */
-    public void setListContents(List<String> namesBlacklist, List<String> namesWhitelist)
+    public void setListContents(BlackWhiteList list)
     {
-        this.setValuesForList(ListType.BLACKLIST, namesBlacklist);
-        this.setValuesForList(ListType.WHITELIST, namesWhitelist);
+        this.type = list.getListType();
+        this.setValuesForList(ListType.BLACKLIST, list.getBlackList());
+        this.setValuesForList(ListType.WHITELIST, list.getWhiteList());
     }
 
     /**
      * Sets both the black- and whitelist contents based on the provided names, replacing any old values,
      * using the provided registry to fetch the values.
-     * @param namesBlacklist
-     * @param namesWhitelist
+     * @param list
      * @param registry
+     * @param errorTranslationKey
      */
-    public void setListContentsBasedOnRegistry(List<String> namesBlacklist, List<String> namesWhitelist,
-                                               RegistryNamespaced<ResourceLocation, TYPE> registry, String errorTranslationKey)
+    public void setValuesBasedOnRegistry(BlackWhiteList list,
+                                         RegistryNamespaced<ResourceLocation, TYPE> registry, String errorTranslationKey)
     {
-        this.setValuesForListBasedOnRegistry(ListType.BLACKLIST, namesBlacklist, registry, errorTranslationKey);
-        this.setValuesForListBasedOnRegistry(ListType.WHITELIST, namesWhitelist, registry, errorTranslationKey);
+        this.type = list.getListType();
+        this.setValuesForListBasedOnRegistry(ListType.BLACKLIST, list.getBlackList(), registry, errorTranslationKey);
+        this.setValuesForListBasedOnRegistry(ListType.WHITELIST, list.getWhiteList(), registry, errorTranslationKey);
     }
 
     /**

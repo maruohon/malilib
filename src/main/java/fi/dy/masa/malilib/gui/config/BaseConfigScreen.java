@@ -35,28 +35,17 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
     @Nullable protected DialogHandler dialogHandler;
     protected int configElementsWidth = 120;
 
-    public BaseConfigScreen(int listX, int listY, String modId, @Nullable GuiScreen parent,
+    public BaseConfigScreen(String modId, @Nullable GuiScreen parent,
                             List<ConfigTab> configTabs, @Nullable ConfigTab defaultTab, String titleKey, Object... args)
     {
-        super(listX, listY);
+        super(10, 46, 20, 62);
 
         this.modId = modId;
         this.defaultTab = defaultTab;
         this.title = StringUtils.translate(titleKey, args);
         this.configTabs = configTabs;
+
         this.setParent(parent);
-    }
-
-    @Override
-    protected int getListWidth()
-    {
-        return this.width - 20;
-    }
-
-    @Override
-    protected int getListHeight()
-    {
-        return this.height - 76;
     }
 
     public ConfigScreenState getTabState()
@@ -98,15 +87,8 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
         getTabState(modId).currentTab = tab;
     }
 
-    public int getConfigElementsWidth()
+    public int getDefaultConfigElementWidth()
     {
-        int overriddenWidth = this.getListWidget().getElementWidth();
-
-        if (overriddenWidth != -1)
-        {
-            return overriddenWidth;
-        }
-
         return this.getCurrentTab() != null ? this.getCurrentTab().getConfigWidth() : this.configElementsWidth;
     }
 
@@ -149,7 +131,13 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
     @Override
     protected ConfigOptionListWidget<? extends ConfigInfo> createListWidget(int listX, int listY, int listWidth, int listHeight)
     {
-        return new ConfigOptionListWidget<>(listX, listY, listWidth, listHeight, this::getConfigs, this);
+        ConfigOptionListWidget<? extends ConfigInfo> widget =
+                new ConfigOptionListWidget<>(listX, listY, listWidth, listHeight, this.modId, this::getConfigs,
+                                             this::getDefaultConfigElementWidth,
+                                             new ConfigWidgetContext(this::getListWidget, this, this::getDialogHandler));
+        widget.addConfigSearchBarWidget(this);
+
+        return widget;
     }
 
     public void reCreateConfigWidgets()
@@ -181,7 +169,7 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
             this.getTabState().currentTabStartIndex = this.tabButtonContainerWidget.getStartIndex();
         }
 
-        this.tabButtonContainerWidget = new CyclableContainerWidget(10, 26, this.width - 20, 20, this.createTabButtons());
+        this.tabButtonContainerWidget = new CyclableContainerWidget(10, 22, this.width - 20, 20, this.createTabButtons());
         this.tabButtonContainerWidget.setStartIndex(this.getTabState().currentTabStartIndex);
         this.addWidget(this.tabButtonContainerWidget);
     }

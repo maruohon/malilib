@@ -15,7 +15,7 @@ public class DirectorySelectorScreen extends BaseListScreen<BaseFileBrowserWidge
 
     public DirectorySelectorScreen(File currentDirectory, File rootDirectory, Consumer<File> fileConsumer)
     {
-        super(10, 28);
+        super(10, 28, 20, 58);
 
         this.title = StringUtils.translate("malilib.gui.title.directory_browser");
         this.currentDirectory = currentDirectory;
@@ -44,18 +44,6 @@ public class DirectorySelectorScreen extends BaseListScreen<BaseFileBrowserWidge
         super.initGui();
 
         this.addConfirmationButton();
-    }
-
-    @Override
-    protected int getListWidth()
-    {
-        return this.width - 20;
-    }
-
-    @Override
-    protected int getListHeight()
-    {
-        return this.height - 58;
     }
 
     @Override

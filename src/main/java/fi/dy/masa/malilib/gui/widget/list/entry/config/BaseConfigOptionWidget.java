@@ -29,9 +29,9 @@ public abstract class BaseConfigOptionWidget<C extends ConfigInfo> extends BaseD
         this.ctx = ctx;
 
         String nameLabel = this.data.getDisplayName();
-        boolean showOwner = this.ctx.gui.getListWidget().isShowingOptionsFromOtherCategories();
+        boolean showOwner = this.ctx.getListWidget().isShowingOptionsFromOtherCategories();
 
-        String ownerLabel = this.ctx.gui.getListWidget().getModNameAndCategoryPrefix(originalListIndex);
+        String ownerLabel = this.ctx.getListWidget().getModNameAndCategoryPrefix(originalListIndex);
         this.configOwnerLabelWidget = new LabelWidget(x + 2, y + 2, 0xFF707070, ownerLabel != null ? ownerLabel : "");
 
         int lw = this.getMaxLabelWidth();
@@ -51,7 +51,7 @@ public abstract class BaseConfigOptionWidget<C extends ConfigInfo> extends BaseD
     {
         this.clearWidgets();
 
-        if (this.ctx.gui.getListWidget().isShowingOptionsFromOtherCategories())
+        if (this.ctx.getListWidget().isShowingOptionsFromOtherCategories())
         {
             this.addWidget(this.configOwnerLabelWidget);
         }
@@ -61,7 +61,7 @@ public abstract class BaseConfigOptionWidget<C extends ConfigInfo> extends BaseD
 
     protected int getElementWidth()
     {
-        return this.ctx.gui.getConfigElementsWidth();
+        return this.ctx.getListWidget().getElementWidth();
     }
 
     protected void updateResetButton(int x, int y, ConfigInfo config)
@@ -102,7 +102,7 @@ public abstract class BaseConfigOptionWidget<C extends ConfigInfo> extends BaseD
 
     public int getMaxLabelWidth()
     {
-        return this.ctx.gui.getListWidget().getMaxLabelWidth();
+        return this.ctx.getListWidget().getMaxLabelWidth();
     }
 
     public boolean wasModified()

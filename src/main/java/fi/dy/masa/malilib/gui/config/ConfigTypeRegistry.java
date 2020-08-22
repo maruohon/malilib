@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.gui.config;
 
 import java.util.HashMap;
 import javax.annotation.Nullable;
+import fi.dy.masa.malilib.config.option.BlackWhiteListConfig;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.config.option.ColorConfig;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
@@ -14,6 +15,7 @@ import fi.dy.masa.malilib.config.option.IntegerConfig;
 import fi.dy.masa.malilib.config.option.OptionListConfig;
 import fi.dy.masa.malilib.config.option.StringConfig;
 import fi.dy.masa.malilib.config.option.StringListConfig;
+import fi.dy.masa.malilib.gui.widget.list.entry.config.BlackWhiteListConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.BooleanConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.ColorConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.DirectoryConfigWidget;
@@ -78,6 +80,7 @@ public class ConfigTypeRegistry
 
     private void registerDefaultPlacers()
     {
+        this.registerWidgetFactory(BlackWhiteListConfig.class, BlackWhiteListConfigWidget::new);
         this.registerWidgetFactory(BooleanConfig.class, BooleanConfigWidget::new);
         this.registerWidgetFactory(ColorConfig.class, ColorConfigWidget::new);
         this.registerWidgetFactory(DirectoryConfig.class, DirectoryConfigWidget::new);

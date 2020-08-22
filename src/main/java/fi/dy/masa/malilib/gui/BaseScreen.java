@@ -70,9 +70,19 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
     private final MessageRenderer messageRenderer;
     protected BaseWidget hoveredWidget = null;
     protected String title = "";
+    @Nullable private GuiScreen parent;
+    protected int backgroundColor = TOOLTIP_BACKGROUND;
+    protected int borderColor = COLOR_HORIZONTAL_BAR;
+    protected int x;
+    protected int y;
+    protected int screenWidth;
+    protected int screenHeight;
+    protected int titleX = 10;
+    protected int titleY = 6;
+    protected int titleColor = 0xFFFFFFFF;
+    protected boolean renderBorder;
+    protected boolean shouldCenter;
     protected boolean useTitleHierarchy = true;
-    @Nullable
-    private GuiScreen parent;
 
     public BaseScreen()
     {
@@ -127,6 +137,24 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
     }
 
     @Override
+    public void setWorldAndResolution(Minecraft mc, int width, int height)
+    {
+        if (this.getParent() != null)
+        {
+            this.getParent().setWorldAndResolution(mc, width, height);
+        }
+
+        this.setScreenWidthAndHeight(width, height);
+
+        if (this.shouldCenter)
+        {
+            this.centerOnScreen();
+        }
+
+        super.setWorldAndResolution(mc, width, height);
+    }
+
+    @Override
     public void initGui()
     {
         super.initGui();
@@ -146,6 +174,37 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
         }
     }
 
+    protected void setScreenWidthAndHeight(int width, int height)
+    {
+        this.screenWidth = width;
+        this.screenHeight = height;
+
+        this.width = width;
+        this.height = height;
+    }
+
+    protected void centerOnScreen()
+    {
+        if (this.getParent() instanceof BaseScreen)
+        {
+            BaseScreen parent = (BaseScreen) this.getParent();
+            this.x = parent.x + parent.screenWidth / 2 - this.screenWidth / 2;
+            this.y = parent.y + parent.screenHeight / 2 - this.screenHeight / 2;
+        }
+        else if (this.getParent() != null)
+        {
+            GuiScreen parent = this.getParent();
+            this.x = parent.width / 2 - this.screenWidth / 2;
+            this.y = parent.height / 2 - this.screenHeight / 2;
+        }
+        else if (GuiUtils.getCurrentScreen() != null)
+        {
+            GuiScreen current = GuiUtils.getCurrentScreen();
+            this.x = current.width / 2 - this.screenWidth / 2;
+            this.y = current.height / 2 - this.screenHeight / 2;
+        }
+    }
+
     protected BaseWidget getTopHoveredWidget(int mouseX, int mouseY, @Nullable BaseWidget highestFoundWidget)
     {
         highestFoundWidget = BaseWidget.getTopHoveredWidgetFromList(this.buttons, mouseX, mouseY, highestFoundWidget);
@@ -161,6 +220,11 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
+        if (this.getParent() != null)
+        {
+            this.getParent().drawScreen(mouseX, mouseY, partialTicks);
+        }
+
         boolean isActiveGui = GuiUtils.getCurrentScreen() == this;
         int hoveredWidgetId = isActiveGui && this.hoveredWidget != null ? this.hoveredWidget.getId() : -1;
 
@@ -456,7 +520,7 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
             widget.setZLevelBasedOnParent(parentZLevel);
         }
 
-        this.messageRenderer.setZLevel((int) this.zLevel + 100);
+        this.messageRenderer.setZLevel(parentZLevel + 100);
 
         return this;
     }
@@ -542,13 +606,19 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
 
     protected void drawScreenBackground(int mouseX, int mouseY)
     {
-        // Draw the dark background
-        RenderUtils.drawRect(0, 0, this.width, this.height, TOOLTIP_BACKGROUND, this.zLevel);
+        if (this.renderBorder)
+        {
+            RenderUtils.drawOutlinedBox(this.x, this.y, this.screenWidth, this.screenHeight, this.backgroundColor, this.borderColor, this.zLevel);
+        }
+        else
+        {
+            RenderUtils.drawRect(this.x, this.y, this.screenWidth, this.screenHeight, this.backgroundColor, this.zLevel);
+        }
     }
 
     protected void drawTitle(int mouseX, int mouseY, float partialTicks)
     {
-        this.drawStringWithShadow(this.getTitle(), LEFT, TOP, COLOR_WHITE);
+        this.drawStringWithShadow(this.getTitle(), this.x + this.titleX, this.y + this.titleY, this.titleColor);
     }
 
     protected void drawContents(int mouseX, int mouseY, float partialTicks)

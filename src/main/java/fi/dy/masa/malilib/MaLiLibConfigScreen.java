@@ -17,7 +17,7 @@ public class MaLiLibConfigScreen
 
     public static BaseConfigScreen create()
     {
-        return new BaseConfigScreen(10, 50, MaLiLibReference.MOD_ID, null, TABS, GENERIC, "malilib.gui.title.configs");
+        return new BaseConfigScreen(MaLiLibReference.MOD_ID, null, TABS, GENERIC, "malilib.gui.title.configs");
     }
 
     public static ImmutableList<ConfigTab> getConfigTabs()

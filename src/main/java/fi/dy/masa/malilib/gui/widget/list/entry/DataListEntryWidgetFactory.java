@@ -2,7 +2,6 @@ package fi.dy.masa.malilib.gui.widget.list.entry;
 
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
-import fi.dy.masa.malilib.gui.widget.list.entry.BaseListEntryWidget;
 
 public interface DataListEntryWidgetFactory<DATATYPE>
 {

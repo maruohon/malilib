@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -359,6 +361,31 @@ public class JsonUtils
         return null;
     }
 
+    public static JsonArray stringListAsArray(List<String> list)
+    {
+        JsonArray arr = new JsonArray();
+
+        for (String str : list)
+        {
+            arr.add(str);
+        }
+
+        return arr;
+    }
+
+    public static List<String> arrayAsStringList(JsonArray arr)
+    {
+        List<String> list = new ArrayList<>();
+        final int count = arr.size();
+
+        for (int i = 0; i < count; ++i)
+        {
+            list.add(arr.get(i).getAsString());
+        }
+
+        return list;
+    }
+
     // https://stackoverflow.com/questions/29786197/gson-jsonobject-copy-value-affected-others-jsonobject-instance
     @Nonnull
     public static JsonObject deepCopy(@Nonnull JsonObject jsonObject)
@@ -451,7 +478,7 @@ public class JsonUtils
     /**
      * Converts the given JsonElement tree into its string representation.
      * If <b>compact</b> is true, then it's written in one line without spaces or line breaks.
-     * @param root
+     * @param element
      * @param compact
      * @return
      */

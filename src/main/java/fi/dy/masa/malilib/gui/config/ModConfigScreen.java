@@ -10,7 +10,7 @@ public class ModConfigScreen extends BaseConfigScreen
 
     public ModConfigScreen(String modId, List<? extends ConfigInfo> configs, String titleKey, Object... args)
     {
-        super(10, 0, modId, null, ImmutableList.of(), null, titleKey, args);
+        super(modId, null, ImmutableList.of(), null, titleKey, args);
 
         this.configs = configs;
     }

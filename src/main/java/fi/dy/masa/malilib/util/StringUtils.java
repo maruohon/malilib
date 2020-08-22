@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.util;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -80,6 +81,11 @@ public class StringUtils
         name.getStyle().setClickEvent(new net.minecraft.util.text.event.ClickEvent(net.minecraft.util.text.event.ClickEvent.Action.OPEN_FILE, file.getAbsolutePath()));
         name.getStyle().setUnderlined(Boolean.TRUE);
         sender.sendMessage(new net.minecraft.util.text.TextComponentTranslation(messageKey, name));
+    }
+
+    public static int getMaxStringRenderWidth(String... strings)
+    {
+        return getMaxStringRenderWidth(Arrays.asList(strings));
     }
 
     public static int getMaxStringRenderWidth(List<String> lines)

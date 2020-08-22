@@ -67,6 +67,8 @@ malilib.gui.button.config.hover.reset_all_filtered=Reset all the configs matchin
 malilib.gui.button.config.hover.selected_directory=Current directory:\n§3%s§r
 malilib.gui.button.config.hover.selected_file=Current file:\n§3%s§r
 
+malilib.gui.button.black_white_list_edit.entries=§e%s§r - §b%s§r entries
+malilib.gui.button.black_white_list_edit.none=Type: NONE
 malilib.gui.button.cancel=Cancel
 malilib.gui.button.default=Default
 malilib.gui.button.none.caps=NONE
@@ -79,16 +81,18 @@ malilib.gui.button.render_layers_gui.follow_player=Follow Player: %s
 malilib.gui.button.render_layers_gui.layers=Layers: %s
 malilib.gui.button.render_layers_gui.set_to_player=Set to player
 
+malilib.gui.button.hover.black_white_list_edit.type=List Type: §3%s
 malilib.gui.button.hover.config.reset_all_filtered=Reset all the configs matching the current\nsearch filters back to their default values
 malilib.gui.button.hover.directory_widget.create_directory=Create a new directory
 malilib.gui.button.hover.directory_widget.hold_shift_to_open_directory=You can shift click the directory path elements\nto open the directory in the system file manager
 malilib.gui.button.hover.directory_widget.root=To root/base directory
 malilib.gui.button.hover.directory_widget.up=Up to parent directory
+malilib.gui.button.hover.entries_more=... and §b%s§r more
+malilib.gui.button.hover.entries_total=Total entries: §b%s§r
 malilib.gui.button.hover.hold_shift_for_info=§oHold Shift for more information§r
 malilib.gui.button.hover.hotkey_search_button=Search hotkeys for the given keys
 malilib.gui.button.hover.plus_minus_tip=Left click to increase\nRight click to decrease\nShift and/or Alt to increase the step size
 malilib.gui.button.hover.render_layers_gui.follow_player=If enabled, then the render layer follows the player
-malilib.gui.button.hover.string_list.total_entries=Total entries: %s
 malilib.gui.button.hover.text_field_slider_toggle=Toggle between a text field and a slider
 
 malilib.gui.button.hover.list.add_after=Add an entry after
@@ -100,6 +104,10 @@ malilib.gui.button.hover.list.move_up=Move Up
 malilib.gui.button.hover.list.remove=Remove
 
 malilib.gui.hover.open_color_editor=Open color editor
+
+malilib.gui.label.black_white_list_edit.black_list=Black List
+malilib.gui.label.black_white_list_edit.type=List Type
+malilib.gui.label.black_white_list_edit.white_list=White List
 
 malilib.gui.label.block_snap.center=Center
 malilib.gui.label.block_snap.corner=Corner
@@ -151,6 +159,7 @@ malilib.gui.label.render_layers.layer_min=Min layer
 malilib.gui.label.render_layers.player_follow_offset=Offset
 
 malilib.gui.title.all_hotkeys=All registered hotkeys
+malilib.gui.title.black_white_list_edit=Edit Black/White List '%s'
 malilib.gui.title.color_editor=Color Editor
 malilib.gui.title.configs=malilib Configs
 malilib.gui.title.confirm_config_reset=Confirm config reset

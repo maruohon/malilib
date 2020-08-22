@@ -6,8 +6,8 @@ import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
-import fi.dy.masa.malilib.gui.widget.BaseWidget;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
+import fi.dy.masa.malilib.gui.widget.BaseWidget;
 import fi.dy.masa.malilib.gui.widget.list.BaseListWidget;
 
 public abstract class BaseListScreen<LISTWIDGET extends BaseListWidget> extends BaseScreen
@@ -15,11 +15,18 @@ public abstract class BaseListScreen<LISTWIDGET extends BaseListWidget> extends 
     private int listX;
     private int listY;
     private LISTWIDGET widget;
+    protected int totalListMarginX;
+    protected int totalListMarginY;
 
-    protected BaseListScreen(int listX, int listY)
+    protected BaseListScreen(int listX, int listY, int totalListMarginX, int totalListMarginY)
     {
+        this.totalListMarginX = totalListMarginX;
+        this.totalListMarginY = totalListMarginY;
+
         this.setListPosition(listX, listY);
     }
+
+    protected abstract LISTWIDGET createListWidget(int listX, int listY, int listWidth, int listHeight);
 
     protected void setListPosition(int listX, int listY)
     {
@@ -29,19 +36,23 @@ public abstract class BaseListScreen<LISTWIDGET extends BaseListWidget> extends 
 
     protected int getListX()
     {
-        return this.listX;
+        return this.x + this.listX;
     }
 
     protected int getListY()
     {
-        return this.listY;
+        return this.y + this.listY;
     }
 
-    protected abstract LISTWIDGET createListWidget(int listX, int listY, int listWidth, int listHeight);
+    protected int getListWidth()
+    {
+        return this.screenWidth - this.totalListMarginX;
+    }
 
-    protected abstract int getListWidth();
-
-    protected abstract int getListHeight();
+    protected int getListHeight()
+    {
+        return this.screenHeight - this.totalListMarginY;
+    }
 
     @Nullable
     public LISTWIDGET getListWidget()
@@ -57,6 +68,7 @@ public abstract class BaseListScreen<LISTWIDGET extends BaseListWidget> extends 
     protected void reCreateListWidget()
     {
         this.widget = this.createListWidget(this.getListX(), this.getListY(), this.getListWidth(), this.getListHeight());
+        this.widget.setZLevel((int) this.zLevel + 2);
         this.widget.initWidget();
     }
 

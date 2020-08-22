@@ -21,12 +21,12 @@ public class HotkeyConfigWidget extends BaseConfigOptionWidget<HotkeyConfig>
         this.config = config;
         this.initialValue = this.config.getKeyBind().getKeys();
 
-        this.keybindButton = new KeyBindConfigButton(x, y, 120, 20, this.config.getKeyBind(), ctx.gui);
+        this.keybindButton = new KeyBindConfigButton(x, y, 120, 20, this.config.getKeyBind(), ctx.getKeybindEditingScreen());
         this.keybindButton.setActionListener((btn, mbtn) -> this.resetButton.setEnabled(this.config.isModified()));
         this.keybindButton.setValueChangeListener(() -> this.resetButton.setEnabled(this.config.isModified()));
 
         this.settingsWidget = new KeybindSettingsWidget(x, y, 20, 20, config.getKeyBind(),
-                                                        config.getDisplayName(), ctx.gui.getDialogHandler());
+                                                        config.getDisplayName(), ctx.getDialogHandler());
 
         this.resetButton.setActionListener((btn, mbtn) -> {
             this.config.resetToDefault();

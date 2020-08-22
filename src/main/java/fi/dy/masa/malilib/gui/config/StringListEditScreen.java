@@ -1,13 +1,12 @@
-package fi.dy.masa.malilib.gui;
+package fi.dy.masa.malilib.gui.config;
 
 import java.util.List;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.config.option.StringListConfig;
-import fi.dy.masa.malilib.gui.config.ConfigScreen;
+import fi.dy.masa.malilib.gui.BaseListScreen;
 import fi.dy.masa.malilib.gui.icon.BaseIcon;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.util.DialogHandler;
@@ -17,30 +16,28 @@ import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.StringListEditEntryWidget;
 import fi.dy.masa.malilib.gui.widget.list.header.StringListEditHeaderWidget;
 import fi.dy.masa.malilib.listener.EventListener;
-import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class StringListEditScreen extends BaseListScreen<DataListWidget<String>>
 {
     protected final StringListConfig config;
-    protected final ConfigScreen configGui;
-    protected int dialogWidth;
-    protected int dialogHeight;
-    protected int dialogLeft;
-    protected int dialogTop;
     @Nullable protected final DialogHandler dialogHandler;
     @Nullable protected final EventListener saveListener;
 
-    public StringListEditScreen(StringListConfig config, ConfigScreen configGui,
-                                @Nullable DialogHandler dialogHandler, GuiScreen parent, @Nullable EventListener saveListener)
+    public StringListEditScreen(StringListConfig config, @Nullable EventListener saveListener,
+                                @Nullable DialogHandler dialogHandler, GuiScreen parent)
     {
-        super(0, 0);
+        super(8, 20, 14, 25);
 
         this.config = config;
-        this.configGui = configGui;
         this.dialogHandler = dialogHandler;
         this.saveListener = saveListener;
+
         this.title = StringUtils.translate("malilib.gui.title.string_list_edit", config.getDisplayName());
+        this.shouldCenter = true;
+        this.renderBorder = true;
+        this.useTitleHierarchy = false;
+        this.backgroundColor = 0xFF000000;
 
         // When we have a dialog handler, then we are inside the Liteloader config menu.
         // In there we don't want to use the normal "GUI replacement and render parent first" trick.
@@ -56,38 +53,11 @@ public class StringListEditScreen extends BaseListScreen<DataListWidget<String>>
         }
     }
 
-    protected void setWidthAndHeight()
-    {
-        this.dialogWidth = 400;
-        this.dialogHeight = GuiUtils.getScaledWindowHeight() - 90;
-    }
-
-    protected void centerOnScreen()
-    {
-        if (this.getParent() != null)
-        {
-            this.dialogLeft = this.getParent().width / 2 - this.dialogWidth / 2;
-            this.dialogTop = this.getParent().height / 2 - this.dialogHeight / 2;
-        }
-        else
-        {
-            this.dialogLeft = 20;
-            this.dialogTop = 20;
-        }
-
-        this.setListPosition(this.dialogLeft + 8, this.dialogTop + 20);
-    }
-
     @Override
-    protected int getListWidth()
+    protected void setScreenWidthAndHeight(int width, int height)
     {
-        return this.dialogWidth - 14;
-    }
-
-    @Override
-    protected int getListHeight()
-    {
-        return this.dialogHeight - 25;
+        this.screenWidth = 400;
+        this.screenHeight = GuiUtils.getScaledWindowHeight() - 90;
     }
 
     @Override
@@ -104,11 +74,22 @@ public class StringListEditScreen extends BaseListScreen<DataListWidget<String>>
     }
 
     @Override
+    public boolean onKeyTyped(char typedChar, int keyCode)
+    {
+        if (keyCode == Keyboard.KEY_ESCAPE && this.dialogHandler != null)
+        {
+            this.dialogHandler.closeDialog();
+            return true;
+        }
+
+        return super.onKeyTyped(typedChar, keyCode);
+    }
+
+    @Override
     protected DataListWidget<String> createListWidget(int listX, int listY, int listWidth, int listHeight)
     {
         DataListWidget<String> listWidget = new DataListWidget<>(listX, listY, listWidth, listHeight, this.config::getStrings);
 
-        listWidget.setZLevel((int) this.zLevel + 2);
         listWidget.setListEntryWidgetFixedHeight(20);
         listWidget.addSearchBar(new SearchBarWidget(listWidget.getX() + 17, listWidget.getY() + 3,
                                                     listWidget.getWidth() - 31, 14, 0, BaseIcon.SEARCH,
@@ -131,54 +112,5 @@ public class StringListEditScreen extends BaseListScreen<DataListWidget<String>>
         });
 
         return listWidget;
-    }
-
-    @Override
-    public void setWorldAndResolution(Minecraft mc, int width, int height)
-    {
-        if (this.getParent() != null)
-        {
-            this.getParent().setWorldAndResolution(mc, width, height);
-        }
-
-        this.setWidthAndHeight();
-        this.centerOnScreen();
-
-        super.setWorldAndResolution(mc, width, height);
-    }
-
-    @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks)
-    {
-        if (this.getParent() != null)
-        {
-            this.getParent().drawScreen(mouseX, mouseY, partialTicks);
-        }
-
-        super.drawScreen(mouseX, mouseY, partialTicks);
-    }
-
-    @Override
-    protected void drawScreenBackground(int mouseX, int mouseY)
-    {
-        RenderUtils.drawOutlinedBox(this.dialogLeft, this.dialogTop, this.dialogWidth, this.dialogHeight, 0xFF000000, COLOR_HORIZONTAL_BAR, (int) this.zLevel);
-    }
-
-    @Override
-    protected void drawTitle(int mouseX, int mouseY, float partialTicks)
-    {
-        this.drawStringWithShadow(this.title, this.dialogLeft + 10, this.dialogTop + 6, COLOR_WHITE);
-    }
-
-    @Override
-    public boolean onKeyTyped(char typedChar, int keyCode)
-    {
-        if (keyCode == Keyboard.KEY_ESCAPE && this.dialogHandler != null)
-        {
-            this.dialogHandler.closeDialog();
-            return true;
-        }
-
-        return super.onKeyTyped(typedChar, keyCode);
     }
 }

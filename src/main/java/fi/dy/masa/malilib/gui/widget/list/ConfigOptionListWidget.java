@@ -3,16 +3,17 @@ package fi.dy.masa.malilib.gui.widget.list;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
+import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
-import fi.dy.masa.malilib.gui.config.BaseConfigScreen;
 import fi.dy.masa.malilib.gui.config.ConfigOptionWidgetFactory;
 import fi.dy.masa.malilib.gui.config.ConfigTab;
 import fi.dy.masa.malilib.gui.config.ConfigTabProvider;
 import fi.dy.masa.malilib.gui.config.ConfigTabRegistry;
 import fi.dy.masa.malilib.gui.config.ConfigTypeRegistry;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
+import fi.dy.masa.malilib.gui.config.KeybindEditingScreen;
 import fi.dy.masa.malilib.gui.icon.BaseIcon;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.widget.ConfigsSearchBarWidget;
@@ -21,26 +22,22 @@ import fi.dy.masa.malilib.gui.widget.list.entry.config.BaseConfigOptionWidget;
 
 public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget<C>
 {
-    protected final BaseConfigScreen gui;
-    protected final ConfigsSearchBarWidget configsSearchBarWidget;
     protected final EnumMap<ConfigsSearchBarWidget.Scope, List<C>> cachedConfigs = new EnumMap<>(ConfigsSearchBarWidget.Scope.class);
     protected final EnumMap<ConfigsSearchBarWidget.Scope, List<ConfigTab>> cachedCategories = new EnumMap<>(ConfigsSearchBarWidget.Scope.class);
+    protected final String modId;
+    protected final IntSupplier defaultElementWidthSupplier;
+    @Nullable protected ConfigsSearchBarWidget configsSearchBarWidget;
     protected int maxLabelWidth;
 
-    public ConfigOptionListWidget(int x, int y, int width, int height, Supplier<List<C>> entrySupplier, BaseConfigScreen gui)
+    public ConfigOptionListWidget(int x, int y, int width, int height, String modId, Supplier<List<C>> entrySupplier,
+                                  IntSupplier defaultElementWidthSupplier, ConfigWidgetContext ctx)
     {
         super(x, y, width, height, entrySupplier);
 
-        this.gui = gui;
+        this.modId = modId;
+        this.defaultElementWidthSupplier = defaultElementWidthSupplier;
 
-        this.configsSearchBarWidget = new ConfigsSearchBarWidget(x, y, width, 32, 0,
-                                                                 BaseIcon.SEARCH, HorizontalAlignment.LEFT,
-                                                                 this::onSearchBarChange,
-                                                                 this::refreshEntries, this::resetFilteredConfigsToDefaults, gui);
-        this.configsSearchBarWidget.setGeometryChangeListener(this::updatePositioningAndElements);
-        this.searchBarWidget = this.configsSearchBarWidget;
-
-        this.setEntryWidgetFactory(new ConfigOptionListEntryWidgetFactory<>(entrySupplier, gui));
+        this.setEntryWidgetFactory(new ConfigOptionListEntryWidgetFactory<>(entrySupplier, ctx));
         this.setEntryFilterStringFactory(ConfigInfo::getSearchStrings);
 
         this.listPosition.setTopPadding(0);
@@ -53,13 +50,31 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
 
     public int getElementWidth()
     {
-        // FIXME how to retrieve the correct max width from the config tabs?
-        return this.isShowingOptionsFromOtherCategories() ? 220 : -1;
+        if (this.isShowingOptionsFromOtherCategories())
+        {
+            // FIXME how to retrieve the correct max width from the config tabs?
+            return 220;
+        }
+
+        return this.defaultElementWidthSupplier.getAsInt();
     }
 
     public boolean isShowingOptionsFromOtherCategories()
     {
-        return this.configsSearchBarWidget.getCurrentScope() != ConfigsSearchBarWidget.Scope.CURRENT_CATEGORY;
+        return this.configsSearchBarWidget != null &&
+               this.configsSearchBarWidget.getCurrentScope() != ConfigsSearchBarWidget.Scope.CURRENT_CATEGORY;
+    }
+
+    public void addConfigSearchBarWidget(KeybindEditingScreen screen)
+    {
+        this.configsSearchBarWidget = new ConfigsSearchBarWidget(this.getX(), this.getY(), this.getWidth(), 32, 0,
+                                                                 BaseIcon.SEARCH, HorizontalAlignment.LEFT,
+                                                                 this::onSearchBarChange,
+                                                                 this::refreshEntries,
+                                                                 this::resetFilteredConfigsToDefaults,
+                                                                 screen);
+        this.configsSearchBarWidget.setGeometryChangeListener(this::updatePositioningAndElements);
+        this.searchBarWidget = this.configsSearchBarWidget;
     }
 
     protected boolean resetFilteredConfigsToDefaults()
@@ -77,11 +92,10 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
     @Nullable
     public String getModNameAndCategoryPrefix(int listIndex)
     {
-        ConfigsSearchBarWidget.Scope scope = this.configsSearchBarWidget.getCurrentScope();
-
-        if (scope != ConfigsSearchBarWidget.Scope.CURRENT_CATEGORY)
+        if (this.configsSearchBarWidget != null &&
+            this.configsSearchBarWidget.getCurrentScope() != ConfigsSearchBarWidget.Scope.CURRENT_CATEGORY)
         {
-            List<ConfigTab> categories = this.cachedCategories.get(scope);
+            List<ConfigTab> categories = this.cachedCategories.get(this.configsSearchBarWidget.getCurrentScope());
 
             if (categories != null && listIndex < categories.size())
             {
@@ -96,7 +110,8 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
     @Override
     protected boolean entryMatchesFilter(C entry, String filterText)
     {
-        return super.entryMatchesFilter(entry, filterText) && this.configsSearchBarWidget.passesFilter(entry);
+        return super.entryMatchesFilter(entry, filterText) &&
+               (this.configsSearchBarWidget == null || this.configsSearchBarWidget.passesFilter(entry));
     }
 
     @Override
@@ -129,10 +144,10 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
     @Override
     public List<C> getCurrentEntries()
     {
-        ConfigsSearchBarWidget.Scope scope = this.configsSearchBarWidget.getCurrentScope();
-
-        if (scope != ConfigsSearchBarWidget.Scope.CURRENT_CATEGORY)
+        if (this.configsSearchBarWidget != null &&
+            this.configsSearchBarWidget.getCurrentScope() != ConfigsSearchBarWidget.Scope.CURRENT_CATEGORY)
         {
+            ConfigsSearchBarWidget.Scope scope = this.configsSearchBarWidget.getCurrentScope();
             List<C> list = this.cachedConfigs.get(scope);
 
             if (list == null)
@@ -147,7 +162,7 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
                 }
                 else
                 {
-                    ConfigTabProvider tabProvider = ConfigTabRegistry.INSTANCE.getConfigTabProviderFor(this.gui.getModId());
+                    ConfigTabProvider tabProvider = ConfigTabRegistry.INSTANCE.getConfigTabProviderFor(this.modId);
 
                     if (tabProvider != null)
                     {
@@ -189,10 +204,10 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
         protected final Supplier<List<C>> entrySupplier;
         protected final ConfigWidgetContext ctx;
 
-        public ConfigOptionListEntryWidgetFactory(Supplier<List<C>> entrySupplier, BaseConfigScreen gui)
+        public ConfigOptionListEntryWidgetFactory(Supplier<List<C>> entrySupplier, ConfigWidgetContext ctx)
         {
             this.entrySupplier = entrySupplier;
-            this.ctx = new ConfigWidgetContext(gui);
+            this.ctx = ctx;
         }
 
         @Override
