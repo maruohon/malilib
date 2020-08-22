@@ -67,6 +67,16 @@ public class KeyBindConfigButton extends GenericButton
                 this.host.setActiveKeyBindButton(this);
             }
         }
+        else if (mouseButton == 2)
+        {
+            this.keyBind.clearKeys();
+            this.updateDisplayString();
+
+            if (this.valueChangeListener != null)
+            {
+                this.valueChangeListener.onEvent();
+            }
+        }
 
         return true;
     }
@@ -236,13 +246,22 @@ public class KeyBindConfigButton extends GenericButton
             this.addHoverStrings(label + ": " + defaultStr);
         }
 
+        boolean nonEmpty = this.keyBind.getKeys().isEmpty() == false;
+
+        if (nonEmpty)
+        {
+            this.addHoverStrings("malilib.gui.button.hover.keybind.middle_click_to_clear");
+        }
+
         if (this.overlapInfo.size() > 0)
         {
-            if (modified)
+            if (modified || nonEmpty)
             {
-                this.addHoverStrings("--------");
+                this.addHoverStrings("================");
             }
 
+            this.addHoverStrings("malilib.gui.button.hover.keybind.possible_overlaps");
+            this.addHoverStrings("----------------");
             this.addHoverStrings(this.overlapInfo);
         }
     }
