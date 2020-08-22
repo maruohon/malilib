@@ -14,11 +14,11 @@ import fi.dy.masa.malilib.util.restriction.UsageRestriction.ListType;
 public class BlackWhiteListEditButton extends GenericButton
 {
     protected final BlackWhiteListConfig config;
+    protected final EventListener saveListener;
     @Nullable protected final DialogHandler dialogHandler;
-    @Nullable protected final EventListener saveListener;
 
     public BlackWhiteListEditButton(int x, int y, int width, int height, BlackWhiteListConfig config,
-                                    @Nullable EventListener saveListener, @Nullable DialogHandler dialogHandler)
+                                    EventListener saveListener, @Nullable DialogHandler dialogHandler)
     {
         super(x, y, width, height, "");
 
