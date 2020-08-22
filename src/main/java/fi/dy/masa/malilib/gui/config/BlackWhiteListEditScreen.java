@@ -43,9 +43,16 @@ public class BlackWhiteListEditScreen extends BaseListScreen<ConfigOptionListWid
         this.useTitleHierarchy = false;
         this.backgroundColor = 0xFF000000;
 
-        this.typeConfig = new OptionListConfig<>("malilib.gui.label.black_white_list_edit.type", config.getValue().getListType());
-        this.blackListConfig = new StringListConfig("malilib.gui.label.black_white_list_edit.black_list", config.getValue().getBlackList());
-        this.whiteListConfig = new StringListConfig("malilib.gui.label.black_white_list_edit.white_list", config.getValue().getWhiteList());
+        // Initialize them to the default value so that the reset button is active when they differ from the default value,
+        // and also so that the reset restores them to the default value, not the value they were are when the screen was opened
+        this.typeConfig = new OptionListConfig<>("malilib.gui.label.black_white_list_edit.type", config.getDefaultValue().getListType());
+        this.blackListConfig = new StringListConfig("malilib.gui.label.black_white_list_edit.black_list", config.getDefaultValue().getBlackList());
+        this.whiteListConfig = new StringListConfig("malilib.gui.label.black_white_list_edit.white_list", config.getDefaultValue().getWhiteList());
+
+        this.typeConfig.setOptionListValue(config.getValue().getListType());
+        this.blackListConfig.setStrings(config.getValue().getBlackList());
+        this.whiteListConfig.setStrings(config.getValue().getWhiteList());
+
         this.configs.add(this.typeConfig);
         this.configs.add(this.blackListConfig);
         this.configs.add(this.whiteListConfig);
