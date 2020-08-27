@@ -3,20 +3,19 @@ package fi.dy.masa.malilib.config.value;
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.util.StringUtils;
 
-public enum HudAlignment implements ConfigOptionListEntry<HudAlignment>
+public enum ScreenCorner implements ConfigOptionListEntry<ScreenCorner>
 {
     TOP_LEFT        ("top_left",        "malilib.label.alignment.top_left"),
     TOP_RIGHT       ("top_right",       "malilib.label.alignment.top_right"),
     BOTTOM_LEFT     ("bottom_left",     "malilib.label.alignment.bottom_left"),
-    BOTTOM_RIGHT    ("bottom_right",    "malilib.label.alignment.bottom_right"),
-    CENTER          ("center",          "malilib.label.alignment.center");
+    BOTTOM_RIGHT    ("bottom_right",    "malilib.label.alignment.bottom_right");
 
-    public static final ImmutableList<HudAlignment> VALUES = ImmutableList.copyOf(values());
+    public static final ImmutableList<ScreenCorner> VALUES = ImmutableList.copyOf(values());
 
     private final String configString;
     private final String translationKey;
 
-    HudAlignment(String configString, String translationKey)
+    ScreenCorner(String configString, String translationKey)
     {
         this.configString = configString;
         this.translationKey = translationKey;
@@ -35,13 +34,13 @@ public enum HudAlignment implements ConfigOptionListEntry<HudAlignment>
     }
 
     @Override
-    public HudAlignment cycle(boolean forward)
+    public ScreenCorner cycle(boolean forward)
     {
         return BaseConfigOptionListEntry.cycleValue(VALUES, this.ordinal(), forward);
     }
 
     @Override
-    public HudAlignment fromString(String name)
+    public ScreenCorner fromString(String name)
     {
         return BaseConfigOptionListEntry.findValueByName(name, VALUES);
     }

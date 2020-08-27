@@ -1,24 +1,29 @@
 package fi.dy.masa.malilib.gui.widget.list.header;
 
 import java.util.List;
+import java.util.function.Supplier;
 import fi.dy.masa.malilib.gui.icon.BaseIcon;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.DataListHeaderWidget;
 
-public class StringListEditHeaderWidget extends DataListHeaderWidget<String>
+public class BaseDataListEditHeaderWidget<DATATYPE> extends DataListHeaderWidget<DATATYPE>
 {
-    protected final List<String> stringList;
+    protected final List<DATATYPE> dataList;
+    protected final Supplier<DATATYPE> dataFactory;
     protected final GenericButton addButton;
 
-    public StringListEditHeaderWidget(int x, int y, int width, int height, DataListWidget<String> listWidget)
+    public BaseDataListEditHeaderWidget(int x, int y, int width, int height,
+                                        DataListWidget<DATATYPE> listWidget, String buttonHover,
+                                        Supplier<DATATYPE> dataFactory)
     {
         super(x, y, 15, 15, listWidget);
 
         // This is a reference to the current entries list, which can be modified
-        this.stringList = listWidget.getCurrentEntries();
+        this.dataList = listWidget.getCurrentEntries();
+        this.dataFactory = dataFactory;
 
-        this.addButton = new GenericButton(x, y, BaseIcon.PLUS, "malilib.gui.button.hover.list.add_first");
+        this.addButton = new GenericButton(x, y, BaseIcon.PLUS, buttonHover);
         this.addButton.setRenderOutline(true);
         this.addButton.setActionListener((btn, mbtn) -> this.insertEntry());
     }
@@ -41,7 +46,7 @@ public class StringListEditHeaderWidget extends DataListHeaderWidget<String>
 
     protected void insertEntry()
     {
-        this.stringList.add(0, "");
+        this.dataList.add(0, this.dataFactory.get());
         this.listWidget.refreshEntries();
         this.listWidget.focusWidget(0);
     }

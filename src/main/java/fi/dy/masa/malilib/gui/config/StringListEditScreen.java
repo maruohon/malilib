@@ -14,7 +14,7 @@ import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.SearchBarWidget;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.StringListEditEntryWidget;
-import fi.dy.masa.malilib.gui.widget.list.header.StringListEditHeaderWidget;
+import fi.dy.masa.malilib.gui.widget.list.header.BaseDataListEditHeaderWidget;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.util.StringUtils;
 
@@ -95,7 +95,7 @@ public class StringListEditScreen extends BaseListScreen<DataListWidget<String>>
                                                     listWidget.getWidth() - 31, 14, 0, BaseIcon.SEARCH,
                                                     HorizontalAlignment.RIGHT, listWidget::onSearchBarChange));
 
-        listWidget.setHeaderWidgetFactory(StringListEditHeaderWidget::new);
+        listWidget.setHeaderWidgetFactory((x, y, w, h, lw) -> new BaseDataListEditHeaderWidget<>(x, y, w, h, lw, "malilib.gui.button.hover.list.add_first", () -> ""));
         listWidget.setSearchBarPositioner((wgt, x, y, w) -> {
             wgt.setPosition(x + 17, y);
             wgt.setWidth(w - 17);

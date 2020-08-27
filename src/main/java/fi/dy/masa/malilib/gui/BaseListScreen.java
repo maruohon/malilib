@@ -68,8 +68,12 @@ public abstract class BaseListScreen<LISTWIDGET extends BaseListWidget> extends 
     protected void reCreateListWidget()
     {
         this.widget = this.createListWidget(this.getListX(), this.getListY(), this.getListWidth(), this.getListHeight());
-        this.widget.setZLevel((int) this.zLevel + 2);
-        this.widget.initWidget();
+
+        if (this.widget != null)
+        {
+            this.widget.setZLevel((int) this.zLevel + 2);
+            this.widget.initWidget();
+        }
     }
 
     public boolean isSearchOpen()

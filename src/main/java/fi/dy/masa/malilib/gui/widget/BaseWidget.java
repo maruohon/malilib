@@ -381,6 +381,12 @@ public abstract class BaseWidget
         this.hoverStrings.clear();
     }
 
+    public void setHoverStrings(String... hoverStrings)
+    {
+        this.clearHoverStrings();
+        this.addHoverStrings(hoverStrings);
+    }
+
     public void addHoverStrings(String... hoverStrings)
     {
         this.addHoverStrings(Arrays.asList(hoverStrings));
