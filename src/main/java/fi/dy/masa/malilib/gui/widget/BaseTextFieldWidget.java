@@ -68,7 +68,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
         this.setBackgroundEnabled(true);
         this.setBorderColor(this.colorUnfocused);
         this.setBorderWidth(1);
-        this.setPaddingX(4);
+        this.setPaddingX(3);
         this.updateTextFieldSize();
         this.setText(text);
     }
@@ -951,9 +951,11 @@ public class BaseTextFieldWidget extends BackgroundWidget
 
         if (this.text.isEmpty() == false)
         {
-            int offset = (this.getHeight() - this.fontHeight) / 2 + 1;
+            int bw = this.borderEnabled ? this.borderWidth * 2 : 0;
+            // The font is usually 1 pixel "too high", as in it's touching the top, but not the bottom
+            int offset = Math.max((this.getHeight() - bw - this.fontHeight) / 2 + 1, 0);
 
-            if ((offset & 0x1) == 0)
+            if ((offset & 0x1) == 1)
             {
                 offset += 1;
             }
