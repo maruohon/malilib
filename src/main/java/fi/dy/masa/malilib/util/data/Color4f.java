@@ -66,7 +66,7 @@ public class Color4f
     public static Color4f fromColor(int color, float alpha)
     {
         float r = ((color & 0x00FF0000) >>> 16) / 255f;
-        float g = ((color & 0x000FF000) >>>  8) / 255f;
+        float g = ((color & 0x0000FF00) >>>  8) / 255f;
         float b = ((color & 0x000000FF)       ) / 255f;
 
         return new Color4f(r, g, b, alpha);
