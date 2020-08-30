@@ -7,11 +7,11 @@ import fi.dy.masa.malilib.MaLiLib;
 
 public class IntegerConfig extends BaseConfig<Integer> implements SliderConfig
 {
-    protected final int minValue;
-    protected final int maxValue;
     protected final int defaultValue;
     protected int value;
     protected int lastSavedValue;
+    protected int minValue;
+    protected int maxValue;
     protected boolean useSlider;
 
     public IntegerConfig(String name, int defaultValue)
@@ -38,10 +38,10 @@ public class IntegerConfig extends BaseConfig<Integer> implements SliderConfig
     {
         super(name, comment);
 
-        this.minValue = minValue;
-        this.maxValue = maxValue;
         this.defaultValue = defaultValue;
         this.value = defaultValue;
+        this.minValue = minValue;
+        this.maxValue = maxValue;
         this.useSlider = useSlider;
 
         this.cacheSavedValue();
@@ -88,6 +88,18 @@ public class IntegerConfig extends BaseConfig<Integer> implements SliderConfig
     public int getMaxIntegerValue()
     {
         return this.maxValue;
+    }
+
+    public void setMinIntegerValue(int minValue)
+    {
+        this.minValue = minValue;
+        this.setIntegerValue(this.value);
+    }
+
+    public void setMaxIntegerValue(int maxValue)
+    {
+        this.maxValue = maxValue;
+        this.setIntegerValue(this.value);
     }
 
     protected int getClampedValue(int value)

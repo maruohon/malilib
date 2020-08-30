@@ -7,11 +7,11 @@ import fi.dy.masa.malilib.MaLiLib;
 
 public class DoubleConfig extends BaseConfig<Double> implements SliderConfig
 {
-    protected final double minValue;
-    protected final double maxValue;
     protected final double defaultValue;
     protected double value;
     protected double lastSavedValue;
+    protected double minValue;
+    protected double maxValue;
     protected boolean useSlider;
 
     public DoubleConfig(String name, double defaultValue)
@@ -38,10 +38,10 @@ public class DoubleConfig extends BaseConfig<Double> implements SliderConfig
     {
         super(name, comment);
 
-        this.minValue = minValue;
-        this.maxValue = maxValue;
         this.defaultValue = defaultValue;
         this.value = defaultValue;
+        this.minValue = minValue;
+        this.maxValue = maxValue;
         this.useSlider = useSlider;
 
         this.cacheSavedValue();
@@ -93,6 +93,18 @@ public class DoubleConfig extends BaseConfig<Double> implements SliderConfig
     public double getMaxDoubleValue()
     {
         return this.maxValue;
+    }
+
+    public void setMinDoubleValue(double minValue)
+    {
+        this.minValue = minValue;
+        this.setDoubleValue(this.value);
+    }
+
+    public void setMaxDoubleValue(double maxValue)
+    {
+        this.maxValue = maxValue;
+        this.setDoubleValue(this.value);
     }
 
     protected double getClampedValue(double value)
