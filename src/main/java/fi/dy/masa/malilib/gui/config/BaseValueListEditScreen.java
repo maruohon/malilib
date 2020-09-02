@@ -1,11 +1,12 @@
 package fi.dy.masa.malilib.gui.config;
 
 import java.util.List;
+import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.gui.GuiScreen;
-import fi.dy.masa.malilib.config.option.StringListConfig;
+import fi.dy.masa.malilib.config.option.ValueListConfig;
 import fi.dy.masa.malilib.gui.BaseListScreen;
 import fi.dy.masa.malilib.gui.icon.BaseIcon;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
@@ -13,27 +14,31 @@ import fi.dy.masa.malilib.gui.util.DialogHandler;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.SearchBarWidget;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
-import fi.dy.masa.malilib.gui.widget.list.entry.StringListEditEntryWidget;
+import fi.dy.masa.malilib.gui.widget.list.entry.BaseOrderableListEditEntryWidget;
 import fi.dy.masa.malilib.gui.widget.list.header.BaseDataListEditHeaderWidget;
 import fi.dy.masa.malilib.listener.EventListener;
-import fi.dy.masa.malilib.util.StringUtils;
 
-public class StringListEditScreen extends BaseListScreen<DataListWidget<String>>
+public class BaseValueListEditScreen<TYPE> extends BaseListScreen<DataListWidget<TYPE>>
 {
-    protected final StringListConfig config;
+    protected final ValueListConfig<TYPE> config;
+    protected final Supplier<TYPE> newEntrySupplier;
+    protected final ValueListEditEntryWidgetFactory<TYPE> widgetFactory;
     @Nullable protected final DialogHandler dialogHandler;
     @Nullable protected final EventListener saveListener;
 
-    public StringListEditScreen(StringListConfig config, @Nullable EventListener saveListener,
-                                @Nullable DialogHandler dialogHandler, GuiScreen parent)
+    public BaseValueListEditScreen(ValueListConfig<TYPE> config, @Nullable EventListener saveListener,
+                                   @Nullable DialogHandler dialogHandler, GuiScreen parent, String title,
+                                   Supplier<TYPE> newEntrySupplier, ValueListEditEntryWidgetFactory<TYPE> widgetFactory)
     {
         super(8, 20, 14, 25);
 
         this.config = config;
         this.dialogHandler = dialogHandler;
         this.saveListener = saveListener;
+        this.newEntrySupplier = newEntrySupplier;
+        this.widgetFactory = widgetFactory;
 
-        this.title = StringUtils.translate("malilib.gui.title.string_list_edit", config.getDisplayName());
+        this.title = title;
         this.shouldCenter = true;
         this.renderBorder = true;
         this.useTitleHierarchy = false;
@@ -63,7 +68,7 @@ public class StringListEditScreen extends BaseListScreen<DataListWidget<String>>
     @Override
     public void onGuiClosed()
     {
-        this.config.setStrings(ImmutableList.copyOf(this.getListWidget().getCurrentEntries()));
+        this.config.setValues(ImmutableList.copyOf(this.getListWidget().getCurrentEntries()));
 
         if (this.saveListener != null)
         {
@@ -86,16 +91,16 @@ public class StringListEditScreen extends BaseListScreen<DataListWidget<String>>
     }
 
     @Override
-    protected DataListWidget<String> createListWidget(int listX, int listY, int listWidth, int listHeight)
+    protected DataListWidget<TYPE> createListWidget(int listX, int listY, int listWidth, int listHeight)
     {
-        DataListWidget<String> listWidget = new DataListWidget<>(listX, listY, listWidth, listHeight, this.config::getStrings);
+        DataListWidget<TYPE> listWidget = new DataListWidget<>(listX, listY, listWidth, listHeight, this.config::getValues);
 
         listWidget.setListEntryWidgetFixedHeight(20);
         listWidget.addSearchBar(new SearchBarWidget(listWidget.getX() + 17, listWidget.getY() + 3,
                                                     listWidget.getWidth() - 31, 14, 0, BaseIcon.SEARCH,
                                                     HorizontalAlignment.RIGHT, listWidget::onSearchBarChange));
 
-        listWidget.setHeaderWidgetFactory((x, y, w, h, lw) -> new BaseDataListEditHeaderWidget<>(x, y, w, h, lw, "malilib.gui.button.hover.list.add_first", () -> ""));
+        listWidget.setHeaderWidgetFactory((x, y, w, h, lw) -> new BaseDataListEditHeaderWidget<>(x, y, w, h, lw, "malilib.gui.button.hover.list.add_first", this.newEntrySupplier));
         listWidget.setSearchBarPositioner((wgt, x, y, w) -> {
             wgt.setPosition(x + 17, y);
             wgt.setWidth(w - 17);
@@ -106,11 +111,18 @@ public class StringListEditScreen extends BaseListScreen<DataListWidget<String>>
         });
 
         listWidget.setEntryWidgetFactory((wx, wy, ww, wh, li, oi, entry, lw) -> {
-            List<String> defaultList = this.config.getDefaultStrings();
-            String defaultValue = li < defaultList.size() ? defaultList.get(li) : "";
-            return new StringListEditEntryWidget(wx, wy, ww, wh, li, oi, entry, defaultValue, lw);
+            List<TYPE> defaultList = this.config.getDefaultValues();
+            TYPE defaultValue = li < defaultList.size() ? defaultList.get(li) : this.newEntrySupplier.get();
+            return this.widgetFactory.create(wx, wy, ww, wh, li, oi, entry, defaultValue, lw);
         });
 
         return listWidget;
+    }
+
+    public interface ValueListEditEntryWidgetFactory<DATATYPE>
+    {
+        BaseOrderableListEditEntryWidget<DATATYPE> create(int x, int y, int width, int height, int listIndex,
+                                                          int originalListIndex, DATATYPE initialValue,
+                                                          DATATYPE defaultValue, DataListWidget<DATATYPE> listWidget);
     }
 }

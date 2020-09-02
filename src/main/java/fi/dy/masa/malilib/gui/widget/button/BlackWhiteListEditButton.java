@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.gui.widget.button;
 
+import java.util.List;
 import javax.annotation.Nullable;
-import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.config.option.BlackWhiteListConfig;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.config.BlackWhiteListEditScreen;
@@ -11,13 +11,13 @@ import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.restriction.UsageRestriction.ListType;
 
-public class BlackWhiteListEditButton extends GenericButton
+public class BlackWhiteListEditButton<TYPE> extends GenericButton
 {
-    protected final BlackWhiteListConfig config;
+    protected final BlackWhiteListConfig<TYPE> config;
     protected final EventListener saveListener;
     @Nullable protected final DialogHandler dialogHandler;
 
-    public BlackWhiteListEditButton(int x, int y, int width, int height, BlackWhiteListConfig config,
+    public BlackWhiteListEditButton(int x, int y, int width, int height, BlackWhiteListConfig<TYPE> config,
                                     EventListener saveListener, @Nullable DialogHandler dialogHandler)
     {
         super(x, y, width, height, "");
@@ -36,11 +36,11 @@ public class BlackWhiteListEditButton extends GenericButton
 
         if (this.dialogHandler != null)
         {
-            this.dialogHandler.openDialog(new BlackWhiteListEditScreen(this.config, this.saveListener, this.dialogHandler, null));
+            this.dialogHandler.openDialog(new BlackWhiteListEditScreen<>(this.config, this.saveListener, this.dialogHandler, null));
         }
         else
         {
-            BaseScreen.openPopupGui(new BlackWhiteListEditScreen(this.config, this.saveListener, null, GuiUtils.getCurrentScreen()));
+            BaseScreen.openPopupGui(new BlackWhiteListEditScreen<>(this.config, this.saveListener, null, GuiUtils.getCurrentScreen()));
         }
 
         return true;
@@ -59,7 +59,7 @@ public class BlackWhiteListEditButton extends GenericButton
         }
         else
         {
-            ImmutableList<String> list = this.config.getValue().getActiveList();
+            List<String> list = this.config.getValue().getActiveListAsString();
             int total = list.size();
             int max = Math.min(10, total);
 

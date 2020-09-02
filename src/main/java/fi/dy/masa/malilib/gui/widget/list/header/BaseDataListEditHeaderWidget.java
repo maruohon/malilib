@@ -44,9 +44,14 @@ public class BaseDataListEditHeaderWidget<DATATYPE> extends DataListHeaderWidget
         this.addButton.setPosition(this.getX(), this.getY());
     }
 
+    protected DATATYPE getNewDataEntry()
+    {
+        return this.dataFactory.get();
+    }
+
     protected void insertEntry()
     {
-        this.dataList.add(0, this.dataFactory.get());
+        this.dataList.add(0, this.getNewDataEntry());
         this.listWidget.refreshEntries();
         this.listWidget.focusWidget(0);
     }

@@ -30,43 +30,14 @@ public class UsageRestriction<TYPE>
         this.valueValidator = valueValidator;
     }
 
-    public void setListType(ListType type)
-    {
-        this.type = type;
-    }
-
     public ListType getListType()
     {
         return this.type;
     }
 
-    /**
-     * Sets both the black- and whitelist contents based on the provided names, replacing any old values.
-     * If this method is used, then the class should be extended and the
-     * {@link #setValuesForList(Set, List)}
-     * method should be overridden to handle the names to objects conversion and adding to the Set.
-     * @param list
-     */
-    public void setListContents(BlackWhiteList list)
+    public void setListType(ListType type)
     {
-        this.type = list.getListType();
-        this.setValuesForList(ListType.BLACKLIST, list.getBlackList());
-        this.setValuesForList(ListType.WHITELIST, list.getWhiteList());
-    }
-
-    /**
-     * Sets both the black- and whitelist contents based on the provided names, replacing any old values,
-     * using the provided registry to fetch the values.
-     * @param list
-     * @param registry
-     * @param errorTranslationKey
-     */
-    public void setValuesBasedOnRegistry(BlackWhiteList list,
-                                         RegistryNamespaced<ResourceLocation, TYPE> registry, String errorTranslationKey)
-    {
-        this.type = list.getListType();
-        this.setValuesForListBasedOnRegistry(ListType.BLACKLIST, list.getBlackList(), registry, errorTranslationKey);
-        this.setValuesForListBasedOnRegistry(ListType.WHITELIST, list.getWhiteList(), registry, errorTranslationKey);
+        this.type = type;
     }
 
     /**
@@ -76,22 +47,53 @@ public class UsageRestriction<TYPE>
      * @param type
      * @return
      */
-    public Set<TYPE> getListForType(ListType type)
+    protected Set<TYPE> getListForType(ListType type)
     {
         return type == ListType.WHITELIST ? this.whiteList : this.blackList;
     }
 
     /**
-     * Clears the old values for the given  {@link ListType} and then populates them from the provided list of names
-     * @param type
-     * @param names
+     * Sets both the black- and whitelist contents based on the provided names, replacing any old values.
+     * @param list
      */
-    public void setValuesForList(ListType type, List<String> names)
+    public void setListContents(BlackWhiteList<TYPE> list)
     {
-        Set<TYPE> set = this.getListForType(type);
+        this.type = list.getListType();
+        this.setValuesForList(this.getListForType(ListType.BLACKLIST), list.getBlackList());
+        this.setValuesForList(this.getListForType(ListType.WHITELIST), list.getWhiteList());
+    }
+
+    /**
+     * Should set the values for the given Set based on the values in the provided List.
+     * @param set
+     * @param values
+     */
+    protected void setValuesForList(Set<TYPE> set, List<TYPE> values)
+    {
         set.clear();
 
-        this.setValuesForList(set, names);
+        for (TYPE value : values)
+        {
+            if (value != null && this.valueValidator.test(value))
+            {
+                set.add(value);
+            }
+        }
+    }
+
+    /**
+     * Sets both the black- and whitelist contents based on the provided names, replacing any old values,
+     * using the provided registry to fetch the values.
+     * @param list
+     * @param registry
+     * @param errorTranslationKey
+     */
+    public void setValuesBasedOnRegistry(BlackWhiteList<String> list,
+                                         RegistryNamespaced<ResourceLocation, TYPE> registry, String errorTranslationKey)
+    {
+        this.type = list.getListType();
+        this.setValuesForListBasedOnRegistry(ListType.BLACKLIST, list.getBlackList(), registry, errorTranslationKey);
+        this.setValuesForListBasedOnRegistry(ListType.WHITELIST, list.getWhiteList(), registry, errorTranslationKey);
     }
 
     /**
@@ -129,17 +131,6 @@ public class UsageRestriction<TYPE>
                 MaLiLib.LOGGER.warn(StringUtils.translate(errorTranslationKey, name));
             }
         }
-    }
-
-    /**
-     * Should set the values for the given Set based on the names in the provided List.
-     * This should be overridden for any custom restriction types that are not based on
-     * objects in the vanilla registries.
-     * @param set
-     * @param names
-     */
-    protected void setValuesForList(Set<TYPE> set, List<String> names)
-    {
     }
 
     /**

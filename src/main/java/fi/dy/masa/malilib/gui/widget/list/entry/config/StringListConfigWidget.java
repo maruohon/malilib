@@ -18,7 +18,7 @@ public class StringListConfigWidget extends BaseConfigOptionWidget<StringListCon
         super(x, y, width, 22, listIndex, originalListIndex, config, ctx);
 
         this.config = config;
-        this.initialValue = this.config.getStrings();
+        this.initialValue = this.config.getValues();
 
         this.button = new StringListEditButton(x, y, this.getElementWidth(), 20, config, this, ctx.getDialogHandler());
 
@@ -59,6 +59,6 @@ public class StringListConfigWidget extends BaseConfigOptionWidget<StringListCon
     @Override
     public boolean wasModified()
     {
-        return this.config.getStrings().equals(this.initialValue) == false;
+        return this.config.getValues().equals(this.initialValue) == false;
     }
 }

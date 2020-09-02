@@ -5,21 +5,21 @@ import fi.dy.masa.malilib.config.value.BlackWhiteList;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.widget.button.BlackWhiteListEditButton;
 
-public class BlackWhiteListConfigWidget extends BaseConfigOptionWidget<BlackWhiteListConfig>
+public class BlackWhiteListConfigWidget<TYPE> extends BaseConfigOptionWidget<BlackWhiteListConfig<TYPE>>
 {
-    protected final BlackWhiteListConfig config;
-    protected final BlackWhiteListEditButton button;
-    protected final BlackWhiteList initialValue;
+    protected final BlackWhiteListConfig<TYPE> config;
+    protected final BlackWhiteListEditButton<TYPE> button;
+    protected final BlackWhiteList<TYPE> initialValue;
 
     public BlackWhiteListConfigWidget(int x, int y, int width, int height, int listIndex, int originalListIndex,
-                                      BlackWhiteListConfig config, ConfigWidgetContext ctx)
+                                      BlackWhiteListConfig<TYPE> config, ConfigWidgetContext ctx)
     {
         super(x, y, width, 22, listIndex, originalListIndex, config, ctx);
 
         this.config = config;
         this.initialValue = this.config.getValue();
 
-        this.button = new BlackWhiteListEditButton(x, y, this.getElementWidth(), 20, config, this::onSave, ctx.getDialogHandler());
+        this.button = new BlackWhiteListEditButton<>(x, y, this.getElementWidth(), 20, config, this::onSave, ctx.getDialogHandler());
 
         this.resetButton.setActionListener((btn, mbtn) -> {
             this.config.resetToDefault();

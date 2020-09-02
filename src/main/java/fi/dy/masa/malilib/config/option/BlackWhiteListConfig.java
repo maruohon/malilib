@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.config.option;
 
-import com.google.common.collect.ImmutableList;
+import java.util.List;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
@@ -10,23 +10,23 @@ import fi.dy.masa.malilib.config.value.BlackWhiteList;
 import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.restriction.UsageRestriction;
 
-public class BlackWhiteListConfig extends BaseConfig<BlackWhiteList>
+public class BlackWhiteListConfig<TYPE> extends BaseConfig<BlackWhiteList<TYPE>>
 {
-    protected final BlackWhiteList defaultValue;
-    protected BlackWhiteList value;
-    protected BlackWhiteList lastSavedValue;
+    protected final BlackWhiteList<TYPE> defaultValue;
+    protected BlackWhiteList<TYPE> value;
+    protected BlackWhiteList<TYPE> lastSavedValue;
 
-    public BlackWhiteListConfig(String name, BlackWhiteList defaultValue)
+    public BlackWhiteListConfig(String name, BlackWhiteList<TYPE> defaultValue)
     {
         this(name, defaultValue, name);
     }
 
-    public BlackWhiteListConfig(String name, BlackWhiteList defaultValue, String comment)
+    public BlackWhiteListConfig(String name, BlackWhiteList<TYPE> defaultValue, String comment)
     {
         this(name, defaultValue, name, comment);
     }
 
-    public BlackWhiteListConfig(String name, BlackWhiteList defaultValue, String prettyName, String comment)
+    public BlackWhiteListConfig(String name, BlackWhiteList<TYPE> defaultValue, String prettyName, String comment)
     {
         super(name, name, prettyName, comment);
 
@@ -36,19 +36,19 @@ public class BlackWhiteListConfig extends BaseConfig<BlackWhiteList>
         this.cacheSavedValue();
     }
 
-    public BlackWhiteList getValue()
+    public BlackWhiteList<TYPE> getValue()
     {
         return this.value;
     }
 
-    public BlackWhiteList getDefaultValue()
+    public BlackWhiteList<TYPE> getDefaultValue()
     {
         return this.defaultValue;
     }
 
-    public void setValue(BlackWhiteList value)
+    public void setValue(BlackWhiteList<TYPE> value)
     {
-        BlackWhiteList oldValue = this.value;
+        BlackWhiteList<TYPE> oldValue = this.value;
 
         if (oldValue.equals(value) == false)
         {
@@ -95,9 +95,10 @@ public class BlackWhiteListConfig extends BaseConfig<BlackWhiteList>
                     JsonUtils.hasArray(obj, "whitelist"))
                 {
                     UsageRestriction.ListType type = BaseConfigOptionListEntry.findValueByName(JsonUtils.getString(obj, "type"), UsageRestriction.ListType.VALUES);
-                    ImmutableList<String> blackList = ImmutableList.copyOf(JsonUtils.arrayAsStringList(obj.getAsJsonArray("blacklist")));
-                    ImmutableList<String> whiteList = ImmutableList.copyOf(JsonUtils.arrayAsStringList(obj.getAsJsonArray("whitelist")));
-                    this.value = new BlackWhiteList(type, blackList, whiteList);
+                    List<String> blackListStr = JsonUtils.arrayAsStringList(obj.getAsJsonArray("blacklist"));
+                    List<String> whiteListStr = JsonUtils.arrayAsStringList(obj.getAsJsonArray("whitelist"));
+
+                    this.value = BlackWhiteList.fromLists(this.value, type, blackListStr, whiteListStr);
                     this.onValueLoaded(this.value);
                 }
             }
@@ -120,8 +121,8 @@ public class BlackWhiteListConfig extends BaseConfig<BlackWhiteList>
         JsonObject obj = new JsonObject();
 
         obj.add("type", new JsonPrimitive(this.value.getListType().getStringValue()));
-        obj.add("blacklist", JsonUtils.stringListAsArray(this.value.getBlackList()));
-        obj.add("whitelist", JsonUtils.stringListAsArray(this.value.getWhiteList()));
+        obj.add("blacklist", JsonUtils.stringListAsArray(this.value.getBlackListAsString()));
+        obj.add("whitelist", JsonUtils.stringListAsArray(this.value.getWhiteListAsString()));
 
         return obj;
     }

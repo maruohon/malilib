@@ -1,20 +1,41 @@
 package fi.dy.masa.malilib.config.value;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Function;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.RegistryNamespaced;
+import fi.dy.masa.malilib.config.option.ValueListConfig;
 import fi.dy.masa.malilib.util.restriction.UsageRestriction.ListType;
 
-public class BlackWhiteList
+public class BlackWhiteList<TYPE>
 {
     protected final ListType type;
-    protected final ImmutableList<String> blackList;
-    protected final ImmutableList<String> whiteList;
+    protected final ImmutableList<TYPE> blackList;
+    protected final ImmutableList<TYPE> whiteList;
+    protected final Function<TYPE, String> toStringConverter;
+    protected final Function<String, TYPE> fromStringConverter;
 
-    public BlackWhiteList(ListType type, ImmutableList<String> blackList, ImmutableList<String> whiteList)
+    public BlackWhiteList(ListType type, ImmutableList<TYPE> blackList, ImmutableList<TYPE> whiteList,
+                          RegistryNamespaced<ResourceLocation, TYPE> registry)
     {
         this.type = type;
         this.blackList = blackList;
         this.whiteList = whiteList;
+        this.toStringConverter = getRegistryBasedToStringConverter(registry);
+        this.fromStringConverter = getRegistryBasedFromStringConverter(registry);
+    }
+
+    public BlackWhiteList(ListType type, ImmutableList<TYPE> blackList, ImmutableList<TYPE> whiteList,
+                          Function<TYPE, String> toStringConverter, Function<String, TYPE> fromStringConverter)
+    {
+        this.type = type;
+        this.blackList = blackList;
+        this.whiteList = whiteList;
+        this.toStringConverter = toStringConverter;
+        this.fromStringConverter = fromStringConverter;
     }
 
     public ListType getListType()
@@ -22,18 +43,18 @@ public class BlackWhiteList
         return this.type;
     }
 
-    public ImmutableList<String> getBlackList()
+    public ImmutableList<TYPE> getBlackList()
     {
-        return blackList;
+        return this.blackList;
     }
 
-    public ImmutableList<String> getWhiteList()
+    public ImmutableList<TYPE> getWhiteList()
     {
-        return whiteList;
+        return this.whiteList;
     }
 
     @Nullable
-    public ImmutableList<String> getActiveList()
+    public ImmutableList<TYPE> getActiveList()
     {
         if (this.type == ListType.BLACKLIST)
         {
@@ -47,30 +68,95 @@ public class BlackWhiteList
         return null;
     }
 
-    public static BlackWhiteList of(ListType type, ImmutableList<String> blackList, ImmutableList<String> whiteList)
+    public ImmutableList<String> getBlackListAsString()
     {
-        return new BlackWhiteList(type, blackList, whiteList);
+        return ValueListConfig.getValuesAsStringList(this.blackList, this.toStringConverter);
+    }
+
+    public ImmutableList<String> getWhiteListAsString()
+    {
+        return ValueListConfig.getValuesAsStringList(this.whiteList, this.toStringConverter);
+    }
+
+    @Nullable
+    public ImmutableList<String> getActiveListAsString()
+    {
+        if (this.type == ListType.BLACKLIST)
+        {
+            return this.getBlackListAsString();
+        }
+        else if (this.type == ListType.WHITELIST)
+        {
+            return this.getWhiteListAsString();
+        }
+
+        return null;
+    }
+
+    public Function<TYPE, String> getToStringConverter()
+    {
+        return this.toStringConverter;
+    }
+
+    public Function<String, TYPE> getFromStringConverter()
+    {
+        return this.fromStringConverter;
+    }
+
+    public static <TYPE> BlackWhiteList<TYPE> of(ListType type, ImmutableList<TYPE> blackList, ImmutableList<TYPE> whiteList, RegistryNamespaced<ResourceLocation, TYPE> registry)
+    {
+        return new BlackWhiteList<>(type, blackList, whiteList, registry);
+    }
+
+    public static <TYPE> BlackWhiteList<TYPE> fromLists(BlackWhiteList<TYPE> oldList, ListType type, List<String> blackListStr, List<String> whiteListStr)
+    {
+        ImmutableList<TYPE> blackList = ValueListConfig.getStringListAsValues(blackListStr, oldList.getFromStringConverter());
+        ImmutableList<TYPE> whiteList = ValueListConfig.getStringListAsValues(whiteListStr, oldList.getFromStringConverter());
+        return new BlackWhiteList<>(type, blackList, whiteList, oldList.getToStringConverter(), oldList.getFromStringConverter());
     }
 
     @Override
     public boolean equals(Object o)
     {
         if (this == o) { return true; }
-        if (o == null || getClass() != o.getClass()) { return false; }
+        if (o == null || this.getClass() != o.getClass()) { return false; }
 
-        BlackWhiteList that = (BlackWhiteList) o;
+        BlackWhiteList<TYPE> that = (BlackWhiteList<TYPE>) o;
 
-        if (type != that.type) { return false; }
-        if (blackList != null ? !blackList.equals(that.blackList) : that.blackList != null) { return false; }
-        return whiteList != null ? whiteList.equals(that.whiteList) : that.whiteList == null;
+        if (this.type != that.type) { return false; }
+        if (!Objects.equals(this.blackList, that.blackList)) { return false; }
+        return Objects.equals(this.whiteList, that.whiteList);
     }
 
     @Override
     public int hashCode()
     {
-        int result = type != null ? type.hashCode() : 0;
-        result = 31 * result + (blackList != null ? blackList.hashCode() : 0);
-        result = 31 * result + (whiteList != null ? whiteList.hashCode() : 0);
+        int result = this.type != null ? this.type.hashCode() : 0;
+        result = 31 * result + (this.blackList != null ? this.blackList.hashCode() : 0);
+        result = 31 * result + (this.whiteList != null ? this.whiteList.hashCode() : 0);
         return result;
+    }
+
+    public static <TYPE> Function<TYPE, String> getRegistryBasedToStringConverter(RegistryNamespaced<ResourceLocation, TYPE> registry)
+    {
+        return (t) -> {
+            ResourceLocation id = registry.getNameForObject(t);
+            return id != null ? id.toString() : "<N/A>";
+        };
+    }
+
+    public static <TYPE> Function<String, TYPE> getRegistryBasedFromStringConverter(RegistryNamespaced<ResourceLocation, TYPE> registry)
+    {
+        return (str) -> {
+            try
+            {
+                ResourceLocation id = new ResourceLocation(str);
+                return registry.getObject(id);
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        };
     }
 }

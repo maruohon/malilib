@@ -127,6 +127,11 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
         return Math.max(0, Math.min(size, index));
     }
 
+    protected void insertEntryAfter()
+    {
+        this.insertEntry(false);
+    }
+
     protected void insertEntry(boolean before)
     {
         int index = this.getInsertionIndex(this.dataList, before);
@@ -144,6 +149,16 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
             this.dataList.remove(this.originalListIndex);
             this.parent.refreshEntries();
         }
+    }
+
+    protected void moveEntryDown()
+    {
+        this.moveEntry(true);
+    }
+
+    protected void moveEntryUp()
+    {
+        this.moveEntry(false);
     }
 
     protected void moveEntry(boolean down)
@@ -203,10 +218,10 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
 
     protected enum ButtonType
     {
-        ADD         (BaseIcon.PLUS,         "malilib.gui.button.hover.list.add_after",  (w) -> w.insertEntry(false)),
+        ADD         (BaseIcon.PLUS,         "malilib.gui.button.hover.list.add_after",  BaseOrderableListEditEntryWidget::insertEntryAfter),
         REMOVE      (BaseIcon.MINUS,        "malilib.gui.button.hover.list.remove",     BaseOrderableListEditEntryWidget::removeEntry),
-        MOVE_UP     (BaseIcon.ARROW_UP,     "malilib.gui.button.hover.list.move_up",    (w) -> w.moveEntry(false)),
-        MOVE_DOWN   (BaseIcon.ARROW_DOWN,   "malilib.gui.button.hover.list.move_down",  (w) -> w.moveEntry(true));
+        MOVE_UP     (BaseIcon.ARROW_UP,     "malilib.gui.button.hover.list.move_up",    BaseOrderableListEditEntryWidget::moveEntryUp),
+        MOVE_DOWN   (BaseIcon.ARROW_DOWN,   "malilib.gui.button.hover.list.move_down",  BaseOrderableListEditEntryWidget::moveEntryDown);
 
         protected final BaseIcon icon;
         protected final String translationKey;
