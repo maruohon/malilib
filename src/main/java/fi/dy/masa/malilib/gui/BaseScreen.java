@@ -14,12 +14,12 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import fi.dy.masa.malilib.MaLiLibConfigs;
-import fi.dy.masa.malilib.gui.widget.button.BaseButton;
-import fi.dy.masa.malilib.gui.widget.button.ButtonActionListener;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.BaseWidget;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
+import fi.dy.masa.malilib.gui.widget.button.BaseButton;
+import fi.dy.masa.malilib.gui.widget.button.ButtonActionListener;
 import fi.dy.masa.malilib.listener.TextChangeListener;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.message.MessageConsumer;
@@ -75,6 +75,8 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
     protected int borderColor = COLOR_HORIZONTAL_BAR;
     protected int x;
     protected int y;
+    protected int lastMouseX = -1;
+    protected int lastMouseY = -1;
     protected int screenWidth;
     protected int screenHeight;
     protected int titleX = 10;
@@ -121,7 +123,7 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
 
     protected int getPopupGuiZLevelIncrement()
     {
-        return 200;
+        return 50;
     }
 
     @Override
@@ -258,6 +260,13 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
         boolean isActiveGui = GuiUtils.getCurrentScreen() == this;
         this.updateTopHoveredWidget(mouseX, mouseY, isActiveGui);
 
+        if (mouseX != this.lastMouseX || mouseY != this.lastMouseY)
+        {
+            this.onMouseMoved(mouseX, mouseY);
+            this.lastMouseX = mouseX;
+            this.lastMouseY = mouseY;
+        }
+
         if (mouseWheelDelta == 0 || this.onMouseScrolled(mouseX, mouseY, mouseWheelDelta) == false)
         {
             super.handleMouseInput();
@@ -374,6 +383,24 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
             if (widget.onMouseScrolled(mouseX, mouseY, mouseWheelDelta))
             {
                 // Don't call super if the action got handled
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean onMouseMoved(int mouseX, int mouseY)
+    {
+        if (this.hoveredWidget != null && this.hoveredWidget.onMouseMoved(mouseX, mouseY))
+        {
+            return true;
+        }
+
+        for (BaseWidget widget : this.widgets)
+        {
+            if (widget.onMouseMoved(mouseX, mouseY))
+            {
                 return true;
             }
         }

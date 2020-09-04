@@ -2,7 +2,9 @@ package fi.dy.masa.malilib.gui.widget.list.entry;
 
 import java.util.List;
 import java.util.function.Function;
+import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.widget.DropDownListWidget;
+import fi.dy.masa.malilib.gui.widget.DropDownListWidget.IconWidgetFactory;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
@@ -16,7 +18,9 @@ public class BaseValueListEditEntryWidget<TYPE> extends BaseOrderableListEditEnt
 
     public BaseValueListEditEntryWidget(int x, int y, int width, int height, int listIndex, int originalListIndex,
                                         TYPE initialValue, TYPE defaultValue, List<TYPE> possibleValues,
-                                        Function<TYPE, String> toStringConverter, DataListWidget<TYPE> parent)
+                                        Function<TYPE, String> toStringConverter,
+                                        @Nullable IconWidgetFactory<TYPE> iconWidgetFactory,
+                                        DataListWidget<TYPE> parent)
     {
         super(x, y, width, height, listIndex, originalListIndex, initialValue, parent);
 
@@ -24,7 +28,7 @@ public class BaseValueListEditEntryWidget<TYPE> extends BaseOrderableListEditEnt
         this.initialValue = initialValue;
 
         this.labelWidget = new LabelWidget(x + 2, y + 7, 32, 10, 0xC0C0C0C0, String.format("%5d:", originalListIndex + 1));
-        this.dropDownWidget = new DropDownListWidget<>(x, y, -1, 16, 160, 16, possibleValues, toStringConverter);
+        this.dropDownWidget = new DropDownListWidget<>(x, y, -1, 18, 160, 16, possibleValues, toStringConverter, iconWidgetFactory);
 
         this.resetButton = new GenericButton(x, y, -1, 16, "malilib.gui.button.reset.caps");
         this.resetButton.setRenderBackground(false);
@@ -67,14 +71,14 @@ public class BaseValueListEditEntryWidget<TYPE> extends BaseOrderableListEditEnt
     @Override
     protected void updateSubWidgetsToGeometryChangesPre(int x, int y)
     {
-        this.dropDownWidget.setPosition(x, y + 2);
+        this.dropDownWidget.setPosition(x, y + 1);
         this.nextWidgetX = this.dropDownWidget.getRight() + 2;
     }
 
     @Override
     protected void updateSubWidgetsToGeometryChangesPost(int x, int y)
     {
-        this.resetButton.setPosition(x, y + 2);
+        this.resetButton.setPosition(x, y + 1);
     }
 
     @Override

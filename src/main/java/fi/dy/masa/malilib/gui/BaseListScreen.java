@@ -194,6 +194,19 @@ public abstract class BaseListScreen<LISTWIDGET extends BaseListWidget> extends 
     }
 
     @Override
+    public boolean onMouseMoved(int mouseX, int mouseY)
+    {
+        if (super.onMouseMoved(mouseX, mouseY))
+        {
+            return true;
+        }
+
+        BaseListWidget listWidget = this.getListWidget();
+
+        return listWidget != null && listWidget.onMouseMoved(mouseX, mouseY);
+    }
+
+    @Override
     public boolean onKeyTyped(char typedChar, int keyCode)
     {
         // Try to handle everything except ESC in the parent first

@@ -1,25 +1,25 @@
 package fi.dy.masa.malilib.gui.widget.list.entry.config;
 
-import fi.dy.masa.malilib.config.option.BlackWhiteListConfig;
-import fi.dy.masa.malilib.config.value.BlackWhiteList;
+import com.google.common.collect.ImmutableList;
+import fi.dy.masa.malilib.config.option.ValueListConfig;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
-import fi.dy.masa.malilib.gui.widget.button.BlackWhiteListEditButton;
+import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 
-public class BlackWhiteListConfigWidget extends BaseConfigOptionWidget<BlackWhiteListConfig>
+public abstract class BaseValueListConfigWidget<TYPE, CFG extends ValueListConfig<TYPE>> extends BaseConfigOptionWidget<CFG>
 {
-    protected final BlackWhiteListConfig<?, ?> config;
-    protected final BlackWhiteListEditButton button;
-    protected final BlackWhiteList<?, ?> initialValue;
+    protected final CFG config;
+    protected final GenericButton button;
+    protected final ImmutableList<TYPE> initialValue;
 
-    public BlackWhiteListConfigWidget(int x, int y, int width, int height, int listIndex, int originalListIndex,
-                                      BlackWhiteListConfig<?, ?> config, ConfigWidgetContext ctx)
+    public BaseValueListConfigWidget(int x, int y, int width, int height, int listIndex,
+                                  int originalListIndex, CFG config, ConfigWidgetContext ctx)
     {
         super(x, y, width, 22, listIndex, originalListIndex, config, ctx);
 
         this.config = config;
-        this.initialValue = this.config.getValue();
+        this.initialValue = this.config.getValues();
 
-        this.button = new BlackWhiteListEditButton(x, y, this.getElementWidth(), 20, config, this::onSave, ctx.getDialogHandler());
+        this.button = this.createButton(this.getElementWidth(), 20, config, ctx);
 
         this.resetButton.setActionListener((btn, mbtn) -> {
             this.config.resetToDefault();
@@ -27,6 +27,8 @@ public class BlackWhiteListConfigWidget extends BaseConfigOptionWidget<BlackWhit
             this.resetButton.setEnabled(this.config.isModified());
         });
     }
+
+    protected abstract GenericButton createButton(int width, int height, CFG config, ConfigWidgetContext ctx);
 
     @Override
     public void reAddSubWidgets()
@@ -48,7 +50,7 @@ public class BlackWhiteListConfigWidget extends BaseConfigOptionWidget<BlackWhit
         this.addWidget(this.resetButton);
     }
 
-    public void onSave()
+    public void onReset()
     {
         this.button.updateDisplayString();
         this.resetButton.setEnabled(this.config.isModified());
@@ -57,6 +59,6 @@ public class BlackWhiteListConfigWidget extends BaseConfigOptionWidget<BlackWhit
     @Override
     public boolean wasModified()
     {
-        return this.config.getValue().equals(this.initialValue) == false;
+        return this.config.getValues().equals(this.initialValue) == false;
     }
 }

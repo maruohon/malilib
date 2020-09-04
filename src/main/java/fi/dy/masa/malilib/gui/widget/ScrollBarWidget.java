@@ -5,6 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.icon.Icon;
+import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.render.RenderUtils;
 
 public class ScrollBarWidget extends BaseWidget
@@ -12,6 +13,7 @@ public class ScrollBarWidget extends BaseWidget
     @Nullable protected final Icon barTexture;
     @Nullable protected Icon arrowTextureUp;
     @Nullable protected Icon arrowTextureDown;
+    @Nullable protected EventListener changeListener;
     protected final Minecraft mc = Minecraft.getMinecraft();
     protected boolean mouseOver = false;
     protected boolean dragging = false;
@@ -54,6 +56,12 @@ public class ScrollBarWidget extends BaseWidget
         return this;
     }
 
+    public ScrollBarWidget setValueChangeListener(EventListener listener)
+    {
+        this.changeListener = listener;
+        return this;
+    }
+
     /**
      * Sets the arrow up and down textures.
      * If both of them are set, then they will be used and rendered,
@@ -81,7 +89,13 @@ public class ScrollBarWidget extends BaseWidget
 
     public void setValue(int value)
     {
+        int old = this.currentValue;
         this.currentValue = MathHelper.clamp(value, 0, this.maxValue);
+
+        if (this.changeListener != null && old != this.currentValue)
+        {
+            this.changeListener.onEvent();
+        }
     }
 
     public void offsetValue(int offset)
@@ -97,7 +111,7 @@ public class ScrollBarWidget extends BaseWidget
     public void setMaxValue(int maxValue)
     {
         this.maxValue = Math.max(0, maxValue);
-        this.currentValue = Math.min(this.currentValue, this.maxValue);
+        this.setValue(this.currentValue);
     }
 
     public void setTotalHeight(int totalHeight)
@@ -139,6 +153,14 @@ public class ScrollBarWidget extends BaseWidget
         return true;
     }
 
+    @Override
+    public boolean onMouseScrolledImpl(int mouseX, int mouseY, double mouseWheelDelta)
+    {
+        int amount = mouseWheelDelta < 0 ? 1 : -1;
+        this.offsetValue(amount);
+        return true;
+    }
+
     /**
      * Returns the move amount for clicking on the up or down
      * arrows, based on whether or not shift and/or ctrl are held
@@ -168,6 +190,38 @@ public class ScrollBarWidget extends BaseWidget
         {
             this.setIsDragging(false);
         }
+    }
+
+    @Override
+    public boolean onMouseMovedImpl(int mouseX, int mouseY)
+    {
+        int totalHeight = this.totalHeight;
+
+        if (totalHeight > 0)
+        {
+            boolean useArrows = this.getRenderArrows();
+            int upArH = 0;
+            int downArH = 0;
+
+            if (useArrows)
+            {
+                upArH = this.arrowTextureUp.getHeight();
+                downArH = this.arrowTextureDown.getHeight();
+            }
+
+            int height = this.getHeight();
+            int slideHeight = Math.max(0, height - upArH - downArH);
+            totalHeight = Math.max(0, totalHeight - upArH - downArH);
+            float relative = Math.min(1.0F, (float) slideHeight / (float) totalHeight);
+            int barHeight = (int) (relative * slideHeight);
+            int barTravel = slideHeight - barHeight;
+
+            this.handleDrag(mouseY, barTravel);
+
+            return this.dragging;
+        }
+
+        return false;
     }
 
     public boolean isMouseOverUpArrow(int mouseX, int mouseY)
@@ -201,7 +255,7 @@ public class ScrollBarWidget extends BaseWidget
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
+    public void render(int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
     {
         int x = this.getX();
         int y = this.getY();
@@ -260,8 +314,6 @@ public class ScrollBarWidget extends BaseWidget
 
             // FIXME?
             this.mouseOver = mouseX > x && mouseX < x + width && mouseY > barPosition && mouseY < barPosition + barHeight;
-
-            this.handleDrag(mouseY, barTravel);
         }
     }
 

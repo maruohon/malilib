@@ -174,7 +174,9 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
 
                 for (ConfigInfo cfg : configList)
                 {
-                    list.add((C) cfg);
+                    @SuppressWarnings("unchecked")
+                    C c = (C) cfg;
+                    list.add(c);
                 }
 
                 this.cachedConfigs.put(scope, list);

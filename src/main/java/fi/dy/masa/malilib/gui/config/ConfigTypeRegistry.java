@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.gui.config;
 import java.util.HashMap;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.option.BlackWhiteListConfig;
+import fi.dy.masa.malilib.config.option.BlockListConfig;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.config.option.ColorConfig;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
@@ -12,10 +13,12 @@ import fi.dy.masa.malilib.config.option.FileConfig;
 import fi.dy.masa.malilib.config.option.HotkeyConfig;
 import fi.dy.masa.malilib.config.option.HotkeyedBooleanConfig;
 import fi.dy.masa.malilib.config.option.IntegerConfig;
+import fi.dy.masa.malilib.config.option.ItemListConfig;
 import fi.dy.masa.malilib.config.option.OptionListConfig;
 import fi.dy.masa.malilib.config.option.StringConfig;
 import fi.dy.masa.malilib.config.option.StringListConfig;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.BlackWhiteListConfigWidget;
+import fi.dy.masa.malilib.gui.widget.list.entry.config.BlockListConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.BooleanConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.ColorConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.DirectoryConfigWidget;
@@ -24,6 +27,7 @@ import fi.dy.masa.malilib.gui.widget.list.entry.config.FileConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.HotkeyConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.HotkeyedBooleanConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.IntegerConfigWidget;
+import fi.dy.masa.malilib.gui.widget.list.entry.config.ItemListConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.OptionListConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.StringConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.StringListConfigWidget;
@@ -81,6 +85,7 @@ public class ConfigTypeRegistry
     private void registerDefaultPlacers()
     {
         this.registerWidgetFactory(BlackWhiteListConfig.class, BlackWhiteListConfigWidget::new);
+        this.registerWidgetFactory(BlockListConfig.class, BlockListConfigWidget::new);
         this.registerWidgetFactory(BooleanConfig.class, BooleanConfigWidget::new);
         this.registerWidgetFactory(ColorConfig.class, ColorConfigWidget::new);
         this.registerWidgetFactory(DirectoryConfig.class, DirectoryConfigWidget::new);
@@ -89,6 +94,7 @@ public class ConfigTypeRegistry
         this.registerWidgetFactory(HotkeyConfig.class, HotkeyConfigWidget::new);
         this.registerWidgetFactory(HotkeyedBooleanConfig.class, HotkeyedBooleanConfigWidget::new);
         this.registerWidgetFactory(IntegerConfig.class, IntegerConfigWidget::new);
+        this.registerWidgetFactory(ItemListConfig.class, ItemListConfigWidget::new);
         this.registerWidgetFactory(OptionListConfig.class, OptionListConfigWidget::new);
         this.registerWidgetFactory(StringConfig.class, StringConfigWidget::new);
         this.registerWidgetFactory(StringListConfig.class, StringListConfigWidget::new);

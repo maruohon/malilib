@@ -399,12 +399,13 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
     @Override
     protected void renderWidget(int widgetIndex, int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
     {
-        BaseListEntryWidget widget = this.listWidgets.get(widgetIndex);
+        BaseListEntryWidget widget = this.entryWidgets.get(widgetIndex);
         boolean isSelected = false;
 
         // TODO fix this mess
         try
         {
+            @SuppressWarnings("unchecked")
             DATATYPE entry = widget instanceof BaseDataListEntryWidget ? ((BaseDataListEntryWidget<DATATYPE>) widget).getData() : null;
             isSelected = entry != null && this.getEntrySelectionHandler() != null &&
                                  this.getEntrySelectionHandler().isEntrySelected(entry);

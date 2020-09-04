@@ -9,7 +9,7 @@ import com.google.gson.JsonPrimitive;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.util.JsonUtils;
 
-public class ValueListConfig<TYPE> extends BaseConfig<ImmutableList<TYPE>>
+public abstract class ValueListConfig<TYPE> extends BaseConfig<ImmutableList<TYPE>>
 {
     protected final ImmutableList<TYPE> defaultValues;
     protected final Function<TYPE, String> toStringConverter;
@@ -51,6 +51,16 @@ public class ValueListConfig<TYPE> extends BaseConfig<ImmutableList<TYPE>>
         return getValuesAsStringList(this.values, this.toStringConverter);
     }
 
+    public Function<TYPE, String> getToStringConverter()
+    {
+        return this.toStringConverter;
+    }
+
+    public Function<String, TYPE> getFromStringConverter()
+    {
+        return this.fromStringConverter;
+    }
+
     public void setValues(List<TYPE> newValues)
     {
         if (this.values.equals(newValues) == false)
@@ -84,6 +94,8 @@ public class ValueListConfig<TYPE> extends BaseConfig<ImmutableList<TYPE>>
     {
         this.lastSavedValues = this.values;
     }
+
+    public abstract ValueListConfig<TYPE> copy();
 
     @Override
     public void setValueFromJsonElement(JsonElement element, String configName)

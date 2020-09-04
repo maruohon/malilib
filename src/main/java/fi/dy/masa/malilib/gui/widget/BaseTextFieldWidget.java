@@ -953,7 +953,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
         {
             int bw = this.borderEnabled ? this.borderWidth * 2 : 0;
             // The font is usually 1 pixel "too high", as in it's touching the top, but not the bottom
-            int offset = Math.max((this.getHeight() - bw - this.fontHeight) / 2 + 1, 0);
+            int offset = Math.max((int) Math.ceil((this.getHeight() - bw - this.fontHeight) / 2.0) + 1, 0);
 
             if ((offset & 0x1) == 1)
             {

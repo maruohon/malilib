@@ -282,7 +282,7 @@ public abstract class BaseWidget
 
     protected int getSubWidgetZLevelIncrement()
     {
-        return 4;
+        return 2;
     }
 
     protected int getCenteredTextOffsetY()
@@ -349,6 +349,16 @@ public abstract class BaseWidget
     }
 
     public boolean onMouseScrolledImpl(int mouseX, int mouseY, double mouseWheelDelta)
+    {
+        return false;
+    }
+
+    public boolean onMouseMoved(int mouseX, int mouseY)
+    {
+        return this.onMouseMovedImpl(mouseX, mouseY);
+    }
+
+    public boolean onMouseMovedImpl(int mouseX, int mouseY)
     {
         return false;
     }

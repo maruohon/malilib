@@ -224,7 +224,7 @@ public class DirectoryNavigationWidget extends SearchBarWidget
 
                 if (dirs.isEmpty() == false)
                 {
-                    final DropDownListWidget<File> dropdown = new DropDownListWidget<>(x + el.totalWidth, y + 16, -1, 12, 120, 10, dirs, displayNameFactory);
+                    final DropDownListWidget<File> dropdown = new DropDownListWidget<>(x + el.totalWidth, y + 16, -1, 12, 120, 10, dirs, displayNameFactory, null);
                     dropdown.setNoBarWhenClosed(x + el.totalWidth - 12, y + 2, () -> this.getNavBarIconSubdirs(dropdown.isOpen()));
                     dropdown.setSelectionListener(this.navigator::switchToDirectory);
                     dropdown.setRightAlign(true, x + el.totalWidth, true);
@@ -234,7 +234,7 @@ public class DirectoryNavigationWidget extends SearchBarWidget
             else
             {
                 List<File> dirs = FileUtils.getDirsForRootPath(el.dir, this.rootDir);
-                final DropDownListWidget<File> dropdown = new DropDownListWidget<>(x, y + 16, -1, 12, 120, 10, dirs, displayNameFactory);
+                final DropDownListWidget<File> dropdown = new DropDownListWidget<>(x, y + 16, -1, 12, 120, 10, dirs, displayNameFactory, null);
                 dropdown.setNoBarWhenClosed(x, y + 2, () -> this.getNavBarIconRoot(dropdown.isOpen()));
                 dropdown.setSelectionListener(this.navigator::switchToDirectory);
                 this.addWidget(dropdown);

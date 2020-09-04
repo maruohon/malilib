@@ -241,6 +241,20 @@ public abstract class ContainerWidget extends BackgroundWidget
     }
 
     @Override
+    public boolean onMouseMoved(int mouseX, int mouseY)
+    {
+        for (BaseWidget widget : this.subWidgets)
+        {
+            if (widget.onMouseMoved(mouseX, mouseY))
+            {
+                return true;
+            }
+        }
+
+        return super.onMouseMoved(mouseX, mouseY);
+    }
+
+    @Override
     public boolean onKeyTyped(char typedChar, int keyCode)
     {
         if (this.subWidgets.isEmpty() == false)
@@ -285,7 +299,7 @@ public abstract class ContainerWidget extends BackgroundWidget
     @Override
     public void render(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
     {
-        this.render(mouseX, mouseY, isActiveGui, this.getId() == hoveredWidgetId);
+        this.render(mouseX, mouseY, isActiveGui, this.getId() == hoveredWidgetId || (isActiveGui && this.isMouseOver(mouseX, mouseY)));
         this.drawSubWidgets(mouseX, mouseY, isActiveGui, hoveredWidgetId);
 
         RenderUtils.color(1f, 1f, 1f, 1f);

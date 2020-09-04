@@ -5,20 +5,31 @@ import java.util.Objects;
 import java.util.function.Function;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
+import net.minecraft.potion.Potion;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.RegistryNamespaced;
+import fi.dy.masa.malilib.config.option.BlockListConfig;
+import fi.dy.masa.malilib.config.option.ItemListConfig;
+import fi.dy.masa.malilib.config.option.StatusEffectListConfig;
 import fi.dy.masa.malilib.config.option.ValueListConfig;
 import fi.dy.masa.malilib.util.restriction.UsageRestriction.ListType;
 
-public class BlackWhiteList<TYPE>
+public class BlackWhiteList<TYPE, CFG extends ValueListConfig<TYPE>>
 {
     protected final ListType type;
-    protected final ImmutableList<TYPE> blackList;
-    protected final ImmutableList<TYPE> whiteList;
+    protected final CFG blackList;
+    protected final CFG whiteList;
     protected final Function<TYPE, String> toStringConverter;
     protected final Function<String, TYPE> fromStringConverter;
 
-    public BlackWhiteList(ListType type, ImmutableList<TYPE> blackList, ImmutableList<TYPE> whiteList,
+    public BlackWhiteList(ListType type, CFG blackList, CFG whiteList)
+    {
+        this(type, blackList, whiteList, blackList.getToStringConverter(), blackList.getFromStringConverter());
+    }
+
+    public BlackWhiteList(ListType type, CFG blackList, CFG whiteList,
                           RegistryNamespaced<ResourceLocation, TYPE> registry)
     {
         this.type = type;
@@ -28,7 +39,7 @@ public class BlackWhiteList<TYPE>
         this.fromStringConverter = getRegistryBasedFromStringConverter(registry);
     }
 
-    public BlackWhiteList(ListType type, ImmutableList<TYPE> blackList, ImmutableList<TYPE> whiteList,
+    public BlackWhiteList(ListType type, CFG blackList, CFG whiteList,
                           Function<TYPE, String> toStringConverter, Function<String, TYPE> fromStringConverter)
     {
         this.type = type;
@@ -43,18 +54,18 @@ public class BlackWhiteList<TYPE>
         return this.type;
     }
 
-    public ImmutableList<TYPE> getBlackList()
+    public CFG getBlackList()
     {
         return this.blackList;
     }
 
-    public ImmutableList<TYPE> getWhiteList()
+    public CFG getWhiteList()
     {
         return this.whiteList;
     }
 
     @Nullable
-    public ImmutableList<TYPE> getActiveList()
+    public CFG getActiveList()
     {
         if (this.type == ListType.BLACKLIST)
         {
@@ -70,12 +81,12 @@ public class BlackWhiteList<TYPE>
 
     public ImmutableList<String> getBlackListAsString()
     {
-        return ValueListConfig.getValuesAsStringList(this.blackList, this.toStringConverter);
+        return ValueListConfig.getValuesAsStringList(this.blackList.getValues(), this.toStringConverter);
     }
 
     public ImmutableList<String> getWhiteListAsString()
     {
-        return ValueListConfig.getValuesAsStringList(this.whiteList, this.toStringConverter);
+        return ValueListConfig.getValuesAsStringList(this.whiteList.getValues(), this.toStringConverter);
     }
 
     @Nullable
@@ -103,16 +114,39 @@ public class BlackWhiteList<TYPE>
         return this.fromStringConverter;
     }
 
-    public static <TYPE> BlackWhiteList<TYPE> of(ListType type, ImmutableList<TYPE> blackList, ImmutableList<TYPE> whiteList, RegistryNamespaced<ResourceLocation, TYPE> registry)
+    @SuppressWarnings("unchecked")
+    public BlackWhiteList<TYPE, CFG> copy()
+    {
+        return new BlackWhiteList<>(this.type, (CFG) this.blackList.copy(), (CFG) this.whiteList.copy(), this.getToStringConverter(), this.getFromStringConverter());
+    }
+
+    public static <TYPE, CFG extends ValueListConfig<TYPE>> BlackWhiteList<TYPE, CFG> of(ListType type, CFG blackList, CFG whiteList, RegistryNamespaced<ResourceLocation, TYPE> registry)
     {
         return new BlackWhiteList<>(type, blackList, whiteList, registry);
     }
 
-    public static <TYPE> BlackWhiteList<TYPE> fromLists(BlackWhiteList<TYPE> oldList, ListType type, List<String> blackListStr, List<String> whiteListStr)
+    public static BlackWhiteList<Item, ItemListConfig> items(ListType type, List<String> blackList, List<String> whiteList)
     {
-        ImmutableList<TYPE> blackList = ValueListConfig.getStringListAsValues(blackListStr, oldList.getFromStringConverter());
-        ImmutableList<TYPE> whiteList = ValueListConfig.getStringListAsValues(whiteListStr, oldList.getFromStringConverter());
-        return new BlackWhiteList<>(type, blackList, whiteList, oldList.getToStringConverter(), oldList.getFromStringConverter());
+        return BlackWhiteList.of(type,
+                                 ItemListConfig.create("malilib.label.list_type.blacklist", blackList),
+                                 ItemListConfig.create("malilib.label.list_type.whitelist", whiteList),
+                                 Item.REGISTRY);
+    }
+
+    public static BlackWhiteList<Block, BlockListConfig> blocks(ListType type, List<String> blackList, List<String> whiteList)
+    {
+        return BlackWhiteList.of(type,
+                                 BlockListConfig.create("malilib.label.list_type.blacklist", blackList),
+                                 BlockListConfig.create("malilib.label.list_type.whitelist", whiteList),
+                                 Block.REGISTRY);
+    }
+
+    public static BlackWhiteList<Potion, StatusEffectListConfig> effects(ListType type, List<String> blackList, List<String> whiteList)
+    {
+        return BlackWhiteList.of(type,
+                                 StatusEffectListConfig.create("malilib.label.list_type.blacklist", blackList),
+                                 StatusEffectListConfig.create("malilib.label.list_type.whitelist", whiteList),
+                                 Potion.REGISTRY);
     }
 
     @Override
@@ -121,19 +155,20 @@ public class BlackWhiteList<TYPE>
         if (this == o) { return true; }
         if (o == null || this.getClass() != o.getClass()) { return false; }
 
-        BlackWhiteList<TYPE> that = (BlackWhiteList<TYPE>) o;
+        @SuppressWarnings("unchecked")
+        BlackWhiteList<TYPE, CFG> that = (BlackWhiteList<TYPE, CFG>) o;
 
         if (this.type != that.type) { return false; }
-        if (!Objects.equals(this.blackList, that.blackList)) { return false; }
-        return Objects.equals(this.whiteList, that.whiteList);
+        if (!Objects.equals(this.blackList.getValues(), that.blackList.getValues())) { return false; }
+        return Objects.equals(this.whiteList.getValues(), that.whiteList.getValues());
     }
 
     @Override
     public int hashCode()
     {
         int result = this.type != null ? this.type.hashCode() : 0;
-        result = 31 * result + (this.blackList != null ? this.blackList.hashCode() : 0);
-        result = 31 * result + (this.whiteList != null ? this.whiteList.hashCode() : 0);
+        result = 31 * result + (this.blackList != null ? this.blackList.getValues().hashCode() : 0);
+        result = 31 * result + (this.whiteList != null ? this.whiteList.getValues().hashCode() : 0);
         return result;
     }
 

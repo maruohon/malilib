@@ -27,10 +27,13 @@ public class DropDownListWidget<T> extends ContainerWidget
 {
     protected final List<T> filteredEntries = new ArrayList<>();
     protected final List<T> entries;
+    protected final List<BaseWidget> dropDownSubWidgets = new ArrayList<>();
+    protected final List<BaseWidget> listEntryWidgets = new ArrayList<>();
     protected final ScrollBarWidget scrollBar;
     protected final BaseTextFieldWidget searchField;
     protected final SelectionBarWidget<T> selectionBarWidget;
     @Nullable protected final Function<T, String> stringFactory;
+    @Nullable protected final IconWidgetFactory<T> iconWidgetFactory;
 
     protected final int maxVisibleEntries;
     protected final int maxHeight;
@@ -47,13 +50,14 @@ public class DropDownListWidget<T> extends ContainerWidget
     protected int dropdownHeight;
     protected int dropdownTopY;
     protected int textColor = 0xFFE0E0E0;
+    protected int previousScrollPosition = -1;
     protected int totalHeight;
     protected int visibleEntries;
 
     public DropDownListWidget(int x, int y, int width, int height, int maxHeight,
                               int maxVisibleEntries, List<T> entries)
     {
-        this(x, y, width, height, maxHeight, maxVisibleEntries, entries, null);
+        this(x, y, width, height, maxHeight, maxVisibleEntries, entries, null, null);
     }
 
     /**
@@ -63,13 +67,16 @@ public class DropDownListWidget<T> extends ContainerWidget
      * @param y
      * @param width
      * @param height
-     * @param maxHeight
-     * @param maxVisibleEntries
+     * @param maxHeight the maximum total height of the dropdown widget, when open
+     * @param maxVisibleEntries the maximum number of visible list entries when open
      * @param entries
      * @param stringFactory
+     * @param iconWidgetFactory
      */
     public DropDownListWidget(int x, int y, int width, int height, int maxHeight,
-                              int maxVisibleEntries, List<T> entries, @Nullable Function<T, String> stringFactory)
+                              int maxVisibleEntries, List<T> entries,
+                              @Nullable Function<T, String> stringFactory,
+                              @Nullable IconWidgetFactory<T> iconWidgetFactory)
     {
         super(x, y, width, height);
 
@@ -77,6 +84,7 @@ public class DropDownListWidget<T> extends ContainerWidget
         this.maxHeight = maxHeight;
         this.entries = entries;
         this.stringFactory = stringFactory;
+        this.iconWidgetFactory = iconWidgetFactory;
 
         int v = Math.min(maxVisibleEntries, entries.size());
         v = Math.min(v, maxHeight / height);
@@ -96,9 +104,10 @@ public class DropDownListWidget<T> extends ContainerWidget
         this.scrollBar = new ScrollBarWidget(0, 0, scrollbarWidth, scrollbarHeight);
         this.scrollBar.setMaxValue(this.entries.size() - this.maxVisibleEntries);
         this.scrollBar.setArrowTextures(BaseIcon.SMALL_ARROW_UP, BaseIcon.SMALL_ARROW_DOWN);
+        this.scrollBar.setValueChangeListener(this::reCreateListEntryWidgets);
 
         this.selectionBarWidget = new SelectionBarWidget<>(x, y, width, height, this.textColor, this);
-        this.selectionBarWidget.setZLevel(this.getZLevel() + 2);
+        this.selectionBarWidget.setZLevel(2);
 
         this.searchField = new BaseTextFieldWidget(x, y - 16, width, 16);
         this.searchField.setUpdateListenerAlways(true);
@@ -114,7 +123,7 @@ public class DropDownListWidget<T> extends ContainerWidget
     protected int getSubWidgetZLevelIncrement()
     {
         // Raise the z-level so it's likely to be on top of all other widgets in the same GUI
-        return 80;
+        return 10;
     }
 
     public void setIconProvider(@Nullable IconProvider<T> iconProvider)
@@ -136,10 +145,38 @@ public class DropDownListWidget<T> extends ContainerWidget
         this.reAddSubWidgets();
     }
 
+    @Nullable
+    public BaseWidget createIconWidgetForEntry(int x, int y, int height, T entry)
+    {
+        if (this.iconWidgetFactory != null)
+        {
+            BackgroundWidget widget = this.iconWidgetFactory.create(x, y + 1, height - 2, entry);
+            return widget;
+        }
+        else if (this.iconProvider != null)
+        {
+            Icon icon = this.iconProvider.getIconFor(entry);
+            int offY = (height - icon.getHeight()) / 2;
+            return new IconWidget(x, y + offY, icon);
+        }
+
+        return null;
+    }
+
     @Override
     public void reAddSubWidgets()
     {
         super.reAddSubWidgets();
+
+        this.dropDownSubWidgets.clear();
+        this.dropDownSubWidgets.add(this.scrollBar);
+        this.dropDownSubWidgets.add(this.selectionBarWidget);
+        this.dropDownSubWidgets.add(this.searchField);
+
+        if (this.openCloseButton != null)
+        {
+            this.dropDownSubWidgets.add(this.openCloseButton);
+        }
 
         if (this.isOpen)
         {
@@ -148,6 +185,11 @@ public class DropDownListWidget<T> extends ContainerWidget
             if (this.searchOpen)
             {
                 this.addWidget(this.searchField);
+            }
+
+            for (BaseWidget widget : this.listEntryWidgets)
+            {
+                this.addWidget(widget);
             }
         }
 
@@ -176,9 +218,53 @@ public class DropDownListWidget<T> extends ContainerWidget
         this.dropdownTopY = y + yOff;
         this.totalHeight = this.dropdownHeight + yOff;
 
-        this.scrollBar.setPosition(x + width - scrollbarWidth - 1, y + yOff + 1);
+        this.scrollBar.setPosition(x + width - scrollbarWidth - 1, y + yOff);
         this.searchField.setPositionAndSize(x, y - 16, width, 16);
         this.selectionBarWidget.setPositionAndSize(x, y, width, this.lineHeight);
+    }
+
+    @Override
+    public void moveSubWidgets(int diffX, int diffY)
+    {
+        for (BaseWidget widget : this.dropDownSubWidgets)
+        {
+            widget.setPosition(widget.getX() + diffX, widget.getY() + diffY);
+        }
+
+        for (BaseWidget widget : this.listEntryWidgets)
+        {
+            widget.setPosition(widget.getX() + diffX, widget.getY() + diffY);
+        }
+    }
+
+    protected void reCreateListEntryWidgets()
+    {
+        this.listEntryWidgets.clear();
+
+        if (this.isOpen == false)
+        {
+            return;
+        }
+
+        int bw = this.borderEnabled ? this.borderWidth * 2 : 0;
+        int width = this.getWidth() - this.scrollBar.getWidth() - bw;
+        int height = this.lineHeight;
+        int x = this.getX();
+        int y = this.getY() + height;
+
+        List<T> list = this.filteredEntries;
+        int startIndex = Math.max(0, this.scrollBar.getValue());
+        int max = Math.min(startIndex + this.maxVisibleEntries, list.size());
+
+        for (int i = startIndex; i < max; ++i)
+        {
+            T entry = list.get(i);
+            DropDownListEntryWidget<T> widget = new DropDownListEntryWidget<>(x, y, width, height, i, entry, this);
+            this.listEntryWidgets.add(widget);
+            y += height;
+        }
+
+        this.reAddSubWidgets();
     }
 
     protected int getRequiredWidth(int width, List<T> entries)
@@ -209,12 +295,23 @@ public class DropDownListWidget<T> extends ContainerWidget
         return this.selectedEntry;
     }
 
+    public void onEntryClicked(T entry)
+    {
+        this.setSelectedEntry(entry);
+        this.setOpen(false);
+    }
+
     public DropDownListWidget<T> setSelectedEntry(T entry)
     {
         if (this.entries.contains(entry))
         {
             this.selectedEntry = entry;
             this.updateSelectionBar();
+
+            if (this.selectionListener != null)
+            {
+                this.selectionListener.onSelectionChange(this.selectedEntry);
+            }
         }
 
         return this;
@@ -225,12 +322,6 @@ public class DropDownListWidget<T> extends ContainerWidget
         if (index >= 0 && index < this.filteredEntries.size())
         {
             this.setSelectedEntry(this.filteredEntries.get(index));
-
-            if (this.selectionListener != null)
-            {
-                this.selectionListener.onSelectionChange(this.selectedEntry);
-            }
-
             return true;
         }
 
@@ -244,15 +335,24 @@ public class DropDownListWidget<T> extends ContainerWidget
 
     protected void toggleOpen()
     {
-        this.isOpen = ! this.isOpen;
+        this.setOpen(! this.isOpen);
+    }
+
+    protected void setOpen(boolean isOpen)
+    {
+        this.isOpen = isOpen;
+
+        this.reCreateListEntryWidgets();
 
         if (this.isOpen == false)
         {
+            this.setZLevel(this.getZLevel() - 50);
             this.setSearchOpen(false);
         }
         // setSearchOpen() already re-adds the widgets
         else
         {
+            this.setZLevel(this.getZLevel() + 50);
             // Add/remove the sub widgets as needed
             this.reAddSubWidgets();
         }
@@ -330,7 +430,7 @@ public class DropDownListWidget<T> extends ContainerWidget
         {
             if (this.isOpen)
             {
-                this.toggleOpen();
+                this.setOpen(false);
                 return true;
             }
 
@@ -351,7 +451,7 @@ public class DropDownListWidget<T> extends ContainerWidget
 
                 if (this.setSelectedEntry(this.scrollBar.getValue() + relIndex))
                 {
-                    this.toggleOpen();
+                    this.setOpen(false);
                     return true;
                 }
             }
@@ -406,7 +506,7 @@ public class DropDownListWidget<T> extends ContainerWidget
                 }
                 else
                 {
-                    this.toggleOpen();
+                    this.setOpen(false);
                 }
 
                 return true;
@@ -446,6 +546,7 @@ public class DropDownListWidget<T> extends ContainerWidget
         }
 
         this.scrollBar.setMaxValue(this.filteredEntries.size() - this.maxVisibleEntries);
+        this.reCreateListEntryWidgets();
         this.updateScrollBarHeight();
     }
 
@@ -483,7 +584,7 @@ public class DropDownListWidget<T> extends ContainerWidget
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
+    public void render(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
     {
         // Render the open dropdown list
         if (this.isOpen)
@@ -495,56 +596,9 @@ public class DropDownListWidget<T> extends ContainerWidget
             int height = this.visibleEntries * this.lineHeight;
 
             RenderUtils.drawOutlinedBox(x, this.dropdownTopY, width, height + 2, 0xD0000000, 0xFFE0E0E0, this.getZLevel());
-
-            boolean mouseOverListOnX = mouseX >= x && mouseX < x + width - this.scrollBar.getWidth();
-            int txtY = this.dropdownTopY + this.lineHeight / 2 - this.fontHeight / 2 + 1;
-            this.renderListContents(txtY, mouseX, mouseY, mouseOverListOnX && hovered);
         }
 
-        super.render(mouseX, mouseY, isActiveGui, hovered);
-    }
-
-    protected void renderListContents(int txtY, int mouseX, int mouseY, boolean mouseOverListOnX)
-    {
-        List<T> list = this.filteredEntries;
-        int height = this.lineHeight;
-        int y = this.dropdownTopY + 1;
-        int startIndex = Math.max(0, this.scrollBar.getValue());
-        int max = Math.min(startIndex + this.maxVisibleEntries, list.size());
-        int scrollWidth = this.scrollBar.getWidth();
-        int defaultIconWidth = this.iconProvider != null ? this.iconProvider.getExpectedWidth() + 2 : 0;
-
-        for (int i = startIndex; i < max; ++i)
-        {
-            int bg = (i & 0x1) != 0 ? 0x20FFFFFF : 0x30FFFFFF;
-            boolean hovered = mouseOverListOnX && mouseY >= y && mouseY < y + height;
-
-            if (hovered)
-            {
-                bg = 0x60FFFFFF;
-            }
-
-            T entry = list.get(i);
-            Icon icon = this.iconProvider != null && entry != null ? this.iconProvider.getIconFor(entry) : null;
-            int iconWidth = defaultIconWidth;
-            int x = this.getX();
-            int width = this.getWidth();
-
-            RenderUtils.drawRect(x, y, width - scrollWidth - 1, height, bg, this.getZLevel());
-
-            if (icon != null)
-            {
-                iconWidth = icon.getWidth() + 2;
-                int iconOffY = (height - icon.getHeight()) / 2;
-                icon.renderAt(x + 4, y + iconOffY, this.getZLevel(), true, hovered);
-            }
-
-            int txtX = x + iconWidth + 6;
-            this.drawString(txtX, txtY, this.textColor, this.getDisplayString(entry));
-
-            y += height;
-            txtY += height;
-        }
+        super.render(mouseX, mouseY, isActiveGui, hoveredWidgetId);
     }
 
     public static class SelectionBarWidget<T> extends ClickableWidget
@@ -552,23 +606,21 @@ public class DropDownListWidget<T> extends ContainerWidget
         protected final DropDownListWidget<T> dropdownWidget;
         protected final LabelWidget labelWidget;
         protected final IconWidget openCloseIconWidget;
-        protected final IconWidget entryIconWidget;
+        @Nullable protected BaseWidget iconWidget;
 
-        public SelectionBarWidget(int x, int y, int width, int height, int textColor, DropDownListWidget<T> dropdown)
+        public SelectionBarWidget(int x, int y, int width, int height, int textColor, DropDownListWidget<T> dropDown)
         {
-            super(x, y, width, height, dropdown::toggleOpen);
+            super(x, y, width, height, dropDown::toggleOpen);
 
-            this.dropdownWidget = dropdown;
+            this.dropdownWidget = dropDown;
 
             // The positions of these widgets are updated in update()
-            this.labelWidget = new LabelWidget(0, 0, textColor, dropdown.getCurrentEntryDisplayString());
+            this.labelWidget = new LabelWidget(0, 0, textColor, dropDown.getCurrentEntryDisplayString());
             this.labelWidget.setUseTextShadow(false);
 
-            Icon iconOpen = dropdown.isOpen() ? BaseIcon.ARROW_UP : BaseIcon.ARROW_DOWN;
+            Icon iconOpen = dropDown.isOpen() ? BaseIcon.ARROW_UP : BaseIcon.ARROW_DOWN;
             this.openCloseIconWidget = new IconWidget(0, 0, iconOpen);
             this.openCloseIconWidget.setEnabled(true).setDoHighlight(true);
-
-            this.entryIconWidget = new IconWidget(0, 0, BaseIcon.EMPTY);
 
             this.setBackgroundEnabled(true);
             this.setBorderWidth(1);
@@ -582,9 +634,9 @@ public class DropDownListWidget<T> extends ContainerWidget
             this.addWidget(this.labelWidget);
             this.addWidget(this.openCloseIconWidget);
 
-            if (this.entryIconWidget.getIcon() != null)
+            if (this.iconWidget != null)
             {
-                this.addWidget(this.entryIconWidget);
+                this.addWidget(this.iconWidget);
             }
         }
 
@@ -593,31 +645,31 @@ public class DropDownListWidget<T> extends ContainerWidget
         {
             super.updateSubWidgetsToGeometryChanges();
 
-            DropDownListWidget<T> dropdown = this.dropdownWidget;
-            T entry = dropdown.getSelectedEntry();
-            Icon entryIcon = dropdown.iconProvider != null && entry != null ? dropdown.iconProvider.getIconFor(entry) : null;
-            Icon iconOpen = dropdown.isOpen() ? BaseIcon.ARROW_UP : BaseIcon.ARROW_DOWN;
+            DropDownListWidget<T> dropDown = this.dropdownWidget;
+            Icon iconOpen = dropDown.isOpen() ? BaseIcon.ARROW_UP : BaseIcon.ARROW_DOWN;
 
             this.openCloseIconWidget.setIcon(iconOpen);
-            this.entryIconWidget.setIcon(entryIcon);
-            this.labelWidget.setText(dropdown.getCurrentEntryDisplayString());
+            this.labelWidget.setText(dropDown.getCurrentEntryDisplayString());
 
             int x = this.getX();
             int y = this.getY();
             int width = this.getWidth();
             int height = this.getHeight();
-            int labelX = x + 4;
+            int nextX = x + 4;
             int labelY = y + (height - this.labelWidget.getHeight()) / 2 + 1;
+
+            this.iconWidget = dropDown.createIconWidgetForEntry(nextX, y, height, dropDown.getSelectedEntry());
+
+            if (this.iconWidget != null)
+            {
+                nextX = this.iconWidget.getRight() + 4;
+            }
+
+            this.labelWidget.setPosition(nextX, labelY);
+
             int openIconX = x + width - iconOpen.getWidth() - 2;
             int openIconY = y + (height - iconOpen.getHeight()) / 2 + 1;
 
-            if (entryIcon != null)
-            {
-                labelX += this.entryIconWidget.getWidth() + 4;
-                this.entryIconWidget.setPosition(x + 4, y + (height - entryIcon.getHeight()) / 2);
-            }
-
-            this.labelWidget.setPosition(labelX, labelY);
             this.openCloseIconWidget.setPosition(openIconX, openIconY);
         }
 
@@ -626,5 +678,74 @@ public class DropDownListWidget<T> extends ContainerWidget
             this.updateSubWidgetsToGeometryChanges();
             this.reAddSubWidgets();
         }
+    }
+
+    public static class DropDownListEntryWidget<T> extends ClickableWidget
+    {
+        protected final T entry;
+        protected final int listIndex;
+        protected LabelWidget labelWidget;
+        @Nullable protected BaseWidget iconWidget;
+
+        public DropDownListEntryWidget(int x, int y, int width, int height, int listIndex, T entry, DropDownListWidget<T> dropDown)
+        {
+            super(x, y, width, height, () -> dropDown.onEntryClicked(entry));
+
+            this.listIndex = listIndex;
+            this.entry = entry;
+
+            this.backgroundColor = (listIndex & 0x1) != 0 ? 0x20FFFFFF : 0x30FFFFFF;
+            this.backgroundColorHovered = 0x60FFFFFF;
+            this.backgroundEnabled = true;
+
+            int nextX = x + 4;
+
+            this.iconWidget = dropDown.createIconWidgetForEntry(nextX, y, height, entry);
+
+            if (this.iconWidget != null)
+            {
+                nextX = this.iconWidget.getRight() + 4;
+            }
+
+            this.labelWidget = new LabelWidget(nextX, y, -1, height, 0xFFFFFFFF, dropDown.getDisplayString(entry));
+            this.labelWidget.setPaddingY((height - this.fontHeight) / 2 + 1);
+        }
+
+        @Override
+        public void reAddSubWidgets()
+        {
+            super.reAddSubWidgets();
+
+            this.addWidget(this.labelWidget);
+
+            if (this.iconWidget != null)
+            {
+                this.addWidget(this.iconWidget);
+            }
+        }
+
+        @Override
+        public void updateSubWidgetsToGeometryChanges()
+        {
+            super.updateSubWidgetsToGeometryChanges();
+
+            int nextX = this.getX() + 4;
+            int y = this.getY();
+            int height = this.getHeight();
+
+            if (this.iconWidget != null)
+            {
+                int offY = (height - this.iconWidget.getHeight()) / 2;
+                this.iconWidget.setPosition(nextX, y + offY);
+                nextX = this.iconWidget.getRight() + 4;
+            }
+
+            this.labelWidget.setPosition(nextX, y);
+        }
+    }
+
+    public interface IconWidgetFactory<T>
+    {
+        BackgroundWidget create(int x, int y, int height, T data);
     }
 }

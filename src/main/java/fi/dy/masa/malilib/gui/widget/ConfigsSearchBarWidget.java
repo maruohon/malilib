@@ -60,11 +60,11 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
         final ConfirmActionScreen confirmScreen = new ConfirmActionScreen(240, "malilib.gui.title.confirm_config_reset", configResetter, GuiUtils.getCurrentScreen(), "malilib.gui.label.confirm_config_reset");
         this.resetConfigsButton.setActionListener((btn, mbtn) -> BaseScreen.openPopupGui(confirmScreen));
 
-        this.sourceSelectionDropdown = new DropDownListWidget<>(x, y - 16, -1, 15, 60, 10, Scope.VALUES, Scope::getDisplayName);
+        this.sourceSelectionDropdown = new DropDownListWidget<>(x, y - 16, -1, 15, 60, 10, Scope.VALUES, Scope::getDisplayName, null);
         this.sourceSelectionDropdown.setSelectedEntry(Scope.ALL_CATEGORIES);
         this.sourceSelectionDropdown.setSelectionListener((s) -> filterChangeListener.onEvent());
 
-        this.typeFilterDropdown = new DropDownListWidget<>(x + 100, y - 16, -1, 15, 120, 10, TypeFilter.VALUES, TypeFilter::getDisplayName);
+        this.typeFilterDropdown = new DropDownListWidget<>(x + 100, y - 16, -1, 15, 120, 10, TypeFilter.VALUES, TypeFilter::getDisplayName, null);
         this.typeFilterDropdown.setSelectedEntry(TypeFilter.ALL);
         this.typeFilterDropdown.setSelectionListener((s) -> filterChangeListener.onEvent());
     }

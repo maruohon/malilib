@@ -10,23 +10,23 @@ import fi.dy.masa.malilib.config.value.BlackWhiteList;
 import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.restriction.UsageRestriction;
 
-public class BlackWhiteListConfig<TYPE> extends BaseConfig<BlackWhiteList<TYPE>>
+public class BlackWhiteListConfig<TYPE, CFG extends ValueListConfig<TYPE>> extends BaseConfig<BlackWhiteList<TYPE, CFG>>
 {
-    protected final BlackWhiteList<TYPE> defaultValue;
-    protected BlackWhiteList<TYPE> value;
-    protected BlackWhiteList<TYPE> lastSavedValue;
+    protected final BlackWhiteList<TYPE, CFG> defaultValue;
+    protected BlackWhiteList<TYPE, CFG> value;
+    protected BlackWhiteList<TYPE, CFG> lastSavedValue;
 
-    public BlackWhiteListConfig(String name, BlackWhiteList<TYPE> defaultValue)
+    public BlackWhiteListConfig(String name, BlackWhiteList<TYPE, CFG> defaultValue)
     {
         this(name, defaultValue, name);
     }
 
-    public BlackWhiteListConfig(String name, BlackWhiteList<TYPE> defaultValue, String comment)
+    public BlackWhiteListConfig(String name, BlackWhiteList<TYPE, CFG> defaultValue, String comment)
     {
         this(name, defaultValue, name, comment);
     }
 
-    public BlackWhiteListConfig(String name, BlackWhiteList<TYPE> defaultValue, String prettyName, String comment)
+    public BlackWhiteListConfig(String name, BlackWhiteList<TYPE, CFG> defaultValue, String prettyName, String comment)
     {
         super(name, name, prettyName, comment);
 
@@ -36,19 +36,19 @@ public class BlackWhiteListConfig<TYPE> extends BaseConfig<BlackWhiteList<TYPE>>
         this.cacheSavedValue();
     }
 
-    public BlackWhiteList<TYPE> getValue()
+    public BlackWhiteList<TYPE, CFG> getValue()
     {
         return this.value;
     }
 
-    public BlackWhiteList<TYPE> getDefaultValue()
+    public BlackWhiteList<TYPE, CFG> getDefaultValue()
     {
         return this.defaultValue;
     }
 
-    public void setValue(BlackWhiteList<TYPE> value)
+    public void setValue(BlackWhiteList<TYPE, CFG> value)
     {
-        BlackWhiteList<TYPE> oldValue = this.value;
+        BlackWhiteList<TYPE, CFG> oldValue = this.value;
 
         if (oldValue.equals(value) == false)
         {
@@ -72,7 +72,7 @@ public class BlackWhiteListConfig<TYPE> extends BaseConfig<BlackWhiteList<TYPE>>
     @Override
     public void cacheSavedValue()
     {
-        this.lastSavedValue = this.value;
+        this.lastSavedValue = this.value.copy();
     }
 
     @Override
@@ -98,7 +98,15 @@ public class BlackWhiteListConfig<TYPE> extends BaseConfig<BlackWhiteList<TYPE>>
                     List<String> blackListStr = JsonUtils.arrayAsStringList(obj.getAsJsonArray("blacklist"));
                     List<String> whiteListStr = JsonUtils.arrayAsStringList(obj.getAsJsonArray("whitelist"));
 
-                    this.value = BlackWhiteList.fromLists(this.value, type, blackListStr, whiteListStr);
+                    @SuppressWarnings("unchecked")
+                    CFG blackList = (CFG) this.value.getBlackList().copy();
+                    @SuppressWarnings("unchecked")
+                    CFG whiteList = (CFG) this.value.getWhiteList().copy();
+
+                    blackList.setValues(ValueListConfig.getStringListAsValues(blackListStr, this.value.getFromStringConverter()));
+                    whiteList.setValues(ValueListConfig.getStringListAsValues(whiteListStr, this.value.getFromStringConverter()));
+
+                    this.value = new BlackWhiteList<>(type, blackList, whiteList, this.value.getToStringConverter(), this.value.getFromStringConverter());
                     this.onValueLoaded(this.value);
                 }
             }

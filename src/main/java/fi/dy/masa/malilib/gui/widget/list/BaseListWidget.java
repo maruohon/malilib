@@ -26,7 +26,7 @@ import fi.dy.masa.malilib.render.RenderUtils;
 
 public abstract class BaseListWidget extends ContainerWidget
 {
-    protected final ArrayList<BaseListEntryWidget> listWidgets = new ArrayList<>();
+    protected final ArrayList<BaseListEntryWidget> entryWidgets = new ArrayList<>();
     protected final Padding listPosition = new Padding(2, 2, 2, 2);
     protected final ScrollBarWidget scrollBar;
 
@@ -197,13 +197,13 @@ public abstract class BaseListWidget extends ContainerWidget
 
     protected int getHeightForListEntryWidget(int listIndex)
     {
-        if (this.areEntriesFixedHeight || listIndex >= this.listWidgets.size())
+        if (this.areEntriesFixedHeight || listIndex >= this.entryWidgets.size())
         {
             return this.entryWidgetFixedHeight;
         }
         else
         {
-            return this.listWidgets.get(listIndex).getHeight();
+            return this.entryWidgets.get(listIndex).getHeight();
         }
     }
 
@@ -293,7 +293,7 @@ public abstract class BaseListWidget extends ContainerWidget
 
     public void onGuiClosed()
     {
-        for (BaseListEntryWidget widget : this.listWidgets)
+        for (BaseListEntryWidget widget : this.entryWidgets)
         {
             widget.onAboutToDestroy();
         }
@@ -321,6 +321,14 @@ public abstract class BaseListWidget extends ContainerWidget
             return true;
         }
 
+        for (BaseListEntryWidget widget : this.entryWidgets)
+        {
+            if (widget.onMouseClicked(mouseX, mouseY, mouseButton))
+            {
+                return true;
+            }
+        }
+
         return super.onMouseClicked(mouseX, mouseY, mouseButton);
     }
 
@@ -332,9 +340,9 @@ public abstract class BaseListWidget extends ContainerWidget
             this.headerWidget.onMouseReleased(mouseX, mouseY, mouseButton);
         }
 
-        for (BaseListEntryWidget listWidget : this.listWidgets)
+        for (BaseListEntryWidget widget : this.entryWidgets)
         {
-            listWidget.onMouseReleased(mouseX, mouseY, mouseButton);
+            widget.onMouseReleased(mouseX, mouseY, mouseButton);
         }
 
         super.onMouseReleased(mouseX, mouseY, mouseButton);
@@ -360,8 +368,13 @@ public abstract class BaseListWidget extends ContainerWidget
             return true;
         }
 
-        // The scroll event could be/should be distributed to the entry widgets here
-        // It's not done (for now?) to prevent accidentally messing up stuff when scrolling over lists that have buttons
+        for (BaseListEntryWidget widget : this.entryWidgets)
+        {
+            if (widget.onMouseScrolled(mouseX, mouseY, mouseWheelDelta))
+            {
+                return true;
+            }
+        }
 
         if (GuiUtils.isMouseInRegion(mouseX, mouseY, this.getX(), this.entryWidgetStartY, this.getWidth(), this.listHeight))
         {
@@ -371,6 +384,32 @@ public abstract class BaseListWidget extends ContainerWidget
         }
 
         return false;
+    }
+
+    @Override
+    public boolean onMouseMoved(int mouseX, int mouseY)
+    {
+        if (this.getSearchBarWidget() != null &&
+            this.getSearchBarWidget().onMouseMoved(mouseX, mouseY))
+        {
+            return true;
+        }
+
+        if (this.headerWidget != null &&
+            this.headerWidget.onMouseMoved(mouseX, mouseY))
+        {
+            return true;
+        }
+
+        for (BaseListEntryWidget widget : this.entryWidgets)
+        {
+            if (widget.onMouseMoved(mouseX, mouseY))
+            {
+                return true;
+            }
+        }
+
+        return super.onMouseMoved(mouseX, mouseY);
     }
 
     protected boolean onEntryWidgetClicked(BaseListEntryWidget widget, int mouseX, int mouseY, int mouseButton)
@@ -417,7 +456,7 @@ public abstract class BaseListWidget extends ContainerWidget
             return true;
         }
 
-        for (BaseListEntryWidget widget : this.listWidgets)
+        for (BaseListEntryWidget widget : this.entryWidgets)
         {
             if (widget.onKeyTyped(typedChar, keyCode))
             {
@@ -473,11 +512,11 @@ public abstract class BaseListWidget extends ContainerWidget
             if (this.areEntriesFixedHeight)
             {
                 int relIndex = relativeY / this.entryWidgetFixedHeight;
-                return relIndex < this.listWidgets.size() ? this.listWidgets.get(relIndex) : null;
+                return relIndex < this.entryWidgets.size() ? this.entryWidgets.get(relIndex) : null;
             }
             else
             {
-                for (BaseListEntryWidget widget : this.listWidgets)
+                for (BaseListEntryWidget widget : this.entryWidgets)
                 {
                     if (widget.isMouseOver(mouseX, mouseY))
                     {
@@ -494,7 +533,7 @@ public abstract class BaseListWidget extends ContainerWidget
     public BaseWidget getTopHoveredWidget(int mouseX, int mouseY, BaseWidget highestFoundWidget)
     {
         highestFoundWidget = super.getTopHoveredWidget(mouseX, mouseY, highestFoundWidget);
-        highestFoundWidget = BaseWidget.getTopHoveredWidgetFromList(this.listWidgets, mouseX, mouseY, highestFoundWidget);
+        highestFoundWidget = BaseWidget.getTopHoveredWidgetFromList(this.entryWidgets, mouseX, mouseY, highestFoundWidget);
         return highestFoundWidget;
     }
 
@@ -503,9 +542,9 @@ public abstract class BaseListWidget extends ContainerWidget
     {
         List<BaseTextFieldWidget> textFields = new ArrayList<>(super.getAllTextFields());
 
-        if (this.listWidgets.isEmpty() == false)
+        if (this.entryWidgets.isEmpty() == false)
         {
-            for (BaseWidget widget : this.listWidgets)
+            for (BaseWidget widget : this.entryWidgets)
             {
                 textFields.addAll(widget.getAllTextFields());
             }
@@ -521,7 +560,7 @@ public abstract class BaseListWidget extends ContainerWidget
 
     public void focusWidget(int listIndex)
     {
-        for (BaseListEntryWidget widget : this.listWidgets)
+        for (BaseListEntryWidget widget : this.entryWidgets)
         {
             if (widget.getListIndex() == listIndex)
             {
@@ -541,7 +580,7 @@ public abstract class BaseListWidget extends ContainerWidget
 
     protected void reCreateListEntryWidgets()
     {
-        for (BaseListEntryWidget widget : this.listWidgets)
+        for (BaseListEntryWidget widget : this.entryWidgets)
         {
             widget.onAboutToDestroy();
         }
@@ -552,7 +591,7 @@ public abstract class BaseListWidget extends ContainerWidget
         int y = this.entryWidgetStartY;
         int listIndex = this.scrollBar.getValue();
 
-        this.listWidgets.clear();
+        this.entryWidgets.clear();
         this.visibleListEntries = 0;
 
         this.onPreListEntryWidgetsCreation(listIndex);
@@ -577,7 +616,7 @@ public abstract class BaseListWidget extends ContainerWidget
             }
 
             this.onSubWidgetAdded(widget);
-            this.listWidgets.add(widget);
+            this.entryWidgets.add(widget);
             ++this.visibleListEntries;
 
             usedHeight += widgetHeight;
@@ -620,7 +659,7 @@ public abstract class BaseListWidget extends ContainerWidget
         }
 
         // Draw the currently visible widgets
-        for (int i = 0; i < this.listWidgets.size(); i++)
+        for (int i = 0; i < this.entryWidgets.size(); i++)
         {
             this.renderWidget(i, mouseX, mouseY, isActiveGui, hoveredWidgetId);
         }
@@ -631,13 +670,13 @@ public abstract class BaseListWidget extends ContainerWidget
 
     protected void renderWidget(int widgetIndex, int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
     {
-        this.listWidgets.get(widgetIndex).render(mouseX, mouseY, isActiveGui, hoveredWidgetId, false);
+        this.entryWidgets.get(widgetIndex).render(mouseX, mouseY, isActiveGui, hoveredWidgetId, false);
     }
 
     @Override
     public void renderDebug(int mouseX, int mouseY, boolean hovered, boolean renderAll, boolean infoAlways)
     {
         super.renderDebug(mouseX, mouseY, hovered, renderAll, infoAlways);
-        BaseScreen.renderWidgetDebug(this.listWidgets, mouseX, mouseY, renderAll, infoAlways);
+        BaseScreen.renderWidgetDebug(this.entryWidgets, mouseX, mouseY, renderAll, infoAlways);
     }
 }
