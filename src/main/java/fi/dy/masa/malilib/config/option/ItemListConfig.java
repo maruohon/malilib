@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
+import fi.dy.masa.malilib.util.ItemUtils;
 
 public class ItemListConfig extends ValueListConfig<Item>
 {
@@ -39,18 +40,6 @@ public class ItemListConfig extends ValueListConfig<Item>
         }
     }
 
-    public static String itemToName(Item item)
-    {
-        try
-        {
-            return Item.REGISTRY.getNameForObject(item).toString();
-        }
-        catch (Exception e)
-        {
-            return "?";
-        }
-    }
-
     public static ItemListConfig create(String cfgName, String... itemNames)
     {
         return create(cfgName, Arrays.asList(itemNames));
@@ -70,6 +59,6 @@ public class ItemListConfig extends ValueListConfig<Item>
             }
         }
 
-        return new ItemListConfig(cfgName, builder.build(), ItemListConfig::itemToName, ItemListConfig::nameToItem);
+        return new ItemListConfig(cfgName, builder.build(), ItemUtils::getItemRegistryName, ItemListConfig::nameToItem);
     }
 }

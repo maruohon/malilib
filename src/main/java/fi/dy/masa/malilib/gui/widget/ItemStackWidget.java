@@ -1,7 +1,9 @@
 package fi.dy.masa.malilib.gui.widget;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import fi.dy.masa.malilib.render.ItemRenderUtils;
+import fi.dy.masa.malilib.util.ItemUtils;
 
 public class ItemStackWidget extends BaseModelWidget
 {
@@ -36,5 +38,18 @@ public class ItemStackWidget extends BaseModelWidget
         {
             ItemRenderUtils.renderStackAt(this.stack, x, y, z, this.scale, this.mc);
         }
+    }
+
+    public static ItemStackWidget createItemWidget(int x, int y, int dimensions, Item item)
+    {
+        ItemStackWidget widget = new ItemStackWidget(x, y, dimensions, new ItemStack(item));
+        widget.setBackgroundColor(0x40C0C0C0);
+        widget.setBackgroundEnabled(true);
+        return widget;
+    }
+
+    public static String getItemDisplayName(Item item)
+    {
+        return ItemUtils.getItemRegistryName(item);
     }
 }
