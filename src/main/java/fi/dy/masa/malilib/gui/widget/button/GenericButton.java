@@ -188,7 +188,7 @@ public class GenericButton extends BaseButton
         // Account for odd widths
         int w2 = (width % 2) != 0 ? w1 + 1 : w1;
         int buttonStyle = this.getTextureOffset(hovered);
-        int z = this.getZLevel();
+        float z = this.getZLevel();
 
         RenderUtils.drawTexturedRect(x     , y,        0, 46 + buttonStyle * 20, w1, height, z);
         RenderUtils.drawTexturedRect(x + w1, y, 200 - w2, 46 + buttonStyle * 20, w2, height, z);
@@ -203,7 +203,7 @@ public class GenericButton extends BaseButton
 
             int x = this.getX();
             int y = this.getY();
-            int z = this.getZLevel();
+            float z = this.getZLevel();
             int width = this.getWidth();
             int height = this.getHeight();
             boolean textBlank = StringUtils.isBlank(this.displayString);

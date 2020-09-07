@@ -1,6 +1,5 @@
 package fi.dy.masa.malilib.render.overlay;
 
-import java.util.List;
 import org.lwjgl.opengl.GL11;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockChest;
@@ -10,11 +9,9 @@ import net.minecraft.block.BlockHopper;
 import net.minecraft.block.BlockShulkerBox;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.ContainerHorseChest;
@@ -33,7 +30,7 @@ import net.minecraft.tileentity.TileEntityShulkerBox;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.TextFormatting;
+import fi.dy.masa.malilib.render.ItemRenderUtils;
 import fi.dy.masa.malilib.render.RenderUtils;
 
 public class InventoryOverlay
@@ -48,7 +45,7 @@ public class InventoryOverlay
 
     public static final InventoryProperties INV_PROPS_TEMP = new InventoryProperties();
 
-    private static final EntityEquipmentSlot[] VALID_EQUIPMENT_SLOTS = new EntityEquipmentSlot[] { EntityEquipmentSlot.HEAD, EntityEquipmentSlot.CHEST, EntityEquipmentSlot.LEGS, EntityEquipmentSlot.FEET };
+    private static final EntityEquipmentSlot[] ARMOR_EQUIPMENT_SLOTS = new EntityEquipmentSlot[] { EntityEquipmentSlot.HEAD, EntityEquipmentSlot.CHEST, EntityEquipmentSlot.LEGS, EntityEquipmentSlot.FEET };
 
     public static void renderInventoryBackground(InventoryRenderType type, int x, int y, int zLevel, int slotsPerRow, int totalSlots, Minecraft mc)
     {
@@ -198,7 +195,7 @@ public class InventoryOverlay
 
         for (int i = 0, xOff = 7, yOff = 7; i < 4; ++i, yOff += 18)
         {
-            final EntityEquipmentSlot eqSlot = VALID_EQUIPMENT_SLOTS[i];
+            final EntityEquipmentSlot eqSlot = ARMOR_EQUIPMENT_SLOTS[i];
 
             if (entity.getItemStackFromSlot(eqSlot).isEmpty())
             {
@@ -360,22 +357,22 @@ public class InventoryOverlay
         return INV_PROPS_TEMP;
     }
 
-    public static void renderInventoryStacks(InventoryRenderType type, IInventory inv, int startX, int startY, int zLevel,
+    public static void renderInventoryStacks(InventoryRenderType type, IInventory inv, int startX, int startY, float zLevel,
             int slotsPerRow, int startSlot, int maxSlots, Minecraft mc)
     {
         if (type == InventoryRenderType.FURNACE)
         {
-            renderStackAt(inv.getStackInSlot(0), startX +   8, startY +  8, zLevel, 1f, mc);
-            renderStackAt(inv.getStackInSlot(1), startX +   8, startY + 44, zLevel, 1f, mc);
-            renderStackAt(inv.getStackInSlot(2), startX +  68, startY + 26, zLevel, 1f, mc);
+            ItemRenderUtils.renderStackAt(inv.getStackInSlot(0), startX +   8, startY +  8, zLevel, 1f, mc);
+            ItemRenderUtils.renderStackAt(inv.getStackInSlot(1), startX +   8, startY + 44, zLevel, 1f, mc);
+            ItemRenderUtils.renderStackAt(inv.getStackInSlot(2), startX +  68, startY + 26, zLevel, 1f, mc);
         }
         else if (type == InventoryRenderType.BREWING_STAND)
         {
-            renderStackAt(inv.getStackInSlot(0), startX +  47, startY + 42, zLevel, 1f, mc);
-            renderStackAt(inv.getStackInSlot(1), startX +  70, startY + 49, zLevel, 1f, mc);
-            renderStackAt(inv.getStackInSlot(2), startX +  93, startY + 42, zLevel, 1f, mc);
-            renderStackAt(inv.getStackInSlot(3), startX +  70, startY +  8, zLevel, 1f, mc);
-            renderStackAt(inv.getStackInSlot(4), startX +   8, startY +  8, zLevel, 1f, mc);
+            ItemRenderUtils.renderStackAt(inv.getStackInSlot(0), startX +  47, startY + 42, zLevel, 1f, mc);
+            ItemRenderUtils.renderStackAt(inv.getStackInSlot(1), startX +  70, startY + 49, zLevel, 1f, mc);
+            ItemRenderUtils.renderStackAt(inv.getStackInSlot(2), startX +  93, startY + 42, zLevel, 1f, mc);
+            ItemRenderUtils.renderStackAt(inv.getStackInSlot(3), startX +  70, startY +  8, zLevel, 1f, mc);
+            ItemRenderUtils.renderStackAt(inv.getStackInSlot(4), startX +   8, startY +  8, zLevel, 1f, mc);
         }
         else
         {
@@ -396,7 +393,7 @@ public class InventoryOverlay
 
                     if (stack.isEmpty() == false)
                     {
-                        renderStackAt(stack, x, y, zLevel, 1f, mc);
+                        ItemRenderUtils.renderStackAt(stack, x, y, zLevel, 1f, mc);
                     }
 
                     x += 18;
@@ -408,16 +405,16 @@ public class InventoryOverlay
         }
     }
 
-    public static void renderEquipmentStacks(EntityLivingBase entity, int x, int y, int zLevel, Minecraft mc)
+    public static void renderEquipmentStacks(EntityLivingBase entity, int x, int y, float zLevel, Minecraft mc)
     {
         for (int i = 0, xOff = 7, yOff = 7; i < 4; ++i, yOff += 18)
         {
-            final EntityEquipmentSlot eqSlot = VALID_EQUIPMENT_SLOTS[i];
+            final EntityEquipmentSlot eqSlot = ARMOR_EQUIPMENT_SLOTS[i];
             ItemStack stack = entity.getItemStackFromSlot(eqSlot);
 
             if (stack.isEmpty() == false)
             {
-                renderStackAt(stack, x + xOff + 1, y + yOff + 1, zLevel, 1f, mc);
+                ItemRenderUtils.renderStackAt(stack, x + xOff + 1, y + yOff + 1, zLevel, 1f, mc);
             }
         }
 
@@ -425,18 +422,18 @@ public class InventoryOverlay
 
         if (stack.isEmpty() == false)
         {
-            renderStackAt(stack, x + 28, y + 2 * 18 + 7 + 1, zLevel, 1f, mc);
+            ItemRenderUtils.renderStackAt(stack, x + 28, y + 2 * 18 + 7 + 1, zLevel, 1f, mc);
         }
 
         stack = entity.getItemStackFromSlot(EntityEquipmentSlot.OFFHAND);
 
         if (stack.isEmpty() == false)
         {
-            renderStackAt(stack, x + 28, y + 3 * 18 + 7 + 1, zLevel, 1f, mc);
+            ItemRenderUtils.renderStackAt(stack, x + 28, y + 3 * 18 + 7 + 1, zLevel, 1f, mc);
         }
     }
 
-    public static void renderItemStacks(NonNullList<ItemStack> items, int startX, int startY, int slotsPerRow, int startSlot, int maxSlots, int zLevel, Minecraft mc)
+    public static void renderItemStacks(NonNullList<ItemStack> items, int startX, int startY, int slotsPerRow, int startSlot, int maxSlots, float zLevel, Minecraft mc)
     {
         final int slots = items.size();
         int x = startX;
@@ -455,7 +452,7 @@ public class InventoryOverlay
 
                 if (stack.isEmpty() == false)
                 {
-                    renderStackAt(stack, x, y, zLevel, 1f, mc);
+                    ItemRenderUtils.renderStackAt(stack, x, y, zLevel, 1f, mc);
                 }
 
                 x += 18;
@@ -466,48 +463,7 @@ public class InventoryOverlay
         }
     }
 
-    public static void renderStackAt(ItemStack stack, int x, int y, int z, float scale, Minecraft mc)
-    {
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(x, y, 0);
 
-        if (scale != 0f)
-        {
-            GlStateManager.scale(scale, scale, 1f);
-        }
-
-        GlStateManager.disableLighting();
-        RenderUtils.enableGuiItemLighting();
-
-        float oldZ = mc.getRenderItem().zLevel;
-        mc.getRenderItem().zLevel = z;
-        mc.getRenderItem().renderItemAndEffectIntoGUI(mc.player, stack, 0, 0);
-        mc.getRenderItem().renderItemOverlayIntoGUI(mc.fontRenderer, stack, 0, 0, null);
-        mc.getRenderItem().zLevel = oldZ;
-
-        //GlStateManager.disableBlend();
-        RenderUtils.disableItemLighting();
-        GlStateManager.popMatrix();
-    }
-
-    public static void renderStackToolTip(int x, int y, int zLevel, ItemStack stack, Minecraft mc)
-    {
-        List<String> list = stack.getTooltip(mc.player, mc.gameSettings.advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL);
-
-        for (int i = 0; i < list.size(); ++i)
-        {
-            if (i == 0)
-            {
-                list.set(i, stack.getRarity().color + (String)list.get(i));
-            }
-            else
-            {
-                list.set(i, TextFormatting.GRAY + (String)list.get(i));
-            }
-        }
-
-        RenderUtils.drawHoverText(x, y, zLevel, list);
-    }
 
     public static class InventoryProperties
     {

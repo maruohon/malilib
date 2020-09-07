@@ -224,6 +224,20 @@ public class ScrollBarWidget extends BaseWidget
         return false;
     }
 
+    public void handleDrag(int mouseY, int barTravel)
+    {
+        if (this.dragging)
+        {
+            float valuePerPixel = (float) this.maxValue / barTravel;
+            this.setValue((int) (this.dragStartValue + ((mouseY - this.dragStartY) * valuePerPixel)));
+        }
+        else
+        {
+            this.dragStartY = mouseY;
+            this.dragStartValue = this.currentValue;
+        }
+    }
+
     public boolean isMouseOverUpArrow(int mouseX, int mouseY)
     {
         if (this.getRenderArrows())
@@ -302,7 +316,7 @@ public class ScrollBarWidget extends BaseWidget
                 int v = this.barTexture.getV();
                 int w = this.barTexture.getWidth();
                 int h = this.barTexture.getHeight();
-                int z = this.getZLevel();
+                float z = this.getZLevel();
 
                 RenderUtils.drawTexturedRect(x + 1, barPosition                , u, v        , w, barHeight - 2, z);
                 RenderUtils.drawTexturedRect(x + 1, barPosition + barHeight - 2, u, v + h - 2, w, 2            , z);
@@ -314,20 +328,6 @@ public class ScrollBarWidget extends BaseWidget
 
             // FIXME?
             this.mouseOver = mouseX > x && mouseX < x + width && mouseY > barPosition && mouseY < barPosition + barHeight;
-        }
-    }
-
-    public void handleDrag(int mouseY, int barTravel)
-    {
-        if (this.dragging)
-        {
-            float valuePerPixel = (float) this.maxValue / barTravel;
-            this.setValue((int) (this.dragStartValue + ((mouseY - this.dragStartY) * valuePerPixel)));
-        }
-        else
-        {
-            this.dragStartY = mouseY;
-            this.dragStartValue = this.currentValue;
         }
     }
 }

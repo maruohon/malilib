@@ -39,11 +39,11 @@ import fi.dy.masa.malilib.config.value.HudAlignment;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.render.overlay.InventoryOverlay;
+import fi.dy.masa.malilib.util.PositionUtils;
+import fi.dy.masa.malilib.util.PositionUtils.HitPart;
 import fi.dy.masa.malilib.util.data.Color4f;
 import fi.dy.masa.malilib.util.data.IntBoundingBox;
 import fi.dy.masa.malilib.util.inventory.InventoryUtils;
-import fi.dy.masa.malilib.util.PositionUtils;
-import fi.dy.masa.malilib.util.PositionUtils.HitPart;
 
 public class RenderUtils
 {
@@ -235,7 +235,7 @@ public class RenderUtils
     }
 
     public static void draw9SplicedTexture(int x, int y, int u, int v, int width, int height,
-            int texWidth, int texHeight, int edgeThickness, int zLevel)
+            int texWidth, int texHeight, int edgeThickness, float zLevel)
     {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
@@ -255,7 +255,7 @@ public class RenderUtils
             final int repeatableWidth = texWidth - 2 * e;
             final int requiredWidth = width - 2 * e;
 
-            for (int doneWidth = 0, tmpX = x + e, tmpW = 0; doneWidth < requiredWidth; )
+            for (int doneWidth = 0, tmpX = x + e, tmpW; doneWidth < requiredWidth; )
             {
                 tmpW = Math.min(repeatableWidth, requiredWidth - doneWidth);
 
@@ -279,7 +279,7 @@ public class RenderUtils
             final int repeatableHeight = texHeight - 2 * e;
             final int requiredHeight = height - 2 * e;
 
-            for (int doneHeight = 0, tmpY = y + e, tmpH = 0; doneHeight < requiredHeight; )
+            for (int doneHeight = 0, tmpY = y + e, tmpH; doneHeight < requiredHeight; )
             {
                 tmpH = Math.min(repeatableHeight, requiredHeight - doneHeight);
 
@@ -303,13 +303,13 @@ public class RenderUtils
             final int repeatableWidth = texWidth - 2 * e;
             final int requiredWidth = width - 2 * e;
 
-            for (int doneWidth = 0, tmpX = x + e, tmpW = 0; doneWidth < requiredWidth; )
+            for (int doneWidth = 0, tmpX = x + e, tmpW; doneWidth < requiredWidth; )
             {
                 final int repeatableHeight = texHeight - 2 * e;
                 final int requiredHeight = height - 2 * e;
                 tmpW = Math.min(repeatableWidth, requiredWidth - doneWidth);
 
-                for (int doneHeight = 0, tmpY = y + e, tmpH = 0; doneHeight < requiredHeight; )
+                for (int doneHeight = 0, tmpY = y + e, tmpH; doneHeight < requiredHeight; )
                 {
                     tmpH = Math.min(repeatableHeight, requiredHeight - doneHeight);
 
@@ -433,12 +433,12 @@ public class RenderUtils
         return contentHeight + bgMargin * 2;
     }
 
-    public static void drawHoverText(int x, int y, int zLevel, List<String> textLines)
+    public static void drawHoverText(int x, int y, float zLevel, List<String> textLines)
     {
         drawHoverText(x, y, zLevel, textLines, 0xFFC0C0C0 , RenderUtils::renderHoverTextBackground);
     }
 
-    public static void drawHoverText(int x, int y, int zLevel, List<String> textLines, int textColor, RectangleRenderer backgroundRenderer)
+    public static void drawHoverText(int x, int y, float zLevel, List<String> textLines, int textColor, RectangleRenderer backgroundRenderer)
     {
         Minecraft mc = mc();
 
@@ -505,9 +505,8 @@ public class RenderUtils
 
             backgroundRenderer.render(textStartX, textStartY, maxLineLength, textHeight, zLevel);
 
-            for (int i = 0; i < textLines.size(); ++i)
+            for (String str : textLines)
             {
-                String str = textLines.get(i);
                 font.drawStringWithShadow(str, textStartX, textStartY, textColor);
                 textStartY += lineHeight;
             }
@@ -519,7 +518,7 @@ public class RenderUtils
         }
     }
 
-    public static void renderHoverTextBackground(int x, int y, int width, int height, int zLevel)
+    public static void renderHoverTextBackground(int x, int y, int width, int height, float zLevel)
     {
         int borderColor = 0xF0100010;
         drawGradientRect(x - 3        , y - 4         , x + width + 3, y - 3         , zLevel, borderColor, borderColor);
@@ -1250,7 +1249,7 @@ public class RenderUtils
         }
     }
 
-    public static void renderModelInGui(int x, int y, int zLevel, IBakedModel model, IBlockState state)
+    public static void renderModelInGui(int x, int y, float zLevel, IBakedModel model, IBlockState state)
     {
         if (state.getBlock() == Blocks.AIR)
         {
@@ -1300,7 +1299,7 @@ public class RenderUtils
         }
     }
 
-    private static void renderModel(IBakedModel model, IBlockState state, int zLevel)
+    private static void renderModel(IBakedModel model, IBlockState state, float zLevel)
     {
         GlStateManager.pushMatrix();
         GlStateManager.translate(-0.5F, -0.5F, -0.5F);
@@ -1326,11 +1325,8 @@ public class RenderUtils
 
     private static void renderQuads(BufferBuilder renderer, List<BakedQuad> quads, IBlockState state, int color)
     {
-        final int quadCount = quads.size();
-
-        for (int i = 0; i < quadCount; ++i)
+        for (BakedQuad quad : quads)
         {
-            BakedQuad quad = quads.get(i);
             renderQuad(renderer, quad, state, 0xFFFFFFFF);
         }
     }
@@ -1392,11 +1388,8 @@ public class RenderUtils
      */
     public static void renderQuads(List<BakedQuad> quads, Vec3d pos, float brightness, float red, float green, float blue, BufferBuilder buffer)
     {
-        final int count = quads.size();
-
-        for (int i = 0; i < count; ++i)
+        for (BakedQuad quad : quads)
         {
-            BakedQuad quad = quads.get(i);
             buffer.addVertexData(quad.getVertexData());
 
             if (quad.hasTintIndex())

@@ -38,7 +38,7 @@ public abstract class BaseWidget
     private int xRight;
     private int width;
     private int height;
-    private int zLevel;
+    private float zLevel;
     private boolean keepOnScreen;
     private boolean rightAlign;
     protected boolean automaticHeight;
@@ -240,7 +240,7 @@ public abstract class BaseWidget
     {
     }
 
-    public int getZLevel()
+    public float getZLevel()
     {
         return this.zLevel;
     }
@@ -256,13 +256,13 @@ public abstract class BaseWidget
         return this.id;
     }
 
-    public BaseWidget setZLevel(int zLevel)
+    public BaseWidget setZLevel(float zLevel)
     {
         this.zLevel = zLevel;
         return this;
     }
 
-    public BaseWidget setZLevelBasedOnParent(int parentZLevel)
+    public BaseWidget setZLevelBasedOnParent(float parentZLevel)
     {
         this.setZLevel(parentZLevel + this.getSubWidgetZLevelIncrement());
         return this;
@@ -274,7 +274,7 @@ public abstract class BaseWidget
      * @param parentZLevel
      * @return
      */
-    public BaseWidget onWidgetAdded(int parentZLevel)
+    public BaseWidget onWidgetAdded(float parentZLevel)
     {
         this.setZLevelBasedOnParent(parentZLevel);
         return this;
@@ -547,7 +547,7 @@ public abstract class BaseWidget
     {
         int x = this.getX();
         int y = this.getY();
-        int z = this.getZLevel();
+        float z = this.getZLevel();
         int w = this.getWidth();
         int h = this.getHeight();
 

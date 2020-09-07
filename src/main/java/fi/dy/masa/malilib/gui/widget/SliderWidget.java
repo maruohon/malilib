@@ -50,7 +50,7 @@ public class SliderWidget extends BaseWidget
 
         int x = this.getX();
         int y = this.getY();
-        int z = this.getZLevel();
+        float z = this.getZLevel();
         int width = this.getWidth();
 
         this.bindTexture(VANILLA_WIDGETS);

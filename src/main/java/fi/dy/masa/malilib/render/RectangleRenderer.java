@@ -11,5 +11,5 @@ public interface RectangleRenderer
      * @param height
      * @param zLevel
      */
-    void render(int x, int y, int width, int height, int zLevel);
+    void render(int x, int y, int width, int height, float zLevel);
 }

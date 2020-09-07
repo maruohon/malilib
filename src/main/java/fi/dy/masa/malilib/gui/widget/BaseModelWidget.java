@@ -72,7 +72,7 @@ public abstract class BaseModelWidget extends BackgroundWidget
         this.setHeight(height);
     }
 
-    protected abstract void renderModel(int x, int y, int z, float scale);
+    protected abstract void renderModel(int x, int y, float z, float scale);
 
     @Override
     public void render(int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
@@ -81,7 +81,7 @@ public abstract class BaseModelWidget extends BackgroundWidget
 
         int x = this.getX();
         int y = this.getY();
-        int z = this.getZLevel();
+        float z = this.getZLevel();
         int width = this.getWidth();
         int height = this.getHeight();
 
@@ -96,6 +96,6 @@ public abstract class BaseModelWidget extends BackgroundWidget
             RenderUtils.drawRect(x, y, width, height, this.highlightColor, z);
         }
 
-        this.renderModel(x, y, z, this.scale);
+        this.renderModel(x, y, z + 0.5f, this.scale);
     }
 }

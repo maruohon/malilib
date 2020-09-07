@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.gui.widget;
 
 import net.minecraft.item.ItemStack;
-import fi.dy.masa.malilib.render.overlay.InventoryOverlay;
+import fi.dy.masa.malilib.render.ItemRenderUtils;
 
 public class ItemStackWidget extends BaseModelWidget
 {
@@ -30,11 +30,11 @@ public class ItemStackWidget extends BaseModelWidget
     }
 
     @Override
-    protected void renderModel(int x, int y, int z, float scale)
+    protected void renderModel(int x, int y, float z, float scale)
     {
         if (this.stack.isEmpty() == false)
         {
-            InventoryOverlay.renderStackAt(this.stack, x, y, z, this.scale, this.mc);
+            ItemRenderUtils.renderStackAt(this.stack, x, y, z, this.scale, this.mc);
         }
     }
 }

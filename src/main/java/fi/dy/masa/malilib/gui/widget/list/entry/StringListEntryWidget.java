@@ -16,7 +16,7 @@ public class StringListEntryWidget extends BaseDataListEntryWidget<String>
 
         int x = this.getX();
         int y = this.getY();
-        int z = this.getZLevel();
+        float z = this.getZLevel();
         int width = this.getWidth();
         int height = this.getHeight();
 

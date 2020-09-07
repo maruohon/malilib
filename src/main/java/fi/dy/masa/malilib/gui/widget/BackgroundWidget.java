@@ -113,7 +113,7 @@ public class BackgroundWidget extends BaseWidget
             RenderUtils.color(1f, 1f, 1f, 1f);
             RenderUtils.setupBlend();
 
-            int z = this.getZLevel();
+            float z = this.getZLevel();
             int w = width;
             int h = height;
             int bw = this.borderWidth;
@@ -136,7 +136,7 @@ public class BackgroundWidget extends BaseWidget
             RenderUtils.color(1f, 1f, 1f, 1f);
             RenderUtils.setupBlend();
 
-            int z = this.getZLevel();
+            float z = this.getZLevel();
             int bw = this.borderWidth;
             int b2 = bw * 2;
 

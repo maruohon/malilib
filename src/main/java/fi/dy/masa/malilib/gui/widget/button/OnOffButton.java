@@ -133,7 +133,7 @@ public class OnOffButton extends GenericButton
             int iconHeight1 = height / 2 - 1;
             int iconHeight2 = (height % 2) != 0 ? iconHeight1 + 1 : iconHeight1; // Account for odd height
             int sliderX = value ? x + width - iconWidth - 1 : x + 1;
-            int z = this.getZLevel();
+            float z = this.getZLevel();
             int u = icon.getU();
             int v1 = icon.getV();
             int v2 = v1 + icon.getHeight() - iconHeight2;

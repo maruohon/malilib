@@ -80,7 +80,7 @@ public class KeybindSettingsWidget extends BaseWidget
 
         int x = this.getX();
         int y = this.getY();
-        int z = this.getZLevel();
+        float z = this.getZLevel();
         int edgeColor = this.keyBind.areSettingsModified() ? 0xFFFFBB33 : 0xFFFFFFFF;
 
         RenderUtils.drawRect(x    , y    , 20, 20, edgeColor, z);
