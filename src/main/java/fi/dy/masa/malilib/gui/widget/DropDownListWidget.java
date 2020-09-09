@@ -273,7 +273,7 @@ public class DropDownListWidget<T> extends ContainerWidget
         if (width == -1)
         {
             width = 0;
-            int right = this.lineHeight + 10;
+            int right = this.lineHeight + 4;
 
             for (T entry : entries)
             {
@@ -281,9 +281,14 @@ public class DropDownListWidget<T> extends ContainerWidget
                 width = Math.max(width, this.getStringWidth(this.getDisplayString(entry)) + right);
             }
 
-            if (this.iconProvider != null)
+            if (entries.size() > 0)
             {
-                width += this.iconProvider.getExpectedWidth() + 8;
+                BaseWidget iconWidget = this.createIconWidgetForEntry(0, 0, this.lineHeight, entries.get(0));
+
+                if (iconWidget != null)
+                {
+                    width += iconWidget.getWidth() + 8;
+                }
             }
         }
 

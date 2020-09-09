@@ -22,12 +22,8 @@ public class BlockListConfig extends ValueListConfig<Block>
     @Override
     public BlockListConfig copy()
     {
-        BlockListConfig config = new BlockListConfig(this.name, this.defaultValues, this.commentTranslationKey, this.toStringConverter, this.fromStringConverter);
-        config.setValidValues(this.validValues);
-        config.setValues(this.getValues());
-        config.setModId(this.getModId());
-        config.setValueChangeCallback(this.valueChangeCallback);
-        config.setValueLoadCallback(this.valueLoadCallback);
+        BlockListConfig config = new BlockListConfig(this.name, this.defaultValues, this.toStringConverter, this.fromStringConverter);
+        config.copyValuesFrom(this);
         return config;
     }
 

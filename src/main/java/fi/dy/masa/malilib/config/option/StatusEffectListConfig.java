@@ -23,9 +23,8 @@ public class StatusEffectListConfig extends ValueListConfig<Potion>
     @Override
     public StatusEffectListConfig copy()
     {
-        StatusEffectListConfig config = new StatusEffectListConfig(this.name, this.defaultValues, this.commentTranslationKey, this.toStringConverter, this.fromStringConverter);
-        config.setValidValues(this.validValues);
-        config.setValues(this.getValues());
+        StatusEffectListConfig config = new StatusEffectListConfig(this.name, this.defaultValues, this.toStringConverter, this.fromStringConverter);
+        config.copyValuesFrom(this);
         return config;
     }
 

@@ -13,7 +13,7 @@ import com.google.gson.JsonPrimitive;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.util.JsonUtils;
 
-public abstract class ValueListConfig<TYPE> extends BaseConfig<ImmutableList<TYPE>>
+public class ValueListConfig<TYPE> extends BaseConfig<ImmutableList<TYPE>>
 {
     protected final ImmutableList<TYPE> defaultValues;
     protected final Function<TYPE, String> toStringConverter;
@@ -134,7 +134,26 @@ public abstract class ValueListConfig<TYPE> extends BaseConfig<ImmutableList<TYP
         this.lastSavedValues = this.values;
     }
 
-    public abstract ValueListConfig<TYPE> copy();
+    protected void copyValuesFrom(ValueListConfig<TYPE> other)
+    {
+        this.nameTranslationKey = other.nameTranslationKey;
+        this.prettyNameTranslationKey = other.prettyNameTranslationKey;
+        this.commentTranslationKey = other.commentTranslationKey;
+        this.commentArgs = other.commentArgs;
+        this.modId = other.modId;
+        this.setValidValues(other.validValues);
+        this.setValues(other.getValues());
+        this.setValueChangeCallback(other.valueChangeCallback);
+        this.setValueLoadCallback(other.valueLoadCallback);
+    }
+
+    public ValueListConfig<TYPE> copy()
+    {
+        ValueListConfig<TYPE> config = new ValueListConfig<>(this.name, this.defaultValues,
+                                                             this.toStringConverter, this.fromStringConverter);
+        config.copyValuesFrom(this);
+        return config;
+    }
 
     @Override
     public void setValueFromJsonElement(JsonElement element, String configName)

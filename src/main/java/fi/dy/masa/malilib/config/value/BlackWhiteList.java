@@ -16,20 +16,20 @@ import fi.dy.masa.malilib.config.option.StatusEffectListConfig;
 import fi.dy.masa.malilib.config.option.ValueListConfig;
 import fi.dy.masa.malilib.util.restriction.UsageRestriction.ListType;
 
-public class BlackWhiteList<TYPE, CFG extends ValueListConfig<TYPE>>
+public class BlackWhiteList<TYPE>
 {
     protected final ListType type;
-    protected final CFG blackList;
-    protected final CFG whiteList;
+    protected final ValueListConfig<TYPE> blackList;
+    protected final ValueListConfig<TYPE> whiteList;
     protected final Function<TYPE, String> toStringConverter;
     protected final Function<String, TYPE> fromStringConverter;
 
-    public BlackWhiteList(ListType type, CFG blackList, CFG whiteList)
+    public BlackWhiteList(ListType type, ValueListConfig<TYPE> blackList, ValueListConfig<TYPE> whiteList)
     {
         this(type, blackList, whiteList, blackList.getToStringConverter(), blackList.getFromStringConverter());
     }
 
-    public BlackWhiteList(ListType type, CFG blackList, CFG whiteList,
+    public BlackWhiteList(ListType type, ValueListConfig<TYPE> blackList, ValueListConfig<TYPE> whiteList,
                           RegistryNamespaced<ResourceLocation, TYPE> registry)
     {
         this.type = type;
@@ -39,7 +39,7 @@ public class BlackWhiteList<TYPE, CFG extends ValueListConfig<TYPE>>
         this.fromStringConverter = getRegistryBasedFromStringConverter(registry);
     }
 
-    public BlackWhiteList(ListType type, CFG blackList, CFG whiteList,
+    public BlackWhiteList(ListType type, ValueListConfig<TYPE> blackList, ValueListConfig<TYPE> whiteList,
                           Function<TYPE, String> toStringConverter, Function<String, TYPE> fromStringConverter)
     {
         this.type = type;
@@ -54,18 +54,18 @@ public class BlackWhiteList<TYPE, CFG extends ValueListConfig<TYPE>>
         return this.type;
     }
 
-    public CFG getBlackList()
+    public ValueListConfig<TYPE> getBlackList()
     {
         return this.blackList;
     }
 
-    public CFG getWhiteList()
+    public ValueListConfig<TYPE> getWhiteList()
     {
         return this.whiteList;
     }
 
     @Nullable
-    public CFG getActiveList()
+    public ValueListConfig<TYPE> getActiveList()
     {
         if (this.type == ListType.BLACKLIST)
         {
@@ -114,44 +114,43 @@ public class BlackWhiteList<TYPE, CFG extends ValueListConfig<TYPE>>
         return this.fromStringConverter;
     }
 
-    @SuppressWarnings("unchecked")
-    public BlackWhiteList<TYPE, CFG> copy()
+    public BlackWhiteList<TYPE> copy()
     {
-        return new BlackWhiteList<>(this.type, (CFG) this.blackList.copy(), (CFG) this.whiteList.copy(), this.getToStringConverter(), this.getFromStringConverter());
+        return new BlackWhiteList<>(this.type, this.blackList.copy(), this.whiteList.copy(), this.getToStringConverter(), this.getFromStringConverter());
     }
 
-    public static <TYPE, CFG extends ValueListConfig<TYPE>> BlackWhiteList<TYPE, CFG> of(ListType type, CFG blackList, CFG whiteList)
+    public static <TYPE> BlackWhiteList<TYPE> of(ListType type, ValueListConfig<TYPE> blackList, ValueListConfig<TYPE> whiteList)
     {
         return new BlackWhiteList<>(type, blackList, whiteList);
     }
 
-    public static <TYPE, CFG extends ValueListConfig<TYPE>> BlackWhiteList<TYPE, CFG> of(ListType type, CFG blackList, CFG whiteList, RegistryNamespaced<ResourceLocation, TYPE> registry)
+    public static <TYPE> BlackWhiteList<TYPE> of(ListType type, ValueListConfig<TYPE> blackList, ValueListConfig<TYPE> whiteList, RegistryNamespaced<ResourceLocation, TYPE> registry)
     {
         return new BlackWhiteList<>(type, blackList, whiteList, registry);
     }
 
-    public static BlackWhiteList<Item, ItemListConfig> items(ListType type, ImmutableList<Item> blackList, ImmutableList<Item> whiteList)
+    public static BlackWhiteList<Item> items(ListType type, ImmutableList<Item> blackList, ImmutableList<Item> whiteList)
     {
         return BlackWhiteList.of(type,
                                  ItemListConfig.create("malilib.label.list_type.blacklist", blackList),
                                  ItemListConfig.create("malilib.label.list_type.whitelist", whiteList));
     }
 
-    public static BlackWhiteList<Item, ItemListConfig> itemNames(ListType type, List<String> blackList, List<String> whiteList)
+    public static BlackWhiteList<Item> itemNames(ListType type, List<String> blackList, List<String> whiteList)
     {
         return BlackWhiteList.of(type,
                                  ItemListConfig.fromNames("malilib.label.list_type.blacklist", blackList),
                                  ItemListConfig.fromNames("malilib.label.list_type.whitelist", whiteList));
     }
 
-    public static BlackWhiteList<Block, BlockListConfig> blocks(ListType type, ImmutableList<Block> blackList, ImmutableList<Block> whiteList)
+    public static BlackWhiteList<Block> blocks(ListType type, ImmutableList<Block> blackList, ImmutableList<Block> whiteList)
     {
         return BlackWhiteList.of(type,
                                  BlockListConfig.create("malilib.label.list_type.blacklist", blackList),
                                  BlockListConfig.create("malilib.label.list_type.whitelist", whiteList));
     }
 
-    public static BlackWhiteList<Potion, StatusEffectListConfig> effects(ListType type, List<String> blackList, List<String> whiteList)
+    public static BlackWhiteList<Potion> effects(ListType type, List<String> blackList, List<String> whiteList)
     {
         return BlackWhiteList.of(type,
                                  StatusEffectListConfig.create("malilib.label.list_type.blacklist", blackList),
@@ -166,7 +165,7 @@ public class BlackWhiteList<TYPE, CFG extends ValueListConfig<TYPE>>
         if (o == null || this.getClass() != o.getClass()) { return false; }
 
         @SuppressWarnings("unchecked")
-        BlackWhiteList<TYPE, CFG> that = (BlackWhiteList<TYPE, CFG>) o;
+        BlackWhiteList<TYPE> that = (BlackWhiteList<TYPE>) o;
 
         if (this.type != that.type) { return false; }
         if (!Objects.equals(this.blackList.getValues(), that.blackList.getValues())) { return false; }

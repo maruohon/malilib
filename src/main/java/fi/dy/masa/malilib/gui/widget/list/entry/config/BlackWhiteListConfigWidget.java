@@ -7,12 +7,12 @@ import fi.dy.masa.malilib.gui.widget.button.BlackWhiteListEditButton;
 
 public class BlackWhiteListConfigWidget extends BaseConfigOptionWidget<BlackWhiteListConfig>
 {
-    protected final BlackWhiteListConfig<?, ?> config;
+    protected final BlackWhiteListConfig<?> config;
     protected final BlackWhiteListEditButton button;
-    protected final BlackWhiteList<?, ?> initialValue;
+    protected final BlackWhiteList<?> initialValue;
 
     public BlackWhiteListConfigWidget(int x, int y, int width, int height, int listIndex, int originalListIndex,
-                                      BlackWhiteListConfig<?, ?> config, ConfigWidgetContext ctx)
+                                      BlackWhiteListConfig<?> config, ConfigWidgetContext ctx)
     {
         super(x, y, width, 22, listIndex, originalListIndex, config, ctx);
 

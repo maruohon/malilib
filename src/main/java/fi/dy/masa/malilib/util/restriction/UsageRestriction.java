@@ -8,7 +8,6 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.RegistryNamespaced;
 import fi.dy.masa.malilib.MaLiLib;
-import fi.dy.masa.malilib.config.option.ValueListConfig;
 import fi.dy.masa.malilib.config.value.BaseConfigOptionListEntry;
 import fi.dy.masa.malilib.config.value.BlackWhiteList;
 import fi.dy.masa.malilib.config.value.ConfigOptionListEntry;
@@ -57,7 +56,7 @@ public class UsageRestriction<TYPE>
      * Sets both the black- and whitelist contents based on the provided names, replacing any old values.
      * @param list
      */
-    public <CFG extends ValueListConfig<TYPE>> void setListContents(BlackWhiteList<TYPE, CFG> list)
+    public void setListContents(BlackWhiteList<TYPE> list)
     {
         this.type = list.getListType();
         this.setValuesForList(this.getListForType(ListType.BLACKLIST), list.getBlackList().getValues());

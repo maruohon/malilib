@@ -27,9 +27,8 @@ public class ItemListConfig extends ValueListConfig<Item>
     @Override
     public ItemListConfig copy()
     {
-        ItemListConfig config = new ItemListConfig(this.name, this.defaultValues, this.commentTranslationKey, this.toStringConverter, this.fromStringConverter);
-        config.setValidValues(this.validValues);
-        config.setValues(this.getValues());
+        ItemListConfig config = new ItemListConfig(this.name, this.defaultValues, this.toStringConverter, this.fromStringConverter);
+        config.copyValuesFrom(this);
         return config;
     }
 

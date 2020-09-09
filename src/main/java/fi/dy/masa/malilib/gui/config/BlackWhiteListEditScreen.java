@@ -11,15 +11,15 @@ import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.restriction.UsageRestriction.ListType;
 
-public class BlackWhiteListEditScreen<TYPE, CFG extends ValueListConfig<TYPE>> extends BaseConfigGroupEditScreen
+public class BlackWhiteListEditScreen<TYPE> extends BaseConfigGroupEditScreen
 {
-    protected final BlackWhiteListConfig<TYPE, CFG> config;
+    protected final BlackWhiteListConfig<TYPE> config;
     protected final EventListener externalSaveListener;
     protected final OptionListConfig<ListType> typeConfig;
-    protected final CFG blackListConfig;
-    protected final CFG whiteListConfig;
+    protected final ValueListConfig<TYPE> blackListConfig;
+    protected final ValueListConfig<TYPE> whiteListConfig;
 
-    public BlackWhiteListEditScreen(BlackWhiteListConfig<TYPE, CFG> config, EventListener saveListener,
+    public BlackWhiteListEditScreen(BlackWhiteListConfig<TYPE> config, EventListener saveListener,
                                     @Nullable DialogHandler dialogHandler, GuiScreen parent)
     {
         super(config.getModId(), saveListener, dialogHandler, parent);
@@ -27,19 +27,15 @@ public class BlackWhiteListEditScreen<TYPE, CFG extends ValueListConfig<TYPE>> e
         this.config = config;
         this.externalSaveListener = saveListener;
         this.title = StringUtils.translate("malilib.gui.title.black_white_list_edit", config.getDisplayName());
+        BlackWhiteList<TYPE> bwList = config.getValue();
 
         // Initialize them to the default value so that the reset button is active when they differ from the default value,
         // and also so that the reset restores them to the default value, not the value they were at when the screen was opened
         this.typeConfig = new OptionListConfig<>("malilib.gui.label.black_white_list_edit.type", config.getDefaultValue().getListType());
-        this.typeConfig.setOptionListValue(config.getValue().getListType());
+        this.typeConfig.setOptionListValue(bwList.getListType());
 
-        @SuppressWarnings("unchecked")
-        CFG bl = (CFG) config.getValue().getBlackList().copy();
-        this.blackListConfig = bl;
-
-        @SuppressWarnings("unchecked")
-        CFG wl = (CFG) config.getValue().getWhiteList().copy();
-        this.whiteListConfig = wl;
+        this.blackListConfig = bwList.getBlackList().copy();
+        this.whiteListConfig = bwList.getWhiteList().copy();
 
         this.configs.add(this.typeConfig);
         this.configs.add(this.blackListConfig);
@@ -50,11 +46,12 @@ public class BlackWhiteListEditScreen<TYPE, CFG extends ValueListConfig<TYPE>> e
 
     protected void saveConfigChanges()
     {
-        BlackWhiteList<TYPE, CFG> old = this.config.getDefaultValue();
-        BlackWhiteList<TYPE, CFG> list = new BlackWhiteList<>(this.typeConfig.getOptionListValue(),
-                                                              this.blackListConfig,
-                                                              this.whiteListConfig,
-                                                              old.getToStringConverter(), old.getFromStringConverter());
+        BlackWhiteList<TYPE> old = this.config.getDefaultValue();
+        BlackWhiteList<TYPE> list = new BlackWhiteList<>(this.typeConfig.getOptionListValue(),
+                                                         this.blackListConfig,
+                                                         this.whiteListConfig,
+                                                         old.getToStringConverter(),
+                                                         old.getFromStringConverter());
         this.config.setValue(list);
         this.externalSaveListener.onEvent();
     }

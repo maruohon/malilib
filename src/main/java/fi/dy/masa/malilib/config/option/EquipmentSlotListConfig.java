@@ -29,9 +29,8 @@ public class EquipmentSlotListConfig extends ValueListConfig<EntityEquipmentSlot
     @Override
     public EquipmentSlotListConfig copy()
     {
-        EquipmentSlotListConfig config = new EquipmentSlotListConfig(this.name, this.defaultValues, this.commentTranslationKey, this.toStringConverter, this.fromStringConverter);
-        config.setValidValues(this.validValues);
-        config.setValues(this.getValues());
+        EquipmentSlotListConfig config = new EquipmentSlotListConfig(this.name, this.defaultValues, this.toStringConverter, this.fromStringConverter);
+        config.copyValuesFrom(this);
         return config;
     }
 
