@@ -120,25 +120,35 @@ public class BlackWhiteList<TYPE, CFG extends ValueListConfig<TYPE>>
         return new BlackWhiteList<>(this.type, (CFG) this.blackList.copy(), (CFG) this.whiteList.copy(), this.getToStringConverter(), this.getFromStringConverter());
     }
 
+    public static <TYPE, CFG extends ValueListConfig<TYPE>> BlackWhiteList<TYPE, CFG> of(ListType type, CFG blackList, CFG whiteList)
+    {
+        return new BlackWhiteList<>(type, blackList, whiteList);
+    }
+
     public static <TYPE, CFG extends ValueListConfig<TYPE>> BlackWhiteList<TYPE, CFG> of(ListType type, CFG blackList, CFG whiteList, RegistryNamespaced<ResourceLocation, TYPE> registry)
     {
         return new BlackWhiteList<>(type, blackList, whiteList, registry);
     }
 
-    public static BlackWhiteList<Item, ItemListConfig> items(ListType type, List<String> blackList, List<String> whiteList)
+    public static BlackWhiteList<Item, ItemListConfig> items(ListType type, ImmutableList<Item> blackList, ImmutableList<Item> whiteList)
     {
         return BlackWhiteList.of(type,
                                  ItemListConfig.create("malilib.label.list_type.blacklist", blackList),
-                                 ItemListConfig.create("malilib.label.list_type.whitelist", whiteList),
-                                 Item.REGISTRY);
+                                 ItemListConfig.create("malilib.label.list_type.whitelist", whiteList));
     }
 
-    public static BlackWhiteList<Block, BlockListConfig> blocks(ListType type, List<String> blackList, List<String> whiteList)
+    public static BlackWhiteList<Item, ItemListConfig> itemNames(ListType type, List<String> blackList, List<String> whiteList)
+    {
+        return BlackWhiteList.of(type,
+                                 ItemListConfig.fromNames("malilib.label.list_type.blacklist", blackList),
+                                 ItemListConfig.fromNames("malilib.label.list_type.whitelist", whiteList));
+    }
+
+    public static BlackWhiteList<Block, BlockListConfig> blocks(ListType type, ImmutableList<Block> blackList, ImmutableList<Block> whiteList)
     {
         return BlackWhiteList.of(type,
                                  BlockListConfig.create("malilib.label.list_type.blacklist", blackList),
-                                 BlockListConfig.create("malilib.label.list_type.whitelist", whiteList),
-                                 Block.REGISTRY);
+                                 BlockListConfig.create("malilib.label.list_type.whitelist", whiteList));
     }
 
     public static BlackWhiteList<Potion, StatusEffectListConfig> effects(ListType type, List<String> blackList, List<String> whiteList)

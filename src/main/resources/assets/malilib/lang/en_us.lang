@@ -162,18 +162,21 @@ malilib.gui.label.render_layers.player_follow_offset=Offset
 
 malilib.gui.title.all_hotkeys=All registered hotkeys
 malilib.gui.title.black_white_list_edit=Edit Black/White List '%s'
-malilib.gui.title.block_list_edit=Edit block list for '%s'
+malilib.gui.title.block_list_edit=Edit block list '%s'
 malilib.gui.title.color_editor=Color Editor
 malilib.gui.title.configs=malilib Configs
 malilib.gui.title.confirm_config_reset=Confirm config reset
 malilib.gui.title.create_directory=Create a new directory
 malilib.gui.title.debug=Debug
 malilib.gui.title.directory_browser=Directory Browser
+malilib.gui.title.equipment_slot_list_edit=Edit equipment slot list '%s'
 malilib.gui.title.file_browser=File Browser
 malilib.gui.title.generic=Generic
-malilib.gui.title.item_list_edit=Edit item list for '%s'
-malilib.gui.title.keybind_settings.advanced=Advanced Keybind Settings for '%s'
-malilib.gui.title.string_list_edit=Edit string list for '%s'
+malilib.gui.title.identifier_list_edit=Edit identifier list '%s'
+malilib.gui.title.item_list_edit=Edit item list '%s'
+malilib.gui.title.keybind_settings.advanced=Advanced Keybind Settings '%s'
+malilib.gui.title.status_effect_list_edit=Edit status effect list '%s'
+malilib.gui.title.string_list_edit=Edit string list '%s'
 
 malilib.hotkeys.category.debug_hotkeys=Debug hotkeys
 malilib.hotkeys.category.generic_hotkeys=Generic hotkeys

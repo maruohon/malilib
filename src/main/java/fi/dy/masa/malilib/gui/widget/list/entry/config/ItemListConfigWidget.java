@@ -1,10 +1,14 @@
 package fi.dy.masa.malilib.gui.widget.list.entry.config;
 
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import fi.dy.masa.malilib.config.option.ItemListConfig;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
+import fi.dy.masa.malilib.gui.widget.ItemStackWidget;
+import fi.dy.masa.malilib.gui.widget.button.BaseValueListEditButton;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
-import fi.dy.masa.malilib.gui.widget.button.ItemListEditButton;
+import fi.dy.masa.malilib.util.ItemUtils;
+import fi.dy.masa.malilib.util.StringUtils;
 
 public class ItemListConfigWidget extends BaseValueListConfigWidget<Item, ItemListConfig>
 {
@@ -17,6 +21,12 @@ public class ItemListConfigWidget extends BaseValueListConfigWidget<Item, ItemLi
     @Override
     protected GenericButton createButton(int width, int height, ItemListConfig config, ConfigWidgetContext ctx)
     {
-        return new ItemListEditButton(0, 0, width, height, config, this::onReset, ctx.getDialogHandler());
+        String title = StringUtils.translate("malilib.gui.title.item_list_edit", this.config.getDisplayName());
+
+        return new BaseValueListEditButton<>(0, 0, width, height, config, this::onReset, ctx.getDialogHandler(),
+                                             title, () -> Items.STICK,
+                                             ItemUtils::getSortedItemList,
+                                             ItemStackWidget::getItemDisplayName,
+                                             ItemStackWidget::createItemWidget);
     }
 }

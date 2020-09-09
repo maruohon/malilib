@@ -65,7 +65,9 @@ public class BaseTextFieldWidget extends BackgroundWidget
         this.lastNotifiedText = text;
 
         this.setBackgroundColor(0xFF000000);
+        this.setBackgroundColorHovered(this.backgroundColor);
         this.setBackgroundEnabled(true);
+        this.setRenderHoverBackground(false);
         this.setBorderColor(this.colorUnfocused);
         this.setBorderWidth(1);
         this.setPaddingX(3);

@@ -3,10 +3,9 @@ package fi.dy.masa.malilib.config.option;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
-import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.block.Block;
-import net.minecraft.util.ResourceLocation;
+import fi.dy.masa.malilib.util.BlockUtils;
 
 public class BlockListConfig extends ValueListConfig<Block>
 {
@@ -23,46 +22,27 @@ public class BlockListConfig extends ValueListConfig<Block>
     @Override
     public BlockListConfig copy()
     {
-        return new BlockListConfig(this.name, this.defaultValues, this.commentTranslationKey, this.toStringConverter, this.fromStringConverter);
+        BlockListConfig config = new BlockListConfig(this.name, this.defaultValues, this.commentTranslationKey, this.toStringConverter, this.fromStringConverter);
+        config.setValidValues(this.validValues);
+        config.setValues(this.getValues());
+        config.setModId(this.getModId());
+        config.setValueChangeCallback(this.valueChangeCallback);
+        config.setValueLoadCallback(this.valueLoadCallback);
+        return config;
     }
 
-    @Nullable
-    public static Block nameToBlock(String name)
+    public static BlockListConfig fromNames(String cfgName, String... blockNames)
     {
-        try
-        {
-            return Block.REGISTRY.getObject(new ResourceLocation(name));
-        }
-        catch (Exception e)
-        {
-            return null;
-        }
+        return fromNames(cfgName, Arrays.asList(blockNames));
     }
 
-    public static String blockToName(Block block)
-    {
-        try
-        {
-            return Block.REGISTRY.getNameForObject(block).toString();
-        }
-        catch (Exception e)
-        {
-            return "?";
-        }
-    }
-
-    public static BlockListConfig create(String cfgName, String... blockNames)
-    {
-        return create(cfgName, Arrays.asList(blockNames));
-    }
-
-    public static BlockListConfig create(String cfgName, List<String> blockNames)
+    public static BlockListConfig fromNames(String cfgName, List<String> blockNames)
     {
         ImmutableList.Builder<Block> builder = ImmutableList.builder();
 
         for (String name : blockNames)
         {
-            Block block = nameToBlock(name);
+            Block block = BlockUtils.getBlockByRegistryName(name);
 
             if (block != null)
             {
@@ -70,6 +50,11 @@ public class BlockListConfig extends ValueListConfig<Block>
             }
         }
 
-        return new BlockListConfig(cfgName, builder.build(), BlockListConfig::blockToName, BlockListConfig::nameToBlock);
+        return create(cfgName, builder.build());
+    }
+
+    public static BlockListConfig create(String cfgName, ImmutableList<Block> blocks)
+    {
+        return new BlockListConfig(cfgName, blocks, BlockUtils::getBlockRegistryName, BlockUtils::getBlockByRegistryName);
     }
 }

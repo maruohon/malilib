@@ -17,10 +17,10 @@ public class BaseValueListEditEntryWidget<TYPE> extends BaseOrderableListEditEnt
     protected final GenericButton resetButton;
 
     public BaseValueListEditEntryWidget(int x, int y, int width, int height, int listIndex, int originalListIndex,
-                                        TYPE initialValue, TYPE defaultValue, List<TYPE> possibleValues,
+                                        TYPE initialValue, TYPE defaultValue, DataListWidget<TYPE> parent,
+                                        List<TYPE> possibleValues,
                                         Function<TYPE, String> toStringConverter,
-                                        @Nullable IconWidgetFactory<TYPE> iconWidgetFactory,
-                                        DataListWidget<TYPE> parent)
+                                        @Nullable IconWidgetFactory<TYPE> iconWidgetFactory)
     {
         super(x, y, width, height, listIndex, originalListIndex, initialValue, parent);
 
@@ -78,7 +78,7 @@ public class BaseValueListEditEntryWidget<TYPE> extends BaseOrderableListEditEnt
     @Override
     protected void updateSubWidgetsToGeometryChangesPost(int x, int y)
     {
-        this.resetButton.setPosition(x, y + 1);
+        this.resetButton.setPosition(x, y + 2);
     }
 
     @Override

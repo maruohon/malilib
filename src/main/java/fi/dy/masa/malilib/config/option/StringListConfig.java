@@ -17,6 +17,9 @@ public class StringListConfig extends ValueListConfig<String>
     @Override
     public StringListConfig copy()
     {
-        return new StringListConfig(this.name, this.defaultValues, this.commentTranslationKey);
+        StringListConfig config = new StringListConfig(this.name, this.defaultValues, this.commentTranslationKey);
+        config.setValidValues(this.validValues);
+        config.setValues(this.getValues());
+        return config;
     }
 }

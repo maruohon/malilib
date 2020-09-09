@@ -23,11 +23,14 @@ public class StatusEffectListConfig extends ValueListConfig<Potion>
     @Override
     public StatusEffectListConfig copy()
     {
-        return new StatusEffectListConfig(this.name, this.defaultValues, this.commentTranslationKey, this.toStringConverter, this.fromStringConverter);
+        StatusEffectListConfig config = new StatusEffectListConfig(this.name, this.defaultValues, this.commentTranslationKey, this.toStringConverter, this.fromStringConverter);
+        config.setValidValues(this.validValues);
+        config.setValues(this.getValues());
+        return config;
     }
 
     @Nullable
-    public static Potion nameToEffect(String name)
+    public static Potion getEffectByRegistryName(String name)
     {
         try
         {
@@ -39,7 +42,7 @@ public class StatusEffectListConfig extends ValueListConfig<Potion>
         }
     }
 
-    public static String effectToName(Potion effect)
+    public static String getRegistryName(Potion effect)
     {
         try
         {
@@ -62,7 +65,7 @@ public class StatusEffectListConfig extends ValueListConfig<Potion>
 
         for (String name : effectNames)
         {
-            Potion effect = nameToEffect(name);
+            Potion effect = getEffectByRegistryName(name);
 
             if (effect != null)
             {
@@ -70,6 +73,6 @@ public class StatusEffectListConfig extends ValueListConfig<Potion>
             }
         }
 
-        return new StatusEffectListConfig(cfgName, builder.build(), StatusEffectListConfig::effectToName, StatusEffectListConfig::nameToEffect);
+        return new StatusEffectListConfig(cfgName, builder.build(), StatusEffectListConfig::getRegistryName, StatusEffectListConfig::getEffectByRegistryName);
     }
 }

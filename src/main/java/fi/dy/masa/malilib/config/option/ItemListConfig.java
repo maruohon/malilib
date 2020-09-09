@@ -3,14 +3,17 @@ package fi.dy.masa.malilib.config.option;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
-import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.util.ItemUtils;
 
 public class ItemListConfig extends ValueListConfig<Item>
 {
+    public ItemListConfig(String name, ImmutableList<Item> defaultValues)
+    {
+        this(name, defaultValues, ItemUtils::getItemRegistryName, ItemUtils::getItemByRegistryName);
+    }
+
     public ItemListConfig(String name, ImmutableList<Item> defaultValues, Function<Item, String> toStringConverter, Function<String, Item> fromStringConverter)
     {
         super(name, defaultValues, toStringConverter, fromStringConverter);
@@ -24,34 +27,24 @@ public class ItemListConfig extends ValueListConfig<Item>
     @Override
     public ItemListConfig copy()
     {
-        return new ItemListConfig(this.name, this.defaultValues, this.commentTranslationKey, this.toStringConverter, this.fromStringConverter);
+        ItemListConfig config = new ItemListConfig(this.name, this.defaultValues, this.commentTranslationKey, this.toStringConverter, this.fromStringConverter);
+        config.setValidValues(this.validValues);
+        config.setValues(this.getValues());
+        return config;
     }
 
-    @Nullable
-    public static Item nameToItem(String name)
+    public static ItemListConfig fromNames(String cfgName, String... itemNames)
     {
-        try
-        {
-            return Item.REGISTRY.getObject(new ResourceLocation(name));
-        }
-        catch (Exception e)
-        {
-            return null;
-        }
+        return fromNames(cfgName, Arrays.asList(itemNames));
     }
 
-    public static ItemListConfig create(String cfgName, String... itemNames)
-    {
-        return create(cfgName, Arrays.asList(itemNames));
-    }
-
-    public static ItemListConfig create(String cfgName, List<String> itemNames)
+    public static ItemListConfig fromNames(String cfgName, List<String> itemNames)
     {
         ImmutableList.Builder<Item> builder = ImmutableList.builder();
 
         for (String name : itemNames)
         {
-            Item item = nameToItem(name);
+            Item item = ItemUtils.getItemByRegistryName(name);
 
             if (item != null)
             {
@@ -59,6 +52,11 @@ public class ItemListConfig extends ValueListConfig<Item>
             }
         }
 
-        return new ItemListConfig(cfgName, builder.build(), ItemUtils::getItemRegistryName, ItemListConfig::nameToItem);
+        return create(cfgName, builder.build());
+    }
+
+    public static ItemListConfig create(String cfgName, ImmutableList<Item> items)
+    {
+        return new ItemListConfig(cfgName, items, ItemUtils::getItemRegistryName, ItemUtils::getItemByRegistryName);
     }
 }

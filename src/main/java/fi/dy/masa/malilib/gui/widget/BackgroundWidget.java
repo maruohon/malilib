@@ -6,6 +6,7 @@ public class BackgroundWidget extends BaseWidget
 {
     protected boolean backgroundEnabled;
     protected boolean borderEnabled;
+    protected boolean renderHoverBackground = true;
     protected int backgroundColor = 0xB0101010;
     protected int backgroundColorHovered = 0x60FFFFFF;
     protected int borderColorBR = 0xFFC0C0C0;
@@ -24,6 +25,12 @@ public class BackgroundWidget extends BaseWidget
         this.backgroundEnabled = enabled;
         this.updateWidth();
         this.updateHeight();
+        return this;
+    }
+
+    public BackgroundWidget setRenderHoverBackground(boolean enabled)
+    {
+        this.renderHoverBackground = enabled;
         return this;
     }
 
@@ -141,8 +148,8 @@ public class BackgroundWidget extends BaseWidget
             int b2 = bw * 2;
 
             // Background
-            int color = hovered ? this.backgroundColorHovered : this.backgroundColor;
-            RenderUtils.drawRect(x + bw, y + bw, width - b2 , height - b2, color, z);
+            int color = hovered && this.renderHoverBackground ? this.backgroundColorHovered : this.backgroundColor;
+            RenderUtils.drawRect(x + bw, y + bw, width - b2, height - b2, color, z);
         }
     }
 }

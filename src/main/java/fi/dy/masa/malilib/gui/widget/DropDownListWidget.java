@@ -108,6 +108,7 @@ public class DropDownListWidget<T> extends ContainerWidget
 
         this.selectionBarWidget = new SelectionBarWidget<>(x, y, width, height, this.textColor, this);
         this.selectionBarWidget.setZLevel(2);
+        this.selectionBarWidget.setBackgroundColorHovered(0xB0404040);
 
         this.searchField = new BaseTextFieldWidget(x, y - 16, width, 16);
         this.searchField.setUpdateListenerAlways(true);

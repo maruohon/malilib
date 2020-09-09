@@ -1,8 +1,12 @@
 package fi.dy.masa.malilib.config.option;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
+import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
@@ -16,6 +20,7 @@ public abstract class ValueListConfig<TYPE> extends BaseConfig<ImmutableList<TYP
     protected final Function<String, TYPE> fromStringConverter;
     protected ImmutableList<TYPE> values;
     protected ImmutableList<TYPE> lastSavedValues;
+    @Nullable ImmutableSet<TYPE> validValues;
 
     public ValueListConfig(String name, ImmutableList<TYPE> defaultValues,
                            Function<TYPE, String> toStringConverter, Function<String, TYPE> fromStringConverter)
@@ -61,12 +66,46 @@ public abstract class ValueListConfig<TYPE> extends BaseConfig<ImmutableList<TYP
         return this.fromStringConverter;
     }
 
+    @Nullable
+    public ImmutableSet<TYPE> getValidValues()
+    {
+        return this.validValues;
+    }
+
+    /**
+     * Sets the values that are allowed/valid for this config.
+     * A null list or an empty list will disable the validity check.
+     * By default all values are valid (a null set).
+     */
+    public void setValidValues(@Nullable Collection<TYPE> values)
+    {
+        if (values != null && values.isEmpty() == false)
+        {
+            this.validValues = ImmutableSet.copyOf(values);
+        }
+        else
+        {
+            this.validValues = null;
+        }
+    }
+
     public void setValues(List<TYPE> newValues)
     {
         if (this.values.equals(newValues) == false)
         {
             ImmutableList<TYPE> oldValues = this.values;
-            this.values = ImmutableList.copyOf(newValues);
+            List<TYPE> filteredValues;
+
+            if (this.validValues != null && this.validValues.isEmpty() == false)
+            {
+                filteredValues = newValues.stream().filter(this.validValues::contains).collect(Collectors.toList());
+            }
+            else
+            {
+                filteredValues = newValues;
+            }
+
+            this.values = ImmutableList.copyOf(filteredValues);
             this.onValueChanged(this.values, oldValues);
         }
     }
@@ -152,7 +191,12 @@ public abstract class ValueListConfig<TYPE> extends BaseConfig<ImmutableList<TYP
 
         for (TYPE value : values)
         {
-            builder.add(converter.apply(value));
+            String str = converter.apply(value);
+
+            if (str != null)
+            {
+                builder.add(str);
+            }
         }
 
         return builder.build();
@@ -164,7 +208,12 @@ public abstract class ValueListConfig<TYPE> extends BaseConfig<ImmutableList<TYP
 
         for (String str : strings)
         {
-            builder.add(converter.apply(str));
+            TYPE value = converter.apply(str);
+
+            if (value != null)
+            {
+                builder.add(value);
+            }
         }
 
         return builder.build();

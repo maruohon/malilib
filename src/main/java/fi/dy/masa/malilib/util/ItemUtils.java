@@ -3,8 +3,9 @@ package fi.dy.masa.malilib.util;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import javax.annotation.Nullable;
 import net.minecraft.item.Item;
-import fi.dy.masa.malilib.gui.widget.ItemStackWidget;
+import net.minecraft.util.ResourceLocation;
 
 public class ItemUtils
 {
@@ -20,6 +21,19 @@ public class ItemUtils
         }
     }
 
+    @Nullable
+    public static Item getItemByRegistryName(String name)
+    {
+        try
+        {
+            return Item.REGISTRY.getObject(new ResourceLocation(name));
+        }
+        catch (Exception e)
+        {
+            return null;
+        }
+    }
+
     public static List<Item> getSortedItemList()
     {
         List<Item> items = new ArrayList<>();
@@ -29,7 +43,7 @@ public class ItemUtils
             items.add(item);
         }
 
-        items.sort(Comparator.comparing(ItemStackWidget::getItemDisplayName));
+        items.sort(Comparator.comparing(ItemUtils::getItemRegistryName));
 
         return items;
     }

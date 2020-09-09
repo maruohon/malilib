@@ -28,6 +28,45 @@ public class BlockUtils
     private static final Splitter COMMA_SPLITTER = Splitter.on(',');
     private static final Splitter EQUAL_SPLITTER = Splitter.on('=').limit(2);
 
+    public static String getBlockRegistryName(Block block)
+    {
+        try
+        {
+            return Block.REGISTRY.getNameForObject(block).toString();
+        }
+        catch (Exception e)
+        {
+            return "?";
+        }
+    }
+
+    @Nullable
+    public static Block getBlockByRegistryName(String name)
+    {
+        try
+        {
+            return Block.REGISTRY.getObject(new ResourceLocation(name));
+        }
+        catch (Exception e)
+        {
+            return null;
+        }
+    }
+
+    public static List<Block> getSortedBlockList()
+    {
+        List<Block> blocks = new ArrayList<>();
+
+        for (Block block : Block.REGISTRY)
+        {
+            blocks.add(block);
+        }
+
+        blocks.sort(Comparator.comparing(BlockUtils::getBlockRegistryName));
+
+        return blocks;
+    }
+
     /**
      * Parses the provided string into the full block state.<br>
      * The string should be in either one of the following formats:<br>
