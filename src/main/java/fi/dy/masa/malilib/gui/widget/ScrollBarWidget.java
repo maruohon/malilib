@@ -213,7 +213,7 @@ public class ScrollBarWidget extends BaseWidget
             int slideHeight = Math.max(0, height - upArH - downArH);
             totalHeight = Math.max(0, totalHeight - upArH - downArH);
             float relative = Math.min(1.0F, (float) slideHeight / (float) totalHeight);
-            int barHeight = (int) (relative * slideHeight);
+            int barHeight = (int) Math.max((relative * slideHeight), 3);
             int barTravel = slideHeight - barHeight;
 
             this.handleDrag(mouseY, barTravel);
@@ -297,7 +297,7 @@ public class ScrollBarWidget extends BaseWidget
             int slideHeight = Math.max(0, height - upArH - downArH);
             totalHeight = Math.max(0, totalHeight - upArH - downArH);
             float relative = Math.min(1.0F, (float) slideHeight / (float) totalHeight);
-            int barHeight = (int) (relative * slideHeight);
+            int barHeight = (int) Math.max((relative * slideHeight), 3);
             int barTravel = slideHeight - barHeight;
             int barPosition = y + upArH + (this.maxValue > 0 ? (int) ((this.currentValue / (float) this.maxValue) * barTravel) : 0);
 
@@ -324,7 +324,7 @@ public class ScrollBarWidget extends BaseWidget
             }
 
             // FIXME?
-            this.mouseOver = mouseX > x && mouseX < x + width && mouseY > barPosition && mouseY < barPosition + barHeight;
+            this.mouseOver = mouseX >= x && mouseX < x + width && mouseY >= barPosition && mouseY < barPosition + barHeight;
         }
     }
 }

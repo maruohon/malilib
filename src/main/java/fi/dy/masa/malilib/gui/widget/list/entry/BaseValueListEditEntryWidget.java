@@ -38,7 +38,7 @@ public class BaseValueListEditEntryWidget<TYPE> extends BaseOrderableListEditEnt
         int ddWidth = width - this.resetButton.getWidth() - this.labelWidget.getWidth()
                             - this.addButton.getWidth() - this.removeButton.getWidth()
                             - this.upButton.getWidth() - this.downButton.getWidth() - 20;
-        this.dropDownWidget = new DropDownListWidget<>(x, y, -ddWidth, 18, 160, 16, possibleValues, toStringConverter, iconWidgetFactory);
+        this.dropDownWidget = new DropDownListWidget<>(x, y, -ddWidth, 18, 216, 12, possibleValues, toStringConverter, iconWidgetFactory);
 
         this.dropDownWidget.setSelectedEntry(this.initialValue);
         this.dropDownWidget.setSelectionListener((entry) -> {
