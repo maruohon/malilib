@@ -844,7 +844,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
         return false;
     }
 
-    protected void renderCursor(int x, int y, int color)
+    protected void renderCursor(int x, int y, float z, int color)
     {
         int relIndex = this.cursorPosition - this.visibleText.getStartIndex();
         color = this.selectionStartPosition != -1 ? 0xFF00D0FF : color;
@@ -857,7 +857,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
             if (this.cursorPosition == this.text.length() && this.selectionStartPosition == -1)
             {
                 int offX = this.getStringWidth(visibleText);
-                this.drawString(x + offX, y + this.getCenteredTextOffsetY(), color, "_");
+                this.drawString(x + offX, y + this.getCenteredTextOffsetY(), z, color, "_");
             }
             else
             {
@@ -872,18 +872,18 @@ public class BaseTextFieldWidget extends BackgroundWidget
                 int y2 = y1 + cursorExtraHeight;
                 int y3 = y2 + this.fontHeight;
 
-                RenderUtils.drawVerticalLine(x + offX, y1, cursorExtraHeight    , color  , this.getZLevel() + 0.1f);
-                RenderUtils.drawVerticalLine(x + offX, y2, this.fontHeight      , colorTr, this.getZLevel() + 0.1f);
-                RenderUtils.drawVerticalLine(x + offX, y3, cursorExtraHeight + 1, color  , this.getZLevel() + 0.1f);
+                RenderUtils.drawVerticalLine(x + offX, y1, cursorExtraHeight    , color  , z + 0.1f);
+                RenderUtils.drawVerticalLine(x + offX, y2, this.fontHeight      , colorTr, z + 0.1f);
+                RenderUtils.drawVerticalLine(x + offX, y3, cursorExtraHeight + 1, color  , z + 0.1f);
             }
         }
     }
 
-    protected void renderTextSegment(int x, int y, int startIndex, int textLength, int textColor, int backgroundColor)
+    protected void renderTextSegment(int x, int y, float z, int startIndex, int textLength, int textColor, int backgroundColor)
     {
     }
 
-    protected void renderVisibleText(int x, int y, int textColor)
+    protected void renderVisibleText(int x, int y, float z, int textColor)
     {
         String visibleText = this.visibleText.getText();
 
@@ -903,7 +903,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
                 if (selStart > start)
                 {
                     String str = visibleText.substring(0, selStart - start);
-                    this.drawString(x, y, textColor, str);
+                    this.drawString(x, y, z, textColor, str);
                     x += this.getStringWidth(str);
                 }
 
@@ -912,15 +912,15 @@ public class BaseTextFieldWidget extends BackgroundWidget
                 String str = visibleText.substring(p1, p2);
                 int selWidth = this.getStringWidth(str);
 
-                RenderUtils.drawRect(x, y - 2, selWidth, this.fontHeight + 3, textColor, this.getZLevel());
-                this.drawString(x, y, 0xFF000000, str);
+                RenderUtils.drawRect(x, y - 2, selWidth, this.fontHeight + 3, textColor, z);
+                this.drawString(x, y, z, 0xFF000000, str);
                 x += selWidth;
 
                 // Non-selected text at the start
                 if (selEnd <= end)
                 {
                     str = visibleText.substring(selEnd - start, visLen);
-                    this.drawString(x, y, textColor, str);
+                    this.drawString(x, y, z, textColor, str);
                 }
 
                 return;
@@ -928,16 +928,14 @@ public class BaseTextFieldWidget extends BackgroundWidget
         }
 
         // No selection
-        this.drawString(x, y, textColor, visibleText);
+        this.drawString(x, y, z, textColor, visibleText);
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
+    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
     {
-        super.render(mouseX, mouseY, isActiveGui, hovered);
+        super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hovered);
 
-        int x = this.getX();
-        int y = this.getY();
         int color;
 
         if (this.isValidInput)
@@ -962,16 +960,18 @@ public class BaseTextFieldWidget extends BackgroundWidget
                 offset += 1;
             }
 
-            this.renderVisibleText(x, y + offset, color);
+            this.renderVisibleText(x, y + offset, z + 0.1f, color);
         }
 
         if (this.isFocused())
         {
-            this.renderCursor(x, y, color);
+            this.renderCursor(x, y, z + 0.1f, color);
         }
 
         int messagesHeightPre = this.messageRenderer.getHeight();
-        this.messageRenderer.drawMessages(this.messageRenderer.getX(), this.messageRenderer.getY());
+        int diffX = x - this.getX();
+        int diffY = y - this.getY();
+        this.messageRenderer.drawMessages(this.messageRenderer.getX() + diffX, this.messageRenderer.getY() + diffY, z + 0.1f);
 
         // Update the position when old messages are removed
         if (this.messageRenderer.getHeight() != messagesHeightPre)

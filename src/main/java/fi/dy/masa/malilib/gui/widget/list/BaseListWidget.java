@@ -640,14 +640,22 @@ public abstract class BaseListWidget extends ContainerWidget
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
+    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
     {
-        if (this.getSearchBarWidget() != null)
+        SearchBarWidget searchBar = this.getSearchBarWidget();
+        int diffX = x - this.getX();
+        int diffY = y - this.getY();
+        float diffZ = z - this.getZLevel();
+
+        if (searchBar != null)
         {
-            this.getSearchBarWidget().render(mouseX, mouseY, isActiveGui, hoveredWidgetId);
+            int wx = searchBar.getX() + diffX;
+            int wy = searchBar.getY() + diffY;
+            float wz = searchBar.getZLevel() + diffZ;
+            searchBar.renderAt(wx, wy, wz, mouseX, mouseY, isActiveGui, hoveredWidgetId);
         }
 
-        super.render(mouseX, mouseY, isActiveGui, hoveredWidgetId);
+        super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hoveredWidgetId);
 
         RenderUtils.color(1f, 1f, 1f, 1f);
 
@@ -661,16 +669,20 @@ public abstract class BaseListWidget extends ContainerWidget
         // Draw the currently visible widgets
         for (int i = 0; i < this.entryWidgets.size(); i++)
         {
-            this.renderWidget(i, mouseX, mouseY, isActiveGui, hoveredWidgetId);
+            this.renderWidget(i, diffX, diffY, diffZ, mouseX, mouseY, isActiveGui, hoveredWidgetId);
         }
 
         GlStateManager.disableLighting();
         RenderUtils.color(1f, 1f, 1f, 1f);
     }
 
-    protected void renderWidget(int widgetIndex, int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
+    protected void renderWidget(int widgetIndex, int diffX, int diffY, float diffZ, int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
     {
-        this.entryWidgets.get(widgetIndex).render(mouseX, mouseY, isActiveGui, hoveredWidgetId, false);
+        BaseListEntryWidget widget =  this.entryWidgets.get(widgetIndex);
+        int wx = widget.getX() + diffX;
+        int wy = widget.getY() + diffY;
+        float wz = widget.getZLevel() + diffZ;
+        widget.renderAt(wx, wy, wz, mouseX, mouseY, isActiveGui, hoveredWidgetId, false);
     }
 
     @Override

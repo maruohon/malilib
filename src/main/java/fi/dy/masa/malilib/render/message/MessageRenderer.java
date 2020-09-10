@@ -124,7 +124,7 @@ public class MessageRenderer extends BackgroundWidget
         return this.lineSpacing;
     }
 
-    public void drawMessages(int x, int y)
+    public void drawMessages(int x, int y, float z)
     {
         if (this.messages.isEmpty() == false)
         {
@@ -145,7 +145,7 @@ public class MessageRenderer extends BackgroundWidget
                 y -= height;
             }
 
-            this.renderWidgetBackground(x, y, width, height, -1, -1, false);
+            this.renderWidgetBackground(x, y, z, width, height, -1, -1, false);
 
             x += 6;
             y += 6;
@@ -154,7 +154,7 @@ public class MessageRenderer extends BackgroundWidget
             int countBefore = this.messages.size();
 
             GlStateManager.pushMatrix();
-            GlStateManager.translate(0f, 0f, this.getZLevel() + 0.1f);
+            GlStateManager.translate(0f, 0f, z + 0.1f);
 
             for (int i = 0; i < this.messages.size(); ++i)
             {

@@ -1,13 +1,16 @@
 package fi.dy.masa.malilib.gui.widget.list.entry;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 
 public class DataListEntrySelectionHandler<DATATYPE>
 {
-    protected final ArrayList<DATATYPE> selectedEntries = new ArrayList<>();
+    protected final Set<DATATYPE> selectedEntries = new HashSet<>();
+    protected final IntOpenHashSet selectedEntryIndices = new IntOpenHashSet();
     protected final Supplier<List<DATATYPE>> dataListSupplier;
 
     @Nullable protected SelectionListener<DATATYPE> selectionListener;
@@ -55,7 +58,7 @@ public class DataListEntrySelectionHandler<DATATYPE>
         return this.lastSelectedEntry;
     }
 
-    public List<DATATYPE> getSelectedEntries()
+    public Set<DATATYPE> getSelectedEntries()
     {
         return this.selectedEntries;
     }
@@ -70,11 +73,17 @@ public class DataListEntrySelectionHandler<DATATYPE>
         return this.allowMultiSelection ? this.selectedEntries.contains(entry) : entry.equals(this.getLastSelectedEntry());
     }
 
+    public boolean isEntrySelected(int listIndex)
+    {
+        return this.allowMultiSelection ? this.selectedEntryIndices.contains(listIndex) : listIndex == this.lastSelectedEntryIndex;
+    }
+
     public void clearSelection()
     {
         this.lastSelectedEntryIndex = -1;
         this.lastSelectedEntry = null;
         this.selectedEntries.clear();
+        this.selectedEntryIndices.clear();
     }
 
     public void setLastSelectedEntry(int listIndex)
@@ -104,10 +113,12 @@ public class DataListEntrySelectionHandler<DATATYPE>
             if (this.selectedEntries.contains(entry))
             {
                 this.selectedEntries.remove(entry);
+                this.selectedEntryIndices.remove(listIndex);
             }
             else
             {
                 this.selectedEntries.add(entry);
+                this.selectedEntryIndices.add(this.lastSelectedEntryIndex);
             }
         }
 

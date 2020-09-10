@@ -297,21 +297,28 @@ public abstract class ContainerWidget extends BackgroundWidget
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
+    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
     {
-        this.render(mouseX, mouseY, isActiveGui, this.getId() == hoveredWidgetId || (isActiveGui && this.isMouseOver(mouseX, mouseY)));
-        this.renderSubWidgets(mouseX, mouseY, isActiveGui, hoveredWidgetId);
+        this.renderAt(x, y, z, mouseX, mouseY, isActiveGui, this.getId() == hoveredWidgetId);
+        this.renderSubWidgets(x, y, z, mouseX, mouseY, isActiveGui, hoveredWidgetId);
 
         RenderUtils.color(1f, 1f, 1f, 1f);
     }
 
-    protected void renderSubWidgets(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
+    protected void renderSubWidgets(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
     {
         if (this.subWidgets.isEmpty() == false)
         {
+            int diffX = x - this.getX();
+            int diffY = y - this.getY();
+            float diffZ = z - this.getZLevel();
+
             for (BaseWidget widget : this.subWidgets)
             {
-                widget.render(mouseX, mouseY, isActiveGui, hoveredWidgetId);
+                int wx = widget.getX() + diffX;
+                int wy = widget.getY() + diffY;
+                float wz = widget.getZLevel() + diffZ;
+                widget.renderAt(wx, wy, wz, mouseX, mouseY, isActiveGui, hoveredWidgetId);
             }
         }
     }

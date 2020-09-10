@@ -9,13 +9,13 @@ import javax.annotation.Nullable;
 import net.minecraft.client.renderer.OpenGlHelper;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.TextInputScreen;
-import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.icon.BaseIcon;
 import fi.dy.masa.malilib.gui.icon.FileBrowserIconProvider;
 import fi.dy.masa.malilib.gui.icon.FileBrowserIconProvider.FileBrowserIconType;
 import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
+import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.util.DirectoryNavigator;
 import fi.dy.masa.malilib.listener.TextChangeListener;
 import fi.dy.masa.malilib.render.RenderUtils;
@@ -157,19 +157,26 @@ public class DirectoryNavigationWidget extends SearchBarWidget
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
+    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
     {
+        int diffX = x - this.getX();
+        int diffY = y - this.getY();
+        float diffZ = z - this.getZLevel();
+
         if (this.searchOpen)
         {
-            this.textField.render(mouseX, mouseY, isActiveGui, hoveredWidgetId);
+            int tx = this.textField.getX() + diffX;
+            int ty = this.textField.getY() + diffY;
+            float tz = this.textField.getZLevel() + diffZ;
+            this.textField.renderAt(tx, ty, tz, mouseX, mouseY, isActiveGui, hoveredWidgetId);
         }
         else
         {
             // Draw the directory path text background
-            RenderUtils.drawRect(this.pathStartX - 2, this.getY(), this.getMaxPathBarWidth() + 4, this.getHeight(), 0xFF242424, this.getZLevel());
+            RenderUtils.drawRect(this.pathStartX - 2 + diffX, y, this.getMaxPathBarWidth() + 4, this.getHeight(), 0xFF242424, z);
         }
 
-        super.render(mouseX, mouseY, isActiveGui, hoveredWidgetId);
+        super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hoveredWidgetId);
     }
 
     protected String getDisplayNameForDirectory(File dir)

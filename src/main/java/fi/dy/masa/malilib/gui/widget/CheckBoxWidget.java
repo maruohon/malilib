@@ -86,21 +86,14 @@ public class CheckBoxWidget extends BaseWidget
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
+    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
     {
         Icon icon = this.checked ? this.widgetChecked : this.widgetUnchecked;
-
-        RenderUtils.color(1f, 1f, 1f, 1f);
-        this.bindTexture(icon.getTexture());
-
-        int x = this.getX();
-        int y = this.getY();
-        int iw = icon.getWidth();
         int textColor = this.checked ? this.textColorChecked : this.textColorUnchecked;
 
-        icon.renderAt(x, y, this.getZLevel(), false, false);
+        icon.renderAt(x, y, z, false, false);
 
-        this.drawStringWithShadow(x + iw + 3, y + this.getCenteredTextOffsetY(), textColor, this.displayText);
+        this.drawStringWithShadow(x + icon.getWidth() + 3, y + this.getCenteredTextOffsetY(), z, textColor, this.displayText);
 
         RenderUtils.color(1f, 1f, 1f, 1f);
     }

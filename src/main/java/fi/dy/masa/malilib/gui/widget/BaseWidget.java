@@ -457,40 +457,40 @@ public abstract class BaseWidget
         return this.textRenderer.getStringWidth(text);
     }
 
-    public void drawString(int x, int y, int color, String text)
+    public void drawString(int x, int y, float z, int color, String text)
     {
         GlStateManager.pushMatrix();
-        GlStateManager.translate(0f, 0f, this.getZLevel() + 0.1f);
+        GlStateManager.translate(0f, 0f, z + 0.05f);
 
         this.textRenderer.drawString(text, x, y, color);
 
         GlStateManager.popMatrix();
     }
 
-    public void drawCenteredString(int x, int y, int color, String text)
+    public void drawCenteredString(int x, int y, float z, int color, String text)
     {
         GlStateManager.pushMatrix();
-        GlStateManager.translate(0f, 0f, this.getZLevel() + 0.1f);
+        GlStateManager.translate(0f, 0f, z + 0.05f);
 
         this.textRenderer.drawString(text, x - this.getStringWidth(text) / 2, y, color);
 
         GlStateManager.popMatrix();
     }
 
-    public void drawStringWithShadow(int x, int y, int color, String text)
+    public void drawStringWithShadow(int x, int y, float z, int color, String text)
     {
         GlStateManager.pushMatrix();
-        GlStateManager.translate(0f, 0f, this.getZLevel() + 0.1f);
+        GlStateManager.translate(0f, 0f, z + 0.05f);
 
         this.textRenderer.drawStringWithShadow(text, x, y, color);
 
         GlStateManager.popMatrix();
     }
 
-    public void drawCenteredStringWithShadow(int x, int y, int color, String text)
+    public void drawCenteredStringWithShadow(int x, int y, float z, int color, String text)
     {
         GlStateManager.pushMatrix();
-        GlStateManager.translate(0f, 0f, this.getZLevel() + 0.1f);
+        GlStateManager.translate(0f, 0f, z + 0.05f);
 
         this.textRenderer.drawStringWithShadow(text, x - this.getStringWidth(text) / 2, y, color);
 
@@ -509,12 +509,12 @@ public abstract class BaseWidget
         }
     }
 
-    public void render(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
+    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
     {
-        this.render(mouseX, mouseY, isActiveGui, this.id == hoveredWidgetId);
+        this.renderAt(x, y, z, mouseX, mouseY, isActiveGui, this.id == hoveredWidgetId);
     }
 
-    public void render(int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
+    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
     {
     }
 

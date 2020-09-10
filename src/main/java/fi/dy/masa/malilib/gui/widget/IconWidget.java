@@ -85,14 +85,11 @@ public class IconWidget extends BackgroundWidget
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
+    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
     {
         if (this.icon != null)
         {
-            super.render(mouseX, mouseY, isActiveGui, hovered);
-
-            int x = this.getX();
-            int y = this.getY();
+            super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hovered);
 
             if (this.backgroundEnabled)
             {
@@ -100,7 +97,7 @@ public class IconWidget extends BackgroundWidget
                 y += this.paddingY + this.borderWidth;
             }
 
-            this.icon.renderAt(x, y, this.getZLevel() + 0.1f, this.enabled, this.doHighlight && this.isHoveredForRender(mouseX, mouseY));
+            this.icon.renderAt(x, y, z + 0.1f, this.enabled, this.doHighlight && this.isHoveredForRender(mouseX, mouseY));
         }
     }
 }

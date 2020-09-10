@@ -20,7 +20,7 @@ public class ScrollBarWidget extends BaseWidget
     protected boolean renderScrollbarBackgroundColor = true;
     protected int currentValue = 0;
     protected int maxValue = 100;
-    protected int backgroundColor = 0x55FFFFFF;
+    protected int backgroundColor = 0xFF505050;
     protected int scrollBarColor = 0xFFFFFFFF;
     protected int dragStartValue = 0;
     protected int dragStartY = 0;
@@ -269,10 +269,8 @@ public class ScrollBarWidget extends BaseWidget
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
+    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
     {
-        int x = this.getX();
-        int y = this.getY();
         int width = this.getWidth();
         int height = this.getHeight();
         int totalHeight = this.totalHeight;
@@ -281,7 +279,7 @@ public class ScrollBarWidget extends BaseWidget
 
         if (this.renderScrollbarBackgroundColor)
         {
-            RenderUtils.drawRect(x, y, width, height, this.backgroundColor, this.getZLevel());
+            RenderUtils.drawRect(x, y, width, height, this.backgroundColor, z);
         }
 
         if (totalHeight > 0)
@@ -305,8 +303,8 @@ public class ScrollBarWidget extends BaseWidget
 
             if (useArrows)
             {
-                this.arrowTextureUp.renderAt(x, y, this.getZLevel(), false, this.isMouseOverUpArrow(mouseX, mouseY));
-                this.arrowTextureDown.renderAt(x, y + this.getHeight() - downArH, this.getZLevel(), false, this.isMouseOverDownArrow(mouseX, mouseY));
+                this.arrowTextureUp.renderAt(x, y, z, false, this.isMouseOverUpArrow(mouseX, mouseY));
+                this.arrowTextureDown.renderAt(x, y + this.getHeight() - downArH, z, false, this.isMouseOverDownArrow(mouseX, mouseY));
             }
 
             if (this.barTexture != null && barHeight >= 4)
@@ -316,14 +314,13 @@ public class ScrollBarWidget extends BaseWidget
                 int v = this.barTexture.getV();
                 int w = this.barTexture.getWidth();
                 int h = this.barTexture.getHeight();
-                float z = this.getZLevel();
 
                 RenderUtils.drawTexturedRect(x + 1, barPosition                , u, v        , w, barHeight - 2, z);
                 RenderUtils.drawTexturedRect(x + 1, barPosition + barHeight - 2, u, v + h - 2, w, 2            , z);
             }
             else
             {
-                RenderUtils.drawRect(x + 1, barPosition, width - 2, barHeight, this.scrollBarColor, this.getZLevel());
+                RenderUtils.drawRect(x + 1, barPosition, width - 2, barHeight, this.scrollBarColor, z);
             }
 
             // FIXME?

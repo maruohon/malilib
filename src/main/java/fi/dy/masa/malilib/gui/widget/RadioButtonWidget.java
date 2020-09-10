@@ -3,10 +3,11 @@ package fi.dy.masa.malilib.gui.widget;
 import java.util.List;
 import java.util.function.Function;
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.gui.icon.Icon;
-import fi.dy.masa.malilib.gui.widget.list.entry.SelectionListener;
 import fi.dy.masa.malilib.gui.icon.BaseIcon;
+import fi.dy.masa.malilib.gui.icon.Icon;
+import fi.dy.masa.malilib.gui.icon.IconProvider;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
+import fi.dy.masa.malilib.gui.widget.list.entry.SelectionListener;
 import fi.dy.masa.malilib.render.RenderUtils;
 
 public class RadioButtonWidget<T extends Enum<T>> extends BaseWidget
@@ -14,7 +15,7 @@ public class RadioButtonWidget<T extends Enum<T>> extends BaseWidget
     protected final List<T> options;
     protected final Function<T, String> displayStringFunction;
     protected final int textWidth;
-    protected fi.dy.masa.malilib.gui.icon.IconProvider<IconType> iconProvider;
+    protected IconProvider<IconType> iconProvider;
     protected int entryHeight;
     @Nullable protected T selectedEntry;
     @Nullable protected SelectionListener<RadioButtonWidget<T>> listener;
@@ -40,10 +41,10 @@ public class RadioButtonWidget<T extends Enum<T>> extends BaseWidget
 
         this.textWidth = width;
         this.addHoverString(hoverInfoKey);
-        this.setIconProvider(new IconProvider());
+        this.setIconProvider(new DefaultRadioButtonIconProvider());
     }
 
-    public void setIconProvider(fi.dy.masa.malilib.gui.icon.IconProvider<IconType> provider)
+    public void setIconProvider(IconProvider<IconType> provider)
     {
         this.iconProvider = provider;
         this.updateSizes();
@@ -110,13 +111,8 @@ public class RadioButtonWidget<T extends Enum<T>> extends BaseWidget
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
+    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
     {
-        RenderUtils.color(1f, 1f, 1f, 1f);
-
-        int x = this.getX();
-        int y = this.getY();
-
         for (T entry : this.options)
         {
             boolean entrySelected = this.selectedEntry == entry;
@@ -128,14 +124,14 @@ public class RadioButtonWidget<T extends Enum<T>> extends BaseWidget
                 iconWidth = icon.getWidth() + 3;
                 int iconHeight = icon.getHeight();
                 int iconY = y + (this.entryHeight - iconHeight) / 2;
-                icon.renderAt(x, iconY, this.getZLevel(), false, false);
+                icon.renderAt(x, iconY, z, false, false);
             }
 
             int textY = y + 1 + (this.entryHeight - this.fontHeight) / 2;
             int textColor = entrySelected ? 0xFFFFFFFF : 0xB0B0B0B0;
 
             String displayString = this.displayStringFunction.apply(entry);
-            this.drawStringWithShadow(x + iconWidth, textY, textColor, displayString);
+            this.drawStringWithShadow(x + iconWidth, textY, z, textColor, displayString);
 
             y += this.entryHeight;
         }
@@ -151,7 +147,7 @@ public class RadioButtonWidget<T extends Enum<T>> extends BaseWidget
         SELECTED_HOVER;
     }
 
-    public static class IconProvider implements fi.dy.masa.malilib.gui.icon.IconProvider<IconType>
+    public static class DefaultRadioButtonIconProvider implements IconProvider<IconType>
     {
         @Override
         public int getExpectedWidth()

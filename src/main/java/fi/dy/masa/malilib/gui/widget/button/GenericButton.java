@@ -180,7 +180,7 @@ public class GenericButton extends BaseButton
         return this.textCentered ? x + width / 2 + this.textOffsetX: x + this.textOffsetX;
     }
 
-    protected void renderButtonBackground(int x, int y, int width, int height, boolean hovered)
+    protected void renderButtonBackground(int x, int y, float z, int width, int height, boolean hovered)
     {
         this.bindTexture(BUTTON_TEXTURES);
 
@@ -188,22 +188,18 @@ public class GenericButton extends BaseButton
         // Account for odd widths
         int w2 = (width % 2) != 0 ? w1 + 1 : w1;
         int buttonStyle = this.getTextureOffset(hovered);
-        float z = this.getZLevel();
 
         RenderUtils.drawTexturedRect(x     , y,        0, 46 + buttonStyle * 20, w1, height, z);
         RenderUtils.drawTexturedRect(x + w1, y, 200 - w2, 46 + buttonStyle * 20, w2, height, z);
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
+    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
     {
         if (this.visible)
         {
-            super.render(mouseX, mouseY, isActiveGui, hovered);
+            super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hovered);
 
-            int x = this.getX();
-            int y = this.getY();
-            float z = this.getZLevel();
             int width = this.getWidth();
             int height = this.getHeight();
             boolean textBlank = StringUtils.isBlank(this.displayString);
@@ -219,7 +215,7 @@ public class GenericButton extends BaseButton
 
             if (this.renderBackground)
             {
-                this.renderButtonBackground(x, y, width, height, hovered);
+                this.renderButtonBackground(x, y, z, width, height, hovered);
             }
 
             int iconClearing = 0;
@@ -249,7 +245,7 @@ public class GenericButton extends BaseButton
                 int ix = this.alignment == HorizontalAlignment.LEFT ? x + offX : x + width - iconWidth - offX;
                 int iy = y + offY;
 
-                icon.renderAt(ix, iy, this.getZLevel(), this.enabled, hovered);
+                icon.renderAt(ix, iy, z + 0.1f, this.enabled, hovered);
             }
 
             if (textBlank == false)
@@ -263,7 +259,7 @@ public class GenericButton extends BaseButton
                 }
 
                 int color = this.getTextColorForRender(hovered);
-                this.getTextRenderer(this.useTextShadow, textCentered).renderText(tx, ty, color, this.displayString);
+                this.getTextRenderer(this.useTextShadow, this.textCentered).renderText(tx, ty, z, color, this.displayString);
             }
         }
     }

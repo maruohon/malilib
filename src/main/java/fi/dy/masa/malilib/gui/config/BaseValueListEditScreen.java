@@ -61,7 +61,7 @@ public class BaseValueListEditScreen<TYPE> extends BaseListScreen<DataListWidget
     @Override
     protected void setScreenWidthAndHeight(int width, int height)
     {
-        this.screenWidth = 440;
+        this.screenWidth = 300;
         this.screenHeight = GuiUtils.getScaledWindowHeight() - 90;
     }
 

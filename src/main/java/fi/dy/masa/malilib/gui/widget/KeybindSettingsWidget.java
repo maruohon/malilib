@@ -62,7 +62,7 @@ public class KeybindSettingsWidget extends BaseWidget
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
+    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
     {
         RenderUtils.color(1f, 1f, 1f, 1f);
         this.bindTexture(TEXTURE);
@@ -78,9 +78,6 @@ public class KeybindSettingsWidget extends BaseWidget
         int v6 = settings.getAllowEmpty() ? w : 0;
         int v7 = settings.getContext().ordinal() * w + 54;
 
-        int x = this.getX();
-        int y = this.getY();
-        float z = this.getZLevel();
         int edgeColor = this.keyBind.areSettingsModified() ? 0xFFFFBB33 : 0xFFFFFFFF;
 
         RenderUtils.drawRect(x    , y    , 20, 20, edgeColor, z);
@@ -135,7 +132,7 @@ public class KeybindSettingsWidget extends BaseWidget
 
         Collections.addAll(text, parts);
 
-        RenderUtils.drawHoverText(mouseX + 10, mouseY, this.getZLevel(), text);
+        RenderUtils.drawHoverText(mouseX + 10, mouseY, this.getZLevel() + 0.5f, text);
     }
 
     private void addBooleanOptionText(List<String> lines, String translationKey, boolean value, boolean defaultValue)

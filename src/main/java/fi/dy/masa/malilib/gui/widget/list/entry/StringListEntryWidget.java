@@ -10,13 +10,10 @@ public class StringListEntryWidget extends BaseDataListEntryWidget<String>
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId, boolean selected)
+    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId, boolean selected)
     {
         RenderUtils.color(1f, 1f, 1f, 1f);
 
-        int x = this.getX();
-        int y = this.getY();
-        float z = this.getZLevel();
         int width = this.getWidth();
         int height = this.getHeight();
 
@@ -35,8 +32,8 @@ public class StringListEntryWidget extends BaseDataListEntryWidget<String>
             RenderUtils.drawRect(x, y, width, height, 0xA0303030, z);
         }
 
-        this.drawStringWithShadow(x + 2, y + this.getCenteredTextOffsetY(), 0xFFFFFFFF, this.data);
+        this.drawStringWithShadow(x + 2, y + this.getCenteredTextOffsetY(), z, 0xFFFFFFFF, this.data);
 
-        super.render(mouseX, mouseY, isActiveGui, hoveredWidgetId, selected);
+        super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hoveredWidgetId, selected);
     }
 }

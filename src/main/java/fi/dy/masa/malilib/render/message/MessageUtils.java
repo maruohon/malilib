@@ -285,11 +285,11 @@ public class MessageUtils
 
         synchronized (IN_GAME_MESSAGES_CENTER)
         {
-            IN_GAME_MESSAGES_CENTER.drawMessages(x, y);
-            IN_GAME_MESSAGES_TOP_LEFT.drawMessages(4, 4);
-            IN_GAME_MESSAGES_TOP_RIGHT.drawMessages(width - IN_GAME_MESSAGES_TOP_RIGHT.getWidth() - 4, 4);
-            IN_GAME_MESSAGES_BOTTOM_LEFT.drawMessages(4, height - 4);
-            IN_GAME_MESSAGES_BOTTOM_RIGHT.drawMessages(width - IN_GAME_MESSAGES_BOTTOM_RIGHT.getWidth() - 4, height - 4);
+            IN_GAME_MESSAGES_CENTER.drawMessages(x, y, 0);
+            IN_GAME_MESSAGES_TOP_LEFT.drawMessages(4, 4, 0);
+            IN_GAME_MESSAGES_TOP_RIGHT.drawMessages(width - IN_GAME_MESSAGES_TOP_RIGHT.getWidth() - 4, 4, 0);
+            IN_GAME_MESSAGES_BOTTOM_LEFT.drawMessages(4, height - 4, 0);
+            IN_GAME_MESSAGES_BOTTOM_RIGHT.drawMessages(width - IN_GAME_MESSAGES_BOTTOM_RIGHT.getWidth() - 4, height - 4, 0);
         }
     }
 

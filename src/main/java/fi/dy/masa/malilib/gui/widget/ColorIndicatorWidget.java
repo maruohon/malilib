@@ -36,11 +36,8 @@ public class ColorIndicatorWidget extends BaseWidget
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
+    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
     {
-        int x = this.getX();
-        int y = this.getY();
-        float z = this.getZLevel();
         int width = this.getWidth();
         int height = this.getHeight();
 

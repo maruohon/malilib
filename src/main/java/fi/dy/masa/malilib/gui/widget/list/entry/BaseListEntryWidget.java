@@ -56,8 +56,8 @@ public class BaseListEntryWidget extends ContainerWidget
         return true;
     }
 
-    public void render(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId, boolean selected)
+    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId, boolean selected)
     {
-        this.render(mouseX, mouseY, isActiveGui, hoveredWidgetId);
+        this.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hoveredWidgetId);
     }
 }

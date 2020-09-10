@@ -40,7 +40,7 @@ public class SliderWidget extends BaseWidget
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
+    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
     {
         if (this.dragging && mouseX != this.lastMouseX)
         {
@@ -48,9 +48,6 @@ public class SliderWidget extends BaseWidget
             this.lastMouseX = mouseX;
         }
 
-        int x = this.getX();
-        int y = this.getY();
-        float z = this.getZLevel();
         int width = this.getWidth();
 
         this.bindTexture(VANILLA_WIDGETS);
@@ -69,7 +66,7 @@ public class SliderWidget extends BaseWidget
 
         String str = this.callback.getFormattedDisplayValue();
         int tw = this.getStringWidth(str);
-        this.drawString(x + (width / 2) - tw / 2, y + this.getCenteredTextOffsetY(), 0xFFFFFFA0, str);
+        this.drawString(x + (width / 2) - tw / 2, y + this.getCenteredTextOffsetY(), z, 0xFFFFFFA0, str);
 
         RenderUtils.color(1f, 1f, 1f, 1f);
     }

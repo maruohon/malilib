@@ -199,21 +199,21 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
+    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
     {
         RenderUtils.color(1f, 1f, 1f, 1f);
 
         if (this.isOdd)
         {
-            RenderUtils.drawRect(this.getX(), this.getY(), this.getWidth(), this.getHeight(), 0x20FFFFFF, this.getZLevel());
+            RenderUtils.drawRect(x, y, this.getWidth(), this.getHeight(), 0x20FFFFFF, z);
         }
         // Draw a slightly lighter background for even entries
         else
         {
-            RenderUtils.drawRect(this.getX(), this.getY(), this.getWidth(), this.getHeight(), 0x30FFFFFF, this.getZLevel());
+            RenderUtils.drawRect(x, y, this.getWidth(), this.getHeight(), 0x30FFFFFF, z);
         }
 
-        super.render(mouseX, mouseY, isActiveGui, hoveredWidgetId);
+        super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hoveredWidgetId);
     }
 
     protected enum ButtonType

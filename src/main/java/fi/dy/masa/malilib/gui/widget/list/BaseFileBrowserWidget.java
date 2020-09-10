@@ -311,16 +311,16 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         return false;
     }
 
-    protected void drawAdditionalContents(int mouseX, int mouseY)
+    protected void drawAdditionalContents(int x, int y, float z, int mouseX, int mouseY)
     {
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
+    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
     {
-        super.render(mouseX, mouseY, isActiveGui, hovered);
+        super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hovered);
 
-        this.drawAdditionalContents(mouseX, mouseY);
+        this.drawAdditionalContents(x, y, z, mouseX, mouseY);
     }
 
     public static class DirectoryEntry implements Comparable<DirectoryEntry>

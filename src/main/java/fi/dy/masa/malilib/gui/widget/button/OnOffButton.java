@@ -35,6 +35,7 @@ public class OnOffButton extends GenericButton
         this.statusSupplier = statusSupplier;
 
         this.setBackgroundAndBorderColors(0xFF303030, 0xFF000000, 0xFF000000);
+        this.setRenderHoverBackground(false);
         this.setStyle(style);
         this.updateWidth();
         this.updateDisplayString();
@@ -122,7 +123,7 @@ public class OnOffButton extends GenericButton
     }
 
     @Override
-    protected void renderButtonBackground(int x, int y, int width, int height, boolean hovered)
+    protected void renderButtonBackground(int x, int y, float z, int width, int height, boolean hovered)
     {
         if (this.style == OnOffStyle.SLIDER_ON_OFF)
         {
@@ -133,7 +134,6 @@ public class OnOffButton extends GenericButton
             int iconHeight1 = height / 2 - 1;
             int iconHeight2 = (height % 2) != 0 ? iconHeight1 + 1 : iconHeight1; // Account for odd height
             int sliderX = value ? x + width - iconWidth - 1 : x + 1;
-            float z = this.getZLevel();
             int u = icon.getU();
             int v1 = icon.getV();
             int v2 = v1 + icon.getHeight() - iconHeight2;
@@ -145,7 +145,7 @@ public class OnOffButton extends GenericButton
         }
         else
         {
-            super.renderButtonBackground(x, y, width, height, hovered);
+            super.renderButtonBackground(x, y, z, width, height, hovered);
         }
     }
 }

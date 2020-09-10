@@ -161,14 +161,14 @@ public class LabelWidget extends BackgroundWidget
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
+    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
     {
         if (this.visible)
         {
-            super.render(mouseX, mouseY, isActiveGui, hovered);
+            super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hovered);
 
-            int x = this.getX() + this.paddingX + this.borderWidth;
-            int y = this.getY() + this.paddingY + this.borderWidth;
+            x += this.paddingX + this.borderWidth;
+            y += this.paddingY + this.borderWidth;
             int fontHeight = this.fontHeight;
             TextRenderer renderer = this.getTextRenderer(this.useTextShadow, this.centerTextHorizontally);
 
@@ -179,7 +179,7 @@ public class LabelWidget extends BackgroundWidget
                     text = StringUtils.clampTextToRenderLength(text, this.maxWidth - 2, LeftRight.RIGHT, " ...");
                 }
 
-                renderer.renderText(x, y, this.textColor, text);
+                renderer.renderText(x, y, z, this.textColor, text);
 
                 y += fontHeight + 1;
             }

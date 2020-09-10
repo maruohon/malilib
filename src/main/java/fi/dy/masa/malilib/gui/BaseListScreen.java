@@ -236,7 +236,7 @@ public abstract class BaseListScreen<LISTWIDGET extends BaseListWidget> extends 
             boolean isActiveGui = GuiUtils.getCurrentScreen() == this;
             int hoveredId = isActiveGui && this.hoveredWidget != null ? this.hoveredWidget.getId() : -1;
 
-            listWidget.render(mouseX, mouseY, isActiveGui, hoveredId);
+            listWidget.renderAt(listWidget.getX(), listWidget.getY(), listWidget.getZLevel(), mouseX, mouseY, isActiveGui, hoveredId);
         }
     }
 

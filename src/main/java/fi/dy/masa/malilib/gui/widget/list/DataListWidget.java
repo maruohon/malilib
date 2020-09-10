@@ -9,7 +9,6 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import net.minecraft.util.math.MathHelper;
-import fi.dy.masa.malilib.gui.widget.list.entry.BaseDataListEntryWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.BaseListEntryWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntrySelectionHandler;
 import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetFactory;
@@ -397,21 +396,15 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
     }
 
     @Override
-    protected void renderWidget(int widgetIndex, int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
+    protected void renderWidget(int widgetIndex, int diffX, int diffY, float diffZ, int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
     {
         BaseListEntryWidget widget = this.entryWidgets.get(widgetIndex);
-        boolean isSelected = false;
+        DataListEntrySelectionHandler<DATATYPE> handler = this.getEntrySelectionHandler();
+        boolean isSelected = handler != null && handler.isEntrySelected(widget.getListIndex());
 
-        // TODO fix this mess
-        try
-        {
-            @SuppressWarnings("unchecked")
-            DATATYPE entry = widget instanceof BaseDataListEntryWidget ? ((BaseDataListEntryWidget<DATATYPE>) widget).getData() : null;
-            isSelected = entry != null && this.getEntrySelectionHandler() != null &&
-                                 this.getEntrySelectionHandler().isEntrySelected(entry);
-        }
-        catch (Exception ignore) {}
-
-        widget.render(mouseX, mouseY, isActiveGui, hoveredWidgetId, isSelected);
+        int wx = widget.getX() + diffX;
+        int wy = widget.getY() + diffY;
+        float wz = widget.getZLevel() + diffZ;
+        widget.renderAt(wx, wy, wz, mouseX, mouseY, isActiveGui, hoveredWidgetId, isSelected);
     }
 }

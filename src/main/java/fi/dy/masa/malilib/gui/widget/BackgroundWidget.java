@@ -102,28 +102,27 @@ public class BackgroundWidget extends BaseWidget
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
+    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
     {
         int width = this.getBackgroundWidth(mouseX, mouseY, isActiveGui, hovered);
         int height = this.getBackgroundHeight(mouseX, mouseY, isActiveGui, hovered);
 
-        this.renderWidgetBackground(this.getX(), this.getY(), width, height, mouseX, mouseY, hovered);
+        this.renderWidgetBackground(x, y, z, width, height, mouseX, mouseY, hovered);
     }
 
-    protected void renderWidgetBackground(int x, int y, int width, int height, int mouseX, int mouseY, boolean hovered)
+    protected void renderWidgetBackground(int x, int y, float z, int width, int height, int mouseX, int mouseY, boolean hovered)
     {
-        this.renderBackgroundOnly(x, y, width, height, mouseX, mouseY, hovered);
-        this.renderBorder(x, y, width, height, mouseX, mouseY, hovered);
+        this.renderBackgroundOnly(x, y, z, width, height, mouseX, mouseY, hovered);
+        this.renderBorder(x, y, z, width, height, mouseX, mouseY, hovered);
     }
 
-    protected void renderBorder(int x, int y, int width, int height, int mouseX, int mouseY, boolean hovered)
+    protected void renderBorder(int x, int y, float z, int width, int height, int mouseX, int mouseY, boolean hovered)
     {
         if (this.borderEnabled)
         {
             RenderUtils.color(1f, 1f, 1f, 1f);
             RenderUtils.setupBlend();
 
-            float z = this.getZLevel();
             int w = width;
             int h = height;
             int bw = this.borderWidth;
@@ -139,14 +138,13 @@ public class BackgroundWidget extends BaseWidget
         }
     }
 
-    protected void renderBackgroundOnly(int x, int y, int width, int height, int mouseX, int mouseY, boolean hovered)
+    protected void renderBackgroundOnly(int x, int y, float z, int width, int height, int mouseX, int mouseY, boolean hovered)
     {
         if (this.backgroundEnabled)
         {
             RenderUtils.color(1f, 1f, 1f, 1f);
             RenderUtils.setupBlend();
 
-            float z = this.getZLevel();
             int bw = this.borderWidth;
             int b2 = bw * 2;
 

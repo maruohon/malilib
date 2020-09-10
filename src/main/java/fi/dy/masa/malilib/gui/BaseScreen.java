@@ -524,7 +524,7 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
 
     protected void drawGuiMessages()
     {
-        this.messageRenderer.drawMessages(this.width / 2, this.height / 2);
+        this.messageRenderer.drawMessages(this.width / 2, this.height / 2, this.zLevel + 0.5f);
     }
 
     public void bindTexture(ResourceLocation texture)
@@ -658,15 +658,15 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
         {
             for (BaseWidget widget : this.widgets)
             {
-                widget.render(mouseX, mouseY, isActiveGui, hoveredWidgetId);
+                widget.renderAt(widget.getX(), widget.getY(), widget.getZLevel(), mouseX, mouseY, isActiveGui, hoveredWidgetId);
             }
         }
 
         if (this.buttons.isEmpty() == false)
         {
-            for (BaseButton button : this.buttons)
+            for (BaseWidget widget : this.buttons)
             {
-                button.render(mouseX, mouseY, isActiveGui, hoveredWidgetId);
+                widget.renderAt(widget.getX(), widget.getY(), widget.getZLevel(), mouseX, mouseY, isActiveGui, hoveredWidgetId);
             }
         }
     }

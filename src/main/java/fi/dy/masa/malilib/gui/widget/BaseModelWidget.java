@@ -19,7 +19,6 @@ public abstract class BaseModelWidget extends BackgroundWidget
         super(x, y, dimensions, dimensions);
 
         this.dimensions = dimensions;
-
         this.setBorderWidth(0);
 
         if (dimensions > 0)
@@ -75,13 +74,10 @@ public abstract class BaseModelWidget extends BackgroundWidget
     protected abstract void renderModel(int x, int y, float z, float scale);
 
     @Override
-    public void render(int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
+    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
     {
-        super.render(mouseX, mouseY, isActiveGui, hovered);
+        super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hovered);
 
-        int x = this.getX();
-        int y = this.getY();
-        float z = this.getZLevel();
         int width = this.getWidth();
         int height = this.getHeight();
 

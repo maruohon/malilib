@@ -47,13 +47,10 @@ public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId, boolean selected)
+    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId, boolean selected)
     {
         @Nullable Icon icon = this.iconProvider != null ? this.iconProvider.getIconForEntry(this.entry) : null;
         int xOffset = 0;
-        int x = this.getX();
-        int y = this.getY();
-        float z = this.getZLevel();
         int width = this.getWidth();
         int height = this.getHeight();
 
@@ -85,13 +82,13 @@ public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry
         if (icon != null)
         {
             xOffset += this.iconProvider.getEntryIconWidth(this.entry) + 2;
-            icon.renderAt(x, y + (height - icon.getHeight()) / 2, this.getZLevel() + 0.1f, false, false);
+            icon.renderAt(x, y + (height - icon.getHeight()) / 2, z + 0.1f, false, false);
         }
 
         int yOffset = (height - this.fontHeight) / 2 + 1;
-        this.drawString(x + xOffset + 2, y + yOffset, 0xFFFFFFFF, this.getDisplayName());
+        this.drawString(x + xOffset + 2, y + yOffset, z, 0xFFFFFFFF, this.getDisplayName());
 
-        super.render(mouseX, mouseY, isActiveGui, hoveredWidgetId, selected);
+        super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hoveredWidgetId, selected);
     }
 
     protected String getDisplayName()
