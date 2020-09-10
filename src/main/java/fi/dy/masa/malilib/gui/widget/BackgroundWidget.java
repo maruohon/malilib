@@ -107,16 +107,16 @@ public class BackgroundWidget extends BaseWidget
         int width = this.getBackgroundWidth(mouseX, mouseY, isActiveGui, hovered);
         int height = this.getBackgroundHeight(mouseX, mouseY, isActiveGui, hovered);
 
-        this.renderWidgetBackground(x, y, z, width, height, mouseX, mouseY, hovered);
+        this.renderWidgetBackground(x, y, z, width, height, mouseX, mouseY, isActiveGui, hovered);
     }
 
-    protected void renderWidgetBackground(int x, int y, float z, int width, int height, int mouseX, int mouseY, boolean hovered)
+    protected void renderWidgetBackground(int x, int y, float z, int width, int height, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
     {
-        this.renderBackgroundOnly(x, y, z, width, height, mouseX, mouseY, hovered);
-        this.renderBorder(x, y, z, width, height, mouseX, mouseY, hovered);
+        this.renderBackgroundOnly(x, y, z, width, height, mouseX, mouseY, isActiveGui, hovered);
+        this.renderBorder(x, y, z, width, height, mouseX, mouseY, isActiveGui, hovered);
     }
 
-    protected void renderBorder(int x, int y, float z, int width, int height, int mouseX, int mouseY, boolean hovered)
+    protected void renderBorder(int x, int y, float z, int width, int height, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
     {
         if (this.borderEnabled)
         {
@@ -138,7 +138,7 @@ public class BackgroundWidget extends BaseWidget
         }
     }
 
-    protected void renderBackgroundOnly(int x, int y, float z, int width, int height, int mouseX, int mouseY, boolean hovered)
+    protected void renderBackgroundOnly(int x, int y, float z, int width, int height, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
     {
         if (this.backgroundEnabled)
         {
@@ -149,7 +149,8 @@ public class BackgroundWidget extends BaseWidget
             int b2 = bw * 2;
 
             // Background
-            int color = this.renderHoverBackground && (hovered || this.isMouseOver(mouseX, mouseY)) ? this.backgroundColorHovered : this.backgroundColor;
+            hovered = (hovered || (isActiveGui && this.isMouseOver(mouseX, mouseY)));
+            int color = this.renderHoverBackground && hovered ? this.backgroundColorHovered : this.backgroundColor;
             RenderUtils.drawRect(x + bw, y + bw, width - b2, height - b2, color, z);
         }
     }
