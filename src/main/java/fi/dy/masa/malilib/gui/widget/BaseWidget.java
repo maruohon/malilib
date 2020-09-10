@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
+import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.render.RectangleRenderer;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.TextRenderer;
@@ -32,6 +33,7 @@ public abstract class BaseWidget
     protected final FontRenderer textRenderer;
     protected final List<String> hoverStrings = new ArrayList<>();
     protected final int fontHeight;
+    @Nullable protected EventListener clickListener;
     private final int id;
     private int x;
     private int y;
@@ -43,6 +45,8 @@ public abstract class BaseWidget
     private boolean rightAlign;
     protected boolean automaticHeight;
     protected boolean automaticWidth;
+    protected boolean hasMaxWidth;
+    protected int maxWidth;
 
     public BaseWidget(int x, int y, int width, int height)
     {
@@ -55,10 +59,9 @@ public abstract class BaseWidget
         this.fontHeight = this.textRenderer.FONT_HEIGHT;
         this.id = nextWidgetId++;
 
-        if (width < 0)
-        {
-            this.automaticWidth = true;
-        }
+        this.automaticWidth = width < 0;
+        this.hasMaxWidth = width < -1;
+        this.maxWidth = this.hasMaxWidth ? -width : -1;
 
         if (height < 0)
         {
@@ -204,6 +207,7 @@ public abstract class BaseWidget
     public void setWidth(int width)
     {
         this.width = width;
+
         this.updateHorizontalPositionIfRightAligned();
         this.onSizeChanged();
     }
@@ -268,6 +272,11 @@ public abstract class BaseWidget
         return this;
     }
 
+    public void setClickListener(@Nullable EventListener listener)
+    {
+        this.clickListener = listener;
+    }
+
     /**
      * This method is called whenever a widget gets added to its parent widget or GUI.
      * By default it updates the widget's own rendering Z-level based on the parent's Z-level.
@@ -326,6 +335,12 @@ public abstract class BaseWidget
 
     protected boolean onMouseClickedImpl(int mouseX, int mouseY, int mouseButton)
     {
+        if (this.clickListener != null)
+        {
+            this.clickListener.onEvent();
+            return true;
+        }
+
         return false;
     }
 

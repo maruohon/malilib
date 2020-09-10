@@ -300,12 +300,12 @@ public abstract class ContainerWidget extends BackgroundWidget
     public void render(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
     {
         this.render(mouseX, mouseY, isActiveGui, this.getId() == hoveredWidgetId || (isActiveGui && this.isMouseOver(mouseX, mouseY)));
-        this.drawSubWidgets(mouseX, mouseY, isActiveGui, hoveredWidgetId);
+        this.renderSubWidgets(mouseX, mouseY, isActiveGui, hoveredWidgetId);
 
         RenderUtils.color(1f, 1f, 1f, 1f);
     }
 
-    protected void drawSubWidgets(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
+    protected void renderSubWidgets(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
     {
         if (this.subWidgets.isEmpty() == false)
         {

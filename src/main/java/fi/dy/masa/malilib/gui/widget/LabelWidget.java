@@ -3,9 +3,10 @@ package fi.dy.masa.malilib.gui.widget;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import fi.dy.masa.malilib.render.TextRenderer;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.render.TextRenderer;
 import fi.dy.masa.malilib.util.StringUtils;
+import fi.dy.masa.malilib.util.data.LeftRight;
 
 public class LabelWidget extends BackgroundWidget
 {
@@ -13,6 +14,8 @@ public class LabelWidget extends BackgroundWidget
     protected boolean centerTextHorizontally;
     protected boolean useTextShadow = true;
     protected boolean visible = true;
+    protected int totalTextWidth;
+    protected int totalWidth;
     protected int textColor;
 
     public LabelWidget(int x, int y, int textColor, String... text)
@@ -35,19 +38,22 @@ public class LabelWidget extends BackgroundWidget
         super(x, y, width, height);
 
         this.textColor = textColor;
-
-        for (String line : lines)
-        {
-            this.labels.add(StringUtils.translate(line));
-        }
+        this.setText(lines);
 
         this.updateWidth();
         this.updateHeight();
     }
 
+    public int getTotalWidth()
+    {
+        return this.totalWidth;
+    }
+
     public LabelWidget addLine(String translationKey, Object... args)
     {
-        this.labels.add(StringUtils.translate(translationKey, args));
+        String line = StringUtils.translate(translationKey, args);
+        this.totalTextWidth = Math.max(this.totalTextWidth, this.getStringWidth(line) + 4);
+        this.labels.add(line);
         this.updateWidth();
         this.updateHeight();
         return this;
@@ -57,6 +63,21 @@ public class LabelWidget extends BackgroundWidget
     {
         this.labels.clear();
         return this.addLine(translationKey, args);
+    }
+
+    public LabelWidget setText(List<String> lines)
+    {
+        this.labels.clear();
+        this.totalTextWidth = 0;
+
+        for (String line : lines)
+        {
+            line = StringUtils.translate(line);
+            this.totalTextWidth = Math.max(this.totalTextWidth, this.getStringWidth(line) + 4);
+            this.labels.add(line);
+        }
+
+        return this;
     }
 
     public LabelWidget setVisible(boolean visible)
@@ -88,20 +109,20 @@ public class LabelWidget extends BackgroundWidget
     {
         if (this.automaticWidth)
         {
-            int width = 0;
-
-            for (String line : this.labels)
-            {
-                width = Math.max(width, this.getStringWidth(line));
-            }
+            this.totalWidth = this.totalTextWidth;
 
             if (this.backgroundEnabled)
             {
-                width += this.borderWidth * 2 + this.paddingX * 2;
+                this.totalWidth += this.borderWidth * 2;
             }
-            else
+
+            this.totalWidth += this.paddingX * 2;
+
+            int width = this.totalWidth;
+
+            if (this.hasMaxWidth)
             {
-                width += this.paddingX * 2;
+                width = Math.min(width, this.maxWidth);
             }
 
             this.setWidth(width);
@@ -129,6 +150,17 @@ public class LabelWidget extends BackgroundWidget
     }
 
     @Override
+    protected int getBackgroundWidth(int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
+    {
+        if (this.hasMaxWidth && isActiveGui && hovered)
+        {
+            return this.totalWidth;
+        }
+
+        return super.getBackgroundWidth(mouseX, mouseY, isActiveGui, hovered);
+    }
+
+    @Override
     public void render(int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
     {
         if (this.visible)
@@ -142,7 +174,13 @@ public class LabelWidget extends BackgroundWidget
 
             for (String text : this.labels)
             {
+                if (this.hasMaxWidth && hovered == false)
+                {
+                    text = StringUtils.clampTextToRenderLength(text, this.maxWidth - 2, LeftRight.RIGHT, " ...");
+                }
+
                 renderer.renderText(x, y, this.textColor, text);
+
                 y += fontHeight + 1;
             }
 
