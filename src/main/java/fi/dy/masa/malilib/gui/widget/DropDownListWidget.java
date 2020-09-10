@@ -6,6 +6,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
+import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.gui.icon.BaseIcon;
 import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.icon.IconProvider;
@@ -117,6 +118,7 @@ public class DropDownListWidget<T> extends ContainerWidget
         this.searchField.setUpdateListenerFromTextSet(true);
         this.searchField.setListener(this::onSearchTextChange);
         this.searchField.setFocused(true);
+        this.searchField.setColorFocused(0xFFFFFF20);
 
         this.setWidth(width);
         this.updateFilteredEntries(""); // This must be called after the search text field has been created
@@ -264,7 +266,7 @@ public class DropDownListWidget<T> extends ContainerWidget
 
         this.totalHeight = this.dropdownHeight + selBarHeight;
         this.searchField.setPositionAndSize(x, searchY, width, 16);
-        this.scrollBar.setPosition(x + width - this.scrollBar.getWidth() - 1, this.dropdownTopY);
+        this.scrollBar.setPosition(x + width - this.scrollBar.getWidth() - 1, this.dropdownTopY + 1);
         this.selectionBarWidget.setPositionAndSize(x, y, width, this.lineHeight);
     }
 
@@ -583,6 +585,11 @@ public class DropDownListWidget<T> extends ContainerWidget
 
     protected void onSearchTextChange(String searchText)
     {
+        if (MaLiLibConfigs.Info.DROP_DOWN_SEARCH_TIP.getBooleanValue())
+        {
+            MaLiLibConfigs.Info.DROP_DOWN_SEARCH_TIP.setBooleanValue(false);
+        }
+
         this.updateFilteredEntries(searchText);
     }
 
@@ -656,6 +663,17 @@ public class DropDownListWidget<T> extends ContainerWidget
 
             RenderUtils.color(1f, 1f, 1f, 1f);
             RenderUtils.drawOutlinedBox(x, this.dropdownTopY + diffY, this.getWidth(), this.dropdownHeight, 0xFF000000, this.borderColorOpen, z);
+
+            if (this.searchOpen == false && MaLiLibConfigs.Info.DROP_DOWN_SEARCH_TIP.getBooleanValue())
+            {
+                String text = StringUtils.translate("malilib.gui.tip.dropdown.type_to_search");
+                int tx = this.searchField.getX();
+                int ty = this.searchField.getY();
+                int sw = this.getStringWidth(text);
+
+                RenderUtils.drawOutlinedBox(tx, ty, sw + 10, 16, 0xFF000000, 0xFFFFFF20, z);
+                this.drawString(tx + 4, ty + 4, z + 0.1f, 0xFFFFC000, text);
+            }
         }
 
         super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hoveredWidgetId);

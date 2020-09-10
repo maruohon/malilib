@@ -39,6 +39,15 @@ public class MaLiLibConfigs implements ModConfig
         );
     }
 
+    public static class Info
+    {
+        public static final BooleanConfig DROP_DOWN_SEARCH_TIP          = new BooleanConfig("dropDownSearchTip", true);
+
+        public static final ImmutableList<ConfigOption<?>> OPTIONS = ImmutableList.of(
+                DROP_DOWN_SEARCH_TIP
+        );
+    }
+
     public static class Debug
     {
         public static final KeyBindSettings DBG_KS = KeyBindSettings.create(KeyBindSettings.Context.GUI, KeyAction.PRESS, true, false, false, false, true);
@@ -61,8 +70,9 @@ public class MaLiLibConfigs implements ModConfig
     }
 
     private static final ImmutableList<ConfigOptionCategory> CATEGORIES = ImmutableList.of(
-            BaseConfigOptionCategory.normal("Generic", Generic.OPTIONS),
-            BaseConfigOptionCategory.normal("Debug",   Debug.OPTIONS)
+            BaseConfigOptionCategory.normal("Generic",  Generic.OPTIONS),
+            BaseConfigOptionCategory.normal("Info",     Info.OPTIONS),
+            BaseConfigOptionCategory.normal("Debug",    Debug.OPTIONS)
     );
 
     @Override

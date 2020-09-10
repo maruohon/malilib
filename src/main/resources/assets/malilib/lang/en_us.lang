@@ -160,6 +160,8 @@ malilib.gui.label.render_layers.layer_max=Max layer
 malilib.gui.label.render_layers.layer_min=Min layer
 malilib.gui.label.render_layers.player_follow_offset=Offset
 
+malilib.gui.tip.dropdown.type_to_search=Just start typing to search (in any DropDown widget)
+
 malilib.gui.title.all_hotkeys=All registered hotkeys
 malilib.gui.title.black_white_list_edit=Edit Black/White List '%s'
 malilib.gui.title.block_list_edit=Edit block list '%s'
@@ -173,6 +175,7 @@ malilib.gui.title.equipment_slot_list_edit=Edit equipment slot list '%s'
 malilib.gui.title.file_browser=File Browser
 malilib.gui.title.generic=Generic
 malilib.gui.title.identifier_list_edit=Edit identifier list '%s'
+malilib.gui.title.info=Info
 malilib.gui.title.item_list_edit=Edit item list '%s'
 malilib.gui.title.keybind_settings.advanced=Advanced Keybind Settings '%s'
 malilib.gui.title.status_effect_list_edit=Edit status effect list '%s'
