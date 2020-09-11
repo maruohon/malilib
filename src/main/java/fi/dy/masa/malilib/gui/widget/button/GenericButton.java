@@ -2,10 +2,10 @@ package fi.dy.masa.malilib.gui.widget.button;
 
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
-import org.apache.commons.lang3.StringUtils;
 import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.util.StringUtils;
 
 public class GenericButton extends BaseButton
 {
@@ -29,7 +29,7 @@ public class GenericButton extends BaseButton
 
     public GenericButton(int x, int y, int width, boolean rightAlign, String translationKey, Object... args)
     {
-        this(x, y, width, 20, fi.dy.masa.malilib.util.StringUtils.translate(translationKey, args));
+        this(x, y, width, 20, StringUtils.translate(translationKey, args));
 
         this.setRightAlign(rightAlign, x, true);
     }
@@ -180,6 +180,24 @@ public class GenericButton extends BaseButton
         return this.textCentered ? x + width / 2 + this.textOffsetX: x + this.textOffsetX;
     }
 
+    protected int getTextureOffset(boolean isMouseOver)
+    {
+        return (this.enabled == false) ? 0 : (isMouseOver ? 2 : 1);
+    }
+
+    @Override
+    protected int getMaxDisplayStringWidth()
+    {
+        Icon icon = this.iconSupplier != null ? this.iconSupplier.get() : null;
+
+        if (icon != null)
+        {
+            return this.getWidth() - icon.getWidth() - 14;
+        }
+
+        return super.getMaxDisplayStringWidth();
+    }
+
     protected void renderButtonBackground(int x, int y, float z, int width, int height, boolean hovered)
     {
         this.bindTexture(BUTTON_TEXTURES);
@@ -202,7 +220,7 @@ public class GenericButton extends BaseButton
 
             int width = this.getWidth();
             int height = this.getHeight();
-            boolean textBlank = StringUtils.isBlank(this.displayString);
+            boolean textBlank = org.apache.commons.lang3.StringUtils.isBlank(this.displayString);
 
             RenderUtils.color(1f, 1f, 1f, 1f);
             RenderUtils.setupBlendSimple();

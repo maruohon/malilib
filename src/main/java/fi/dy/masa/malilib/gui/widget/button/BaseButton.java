@@ -1,6 +1,5 @@
 package fi.dy.masa.malilib.gui.widget.button;
 
-import java.util.List;
 import java.util.function.BooleanSupplier;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
@@ -10,6 +9,7 @@ import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.widget.BackgroundWidget;
 import fi.dy.masa.malilib.util.StringUtils;
+import fi.dy.masa.malilib.util.data.LeftRight;
 
 public abstract class BaseButton extends BackgroundWidget
 {
@@ -40,6 +40,7 @@ public abstract class BaseButton extends BackgroundWidget
         super(x, y, width, height);
 
         this.displayString = StringUtils.translate(text);
+        this.actionListener = actionListener;
         this.hoverHelp = ImmutableList.of(StringUtils.translate("malilib.gui.button.hover.hold_shift_for_info"));
 
         this.updateWidth();
@@ -84,6 +85,30 @@ public abstract class BaseButton extends BackgroundWidget
     {
         this.displayString = text;
         return this;
+    }
+
+    @Override
+    protected void onPositionOrSizeChanged(int oldX, int oldY)
+    {
+        super.onPositionOrSizeChanged(oldX, oldY);
+
+        // This check is required to prevent infinite recursion
+        if (this.automaticWidth == false)
+        {
+            this.updateDisplayString();
+        }
+    }
+
+    @Override
+    protected void onSizeChanged()
+    {
+        super.onSizeChanged();
+
+        // This check is required to prevent infinite recursion
+        if (this.automaticWidth == false)
+        {
+            this.updateDisplayString();
+        }
     }
 
     @Override
@@ -140,9 +165,27 @@ public abstract class BaseButton extends BackgroundWidget
         }
     }
 
+    protected int getMaxDisplayStringWidth()
+    {
+        return this.getWidth() - 10;
+    }
+
     public void updateDisplayString()
     {
-        this.displayString = this.generateDisplayString();
+        String str = this.generateDisplayString();
+        int maxWidth = this.getMaxDisplayStringWidth();
+
+        if (this.automaticWidth == false &&
+            org.apache.commons.lang3.StringUtils.isBlank(str) == false &&
+            this.getStringWidth(str) > maxWidth)
+        {
+            this.automaticHoverStrings.clear();
+            this.automaticHoverStrings.add(BaseScreen.TXT_AQUA + str);
+            this.updateCombinedHoverStrings();
+            str = StringUtils.clampTextToRenderLength(str, maxWidth, LeftRight.RIGHT, " ...");
+        }
+
+        this.displayString = str;
         this.updateWidth();
     }
 
@@ -157,7 +200,7 @@ public abstract class BaseButton extends BackgroundWidget
     }
 
     @Override
-    public List<String> getHoverStrings()
+    public ImmutableList<String> getHoverStrings()
     {
         if (this.hoverInfoRequiresShift && BaseScreen.isShiftDown() == false)
         {
@@ -165,10 +208,5 @@ public abstract class BaseButton extends BackgroundWidget
         }
 
         return super.getHoverStrings();
-    }
-
-    protected int getTextureOffset(boolean isMouseOver)
-    {
-        return (this.enabled == false) ? 0 : (isMouseOver ? 2 : 1);
     }
 }

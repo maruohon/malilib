@@ -3,7 +3,6 @@ package fi.dy.masa.malilib.gui.widget.button;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
-import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.input.Keyboard;
 import fi.dy.masa.malilib.event.dispatch.KeyBindManager;
 import fi.dy.masa.malilib.gui.BaseScreen;
@@ -13,6 +12,7 @@ import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.input.KeyBindCategory;
 import fi.dy.masa.malilib.input.KeyBindImpl;
 import fi.dy.masa.malilib.listener.EventListener;
+import fi.dy.masa.malilib.util.StringUtils;
 
 public class KeyBindConfigButton extends GenericButton
 {
@@ -167,15 +167,14 @@ public class KeyBindConfigButton extends GenericButton
         List<Integer> keys = this.selected ? this.newKeys : this.keyBind.getKeys();
         String valueStr = KeyBindImpl.writeKeysToString(keys, " + ");
 
-        if (keys.size() == 0 || StringUtils.isBlank(valueStr))
+        if (keys.size() == 0 || org.apache.commons.lang3.StringUtils.isBlank(valueStr))
         {
-            valueStr = fi.dy.masa.malilib.util.StringUtils.translate("malilib.gui.button.none.caps");
+            valueStr = StringUtils.translate("malilib.gui.button.none.caps");
         }
-
-        this.clearHoverStrings();
 
         if (this.selected)
         {
+            this.clearHoverStrings();
             return "> " + BaseScreen.TXT_YELLOW + valueStr + BaseScreen.TXT_RST + " <";
         }
         else
@@ -197,6 +196,8 @@ public class KeyBindConfigButton extends GenericButton
     {
         List<KeyBindCategory> categories = KeyBindManager.INSTANCE.getKeyBindCategories();
         List<Hotkey> overlaps = new ArrayList<>();
+        List<String> hoverStrings = new ArrayList<>();
+
         this.overlapInfo.clear();
 
         for (KeyBindCategory category : categories)
@@ -235,34 +236,36 @@ public class KeyBindConfigButton extends GenericButton
 
         if (modified)
         {
-            String label = fi.dy.masa.malilib.util.StringUtils.translate("malilib.gui.button.default");
+            String label = StringUtils.translate("malilib.gui.button.default");
             String defaultStr = KeyBindImpl.writeKeysToString(this.keyBind.getDefaultKeys(), " + ");
 
-            if (StringUtils.isBlank(defaultStr))
+            if (org.apache.commons.lang3.StringUtils.isBlank(defaultStr))
             {
-                defaultStr = fi.dy.masa.malilib.util.StringUtils.translate("malilib.gui.button.none.caps");
+                defaultStr = StringUtils.translate("malilib.gui.button.none.caps");
             }
 
-            this.addHoverStrings(label + ": " + defaultStr);
+            hoverStrings.add(label + ": " + defaultStr);
         }
 
         boolean nonEmpty = this.keyBind.getKeys().isEmpty() == false;
 
         if (nonEmpty)
         {
-            this.addHoverStrings("malilib.gui.button.hover.keybind.middle_click_to_clear");
+            hoverStrings.add(StringUtils.translate("malilib.gui.button.hover.keybind.middle_click_to_clear"));
         }
 
         if (this.overlapInfo.size() > 0)
         {
             if (modified || nonEmpty)
             {
-                this.addHoverStrings("================");
+                hoverStrings.add("================");
             }
 
-            this.addHoverStrings("malilib.gui.button.hover.keybind.possible_overlaps");
-            this.addHoverStrings("----------------");
-            this.addHoverStrings(this.overlapInfo);
+            hoverStrings.add(StringUtils.translate("malilib.gui.button.hover.keybind.possible_overlaps"));
+            hoverStrings.add("----------------");
+            hoverStrings.addAll(this.overlapInfo);
         }
+
+        this.setHoverStrings(hoverStrings);
     }
 }

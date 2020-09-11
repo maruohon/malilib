@@ -7,6 +7,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 import org.lwjgl.opengl.GL11;
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -31,10 +32,12 @@ public abstract class BaseWidget
 
     protected final Minecraft mc;
     protected final FontRenderer textRenderer;
-    protected final List<String> hoverStrings = new ArrayList<>();
+    protected final List<String> automaticHoverStrings = new ArrayList<>();
+    protected final List<String> userHoverStrings = new ArrayList<>();
     protected final int fontHeight;
-    @Nullable protected EventListener clickListener;
     private final int id;
+    protected ImmutableList<String> combinedHoverStrings = ImmutableList.of();
+    @Nullable protected EventListener clickListener;
     private int x;
     private int y;
     private int xRight;
@@ -398,17 +401,23 @@ public abstract class BaseWidget
 
     public boolean hasHoverText()
     {
-        return this.hoverStrings.isEmpty() == false;
+        return this.combinedHoverStrings.isEmpty() == false;
     }
 
     public void clearHoverStrings()
     {
-        this.hoverStrings.clear();
+        this.userHoverStrings.clear();
+        this.updateCombinedHoverStrings();
     }
 
     public void setHoverStrings(String... hoverStrings)
     {
-        this.clearHoverStrings();
+        this.setHoverStrings(Arrays.asList(hoverStrings));
+    }
+
+    public void setHoverStrings(List<String> hoverStrings)
+    {
+        this.userHoverStrings.clear();
         this.addHoverStrings(hoverStrings);
     }
 
@@ -430,21 +439,28 @@ public abstract class BaseWidget
         if (translationKey != null)
         {
             String str = StringUtils.translate(translationKey, args);
-
             String[] parts = str.split("\\n");
-
-            Collections.addAll(this.hoverStrings, parts);
+            Collections.addAll(this.userHoverStrings, parts);
+            this.updateCombinedHoverStrings();
         }
+    }
+
+    public void updateCombinedHoverStrings()
+    {
+        ImmutableList.Builder<String> builder = ImmutableList.builder();
+        builder.addAll(this.automaticHoverStrings);
+        builder.addAll(this.userHoverStrings);
+        this.combinedHoverStrings = builder.build();
+    }
+
+    public ImmutableList<String> getHoverStrings()
+    {
+        return this.combinedHoverStrings;
     }
 
     public List<BaseTextFieldWidget> getAllTextFields()
     {
         return Collections.emptyList();
-    }
-
-    public List<String> getHoverStrings()
-    {
-        return this.hoverStrings;
     }
 
     public void bindTexture(ResourceLocation texture)

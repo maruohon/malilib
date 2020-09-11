@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.gui.widget.button;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -82,23 +83,24 @@ public class BaseValueListEditButton<TYPE> extends GenericButton
     @Override
     protected String generateDisplayString()
     {
-        this.clearHoverStrings();
-
         ImmutableList<String> strings = this.config.getValuesAsString();
+        List<String> hoverStrings = new ArrayList<>();
         int total = strings.size();
         int max = Math.min(10, total);
 
-        this.addHoverString("malilib.gui.button.hover.entries_total", total);
+        hoverStrings.add(StringUtils.translate("malilib.gui.button.hover.entries_total", total));
 
         for (int i = 0; i < max; ++i)
         {
-            this.addHoverString("§7" + strings.get(i));
+            hoverStrings.add("§7" + strings.get(i));
         }
 
         if (total > max)
         {
-            this.addHoverString("malilib.gui.button.hover.entries_more", total - max);
+            hoverStrings.add(StringUtils.translate("malilib.gui.button.hover.entries_more", total - max));
         }
+
+        this.setHoverStrings(hoverStrings);
 
         return StringUtils.getDisplayStringForList(strings, this.getWidth() - 10, "'", "[ ", " ]");
     }

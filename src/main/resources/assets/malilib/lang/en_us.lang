@@ -2,6 +2,7 @@
 malilib.config.category.debug=Debug
 malilib.config.category.generic=Generic
 
+malilib.config.comment.configsearchdefaultscope=This is the default value of the scope DropDown\nwidget in the config menu search bars
 malilib.config.comment.keybinddisplay=Whether or not to display a small indicator/toast\nfor pressed keys and triggered hotkeys/actions
 malilib.config.comment.keybinddisplayalignment=The alignment for the keybind display toast messages
 malilib.config.comment.keybinddisplaycallbackonly=If enabled, then only keybinds that have a defined action callback\nwill be displayed on the keybind display toast.
@@ -22,6 +23,7 @@ malilib.config.comment.keybind_settings.context=Can the keybind be activated in-
 malilib.config.comment.keybind_settings.exclusive=If true, then no other keybinds can have\nbeen activated before the keybind in question.\nThis check resets when all keys are released.
 malilib.config.comment.keybind_settings.order_sensitive=Should the keybind keys be pressed\nin the specific order they were defined in
 
+malilib.config.name.configsearchdefaultscope=Config Search Default Scope
 malilib.config.name.keybinddisplay=KeyBind Display
 malilib.config.name.keybinddisplayalignment=KeyBind Display Alignment
 malilib.config.name.keybinddisplaycallbackonly=KeyBind Display Callback Only
@@ -134,6 +136,8 @@ malilib.gui.label.config_type_filter.unbound_hotkey=Unbound hotkeys
 malilib.gui.label.confirm_config_reset=Are you sure you wan to reset all the configs matching the current search filters back to their default values?
 
 malilib.gui.label_error.no_widget_factory_for_config_type=§cUnknown config type '%s' (no widget factory registered)§r
+
+malilib.gui.label.hover.config_search_default_scope=You can change the default scope value that this drop down widget\nis set to in malilib's configs: Generic > Config Search Default Scope
 
 malilib.gui.label.keybind_display.actions=Actions
 malilib.gui.label.keybind_display.keys=Keys
