@@ -173,7 +173,7 @@ public class DirectoryNavigationWidget extends SearchBarWidget
         else
         {
             // Draw the directory path text background
-            RenderUtils.drawRect(this.pathStartX - 2 + diffX, y, this.getMaxPathBarWidth() + 4, this.getHeight(), 0xFF242424, z);
+            RenderUtils.renderRectangle(this.pathStartX - 2 + diffX, y, this.getMaxPathBarWidth() + 4, this.getHeight(), 0xFF242424, z);
         }
 
         super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hoveredWidgetId);

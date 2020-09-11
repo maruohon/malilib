@@ -89,7 +89,7 @@ public abstract class BaseModelWidget extends BackgroundWidget
 
         if (this.doHighlight && this.isHoveredForRender(mouseX, mouseY))
         {
-            RenderUtils.drawRect(x, y, width, height, this.highlightColor, z);
+            RenderUtils.renderRectangle(x, y, width, height, this.highlightColor, z);
         }
 
         this.renderModel(x, y, z + 0.5f, this.scale);

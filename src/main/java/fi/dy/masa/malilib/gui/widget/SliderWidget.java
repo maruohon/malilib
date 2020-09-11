@@ -53,16 +53,16 @@ public class SliderWidget extends BaseWidget
         this.bindTexture(VANILLA_WIDGETS);
         RenderUtils.color(1f, 1f, 1f, 1f);
 
-        RenderUtils.drawTexturedRect(x + 1        , y,   0, 46, width - 6, 20, z);
-        RenderUtils.drawTexturedRect(x + width - 5, y, 196, 46,         4, 20, z);
+        RenderUtils.renderTexturedRectangle(x + 1        , y, 0, 46, width - 6, 20, z);
+        RenderUtils.renderTexturedRectangle(x + width - 5, y, 196, 46, 4, 20, z);
 
         double relPos = this.callback.getValueRelative();
         int sw = this.sliderWidth;
         int usableWidth = width - 4 - sw;
         int s = sw / 2;
 
-        RenderUtils.drawTexturedRect(x + 2 + (int) (relPos * usableWidth)    , y,       0, 66, s, 20, z);
-        RenderUtils.drawTexturedRect(x + 2 + (int) (relPos * usableWidth) + s, y, 200 - s, 66, s, 20, z);
+        RenderUtils.renderTexturedRectangle(x + 2 + (int) (relPos * usableWidth)    , y, 0, 66, s, 20, z);
+        RenderUtils.renderTexturedRectangle(x + 2 + (int) (relPos * usableWidth) + s, y, 200 - s, 66, s, 20, z);
 
         String str = this.callback.getFormattedDisplayValue();
         int tw = this.getStringWidth(str);

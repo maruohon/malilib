@@ -872,9 +872,9 @@ public class BaseTextFieldWidget extends BackgroundWidget
                 int y2 = y1 + cursorExtraHeight;
                 int y3 = y2 + this.fontHeight;
 
-                RenderUtils.drawVerticalLine(x + offX, y1, cursorExtraHeight    , color  , z + 0.1f);
-                RenderUtils.drawVerticalLine(x + offX, y2, this.fontHeight      , colorTr, z + 0.1f);
-                RenderUtils.drawVerticalLine(x + offX, y3, cursorExtraHeight + 1, color  , z + 0.1f);
+                RenderUtils.renderVerticalLine(x + offX, y1, cursorExtraHeight    , color  , z + 0.1f);
+                RenderUtils.renderVerticalLine(x + offX, y2, this.fontHeight      , colorTr, z + 0.1f);
+                RenderUtils.renderVerticalLine(x + offX, y3, cursorExtraHeight + 1, color  , z + 0.1f);
             }
         }
     }
@@ -912,7 +912,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
                 String str = visibleText.substring(p1, p2);
                 int selWidth = this.getStringWidth(str);
 
-                RenderUtils.drawRect(x, y - 2, selWidth, this.fontHeight + 3, textColor, z);
+                RenderUtils.renderRectangle(x, y - 2, selWidth, this.fontHeight + 3, textColor, z);
                 this.drawString(x, y, z, 0xFF000000, str);
                 x += selWidth;
 

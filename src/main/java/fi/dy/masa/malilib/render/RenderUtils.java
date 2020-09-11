@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.render;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nullable;
 import org.lwjgl.opengl.GL11;
@@ -88,16 +89,16 @@ public class RenderUtils
         RenderHelper.enableGUIStandardItemLighting();
     }
 
-    public static void drawOutlinedBox(int x, int y, int width, int height, int colorBg, int colorBorder, float zLevel)
+    public static void renderOutlinedBox(int x, int y, int width, int height, int colorBg, int colorBorder, float zLevel)
     {
         // Draw the background
-        drawRect(x + 1, y + 1, width - 2, height - 2, colorBg, zLevel);
+        renderRectangle(x + 1, y + 1, width - 2, height - 2, colorBg, zLevel);
 
         // Draw the border
-        drawOutline(x, y, width, height, 1, colorBorder, zLevel);
+        renderOutline(x, y, width, height, 1, colorBorder, zLevel);
     }
 
-    public static void drawOutline(int x, int y, int width, int height, int borderWidth, int colorBorder, float zLevel)
+    public static void renderOutline(int x, int y, int width, int height, int borderWidth, int colorBorder, float zLevel)
     {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
@@ -107,10 +108,10 @@ public class RenderUtils
 
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
 
-        drawRectBatched(x                      ,                        y, borderWidth            , height     , colorBorder, zLevel, buffer); // left edge
-        drawRectBatched(x + width - borderWidth,                        y, borderWidth            , height     , colorBorder, zLevel, buffer); // right edge
-        drawRectBatched(x + borderWidth        ,                        y, width - 2 * borderWidth, borderWidth, colorBorder, zLevel, buffer); // top edge
-        drawRectBatched(x + borderWidth        , y + height - borderWidth, width - 2 * borderWidth, borderWidth, colorBorder, zLevel, buffer); // bottom edge
+        renderRectangleBatched(x                      , y, borderWidth            , height     , colorBorder, zLevel, buffer); // left edge
+        renderRectangleBatched(x + width - borderWidth, y, borderWidth            , height     , colorBorder, zLevel, buffer); // right edge
+        renderRectangleBatched(x + borderWidth        , y, width - 2 * borderWidth, borderWidth, colorBorder, zLevel, buffer); // top edge
+        renderRectangleBatched(x + borderWidth        , y + height - borderWidth, width - 2 * borderWidth, borderWidth, colorBorder, zLevel, buffer); // bottom edge
 
         tessellator.draw();
 
@@ -120,7 +121,7 @@ public class RenderUtils
         color(1f, 1f, 1f, 1f);
     }
 
-    public static void drawRect(int x, int y, int width, int height, int color, float zLevel)
+    public static void renderRectangle(int x, int y, int width, int height, int color, float zLevel)
     {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
@@ -130,7 +131,7 @@ public class RenderUtils
 
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
 
-        drawRectBatched(x, y, width, height, color, zLevel, buffer);
+        renderRectangleBatched(x, y, width, height, color, zLevel, buffer);
 
         tessellator.draw();
 
@@ -140,7 +141,7 @@ public class RenderUtils
         color(1f, 1f, 1f, 1f);
     }
 
-    public static void drawRectBatched(int x, int y, int width, int height, int color, float zLevel, BufferBuilder buffer)
+    public static void renderRectangleBatched(int x, int y, int width, int height, int color, float zLevel, BufferBuilder buffer)
     {
         float a = (float) (color >> 24 & 255) / 255.0F;
         float r = (float) (color >> 16 & 255) / 255.0F;
@@ -153,19 +154,19 @@ public class RenderUtils
         buffer.pos(x + width, y         , zLevel).color(r, g, b, a).endVertex();
     }
 
-    public static void drawTexturedRect(int x, int y, int u, int v, int width, int height, float zLevel)
+    public static void renderTexturedRectangle(int x, int y, int u, int v, int width, int height, float zLevel)
     {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
 
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
 
-        drawTexturedRectBatched(x, y, u, v, width, height, zLevel, buffer);
+        renderTexturedRectangleBatched(x, y, u, v, width, height, zLevel, buffer);
 
         tessellator.draw();
     }
 
-    public static void drawTexturedRectBatched(int x, int y, int u, int v, int width, int height, float zLevel, BufferBuilder buffer)
+    public static void renderTexturedRectangleBatched(int x, int y, int u, int v, int width, int height, float zLevel, BufferBuilder buffer)
     {
         float pixelWidth = 0.00390625F;
 
@@ -175,7 +176,7 @@ public class RenderUtils
         buffer.pos(x        , y         , zLevel).tex( u          * pixelWidth,  v           * pixelWidth).endVertex();
     }
 
-    public static void drawGradientRect(int left, int top, int right, int bottom, double zLevel, int startColor, int endColor)
+    public static void renderGradientRectangle(int left, int top, int right, int bottom, double zLevel, int startColor, int endColor)
     {
         float sa = (float)(startColor >> 24 & 0xFF) / 255.0F;
         float sr = (float)(startColor >> 16 & 0xFF) / 255.0F;
@@ -209,14 +210,14 @@ public class RenderUtils
         GlStateManager.enableTexture2D();
     }
 
-    public static void drawHorizontalLine(int x, int y, int width, int color, float zLevel)
+    public static void renderHorizontalLine(int x, int y, int width, int color, float zLevel)
     {
-        drawRect(x, y, width, 1, color, zLevel);
+        renderRectangle(x, y, width, 1, color, zLevel);
     }
 
-    public static void drawVerticalLine(int x, int y, int height, int color, float zLevel)
+    public static void renderVerticalLine(int x, int y, int height, int color, float zLevel)
     {
-        drawRect(x, y, 1, height, color, zLevel);
+        renderRectangle(x, y, 1, height, color, zLevel);
     }
 
     public static void renderSprite(int x, int y, int width, int height, int zLevel, String texture)
@@ -234,8 +235,8 @@ public class RenderUtils
         }
     }
 
-    public static void draw9SplicedTexture(int x, int y, int u, int v, int width, int height,
-            int texWidth, int texHeight, int edgeThickness, float zLevel)
+    public static void renderNineSplicedTexture(int x, int y, int u, int v, int width, int height,
+                                                int texWidth, int texHeight, int edgeThickness, float zLevel)
     {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
@@ -243,11 +244,11 @@ public class RenderUtils
 
         int e = edgeThickness;
         
-        RenderUtils.drawTexturedRectBatched(x, y             , u, v                , e, e, zLevel, buffer); // top left
-        RenderUtils.drawTexturedRectBatched(x, y + height - e, u, v + texHeight - e, e, e, zLevel, buffer); // bottom left
+        RenderUtils.renderTexturedRectangleBatched(x, y             , u, v                , e, e, zLevel, buffer); // top left
+        RenderUtils.renderTexturedRectangleBatched(x, y + height - e, u, v + texHeight - e, e, e, zLevel, buffer); // bottom left
 
-        RenderUtils.drawTexturedRectBatched(x + width - e, y             , u + texWidth - e, v                , e, e, zLevel, buffer); // top right
-        RenderUtils.drawTexturedRectBatched(x + width - e, y + height - e, u + texWidth - e, v + texHeight - e, e, e, zLevel, buffer); // bottom right
+        RenderUtils.renderTexturedRectangleBatched(x + width - e, y             , u + texWidth - e, v                , e, e, zLevel, buffer); // top right
+        RenderUtils.renderTexturedRectangleBatched(x + width - e, y + height - e, u + texWidth - e, v + texHeight - e, e, e, zLevel, buffer); // bottom right
 
         // Texture is smaller than the requested width, repeat stuff horizontally
         if (texWidth < width)
@@ -259,8 +260,8 @@ public class RenderUtils
             {
                 tmpW = Math.min(repeatableWidth, requiredWidth - doneWidth);
 
-                RenderUtils.drawTexturedRectBatched(tmpX, y             , u + e, v                , tmpW, e, zLevel, buffer); // top center
-                RenderUtils.drawTexturedRectBatched(tmpX, y + height - e, u + e, v + texHeight - e, tmpW, e, zLevel, buffer); // bottom center
+                RenderUtils.renderTexturedRectangleBatched(tmpX, y             , u + e, v                , tmpW, e, zLevel, buffer); // top center
+                RenderUtils.renderTexturedRectangleBatched(tmpX, y + height - e, u + e, v + texHeight - e, tmpW, e, zLevel, buffer); // bottom center
 
                 tmpX += tmpW;
                 doneWidth += tmpW;
@@ -269,8 +270,8 @@ public class RenderUtils
         // Texture is wide enough, no need to repeat horizontally
         else
         {
-            RenderUtils.drawTexturedRectBatched(x + e, y             , u + e, v                , width - 2 * e, e, zLevel, buffer); // top center
-            RenderUtils.drawTexturedRectBatched(x + e, y + height - e, u + e, v + texHeight - e, width - 2 * e, e, zLevel, buffer); // bottom center
+            RenderUtils.renderTexturedRectangleBatched(x + e, y             , u + e, v                , width - 2 * e, e, zLevel, buffer); // top center
+            RenderUtils.renderTexturedRectangleBatched(x + e, y + height - e, u + e, v + texHeight - e, width - 2 * e, e, zLevel, buffer); // bottom center
         }
 
         // Texture is smaller than the requested height, repeat stuff vertically
@@ -283,8 +284,8 @@ public class RenderUtils
             {
                 tmpH = Math.min(repeatableHeight, requiredHeight - doneHeight);
 
-                RenderUtils.drawTexturedRectBatched(x            , tmpY, u               , v + e, e, tmpH, zLevel, buffer); // left center
-                RenderUtils.drawTexturedRectBatched(x + width - e, tmpY, u + texWidth - e, v + e, e, tmpH, zLevel, buffer); // right center
+                RenderUtils.renderTexturedRectangleBatched(x            , tmpY, u               , v + e, e, tmpH, zLevel, buffer); // left center
+                RenderUtils.renderTexturedRectangleBatched(x + width - e, tmpY, u + texWidth - e, v + e, e, tmpH, zLevel, buffer); // right center
 
                 tmpY += tmpH;
                 doneHeight += tmpH;
@@ -293,8 +294,8 @@ public class RenderUtils
         // Texture is tall enough, no need to repeat vertically
         else
         {
-            RenderUtils.drawTexturedRectBatched(x            , y + e, u               , v + e, e, height - 2 * e, zLevel, buffer); // left center
-            RenderUtils.drawTexturedRectBatched(x + width - e, y + e, u + texWidth - e, v + e, e, height - 2 * e, zLevel, buffer); // right center
+            RenderUtils.renderTexturedRectangleBatched(x            , y + e, u               , v + e, e, height - 2 * e, zLevel, buffer); // left center
+            RenderUtils.renderTexturedRectangleBatched(x + width - e, y + e, u + texWidth - e, v + e, e, height - 2 * e, zLevel, buffer); // right center
         }
 
         // The center part needs to be repeated
@@ -313,7 +314,7 @@ public class RenderUtils
                 {
                     tmpH = Math.min(repeatableHeight, requiredHeight - doneHeight);
 
-                    RenderUtils.drawTexturedRectBatched(tmpX, tmpY, u + e, v + e, tmpW, tmpH, zLevel, buffer); // center
+                    RenderUtils.renderTexturedRectangleBatched(tmpX, tmpY, u + e, v + e, tmpW, tmpH, zLevel, buffer); // center
 
                     tmpY += tmpH;
                     doneHeight += tmpH;
@@ -325,7 +326,7 @@ public class RenderUtils
         }
         else
         {
-            RenderUtils.drawTexturedRectBatched(x + e, y + e, u + e, v + e, width - 2 * e, height - 2 * e, zLevel, buffer); // center
+            RenderUtils.renderTexturedRectangleBatched(x + e, y + e, u + e, v + e, width - 2 * e, height - 2 * e, zLevel, buffer); // center
         }
 
         tessellator.draw();
@@ -358,7 +359,7 @@ public class RenderUtils
     }
 
     public static int renderText(int xOff, int yOff, int zLevel, double scale, int textColor, int bgColor,
-            HudAlignment alignment, boolean useBackground, boolean useShadow, List<String> lines)
+                                 HudAlignment alignment, boolean useBackground, boolean useShadow, List<String> lines)
     {
         FontRenderer fontRenderer = mc().fontRenderer;
         final int scaledWidth = GuiUtils.getScaledWindowWidth();
@@ -374,11 +375,8 @@ public class RenderUtils
 
         if (scale != 1d)
         {
-            if (scale != 0)
-            {
-                xOff = (int) (xOff * scale);
-                yOff = (int) (yOff * scale);
-            }
+            xOff = (int) (xOff * scale);
+            yOff = (int) (yOff * scale);
 
             GlStateManager.pushMatrix();
             GlStateManager.scale(scale, scale, 0);
@@ -412,7 +410,7 @@ public class RenderUtils
 
             if (useBackground)
             {
-                drawRect(x - bgMargin, y - bgMargin, width + bgMargin, bgMargin + fontRenderer.FONT_HEIGHT, bgColor, zLevel);
+                renderRectangle(x - bgMargin, y - bgMargin, width + bgMargin, bgMargin + fontRenderer.FONT_HEIGHT, bgColor, zLevel);
             }
 
             if (useShadow)
@@ -433,12 +431,18 @@ public class RenderUtils
         return contentHeight + bgMargin * 2;
     }
 
-    public static void drawHoverText(int x, int y, float zLevel, List<String> textLines)
+    public static void renderHoverText(int x, int y, float zLevel, String text)
     {
-        drawHoverText(x, y, zLevel, textLines, 0xFFC0C0C0 , RenderUtils::renderHoverTextBackground);
+        renderHoverText(x, y, zLevel, Collections.singletonList(text));
     }
 
-    public static void drawHoverText(int x, int y, float zLevel, List<String> textLines, int textColor, RectangleRenderer backgroundRenderer)
+    public static void renderHoverText(int x, int y, float zLevel, List<String> textLines)
+    {
+        renderHoverText(x, y, zLevel, textLines, 0xFFC0C0C0 , RenderUtils::renderHoverTextBackground);
+    }
+
+    public static void renderHoverText(int x, int y, float zLevel, List<String> textLines,
+                                       int textColor, RectangleRenderer backgroundRenderer)
     {
         Minecraft mc = mc();
 
@@ -521,26 +525,27 @@ public class RenderUtils
     public static void renderHoverTextBackground(int x, int y, int width, int height, float zLevel)
     {
         int borderColor = 0xF0100010;
-        drawGradientRect(x - 3        , y - 4         , x + width + 3, y - 3         , zLevel, borderColor, borderColor);
-        drawGradientRect(x - 3        , y + height + 3, x + width + 3, y + height + 4, zLevel, borderColor, borderColor);
-        drawGradientRect(x - 3        , y - 3         , x + width + 3, y + height + 3, zLevel, borderColor, borderColor);
-        drawGradientRect(x - 4        , y - 3         , x - 3        , y + height + 3, zLevel, borderColor, borderColor);
-        drawGradientRect(x + width + 3, y - 3         , x + width + 4, y + height + 3, zLevel, borderColor, borderColor);
+        renderGradientRectangle(x - 3        , y - 4         , x + width + 3, y - 3         , zLevel, borderColor, borderColor);
+        renderGradientRectangle(x - 3        , y + height + 3, x + width + 3, y + height + 4, zLevel, borderColor, borderColor);
+        renderGradientRectangle(x - 3        , y - 3         , x + width + 3, y + height + 3, zLevel, borderColor, borderColor);
+        renderGradientRectangle(x - 4        , y - 3         , x - 3        , y + height + 3, zLevel, borderColor, borderColor);
+        renderGradientRectangle(x + width + 3, y - 3         , x + width + 4, y + height + 3, zLevel, borderColor, borderColor);
 
         int fillColor1 = 0x505000FF;
         int fillColor2 = 0x5028007F;
-        drawGradientRect(x - 3        , y - 3 + 1     , x - 3 + 1    , y + height + 3 - 1, zLevel, fillColor1, fillColor2);
-        drawGradientRect(x + width + 2, y - 3 + 1     , x + width + 3, y + height + 3 - 1, zLevel, fillColor1, fillColor2);
-        drawGradientRect(x - 3        , y - 3         , x + width + 3, y - 3 + 1         , zLevel, fillColor1, fillColor1);
-        drawGradientRect(x - 3        , y + height + 2, x + width + 3, y + height + 3    , zLevel, fillColor2, fillColor2);
+        renderGradientRectangle(x - 3        , y - 3 + 1     , x - 3 + 1    , y + height + 3 - 1, zLevel, fillColor1, fillColor2);
+        renderGradientRectangle(x + width + 2, y - 3 + 1     , x + width + 3, y + height + 3 - 1, zLevel, fillColor1, fillColor2);
+        renderGradientRectangle(x - 3        , y - 3         , x + width + 3, y - 3 + 1         , zLevel, fillColor1, fillColor1);
+        renderGradientRectangle(x - 3        , y + height + 2, x + width + 3, y + height + 3    , zLevel, fillColor2, fillColor2);
     }
 
     /**
      * Assumes a BufferBuilder in GL_QUADS mode has been initialized
      */
-    public static void drawBlockSpaceAllSidesBatchedQuads(BlockPos pos, Color4f color, double expand, BufferBuilder buffer)
+    public static void renderBlockSpaceAllSidesBatchedQuads(BlockPos pos, Color4f color,
+                                                            double expand, BufferBuilder buffer)
     {
-        drawBlockSpaceAllSidesBatchedQuads(pos, Vec3d.ZERO, color, expand, buffer);
+        renderBlockSpaceAllSidesBatchedQuads(pos, Vec3d.ZERO, color, expand, buffer);
     }
 
     /**
@@ -551,7 +556,8 @@ public class RenderUtils
      * @param expand
      * @param buffer
      */
-    public static void drawBlockSpaceAllSidesBatchedQuads(BlockPos pos, Vec3d cameraPos, Color4f color, double expand, BufferBuilder buffer)
+    public static void renderBlockSpaceAllSidesBatchedQuads(BlockPos pos, Vec3d cameraPos, Color4f color,
+                                                            double expand, BufferBuilder buffer)
     {
         double minX = pos.getX() - expand - cameraPos.x;
         double minY = pos.getY() - expand - cameraPos.y;
@@ -560,15 +566,16 @@ public class RenderUtils
         double maxY = pos.getY() + expand - cameraPos.y + 1;
         double maxZ = pos.getZ() + expand - cameraPos.z + 1;
 
-        drawBoxAllSidesBatchedQuads(minX, minY, minZ, maxX, maxY, maxZ, color, buffer);
+        renderBoxAllSidesBatchedQuads(minX, minY, minZ, maxX, maxY, maxZ, color, buffer);
     }
 
     /**
      * Assumes a BufferBuilder in GL_LINES mode has been initialized
      */
-    public static void drawBlockSpaceAllOutlinesBatchedLines(BlockPos pos, Color4f color, double expand, BufferBuilder buffer)
+    public static void renderBlockSpaceAllOutlinesBatchedLines(BlockPos pos, Color4f color,
+                                                               double expand, BufferBuilder buffer)
     {
-        drawBlockSpaceAllOutlinesBatchedLines(pos, Vec3d.ZERO, color, expand, buffer);
+        renderBlockSpaceAllOutlinesBatchedLines(pos, Vec3d.ZERO, color, expand, buffer);
     }
 
     /**
@@ -580,7 +587,8 @@ public class RenderUtils
      * @param expand
      * @param buffer
      */
-    public static void drawBlockSpaceAllOutlinesBatchedLines(BlockPos pos, Vec3d cameraPos, Color4f color, double expand, BufferBuilder buffer)
+    public static void renderBlockSpaceAllOutlinesBatchedLines(BlockPos pos, Vec3d cameraPos, Color4f color,
+                                                               double expand, BufferBuilder buffer)
     {
         double minX = pos.getX() - expand - cameraPos.x;
         double minY = pos.getY() - expand - cameraPos.y;
@@ -589,18 +597,19 @@ public class RenderUtils
         double maxY = pos.getY() + expand - cameraPos.y + 1;
         double maxZ = pos.getZ() + expand - cameraPos.z + 1;
 
-        drawBoxAllEdgesBatchedLines(minX, minY, minZ, maxX, maxY, maxZ, color, buffer);
+        renderBoxAllEdgesBatchedLines(minX, minY, minZ, maxX, maxY, maxZ, color, buffer);
     }
 
     /**
      * Assumes a BufferBuilder in GL_QUADS mode has been initialized
      */
-    public static void drawBoxAllSidesBatchedQuads(double minX, double minY, double minZ, double maxX, double maxY, double maxZ,
-            Color4f color, BufferBuilder buffer)
+    public static void renderBoxAllSidesBatchedQuads(double minX, double minY, double minZ,
+                                                     double maxX, double maxY, double maxZ,
+                                                     Color4f color, BufferBuilder buffer)
     {
-        drawBoxHorizontalSidesBatchedQuads(minX, minY, minZ, maxX, maxY, maxZ, color, buffer);
-        drawBoxTopBatchedQuads(minX, minZ, maxX, maxY, maxZ, color, buffer);
-        drawBoxBottomBatchedQuads(minX, minY, minZ, maxX, maxZ, color, buffer);
+        renderBoxHorizontalSidesBatchedQuads(minX, minY, minZ, maxX, maxY, maxZ, color, buffer);
+        renderBoxTopBatchedQuads(minX, minZ, maxX, maxY, maxZ, color, buffer);
+        renderBoxBottomBatchedQuads(minX, minY, minZ, maxX, maxZ, color, buffer);
     }
 
     /**
@@ -613,9 +622,11 @@ public class RenderUtils
      * @param bufferQuads
      * @param bufferLines
      */
-    public static void drawBoxWithEdgesBatched(BlockPos posMin, BlockPos posMax, Color4f colorLines, Color4f colorSides, BufferBuilder bufferQuads, BufferBuilder bufferLines)
+    public static void renderBoxWithEdgesBatched(BlockPos posMin, BlockPos posMax,
+                                                 Color4f colorLines, Color4f colorSides,
+                                                 BufferBuilder bufferQuads, BufferBuilder bufferLines)
     {
-        drawBoxWithEdgesBatched(posMin, posMax, Vec3d.ZERO, colorLines, colorSides, bufferQuads, bufferLines);
+        renderBoxWithEdgesBatched(posMin, posMax, Vec3d.ZERO, colorLines, colorSides, bufferQuads, bufferLines);
     }
 
     /**
@@ -630,7 +641,9 @@ public class RenderUtils
      * @param bufferQuads
      * @param bufferLines
      */
-    public static void drawBoxWithEdgesBatched(BlockPos posMin, BlockPos posMax, Vec3d cameraPos, Color4f colorLines, Color4f colorSides, BufferBuilder bufferQuads, BufferBuilder bufferLines)
+    public static void renderBoxWithEdgesBatched(BlockPos posMin, BlockPos posMax, Vec3d cameraPos,
+                                                 Color4f colorLines, Color4f colorSides,
+                                                 BufferBuilder bufferQuads, BufferBuilder bufferLines)
     {
         final double x1 = posMin.getX() - cameraPos.x;
         final double y1 = posMin.getY() - cameraPos.y;
@@ -639,15 +652,16 @@ public class RenderUtils
         final double y2 = posMax.getY() + 1 - cameraPos.y;
         final double z2 = posMax.getZ() + 1 - cameraPos.z;
 
-        fi.dy.masa.malilib.render.RenderUtils.drawBoxAllSidesBatchedQuads(x1, y1, z1, x2, y2, z2, colorSides, bufferQuads);
-        fi.dy.masa.malilib.render.RenderUtils.drawBoxAllEdgesBatchedLines(x1, y1, z1, x2, y2, z2, colorLines, bufferLines);
+        renderBoxAllSidesBatchedQuads(x1, y1, z1, x2, y2, z2, colorSides, bufferQuads);
+        renderBoxAllEdgesBatchedLines(x1, y1, z1, x2, y2, z2, colorLines, bufferLines);
     }
 
     /**
      * Assumes a BufferBuilder in GL_QUADS mode has been initialized
      */
-    public static void drawBoxHorizontalSidesBatchedQuads(double minX, double minY, double minZ, double maxX, double maxY, double maxZ,
-            Color4f color, BufferBuilder buffer)
+    public static void renderBoxHorizontalSidesBatchedQuads(double minX, double minY, double minZ,
+                                                            double maxX, double maxY, double maxZ,
+                                                            Color4f color, BufferBuilder buffer)
     {
         // West side
         buffer.pos(minX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
@@ -677,7 +691,9 @@ public class RenderUtils
     /**
      * Assumes a BufferBuilder in GL_QUADS mode has been initialized
      */
-    public static void drawBoxTopBatchedQuads(double minX, double minZ, double maxX, double maxY, double maxZ, Color4f color, BufferBuilder buffer)
+    public static void renderBoxTopBatchedQuads(double minX, double minZ,
+                                                double maxX, double maxY, double maxZ,
+                                                Color4f color, BufferBuilder buffer)
     {
         // Top side
         buffer.pos(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
@@ -689,7 +705,9 @@ public class RenderUtils
     /**
      * Assumes a BufferBuilder in GL_QUADS mode has been initialized
      */
-    public static void drawBoxBottomBatchedQuads(double minX, double minY, double minZ, double maxX, double maxZ, Color4f color, BufferBuilder buffer)
+    public static void renderBoxBottomBatchedQuads(double minX, double minY, double minZ,
+                                                   double maxX, double maxZ,
+                                                   Color4f color, BufferBuilder buffer)
     {
         // Bottom side
         buffer.pos(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
@@ -701,8 +719,9 @@ public class RenderUtils
     /**
      * Assumes a BufferBuilder in GL_LINES mode has been initialized
      */
-    public static void drawBoxAllEdgesBatchedLines(double minX, double minY, double minZ, double maxX, double maxY, double maxZ,
-            Color4f color, BufferBuilder buffer)
+    public static void renderBoxAllEdgesBatchedLines(double minX, double minY, double minZ,
+                                                     double maxX, double maxY, double maxZ,
+                                                     Color4f color, BufferBuilder buffer)
     {
         // West side
         buffer.pos(minX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
@@ -748,15 +767,17 @@ public class RenderUtils
     /**
      * Assumes a BufferBuilder in GL_QUADS mode has been initialized
      */
-    public static void drawBlockSpaceSideBatchedQuads(BlockPos pos, EnumFacing side, Color4f color, double expand, BufferBuilder buffer)
+    public static void renderBlockSpaceSideBatchedQuads(BlockPos pos, EnumFacing side,
+                                                        Color4f color, double expand, BufferBuilder buffer)
     {
-        drawBlockSpaceSideBatchedQuads(pos, Vec3d.ZERO, side, color, expand, buffer);
+        renderBlockSpaceSideBatchedQuads(pos, Vec3d.ZERO, side, color, expand, buffer);
     }
 
     /**
      * Assumes a BufferBuilder in GL_QUADS mode has been initialized
      */
-    public static void drawBlockSpaceSideBatchedQuads(BlockPos pos, Vec3d cameraPos, EnumFacing side, Color4f color, double expand, BufferBuilder buffer)
+    public static void renderBlockSpaceSideBatchedQuads(BlockPos pos, Vec3d cameraPos, EnumFacing side,
+                                                        Color4f color, double expand, BufferBuilder buffer)
     {
         double minX = pos.getX() - expand - cameraPos.x;
         double minY = pos.getY() - expand - cameraPos.y;
@@ -811,7 +832,8 @@ public class RenderUtils
         }
     }
 
-    public static void drawBox(IntBoundingBox bb, Vec3d cameraPos, Color4f color, BufferBuilder bufferQuads, BufferBuilder bufferLines)
+    public static void renderBox(IntBoundingBox bb, Vec3d cameraPos, Color4f color,
+                                 BufferBuilder bufferQuads, BufferBuilder bufferLines)
     {
         double minX = bb.minX - cameraPos.x;
         double minY = bb.minY - cameraPos.y;
@@ -820,11 +842,12 @@ public class RenderUtils
         double maxY = bb.maxY - cameraPos.y + 1;
         double maxZ = bb.maxZ - cameraPos.z + 1;
 
-        drawBoxAllSidesBatchedQuads(minX, minY, minZ, maxX, maxY, maxZ, color, bufferQuads);
-        drawBoxAllEdgesBatchedLines(minX, minY, minZ, maxX, maxY, maxZ, color, bufferLines);
+        renderBoxAllSidesBatchedQuads(minX, minY, minZ, maxX, maxY, maxZ, color, bufferQuads);
+        renderBoxAllEdgesBatchedLines(minX, minY, minZ, maxX, maxY, maxZ, color, bufferLines);
     }
 
-    public static void drawBox(StructureBoundingBox bb, Color4f color, BufferBuilder bufferQuads, BufferBuilder bufferLines)
+    public static void renderBox(StructureBoundingBox bb, Color4f color,
+                                 BufferBuilder bufferQuads, BufferBuilder bufferLines)
     {
         double minX = bb.minX;
         double minY = bb.minY;
@@ -833,8 +856,8 @@ public class RenderUtils
         double maxY = bb.maxY + 1;
         double maxZ = bb.maxZ + 1;
 
-        drawBoxAllSidesBatchedQuads(minX, minY, minZ, maxX, maxY, maxZ, color, bufferQuads);
-        drawBoxAllEdgesBatchedLines(minX, minY, minZ, maxX, maxY, maxZ, color, bufferLines);
+        renderBoxAllSidesBatchedQuads(minX, minY, minZ, maxX, maxY, maxZ, color, bufferQuads);
+        renderBoxAllEdgesBatchedLines(minX, minY, minZ, maxX, maxY, maxZ, color, bufferLines);
     }
 
     /**
@@ -846,18 +869,18 @@ public class RenderUtils
      * @param z
      * @param scale
      */
-    public static void drawTextPlate(List<String> text, double x, double y, double z, float scale)
+    public static void renderTextPlate(List<String> text, double x, double y, double z, float scale)
     {
         Entity entity = mc().getRenderViewEntity();
 
         if (entity != null)
         {
-            drawTextPlate(text, x, y, z, entity.rotationYaw, entity.rotationPitch, scale, 0xFFFFFFFF, 0x40000000, true);
+            renderTextPlate(text, x, y, z, entity.rotationYaw, entity.rotationPitch, scale, 0xFFFFFFFF, 0x40000000, true);
         }
     }
 
-    public static void drawTextPlate(List<String> text, double x, double y, double z, float yaw, float pitch,
-            float scale, int textColor, int bgColor, boolean disableDepth)
+    public static void renderTextPlate(List<String> text, double x, double y, double z, float yaw, float pitch,
+                                       float scale, int textColor, int bgColor, boolean disableDepth)
     {
         FontRenderer textRenderer = mc().fontRenderer;
 
@@ -951,7 +974,7 @@ public class RenderUtils
     }
 
     public static void renderBlockTargetingOverlay(Entity entity, BlockPos pos, EnumFacing side, Vec3d hitVec,
-            Color4f color, float partialTicks)
+                                                   Color4f color, float partialTicks)
     {
         EnumFacing playerFacing = entity.getHorizontalFacing();
         HitPart part = PositionUtils.getHitPart(side, playerFacing, pos, hitVec);
@@ -1054,7 +1077,7 @@ public class RenderUtils
     }
 
     public static void renderBlockTargetingOverlaySimple(Entity entity, BlockPos pos, EnumFacing side,
-            Color4f color, float partialTicks)
+                                                         Color4f color, float partialTicks)
     {
         EnumFacing playerFacing = entity.getHorizontalFacing();
 
@@ -1103,7 +1126,8 @@ public class RenderUtils
         GlStateManager.popMatrix();
     }
 
-    private static void blockTargetingOverlayTranslations(double x, double y, double z, EnumFacing side, EnumFacing playerFacing)
+    private static void blockTargetingOverlayTranslations(double x, double y, double z,
+                                                          EnumFacing side, EnumFacing playerFacing)
     {
         GlStateManager.translate(x, y, z);
 
@@ -1205,7 +1229,7 @@ public class RenderUtils
 
             if (stack.getItem() instanceof ItemShulkerBox)
             {
-                setShulkerboxBackgroundTintColor((BlockShulkerBox) ((ItemBlock) stack.getItem()).getBlock(), useBgColors);
+                setShulkerBoxBackgroundTintColor((BlockShulkerBox) ((ItemBlock) stack.getItem()).getBlock(), useBgColors);
             }
             else
             {
@@ -1233,9 +1257,10 @@ public class RenderUtils
      * @param block
      * @param useBgColors
      */
-    public static void setShulkerboxBackgroundTintColor(@Nullable BlockShulkerBox block, boolean useBgColors)
+    public static void setShulkerBoxBackgroundTintColor(@Nullable BlockShulkerBox block, boolean useBgColors)
     {
-        // In 1.13+ there is the separate uncolored Shulker Box variant, which returns null from getColor().
+        // In 1.13+ there is the separate uncolored Shulker Box variant,
+        // which returns null from getColor().
         // In that case don't tint the background.
         if (useBgColors && block != null && block.getColor() != null)
         {
@@ -1323,7 +1348,7 @@ public class RenderUtils
         GlStateManager.popMatrix();
     }
 
-    private static void renderQuads(BufferBuilder renderer, List<BakedQuad> quads, IBlockState state, int color)
+    public static void renderQuads(BufferBuilder renderer, List<BakedQuad> quads, IBlockState state, int color)
     {
         for (BakedQuad quad : quads)
         {
@@ -1372,7 +1397,8 @@ public class RenderUtils
      * Renders the given model to the given vertex consumer.
      * Needs a vertex consumer initialized with mode GL11.GL_QUADS and DefaultVertexFormats.ITEM
      */
-    public static void renderModelBrightnessColor(IBakedModel model, Vec3d pos, @Nullable IBlockState state, float brightness, float r, float g, float b, BufferBuilder buffer)
+    public static void renderModelBrightnessColor(IBakedModel model, Vec3d pos, @Nullable IBlockState state,
+                                                  float brightness, float r, float g, float b, BufferBuilder buffer)
     {
         for (EnumFacing side : PositionUtils.ALL_DIRECTIONS)
         {
@@ -1386,7 +1412,8 @@ public class RenderUtils
      * Renders the given quads to the given vertex consumer.
      * Needs a vertex consumer initialized with mode GL11.GL_QUADS and DefaultVertexFormats.ITEM
      */
-    public static void renderQuads(List<BakedQuad> quads, Vec3d pos, float brightness, float red, float green, float blue, BufferBuilder buffer)
+    public static void renderQuads(List<BakedQuad> quads, Vec3d pos, float brightness,
+                                   float red, float green, float blue, BufferBuilder buffer)
     {
         for (BakedQuad quad : quads)
         {

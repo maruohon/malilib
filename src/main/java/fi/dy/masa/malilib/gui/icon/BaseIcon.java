@@ -113,7 +113,7 @@ public class BaseIcon implements Icon
 
         RenderUtils.color(1f, 1f, 1f, 1f);
         RenderUtils.bindTexture(this.getTexture());
-        RenderUtils.drawTexturedRect(x, y, u, v, this.w, this.h, zLevel);
+        RenderUtils.renderTexturedRectangle(x, y, u, v, this.w, this.h, zLevel);
     }
 
     @Override

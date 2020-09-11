@@ -483,28 +483,28 @@ public class ColorEditorHSVScreen extends BaseDialogScreen
         int cw = this.sizeHS;
         int ch = 16;
 
-        RenderUtils.drawOutline(x, y, w, h, 1, 0xC0FFFFFF, z); // H
+        RenderUtils.renderOutline(x, y, w, h, 1, 0xC0FFFFFF, z); // H
         y += yd;
-        RenderUtils.drawOutline(x, y, w, h, 1, 0xC0FFFFFF, z); // S
+        RenderUtils.renderOutline(x, y, w, h, 1, 0xC0FFFFFF, z); // S
         y += yd;
-        RenderUtils.drawOutline(x, y, w, h, 1, 0xC0FFFFFF, z); // V
+        RenderUtils.renderOutline(x, y, w, h, 1, 0xC0FFFFFF, z); // V
         y += yd;
-        RenderUtils.drawOutline(x, y, w, h, 1, 0xC0FFFFFF, z); // R
+        RenderUtils.renderOutline(x, y, w, h, 1, 0xC0FFFFFF, z); // R
         y += yd;
-        RenderUtils.drawOutline(x, y, w, h, 1, 0xC0FFFFFF, z); // G
+        RenderUtils.renderOutline(x, y, w, h, 1, 0xC0FFFFFF, z); // G
         y += yd;
-        RenderUtils.drawOutline(x, y, w, h, 1, 0xC0FFFFFF, z); // B
+        RenderUtils.renderOutline(x, y, w, h, 1, 0xC0FFFFFF, z); // B
         y += yd;
-        RenderUtils.drawOutline(x, y, w, h, 1, 0xC0FFFFFF, z); // A
+        RenderUtils.renderOutline(x, y, w, h, 1, 0xC0FFFFFF, z); // A
 
         x = this.xHS;
         y = this.yHS;
         w = this.sizeHS;
         h = this.sizeHS;
 
-        RenderUtils.drawOutline(x - 1 , y - 1 , w + 2 , h + 2 , 1, 0xC0FFFFFF, z); // main color selector
-        RenderUtils.drawOutline(cx - 1, cy - 1, cw + 2, ch + 2, 1, 0xC0FFFFFF, z); // current color indicator
-        RenderUtils.drawOutline(this.xHFullSV, y - 1, this.widthHFullSV, this.sizeHS + 2, 1, 0xC0FFFFFF, z); // Hue vertical/full value
+        RenderUtils.renderOutline(x - 1 , y - 1 , w + 2 , h + 2 , 1, 0xC0FFFFFF, z); // main color selector
+        RenderUtils.renderOutline(cx - 1, cy - 1, cw + 2, ch + 2, 1, 0xC0FFFFFF, z); // current color indicator
+        RenderUtils.renderOutline(this.xHFullSV, y - 1, this.widthHFullSV, this.sizeHS + 2, 1, 0xC0FFFFFF, z); // Hue vertical/full value
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();

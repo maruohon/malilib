@@ -207,8 +207,8 @@ public class GenericButton extends BaseButton
         int w2 = (width % 2) != 0 ? w1 + 1 : w1;
         int buttonStyle = this.getTextureOffset(hovered);
 
-        RenderUtils.drawTexturedRect(x     , y,        0, 46 + buttonStyle * 20, w1, height, z);
-        RenderUtils.drawTexturedRect(x + w1, y, 200 - w2, 46 + buttonStyle * 20, w2, height, z);
+        RenderUtils.renderTexturedRectangle(x     , y, 0, 46 + buttonStyle * 20, w1, height, z);
+        RenderUtils.renderTexturedRectangle(x + w1, y, 200 - w2, 46 + buttonStyle * 20, w2, height, z);
     }
 
     @Override
@@ -228,7 +228,7 @@ public class GenericButton extends BaseButton
             if (this.renderOutline)
             {
                 int color = hovered && this.enabled ? this.outlineColorHover : this.outlineColorNormal;
-                RenderUtils.drawOutline(x, y, width, height, 1, color, z);
+                RenderUtils.renderOutline(x, y, width, height, 1, color, z);
             }
 
             if (this.renderBackground)

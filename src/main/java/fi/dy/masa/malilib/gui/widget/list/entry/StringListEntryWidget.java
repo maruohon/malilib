@@ -20,16 +20,16 @@ public class StringListEntryWidget extends BaseDataListEntryWidget<String>
         // Draw a lighter background for the hovered entry
         if (selected || (isActiveGui && this.getId() == hoveredWidgetId))
         {
-            RenderUtils.drawRect(x, y, width, height, 0xA0707070, z);
+            RenderUtils.renderRectangle(x, y, width, height, 0xA0707070, z);
         }
         else if (this.isOdd)
         {
-            RenderUtils.drawRect(x, y, width, height, 0xA0101010, z);
+            RenderUtils.renderRectangle(x, y, width, height, 0xA0101010, z);
         }
         // Draw a slightly lighter background for even entries
         else
         {
-            RenderUtils.drawRect(x, y, width, height, 0xA0303030, z);
+            RenderUtils.renderRectangle(x, y, width, height, 0xA0303030, z);
         }
 
         this.drawStringWithShadow(x + 2, y + this.getCenteredTextOffsetY(), z, 0xFFFFFFFF, this.data);

@@ -56,48 +56,48 @@ public class InventoryOverlay
         if (type == InventoryRenderType.FURNACE)
         {
             RenderUtils.bindTexture(TEXTURE_FURNACE);
-            RenderUtils.drawTexturedRectBatched(x     , y     ,   0,   0,   4,  64, zLevel, buffer); // left (top)
-            RenderUtils.drawTexturedRectBatched(x +  4, y     ,  84,   0,  92,   4, zLevel, buffer); // top (right)
-            RenderUtils.drawTexturedRectBatched(x     , y + 64,   0, 162,  92,   4, zLevel, buffer); // bottom (left)
-            RenderUtils.drawTexturedRectBatched(x + 92, y +  4, 172, 102,   4,  64, zLevel, buffer); // right (bottom)
-            RenderUtils.drawTexturedRectBatched(x +  4, y +  4,  52,  13,  88,  60, zLevel, buffer); // middle
+            RenderUtils.renderTexturedRectangleBatched(x     , y     ,   0,   0,   4,  64, zLevel, buffer); // left (top)
+            RenderUtils.renderTexturedRectangleBatched(x +  4, y     ,  84,   0,  92,   4, zLevel, buffer); // top (right)
+            RenderUtils.renderTexturedRectangleBatched(x     , y + 64,   0, 162,  92,   4, zLevel, buffer); // bottom (left)
+            RenderUtils.renderTexturedRectangleBatched(x + 92, y +  4, 172, 102,   4,  64, zLevel, buffer); // right (bottom)
+            RenderUtils.renderTexturedRectangleBatched(x +  4, y +  4,  52,  13,  88,  60, zLevel, buffer); // middle
         }
         else if (type == InventoryRenderType.BREWING_STAND)
         {
             RenderUtils.bindTexture(TEXTURE_BREWING_STAND);
-            RenderUtils.drawTexturedRectBatched(x      , y     ,   0,   0,   4,  68, zLevel, buffer); // left (top)
-            RenderUtils.drawTexturedRectBatched(x +   4, y     ,  63,   0, 113,   4, zLevel, buffer); // top (right)
-            RenderUtils.drawTexturedRectBatched(x      , y + 68,   0, 162, 113,   4, zLevel, buffer); // bottom (left)
-            RenderUtils.drawTexturedRectBatched(x + 113, y +  4, 172,  98,   4,  68, zLevel, buffer); // right (bottom)
-            RenderUtils.drawTexturedRectBatched(x +   4, y +  4,  13,  13, 109,  64, zLevel, buffer); // middle
+            RenderUtils.renderTexturedRectangleBatched(x      , y     ,   0,   0,   4,  68, zLevel, buffer); // left (top)
+            RenderUtils.renderTexturedRectangleBatched(x +   4, y     ,  63,   0, 113,   4, zLevel, buffer); // top (right)
+            RenderUtils.renderTexturedRectangleBatched(x      , y + 68,   0, 162, 113,   4, zLevel, buffer); // bottom (left)
+            RenderUtils.renderTexturedRectangleBatched(x + 113, y +  4, 172,  98,   4,  68, zLevel, buffer); // right (bottom)
+            RenderUtils.renderTexturedRectangleBatched(x +   4, y +  4,  13,  13, 109,  64, zLevel, buffer); // middle
         }
         else if (type == InventoryRenderType.DISPENSER)
         {
             RenderUtils.bindTexture(TEXTURE_DISPENSER);
-            RenderUtils.drawTexturedRectBatched(x     , y     ,   0,   0,   7,  61, zLevel, buffer); // left (top)
-            RenderUtils.drawTexturedRectBatched(x +  7, y     , 115,   0,  61,   7, zLevel, buffer); // top (right)
-            RenderUtils.drawTexturedRectBatched(x     , y + 61,   0, 159,  61,   7, zLevel, buffer); // bottom (left)
-            RenderUtils.drawTexturedRectBatched(x + 61, y +  7, 169, 105,   7,  61, zLevel, buffer); // right (bottom)
-            RenderUtils.drawTexturedRectBatched(x +  7, y +  7,  61,  16,  54,  54, zLevel, buffer); // middle
+            RenderUtils.renderTexturedRectangleBatched(x     , y     ,   0,   0,   7,  61, zLevel, buffer); // left (top)
+            RenderUtils.renderTexturedRectangleBatched(x +  7, y     , 115,   0,  61,   7, zLevel, buffer); // top (right)
+            RenderUtils.renderTexturedRectangleBatched(x     , y + 61,   0, 159,  61,   7, zLevel, buffer); // bottom (left)
+            RenderUtils.renderTexturedRectangleBatched(x + 61, y +  7, 169, 105,   7,  61, zLevel, buffer); // right (bottom)
+            RenderUtils.renderTexturedRectangleBatched(x +  7, y +  7,  61,  16,  54,  54, zLevel, buffer); // middle
         }
         else if (type == InventoryRenderType.HOPPER)
         {
             RenderUtils.bindTexture(TEXTURE_HOPPER);
-            RenderUtils.drawTexturedRectBatched(x      , y     ,   0,   0,   7,  25, zLevel, buffer); // left (top)
-            RenderUtils.drawTexturedRectBatched(x +   7, y     ,  79,   0,  97,   7, zLevel, buffer); // top (right)
-            RenderUtils.drawTexturedRectBatched(x      , y + 25,   0, 126,  97,   7, zLevel, buffer); // bottom (left)
-            RenderUtils.drawTexturedRectBatched(x +  97, y +  7, 169, 108,   7,  25, zLevel, buffer); // right (bottom)
-            RenderUtils.drawTexturedRectBatched(x +   7, y +  7,  43,  19,  90,  18, zLevel, buffer); // middle
+            RenderUtils.renderTexturedRectangleBatched(x      , y     ,   0,   0,   7,  25, zLevel, buffer); // left (top)
+            RenderUtils.renderTexturedRectangleBatched(x +   7, y     ,  79,   0,  97,   7, zLevel, buffer); // top (right)
+            RenderUtils.renderTexturedRectangleBatched(x      , y + 25,   0, 126,  97,   7, zLevel, buffer); // bottom (left)
+            RenderUtils.renderTexturedRectangleBatched(x +  97, y +  7, 169, 108,   7,  25, zLevel, buffer); // right (bottom)
+            RenderUtils.renderTexturedRectangleBatched(x +   7, y +  7,  43,  19,  90,  18, zLevel, buffer); // middle
         }
         // Most likely a Villager, or possibly a Llama
         else if (type == InventoryRenderType.VILLAGER)
         {
             RenderUtils.bindTexture(TEXTURE_DOUBLE_CHEST);
-            RenderUtils.drawTexturedRectBatched(x     , y     ,   0,   0,   7,  79, zLevel, buffer); // left (top)
-            RenderUtils.drawTexturedRectBatched(x +  7, y     , 133,   0,  43,   7, zLevel, buffer); // top (right)
-            RenderUtils.drawTexturedRectBatched(x     , y + 79,   0, 215,  43,   7, zLevel, buffer); // bottom (left)
-            RenderUtils.drawTexturedRectBatched(x + 43, y +  7, 169, 143,   7,  79, zLevel, buffer); // right (bottom)
-            RenderUtils.drawTexturedRectBatched(x +  7, y +  7,   7,  17,  36,  72, zLevel, buffer); // 2x4 slots
+            RenderUtils.renderTexturedRectangleBatched(x     , y     ,   0,   0,   7,  79, zLevel, buffer); // left (top)
+            RenderUtils.renderTexturedRectangleBatched(x +  7, y     , 133,   0,  43,   7, zLevel, buffer); // top (right)
+            RenderUtils.renderTexturedRectangleBatched(x     , y + 79,   0, 215,  43,   7, zLevel, buffer); // bottom (left)
+            RenderUtils.renderTexturedRectangleBatched(x + 43, y +  7, 169, 143,   7,  79, zLevel, buffer); // right (bottom)
+            RenderUtils.renderTexturedRectangleBatched(x +  7, y +  7,   7,  17,  36,  72, zLevel, buffer); // 2x4 slots
         }
         else if (type == InventoryRenderType.FIXED_27)
         {
@@ -116,22 +116,22 @@ public class InventoryOverlay
             int bgw = Math.min(totalSlots, slotsPerRow) * 18 + 7;
             int bgh = rows * 18 + 7;
 
-            RenderUtils.drawTexturedRectBatched(x      , y      ,         0,         0,   7, bgh, zLevel, buffer); // left (top)
-            RenderUtils.drawTexturedRectBatched(x +   7, y      , 176 - bgw,         0, bgw,   7, zLevel, buffer); // top (right)
-            RenderUtils.drawTexturedRectBatched(x      , y + bgh,         0,       215, bgw,   7, zLevel, buffer); // bottom (left)
-            RenderUtils.drawTexturedRectBatched(x + bgw, y +   7,       169, 222 - bgh,   7, bgh, zLevel, buffer); // right (bottom)
+            RenderUtils.renderTexturedRectangleBatched(x      , y      ,         0,         0,   7, bgh, zLevel, buffer); // left (top)
+            RenderUtils.renderTexturedRectangleBatched(x +   7, y      , 176 - bgw,         0, bgw,   7, zLevel, buffer); // top (right)
+            RenderUtils.renderTexturedRectangleBatched(x      , y + bgh,         0,       215, bgw,   7, zLevel, buffer); // bottom (left)
+            RenderUtils.renderTexturedRectangleBatched(x + bgw, y +   7,       169, 222 - bgh,   7, bgh, zLevel, buffer); // right (bottom)
 
             for (int row = 0; row < rows; row++)
             {
                 int rowLen = MathHelper.clamp(totalSlots - (row * slotsPerRow), 1, slotsPerRow);
-                RenderUtils.drawTexturedRectBatched(x + 7, y + row * 18 + 7, 7, 17, rowLen * 18, 18, zLevel, buffer);
+                RenderUtils.renderTexturedRectangleBatched(x + 7, y + row * 18 + 7, 7, 17, rowLen * 18, 18, zLevel, buffer);
 
                 // Render the background for the last non-existing slots on the last row,
                 // in two strips of the background texture from the double chest texture's top part.
                 if (rows > 1 && rowLen < slotsPerRow)
                 {
-                    RenderUtils.drawTexturedRectBatched(x + rowLen * 18 + 7, y + row * 18 +  7, 7, 3, (slotsPerRow - rowLen) * 18, 9, zLevel, buffer);
-                    RenderUtils.drawTexturedRectBatched(x + rowLen * 18 + 7, y + row * 18 + 16, 7, 3, (slotsPerRow - rowLen) * 18, 9, zLevel, buffer);
+                    RenderUtils.renderTexturedRectangleBatched(x + rowLen * 18 + 7, y + row * 18 +  7, 7, 3, (slotsPerRow - rowLen) * 18, 9, zLevel, buffer);
+                    RenderUtils.renderTexturedRectangleBatched(x + rowLen * 18 + 7, y + row * 18 + 16, 7, 3, (slotsPerRow - rowLen) * 18, 9, zLevel, buffer);
                 }
             }
         }
@@ -142,21 +142,21 @@ public class InventoryOverlay
     public static void renderInventoryBackground27(int x, int y, int zLevel, BufferBuilder buffer, Minecraft mc)
     {
         RenderUtils.bindTexture(TEXTURE_SINGLE_CHEST);
-        RenderUtils.drawTexturedRectBatched(x      , y     ,   0,   0,   7,  61, zLevel, buffer); // left (top)
-        RenderUtils.drawTexturedRectBatched(x +   7, y     ,   7,   0, 169,   7, zLevel, buffer); // top (right)
-        RenderUtils.drawTexturedRectBatched(x      , y + 61,   0, 159, 169,   7, zLevel, buffer); // bottom (left)
-        RenderUtils.drawTexturedRectBatched(x + 169, y +  7, 169, 105,   7,  61, zLevel, buffer); // right (bottom)
-        RenderUtils.drawTexturedRectBatched(x +   7, y +  7,   7,  17, 162,  54, zLevel, buffer); // middle
+        RenderUtils.renderTexturedRectangleBatched(x      , y     ,   0,   0,   7,  61, zLevel, buffer); // left (top)
+        RenderUtils.renderTexturedRectangleBatched(x +   7, y     ,   7,   0, 169,   7, zLevel, buffer); // top (right)
+        RenderUtils.renderTexturedRectangleBatched(x      , y + 61,   0, 159, 169,   7, zLevel, buffer); // bottom (left)
+        RenderUtils.renderTexturedRectangleBatched(x + 169, y +  7, 169, 105,   7,  61, zLevel, buffer); // right (bottom)
+        RenderUtils.renderTexturedRectangleBatched(x +   7, y +  7,   7,  17, 162,  54, zLevel, buffer); // middle
     }
 
     public static void renderInventoryBackground54(int x, int y, int zLevel, BufferBuilder buffer, Minecraft mc)
     {
         RenderUtils.bindTexture(TEXTURE_DOUBLE_CHEST);
-        RenderUtils.drawTexturedRectBatched(x      , y      ,   0,   0,   7, 115, zLevel, buffer); // left (top)
-        RenderUtils.drawTexturedRectBatched(x +   7, y      ,   7,   0, 169,   7, zLevel, buffer); // top (right)
-        RenderUtils.drawTexturedRectBatched(x      , y + 115,   0, 215, 169,   7, zLevel, buffer); // bottom (left)
-        RenderUtils.drawTexturedRectBatched(x + 169, y +   7, 169, 107,   7, 115, zLevel, buffer); // right (bottom)
-        RenderUtils.drawTexturedRectBatched(x +   7, y +   7,   7,  17, 162, 108, zLevel, buffer); // middle
+        RenderUtils.renderTexturedRectangleBatched(x      , y      ,   0,   0,   7, 115, zLevel, buffer); // left (top)
+        RenderUtils.renderTexturedRectangleBatched(x +   7, y      ,   7,   0, 169,   7, zLevel, buffer); // top (right)
+        RenderUtils.renderTexturedRectangleBatched(x      , y + 115,   0, 215, 169,   7, zLevel, buffer); // bottom (left)
+        RenderUtils.renderTexturedRectangleBatched(x + 169, y +   7, 169, 107,   7, 115, zLevel, buffer); // right (bottom)
+        RenderUtils.renderTexturedRectangleBatched(x +   7, y +   7,   7,  17, 162, 108, zLevel, buffer); // middle
     }
 
     public static void renderEquipmentOverlayBackground(int x, int y, int zLevel, EntityLivingBase entity)
@@ -169,19 +169,19 @@ public class InventoryOverlay
 
         RenderUtils.bindTexture(TEXTURE_DISPENSER);
 
-        RenderUtils.drawTexturedRectBatched(x     , y     ,   0,   0, 50, 83, zLevel, buffer); // top-left (main part)
-        RenderUtils.drawTexturedRectBatched(x + 50, y     , 173,   0,  3, 83, zLevel, buffer); // right edge top
-        RenderUtils.drawTexturedRectBatched(x     , y + 83,   0, 163, 50,  3, zLevel, buffer); // bottom edge left
-        RenderUtils.drawTexturedRectBatched(x + 50, y + 83, 173, 163,  3,  3, zLevel, buffer); // bottom right corner
+        RenderUtils.renderTexturedRectangleBatched(x     , y     ,   0,   0, 50, 83, zLevel, buffer); // top-left (main part)
+        RenderUtils.renderTexturedRectangleBatched(x + 50, y     , 173,   0,  3, 83, zLevel, buffer); // right edge top
+        RenderUtils.renderTexturedRectangleBatched(x     , y + 83,   0, 163, 50,  3, zLevel, buffer); // bottom edge left
+        RenderUtils.renderTexturedRectangleBatched(x + 50, y + 83, 173, 163,  3,  3, zLevel, buffer); // bottom right corner
 
         for (int i = 0, xOff = 7, yOff = 7; i < 4; ++i, yOff += 18)
         {
-            RenderUtils.drawTexturedRectBatched(x + xOff, y + yOff, 61, 16, 18, 18, zLevel, buffer);
+            RenderUtils.renderTexturedRectangleBatched(x + xOff, y + yOff, 61, 16, 18, 18, zLevel, buffer);
         }
 
         // Main hand and offhand
-        RenderUtils.drawTexturedRectBatched(x + 28, y + 2 * 18 + 7, 61, 16, 18, 18, zLevel, buffer);
-        RenderUtils.drawTexturedRectBatched(x + 28, y + 3 * 18 + 7, 61, 16, 18, 18, zLevel, buffer);
+        RenderUtils.renderTexturedRectangleBatched(x + 28, y + 2 * 18 + 7, 61, 16, 18, 18, zLevel, buffer);
+        RenderUtils.renderTexturedRectangleBatched(x + 28, y + 3 * 18 + 7, 61, 16, 18, 18, zLevel, buffer);
 
         tessellator.draw();
 

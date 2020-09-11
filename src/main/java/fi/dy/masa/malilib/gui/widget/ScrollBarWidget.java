@@ -279,7 +279,7 @@ public class ScrollBarWidget extends BaseWidget
 
         if (this.renderScrollbarBackgroundColor)
         {
-            RenderUtils.drawRect(x, y, width, height, this.backgroundColor, z);
+            RenderUtils.renderRectangle(x, y, width, height, this.backgroundColor, z);
         }
 
         if (totalHeight > 0)
@@ -315,12 +315,12 @@ public class ScrollBarWidget extends BaseWidget
                 int w = this.barTexture.getWidth();
                 int h = this.barTexture.getHeight();
 
-                RenderUtils.drawTexturedRect(x + 1, barPosition                , u, v        , w, barHeight - 2, z);
-                RenderUtils.drawTexturedRect(x + 1, barPosition + barHeight - 2, u, v + h - 2, w, 2            , z);
+                RenderUtils.renderTexturedRectangle(x + 1, barPosition                , u, v        , w, barHeight - 2, z);
+                RenderUtils.renderTexturedRectangle(x + 1, barPosition + barHeight - 2, u, v + h - 2, w, 2            , z);
             }
             else
             {
-                RenderUtils.drawRect(x + 1, barPosition, width - 2, barHeight, this.scrollBarColor, z);
+                RenderUtils.renderRectangle(x + 1, barPosition, width - 2, barHeight, this.scrollBarColor, z);
             }
 
             // FIXME?

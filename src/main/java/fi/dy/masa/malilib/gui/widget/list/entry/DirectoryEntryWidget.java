@@ -57,26 +57,26 @@ public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry
         // Draw a lighter background for the hovered and the selected entry
         if (selected)
         {
-            RenderUtils.drawRect(x, y, width, height, 0x70FFFFFF, z);
+            RenderUtils.renderRectangle(x, y, width, height, 0x70FFFFFF, z);
         }
         else if (isActiveGui && this.getId() == hoveredWidgetId)
         {
-            RenderUtils.drawRect(x, y, width, height, 0x60FFFFFF, z);
+            RenderUtils.renderRectangle(x, y, width, height, 0x60FFFFFF, z);
         }
         else if (this.isOdd)
         {
-            RenderUtils.drawRect(x, y, width, height, 0x20FFFFFF, z);
+            RenderUtils.renderRectangle(x, y, width, height, 0x20FFFFFF, z);
         }
         // Draw a slightly lighter background for even entries
         else
         {
-            RenderUtils.drawRect(x, y, width, height, 0x38FFFFFF, z);
+            RenderUtils.renderRectangle(x, y, width, height, 0x38FFFFFF, z);
         }
 
         // Draw an outline if this is the currently selected entry
         if (selected)
         {
-            RenderUtils.drawOutline(x, y, width, height, 1, 0xEEEEEEEE, z);
+            RenderUtils.renderOutline(x, y, width, height, 1, 0xEEEEEEEE, z);
         }
 
         if (icon != null)

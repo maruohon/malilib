@@ -80,21 +80,21 @@ public class KeybindSettingsWidget extends BaseWidget
 
         int edgeColor = this.keyBind.areSettingsModified() ? 0xFFFFBB33 : 0xFFFFFFFF;
 
-        RenderUtils.drawRect(x    , y    , 20, 20, edgeColor, z);
-        RenderUtils.drawRect(x + 1, y + 1, 18, 18, 0xFF000000, z);
+        RenderUtils.renderRectangle(x    , y    , 20, 20, edgeColor, z);
+        RenderUtils.renderRectangle(x + 1, y + 1, 18, 18, 0xFF000000, z);
 
         x += 1;
         y += 1;
 
         RenderUtils.color(1f, 1f, 1f, 1f);
 
-        RenderUtils.drawTexturedRect(x, y,  0, v1, w, w, z);
-        RenderUtils.drawTexturedRect(x, y, 18, v2, w, w, z);
-        RenderUtils.drawTexturedRect(x, y, 36, v3, w, w, z);
-        RenderUtils.drawTexturedRect(x, y, 54, v4, w, w, z);
-        RenderUtils.drawTexturedRect(x, y, 72, v5, w, w, z);
-        RenderUtils.drawTexturedRect(x, y, 90, v6, w, w, z);
-        RenderUtils.drawTexturedRect(x, y,  0, v7, w, w, z);
+        RenderUtils.renderTexturedRectangle(x, y, 0, v1, w, w, z);
+        RenderUtils.renderTexturedRectangle(x, y, 18, v2, w, w, z);
+        RenderUtils.renderTexturedRectangle(x, y, 36, v3, w, w, z);
+        RenderUtils.renderTexturedRectangle(x, y, 54, v4, w, w, z);
+        RenderUtils.renderTexturedRectangle(x, y, 72, v5, w, w, z);
+        RenderUtils.renderTexturedRectangle(x, y, 90, v6, w, w, z);
+        RenderUtils.renderTexturedRectangle(x, y, 0, v7, w, w, z);
     }
 
     @Override
@@ -132,7 +132,7 @@ public class KeybindSettingsWidget extends BaseWidget
 
         Collections.addAll(text, parts);
 
-        RenderUtils.drawHoverText(mouseX + 10, mouseY, this.getZLevel() + 0.5f, text);
+        RenderUtils.renderHoverText(mouseX + 10, mouseY, this.getZLevel() + 0.5f, text);
     }
 
     private void addBooleanOptionText(List<String> lines, String translationKey, boolean value, boolean defaultValue)

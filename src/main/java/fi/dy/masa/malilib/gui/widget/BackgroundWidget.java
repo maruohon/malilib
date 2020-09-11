@@ -129,12 +129,12 @@ public class BackgroundWidget extends BaseWidget
             int b2 = bw * 2;
 
             // Horizontal lines/borders
-            RenderUtils.drawRect(x, y         , w, bw, this.borderColorUL, z);
-            RenderUtils.drawRect(x, y + h - bw, w, bw, this.borderColorBR, z);
+            RenderUtils.renderRectangle(x, y         , w, bw, this.borderColorUL, z);
+            RenderUtils.renderRectangle(x, y + h - bw, w, bw, this.borderColorBR, z);
 
             // Vertical lines/borders
-            RenderUtils.drawRect(x         , y + bw, bw, h - b2, this.borderColorUL, z);
-            RenderUtils.drawRect(x + w - bw, y + bw, bw, h - b2, this.borderColorBR, z);
+            RenderUtils.renderRectangle(x         , y + bw, bw, h - b2, this.borderColorUL, z);
+            RenderUtils.renderRectangle(x + w - bw, y + bw, bw, h - b2, this.borderColorBR, z);
         }
     }
 
@@ -151,7 +151,7 @@ public class BackgroundWidget extends BaseWidget
             // Background
             hovered = (hovered || (isActiveGui && this.isMouseOver(mouseX, mouseY)));
             int color = this.renderHoverBackground && hovered ? this.backgroundColorHovered : this.backgroundColor;
-            RenderUtils.drawRect(x + bw, y + bw, width - b2, height - b2, color, z);
+            RenderUtils.renderRectangle(x + bw, y + bw, width - b2, height - b2, color, z);
         }
     }
 }

@@ -66,7 +66,7 @@ public class BaseDialogScreen extends BaseScreen
     @Override
     protected void drawScreenBackground(int mouseX, int mouseY)
     {
-        RenderUtils.drawOutlinedBox(this.dialogLeft, this.dialogTop, this.dialogWidth, this.dialogHeight, 0xF0000000, COLOR_HORIZONTAL_BAR, (int) this.zLevel);
+        RenderUtils.renderOutlinedBox(this.dialogLeft, this.dialogTop, this.dialogWidth, this.dialogHeight, 0xF0000000, COLOR_HORIZONTAL_BAR, (int) this.zLevel);
     }
 
     @Override

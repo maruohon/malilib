@@ -59,7 +59,7 @@ public class ToastWidget extends BaseWidget
         RenderUtils.color(1f, 1f, 1f, 1f);
         this.bindTexture(TEXTURE);
 
-        RenderUtils.draw9SplicedTexture(x, y, 0, 0, this.getWidth(), this.getHeight(), 256, 32, 6, this.getZLevel());
+        RenderUtils.renderNineSplicedTexture(x, y, 0, 0, this.getWidth(), this.getHeight(), 256, 32, 6, this.getZLevel());
 
         RenderUtils.renderText(x + 10, y + 8, 0xFFFFFFFF, this.text);
     }

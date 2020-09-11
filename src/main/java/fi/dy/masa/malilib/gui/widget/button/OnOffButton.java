@@ -140,8 +140,8 @@ public class OnOffButton extends GenericButton
 
             this.bindTexture(icon.getTexture());
 
-            RenderUtils.drawTexturedRect(sliderX, y + 1              , u, v1, iconWidth, iconHeight1, z);
-            RenderUtils.drawTexturedRect(sliderX, y + 1 + iconHeight1, u, v2, iconWidth, iconHeight2, z);
+            RenderUtils.renderTexturedRectangle(sliderX, y + 1              , u, v1, iconWidth, iconHeight1, z);
+            RenderUtils.renderTexturedRectangle(sliderX, y + 1 + iconHeight1, u, v2, iconWidth, iconHeight2, z);
         }
         else
         {

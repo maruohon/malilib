@@ -65,7 +65,7 @@ public abstract class SortableListEntryWidget<TYPE> extends BaseDataListEntryWid
             int xStart = this.getColumnPosX(i);
             int xEnd = this.getColumnPosX(i + 1);
 
-            RenderUtils.drawOutline(xStart - 3, y + 1, xEnd - xStart - 2, height - 2, 1, outlineColor, this.getZLevel());
+            RenderUtils.renderOutline(xStart - 3, y + 1, xEnd - xStart - 2, height - 2, 1, outlineColor, this.getZLevel());
         }
     }
 }

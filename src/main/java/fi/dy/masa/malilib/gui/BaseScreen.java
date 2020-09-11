@@ -635,11 +635,11 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
     {
         if (this.renderBorder)
         {
-            RenderUtils.drawOutlinedBox(this.x, this.y, this.screenWidth, this.screenHeight, this.backgroundColor, this.borderColor, this.zLevel);
+            RenderUtils.renderOutlinedBox(this.x, this.y, this.screenWidth, this.screenHeight, this.backgroundColor, this.borderColor, this.zLevel);
         }
         else
         {
-            RenderUtils.drawRect(this.x, this.y, this.screenWidth, this.screenHeight, this.backgroundColor, this.zLevel);
+            RenderUtils.renderRectangle(this.x, this.y, this.screenWidth, this.screenHeight, this.backgroundColor, this.zLevel);
         }
     }
 

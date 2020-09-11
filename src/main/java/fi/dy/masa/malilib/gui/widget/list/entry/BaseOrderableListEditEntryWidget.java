@@ -205,12 +205,12 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
 
         if (this.isOdd)
         {
-            RenderUtils.drawRect(x, y, this.getWidth(), this.getHeight(), 0x20FFFFFF, z);
+            RenderUtils.renderRectangle(x, y, this.getWidth(), this.getHeight(), 0x20FFFFFF, z);
         }
         // Draw a slightly lighter background for even entries
         else
         {
-            RenderUtils.drawRect(x, y, this.getWidth(), this.getHeight(), 0x30FFFFFF, z);
+            RenderUtils.renderRectangle(x, y, this.getWidth(), this.getHeight(), 0x30FFFFFF, z);
         }
 
         super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hoveredWidgetId);

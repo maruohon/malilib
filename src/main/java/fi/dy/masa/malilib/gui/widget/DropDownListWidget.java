@@ -662,7 +662,7 @@ public class DropDownListWidget<T> extends ContainerWidget
             int diffY = y - this.getY();
 
             RenderUtils.color(1f, 1f, 1f, 1f);
-            RenderUtils.drawOutlinedBox(x, this.dropdownTopY + diffY, this.getWidth(), this.dropdownHeight, 0xFF000000, this.borderColorOpen, z);
+            RenderUtils.renderOutlinedBox(x, this.dropdownTopY + diffY, this.getWidth(), this.dropdownHeight, 0xFF000000, this.borderColorOpen, z);
 
             if (this.searchOpen == false && MaLiLibConfigs.Info.DROP_DOWN_SEARCH_TIP.getBooleanValue())
             {
@@ -671,7 +671,7 @@ public class DropDownListWidget<T> extends ContainerWidget
                 int ty = this.searchField.getY();
                 int sw = this.getStringWidth(text);
 
-                RenderUtils.drawOutlinedBox(tx, ty, sw + 10, 16, 0xFF000000, 0xFFFFFF20, z);
+                RenderUtils.renderOutlinedBox(tx, ty, sw + 10, 16, 0xFF000000, 0xFFFFFF20, z);
                 this.drawString(tx + 4, ty + 4, z + 0.1f, 0xFFFFC000, text);
             }
         }
