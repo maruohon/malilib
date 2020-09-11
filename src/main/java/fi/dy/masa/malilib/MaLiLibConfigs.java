@@ -12,6 +12,7 @@ import fi.dy.masa.malilib.config.option.IntegerConfig;
 import fi.dy.masa.malilib.config.option.OptionListConfig;
 import fi.dy.masa.malilib.config.value.HudAlignment;
 import fi.dy.masa.malilib.config.value.KeybindDisplayMode;
+import fi.dy.masa.malilib.gui.widget.ConfigsSearchBarWidget.Scope;
 import fi.dy.masa.malilib.input.KeyAction;
 import fi.dy.masa.malilib.input.KeyBindSettings;
 
@@ -19,6 +20,7 @@ public class MaLiLibConfigs implements ModConfig
 {
     public static class Generic
     {
+        public static final OptionListConfig<Scope> CONFIG_SEARCH_DEFAULT_SCOPE         = new OptionListConfig<>("configSearchDefaultScope", Scope.ALL_CATEGORIES);
         public static final OptionListConfig<KeybindDisplayMode> KEYBIND_DISPLAY        = new OptionListConfig<>("keybindDisplay", KeybindDisplayMode.NONE);
         public static final OptionListConfig<HudAlignment> KEYBIND_DISPLAY_ALIGNMENT    = new OptionListConfig<>("keybindDisplayAlignment", HudAlignment.BOTTOM_RIGHT);
 
@@ -29,6 +31,7 @@ public class MaLiLibConfigs implements ModConfig
         public static final HotkeyConfig OPEN_GUI_CONFIGS               = new HotkeyConfig("openGuiConfigs", "A,C");
 
         public static final ImmutableList<ConfigOption<?>> OPTIONS = ImmutableList.of(
+                CONFIG_SEARCH_DEFAULT_SCOPE,
                 IGNORED_KEYS,
                 KEYBIND_DISPLAY,
                 KEYBIND_DISPLAY_ALIGNMENT,

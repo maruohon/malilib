@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import com.google.common.collect.ImmutableList;
+import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.config.value.BaseConfigOptionListEntry;
 import fi.dy.masa.malilib.config.value.ConfigOptionListEntry;
@@ -63,8 +64,9 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
         this.resetConfigsButton.setActionListener((btn, mbtn) -> BaseScreen.openPopupGui(confirmScreen));
 
         this.sourceSelectionDropdown = new DropDownListWidget<>(x, y - 16, -1, 15, 60, 10, Scope.VALUES, Scope::getDisplayName, null);
-        this.sourceSelectionDropdown.setSelectedEntry(Scope.ALL_CATEGORIES);
+        this.sourceSelectionDropdown.setSelectedEntry(MaLiLibConfigs.Generic.CONFIG_SEARCH_DEFAULT_SCOPE.getOptionListValue());
         this.sourceSelectionDropdown.setSelectionListener((s) -> filterChangeListener.onEvent());
+        this.sourceSelectionDropdown.setOpenStateHoverText(StringUtils.translate("malilib.gui.label.hover.config_search_default_scope"));
 
         this.typeFilterDropdown = new DropDownListWidget<>(x + 100, y - 16, -1, 15, 160, 10, TypeFilter.VALUES, TypeFilter::getDisplayName, null);
         this.typeFilterDropdown.setSelectedEntry(TypeFilter.ALL);

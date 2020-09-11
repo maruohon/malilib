@@ -162,6 +162,15 @@ public class DropDownListWidget<T> extends ContainerWidget
         this.borderColorOpen = color;
     }
 
+    /**
+     * Sets a hover text that will only be rendered when hovering over the
+     * selection bar, and the dropdown widget is open.
+     */
+    public void setOpenStateHoverText(@Nullable String hoverText)
+    {
+        this.selectionBarWidget.openStateHoverText = hoverText;
+    }
+
     @Nullable
     public BaseWidget createIconWidgetForEntry(int x, int y, int height, T entry)
     {
@@ -683,8 +692,9 @@ public class DropDownListWidget<T> extends ContainerWidget
     {
         protected final DropDownListWidget<T> dropdownWidget;
         protected final IconWidget openCloseIconWidget;
-        @Nullable protected BaseWidget iconWidget;
         protected String displayString;
+        @Nullable protected BaseWidget iconWidget;
+        @Nullable protected String openStateHoverText;
         protected int displayStringWidth;
         protected int nonTextWidth;
         protected int textColor;
@@ -820,6 +830,17 @@ public class DropDownListWidget<T> extends ContainerWidget
                 }
 
                 widget.renderAt(wx, wy, wz, mouseX, mouseY, isActiveGui, hoveredWidgetId);
+            }
+        }
+
+        @Override
+        public void postRenderHovered(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
+        {
+            super.postRenderHovered(mouseX, mouseY, isActiveGui, hoveredWidgetId);
+
+            if (this.dropdownWidget.isOpen() && this.openStateHoverText != null)
+            {
+                RenderUtils.renderHoverText(mouseX + 4, mouseY + 4, this.getZLevel() + 50, this.openStateHoverText);
             }
         }
 
