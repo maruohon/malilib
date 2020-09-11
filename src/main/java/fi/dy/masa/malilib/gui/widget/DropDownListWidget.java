@@ -679,6 +679,13 @@ public class DropDownListWidget<T> extends ContainerWidget
                 int tx = this.searchField.getX();
                 int ty = this.searchField.getY();
                 int sw = this.getStringWidth(text);
+                int right = tx + sw + 10;
+                int windowWidth = GuiUtils.getScaledWindowWidth();
+
+                if (right > windowWidth)
+                {
+                    tx -= (right - windowWidth);
+                }
 
                 RenderUtils.renderOutlinedBox(tx, ty, sw + 10, 16, 0xFF000000, 0xFFFFFF20, z);
                 this.drawString(tx + 4, ty + 4, z + 0.1f, 0xFFFFC000, text);
