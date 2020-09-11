@@ -122,11 +122,14 @@ malilib.gui.label.config_scope.all_mods=From all mods (using MaLiLib)
 malilib.gui.label.config_scope.current_category=From current category
 
 malilib.gui.label.config_type_filter.all=Everything
-malilib.gui.label.config_type_filter.modified=Modified settings
+malilib.gui.label.config_type_filter.modified=Modified config options
 malilib.gui.label.config_type_filter.enabled_toggle=Enabled toggle options
+malilib.gui.label.config_type_filter.disabled_toggle=Disabled toggle options
 malilib.gui.label.config_type_filter.modified_toggle=Modified toggle options
 malilib.gui.label.config_type_filter.any_hotkey=Any hotkeys
+malilib.gui.label.config_type_filter.bound_hotkey=Bound hotkeys
 malilib.gui.label.config_type_filter.modified_hotkey=Modified hotkeys
+malilib.gui.label.config_type_filter.unbound_hotkey=Unbound hotkeys
 
 malilib.gui.label.confirm_config_reset=Are you sure you wan to reset all the configs matching the current search filters back to their default values?
 

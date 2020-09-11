@@ -19,12 +19,6 @@ public class ConfigSearchInfo<C extends ConfigInfo>
         this.hasHotkey = hasHotkey;
     }
 
-    public boolean getToggleStatus(C config)
-    {
-        BooleanConfig booleanConfig = this.booleanConfigGetter.apply(config);
-        return booleanConfig != null && booleanConfig.getBooleanValue();
-    }
-
     @Nullable
     public BooleanConfig getBooleanConfig(C config)
     {
@@ -37,6 +31,74 @@ public class ConfigSearchInfo<C extends ConfigInfo>
         return this.keyBindGetter.apply(config);
     }
 
+    public boolean hasEnabledToggle(C config)
+    {
+        if (this.hasToggle)
+        {
+            BooleanConfig booleanConfig = this.booleanConfigGetter.apply(config);
+            return booleanConfig != null && booleanConfig.getBooleanValue();
+        }
+
+        return false;
+    }
+
+    public boolean hasDisabledToggle(C config)
+    {
+        if (this.hasToggle)
+        {
+            BooleanConfig booleanConfig = this.booleanConfigGetter.apply(config);
+            return booleanConfig != null && booleanConfig.getBooleanValue() == false;
+        }
+
+        return false;
+    }
+
+    public boolean hasModifiedToggle(C config)
+    {
+        if (this.hasToggle)
+        {
+            BooleanConfig booleanConfig = this.booleanConfigGetter.apply(config);
+            // Can't use isModified() here, because it may be checking other
+            // things as well, such as in HotkeyedBooleanConfig
+            return booleanConfig != null && booleanConfig.getBooleanValue() != booleanConfig.getDefaultBooleanValue();
+        }
+
+        return false;
+    }
+
+    public boolean hasModifiedHotkey(C config)
+    {
+        if (this.hasHotkey)
+        {
+            KeyBind keyBind = this.keyBindGetter.apply(config);
+            return keyBind != null && keyBind.isModified();
+        }
+
+        return false;
+    }
+
+    public boolean hasBoundHotkey(C config)
+    {
+        if (this.hasHotkey)
+        {
+            KeyBind keyBind = this.keyBindGetter.apply(config);
+            return keyBind != null && keyBind.getKeys().isEmpty() == false;
+        }
+
+        return false;
+    }
+
+    public boolean hasUnboundHotkey(C config)
+    {
+        if (this.hasHotkey)
+        {
+            KeyBind keyBind = this.keyBindGetter.apply(config);
+            return keyBind != null && keyBind.getKeys().isEmpty();
+        }
+
+        return false;
+    }
+
     public ConfigSearchInfo<C> setBooleanConfigGetter(Function<C, BooleanConfig> getter)
     {
         this.booleanConfigGetter = getter;
@@ -47,10 +109,5 @@ public class ConfigSearchInfo<C extends ConfigInfo>
     {
         this.keyBindGetter = getter;
         return this;
-    }
-
-    public interface ToggleStatusGetter<C>
-    {
-        boolean getToggleStatus(C config);
     }
 }

@@ -1,5 +1,7 @@
 package fi.dy.masa.malilib.gui.widget;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import com.google.common.collect.ImmutableList;
@@ -64,7 +66,7 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
         this.sourceSelectionDropdown.setSelectedEntry(Scope.ALL_CATEGORIES);
         this.sourceSelectionDropdown.setSelectionListener((s) -> filterChangeListener.onEvent());
 
-        this.typeFilterDropdown = new DropDownListWidget<>(x + 100, y - 16, -1, 15, 120, 10, TypeFilter.VALUES, TypeFilter::getDisplayName, null);
+        this.typeFilterDropdown = new DropDownListWidget<>(x + 100, y - 16, -1, 15, 160, 10, TypeFilter.VALUES, TypeFilter::getDisplayName, null);
         this.typeFilterDropdown.setSelectedEntry(TypeFilter.ALL);
         this.typeFilterDropdown.setSelectionListener((s) -> filterChangeListener.onEvent());
     }
@@ -130,15 +132,15 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
     public boolean hasFilter()
     {
         return super.hasFilter() || (this.isSearchOpen() &&
-                                             (this.searchKey.getKeys().size() > 0 ||
-                                              this.typeFilterDropdown.getSelectedEntry() != TypeFilter.ALL));
+                                     (this.searchKey.getKeys().size() > 0 ||
+                                      this.typeFilterDropdown.getSelectedEntry() != TypeFilter.ALL));
     }
 
-    public <C extends ConfigInfo> boolean passesFilter(C config)
+    public boolean passesFilter(ConfigInfo config)
     {
         if (this.isSearchOpen())
         {
-            @Nullable ConfigSearchInfo<C> info = ConfigTypeRegistry.INSTANCE.getSearchInfo(config);
+            @Nullable ConfigSearchInfo<ConfigInfo> info = ConfigTypeRegistry.INSTANCE.getSearchInfo(config);
 
             if (this.searchKey.getKeys().size() > 0)
             {
@@ -156,39 +158,7 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
             }
 
             TypeFilter type = this.typeFilterDropdown.getSelectedEntry();
-
-            if (type != TypeFilter.ALL)
-            {
-                if (type == TypeFilter.MODIFIED)
-                {
-                    return config.isModified();
-                }
-
-                if (info == null)
-                {
-                    return false;
-                }
-
-                if (type == TypeFilter.MODIFIED_TOGGLE)
-                {
-                    return info.hasToggle && info.getBooleanConfig(config).isModified();
-                }
-
-                if (type == TypeFilter.MODIFIED_HOTKEY)
-                {
-                    return info.hasHotkey && info.getKeyBind(config).isModified();
-                }
-
-                if (type == TypeFilter.ENABLED_TOGGLE)
-                {
-                    return info.hasToggle && info.getToggleStatus(config);
-                }
-
-                if (type == TypeFilter.ANY_HOTKEY)
-                {
-                    return info.hasHotkey;
-                }
-            }
+            return type == null || type.matches(info, config);
         }
 
         return true;
@@ -279,22 +249,27 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
         }
     }
 
-    public enum TypeFilter implements ConfigOptionListEntry<TypeFilter>
+    public static class TypeFilter implements ConfigOptionListEntry<TypeFilter>
     {
-        ALL             ("malilib.gui.label.config_type_filter.all"),
-        MODIFIED        ("malilib.gui.label.config_type_filter.modified"),
-        ENABLED_TOGGLE  ("malilib.gui.label.config_type_filter.enabled_toggle"),
-        MODIFIED_TOGGLE ("malilib.gui.label.config_type_filter.modified_toggle"),
-        ANY_HOTKEY      ("malilib.gui.label.config_type_filter.any_hotkey"),
-        MODIFIED_HOTKEY ("malilib.gui.label.config_type_filter.modified_hotkey");
+        public static final List<TypeFilter> VALUES = new ArrayList<>();
 
-        public static final ImmutableList<TypeFilter> VALUES = ImmutableList.copyOf(values());
+        public static final TypeFilter ALL             = register("malilib.gui.label.config_type_filter.all",                (i, c) -> true);
+        public static final TypeFilter MODIFIED        = register("malilib.gui.label.config_type_filter.modified",           (i, c) -> c.isModified());
+        public static final TypeFilter MODIFIED_TOGGLE = register("malilib.gui.label.config_type_filter.modified_toggle",    (i, c) -> i != null && i.hasModifiedToggle(c));
+        public static final TypeFilter ENABLED_TOGGLE  = register("malilib.gui.label.config_type_filter.enabled_toggle",     (i, c) -> i != null && i.hasEnabledToggle(c));
+        public static final TypeFilter DISABLED_TOGGLE = register("malilib.gui.label.config_type_filter.disabled_toggle",    (i, c) -> i != null && i.hasDisabledToggle(c));
+        public static final TypeFilter ANY_HOTKEY      = register("malilib.gui.label.config_type_filter.any_hotkey",         (i, c) -> i != null && i.hasHotkey);
+        public static final TypeFilter MODIFIED_HOTKEY = register("malilib.gui.label.config_type_filter.modified_hotkey",    (i, c) -> i != null && i.hasModifiedHotkey(c));
+        public static final TypeFilter BOUND_HOTKEY    = register("malilib.gui.label.config_type_filter.bound_hotkey",       (i, c) -> i != null && i.hasBoundHotkey(c));
+        public static final TypeFilter UNBOUND_HOTKEY  = register("malilib.gui.label.config_type_filter.unbound_hotkey",     (i, c) -> i != null && i.hasUnboundHotkey(c));
 
         private final String translationKey;
+        private final TypeFilterTest tester;
 
-        TypeFilter(String translationKey)
+        public TypeFilter(String translationKey, TypeFilterTest tester)
         {
             this.translationKey = translationKey;
+            this.tester = tester;
         }
 
         @Override
@@ -309,10 +284,15 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
             return StringUtils.translate(this.translationKey);
         }
 
+        public boolean matches(@Nullable ConfigSearchInfo<ConfigInfo> info, ConfigInfo config)
+        {
+            return this.tester.test(info, config);
+        }
+
         @Override
         public TypeFilter cycle(boolean forward)
         {
-            return BaseConfigOptionListEntry.cycleValue(VALUES, this.ordinal(), forward);
+            return BaseConfigOptionListEntry.cycleValue(VALUES, VALUES.indexOf(this), forward);
         }
 
         @Override
@@ -320,5 +300,17 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
         {
             return BaseConfigOptionListEntry.findValueByName(name, VALUES);
         }
+
+        public static TypeFilter register(String translationKey, TypeFilterTest tester)
+        {
+            TypeFilter filter = new TypeFilter(translationKey, tester);
+            VALUES.add(filter);
+            return filter;
+        }
+    }
+
+    public interface TypeFilterTest
+    {
+        boolean test(ConfigSearchInfo<ConfigInfo> info, ConfigInfo config);
     }
 }

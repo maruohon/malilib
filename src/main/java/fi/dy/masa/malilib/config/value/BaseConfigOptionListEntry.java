@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.config.value;
 
 import java.util.List;
 import com.google.common.collect.ImmutableList;
+import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class BaseConfigOptionListEntry<T extends BaseConfigOptionListEntry<T>> implements ConfigOptionListEntry<T>
@@ -68,7 +69,8 @@ public class BaseConfigOptionListEntry<T extends BaseConfigOptionListEntry<T>> i
 
         if (index < 0)
         {
-            throw new RuntimeException(String.format("Invalid index %d when trying to cycle a config option list value", index));
+            index = 0;
+            MaLiLib.LOGGER.warn("Invalid index {} when trying to cycle a config option list value", index);
         }
 
         if (forward)
