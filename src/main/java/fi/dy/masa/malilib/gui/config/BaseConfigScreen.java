@@ -20,6 +20,7 @@ import fi.dy.masa.malilib.gui.widget.button.BaseButton;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.button.KeyBindConfigButton;
 import fi.dy.masa.malilib.gui.widget.list.ConfigOptionListWidget;
+import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? extends ConfigInfo>> implements KeybindEditingScreen
@@ -29,6 +30,7 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
     protected final List<ConfigTab> configTabs;
     protected final List<BaseButton> tabButtons = new ArrayList<>();
     protected final String modId;
+    @Nullable protected EventListener configSaveListener;
     @Nullable protected CyclableContainerWidget tabButtonContainerWidget;
     @Nullable protected ConfigTab defaultTab;
     @Nullable protected KeyBindConfigButton activeKeyBindButton;
@@ -56,6 +58,11 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
     public static ConfigScreenState getTabState(String modId)
     {
         return CURRENT_STATE.computeIfAbsent(modId, (id) -> new ConfigScreenState(null));
+    }
+
+    public void setConfigSaveListener(@Nullable EventListener configSaveListener)
+    {
+        this.configSaveListener = configSaveListener;
     }
 
     @Nullable
@@ -216,6 +223,11 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
     protected void onSettingsChanged()
     {
         KeyBindManager.INSTANCE.updateUsedKeys();
+
+        if (this.configSaveListener != null)
+        {
+            this.configSaveListener.onEvent();
+        }
     }
 
     @Override
