@@ -7,6 +7,7 @@ import java.util.Locale;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.ValueChangeCallback;
 import fi.dy.masa.malilib.config.ValueLoadedCallback;
+import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public abstract class BaseConfig<T> implements ConfigOption<T>
@@ -22,6 +23,8 @@ public abstract class BaseConfig<T> implements ConfigOption<T>
     protected ValueChangeCallback<T> valueChangeCallback;
     @Nullable
     protected ValueLoadedCallback<T> valueLoadCallback;
+    @Nullable
+    protected EventListener labelClickHandler;
 
     public BaseConfig(String name)
     {
@@ -165,6 +168,18 @@ public abstract class BaseConfig<T> implements ConfigOption<T>
     {
         this.commentArgs = args;
         return this;
+    }
+
+    @Override
+    @Nullable
+    public EventListener getLabelClickHandler()
+    {
+        return this.labelClickHandler;
+    }
+
+    public void setLabelClickHandler(EventListener clickHandler)
+    {
+        this.labelClickHandler = clickHandler;
     }
 
     @Override

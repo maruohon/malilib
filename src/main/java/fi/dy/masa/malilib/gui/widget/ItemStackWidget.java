@@ -46,6 +46,7 @@ public class ItemStackWidget extends BaseModelWidget
         widget.setBackgroundColor(0xFF505050);
         widget.setBackgroundColorHovered(0xFF505050);
         widget.setBackgroundEnabled(true);
+        widget.setRenderHoverBackground(true);
         return widget;
     }
 

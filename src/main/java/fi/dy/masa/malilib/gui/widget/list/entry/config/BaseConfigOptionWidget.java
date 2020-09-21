@@ -2,15 +2,17 @@ package fi.dy.masa.malilib.gui.widget.list.entry.config;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.config.option.FileConfig;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.DirectorySelectorScreen;
-import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
+import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.entry.BaseDataListEntryWidget;
+import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 
@@ -29,17 +31,35 @@ public abstract class BaseConfigOptionWidget<C extends ConfigInfo> extends BaseD
         this.ctx = ctx;
 
         String nameLabel = this.data.getDisplayName();
-        boolean showOwner = this.ctx.getListWidget().isShowingOptionsFromOtherCategories();
-
         String ownerLabel = this.ctx.getListWidget().getModNameAndCategoryPrefix(originalListIndex);
+        boolean showOwner = this.ctx.getListWidget().isShowingOptionsFromOtherCategories();
         this.configOwnerLabelWidget = new LabelWidget(x + 2, y + 2, 0xFF707070, ownerLabel != null ? ownerLabel : "");
+        this.configOwnerLabelWidget.setPaddingX(4);
 
         int lw = this.getMaxLabelWidth();
 
-        this.configNameLabelWidget = new LabelWidget(x + 2, y, lw, 22, 0xFFFFFFFF, nameLabel);
-        this.configNameLabelWidget.addHoverStrings(this.data.getComment());
+        this.configNameLabelWidget = new LabelWidget(x, y, lw, 22, 0xFFFFFFFF, nameLabel);
         this.configNameLabelWidget.setPaddingY(showOwner ? 12 : 7);
+        this.configNameLabelWidget.setPaddingX(4);
 
+        EventListener clickHandler = config.getLabelClickHandler();
+        String comment = config.getComment();
+        List<String> comments = new ArrayList<>();
+
+        if (clickHandler != null)
+        {
+            comments.add(StringUtils.translate("malilib.gui.label.config.hover.click_for_more_information"));
+            this.configNameLabelWidget.setClickListener(clickHandler);
+            this.configNameLabelWidget.setHoveredBorderColor(0xFF15D6F0);
+            this.configNameLabelWidget.setHoveredBorderWidth(1);
+        }
+
+        if (comment != null)
+        {
+            comments.add(comment);
+        }
+
+        this.configNameLabelWidget.addHoverStrings(comments);
         this.resetButton = new GenericButton(x, y, -1, 20, StringUtils.translate("malilib.gui.button.reset.caps"));
 
         this.setBackgroundColor(this.isOdd ? 0x70606060 : 0x70909090);

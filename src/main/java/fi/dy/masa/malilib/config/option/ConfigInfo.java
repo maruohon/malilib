@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.config.option;
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nullable;
+import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public interface ConfigInfo
@@ -64,6 +65,20 @@ public interface ConfigInfo
     }
 
     /**
+     * Returns a click handler for the config name label widget.
+     * If this returns a non-null value, then the hover info will
+     * by default get a prefix saying "Click for more information"
+     * and the label widget will get this event handler set as the click action.
+     * @return
+     */
+    @Nullable
+    default EventListener getLabelClickHandler()
+    {
+        return null;
+    }
+
+    /**
+     * 
      * Returns true if the value has been changed from the default value
      * @return
      */

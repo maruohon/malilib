@@ -119,6 +119,8 @@ malilib.gui.label.block_snap.none=None
 
 malilib.gui.label.color_editor.current_color=Current color:
 
+malilib.gui.label.config.hover.click_for_more_information=§b§oClick for more information
+
 malilib.gui.label.config_scope.all_categories=From all categories in this mod
 malilib.gui.label.config_scope.all_mods=From all mods (using MaLiLib)
 malilib.gui.label.config_scope.current_category=From current category

@@ -1,8 +1,14 @@
 package fi.dy.masa.malilib.gui.util;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Collection;
+import java.util.Locale;
+import java.util.Set;
 import javax.annotation.Nullable;
+import com.google.common.collect.Sets;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiConfirmOpenLink;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.player.EntityPlayer;
@@ -10,21 +16,25 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.config.value.HudAlignment;
 import fi.dy.masa.malilib.gui.BaseScreen;
-import fi.dy.masa.malilib.gui.widget.button.BaseButton;
-import fi.dy.masa.malilib.gui.widget.button.GenericButton;
-import fi.dy.masa.malilib.gui.widget.button.ButtonActionListener;
 import fi.dy.masa.malilib.gui.icon.BaseIcon;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.DoubleTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.IntegerTextFieldWidget;
-import fi.dy.masa.malilib.util.position.CoordinateValueModifier;
+import fi.dy.masa.malilib.gui.widget.button.BaseButton;
+import fi.dy.masa.malilib.gui.widget.button.ButtonActionListener;
+import fi.dy.masa.malilib.gui.widget.button.GenericButton;
+import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.util.PositionUtils.CoordinateType;
 import fi.dy.masa.malilib.util.StringUtils;
+import fi.dy.masa.malilib.util.position.CoordinateValueModifier;
 
 public class GuiUtils
 {
+    private static final Set<String> LINK_PROTOCOLS = Sets.newHashSet("http", "https");
+
     public static int getScaledWindowWidth()
     {
         ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
@@ -199,6 +209,73 @@ public class GuiUtils
         }
 
         return posY;
+    }
+
+    /**
+     * Creates a click handler that opens the given URL via the vanilla OPEN_LINK
+     * text component click handling.
+     */
+    public static EventListener createLabelClickHandlerForInfoUrl(String urlString)
+    {
+        return () -> tryOpenLink(urlString);
+    }
+
+    public static void tryOpenLink(String urlString)
+    {
+        try
+        {
+            Minecraft mc = Minecraft.getMinecraft();
+            URI uri = new URI(urlString);
+            String s = uri.getScheme();
+
+            if (s == null)
+            {
+                throw new URISyntaxException(urlString, "Missing protocol");
+            }
+
+            if (LINK_PROTOCOLS.contains(s.toLowerCase(Locale.ROOT)) == false)
+            {
+                throw new URISyntaxException(urlString, "Unsupported protocol: " + s.toLowerCase(Locale.ROOT));
+            }
+
+            final GuiScreen currentScreen = getCurrentScreen();
+
+            if (mc.gameSettings.chatLinksPrompt)
+            {
+                //BaseScreen.openGui(new ConfirmActionScreen(320, "", () -> openWebLink(uri), getCurrentScreen(), ""));
+                BaseScreen.openGui(new GuiConfirmOpenLink((result, id) -> {
+                    if (result && id == 31102009)
+                        openWebLink(uri);
+                    else
+                        BaseScreen.openGui(currentScreen);
+                    }, urlString, 31102009, false));
+            }
+            else
+            {
+                openWebLink(uri);
+            }
+        }
+        catch (URISyntaxException urisyntaxexception)
+        {
+            MaLiLib.LOGGER.error("Can't open url for {}", urlString, urisyntaxexception);
+        }
+    }
+
+    public static boolean openWebLink(URI uri)
+    {
+        try
+        {
+            Class<?> clazz = Class.forName("java.awt.Desktop");
+            Object object = clazz.getMethod("getDesktop").invoke(null);
+            clazz.getMethod("browse", URI.class).invoke(object, uri);
+            return true;
+        }
+        catch (Throwable t)
+        {
+            Throwable throwable = t.getCause();
+            MaLiLib.LOGGER.error("Couldn't open link: {}", (throwable == null ? "<UNKNOWN>" : throwable.getMessage()));
+            return false;
+        }
     }
 
     public static class ButtonListenerCoordinateInput implements ButtonActionListener

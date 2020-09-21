@@ -132,10 +132,12 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
 
             if (owner != null)
             {
-                this.maxLabelWidth = Math.max(this.maxLabelWidth, this.getStringWidth(owner));
+                this.maxLabelWidth = Math.max(this.maxLabelWidth, this.getStringWidth(owner) + 10);
             }
 
-            this.maxLabelWidth = Math.max(this.maxLabelWidth, this.getStringWidth(name));
+            // The +10 here compensates for the X padding of the label widgets,
+            // which is used because of the hover border used for the labels of configs with a click handler
+            this.maxLabelWidth = Math.max(this.maxLabelWidth, this.getStringWidth(name) + 10);
         }
 
         this.resetScrollbarPosition();

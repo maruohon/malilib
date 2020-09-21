@@ -112,6 +112,7 @@ public class DropDownListWidget<T> extends ContainerWidget
         this.selectionBarWidget = new SelectionBarWidget<>(x, y, width, height, this.textColor, this);
         this.selectionBarWidget.setZLevel(2);
         this.selectionBarWidget.setBackgroundColorHovered(0xFF202020);
+        this.selectionBarWidget.setRenderHoverBackground(true);
 
         this.searchField = new BaseTextFieldWidget(x, y - 16, width, 16);
         this.searchField.setUpdateListenerAlways(true);
@@ -882,9 +883,10 @@ public class DropDownListWidget<T> extends ContainerWidget
             this.textColor = textColor;
             this.setClickListener(this::onClicked);
 
-            this.backgroundColor = (listIndex & 0x1) != 0 ? 0xFF202020 : 0xFF404040;
-            this.backgroundColorHovered = 0xFF606060;
-            this.backgroundEnabled = true;
+            this.setBackgroundColor((listIndex & 0x1) != 0 ? 0xFF202020 : 0xFF404040);
+            this.setBackgroundColorHovered(0xFF606060);
+            this.setBackgroundEnabled(true);
+            this.setRenderHoverBackground(true);
 
             int iconWidth = 0;
 
