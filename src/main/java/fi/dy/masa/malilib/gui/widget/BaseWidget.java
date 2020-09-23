@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 import javax.annotation.Nullable;
 import org.lwjgl.opengl.GL11;
 import com.google.common.collect.ArrayListMultimap;
@@ -38,6 +39,7 @@ public abstract class BaseWidget
     private final int id;
     protected ImmutableList<String> combinedHoverStrings = ImmutableList.of();
     @Nullable protected EventListener clickListener;
+    @Nullable protected Consumer<Runnable> taskQueue;
     private int x;
     private int y;
     private int xRight;
@@ -273,6 +275,23 @@ public abstract class BaseWidget
     {
         this.setZLevel(parentZLevel + this.getSubWidgetZLevelIncrement());
         return this;
+    }
+
+    public void setTaskQueue(@Nullable Consumer<Runnable> taskQueue)
+    {
+        this.taskQueue = taskQueue;
+    }
+
+    /**
+     * Schedules a task to run after any widget iterations are finished, to not cause CMEs
+     * if the task needs to modify the data list or the widget list in some way.
+     */
+    protected void scheduleTask(Runnable task)
+    {
+        if (this.taskQueue != null)
+        {
+            this.taskQueue.accept(task);
+        }
     }
 
     public void setClickListener(@Nullable EventListener listener)

@@ -72,6 +72,6 @@ public class BaseDialogScreen extends BaseScreen
     @Override
     protected void drawTitle(int mouseX, int mouseY, float partialTicks)
     {
-        this.drawStringWithShadow(this.getTitle(), this.dialogLeft + 10, this.dialogTop + 6, COLOR_WHITE);
+        this.drawStringWithShadow(this.getTitle(), this.dialogLeft + 10, this.dialogTop + 6, 0xFFFFFFFF);
     }
 }

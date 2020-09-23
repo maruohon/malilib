@@ -12,6 +12,7 @@ import fi.dy.masa.malilib.render.RenderUtils;
 public abstract class ContainerWidget extends BackgroundWidget
 {
     protected final List<BaseWidget> subWidgets = new ArrayList<>();
+    protected final List<Runnable> tasks = new ArrayList<>();
 
     public ContainerWidget(int x, int y, int width, int height)
     {
@@ -103,6 +104,24 @@ public abstract class ContainerWidget extends BackgroundWidget
         return widget;
     }
 
+    private void addTask(Runnable task)
+    {
+        this.tasks.add(task);
+    }
+
+    protected void runTasks()
+    {
+        if (this.tasks.isEmpty() == false)
+        {
+            for (Runnable task : this.tasks)
+            {
+                task.run();
+            }
+
+            this.tasks.clear();
+        }
+    }
+
     public <T extends BaseWidget> T addWidget(T widget)
     {
         this.subWidgets.add(widget);
@@ -147,6 +166,7 @@ public abstract class ContainerWidget extends BackgroundWidget
 
     public void onSubWidgetAdded(BaseWidget widget)
     {
+        widget.setTaskQueue(this::addTask);
         widget.onWidgetAdded(this.getZLevel());
     }
 
@@ -200,10 +220,13 @@ public abstract class ContainerWidget extends BackgroundWidget
             {
                 if (widget.onMouseClicked(mouseX, mouseY, mouseButton))
                 {
+                    this.runTasks();
                     // Don't call super if the button press got handled
                     return true;
                 }
             }
+
+            this.runTasks();
         }
 
         return super.onMouseClicked(mouseX, mouseY, mouseButton);
@@ -218,6 +241,8 @@ public abstract class ContainerWidget extends BackgroundWidget
             {
                 widget.onMouseReleased(mouseX, mouseY, mouseButton);
             }
+
+            this.runTasks();
         }
 
         this.onMouseReleasedImpl(mouseX, mouseY, mouseButton);
@@ -232,9 +257,12 @@ public abstract class ContainerWidget extends BackgroundWidget
             {
                 if (widget.onMouseScrolled(mouseX, mouseY, mouseWheelDelta))
                 {
+                    this.runTasks();
                     return true;
                 }
             }
+
+            this.runTasks();
         }
 
         return super.onMouseScrolled(mouseX, mouseY, mouseWheelDelta);
@@ -247,9 +275,12 @@ public abstract class ContainerWidget extends BackgroundWidget
         {
             if (widget.onMouseMoved(mouseX, mouseY))
             {
+                this.runTasks();
                 return true;
             }
         }
+
+        this.runTasks();
 
         return super.onMouseMoved(mouseX, mouseY);
     }

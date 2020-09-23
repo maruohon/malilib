@@ -57,14 +57,13 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
     protected static final String BUTTON_LABEL_ADD = TXT_DARK_GREEN + "+" + TXT_RST;
     protected static final String BUTTON_LABEL_REMOVE = TXT_DARK_RED + "-" + TXT_RST;
 
-    public static final int COLOR_WHITE          = 0xFFFFFFFF;
     public static final int TOOLTIP_BACKGROUND   = 0xB0000000;
     public static final int COLOR_HORIZONTAL_BAR = 0xFF999999;
-    protected static final int LEFT         = 10;
-    protected static final int TOP          = 6;
+
     public final Minecraft mc = Minecraft.getMinecraft();
     public final FontRenderer textRenderer = this.mc.fontRenderer;
     public final int fontHeight = this.textRenderer.FONT_HEIGHT;
+    protected final List<Runnable> tasks = new ArrayList<>();
     private final List<BaseButton> buttons = new ArrayList<>();
     private final List<BaseWidget> widgets = new ArrayList<>();
     private final MessageRenderer messageRenderer;
@@ -334,22 +333,23 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
             }
         }
 
-        // A widget handled the click, abort
-        if (clickedWidget != null)
+        // Any widget didn't handle the click yet
+        if (clickedWidget == null)
         {
-            return true;
-        }
-
-        for (BaseButton button : this.buttons)
-        {
-            if (button.onMouseClicked(mouseX, mouseY, mouseButton))
+            for (BaseButton button : this.buttons)
             {
-                return true;
+                if (button.onMouseClicked(mouseX, mouseY, mouseButton))
+                {
+                    clickedWidget = button;
+                    break;
+                }
             }
         }
 
+        this.runTasks();
+
         // Only call super if the click wasn't handled
-        return false;
+        return clickedWidget != null;
     }
 
     public boolean onMouseReleased(int mouseX, int mouseY, int mouseButton)
@@ -359,6 +359,8 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
             widget.onMouseReleased(mouseX, mouseY, mouseButton);
         }
 
+        this.runTasks();
+
         return false;
     }
 
@@ -366,15 +368,19 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
     {
         if (this.hoveredWidget != null && this.hoveredWidget.onMouseScrolled(mouseX, mouseY, mouseWheelDelta))
         {
+            this.runTasks();
             return true;
         }
+
+        boolean handled = false;
 
         for (BaseButton button : this.buttons)
         {
             if (button.onMouseScrolled(mouseX, mouseY, mouseWheelDelta))
             {
                 // Don't call super if the button press got handled
-                return true;
+                handled = true;
+                break;
             }
         }
 
@@ -383,57 +389,73 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
             if (widget.onMouseScrolled(mouseX, mouseY, mouseWheelDelta))
             {
                 // Don't call super if the action got handled
-                return true;
+                handled = true;
+                break;
             }
         }
 
-        return false;
+        this.runTasks();
+
+        return handled;
     }
 
     public boolean onMouseMoved(int mouseX, int mouseY)
     {
+        boolean handled = false;
+
         if (this.hoveredWidget != null && this.hoveredWidget.onMouseMoved(mouseX, mouseY))
         {
-            return true;
+            handled = true;
         }
 
-        for (BaseWidget widget : this.widgets)
+        if (handled == false)
         {
-            if (widget.onMouseMoved(mouseX, mouseY))
+            for (BaseWidget widget : this.widgets)
             {
-                return true;
+                if (widget.onMouseMoved(mouseX, mouseY))
+                {
+                    handled = true;
+                    break;
+                }
             }
         }
 
-        return false;
+        this.runTasks();
+
+        return handled;
     }
 
     public boolean onKeyTyped(char typedChar, int keyCode)
     {
+        boolean handled = false;
+
         if (keyCode == Keyboard.KEY_TAB && changeTextFieldFocus(this.getAllTextFields(), isShiftDown()))
         {
-            return true;
+            handled = true;
         }
 
-        if (this.widgets.isEmpty() == false)
+        if (handled == false && this.widgets.isEmpty() == false)
         {
             for (BaseWidget widget : this.widgets)
             {
                 if (widget.onKeyTyped(typedChar, keyCode))
                 {
                     // Don't call super if the button press got handled
-                    return true;
+                    handled = true;
+                    break;
                 }
             }
         }
 
-        if (keyCode == Keyboard.KEY_ESCAPE)
+        if (handled == false && keyCode == Keyboard.KEY_ESCAPE)
         {
             this.closeGui(isShiftDown() == false);
-            return true;
+            handled = true;
         }
 
-        return false;
+        this.runTasks();
+
+        return handled;
     }
 
     public static boolean changeTextFieldFocus(List<BaseTextFieldWidget> textFields, boolean reverse)
@@ -573,6 +595,7 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
     public <T extends BaseWidget> T addWidget(T widget)
     {
         this.widgets.add(widget);
+        widget.setTaskQueue(this::addTask);
         widget.onWidgetAdded((int) this.zLevel);
         return widget;
     }
@@ -629,6 +652,24 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
     protected void clearButtons()
     {
         this.buttons.clear();
+    }
+
+    private void addTask(Runnable task)
+    {
+        this.tasks.add(task);
+    }
+
+    protected void runTasks()
+    {
+        if (this.tasks.isEmpty() == false)
+        {
+            for (Runnable task : this.tasks)
+            {
+                task.run();
+            }
+
+            this.tasks.clear();
+        }
     }
 
     protected void drawScreenBackground(int mouseX, int mouseY)
