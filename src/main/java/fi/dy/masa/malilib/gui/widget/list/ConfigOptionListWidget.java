@@ -37,7 +37,7 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
         this.modId = modId;
         this.defaultElementWidthSupplier = defaultElementWidthSupplier;
 
-        this.setEntryWidgetFactory(new ConfigOptionListEntryWidgetFactory<>(entrySupplier, ctx));
+        this.setEntryWidgetFactory(new ConfigOptionListEntryWidgetFactory<>(ctx));
         this.setEntryFilterStringFactory(ConfigInfo::getSearchStrings);
 
         this.listPosition.setTopPadding(0);
@@ -205,12 +205,10 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
 
     public static class ConfigOptionListEntryWidgetFactory<C extends ConfigInfo> implements DataListEntryWidgetFactory<C>
     {
-        protected final Supplier<List<C>> entrySupplier;
         protected final ConfigWidgetContext ctx;
 
-        public ConfigOptionListEntryWidgetFactory(Supplier<List<C>> entrySupplier, ConfigWidgetContext ctx)
+        public ConfigOptionListEntryWidgetFactory(ConfigWidgetContext ctx)
         {
-            this.entrySupplier = entrySupplier;
             this.ctx = ctx;
         }
 
