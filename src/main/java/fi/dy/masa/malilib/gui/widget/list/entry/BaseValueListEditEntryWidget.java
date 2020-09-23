@@ -77,6 +77,7 @@ public class BaseValueListEditEntryWidget<TYPE> extends BaseOrderableListEditEnt
     {
         this.dropDownWidget.setPosition(x, y + 1);
         this.nextWidgetX = this.dropDownWidget.getRight() + 2;
+        this.draggableRegionEndX = this.getRight();
     }
 
     @Override

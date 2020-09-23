@@ -87,6 +87,7 @@ public abstract class BaseStringListEditEntryWidget<TYPE> extends BaseOrderableL
     {
         this.textField.setPosition(x, y + 2);
         this.nextWidgetX = this.textField.getRight() + 2;
+        this.draggableRegionEndX = x - 1;
     }
 
     @Override

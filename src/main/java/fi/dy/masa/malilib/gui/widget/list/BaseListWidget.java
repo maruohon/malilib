@@ -63,6 +63,11 @@ public abstract class BaseListWidget extends ContainerWidget
     @Nullable
     protected abstract BaseListEntryWidget createListEntryWidget(int x, int y, int listIndex);
 
+    public List<BaseListEntryWidget> getListEntryWidgets()
+    {
+        return this.entryWidgets;
+    }
+
     /**
      * Creates a header widget, that will be displayed before the first entry of the list.
      */

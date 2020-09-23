@@ -19,7 +19,11 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
     protected final GenericButton removeButton;
     protected final GenericButton upButton;
     protected final GenericButton downButton;
+    protected boolean dragged;
     protected int nextWidgetX;
+    protected int dragStartX;
+    protected int dragStartY;
+    protected int draggableRegionEndX = -1;
 
     @Nullable protected LabelWidget labelWidget;
 
@@ -112,6 +116,79 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
         return button;
     }
 
+    @Override
+    protected boolean onMouseClickedImpl(int mouseX, int mouseY, int mouseButton)
+    {
+        if (this.canDragAt(mouseX, mouseY))
+        {
+            this.dragged = true;
+            this.dragStartX = mouseX;
+            this.dragStartY = mouseY;
+            return true;
+        }
+
+        return super.onMouseClickedImpl(mouseX, mouseY, mouseButton);
+    }
+
+    @Override
+    public void onMouseReleasedImpl(int mouseX, int mouseY, int mouseButton)
+    {
+        if (this.dragged)
+        {
+            int x = this.getX();
+
+            if (mouseX >= x && mouseX <= x + this.getWidth())
+            {
+                int newIndex = this.getNewIndexFromDrag(mouseY);
+                this.scheduleTask(() -> this.moveEntry(newIndex));
+            }
+
+            this.dragged = false;
+        }
+
+        super.onMouseReleasedImpl(mouseX, mouseY, mouseButton);
+    }
+
+    protected boolean canDragAt(int mouseX, int mouseY)
+    {
+        return mouseX <= this.draggableRegionEndX;
+    }
+
+    protected int getNewIndexFromDrag(int mouseY)
+    {
+        List<BaseListEntryWidget> list = this.parent.getListEntryWidgets();
+        int newIndex = -1;
+
+        if (mouseY > this.dragStartY)
+        {
+            for (BaseListEntryWidget widget : list)
+            {
+                if (mouseY < widget.getY() + (widget.getHeight() / 2))
+                {
+                    break;
+                }
+
+                newIndex = widget.getListIndex();
+            }
+        }
+        else if (mouseY < this.dragStartY)
+        {
+            for (int i = list.size() - 1; i >= 0; --i)
+            {
+                BaseListEntryWidget widget = list.get(i);
+
+                if (mouseY > widget.getY() + (widget.getHeight() / 2))
+                {
+                    break;
+                }
+
+                newIndex = widget.getListIndex();
+            }
+        }
+
+        return newIndex;
+    }
+
     protected abstract DATATYPE getNewDataEntry();
 
     protected int getInsertionIndex(List<DATATYPE> list, boolean before)
@@ -153,41 +230,28 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
 
     protected void moveEntryDown()
     {
-        this.moveEntry(true);
+        this.moveEntry(this.originalListIndex + 1);
     }
 
     protected void moveEntryUp()
     {
-        this.moveEntry(false);
+        this.moveEntry(this.originalListIndex - 1);
     }
 
-    protected void moveEntry(boolean down)
+    protected void moveEntry(int newIndex)
     {
         List<DATATYPE> list = this.dataList;
         final int size = list.size();
+        final int oldIndex = this.originalListIndex;
 
-        if (this.originalListIndex >= 0 && this.originalListIndex < size)
+        if (oldIndex >= 0 && oldIndex < size &&
+            newIndex >= 0 && newIndex < size &&
+            newIndex != oldIndex)
         {
-            int index1 = this.originalListIndex;
-            int index2 = -1;
+            DATATYPE entry = list.remove(oldIndex);
+            list.add(newIndex, entry);
 
-            if (down && this.originalListIndex < (size - 1))
-            {
-                index2 = index1 + 1;
-            }
-            else if (down == false && this.originalListIndex > 0)
-            {
-                index2 = index1 - 1;
-            }
-
-            if (index2 >= 0)
-            {
-                DATATYPE tmp = list.get(index1);
-                list.set(index1, list.get(index2));
-                list.set(index2, tmp);
-
-                this.parent.refreshEntries();
-            }
+            this.parent.refreshEntries();
         }
     }
 
@@ -202,15 +266,38 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
     public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
     {
         RenderUtils.color(1f, 1f, 1f, 1f);
+        int width = this.getWidth();
+        int height = this.getHeight();
+
+        if (this.dragged)
+        {
+            int newIndex = this.getNewIndexFromDrag(mouseY);
+
+            if (newIndex != -1)
+            {
+                int off = (newIndex - this.listIndex) * height - 1;
+
+                if (newIndex > this.listIndex)
+                {
+                    off += height;
+                }
+
+                RenderUtils.renderRectangle(x - 2, y + off, width + 4, 2, 0xFF00FFFF, z + 70);
+            }
+
+            x += (mouseX - this.dragStartX);
+            y += (mouseY - this.dragStartY);
+            z += 60;
+        }
 
         if (this.isOdd)
         {
-            RenderUtils.renderRectangle(x, y, this.getWidth(), this.getHeight(), 0x20FFFFFF, z);
+            RenderUtils.renderRectangle(x, y, width, height, 0x20FFFFFF, z);
         }
         // Draw a slightly lighter background for even entries
         else
         {
-            RenderUtils.renderRectangle(x, y, this.getWidth(), this.getHeight(), 0x30FFFFFF, z);
+            RenderUtils.renderRectangle(x, y, width, height, 0x30FFFFFF, z);
         }
 
         super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hoveredWidgetId);
