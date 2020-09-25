@@ -124,7 +124,7 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
         {
             this.dragged = true;
             this.dragStartX = mouseX;
-            this.dragStartY = mouseY;
+            this.dragStartY = this.getY() + this.getHeight() / 2;
             return true;
         }
 
@@ -158,7 +158,7 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
     protected int getNewIndexFromDrag(int mouseY)
     {
         List<BaseListEntryWidget> list = this.parent.getListEntryWidgets();
-        int newIndex = -1;
+        int newIndex = this.listIndex;
 
         if (mouseY > this.dragStartY)
         {
@@ -275,37 +275,30 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
         RenderUtils.color(1f, 1f, 1f, 1f);
         int width = this.getWidth();
         int height = this.getHeight();
+        // Draw a slightly lighter background for even entries
+        int bgColor = this.isOdd ? 0x20FFFFFF : 0x30FFFFFF;
 
         if (this.dragged)
         {
             int newIndex = this.getNewIndexFromDrag(mouseY);
+            int off = (newIndex - this.listIndex) * height - 1;
+            bgColor = 0xFF303030;
 
-            if (newIndex != -1)
+            if (newIndex > this.listIndex)
             {
-                int off = (newIndex - this.listIndex) * height - 1;
-
-                if (newIndex > this.listIndex)
-                {
-                    off += height;
-                }
-
-                RenderUtils.renderRectangle(x - 2, y + off, width + 4, 2, 0xFF00FFFF, z + 70);
+                off += height;
             }
+
+            RenderUtils.renderRectangle(x - 2, y + off, width + 4, 2, 0xFF00FFFF, z + 50);
 
             x += (mouseX - this.dragStartX);
             y += (mouseY - this.dragStartY);
             z += 60;
+
+            RenderUtils.renderOutline(x - 1, y - 1, width + 2, height + 2, 1, 0xFFFFFFFF, z);
         }
 
-        if (this.isOdd)
-        {
-            RenderUtils.renderRectangle(x, y, width, height, 0x20FFFFFF, z);
-        }
-        // Draw a slightly lighter background for even entries
-        else
-        {
-            RenderUtils.renderRectangle(x, y, width, height, 0x30FFFFFF, z);
-        }
+        RenderUtils.renderRectangle(x, y, width, height, bgColor, z);
 
         super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hoveredWidgetId);
     }
