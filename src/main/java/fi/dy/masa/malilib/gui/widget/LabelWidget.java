@@ -116,7 +116,7 @@ public class LabelWidget extends BackgroundWidget
                 this.totalWidth += this.borderWidth * 2;
             }
 
-            this.totalWidth += this.paddingX * 2;
+            this.totalWidth += this.paddingLeft + this.paddingRight;
 
             int width = this.totalWidth;
 
@@ -134,15 +134,11 @@ public class LabelWidget extends BackgroundWidget
     {
         if (this.automaticHeight)
         {
-            int height = (this.fontHeight + 1) * this.labels.size() - 2;
+            int height = (this.fontHeight + 1) * this.labels.size() + this.paddingTop + this.paddingBottom - 2;
 
-            if (this.backgroundEnabled)
+            if (this.borderEnabled)
             {
-                height += this.borderWidth * 2 + this.paddingY * 2;
-            }
-            else
-            {
-                height += this.paddingY * 2;
+                height += this.borderWidth * 2;
             }
 
             this.setHeight(height);
@@ -167,8 +163,8 @@ public class LabelWidget extends BackgroundWidget
         {
             super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hovered);
 
-            x += this.paddingX + this.borderWidth;
-            y += this.paddingY + this.borderWidth;
+            x += this.paddingLeft + this.borderWidth;
+            y += this.paddingTop + this.borderWidth;
             int fontHeight = this.fontHeight;
             TextRenderer renderer = this.getTextRenderer(this.useTextShadow, this.centerTextHorizontally);
 

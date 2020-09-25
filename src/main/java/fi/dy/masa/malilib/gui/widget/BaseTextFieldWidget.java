@@ -68,7 +68,8 @@ public class BaseTextFieldWidget extends BackgroundWidget
         this.setBackgroundEnabled(true);
         this.setBorderColor(this.colorUnfocused);
         this.setBorderWidth(1);
-        this.setPaddingX(3);
+        this.setPaddingLeft(3);
+        this.setPaddingRight(3);
         this.updateTextFieldSize();
         this.setText(text);
     }
@@ -506,7 +507,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
 
     protected int getTextStartRelativeX()
     {
-        return this.borderWidth + this.paddingX;
+        return this.borderWidth + this.paddingLeft;
     }
 
     /**
@@ -515,7 +516,14 @@ public class BaseTextFieldWidget extends BackgroundWidget
      */
     protected int getMaxTextWidth()
     {
-        return this.getWidth() - this.borderWidth * 2 - this.paddingX * 2;
+        int maxWidth = this.getWidth() - this.paddingLeft - this.paddingRight;
+
+        if (this.borderEnabled)
+        {
+            maxWidth -= this.borderWidth * 2;
+        }
+
+        return maxWidth;
     }
 
     protected boolean isUsableCharacter(char typedChar, int modifiers)

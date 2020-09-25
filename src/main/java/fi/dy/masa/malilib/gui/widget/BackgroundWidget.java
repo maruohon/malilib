@@ -15,8 +15,10 @@ public class BackgroundWidget extends BaseWidget
     protected int borderColorHovered = 0xFFFFFFFF;
     protected int borderWidth;
     protected int borderWidthHovered;
-    protected int paddingX;
-    protected int paddingY;
+    protected int paddingLeft;
+    protected int paddingRight;
+    protected int paddingTop;
+    protected int paddingBottom;
 
     public BackgroundWidget(int x, int y, int width, int height)
     {
@@ -86,24 +88,42 @@ public class BackgroundWidget extends BaseWidget
         return this;
     }
 
-    public BackgroundWidget setPaddingX(int offsetX)
+    public BackgroundWidget setPaddingLeft(int padding)
     {
-        this.paddingX = offsetX;
+        this.paddingLeft = padding;
         this.updateWidth();
         return this;
     }
 
-    public BackgroundWidget setPaddingY(int offsetY)
+    public BackgroundWidget setPaddingRight(int padding)
     {
-        this.paddingY = offsetY;
+        this.paddingRight = padding;
+        this.updateWidth();
+        return this;
+    }
+
+    public BackgroundWidget setPaddingTop(int padding)
+    {
+        this.paddingTop = padding;
         this.updateHeight();
         return this;
     }
 
-    public BackgroundWidget setPaddingXY(int offset)
+    public BackgroundWidget setPaddingBottom(int padding)
     {
-        this.setPaddingX(offset);
-        this.setPaddingY(offset);
+        this.paddingBottom = padding;
+        this.updateHeight();
+        return this;
+    }
+
+    public BackgroundWidget setPaddingXY(int padding)
+    {
+        this.paddingLeft = padding;
+        this.paddingRight = padding;
+        this.paddingTop = padding;
+        this.paddingBottom = padding;
+        this.updateWidth();
+        this.updateHeight();
         return this;
     }
 

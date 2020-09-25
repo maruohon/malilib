@@ -34,13 +34,13 @@ public abstract class BaseConfigOptionWidget<C extends ConfigInfo> extends BaseD
         String ownerLabel = this.ctx.getListWidget().getModNameAndCategoryPrefix(originalListIndex);
         boolean showOwner = this.ctx.getListWidget().isShowingOptionsFromOtherCategories();
         this.configOwnerLabelWidget = new LabelWidget(x + 2, y + 2, 0xFF707070, ownerLabel != null ? ownerLabel : "");
-        this.configOwnerLabelWidget.setPaddingX(4);
+        this.configOwnerLabelWidget.setPaddingLeft(4);
 
         int lw = this.getMaxLabelWidth();
 
         this.configNameLabelWidget = new LabelWidget(x, y, lw, 22, 0xFFFFFFFF, nameLabel);
-        this.configNameLabelWidget.setPaddingY(showOwner ? 12 : 7);
-        this.configNameLabelWidget.setPaddingX(4);
+        this.configNameLabelWidget.setPaddingTop(showOwner ? 12 : 7);
+        this.configNameLabelWidget.setPaddingLeft(4);
 
         EventListener clickHandler = config.getLabelClickHandler();
         String comment = config.getComment();

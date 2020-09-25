@@ -14,9 +14,9 @@ public abstract class BaseListScreen<LISTWIDGET extends BaseListWidget> extends 
 {
     private int listX;
     private int listY;
-    private LISTWIDGET widget;
     protected int totalListMarginX;
     protected int totalListMarginY;
+    private LISTWIDGET widget;
 
     protected BaseListScreen(int listX, int listY, int totalListMarginX, int totalListMarginY)
     {
