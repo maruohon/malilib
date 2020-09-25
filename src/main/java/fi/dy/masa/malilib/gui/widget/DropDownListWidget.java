@@ -664,7 +664,7 @@ public class DropDownListWidget<T> extends ContainerWidget
     }
 
     @Override
-    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
+    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
     {
         // Render the open dropdown list
         if (this.isOpen)
@@ -693,7 +693,7 @@ public class DropDownListWidget<T> extends ContainerWidget
             }
         }
 
-        super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hoveredWidgetId);
+        super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hovered);
     }
 
     public static class SelectionBarWidget<T> extends ContainerWidget

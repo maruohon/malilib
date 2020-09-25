@@ -330,9 +330,9 @@ public abstract class BaseWidget
                mouseY >= y && mouseY < y + this.getHeight();
     }
 
-    public boolean isHoveredForRender(int mouseX, int mouseY)
+    public boolean isHoveredForRender(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
     {
-        return this.isMouseOver(mouseX, mouseY);
+        return hoveredWidgetId == this.getId() || (isActiveGui && this.isMouseOver(mouseX, mouseY));
     }
 
     public boolean getShouldReceiveOutsideClicks()
@@ -546,7 +546,8 @@ public abstract class BaseWidget
 
     public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
     {
-        this.renderAt(x, y, z, mouseX, mouseY, isActiveGui, this.id == hoveredWidgetId);
+        boolean hovered = this.isHoveredForRender(mouseX, mouseY, isActiveGui, hoveredWidgetId);
+        this.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hovered);
     }
 
     public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
@@ -570,7 +571,7 @@ public abstract class BaseWidget
     @Nullable
     public BaseWidget getTopHoveredWidget(int mouseX, int mouseY, @Nullable BaseWidget highestFoundWidget)
     {
-        if (this.isHoveredForRender(mouseX, mouseY) &&
+        if (this.isMouseOver(mouseX, mouseY) &&
             (highestFoundWidget == null || this.getZLevel() > highestFoundWidget.getZLevel()))
         {
             return this;

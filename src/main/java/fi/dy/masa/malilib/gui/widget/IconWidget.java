@@ -97,7 +97,7 @@ public class IconWidget extends BackgroundWidget
                 y += this.paddingTop + this.borderWidth;
             }
 
-            this.icon.renderAt(x, y, z + 0.1f, this.enabled, this.doHighlight && this.isHoveredForRender(mouseX, mouseY));
+            this.icon.renderAt(x, y, z + 0.1f, this.enabled, this.doHighlight && hovered);
         }
     }
 }

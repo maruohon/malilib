@@ -32,6 +32,7 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
     {
         super(x, y, width, height, listIndex, originalListIndex, initialValue);
 
+        this.setBackgroundColorHovered(0x30FFFFFF);
         this.parent = parent;
 
         // This is a reference to the current entries list, which can be modified
@@ -260,6 +261,12 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
         final int size = this.dataList.size();
         return (this.originalListIndex >= 0 && this.originalListIndex < size) &&
                 ((down && this.originalListIndex < (size - 1)) || (down == false && this.originalListIndex > 0));
+    }
+
+    @Override
+    public boolean isHoveredForRender(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
+    {
+        return this.dragged == false && super.isHoveredForRender(mouseX, mouseY, isActiveGui, hoveredWidgetId);
     }
 
     @Override

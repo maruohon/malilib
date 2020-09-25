@@ -9,7 +9,7 @@ public class BackgroundWidget extends BaseWidget
     protected boolean borderEnabledHovered;
     protected boolean renderHoverBackground;
     protected int backgroundColor = 0xFF101010;
-    protected int backgroundColorHovered = 0x60FFFFFF;
+    protected int backgroundColorHovered = 0x50FFFFFF;
     protected int borderColorBR = 0xFFC0C0C0;
     protected int borderColorUL = 0xFFC0C0C0;
     protected int borderColorHovered = 0xFFFFFFFF;
@@ -154,7 +154,6 @@ public class BackgroundWidget extends BaseWidget
 
     protected void renderBorder(int x, int y, float z, int width, int height, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
     {
-        hovered = (hovered || (isActiveGui && this.isMouseOver(mouseX, mouseY)));
         boolean hoverBorder = this.borderEnabledHovered && hovered;
 
         if (this.borderEnabled || hoverBorder)
@@ -181,7 +180,6 @@ public class BackgroundWidget extends BaseWidget
 
     protected void renderBackgroundOnly(int x, int y, float z, int width, int height, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
     {
-        hovered = (hovered || (isActiveGui && this.isMouseOver(mouseX, mouseY)));
         boolean hoverBg = this.renderHoverBackground && hovered;
 
         if (this.backgroundEnabled || hoverBg)

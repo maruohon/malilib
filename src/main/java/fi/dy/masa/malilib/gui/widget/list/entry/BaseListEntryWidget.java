@@ -17,6 +17,7 @@ public class BaseListEntryWidget extends ContainerWidget
 
         this.setIsOdd((listIndex & 0x1) != 0);
         this.setRenderHoverBackground(true);
+        this.setBackgroundColorHovered(0x50FFFFFF);
     }
 
     public void setIsOdd(boolean isOdd)
