@@ -14,7 +14,7 @@ public abstract class BaseValueListConfigWidget<TYPE, CFG extends ValueListConfi
     public BaseValueListConfigWidget(int x, int y, int width, int height, int listIndex,
                                   int originalListIndex, CFG config, ConfigWidgetContext ctx)
     {
-        super(x, y, width, 22, listIndex, originalListIndex, config, ctx);
+        super(x, y, width, height, listIndex, originalListIndex, config, ctx);
 
         this.config = config;
         this.initialValue = this.config.getValues();

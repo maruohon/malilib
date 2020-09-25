@@ -16,7 +16,7 @@ public class IntegerConfigWidget extends NumericConfigWidget<IntegerConfig>
     public IntegerConfigWidget(int x, int y, int width, int height, int listIndex,
                                int originalListIndex, IntegerConfig config, ConfigWidgetContext ctx)
     {
-        super(x, y, width, 22, listIndex, originalListIndex, config, ctx);
+        super(x, y, width, height, listIndex, originalListIndex, config, ctx);
 
         this.integerConfig = config;
         this.initialValue = this.config.getIntegerValue();

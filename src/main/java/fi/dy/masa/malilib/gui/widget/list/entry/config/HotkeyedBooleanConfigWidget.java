@@ -10,7 +10,7 @@ public class HotkeyedBooleanConfigWidget extends BaseHotkeyedBooleanConfigWidget
     public HotkeyedBooleanConfigWidget(int x, int y, int width, int height, int listIndex,
                                        int originalListIndex, HotkeyedBooleanConfig config, ConfigWidgetContext ctx)
     {
-        super(x, y, width, 22, listIndex, originalListIndex, config, ctx);
+        super(x, y, width, height, listIndex, originalListIndex, config, ctx);
     }
 
     @Override

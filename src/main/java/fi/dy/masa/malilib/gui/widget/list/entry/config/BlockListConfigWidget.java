@@ -15,7 +15,7 @@ public class BlockListConfigWidget extends BaseValueListConfigWidget<Block, Bloc
     public BlockListConfigWidget(int x, int y, int width, int height, int listIndex,
                                 int originalListIndex, BlockListConfig config, ConfigWidgetContext ctx)
     {
-        super(x, y, width, 22, listIndex, originalListIndex, config, ctx);
+        super(x, y, width, height, listIndex, originalListIndex, config, ctx);
     }
 
     @Override

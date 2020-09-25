@@ -17,7 +17,7 @@ public class EquipmentSlotListConfigWidget extends BaseValueListConfigWidget<Ent
     public EquipmentSlotListConfigWidget(int x, int y, int width, int height, int listIndex,
                                  int originalListIndex, EquipmentSlotListConfig config, ConfigWidgetContext ctx)
     {
-        super(x, y, width, 22, listIndex, originalListIndex, config, ctx);
+        super(x, y, width, height, listIndex, originalListIndex, config, ctx);
     }
 
     @Override

@@ -17,7 +17,7 @@ public class ColorConfigWidget extends BaseConfigOptionWidget<ColorConfig>
     public ColorConfigWidget(int x, int y, int width, int height, int listIndex,
                              int originalListIndex, ColorConfig config, ConfigWidgetContext ctx)
     {
-        super(x, y, width, 22, listIndex, originalListIndex, config, ctx);
+        super(x, y, width, height, listIndex, originalListIndex, config, ctx);
 
         this.config = config;
         this.initialValue = this.config.getIntegerValue();

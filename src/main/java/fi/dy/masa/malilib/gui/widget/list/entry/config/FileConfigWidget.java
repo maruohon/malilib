@@ -13,7 +13,7 @@ public class FileConfigWidget extends BaseConfigOptionWidget<FileConfig>
     public FileConfigWidget(int x, int y, int width, int height, int listIndex,
                             int originalListIndex, FileConfig config, ConfigWidgetContext ctx)
     {
-        super(x, y, width, 22, listIndex, originalListIndex, config, ctx);
+        super(x, y, width, height, listIndex, originalListIndex, config, ctx);
 
         this.config = config;
         this.initialValue = this.config.getFile();

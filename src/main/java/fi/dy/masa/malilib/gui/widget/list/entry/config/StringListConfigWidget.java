@@ -12,7 +12,7 @@ public class StringListConfigWidget extends BaseValueListConfigWidget<String, St
     public StringListConfigWidget(int x, int y, int width, int height, int listIndex,
                                   int originalListIndex, StringListConfig config, ConfigWidgetContext ctx)
     {
-        super(x, y, width, 22, listIndex, originalListIndex, config, ctx);
+        super(x, y, width, height, listIndex, originalListIndex, config, ctx);
     }
 
     @Override

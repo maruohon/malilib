@@ -14,7 +14,7 @@ public class DirectoryConfigWidget extends BaseConfigOptionWidget<DirectoryConfi
     public DirectoryConfigWidget(int x, int y, int width, int height, int listIndex,
                                  int originalListIndex, DirectoryConfig config, ConfigWidgetContext ctx)
     {
-        super(x, y, width, 22, listIndex, originalListIndex, config, ctx);
+        super(x, y, width, height, listIndex, originalListIndex, config, ctx);
 
         this.config = config;
         this.initialValue = this.config.getFile();

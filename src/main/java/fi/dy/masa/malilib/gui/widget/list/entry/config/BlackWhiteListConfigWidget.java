@@ -14,7 +14,7 @@ public class BlackWhiteListConfigWidget extends BaseConfigOptionWidget<BlackWhit
     public BlackWhiteListConfigWidget(int x, int y, int width, int height, int listIndex, int originalListIndex,
                                       BlackWhiteListConfig<?> config, ConfigWidgetContext ctx)
     {
-        super(x, y, width, 22, listIndex, originalListIndex, config, ctx);
+        super(x, y, width, height, listIndex, originalListIndex, config, ctx);
 
         this.config = config;
         this.initialValue = this.config.getValue();

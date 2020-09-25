@@ -13,7 +13,7 @@ public class BooleanConfigWidget extends BaseConfigOptionWidget<BooleanConfig>
     public BooleanConfigWidget(int x, int y, int width, int height, int listIndex,
                                int originalListIndex, BooleanConfig config, ConfigWidgetContext ctx)
     {
-        super(x, y, width, 22, listIndex, originalListIndex, config, ctx);
+        super(x, y, width, height, listIndex, originalListIndex, config, ctx);
 
         this.config = config;
         this.initialValue = this.config.getBooleanValue();

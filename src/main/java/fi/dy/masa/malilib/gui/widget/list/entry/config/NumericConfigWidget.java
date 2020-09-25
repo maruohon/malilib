@@ -20,7 +20,7 @@ public abstract class NumericConfigWidget<T extends ConfigOption<?> & SliderConf
     public NumericConfigWidget(int x, int y, int width, int height, int listIndex,
                                int originalListIndex, T config, ConfigWidgetContext ctx)
     {
-        super(x, y, width, 22, listIndex, originalListIndex, config, ctx);
+        super(x, y, width, height, listIndex, originalListIndex, config, ctx);
 
         this.config = config;
 

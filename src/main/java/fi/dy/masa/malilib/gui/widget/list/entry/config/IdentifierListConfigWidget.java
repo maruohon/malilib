@@ -17,7 +17,7 @@ public class IdentifierListConfigWidget extends BaseValueListConfigWidget<Resour
     public IdentifierListConfigWidget(int x, int y, int width, int height, int listIndex,
                                       int originalListIndex, IdentifierListConfig config, ConfigWidgetContext ctx)
     {
-        super(x, y, width, 22, listIndex, originalListIndex, config, ctx);
+        super(x, y, width, height, listIndex, originalListIndex, config, ctx);
     }
 
     @Override

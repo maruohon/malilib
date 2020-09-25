@@ -16,7 +16,7 @@ public class StatusEffectListConfigWidget extends BaseValueListConfigWidget<Poti
     public StatusEffectListConfigWidget(int x, int y, int width, int height, int listIndex,
                                 int originalListIndex, StatusEffectListConfig config, ConfigWidgetContext ctx)
     {
-        super(x, y, width, 22, listIndex, originalListIndex, config, ctx);
+        super(x, y, width, height, listIndex, originalListIndex, config, ctx);
     }
 
     @Override

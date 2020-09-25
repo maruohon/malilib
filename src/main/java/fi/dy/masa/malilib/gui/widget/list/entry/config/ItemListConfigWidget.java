@@ -15,7 +15,7 @@ public class ItemListConfigWidget extends BaseValueListConfigWidget<Item, ItemLi
     public ItemListConfigWidget(int x, int y, int width, int height, int listIndex,
                                   int originalListIndex, ItemListConfig config, ConfigWidgetContext ctx)
     {
-        super(x, y, width, 22, listIndex, originalListIndex, config, ctx);
+        super(x, y, width, height, listIndex, originalListIndex, config, ctx);
     }
 
     @Override
