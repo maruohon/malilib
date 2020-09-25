@@ -800,9 +800,15 @@ public class DropDownListWidget<T> extends ContainerWidget
 
             String text = this.displayString;
             int width = this.getWidth();
-            int tx = this.iconWidget != null ? this.iconWidget.getRight() + 4 : x + 4;
+            int tx = x + 4;
             int ty = y + (this.getHeight() - this.fontHeight) / 2 + 1;
             int ocw = this.openCloseIconWidget.getWidth() + 4;
+
+            if (this.iconWidget != null)
+            {
+                int xDiff = x - this.getX();
+                tx = this.iconWidget.getRight() + 4 + xDiff;
+            }
 
             if ((tx + this.displayStringWidth + ocw) > (x + width) && this.isMouseOver(mouseX, mouseY) == false)
             {
