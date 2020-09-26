@@ -97,10 +97,10 @@ public class BaseTextFieldWidget extends BackgroundWidget
     }
 
     @Override
-    public BaseWidget setZLevel(float zLevel)
+    public void setZLevel(float zLevel)
     {
         this.messageRenderer.setZLevel(zLevel + 10);
-        return super.setZLevel(zLevel);
+        super.setZLevel(zLevel);
     }
 
     public String getText()

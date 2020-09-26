@@ -265,16 +265,14 @@ public abstract class BaseWidget
         return this.id;
     }
 
-    public BaseWidget setZLevel(float zLevel)
+    public void setZLevel(float zLevel)
     {
         this.zLevel = zLevel;
-        return this;
     }
 
-    public BaseWidget setZLevelBasedOnParent(float parentZLevel)
+    public void setZLevelBasedOnParent(float parentZLevel)
     {
         this.setZLevel(parentZLevel + this.getSubWidgetZLevelIncrement());
-        return this;
     }
 
     public void setTaskQueue(@Nullable Consumer<Runnable> taskQueue)
@@ -302,13 +300,10 @@ public abstract class BaseWidget
     /**
      * This method is called whenever a widget gets added to its parent widget or GUI.
      * By default it updates the widget's own rendering Z-level based on the parent's Z-level.
-     * @param parentZLevel
-     * @return
      */
-    public BaseWidget onWidgetAdded(float parentZLevel)
+    public void onWidgetAdded(float parentZLevel)
     {
         this.setZLevelBasedOnParent(parentZLevel);
-        return this;
     }
 
     protected int getSubWidgetZLevelIncrement()

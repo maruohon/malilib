@@ -171,23 +171,22 @@ public abstract class ContainerWidget extends BackgroundWidget
     }
 
     @Override
-    public BaseWidget onWidgetAdded(float parentZLevel)
+    public void onWidgetAdded(float parentZLevel)
     {
         super.onWidgetAdded(parentZLevel);
         this.reAddSubWidgets();
         this.updateSubWidgetsToGeometryChanges();
-        return this;
     }
 
     @Override
-    public BaseWidget setZLevel(float zLevel)
+    public void setZLevel(float zLevel)
     {
         for (BaseWidget widget : this.subWidgets)
         {
             widget.setZLevelBasedOnParent(zLevel);
         }
 
-        return super.setZLevel(zLevel);
+        super.setZLevel(zLevel);
     }
 
     @Override
