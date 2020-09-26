@@ -157,26 +157,15 @@ public class DirectoryNavigationWidget extends SearchBarWidget
     }
 
     @Override
-    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
+    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
     {
-        int diffX = x - this.getX();
-        int diffY = y - this.getY();
-        float diffZ = z - this.getZLevel();
-
-        if (this.searchOpen)
+        if (this.searchOpen == false)
         {
-            int tx = this.textField.getX() + diffX;
-            int ty = this.textField.getY() + diffY;
-            float tz = this.textField.getZLevel() + diffZ;
-            this.textField.renderAt(tx, ty, tz, mouseX, mouseY, isActiveGui, hoveredWidgetId);
-        }
-        else
-        {
-            // Draw the directory path text background
+            int diffX = x - this.getX();
             RenderUtils.renderRectangle(this.pathStartX - 2 + diffX, y, this.getMaxPathBarWidth() + 4, this.getHeight(), 0xFF242424, z);
         }
 
-        super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hoveredWidgetId);
+        super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hovered);
     }
 
     protected String getDisplayNameForDirectory(File dir)
