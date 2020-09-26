@@ -78,6 +78,16 @@ public interface ConfigInfo
     }
 
     /**
+     * If this config contains any nested options, adds the nested options to the provided list.
+     * This is intended for config groups which are currently open/expanded, to add their
+     * contained nested options to the list for the config screen.
+     */
+    default <C extends ConfigInfo> void addNestedOptionsToList(List<C> list, int nestingLevel)
+    {
+        // NO-OP
+    }
+
+    /**
      * 
      * Returns true if the value has been changed from the default value
      * @return

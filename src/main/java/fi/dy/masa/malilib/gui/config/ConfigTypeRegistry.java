@@ -16,6 +16,7 @@ import fi.dy.masa.malilib.config.option.HotkeyedBooleanConfig;
 import fi.dy.masa.malilib.config.option.IdentifierListConfig;
 import fi.dy.masa.malilib.config.option.IntegerConfig;
 import fi.dy.masa.malilib.config.option.ItemListConfig;
+import fi.dy.masa.malilib.config.option.NestedConfig;
 import fi.dy.masa.malilib.config.option.OptionListConfig;
 import fi.dy.masa.malilib.config.option.StatusEffectListConfig;
 import fi.dy.masa.malilib.config.option.StringConfig;
@@ -24,6 +25,7 @@ import fi.dy.masa.malilib.gui.widget.list.entry.config.BlackWhiteListConfigWidge
 import fi.dy.masa.malilib.gui.widget.list.entry.config.BlockListConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.BooleanConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.ColorConfigWidget;
+import fi.dy.masa.malilib.gui.widget.list.entry.config.ExpandableConfigGroupWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.DirectoryConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.DoubleConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.EquipmentSlotListConfigWidget;
@@ -33,6 +35,7 @@ import fi.dy.masa.malilib.gui.widget.list.entry.config.HotkeyedBooleanConfigWidg
 import fi.dy.masa.malilib.gui.widget.list.entry.config.IdentifierListConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.IntegerConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.ItemListConfigWidget;
+import fi.dy.masa.malilib.gui.widget.list.entry.config.NestedConfigWidgetFactory;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.OptionListConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.StatusEffectListConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.StringConfigWidget;
@@ -48,7 +51,7 @@ public class ConfigTypeRegistry
 
     private ConfigTypeRegistry()
     {
-        this.registerDefaultPlacers();
+        this.registerDefaultWidgetFactories();
         this.registerDefaultSearchInfos();
     }
 
@@ -81,6 +84,11 @@ public class ConfigTypeRegistry
         return (ConfigOptionWidgetFactory<C>) this.widgetFactories.getOrDefault(config.getClass(), this.missingTypeFactory);
     }
 
+    public ConfigOptionWidgetFactory<?> getMissingTypeFactory()
+    {
+        return this.missingTypeFactory;
+    }
+
     @Nullable
     @SuppressWarnings("unchecked")
     public <C extends ConfigInfo> ConfigSearchInfo<C> getSearchInfo(C config)
@@ -88,12 +96,13 @@ public class ConfigTypeRegistry
         return (ConfigSearchInfo<C>) this.configSearchInfoMap.get(config.getClass());
     }
 
-    private void registerDefaultPlacers()
+    private void registerDefaultWidgetFactories()
     {
         this.registerWidgetFactory(BlackWhiteListConfig.class, BlackWhiteListConfigWidget::new);
         this.registerWidgetFactory(BlockListConfig.class, BlockListConfigWidget::new);
         this.registerWidgetFactory(BooleanConfig.class, BooleanConfigWidget::new);
         this.registerWidgetFactory(ColorConfig.class, ColorConfigWidget::new);
+        this.registerWidgetFactory(ExpandableConfigGroup.class, ExpandableConfigGroupWidget::new);
         this.registerWidgetFactory(DirectoryConfig.class, DirectoryConfigWidget::new);
         this.registerWidgetFactory(DoubleConfig.class, DoubleConfigWidget::new);
         this.registerWidgetFactory(EquipmentSlotListConfig.class, EquipmentSlotListConfigWidget::new);
@@ -103,6 +112,7 @@ public class ConfigTypeRegistry
         this.registerWidgetFactory(IdentifierListConfig.class, IdentifierListConfigWidget::new);
         this.registerWidgetFactory(IntegerConfig.class, IntegerConfigWidget::new);
         this.registerWidgetFactory(ItemListConfig.class, ItemListConfigWidget::new);
+        this.registerWidgetFactory(NestedConfig.class, new NestedConfigWidgetFactory());
         this.registerWidgetFactory(OptionListConfig.class, OptionListConfigWidget::new);
         this.registerWidgetFactory(StatusEffectListConfig.class, StatusEffectListConfigWidget::new);
         this.registerWidgetFactory(StringConfig.class, StringConfigWidget::new);

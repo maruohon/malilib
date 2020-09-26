@@ -30,17 +30,29 @@ public abstract class BaseConfigOptionWidget<C extends ConfigInfo> extends BaseD
 
         this.ctx = ctx;
 
+        int labelLeftPadding = this.getLabelPadding(4, ctx.getNestingLevel());
         String nameLabel = this.data.getDisplayName();
         String ownerLabel = this.ctx.getListWidget().getModNameAndCategoryPrefix(originalListIndex);
+
+        if (ctx.getNestingLevel() > 0)
+        {
+            nameLabel = "> " + nameLabel;
+
+            if (ownerLabel != null)
+            {
+                ownerLabel = "> " + ownerLabel;
+            }
+        }
+
         boolean showOwner = this.ctx.getListWidget().isShowingOptionsFromOtherCategories();
-        this.configOwnerLabelWidget = new LabelWidget(x + 2, y + 2, 0xFF707070, ownerLabel != null ? ownerLabel : "");
-        this.configOwnerLabelWidget.setPaddingLeft(4);
+        this.configOwnerLabelWidget = new LabelWidget(x, y + 2, 0xFF707070, ownerLabel != null ? ownerLabel : "");
+        this.configOwnerLabelWidget.setPaddingLeft(labelLeftPadding);
 
         int lw = this.getMaxLabelWidth();
 
-        this.configNameLabelWidget = new LabelWidget(x, y, lw, 22, 0xFFFFFFFF, nameLabel);
+        this.configNameLabelWidget = new LabelWidget(x, y, lw, height, 0xFFFFFFFF, nameLabel);
         this.configNameLabelWidget.setPaddingTop(showOwner ? 12 : 7);
-        this.configNameLabelWidget.setPaddingLeft(4);
+        this.configNameLabelWidget.setPaddingLeft(labelLeftPadding);
 
         EventListener clickHandler = config.getLabelClickHandler();
         String comment = config.getComment();
@@ -64,6 +76,11 @@ public abstract class BaseConfigOptionWidget<C extends ConfigInfo> extends BaseD
 
         this.setBackgroundColor(this.isOdd ? 0x70606060 : 0x70909090);
         this.setBackgroundEnabled(true);
+    }
+
+    public int getLabelPadding(int defaultPadding, int nestingLevel)
+    {
+        return defaultPadding + nestingLevel * 6;
     }
 
     @Override
@@ -106,7 +123,7 @@ public abstract class BaseConfigOptionWidget<C extends ConfigInfo> extends BaseD
         this.addButton(button, (btn, mbtn) -> {
             DirectorySelectorScreen browserScreen = screenFactory.create();
             browserScreen.setParent(GuiUtils.getCurrentScreen());
-            BaseScreen.openGui(browserScreen);
+            BaseScreen.openPopupGui(browserScreen);
         });
 
         this.resetButton.setPosition(x + elementWidth + 4, y + 1);

@@ -8,16 +8,20 @@ import fi.dy.masa.malilib.gui.widget.list.ConfigOptionListWidget;
 
 public class ConfigWidgetContext
 {
-    @Nullable protected final KeybindEditingScreen keyBindScreen;
     protected final Supplier<ConfigOptionListWidget<? extends ConfigInfo>> listWidgetSupplier;
+    @Nullable protected final KeybindEditingScreen keyBindScreen;
     protected final Supplier<DialogHandler> dialogSupplier;
+    protected final int nestingLevel;
 
     public ConfigWidgetContext(Supplier<ConfigOptionListWidget<? extends ConfigInfo>> listWidgetSupplier,
-                               @Nullable KeybindEditingScreen keyBindScreen, Supplier<DialogHandler> dialogSupplier)
+                               @Nullable KeybindEditingScreen keyBindScreen,
+                               Supplier<DialogHandler> dialogSupplier,
+                               int nestingLevel)
     {
         this.listWidgetSupplier = listWidgetSupplier;
         this.keyBindScreen = keyBindScreen;
         this.dialogSupplier = dialogSupplier;
+        this.nestingLevel = nestingLevel;
     }
 
     public ConfigOptionListWidget<? extends ConfigInfo> getListWidget()
@@ -35,5 +39,15 @@ public class ConfigWidgetContext
     public KeybindEditingScreen getKeybindEditingScreen()
     {
         return this.keyBindScreen;
+    }
+
+    public int getNestingLevel()
+    {
+        return this.nestingLevel;
+    }
+
+    public ConfigWidgetContext withNestingLevel(int nestingLevel)
+    {
+        return new ConfigWidgetContext(this.listWidgetSupplier, this.keyBindScreen, this.dialogSupplier, nestingLevel);
     }
 }

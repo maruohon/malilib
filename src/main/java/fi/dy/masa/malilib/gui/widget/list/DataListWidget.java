@@ -58,10 +58,10 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
      * to fetch the contents to the list.<br><br>
      * The non-dynamic case on the other hand allows the list returned
      * by the getCurrentContents() method to be used as a backing data list for other things,
-     * for example the StringListEditEntryWidget uses the list returned by getCurrentEntries()
-     * to store the edited string list before committing the changes back to the actual underlying config.
-     * @param isDynamic
-     * @return
+     * for example the {@link fi.dy.masa.malilib.gui.widget.list.entry.BaseOrderableListEditEntryWidget}
+     * uses the list returned by getCurrentEntries()
+     * to store the edited list, before the changes are stored back to the actual underlying config
+     * in {@link fi.dy.masa.malilib.gui.config.BaseValueListEditScreen#onGuiClosed()}.
      */
     public DataListWidget<DATATYPE> setContentsAreDynamic(boolean isDynamic)
     {
@@ -99,14 +99,13 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
     protected BaseListEntryWidget createListEntryWidget(int x, int y, int listIndex)
     {
         List<DATATYPE> list = this.getFilteredEntries();
-        List<Integer> indices = this.filteredIndices;
 
         if (this.entryWidgetFactory != null && listIndex < list.size())
         {
+            List<Integer> indices = this.filteredIndices;
             DATATYPE data = list.get(listIndex);
             int originalDataIndex = listIndex < indices.size() ? indices.get(listIndex) : listIndex;
-            int height = this.areEntriesFixedHeight ? this.entryWidgetFixedHeight :
-                         this.getHeightForListEntryWidget(listIndex);
+            int height = this.getHeightForListEntryWidgetCreation(listIndex);
             return this.entryWidgetFactory.createWidget(x, y, this.entryWidgetWidth, height,
                                                         listIndex, originalDataIndex, data, this);
         }

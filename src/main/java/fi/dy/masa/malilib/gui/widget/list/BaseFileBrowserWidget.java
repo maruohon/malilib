@@ -225,10 +225,15 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     }
 
     @Override
-    protected int getHeightForListEntryWidget(int listIndex)
+    protected int getHeightForListEntryWidgetCreation(int listIndex)
     {
-        DirectoryEntry entry = this.filteredContents.get(listIndex);
-        return entry.getType() == DirectoryEntryType.DIRECTORY ? 14 : this.entryWidgetFixedHeight;
+        if (listIndex >= 0 && listIndex < this.filteredContents.size())
+        {
+            DirectoryEntry entry = this.filteredContents.get(listIndex);
+            return entry.getType() == DirectoryEntryType.DIRECTORY ? 14 : this.entryWidgetFixedHeight;
+        }
+
+        return this.entryWidgetFixedHeight;
     }
 
     protected boolean currentDirectoryIsRoot()

@@ -193,14 +193,19 @@ public abstract class BaseListWidget extends ContainerWidget
         {
             for (int i = 0; i < count; ++i)
             {
-                totalHeight += this.getHeightForListEntryWidget(i);
+                totalHeight += this.getHeightForExistingListEntryWidget(i);
             }
         }
 
         this.scrollBar.setTotalHeight(Math.max(totalHeight, this.scrollBar.getHeight()));
     }
 
-    protected int getHeightForListEntryWidget(int listIndex)
+    protected int getHeightForListEntryWidgetCreation(int listIndex)
+    {
+        return this.entryWidgetFixedHeight;
+    }
+
+    protected int getHeightForExistingListEntryWidget(int listIndex)
     {
         if (this.areEntriesFixedHeight || listIndex >= this.entryWidgets.size())
         {
@@ -240,7 +245,7 @@ public abstract class BaseListWidget extends ContainerWidget
 
     public Padding getListPosition()
     {
-        return listPosition;
+        return this.listPosition;
     }
 
     public ScrollBarWidget getScrollbar()

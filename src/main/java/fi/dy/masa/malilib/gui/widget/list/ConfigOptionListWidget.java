@@ -29,13 +29,15 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
     @Nullable protected ConfigsSearchBarWidget configsSearchBarWidget;
     protected int maxLabelWidth;
 
-    public ConfigOptionListWidget(int x, int y, int width, int height, String modId, Supplier<List<C>> entrySupplier,
-                                  IntSupplier defaultElementWidthSupplier, ConfigWidgetContext ctx)
+    protected ConfigOptionListWidget(int x, int y, int width, int height, IntSupplier defaultElementWidthSupplier,
+                                     String modId, Supplier<List<C>> entrySupplier,
+                                     ConfigWidgetContext ctx)
     {
         super(x, y, width, height, entrySupplier);
 
         this.modId = modId;
         this.defaultElementWidthSupplier = defaultElementWidthSupplier;
+        this.areContentsDynamic = true;
 
         this.setEntryWidgetFactory(new ConfigOptionListEntryWidgetFactory<>(ctx));
         this.setEntryFilterStringFactory(ConfigInfo::getSearchStrings);
@@ -140,7 +142,7 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
             this.maxLabelWidth = Math.max(this.maxLabelWidth, this.getStringWidth(name) + 10);
         }
 
-        this.resetScrollbarPosition();
+        //this.resetScrollbarPosition();
     }
 
     @Override
@@ -203,6 +205,31 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
         }
     }
 
+    public static <C extends ConfigInfo> ConfigOptionListWidget<C> createWithExpandedGroups(
+            int listX, int listY, int listWidth, int listHeight, IntSupplier defaultElementWidthSupplier,
+            String modId, Supplier<List<C>> entrySupplier, ConfigWidgetContext ctx)
+    {
+        return new ConfigOptionListWidget<>(listX, listY, listWidth, listHeight,
+                                            defaultElementWidthSupplier, modId,
+                                            createUnNestingConfigSupplier(entrySupplier), ctx);
+    }
+
+    public static <C extends ConfigInfo> Supplier<List<C>> createUnNestingConfigSupplier(Supplier<List<C>> entrySupplier)
+    {
+        return () -> {
+            List<C> originalList = entrySupplier.get();
+            ArrayList<C> expandedList = new ArrayList<>();
+
+            for (C config : originalList)
+            {
+                expandedList.add(config);
+                config.addNestedOptionsToList(expandedList, 1);
+            }
+
+            return expandedList;
+        };
+    }
+
     public static class ConfigOptionListEntryWidgetFactory<C extends ConfigInfo> implements DataListEntryWidgetFactory<C>
     {
         protected final ConfigWidgetContext ctx;
@@ -214,8 +241,9 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
 
         @Override
         @Nullable
-        public BaseConfigOptionWidget<C> createWidget(int x, int y, int width, int height, int listIndex, int originalListIndex,
-                                                      C config, DataListWidget<C> listWidget)
+        public BaseConfigOptionWidget<? extends ConfigInfo> createWidget(int x, int y, int width, int height,
+                                                                         int listIndex, int originalListIndex,
+                                                                         C config, DataListWidget<C> listWidget)
         {
             ConfigOptionWidgetFactory<C> factory = ConfigTypeRegistry.INSTANCE.getWidgetFactory(config);
             return factory.create(x, y, width, height, listIndex, originalListIndex, config, this.ctx);

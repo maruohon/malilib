@@ -109,7 +109,8 @@ public class BaseConfigGroupEditScreen extends BaseListScreen<ConfigOptionListWi
     @Override
     protected ConfigOptionListWidget<? extends ConfigInfo> createListWidget(int listX, int listY, int listWidth, int listHeight)
     {
-        ConfigWidgetContext ctx = new ConfigWidgetContext(this::getListWidget, this.getKeybindEditingScreen(), () -> this.dialogHandler);
-        return new ConfigOptionListWidget<>(listX, listY, listWidth, listHeight, this.modId, this::getConfigs, this::getElementsWidth, ctx);
+        ConfigWidgetContext ctx = new ConfigWidgetContext(this::getListWidget, this.getKeybindEditingScreen(), () -> this.dialogHandler, 0);
+        return ConfigOptionListWidget.createWithExpandedGroups(listX, listY, listWidth, listHeight,
+                                                               this::getElementsWidth, this.modId, this::getConfigs, ctx);
     }
 }
