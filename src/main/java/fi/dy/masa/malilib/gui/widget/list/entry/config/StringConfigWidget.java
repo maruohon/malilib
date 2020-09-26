@@ -43,6 +43,12 @@ public class StringConfigWidget extends BaseConfigOptionWidget<StringConfig>
         this.textField.setWidth(elementWidth);
         this.textField.setText(this.config.getStringValue());
 
+        // Set the cursor to the start at first, so that the beginning
+        // of the string is shown by default. Otherwise, depending on the string length,
+        // an arbitrary number of characters from the end would show at first,
+        // even just one, depending on the alignment/length of the string.
+        this.textField.setCursorToStart();
+
         this.updateResetButton(x + elementWidth + 4, y, this.config);
 
         this.addWidget(this.textField);
