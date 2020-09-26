@@ -29,7 +29,7 @@ public abstract class BaseWidget
     private static int lastDebugOutlineColorHue;
     private static int nextWidgetId;
 
-    public static final RectangleRenderer DEBUG_TEXT_BG_RENDERER = (x, y, w, h, z) -> { RenderUtils.renderOutlinedBox(x - 3, y - 3, w + 6, h + 6, 0xE0000000, 0xFFC0C0C0, z); };
+    public static final RectangleRenderer DEBUG_TEXT_BG_RENDERER = (x, y, w, h, z) -> RenderUtils.renderOutlinedBox(x - 3, y - 3, w + 6, h + 6, 0xE0000000, 0xFFC0C0C0, z);
 
     protected final Minecraft mc;
     protected final FontRenderer textRenderer;
@@ -39,6 +39,7 @@ public abstract class BaseWidget
     private final int id;
     protected ImmutableList<String> combinedHoverStrings = ImmutableList.of();
     @Nullable protected EventListener clickListener;
+    @Nullable protected HoverChecker renderHoverChecker;
     @Nullable protected Consumer<Runnable> taskQueue;
     private int x;
     private int y;
@@ -280,6 +281,11 @@ public abstract class BaseWidget
         this.taskQueue = taskQueue;
     }
 
+    public void setRenderHoverChecker(@Nullable HoverChecker checker)
+    {
+        this.renderHoverChecker = checker;
+    }
+
     /**
      * Schedules a task to run after any widget iterations are finished, to not cause CMEs
      * if the task needs to modify the data list or the widget list in some way.
@@ -327,6 +333,11 @@ public abstract class BaseWidget
 
     public boolean isHoveredForRender(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
     {
+        if (this.renderHoverChecker != null)
+        {
+            return this.renderHoverChecker.isHovered(mouseX, mouseY, isActiveGui, hoveredWidgetId);
+        }
+
         return hoveredWidgetId == this.getId() || (isActiveGui && this.isMouseOver(mouseX, mouseY));
     }
 
@@ -668,5 +679,10 @@ public abstract class BaseWidget
         }
 
         lastDebugOutlineColorHue = 0;
+    }
+
+    public interface HoverChecker
+    {
+        boolean isHovered(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId);
     }
 }
