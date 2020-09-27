@@ -119,7 +119,7 @@ public class ColorEditorHSVScreen extends BaseDialogScreen
 
         String str = "HEX:";
         int w = this.getStringWidth(str);
-        this.addLabel(this.xH - w - 4, y + 4, 0xFFFFFF, str);
+        this.addLabel(this.xH - w - 4, y + 6, 0xFFFFFFFF, str);
         this.textFieldFullColor = new BaseTextFieldWidget(this.xH - 1, y + 2, 68, 14);
         this.textFieldFullColor.setTextValidator(BaseTextFieldWidget.VALIDATOR_HEX_COLOR_8);
         this.textFieldFullColor.setListener(new TextChangeListener(null, this));
@@ -170,7 +170,7 @@ public class ColorEditorHSVScreen extends BaseDialogScreen
             default:
         }
 
-        this.addLabel(xLabel, y + 2, 0xFFFFFF, element.name() + ":");
+        this.addLabel(xLabel, y + 3, 0xFFFFFF, element.name() + ":");
         this.addWidget(textField);
 
         return this.heightSlider + this.gapSlider;
