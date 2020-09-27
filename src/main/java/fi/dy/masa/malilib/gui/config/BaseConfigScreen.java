@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import net.minecraft.client.gui.GuiScreen;
+import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.event.dispatch.KeyBindManager;
@@ -22,10 +23,12 @@ import fi.dy.masa.malilib.gui.widget.button.KeyBindConfigButton;
 import fi.dy.masa.malilib.gui.widget.list.ConfigOptionListWidget;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.util.StringUtils;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
 public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? extends ConfigInfo>> implements KeybindEditingScreen
 {
     protected static final Map<String, ConfigScreenState> CURRENT_STATE = new HashMap<>();
+    protected static final Object2IntOpenHashMap<ConfigTab> SCROLLBAR_POSITIONS = new Object2IntOpenHashMap<>();
 
     protected final List<ConfigTab> configTabs;
     protected final List<BaseButton> tabButtons = new ArrayList<>();
@@ -50,14 +53,35 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
         this.setParent(parent);
     }
 
-    public ConfigScreenState getTabState()
-    {
-        return getTabState(this.modId);
-    }
-
     public static ConfigScreenState getTabState(String modId)
     {
         return CURRENT_STATE.computeIfAbsent(modId, (id) -> new ConfigScreenState(null));
+    }
+
+    @Nullable
+    public static ConfigTab getCurrentTab(String modId)
+    {
+        return getTabState(modId).currentTab;
+    }
+
+    public static void setCurrentTab(String modId, ConfigTab tab)
+    {
+        getTabState(modId).currentTab = tab;
+    }
+
+    public static int getScrollBarPosition(ConfigTab tab)
+    {
+        return SCROLLBAR_POSITIONS.getInt(tab);
+    }
+
+    public static void setScrollBarPosition(ConfigTab tab, int position)
+    {
+        SCROLLBAR_POSITIONS.put(tab, position);
+    }
+
+    public ConfigScreenState getTabState()
+    {
+        return getTabState(this.modId);
     }
 
     public void setConfigSaveListener(@Nullable EventListener configSaveListener)
@@ -78,20 +102,9 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
         return state.currentTab;
     }
 
-    @Nullable
-    public static ConfigTab getCurrentTab(String modId)
-    {
-        return getTabState(modId).currentTab;
-    }
-
     public void setCurrentTab(ConfigTab tab)
     {
         setCurrentTab(this.modId, tab);
-    }
-
-    public static void setCurrentTab(String modId, ConfigTab tab)
-    {
-        getTabState(modId).currentTab = tab;
     }
 
     public int getDefaultConfigElementWidth()
@@ -154,12 +167,19 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
             tabButton.updateButtonState();
         }
 
-        this.reCreateListWidget();
+        ConfigOptionListWidget<?> listWidget = this.getListWidget();
+
+        if (listWidget != null)
+        {
+            listWidget.refreshEntries();
+        }
     }
 
     @Override
     public void initGui()
     {
+        this.restoreScrollBarPositionForCurrentTab();
+
         super.initGui();
 
         this.clearOptions();
@@ -168,16 +188,49 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
         Keyboard.enableRepeatEvents(true);
     }
 
+    public void saveScrollBarPositionForCurrentTab()
+    {
+        if (this.shouldRestoreScrollBarPosition())
+        {
+            ConfigOptionListWidget<?> listWidget = this.getListWidget();
+            ConfigTab tab = this.getCurrentTab();
+
+            if (listWidget != null && tab != null)
+            {
+                setScrollBarPosition(tab, listWidget.getScrollbar().getValue());
+            }
+        }
+    }
+
+    public void restoreScrollBarPositionForCurrentTab()
+    {
+        if (this.shouldRestoreScrollBarPosition())
+        {
+            ConfigOptionListWidget<?> listWidget = this.getListWidget();
+            ConfigTab tab = this.getCurrentTab();
+
+            if (listWidget != null && tab != null)
+            {
+                listWidget.setRequestedScrollBarPosition(getScrollBarPosition(tab));
+            }
+        }
+    }
+
+    protected boolean shouldRestoreScrollBarPosition()
+    {
+        return MaLiLibConfigs.Generic.REMEMBER_CONFIG_TAB_SCROLL_POSITIONS.getBooleanValue();
+    }
+
     protected void createTabButtonWidget()
     {
         // This stores the value when resizing the window
         if (this.tabButtonContainerWidget != null)
         {
-            this.getTabState().currentTabStartIndex = this.tabButtonContainerWidget.getStartIndex();
+            this.getTabState().visibleTabsStartIndex = this.tabButtonContainerWidget.getStartIndex();
         }
 
         this.tabButtonContainerWidget = new CyclableContainerWidget(10, 22, this.width - 20, 20, this.createTabButtons());
-        this.tabButtonContainerWidget.setStartIndex(this.getTabState().currentTabStartIndex);
+        this.tabButtonContainerWidget.setStartIndex(this.getTabState().visibleTabsStartIndex);
         this.addWidget(this.tabButtonContainerWidget);
     }
 
@@ -209,8 +262,10 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
 
         if (this.tabButtonContainerWidget != null)
         {
-            this.getTabState().currentTabStartIndex = this.tabButtonContainerWidget.getStartIndex();
+            this.getTabState().visibleTabsStartIndex = this.tabButtonContainerWidget.getStartIndex();
         }
+
+        this.saveScrollBarPositionForCurrentTab();
 
         if (ConfigManager.INSTANCE.saveConfigsIfChanged(this.modId))
         {

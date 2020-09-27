@@ -5,7 +5,7 @@ import javax.annotation.Nullable;
 public class ConfigScreenState
 {
     @Nullable public ConfigTab currentTab;
-    public int currentTabStartIndex;
+    public int visibleTabsStartIndex;
 
     public ConfigScreenState(@Nullable ConfigTab currentTab)
     {

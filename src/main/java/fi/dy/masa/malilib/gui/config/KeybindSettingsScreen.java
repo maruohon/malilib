@@ -11,9 +11,9 @@ import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.config.option.OptionListConfig;
 import fi.dy.masa.malilib.gui.BaseDialogScreen;
 import fi.dy.masa.malilib.gui.BaseScreen;
+import fi.dy.masa.malilib.gui.util.DialogHandler;
 import fi.dy.masa.malilib.gui.widget.button.BooleanConfigButton;
 import fi.dy.masa.malilib.gui.widget.button.OptionListConfigButton;
-import fi.dy.masa.malilib.gui.util.DialogHandler;
 import fi.dy.masa.malilib.input.KeyAction;
 import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.input.KeyBindSettings;
@@ -89,11 +89,11 @@ public class KeybindSettingsScreen extends BaseDialogScreen
 
         int totalWidth = this.labelWidth + this.configWidth + 30;
         totalWidth = Math.max(totalWidth, this.getStringWidth(this.title) + 20);
+        int totalHeight = this.configList.size() * 22 + 30;
 
-        this.setWidthAndHeight(totalWidth, this.configList.size() * 22 + 30);
+        this.setWidthAndHeight(totalWidth, totalHeight);
+        this.setScreenWidthAndHeight(totalWidth, totalHeight);
         this.centerOnScreen();
-
-        this.setWorldAndResolution(this.mc, this.dialogWidth, this.dialogHeight);
     }
 
     @Override

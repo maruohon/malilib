@@ -261,7 +261,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
 
         this.refreshEntries();
         this.updateDirectoryNavigationWidget();
-        this.resetScrollbarPosition();
+        this.resetScrollBarPosition();
     }
 
     @Override

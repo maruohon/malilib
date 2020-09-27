@@ -8,6 +8,7 @@ malilib.config.comment.keybinddisplayalignment=The alignment for the keybind dis
 malilib.config.comment.keybinddisplaycallbackonly=If enabled, then only keybinds that have a defined action callback\nwill be displayed on the keybind display toast.
 malilib.config.comment.keybinddisplaycancelonly=If enabled, then only keybinds that are set to cancel\nfurther processing will be displayed on the\nkeybind display toast. This prevents so called "modifier" keys\nfrom spamming the display.
 malilib.config.comment.keybinddisplayduration=The duration (in milliseconds) the keybind display toasts are shown
+malilib.config.comment.rememberconfigtabscrollpositions=Remember the config screen scrollbar position for each tab
 
 malilib.config.comment.guidebug=When enabled, all GUI widgets will draw their outlines\nand when hovered also their position and dimension\ninfo and the widget class name.\nIf a key is set for GUI Debug Key, then that key must be held\nfor any of the debug rendering to happen.
 malilib.config.comment.guidebugall=If true, then all widgets will render the debug outline,\notherwise only the hovered widget will render it
@@ -29,6 +30,7 @@ malilib.config.name.keybinddisplayalignment=KeyBind Display Alignment
 malilib.config.name.keybinddisplaycallbackonly=KeyBind Display Callback Only
 malilib.config.name.keybinddisplaycancelonly=KeyBind Display Cancel Only
 malilib.config.name.keybinddisplayduration=KeyBind Display Duration
+malilib.config.name.rememberconfigtabscrollpositions=Remember Config Screen Scroll Positions
 
 malilib.config.name.guidebug=GUI Debug
 malilib.config.name.guidebugall=GUI Debug All
@@ -187,7 +189,7 @@ malilib.gui.title.generic=Generic
 malilib.gui.title.identifier_list_edit=Edit identifier list '%s'
 malilib.gui.title.info=Info
 malilib.gui.title.item_list_edit=Edit item list '%s'
-malilib.gui.title.keybind_settings.advanced=Advanced Keybind Settings '%s'
+malilib.gui.title.keybind_settings.advanced=Advanced Keybind Settings for '%s'
 malilib.gui.title.status_effect_list_edit=Edit status effect list '%s'
 malilib.gui.title.string_list_edit=Edit string list '%s'
 

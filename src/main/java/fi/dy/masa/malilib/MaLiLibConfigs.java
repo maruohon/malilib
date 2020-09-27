@@ -24,11 +24,12 @@ public class MaLiLibConfigs implements ModConfig
         public static final OptionListConfig<KeybindDisplayMode> KEYBIND_DISPLAY        = new OptionListConfig<>("keybindDisplay", KeybindDisplayMode.NONE);
         public static final OptionListConfig<HudAlignment> KEYBIND_DISPLAY_ALIGNMENT    = new OptionListConfig<>("keybindDisplayAlignment", HudAlignment.BOTTOM_RIGHT);
 
-        public static final HotkeyConfig IGNORED_KEYS                   = new HotkeyConfig("ignoredKeys", "");
-        public static final BooleanConfig KEYBIND_DISPLAY_CALLBACK_ONLY = new BooleanConfig("keybindDisplayCallbackOnly", true);
-        public static final BooleanConfig KEYBIND_DISPLAY_CANCEL_ONLY   = new BooleanConfig("keybindDisplayCancelOnly", true);
-        public static final IntegerConfig KEYBIND_DISPLAY_DURATION      = new IntegerConfig("keybindDisplayDuration", 5000, 0, 120000);
-        public static final HotkeyConfig OPEN_GUI_CONFIGS               = new HotkeyConfig("openGuiConfigs", "A,C");
+        public static final HotkeyConfig IGNORED_KEYS                           = new HotkeyConfig("ignoredKeys", "");
+        public static final BooleanConfig KEYBIND_DISPLAY_CALLBACK_ONLY         = new BooleanConfig("keybindDisplayCallbackOnly", true);
+        public static final BooleanConfig KEYBIND_DISPLAY_CANCEL_ONLY           = new BooleanConfig("keybindDisplayCancelOnly", true);
+        public static final IntegerConfig KEYBIND_DISPLAY_DURATION              = new IntegerConfig("keybindDisplayDuration", 5000, 0, 120000);
+        public static final HotkeyConfig OPEN_GUI_CONFIGS                       = new HotkeyConfig("openGuiConfigs", "A,C");
+        public static final BooleanConfig REMEMBER_CONFIG_TAB_SCROLL_POSITIONS  = new BooleanConfig("rememberConfigTabScrollPositions", true);
 
         public static final ImmutableList<ConfigOption<?>> OPTIONS = ImmutableList.of(
                 CONFIG_SEARCH_DEFAULT_SCOPE,
@@ -38,7 +39,8 @@ public class MaLiLibConfigs implements ModConfig
                 KEYBIND_DISPLAY_CALLBACK_ONLY,
                 KEYBIND_DISPLAY_CANCEL_ONLY,
                 KEYBIND_DISPLAY_DURATION,
-                OPEN_GUI_CONFIGS
+                OPEN_GUI_CONFIGS,
+                REMEMBER_CONFIG_TAB_SCROLL_POSITIONS
         );
     }
 

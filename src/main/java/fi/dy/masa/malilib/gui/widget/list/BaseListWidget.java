@@ -42,7 +42,6 @@ public abstract class BaseListWidget extends ContainerWidget
     protected int entryWidgetStartY;
     protected int entryWidgetFixedHeight = 22;
     protected int entryWidgetWidth;
-    protected int lastScrollbarPosition;
     protected int listHeight;
     protected int visibleListEntries;
 
@@ -56,6 +55,7 @@ public abstract class BaseListWidget extends ContainerWidget
         // The position gets updated in setSize()
         this.scrollBar = new ScrollBarWidget(0, 0, 8, height);
         this.scrollBar.setArrowTextures(BaseIcon.SMALL_ARROW_UP, BaseIcon.SMALL_ARROW_DOWN);
+        this.scrollBar.setValueChangeListener(this::reCreateListEntryWidgets);
     }
 
     public abstract int getTotalListWidgetCount();
@@ -442,7 +442,7 @@ public abstract class BaseListWidget extends ContainerWidget
                 if (widget.isSearchOpen() != searchOpenPre || filterPre.equals(widget.getFilter()) == false)
                 {
                     this.refreshEntries();
-                    this.resetScrollbarPosition();
+                    this.resetScrollBarPosition();
                 }
 
                 return true;
@@ -455,7 +455,7 @@ public abstract class BaseListWidget extends ContainerWidget
     public void onSearchBarChange(String text)
     {
         this.refreshEntries();
-        this.resetScrollbarPosition();
+        this.resetScrollBarPosition();
     }
 
     @Override
@@ -504,7 +504,7 @@ public abstract class BaseListWidget extends ContainerWidget
         }
     }
 
-    public void resetScrollbarPosition()
+    public void resetScrollBarPosition()
     {
         this.scrollBar.setValue(0);
     }
@@ -599,11 +599,11 @@ public abstract class BaseListWidget extends ContainerWidget
         int usedHeight = 0;
         int x = this.entryWidgetStartX;
         int y = this.entryWidgetStartY;
-        int listIndex = this.scrollBar.getValue();
 
         this.entryWidgets.clear();
         this.visibleListEntries = 0;
 
+        int listIndex = this.getListStartIndex();
         this.onPreListEntryWidgetsCreation(listIndex);
 
         final int totalEntryCount = this.getTotalListWidgetCount();
@@ -636,6 +636,11 @@ public abstract class BaseListWidget extends ContainerWidget
         this.onListEntryWidgetsCreated();
     }
 
+    protected int getListStartIndex()
+    {
+        return this.scrollBar.getValue();
+    }
+
     protected void onPreListEntryWidgetsCreation(int firstListIndex)
     {
     }
@@ -652,29 +657,13 @@ public abstract class BaseListWidget extends ContainerWidget
     @Override
     public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
     {
-        SearchBarWidget searchBar = this.getSearchBarWidget();
         int diffX = x - this.getX();
         int diffY = y - this.getY();
         float diffZ = z - this.getZLevel();
 
-        if (searchBar != null)
-        {
-            int wx = searchBar.getX() + diffX;
-            int wy = searchBar.getY() + diffY;
-            float wz = searchBar.getZLevel() + diffZ;
-            searchBar.renderAt(wx, wy, wz, mouseX, mouseY, isActiveGui, hoveredWidgetId);
-        }
-
         super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hoveredWidgetId);
 
         RenderUtils.color(1f, 1f, 1f, 1f);
-
-        // The value gets updated in the drawScrollBar() method above, if dragging
-        if (this.scrollBar.getValue() != this.lastScrollbarPosition)
-        {
-            this.lastScrollbarPosition = this.scrollBar.getValue();
-            this.reCreateListEntryWidgets();
-        }
 
         // Draw the currently visible widgets
         for (int i = 0; i < this.entryWidgets.size(); i++)

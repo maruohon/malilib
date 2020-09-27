@@ -19,8 +19,9 @@ public class ConfigScreenTabButtonListener implements ButtonActionListener
     @Override
     public void actionPerformedWithButton(BaseButton button, int mouseButton)
     {
+        this.gui.saveScrollBarPositionForCurrentTab();
         this.gui.setCurrentTab(this.tab);
-        this.gui.reCreateConfigWidgets(); // apply the new config width
-        this.gui.getListWidget().resetScrollbarPosition();
+        this.gui.restoreScrollBarPositionForCurrentTab();
+        this.gui.reCreateConfigWidgets();
     }
 }
