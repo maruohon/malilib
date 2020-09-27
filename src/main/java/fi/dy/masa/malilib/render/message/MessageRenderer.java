@@ -23,6 +23,7 @@ public class MessageRenderer extends BackgroundWidget
         this.setBackgroundEnabled(true);
         this.setBackgroundColor(0xA0000000);
         this.setBorderColor(0xFFC0C0C0);
+        this.setBorderWidth(1);
     }
 
     /**

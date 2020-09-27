@@ -546,7 +546,7 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
 
     protected void drawGuiMessages()
     {
-        this.messageRenderer.drawMessages(this.width / 2, this.height / 2, this.zLevel + 0.5f);
+        this.messageRenderer.drawMessages(this.width / 2, this.height / 2, this.zLevel + 200);
     }
 
     public void bindTexture(ResourceLocation texture)
