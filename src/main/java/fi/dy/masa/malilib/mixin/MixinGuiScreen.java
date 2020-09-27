@@ -21,13 +21,12 @@ import fi.dy.masa.malilib.event.dispatch.RenderEventDispatcherImpl;
 @Mixin(GuiScreen.class)
 public abstract class MixinGuiScreen extends Gui
 {
-    @Shadow
-    protected Minecraft mc;
+    @Shadow protected Minecraft mc;
 
     @Inject(method = "renderToolTip", at = @At("RETURN"))
     private void onRenderToolTip(ItemStack stack, int x, int y, CallbackInfo ci)
     {
-        ((RenderEventDispatcherImpl) RenderEventDispatcher.INSTANCE).onRenderTooltipPost(stack, x, y);
+        ((RenderEventDispatcherImpl) RenderEventDispatcher.INSTANCE).onRenderTooltipPost(stack, x, y, this.mc);
     }
 
     @Inject(method = "sendChatMessage(Ljava/lang/String;Z)V", at = @At(

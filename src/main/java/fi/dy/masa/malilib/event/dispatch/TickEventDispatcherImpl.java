@@ -29,10 +29,16 @@ public class TickEventDispatcherImpl implements TickEventDispatcher
     {
         if (this.clientTickHandlers.isEmpty() == false)
         {
+            mc.profiler.startSection("malilib_client_tick");
+
             for (ClientTickHandler handler : this.clientTickHandlers)
             {
+                mc.profiler.func_194340_a(handler.getProfilerSectionSupplier());
                 handler.onClientTick(mc);
+                mc.profiler.endSection();
             }
+
+            mc.profiler.endSection();
         }
     }
 }
