@@ -52,6 +52,8 @@ public abstract class BaseWidget
     protected boolean automaticHeight;
     protected boolean automaticWidth;
     protected boolean hasMaxWidth;
+    protected boolean shouldReceiveOutsideClicks;
+    protected boolean shouldReceiveOutsideScrolls;
     protected int maxWidth;
 
     public BaseWidget(int x, int y, int width, int height)
@@ -303,6 +305,16 @@ public abstract class BaseWidget
         this.clickListener = listener;
     }
 
+    public void setShouldReceiveOutsideClicks(boolean shouldReceiveOutsideClicks)
+    {
+        this.shouldReceiveOutsideClicks = shouldReceiveOutsideClicks;
+    }
+
+    public void setShouldReceiveOutsideScrolls(boolean shouldReceiveOutsideScrolls)
+    {
+        this.shouldReceiveOutsideScrolls = shouldReceiveOutsideScrolls;
+    }
+
     /**
      * This method is called whenever a widget gets added to its parent widget or GUI.
      * By default it updates the widget's own rendering Z-level based on the parent's Z-level.
@@ -343,17 +355,17 @@ public abstract class BaseWidget
 
     public boolean getShouldReceiveOutsideClicks()
     {
-        return false;
+        return this.shouldReceiveOutsideClicks;
     }
 
     public boolean getShouldReceiveOutsideScrolls()
     {
-        return false;
+        return this.shouldReceiveOutsideScrolls;
     }
 
     public boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
-        if (this.isMouseOver(mouseX, mouseY) || this.getShouldReceiveOutsideClicks())
+        if (this.getShouldReceiveOutsideClicks() || this.isMouseOver(mouseX, mouseY))
         {
             return this.onMouseClickedImpl(mouseX, mouseY, mouseButton);
         }
@@ -383,7 +395,7 @@ public abstract class BaseWidget
 
     public boolean onMouseScrolled(int mouseX, int mouseY, double mouseWheelDelta)
     {
-        if (this.isMouseOver(mouseX, mouseY) || this.getShouldReceiveOutsideScrolls())
+        if (this.getShouldReceiveOutsideScrolls() || this.isMouseOver(mouseX, mouseY))
         {
             return this.onMouseScrolledImpl(mouseX, mouseY, mouseWheelDelta);
         }

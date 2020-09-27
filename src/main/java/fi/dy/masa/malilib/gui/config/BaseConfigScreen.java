@@ -264,7 +264,7 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
         }
 
         // When clicking on not-a-button, clear the selection
-        if (this.activeKeyBindButton != null)
+        if (this.activeKeyBindButton != null && mouseButton == 0)
         {
             this.setActiveKeyBindButton(null);
             return true;

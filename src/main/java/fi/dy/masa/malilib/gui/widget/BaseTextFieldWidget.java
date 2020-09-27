@@ -64,6 +64,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
 
         this.lastNotifiedText = text;
 
+        this.setShouldReceiveOutsideClicks(true);
         this.setBackgroundColor(0xFF000000);
         this.setBackgroundEnabled(true);
         this.setBorderColor(this.colorUnfocused);
@@ -690,12 +691,6 @@ public class BaseTextFieldWidget extends BackgroundWidget
         }
 
         this.insertText(GuiScreen.getClipboardString());
-    }
-
-    @Override
-    public boolean getShouldReceiveOutsideClicks()
-    {
-        return true;
     }
 
     @Override

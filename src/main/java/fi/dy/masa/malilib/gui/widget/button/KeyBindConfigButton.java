@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
+import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.event.dispatch.KeyBindManager;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.config.KeybindEditingScreen;
@@ -12,6 +13,8 @@ import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.input.KeyBindCategory;
 import fi.dy.masa.malilib.input.KeyBindImpl;
 import fi.dy.masa.malilib.listener.EventListener;
+import fi.dy.masa.malilib.render.message.MessageType;
+import fi.dy.masa.malilib.render.message.MessageUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class KeyBindConfigButton extends GenericButton
@@ -32,6 +35,7 @@ public class KeyBindConfigButton extends GenericButton
         this.host = host;
         this.keyBind = keyBind;
 
+        this.setShouldReceiveOutsideClicks(true);
         this.updateDisplayString();
         this.setHoverInfoRequiresShift(true);
     }
@@ -53,24 +57,31 @@ public class KeyBindConfigButton extends GenericButton
     @Override
     protected boolean onMouseClickedImpl(int mouseX, int mouseY, int mouseButton)
     {
-        super.onMouseClickedImpl(mouseX, mouseY, mouseButton);
+        boolean handled = false;
 
         if (this.selected)
         {
-            this.addKey(mouseButton - 100);
-            this.updateDisplayString();
+            if (mouseButton != 0 || this.isMouseOver(mouseX, mouseY))
+            {
+                this.addKey(mouseButton - 100);
+                this.updateDisplayString();
+                handled = true;
+            }
         }
-        else if (mouseButton == 0)
+        else if (mouseButton == 0 && this.isMouseOver(mouseX, mouseY))
         {
             if (this.host != null)
             {
                 this.host.setActiveKeyBindButton(this);
             }
+
+            handled = true;
         }
-        else if (mouseButton == 2)
+        else if (mouseButton == 2 && this.isMouseOver(mouseX, mouseY))
         {
             this.keyBind.clearKeys();
             this.updateDisplayString();
+            handled = true;
 
             if (this.valueChangeListener != null)
             {
@@ -78,7 +89,12 @@ public class KeyBindConfigButton extends GenericButton
             }
         }
 
-        return true;
+        if (handled)
+        {
+            super.onMouseClickedImpl(mouseX, mouseY, mouseButton);
+        }
+
+        return handled;
     }
 
     public void onKeyPressed(int keyCode)
@@ -106,8 +122,15 @@ public class KeyBindConfigButton extends GenericButton
         }
     }
 
-    private void addKey(int keyCode)
+    protected void addKey(int keyCode)
     {
+        if (MaLiLibConfigs.Generic.IGNORED_KEYS.getKeyBind().getKeys().contains(keyCode))
+        {
+            String str = KeyBindImpl.getStorageStringForKeyCode(keyCode);
+            MessageUtils.showGuiMessage(MessageType.WARNING, "malilib.error.keybind.attempt_to_bind_ignored_key", str);
+            return;
+        }
+
         if (this.firstKey)
         {
             this.newKeys.clear();

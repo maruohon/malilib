@@ -121,6 +121,7 @@ public class DropDownListWidget<T> extends ContainerWidget
         this.searchField.setFocused(true);
         this.searchField.setColorFocused(0xFFFFFF20);
 
+        this.setShouldReceiveOutsideClicks(true);
         this.setWidth(width);
         this.updateFilteredEntries(""); // This must be called after the search text field has been created
         this.updateMaxSize();
@@ -497,12 +498,6 @@ public class DropDownListWidget<T> extends ContainerWidget
 
         return this.isOpen && mouseX >= x && mouseX < x + this.getWidth() &&
                mouseY >= this.dropdownTopY && mouseY < this.dropdownTopY + this.dropdownHeight;
-    }
-
-    @Override
-    public boolean getShouldReceiveOutsideClicks()
-    {
-        return true;
     }
 
     @Override
