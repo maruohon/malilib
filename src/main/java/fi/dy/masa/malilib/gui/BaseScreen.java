@@ -83,6 +83,7 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
     protected int titleColor = 0xFFFFFFFF;
     protected boolean renderBorder;
     protected boolean shouldCenter;
+    protected boolean shouldRenderParent;
     protected boolean useTitleHierarchy = true;
 
     public BaseScreen()
@@ -118,6 +119,11 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
     public void setTitle(String title)
     {
         this.title = title;
+    }
+
+    public void setShouldRenderParent(boolean render)
+    {
+        this.shouldRenderParent = render;
     }
 
     protected int getPopupGuiZLevelIncrement()
@@ -221,7 +227,7 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
-        if (this.getParent() != null)
+        if (this.getParent() != null && this.shouldRenderParent)
         {
             this.getParent().drawScreen(mouseX, mouseY, partialTicks);
         }
@@ -755,11 +761,16 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
     /**
      * Opens a popup GUI, which is meant to open on top of another GUI.
      * This will set the Z level on that GUI based on the current GUI
-     * @param gui
      */
     public static boolean openPopupGui(BaseScreen gui)
     {
+        return openPopupGui(gui, true);
+    }
+
+    public static boolean openPopupGui(BaseScreen gui, boolean shouldRenderParent)
+    {
         gui.setPopupGuiZLevelBasedOn(GuiUtils.getCurrentScreen());
+        gui.setShouldRenderParent(shouldRenderParent);
         Minecraft.getMinecraft().displayGuiScreen(gui);
         return true;
     }
