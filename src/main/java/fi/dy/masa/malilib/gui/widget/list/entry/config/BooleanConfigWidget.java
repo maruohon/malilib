@@ -33,9 +33,8 @@ public class BooleanConfigWidget extends BaseConfigOptionWidget<BooleanConfig>
     {
         super.reAddSubWidgets();
 
-        int x = this.getX();
+        int x = this.getElementsStartPosition();
         int y = this.getY() + 1;
-        int xOff = this.getMaxLabelWidth() + 10;
         int elementWidth = this.getElementWidth();
 
         if (elementWidth < 0)
@@ -43,10 +42,10 @@ public class BooleanConfigWidget extends BaseConfigOptionWidget<BooleanConfig>
             elementWidth = this.booleanButton.getWidth();
         }
 
-        this.booleanButton.setPosition(x + xOff, y);
+        this.booleanButton.setPosition(x, y);
         //this.booleanButton.setWidth(elementWidth);
 
-        this.updateResetButton(x + xOff + elementWidth + 4, y, this.config);
+        this.updateResetButton(x + elementWidth + 4, y, this.config);
 
         this.addWidget(this.booleanButton);
         this.addWidget(this.resetButton);

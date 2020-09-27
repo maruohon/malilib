@@ -57,7 +57,7 @@ public abstract class BaseHotkeyedBooleanConfigWidget<C extends ConfigInfo> exte
     {
         super.reAddSubWidgets();
 
-        int x = this.getX() + this.getMaxLabelWidth() + 10;
+        int x = this.getElementsStartPosition();
         int y = this.getY() + 1;
         int elementWidth = this.getElementWidth();
 

@@ -34,7 +34,7 @@ public class OptionListConfigWidget extends BaseConfigOptionWidget<OptionListCon
     {
         super.reAddSubWidgets();
 
-        int x = this.getX() + this.getMaxLabelWidth() + 10;
+        int x = this.getElementsStartPosition();
         int y = this.getY() + 1;
         int elementWidth = this.getElementWidth();
 

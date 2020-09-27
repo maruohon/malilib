@@ -26,10 +26,9 @@ public class MissingConfigTypeFactory implements ConfigOptionWidgetFactory<Confi
         {
             super.reAddSubWidgets();
 
-            int x = this.getX();
+            int x = this.getElementsStartPosition();
             int y = this.getY();
 
-            x += this.getMaxLabelWidth() + 10;
             this.addLabel(x, y + 7, 0xFFFFFFFF, StringUtils.translate(
                     "malilib.gui.label_error.no_widget_factory_for_config_type", this.data.getClass().getName()));
         }

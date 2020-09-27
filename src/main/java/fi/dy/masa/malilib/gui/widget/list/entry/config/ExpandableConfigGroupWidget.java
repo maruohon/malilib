@@ -60,18 +60,17 @@ public class ExpandableConfigGroupWidget extends BaseConfigOptionWidget<Expandab
         int x = this.getX();
         int y = this.getY();
         int height = this.getHeight();
-        int xOff = this.getMaxLabelWidth() + 10;
 
         this.plusMinusIconWidget.setIcon(this.getPlusMinusIcon());
         this.plusMinusIconWidget.setPosition(x + 2, y + (height - this.plusMinusIconWidget.getHeight()) / 2);
         this.arrowIconWidget.setIcon(this.getArrowIcon());
-        this.arrowIconWidget.setPosition(x + xOff, y + (height - this.arrowIconWidget.getHeight()) / 2);
+        this.arrowIconWidget.setPosition(this.getElementsStartPosition(), y + (height - this.arrowIconWidget.getHeight()) / 2);
 
         int tx = this.plusMinusIconWidget.getRight();
         this.configNameLabelWidget.setX(tx);
         this.configOwnerLabelWidget.setX(tx);
 
-        int labelLeftPadding = this.getLabelPadding(2, this.ctx.getNestingLevel());
+        int labelLeftPadding = this.getNestingOffset(this.ctx.getNestingLevel()) + 2;
         this.configNameLabelWidget.setPaddingLeft(labelLeftPadding);
         this.configOwnerLabelWidget.setPaddingLeft(labelLeftPadding);
     }

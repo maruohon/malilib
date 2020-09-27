@@ -30,7 +30,6 @@ public abstract class BaseConfigOptionWidget<C extends ConfigInfo> extends BaseD
 
         this.ctx = ctx;
 
-        int labelLeftPadding = this.getLabelPadding(4, ctx.getNestingLevel());
         String nameLabel = this.data.getDisplayName();
         String ownerLabel = this.ctx.getListWidget().getModNameAndCategoryPrefix(originalListIndex);
 
@@ -46,13 +45,8 @@ public abstract class BaseConfigOptionWidget<C extends ConfigInfo> extends BaseD
 
         boolean showOwner = this.ctx.getListWidget().isShowingOptionsFromOtherCategories();
         this.configOwnerLabelWidget = new LabelWidget(x, y + 2, 0xFF707070, ownerLabel != null ? ownerLabel : "");
-        this.configOwnerLabelWidget.setPaddingLeft(labelLeftPadding);
-
-        int lw = this.getMaxLabelWidth();
-
-        this.configNameLabelWidget = new LabelWidget(x, y, lw, height, 0xFFFFFFFF, nameLabel);
+        this.configNameLabelWidget = new LabelWidget(x, y, this.getMaxLabelWidth(), height, 0xFFFFFFFF, nameLabel);
         this.configNameLabelWidget.setPaddingTop(showOwner ? 12 : 7);
-        this.configNameLabelWidget.setPaddingLeft(labelLeftPadding);
 
         EventListener clickHandler = config.getLabelClickHandler();
         String comment = config.getComment();
@@ -78,11 +72,6 @@ public abstract class BaseConfigOptionWidget<C extends ConfigInfo> extends BaseD
         this.setBackgroundEnabled(true);
     }
 
-    public int getLabelPadding(int defaultPadding, int nestingLevel)
-    {
-        return defaultPadding + nestingLevel * 6;
-    }
-
     @Override
     public void reAddSubWidgets()
     {
@@ -94,6 +83,16 @@ public abstract class BaseConfigOptionWidget<C extends ConfigInfo> extends BaseD
         }
 
         this.addWidget(this.configNameLabelWidget);
+    }
+
+    @Override
+    public void updateSubWidgetsToGeometryChanges()
+    {
+        super.updateSubWidgetsToGeometryChanges();
+
+        int nesting = this.getNestingOffset(this.ctx.getNestingLevel());
+        this.configOwnerLabelWidget.setPaddingLeft(nesting + 4);
+        this.configNameLabelWidget.setPaddingLeft(nesting + 4);
     }
 
     protected int getElementWidth()
@@ -110,7 +109,7 @@ public abstract class BaseConfigOptionWidget<C extends ConfigInfo> extends BaseD
     protected GenericButton createFileSelectorWidgets(int x, int y, final FileConfig config,
                                                       final FileSelectorScreenFactory screenFactory, String buttonText, String hoverTextKey)
     {
-        x += this.getMaxLabelWidth() + 10;
+        x = this.getElementsStartPosition();
         int elementWidth = this.getElementWidth();
         File file = FileUtils.getCanonicalFileIfPossible(config.getFile());
 
@@ -140,6 +139,19 @@ public abstract class BaseConfigOptionWidget<C extends ConfigInfo> extends BaseD
     public int getMaxLabelWidth()
     {
         return this.ctx.getListWidget().getMaxLabelWidth();
+    }
+
+    public int getNestingOffset(int nestingLevel)
+    {
+        return nestingLevel * 6;
+    }
+
+    protected int getElementsStartPosition()
+    {
+        int nestingLevel = this.ctx.getNestingLevel();
+        // The +8 is to compensate for the added "> " prefix when nested
+        int offset = nestingLevel > 0 ? this.getNestingOffset(nestingLevel) + 8 : 0;
+        return this.getX() + this.getMaxLabelWidth() + offset + 10;
     }
 
     public boolean wasModified()

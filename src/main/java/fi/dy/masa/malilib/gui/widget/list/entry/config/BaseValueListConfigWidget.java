@@ -35,16 +35,15 @@ public abstract class BaseValueListConfigWidget<TYPE, CFG extends ValueListConfi
     {
         super.reAddSubWidgets();
 
-        int x = this.getX();
+        int x = this.getElementsStartPosition();
         int y = this.getY() + 1;
-        int xOff = this.getMaxLabelWidth() + 10;
         int elementWidth = this.getElementWidth();
 
-        this.button.setPosition(x + xOff, y);
+        this.button.setPosition(x, y);
         this.button.setWidth(elementWidth);
         this.button.updateDisplayString();
 
-        this.updateResetButton(x + xOff + elementWidth + 4, y, this.config);
+        this.updateResetButton(x + elementWidth + 4, y, this.config);
 
         this.addWidget(this.button);
         this.addWidget(this.resetButton);
