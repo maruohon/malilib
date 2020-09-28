@@ -12,12 +12,13 @@ public abstract class BaseConfigGroup implements ConfigInfo
     protected final String commentTranslationKey;
     protected final Object[] commentArgs;
     protected ImmutableList<ConfigInfo> configs = ImmutableList.of();
+    protected ImmutableList<String> searchStrings = ImmutableList.of();
 
     public BaseConfigGroup(String name, String modId, List<ConfigInfo> configs)
     {
         this(modId + ".config_group.name." + name, modId + ".config_group.comment." + name);
 
-        this.configs = ImmutableList.copyOf(configs);
+        this.setConfigs(configs);
     }
 
     public BaseConfigGroup(String nameTranslationKey, String commentTranslationKey, Object... commentArgs)
@@ -29,12 +30,19 @@ public abstract class BaseConfigGroup implements ConfigInfo
 
     /**
      * Sets the list of contained configs, overriding any old values
-     * @param configs
-     * @return
      */
-    public BaseConfigGroup setConfigs(ConfigInfo... configs)
+    public BaseConfigGroup setConfigs(List<ConfigInfo> configs)
     {
+        ImmutableList.Builder<String> builder = ImmutableList.builder();
+
+        for (ConfigInfo config : configs)
+        {
+            builder.addAll(config.getSearchStrings());
+        }
+
+        this.searchStrings = builder.build();
         this.configs = ImmutableList.copyOf(configs);
+
         return this;
     }
 
@@ -64,6 +72,12 @@ public abstract class BaseConfigGroup implements ConfigInfo
     public String getCommentTranslationKey()
     {
         return this.commentTranslationKey;
+    }
+
+    @Override
+    public List<String> getSearchStrings()
+    {
+        return this.searchStrings;
     }
 
     @Override

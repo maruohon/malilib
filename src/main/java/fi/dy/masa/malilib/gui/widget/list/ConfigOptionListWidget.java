@@ -230,12 +230,37 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
     {
         if (tab != null && tab.showOnConfigScreen())
         {
-            for (ConfigInfo cfg : tab.getConfigsForDisplay())
+            ArrayList<ConfigInfo> expandedList = new ArrayList<>();
+
+            for (ConfigInfo config : tab.getConfigsForDisplay())
             {
-                configList.add(cfg);
+                configList.add(config);
                 tabList.add(tab);
+
+                expandedList.clear();
+                config.addNestedOptionsToList(expandedList, 1);
+                int size = expandedList.size();
+
+                if (size > 0)
+                {
+                    configList.addAll(expandedList);
+
+                    for (int i = 0; i < size; ++i)
+                    {
+                        tabList.add(tab);
+                    }
+                }
             }
         }
+    }
+
+    /**
+     * Clears the cache of config options per search scopes
+     */
+    public void clearConfigSearchCache()
+    {
+        this.cachedConfigs.clear();
+        this.cachedCategories.clear();
     }
 
     public static <C extends ConfigInfo> ConfigOptionListWidget<C> createWithExpandedGroups(

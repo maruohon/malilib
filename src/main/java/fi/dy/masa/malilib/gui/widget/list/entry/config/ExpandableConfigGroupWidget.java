@@ -79,9 +79,11 @@ public class ExpandableConfigGroupWidget extends BaseConfigOptionWidget<Expandab
     protected boolean onMouseClickedImpl(int mouseX, int mouseY, int mouseButton)
     {
         this.config.toggleIsExpanded();
-        int sb = this.ctx.getListWidget().getScrollbar().getValue();
+
+        // Clear the cache so that the new expanded or unexpanded set of configs will actually show up
+        this.ctx.getListWidget().clearConfigSearchCache();
         this.ctx.getListWidget().refreshEntries();
-        this.ctx.getListWidget().getScrollbar().setValue(sb);
+
         return true;
     }
 }
