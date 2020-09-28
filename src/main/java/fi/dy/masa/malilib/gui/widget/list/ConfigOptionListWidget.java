@@ -28,7 +28,6 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
     protected final IntSupplier defaultElementWidthSupplier;
     @Nullable protected ConfigsSearchBarWidget configsSearchBarWidget;
     protected int maxLabelWidth;
-    protected int requestedScrollBarPosition = -1;
 
     protected ConfigOptionListWidget(int x, int y, int width, int height, IntSupplier defaultElementWidthSupplier,
                                      String modId, Supplier<List<C>> entrySupplier,
@@ -44,11 +43,6 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
         this.setEntryFilterStringFactory(ConfigInfo::getSearchStrings);
 
         this.listPosition.setTopPadding(0);
-    }
-
-    public void setRequestedScrollBarPosition(int position)
-    {
-        this.requestedScrollBarPosition = position;
     }
 
     public int getMaxLabelWidth()
@@ -120,33 +114,6 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
     {
         return super.entryMatchesFilter(entry, filterText) &&
                (this.configsSearchBarWidget == null || this.configsSearchBarWidget.passesFilter(entry));
-    }
-
-    @Override
-    protected int getListStartIndex()
-    {
-        // This "request" workaround is needed because the ConfigScreenTabButtonListener
-        // can't set the scroll bar value before re-creating the widgets, as the
-        // maximum allowed value for the scroll bar isn't set yet to the correct value,
-        // which only happens once the amount of visible widgets is known.
-        if (this.requestedScrollBarPosition >= 0)
-        {
-            return this.requestedScrollBarPosition;
-        }
-
-        return super.getListStartIndex();
-    }
-
-    @Override
-    protected void onListEntryWidgetsCreated()
-    {
-        super.onListEntryWidgetsCreated();
-
-        if (this.requestedScrollBarPosition >= 0)
-        {
-            this.getScrollbar().setValue(this.requestedScrollBarPosition);
-            this.requestedScrollBarPosition = -1;
-        }
     }
 
     @Override

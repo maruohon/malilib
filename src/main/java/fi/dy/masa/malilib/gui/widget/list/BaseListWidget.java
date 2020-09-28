@@ -43,6 +43,7 @@ public abstract class BaseListWidget extends ContainerWidget
     protected int entryWidgetFixedHeight = 22;
     protected int entryWidgetWidth;
     protected int listHeight;
+    protected int requestedScrollBarPosition = -1;
     protected int visibleListEntries;
 
     protected boolean allowKeyboardNavigation;
@@ -66,6 +67,11 @@ public abstract class BaseListWidget extends ContainerWidget
     public List<BaseListEntryWidget> getListEntryWidgets()
     {
         return this.entryWidgets;
+    }
+
+    public void setRequestedScrollBarPosition(int position)
+    {
+        this.requestedScrollBarPosition = position;
     }
 
     /**
@@ -638,6 +644,15 @@ public abstract class BaseListWidget extends ContainerWidget
 
     protected int getListStartIndex()
     {
+        // This "request" workaround is needed because the ConfigScreenTabButtonListener
+        // can't set the scroll bar value before re-creating the widgets, as the
+        // maximum allowed value for the scroll bar isn't set yet to the correct value,
+        // which only happens once the amount of visible widgets is known.
+        if (this.requestedScrollBarPosition >= 0)
+        {
+            return this.requestedScrollBarPosition;
+        }
+
         return this.scrollBar.getValue();
     }
 
@@ -652,6 +667,12 @@ public abstract class BaseListWidget extends ContainerWidget
     {
         this.scrollBar.setMaxValue(this.getTotalListWidgetCount() - this.visibleListEntries);
         this.updateScrollBarHeight();
+
+        if (this.requestedScrollBarPosition >= 0)
+        {
+            this.getScrollbar().setValue(this.requestedScrollBarPosition);
+            this.requestedScrollBarPosition = -1;
+        }
     }
 
     @Override
