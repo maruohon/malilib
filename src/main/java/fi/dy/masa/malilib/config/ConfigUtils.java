@@ -1,7 +1,11 @@
 package fi.dy.masa.malilib.config;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import com.google.gson.JsonObject;
+import net.minecraft.util.text.TextFormatting;
+import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.config.option.ConfigOption;
 import fi.dy.masa.malilib.util.JsonUtils;
 
@@ -44,5 +48,10 @@ public class ConfigUtils
             obj.add(config.getName(), serializer.serialize(config));
             config.cacheSavedValue();
         }
+    }
+
+    public static void sortConfigsByDisplayName(ArrayList<ConfigInfo> configs)
+    {
+        configs.sort(Comparator.comparing((c) -> TextFormatting.getTextWithoutFormattingCodes(c.getDisplayName())));
     }
 }
