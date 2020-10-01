@@ -24,7 +24,8 @@ public class ColorIndicatorWidget extends BaseWidget
 
         this.config = config;
         this.valueConsumer = consumer;
-        this.addHoverString("malilib.gui.hover.open_color_editor");
+        String color = Color4f.getHexColorString(this.config.getIntegerValue());
+        this.addHoverString("malilib.gui.hover.open_color_editor", color);
     }
 
     @Override

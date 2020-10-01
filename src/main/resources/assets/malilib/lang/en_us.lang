@@ -110,7 +110,7 @@ malilib.gui.button.hover.list.move_down=Move Down
 malilib.gui.button.hover.list.move_up=Move Up
 malilib.gui.button.hover.list.remove=Remove
 
-malilib.gui.hover.open_color_editor=Open color editor
+malilib.gui.hover.open_color_editor=Open color editor\nCurrent: §f%s§7 (AARRGGBB)
 
 malilib.gui.label.black_white_list_edit.black_list=Black List
 malilib.gui.label.black_white_list_edit.type=List Type
