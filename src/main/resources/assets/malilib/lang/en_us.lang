@@ -16,6 +16,8 @@ malilib.config.comment.guidebuginfoalways=When enabled, the debug position and d
 malilib.config.comment.keybinddebugging=When enabled, key presses and held keys are\nprinted to the game console (and the action bar, if enabled)
 malilib.config.comment.keybinddebuggingingame=If enabled, then the messages from 'Keybind Debugging'\nare also printed to the in-game action bar
 
+malilib.config.comment.dropdownsearchtip=Should the DropDown widget tip about just typing\nto open the search be shown, or was it shown already
+
 malilib.config.comment.keybind_settings.activate_on=Does the keybind activate on press or release of the key combination
 malilib.config.comment.keybind_settings.allow_empty_keybind=Is an empty keybind valid\n(will always be considered to be active)
 malilib.config.comment.keybind_settings.allow_extra_keys=Are extra keys allowed to be held to still activate the keybind
@@ -37,6 +39,8 @@ malilib.config.name.guidebugall=GUI Debug All
 malilib.config.name.guidebuginfoalways=GUI Debug Info Always
 malilib.config.name.keybinddebugging=KeyBind Debugging
 malilib.config.name.keybinddebuggingingame=KeyBind Debug In Action Bar
+
+malilib.config.name.dropdownsearchtip=Drop Down Search Tip
 
 malilib.hotkey.comment.guidebugkey=If this is set, then the GUI debug only renders\nwhile this key is held down
 malilib.hotkey.comment.ignoredkeys=Any keys set here will be completely ignored from\nthe hotkey system. This can be used to blacklist\nkeys that cause issues or often get stuck for some reason.
