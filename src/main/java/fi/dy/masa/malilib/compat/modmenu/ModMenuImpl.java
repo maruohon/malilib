@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.compat.modmenu;
 
-import fi.dy.masa.malilib.MaLiLibConfigGui;
+public class ModMenuImpl{}/*
+
 import io.github.prospector.modmenu.api.ConfigScreenFactory;
 import io.github.prospector.modmenu.api.ModMenuApi;
 
@@ -16,3 +17,4 @@ public class ModMenuImpl implements ModMenuApi
         };
     }
 }
+*/

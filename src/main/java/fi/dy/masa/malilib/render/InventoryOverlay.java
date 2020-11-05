@@ -2,7 +2,6 @@ package fi.dy.masa.malilib.render;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.lwjgl.opengl.GL11;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.block.Block;
 import net.minecraft.block.BrewingStandBlock;
@@ -20,6 +19,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
@@ -60,7 +60,7 @@ public class InventoryOverlay
     {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
-        buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_TEXTURE);
+        buffer.begin(VertexFormat.class_5596.field_27382, VertexFormats.POSITION_TEXTURE);
 
         if (type == InventoryRenderType.FURNACE)
         {
@@ -174,7 +174,7 @@ public class InventoryOverlay
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
-        buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_TEXTURE);
+        buffer.begin(VertexFormat.class_5596.field_27382, VertexFormats.POSITION_TEXTURE);
 
         RenderUtils.bindTexture(TEXTURE_DISPENSER);
 

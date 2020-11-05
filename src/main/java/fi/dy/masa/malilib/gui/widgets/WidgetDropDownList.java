@@ -12,14 +12,13 @@ import fi.dy.masa.malilib.gui.MaLiLibIcons;
 import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
 import fi.dy.masa.malilib.gui.wrappers.TextFieldWrapper;
 import fi.dy.masa.malilib.interfaces.IStringRetriever;
-import fi.dy.masa.malilib.interfaces.IStringValue;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.GuiUtils;
 
 /**
  * A dropdown selection widget for entries in the given list.
- * If the entries extend {@link IStringValue}, then the {@link IStringValue#getStringValue()}
- * method is used for the display string, otherwise {@link toString()} is used.
+ * If the entries extend {@link fi.dy.masa.malilib.interfaces.IStringValue}, then the {@link fi.dy.masa.malilib.interfaces.IStringValue#getStringValue()}
+ * method is used for the display string, otherwise {@link #toString()} is used.
  * @author masa
  *
  * @param <T>

@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.gui;
 
-import java.awt.Color;
+import java.awt.*;
 import javax.annotation.Nullable;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
@@ -8,6 +8,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
@@ -498,7 +499,7 @@ public class GuiColorEditorHSV extends GuiDialogBase
         GL20.glUseProgram(SHADER_HUE.getProgram());
         GL20.glUniform1f(GL20.glGetUniformLocation(SHADER_HUE.getProgram(), "hue_value"), this.relH);
 
-        buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_TEXTURE);
+        buffer.begin(VertexFormat.class_5596.field_27382, VertexFormats.POSITION_TEXTURE);
 
         buffer.vertex(x    , y    , z).texture(1, 0).next();
         buffer.vertex(x    , y + h, z).texture(0, 0).next();
@@ -509,7 +510,7 @@ public class GuiColorEditorHSV extends GuiDialogBase
 
         GL20.glUseProgram(0);
 
-        buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR);
+        buffer.begin(VertexFormat.class_5596.field_27382, VertexFormats.POSITION_COLOR);
 
         float r = this.relR;
         float g = this.relG;

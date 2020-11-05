@@ -17,6 +17,7 @@ import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
@@ -158,7 +159,7 @@ public class RenderUtils
         setupBlend();
         color(r, g, b, a);
 
-        buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION);
+        buffer.begin(VertexFormat.class_5596.field_27382, VertexFormats.POSITION);
 
         buffer.vertex(x        , y         , zLevel).next();
         buffer.vertex(x        , y + height, zLevel).next();
@@ -178,7 +179,7 @@ public class RenderUtils
         BufferBuilder buffer = tessellator.getBuffer();
 
         setupBlend();
-        buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_TEXTURE);
+        buffer.begin(VertexFormat.class_5596.field_27382, VertexFormats.POSITION_TEXTURE);
 
         buffer.vertex(x        , y + height, zLevel).texture( u          * pixelWidth, (v + height) * pixelWidth).next();
         buffer.vertex(x + width, y + height, zLevel).texture((u + width) * pixelWidth, (v + height) * pixelWidth).next();
@@ -295,7 +296,7 @@ public class RenderUtils
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
-        buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR);
+        buffer.begin(VertexFormat.class_5596.field_27382, VertexFormats.POSITION_COLOR);
 
         buffer.vertex(right, top,    zLevel).color(sr, sg, sb, sa).next();
         buffer.vertex(left,  top,    zLevel).color(sr, sg, sb, sa).next();
@@ -773,7 +774,7 @@ public class RenderUtils
         int bgg = ((bgColor >>>  8) & 0xFF);
         int bgb = (bgColor          & 0xFF);
 
-        buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR);
+        buffer.begin(VertexFormat.class_5596.field_27382, VertexFormats.POSITION_COLOR);
         buffer.vertex(-strLenHalf - 1,          -1, 0.0D).color(bgr, bgg, bgb, bga).next();
         buffer.vertex(-strLenHalf - 1,  textHeight, 0.0D).color(bgr, bgg, bgb, bga).next();
         buffer.vertex( strLenHalf    ,  textHeight, 0.0D).color(bgr, bgg, bgb, bga).next();
@@ -846,7 +847,7 @@ public class RenderUtils
         int ha = (int) (color.a * 255f);
         int c = 255;
 
-        buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR);
+        buffer.begin(VertexFormat.class_5596.field_27382, VertexFormats.POSITION_COLOR);
 
         // White full block background
         buffer.vertex(x - 0.5, y - 0.5, z).color(c, c, c, quadAlpha).next();
@@ -893,16 +894,23 @@ public class RenderUtils
 
         RenderSystem.lineWidth(1.6f);
 
-        buffer.begin(GL11.GL_LINE_LOOP, VertexFormats.POSITION_COLOR);
+        buffer.begin(VertexFormat.class_5596.field_27377, VertexFormats.POSITION_COLOR);
 
         // Middle small rectangle
         buffer.vertex(x - 0.25, y - 0.25, z).color(c, c, c, c).next();
         buffer.vertex(x + 0.25, y - 0.25, z).color(c, c, c, c).next();
+
+        buffer.vertex(x + 0.25, y - 0.25, z).color(c, c, c, c).next();
+        buffer.vertex(x + 0.25, y + 0.25, z).color(c, c, c, c).next();
+
         buffer.vertex(x + 0.25, y + 0.25, z).color(c, c, c, c).next();
         buffer.vertex(x - 0.25, y + 0.25, z).color(c, c, c, c).next();
+
+        buffer.vertex(x - 0.25, y + 0.25, z).color(c, c, c, c).next();
+        buffer.vertex(x - 0.25, y - 0.25, z).color(c, c, c, c).next();
         tessellator.draw();
 
-        buffer.begin(GL11.GL_LINES, VertexFormats.POSITION_COLOR);
+        buffer.begin(VertexFormat.class_5596.field_27377, VertexFormats.POSITION_COLOR);
         // Bottom left
         buffer.vertex(x - 0.50, y - 0.50, z).color(c, c, c, c).next();
         buffer.vertex(x - 0.25, y - 0.25, z).color(c, c, c, c).next();
@@ -948,7 +956,7 @@ public class RenderUtils
         int b = (int) (color.b * 255f);
         int c = 255;
 
-        buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR);
+        buffer.begin(VertexFormat.class_5596.field_27382, VertexFormats.POSITION_COLOR);
 
         // Simple colored quad
         buffer.vertex(x - 0.5, y - 0.5, z).color(r, g, b, a).next();
@@ -960,13 +968,20 @@ public class RenderUtils
 
         RenderSystem.lineWidth(1.6f);
 
-        buffer.begin(GL11.GL_LINE_LOOP, VertexFormats.POSITION_COLOR);
+        buffer.begin(VertexFormat.class_5596.field_27377, VertexFormats.POSITION_COLOR);
 
         // Middle rectangle
         buffer.vertex(x - 0.375, y - 0.375, z).color(c, c, c, c).next();
         buffer.vertex(x + 0.375, y - 0.375, z).color(c, c, c, c).next();
+
+        buffer.vertex(x + 0.375, y - 0.375, z).color(c, c, c, c).next();
+        buffer.vertex(x + 0.375, y + 0.375, z).color(c, c, c, c).next();
+
         buffer.vertex(x + 0.375, y + 0.375, z).color(c, c, c, c).next();
         buffer.vertex(x - 0.375, y + 0.375, z).color(c, c, c, c).next();
+
+        buffer.vertex(x - 0.375, y + 0.375, z).color(c, c, c, c).next();
+        buffer.vertex(x - 0.375, y - 0.375, z).color(c, c, c, c).next();
 
         tessellator.draw();
 
@@ -1022,7 +1037,7 @@ public class RenderUtils
 
             Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder buffer = tessellator.getBuffer();
-            buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_TEXTURE);
+            buffer.begin(VertexFormat.class_5596.field_27382, VertexFormats.POSITION_TEXTURE);
             buffer.vertex(x1, y2, z).texture(0.0f, 1.0f).next();
             buffer.vertex(x2, y2, z).texture(1.0f, 1.0f).next();
             buffer.vertex(x2, y1, z).texture(1.0f, 0.0f).next();
@@ -1170,7 +1185,7 @@ public class RenderUtils
         {
             Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder bufferbuilder = tessellator.getBuffer();
-            bufferbuilder.begin(GL11.GL_QUADS, VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL);
+            bufferbuilder.begin(VertexFormat.class_5596.field_27382, VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL);
 
             for (Direction face : Direction.values())
             {

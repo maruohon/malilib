@@ -146,7 +146,7 @@ public class InventoryUtils
     public static boolean swapItemToMainHand(ItemStack stackReference, MinecraftClient mc)
     {
         PlayerEntity player = mc.player;
-        boolean isCreative = player.abilities.creativeMode;
+        boolean isCreative = player.isCreative();
 
         // Already holding the requested item
         if (areStacksEqual(stackReference, player.getMainHandStack()))
@@ -156,8 +156,8 @@ public class InventoryUtils
 
         if (isCreative)
         {
-            player.inventory.addPickBlock(stackReference);
-            mc.interactionManager.clickCreativeStack(player.getMainHandStack(), 36 + player.inventory.selectedSlot); // sendSlotPacket
+            player.method_31548().addPickBlock(stackReference);
+            mc.interactionManager.clickCreativeStack(player.getMainHandStack(), 36 + player.method_31548().selectedSlot); // sendSlotPacket
             return true;
         }
         else
@@ -166,7 +166,7 @@ public class InventoryUtils
 
             if (slot != -1)
             {
-                int currentHotbarSlot = player.inventory.selectedSlot;
+                int currentHotbarSlot = player.method_31548().selectedSlot;
                 mc.interactionManager.clickSlot(player.playerScreenHandler.syncId, slot, currentHotbarSlot, SlotActionType.SWAP, mc.player);
                 return true;
             }
