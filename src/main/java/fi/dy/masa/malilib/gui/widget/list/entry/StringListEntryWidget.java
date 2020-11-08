@@ -1,12 +1,14 @@
 package fi.dy.masa.malilib.gui.widget.list.entry;
 
+import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.render.RenderUtils;
 
 public class StringListEntryWidget extends BaseDataListEntryWidget<String>
 {
-    public StringListEntryWidget(int x, int y, int width, int height, int listIndex, int originalListIndex, String entry)
+    public StringListEntryWidget(int x, int y, int width, int height, int listIndex, int originalListIndex,
+                                 String entry, DataListWidget<String> listWidget)
     {
-        super(x, y, width, height, listIndex, originalListIndex, entry);
+        super(x, y, width, height, listIndex, originalListIndex, entry, listWidget);
     }
 
     @Override

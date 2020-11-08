@@ -19,9 +19,9 @@ public abstract class BaseStringListEditEntryWidget<TYPE> extends BaseOrderableL
                                          TYPE initialValue, TYPE defaultValue,
                                          Function<TYPE, String> toStringConverter,
                                          Function<String, TYPE> fromStringConverter,
-                                         DataListWidget<TYPE> parent)
+                                         DataListWidget<TYPE> listWidget)
     {
-        super(x, y, width, height, listIndex, originalListIndex, initialValue, parent);
+        super(x, y, width, height, listIndex, originalListIndex, initialValue, listWidget);
 
         this.defaultValue = defaultValue;
         this.initialValue = initialValue;

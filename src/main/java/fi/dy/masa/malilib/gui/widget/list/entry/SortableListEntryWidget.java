@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.gui.widget.list.entry;
 
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.icon.Icon;
+import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.render.RenderUtils;
 
 public abstract class SortableListEntryWidget<TYPE> extends BaseDataListEntryWidget<TYPE>
@@ -9,9 +10,9 @@ public abstract class SortableListEntryWidget<TYPE> extends BaseDataListEntryWid
     protected int columnCount = 2;
 
     public SortableListEntryWidget(int x, int y, int width, int height, int listIndex,
-                                   int originalListIndex, @Nullable TYPE entry)
+                                   int originalListIndex, @Nullable TYPE entry, DataListWidget<TYPE> listWidget)
     {
-        super(x, y, width, height, listIndex, originalListIndex, entry);
+        super(x, y, width, height, listIndex, originalListIndex, entry, listWidget);
     }
 
     protected abstract int getColumnPosX(int column);

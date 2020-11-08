@@ -13,7 +13,6 @@ import fi.dy.masa.malilib.render.RenderUtils;
 
 public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDataListEntryWidget<DATATYPE>
 {
-    protected final DataListWidget<DATATYPE> parent;
     protected final List<DATATYPE> dataList;
     protected final GenericButton addButton;
     protected final GenericButton removeButton;
@@ -28,15 +27,14 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
     @Nullable protected LabelWidget labelWidget;
 
     public BaseOrderableListEditEntryWidget(int x, int y, int width, int height, int listIndex, int originalListIndex,
-                                            DATATYPE initialValue, DataListWidget<DATATYPE> parent)
+                                            DATATYPE initialValue, DataListWidget<DATATYPE> listWidget)
     {
-        super(x, y, width, height, listIndex, originalListIndex, initialValue);
+        super(x, y, width, height, listIndex, originalListIndex, initialValue, listWidget);
 
         this.setBackgroundColorHovered(0x30FFFFFF);
-        this.parent = parent;
 
         // This is a reference to the current entries list, which can be modified
-        this.dataList = parent.getCurrentEntries();
+        this.dataList = listWidget.getCurrentEntries();
 
         this.addButton    = this.createListActionButton(x, y, ButtonType.ADD);
         this.removeButton = this.createListActionButton(x, y, ButtonType.REMOVE);
@@ -157,7 +155,7 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
 
     protected int getNewIndexFromDrag(int mouseY)
     {
-        List<BaseListEntryWidget> list = this.parent.getListEntryWidgets();
+        List<BaseListEntryWidget> list = this.listWidget.getListEntryWidgets();
         int newIndex = this.listIndex;
 
         if (mouseY > this.dragStartY)
@@ -214,8 +212,8 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
     {
         int index = this.getInsertionIndex(this.dataList, before);
         this.dataList.add(index, this.getNewDataEntry());
-        this.parent.refreshEntries();
-        this.parent.focusWidget(index);
+        this.listWidget.refreshEntries();
+        this.listWidget.focusWidget(index);
     }
 
     protected void removeEntry()
@@ -225,7 +223,7 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
         if (this.originalListIndex >= 0 && this.originalListIndex < size)
         {
             this.dataList.remove(this.originalListIndex);
-            this.parent.refreshEntries();
+            this.listWidget.refreshEntries();
         }
     }
 
@@ -252,7 +250,7 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
             DATATYPE entry = list.remove(oldIndex);
             list.add(newIndex, entry);
 
-            this.parent.refreshEntries();
+            this.listWidget.refreshEntries();
         }
     }
 

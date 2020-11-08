@@ -63,7 +63,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         this.searchBarWidget = this.navigationWidget;
 
         this.setEntryWidgetFactory((wx, wy, ww, wh, li, oi, entry, lw) ->
-                                    new DirectoryEntryWidget(wx, wy, ww, wh, li, oi, entry, this, this.iconProvider));
+                                    new DirectoryEntryWidget(wx, wy, ww, wh, li, oi, entry, this, this, this.iconProvider));
 
         this.setBackgroundColor(0xB0000000);
         this.setBackgroundEnabled(true);

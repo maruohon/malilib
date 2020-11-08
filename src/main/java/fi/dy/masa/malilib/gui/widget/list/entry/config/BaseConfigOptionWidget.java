@@ -11,6 +11,7 @@ import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
+import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.BaseDataListEntryWidget;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.util.FileUtils;
@@ -26,7 +27,7 @@ public abstract class BaseConfigOptionWidget<C extends ConfigInfo> extends BaseD
     public BaseConfigOptionWidget(int x, int y, int width, int height, int listIndex,
                                   int originalListIndex, C config, ConfigWidgetContext ctx)
     {
-        super(x, y, width, height, listIndex, originalListIndex, config);
+        super(x, y, width, height, listIndex, originalListIndex, config, (DataListWidget<C>) ctx.getListWidget());
 
         this.ctx = ctx;
 

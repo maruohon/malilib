@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.gui.widget.list.entry;
 
 import java.io.File;
 import javax.annotation.Nullable;
+import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.gui.widget.util.DirectoryNavigator;
 import fi.dy.masa.malilib.gui.icon.FileBrowserIconProvider;
 import fi.dy.masa.malilib.gui.icon.Icon;
@@ -16,10 +17,11 @@ public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry
     protected final DirectoryEntry entry;
     @Nullable protected final FileBrowserIconProvider iconProvider;
 
-    public DirectoryEntryWidget(int x, int y, int width, int height, int listIndex, int originalListIndex, DirectoryEntry entry,
+    public DirectoryEntryWidget(int x, int y, int width, int height, int listIndex, int originalListIndex,
+                                DirectoryEntry entry, DataListWidget<DirectoryEntry> listWidget,
                                 DirectoryNavigator navigator, @Nullable FileBrowserIconProvider iconProvider)
     {
-        super(x, y, width, height, listIndex, originalListIndex, entry);
+        super(x, y, width, height, listIndex, originalListIndex, entry, listWidget);
 
         this.entry = entry;
         this.navigator = navigator;
