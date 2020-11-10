@@ -2,9 +2,9 @@ package fi.dy.masa.malilib.render;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.client.util.math.MatrixStack;
 import fi.dy.masa.malilib.gui.Message;
 import fi.dy.masa.malilib.gui.Message.MessageType;
-import net.minecraft.client.util.math.MatrixStack;
 
 public class MessageRenderer
 {
@@ -48,7 +48,7 @@ public class MessageRenderer
     /**
      * Sets whether the rendered box should get centered to the given x and y coordinates, or expand
      * to a given direction from that point.
-     * If centeredV is false, then the value set in {@link setExpandUp()} determines whether the box expands up or down.
+     * If centeredV is false, then the value set in {@link #setExpandUp(boolean)} determines whether the box expands up or down.
      * @param centeredH
      * @param centeredV
      */

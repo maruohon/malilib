@@ -499,7 +499,7 @@ public class GuiColorEditorHSV extends GuiDialogBase
         GL20.glUseProgram(SHADER_HUE.getProgram());
         GL20.glUniform1f(GL20.glGetUniformLocation(SHADER_HUE.getProgram(), "hue_value"), this.relH);
 
-        buffer.begin(VertexFormat.class_5596.field_27382, VertexFormats.POSITION_TEXTURE);
+        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
 
         buffer.vertex(x    , y    , z).texture(1, 0).next();
         buffer.vertex(x    , y + h, z).texture(0, 0).next();
@@ -510,7 +510,7 @@ public class GuiColorEditorHSV extends GuiDialogBase
 
         GL20.glUseProgram(0);
 
-        buffer.begin(VertexFormat.class_5596.field_27382, VertexFormats.POSITION_COLOR);
+        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
 
         float r = this.relR;
         float g = this.relG;
