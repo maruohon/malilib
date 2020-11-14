@@ -12,7 +12,7 @@ public class WorldUtils
 {
     public static String getDimensionId(World world)
     {
-        Identifier id = world.getRegistryManager().getDimensionTypes().getId(world.getDimension());
+        Identifier id = world.getRegistryKey().getValue();
         return id != null ? id.getNamespace() + "_" + id.getPath() : "__fallback";
     }
 
