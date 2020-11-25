@@ -17,6 +17,7 @@ import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.model.BakedModel;
@@ -1031,17 +1032,19 @@ public class RenderUtils
             buffer.vertex(x1, y1, z).texture(0.0f, 0.0f).next();
             tessellator.draw();
 
-            MapState mapdata = FilledMapItem.getMapState(stack, mc().world);
+            Integer mapId = FilledMapItem.getMapId(stack);
+            MapState mapState = FilledMapItem.getMapState(mapId, mc().world);
 
-            if (mapdata != null)
+            if (mapState != null)
             {
                 x1 += 8;
                 y1 += 8;
                 z = 310;
+                VertexConsumerProvider.Immediate consumer = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
                 double scale = (double) (dimensions - 16) / 128.0D;
                 RenderSystem.translatef(x1, y1, z);
                 RenderSystem.scaled(scale, scale, 0);
-                mc().gameRenderer.getMapRenderer().draw(new MatrixStack(), MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers(), mapdata, false, 0xF000F0);
+                mc().gameRenderer.getMapRenderer().draw(new MatrixStack(), consumer, mapId, mapState, false, 0xF000F0);
             }
 
             RenderSystem.enableLighting();
