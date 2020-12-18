@@ -1,18 +1,22 @@
 package fi.dy.masa.malilib.util;
 
+import java.util.Optional;
 import javax.annotation.Nullable;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.WorldChunk;
+import net.minecraft.world.dimension.DimensionType;
 
 public class WorldUtils
 {
     public static String getDimensionId(World world)
     {
-        Identifier id = world.getRegistryManager().getDimensionTypes().getId(world.getDimension());
+        Optional<? extends Registry<DimensionType>> optional = world.getRegistryManager().method_33310(Registry.DIMENSION_TYPE_KEY);
+        Identifier id = optional.map(dimensionTypes -> dimensionTypes.getId(world.getDimension())).orElse(null);
         return id != null ? id.getNamespace() + "_" + id.getPath() : "__fallback";
     }
 
