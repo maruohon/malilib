@@ -1,7 +1,5 @@
 package fi.dy.masa.malilib.gui.callback;
 
-import fi.dy.masa.malilib.gui.callback.SliderCallback;
-
 public interface SteppedSliderCallback extends SliderCallback
 {
     /**
