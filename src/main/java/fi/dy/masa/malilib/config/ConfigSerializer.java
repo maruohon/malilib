@@ -1,7 +1,6 @@
 package fi.dy.masa.malilib.config;
 
 import com.google.gson.JsonElement;
-import fi.dy.masa.malilib.config.option.ConfigOption;
 
 public interface ConfigSerializer
 {

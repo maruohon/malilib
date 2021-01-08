@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.gui.widget.list.entry.config;
 
-import fi.dy.masa.malilib.config.option.ConfigInfo;
+import fi.dy.masa.malilib.config.ConfigInfo;
 import fi.dy.masa.malilib.config.option.NestedConfig;
 import fi.dy.masa.malilib.gui.config.ConfigOptionWidgetFactory;
 import fi.dy.masa.malilib.gui.config.ConfigTypeRegistry;

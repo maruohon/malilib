@@ -1,7 +1,9 @@
-package fi.dy.masa.malilib.config;
+package fi.dy.masa.malilib.config.category;
 
 import java.util.List;
-import fi.dy.masa.malilib.config.option.ConfigOption;
+import fi.dy.masa.malilib.config.ConfigDeserializer;
+import fi.dy.masa.malilib.config.ConfigOption;
+import fi.dy.masa.malilib.config.ConfigSerializer;
 
 public class BaseConfigOptionCategory implements ConfigOptionCategory
 {
@@ -9,7 +11,7 @@ public class BaseConfigOptionCategory implements ConfigOptionCategory
     protected final boolean saveToFile;
     protected final List<? extends ConfigOption<?>> configs;
     protected ConfigSerializer serializer = ConfigOption::getAsJsonElement;
-    protected ConfigDeSerializer deSerializer = ConfigOption::setValueFromJsonElement;
+    protected ConfigDeserializer deSerializer = ConfigOption::setValueFromJsonElement;
 
     public BaseConfigOptionCategory(String name, boolean saveToFile, List<? extends ConfigOption<?>> configs)
     {
@@ -37,7 +39,7 @@ public class BaseConfigOptionCategory implements ConfigOptionCategory
     }
 
     @Override
-    public ConfigDeSerializer getDeserializer()
+    public ConfigDeserializer getDeserializer()
     {
         return this.deSerializer;
     }
@@ -54,7 +56,7 @@ public class BaseConfigOptionCategory implements ConfigOptionCategory
         return this;
     }
 
-    public BaseConfigOptionCategory setDeSerializer(ConfigDeSerializer deSerializer)
+    public BaseConfigOptionCategory setDeSerializer(ConfigDeserializer deSerializer)
     {
         this.deSerializer = deSerializer;
         return this;

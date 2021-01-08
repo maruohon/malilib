@@ -1,9 +1,8 @@
 package fi.dy.masa.malilib.config;
 
 import com.google.gson.JsonElement;
-import fi.dy.masa.malilib.config.option.ConfigOption;
 
-public interface ConfigDeSerializer
+public interface ConfigDeserializer
 {
     /**
      * Reads the given config from the provided JsonElement
@@ -11,5 +10,5 @@ public interface ConfigDeSerializer
      * @param element
      * @param configName
      */
-    void deSerializeConfig(ConfigOption<?> config, JsonElement element, String configName);
+    void deserialize(ConfigOption<?> config, JsonElement element, String configName);
 }

@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.config.option;
+package fi.dy.masa.malilib.config;
 
 import java.util.Collections;
 import java.util.List;
@@ -21,19 +21,6 @@ public interface ConfigInfo
     String getConfigNameTranslationKey();
 
     /**
-     * Returns the display name used for this config on the config screens
-     * @return
-     */
-    default String getDisplayName()
-    {
-        String key = this.getConfigNameTranslationKey();
-        String name = StringUtils.translate(key);
-
-        // If there is no translation for the config name, then show the actual base name
-        return name.equals(key) ? this.getName() : name;
-    }
-
-    /**
      * Returns the raw translation key for the comment.
      * @return
      */
@@ -41,9 +28,22 @@ public interface ConfigInfo
     String getCommentTranslationKey();
 
     /**
+     * Returns the display name used for this config on the config screens
+     * @return
+     */
+    default String getDisplayName()
+    {
+        String key = this.getConfigNameTranslationKey();
+        String translatedName = StringUtils.translate(key);
+
+        // If there is no translation for the config name, then show the actual base name
+        return translatedName.equals(key) ? this.getName() : translatedName;
+    }
+
+    /**
      * Returns the comment displayed when hovering over the config name in the config GUI.
      * Newlines can be added with "\n". Can be null if there is no comment for this config.
-     * @return the comment, or null if no comment has been set
+     * @return the (localized) comment, or null if no comment has been set
      */
     @Nullable
     default String getComment()

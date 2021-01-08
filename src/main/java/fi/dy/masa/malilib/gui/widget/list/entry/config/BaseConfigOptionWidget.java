@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.gui.widget.list.entry.config;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import fi.dy.masa.malilib.config.option.ConfigInfo;
+import fi.dy.masa.malilib.config.ConfigInfo;
 import fi.dy.masa.malilib.config.option.FileConfig;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.DirectorySelectorScreen;

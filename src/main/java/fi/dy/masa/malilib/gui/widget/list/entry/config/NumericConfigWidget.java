@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.gui.widget.list.entry.config;
 
-import fi.dy.masa.malilib.config.option.ConfigOption;
-import fi.dy.masa.malilib.config.option.SliderConfig;
+import fi.dy.masa.malilib.config.ConfigOption;
+import fi.dy.masa.malilib.config.SliderConfig;
 import fi.dy.masa.malilib.gui.callback.SliderCallback;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;

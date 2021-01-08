@@ -6,7 +6,7 @@ import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.MaLiLibConfigs;
-import fi.dy.masa.malilib.config.option.ConfigInfo;
+import fi.dy.masa.malilib.config.ConfigInfo;
 import fi.dy.masa.malilib.config.value.BaseConfigOptionListEntry;
 import fi.dy.masa.malilib.config.value.ConfigOptionListEntry;
 import fi.dy.masa.malilib.gui.BaseScreen;

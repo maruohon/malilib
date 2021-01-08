@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.MaLiLib;
+import fi.dy.masa.malilib.config.SliderConfig;
 
 public class DoubleConfig extends BaseConfig<Double> implements SliderConfig
 {

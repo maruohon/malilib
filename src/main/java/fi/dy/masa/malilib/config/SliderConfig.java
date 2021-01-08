@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.config.option;
+package fi.dy.masa.malilib.config;
 
 public interface SliderConfig
 {

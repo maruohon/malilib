@@ -5,28 +5,12 @@ import java.util.List;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.MaLiLib;
-import fi.dy.masa.malilib.config.option.ConfigOption;
+import fi.dy.masa.malilib.config.category.ConfigOptionCategory;
 import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.JsonUtils;
 
 public interface ModConfig
 {
-    /**
-     * Returns the directory where the configs should be saved
-     * @return
-     */
-    default File getConfigDirectory()
-    {
-        File dir = FileUtils.getConfigDirectory();
-
-        if (dir.exists() == false && dir.mkdirs() == false)
-        {
-            MaLiLib.LOGGER.warn("Failed to create config directory '{}'", dir.getAbsolutePath());
-        }
-
-        return dir;
-    }
-
     /**
      * Returns the mod ID this handler belongs to
      * @return
@@ -58,6 +42,22 @@ public interface ModConfig
      * @return
      */
     List<ConfigOptionCategory> getConfigOptionCategories();
+
+    /**
+     * Returns the directory where the configs should be saved
+     * @return
+     */
+    default File getConfigDirectory()
+    {
+        File dir = FileUtils.getConfigDirectory();
+
+        if (dir.exists() == false && dir.mkdirs() == false)
+        {
+            MaLiLib.LOGGER.warn("Failed to create config directory '{}'", dir.getAbsolutePath());
+        }
+
+        return dir;
+    }
 
     /**
      * Returns true if at least some of the config values have changed since last saving to disk.
@@ -145,7 +145,7 @@ public interface ModConfig
     /**
      * Called to unconditionally save all configs to a file
      */
-    default void save()
+    default boolean save()
     {
         File dir = this.getConfigDirectory();
 
@@ -163,8 +163,10 @@ public interface ModConfig
                 this.writeConfigCategory(root, category);
             }
 
-            JsonUtils.writeJsonToFile(root, new File(dir, this.getConfigFileName()));
+            return JsonUtils.writeJsonToFile(root, new File(dir, this.getConfigFileName()));
         }
+
+        return false;
     }
 
     /**
@@ -174,8 +176,7 @@ public interface ModConfig
     {
         if (this.areConfigsDirty())
         {
-            this.save();
-            return true;
+            return this.save();
         }
 
         return false;

@@ -1,9 +1,7 @@
-package fi.dy.masa.malilib.config.option;
+package fi.dy.masa.malilib.config;
 
 import javax.annotation.Nullable;
 import com.google.gson.JsonElement;
-import fi.dy.masa.malilib.config.ValueChangeCallback;
-import fi.dy.masa.malilib.config.ValueLoadedCallback;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public interface ConfigOption<T> extends ConfigInfo

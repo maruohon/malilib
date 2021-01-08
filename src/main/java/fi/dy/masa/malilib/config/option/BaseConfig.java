@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import javax.annotation.Nullable;
+import fi.dy.masa.malilib.config.ConfigOption;
 import fi.dy.masa.malilib.config.ValueChangeCallback;
 import fi.dy.masa.malilib.config.ValueLoadedCallback;
 import fi.dy.masa.malilib.listener.EventListener;

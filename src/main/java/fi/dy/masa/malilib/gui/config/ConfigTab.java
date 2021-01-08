@@ -1,8 +1,8 @@
 package fi.dy.masa.malilib.gui.config;
 
 import java.util.List;
-import fi.dy.masa.malilib.config.ConfigCategory;
-import fi.dy.masa.malilib.config.option.ConfigInfo;
+import fi.dy.masa.malilib.config.category.ConfigCategory;
+import fi.dy.masa.malilib.config.ConfigInfo;
 import fi.dy.masa.malilib.gui.widget.button.ButtonActionListener;
 
 public interface ConfigTab extends ConfigCategory

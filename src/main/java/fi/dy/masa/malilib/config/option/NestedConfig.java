@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.config.option;
 
 import javax.annotation.Nullable;
+import fi.dy.masa.malilib.config.ConfigInfo;
 
 /**
  * This is a wrapper used for the config screens, to embed the nesting level information
@@ -9,12 +10,12 @@ import javax.annotation.Nullable;
 public class NestedConfig implements ConfigInfo
 {
     protected final ConfigInfo config;
-    protected final int nestinglevel;
+    protected final int nestingLevel;
 
-    public NestedConfig(ConfigInfo config, int nestinglevel)
+    public NestedConfig(ConfigInfo config, int nestingLevel)
     {
         this.config = config;
-        this.nestinglevel = nestinglevel;
+        this.nestingLevel = nestingLevel;
     }
 
     public ConfigInfo getConfig()
@@ -24,7 +25,7 @@ public class NestedConfig implements ConfigInfo
 
     public int getNestingLevel()
     {
-        return this.nestinglevel;
+        return this.nestingLevel;
     }
 
     @Override

@@ -6,7 +6,7 @@ import fi.dy.masa.malilib.config.option.BlackWhiteListConfig;
 import fi.dy.masa.malilib.config.option.BlockListConfig;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.config.option.ColorConfig;
-import fi.dy.masa.malilib.config.option.ConfigInfo;
+import fi.dy.masa.malilib.config.ConfigInfo;
 import fi.dy.masa.malilib.config.option.DirectoryConfig;
 import fi.dy.masa.malilib.config.option.DoubleConfig;
 import fi.dy.masa.malilib.config.option.EquipmentSlotListConfig;
