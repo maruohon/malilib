@@ -133,7 +133,7 @@ malilib.gui.label.config_scope.all_mods=From all mods (using MaLiLib)
 malilib.gui.label.config_scope.current_category=From current category
 
 malilib.gui.label.config_type_filter.all=Everything
-malilib.gui.label.config_type_filter.modified=Modified config options
+malilib.gui.label.config_type_filter.modified=Modified configs
 malilib.gui.label.config_type_filter.enabled_toggle=Enabled toggle options
 malilib.gui.label.config_type_filter.disabled_toggle=Disabled toggle options
 malilib.gui.label.config_type_filter.modified_toggle=Modified toggle options
@@ -272,4 +272,4 @@ malilib.message.set_layer_mode_to=Set layer mode to %s
 malilib.message.set_layer_to=Set layer to %s
 
 malilib.toast.keybind_display.keys=§eKeys:§r §6%s§r
-malilib.toast.keybind_display.action=Action: §b%s : %s§r
+malilib.toast.keybind_display.action=Action: §b%s => %s§r

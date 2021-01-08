@@ -21,6 +21,7 @@ public abstract class BaseConfig<T> implements ConfigOption<T>
     protected String commentTranslationKey;
     protected Object[] commentArgs;
     protected String modId = "?";
+    protected String modName = "?";
     @Nullable
     protected ValueChangeCallback<T> valueChangeCallback;
     @Nullable
@@ -55,6 +56,12 @@ public abstract class BaseConfig<T> implements ConfigOption<T>
     }
 
     @Override
+    public String getModName()
+    {
+        return this.modName;
+    }
+
+    @Override
     public List<String> getSearchStrings()
     {
         return this.searchStrings;
@@ -85,6 +92,12 @@ public abstract class BaseConfig<T> implements ConfigOption<T>
         {
             this.searchStrings.add(this.getPrettyName());
         }
+    }
+
+    @Override
+    public void setModName(String modName)
+    {
+        this.modName = modName;
     }
 
     protected String createNameTranslationKey(String modId)

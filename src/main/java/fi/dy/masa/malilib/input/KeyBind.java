@@ -10,9 +10,11 @@ public interface KeyBind
 {
     /**
      * Sets the mod name owning this keybind. Used for the popup toast rendering.
-     * @param modId
+     * @param modName
      */
-    void setModId(String modId);
+    void setModName(String modName);
+
+    void setNameTranslationKey(String nameTranslationKey);
 
     boolean isValid();
 

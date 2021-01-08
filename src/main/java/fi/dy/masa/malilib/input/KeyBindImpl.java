@@ -32,7 +32,6 @@ public class KeyBindImpl implements KeyBind
     private static final List<Integer> PRESSED_KEYS = new ArrayList<>();
     private static int triggeredCount;
 
-    private final String name;
     private final KeyBindSettings defaultSettings;
     private final ImmutableList<Integer> defaultKeyCodes;
     private ImmutableList<Integer> keyCodes = ImmutableList.of();
@@ -40,15 +39,15 @@ public class KeyBindImpl implements KeyBind
     private KeyBindSettings settings;
     private KeyBindSettings lastSavedSettings;
     private String modName = "";
+    private String nameTranslationKey = "";
     private boolean pressed;
     private boolean pressedLast;
     private int heldTime;
     @Nullable
     private HotkeyCallback callback;
 
-    private KeyBindImpl(String name, String defaultStorageString, KeyBindSettings settings)
+    private KeyBindImpl(String defaultStorageString, KeyBindSettings settings)
     {
-        this.name = name;
         this.defaultSettings = settings;
         this.defaultKeyCodes = readKeysFromStorageString(defaultStorageString);
         this.settings = settings;
@@ -57,9 +56,15 @@ public class KeyBindImpl implements KeyBind
     }
 
     @Override
-    public void setModId(String modId)
+    public void setModName(String modName)
     {
-        this.modName = modId;
+        this.modName = modName;
+    }
+
+    @Override
+    public void setNameTranslationKey(String nameTranslationKey)
+    {
+        this.nameTranslationKey = nameTranslationKey;
     }
 
     @Override
@@ -249,7 +254,8 @@ public class KeyBindImpl implements KeyBind
 
             if (val == KeybindDisplayMode.ACTIONS || val == KeybindDisplayMode.KEYS_ACTIONS)
             {
-                lines.add(StringUtils.translate("malilib.toast.keybind_display.action", this.modName, this.name));
+                String name = StringUtils.translate(this.nameTranslationKey);
+                lines.add(StringUtils.translate("malilib.toast.keybind_display.action", this.modName, name));
             }
 
             HudAlignment align = MaLiLibConfigs.Generic.KEYBIND_DISPLAY_ALIGNMENT.getOptionListValue();
@@ -476,9 +482,9 @@ public class KeyBindImpl implements KeyBind
         return obj;
     }
 
-    public static KeyBindImpl fromStorageString(String name, String storageString, KeyBindSettings settings)
+    public static KeyBindImpl fromStorageString(String storageString, KeyBindSettings settings)
     {
-        KeyBindImpl keyBind = new KeyBindImpl(name, storageString, settings);
+        KeyBindImpl keyBind = new KeyBindImpl(storageString, settings);
         keyBind.setValueFromString(storageString);
         return keyBind;
     }

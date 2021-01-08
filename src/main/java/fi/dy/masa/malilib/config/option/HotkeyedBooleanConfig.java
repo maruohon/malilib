@@ -40,7 +40,7 @@ public class HotkeyedBooleanConfig extends BooleanConfig implements Hotkey
     {
         super(name, defaultValue, prettyName, comment);
 
-        this.keyBind = KeyBindImpl.fromStorageString(name, defaultHotkey, settings);
+        this.keyBind = KeyBindImpl.fromStorageString(defaultHotkey, settings);
         this.keyBind.setCallback(new ToggleBooleanWithMessageKeyCallback(this));
 
         this.cacheSavedValue();
@@ -50,6 +50,13 @@ public class HotkeyedBooleanConfig extends BooleanConfig implements Hotkey
     public KeyBind getKeyBind()
     {
         return this.keyBind;
+    }
+
+    @Override
+    public void setModId(String modId)
+    {
+        super.setModId(modId);
+        this.keyBind.setNameTranslationKey(this.nameTranslationKey);
     }
 
     @Override

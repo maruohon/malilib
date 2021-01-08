@@ -13,13 +13,30 @@ public interface ConfigOption<T> extends ConfigInfo
 
     /**
      * Sets the mod ID owning this config.
-     * This is used for generating the default config localization key
-     * strings and also for example for the hotkey toast popups and some config screen tooltips.
+     * This is used for generating the default config localization keys.
+     * This is automatically called in {@link ConfigManager#registerConfigHandler(ModConfig)}
+     * using the mod ID from {@link ModConfig#getModId()}.
      * @param modId
      */
     void setModId(String modId);
 
     /**
+     * Returns the mod name owning this config.
+     * @return
+     */
+    String getModName();
+
+    /**
+     * Sets the mod name owning this config.
+     * This is used for the hotkey toast popups.
+     * This is automatically called in {@link ConfigManager#registerConfigHandler(ModConfig)}
+     * using the mod ID from {@link ModConfig#getModName()}
+     * @param modName
+     */
+    void setModName(String modName);
+
+    /**
+     * 
      * Returns the "pretty name" for this config.
      * This is used in the possible toggle messages.
      * @return

@@ -10,7 +10,7 @@ import fi.dy.masa.malilib.util.StringUtils;
 
 public class HotkeyConfig extends BaseConfig<HotkeyConfig> implements Hotkey
 {
-    protected final KeyBindImpl keyBind;
+    protected final KeyBind keyBind;
 
     public HotkeyConfig(String name, String defaultStorageString)
     {
@@ -41,7 +41,7 @@ public class HotkeyConfig extends BaseConfig<HotkeyConfig> implements Hotkey
     {
         super(name, name, prettyName, comment);
 
-        this.keyBind = KeyBindImpl.fromStorageString(name, defaultStorageString, settings);
+        this.keyBind = KeyBindImpl.fromStorageString(defaultStorageString, settings);
     }
 
     @Override
@@ -62,8 +62,14 @@ public class HotkeyConfig extends BaseConfig<HotkeyConfig> implements Hotkey
     public void setModId(String modId)
     {
         super.setModId(modId);
+        this.keyBind.setNameTranslationKey(this.nameTranslationKey);
+    }
 
-        this.keyBind.setModId(modId);
+    @Override
+    public void setModName(String modName)
+    {
+        super.setModName(modName);
+        this.keyBind.setModName(modName);
     }
 
     @Override

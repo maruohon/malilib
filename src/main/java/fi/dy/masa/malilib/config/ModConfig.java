@@ -158,7 +158,10 @@ public interface ModConfig
 
             for (ConfigOptionCategory category : this.getConfigOptionCategories())
             {
-                this.writeConfigCategory(root, category);
+                if (category.shouldSaveToFile())
+                {
+                    this.writeConfigCategory(root, category);
+                }
             }
 
             return JsonUtils.writeJsonToFile(root, new File(dir, this.getConfigFileName()));

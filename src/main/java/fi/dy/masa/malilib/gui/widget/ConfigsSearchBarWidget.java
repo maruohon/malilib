@@ -50,7 +50,7 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
         this.openedHeight = openedHeight;
 
         KeyBindSettings settings = KeyBindSettings.create(Context.ANY, KeyAction.BOTH, true, true, false, false, false);
-        this.searchKey = KeyBindImpl.fromStorageString("", "", settings);
+        this.searchKey = KeyBindImpl.fromStorageString("", settings);
 
         this.hotkeySearchButton = new KeyBindConfigButton(x + width - 150, y, 160, 20, this.searchKey, screen);
         this.hotkeySearchButton.setUpdateKeyBindImmediately();

@@ -20,6 +20,7 @@ public class ConfigManagerImpl implements ConfigManager
     public void registerConfigHandler(ModConfig handler)
     {
         final String modId = handler.getModId();
+        final String modName = handler.getModName();
 
         if (this.configHandlers.containsKey(modId))
         {
@@ -28,6 +29,7 @@ public class ConfigManagerImpl implements ConfigManager
         }
 
         handler.getConfigOptionCategories().forEach((category) -> category.getConfigOptions().forEach((config) -> config.setModId(modId)));
+        handler.getConfigOptionCategories().forEach((category) -> category.getConfigOptions().forEach((config) -> config.setModName(modName)));
 
         this.configHandlers.put(modId, handler);
     }
