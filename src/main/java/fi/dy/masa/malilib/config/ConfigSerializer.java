@@ -5,7 +5,7 @@ import com.google.gson.JsonElement;
 public interface ConfigSerializer
 {
     /**
-     * Writes the given config to a JsonElement, for saving in a config file.
+     * Writes the given config to a JsonElement, usually for example for saving to a config file.
      * @param config
      * @return
      */
