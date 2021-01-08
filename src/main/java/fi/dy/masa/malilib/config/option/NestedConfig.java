@@ -35,16 +35,16 @@ public class NestedConfig implements ConfigInfo
     }
 
     @Override
-    public String getConfigNameTranslationKey()
+    public String getDisplayName()
     {
-        return this.config.getConfigNameTranslationKey();
+        return this.config.getDisplayName();
     }
 
     @Nullable
     @Override
-    public String getCommentTranslationKey()
+    public String getComment()
     {
-        return this.config.getCommentTranslationKey();
+        return this.config.getComment();
     }
 
     @Override

@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import javax.annotation.Nullable;
+import fi.dy.masa.malilib.config.ConfigInfo;
 import fi.dy.masa.malilib.config.ConfigOption;
 import fi.dy.masa.malilib.config.ValueChangeCallback;
 import fi.dy.masa.malilib.config.ValueLoadedCallback;
@@ -140,9 +141,9 @@ public abstract class BaseConfig<T> implements ConfigOption<T>
     }
 
     @Override
-    public String getConfigNameTranslationKey()
+    public String getDisplayName()
     {
-        return this.nameTranslationKey;
+        return getDefaultDisplayName(this, this.nameTranslationKey);
     }
 
     @Override
@@ -153,16 +154,9 @@ public abstract class BaseConfig<T> implements ConfigOption<T>
 
     @Override
     @Nullable
-    public String getCommentTranslationKey()
-    {
-        return this.commentTranslationKey;
-    }
-
-    @Override
-    @Nullable
     public String getComment()
     {
-        return StringUtils.translate(this.getCommentTranslationKey(), this.commentArgs);
+        return StringUtils.translate(this.commentTranslationKey, this.commentArgs);
     }
 
     public BaseConfig<T> setCommentArgs(Object... args)
@@ -211,5 +205,14 @@ public abstract class BaseConfig<T> implements ConfigOption<T>
         {
             this.valueLoadCallback.onValueLoaded(newValue);
         }
+    }
+
+    public static String getDefaultDisplayName(ConfigInfo config, String nameTranslationKey)
+    {
+        String key = nameTranslationKey;
+        String translatedName = StringUtils.translate(key);
+
+        // If there is no translation for the config name, then show the actual base name
+        return translatedName.equals(key) ? config.getName() : translatedName;
     }
 }

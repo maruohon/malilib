@@ -2,7 +2,6 @@ package fi.dy.masa.malilib.config;
 
 import javax.annotation.Nullable;
 import com.google.gson.JsonElement;
-import fi.dy.masa.malilib.util.StringUtils;
 
 public interface ConfigOption<T> extends ConfigInfo
 {
@@ -27,7 +26,7 @@ public interface ConfigOption<T> extends ConfigInfo
      */
     default String getPrettyName()
     {
-        return StringUtils.translate(this.getConfigNameTranslationKey());
+        return this.getDisplayName();
     }
 
     /**

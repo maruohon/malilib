@@ -4,53 +4,28 @@ import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.listener.EventListener;
-import fi.dy.masa.malilib.util.StringUtils;
 
 public interface ConfigInfo
 {
     /**
-     * Returns the name of this config option, used in the config files
+     * Returns the (internal) name of this config, used for example in the config files
      * @return the internal name of this config
      */
     String getName();
 
     /**
-     * Returns the translation key for the localization file
-     * @return
-     */
-    String getConfigNameTranslationKey();
-
-    /**
-     * Returns the raw translation key for the comment.
-     * @return
-     */
-    @Nullable
-    String getCommentTranslationKey();
-
-    /**
      * Returns the display name used for this config on the config screens
      * @return
      */
-    default String getDisplayName()
-    {
-        String key = this.getConfigNameTranslationKey();
-        String translatedName = StringUtils.translate(key);
-
-        // If there is no translation for the config name, then show the actual base name
-        return translatedName.equals(key) ? this.getName() : translatedName;
-    }
+    String getDisplayName();
 
     /**
-     * Returns the comment displayed when hovering over the config name in the config GUI.
+     * Returns the comment displayed when hovering over the config name on the config screens.
      * Newlines can be added with "\n". Can be null if there is no comment for this config.
      * @return the (localized) comment, or null if no comment has been set
      */
     @Nullable
-    default String getComment()
-    {
-        String key = this.getCommentTranslationKey();
-        return key != null ? StringUtils.translate(key) : null;
-    }
+    String getComment();
 
     /**
      * Returns a list of strings that the config screen search bar is matching against.

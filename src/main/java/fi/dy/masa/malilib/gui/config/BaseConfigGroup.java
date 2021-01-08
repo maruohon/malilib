@@ -4,6 +4,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.config.ConfigInfo;
+import fi.dy.masa.malilib.config.option.BaseConfig;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public abstract class BaseConfigGroup implements ConfigInfo
@@ -58,20 +59,20 @@ public abstract class BaseConfigGroup implements ConfigInfo
     @Override
     public String getName()
     {
-        return StringUtils.translate(this.getConfigNameTranslationKey());
+        return this.getDisplayName();
     }
 
     @Override
-    public String getConfigNameTranslationKey()
+    public String getDisplayName()
     {
-        return this.nameTranslationKey;
+        return BaseConfig.getDefaultDisplayName(this, this.nameTranslationKey);
     }
 
-    @Override
     @Nullable
-    public String getCommentTranslationKey()
+    @Override
+    public String getComment()
     {
-        return this.commentTranslationKey;
+        return StringUtils.translate(this.commentTranslationKey, this.commentArgs);
     }
 
     @Override
