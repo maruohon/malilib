@@ -6,14 +6,13 @@ import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.config.SliderConfig;
 
-public class DoubleConfig extends BaseConfig<Double> implements SliderConfig
+public class DoubleConfig extends BaseSliderConfig<Double> implements SliderConfig
 {
     protected final double defaultValue;
     protected double value;
     protected double lastSavedValue;
     protected double minValue;
     protected double maxValue;
-    protected boolean useSlider;
 
     public DoubleConfig(String name, double defaultValue)
     {
@@ -35,29 +34,16 @@ public class DoubleConfig extends BaseConfig<Double> implements SliderConfig
         this(name, defaultValue, minValue, maxValue, false, comment);
     }
 
-    public DoubleConfig(String name, double defaultValue, double minValue, double maxValue, boolean useSlider, String comment)
+    public DoubleConfig(String name, double defaultValue, double minValue, double maxValue, boolean sliderActive, String comment)
     {
-        super(name, comment);
+        super(name, comment, sliderActive);
 
         this.defaultValue = defaultValue;
         this.value = defaultValue;
         this.minValue = minValue;
         this.maxValue = maxValue;
-        this.useSlider = useSlider;
 
         this.cacheSavedValue();
-    }
-
-    @Override
-    public boolean shouldUseSlider()
-    {
-        return this.useSlider;
-    }
-
-    @Override
-    public void toggleUseSlider()
-    {
-        this.useSlider = ! this.useSlider;
     }
 
     public double getDoubleValue()

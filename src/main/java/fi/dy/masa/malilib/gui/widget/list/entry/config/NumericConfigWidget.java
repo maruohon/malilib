@@ -26,10 +26,10 @@ public abstract class NumericConfigWidget<T extends ConfigOption<?> & SliderConf
 
         this.textField = new BaseTextFieldWidget(x, y, 60, 16);
 
-        this.sliderToggleButton = new GenericButton(x, y, () -> this.config.shouldUseSlider() ? BaseIcon.BTN_TXTFIELD : BaseIcon.BTN_SLIDER);
+        this.sliderToggleButton = new GenericButton(x, y, () -> this.config.isSliderActive() ? BaseIcon.BTN_TXTFIELD : BaseIcon.BTN_SLIDER);
         this.sliderToggleButton.addHoverStrings("malilib.gui.button.hover.text_field_slider_toggle");
         this.sliderToggleButton.setActionListener((btn, mbtn) -> {
-            this.config.toggleUseSlider();
+            this.config.toggleSliderActive();
             this.reAddSubWidgets();
         });
 
@@ -51,7 +51,7 @@ public abstract class NumericConfigWidget<T extends ConfigOption<?> & SliderConf
         int y = this.getY();
         int elementWidth = this.getElementWidth();
 
-        if (this.config.shouldUseSlider())
+        if (this.config.isSliderActive())
         {
             this.sliderWidget.setPosition(x, y + 1);
             this.sliderWidget.setWidth(elementWidth - 18);
@@ -70,6 +70,14 @@ public abstract class NumericConfigWidget<T extends ConfigOption<?> & SliderConf
         }
 
         this.sliderToggleButton.setPosition(x, y + 3);
+        this.sliderToggleButton.setEnabled(this.config.allowSlider());
+
+        if (this.config.allowSlider() == false)
+        {
+            this.sliderToggleButton.setHoverStrings("malilib.gui.button.hover.text_field_slider_toggle",
+                                                    "malilib.gui.button.hover.text_field_slider_toggle.not_allowed");
+        }
+
         this.updateResetButton(x + 20, y + 1, this.config);
 
         this.addWidget(this.sliderToggleButton);

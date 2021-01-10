@@ -105,6 +105,7 @@ malilib.gui.button.hover.keybind.possible_overlaps=Possible overlaps [most are f
 malilib.gui.button.hover.plus_minus_tip=Left click to increase\nRight click to decrease\nShift and/or Alt to increase the step size
 malilib.gui.button.hover.render_layers_gui.follow_player=If enabled, then the render layer follows the player
 malilib.gui.button.hover.text_field_slider_toggle=Toggle between a text field and a slider
+malilib.gui.button.hover.text_field_slider_toggle.not_allowed=§6Using a slider is currently disabled for this config§r
 
 malilib.gui.button.hover.list.add_after=Add an entry after
 malilib.gui.button.hover.list.add_first=Add an entry
