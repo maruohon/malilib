@@ -26,7 +26,7 @@ public class SliderWidget extends BaseWidget
     @Override
     protected boolean onMouseClickedImpl(int mouseX, int mouseY, int mouseButton)
     {
-        this.callback.setValueRelative(this.getRelativePosition(mouseX));
+        this.callback.setRelativeValue(this.getRelativePosition(mouseX));
         this.lastMouseX = mouseX;
         this.dragging = true;
 
@@ -44,7 +44,7 @@ public class SliderWidget extends BaseWidget
     {
         if (this.dragging && mouseX != this.lastMouseX)
         {
-            this.callback.setValueRelative(this.getRelativePosition(mouseX));
+            this.callback.setRelativeValue(this.getRelativePosition(mouseX));
             this.lastMouseX = mouseX;
         }
 
@@ -56,7 +56,7 @@ public class SliderWidget extends BaseWidget
         RenderUtils.renderTexturedRectangle(x + 1        , y, 0, 46, width - 6, 20, z);
         RenderUtils.renderTexturedRectangle(x + width - 5, y, 196, 46, 4, 20, z);
 
-        double relPos = this.callback.getValueRelative();
+        double relPos = this.callback.getRelativeValue();
         int sw = this.sliderWidth;
         int usableWidth = width - 4 - sw;
         int s = sw / 2;

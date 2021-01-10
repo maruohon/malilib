@@ -18,13 +18,13 @@ public class DoubleSliderCallback implements SteppedSliderCallback
     }
 
     @Override
-    public double getValueRelative()
+    public double getRelativeValue()
     {
         return (this.config.getDoubleValue() - this.config.getMinDoubleValue()) / (this.config.getMaxDoubleValue() - this.config.getMinDoubleValue());
     }
 
     @Override
-    public void setValueRelative(double relativeValue)
+    public void setRelativeValue(double relativeValue)
     {
         double relValue = relativeValue * (this.config.getMaxDoubleValue() - this.config.getMinDoubleValue());
         double value = relValue + this.config.getMinDoubleValue();

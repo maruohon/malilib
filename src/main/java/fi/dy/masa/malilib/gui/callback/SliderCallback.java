@@ -10,19 +10,21 @@ public interface SliderCallback
     int getMaxSteps();
 
     /**
-     * Returns the relative value (within the min - max range)
+     * Returns the relative value within the min - max range,
+     * so relativeValue = (value - minValue) / (maxValue - minValue)
      * @return
      */
-    double getValueRelative();
+    double getRelativeValue();
 
     /**
      * Sets the value from the provided relative value (0.0 ... 1.0)
      * @param relativeValue
      */
-    void setValueRelative(double relativeValue);
+    void setRelativeValue(double relativeValue);
 
     /**
-     * Returns the formatted display string for the current value
+     * Returns the formatted display string for the current value.
+     * This is used in the slider widget in the GUI.
      * @return
      */
     String getFormattedDisplayValue();

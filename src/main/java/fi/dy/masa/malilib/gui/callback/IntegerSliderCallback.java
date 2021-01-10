@@ -24,13 +24,13 @@ public class IntegerSliderCallback implements SliderCallback
     }
 
     @Override
-    public double getValueRelative()
+    public double getRelativeValue()
     {
         return ((double) this.config.getIntegerValue() - (double) this.config.getMinIntegerValue()) / ((double) this.config.getMaxIntegerValue() - (double) this.config.getMinIntegerValue());
     }
 
     @Override
-    public void setValueRelative(double relativeValue)
+    public void setRelativeValue(double relativeValue)
     {
         long relValue = (long) (relativeValue * ((long) this.config.getMaxIntegerValue() - (long) this.config.getMinIntegerValue()));
         this.config.setIntegerValue((int) (relValue + this.config.getMinIntegerValue()));
