@@ -1,15 +1,19 @@
 package fi.dy.masa.malilib.config.option;
 
+import java.util.function.Function;
 import fi.dy.masa.malilib.config.SliderConfig;
+import fi.dy.masa.malilib.gui.callback.SliderCallback;
+import fi.dy.masa.malilib.listener.EventListener;
 
 public abstract class BaseSliderConfig<T> extends BaseConfig<T> implements SliderConfig
 {
+    protected Function<EventListener, SliderCallback> sliderCallbackFactory;
     protected boolean sliderActive;
     protected boolean allowSlider = true;
 
     public BaseSliderConfig(String name, String comment)
     {
-        super(name, comment);
+        this(name, comment, false);
     }
 
     public BaseSliderConfig(String name, String comment, boolean sliderActive)
@@ -41,5 +45,17 @@ public abstract class BaseSliderConfig<T> extends BaseConfig<T> implements Slide
     public void setAllowSlider(boolean allowSlider)
     {
         this.allowSlider = allowSlider;
+    }
+
+    @Override
+    public SliderCallback getSliderCallback(EventListener changeListener)
+    {
+        return this.sliderCallbackFactory.apply(changeListener);
+    }
+
+    @Override
+    public void setSliderCallbackFactory(Function<EventListener, SliderCallback> sliderCallbackFactory)
+    {
+        this.sliderCallbackFactory = sliderCallbackFactory;
     }
 }

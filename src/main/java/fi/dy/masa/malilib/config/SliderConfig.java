@@ -1,5 +1,9 @@
 package fi.dy.masa.malilib.config;
 
+import java.util.function.Function;
+import fi.dy.masa.malilib.gui.callback.SliderCallback;
+import fi.dy.masa.malilib.listener.EventListener;
+
 public interface SliderConfig
 {
     /**
@@ -28,4 +32,18 @@ public interface SliderConfig
      * @param allowSlider
      */
     void setAllowSlider(boolean allowSlider);
+
+    /**
+     * Returns the slider callback used to read and write values from/to this config
+     * @param changeListener
+     * @return
+     */
+    SliderCallback getSliderCallback(EventListener changeListener);
+
+    /**
+     * Sets the slider callback factory. If a mod wants to use a non-default callback implementation,
+     * it can change the factory using this method.
+     * @param callbackFactory
+     */
+    void setSliderCallbackFactory(Function<EventListener, SliderCallback> callbackFactory);
 }

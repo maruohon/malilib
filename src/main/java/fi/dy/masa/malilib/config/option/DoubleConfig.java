@@ -5,6 +5,7 @@ import com.google.gson.JsonPrimitive;
 import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.config.SliderConfig;
+import fi.dy.masa.malilib.gui.callback.DoubleSliderCallback;
 
 public class DoubleConfig extends BaseSliderConfig<Double> implements SliderConfig
 {
@@ -42,6 +43,7 @@ public class DoubleConfig extends BaseSliderConfig<Double> implements SliderConf
         this.value = defaultValue;
         this.minValue = minValue;
         this.maxValue = maxValue;
+        this.sliderCallbackFactory = (listener) -> new DoubleSliderCallback(this, listener);
 
         this.cacheSavedValue();
     }

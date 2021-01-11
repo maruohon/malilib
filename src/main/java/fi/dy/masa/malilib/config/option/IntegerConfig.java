@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.MaLiLib;
+import fi.dy.masa.malilib.gui.callback.IntegerSliderCallback;
 
 public class IntegerConfig extends BaseSliderConfig<Integer>
 {
@@ -41,6 +42,7 @@ public class IntegerConfig extends BaseSliderConfig<Integer>
         this.value = defaultValue;
         this.minValue = minValue;
         this.maxValue = maxValue;
+        this.sliderCallbackFactory = (listener) -> new IntegerSliderCallback(this, listener);
 
         this.cacheSavedValue();
     }
