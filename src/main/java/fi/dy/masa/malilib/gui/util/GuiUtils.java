@@ -19,7 +19,7 @@ import net.minecraft.util.math.Vec3d;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.config.value.HudAlignment;
 import fi.dy.masa.malilib.gui.BaseScreen;
-import fi.dy.masa.malilib.gui.icon.BaseIcon;
+import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.DoubleTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.IntegerTextFieldWidget;
@@ -113,7 +113,7 @@ public class GuiUtils
         if (addButton)
         {
             String hover = StringUtils.translate("malilib.gui.button.hover.plus_minus_tip");
-            GenericButton button = new GenericButton(x, y, BaseIcon.BTN_PLUSMINUS_16, hover);
+            GenericButton button = new GenericButton(x, y, DefaultIcons.BTN_PLUSMINUS_16, hover);
             button.setCanScrollToClick(true);
             gui.addButton(button, new ButtonListenerCoordinateInput(type, modifier));
         }

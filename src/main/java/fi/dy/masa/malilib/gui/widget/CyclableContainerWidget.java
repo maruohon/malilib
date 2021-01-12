@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.gui.widget;
 
 import java.util.List;
-import fi.dy.masa.malilib.gui.icon.BaseIcon;
+import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 
 public class CyclableContainerWidget extends ContainerWidget
@@ -17,13 +17,13 @@ public class CyclableContainerWidget extends ContainerWidget
         super(x, y, width, height);
 
         this.cyclableWidgets = cyclableWidgets;
-        this.leftButton = new GenericButton(x, y, 12, 20, "", BaseIcon.MEDIUM_ARROW_LEFT, "malilib.gui.button.hover.cycle_widgets_left");
+        this.leftButton = new GenericButton(x, y, 12, 20, "", DefaultIcons.MEDIUM_ARROW_LEFT, "malilib.gui.button.hover.cycle_widgets_left");
         this.leftButton.setRenderBackground(true);
         this.leftButton.setActionListener((btn, mbtn) -> {
             this.startIndex = Math.max(this.startIndex - 1, 0);
             this.reAddSubWidgets();
         });
-        this.rightButton = new GenericButton(x, y, 12, 20, "", BaseIcon.MEDIUM_ARROW_RIGHT, "malilib.gui.button.hover.cycle_widgets_right");
+        this.rightButton = new GenericButton(x, y, 12, 20, "", DefaultIcons.MEDIUM_ARROW_RIGHT, "malilib.gui.button.hover.cycle_widgets_right");
         this.rightButton.setRenderBackground(true);
         this.rightButton.setActionListener((btn, mbtn) -> {
             this.startIndex = Math.min(this.startIndex + 1, this.getMaxStartIndex());

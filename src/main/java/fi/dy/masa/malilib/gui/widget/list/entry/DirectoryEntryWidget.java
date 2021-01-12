@@ -2,12 +2,12 @@ package fi.dy.masa.malilib.gui.widget.list.entry;
 
 import java.io.File;
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
-import fi.dy.masa.malilib.gui.widget.util.DirectoryNavigator;
 import fi.dy.masa.malilib.gui.icon.FileBrowserIconProvider;
-import fi.dy.masa.malilib.gui.icon.Icon;
+import fi.dy.masa.malilib.gui.icon.MultiIcon;
 import fi.dy.masa.malilib.gui.widget.list.BaseFileBrowserWidget.DirectoryEntry;
 import fi.dy.masa.malilib.gui.widget.list.BaseFileBrowserWidget.DirectoryEntryType;
+import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
+import fi.dy.masa.malilib.gui.widget.util.DirectoryNavigator;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.FileUtils;
 
@@ -51,7 +51,7 @@ public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry
     @Override
     public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId, boolean selected)
     {
-        @Nullable Icon icon = this.iconProvider != null ? this.iconProvider.getIconForEntry(this.entry) : null;
+        @Nullable MultiIcon icon = this.iconProvider != null ? this.iconProvider.getIconForEntry(this.entry) : null;
         int xOffset = 0;
         int width = this.getWidth();
         int height = this.getHeight();

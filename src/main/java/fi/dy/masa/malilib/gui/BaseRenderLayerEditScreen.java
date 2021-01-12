@@ -2,8 +2,8 @@ package fi.dy.masa.malilib.gui;
 
 import net.minecraft.util.EnumFacing;
 import fi.dy.masa.malilib.config.value.LayerMode;
-import fi.dy.masa.malilib.gui.icon.BaseIcon;
-import fi.dy.masa.malilib.gui.icon.Icon;
+import fi.dy.masa.malilib.gui.icon.DefaultIcons;
+import fi.dy.masa.malilib.gui.icon.MultiIcon;
 import fi.dy.masa.malilib.gui.listener.IntegerTextFieldListener;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.CheckBoxWidget;
@@ -26,9 +26,9 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
 
     protected abstract LayerRange getLayerRange();
 
-    protected Icon getValueAdjustButtonIcon()
+    protected MultiIcon getValueAdjustButtonIcon()
     {
-        return BaseIcon.BTN_PLUSMINUS_16;
+        return DefaultIcons.BTN_PLUSMINUS_16;
     }
 
     protected void createLayerEditControls(int x, int y, LayerRange layerRange)
@@ -86,7 +86,7 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
             x += this.addLabel(x, y + 5, 0xFFFFFF, label).getWidth() + 4;
         }
 
-        Icon valueAdjustIcon = this.getValueAdjustButtonIcon();
+        MultiIcon valueAdjustIcon = this.getValueAdjustButtonIcon();
 
         if (layerMode == LayerMode.LAYER_RANGE)
         {
@@ -164,7 +164,7 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
         }
     }
 
-    protected void createValueAdjustButton(int x, int y, boolean isSecondValue, LayerRange layerRange, Icon icon)
+    protected void createValueAdjustButton(int x, int y, boolean isSecondValue, LayerRange layerRange, MultiIcon icon)
     {
         LayerMode layerMode = layerRange.getLayerMode();
         ButtonListenerChangeValue listener = new ButtonListenerChangeValue(layerMode, layerRange, isSecondValue, this);

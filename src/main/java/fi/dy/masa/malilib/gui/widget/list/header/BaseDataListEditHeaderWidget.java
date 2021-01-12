@@ -2,7 +2,7 @@ package fi.dy.masa.malilib.gui.widget.list.header;
 
 import java.util.List;
 import java.util.function.Supplier;
-import fi.dy.masa.malilib.gui.icon.BaseIcon;
+import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.DataListHeaderWidget;
@@ -23,7 +23,7 @@ public class BaseDataListEditHeaderWidget<DATATYPE> extends DataListHeaderWidget
         this.dataList = listWidget.getCurrentEntries();
         this.dataFactory = dataFactory;
 
-        this.addButton = new GenericButton(x, y, BaseIcon.LIST_ADD_PLUS, buttonHover);
+        this.addButton = new GenericButton(x, y, DefaultIcons.LIST_ADD_PLUS, buttonHover);
         this.addButton.setRenderOutline(true);
         this.addButton.setActionListener((btn, mbtn) -> this.insertEntry());
     }

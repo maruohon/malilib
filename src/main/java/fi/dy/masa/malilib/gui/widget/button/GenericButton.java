@@ -2,7 +2,7 @@ package fi.dy.masa.malilib.gui.widget.button;
 
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.gui.icon.Icon;
+import fi.dy.masa.malilib.gui.icon.MultiIcon;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
@@ -10,7 +10,7 @@ import fi.dy.masa.malilib.util.StringUtils;
 public class GenericButton extends BaseButton
 {
     @Nullable
-    protected final Supplier<Icon> iconSupplier;
+    protected final Supplier<MultiIcon> iconSupplier;
     protected HorizontalAlignment alignment = HorizontalAlignment.LEFT;
     protected boolean textCentered;
     protected boolean customIconOffset;
@@ -36,22 +36,22 @@ public class GenericButton extends BaseButton
 
     public GenericButton(int x, int y, int width, int height, String text, String... hoverStrings)
     {
-        this(x, y, width, height, text, (Supplier<Icon>) null, hoverStrings);
+        this(x, y, width, height, text, (Supplier<MultiIcon>) null, hoverStrings);
 
         this.textCentered = true;
     }
 
-    public GenericButton(int x, int y, int width, int height, String text, Icon icon, String... hoverStrings)
+    public GenericButton(int x, int y, int width, int height, String text, MultiIcon icon, String... hoverStrings)
     {
         this(x, y, width, height, text, () -> icon, hoverStrings);
     }
 
-    public GenericButton(int x, int y, int width, int height, String text, Supplier<Icon> iconSupplier, String... hoverStrings)
+    public GenericButton(int x, int y, int width, int height, String text, Supplier<MultiIcon> iconSupplier, String... hoverStrings)
     {
         super(x, y, width, height, text);
 
         this.iconSupplier = iconSupplier;
-        Icon icon = iconSupplier != null ? iconSupplier.get() : null;
+        MultiIcon icon = iconSupplier != null ? iconSupplier.get() : null;
 
         if (this.automaticWidth && icon != null)
         {
@@ -64,12 +64,12 @@ public class GenericButton extends BaseButton
         }
     }
 
-    public GenericButton(int x, int y, Icon icon, String... hoverStrings)
+    public GenericButton(int x, int y, MultiIcon icon, String... hoverStrings)
     {
         this(x, y, () -> icon, hoverStrings);
     }
 
-    public GenericButton(int x, int y, Supplier<Icon> iconSupplier, String... hoverStrings)
+    public GenericButton(int x, int y, Supplier<MultiIcon> iconSupplier, String... hoverStrings)
     {
         this(x, y, iconSupplier.get().getWidth(), iconSupplier.get().getHeight(), "", iconSupplier, hoverStrings);
 
@@ -188,7 +188,7 @@ public class GenericButton extends BaseButton
     @Override
     protected int getMaxDisplayStringWidth()
     {
-        Icon icon = this.iconSupplier != null ? this.iconSupplier.get() : null;
+        MultiIcon icon = this.iconSupplier != null ? this.iconSupplier.get() : null;
 
         if (icon != null)
         {
@@ -237,7 +237,7 @@ public class GenericButton extends BaseButton
             }
 
             int iconClearing = 0;
-            Icon icon = this.iconSupplier != null ? this.iconSupplier.get() : null;
+            MultiIcon icon = this.iconSupplier != null ? this.iconSupplier.get() : null;
 
             if (icon != null)
             {
@@ -282,18 +282,18 @@ public class GenericButton extends BaseButton
         }
     }
 
-    public static GenericButton createIconOnly(int x, int y, Icon icon)
+    public static GenericButton createIconOnly(int x, int y, MultiIcon icon)
     {
         return createIconOnly(x, y, icon.getWidth() + 2, icon.getHeight() + 2, () -> icon);
     }
 
-    public static GenericButton createIconOnly(int x, int y, Supplier<Icon> iconSupplier)
+    public static GenericButton createIconOnly(int x, int y, Supplier<MultiIcon> iconSupplier)
     {
-        Icon icon = iconSupplier.get();
+        MultiIcon icon = iconSupplier.get();
         return createIconOnly(x, y, icon.getWidth() + 2, icon.getHeight() + 2, iconSupplier);
     }
 
-    public static GenericButton createIconOnly(int x, int y, int width, int height, Supplier<Icon> iconSupplier)
+    public static GenericButton createIconOnly(int x, int y, int width, int height, Supplier<MultiIcon> iconSupplier)
     {
         GenericButton button = new GenericButton(x, y, iconSupplier);
 

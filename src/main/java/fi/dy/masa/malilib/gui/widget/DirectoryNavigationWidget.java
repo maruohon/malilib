@@ -9,10 +9,10 @@ import javax.annotation.Nullable;
 import net.minecraft.client.renderer.OpenGlHelper;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.TextInputScreen;
-import fi.dy.masa.malilib.gui.icon.BaseIcon;
+import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.icon.FileBrowserIconProvider;
 import fi.dy.masa.malilib.gui.icon.FileBrowserIconProvider.FileBrowserIconType;
-import fi.dy.masa.malilib.gui.icon.Icon;
+import fi.dy.masa.malilib.gui.icon.MultiIcon;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
@@ -78,7 +78,7 @@ public class DirectoryNavigationWidget extends SearchBarWidget
         });
         this.pathStartX = this.buttonCreateDir.getX() + this.buttonCreateDir.getWidth() + 6;
 
-        Icon icon = BaseIcon.INFO_ICON_11;
+        MultiIcon icon = DefaultIcons.INFO_ICON_11;
         int iw = icon.getWidth();
 
         x = this.getX();
@@ -141,12 +141,12 @@ public class DirectoryNavigationWidget extends SearchBarWidget
         this.reAddSubWidgets();
     }
 
-    public Icon getNavBarIconRoot(boolean isOpen)
+    public MultiIcon getNavBarIconRoot(boolean isOpen)
     {
         return this.iconProvider.getIcon(isOpen ? FileBrowserIconType.NAVBAR_ROOT_PATH_OPEN : FileBrowserIconType.NAVBAR_ROOT_PATH_CLOSED);
     }
 
-    public Icon getNavBarIconSubdirs(boolean isOpen)
+    public MultiIcon getNavBarIconSubdirs(boolean isOpen)
     {
         return this.iconProvider.getIcon(isOpen ? FileBrowserIconType.NAVBAR_SUBDIRS_OPEN : FileBrowserIconType.NAVBAR_SUBDIRS_CLOSED);
     }

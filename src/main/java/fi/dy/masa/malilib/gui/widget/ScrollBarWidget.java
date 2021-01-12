@@ -5,14 +5,15 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.icon.Icon;
+import fi.dy.masa.malilib.gui.icon.MultiIcon;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.render.RenderUtils;
 
 public class ScrollBarWidget extends BaseWidget
 {
     @Nullable protected final Icon barTexture;
-    @Nullable protected Icon arrowTextureUp;
-    @Nullable protected Icon arrowTextureDown;
+    @Nullable protected MultiIcon arrowTextureUp;
+    @Nullable protected MultiIcon arrowTextureDown;
     @Nullable protected EventListener changeListener;
     protected final Minecraft mc = Minecraft.getMinecraft();
     protected boolean mouseOver = false;
@@ -70,7 +71,7 @@ public class ScrollBarWidget extends BaseWidget
      * @param iconDown
      * @return
      */
-    public ScrollBarWidget setArrowTextures(@Nullable Icon iconUp, @Nullable Icon iconDown)
+    public ScrollBarWidget setArrowTextures(@Nullable MultiIcon iconUp, @Nullable MultiIcon iconDown)
     {
         this.arrowTextureUp = iconUp;
         this.arrowTextureDown = iconDown;

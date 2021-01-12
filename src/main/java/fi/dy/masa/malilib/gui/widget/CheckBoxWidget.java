@@ -1,21 +1,21 @@
 package fi.dy.masa.malilib.gui.widget;
 
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.gui.icon.Icon;
+import fi.dy.masa.malilib.gui.icon.MultiIcon;
 import fi.dy.masa.malilib.gui.widget.list.entry.SelectionListener;
 import fi.dy.masa.malilib.render.RenderUtils;
 
 public class CheckBoxWidget extends BaseWidget
 {
     protected final String displayText;
-    protected final Icon widgetUnchecked;
-    protected final Icon widgetChecked;
+    protected final MultiIcon widgetUnchecked;
+    protected final MultiIcon widgetChecked;
     protected int textColorChecked = 0xFFFFFFFF;
     protected int textColorUnchecked = 0xB0B0B0B0;
     protected boolean checked;
     @Nullable protected SelectionListener<CheckBoxWidget> listener;
 
-    public CheckBoxWidget(int x, int y, Icon iconUnchecked, Icon iconChecked, String text)
+    public CheckBoxWidget(int x, int y, MultiIcon iconUnchecked, MultiIcon iconChecked, String text)
     {
         super(x, y, 0, 0);
 
@@ -28,7 +28,7 @@ public class CheckBoxWidget extends BaseWidget
         this.setHeight(Math.max(this.fontHeight, iconChecked.getHeight()));
     }
 
-    public CheckBoxWidget(int x, int y, Icon iconUnchecked, Icon iconChecked, String text, @Nullable String hoverInfo)
+    public CheckBoxWidget(int x, int y, MultiIcon iconUnchecked, MultiIcon iconChecked, String text, @Nullable String hoverInfo)
     {
         this(x, y, iconUnchecked, iconChecked, text);
 
@@ -88,7 +88,7 @@ public class CheckBoxWidget extends BaseWidget
     @Override
     public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
     {
-        Icon icon = this.checked ? this.widgetChecked : this.widgetUnchecked;
+        MultiIcon icon = this.checked ? this.widgetChecked : this.widgetUnchecked;
         int textColor = this.checked ? this.textColorChecked : this.textColorUnchecked;
 
         icon.renderAt(x, y, z, false, false);

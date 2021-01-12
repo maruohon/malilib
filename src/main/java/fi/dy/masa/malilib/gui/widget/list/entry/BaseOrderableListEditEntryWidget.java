@@ -3,8 +3,8 @@ package fi.dy.masa.malilib.gui.widget.list.entry;
 import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.gui.icon.BaseIcon;
-import fi.dy.masa.malilib.gui.icon.Icon;
+import fi.dy.masa.malilib.gui.icon.DefaultIcons;
+import fi.dy.masa.malilib.gui.icon.MultiIcon;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.button.ButtonActionListener;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
@@ -303,23 +303,23 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
 
     protected enum ButtonType
     {
-        ADD         (BaseIcon.LIST_ADD_PLUS,        "malilib.gui.button.hover.list.add_after",  BaseOrderableListEditEntryWidget::insertEntryAfter),
-        REMOVE      (BaseIcon.LIST_REMOVE_MINUS,    "malilib.gui.button.hover.list.remove",     BaseOrderableListEditEntryWidget::removeEntry),
-        MOVE_UP     (BaseIcon.ARROW_UP,             "malilib.gui.button.hover.list.move_up",    BaseOrderableListEditEntryWidget::moveEntryUp),
-        MOVE_DOWN   (BaseIcon.ARROW_DOWN,           "malilib.gui.button.hover.list.move_down",  BaseOrderableListEditEntryWidget::moveEntryDown);
+        ADD         (DefaultIcons.LIST_ADD_PLUS, "malilib.gui.button.hover.list.add_after", BaseOrderableListEditEntryWidget::insertEntryAfter),
+        REMOVE      (DefaultIcons.LIST_REMOVE_MINUS, "malilib.gui.button.hover.list.remove", BaseOrderableListEditEntryWidget::removeEntry),
+        MOVE_UP     (DefaultIcons.ARROW_UP, "malilib.gui.button.hover.list.move_up", BaseOrderableListEditEntryWidget::moveEntryUp),
+        MOVE_DOWN   (DefaultIcons.ARROW_DOWN, "malilib.gui.button.hover.list.move_down", BaseOrderableListEditEntryWidget::moveEntryDown);
 
-        protected final BaseIcon icon;
+        protected final MultiIcon icon;
         protected final String translationKey;
         protected final Consumer<BaseOrderableListEditEntryWidget<?>> action;
 
-        ButtonType(BaseIcon icon, String translationKey, Consumer<BaseOrderableListEditEntryWidget<?>> action)
+        ButtonType(MultiIcon icon, String translationKey, Consumer<BaseOrderableListEditEntryWidget<?>> action)
         {
             this.icon = icon;
             this.translationKey = translationKey;
             this.action = action;
         }
 
-        public Icon getIcon()
+        public MultiIcon getIcon()
         {
             return this.icon;
         }

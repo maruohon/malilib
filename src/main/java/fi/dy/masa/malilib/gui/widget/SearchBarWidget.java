@@ -4,9 +4,9 @@ import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import net.minecraft.util.ChatAllowedCharacters;
 import fi.dy.masa.malilib.gui.BaseScreen;
-import fi.dy.masa.malilib.gui.widget.button.GenericButton;
-import fi.dy.masa.malilib.gui.icon.Icon;
+import fi.dy.masa.malilib.gui.icon.MultiIcon;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
+import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.listener.TextChangeListener;
 
@@ -14,14 +14,14 @@ public class SearchBarWidget extends ContainerWidget
 {
     protected final BaseTextFieldWidget textField;
     protected final GenericButton buttonSearchToggle;
-    protected final Icon toggleButtonIcon;
+    protected final MultiIcon toggleButtonIcon;
     protected final HorizontalAlignment toggleButtonAlignment;
     protected final int searchBarOffsetX;
     @Nullable protected EventListener geometryChangeListener;
     protected boolean searchOpen;
 
     public SearchBarWidget(int x, int y, int width, int height, int searchBarOffsetX,
-                           Icon toggleButtonIcon, HorizontalAlignment toggleButtonAlignment,
+                           MultiIcon toggleButtonIcon, HorizontalAlignment toggleButtonAlignment,
                            TextChangeListener textChangeListener)
     {
         super(x, y, width, height);

@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.gui.widget.list.entry.config;
 import fi.dy.masa.malilib.config.ConfigOption;
 import fi.dy.masa.malilib.config.SliderConfig;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
-import fi.dy.masa.malilib.gui.icon.BaseIcon;
+import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.SliderWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
@@ -24,7 +24,7 @@ public abstract class NumericConfigWidget<T extends ConfigOption<?> & SliderConf
 
         this.textField = new BaseTextFieldWidget(x, y, 60, 16);
 
-        this.sliderToggleButton = new GenericButton(x, y, () -> this.config.isSliderActive() ? BaseIcon.BTN_TXTFIELD : BaseIcon.BTN_SLIDER);
+        this.sliderToggleButton = new GenericButton(x, y, () -> this.config.isSliderActive() ? DefaultIcons.BTN_TXTFIELD : DefaultIcons.BTN_SLIDER);
         this.sliderToggleButton.addHoverStrings("malilib.gui.button.hover.text_field_slider_toggle");
         this.sliderToggleButton.setActionListener((btn, mbtn) -> {
             this.config.toggleSliderActive();

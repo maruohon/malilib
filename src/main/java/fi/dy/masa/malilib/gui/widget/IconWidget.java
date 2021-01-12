@@ -1,15 +1,15 @@
 package fi.dy.masa.malilib.gui.widget;
 
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.gui.icon.Icon;
+import fi.dy.masa.malilib.gui.icon.MultiIcon;
 
 public class IconWidget extends BackgroundWidget
 {
-    @Nullable protected Icon icon;
+    @Nullable protected MultiIcon icon;
     protected boolean doHighlight;
     protected boolean enabled;
 
-    public IconWidget(int x, int y, @Nullable Icon icon)
+    public IconWidget(int x, int y, @Nullable MultiIcon icon)
     {
         super(x, y, icon.getWidth(), icon.getHeight());
 
@@ -17,12 +17,12 @@ public class IconWidget extends BackgroundWidget
     }
 
     @Nullable
-    public Icon getIcon()
+    public MultiIcon getIcon()
     {
         return this.icon;
     }
 
-    public IconWidget setIcon(@Nullable Icon icon)
+    public IconWidget setIcon(@Nullable MultiIcon icon)
     {
         this.icon = icon;
 

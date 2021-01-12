@@ -7,9 +7,9 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import fi.dy.masa.malilib.MaLiLibConfigs;
-import fi.dy.masa.malilib.gui.icon.BaseIcon;
-import fi.dy.masa.malilib.gui.icon.Icon;
-import fi.dy.masa.malilib.gui.icon.IconProvider;
+import fi.dy.masa.malilib.gui.icon.DefaultIcons;
+import fi.dy.masa.malilib.gui.icon.MultiIcon;
+import fi.dy.masa.malilib.gui.icon.MultiIconProvider;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.entry.SelectionListener;
@@ -42,7 +42,7 @@ public class DropDownListWidget<T> extends ContainerWidget
     protected final int lineHeight;
 
     @Nullable protected GenericButton openCloseButton;
-    @Nullable protected IconProvider<T> iconProvider;
+    @Nullable protected MultiIconProvider<T> iconProvider;
     @Nullable protected SelectionListener<T> selectionListener;
     @Nullable protected T selectedEntry;
     protected LeftRight openIconSide = LeftRight.RIGHT;
@@ -106,7 +106,7 @@ public class DropDownListWidget<T> extends ContainerWidget
         // The position gets updated in updateSubWidgetsToGeometryChanges
         this.scrollBar = new ScrollBarWidget(0, 0, scrollbarWidth, scrollbarHeight);
         this.scrollBar.setMaxValue(this.entries.size() - this.maxVisibleEntries);
-        this.scrollBar.setArrowTextures(BaseIcon.SMALL_ARROW_UP, BaseIcon.SMALL_ARROW_DOWN);
+        this.scrollBar.setArrowTextures(DefaultIcons.SMALL_ARROW_UP, DefaultIcons.SMALL_ARROW_DOWN);
         this.scrollBar.setValueChangeListener(this::onScrolled);
 
         this.selectionBarWidget = new SelectionBarWidget<>(x, y, width, height, this.textColor, this);
@@ -134,7 +134,7 @@ public class DropDownListWidget<T> extends ContainerWidget
         return 10;
     }
 
-    public void setIconProvider(@Nullable IconProvider<T> iconProvider)
+    public void setIconProvider(@Nullable MultiIconProvider<T> iconProvider)
     {
         this.iconProvider = iconProvider;
     }
@@ -144,7 +144,7 @@ public class DropDownListWidget<T> extends ContainerWidget
         this.selectionListener = selectionListener;
     }
 
-    public void setNoBarWhenClosed(int buttonX, int buttonY, Supplier<Icon> iconSupplier)
+    public void setNoBarWhenClosed(int buttonX, int buttonY, Supplier<MultiIcon> iconSupplier)
     {
         this.noCurrentEntryBar = true;
         this.openCloseButton = GenericButton.createIconOnly(buttonX, buttonY, iconSupplier);
@@ -183,7 +183,7 @@ public class DropDownListWidget<T> extends ContainerWidget
         }
         else if (this.iconProvider != null)
         {
-            Icon icon = this.iconProvider.getIconFor(entry);
+            MultiIcon icon = this.iconProvider.getIconFor(entry);
             int offY = (height - icon.getHeight()) / 2;
             return new IconWidget(x, y + offY, icon);
         }
@@ -710,7 +710,7 @@ public class DropDownListWidget<T> extends ContainerWidget
             this.dropdownWidget = dropDown;
             this.iconWidget = dropDown.createIconWidgetForEntry(x + 2, y, height, dropDown.getSelectedEntry());
 
-            Icon iconOpen = dropDown.isOpen() ? BaseIcon.ARROW_UP : BaseIcon.ARROW_DOWN;
+            MultiIcon iconOpen = dropDown.isOpen() ? DefaultIcons.ARROW_UP : DefaultIcons.ARROW_DOWN;
             this.openCloseIconWidget = new IconWidget(0, 0, iconOpen);
             this.openCloseIconWidget.setEnabled(true).setDoHighlight(true);
             this.nonTextWidth = this.openCloseIconWidget.getWidth() + 6;
@@ -768,7 +768,7 @@ public class DropDownListWidget<T> extends ContainerWidget
             super.updateSubWidgetsToGeometryChanges();
 
             DropDownListWidget<T> dropDown = this.dropdownWidget;
-            Icon iconOpen = dropDown.isOpen() ? BaseIcon.ARROW_UP : BaseIcon.ARROW_DOWN;
+            MultiIcon iconOpen = dropDown.isOpen() ? DefaultIcons.ARROW_UP : DefaultIcons.ARROW_DOWN;
 
             this.openCloseIconWidget.setIcon(iconOpen);
             this.setDisplayString(dropDown.getCurrentEntryDisplayString());

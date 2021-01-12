@@ -4,15 +4,36 @@ import net.minecraft.util.ResourceLocation;
 
 public interface Icon
 {
+    /**
+     * @return the width of this icon
+     */
     int getWidth();
 
+    /**
+     * @return the height of this icon
+     */
     int getHeight();
 
+    /**
+     * @return the texture U-coordinate (x-coordinate) of this icon
+     */
     int getU();
 
+    /**
+     * @return the texture V-coordinate (y-coordinate) of this icon
+     */
     int getV();
 
-    void renderAt(int x, int y, float zLevel, boolean enabled, boolean hovered);
-
+    /**
+     * @return the identifier/location of the texture used for this icon
+     */
     ResourceLocation getTexture();
+
+    /**
+     * Renders this icon at the given position
+     * @param x
+     * @param y
+     * @param zLevel
+     */
+    void renderAt(int x, int y, float zLevel);
 }

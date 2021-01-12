@@ -9,7 +9,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.gui.BaseScreen;
-import fi.dy.masa.malilib.gui.icon.BaseIcon;
+import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.position.Padding;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
@@ -55,7 +55,7 @@ public abstract class BaseListWidget extends ContainerWidget
 
         // The position gets updated in setSize()
         this.scrollBar = new ScrollBarWidget(0, 0, 8, height);
-        this.scrollBar.setArrowTextures(BaseIcon.SMALL_ARROW_UP, BaseIcon.SMALL_ARROW_DOWN);
+        this.scrollBar.setArrowTextures(DefaultIcons.SMALL_ARROW_UP, DefaultIcons.SMALL_ARROW_DOWN);
         this.scrollBar.setValueChangeListener(this::reCreateListEntryWidgets);
     }
 
@@ -303,7 +303,7 @@ public abstract class BaseListWidget extends ContainerWidget
     public void addDefaultSearchBar()
     {
         this.searchBarWidget = new SearchBarWidget(this.getX() + 2, this.getY() + 3,
-                                                   this.getWidth() - 14, 14, 0, BaseIcon.SEARCH,
+                                                   this.getWidth() - 14, 14, 0, DefaultIcons.SEARCH,
                                                    HorizontalAlignment.LEFT, this::onSearchBarChange);
     }
 

@@ -11,22 +11,22 @@ public interface FileBrowserIconProvider
      * Returns the icon to use for the given icon type
      * @return
      */
-    default Icon getIcon(FileBrowserIconType type)
+    default MultiIcon getIcon(FileBrowserIconType type)
     {
         switch (type)
         {
-            case ROOT:                      return BaseIcon.FILE_BROWSER_DIR_ROOT;
-            case UP:                        return BaseIcon.FILE_BROWSER_DIR_UP;
-            case CREATE_DIR:                return BaseIcon.FILE_BROWSER_CREATE_DIR;
-            case SEARCH:                    return BaseIcon.SEARCH;
-            case DIRECTORY:                 return BaseIcon.FILE_BROWSER_DIR;
-            case NAVBAR_ROOT_PATH_CLOSED:   return BaseIcon.MEDIUM_ARROW_LEFT;
-            case NAVBAR_SUBDIRS_CLOSED:     return BaseIcon.SMALL_ARROW_RIGHT;
+            case ROOT:                      return DefaultIcons.FILE_BROWSER_DIR_ROOT;
+            case UP:                        return DefaultIcons.FILE_BROWSER_DIR_UP;
+            case CREATE_DIR:                return DefaultIcons.FILE_BROWSER_CREATE_DIR;
+            case SEARCH:                    return DefaultIcons.SEARCH;
+            case DIRECTORY:                 return DefaultIcons.FILE_BROWSER_DIR;
+            case NAVBAR_ROOT_PATH_CLOSED:   return DefaultIcons.MEDIUM_ARROW_LEFT;
+            case NAVBAR_SUBDIRS_CLOSED:     return DefaultIcons.SMALL_ARROW_RIGHT;
             case NAVBAR_ROOT_PATH_OPEN:
-            case NAVBAR_SUBDIRS_OPEN:       return BaseIcon.SMALL_ARROW_DOWN;
+            case NAVBAR_SUBDIRS_OPEN:       return DefaultIcons.SMALL_ARROW_DOWN;
         }
 
-        return BaseIcon.EMPTY;
+        return DefaultIcons.EMPTY;
     }
 
     /**
@@ -35,7 +35,7 @@ public interface FileBrowserIconProvider
      * @return the icon that should be used for the given file, or null if it shouldn't have an icon
      */
     @Nullable
-    default Icon getIconForFile(File file)
+    default MultiIcon getIconForFile(File file)
     {
         return null;
     }
@@ -49,7 +49,7 @@ public interface FileBrowserIconProvider
      * @return
      */
     @Nullable
-    default Icon getIconForEntry(DirectoryEntry entry)
+    default MultiIcon getIconForEntry(DirectoryEntry entry)
     {
         if (entry.getType() == DirectoryEntryType.DIRECTORY)
         {
@@ -68,7 +68,7 @@ public interface FileBrowserIconProvider
      */
     default int getEntryIconWidth(DirectoryEntry entry)
     {
-        Icon icon = this.getIconForEntry(entry);
+        MultiIcon icon = this.getIconForEntry(entry);
 
         if (icon != null)
         {

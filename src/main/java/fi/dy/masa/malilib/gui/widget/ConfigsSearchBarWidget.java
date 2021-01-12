@@ -14,7 +14,7 @@ import fi.dy.masa.malilib.gui.ConfirmActionScreen;
 import fi.dy.masa.malilib.gui.config.ConfigSearchInfo;
 import fi.dy.masa.malilib.gui.config.ConfigTypeRegistry;
 import fi.dy.masa.malilib.gui.config.KeybindEditingScreen;
-import fi.dy.masa.malilib.gui.icon.Icon;
+import fi.dy.masa.malilib.gui.icon.MultiIcon;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
@@ -39,7 +39,7 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
     protected int openedHeight;
 
     public ConfigsSearchBarWidget(int x, int y, int width, int openedHeight, int searchBarOffsetX,
-                                  Icon iconSearch, HorizontalAlignment iconAlignment,
+                                  MultiIcon iconSearch, HorizontalAlignment iconAlignment,
                                   TextChangeListener textChangeListener,
                                   final EventListener filterChangeListener,
                                   ConfirmationListener configResetter,

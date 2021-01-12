@@ -8,7 +8,7 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.config.option.ValueListConfig;
 import fi.dy.masa.malilib.gui.BaseListScreen;
-import fi.dy.masa.malilib.gui.icon.BaseIcon;
+import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.util.DialogHandler;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
@@ -97,7 +97,7 @@ public class BaseValueListEditScreen<TYPE> extends BaseListScreen<DataListWidget
 
         listWidget.setListEntryWidgetFixedHeight(20);
         listWidget.addSearchBar(new SearchBarWidget(listWidget.getX() + 17, listWidget.getY() + 3,
-                                                    listWidget.getWidth() - 31, 14, 0, BaseIcon.SEARCH,
+                                                    listWidget.getWidth() - 31, 14, 0, DefaultIcons.SEARCH,
                                                     HorizontalAlignment.RIGHT, listWidget::onSearchBarChange));
 
         listWidget.setHeaderWidgetFactory((x, y, w, h, lw) -> new BaseDataListEditHeaderWidget<>(x, y, w, h, lw, "malilib.gui.button.hover.list.add_first", this.newEntrySupplier));

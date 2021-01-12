@@ -70,13 +70,14 @@ public class KeybindSettingsWidget extends BaseWidget
         KeyBindSettings settings = this.keyBind.getSettings();
 
         int w = 18;
-        int v1 = settings.getActivateOn().ordinal() * w;
-        int v2 = settings.getAllowExtraKeys() ? w : 0;
-        int v3 = settings.isOrderSensitive() ? w : 0;
-        int v4 = settings.isExclusive() ? w : 0;
-        int v5 = settings.shouldCancel() ? w : 0;
-        int v6 = settings.getAllowEmpty() ? w : 0;
-        int v7 = settings.getContext().ordinal() * w + 54;
+        int vStart = 166;
+        int v1 = vStart + (settings.getActivateOn().ordinal() * w);
+        int v2 = vStart + (settings.getAllowExtraKeys() ? w : 0);
+        int v3 = vStart + (settings.isOrderSensitive() ? w : 0);
+        int v4 = vStart + (settings.isExclusive() ? w : 0);
+        int v5 = vStart + (settings.shouldCancel() ? w : 0);
+        int v6 = vStart + (settings.getAllowEmpty() ? w : 0);
+        int v7 = 202 + settings.getContext().ordinal() * w;
 
         int edgeColor = this.keyBind.areSettingsModified() ? 0xFFFFBB33 : 0xFFFFFFFF;
 
@@ -88,13 +89,13 @@ public class KeybindSettingsWidget extends BaseWidget
 
         RenderUtils.color(1f, 1f, 1f, 1f);
 
-        RenderUtils.renderTexturedRectangle(x, y, 0, v1, w, w, z);
+        RenderUtils.renderTexturedRectangle(x, y,  0, v1, w, w, z);
         RenderUtils.renderTexturedRectangle(x, y, 18, v2, w, w, z);
         RenderUtils.renderTexturedRectangle(x, y, 36, v3, w, w, z);
         RenderUtils.renderTexturedRectangle(x, y, 54, v4, w, w, z);
         RenderUtils.renderTexturedRectangle(x, y, 72, v5, w, w, z);
         RenderUtils.renderTexturedRectangle(x, y, 90, v6, w, w, z);
-        RenderUtils.renderTexturedRectangle(x, y, 0, v7, w, w, z);
+        RenderUtils.renderTexturedRectangle(x, y, 90, v7, w, w, z);
     }
 
     @Override

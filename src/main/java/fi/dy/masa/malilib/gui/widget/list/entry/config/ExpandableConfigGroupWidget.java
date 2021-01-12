@@ -2,8 +2,8 @@ package fi.dy.masa.malilib.gui.widget.list.entry.config;
 
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.config.ExpandableConfigGroup;
-import fi.dy.masa.malilib.gui.icon.BaseIcon;
-import fi.dy.masa.malilib.gui.icon.Icon;
+import fi.dy.masa.malilib.gui.icon.DefaultIcons;
+import fi.dy.masa.malilib.gui.icon.MultiIcon;
 import fi.dy.masa.malilib.gui.widget.IconWidget;
 
 public class ExpandableConfigGroupWidget extends BaseConfigOptionWidget<ExpandableConfigGroup>
@@ -33,14 +33,14 @@ public class ExpandableConfigGroupWidget extends BaseConfigOptionWidget<Expandab
         this.plusMinusIconWidget.setRenderHoverChecker(this::isHoveredForRender);
     }
 
-    protected Icon getArrowIcon()
+    protected MultiIcon getArrowIcon()
     {
-        return this.config.isExpanded() ? BaseIcon.ARROW_DOWN : BaseIcon.ARROW_RIGHT;
+        return this.config.isExpanded() ? DefaultIcons.ARROW_DOWN : DefaultIcons.ARROW_RIGHT;
     }
 
-    protected Icon getPlusMinusIcon()
+    protected MultiIcon getPlusMinusIcon()
     {
-        return this.config.isExpanded() ? BaseIcon.GROUP_COLLAPSE_MINUS : BaseIcon.GROUP_EXPAND_PLUS;
+        return this.config.isExpanded() ? DefaultIcons.GROUP_COLLAPSE_MINUS : DefaultIcons.GROUP_EXPAND_PLUS;
     }
 
     @Override

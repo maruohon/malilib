@@ -14,7 +14,7 @@ import fi.dy.masa.malilib.gui.config.ConfigTabRegistry;
 import fi.dy.masa.malilib.gui.config.ConfigTypeRegistry;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.config.KeybindEditingScreen;
-import fi.dy.masa.malilib.gui.icon.BaseIcon;
+import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.widget.ConfigsSearchBarWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetFactory;
@@ -70,7 +70,7 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
     public void addConfigSearchBarWidget(KeybindEditingScreen screen)
     {
         this.configsSearchBarWidget = new ConfigsSearchBarWidget(this.getX(), this.getY(), this.getWidth(), 32, 0,
-                                                                 BaseIcon.SEARCH, HorizontalAlignment.LEFT,
+                                                                 DefaultIcons.SEARCH, HorizontalAlignment.LEFT,
                                                                  this::onSearchBarChange,
                                                                  this::refreshEntries,
                                                                  this::resetFilteredConfigsToDefaults,

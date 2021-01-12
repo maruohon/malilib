@@ -2,7 +2,7 @@ package fi.dy.masa.malilib.gui.widget.button;
 
 import java.util.function.BooleanSupplier;
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.gui.icon.BaseIcon;
+import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.message.MessageHelpers;
@@ -73,7 +73,7 @@ public class OnOffButton extends GenericButton
 
             if (this.style == OnOffStyle.SLIDER_ON_OFF)
             {
-                width += Math.max(BaseIcon.SLIDER_GREEN.getWidth(), BaseIcon.SLIDER_RED.getWidth());
+                width += Math.max(DefaultIcons.SLIDER_GREEN.getWidth(), DefaultIcons.SLIDER_RED.getWidth());
             }
 
             this.setWidth(width);
@@ -112,7 +112,7 @@ public class OnOffButton extends GenericButton
         if (this.style == OnOffStyle.SLIDER_ON_OFF)
         {
             boolean value = this.statusSupplier.getAsBoolean();
-            Icon icon = value ? BaseIcon.SLIDER_GREEN : BaseIcon.SLIDER_RED;
+            Icon icon = value ? DefaultIcons.SLIDER_GREEN : DefaultIcons.SLIDER_RED;
             int iconWidth = icon.getWidth();
             int offX = (width - iconWidth) / 2;
 
@@ -128,7 +128,7 @@ public class OnOffButton extends GenericButton
         if (this.style == OnOffStyle.SLIDER_ON_OFF)
         {
             boolean value = this.statusSupplier.getAsBoolean();
-            Icon icon = value ? BaseIcon.SLIDER_GREEN : BaseIcon.SLIDER_RED;
+            Icon icon = value ? DefaultIcons.SLIDER_GREEN : DefaultIcons.SLIDER_RED;
 
             int iconWidth = icon.getWidth();
             int iconHeight1 = height / 2 - 1;
