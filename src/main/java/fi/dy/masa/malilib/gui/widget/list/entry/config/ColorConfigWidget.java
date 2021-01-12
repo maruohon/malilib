@@ -51,6 +51,7 @@ public class ColorConfigWidget extends BaseConfigOptionWidget<ColorConfig>
 
         this.colorIndicatorWidget.setPosition(x, y + 2);
         this.textField.setPosition(x + this.colorIndicatorWidget.getWidth() + 4, y + 3);
+        this.textField.setText(this.config.getStringValue());
         this.updateResetButton(x + elementWidth + 4, y + 1, this.config);
 
         this.addWidget(this.colorIndicatorWidget);

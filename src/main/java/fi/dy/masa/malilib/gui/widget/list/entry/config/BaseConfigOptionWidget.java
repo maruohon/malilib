@@ -126,8 +126,7 @@ public abstract class BaseConfigOptionWidget<C extends ConfigInfo> extends BaseD
             BaseScreen.openPopupGui(browserScreen);
         });
 
-        this.resetButton.setPosition(x + elementWidth + 4, y + 1);
-        this.resetButton.setEnabled(config.isModified());
+        this.updateResetButton(x + elementWidth + 4, y + 1, config);
 
         this.addButton(this.resetButton, (btn, mbtn) -> {
             config.resetToDefault();
