@@ -25,9 +25,6 @@ public class DirectoryConfigWidget extends BaseConfigOptionWidget<DirectoryConfi
     {
         super.reAddSubWidgets();
 
-        int x = this.getX();
-        int y = this.getY();
-
         File file = FileUtils.getCanonicalFileIfPossible(this.config.getFile().getAbsoluteFile());
         final File rootDir = new File("/");
         final File dir = file == null || file.isDirectory() == false ? (file != null ? file.getParentFile() : rootDir) : file;
@@ -37,7 +34,7 @@ public class DirectoryConfigWidget extends BaseConfigOptionWidget<DirectoryConfi
             this.reAddSubWidgets();
         });
 
-        this.createFileSelectorWidgets(x, y, this.config, factory,
+        this.createFileSelectorWidgets(this.getY(), this.config, factory,
                                        "malilib.gui.button.config.select_directory",
                                        "malilib.gui.button.config.hover.selected_directory");
     }

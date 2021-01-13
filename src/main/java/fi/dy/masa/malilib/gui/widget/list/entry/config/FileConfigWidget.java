@@ -24,9 +24,6 @@ public class FileConfigWidget extends BaseConfigOptionWidget<FileConfig>
     {
         super.reAddSubWidgets();
 
-        int x = this.getX();
-        int y = this.getY();
-
         File file = this.config.getFile().getAbsoluteFile();
         final File rootDir = new File("/");
         final File dir = file == null || file.isDirectory() == false ? (file != null ? file.getParentFile() : rootDir) : file;
@@ -36,7 +33,7 @@ public class FileConfigWidget extends BaseConfigOptionWidget<FileConfig>
             this.reAddSubWidgets();
         });
 
-        this.createFileSelectorWidgets(x, y, this.config, factory,
+        this.createFileSelectorWidgets(this.getY(), this.config, factory,
                                        "malilib.gui.button.config.select_file",
                                        "malilib.gui.button.config.hover.selected_file");
     }
