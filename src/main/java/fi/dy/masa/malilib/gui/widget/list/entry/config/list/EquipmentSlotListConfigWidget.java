@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.gui.widget.list.entry.config;
+package fi.dy.masa.malilib.gui.widget.list.entry.config.list;
 
 import java.util.ArrayList;
 import java.util.List;

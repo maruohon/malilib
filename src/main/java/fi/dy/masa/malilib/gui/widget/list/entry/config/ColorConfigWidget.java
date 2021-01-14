@@ -6,12 +6,10 @@ import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.ColorIndicatorWidget;
 import fi.dy.masa.malilib.util.data.Color4f;
 
-public class ColorConfigWidget extends BaseConfigOptionWidget<ColorConfig>
+public class ColorConfigWidget extends BaseConfigOptionWidget<Integer, ColorConfig>
 {
-    protected final ColorConfig config;
     protected final ColorIndicatorWidget colorIndicatorWidget;
     protected final BaseTextFieldWidget textField;
-    protected final int initialValue;
     protected final String initialStringValue;
 
     public ColorConfigWidget(int x, int y, int width, int height, int listIndex,
@@ -19,8 +17,6 @@ public class ColorConfigWidget extends BaseConfigOptionWidget<ColorConfig>
     {
         super(x, y, width, height, listIndex, originalListIndex, config, ctx);
 
-        this.config = config;
-        this.initialValue = this.config.getIntegerValue();
         this.initialStringValue = Color4f.getHexColorString(this.initialValue);
 
         this.colorIndicatorWidget = new ColorIndicatorWidget(x, y, 18, 18, this.config, (newValue) -> {
@@ -52,7 +48,7 @@ public class ColorConfigWidget extends BaseConfigOptionWidget<ColorConfig>
         this.colorIndicatorWidget.setPosition(x, y + 2);
         this.textField.setPosition(x + this.colorIndicatorWidget.getWidth() + 4, y + 3);
         this.textField.setText(this.config.getStringValue());
-        this.updateResetButton(x + elementWidth + 4, y + 1, this.config);
+        this.updateResetButton(x + elementWidth + 4, y + 1);
 
         this.addWidget(this.colorIndicatorWidget);
         this.addWidget(this.textField);
@@ -68,11 +64,5 @@ public class ColorConfigWidget extends BaseConfigOptionWidget<ColorConfig>
         {
             this.config.setValueFromString(text);
         }
-    }
-
-    @Override
-    public boolean wasModified()
-    {
-        return this.config.getIntegerValue() != this.initialValue;
     }
 }

@@ -237,7 +237,7 @@ public class KeyBindImpl implements KeyBind
 
     private void addToastMessage(boolean hasCallback, boolean cancelled)
     {
-        KeybindDisplayMode val = MaLiLibConfigs.Generic.KEYBIND_DISPLAY.getOptionListValue();
+        KeybindDisplayMode val = MaLiLibConfigs.Generic.KEYBIND_DISPLAY.getValue();
         boolean showCallbackOnly = MaLiLibConfigs.Generic.KEYBIND_DISPLAY_CALLBACK_ONLY.getBooleanValue();
         boolean showCancelledOnly = MaLiLibConfigs.Generic.KEYBIND_DISPLAY_CANCEL_ONLY.getBooleanValue();
 
@@ -258,7 +258,7 @@ public class KeyBindImpl implements KeyBind
                 lines.add(StringUtils.translate("malilib.toast.keybind_display.action", this.modName, name));
             }
 
-            HudAlignment align = MaLiLibConfigs.Generic.KEYBIND_DISPLAY_ALIGNMENT.getOptionListValue();
+            HudAlignment align = MaLiLibConfigs.Generic.KEYBIND_DISPLAY_ALIGNMENT.getValue();
             ToastWidget.updateOrAddToast(align, lines, MaLiLibConfigs.Generic.KEYBIND_DISPLAY_DURATION.getIntegerValue());
         }
     }

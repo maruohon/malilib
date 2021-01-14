@@ -41,12 +41,13 @@ public class ValueListConfig<TYPE> extends BaseConfig<ImmutableList<TYPE>>
         this.cacheSavedValue();
     }
 
-    public ImmutableList<TYPE> getValues()
+    @Override
+    public ImmutableList<TYPE> getValue()
     {
         return this.values;
     }
 
-    public ImmutableList<TYPE> getDefaultValues()
+    public ImmutableList<TYPE> getDefaultValue()
     {
         return this.defaultValues;
     }
@@ -142,7 +143,7 @@ public class ValueListConfig<TYPE> extends BaseConfig<ImmutableList<TYPE>>
         this.commentArgs = other.commentArgs;
         this.modId = other.modId;
         this.setValidValues(other.validValues);
-        this.setValues(other.getValues());
+        this.setValues(other.getValue());
         this.setValueChangeCallback(other.valueChangeCallback);
         this.setValueLoadCallback(other.valueLoadCallback);
     }

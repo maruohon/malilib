@@ -79,6 +79,12 @@ public class HotkeyConfig extends BaseConfig<HotkeyConfig> implements Hotkey
     }
 
     @Override
+    public HotkeyConfig getValue()
+    {
+        return this;
+    }
+
+    @Override
     public boolean isModified()
     {
         return this.keyBind.isModified();

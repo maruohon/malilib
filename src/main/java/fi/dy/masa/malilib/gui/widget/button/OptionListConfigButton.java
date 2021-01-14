@@ -36,7 +36,7 @@ public class OptionListConfigButton extends GenericButton
     @Override
     protected String generateDisplayString()
     {
-        String configDisplayText = this.config.getOptionListValue().getDisplayName();
+        String configDisplayText = this.config.getValue().getDisplayName();
 
         if (this.prefixTranslationKey != null)
         {

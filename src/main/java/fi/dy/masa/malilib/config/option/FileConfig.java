@@ -26,6 +26,12 @@ public class FileConfig extends BaseStringConfig<File>
     }
 
     @Override
+    public File getValue()
+    {
+        return this.file;
+    }
+
+    @Override
     public void setValueFromString(String value)
     {
         if (this.value.equals(value) == false)

@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.gui.widget.list.entry.config;
+package fi.dy.masa.malilib.gui.widget.list.entry.config.list;
 
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;

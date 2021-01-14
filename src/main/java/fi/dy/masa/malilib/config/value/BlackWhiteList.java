@@ -81,12 +81,12 @@ public class BlackWhiteList<TYPE>
 
     public ImmutableList<String> getBlackListAsString()
     {
-        return ValueListConfig.getValuesAsStringList(this.blackList.getValues(), this.toStringConverter);
+        return ValueListConfig.getValuesAsStringList(this.blackList.getValue(), this.toStringConverter);
     }
 
     public ImmutableList<String> getWhiteListAsString()
     {
-        return ValueListConfig.getValuesAsStringList(this.whiteList.getValues(), this.toStringConverter);
+        return ValueListConfig.getValuesAsStringList(this.whiteList.getValue(), this.toStringConverter);
     }
 
     @Nullable
@@ -168,16 +168,16 @@ public class BlackWhiteList<TYPE>
         BlackWhiteList<TYPE> that = (BlackWhiteList<TYPE>) o;
 
         if (this.type != that.type) { return false; }
-        if (!Objects.equals(this.blackList.getValues(), that.blackList.getValues())) { return false; }
-        return Objects.equals(this.whiteList.getValues(), that.whiteList.getValues());
+        if (!Objects.equals(this.blackList.getValue(), that.blackList.getValue())) { return false; }
+        return Objects.equals(this.whiteList.getValue(), that.whiteList.getValue());
     }
 
     @Override
     public int hashCode()
     {
         int result = this.type != null ? this.type.hashCode() : 0;
-        result = 31 * result + (this.blackList != null ? this.blackList.getValues().hashCode() : 0);
-        result = 31 * result + (this.whiteList != null ? this.whiteList.getValues().hashCode() : 0);
+        result = 31 * result + (this.blackList != null ? this.blackList.getValue().hashCode() : 0);
+        result = 31 * result + (this.whiteList != null ? this.whiteList.getValue().hashCode() : 0);
         return result;
     }
 

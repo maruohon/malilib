@@ -8,19 +8,16 @@ import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.SliderWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 
-public abstract class NumericConfigWidget<T extends ConfigOption<?> & SliderConfig> extends BaseConfigOptionWidget<T>
+public abstract class NumericConfigWidget<TYPE, CFG extends ConfigOption<TYPE> & SliderConfig> extends BaseConfigOptionWidget<TYPE, CFG>
 {
-    protected final T config;
     protected final BaseTextFieldWidget textField;
     protected final GenericButton sliderToggleButton;
     protected SliderWidget sliderWidget;
 
     public NumericConfigWidget(int x, int y, int width, int height, int listIndex,
-                               int originalListIndex, T config, ConfigWidgetContext ctx)
+                               int originalListIndex, CFG config, ConfigWidgetContext ctx)
     {
         super(x, y, width, height, listIndex, originalListIndex, config, ctx);
-
-        this.config = config;
 
         this.textField = new BaseTextFieldWidget(x, y, 60, 16);
 
@@ -76,7 +73,7 @@ public abstract class NumericConfigWidget<T extends ConfigOption<?> & SliderConf
                                                     "malilib.gui.button.hover.text_field_slider_toggle.not_allowed");
         }
 
-        this.updateResetButton(x + 20, y + 1, this.config);
+        this.updateResetButton(x + 20, y + 1);
 
         this.addWidget(this.sliderToggleButton);
         this.addWidget(this.resetButton);

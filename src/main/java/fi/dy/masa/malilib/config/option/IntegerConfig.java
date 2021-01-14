@@ -57,6 +57,12 @@ public class IntegerConfig extends BaseSliderConfig<Integer>
         return this.defaultValue;
     }
 
+    @Override
+    public Integer getValue()
+    {
+        return this.value;
+    }
+
     public void setIntegerValue(int value)
     {
         int oldValue = this.value;

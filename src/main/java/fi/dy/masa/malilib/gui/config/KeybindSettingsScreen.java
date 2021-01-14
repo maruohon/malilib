@@ -66,8 +66,8 @@ public class KeybindSettingsScreen extends BaseDialogScreen
         this.cfgCancel         = new BooleanConfig("", defaultSettings.shouldCancel(),      "malilib.gui.label.keybind_settings.cancel_further_processing", "malilib.config.comment.keybind_settings.cancel_further");
 
         KeyBindSettings settings = this.keybind.getSettings();
-        this.cfgActivateOn.setOptionListValue(settings.getActivateOn());
-        this.cfgContext.setOptionListValue(settings.getContext());
+        this.cfgActivateOn.setValue(settings.getActivateOn());
+        this.cfgContext.setValue(settings.getContext());
         this.cfgAllowEmpty.setBooleanValue(settings.getAllowEmpty());
         this.cfgAllowExtra.setBooleanValue(settings.getAllowExtraKeys());
         this.cfgOrderSensitive.setBooleanValue(settings.isOrderSensitive());
@@ -142,8 +142,8 @@ public class KeybindSettingsScreen extends BaseDialogScreen
     @Override
     public void onGuiClosed()
     {
-        KeyAction activateOn = this.cfgActivateOn.getOptionListValue();
-        KeyBindSettings.Context context = this.cfgContext.getOptionListValue();
+        KeyAction activateOn = this.cfgActivateOn.getValue();
+        KeyBindSettings.Context context = this.cfgContext.getValue();
         boolean allowEmpty = this.cfgAllowEmpty.getBooleanValue();
         boolean allowExtraKeys = this.cfgAllowExtra.getBooleanValue();
         boolean orderSensitive = this.cfgOrderSensitive.getBooleanValue();

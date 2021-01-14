@@ -59,8 +59,8 @@ public class UsageRestriction<TYPE>
     public void setListContents(BlackWhiteList<TYPE> list)
     {
         this.type = list.getListType();
-        this.setValuesForList(this.getListForType(ListType.BLACKLIST), list.getBlackList().getValues());
-        this.setValuesForList(this.getListForType(ListType.WHITELIST), list.getWhiteList().getValues());
+        this.setValuesForList(this.getListForType(ListType.BLACKLIST), list.getBlackList().getValue());
+        this.setValuesForList(this.getListForType(ListType.WHITELIST), list.getWhiteList().getValue());
     }
 
     /**

@@ -6,7 +6,7 @@ import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
 import fi.dy.masa.malilib.gui.widget.IconWidget;
 
-public class ExpandableConfigGroupWidget extends BaseConfigOptionWidget<ExpandableConfigGroup>
+public class ExpandableConfigGroupWidget extends BaseConfigWidget<ExpandableConfigGroup>
 {
     protected final ExpandableConfigGroup config;
     protected final IconWidget plusMinusIconWidget;

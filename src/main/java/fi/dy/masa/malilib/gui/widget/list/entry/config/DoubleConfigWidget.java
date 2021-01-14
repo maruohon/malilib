@@ -4,10 +4,8 @@ import fi.dy.masa.malilib.config.option.DoubleConfig;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.widget.DoubleTextFieldWidget;
 
-public class DoubleConfigWidget extends NumericConfigWidget<DoubleConfig>
+public class DoubleConfigWidget extends NumericConfigWidget<Double, DoubleConfig>
 {
-    protected final DoubleConfig doubleConfig;
-    protected final double initialValue;
     protected final String initialStringValue;
 
     public DoubleConfigWidget(int x, int y, int width, int height, int listIndex,
@@ -15,8 +13,6 @@ public class DoubleConfigWidget extends NumericConfigWidget<DoubleConfig>
     {
         super(x, y, width, height, listIndex, originalListIndex, config, ctx);
 
-        this.doubleConfig = config;
-        this.initialValue = this.config.getDoubleValue();
         this.initialStringValue = String.valueOf(this.initialValue);
 
         this.textField.setTextValidator(new DoubleTextFieldWidget.DoubleValidator(this.config.getMinDoubleValue(), this.config.getMaxDoubleValue()));
@@ -29,7 +25,7 @@ public class DoubleConfigWidget extends NumericConfigWidget<DoubleConfig>
     @Override
     protected String getCurrentValueAsString()
     {
-        return String.valueOf(this.doubleConfig.getDoubleValue());
+        return String.valueOf(this.config.getDoubleValue());
     }
 
     @Override
@@ -41,12 +37,6 @@ public class DoubleConfigWidget extends NumericConfigWidget<DoubleConfig>
         {
             this.config.setValueFromString(text);
         }
-    }
-
-    @Override
-    public boolean wasModified()
-    {
-        return this.config.getDoubleValue() != this.initialValue;
     }
 }
 

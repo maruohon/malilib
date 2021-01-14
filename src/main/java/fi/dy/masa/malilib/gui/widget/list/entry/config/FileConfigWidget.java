@@ -5,18 +5,12 @@ import fi.dy.masa.malilib.config.option.FileConfig;
 import fi.dy.masa.malilib.gui.FileSelectorScreen;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 
-public class FileConfigWidget extends BaseConfigOptionWidget<FileConfig>
+public class FileConfigWidget extends BaseConfigOptionWidget<File, FileConfig>
 {
-    protected final FileConfig config;
-    protected final File initialValue;
-
     public FileConfigWidget(int x, int y, int width, int height, int listIndex,
                             int originalListIndex, FileConfig config, ConfigWidgetContext ctx)
     {
         super(x, y, width, height, listIndex, originalListIndex, config, ctx);
-
-        this.config = config;
-        this.initialValue = this.config.getFile();
     }
 
     @Override
@@ -24,7 +18,7 @@ public class FileConfigWidget extends BaseConfigOptionWidget<FileConfig>
     {
         super.reAddSubWidgets();
 
-        File file = this.config.getFile().getAbsoluteFile();
+        File file = this.config.getValue().getAbsoluteFile();
         final File rootDir = new File("/");
         final File dir = file == null || file.isDirectory() == false ? (file != null ? file.getParentFile() : rootDir) : file;
 
@@ -36,11 +30,5 @@ public class FileConfigWidget extends BaseConfigOptionWidget<FileConfig>
         this.createFileSelectorWidgets(this.getY(), this.config, factory,
                                        "malilib.gui.button.config.select_file",
                                        "malilib.gui.button.config.hover.selected_file");
-    }
-
-    @Override
-    public boolean wasModified()
-    {
-        return this.config.getFile().equals(this.initialValue) == false;
     }
 }

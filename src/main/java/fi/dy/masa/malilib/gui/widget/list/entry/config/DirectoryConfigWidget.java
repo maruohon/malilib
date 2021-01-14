@@ -6,18 +6,12 @@ import fi.dy.masa.malilib.gui.DirectorySelectorScreen;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.util.FileUtils;
 
-public class DirectoryConfigWidget extends BaseConfigOptionWidget<DirectoryConfig>
+public class DirectoryConfigWidget extends BaseConfigOptionWidget<File, DirectoryConfig>
 {
-    protected final DirectoryConfig config;
-    protected final File initialValue;
-
     public DirectoryConfigWidget(int x, int y, int width, int height, int listIndex,
                                  int originalListIndex, DirectoryConfig config, ConfigWidgetContext ctx)
     {
         super(x, y, width, height, listIndex, originalListIndex, config, ctx);
-
-        this.config = config;
-        this.initialValue = this.config.getFile();
     }
 
     @Override
@@ -25,7 +19,7 @@ public class DirectoryConfigWidget extends BaseConfigOptionWidget<DirectoryConfi
     {
         super.reAddSubWidgets();
 
-        File file = FileUtils.getCanonicalFileIfPossible(this.config.getFile().getAbsoluteFile());
+        File file = FileUtils.getCanonicalFileIfPossible(this.config.getValue().getAbsoluteFile());
         final File rootDir = new File("/");
         final File dir = file == null || file.isDirectory() == false ? (file != null ? file.getParentFile() : rootDir) : file;
 
@@ -37,11 +31,5 @@ public class DirectoryConfigWidget extends BaseConfigOptionWidget<DirectoryConfi
         this.createFileSelectorWidgets(this.getY(), this.config, factory,
                                        "malilib.gui.button.config.select_directory",
                                        "malilib.gui.button.config.hover.selected_directory");
-    }
-
-    @Override
-    public boolean wasModified()
-    {
-        return this.config.getFile().equals(this.initialValue) == false;
     }
 }

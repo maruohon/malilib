@@ -1,17 +1,16 @@
 package fi.dy.masa.malilib.gui.widget.list.entry.config;
 
 import com.google.common.collect.ImmutableList;
-import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.config.ConfigInfo;
+import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.widget.KeybindSettingsWidget;
 import fi.dy.masa.malilib.gui.widget.button.BooleanConfigButton;
 import fi.dy.masa.malilib.gui.widget.button.KeyBindConfigButton;
 import fi.dy.masa.malilib.input.KeyBind;
 
-public abstract class BaseHotkeyedBooleanConfigWidget<C extends ConfigInfo> extends BaseConfigOptionWidget<C>
+public abstract class BaseHotkeyedBooleanConfigWidget extends BaseConfigWidget<ConfigInfo>
 {
-    protected final C config;
     protected final BooleanConfig booleanConfig;
     protected final KeyBind keyBind;
     protected final ImmutableList<Integer> initialHotkeyValue;
@@ -20,25 +19,24 @@ public abstract class BaseHotkeyedBooleanConfigWidget<C extends ConfigInfo> exte
     protected final KeybindSettingsWidget settingsWidget;
     protected final boolean initialBooleanValue;
 
-    public BaseHotkeyedBooleanConfigWidget(int x, int y, int width, int height, int listIndex,
-                                           int originalListIndex, C config, ConfigWidgetContext ctx)
+    public BaseHotkeyedBooleanConfigWidget(int x, int y, int width, int height, int listIndex, int originalListIndex,
+                                           ConfigInfo baseConfig, BooleanConfig booleanConfig, KeyBind keyBind,
+                                           ConfigWidgetContext ctx)
     {
-        super(x, y, width, height, listIndex, originalListIndex, config, ctx);
+        super(x, y, width, height, listIndex, originalListIndex, baseConfig, ctx);
 
-        this.config = config;
-
-        this.booleanConfig = this.getBooleanConfig(config);
-        this.keyBind = this.getKeyBind(config);
-        this.initialBooleanValue = this.booleanConfig.getBooleanValue();
+        this.booleanConfig = booleanConfig;
+        this.keyBind = keyBind;
+        this.initialBooleanValue = booleanConfig.getBooleanValue();
         this.initialHotkeyValue = this.keyBind.getKeys();
 
-        this.booleanButton = new BooleanConfigButton(x, y + 1, -1, 20, this.booleanConfig);
+        this.booleanButton = new BooleanConfigButton(x, y + 1, -1, 20, booleanConfig);
         this.booleanButton.setActionListener((btn, mbtn) -> this.resetButton.setEnabled(this.config.isModified()));
 
-        this.hotkeyButton = new KeyBindConfigButton(x, y + 1, 120, 20, this.keyBind, ctx.getKeybindEditingScreen());
+        this.hotkeyButton = new KeyBindConfigButton(x, y + 1, 120, 20, keyBind, ctx.getKeybindEditingScreen());
         this.hotkeyButton.setValueChangeListener(() -> this.resetButton.setEnabled(this.config.isModified()));
 
-        this.settingsWidget = new KeybindSettingsWidget(x, y, 20, 20, this.keyBind, config.getDisplayName(), ctx.getDialogHandler());
+        this.settingsWidget = new KeybindSettingsWidget(x, y, 20, 20, keyBind, booleanConfig.getDisplayName(), ctx.getDialogHandler());
 
         this.resetButton.setActionListener((btn, mbtn) -> {
             this.config.resetToDefault();
@@ -47,10 +45,6 @@ public abstract class BaseHotkeyedBooleanConfigWidget<C extends ConfigInfo> exte
             this.hotkeyButton.updateDisplayString();
         });
     }
-
-    protected abstract BooleanConfig getBooleanConfig(C config);
-
-    protected abstract KeyBind getKeyBind(C config);
 
     @Override
     public void reAddSubWidgets()
@@ -74,7 +68,7 @@ public abstract class BaseHotkeyedBooleanConfigWidget<C extends ConfigInfo> exte
         this.settingsWidget.setPosition(x, y);
 
         x += this.settingsWidget.getWidth() + 4;
-        this.updateResetButton(x, y, this.config);
+        this.updateResetButton(x, y);
 
         this.addWidget(this.booleanButton);
         this.addWidget(this.hotkeyButton);

@@ -93,7 +93,7 @@ public class BaseValueListEditScreen<TYPE> extends BaseListScreen<DataListWidget
     @Override
     protected DataListWidget<TYPE> createListWidget(int listX, int listY, int listWidth, int listHeight)
     {
-        DataListWidget<TYPE> listWidget = new DataListWidget<>(listX, listY, listWidth, listHeight, this.config::getValues);
+        DataListWidget<TYPE> listWidget = new DataListWidget<>(listX, listY, listWidth, listHeight, this.config::getValue);
 
         listWidget.setListEntryWidgetFixedHeight(20);
         listWidget.addSearchBar(new SearchBarWidget(listWidget.getX() + 17, listWidget.getY() + 3,
@@ -111,7 +111,7 @@ public class BaseValueListEditScreen<TYPE> extends BaseListScreen<DataListWidget
         });
 
         listWidget.setEntryWidgetFactory((wx, wy, ww, wh, li, oi, entry, lw) -> {
-            List<TYPE> defaultList = this.config.getDefaultValues();
+            List<TYPE> defaultList = this.config.getDefaultValue();
             TYPE defaultValue = li < defaultList.size() ? defaultList.get(li) : this.newEntrySupplier.get();
             return this.widgetFactory.create(wx, wy, ww, wh, li, oi, entry, defaultValue, lw);
         });

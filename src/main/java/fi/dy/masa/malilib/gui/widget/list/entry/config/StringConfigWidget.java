@@ -4,19 +4,14 @@ import fi.dy.masa.malilib.config.option.StringConfig;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 
-public class StringConfigWidget extends BaseConfigOptionWidget<StringConfig>
+public class StringConfigWidget extends BaseConfigOptionWidget<String, StringConfig>
 {
-    protected final StringConfig config;
-    protected final String initialValue;
     protected final BaseTextFieldWidget textField;
 
     public StringConfigWidget(int x, int y, int width, int height, int listIndex,
                               int originalListIndex, StringConfig config, ConfigWidgetContext ctx)
     {
         super(x, y, width, height, listIndex, originalListIndex, config, ctx);
-
-        this.config = config;
-        this.initialValue = this.config.getStringValue();
 
         this.textField = new BaseTextFieldWidget(x, y, 20, 16, this.config.getStringValue());
         this.textField.setListener((str) -> {
@@ -49,7 +44,7 @@ public class StringConfigWidget extends BaseConfigOptionWidget<StringConfig>
         // even just one, depending on the alignment/length of the string.
         this.textField.setCursorToStart();
 
-        this.updateResetButton(x + elementWidth + 4, y, this.config);
+        this.updateResetButton(x + elementWidth + 4, y);
 
         this.addWidget(this.textField);
         this.addWidget(this.resetButton);
@@ -64,10 +59,5 @@ public class StringConfigWidget extends BaseConfigOptionWidget<StringConfig>
         {
             this.config.setValueFromString(text);
         }
-    }
-    @Override
-    public boolean wasModified()
-    {
-        return this.config.getStringValue().equals(this.initialValue) == false;
     }
 }

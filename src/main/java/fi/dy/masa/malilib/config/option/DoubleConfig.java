@@ -63,6 +63,12 @@ public class DoubleConfig extends BaseSliderConfig<Double> implements SliderConf
         return this.defaultValue;
     }
 
+    @Override
+    public Double getValue()
+    {
+        return this.value;
+    }
+
     public void setDoubleValue(double value)
     {
         double oldValue = this.value;

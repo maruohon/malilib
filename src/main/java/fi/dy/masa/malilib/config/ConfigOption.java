@@ -59,6 +59,16 @@ public interface ConfigOption<T> extends ConfigInfo
     void cacheSavedValue();
 
     /**
+     * Returns the value of this config.
+     * Note that for primitive config types you should generally prefer the
+     * type-specific methods to avoid boxing/unboxing.
+     * This method is meant more for some of the config screen and other config
+     * system related code, to make things a bit more generic there.
+     * @return
+     */
+    T getValue();
+
+    /**
      * Called after the config value changes
      * @param newValue the new value that was set to the config
      * @param oldValue the old value before the change happened

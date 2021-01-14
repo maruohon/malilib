@@ -5,7 +5,7 @@ import fi.dy.masa.malilib.config.value.ConfigOptionListEntry;
 import fi.dy.masa.malilib.gui.widget.button.OptionListConfigButton;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 
-public class OptionListConfigWidget extends BaseConfigOptionWidget<OptionListConfig<?>>
+public class OptionListConfigWidget extends BaseConfigWidget<OptionListConfig<?>>
 {
     protected final OptionListConfig<?> config;
     protected final ConfigOptionListEntry<?> initialValue;
@@ -17,7 +17,7 @@ public class OptionListConfigWidget extends BaseConfigOptionWidget<OptionListCon
         super(x, y, width, height, listIndex, originalListIndex, config, ctx);
 
         this.config = config;
-        this.initialValue = this.config.getOptionListValue();
+        this.initialValue = this.config.getValue();
 
         this.optionListButton = new OptionListConfigButton(x, y, 80, 20, this.config);
         this.optionListButton.setActionListener((btn, mbtn) -> this.resetButton.setEnabled(this.config.isModified()));
@@ -41,7 +41,7 @@ public class OptionListConfigWidget extends BaseConfigOptionWidget<OptionListCon
         this.optionListButton.setPosition(x, y);
         this.optionListButton.setWidth(elementWidth);
 
-        this.updateResetButton(x + elementWidth + 4, y, this.config);
+        this.updateResetButton(x + elementWidth + 4, y);
 
         this.addWidget(this.optionListButton);
         this.addWidget(this.resetButton);
@@ -50,6 +50,6 @@ public class OptionListConfigWidget extends BaseConfigOptionWidget<OptionListCon
     @Override
     public boolean wasModified()
     {
-        return this.config.getOptionListValue().equals(this.initialValue) == false;
+        return this.config.getValue().equals(this.initialValue) == false;
     }
 }

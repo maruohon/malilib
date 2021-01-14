@@ -31,17 +31,18 @@ public class OptionListConfig<T extends ConfigOptionListEntry<T>> extends BaseCo
         this.cacheSavedValue();
     }
 
-    public T getOptionListValue()
+    @Override
+    public T getValue()
     {
         return this.value;
     }
 
-    public T getDefaultOptionListValue()
+    public T getDefaultValue()
     {
         return this.defaultValue;
     }
 
-    public void setOptionListValue(T value)
+    public void setValue(T value)
     {
         T oldValue = this.value;
         this.value = value;
@@ -54,7 +55,7 @@ public class OptionListConfig<T extends ConfigOptionListEntry<T>> extends BaseCo
 
     public void cycleValue(boolean forward)
     {
-        this.setOptionListValue(this.value.cycle(forward));
+        this.setValue(this.value.cycle(forward));
     }
 
     @Override
@@ -78,7 +79,7 @@ public class OptionListConfig<T extends ConfigOptionListEntry<T>> extends BaseCo
     @Override
     public void resetToDefault()
     {
-        this.setOptionListValue(this.defaultValue);
+        this.setValue(this.defaultValue);
     }
 
     @Override

@@ -40,6 +40,12 @@ public class BooleanConfig extends BaseConfig<Boolean>
         return this.defaultValue;
     }
 
+    @Override
+    public Boolean getValue()
+    {
+        return this.value;
+    }
+
     public void setBooleanValue(boolean value)
     {
         boolean oldValue = this.value;

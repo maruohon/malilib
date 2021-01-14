@@ -36,6 +36,7 @@ public class BlackWhiteListConfig<TYPE> extends BaseConfig<BlackWhiteList<TYPE>>
         this.cacheSavedValue();
     }
 
+    @Override
     public BlackWhiteList<TYPE> getValue()
     {
         return this.value;

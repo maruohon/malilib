@@ -6,7 +6,7 @@ import fi.dy.masa.malilib.gui.widget.button.KeyBindConfigButton;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.widget.KeybindSettingsWidget;
 
-public class HotkeyConfigWidget extends BaseConfigOptionWidget<HotkeyConfig>
+public class HotkeyConfigWidget extends BaseConfigWidget<HotkeyConfig>
 {
     protected final HotkeyConfig config;
     protected final ImmutableList<Integer> initialValue;
@@ -51,7 +51,7 @@ public class HotkeyConfigWidget extends BaseConfigOptionWidget<HotkeyConfig>
         this.settingsWidget.setPosition(x, y);
 
         x += this.settingsWidget.getWidth() + 4;
-        this.updateResetButton(x, y, this.config);
+        this.updateResetButton(x, y);
 
         this.addWidget(this.keybindButton);
         this.addWidget(this.settingsWidget);

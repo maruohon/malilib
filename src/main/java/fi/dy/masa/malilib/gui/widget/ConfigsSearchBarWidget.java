@@ -64,7 +64,7 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
         this.resetConfigsButton.setActionListener((btn, mbtn) -> BaseScreen.openPopupGui(confirmScreen));
 
         this.sourceSelectionDropdown = new DropDownListWidget<>(x, y - 16, -1, 15, 60, 10, Scope.VALUES, Scope::getDisplayName, null);
-        this.sourceSelectionDropdown.setSelectedEntry(MaLiLibConfigs.Generic.CONFIG_SEARCH_DEFAULT_SCOPE.getOptionListValue());
+        this.sourceSelectionDropdown.setSelectedEntry(MaLiLibConfigs.Generic.CONFIG_SEARCH_DEFAULT_SCOPE.getValue());
         this.sourceSelectionDropdown.setSelectionListener((s) -> filterChangeListener.onEvent());
         this.sourceSelectionDropdown.setOpenStateHoverText(StringUtils.translate("malilib.gui.label.hover.config_search_default_scope"));
 

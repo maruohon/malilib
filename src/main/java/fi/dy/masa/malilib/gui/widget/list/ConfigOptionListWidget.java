@@ -18,7 +18,7 @@ import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.widget.ConfigsSearchBarWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetFactory;
-import fi.dy.masa.malilib.gui.widget.list.entry.config.BaseConfigOptionWidget;
+import fi.dy.masa.malilib.gui.widget.list.entry.config.BaseConfigWidget;
 
 public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget<C>
 {
@@ -266,9 +266,9 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
 
         @Override
         @Nullable
-        public BaseConfigOptionWidget<? extends ConfigInfo> createWidget(int x, int y, int width, int height,
-                                                                         int listIndex, int originalListIndex,
-                                                                         C config, DataListWidget<C> listWidget)
+        public BaseConfigWidget<? extends ConfigInfo> createWidget(int x, int y, int width, int height,
+                                                                   int listIndex, int originalListIndex,
+                                                                   C config, DataListWidget<C> listWidget)
         {
             ConfigOptionWidgetFactory<C> factory = ConfigTypeRegistry.INSTANCE.getWidgetFactory(config);
             return factory.create(x, y, width, height, listIndex, originalListIndex, config, this.ctx);

@@ -16,6 +16,12 @@ public class StringConfig extends BaseStringConfig<String>
     }
 
     @Override
+    public String getValue()
+    {
+        return this.value;
+    }
+
+    @Override
     public void setValueFromString(String value)
     {
         if (this.value.equals(value) == false)
