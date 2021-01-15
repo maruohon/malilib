@@ -99,14 +99,15 @@ public class HotkeyedBooleanConfig extends BooleanConfig implements Hotkey
             if (element.isJsonObject())
             {
                 JsonObject obj = element.getAsJsonObject();
-                this.value = JsonUtils.getBooleanOrDefault(obj, "enabled", false);
+                this.booleanValue = JsonUtils.getBooleanOrDefault(obj, "enabled", false);
+                this.value = this.booleanValue;
 
                 if (JsonUtils.hasObject(obj, "hotkey"))
                 {
                     this.keyBind.setValueFromJsonElement(JsonUtils.getNestedObject(obj, "hotkey", false), configName);
                 }
 
-                this.onValueLoaded(this.value);
+                this.onValueLoaded(this.booleanValue);
             }
             else
             {
@@ -125,7 +126,7 @@ public class HotkeyedBooleanConfig extends BooleanConfig implements Hotkey
     public JsonElement getAsJsonElement()
     {
         JsonObject obj = new JsonObject();
-        obj.add("enabled", new JsonPrimitive(this.value));
+        obj.add("enabled", new JsonPrimitive(this.booleanValue));
         obj.add("hotkey", this.keyBind.getAsJsonElement());
         return obj;
     }

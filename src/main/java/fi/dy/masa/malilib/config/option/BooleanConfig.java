@@ -4,11 +4,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import fi.dy.masa.malilib.MaLiLib;
 
-public class BooleanConfig extends BaseConfig<Boolean>
+public class BooleanConfig extends BaseGenericConfig<Boolean>
 {
-    protected final boolean defaultValue;
-    protected boolean value;
-    protected boolean lastSavedValue;
+    protected boolean booleanValue;
 
     public BooleanConfig(String name, boolean defaultValue)
     {
@@ -22,68 +20,27 @@ public class BooleanConfig extends BaseConfig<Boolean>
 
     public BooleanConfig(String name, boolean defaultValue, String prettyName, String comment)
     {
-        super(name, name, prettyName, comment);
+        super(name, defaultValue, name, prettyName, comment);
 
-        this.defaultValue = defaultValue;
-        this.value = defaultValue;
-
-        this.cacheSavedValue();
+        this.booleanValue = defaultValue;
     }
 
     public boolean getBooleanValue()
     {
-        return this.value;
-    }
-
-    public boolean getDefaultBooleanValue()
-    {
-        return this.defaultValue;
-    }
-
-    @Override
-    public Boolean getValue()
-    {
-        return this.value;
-    }
-
-    public void setBooleanValue(boolean value)
-    {
-        boolean oldValue = this.value;
-        this.value = value;
-
-        if (oldValue != this.value)
-        {
-            this.onValueChanged(value, oldValue);
-        }
+        return this.booleanValue;
     }
 
     public void toggleBooleanValue()
     {
-        this.setBooleanValue(! this.getBooleanValue());
+        this.setValue(! this.booleanValue);
     }
 
     @Override
-    public boolean isModified()
+    public void setValue(Boolean newValue)
     {
-        return this.value != this.defaultValue;
-    }
+        this.booleanValue = newValue;
 
-    @Override
-    public boolean isDirty()
-    {
-        return this.lastSavedValue != this.value;
-    }
-
-    @Override
-    public void cacheSavedValue()
-    {
-        this.lastSavedValue = this.value;
-    }
-
-    @Override
-    public void resetToDefault()
-    {
-        this.setBooleanValue(this.defaultValue);
+        super.setValue(newValue);
     }
 
     @Override
@@ -93,8 +50,9 @@ public class BooleanConfig extends BaseConfig<Boolean>
         {
             if (element.isJsonPrimitive())
             {
-                this.value = element.getAsBoolean();
-                this.onValueLoaded(this.value);
+                this.booleanValue = element.getAsBoolean();
+                this.value = this.booleanValue;
+                this.onValueLoaded(this.booleanValue);
             }
             else
             {
@@ -112,6 +70,6 @@ public class BooleanConfig extends BaseConfig<Boolean>
     @Override
     public JsonElement getAsJsonElement()
     {
-        return new JsonPrimitive(this.value);
+        return new JsonPrimitive(this.booleanValue);
     }
 }

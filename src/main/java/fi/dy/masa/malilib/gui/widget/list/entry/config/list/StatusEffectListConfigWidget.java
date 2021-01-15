@@ -5,7 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 import net.minecraft.init.MobEffects;
 import net.minecraft.potion.Potion;
-import fi.dy.masa.malilib.config.option.StatusEffectListConfig;
+import fi.dy.masa.malilib.config.option.list.StatusEffectListConfig;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.widget.button.BaseValueListEditButton;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;

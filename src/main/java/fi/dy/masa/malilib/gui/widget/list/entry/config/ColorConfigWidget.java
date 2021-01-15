@@ -20,7 +20,7 @@ public class ColorConfigWidget extends BaseConfigOptionWidget<Integer, ColorConf
         this.initialStringValue = Color4f.getHexColorString(this.initialValue);
 
         this.colorIndicatorWidget = new ColorIndicatorWidget(x, y, 18, 18, this.config, (newValue) -> {
-            this.config.setIntegerValue(newValue);
+            this.config.setValue(newValue);
             this.reAddSubWidgets();
         });
 

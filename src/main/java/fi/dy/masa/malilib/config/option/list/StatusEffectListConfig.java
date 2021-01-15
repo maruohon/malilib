@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.config.option;
+package fi.dy.masa.malilib.config.option.list;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,7 +23,7 @@ public class StatusEffectListConfig extends ValueListConfig<Potion>
     @Override
     public StatusEffectListConfig copy()
     {
-        StatusEffectListConfig config = new StatusEffectListConfig(this.name, this.defaultValues, this.toStringConverter, this.fromStringConverter);
+        StatusEffectListConfig config = new StatusEffectListConfig(this.name, this.defaultValue, this.toStringConverter, this.fromStringConverter);
         config.copyValuesFrom(this);
         return config;
     }

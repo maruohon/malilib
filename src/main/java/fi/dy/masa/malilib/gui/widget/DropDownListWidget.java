@@ -592,7 +592,7 @@ public class DropDownListWidget<T> extends ContainerWidget
     {
         if (MaLiLibConfigs.Info.DROP_DOWN_SEARCH_TIP.getBooleanValue())
         {
-            MaLiLibConfigs.Info.DROP_DOWN_SEARCH_TIP.setBooleanValue(false);
+            MaLiLibConfigs.Info.DROP_DOWN_SEARCH_TIP.setValue(false);
         }
 
         this.updateFilteredEntries(searchText);

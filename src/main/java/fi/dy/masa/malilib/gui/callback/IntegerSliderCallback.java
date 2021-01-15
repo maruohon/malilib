@@ -33,7 +33,7 @@ public class IntegerSliderCallback implements SliderCallback
     public void setRelativeValue(double relativeValue)
     {
         long relValue = (long) (relativeValue * ((long) this.config.getMaxIntegerValue() - (long) this.config.getMinIntegerValue()));
-        this.config.setIntegerValue((int) (relValue + this.config.getMinIntegerValue()));
+        this.config.setValue((int) (relValue + this.config.getMinIntegerValue()));
 
         if (this.changeListener != null)
         {

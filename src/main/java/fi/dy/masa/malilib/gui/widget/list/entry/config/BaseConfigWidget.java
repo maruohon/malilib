@@ -118,7 +118,7 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
     {
         int x = this.getElementsStartPosition();
         int elementWidth = this.getElementWidth();
-        File file = FileUtils.getCanonicalFileIfPossible(config.getFile());
+        File file = FileUtils.getCanonicalFileIfPossible(config.getValue());
 
         ArrayList<String> lines = new ArrayList<>();
         StringUtils.splitTextToLines(lines, StringUtils.translate(hoverTextKey, file.getAbsolutePath()), 280);

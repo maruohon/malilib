@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.util.ResourceLocation;
-import fi.dy.masa.malilib.config.option.IdentifierListConfig;
+import fi.dy.masa.malilib.config.option.list.IdentifierListConfig;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.widget.button.BaseValueListEditButton;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;

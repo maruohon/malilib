@@ -35,7 +35,7 @@ public class DoubleSliderCallback implements SteppedSliderCallback
             value = value - ((value + step) % step);
         }
 
-        this.config.setDoubleValue(value);
+        this.config.setValue(value);
 
         if (this.changeListener != null)
         {

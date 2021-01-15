@@ -10,10 +10,10 @@ import net.minecraft.item.Item;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.RegistryNamespaced;
-import fi.dy.masa.malilib.config.option.BlockListConfig;
-import fi.dy.masa.malilib.config.option.ItemListConfig;
-import fi.dy.masa.malilib.config.option.StatusEffectListConfig;
-import fi.dy.masa.malilib.config.option.ValueListConfig;
+import fi.dy.masa.malilib.config.option.list.BlockListConfig;
+import fi.dy.masa.malilib.config.option.list.ItemListConfig;
+import fi.dy.masa.malilib.config.option.list.StatusEffectListConfig;
+import fi.dy.masa.malilib.config.option.list.ValueListConfig;
 import fi.dy.masa.malilib.util.restriction.UsageRestriction.ListType;
 
 public class BlackWhiteList<TYPE>

@@ -60,7 +60,7 @@ public class ConfigSearchInfo<C extends ConfigInfo>
             BooleanConfig booleanConfig = this.booleanConfigGetter.apply(config);
             // Can't use isModified() here, because it may be checking other
             // things as well, such as in HotkeyedBooleanConfig
-            return booleanConfig != null && booleanConfig.getBooleanValue() != booleanConfig.getDefaultBooleanValue();
+            return booleanConfig != null && booleanConfig.isModified();
         }
 
         return false;

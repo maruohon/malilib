@@ -5,12 +5,8 @@ import com.google.gson.JsonPrimitive;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.config.value.ConfigOptionListEntry;
 
-public class OptionListConfig<T extends ConfigOptionListEntry<T>> extends BaseConfig<T>
+public class OptionListConfig<T extends ConfigOptionListEntry<T>> extends BaseGenericConfig<T>
 {
-    protected final T defaultValue;
-    protected T value;
-    protected T lastSavedValue;
-
     public OptionListConfig(String name, T defaultValue)
     {
         this(name, defaultValue, name);
@@ -23,63 +19,12 @@ public class OptionListConfig<T extends ConfigOptionListEntry<T>> extends BaseCo
 
     public OptionListConfig(String name, T defaultValue, String prettyName, String comment)
     {
-        super(name, name, prettyName, comment);
-
-        this.defaultValue = defaultValue;
-        this.value = defaultValue;
-
-        this.cacheSavedValue();
-    }
-
-    @Override
-    public T getValue()
-    {
-        return this.value;
-    }
-
-    public T getDefaultValue()
-    {
-        return this.defaultValue;
-    }
-
-    public void setValue(T value)
-    {
-        T oldValue = this.value;
-        this.value = value;
-
-        if (oldValue != this.value)
-        {
-            this.onValueChanged(value, oldValue);
-        }
+        super(name, defaultValue, name, prettyName, comment);
     }
 
     public void cycleValue(boolean forward)
     {
         this.setValue(this.value.cycle(forward));
-    }
-
-    @Override
-    public boolean isModified()
-    {
-        return this.value != this.defaultValue;
-    }
-
-    @Override
-    public boolean isDirty()
-    {
-        return this.lastSavedValue != this.value;
-    }
-
-    @Override
-    public void cacheSavedValue()
-    {
-        this.lastSavedValue = this.value;
-    }
-
-    @Override
-    public void resetToDefault()
-    {
-        this.setValue(this.defaultValue);
     }
 
     @Override

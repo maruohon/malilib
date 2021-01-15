@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.gui.widget.button;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.config.option.BlackWhiteListConfig;
+import fi.dy.masa.malilib.config.option.list.BlackWhiteListConfig;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.config.BlackWhiteListEditScreen;
 import fi.dy.masa.malilib.gui.util.DialogHandler;

@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.config.option;
+package fi.dy.masa.malilib.config.option.list;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,7 +22,7 @@ public class BlockListConfig extends ValueListConfig<Block>
     @Override
     public BlockListConfig copy()
     {
-        BlockListConfig config = new BlockListConfig(this.name, this.defaultValues, this.toStringConverter, this.fromStringConverter);
+        BlockListConfig config = new BlockListConfig(this.name, this.defaultValue, this.toStringConverter, this.fromStringConverter);
         config.copyValuesFrom(this);
         return config;
     }

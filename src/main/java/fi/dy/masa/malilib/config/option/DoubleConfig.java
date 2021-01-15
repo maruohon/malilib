@@ -9,9 +9,7 @@ import fi.dy.masa.malilib.gui.callback.DoubleSliderCallback;
 
 public class DoubleConfig extends BaseSliderConfig<Double> implements SliderConfig
 {
-    protected final double defaultValue;
-    protected double value;
-    protected double lastSavedValue;
+    protected double doubleValue;
     protected double minValue;
     protected double maxValue;
 
@@ -37,46 +35,32 @@ public class DoubleConfig extends BaseSliderConfig<Double> implements SliderConf
 
     public DoubleConfig(String name, double defaultValue, double minValue, double maxValue, boolean sliderActive, String comment)
     {
-        super(name, comment, sliderActive);
+        super(name, defaultValue, comment, sliderActive);
 
-        this.defaultValue = defaultValue;
-        this.value = defaultValue;
+        this.doubleValue = defaultValue;
         this.minValue = minValue;
         this.maxValue = maxValue;
         this.sliderCallbackFactory = (listener) -> new DoubleSliderCallback(this, listener);
-
-        this.cacheSavedValue();
     }
 
     public double getDoubleValue()
     {
-        return this.value;
+        return this.doubleValue;
     }
 
     public float getFloatValue()
     {
-        return (float) this.getDoubleValue();
-    }
-
-    public double getDefaultDoubleValue()
-    {
-        return this.defaultValue;
+        return (float) this.doubleValue;
     }
 
     @Override
-    public Double getValue()
+    public void setValue(Double newValue)
     {
-        return this.value;
-    }
-
-    public void setDoubleValue(double value)
-    {
-        double oldValue = this.value;
-        this.value = this.getClampedValue(value);
-
-        if (oldValue != this.value)
+        if (Double.isNaN(newValue) == false)
         {
-            this.onValueChanged(value, oldValue);
+            newValue = this.getClampedValue(newValue);
+            this.doubleValue = newValue;
+            super.setValue(newValue);
         }
     }
 
@@ -93,24 +77,18 @@ public class DoubleConfig extends BaseSliderConfig<Double> implements SliderConf
     public void setMinDoubleValue(double minValue)
     {
         this.minValue = minValue;
-        this.setDoubleValue(this.value);
+        this.setValue(this.doubleValue);
     }
 
     public void setMaxDoubleValue(double maxValue)
     {
         this.maxValue = maxValue;
-        this.setDoubleValue(this.value);
+        this.setValue(this.doubleValue);
     }
 
     protected double getClampedValue(double value)
     {
         return MathHelper.clamp(value, this.minValue, this.maxValue);
-    }
-
-    @Override
-    public boolean isModified()
-    {
-        return this.value != this.defaultValue;
     }
 
     public boolean isModified(String newValue)
@@ -126,27 +104,9 @@ public class DoubleConfig extends BaseSliderConfig<Double> implements SliderConf
         return true;
     }
 
-    @Override
-    public boolean isDirty()
-    {
-        return this.lastSavedValue != this.value;
-    }
-
-    @Override
-    public void cacheSavedValue()
-    {
-        this.lastSavedValue = this.value;
-    }
-
-    @Override
-    public void resetToDefault()
-    {
-        this.setDoubleValue(this.defaultValue);
-    }
-
     public String getStringValue()
     {
-        return String.valueOf(this.value);
+        return String.valueOf(this.doubleValue);
     }
 
     public String getDefaultStringValue()
@@ -158,7 +118,7 @@ public class DoubleConfig extends BaseSliderConfig<Double> implements SliderConf
     {
         try
         {
-            this.setDoubleValue(Double.parseDouble(value));
+            this.setValue(Double.parseDouble(value));
         }
         catch (Exception e)
         {
@@ -173,8 +133,9 @@ public class DoubleConfig extends BaseSliderConfig<Double> implements SliderConf
         {
             if (element.isJsonPrimitive())
             {
-                this.value = this.getClampedValue(element.getAsDouble());
-                this.onValueLoaded(this.value);
+                this.doubleValue = this.getClampedValue(element.getAsDouble());
+                this.value = this.doubleValue;
+                this.onValueLoaded(this.doubleValue);
             }
             else
             {
@@ -192,6 +153,6 @@ public class DoubleConfig extends BaseSliderConfig<Double> implements SliderConf
     @Override
     public JsonElement getAsJsonElement()
     {
-        return new JsonPrimitive(this.value);
+        return new JsonPrimitive(this.doubleValue);
     }
 }

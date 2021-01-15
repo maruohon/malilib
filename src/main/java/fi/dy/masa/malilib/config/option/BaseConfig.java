@@ -22,12 +22,9 @@ public abstract class BaseConfig<T> implements ConfigOption<T>
     protected Object[] commentArgs;
     protected String modId = "?";
     protected String modName = "?";
-    @Nullable
-    protected ValueChangeCallback<T> valueChangeCallback;
-    @Nullable
-    protected ValueLoadedCallback<T> valueLoadCallback;
-    @Nullable
-    protected EventListener labelClickHandler;
+    @Nullable protected ValueChangeCallback<T> valueChangeCallback;
+    @Nullable protected ValueLoadedCallback<T> valueLoadCallback;
+    @Nullable protected EventListener labelClickHandler;
 
     public BaseConfig(String name)
     {
@@ -185,7 +182,7 @@ public abstract class BaseConfig<T> implements ConfigOption<T>
         return this.labelClickHandler;
     }
 
-    public void setLabelClickHandler(EventListener clickHandler)
+    public void setLabelClickHandler(@Nullable EventListener clickHandler)
     {
         this.labelClickHandler = clickHandler;
     }

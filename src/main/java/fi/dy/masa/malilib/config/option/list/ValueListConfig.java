@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.config.option;
+package fi.dy.masa.malilib.config.option.list;
 
 import java.util.Collection;
 import java.util.List;
@@ -11,15 +11,13 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import fi.dy.masa.malilib.MaLiLib;
+import fi.dy.masa.malilib.config.option.BaseGenericConfig;
 import fi.dy.masa.malilib.util.JsonUtils;
 
-public class ValueListConfig<TYPE> extends BaseConfig<ImmutableList<TYPE>>
+public class ValueListConfig<TYPE> extends BaseGenericConfig<ImmutableList<TYPE>>
 {
-    protected final ImmutableList<TYPE> defaultValues;
     protected final Function<TYPE, String> toStringConverter;
     protected final Function<String, TYPE> fromStringConverter;
-    protected ImmutableList<TYPE> values;
-    protected ImmutableList<TYPE> lastSavedValues;
     @Nullable ImmutableSet<TYPE> validValues;
 
     public ValueListConfig(String name, ImmutableList<TYPE> defaultValues,
@@ -31,30 +29,21 @@ public class ValueListConfig<TYPE> extends BaseConfig<ImmutableList<TYPE>>
     public ValueListConfig(String name, ImmutableList<TYPE> defaultValues, String comment,
                            Function<TYPE, String> toStringConverter, Function<String, TYPE> fromStringConverter)
     {
-        super(name, comment);
+        super(name, defaultValues, comment);
 
-        this.defaultValues = defaultValues;
-        this.values = ImmutableList.copyOf(defaultValues);
         this.toStringConverter = toStringConverter;
         this.fromStringConverter = fromStringConverter;
-
-        this.cacheSavedValue();
-    }
-
-    @Override
-    public ImmutableList<TYPE> getValue()
-    {
-        return this.values;
-    }
-
-    public ImmutableList<TYPE> getDefaultValue()
-    {
-        return this.defaultValues;
     }
 
     public ImmutableList<String> getValuesAsString()
     {
-        return getValuesAsStringList(this.values, this.toStringConverter);
+        return getValuesAsStringList(this.getValue(), this.toStringConverter);
+    }
+
+    @Nullable
+    public ImmutableSet<TYPE> getValidValues()
+    {
+        return this.validValues;
     }
 
     public Function<TYPE, String> getToStringConverter()
@@ -65,12 +54,6 @@ public class ValueListConfig<TYPE> extends BaseConfig<ImmutableList<TYPE>>
     public Function<String, TYPE> getFromStringConverter()
     {
         return this.fromStringConverter;
-    }
-
-    @Nullable
-    public ImmutableSet<TYPE> getValidValues()
-    {
-        return this.validValues;
     }
 
     /**
@@ -92,9 +75,9 @@ public class ValueListConfig<TYPE> extends BaseConfig<ImmutableList<TYPE>>
 
     public void setValues(List<TYPE> newValues)
     {
-        if (this.values.equals(newValues) == false)
+        if (this.value.equals(newValues) == false)
         {
-            ImmutableList<TYPE> oldValues = this.values;
+            ImmutableList<TYPE> oldValues = this.value;
             List<TYPE> filteredValues;
 
             if (this.validValues != null && this.validValues.isEmpty() == false)
@@ -106,36 +89,12 @@ public class ValueListConfig<TYPE> extends BaseConfig<ImmutableList<TYPE>>
                 filteredValues = newValues;
             }
 
-            this.values = ImmutableList.copyOf(filteredValues);
-            this.onValueChanged(this.values, oldValues);
+            this.value = ImmutableList.copyOf(filteredValues);
+            this.onValueChanged(this.value, oldValues);
         }
     }
 
-    @Override
-    public void resetToDefault()
-    {
-        this.setValues(this.defaultValues);
-    }
-
-    @Override
-    public boolean isModified()
-    {
-        return this.values.equals(this.defaultValues) == false;
-    }
-
-    @Override
-    public boolean isDirty()
-    {
-        return this.lastSavedValues.equals(this.values) == false;
-    }
-
-    @Override
-    public void cacheSavedValue()
-    {
-        this.lastSavedValues = this.values;
-    }
-
-    protected void copyValuesFrom(ValueListConfig<TYPE> other)
+    public void copyValuesFrom(ValueListConfig<TYPE> other)
     {
         this.nameTranslationKey = other.nameTranslationKey;
         this.prettyNameTranslationKey = other.prettyNameTranslationKey;
@@ -150,7 +109,7 @@ public class ValueListConfig<TYPE> extends BaseConfig<ImmutableList<TYPE>>
 
     public ValueListConfig<TYPE> copy()
     {
-        ValueListConfig<TYPE> config = new ValueListConfig<>(this.name, this.defaultValues,
+        ValueListConfig<TYPE> config = new ValueListConfig<>(this.name, this.defaultValue,
                                                              this.toStringConverter, this.fromStringConverter);
         config.copyValuesFrom(this);
         return config;
@@ -171,21 +130,21 @@ public class ValueListConfig<TYPE> extends BaseConfig<ImmutableList<TYPE>>
                     builder.add(value);
                 }
 
-                this.values = builder.build();
+                this.value = builder.build();
             }
             else
             {
                 // Make sure to clear the old value in any case
-                this.values = ImmutableList.of();
+                this.value = ImmutableList.of();
                 MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element);
             }
 
-            this.onValueLoaded(this.values);
+            this.onValueLoaded(this.value);
         }
         catch (Exception e)
         {
             // Make sure to clear the old value in any case
-            this.values = ImmutableList.of();
+            this.value = ImmutableList.of();
             MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
         }
 
@@ -197,7 +156,7 @@ public class ValueListConfig<TYPE> extends BaseConfig<ImmutableList<TYPE>>
     {
         JsonArray arr = new JsonArray();
 
-        for (String str : getValuesAsStringList(this.values, this.toStringConverter))
+        for (String str : getValuesAsStringList(this.value, this.toStringConverter))
         {
             arr.add(new JsonPrimitive(str));
         }

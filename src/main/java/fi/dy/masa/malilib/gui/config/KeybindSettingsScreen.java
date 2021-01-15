@@ -68,11 +68,11 @@ public class KeybindSettingsScreen extends BaseDialogScreen
         KeyBindSettings settings = this.keybind.getSettings();
         this.cfgActivateOn.setValue(settings.getActivateOn());
         this.cfgContext.setValue(settings.getContext());
-        this.cfgAllowEmpty.setBooleanValue(settings.getAllowEmpty());
-        this.cfgAllowExtra.setBooleanValue(settings.getAllowExtraKeys());
-        this.cfgOrderSensitive.setBooleanValue(settings.isOrderSensitive());
-        this.cfgExclusive.setBooleanValue(settings.isExclusive());
-        this.cfgCancel.setBooleanValue(settings.shouldCancel());
+        this.cfgAllowEmpty.setValue(settings.getAllowEmpty());
+        this.cfgAllowExtra.setValue(settings.getAllowExtraKeys());
+        this.cfgOrderSensitive.setValue(settings.isOrderSensitive());
+        this.cfgExclusive.setValue(settings.isExclusive());
+        this.cfgCancel.setValue(settings.shouldCancel());
 
         this.cfgActivateOn.setValueChangeCallback((nv, ov) -> this.initGui());
         this.cfgContext.setValueChangeCallback((nv, ov) -> this.initGui());

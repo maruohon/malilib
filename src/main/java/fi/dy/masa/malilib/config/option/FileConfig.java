@@ -6,8 +6,6 @@ import fi.dy.masa.malilib.MaLiLib;
 
 public class FileConfig extends BaseStringConfig<File>
 {
-    protected File file;
-
     public FileConfig(String name, File defaultValue)
     {
         this(name, defaultValue, name);
@@ -15,31 +13,24 @@ public class FileConfig extends BaseStringConfig<File>
 
     public FileConfig(String name, File defaultValue, String comment)
     {
-        super(name, defaultValue.getAbsolutePath(), comment);
+        super(name, defaultValue, comment);
 
-        this.file = defaultValue;
-    }
-
-    public File getFile()
-    {
-        return this.file;
+        this.stringValue = defaultValue.getAbsolutePath();
     }
 
     @Override
-    public File getValue()
+    public void setValue(File newValue)
     {
-        return this.file;
+        this.stringValue = newValue.getAbsolutePath();
+        super.setValue(newValue);
     }
 
     @Override
-    public void setValueFromString(String value)
+    public void setValueFromString(String newValue)
     {
-        if (this.value.equals(value) == false)
+        if (this.stringValue.equals(newValue) == false)
         {
-            File oldFile = this.file;
-            this.value = value;
-            this.file = new File(value);
-            this.onValueChanged(this.file, oldFile);
+            this.setValue(new File(newValue));
         }
     }
 
@@ -50,9 +41,9 @@ public class FileConfig extends BaseStringConfig<File>
         {
             if (element.isJsonPrimitive())
             {
-                this.value = element.getAsString();
-                this.file = new File(this.value);
-                this.onValueLoaded(this.file);
+                this.stringValue = element.getAsString();
+                this.value = new File(this.stringValue);
+                this.onValueLoaded(this.value);
             }
             else
             {

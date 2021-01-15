@@ -13,23 +13,21 @@ public class StringConfig extends BaseStringConfig<String>
     public StringConfig(String name, String defaultValue, String comment)
     {
         super(name, defaultValue, comment);
+
+        this.stringValue = defaultValue;
     }
 
     @Override
-    public String getValue()
+    public void setValue(String newValue)
     {
-        return this.value;
+        this.stringValue = newValue;
+        super.setValue(newValue);
     }
 
     @Override
-    public void setValueFromString(String value)
+    public void setValueFromString(String newValue)
     {
-        if (this.value.equals(value) == false)
-        {
-            String oldValue = this.value;
-            this.value = value;
-            this.onValueChanged(value, oldValue);
-        }
+        this.setValue(newValue);
     }
 
     @Override
@@ -39,8 +37,9 @@ public class StringConfig extends BaseStringConfig<String>
         {
             if (element.isJsonPrimitive())
             {
-                this.value = element.getAsString();
-                this.onValueLoaded(this.value);
+                this.stringValue = element.getAsString();
+                this.value = this.stringValue;
+                this.onValueLoaded(this.stringValue);
             }
             else
             {

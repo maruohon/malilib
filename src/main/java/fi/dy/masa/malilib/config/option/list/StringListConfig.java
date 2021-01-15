@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.config.option;
+package fi.dy.masa.malilib.config.option.list;
 
 import com.google.common.collect.ImmutableList;
 
@@ -17,7 +17,7 @@ public class StringListConfig extends ValueListConfig<String>
     @Override
     public StringListConfig copy()
     {
-        StringListConfig config = new StringListConfig(this.name, this.defaultValues);
+        StringListConfig config = new StringListConfig(this.name, this.defaultValue);
         config.copyValuesFrom(this);
         return config;
     }

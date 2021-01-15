@@ -8,9 +8,7 @@ import fi.dy.masa.malilib.gui.callback.IntegerSliderCallback;
 
 public class IntegerConfig extends BaseSliderConfig<Integer>
 {
-    protected final int defaultValue;
-    protected int value;
-    protected int lastSavedValue;
+    protected int integerValue;
     protected int minValue;
     protected int maxValue;
 
@@ -36,20 +34,17 @@ public class IntegerConfig extends BaseSliderConfig<Integer>
 
     public IntegerConfig(String name, int defaultValue, int minValue, int maxValue, boolean sliderActive, String comment)
     {
-        super(name, comment, sliderActive);
+        super(name, defaultValue, comment, sliderActive);
 
-        this.defaultValue = defaultValue;
-        this.value = defaultValue;
+        this.integerValue = defaultValue;
         this.minValue = minValue;
         this.maxValue = maxValue;
         this.sliderCallbackFactory = (listener) -> new IntegerSliderCallback(this, listener);
-
-        this.cacheSavedValue();
     }
 
     public int getIntegerValue()
     {
-        return this.value;
+        return this.integerValue;
     }
 
     public int getDefaultIntegerValue()
@@ -58,20 +53,11 @@ public class IntegerConfig extends BaseSliderConfig<Integer>
     }
 
     @Override
-    public Integer getValue()
+    public void setValue(Integer newValue)
     {
-        return this.value;
-    }
-
-    public void setIntegerValue(int value)
-    {
-        int oldValue = this.value;
-        this.value = this.getClampedValue(value);
-
-        if (oldValue != this.value)
-        {
-            this.onValueChanged(value, oldValue);
-        }
+        newValue = this.getClampedValue(newValue);
+        this.integerValue = newValue;
+        super.setValue(newValue);
     }
 
     public int getMinIntegerValue()
@@ -87,24 +73,18 @@ public class IntegerConfig extends BaseSliderConfig<Integer>
     public void setMinIntegerValue(int minValue)
     {
         this.minValue = minValue;
-        this.setIntegerValue(this.value);
+        this.setValue(this.integerValue);
     }
 
     public void setMaxIntegerValue(int maxValue)
     {
         this.maxValue = maxValue;
-        this.setIntegerValue(this.value);
+        this.setValue(this.integerValue);
     }
 
     protected int getClampedValue(int value)
     {
         return MathHelper.clamp(value, this.minValue, this.maxValue);
-    }
-
-    @Override
-    public boolean isModified()
-    {
-        return this.value != this.defaultValue;
     }
 
     public boolean isModified(String newValue)
@@ -120,27 +100,9 @@ public class IntegerConfig extends BaseSliderConfig<Integer>
         return true;
     }
 
-    @Override
-    public boolean isDirty()
-    {
-        return this.lastSavedValue != this.value;
-    }
-
-    @Override
-    public void cacheSavedValue()
-    {
-        this.lastSavedValue = this.value;
-    }
-
-    @Override
-    public void resetToDefault()
-    {
-        this.setIntegerValue(this.defaultValue);
-    }
-
     public String getStringValue()
     {
-        return String.valueOf(this.value);
+        return String.valueOf(this.integerValue);
     }
 
     public String getDefaultStringValue()
@@ -152,7 +114,7 @@ public class IntegerConfig extends BaseSliderConfig<Integer>
     {
         try
         {
-            this.setIntegerValue(Integer.parseInt(value));
+            this.setValue(Integer.parseInt(value));
         }
         catch (Exception e)
         {
@@ -167,8 +129,9 @@ public class IntegerConfig extends BaseSliderConfig<Integer>
         {
             if (element.isJsonPrimitive())
             {
-                this.value = this.getClampedValue(element.getAsInt());
-                this.onValueLoaded(this.value);
+                this.integerValue = this.getClampedValue(element.getAsInt());
+                this.value = this.integerValue;
+                this.onValueLoaded(this.integerValue);
             }
             else
             {
@@ -186,6 +149,6 @@ public class IntegerConfig extends BaseSliderConfig<Integer>
     @Override
     public JsonElement getAsJsonElement()
     {
-        return new JsonPrimitive(this.value);
+        return new JsonPrimitive(this.integerValue);
     }
 }

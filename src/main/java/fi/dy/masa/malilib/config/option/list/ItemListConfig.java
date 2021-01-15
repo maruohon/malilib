@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.config.option;
+package fi.dy.masa.malilib.config.option.list;
 
 import java.util.Arrays;
 import java.util.List;
@@ -27,7 +27,7 @@ public class ItemListConfig extends ValueListConfig<Item>
     @Override
     public ItemListConfig copy()
     {
-        ItemListConfig config = new ItemListConfig(this.name, this.defaultValues, this.toStringConverter, this.fromStringConverter);
+        ItemListConfig config = new ItemListConfig(this.name, this.defaultValue, this.toStringConverter, this.fromStringConverter);
         config.copyValuesFrom(this);
         return config;
     }
