@@ -35,6 +35,18 @@ public class BaseMultiIcon extends BaseIcon implements MultiIcon
     }
 
     @Override
+    public int getVariantU(int variantIndex)
+    {
+        return this.u + variantIndex * this.variantOffsetU;
+    }
+
+    @Override
+    public int getVariantV(int variantIndex)
+    {
+        return this.v + variantIndex * this.variantOffsetV;
+    }
+
+    @Override
     public void renderAt(int x, int y, float zLevel, int variantIndex)
     {
         if (this.w == 0 || this.h == 0)
@@ -42,8 +54,8 @@ public class BaseMultiIcon extends BaseIcon implements MultiIcon
             return;
         }
 
-        int u = this.u + variantIndex * this.variantOffsetU;
-        int v = this.v + variantIndex * this.variantOffsetV;
+        int u = this.getVariantU(variantIndex);
+        int v = this.getVariantV(variantIndex);
 
         RenderUtils.color(1f, 1f, 1f, 1f);
         RenderUtils.bindTexture(this.getTexture());

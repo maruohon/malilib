@@ -3,6 +3,20 @@ package fi.dy.masa.malilib.gui.icon;
 public interface MultiIcon extends Icon
 {
     /**
+     * Get the U coordinate for the given icon variant
+     * @param variantIndex
+     * @return
+     */
+    int getVariantU(int variantIndex);
+
+    /**
+     * Get the V coordinate for the given icon variant
+     * @param variantIndex
+     * @return
+     */
+    int getVariantV(int variantIndex);
+
+    /**
      * Renders the icon at the given location, using the given icon variant index.
      * The variant index is basically an offset from the base UV location.
      * The implementation can define where and how the position is offset
