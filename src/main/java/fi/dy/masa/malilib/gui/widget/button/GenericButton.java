@@ -23,9 +23,9 @@ public class GenericButton extends BaseButton
     protected int textOffsetY;
     protected int outlineColorHover = 0xFFFFFFFF;
     protected int outlineColorNormal = 0x00000000;
-    protected int textColorDisabled = 0xA0A0A0;
-    protected int textColorNormal = 0xE0E0E0;
-    protected int textColorHovered = 0xFFFFA0;
+    protected int textColorDisabled = 0xFF606060;
+    protected int textColorNormal = 0xFFE0E0E0;
+    protected int textColorHovered = 0xFFFFFFA0;
 
     public GenericButton(int x, int y, int width, boolean rightAlign, String translationKey, Object... args)
     {

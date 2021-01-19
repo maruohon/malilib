@@ -4,6 +4,7 @@ import java.util.function.BooleanSupplier;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.icon.Icon;
+import fi.dy.masa.malilib.gui.icon.MultiIcon;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.message.MessageHelpers;
 import fi.dy.masa.malilib.util.StringUtils;
@@ -56,7 +57,7 @@ public class OnOffButton extends GenericButton
 
         this.setBorderWidth(isSlider ? 1 : 0);
         this.backgroundEnabled = isSlider;
-        this.textColorNormal = isSlider ? (value ? 0xFFE0E0E0 : 0xFF707070) : 0xFFE0E0E0;
+        this.textColorNormal = isSlider ? (value ? 0xFFE0E0E0 : 0xFF909090) : 0xFFE0E0E0;
         this.textColorHovered = isSlider ? 0xFFF0F000 : 0xFFFFFFA0;
 
         return valueStr;
@@ -128,14 +129,15 @@ public class OnOffButton extends GenericButton
         if (this.style == OnOffStyle.SLIDER_ON_OFF)
         {
             boolean value = this.statusSupplier.getAsBoolean();
-            Icon icon = value ? DefaultIcons.SLIDER_GREEN : DefaultIcons.SLIDER_RED;
+            MultiIcon icon = value ? DefaultIcons.SLIDER_GREEN : DefaultIcons.SLIDER_RED;
 
             int iconWidth = icon.getWidth();
             int iconHeight1 = height / 2 - 1;
             int iconHeight2 = (height % 2) != 0 ? iconHeight1 + 1 : iconHeight1; // Account for odd height
             int sliderX = value ? x + width - iconWidth - 1 : x + 1;
-            int u = icon.getU();
-            int v1 = icon.getV();
+            int variantIndex = icon.getVariantIndex(this.enabled, hovered);
+            int u = icon.getVariantU(variantIndex);
+            int v1 = icon.getVariantV(variantIndex);
             int v2 = v1 + icon.getHeight() - iconHeight2;
 
             this.bindTexture(icon.getTexture());
