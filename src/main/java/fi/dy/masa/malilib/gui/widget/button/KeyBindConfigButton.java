@@ -57,9 +57,14 @@ public class KeyBindConfigButton extends GenericButton
     @Override
     protected boolean onMouseClickedImpl(int mouseX, int mouseY, int mouseButton)
     {
+        if (this.enabled == false)
+        {
+            return false;
+        }
+
         boolean handled = false;
 
-        if (this.selected)
+        if (this.isSelected())
         {
             if (mouseButton != 0 || this.isMouseOver(mouseX, mouseY))
             {
@@ -99,7 +104,7 @@ public class KeyBindConfigButton extends GenericButton
 
     public void onKeyPressed(int keyCode)
     {
-        if (this.selected)
+        if (this.isSelected())
         {
             if (keyCode == Keyboard.KEY_ESCAPE)
             {
@@ -181,13 +186,13 @@ public class KeyBindConfigButton extends GenericButton
 
     public boolean isSelected()
     {
-        return this.selected;
+        return this.selected && this.enabled;
     }
 
     @Override
     protected String generateDisplayString()
     {
-        List<Integer> keys = this.selected ? this.newKeys : this.keyBind.getKeys();
+        List<Integer> keys = this.isSelected() ? this.newKeys : this.keyBind.getKeys();
         String valueStr = KeyBindImpl.writeKeysToString(keys, " + ");
 
         if (keys.size() == 0 || org.apache.commons.lang3.StringUtils.isBlank(valueStr))
@@ -195,7 +200,7 @@ public class KeyBindConfigButton extends GenericButton
             valueStr = StringUtils.translate("malilib.gui.button.none.caps");
         }
 
-        if (this.selected)
+        if (this.isSelected())
         {
             this.clearHoverStrings();
             return "> " + BaseScreen.TXT_YELLOW + valueStr + BaseScreen.TXT_RST + " <";

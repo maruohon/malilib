@@ -27,14 +27,12 @@ public class BlackWhiteListEditButton extends GenericButton
         this.dialogHandler = dialogHandler;
         this.saveListener = saveListener;
 
+        this.setActionListener((btn, mbtn) -> this.openEditScreen());
         this.updateDisplayString();
     }
 
-    @Override
-    protected boolean onMouseClickedImpl(int mouseX, int mouseY, int mouseButton)
+    protected void openEditScreen()
     {
-        super.onMouseClickedImpl(mouseX, mouseY, mouseButton);
-
         if (this.dialogHandler != null)
         {
             this.dialogHandler.openDialog(new BlackWhiteListEditScreen<>(this.config, this.saveListener, this.dialogHandler, null));
@@ -43,8 +41,6 @@ public class BlackWhiteListEditButton extends GenericButton
         {
             BaseScreen.openPopupGui(new BlackWhiteListEditScreen<>(this.config, this.saveListener, null, GuiUtils.getCurrentScreen()));
         }
-
-        return true;
     }
 
     @Override

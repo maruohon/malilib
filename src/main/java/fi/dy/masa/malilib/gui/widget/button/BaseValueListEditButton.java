@@ -41,6 +41,7 @@ public class BaseValueListEditButton<TYPE> extends GenericButton
         this.newEntryFactory = newEntryFactory;
         this.widgetFactory = widgetFactory;
 
+        this.setActionListener((btn, mbtn) -> this.openEditScreen());
         this.updateDisplayString();
     }
 
@@ -63,11 +64,8 @@ public class BaseValueListEditButton<TYPE> extends GenericButton
                                              this.screenTitle, this.newEntryFactory, this.widgetFactory);
     }
 
-    @Override
-    protected boolean onMouseClickedImpl(int mouseX, int mouseY, int mouseButton)
+    protected void openEditScreen()
     {
-        super.onMouseClickedImpl(mouseX, mouseY, mouseButton);
-
         if (this.dialogHandler != null)
         {
             this.dialogHandler.openDialog(this.createScreen(this.dialogHandler, null));
@@ -76,8 +74,6 @@ public class BaseValueListEditButton<TYPE> extends GenericButton
         {
             BaseScreen.openPopupGui(this.createScreen(null, GuiUtils.getCurrentScreen()));
         }
-
-        return true;
     }
 
     @Override

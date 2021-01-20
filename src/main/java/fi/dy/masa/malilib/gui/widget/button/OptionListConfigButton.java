@@ -21,16 +21,14 @@ public class OptionListConfigButton extends GenericButton
         this.config = config;
         this.prefixTranslationKey = prefixTranslationKey;
 
+        this.setActionListener((btn, mbtn) -> this.cycleValue(mbtn));
         this.updateDisplayString();
     }
 
-    @Override
-    protected boolean onMouseClickedImpl(int mouseX, int mouseY, int mouseButton)
+    protected void cycleValue(int mouseButton)
     {
         this.config.cycleValue(mouseButton == 0);
         this.updateDisplayString();
-
-        return super.onMouseClickedImpl(mouseX, mouseY, mouseButton);
     }
 
     @Override
