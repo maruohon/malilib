@@ -38,7 +38,7 @@ import fi.dy.masa.malilib.gui.widget.list.entry.config.list.ItemListConfigWidget
 import fi.dy.masa.malilib.gui.widget.list.entry.config.OptionListConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.list.StatusEffectListConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.StringConfigWidget;
-import fi.dy.masa.malilib.gui.widget.list.entry.config.StringListConfigWidget;
+import fi.dy.masa.malilib.gui.widget.list.entry.config.list.StringListConfigWidget;
 
 public class ConfigTypeRegistry
 {

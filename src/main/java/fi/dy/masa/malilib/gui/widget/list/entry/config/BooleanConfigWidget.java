@@ -14,12 +14,14 @@ public class BooleanConfigWidget extends BaseConfigOptionWidget<Boolean, Boolean
         super(x, y, width, height, listIndex, originalListIndex, config, ctx);
 
         this.booleanButton = new BooleanConfigButton(x, y, -1, 20, this.config);
-        this.booleanButton.setActionListener((btn, mbtn) -> this.resetButton.setEnabled(this.config.isModified()));
+        this.booleanButton.setActionListener((btn, mbtn) -> {
+            this.config.toggleBooleanValue();
+            this.updateButtonStates();
+        });
 
         this.resetButton.setActionListener((btn, mbtn) -> {
             this.config.resetToDefault();
-            this.booleanButton.updateDisplayString();
-            this.resetButton.setEnabled(this.config.isModified());
+            this.updateButtonStates();
         });
     }
 
@@ -40,9 +42,18 @@ public class BooleanConfigWidget extends BaseConfigOptionWidget<Boolean, Boolean
         this.booleanButton.setPosition(x, y);
         //this.booleanButton.setWidth(elementWidth);
 
-        this.updateResetButton(x + elementWidth + 4, y);
+        this.resetButton.setPosition(x + elementWidth + 4, y);
+        this.updateButtonStates();
 
         this.addWidget(this.booleanButton);
         this.addWidget(this.resetButton);
+    }
+
+    protected void updateButtonStates()
+    {
+        this.booleanButton.setEnabled(this.config.isLocked() == false);
+        this.booleanButton.setHoverStrings(this.config.getLockAndOverrideMessages());
+        this.booleanButton.updateDisplayString();
+        this.updateResetButtonState();
     }
 }

@@ -20,4 +20,10 @@ public class BaseConfigOptionWidget<TYPE, CFG extends ConfigOption<TYPE>> extend
     {
         return this.config.getValue().equals(this.initialValue) == false;
     }
+
+    @Override
+    protected void updateResetButtonState()
+    {
+        this.resetButton.setEnabled(this.config.isLocked() == false && this.config.isModified());
+    }
 }

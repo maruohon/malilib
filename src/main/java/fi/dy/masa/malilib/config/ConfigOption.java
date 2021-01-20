@@ -69,20 +69,6 @@ public interface ConfigOption<T> extends ConfigInfo
     T getValue();
 
     /**
-     * Called after the config value changes
-     * @param newValue the new value that was set to the config
-     * @param oldValue the old value before the change happened
-     */
-    void onValueChanged(T newValue, T oldValue);
-
-    /**
-     * Called when the config value is read from file (or rather from JSON,
-     * which might also come from somewhere else)
-     * @param newValue the new value that was set from JSON
-     */
-    void onValueLoaded(T newValue);
-
-    /**
      * Set the value change callback. Can be null.
      * @param callback
      */
@@ -107,4 +93,21 @@ public interface ConfigOption<T> extends ConfigInfo
      * @return
      */
     JsonElement getAsJsonElement();
+
+    /**
+     * Whether or not this config is currently locked to its current value,
+     * and can not be changed without unlocking.
+     *
+     * @return true if the config is locked
+     */
+    boolean isLocked();
+
+    /**
+     * Set whether or not this config should be locked to its current value.
+     * Note: This does not prevent the {@link #setValueFromJsonElement(JsonElement, String)} method
+     * from changing the value! It only prevents the normal setValue() methods
+     * from changing it.
+     * @param isLocked
+     */
+    void setLocked(boolean isLocked);
 }

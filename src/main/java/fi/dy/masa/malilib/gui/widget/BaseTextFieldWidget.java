@@ -40,13 +40,15 @@ public class BaseTextFieldWidget extends BackgroundWidget
     @Nullable protected IInputCharacterValidator inputValidator;
     @Nullable protected TextFieldValidator textValidator;
     @Nullable protected TextChangeListener listener;
-    protected int currentlyVisibleTextStartIndex;
     protected int colorError = 0xFFE04040;
+    protected int colorErrorDisabled = 0xFFB01010;
+    protected int colorDisabled = 0xFF707070;
     protected int colorFocused = 0xFFD0D0D0;
     protected int colorUnfocused = 0xFFA0A0A0;
     protected int colorWarning;
     protected int cursorPosition;
     protected int selectionStartPosition = -1;
+    protected boolean enabled = true;
     protected boolean isFocused;
     protected boolean isValidInput = true;
     protected boolean updateListenerAlways;
@@ -118,6 +120,18 @@ public class BaseTextFieldWidget extends BackgroundWidget
     public BaseTextFieldWidget setColorError(int color)
     {
         this.colorError = color;
+        return this;
+    }
+
+    public BaseTextFieldWidget setColorErrorDisabled(int color)
+    {
+        this.colorErrorDisabled = color;
+        return this;
+    }
+
+    public BaseTextFieldWidget setColorDisabled(int color)
+    {
+        this.colorDisabled = color;
         return this;
     }
 
@@ -220,17 +234,33 @@ public class BaseTextFieldWidget extends BackgroundWidget
         }
     }
 
+    public boolean isEnabled()
+    {
+        return this.enabled;
+    }
+
+    public void setEnabled(boolean enabled)
+    {
+        if (enabled == false && this.isFocused())
+        {
+            this.setFocused(false);
+        }
+
+        this.enabled = enabled;
+        this.updateColors();
+    }
+
     public boolean isFocused()
     {
-        return this.isFocused;
+        return this.isFocused && this.enabled;
     }
 
     public BaseTextFieldWidget setFocused(boolean isFocused)
     {
         boolean wasFocused = this.isFocused;
 
-        this.isFocused = isFocused;
-        this.setBorderColor(isFocused ? this.colorFocused : this.colorUnfocused);
+        this.isFocused = isFocused && this.enabled;
+        this.updateColors();
 
         if (wasFocused && this.isFocused == false)
         {
@@ -243,6 +273,12 @@ public class BaseTextFieldWidget extends BackgroundWidget
         }
 
         return this;
+    }
+
+    public void updateColors()
+    {
+        int borderColor = this.enabled ? (this.isFocused ? this.colorFocused : this.colorUnfocused) : this.colorDisabled;
+        this.setBorderColor(borderColor);
     }
 
     public BaseTextFieldWidget setInputValidator(@Nullable IInputCharacterValidator inputValidator)
@@ -941,11 +977,11 @@ public class BaseTextFieldWidget extends BackgroundWidget
 
         if (this.isValidInput)
         {
-            color = this.isFocused() ? this.colorFocused : this.colorUnfocused;
+            color = this.enabled ? (this.isFocused() ? this.colorFocused : this.colorUnfocused) : this.colorDisabled;
         }
         else
         {
-            color = this.colorError;
+            color = this.enabled ? this.colorError : this.colorErrorDisabled;
         }
 
         x += this.getTextStartRelativeX();

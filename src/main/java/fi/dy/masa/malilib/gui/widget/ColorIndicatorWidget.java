@@ -26,14 +26,17 @@ public class ColorIndicatorWidget extends BaseWidget
         this.valueConsumer = consumer;
         String color = Color4f.getHexColorString(this.config.getIntegerValue());
         this.addHoverString("malilib.gui.hover.open_color_editor", color);
+
+        this.setClickListener(this::openColorEditorScreen);
     }
 
-    @Override
-    protected boolean onMouseClickedImpl(int mouseX, int mouseY, int mouseButton)
+    protected void openColorEditorScreen()
     {
-        ColorEditorHSVScreen gui = new ColorEditorHSVScreen(this.config.getIntegerValue(), this.valueConsumer, null, GuiUtils.getCurrentScreen());
-        BaseScreen.openPopupGui(gui);
-        return true;
+        if (this.config.isLocked() == false)
+        {
+            ColorEditorHSVScreen gui = new ColorEditorHSVScreen(this.config.getIntegerValue(), this.valueConsumer, null, GuiUtils.getCurrentScreen());
+            BaseScreen.openPopupGui(gui);
+        }
     }
 
     @Override

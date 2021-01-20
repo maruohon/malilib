@@ -20,7 +20,7 @@ public class DoubleConfig extends BaseSliderConfig<Double> implements SliderConf
 
     public DoubleConfig(String name, double defaultValue, String comment)
     {
-        this(name, defaultValue, Double.MIN_VALUE, Double.MAX_VALUE, comment);
+        this(name, defaultValue, -10000, 10000, comment);
     }
 
     public DoubleConfig(String name, double defaultValue, double minValue, double maxValue)
@@ -54,14 +54,20 @@ public class DoubleConfig extends BaseSliderConfig<Double> implements SliderConf
     }
 
     @Override
-    public void setValue(Double newValue)
+    public boolean setValue(Double newValue)
     {
         if (Double.isNaN(newValue) == false)
         {
             newValue = this.getClampedValue(newValue);
-            this.doubleValue = newValue;
-            super.setValue(newValue);
+
+            if (this.locked == false)
+            {
+                this.doubleValue = newValue;
+                return super.setValue(newValue);
+            }
         }
+
+        return false;
     }
 
     public double getMinDoubleValue()

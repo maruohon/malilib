@@ -27,7 +27,7 @@ public class ColorConfigWidget extends BaseConfigOptionWidget<Integer, ColorConf
         this.textField = new BaseTextFieldWidget(x, y, 70, 16, this.config.getStringValue());
         this.textField.setListener((str) -> {
             this.config.setValueFromString(str);
-            this.resetButton.setEnabled(this.config.isModified());
+            this.updateResetButtonState();
         });
 
         this.resetButton.setActionListener((btn, mbtn) -> {
@@ -46,8 +46,13 @@ public class ColorConfigWidget extends BaseConfigOptionWidget<Integer, ColorConf
         int elementWidth = this.getElementWidth();
 
         this.colorIndicatorWidget.setPosition(x, y + 2);
+        this.colorIndicatorWidget.setHoverStrings(this.config.getLockAndOverrideMessages());
+
         this.textField.setPosition(x + this.colorIndicatorWidget.getWidth() + 4, y + 3);
         this.textField.setText(this.config.getStringValue());
+        this.textField.setHoverStrings(this.config.getLockAndOverrideMessages());
+        this.textField.setEnabled(this.config.isLocked() == false);
+
         this.updateResetButton(x + elementWidth + 4, y + 1);
 
         this.addWidget(this.colorIndicatorWidget);

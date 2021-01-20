@@ -18,7 +18,7 @@ public class IntegerConfigWidget extends NumericConfigWidget<Integer, IntegerCon
         this.textField.setTextValidator(new IntegerTextFieldWidget.IntValidator(this.config.getMinIntegerValue(), this.config.getMaxIntegerValue()));
         this.textField.setListener((str) -> {
             this.config.setValueFromString(str);
-            this.resetButton.setEnabled(this.config.isModified());
+            this.updateResetButtonState();
         });
     }
 

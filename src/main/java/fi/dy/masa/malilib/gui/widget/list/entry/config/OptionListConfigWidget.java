@@ -25,7 +25,7 @@ public class OptionListConfigWidget extends BaseConfigWidget<OptionListConfig<?>
         this.resetButton.setActionListener((btn, mbtn) -> {
             this.config.resetToDefault();
             this.optionListButton.updateDisplayString();
-            this.resetButton.setEnabled(this.config.isModified());
+            this.updateResetButtonState();
         });
     }
 
@@ -40,6 +40,8 @@ public class OptionListConfigWidget extends BaseConfigWidget<OptionListConfig<?>
 
         this.optionListButton.setPosition(x, y);
         this.optionListButton.setWidth(elementWidth);
+        this.optionListButton.setEnabled(this.config.isLocked() == false);
+        this.optionListButton.setHoverStrings(this.config.getLockAndOverrideMessages());
 
         this.updateResetButton(x + elementWidth + 4, y);
 

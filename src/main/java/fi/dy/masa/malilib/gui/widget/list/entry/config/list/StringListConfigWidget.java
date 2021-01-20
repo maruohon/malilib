@@ -1,11 +1,10 @@
-package fi.dy.masa.malilib.gui.widget.list.entry.config;
+package fi.dy.masa.malilib.gui.widget.list.entry.config.list;
 
 import fi.dy.masa.malilib.config.option.list.StringListConfig;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.widget.button.BaseValueListEditButton;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.entry.StringListEditEntryWidget;
-import fi.dy.masa.malilib.gui.widget.list.entry.config.list.BaseValueListConfigWidget;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class StringListConfigWidget extends BaseValueListConfigWidget<String, StringListConfig>

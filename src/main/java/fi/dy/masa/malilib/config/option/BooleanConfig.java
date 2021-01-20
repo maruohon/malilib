@@ -3,10 +3,13 @@ package fi.dy.masa.malilib.config.option;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 import fi.dy.masa.malilib.MaLiLib;
+import fi.dy.masa.malilib.util.StringUtils;
 
 public class BooleanConfig extends BaseGenericConfig<Boolean>
 {
     protected boolean booleanValue;
+    protected boolean hasOverride;
+    protected boolean overrideValue;
 
     public BooleanConfig(String name, boolean defaultValue)
     {
@@ -27,7 +30,13 @@ public class BooleanConfig extends BaseGenericConfig<Boolean>
 
     public boolean getBooleanValue()
     {
-        return this.booleanValue;
+        return this.hasOverride ? this.overrideValue : this.booleanValue;
+    }
+
+    @Override
+    public Boolean getValue()
+    {
+        return this.hasOverride ? this.overrideValue : this.value;
     }
 
     public void toggleBooleanValue()
@@ -36,11 +45,38 @@ public class BooleanConfig extends BaseGenericConfig<Boolean>
     }
 
     @Override
-    public void setValue(Boolean newValue)
+    public boolean setValue(Boolean newValue)
     {
-        this.booleanValue = newValue;
+        if (this.locked == false)
+        {
+            this.booleanValue = newValue;
+            return super.setValue(newValue);
+        }
 
-        super.setValue(newValue);
+        return false;
+    }
+
+    @Override
+    public boolean isLocked()
+    {
+        return super.isLocked() || this.hasOverride;
+    }
+
+    public void setOverride(boolean overrideEnabled, boolean overrideValue)
+    {
+        this.hasOverride = overrideEnabled;
+        this.overrideValue = overrideValue;
+    }
+
+    @Override
+    protected void rebuildLockOverrideMessages()
+    {
+        super.rebuildLockOverrideMessages();
+
+        if (this.hasOverride && this.overrideMessage != null)
+        {
+            this.lockOverrideMessages.add(StringUtils.translate(this.overrideMessage));
+        }
     }
 
     @Override

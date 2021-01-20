@@ -1,14 +1,14 @@
 package fi.dy.masa.malilib.gui.widget.list.entry.config;
 
-import fi.dy.masa.malilib.config.ConfigOption;
 import fi.dy.masa.malilib.config.SliderConfig;
+import fi.dy.masa.malilib.config.option.BaseConfig;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.SliderWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 
-public abstract class NumericConfigWidget<TYPE, CFG extends ConfigOption<TYPE> & SliderConfig> extends BaseConfigOptionWidget<TYPE, CFG>
+public abstract class NumericConfigWidget<TYPE, CFG extends BaseConfig<TYPE> & SliderConfig> extends BaseConfigOptionWidget<TYPE, CFG>
 {
     protected final BaseTextFieldWidget textField;
     protected final GenericButton sliderToggleButton;
@@ -66,6 +66,7 @@ public abstract class NumericConfigWidget<TYPE, CFG extends ConfigOption<TYPE> &
 
         this.sliderToggleButton.setPosition(x, y + 3);
         this.sliderToggleButton.setEnabled(this.config.allowSlider());
+        this.updateWidgetStates();
 
         if (this.config.allowSlider() == false)
         {
@@ -79,9 +80,18 @@ public abstract class NumericConfigWidget<TYPE, CFG extends ConfigOption<TYPE> &
         this.addWidget(this.resetButton);
     }
 
-    protected void updateResetButtonState()
+    protected void updateWidgetStates()
     {
-        this.resetButton.setEnabled(this.config.isModified());
+        if (this.config.isSliderActive())
+        {
+            this.sliderWidget.setLocked(this.config.isLocked());
+            this.sliderWidget.setHoverStrings(this.config.getLockAndOverrideMessages());
+        }
+        else
+        {
+            this.textField.setHoverStrings(this.config.getLockAndOverrideMessages());
+            this.textField.setEnabled(this.config.isLocked() == false);
+        }
     }
 
     protected abstract String getCurrentValueAsString();

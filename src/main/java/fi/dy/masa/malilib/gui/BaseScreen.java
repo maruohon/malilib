@@ -435,7 +435,7 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
     {
         boolean handled = false;
 
-        if (keyCode == Keyboard.KEY_TAB && changeTextFieldFocus(this.getAllTextFields(), isShiftDown()))
+        if (keyCode == Keyboard.KEY_TAB && GuiUtils.changeTextFieldFocus(this.getAllTextFields(), isShiftDown()))
         {
             handled = true;
         }
@@ -462,48 +462,6 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
         this.runTasks();
 
         return handled;
-    }
-
-    public static boolean changeTextFieldFocus(List<BaseTextFieldWidget> textFields, boolean reverse)
-    {
-        final int size = textFields.size();
-
-        if (size > 1)
-        {
-            int currentIndex = -1;
-
-            for (int i = 0; i < size; ++i)
-            {
-                BaseTextFieldWidget textField = textFields.get(i);
-
-                if (textField.isFocused())
-                {
-                    currentIndex = i;
-                    textField.setFocused(false);
-                    break;
-                }
-            }
-
-            if (currentIndex != -1)
-            {
-                int newIndex = currentIndex + (reverse ? -1 : 1);
-
-                if (newIndex >= size)
-                {
-                    newIndex = 0;
-                }
-                else if (newIndex < 0)
-                {
-                    newIndex = size - 1;
-                }
-
-                textFields.get(newIndex).setFocused(true);
-
-                return true;
-            }
-        }
-
-        return false;
     }
 
     protected List<BaseTextFieldWidget> getAllTextFields()

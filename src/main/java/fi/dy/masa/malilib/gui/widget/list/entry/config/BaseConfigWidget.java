@@ -105,6 +105,11 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
     protected void updateResetButton(int x, int y)
     {
         this.resetButton.setPosition(x, y);
+        this.updateResetButtonState();
+    }
+
+    protected void updateResetButtonState()
+    {
         this.resetButton.setEnabled(this.config.isModified());
     }
 
@@ -125,6 +130,8 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
 
         GenericButton button = new GenericButton(x, y + 1, elementWidth, 20, buttonText);
         button.addHoverStrings(lines);
+        button.addHoverStrings(config.getLockAndOverrideMessages());
+        button.setEnabled(config.isLocked() == false);
 
         this.addButton(button, (btn, mbtn) -> {
             DirectorySelectorScreen browserScreen = screenFactory.create();

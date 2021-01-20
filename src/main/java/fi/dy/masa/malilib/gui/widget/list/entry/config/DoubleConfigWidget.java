@@ -18,7 +18,7 @@ public class DoubleConfigWidget extends NumericConfigWidget<Double, DoubleConfig
         this.textField.setTextValidator(new DoubleTextFieldWidget.DoubleValidator(this.config.getMinDoubleValue(), this.config.getMaxDoubleValue()));
         this.textField.setListener((str) -> {
             this.config.setValueFromString(str);
-            this.resetButton.setEnabled(this.config.isModified());
+            this.updateResetButtonState();
         });
     }
 

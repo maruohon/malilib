@@ -18,10 +18,15 @@ public class StringConfig extends BaseStringConfig<String>
     }
 
     @Override
-    public void setValue(String newValue)
+    public boolean setValue(String newValue)
     {
-        this.stringValue = newValue;
-        super.setValue(newValue);
+        if (this.locked == false)
+        {
+            this.stringValue = newValue;
+            return super.setValue(newValue);
+        }
+
+        return false;
     }
 
     @Override

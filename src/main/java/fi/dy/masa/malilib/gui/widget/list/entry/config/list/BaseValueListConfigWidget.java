@@ -22,8 +22,7 @@ public abstract class BaseValueListConfigWidget<TYPE, CFG extends ValueListConfi
 
         this.resetButton.setActionListener((btn, mbtn) -> {
             this.config.resetToDefault();
-            this.button.updateDisplayString();
-            this.resetButton.setEnabled(this.config.isModified());
+            this.onReset();
         });
     }
 
@@ -41,6 +40,8 @@ public abstract class BaseValueListConfigWidget<TYPE, CFG extends ValueListConfi
         this.button.setPosition(x, y);
         this.button.setWidth(elementWidth);
         this.button.updateDisplayString();
+        this.button.setEnabled(this.config.isLocked() == false);
+        this.button.addHoverStrings(this.config.getLockAndOverrideMessages());
 
         this.updateResetButton(x + elementWidth + 4, y);
 

@@ -19,10 +19,15 @@ public class FileConfig extends BaseStringConfig<File>
     }
 
     @Override
-    public void setValue(File newValue)
+    public boolean setValue(File newValue)
     {
-        this.stringValue = newValue.getAbsolutePath();
-        super.setValue(newValue);
+        if (this.locked == false)
+        {
+            this.stringValue = newValue.getAbsolutePath();
+            return super.setValue(newValue);
+        }
+
+        return false;
     }
 
     @Override

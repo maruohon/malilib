@@ -47,14 +47,26 @@ public abstract class BaseGenericConfig<T> extends BaseConfig<T>
         return this.defaultValue;
     }
 
-    public void setValue(T newValue)
+    public boolean setValue(T newValue)
     {
-        if (this.value.equals(newValue) == false)
+        T oldValue = this.getValue();
+
+        if (this.locked == false && oldValue.equals(newValue) == false)
         {
-            T oldValue = this.value;
             this.value = newValue;
-            this.onValueChanged(newValue, oldValue);
+
+            // Re-fetch the current value, to take into account a possible value override
+            newValue = this.getValue();
+
+            if (oldValue.equals(newValue) == false)
+            {
+                this.onValueChanged(newValue, oldValue);
+            }
+
+            return true;
         }
+
+        return false;
     }
 
     @Override

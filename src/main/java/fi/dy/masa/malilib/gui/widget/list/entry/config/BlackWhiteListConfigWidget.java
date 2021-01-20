@@ -19,12 +19,11 @@ public class BlackWhiteListConfigWidget extends BaseConfigWidget<BlackWhiteListC
         this.config = config;
         this.initialValue = this.config.getValue();
 
-        this.button = new BlackWhiteListEditButton(x, y, this.getElementWidth(), 20, config, this::onSave, ctx.getDialogHandler());
+        this.button = new BlackWhiteListEditButton(x, y, this.getElementWidth(), 20, config, this::updateButtons, ctx.getDialogHandler());
 
         this.resetButton.setActionListener((btn, mbtn) -> {
             this.config.resetToDefault();
-            this.button.updateDisplayString();
-            this.resetButton.setEnabled(this.config.isModified());
+            this.updateButtons();
         });
     }
 
@@ -39,6 +38,8 @@ public class BlackWhiteListConfigWidget extends BaseConfigWidget<BlackWhiteListC
 
         this.button.setPosition(x, y);
         this.button.setWidth(elementWidth);
+        this.button.setEnabled(this.config.isLocked() == false);
+        this.button.setHoverStrings(this.config.getLockAndOverrideMessages());
         this.button.updateDisplayString();
 
         this.updateResetButton(x + elementWidth + 4, y);
@@ -47,10 +48,10 @@ public class BlackWhiteListConfigWidget extends BaseConfigWidget<BlackWhiteListC
         this.addWidget(this.resetButton);
     }
 
-    public void onSave()
+    public void updateButtons()
     {
         this.button.updateDisplayString();
-        this.resetButton.setEnabled(this.config.isModified());
+        this.updateResetButtonState();
     }
 
     @Override

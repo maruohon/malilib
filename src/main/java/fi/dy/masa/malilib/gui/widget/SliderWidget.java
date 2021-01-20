@@ -13,6 +13,7 @@ public class SliderWidget extends BaseWidget
     protected int sliderWidth;
     protected int lastMouseX;
     protected boolean dragging;
+    protected boolean locked;
 
     public SliderWidget(int x, int y, int width, int height, SliderCallback callback)
     {
@@ -23,12 +24,20 @@ public class SliderWidget extends BaseWidget
         this.sliderWidth = MathHelper.clamp(usableWidth / callback.getMaxSteps(), 8, usableWidth / 2);
     }
 
+    public void setLocked(boolean locked)
+    {
+        this.locked = locked;
+    }
+
     @Override
     protected boolean onMouseClickedImpl(int mouseX, int mouseY, int mouseButton)
     {
-        this.callback.setRelativeValue(this.getRelativePosition(mouseX));
-        this.lastMouseX = mouseX;
-        this.dragging = true;
+        if (this.locked == false)
+        {
+            this.callback.setRelativeValue(this.getRelativePosition(mouseX));
+            this.lastMouseX = mouseX;
+            this.dragging = true;
+        }
 
         return true;
     }

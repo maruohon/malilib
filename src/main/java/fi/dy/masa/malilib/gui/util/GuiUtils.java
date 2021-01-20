@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.gui.util;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import javax.annotation.Nullable;
@@ -209,6 +210,58 @@ public class GuiUtils
         }
 
         return posY;
+    }
+
+    public static boolean changeTextFieldFocus(List<BaseTextFieldWidget> textFields, boolean reverse)
+    {
+        final int size = textFields.size();
+
+        if (size > 1)
+        {
+            int currentIndex = -1;
+
+            for (int i = 0; i < size; ++i)
+            {
+                BaseTextFieldWidget textField = textFields.get(i);
+
+                if (textField.isFocused())
+                {
+                    currentIndex = i;
+                    textField.setFocused(false);
+                    break;
+                }
+            }
+
+            if (currentIndex != -1)
+            {
+                int count = size - 1;
+                int newIndex = currentIndex + (reverse ? -1 : 1);
+
+                for (int i = 0; i < count; ++i)
+                {
+                    if (newIndex >= size)
+                    {
+                        newIndex = 0;
+                    }
+                    else if (newIndex < 0)
+                    {
+                        newIndex = size - 1;
+                    }
+
+                    BaseTextFieldWidget textField = textFields.get(newIndex);
+
+                    if (textField.isEnabled())
+                    {
+                        textField.setFocused(true);
+                        return true;
+                    }
+
+                    newIndex += (reverse ? -1 : 1);
+                }
+            }
+        }
+
+        return false;
     }
 
     /**

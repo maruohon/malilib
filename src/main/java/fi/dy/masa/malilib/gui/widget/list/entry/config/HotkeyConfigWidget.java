@@ -46,6 +46,13 @@ public class HotkeyConfigWidget extends BaseConfigWidget<HotkeyConfig>
 
         this.keybindButton.setPosition(x, y);
         this.keybindButton.setWidth(elementWidth - 22);
+        this.keybindButton.setEnabled(this.config.isLocked() == false);
+        this.keybindButton.setHoverInfoRequiresShift(this.config.isLocked() == false);
+
+        if (this.config.isLocked())
+        {
+            this.keybindButton.setHoverStrings(this.config.getLockAndOverrideMessages());
+        }
 
         x += this.keybindButton.getWidth() + 2;
         this.settingsWidget.setPosition(x, y);

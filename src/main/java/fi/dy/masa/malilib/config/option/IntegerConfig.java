@@ -53,11 +53,16 @@ public class IntegerConfig extends BaseSliderConfig<Integer>
     }
 
     @Override
-    public void setValue(Integer newValue)
+    public boolean setValue(Integer newValue)
     {
-        newValue = this.getClampedValue(newValue);
-        this.integerValue = newValue;
-        super.setValue(newValue);
+        if (this.locked == false)
+        {
+            newValue = this.getClampedValue(newValue);
+            this.integerValue = newValue;
+            return super.setValue(newValue);
+        }
+
+        return false;
     }
 
     public int getMinIntegerValue()

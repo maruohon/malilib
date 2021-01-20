@@ -16,15 +16,19 @@ public abstract class BaseConfig<T> implements ConfigOption<T>
 {
     protected final String name;
     protected final List<String> searchStrings = new ArrayList<>();
+    protected final List<String> lockOverrideMessages = new ArrayList<>();
     protected String nameTranslationKey;
     protected String prettyNameTranslationKey;
     protected String commentTranslationKey;
     protected Object[] commentArgs;
     protected String modId = "?";
     protected String modName = "?";
+    protected boolean locked;
     @Nullable protected ValueChangeCallback<T> valueChangeCallback;
     @Nullable protected ValueLoadedCallback<T> valueLoadCallback;
     @Nullable protected EventListener labelClickHandler;
+    @Nullable protected String lockMessage;
+    @Nullable protected String overrideMessage;
 
     public BaseConfig(String name)
     {
@@ -62,6 +66,38 @@ public abstract class BaseConfig<T> implements ConfigOption<T>
     public List<String> getSearchStrings()
     {
         return this.searchStrings;
+    }
+
+    /**
+     * Returns the possible custom messages set to inform the user
+     * about a locked or overridden config value.
+     * @return
+     */
+    public List<String> getLockAndOverrideMessages()
+    {
+        return this.lockOverrideMessages;
+    }
+
+    public void setLockMessage(@Nullable String translationKey)
+    {
+        this.lockMessage = translationKey;
+        this.rebuildLockOverrideMessages();
+    }
+
+    public void setOverrideMessage(@Nullable String translationKey)
+    {
+        this.overrideMessage = translationKey;
+        this.rebuildLockOverrideMessages();
+    }
+
+    protected void rebuildLockOverrideMessages()
+    {
+        this.lockOverrideMessages.clear();
+
+        if (this.isLocked() && this.lockMessage != null)
+        {
+            this.lockOverrideMessages.add(StringUtils.translate(this.lockMessage));
+        }
     }
 
     @Override
@@ -135,6 +171,7 @@ public abstract class BaseConfig<T> implements ConfigOption<T>
     /**
      * Adds additional search terms to this config.
      * By default the pretty name is used for searching against.
+     *
      * @param searchTerms
      * @return
      */
@@ -199,7 +236,6 @@ public abstract class BaseConfig<T> implements ConfigOption<T>
         this.valueLoadCallback = callback;
     }
 
-    @Override
     public void onValueChanged(T newValue, T oldValue)
     {
         if (this.valueChangeCallback != null)
@@ -208,7 +244,6 @@ public abstract class BaseConfig<T> implements ConfigOption<T>
         }
     }
 
-    @Override
     public void onValueLoaded(T newValue)
     {
         if (this.valueLoadCallback != null)
@@ -224,5 +259,27 @@ public abstract class BaseConfig<T> implements ConfigOption<T>
 
         // If there is no translation for the config name, then show the actual base name
         return translatedName.equals(key) ? config.getName() : translatedName;
+    }
+
+    /**
+     * Whether or not this config is currently locked to its current value,
+     * and can not be changed without unlocking.
+     *
+     * @return true if the config is locked
+     */
+    @Override
+    public boolean isLocked()
+    {
+        return this.locked;
+    }
+
+    /**
+     * Set whether or not this config should be locked to its current value
+     * @param isLocked
+     */
+    @Override
+    public void setLocked(boolean isLocked)
+    {
+        this.locked = isLocked;
     }
 }
