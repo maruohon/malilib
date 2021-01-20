@@ -79,8 +79,6 @@ public class ColorEditorHSVScreen extends BaseDialogScreen
 
         this.setWidthAndHeight(300, 180);
         this.centerOnScreen();
-
-        this.setWorldAndResolution(this.mc, this.dialogWidth, this.dialogHeight);
     }
 
     @Override
