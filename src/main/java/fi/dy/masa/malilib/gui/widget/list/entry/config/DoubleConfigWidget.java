@@ -33,7 +33,7 @@ public class DoubleConfigWidget extends NumericConfigWidget<Double, DoubleConfig
     {
         String text = this.textField.getText();
 
-        if (text.equals(this.initialStringValue) == false)
+        if (this.config.isSliderActive() == false && text.equals(this.initialStringValue) == false)
         {
             this.config.setValueFromString(text);
         }
