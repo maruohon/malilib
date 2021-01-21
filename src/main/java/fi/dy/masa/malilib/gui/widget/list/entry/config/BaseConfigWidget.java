@@ -129,8 +129,8 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
         StringUtils.splitTextToLines(lines, StringUtils.translate(hoverTextKey, file.getAbsolutePath()), 280);
 
         GenericButton button = new GenericButton(x, y + 1, elementWidth, 20, buttonText);
-        button.addHoverStrings(lines);
-        button.addHoverStrings(config.getLockAndOverrideMessages());
+        button.setHoverStringProvider("path", () -> lines, 100);
+        button.setHoverStringProvider("locked", config::getLockAndOverrideMessages, 101);
         button.setEnabled(config.isLocked() == false);
 
         this.addButton(button, (btn, mbtn) -> {

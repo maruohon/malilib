@@ -1,10 +1,10 @@
 package fi.dy.masa.malilib.gui.widget;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import org.lwjgl.opengl.GL11;
 import com.google.common.collect.ArrayListMultimap;
@@ -17,6 +17,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.listener.EventListener;
+import fi.dy.masa.malilib.message.OrderedStringListFactory;
 import fi.dy.masa.malilib.render.RectangleRenderer;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.TextRenderer;
@@ -30,14 +31,13 @@ public abstract class BaseWidget
     private static int nextWidgetId;
 
     public static final RectangleRenderer DEBUG_TEXT_BG_RENDERER = (x, y, w, h, z) -> RenderUtils.renderOutlinedBox(x - 3, y - 3, w + 6, h + 6, 0xE0000000, 0xFFC0C0C0, z);
+    public static final ImmutableList<String> EMPTY_STRING_LIST = ImmutableList.of();
 
+    private final int id;
+    protected final int fontHeight;
     protected final Minecraft mc;
     protected final FontRenderer textRenderer;
-    protected final List<String> automaticHoverStrings = new ArrayList<>();
-    protected final List<String> userHoverStrings = new ArrayList<>();
-    protected final int fontHeight;
-    private final int id;
-    protected ImmutableList<String> combinedHoverStrings = ImmutableList.of();
+    protected OrderedStringListFactory hoverInfoFactory = new OrderedStringListFactory();
     @Nullable protected EventListener clickListener;
     @Nullable protected HoverChecker renderHoverChecker;
     @Nullable protected Consumer<Runnable> taskQueue;
@@ -438,24 +438,22 @@ public abstract class BaseWidget
 
     public boolean hasHoverText()
     {
-        return this.combinedHoverStrings.isEmpty() == false;
+        return this.getHoverStrings().isEmpty() == false;
     }
 
-    public void clearHoverStrings()
+    public ImmutableList<String> getHoverStrings()
     {
-        this.userHoverStrings.clear();
-        this.updateCombinedHoverStrings();
+        return this.hoverInfoFactory.getLines();
     }
 
-    public void setHoverStrings(String... hoverStrings)
+    public OrderedStringListFactory getHoverInfoFactory()
     {
-        this.setHoverStrings(Arrays.asList(hoverStrings));
+        return this.hoverInfoFactory;
     }
 
     public void setHoverStrings(List<String> hoverStrings)
     {
-        this.userHoverStrings.clear();
-        this.addHoverStrings(hoverStrings);
+        this.hoverInfoFactory.setLines("_default", hoverStrings);
     }
 
     public void addHoverStrings(String... hoverStrings)
@@ -465,34 +463,36 @@ public abstract class BaseWidget
 
     public void addHoverStrings(List<String> hoverStrings)
     {
-        for (String str : hoverStrings)
-        {
-            this.addHoverString(str);
-        }
+        this.hoverInfoFactory.addLines(hoverStrings);
     }
 
-    public void addHoverString(@Nullable String translationKey, Object... args)
+    /**
+     * Adds the provided line supplier, by using the provided key.
+     * The key can be used to remove just these lines later.
+     */
+    public void setHoverStringProvider(String key, Supplier<List<String>> supplier)
     {
-        if (translationKey != null)
-        {
-            String str = StringUtils.translate(translationKey, args);
-            String[] parts = str.split("\\n");
-            Collections.addAll(this.userHoverStrings, parts);
-            this.updateCombinedHoverStrings();
-        }
+        this.hoverInfoFactory.setStringListProvider(key, supplier);
     }
 
-    public void updateCombinedHoverStrings()
+    /**
+     * Adds the provided line supplier, by using the provided key.
+     * The key can be used to remove just these lines later.
+     */
+    public void setHoverStringProvider(String key, Supplier<List<String>> supplier, int priority)
     {
-        ImmutableList.Builder<String> builder = ImmutableList.builder();
-        builder.addAll(this.automaticHoverStrings);
-        builder.addAll(this.userHoverStrings);
-        this.combinedHoverStrings = builder.build();
+        this.hoverInfoFactory.setStringListProvider(key, supplier, priority);
     }
 
-    public ImmutableList<String> getHoverStrings()
+    public void addHoverString(String translationKey, Object... args)
     {
-        return this.combinedHoverStrings;
+        String str = StringUtils.translate(translationKey, args);
+        this.addHoverStrings(str.split("\\n"));
+    }
+
+    public void updateHoverStrings()
+    {
+        this.hoverInfoFactory.updateList();
     }
 
     public List<BaseTextFieldWidget> getAllTextFields()

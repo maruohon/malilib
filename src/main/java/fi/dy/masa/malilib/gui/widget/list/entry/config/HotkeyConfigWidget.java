@@ -22,6 +22,7 @@ public class HotkeyConfigWidget extends BaseConfigWidget<HotkeyConfig>
         this.initialValue = this.config.getKeyBind().getKeys();
 
         this.keybindButton = new KeyBindConfigButton(x, y, 120, 20, this.config.getKeyBind(), ctx.getKeybindEditingScreen());
+        this.keybindButton.setHoverStringProvider("locked", this.config::getLockAndOverrideMessages);
         this.keybindButton.setActionListener((btn, mbtn) -> this.resetButton.setEnabled(this.config.isModified()));
         this.keybindButton.setValueChangeListener(() -> this.resetButton.setEnabled(this.config.isModified()));
 
@@ -48,11 +49,7 @@ public class HotkeyConfigWidget extends BaseConfigWidget<HotkeyConfig>
         this.keybindButton.setWidth(elementWidth - 22);
         this.keybindButton.setEnabled(this.config.isLocked() == false);
         this.keybindButton.setHoverInfoRequiresShift(this.config.isLocked() == false);
-
-        if (this.config.isLocked())
-        {
-            this.keybindButton.setHoverStrings(this.config.getLockAndOverrideMessages());
-        }
+        this.keybindButton.updateHoverStrings();
 
         x += this.keybindButton.getWidth() + 2;
         this.settingsWidget.setPosition(x, y);

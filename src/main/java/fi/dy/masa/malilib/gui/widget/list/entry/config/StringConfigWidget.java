@@ -14,6 +14,8 @@ public class StringConfigWidget extends BaseConfigOptionWidget<String, StringCon
         super(x, y, width, height, listIndex, originalListIndex, config, ctx);
 
         this.textField = new BaseTextFieldWidget(x, y, 20, 16, this.config.getStringValue());
+        this.textField.setHoverStringProvider("locked", this.config::getLockAndOverrideMessages);
+
         this.textField.setListener((str) -> {
             this.config.setValueFromString(str);
             this.updateResetButtonState();
@@ -37,8 +39,8 @@ public class StringConfigWidget extends BaseConfigOptionWidget<String, StringCon
         this.textField.setPosition(x, y + 2);
         this.textField.setWidth(elementWidth);
         this.textField.setText(this.config.getStringValue());
-        this.textField.setHoverStrings(this.config.getLockAndOverrideMessages());
         this.textField.setEnabled(this.config.isLocked() == false);
+        this.textField.updateHoverStrings();
 
         // Set the cursor to the start at first, so that the beginning
         // of the string is shown by default. Otherwise, depending on the string length,

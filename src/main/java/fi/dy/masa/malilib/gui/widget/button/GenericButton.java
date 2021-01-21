@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.gui.widget.button;
 
+import java.util.Arrays;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
@@ -9,8 +10,7 @@ import fi.dy.masa.malilib.util.StringUtils;
 
 public class GenericButton extends BaseButton
 {
-    @Nullable
-    protected final Supplier<MultiIcon> iconSupplier;
+    @Nullable protected final Supplier<MultiIcon> iconSupplier;
     protected HorizontalAlignment alignment = HorizontalAlignment.LEFT;
     protected boolean textCentered;
     protected boolean customIconOffset;
@@ -46,7 +46,7 @@ public class GenericButton extends BaseButton
         this(x, y, width, height, text, () -> icon, hoverStrings);
     }
 
-    public GenericButton(int x, int y, int width, int height, String text, Supplier<MultiIcon> iconSupplier, String... hoverStrings)
+    public GenericButton(int x, int y, int width, int height, String text, @Nullable Supplier<MultiIcon> iconSupplier, String... hoverStrings)
     {
         super(x, y, width, height, text);
 
@@ -60,7 +60,7 @@ public class GenericButton extends BaseButton
 
         if (hoverStrings.length > 0)
         {
-            this.addHoverStrings(hoverStrings);
+            this.setHoverStringProvider("_default", () -> Arrays.asList(hoverStrings));
         }
     }
 

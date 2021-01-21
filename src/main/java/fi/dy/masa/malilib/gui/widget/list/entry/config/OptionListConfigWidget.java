@@ -20,7 +20,8 @@ public class OptionListConfigWidget extends BaseConfigWidget<OptionListConfig<?>
         this.initialValue = this.config.getValue();
 
         this.optionListButton = new OptionListConfigButton(x, y, 80, 20, this.config);
-        this.optionListButton.setActionListener((btn, mbtn) -> this.resetButton.setEnabled(this.config.isModified()));
+        this.optionListButton.setHoverStringProvider("locked", this.config::getLockAndOverrideMessages);
+        this.optionListButton.setChangeListener(this::updateResetButtonState);
 
         this.resetButton.setActionListener((btn, mbtn) -> {
             this.config.resetToDefault();
@@ -41,7 +42,7 @@ public class OptionListConfigWidget extends BaseConfigWidget<OptionListConfig<?>
         this.optionListButton.setPosition(x, y);
         this.optionListButton.setWidth(elementWidth);
         this.optionListButton.setEnabled(this.config.isLocked() == false);
-        this.optionListButton.setHoverStrings(this.config.getLockAndOverrideMessages());
+        this.optionListButton.updateHoverStrings();
 
         this.updateResetButton(x + elementWidth + 4, y);
 

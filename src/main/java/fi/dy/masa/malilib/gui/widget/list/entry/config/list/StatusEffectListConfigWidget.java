@@ -24,7 +24,7 @@ public class StatusEffectListConfigWidget extends BaseValueListConfigWidget<Poti
     {
         String title = StringUtils.translate("malilib.gui.title.status_effect_list_edit", this.config.getDisplayName());
 
-        return new BaseValueListEditButton<>(0, 0, width, height, config, this::onReset, ctx.getDialogHandler(),
+        return new BaseValueListEditButton<>(0, 0, width, height, config, this::reset, ctx.getDialogHandler(),
                                              title, () -> MobEffects.REGENERATION,
                                              StatusEffectListConfigWidget::getSortedEffectList,
                                              StatusEffectListConfig::getRegistryName,

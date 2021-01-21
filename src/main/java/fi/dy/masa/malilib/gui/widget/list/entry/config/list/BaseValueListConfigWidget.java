@@ -19,10 +19,11 @@ public abstract class BaseValueListConfigWidget<TYPE, CFG extends ValueListConfi
         this.config = config;
 
         this.button = this.createButton(this.getElementWidth(), 20, config, ctx);
+        this.button.setHoverStringProvider("locked", config::getLockAndOverrideMessages);
 
         this.resetButton.setActionListener((btn, mbtn) -> {
             this.config.resetToDefault();
-            this.onReset();
+            this.reset();
         });
     }
 
@@ -41,7 +42,6 @@ public abstract class BaseValueListConfigWidget<TYPE, CFG extends ValueListConfi
         this.button.setWidth(elementWidth);
         this.button.updateDisplayString();
         this.button.setEnabled(this.config.isLocked() == false);
-        this.button.addHoverStrings(this.config.getLockAndOverrideMessages());
 
         this.updateResetButton(x + elementWidth + 4, y);
 
@@ -49,9 +49,9 @@ public abstract class BaseValueListConfigWidget<TYPE, CFG extends ValueListConfi
         this.addWidget(this.resetButton);
     }
 
-    public void onReset()
+    public void reset()
     {
         this.button.updateDisplayString();
-        this.resetButton.setEnabled(this.config.isModified());
+        this.updateResetButtonState();
     }
 }

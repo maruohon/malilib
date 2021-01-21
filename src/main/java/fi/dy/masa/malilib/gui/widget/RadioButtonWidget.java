@@ -40,7 +40,11 @@ public class RadioButtonWidget<T extends Enum<T>> extends BaseWidget
         }
 
         this.textWidth = width;
-        this.addHoverString(hoverInfoKey);
+
+        if (hoverInfoKey != null)
+        {
+            this.addHoverString(hoverInfoKey);
+        }
     }
 
     public void setIcons(MultiIcon iconSelected, MultiIcon iconUnselected)

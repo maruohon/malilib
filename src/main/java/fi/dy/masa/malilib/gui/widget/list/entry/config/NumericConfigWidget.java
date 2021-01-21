@@ -1,5 +1,7 @@
 package fi.dy.masa.malilib.gui.widget.list.entry.config;
 
+import java.util.List;
+import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.config.SliderConfig;
 import fi.dy.masa.malilib.config.option.BaseConfig;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
@@ -20,9 +22,14 @@ public abstract class NumericConfigWidget<TYPE, CFG extends BaseConfig<TYPE> & S
         super(x, y, width, height, listIndex, originalListIndex, config, ctx);
 
         this.textField = new BaseTextFieldWidget(x, y, 60, 16);
+        this.textField.setHoverStringProvider("lock", config::getLockAndOverrideMessages);
+
+        this.sliderWidget = new SliderWidget(x, y, 60, 20, config.getSliderCallback(this::updateResetButtonState));
+        this.sliderWidget.setHoverStringProvider("lock", config::getLockAndOverrideMessages);
 
         this.sliderToggleButton = new GenericButton(x, y, () -> this.config.isSliderActive() ? DefaultIcons.BTN_TXTFIELD : DefaultIcons.BTN_SLIDER);
-        this.sliderToggleButton.addHoverStrings("malilib.gui.button.hover.text_field_slider_toggle");
+        this.sliderToggleButton.getHoverInfoFactory().setStringListProvider("slider", this::getSliderMessages);
+
         this.sliderToggleButton.setActionListener((btn, mbtn) -> {
             this.config.toggleSliderActive();
             this.reAddSubWidgets();
@@ -30,11 +37,9 @@ public abstract class NumericConfigWidget<TYPE, CFG extends BaseConfig<TYPE> & S
 
         this.resetButton.setActionListener((btn, mbtn) -> {
             this.config.resetToDefault();
-            this.resetButton.setEnabled(this.config.isModified());
+            this.updateResetButtonState();
             this.reAddSubWidgets();
         });
-
-        this.sliderWidget = new SliderWidget(x, y, 60, 20, config.getSliderCallback(this::updateResetButtonState));
     }
 
     @Override
@@ -45,9 +50,11 @@ public abstract class NumericConfigWidget<TYPE, CFG extends BaseConfig<TYPE> & S
         int x = this.getElementsStartPosition();
         int y = this.getY();
         int elementWidth = this.getElementWidth();
+        boolean locked = this.config.isLocked();
 
         if (this.config.isSliderActive())
         {
+            this.sliderWidget.setLocked(locked);
             this.sliderWidget.setPosition(x, y + 1);
             this.sliderWidget.setWidth(elementWidth - 18);
             x += this.sliderWidget.getWidth() + 2;
@@ -56,6 +63,8 @@ public abstract class NumericConfigWidget<TYPE, CFG extends BaseConfig<TYPE> & S
         }
         else
         {
+            this.textField.setEnabled(locked == false);
+            this.textField.updateHoverStrings();
             this.textField.setPosition(x, y + 3);
             this.textField.setWidth(elementWidth - 18);
             this.textField.setText(this.getCurrentValueAsString());
@@ -66,13 +75,7 @@ public abstract class NumericConfigWidget<TYPE, CFG extends BaseConfig<TYPE> & S
 
         this.sliderToggleButton.setPosition(x, y + 3);
         this.sliderToggleButton.setEnabled(this.config.allowSlider());
-        this.updateWidgetStates();
-
-        if (this.config.allowSlider() == false)
-        {
-            this.sliderToggleButton.setHoverStrings("malilib.gui.button.hover.text_field_slider_toggle",
-                                                    "malilib.gui.button.hover.text_field_slider_toggle.not_allowed");
-        }
+        this.sliderToggleButton.updateHoverStrings();
 
         this.updateResetButton(x + 20, y + 1);
 
@@ -80,18 +83,15 @@ public abstract class NumericConfigWidget<TYPE, CFG extends BaseConfig<TYPE> & S
         this.addWidget(this.resetButton);
     }
 
-    protected void updateWidgetStates()
+    protected List<String> getSliderMessages()
     {
-        if (this.config.isSliderActive())
+        if (this.config.allowSlider() == false)
         {
-            this.sliderWidget.setLocked(this.config.isLocked());
-            this.sliderWidget.setHoverStrings(this.config.getLockAndOverrideMessages());
+            return ImmutableList.of("malilib.gui.button.hover.text_field_slider_toggle",
+                                    "malilib.gui.button.hover.text_field_slider_toggle.not_allowed");
         }
-        else
-        {
-            this.textField.setHoverStrings(this.config.getLockAndOverrideMessages());
-            this.textField.setEnabled(this.config.isLocked() == false);
-        }
+
+        return ImmutableList.of("malilib.gui.button.hover.text_field_slider_toggle");
     }
 
     protected abstract String getCurrentValueAsString();

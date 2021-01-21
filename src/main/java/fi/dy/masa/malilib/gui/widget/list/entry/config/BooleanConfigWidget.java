@@ -14,6 +14,8 @@ public class BooleanConfigWidget extends BaseConfigOptionWidget<Boolean, Boolean
         super(x, y, width, height, listIndex, originalListIndex, config, ctx);
 
         this.booleanButton = new BooleanConfigButton(x, y, -1, 20, this.config);
+        this.booleanButton.setHoverStringProvider("locked", this.config::getLockAndOverrideMessages);
+
         this.booleanButton.setActionListener((btn, mbtn) -> {
             this.config.toggleBooleanValue();
             this.updateButtonStates();
@@ -52,8 +54,8 @@ public class BooleanConfigWidget extends BaseConfigOptionWidget<Boolean, Boolean
     protected void updateButtonStates()
     {
         this.booleanButton.setEnabled(this.config.isLocked() == false);
-        this.booleanButton.setHoverStrings(this.config.getLockAndOverrideMessages());
         this.booleanButton.updateDisplayString();
+        this.booleanButton.updateHoverStrings();
         this.updateResetButtonState();
     }
 }

@@ -32,7 +32,7 @@ public class CheckBoxWidget extends BaseWidget
     {
         this(x, y, iconUnchecked, iconChecked, text);
 
-        this.addHoverString(hoverInfo);
+        this.addHoverStrings(hoverInfo);
     }
 
     public void setListener(@Nullable SelectionListener<CheckBoxWidget> listener)

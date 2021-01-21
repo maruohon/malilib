@@ -26,6 +26,7 @@ public class BlackWhiteListEditButton extends GenericButton
         this.config = config;
         this.dialogHandler = dialogHandler;
         this.saveListener = saveListener;
+        this.hoverInfoFactory.setStringListProvider("value_preview", this::generateHoverStrings);
 
         this.setActionListener((btn, mbtn) -> this.openEditScreen());
         this.updateDisplayString();
@@ -46,14 +47,26 @@ public class BlackWhiteListEditButton extends GenericButton
     @Override
     protected String generateDisplayString()
     {
+        this.hoverInfoFactory.updateList();
+
         ListType type = this.config.getValue().getListType();
 
         if (type == ListType.NONE)
         {
-            this.clearHoverStrings();
             return StringUtils.translate("malilib.gui.button.black_white_list_edit.none");
         }
         else
+        {
+            int total = this.config.getValue().getActiveList().getValue().size();
+            return StringUtils.translate("malilib.gui.button.black_white_list_edit.entries", type.getDisplayName(), total);
+        }
+    }
+
+    protected List<String> generateHoverStrings()
+    {
+        ListType type = this.config.getValue().getListType();
+
+        if (type != ListType.NONE)
         {
             List<String> hoverStrings = new ArrayList<>();
             List<String> list = this.config.getValue().getActiveListAsString();
@@ -73,9 +86,9 @@ public class BlackWhiteListEditButton extends GenericButton
                 hoverStrings.add(StringUtils.translate("malilib.gui.button.hover.entries_more", total - max));
             }
 
-            this.setHoverStrings(hoverStrings);
-
-            return StringUtils.translate("malilib.gui.button.black_white_list_edit.entries", type.getDisplayName(), total);
+            return hoverStrings;
         }
+
+        return EMPTY_STRING_LIST;
     }
 }

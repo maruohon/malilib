@@ -26,6 +26,7 @@ public class BaseValueListEditButton<TYPE> extends GenericButton
     protected final String screenTitle;
     protected final Supplier<TYPE> newEntryFactory;
     protected final ValueListEditEntryWidgetFactory<TYPE> widgetFactory;
+    protected final List<String> hoverStrings = new ArrayList<>();
 
     public BaseValueListEditButton(int x, int y, int width, int height, ValueListConfig<TYPE> config,
                                    @Nullable EventListener saveListener, @Nullable DialogHandler dialogHandler,
@@ -41,6 +42,7 @@ public class BaseValueListEditButton<TYPE> extends GenericButton
         this.newEntryFactory = newEntryFactory;
         this.widgetFactory = widgetFactory;
 
+        this.setHoverStringProvider("preview", () -> this.hoverStrings);
         this.setActionListener((btn, mbtn) -> this.openEditScreen());
         this.updateDisplayString();
     }
@@ -79,16 +81,24 @@ public class BaseValueListEditButton<TYPE> extends GenericButton
     @Override
     protected String generateDisplayString()
     {
-        ImmutableList<String> strings = this.config.getValuesAsString();
-        List<String> hoverStrings = new ArrayList<>();
-        int total = strings.size();
+        ImmutableList<String> valueStrings = this.config.getValuesAsString();
+        this.updateHoverStrings(valueStrings);
+
+        return StringUtils.getDisplayStringForList(valueStrings, this.getWidth() - 10, "'", "[ ", " ]");
+    }
+
+    protected void updateHoverStrings(ImmutableList<String> valueStrings)
+    {
+        List<String> hoverStrings = this.hoverStrings;
+        int total = valueStrings.size();
         int max = Math.min(10, total);
 
+        hoverStrings.clear();
         hoverStrings.add(StringUtils.translate("malilib.gui.button.hover.entries_total", total));
 
         for (int i = 0; i < max; ++i)
         {
-            hoverStrings.add("§7" + strings.get(i));
+            hoverStrings.add("§7" + valueStrings.get(i));
         }
 
         if (total > max)
@@ -96,8 +106,6 @@ public class BaseValueListEditButton<TYPE> extends GenericButton
             hoverStrings.add(StringUtils.translate("malilib.gui.button.hover.entries_more", total - max));
         }
 
-        this.setHoverStrings(hoverStrings);
-
-        return StringUtils.getDisplayStringForList(strings, this.getWidth() - 10, "'", "[ ", " ]");
+        this.updateHoverStrings();
     }
 }

@@ -23,8 +23,11 @@ public class ColorConfigWidget extends BaseConfigOptionWidget<Integer, ColorConf
             this.config.setValue(newValue);
             this.reAddSubWidgets();
         });
+        this.colorIndicatorWidget.setHoverStringProvider("locked", this.config::getLockAndOverrideMessages, 110);
 
         this.textField = new BaseTextFieldWidget(x, y, 70, 16, this.config.getStringValue());
+        this.textField.setHoverStringProvider("locked", this.config::getLockAndOverrideMessages);
+
         this.textField.setListener((str) -> {
             this.config.setValueFromString(str);
             this.updateResetButtonState();
@@ -46,12 +49,12 @@ public class ColorConfigWidget extends BaseConfigOptionWidget<Integer, ColorConf
         int elementWidth = this.getElementWidth();
 
         this.colorIndicatorWidget.setPosition(x, y + 2);
-        this.colorIndicatorWidget.setHoverStrings(this.config.getLockAndOverrideMessages());
+        this.colorIndicatorWidget.updateHoverStrings();
 
         this.textField.setPosition(x + this.colorIndicatorWidget.getWidth() + 4, y + 3);
         this.textField.setText(this.config.getStringValue());
-        this.textField.setHoverStrings(this.config.getLockAndOverrideMessages());
         this.textField.setEnabled(this.config.isLocked() == false);
+        this.textField.updateHoverStrings();
 
         this.updateResetButton(x + elementWidth + 4, y + 1);
 

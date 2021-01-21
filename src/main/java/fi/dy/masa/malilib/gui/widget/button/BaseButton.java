@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.gui.widget.button;
 
+import java.util.List;
 import java.util.function.BooleanSupplier;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
@@ -17,6 +18,7 @@ public abstract class BaseButton extends BackgroundWidget
 
     protected final ImmutableList<String> hoverHelp;
     protected String displayString;
+    protected String fullDisplayString;
     protected boolean canScrollToClick;
     protected boolean enabled = true;
     protected boolean hoverInfoRequiresShift;
@@ -40,8 +42,10 @@ public abstract class BaseButton extends BackgroundWidget
         super(x, y, width, height);
 
         this.displayString = StringUtils.translate(text);
+        this.fullDisplayString = this.displayString;
         this.actionListener = actionListener;
         this.hoverHelp = ImmutableList.of(StringUtils.translate("malilib.gui.button.hover.hold_shift_for_info"));
+        this.hoverInfoFactory.setStringListProvider("full_label", this::getFullLabelHoverString, 99);
 
         this.updateWidth();
     }
@@ -84,6 +88,7 @@ public abstract class BaseButton extends BackgroundWidget
     public BaseButton setDisplayString(String text)
     {
         this.displayString = text;
+        this.fullDisplayString = text;
         return this;
     }
 
@@ -174,18 +179,18 @@ public abstract class BaseButton extends BackgroundWidget
     {
         String str = this.generateDisplayString();
         int maxWidth = this.getMaxDisplayStringWidth();
+        this.fullDisplayString = str;
 
         if (this.automaticWidth == false &&
             org.apache.commons.lang3.StringUtils.isBlank(str) == false &&
             this.getStringWidth(str) > maxWidth)
         {
-            this.automaticHoverStrings.clear();
-            this.automaticHoverStrings.add(BaseScreen.TXT_AQUA + str);
-            this.updateCombinedHoverStrings();
             str = StringUtils.clampTextToRenderLength(str, maxWidth, LeftRight.RIGHT, " ...");
         }
 
         this.displayString = str;
+
+        this.updateHoverStrings();
         this.updateWidth();
     }
 
@@ -208,5 +213,20 @@ public abstract class BaseButton extends BackgroundWidget
         }
 
         return super.getHoverStrings();
+    }
+
+    protected List<String> getFullLabelHoverString()
+    {
+        String str = this.fullDisplayString != null ? this.fullDisplayString : this.displayString;
+        int maxWidth = this.getMaxDisplayStringWidth();
+
+        if (this.automaticWidth == false &&
+            org.apache.commons.lang3.StringUtils.isBlank(str) == false &&
+            this.getStringWidth(str) > maxWidth)
+        {
+            return ImmutableList.of(BaseScreen.TXT_WHITE + str);
+        }
+
+        return EMPTY_STRING_LIST;
     }
 }

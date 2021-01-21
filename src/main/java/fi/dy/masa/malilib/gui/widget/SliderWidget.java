@@ -62,20 +62,24 @@ public class SliderWidget extends BaseWidget
         this.bindTexture(VANILLA_WIDGETS);
         RenderUtils.color(1f, 1f, 1f, 1f);
 
-        RenderUtils.renderTexturedRectangle(x + 1        , y, 0, 46, width - 6, 20, z);
-        RenderUtils.renderTexturedRectangle(x + width - 5, y, 196, 46, 4, 20, z);
+        // Render the slider background texture
+        RenderUtils.renderTexturedRectangle(x + 1        , y,   0, 46, width - 6, 20, z);
+        RenderUtils.renderTexturedRectangle(x + width - 5, y, 196, 46,         4, 20, z);
 
         double relPos = this.callback.getRelativeValue();
         int sw = this.sliderWidth;
         int usableWidth = width - 4 - sw;
         int s = sw / 2;
+        int v = this.locked ? 46 : 66;
 
-        RenderUtils.renderTexturedRectangle(x + 2 + (int) (relPos * usableWidth)    , y, 0, 66, s, 20, z);
-        RenderUtils.renderTexturedRectangle(x + 2 + (int) (relPos * usableWidth) + s, y, 200 - s, 66, s, 20, z);
+        // Render the slider bar texture
+        RenderUtils.renderTexturedRectangle(x + 2 + (int) (relPos * usableWidth)    , y,       0, v, s, 20, z);
+        RenderUtils.renderTexturedRectangle(x + 2 + (int) (relPos * usableWidth) + s, y, 200 - s, v, s, 20, z);
 
         String str = this.callback.getFormattedDisplayValue();
         int tw = this.getStringWidth(str);
-        this.drawString(x + (width / 2) - tw / 2, y + this.getCenteredTextOffsetY(), z, 0xFFFFFFA0, str);
+        int textColor = this.locked ? 0xFF909090 : 0xFFFFFFA0;
+        this.drawString(x + (width / 2) - tw / 2, y + this.getCenteredTextOffsetY(), z, textColor, str);
 
         RenderUtils.color(1f, 1f, 1f, 1f);
     }
