@@ -2,14 +2,15 @@ package fi.dy.masa.malilib;
 
 import java.util.List;
 import com.google.common.collect.ImmutableList;
+import fi.dy.masa.malilib.config.ConfigOption;
+import fi.dy.masa.malilib.config.ModConfig;
 import fi.dy.masa.malilib.config.category.BaseConfigOptionCategory;
 import fi.dy.masa.malilib.config.category.ConfigOptionCategory;
-import fi.dy.masa.malilib.config.ModConfig;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
-import fi.dy.masa.malilib.config.ConfigOption;
 import fi.dy.masa.malilib.config.option.HotkeyConfig;
 import fi.dy.masa.malilib.config.option.IntegerConfig;
 import fi.dy.masa.malilib.config.option.OptionListConfig;
+import fi.dy.masa.malilib.config.option.StringConfig;
 import fi.dy.masa.malilib.config.value.HudAlignment;
 import fi.dy.masa.malilib.config.value.KeybindDisplayMode;
 import fi.dy.masa.malilib.gui.widget.ConfigsSearchBarWidget.Scope;
@@ -24,6 +25,7 @@ public class MaLiLibConfigs implements ModConfig
         public static final OptionListConfig<KeybindDisplayMode> KEYBIND_DISPLAY        = new OptionListConfig<>("keybindDisplay", KeybindDisplayMode.NONE);
         public static final OptionListConfig<HudAlignment> KEYBIND_DISPLAY_ALIGNMENT    = new OptionListConfig<>("keybindDisplayAlignment", HudAlignment.BOTTOM_RIGHT);
 
+        public static final StringConfig DATA_DUMP_CSV_DELIMITER                = new StringConfig("dataDumpCsvDelimiter", ",");
         public static final HotkeyConfig IGNORED_KEYS                           = new HotkeyConfig("ignoredKeys", "");
         public static final BooleanConfig KEYBIND_DISPLAY_CALLBACK_ONLY         = new BooleanConfig("keybindDisplayCallbackOnly", true);
         public static final BooleanConfig KEYBIND_DISPLAY_CANCEL_ONLY           = new BooleanConfig("keybindDisplayCancelOnly", true);
@@ -33,6 +35,7 @@ public class MaLiLibConfigs implements ModConfig
 
         public static final ImmutableList<ConfigOption<?>> OPTIONS = ImmutableList.of(
                 CONFIG_SEARCH_DEFAULT_SCOPE,
+                DATA_DUMP_CSV_DELIMITER,
                 IGNORED_KEYS,
                 KEYBIND_DISPLAY,
                 KEYBIND_DISPLAY_ALIGNMENT,

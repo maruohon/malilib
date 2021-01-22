@@ -3,6 +3,7 @@ malilib.config.category.debug=Debug
 malilib.config.category.generic=Generic
 
 malilib.config.comment.configsearchdefaultscope=This is the default value of the scope DropDown\nwidget in the config menu search bars
+malilib.config.comment.datadumpcsvdelimiter=The column delimiter to use for CSV format data dumps
 malilib.config.comment.keybinddisplay=Whether or not to display a small indicator/toast\nfor pressed keys and triggered hotkeys/actions
 malilib.config.comment.keybinddisplayalignment=The alignment for the keybind display toast messages
 malilib.config.comment.keybinddisplaycallbackonly=If enabled, then only keybinds that have a defined action callback\nwill be displayed on the keybind display toast.
@@ -27,6 +28,7 @@ malilib.config.comment.keybind_settings.exclusive=If true, then no other keybind
 malilib.config.comment.keybind_settings.order_sensitive=Should the keybind keys be pressed\nin the specific order they were defined in
 
 malilib.config.name.configsearchdefaultscope=Config Search Default Scope
+malilib.config.name.datadumpcsvdelimiter=Data Dump CSV Delimiter
 malilib.config.name.keybinddisplay=KeyBind Display
 malilib.config.name.keybinddisplayalignment=KeyBind Display Alignment
 malilib.config.name.keybinddisplaycallbackonly=KeyBind Display Callback Only
