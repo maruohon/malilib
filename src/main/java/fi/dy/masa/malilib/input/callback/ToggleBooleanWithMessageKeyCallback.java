@@ -16,9 +16,7 @@ public class ToggleBooleanWithMessageKeyCallback extends ToggleBooleanKeyCallbac
     public boolean onKeyAction(KeyAction action, KeyBind key)
     {
         super.onKeyAction(action, key);
-
-        MessageUtils.printBooleanConfigToggleMessage(this.config.getPrettyName(), this.config.getBooleanValue());
-
+        MessageUtils.printBooleanConfigToggleMessage(this.config);
         return true;
     }
 }

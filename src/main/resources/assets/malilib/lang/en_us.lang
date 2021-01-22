@@ -252,16 +252,16 @@ malilib.label.true=true
 malilib.label.no=no
 malilib.label.yes=yes
 
-malilib.message.directory_created=Directory '%s' created
-malilib.message.toggled=Toggled %s %s
-malilib.message.value.off=OFF
-malilib.message.value.on=ON
-
 malilib.message.formatting_code.error=§c
 malilib.message.formatting_code.info=§f
 malilib.message.formatting_code.success=§a
 malilib.message.formatting_code.warning=§6
 
+malilib.message.config_locked_off=%s is currently locked to §cOFF§r
+malilib.message.config_locked_on=%s is currently locked to §aON§r
+malilib.message.config_overridden_off=%s is currently overridden to §cOFF§r
+malilib.message.config_overridden_on=%s is currently overridden to §aON§r
+malilib.message.directory_created=Directory '%s' created
 malilib.message.layer_range.range_max=max
 malilib.message.layer_range.range_min=min
 malilib.message.moved_layer_range=Moved the entire layer range by §a%s§r on the §a%s§r axis
@@ -271,6 +271,10 @@ malilib.message.moved_min_layer_to=Moved min layer to %s
 malilib.message.set_layer_axis_to=Set layer axis to %s
 malilib.message.set_layer_mode_to=Set layer mode to %s
 malilib.message.set_layer_to=Set layer to %s
+malilib.message.toggled_config_off=Toggled %s §cOFF§r
+malilib.message.toggled_config_on=Toggled %s §aON§r
+malilib.message.value.off=OFF
+malilib.message.value.on=ON
 
 malilib.toast.keybind_display.keys=§eKeys:§r §6%s§r
 malilib.toast.keybind_display.action=Action: §b%s => %s§r

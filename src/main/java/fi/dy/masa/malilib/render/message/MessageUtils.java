@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.TextComponentTranslation;
 import fi.dy.masa.malilib.MaLiLib;
+import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.config.value.HudAlignment;
 import fi.dy.masa.malilib.config.value.InfoType;
 import fi.dy.masa.malilib.gui.BaseScreen;
@@ -264,13 +265,25 @@ public class MessageUtils
         MaLiLib.LOGGER.error(msg);
     }
 
-    public static void printBooleanConfigToggleMessage(String prettyName, boolean newValue)
+    public static void printBooleanConfigToggleMessage(BooleanConfig config)
     {
-        String pre = newValue ? BaseScreen.TXT_GREEN : BaseScreen.TXT_RED;
-        String status = StringUtils.translate("malilib.message.value." + (newValue ? "on" : "off"));
-        String message = StringUtils.translate("malilib.message.toggled", prettyName, pre + status + BaseScreen.TXT_RST);
+        boolean newValue = config.getBooleanValue();
+        String msgKey;
 
-        printActionbarMessage(message);
+        if (config.isOverridden())
+        {
+            msgKey = newValue ? "malilib.message.config_overridden_on" : "malilib.message.config_overridden_off";
+        }
+        else if (config.isLocked())
+        {
+            msgKey = newValue ? "malilib.message.config_locked_on" : "malilib.message.config_locked_off";
+        }
+        else
+        {
+            msgKey = newValue ? "malilib.message.toggled_config_on" : "malilib.message.toggled_config_off";
+        }
+
+        printActionbarMessage(msgKey, config.getPrettyName());
     }
 
     /**

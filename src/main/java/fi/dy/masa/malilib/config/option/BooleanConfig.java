@@ -62,6 +62,11 @@ public class BooleanConfig extends BaseGenericConfig<Boolean>
         return super.isLocked() || this.hasOverride;
     }
 
+    public boolean isOverridden()
+    {
+        return this.hasOverride;
+    }
+
     public void setOverride(boolean overrideEnabled, boolean overrideValue)
     {
         this.hasOverride = overrideEnabled;
