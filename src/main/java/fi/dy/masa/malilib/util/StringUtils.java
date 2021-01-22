@@ -7,6 +7,8 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.Nullable;
+import net.minecraft.client.Minecraft;
+import net.minecraft.world.World;
 import fi.dy.masa.malilib.util.data.LeftRight;
 
 public class StringUtils
@@ -421,18 +423,24 @@ public class StringUtils
         {
             if (globalData)
             {
-                return prefix + name + suffix;
+                name = prefix + name + suffix;
             }
-
-            net.minecraft.world.World world = net.minecraft.client.Minecraft.getMinecraft().world;
-
-            if (world != null)
+            else
             {
-                return prefix + name + "_dim" + WorldUtils.getDimensionId(world) + suffix;
+                World world = Minecraft.getMinecraft().world;
+
+                if (world != null)
+                {
+                    name = prefix + name + "_dim" + WorldUtils.getDimensionId(world) + suffix;
+                }
             }
         }
+        else
+        {
+            name = prefix + defaultName + suffix;
+        }
 
-        return prefix + defaultName + suffix;
+        return FileUtils.generateSimpleSafeFileName(name);
     }
 
     public static String getStackString(net.minecraft.item.ItemStack stack)
