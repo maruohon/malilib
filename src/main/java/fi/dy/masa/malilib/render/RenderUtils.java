@@ -1223,9 +1223,21 @@ public class RenderUtils
             InventoryOverlay.InventoryRenderType type = InventoryOverlay.getInventoryType(stack);
             InventoryOverlay.InventoryProperties props = InventoryOverlay.getInventoryPropsTemp(type, items.size());
 
+            int screenWidth = GuiUtils.getScaledWindowWidth();
+            int screenHeight = GuiUtils.getScaledWindowHeight();
             int z = 0;
             x += 8;
-            y -= (props.height + 18);
+            y = Math.max(y - (props.height + 18), 2);
+
+            if (x + props.width + 2 > screenWidth)
+            {
+                x = Math.max(x - props.width - 16, 2);
+            }
+
+            if (y + props.height + 2 > screenHeight)
+            {
+                y = screenHeight - props.height - 2;
+            }
 
             if (stack.getItem() instanceof ItemShulkerBox)
             {
