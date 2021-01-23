@@ -1166,10 +1166,23 @@ public class RenderUtils
             GlStateManager.disableLighting();
             color(1f, 1f, 1f, 1f);
 
-            int y1 = y - dimensions - 20;
-            int y2 = y1 + dimensions;
+            int screenWidth = GuiUtils.getScaledWindowWidth();
+            int screenHeight = GuiUtils.getScaledWindowHeight();
+            int y1 = Math.max(y - dimensions - 20, 2);
+
+            if (x + dimensions + 10 > screenWidth)
+            {
+                x = Math.max(x - dimensions - 10, 2);
+            }
+
+            if (y1 + dimensions + 2 > screenHeight)
+            {
+                y1 = screenHeight - dimensions - 2;
+            }
+
             int x1 = x + 8;
             int x2 = x1 + dimensions;
+            int y2 = y1 + dimensions;
             int z = 300;
 
             bindTexture(fi.dy.masa.malilib.render.RenderUtils.TEXTURE_MAP_BACKGROUND);
