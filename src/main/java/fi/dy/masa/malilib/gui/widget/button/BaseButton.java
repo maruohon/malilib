@@ -24,6 +24,7 @@ public abstract class BaseButton extends BackgroundWidget
     protected boolean hoverInfoRequiresShift;
     protected boolean playClickSound = true;
     protected boolean visible = true;
+    protected int horizontalLabelPadding = 5;
     @Nullable protected ButtonActionListener actionListener;
     @Nullable protected BooleanSupplier enabledStatusSupplier;
 
@@ -71,6 +72,17 @@ public abstract class BaseButton extends BackgroundWidget
     public void setEnabled(boolean enabled)
     {
         this.enabled = enabled;
+    }
+
+    /**
+     * Sets the horizontal padding for the display string (on one side)
+     * @param padding
+     * @return
+     */
+    public BaseButton setHorizontalLabelPadding(int padding)
+    {
+        this.horizontalLabelPadding = padding;
+        return this;
     }
 
     public BaseButton setCanScrollToClick(boolean canScroll)
@@ -121,7 +133,7 @@ public abstract class BaseButton extends BackgroundWidget
     {
         if (this.automaticWidth)
         {
-            this.setWidth(this.getStringWidth(this.displayString) + 10);
+            this.setWidth(this.getStringWidth(this.displayString) + this.horizontalLabelPadding * 2);
         }
     }
 
@@ -172,7 +184,7 @@ public abstract class BaseButton extends BackgroundWidget
 
     protected int getMaxDisplayStringWidth()
     {
-        return this.getWidth() - 10;
+        return this.getWidth() - this.horizontalLabelPadding * 2;
     }
 
     public void updateDisplayString()

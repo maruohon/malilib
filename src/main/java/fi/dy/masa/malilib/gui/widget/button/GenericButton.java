@@ -192,7 +192,7 @@ public class GenericButton extends BaseButton
 
         if (icon != null)
         {
-            return this.getWidth() - icon.getWidth() - 14;
+            return this.getWidth() - icon.getWidth() - this.horizontalLabelPadding * 3;
         }
 
         return super.getMaxDisplayStringWidth();

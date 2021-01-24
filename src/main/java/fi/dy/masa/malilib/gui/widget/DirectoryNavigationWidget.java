@@ -199,6 +199,7 @@ public class DirectoryNavigationWidget extends SearchBarWidget
             if (el.type == PathElement.Type.DIR)
             {
                 GenericButton button = new GenericButton(x, y, el.nameWidth + 4, 14, el.displayName);
+                button.setHorizontalLabelPadding(2);
                 button.setRenderBackground(false);
                 button.setRenderOutline(true);
                 button.setPlayClickSound(false);
