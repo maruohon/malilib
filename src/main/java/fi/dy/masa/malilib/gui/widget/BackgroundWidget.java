@@ -127,6 +127,11 @@ public class BackgroundWidget extends BaseWidget
         return this;
     }
 
+    public int getActiveBorderWidth()
+    {
+        return this.borderEnabled ? this.borderWidth : 0;
+    }
+
     protected int getBackgroundWidth(int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
     {
         return this.getWidth();
@@ -148,52 +153,62 @@ public class BackgroundWidget extends BaseWidget
 
     protected void renderWidgetBackground(int x, int y, float z, int width, int height, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
     {
-        this.renderBackgroundOnly(x, y, z, width, height, mouseX, mouseY, isActiveGui, hovered);
-        this.renderBorder(x, y, z, width, height, mouseX, mouseY, isActiveGui, hovered);
+        this.renderBackgroundIfEnabled(x, y, z, width, height, mouseX, mouseY, isActiveGui, hovered);
+        this.renderBorderIfEnabled(x, y, z, width, height, mouseX, mouseY, isActiveGui, hovered);
     }
 
-    protected void renderBorder(int x, int y, float z, int width, int height, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
+    protected void renderBorderIfEnabled(int x, int y, float z, int width, int height, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
     {
         boolean hoverBorder = this.borderEnabledHovered && hovered;
 
         if (this.borderEnabled || hoverBorder)
         {
-            RenderUtils.color(1f, 1f, 1f, 1f);
-            RenderUtils.setupBlend();
-
-            int w = width;
-            int h = height;
-            int bw = hoverBorder ? this.borderWidthHovered : this.borderWidth;
-            int b2 = bw * 2;
-            int colorUL = hoverBorder ? this.borderColorHovered : this.borderColorUL;
-            int colorBR = hoverBorder ? this.borderColorHovered : this.borderColorBR;
-
-            // Horizontal lines/borders
-            RenderUtils.renderRectangle(x, y         , w, bw, colorUL, z);
-            RenderUtils.renderRectangle(x, y + h - bw, w, bw, colorBR, z);
-
-            // Vertical lines/borders
-            RenderUtils.renderRectangle(x         , y + bw, bw, h - b2, colorUL, z);
-            RenderUtils.renderRectangle(x + w - bw, y + bw, bw, h - b2, colorBR, z);
+            this.renderBorder(x, y, z, width, height, mouseX, mouseY, isActiveGui, hovered, hoverBorder);
         }
     }
 
-    protected void renderBackgroundOnly(int x, int y, float z, int width, int height, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
+    protected void renderBorder(int x, int y, float z, int width, int height, int mouseX, int mouseY, boolean isActiveGui, boolean hovered, boolean hoverBorder)
+    {
+        RenderUtils.color(1f, 1f, 1f, 1f);
+        RenderUtils.setupBlend();
+
+        int w = width;
+        int h = height;
+        int bw = hoverBorder ? this.borderWidthHovered : this.borderWidth;
+        int b2 = bw * 2;
+        int colorUL = hoverBorder ? this.borderColorHovered : this.borderColorUL;
+        int colorBR = hoverBorder ? this.borderColorHovered : this.borderColorBR;
+
+        // Horizontal lines/borders
+        RenderUtils.renderRectangle(x, y         , w, bw, colorUL, z);
+        RenderUtils.renderRectangle(x, y + h - bw, w, bw, colorBR, z);
+
+        // Vertical lines/borders
+        RenderUtils.renderRectangle(x         , y + bw, bw, h - b2, colorUL, z);
+        RenderUtils.renderRectangle(x + w - bw, y + bw, bw, h - b2, colorBR, z);
+    }
+
+    protected void renderBackgroundIfEnabled(int x, int y, float z, int width, int height, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
     {
         boolean hoverBg = this.renderHoverBackground && hovered;
 
         if (this.backgroundEnabled || hoverBg)
         {
-            RenderUtils.color(1f, 1f, 1f, 1f);
-            RenderUtils.setupBlend();
-
-            boolean hoverBorder = this.borderEnabledHovered && hovered;
-            int bw = hoverBorder ? this.borderWidthHovered : this.borderWidth;
-            int b2 = bw * 2;
-
-            // Background
-            int color = hoverBg ? this.backgroundColorHovered : this.backgroundColor;
-            RenderUtils.renderRectangle(x + bw, y + bw, width - b2, height - b2, color, z);
+            this.renderBackground(x, y, z, width, height, mouseX, mouseY, isActiveGui, hovered, hoverBg);
         }
+    }
+
+    protected void renderBackground(int x, int y, float z, int width, int height, int mouseX, int mouseY, boolean isActiveGui, boolean hovered, boolean hoverBg)
+    {
+        RenderUtils.color(1f, 1f, 1f, 1f);
+        RenderUtils.setupBlend();
+
+        boolean hoverBorder = this.borderEnabledHovered && hovered;
+        int bw = hoverBorder ? this.borderWidthHovered : this.borderWidth;
+        int b2 = bw * 2;
+
+        // Background
+        int color = hoverBg ? this.backgroundColorHovered : this.backgroundColor;
+        RenderUtils.renderRectangle(x + bw, y + bw, width - b2, height - b2, color, z);
     }
 }

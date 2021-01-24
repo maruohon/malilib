@@ -51,9 +51,11 @@ public abstract class BaseWidget
     private boolean rightAlign;
     protected boolean automaticHeight;
     protected boolean automaticWidth;
+    protected boolean hasMaxHeight;
     protected boolean hasMaxWidth;
     protected boolean shouldReceiveOutsideClicks;
     protected boolean shouldReceiveOutsideScrolls;
+    protected int maxHeight;
     protected int maxWidth;
 
     public BaseWidget(int x, int y, int width, int height)
@@ -68,13 +70,11 @@ public abstract class BaseWidget
         this.id = nextWidgetId++;
 
         this.automaticWidth = width < 0;
+        this.automaticHeight = height < 0;
         this.hasMaxWidth = width < -1;
-        this.maxWidth = this.hasMaxWidth ? -width : -1;
-
-        if (height < 0)
-        {
-            this.automaticHeight = true;
-        }
+        this.hasMaxHeight = height < -1;
+        this.maxWidth = this.hasMaxWidth ? -width : width;
+        this.maxHeight = this.hasMaxHeight ? -height : height;
     }
 
     public final int getX()

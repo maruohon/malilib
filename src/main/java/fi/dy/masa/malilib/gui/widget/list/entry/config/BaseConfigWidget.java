@@ -49,6 +49,7 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
         this.configOwnerLabelWidget = new LabelWidget(x, y + 2, 0xFF707070, ownerLabel != null ? ownerLabel : "");
         this.configNameLabelWidget = new LabelWidget(x, y, this.getMaxLabelWidth(), height, 0xFFFFFFFF, nameLabel);
         this.configNameLabelWidget.setPaddingTop(showOwner ? 12 : 7);
+        this.configNameLabelWidget.setPaddingBottom(2);
 
         EventListener clickHandler = config.getLabelClickHandler();
         String comment = config.getComment();
