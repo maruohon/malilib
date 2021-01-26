@@ -194,11 +194,11 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
     }
 
     @Override
-    public boolean onKeyTyped(char typedChar, int keyCode, int scanCode, int modifiers)
+    public boolean onKeyTyped(int keyCode, int scanCode, int modifiers)
     {
         if (this.isSearchOpen() && this.hotkeySearchButton.isSelected())
         {
-            this.hotkeySearchButton.onKeyPressed(keyCode);
+            this.hotkeySearchButton.onKeyPressed(keyCode, scanCode, modifiers);
 
             if (keyCode == Keyboard.KEY_ESCAPE)
             {
@@ -208,7 +208,7 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
             return true;
         }
 
-        return super.onKeyTyped(typedChar, keyCode, scanCode, modifiers);
+        return super.onKeyTyped(keyCode, scanCode, modifiers);
     }
 
     public enum Scope implements ConfigOptionListEntry<Scope>

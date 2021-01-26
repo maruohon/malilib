@@ -283,15 +283,32 @@ public abstract class ContainerWidget extends BackgroundWidget
     }
 
     @Override
-    public boolean onKeyTyped(char typedChar, int keyCode, int scanCode, int modifiers)
+    public boolean onKeyTyped(int keyCode, int scanCode, int modifiers)
     {
         if (this.subWidgets.isEmpty() == false)
         {
             for (BaseWidget widget : this.subWidgets)
             {
-                if (widget.onKeyTyped(typedChar, keyCode, scanCode, modifiers))
+                if (widget.onKeyTyped(keyCode, scanCode, modifiers))
                 {
                     // Don't call super if the key press got handled
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean onCharTyped(char charIn, int modifiers)
+    {
+        if (this.subWidgets.isEmpty() == false)
+        {
+            for (BaseWidget widget : this.subWidgets)
+            {
+                if (widget.onCharTyped(charIn, modifiers))
+                {
                     return true;
                 }
             }

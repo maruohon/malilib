@@ -408,7 +408,12 @@ public abstract class BaseWidget
         return false;
     }
 
-    public boolean onKeyTyped(char typedChar, int keyCode, int scanCode, int modifiers)
+    public boolean onKeyTyped(int keyCode, int scanCode, int modifiers)
+    {
+        return false;
+    }
+
+    public boolean onCharTyped(char charIn, int modifiers)
     {
         return false;
     }

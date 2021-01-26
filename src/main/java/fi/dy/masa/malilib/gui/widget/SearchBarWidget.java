@@ -2,7 +2,6 @@ package fi.dy.masa.malilib.gui.widget;
 
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
-import net.minecraft.util.ChatAllowedCharacters;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
@@ -122,32 +121,36 @@ public class SearchBarWidget extends ContainerWidget
     }
 
     @Override
-    public boolean onKeyTyped(char typedChar, int keyCode, int scanCode, int modifiers)
+    public boolean onKeyTyped(int keyCode, int scanCode, int modifiers)
     {
-        if (this.searchOpen)
+        if (this.searchOpen && keyCode == Keyboard.KEY_ESCAPE)
         {
-            if (keyCode == Keyboard.KEY_ESCAPE)
+            if (BaseScreen.isShiftDown())
             {
-                if (BaseScreen.isShiftDown())
-                {
-                    BaseScreen.openGui(null);
-                }
-                else
-                {
-                    this.setSearchOpen(false);
-                    this.textField.setText("");
-                }
-
-                return true;
+                BaseScreen.openGui(null);
             }
-        }
-        else if (ChatAllowedCharacters.isAllowedCharacter(typedChar))
-        {
-            this.setSearchOpen(true);
-            this.textField.onKeyTyped(typedChar, keyCode, scanCode, modifiers);
+            else
+            {
+                this.setSearchOpen(false);
+                this.textField.setText("");
+            }
+
             return true;
         }
 
-        return super.onKeyTyped(typedChar, keyCode, scanCode, modifiers);
+        return super.onKeyTyped(keyCode, scanCode, modifiers);
+    }
+
+    @Override
+    public boolean onCharTyped(char charIn, int modifiers)
+    {
+        if (this.searchOpen == false)
+        {
+            this.setSearchOpen(true);
+            this.textField.onCharTyped(charIn, modifiers);
+            return true;
+        }
+
+        return super.onCharTyped(charIn, modifiers);
     }
 }

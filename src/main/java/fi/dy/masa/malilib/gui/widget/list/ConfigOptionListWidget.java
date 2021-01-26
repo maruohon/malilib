@@ -38,6 +38,7 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
         this.modId = modId;
         this.defaultElementWidthSupplier = defaultElementWidthSupplier;
         this.areContentsDynamic = true;
+        this.allowKeyboardNavigation = true;
 
         this.setEntryWidgetFactory(new ConfigOptionListEntryWidgetFactory<>(ctx));
         this.setEntryFilterStringFactory(ConfigInfo::getSearchStrings);

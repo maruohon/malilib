@@ -303,12 +303,16 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
     }
 
     @Override
-    protected void keyTyped(char typedChar, int keyCode) throws IOException
+    protected void keyTyped(char charIn, int keyCode) throws IOException
     {
-        System.out.printf("c: '%c' = %d, k: %d\n", typedChar, (int) typedChar, keyCode);
-        if (this.onKeyTyped(typedChar, keyCode, 0, 0) == false)
+        if (this.onKeyTyped(keyCode, 0, 0) == false)
         {
-            super.keyTyped(typedChar, keyCode);
+            super.keyTyped(charIn, keyCode);
+        }
+
+        if (charIn >= ' ')
+        {
+            this.onCharTyped(charIn, 0);
         }
     }
 
@@ -434,7 +438,7 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
         return handled;
     }
 
-    public boolean onKeyTyped(char typedChar, int keyCode, int scanCode, int modifiers)
+    public boolean onKeyTyped(int keyCode, int scanCode, int modifiers)
     {
         boolean handled = false;
 
@@ -452,7 +456,7 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
         {
             for (BaseWidget widget : this.widgets)
             {
-                if (widget.onKeyTyped(typedChar, keyCode, scanCode, modifiers))
+                if (widget.onKeyTyped(keyCode, scanCode, modifiers))
                 {
                     // Don't call super if the button press got handled
                     handled = true;
@@ -465,6 +469,25 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
         {
             this.closeGui(isShiftDown() == false);
             handled = true;
+        }
+
+        this.runTasks();
+
+        return handled;
+    }
+
+    public boolean onCharTyped(char charIn, int modifiers)
+    {
+        boolean handled = false;
+
+        for (BaseWidget widget : this.widgets)
+        {
+            if (widget.onCharTyped(charIn, modifiers))
+            {
+                // Don't call super if the button press got handled
+                handled = true;
+                break;
+            }
         }
 
         this.runTasks();

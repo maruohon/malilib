@@ -465,16 +465,16 @@ public abstract class BaseListWidget extends ContainerWidget
     }
 
     @Override
-    public boolean onKeyTyped(char typedChar, int keyCode, int scanCode, int modifiers)
+    public boolean onKeyTyped(int keyCode, int scanCode, int modifiers)
     {
-        if (this.headerWidget != null && this.headerWidget.onKeyTyped(typedChar, keyCode, scanCode, modifiers))
+        if (this.headerWidget != null && this.headerWidget.onKeyTyped(keyCode, scanCode, modifiers))
         {
             return true;
         }
 
         for (BaseListEntryWidget widget : this.entryWidgets)
         {
-            if (widget.onKeyTyped(typedChar, keyCode, scanCode, modifiers))
+            if (widget.onKeyTyped(keyCode, scanCode, modifiers))
             {
                 return true;
             }
@@ -488,12 +488,31 @@ public abstract class BaseListWidget extends ContainerWidget
             else if (keyCode == Keyboard.KEY_NEXT)  this.offsetSelectionOrScrollbar(this.visibleListEntries / 2, true);
             else if (keyCode == Keyboard.KEY_HOME)  this.offsetSelectionOrScrollbar(-this.getTotalListWidgetCount(), true);
             else if (keyCode == Keyboard.KEY_END)   this.offsetSelectionOrScrollbar(this.getTotalListWidgetCount(), true);
-            else return super.onKeyTyped(typedChar, keyCode, scanCode, modifiers);
+            else return super.onKeyTyped(keyCode, scanCode, modifiers);
 
             return true;
         }
 
-        return super.onKeyTyped(typedChar, keyCode, scanCode, modifiers);
+        return super.onKeyTyped(keyCode, scanCode, modifiers);
+    }
+
+    @Override
+    public boolean onCharTyped(char charIn, int modifiers)
+    {
+        if (this.headerWidget != null && this.headerWidget.onCharTyped(charIn, modifiers))
+        {
+            return true;
+        }
+
+        for (BaseListEntryWidget widget : this.entryWidgets)
+        {
+            if (widget.onCharTyped(charIn, modifiers))
+            {
+                return true;
+            }
+        }
+
+        return super.onCharTyped(charIn, modifiers);
     }
 
     protected void offsetSelectionOrScrollbar(int amount, boolean changeSelection)

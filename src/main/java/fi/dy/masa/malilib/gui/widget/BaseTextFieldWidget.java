@@ -779,13 +779,17 @@ public class BaseTextFieldWidget extends BackgroundWidget
     }
 
     @Override
-    public boolean onKeyTyped(char typedChar, int keyCode, int scanCode, int modifiers)
+    public boolean onKeyTyped(int keyCode, int scanCode, int modifiers)
     {
         if (this.isFocused())
         {
             boolean selectText = BaseScreen.isShiftDown();
 
-            if (keyCode == Keyboard.KEY_BACK)
+            if (keyCode == Keyboard.KEY_ESCAPE)
+            {
+                this.setFocused(false);
+            }
+            else if (keyCode == Keyboard.KEY_BACK)
             {
                 if (BaseScreen.isCtrlDown())
                 {
@@ -861,10 +865,6 @@ public class BaseTextFieldWidget extends BackgroundWidget
             {
                 this.pasteText();
             }
-            else if (this.isUsableCharacter(typedChar, keyCode))
-            {
-                this.writeCharacter(typedChar, keyCode);
-            }
             else
             {
                 return false;
@@ -873,7 +873,19 @@ public class BaseTextFieldWidget extends BackgroundWidget
             return true;
         }
 
-        return super.onKeyTyped(typedChar, keyCode, scanCode, modifiers);
+        return super.onKeyTyped(keyCode, scanCode, modifiers);
+    }
+
+    @Override
+    public boolean onCharTyped(char charIn, int modifiers)
+    {
+        if (this.isFocused() && this.isUsableCharacter(charIn, modifiers))
+        {
+            this.writeCharacter(charIn, modifiers);
+            return true;
+        }
+
+        return super.onCharTyped(charIn, modifiers);
     }
 
     protected void renderCursor(int x, int y, float z, int color)

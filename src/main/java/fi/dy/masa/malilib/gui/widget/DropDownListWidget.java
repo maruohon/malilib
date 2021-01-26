@@ -559,9 +559,9 @@ public class DropDownListWidget<T> extends ContainerWidget
     }
 
     @Override
-    public boolean onKeyTyped(char typedChar, int keyCode, int scanCode, int modifiers)
+    public boolean onKeyTyped(int keyCode, int scanCode, int modifiers)
     {
-        if (super.onKeyTyped(typedChar, keyCode, scanCode, modifiers))
+        if (super.onKeyTyped(keyCode, scanCode, modifiers))
         {
             return true;
         }
@@ -582,15 +582,26 @@ public class DropDownListWidget<T> extends ContainerWidget
                 return true;
             }
 
-            if (this.searchOpen == false && this.searchField.isUsableCharacter(typedChar, 0))
+            return this.searchField.onKeyTyped(keyCode, scanCode, modifiers);
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean onCharTyped(char charIn, int modifiers)
+    {
+        if (this.isOpen)
+        {
+            if (this.searchOpen == false && this.searchField.isUsableCharacter(charIn, modifiers))
             {
                 this.setSearchOpen(true);
             }
 
-            return this.searchField.onKeyTyped(typedChar, keyCode, scanCode, modifiers);
+            return this.searchField.onCharTyped(charIn, modifiers);
         }
 
-        return false;
+        return super.onCharTyped(charIn, modifiers);
     }
 
     protected void onSearchTextChange(String searchText)

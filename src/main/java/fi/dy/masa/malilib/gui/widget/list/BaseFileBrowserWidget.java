@@ -287,9 +287,9 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     }
 
     @Override
-    public boolean onKeyTyped(char typedChar, int keyCode, int scanCode, int modifiers)
+    public boolean onKeyTyped(int keyCode, int scanCode, int modifiers)
     {
-        if (super.onKeyTyped(typedChar, keyCode, scanCode, modifiers))
+        if (super.onKeyTyped(keyCode, scanCode, modifiers))
         {
             return true;
         }
@@ -300,7 +300,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
             return true;
         }
         else if ((keyCode == Keyboard.KEY_RIGHT || keyCode == Keyboard.KEY_RETURN) &&
-                         this.getLastSelectedEntry() != null && this.getLastSelectedEntry().getType() == DirectoryEntryType.DIRECTORY)
+                 this.getLastSelectedEntry() != null && this.getLastSelectedEntry().getType() == DirectoryEntryType.DIRECTORY)
         {
             this.switchToDirectory(new File(this.getLastSelectedEntry().getDirectory(), this.getLastSelectedEntry().getName()));
             return true;

@@ -285,16 +285,16 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
     }
 
     @Override
-    public boolean onKeyTyped(char typedChar, int keyCode, int scanCode, int modifiers)
+    public boolean onKeyTyped(int keyCode, int scanCode, int modifiers)
     {
         if (this.activeKeyBindButton != null)
         {
-            this.activeKeyBindButton.onKeyPressed(keyCode);
+            this.activeKeyBindButton.onKeyPressed(keyCode, scanCode, modifiers);
             return true;
         }
         else
         {
-            if (this.getListWidget().onKeyTyped(typedChar, keyCode, scanCode, modifiers))
+            if (this.getListWidget().onKeyTyped(keyCode, scanCode, modifiers))
             {
                 return true;
             }
@@ -305,7 +305,7 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
                 return true;
             }
 
-            return super.onKeyTyped(typedChar, keyCode, scanCode, modifiers);
+            return super.onKeyTyped(keyCode, scanCode, modifiers);
         }
     }
 

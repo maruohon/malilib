@@ -105,7 +105,7 @@ public class KeyBindConfigButton extends GenericButton
         return handled;
     }
 
-    public void onKeyPressed(int keyCode)
+    public void onKeyPressed(int keyCode, int scanCode, int modifiers)
     {
         if (this.isSelected())
         {
@@ -128,6 +128,14 @@ public class KeyBindConfigButton extends GenericButton
 
             this.updateDisplayString();
         }
+    }
+
+    @Override
+    public boolean onCharTyped(char charIn, int modifiers)
+    {
+        // Eat all the characters when the button is active,
+        // otherwise they can leak into search bars etc.
+        return this.isSelected();
     }
 
     protected void addKey(int keyCode)
