@@ -37,7 +37,6 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
     @Nullable protected CyclableContainerWidget tabButtonContainerWidget;
     @Nullable protected ConfigTab defaultTab;
     @Nullable protected KeyBindConfigButton activeKeyBindButton;
-    @Nullable protected DialogHandler dialogHandler;
     protected int configElementsWidth = 120;
 
     public BaseConfigScreen(String modId, @Nullable GuiScreen parent,
@@ -286,7 +285,7 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
     }
 
     @Override
-    public boolean onKeyTyped(char typedChar, int keyCode)
+    public boolean onKeyTyped(char typedChar, int keyCode, int scanCode, int modifiers)
     {
         if (this.activeKeyBindButton != null)
         {
@@ -295,7 +294,7 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
         }
         else
         {
-            if (this.getListWidget().onKeyTyped(typedChar, keyCode))
+            if (this.getListWidget().onKeyTyped(typedChar, keyCode, scanCode, modifiers))
             {
                 return true;
             }
@@ -306,7 +305,7 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
                 return true;
             }
 
-            return super.onKeyTyped(typedChar, keyCode);
+            return super.onKeyTyped(typedChar, keyCode, scanCode, modifiers);
         }
     }
 

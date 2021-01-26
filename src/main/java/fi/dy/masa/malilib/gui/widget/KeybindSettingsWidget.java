@@ -36,7 +36,7 @@ public class KeybindSettingsWidget extends BaseWidget
     }
 
     @Override
-    protected boolean onMouseClickedImpl(int mouseX, int mouseY, int mouseButton)
+    protected boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
         if (mouseButton == 0)
         {

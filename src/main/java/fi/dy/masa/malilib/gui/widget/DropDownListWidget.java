@@ -501,7 +501,7 @@ public class DropDownListWidget<T> extends ContainerWidget
     }
 
     @Override
-    protected boolean onMouseClickedImpl(int mouseX, int mouseY, int mouseButton)
+    protected boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
         // Close the dropdown when clicking outside of it
         if (this.isMouseOver(mouseX, mouseY) == false)
@@ -516,7 +516,7 @@ public class DropDownListWidget<T> extends ContainerWidget
         }
 
         // This handles the open/close button in the no-entry-bar case, plus the entry bar clicks 
-        if (super.onMouseClickedImpl(mouseX, mouseY, mouseButton))
+        if (super.onMouseClicked(mouseX, mouseY, mouseButton))
         {
             return true;
         }
@@ -533,19 +533,19 @@ public class DropDownListWidget<T> extends ContainerWidget
     }
 
     @Override
-    public void onMouseReleasedImpl(int mouseX, int mouseY, int mouseButton)
+    public void onMouseReleased(int mouseX, int mouseY, int mouseButton)
     {
         this.scrollBar.onMouseReleased(mouseX, mouseY, mouseButton);
     }
 
     @Override
-    public boolean onMouseScrolledImpl(int mouseX, int mouseY, double mouseWheelDelta)
+    protected boolean onMouseScrolled(int mouseX, int mouseY, double mouseWheelDelta)
     {
         if (this.isOpen)
         {
-            if (this.searchOpen && this.searchField.isMouseOver(mouseX, mouseY))
+            if (this.searchOpen)
             {
-                return this.searchField.onMouseScrolled(mouseX, mouseY, mouseWheelDelta);
+                return this.searchField.tryMouseScroll(mouseX, mouseY, mouseWheelDelta);
             }
             else
             {
@@ -559,8 +559,13 @@ public class DropDownListWidget<T> extends ContainerWidget
     }
 
     @Override
-    protected boolean onKeyTypedImpl(char typedChar, int keyCode)
+    public boolean onKeyTyped(char typedChar, int keyCode, int scanCode, int modifiers)
     {
+        if (super.onKeyTyped(typedChar, keyCode, scanCode, modifiers))
+        {
+            return true;
+        }
+
         if (this.isOpen)
         {
             if (keyCode == Keyboard.KEY_ESCAPE)
@@ -582,7 +587,7 @@ public class DropDownListWidget<T> extends ContainerWidget
                 this.setSearchOpen(true);
             }
 
-            return this.searchField.onKeyTyped(typedChar, keyCode);
+            return this.searchField.onKeyTyped(typedChar, keyCode, scanCode, modifiers);
         }
 
         return false;

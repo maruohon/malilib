@@ -3,7 +3,6 @@ package fi.dy.masa.malilib.gui.config;
 import java.util.List;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
-import org.lwjgl.input.Keyboard;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.config.option.list.ValueListConfig;
@@ -23,7 +22,6 @@ public class BaseValueListEditScreen<TYPE> extends BaseListScreen<DataListWidget
     protected final ValueListConfig<TYPE> config;
     protected final Supplier<TYPE> newEntrySupplier;
     protected final ValueListEditEntryWidgetFactory<TYPE> widgetFactory;
-    @Nullable protected final DialogHandler dialogHandler;
     @Nullable protected final EventListener saveListener;
 
     public BaseValueListEditScreen(ValueListConfig<TYPE> config, @Nullable EventListener saveListener,
@@ -76,18 +74,6 @@ public class BaseValueListEditScreen<TYPE> extends BaseListScreen<DataListWidget
         }
 
         super.onGuiClosed();
-    }
-
-    @Override
-    public boolean onKeyTyped(char typedChar, int keyCode)
-    {
-        if (keyCode == Keyboard.KEY_ESCAPE && this.dialogHandler != null)
-        {
-            this.dialogHandler.closeDialog();
-            return true;
-        }
-
-        return super.onKeyTyped(typedChar, keyCode);
     }
 
     @Override

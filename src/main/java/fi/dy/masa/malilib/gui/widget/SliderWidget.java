@@ -30,7 +30,7 @@ public class SliderWidget extends BaseWidget
     }
 
     @Override
-    protected boolean onMouseClickedImpl(int mouseX, int mouseY, int mouseButton)
+    protected boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
         if (this.locked == false)
         {
@@ -43,7 +43,7 @@ public class SliderWidget extends BaseWidget
     }
 
     @Override
-    public void onMouseReleasedImpl(int mouseX, int mouseY, int mouseButton)
+    public void onMouseReleased(int mouseX, int mouseY, int mouseButton)
     {
         this.dragging = false;
     }

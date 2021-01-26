@@ -167,14 +167,14 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
     }
 
     @Override
-    protected boolean onMouseClickedImpl(int mouseX, int mouseY, int mouseButton)
+    protected boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
         if (this.isSearchOpen())
         {
             if (this.hotkeySearchButton.isMouseOver(mouseX, mouseY))
             {
                 boolean selectedPre = this.hotkeySearchButton.isSelected();
-                this.hotkeySearchButton.onMouseClicked(mouseX, mouseY, mouseButton);
+                this.hotkeySearchButton.tryMouseClick(mouseX, mouseY, mouseButton);
 
                 if (selectedPre == false)
                 {
@@ -190,11 +190,11 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
             }
         }
 
-        return super.onMouseClickedImpl(mouseX, mouseY, mouseButton);
+        return super.onMouseClicked(mouseX, mouseY, mouseButton);
     }
 
     @Override
-    protected boolean onKeyTypedImpl(char typedChar, int keyCode)
+    public boolean onKeyTyped(char typedChar, int keyCode, int scanCode, int modifiers)
     {
         if (this.isSearchOpen() && this.hotkeySearchButton.isSelected())
         {
@@ -208,7 +208,7 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
             return true;
         }
 
-        return super.onKeyTypedImpl(typedChar, keyCode);
+        return super.onKeyTyped(typedChar, keyCode, scanCode, modifiers);
     }
 
     public enum Scope implements ConfigOptionListEntry<Scope>

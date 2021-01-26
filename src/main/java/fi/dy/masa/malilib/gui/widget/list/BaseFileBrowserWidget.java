@@ -287,9 +287,9 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     }
 
     @Override
-    public boolean onKeyTyped(char typedChar, int keyCode)
+    public boolean onKeyTyped(char typedChar, int keyCode, int scanCode, int modifiers)
     {
-        if (super.onKeyTyped(typedChar, keyCode))
+        if (super.onKeyTyped(typedChar, keyCode, scanCode, modifiers))
         {
             return true;
         }

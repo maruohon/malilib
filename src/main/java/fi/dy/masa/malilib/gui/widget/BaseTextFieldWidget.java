@@ -730,7 +730,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
     }
 
     @Override
-    protected boolean onMouseClickedImpl(int mouseX, int mouseY, int mouseButton)
+    protected boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
         boolean isMouseOver = this.isMouseOver(mouseX, mouseY);
 
@@ -765,7 +765,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
     }
 
     @Override
-    public boolean onMouseScrolledImpl(int mouseX, int mouseY, double mouseWheelDelta)
+    protected boolean onMouseScrolled(int mouseX, int mouseY, double mouseWheelDelta)
     {
         // Allow selecting text or moving the cursor by scrolling
         if (this.isFocused() && this.text.length() > 0)
@@ -779,12 +779,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
     }
 
     @Override
-    public void onMouseReleasedImpl(int mouseX, int mouseY, int mouseButton)
-    {
-    }
-
-    @Override
-    protected boolean onKeyTypedImpl(char typedChar, int keyCode)
+    public boolean onKeyTyped(char typedChar, int keyCode, int scanCode, int modifiers)
     {
         if (this.isFocused())
         {
@@ -878,7 +873,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
             return true;
         }
 
-        return false;
+        return super.onKeyTyped(typedChar, keyCode, scanCode, modifiers);
     }
 
     protected void renderCursor(int x, int y, float z, int color)

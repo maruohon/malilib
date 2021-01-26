@@ -211,13 +211,13 @@ public abstract class ContainerWidget extends BackgroundWidget
     }
 
     @Override
-    public boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
+    protected boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
         if (this.subWidgets.isEmpty() == false)
         {
             for (BaseWidget widget : this.subWidgets)
             {
-                if (widget.onMouseClicked(mouseX, mouseY, mouseButton))
+                if (widget.tryMouseClick(mouseX, mouseY, mouseButton))
                 {
                     this.runTasks();
                     // Don't call super if the button press got handled
@@ -243,18 +243,16 @@ public abstract class ContainerWidget extends BackgroundWidget
 
             this.runTasks();
         }
-
-        this.onMouseReleasedImpl(mouseX, mouseY, mouseButton);
     }
 
     @Override
-    public boolean onMouseScrolled(int mouseX, int mouseY, double mouseWheelDelta)
+    protected boolean onMouseScrolled(int mouseX, int mouseY, double mouseWheelDelta)
     {
         if (this.subWidgets.isEmpty() == false)
         {
             for (BaseWidget widget : this.subWidgets)
             {
-                if (widget.onMouseScrolled(mouseX, mouseY, mouseWheelDelta))
+                if (widget.tryMouseScroll(mouseX, mouseY, mouseWheelDelta))
                 {
                     this.runTasks();
                     return true;
@@ -285,13 +283,13 @@ public abstract class ContainerWidget extends BackgroundWidget
     }
 
     @Override
-    public boolean onKeyTyped(char typedChar, int keyCode)
+    public boolean onKeyTyped(char typedChar, int keyCode, int scanCode, int modifiers)
     {
         if (this.subWidgets.isEmpty() == false)
         {
             for (BaseWidget widget : this.subWidgets)
             {
-                if (widget.onKeyTyped(typedChar, keyCode))
+                if (widget.onKeyTyped(typedChar, keyCode, scanCode, modifiers))
                 {
                     // Don't call super if the key press got handled
                     return true;
@@ -299,7 +297,7 @@ public abstract class ContainerWidget extends BackgroundWidget
             }
         }
 
-        return this.onKeyTypedImpl(typedChar, keyCode);
+        return false;
     }
 
     @Override

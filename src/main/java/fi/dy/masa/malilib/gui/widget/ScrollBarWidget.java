@@ -131,7 +131,7 @@ public class ScrollBarWidget extends BaseWidget
     }
 
     @Override
-    protected boolean onMouseClickedImpl(int mouseX, int mouseY, int mouseButton)
+    protected boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
         if (this.isMouseOverUpArrow(mouseX, mouseY))
         {
@@ -155,37 +155,7 @@ public class ScrollBarWidget extends BaseWidget
     }
 
     @Override
-    public boolean onMouseScrolledImpl(int mouseX, int mouseY, double mouseWheelDelta)
-    {
-        int amount = mouseWheelDelta < 0 ? 1 : -1;
-        this.offsetValue(amount);
-        return true;
-    }
-
-    /**
-     * Returns the move amount for clicking on the up or down
-     * arrows, based on whether or not shift and/or ctrl are held
-     * @return
-     */
-    protected int getMoveAmountForArrowClick()
-    {
-        int amount = 1;
-
-        if (BaseScreen.isShiftDown())
-        {
-            amount *= 5;
-        }
-
-        if (BaseScreen.isCtrlDown())
-        {
-            amount *= 4;
-        }
-
-        return amount;
-    }
-
-    @Override
-    public void onMouseReleasedImpl(int mouseX, int mouseY, int mouseButton)
+    public void onMouseReleased(int mouseX, int mouseY, int mouseButton)
     {
         if (mouseButton == 0)
         {
@@ -194,7 +164,15 @@ public class ScrollBarWidget extends BaseWidget
     }
 
     @Override
-    public boolean onMouseMovedImpl(int mouseX, int mouseY)
+    protected boolean onMouseScrolled(int mouseX, int mouseY, double mouseWheelDelta)
+    {
+        int amount = mouseWheelDelta < 0 ? 1 : -1;
+        this.offsetValue(amount);
+        return true;
+    }
+
+    @Override
+    public boolean onMouseMoved(int mouseX, int mouseY)
     {
         int totalHeight = this.totalHeight;
 
@@ -223,6 +201,28 @@ public class ScrollBarWidget extends BaseWidget
         }
 
         return false;
+    }
+
+    /**
+     * Returns the move amount for clicking on the up or down
+     * arrows, based on whether or not shift and/or ctrl are held
+     * @return
+     */
+    protected int getMoveAmountForArrowClick()
+    {
+        int amount = 1;
+
+        if (BaseScreen.isShiftDown())
+        {
+            amount *= 5;
+        }
+
+        if (BaseScreen.isCtrlDown())
+        {
+            amount *= 4;
+        }
+
+        return amount;
     }
 
     public void handleDrag(int mouseY, int barTravel)

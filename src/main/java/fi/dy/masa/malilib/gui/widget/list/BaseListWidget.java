@@ -316,14 +316,14 @@ public abstract class BaseListWidget extends ContainerWidget
     }
 
     @Override
-    public boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
+    protected boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
         if (this.onMouseClickedSearchBar(mouseX, mouseY, mouseButton))
         {
             return true;
         }
 
-        if (this.headerWidget != null && this.headerWidget.onMouseClicked(mouseX, mouseY, mouseButton))
+        if (this.headerWidget != null && this.headerWidget.tryMouseClick(mouseX, mouseY, mouseButton))
         {
             return true;
         }
@@ -339,7 +339,7 @@ public abstract class BaseListWidget extends ContainerWidget
 
         for (BaseListEntryWidget widget : this.entryWidgets)
         {
-            if (widget.onMouseClicked(mouseX, mouseY, mouseButton))
+            if (widget.tryMouseClick(mouseX, mouseY, mouseButton))
             {
                 return true;
             }
@@ -365,16 +365,16 @@ public abstract class BaseListWidget extends ContainerWidget
     }
 
     @Override
-    public boolean onMouseScrolled(int mouseX, int mouseY, double mouseWheelDelta)
+    protected boolean onMouseScrolled(int mouseX, int mouseY, double mouseWheelDelta)
     {
         if (this.getSearchBarWidget() != null &&
-            this.getSearchBarWidget().onMouseScrolled(mouseX, mouseY, mouseWheelDelta))
+            this.getSearchBarWidget().tryMouseScroll(mouseX, mouseY, mouseWheelDelta))
         {
             return true;
         }
 
         if (this.headerWidget != null &&
-            this.headerWidget.onMouseScrolled(mouseX, mouseY, mouseWheelDelta))
+            this.headerWidget.tryMouseScroll(mouseX, mouseY, mouseWheelDelta))
         {
             return true;
         }
@@ -386,7 +386,7 @@ public abstract class BaseListWidget extends ContainerWidget
 
         for (BaseListEntryWidget widget : this.entryWidgets)
         {
-            if (widget.onMouseScrolled(mouseX, mouseY, mouseWheelDelta))
+            if (widget.tryMouseScroll(mouseX, mouseY, mouseWheelDelta))
             {
                 return true;
             }
@@ -430,7 +430,7 @@ public abstract class BaseListWidget extends ContainerWidget
 
     protected boolean onEntryWidgetClicked(BaseListEntryWidget widget, int mouseX, int mouseY, int mouseButton)
     {
-        return widget.onMouseClicked(mouseX, mouseY, mouseButton);
+        return widget.tryMouseClick(mouseX, mouseY, mouseButton);
     }
 
     protected boolean onMouseClickedSearchBar(int mouseX, int mouseY, int mouseButton)
@@ -442,7 +442,7 @@ public abstract class BaseListWidget extends ContainerWidget
             boolean searchOpenPre = widget.isSearchOpen();
             String filterPre = widget.getFilter();
 
-            if (widget.onMouseClicked(mouseX, mouseY, mouseButton))
+            if (widget.tryMouseClick(mouseX, mouseY, mouseButton))
             {
                 // Toggled the search bar on or off, or cleared the filter with a right click
                 if (widget.isSearchOpen() != searchOpenPre || filterPre.equals(widget.getFilter()) == false)
@@ -465,16 +465,16 @@ public abstract class BaseListWidget extends ContainerWidget
     }
 
     @Override
-    public boolean onKeyTyped(char typedChar, int keyCode)
+    public boolean onKeyTyped(char typedChar, int keyCode, int scanCode, int modifiers)
     {
-        if (this.headerWidget != null && this.headerWidget.onKeyTyped(typedChar, keyCode))
+        if (this.headerWidget != null && this.headerWidget.onKeyTyped(typedChar, keyCode, scanCode, modifiers))
         {
             return true;
         }
 
         for (BaseListEntryWidget widget : this.entryWidgets)
         {
-            if (widget.onKeyTyped(typedChar, keyCode))
+            if (widget.onKeyTyped(typedChar, keyCode, scanCode, modifiers))
             {
                 return true;
             }
@@ -488,12 +488,12 @@ public abstract class BaseListWidget extends ContainerWidget
             else if (keyCode == Keyboard.KEY_NEXT)  this.offsetSelectionOrScrollbar(this.visibleListEntries / 2, true);
             else if (keyCode == Keyboard.KEY_HOME)  this.offsetSelectionOrScrollbar(-this.getTotalListWidgetCount(), true);
             else if (keyCode == Keyboard.KEY_END)   this.offsetSelectionOrScrollbar(this.getTotalListWidgetCount(), true);
-            else return super.onKeyTyped(typedChar, keyCode);
+            else return super.onKeyTyped(typedChar, keyCode, scanCode, modifiers);
 
             return true;
         }
 
-        return super.onKeyTyped(typedChar, keyCode);
+        return super.onKeyTyped(typedChar, keyCode, scanCode, modifiers);
     }
 
     protected void offsetSelectionOrScrollbar(int amount, boolean changeSelection)

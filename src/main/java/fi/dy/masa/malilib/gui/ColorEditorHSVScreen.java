@@ -3,7 +3,6 @@ package fi.dy.masa.malilib.gui;
 import java.awt.*;
 import java.util.function.IntConsumer;
 import javax.annotation.Nullable;
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import net.minecraft.client.gui.GuiScreen;
@@ -25,7 +24,6 @@ public class ColorEditorHSVScreen extends BaseDialogScreen
 
     protected final IntConsumer valueConsumer;
     protected final int initialValue;
-    @Nullable protected final DialogHandler dialogHandler;
     @Nullable protected Element clickedElement;
     @Nullable protected Element currentTextInputElement;
     protected BaseTextFieldWidget textFieldFullColor;
@@ -194,20 +192,6 @@ public class ColorEditorHSVScreen extends BaseDialogScreen
         }
 
         this.drawColorSelector();
-    }
-
-    @Override
-    public boolean onKeyTyped(char typedChar, int keyCode)
-    {
-        if (keyCode == Keyboard.KEY_ESCAPE && this.dialogHandler != null)
-        {
-            this.dialogHandler.closeDialog();
-            return true;
-        }
-        else
-        {
-            return super.onKeyTyped(typedChar, keyCode);
-        }
     }
 
     @Override

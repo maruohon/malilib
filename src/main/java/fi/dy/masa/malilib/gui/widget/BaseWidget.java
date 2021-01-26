@@ -363,17 +363,17 @@ public abstract class BaseWidget
         return this.shouldReceiveOutsideScrolls;
     }
 
-    public boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
+    public boolean tryMouseClick(int mouseX, int mouseY, int mouseButton)
     {
         if (this.getShouldReceiveOutsideClicks() || this.isMouseOver(mouseX, mouseY))
         {
-            return this.onMouseClickedImpl(mouseX, mouseY, mouseButton);
+            return this.onMouseClicked(mouseX, mouseY, mouseButton);
         }
 
         return false;
     }
 
-    protected boolean onMouseClickedImpl(int mouseX, int mouseY, int mouseButton)
+    protected boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
         if (this.clickListener != null)
         {
@@ -386,44 +386,29 @@ public abstract class BaseWidget
 
     public void onMouseReleased(int mouseX, int mouseY, int mouseButton)
     {
-        this.onMouseReleasedImpl(mouseX, mouseY, mouseButton);
     }
 
-    public void onMouseReleasedImpl(int mouseX, int mouseY, int mouseButton)
-    {
-    }
-
-    public boolean onMouseScrolled(int mouseX, int mouseY, double mouseWheelDelta)
+    public boolean tryMouseScroll(int mouseX, int mouseY, double mouseWheelDelta)
     {
         if (this.getShouldReceiveOutsideScrolls() || this.isMouseOver(mouseX, mouseY))
         {
-            return this.onMouseScrolledImpl(mouseX, mouseY, mouseWheelDelta);
+            return this.onMouseScrolled(mouseX, mouseY, mouseWheelDelta);
         }
 
         return false;
     }
 
-    public boolean onMouseScrolledImpl(int mouseX, int mouseY, double mouseWheelDelta)
+    protected boolean onMouseScrolled(int mouseX, int mouseY, double mouseWheelDelta)
     {
         return false;
     }
 
     public boolean onMouseMoved(int mouseX, int mouseY)
     {
-        return this.onMouseMovedImpl(mouseX, mouseY);
-    }
-
-    public boolean onMouseMovedImpl(int mouseX, int mouseY)
-    {
         return false;
     }
 
-    public boolean onKeyTyped(char typedChar, int keyCode)
-    {
-        return this.onKeyTypedImpl(typedChar, keyCode);
-    }
-
-    protected boolean onKeyTypedImpl(char typedChar, int keyCode)
+    public boolean onKeyTyped(char typedChar, int keyCode, int scanCode, int modifiers)
     {
         return false;
     }

@@ -138,7 +138,7 @@ public abstract class BaseButton extends BackgroundWidget
     }
 
     @Override
-    protected boolean onMouseClickedImpl(int mouseX, int mouseY, int mouseButton)
+    protected boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
         if (this.enabled && this.visible)
         {
@@ -157,12 +157,12 @@ public abstract class BaseButton extends BackgroundWidget
     }
 
     @Override
-    public boolean onMouseScrolledImpl(int mouseX, int mouseY, double mouseWheelDelta)
+    protected boolean onMouseScrolled(int mouseX, int mouseY, double mouseWheelDelta)
     {
         if (this.canScrollToClick)
         {
             int mouseButton = mouseWheelDelta < 0 ? 1 : 0;
-            return this.onMouseClickedImpl(mouseX, mouseY, mouseButton);
+            return this.onMouseClicked(mouseX, mouseY, mouseButton);
         }
 
         return false;

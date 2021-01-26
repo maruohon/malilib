@@ -3,7 +3,6 @@ package fi.dy.masa.malilib.gui.config;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
-import org.lwjgl.input.Keyboard;
 import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.config.ConfigInfo;
 import fi.dy.masa.malilib.gui.BaseListScreen;
@@ -16,7 +15,6 @@ public class BaseConfigGroupEditScreen extends BaseListScreen<ConfigOptionListWi
 {
     protected final ArrayList<ConfigInfo> configs = new ArrayList<>();
     protected final String modId;
-    @Nullable protected final DialogHandler dialogHandler;
     @Nullable protected EventListener saveListener;
     @Nullable protected KeybindEditingScreen keyBindEditingScreen;
     protected int elementsWidth = 200;
@@ -65,18 +63,6 @@ public class BaseConfigGroupEditScreen extends BaseListScreen<ConfigOptionListWi
         }
 
         super.onGuiClosed();
-    }
-
-    @Override
-    public boolean onKeyTyped(char typedChar, int keyCode)
-    {
-        if (keyCode == Keyboard.KEY_ESCAPE && this.dialogHandler != null)
-        {
-            this.dialogHandler.closeDialog();
-            return true;
-        }
-
-        return super.onKeyTyped(typedChar, keyCode);
     }
 
     public void setSaveListener(@Nullable EventListener saveListener)

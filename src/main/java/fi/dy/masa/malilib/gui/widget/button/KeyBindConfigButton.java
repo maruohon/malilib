@@ -57,9 +57,9 @@ public class KeyBindConfigButton extends GenericButton
     }
 
     @Override
-    protected boolean onMouseClickedImpl(int mouseX, int mouseY, int mouseButton)
+    protected boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
-        if (this.enabled == false)
+        if (this.enabled == false || this.visible == false)
         {
             return false;
         }
@@ -98,7 +98,8 @@ public class KeyBindConfigButton extends GenericButton
 
         if (handled)
         {
-            super.onMouseClickedImpl(mouseX, mouseY, mouseButton);
+            // Play the click sound
+            super.onMouseClicked(mouseX, mouseY, mouseButton);
         }
 
         return handled;

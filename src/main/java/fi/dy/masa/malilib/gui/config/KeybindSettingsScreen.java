@@ -2,7 +2,6 @@ package fi.dy.masa.malilib.gui.config;
 
 import java.util.List;
 import javax.annotation.Nullable;
-import org.lwjgl.input.Keyboard;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.config.ValueChangeCallback;
@@ -31,7 +30,6 @@ public class KeybindSettingsScreen extends BaseDialogScreen
     protected final BooleanConfig cfgExclusive;
     protected final BooleanConfig cfgCancel;
     protected final List<BaseConfig<?>> configList;
-    @Nullable protected final DialogHandler dialogHandler;
     protected int labelWidth;
     protected int configWidth;
 
@@ -154,19 +152,5 @@ public class KeybindSettingsScreen extends BaseDialogScreen
         this.keybind.setSettings(settingsNew);
 
         super.onGuiClosed();
-    }
-
-    @Override
-    public boolean onKeyTyped(char typedChar, int keyCode)
-    {
-        if (keyCode == Keyboard.KEY_ESCAPE && this.dialogHandler != null)
-        {
-            this.dialogHandler.closeDialog();
-            return true;
-        }
-        else
-        {
-            return super.onKeyTyped(typedChar, keyCode);
-        }
     }
 }

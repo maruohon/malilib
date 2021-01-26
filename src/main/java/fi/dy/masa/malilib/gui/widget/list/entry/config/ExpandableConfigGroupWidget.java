@@ -76,7 +76,7 @@ public class ExpandableConfigGroupWidget extends BaseConfigWidget<ExpandableConf
     }
 
     @Override
-    protected boolean onMouseClickedImpl(int mouseX, int mouseY, int mouseButton)
+    protected boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
         this.config.toggleIsExpanded();
 

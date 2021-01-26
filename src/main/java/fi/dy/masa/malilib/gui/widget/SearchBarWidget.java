@@ -122,7 +122,7 @@ public class SearchBarWidget extends ContainerWidget
     }
 
     @Override
-    protected boolean onKeyTypedImpl(char typedChar, int keyCode)
+    public boolean onKeyTyped(char typedChar, int keyCode, int scanCode, int modifiers)
     {
         if (this.searchOpen)
         {
@@ -144,10 +144,10 @@ public class SearchBarWidget extends ContainerWidget
         else if (ChatAllowedCharacters.isAllowedCharacter(typedChar))
         {
             this.setSearchOpen(true);
-            this.textField.onKeyTyped(typedChar, keyCode);
+            this.textField.onKeyTyped(typedChar, keyCode, scanCode, modifiers);
             return true;
         }
 
-        return super.onKeyTypedImpl(typedChar, keyCode);
+        return super.onKeyTyped(typedChar, keyCode, scanCode, modifiers);
     }
 }

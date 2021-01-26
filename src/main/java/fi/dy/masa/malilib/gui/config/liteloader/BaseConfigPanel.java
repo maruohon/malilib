@@ -112,7 +112,7 @@ public abstract class BaseConfigPanel extends AbstractConfigPanel
     {
         if (this.selectedSubPanel != null)
         {
-            if (this.selectedSubPanel.onKeyTyped(keyChar, keyCode) == false && keyCode == Keyboard.KEY_ESCAPE)
+            if (this.selectedSubPanel.onKeyTyped(keyChar, keyCode, 0, 0) == false && keyCode == Keyboard.KEY_ESCAPE)
             {
                 this.setSelectedSubPanel(null);
             }
@@ -314,9 +314,9 @@ public abstract class BaseConfigPanel extends AbstractConfigPanel
         }
 
         @Override
-        public boolean onKeyTyped(char typedChar, int keyCode)
+        public boolean onKeyTyped(char typedChar, int keyCode, int scanCode, int modifiers)
         {
-            return this.foregroundGui.onKeyTyped(typedChar, keyCode);
+            return this.foregroundGui.onKeyTyped(typedChar, keyCode, scanCode, modifiers);
         }
 
         @Override

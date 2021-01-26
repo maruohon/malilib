@@ -34,7 +34,7 @@ public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry
     }
 
     @Override
-    protected boolean onMouseClickedImpl(int mouseX, int mouseY, int mouseButton)
+    protected boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
         if (this.entry.getType() == DirectoryEntryType.DIRECTORY)
         {
@@ -42,7 +42,7 @@ public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry
         }
         else
         {
-            return super.onMouseClickedImpl(mouseX, mouseY, mouseButton);
+            return super.onMouseClicked(mouseX, mouseY, mouseButton);
         }
 
         return true;

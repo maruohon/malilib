@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import fi.dy.masa.malilib.MaLiLibConfigs;
+import fi.dy.masa.malilib.gui.util.DialogHandler;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.BaseWidget;
@@ -70,6 +71,7 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
     protected BaseWidget hoveredWidget = null;
     protected String title = "";
     @Nullable private GuiScreen parent;
+    @Nullable protected DialogHandler dialogHandler;
     protected int backgroundColor = TOOLTIP_BACKGROUND;
     protected int borderColor = COLOR_HORIZONTAL_BAR;
     protected int x;
@@ -303,7 +305,8 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException
     {
-        if (this.onKeyTyped(typedChar, keyCode) == false)
+        System.out.printf("c: '%c' = %d, k: %d\n", typedChar, (int) typedChar, keyCode);
+        if (this.onKeyTyped(typedChar, keyCode, 0, 0) == false)
         {
             super.keyTyped(typedChar, keyCode);
         }
@@ -314,7 +317,7 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
         List<BaseTextFieldWidget> textFields = this.getAllTextFields();
         BaseWidget clickedWidget = null;
 
-        if (this.hoveredWidget != null && this.hoveredWidget.onMouseClicked(mouseX, mouseY, mouseButton))
+        if (this.hoveredWidget != null && this.hoveredWidget.tryMouseClick(mouseX, mouseY, mouseButton))
         {
             clickedWidget = this.hoveredWidget;
         }
@@ -322,7 +325,7 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
         {
             for (BaseWidget widget : this.widgets)
             {
-                if (widget.onMouseClicked(mouseX, mouseY, mouseButton))
+                if (widget.tryMouseClick(mouseX, mouseY, mouseButton))
                 {
                     clickedWidget = widget;
                     break;
@@ -344,7 +347,7 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
         {
             for (BaseButton button : this.buttons)
             {
-                if (button.onMouseClicked(mouseX, mouseY, mouseButton))
+                if (button.tryMouseClick(mouseX, mouseY, mouseButton))
                 {
                     clickedWidget = button;
                     break;
@@ -372,7 +375,7 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
 
     public boolean onMouseScrolled(int mouseX, int mouseY, double mouseWheelDelta)
     {
-        if (this.hoveredWidget != null && this.hoveredWidget.onMouseScrolled(mouseX, mouseY, mouseWheelDelta))
+        if (this.hoveredWidget != null && this.hoveredWidget.tryMouseScroll(mouseX, mouseY, mouseWheelDelta))
         {
             this.runTasks();
             return true;
@@ -382,7 +385,7 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
 
         for (BaseButton button : this.buttons)
         {
-            if (button.onMouseScrolled(mouseX, mouseY, mouseWheelDelta))
+            if (button.tryMouseScroll(mouseX, mouseY, mouseWheelDelta))
             {
                 // Don't call super if the button press got handled
                 handled = true;
@@ -392,7 +395,7 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
 
         for (BaseWidget widget : this.widgets)
         {
-            if (widget.onMouseScrolled(mouseX, mouseY, mouseWheelDelta))
+            if (widget.tryMouseScroll(mouseX, mouseY, mouseWheelDelta))
             {
                 // Don't call super if the action got handled
                 handled = true;
@@ -431,11 +434,16 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
         return handled;
     }
 
-    public boolean onKeyTyped(char typedChar, int keyCode)
+    public boolean onKeyTyped(char typedChar, int keyCode, int scanCode, int modifiers)
     {
         boolean handled = false;
 
-        if (keyCode == Keyboard.KEY_TAB && GuiUtils.changeTextFieldFocus(this.getAllTextFields(), isShiftDown()))
+        if (keyCode == Keyboard.KEY_ESCAPE && this.dialogHandler != null)
+        {
+            this.dialogHandler.closeDialog();
+            handled = true;
+        }
+        else if (keyCode == Keyboard.KEY_TAB && GuiUtils.changeTextFieldFocus(this.getAllTextFields(), isShiftDown()))
         {
             handled = true;
         }
@@ -444,7 +452,7 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
         {
             for (BaseWidget widget : this.widgets)
             {
-                if (widget.onKeyTyped(typedChar, keyCode))
+                if (widget.onKeyTyped(typedChar, keyCode, scanCode, modifiers))
                 {
                     // Don't call super if the button press got handled
                     handled = true;

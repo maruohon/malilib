@@ -54,7 +54,7 @@ public abstract class BaseTextInputScreen extends BaseDialogScreen
     }
 
     @Override
-    public boolean onKeyTyped(char typedChar, int keyCode)
+    public boolean onKeyTyped(char typedChar, int keyCode, int scanCode, int modifiers)
     {
         if (keyCode == Keyboard.KEY_RETURN)
         {
@@ -72,7 +72,7 @@ public abstract class BaseTextInputScreen extends BaseDialogScreen
             return true;
         }
 
-        return super.onKeyTyped(typedChar, keyCode);
+        return super.onKeyTyped(typedChar, keyCode, scanCode, modifiers);
     }
 
     protected abstract boolean applyValue(String string);

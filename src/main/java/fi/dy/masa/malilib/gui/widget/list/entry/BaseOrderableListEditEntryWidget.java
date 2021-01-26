@@ -116,7 +116,7 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
     }
 
     @Override
-    protected boolean onMouseClickedImpl(int mouseX, int mouseY, int mouseButton)
+    protected boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
         if (this.canDragAt(mouseX, mouseY))
         {
@@ -126,11 +126,11 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
             return true;
         }
 
-        return super.onMouseClickedImpl(mouseX, mouseY, mouseButton);
+        return super.onMouseClicked(mouseX, mouseY, mouseButton);
     }
 
     @Override
-    public void onMouseReleasedImpl(int mouseX, int mouseY, int mouseButton)
+    public void onMouseReleased(int mouseX, int mouseY, int mouseButton)
     {
         if (this.dragged)
         {
@@ -145,7 +145,7 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
             this.dragged = false;
         }
 
-        super.onMouseReleasedImpl(mouseX, mouseY, mouseButton);
+        super.onMouseReleased(mouseX, mouseY, mouseButton);
     }
 
     protected boolean canDragAt(int mouseX, int mouseY)

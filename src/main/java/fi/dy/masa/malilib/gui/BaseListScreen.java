@@ -159,7 +159,7 @@ public abstract class BaseListScreen<LISTWIDGET extends BaseListWidget> extends 
 
         BaseListWidget listWidget = this.getListWidget();
 
-        return listWidget != null && listWidget.onMouseClicked(mouseX, mouseY, mouseButton);
+        return listWidget != null && listWidget.tryMouseClick(mouseX, mouseY, mouseButton);
     }
 
     @Override
@@ -190,7 +190,7 @@ public abstract class BaseListScreen<LISTWIDGET extends BaseListWidget> extends 
 
         BaseListWidget listWidget = this.getListWidget();
 
-        return listWidget != null && listWidget.onMouseScrolled(mouseX, mouseY, mouseWheelDelta);
+        return listWidget != null && listWidget.tryMouseScroll(mouseX, mouseY, mouseWheelDelta);
     }
 
     @Override
@@ -207,23 +207,23 @@ public abstract class BaseListScreen<LISTWIDGET extends BaseListWidget> extends 
     }
 
     @Override
-    public boolean onKeyTyped(char typedChar, int keyCode)
+    public boolean onKeyTyped(char typedChar, int keyCode, int scanCode, int modifiers)
     {
         // Try to handle everything except ESC in the parent first
-        if (keyCode != Keyboard.KEY_ESCAPE && super.onKeyTyped(typedChar, keyCode))
+        if (keyCode != Keyboard.KEY_ESCAPE && super.onKeyTyped(typedChar, keyCode, scanCode, modifiers))
         {
             return true;
         }
 
         BaseListWidget listWidget = this.getListWidget();
 
-        if (listWidget != null && listWidget.onKeyTyped(typedChar, keyCode))
+        if (listWidget != null && listWidget.onKeyTyped(typedChar, keyCode, scanCode, modifiers))
         {
             return true;
         }
 
         // If the list widget or its sub widgets didn't consume the ESC, then send that to the parent (to close the GUI)
-        return keyCode == Keyboard.KEY_ESCAPE && super.onKeyTyped(typedChar, keyCode);
+        return keyCode == Keyboard.KEY_ESCAPE && super.onKeyTyped(typedChar, keyCode, scanCode, modifiers);
     }
 
     @Override
