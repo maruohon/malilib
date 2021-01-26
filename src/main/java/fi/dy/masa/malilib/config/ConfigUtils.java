@@ -28,6 +28,17 @@ public class ConfigUtils
                 {
                     deSerializer.deserialize(config, obj.get(name), name);
                 }
+                else
+                {
+                    for (String oldName : config.getOldNames())
+                    {
+                        if (obj.has(oldName))
+                        {
+                            deSerializer.deserialize(config, obj.get(oldName), oldName);
+                            break;
+                        }
+                    }
+                }
             }
         }
     }

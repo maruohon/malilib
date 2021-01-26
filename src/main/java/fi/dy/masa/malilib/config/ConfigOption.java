@@ -1,5 +1,7 @@
 package fi.dy.masa.malilib.config;
 
+import java.util.Collections;
+import java.util.List;
 import javax.annotation.Nullable;
 import com.google.gson.JsonElement;
 
@@ -67,6 +69,17 @@ public interface ConfigOption<T> extends ConfigInfo
      * @return
      */
     T getValue();
+
+    /**
+     * Returns a list of old internal names this config used to go by, if any.
+     * This allows reading the user-set values from config files that still use
+     * the old name, if the config has since been renamed.
+     * @return
+     */
+    default List<String> getOldNames()
+    {
+        return Collections.emptyList();
+    }
 
     /**
      * Set the value change callback. Can be null.

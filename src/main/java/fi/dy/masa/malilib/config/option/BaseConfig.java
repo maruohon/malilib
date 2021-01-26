@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.config.option;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
@@ -17,6 +18,7 @@ public abstract class BaseConfig<T> implements ConfigOption<T>
     protected final String name;
     protected final List<String> searchStrings = new ArrayList<>();
     protected final List<String> lockOverrideMessages = new ArrayList<>();
+    protected final List<String> oldNames = new ArrayList<>();
     protected String nameTranslationKey;
     protected String prettyNameTranslationKey;
     protected String commentTranslationKey;
@@ -210,6 +212,18 @@ public abstract class BaseConfig<T> implements ConfigOption<T>
     {
         this.commentArgs = args;
         return this;
+    }
+
+    @Override
+    public List<String> getOldNames()
+    {
+        return this.oldNames;
+    }
+
+    public void setOldNames(String... names)
+    {
+        this.oldNames.clear();
+        this.oldNames.addAll(Arrays.asList(names));
     }
 
     @Override
