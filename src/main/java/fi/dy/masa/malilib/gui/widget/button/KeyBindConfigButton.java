@@ -12,6 +12,7 @@ import fi.dy.masa.malilib.input.Hotkey;
 import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.input.KeyBindCategory;
 import fi.dy.masa.malilib.input.KeyBindImpl;
+import fi.dy.masa.malilib.input.Keys;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.render.message.MessageType;
 import fi.dy.masa.malilib.render.message.MessageUtils;
@@ -142,7 +143,7 @@ public class KeyBindConfigButton extends GenericButton
     {
         if (MaLiLibConfigs.Generic.IGNORED_KEYS.getKeyBind().getKeys().contains(keyCode))
         {
-            String str = KeyBindImpl.getStorageStringForKeyCode(keyCode, KeyBindImpl::charAsCharacter);
+            String str = Keys.getStorageStringForKeyCode(keyCode, KeyBindImpl::charAsCharacter);
             MessageUtils.showGuiMessage(MessageType.WARNING, "malilib.error.keybind.attempt_to_bind_ignored_key", str);
             return;
         }

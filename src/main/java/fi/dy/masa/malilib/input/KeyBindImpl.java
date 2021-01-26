@@ -6,8 +6,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Function;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -33,7 +31,6 @@ import fi.dy.masa.malilib.util.StringUtils;
 public class KeyBindImpl implements KeyBind
 {
     private static final List<Integer> PRESSED_KEYS = new ArrayList<>();
-    private static final Pattern PATTERN_CHAR_CODE = Pattern.compile("^CHAR_(?<code>[0-9]+)$");
 
     private static int triggeredCount;
 
@@ -563,7 +560,7 @@ public class KeyBindImpl implements KeyBind
     private static void printKeyBindDebugMessage(int keyCode, int scanCode, int modifiers, char charIn, boolean keyState)
     {
         String action = keyState ? "PRESS  " : "RELEASE";
-        String keyName = getStorageStringForKeyCode(keyCode, KeyBindImpl::charAsStorageString);
+        String keyName = Keys.getStorageStringForKeyCode(keyCode, KeyBindImpl::charAsStorageString);
         String held = getActiveKeysString();
         String msg = String.format("%s '%s' (k: %d, s: %d, m: %d, c: '%c' = %d), held keys: %s",
                                    action, keyName, keyCode, scanCode, modifiers, charIn, (int) charIn, held);
@@ -590,7 +587,7 @@ public class KeyBindImpl implements KeyBind
                     sb.append(" + ");
                 }
 
-                String name = getStorageStringForKeyCode(key, KeyBindImpl::charAsCharacter);
+                String name = Keys.getStorageStringForKeyCode(key, KeyBindImpl::charAsCharacter);
 
                 if (name != null)
                 {
@@ -604,30 +601,6 @@ public class KeyBindImpl implements KeyBind
         }
 
         return "<none>";
-    }
-
-    @Nullable
-    public static String getStorageStringForKeyCode(int keyCode, Function<Integer, String> charEncoder)
-    {
-        if (keyCode > 0 && keyCode < 256)
-        {
-            return Keyboard.getKeyName(keyCode);
-        }
-        else if (keyCode >= 256)
-        {
-            return charEncoder.apply(keyCode - 256);
-        }
-        else if (keyCode < 0)
-        {
-            keyCode += 100;
-
-            if (keyCode >= 0 && keyCode < Mouse.getButtonCount())
-            {
-                return Mouse.getButtonName(keyCode);
-            }
-        }
-
-        return null;
     }
 
     public static String charAsStorageString(int charIn)
@@ -651,7 +624,7 @@ public class KeyBindImpl implements KeyBind
 
             if (keyName.isEmpty() == false)
             {
-                int keyCode = getKeyCodeForStorageString(keyName);
+                int keyCode = Keys.getKeyCodeForStorageString(keyName);
 
                 if (keyCode != Keyboard.KEY_NONE && keyCodes.contains(keyCode) == false)
                 {
@@ -661,41 +634,6 @@ public class KeyBindImpl implements KeyBind
         }
 
         return ImmutableList.copyOf(keyCodes);
-    }
-
-    public static int getKeyCodeForStorageString(String keyName)
-    {
-        int keyCode = Keyboard.getKeyIndex(keyName);
-
-        if (keyCode == Keyboard.KEY_NONE)
-        {
-            Matcher matcher = PATTERN_CHAR_CODE.matcher(keyName);
-
-            if (matcher.matches())
-            {
-                try
-                {
-                    keyCode = Integer.parseInt(matcher.group("code")) + 256;
-                }
-                catch (Exception ignore) {}
-            }
-        }
-
-        if (keyCode == Keyboard.KEY_NONE)
-        {
-            keyCode = Mouse.getButtonIndex(keyName);
-
-            if (keyCode >= 0 && keyCode < Mouse.getButtonCount())
-            {
-                keyCode -= 100;
-            }
-            else
-            {
-                keyCode = Keyboard.KEY_NONE;
-            }
-        }
-
-        return keyCode;
     }
 
     public static String writeKeysToString(List<Integer> keyCodes, String separator, Function<Integer, String> charEncoder)
@@ -710,7 +648,7 @@ public class KeyBindImpl implements KeyBind
             }
 
             int keyCode = keyCodes.get(i).intValue();
-            String name = getStorageStringForKeyCode(keyCode, charEncoder);
+            String name = Keys.getStorageStringForKeyCode(keyCode, charEncoder);
 
             if (name != null)
             {
