@@ -49,6 +49,27 @@ public class SliderWidget extends BaseWidget
     }
 
     @Override
+    protected boolean onMouseScrolled(int mouseX, int mouseY, double mouseWheelDelta)
+    {
+        if (this.locked == false)
+        {
+            double relPos = this.callback.getRelativeValue();
+            double delta = 1.0 / (double) (this.getWidth() - this.sliderWidth);
+
+            if (mouseWheelDelta < 0)
+            {
+                delta = -delta;
+            }
+
+            this.callback.setRelativeValue(relPos + delta);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
     public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
     {
         if (this.dragging && mouseX != this.lastMouseX)
