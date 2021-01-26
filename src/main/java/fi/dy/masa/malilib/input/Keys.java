@@ -103,6 +103,8 @@ public class Keys
         addNameOverride(Keyboard.KEY_RSHIFT, "R_SHIFT");
         addNameOverride(Keyboard.KEY_LCONTROL, "L_CTRL");
         addNameOverride(Keyboard.KEY_RCONTROL, "R_CTRL");
+        addNameOverride(-199, "SCROLL_UP");
+        addNameOverride(-201, "SCROLL_DOWN");
 
         addFallBackNames(Keyboard.KEY_LMENU, "LMENU", "L_MENU", "LALT", "L_ALT", "LEFT_ALT");
         addFallBackNames(Keyboard.KEY_RMENU, "RMENU", "R_MENU", "RALT", "R_ALT", "RIGHT_ALT");
@@ -110,6 +112,8 @@ public class Keys
         addFallBackNames(Keyboard.KEY_RSHIFT, "RSHIFT", "R_SHIFT", "RIGHT_SHIFT");
         addFallBackNames(Keyboard.KEY_LCONTROL, "LCTRL", "L_CTRL", "LEFT_CTRL", "LCONTROL", "L_CONTROL", "LEFT_CONTROL");
         addFallBackNames(Keyboard.KEY_RCONTROL, "RCTRL", "R_CTRL", "RIGHT_CTRL", "RCONTROL", "R_CONTROL", "RIGHT_CONTROL");
+        addFallBackNames(-199, "SCROLL_UP");
+        addFallBackNames(-201, "SCROLL_DOWN");
     }
 
     private static void addFallBackNames(int keyCode, String... names)

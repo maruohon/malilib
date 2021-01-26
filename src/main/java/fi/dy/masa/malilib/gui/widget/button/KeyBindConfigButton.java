@@ -106,6 +106,20 @@ public class KeyBindConfigButton extends GenericButton
         return handled;
     }
 
+    @Override
+    protected boolean onMouseScrolled(int mouseX, int mouseY, double mouseWheelDelta)
+    {
+        if (this.enabled && this.visible && this.isSelected())
+        {
+            int keyCode = mouseWheelDelta < 0 ? -201 : -199;
+            this.addKey(keyCode);
+            this.updateDisplayString();
+            return true;
+        }
+
+        return false;
+    }
+
     public void onKeyPressed(int keyCode, int scanCode, int modifiers)
     {
         if (this.isSelected())

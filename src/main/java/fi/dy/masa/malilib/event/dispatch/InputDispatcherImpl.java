@@ -63,8 +63,9 @@ public class InputDispatcherImpl implements InputDispatcher
         int eventKey = Keyboard.getEventKey();
         boolean eventKeyState = Keyboard.getEventKeyState();
         char eventChar = Keyboard.getEventCharacter();
+        boolean isChar = eventKey == 0 && eventChar >= ' ';
 
-        if (eventKey == 0 && eventChar >= ' ')
+        if (isChar)
         {
             eventKey = (int) eventChar + 256;
         }
@@ -73,6 +74,14 @@ public class InputDispatcherImpl implements InputDispatcher
         KeyBindImpl.onKeyInputPre(eventKey, 0, 0, eventChar, eventKeyState);
 
         boolean cancel = ((KeyBindManagerImpl) KeyBindManager.INSTANCE).checkKeyBindsForChanges(eventKey);
+
+        // Since char-only keys can't be properly held down (there is no properly detectable release event,
+        // the char value in the release event is not set), clear them immediately.
+        if (isChar)
+        {
+            KeyBindImpl.onKeyInputPre(eventKey, 0, 0, eventChar, false);
+            ((KeyBindManagerImpl) KeyBindManager.INSTANCE).checkKeyBindsForChanges(eventKey);
+        }
 
         if (this.keyboardHandlers.isEmpty() == false)
         {
@@ -100,12 +109,21 @@ public class InputDispatcherImpl implements InputDispatcher
 
         if (eventButton != -1 || dWheel != 0)
         {
-            if (eventButton != -1)
-            {
-                // Update the cached pressed keys status
-                KeyBindImpl.onKeyInputPre(eventButton - 100, 0, 0, (char) 0, eventButtonState);
+            // Support mouse scrolls in the keybind system
+            int keyCode = eventButton != -1 ? eventButton - 100 : (dWheel < 0 ? -201 : -199);
+            boolean isScroll = dWheel != 0 && eventButton == -1;
+            boolean keyState = isScroll || eventButtonState;
 
-                cancel = ((KeyBindManagerImpl) KeyBindManager.INSTANCE).checkKeyBindsForChanges(eventButton - 100);
+            // Update the cached pressed keys status
+            KeyBindImpl.onKeyInputPre(keyCode, 0, 0, (char) 0, keyState);
+
+            cancel = ((KeyBindManagerImpl) KeyBindManager.INSTANCE).checkKeyBindsForChanges(keyCode);
+
+            // Since scroll "keys" can't be held down, clear them immediately
+            if (isScroll)
+            {
+                KeyBindImpl.onKeyInputPre(keyCode, 0, 0, (char) 0, false);
+                ((KeyBindManagerImpl) KeyBindManager.INSTANCE).checkKeyBindsForChanges(keyCode);
             }
 
             if (this.mouseHandlers.isEmpty() == false)
