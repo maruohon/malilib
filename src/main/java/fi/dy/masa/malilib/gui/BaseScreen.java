@@ -305,6 +305,11 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
     @Override
     protected void keyTyped(char charIn, int keyCode) throws IOException
     {
+        if (keyCode == 0 && charIn >= ' ')
+        {
+            keyCode = (int) charIn + 256;
+        }
+
         if (this.onKeyTyped(keyCode, 0, 0) == false)
         {
             super.keyTyped(charIn, keyCode);

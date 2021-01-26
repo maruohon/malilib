@@ -62,9 +62,15 @@ public class InputDispatcherImpl implements InputDispatcher
     {
         int eventKey = Keyboard.getEventKey();
         boolean eventKeyState = Keyboard.getEventKeyState();
+        char eventChar = Keyboard.getEventCharacter();
+
+        if (eventKey == 0 && eventChar >= ' ')
+        {
+            eventKey = (int) eventChar + 256;
+        }
 
         // Update the cached pressed keys status
-        KeyBindImpl.onKeyInputPre(eventKey, eventKeyState);
+        KeyBindImpl.onKeyInputPre(eventKey, 0, 0, eventChar, eventKeyState);
 
         boolean cancel = ((KeyBindManagerImpl) KeyBindManager.INSTANCE).checkKeyBindsForChanges(eventKey);
 
@@ -97,7 +103,7 @@ public class InputDispatcherImpl implements InputDispatcher
             if (eventButton != -1)
             {
                 // Update the cached pressed keys status
-                KeyBindImpl.onKeyInputPre(eventButton - 100, eventButtonState);
+                KeyBindImpl.onKeyInputPre(eventButton - 100, 0, 0, (char) 0, eventButtonState);
 
                 cancel = ((KeyBindManagerImpl) KeyBindManager.INSTANCE).checkKeyBindsForChanges(eventButton - 100);
             }

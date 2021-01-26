@@ -5,6 +5,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -30,6 +33,8 @@ import fi.dy.masa.malilib.util.StringUtils;
 public class KeyBindImpl implements KeyBind
 {
     private static final List<Integer> PRESSED_KEYS = new ArrayList<>();
+    private static final Pattern PATTERN_CHAR_CODE = Pattern.compile("^CHAR_(?<code>[0-9]+)$");
+
     private static int triggeredCount;
 
     private final KeyBindSettings defaultSettings;
@@ -150,7 +155,7 @@ public class KeyBindImpl implements KeyBind
                     }
                 }
                 else if ((allowOutOfOrder == false && (keyCodeIndex > 0 || sizePressed == sizeRequired)) ||
-                                 (this.keyCodes.contains(keyCodeObj) == false && allowExtraKeys == false))
+                         (this.keyCodes.contains(keyCodeObj) == false && allowExtraKeys == false))
                 {
                     /*
                     System.out.printf("km fail: key: %s, ae: %s, aoo: %s, cont: %s, keys: %s, pressed: %s, triggeredCount: %d\n",
@@ -303,7 +308,7 @@ public class KeyBindImpl implements KeyBind
     @Override
     public String getKeysDisplayString()
     {
-        return writeKeysToString(this.keyCodes, " + ");
+        return writeKeysToString(this.keyCodes, " + ", KeyBindImpl::charAsCharacter);
     }
 
     /**
@@ -376,10 +381,10 @@ public class KeyBindImpl implements KeyBind
         if (this.contextOverlaps(other))
         {
             KeyBindSettings settingsOther = other.getSettings();
-            boolean o1 = this.settings.isOrderSensitive();
-            boolean o2 = settingsOther.isOrderSensitive();
             List<Integer> keys1 = this.getKeys();
             List<Integer> keys2 = other.getKeys();
+            boolean o1 = this.settings.isOrderSensitive();
+            boolean o2 = settingsOther.isOrderSensitive();
             int l1 = keys1.size();
             int l2 = keys2.size();
 
@@ -388,8 +393,11 @@ public class KeyBindImpl implements KeyBind
                 return false;
             }
 
-            if ((this.settings.getAllowExtraKeys() == false && l1 < l2 && keys1.get(0) != keys2.get(0)) ||
-                (settingsOther.getAllowExtraKeys() == false && l2 < l1 && keys1.get(0) != keys2.get(0)))
+            boolean firstMatches = keys1.get(0).equals(keys2.get(0));
+
+            if (firstMatches == false &&
+                ((this.settings.getAllowExtraKeys() == false && l1 < l2) ||
+                 (settingsOther.getAllowExtraKeys() == false && l2 < l1)))
             {
                 return false;
             }
@@ -420,10 +428,7 @@ public class KeyBindImpl implements KeyBind
             KeyAction a1 = this.settings.getActivateOn();
             KeyAction a2 = settingsOther.getActivateOn();
 
-            if (a1 == KeyAction.BOTH || a2 == KeyAction.BOTH || a1 == a2)
-            {
-                return true;
-            }
+            return a1 == KeyAction.BOTH || a2 == KeyAction.BOTH || a1 == a2;
         }
 
         return false;
@@ -471,7 +476,7 @@ public class KeyBindImpl implements KeyBind
     {
         JsonObject obj = new JsonObject();
 
-        String str = writeKeysToString(this.keyCodes, ",");
+        String str = writeKeysToString(this.keyCodes, ",", KeyBindImpl::charAsStorageString);
         obj.add("keys", new JsonPrimitive(str));
 
         if (this.areSettingsModified())
@@ -504,11 +509,11 @@ public class KeyBindImpl implements KeyBind
     /**
      * NOT PUBLIC API - DO NOT CALL FROM MOD CODE!!!
      */
-    public static void onKeyInputPre(int keyCode, boolean state)
+    public static void onKeyInputPre(int keyCode, int scanCode, int modifiers, char charIn, boolean keyState)
     {
-        Integer valObj = Integer.valueOf(keyCode);
+        Integer valObj = keyCode;
 
-        if (state)
+        if (keyState)
         {
             if (PRESSED_KEYS.contains(valObj) == false)
             {
@@ -527,7 +532,7 @@ public class KeyBindImpl implements KeyBind
 
         if (MaLiLibConfigs.Debug.KEYBIND_DEBUG.getBooleanValue())
         {
-            printKeyBindDebugMessage(keyCode, state);
+            printKeyBindDebugMessage(keyCode, scanCode, modifiers, charIn, keyState);
         }
     }
 
@@ -555,12 +560,13 @@ public class KeyBindImpl implements KeyBind
         }
     }
 
-    private static void printKeyBindDebugMessage(int eventKey, boolean eventKeyState)
+    private static void printKeyBindDebugMessage(int keyCode, int scanCode, int modifiers, char charIn, boolean keyState)
     {
-        String keyName = eventKey > 0 ? Keyboard.getKeyName(eventKey) : Mouse.getButtonName(eventKey + 100);
-        String type = eventKeyState ? "PRESS" : "RELEASE";
+        String action = keyState ? "PRESS  " : "RELEASE";
+        String keyName = getStorageStringForKeyCode(keyCode, KeyBindImpl::charAsStorageString);
         String held = getActiveKeysString();
-        String msg = String.format("%s %s (%d), held keys: %s", type, keyName, eventKey, held);
+        String msg = String.format("%s '%s' (k: %d, s: %d, m: %d, c: '%c' = %d), held keys: %s",
+                                   action, keyName, keyCode, scanCode, modifiers, charIn, (int) charIn, held);
 
         MaLiLib.LOGGER.info(msg);
 
@@ -584,7 +590,7 @@ public class KeyBindImpl implements KeyBind
                     sb.append(" + ");
                 }
 
-                String name = getStorageStringForKeyCode(key);
+                String name = getStorageStringForKeyCode(key, KeyBindImpl::charAsCharacter);
 
                 if (name != null)
                 {
@@ -601,11 +607,15 @@ public class KeyBindImpl implements KeyBind
     }
 
     @Nullable
-    public static String getStorageStringForKeyCode(int keyCode)
+    public static String getStorageStringForKeyCode(int keyCode, Function<Integer, String> charEncoder)
     {
-        if (keyCode > 0)
+        if (keyCode > 0 && keyCode < 256)
         {
             return Keyboard.getKeyName(keyCode);
+        }
+        else if (keyCode >= 256)
+        {
+            return charEncoder.apply(keyCode - 256);
         }
         else if (keyCode < 0)
         {
@@ -620,32 +630,28 @@ public class KeyBindImpl implements KeyBind
         return null;
     }
 
+    public static String charAsStorageString(int charIn)
+    {
+        return String.format("CHAR_%d", charIn);
+    }
+
+    public static String charAsCharacter(int charIn)
+    {
+        return String.valueOf((char) (charIn & 0xFF));
+    }
+
     public static ImmutableList<Integer> readKeysFromStorageString(String str)
     {
         ArrayList<Integer> keyCodes = new ArrayList<>();
         String[] keys = str.split(",");
 
-        for (String key : keys)
+        for (String keyName : keys)
         {
-            key = key.trim();
+            keyName = keyName.trim();
 
-            if (key.isEmpty() == false)
+            if (keyName.isEmpty() == false)
             {
-                int keyCode = Keyboard.getKeyIndex(key);
-
-                if (keyCode == Keyboard.KEY_NONE)
-                {
-                    keyCode = Mouse.getButtonIndex(key);
-
-                    if (keyCode >= 0 && keyCode < Mouse.getButtonCount())
-                    {
-                        keyCode -= 100;
-                    }
-                    else
-                    {
-                        continue;
-                    }
-                }
+                int keyCode = getKeyCodeForStorageString(keyName);
 
                 if (keyCode != Keyboard.KEY_NONE && keyCodes.contains(keyCode) == false)
                 {
@@ -657,7 +663,42 @@ public class KeyBindImpl implements KeyBind
         return ImmutableList.copyOf(keyCodes);
     }
 
-    public static String writeKeysToString(List<Integer> keyCodes, String separator)
+    public static int getKeyCodeForStorageString(String keyName)
+    {
+        int keyCode = Keyboard.getKeyIndex(keyName);
+
+        if (keyCode == Keyboard.KEY_NONE)
+        {
+            Matcher matcher = PATTERN_CHAR_CODE.matcher(keyName);
+
+            if (matcher.matches())
+            {
+                try
+                {
+                    keyCode = Integer.parseInt(matcher.group("code")) + 256;
+                }
+                catch (Exception ignore) {}
+            }
+        }
+
+        if (keyCode == Keyboard.KEY_NONE)
+        {
+            keyCode = Mouse.getButtonIndex(keyName);
+
+            if (keyCode >= 0 && keyCode < Mouse.getButtonCount())
+            {
+                keyCode -= 100;
+            }
+            else
+            {
+                keyCode = Keyboard.KEY_NONE;
+            }
+        }
+
+        return keyCode;
+    }
+
+    public static String writeKeysToString(List<Integer> keyCodes, String separator, Function<Integer, String> charEncoder)
     {
         StringBuilder sb = new StringBuilder(32);
 
@@ -669,7 +710,7 @@ public class KeyBindImpl implements KeyBind
             }
 
             int keyCode = keyCodes.get(i).intValue();
-            String name = getStorageStringForKeyCode(keyCode);
+            String name = getStorageStringForKeyCode(keyCode, charEncoder);
 
             if (name != null)
             {

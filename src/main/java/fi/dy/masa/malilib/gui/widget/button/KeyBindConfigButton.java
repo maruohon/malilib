@@ -142,7 +142,7 @@ public class KeyBindConfigButton extends GenericButton
     {
         if (MaLiLibConfigs.Generic.IGNORED_KEYS.getKeyBind().getKeys().contains(keyCode))
         {
-            String str = KeyBindImpl.getStorageStringForKeyCode(keyCode);
+            String str = KeyBindImpl.getStorageStringForKeyCode(keyCode, KeyBindImpl::charAsCharacter);
             MessageUtils.showGuiMessage(MessageType.WARNING, "malilib.error.keybind.attempt_to_bind_ignored_key", str);
             return;
         }
@@ -206,7 +206,7 @@ public class KeyBindConfigButton extends GenericButton
     protected String generateDisplayString()
     {
         List<Integer> keys = this.isSelected() ? this.newKeys : this.keyBind.getKeys();
-        String valueStr = KeyBindImpl.writeKeysToString(keys, " + ");
+        String valueStr = KeyBindImpl.writeKeysToString(keys, " + ", KeyBindImpl::charAsCharacter);
 
         if (keys.size() == 0 || org.apache.commons.lang3.StringUtils.isBlank(valueStr))
         {
@@ -288,7 +288,7 @@ public class KeyBindConfigButton extends GenericButton
         //if (modified)
         {
             String label = StringUtils.translate("malilib.gui.button.default");
-            String defaultStr = KeyBindImpl.writeKeysToString(this.keyBind.getDefaultKeys(), " + ");
+            String defaultStr = KeyBindImpl.writeKeysToString(this.keyBind.getDefaultKeys(), " + ", KeyBindImpl::charAsCharacter);
 
             if (org.apache.commons.lang3.StringUtils.isBlank(defaultStr))
             {
