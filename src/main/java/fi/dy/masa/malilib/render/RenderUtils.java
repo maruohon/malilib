@@ -53,6 +53,7 @@ import fi.dy.masa.malilib.util.PositionUtils.HitPart;
 public class RenderUtils
 {
     public static final Identifier TEXTURE_MAP_BACKGROUND = new Identifier("textures/map/map_background.png");
+    public static final Identifier TEXTURE_MAP_BACKGROUND_CHECKERBOARD = new Identifier("textures/map/map_background_checkerboard.png");
 
     private static final Random RAND = new Random();
     //private static final Vec3d LIGHT0_POS = (new Vec3d( 0.2D, 1.0D, -0.7D)).normalize();
@@ -1020,7 +1021,10 @@ public class RenderUtils
             int x2 = x1 + dimensions;
             int z = 300;
 
-            bindTexture(fi.dy.masa.malilib.render.RenderUtils.TEXTURE_MAP_BACKGROUND);
+            MapState mapData = FilledMapItem.getMapState(stack, mc().world);
+            Identifier bgTexture = mapData == null ? TEXTURE_MAP_BACKGROUND : TEXTURE_MAP_BACKGROUND_CHECKERBOARD;
+            bindTexture(bgTexture);
+            setupBlend();
 
             Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder buffer = tessellator.getBuffer();
@@ -1030,10 +1034,9 @@ public class RenderUtils
             buffer.vertex(x2, y1, z).texture(1.0f, 0.0f).next();
             buffer.vertex(x1, y1, z).texture(0.0f, 0.0f).next();
             tessellator.draw();
+            RenderSystem.disableBlend();
 
-            MapState mapdata = FilledMapItem.getMapState(stack, mc().world);
-
-            if (mapdata != null)
+            if (mapData != null)
             {
                 x1 += 8;
                 y1 += 8;
@@ -1041,7 +1044,9 @@ public class RenderUtils
                 double scale = (double) (dimensions - 16) / 128.0D;
                 RenderSystem.translatef(x1, y1, z);
                 RenderSystem.scaled(scale, scale, 0);
-                mc().gameRenderer.getMapRenderer().draw(new MatrixStack(), MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers(), mapdata, false, 0xF000F0);
+                VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
+                mc().gameRenderer.getMapRenderer().draw(new MatrixStack(), immediate, mapData, false, 0xF000F0);
+                immediate.draw();
             }
 
             RenderSystem.enableLighting();
