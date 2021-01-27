@@ -1,9 +1,7 @@
 package fi.dy.masa.malilib;
 
-import java.util.List;
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.config.ConfigOption;
-import fi.dy.masa.malilib.config.ModConfig;
 import fi.dy.masa.malilib.config.category.BaseConfigOptionCategory;
 import fi.dy.masa.malilib.config.category.ConfigOptionCategory;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
@@ -17,7 +15,7 @@ import fi.dy.masa.malilib.gui.widget.ConfigsSearchBarWidget.Scope;
 import fi.dy.masa.malilib.input.KeyAction;
 import fi.dy.masa.malilib.input.KeyBindSettings;
 
-public class MaLiLibConfigs implements ModConfig
+public class MaLiLibConfigs
 {
     public static class Generic
     {
@@ -77,33 +75,9 @@ public class MaLiLibConfigs implements ModConfig
         );
     }
 
-    private static final ImmutableList<ConfigOptionCategory> CATEGORIES = ImmutableList.of(
+    public static final ImmutableList<ConfigOptionCategory> CATEGORIES = ImmutableList.of(
             BaseConfigOptionCategory.normal("Generic",  Generic.OPTIONS),
             BaseConfigOptionCategory.normal("Info",     Info.OPTIONS),
             BaseConfigOptionCategory.normal("Debug",    Debug.OPTIONS)
     );
-
-    @Override
-    public String getModId()
-    {
-        return MaLiLibReference.MOD_ID;
-    }
-
-    @Override
-    public String getModName()
-    {
-        return MaLiLibReference.MOD_NAME;
-    }
-
-    @Override
-    public String getConfigFileName()
-    {
-        return MaLiLibReference.MOD_ID + ".json";
-    }
-
-    @Override
-    public List<ConfigOptionCategory> getConfigOptionCategories()
-    {
-        return CATEGORIES;
-    }
 }

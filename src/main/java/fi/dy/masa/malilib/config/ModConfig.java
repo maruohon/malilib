@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.List;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.config.category.ConfigOptionCategory;
 import fi.dy.masa.malilib.util.FileUtils;
@@ -40,6 +41,15 @@ public interface ModConfig
      * @return
      */
     List<ConfigOptionCategory> getConfigOptionCategories();
+
+    /**
+     * Returns the current version number of the configs.
+     * This can be used to adjust or reset some values when loading configs
+     * from file that were last saved in some older version of the config scheme,
+     * or if some configs used to have bad default values etc.
+     * @return
+     */
+    int getConfigVersion();
 
     /**
      * Returns the directory where the configs should be saved
@@ -91,8 +101,9 @@ public interface ModConfig
      * read from the config file.
      * @param root
      * @param category
+     * @param configVersion the version of the config file this data was read from
      */
-    default void readConfigCategory(JsonObject root, ConfigOptionCategory category)
+    default void readConfigCategory(JsonObject root, ConfigOptionCategory category, int configVersion)
     {
         ConfigUtils.readConfig(root, category.getName(), category.getConfigOptions(), category.getDeserializer());
     }
@@ -111,10 +122,11 @@ public interface ModConfig
             if (element != null && element.isJsonObject())
             {
                 JsonObject root = element.getAsJsonObject();
+                int configVersion = JsonUtils.getIntegerOrDefault(root, "config_version", -1);
 
                 for (ConfigOptionCategory category : this.getConfigOptionCategories())
                 {
-                    this.readConfigCategory(root, category);
+                    this.readConfigCategory(root, category, configVersion);
                 }
             }
         }
@@ -155,6 +167,7 @@ public interface ModConfig
         if (dir.exists() && dir.isDirectory())
         {
             JsonObject root = new JsonObject();
+            root.add("config_version", new JsonPrimitive(this.getConfigVersion()));
 
             for (ConfigOptionCategory category : this.getConfigOptionCategories())
             {
