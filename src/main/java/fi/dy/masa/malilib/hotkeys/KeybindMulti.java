@@ -6,9 +6,10 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import javax.annotation.Nullable;
+
+import net.minecraft.client.option.KeyBinding;
 import org.lwjgl.glfw.GLFW;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.MaLiLibConfigs;
