@@ -71,7 +71,7 @@ public class ConfigManagerImpl implements ConfigManager
     {
         for (ModConfig handler : this.configHandlers.values())
         {
-            handler.load();
+            handler.loadFromFile();
         }
     }
 

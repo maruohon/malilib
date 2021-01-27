@@ -5,18 +5,22 @@ import java.util.Comparator;
 import java.util.List;
 import com.google.gson.JsonObject;
 import net.minecraft.util.text.TextFormatting;
+import fi.dy.masa.malilib.config.category.ConfigOptionCategory;
 import fi.dy.masa.malilib.util.JsonUtils;
 
 public class ConfigUtils
 {
-    public static void readConfig(JsonObject root, String category, List<? extends ConfigOption<?>> options)
+    public static void readConfig(JsonObject root, ConfigOptionCategory category, int configVersion)
     {
-        readConfig(root, category, options, ConfigOption::setValueFromJsonElement);
+        readConfig(root, category, category.getDeserializer(), configVersion);
     }
 
-    public static void readConfig(JsonObject root, String category, List<? extends ConfigOption<?>> options, ConfigDeserializer deSerializer)
+    public static void readConfig(JsonObject root, ConfigOptionCategory category,
+                                  ConfigDeserializer deSerializer, int configVersion)
     {
-        JsonObject obj = JsonUtils.getNestedObject(root, category, false);
+        String categoryName = category.getName();
+        List<? extends ConfigOption<?>> options = category.getConfigOptions();
+        JsonObject obj = JsonUtils.getNestedObject(root, categoryName, false);
 
         if (obj != null)
         {

@@ -2,19 +2,14 @@ package fi.dy.masa.malilib.config;
 
 import java.io.File;
 import java.util.List;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.config.category.ConfigOptionCategory;
 import fi.dy.masa.malilib.util.FileUtils;
-import fi.dy.masa.malilib.util.JsonUtils;
 
 public interface ModConfig
 {
     /**
      * Returns the mod ID this handler belongs to
-     * @return
      */
     String getModId();
 
@@ -22,13 +17,11 @@ public interface ModConfig
      * Returns a human-friendly mod name owning the configs of this handler.
      * This is used in things like the hotkey info toast/popup for
      * showing which which hotkey from which mod was triggered.
-     * @return
      */
     String getModName();
 
     /**
      * Returns the filename for the configs
-     * @return
      */
     String getConfigFileName();
 
@@ -38,7 +31,6 @@ public interface ModConfig
      * <br>
      * These categories can be different than what is shown
      * on the config screens, as the config screen tabs are defined separately.
-     * @return
      */
     List<ConfigOptionCategory> getConfigOptionCategories();
 
@@ -47,13 +39,12 @@ public interface ModConfig
      * This can be used to adjust or reset some values when loading configs
      * from file that were last saved in some older version of the config scheme,
      * or if some configs used to have bad default values etc.
-     * @return
+     * @return the current config scheme version
      */
     int getConfigVersion();
 
     /**
      * Returns the directory where the configs should be saved
-     * @return
      */
     default File getConfigDirectory()
     {
@@ -69,7 +60,6 @@ public interface ModConfig
 
     /**
      * Returns true if at least some of the config values have changed since last saving to disk.
-     * @return
      */
     default boolean areConfigsDirty()
     {
@@ -97,65 +87,38 @@ public interface ModConfig
     }
 
     /**
-     * Reads the provided config category from the provided (root level) JsonObject
-     * read from the config file.
-     * @param root
-     * @param category
-     * @param configVersion the version of the config file this data was read from
-     */
-    default void readConfigCategory(JsonObject root, ConfigOptionCategory category, int configVersion)
-    {
-        ConfigUtils.readConfig(root, category.getName(), category.getConfigOptions(), category.getDeserializer());
-    }
-
-    /**
      * Called to (re-)load all the configs from file
      */
-    default void load()
+    default void loadFromFile()
     {
         File configFile = new File(this.getConfigDirectory(), this.getConfigFileName());
 
         if (configFile.exists() && configFile.isFile() && configFile.canRead())
         {
-            JsonElement element = JsonUtils.parseJsonFile(configFile);
-
-            if (element != null && element.isJsonObject())
-            {
-                JsonObject root = element.getAsJsonObject();
-                int configVersion = JsonUtils.getIntegerOrDefault(root, "config_version", -1);
-
-                for (ConfigOptionCategory category : this.getConfigOptionCategories())
-                {
-                    this.readConfigCategory(root, category, configVersion);
-                }
-            }
+            this.loadFromFile(configFile);
         }
 
         this.onPostLoad();
     }
 
     /**
-     * Called after the load() method has loaded the configs, to allow
+     * Reads all the configs from the provided config file.
+     * @param configFile the file to load the configs from
+     */
+    void loadFromFile(File configFile);
+
+    /**
+     * Called after the {@link #loadFromFile(File)} method has loaded the configs, to allow
      * mods to do some custom setup with the new config options.
      */
     default void onPostLoad()
     {
     }
 
-    /**
-     * Writes the provided config category to the provided (root level) JsonObject
-     * @param root
-     * @param category
+     /**
+     * Called to unconditionally save all the configs to a file
      */
-    default void writeConfigCategory(JsonObject root, ConfigOptionCategory category)
-    {
-        ConfigUtils.writeConfig(root, category.getName(), category.getConfigOptions(), category.getSerializer());
-    }
-
-    /**
-     * Called to unconditionally save all configs to a file
-     */
-    default boolean save()
+    default boolean saveToFile()
     {
         File dir = this.getConfigDirectory();
 
@@ -166,22 +129,18 @@ public interface ModConfig
 
         if (dir.exists() && dir.isDirectory())
         {
-            JsonObject root = new JsonObject();
-            root.add("config_version", new JsonPrimitive(this.getConfigVersion()));
-
-            for (ConfigOptionCategory category : this.getConfigOptionCategories())
-            {
-                if (category.shouldSaveToFile())
-                {
-                    this.writeConfigCategory(root, category);
-                }
-            }
-
-            return JsonUtils.writeJsonToFile(root, new File(dir, this.getConfigFileName()));
+            return this.saveToFile(new File(dir, this.getConfigFileName()));
         }
 
         return false;
     }
+
+    /**
+     * Saves all the configs to the provided config file
+     * @param configFile the file to save the configs to
+     * @return true on success, false on failure
+     */
+    boolean saveToFile(File configFile);
 
     /**
      * Save the configs only if at least some of them have been modified since last saving
@@ -190,7 +149,7 @@ public interface ModConfig
     {
         if (this.areConfigsDirty())
         {
-            return this.save();
+            return this.saveToFile();
         }
 
         return false;
