@@ -53,6 +53,7 @@ malilib.hotkey.name.ignoredkeys=Ignored Keys
 malilib.hotkey.name.openguiconfigs=Open Config Menu
 
 malilib.error.failed_to_create_directory=Failed to create directory '%s'
+malilib.error.failed_to_save_all_configs=At least some config options failed to save properly
 malilib.error.file_delete_failed=Failed to delete the file '%s'
 malilib.error.file_or_directory_already_exists=File or directory '%s' already exists
 malilib.error.file_rename.file_already_exists=File rename failed, file '%s' already exists

@@ -1,7 +1,5 @@
 package fi.dy.masa.malilib.config.option;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonPrimitive;
 import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.gui.callback.IntegerSliderCallback;
@@ -128,32 +126,9 @@ public class IntegerConfig extends BaseSliderConfig<Integer>
     }
 
     @Override
-    public void setValueFromJsonElement(JsonElement element, String configName)
+    public void loadValueFromConfig(Integer value)
     {
-        try
-        {
-            if (element.isJsonPrimitive())
-            {
-                this.integerValue = this.getClampedValue(element.getAsInt());
-                this.value = this.integerValue;
-                this.onValueLoaded(this.integerValue);
-            }
-            else
-            {
-                MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element);
-            }
-        }
-        catch (Exception e)
-        {
-            MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
-        }
-
-        this.cacheSavedValue();
-    }
-
-    @Override
-    public JsonElement getAsJsonElement()
-    {
-        return new JsonPrimitive(this.integerValue);
+        this.integerValue = value;
+        super.loadValueFromConfig(value);
     }
 }

@@ -1,14 +1,14 @@
 package fi.dy.masa.malilib.config.option;
 
+import java.util.List;
 import java.util.Locale;
-import com.google.gson.JsonElement;
 import fi.dy.masa.malilib.input.Hotkey;
 import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.input.KeyBindImpl;
 import fi.dy.masa.malilib.input.KeyBindSettings;
 import fi.dy.masa.malilib.util.StringUtils;
 
-public class HotkeyConfig extends BaseConfig<HotkeyConfig> implements Hotkey
+public class HotkeyConfig extends BaseConfig<KeyBind> implements Hotkey
 {
     protected final KeyBind keyBind;
 
@@ -79,9 +79,9 @@ public class HotkeyConfig extends BaseConfig<HotkeyConfig> implements Hotkey
     }
 
     @Override
-    public HotkeyConfig getValue()
+    public KeyBind getValue()
     {
-        return this;
+        return this.keyBind;
     }
 
     @Override
@@ -108,15 +108,11 @@ public class HotkeyConfig extends BaseConfig<HotkeyConfig> implements Hotkey
         this.keyBind.resetToDefault();
     }
 
-    @Override
-    public void setValueFromJsonElement(JsonElement element, String configName)
+    public void loadHotkeyValueFromConfig(List<Integer> keys, KeyBindSettings settings)
     {
-        this.keyBind.setValueFromJsonElement(element, configName);
-    }
-
-    @Override
-    public JsonElement getAsJsonElement()
-    {
-        return this.keyBind.getAsJsonElement();
+        this.keyBind.setKeys(keys);
+        this.keyBind.setSettings(settings);
+        this.cacheSavedValue();
+        this.onValueLoaded(this.keyBind);
     }
 }

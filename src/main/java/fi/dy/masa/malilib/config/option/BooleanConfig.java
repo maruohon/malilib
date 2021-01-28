@@ -1,8 +1,5 @@
 package fi.dy.masa.malilib.config.option;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonPrimitive;
-import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class BooleanConfig extends BaseGenericConfig<Boolean>
@@ -85,32 +82,9 @@ public class BooleanConfig extends BaseGenericConfig<Boolean>
     }
 
     @Override
-    public void setValueFromJsonElement(JsonElement element, String configName)
+    public void loadValueFromConfig(Boolean value)
     {
-        try
-        {
-            if (element.isJsonPrimitive())
-            {
-                this.booleanValue = element.getAsBoolean();
-                this.value = this.booleanValue;
-                this.onValueLoaded(this.booleanValue);
-            }
-            else
-            {
-                MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element);
-            }
-        }
-        catch (Exception e)
-        {
-            MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
-        }
-
-        this.cacheSavedValue();
-    }
-
-    @Override
-    public JsonElement getAsJsonElement()
-    {
-        return new JsonPrimitive(this.booleanValue);
+        this.booleanValue = value;
+        super.loadValueFromConfig(value);
     }
 }

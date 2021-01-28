@@ -1,8 +1,5 @@
 package fi.dy.masa.malilib.config.option;
 
-import com.google.gson.JsonElement;
-import fi.dy.masa.malilib.MaLiLib;
-
 public class StringConfig extends BaseStringConfig<String>
 {
     public StringConfig(String name, String defaultValue)
@@ -35,27 +32,11 @@ public class StringConfig extends BaseStringConfig<String>
         this.setValue(newValue);
     }
 
-    @Override
-    public void setValueFromJsonElement(JsonElement element, String configName)
+    public void loadStringValueFromConfig(String value)
     {
-        try
-        {
-            if (element.isJsonPrimitive())
-            {
-                this.stringValue = element.getAsString();
-                this.value = this.stringValue;
-                this.onValueLoaded(this.stringValue);
-            }
-            else
-            {
-                MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element);
-            }
-        }
-        catch (Exception e)
-        {
-            MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
-        }
-
+        this.stringValue = value;
+        this.value = value;
         this.cacheSavedValue();
+        this.onValueLoaded(value);
     }
 }

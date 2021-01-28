@@ -1,10 +1,7 @@
 package fi.dy.masa.malilib.config.option;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonPrimitive;
 import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.MaLiLib;
-import fi.dy.masa.malilib.config.SliderConfig;
 import fi.dy.masa.malilib.gui.callback.DoubleSliderCallback;
 
 public class DoubleConfig extends BaseSliderConfig<Double> implements SliderConfig
@@ -133,32 +130,9 @@ public class DoubleConfig extends BaseSliderConfig<Double> implements SliderConf
     }
 
     @Override
-    public void setValueFromJsonElement(JsonElement element, String configName)
+    public void loadValueFromConfig(Double value)
     {
-        try
-        {
-            if (element.isJsonPrimitive())
-            {
-                this.doubleValue = this.getClampedValue(element.getAsDouble());
-                this.value = this.doubleValue;
-                this.onValueLoaded(this.doubleValue);
-            }
-            else
-            {
-                MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element);
-            }
-        }
-        catch (Exception e)
-        {
-            MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
-        }
-
-        this.cacheSavedValue();
-    }
-
-    @Override
-    public JsonElement getAsJsonElement()
-    {
-        return new JsonPrimitive(this.doubleValue);
+        this.doubleValue = value;
+        super.loadValueFromConfig(value);
     }
 }

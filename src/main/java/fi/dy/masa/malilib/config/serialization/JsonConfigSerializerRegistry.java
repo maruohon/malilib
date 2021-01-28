@@ -1,0 +1,121 @@
+package fi.dy.masa.malilib.config.serialization;
+
+import java.util.HashMap;
+import javax.annotation.Nullable;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
+import fi.dy.masa.malilib.config.option.ConfigInfo;
+import fi.dy.masa.malilib.config.option.BooleanConfig;
+import fi.dy.masa.malilib.config.option.ColorConfig;
+import fi.dy.masa.malilib.config.option.DirectoryConfig;
+import fi.dy.masa.malilib.config.option.DoubleConfig;
+import fi.dy.masa.malilib.config.option.FileConfig;
+import fi.dy.masa.malilib.config.option.HotkeyConfig;
+import fi.dy.masa.malilib.config.option.HotkeyedBooleanConfig;
+import fi.dy.masa.malilib.config.option.IntegerConfig;
+import fi.dy.masa.malilib.config.option.OptionListConfig;
+import fi.dy.masa.malilib.config.option.StringConfig;
+import fi.dy.masa.malilib.config.option.list.BlackWhiteListConfig;
+import fi.dy.masa.malilib.config.option.list.ValueListConfig;
+
+public class JsonConfigSerializerRegistry
+{
+    public static final JsonConfigSerializerRegistry INSTANCE = new JsonConfigSerializerRegistry();
+
+    private final HashMap<Class<? extends ConfigInfo>, JsonConfigSerializer<?>> serializers = new HashMap<>();
+    private final HashMap<Class<? extends ConfigInfo>, JsonConfigDeSerializer<?>> deSerializers = new HashMap<>();
+
+    protected JsonConfigSerializerRegistry()
+    {
+        this.registerDefaultSerializers();
+    }
+
+    /**
+     * Registers a config option serializer and deserializer
+     */
+    public <C extends ConfigInfo>
+    void registerSerializers(Class<C> type, JsonConfigSerializer<C> serializer, JsonConfigDeSerializer<C> deSerializer)
+    {
+        this.serializers.put(type, serializer);
+        this.deSerializers.put(type, deSerializer);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Nullable
+    public <C extends ConfigInfo> JsonConfigSerializer<C> getSerializer(ConfigInfo config)
+    {
+        JsonConfigSerializer<C> serializer = (JsonConfigSerializer<C>) this.serializers.get(config.getClass());
+
+        if (serializer == null)
+        {
+            Class<?> clazz = config.getClass().getSuperclass();
+
+            while (clazz != null && ConfigInfo.class.isAssignableFrom(clazz))
+            {
+                serializer = (JsonConfigSerializer<C>) this.serializers.get(clazz);
+
+                if (serializer != null)
+                {
+                    return serializer;
+                }
+
+                clazz = clazz.getSuperclass();
+            }
+        }
+
+        return serializer;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Nullable
+    public <C extends ConfigInfo> JsonConfigDeSerializer<C> getDeSerializer(ConfigInfo config)
+    {
+        JsonConfigDeSerializer<C> deSerializer = (JsonConfigDeSerializer<C>) this.deSerializers.get(config.getClass());
+
+        if (deSerializer == null)
+        {
+            Class<?> clazz = config.getClass().getSuperclass();
+
+            while (clazz != null && ConfigInfo.class.isAssignableFrom(clazz))
+            {
+                deSerializer = (JsonConfigDeSerializer<C>) this.deSerializers.get(clazz);
+
+                if (deSerializer != null)
+                {
+                    return deSerializer;
+                }
+
+                clazz = clazz.getSuperclass();
+            }
+        }
+
+        return deSerializer;
+    }
+
+    private void registerDefaultSerializers()
+    {
+        this.registerSerializers(BooleanConfig.class,   (c) -> new JsonPrimitive(c.getBooleanValue()), (c, d, n) -> c.loadValueFromConfig(d.getAsBoolean()));
+        this.registerSerializers(ColorConfig.class,     (c) -> new JsonPrimitive(c.getStringValue()), (c, d, n) -> c.loadColorValueFromString(d.getAsString()));
+        this.registerSerializers(DirectoryConfig.class, (c) -> new JsonPrimitive(c.getStringValue()), (c, d, n) -> c.loadStringValueFromConfig(d.getAsString()));
+        this.registerSerializers(DoubleConfig.class,    (c) -> new JsonPrimitive(c.getDoubleValue()), (c, d, n) -> c.loadValueFromConfig(d.getAsDouble()));
+        this.registerSerializers(FileConfig.class,      (c) -> new JsonPrimitive(c.getStringValue()), (c, d, n) -> c.loadStringValueFromConfig(d.getAsString()));
+        this.registerSerializers(HotkeyConfig.class,    (c) -> c.getKeyBind().getAsJsonElement(), (c, d, n) -> c.getKeyBind().setValueFromJsonElement(d, n));
+        this.registerSerializers(IntegerConfig.class,   (c) -> new JsonPrimitive(c.getIntegerValue()), (c, d, n) -> c.loadValueFromConfig(d.getAsInt()));
+        this.registerSerializers(StringConfig.class,    (c) -> new JsonPrimitive(c.getStringValue()), (c, d, n) -> c.loadStringValueFromConfig(d.getAsString()));
+
+        this.registerSerializers(BlackWhiteListConfig.class,    JsonConfigSerializers::saveBlackWhiteListConfig,    JsonConfigSerializers::loadBlackWhiteListConfig);
+        this.registerSerializers(HotkeyedBooleanConfig.class,   JsonConfigSerializers::saveHotkeydBooleanConfig,    JsonConfigSerializers::loadHotkeydBooleanConfig);
+        this.registerSerializers(OptionListConfig.class,        JsonConfigSerializers::saveOptionListConfig,        JsonConfigSerializers::loadOptionListConfig);
+        this.registerSerializers(ValueListConfig.class,         JsonConfigSerializers::saveValueListConfig,         JsonConfigSerializers::loadValueListConfig);
+    }
+
+    public interface JsonConfigSerializer<C extends ConfigInfo>
+    {
+        JsonElement serializeConfigValue(C config);
+    }
+
+    public interface JsonConfigDeSerializer<C extends ConfigInfo>
+    {
+        void deSerializeConfigValue(C config, JsonElement data, String configName);
+    }
+}

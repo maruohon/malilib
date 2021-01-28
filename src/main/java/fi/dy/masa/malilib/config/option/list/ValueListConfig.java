@@ -7,12 +7,7 @@ import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonPrimitive;
-import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.config.option.BaseGenericConfig;
-import fi.dy.masa.malilib.util.JsonUtils;
 
 public class ValueListConfig<TYPE> extends BaseGenericConfig<ImmutableList<TYPE>>
 {
@@ -113,55 +108,6 @@ public class ValueListConfig<TYPE> extends BaseGenericConfig<ImmutableList<TYPE>
                                                              this.toStringConverter, this.fromStringConverter);
         config.copyValuesFrom(this);
         return config;
-    }
-
-    @Override
-    public void setValueFromJsonElement(JsonElement element, String configName)
-    {
-        try
-        {
-            if (element.isJsonArray())
-            {
-                ImmutableList.Builder<TYPE> builder = ImmutableList.builder();
-                List<String> strings = JsonUtils.arrayAsStringList(element.getAsJsonArray());
-
-                for (TYPE value : getStringListAsValues(strings, this.fromStringConverter))
-                {
-                    builder.add(value);
-                }
-
-                this.value = builder.build();
-            }
-            else
-            {
-                // Make sure to clear the old value in any case
-                this.value = ImmutableList.of();
-                MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element);
-            }
-
-            this.onValueLoaded(this.value);
-        }
-        catch (Exception e)
-        {
-            // Make sure to clear the old value in any case
-            this.value = ImmutableList.of();
-            MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
-        }
-
-        this.cacheSavedValue();
-    }
-
-    @Override
-    public JsonElement getAsJsonElement()
-    {
-        JsonArray arr = new JsonArray();
-
-        for (String str : getValuesAsStringList(this.value, this.toStringConverter))
-        {
-            arr.add(new JsonPrimitive(str));
-        }
-
-        return arr;
     }
 
     public static <TYPE> ImmutableList<String> getValuesAsStringList(List<TYPE> values, Function<TYPE, String> converter)

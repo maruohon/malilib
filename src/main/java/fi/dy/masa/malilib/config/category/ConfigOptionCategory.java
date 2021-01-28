@@ -1,9 +1,7 @@
 package fi.dy.masa.malilib.config.category;
 
 import java.util.List;
-import fi.dy.masa.malilib.config.ConfigDeserializer;
-import fi.dy.masa.malilib.config.ConfigOption;
-import fi.dy.masa.malilib.config.ConfigSerializer;
+import fi.dy.masa.malilib.config.option.ConfigOption;
 
 public interface ConfigOptionCategory extends ConfigCategory
 {
@@ -21,16 +19,4 @@ public interface ConfigOptionCategory extends ConfigCategory
      * @return
      */
     List<? extends ConfigOption<?>> getConfigOptions();
-
-    /**
-     * Returns the config de-serializer that should be used for the configs in this category
-     * @return
-     */
-    ConfigDeserializer getDeserializer();
-
-    /**
-     * Returns the config serializer that should be used for the configs in this category
-     * @return
-     */
-    ConfigSerializer getSerializer();
 }

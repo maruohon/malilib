@@ -2,11 +2,8 @@ package fi.dy.masa.malilib.config;
 
 import java.io.File;
 import java.util.List;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import fi.dy.masa.malilib.config.category.ConfigOptionCategory;
-import fi.dy.masa.malilib.util.JsonUtils;
+import fi.dy.masa.malilib.config.util.JsonConfigUtils;
 
 public class JsonModConfig extends BaseModConfig
 {
@@ -18,34 +15,12 @@ public class JsonModConfig extends BaseModConfig
     @Override
     public void loadFromFile(File configFile)
     {
-        JsonElement element = JsonUtils.parseJsonFile(configFile);
-
-        if (element != null && element.isJsonObject())
-        {
-            JsonObject root = element.getAsJsonObject();
-            int configVersion = JsonUtils.getIntegerOrDefault(root, "config_version", -1);
-
-            for (ConfigOptionCategory category : this.getConfigOptionCategories())
-            {
-                ConfigUtils.readConfig(root, category, configVersion);
-            }
-        }
+        JsonConfigUtils.loadFromFile(configFile, this.getConfigOptionCategories());
     }
 
     @Override
     public boolean saveToFile(File configFile)
     {
-        JsonObject root = new JsonObject();
-        root.add("config_version", new JsonPrimitive(this.getConfigVersion()));
-
-        for (ConfigOptionCategory category : this.getConfigOptionCategories())
-        {
-            if (category.shouldSaveToFile())
-            {
-                ConfigUtils.writeConfig(root, category.getName(), category.getConfigOptions(), category.getSerializer());
-            }
-        }
-
-        return JsonUtils.writeJsonToFile(root, configFile);
+        return JsonConfigUtils.saveToFile(configFile, this.getConfigOptionCategories(), this.getConfigVersion());
     }
 }

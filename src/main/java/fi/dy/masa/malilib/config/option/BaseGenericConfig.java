@@ -92,4 +92,18 @@ public abstract class BaseGenericConfig<T> extends BaseConfig<T>
     {
         this.setValue(this.defaultValue);
     }
+
+    /**
+     * Sets the value of this config option, when loaded from a config file.
+     * This should set the value without calling the ValueChangeCallback,
+     * but instead call the ValueLoadCallback and cache the current value
+     * for the dirty checks by the {@link ConfigOption#isDirty()} method later on.
+     * @param value
+     */
+    public void loadValueFromConfig(T value)
+    {
+        this.value = value;
+        this.cacheSavedValue();
+        this.onValueLoaded(value);
+    }
 }

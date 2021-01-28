@@ -1,8 +1,5 @@
 package fi.dy.masa.malilib.config.option;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonPrimitive;
-import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.Color4f;
 
@@ -71,34 +68,12 @@ public class ColorConfig extends IntegerConfig
         return true;
     }
 
-    @Override
-    public void setValueFromJsonElement(JsonElement element, String configName)
+    public void loadColorValueFromString(String value)
     {
-        try
-        {
-            if (element.isJsonPrimitive())
-            {
-                this.integerValue = this.getClampedValue(StringUtils.getColor(element.getAsString(), 0));
-                this.value = this.integerValue;
-                this.color = Color4f.fromColor(this.integerValue);
-                this.onValueLoaded(this.integerValue);
-            }
-            else
-            {
-                MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element);
-            }
-        }
-        catch (Exception e)
-        {
-            MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
-        }
-
+        this.integerValue = this.getClampedValue(StringUtils.getColor(value, 0));
+        this.value = this.integerValue;
+        this.color = Color4f.fromColor(this.integerValue);
         this.cacheSavedValue();
-    }
-
-    @Override
-    public JsonElement getAsJsonElement()
-    {
-        return new JsonPrimitive(this.getStringValue());
+        this.onValueLoaded(this.integerValue);
     }
 }

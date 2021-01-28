@@ -1,15 +1,10 @@
 package fi.dy.masa.malilib.config.option;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
-import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.input.Hotkey;
 import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.input.KeyBindImpl;
 import fi.dy.masa.malilib.input.KeyBindSettings;
 import fi.dy.masa.malilib.input.callback.ToggleBooleanWithMessageKeyCallback;
-import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class HotkeyedBooleanConfig extends BooleanConfig implements Hotkey
@@ -91,43 +86,11 @@ public class HotkeyedBooleanConfig extends BooleanConfig implements Hotkey
         this.keyBind.resetToDefault();
     }
 
-    @Override
-    public void setValueFromJsonElement(JsonElement element, String configName)
+    public void loadHotkeydBooleanValueFromConfig(boolean booleanValue)
     {
-        try
-        {
-            if (element.isJsonObject())
-            {
-                JsonObject obj = element.getAsJsonObject();
-                this.booleanValue = JsonUtils.getBooleanOrDefault(obj, "enabled", false);
-                this.value = this.booleanValue;
-
-                if (JsonUtils.hasObject(obj, "hotkey"))
-                {
-                    this.keyBind.setValueFromJsonElement(JsonUtils.getNestedObject(obj, "hotkey", false), configName);
-                }
-
-                this.onValueLoaded(this.booleanValue);
-            }
-            else
-            {
-                MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element);
-            }
-        }
-        catch (Exception e)
-        {
-            MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
-        }
-
+        this.booleanValue = booleanValue;
+        this.value = booleanValue;
         this.cacheSavedValue();
-    }
-
-    @Override
-    public JsonElement getAsJsonElement()
-    {
-        JsonObject obj = new JsonObject();
-        obj.add("enabled", new JsonPrimitive(this.booleanValue));
-        obj.add("hotkey", this.keyBind.getAsJsonElement());
-        return obj;
+        this.onValueLoaded(booleanValue);
     }
 }
