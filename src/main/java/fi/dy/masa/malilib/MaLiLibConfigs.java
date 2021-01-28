@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib;
 
 import com.google.common.collect.ImmutableList;
-import fi.dy.masa.malilib.config.ConfigOption;
+import fi.dy.masa.malilib.config.option.ConfigOption;
 import fi.dy.masa.malilib.config.category.BaseConfigOptionCategory;
 import fi.dy.masa.malilib.config.category.ConfigOptionCategory;
 import fi.dy.masa.malilib.config.option.BooleanConfig;

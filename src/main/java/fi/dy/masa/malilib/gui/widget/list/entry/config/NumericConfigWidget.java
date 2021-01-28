@@ -2,7 +2,7 @@ package fi.dy.masa.malilib.gui.widget.list.entry.config;
 
 import java.util.List;
 import com.google.common.collect.ImmutableList;
-import fi.dy.masa.malilib.config.SliderConfig;
+import fi.dy.masa.malilib.config.option.SliderConfig;
 import fi.dy.masa.malilib.config.option.BaseConfig;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;

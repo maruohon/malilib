@@ -10,7 +10,7 @@ import org.lwjgl.input.Keyboard;
 import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.config.ConfigManager;
-import fi.dy.masa.malilib.config.ConfigInfo;
+import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.event.dispatch.KeyBindManager;
 import fi.dy.masa.malilib.gui.BaseListScreen;
 import fi.dy.masa.malilib.gui.BaseScreen;

@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.List;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.config.category.ConfigOptionCategory;
+import fi.dy.masa.malilib.config.option.ConfigOption;
 import fi.dy.masa.malilib.util.FileUtils;
 
 public interface ModConfig

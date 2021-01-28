@@ -6,10 +6,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.config.ConfigInfo;
-import fi.dy.masa.malilib.config.ConfigOption;
 import fi.dy.masa.malilib.config.ValueChangeCallback;
-import fi.dy.masa.malilib.config.ValueLoadedCallback;
+import fi.dy.masa.malilib.config.ValueLoadCallback;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.util.StringUtils;
 
@@ -27,7 +25,7 @@ public abstract class BaseConfig<T> implements ConfigOption<T>
     protected String modName = "?";
     protected boolean locked;
     @Nullable protected ValueChangeCallback<T> valueChangeCallback;
-    @Nullable protected ValueLoadedCallback<T> valueLoadCallback;
+    @Nullable protected ValueLoadCallback<T> valueLoadCallback;
     @Nullable protected EventListener labelClickHandler;
     @Nullable protected String lockMessage;
     @Nullable protected String overrideMessage;
@@ -245,7 +243,7 @@ public abstract class BaseConfig<T> implements ConfigOption<T>
     }
 
     @Override
-    public void setValueLoadCallback(@Nullable ValueLoadedCallback<T> callback)
+    public void setValueLoadCallback(@Nullable ValueLoadCallback<T> callback)
     {
         this.valueLoadCallback = callback;
     }

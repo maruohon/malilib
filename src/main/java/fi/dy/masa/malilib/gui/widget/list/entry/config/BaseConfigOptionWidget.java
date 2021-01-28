@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.gui.widget.list.entry.config;
 
-import fi.dy.masa.malilib.config.ConfigOption;
+import fi.dy.masa.malilib.config.option.ConfigOption;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 
 public class BaseConfigOptionWidget<TYPE, CFG extends ConfigOption<TYPE>> extends BaseConfigWidget<CFG>

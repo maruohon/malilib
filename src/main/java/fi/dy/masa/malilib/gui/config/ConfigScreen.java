@@ -2,7 +2,7 @@ package fi.dy.masa.malilib.gui.config;
 
 import java.util.List;
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.config.ConfigInfo;
+import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.gui.util.DialogHandler;
 
 public interface ConfigScreen

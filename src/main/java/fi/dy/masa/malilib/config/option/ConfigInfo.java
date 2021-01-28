@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.config;
+package fi.dy.masa.malilib.config.option;
 
 import java.util.Collections;
 import java.util.List;

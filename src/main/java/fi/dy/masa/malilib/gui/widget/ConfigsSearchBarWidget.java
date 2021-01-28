@@ -6,13 +6,13 @@ import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.MaLiLibConfigs;
-import fi.dy.masa.malilib.config.ConfigInfo;
+import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.config.value.BaseConfigOptionListEntry;
 import fi.dy.masa.malilib.config.value.ConfigOptionListEntry;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.ConfirmActionScreen;
 import fi.dy.masa.malilib.gui.config.ConfigSearchInfo;
-import fi.dy.masa.malilib.gui.config.ConfigTypeRegistry;
+import fi.dy.masa.malilib.gui.config.ConfigWidgetRegistry;
 import fi.dy.masa.malilib.gui.config.KeybindEditingScreen;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
@@ -142,7 +142,7 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
     {
         if (this.isSearchOpen())
         {
-            @Nullable ConfigSearchInfo<ConfigInfo> info = ConfigTypeRegistry.INSTANCE.getSearchInfo(config);
+            @Nullable ConfigSearchInfo<ConfigInfo> info = ConfigWidgetRegistry.INSTANCE.getSearchInfo(config);
 
             if (this.searchKey.getKeys().size() > 0)
             {

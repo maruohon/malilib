@@ -6,12 +6,12 @@ import java.util.List;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.config.ConfigInfo;
+import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.gui.config.ConfigOptionWidgetFactory;
 import fi.dy.masa.malilib.gui.config.ConfigTab;
 import fi.dy.masa.malilib.gui.config.ConfigTabProvider;
 import fi.dy.masa.malilib.gui.config.ConfigTabRegistry;
-import fi.dy.masa.malilib.gui.config.ConfigTypeRegistry;
+import fi.dy.masa.malilib.gui.config.ConfigWidgetRegistry;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.config.KeybindEditingScreen;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
@@ -271,7 +271,7 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
                                                                    int listIndex, int originalListIndex,
                                                                    C config, DataListWidget<C> listWidget)
         {
-            ConfigOptionWidgetFactory<C> factory = ConfigTypeRegistry.INSTANCE.getWidgetFactory(config);
+            ConfigOptionWidgetFactory<C> factory = ConfigWidgetRegistry.INSTANCE.getWidgetFactory(config);
             return factory.create(x, y, width, height, listIndex, originalListIndex, config, this.ctx);
         }
     }

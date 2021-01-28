@@ -6,7 +6,7 @@ import fi.dy.masa.malilib.config.option.list.BlackWhiteListConfig;
 import fi.dy.masa.malilib.config.option.list.BlockListConfig;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.config.option.ColorConfig;
-import fi.dy.masa.malilib.config.ConfigInfo;
+import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.config.option.DirectoryConfig;
 import fi.dy.masa.malilib.config.option.DoubleConfig;
 import fi.dy.masa.malilib.config.option.list.EquipmentSlotListConfig;
@@ -40,15 +40,15 @@ import fi.dy.masa.malilib.gui.widget.list.entry.config.list.StatusEffectListConf
 import fi.dy.masa.malilib.gui.widget.list.entry.config.StringConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.list.StringListConfigWidget;
 
-public class ConfigTypeRegistry
+public class ConfigWidgetRegistry
 {
-    public static final ConfigTypeRegistry INSTANCE = new ConfigTypeRegistry();
+    public static final ConfigWidgetRegistry INSTANCE = new ConfigWidgetRegistry();
 
     private final HashMap<Class<? extends ConfigInfo>, ConfigOptionWidgetFactory<?>> widgetFactories = new HashMap<>();
     private final HashMap<Class<? extends ConfigInfo>, ConfigSearchInfo<?>> configSearchInfoMap = new HashMap<>();
     private final ConfigOptionWidgetFactory<?> missingTypeFactory = new MissingConfigTypeFactory();
 
-    private ConfigTypeRegistry()
+    private ConfigWidgetRegistry()
     {
         this.registerDefaultWidgetFactories();
         this.registerDefaultSearchInfos();

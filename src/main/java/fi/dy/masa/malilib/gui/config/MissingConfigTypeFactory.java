@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.gui.config;
 
-import fi.dy.masa.malilib.config.ConfigInfo;
+import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.BaseConfigWidget;
 import fi.dy.masa.malilib.util.StringUtils;
 

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
 import net.minecraft.client.gui.GuiScreen;
-import fi.dy.masa.malilib.config.ConfigInfo;
+import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.gui.BaseListScreen;
 import fi.dy.masa.malilib.gui.util.DialogHandler;
 import fi.dy.masa.malilib.gui.util.GuiUtils;

@@ -2,7 +2,7 @@ package fi.dy.masa.malilib.gui.config;
 
 import java.util.List;
 import com.google.common.collect.ImmutableList;
-import fi.dy.masa.malilib.config.ConfigInfo;
+import fi.dy.masa.malilib.config.option.ConfigInfo;
 
 public class ModConfigScreen extends BaseConfigScreen
 {

@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.gui.config;
 import java.util.function.Function;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
-import fi.dy.masa.malilib.config.ConfigInfo;
+import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.input.KeyBind;
 
 public class ConfigSearchInfo<C extends ConfigInfo>

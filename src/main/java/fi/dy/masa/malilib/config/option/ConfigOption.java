@@ -1,9 +1,10 @@
-package fi.dy.masa.malilib.config;
+package fi.dy.masa.malilib.config.option;
 
 import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nullable;
-import com.google.gson.JsonElement;
+import fi.dy.masa.malilib.config.ValueChangeCallback;
+import fi.dy.masa.malilib.config.ValueLoadCallback;
 
 public interface ConfigOption<T> extends ConfigInfo
 {
@@ -16,8 +17,8 @@ public interface ConfigOption<T> extends ConfigInfo
     /**
      * Sets the mod ID owning this config.
      * This is used for generating the default config localization keys.
-     * This is automatically called in {@link ConfigManager#registerConfigHandler(ModConfig)}
-     * using the mod ID from {@link ModConfig#getModId()}.
+     * This is automatically called in {@link fi.dy.masa.malilib.config.ConfigManager#registerConfigHandler(fi.dy.masa.malilib.config.ModConfig)}
+     * using the mod ID from {@link fi.dy.masa.malilib.config.ModConfig#getModId()}.
      * @param modId
      */
     void setModId(String modId);
@@ -31,8 +32,8 @@ public interface ConfigOption<T> extends ConfigInfo
     /**
      * Sets the mod name owning this config.
      * This is used for the hotkey toast popups.
-     * This is automatically called in {@link ConfigManager#registerConfigHandler(ModConfig)}
-     * using the mod ID from {@link ModConfig#getModName()}
+     * This is automatically called in {@link fi.dy.masa.malilib.config.ConfigManager#registerConfigHandler(fi.dy.masa.malilib.config.ModConfig)}
+     * using the mod ID from {@link fi.dy.masa.malilib.config.ModConfig#getModName()}
      * @param modName
      */
     void setModName(String modName);
@@ -91,21 +92,7 @@ public interface ConfigOption<T> extends ConfigInfo
      * Set the value load callback. Can be null.
      * @param callback
      */
-    void setValueLoadCallback(@Nullable ValueLoadedCallback<T> callback);
-
-    /**
-     * Set the value of this config option from a JSON element (is possible)
-     * @param element
-     * @param configName
-     */
-    void setValueFromJsonElement(JsonElement element, String configName);
-
-    /**
-     * Return the value of this config option as a JSON element
-     * (for saving into a config file or otherwise serializing)
-     * @return
-     */
-    JsonElement getAsJsonElement();
+    void setValueLoadCallback(@Nullable ValueLoadCallback<T> callback);
 
     /**
      * Whether or not this config is currently locked to its current value,
@@ -117,7 +104,7 @@ public interface ConfigOption<T> extends ConfigInfo
 
     /**
      * Set whether or not this config should be locked to its current value.
-     * Note: This does not prevent the {@link #setValueFromJsonElement(JsonElement, String)} method
+     * Note: This does not prevent the methods that load the values from configs
      * from changing the value! It only prevents the normal setValue() methods
      * from changing it.
      * @param isLocked

@@ -1,7 +1,6 @@
 package fi.dy.masa.malilib.config.option;
 
 import java.util.function.Function;
-import fi.dy.masa.malilib.config.SliderConfig;
 import fi.dy.masa.malilib.gui.callback.SliderCallback;
 import fi.dy.masa.malilib.listener.EventListener;
 
