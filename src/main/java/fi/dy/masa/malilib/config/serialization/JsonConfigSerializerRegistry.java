@@ -94,14 +94,14 @@ public class JsonConfigSerializerRegistry
 
     private void registerDefaultSerializers()
     {
-        this.registerSerializers(BooleanConfig.class,   (c) -> new JsonPrimitive(c.getBooleanValue()), (c, d, n) -> c.loadValueFromConfig(d.getAsBoolean()));
-        this.registerSerializers(ColorConfig.class,     (c) -> new JsonPrimitive(c.getStringValue()), (c, d, n) -> c.loadColorValueFromString(d.getAsString()));
-        this.registerSerializers(DirectoryConfig.class, (c) -> new JsonPrimitive(c.getStringValue()), (c, d, n) -> c.loadStringValueFromConfig(d.getAsString()));
-        this.registerSerializers(DoubleConfig.class,    (c) -> new JsonPrimitive(c.getDoubleValue()), (c, d, n) -> c.loadValueFromConfig(d.getAsDouble()));
-        this.registerSerializers(FileConfig.class,      (c) -> new JsonPrimitive(c.getStringValue()), (c, d, n) -> c.loadStringValueFromConfig(d.getAsString()));
-        this.registerSerializers(HotkeyConfig.class,    (c) -> c.getKeyBind().getAsJsonElement(), (c, d, n) -> c.getKeyBind().setValueFromJsonElement(d, n));
-        this.registerSerializers(IntegerConfig.class,   (c) -> new JsonPrimitive(c.getIntegerValue()), (c, d, n) -> c.loadValueFromConfig(d.getAsInt()));
-        this.registerSerializers(StringConfig.class,    (c) -> new JsonPrimitive(c.getStringValue()), (c, d, n) -> c.loadStringValueFromConfig(d.getAsString()));
+        this.registerSerializers(BooleanConfig.class,   (c) -> new JsonPrimitive(c.getBooleanValue()),  (c, d, n) -> JsonConfigSerializers.loadGenericConfig(c::loadValueFromConfig,        d::getAsBoolean, d, n));
+        this.registerSerializers(ColorConfig.class,     (c) -> new JsonPrimitive(c.getStringValue()),   (c, d, n) -> JsonConfigSerializers.loadGenericConfig(c::loadColorValueFromString,   d::getAsString, d, n));
+        this.registerSerializers(DirectoryConfig.class, (c) -> new JsonPrimitive(c.getStringValue()),   (c, d, n) -> JsonConfigSerializers.loadGenericConfig(c::loadStringValueFromConfig,  d::getAsString, d, n));
+        this.registerSerializers(DoubleConfig.class,    (c) -> new JsonPrimitive(c.getDoubleValue()),   (c, d, n) -> JsonConfigSerializers.loadGenericConfig(c::loadValueFromConfig,        d::getAsDouble, d, n));
+        this.registerSerializers(FileConfig.class,      (c) -> new JsonPrimitive(c.getStringValue()),   (c, d, n) -> JsonConfigSerializers.loadGenericConfig(c::loadStringValueFromConfig,  d::getAsString, d, n));
+        this.registerSerializers(HotkeyConfig.class,    (c) -> c.getKeyBind().getAsJsonElement(),       (c, d, n) -> c.getKeyBind().setValueFromJsonElement(d, n));
+        this.registerSerializers(IntegerConfig.class,   (c) -> new JsonPrimitive(c.getIntegerValue()),  (c, d, n) -> JsonConfigSerializers.loadGenericConfig(c::loadValueFromConfig,        d::getAsInt, d, n));
+        this.registerSerializers(StringConfig.class,    (c) -> new JsonPrimitive(c.getStringValue()),   (c, d, n) -> JsonConfigSerializers.loadGenericConfig(c::loadStringValueFromConfig,  d::getAsString, d, n));
 
         this.registerSerializers(BlackWhiteListConfig.class,    JsonConfigSerializers::saveBlackWhiteListConfig,    JsonConfigSerializers::loadBlackWhiteListConfig);
         this.registerSerializers(HotkeyedBooleanConfig.class,   JsonConfigSerializers::saveHotkeydBooleanConfig,    JsonConfigSerializers::loadHotkeydBooleanConfig);

@@ -1,12 +1,15 @@
 package fi.dy.masa.malilib.config.serialization;
 
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import fi.dy.masa.malilib.MaLiLib;
+import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.config.option.HotkeyedBooleanConfig;
 import fi.dy.masa.malilib.config.option.OptionListConfig;
 import fi.dy.masa.malilib.config.option.list.BlackWhiteListConfig;
@@ -19,6 +22,44 @@ import fi.dy.masa.malilib.util.restriction.UsageRestriction;
 
 public class JsonConfigSerializers
 {
+    public static <T> void loadGenericConfig(Consumer<T> consumer, Supplier<T> supplier, JsonElement element, String configName)
+    {
+        try
+        {
+            if (element.isJsonPrimitive())
+            {
+                consumer.accept(supplier.get());
+            }
+            else
+            {
+                MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}' - not a JSON primitive", configName, element);
+            }
+        }
+        catch (Exception e)
+        {
+            MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
+        }
+    }
+
+    public static void loadBooleanConfig(BooleanConfig config, JsonElement element, String configName)
+    {
+        try
+        {
+            if (element.isJsonPrimitive())
+            {
+                config.loadValueFromConfig(element.getAsBoolean());
+            }
+            else
+            {
+                MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element);
+            }
+        }
+        catch (Exception e)
+        {
+            MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
+        }
+    }
+
     public static JsonElement saveHotkeydBooleanConfig(HotkeyedBooleanConfig config)
     {
         JsonObject obj = new JsonObject();
