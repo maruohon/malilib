@@ -31,7 +31,8 @@ public class BlackWhiteListEditScreen<TYPE> extends BaseConfigGroupEditScreen
 
         // Initialize them to the default value so that the reset button is active when they differ from the default value,
         // and also so that the reset restores them to the default value, not the value they were at when the screen was opened
-        this.typeConfig = new OptionListConfig<>("malilib.gui.label.black_white_list_edit.type", config.getDefaultValue().getListType());
+        this.typeConfig = new OptionListConfig<>("malilib.gui.label.black_white_list_edit.type",
+                                                 config.getDefaultValue().getListType(), ListType.VALUES);
         this.typeConfig.setValue(bwList.getListType());
 
         this.blackListConfig = bwList.getBlackList().copy();

@@ -1,47 +1,18 @@
 package fi.dy.masa.malilib.config.value;
 
 import com.google.common.collect.ImmutableList;
-import fi.dy.masa.malilib.util.StringUtils;
 
-public enum InfoType implements ConfigOptionListEntry<InfoType>
+public class InfoType extends BaseOptionListConfigValue
 {
-    MESSAGE_OVERLAY ("message", "malilib.label.info_type.message"),
-    HOTBAR          ("hotbar",  "malilib.label.info_type.hotbar"),
-    CHAT            ("chat",    "malilib.label.info_type.chat"),
-    NONE            ("none",    "malilib.label.info_type.none");
+    public static final InfoType MESSAGE_OVERLAY = new InfoType("message", "malilib.label.info_type.message");
+    public static final InfoType HOTBAR          = new InfoType("hotbar",  "malilib.label.info_type.hotbar");
+    public static final InfoType CHAT            = new InfoType("chat",    "malilib.label.info_type.chat");
+    public static final InfoType NONE            = new InfoType("none",    "malilib.label.info_type.none");
 
-    public static final ImmutableList<InfoType> VALUES = ImmutableList.copyOf(values());
+    public static final ImmutableList<InfoType> VALUES = ImmutableList.of(MESSAGE_OVERLAY, HOTBAR, CHAT, NONE);
 
-    private final String configString;
-    private final String translationKey;
-
-    InfoType(String configString, String translationKey)
+    private InfoType(String name, String translationKey)
     {
-        this.configString = configString;
-        this.translationKey = translationKey;
-    }
-
-    @Override
-    public String getStringValue()
-    {
-        return this.configString;
-    }
-
-    @Override
-    public String getDisplayName()
-    {
-        return StringUtils.translate(this.translationKey);
-    }
-
-    @Override
-    public InfoType cycle(boolean forward)
-    {
-        return BaseConfigOptionListEntry.cycleValue(VALUES, this.ordinal(), forward);
-    }
-
-    @Override
-    public InfoType fromString(String name)
-    {
-        return BaseConfigOptionListEntry.findValueByName(name, VALUES);
+        super(name, translationKey);
     }
 }

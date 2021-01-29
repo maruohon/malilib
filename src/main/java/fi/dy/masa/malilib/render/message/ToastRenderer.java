@@ -1,8 +1,11 @@
 package fi.dy.masa.malilib.render.message;
 
-import java.util.ArrayList;
 import java.util.Deque;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.annotation.Nullable;
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Queues;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
@@ -17,31 +20,25 @@ public class ToastRenderer
     public static final ToastRenderer INSTANCE = new ToastRenderer();
 
     protected final Minecraft mc;
-    protected final ArrayList<ArrayList<ToastInstance>> activeToasts = new ArrayList<>();
-    protected final ArrayList<Deque<ToastWidget>> toastQueue = new ArrayList<>();
+    protected final ArrayListMultimap<HudAlignment, ToastInstance> activeToasts = ArrayListMultimap.create();
+    protected final Map<HudAlignment, Deque<ToastWidget>> toastQueue = new HashMap<>();
     protected int maxToasts = 5;
 
     protected ToastRenderer()
     {
         this.mc = Minecraft.getMinecraft();
-
-        for (int i = 0; i < HudAlignment.values().length; ++i)
-        {
-            this.activeToasts.add(new ArrayList<>());
-            this.toastQueue.add(Queues.newArrayDeque());
-        }
     }
 
     public void addToast(HudAlignment alignment, ToastWidget toast)
     {
-        this.toastQueue.get(alignment.ordinal()).add(toast);
+        this.toastQueue.computeIfAbsent(alignment, (a) -> Queues.newArrayDeque()).add(toast);
     }
 
     @SuppressWarnings("unchecked")
     @Nullable
     public <T extends ToastWidget> T getToast(HudAlignment alignment, Class <? extends T> clazz)
     {
-        for (ToastInstance instance : this.activeToasts.get(alignment.ordinal()))
+        for (ToastInstance instance : this.activeToasts.get(alignment))
         {
             if (clazz.isAssignableFrom(instance.getToast().getClass()))
             {
@@ -49,7 +46,7 @@ public class ToastRenderer
             }
         }
 
-        for (Deque<ToastWidget> deque : this.toastQueue)
+        for (Deque<ToastWidget> deque : this.toastQueue.values())
         {
             for (ToastWidget toast : deque)
             {
@@ -60,7 +57,7 @@ public class ToastRenderer
             }
         }
 
-        return (T) null;
+        return null;
     }
 
     public void render()
@@ -70,9 +67,9 @@ public class ToastRenderer
             ScaledResolution res = new ScaledResolution(this.mc);
             RenderHelper.disableStandardItemLighting();
 
-            for (HudAlignment alignment : HudAlignment.values())
+            for (HudAlignment alignment : HudAlignment.VALUES)
             {
-                ArrayList<ToastInstance> list = this.activeToasts.get(alignment.ordinal());
+                List<ToastInstance> list = this.activeToasts.get(alignment);
 
                 if (list.isEmpty() == false)
                 {
@@ -90,7 +87,7 @@ public class ToastRenderer
                     }
                 }
 
-                Deque<ToastWidget> deque = this.toastQueue.get(alignment.ordinal());
+                Deque<ToastWidget> deque = this.toastQueue.computeIfAbsent(alignment, (a) -> Queues.newArrayDeque());
 
                 if (deque.isEmpty() == false)
                 {
@@ -105,31 +102,27 @@ public class ToastRenderer
         }
     }
 
-    protected int getBaseY(HudAlignment alignment, ScaledResolution res, ArrayList<ToastInstance> toasts)
+    protected int getBaseY(HudAlignment alignment, ScaledResolution res, List<ToastInstance> toasts)
     {
-        switch (alignment)
+        if (alignment == HudAlignment.BOTTOM_LEFT || alignment == HudAlignment.BOTTOM_RIGHT)
         {
-            case TOP_LEFT:
-            case TOP_RIGHT:
-                return 0;
-            case BOTTOM_LEFT:
-            case BOTTOM_RIGHT:
-                return res.getScaledHeight() - this.getTotalToastHeight(toasts);
-            case CENTER:
-                return res.getScaledHeight() / 2 - this.getTotalToastHeight(toasts) / 2;
-            default:
+            return res.getScaledHeight() - this.getTotalToastHeight(toasts);
+        }
+        else if (alignment == HudAlignment.CENTER)
+        {
+            return res.getScaledHeight() / 2 - this.getTotalToastHeight(toasts) / 2;
         }
 
         return 0;
     }
 
-    protected int getTotalToastHeight(ArrayList<ToastInstance> list)
+    protected int getTotalToastHeight(List<ToastInstance> list)
     {
         int height = 0;
 
-        for (int i = 0; i < list.size(); ++i)
+        for (ToastInstance toastInstance : list)
         {
-            height += list.get(i).getHeight();
+            height += toastInstance.getHeight();
         }
 
         return height;
@@ -186,20 +179,17 @@ public class ToastRenderer
             int height = this.toast.getHeight();
             int animationOffset = width;
 
-            switch (this.alignment)
+            if (this.alignment == HudAlignment.TOP_RIGHT || this.alignment == HudAlignment.BOTTOM_RIGHT)
             {
-                case TOP_RIGHT:
-                case BOTTOM_RIGHT:
-                    x = res.getScaledWidth() - this.toast.getWidth();
-                    break;
-                case CENTER:
-                    x = res.getScaledWidth() / 2 - this.toast.getWidth() / 2;
-                    break;
-                case TOP_LEFT:
-                case BOTTOM_LEFT:
-                    animationOffset = -animationOffset;
-                    break;
-                default:
+                x = res.getScaledWidth() - this.toast.getWidth();
+            }
+            else if (this.alignment == HudAlignment.TOP_LEFT || this.alignment == HudAlignment.BOTTOM_LEFT)
+            {
+                animationOffset = -animationOffset;
+            }
+            else if (this.alignment == HudAlignment.CENTER)
+            {
+                x = res.getScaledWidth() / 2 - this.toast.getWidth() / 2;
             }
 
             long currentTime = Minecraft.getSystemTime();

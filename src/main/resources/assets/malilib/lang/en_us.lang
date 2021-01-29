@@ -213,9 +213,9 @@ malilib.label.info_type.hotbar=Hotbar
 malilib.label.info_type.message=Message Overlay
 malilib.label.info_type.none=None
 
-malilib.label.key_action.both=BOTH
-malilib.label.key_action.press=PRESS
-malilib.label.key_action.release=RELEASE
+malilib.label.key_action.both=Both
+malilib.label.key_action.press=Press
+malilib.label.key_action.release=Release
 
 malilib.label.key_context.any=Any
 malilib.label.key_context.gui=GUI

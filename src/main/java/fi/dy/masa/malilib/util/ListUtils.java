@@ -39,4 +39,55 @@ public class ListUtils
             listFrom.addAll(newList);
         }
     }
+
+    /**
+     * Returns either the next or the previous entry in the list, depending on the reverse argument.
+     */
+    public static <T> T getNextEntry(List<T> list, T currentValue, boolean reverse)
+    {
+        return getNextEntry(list, currentValue, reverse, (v) -> true);
+    }
+
+    /**
+     * Returns either the next or the previous entry in the list, depending on the reverse argument,
+     * that passes the test in predicate.
+     */
+    public static <T> T getNextEntry(List<T> list, T currentValue, boolean reverse, Predicate<T> predicate)
+    {
+        final int size = list.size();
+
+        if (size > 1)
+        {
+            int newIndex = list.indexOf(currentValue);
+
+            if (newIndex != -1)
+            {
+                final int maxIndex = size - 1;
+                final int increment = (reverse ? -1 : 1);
+
+                for (int i = 0; i < size; ++i)
+                {
+                    newIndex += increment;
+
+                    if (newIndex >= size)
+                    {
+                        newIndex = 0;
+                    }
+                    else if (newIndex < 0)
+                    {
+                        newIndex = maxIndex;
+                    }
+
+                    T tmp = list.get(newIndex);
+
+                    if (predicate.test(tmp))
+                    {
+                        return tmp;
+                    }
+                }
+            }
+        }
+
+        return currentValue;
+    }
 }

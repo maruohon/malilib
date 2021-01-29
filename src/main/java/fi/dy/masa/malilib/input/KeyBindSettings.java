@@ -2,10 +2,8 @@ package fi.dy.masa.malilib.input;
 
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonObject;
-import fi.dy.masa.malilib.config.value.BaseConfigOptionListEntry;
-import fi.dy.masa.malilib.config.value.ConfigOptionListEntry;
+import fi.dy.masa.malilib.config.value.BaseOptionListConfigValue;
 import fi.dy.masa.malilib.util.JsonUtils;
-import fi.dy.masa.malilib.util.StringUtils;
 
 public class KeyBindSettings
 {
@@ -97,8 +95,8 @@ public class KeyBindSettings
     {
         JsonObject obj = new JsonObject();
 
-        obj.addProperty("activate_on", this.activateOn.name());
-        obj.addProperty("context", this.context.name());
+        obj.addProperty("activate_on", this.activateOn.getName());
+        obj.addProperty("context", this.context.getName());
         obj.addProperty("allow_empty", this.allowEmpty);
         obj.addProperty("allow_extra_keys", this.allowExtraKeys);
         obj.addProperty("order_sensitive", this.orderSensitive);
@@ -117,26 +115,12 @@ public class KeyBindSettings
 
         if (contextStr != null)
         {
-            for (Context ctx : Context.values())
-            {
-                if (ctx.name().equalsIgnoreCase(contextStr))
-                {
-                    context = ctx;
-                    break;
-                }
-            }
+            context = BaseOptionListConfigValue.findValueByName(contextStr, Context.VALUES);
         }
 
         if (activateStr != null)
         {
-            for (KeyAction act : KeyAction.values())
-            {
-                if (act.name().equalsIgnoreCase(activateStr))
-                {
-                    activateOn = act;
-                    break;
-                }
-            }
+            activateOn = BaseOptionListConfigValue.findValueByName(activateStr, KeyAction.VALUES);
         }
 
         boolean allowEmpty = JsonUtils.getBoolean(obj, "allow_empty");
@@ -155,65 +139,44 @@ public class KeyBindSettings
             return true;
         if (obj == null)
             return false;
-        if (getClass() != obj.getClass())
+        if (this.getClass() != obj.getClass())
             return false;
         KeyBindSettings other = (KeyBindSettings) obj;
-        if (activateOn != other.activateOn)
+        if (this.activateOn != other.activateOn)
             return false;
-        if (context != other.context)
+        if (this.context != other.context)
             return false;
-        if (allowEmpty != other.allowEmpty)
+        if (this.allowEmpty != other.allowEmpty)
             return false;
-        if (allowExtraKeys != other.allowExtraKeys)
+        if (this.allowExtraKeys != other.allowExtraKeys)
             return false;
-        if (cancel != other.cancel)
+        if (this.cancel != other.cancel)
             return false;
-        if (exclusive != other.exclusive)
+        if (this.exclusive != other.exclusive)
             return false;
-        if (orderSensitive != other.orderSensitive)
-            return false;
-        return true;
+        return this.orderSensitive == other.orderSensitive;
     }
 
-    public enum Context implements ConfigOptionListEntry<Context>
+    public static class Context extends BaseOptionListConfigValue
     {
-        INGAME  ("ingame",  "malilib.label.key_context.ingame"),
-        GUI     ("gui",     "malilib.label.key_context.gui"),
-        ANY     ("any",     "malilib.label.key_context.any");
+        public static final Context INGAME = new Context("ingame",  "malilib.label.key_context.ingame", 0);
+        public static final Context GUI    = new Context("gui",     "malilib.label.key_context.gui", 1);
+        public static final Context ANY    = new Context("any",     "malilib.label.key_context.any", 2);
 
-        public static final ImmutableList<Context> VALUES = ImmutableList.copyOf(values());
+        public static final ImmutableList<Context> VALUES = ImmutableList.of(INGAME, GUI, ANY);
 
-        private final String configString;
-        private final String translationKey;
+        protected final int iconIndex;
 
-        Context(String configString, String translationKey)
+        private Context(String name, String translationKey, int iconIndex)
         {
-            this.configString = configString;
-            this.translationKey = translationKey;
+            super(name, translationKey);
+
+            this.iconIndex = iconIndex;
         }
 
-        @Override
-        public String getStringValue()
+        public int getIconIndex()
         {
-            return this.configString;
-        }
-
-        @Override
-        public String getDisplayName()
-        {
-            return StringUtils.translate(this.translationKey);
-        }
-
-        @Override
-        public Context cycle(boolean forward)
-        {
-            return BaseConfigOptionListEntry.cycleValue(VALUES, this.ordinal(), forward);
-        }
-
-        @Override
-        public Context fromString(String name)
-        {
-            return BaseConfigOptionListEntry.findValueByName(name, VALUES);
+            return this.iconIndex;
         }
     }
 }

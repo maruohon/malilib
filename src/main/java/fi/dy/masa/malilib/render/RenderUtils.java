@@ -392,16 +392,13 @@ public class RenderUtils
         {
             final int width = fontRenderer.getStringWidth(line);
 
-            switch (alignment)
+            if (alignment == HudAlignment.TOP_RIGHT || alignment == HudAlignment.BOTTOM_RIGHT)
             {
-                case TOP_RIGHT:
-                case BOTTOM_RIGHT:
-                    posX = (scaledWidth / scale) - width - xOff - bgMargin;
-                    break;
-                case CENTER:
-                    posX = (scaledWidth / scale / 2) - (width / 2) - xOff;
-                    break;
-                default:
+                posX = (scaledWidth / scale) - width - xOff - bgMargin;
+            }
+            else if (alignment == HudAlignment.CENTER)
+            {
+                posX = (scaledWidth / scale / 2) - (width / 2) - xOff;
             }
 
             final int x = (int) posX;

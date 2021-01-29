@@ -7,8 +7,8 @@ import org.lwjgl.input.Keyboard;
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
-import fi.dy.masa.malilib.config.value.BaseConfigOptionListEntry;
-import fi.dy.masa.malilib.config.value.ConfigOptionListEntry;
+import fi.dy.masa.malilib.config.value.BaseOptionListConfigValue;
+import fi.dy.masa.malilib.config.value.OptionListConfigValue;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.ConfirmActionScreen;
 import fi.dy.masa.malilib.gui.config.ConfigSearchInfo;
@@ -211,47 +211,21 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
         return super.onKeyTyped(keyCode, scanCode, modifiers);
     }
 
-    public enum Scope implements ConfigOptionListEntry<Scope>
+    public static class Scope extends BaseOptionListConfigValue
     {
-        CURRENT_CATEGORY ("malilib.gui.label.config_scope.current_category"),
-        ALL_CATEGORIES   ("malilib.gui.label.config_scope.all_categories"),
-        ALL_MODS         ("malilib.gui.label.config_scope.all_mods");
+        public static final Scope CURRENT_CATEGORY = new Scope("malilib.gui.label.config_scope.current_category");
+        public static final Scope ALL_CATEGORIES   = new Scope("malilib.gui.label.config_scope.all_categories");
+        public static final Scope ALL_MODS         = new Scope("malilib.gui.label.config_scope.all_mods");
 
-        public static final ImmutableList<Scope> VALUES = ImmutableList.copyOf(values());
+        public static final ImmutableList<Scope> VALUES = ImmutableList.of(CURRENT_CATEGORY, ALL_CATEGORIES, ALL_MODS);
 
-        private final String translationKey;
-
-        Scope(String translationKey)
+        private Scope(String translationKey)
         {
-            this.translationKey = translationKey;
-        }
-
-        @Override
-        public String getStringValue()
-        {
-            return this.translationKey;
-        }
-
-        @Override
-        public String getDisplayName()
-        {
-            return StringUtils.translate(this.translationKey);
-        }
-
-        @Override
-        public Scope cycle(boolean forward)
-        {
-            return BaseConfigOptionListEntry.cycleValue(VALUES, this.ordinal(), forward);
-        }
-
-        @Override
-        public Scope fromString(String name)
-        {
-            return BaseConfigOptionListEntry.findValueByName(name, VALUES);
+            super(translationKey, translationKey);
         }
     }
 
-    public static class TypeFilter implements ConfigOptionListEntry<TypeFilter>
+    public static class TypeFilter implements OptionListConfigValue
     {
         public static final List<TypeFilter> VALUES = new ArrayList<>();
 
@@ -275,7 +249,7 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
         }
 
         @Override
-        public String getStringValue()
+        public String getName()
         {
             return this.translationKey;
         }
@@ -289,18 +263,6 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
         public boolean matches(@Nullable ConfigSearchInfo<ConfigInfo> info, ConfigInfo config)
         {
             return this.tester.test(info, config);
-        }
-
-        @Override
-        public TypeFilter cycle(boolean forward)
-        {
-            return BaseConfigOptionListEntry.cycleValue(VALUES, VALUES.indexOf(this), forward);
-        }
-
-        @Override
-        public TypeFilter fromString(String name)
-        {
-            return BaseConfigOptionListEntry.findValueByName(name, VALUES);
         }
 
         public static TypeFilter register(String translationKey, TypeFilterTest tester)

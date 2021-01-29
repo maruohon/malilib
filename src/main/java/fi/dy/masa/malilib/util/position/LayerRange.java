@@ -12,7 +12,7 @@ import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
-import fi.dy.masa.malilib.config.value.BaseConfigOptionListEntry;
+import fi.dy.masa.malilib.config.value.BaseOptionListConfigValue;
 import fi.dy.masa.malilib.config.value.LayerMode;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.listener.LayerRangeChangeListener;
@@ -553,9 +553,6 @@ public class LayerRange
     {
         switch (this.layerMode)
         {
-            case ALL:
-                return "";
-
             case SINGLE_LAYER:
                 return String.valueOf(this.layerSingle);
 
@@ -849,7 +846,7 @@ public class LayerRange
 
     public void fromJson(JsonObject obj)
     {
-        this.layerMode = BaseConfigOptionListEntry.findValueByName(JsonUtils.getString(obj, "mode"), LayerMode.VALUES);
+        this.layerMode = BaseOptionListConfigValue.findValueByName(JsonUtils.getString(obj, "mode"), LayerMode.VALUES);
         this.axis = EnumFacing.Axis.byName(JsonUtils.getString(obj, "axis"));
         if (this.axis == null) { this.axis = EnumFacing.Axis.Y; }
 

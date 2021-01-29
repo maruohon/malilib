@@ -1,48 +1,27 @@
 package fi.dy.masa.malilib.input;
 
 import com.google.common.collect.ImmutableList;
-import fi.dy.masa.malilib.config.value.BaseConfigOptionListEntry;
-import fi.dy.masa.malilib.config.value.ConfigOptionListEntry;
-import fi.dy.masa.malilib.util.StringUtils;
+import fi.dy.masa.malilib.config.value.BaseOptionListConfigValue;
 
-public enum KeyAction implements ConfigOptionListEntry<KeyAction>
+public class KeyAction extends BaseOptionListConfigValue
 {
-    PRESS   ("press",   "malilib.label.key_action.press"),
-    RELEASE ("release", "malilib.label.key_action.release"),
-    BOTH    ("both",    "malilib.label.key_action.both");
+    public static final KeyAction PRESS   = new KeyAction("press",   "malilib.label.key_action.press", 0);
+    public static final KeyAction RELEASE = new KeyAction("release", "malilib.label.key_action.release", 1);
+    public static final KeyAction BOTH    = new KeyAction("both",    "malilib.label.key_action.both", 2);
 
-    public static final ImmutableList<KeyAction> VALUES = ImmutableList.copyOf(values());
+    public static final ImmutableList<KeyAction> VALUES = ImmutableList.of(PRESS, RELEASE, BOTH);
 
-    private final String configString;
-    private final String translationKey;
+    protected final int iconIndex;
 
-    KeyAction(String configString, String translationKey)
+    public KeyAction(String name, String translationKey, int iconIndex)
     {
-        this.configString = configString;
-        this.translationKey = translationKey;
+        super(name, translationKey);
+
+        this.iconIndex = iconIndex;
     }
 
-    @Override
-    public String getStringValue()
+    public int getIconIndex()
     {
-        return this.configString;
-    }
-
-    @Override
-    public String getDisplayName()
-    {
-        return StringUtils.translate(this.translationKey);
-    }
-
-    @Override
-    public KeyAction cycle(boolean forward)
-    {
-        return BaseConfigOptionListEntry.cycleValue(VALUES, this.ordinal(), forward);
-    }
-
-    @Override
-    public KeyAction fromString(String name)
-    {
-        return BaseConfigOptionListEntry.findValueByName(name, VALUES);
+        return this.iconIndex;
     }
 }

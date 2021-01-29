@@ -197,16 +197,13 @@ public class GuiUtils
         int scaledHeight = GuiUtils.getScaledWindowHeight();
         int posY = yOrig;
 
-        switch (alignment)
+        if (alignment == HudAlignment.BOTTOM_LEFT || alignment == HudAlignment.BOTTOM_RIGHT)
         {
-            case BOTTOM_LEFT:
-            case BOTTOM_RIGHT:
-                posY = (int) ((scaledHeight / scale) - contentHeight - yOffset);
-                break;
-            case CENTER:
-                posY = (int) ((scaledHeight / scale / 2.0d) - (contentHeight / 2.0d) + yOffset);
-                break;
-            default:
+            posY = (int) ((scaledHeight / scale) - contentHeight - yOffset);
+        }
+        else if (alignment == HudAlignment.CENTER)
+        {
+            posY = (int) ((scaledHeight / scale / 2.0d) - (contentHeight / 2.0d) + yOffset);
         }
 
         return posY;

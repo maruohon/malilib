@@ -228,27 +228,25 @@ public class MessageUtils
     {
         synchronized (IN_GAME_MESSAGES_CENTER)
         {
-            switch (renderPosition)
+            if (renderPosition == HudAlignment.CENTER)
             {
-                case CENTER:
-                    IN_GAME_MESSAGES_CENTER.addMessage(type, lifeTime, translationKey, args);
-                    break;
-
-                case TOP_LEFT:
-                    IN_GAME_MESSAGES_TOP_LEFT.addMessage(type, lifeTime, translationKey, args);
-                    break;
-
-                case TOP_RIGHT:
-                    IN_GAME_MESSAGES_TOP_RIGHT.addMessage(type, lifeTime, translationKey, args);
-                    break;
-
-                case BOTTOM_LEFT:
-                    IN_GAME_MESSAGES_BOTTOM_LEFT.addMessage(type, lifeTime, translationKey, args);
-                    break;
-
-                case BOTTOM_RIGHT:
-                    IN_GAME_MESSAGES_BOTTOM_RIGHT.addMessage(type, lifeTime, translationKey, args);
-                    break;
+                IN_GAME_MESSAGES_CENTER.addMessage(type, lifeTime, translationKey, args);
+            }
+            else if (renderPosition == HudAlignment.TOP_LEFT)
+            {
+                IN_GAME_MESSAGES_TOP_LEFT.addMessage(type, lifeTime, translationKey, args);
+            }
+            else if (renderPosition == HudAlignment.TOP_RIGHT)
+            {
+                IN_GAME_MESSAGES_TOP_RIGHT.addMessage(type, lifeTime, translationKey, args);
+            }
+            else if (renderPosition == HudAlignment.BOTTOM_LEFT)
+            {
+                IN_GAME_MESSAGES_BOTTOM_LEFT.addMessage(type, lifeTime, translationKey, args);
+            }
+            else if (renderPosition == HudAlignment.BOTTOM_RIGHT)
+            {
+                IN_GAME_MESSAGES_BOTTOM_RIGHT.addMessage(type, lifeTime, translationKey, args);
             }
         }
     }

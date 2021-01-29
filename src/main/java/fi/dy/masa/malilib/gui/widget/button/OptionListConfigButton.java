@@ -36,7 +36,7 @@ public class OptionListConfigButton extends GenericButton
 
     protected void cycleValue(int mouseButton)
     {
-        this.config.cycleValue(mouseButton == 0);
+        this.config.cycleValue(mouseButton != 0);
         this.updateDisplayString();
 
         if (this.changeListener != null)

@@ -11,9 +11,9 @@ import fi.dy.masa.malilib.config.option.HotkeyedBooleanConfig;
 import fi.dy.masa.malilib.config.option.OptionListConfig;
 import fi.dy.masa.malilib.config.option.list.BlackWhiteListConfig;
 import fi.dy.masa.malilib.config.option.list.ValueListConfig;
-import fi.dy.masa.malilib.config.value.BaseConfigOptionListEntry;
+import fi.dy.masa.malilib.config.value.BaseOptionListConfigValue;
 import fi.dy.masa.malilib.config.value.BlackWhiteList;
-import fi.dy.masa.malilib.config.value.ConfigOptionListEntry;
+import fi.dy.masa.malilib.config.value.OptionListConfigValue;
 import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.restriction.UsageRestriction;
 
@@ -54,18 +54,18 @@ public class JsonConfigSerializers
         }
     }
 
-    public static JsonElement saveOptionListConfig(OptionListConfig<?> config)
+    public static <T extends OptionListConfigValue> JsonElement saveOptionListConfig(OptionListConfig<T> config)
     {
-        return new JsonPrimitive(config.getValue().getStringValue());
+        return new JsonPrimitive(config.getValue().getName());
     }
 
-    public static <T extends ConfigOptionListEntry<T>> void loadOptionListConfig(OptionListConfig<T> config, JsonElement element, String configName)
+    public static <T extends OptionListConfigValue> void loadOptionListConfig(OptionListConfig<T> config, JsonElement element, String configName)
     {
         try
         {
             if (element.isJsonPrimitive())
             {
-                config.loadValueFromConfig(config.getValue().fromString(element.getAsString()));
+                config.loadValueFromConfig(BaseOptionListConfigValue.findValueByName(element.getAsString(), config.getAllValues()));
             }
             else
             {
@@ -126,7 +126,7 @@ public class JsonConfigSerializers
         JsonObject obj = new JsonObject();
 
         BlackWhiteList<T> list = config.getValue();
-        obj.add("type", new JsonPrimitive(list.getListType().getStringValue()));
+        obj.add("type", new JsonPrimitive(list.getListType().getName()));
         obj.add("blacklist", JsonUtils.stringListAsArray(list.getBlackListAsString()));
         obj.add("whitelist", JsonUtils.stringListAsArray(list.getWhiteListAsString()));
 
@@ -145,7 +145,7 @@ public class JsonConfigSerializers
                     JsonUtils.hasArray(obj, "blacklist") &&
                     JsonUtils.hasArray(obj, "whitelist"))
                 {
-                    UsageRestriction.ListType type = BaseConfigOptionListEntry.findValueByName(JsonUtils.getString(obj, "type"), UsageRestriction.ListType.VALUES);
+                    UsageRestriction.ListType type = BaseOptionListConfigValue.findValueByName(JsonUtils.getString(obj, "type"), UsageRestriction.ListType.VALUES);
                     List<String> blackListStr = JsonUtils.arrayAsStringList(obj.getAsJsonArray("blacklist"));
                     List<String> whiteListStr = JsonUtils.arrayAsStringList(obj.getAsJsonArray("whitelist"));
 

@@ -55,8 +55,8 @@ public class KeybindSettingsScreen extends BaseDialogScreen
         this.title = BaseScreen.TXT_BOLD + StringUtils.translate("malilib.gui.title.keybind_settings.advanced", this.keybindName) + BaseScreen.TXT_RST;
 
         KeyBindSettings defaultSettings = this.keybind.getDefaultSettings();
-        this.cfgActivateOn     = new OptionListConfig<>("", defaultSettings.getActivateOn(),"malilib.gui.label.keybind_settings.activate_on",               "malilib.config.comment.keybind_settings.activate_on");
-        this.cfgContext        = new OptionListConfig<>("", defaultSettings.getContext(),   "malilib.gui.label.keybind_settings.context",                   "malilib.config.comment.keybind_settings.context");
+        this.cfgActivateOn     = new OptionListConfig<>("", defaultSettings.getActivateOn(), KeyAction.VALUES, "malilib.gui.label.keybind_settings.activate_on",               "malilib.config.comment.keybind_settings.activate_on");
+        this.cfgContext        = new OptionListConfig<>("", defaultSettings.getContext(),    KeyBindSettings.Context.VALUES, "malilib.gui.label.keybind_settings.context",                   "malilib.config.comment.keybind_settings.context");
         this.cfgAllowEmpty     = new BooleanConfig("", defaultSettings.getAllowEmpty(),     "malilib.gui.label.keybind_settings.allow_empty_keybind",       "malilib.config.comment.keybind_settings.allow_empty_keybind");
         this.cfgAllowExtra     = new BooleanConfig("", defaultSettings.getAllowExtraKeys(), "malilib.gui.label.keybind_settings.allow_extra_keys",          "malilib.config.comment.keybind_settings.allow_extra_keys");
         this.cfgOrderSensitive = new BooleanConfig("", defaultSettings.isOrderSensitive(),  "malilib.gui.label.keybind_settings.order_sensitive",           "malilib.config.comment.keybind_settings.order_sensitive");

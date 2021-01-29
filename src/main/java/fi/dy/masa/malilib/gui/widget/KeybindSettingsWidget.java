@@ -71,13 +71,13 @@ public class KeybindSettingsWidget extends BaseWidget
 
         int w = 18;
         int vStart = 166;
-        int v1 = vStart + (settings.getActivateOn().ordinal() * w);
+        int v1 = vStart + (settings.getActivateOn().getIconIndex() * w);
         int v2 = vStart + (settings.getAllowExtraKeys() ? w : 0);
         int v3 = vStart + (settings.isOrderSensitive() ? w : 0);
         int v4 = vStart + (settings.isExclusive() ? w : 0);
         int v5 = vStart + (settings.shouldCancel() ? w : 0);
         int v6 = vStart + (settings.getAllowEmpty() ? w : 0);
-        int v7 = 202 + settings.getContext().ordinal() * w;
+        int v7 = 202 + settings.getContext().getIconIndex() * w;
 
         int edgeColor = this.keyBind.areSettingsModified() ? 0xFFFFBB33 : 0xFFFFFFFF;
 
@@ -113,12 +113,12 @@ public class KeybindSettingsWidget extends BaseWidget
         KeyAction action = settings.getActivateOn();
         modified = action != defaultSettings.getActivateOn();
         nameColor = modified ? BaseScreen.TXT_YELLOW : BaseScreen.TXT_GRAY;
-        val = BaseScreen.TXT_BLUE + action.name();
+        val = BaseScreen.TXT_BLUE + action.getDisplayName();
         text.add(String.format("%s%s: %s", nameColor, name, val));
 
         name = StringUtils.translate("malilib.gui.label.keybind_settings.context");
         Context context = settings.getContext();
-        val = BaseScreen.TXT_BLUE + context.name();
+        val = BaseScreen.TXT_BLUE + context.getDisplayName();
         nameColor = context != defaultSettings.getContext() ? BaseScreen.TXT_YELLOW : BaseScreen.TXT_GRAY;
         text.add(String.format("%s%s: %s", nameColor, name, val));
 

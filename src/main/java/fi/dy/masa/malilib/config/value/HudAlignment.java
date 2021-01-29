@@ -1,48 +1,19 @@
 package fi.dy.masa.malilib.config.value;
 
 import com.google.common.collect.ImmutableList;
-import fi.dy.masa.malilib.util.StringUtils;
 
-public enum HudAlignment implements ConfigOptionListEntry<HudAlignment>
+public class HudAlignment extends BaseOptionListConfigValue
 {
-    TOP_LEFT        ("top_left",        "malilib.label.alignment.top_left"),
-    TOP_RIGHT       ("top_right",       "malilib.label.alignment.top_right"),
-    BOTTOM_LEFT     ("bottom_left",     "malilib.label.alignment.bottom_left"),
-    BOTTOM_RIGHT    ("bottom_right",    "malilib.label.alignment.bottom_right"),
-    CENTER          ("center",          "malilib.label.alignment.center");
+    public static final HudAlignment TOP_LEFT     = new HudAlignment("top_left",        "malilib.label.alignment.top_left");
+    public static final HudAlignment TOP_RIGHT    = new HudAlignment("top_right",       "malilib.label.alignment.top_right");
+    public static final HudAlignment BOTTOM_LEFT  = new HudAlignment("bottom_left",     "malilib.label.alignment.bottom_left");
+    public static final HudAlignment BOTTOM_RIGHT = new HudAlignment("bottom_right",    "malilib.label.alignment.bottom_right");
+    public static final HudAlignment CENTER       = new HudAlignment("center",          "malilib.label.alignment.center");
 
-    public static final ImmutableList<HudAlignment> VALUES = ImmutableList.copyOf(values());
+    public static final ImmutableList<HudAlignment> VALUES = ImmutableList.of(TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT, CENTER);
 
-    private final String configString;
-    private final String translationKey;
-
-    HudAlignment(String configString, String translationKey)
+    private HudAlignment(String name, String translationKey)
     {
-        this.configString = configString;
-        this.translationKey = translationKey;
-    }
-
-    @Override
-    public String getStringValue()
-    {
-        return this.configString;
-    }
-
-    @Override
-    public String getDisplayName()
-    {
-        return StringUtils.translate(this.translationKey);
-    }
-
-    @Override
-    public HudAlignment cycle(boolean forward)
-    {
-        return BaseConfigOptionListEntry.cycleValue(VALUES, this.ordinal(), forward);
-    }
-
-    @Override
-    public HudAlignment fromString(String name)
-    {
-        return BaseConfigOptionListEntry.findValueByName(name, VALUES);
+        super(name, translationKey);
     }
 }

@@ -1,14 +1,14 @@
 package fi.dy.masa.malilib.gui.widget.list.entry.config;
 
 import fi.dy.masa.malilib.config.option.OptionListConfig;
-import fi.dy.masa.malilib.config.value.ConfigOptionListEntry;
+import fi.dy.masa.malilib.config.value.OptionListConfigValue;
 import fi.dy.masa.malilib.gui.widget.button.OptionListConfigButton;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 
 public class OptionListConfigWidget extends BaseConfigWidget<OptionListConfig<?>>
 {
     protected final OptionListConfig<?> config;
-    protected final ConfigOptionListEntry<?> initialValue;
+    protected final OptionListConfigValue initialValue;
     protected final OptionListConfigButton optionListButton;
 
     public OptionListConfigWidget(int x, int y, int width, int height, int listIndex,

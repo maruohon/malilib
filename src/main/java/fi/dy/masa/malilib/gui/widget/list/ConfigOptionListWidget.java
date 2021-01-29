@@ -1,8 +1,9 @@
 package fi.dy.masa.malilib.gui.widget.list;
 
 import java.util.ArrayList;
-import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
@@ -11,8 +12,8 @@ import fi.dy.masa.malilib.gui.config.ConfigOptionWidgetFactory;
 import fi.dy.masa.malilib.gui.config.ConfigTab;
 import fi.dy.masa.malilib.gui.config.ConfigTabProvider;
 import fi.dy.masa.malilib.gui.config.ConfigTabRegistry;
-import fi.dy.masa.malilib.gui.config.ConfigWidgetRegistry;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
+import fi.dy.masa.malilib.gui.config.ConfigWidgetRegistry;
 import fi.dy.masa.malilib.gui.config.KeybindEditingScreen;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
@@ -22,8 +23,8 @@ import fi.dy.masa.malilib.gui.widget.list.entry.config.BaseConfigWidget;
 
 public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget<C>
 {
-    protected final EnumMap<ConfigsSearchBarWidget.Scope, List<C>> cachedConfigs = new EnumMap<>(ConfigsSearchBarWidget.Scope.class);
-    protected final EnumMap<ConfigsSearchBarWidget.Scope, List<ConfigTab>> cachedCategories = new EnumMap<>(ConfigsSearchBarWidget.Scope.class);
+    protected final Map<ConfigsSearchBarWidget.Scope, List<C>> cachedConfigs = new HashMap<>();
+    protected final Map<ConfigsSearchBarWidget.Scope, List<ConfigTab>> cachedCategories = new HashMap<>();
     protected final String modId;
     protected final IntSupplier defaultElementWidthSupplier;
     @Nullable protected ConfigsSearchBarWidget configsSearchBarWidget;

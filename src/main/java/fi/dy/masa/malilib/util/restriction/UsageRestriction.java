@@ -8,9 +8,8 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.RegistryNamespaced;
 import fi.dy.masa.malilib.MaLiLib;
-import fi.dy.masa.malilib.config.value.BaseConfigOptionListEntry;
+import fi.dy.masa.malilib.config.value.BaseOptionListConfigValue;
 import fi.dy.masa.malilib.config.value.BlackWhiteList;
-import fi.dy.masa.malilib.config.value.ConfigOptionListEntry;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class UsageRestriction<TYPE>
@@ -156,45 +155,17 @@ public class UsageRestriction<TYPE>
         }
     }
 
-    public enum ListType implements ConfigOptionListEntry<ListType>
+    public static class ListType extends BaseOptionListConfigValue
     {
-        NONE        ("none",        "malilib.label.list_type.none"),
-        BLACKLIST   ("blacklist",   "malilib.label.list_type.blacklist"),
-        WHITELIST   ("whitelist",   "malilib.label.list_type.whitelist");
+        public static final ListType NONE      = new ListType("none",        "malilib.label.list_type.none");
+        public static final ListType BLACKLIST = new ListType("blacklist",   "malilib.label.list_type.blacklist");
+        public static final ListType WHITELIST = new ListType("whitelist",   "malilib.label.list_type.whitelist");
 
-        public static final ImmutableList<ListType> VALUES = ImmutableList.copyOf(values());
+        public static final ImmutableList<ListType> VALUES = ImmutableList.of(NONE, BLACKLIST, WHITELIST);
 
-        private final String configString;
-        private final String translationKey;
-
-        ListType(String configString, String translationKey)
+        private ListType(String name, String translationKey)
         {
-            this.configString = configString;
-            this.translationKey = translationKey;
-        }
-
-        @Override
-        public String getStringValue()
-        {
-            return this.configString;
-        }
-
-        @Override
-        public String getDisplayName()
-        {
-            return StringUtils.translate(this.translationKey);
-        }
-
-        @Override
-        public ListType cycle(boolean forward)
-        {
-            return BaseConfigOptionListEntry.cycleValue(VALUES, this.ordinal(), forward);
-        }
-
-        @Override
-        public ListType fromString(String name)
-        {
-            return BaseConfigOptionListEntry.findValueByName(name, VALUES);
+            super(name, translationKey);
         }
     }
 }

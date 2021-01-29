@@ -14,6 +14,7 @@ import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.button.OnOffButton;
 import fi.dy.masa.malilib.gui.widget.button.OnOffStyle;
 import fi.dy.masa.malilib.gui.widget.list.entry.SelectionListener;
+import fi.dy.masa.malilib.util.ListUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.position.LayerRange;
 
@@ -191,7 +192,7 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
         {
             if (this.type == Type.MODE)
             {
-                this.layerRange.setLayerMode(this.layerRange.getLayerMode().cycle(mouseButton == 0));
+                this.layerRange.setLayerMode(ListUtils.getNextEntry(LayerMode.VALUES, this.layerRange.getLayerMode(), mouseButton != 0));
             }
             else if (this.type == Type.AXIS)
             {

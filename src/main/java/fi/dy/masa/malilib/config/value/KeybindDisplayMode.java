@@ -1,47 +1,18 @@
 package fi.dy.masa.malilib.config.value;
 
 import com.google.common.collect.ImmutableList;
-import fi.dy.masa.malilib.util.StringUtils;
 
-public enum KeybindDisplayMode implements ConfigOptionListEntry<KeybindDisplayMode>
+public class KeybindDisplayMode extends BaseOptionListConfigValue
 {
-    NONE            ("none",                "malilib.gui.label.keybind_display.none"),
-    KEYS            ("keys",                "malilib.gui.label.keybind_display.keys"),
-    ACTIONS         ("actions",             "malilib.gui.label.keybind_display.actions"),
-    KEYS_ACTIONS    ("keys_and_actions",    "malilib.gui.label.keybind_display.keys_and_actions");
+    public static final KeybindDisplayMode NONE         = new KeybindDisplayMode("none",                "malilib.gui.label.keybind_display.none");
+    public static final KeybindDisplayMode KEYS         = new KeybindDisplayMode("keys",                "malilib.gui.label.keybind_display.keys");
+    public static final KeybindDisplayMode ACTIONS      = new KeybindDisplayMode("actions",             "malilib.gui.label.keybind_display.actions");
+    public static final KeybindDisplayMode KEYS_ACTIONS = new KeybindDisplayMode("keys_and_actions",    "malilib.gui.label.keybind_display.keys_and_actions");
 
-    public static final ImmutableList<KeybindDisplayMode> VALUES = ImmutableList.copyOf(values());
+    public static final ImmutableList<KeybindDisplayMode> VALUES = ImmutableList.of(NONE, KEYS, ACTIONS, KEYS_ACTIONS);
 
-    private final String configString;
-    private final String translationKey;
-
-    KeybindDisplayMode(String configString, String translationKey)
+    private KeybindDisplayMode(String name, String translationKey)
     {
-        this.configString = configString;
-        this.translationKey = translationKey;
-    }
-
-    @Override
-    public String getStringValue()
-    {
-        return this.configString;
-    }
-
-    @Override
-    public String getDisplayName()
-    {
-        return StringUtils.translate(this.translationKey);
-    }
-
-    @Override
-    public KeybindDisplayMode cycle(boolean forward)
-    {
-        return BaseConfigOptionListEntry.cycleValue(VALUES, this.ordinal(), forward);
-    }
-
-    @Override
-    public KeybindDisplayMode fromString(String name)
-    {
-        return BaseConfigOptionListEntry.findValueByName(name, VALUES);
+        super(name, translationKey);
     }
 }

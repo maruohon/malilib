@@ -1,46 +1,17 @@
 package fi.dy.masa.malilib.config.value;
 
 import com.google.common.collect.ImmutableList;
-import fi.dy.masa.malilib.util.StringUtils;
 
-public enum BlockSnap implements ConfigOptionListEntry<BlockSnap>
+public class BlockSnap extends BaseOptionListConfigValue
 {
-    NONE        ("none",    "malilib.gui.label.block_snap.none"),
-    CENTER      ("center",  "malilib.gui.label.block_snap.center"),
-    CORNER      ("corner",  "malilib.gui.label.block_snap.corner");
+    public static final BlockSnap NONE   = new BlockSnap("none",    "malilib.gui.label.block_snap.none");
+    public static final BlockSnap CENTER = new BlockSnap("center",  "malilib.gui.label.block_snap.center");
+    public static final BlockSnap CORNER = new BlockSnap("corner",  "malilib.gui.label.block_snap.corner");
 
-    public static final ImmutableList<BlockSnap> VALUES = ImmutableList.copyOf(values());
+    public static final ImmutableList<BlockSnap> VALUES = ImmutableList.of(NONE, CENTER, CORNER);
 
-    private final String configString;
-    private final String translationKey;
-
-    BlockSnap(String configString, String translationKey)
+    private BlockSnap(String name, String translationKey)
     {
-        this.configString = configString;
-        this.translationKey = translationKey;
-    }
-
-    @Override
-    public String getStringValue()
-    {
-        return this.configString;
-    }
-
-    @Override
-    public String getDisplayName()
-    {
-        return StringUtils.translate(this.translationKey);
-    }
-
-    @Override
-    public BlockSnap cycle(boolean forward)
-    {
-        return BaseConfigOptionListEntry.cycleValue(VALUES, this.ordinal(), forward);
-    }
-
-    @Override
-    public BlockSnap fromString(String name)
-    {
-        return BaseConfigOptionListEntry.findValueByName(name, VALUES);
+        super(name, translationKey);
     }
 }
