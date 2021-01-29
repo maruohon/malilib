@@ -2,8 +2,10 @@ package fi.dy.masa.malilib.message;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import org.apache.commons.lang3.tuple.Pair;
 import com.google.common.collect.ImmutableList;
@@ -13,7 +15,7 @@ public class OrderedStringListFactory
 {
     protected static final String AUTOMATIC_KEY_PREFIX = "_auto_";
 
-    protected final HashMap<String, Pair<Integer, Supplier<List<String>>>> providers = new HashMap<>();
+    protected final HashMap<String, Pair<Integer, Function<List<String>, List<String>>>> providers = new HashMap<>();
     protected ImmutableList<String> lines = ImmutableList.of();
     protected boolean dirty;
 
@@ -49,7 +51,7 @@ public class OrderedStringListFactory
     {
         if (this.providers.containsKey(AUTOMATIC_KEY_PREFIX))
         {
-            List<String> newLines = new ArrayList<>(this.providers.get(AUTOMATIC_KEY_PREFIX).getValue().get());
+            List<String> newLines = new ArrayList<>(this.providers.get(AUTOMATIC_KEY_PREFIX).getValue().apply(Collections.emptyList()));
             newLines.addAll(linesIn);
             linesIn = newLines;
         }
@@ -93,6 +95,17 @@ public class OrderedStringListFactory
      * they are sorted by their numerical priority (so smaller priority value comes first).
      */
     public void setStringListProvider(String key, Supplier<List<String>> supplier, int priority)
+    {
+        this.setStringListProvider(key, (lines) -> supplier.get(), priority);
+    }
+
+    /**
+     * Adds the provided line supplier, by using the provided key.
+     * The key can be used to remove just these lines later.
+     * The priority is the sort order of all the line suppliers,
+     * they are sorted by their numerical priority (so smaller priority value comes first).
+     */
+    public void setStringListProvider(String key, Function<List<String>, List<String>> supplier, int priority)
     {
         this.providers.put(key, Pair.of(priority, supplier));
         this.markDirty();
@@ -138,23 +151,23 @@ public class OrderedStringListFactory
      */
     public void updateList()
     {
-        ArrayList<Pair<Integer, Supplier<List<String>>>> providers = new ArrayList<>(this.providers.values());
+        ArrayList<Pair<Integer, Function<List<String>, List<String>>>> providers = new ArrayList<>(this.providers.values());
         providers.sort(java.util.Map.Entry.comparingByKey());
 
-        ImmutableList.Builder<String> builder = ImmutableList.builder();
+        ArrayList<String> allLines = new ArrayList<>();
 
-        for (Pair<Integer, Supplier<List<String>>> pair : providers)
+        for (Pair<Integer, Function<List<String>, List<String>>> pair : providers)
         {
-            List<String> lines = pair.getRight().get();
+            List<String> rawLines = pair.getRight().apply(allLines);
 
-            for (String line : lines)
+            for (String line : rawLines)
             {
                 String[] parts = StringUtils.translate(line).split("\\n");
-                builder.addAll(Arrays.asList(parts));
+                allLines.addAll(Arrays.asList(parts));
             }
         }
 
-        this.lines = builder.build();
+        this.lines = ImmutableList.copyOf(allLines);
         this.dirty = false;
     }
 

@@ -28,7 +28,7 @@ public class OptionListConfigButton extends GenericButton
 
         this.config = config;
         this.prefixTranslationKey = prefixTranslationKey;
-        this.hoverInfoFactory.setStringListProvider("list_preview", this::getOptionListPreviewHoverString);
+        this.hoverInfoFactory.setStringListProvider("list_preview", this::getOptionListPreviewHoverString, 100);
 
         this.setActionListener((btn, mbtn) -> this.cycleValue(mbtn));
         this.updateDisplayString();
@@ -65,16 +65,24 @@ public class OptionListConfigButton extends GenericButton
         }
     }
 
-    protected List<String> getOptionListPreviewHoverString()
+    protected List<String> getOptionListPreviewHoverString(List<String> previousLines)
+    {
+        return getOptionListPreviewHoverString(this.config, previousLines);
+    }
+
+    public static List<String> getOptionListPreviewHoverString(OptionListConfig<?> config, List<String> previousLines)
     {
         List<String> lines = new ArrayList<>();
-        List<OptionListConfigValue> allValues = new ArrayList<>(this.config.getAllValues());
-        Set<OptionListConfigValue> allowedValues = new HashSet<>(this.config.getAllowedValues());
-        OptionListConfigValue currentValue = this.config.getValue();
+        List<OptionListConfigValue> allValues = new ArrayList<>(config.getAllValues());
+        Set<OptionListConfigValue> allowedValues = new HashSet<>(config.getAllowedValues());
+        OptionListConfigValue currentValue = config.getValue();
         int totalValues = allValues.size();
-        int allowedValuesCount = this.config.getAllowedValues().size();
+        int allowedValuesCount = config.getAllowedValues().size();
 
-        lines.add("");
+        if (previousLines.isEmpty() == false)
+        {
+            lines.add("");
+        }
 
         if (totalValues == allowedValuesCount)
         {
