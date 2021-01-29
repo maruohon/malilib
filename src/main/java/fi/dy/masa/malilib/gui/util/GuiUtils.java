@@ -64,6 +64,16 @@ public class GuiUtils
         return Minecraft.getMinecraft().currentScreen;
     }
 
+    public static void reInitCurrentScreen()
+    {
+        Minecraft mc = Minecraft.getMinecraft();
+
+        if (mc.currentScreen != null)
+        {
+            mc.currentScreen.initGui();
+        }
+    }
+
     public static boolean isMouseInRegion(int mouseX, int mouseY, int x, int y, int width, int height)
     {
         return mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + height;

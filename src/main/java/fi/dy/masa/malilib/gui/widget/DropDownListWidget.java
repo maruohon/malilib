@@ -46,9 +46,11 @@ public class DropDownListWidget<T> extends ContainerWidget
     @Nullable protected SelectionListener<T> selectionListener;
     @Nullable protected T selectedEntry;
     protected LeftRight openIconSide = LeftRight.RIGHT;
+    protected boolean enabled = true;
     protected boolean isOpen;
     protected boolean searchOpen;
     protected boolean noCurrentEntryBar;
+    protected int borderColorDisabled = 0xFF707070;
     protected int borderColorOpen = 0xFF40F0F0;
     protected int dropdownHeight;
     protected int dropdownTopY;
@@ -153,6 +155,12 @@ public class DropDownListWidget<T> extends ContainerWidget
         this.reAddSubWidgets();
     }
 
+    public void setEnabled(boolean enabled)
+    {
+        this.enabled = enabled;
+        this.updateSelectionBar();
+    }
+
     public void setTextColor(int color)
     {
         this.textColor = color;
@@ -206,7 +214,7 @@ public class DropDownListWidget<T> extends ContainerWidget
             this.dropDownSubWidgets.add(this.openCloseButton);
         }
 
-        if (this.isOpen)
+        if (this.isOpen())
         {
             this.addWidget(this.scrollBar);
 
@@ -299,7 +307,7 @@ public class DropDownListWidget<T> extends ContainerWidget
     {
         this.listEntryWidgets.clear();
 
-        if (this.isOpen == false)
+        if (this.isOpen() == false)
         {
             return;
         }
@@ -410,12 +418,15 @@ public class DropDownListWidget<T> extends ContainerWidget
 
     protected void toggleOpen()
     {
-        this.setOpen(! this.isOpen);
+        if (this.enabled)
+        {
+            this.setOpen(! this.isOpen);
+        }
     }
 
     protected void setOpen(boolean isOpen)
     {
-        this.isOpen = isOpen;
+        this.isOpen = isOpen && this.enabled;
 
         this.reCreateListEntryWidgets();
 
@@ -423,13 +434,11 @@ public class DropDownListWidget<T> extends ContainerWidget
         {
             this.setZLevel(this.getZLevel() - 50);
             this.setSearchOpen(false);
-            this.selectionBarWidget.setBorderColor(0xFFC0C0C0);
         }
         // setSearchOpen() already re-adds the widgets
         else
         {
             this.setZLevel(this.getZLevel() + 50);
-            this.selectionBarWidget.setBorderColor(this.borderColorOpen);
             // Add/remove the sub widgets as needed
             this.reAddSubWidgets();
         }
@@ -468,7 +477,7 @@ public class DropDownListWidget<T> extends ContainerWidget
     @Override
     public int getHeight()
     {
-        if (this.isOpen)
+        if (this.isOpen())
         {
             return this.totalHeight;
         }
@@ -479,12 +488,12 @@ public class DropDownListWidget<T> extends ContainerWidget
     @Override
     public boolean isMouseOver(int mouseX, int mouseY)
     {
-        if (this.noCurrentEntryBar && this.isOpen == false)
+        if (this.noCurrentEntryBar && this.isOpen() == false)
         {
             return this.openCloseButton != null && this.openCloseButton.isMouseOver(mouseX, mouseY);
         }
 
-        if (this.isOpen && this.searchOpen && this.searchField.isMouseOver(mouseX, mouseY))
+        if (this.isOpen() && this.searchOpen && this.searchField.isMouseOver(mouseX, mouseY))
         {
             return true;
         }
@@ -496,7 +505,7 @@ public class DropDownListWidget<T> extends ContainerWidget
 
         int x = this.getX();
 
-        return this.isOpen && mouseX >= x && mouseX < x + this.getWidth() &&
+        return this.isOpen() && mouseX >= x && mouseX < x + this.getWidth() &&
                mouseY >= this.dropdownTopY && mouseY < this.dropdownTopY + this.dropdownHeight;
     }
 
@@ -506,7 +515,7 @@ public class DropDownListWidget<T> extends ContainerWidget
         // Close the dropdown when clicking outside of it
         if (this.isMouseOver(mouseX, mouseY) == false)
         {
-            if (this.isOpen)
+            if (this.isOpen())
             {
                 this.setOpen(false);
                 return true;
@@ -521,7 +530,7 @@ public class DropDownListWidget<T> extends ContainerWidget
             return true;
         }
 
-        if (this.isOpen && mouseY >= this.dropdownTopY)
+        if (this.isOpen() && mouseY >= this.dropdownTopY)
         {
             if (this.scrollBar.onMouseClicked(mouseX, mouseY, mouseButton))
             {
@@ -541,7 +550,7 @@ public class DropDownListWidget<T> extends ContainerWidget
     @Override
     protected boolean onMouseScrolled(int mouseX, int mouseY, double mouseWheelDelta)
     {
-        if (this.isOpen)
+        if (this.isOpen())
         {
             if (this.searchOpen)
             {
@@ -566,7 +575,7 @@ public class DropDownListWidget<T> extends ContainerWidget
             return true;
         }
 
-        if (this.isOpen)
+        if (this.isOpen())
         {
             if (keyCode == Keyboard.KEY_ESCAPE)
             {
@@ -591,7 +600,7 @@ public class DropDownListWidget<T> extends ContainerWidget
     @Override
     public boolean onCharTyped(char charIn, int modifiers)
     {
-        if (this.isOpen)
+        if (this.isOpen())
         {
             if (this.searchOpen == false && this.searchField.isUsableCharacter(charIn, modifiers))
             {
@@ -678,7 +687,7 @@ public class DropDownListWidget<T> extends ContainerWidget
     public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
     {
         // Render the open dropdown list
-        if (this.isOpen)
+        if (this.isOpen())
         {
             int diffY = y - this.getY();
 
@@ -807,6 +816,9 @@ public class DropDownListWidget<T> extends ContainerWidget
         @Override
         public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
         {
+            DropDownListWidget<T> dropDown = this.dropdownWidget;
+            this.setBorderColor(dropDown.enabled ? (dropDown.isOpen() ? dropDown.borderColorOpen : dropDown.borderColorUL) : dropDown.borderColorDisabled);
+
             super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hovered);
 
             String text = this.displayString;
@@ -827,7 +839,8 @@ public class DropDownListWidget<T> extends ContainerWidget
                 text = StringUtils.clampTextToRenderLength(text, maxWidth, LeftRight.RIGHT, " ...");
             }
 
-            this.drawString(tx, ty, z, this.textColor, text);
+            int textColor = dropDown.enabled ? this.textColor : 0xFF505050;
+            this.drawString(tx, ty, z, textColor, text);
         }
 
         @Override
@@ -862,6 +875,7 @@ public class DropDownListWidget<T> extends ContainerWidget
         public void postRenderHovered(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
         {
             super.postRenderHovered(mouseX, mouseY, isActiveGui, hoveredWidgetId);
+            this.dropdownWidget.postRenderHovered(mouseX, mouseY, isActiveGui, this.dropdownWidget.getId());
 
             if (this.dropdownWidget.isOpen() && this.openStateHoverText != null)
             {

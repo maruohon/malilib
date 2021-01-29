@@ -1,18 +1,24 @@
 package fi.dy.masa.malilib.gui.widget.list.entry.config;
 
+import java.util.ArrayList;
+import java.util.List;
+import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.config.option.OptionListConfig;
 import fi.dy.masa.malilib.config.value.OptionListConfigValue;
-import fi.dy.masa.malilib.gui.widget.button.OptionListConfigButton;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
+import fi.dy.masa.malilib.gui.widget.BaseWidget;
+import fi.dy.masa.malilib.gui.widget.DropDownListWidget;
+import fi.dy.masa.malilib.gui.widget.button.OptionListConfigButton;
 
-public class OptionListConfigWidget extends BaseConfigWidget<OptionListConfig<?>>
+public class OptionListConfigWidget extends BaseConfigWidget<OptionListConfig<OptionListConfigValue>>
 {
-    protected final OptionListConfig<?> config;
+    protected final OptionListConfig<OptionListConfigValue> config;
     protected final OptionListConfigValue initialValue;
     protected final OptionListConfigButton optionListButton;
+    protected final DropDownListWidget<OptionListConfigValue> dropDownWidget;
 
     public OptionListConfigWidget(int x, int y, int width, int height, int listIndex,
-                                  int originalListIndex, OptionListConfig<?> config, ConfigWidgetContext ctx)
+                                  int originalListIndex, OptionListConfig<OptionListConfigValue> config, ConfigWidgetContext ctx)
     {
         super(x, y, width, height, listIndex, originalListIndex, config, ctx);
 
@@ -23,9 +29,29 @@ public class OptionListConfigWidget extends BaseConfigWidget<OptionListConfig<?>
         this.optionListButton.setHoverStringProvider("locked", this.config::getLockAndOverrideMessages);
         this.optionListButton.setChangeListener(this::updateResetButtonState);
 
+        ArrayList<OptionListConfigValue> values = new ArrayList<>(config.getAllowedValues());
+        this.dropDownWidget = new DropDownListWidget<>(x, y, 80, 16, 200, 20, values, OptionListConfigValue::getDisplayName, null);
+        this.dropDownWidget.setSelectedEntry(config.getValue());
+        this.dropDownWidget.getHoverInfoFactory().setStringListProvider("list_preview", this::getOptionListPreviewHoverString, 99);
+        this.dropDownWidget.setHoverStringProvider("locked", this.config::getLockAndOverrideMessages);
+        this.dropDownWidget.setSelectionListener((v) -> {
+            this.config.setValue(v);
+            this.dropDownWidget.updateHoverStrings();
+            this.updateResetButtonState();
+        });
+
         this.resetButton.setActionListener((btn, mbtn) -> {
             this.config.resetToDefault();
-            this.optionListButton.updateDisplayString();
+
+            if (MaLiLibConfigs.Generic.OPTION_LIST_CONFIG_DROPDOWN.getBooleanValue())
+            {
+                this.dropDownWidget.setSelectedEntry(this.config.getValue());
+            }
+            else
+            {
+                this.optionListButton.updateDisplayString();
+            }
+
             this.updateResetButtonState();
         });
     }
@@ -38,15 +64,27 @@ public class OptionListConfigWidget extends BaseConfigWidget<OptionListConfig<?>
         int x = this.getElementsStartPosition();
         int y = this.getY() + 1;
         int elementWidth = this.getElementWidth();
-
-        this.optionListButton.setPosition(x, y);
-        this.optionListButton.setWidth(elementWidth);
-        this.optionListButton.setEnabled(this.config.isLocked() == false);
-        this.optionListButton.updateHoverStrings();
+        boolean useDropDown = MaLiLibConfigs.Generic.OPTION_LIST_CONFIG_DROPDOWN.getBooleanValue();
 
         this.updateResetButton(x + elementWidth + 4, y);
 
-        this.addWidget(this.optionListButton);
+        BaseWidget widget = useDropDown ? this.dropDownWidget : this.optionListButton;
+
+        if (useDropDown)
+        {
+            y += 2;
+            this.dropDownWidget.setEnabled(this.config.isLocked() == false);
+        }
+        else
+        {
+            this.optionListButton.setEnabled(this.config.isLocked() == false);
+        }
+
+        widget.setPosition(x, y);
+        widget.setWidth(elementWidth);
+        widget.updateHoverStrings();
+
+        this.addWidget(widget);
         this.addWidget(this.resetButton);
     }
 
@@ -54,5 +92,10 @@ public class OptionListConfigWidget extends BaseConfigWidget<OptionListConfig<?>
     public boolean wasModified()
     {
         return this.config.getValue().equals(this.initialValue) == false;
+    }
+
+    protected List<String> getOptionListPreviewHoverString(List<String> previousLines)
+    {
+        return OptionListConfigButton.getOptionListPreviewHoverString(this.config, previousLines);
     }
 }

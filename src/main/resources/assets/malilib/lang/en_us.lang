@@ -9,6 +9,7 @@ malilib.config.comment.keybinddisplayalignment=The alignment for the keybind dis
 malilib.config.comment.keybinddisplaycallbackonly=If enabled, then only keybinds that have a defined action callback\nwill be displayed on the keybind display toast.
 malilib.config.comment.keybinddisplaycancelonly=If enabled, then only keybinds that are set to cancel\nfurther processing will be displayed on the\nkeybind display toast. This prevents so called "modifier" keys\nfrom spamming the display.
 malilib.config.comment.keybinddisplayduration=The duration (in milliseconds) the keybind display toasts are shown
+malilib.config.comment.optionlistconfigdropdown=Use a DropDown widget instead of a button for OptionList configs
 malilib.config.comment.rememberconfigtabscrollpositions=Remember the config screen scrollbar position for each tab
 
 malilib.config.comment.guidebug=When enabled, all GUI widgets will draw their outlines\nand when hovered also their position and dimension\ninfo and the widget class name.\nIf a key is set for GUI Debug Key, then that key must be held\nfor any of the debug rendering to happen.
@@ -34,6 +35,7 @@ malilib.config.name.keybinddisplayalignment=KeyBind Display Alignment
 malilib.config.name.keybinddisplaycallbackonly=KeyBind Display Callback Only
 malilib.config.name.keybinddisplaycancelonly=KeyBind Display Cancel Only
 malilib.config.name.keybinddisplayduration=KeyBind Display Duration
+malilib.config.name.optionlistconfigdropdown=Option List Config DropDown
 malilib.config.name.rememberconfigtabscrollpositions=Remember Config Screen Scroll Positions
 
 malilib.config.name.guidebug=GUI Debug
