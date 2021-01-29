@@ -175,6 +175,10 @@ malilib.gui.label.layer_mode.all_below=All below
 malilib.gui.label.layer_mode.layer_range=Layer Range
 malilib.gui.label.layer_mode.single_layer=Single Layer
 
+malilib.gui.label.option_list_hover.total_values.all=§7Total values: §b%s
+malilib.gui.label.option_list_hover.total_values.allowed=§7Allowed values: §b%s§7 / §b%s
+malilib.gui.label.option_list_hover.total_values.disallowed=§7Disallowed values: §b%s§7 / §b%s
+
 malilib.gui.label.render_layers.layer=Layer
 malilib.gui.label.render_layers.layer_max=Max layer
 malilib.gui.label.render_layers.layer_min=Min layer
