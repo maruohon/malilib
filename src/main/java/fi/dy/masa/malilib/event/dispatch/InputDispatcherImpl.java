@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.event.dispatch;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -31,6 +32,7 @@ public class InputDispatcherImpl implements InputDispatcher
         if (this.keyboardHandlers.contains(handler) == false)
         {
             this.keyboardHandlers.add(handler);
+            this.keyboardHandlers.sort(Comparator.comparing(KeyboardInputHandler::getPriority));
         }
     }
 
@@ -46,6 +48,7 @@ public class InputDispatcherImpl implements InputDispatcher
         if (this.mouseHandlers.contains(handler) == false)
         {
             this.mouseHandlers.add(handler);
+            this.mouseHandlers.sort(Comparator.comparing(MouseInputHandler::getPriority));
         }
     }
 

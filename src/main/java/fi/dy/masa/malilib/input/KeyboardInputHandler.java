@@ -1,6 +1,8 @@
 package fi.dy.masa.malilib.input;
 
-public interface KeyboardInputHandler
+import fi.dy.masa.malilib.event.PrioritizedEventHandler;
+
+public interface KeyboardInputHandler extends PrioritizedEventHandler
 {
     /**
      * Called on keyboard events with the key and whether the key was pressed or released.

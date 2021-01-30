@@ -1,6 +1,8 @@
 package fi.dy.masa.malilib.input;
 
-public interface MouseInputHandler
+import fi.dy.masa.malilib.event.PrioritizedEventHandler;
+
+public interface MouseInputHandler extends PrioritizedEventHandler
 {
     /**
      * Called on mouse events with the key or wheel value and whether the key was pressed or released.
