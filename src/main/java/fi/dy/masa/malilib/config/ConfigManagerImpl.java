@@ -78,11 +78,15 @@ public class ConfigManagerImpl implements ConfigManager
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public void saveAllConfigs()
+    public boolean saveAllConfigs()
     {
+        boolean savedSomething = false;
+
         for (ModConfig handler : this.configHandlers.values())
         {
-            handler.saveIfDirty();
+            savedSomething |= handler.saveIfDirty();
         }
+
+        return savedSomething;
     }
 }
