@@ -10,6 +10,7 @@ public abstract class BaseModConfig implements ModConfig
     protected final String configFileName;
     protected final List<ConfigOptionCategory> configOptionCategories;
     protected final int configVersion;
+    protected int backupCount = 5;
 
     public BaseModConfig(String modId, String modName, String configFileName, List<ConfigOptionCategory> configOptionCategories, int configVersion)
     {
@@ -48,5 +49,13 @@ public abstract class BaseModConfig implements ModConfig
     public int getConfigVersion()
     {
         return this.configVersion;
+    }
+
+    /**
+     * Sets the maximum number of backup copies to keep of the config file
+     */
+    public void setBackupCount(int backupCount)
+    {
+        this.backupCount = backupCount;
     }
 }

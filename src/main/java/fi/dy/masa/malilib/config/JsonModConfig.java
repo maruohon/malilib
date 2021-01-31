@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.List;
 import fi.dy.masa.malilib.config.category.ConfigOptionCategory;
 import fi.dy.masa.malilib.config.util.JsonConfigUtils;
+import fi.dy.masa.malilib.util.FileUtils;
 
 public class JsonModConfig extends BaseModConfig
 {
@@ -21,6 +22,11 @@ public class JsonModConfig extends BaseModConfig
     @Override
     public boolean saveToFile(File configFile)
     {
+        if (this.backupCount > 0)
+        {
+            FileUtils.createRollingBackup(configFile, this.backupCount, ".bak_");
+        }
+
         return JsonConfigUtils.saveToFile(configFile, this.getConfigOptionCategories(), this.getConfigVersion());
     }
 }

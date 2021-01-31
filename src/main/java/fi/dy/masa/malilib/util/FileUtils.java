@@ -239,6 +239,41 @@ public class FileUtils
         return null;
     }
 
+    public static boolean createRollingBackup(File fileIn, int maxBackups, String suffix)
+    {
+        File dir = fileIn.getParentFile();
+        String name = fileIn.getName();
+
+        for (int i = maxBackups; i > 1; --i)
+        {
+            File tmp1 = new File(dir, name + suffix + (i - 1));
+            File tmp2 = new File(dir, name + suffix + i);
+
+            if (tmp2.exists() && tmp2.isFile())
+            {
+                tmp2.delete();
+            }
+
+            if (tmp1.exists() && tmp1.renameTo(tmp2) == false)
+            {
+                return false;
+            }
+        }
+
+        File fileBackup = new File(dir, name + suffix + 1);
+
+        try
+        {
+            org.apache.commons.io.FileUtils.copyFile(fileIn, fileBackup);
+        }
+        catch (Exception e)
+        {
+            MaLiLib.LOGGER.warn("Failed to copy file '{}' to '{}'", fileIn.getAbsolutePath(), fileBackup.getAbsolutePath());
+        }
+
+        return true;
+    }
+
     public static class FileRenamer implements StringConsumer
     {
         protected final File dir;
