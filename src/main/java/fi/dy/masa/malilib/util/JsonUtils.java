@@ -3,10 +3,10 @@ package fi.dy.masa.malilib.util;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import com.google.gson.Gson;
@@ -496,18 +496,29 @@ public class JsonUtils
     public static boolean writeJsonToFile(Gson gson, JsonElement root, File file)
     {
         FileWriter writer = null;
+        File fileTmp = new File(file.getParentFile(), file.getName() + ".tmp");
+
+        if (fileTmp.exists())
+        {
+            fileTmp = new File(file.getParentFile(), UUID.randomUUID().toString() + ".tmp");
+        }
 
         try
         {
-            writer = new FileWriter(file);
+            writer = new FileWriter(fileTmp);
             writer.write(gson.toJson(root));
             writer.close();
 
-            return true;
+            if (file.exists() && file.isFile())
+            {
+                file.delete();
+            }
+
+            return fileTmp.renameTo(file);
         }
-        catch (IOException e)
+        catch (Exception e)
         {
-            MaLiLib.LOGGER.warn("Failed to write JSON data to file '{}'", file.getAbsolutePath(), e);
+            MaLiLib.LOGGER.warn("Failed to write JSON data to file '{}'", fileTmp.getAbsolutePath(), e);
         }
         finally
         {
