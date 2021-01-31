@@ -30,6 +30,16 @@ public class JsonConfigUtils
                 readConfigs(root, category, configVersion);
             }
         }
+        else
+        {
+            for (ConfigOptionCategory category : categories)
+            {
+                for (ConfigOption<?> config : category.getConfigOptions())
+                {
+                    config.resetToDefault();
+                }
+            }
+        }
     }
 
     public static void readConfigs(JsonObject root, ConfigOptionCategory category, int configVersion)
@@ -45,6 +55,13 @@ public class JsonConfigUtils
                 tryLoadConfig(obj, config, categoryName);
             }
         }
+        else
+        {
+            for (ConfigOption<?> config : options)
+            {
+                config.resetToDefault();
+            }
+        }
     }
 
     public static <T, C extends ConfigOption<T>> void tryLoadConfig(JsonObject obj, C config, String categoryName)
@@ -58,6 +75,7 @@ public class JsonConfigUtils
             if (obj.has(name))
             {
                 deSerializer.deSerializeConfigValue(config, obj.get(name), name);
+                return;
             }
             else
             {
@@ -66,7 +84,7 @@ public class JsonConfigUtils
                     if (obj.has(oldName))
                     {
                         deSerializer.deSerializeConfigValue(config, obj.get(name), name);
-                        break;
+                        return;
                     }
                 }
             }
@@ -75,6 +93,9 @@ public class JsonConfigUtils
         {
             MaLiLib.LOGGER.warn("Failed to get a config de-serializer for '{}'.'{}'", categoryName, config.getName());
         }
+
+        // Reset the config to default if it wasn't successfully read from the config file
+        config.resetToDefault();
     }
 
     public static boolean saveToFile(File configFile, List<ConfigOptionCategory> categories, int configVersion)
