@@ -34,7 +34,7 @@ public class HotkeyConfig extends BaseConfig<KeyBind> implements Hotkey
 
     public HotkeyConfig(String name, String defaultStorageString, String prettyName, String comment)
     {
-        this(name, defaultStorageString, KeyBindSettings.DEFAULT, prettyName, comment);
+        this(name, defaultStorageString, KeyBindSettings.INGAME_DEFAULT, prettyName, comment);
     }
 
     public HotkeyConfig(String name, String defaultStorageString, KeyBindSettings settings, String prettyName, String comment)

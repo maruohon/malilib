@@ -35,7 +35,7 @@ public interface KeyBind
      * Without a callback, the return value will be false to not cancel further processing.
      * @return
      */
-    boolean updateIsPressed();
+    KeyUpdateResult updateIsPressed(boolean isFirst);
 
     KeyBindSettings getSettings();
 

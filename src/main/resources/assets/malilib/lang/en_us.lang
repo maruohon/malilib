@@ -25,8 +25,10 @@ malilib.config.comment.keybind_settings.allow_empty_keybind=Is an empty keybind 
 malilib.config.comment.keybind_settings.allow_extra_keys=Are extra keys allowed to be held to still activate the keybind
 malilib.config.comment.keybind_settings.cancel_further=Cancel further (vanilla) processing of the\nlast pressed key, when the keybind activates
 malilib.config.comment.keybind_settings.context=Can the keybind be activated in-game or inside a GUI
-malilib.config.comment.keybind_settings.exclusive=If true, then no other keybinds can have\nbeen activated before the keybind in question.\nThis check resets when all keys are released.
+malilib.config.comment.keybind_settings.exclusive=If enabled, then no other keybinds can have\nbeen activated before the keybind in question.\nThis check resets when all keys are released.
+malilib.config.comment.keybind_settings.first_only=If enabled, then this keybind will only trigger\nif it's the first keybind to trigger with the key event\nthat triggers it. It's kind of similar to Exclusive,\nbut it's per-key and does not need all keys to be\nreleased to trigger again.
 malilib.config.comment.keybind_settings.order_sensitive=Should the keybind keys be pressed\nin the specific order they were defined in
+malilib.config.comment.keybind_settings.priority=The priority of this keybind in relation to other keybinds\nthat trigger with the same last key. It's a simple\nnumerical sort order - lower values come first.
 
 malilib.config.name.configsearchdefaultscope=Config Search Default Scope
 malilib.config.name.datadumpcsvdelimiter=Data Dump CSV Delimiter
@@ -130,6 +132,11 @@ malilib.gui.label.block_snap.center=Center
 malilib.gui.label.block_snap.corner=Corner
 malilib.gui.label.block_snap.none=None
 
+malilib.label.cancel_condition.always=Always
+malilib.label.cancel_condition.never=Never
+malilib.label.cancel_condition.on_failure=On Failure
+malilib.label.cancel_condition.on_success=On Success
+
 malilib.gui.label.color_editor.current_color=Current color:
 
 malilib.gui.label.config.hover.click_for_more_information=§b§oClick for more information
@@ -167,7 +174,9 @@ malilib.gui.label.keybind_settings.cancel_further_processing=Cancel further proc
 malilib.gui.label.keybind_settings.context=Context
 malilib.gui.label.keybind_settings.default=default
 malilib.gui.label.keybind_settings.exclusive=Exclusive
+malilib.gui.label.keybind_settings.first_only=First Only
 malilib.gui.label.keybind_settings.order_sensitive=Order Sensitive
+malilib.gui.label.keybind_settings.priority=Priority
 malilib.gui.label.keybind_settings.tips=- Left click to configure\n- Right click to reset to defaults
 malilib.gui.label.keybind_settings.title_advanced_keybind_settings=Advanced Keybind settings
 

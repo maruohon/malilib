@@ -19,11 +19,12 @@ import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.button.KeyBindConfigButton;
+import fi.dy.masa.malilib.input.CancelCondition;
+import fi.dy.masa.malilib.input.Context;
 import fi.dy.masa.malilib.input.KeyAction;
 import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.input.KeyBindImpl;
 import fi.dy.masa.malilib.input.KeyBindSettings;
-import fi.dy.masa.malilib.input.KeyBindSettings.Context;
 import fi.dy.masa.malilib.listener.ConfirmationListener;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.listener.TextChangeListener;
@@ -49,7 +50,7 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
 
         this.openedHeight = openedHeight;
 
-        KeyBindSettings settings = KeyBindSettings.create(Context.ANY, KeyAction.BOTH, true, true, false, false, false);
+        KeyBindSettings settings = KeyBindSettings.create(Context.ANY, KeyAction.BOTH, true, true, false, CancelCondition.NEVER, false);
         this.searchKey = KeyBindImpl.fromStorageString("", settings);
 
         this.hotkeySearchButton = new KeyBindConfigButton(x + width - 150, y, 160, 20, this.searchKey, screen);

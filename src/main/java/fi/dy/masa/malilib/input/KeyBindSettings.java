@@ -1,41 +1,48 @@
 package fi.dy.masa.malilib.input;
 
-import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.config.value.BaseOptionListConfigValue;
 import fi.dy.masa.malilib.util.JsonUtils;
 
 public class KeyBindSettings
 {
-    public static final KeyBindSettings DEFAULT                     = new KeyBindSettings(Context.INGAME, KeyAction.PRESS, false, true, false, true);
-    public static final KeyBindSettings EXCLUSIVE                   = new KeyBindSettings(Context.INGAME, KeyAction.PRESS, false, true, true, true);
-    public static final KeyBindSettings RELEASE                     = new KeyBindSettings(Context.INGAME, KeyAction.RELEASE, false, true, false, false);
-    public static final KeyBindSettings RELEASE_ALLOW_EXTRA         = new KeyBindSettings(Context.INGAME, KeyAction.RELEASE, true, true, false, false);
-    public static final KeyBindSettings RELEASE_EXCLUSIVE           = new KeyBindSettings(Context.INGAME, KeyAction.RELEASE, false, true, true, true);
-    public static final KeyBindSettings NOCANCEL                    = new KeyBindSettings(Context.INGAME, KeyAction.PRESS, false, true, false, false);
-    public static final KeyBindSettings PRESS_ALLOWEXTRA            = new KeyBindSettings(Context.INGAME, KeyAction.PRESS, true, true, false, true);
-    public static final KeyBindSettings PRESS_ALLOWEXTRA_EMPTY      = new KeyBindSettings(Context.INGAME, KeyAction.PRESS, true, true, false, true, true);
-    public static final KeyBindSettings PRESS_NON_ORDER_SENSITIVE   = new KeyBindSettings(Context.INGAME, KeyAction.PRESS, false, false, false, true);
-    public static final KeyBindSettings INGAME_BOTH                 = new KeyBindSettings(Context.INGAME, KeyAction.BOTH, false, true, false, true);
-    public static final KeyBindSettings MODIFIER_INGAME             = new KeyBindSettings(Context.INGAME, KeyAction.PRESS, true, false, false, false);
-    public static final KeyBindSettings MODIFIER_INGAME_EMPTY       = new KeyBindSettings(Context.INGAME, KeyAction.PRESS, true, false, false, false, true);
-    public static final KeyBindSettings MODIFIER_GUI                = new KeyBindSettings(Context.GUI, KeyAction.PRESS, true, false, false, false);
-    public static final KeyBindSettings GUI                         = new KeyBindSettings(Context.GUI, KeyAction.PRESS, false, true, false, true);
+    public static final KeyBindSettings INGAME_DEFAULT              = new KeyBindSettings(Context.INGAME, KeyAction.PRESS, false, true, false, CancelCondition.ALWAYS);
+    public static final KeyBindSettings INGAME_BOTH                 = new KeyBindSettings(Context.INGAME, KeyAction.BOTH, false, true, false, CancelCondition.ALWAYS);
+    public static final KeyBindSettings INGAME_MODIFIER             = new KeyBindSettings(Context.INGAME, KeyAction.PRESS, true, false, false, CancelCondition.NEVER);
+    public static final KeyBindSettings INGAME_MODIFIER_EMPTY       = new KeyBindSettings(Context.INGAME, KeyAction.PRESS, true, false, false, CancelCondition.NEVER, true);
+    public static final KeyBindSettings INGAME_EXTRA                = new KeyBindSettings(Context.INGAME, KeyAction.PRESS, true, true, false, CancelCondition.ALWAYS);
+    public static final KeyBindSettings INGAME_NOCANCEL             = new KeyBindSettings(Context.INGAME, KeyAction.PRESS, false, true, false, CancelCondition.NEVER);
+    public static final KeyBindSettings INGAME_EXCLUSIVE            = new KeyBindSettings(Context.INGAME, KeyAction.PRESS, false, true, true, CancelCondition.ALWAYS);
+    public static final KeyBindSettings INGAME_RELEASE              = new KeyBindSettings(Context.INGAME, KeyAction.RELEASE, false, true, false, CancelCondition.NEVER);
+    public static final KeyBindSettings INGAME_RELEASE_EXTRA        = new KeyBindSettings(Context.INGAME, KeyAction.RELEASE, true, true, false, CancelCondition.NEVER);
+    public static final KeyBindSettings INGAME_RELEASE_EXCLUSIVE    = new KeyBindSettings(Context.INGAME, KeyAction.RELEASE, false, true, true, CancelCondition.NEVER);
+    public static final KeyBindSettings GUI_DEFAULT                 = new KeyBindSettings(Context.GUI, KeyAction.PRESS, false, true, false, CancelCondition.ALWAYS);
+    public static final KeyBindSettings GUI_MODIFIER                = new KeyBindSettings(Context.GUI, KeyAction.PRESS, true, false, false, CancelCondition.NEVER);
 
-    private final Context context;
     private final KeyAction activateOn;
+    private final Context context;
+    private final CancelCondition cancel;
     private final boolean allowEmpty;
     private final boolean allowExtraKeys;
-    private final boolean orderSensitive;
     private final boolean exclusive;
-    private final boolean cancel;
+    private final boolean firstOnly;
+    private final boolean orderSensitive;
+    private final int priority;
 
-    private KeyBindSettings(Context context, KeyAction activateOn, boolean allowExtraKeys, boolean orderSensitive, boolean exclusive, boolean cancel)
+    private KeyBindSettings(Context context, KeyAction activateOn, boolean allowExtraKeys, boolean orderSensitive,
+                            boolean exclusive, CancelCondition cancel)
     {
         this(context, activateOn, allowExtraKeys, orderSensitive, exclusive, cancel, false);
     }
 
-    private KeyBindSettings(Context context, KeyAction activateOn, boolean allowExtraKeys, boolean orderSensitive, boolean exclusive, boolean cancel, boolean allowEmpty)
+    private KeyBindSettings(Context context, KeyAction activateOn, boolean allowExtraKeys, boolean orderSensitive,
+                            boolean exclusive, CancelCondition cancel, boolean allowEmpty)
+    {
+        this(context, activateOn, allowExtraKeys, orderSensitive, exclusive, cancel, false, 50, false);
+    }
+
+    private KeyBindSettings(Context context, KeyAction activateOn, boolean allowExtraKeys, boolean orderSensitive,
+                            boolean exclusive, CancelCondition cancel, boolean allowEmpty, int priority, boolean firstOnly)
     {
         this.context = context;
         this.activateOn = activateOn;
@@ -44,16 +51,27 @@ public class KeyBindSettings
         this.exclusive = exclusive;
         this.cancel = cancel;
         this.allowEmpty = allowEmpty;
+        this.priority = priority;
+        this.firstOnly = firstOnly;
     }
 
-    public static KeyBindSettings create(Context context, KeyAction activateOn, boolean allowExtraKeys, boolean orderSensitive, boolean exclusive, boolean cancel)
+    public static KeyBindSettings create(Context context, KeyAction activateOn, boolean allowExtraKeys,
+                                         boolean orderSensitive, boolean exclusive, CancelCondition cancel)
     {
         return create(context, activateOn, allowExtraKeys, orderSensitive, exclusive, cancel, false);
     }
 
-    public static KeyBindSettings create(Context context, KeyAction activateOn, boolean allowExtraKeys, boolean orderSensitive, boolean exclusive, boolean cancel, boolean allowEmpty)
+    public static KeyBindSettings create(Context context, KeyAction activateOn, boolean allowExtraKeys,
+                                         boolean orderSensitive, boolean exclusive, CancelCondition cancel, boolean allowEmpty)
     {
         return new KeyBindSettings(context, activateOn, allowExtraKeys, orderSensitive, exclusive, cancel, allowEmpty);
+    }
+
+    public static KeyBindSettings create(Context context, KeyAction activateOn, boolean allowExtraKeys,
+                                         boolean orderSensitive, boolean exclusive, CancelCondition cancel,
+                                         boolean allowEmpty, int priority, boolean firstOnly)
+    {
+        return new KeyBindSettings(context, activateOn, allowExtraKeys, orderSensitive, exclusive, cancel, allowEmpty, priority, firstOnly);
     }
 
     public Context getContext()
@@ -86,7 +104,17 @@ public class KeyBindSettings
         return this.exclusive;
     }
 
-    public boolean shouldCancel()
+    public boolean getFirstOnly()
+    {
+        return this.firstOnly;
+    }
+
+    public int getPriority()
+    {
+        return this.priority;
+    }
+
+    public CancelCondition shouldCancel()
     {
         return this.cancel;
     }
@@ -96,12 +124,14 @@ public class KeyBindSettings
         JsonObject obj = new JsonObject();
 
         obj.addProperty("activate_on", this.activateOn.getName());
-        obj.addProperty("context", this.context.getName());
         obj.addProperty("allow_empty", this.allowEmpty);
         obj.addProperty("allow_extra_keys", this.allowExtraKeys);
-        obj.addProperty("order_sensitive", this.orderSensitive);
+        obj.addProperty("cancel", this.cancel.getName());
+        obj.addProperty("context", this.context.getName());
         obj.addProperty("exclusive", this.exclusive);
-        obj.addProperty("cancel", this.cancel);
+        obj.addProperty("first_only", this.firstOnly);
+        obj.addProperty("order_sensitive", this.orderSensitive);
+        obj.addProperty("priority", this.priority);
 
         return obj;
     }
@@ -127,9 +157,26 @@ public class KeyBindSettings
         boolean allowExtraKeys = JsonUtils.getBoolean(obj, "allow_extra_keys");
         boolean orderSensitive = JsonUtils.getBooleanOrDefault(obj, "order_sensitive", true);
         boolean exclusive = JsonUtils.getBooleanOrDefault(obj, "exclusive", true);
-        boolean cancel = JsonUtils.getBooleanOrDefault(obj, "cancel", true);
+        boolean firstOnly = JsonUtils.getBooleanOrDefault(obj, "first_only", false);
+        int priority = JsonUtils.getIntegerOrDefault(obj, "priority", 50);
+        String cancelName = JsonUtils.getStringOrDefault(obj, "cancel", "false");
+        CancelCondition cancel;
 
-        return create(context, activateOn, allowExtraKeys, orderSensitive, exclusive, cancel, allowEmpty);
+        // Backwards compatibility with the old boolean value
+        if (cancelName.equalsIgnoreCase("true"))
+        {
+            cancel = CancelCondition.ALWAYS;
+        }
+        else if (cancelName.equalsIgnoreCase("false"))
+        {
+            cancel = CancelCondition.NEVER;
+        }
+        else
+        {
+            cancel = BaseOptionListConfigValue.findValueByName(cancelName, CancelCondition.VALUES);
+        }
+
+        return create(context, activateOn, allowExtraKeys, orderSensitive, exclusive, cancel, allowEmpty, priority, firstOnly);
     }
 
     @Override
@@ -154,29 +201,10 @@ public class KeyBindSettings
             return false;
         if (this.exclusive != other.exclusive)
             return false;
+        if (this.firstOnly != other.firstOnly)
+            return false;
+        if (this.priority != other.priority)
+            return false;
         return this.orderSensitive == other.orderSensitive;
-    }
-
-    public static class Context extends BaseOptionListConfigValue
-    {
-        public static final Context INGAME = new Context("ingame",  "malilib.label.key_context.ingame", 0);
-        public static final Context GUI    = new Context("gui",     "malilib.label.key_context.gui", 1);
-        public static final Context ANY    = new Context("any",     "malilib.label.key_context.any", 2);
-
-        public static final ImmutableList<Context> VALUES = ImmutableList.of(INGAME, GUI, ANY);
-
-        protected final int iconIndex;
-
-        private Context(String name, String translationKey, int iconIndex)
-        {
-            super(name, translationKey);
-
-            this.iconIndex = iconIndex;
-        }
-
-        public int getIconIndex()
-        {
-            return this.iconIndex;
-        }
     }
 }

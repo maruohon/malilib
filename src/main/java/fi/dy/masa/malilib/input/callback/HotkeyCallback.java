@@ -9,7 +9,7 @@ public interface HotkeyCallback
      * Called when a hotkey action happens.
      * @param action
      * @param key
-     * @return true if further processing of the just pressed key should be cancelled
+     * @return true if the action was successful. NOTE: This used to be directly whether or not further processing should be cancelled! This changed in malilib 1.0.
      */
     boolean onKeyAction(KeyAction action, KeyBind key);
 }

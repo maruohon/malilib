@@ -1,19 +1,19 @@
 package fi.dy.masa.malilib.gui.widget;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 import javax.annotation.Nullable;
 import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.MaLiLibReference;
+import fi.dy.masa.malilib.config.value.OptionListConfigValue;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.config.KeybindSettingsScreen;
 import fi.dy.masa.malilib.gui.util.DialogHandler;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
-import fi.dy.masa.malilib.input.KeyAction;
+import fi.dy.masa.malilib.input.CancelCondition;
 import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.input.KeyBindSettings;
-import fi.dy.masa.malilib.input.KeyBindSettings.Context;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 
@@ -33,6 +33,7 @@ public class KeybindSettingsWidget extends BaseWidget
         this.keyBind = keyBind;
         this.keyBindName = keyBindName;
         this.dialogHandler = dialogHandler;
+        this.hoverInfoFactory.setStringListProvider("hover_info", this::rebuildHoverStrings);
     }
 
     @Override
@@ -55,6 +56,7 @@ public class KeybindSettingsWidget extends BaseWidget
         else if (mouseButton == 1)
         {
             this.keyBind.resetSettingsToDefaults();
+            this.updateHoverStrings();
             return true;
         }
 
@@ -75,7 +77,7 @@ public class KeybindSettingsWidget extends BaseWidget
         int v2 = vStart + (settings.getAllowExtraKeys() ? w : 0);
         int v3 = vStart + (settings.isOrderSensitive() ? w : 0);
         int v4 = vStart + (settings.isExclusive() ? w : 0);
-        int v5 = vStart + (settings.shouldCancel() ? w : 0);
+        int v5 = vStart + (settings.shouldCancel() != CancelCondition.NEVER ? w : 0); // TODO add separate icons for ON_SUCCESS and ON_FAILURE
         int v6 = vStart + (settings.getAllowEmpty() ? w : 0);
         int v7 = 202 + settings.getContext().getIconIndex() * w;
 
@@ -98,57 +100,60 @@ public class KeybindSettingsWidget extends BaseWidget
         RenderUtils.renderTexturedRectangle(x, y, 90, v7, w, w, z);
     }
 
-    @Override
-    public void postRenderHovered(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
+    protected List<String> rebuildHoverStrings()
     {
-        List<String> text = new ArrayList<>();
-        String name, val, nameColor;
+        List<String> lines = new ArrayList<>();
         KeyBindSettings settings = this.keyBind.getSettings();
         KeyBindSettings defaultSettings = this.keyBind.getDefaultSettings();
-        boolean modified;
 
-        text.add(BaseScreen.TXT_WHITE + BaseScreen.TXT_UNDERLINE + StringUtils.translate("malilib.gui.label.keybind_settings.title_advanced_keybind_settings"));
+        lines.add(BaseScreen.TXT_WHITE + StringUtils.translate("malilib.gui.label.keybind_settings.title_advanced_keybind_settings"));
 
-        name = StringUtils.translate("malilib.gui.label.keybind_settings.activate_on");
-        KeyAction action = settings.getActivateOn();
-        modified = action != defaultSettings.getActivateOn();
-        nameColor = modified ? BaseScreen.TXT_YELLOW : BaseScreen.TXT_GRAY;
-        val = BaseScreen.TXT_BLUE + action.getDisplayName();
-        text.add(String.format("%s%s: %s", nameColor, name, val));
+        this.addOptionText(lines, "malilib.gui.label.keybind_settings.activate_on", settings.getActivateOn(), defaultSettings.getActivateOn(), this::getDisplayString);
+        this.addOptionText(lines, "malilib.gui.label.keybind_settings.context", settings.getContext(), defaultSettings.getContext(), this::getDisplayString);
+        this.addOptionText(lines, "malilib.gui.label.keybind_settings.cancel_further", settings.shouldCancel(), defaultSettings.shouldCancel(), this::getDisplayString);
 
-        name = StringUtils.translate("malilib.gui.label.keybind_settings.context");
-        Context context = settings.getContext();
-        val = BaseScreen.TXT_BLUE + context.getDisplayName();
-        nameColor = context != defaultSettings.getContext() ? BaseScreen.TXT_YELLOW : BaseScreen.TXT_GRAY;
-        text.add(String.format("%s%s: %s", nameColor, name, val));
+        this.addOptionText(lines, "malilib.gui.label.keybind_settings.allow_empty_keybind", settings.getAllowEmpty(), defaultSettings.getAllowEmpty(), this::getDisplayString);
+        this.addOptionText(lines, "malilib.gui.label.keybind_settings.allow_extra_keys", settings.getAllowExtraKeys(), defaultSettings.getAllowExtraKeys(), this::getDisplayString);
+        this.addOptionText(lines, "malilib.gui.label.keybind_settings.order_sensitive", settings.isOrderSensitive(), defaultSettings.isOrderSensitive(), this::getDisplayString);
+        this.addOptionText(lines, "malilib.gui.label.keybind_settings.exclusive", settings.isExclusive(), defaultSettings.isExclusive(), this::getDisplayString);
+        this.addOptionText(lines, "malilib.gui.label.keybind_settings.first_only", settings.getFirstOnly(), defaultSettings.getFirstOnly(), this::getDisplayString);
+        this.addOptionText(lines, "malilib.gui.label.keybind_settings.priority", settings.getPriority(), defaultSettings.getPriority(), this::getDisplayString);
 
-        this.addBooleanOptionText(text, "malilib.gui.label.keybind_settings.allow_empty_keybind", settings.getAllowEmpty(), defaultSettings.getAllowEmpty());
-        this.addBooleanOptionText(text, "malilib.gui.label.keybind_settings.allow_extra_keys", settings.getAllowExtraKeys(), defaultSettings.getAllowExtraKeys());
-        this.addBooleanOptionText(text, "malilib.gui.label.keybind_settings.order_sensitive", settings.isOrderSensitive(), defaultSettings.isOrderSensitive());
-        this.addBooleanOptionText(text, "malilib.gui.label.keybind_settings.exclusive", settings.isExclusive(), defaultSettings.isExclusive());
-        this.addBooleanOptionText(text, "malilib.gui.label.keybind_settings.cancel_further", settings.shouldCancel(), defaultSettings.shouldCancel());
+        lines.add("");
+        StringUtils.addTranslatedLines(lines, "malilib.gui.label.keybind_settings.tips");
 
-        text.add("");
-        String[] parts = StringUtils.translate("malilib.gui.label.keybind_settings.tips").split("\\\\n");
-
-        Collections.addAll(text, parts);
-
-        RenderUtils.renderHoverText(mouseX + 10, mouseY, this.getZLevel() + 0.5f, text);
+        return lines;
     }
 
-    private void addBooleanOptionText(List<String> lines, String translationKey, boolean value, boolean defaultValue)
+    protected <T> void addOptionText(List<String> lines, String translationKey, T value, T defaultValue, Function<T, String> displayValueFunction)
     {
-        boolean modified = value != defaultValue;
+        boolean modified = value.equals(defaultValue) == false;
+        String gray = BaseScreen.TXT_GRAY;
+        String nameColor = modified ? BaseScreen.TXT_YELLOW : gray;
+
         String name = StringUtils.translate(translationKey);
+        String valStr = displayValueFunction.apply(value);
+        String defValStr = displayValueFunction.apply(defaultValue);
+        String def = StringUtils.translate("malilib.gui.label.keybind_settings.default");
+        String defFull = modified ? String.format(" %s[%s: %s%s]", gray, def, defValStr, gray) : "";
+
+        lines.add(String.format("%s%s: %s%s", nameColor, name, valStr, defFull));
+    }
+
+    protected String getDisplayString(boolean value)
+    {
         String strYes = StringUtils.translate("malilib.label.yes");
         String strNo = StringUtils.translate("malilib.label.no");
-        String valStr = value ? (BaseScreen.TXT_GREEN + strYes) : (BaseScreen.TXT_RED + strNo);
-        String defaultValStr = defaultValue ? (BaseScreen.TXT_GREEN + strYes) : (BaseScreen.TXT_RED + strNo);
-        String nameColor = modified ? BaseScreen.TXT_YELLOW : BaseScreen.TXT_GRAY;
-        String gray = BaseScreen.TXT_GRAY;
-        String def = StringUtils.translate("malilib.gui.label.keybind_settings.default");
-        String defaultValueFull = modified ? String.format(" %s[%s: %s%s]", gray, def, defaultValStr, gray) : "";
+        return value ? (BaseScreen.TXT_GREEN + strYes) : (BaseScreen.TXT_RED + strNo);
+    }
 
-        lines.add(String.format("%s%s: %s%s", nameColor, name, valStr, defaultValueFull));
+    protected String getDisplayString(OptionListConfigValue value)
+    {
+        return BaseScreen.TXT_BLUE + value.getDisplayName();
+    }
+
+    protected String getDisplayString(int value)
+    {
+        return BaseScreen.TXT_AQUA + value;
     }
 }

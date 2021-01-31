@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.config.option;
 
 import java.util.function.Function;
+import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.callback.SliderCallback;
 import fi.dy.masa.malilib.listener.EventListener;
 
@@ -47,7 +48,7 @@ public abstract class BaseSliderConfig<T> extends BaseGenericConfig<T> implement
     }
 
     @Override
-    public SliderCallback getSliderCallback(EventListener changeListener)
+    public SliderCallback getSliderCallback(@Nullable EventListener changeListener)
     {
         return this.sliderCallbackFactory.apply(changeListener);
     }

@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.util;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -100,6 +101,12 @@ public class StringUtils
         }
 
         return width;
+    }
+
+    public static void addTranslatedLines(List<String> linesOut, String translationKey)
+    {
+        String[] parts = StringUtils.translate(translationKey).split("\\\\n");
+        Collections.addAll(linesOut, parts);
     }
 
     /**

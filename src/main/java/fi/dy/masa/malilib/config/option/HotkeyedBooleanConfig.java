@@ -28,7 +28,7 @@ public class HotkeyedBooleanConfig extends BooleanConfig implements Hotkey
 
     public HotkeyedBooleanConfig(String name, boolean defaultValue, String defaultHotkey, String prettyName, String comment)
     {
-        this(name, defaultValue, defaultHotkey, KeyBindSettings.DEFAULT, prettyName, comment);
+        this(name, defaultValue, defaultHotkey, KeyBindSettings.INGAME_DEFAULT, prettyName, comment);
     }
 
     public HotkeyedBooleanConfig(String name, boolean defaultValue, String defaultHotkey, KeyBindSettings settings, String prettyName, String comment)

@@ -1,10 +1,10 @@
 package fi.dy.masa.malilib;
 
 import com.google.common.collect.ImmutableList;
-import fi.dy.masa.malilib.config.option.ConfigOption;
 import fi.dy.masa.malilib.config.category.BaseConfigOptionCategory;
 import fi.dy.masa.malilib.config.category.ConfigOptionCategory;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
+import fi.dy.masa.malilib.config.option.ConfigOption;
 import fi.dy.masa.malilib.config.option.HotkeyConfig;
 import fi.dy.masa.malilib.config.option.IntegerConfig;
 import fi.dy.masa.malilib.config.option.OptionListConfig;
@@ -12,6 +12,8 @@ import fi.dy.masa.malilib.config.option.StringConfig;
 import fi.dy.masa.malilib.config.value.HudAlignment;
 import fi.dy.masa.malilib.config.value.KeybindDisplayMode;
 import fi.dy.masa.malilib.gui.widget.ConfigsSearchBarWidget.Scope;
+import fi.dy.masa.malilib.input.CancelCondition;
+import fi.dy.masa.malilib.input.Context;
 import fi.dy.masa.malilib.input.KeyAction;
 import fi.dy.masa.malilib.input.KeyBindSettings;
 
@@ -58,7 +60,7 @@ public class MaLiLibConfigs
 
     public static class Debug
     {
-        public static final KeyBindSettings DBG_KS = KeyBindSettings.create(KeyBindSettings.Context.GUI, KeyAction.PRESS, true, false, false, false, true);
+        public static final KeyBindSettings DBG_KS = KeyBindSettings.create(Context.GUI, KeyAction.PRESS, true, false, false, CancelCondition.NEVER, true);
 
         public static final BooleanConfig GUI_DEBUG                 = new BooleanConfig("guiDebug", false);
         public static final BooleanConfig GUI_DEBUG_ALL             = new BooleanConfig("guiDebugAll", true);

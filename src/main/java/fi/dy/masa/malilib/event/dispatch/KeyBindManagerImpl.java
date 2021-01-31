@@ -1,18 +1,18 @@
 package fi.dy.masa.malilib.event.dispatch;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
 import fi.dy.masa.malilib.input.Hotkey;
 import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.input.KeyBindCategory;
 import fi.dy.masa.malilib.input.KeyBindProvider;
+import fi.dy.masa.malilib.input.KeyUpdateResult;
 
 public class KeyBindManagerImpl implements KeyBindManager
 {
-    private final Multimap<Integer, KeyBind> hotkeyMap = ArrayListMultimap.create();
+    private final ArrayListMultimap<Integer, KeyBind> hotkeyMap = ArrayListMultimap.create();
     private final List<KeyBindCategory> keyBindCategories = new ArrayList<>();
     private final List<KeyBindProvider> keyBindProviders = new ArrayList<>();
 
@@ -58,11 +58,16 @@ public class KeyBindManagerImpl implements KeyBindManager
                 this.addKeyBindToMap(hotkey.getKeyBind());
             }
         }
+
+        for (Integer key : this.hotkeyMap.keySet())
+        {
+            this.hotkeyMap.get(key).sort(Comparator.comparingInt((v) -> v.getSettings().getPriority()));
+        }
     }
 
     private void addKeyBindToMap(KeyBind keybind)
     {
-        Collection<Integer> keys = keybind.getKeys();
+        List<Integer> keys = keybind.getKeys();
 
         for (int key : keys)
         {
@@ -80,14 +85,22 @@ public class KeyBindManagerImpl implements KeyBindManager
     boolean checkKeyBindsForChanges(int eventKey)
     {
         boolean cancel = false;
-        Collection<KeyBind> keyBinds = this.hotkeyMap.get(eventKey);
+        boolean isFirst = true;
+        List<KeyBind> keyBinds = this.hotkeyMap.get(eventKey);
 
         if (keyBinds.isEmpty() == false)
         {
             for (KeyBind keyBind : keyBinds)
             {
-                // Note: isPressed() has to get called for key releases too, to reset the state
-                cancel |= keyBind.updateIsPressed();
+                // Note: updateIsPressed() has to be called for key releases too, to reset the state
+                KeyUpdateResult result = keyBind.updateIsPressed(isFirst);
+
+                if (result.triggered)
+                {
+                    isFirst = false;
+                }
+
+                cancel |= result.cancel;
             }
         }
 

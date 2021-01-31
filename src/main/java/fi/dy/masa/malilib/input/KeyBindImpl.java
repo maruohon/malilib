@@ -22,7 +22,6 @@ import fi.dy.masa.malilib.config.value.HudAlignment;
 import fi.dy.masa.malilib.config.value.KeybindDisplayMode;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.ToastWidget;
-import fi.dy.masa.malilib.input.KeyBindSettings.Context;
 import fi.dy.masa.malilib.input.callback.HotkeyCallback;
 import fi.dy.masa.malilib.render.message.MessageUtils;
 import fi.dy.masa.malilib.util.JsonUtils;
@@ -31,6 +30,8 @@ import fi.dy.masa.malilib.util.StringUtils;
 public class KeyBindImpl implements KeyBind
 {
     private static final List<Integer> PRESSED_KEYS = new ArrayList<>();
+
+    public static final KeyUpdateResult NO_ACTION = new KeyUpdateResult(false, false);
 
     private static int triggeredCount;
 
@@ -120,19 +121,19 @@ public class KeyBindImpl implements KeyBind
      * NOT PUBLIC API - DO NOT CALL FROM MOD CODE!!!
      */
     @Override
-    public boolean updateIsPressed()
+    public KeyUpdateResult updateIsPressed(boolean isFirst)
     {
         if (this.keyCodes.isEmpty() ||
-            (this.settings.getContext() != KeyBindSettings.Context.ANY &&
-            ((this.settings.getContext() == KeyBindSettings.Context.INGAME) != (GuiUtils.getCurrentScreen() == null))))
+            (this.settings.getContext() != Context.ANY &&
+            ((this.settings.getContext() == Context.INGAME) != (GuiUtils.getCurrentScreen() == null))))
         {
             this.pressed = false;
-            return false;
+            return NO_ACTION;
         }
 
-        boolean allowExtraKeys = this.settings.getAllowExtraKeys();
-        boolean allowOutOfOrder = this.settings.isOrderSensitive() == false;
-        boolean pressedLast = this.pressed;
+        final boolean allowExtraKeys = this.settings.getAllowExtraKeys();
+        final boolean allowOutOfOrder = this.settings.isOrderSensitive() == false;
+        final boolean pressedLast = this.pressed;
         final int sizePressed = PRESSED_KEYS.size();
         final int sizeRequired = this.keyCodes.size();
 
@@ -171,29 +172,31 @@ public class KeyBindImpl implements KeyBind
         KeyAction activateOn = this.settings.getActivateOn();
 
         if (this.pressed != pressedLast &&
+            (isFirst || this.settings.getFirstOnly() == false) &&
             (triggeredCount == 0 || this.settings.isExclusive() == false) &&
             (activateOn == KeyAction.BOTH || this.pressed == (activateOn == KeyAction.PRESS)))
         {
-            boolean cancel = this.triggerKeyAction(pressedLast);
+            KeyUpdateResult result = this.triggerKeyAction(pressedLast);
             //System.out.printf("triggered, cancel: %s, triggeredCount: %d\n", cancel, triggeredCount);
 
-            if (cancel)
+            if (result.triggered)
             {
                 ++triggeredCount;
             }
 
-            return cancel;
+            return result;
         }
 
-        return false;
+        return NO_ACTION;
     }
 
-    private boolean triggerKeyAction(boolean pressedLast)
+    private KeyUpdateResult triggerKeyAction(boolean pressedLast)
     {
+        KeyAction activateOn = this.settings.getActivateOn();
+
         if (this.pressed == false)
         {
             this.heldTime = 0;
-            KeyAction activateOn = this.settings.getActivateOn();
 
             if (pressedLast && (activateOn == KeyAction.RELEASE || activateOn == KeyAction.BOTH))
             {
@@ -208,33 +211,35 @@ public class KeyBindImpl implements KeyBind
                 ((MinecraftClientAccessor) Minecraft.getMinecraft()).setActionKeyF3(true);
             }
 
-            KeyAction activateOn = this.settings.getActivateOn();
-
             if (activateOn == KeyAction.PRESS || activateOn == KeyAction.BOTH)
             {
                 return this.triggerKeyCallback(KeyAction.PRESS);
             }
         }
 
-        return false;
+        return NO_ACTION;
     }
 
-    private boolean triggerKeyCallback(KeyAction action)
+    private KeyUpdateResult triggerKeyCallback(KeyAction action)
     {
         boolean cancel;
 
         if (this.callback == null)
         {
-            cancel = action == KeyAction.PRESS && this.settings.shouldCancel();
+            cancel = action == KeyAction.PRESS && this.settings.shouldCancel() == CancelCondition.ALWAYS;
             this.addToastMessage(false, cancel);
         }
         else
         {
-            cancel = this.callback.onKeyAction(action, this) && this.settings.shouldCancel();
+            boolean success = this.callback.onKeyAction(action, this);
+            CancelCondition condition = this.settings.shouldCancel();
+            cancel = condition == CancelCondition.ALWAYS
+                     || (success && condition == CancelCondition.ON_SUCCESS)
+                     || (success == false && condition == CancelCondition.ON_FAILURE);
             this.addToastMessage(true, cancel);
         }
 
-        return cancel;
+        return new KeyUpdateResult(cancel, true);
     }
 
     private void addToastMessage(boolean hasCallback, boolean cancelled)
