@@ -34,21 +34,21 @@ public class GenericButton extends BaseButton
         this.setRightAlign(rightAlign, x, true);
     }
 
-    public GenericButton(int x, int y, int width, int height, String text, String... hoverStrings)
+    public GenericButton(int x, int y, int width, int height, String translationKey, String... hoverStrings)
     {
-        this(x, y, width, height, text, (Supplier<MultiIcon>) null, hoverStrings);
+        this(x, y, width, height, translationKey, (Supplier<MultiIcon>) null, hoverStrings);
 
         this.textCentered = true;
     }
 
-    public GenericButton(int x, int y, int width, int height, String text, MultiIcon icon, String... hoverStrings)
+    public GenericButton(int x, int y, int width, int height, String translationKey, MultiIcon icon, String... hoverStrings)
     {
-        this(x, y, width, height, text, () -> icon, hoverStrings);
+        this(x, y, width, height, translationKey, () -> icon, hoverStrings);
     }
 
-    public GenericButton(int x, int y, int width, int height, String text, @Nullable Supplier<MultiIcon> iconSupplier, String... hoverStrings)
+    public GenericButton(int x, int y, int width, int height, String translationKey, @Nullable Supplier<MultiIcon> iconSupplier, String... hoverStrings)
     {
-        super(x, y, width, height, text);
+        super(x, y, width, height, translationKey);
 
         this.iconSupplier = iconSupplier;
         MultiIcon icon = iconSupplier != null ? iconSupplier.get() : null;

@@ -14,7 +14,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import fi.dy.masa.malilib.MaLiLibConfigs;
-import fi.dy.masa.malilib.gui.util.DialogHandler;
+import fi.dy.masa.malilib.gui.config.liteloader.DialogHandler;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.BaseWidget;
@@ -142,7 +142,7 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
     @Override
     public boolean doesGuiPauseGame()
     {
-        return false;
+        return this.getParent() != null && this.getParent().doesGuiPauseGame();
     }
 
     @Override
@@ -153,7 +153,12 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
             this.getParent().setWorldAndResolution(mc, width, height);
         }
 
-        this.setScreenWidthAndHeight(width, height);
+        // Don't override custom screen sizes when the window is resized or whatever,
+        // which calls this method again.
+        if (this.screenWidth == this.width && this.screenHeight == this.height)
+        {
+            this.setScreenWidthAndHeight(width, height);
+        }
 
         if (this.shouldCenter)
         {
@@ -171,7 +176,7 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
         this.clearElements();
     }
 
-    protected void closeGui(boolean showParent)
+    protected void closeScreen(boolean showParent)
     {
         if (showParent)
         {
@@ -187,31 +192,47 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
     {
         this.screenWidth = width;
         this.screenHeight = height;
-
-        this.width = width;
-        this.height = height;
     }
 
-    protected void centerOnScreen()
+    public void setPosition(int x, int y)
     {
-        if (this.getParent() instanceof BaseScreen)
+        this.x = x;
+        this.y = y;
+    }
+
+    public void centerOnScreen()
+    {
+        int x;
+        int y;
+        GuiScreen parent = this.getParent();
+
+        if (parent instanceof BaseScreen)
         {
-            BaseScreen parent = (BaseScreen) this.getParent();
-            this.x = parent.x + parent.screenWidth / 2 - this.screenWidth / 2;
-            this.y = parent.y + parent.screenHeight / 2 - this.screenHeight / 2;
+            BaseScreen parentBaseScreen = (BaseScreen) this.getParent();
+            x = parentBaseScreen.x + parentBaseScreen.screenWidth / 2;
+            y = parentBaseScreen.y + parentBaseScreen.screenHeight / 2;
         }
-        else if (this.getParent() != null)
+        else if (parent != null)
         {
-            GuiScreen parent = this.getParent();
-            this.x = parent.width / 2 - this.screenWidth / 2;
-            this.y = parent.height / 2 - this.screenHeight / 2;
+            x = parent.width / 2;
+            y = parent.height / 2;
         }
         else if (GuiUtils.getCurrentScreen() != null)
         {
             GuiScreen current = GuiUtils.getCurrentScreen();
-            this.x = current.width / 2 - this.screenWidth / 2;
-            this.y = current.height / 2 - this.screenHeight / 2;
+            x = current.width / 2;
+            y = current.height / 2;
         }
+        else
+        {
+            x = GuiUtils.getScaledWindowWidth() / 2;
+            y = GuiUtils.getScaledWindowHeight() / 2;
+        }
+
+        x -= this.screenWidth / 2;
+        y -= this.screenHeight / 2;
+
+        this.setPosition(x, y);
     }
 
     protected BaseWidget getTopHoveredWidget(int mouseX, int mouseY, @Nullable BaseWidget highestFoundWidget)
@@ -326,6 +347,12 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
         List<BaseTextFieldWidget> textFields = this.getAllTextFields();
         BaseWidget clickedWidget = null;
 
+        // Clear the focus from all text fields
+        for (BaseTextFieldWidget tf : textFields)
+        {
+            tf.setFocused(false);
+        }
+
         if (this.hoveredWidget != null && this.hoveredWidget.tryMouseClick(mouseX, mouseY, mouseButton))
         {
             clickedWidget = this.hoveredWidget;
@@ -339,15 +366,6 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
                     clickedWidget = widget;
                     break;
                 }
-            }
-        }
-
-        // Clear the focus from all but the text field that was just clicked
-        for (BaseTextFieldWidget tf : textFields)
-        {
-            if (tf != clickedWidget)
-            {
-                tf.setFocused(false);
             }
         }
 
@@ -472,7 +490,7 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
 
         if (handled == false && keyCode == Keyboard.KEY_ESCAPE)
         {
-            this.closeGui(isShiftDown() == false);
+            this.closeScreen(isShiftDown() == false);
             handled = true;
         }
 

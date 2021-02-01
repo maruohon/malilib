@@ -11,7 +11,7 @@ import fi.dy.masa.malilib.config.option.list.ValueListConfig;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.config.BaseValueListEditScreen;
 import fi.dy.masa.malilib.gui.config.BaseValueListEditScreen.ValueListEditEntryWidgetFactory;
-import fi.dy.masa.malilib.gui.util.DialogHandler;
+import fi.dy.masa.malilib.gui.config.liteloader.DialogHandler;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.DropDownListWidget.IconWidgetFactory;
 import fi.dy.masa.malilib.gui.widget.list.entry.BaseValueListEditEntryWidget;

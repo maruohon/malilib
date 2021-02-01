@@ -9,10 +9,9 @@ import fi.dy.masa.malilib.config.option.BaseConfig;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.config.option.IntegerConfig;
 import fi.dy.masa.malilib.config.option.OptionListConfig;
-import fi.dy.masa.malilib.gui.BaseDialogScreen;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
-import fi.dy.masa.malilib.gui.util.DialogHandler;
+import fi.dy.masa.malilib.gui.config.liteloader.DialogHandler;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.IntegerTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.SliderWidget;
@@ -26,7 +25,7 @@ import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.input.KeyBindSettings;
 import fi.dy.masa.malilib.util.StringUtils;
 
-public class KeybindSettingsScreen extends BaseDialogScreen
+public class KeybindSettingsScreen extends BaseScreen
 {
     protected final KeyBind keybind;
     protected final String keybindName;
@@ -62,6 +61,9 @@ public class KeybindSettingsScreen extends BaseDialogScreen
             this.setParent(parent);
         }
 
+        this.backgroundColor = 0xFF000000;
+        this.renderBorder = true;
+        this.useTitleHierarchy = false;
         this.title = BaseScreen.TXT_BOLD + StringUtils.translate("malilib.gui.title.keybind_settings.advanced", this.keybindName) + BaseScreen.TXT_RST;
 
         KeyBindSettings defaultSettings = this.keybind.getDefaultSettings();
@@ -106,7 +108,6 @@ public class KeybindSettingsScreen extends BaseDialogScreen
         totalWidth = Math.max(totalWidth, this.getStringWidth(this.title) + 20);
         int totalHeight = this.configList.size() * 22 + 30;
 
-        this.setWidthAndHeight(totalWidth, totalHeight);
         this.setScreenWidthAndHeight(totalWidth, totalHeight);
         this.centerOnScreen();
     }
@@ -114,10 +115,10 @@ public class KeybindSettingsScreen extends BaseDialogScreen
     @Override
     public void initGui()
     {
-        this.clearElements();
+        super.initGui();
 
-        int x = this.dialogLeft + 10;
-        int y = this.dialogTop + 24;
+        int x = this.x + 10;
+        int y = this.y + 24;
 
         for (BaseConfig<?> config : this.configList)
         {

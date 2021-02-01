@@ -11,14 +11,14 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.math.MathHelper;
-import fi.dy.masa.malilib.gui.util.DialogHandler;
+import fi.dy.masa.malilib.gui.config.liteloader.DialogHandler;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.IntegerTextFieldWidget;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.shader.ShaderProgram;
 import fi.dy.masa.malilib.util.StringUtils;
 
-public class ColorEditorHSVScreen extends BaseDialogScreen
+public class ColorEditorHSVScreen extends BaseScreen
 {
     protected static final ShaderProgram SHADER_HUE = new ShaderProgram("malilib", null, "shaders/sv_selector.frag");
 
@@ -73,21 +73,22 @@ public class ColorEditorHSVScreen extends BaseDialogScreen
             this.setParent(parent);
         }
 
+        this.useTitleHierarchy = false;
         this.title = StringUtils.translate("malilib.gui.title.color_editor");
 
-        this.setWidthAndHeight(300, 180);
+        this.setScreenWidthAndHeight(300, 180);
         this.centerOnScreen();
     }
 
     @Override
-    public void setPosition(int left, int top)
+    public void setPosition(int x, int y)
     {
-        super.setPosition(left, top);
+        super.setPosition(x, y);
 
-        this.xHS = this.dialogLeft + 6;
-        this.yHS = this.dialogTop + 24;
-        this.xH = this.dialogLeft + 160;
-        this.yH = this.dialogTop + 24;
+        this.xHS = this.x + 6;
+        this.yHS = this.y + 24;
+        this.xH = this.x + 160;
+        this.yH = this.y + 24;
         this.xHFullSV = this.xHS + 110;
         this.sizeHS = 102;
         this.widthHFullSV = 16;
@@ -99,11 +100,11 @@ public class ColorEditorHSVScreen extends BaseDialogScreen
     @Override
     public void initGui()
     {
-        this.clearElements();
+        super.initGui();
 
-        int xLabel = this.dialogLeft + 148;
+        int xLabel = this.x + 148;
         int xTextField = xLabel + 110;
-        int y = this.dialogTop + 23;
+        int y = this.y + 23;
 
         y += this.createComponentElements(xTextField, y, xLabel, Element.H);
         y += this.createComponentElements(xTextField, y, xLabel, Element.S);
@@ -267,7 +268,7 @@ public class ColorEditorHSVScreen extends BaseDialogScreen
 
         this.color = (ai << 24) | (ri << 16) | (gi << 8) | bi;
 
-        this.updateTextFieldsHSV(this.relH, this.relS, this.relV);
+        this.updateTextFieldsHSV();
     }
 
     protected void setHSVFromRGB(int rgb)
@@ -278,7 +279,7 @@ public class ColorEditorHSVScreen extends BaseDialogScreen
         this.relS = hsv[1];
         this.relV = hsv[2];
 
-        this.updateTextFieldsHSV(this.relH, this.relS, this.relV);
+        this.updateTextFieldsHSV();
     }
 
     protected void setRGBFromHSV()
@@ -390,7 +391,7 @@ public class ColorEditorHSVScreen extends BaseDialogScreen
         }
     }
 
-    protected void updateTextFieldsHSV(float h, float s, float v)
+    protected void updateTextFieldsHSV()
     {
         this.updateTextField(Element.HEX);
         this.updateTextField(Element.H);
@@ -599,7 +600,6 @@ public class ColorEditorHSVScreen extends BaseDialogScreen
         color2 = this.color | 0xFF000000;
         renderGradientColorBar(x, y, z, w, h, color1, color2, buffer);
         renderBarMarkerHorizontalBar(x, y, z, w, h, (float) a / 255f, buffer);
-        y += yd;
 
         tessellator.draw();
 
@@ -672,7 +672,7 @@ public class ColorEditorHSVScreen extends BaseDialogScreen
         y -= segmentHeight;
 
         color1 = Color.HSBtoRGB(5f/6f, saturation, value);
-        color2 = Color.HSBtoRGB(6f/6f, saturation, value);
+        color2 = Color.HSBtoRGB(   1f, saturation, value);
         renderHueBarSegment(x, y, z, width, height, segmentWidth, segmentHeight, color1, color2, buffer);
     }
 
@@ -813,7 +813,7 @@ public class ColorEditorHSVScreen extends BaseDialogScreen
                 {
                     int val = Integer.parseInt(newText);
                     float[] hsv = this.gui.getCurrentColorHSV();
-                    int colorNew = colorOld;
+                    int colorNew;
 
                     switch (this.type)
                     {
@@ -858,7 +858,7 @@ public class ColorEditorHSVScreen extends BaseDialogScreen
                         this.gui.setColor(colorNew);
                     }
                 }
-                catch (Exception e) {}
+                catch (Exception ignore) {}
             }
         }
     }

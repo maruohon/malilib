@@ -33,16 +33,16 @@ public abstract class BaseButton extends BackgroundWidget
         this(x, y, width, height, "");
     }
 
-    public BaseButton(int x, int y, int width, int height, String text)
+    public BaseButton(int x, int y, int width, int height, String translationKey)
     {
-        this(x, y, width, height, text, null);
+        this(x, y, width, height, translationKey, null);
     }
 
-    public BaseButton(int x, int y, int width, int height, String text, @Nullable ButtonActionListener actionListener)
+    public BaseButton(int x, int y, int width, int height, String translationKey, @Nullable ButtonActionListener actionListener)
     {
         super(x, y, width, height);
 
-        this.displayString = StringUtils.translate(text);
+        this.displayString = StringUtils.translate(translationKey);
         this.fullDisplayString = this.displayString;
         this.actionListener = actionListener;
         this.hoverHelp = ImmutableList.of(StringUtils.translate("malilib.gui.button.hover.hold_shift_for_info"));

@@ -250,7 +250,7 @@ public abstract class BaseConfigPanel extends AbstractConfigPanel
         }
     }
 
-    private class DialogHandler implements fi.dy.masa.malilib.gui.util.DialogHandler
+    private class DialogHandler implements fi.dy.masa.malilib.gui.config.liteloader.DialogHandler
     {
         @Nullable private final BaseConfigScreen selectedPanel;
 

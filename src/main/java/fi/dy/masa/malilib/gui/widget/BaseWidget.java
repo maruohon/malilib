@@ -571,7 +571,7 @@ public abstract class BaseWidget
     {
         if (this.hasHoverText() && this.shouldRenderHoverInfo(mouseX, mouseY, isActiveGui, hoveredWidgetId))
         {
-            RenderUtils.renderHoverText(mouseX, mouseY, this.getZLevel(), this.getHoverStrings());
+            RenderUtils.renderHoverText(mouseX, mouseY, this.getZLevel() + 0.5f, this.getHoverStrings());
             RenderUtils.disableItemLighting();
         }
     }

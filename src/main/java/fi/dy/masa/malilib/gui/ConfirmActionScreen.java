@@ -4,16 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
 import net.minecraft.client.gui.GuiScreen;
+import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
-import fi.dy.masa.malilib.gui.widget.button.ButtonActionListener;
+import fi.dy.masa.malilib.listener.ConfirmationListener;
+import fi.dy.masa.malilib.listener.TaskCompletionListener;
 import fi.dy.masa.malilib.render.message.MessageConsumer;
 import fi.dy.masa.malilib.render.message.MessageType;
-import fi.dy.masa.malilib.gui.widget.LabelWidget;
-import fi.dy.masa.malilib.listener.TaskCompletionListener;
-import fi.dy.masa.malilib.listener.ConfirmationListener;
 import fi.dy.masa.malilib.util.StringUtils;
 
-public class ConfirmActionScreen extends BaseDialogScreen implements TaskCompletionListener
+public class ConfirmActionScreen extends BaseScreen implements TaskCompletionListener
 {
     protected final List<String> messageLines = new ArrayList<>();
     protected final ConfirmationListener listener;
@@ -29,7 +28,7 @@ public class ConfirmActionScreen extends BaseDialogScreen implements TaskComplet
 
         StringUtils.splitTextToLines(this.messageLines, StringUtils.translate(messageKey, args), width - 30);
 
-        this.setWidthAndHeight(width, this.getMessageHeight() + 50);
+        this.setScreenWidthAndHeight(width, this.getMessageHeight() + 50);
         this.centerOnScreen();
     }
 
@@ -38,20 +37,21 @@ public class ConfirmActionScreen extends BaseDialogScreen implements TaskComplet
     {
         super.initGui();
 
-        int x = this.dialogLeft + 10;
+        int x = this.x + 10;
 
-        this.addWidget(new LabelWidget(x, this.dialogTop + 20, this.textColor, this.messageLines));
+        this.addWidget(new LabelWidget(x, this.y + 20, this.textColor, this.messageLines));
 
-        int buttonWidth = this.getButtonWidth();
-        int y = this.dialogTop + this.dialogHeight - 26;
+        int buttonWidth = 10 + StringUtils.getMaxStringRenderWidth(StringUtils::translate, "malilib.gui.button.colored.confirm", "malilib.gui.button.colored.cancel");
+        int y = this.y + this.screenHeight - 26;
 
-        this.createButton(x, y, buttonWidth, ButtonType.OK, (btn, mbtn) -> {
+        // FIXME Should the parent screen be opened before triggering the action, that way the TaskCompletionListener redirect would not be needed?
+        this.addButton(new GenericButton(x, y, buttonWidth, 20, "malilib.gui.button.colored.confirm"), (btn, mbtn) -> {
             this.listener.onActionConfirmed();
             BaseScreen.openGui(this.getParent());
         });
         x += buttonWidth + 10;
 
-        this.createButton(x, y, buttonWidth, ButtonType.CANCEL, (btn, mbtn) -> {
+        this.addButton(new GenericButton(x, y, buttonWidth, 20, "malilib.gui.button.colored.cancel"), (btn, mbtn) -> {
             this.listener.onActionCancelled();
             BaseScreen.openGui(this.getParent());
         });
@@ -65,24 +65,6 @@ public class ConfirmActionScreen extends BaseDialogScreen implements TaskComplet
     public int getMessageHeight()
     {
         return this.messageLines.size() * (this.fontHeight + 1) - 1 + 5;
-    }
-
-    protected int getButtonWidth()
-    {
-        int width = 0;
-
-        for (ButtonType type : ButtonType.values())
-        {
-            width = Math.max(width, this.getStringWidth(type.getDisplayName()) + 10);
-        }
-
-        return width;
-    }
-
-    protected void createButton(int x, int y, int buttonWidth, ButtonType type, ButtonActionListener listener)
-    {
-        GenericButton button = new GenericButton(x, y, buttonWidth, 20, type.getDisplayName());
-        this.addButton(button, listener);
     }
 
     @Override
@@ -113,24 +95,6 @@ public class ConfirmActionScreen extends BaseDialogScreen implements TaskComplet
         if (this.getParent() instanceof TaskCompletionListener)
         {
             ((TaskCompletionListener) this.getParent()).onTaskAborted();
-        }
-    }
-
-    protected enum ButtonType
-    {
-        OK      ("malilib.gui.button.ok"),
-        CANCEL  ("malilib.gui.button.cancel");
-
-        private final String labelKey;
-
-        private ButtonType(String labelKey)
-        {
-            this.labelKey = labelKey;
-        }
-
-        public String getDisplayName()
-        {
-            return (this == ButtonType.OK ? BaseScreen.TXT_GREEN : BaseScreen.TXT_RED) + StringUtils.translate(this.labelKey) + BaseScreen.TXT_RST;
         }
     }
 }

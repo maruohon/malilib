@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.gui.util;
+package fi.dy.masa.malilib.gui.config.liteloader;
 
 import fi.dy.masa.malilib.gui.BaseScreen;
 

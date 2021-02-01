@@ -9,7 +9,7 @@ import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.config.value.OptionListConfigValue;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.config.KeybindSettingsScreen;
-import fi.dy.masa.malilib.gui.util.DialogHandler;
+import fi.dy.masa.malilib.gui.config.liteloader.DialogHandler;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.input.CancelCondition;
 import fi.dy.masa.malilib.input.KeyBind;

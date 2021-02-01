@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.Nullable;
@@ -93,11 +94,21 @@ public class StringUtils
 
     public static int getMaxStringRenderWidth(List<String> lines)
     {
+        return getMaxStringRenderWidth(lines, (l) -> l);
+    }
+
+    public static int getMaxStringRenderWidth(Function<String, String> translator, String... strings)
+    {
+        return getMaxStringRenderWidth(Arrays.asList(strings), translator);
+    }
+
+    public static int getMaxStringRenderWidth(List<String> lines, Function<String, String> translator)
+    {
         int width = 0;
 
         for (String line : lines)
         {
-            width = Math.max(width, getStringWidth(line));
+            width = Math.max(width, getStringWidth(translator.apply(line)));
         }
 
         return width;

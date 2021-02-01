@@ -3,13 +3,12 @@ package fi.dy.masa.malilib.gui;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import net.minecraft.client.gui.GuiScreen;
-import fi.dy.masa.malilib.gui.widget.button.BaseButton;
-import fi.dy.masa.malilib.gui.widget.button.GenericButton;
-import fi.dy.masa.malilib.gui.widget.button.ButtonActionListener;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
+import fi.dy.masa.malilib.gui.widget.button.ButtonActionListener;
+import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.util.StringUtils;
 
-public abstract class BaseTextInputScreen extends BaseDialogScreen
+public abstract class BaseTextInputScreen extends BaseScreen
 {
     protected final BaseTextFieldWidget textField;
     protected final String originalText;
@@ -21,10 +20,10 @@ public abstract class BaseTextInputScreen extends BaseDialogScreen
         this.useTitleHierarchy = false;
         this.originalText = defaultText;
 
-        this.setWidthAndHeight(260, 100);
+        this.setScreenWidthAndHeight(260, 100);
         this.centerOnScreen();
 
-        this.textField = new BaseTextFieldWidget(this.dialogLeft + 12, this.dialogTop + 40, 240, 20, this.originalText);
+        this.textField = new BaseTextFieldWidget(this.x + 12, this.y + 40, 240, 20, this.originalText);
         this.textField.setFocused(true);
     }
 
@@ -33,24 +32,24 @@ public abstract class BaseTextInputScreen extends BaseDialogScreen
     {
         super.initGui();
 
-        int x = this.dialogLeft + 10;
-        int y = this.dialogTop + 70;
+        int x = this.x + 10;
+        int y = this.y + 70;
 
-        this.textField.setPosition(this.dialogLeft + 12, this.dialogTop + 40);
+        this.textField.setPosition(this.x + 12, this.y + 40);
         this.addWidget(this.textField);
 
-        x += this.createButton(x, y, ButtonType.OK) + 2;
-        x += this.createButton(x, y, ButtonType.RESET) + 2;
-        this.createButton(x, y, ButtonType.CANCEL);
+        x += 2 + this.createButton(x, y, "malilib.gui.button.colored.ok", (btn, mbtn) -> this.closeScreenIfValueApplied());
+        x += 2 + this.createButton(x, y, "malilib.gui.button.reset", (btn, mbtn) -> this.resetTextFieldToOriginalText());
+        this.createButton(x, y, "malilib.gui.button.colored.cancel", (btn, mbtn) -> this.closeScreen(true));
 
         Keyboard.enableRepeatEvents(true);
     }
 
-    protected int createButton(int x, int y, ButtonType type)
+    protected int createButton(int x, int y, String translationKey, ButtonActionListener listener)
     {
-        GenericButton button = new GenericButton(x, y, -1, 20, type.getDisplayName());
+        GenericButton button = new GenericButton(x, y, -1, 20, translationKey);
         button.setWidth(Math.max(40, button.getWidth()));
-        return this.addButton(button, new ButtonListener(type, this)).getWidth();
+        return this.addButton(button, listener).getWidth();
     }
 
     @Override
@@ -58,76 +57,33 @@ public abstract class BaseTextInputScreen extends BaseDialogScreen
     {
         if (keyCode == Keyboard.KEY_RETURN)
         {
-            // Only close the GUI if the value was successfully applied
-            if (this.applyValue(this.textField.getText()))
-            {
-                BaseScreen.openGui(this.getParent());
-            }
-
+            this.closeScreenIfValueApplied();
             return true;
         }
         else if (keyCode == Keyboard.KEY_ESCAPE)
         {
-            BaseScreen.openGui(this.getParent());
+            this.closeScreen(true);
             return true;
         }
 
         return super.onKeyTyped(keyCode, scanCode, modifiers);
     }
 
+    protected void closeScreenIfValueApplied()
+    {
+        // Only close the GUI if the value was successfully applied
+        if (this.applyValue(this.textField.getText()))
+        {
+            this.closeScreen(true);
+        }
+    }
+
+    protected void resetTextFieldToOriginalText()
+    {
+        this.textField.setText(this.originalText);
+        this.textField.setCursorToStart();
+        this.textField.setFocused(true);
+    }
+
     protected abstract boolean applyValue(String string);
-
-    protected static class ButtonListener implements ButtonActionListener
-    {
-        private final BaseTextInputScreen gui;
-        private final ButtonType type;
-
-        public ButtonListener(ButtonType type, BaseTextInputScreen gui)
-        {
-            this.type = type;
-            this.gui = gui;
-        }
-
-        @Override
-        public void actionPerformedWithButton(BaseButton button, int mouseButton)
-        {
-            if (this.type == ButtonType.OK)
-            {
-                // Only close the GUI if the value was successfully applied
-                if (this.gui.applyValue(this.gui.textField.getText()))
-                {
-                    BaseScreen.openGui(this.gui.getParent());
-                }
-            }
-            else if (this.type == ButtonType.CANCEL)
-            {
-                BaseScreen.openGui(this.gui.getParent());
-            }
-            else if (this.type == ButtonType.RESET)
-            {
-                this.gui.textField.setText(this.gui.originalText);
-                this.gui.textField.setCursorToStart();
-                this.gui.textField.setFocused(true);
-            }
-        }
-    }
-
-    protected enum ButtonType
-    {
-        OK      ("malilib.gui.button.ok"),
-        CANCEL  ("malilib.gui.button.cancel"),
-        RESET   ("malilib.gui.button.reset");
-
-        private final String labelKey;
-
-        ButtonType(String labelKey)
-        {
-            this.labelKey = labelKey;
-        }
-
-        public String getDisplayName()
-        {
-            return StringUtils.translate(this.labelKey);
-        }
-    }
 }
