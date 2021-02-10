@@ -1,27 +1,17 @@
 package fi.dy.masa.malilib.gui.widget;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import fi.dy.masa.malilib.message.StringListRenderer;
 import fi.dy.masa.malilib.render.RenderUtils;
-import fi.dy.masa.malilib.render.TextRenderer;
-import fi.dy.masa.malilib.util.StringUtils;
-import fi.dy.masa.malilib.util.data.LeftRight;
 
 public class LabelWidget extends BackgroundWidget
 {
-    protected final List<String> originalStrings = new ArrayList<>();
-    protected final List<String> processedLinesNoHover = new ArrayList<>();
-    protected final List<String> processedLinesHover = new ArrayList<>();
-    protected boolean centerTextHorizontally;
-    protected boolean hasOverflowingContent;
+    protected final StringListRenderer stringListRenderer = new StringListRenderer();
     protected boolean useBackgroundForHoverOverflow = true;
-    protected boolean useTextShadow = true;
     protected boolean visible = true;
-    protected int totalTextWidth;
     protected int totalHeight;
     protected int totalWidth;
-    protected int textColor;
 
     public LabelWidget(int x, int y, int textColor, String... text)
     {
@@ -42,8 +32,10 @@ public class LabelWidget extends BackgroundWidget
     {
         super(x, y, width, height);
 
-        this.textColor = textColor;
+        this.stringListRenderer.setNormalTextColor(textColor);
+        this.stringListRenderer.setHoverTextColor(textColor);
         this.setText(lines);
+        this.updateStringRendererSize();
     }
 
     public int getTotalWidth()
@@ -58,71 +50,28 @@ public class LabelWidget extends BackgroundWidget
 
     protected void clearText()
     {
-        this.originalStrings.clear();
-        this.processedLinesNoHover.clear();
-        this.processedLinesHover.clear();
-        this.hasOverflowingContent = false;
-        this.totalTextWidth = 0;
+        this.stringListRenderer.clearText();
     }
 
     public LabelWidget setText(String translationKey, Object... args)
     {
-        this.clearText();
-        return this.addLine(translationKey, args);
+        this.stringListRenderer.setText(translationKey, args);
+        this.updateLabelWidgetSize();
+        return this;
     }
 
     public LabelWidget setText(List<String> lines)
     {
-        this.clearText();
-
-        for (String line : lines)
-        {
-            this.addLineNoUpdate(line);
-        }
-
-        this.updateWidth();
-        this.updateHeight();
-
+        this.stringListRenderer.setText(lines);
+        this.updateLabelWidgetSize();
         return this;
     }
 
     public LabelWidget addLine(String translationKey, Object... args)
     {
-        this.addLineNoUpdate(translationKey, args);
-        this.updateWidth();
-        this.updateHeight();
+        this.stringListRenderer.addLine(translationKey, args);
+        this.updateLabelWidgetSize();
         return this;
-    }
-
-    protected void addLineNoUpdate(String translationKey, Object... args)
-    {
-        String translated = StringUtils.translate(translationKey, args);
-        this.originalStrings.add(translated);
-
-        String[] splitLines = translated.split("\\n");
-
-        for (String line : splitLines)
-        {
-            this.totalTextWidth = Math.max(this.totalTextWidth, this.getStringWidth(line));
-            this.processedLinesHover.add(line);
-            String clampedLine = line;
-
-            if (this.automaticWidth == false || this.hasMaxWidth)
-            {
-                clampedLine = StringUtils.clampTextToRenderLength(line, this.maxWidth - 2, LeftRight.RIGHT, "...");
-                this.hasOverflowingContent |= clampedLine.equals(line) == false;
-            }
-
-            this.processedLinesNoHover.add(clampedLine);
-        }
-
-        int bw = this.getActiveBorderWidth();
-        int h = (this.fontHeight + 1) * this.processedLinesNoHover.size() + this.padding.getTop() + this.padding.getBottom() + bw;
-
-        if (this.maxHeight > 0 && h > this.maxHeight)
-        {
-            this.hasOverflowingContent = true;
-        }
     }
 
     public LabelWidget setVisible(boolean visible)
@@ -133,19 +82,25 @@ public class LabelWidget extends BackgroundWidget
 
     public LabelWidget setCenterTextHorizontally(boolean centerTextHorizontally)
     {
-        this.centerTextHorizontally = centerTextHorizontally;
+        this.stringListRenderer.setCenterTextHorizontally(centerTextHorizontally);
         return this;
     }
 
     public LabelWidget setUseTextShadow(boolean useShadow)
     {
-        this.useTextShadow = useShadow;
+        this.stringListRenderer.setUseTextShadow(useShadow);
         return this;
     }
 
-    public LabelWidget setTextColor(int color)
+    public LabelWidget setNormalTextColor(int color)
     {
-        this.textColor = color;
+        this.stringListRenderer.setNormalTextColor(color);
+        return this;
+    }
+
+    public LabelWidget setHoverTextColor(int color)
+    {
+        this.stringListRenderer.setHoverTextColor(color);
         return this;
     }
 
@@ -155,21 +110,45 @@ public class LabelWidget extends BackgroundWidget
         return this;
     }
 
+    protected void updateLabelWidgetSize()
+    {
+        this.updateWidth();
+        this.updateHeight();
+        this.updateStringRendererSize();
+    }
+
+    @Override
+    protected void onSizeChanged()
+    {
+        this.updateStringRendererSize();
+    }
+
+    protected void updateStringRendererSize()
+    {
+        int width = this.hasMaxWidth ? this.maxWidth : this.getWidth();
+        int height = this.hasMaxHeight ? this.maxHeight : this.getHeight();
+        int bw = this.getActiveBorderWidth() * 2;
+
+        this.stringListRenderer.setMaxWidth(width - this.padding.getLeft() - this.padding.getRight() - bw);
+        this.stringListRenderer.setMaxHeight(height - this.padding.getTop() - this.padding.getBottom() - bw);
+        this.stringListRenderer.reAddLines();
+    }
+
     @Override
     public void updateWidth()
     {
-        this.totalWidth = this.totalTextWidth + this.padding.getLeft() + this.padding.getRight();
-        this.totalHeight += this.getActiveBorderWidth() * 2;
-
-        int width = this.totalWidth;
-
-        if (this.hasMaxWidth)
-        {
-            width = Math.min(width, this.maxWidth);
-        }
+        this.totalWidth = this.stringListRenderer.getTotalTextWidth() + this.padding.getLeft() + this.padding.getRight();
+        this.totalWidth += this.getActiveBorderWidth() * 2;
 
         if (this.automaticWidth)
         {
+            int width = this.totalWidth;
+
+            if (this.hasMaxWidth)
+            {
+                width = Math.min(width, this.maxWidth);
+            }
+
             this.setWidth(width);
         }
     }
@@ -177,18 +156,18 @@ public class LabelWidget extends BackgroundWidget
     @Override
     public void updateHeight()
     {
-        this.totalHeight = (this.fontHeight + 1) * this.processedLinesNoHover.size() + this.padding.getTop() + this.padding.getBottom();
+        this.totalHeight = this.stringListRenderer.getTotalHeight() + this.padding.getTop() + this.padding.getBottom();
         this.totalHeight += this.getActiveBorderWidth() * 2;
-
-        int height = this.totalHeight;
-
-        if (this.hasMaxHeight)
-        {
-            height = Math.min(height, this.maxHeight);
-        }
 
         if (this.automaticHeight)
         {
+            int height = this.totalHeight;
+
+            if (this.hasMaxHeight)
+            {
+                height = Math.min(height, this.maxHeight);
+            }
+
             this.setHeight(height);
         }
     }
@@ -220,7 +199,7 @@ public class LabelWidget extends BackgroundWidget
     {
         if (this.visible)
         {
-            if (hovered && this.backgroundEnabled == false && this.useBackgroundForHoverOverflow && this.hasOverflowingContent)
+            if (hovered && this.backgroundEnabled == false && this.useBackgroundForHoverOverflow && this.stringListRenderer.hasClampedContent())
             {
                 z += 20;
                 int width = this.totalWidth;
@@ -234,25 +213,10 @@ public class LabelWidget extends BackgroundWidget
             }
 
             int bw = this.getActiveBorderWidth();
-            int fontHeight = this.fontHeight;
-            int usedHeight = this.padding.getTop() + this.padding.getBottom() + bw * 2;
             x += this.padding.getLeft() + bw;
             y += this.padding.getTop() + bw;
-            TextRenderer renderer = this.getTextRenderer(this.useTextShadow, this.centerTextHorizontally);
-            List<String> lines = hovered ? this.processedLinesHover : this.processedLinesNoHover;
 
-            for (String text : lines)
-            {
-                usedHeight += fontHeight + 1;
-
-                if (hovered == false && usedHeight > this.maxHeight && (this.automaticHeight == false || this.hasMaxHeight))
-                {
-                    break;
-                }
-
-                renderer.renderText(x, y, z, this.textColor, text);
-                y += fontHeight + 1;
-            }
+            this.stringListRenderer.renderAt(x, y, z, hovered);
 
             RenderUtils.color(1f, 1f, 1f, 1f);
         }
