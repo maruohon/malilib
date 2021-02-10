@@ -38,7 +38,7 @@ public class KeyBindSettings
     private KeyBindSettings(Context context, KeyAction activateOn, boolean allowExtraKeys, boolean orderSensitive,
                             boolean exclusive, CancelCondition cancel, boolean allowEmpty)
     {
-        this(context, activateOn, allowExtraKeys, orderSensitive, exclusive, cancel, false, 50, false);
+        this(context, activateOn, allowExtraKeys, orderSensitive, exclusive, cancel, allowEmpty, 50, false);
     }
 
     private KeyBindSettings(Context context, KeyAction activateOn, boolean allowExtraKeys, boolean orderSensitive,
