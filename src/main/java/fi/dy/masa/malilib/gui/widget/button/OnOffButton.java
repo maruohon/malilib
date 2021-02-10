@@ -6,7 +6,7 @@ import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
 import fi.dy.masa.malilib.render.RenderUtils;
-import fi.dy.masa.malilib.render.message.MessageHelpers;
+import fi.dy.masa.malilib.message.MessageHelpers;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class OnOffButton extends GenericButton
@@ -35,7 +35,8 @@ public class OnOffButton extends GenericButton
         this.translationKey = translationKey;
         this.statusSupplier = statusSupplier;
 
-        this.setBackgroundAndBorderColors(0xFF303030, 0xFF000000, 0xFF000000);
+        this.setBackgroundColor(0xFF303030);
+        this.setNormalBorderColor(0xFF000000);
         this.setRenderHoverBackground(false);
         this.setStyle(style);
         this.updateWidth();

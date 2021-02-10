@@ -14,6 +14,7 @@ import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.config.liteloader.DialogHandler;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.IntegerTextFieldWidget;
+import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.SliderWidget;
 import fi.dy.masa.malilib.gui.widget.button.BooleanConfigButton;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
@@ -142,7 +143,9 @@ public class KeybindSettingsScreen extends BaseScreen
     protected void addConfig(int x, int y, int labelWidth, int configWidth, BaseConfig<?> config)
     {
         int color = config.isModified() ? 0xFFFFFF55 : 0xFFAAAAAA;
-        this.addLabel(x, y, labelWidth + 4, 20, color, config.getPrettyName()).setPaddingTop(5).addHoverStrings(config.getComment());
+        LabelWidget label = this.addLabel(x, y, labelWidth + 4, 20, color, config.getPrettyName());
+        label.addHoverStrings(config.getComment());
+        label.getPadding().setTop(5);
         x += labelWidth + 10;
 
         if (config instanceof BooleanConfig)

@@ -19,7 +19,7 @@ public class ExpandableConfigGroupWidget extends BaseConfigWidget<ExpandableConf
 
         this.config = config;
 
-        this.setBorderColor(0xFFFFFFFF);
+        this.setNormalBorderColor(0xFFFFFFFF);
         this.setHoveredBorderWidth(1);
 
         this.arrowIconWidget = new IconWidget(0, 0, this.getArrowIcon());
@@ -71,8 +71,8 @@ public class ExpandableConfigGroupWidget extends BaseConfigWidget<ExpandableConf
         this.configOwnerLabelWidget.setX(tx);
 
         int labelLeftPadding = this.getNestingOffset(this.ctx.getNestingLevel()) + 2;
-        this.configNameLabelWidget.setPaddingLeft(labelLeftPadding);
-        this.configOwnerLabelWidget.setPaddingLeft(labelLeftPadding);
+        this.configNameLabelWidget.getPadding().setLeft(labelLeftPadding);
+        this.configOwnerLabelWidget.getPadding().setLeft(labelLeftPadding);
     }
 
     @Override

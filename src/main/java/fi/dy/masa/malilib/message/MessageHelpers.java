@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.render.message;
+package fi.dy.masa.malilib.message;
 
 import java.util.Locale;
 import fi.dy.masa.malilib.util.StringUtils;

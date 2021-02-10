@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.render.message;
+package fi.dy.masa.malilib.message;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,7 @@ public class MessageRenderer extends BackgroundWidget
 
         this.setBackgroundEnabled(true);
         this.setBackgroundColor(0xA0000000);
-        this.setBorderColor(0xFFC0C0C0);
+        this.setNormalBorderColor(0xFFC0C0C0);
         this.setBorderWidth(1);
     }
 

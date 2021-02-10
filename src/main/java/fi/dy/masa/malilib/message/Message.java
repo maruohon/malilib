@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.render.message;
+package fi.dy.masa.malilib.message;
 
 import java.util.ArrayList;
 import java.util.List;

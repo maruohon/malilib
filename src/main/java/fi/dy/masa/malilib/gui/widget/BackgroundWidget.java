@@ -1,35 +1,44 @@
 package fi.dy.masa.malilib.gui.widget;
 
+import fi.dy.masa.malilib.gui.position.EdgeInt;
 import fi.dy.masa.malilib.render.RenderUtils;
 
-public class BackgroundWidget extends BaseWidget
+public class BackgroundWidget extends InteractableWidget
 {
+    protected final EdgeInt padding = new EdgeInt();
+    protected final EdgeInt borderColorNormal = new EdgeInt(0xFFC0C0C0);
+    protected final EdgeInt borderColorHovered = new EdgeInt(0xFFFFFFFF);
     protected boolean backgroundEnabled;
     protected boolean borderEnabled;
     protected boolean borderEnabledHovered;
     protected boolean renderHoverBackground;
     protected int backgroundColor = 0xFF101010;
     protected int backgroundColorHovered = 0x50FFFFFF;
-    protected int borderColorBR = 0xFFC0C0C0;
-    protected int borderColorUL = 0xFFC0C0C0;
-    protected int borderColorHovered = 0xFFFFFFFF;
     protected int borderWidth;
     protected int borderWidthHovered;
-    protected int paddingLeft;
-    protected int paddingRight;
-    protected int paddingTop;
-    protected int paddingBottom;
 
     public BackgroundWidget(int x, int y, int width, int height)
     {
         super(x, y, width, height);
+
+        this.padding.setChangeListener(this::updateSize);
+    }
+
+    public EdgeInt getPadding()
+    {
+        return this.padding;
+    }
+
+    public void updateSize()
+    {
+        this.updateWidth();
+        this.updateHeight();
     }
 
     public BackgroundWidget setBackgroundEnabled(boolean enabled)
     {
         this.backgroundEnabled = enabled;
-        this.updateWidth();
-        this.updateHeight();
+        this.updateSize();
         return this;
     }
 
@@ -43,8 +52,7 @@ public class BackgroundWidget extends BaseWidget
     {
         this.borderWidth = borderWidth;
         this.borderEnabled = borderWidth > 0;
-        this.updateWidth();
-        this.updateHeight();
+        this.updateSize();
         return this;
     }
 
@@ -67,63 +75,15 @@ public class BackgroundWidget extends BaseWidget
         return this;
     }
 
-    public BackgroundWidget setBorderColor(int borderColor)
+    public BackgroundWidget setNormalBorderColor(int borderColor)
     {
-        this.borderColorUL = borderColor;
-        this.borderColorBR = borderColor;
+        this.borderColorNormal.setAll(borderColor);
         return this;
     }
 
     public BackgroundWidget setHoveredBorderColor(int borderColor)
     {
-        this.borderColorHovered = borderColor;
-        return this;
-    }
-
-    public BackgroundWidget setBackgroundAndBorderColors(int backgroundColor, int borderColorUL, int borderColorBR)
-    {
-        this.backgroundColor = backgroundColor;
-        this.borderColorUL = borderColorUL;
-        this.borderColorBR = borderColorBR;
-        return this;
-    }
-
-    public BackgroundWidget setPaddingLeft(int padding)
-    {
-        this.paddingLeft = padding;
-        this.updateWidth();
-        return this;
-    }
-
-    public BackgroundWidget setPaddingRight(int padding)
-    {
-        this.paddingRight = padding;
-        this.updateWidth();
-        return this;
-    }
-
-    public BackgroundWidget setPaddingTop(int padding)
-    {
-        this.paddingTop = padding;
-        this.updateHeight();
-        return this;
-    }
-
-    public BackgroundWidget setPaddingBottom(int padding)
-    {
-        this.paddingBottom = padding;
-        this.updateHeight();
-        return this;
-    }
-
-    public BackgroundWidget setPaddingXY(int padding)
-    {
-        this.paddingLeft = padding;
-        this.paddingRight = padding;
-        this.paddingTop = padding;
-        this.paddingBottom = padding;
-        this.updateWidth();
-        this.updateHeight();
+        this.borderColorHovered.setAll(borderColor);
         return this;
     }
 
@@ -176,16 +136,15 @@ public class BackgroundWidget extends BaseWidget
         int h = height;
         int bw = hoverBorder ? this.borderWidthHovered : this.borderWidth;
         int b2 = bw * 2;
-        int colorUL = hoverBorder ? this.borderColorHovered : this.borderColorUL;
-        int colorBR = hoverBorder ? this.borderColorHovered : this.borderColorBR;
+        EdgeInt color = hoverBorder ? this.borderColorHovered : this.borderColorNormal;
 
         // Horizontal lines/borders
-        RenderUtils.renderRectangle(x, y         , w, bw, colorUL, z);
-        RenderUtils.renderRectangle(x, y + h - bw, w, bw, colorBR, z);
+        RenderUtils.renderRectangle(x, y         , w, bw, color.getTop()   , z);
+        RenderUtils.renderRectangle(x, y + h - bw, w, bw, color.getBottom(), z);
 
         // Vertical lines/borders
-        RenderUtils.renderRectangle(x         , y + bw, bw, h - b2, colorUL, z);
-        RenderUtils.renderRectangle(x + w - bw, y + bw, bw, h - b2, colorBR, z);
+        RenderUtils.renderRectangle(x         , y + bw, bw, h - b2, color.getLeft() , z);
+        RenderUtils.renderRectangle(x + w - bw, y + bw, bw, h - b2, color.getRight(), z);
     }
 
     protected void renderBackgroundIfEnabled(int x, int y, float z, int width, int height, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)

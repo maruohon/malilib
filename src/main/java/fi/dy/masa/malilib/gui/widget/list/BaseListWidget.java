@@ -11,10 +11,10 @@ import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
-import fi.dy.masa.malilib.gui.position.Padding;
+import fi.dy.masa.malilib.gui.position.EdgeInt;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
-import fi.dy.masa.malilib.gui.widget.BaseWidget;
+import fi.dy.masa.malilib.gui.widget.InteractableWidget;
 import fi.dy.masa.malilib.gui.widget.ContainerWidget;
 import fi.dy.masa.malilib.gui.widget.ScrollBarWidget;
 import fi.dy.masa.malilib.gui.widget.SearchBarWidget;
@@ -27,7 +27,7 @@ import fi.dy.masa.malilib.render.RenderUtils;
 public abstract class BaseListWidget extends ContainerWidget
 {
     protected final ArrayList<BaseListEntryWidget> entryWidgets = new ArrayList<>();
-    protected final Padding listPosition = new Padding(2, 2, 2, 2);
+    protected final EdgeInt listPosition = new EdgeInt(2, 2, 2, 2);
     protected final ScrollBarWidget scrollBar;
 
     protected WidgetPositioner searchBarPositioner = new DefaultWidgetPositioner();
@@ -133,11 +133,11 @@ public abstract class BaseListWidget extends ContainerWidget
             startY = this.headerWidget.getY() + this.headerWidget.getHeight() + 2;
         }
 
-        int rightPadding = this.listPosition.getRightPadding();
-        int bottomPadding = this.listPosition.getBottomPadding();
+        int rightPadding = this.listPosition.getRight();
+        int bottomPadding = this.listPosition.getBottom();
 
-        this.entryWidgetStartX = x + this.listPosition.getLeftPadding();
-        this.entryWidgetStartY = startY + this.listPosition.getTopPadding();
+        this.entryWidgetStartX = x + this.listPosition.getLeft();
+        this.entryWidgetStartY = startY + this.listPosition.getTop();
         this.entryWidgetWidth = x + listWidth - this.entryWidgetStartX - rightPadding - this.scrollBar.getWidth() - 1;
         this.listHeight = this.getHeight() - (this.entryWidgetStartY - this.getY()) - bottomPadding;
 
@@ -249,7 +249,7 @@ public abstract class BaseListWidget extends ContainerWidget
         return this.parentScreen;
     }
 
-    public Padding getListPosition()
+    public EdgeInt getListPosition()
     {
         return this.listPosition;
     }
@@ -565,10 +565,10 @@ public abstract class BaseListWidget extends ContainerWidget
     }
 
     @Override
-    public BaseWidget getTopHoveredWidget(int mouseX, int mouseY, BaseWidget highestFoundWidget)
+    public InteractableWidget getTopHoveredWidget(int mouseX, int mouseY, InteractableWidget highestFoundWidget)
     {
         highestFoundWidget = super.getTopHoveredWidget(mouseX, mouseY, highestFoundWidget);
-        highestFoundWidget = BaseWidget.getTopHoveredWidgetFromList(this.entryWidgets, mouseX, mouseY, highestFoundWidget);
+        highestFoundWidget = InteractableWidget.getTopHoveredWidgetFromList(this.entryWidgets, mouseX, mouseY, highestFoundWidget);
         return highestFoundWidget;
     }
 
@@ -579,7 +579,7 @@ public abstract class BaseListWidget extends ContainerWidget
 
         if (this.entryWidgets.isEmpty() == false)
         {
-            for (BaseWidget widget : this.entryWidgets)
+            for (InteractableWidget widget : this.entryWidgets)
             {
                 textFields.addAll(widget.getAllTextFields());
             }

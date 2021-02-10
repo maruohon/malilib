@@ -18,14 +18,15 @@ import fi.dy.masa.malilib.gui.config.liteloader.DialogHandler;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.BaseWidget;
+import fi.dy.masa.malilib.gui.widget.InteractableWidget;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.button.BaseButton;
 import fi.dy.masa.malilib.gui.widget.button.ButtonActionListener;
 import fi.dy.masa.malilib.listener.TextChangeListener;
+import fi.dy.masa.malilib.message.MessageConsumer;
+import fi.dy.masa.malilib.message.MessageRenderer;
+import fi.dy.masa.malilib.message.MessageType;
 import fi.dy.masa.malilib.render.RenderUtils;
-import fi.dy.masa.malilib.render.message.MessageConsumer;
-import fi.dy.masa.malilib.render.message.MessageRenderer;
-import fi.dy.masa.malilib.render.message.MessageType;
 import fi.dy.masa.malilib.util.consumer.StringConsumer;
 
 public abstract class BaseScreen extends GuiScreen implements MessageConsumer, StringConsumer
@@ -66,9 +67,9 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
     public final int fontHeight = this.textRenderer.FONT_HEIGHT;
     protected final List<Runnable> tasks = new ArrayList<>();
     private final List<BaseButton> buttons = new ArrayList<>();
-    private final List<BaseWidget> widgets = new ArrayList<>();
+    private final List<InteractableWidget> widgets = new ArrayList<>();
     private final MessageRenderer messageRenderer;
-    protected BaseWidget hoveredWidget = null;
+    protected InteractableWidget hoveredWidget = null;
     protected String title = "";
     @Nullable private GuiScreen parent;
     @Nullable protected DialogHandler dialogHandler;
@@ -91,7 +92,7 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
     public BaseScreen()
     {
         this.messageRenderer = new MessageRenderer();
-        this.messageRenderer.setBackgroundColor(0xDD000000).setBorderColor(COLOR_HORIZONTAL_BAR);
+        this.messageRenderer.setBackgroundColor(0xDD000000).setNormalBorderColor(COLOR_HORIZONTAL_BAR);
         this.messageRenderer.setCentered(true, true);
         this.messageRenderer.setZLevel(100);
     }
@@ -235,10 +236,10 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
         this.setPosition(x, y);
     }
 
-    protected BaseWidget getTopHoveredWidget(int mouseX, int mouseY, @Nullable BaseWidget highestFoundWidget)
+    protected InteractableWidget getTopHoveredWidget(int mouseX, int mouseY, @Nullable InteractableWidget highestFoundWidget)
     {
-        highestFoundWidget = BaseWidget.getTopHoveredWidgetFromList(this.buttons, mouseX, mouseY, highestFoundWidget);
-        highestFoundWidget = BaseWidget.getTopHoveredWidgetFromList(this.widgets, mouseX, mouseY, highestFoundWidget);
+        highestFoundWidget = InteractableWidget.getTopHoveredWidgetFromList(this.buttons, mouseX, mouseY, highestFoundWidget);
+        highestFoundWidget = InteractableWidget.getTopHoveredWidgetFromList(this.widgets, mouseX, mouseY, highestFoundWidget);
         return highestFoundWidget;
     }
 
@@ -345,7 +346,7 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
     public boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
         List<BaseTextFieldWidget> textFields = this.getAllTextFields();
-        BaseWidget clickedWidget = null;
+        InteractableWidget clickedWidget = null;
 
         // Clear the focus from all text fields
         for (BaseTextFieldWidget tf : textFields)
@@ -359,7 +360,7 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
         }
         else
         {
-            for (BaseWidget widget : this.widgets)
+            for (InteractableWidget widget : this.widgets)
             {
                 if (widget.tryMouseClick(mouseX, mouseY, mouseButton))
                 {
@@ -390,7 +391,7 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
 
     public boolean onMouseReleased(int mouseX, int mouseY, int mouseButton)
     {
-        for (BaseWidget widget : this.widgets)
+        for (InteractableWidget widget : this.widgets)
         {
             widget.onMouseReleased(mouseX, mouseY, mouseButton);
         }
@@ -420,7 +421,7 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
             }
         }
 
-        for (BaseWidget widget : this.widgets)
+        for (InteractableWidget widget : this.widgets)
         {
             if (widget.tryMouseScroll(mouseX, mouseY, mouseWheelDelta))
             {
@@ -446,7 +447,7 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
 
         if (handled == false)
         {
-            for (BaseWidget widget : this.widgets)
+            for (InteractableWidget widget : this.widgets)
             {
                 if (widget.onMouseMoved(mouseX, mouseY))
                 {
@@ -477,7 +478,7 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
 
         if (handled == false && this.widgets.isEmpty() == false)
         {
-            for (BaseWidget widget : this.widgets)
+            for (InteractableWidget widget : this.widgets)
             {
                 if (widget.onKeyTyped(keyCode, scanCode, modifiers))
                 {
@@ -503,7 +504,7 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
     {
         boolean handled = false;
 
-        for (BaseWidget widget : this.widgets)
+        for (InteractableWidget widget : this.widgets)
         {
             if (widget.onCharTyped(charIn, modifiers))
             {
@@ -524,7 +525,7 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
 
         if (this.widgets.isEmpty() == false)
         {
-            for (BaseWidget widget : this.widgets)
+            for (InteractableWidget widget : this.widgets)
             {
                 textFields.addAll(widget.getAllTextFields());
             }
@@ -577,12 +578,12 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
         this.zLevel = zLevel;
         int parentZLevel = (int) this.zLevel;
 
-        for (BaseWidget widget : this.buttons)
+        for (InteractableWidget widget : this.buttons)
         {
             widget.setZLevelBasedOnParent(parentZLevel);
         }
 
-        for (BaseWidget widget : this.widgets)
+        for (InteractableWidget widget : this.widgets)
         {
             widget.setZLevelBasedOnParent(parentZLevel);
         }
@@ -610,7 +611,7 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
         return button;
     }
 
-    public <T extends BaseWidget> T addWidget(T widget)
+    public <T extends InteractableWidget> T addWidget(T widget)
     {
         this.widgets.add(widget);
         widget.setTaskQueue(this::addTask);
@@ -645,7 +646,7 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
         return this.addWidget(new LabelWidget(x, y, width, height, textColor, lines));
     }
 
-    protected boolean removeWidget(BaseWidget widget)
+    protected boolean removeWidget(InteractableWidget widget)
     {
         if (widget != null && this.widgets.contains(widget))
         {
@@ -715,7 +716,7 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
     {
         if (this.widgets.isEmpty() == false)
         {
-            for (BaseWidget widget : this.widgets)
+            for (InteractableWidget widget : this.widgets)
             {
                 widget.renderAt(widget.getX(), widget.getY(), widget.getZLevel(), mouseX, mouseY, isActiveGui, hoveredWidgetId);
             }
@@ -723,7 +724,7 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
 
         if (this.buttons.isEmpty() == false)
         {
-            for (BaseWidget widget : this.buttons)
+            for (InteractableWidget widget : this.buttons)
             {
                 widget.renderAt(widget.getX(), widget.getY(), widget.getZLevel(), mouseX, mouseY, isActiveGui, hoveredWidgetId);
             }
@@ -814,11 +815,11 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
         }
     }
 
-    public static void renderWidgetDebug(List<? extends BaseWidget> widgets, int mouseX, int mouseY, boolean renderAll, boolean infoAlways)
+    public static void renderWidgetDebug(List<? extends InteractableWidget> widgets, int mouseX, int mouseY, boolean renderAll, boolean infoAlways)
     {
         if (widgets.isEmpty() == false)
         {
-            for (BaseWidget widget : widgets)
+            for (InteractableWidget widget : widgets)
             {
                 boolean hovered = widget.isMouseOver(mouseX, mouseY);
                 widget.renderDebug(mouseX, mouseY, hovered, renderAll, infoAlways);

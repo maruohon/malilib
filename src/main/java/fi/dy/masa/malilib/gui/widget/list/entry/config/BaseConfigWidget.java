@@ -48,7 +48,7 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
         boolean showOwner = this.ctx.getListWidget().isShowingOptionsFromOtherCategories();
         this.configOwnerLabelWidget = new LabelWidget(x, y + 2, 0xFF707070, ownerLabel != null ? ownerLabel : "");
         this.configNameLabelWidget = new LabelWidget(x, y, this.getMaxLabelWidth(), height, 0xFFFFFFFF, nameLabel);
-        this.configNameLabelWidget.setPaddingTop(showOwner ? 12 : 7);
+        this.configNameLabelWidget.getPadding().setTop(showOwner ? 12 : 7);
 
         EventListener clickHandler = config.getLabelClickHandler();
         String comment = config.getComment();
@@ -93,8 +93,8 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
         super.updateSubWidgetsToGeometryChanges();
 
         int nesting = this.getNestingOffset(this.ctx.getNestingLevel());
-        this.configOwnerLabelWidget.setPaddingLeft(nesting + 4);
-        this.configNameLabelWidget.setPaddingLeft(nesting + 4);
+        this.configOwnerLabelWidget.getPadding().setLeft(nesting + 4);
+        this.configNameLabelWidget.getPadding().setLeft(nesting + 4);
     }
 
     protected int getElementWidth()

@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.input.callback;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.input.KeyAction;
 import fi.dy.masa.malilib.input.KeyBind;
-import fi.dy.masa.malilib.render.message.MessageUtils;
+import fi.dy.masa.malilib.message.MessageUtils;
 
 public class ToggleBooleanWithMessageKeyCallback extends ToggleBooleanKeyCallback
 {

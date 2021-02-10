@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.systems;
+package fi.dy.masa.malilib.interoperation;
 
 import java.util.ArrayList;
 import javax.annotation.Nullable;

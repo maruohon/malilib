@@ -117,9 +117,9 @@ public class LabelWidget extends BackgroundWidget
         }
 
         int bw = this.getActiveBorderWidth();
-        int w = (this.fontHeight + 1) * this.processedLinesNoHover.size() + this.paddingTop + this.paddingBottom + bw;
+        int h = (this.fontHeight + 1) * this.processedLinesNoHover.size() + this.padding.getTop() + this.padding.getBottom() + bw;
 
-        if (this.maxHeight > 0 && w > this.maxHeight)
+        if (this.maxHeight > 0 && h > this.maxHeight)
         {
             this.hasOverflowingContent = true;
         }
@@ -158,7 +158,7 @@ public class LabelWidget extends BackgroundWidget
     @Override
     public void updateWidth()
     {
-        this.totalWidth = this.totalTextWidth + this.paddingLeft + this.paddingRight;
+        this.totalWidth = this.totalTextWidth + this.padding.getLeft() + this.padding.getRight();
         this.totalHeight += this.getActiveBorderWidth() * 2;
 
         int width = this.totalWidth;
@@ -177,7 +177,7 @@ public class LabelWidget extends BackgroundWidget
     @Override
     public void updateHeight()
     {
-        this.totalHeight = (this.fontHeight + 1) * this.processedLinesNoHover.size() + this.paddingTop + this.paddingBottom;
+        this.totalHeight = (this.fontHeight + 1) * this.processedLinesNoHover.size() + this.padding.getTop() + this.padding.getBottom();
         this.totalHeight += this.getActiveBorderWidth() * 2;
 
         int height = this.totalHeight;
@@ -235,9 +235,9 @@ public class LabelWidget extends BackgroundWidget
 
             int bw = this.getActiveBorderWidth();
             int fontHeight = this.fontHeight;
-            int usedHeight = this.paddingTop + this.paddingBottom + bw * 2;
-            x += this.paddingLeft + bw;
-            y += this.paddingTop + bw;
+            int usedHeight = this.padding.getTop() + this.padding.getBottom() + bw * 2;
+            x += this.padding.getLeft() + bw;
+            y += this.padding.getTop() + bw;
             TextRenderer renderer = this.getTextRenderer(this.useTextShadow, this.centerTextHorizontally);
             List<String> lines = hovered ? this.processedLinesHover : this.processedLinesNoHover;
 

@@ -52,7 +52,7 @@ public abstract class BaseModelWidget extends BackgroundWidget
 
         if (this.backgroundEnabled)
         {
-            width += this.paddingLeft + this.paddingRight + this.borderWidth * 2;
+            width += this.padding.getLeft() + this.padding.getRight() + this.borderWidth * 2;
         }
 
         this.setWidth(width);
@@ -65,7 +65,7 @@ public abstract class BaseModelWidget extends BackgroundWidget
 
         if (this.backgroundEnabled)
         {
-            height += this.paddingTop + this.paddingBottom + this.borderWidth * 2;
+            height += this.padding.getTop() + this.padding.getBottom() + this.borderWidth * 2;
         }
 
         this.setHeight(height);
@@ -83,8 +83,8 @@ public abstract class BaseModelWidget extends BackgroundWidget
 
         if (this.backgroundEnabled)
         {
-            x += this.paddingLeft + this.borderWidth;
-            y += this.paddingTop + this.borderWidth;
+            x += this.padding.getLeft() + this.borderWidth;
+            y += this.padding.getTop() + this.borderWidth;
         }
 
         if (this.doHighlight && hovered)

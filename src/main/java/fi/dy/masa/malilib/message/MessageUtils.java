@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.render.message;
+package fi.dy.masa.malilib.message;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.ChatType;
@@ -43,7 +43,7 @@ public class MessageUtils
             {
                 showGuiOrInGameMessage(messageType, lifeTime, translationKey, args);
             }
-            else if (outputType == InfoType.HOTBAR)
+            else if (outputType == InfoType.VANILLA_HOTBAR)
             {
                 printActionbarMessage(translationKey, args);
             }

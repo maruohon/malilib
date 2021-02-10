@@ -29,8 +29,8 @@ public class DropDownListWidget<T> extends ContainerWidget
 {
     protected final List<T> filteredEntries = new ArrayList<>();
     protected final List<T> entries;
-    protected final List<BaseWidget> dropDownSubWidgets = new ArrayList<>();
-    protected final List<BaseWidget> listEntryWidgets = new ArrayList<>();
+    protected final List<InteractableWidget> dropDownSubWidgets = new ArrayList<>();
+    protected final List<InteractableWidget> listEntryWidgets = new ArrayList<>();
     protected final ScrollBarWidget scrollBar;
     protected final BaseTextFieldWidget searchField;
     protected final SelectionBarWidget<T> selectionBarWidget;
@@ -182,7 +182,7 @@ public class DropDownListWidget<T> extends ContainerWidget
     }
 
     @Nullable
-    public BaseWidget createIconWidgetForEntry(int x, int y, int height, T entry)
+    public InteractableWidget createIconWidgetForEntry(int x, int y, int height, T entry)
     {
         if (this.iconWidgetFactory != null)
         {
@@ -223,7 +223,7 @@ public class DropDownListWidget<T> extends ContainerWidget
                 this.addWidget(this.searchField);
             }
 
-            for (BaseWidget widget : this.listEntryWidgets)
+            for (InteractableWidget widget : this.listEntryWidgets)
             {
                 this.addWidget(widget);
             }
@@ -292,12 +292,12 @@ public class DropDownListWidget<T> extends ContainerWidget
     @Override
     public void moveSubWidgets(int diffX, int diffY)
     {
-        for (BaseWidget widget : this.dropDownSubWidgets)
+        for (InteractableWidget widget : this.dropDownSubWidgets)
         {
             widget.setPosition(widget.getX() + diffX, widget.getY() + diffY);
         }
 
-        for (BaseWidget widget : this.listEntryWidgets)
+        for (InteractableWidget widget : this.listEntryWidgets)
         {
             widget.setPosition(widget.getX() + diffX, widget.getY() + diffY);
         }
@@ -352,7 +352,7 @@ public class DropDownListWidget<T> extends ContainerWidget
 
             if (entries.size() > 0)
             {
-                BaseWidget iconWidget = this.createIconWidgetForEntry(0, 0, this.lineHeight, entries.get(0));
+                InteractableWidget iconWidget = this.createIconWidgetForEntry(0, 0, this.lineHeight, entries.get(0));
 
                 if (iconWidget != null)
                 {
@@ -721,7 +721,7 @@ public class DropDownListWidget<T> extends ContainerWidget
         protected final DropDownListWidget<T> dropdownWidget;
         protected final IconWidget openCloseIconWidget;
         protected String displayString;
-        @Nullable protected BaseWidget iconWidget;
+        @Nullable protected InteractableWidget iconWidget;
         @Nullable protected String openStateHoverText;
         protected int displayStringWidth;
         protected int nonTextWidth;
@@ -817,7 +817,7 @@ public class DropDownListWidget<T> extends ContainerWidget
         public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
         {
             DropDownListWidget<T> dropDown = this.dropdownWidget;
-            this.setBorderColor(dropDown.enabled ? (dropDown.isOpen() ? dropDown.borderColorOpen : dropDown.borderColorUL) : dropDown.borderColorDisabled);
+            this.setNormalBorderColor(dropDown.enabled ? (dropDown.isOpen() ? dropDown.borderColorOpen : dropDown.borderColorNormal.getTop()) : dropDown.borderColorDisabled);
 
             super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hovered);
 
@@ -850,7 +850,7 @@ public class DropDownListWidget<T> extends ContainerWidget
             int diffY = y - this.getY();
             float diffZ = z - this.getZLevel();
 
-            for (BaseWidget widget : this.subWidgets)
+            for (InteractableWidget widget : this.subWidgets)
             {
                 int wx;
                 int wy;
@@ -898,7 +898,7 @@ public class DropDownListWidget<T> extends ContainerWidget
         protected final T entry;
         protected final int listIndex;
         protected final DropDownListWidget<T> dropDown;
-        @Nullable protected BaseWidget iconWidget;
+        @Nullable protected InteractableWidget iconWidget;
         protected final int totalWidth;
         protected String displayString;
         protected int displayStringWidth;

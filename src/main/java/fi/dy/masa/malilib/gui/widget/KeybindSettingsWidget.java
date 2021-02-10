@@ -17,7 +17,7 @@ import fi.dy.masa.malilib.input.KeyBindSettings;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 
-public class KeybindSettingsWidget extends BaseWidget
+public class KeybindSettingsWidget extends InteractableWidget
 {
     public static final ResourceLocation TEXTURE = new ResourceLocation(MaLiLibReference.MOD_ID, "textures/gui/gui_widgets.png");
 

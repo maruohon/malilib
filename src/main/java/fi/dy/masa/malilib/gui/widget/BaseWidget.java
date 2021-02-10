@@ -1,11 +1,5 @@
 package fi.dy.masa.malilib.gui.widget;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-import javax.annotation.Nullable;
 import org.lwjgl.opengl.GL11;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableList;
@@ -16,47 +10,36 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
-import fi.dy.masa.malilib.listener.EventListener;
-import fi.dy.masa.malilib.message.OrderedStringListFactory;
 import fi.dy.masa.malilib.render.RectangleRenderer;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.TextRenderer;
-import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.Color4f;
 
-public abstract class BaseWidget
+public class BaseWidget
 {
+    public static final ImmutableList<String> EMPTY_STRING_LIST = ImmutableList.of();
+    public static final RectangleRenderer DEBUG_TEXT_BG_RENDERER = (x, y, w, h, z) -> RenderUtils.renderOutlinedBox(x - 3, y - 3, w + 6, h + 6, 0xE0000000, 0xFFC0C0C0, z);
+
     private static final ArrayListMultimap<Long, String> DEBUG_STRINGS = ArrayListMultimap.create();
     private static int lastDebugOutlineColorHue;
-    private static int nextWidgetId;
 
-    public static final RectangleRenderer DEBUG_TEXT_BG_RENDERER = (x, y, w, h, z) -> RenderUtils.renderOutlinedBox(x - 3, y - 3, w + 6, h + 6, 0xE0000000, 0xFFC0C0C0, z);
-    public static final ImmutableList<String> EMPTY_STRING_LIST = ImmutableList.of();
-
-    private final int id;
-    protected final int fontHeight;
     protected final Minecraft mc;
     protected final FontRenderer textRenderer;
-    protected OrderedStringListFactory hoverInfoFactory = new OrderedStringListFactory();
-    @Nullable protected EventListener clickListener;
-    @Nullable protected HoverChecker renderHoverChecker;
-    @Nullable protected Consumer<Runnable> taskQueue;
+    protected final int fontHeight;
     private int x;
     private int y;
+    private float zLevel;
     private int xRight;
     private int width;
     private int height;
-    private float zLevel;
+    protected int maxWidth;
+    protected int maxHeight;
     private boolean keepOnScreen;
     private boolean rightAlign;
     protected boolean automaticHeight;
     protected boolean automaticWidth;
     protected boolean hasMaxHeight;
     protected boolean hasMaxWidth;
-    protected boolean shouldReceiveOutsideClicks;
-    protected boolean shouldReceiveOutsideScrolls;
-    protected int maxHeight;
-    protected int maxWidth;
 
     public BaseWidget(int x, int y, int width, int height)
     {
@@ -67,7 +50,6 @@ public abstract class BaseWidget
         this.mc = Minecraft.getMinecraft();
         this.textRenderer = this.mc.fontRenderer;
         this.fontHeight = this.textRenderer.FONT_HEIGHT;
-        this.id = nextWidgetId++;
 
         this.automaticWidth = width < 0;
         this.automaticHeight = height < 0;
@@ -257,17 +239,6 @@ public abstract class BaseWidget
         return this.zLevel;
     }
 
-    /**
-     * Returns the unique(-ish) ID of this widget.
-     * The ID is increment by one for each widget that is created (starting from 0 for each game launch).
-     * This ID is mainly meant for things like identifying the top-most hovered widget.
-     * @return
-     */
-    public int getId()
-    {
-        return this.id;
-    }
-
     public void setZLevel(float zLevel)
     {
         this.zLevel = zLevel;
@@ -276,43 +247,6 @@ public abstract class BaseWidget
     public void setZLevelBasedOnParent(float parentZLevel)
     {
         this.setZLevel(parentZLevel + this.getSubWidgetZLevelIncrement());
-    }
-
-    public void setTaskQueue(@Nullable Consumer<Runnable> taskQueue)
-    {
-        this.taskQueue = taskQueue;
-    }
-
-    public void setRenderHoverChecker(@Nullable HoverChecker checker)
-    {
-        this.renderHoverChecker = checker;
-    }
-
-    /**
-     * Schedules a task to run after any widget iterations are finished, to not cause CMEs
-     * if the task needs to modify the data list or the widget list in some way.
-     */
-    protected void scheduleTask(Runnable task)
-    {
-        if (this.taskQueue != null)
-        {
-            this.taskQueue.accept(task);
-        }
-    }
-
-    public void setClickListener(@Nullable EventListener listener)
-    {
-        this.clickListener = listener;
-    }
-
-    public void setShouldReceiveOutsideClicks(boolean shouldReceiveOutsideClicks)
-    {
-        this.shouldReceiveOutsideClicks = shouldReceiveOutsideClicks;
-    }
-
-    public void setShouldReceiveOutsideScrolls(boolean shouldReceiveOutsideScrolls)
-    {
-        this.shouldReceiveOutsideScrolls = shouldReceiveOutsideScrolls;
     }
 
     /**
@@ -332,162 +266,6 @@ public abstract class BaseWidget
     protected int getCenteredTextOffsetY()
     {
         return (this.getHeight() - this.fontHeight) / 2 + 1;
-    }
-
-    public boolean isMouseOver(int mouseX, int mouseY)
-    {
-        int x = this.getX();
-        int y = this.getY();
-
-        return mouseX >= x && mouseX < x + this.getWidth() &&
-               mouseY >= y && mouseY < y + this.getHeight();
-    }
-
-    public boolean isHoveredForRender(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
-    {
-        if (this.renderHoverChecker != null)
-        {
-            return this.renderHoverChecker.isHovered(mouseX, mouseY, isActiveGui, hoveredWidgetId);
-        }
-
-        return hoveredWidgetId == this.getId() || (isActiveGui && this.isMouseOver(mouseX, mouseY));
-    }
-
-    public boolean getShouldReceiveOutsideClicks()
-    {
-        return this.shouldReceiveOutsideClicks;
-    }
-
-    public boolean getShouldReceiveOutsideScrolls()
-    {
-        return this.shouldReceiveOutsideScrolls;
-    }
-
-    public boolean tryMouseClick(int mouseX, int mouseY, int mouseButton)
-    {
-        if (this.getShouldReceiveOutsideClicks() || this.isMouseOver(mouseX, mouseY))
-        {
-            return this.onMouseClicked(mouseX, mouseY, mouseButton);
-        }
-
-        return false;
-    }
-
-    protected boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
-    {
-        if (this.clickListener != null)
-        {
-            this.clickListener.onEvent();
-            return true;
-        }
-
-        return false;
-    }
-
-    public void onMouseReleased(int mouseX, int mouseY, int mouseButton)
-    {
-    }
-
-    public boolean tryMouseScroll(int mouseX, int mouseY, double mouseWheelDelta)
-    {
-        if (this.getShouldReceiveOutsideScrolls() || this.isMouseOver(mouseX, mouseY))
-        {
-            return this.onMouseScrolled(mouseX, mouseY, mouseWheelDelta);
-        }
-
-        return false;
-    }
-
-    protected boolean onMouseScrolled(int mouseX, int mouseY, double mouseWheelDelta)
-    {
-        return false;
-    }
-
-    public boolean onMouseMoved(int mouseX, int mouseY)
-    {
-        return false;
-    }
-
-    public boolean onKeyTyped(int keyCode, int scanCode, int modifiers)
-    {
-        return false;
-    }
-
-    public boolean onCharTyped(char charIn, int modifiers)
-    {
-        return false;
-    }
-
-    /**
-     * Returns true if this widget can be hovered (for hover info etc.) at the given point
-     */
-    public boolean canHoverAt(int mouseX, int mouseY, int mouseButton)
-    {
-        return true;
-    }
-
-    public boolean hasHoverText()
-    {
-        return this.getHoverStrings().isEmpty() == false;
-    }
-
-    public ImmutableList<String> getHoverStrings()
-    {
-        return this.hoverInfoFactory.getLines();
-    }
-
-    public OrderedStringListFactory getHoverInfoFactory()
-    {
-        return this.hoverInfoFactory;
-    }
-
-    public void setHoverStrings(List<String> hoverStrings)
-    {
-        this.hoverInfoFactory.setLines("_default", hoverStrings);
-    }
-
-    public void addHoverStrings(String... hoverStrings)
-    {
-        this.addHoverStrings(Arrays.asList(hoverStrings));
-    }
-
-    public void addHoverStrings(List<String> hoverStrings)
-    {
-        this.hoverInfoFactory.addLines(hoverStrings);
-    }
-
-    /**
-     * Adds the provided line supplier, by using the provided key.
-     * The key can be used to remove just these lines later.
-     */
-    public void setHoverStringProvider(String key, Supplier<List<String>> supplier)
-    {
-        this.hoverInfoFactory.setStringListProvider(key, supplier);
-    }
-
-    /**
-     * Adds the provided line supplier, by using the provided key.
-     * The key can be used to remove just these lines later.
-     */
-    public void setHoverStringProvider(String key, Supplier<List<String>> supplier, int priority)
-    {
-        this.hoverInfoFactory.setStringListProvider(key, supplier, priority);
-    }
-
-    public void addHoverString(String translationKey, Object... args)
-    {
-        String str = StringUtils.translate(translationKey, args);
-        this.addHoverStrings(str.split("\\n"));
-    }
-
-    public void updateHoverStrings()
-    {
-        this.hoverInfoFactory.updateList();
-    }
-
-    public List<BaseTextFieldWidget> getAllTextFields()
-    {
-        return Collections.emptyList();
     }
 
     public void bindTexture(ResourceLocation texture)
@@ -535,7 +313,7 @@ public abstract class BaseWidget
         GlStateManager.pushMatrix();
         GlStateManager.translate(0f, 0f, z + 0.05f);
 
-        this.textRenderer.drawStringWithShadow(text, x - this.getStringWidth(text) / 2, y, color);
+        this.textRenderer.drawStringWithShadow(text, x - this.getStringWidth(text) / 2f, y, color);
 
         GlStateManager.popMatrix();
     }
@@ -550,56 +328,6 @@ public abstract class BaseWidget
         {
             return useTextShadow ? this::drawStringWithShadow : this::drawString;
         }
-    }
-
-    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
-    {
-        boolean hovered = this.isHoveredForRender(mouseX, mouseY, isActiveGui, hoveredWidgetId);
-        this.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hovered);
-    }
-
-    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
-    {
-    }
-
-    public boolean shouldRenderHoverInfo(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
-    {
-        return this.getId() == hoveredWidgetId && this.canHoverAt(mouseX, mouseY, 0);
-    }
-
-    public void postRenderHovered(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
-    {
-        if (this.hasHoverText() && this.shouldRenderHoverInfo(mouseX, mouseY, isActiveGui, hoveredWidgetId))
-        {
-            RenderUtils.renderHoverText(mouseX, mouseY, this.getZLevel() + 0.5f, this.getHoverStrings());
-            RenderUtils.disableItemLighting();
-        }
-    }
-
-    @Nullable
-    public BaseWidget getTopHoveredWidget(int mouseX, int mouseY, @Nullable BaseWidget highestFoundWidget)
-    {
-        if (this.isMouseOver(mouseX, mouseY) &&
-            (highestFoundWidget == null || this.getZLevel() > highestFoundWidget.getZLevel()))
-        {
-            return this;
-        }
-
-        return highestFoundWidget;
-    }
-
-    @Nullable
-    public static BaseWidget getTopHoveredWidgetFromList(List<? extends BaseWidget> widgets, int mouseX, int mouseY, @Nullable BaseWidget highestFoundWidget)
-    {
-        if (widgets.isEmpty() == false)
-        {
-            for (BaseWidget widget : widgets)
-            {
-                highestFoundWidget = widget.getTopHoveredWidget(mouseX, mouseY, highestFoundWidget);
-            }
-        }
-
-        return highestFoundWidget;
     }
 
     public void renderDebug(int mouseX, int mouseY, boolean hovered, boolean renderAll, boolean infoAlways)
@@ -661,7 +389,7 @@ public abstract class BaseWidget
         String str = String.format("§7x: §6%d ... %d§7, y: §6%d ... %d§7, z: §d%.1f§7 w: §a%d§7, h: §a%d§7 - §3%s", x, x + w - 1, y, y + h - 1, z, w, h, text);
         int posY = mouseY - 2;
 
-        Long posLong = Long.valueOf((long) posY << 32 | (long) mouseX);
+        Long posLong = (long) posY << 32 | (long) mouseX;
         DEBUG_STRINGS.put(posLong, str);
     }
 
@@ -671,8 +399,8 @@ public abstract class BaseWidget
         {
             for (Long posLong : DEBUG_STRINGS.keySet())
             {
-                int x = (int) (posLong.longValue() & 0xFFFFFFFF);
-                int y = (int) ((posLong.longValue() >>> 32) & 0xFFFFFFFF);
+                int x = (int) posLong.longValue();
+                int y = (int) (posLong.longValue() >>> 32);
                 RenderUtils.renderHoverText(x, y, 10, DEBUG_STRINGS.get(posLong), 0xFFFF4040, DEBUG_TEXT_BG_RENDERER);
             }
 
@@ -681,10 +409,5 @@ public abstract class BaseWidget
         }
 
         lastDebugOutlineColorHue = 0;
-    }
-
-    public interface HoverChecker
-    {
-        boolean isHovered(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId);
     }
 }

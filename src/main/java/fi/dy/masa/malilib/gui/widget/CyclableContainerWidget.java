@@ -6,13 +6,13 @@ import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 
 public class CyclableContainerWidget extends ContainerWidget
 {
-    protected final List<? extends BaseWidget> cyclableWidgets;
+    protected final List<? extends InteractableWidget> cyclableWidgets;
     protected final GenericButton leftButton;
     protected final GenericButton rightButton;
     protected int startIndex;
     protected int widgetGap = 2;
 
-    public CyclableContainerWidget(int x, int y, int width, int height, List<? extends BaseWidget> cyclableWidgets)
+    public CyclableContainerWidget(int x, int y, int width, int height, List<? extends InteractableWidget> cyclableWidgets)
     {
         super(x, y, width, height);
 
@@ -75,7 +75,7 @@ public class CyclableContainerWidget extends ContainerWidget
 
         while (index > 0)
         {
-            BaseWidget widget = this.cyclableWidgets.get(index - 1);
+            InteractableWidget widget = this.cyclableWidgets.get(index - 1);
             int width = widget.getWidth();
 
             if (width > usableWidth)
@@ -95,7 +95,7 @@ public class CyclableContainerWidget extends ContainerWidget
         int widgetCount = this.cyclableWidgets.size();
         int allWidgetsWidth = 0;
 
-        for (BaseWidget widget : this.cyclableWidgets)
+        for (InteractableWidget widget : this.cyclableWidgets)
         {
             allWidgetsWidth += widget.getWidth();
         }
@@ -136,7 +136,7 @@ public class CyclableContainerWidget extends ContainerWidget
 
         for (int index = this.startIndex; index < this.cyclableWidgets.size(); ++index)
         {
-            BaseWidget widget = this.cyclableWidgets.get(index);
+            InteractableWidget widget = this.cyclableWidgets.get(index);
 
             if (x + widget.getWidth() > maxX)
             {

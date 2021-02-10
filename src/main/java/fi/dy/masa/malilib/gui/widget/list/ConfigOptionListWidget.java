@@ -44,7 +44,7 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
         this.setEntryWidgetFactory(new ConfigOptionListEntryWidgetFactory<>(ctx));
         this.setEntryFilterStringFactory(ConfigInfo::getSearchStrings);
 
-        this.listPosition.setTopPadding(0);
+        this.listPosition.setTop(0);
     }
 
     public int getMaxLabelWidth()

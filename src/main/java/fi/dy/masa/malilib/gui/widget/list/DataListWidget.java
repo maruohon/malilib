@@ -118,7 +118,7 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
     {
         if (this.headerWidgetFactory != null)
         {
-            int x = this.getX() + this.listPosition.getLeftPadding();
+            int x = this.getX() + this.listPosition.getLeft();
             int y = this.getY();
             this.headerWidget = this.headerWidgetFactory.createWidget(x, y, this.entryWidgetWidth, -1, this);
         }

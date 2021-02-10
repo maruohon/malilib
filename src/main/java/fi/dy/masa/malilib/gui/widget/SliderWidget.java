@@ -5,7 +5,7 @@ import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.gui.callback.SliderCallback;
 import fi.dy.masa.malilib.render.RenderUtils;
 
-public class SliderWidget extends BaseWidget
+public class SliderWidget extends InteractableWidget
 {
     public static final ResourceLocation VANILLA_WIDGETS = new ResourceLocation("textures/gui/widgets.png");
 

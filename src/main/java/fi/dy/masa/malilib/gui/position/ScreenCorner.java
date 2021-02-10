@@ -1,6 +1,7 @@
-package fi.dy.masa.malilib.config.value;
+package fi.dy.masa.malilib.gui.position;
 
 import com.google.common.collect.ImmutableList;
+import fi.dy.masa.malilib.config.value.BaseOptionListConfigValue;
 
 public class ScreenCorner extends BaseOptionListConfigValue
 {

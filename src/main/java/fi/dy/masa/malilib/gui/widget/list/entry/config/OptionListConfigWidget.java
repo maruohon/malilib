@@ -6,7 +6,7 @@ import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.config.option.OptionListConfig;
 import fi.dy.masa.malilib.config.value.OptionListConfigValue;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
-import fi.dy.masa.malilib.gui.widget.BaseWidget;
+import fi.dy.masa.malilib.gui.widget.InteractableWidget;
 import fi.dy.masa.malilib.gui.widget.DropDownListWidget;
 import fi.dy.masa.malilib.gui.widget.button.OptionListConfigButton;
 
@@ -68,7 +68,7 @@ public class OptionListConfigWidget extends BaseConfigWidget<OptionListConfig<Op
 
         this.updateResetButton(x + elementWidth + 4, y);
 
-        BaseWidget widget = useDropDown ? this.dropDownWidget : this.optionListButton;
+        InteractableWidget widget = useDropDown ? this.dropDownWidget : this.optionListButton;
 
         if (useDropDown)
         {

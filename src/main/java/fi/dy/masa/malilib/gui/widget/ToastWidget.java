@@ -6,10 +6,10 @@ import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.config.value.HudAlignment;
 import fi.dy.masa.malilib.render.RenderUtils;
-import fi.dy.masa.malilib.render.message.ToastRenderer;
+import fi.dy.masa.malilib.message.ToastRenderer;
 import fi.dy.masa.malilib.util.StringUtils;
 
-public class ToastWidget extends BaseWidget
+public class ToastWidget extends InteractableWidget
 {
     public static final ResourceLocation TEXTURE = new ResourceLocation(MaLiLibReference.MOD_ID, "textures/gui/toasts.png");
 

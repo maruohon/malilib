@@ -7,8 +7,8 @@ import net.minecraft.item.ItemStack;
 import fi.dy.masa.malilib.event.PostGameOverlayRenderer;
 import fi.dy.masa.malilib.event.PostItemTooltipRenderer;
 import fi.dy.masa.malilib.event.PostWorldRenderer;
-import fi.dy.masa.malilib.render.message.MessageUtils;
-import fi.dy.masa.malilib.render.message.ToastRenderer;
+import fi.dy.masa.malilib.message.MessageUtils;
+import fi.dy.masa.malilib.message.ToastRenderer;
 
 public class RenderEventDispatcherImpl implements RenderEventDispatcher
 {

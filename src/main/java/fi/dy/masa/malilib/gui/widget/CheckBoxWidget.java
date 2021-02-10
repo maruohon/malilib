@@ -5,7 +5,7 @@ import fi.dy.masa.malilib.gui.icon.MultiIcon;
 import fi.dy.masa.malilib.gui.widget.list.entry.SelectionListener;
 import fi.dy.masa.malilib.render.RenderUtils;
 
-public class CheckBoxWidget extends BaseWidget
+public class CheckBoxWidget extends InteractableWidget
 {
     protected final String displayText;
     protected final MultiIcon widgetUnchecked;

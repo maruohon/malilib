@@ -9,7 +9,7 @@ import fi.dy.masa.malilib.gui.icon.MultiIcon;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.render.RenderUtils;
 
-public class ScrollBarWidget extends BaseWidget
+public class ScrollBarWidget extends InteractableWidget
 {
     @Nullable protected final Icon barTexture;
     @Nullable protected MultiIcon arrowTextureUp;

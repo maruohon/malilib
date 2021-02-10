@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.systems;
+package fi.dy.masa.malilib.interoperation;
 
 import javax.annotation.Nullable;
 import net.minecraft.util.math.BlockPos;

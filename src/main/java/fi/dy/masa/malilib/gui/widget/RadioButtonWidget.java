@@ -9,7 +9,7 @@ import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.list.entry.SelectionListener;
 import fi.dy.masa.malilib.render.RenderUtils;
 
-public class RadioButtonWidget<T extends Enum<T>> extends BaseWidget
+public class RadioButtonWidget<T extends Enum<T>> extends InteractableWidget
 {
     protected final List<T> options;
     protected final Function<T, String> displayStringFunction;

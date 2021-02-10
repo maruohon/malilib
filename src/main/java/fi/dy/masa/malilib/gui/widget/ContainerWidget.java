@@ -11,7 +11,7 @@ import fi.dy.masa.malilib.render.RenderUtils;
 
 public abstract class ContainerWidget extends BackgroundWidget
 {
-    protected final List<BaseWidget> subWidgets = new ArrayList<>();
+    protected final List<InteractableWidget> subWidgets = new ArrayList<>();
     protected final List<Runnable> tasks = new ArrayList<>();
 
     public ContainerWidget(int x, int y, int width, int height)
@@ -74,7 +74,7 @@ public abstract class ContainerWidget extends BackgroundWidget
      */
     public void moveSubWidgets(int diffX, int diffY)
     {
-        for (BaseWidget widget : this.subWidgets)
+        for (InteractableWidget widget : this.subWidgets)
         {
             widget.setPosition(widget.getX() + diffX, widget.getY() + diffY);
         }
@@ -88,13 +88,13 @@ public abstract class ContainerWidget extends BackgroundWidget
      */
     public void updateSubWidgetsToGeometryChanges()
     {
-        for (BaseWidget widget : this.subWidgets)
+        for (InteractableWidget widget : this.subWidgets)
         {
             widget.onContainerGeometryChanged();
         }
     }
 
-    public <T extends BaseWidget> T addWidgetIfNotNull(@Nullable T widget)
+    public <T extends InteractableWidget> T addWidgetIfNotNull(@Nullable T widget)
     {
         if (widget != null)
         {
@@ -122,7 +122,7 @@ public abstract class ContainerWidget extends BackgroundWidget
         }
     }
 
-    public <T extends BaseWidget> T addWidget(T widget)
+    public <T extends InteractableWidget> T addWidget(T widget)
     {
         this.subWidgets.add(widget);
         this.onSubWidgetAdded(widget);
@@ -154,7 +154,7 @@ public abstract class ContainerWidget extends BackgroundWidget
         return this.addWidget(new LabelWidget(x, y, width, height, textColor, lines));
     }
 
-    public void removeWidget(BaseWidget widget)
+    public void removeWidget(InteractableWidget widget)
     {
         this.subWidgets.remove(widget);
     }
@@ -164,7 +164,7 @@ public abstract class ContainerWidget extends BackgroundWidget
         this.subWidgets.clear();
     }
 
-    public void onSubWidgetAdded(BaseWidget widget)
+    public void onSubWidgetAdded(InteractableWidget widget)
     {
         widget.setTaskQueue(this::addTask);
         widget.onWidgetAdded(this.getZLevel());
@@ -181,7 +181,7 @@ public abstract class ContainerWidget extends BackgroundWidget
     @Override
     public void setZLevel(float zLevel)
     {
-        for (BaseWidget widget : this.subWidgets)
+        for (InteractableWidget widget : this.subWidgets)
         {
             widget.setZLevelBasedOnParent(zLevel);
         }
@@ -199,7 +199,7 @@ public abstract class ContainerWidget extends BackgroundWidget
 
         // Let the sub widgets check if the mouse is over them,
         // in case they extend beyond the bounds of this container widget.
-        for (BaseWidget widget : this.subWidgets)
+        for (InteractableWidget widget : this.subWidgets)
         {
             if (widget.isMouseOver(mouseX, mouseY))
             {
@@ -215,7 +215,7 @@ public abstract class ContainerWidget extends BackgroundWidget
     {
         if (this.subWidgets.isEmpty() == false)
         {
-            for (BaseWidget widget : this.subWidgets)
+            for (InteractableWidget widget : this.subWidgets)
             {
                 if (widget.tryMouseClick(mouseX, mouseY, mouseButton))
                 {
@@ -236,7 +236,7 @@ public abstract class ContainerWidget extends BackgroundWidget
     {
         if (this.subWidgets.isEmpty() == false)
         {
-            for (BaseWidget widget : this.subWidgets)
+            for (InteractableWidget widget : this.subWidgets)
             {
                 widget.onMouseReleased(mouseX, mouseY, mouseButton);
             }
@@ -250,7 +250,7 @@ public abstract class ContainerWidget extends BackgroundWidget
     {
         if (this.subWidgets.isEmpty() == false)
         {
-            for (BaseWidget widget : this.subWidgets)
+            for (InteractableWidget widget : this.subWidgets)
             {
                 if (widget.tryMouseScroll(mouseX, mouseY, mouseWheelDelta))
                 {
@@ -268,7 +268,7 @@ public abstract class ContainerWidget extends BackgroundWidget
     @Override
     public boolean onMouseMoved(int mouseX, int mouseY)
     {
-        for (BaseWidget widget : this.subWidgets)
+        for (InteractableWidget widget : this.subWidgets)
         {
             if (widget.onMouseMoved(mouseX, mouseY))
             {
@@ -287,7 +287,7 @@ public abstract class ContainerWidget extends BackgroundWidget
     {
         if (this.subWidgets.isEmpty() == false)
         {
-            for (BaseWidget widget : this.subWidgets)
+            for (InteractableWidget widget : this.subWidgets)
             {
                 if (widget.onKeyTyped(keyCode, scanCode, modifiers))
                 {
@@ -305,7 +305,7 @@ public abstract class ContainerWidget extends BackgroundWidget
     {
         if (this.subWidgets.isEmpty() == false)
         {
-            for (BaseWidget widget : this.subWidgets)
+            for (InteractableWidget widget : this.subWidgets)
             {
                 if (widget.onCharTyped(charIn, modifiers))
                 {
@@ -319,10 +319,10 @@ public abstract class ContainerWidget extends BackgroundWidget
 
     @Override
     @Nullable
-    public BaseWidget getTopHoveredWidget(int mouseX, int mouseY, @Nullable BaseWidget highestFoundWidget)
+    public InteractableWidget getTopHoveredWidget(int mouseX, int mouseY, @Nullable InteractableWidget highestFoundWidget)
     {
         highestFoundWidget = super.getTopHoveredWidget(mouseX, mouseY, highestFoundWidget);
-        return BaseWidget.getTopHoveredWidgetFromList(this.subWidgets, mouseX, mouseY, highestFoundWidget);
+        return InteractableWidget.getTopHoveredWidgetFromList(this.subWidgets, mouseX, mouseY, highestFoundWidget);
     }
 
     @Override
@@ -332,7 +332,7 @@ public abstract class ContainerWidget extends BackgroundWidget
 
         if (this.subWidgets.isEmpty() == false)
         {
-            for (BaseWidget widget : this.subWidgets)
+            for (InteractableWidget widget : this.subWidgets)
             {
                 textFields.addAll(widget.getAllTextFields());
             }
@@ -358,7 +358,7 @@ public abstract class ContainerWidget extends BackgroundWidget
             int diffY = y - this.getY();
             float diffZ = z - this.getZLevel();
 
-            for (BaseWidget widget : this.subWidgets)
+            for (InteractableWidget widget : this.subWidgets)
             {
                 int wx = widget.getX() + diffX;
                 int wy = widget.getY() + diffY;

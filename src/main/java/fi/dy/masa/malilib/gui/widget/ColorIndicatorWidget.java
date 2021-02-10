@@ -8,7 +8,7 @@ import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.data.Color4f;
 
-public class ColorIndicatorWidget extends BaseWidget
+public class ColorIndicatorWidget extends InteractableWidget
 {
     protected final IntegerConfig config;
     protected final IntConsumer valueConsumer;

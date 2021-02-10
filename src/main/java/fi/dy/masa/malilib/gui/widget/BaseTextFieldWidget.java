@@ -16,8 +16,8 @@ import fi.dy.masa.malilib.gui.util.TextRegion;
 import fi.dy.masa.malilib.gui.widget.util.TextFieldValidator;
 import fi.dy.masa.malilib.listener.TextChangeListener;
 import fi.dy.masa.malilib.render.RenderUtils;
-import fi.dy.masa.malilib.render.message.MessageRenderer;
-import fi.dy.masa.malilib.render.message.MessageType;
+import fi.dy.masa.malilib.message.MessageRenderer;
+import fi.dy.masa.malilib.message.MessageType;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.LeftRight;
 
@@ -69,10 +69,10 @@ public class BaseTextFieldWidget extends BackgroundWidget
         this.setShouldReceiveOutsideClicks(true);
         this.setBackgroundColor(0xFF000000);
         this.setBackgroundEnabled(true);
-        this.setBorderColor(this.colorUnfocused);
+        this.setNormalBorderColor(this.colorUnfocused);
         this.setBorderWidth(1);
-        this.setPaddingLeft(3);
-        this.setPaddingRight(3);
+        this.padding.setLeft(3);
+        this.padding.setRight(3);
         this.updateTextFieldSize();
         this.setText(text);
     }
@@ -278,7 +278,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
     public void updateColors()
     {
         int borderColor = this.enabled ? (this.isFocused ? this.colorFocused : this.colorUnfocused) : this.colorDisabled;
-        this.setBorderColor(borderColor);
+        this.setNormalBorderColor(borderColor);
     }
 
     public BaseTextFieldWidget setInputValidator(@Nullable IInputCharacterValidator inputValidator)
@@ -544,7 +544,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
 
     protected int getTextStartRelativeX()
     {
-        return this.borderWidth + this.paddingLeft;
+        return this.borderWidth + this.padding.getLeft();
     }
 
     /**
@@ -553,7 +553,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
      */
     protected int getMaxTextWidth()
     {
-        int maxWidth = this.getWidth() - this.paddingLeft - this.paddingRight;
+        int maxWidth = this.getWidth() - this.padding.getLeft() - this.padding.getRight();
 
         if (this.borderEnabled)
         {
