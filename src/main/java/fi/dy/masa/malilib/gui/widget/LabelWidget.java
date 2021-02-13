@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.gui.widget;
 
 import java.util.Arrays;
 import java.util.List;
+import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 import fi.dy.masa.malilib.message.StringListRenderer;
 import fi.dy.masa.malilib.render.RenderUtils;
 
@@ -80,9 +81,9 @@ public class LabelWidget extends BackgroundWidget
         return this;
     }
 
-    public LabelWidget setCenterTextHorizontally(boolean centerTextHorizontally)
+    public LabelWidget setHorizontalAlignment(HorizontalAlignment alignment)
     {
-        this.stringListRenderer.setCenterTextHorizontally(centerTextHorizontally);
+        this.stringListRenderer.setHorizontalAlignment(alignment);
         return this;
     }
 

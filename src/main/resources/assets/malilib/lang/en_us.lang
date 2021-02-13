@@ -228,6 +228,20 @@ malilib.label.active_mode.always=Always
 malilib.label.active_mode.never=Never
 malilib.label.active_mode.with_key=With Key
 
+malilib.label.alignment.top_center=Top Center
+malilib.label.alignment.top_left=Top Left
+malilib.label.alignment.top_right=Top Right
+malilib.label.alignment.bottom_center=Bottom Center
+malilib.label.alignment.bottom_left=Bottom Left
+malilib.label.alignment.bottom_right=Bottom Right
+malilib.label.alignment.center=Center
+malilib.label.alignment.center_left=Left Center
+malilib.label.alignment.center_right=Right Center
+
+malilib.label.horizontal_alignment.center=Center
+malilib.label.horizontal_alignment.left=Left
+malilib.label.horizontal_alignment.right=Right
+
 malilib.label.info_type.chat=Chat
 malilib.label.info_type.hotbar.custom=Hotbar (custom)
 malilib.label.info_type.hotbar.vanilla=Hotbar (vanilla)
@@ -246,11 +260,9 @@ malilib.label.list_type.blacklist=Black List
 malilib.label.list_type.none=None
 malilib.label.list_type.whitelist=White List
 
-malilib.label.alignment.top_left=Top Left
-malilib.label.alignment.top_right=Top Right
-malilib.label.alignment.bottom_left=Bottom Left
-malilib.label.alignment.bottom_right=Bottom Right
-malilib.label.alignment.center=Center
+malilib.label.vertical_alignment.bottom=Bottom
+malilib.label.vertical_alignment.center=Center
+malilib.label.vertical_alignment.top=Top
 
 malilib.label.colored.false=§cfalse§r
 malilib.label.colored.true=§atrue§r

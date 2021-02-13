@@ -9,13 +9,13 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import org.apache.commons.lang3.tuple.Pair;
 import com.google.common.collect.ImmutableList;
-import fi.dy.masa.malilib.util.StringUtils;
 
 public class OrderedStringListFactory
 {
     protected static final String AUTOMATIC_KEY_PREFIX = "_auto_";
 
     protected final HashMap<String, Pair<Integer, Function<List<String>, List<String>>>> providers = new HashMap<>();
+    protected final List<Function<List<String>, List<String>>> sortedProviders = new ArrayList<>();
     protected ImmutableList<String> lines = ImmutableList.of();
     protected boolean dirty;
 
@@ -34,8 +34,14 @@ public class OrderedStringListFactory
         return this.lines;
     }
 
+    public boolean isEmpty()
+    {
+        return this.sortedProviders.isEmpty();
+    }
+
     /**
-     * Adds the provided lines, by creating a provider with an automatically generated key
+     * Adds the provided lines, by creating a provider with an automatically generated key.
+     * The lines should be already translated/localized.
      * @param lines
      */
     public void addLines(String... lines)
@@ -44,7 +50,8 @@ public class OrderedStringListFactory
     }
 
     /**
-     * Adds the provided lines, by appending them to any previously added non-keyed lines
+     * Adds the provided lines, by appending them to any previously added non-keyed lines.
+     * The lines should be already translated/localized.
      * @param linesIn
      */
     public void addLines(List<String> linesIn)
@@ -64,6 +71,7 @@ public class OrderedStringListFactory
     /**
      * Adds the provided lines, by using the provided key.
      * The key can be used to remove just these lines later.
+     * The lines should be already translated/localized.
      */
     public void setLines(String key, String... lines)
     {
@@ -73,6 +81,7 @@ public class OrderedStringListFactory
     /**
      * Adds the provided lines, by using the provided key.
      * The key can be used to remove just these lines later.
+     * The lines should be already translated/localized.
      */
     public void setLines(String key, List<String> lines)
     {
@@ -82,6 +91,7 @@ public class OrderedStringListFactory
     /**
      * Adds the provided line supplier, by using the provided key.
      * The key can be used to remove just these lines later.
+     * The lines should be already translated/localized.
      */
     public void setStringListProvider(String key, Supplier<List<String>> supplier)
     {
@@ -93,6 +103,7 @@ public class OrderedStringListFactory
      * The key can be used to remove just these lines later.
      * The priority is the sort order of all the line suppliers,
      * they are sorted by their numerical priority (so smaller priority value comes first).
+     * The lines should be already translated/localized.
      */
     public void setStringListProvider(String key, Supplier<List<String>> supplier, int priority)
     {
@@ -104,10 +115,16 @@ public class OrderedStringListFactory
      * The key can be used to remove just these lines later.
      * The priority is the sort order of all the line suppliers,
      * they are sorted by their numerical priority (so smaller priority value comes first).
+     * The Function gets in the current list of strings at the moment when the function is executed.
+     * This allows the function to do some conditional checks before adding its own lines,
+     * for example based on the number of existing lines. As an example not adding a preceding blank
+     * line if the list is currently empty.
+     * The lines should be already translated/localized.
      */
     public void setStringListProvider(String key, Function<List<String>, List<String>> supplier, int priority)
     {
         this.providers.put(key, Pair.of(priority, supplier));
+        this.updateSortedProviders();
         this.markDirty();
     }
 
@@ -117,6 +134,7 @@ public class OrderedStringListFactory
     public void removeStringListProvider(String key)
     {
         this.providers.remove(key);
+        this.updateSortedProviders();
         this.markDirty();
     }
 
@@ -146,50 +164,26 @@ public class OrderedStringListFactory
         this.dirty = true;
     }
 
+    protected void updateSortedProviders()
+    {
+        this.sortedProviders.clear();
+        this.providers.values().stream().sorted(java.util.Map.Entry.comparingByKey()).forEach((p) -> this.sortedProviders.add(p.getValue()));
+    }
+
     /**
      * Rebuilds the list of strings from the current line providers
      */
     public void updateList()
     {
-        ArrayList<Pair<Integer, Function<List<String>, List<String>>>> providers = new ArrayList<>(this.providers.values());
-        providers.sort(java.util.Map.Entry.comparingByKey());
-
         ArrayList<String> allLines = new ArrayList<>();
 
-        for (Pair<Integer, Function<List<String>, List<String>>> pair : providers)
+        for (Function<List<String>, List<String>> stringProvider : this.sortedProviders)
         {
-            List<String> rawLines = pair.getRight().apply(allLines);
-
-            for (String line : rawLines)
-            {
-                String[] parts = StringUtils.translate(line).split("\\n");
-                allLines.addAll(Arrays.asList(parts));
-            }
+            List<String> lines = stringProvider.apply(allLines);
+            allLines.addAll(lines);
         }
 
         this.lines = ImmutableList.copyOf(allLines);
         this.dirty = false;
     }
-
-    /*
-    protected String generateUnusedKey()
-    {
-        int size = this.providers.size();
-        int suffix = size;
-        String key = AUTOMATIC_KEY_PREFIX + suffix;
-
-        for (int i = 0; i < size; ++i)
-        {
-            if (this.providers.containsKey(key) == false)
-            {
-                return key;
-            }
-
-            ++suffix;
-            key = AUTOMATIC_KEY_PREFIX + suffix;
-        }
-
-        return key;
-    }
-    */
 }

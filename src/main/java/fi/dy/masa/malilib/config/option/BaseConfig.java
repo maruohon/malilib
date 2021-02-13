@@ -96,7 +96,7 @@ public abstract class BaseConfig<T> implements ConfigOption<T>
 
         if (this.isLocked() && this.lockMessage != null)
         {
-            this.lockOverrideMessages.add(StringUtils.translate(this.lockMessage));
+            StringUtils.translateAndLineSplit(this.lockOverrideMessages::add, this.lockMessage);
         }
     }
 

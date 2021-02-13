@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -474,6 +475,22 @@ public class StringUtils
         }
 
         return "<empty>";
+    }
+
+    public static List<String> translateAndLineSplit(String translationKey, Object... args)
+    {
+        String translated = translate(translationKey, args);
+        return Arrays.asList(translated.split("\\n"));
+    }
+
+    public static void translateAndLineSplit(Consumer<String> lineConsumer, String translationKey, Object... args)
+    {
+        String translated = translate(translationKey, args);
+
+        for (String line : translated.split("\\n"))
+        {
+            lineConsumer.accept(line);
+        }
     }
 
     // Some MCP vs. Yarn vs. MC versions compatibility/wrapper stuff below this
