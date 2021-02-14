@@ -24,8 +24,8 @@ public class InfoArea
     protected int y;
     protected int width;
     protected int height;
-    protected int offsetX = 4;
-    protected int offsetY = 4;
+    protected int offsetX;
+    protected int offsetY;
 
     public InfoArea(ScreenLocation location, @Nullable EventListener reLayoutRequestListener)
     {
@@ -40,32 +40,39 @@ public class InfoArea
         this.viewportHeightSupplier = viewportHeightSupplier;
     }
 
-    @SuppressWarnings("unchecked")
-    public <T extends InfoRendererWidget> T getOrCreateInfoWidget(String id, Class<T> clazz, Supplier<T> factory)
-    {
-        InfoRendererWidget widget = this.infoWidgetMap.get(id);
-
-        if (widget == null || clazz.isInstance(widget) == false)
-        {
-            widget = factory.get();
-            this.putInfoWidget(id, widget);
-        }
-
-        return (T) widget;
-    }
-
     @Nullable
-    public InfoRendererWidget getInfoWidget(String id)
+    public InfoRendererWidget getWidget(String id)
     {
         return this.infoWidgetMap.get(id);
     }
 
-    public void putInfoWidget(String id, InfoRendererWidget widget)
+    public InfoRendererWidget getOrCreateWidget(String id, Supplier<? extends InfoRendererWidget> factory)
     {
-        widget.setContainer(this);
+        InfoRendererWidget widget = this.infoWidgetMap.get(id);
+
+        if (widget == null)
+        {
+            widget = factory.get();
+            this.putWidget(id, widget);
+        }
+
+        return widget;
+    }
+
+    public void putWidget(String id, InfoRendererWidget widget)
+    {
+        widget.setGeometryChangeListener(this::requestReLayout);
         widget.setLocation(this.location);
         this.infoWidgetMap.put(id, widget);
         this.requestReLayout();
+    }
+
+    public void removeWidget(String id)
+    {
+        if (this.infoWidgetMap.remove(id) != null)
+        {
+            this.requestReLayout();
+        }
     }
 
     public List<InfoRendererWidget> getEnabledWidgets()
@@ -106,9 +113,15 @@ public class InfoArea
         }
 
         this.enabledInfoWidgetsList.sort(Comparator.comparing(InfoRendererWidget::getSortIndex));
-        this.updateSizeAndPosition();
+
+        this.updateSize();
+        this.updatePositions();
     }
 
+    /**
+     * Updates the size of the InfoArea so that it tightly encloses
+     * all the currently enabled widgets.
+     */
     public void updateSize()
     {
         int width = 0;
@@ -116,8 +129,8 @@ public class InfoArea
 
         for (InfoRendererWidget widget : this.enabledInfoWidgetsList)
         {
-            width = Math.max(width, widget.getWidth());
-            height += widget.getHeight();
+            width = Math.max(width, widget.getPaddedWidth());
+            height += widget.getPaddedHeight();
         }
 
         this.width = width;
@@ -129,7 +142,10 @@ public class InfoArea
         }
     }
 
-    public void updatePosition()
+    /**
+     * Updates both the InfoArea position, and all the contained enabled widgets' positions
+     */
+    public void updatePositions()
     {
         this.x = this.location.getStartX(this.width, this.viewportWidthSupplier.getAsInt(), this.offsetX);
         this.y = this.location.getStartY(this.height, this.viewportHeightSupplier.getAsInt(), this.offsetY);
@@ -139,13 +155,7 @@ public class InfoArea
         for (InfoRendererWidget widget : this.enabledInfoWidgetsList)
         {
             widget.setPosition(this.x, y);
-            y += widget.getHeight();
+            y += widget.getPaddedHeight();
         }
-    }
-
-    public void updateSizeAndPosition()
-    {
-        this.updateSize();
-        this.updatePosition();
     }
 }

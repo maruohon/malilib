@@ -2,22 +2,22 @@ package fi.dy.masa.malilib.message;
 
 import java.util.List;
 import java.util.function.Supplier;
-import javax.annotation.Nullable;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import fi.dy.masa.malilib.gui.position.ScreenLocation;
-import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.render.text.TextRenderSettings;
 
 public class StringListRendererWidget extends InfoRendererWidget
 {
     protected final OrderedStringListFactory stringListFactory = new OrderedStringListFactory();
     protected final StringListRenderer stringListRenderer = new StringListRenderer();
-    @Nullable protected EventListener changeListener;
+    protected double scale = 1.0;
     protected boolean dirty;
 
     public StringListRendererWidget()
     {
         this.stringListRenderer.setNormalTextColor(0xFFFFFFFF);
-        this.stringListRenderer.setHoverTextColor(0xFFFFFFFF);
     }
 
     /**
@@ -48,11 +48,6 @@ public class StringListRendererWidget extends InfoRendererWidget
         this.dirty = true;
     }
 
-    public void setChangeListener(@Nullable EventListener changeListener)
-    {
-        this.changeListener = changeListener;
-    }
-
     @Override
     public void setLocation(ScreenLocation location)
     {
@@ -60,12 +55,22 @@ public class StringListRendererWidget extends InfoRendererWidget
         this.stringListRenderer.setHorizontalAlignment(this.location.horizontalLocation);
     }
 
+    public void setScale(double scale)
+    {
+        this.scale = scale;
+        this.markDirty();
+    }
+
+    public void setTextSettings(TextRenderSettings settings)
+    {
+        this.stringListRenderer.setNormalTextSettings(settings);
+    }
+
     /**
      * Call this method to indicate that the string list needs to be re-built.
      */
     public void markDirty()
     {
-        this.stringListFactory.markDirty();
         this.dirty = true;
     }
 
@@ -77,25 +82,22 @@ public class StringListRendererWidget extends InfoRendererWidget
 
         if (isEnabled)
         {
+            this.stringListFactory.markDirty();
             this.stringListRenderer.setText(this.stringListFactory.getLines());
-            this.setWidth(this.stringListRenderer.getTotalTextWidth());
-            this.setHeight(this.stringListRenderer.getClampedHeight());
+            int width = (int) Math.ceil(this.stringListRenderer.getTotalTextWidth() * this.scale);
+            int height = (int) Math.ceil(this.stringListRenderer.getClampedHeight() * this.scale);
+            this.setWidth(width);
+            this.setHeight(height);
         }
 
         if (isEnabled || wasEnabled)
         {
-            // TODO - only update when something changes
             this.updateContainerLayout();
-        }
-
-        if (this.changeListener != null)
-        {
-            this.changeListener.onEvent();
         }
     }
 
     @Override
-    public void updateState()
+    public void updateState(Minecraft mc)
     {
         if (this.dirty)
         {
@@ -107,7 +109,19 @@ public class StringListRendererWidget extends InfoRendererWidget
     @Override
     public void renderAt(int x, int y, float z)
     {
-        this.stringListRenderer.renderAt(x, y, z, false);
+        if (this.scale != 1.0)
+        {
+            GlStateManager.pushMatrix();
+            GlStateManager.translate(x, y, z);
+            GlStateManager.scale(this.scale, this.scale, 1);
+            this.stringListRenderer.renderAt(0, 0, 0, false);
+            GlStateManager.popMatrix();
+        }
+        else
+        {
+            this.stringListRenderer.renderAt(x, y, z, false);
+        }
+
         RenderUtils.color(1f, 1f, 1f, 1f);
     }
 }

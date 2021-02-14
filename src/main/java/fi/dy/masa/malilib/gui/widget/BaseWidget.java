@@ -110,6 +110,12 @@ public class BaseWidget
         this.onPositionChanged(oldX, oldY);
     }
 
+    public void setPositionNoUpdate(int x, int y)
+    {
+        this.x = x;
+        this.y = y;
+    }
+
     public final void setPositionAndSize(int x, int y, int width, int height)
     {
         int oldX = this.x;

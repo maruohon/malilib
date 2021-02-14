@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.message;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import net.minecraft.client.Minecraft;
 import fi.dy.masa.malilib.gui.position.ScreenLocation;
 
 public class InfoOverlay
@@ -11,19 +12,23 @@ public class InfoOverlay
 
     protected final HashMap<ScreenLocation, InfoArea> infoAreas = new HashMap<>();
     protected final List<InfoRendererWidget> enabledInfoWidgets = new ArrayList<>();
-    protected boolean needsReLayout;
+    protected boolean needsReFetch;
 
     public InfoArea getOrCreateInfoArea(ScreenLocation location)
     {
-        return this.infoAreas.computeIfAbsent(location, (loc) -> new InfoArea(loc, this::requestReLayout));
+        return this.infoAreas.computeIfAbsent(location, (loc) -> new InfoArea(loc, this::notifyChange));
     }
 
-    protected void requestReLayout()
+    /**
+     * Notifies the InfoOverlay of a change in the set of enabled InfoRendererWidgets,
+     * causing the enabled widgets to be fetched again.
+     */
+    public void notifyChange()
     {
-        this.needsReLayout = true;
+        this.needsReFetch = true;
     }
 
-    protected void reLayoutWidgets()
+    protected void fetchEnabledWidgets()
     {
         this.enabledInfoWidgets.clear();
 
@@ -33,19 +38,33 @@ public class InfoOverlay
         }
     }
 
-    public void render()
+    /**
+     * Calls the InfoRendererWidget#updateState() method on all the currently enabled widgets.
+     * Don't call this unless you have your own instance of the InfoOverlay,
+     * ie. don't call this on InfoOverlay.INSTANCE
+     * @param mc
+     */
+    public void tick(Minecraft mc)
     {
         for (InfoRendererWidget widget : this.enabledInfoWidgets)
         {
-            widget.updateState();
+            widget.updateState(mc);
         }
 
-        if (this.needsReLayout)
+        if (this.needsReFetch)
         {
-            this.reLayoutWidgets();
-            this.needsReLayout = false;
+            this.fetchEnabledWidgets();
+            this.needsReFetch = false;
         }
+    }
 
+    /**
+     * Renders all the currently enabled widgets.
+     * Don't call this unless you have your own instance of the InfoOverlay,
+     * ie. don't call this on InfoOverlay.INSTANCE
+     */
+    public void render()
+    {
         for (InfoRendererWidget widget : this.enabledInfoWidgets)
         {
             widget.render();
@@ -59,6 +78,16 @@ public class InfoOverlay
      */
     public static StringListRendererWidget getTextHud(ScreenLocation location)
     {
-        return INSTANCE.getOrCreateInfoArea(location).getOrCreateInfoWidget("text_hud", StringListRendererWidget.class, StringListRendererWidget::new);
+        InfoArea area = INSTANCE.getOrCreateInfoArea(location);
+        String id = "text_hud";
+        InfoRendererWidget widget = area.getOrCreateWidget(id, StringListRendererWidget::new);
+
+        if ((widget instanceof StringListRendererWidget) == false)
+        {
+            widget = new StringListRendererWidget();
+            area.putWidget(id, widget);
+        }
+
+        return (StringListRendererWidget) widget;
     }
 }

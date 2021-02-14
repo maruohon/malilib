@@ -62,6 +62,15 @@ public class EdgeInt
         }
     }
 
+    public void setFrom(EdgeInt other)
+    {
+        this.left = other.left;
+        this.right = other.right;
+        this.top = other.top;
+        this.bottom = other.bottom;
+        this.notifyChange();
+    }
+
     public EdgeInt setLeft(int left)
     {
         this.left = left;

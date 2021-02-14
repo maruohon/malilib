@@ -5,6 +5,7 @@ import fi.dy.masa.malilib.config.JsonModConfig;
 import fi.dy.masa.malilib.event.InitializationHandler;
 import fi.dy.masa.malilib.event.dispatch.KeyBindManager;
 import fi.dy.masa.malilib.event.dispatch.RenderEventDispatcher;
+import fi.dy.masa.malilib.event.dispatch.TickEventDispatcher;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.config.ConfigTabRegistry;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
@@ -24,5 +25,6 @@ public class MaLiLibInitHandler implements InitializationHandler
         MaLiLibConfigs.Generic.OPTION_LIST_CONFIG_DROPDOWN.setValueChangeCallback((n, o) -> GuiUtils.reInitCurrentScreen());
 
         RenderEventDispatcher.INSTANCE.registerGameOverlayRenderer((mc, pt) -> InfoOverlay.INSTANCE.render());
+        TickEventDispatcher.INSTANCE.registerClientTickHandler(InfoOverlay.INSTANCE::tick);
     }
 }
