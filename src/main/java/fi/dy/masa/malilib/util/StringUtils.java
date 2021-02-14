@@ -409,7 +409,7 @@ public class StringUtils
 
             if (server != null)
             {
-                return server.getFolderName();
+                return FileUtils.generateSimpleSafeFileName(server.getFolderName());
             }
         }
         else
