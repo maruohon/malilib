@@ -58,6 +58,7 @@ public class InventoryOverlay
 
     public static void renderInventoryBackground(InventoryRenderType type, int x, int y, int slotsPerRow, int totalSlots, MinecraftClient mc)
     {
+        RenderUtils.setupBlend();
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
         buffer.begin(GL11.GL_QUADS, VertexFormats.POSITION_TEXTURE);
