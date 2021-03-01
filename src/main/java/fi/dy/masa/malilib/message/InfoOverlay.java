@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import net.minecraft.client.Minecraft;
+import fi.dy.masa.malilib.event.ClientTickHandler;
+import fi.dy.masa.malilib.event.PostGameOverlayRenderer;
 import fi.dy.masa.malilib.gui.position.ScreenLocation;
 
-public class InfoOverlay
+public class InfoOverlay implements PostGameOverlayRenderer, ClientTickHandler
 {
     public static final InfoOverlay INSTANCE = new InfoOverlay();
 
@@ -89,5 +91,17 @@ public class InfoOverlay
         }
 
         return (StringListRendererWidget) widget;
+    }
+
+    @Override
+    public void onPostGameOverlayRender(Minecraft mc, float partialTicks)
+    {
+        this.render();
+    }
+
+    @Override
+    public void onClientTick(Minecraft mc)
+    {
+        this.tick(mc);
     }
 }

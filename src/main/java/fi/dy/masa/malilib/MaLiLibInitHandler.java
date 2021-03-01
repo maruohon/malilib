@@ -24,7 +24,7 @@ public class MaLiLibInitHandler implements InitializationHandler
         MaLiLibConfigs.Generic.OPEN_GUI_CONFIGS.getKeyBind().setCallback((a, k) -> BaseScreen.openGui(MaLiLibConfigScreen.create()));
         MaLiLibConfigs.Generic.OPTION_LIST_CONFIG_DROPDOWN.setValueChangeCallback((n, o) -> GuiUtils.reInitCurrentScreen());
 
-        RenderEventDispatcher.INSTANCE.registerGameOverlayRenderer((mc, pt) -> InfoOverlay.INSTANCE.render());
-        TickEventDispatcher.INSTANCE.registerClientTickHandler(InfoOverlay.INSTANCE::tick);
+        RenderEventDispatcher.INSTANCE.registerGameOverlayRenderer(InfoOverlay.INSTANCE);
+        TickEventDispatcher.INSTANCE.registerClientTickHandler(InfoOverlay.INSTANCE);
     }
 }

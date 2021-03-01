@@ -9,21 +9,21 @@ public interface RenderEventDispatcher
     RenderEventDispatcher INSTANCE = new RenderEventDispatcherImpl();
 
     /**
-     * Registers a renderer which will have its {@link PostGameOverlayRenderer#onPostGameOverlayRender(float)}
+     * Registers a renderer which will have its {@link PostGameOverlayRenderer#onPostGameOverlayRender(net.minecraft.client.Minecraft, float)}
      * method called after the vanilla game overlay rendering is done.
      * @param renderer
      */
     void registerGameOverlayRenderer(PostGameOverlayRenderer renderer);
 
     /**
-     * Registers a renderer which will have its {@link PostItemTooltipRenderer#onPostRenderItemTooltip(net.minecraft.item.ItemStack, int, int)}
+     * Registers a renderer which will have its {@link PostItemTooltipRenderer#onPostRenderItemTooltip(net.minecraft.item.ItemStack, int, int, net.minecraft.client.Minecraft)}
      * method called after the vanilla ItemStack tooltip text has been rendered.
      * @param renderer
      */
     void registerTooltipPostRenderer(PostItemTooltipRenderer renderer);
 
     /**
-     * Registers a renderer which will have its {@link PostWorldRenderer#onPostWorldRender(float)}
+     * Registers a renderer which will have its {@link PostWorldRenderer#onPostWorldRender(net.minecraft.client.Minecraft, float)}
      * method called after the vanilla world rendering is done.
      * @param renderer
      */
