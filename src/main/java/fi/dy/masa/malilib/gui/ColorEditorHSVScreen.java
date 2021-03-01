@@ -17,6 +17,7 @@ import fi.dy.masa.malilib.gui.widget.IntegerTextFieldWidget;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.shader.ShaderProgram;
 import fi.dy.masa.malilib.util.StringUtils;
+import fi.dy.masa.malilib.util.data.Color4f;
 
 public class ColorEditorHSVScreen extends BaseScreen
 {
@@ -219,19 +220,7 @@ public class ColorEditorHSVScreen extends BaseScreen
 
     protected float[] getCurrentColorHSV()
     {
-        return this.getColorHSV(this.color);
-    }
-
-    protected float[] getColorHSV(int color)
-    {
-        int r = ((color >>> 16) & 0xFF);
-        int g = ((color >>>  8) & 0xFF);
-        int b = ( color         & 0xFF);
-
-        float[] hsv = new float[3];
-        Color.RGBtoHSB(r, g, b, hsv);
-
-        return hsv;
+        return Color4f.convertRgb2Hsv(this.color);
     }
 
     protected void setColor(int color)
@@ -273,7 +262,7 @@ public class ColorEditorHSVScreen extends BaseScreen
 
     protected void setHSVFromRGB(int rgb)
     {
-        float[] hsv = this.getColorHSV(rgb);
+        float[] hsv = Color4f.convertRgb2Hsv(rgb);
 
         this.relH = hsv[0];
         this.relS = hsv[1];

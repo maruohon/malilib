@@ -91,4 +91,16 @@ public class Color4f
     {
         return String.format("#%08X", color);
     }
+
+    public static float[] convertRgb2Hsv(int color)
+    {
+        float[] hsv = new float[3];
+        int r = ((color >>> 16) & 0xFF);
+        int g = ((color >>>  8) & 0xFF);
+        int b = ( color         & 0xFF);
+
+        Color.RGBtoHSB(r, g, b, hsv);
+
+        return hsv;
+    }
 }
