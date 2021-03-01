@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.render.RectangleRenderer;
 import fi.dy.masa.malilib.render.RenderUtils;
-import fi.dy.masa.malilib.render.TextRenderer;
+import fi.dy.masa.malilib.render.text.TextRenderFunction;
 import fi.dy.masa.malilib.util.data.Color4f;
 
 public class BaseWidget
@@ -324,7 +324,7 @@ public class BaseWidget
         GlStateManager.popMatrix();
     }
 
-    public TextRenderer getTextRenderer(boolean useTextShadow, boolean centered)
+    public TextRenderFunction getTextRenderer(boolean useTextShadow, boolean centered)
     {
         if (centered)
         {

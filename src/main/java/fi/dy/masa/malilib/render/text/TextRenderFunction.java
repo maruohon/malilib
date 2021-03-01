@@ -1,6 +1,6 @@
-package fi.dy.masa.malilib.render;
+package fi.dy.masa.malilib.render.text;
 
-public interface TextRenderer
+public interface TextRenderFunction
 {
     /**
      * Renders the given string at the given location using the provided color.

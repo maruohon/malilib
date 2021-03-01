@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.widget.BaseWidget;
 import fi.dy.masa.malilib.render.RenderUtils;
-import fi.dy.masa.malilib.render.TextRenderer;
+import fi.dy.masa.malilib.render.text.TextRenderFunction;
 import fi.dy.masa.malilib.render.text.TextRenderSettings;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.LeftRight;
@@ -219,7 +219,7 @@ public class StringListRenderer extends BaseWidget
     {
         boolean rightAlign = this.horizontalAlignment == HorizontalAlignment.RIGHT;
         boolean center = this.horizontalAlignment == HorizontalAlignment.CENTER;
-        TextRenderer renderer = this.getTextRenderer(this.textSettingsNormal.useFontShadow, center);
+        TextRenderFunction renderer = this.getTextRenderer(this.textSettingsNormal.useFontShadow, center);
         List<Line> lines = hovered ? this.processedLinesFull : this.processedLinesClamped;
         boolean renderBackground = hovered ? this.textSettingsHover.useBackground : this.textSettingsNormal.useBackground;
         int maxTextWidth = hovered ? this.totalTextWidth : this.clampedTextWidth;
