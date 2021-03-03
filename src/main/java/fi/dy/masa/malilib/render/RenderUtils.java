@@ -154,6 +154,14 @@ public class RenderUtils
         buffer.pos(x + width, y         , zLevel).color(r, g, b, a).endVertex();
     }
 
+    public static void renderRectangleBatched(int x, int y, float z, int width, int height, Color4f color, BufferBuilder buffer)
+    {
+        buffer.pos(x        , y         , z).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.pos(x        , y + height, z).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.pos(x + width, y + height, z).color(color.r, color.g, color.b, color.a).endVertex();
+        buffer.pos(x + width, y         , z).color(color.r, color.g, color.b, color.a).endVertex();
+    }
+
     public static void renderTexturedRectangle(int x, int y, int u, int v, int width, int height, float zLevel)
     {
         Tessellator tessellator = Tessellator.getInstance();

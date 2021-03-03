@@ -10,16 +10,18 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.widget.BaseWidget;
 import fi.dy.masa.malilib.render.RenderUtils;
-import fi.dy.masa.malilib.render.text.TextRenderFunction;
+import fi.dy.masa.malilib.render.text.StyledText;
+import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.render.text.TextRenderSettings;
+import fi.dy.masa.malilib.render.text.TextRenderer;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.LeftRight;
 
 public class StringListRenderer extends BaseWidget
 {
     protected final List<String> originalStrings = new ArrayList<>();
-    protected final List<Line> processedLinesClamped = new ArrayList<>();
-    protected final List<Line> processedLinesFull = new ArrayList<>();
+    protected final List<StyledTextLine> processedLinesClamped = new ArrayList<>();
+    protected final List<StyledTextLine> processedLinesFull = new ArrayList<>();
     protected final TextRenderSettings textSettingsNormal = new TextRenderSettings();
     protected final TextRenderSettings textSettingsHover = new TextRenderSettings();
     protected HorizontalAlignment horizontalAlignment = HorizontalAlignment.LEFT;
@@ -167,25 +169,27 @@ public class StringListRenderer extends BaseWidget
 
     protected void splitAndAddLine(String translated)
     {
-        String[] splitLines = translated.split("\\n");
+        StyledText text = StyledText.of(translated);
 
-        for (String line : splitLines)
+        for (StyledTextLine fullLine : text.lines)
         {
-            String clampedLine = line;
-            int lineWidth = this.textRenderer.getStringWidth(line);
+            String fullLineText = fullLine.unStyledText;
+            StyledTextLine clampedLine = fullLine;
+            int lineWidth = fullLine.renderWidth;
             int lineHeight = this.fontHeight + 2;
             this.totalHeight += this.processedLinesFull.size() > 0 ? lineHeight : lineHeight - 1;
             this.totalTextWidth = Math.max(this.totalTextWidth, lineWidth);
-            this.processedLinesFull.add(new Line(line, lineWidth));
+            this.processedLinesFull.add(fullLine);
 
             if (this.hasMaxWidth)
             {
-                clampedLine = this.lineClamper.clampLineToWidth(line, this.maxWidth);
-                boolean gotClamped = clampedLine.equals(line) == false;
+                String clampedLineText = this.lineClamper.clampLineToWidth(fullLineText, this.maxWidth);
+                boolean gotClamped = clampedLineText.equals(fullLineText) == false;
 
                 if (gotClamped)
                 {
-                    lineWidth = this.textRenderer.getStringWidth(clampedLine);
+                    clampedLine = StyledTextLine.of(clampedLineText);
+                    lineWidth = clampedLine.renderWidth;
                     this.hasClampedContent = true;
                 }
             }
@@ -194,7 +198,7 @@ public class StringListRenderer extends BaseWidget
 
             if (this.hasMaxHeight == false || this.totalHeight <= this.maxHeight)
             {
-                this.processedLinesClamped.add(new Line(clampedLine, lineWidth));
+                this.processedLinesClamped.add(clampedLine);
                 this.clampedHeight = this.totalHeight;
             }
         }
@@ -219,21 +223,23 @@ public class StringListRenderer extends BaseWidget
     {
         boolean rightAlign = this.horizontalAlignment == HorizontalAlignment.RIGHT;
         boolean center = this.horizontalAlignment == HorizontalAlignment.CENTER;
-        TextRenderFunction renderer = this.getTextRenderer(this.textSettingsNormal.useFontShadow, center);
-        List<Line> lines = hovered ? this.processedLinesFull : this.processedLinesClamped;
+        boolean shadow = this.textSettingsNormal.useFontShadow;
         boolean renderBackground = hovered ? this.textSettingsHover.useBackground : this.textSettingsNormal.useBackground;
         int maxTextWidth = hovered ? this.totalTextWidth : this.clampedTextWidth;
         int color = hovered ? this.textSettingsHover.textColor : this.textSettingsNormal.textColor;
-        int fontHeight = this.fontHeight;
+        int fontHeight = TextRenderer.INSTANCE.getFontHeight();
         int lineHeight = fontHeight + 2;
         int usedHeight = fontHeight;
+        List<StyledTextLine> lines = hovered ? this.processedLinesFull : this.processedLinesClamped;
 
         if (renderBackground)
         {
             this.renderTextBackgrounds(x, y, z, lines, hovered);
         }
 
-        for (Line line : lines)
+        TextRenderer.INSTANCE.startBuffers();
+
+        for (StyledTextLine line : lines)
         {
             if (hovered == false && this.hasMaxHeight && usedHeight > this.maxHeight)
             {
@@ -251,13 +257,15 @@ public class StringListRenderer extends BaseWidget
                 lineX = x + maxTextWidth / 2;
             }
 
-            renderer.renderText(lineX, y, z, color, line.text);
+            TextRenderer.INSTANCE.renderLineToBuffer(lineX, y, z, color, shadow, line);
             y += lineHeight;
             usedHeight += lineHeight;
         }
+
+        TextRenderer.INSTANCE.renderBuffers();
     }
 
-    protected void renderTextBackgrounds(int x, int y, float z, List<Line> lines, boolean hovered)
+    protected void renderTextBackgrounds(int x, int y, float z, List<StyledTextLine> lines, boolean hovered)
     {
         RenderUtils.setupBlend();
         GlStateManager.disableTexture2D();
@@ -272,7 +280,7 @@ public class StringListRenderer extends BaseWidget
         int bgColor = hovered ? this.textSettingsHover.backgroundColor : this.textSettingsNormal.backgroundColor;
         int lineY = y - 2;
 
-        for (Line line : lines)
+        for (StyledTextLine line : lines)
         {
             int lineX = x - 2;
 
