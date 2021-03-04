@@ -428,12 +428,14 @@ public class TextRenderer implements IResourceManagerReloadListener
 
         if (style.underline)
         {
-            RenderUtils.renderRectangleBatched(x - 1F, y + this.fontHeight - 1F, z, segment.renderWidth, 1, color, this.styleBuffer);
+            float lineHeight = this.unicode ? 0.5F : 1.0F;
+            RenderUtils.renderRectangleBatched(x - 1F, y + this.fontHeight - 1F, z, segment.renderWidth, lineHeight, color, this.styleBuffer);
         }
 
         if (style.strikeThrough)
         {
-            RenderUtils.renderRectangleBatched(x - 1F, y + this.fontHeight / 2.0F - 1F, z, segment.renderWidth + 1, 1, color, this.styleBuffer);
+            float lineHeight = this.unicode ? 0.5F : 1.0F;
+            RenderUtils.renderRectangleBatched(x - 1F, y + this.fontHeight / 2.0F - 1F, z, segment.renderWidth + 1, lineHeight, color, this.styleBuffer);
         }
 
         return this.renderTextSegmentWithColor(x, y, z, segment, color, this.textBuffer);
@@ -465,9 +467,9 @@ public class TextRenderer implements IResourceManagerReloadListener
         float w = (float) glyph.width;
         float h = (float) glyph.height;
         float u1 = glyph.u1;
-        float u2 = glyph.u2;
+        float u2 = glyph.u2 - 0.00125F;
         float v1 = glyph.v1;
-        float v2 = glyph.v2;
+        float v2 = glyph.v2 - 0.00125F;
 
         buffer.pos(x     + slant, y    , z).tex(u1, v1).color(color.r, color.g, color.b, color.a).endVertex();
         buffer.pos(x     - slant, y + h, z).tex(u1, v2).color(color.r, color.g, color.b, color.a).endVertex();
