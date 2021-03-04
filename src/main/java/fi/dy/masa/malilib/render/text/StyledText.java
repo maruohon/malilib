@@ -2,11 +2,18 @@ package fi.dy.masa.malilib.render.text;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
+import fi.dy.masa.malilib.MaLiLib;
 
 public class StyledText
 {
+    protected static final Cache<String, StyledText> TEXT_CACHE = CacheBuilder.newBuilder().initialCapacity(1000).maximumSize(1000).expireAfterAccess(15 * 60, TimeUnit.SECONDS).build();
+
     public final ImmutableList<StyledTextLine> lines;
 
     public StyledText(ImmutableList<StyledTextLine> lines)
@@ -29,6 +36,25 @@ public class StyledText
     public int hashCode()
     {
         return this.lines.hashCode();
+    }
+
+    public static void clearCache()
+    {
+        TEXT_CACHE.invalidateAll();
+    }
+
+    public static StyledText of(String str)
+    {
+        try
+        {
+            //System.out.printf("StyledText: cache size: %d\n", TEXT_CACHE.size());
+            return TEXT_CACHE.get(str, () -> StyledTextParser.parseString(str));
+        }
+        catch (ExecutionException e)
+        {
+            MaLiLib.LOGGER.warn("Exception while retrieving StyledText from cache", e);
+            return StyledTextParser.parseString(str);
+        }
     }
 
     public static Builder builder()
@@ -99,10 +125,5 @@ public class StyledText
             this.commitCurrentLine();
             return new StyledText(ImmutableList.copyOf(this.lines));
         }
-    }
-
-    public static StyledText of(String str)
-    {
-        return StyledTextParser.parseString(str);
     }
 }

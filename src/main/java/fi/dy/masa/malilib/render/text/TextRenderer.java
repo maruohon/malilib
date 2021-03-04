@@ -120,7 +120,6 @@ public class TextRenderer implements IResourceManagerReloadListener
     @Override
     public void onResourceManagerReload(@Nonnull IResourceManager resourceManager)
     {
-        // FIXME these should be hooked from the vanilla setter
         Minecraft mc = Minecraft.getMinecraft();
         this.unicode = mc.isUnicode();
 
@@ -130,6 +129,7 @@ public class TextRenderer implements IResourceManagerReloadListener
             this.setColorCodes(this.anaglyph);
         }
 
+        StyledText.clearCache();
         this.glyphs.clear();
         this.glyphsBySize.clear();
         Arrays.fill(this.charWidth, 0);
@@ -151,21 +151,14 @@ public class TextRenderer implements IResourceManagerReloadListener
         return index >= 0 && index < 16 ? this.colorCode[index] : 0;
     }
 
-    public int getCharWidth(char c)
-    {
-        return this.getGlyphFor(c).renderWidth;
-    }
-
     public int getStringWidth(String str)
     {
-        int len = str.length();
+        StyledText text = StyledText.of(str);
         int width = 0;
 
-        // TODO §l and §r ??
-
-        for (int i = 0; i < len; ++i)
+        for (StyledTextLine line : text.lines)
         {
-            width += this.getCharWidth(str.charAt(i));
+            width = Math.max(width, line.renderWidth);
         }
 
         return width;
@@ -310,6 +303,13 @@ public class TextRenderer implements IResourceManagerReloadListener
 
     public void startBuffers()
     {
+        Minecraft mc = Minecraft.getMinecraft();
+
+        if (this.unicode != mc.isUnicode())
+        {
+            this.onResourceManagerReload(mc.getResourceManager());
+        }
+
         if (this.buildingTextBuffer == false)
         {
             this.textBuffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);

@@ -1,9 +1,13 @@
 package fi.dy.masa.malilib.render.text;
 
+import java.util.ArrayList;
+import java.util.List;
 import com.google.common.collect.ImmutableList;
 
 public class StyledTextLine
 {
+    public static final StyledTextLine EMPTY = new StyledTextLine(ImmutableList.of());
+
     public final ImmutableList<StyledTextSegment> segments;
     public final String displayText;
     public final String originalString;
@@ -48,6 +52,16 @@ public class StyledTextLine
     public static StyledTextLine of(String str)
     {
         StyledText text = StyledText.of(str);
-        return text.lines.size() > 0 ? text.lines.get(0) : new StyledTextLine(ImmutableList.of());
+        return text.lines.size() > 0 ? text.lines.get(0) : EMPTY;
+    }
+
+    /**
+     * Returns the string as a completely unparsed raw StyledTextLine
+     */
+    public static StyledTextLine raw(String str)
+    {
+        List<StyledTextSegment> segments = new ArrayList<>();
+        TextRenderer.INSTANCE.generateTextSegmentsFor(str, str, TextStyle.builder().build(), segments::add);
+        return new StyledTextLine(ImmutableList.copyOf(segments));
     }
 }
