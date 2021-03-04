@@ -315,7 +315,6 @@ public class TextRenderer implements IResourceManagerReloadListener
             for (StyledTextSegment segment : line.segments)
             {
                 segmentX += this.renderTextSegment(segmentX, y, z, defaultColor4f, shadow, segment);
-                //segmentX += segment.renderWidth;
             }
         }
     }
@@ -333,31 +332,32 @@ public class TextRenderer implements IResourceManagerReloadListener
         if (shadow)
         {
             Color4f shadowColor = style.shadowColor != null ? style.shadowColor : TextStyle.getDefaultShadowColor(color);
-            this.renderTextSegmentWithColor(x + 1, y + 1, z, shadowColor, segment);
+            float offset = this.unicode ? 0.5F : 1.0F;
+            this.renderTextSegmentWithColor(x + offset, y + offset, z, shadowColor, segment);
         }
 
         return this.renderTextSegmentWithColor(x, y, z, color, segment);
     }
 
-    protected int renderTextSegmentWithColor(int x, int y, float z, Color4f color, StyledTextSegment segment)
+    protected int renderTextSegmentWithColor(float x, float y, float z, Color4f color, StyledTextSegment segment)
     {
         TextStyle style = segment.style;
         int renderWidth = this.renderString(x, y, z, segment.text, color, style, this.textBuffer);
 
         if (style.underline)
         {
-            RenderUtils.renderRectangleBatched(x - 1, y + this.fontHeight - 1, z, segment.renderWidth, 1, color, this.styleBuffer);
+            RenderUtils.renderRectangleBatched(x - 1F, y + this.fontHeight - 1F, z, segment.renderWidth, 1, color, this.styleBuffer);
         }
 
         if (style.strikeThrough)
         {
-            RenderUtils.renderRectangleBatched(x - 1, y + this.fontHeight / 2 - 1, z, segment.renderWidth + 1, 1, color, this.styleBuffer);
+            RenderUtils.renderRectangleBatched(x - 1F, y + this.fontHeight / 2.0F - 1F, z, segment.renderWidth + 1, 1, color, this.styleBuffer);
         }
 
         return renderWidth;
     }
 
-    protected int renderString(int x, int y, float z, String str, Color4f color, TextStyle style, BufferBuilder buffer)
+    protected int renderString(float x, float y, float z, String str, Color4f color, TextStyle style, BufferBuilder buffer)
     {
         int len = str.length();
         int renderWidth = 0;
