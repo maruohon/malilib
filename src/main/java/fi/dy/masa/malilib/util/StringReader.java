@@ -76,6 +76,21 @@ public class StringReader
         return "";
     }
 
+    public String subStringWithLength(int length)
+    {
+        return this.subStringWithLength(this.pos, length);
+    }
+
+    public String subStringWithLength(int startPos, int length)
+    {
+        if (startPos >= 0 && length > 0 && startPos + length <= this.length)
+        {
+            return this.string.substring(startPos, startPos + length);
+        }
+
+        return "";
+    }
+
     public StringReader subReader(Region region)
     {
         return this.subReader(region.start, region.end);

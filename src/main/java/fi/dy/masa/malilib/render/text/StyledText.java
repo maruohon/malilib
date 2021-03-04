@@ -41,11 +41,17 @@ public class StyledText
         protected final List<StyledTextLine> lines = new ArrayList<>();
         protected final List<StyledTextSegment> segmentsForCurrentLine = new ArrayList<>();
         protected final TextStyle.Builder styleBuilder = TextStyle.builder();
-        protected StringBuilder stringForCurrentSegment = new StringBuilder();
+        protected StringBuilder displayStringForCurrentSegment = new StringBuilder();
+        protected StringBuilder originalTextStringForCurrentSegment = new StringBuilder();
 
-        public void appendString(String str)
+        public void appendDisplayString(String str)
         {
-            this.stringForCurrentSegment.append(str);
+            this.displayStringForCurrentSegment.append(str);
+        }
+
+        public void appendOriginalTextString(String str)
+        {
+            this.originalTextStringForCurrentSegment.append(str);
         }
 
         public void applyStyleChange(Consumer<TextStyle.Builder> styleModifier)
@@ -61,8 +67,7 @@ public class StyledText
 
         public void addLineBeak()
         {
-            this.commitCurrentSegment();
-            this.lines.add(new StyledTextLine(ImmutableList.copyOf(this.segmentsForCurrentLine)));
+            this.commitCurrentLine();
             this.segmentsForCurrentLine.clear();
         }
 
@@ -73,18 +78,25 @@ public class StyledText
 
         protected void commitCurrentSegmentUsingStyle(TextStyle style)
         {
-            if (this.stringForCurrentSegment.length() > 0)
+            if (this.displayStringForCurrentSegment.length() > 0)
             {
-                String str = this.stringForCurrentSegment.toString();
-                this.segmentsForCurrentLine.add(new StyledTextSegment(str, style));
-                this.stringForCurrentSegment = new StringBuilder();
+                String displayString = this.displayStringForCurrentSegment.toString();
+                String originalString = this.originalTextStringForCurrentSegment.toString();
+                TextRenderer.INSTANCE.generateTextSegmentsFor(displayString, originalString, style, this.segmentsForCurrentLine::add);
+                this.displayStringForCurrentSegment = new StringBuilder();
+                this.originalTextStringForCurrentSegment = new StringBuilder();
             }
+        }
+
+        protected void commitCurrentLine()
+        {
+            this.commitCurrentSegment();
+            this.lines.add(new StyledTextLine(ImmutableList.copyOf(this.segmentsForCurrentLine)));
         }
 
         public StyledText build()
         {
-            this.commitCurrentSegment();
-            this.lines.add(new StyledTextLine(ImmutableList.copyOf(this.segmentsForCurrentLine)));
+            this.commitCurrentLine();
             return new StyledText(ImmutableList.copyOf(this.lines));
         }
     }

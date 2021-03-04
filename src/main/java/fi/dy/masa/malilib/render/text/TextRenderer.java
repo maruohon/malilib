@@ -2,10 +2,16 @@ package fi.dy.masa.malilib.render.text;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
+import java.util.function.Consumer;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import org.apache.commons.lang3.tuple.MutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -19,7 +25,6 @@ import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.data.Color4f;
 import it.unimi.dsi.fastutil.chars.Char2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
 public class TextRenderer implements IResourceManagerReloadListener
 {
@@ -33,18 +38,20 @@ public class TextRenderer implements IResourceManagerReloadListener
     // This needs to be below the other static fields, because the resource manager reload will access the  other fields!
     public static final TextRenderer INSTANCE = new TextRenderer(Minecraft.getMinecraft().getTextureManager(), ASCII_TEXTURE, false, false);
 
-    protected final Char2ObjectOpenHashMap<Glyph> glyphs = new Char2ObjectOpenHashMap<>();
-    protected final Int2ObjectOpenHashMap<List<Glyph>> glyphsBySize = new Int2ObjectOpenHashMap<>();
-    protected final WorldVertexBufferUploader vboUploader = new WorldVertexBufferUploader();
-    protected final BufferBuilder textBuffer = new BufferBuilder(65536);
-    protected final BufferBuilder styleBuffer = new BufferBuilder(8192);
     protected final Random rand = new Random();
+    protected final WorldVertexBufferUploader vboUploader = new WorldVertexBufferUploader();
+    protected final BufferBuilder textBuffer = new BufferBuilder(1048576);
+    protected final BufferBuilder styleBuffer = new BufferBuilder(8192);
     protected final TextureManager textureManager;
     protected final ResourceLocation asciiTexture;
+
+    protected final Char2ObjectOpenHashMap<Glyph> glyphs = new Char2ObjectOpenHashMap<>();
+    protected final HashMap<Pair<ResourceLocation, Integer>, List<Glyph>> glyphsBySize = new HashMap<>();
     protected final byte[] glyphWidth = new byte[65536];
     protected final byte[] asciiCharacterWidths = new byte[65536];
     protected final int[] charWidth = new int[256];
     protected final int[] colorCode = new int[32];
+    @Nullable protected ResourceLocation currentFontTexture;
     protected boolean anaglyph;
     protected boolean unicode;
     protected boolean buildingStyleBuffer;
@@ -86,7 +93,7 @@ public class TextRenderer implements IResourceManagerReloadListener
         {
             char c = VALID_ASCII_CHARACTERS.charAt(i);
             this.asciiCharacterWidths[c] = (byte) this.charWidth[i];
-            this.getGlyphFor(c, false); // generate all the glyphs so that the randomization always has all the valid alternatives available
+            this.getGlyphFor(c); // generate all the glyphs so that the randomization always has all the valid alternatives available
         }
     }
 
@@ -146,7 +153,7 @@ public class TextRenderer implements IResourceManagerReloadListener
 
     public int getCharWidth(char c)
     {
-        return this.getGlyphFor(c, false).renderWidth;
+        return this.getGlyphFor(c).renderWidth;
     }
 
     public int getStringWidth(String str)
@@ -164,7 +171,7 @@ public class TextRenderer implements IResourceManagerReloadListener
         return width;
     }
 
-    protected Glyph getGlyphFor(char c, boolean randomize)
+    protected Glyph getGlyphFor(char c)
     {
         Glyph glyph = this.glyphs.get(c);
 
@@ -188,16 +195,77 @@ public class TextRenderer implements IResourceManagerReloadListener
             }
 
             this.glyphs.put(c, glyph);
-            this.glyphsBySize.computeIfAbsent(glyph.renderWidth, (w) -> new ArrayList<>()).add(glyph);
-        }
 
-        if (randomize)
-        {
-            List<Glyph> list = this.glyphsBySize.get(glyph.renderWidth);
-            glyph = list.get(this.rand.nextInt(list.size()));
+            Pair<ResourceLocation, Integer> key = Pair.of(glyph.texture, glyph.renderWidth);
+            this.glyphsBySize.computeIfAbsent(key, (k) -> new ArrayList<>()).add(glyph);
         }
 
         return glyph;
+    }
+
+    public void generateTextSegmentsFor(String displayString, String originalString, TextStyle style, Consumer<StyledTextSegment> consumer)
+    {
+        List<Glyph> glyphs = new ArrayList<>();
+        final int len = displayString.length();
+        ResourceLocation texture = null;
+        int displayStringStart = 0;
+        int originalStringStart = 0;
+        int stylePrefixLength = originalString.length() - displayString.length();
+        int segmentLength = 0;
+
+        for (int i = 0; i < len; ++i, ++segmentLength)
+        {
+            Glyph glyph = this.getGlyphFor(displayString.charAt(i));
+
+            // font sheet change, add the segment
+            if (texture != null && glyph.texture != texture)
+            {
+                int endIndex = originalStringStart + stylePrefixLength + segmentLength;
+                String originalStringSegment = originalString.substring(originalStringStart, endIndex);
+                String displayStringSegment = displayString.substring(displayStringStart, i);
+
+                consumer.accept(new StyledTextSegment(texture, style, ImmutableList.copyOf(glyphs), displayStringSegment, originalStringSegment));
+
+                displayStringStart += segmentLength;
+                originalStringStart += segmentLength + stylePrefixLength;
+                stylePrefixLength = 0;
+                segmentLength = 0;
+                glyphs.clear();
+            }
+
+            glyphs.add(glyph);
+            texture = glyph.texture;
+        }
+
+        String displayStringSegment = displayString.substring(displayStringStart, len);
+        String originalStringSegment = originalString.substring(originalStringStart);
+
+        consumer.accept(new StyledTextSegment(texture, style, ImmutableList.copyOf(glyphs), displayStringSegment, originalStringSegment));
+    }
+
+    public List<Glyph> getRandomizedGlyphsFromSameTexture(ResourceLocation texture, List<Glyph> originalGlyphs)
+    {
+        MutablePair<ResourceLocation, Integer> key = new MutablePair<>();
+        List<Glyph> glyphs = new ArrayList<>();
+        key.setLeft(texture);
+
+        for (Glyph glyph : originalGlyphs)
+        {
+            key.setRight(glyph.renderWidth);
+            List<Glyph> list = this.glyphsBySize.get(key);
+
+            // This seems to be a necessary precaution during resource manager reloads
+            if (list != null)
+            {
+                glyphs.add(list.get(this.rand.nextInt(list.size())));
+            }
+            else
+            {
+                glyphs.add(glyph);
+            }
+        }
+
+        return glyphs;
     }
 
     protected Glyph generateAsciiCharacterGlyph(char c)
@@ -274,7 +342,14 @@ public class TextRenderer implements IResourceManagerReloadListener
         if (this.buildingTextBuffer)
         {
             this.textBuffer.finishDrawing();
-            this.vboUploader.draw(this.textBuffer);
+
+            if (this.currentFontTexture != null)
+            {
+                this.textureManager.bindTexture(this.currentFontTexture);
+                this.vboUploader.draw(this.textBuffer);
+            }
+
+            this.currentFontTexture = null;
             this.buildingTextBuffer = false;
         }
     }
@@ -324,6 +399,14 @@ public class TextRenderer implements IResourceManagerReloadListener
         TextStyle style = segment.style;
         Color4f color = style.color != null ? style.color : defaultColor;
 
+        // Reference equality is fine here, as the sheets are fixed/pre-determined
+        if (this.currentFontTexture != segment.texture)
+        {
+            this.renderTextBuffer();
+            this.startBuffers();
+            this.currentFontTexture = segment.texture;
+        }
+
         if (style.shadow != null)
         {
             shadow = style.shadow;
@@ -333,16 +416,15 @@ public class TextRenderer implements IResourceManagerReloadListener
         {
             Color4f shadowColor = style.shadowColor != null ? style.shadowColor : TextStyle.getDefaultShadowColor(color);
             float offset = this.unicode ? 0.5F : 1.0F;
-            this.renderTextSegmentWithColor(x + offset, y + offset, z, shadowColor, segment);
+            this.renderTextSegmentAndStylesWithColor(x + offset, y + offset, z, shadowColor, segment);
         }
 
-        return this.renderTextSegmentWithColor(x, y, z, color, segment);
+        return this.renderTextSegmentAndStylesWithColor(x, y, z, color, segment);
     }
 
-    protected int renderTextSegmentWithColor(float x, float y, float z, Color4f color, StyledTextSegment segment)
+    protected int renderTextSegmentAndStylesWithColor(float x, float y, float z, Color4f color, StyledTextSegment segment)
     {
         TextStyle style = segment.style;
-        int renderWidth = this.renderString(x, y, z, segment.text, color, style, this.textBuffer);
 
         if (style.underline)
         {
@@ -354,18 +436,17 @@ public class TextRenderer implements IResourceManagerReloadListener
             RenderUtils.renderRectangleBatched(x - 1F, y + this.fontHeight / 2.0F - 1F, z, segment.renderWidth + 1, 1, color, this.styleBuffer);
         }
 
-        return renderWidth;
+        return this.renderTextSegmentWithColor(x, y, z, segment, color, this.textBuffer);
     }
 
-    protected int renderString(float x, float y, float z, String str, Color4f color, TextStyle style, BufferBuilder buffer)
+    protected int renderTextSegmentWithColor(float x, float y, float z, StyledTextSegment segment, Color4f color, BufferBuilder buffer)
     {
-        int len = str.length();
+        TextStyle style = segment.style;
+        List<Glyph> glyphs = segment.getGlyphsForRender();
         int renderWidth = 0;
 
-        for (int i = 0; i < len; ++i)
+        for (Glyph glyph : glyphs)
         {
-            char c = str.charAt(i);
-            Glyph glyph = this.getGlyphFor(c, style.random);
             renderWidth += this.renderGlyph(x + renderWidth, y, z, glyph, color, style, buffer);
         }
 
@@ -379,16 +460,14 @@ public class TextRenderer implements IResourceManagerReloadListener
             return glyph.renderWidth;
         }
 
+        int renderWidth = glyph.renderWidth;
         float slant = style.italic ? 1.0F : 0.0F;
         float w = (float) glyph.width;
-        int renderWidth = glyph.renderWidth;
-        float h = glyph.height;
+        float h = (float) glyph.height;
         float u1 = glyph.u1;
         float u2 = glyph.u2;
         float v1 = glyph.v1;
         float v2 = glyph.v2;
-
-        this.textureManager.bindTexture(glyph.texture); // FIXME this should be per text segment
 
         buffer.pos(x     + slant, y    , z).tex(u1, v1).color(color.r, color.g, color.b, color.a).endVertex();
         buffer.pos(x     - slant, y + h, z).tex(u1, v2).color(color.r, color.g, color.b, color.a).endVertex();

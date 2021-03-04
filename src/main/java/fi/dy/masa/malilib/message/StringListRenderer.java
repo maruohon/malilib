@@ -173,16 +173,17 @@ public class StringListRenderer extends BaseWidget
 
         for (StyledTextLine fullLine : text.lines)
         {
-            String fullLineText = fullLine.unStyledText;
+            String fullLineText = fullLine.displayText;
             StyledTextLine clampedLine = fullLine;
             int lineWidth = fullLine.renderWidth;
-            int lineHeight = this.fontHeight + 2;
-            this.totalHeight += this.processedLinesFull.size() > 0 ? lineHeight : lineHeight - 1;
+            int lineHeight = this.fontHeight + 1;
+            this.totalHeight += this.processedLinesFull.size() > 0 ? lineHeight + 1 : lineHeight;
             this.totalTextWidth = Math.max(this.totalTextWidth, lineWidth);
             this.processedLinesFull.add(fullLine);
 
-            if (this.hasMaxWidth)
+            if (this.hasMaxWidth && lineWidth > this.maxWidth)
             {
+                // TODO this needs style preserving clamping
                 String clampedLineText = this.lineClamper.clampLineToWidth(fullLineText, this.maxWidth);
                 boolean gotClamped = clampedLineText.equals(fullLineText) == false;
 
@@ -293,7 +294,7 @@ public class StringListRenderer extends BaseWidget
                 lineX = x + maxTextWidth / 2 - line.renderWidth / 2 - 2;
             }
 
-            RenderUtils.renderRectangleBatched(lineX, lineY, line.renderWidth + 3, lineHeight, bgColor, z, buffer);
+            RenderUtils.renderRectangleBatched(lineX, lineY, z, line.renderWidth + 3, lineHeight, bgColor, buffer);
             lineY += lineHeight;
         }
 

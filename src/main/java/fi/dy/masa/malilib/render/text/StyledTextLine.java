@@ -5,23 +5,27 @@ import com.google.common.collect.ImmutableList;
 public class StyledTextLine
 {
     public final ImmutableList<StyledTextSegment> segments;
-    public final String unStyledText;
+    public final String displayText;
+    public final String originalString;
     public final int renderWidth;
 
     public StyledTextLine(ImmutableList<StyledTextSegment> segments)
     {
         this.segments = segments;
 
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sbDisplay = new StringBuilder();
+        StringBuilder sbOriginal = new StringBuilder();
         int width = 0;
 
         for (StyledTextSegment segment : segments)
         {
-            sb.append(segment.text);
+            sbDisplay.append(segment.displayText);
+            sbOriginal.append(segment.originalString);
             width += segment.renderWidth;
         }
 
-        this.unStyledText = sb.toString();
+        this.displayText = sbDisplay.toString();
+        this.originalString = sbOriginal.toString();
         this.renderWidth = width;
     }
 

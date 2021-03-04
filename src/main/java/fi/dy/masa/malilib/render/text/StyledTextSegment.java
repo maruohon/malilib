@@ -1,27 +1,51 @@
 package fi.dy.masa.malilib.render.text;
 
-import fi.dy.masa.malilib.util.StringUtils;
+import java.util.List;
+import java.util.Objects;
+import com.google.common.collect.ImmutableList;
+import net.minecraft.util.ResourceLocation;
 
 public class StyledTextSegment
 {
-    public final String text;
+    protected final ImmutableList<Glyph> glyphs;
+    public final ResourceLocation texture;
     public final TextStyle style;
+    public final String displayText;
+    public final String originalString;
     public final int renderWidth;
 
-    public StyledTextSegment(String text, TextStyle style)
+    public StyledTextSegment(ResourceLocation texture, TextStyle style, ImmutableList<Glyph> glyphs, String displayText, String originalString)
     {
-        this.text = text;
+        this.texture = texture;
         this.style = style;
+        this.glyphs = glyphs;
+        this.displayText = displayText;
+        this.originalString = originalString;
 
-        int renderWidth = StringUtils.getStringWidth(text);
+        int renderWidth = 0;
+
+        for (Glyph glyph : glyphs)
+        {
+            renderWidth += glyph.renderWidth;
+        }
 
         // Bold style glyphs are 1 pixel wider per glyph
         if (style.bold)
         {
-            renderWidth += text.length();
+            renderWidth += glyphs.size();
         }
 
         this.renderWidth = renderWidth;
+    }
+
+    public List<Glyph> getGlyphsForRender()
+    {
+        if (this.style.random)
+        {
+            return TextRenderer.INSTANCE.getRandomizedGlyphsFromSameTexture(this.texture, this.glyphs);
+        }
+
+        return this.glyphs;
     }
 
     @Override
@@ -32,14 +56,16 @@ public class StyledTextSegment
 
         StyledTextSegment that = (StyledTextSegment) o;
 
-        if (!this.text.equals(that.text)) { return false; }
-        return this.style.equals(that.style);
+        if (!Objects.equals(this.displayText, that.displayText)) { return false; }
+        if (!Objects.equals(this.texture, that.texture)) { return false; }
+        return Objects.equals(this.style, that.style);
     }
 
     @Override
     public int hashCode()
     {
-        int result = this.text.hashCode();
+        int result = this.displayText.hashCode();
+        result = 31 * result + this.texture.hashCode();
         result = 31 * result + this.style.hashCode();
         return result;
     }

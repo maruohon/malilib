@@ -98,7 +98,7 @@ public class RenderUtils
         renderOutline(x, y, width, height, 1, colorBorder, zLevel);
     }
 
-    public static void renderOutline(int x, int y, int width, int height, int borderWidth, int colorBorder, float zLevel)
+    public static void renderOutline(int x, int y, int width, int height, int borderWidth, int colorBorder, float z)
     {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
@@ -108,10 +108,10 @@ public class RenderUtils
 
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
 
-        renderRectangleBatched(x                      , y, borderWidth            , height     , colorBorder, zLevel, buffer); // left edge
-        renderRectangleBatched(x + width - borderWidth, y, borderWidth            , height     , colorBorder, zLevel, buffer); // right edge
-        renderRectangleBatched(x + borderWidth        , y, width - 2 * borderWidth, borderWidth, colorBorder, zLevel, buffer); // top edge
-        renderRectangleBatched(x + borderWidth        , y + height - borderWidth, width - 2 * borderWidth, borderWidth, colorBorder, zLevel, buffer); // bottom edge
+        renderRectangleBatched(x                      , y                       , z, borderWidth            , height     , colorBorder, buffer); // left edge
+        renderRectangleBatched(x + width - borderWidth, y                       , z, borderWidth            , height     , colorBorder, buffer); // right edge
+        renderRectangleBatched(x + borderWidth        , y                       , z, width - 2 * borderWidth, borderWidth, colorBorder, buffer); // top edge
+        renderRectangleBatched(x + borderWidth        , y + height - borderWidth, z, width - 2 * borderWidth, borderWidth, colorBorder, buffer); // bottom edge
 
         tessellator.draw();
 
@@ -131,7 +131,7 @@ public class RenderUtils
 
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
 
-        renderRectangleBatched(x, y, width, height, color, zLevel, buffer);
+        renderRectangleBatched(x, y, zLevel, width, height, color, buffer);
 
         tessellator.draw();
 
@@ -141,20 +141,20 @@ public class RenderUtils
         color(1f, 1f, 1f, 1f);
     }
 
-    public static void renderRectangleBatched(int x, int y, int width, int height, int color, float zLevel, BufferBuilder buffer)
+    public static void renderRectangleBatched(float x, float y, float z, float width, float height, int color, BufferBuilder buffer)
     {
-        float a = (float) (color >> 24 & 255) / 255.0F;
-        float r = (float) (color >> 16 & 255) / 255.0F;
-        float g = (float) (color >>  8 & 255) / 255.0F;
-        float b = (float) (color & 255) / 255.0F;
+        float a = (float) ((color >> 24) & 0xFF) / 255.0F;
+        float r = (float) ((color >> 16) & 0xFF) / 255.0F;
+        float g = (float) ((color >>  8) & 0xFF) / 255.0F;
+        float b = (float) (color         & 0xFF) / 255.0F;
 
-        buffer.pos(x        , y         , zLevel).color(r, g, b, a).endVertex();
-        buffer.pos(x        , y + height, zLevel).color(r, g, b, a).endVertex();
-        buffer.pos(x + width, y + height, zLevel).color(r, g, b, a).endVertex();
-        buffer.pos(x + width, y         , zLevel).color(r, g, b, a).endVertex();
+        buffer.pos(x        , y         , z).color(r, g, b, a).endVertex();
+        buffer.pos(x        , y + height, z).color(r, g, b, a).endVertex();
+        buffer.pos(x + width, y + height, z).color(r, g, b, a).endVertex();
+        buffer.pos(x + width, y         , z).color(r, g, b, a).endVertex();
     }
 
-    public static void renderRectangleBatched(float x, float y, float z, int width, int height, Color4f color, BufferBuilder buffer)
+    public static void renderRectangleBatched(float x, float y, float z, float width, float height, Color4f color, BufferBuilder buffer)
     {
         buffer.pos(x        , y         , z).color(color.r, color.g, color.b, color.a).endVertex();
         buffer.pos(x        , y + height, z).color(color.r, color.g, color.b, color.a).endVertex();

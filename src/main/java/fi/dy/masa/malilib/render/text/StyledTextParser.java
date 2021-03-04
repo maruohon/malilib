@@ -56,15 +56,15 @@ public class StyledTextParser
             {
                 if (current == '§' && previous != '\\' && VANILLA_FORMAT_CODES.indexOf(next) != -1)
                 {
-                    token = new VanillaStyleToken(next);
+                    token = new VanillaStyleToken(reader.subStringWithLength(2));
                 }
                 else if (current == '\\' && next == 'n' && previous != '\\')
                 {
-                    token = new LineBreakToken(2);
+                    token = new LineBreakToken(reader.subStringWithLength(2));
                 }
                 else if (current == '\n')
                 {
-                    token = new LineBreakToken(1);
+                    token = new LineBreakToken(String.valueOf(current));
                 }
                 else
                 {
@@ -127,42 +127,53 @@ public class StyledTextParser
         // <, >, and possibly the negation character
         int baseLength = state ? 2 : 3;
         Token token = null;
+        String originalStr;
 
         if (reader.startsWith("b>"))
         {
-            token = new StyleChangeToken(TextStyle.Builder::withBold, state, baseLength + 1);
+            originalStr = reader.subStringWithLength(originalPos, baseLength + 1);
+            token = new StyleChangeToken(TextStyle.Builder::withBold, state, originalStr);
         }
         else if (reader.startsWith("i>"))
         {
-            token = new StyleChangeToken(TextStyle.Builder::withItalic, state, baseLength + 1);
+            originalStr = reader.subStringWithLength(originalPos, baseLength + 1);
+            token = new StyleChangeToken(TextStyle.Builder::withItalic, state, originalStr);
         }
         else if (reader.startsWith("u>"))
         {
-            token = new StyleChangeToken(TextStyle.Builder::withUnderline, state, baseLength + 1);
+            originalStr = reader.subStringWithLength(originalPos, baseLength + 1);
+            token = new StyleChangeToken(TextStyle.Builder::withUnderline, state, originalStr);
         }
         else if (reader.startsWith("st>"))
         {
-            token = new StyleChangeToken(TextStyle.Builder::withStrikeThrough, state, baseLength + 2);
+            originalStr = reader.subStringWithLength(originalPos, baseLength + 2);
+            token = new StyleChangeToken(TextStyle.Builder::withStrikeThrough, state, originalStr);
         }
         else if (reader.startsWith("sh>"))
         {
-            token = new StyleChangeToken(TextStyle.Builder::withShadow, state, baseLength + 2);
+            originalStr = reader.subStringWithLength(originalPos, baseLength + 2);
+            token = new StyleChangeToken(TextStyle.Builder::withShadow, state, originalStr);
         }
         else if (reader.startsWith("rnd>"))
         {
-            token = new StyleChangeToken(TextStyle.Builder::withRandom, state, baseLength + 3);
+            originalStr = reader.subStringWithLength(originalPos, baseLength + 3);
+            token = new StyleChangeToken(TextStyle.Builder::withRandom, state, originalStr);
         }
         else if (reader.startsWith("rst>") && state) // negated reset state is not valid
         {
-            token = new StyleChangeToken((b, v) -> b.resetEverything(), false, baseLength + 3);
+            originalStr = reader.subStringWithLength(originalPos, baseLength + 3);
+            token = new StyleChangeToken((b, v) -> b.resetEverything(), false, originalStr);
         }
+        // color reset
         else if (state == false && (reader.startsWith("c>") || reader.startsWith("csh>")))
         {
             boolean shadow = reader.startsWith("csh>");
             int tokenValueLen = shadow ? 3 : 1;
+            originalStr = reader.subStringWithLength(originalPos, baseLength + tokenValueLen);
             BiConsumer<TextStyle.Builder, Color4f> consumer = shadow ? TextStyle.Builder::withShadowColor : TextStyle.Builder::withColor;
-            token = new ColorChangeToken(consumer, null, baseLength + tokenValueLen);
+            token = new ColorChangeToken(consumer, null, originalStr);
         }
+        // color start
         else if (state && (reader.startsWith("c=") || reader.startsWith("csh=")))
         {
             Color4f color = null;
@@ -204,8 +215,9 @@ public class StyledTextParser
 
             if (color != null)
             {
+                originalStr = reader.subStringWithLength(originalPos, baseLength + tokenValueLen);
                 BiConsumer<TextStyle.Builder, Color4f> consumer = shadow ? TextStyle.Builder::withShadowColor : TextStyle.Builder::withColor;
-                token = new ColorChangeToken(consumer, color, baseLength + tokenValueLen);
+                token = new ColorChangeToken(consumer, color, originalStr);
             }
         }
 
@@ -216,7 +228,13 @@ public class StyledTextParser
 
     public abstract static class Token
     {
+        protected final String originalString;
         protected int stringLength;
+
+        protected Token(String originalString)
+        {
+            this.originalString = originalString;
+        }
 
         public int getStringLength()
         {
@@ -231,17 +249,20 @@ public class StyledTextParser
         protected final BiConsumer<TextStyle.Builder, Boolean> consumer;
         protected final boolean state;
 
-        public StyleChangeToken(BiConsumer<TextStyle.Builder, Boolean> consumer, boolean state, int tokenLength)
+        public StyleChangeToken(BiConsumer<TextStyle.Builder, Boolean> consumer, boolean state, String originalString)
         {
+            super(originalString);
+
             this.consumer = consumer;
             this.state = state;
-            this.stringLength = tokenLength;
+            this.stringLength = originalString.length();
         }
 
         @Override
         public void applyTo(StyledText.Builder builder)
         {
             builder.applyStyleChange((b) -> this.consumer.accept(b, this.state));
+            builder.appendOriginalTextString(this.originalString);
         }
     }
 
@@ -250,17 +271,20 @@ public class StyledTextParser
         protected final BiConsumer<TextStyle.Builder, Color4f> consumer;
         protected final Color4f color;
 
-        public ColorChangeToken(BiConsumer<TextStyle.Builder, Color4f> consumer, Color4f color, int tokenLength)
+        public ColorChangeToken(BiConsumer<TextStyle.Builder, Color4f> consumer, Color4f color, String originalString)
         {
+            super(originalString);
+
             this.consumer = consumer;
             this.color = color;
-            this.stringLength = tokenLength;
+            this.stringLength = originalString.length();
         }
 
         @Override
         public void applyTo(StyledText.Builder builder)
         {
             builder.applyStyleChange((b) -> this.consumer.accept(b, this.color));
+            builder.appendOriginalTextString(this.originalString);
         }
     }
 
@@ -268,10 +292,12 @@ public class StyledTextParser
     {
         protected final char code;
 
-        public VanillaStyleToken(char code)
+        public VanillaStyleToken(String originalString)
         {
-            this.code = String.valueOf(code).toLowerCase(Locale.ROOT).charAt(0);
-            this.stringLength = 2;
+            super(originalString);
+
+            this.code = originalString.toLowerCase(Locale.ROOT).charAt(1);
+            this.stringLength = originalString.length();
         }
 
         @Override
@@ -289,19 +315,24 @@ public class StyledTextParser
                     builder.applyStyleChange(TextStyle.Builder::resetVanillaStyles);
                     builder.applyStyleChange((b) -> b.withColor(Color4f.fromColor(TextRenderer.INSTANCE.getColorCode(this.code), 1f)));
             }
+
+            builder.appendOriginalTextString(this.originalString);
         }
     }
 
     public static class LineBreakToken extends Token
     {
-        public LineBreakToken(int tokenLength)
+        public LineBreakToken(String originalString)
         {
-            this.stringLength = tokenLength;
+            super(originalString);
+
+            this.stringLength = originalString.length();
         }
 
         @Override
         public void applyTo(StyledText.Builder builder)
         {
+            builder.appendOriginalTextString(this.originalString);
             builder.addLineBeak();
         }
     }
@@ -312,6 +343,8 @@ public class StyledTextParser
 
         public StringToken(String str)
         {
+            super(str);
+
             this.str = str;
             this.stringLength = str.length();
         }
@@ -319,7 +352,8 @@ public class StyledTextParser
         @Override
         public void applyTo(StyledText.Builder builder)
         {
-            builder.appendString(this.str);
+            builder.appendDisplayString(this.str);
+            builder.appendOriginalTextString(this.originalString);
         }
     }
 }
