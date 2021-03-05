@@ -2,8 +2,12 @@ package fi.dy.masa.malilib.render.text;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 import org.apache.commons.io.IOUtils;
+import com.google.common.collect.ImmutableList;
 import com.ibm.icu.text.ArabicShaping;
 import com.ibm.icu.text.ArabicShapingException;
 import com.ibm.icu.text.Bidi;
@@ -11,6 +15,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.util.ResourceLocation;
+import fi.dy.masa.malilib.MaLiLib;
 
 public class TextRendererUtils
 {
@@ -53,7 +58,11 @@ public class TextRendererUtils
         try
         {
             resource = Minecraft.getMinecraft().getResourceManager().getResource(new ResourceLocation("font/glyph_sizes.bin"));
-            resource.getInputStream().read(glyphWidth);
+
+            if (resource.getInputStream().read(glyphWidth) <= 0)
+            {
+                MaLiLib.LOGGER.warn("Failed to read glyph sizes from 'font/glyph_sizes.bin'");
+            }
         }
         catch (IOException ioexception)
         {
@@ -146,5 +155,51 @@ public class TextRendererUtils
         {
             return text;
         }
+    }
+
+    public static void generatePerFontTextureSegmentsFor(String displayString, String originalString, TextStyle style,
+                                                         Consumer<StyledTextSegment> consumer, GlyphSource glyphSource)
+    {
+        List<Glyph> glyphs = new ArrayList<>();
+        ResourceLocation texture = null;
+        final int len = displayString.length();
+        int displayStringStart = 0;
+        int originalStringStart = 0;
+        int stylePrefixLength = originalString.length() - displayString.length();
+        int segmentLength = 0;
+
+        for (int i = 0; i < len; ++i, ++segmentLength)
+        {
+            Glyph glyph = glyphSource.getGlyphFor(displayString.charAt(i));
+
+            // font sheet change, add the segment
+            if (texture != null && glyph.texture != texture)
+            {
+                int endIndex = originalStringStart + stylePrefixLength + segmentLength;
+                String originalStringSegment = originalString.substring(originalStringStart, endIndex);
+                String displayStringSegment = displayString.substring(displayStringStart, i);
+
+                consumer.accept(new StyledTextSegment(texture, style, ImmutableList.copyOf(glyphs), displayStringSegment, originalStringSegment));
+
+                displayStringStart += segmentLength;
+                originalStringStart += segmentLength + stylePrefixLength;
+                stylePrefixLength = 0;
+                segmentLength = 0;
+                glyphs.clear();
+            }
+
+            glyphs.add(glyph);
+            texture = glyph.texture;
+        }
+
+        String displayStringSegment = displayString.substring(displayStringStart, len);
+        String originalStringSegment = originalString.substring(originalStringStart);
+
+        consumer.accept(new StyledTextSegment(texture, style, ImmutableList.copyOf(glyphs), displayStringSegment, originalStringSegment));
+    }
+
+    public interface GlyphSource
+    {
+        Glyph getGlyphFor(char character);
     }
 }

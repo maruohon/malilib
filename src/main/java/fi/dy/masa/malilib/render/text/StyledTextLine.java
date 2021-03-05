@@ -56,12 +56,22 @@ public class StyledTextLine
     }
 
     /**
-     * Returns the string as a completely unparsed raw StyledTextLine
+     * Returns the string as a completely un-parsed raw StyledTextLine with the default TextStyle
      */
     public static StyledTextLine raw(String str)
     {
+        return rawWithStyle(str, TextStyle.DEFAULT);
+    }
+
+    /**
+     * Returns the string as a completely un-parsed raw StyledTextLine,
+     * using the provided TextStyle
+     */
+    public static StyledTextLine rawWithStyle(String str, TextStyle style)
+    {
         List<StyledTextSegment> segments = new ArrayList<>();
-        TextRenderer.INSTANCE.generateTextSegmentsFor(str, str, TextStyle.builder().build(), segments::add);
+        TextRendererUtils.generatePerFontTextureSegmentsFor(str, str, style,
+                                                            segments::add, TextRenderer.INSTANCE::getGlyphFor);
         return new StyledTextLine(ImmutableList.copyOf(segments));
     }
 }

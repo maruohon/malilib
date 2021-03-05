@@ -108,7 +108,11 @@ public class StyledText
             {
                 String displayString = this.displayStringForCurrentSegment.toString();
                 String originalString = this.originalTextStringForCurrentSegment.toString();
-                TextRenderer.INSTANCE.generateTextSegmentsFor(displayString, originalString, style, this.segmentsForCurrentLine::add);
+
+                TextRendererUtils.generatePerFontTextureSegmentsFor(displayString, originalString, style,
+                                                                    this.segmentsForCurrentLine::add,
+                                                                    TextRenderer.INSTANCE::getGlyphFor);
+
                 this.displayStringForCurrentSegment = new StringBuilder();
                 this.originalTextStringForCurrentSegment = new StringBuilder();
             }

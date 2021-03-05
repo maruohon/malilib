@@ -5,13 +5,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
-import java.util.function.Consumer;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
-import com.google.common.collect.ImmutableList;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -164,7 +162,7 @@ public class TextRenderer implements IResourceManagerReloadListener
         return width;
     }
 
-    protected Glyph getGlyphFor(char c)
+    public Glyph getGlyphFor(char c)
     {
         Glyph glyph = this.glyphs.get(c);
 
@@ -194,46 +192,6 @@ public class TextRenderer implements IResourceManagerReloadListener
         }
 
         return glyph;
-    }
-
-    public void generateTextSegmentsFor(String displayString, String originalString, TextStyle style, Consumer<StyledTextSegment> consumer)
-    {
-        List<Glyph> glyphs = new ArrayList<>();
-        final int len = displayString.length();
-        ResourceLocation texture = null;
-        int displayStringStart = 0;
-        int originalStringStart = 0;
-        int stylePrefixLength = originalString.length() - displayString.length();
-        int segmentLength = 0;
-
-        for (int i = 0; i < len; ++i, ++segmentLength)
-        {
-            Glyph glyph = this.getGlyphFor(displayString.charAt(i));
-
-            // font sheet change, add the segment
-            if (texture != null && glyph.texture != texture)
-            {
-                int endIndex = originalStringStart + stylePrefixLength + segmentLength;
-                String originalStringSegment = originalString.substring(originalStringStart, endIndex);
-                String displayStringSegment = displayString.substring(displayStringStart, i);
-
-                consumer.accept(new StyledTextSegment(texture, style, ImmutableList.copyOf(glyphs), displayStringSegment, originalStringSegment));
-
-                displayStringStart += segmentLength;
-                originalStringStart += segmentLength + stylePrefixLength;
-                stylePrefixLength = 0;
-                segmentLength = 0;
-                glyphs.clear();
-            }
-
-            glyphs.add(glyph);
-            texture = glyph.texture;
-        }
-
-        String displayStringSegment = displayString.substring(displayStringStart, len);
-        String originalStringSegment = originalString.substring(originalStringStart);
-
-        consumer.accept(new StyledTextSegment(texture, style, ImmutableList.copyOf(glyphs), displayStringSegment, originalStringSegment));
     }
 
     public List<Glyph> getRandomizedGlyphsFromSameTexture(ResourceLocation texture, List<Glyph> originalGlyphs)

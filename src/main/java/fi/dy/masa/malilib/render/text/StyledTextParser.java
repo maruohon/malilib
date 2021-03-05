@@ -162,7 +162,7 @@ public class StyledTextParser
         else if (reader.startsWith("rst>") && state) // negated reset state is not valid
         {
             originalStr = reader.subStringWithLength(originalPos, baseLength + 3);
-            token = new StyleChangeToken((b, v) -> b.resetEverything(), false, originalStr);
+            token = new StyleChangeToken((b, v) -> b.resetAll(), false, originalStr);
         }
         // color reset
         else if (state == false && (reader.startsWith("c>") || reader.startsWith("csh>")))

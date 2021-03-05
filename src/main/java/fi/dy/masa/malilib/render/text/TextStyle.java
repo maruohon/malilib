@@ -7,6 +7,8 @@ import fi.dy.masa.malilib.util.data.Color4f;
 
 public class TextStyle
 {
+    public static final TextStyle DEFAULT = new TextStyle(null, false, false, false);
+
     public final boolean bold;
     public final boolean italic;
     public final boolean underline;
@@ -138,7 +140,7 @@ public class TextStyle
             this.shadow = old.shadow;
         }
 
-        public Builder resetEverything()
+        public Builder resetAll()
         {
             this.shadowColor = null;
             this.gradient = null;
@@ -147,6 +149,10 @@ public class TextStyle
             return this;
         }
 
+        /**
+         * Resets all the styles that the vanilla text renderer supports and has formatting codes for:
+         * color, bold, italic, underline, strike-through, random/obfuscated
+         */
         public Builder resetVanillaStyles()
         {
             this.color = null;
@@ -212,6 +218,11 @@ public class TextStyle
             return this;
         }
 
+        /**
+         * Creates a TextStyle instance of the current style settings in the Builder.
+         * This does not have side effects, and the Builder can be further used/modified and built again.
+         * @return
+         */
         public TextStyle build()
         {
             return new TextStyle(this.color, this.bold, this.italic, this.underline, this.strikeThrough, this.random,
