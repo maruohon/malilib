@@ -49,10 +49,36 @@ public class StyledTextLine
         return this.segments.hashCode();
     }
 
+    /**
+     * Creates a styled text line of the provided raw string.
+     * If the string has line breaks, the separate lines will be joined
+     * and the line breaks will be replaced by the string '\n'.
+     */
     public static StyledTextLine of(String str)
     {
         StyledText text = StyledText.of(str);
-        return text.lines.size() > 0 ? text.lines.get(0) : EMPTY;
+        final int size = text.lines.size();
+
+        if (size == 1)
+        {
+            return text.lines.get(0);
+        }
+        else if (size > 1)
+        {
+            List<StyledTextSegment> segments = new ArrayList<>();
+            String lineBreak = "\\n";
+
+            for (StyledTextLine line : text.lines)
+            {
+                segments.addAll(line.segments);
+                TextRendererUtils.generatePerFontTextureSegmentsFor(lineBreak, lineBreak, TextStyle.DEFAULT,
+                                                                    segments::add, TextRenderer.INSTANCE::getGlyphFor);
+            }
+
+            return new StyledTextLine(ImmutableList.copyOf(segments));
+        }
+
+        return EMPTY;
     }
 
     /**
