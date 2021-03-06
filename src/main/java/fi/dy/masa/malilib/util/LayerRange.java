@@ -4,21 +4,21 @@ import javax.annotation.Nullable;
 import org.apache.commons.lang3.tuple.Pair;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import fi.dy.masa.malilib.gui.GuiBase;
-import fi.dy.masa.malilib.interfaces.IRangeChangeListener;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Direction.Axis;
 import net.minecraft.util.math.MathHelper;
+import fi.dy.masa.malilib.gui.GuiBase;
+import fi.dy.masa.malilib.interfaces.IRangeChangeListener;
 
 public class LayerRange
 {
     public static final int WORLD_HORIZONTAL_SIZE_MAX =  30000000;
     public static final int WORLD_HORIZONTAL_SIZE_MIN = -30000000;
-    public static final int WORLD_VERTICAL_SIZE_MAX = 255;
-    public static final int WORLD_VERTICAL_SIZE_MIN = 0;
+    public static final int WORLD_VERTICAL_SIZE_MAX = 383; // TODO 1.17
+    public static final int WORLD_VERTICAL_SIZE_MIN = -64;
 
     protected final IRangeChangeListener refresher;
     protected LayerMode layerMode = LayerMode.ALL;

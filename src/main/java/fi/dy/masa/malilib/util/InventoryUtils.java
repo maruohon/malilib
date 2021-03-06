@@ -278,7 +278,7 @@ public class InventoryUtils
 
                 for (int i = 0; i < count; ++i)
                 {
-                    ItemStack stack = ItemStack.fromTag(tagList.getCompound(i));
+                    ItemStack stack = ItemStack.fromNbt(tagList.getCompound(i));
 
                     if (stack.isEmpty() == false)
                     {
@@ -336,7 +336,7 @@ public class InventoryUtils
                 for (int i = 0; i < count; ++i)
                 {
                     CompoundTag tag = tagList.getCompound(i);
-                    ItemStack stack = ItemStack.fromTag(tag);
+                    ItemStack stack = ItemStack.fromNbt(tag);
                     int slot = tag.getByte("Slot");
 
                     if (slot >= 0 && slot < items.size() && stack.isEmpty() == false)
