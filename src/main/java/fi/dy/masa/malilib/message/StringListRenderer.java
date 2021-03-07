@@ -19,7 +19,7 @@ import fi.dy.masa.malilib.util.data.LeftRight;
 
 public class StringListRenderer extends BaseWidget
 {
-    protected final List<String> originalStrings = new ArrayList<>();
+    protected final List<StyledTextLine> originalTextLines = new ArrayList<>();
     protected final List<StyledTextLine> processedLinesClamped = new ArrayList<>();
     protected final List<StyledTextLine> processedLinesFull = new ArrayList<>();
     protected final TextRenderSettings textSettingsNormal = new TextRenderSettings();
@@ -27,6 +27,7 @@ public class StringListRenderer extends BaseWidget
     protected HorizontalAlignment horizontalAlignment = HorizontalAlignment.LEFT;
     protected LineClamper lineClamper;
     protected boolean hasClampedContent;
+    protected int lineHeight;
     protected int clampedTextWidth;
     protected int totalTextWidth;
     protected int clampedHeight;
@@ -36,6 +37,7 @@ public class StringListRenderer extends BaseWidget
     {
         super(0, 0, 0, 0);
 
+        this.lineHeight = TextRenderer.INSTANCE.getFontHeight() + 2;
         this.textSettingsNormal.setTextColor(0xFFC0C0C0).setUseFontShadow(true);
         this.textSettingsHover.setTextColor(0xFFE0E0E0).setUseFontShadow(true);
         this.lineClamper = this::clampLineToWidth;
@@ -69,6 +71,12 @@ public class StringListRenderer extends BaseWidget
     public void setHoveredTextSettings(TextRenderSettings settings)
     {
         this.textSettingsHover.setFrom(settings);
+    }
+
+    public StringListRenderer setLineHeight(int lineHeight)
+    {
+        this.lineHeight = lineHeight;
+        return this;
     }
 
     public StringListRenderer setNormalTextColor(int color)
@@ -121,7 +129,7 @@ public class StringListRenderer extends BaseWidget
      */
     public void clearText()
     {
-        this.originalStrings.clear();
+        this.originalTextLines.clear();
         this.clearProcessedText();
     }
 
@@ -155,53 +163,82 @@ public class StringListRenderer extends BaseWidget
         }
     }
 
+    public void addLine(String translationKey, Object... args)
+    {
+        String translated = StringUtils.translate(translationKey, args);
+        this.parseAndAddLine(translated);
+    }
+
+    protected void parseAndAddLine(String translated)
+    {
+        this.addStyledText(StyledText.of(translated));
+    }
+
+    public void setStyledText(StyledText text)
+    {
+        this.clearText();
+        this.setStyledTextLines(text.lines);
+    }
+
+    public void addStyledText(StyledText text)
+    {
+        for (StyledTextLine line : text.lines)
+        {
+            this.addStyledTextLine(line);
+        }
+    }
+
+    public void setStyledTextLines(List<StyledTextLine> lines)
+    {
+        this.clearText();
+
+        for (StyledTextLine line : lines)
+        {
+            this.addStyledTextLine(line);
+        }
+    }
+
+    public void addStyledTextLine(StyledTextLine line)
+    {
+        this.originalTextLines.add(line);
+        this.clampAndAddTextLine(line);
+    }
+
     public String clampLineToWidth(String line, int maxWidth)
     {
         return StringUtils.clampTextToRenderLength(line, maxWidth, LeftRight.RIGHT, "...");
     }
 
-    public void addLine(String translationKey, Object... args)
+    protected void clampAndAddTextLine(StyledTextLine line)
     {
-        String translated = StringUtils.translate(translationKey, args);
-        this.originalStrings.add(translated);
-        this.splitAndAddLine(translated);
-    }
+        String fullLineText = line.displayText;
+        StyledTextLine clampedLine = line;
+        int lineWidth = line.renderWidth;
+        int lineHeight = this.fontHeight + 1;
+        this.totalHeight += this.processedLinesFull.size() > 0 ? lineHeight + 1 : lineHeight;
+        this.totalTextWidth = Math.max(this.totalTextWidth, lineWidth);
+        this.processedLinesFull.add(line);
 
-    protected void splitAndAddLine(String translated)
-    {
-        StyledText text = StyledText.of(translated);
-
-        for (StyledTextLine fullLine : text.lines)
+        if (this.hasMaxWidth && lineWidth > this.maxWidth)
         {
-            String fullLineText = fullLine.displayText;
-            StyledTextLine clampedLine = fullLine;
-            int lineWidth = fullLine.renderWidth;
-            int lineHeight = this.fontHeight + 1;
-            this.totalHeight += this.processedLinesFull.size() > 0 ? lineHeight + 1 : lineHeight;
-            this.totalTextWidth = Math.max(this.totalTextWidth, lineWidth);
-            this.processedLinesFull.add(fullLine);
+            // TODO this needs style preserving clamping
+            String clampedLineText = this.lineClamper.clampLineToWidth(fullLineText, this.maxWidth);
+            boolean gotClamped = clampedLineText.equals(fullLineText) == false;
 
-            if (this.hasMaxWidth && lineWidth > this.maxWidth)
+            if (gotClamped)
             {
-                // TODO this needs style preserving clamping
-                String clampedLineText = this.lineClamper.clampLineToWidth(fullLineText, this.maxWidth);
-                boolean gotClamped = clampedLineText.equals(fullLineText) == false;
-
-                if (gotClamped)
-                {
-                    clampedLine = StyledTextLine.of(clampedLineText);
-                    lineWidth = clampedLine.renderWidth;
-                    this.hasClampedContent = true;
-                }
+                clampedLine = StyledTextLine.of(clampedLineText);
+                lineWidth = clampedLine.renderWidth;
+                this.hasClampedContent = true;
             }
+        }
 
-            this.clampedTextWidth = Math.max(this.clampedTextWidth, lineWidth);
+        this.clampedTextWidth = Math.max(this.clampedTextWidth, lineWidth);
 
-            if (this.hasMaxHeight == false || this.totalHeight <= this.maxHeight)
-            {
-                this.processedLinesClamped.add(clampedLine);
-                this.clampedHeight = this.totalHeight;
-            }
+        if (this.hasMaxHeight == false || this.totalHeight <= this.maxHeight)
+        {
+            this.processedLinesClamped.add(clampedLine);
+            this.clampedHeight = this.totalHeight;
         }
 
         if (this.hasMaxHeight)
@@ -214,9 +251,9 @@ public class StringListRenderer extends BaseWidget
     {
         this.clearProcessedText();
 
-        for (String translated : this.originalStrings)
+        for (StyledTextLine line : this.originalTextLines)
         {
-            this.splitAndAddLine(translated);
+            this.clampAndAddTextLine(line);
         }
     }
 
@@ -228,9 +265,7 @@ public class StringListRenderer extends BaseWidget
         boolean renderBackground = hovered ? this.textSettingsHover.useBackground : this.textSettingsNormal.useBackground;
         int maxTextWidth = hovered ? this.totalTextWidth : this.clampedTextWidth;
         int color = hovered ? this.textSettingsHover.textColor : this.textSettingsNormal.textColor;
-        int fontHeight = TextRenderer.INSTANCE.getFontHeight();
-        int lineHeight = fontHeight + 2;
-        int usedHeight = fontHeight;
+        int usedHeight = TextRenderer.INSTANCE.getFontHeight();
         List<StyledTextLine> lines = hovered ? this.processedLinesFull : this.processedLinesClamped;
 
         if (renderBackground)
@@ -259,8 +294,8 @@ public class StringListRenderer extends BaseWidget
             }
 
             TextRenderer.INSTANCE.renderLineToBuffer(lineX, y, z, color, shadow, line);
-            y += lineHeight;
-            usedHeight += lineHeight;
+            y += this.lineHeight;
+            usedHeight += this.lineHeight;
         }
 
         TextRenderer.INSTANCE.renderBuffers();

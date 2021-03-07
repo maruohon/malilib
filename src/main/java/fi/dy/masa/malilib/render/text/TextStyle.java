@@ -46,6 +46,32 @@ public class TextStyle
         this.gradient = gradient;
     }
 
+    /**
+     * Use the provided color as the color and/or the shadow color,
+     * if they are not set already.
+     */
+    public TextStyle withFallbackColor(Color4f color)
+    {
+        if (this.color == null || this.shadowColor == null)
+        {
+            Builder builder = builder();
+
+            if (this.color == null)
+            {
+                builder.withColor(color);
+            }
+
+            if (this.shadowColor == null)
+            {
+                builder.withShadowColor(getDefaultShadowColor(this.color != null ? this.color : color));
+            }
+
+            return builder.build();
+        }
+
+        return this;
+    }
+
     public static TextStyle normal(Color4f color)
     {
         return new TextStyle(color, false, false, false);

@@ -39,7 +39,7 @@ public class ConfirmActionScreen extends BaseScreen implements TaskCompletionLis
 
         int x = this.x + 10;
 
-        this.addWidget(new LabelWidget(x, this.y + 20, this.textColor, this.messageLines));
+        this.addWidget(new LabelWidget(x, this.y + 20, -1, -1, this.textColor, this.messageLines));
 
         int buttonWidth = 10 + StringUtils.getMaxStringRenderWidth(StringUtils::translate, "malilib.gui.button.colored.confirm", "malilib.gui.button.colored.cancel");
         int y = this.y + this.screenHeight - 26;

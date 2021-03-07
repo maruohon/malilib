@@ -5,6 +5,8 @@ import java.util.List;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 import fi.dy.masa.malilib.message.StringListRenderer;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.render.text.StyledText;
+import fi.dy.masa.malilib.render.text.StyledTextLine;
 
 public class LabelWidget extends BackgroundWidget
 {
@@ -14,14 +16,17 @@ public class LabelWidget extends BackgroundWidget
     protected int totalHeight;
     protected int totalWidth;
 
-    public LabelWidget(int x, int y, int textColor, String... text)
+    public LabelWidget(int x, int y, int width, int height, int textColor)
     {
-        this(x, y, -1, -1, textColor, Arrays.asList(text));
+        super(x, y, width, height);
+
+        this.stringListRenderer.setNormalTextColor(textColor);
+        this.stringListRenderer.setHoverTextColor(textColor);
     }
 
-    public LabelWidget(int x, int y, int textColor, List<String> lines)
+    public LabelWidget(int x, int y, int textColor, String... text)
     {
-        this(x, y, -1, -1, textColor, lines);
+        this(x, y, -1, -1, textColor, text);
     }
 
     public LabelWidget(int x, int y, int width, int height, int textColor, String... text)
@@ -31,12 +36,16 @@ public class LabelWidget extends BackgroundWidget
 
     public LabelWidget(int x, int y, int width, int height, int textColor, List<String> lines)
     {
-        super(x, y, width, height);
+        this(x, y, width, height, textColor);
 
-        this.stringListRenderer.setNormalTextColor(textColor);
-        this.stringListRenderer.setHoverTextColor(textColor);
         this.setText(lines);
-        this.updateStringRendererSize();
+    }
+
+    public LabelWidget(int x, int y, int width, int height, int textColor, StyledTextLine... lines)
+    {
+        this(x, y, width, height, textColor);
+
+        this.setStyledTextLines(Arrays.asList(lines));
     }
 
     public int getTotalWidth()
@@ -75,6 +84,27 @@ public class LabelWidget extends BackgroundWidget
         return this;
     }
 
+    public LabelWidget setStyledText(StyledText text)
+    {
+        this.stringListRenderer.setStyledText(text);
+        this.updateLabelWidgetSize();
+        return this;
+    }
+
+    public LabelWidget setStyledTextLines(List<StyledTextLine> lines)
+    {
+        this.stringListRenderer.setStyledTextLines(lines);
+        this.updateLabelWidgetSize();
+        return this;
+    }
+
+    public LabelWidget addStyledTextLine(StyledTextLine line)
+    {
+        this.stringListRenderer.addStyledTextLine(line);
+        this.updateLabelWidgetSize();
+        return this;
+    }
+
     public LabelWidget setVisible(boolean visible)
     {
         this.visible = visible;
@@ -93,6 +123,12 @@ public class LabelWidget extends BackgroundWidget
         return this;
     }
 
+    public LabelWidget setLineHeight(int lineHeight)
+    {
+        this.stringListRenderer.setLineHeight(lineHeight);
+        return this;
+    }
+    
     public LabelWidget setNormalTextColor(int color)
     {
         this.stringListRenderer.setNormalTextColor(color);
