@@ -9,6 +9,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import org.apache.commons.lang3.tuple.Pair;
 import com.google.common.collect.ImmutableList;
+import fi.dy.masa.malilib.util.StringUtils;
 
 public class OrderedStringListFactory
 {
@@ -37,6 +38,18 @@ public class OrderedStringListFactory
     public boolean isEmpty()
     {
         return this.sortedProviders.isEmpty();
+    }
+
+    public void translateAndAddLines(List<String> translationKeys)
+    {
+        List<String> translated = new ArrayList<>();
+
+        for (String key : translationKeys)
+        {
+            translated.add(StringUtils.translate(key));
+        }
+
+        this.addLines(translated);
     }
 
     /**

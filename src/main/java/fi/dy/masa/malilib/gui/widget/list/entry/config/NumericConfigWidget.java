@@ -9,6 +9,7 @@ import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.SliderWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
+import fi.dy.masa.malilib.util.StringUtils;
 
 public abstract class NumericConfigWidget<TYPE, CFG extends BaseConfig<TYPE> & SliderConfig> extends BaseConfigOptionWidget<TYPE, CFG>
 {
@@ -28,7 +29,7 @@ public abstract class NumericConfigWidget<TYPE, CFG extends BaseConfig<TYPE> & S
         this.sliderWidget.setHoverStringProvider("lock", config::getLockAndOverrideMessages);
 
         this.sliderToggleButton = new GenericButton(x, y, () -> this.config.isSliderActive() ? DefaultIcons.BTN_TXTFIELD : DefaultIcons.BTN_SLIDER);
-        this.sliderToggleButton.getHoverInfoFactory().setStringListProvider("slider", this::getSliderMessages);
+        this.sliderToggleButton.setHoverStringProvider("slider", this::getSliderMessages);
 
         this.sliderToggleButton.setActionListener((btn, mbtn) -> {
             this.config.toggleSliderActive();
@@ -87,11 +88,11 @@ public abstract class NumericConfigWidget<TYPE, CFG extends BaseConfig<TYPE> & S
     {
         if (this.config.allowSlider() == false)
         {
-            return ImmutableList.of("malilib.gui.button.hover.text_field_slider_toggle",
-                                    "malilib.gui.button.hover.text_field_slider_toggle.not_allowed");
+            return ImmutableList.of(StringUtils.translate("malilib.gui.button.hover.text_field_slider_toggle"),
+                                    StringUtils.translate("malilib.gui.button.hover.text_field_slider_toggle.not_allowed"));
         }
 
-        return ImmutableList.of("malilib.gui.button.hover.text_field_slider_toggle");
+        return ImmutableList.of(StringUtils.translate("malilib.gui.button.hover.text_field_slider_toggle"));
     }
 
     protected abstract String getCurrentValueAsString();

@@ -34,9 +34,12 @@ public class BlackWhiteListEditScreen<TYPE> extends BaseConfigGroupEditScreen
         this.typeConfig = new OptionListConfig<>("malilib.gui.label.black_white_list_edit.type",
                                                  config.getDefaultValue().getListType(), ListType.VALUES);
         this.typeConfig.setValue(bwList.getListType());
+        this.typeConfig.setCommentTranslationKey(null);
 
         this.blackListConfig = bwList.getBlackList().copy();
+        this.blackListConfig.setCommentTranslationKey(null);
         this.whiteListConfig = bwList.getWhiteList().copy();
+        this.whiteListConfig.setCommentTranslationKey(null);
 
         this.configs.add(this.typeConfig);
         this.configs.add(this.blackListConfig);

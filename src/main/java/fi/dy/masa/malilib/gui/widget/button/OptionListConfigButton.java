@@ -28,7 +28,7 @@ public class OptionListConfigButton extends GenericButton
 
         this.config = config;
         this.prefixTranslationKey = prefixTranslationKey;
-        this.hoverInfoFactory.setStringListProvider("list_preview", this::getOptionListPreviewHoverString, 100);
+        this.setHoverStringProvider("list_preview", this::getOptionListPreviewHoverString, 100);
 
         this.setActionListener((btn, mbtn) -> this.cycleValue(mbtn));
         this.updateDisplayString();

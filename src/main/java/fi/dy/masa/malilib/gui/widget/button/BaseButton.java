@@ -46,7 +46,7 @@ public abstract class BaseButton extends BackgroundWidget
 
         this.actionListener = actionListener;
         this.hoverHelp = ImmutableList.of(StringUtils.translate("malilib.gui.button.hover.hold_shift_for_info"));
-        this.hoverInfoFactory.setStringListProvider("full_label", this::getFullLabelHoverString, 99);
+        this.setHoverStringProvider("full_label", this::getFullLabelHoverString, 99);
 
         this.setDisplayString(StringUtils.translate(translationKey));
         this.updateWidth();

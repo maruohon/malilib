@@ -25,7 +25,7 @@ public class ColorIndicatorWidget extends InteractableWidget
         this.config = config;
         this.valueConsumer = consumer;
         String color = Color4f.getHexColorString(this.config.getIntegerValue());
-        this.addHoverString("malilib.gui.hover.open_color_editor", color);
+        this.translateAndAddHoverString("malilib.gui.hover.open_color_editor", color);
 
         this.setClickListener(this::openColorEditorScreen);
     }

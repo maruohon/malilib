@@ -45,7 +45,7 @@ public class RadioButtonWidget<T extends Enum<T>> extends InteractableWidget
 
         if (hoverInfoKey != null)
         {
-            this.addHoverString(hoverInfoKey);
+            this.translateAndAddHoverString(hoverInfoKey);
         }
     }
 

@@ -28,11 +28,11 @@ public class CheckBoxWidget extends InteractableWidget
         this.setHeight(Math.max(this.fontHeight, iconChecked.getHeight()));
     }
 
-    public CheckBoxWidget(int x, int y, MultiIcon iconUnchecked, MultiIcon iconChecked, String text, @Nullable String hoverInfo)
+    public CheckBoxWidget(int x, int y, MultiIcon iconUnchecked, MultiIcon iconChecked, String text, String hoverInfoKey)
     {
         this(x, y, iconUnchecked, iconChecked, text);
 
-        this.addHoverStrings(hoverInfo);
+        this.translateAndAddHoverStrings(hoverInfoKey);
     }
 
     public void setListener(@Nullable SelectionListener<CheckBoxWidget> listener)

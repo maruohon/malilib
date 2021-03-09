@@ -36,7 +36,7 @@ public class KeyBindConfigButton extends GenericButton
 
         this.host = host;
         this.keyBind = keyBind;
-        this.hoverInfoFactory.setStringListProvider("overlap_info", this::getKeyBindHoverStrings);
+        this.setHoverStringProvider("overlap_info", this::getKeyBindHoverStrings);
 
         this.setShouldReceiveOutsideClicks(true);
         this.updateDisplayString();

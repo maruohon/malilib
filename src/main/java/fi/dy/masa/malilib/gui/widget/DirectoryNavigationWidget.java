@@ -57,17 +57,17 @@ public class DirectoryNavigationWidget extends SearchBarWidget
         this.rootDirDisplayName = rootDirDisplayName;
 
         this.buttonRoot = GenericButton.createIconOnly(x, y, iconProvider.getIcon(FileBrowserIconType.ROOT));
-        this.buttonRoot.addHoverStrings("malilib.gui.button.hover.directory_widget.root");
+        this.buttonRoot.translateAndAddHoverStrings("malilib.gui.button.hover.directory_widget.root");
         this.buttonRoot.setActionListener((btn, mbtn) -> { if (this.searchOpen == false) this.navigator.switchToRootDirectory(); });
         x += this.buttonRoot.getWidth() + 2;
 
         this.buttonUp = GenericButton.createIconOnly(x, y, iconProvider.getIcon(FileBrowserIconType.UP));
-        this.buttonUp.addHoverStrings("malilib.gui.button.hover.directory_widget.up");
+        this.buttonUp.translateAndAddHoverStrings("malilib.gui.button.hover.directory_widget.up");
         this.buttonUp.setActionListener((btn, mbtn) -> { if (this.searchOpen == false) this.navigator.switchToParentDirectory(); });
         x += this.buttonUp.getWidth() + 2;
 
         this.buttonCreateDir = GenericButton.createIconOnly(x, y, iconProvider.getIcon(FileBrowserIconType.CREATE_DIR));
-        this.buttonCreateDir.addHoverStrings("malilib.gui.button.hover.directory_widget.create_directory");
+        this.buttonCreateDir.translateAndAddHoverStrings("malilib.gui.button.hover.directory_widget.create_directory");
         this.buttonCreateDir.setActionListener((btn, mbtn) -> {
             if (this.searchOpen == false)
             {

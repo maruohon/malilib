@@ -26,7 +26,7 @@ public class BlackWhiteListEditButton extends GenericButton
         this.config = config;
         this.dialogHandler = dialogHandler;
         this.saveListener = saveListener;
-        this.hoverInfoFactory.setStringListProvider("value_preview", this::generateHoverStrings);
+        this.setHoverStringProvider("value_preview", this::generateHoverStrings);
 
         this.setActionListener((btn, mbtn) -> this.openEditScreen());
         this.updateDisplayString();

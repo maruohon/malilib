@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
@@ -187,24 +188,51 @@ public abstract class InteractableWidget extends BaseWidget
         return this.hoverInfoFactory;
     }
 
+    /**
+     * Replaces the default hover strings with the provided strings.<br>
+     * <b>Note:</b> The strings should be localized already.
+     */
     public void setHoverStrings(List<String> hoverStrings)
     {
         this.hoverInfoFactory.setLines("_default", hoverStrings);
     }
 
+    /**
+     * <b>Note:</b> The strings should be localized already.
+     */
     public void addHoverStrings(String... hoverStrings)
     {
         this.addHoverStrings(Arrays.asList(hoverStrings));
     }
 
+    /**
+     * <b>Note:</b> The strings should be localized already.
+     */
     public void addHoverStrings(List<String> hoverStrings)
     {
         this.hoverInfoFactory.addLines(hoverStrings);
     }
 
+    public void translateAndAddHoverString(String translationKey, Object... args)
+    {
+        String str = StringUtils.translate(translationKey, args);
+        this.hoverInfoFactory.addLines(Arrays.asList(str.split("\\n")));
+    }
+
+    public void translateAndAddHoverStrings(String... hoverStrings)
+    {
+        this.translateAndAddHoverStrings(Arrays.asList(hoverStrings));
+    }
+
+    public void translateAndAddHoverStrings(List<String> hoverStrings)
+    {
+        this.hoverInfoFactory.translateAndAddLines(hoverStrings);
+    }
+
     /**
-     * Adds the provided line supplier, by using the provided key.
-     * The key can be used to remove just these lines later.
+     * Adds the provided hover string supplier, by using the provided key.<br>
+     * The key can be used to remove this string provider later.<br>
+     * <b>Note:</b> The returned strings should be localized already.
      */
     public void setHoverStringProvider(String key, Supplier<List<String>> supplier)
     {
@@ -212,18 +240,23 @@ public abstract class InteractableWidget extends BaseWidget
     }
 
     /**
-     * Adds the provided line supplier, by using the provided key.
-     * The key can be used to remove just these lines later.
+     * Adds the provided hover string supplier, by using the provided key.<br>
+     * The key can be used to remove this string provider later.<br>
+     * <b>Note:</b> The returned strings should be localized already.
      */
     public void setHoverStringProvider(String key, Supplier<List<String>> supplier, int priority)
     {
         this.hoverInfoFactory.setStringListProvider(key, supplier, priority);
     }
 
-    public void addHoverString(String translationKey, Object... args)
+    /**
+     * Adds the provided hover string supplier, by using the provided key.<br>
+     * The key can be used to remove this string provider later.<br>
+     * <b>Note:</b> The returned strings should be localized already.
+     */
+    public void setHoverStringProvider(String key, Function<List<String>, List<String>> supplier, int priority)
     {
-        String str = StringUtils.translate(translationKey, args);
-        this.addHoverStrings(str.split("\\n"));
+        this.hoverInfoFactory.setStringListProvider(key, supplier, priority);
     }
 
     public void updateHoverStrings()

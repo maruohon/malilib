@@ -33,7 +33,7 @@ public class KeybindSettingsWidget extends InteractableWidget
         this.keyBind = keyBind;
         this.keyBindName = keyBindName;
         this.dialogHandler = dialogHandler;
-        this.hoverInfoFactory.setStringListProvider("hover_info", this::rebuildHoverStrings);
+        this.setHoverStringProvider("hover_info", this::rebuildHoverStrings);
     }
 
     @Override

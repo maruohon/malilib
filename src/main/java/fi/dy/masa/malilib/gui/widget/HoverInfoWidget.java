@@ -6,6 +6,6 @@ public class HoverInfoWidget extends InteractableWidget
     {
         super(x, y, width, height);
 
-        this.addHoverString(key, args);
+        this.translateAndAddHoverString(key, args);
     }
 }

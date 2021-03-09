@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.gui.widget.button;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
@@ -60,7 +60,9 @@ public class GenericButton extends BaseButton
 
         if (hoverStrings.length > 0)
         {
-            this.setHoverStringProvider("_default", () -> Arrays.asList(hoverStrings));
+            ArrayList<String> hoverStringList = new ArrayList<>();
+            for (String key : hoverStrings) { hoverStringList.add(StringUtils.translate(key)); }
+            this.setHoverStringProvider("_default", () -> hoverStringList);
         }
     }
 

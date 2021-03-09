@@ -19,11 +19,11 @@ public abstract class BaseConfig<T> implements ConfigOption<T>
     protected final List<String> oldNames = new ArrayList<>();
     protected String nameTranslationKey;
     protected String prettyNameTranslationKey;
-    protected String commentTranslationKey;
-    protected Object[] commentArgs;
     protected String modId = "?";
     protected String modName = "?";
     protected boolean locked;
+    protected Object[] commentArgs;
+    @Nullable protected String commentTranslationKey;
     @Nullable protected ValueChangeCallback<T> valueChangeCallback;
     @Nullable protected ValueLoadCallback<T> valueLoadCallback;
     @Nullable protected EventListener labelClickHandler;
@@ -41,7 +41,7 @@ public abstract class BaseConfig<T> implements ConfigOption<T>
     }
 
     public BaseConfig(String name, String nameTranslationKey, String prettyNameTranslationKey,
-                      String commentTranslationKey, Object... commentArgs)
+                      @Nullable String commentTranslationKey, Object... commentArgs)
     {
         this.name = name;
         this.nameTranslationKey = nameTranslationKey;
@@ -116,7 +116,7 @@ public abstract class BaseConfig<T> implements ConfigOption<T>
             this.prettyNameTranslationKey = this.createPrettyNameTranslationKey(modId);
         }
 
-        if (this.commentTranslationKey.equals(this.name))
+        if (this.commentTranslationKey != null && this.commentTranslationKey.equals(this.name))
         {
             this.commentTranslationKey = this.createCommentTranslationKey(modId);
         }
@@ -162,7 +162,7 @@ public abstract class BaseConfig<T> implements ConfigOption<T>
         return this;
     }
 
-    public BaseConfig<T> setCommentTranslationKey(String key)
+    public BaseConfig<T> setCommentTranslationKey(@Nullable String key)
     {
         this.commentTranslationKey = key;
         return this;
@@ -203,7 +203,12 @@ public abstract class BaseConfig<T> implements ConfigOption<T>
     @Nullable
     public String getComment()
     {
-        return StringUtils.translate(this.commentTranslationKey, this.commentArgs);
+        if (this.commentTranslationKey != null)
+        {
+            return StringUtils.translate(this.commentTranslationKey, this.commentArgs);
+        }
+
+        return null;
     }
 
     public BaseConfig<T> setCommentArgs(Object... args)
