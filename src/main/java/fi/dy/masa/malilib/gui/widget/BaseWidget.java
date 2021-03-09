@@ -4,15 +4,16 @@ import org.lwjgl.opengl.GL11;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
+import fi.dy.masa.malilib.gui.position.EdgeInt;
 import fi.dy.masa.malilib.render.RectangleRenderer;
 import fi.dy.masa.malilib.render.RenderUtils;
-import fi.dy.masa.malilib.render.text.TextRenderFunction;
+import fi.dy.masa.malilib.render.text.StyledTextLine;
+import fi.dy.masa.malilib.render.text.TextRenderer;
 import fi.dy.masa.malilib.util.data.Color4f;
 
 public class BaseWidget
@@ -24,22 +25,23 @@ public class BaseWidget
     private static int lastDebugOutlineColorHue;
 
     protected final Minecraft mc;
-    protected final FontRenderer textRenderer;
+    protected final TextRenderer textRenderer;
+    protected final EdgeInt padding = new EdgeInt();
     protected final int fontHeight;
     private int x;
     private int y;
-    private float zLevel;
-    private int xRight;
-    private int width;
     private int height;
-    protected int maxWidth;
-    protected int maxHeight;
+    private int width;
+    private int xRight;
+    private float zLevel;
     private boolean keepOnScreen;
     private boolean rightAlign;
     protected boolean automaticHeight;
     protected boolean automaticWidth;
     protected boolean hasMaxHeight;
     protected boolean hasMaxWidth;
+    protected int maxHeight;
+    protected int maxWidth;
 
     public BaseWidget(int x, int y, int width, int height)
     {
@@ -48,8 +50,9 @@ public class BaseWidget
         this.width = width;
         this.height = height;
         this.mc = Minecraft.getMinecraft();
-        this.textRenderer = this.mc.fontRenderer;
-        this.fontHeight = this.textRenderer.FONT_HEIGHT;
+        this.textRenderer = TextRenderer.INSTANCE;
+        this.fontHeight = this.textRenderer.getFontHeight();
+        this.padding.setChangeListener(this::updateSize);
 
         this.automaticWidth = width < 0;
         this.automaticHeight = height < 0;
@@ -77,6 +80,50 @@ public class BaseWidget
     public final int getBottom()
     {
         return this.getY() + this.getHeight();
+    }
+
+    /**
+     * Returns the start position of any content, basically offsetting
+     * the widget x-position by the left padding.
+     *
+     * @return
+     */
+    protected int getContentStartX()
+    {
+        return this.getX() + this.padding.getLeft();
+    }
+
+    /**
+     * Returns the end position of any content, basically offsetting
+     * the widget right edge x-position by the right padding.
+     *
+     * @return
+     */
+    protected int getContentEndX()
+    {
+        return this.getX() + this.getWidth() - this.padding.getRight() - 1;
+    }
+
+    /**
+     * Returns the start position of any content, basically offsetting
+     * the widget y-position by the top padding.
+     *
+     * @return
+     */
+    protected int getContentStartY()
+    {
+        return this.getY() + this.padding.getTop();
+    }
+
+    /**
+     * Returns the end position of any content, basically offsetting
+     * the widget bottom edge y-position by the bottom padding.
+     *
+     * @return
+     */
+    protected int getContentEndY()
+    {
+        return this.getY() + this.getHeight() - this.padding.getBottom() - 1;
     }
 
     public final void setX(int x)
@@ -146,6 +193,16 @@ public class BaseWidget
         }
     }
 
+    public EdgeInt getPadding()
+    {
+        return this.padding;
+    }
+
+    public void setPadding(EdgeInt padding)
+    {
+        this.padding.setFrom(padding);
+    }
+
     protected void updateHorizontalPositionIfRightAligned()
     {
         if (this.rightAlign)
@@ -163,6 +220,12 @@ public class BaseWidget
 
             this.onPositionChanged(oldX, oldY);
         }
+    }
+
+    public void updateSize()
+    {
+        this.updateWidth();
+        this.updateHeight();
     }
 
     /**
@@ -269,6 +332,11 @@ public class BaseWidget
         return 2;
     }
 
+    public int getFontHeight()
+    {
+        return this.fontHeight;
+    }
+
     protected int getCenteredTextOffsetY()
     {
         return (this.getHeight() - this.fontHeight) / 2 + 1;
@@ -279,61 +347,29 @@ public class BaseWidget
         RenderUtils.bindTexture(texture);
     }
 
-    public int getStringWidth(String text)
+    public int getStringWidth(String str)
     {
-        return this.textRenderer.getStringWidth(text);
+        return this.textRenderer.getStringWidth(str);
     }
 
-    public void drawString(int x, int y, float z, int color, String text)
+    public int getRawStringWidth(String str)
     {
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(0f, 0f, z + 0.05f);
-
-        this.textRenderer.drawString(text, x, y, color);
-
-        GlStateManager.popMatrix();
+        return StyledTextLine.raw(str).renderWidth;
     }
 
-    public void drawCenteredString(int x, int y, float z, int color, String text)
+    public void renderTextLine(int x, int y, float z, int defaultColor, boolean shadow, StyledTextLine text)
     {
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(0f, 0f, z + 0.05f);
-
-        this.textRenderer.drawString(text, x - this.getStringWidth(text) / 2, y, color);
-
-        GlStateManager.popMatrix();
+        this.textRenderer.renderLine(x, y, z, defaultColor, shadow, text);
     }
 
-    public void drawStringWithShadow(int x, int y, float z, int color, String text)
+    /**
+     * Renders a plain string, by converting it to a StyledTextLine.<br>
+     * <b>Note:</b> It's discouraged to use this method, if it's possible to easily
+     * generate and cache the resulting StyledTextLine directly.
+     */
+    public void renderPlainString(int x, int y, float z, int color, boolean shadow, String str)
     {
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(0f, 0f, z + 0.05f);
-
-        this.textRenderer.drawStringWithShadow(text, x, y, color);
-
-        GlStateManager.popMatrix();
-    }
-
-    public void drawCenteredStringWithShadow(int x, int y, float z, int color, String text)
-    {
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(0f, 0f, z + 0.05f);
-
-        this.textRenderer.drawStringWithShadow(text, x - this.getStringWidth(text) / 2f, y, color);
-
-        GlStateManager.popMatrix();
-    }
-
-    public TextRenderFunction getTextRenderer(boolean useTextShadow, boolean centered)
-    {
-        if (centered)
-        {
-            return useTextShadow ? this::drawCenteredStringWithShadow : this::drawCenteredString;
-        }
-        else
-        {
-            return useTextShadow ? this::drawStringWithShadow : this::drawString;
-        }
+        this.textRenderer.renderLine(x, y, z, color, shadow, StyledTextLine.of(str));
     }
 
     public void renderDebug(int mouseX, int mouseY, boolean hovered, boolean renderAll, boolean infoAlways)
@@ -347,6 +383,16 @@ public class BaseWidget
         if (hovered || renderAll)
         {
             renderDebugOutline(x, y, z, w, h, hovered);
+
+            if (this.padding.isEmpty() == false)
+            {
+                int left = this.padding.getLeft();
+                int top = this.padding.getTop();
+                int right = this.padding.getRight();
+                int bottom = this.padding.getBottom();
+
+                renderDebugOutline(x + left, y + top, z, w - left - right, h - top - bottom, false, 0xFFFFFFFF);
+            }
         }
 
         if (hovered || infoAlways)
@@ -362,10 +408,15 @@ public class BaseWidget
         int color = Color4f.getColorFromHue(lastDebugOutlineColorHue);
         lastDebugOutlineColorHue += 40;
 
+        renderDebugOutline(x, y, z, w, h, hovered, color);
+    }
+
+    public static void renderDebugOutline(double x, double y, double z, double w, double h, boolean hovered, int color)
+    {
         float a = (float) (color >> 24 & 255) / 255.0F;
         float r = (float) (color >> 16 & 255) / 255.0F;
         float g = (float) (color >>  8 & 255) / 255.0F;
-        float b = (float) (color & 255) / 255.0F;
+        float b = (float) (color       & 255) / 255.0F;
         float lineWidth = hovered ? 3f : 1.0f;
 
         Tessellator tessellator = Tessellator.getInstance();
@@ -392,7 +443,8 @@ public class BaseWidget
 
     public static void addDebugText(int mouseX, int mouseY, int x, int y, double z, int w, int h, String text)
     {
-        String str = String.format("§7x: §6%d ... %d§7, y: §6%d ... %d§7, z: §d%.1f§7 w: §a%d§7, h: §a%d§7 - §3%s", x, x + w - 1, y, y + h - 1, z, w, h, text);
+        String str = String.format("§7x: §6%d ... %d§7, y: §6%d ... %d§7, z: §d%.1f§7 w: §a%d§7, h: §a%d§7 - §3%s",
+                                   x, x + w - 1, y, y + h - 1, z, w, h, text);
         int posY = mouseY - 2;
 
         Long posLong = (long) posY << 32 | (long) mouseX;

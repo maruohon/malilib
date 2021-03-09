@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import net.minecraft.client.Minecraft;
+import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.event.ClientTickHandler;
 import fi.dy.masa.malilib.event.PostGameOverlayRenderer;
 import fi.dy.masa.malilib.gui.position.ScreenLocation;
+import fi.dy.masa.malilib.gui.widget.BaseWidget;
 
 public class InfoOverlay implements PostGameOverlayRenderer, ClientTickHandler
 {
@@ -19,6 +21,18 @@ public class InfoOverlay implements PostGameOverlayRenderer, ClientTickHandler
     public InfoArea getOrCreateInfoArea(ScreenLocation location)
     {
         return this.infoAreas.computeIfAbsent(location, (loc) -> new InfoArea(loc, this::notifyChange));
+    }
+
+    @Override
+    public void onPostGameOverlayRender(Minecraft mc, float partialTicks)
+    {
+        this.render();
+    }
+
+    @Override
+    public void onClientTick(Minecraft mc)
+    {
+        this.tick(mc);
     }
 
     /**
@@ -67,14 +81,28 @@ public class InfoOverlay implements PostGameOverlayRenderer, ClientTickHandler
      */
     public void render()
     {
+        if (MaLiLibConfigs.Debug.INFO_OVERLAY_DEBUG.getBooleanValue())
+        {
+            for (InfoArea area : this.infoAreas.values())
+            {
+                area.renderDebug();
+            }
+        }
+
         for (InfoRendererWidget widget : this.enabledInfoWidgets)
         {
             widget.render();
         }
+
+        if (MaLiLibConfigs.Debug.INFO_OVERLAY_DEBUG.getBooleanValue())
+        {
+            BaseWidget.renderDebugTextAndClear();
+        }
     }
 
     /**
-     * Convenience method to get or create a text hud at the given screen location
+     * Convenience method to get or create a text hud at the given screen location,
+     * from the default InfoOverlay instance.
      * @param location
      * @return
      */
@@ -91,17 +119,5 @@ public class InfoOverlay implements PostGameOverlayRenderer, ClientTickHandler
         }
 
         return (StringListRendererWidget) widget;
-    }
-
-    @Override
-    public void onPostGameOverlayRender(Minecraft mc, float partialTicks)
-    {
-        this.render();
-    }
-
-    @Override
-    public void onClientTick(Minecraft mc)
-    {
-        this.tick(mc);
     }
 }

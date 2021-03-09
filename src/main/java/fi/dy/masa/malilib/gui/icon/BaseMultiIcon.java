@@ -58,6 +58,7 @@ public class BaseMultiIcon extends BaseIcon implements MultiIcon
         int v = this.getVariantV(variantIndex);
 
         RenderUtils.color(1f, 1f, 1f, 1f);
+        RenderUtils.setupBlend();
         RenderUtils.bindTexture(this.getTexture());
         RenderUtils.renderTexturedRectangle(x, y, u, v, this.w, this.h, zLevel);
     }

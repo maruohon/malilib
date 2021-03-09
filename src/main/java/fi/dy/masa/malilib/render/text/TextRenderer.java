@@ -344,6 +344,7 @@ public class TextRenderer implements IResourceManagerReloadListener
             int segmentX = x;
             Color4f defaultColor4f = Color4f.fromColor(defaultColor);
             RenderUtils.color(1f, 1f, 1f, 1f);
+            RenderUtils.setupBlend();
 
             for (StyledTextSegment segment : line.segments)
             {

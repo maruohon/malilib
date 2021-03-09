@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.position.ScreenLocation;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
+import fi.dy.masa.malilib.gui.widget.BaseWidget;
 import fi.dy.masa.malilib.listener.EventListener;
 
 public class InfoArea
@@ -129,8 +130,8 @@ public class InfoArea
 
         for (InfoRendererWidget widget : this.enabledInfoWidgetsList)
         {
-            width = Math.max(width, widget.getPaddedWidth());
-            height += widget.getPaddedHeight();
+            width = Math.max(width, widget.getWidth());
+            height += widget.getHeight();
         }
 
         this.width = width;
@@ -147,15 +148,24 @@ public class InfoArea
      */
     public void updatePositions()
     {
-        this.x = this.location.getStartX(this.width, this.viewportWidthSupplier.getAsInt(), this.offsetX);
-        this.y = this.location.getStartY(this.height, this.viewportHeightSupplier.getAsInt(), this.offsetY);
+        int viewportWidth = this.viewportWidthSupplier.getAsInt();
+        int viewportHeight = this.viewportHeightSupplier.getAsInt();
+
+        this.x = this.location.getStartX(this.width, viewportWidth, this.offsetX);
+        this.y = this.location.getStartY(this.height, viewportHeight, this.offsetY);
 
         int y = this.y;
 
         for (InfoRendererWidget widget : this.enabledInfoWidgetsList)
         {
-            widget.setPosition(this.x, y);
-            y += widget.getPaddedHeight();
+            int x = this.location.getStartX(widget.getWidth(), viewportWidth, this.offsetX);
+            widget.setPosition(x, y);
+            y += widget.getHeight();
         }
+    }
+
+    public void renderDebug()
+    {
+        BaseWidget.renderDebugOutline(this.x, this.y, 0, this.width, this.height, false);
     }
 }

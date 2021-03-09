@@ -9,6 +9,7 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.widget.BackgroundWidget;
+import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.LeftRight;
 
@@ -19,6 +20,7 @@ public abstract class BaseButton extends BackgroundWidget
     protected final ImmutableList<String> hoverHelp;
     protected String displayString;
     protected String fullDisplayString;
+    protected StyledTextLine styledDisplayString;
     protected boolean canScrollToClick;
     protected boolean enabled = true;
     protected boolean hoverInfoRequiresShift;
@@ -42,12 +44,11 @@ public abstract class BaseButton extends BackgroundWidget
     {
         super(x, y, width, height);
 
-        this.displayString = StringUtils.translate(translationKey);
-        this.fullDisplayString = this.displayString;
         this.actionListener = actionListener;
         this.hoverHelp = ImmutableList.of(StringUtils.translate("malilib.gui.button.hover.hold_shift_for_info"));
         this.hoverInfoFactory.setStringListProvider("full_label", this::getFullLabelHoverString, 99);
 
+        this.setDisplayString(StringUtils.translate(translationKey));
         this.updateWidth();
     }
 
@@ -101,6 +102,7 @@ public abstract class BaseButton extends BackgroundWidget
     {
         this.displayString = text;
         this.fullDisplayString = text;
+        this.styledDisplayString = StyledTextLine.of(text);
         return this;
     }
 
@@ -201,6 +203,7 @@ public abstract class BaseButton extends BackgroundWidget
         }
 
         this.displayString = str;
+        this.styledDisplayString = StyledTextLine.of(str);
 
         this.updateHoverStrings();
         this.updateWidth();

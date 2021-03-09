@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.message;
+package fi.dy.masa.malilib.render.text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,12 +8,9 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
+import fi.dy.masa.malilib.gui.position.VerticalAlignment;
 import fi.dy.masa.malilib.gui.widget.BaseWidget;
 import fi.dy.masa.malilib.render.RenderUtils;
-import fi.dy.masa.malilib.render.text.StyledText;
-import fi.dy.masa.malilib.render.text.StyledTextLine;
-import fi.dy.masa.malilib.render.text.TextRenderSettings;
-import fi.dy.masa.malilib.render.text.TextRenderer;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.LeftRight;
 
@@ -25,21 +22,22 @@ public class StringListRenderer extends BaseWidget
     protected final TextRenderSettings textSettingsNormal = new TextRenderSettings();
     protected final TextRenderSettings textSettingsHover = new TextRenderSettings();
     protected HorizontalAlignment horizontalAlignment = HorizontalAlignment.LEFT;
+    protected VerticalAlignment verticalAlignment = VerticalAlignment.TOP;
     protected LineClamper lineClamper;
     protected boolean hasClampedContent;
     protected int lineHeight;
-    protected int clampedTextWidth;
     protected int totalTextWidth;
+    protected int totalTextHeight;
+    protected int clampedTextWidth;
     protected int clampedHeight;
-    protected int totalHeight;
 
     public StringListRenderer()
     {
         super(0, 0, 0, 0);
 
-        this.lineHeight = TextRenderer.INSTANCE.getFontHeight() + 2;
-        this.textSettingsNormal.setTextColor(0xFFC0C0C0).setUseFontShadow(true);
-        this.textSettingsHover.setTextColor(0xFFE0E0E0).setUseFontShadow(true);
+        this.lineHeight = TextRenderer.INSTANCE.getFontHeight() + 1;
+        this.textSettingsNormal.setTextColor(0xFFC0C0C0).setUseTextShadow(true);
+        this.textSettingsHover.setTextColor(0xFFE0E0E0).setUseTextShadow(true);
         this.lineClamper = this::clampLineToWidth;
     }
 
@@ -53,9 +51,21 @@ public class StringListRenderer extends BaseWidget
         return this.totalTextWidth;
     }
 
-    public int getTotalHeight()
+    public int getTotalRenderWidth()
     {
-        return this.totalHeight;
+        int bgOffset = this.textSettingsNormal.useBackground ? 3 : 0;
+        return this.totalTextWidth + bgOffset;
+    }
+
+    public int getTotalTextHeight()
+    {
+        return this.totalTextHeight;
+    }
+
+    public int getTotalRenderHeight()
+    {
+        int bgOffset = this.textSettingsNormal.useBackground ? 1 : 0;
+        return this.totalTextHeight + bgOffset;
     }
 
     public int getClampedHeight()
@@ -97,9 +107,15 @@ public class StringListRenderer extends BaseWidget
         return this;
     }
 
+    public StringListRenderer setVerticalAlignment(VerticalAlignment verticalAlignment)
+    {
+        this.verticalAlignment = verticalAlignment;
+        return this;
+    }
+
     public StringListRenderer setUseTextShadow(boolean useShadow)
     {
-        this.textSettingsNormal.setUseFontShadow(useShadow);
+        this.textSettingsNormal.setUseTextShadow(useShadow);
         return this;
     }
 
@@ -144,7 +160,7 @@ public class StringListRenderer extends BaseWidget
         this.totalTextWidth = 0;
         this.clampedTextWidth = 0;
         this.clampedHeight = 0;
-        this.totalHeight = 0;
+        this.totalTextHeight = 0;
     }
 
     public void setText(String translationKey, Object... args)
@@ -214,8 +230,7 @@ public class StringListRenderer extends BaseWidget
         String fullLineText = line.displayText;
         StyledTextLine clampedLine = line;
         int lineWidth = line.renderWidth;
-        int lineHeight = this.fontHeight + 1;
-        this.totalHeight += this.processedLinesFull.size() > 0 ? lineHeight + 1 : lineHeight;
+        this.totalTextHeight += this.processedLinesFull.size() > 0 ? this.lineHeight : TextRenderer.INSTANCE.getFontHeight();
         this.totalTextWidth = Math.max(this.totalTextWidth, lineWidth);
         this.processedLinesFull.add(line);
 
@@ -235,15 +250,15 @@ public class StringListRenderer extends BaseWidget
 
         this.clampedTextWidth = Math.max(this.clampedTextWidth, lineWidth);
 
-        if (this.hasMaxHeight == false || this.totalHeight <= this.maxHeight)
+        if (this.hasMaxHeight == false || this.totalTextHeight <= this.maxHeight)
         {
             this.processedLinesClamped.add(clampedLine);
-            this.clampedHeight = this.totalHeight;
+            this.clampedHeight = this.totalTextHeight;
         }
 
         if (this.hasMaxHeight)
         {
-            this.hasClampedContent |= this.totalHeight > this.maxHeight;
+            this.hasClampedContent |= this.totalTextHeight > this.maxHeight;
         }
     }
 
@@ -257,80 +272,92 @@ public class StringListRenderer extends BaseWidget
         }
     }
 
+    /**
+     * Render the text aligned to the given position.<br>
+     * The alignment behavior depends on the set horizontal and vertical alignment values.<br>
+     * With HorizontalAlignment.LEFT and VerticalAlignment.TOP, the x and y coordinates are
+     * the top left corner of the string list.<br>
+     * With HorizontalAlignment.RIGHT, the x coordinate is the right edge.<br>
+     * With HorizontalAlignment.CENTER, the x coordinate is the middle of the string list. etc.
+     */
     public void renderAt(int x, int y, float z, boolean hovered)
     {
+        List<StyledTextLine> lines = hovered ? this.processedLinesFull : this.processedLinesClamped;
         boolean rightAlign = this.horizontalAlignment == HorizontalAlignment.RIGHT;
         boolean center = this.horizontalAlignment == HorizontalAlignment.CENTER;
-        boolean shadow = this.textSettingsNormal.useFontShadow;
+        boolean shadow = hovered ? this.textSettingsHover.useTextShadow : this.textSettingsNormal.useTextShadow;
         boolean renderBackground = hovered ? this.textSettingsHover.useBackground : this.textSettingsNormal.useBackground;
-        int maxTextWidth = hovered ? this.totalTextWidth : this.clampedTextWidth;
+        boolean checkHeight = hovered == false && this.hasMaxHeight;
         int color = hovered ? this.textSettingsHover.textColor : this.textSettingsNormal.textColor;
         int usedHeight = TextRenderer.INSTANCE.getFontHeight();
-        List<StyledTextLine> lines = hovered ? this.processedLinesFull : this.processedLinesClamped;
+        int yOffset = this.verticalAlignment.getYStartOffset(this.getTotalRenderHeight());
+        int textLineX = x + 2;
+        int textLineY = y + yOffset + 1;
 
         if (renderBackground)
         {
-            this.renderTextBackgrounds(x, y, z, lines, hovered);
+            int bgColor = hovered ? this.textSettingsHover.backgroundColor : this.textSettingsNormal.backgroundColor;
+            this.renderTextBackgrounds(x, y + yOffset, z, lines, checkHeight, bgColor);
         }
 
         TextRenderer.INSTANCE.startBuffers();
 
         for (StyledTextLine line : lines)
         {
-            if (hovered == false && this.hasMaxHeight && usedHeight > this.maxHeight)
+            if (checkHeight && usedHeight > this.maxHeight)
             {
                 break;
             }
 
-            int lineX = x;
-
             if (rightAlign)
             {
-                lineX = x + maxTextWidth - line.renderWidth;
+                textLineX = x - line.renderWidth;
             }
             else if (center)
             {
-                lineX = x + maxTextWidth / 2;
+                textLineX = x - line.renderWidth / 2 + 1;
             }
 
-            TextRenderer.INSTANCE.renderLineToBuffer(lineX, y, z, color, shadow, line);
-            y += this.lineHeight;
+            TextRenderer.INSTANCE.renderLineToBuffer(textLineX, textLineY, z, color, shadow, line);
+            textLineY += this.lineHeight;
             usedHeight += this.lineHeight;
         }
 
         TextRenderer.INSTANCE.renderBuffers();
     }
 
-    protected void renderTextBackgrounds(int x, int y, float z, List<StyledTextLine> lines, boolean hovered)
+    protected void renderTextBackgrounds(int x, int y, float z, List<StyledTextLine> lines, boolean checkHeight, int bgColor)
     {
+        boolean rightAlign = this.horizontalAlignment == HorizontalAlignment.RIGHT;
+        boolean center = this.horizontalAlignment == HorizontalAlignment.CENTER;
+        int usedHeight = TextRenderer.INSTANCE.getFontHeight();
+        int lineX = x;
+
         RenderUtils.setupBlend();
         GlStateManager.disableTexture2D();
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
 
-        boolean rightAlign = this.horizontalAlignment == HorizontalAlignment.RIGHT;
-        boolean center = this.horizontalAlignment == HorizontalAlignment.CENTER;
-        int maxTextWidth = hovered ? this.totalTextWidth : this.clampedTextWidth;
-        int lineHeight = this.fontHeight + 2;
-        int bgColor = hovered ? this.textSettingsHover.backgroundColor : this.textSettingsNormal.backgroundColor;
-        int lineY = y - 2;
-
         for (StyledTextLine line : lines)
         {
-            int lineX = x - 2;
+            if (checkHeight && usedHeight > this.maxHeight)
+            {
+                break;
+            }
 
             if (rightAlign)
             {
-                lineX = x + maxTextWidth - line.renderWidth - 2;
+                lineX = x - line.renderWidth - 2;
             }
             else if (center)
             {
-                lineX = x + maxTextWidth / 2 - line.renderWidth / 2 - 2;
+                lineX = x - line.renderWidth / 2 - 1;
             }
 
-            RenderUtils.renderRectangleBatched(lineX, lineY, z, line.renderWidth + 3, lineHeight, bgColor, buffer);
-            lineY += lineHeight;
+            RenderUtils.renderRectangleBatched(lineX, y, z, line.renderWidth + 3, this.lineHeight, bgColor, buffer);
+            y += this.lineHeight;
+            usedHeight += this.lineHeight;
         }
 
         tessellator.draw();

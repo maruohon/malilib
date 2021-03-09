@@ -14,6 +14,7 @@ import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.entry.SelectionListener;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.LeftRight;
 
@@ -34,6 +35,7 @@ public class DropDownListWidget<T> extends ContainerWidget
     protected final ScrollBarWidget scrollBar;
     protected final BaseTextFieldWidget searchField;
     protected final SelectionBarWidget<T> selectionBarWidget;
+    protected final StyledTextLine searchTipText;
     @Nullable protected final Function<T, String> stringFactory;
     @Nullable protected final IconWidgetFactory<T> iconWidgetFactory;
 
@@ -91,6 +93,7 @@ public class DropDownListWidget<T> extends ContainerWidget
         this.entries = entries;
         this.stringFactory = stringFactory;
         this.iconWidgetFactory = iconWidgetFactory;
+        this.searchTipText = StyledTextLine.of(StringUtils.translate("malilib.gui.tip.dropdown.type_to_search"));
 
         int v = Math.min(maxVisibleEntries, entries.size());
         v = Math.min(v, maxHeight / height);
@@ -696,10 +699,9 @@ public class DropDownListWidget<T> extends ContainerWidget
 
             if (this.searchOpen == false && MaLiLibConfigs.Info.DROP_DOWN_SEARCH_TIP.getBooleanValue())
             {
-                String text = StringUtils.translate("malilib.gui.tip.dropdown.type_to_search");
                 int tx = this.searchField.getX();
                 int ty = this.searchField.getY();
-                int sw = this.getStringWidth(text);
+                int sw = this.searchTipText.renderWidth;
                 int right = tx + sw + 10;
                 int windowWidth = GuiUtils.getScaledWindowWidth();
 
@@ -709,7 +711,7 @@ public class DropDownListWidget<T> extends ContainerWidget
                 }
 
                 RenderUtils.renderOutlinedBox(tx, ty, sw + 10, 16, 0xFF000000, 0xFFFFFF20, z);
-                this.drawString(tx + 4, ty + 4, z + 0.1f, 0xFFFFC000, text);
+                this.renderTextLine(tx + 4, ty + 4, z + 0.1f, 0xFFFFC000, false, this.searchTipText);
             }
         }
 
@@ -720,7 +722,8 @@ public class DropDownListWidget<T> extends ContainerWidget
     {
         protected final DropDownListWidget<T> dropdownWidget;
         protected final IconWidget openCloseIconWidget;
-        protected String displayString;
+        protected StyledTextLine displayStringFull;
+        protected StyledTextLine displayStringClamped;
         @Nullable protected InteractableWidget iconWidget;
         @Nullable protected String openStateHoverText;
         protected int displayStringWidth;
@@ -745,10 +748,10 @@ public class DropDownListWidget<T> extends ContainerWidget
                 this.nonTextWidth += this.iconWidget.getWidth() + 4;
             }
 
-            this.setDisplayString(dropDown.getCurrentEntryDisplayString());
             this.setBackgroundEnabled(true);
             this.setBorderWidth(1);
             this.setClickListener(dropDown::toggleOpen);
+            this.setDisplayString(dropDown.getCurrentEntryDisplayString());
         }
 
         protected boolean shouldRenderExpandedBackground(int mouseX, int mouseY, boolean isActiveGui)
@@ -759,8 +762,26 @@ public class DropDownListWidget<T> extends ContainerWidget
 
         protected void setDisplayString(String text)
         {
-            this.displayString = text;
-            this.displayStringWidth = this.getStringWidth(text);
+            this.displayStringFull = StyledTextLine.of(text);
+            this.displayStringWidth = this.displayStringFull.renderWidth;
+
+            int width = this.getWidth();
+            int usableWidth = width - this.openCloseIconWidget.getWidth() - 6;
+
+            if (this.iconWidget != null)
+            {
+                usableWidth -= this.iconWidget.getWidth() + 4;
+            }
+
+            if (this.displayStringWidth > usableWidth)
+            {
+                text = StringUtils.clampTextToRenderLength(text, usableWidth, LeftRight.RIGHT, " ...");
+                this.displayStringClamped = StyledTextLine.of(text);
+            }
+            else
+            {
+                this.displayStringClamped = this.displayStringFull;
+            }
         }
 
         @Override
@@ -821,11 +842,9 @@ public class DropDownListWidget<T> extends ContainerWidget
 
             super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hovered);
 
-            String text = this.displayString;
-            int width = this.getWidth();
+            StyledTextLine text = this.isMouseOver(mouseX, mouseY) ? this.displayStringFull : this.displayStringClamped;
             int tx = x + 4;
             int ty = y + (this.getHeight() - this.fontHeight) / 2 + 1;
-            int ocw = this.openCloseIconWidget.getWidth() + 4;
 
             if (this.iconWidget != null)
             {
@@ -833,14 +852,8 @@ public class DropDownListWidget<T> extends ContainerWidget
                 tx = this.iconWidget.getRight() + 4 + xDiff;
             }
 
-            if ((tx + this.displayStringWidth + ocw) > (x + width) && this.isMouseOver(mouseX, mouseY) == false)
-            {
-                int maxWidth = width - (tx - x) - ocw - 2;
-                text = StringUtils.clampTextToRenderLength(text, maxWidth, LeftRight.RIGHT, " ...");
-            }
-
             int textColor = dropDown.enabled ? this.textColor : 0xFF505050;
-            this.drawString(tx, ty, z, textColor, text);
+            this.renderTextLine(tx, ty, z, textColor, false, text);
         }
 
         @Override
@@ -900,7 +913,8 @@ public class DropDownListWidget<T> extends ContainerWidget
         protected final DropDownListWidget<T> dropDown;
         @Nullable protected InteractableWidget iconWidget;
         protected final int totalWidth;
-        protected String displayString;
+        protected StyledTextLine displayStringFull;
+        protected StyledTextLine displayStringClamped;
         protected int displayStringWidth;
         protected int textColor;
 
@@ -935,7 +949,21 @@ public class DropDownListWidget<T> extends ContainerWidget
 
         protected void setDisplayString(String text)
         {
-            this.displayString = text;
+            int width = this.getWidth();
+            int usableWidth = (this.iconWidget != null ? width - this.iconWidget.getWidth() - 4 : width) - 2;
+            this.displayStringFull = StyledTextLine.of(text);
+
+            if (this.displayStringFull.renderWidth > usableWidth)
+            {
+                // TODO this needs a style aware clamping method
+                text = StringUtils.clampTextToRenderLength(this.displayStringFull.displayText, usableWidth, LeftRight.RIGHT, " ...");
+                this.displayStringClamped = StyledTextLine.of(text);
+            }
+            else
+            {
+                this.displayStringClamped = this.displayStringFull;
+            }
+
             this.displayStringWidth = this.getStringWidth(text);
         }
 
@@ -983,18 +1011,11 @@ public class DropDownListWidget<T> extends ContainerWidget
         {
             super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hovered);
 
-            String text = this.displayString;
-            int width = this.getWidth();
+            StyledTextLine text = this.isMouseOver(mouseX, mouseY) ? this.displayStringFull : this.displayStringClamped;
             int tx = this.iconWidget != null ? this.iconWidget.getRight() + 4 : x + 4;
             int ty = y + (this.getHeight() - this.fontHeight) / 2 + 1;
 
-            if ((tx + this.displayStringWidth) > (x + width) && this.isMouseOver(mouseX, mouseY) == false)
-            {
-                int maxWidth = width - (tx - x) - 2;
-                text = StringUtils.clampTextToRenderLength(text, maxWidth, LeftRight.RIGHT, " ...");
-            }
-
-            this.drawStringWithShadow(tx, ty, z, this.textColor, text);
+            this.renderTextLine(tx, ty, z, this.textColor, true, text);
         }
     }
 

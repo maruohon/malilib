@@ -15,6 +15,7 @@ malilib.config.comment.rememberconfigtabscrollpositions=Remember the config scre
 malilib.config.comment.guidebug=When enabled, all GUI widgets will draw their outlines\nand when hovered also their position and dimension\ninfo and the widget class name.\nIf a key is set for GUI Debug Key, then that key must be held\nfor any of the debug rendering to happen.
 malilib.config.comment.guidebugall=If true, then all widgets will render the debug outline,\notherwise only the hovered widget will render it
 malilib.config.comment.guidebuginfoalways=When enabled, the debug position and dimensions text\nis always rendered, even without hovering the widgets
+malilib.config.comment.infooverlaydebug=When enabled, the Info Overlay widgets and\nInfoAreas render debug outlines
 malilib.config.comment.keybinddebugging=When enabled, key presses and held keys are\nprinted to the game console (and the action bar, if enabled)
 malilib.config.comment.keybinddebuggingingame=If enabled, then the messages from 'Keybind Debugging'\nare also printed to the in-game action bar
 
@@ -43,6 +44,7 @@ malilib.config.name.rememberconfigtabscrollpositions=Remember Config Screen Scro
 malilib.config.name.guidebug=GUI Debug
 malilib.config.name.guidebugall=GUI Debug All
 malilib.config.name.guidebuginfoalways=GUI Debug Info Always
+malilib.config.name.infooverlaydebug=Info Overlay Debug
 malilib.config.name.keybinddebugging=KeyBind Debugging
 malilib.config.name.keybinddebuggingingame=KeyBind Debug In Action Bar
 

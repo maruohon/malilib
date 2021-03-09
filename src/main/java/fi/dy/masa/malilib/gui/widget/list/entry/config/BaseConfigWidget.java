@@ -3,6 +3,8 @@ package fi.dy.masa.malilib.gui.widget.list.entry.config;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nullable;
+import com.google.common.collect.Lists;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.config.option.FileConfig;
 import fi.dy.masa.malilib.gui.BaseScreen;
@@ -13,16 +15,20 @@ import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.entry.BaseDataListEntryWidget;
 import fi.dy.masa.malilib.listener.EventListener;
+import fi.dy.masa.malilib.render.text.StyledTextLine;
+import fi.dy.masa.malilib.render.text.TextStyle;
 import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.StringUtils;
+import fi.dy.masa.malilib.util.data.Color4f;
 
 public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataListEntryWidget<CFG>
 {
     protected final CFG config;
     protected final ConfigWidgetContext ctx;
     protected final GenericButton resetButton;
-    protected final LabelWidget configNameLabelWidget;
-    protected final LabelWidget configOwnerLabelWidget;
+    protected final LabelWidget configOwnerAndNameLabelWidget;
+    protected final StyledTextLine nameText;
+    @Nullable protected final StyledTextLine ownerText;
 
     public BaseConfigWidget(int x, int y, int width, int height, int listIndex,
                             int originalListIndex, CFG config, ConfigWidgetContext ctx)
@@ -32,8 +38,8 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
         this.config = config;
         this.ctx = ctx;
 
-        String nameLabel = this.data.getDisplayName();
-        String ownerLabel = this.ctx.getListWidget().getModNameAndCategoryPrefix(originalListIndex);
+        String nameLabel = config.getDisplayName();
+        @Nullable String ownerLabel = this.ctx.getListWidget().getModNameAndCategoryPrefix(originalListIndex);
 
         if (ctx.getNestingLevel() > 0)
         {
@@ -45,21 +51,20 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
             }
         }
 
-        boolean showOwner = this.ctx.getListWidget().isShowingOptionsFromOtherCategories();
-        this.configOwnerLabelWidget = new LabelWidget(x, y + 2, 0xFF707070, ownerLabel != null ? ownerLabel : "");
-        this.configNameLabelWidget = new LabelWidget(x, y, this.getMaxLabelWidth(), height, 0xFFFFFFFF, nameLabel);
-        this.configNameLabelWidget.getPadding().setTop(showOwner ? 12 : 7);
+        this.ownerText = ownerLabel != null ? StyledTextLine.rawWithStyle(ownerLabel, TextStyle.normal(Color4f.fromColor(0xFF686868))) : null;
+        this.nameText = StyledTextLine.of(nameLabel);
+        this.configOwnerAndNameLabelWidget = new LabelWidget(x, y, this.getMaxLabelWidth(), height, 0xFFF0F0F0);
 
         EventListener clickHandler = config.getLabelClickHandler();
-        String comment = config.getComment();
         List<String> comments = new ArrayList<>();
+        String comment = config.getComment();
 
         if (clickHandler != null)
         {
             comments.add(StringUtils.translate("malilib.gui.label.config.hover.click_for_more_information"));
-            this.configNameLabelWidget.setClickListener(clickHandler);
-            this.configNameLabelWidget.setHoveredBorderColor(0xFF15D6F0);
-            this.configNameLabelWidget.setHoveredBorderWidth(1);
+            this.configOwnerAndNameLabelWidget.setClickListener(clickHandler);
+            this.configOwnerAndNameLabelWidget.setHoveredBorderColor(0xFF15D6F0);
+            this.configOwnerAndNameLabelWidget.setHoveredBorderWidth(1);
         }
 
         if (comment != null)
@@ -67,8 +72,8 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
             comments.add(comment);
         }
 
-        this.configNameLabelWidget.addHoverStrings(comments);
-        this.resetButton = new GenericButton(x, y, -1, 20, StringUtils.translate("malilib.gui.button.reset.caps"));
+        this.configOwnerAndNameLabelWidget.addHoverStrings(comments);
+        this.resetButton = new GenericButton(x, y, -1, 20, "malilib.gui.button.reset.caps");
 
         this.setBackgroundColor(this.isOdd ? 0x70606060 : 0x70909090);
         this.setBackgroundEnabled(true);
@@ -79,12 +84,7 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
     {
         this.clearWidgets();
 
-        if (this.ctx.getListWidget().isShowingOptionsFromOtherCategories())
-        {
-            this.addWidget(this.configOwnerLabelWidget);
-        }
-
-        this.addWidget(this.configNameLabelWidget);
+        this.addWidget(this.configOwnerAndNameLabelWidget);
     }
 
     @Override
@@ -93,8 +93,20 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
         super.updateSubWidgetsToGeometryChanges();
 
         int nesting = this.getNestingOffset(this.ctx.getNestingLevel());
-        this.configOwnerLabelWidget.getPadding().setLeft(nesting + 4);
-        this.configNameLabelWidget.getPadding().setLeft(nesting + 4);
+        boolean showOwner = this.ctx.getListWidget().isShowingOptionsFromOtherCategories();
+
+        this.configOwnerAndNameLabelWidget.getPadding().setLeft(nesting + 4);
+
+        if (showOwner && this.ownerText != null)
+        {
+            this.configOwnerAndNameLabelWidget.getPadding().setTop(1);
+            this.configOwnerAndNameLabelWidget.setStyledTextLines(Lists.newArrayList(this.ownerText, this.nameText));
+        }
+        else
+        {
+            this.configOwnerAndNameLabelWidget.getPadding().setTop(6);
+            this.configOwnerAndNameLabelWidget.setStyledTextLines(Lists.newArrayList(this.nameText));
+        }
     }
 
     protected int getElementWidth()

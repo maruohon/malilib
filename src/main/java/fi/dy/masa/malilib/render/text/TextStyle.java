@@ -72,6 +72,22 @@ public class TextStyle
         return this;
     }
 
+    @Override
+    public String toString()
+    {
+        return "TextStyle{" +
+                       "bold=" + this.bold +
+                       ", italic=" + this.italic +
+                       ", underline=" + this.underline +
+                       ", strikeThrough=" + this.strikeThrough +
+                       ", random=" + this.random +
+                       ", color=" + this.color +
+                       ", shadowColor=" + this.shadowColor +
+                       ", gradient=" + this.gradient +
+                       ", shadow=" + this.shadow +
+                       '}';
+    }
+
     public static TextStyle normal(Color4f color)
     {
         return new TextStyle(color, false, false, false);

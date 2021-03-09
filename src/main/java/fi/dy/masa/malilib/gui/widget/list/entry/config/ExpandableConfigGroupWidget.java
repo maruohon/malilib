@@ -67,12 +67,10 @@ public class ExpandableConfigGroupWidget extends BaseConfigWidget<ExpandableConf
         this.arrowIconWidget.setPosition(this.getElementsStartPosition(), y + (height - this.arrowIconWidget.getHeight()) / 2);
 
         int tx = this.plusMinusIconWidget.getRight();
-        this.configNameLabelWidget.setX(tx);
-        this.configOwnerLabelWidget.setX(tx);
+        this.configOwnerAndNameLabelWidget.setX(tx);
 
         int labelLeftPadding = this.getNestingOffset(this.ctx.getNestingLevel()) + 2;
-        this.configNameLabelWidget.getPadding().setLeft(labelLeftPadding);
-        this.configOwnerLabelWidget.getPadding().setLeft(labelLeftPadding);
+        this.configOwnerAndNameLabelWidget.getPadding().setLeft(labelLeftPadding);
     }
 
     @Override

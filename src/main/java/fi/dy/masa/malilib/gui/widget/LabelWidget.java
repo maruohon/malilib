@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.gui.widget;
 import java.util.Arrays;
 import java.util.List;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
-import fi.dy.masa.malilib.message.StringListRenderer;
+import fi.dy.masa.malilib.render.text.StringListRenderer;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.text.StyledText;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
@@ -193,7 +193,7 @@ public class LabelWidget extends BackgroundWidget
     @Override
     public void updateHeight()
     {
-        this.totalHeight = this.stringListRenderer.getTotalHeight() + this.padding.getTop() + this.padding.getBottom();
+        this.totalHeight = this.stringListRenderer.getTotalTextHeight() + this.padding.getTop() + this.padding.getBottom();
         this.totalHeight += this.getActiveBorderWidth() * 2;
 
         if (this.automaticHeight)

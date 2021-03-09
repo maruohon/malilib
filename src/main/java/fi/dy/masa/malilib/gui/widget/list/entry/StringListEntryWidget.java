@@ -2,13 +2,18 @@ package fi.dy.masa.malilib.gui.widget.list.entry;
 
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.render.text.StyledTextLine;
 
 public class StringListEntryWidget extends BaseDataListEntryWidget<String>
 {
+    protected final StyledTextLine string;
+
     public StringListEntryWidget(int x, int y, int width, int height, int listIndex, int originalListIndex,
                                  String entry, DataListWidget<String> listWidget)
     {
         super(x, y, width, height, listIndex, originalListIndex, entry, listWidget);
+
+        this.string = StyledTextLine.raw(entry);
     }
 
     @Override
@@ -34,7 +39,7 @@ public class StringListEntryWidget extends BaseDataListEntryWidget<String>
             RenderUtils.renderRectangle(x, y, width, height, 0xA0303030, z);
         }
 
-        this.drawStringWithShadow(x + 2, y + this.getCenteredTextOffsetY(), z, 0xFFFFFFFF, this.data);
+        this.renderTextLine(x + 2, y + this.getCenteredTextOffsetY(), z, 0xFFFFFFFF, true, this.string);
 
         super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hoveredWidgetId, selected);
     }

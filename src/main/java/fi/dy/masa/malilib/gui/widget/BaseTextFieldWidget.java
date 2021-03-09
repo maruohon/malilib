@@ -18,6 +18,7 @@ import fi.dy.masa.malilib.listener.TextChangeListener;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.message.MessageRenderer;
 import fi.dy.masa.malilib.message.MessageType;
+import fi.dy.masa.malilib.render.text.TextRenderer;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.LeftRight;
 
@@ -530,8 +531,8 @@ public class BaseTextFieldWidget extends BackgroundWidget
         // if the click position is on the right half of the character.
         if (visibleText.length() > textLeftLength)
         {
-            int xPosInChar = relX - this.getStringWidth(textLeftOfCursor);
-            int charWidth = this.getStringWidth(visibleText.substring(textLeftLength, textLeftLength + 1));
+            int xPosInChar = relX - this.getRawStringWidth(textLeftOfCursor);
+            int charWidth = TextRenderer.INSTANCE.getGlyphFor(visibleText.charAt(textLeftLength)).renderWidth;
 
             if (xPosInChar >= charWidth / 2)
             {
@@ -891,7 +892,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
     protected void renderCursor(int x, int y, float z, int color)
     {
         int relIndex = this.cursorPosition - this.visibleText.getStartIndex();
-        color = this.selectionStartPosition != -1 ? 0xFF00D0FF : color;
+        color = this.selectionStartPosition != -1 ? 0xFFFF5000 : color;
 
         if (relIndex >= 0)
         {
@@ -900,8 +901,8 @@ public class BaseTextFieldWidget extends BackgroundWidget
             // The cursor is at the end of the text, use an underscore cursor
             if (this.cursorPosition == this.text.length() && this.selectionStartPosition == -1)
             {
-                int offX = this.getStringWidth(visibleText);
-                this.drawString(x + offX, y + this.getCenteredTextOffsetY(), z, color, "_");
+                int offX = this.visibleText.getStyledText().renderWidth;
+                RenderUtils.renderHorizontalLine(x + offX, y + this.fontHeight + 3, 5, color, z + 0.1f);
             }
             else
             {
@@ -910,7 +911,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
                 int colorTr = (color & 0x00FFFFFF) | 0x50000000;
                 int cursorExtraHeight = 2;
 
-                int offX = this.getStringWidth(visibleText.substring(0, relIndex));
+                int offX = this.getRawStringWidth(visibleText.substring(0, relIndex));
                 int offY = (this.getHeight() - (this.fontHeight + cursorExtraHeight * 2)) / 2;
                 int y1 = y + offY;
                 int y2 = y1 + cursorExtraHeight;
@@ -929,11 +930,10 @@ public class BaseTextFieldWidget extends BackgroundWidget
 
     protected void renderVisibleText(int x, int y, float z, int textColor)
     {
-        String visibleText = this.visibleText.getText();
-
         // A selection exists
         if (this.selectionStartPosition >= 0)
         {
+            String visibleText = this.visibleText.getText();
             int selStart = Math.min(this.cursorPosition, this.selectionStartPosition);
             int selEnd   = Math.max(this.cursorPosition, this.selectionStartPosition);
             int start = this.visibleText.getStartIndex();
@@ -947,24 +947,24 @@ public class BaseTextFieldWidget extends BackgroundWidget
                 if (selStart > start)
                 {
                     String str = visibleText.substring(0, selStart - start);
-                    this.drawString(x, y, z, textColor, str);
-                    x += this.getStringWidth(str);
+                    this.renderPlainString(x, y, z, textColor, false, str);
+                    x += this.getRawStringWidth(str);
                 }
 
                 int p1 = Math.max(0     , selStart - start);
                 int p2 = Math.min(visLen, selEnd - start);
                 String str = visibleText.substring(p1, p2);
-                int selWidth = this.getStringWidth(str);
+                int selWidth = this.getRawStringWidth(str);
 
                 RenderUtils.renderRectangle(x, y - 2, selWidth, this.fontHeight + 3, textColor, z);
-                this.drawString(x, y, z, 0xFF000000, str);
+                this.renderPlainString(x, y, z, 0xFF000000, false, str);
                 x += selWidth;
 
                 // Non-selected text at the start
                 if (selEnd <= end)
                 {
                     str = visibleText.substring(selEnd - start, visLen);
-                    this.drawString(x, y, z, textColor, str);
+                    this.renderPlainString(x, y, z, textColor, false, str);
                 }
 
                 return;
@@ -972,7 +972,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
         }
 
         // No selection
-        this.drawString(x, y, z, textColor, visibleText);
+        this.renderTextLine(x, y, z, textColor, false, this.visibleText.getStyledText());
     }
 
     @Override

@@ -4,6 +4,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.gui.callback.SliderCallback;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.render.text.StyledTextLine;
 
 public class SliderWidget extends InteractableWidget
 {
@@ -97,10 +98,10 @@ public class SliderWidget extends InteractableWidget
         RenderUtils.renderTexturedRectangle(x + 2 + (int) (relPos * usableWidth)    , y,       0, v, s, 20, z);
         RenderUtils.renderTexturedRectangle(x + 2 + (int) (relPos * usableWidth) + s, y, 200 - s, v, s, 20, z);
 
-        String str = this.callback.getFormattedDisplayValue();
-        int tw = this.getStringWidth(str);
+        StyledTextLine text = StyledTextLine.raw(this.callback.getFormattedDisplayValue());
+        int textWidth = text.renderWidth;
         int textColor = this.locked ? 0xFF909090 : 0xFFFFFFA0;
-        this.drawString(x + (width / 2) - tw / 2, y + this.getCenteredTextOffsetY(), z, textColor, str);
+        this.renderTextLine(x + (width / 2) - textWidth / 2, y + this.getCenteredTextOffsetY(), z, textColor, false, text);
 
         RenderUtils.color(1f, 1f, 1f, 1f);
     }

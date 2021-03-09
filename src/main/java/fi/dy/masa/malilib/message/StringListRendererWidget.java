@@ -4,8 +4,11 @@ import java.util.List;
 import java.util.function.Supplier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
+import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.position.ScreenLocation;
+import fi.dy.masa.malilib.gui.position.VerticalAlignment;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.render.text.StringListRenderer;
 import fi.dy.masa.malilib.render.text.TextRenderSettings;
 
 public class StringListRendererWidget extends InfoRendererWidget
@@ -14,6 +17,8 @@ public class StringListRendererWidget extends InfoRendererWidget
     protected final StringListRenderer stringListRenderer = new StringListRenderer();
     protected double scale = 1.0;
     protected boolean dirty;
+    protected int stringListPosX;
+    protected int stringListPosY;
 
     public StringListRendererWidget()
     {
@@ -27,7 +32,7 @@ public class StringListRendererWidget extends InfoRendererWidget
     public void setLines(String key, List<String> lines, int priority)
     {
         this.stringListFactory.setStringListProvider(key, () -> lines, priority);
-        this.dirty = true;
+        this.markDirty();
     }
 
     /**
@@ -39,13 +44,13 @@ public class StringListRendererWidget extends InfoRendererWidget
     public void setStringListProvider(String key, Supplier<List<String>> supplier, int priority)
     {
         this.stringListFactory.setStringListProvider(key, (lines) -> supplier.get(), priority);
-        this.dirty = true;
+        this.markDirty();
     }
 
     public void removeStringListProvider(String key)
     {
         this.stringListFactory.removeStringListProvider(key);
-        this.dirty = true;
+        this.markDirty();
     }
 
     @Override
@@ -53,6 +58,7 @@ public class StringListRendererWidget extends InfoRendererWidget
     {
         super.setLocation(location);
         this.stringListRenderer.setHorizontalAlignment(this.location.horizontalLocation);
+        this.stringListRenderer.setVerticalAlignment(this.location.verticalLocation);
     }
 
     public void setScale(double scale)
@@ -64,6 +70,20 @@ public class StringListRendererWidget extends InfoRendererWidget
     public void setTextSettings(TextRenderSettings settings)
     {
         this.stringListRenderer.setNormalTextSettings(settings);
+    }
+
+    @Override
+    public void updateWidth()
+    {
+        int width = (int) Math.ceil(this.stringListRenderer.getTotalRenderWidth() * this.scale);
+        this.setWidth(width + this.padding.getHorizontalTotalPadding());
+    }
+
+    @Override
+    public void updateHeight()
+    {
+        int height = (int) Math.ceil(this.stringListRenderer.getTotalRenderHeight() * this.scale);
+        this.setHeight(height + this.padding.getVerticalTotalPadding());
     }
 
     /**
@@ -84,16 +104,65 @@ public class StringListRendererWidget extends InfoRendererWidget
         {
             this.stringListFactory.markDirty();
             this.stringListRenderer.setText(this.stringListFactory.getLines());
-            int width = (int) Math.ceil(this.stringListRenderer.getTotalTextWidth() * this.scale);
-            int height = (int) Math.ceil(this.stringListRenderer.getClampedHeight() * this.scale);
-            this.setWidth(width);
-            this.setHeight(height);
+
+            this.updateSize();
         }
 
         if (isEnabled || wasEnabled)
         {
-            this.updateContainerLayout();
+            this.notifyContainerOfChanges();
         }
+    }
+
+    @Override
+    protected void onPositionChanged(int oldX, int oldY)
+    {
+        super.onPositionChanged(oldX, oldY);
+        this.updateStringListRendererPosition();
+    }
+
+    protected void updateStringListRendererPosition()
+    {
+        HorizontalAlignment ha = this.location.horizontalLocation;
+        VerticalAlignment va = this.location.verticalLocation;
+
+        if (ha == HorizontalAlignment.LEFT)
+        {
+            this.stringListPosX = this.getX() + this.padding.getLeft();
+        }
+        else if (ha == HorizontalAlignment.RIGHT)
+        {
+            this.stringListPosX = this.getX() + this.getWidth() - 1 - this.padding.getRight();
+        }
+        else if (ha == HorizontalAlignment.CENTER)
+        {
+            this.stringListPosX = this.getX() + this.getWidth() / 2;
+        }
+
+        if (va == VerticalAlignment.TOP)
+        {
+            this.stringListPosY = this.getY() + this.padding.getTop();
+        }
+        else if (va == VerticalAlignment.BOTTOM)
+        {
+            this.stringListPosY = this.getY() + this.getHeight() - this.padding.getBottom();
+        }
+        else if (va == VerticalAlignment.CENTER)
+        {
+            this.stringListPosY = this.getY() + this.getHeight() / 2;
+        }
+    }
+
+    @Override
+    protected int getContentStartX()
+    {
+        return this.stringListPosX;
+    }
+
+    @Override
+    protected int getContentStartY()
+    {
+        return this.stringListPosY;
     }
 
     @Override
@@ -114,7 +183,9 @@ public class StringListRendererWidget extends InfoRendererWidget
             GlStateManager.pushMatrix();
             GlStateManager.translate(x, y, z);
             GlStateManager.scale(this.scale, this.scale, 1);
+
             this.stringListRenderer.renderAt(0, 0, 0, false);
+
             GlStateManager.popMatrix();
         }
         else

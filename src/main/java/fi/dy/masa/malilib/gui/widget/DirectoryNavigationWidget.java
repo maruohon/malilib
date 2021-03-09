@@ -204,7 +204,7 @@ public class DirectoryNavigationWidget extends SearchBarWidget
                 button.setRenderOutline(true);
                 button.setPlayClickSound(false);
                 button.setUseTextShadow(false);
-                button.setTextColorHovered(0xFFFFFF);
+                button.setTextColorHovered(0xFFFFFFFF);
 
                 this.addButton(button, (btn, mbtn) -> {
                     if (BaseScreen.isShiftDown())

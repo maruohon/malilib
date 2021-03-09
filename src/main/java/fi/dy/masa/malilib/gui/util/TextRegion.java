@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.gui.util;
 
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
+import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.data.LeftRight;
 import fi.dy.masa.malilib.util.StringUtils;
 
@@ -9,10 +10,12 @@ public class TextRegion
     protected int maxWidth = 4;
     protected int endIndex;
     protected int startIndex;
-    protected String text = "";
+    protected String text;
+    protected StyledTextLine styledText;
 
     public TextRegion()
     {
+        this.setText("");
     }
 
     public void setMaxWidth(int maxWidth)
@@ -38,6 +41,17 @@ public class TextRegion
     public String getText()
     {
         return this.text;
+    }
+
+    public StyledTextLine getStyledText()
+    {
+        return this.styledText;
+    }
+
+    protected void setText(String text)
+    {
+        this.text = text;
+        this.styledText = StyledTextLine.raw(text);
     }
 
     /**
@@ -66,7 +80,7 @@ public class TextRegion
         {
             this.startIndex = 0;
             this.endIndex = fullTextLength - 1;
-            this.text = fullText;
+            this.setText(fullText);
             //System.out.printf("align: i: %d, a: %s => FULL\n", index, alignment);
             return;
         }
@@ -148,7 +162,7 @@ public class TextRegion
 
         this.startIndex = startIndex;
         this.endIndex = endIndex;
-        this.text = visibleText;
+        this.setText(visibleText);
         //System.out.printf("align: i: %d, a: %s => s: %s, e: %d, t: %s\n", index, alignment, this.startIndex, this.endIndex, this.text);
     }
 

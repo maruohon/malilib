@@ -24,6 +24,7 @@ public class StringConfigWidget extends BaseConfigOptionWidget<String, StringCon
         this.resetButton.setActionListener((btn, mbtn) -> {
             this.config.resetToDefault();
             this.textField.setText(this.config.getStringValue());
+            this.updateResetButtonState();
         });
     }
 

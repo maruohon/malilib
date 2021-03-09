@@ -9,12 +9,14 @@ import fi.dy.masa.malilib.gui.widget.list.BaseFileBrowserWidget.DirectoryEntryTy
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.gui.widget.util.DirectoryNavigator;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.FileUtils;
 
 public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry>
 {
     protected final DirectoryNavigator navigator;
     protected final DirectoryEntry entry;
+    protected final StyledTextLine displayText;
     @Nullable protected final FileBrowserIconProvider iconProvider;
 
     public DirectoryEntryWidget(int x, int y, int width, int height, int listIndex, int originalListIndex,
@@ -26,6 +28,7 @@ public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry
         this.entry = entry;
         this.navigator = navigator;
         this.iconProvider = iconProvider;
+        this.displayText = StyledTextLine.raw(this.getDisplayName());
     }
 
     public DirectoryEntry getDirectoryEntry()
@@ -88,7 +91,7 @@ public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry
         }
 
         int yOffset = (height - this.fontHeight) / 2 + 1;
-        this.drawString(x + xOffset + 2, y + yOffset, z, 0xFFFFFFFF, this.getDisplayName());
+        this.renderTextLine(x + xOffset + 2, y + yOffset, z, 0xFFFFFFFF, false, this.displayText);
 
         super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hoveredWidgetId, selected);
     }

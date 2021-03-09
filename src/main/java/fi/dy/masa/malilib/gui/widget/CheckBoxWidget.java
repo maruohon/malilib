@@ -3,11 +3,11 @@ package fi.dy.masa.malilib.gui.widget;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
 import fi.dy.masa.malilib.gui.widget.list.entry.SelectionListener;
-import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.render.text.StyledTextLine;
 
 public class CheckBoxWidget extends InteractableWidget
 {
-    protected final String displayText;
+    protected final StyledTextLine displayText;
     protected final MultiIcon widgetUnchecked;
     protected final MultiIcon widgetChecked;
     protected int textColorChecked = 0xFFFFFFFF;
@@ -19,12 +19,12 @@ public class CheckBoxWidget extends InteractableWidget
     {
         super(x, y, 0, 0);
 
-        this.displayText = text;
+        this.displayText = StyledTextLine.of(text);
         this.widgetUnchecked = iconUnchecked;
         this.widgetChecked = iconChecked;
 
-        int sw = this.getStringWidth(text);
-        this.setWidth(iconUnchecked.getWidth() + (sw > 0 ? sw + 3 : 0));
+        int textWidth = this.displayText.renderWidth;
+        this.setWidth(iconUnchecked.getWidth() + (textWidth > 0 ? textWidth + 3 : 0));
         this.setHeight(Math.max(this.fontHeight, iconChecked.getHeight()));
     }
 
@@ -92,9 +92,6 @@ public class CheckBoxWidget extends InteractableWidget
         int textColor = this.checked ? this.textColorChecked : this.textColorUnchecked;
 
         icon.renderAt(x, y, z, false, false);
-
-        this.drawStringWithShadow(x + icon.getWidth() + 3, y + this.getCenteredTextOffsetY(), z, textColor, this.displayText);
-
-        RenderUtils.color(1f, 1f, 1f, 1f);
+        this.renderTextLine(x + icon.getWidth() + 3, y + this.getCenteredTextOffsetY(), z, textColor, true, this.displayText);
     }
 }

@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.gui.widget;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import javax.annotation.Nullable;
@@ -8,11 +9,12 @@ import fi.dy.masa.malilib.gui.icon.MultiIcon;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.list.entry.SelectionListener;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.render.text.StyledTextLine;
 
 public class RadioButtonWidget<T extends Enum<T>> extends InteractableWidget
 {
     protected final List<T> options;
-    protected final Function<T, String> displayStringFunction;
+    protected final List<StyledTextLine> displayStrings = new ArrayList<>();
     protected final int textWidth;
     protected MultiIcon iconSelected = DefaultIcons.RADIO_BUTTON_SELECTED;
     protected MultiIcon iconUnselected = DefaultIcons.RADIO_BUTTON_UNSELECTED;
@@ -29,16 +31,16 @@ public class RadioButtonWidget<T extends Enum<T>> extends InteractableWidget
     {
         super(x, y, 10, 10);
 
-        this.options = options;
-        this.displayStringFunction = displayStringFunction;
-
         int width = 0;
 
         for (T val : options)
         {
-            width = Math.max(width, this.getStringWidth(displayStringFunction.apply(val)));
+            String displayString = displayStringFunction.apply(val);
+            width = Math.max(width, this.getStringWidth(displayString));
+            this.displayStrings.add(StyledTextLine.of(displayString));
         }
 
+        this.options = options;
         this.textWidth = width;
 
         if (hoverInfoKey != null)
@@ -103,8 +105,12 @@ public class RadioButtonWidget<T extends Enum<T>> extends InteractableWidget
     @Override
     public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
     {
-        for (T entry : this.options)
+        int count = Math.min(this.options.size(), this.displayStrings.size());
+
+        for (int i = 0; i < count; ++i)
         {
+            T entry = this.options.get(i);
+            StyledTextLine displayString = this.displayStrings.get(i);
             boolean entrySelected = this.selectedEntry == entry;
             MultiIcon icon = entrySelected ? this.iconSelected : this.iconUnselected;
             int iconWidth = 0;
@@ -121,9 +127,7 @@ public class RadioButtonWidget<T extends Enum<T>> extends InteractableWidget
             int textY = y + 1 + (this.entryHeight - this.fontHeight) / 2;
             int textColor = entrySelected ? 0xFFFFFFFF : 0xB0B0B0B0;
 
-            String displayString = this.displayStringFunction.apply(entry);
-            this.drawStringWithShadow(x + iconWidth, textY, z, textColor, displayString);
-
+            this.renderTextLine(x + iconWidth, textY, z, textColor, true, displayString);
             y += this.entryHeight;
         }
 

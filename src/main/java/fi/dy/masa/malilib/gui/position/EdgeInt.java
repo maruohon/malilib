@@ -48,6 +48,21 @@ public class EdgeInt
         return this.bottom;
     }
 
+    public int getHorizontalTotalPadding()
+    {
+        return this.left + this.right;
+    }
+
+    public int getVerticalTotalPadding()
+    {
+        return this.top + this.bottom;
+    }
+
+    public boolean isEmpty()
+    {
+        return this.left == 0 && this.top == 0 && this.right == 0 && this.bottom == 0;
+    }
+
     public EdgeInt setChangeListener(@Nullable EventListener changeListener)
     {
         this.changeListener = changeListener;

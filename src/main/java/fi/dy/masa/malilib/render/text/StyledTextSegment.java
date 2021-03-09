@@ -49,6 +49,12 @@ public class StyledTextSegment
     }
 
     @Override
+    public String toString()
+    {
+        return "StyledTextSegment{displayText='" + this.displayText + "'}";
+    }
+
+    @Override
     public boolean equals(Object o)
     {
         if (this == o) { return true; }

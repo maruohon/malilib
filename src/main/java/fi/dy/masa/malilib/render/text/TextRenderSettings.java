@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.render.text;
 public class TextRenderSettings
 {
     public boolean useBackground;
-    public boolean useFontShadow;
+    public boolean useTextShadow = true;
     public int backgroundColor = 0xA0505050;
     public int textColor = 0xFFFFFFFF;
 
@@ -13,9 +13,9 @@ public class TextRenderSettings
         return this;
     }
 
-    public TextRenderSettings setUseFontShadow(boolean useFontShadow)
+    public TextRenderSettings setUseTextShadow(boolean useTextShadow)
     {
-        this.useFontShadow = useFontShadow;
+        this.useTextShadow = useTextShadow;
         return this;
     }
 
@@ -34,7 +34,7 @@ public class TextRenderSettings
     public void setFrom(TextRenderSettings other)
     {
         this.useBackground = other.useBackground;
-        this.useFontShadow = other.useFontShadow;
+        this.useTextShadow = other.useTextShadow;
         this.backgroundColor = other.backgroundColor;
         this.textColor = other.textColor;
     }

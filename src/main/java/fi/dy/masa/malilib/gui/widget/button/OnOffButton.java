@@ -109,19 +109,24 @@ public class OnOffButton extends GenericButton
     }
 
     @Override
-    protected int getTextStartX(int x, int width)
+    protected int getTextStartX(int baseX, int usableWidth, int textWidth)
     {
         if (this.style == OnOffStyle.SLIDER_ON_OFF)
         {
             boolean value = this.statusSupplier.getAsBoolean();
             Icon icon = value ? DefaultIcons.SLIDER_GREEN : DefaultIcons.SLIDER_RED;
             int iconWidth = icon.getWidth();
-            int offX = (width - iconWidth) / 2;
 
-            return x + (value ? offX : offX + iconWidth);
+            usableWidth -= iconWidth;
+
+            // The slider is on the left side
+            if (value == false)
+            {
+                baseX += iconWidth;
+            }
         }
 
-        return super.getTextStartX(x, width);
+        return super.getTextStartX(baseX, usableWidth, textWidth);
     }
 
     @Override

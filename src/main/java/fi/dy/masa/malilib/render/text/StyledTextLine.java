@@ -34,6 +34,12 @@ public class StyledTextLine
     }
 
     @Override
+    public String toString()
+    {
+        return "StyledTextLine{" + this.displayText + "}";
+    }
+
+    @Override
     public boolean equals(Object o)
     {
         if (this == o) { return true; }

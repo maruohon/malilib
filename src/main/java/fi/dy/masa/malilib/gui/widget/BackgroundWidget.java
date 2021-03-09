@@ -5,7 +5,6 @@ import fi.dy.masa.malilib.render.RenderUtils;
 
 public class BackgroundWidget extends InteractableWidget
 {
-    protected final EdgeInt padding = new EdgeInt();
     protected final EdgeInt borderColorNormal = new EdgeInt(0xFFC0C0C0);
     protected final EdgeInt borderColorHovered = new EdgeInt(0xFFFFFFFF);
     protected boolean backgroundEnabled;
@@ -20,19 +19,6 @@ public class BackgroundWidget extends InteractableWidget
     public BackgroundWidget(int x, int y, int width, int height)
     {
         super(x, y, width, height);
-
-        this.padding.setChangeListener(this::updateSize);
-    }
-
-    public EdgeInt getPadding()
-    {
-        return this.padding;
-    }
-
-    public void updateSize()
-    {
-        this.updateWidth();
-        this.updateHeight();
     }
 
     public BackgroundWidget setBackgroundEnabled(boolean enabled)

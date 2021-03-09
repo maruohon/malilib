@@ -26,6 +26,12 @@ public class BaseOptionListConfigValue implements OptionListConfigValue
         return StringUtils.translate(this.translationKey);
     }
 
+    @Override
+    public String toString()
+    {
+        return this.name;
+    }
+
     /**
      * 
      * Finds the value by the given name from the provided list.

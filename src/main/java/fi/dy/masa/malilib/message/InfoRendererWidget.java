@@ -2,19 +2,18 @@ package fi.dy.masa.malilib.message;
 
 import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
-import fi.dy.masa.malilib.gui.position.EdgeInt;
+import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.gui.position.ScreenLocation;
 import fi.dy.masa.malilib.gui.widget.BaseWidget;
 import fi.dy.masa.malilib.listener.EventListener;
 
 public abstract class InfoRendererWidget extends BaseWidget
 {
-    protected final EdgeInt padding = new EdgeInt();
     protected ScreenLocation location = ScreenLocation.TOP_LEFT;
     @Nullable protected EventListener geometryChangeListener;
     protected boolean enabled = true;
     protected long previousGeometryUpdateTime = -1;
-    protected long geometryShrinkDelay = (long) (4 * 1E9); // 4 seconds
+    protected long geometryShrinkDelay = (long) (5 * 1E9); // 5 seconds
     protected int sortIndex = 100;
     protected int containerWidth;
     protected int containerHeight;
@@ -52,11 +51,6 @@ public abstract class InfoRendererWidget extends BaseWidget
         this.sortIndex = index;
     }
 
-    public void setPadding(EdgeInt padding)
-    {
-        this.padding.setFrom(padding);
-    }
-
     /**
      * Sets a listener that should be notified if the dimensions of this widget get changed,
      * such as the widget height or width changing due to changes in the displayed contents.
@@ -82,7 +76,7 @@ public abstract class InfoRendererWidget extends BaseWidget
      * Requests the container to re-layout all the info widgets due to
      * this widget's dimensions changing.
      */
-    protected void updateContainerLayout()
+    protected void notifyContainerOfChanges()
     {
         if (this.geometryChangeListener != null && this.needsGeometryUpdate())
         {
@@ -112,17 +106,8 @@ public abstract class InfoRendererWidget extends BaseWidget
         return false;
     }
 
-    public int getPaddedWidth()
-    {
-        return this.getWidth() + this.padding.getLeft() + this.padding.getRight();
-    }
-
-    public int getPaddedHeight()
-    {
-        return this.getHeight() + this.padding.getTop() + this.padding.getBottom();
-    }
-
     /**
+     * 
      * Called to allow the widget to update its state before all the enabled widgets are rendered.
      */
     public void updateState(Minecraft mc)
@@ -133,9 +118,14 @@ public abstract class InfoRendererWidget extends BaseWidget
     {
         if (this.isEnabled())
         {
-            int x = this.getX() + this.padding.getLeft();
-            int y = this.getY() + this.padding.getTop();
+            int x = this.getContentStartX();
+            int y = this.getContentStartY();
             this.renderAt(x, y, this.getZLevel());
+
+            if (MaLiLibConfigs.Debug.INFO_OVERLAY_DEBUG.getBooleanValue())
+            {
+                this.renderDebug(0, 0, false, true, true);
+            }
         }
     }
 

@@ -11,12 +11,12 @@ import fi.dy.masa.malilib.util.StringUtils;
 public class GenericButton extends BaseButton
 {
     @Nullable protected final Supplier<MultiIcon> iconSupplier;
-    protected HorizontalAlignment alignment = HorizontalAlignment.LEFT;
-    protected boolean textCentered;
+    protected HorizontalAlignment iconAlignment = HorizontalAlignment.LEFT;
     protected boolean customIconOffset;
     protected boolean renderBackground = true;
     protected boolean renderOutline;
-    protected boolean useTextShadow = true;
+    protected boolean textCentered;
+    protected boolean textShadow = true;
     protected int iconOffsetX;
     protected int iconOffsetY;
     protected int textOffsetX;
@@ -97,7 +97,7 @@ public class GenericButton extends BaseButton
 
     public GenericButton setUseTextShadow(boolean useShadow)
     {
-        this.useTextShadow = useShadow;
+        this.textShadow = useShadow;
         return this;
     }
 
@@ -135,14 +135,14 @@ public class GenericButton extends BaseButton
     }
 
     /**
-     * Set the icon aligment.<br>
+     * Set the icon alignment.<br>
      * Note: Only LEFT and RIGHT alignments work properly.
      * @param alignment
      * @return
      */
     public GenericButton setIconAlignment(HorizontalAlignment alignment)
     {
-        this.alignment = alignment;
+        this.iconAlignment = alignment;
         return this;
     }
 
@@ -175,9 +175,14 @@ public class GenericButton extends BaseButton
         return this.enabled == false ? this.textColorDisabled : (hovered ? this.textColorHovered : this.textColorNormal);
     }
 
-    protected int getTextStartX(int x, int width)
+    protected int getTextStartX(int baseX, int usableWidth, int textWidth)
     {
-        return this.textCentered ? x + width / 2 + this.textOffsetX: x + this.textOffsetX;
+        if (this.textCentered)
+        {
+            return baseX + usableWidth / 2 - textWidth / 2 + this.textOffsetX;
+        }
+
+        return baseX + this.textOffsetX;
     }
 
     protected int getTextureOffset(boolean isMouseOver)
@@ -220,7 +225,7 @@ public class GenericButton extends BaseButton
 
             int width = this.getWidth();
             int height = this.getHeight();
-            boolean textBlank = org.apache.commons.lang3.StringUtils.isBlank(this.displayString);
+            boolean textBlank = this.styledDisplayString == null || this.styledDisplayString.renderWidth == 0;
 
             RenderUtils.color(1f, 1f, 1f, 1f);
             RenderUtils.setupBlendSimple();
@@ -260,7 +265,7 @@ public class GenericButton extends BaseButton
                 }
 
                 int offY = this.customIconOffset ? this.iconOffsetY : (height - icon.getHeight()) / 2;
-                int ix = this.alignment == HorizontalAlignment.LEFT ? x + offX : x + width - iconWidth - offX;
+                int ix = this.iconAlignment == HorizontalAlignment.LEFT ? x + offX : x + width - iconWidth - offX;
                 int iy = y + offY;
 
                 icon.renderAt(ix, iy, z + 0.1f, this.enabled, hovered);
@@ -268,16 +273,16 @@ public class GenericButton extends BaseButton
 
             if (textBlank == false)
             {
-                int tx = this.getTextStartX(x, width);
-                int ty = y + (height - 8) / 2 + this.textOffsetY;
+                int tx = this.getTextStartX(x, width, this.styledDisplayString.renderWidth);
+                int ty = y + height / 2 - this.getFontHeight() / 2 + this.textOffsetY;
 
-                if (this.alignment == HorizontalAlignment.LEFT)
+                if (this.iconAlignment == HorizontalAlignment.LEFT)
                 {
                     tx += iconClearing;
                 }
 
                 int color = this.getTextColorForRender(hovered);
-                this.getTextRenderer(this.useTextShadow, this.textCentered).renderText(tx, ty, z, color, this.displayString);
+                this.renderTextLine(tx, ty, z, color, this.textShadow, this.styledDisplayString);
             }
         }
     }
