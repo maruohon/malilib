@@ -342,10 +342,10 @@ public class LayerRange
     public void setSingleBoundaryToPosition(Entity entity)
     {
         int pos = this.getPositionFromEntity(entity);
-        this.setSingleBoundaryToPosition(pos, entity);
+        this.setSingleBoundaryToPosition(pos);
     }
 
-    protected void setSingleBoundaryToPosition(int pos, Entity entity)
+    protected void setSingleBoundaryToPosition(int pos)
     {
         switch (this.layerMode)
         {
@@ -385,7 +385,7 @@ public class LayerRange
             }
             else
             {
-                this.setSingleBoundaryToPosition(newPos, entity);
+                this.setSingleBoundaryToPosition(newPos);
             }
         }
     }

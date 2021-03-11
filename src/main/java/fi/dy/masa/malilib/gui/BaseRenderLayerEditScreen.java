@@ -201,7 +201,7 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
                 axis = EnumFacing.Axis.values()[next % 3];
                 this.layerRange.setAxis(axis);
             }
-            else if (this.type == Type.SET_TO_PLAYER)
+            else if (this.type == Type.SET_TO_PLAYER && this.parent.mc.player != null)
             {
                 this.layerRange.setSingleBoundaryToPosition(this.parent.mc.player);
             }
