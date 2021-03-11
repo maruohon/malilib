@@ -76,6 +76,7 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
     @Nullable protected DialogHandler dialogHandler;
     protected int backgroundColor = TOOLTIP_BACKGROUND;
     protected int borderColor = COLOR_HORIZONTAL_BAR;
+    protected int customScreenScale;
     protected int x;
     protected int y;
     protected int lastMouseX = -1;
@@ -89,6 +90,7 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
     protected boolean shouldCenter;
     protected boolean shouldRenderParent;
     protected boolean useTitleHierarchy = true;
+    protected boolean useCustomScreenScaling;
 
     public BaseScreen()
     {
@@ -96,6 +98,9 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
         this.messageRenderer.setBackgroundColor(0xDD000000).setNormalBorderColor(COLOR_HORIZONTAL_BAR);
         this.messageRenderer.setCentered(true, true);
         this.messageRenderer.setZLevel(100);
+
+        int customScale = MaLiLibConfigs.Generic.CUSTOM_SCREEN_SCALE.getIntegerValue();
+        this.useCustomScreenScaling = customScale != this.mc.gameSettings.guiScale && customScale > 0;
     }
 
     public BaseScreen setParent(@Nullable GuiScreen parent)
@@ -155,9 +160,19 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
             this.getParent().setWorldAndResolution(mc, width, height);
         }
 
+        boolean initial = this.screenWidth == this.width && this.screenHeight == this.height;
+
+        this.updateCustomScreenScale();
+
+        if (this.useCustomScreenScaling())
+        {
+            width = this.width;
+            height = this.height;
+        }
+
         // Don't override custom screen sizes when the window is resized or whatever,
         // which calls this method again.
-        if (this.screenWidth == this.width && this.screenHeight == this.height)
+        if (initial)
         {
             this.setScreenWidthAndHeight(width, height);
         }
@@ -181,6 +196,48 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
     protected void initScreen()
     {
         this.clearElements();
+    }
+
+    protected boolean useCustomScreenScaling()
+    {
+        return this.useCustomScreenScaling;
+    }
+
+    protected void updateCustomScreenScale()
+    {
+        int currentValue = MaLiLibConfigs.Generic.CUSTOM_SCREEN_SCALE.getIntegerValue();
+
+        if (currentValue != this.customScreenScale)
+        {
+            boolean oldUseCustomScale = this.useCustomScreenScaling;
+            this.useCustomScreenScaling = currentValue > 0 && currentValue != this.mc.gameSettings.guiScale;
+            this.customScreenScale = currentValue;
+
+            if (oldUseCustomScale || this.useCustomScreenScaling())
+            {
+                this.setCustomScreenScale(currentValue);
+            }
+        }
+    }
+
+    protected void setCustomScreenScale(double scaleFactor)
+    {
+        int width = (int) Math.ceil((double) this.mc.displayWidth / scaleFactor);
+        int height = (int) Math.ceil((double) this.mc.displayHeight / scaleFactor);
+        boolean setScreenSize = this.screenWidth == this.width && this.screenHeight == this.height;
+
+        if (this.width != width || this.height != height)
+        {
+            this.width = width;
+            this.height = height;
+
+            if (setScreenSize)
+            {
+                this.setScreenWidthAndHeight(width, height);
+            }
+
+            this.initScreen();
+        }
     }
 
     protected void closeScreen(boolean showParent)
@@ -262,6 +319,19 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
             this.getParent().drawScreen(mouseX, mouseY, partialTicks);
         }
 
+        // These are after the parent rendering, because the parent
+        // can/will also both enable and disable the custom scale,
+        // so it needs to be enabled here again in any case after
+        // rendering the parent screen.
+        this.updateCustomScreenScale();
+
+        if (this.useCustomScreenScaling())
+        {
+            RenderUtils.setupScaledScreenRendering(this.customScreenScale);
+            mouseX = Mouse.getX() * this.width / this.mc.displayWidth;
+            mouseY = this.height - Mouse.getY() * this.height / this.mc.displayHeight - 1;
+        }
+
         boolean isActiveGui = GuiUtils.getCurrentScreen() == this;
         int hoveredWidgetId = isActiveGui && this.hoveredWidget != null ? this.hoveredWidget.getId() : -1;
 
@@ -283,6 +353,11 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
         }
 
         BaseWidget.renderDebugTextAndClear();
+
+        if (this.useCustomScreenScaling())
+        {
+            RenderUtils.setupScaledScreenRendering(RenderUtils.getVanillaScreenScale());
+        }
     }
 
     @Override
@@ -315,6 +390,12 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
     {
+        if (this.useCustomScreenScaling())
+        {
+            mouseX = Mouse.getX() * this.width / this.mc.displayWidth;
+            mouseY = this.height - Mouse.getY() * this.height / this.mc.displayHeight - 1;
+        }
+
         if (this.onMouseClicked(mouseX, mouseY, mouseButton) == false)
         {
             super.mouseClicked(mouseX, mouseY, mouseButton);
@@ -324,6 +405,12 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
     @Override
     protected void mouseReleased(int mouseX, int mouseY, int mouseButton)
     {
+        if (this.useCustomScreenScaling())
+        {
+            mouseX = Mouse.getX() * this.width / this.mc.displayWidth;
+            mouseY = this.height - Mouse.getY() * this.height / this.mc.displayHeight - 1;
+        }
+
         if (this.onMouseReleased(mouseX, mouseY, mouseButton) == false)
         {
             super.mouseReleased(mouseX, mouseY, mouseButton);

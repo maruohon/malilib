@@ -3,6 +3,7 @@ malilib.config.category.debug=Debug
 malilib.config.category.generic=Generic
 
 malilib.config.comment.configsearchdefaultscope=This is the default scope value in the config menu search bars
+malilib.config.comment.customscreenscale=Custom screen scale value for any screens using the malilib screen classes. Use 0 for the default vanilla GUI scale value.
 malilib.config.comment.datadumpcsvdelimiter=The column delimiter to use for CSV format data dumps
 malilib.config.comment.hovertextmaxwidth=The maximum width of the mouse over hover texts
 malilib.hotkey.comment.ignoredkeys=Any keys set here will be completely ignored from the hotkey system. This can be used to blacklist keys that cause issues or often get stuck for some reason.
@@ -34,6 +35,7 @@ malilib.config.comment.keybind_settings.order_sensitive=Should the keybind keys 
 malilib.config.comment.keybind_settings.priority=The priority of this keybind in relation to other keybinds that trigger with the same last key. It's a simple numerical sort order - lower values come first.
 
 malilib.config.name.configsearchdefaultscope=Config Search Default Scope
+malilib.config.name.customscreenscale=Custom Screen Scale
 malilib.config.name.datadumpcsvdelimiter=Data Dump CSV Delimiter
 malilib.config.name.hovertextmaxwidth=Hover Text Max Width
 malilib.config.name.keybinddisplay=KeyBind Display

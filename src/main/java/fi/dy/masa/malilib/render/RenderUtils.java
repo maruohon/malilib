@@ -83,6 +83,43 @@ public class RenderUtils
         RenderHelper.enableGUIStandardItemLighting();
     }
 
+    public static void setupScaledScreenRendering(double scaleFactor)
+    {
+        Minecraft mc = Minecraft.getMinecraft();
+        double width = mc.displayWidth / scaleFactor;
+        double height = mc.displayHeight / scaleFactor;
+
+        setupScaledScreenRendering(width, height);
+    }
+
+    public static int getVanillaScreenScale()
+    {
+        Minecraft mc = Minecraft.getMinecraft();
+        int displayWidth = mc.displayWidth;
+        int displayHeight = mc.displayHeight;
+        int scale = Math.min(displayWidth / 320, displayHeight / 240);
+        scale = Math.min(scale, mc.gameSettings.guiScale);
+        scale = Math.max(scale, 1);
+
+        if (mc.isUnicode() && (scale & 0x1) != 0 && scale > 1)
+        {
+            --scale;
+        }
+
+        return scale;
+    }
+
+    public static void setupScaledScreenRendering(double width, double height)
+    {
+        GlStateManager.clear(256);
+        GlStateManager.matrixMode(5889);
+        GlStateManager.loadIdentity();
+        GlStateManager.ortho(0.0D, width, height, 0.0D, 1000.0D, 3000.0D);
+        GlStateManager.matrixMode(5888);
+        GlStateManager.loadIdentity();
+        GlStateManager.translate(0.0F, 0.0F, -2000.0F);
+    }
+
     public static void renderSprite(int x, int y, int z, int width, int height, String texture)
     {
         if (texture != null)
