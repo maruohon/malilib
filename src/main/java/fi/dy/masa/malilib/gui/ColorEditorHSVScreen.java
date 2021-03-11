@@ -100,9 +100,9 @@ public class ColorEditorHSVScreen extends BaseScreen
     }
 
     @Override
-    public void initGui()
+    protected void initScreen()
     {
-        super.initGui();
+        super.initScreen();
 
         int xLabel = this.x + 148;
         int xTextField = xLabel + 110;

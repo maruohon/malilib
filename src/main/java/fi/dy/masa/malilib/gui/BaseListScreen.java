@@ -124,9 +124,9 @@ public abstract class BaseListScreen<LISTWIDGET extends BaseListWidget> extends 
     }
 
     @Override
-    public void initGui()
+    protected void initScreen()
     {
-        super.initGui();
+        super.initScreen();
 
         BaseListWidget listWidget = this.getListWidget();
 

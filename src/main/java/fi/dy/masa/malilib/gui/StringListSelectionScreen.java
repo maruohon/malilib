@@ -33,9 +33,9 @@ public class StringListSelectionScreen extends BaseListScreen<DataListWidget<Str
     }
 
     @Override
-    public void initGui()
+    protected void initScreen()
     {
-        super.initGui();
+        super.initScreen();
 
         int x = 12;
         int y = this.height - 32;

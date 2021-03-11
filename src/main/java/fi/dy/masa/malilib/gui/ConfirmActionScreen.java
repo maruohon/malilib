@@ -33,9 +33,9 @@ public class ConfirmActionScreen extends BaseScreen implements TaskCompletionLis
     }
 
     @Override
-    public void initGui()
+    protected void initScreen()
     {
-        super.initGui();
+        super.initScreen();
 
         int x = this.x + 10;
 

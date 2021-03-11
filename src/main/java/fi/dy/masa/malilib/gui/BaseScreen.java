@@ -175,6 +175,11 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
     {
         super.initGui();
 
+        this.initScreen();
+    }
+
+    protected void initScreen()
+    {
         this.clearElements();
     }
 

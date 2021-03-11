@@ -176,11 +176,11 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
     }
 
     @Override
-    public void initGui()
+    protected void initScreen()
     {
         this.restoreScrollBarPositionForCurrentTab();
 
-        super.initGui();
+        super.initScreen();
 
         this.clearOptions();
         this.createTabButtonWidget();
@@ -229,7 +229,7 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
             this.getTabState().visibleTabsStartIndex = this.tabButtonContainerWidget.getStartIndex();
         }
 
-        this.tabButtonContainerWidget = new CyclableContainerWidget(10, 22, this.width - 20, 20, this.createTabButtons());
+        this.tabButtonContainerWidget = new CyclableContainerWidget(10, 22, this.screenWidth - 20, 20, this.createTabButtons());
         this.tabButtonContainerWidget.setStartIndex(this.getTabState().visibleTabsStartIndex);
         this.addWidget(this.tabButtonContainerWidget);
     }

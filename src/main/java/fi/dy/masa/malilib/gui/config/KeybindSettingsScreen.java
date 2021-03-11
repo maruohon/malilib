@@ -114,9 +114,9 @@ public class KeybindSettingsScreen extends BaseScreen
     }
 
     @Override
-    public void initGui()
+    protected void initScreen()
     {
-        super.initGui();
+        super.initScreen();
 
         int x = this.x + 10;
         int y = this.y + 24;

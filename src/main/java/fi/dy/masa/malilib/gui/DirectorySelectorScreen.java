@@ -39,9 +39,9 @@ public class DirectorySelectorScreen extends BaseListScreen<BaseFileBrowserWidge
     }
 
     @Override
-    public void initGui()
+    protected void initScreen()
     {
-        super.initGui();
+        super.initScreen();
 
         this.addConfirmationButton();
     }
