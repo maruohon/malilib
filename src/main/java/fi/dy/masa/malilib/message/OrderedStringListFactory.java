@@ -9,7 +9,11 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import org.apache.commons.lang3.tuple.Pair;
 import com.google.common.collect.ImmutableList;
+import fi.dy.masa.malilib.MaLiLibConfigs;
+import fi.dy.masa.malilib.render.text.StyledText;
+import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.StringUtils;
+import fi.dy.masa.malilib.util.StyledTextUtils;
 
 public class OrderedStringListFactory
 {
@@ -17,13 +21,28 @@ public class OrderedStringListFactory
 
     protected final HashMap<String, Pair<Integer, Function<List<String>, List<String>>>> providers = new HashMap<>();
     protected final List<Function<List<String>, List<String>>> sortedProviders = new ArrayList<>();
-    protected ImmutableList<String> lines = ImmutableList.of();
+    protected ImmutableList<String> strings = ImmutableList.of();
+    protected ImmutableList<StyledTextLine> styledLines = ImmutableList.of();
     protected boolean dirty;
+    protected int maxTextRenderWidth;
+
+    public OrderedStringListFactory()
+    {
+        this.maxTextRenderWidth = MaLiLibConfigs.Generic.HOVER_TEXT_MAX_WIDTH.getIntegerValue();
+    }
 
     /**
+     * Sets the maximum render width the text should be wrapped to
+     */
+    public void setMaxTextRenderWidth(int maxWidth)
+    {
+        this.maxTextRenderWidth = maxWidth;
+    }
+
+    /**
+     * 
      * Returns the current built list of strings.
      * Call {@link #updateList()} to rebuild the list from the current line providers.
-     * @return
      */
     public ImmutableList<String> getLines()
     {
@@ -32,12 +51,31 @@ public class OrderedStringListFactory
             this.updateList();
         }
 
-        return this.lines;
+        return this.strings;
     }
 
-    public boolean isEmpty()
+    /**
+     * Returns the current built list of styled text lines.
+     * Call {@link #updateList()} to rebuild the list from the current line providers.
+     */
+    public ImmutableList<StyledTextLine> getStyledLines()
+    {
+        if (this.dirty)
+        {
+            this.updateList();
+        }
+
+        return this.styledLines;
+    }
+
+    public boolean hasNoProviders()
     {
         return this.sortedProviders.isEmpty();
+    }
+
+    public boolean hasNoStrings()
+    {
+        return this.strings.isEmpty() && this.dirty == false;
     }
 
     public void translateAndAddLines(List<String> translationKeys)
@@ -166,7 +204,8 @@ public class OrderedStringListFactory
     public void removeAll()
     {
         this.providers.clear();
-        this.lines = ImmutableList.of();
+        this.strings = ImmutableList.of();
+        this.styledLines = ImmutableList.of();
     }
 
     /**
@@ -196,7 +235,20 @@ public class OrderedStringListFactory
             allLines.addAll(lines);
         }
 
-        this.lines = ImmutableList.copyOf(allLines);
+        List<StyledTextLine> styledLines = new ArrayList<>();
+
+        for (String str : allLines)
+        {
+            styledLines.addAll(StyledText.of(str).lines);
+        }
+
+        if (this.maxTextRenderWidth > 16)
+        {
+            styledLines = StyledTextUtils.wrapStyledTextToMaxWidth(styledLines, this.maxTextRenderWidth);
+        }
+
+        this.strings = ImmutableList.copyOf(allLines);
+        this.styledLines = ImmutableList.copyOf(styledLines);
         this.dirty = false;
     }
 }

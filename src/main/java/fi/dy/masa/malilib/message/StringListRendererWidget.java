@@ -97,13 +97,13 @@ public class StringListRendererWidget extends InfoRendererWidget
     protected void updateLines()
     {
         boolean wasEnabled = this.isEnabled();
-        this.setEnabled(this.stringListFactory.isEmpty() == false);
+        this.setEnabled(this.stringListFactory.hasNoProviders() == false);
         boolean isEnabled = this.isEnabled();
 
         if (isEnabled)
         {
             this.stringListFactory.markDirty();
-            this.stringListRenderer.setText(this.stringListFactory.getLines());
+            this.stringListRenderer.setStyledTextLines(this.stringListFactory.getStyledLines());
 
             this.updateSize();
         }

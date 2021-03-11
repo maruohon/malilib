@@ -10,7 +10,8 @@ import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.message.OrderedStringListFactory;
-import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.render.TextRenderUtils;
+import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public abstract class InteractableWidget extends BaseWidget
@@ -175,12 +176,12 @@ public abstract class InteractableWidget extends BaseWidget
 
     public boolean hasHoverText()
     {
-        return this.getHoverStrings().isEmpty() == false;
+        return this.hoverInfoFactory.hasNoStrings() == false;
     }
 
-    public ImmutableList<String> getHoverStrings()
+    public ImmutableList<StyledTextLine> getHoverText()
     {
-        return this.hoverInfoFactory.getLines();
+        return this.hoverInfoFactory.getStyledLines();
     }
 
     public OrderedStringListFactory getHoverInfoFactory()
@@ -216,7 +217,7 @@ public abstract class InteractableWidget extends BaseWidget
     public void translateAndAddHoverString(String translationKey, Object... args)
     {
         String str = StringUtils.translate(translationKey, args);
-        this.hoverInfoFactory.addLines(Arrays.asList(str.split("\\n")));
+        this.hoverInfoFactory.addLines(str);
     }
 
     public void translateAndAddHoverStrings(String... hoverStrings)
@@ -288,8 +289,7 @@ public abstract class InteractableWidget extends BaseWidget
     {
         if (this.hasHoverText() && this.shouldRenderHoverInfo(mouseX, mouseY, isActiveGui, hoveredWidgetId))
         {
-            RenderUtils.renderHoverText(mouseX, mouseY, this.getZLevel() + 0.5f, this.getHoverStrings());
-            RenderUtils.disableItemLighting();
+            TextRenderUtils.renderStyledHoverText(mouseX, mouseY, this.getZLevel() + 0.5f, this.getHoverText());
         }
     }
 

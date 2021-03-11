@@ -13,6 +13,7 @@ import fi.dy.masa.malilib.gui.widget.BaseWidget;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
+import fi.dy.masa.malilib.util.StyledTextUtils;
 import fi.dy.masa.malilib.util.data.LeftRight;
 
 public class StringListRenderer extends BaseWidget
@@ -221,14 +222,13 @@ public class StringListRenderer extends BaseWidget
         this.clampAndAddTextLine(line);
     }
 
-    public String clampLineToWidth(String line, int maxWidth)
+    public StyledTextLine clampLineToWidth(StyledTextLine line, int maxWidth)
     {
-        return StringUtils.clampTextToRenderLength(line, maxWidth, LeftRight.RIGHT, "...");
+        return StyledTextUtils.clampStyledTextToMaxWidth(line, this.maxWidth, LeftRight.RIGHT, " ...");
     }
 
     protected void clampAndAddTextLine(StyledTextLine line)
     {
-        String fullLineText = line.displayText;
         StyledTextLine clampedLine = line;
         int lineWidth = line.renderWidth;
         this.totalTextHeight += this.processedLinesFull.size() > 0 ? this.lineHeight : TextRenderer.INSTANCE.getFontHeight();
@@ -237,16 +237,9 @@ public class StringListRenderer extends BaseWidget
 
         if (this.hasMaxWidth && lineWidth > this.maxWidth)
         {
-            // TODO this needs style preserving clamping
-            String clampedLineText = this.lineClamper.clampLineToWidth(fullLineText, this.maxWidth);
-            boolean gotClamped = clampedLineText.equals(fullLineText) == false;
-
-            if (gotClamped)
-            {
-                clampedLine = StyledTextLine.of(clampedLineText);
-                lineWidth = clampedLine.renderWidth;
-                this.hasClampedContent = true;
-            }
+            clampedLine = this.lineClamper.clampLineToWidth(line, this.maxWidth);
+            lineWidth = clampedLine.renderWidth;
+            this.hasClampedContent = true;
         }
 
         this.clampedTextWidth = Math.max(this.clampedTextWidth, lineWidth);
@@ -367,7 +360,7 @@ public class StringListRenderer extends BaseWidget
 
     public interface LineClamper
     {
-        String clampLineToWidth(String line, int maxWidth);
+        StyledTextLine clampLineToWidth(StyledTextLine line, int maxWidth);
     }
 
     public static class Line

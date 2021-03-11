@@ -2,37 +2,40 @@
 malilib.config.category.debug=Debug
 malilib.config.category.generic=Generic
 
-malilib.config.comment.configsearchdefaultscope=This is the default value of the scope DropDown\nwidget in the config menu search bars
+malilib.config.comment.configsearchdefaultscope=This is the default scope value in the config menu search bars
 malilib.config.comment.datadumpcsvdelimiter=The column delimiter to use for CSV format data dumps
-malilib.config.comment.keybinddisplay=Whether or not to display a small indicator/toast\nfor pressed keys and triggered hotkeys/actions
+malilib.config.comment.hovertextmaxwidth=The maximum width of the mouse over hover texts
+malilib.hotkey.comment.ignoredkeys=Any keys set here will be completely ignored from the hotkey system. This can be used to blacklist keys that cause issues or often get stuck for some reason.
+malilib.config.comment.keybinddisplay=Whether or not to display a small indicator/toast for pressed keys and triggered hotkeys/actions
 malilib.config.comment.keybinddisplayalignment=The alignment for the keybind display toast messages
-malilib.config.comment.keybinddisplaycallbackonly=If enabled, then only keybinds that have a defined action callback\nwill be displayed on the keybind display toast.
-malilib.config.comment.keybinddisplaycancelonly=If enabled, then only keybinds that are set to cancel\nfurther processing will be displayed on the\nkeybind display toast. This prevents so called "modifier" keys\nfrom spamming the display.
+malilib.config.comment.keybinddisplaycallbackonly=If enabled, then only keybinds that have a defined action callback will be displayed on the keybind display toast
+malilib.config.comment.keybinddisplaycancelonly=If enabled, then only keybinds that are set to cancel further processing will be displayed on the keybind display toast. This prevents so called "modifier" keys from spamming the display.
 malilib.config.comment.keybinddisplayduration=The duration (in milliseconds) the keybind display toasts are shown
-malilib.config.comment.optionlistconfigdropdown=Use a DropDown widget instead of a button for OptionList configs
+malilib.config.comment.optionlistconfigdropdown=Use a DropDown widget instead of a cycle button for OptionList type configs
 malilib.config.comment.rememberconfigtabscrollpositions=Remember the config screen scrollbar position for each tab
 
-malilib.config.comment.guidebug=When enabled, all GUI widgets will draw their outlines\nand when hovered also their position and dimension\ninfo and the widget class name.\nIf a key is set for GUI Debug Key, then that key must be held\nfor any of the debug rendering to happen.
-malilib.config.comment.guidebugall=If true, then all widgets will render the debug outline,\notherwise only the hovered widget will render it
-malilib.config.comment.guidebuginfoalways=When enabled, the debug position and dimensions text\nis always rendered, even without hovering the widgets
-malilib.config.comment.infooverlaydebug=When enabled, the Info Overlay widgets and\nInfoAreas render debug outlines
-malilib.config.comment.keybinddebugging=When enabled, key presses and held keys are\nprinted to the game console (and the action bar, if enabled)
-malilib.config.comment.keybinddebuggingingame=If enabled, then the messages from 'Keybind Debugging'\nare also printed to the in-game action bar
+malilib.config.comment.guidebug=When enabled, all GUI widgets will draw their outlines, and when hovered, also their position and dimension info and the widget class name. If a key is set for Debug -> 'GUI Debug Key', then that key must be held for any of the debug rendering to happen.
+malilib.config.comment.guidebugall=If true, then all widgets will render the debug outline, otherwise only the hovered widget will render it
+malilib.config.comment.guidebuginfoalways=When enabled, the debug position and dimensions text is always rendered, even without hovering the widgets
+malilib.config.comment.infooverlaydebug=When enabled, the Info Overlay widgets and InfoAreas render debug outlines
+malilib.config.comment.keybinddebugging=When enabled, key presses and held keys are printed to the game console (and the action bar, if enabled)
+malilib.config.comment.keybinddebuggingingame=If enabled, then the messages from 'Keybind Debugging' are also printed to the in-game action bar
 
-malilib.config.comment.dropdownsearchtip=Should the DropDown widget tip about just typing\nto open the search be shown, or was it shown already
+malilib.config.comment.dropdownsearchtip=Should the DropDown widget search tip about just starting to type to open the search be shown, or was it shown already
 
 malilib.config.comment.keybind_settings.activate_on=Does the keybind activate on press or release of the key combination
-malilib.config.comment.keybind_settings.allow_empty_keybind=Is an empty keybind valid\n(will always be considered to be active)
+malilib.config.comment.keybind_settings.allow_empty_keybind=Is an empty keybind valid (will always be considered to be active)
 malilib.config.comment.keybind_settings.allow_extra_keys=Are extra keys allowed to be held to still activate the keybind
-malilib.config.comment.keybind_settings.cancel_further=Cancel further (vanilla) processing of the\nlast pressed key, when the keybind activates
+malilib.config.comment.keybind_settings.cancel_further=Cancel further (vanilla) processing of the last pressed key, when the keybind activates
 malilib.config.comment.keybind_settings.context=Can the keybind be activated in-game or inside a GUI
-malilib.config.comment.keybind_settings.exclusive=If enabled, then no other keybinds can have\nbeen activated before the keybind in question.\nThis check resets when all keys are released.
-malilib.config.comment.keybind_settings.first_only=If enabled, then this keybind will only trigger\nif it's the first keybind to trigger with the key event\nthat triggers it. It's kind of similar to Exclusive,\nbut it's per-key and does not need all keys to be\nreleased to trigger again.
-malilib.config.comment.keybind_settings.order_sensitive=Should the keybind keys be pressed\nin the specific order they were defined in
-malilib.config.comment.keybind_settings.priority=The priority of this keybind in relation to other keybinds\nthat trigger with the same last key. It's a simple\nnumerical sort order - lower values come first.
+malilib.config.comment.keybind_settings.exclusive=If enabled, then no other keybinds can have been activated before the keybind in question. This check resets when all keys are released.
+malilib.config.comment.keybind_settings.first_only=If enabled, then this keybind will only trigger if it's the first keybind to trigger with the key event that triggers it. It's kind of similar to Exclusive, but it's per-key and does not need all keys to be released to trigger again.
+malilib.config.comment.keybind_settings.order_sensitive=Should the keybind keys be pressed in the specific order they were defined in
+malilib.config.comment.keybind_settings.priority=The priority of this keybind in relation to other keybinds that trigger with the same last key. It's a simple numerical sort order - lower values come first.
 
 malilib.config.name.configsearchdefaultscope=Config Search Default Scope
 malilib.config.name.datadumpcsvdelimiter=Data Dump CSV Delimiter
+malilib.config.name.hovertextmaxwidth=Hover Text Max Width
 malilib.config.name.keybinddisplay=KeyBind Display
 malilib.config.name.keybinddisplayalignment=KeyBind Display Alignment
 malilib.config.name.keybinddisplaycallbackonly=KeyBind Display Callback Only
@@ -50,8 +53,7 @@ malilib.config.name.keybinddebuggingingame=KeyBind Debug In Action Bar
 
 malilib.config.name.dropdownsearchtip=Drop Down Search Tip
 
-malilib.hotkey.comment.guidebugkey=If this is set, then the GUI debug only renders\nwhile this key is held down
-malilib.hotkey.comment.ignoredkeys=Any keys set here will be completely ignored from\nthe hotkey system. This can be used to blacklist\nkeys that cause issues or often get stuck for some reason.
+malilib.hotkey.comment.guidebugkey=If this is set, then the GUI debug only renders while this key is held down
 malilib.hotkey.comment.openguiconfigs=Open the in-game malilib config menu
 
 malilib.hotkey.name.guidebugkey=GUI Debug Key
@@ -64,11 +66,11 @@ malilib.error.file_delete_failed=Failed to delete the file '%s'
 malilib.error.file_or_directory_already_exists=File or directory '%s' already exists
 malilib.error.file_rename.file_already_exists=File rename failed, file '%s' already exists
 malilib.error.file_rename.rename_failed=Failed to rename the file '%s' to '%s'
-malilib.error.illegal_characters_in_file_name=Invalid characters in the given file name '%s'.\nFor example slashes are not allowed, and on Windows also\nmany other special characters are not valid for file names!
+malilib.error.illegal_characters_in_file_name=Invalid characters in the given file name '%s'.\nFor example slashes are not allowed, and on Windows also many other special characters are not valid for file names!
 malilib.error.invalid_directory=Invalid directory name '%s'
 malilib.error.invalid_item_blacklist_entry=Invalid item name in a black- or whitelist: '%s'
 malilib.error.invalid_registry_name=Invalid registry name in a black- or whitelist: '%s'
-malilib.error.keybind.attempt_to_bind_ignored_key=The key '%s' is currently set to be ignored by malilib.\nSee malilib configs Generic -> Ignored Keys
+malilib.error.keybind.attempt_to_bind_ignored_key=The key '%s' is currently set to be ignored by malilib. See malilib configs Generic -> Ignored Keys
 
 malilib.error.textfield.invalid_value_floating_point_number='%s' is not a floating point number
 malilib.error.textfield.invalid_value_int='%s' is not an integer number
@@ -81,7 +83,7 @@ malilib.gui.button.config.select_file=Select File
 malilib.gui.button.config.use_current_directory=Use current directory
 malilib.gui.button.config.use_selected_file=Select file
 
-malilib.gui.button.config.hover.reset_all_filtered=Reset all the configs matching the current search/filter\nsettings back to their default values
+malilib.gui.button.config.hover.reset_all_filtered=Reset all the configs matching the current search/filter settings back to their default values
 malilib.gui.button.config.hover.selected_directory=Current directory:\n§3%s§r
 malilib.gui.button.config.hover.selected_file=Current file:\n§3%s§r
 
@@ -105,9 +107,9 @@ malilib.gui.button.render_layers_gui.layers=Layers: %s
 malilib.gui.button.render_layers_gui.set_to_player=Set to player
 
 malilib.gui.button.hover.black_white_list_edit.type=List Type: §3%s
-malilib.gui.button.hover.config.reset_all_filtered=Reset all the configs matching the current\nsearch filters back to their default values
+malilib.gui.button.hover.config.reset_all_filtered=Reset all the configs matching the current search filters back to their default values
 malilib.gui.button.hover.directory_widget.create_directory=Create a new directory
-malilib.gui.button.hover.directory_widget.hold_shift_to_open_directory=You can shift click the directory path elements\nto open the directory in the system file manager
+malilib.gui.button.hover.directory_widget.hold_shift_to_open_directory=You can shift click the directory path elements to open the directory in the system file manager
 malilib.gui.button.hover.directory_widget.root=To root/base directory
 malilib.gui.button.hover.directory_widget.up=Up to parent directory
 malilib.gui.button.hover.entries_more=... and §b%s§r more
@@ -115,11 +117,11 @@ malilib.gui.button.hover.entries_total=Total entries: §b%s§r
 malilib.gui.button.hover.hold_shift_for_info=§oHold Shift for more information§r
 malilib.gui.button.hover.hotkey_search_button=Search hotkeys for the given keys
 malilib.gui.button.hover.keybind.middle_click_to_clear=(Middle click to clear)
-malilib.gui.button.hover.keybind.possible_overlaps=Possible overlaps [most are fine though!!]:
+malilib.gui.button.hover.keybind.possible_overlaps=Possible overlaps [<i>most are fine though!!</i>]:
 malilib.gui.button.hover.plus_minus_tip=Left click to increase\nRight click to decrease\nShift and/or Alt to increase the step size
 malilib.gui.button.hover.render_layers_gui.follow_player=If enabled, then the render layer follows the player
 malilib.gui.button.hover.text_field_slider_toggle=Toggle between a text field and a slider
-malilib.gui.button.hover.text_field_slider_toggle.not_allowed=§6Using a slider is currently disabled for this config§r
+malilib.gui.button.hover.text_field_slider_toggle.not_allowed=§6Using a slider is currently disabled for this config
 
 malilib.gui.button.hover.list.add_after=Add an entry after
 malilib.gui.button.hover.list.add_first=Add an entry
@@ -129,7 +131,7 @@ malilib.gui.button.hover.list.move_down=Move Down
 malilib.gui.button.hover.list.move_up=Move Up
 malilib.gui.button.hover.list.remove=Remove
 
-malilib.gui.hover.open_color_editor=Open color editor\nCurrent: §f%s§7 (AARRGGBB)
+malilib.gui.hover.open_color_editor=Open color editor\nCurrent color: §f%s§7 (AARRGGBB)
 
 malilib.gui.label.black_white_list_edit.black_list=Black List
 malilib.gui.label.black_white_list_edit.type=List Type
@@ -166,7 +168,7 @@ malilib.gui.label.confirm_config_reset=Are you sure you wan to reset all the con
 
 malilib.gui.label_error.no_widget_factory_for_config_type=§cUnknown config type '%s' (no widget factory registered)§r
 
-malilib.gui.label.hover.config_search_default_scope=You can change the default scope value that this drop down widget\nis set to in malilib's configs: Generic > Config Search Default Scope
+malilib.gui.label.hover.config_search_default_scope=You can change the default scope value that this drop down widget is set to in malilib's configs: Generic > Config Search Default Scope
 
 malilib.gui.label.keybind_display.actions=Actions
 malilib.gui.label.keybind_display.keys=Keys

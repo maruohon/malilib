@@ -18,6 +18,7 @@ import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.render.TextRenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
+import fi.dy.masa.malilib.util.StyledTextUtils;
 import fi.dy.masa.malilib.util.data.LeftRight;
 
 /**
@@ -952,14 +953,12 @@ public class DropDownListWidget<T> extends ContainerWidget
         protected void setDisplayString(String text)
         {
             int width = this.getWidth();
-            int usableWidth = (this.iconWidget != null ? width - this.iconWidget.getWidth() - 4 : width) - 2;
+            int usableWidth = (this.iconWidget != null ? width - this.iconWidget.getWidth() - 4 : width) - 10;
             this.displayStringFull = StyledTextLine.of(text);
 
             if (this.displayStringFull.renderWidth > usableWidth)
             {
-                // TODO this needs a style aware clamping method
-                text = StringUtils.clampTextToRenderLength(this.displayStringFull.displayText, usableWidth, LeftRight.RIGHT, " ...");
-                this.displayStringClamped = StyledTextLine.of(text);
+                this.displayStringClamped = StyledTextUtils.clampStyledTextToMaxWidth(this.displayStringFull, usableWidth, LeftRight.RIGHT, " ...");
             }
             else
             {

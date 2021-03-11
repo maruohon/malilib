@@ -171,15 +171,7 @@ public class TextStyle
 
         public Builder(TextStyle old)
         {
-            this.color = old.color;
-            this.shadowColor = old.shadowColor;
-            this.bold = old.bold;
-            this.italic = old.italic;
-            this.underline = old.underline;
-            this.strikeThrough = old.strikeThrough;
-            this.random = old.random;
-            this.gradient = old.gradient;
-            this.shadow = old.shadow;
+            this.fromStyle(old);
         }
 
         public Builder resetAll()
@@ -203,6 +195,20 @@ public class TextStyle
             this.underline = false;
             this.strikeThrough = false;
             this.random = false;
+            return this;
+        }
+
+        public Builder fromStyle(TextStyle old)
+        {
+            this.color = old.color;
+            this.shadowColor = old.shadowColor;
+            this.bold = old.bold;
+            this.italic = old.italic;
+            this.underline = old.underline;
+            this.strikeThrough = old.strikeThrough;
+            this.random = old.random;
+            this.gradient = old.gradient;
+            this.shadow = old.shadow;
             return this;
         }
 

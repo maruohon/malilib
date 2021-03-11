@@ -26,6 +26,7 @@ public class MaLiLibConfigs
         public static final OptionListConfig<HudAlignment> KEYBIND_DISPLAY_ALIGNMENT    = new OptionListConfig<>("keybindDisplayAlignment", HudAlignment.BOTTOM_RIGHT, HudAlignment.VALUES);
 
         public static final StringConfig DATA_DUMP_CSV_DELIMITER                = new StringConfig("dataDumpCsvDelimiter", ",");
+        public static final IntegerConfig HOVER_TEXT_MAX_WIDTH                  = new IntegerConfig("hoverTextMaxWidth", 310, 16, 4096);
         public static final HotkeyConfig IGNORED_KEYS                           = new HotkeyConfig("ignoredKeys", "");
         public static final BooleanConfig KEYBIND_DISPLAY_CALLBACK_ONLY         = new BooleanConfig("keybindDisplayCallbackOnly", true);
         public static final BooleanConfig KEYBIND_DISPLAY_CANCEL_ONLY           = new BooleanConfig("keybindDisplayCancelOnly", true);
@@ -37,6 +38,7 @@ public class MaLiLibConfigs
         public static final ImmutableList<ConfigOption<?>> OPTIONS = ImmutableList.of(
                 CONFIG_SEARCH_DEFAULT_SCOPE,
                 DATA_DUMP_CSV_DELIMITER,
+                HOVER_TEXT_MAX_WIDTH,
                 IGNORED_KEYS,
                 KEYBIND_DISPLAY,
                 KEYBIND_DISPLAY_ALIGNMENT,

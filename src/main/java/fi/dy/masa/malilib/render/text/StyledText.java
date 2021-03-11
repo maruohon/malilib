@@ -9,6 +9,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.MaLiLib;
+import fi.dy.masa.malilib.util.StringUtils;
 
 public class StyledText
 {
@@ -49,6 +50,11 @@ public class StyledText
         TEXT_CACHE.invalidateAll();
     }
 
+    public static StyledText translatedOf(String translationKey)
+    {
+        return of(StringUtils.translate(translationKey));
+    }
+
     public static StyledText of(String str)
     {
         try
@@ -63,9 +69,28 @@ public class StyledText
         }
     }
 
+    public static StyledText of(String str, TextStyle startingStyle)
+    {
+        try
+        {
+            //System.out.printf("StyledText: cache size: %d\n", TEXT_CACHE.size());
+            return TEXT_CACHE.get(str, () -> StyledTextParser.parseStringWithStartingStyle(str, startingStyle));
+        }
+        catch (ExecutionException e)
+        {
+            MaLiLib.LOGGER.warn("Exception while retrieving StyledText from cache", e);
+            return StyledTextParser.parseStringWithStartingStyle(str, startingStyle);
+        }
+    }
+
     public static Builder builder()
     {
         return new Builder();
+    }
+
+    public static Builder builder(TextStyle startingStyle)
+    {
+        return new Builder(startingStyle);
     }
 
     public static class Builder
@@ -75,6 +100,15 @@ public class StyledText
         protected final TextStyle.Builder styleBuilder = TextStyle.builder();
         protected StringBuilder displayStringForCurrentSegment = new StringBuilder();
         protected StringBuilder originalTextStringForCurrentSegment = new StringBuilder();
+
+        Builder()
+        {
+        }
+
+        Builder(TextStyle startingStyle)
+        {
+            this.styleBuilder.fromStyle(startingStyle);
+        }
 
         public void appendDisplayString(String str)
         {

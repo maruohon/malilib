@@ -9,6 +9,7 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.widget.BackgroundWidget;
+import fi.dy.masa.malilib.render.text.StyledText;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.LeftRight;
@@ -17,10 +18,10 @@ public abstract class BaseButton extends BackgroundWidget
 {
     protected static final ResourceLocation BUTTON_TEXTURES = new ResourceLocation("minecraft", "textures/gui/widgets.png");
 
-    protected final ImmutableList<String> hoverHelp;
+    protected final ImmutableList<StyledTextLine> hoverHelp;
+    protected StyledTextLine styledDisplayString;
     protected String displayString;
     protected String fullDisplayString;
-    protected StyledTextLine styledDisplayString;
     protected boolean canScrollToClick;
     protected boolean enabled = true;
     protected boolean hoverInfoRequiresShift;
@@ -45,7 +46,7 @@ public abstract class BaseButton extends BackgroundWidget
         super(x, y, width, height);
 
         this.actionListener = actionListener;
-        this.hoverHelp = ImmutableList.of(StringUtils.translate("malilib.gui.button.hover.hold_shift_for_info"));
+        this.hoverHelp = StyledText.translatedOf("malilib.gui.button.hover.hold_shift_for_info").lines;
         this.setHoverStringProvider("full_label", this::getFullLabelHoverString, 99);
 
         this.setDisplayString(StringUtils.translate(translationKey));
@@ -220,14 +221,14 @@ public abstract class BaseButton extends BackgroundWidget
     }
 
     @Override
-    public ImmutableList<String> getHoverStrings()
+    public ImmutableList<StyledTextLine> getHoverText()
     {
         if (this.hoverInfoRequiresShift && BaseScreen.isShiftDown() == false)
         {
             return this.hoverHelp;
         }
 
-        return super.getHoverStrings();
+        return super.getHoverText();
     }
 
     protected List<String> getFullLabelHoverString()

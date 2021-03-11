@@ -12,6 +12,7 @@ public class StyledTextSegment
     public final TextStyle style;
     public final String displayText;
     public final String originalString;
+    public final int glyphCount;
     public final int renderWidth;
 
     public StyledTextSegment(ResourceLocation texture, TextStyle style, ImmutableList<Glyph> glyphs, String displayText, String originalString)
@@ -35,9 +36,14 @@ public class StyledTextSegment
             renderWidth += glyphs.size();
         }
 
+        this.glyphCount = glyphs.size();
         this.renderWidth = renderWidth;
     }
 
+    /**
+     * Returns the Glyphs for rendering.
+     * These will be randomized, if this segment has the random/obfuscated style set.
+     */
     public List<Glyph> getGlyphsForRender()
     {
         if (this.style.random)
@@ -46,6 +52,46 @@ public class StyledTextSegment
         }
 
         return this.glyphs;
+    }
+
+    public List<Glyph> getOriginalGlyphs()
+    {
+        return this.glyphs;
+    }
+
+    /**
+     * Returns a sub segment of this text segment.
+     * @param startIndex the inclusive start index of the sub segment
+     * @param endIndex the exclusive end index of the sub segment
+     */
+    public StyledTextSegment getSubSegment(int startIndex, int endIndex)
+    {
+        if (startIndex < 0 || startIndex >= this.glyphCount)
+        {
+            throw new IllegalArgumentException(String.format("start index out of bounds - startIndex: %d, endIndex: %d, glyphCount: %d",
+                                                             startIndex, endIndex, this.glyphCount));
+        }
+
+        if (endIndex <= startIndex || endIndex > this.glyphCount)
+        {
+            throw new IllegalArgumentException(String.format("end index out of bounds - startIndex: %d, endIndex: %d, glyphCount: %d",
+                                                             startIndex, endIndex, this.glyphCount));
+        }
+
+        ImmutableList.Builder<Glyph> glyphs = ImmutableList.builder();
+
+        for (int i = startIndex; i < endIndex; ++i)
+        {
+            glyphs.add(this.glyphs.get(i));
+        }
+
+        int stylePrefixLength = startIndex == 0 ? this.originalString.length() - this.displayText.length() : 0;
+        int originalStringStart = startIndex == 0 ? 0 : stylePrefixLength + startIndex;
+        int originalStringEnd = originalStringStart + stylePrefixLength + (endIndex - startIndex);
+        String originalStringSegment = this.originalString.substring(originalStringStart, originalStringEnd);
+        String displayStringSegment = this.displayText.substring(startIndex, endIndex);
+
+        return new StyledTextSegment(this.texture, this.style, glyphs.build(), displayStringSegment, originalStringSegment);
     }
 
     @Override

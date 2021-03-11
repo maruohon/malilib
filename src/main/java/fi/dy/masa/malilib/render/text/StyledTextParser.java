@@ -17,20 +17,30 @@ public class StyledTextParser
     protected static final Pattern PATTERN_COLOR_6 = Pattern.compile("[0-9a-fA-F]{6}>");
     protected static final Pattern PATTERN_COLOR_8 = Pattern.compile("[0-9a-fA-F]{8}>");
 
+    public static StyledText parseStringWithStartingStyle(String str, TextStyle style)
+    {
+        StyledText.Builder builder = StyledText.builder(style);
+        return parseString(str, builder);
+    }
+
     public static StyledText parseString(String str)
+    {
+        StyledText.Builder builder = StyledText.builder();
+        return parseString(str, builder);
+    }
+
+    public static StyledText parseString(String str, StyledText.Builder builder)
     {
         StringReader reader = new StringReader(str);
         List<Token> tokens = new ArrayList<>();
 
         readTokens(reader, tokens);
 
-        return parseTokensToStyledText(tokens);
+        return parseTokensToStyledText(tokens, builder);
     }
 
-    public static StyledText parseTokensToStyledText(List<Token> tokens)
+    public static StyledText parseTokensToStyledText(List<Token> tokens, StyledText.Builder builder)
     {
-        StyledText.Builder builder = StyledText.builder();
-
         for (Token token : tokens)
         {
             token.applyTo(builder);
