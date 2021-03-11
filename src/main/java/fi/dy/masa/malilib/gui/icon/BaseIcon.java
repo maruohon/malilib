@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.gui.icon;
 import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.render.ShapeRenderUtils;
 
 public class BaseIcon implements Icon
 {
@@ -59,7 +60,7 @@ public class BaseIcon implements Icon
     }
 
     @Override
-    public void renderAt(int x, int y, float zLevel)
+    public void renderAt(int x, int y, float z)
     {
         if (this.w == 0 || this.h == 0)
         {
@@ -68,6 +69,6 @@ public class BaseIcon implements Icon
 
         RenderUtils.color(1f, 1f, 1f, 1f);
         RenderUtils.bindTexture(this.getTexture());
-        RenderUtils.renderTexturedRectangle(x, y, this.u, this.v, this.w, this.h, zLevel);
+        ShapeRenderUtils.renderTexturedRectangle(x, y, z, this.u, this.v, this.w, this.h);
     }
 }

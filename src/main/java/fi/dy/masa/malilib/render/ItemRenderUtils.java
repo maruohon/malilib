@@ -65,6 +65,6 @@ public class ItemRenderUtils
             }
         }
 
-        RenderUtils.renderHoverText(x, y, zLevel, list);
+        TextRenderUtils.renderHoverText(x, y, zLevel, list);
     }
 }

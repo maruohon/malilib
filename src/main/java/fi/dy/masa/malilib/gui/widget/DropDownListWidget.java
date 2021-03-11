@@ -14,7 +14,9 @@ import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.entry.SelectionListener;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
+import fi.dy.masa.malilib.render.TextRenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.LeftRight;
 
@@ -695,7 +697,7 @@ public class DropDownListWidget<T> extends ContainerWidget
             int diffY = y - this.getY();
 
             RenderUtils.color(1f, 1f, 1f, 1f);
-            RenderUtils.renderOutlinedBox(x, this.dropdownTopY + diffY, this.getWidth(), this.dropdownHeight, 0xFF000000, this.borderColorOpen, z);
+            ShapeRenderUtils.renderOutlinedRectangle(x, this.dropdownTopY + diffY, z, this.getWidth(), this.dropdownHeight, 0xFF000000, this.borderColorOpen);
 
             if (this.searchOpen == false && MaLiLibConfigs.Info.DROP_DOWN_SEARCH_TIP.getBooleanValue())
             {
@@ -710,7 +712,7 @@ public class DropDownListWidget<T> extends ContainerWidget
                     tx -= (right - windowWidth);
                 }
 
-                RenderUtils.renderOutlinedBox(tx, ty, sw + 10, 16, 0xFF000000, 0xFFFFFF20, z);
+                ShapeRenderUtils.renderOutlinedRectangle(tx, ty, z, sw + 10, 16, 0xFF000000, 0xFFFFFF20);
                 this.renderTextLine(tx + 4, ty + 4, z + 0.1f, 0xFFFFC000, false, this.searchTipText);
             }
         }
@@ -892,7 +894,7 @@ public class DropDownListWidget<T> extends ContainerWidget
 
             if (this.dropdownWidget.isOpen() && this.openStateHoverText != null)
             {
-                RenderUtils.renderHoverText(mouseX + 4, mouseY + 4, this.getZLevel() + 50, this.openStateHoverText);
+                TextRenderUtils.renderHoverText(mouseX + 4, mouseY + 4, this.getZLevel() + 50, this.openStateHoverText);
             }
         }
 

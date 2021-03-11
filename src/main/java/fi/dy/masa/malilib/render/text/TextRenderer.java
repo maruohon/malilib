@@ -21,6 +21,7 @@ import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.util.data.Color4f;
 import it.unimi.dsi.fastutil.chars.Char2ObjectOpenHashMap;
 
@@ -388,13 +389,13 @@ public class TextRenderer implements IResourceManagerReloadListener
         if (style.underline)
         {
             float lineHeight = this.unicode ? 0.5F : 1.0F;
-            RenderUtils.renderRectangleBatched(x - 1F, y + this.fontHeight - 1F, z, segment.renderWidth, lineHeight, color, this.styleBuffer);
+            ShapeRenderUtils.renderRectangle(x - 1F, y + this.fontHeight - 1F, z, segment.renderWidth, lineHeight, color, this.styleBuffer);
         }
 
         if (style.strikeThrough)
         {
             float lineHeight = this.unicode ? 0.5F : 1.0F;
-            RenderUtils.renderRectangleBatched(x - 1F, y + this.fontHeight / 2.0F - 1F, z, segment.renderWidth + 1, lineHeight, color, this.styleBuffer);
+            ShapeRenderUtils.renderRectangle(x - 1F, y + this.fontHeight / 2.0F - 1F, z, segment.renderWidth + 1, lineHeight, color, this.styleBuffer);
         }
 
         return this.renderTextSegmentWithColor(x, y, z, segment, color, this.textBuffer);

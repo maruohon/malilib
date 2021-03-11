@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class GenericButton extends BaseButton
@@ -214,8 +215,8 @@ public class GenericButton extends BaseButton
         int w2 = (width % 2) != 0 ? w1 + 1 : w1;
         int buttonStyle = this.getTextureOffset(hovered);
 
-        RenderUtils.renderTexturedRectangle(x     , y, 0, 46 + buttonStyle * 20, w1, height, z);
-        RenderUtils.renderTexturedRectangle(x + w1, y, 200 - w2, 46 + buttonStyle * 20, w2, height, z);
+        ShapeRenderUtils.renderTexturedRectangle(x     , y, z,        0, 46 + buttonStyle * 20, w1, height);
+        ShapeRenderUtils.renderTexturedRectangle(x + w1, y, z, 200 - w2, 46 + buttonStyle * 20, w2, height);
     }
 
     @Override
@@ -235,7 +236,7 @@ public class GenericButton extends BaseButton
             if (this.renderOutline)
             {
                 int color = hovered && this.enabled ? this.outlineColorHover : this.outlineColorNormal;
-                RenderUtils.renderOutline(x, y, width, height, 1, color, z);
+                ShapeRenderUtils.renderOutline(x, y, z, width, height, 1, color);
             }
 
             if (this.renderBackground)

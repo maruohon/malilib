@@ -5,8 +5,8 @@ import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
-import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.message.MessageHelpers;
+import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class OnOffButton extends GenericButton
@@ -148,8 +148,8 @@ public class OnOffButton extends GenericButton
 
             this.bindTexture(icon.getTexture());
 
-            RenderUtils.renderTexturedRectangle(sliderX, y + 1              , u, v1, iconWidth, iconHeight1, z);
-            RenderUtils.renderTexturedRectangle(sliderX, y + 1 + iconHeight1, u, v2, iconWidth, iconHeight2, z);
+            ShapeRenderUtils.renderTexturedRectangle(sliderX, y + 1              , z, u, v1, iconWidth, iconHeight1);
+            ShapeRenderUtils.renderTexturedRectangle(sliderX, y + 1 + iconHeight1, z, u, v2, iconWidth, iconHeight2);
         }
         else
         {

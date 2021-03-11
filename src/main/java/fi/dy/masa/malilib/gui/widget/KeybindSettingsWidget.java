@@ -15,6 +15,7 @@ import fi.dy.masa.malilib.input.CancelCondition;
 import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.input.KeyBindSettings;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class KeybindSettingsWidget extends InteractableWidget
@@ -83,21 +84,21 @@ public class KeybindSettingsWidget extends InteractableWidget
 
         int edgeColor = this.keyBind.areSettingsModified() ? 0xFFFFBB33 : 0xFFFFFFFF;
 
-        RenderUtils.renderRectangle(x    , y    , 20, 20, edgeColor, z);
-        RenderUtils.renderRectangle(x + 1, y + 1, 18, 18, 0xFF000000, z);
+        ShapeRenderUtils.renderRectangle(x    , y    , z, 20, 20, edgeColor);
+        ShapeRenderUtils.renderRectangle(x + 1, y + 1, z, 18, 18, 0xFF000000);
 
         x += 1;
         y += 1;
 
         RenderUtils.color(1f, 1f, 1f, 1f);
 
-        RenderUtils.renderTexturedRectangle(x, y,  0, v1, w, w, z);
-        RenderUtils.renderTexturedRectangle(x, y, 18, v2, w, w, z);
-        RenderUtils.renderTexturedRectangle(x, y, 36, v3, w, w, z);
-        RenderUtils.renderTexturedRectangle(x, y, 54, v4, w, w, z);
-        RenderUtils.renderTexturedRectangle(x, y, 72, v5, w, w, z);
-        RenderUtils.renderTexturedRectangle(x, y, 90, v6, w, w, z);
-        RenderUtils.renderTexturedRectangle(x, y, 90, v7, w, w, z);
+        ShapeRenderUtils.renderTexturedRectangle(x, y, z,  0, v1, w, w);
+        ShapeRenderUtils.renderTexturedRectangle(x, y, z, 18, v2, w, w);
+        ShapeRenderUtils.renderTexturedRectangle(x, y, z, 36, v3, w, w);
+        ShapeRenderUtils.renderTexturedRectangle(x, y, z, 54, v4, w, w);
+        ShapeRenderUtils.renderTexturedRectangle(x, y, z, 72, v5, w, w);
+        ShapeRenderUtils.renderTexturedRectangle(x, y, z, 90, v6, w, w);
+        ShapeRenderUtils.renderTexturedRectangle(x, y, z, 90, v7, w, w);
     }
 
     protected List<String> rebuildHoverStrings()

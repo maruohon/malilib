@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.gui.widget.list.entry;
 
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 
 public class StringListEntryWidget extends BaseDataListEntryWidget<String>
@@ -27,16 +28,16 @@ public class StringListEntryWidget extends BaseDataListEntryWidget<String>
         // Draw a lighter background for the hovered entry
         if (selected || (isActiveGui && this.getId() == hoveredWidgetId))
         {
-            RenderUtils.renderRectangle(x, y, width, height, 0xA0707070, z);
+            ShapeRenderUtils.renderRectangle(x, y, z, width, height, 0xA0707070);
         }
         else if (this.isOdd)
         {
-            RenderUtils.renderRectangle(x, y, width, height, 0xA0101010, z);
+            ShapeRenderUtils.renderRectangle(x, y, z, width, height, 0xA0101010);
         }
         // Draw a slightly lighter background for even entries
         else
         {
-            RenderUtils.renderRectangle(x, y, width, height, 0xA0303030, z);
+            ShapeRenderUtils.renderRectangle(x, y, z, width, height, 0xA0303030);
         }
 
         this.renderTextLine(x + 2, y + this.getCenteredTextOffsetY(), z, 0xFFFFFFFF, true, this.string);

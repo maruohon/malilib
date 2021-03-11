@@ -33,7 +33,7 @@ public interface Icon
      * Renders this icon at the given position
      * @param x
      * @param y
-     * @param zLevel
+     * @param z
      */
-    void renderAt(int x, int y, float zLevel);
+    void renderAt(int x, int y, float z);
 }

@@ -27,6 +27,7 @@ import fi.dy.masa.malilib.message.MessageConsumer;
 import fi.dy.masa.malilib.message.MessageRenderer;
 import fi.dy.masa.malilib.message.MessageType;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.util.consumer.StringConsumer;
 
 public abstract class BaseScreen extends GuiScreen implements MessageConsumer, StringConsumer
@@ -695,11 +696,11 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
     {
         if (this.renderBorder)
         {
-            RenderUtils.renderOutlinedBox(this.x, this.y, this.screenWidth, this.screenHeight, this.backgroundColor, this.borderColor, this.zLevel);
+            ShapeRenderUtils.renderOutlinedRectangle(this.x, this.y, this.zLevel, this.screenWidth, this.screenHeight, this.backgroundColor, this.borderColor);
         }
         else
         {
-            RenderUtils.renderRectangle(this.x, this.y, this.screenWidth, this.screenHeight, this.backgroundColor, this.zLevel);
+            ShapeRenderUtils.renderRectangle(this.x, this.y, this.zLevel, this.screenWidth, this.screenHeight, this.backgroundColor);
         }
     }
 

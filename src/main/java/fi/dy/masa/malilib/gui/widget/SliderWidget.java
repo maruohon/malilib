@@ -4,6 +4,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.gui.callback.SliderCallback;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 
 public class SliderWidget extends InteractableWidget
@@ -85,8 +86,8 @@ public class SliderWidget extends InteractableWidget
         RenderUtils.color(1f, 1f, 1f, 1f);
 
         // Render the slider background texture
-        RenderUtils.renderTexturedRectangle(x + 1        , y,   0, 46, width - 6, 20, z);
-        RenderUtils.renderTexturedRectangle(x + width - 5, y, 196, 46,         4, 20, z);
+        ShapeRenderUtils.renderTexturedRectangle(x + 1        , y, z,   0, 46, width - 6, 20);
+        ShapeRenderUtils.renderTexturedRectangle(x + width - 5, y, z, 196, 46,         4, 20);
 
         double relPos = this.callback.getRelativeValue();
         int sw = this.sliderWidth;
@@ -95,8 +96,8 @@ public class SliderWidget extends InteractableWidget
         int v = this.locked ? 46 : 66;
 
         // Render the slider bar texture
-        RenderUtils.renderTexturedRectangle(x + 2 + (int) (relPos * usableWidth)    , y,       0, v, s, 20, z);
-        RenderUtils.renderTexturedRectangle(x + 2 + (int) (relPos * usableWidth) + s, y, 200 - s, v, s, 20, z);
+        ShapeRenderUtils.renderTexturedRectangle(x + 2 + (int) (relPos * usableWidth)    , y, z,       0, v, s, 20);
+        ShapeRenderUtils.renderTexturedRectangle(x + 2 + (int) (relPos * usableWidth) + s, y, z, 200 - s, v, s, 20);
 
         StyledTextLine text = StyledTextLine.raw(this.callback.getFormattedDisplayValue());
         int textWidth = text.renderWidth;

@@ -8,7 +8,7 @@ import fi.dy.masa.malilib.gui.widget.list.BaseFileBrowserWidget.DirectoryEntry;
 import fi.dy.masa.malilib.gui.widget.list.BaseFileBrowserWidget.DirectoryEntryType;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.gui.widget.util.DirectoryNavigator;
-import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.FileUtils;
 
@@ -62,26 +62,26 @@ public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry
         // Draw a lighter background for the hovered and the selected entry
         if (selected)
         {
-            RenderUtils.renderRectangle(x, y, width, height, 0x70FFFFFF, z);
+            ShapeRenderUtils.renderRectangle(x, y, z, width, height, 0x70FFFFFF);
         }
         else if (isActiveGui && this.getId() == hoveredWidgetId)
         {
-            RenderUtils.renderRectangle(x, y, width, height, 0x60FFFFFF, z);
+            ShapeRenderUtils.renderRectangle(x, y, z, width, height, 0x60FFFFFF);
         }
         else if (this.isOdd)
         {
-            RenderUtils.renderRectangle(x, y, width, height, 0x20FFFFFF, z);
+            ShapeRenderUtils.renderRectangle(x, y, z, width, height, 0x20FFFFFF);
         }
         // Draw a slightly lighter background for even entries
         else
         {
-            RenderUtils.renderRectangle(x, y, width, height, 0x38FFFFFF, z);
+            ShapeRenderUtils.renderRectangle(x, y, z, width, height, 0x38FFFFFF);
         }
 
         // Draw an outline if this is the currently selected entry
         if (selected)
         {
-            RenderUtils.renderOutline(x, y, width, height, 1, 0xEEEEEEEE, z);
+            ShapeRenderUtils.renderOutline(x, y, z, width, height, 1, 0xEEEEEEEE);
         }
 
         if (icon != null)

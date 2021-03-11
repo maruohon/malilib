@@ -18,7 +18,7 @@ import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.util.DirectoryNavigator;
 import fi.dy.masa.malilib.listener.TextChangeListener;
-import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.util.DirectoryCreator;
 import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.StringUtils;
@@ -162,7 +162,7 @@ public class DirectoryNavigationWidget extends SearchBarWidget
         if (this.searchOpen == false)
         {
             int diffX = x - this.getX();
-            RenderUtils.renderRectangle(this.pathStartX - 2 + diffX, y, this.getMaxPathBarWidth() + 4, this.getHeight(), 0xFF242424, z);
+            ShapeRenderUtils.renderRectangle(this.pathStartX - 2 + diffX, y, z, this.getMaxPathBarWidth() + 4, this.getHeight(), 0xFF242424);
         }
 
         super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hovered);

@@ -11,6 +11,7 @@ import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.position.VerticalAlignment;
 import fi.dy.masa.malilib.gui.widget.BaseWidget;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.LeftRight;
 
@@ -355,7 +356,7 @@ public class StringListRenderer extends BaseWidget
                 lineX = x - line.renderWidth / 2 - 1;
             }
 
-            RenderUtils.renderRectangleBatched(lineX, y, z, line.renderWidth + 3, this.lineHeight, bgColor, buffer);
+            ShapeRenderUtils.renderRectangle(lineX, y, z, line.renderWidth + 3, this.lineHeight, bgColor, buffer);
             y += this.lineHeight;
             usedHeight += this.lineHeight;
         }

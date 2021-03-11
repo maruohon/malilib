@@ -5,7 +5,7 @@ import fi.dy.masa.malilib.config.option.IntegerConfig;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.ColorEditorHSVScreen;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
-import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.util.data.Color4f;
 
 public class ColorIndicatorWidget extends InteractableWidget
@@ -45,8 +45,8 @@ public class ColorIndicatorWidget extends InteractableWidget
         int width = this.getWidth();
         int height = this.getHeight();
 
-        RenderUtils.renderRectangle(x    , y    , width    , height    , 0xFFFFFFFF, z);
-        RenderUtils.renderRectangle(x + 1, y + 1, width - 2, height - 2, 0xFF000000, z);
-        RenderUtils.renderRectangle(x + 2, y + 2, width - 4, height - 4, 0xFF000000 | this.config.getIntegerValue(), z);
+        ShapeRenderUtils.renderRectangle(x    , y    , z, width    , height    , 0xFFFFFFFF);
+        ShapeRenderUtils.renderRectangle(x + 1, y + 1, z, width - 2, height - 2, 0xFF000000);
+        ShapeRenderUtils.renderRectangle(x + 2, y + 2, z, width - 4, height - 4, 0xFF000000 | this.config.getIntegerValue());
     }
 }

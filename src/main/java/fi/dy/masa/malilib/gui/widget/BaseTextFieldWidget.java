@@ -18,6 +18,7 @@ import fi.dy.masa.malilib.listener.TextChangeListener;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.message.MessageRenderer;
 import fi.dy.masa.malilib.message.MessageType;
+import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.render.text.TextRenderer;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.LeftRight;
@@ -902,7 +903,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
             if (this.cursorPosition == this.text.length() && this.selectionStartPosition == -1)
             {
                 int offX = this.visibleText.getStyledText().renderWidth;
-                RenderUtils.renderHorizontalLine(x + offX, y + this.fontHeight + 3, 5, color, z + 0.1f);
+                ShapeRenderUtils.renderHorizontalLine(x + offX, y + this.fontHeight + 3, z + 0.1f, 5, color);
             }
             else
             {
@@ -917,9 +918,9 @@ public class BaseTextFieldWidget extends BackgroundWidget
                 int y2 = y1 + cursorExtraHeight;
                 int y3 = y2 + this.fontHeight;
 
-                RenderUtils.renderVerticalLine(x + offX, y1, cursorExtraHeight    , color  , z + 0.1f);
-                RenderUtils.renderVerticalLine(x + offX, y2, this.fontHeight      , colorTr, z + 0.1f);
-                RenderUtils.renderVerticalLine(x + offX, y3, cursorExtraHeight + 1, color  , z + 0.1f);
+                ShapeRenderUtils.renderVerticalLine(x + offX, y1, z + 0.1f, cursorExtraHeight    , color);
+                ShapeRenderUtils.renderVerticalLine(x + offX, y2, z + 0.1f, this.fontHeight      , colorTr);
+                ShapeRenderUtils.renderVerticalLine(x + offX, y3, z + 0.1f, cursorExtraHeight + 1, color);
             }
         }
     }
@@ -956,7 +957,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
                 String str = visibleText.substring(p1, p2);
                 int selWidth = this.getRawStringWidth(str);
 
-                RenderUtils.renderRectangle(x, y - 2, selWidth, this.fontHeight + 3, textColor, z);
+                ShapeRenderUtils.renderRectangle(x, y - 2, z, selWidth, this.fontHeight + 3, textColor);
                 this.renderPlainString(x, y, z, 0xFF000000, false, str);
                 x += selWidth;
 

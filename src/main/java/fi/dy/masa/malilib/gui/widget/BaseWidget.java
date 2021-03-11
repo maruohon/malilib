@@ -12,14 +12,16 @@ import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.gui.position.EdgeInt;
 import fi.dy.masa.malilib.render.RectangleRenderer;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.render.text.TextRenderer;
+import fi.dy.masa.malilib.render.TextRenderUtils;
 import fi.dy.masa.malilib.util.data.Color4f;
 
 public class BaseWidget
 {
     public static final ImmutableList<String> EMPTY_STRING_LIST = ImmutableList.of();
-    public static final RectangleRenderer DEBUG_TEXT_BG_RENDERER = (x, y, w, h, z) -> RenderUtils.renderOutlinedBox(x - 3, y - 3, w + 6, h + 6, 0xE0000000, 0xFFC0C0C0, z);
+    public static final RectangleRenderer DEBUG_TEXT_BG_RENDERER = (x, y, z, w, h) -> ShapeRenderUtils.renderOutlinedRectangle(x - 3, y - 3, z, w + 6, h + 6, 0xE0000000, 0xFFC0C0C0);
 
     private static final ArrayListMultimap<Long, String> DEBUG_STRINGS = ArrayListMultimap.create();
     private static int lastDebugOutlineColorHue;
@@ -459,7 +461,7 @@ public class BaseWidget
             {
                 int x = (int) posLong.longValue();
                 int y = (int) (posLong.longValue() >>> 32);
-                RenderUtils.renderHoverText(x, y, 10, DEBUG_STRINGS.get(posLong), 0xFFFF4040, DEBUG_TEXT_BG_RENDERER);
+                TextRenderUtils.renderHoverText(x, y, 10, DEBUG_STRINGS.get(posLong), 0xFFFF4040, DEBUG_TEXT_BG_RENDERER);
             }
 
             DEBUG_STRINGS.clear();

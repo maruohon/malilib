@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.gui.widget;
 
-import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.render.ShapeRenderUtils;
 
 public abstract class BaseModelWidget extends BackgroundWidget
 {
@@ -89,7 +89,7 @@ public abstract class BaseModelWidget extends BackgroundWidget
 
         if (this.doHighlight && hovered)
         {
-            RenderUtils.renderRectangle(x, y, width, height, this.highlightColor, z);
+            ShapeRenderUtils.renderRectangle(x, y, z, width, height, this.highlightColor);
         }
 
         this.renderModel(x, y, z + 0.5f, this.scale);

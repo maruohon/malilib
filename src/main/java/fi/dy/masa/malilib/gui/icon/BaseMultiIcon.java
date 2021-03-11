@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.gui.icon;
 
 import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.render.ShapeRenderUtils;
 
 public class BaseMultiIcon extends BaseIcon implements MultiIcon
 {
@@ -47,7 +48,7 @@ public class BaseMultiIcon extends BaseIcon implements MultiIcon
     }
 
     @Override
-    public void renderAt(int x, int y, float zLevel, int variantIndex)
+    public void renderAt(int x, int y, float z, int variantIndex)
     {
         if (this.w == 0 || this.h == 0)
         {
@@ -60,6 +61,6 @@ public class BaseMultiIcon extends BaseIcon implements MultiIcon
         RenderUtils.color(1f, 1f, 1f, 1f);
         RenderUtils.setupBlend();
         RenderUtils.bindTexture(this.getTexture());
-        RenderUtils.renderTexturedRectangle(x, y, u, v, this.w, this.h, zLevel);
+        ShapeRenderUtils.renderTexturedRectangle(x, y, z, u, v, this.w, this.h);
     }
 }

@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.gui.widget;
 
 import fi.dy.masa.malilib.gui.position.EdgeInt;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.render.ShapeRenderUtils;
 
 public class BackgroundWidget extends InteractableWidget
 {
@@ -125,12 +126,12 @@ public class BackgroundWidget extends InteractableWidget
         EdgeInt color = hoverBorder ? this.borderColorHovered : this.borderColorNormal;
 
         // Horizontal lines/borders
-        RenderUtils.renderRectangle(x, y         , w, bw, color.getTop()   , z);
-        RenderUtils.renderRectangle(x, y + h - bw, w, bw, color.getBottom(), z);
+        ShapeRenderUtils.renderRectangle(x, y         , z, w, bw, color.getTop());
+        ShapeRenderUtils.renderRectangle(x, y + h - bw, z, w, bw, color.getBottom());
 
         // Vertical lines/borders
-        RenderUtils.renderRectangle(x         , y + bw, bw, h - b2, color.getLeft() , z);
-        RenderUtils.renderRectangle(x + w - bw, y + bw, bw, h - b2, color.getRight(), z);
+        ShapeRenderUtils.renderRectangle(x         , y + bw, z, bw, h - b2, color.getLeft());
+        ShapeRenderUtils.renderRectangle(x + w - bw, y + bw, z, bw, h - b2, color.getRight());
     }
 
     protected void renderBackgroundIfEnabled(int x, int y, float z, int width, int height, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
@@ -154,6 +155,6 @@ public class BackgroundWidget extends InteractableWidget
 
         // Background
         int color = hoverBg ? this.backgroundColorHovered : this.backgroundColor;
-        RenderUtils.renderRectangle(x + bw, y + bw, width - b2, height - b2, color, z);
+        ShapeRenderUtils.renderRectangle(x + bw, y + bw, z, width - b2, height - b2, color);
     }
 }

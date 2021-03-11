@@ -23,24 +23,24 @@ public interface MultiIcon extends Icon
      * from the base location.
      * @param x
      * @param y
-     * @param zLevel
+     * @param z
      * @param variantIndex
      */
-    void renderAt(int x, int y, float zLevel, int variantIndex);
+    void renderAt(int x, int y, float z, int variantIndex);
 
     /**
      * Renders the icon at the given location, using an icon variant chosen
      * by the given enabled and hover status.
      * @param x
      * @param y
-     * @param zLevel
+     * @param z
      * @param enabled
      * @param hovered
      */
-    default void renderAt(int x, int y, float zLevel, boolean enabled, boolean hovered)
+    default void renderAt(int x, int y, float z, boolean enabled, boolean hovered)
     {
         int variantIndex = this.getVariantIndex(enabled, hovered);
-        this.renderAt(x, y, zLevel, variantIndex);
+        this.renderAt(x, y, z, variantIndex);
     }
 
     /**

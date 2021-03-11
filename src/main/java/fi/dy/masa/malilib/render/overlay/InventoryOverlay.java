@@ -32,6 +32,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.render.ItemRenderUtils;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.render.ShapeRenderUtils;
 
 public class InventoryOverlay
 {
@@ -47,7 +48,7 @@ public class InventoryOverlay
 
     private static final EntityEquipmentSlot[] ARMOR_EQUIPMENT_SLOTS = new EntityEquipmentSlot[] { EntityEquipmentSlot.HEAD, EntityEquipmentSlot.CHEST, EntityEquipmentSlot.LEGS, EntityEquipmentSlot.FEET };
 
-    public static void renderInventoryBackground(InventoryRenderType type, int x, int y, int zLevel, int slotsPerRow, int totalSlots, Minecraft mc)
+    public static void renderInventoryBackground(InventoryRenderType type, int x, int y, int z, int slotsPerRow, int totalSlots, Minecraft mc)
     {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
@@ -56,56 +57,56 @@ public class InventoryOverlay
         if (type == InventoryRenderType.FURNACE)
         {
             RenderUtils.bindTexture(TEXTURE_FURNACE);
-            RenderUtils.renderTexturedRectangleBatched(x     , y     ,   0,   0,   4,  64, zLevel, buffer); // left (top)
-            RenderUtils.renderTexturedRectangleBatched(x +  4, y     ,  84,   0,  92,   4, zLevel, buffer); // top (right)
-            RenderUtils.renderTexturedRectangleBatched(x     , y + 64,   0, 162,  92,   4, zLevel, buffer); // bottom (left)
-            RenderUtils.renderTexturedRectangleBatched(x + 92, y +  4, 172, 102,   4,  64, zLevel, buffer); // right (bottom)
-            RenderUtils.renderTexturedRectangleBatched(x +  4, y +  4,  52,  13,  88,  60, zLevel, buffer); // middle
+            ShapeRenderUtils.renderTexturedRectangle(x     , y     , z,   0,   0,   4,  64, buffer); // left (top)
+            ShapeRenderUtils.renderTexturedRectangle(x +  4, y     , z,  84,   0,  92,   4, buffer); // top (right)
+            ShapeRenderUtils.renderTexturedRectangle(x     , y + 64, z,   0, 162,  92,   4, buffer); // bottom (left)
+            ShapeRenderUtils.renderTexturedRectangle(x + 92, y +  4, z, 172, 102,   4,  64, buffer); // right (bottom)
+            ShapeRenderUtils.renderTexturedRectangle(x +  4, y +  4, z,  52,  13,  88,  60, buffer); // middle
         }
         else if (type == InventoryRenderType.BREWING_STAND)
         {
             RenderUtils.bindTexture(TEXTURE_BREWING_STAND);
-            RenderUtils.renderTexturedRectangleBatched(x      , y     ,   0,   0,   4,  68, zLevel, buffer); // left (top)
-            RenderUtils.renderTexturedRectangleBatched(x +   4, y     ,  63,   0, 113,   4, zLevel, buffer); // top (right)
-            RenderUtils.renderTexturedRectangleBatched(x      , y + 68,   0, 162, 113,   4, zLevel, buffer); // bottom (left)
-            RenderUtils.renderTexturedRectangleBatched(x + 113, y +  4, 172,  98,   4,  68, zLevel, buffer); // right (bottom)
-            RenderUtils.renderTexturedRectangleBatched(x +   4, y +  4,  13,  13, 109,  64, zLevel, buffer); // middle
+            ShapeRenderUtils.renderTexturedRectangle(x      , y     , z,   0,   0,   4,  68, buffer); // left (top)
+            ShapeRenderUtils.renderTexturedRectangle(x +   4, y     , z,  63,   0, 113,   4, buffer); // top (right)
+            ShapeRenderUtils.renderTexturedRectangle(x      , y + 68, z,   0, 162, 113,   4, buffer); // bottom (left)
+            ShapeRenderUtils.renderTexturedRectangle(x + 113, y +  4, z, 172,  98,   4,  68, buffer); // right (bottom)
+            ShapeRenderUtils.renderTexturedRectangle(x +   4, y +  4, z,  13,  13, 109,  64, buffer); // middle
         }
         else if (type == InventoryRenderType.DISPENSER)
         {
             RenderUtils.bindTexture(TEXTURE_DISPENSER);
-            RenderUtils.renderTexturedRectangleBatched(x     , y     ,   0,   0,   7,  61, zLevel, buffer); // left (top)
-            RenderUtils.renderTexturedRectangleBatched(x +  7, y     , 115,   0,  61,   7, zLevel, buffer); // top (right)
-            RenderUtils.renderTexturedRectangleBatched(x     , y + 61,   0, 159,  61,   7, zLevel, buffer); // bottom (left)
-            RenderUtils.renderTexturedRectangleBatched(x + 61, y +  7, 169, 105,   7,  61, zLevel, buffer); // right (bottom)
-            RenderUtils.renderTexturedRectangleBatched(x +  7, y +  7,  61,  16,  54,  54, zLevel, buffer); // middle
+            ShapeRenderUtils.renderTexturedRectangle(x     , y     , z,   0,   0,   7,  61, buffer); // left (top)
+            ShapeRenderUtils.renderTexturedRectangle(x +  7, y     , z, 115,   0,  61,   7, buffer); // top (right)
+            ShapeRenderUtils.renderTexturedRectangle(x     , y + 61, z,   0, 159,  61,   7, buffer); // bottom (left)
+            ShapeRenderUtils.renderTexturedRectangle(x + 61, y +  7, z, 169, 105,   7,  61, buffer); // right (bottom)
+            ShapeRenderUtils.renderTexturedRectangle(x +  7, y +  7, z,  61,  16,  54,  54, buffer); // middle
         }
         else if (type == InventoryRenderType.HOPPER)
         {
             RenderUtils.bindTexture(TEXTURE_HOPPER);
-            RenderUtils.renderTexturedRectangleBatched(x      , y     ,   0,   0,   7,  25, zLevel, buffer); // left (top)
-            RenderUtils.renderTexturedRectangleBatched(x +   7, y     ,  79,   0,  97,   7, zLevel, buffer); // top (right)
-            RenderUtils.renderTexturedRectangleBatched(x      , y + 25,   0, 126,  97,   7, zLevel, buffer); // bottom (left)
-            RenderUtils.renderTexturedRectangleBatched(x +  97, y +  7, 169, 108,   7,  25, zLevel, buffer); // right (bottom)
-            RenderUtils.renderTexturedRectangleBatched(x +   7, y +  7,  43,  19,  90,  18, zLevel, buffer); // middle
+            ShapeRenderUtils.renderTexturedRectangle(x      , y     , z,   0,   0,   7,  25, buffer); // left (top)
+            ShapeRenderUtils.renderTexturedRectangle(x +   7, y     , z,  79,   0,  97,   7, buffer); // top (right)
+            ShapeRenderUtils.renderTexturedRectangle(x      , y + 25, z,   0, 126,  97,   7, buffer); // bottom (left)
+            ShapeRenderUtils.renderTexturedRectangle(x +  97, y +  7, z, 169, 108,   7,  25, buffer); // right (bottom)
+            ShapeRenderUtils.renderTexturedRectangle(x +   7, y +  7, z,  43,  19,  90,  18, buffer); // middle
         }
         // Most likely a Villager, or possibly a Llama
         else if (type == InventoryRenderType.VILLAGER)
         {
             RenderUtils.bindTexture(TEXTURE_DOUBLE_CHEST);
-            RenderUtils.renderTexturedRectangleBatched(x     , y     ,   0,   0,   7,  79, zLevel, buffer); // left (top)
-            RenderUtils.renderTexturedRectangleBatched(x +  7, y     , 133,   0,  43,   7, zLevel, buffer); // top (right)
-            RenderUtils.renderTexturedRectangleBatched(x     , y + 79,   0, 215,  43,   7, zLevel, buffer); // bottom (left)
-            RenderUtils.renderTexturedRectangleBatched(x + 43, y +  7, 169, 143,   7,  79, zLevel, buffer); // right (bottom)
-            RenderUtils.renderTexturedRectangleBatched(x +  7, y +  7,   7,  17,  36,  72, zLevel, buffer); // 2x4 slots
+            ShapeRenderUtils.renderTexturedRectangle(x     , y     , z,   0,   0,   7,  79, buffer); // left (top)
+            ShapeRenderUtils.renderTexturedRectangle(x +  7, y     , z, 133,   0,  43,   7, buffer); // top (right)
+            ShapeRenderUtils.renderTexturedRectangle(x     , y + 79, z,   0, 215,  43,   7, buffer); // bottom (left)
+            ShapeRenderUtils.renderTexturedRectangle(x + 43, y +  7, z, 169, 143,   7,  79, buffer); // right (bottom)
+            ShapeRenderUtils.renderTexturedRectangle(x +  7, y +  7, z,   7,  17,  36,  72, buffer); // 2x4 slots
         }
         else if (type == InventoryRenderType.FIXED_27)
         {
-            renderInventoryBackground27(x, y, zLevel, buffer, mc);
+            renderInventoryBackground27(x, y, z, buffer, mc);
         }
         else if (type == InventoryRenderType.FIXED_54)
         {
-            renderInventoryBackground54(x, y, zLevel, buffer, mc);
+            renderInventoryBackground54(x, y, z, buffer, mc);
         }
         else
         {
@@ -116,22 +117,22 @@ public class InventoryOverlay
             int bgw = Math.min(totalSlots, slotsPerRow) * 18 + 7;
             int bgh = rows * 18 + 7;
 
-            RenderUtils.renderTexturedRectangleBatched(x      , y      ,         0,         0,   7, bgh, zLevel, buffer); // left (top)
-            RenderUtils.renderTexturedRectangleBatched(x +   7, y      , 176 - bgw,         0, bgw,   7, zLevel, buffer); // top (right)
-            RenderUtils.renderTexturedRectangleBatched(x      , y + bgh,         0,       215, bgw,   7, zLevel, buffer); // bottom (left)
-            RenderUtils.renderTexturedRectangleBatched(x + bgw, y +   7,       169, 222 - bgh,   7, bgh, zLevel, buffer); // right (bottom)
+            ShapeRenderUtils.renderTexturedRectangle(x      , y      , z,         0,         0,   7, bgh, buffer); // left (top)
+            ShapeRenderUtils.renderTexturedRectangle(x +   7, y      , z, 176 - bgw,         0, bgw,   7, buffer); // top (right)
+            ShapeRenderUtils.renderTexturedRectangle(x      , y + bgh, z,         0,       215, bgw,   7, buffer); // bottom (left)
+            ShapeRenderUtils.renderTexturedRectangle(x + bgw, y +   7, z,       169, 222 - bgh,   7, bgh, buffer); // right (bottom)
 
             for (int row = 0; row < rows; row++)
             {
                 int rowLen = MathHelper.clamp(totalSlots - (row * slotsPerRow), 1, slotsPerRow);
-                RenderUtils.renderTexturedRectangleBatched(x + 7, y + row * 18 + 7, 7, 17, rowLen * 18, 18, zLevel, buffer);
+                ShapeRenderUtils.renderTexturedRectangle(x + 7, y + row * 18 + 7, z, 7, 17, rowLen * 18, 18, buffer);
 
                 // Render the background for the last non-existing slots on the last row,
                 // in two strips of the background texture from the double chest texture's top part.
                 if (rows > 1 && rowLen < slotsPerRow)
                 {
-                    RenderUtils.renderTexturedRectangleBatched(x + rowLen * 18 + 7, y + row * 18 +  7, 7, 3, (slotsPerRow - rowLen) * 18, 9, zLevel, buffer);
-                    RenderUtils.renderTexturedRectangleBatched(x + rowLen * 18 + 7, y + row * 18 + 16, 7, 3, (slotsPerRow - rowLen) * 18, 9, zLevel, buffer);
+                    ShapeRenderUtils.renderTexturedRectangle(x + rowLen * 18 + 7, y + row * 18 +  7, z, 7, 3, (slotsPerRow - rowLen) * 18, 9, buffer);
+                    ShapeRenderUtils.renderTexturedRectangle(x + rowLen * 18 + 7, y + row * 18 + 16, z, 7, 3, (slotsPerRow - rowLen) * 18, 9, buffer);
                 }
             }
         }
@@ -139,27 +140,27 @@ public class InventoryOverlay
         tessellator.draw();
     }
 
-    public static void renderInventoryBackground27(int x, int y, int zLevel, BufferBuilder buffer, Minecraft mc)
+    public static void renderInventoryBackground27(int x, int y, int z, BufferBuilder buffer, Minecraft mc)
     {
         RenderUtils.bindTexture(TEXTURE_SINGLE_CHEST);
-        RenderUtils.renderTexturedRectangleBatched(x      , y     ,   0,   0,   7,  61, zLevel, buffer); // left (top)
-        RenderUtils.renderTexturedRectangleBatched(x +   7, y     ,   7,   0, 169,   7, zLevel, buffer); // top (right)
-        RenderUtils.renderTexturedRectangleBatched(x      , y + 61,   0, 159, 169,   7, zLevel, buffer); // bottom (left)
-        RenderUtils.renderTexturedRectangleBatched(x + 169, y +  7, 169, 105,   7,  61, zLevel, buffer); // right (bottom)
-        RenderUtils.renderTexturedRectangleBatched(x +   7, y +  7,   7,  17, 162,  54, zLevel, buffer); // middle
+        ShapeRenderUtils.renderTexturedRectangle(x      , y     , z,   0,   0,   7,  61, buffer); // left (top)
+        ShapeRenderUtils.renderTexturedRectangle(x +   7, y     , z,   7,   0, 169,   7, buffer); // top (right)
+        ShapeRenderUtils.renderTexturedRectangle(x      , y + 61, z,   0, 159, 169,   7, buffer); // bottom (left)
+        ShapeRenderUtils.renderTexturedRectangle(x + 169, y +  7, z, 169, 105,   7,  61, buffer); // right (bottom)
+        ShapeRenderUtils.renderTexturedRectangle(x +   7, y +  7, z,   7,  17, 162,  54, buffer); // middle
     }
 
-    public static void renderInventoryBackground54(int x, int y, int zLevel, BufferBuilder buffer, Minecraft mc)
+    public static void renderInventoryBackground54(int x, int y, int z, BufferBuilder buffer, Minecraft mc)
     {
         RenderUtils.bindTexture(TEXTURE_DOUBLE_CHEST);
-        RenderUtils.renderTexturedRectangleBatched(x      , y      ,   0,   0,   7, 115, zLevel, buffer); // left (top)
-        RenderUtils.renderTexturedRectangleBatched(x +   7, y      ,   7,   0, 169,   7, zLevel, buffer); // top (right)
-        RenderUtils.renderTexturedRectangleBatched(x      , y + 115,   0, 215, 169,   7, zLevel, buffer); // bottom (left)
-        RenderUtils.renderTexturedRectangleBatched(x + 169, y +   7, 169, 107,   7, 115, zLevel, buffer); // right (bottom)
-        RenderUtils.renderTexturedRectangleBatched(x +   7, y +   7,   7,  17, 162, 108, zLevel, buffer); // middle
+        ShapeRenderUtils.renderTexturedRectangle(x      , y      , z,   0,   0,   7, 115, buffer); // left (top)
+        ShapeRenderUtils.renderTexturedRectangle(x +   7, y      , z,   7,   0, 169,   7, buffer); // top (right)
+        ShapeRenderUtils.renderTexturedRectangle(x      , y + 115, z,   0, 215, 169,   7, buffer); // bottom (left)
+        ShapeRenderUtils.renderTexturedRectangle(x + 169, y +   7, z, 169, 107,   7, 115, buffer); // right (bottom)
+        ShapeRenderUtils.renderTexturedRectangle(x +   7, y +   7, z,   7,  17, 162, 108, buffer); // middle
     }
 
-    public static void renderEquipmentOverlayBackground(int x, int y, int zLevel, EntityLivingBase entity)
+    public static void renderEquipmentOverlayBackground(int x, int y, int z, EntityLivingBase entity)
     {
         RenderUtils.color(1f, 1f, 1f, 1f);
 
@@ -169,19 +170,19 @@ public class InventoryOverlay
 
         RenderUtils.bindTexture(TEXTURE_DISPENSER);
 
-        RenderUtils.renderTexturedRectangleBatched(x     , y     ,   0,   0, 50, 83, zLevel, buffer); // top-left (main part)
-        RenderUtils.renderTexturedRectangleBatched(x + 50, y     , 173,   0,  3, 83, zLevel, buffer); // right edge top
-        RenderUtils.renderTexturedRectangleBatched(x     , y + 83,   0, 163, 50,  3, zLevel, buffer); // bottom edge left
-        RenderUtils.renderTexturedRectangleBatched(x + 50, y + 83, 173, 163,  3,  3, zLevel, buffer); // bottom right corner
+        ShapeRenderUtils.renderTexturedRectangle(x     , y     , z,   0,   0, 50, 83, buffer); // top-left (main part)
+        ShapeRenderUtils.renderTexturedRectangle(x + 50, y     , z, 173,   0,  3, 83, buffer); // right edge top
+        ShapeRenderUtils.renderTexturedRectangle(x     , y + 83, z,   0, 163, 50,  3, buffer); // bottom edge left
+        ShapeRenderUtils.renderTexturedRectangle(x + 50, y + 83, z, 173, 163,  3,  3, buffer); // bottom right corner
 
         for (int i = 0, xOff = 7, yOff = 7; i < 4; ++i, yOff += 18)
         {
-            RenderUtils.renderTexturedRectangleBatched(x + xOff, y + yOff, 61, 16, 18, 18, zLevel, buffer);
+            ShapeRenderUtils.renderTexturedRectangle(x + xOff, y + yOff, z, 61, 16, 18, 18, buffer);
         }
 
         // Main hand and offhand
-        RenderUtils.renderTexturedRectangleBatched(x + 28, y + 2 * 18 + 7, 61, 16, 18, 18, zLevel, buffer);
-        RenderUtils.renderTexturedRectangleBatched(x + 28, y + 3 * 18 + 7, 61, 16, 18, 18, zLevel, buffer);
+        ShapeRenderUtils.renderTexturedRectangle(x + 28, y + 2 * 18 + 7, z, 61, 16, 18, 18, buffer);
+        ShapeRenderUtils.renderTexturedRectangle(x + 28, y + 3 * 18 + 7, z, 61, 16, 18, 18, buffer);
 
         tessellator.draw();
 
@@ -190,7 +191,7 @@ public class InventoryOverlay
         if (entity.getItemStackFromSlot(EntityEquipmentSlot.OFFHAND).isEmpty())
         {
             String texture = "minecraft:items/empty_armor_slot_shield";
-            RenderUtils.renderSprite(x + 28 + 1, y + 3 * 18 + 7 + 1, 16, 16, zLevel, texture);
+            RenderUtils.renderSprite(x + 28 + 1, y + 3 * 18 + 7 + 1, z, 16, 16, texture);
         }
 
         for (int i = 0, xOff = 7, yOff = 7; i < 4; ++i, yOff += 18)
@@ -200,7 +201,7 @@ public class InventoryOverlay
             if (entity.getItemStackFromSlot(eqSlot).isEmpty())
             {
                 String texture = ItemArmor.EMPTY_SLOT_NAMES[eqSlot.getIndex()];
-                RenderUtils.renderSprite(x + xOff + 1, y + yOff + 1, 16, 16, zLevel, texture);
+                RenderUtils.renderSprite(x + xOff + 1, y + yOff + 1, z, 16, 16, texture);
             }
         }
     }
@@ -357,28 +358,28 @@ public class InventoryOverlay
         return INV_PROPS_TEMP;
     }
 
-    public static void renderInventoryStacks(InventoryRenderType type, IInventory inv, int startX, int startY, float zLevel,
-            int slotsPerRow, int startSlot, int maxSlots, Minecraft mc)
+    public static void renderInventoryStacks(InventoryRenderType type, IInventory inv, int x, int y, float z,
+                                             int slotsPerRow, int startSlot, int maxSlots, Minecraft mc)
     {
         if (type == InventoryRenderType.FURNACE)
         {
-            ItemRenderUtils.renderStackAt(inv.getStackInSlot(0), startX +   8, startY +  8, zLevel, 1f, mc);
-            ItemRenderUtils.renderStackAt(inv.getStackInSlot(1), startX +   8, startY + 44, zLevel, 1f, mc);
-            ItemRenderUtils.renderStackAt(inv.getStackInSlot(2), startX +  68, startY + 26, zLevel, 1f, mc);
+            ItemRenderUtils.renderStackAt(inv.getStackInSlot(0), x +   8, y +  8, z, 1f, mc);
+            ItemRenderUtils.renderStackAt(inv.getStackInSlot(1), x +   8, y + 44, z, 1f, mc);
+            ItemRenderUtils.renderStackAt(inv.getStackInSlot(2), x +  68, y + 26, z, 1f, mc);
         }
         else if (type == InventoryRenderType.BREWING_STAND)
         {
-            ItemRenderUtils.renderStackAt(inv.getStackInSlot(0), startX +  47, startY + 42, zLevel, 1f, mc);
-            ItemRenderUtils.renderStackAt(inv.getStackInSlot(1), startX +  70, startY + 49, zLevel, 1f, mc);
-            ItemRenderUtils.renderStackAt(inv.getStackInSlot(2), startX +  93, startY + 42, zLevel, 1f, mc);
-            ItemRenderUtils.renderStackAt(inv.getStackInSlot(3), startX +  70, startY +  8, zLevel, 1f, mc);
-            ItemRenderUtils.renderStackAt(inv.getStackInSlot(4), startX +   8, startY +  8, zLevel, 1f, mc);
+            ItemRenderUtils.renderStackAt(inv.getStackInSlot(0), x +  47, y + 42, z, 1f, mc);
+            ItemRenderUtils.renderStackAt(inv.getStackInSlot(1), x +  70, y + 49, z, 1f, mc);
+            ItemRenderUtils.renderStackAt(inv.getStackInSlot(2), x +  93, y + 42, z, 1f, mc);
+            ItemRenderUtils.renderStackAt(inv.getStackInSlot(3), x +  70, y +  8, z, 1f, mc);
+            ItemRenderUtils.renderStackAt(inv.getStackInSlot(4), x +   8, y +  8, z, 1f, mc);
         }
         else
         {
             final int slots = inv.getSizeInventory();
-            int x = startX;
-            int y = startY;
+            int tmpX = x;
+            int tmpY = y;
 
             if (maxSlots < 0)
             {
@@ -393,19 +394,19 @@ public class InventoryOverlay
 
                     if (stack.isEmpty() == false)
                     {
-                        ItemRenderUtils.renderStackAt(stack, x, y, zLevel, 1f, mc);
+                        ItemRenderUtils.renderStackAt(stack, tmpX, tmpY, z, 1f, mc);
                     }
 
-                    x += 18;
+                    tmpX += 18;
                 }
 
-                x = startX;
-                y += 18;
+                tmpX = x;
+                tmpY += 18;
             }
         }
     }
 
-    public static void renderEquipmentStacks(EntityLivingBase entity, int x, int y, float zLevel, Minecraft mc)
+    public static void renderEquipmentStacks(EntityLivingBase entity, int x, int y, float z, Minecraft mc)
     {
         for (int i = 0, xOff = 7, yOff = 7; i < 4; ++i, yOff += 18)
         {
@@ -414,7 +415,7 @@ public class InventoryOverlay
 
             if (stack.isEmpty() == false)
             {
-                ItemRenderUtils.renderStackAt(stack, x + xOff + 1, y + yOff + 1, zLevel, 1f, mc);
+                ItemRenderUtils.renderStackAt(stack, x + xOff + 1, y + yOff + 1, z, 1f, mc);
             }
         }
 
@@ -422,22 +423,22 @@ public class InventoryOverlay
 
         if (stack.isEmpty() == false)
         {
-            ItemRenderUtils.renderStackAt(stack, x + 28, y + 2 * 18 + 7 + 1, zLevel, 1f, mc);
+            ItemRenderUtils.renderStackAt(stack, x + 28, y + 2 * 18 + 7 + 1, z, 1f, mc);
         }
 
         stack = entity.getItemStackFromSlot(EntityEquipmentSlot.OFFHAND);
 
         if (stack.isEmpty() == false)
         {
-            ItemRenderUtils.renderStackAt(stack, x + 28, y + 3 * 18 + 7 + 1, zLevel, 1f, mc);
+            ItemRenderUtils.renderStackAt(stack, x + 28, y + 3 * 18 + 7 + 1, z, 1f, mc);
         }
     }
 
-    public static void renderItemStacks(NonNullList<ItemStack> items, int startX, int startY, int slotsPerRow, int startSlot, int maxSlots, float zLevel, Minecraft mc)
+    public static void renderItemStacks(NonNullList<ItemStack> items, int x, int y, float z, int slotsPerRow, int startSlot, int maxSlots, Minecraft mc)
     {
         final int slots = items.size();
-        int x = startX;
-        int y = startY;
+        int tmpX = x;
+        int tmpY = y;
 
         if (maxSlots < 0)
         {
@@ -452,14 +453,14 @@ public class InventoryOverlay
 
                 if (stack.isEmpty() == false)
                 {
-                    ItemRenderUtils.renderStackAt(stack, x, y, zLevel, 1f, mc);
+                    ItemRenderUtils.renderStackAt(stack, tmpX, tmpY, z, 1f, mc);
                 }
 
-                x += 18;
+                tmpX += 18;
             }
 
-            x = startX;
-            y += 18;
+            tmpX = x;
+            tmpY += 18;
         }
     }
 

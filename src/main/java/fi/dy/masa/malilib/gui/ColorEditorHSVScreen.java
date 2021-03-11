@@ -15,6 +15,7 @@ import fi.dy.masa.malilib.gui.config.liteloader.DialogHandler;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.IntegerTextFieldWidget;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.render.shader.ShaderProgram;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.Color4f;
@@ -455,28 +456,28 @@ public class ColorEditorHSVScreen extends BaseScreen
         int cw = this.sizeHS;
         int ch = 16;
 
-        RenderUtils.renderOutline(x, y, w, h, 1, 0xC0FFFFFF, z); // H
+        ShapeRenderUtils.renderOutline(x, y, z, w, h, 1, 0xC0FFFFFF); // H
         y += yd;
-        RenderUtils.renderOutline(x, y, w, h, 1, 0xC0FFFFFF, z); // S
+        ShapeRenderUtils.renderOutline(x, y, z, w, h, 1, 0xC0FFFFFF); // S
         y += yd;
-        RenderUtils.renderOutline(x, y, w, h, 1, 0xC0FFFFFF, z); // V
+        ShapeRenderUtils.renderOutline(x, y, z, w, h, 1, 0xC0FFFFFF); // V
         y += yd;
-        RenderUtils.renderOutline(x, y, w, h, 1, 0xC0FFFFFF, z); // R
+        ShapeRenderUtils.renderOutline(x, y, z, w, h, 1, 0xC0FFFFFF); // R
         y += yd;
-        RenderUtils.renderOutline(x, y, w, h, 1, 0xC0FFFFFF, z); // G
+        ShapeRenderUtils.renderOutline(x, y, z, w, h, 1, 0xC0FFFFFF); // G
         y += yd;
-        RenderUtils.renderOutline(x, y, w, h, 1, 0xC0FFFFFF, z); // B
+        ShapeRenderUtils.renderOutline(x, y, z, w, h, 1, 0xC0FFFFFF); // B
         y += yd;
-        RenderUtils.renderOutline(x, y, w, h, 1, 0xC0FFFFFF, z); // A
+        ShapeRenderUtils.renderOutline(x, y, z, w, h, 1, 0xC0FFFFFF); // A
 
         x = this.xHS;
         y = this.yHS;
         w = this.sizeHS;
         h = this.sizeHS;
 
-        RenderUtils.renderOutline(x - 1 , y - 1 , w + 2 , h + 2 , 1, 0xC0FFFFFF, z); // main color selector
-        RenderUtils.renderOutline(cx - 1, cy - 1, cw + 2, ch + 2, 1, 0xC0FFFFFF, z); // current color indicator
-        RenderUtils.renderOutline(this.xHFullSV, y - 1, this.widthHFullSV, this.sizeHS + 2, 1, 0xC0FFFFFF, z); // Hue vertical/full value
+        ShapeRenderUtils.renderOutline(x - 1 , y - 1 , z, w + 2 , h + 2 , 1, 0xC0FFFFFF); // main color selector
+        ShapeRenderUtils.renderOutline(cx - 1, cy - 1, z, cw + 2, ch + 2, 1, 0xC0FFFFFF); // current color indicator
+        ShapeRenderUtils.renderOutline(this.xHFullSV, y - 1, z, this.widthHFullSV, this.sizeHS + 2, 1, 0xC0FFFFFF); // Hue vertical/full value
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();

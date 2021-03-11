@@ -8,6 +8,7 @@ import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.render.ShapeRenderUtils;
 
 public class ScrollBarWidget extends InteractableWidget
 {
@@ -280,7 +281,7 @@ public class ScrollBarWidget extends InteractableWidget
 
         if (this.renderScrollbarBackgroundColor)
         {
-            RenderUtils.renderRectangle(x, y, width, height, this.backgroundColor, z);
+            ShapeRenderUtils.renderRectangle(x, y, z, width, height, this.backgroundColor);
         }
 
         if (totalHeight > 0)
@@ -316,12 +317,12 @@ public class ScrollBarWidget extends InteractableWidget
                 int w = this.barTexture.getWidth();
                 int h = this.barTexture.getHeight();
 
-                RenderUtils.renderTexturedRectangle(x + 1, barPosition                , u, v        , w, barHeight - 2, z);
-                RenderUtils.renderTexturedRectangle(x + 1, barPosition + barHeight - 2, u, v + h - 2, w, 2            , z);
+                ShapeRenderUtils.renderTexturedRectangle(x + 1, barPosition                , z, u, v        , w, barHeight - 2);
+                ShapeRenderUtils.renderTexturedRectangle(x + 1, barPosition + barHeight - 2, z, u, v + h - 2, w, 2);
             }
             else
             {
-                RenderUtils.renderRectangle(x + 1, barPosition, width - 2, barHeight, this.scrollBarColor, z);
+                ShapeRenderUtils.renderRectangle(x + 1, barPosition, z, width - 2, barHeight, this.scrollBarColor);
             }
 
             // FIXME?

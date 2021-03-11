@@ -10,6 +10,7 @@ import fi.dy.masa.malilib.gui.widget.button.ButtonActionListener;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.render.ShapeRenderUtils;
 
 public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDataListEntryWidget<DATATYPE>
 {
@@ -287,16 +288,16 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
                 off += height;
             }
 
-            RenderUtils.renderRectangle(x - 2, y + off, width + 4, 2, 0xFF00FFFF, z + 50);
+            ShapeRenderUtils.renderRectangle(x - 2, y + off, z + 50, width + 4, 2, 0xFF00FFFF);
 
             x += (mouseX - this.dragStartX);
             y += (mouseY - this.dragStartY);
             z += 60;
 
-            RenderUtils.renderOutline(x - 1, y - 1, width + 2, height + 2, 1, 0xFFFFFFFF, z);
+            ShapeRenderUtils.renderOutline(x - 1, y - 1, z, width + 2, height + 2, 1, 0xFFFFFFFF);
         }
 
-        RenderUtils.renderRectangle(x, y, width, height, bgColor, z);
+        ShapeRenderUtils.renderRectangle(x, y, z, width, height, bgColor);
 
         super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hoveredWidgetId);
     }

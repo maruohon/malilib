@@ -1,14 +1,11 @@
 package fi.dy.masa.malilib.render;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nullable;
 import org.lwjgl.opengl.GL11;
 import net.minecraft.block.BlockShulkerBox;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -34,16 +31,13 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraft.world.storage.MapData;
-import fi.dy.masa.malilib.config.value.HudAlignment;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.render.overlay.InventoryOverlay;
 import fi.dy.masa.malilib.util.PositionUtils;
 import fi.dy.masa.malilib.util.PositionUtils.HitPart;
 import fi.dy.masa.malilib.util.data.Color4f;
-import fi.dy.masa.malilib.util.data.IntBoundingBox;
 import fi.dy.masa.malilib.util.inventory.InventoryUtils;
 
 public class RenderUtils
@@ -89,151 +83,12 @@ public class RenderUtils
         RenderHelper.enableGUIStandardItemLighting();
     }
 
-    public static void renderOutlinedBox(int x, int y, int width, int height, int colorBg, int colorBorder, float zLevel)
-    {
-        // Draw the background
-        renderRectangle(x + 1, y + 1, width - 2, height - 2, colorBg, zLevel);
-
-        // Draw the border
-        renderOutline(x, y, width, height, 1, colorBorder, zLevel);
-    }
-
-    public static void renderOutline(int x, int y, int width, int height, int borderWidth, int colorBorder, float z)
-    {
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
-
-        GlStateManager.disableTexture2D();
-        setupBlend();
-
-        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
-
-        renderRectangleBatched(x                      , y                       , z, borderWidth            , height     , colorBorder, buffer); // left edge
-        renderRectangleBatched(x + width - borderWidth, y                       , z, borderWidth            , height     , colorBorder, buffer); // right edge
-        renderRectangleBatched(x + borderWidth        , y                       , z, width - 2 * borderWidth, borderWidth, colorBorder, buffer); // top edge
-        renderRectangleBatched(x + borderWidth        , y + height - borderWidth, z, width - 2 * borderWidth, borderWidth, colorBorder, buffer); // bottom edge
-
-        tessellator.draw();
-
-        GlStateManager.enableTexture2D();
-        GlStateManager.disableBlend();
-
-        color(1f, 1f, 1f, 1f);
-    }
-
-    public static void renderRectangle(int x, int y, int width, int height, int color, float zLevel)
-    {
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
-
-        GlStateManager.disableTexture2D();
-        setupBlend();
-
-        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
-
-        renderRectangleBatched(x, y, zLevel, width, height, color, buffer);
-
-        tessellator.draw();
-
-        GlStateManager.enableTexture2D();
-        GlStateManager.disableBlend();
-
-        color(1f, 1f, 1f, 1f);
-    }
-
-    public static void renderRectangleBatched(float x, float y, float z, float width, float height, int color, BufferBuilder buffer)
-    {
-        float a = (float) ((color >> 24) & 0xFF) / 255.0F;
-        float r = (float) ((color >> 16) & 0xFF) / 255.0F;
-        float g = (float) ((color >>  8) & 0xFF) / 255.0F;
-        float b = (float) (color         & 0xFF) / 255.0F;
-
-        buffer.pos(x        , y         , z).color(r, g, b, a).endVertex();
-        buffer.pos(x        , y + height, z).color(r, g, b, a).endVertex();
-        buffer.pos(x + width, y + height, z).color(r, g, b, a).endVertex();
-        buffer.pos(x + width, y         , z).color(r, g, b, a).endVertex();
-    }
-
-    public static void renderRectangleBatched(float x, float y, float z, float width, float height, Color4f color, BufferBuilder buffer)
-    {
-        buffer.pos(x        , y         , z).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(x        , y + height, z).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(x + width, y + height, z).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(x + width, y         , z).color(color.r, color.g, color.b, color.a).endVertex();
-    }
-
-    public static void renderTexturedRectangle(int x, int y, int u, int v, int width, int height, float zLevel)
-    {
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
-
-        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-
-        renderTexturedRectangleBatched(x, y, u, v, width, height, zLevel, buffer);
-
-        tessellator.draw();
-    }
-
-    public static void renderTexturedRectangleBatched(int x, int y, int u, int v, int width, int height, float zLevel, BufferBuilder buffer)
-    {
-        float pixelWidth = 0.00390625F;
-
-        buffer.pos(x        , y + height, zLevel).tex( u          * pixelWidth, (v + height) * pixelWidth).endVertex();
-        buffer.pos(x + width, y + height, zLevel).tex((u + width) * pixelWidth, (v + height) * pixelWidth).endVertex();
-        buffer.pos(x + width, y         , zLevel).tex((u + width) * pixelWidth,  v           * pixelWidth).endVertex();
-        buffer.pos(x        , y         , zLevel).tex( u          * pixelWidth,  v           * pixelWidth).endVertex();
-    }
-
-    public static void renderGradientRectangle(int left, int top, int right, int bottom, double zLevel, int startColor, int endColor)
-    {
-        float sa = (float)(startColor >> 24 & 0xFF) / 255.0F;
-        float sr = (float)(startColor >> 16 & 0xFF) / 255.0F;
-        float sg = (float)(startColor >>  8 & 0xFF) / 255.0F;
-        float sb = (float)(startColor & 0xFF) / 255.0F;
-
-        float ea = (float)(endColor >> 24 & 0xFF) / 255.0F;
-        float er = (float)(endColor >> 16 & 0xFF) / 255.0F;
-        float eg = (float)(endColor >>  8 & 0xFF) / 255.0F;
-        float eb = (float)(endColor & 0xFF) / 255.0F;
-
-        GlStateManager.disableTexture2D();
-        GlStateManager.disableAlpha();
-        setupBlend();
-        GlStateManager.shadeModel(GL11.GL_SMOOTH);
-
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
-        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
-
-        buffer.pos(right, top,    zLevel).color(sr, sg, sb, sa).endVertex();
-        buffer.pos(left,  top,    zLevel).color(sr, sg, sb, sa).endVertex();
-        buffer.pos(left,  bottom, zLevel).color(er, eg, eb, ea).endVertex();
-        buffer.pos(right, bottom, zLevel).color(er, eg, eb, ea).endVertex();
-
-        tessellator.draw();
-
-        GlStateManager.shadeModel(GL11.GL_FLAT);
-        GlStateManager.disableBlend();
-        GlStateManager.enableAlpha();
-        GlStateManager.enableTexture2D();
-    }
-
-    public static void renderHorizontalLine(int x, int y, int width, int color, float zLevel)
-    {
-        renderRectangle(x, y, width, 1, color, zLevel);
-    }
-
-    public static void renderVerticalLine(int x, int y, int height, int color, float zLevel)
-    {
-        renderRectangle(x, y, 1, height, color, zLevel);
-    }
-
-    public static void renderSprite(int x, int y, int width, int height, int zLevel, String texture)
+    public static void renderSprite(int x, int y, int z, int width, int height, String texture)
     {
         if (texture != null)
         {
             GlStateManager.pushMatrix();
-            GlStateManager.translate(0f, 0f, zLevel);
+            GlStateManager.translate(0f, 0f, z);
 
             GlStateManager.disableLighting();
             TextureAtlasSprite sprite = mc().getTextureMapBlocks().getAtlasSprite(texture);
@@ -243,8 +98,8 @@ public class RenderUtils
         }
     }
 
-    public static void renderNineSplicedTexture(int x, int y, int u, int v, int width, int height,
-                                                int texWidth, int texHeight, int edgeThickness, float zLevel)
+    public static void renderNineSplicedTexture(int x, int y, float z, int u, int v, int width, int height,
+                                                int texWidth, int texHeight, int edgeThickness)
     {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
@@ -252,11 +107,11 @@ public class RenderUtils
 
         int e = edgeThickness;
         
-        RenderUtils.renderTexturedRectangleBatched(x, y             , u, v                , e, e, zLevel, buffer); // top left
-        RenderUtils.renderTexturedRectangleBatched(x, y + height - e, u, v + texHeight - e, e, e, zLevel, buffer); // bottom left
+        ShapeRenderUtils.renderTexturedRectangle(x, y             , z, u, v                , e, e, buffer); // top left
+        ShapeRenderUtils.renderTexturedRectangle(x, y + height - e, z, u, v + texHeight - e, e, e, buffer); // bottom left
 
-        RenderUtils.renderTexturedRectangleBatched(x + width - e, y             , u + texWidth - e, v                , e, e, zLevel, buffer); // top right
-        RenderUtils.renderTexturedRectangleBatched(x + width - e, y + height - e, u + texWidth - e, v + texHeight - e, e, e, zLevel, buffer); // bottom right
+        ShapeRenderUtils.renderTexturedRectangle(x + width - e, y             , z, u + texWidth - e, v                , e, e, buffer); // top right
+        ShapeRenderUtils.renderTexturedRectangle(x + width - e, y + height - e, z, u + texWidth - e, v + texHeight - e, e, e, buffer); // bottom right
 
         // Texture is smaller than the requested width, repeat stuff horizontally
         if (texWidth < width)
@@ -268,8 +123,8 @@ public class RenderUtils
             {
                 tmpW = Math.min(repeatableWidth, requiredWidth - doneWidth);
 
-                RenderUtils.renderTexturedRectangleBatched(tmpX, y             , u + e, v                , tmpW, e, zLevel, buffer); // top center
-                RenderUtils.renderTexturedRectangleBatched(tmpX, y + height - e, u + e, v + texHeight - e, tmpW, e, zLevel, buffer); // bottom center
+                ShapeRenderUtils.renderTexturedRectangle(tmpX, y             , z, u + e, v                , tmpW, e, buffer); // top center
+                ShapeRenderUtils.renderTexturedRectangle(tmpX, y + height - e, z, u + e, v + texHeight - e, tmpW, e, buffer); // bottom center
 
                 tmpX += tmpW;
                 doneWidth += tmpW;
@@ -278,8 +133,8 @@ public class RenderUtils
         // Texture is wide enough, no need to repeat horizontally
         else
         {
-            RenderUtils.renderTexturedRectangleBatched(x + e, y             , u + e, v                , width - 2 * e, e, zLevel, buffer); // top center
-            RenderUtils.renderTexturedRectangleBatched(x + e, y + height - e, u + e, v + texHeight - e, width - 2 * e, e, zLevel, buffer); // bottom center
+            ShapeRenderUtils.renderTexturedRectangle(x + e, y             , z, u + e, v                , width - 2 * e, e, buffer); // top center
+            ShapeRenderUtils.renderTexturedRectangle(x + e, y + height - e, z, u + e, v + texHeight - e, width - 2 * e, e, buffer); // bottom center
         }
 
         // Texture is smaller than the requested height, repeat stuff vertically
@@ -292,8 +147,8 @@ public class RenderUtils
             {
                 tmpH = Math.min(repeatableHeight, requiredHeight - doneHeight);
 
-                RenderUtils.renderTexturedRectangleBatched(x            , tmpY, u               , v + e, e, tmpH, zLevel, buffer); // left center
-                RenderUtils.renderTexturedRectangleBatched(x + width - e, tmpY, u + texWidth - e, v + e, e, tmpH, zLevel, buffer); // right center
+                ShapeRenderUtils.renderTexturedRectangle(x            , tmpY, z, u               , v + e, e, tmpH, buffer); // left center
+                ShapeRenderUtils.renderTexturedRectangle(x + width - e, tmpY, z, u + texWidth - e, v + e, e, tmpH, buffer); // right center
 
                 tmpY += tmpH;
                 doneHeight += tmpH;
@@ -302,8 +157,8 @@ public class RenderUtils
         // Texture is tall enough, no need to repeat vertically
         else
         {
-            RenderUtils.renderTexturedRectangleBatched(x            , y + e, u               , v + e, e, height - 2 * e, zLevel, buffer); // left center
-            RenderUtils.renderTexturedRectangleBatched(x + width - e, y + e, u + texWidth - e, v + e, e, height - 2 * e, zLevel, buffer); // right center
+            ShapeRenderUtils.renderTexturedRectangle(x            , y + e, z, u               , v + e, e, height - 2 * e, buffer); // left center
+            ShapeRenderUtils.renderTexturedRectangle(x + width - e, y + e, z, u + texWidth - e, v + e, e, height - 2 * e, buffer); // right center
         }
 
         // The center part needs to be repeated
@@ -322,7 +177,7 @@ public class RenderUtils
                 {
                     tmpH = Math.min(repeatableHeight, requiredHeight - doneHeight);
 
-                    RenderUtils.renderTexturedRectangleBatched(tmpX, tmpY, u + e, v + e, tmpW, tmpH, zLevel, buffer); // center
+                    ShapeRenderUtils.renderTexturedRectangle(tmpX, tmpY, z, u + e, v + e, tmpW, tmpH, buffer); // center
 
                     tmpY += tmpH;
                     doneHeight += tmpH;
@@ -334,648 +189,10 @@ public class RenderUtils
         }
         else
         {
-            RenderUtils.renderTexturedRectangleBatched(x + e, y + e, u + e, v + e, width - 2 * e, height - 2 * e, zLevel, buffer); // center
+            ShapeRenderUtils.renderTexturedRectangle(x + e, y + e, z, u + e, v + e, width - 2 * e, height - 2 * e, buffer); // center
         }
 
         tessellator.draw();
-    }
-
-    public static void renderText(int x, int y, int color, String text)
-    {
-        String[] parts = text.split("\\\\n");
-        FontRenderer textRenderer = mc().fontRenderer;
-
-        for (String line : parts)
-        {
-            textRenderer.drawString(line, x, y, color);
-            y += textRenderer.FONT_HEIGHT + 1;
-        }
-    }
-
-    public static void renderText(int x, int y, int color, List<String> lines)
-    {
-        if (lines.isEmpty() == false)
-        {
-            FontRenderer textRenderer = mc().fontRenderer;
-
-            for (String line : lines)
-            {
-                textRenderer.drawString(line, x, y, color);
-                y += textRenderer.FONT_HEIGHT + 2;
-            }
-        }
-    }
-
-    public static int renderText(int xOff, int yOff, int zLevel, double scale, int textColor, int bgColor,
-                                 HudAlignment alignment, boolean useBackground, boolean useShadow, List<String> lines)
-    {
-        FontRenderer fontRenderer = mc().fontRenderer;
-        final int scaledWidth = GuiUtils.getScaledWindowWidth();
-        final int lineHeight = fontRenderer.FONT_HEIGHT + 2;
-        final int contentHeight = lines.size() * lineHeight - 2;
-        int bgMargin = 2;
-
-        // Only Chuck Norris can divide by zero
-        if (scale == 0d)
-        {
-            return 0;
-        }
-
-        if (scale != 1d)
-        {
-            xOff = (int) (xOff * scale);
-            yOff = (int) (yOff * scale);
-
-            GlStateManager.pushMatrix();
-            GlStateManager.scale(scale, scale, 0);
-        }
-
-        double posX = xOff + bgMargin;
-        double posY = yOff + bgMargin;
-
-        posY = GuiUtils.getHudPosY((int) posY, yOff, contentHeight, scale, alignment);
-        posY += GuiUtils.getHudOffsetForPotions(alignment, scale, mc().player);
-
-        for (String line : lines)
-        {
-            final int width = fontRenderer.getStringWidth(line);
-
-            if (alignment == HudAlignment.TOP_RIGHT || alignment == HudAlignment.BOTTOM_RIGHT)
-            {
-                posX = (scaledWidth / scale) - width - xOff - bgMargin;
-            }
-            else if (alignment == HudAlignment.CENTER)
-            {
-                posX = (scaledWidth / scale / 2) - (width / 2) - xOff;
-            }
-
-            final int x = (int) posX;
-            final int y = (int) posY;
-            posY += lineHeight;
-
-            if (useBackground)
-            {
-                renderRectangle(x - bgMargin, y - bgMargin, width + bgMargin, bgMargin + fontRenderer.FONT_HEIGHT, bgColor, zLevel);
-            }
-
-            if (useShadow)
-            {
-                fontRenderer.drawStringWithShadow(line, x, y, textColor);
-            }
-            else
-            {
-                fontRenderer.drawString(line, x, y, textColor);
-            }
-        }
-
-        if (scale != 1d)
-        {
-            GlStateManager.popMatrix();
-        }
-
-        return contentHeight + bgMargin * 2;
-    }
-
-    public static void renderHoverText(int x, int y, float zLevel, String text)
-    {
-        renderHoverText(x, y, zLevel, Collections.singletonList(text));
-    }
-
-    public static void renderHoverText(int x, int y, float zLevel, List<String> textLines)
-    {
-        renderHoverText(x, y, zLevel, textLines, 0xFFC0C0C0 , RenderUtils::renderHoverTextBackground);
-    }
-
-    public static void renderHoverText(int x, int y, float zLevel, List<String> textLines,
-                                       int textColor, RectangleRenderer backgroundRenderer)
-    {
-        Minecraft mc = mc();
-
-        if (textLines.isEmpty() == false && GuiUtils.getCurrentScreen() != null)
-        {
-            List<String> linesNew = new ArrayList<>();
-            FontRenderer font = mc.fontRenderer;
-            int maxLineLength = 0;
-
-            for (String lineOrig : textLines)
-            {
-                String[] lines = lineOrig.split("\\\\n");
-
-                for (String line : lines)
-                {
-                    int length = font.getStringWidth(line);
-
-                    if (length > maxLineLength)
-                    {
-                        maxLineLength = length;
-                    }
-
-                    linesNew.add(line);
-                }
-            }
-
-            textLines = linesNew;
-
-            final int lineHeight = font.FONT_HEIGHT + 1;
-            int maxWidth = GuiUtils.getCurrentScreen().width;
-            int textHeight = textLines.size() * lineHeight - 2;
-            int textStartX = x + 4;
-            int textStartY = Math.max(8, y - textHeight - 6);
-
-            // The text can't fit from the cursor to the right edge of the screen
-            if (textStartX + maxLineLength + 6 > maxWidth)
-            {
-                int leftX = x - maxLineLength - 8;
-
-                // If the text fits from the cursor to the left edge of the screen...
-                if (leftX >= 4)
-                {
-                    textStartX = leftX;
-                }
-                // otherwise move it to touching the edge of the screen that the cursor is closest to
-                else
-                {
-                    textStartX = x < (maxWidth / 2) ? 4 : Math.max(4, maxWidth - maxLineLength - 6);
-                }
-            }
-
-            // The hover info would overlap the cursor vertically
-            // (because the hover info was clamped to the top of the screen),
-            // move it below the cursor instead
-            if (textStartY < y && y < textStartY + textHeight)
-            {
-                textStartY = y + 16;
-            }
-
-            GlStateManager.disableRescaleNormal();
-            disableItemLighting();
-            GlStateManager.disableLighting();
-            GlStateManager.disableDepth();
-
-            backgroundRenderer.render(textStartX, textStartY, maxLineLength, textHeight, zLevel);
-
-            for (String str : textLines)
-            {
-                font.drawStringWithShadow(str, textStartX, textStartY, textColor);
-                textStartY += lineHeight;
-            }
-
-            GlStateManager.enableLighting();
-            GlStateManager.enableDepth();
-            RenderHelper.enableStandardItemLighting();
-            GlStateManager.enableRescaleNormal();
-        }
-    }
-
-    public static void renderHoverTextBackground(int x, int y, int width, int height, float zLevel)
-    {
-        int borderColor = 0xF0100010;
-        renderGradientRectangle(x - 3        , y - 4         , x + width + 3, y - 3         , zLevel, borderColor, borderColor);
-        renderGradientRectangle(x - 3        , y + height + 3, x + width + 3, y + height + 4, zLevel, borderColor, borderColor);
-        renderGradientRectangle(x - 3        , y - 3         , x + width + 3, y + height + 3, zLevel, borderColor, borderColor);
-        renderGradientRectangle(x - 4        , y - 3         , x - 3        , y + height + 3, zLevel, borderColor, borderColor);
-        renderGradientRectangle(x + width + 3, y - 3         , x + width + 4, y + height + 3, zLevel, borderColor, borderColor);
-
-        int fillColor1 = 0x505000FF;
-        int fillColor2 = 0x5028007F;
-        renderGradientRectangle(x - 3        , y - 3 + 1     , x - 3 + 1    , y + height + 3 - 1, zLevel, fillColor1, fillColor2);
-        renderGradientRectangle(x + width + 2, y - 3 + 1     , x + width + 3, y + height + 3 - 1, zLevel, fillColor1, fillColor2);
-        renderGradientRectangle(x - 3        , y - 3         , x + width + 3, y - 3 + 1         , zLevel, fillColor1, fillColor1);
-        renderGradientRectangle(x - 3        , y + height + 2, x + width + 3, y + height + 3    , zLevel, fillColor2, fillColor2);
-    }
-
-    /**
-     * Assumes a BufferBuilder in GL_QUADS mode has been initialized
-     */
-    public static void renderBlockSpaceAllSidesBatchedQuads(BlockPos pos, Color4f color,
-                                                            double expand, BufferBuilder buffer)
-    {
-        renderBlockSpaceAllSidesBatchedQuads(pos, Vec3d.ZERO, color, expand, buffer);
-    }
-
-    /**
-     * Assumes a BufferBuilder in GL_QUADS mode has been initialized
-     * @param pos
-     * @param cameraPos
-     * @param color
-     * @param expand
-     * @param buffer
-     */
-    public static void renderBlockSpaceAllSidesBatchedQuads(BlockPos pos, Vec3d cameraPos, Color4f color,
-                                                            double expand, BufferBuilder buffer)
-    {
-        double minX = pos.getX() - expand - cameraPos.x;
-        double minY = pos.getY() - expand - cameraPos.y;
-        double minZ = pos.getZ() - expand - cameraPos.z;
-        double maxX = pos.getX() + expand - cameraPos.x + 1;
-        double maxY = pos.getY() + expand - cameraPos.y + 1;
-        double maxZ = pos.getZ() + expand - cameraPos.z + 1;
-
-        renderBoxAllSidesBatchedQuads(minX, minY, minZ, maxX, maxY, maxZ, color, buffer);
-    }
-
-    /**
-     * Assumes a BufferBuilder in GL_LINES mode has been initialized
-     */
-    public static void renderBlockSpaceAllOutlinesBatchedLines(BlockPos pos, Color4f color,
-                                                               double expand, BufferBuilder buffer)
-    {
-        renderBlockSpaceAllOutlinesBatchedLines(pos, Vec3d.ZERO, color, expand, buffer);
-    }
-
-    /**
-     * Assumes a BufferBuilder in GL_LINES mode has been initialized.
-     * The cameraPos value will be subtracted from the absolute coordinate values of the passed in BlockPos.
-     * @param pos
-     * @param cameraPos
-     * @param color
-     * @param expand
-     * @param buffer
-     */
-    public static void renderBlockSpaceAllOutlinesBatchedLines(BlockPos pos, Vec3d cameraPos, Color4f color,
-                                                               double expand, BufferBuilder buffer)
-    {
-        double minX = pos.getX() - expand - cameraPos.x;
-        double minY = pos.getY() - expand - cameraPos.y;
-        double minZ = pos.getZ() - expand - cameraPos.z;
-        double maxX = pos.getX() + expand - cameraPos.x + 1;
-        double maxY = pos.getY() + expand - cameraPos.y + 1;
-        double maxZ = pos.getZ() + expand - cameraPos.z + 1;
-
-        renderBoxAllEdgesBatchedLines(minX, minY, minZ, maxX, maxY, maxZ, color, buffer);
-    }
-
-    /**
-     * Assumes a BufferBuilder in GL_QUADS mode has been initialized
-     */
-    public static void renderBoxAllSidesBatchedQuads(double minX, double minY, double minZ,
-                                                     double maxX, double maxY, double maxZ,
-                                                     Color4f color, BufferBuilder buffer)
-    {
-        renderBoxHorizontalSidesBatchedQuads(minX, minY, minZ, maxX, maxY, maxZ, color, buffer);
-        renderBoxTopBatchedQuads(minX, minZ, maxX, maxY, maxZ, color, buffer);
-        renderBoxBottomBatchedQuads(minX, minY, minZ, maxX, maxZ, color, buffer);
-    }
-
-    /**
-     * Draws a box with outlines around the given corner positions.
-     * Takes in buffers initialized for GL_QUADS and GL_LINES modes.
-     * @param posMin
-     * @param posMax
-     * @param colorLines
-     * @param colorSides
-     * @param bufferQuads
-     * @param bufferLines
-     */
-    public static void renderBoxWithEdgesBatched(BlockPos posMin, BlockPos posMax,
-                                                 Color4f colorLines, Color4f colorSides,
-                                                 BufferBuilder bufferQuads, BufferBuilder bufferLines)
-    {
-        renderBoxWithEdgesBatched(posMin, posMax, Vec3d.ZERO, colorLines, colorSides, bufferQuads, bufferLines);
-    }
-
-    /**
-     * Draws a box with outlines around the given corner positions.
-     * Takes in buffers initialized for GL_QUADS and GL_LINES modes.
-     * The cameraPos value will be subtracted from the absolute coordinate values of the passed in block positions.
-     * @param posMin
-     * @param posMax
-     * @param cameraPos
-     * @param colorLines
-     * @param colorSides
-     * @param bufferQuads
-     * @param bufferLines
-     */
-    public static void renderBoxWithEdgesBatched(BlockPos posMin, BlockPos posMax, Vec3d cameraPos,
-                                                 Color4f colorLines, Color4f colorSides,
-                                                 BufferBuilder bufferQuads, BufferBuilder bufferLines)
-    {
-        final double x1 = posMin.getX() - cameraPos.x;
-        final double y1 = posMin.getY() - cameraPos.y;
-        final double z1 = posMin.getZ() - cameraPos.z;
-        final double x2 = posMax.getX() + 1 - cameraPos.x;
-        final double y2 = posMax.getY() + 1 - cameraPos.y;
-        final double z2 = posMax.getZ() + 1 - cameraPos.z;
-
-        renderBoxAllSidesBatchedQuads(x1, y1, z1, x2, y2, z2, colorSides, bufferQuads);
-        renderBoxAllEdgesBatchedLines(x1, y1, z1, x2, y2, z2, colorLines, bufferLines);
-    }
-
-    /**
-     * Assumes a BufferBuilder in GL_QUADS mode has been initialized
-     */
-    public static void renderBoxHorizontalSidesBatchedQuads(double minX, double minY, double minZ,
-                                                            double maxX, double maxY, double maxZ,
-                                                            Color4f color, BufferBuilder buffer)
-    {
-        // West side
-        buffer.pos(minX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-
-        // East side
-        buffer.pos(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-
-        // North side
-        buffer.pos(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(minX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-
-        // South side
-        buffer.pos(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-    }
-
-    /**
-     * Assumes a BufferBuilder in GL_QUADS mode has been initialized
-     */
-    public static void renderBoxTopBatchedQuads(double minX, double minZ,
-                                                double maxX, double maxY, double maxZ,
-                                                Color4f color, BufferBuilder buffer)
-    {
-        // Top side
-        buffer.pos(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-    }
-
-    /**
-     * Assumes a BufferBuilder in GL_QUADS mode has been initialized
-     */
-    public static void renderBoxBottomBatchedQuads(double minX, double minY, double minZ,
-                                                   double maxX, double maxZ,
-                                                   Color4f color, BufferBuilder buffer)
-    {
-        // Bottom side
-        buffer.pos(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(minX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-    }
-
-    /**
-     * Assumes a BufferBuilder in GL_LINES mode has been initialized
-     */
-    public static void renderBoxAllEdgesBatchedLines(double minX, double minY, double minZ,
-                                                     double maxX, double maxY, double maxZ,
-                                                     Color4f color, BufferBuilder buffer)
-    {
-        // West side
-        buffer.pos(minX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-
-        buffer.pos(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-
-        buffer.pos(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-
-        buffer.pos(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(minX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-
-        // East side
-        buffer.pos(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-
-        buffer.pos(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-
-        buffer.pos(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-
-        buffer.pos(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-
-        // North side (don't repeat the vertical lines that are done by the east/west sides)
-        buffer.pos(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(minX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-
-        buffer.pos(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-
-        // South side (don't repeat the vertical lines that are done by the east/west sides)
-        buffer.pos(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-
-        buffer.pos(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-        buffer.pos(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-    }
-
-    /**
-     * Assumes a BufferBuilder in GL_QUADS mode has been initialized
-     */
-    public static void renderBlockSpaceSideBatchedQuads(BlockPos pos, EnumFacing side,
-                                                        Color4f color, double expand, BufferBuilder buffer)
-    {
-        renderBlockSpaceSideBatchedQuads(pos, Vec3d.ZERO, side, color, expand, buffer);
-    }
-
-    /**
-     * Assumes a BufferBuilder in GL_QUADS mode has been initialized
-     */
-    public static void renderBlockSpaceSideBatchedQuads(BlockPos pos, Vec3d cameraPos, EnumFacing side,
-                                                        Color4f color, double expand, BufferBuilder buffer)
-    {
-        double minX = pos.getX() - expand - cameraPos.x;
-        double minY = pos.getY() - expand - cameraPos.y;
-        double minZ = pos.getZ() - expand - cameraPos.z;
-        double maxX = pos.getX() + expand - cameraPos.x + 1;
-        double maxY = pos.getY() + expand - cameraPos.y + 1;
-        double maxZ = pos.getZ() + expand - cameraPos.z + 1;
-
-        switch (side)
-        {
-            case DOWN:
-                buffer.pos(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-                buffer.pos(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-                buffer.pos(minX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-                buffer.pos(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-                break;
-
-            case UP:
-                buffer.pos(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-                buffer.pos(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-                buffer.pos(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-                buffer.pos(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-                break;
-
-            case NORTH:
-                buffer.pos(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-                buffer.pos(minX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-                buffer.pos(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-                buffer.pos(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-                break;
-
-            case SOUTH:
-                buffer.pos(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-                buffer.pos(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-                buffer.pos(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-                buffer.pos(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-                break;
-
-            case WEST:
-                buffer.pos(minX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-                buffer.pos(minX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-                buffer.pos(minX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-                buffer.pos(minX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-                break;
-
-            case EAST:
-                buffer.pos(maxX, minY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-                buffer.pos(maxX, minY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-                buffer.pos(maxX, maxY, minZ).color(color.r, color.g, color.b, color.a).endVertex();
-                buffer.pos(maxX, maxY, maxZ).color(color.r, color.g, color.b, color.a).endVertex();
-                break;
-        }
-    }
-
-    public static void renderBox(IntBoundingBox bb, Vec3d cameraPos, Color4f color,
-                                 BufferBuilder bufferQuads, BufferBuilder bufferLines)
-    {
-        double minX = bb.minX - cameraPos.x;
-        double minY = bb.minY - cameraPos.y;
-        double minZ = bb.minZ - cameraPos.z;
-        double maxX = bb.maxX - cameraPos.x + 1;
-        double maxY = bb.maxY - cameraPos.y + 1;
-        double maxZ = bb.maxZ - cameraPos.z + 1;
-
-        renderBoxAllSidesBatchedQuads(minX, minY, minZ, maxX, maxY, maxZ, color, bufferQuads);
-        renderBoxAllEdgesBatchedLines(minX, minY, minZ, maxX, maxY, maxZ, color, bufferLines);
-    }
-
-    public static void renderBox(StructureBoundingBox bb, Color4f color,
-                                 BufferBuilder bufferQuads, BufferBuilder bufferLines)
-    {
-        double minX = bb.minX;
-        double minY = bb.minY;
-        double minZ = bb.minZ;
-        double maxX = bb.maxX + 1;
-        double maxY = bb.maxY + 1;
-        double maxZ = bb.maxZ + 1;
-
-        renderBoxAllSidesBatchedQuads(minX, minY, minZ, maxX, maxY, maxZ, color, bufferQuads);
-        renderBoxAllEdgesBatchedLines(minX, minY, minZ, maxX, maxY, maxZ, color, bufferLines);
-    }
-
-    /**
-     * Renders a text plate/billboard, similar to the player name plate.<br>
-     * The plate will always face towards the viewer.
-     * @param text
-     * @param x
-     * @param y
-     * @param z
-     * @param scale
-     */
-    public static void renderTextPlate(List<String> text, double x, double y, double z, float scale)
-    {
-        Entity entity = mc().getRenderViewEntity();
-
-        if (entity != null)
-        {
-            renderTextPlate(text, x, y, z, entity.rotationYaw, entity.rotationPitch, scale, 0xFFFFFFFF, 0x40000000, true);
-        }
-    }
-
-    public static void renderTextPlate(List<String> text, double x, double y, double z, float yaw, float pitch,
-                                       float scale, int textColor, int bgColor, boolean disableDepth)
-    {
-        FontRenderer textRenderer = mc().fontRenderer;
-
-        GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(x, y, z);
-        GlStateManager.glNormal3f(0.0F, 1.0F, 0.0F);
-
-        GlStateManager.rotate(-yaw, 0.0F, 1.0F, 0.0F);
-        GlStateManager.rotate(pitch, 1.0F, 0.0F, 0.0F);
-
-        GlStateManager.scale(-scale, -scale, scale);
-        GlStateManager.disableLighting();
-        GlStateManager.disableCull();
-
-        setupBlend();
-        GlStateManager.disableTexture2D();
-
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
-        int maxLineLen = 0;
-
-        for (String line : text)
-        {
-            maxLineLen = Math.max(maxLineLen, textRenderer.getStringWidth(line));
-        }
-
-        int strLenHalf = maxLineLen / 2;
-        int textHeight = textRenderer.FONT_HEIGHT * text.size() - 1;
-        float bga = ((bgColor >>> 24) & 0xFF) * 255f;
-        float bgr = ((bgColor >>> 16) & 0xFF) * 255f;
-        float bgg = ((bgColor >>>  8) & 0xFF) * 255f;
-        float bgb = (bgColor          & 0xFF) * 255f;
-
-        if (disableDepth)
-        {
-            GlStateManager.depthMask(false);
-            GlStateManager.disableDepth();
-        }
-
-        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
-        buffer.pos(-strLenHalf - 1,          -1, 0.0D).color(bgr, bgg, bgb, bga).endVertex();
-        buffer.pos(-strLenHalf - 1,  textHeight, 0.0D).color(bgr, bgg, bgb, bga).endVertex();
-        buffer.pos( strLenHalf    ,  textHeight, 0.0D).color(bgr, bgg, bgb, bga).endVertex();
-        buffer.pos( strLenHalf    ,          -1, 0.0D).color(bgr, bgg, bgb, bga).endVertex();
-        tessellator.draw();
-
-        GlStateManager.enableTexture2D();
-        int textY = 0;
-
-        // translate the text a bit infront of the background
-        if (disableDepth == false)
-        {
-            GlStateManager.enablePolygonOffset();
-            GlStateManager.doPolygonOffset(-0.6f, -1.2f);
-            //GlStateManager.translate(0, 0, -0.02);
-
-            GlStateManager.enableDepth();
-            GlStateManager.depthMask(true);
-        }
-
-        for (String line : text)
-        {
-            if (disableDepth)
-            {
-                GlStateManager.depthMask(false);
-                GlStateManager.disableDepth();
-
-                // Render the faint version that will also show through blocks
-                textRenderer.drawString(line, -strLenHalf, textY, 0x20000000 | (textColor & 0xFFFFFF));
-
-                GlStateManager.enableDepth();
-                GlStateManager.depthMask(true);
-            }
-
-            // Render the actual fully opaque text, that will not show through blocks
-            textRenderer.drawString(line, -strLenHalf, textY, textColor);
-            textY += textRenderer.FONT_HEIGHT;
-        }
-
-        if (disableDepth == false)
-        {
-            GlStateManager.doPolygonOffset(0f, 0f);
-            GlStateManager.disablePolygonOffset();
-        }
-
-        color(1f, 1f, 1f, 1f);
-        GlStateManager.enableCull();
-        GlStateManager.disableBlend();
-        GlStateManager.popMatrix();
     }
 
     public static void renderBlockTargetingOverlay(Entity entity, BlockPos pos, EnumFacing side, Vec3d hitVec,
