@@ -74,7 +74,7 @@ public class BaseValueListEditButton<TYPE> extends GenericButton
         }
         else
         {
-            BaseScreen.openPopupGui(this.createScreen(null, GuiUtils.getCurrentScreen()));
+            BaseScreen.openPopupScreen(this.createScreen(null, GuiUtils.getCurrentScreen()));
         }
     }
 

@@ -127,7 +127,7 @@ public class SearchBarWidget extends ContainerWidget
         {
             if (BaseScreen.isShiftDown())
             {
-                BaseScreen.openGui(null);
+                BaseScreen.openScreen(null);
             }
             else
             {

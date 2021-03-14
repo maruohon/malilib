@@ -34,7 +34,7 @@ public class DirectorySelectorScreen extends BaseListScreen<BaseFileBrowserWidge
 
         this.addButton(button, (btn, mbtn) -> {
             this.fileConsumer.accept(this.getListWidget().getCurrentDirectory());
-            BaseScreen.openGui(this.getParent());
+            BaseScreen.openScreen(this.getParent());
         });
     }
 

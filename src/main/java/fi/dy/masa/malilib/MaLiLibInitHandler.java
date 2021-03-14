@@ -21,7 +21,7 @@ public class MaLiLibInitHandler implements InitializationHandler
 
         ConfigTabRegistry.INSTANCE.registerConfigTabProvider(MaLiLibReference.MOD_ID, MaLiLibConfigScreen::getConfigTabs);
 
-        MaLiLibConfigs.Generic.OPEN_GUI_CONFIGS.getKeyBind().setCallback((a, k) -> BaseScreen.openGui(MaLiLibConfigScreen.create()));
+        MaLiLibConfigs.Generic.OPEN_GUI_CONFIGS.getKeyBind().setCallback((a, k) -> BaseScreen.openScreen(MaLiLibConfigScreen.create(null)));
         MaLiLibConfigs.Generic.OPTION_LIST_CONFIG_DROPDOWN.setValueChangeCallback((n, o) -> GuiUtils.reInitCurrentScreen());
 
         RenderEventDispatcher.INSTANCE.registerGameOverlayRenderer(InfoOverlay.INSTANCE);

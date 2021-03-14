@@ -33,7 +33,7 @@ public class FileSelectorScreen extends DirectorySelectorScreen
             if (entry != null && entry.getType() == BaseFileBrowserWidget.DirectoryEntryType.FILE)
             {
                 this.fileConsumer.accept(entry.getFullPath());
-                BaseScreen.openGui(this.getParent());
+                BaseScreen.openScreen(this.getParent());
             }
         });
     }

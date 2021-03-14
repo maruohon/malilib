@@ -40,7 +40,7 @@ public class BlackWhiteListEditButton extends GenericButton
         }
         else
         {
-            BaseScreen.openPopupGui(new BlackWhiteListEditScreen<>(this.config, this.saveListener, null, GuiUtils.getCurrentScreen()));
+            BaseScreen.openPopupScreen(new BlackWhiteListEditScreen<>(this.config, this.saveListener, null, GuiUtils.getCurrentScreen()));
         }
     }
 

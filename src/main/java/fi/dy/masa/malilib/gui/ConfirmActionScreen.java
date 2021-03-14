@@ -47,13 +47,13 @@ public class ConfirmActionScreen extends BaseScreen implements TaskCompletionLis
         // FIXME Should the parent screen be opened before triggering the action, that way the TaskCompletionListener redirect would not be needed?
         this.addButton(new GenericButton(x, y, buttonWidth, 20, "malilib.gui.button.colored.confirm"), (btn, mbtn) -> {
             this.listener.onActionConfirmed();
-            BaseScreen.openGui(this.getParent());
+            BaseScreen.openScreen(this.getParent());
         });
         x += buttonWidth + 10;
 
         this.addButton(new GenericButton(x, y, buttonWidth, 20, "malilib.gui.button.colored.cancel"), (btn, mbtn) -> {
             this.listener.onActionCancelled();
-            BaseScreen.openGui(this.getParent());
+            BaseScreen.openScreen(this.getParent());
         });
     }
 

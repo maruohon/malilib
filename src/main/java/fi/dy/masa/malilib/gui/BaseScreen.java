@@ -196,6 +196,7 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
     protected void initScreen()
     {
         this.clearElements();
+        Keyboard.enableRepeatEvents(true);
     }
 
     protected boolean useCustomScreenScaling()
@@ -858,9 +859,9 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
         GlStateManager.popMatrix();
     }
 
-    public static boolean openGui(@Nullable GuiScreen gui)
+    public static boolean openScreen(@Nullable GuiScreen screen)
     {
-        Minecraft.getMinecraft().displayGuiScreen(gui);
+        Minecraft.getMinecraft().displayGuiScreen(screen);
         return true;
     }
 
@@ -868,16 +869,16 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
      * Opens a popup GUI, which is meant to open on top of another GUI.
      * This will set the Z level on that GUI based on the current GUI
      */
-    public static boolean openPopupGui(BaseScreen gui)
+    public static boolean openPopupScreen(BaseScreen screen)
     {
-        return openPopupGui(gui, true);
+        return openPopupScreen(screen, true);
     }
 
-    public static boolean openPopupGui(BaseScreen gui, boolean shouldRenderParent)
+    public static boolean openPopupScreen(BaseScreen screen, boolean shouldRenderParent)
     {
-        gui.setPopupGuiZLevelBasedOn(GuiUtils.getCurrentScreen());
-        gui.setShouldRenderParent(shouldRenderParent);
-        Minecraft.getMinecraft().displayGuiScreen(gui);
+        screen.setPopupGuiZLevelBasedOn(GuiUtils.getCurrentScreen());
+        screen.setShouldRenderParent(shouldRenderParent);
+        Minecraft.getMinecraft().displayGuiScreen(screen);
         return true;
     }
 

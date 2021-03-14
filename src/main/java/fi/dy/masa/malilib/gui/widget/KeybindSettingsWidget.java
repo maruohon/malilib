@@ -48,7 +48,7 @@ public class KeybindSettingsWidget extends InteractableWidget
             }
             else
             {
-                BaseScreen.openPopupGui(new KeybindSettingsScreen(this.keyBind, this.keyBindName, null, GuiUtils.getCurrentScreen()));
+                BaseScreen.openPopupScreen(new KeybindSettingsScreen(this.keyBind, this.keyBindName, null, GuiUtils.getCurrentScreen()));
             }
 
             return true;

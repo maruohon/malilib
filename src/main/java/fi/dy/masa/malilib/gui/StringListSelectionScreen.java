@@ -45,6 +45,6 @@ public class StringListSelectionScreen extends BaseListScreen<DataListWidget<Str
         this.addButton(button, (btn, mbtn) -> this.consumer.accept(this.getListWidget().getEntrySelectionHandler().getSelectedEntries()));
 
         button = new GenericButton(x, y, -1, 20, "litematica.gui.button.cancel");
-        this.addButton(button, (btn, mbtn) -> BaseScreen.openGui(this.getParent()));
+        this.addButton(button, (btn, mbtn) -> BaseScreen.openScreen(this.getParent()));
     }
 }

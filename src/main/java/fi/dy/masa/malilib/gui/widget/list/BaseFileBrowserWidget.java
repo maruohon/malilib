@@ -309,7 +309,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         {
             DirectoryCreator creator = new DirectoryCreator(this.getCurrentDirectory(), this);
             TextInputScreen gui = new TextInputScreen("malilib.gui.title.create_directory", "", GuiUtils.getCurrentScreen(), creator);
-            BaseScreen.openPopupGui(gui);
+            BaseScreen.openPopupScreen(gui);
             return true;
         }
 

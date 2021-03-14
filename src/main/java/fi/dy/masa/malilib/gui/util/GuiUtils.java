@@ -303,11 +303,11 @@ public class GuiUtils
             if (mc.gameSettings.chatLinksPrompt)
             {
                 //BaseScreen.openGui(new ConfirmActionScreen(320, "", () -> openWebLink(uri), getCurrentScreen(), ""));
-                BaseScreen.openGui(new GuiConfirmOpenLink((result, id) -> {
+                BaseScreen.openScreen(new GuiConfirmOpenLink((result, id) -> {
                     if (result && id == 31102009)
                         openWebLink(uri);
                     else
-                        BaseScreen.openGui(currentScreen);
+                        BaseScreen.openScreen(currentScreen);
                     }, urlString, 31102009, false));
             }
             else
