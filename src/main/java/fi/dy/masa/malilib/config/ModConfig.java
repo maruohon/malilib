@@ -45,6 +45,20 @@ public interface ModConfig
     int getConfigVersion();
 
     /**
+     * Reads all the configs from the provided config file.
+     * @param configFile the file to load the configs from
+     */
+    void loadFromFile(File configFile);
+
+    /**
+     * Saves all the configs to the provided config file
+     * @param configDirectory the directory where the configs are being saved to
+     * @param configFile the file to save the configs to
+     * @return true on success, false on failure
+     */
+    boolean saveToFile(File configDirectory, File configFile);
+
+    /**
      * Returns the directory where the configs should be saved
      */
     default File getConfigDirectory()
@@ -103,12 +117,6 @@ public interface ModConfig
     }
 
     /**
-     * Reads all the configs from the provided config file.
-     * @param configFile the file to load the configs from
-     */
-    void loadFromFile(File configFile);
-
-    /**
      * Called after the {@link #loadFromFile(File)} method has loaded the configs, to allow
      * mods to do some custom setup with the new config options.
      */
@@ -130,18 +138,11 @@ public interface ModConfig
 
         if (dir.exists() && dir.isDirectory())
         {
-            return this.saveToFile(new File(dir, this.getConfigFileName()));
+            return this.saveToFile(dir, new File(dir, this.getConfigFileName()));
         }
 
         return false;
     }
-
-    /**
-     * Saves all the configs to the provided config file
-     * @param configFile the file to save the configs to
-     * @return true on success, false on failure
-     */
-    boolean saveToFile(File configFile);
 
     /**
      * Save the configs only if at least some of them have been modified since last saving

@@ -8,9 +8,16 @@ import fi.dy.masa.malilib.util.FileUtils;
 
 public class JsonModConfig extends BaseModConfig
 {
-    public JsonModConfig(String modId, String modName, List<ConfigOptionCategory> configOptionCategories, int configVersion)
+    public JsonModConfig(String modId, String modName,
+                         List<ConfigOptionCategory> configOptionCategories, int configVersion)
     {
-        super(modId, modName, modId + ".json", configOptionCategories, configVersion);
+        this(modId, modName, modId + ".json", configOptionCategories, configVersion);
+    }
+
+    public JsonModConfig(String modId, String modName, String configFileName,
+                         List<ConfigOptionCategory> configOptionCategories, int configVersion)
+    {
+        super(modId, modName, configFileName, configOptionCategories, configVersion);
     }
 
     @Override
@@ -20,11 +27,12 @@ public class JsonModConfig extends BaseModConfig
     }
 
     @Override
-    public boolean saveToFile(File configFile)
+    public boolean saveToFile(File configDirectory, File configFile)
     {
         if (this.backupCount > 0)
         {
-            FileUtils.createRollingBackup(configFile, this.backupCount, ".bak_");
+            FileUtils.createRollingBackup(configFile, this.getConfigBackupDirectory(configDirectory),
+                                          this.backupCount, ".bak_");
         }
 
         return JsonConfigUtils.saveToFile(configFile, this.getConfigOptionCategories(), this.getConfigVersion());

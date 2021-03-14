@@ -2,6 +2,7 @@
 malilib.config.category.debug=Debug
 malilib.config.category.generic=Generic
 
+malilib.config.comment.configbackupcount=This is the number of backup copies that should be kept of each of the mod config files, whenever the configs are modified and get saved to the config file again
 malilib.config.comment.configsearchdefaultscope=This is the default scope value in the config menu search bars
 malilib.config.comment.customscreenscale=Custom screen scale value for any screens using the malilib screen classes. Use 0 for the default vanilla GUI scale value.
 malilib.config.comment.datadumpcsvdelimiter=The column delimiter to use for CSV format data dumps
@@ -34,6 +35,7 @@ malilib.config.comment.keybind_settings.first_only=If enabled, then this keybind
 malilib.config.comment.keybind_settings.order_sensitive=Should the keybind keys be pressed in the specific order they were defined in
 malilib.config.comment.keybind_settings.priority=The priority of this keybind in relation to other keybinds that trigger with the same last key. It's a simple numerical sort order - lower values come first.
 
+malilib.config.name.configbackupcount=Config Backup Count
 malilib.config.name.configsearchdefaultscope=Config Search Default Scope
 malilib.config.name.customscreenscale=Custom Screen Scale
 malilib.config.name.datadumpcsvdelimiter=Data Dump CSV Delimiter

@@ -239,36 +239,46 @@ public class FileUtils
         return null;
     }
 
-    public static boolean createRollingBackup(File fileIn, int maxBackups, String suffix)
+    public static boolean createRollingBackup(File fileIn, File backupDirectory, int maxBackups, String suffix)
     {
-        File dir = fileIn.getParentFile();
+        if (backupDirectory.isDirectory() == false && backupDirectory.mkdirs() == false)
+        {
+            MaLiLib.LOGGER.error("Failed to create the config backup directory '{}'", backupDirectory.getAbsolutePath());
+            return false;
+        }
+
         String name = fileIn.getName();
 
         for (int i = maxBackups; i > 1; --i)
         {
-            File tmp1 = new File(dir, name + suffix + (i - 1));
-            File tmp2 = new File(dir, name + suffix + i);
+            File tmp1 = new File(backupDirectory, name + suffix + (i - 1));
+            File tmp2 = new File(backupDirectory, name + suffix + i);
 
             if (tmp2.exists() && tmp2.isFile())
             {
-                tmp2.delete();
+                if (tmp2.delete() == false)
+                {
+                    MaLiLib.LOGGER.warn("Failed to delete config backup file '{}'", tmp2.getAbsolutePath());
+                }
             }
 
             if (tmp1.exists() && tmp1.renameTo(tmp2) == false)
             {
+                MaLiLib.LOGGER.error("Failed to rename config backup file '{}' to '{}'",
+                                    tmp1.getAbsolutePath(), tmp2.getAbsolutePath());
                 return false;
             }
         }
 
-        File fileBackup = new File(dir, name + suffix + 1);
+        File backupFile = new File(backupDirectory, name + suffix + "1");
 
         try
         {
-            org.apache.commons.io.FileUtils.copyFile(fileIn, fileBackup);
+            org.apache.commons.io.FileUtils.copyFile(fileIn, backupFile);
         }
         catch (Exception e)
         {
-            MaLiLib.LOGGER.warn("Failed to copy file '{}' to '{}'", fileIn.getAbsolutePath(), fileBackup.getAbsolutePath());
+            MaLiLib.LOGGER.error("Failed to copy file '{}' to '{}'", fileIn.getAbsolutePath(), backupFile.getAbsolutePath());
         }
 
         return true;
