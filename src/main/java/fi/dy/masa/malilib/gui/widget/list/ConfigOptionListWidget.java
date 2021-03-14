@@ -10,7 +10,6 @@ import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.gui.config.ConfigOptionWidgetFactory;
 import fi.dy.masa.malilib.gui.config.ConfigTab;
-import fi.dy.masa.malilib.gui.config.ConfigTabProvider;
 import fi.dy.masa.malilib.gui.config.ConfigTabRegistry;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetRegistry;
@@ -168,11 +167,11 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
                 }
                 else
                 {
-                    ConfigTabProvider tabProvider = ConfigTabRegistry.INSTANCE.getConfigTabProviderFor(this.modId);
+                    Supplier<List<ConfigTab>> tabProvider = ConfigTabRegistry.INSTANCE.getConfigTabProviderFor(this.modId);
 
                     if (tabProvider != null)
                     {
-                        tabProvider.getConfigTabs().forEach((tab) -> this.addConfigsToLists(tab, configList, tabList));
+                        tabProvider.get().forEach((tab) -> this.addConfigsToLists(tab, configList, tabList));
                     }
                 }
 

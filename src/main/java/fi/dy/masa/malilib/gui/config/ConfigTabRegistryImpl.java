@@ -4,25 +4,26 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 import javax.annotation.Nullable;
 
 public class ConfigTabRegistryImpl implements ConfigTabRegistry
 {
-    private final Map<String, ConfigTabProvider> configTabProviders = new HashMap<>();
+    private final Map<String, Supplier<List<ConfigTab>>> configTabProviders = new HashMap<>();
 
     ConfigTabRegistryImpl()
     {
     }
 
     @Override
-    public void registerConfigTabProvider(String modId, ConfigTabProvider tabProvider)
+    public void registerConfigTabProvider(String modId, Supplier<List<ConfigTab>> tabProvider)
     {
         this.configTabProviders.put(modId, tabProvider);
     }
 
     @Override
     @Nullable
-    public ConfigTabProvider getConfigTabProviderFor(String modId)
+    public Supplier<List<ConfigTab>> getConfigTabProviderFor(String modId)
     {
         return this.configTabProviders.get(modId);
     }
@@ -32,9 +33,9 @@ public class ConfigTabRegistryImpl implements ConfigTabRegistry
     {
         List<ConfigTab> list = new ArrayList<>();
 
-        for (ConfigTabProvider provider : this.configTabProviders.values())
+        for (Supplier<List<ConfigTab>> provider : this.configTabProviders.values())
         {
-            list.addAll(provider.getConfigTabs());
+            list.addAll(provider.get());
         }
 
         return list;

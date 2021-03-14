@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.gui;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
@@ -9,8 +10,9 @@ import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.InteractableWidget;
 import fi.dy.masa.malilib.gui.widget.list.BaseListWidget;
+import fi.dy.masa.malilib.gui.widget.list.ConfigOptionListWidget;
 
-public abstract class BaseListScreen<LISTWIDGET extends BaseListWidget> extends BaseScreen
+public abstract class BaseListScreen<LISTWIDGET extends BaseListWidget> extends BaseTabbedScreen
 {
     private int listX;
     private int listY;
@@ -20,8 +22,17 @@ public abstract class BaseListScreen<LISTWIDGET extends BaseListWidget> extends 
 
     protected BaseListScreen(int listX, int listY, int totalListMarginX, int totalListMarginY)
     {
+        this(listX, listY, totalListMarginX, totalListMarginY, "N/A", Collections.emptyList(), null);
+    }
+
+    protected BaseListScreen(int listX, int listY, int totalListMarginX, int totalListMarginY,
+                             String screenId, List<? extends ScreenTab> screenTabs, @Nullable ScreenTab defaultTab)
+    {
+        super(screenId, screenTabs, defaultTab);
+
         this.totalListMarginX = totalListMarginX;
         this.totalListMarginY = totalListMarginY;
+        this.shouldCreateTabButtons = screenTabs.isEmpty() == false;
 
         this.setListPosition(listX, listY);
     }
@@ -92,6 +103,24 @@ public abstract class BaseListScreen<LISTWIDGET extends BaseListWidget> extends 
         if (this.widget != null)
         {
             this.widget.setPositionAndSize(listX, listY, this.getListWidth(), this.getListHeight());
+        }
+    }
+
+    @Override
+    protected int getCurrentScrollbarPosition()
+    {
+        LISTWIDGET listWidget = this.getListWidget();
+        return listWidget != null ? listWidget.getScrollbar().getValue() : -1;
+    }
+
+    @Override
+    protected void setCurrentScrollbarPosition(int position)
+    {
+        LISTWIDGET listWidget = this.getListWidget();
+
+        if (listWidget != null)
+        {
+            listWidget.setRequestedScrollBarPosition(position);
         }
     }
 

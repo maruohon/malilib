@@ -3,9 +3,9 @@ package fi.dy.masa.malilib.gui.config;
 import java.util.List;
 import fi.dy.masa.malilib.config.category.ConfigCategory;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
-import fi.dy.masa.malilib.gui.widget.button.ButtonActionListener;
+import fi.dy.masa.malilib.gui.ScreenTab;
 
-public interface ConfigTab extends ConfigCategory
+public interface ConfigTab extends ConfigCategory, ScreenTab
 {
     /**
      * Returns the mod name this category belongs to.
@@ -13,15 +13,6 @@ public interface ConfigTab extends ConfigCategory
      * @return
      */
     String getModName();
-
-    /**
-     * Returns the display name for this config category/tab.
-     * This is used in the config screen tab buttons and also
-     * as the category name for the options when showing options
-     * from multiple categories or from all mods.
-     * @return
-     */
-    String getDisplayName();
 
     /**
      * Returns whether or not this category should appear on the config screen
@@ -34,12 +25,6 @@ public interface ConfigTab extends ConfigCategory
      * @return
      */
     int getConfigWidth();
-
-    /**
-     * Returns the button action listener that should be used for this tab's selection button
-     * @return
-     */
-    ButtonActionListener getButtonActionListener(BaseConfigScreen gui);
 
     /**
      * Returns the list of config options to display on this tab/in this category
