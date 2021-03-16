@@ -43,7 +43,7 @@ public class StringListRendererWidget extends InfoRendererWidget
      */
     public void setStringListProvider(String key, Supplier<List<String>> supplier, int priority)
     {
-        this.stringListFactory.setStringListProvider(key, (lines) -> supplier.get(), priority);
+        this.stringListFactory.setStringListProvider(key, supplier, priority);
         this.markDirty();
     }
 

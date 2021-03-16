@@ -97,7 +97,7 @@ public class StyledTextSegment
     @Override
     public String toString()
     {
-        return "StyledTextSegment{displayText='" + this.displayText + "'}";
+        return "StyledTextSegment{displayText='" + this.displayText + "', style=" + this.style + "}";
     }
 
     @Override

@@ -1,7 +1,5 @@
 package fi.dy.masa.malilib.util.data;
 
-import java.awt.*;
-
 public class Color4f
 {
     public static final Color4f WHITE = new Color4f(1F, 1F, 1F, 1F);
@@ -57,6 +55,18 @@ public class Color4f
         return fromColor(this.intValue, alpha);
     }
 
+    @Override
+    public String toString()
+    {
+        return "Color4f{hex=" + getHexColorString(this.intValue) + 
+                       ", a=" + this.a +
+                       ", r=" + this.r +
+                       ", g=" + this.g +
+                       ", b=" + this.b +
+                       ", intValue=" + this.intValue +
+                       '}';
+    }
+
     public static Color4f fromColor(int color)
     {
         float alpha = ((color & 0xFF000000) >>> 24) / 255f;
@@ -79,7 +89,7 @@ public class Color4f
 
     public static int getColorFromHue(int hue)
     {
-        return 0xFF000000 | (Color.HSBtoRGB((float) (hue % 360) / 360f, 1f, 1f) & 0x00FFFFFF);
+        return 0xFF000000 | (java.awt.Color.HSBtoRGB((float) (hue % 360) / 360f, 1f, 1f) & 0x00FFFFFF);
     }
 
     /**
@@ -99,7 +109,7 @@ public class Color4f
         int g = ((color >>>  8) & 0xFF);
         int b = ( color         & 0xFF);
 
-        Color.RGBtoHSB(r, g, b, hsv);
+        java.awt.Color.RGBtoHSB(r, g, b, hsv);
 
         return hsv;
     }

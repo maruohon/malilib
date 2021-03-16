@@ -142,6 +142,17 @@ public class StyledTextLine
     }
 
     /**
+     * Creates a styled text line of the translation result of the provided translation key.
+     * If the string has line breaks, the separate lines will be joined
+     * and the line breaks will be replaced by the string '\n'.
+     * Uses the given startingStyle as the style builder base style.
+     */
+    public static StyledTextLine translatedOf(String translationKey, TextStyle startingStyle)
+    {
+        return of(StringUtils.translate(translationKey), startingStyle);
+    }
+
+    /**
      * Creates a styled text line of the provided raw string.
      * If the string has line breaks, the separate lines will be joined
      * and the line breaks will be replaced by the string '\n'.
@@ -152,6 +163,12 @@ public class StyledTextLine
         return joinLines(text);
     }
 
+    /**
+     * Creates a styled text line of the provided raw string.
+     * If the string has line breaks, the separate lines will be joined
+     * and the line breaks will be replaced by the string '\n'.
+     * Uses the given startingStyle as the style builder base style.
+     */
     public static StyledTextLine of(String str, TextStyle startingStyle)
     {
         StyledText text = StyledText.of(str, startingStyle);
