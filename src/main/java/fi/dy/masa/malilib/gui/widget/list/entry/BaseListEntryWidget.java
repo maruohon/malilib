@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.gui.widget.list.entry;
 
 import fi.dy.masa.malilib.gui.widget.ContainerWidget;
+import fi.dy.masa.malilib.render.ShapeRenderUtils;
 
 public class BaseListEntryWidget extends ContainerWidget
 {
@@ -61,5 +62,10 @@ public class BaseListEntryWidget extends ContainerWidget
     public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId, boolean selected)
     {
         this.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hoveredWidgetId);
+
+        if (selected)
+        {
+            ShapeRenderUtils.renderOutline(x, y, z, this.getWidth(), this.getHeight(), 1, 0xFFFFFFFF);
+        }
     }
 }

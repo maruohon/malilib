@@ -40,6 +40,18 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
         this.selectionHandler = new DataListEntrySelectionHandler<>(this::getFilteredEntries);
     }
 
+    public DataListWidget<DATATYPE> setAllowSelection(boolean allowSelection)
+    {
+        DataListEntrySelectionHandler<DATATYPE> handler = this.getEntrySelectionHandler();
+
+        if (handler != null)
+        {
+            handler.setAllowSelection(allowSelection);
+        }
+
+        return this;
+    }
+
     public DataListWidget<DATATYPE> setHeaderWidgetFactory(@Nullable ListHeaderWidgetFactory<DATATYPE> factory)
     {
         this.headerWidgetFactory = factory;
@@ -353,10 +365,9 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
 
     public void setLastSelectedEntry(int listIndex)
     {
-        int index = listIndex >= 0 && listIndex < this.getTotalListWidgetCount() ? listIndex : -1;
-
         if (this.getEntrySelectionHandler() != null)
         {
+            int index = listIndex >= 0 && listIndex < this.getTotalListWidgetCount() ? listIndex : -1;
             this.getEntrySelectionHandler().setLastSelectedEntry(index);
         }
     }

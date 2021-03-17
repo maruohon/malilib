@@ -16,6 +16,7 @@ public class DataListEntrySelectionHandler<DATATYPE>
     @Nullable protected SelectionListener<DATATYPE> selectionListener;
     @Nullable protected DATATYPE lastSelectedEntry;
     protected boolean allowMultiSelection;
+    protected boolean allowSelection;
     protected int lastSelectedEntryIndex = -1;
 
     public DataListEntrySelectionHandler(Supplier<List<DATATYPE>> dataListSupplier)
@@ -38,6 +39,18 @@ public class DataListEntrySelectionHandler<DATATYPE>
     public DataListEntrySelectionHandler<DATATYPE> setAllowMultiSelection(boolean allowMultiSelection)
     {
         this.allowMultiSelection = allowMultiSelection;
+        return this;
+    }
+
+    public DataListEntrySelectionHandler<DATATYPE> setAllowSelection(boolean allowSelection)
+    {
+        this.allowSelection = allowSelection;
+
+        if (allowSelection == false)
+        {
+            this.clearSelection();
+        }
+
         return this;
     }
 
@@ -88,25 +101,18 @@ public class DataListEntrySelectionHandler<DATATYPE>
 
     public void setLastSelectedEntry(int listIndex)
     {
+        if (this.allowSelection == false)
+        {
+            return;
+        }
+
         List<DATATYPE> dataList = this.dataListSupplier.get();
+        boolean unselect = listIndex == this.lastSelectedEntryIndex || this.selectedEntryIndices.contains(listIndex);
+        boolean validIndex = listIndex >= 0 && listIndex < dataList.size();
+        @Nullable DATATYPE entry = validIndex ? dataList.get(listIndex) : null;
 
-        if (listIndex >= 0 && listIndex < dataList.size())
-        {
-            this.lastSelectedEntryIndex = listIndex;
-        }
-        else
-        {
-            this.lastSelectedEntryIndex = -1;
-        }
-
-        @Nullable DATATYPE entry = null;
-
-        if (this.lastSelectedEntryIndex >= 0 && this.lastSelectedEntryIndex < dataList.size())
-        {
-            entry = dataList.get(this.lastSelectedEntryIndex);
-        }
-
-        this.lastSelectedEntry = entry;
+        this.lastSelectedEntryIndex = validIndex && unselect == false ? listIndex : -1;
+        this.lastSelectedEntry = unselect ? null : entry;
 
         if (this.allowMultiSelection && entry != null)
         {
@@ -115,10 +121,10 @@ public class DataListEntrySelectionHandler<DATATYPE>
                 this.selectedEntries.remove(entry);
                 this.selectedEntryIndices.remove(listIndex);
             }
-            else
+            else if (unselect == false)
             {
                 this.selectedEntries.add(entry);
-                this.selectedEntryIndices.add(this.lastSelectedEntryIndex);
+                this.selectedEntryIndices.add(listIndex);
             }
         }
 
