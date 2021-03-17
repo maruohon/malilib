@@ -131,7 +131,8 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
     }
 
     protected GenericButton createFileSelectorWidgets(int y, final FileConfig config,
-                                                      final FileSelectorScreenFactory screenFactory, String buttonText, String hoverTextKey)
+                                                      final FileSelectorScreenFactory screenFactory,
+                                                      String buttonText, String hoverTextKey)
     {
         int x = this.getElementsStartPosition();
         int elementWidth = this.getElementWidth();

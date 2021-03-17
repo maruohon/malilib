@@ -20,7 +20,7 @@ public class BaseDataListEditHeaderWidget<DATATYPE> extends DataListHeaderWidget
         super(x, y, 15, 15, listWidget);
 
         // This is a reference to the current entries list, which can be modified
-        this.dataList = listWidget.getCurrentEntries();
+        this.dataList = listWidget.getCurrentContents();
         this.dataFactory = dataFactory;
 
         this.addButton = new GenericButton(x, y, DefaultIcons.LIST_ADD_PLUS, buttonHover);
@@ -52,7 +52,7 @@ public class BaseDataListEditHeaderWidget<DATATYPE> extends DataListHeaderWidget
     protected void insertEntry()
     {
         this.dataList.add(0, this.getNewDataEntry());
-        this.listWidget.refreshEntries();
+        this.listWidget.reCreateListEntryWidgets();
         this.listWidget.focusWidget(0);
     }
 }

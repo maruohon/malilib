@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
@@ -16,16 +17,16 @@ import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetFactory;
 public class DataListWidget<DATATYPE> extends BaseListWidget
 {
     protected final Supplier<List<DATATYPE>> entrySupplier;
-    protected final List<DATATYPE> currentContents;
-    protected final List<DATATYPE> filteredContents = new ArrayList<>();
-    protected final List<Integer> filteredIndices = new ArrayList<>();
+    protected final ArrayList<DATATYPE> currentContents;
+    protected final ArrayList<DATATYPE> filteredContents = new ArrayList<>();
+    protected final ArrayList<Integer> filteredIndices = new ArrayList<>();
     @Nullable protected ListHeaderWidgetFactory<DATATYPE> headerWidgetFactory;
     @Nullable protected DataListEntryWidgetFactory<DATATYPE> entryWidgetFactory;
     @Nullable protected DataListEntrySelectionHandler<DATATYPE> selectionHandler;
     @Nullable protected Comparator<DATATYPE> listSortComparator;
     protected Function<DATATYPE, List<String>> entryFilterStringFactory = (e) -> Collections.singletonList(e.toString());
 
-    protected boolean areContentsDynamic;
+    protected boolean fetchFromSupplierOnRefresh;
     protected boolean filterMatchesEmptyEntry;
     protected boolean shouldSortList;
     protected int lastSelectedEntryIndex = -1;
@@ -45,27 +46,27 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
         return this;
     }
 
-    public DataListWidget<DATATYPE> setEntryWidgetFactory(DataListEntryWidgetFactory<DATATYPE> entryWidgetFactory)
+    public DataListWidget<DATATYPE> setEntryWidgetFactory(@Nullable DataListEntryWidgetFactory<DATATYPE> entryWidgetFactory)
     {
         this.entryWidgetFactory = entryWidgetFactory;
         return this;
     }
 
     /**
-     * Marks the contents as dynamic, which means that the entrySupplier is used to re-fetch
-     * the currentContents list any time the refreshEntries method is called.<br><br>
+     * This sets the data to be re-fetched from the list supplier to the
+     * currentContents list any time the refreshEntries method is called.<br><br>
      * If this is false, then the entrySupplier is only used once, in the constructor,
      * to fetch the contents to the list.<br><br>
-     * The non-dynamic case on the other hand allows the list returned
-     * by the getCurrentContents() method to be used as a backing data list for other things,
-     * for example the {@link fi.dy.masa.malilib.gui.widget.list.entry.BaseOrderableListEditEntryWidget}
-     * uses the list returned by getCurrentEntries()
-     * to store the edited list, before the changes are stored back to the actual underlying config
+     * The no-re-fetch case allows the currentContents list (returned by the {@link #getCurrentContents()} method)
+     * to be used as a backing data list for other things.
+     * For example the {@link fi.dy.masa.malilib.gui.widget.list.entry.BaseOrderableListEditEntryWidget}
+     * uses the list returned by getCurrentEntries() to store the edited list,
+     * before the changes are stored back to the actual underlying config option later on
      * in {@link fi.dy.masa.malilib.gui.config.BaseValueListEditScreen#onGuiClosed()}.
      */
-    public DataListWidget<DATATYPE> setContentsAreDynamic(boolean isDynamic)
+    public DataListWidget<DATATYPE> setFetchFromSupplierOnRefresh(boolean fetch)
     {
-        this.areContentsDynamic = isDynamic;
+        this.fetchFromSupplierOnRefresh = fetch;
         return this;
     }
 
@@ -75,6 +76,11 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
         return this;
     }
 
+    /**
+     * Sets the function that creates the strings from the data entries that the
+     * search strings are matched against.
+     * By default this is just a singleton list of the toString() return value of the entry.
+     */
     public DataListWidget<DATATYPE> setEntryFilterStringFactory(Function<DATATYPE, List<String>> factory)
     {
         this.entryFilterStringFactory = factory;
@@ -157,7 +163,7 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
      * if this list widget/screen allows modifying the contents.
      * @return
      */
-    public List<DATATYPE> getCurrentEntries()
+    public ArrayList<DATATYPE> getCurrentContents()
     {
         return this.currentContents;
     }
@@ -169,7 +175,7 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
      */
     public List<DATATYPE> getFilteredEntries()
     {
-        return this.hasFilter() ? this.filteredContents : this.getCurrentEntries();
+        return this.hasFilter() ? this.filteredContents : this.getCurrentContents();
     }
 
     @Nullable
@@ -177,6 +183,12 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
     {
         DataListEntrySelectionHandler<DATATYPE> handler = this.getEntrySelectionHandler();
         return handler != null ? handler.getLastSelectedEntry() : null;
+    }
+
+    public Set<DATATYPE> getSelectedEntries()
+    {
+        DataListEntrySelectionHandler<DATATYPE> handler = this.getEntrySelectionHandler();
+        return handler != null ? handler.getSelectedEntries() : Collections.emptySet();
     }
 
     @Nullable
@@ -191,7 +203,7 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
         return this.selectionHandler;
     }
 
-    public DataListWidget<DATATYPE> setEntrySelectionHandler(DataListEntrySelectionHandler<DATATYPE> selectionHandler)
+    public DataListWidget<DATATYPE> setEntrySelectionHandler(@Nullable DataListEntrySelectionHandler<DATATYPE> selectionHandler)
     {
         this.selectionHandler = selectionHandler;
         return this;
@@ -206,16 +218,22 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
     @Override
     public void refreshEntries()
     {
-        this.filteredContents.clear();
-        this.filteredIndices.clear();
-
-        if (this.areContentsDynamic)
+        if (this.fetchFromSupplierOnRefresh)
         {
             this.currentContents.clear();
             this.currentContents.addAll(this.entrySupplier.get());
         }
 
-        List<DATATYPE> entries = this.getCurrentEntries();
+        this.refreshFilteredEntries();
+    }
+
+    @Override
+    public void refreshFilteredEntries()
+    {
+        this.filteredContents.clear();
+        this.filteredIndices.clear();
+
+        List<DATATYPE> entries = this.getCurrentContents();
 
         if (this.hasFilter())
         {

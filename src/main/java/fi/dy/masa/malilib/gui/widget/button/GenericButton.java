@@ -79,13 +79,6 @@ public class GenericButton extends BaseButton
         this.setRenderBackground(false);
     }
 
-    @Override
-    public GenericButton setActionListener(@Nullable ButtonActionListener actionListener)
-    {
-        this.actionListener = actionListener;
-        return this;
-    }
-
     public GenericButton setTextCentered(boolean centered)
     {
         this.textCentered = centered;

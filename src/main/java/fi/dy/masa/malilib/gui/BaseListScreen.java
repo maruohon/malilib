@@ -10,7 +10,6 @@ import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.InteractableWidget;
 import fi.dy.masa.malilib.gui.widget.list.BaseListWidget;
-import fi.dy.masa.malilib.gui.widget.list.ConfigOptionListWidget;
 
 public abstract class BaseListScreen<LISTWIDGET extends BaseListWidget> extends BaseTabbedScreen
 {
@@ -37,6 +36,7 @@ public abstract class BaseListScreen<LISTWIDGET extends BaseListWidget> extends 
         this.setListPosition(listX, listY);
     }
 
+    @Nullable
     protected abstract LISTWIDGET createListWidget(int listX, int listY, int listWidth, int listHeight);
 
     protected void setListPosition(int listX, int listY)

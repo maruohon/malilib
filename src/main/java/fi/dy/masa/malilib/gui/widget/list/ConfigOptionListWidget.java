@@ -37,7 +37,7 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
 
         this.modId = modId;
         this.defaultElementWidthSupplier = defaultElementWidthSupplier;
-        this.areContentsDynamic = true;
+        this.fetchFromSupplierOnRefresh = true;
         this.allowKeyboardNavigation = true;
 
         this.setEntryWidgetFactory(new ConfigOptionListEntryWidgetFactory<>(ctx));
@@ -122,7 +122,7 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
     {
         super.onEntriesRefreshed();
 
-        List<C> list = this.getCurrentEntries();
+        List<C> list = this.getCurrentContents();
         final int size = list.size();
         boolean showOwner = this.isShowingOptionsFromOtherCategories();
         this.maxLabelWidth = 0;
@@ -147,7 +147,7 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
     }
 
     @Override
-    public List<C> getCurrentEntries()
+    public ArrayList<C> getCurrentContents()
     {
         if (this.configsSearchBarWidget != null &&
             this.configsSearchBarWidget.getCurrentScope() != ConfigsSearchBarWidget.Scope.CURRENT_CATEGORY)
@@ -191,7 +191,7 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
             return list;
         }
 
-        return super.getCurrentEntries();
+        return super.getCurrentContents();
     }
 
     protected void addConfigsToLists(@Nullable ConfigTab tab, ArrayList<ConfigInfo> configList, ArrayList<ConfigTab> tabList)

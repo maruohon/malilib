@@ -174,7 +174,8 @@ public abstract class BaseListWidget extends ContainerWidget
 
         this.createHeaderWidget();
         this.reAddSubWidgets();
-        this.updatePositioningAndElements();
+        this.updateSubWidgetsToGeometryChanges();
+        this.refreshEntries();
 
         Keyboard.enableRepeatEvents(true);
     }
@@ -182,7 +183,7 @@ public abstract class BaseListWidget extends ContainerWidget
     protected void updatePositioningAndElements()
     {
         this.updateSubWidgetsToGeometryChanges();
-        this.refreshEntries();
+        this.reCreateListEntryWidgets();
     }
 
     protected void updateScrollBarHeight()
@@ -447,7 +448,7 @@ public abstract class BaseListWidget extends ContainerWidget
                 // Toggled the search bar on or off, or cleared the filter with a right click
                 if (widget.isSearchOpen() != searchOpenPre || filterPre.equals(widget.getFilter()) == false)
                 {
-                    this.refreshEntries();
+                    this.refreshFilteredEntries();
                     this.resetScrollBarPosition();
                 }
 
@@ -460,7 +461,7 @@ public abstract class BaseListWidget extends ContainerWidget
 
     public void onSearchBarChange(String text)
     {
-        this.refreshEntries();
+        this.refreshFilteredEntries();
         this.resetScrollBarPosition();
     }
 
@@ -590,6 +591,11 @@ public abstract class BaseListWidget extends ContainerWidget
 
     public void refreshEntries()
     {
+        this.refreshFilteredEntries();
+    }
+
+    public void refreshFilteredEntries()
+    {
         this.reCreateListEntryWidgets();
     }
 
@@ -613,7 +619,7 @@ public abstract class BaseListWidget extends ContainerWidget
         }
     }
 
-    protected void reCreateListEntryWidgets()
+    public void reCreateListEntryWidgets()
     {
         for (BaseListEntryWidget widget : this.entryWidgets)
         {

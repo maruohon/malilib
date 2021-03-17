@@ -35,7 +35,7 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
         this.setBackgroundColorHovered(0x30FFFFFF);
 
         // This is a reference to the current entries list, which can be modified
-        this.dataList = listWidget.getCurrentEntries();
+        this.dataList = listWidget.getCurrentContents();
 
         this.addButton    = this.createListActionButton(x, y, ButtonType.ADD);
         this.removeButton = this.createListActionButton(x, y, ButtonType.REMOVE);
@@ -213,7 +213,7 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
     {
         int index = this.getInsertionIndex(this.dataList, before);
         this.dataList.add(index, this.getNewDataEntry());
-        this.listWidget.refreshEntries();
+        this.listWidget.reCreateListEntryWidgets();
         this.listWidget.focusWidget(index);
     }
 
@@ -224,7 +224,7 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
         if (this.originalListIndex >= 0 && this.originalListIndex < size)
         {
             this.dataList.remove(this.originalListIndex);
-            this.listWidget.refreshEntries();
+            this.listWidget.reCreateListEntryWidgets();
         }
     }
 
@@ -251,7 +251,7 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
             DATATYPE entry = list.remove(oldIndex);
             list.add(newIndex, entry);
 
-            this.listWidget.refreshEntries();
+            this.listWidget.reCreateListEntryWidgets();
         }
     }
 
