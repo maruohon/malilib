@@ -9,6 +9,7 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.widget.BackgroundWidget;
+import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.render.text.StyledText;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.StringUtils;
@@ -51,6 +52,17 @@ public abstract class BaseButton extends BackgroundWidget
 
         this.setDisplayString(StringUtils.translate(translationKey));
         this.updateWidth();
+    }
+
+    public BaseButton setActionListener(EventListener actionListener)
+    {
+        this.actionListener = (btn, mbtn) -> {
+            if (mbtn == 0)
+            {
+                actionListener.onEvent();
+            }
+        };
+        return this;
     }
 
     public BaseButton setActionListener(@Nullable ButtonActionListener actionListener)

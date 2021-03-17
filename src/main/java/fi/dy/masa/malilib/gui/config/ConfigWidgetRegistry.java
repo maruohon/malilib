@@ -2,49 +2,58 @@ package fi.dy.masa.malilib.gui.config;
 
 import java.util.HashMap;
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.config.option.list.BlackWhiteListConfig;
-import fi.dy.masa.malilib.config.option.list.BlockListConfig;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.config.option.ColorConfig;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.config.option.DirectoryConfig;
 import fi.dy.masa.malilib.config.option.DoubleConfig;
-import fi.dy.masa.malilib.config.option.list.EquipmentSlotListConfig;
 import fi.dy.masa.malilib.config.option.FileConfig;
 import fi.dy.masa.malilib.config.option.HotkeyConfig;
 import fi.dy.masa.malilib.config.option.HotkeyedBooleanConfig;
-import fi.dy.masa.malilib.config.option.list.IdentifierListConfig;
 import fi.dy.masa.malilib.config.option.IntegerConfig;
-import fi.dy.masa.malilib.config.option.list.ItemListConfig;
 import fi.dy.masa.malilib.config.option.NestedConfig;
 import fi.dy.masa.malilib.config.option.OptionListConfig;
-import fi.dy.masa.malilib.config.option.list.StatusEffectListConfig;
 import fi.dy.masa.malilib.config.option.StringConfig;
+import fi.dy.masa.malilib.config.option.list.BlackWhiteListConfig;
+import fi.dy.masa.malilib.config.option.list.BlockListConfig;
+import fi.dy.masa.malilib.config.option.list.EquipmentSlotListConfig;
+import fi.dy.masa.malilib.config.option.list.IdentifierListConfig;
+import fi.dy.masa.malilib.config.option.list.ItemListConfig;
+import fi.dy.masa.malilib.config.option.list.StatusEffectListConfig;
 import fi.dy.masa.malilib.config.option.list.StringListConfig;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.BlackWhiteListConfigWidget;
-import fi.dy.masa.malilib.gui.widget.list.entry.config.list.BlockListConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.BooleanConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.ColorConfigWidget;
-import fi.dy.masa.malilib.gui.widget.list.entry.config.ExpandableConfigGroupWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.DirectoryConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.DoubleConfigWidget;
-import fi.dy.masa.malilib.gui.widget.list.entry.config.list.EquipmentSlotListConfigWidget;
+import fi.dy.masa.malilib.gui.widget.list.entry.config.ExpandableConfigGroupWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.FileConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.HotkeyConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.HotkeyedBooleanConfigWidget;
-import fi.dy.masa.malilib.gui.widget.list.entry.config.list.IdentifierListConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.IntegerConfigWidget;
-import fi.dy.masa.malilib.gui.widget.list.entry.config.list.ItemListConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.OptionListConfigWidget;
-import fi.dy.masa.malilib.gui.widget.list.entry.config.list.StatusEffectListConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.StringConfigWidget;
+import fi.dy.masa.malilib.gui.widget.list.entry.config.list.BlockListConfigWidget;
+import fi.dy.masa.malilib.gui.widget.list.entry.config.list.EquipmentSlotListConfigWidget;
+import fi.dy.masa.malilib.gui.widget.list.entry.config.list.IdentifierListConfigWidget;
+import fi.dy.masa.malilib.gui.widget.list.entry.config.list.ItemListConfigWidget;
+import fi.dy.masa.malilib.gui.widget.list.entry.config.list.StatusEffectListConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.list.StringListConfigWidget;
+import fi.dy.masa.malilib.overlay.widget.BooleanConfigStatusWidget;
+import fi.dy.masa.malilib.overlay.widget.DoubleConfigStatusWidget;
+import fi.dy.masa.malilib.overlay.widget.HotkeyConfigStatusWidget;
+import fi.dy.masa.malilib.overlay.widget.HotkeyedBooleanConfigStatusWidget;
+import fi.dy.masa.malilib.overlay.widget.IntegerConfigStatusWidget;
+import fi.dy.masa.malilib.overlay.widget.OptionListConfigStatusWidget;
+import fi.dy.masa.malilib.overlay.widget.StringConfigStatusWidget;
 
 public class ConfigWidgetRegistry
 {
     public static final ConfigWidgetRegistry INSTANCE = new ConfigWidgetRegistry();
 
-    private final HashMap<Class<? extends ConfigInfo>, ConfigOptionWidgetFactory<?>> widgetFactories = new HashMap<>();
+    private final HashMap<Class<? extends ConfigInfo>, ConfigOptionWidgetFactory<?>> configWidgetFactories = new HashMap<>();
+    private final HashMap<Class<? extends ConfigInfo>, ConfigStatusWidgetFactory<?>> configStatusWidgetFactories = new HashMap<>();
+    private final HashMap<String, ConfigStatusWidgetFactory<?>> configStatusWidgetFactoriesById = new HashMap<>();
     private final HashMap<Class<? extends ConfigInfo>, ConfigSearchInfo<?>> configSearchInfoMap = new HashMap<>();
     private final ConfigOptionWidgetFactory<?> missingTypeFactory = new MissingConfigTypeFactory();
 
@@ -52,6 +61,7 @@ public class ConfigWidgetRegistry
     {
         this.registerDefaultWidgetFactories();
         this.registerDefaultSearchInfos();
+        this.registerDefaultStatusWidgetFactories();
     }
 
     /**
@@ -59,9 +69,23 @@ public class ConfigWidgetRegistry
      * @param type
      * @param factory
      */
-    public <C extends ConfigInfo> void registerWidgetFactory(Class<C> type, ConfigOptionWidgetFactory<C> factory)
+    public <C extends ConfigInfo> void registerConfigWidgetFactory(Class<C> type, ConfigOptionWidgetFactory<C> factory)
     {
-        this.widgetFactories.put(type, factory);
+        this.configWidgetFactories.put(type, factory);
+    }
+
+    /**
+     * Registers a config status widget factory for the given config type.
+     * These status widgets can be used to show the current status of the
+     * config option on the info HUD.
+     * @param type
+     * @param factory
+     */
+    public <C extends ConfigInfo>
+    void registerConfigStatusWidgetFactory(Class<C> type, Class<?> widgetType, ConfigStatusWidgetFactory<C> factory)
+    {
+        this.configStatusWidgetFactories.put(type, factory);
+        this.configStatusWidgetFactoriesById.put(widgetType.getName(), factory);
     }
 
     /**
@@ -80,7 +104,20 @@ public class ConfigWidgetRegistry
     @SuppressWarnings("unchecked")
     public <C extends ConfigInfo> ConfigOptionWidgetFactory<C> getWidgetFactory(C config)
     {
-        return (ConfigOptionWidgetFactory<C>) this.widgetFactories.getOrDefault(config.getClass(), this.missingTypeFactory);
+        return (ConfigOptionWidgetFactory<C>) this.configWidgetFactories.getOrDefault(config.getClass(), this.missingTypeFactory);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Nullable
+    public <C extends ConfigInfo> ConfigStatusWidgetFactory<C> getConfigStatusWidgetFactory(C config)
+    {
+        return (ConfigStatusWidgetFactory<C>) this.configStatusWidgetFactories.get(config.getClass());
+    }
+
+    @Nullable
+    public ConfigStatusWidgetFactory<?> getConfigStatusWidgetFactory(String id)
+    {
+        return this.configStatusWidgetFactoriesById.get(id);
     }
 
     public ConfigOptionWidgetFactory<?> getMissingTypeFactory()
@@ -97,25 +134,25 @@ public class ConfigWidgetRegistry
 
     private void registerDefaultWidgetFactories()
     {
-        this.registerWidgetFactory(BlackWhiteListConfig.class, BlackWhiteListConfigWidget::new);
-        this.registerWidgetFactory(BlockListConfig.class, BlockListConfigWidget::new);
-        this.registerWidgetFactory(BooleanConfig.class, BooleanConfigWidget::new);
-        this.registerWidgetFactory(ColorConfig.class, ColorConfigWidget::new);
-        this.registerWidgetFactory(ExpandableConfigGroup.class, ExpandableConfigGroupWidget::new);
-        this.registerWidgetFactory(DirectoryConfig.class, DirectoryConfigWidget::new);
-        this.registerWidgetFactory(DoubleConfig.class, DoubleConfigWidget::new);
-        this.registerWidgetFactory(EquipmentSlotListConfig.class, EquipmentSlotListConfigWidget::new);
-        this.registerWidgetFactory(FileConfig.class, FileConfigWidget::new);
-        this.registerWidgetFactory(HotkeyConfig.class, HotkeyConfigWidget::new);
-        this.registerWidgetFactory(HotkeyedBooleanConfig.class, HotkeyedBooleanConfigWidget::new);
-        this.registerWidgetFactory(IdentifierListConfig.class, IdentifierListConfigWidget::new);
-        this.registerWidgetFactory(IntegerConfig.class, IntegerConfigWidget::new);
-        this.registerWidgetFactory(ItemListConfig.class, ItemListConfigWidget::new);
-        this.registerWidgetFactory(NestedConfig.class, new NestedConfigWidgetFactory());
-        this.registerWidgetFactory(OptionListConfig.class, OptionListConfigWidget::new);
-        this.registerWidgetFactory(StatusEffectListConfig.class, StatusEffectListConfigWidget::new);
-        this.registerWidgetFactory(StringConfig.class, StringConfigWidget::new);
-        this.registerWidgetFactory(StringListConfig.class, StringListConfigWidget::new);
+        this.registerConfigWidgetFactory(BlackWhiteListConfig.class,    BlackWhiteListConfigWidget::new);
+        this.registerConfigWidgetFactory(BlockListConfig.class,         BlockListConfigWidget::new);
+        this.registerConfigWidgetFactory(BooleanConfig.class,           BooleanConfigWidget::new);
+        this.registerConfigWidgetFactory(ColorConfig.class,             ColorConfigWidget::new);
+        this.registerConfigWidgetFactory(ExpandableConfigGroup.class,   ExpandableConfigGroupWidget::new);
+        this.registerConfigWidgetFactory(DirectoryConfig.class,         DirectoryConfigWidget::new);
+        this.registerConfigWidgetFactory(DoubleConfig.class,            DoubleConfigWidget::new);
+        this.registerConfigWidgetFactory(EquipmentSlotListConfig.class, EquipmentSlotListConfigWidget::new);
+        this.registerConfigWidgetFactory(FileConfig.class,              FileConfigWidget::new);
+        this.registerConfigWidgetFactory(HotkeyConfig.class,            HotkeyConfigWidget::new);
+        this.registerConfigWidgetFactory(HotkeyedBooleanConfig.class,   HotkeyedBooleanConfigWidget::new);
+        this.registerConfigWidgetFactory(IdentifierListConfig.class,    IdentifierListConfigWidget::new);
+        this.registerConfigWidgetFactory(IntegerConfig.class,           IntegerConfigWidget::new);
+        this.registerConfigWidgetFactory(ItemListConfig.class,          ItemListConfigWidget::new);
+        this.registerConfigWidgetFactory(NestedConfig.class,            new NestedConfigWidgetFactory());
+        this.registerConfigWidgetFactory(OptionListConfig.class,        OptionListConfigWidget::new);
+        this.registerConfigWidgetFactory(StatusEffectListConfig.class,  StatusEffectListConfigWidget::new);
+        this.registerConfigWidgetFactory(StringConfig.class,            StringConfigWidget::new);
+        this.registerConfigWidgetFactory(StringListConfig.class,        StringListConfigWidget::new);
     }
 
     private void registerDefaultSearchInfos()
@@ -123,5 +160,16 @@ public class ConfigWidgetRegistry
         this.registerConfigSearchInfo(BooleanConfig.class,          new ConfigSearchInfo<BooleanConfig>(true, false).setBooleanConfigGetter((c) -> c));
         this.registerConfigSearchInfo(HotkeyConfig.class,           new ConfigSearchInfo<HotkeyConfig>(false, true).setKeyBindGetter(HotkeyConfig::getKeyBind));
         this.registerConfigSearchInfo(HotkeyedBooleanConfig.class,  new ConfigSearchInfo<HotkeyedBooleanConfig>(true, true).setBooleanConfigGetter((c) -> c).setKeyBindGetter(HotkeyedBooleanConfig::getKeyBind));
+    }
+
+    private void registerDefaultStatusWidgetFactories()
+    {
+        this.registerConfigStatusWidgetFactory(BooleanConfig.class,         BooleanConfigStatusWidget.class,            BooleanConfigStatusWidget::new);
+        this.registerConfigStatusWidgetFactory(DoubleConfig.class,          DoubleConfigStatusWidget.class,             DoubleConfigStatusWidget::new);
+        this.registerConfigStatusWidgetFactory(HotkeyConfig.class,          HotkeyConfigStatusWidget.class,             HotkeyConfigStatusWidget::new);
+        this.registerConfigStatusWidgetFactory(HotkeyedBooleanConfig.class, HotkeyedBooleanConfigStatusWidget.class,    HotkeyedBooleanConfigStatusWidget::new);
+        this.registerConfigStatusWidgetFactory(IntegerConfig.class,         IntegerConfigStatusWidget.class,            IntegerConfigStatusWidget::new);
+        this.registerConfigStatusWidgetFactory(OptionListConfig.class,      OptionListConfigStatusWidget.class,         OptionListConfigStatusWidget::new);
+        this.registerConfigStatusWidgetFactory(StringConfig.class,          StringConfigStatusWidget.class,             StringConfigStatusWidget::new);
     }
 }

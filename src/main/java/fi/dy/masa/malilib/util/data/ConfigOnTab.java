@@ -14,6 +14,11 @@ public class ConfigOnTab
         this.config = config;
     }
 
+    public String getConfigPath()
+    {
+        return this.config.getModInfo().getModId() + "." + this.tab.getName() + "." + this.config.getName();
+    }
+
     @Override
     public boolean equals(Object o)
     {

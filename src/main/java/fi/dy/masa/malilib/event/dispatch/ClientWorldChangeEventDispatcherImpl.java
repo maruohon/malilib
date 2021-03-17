@@ -9,6 +9,7 @@ import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.config.ConfigManagerImpl;
 import fi.dy.masa.malilib.event.ClientWorldChangeHandler;
 import fi.dy.masa.malilib.input.HotkeyManager;
+import fi.dy.masa.malilib.overlay.InfoWidgetManager;
 
 public class ClientWorldChangeEventDispatcherImpl implements ClientWorldChangeEventDispatcher
 {
@@ -53,14 +54,16 @@ public class ClientWorldChangeEventDispatcherImpl implements ClientWorldChangeEv
     public void onWorldLoadPost(@Nullable WorldClient worldBefore, @Nullable WorldClient worldAfter, Minecraft mc)
     {
         // Save all the configs when exiting a world
-        if (worldAfter == null)
+        if (worldAfter == null && worldBefore != null)
         {
             ((ConfigManagerImpl) ConfigManager.INSTANCE).saveAllConfigs();
+            //InfoWidgetManager.INSTANCE.saveToFile();
         }
         // (Re-)Load all the configs from file when entering a world
-        else if (worldBefore == null)
+        else if (worldBefore == null && worldAfter != null)
         {
             ((ConfigManagerImpl) ConfigManager.INSTANCE).loadAllConfigs();
+            InfoWidgetManager.INSTANCE.loadFromFile();
             HotkeyManager.INSTANCE.updateUsedKeys();
         }
 

@@ -1,17 +1,23 @@
 package fi.dy.masa.malilib.message;
 
 import javax.annotation.Nullable;
+import org.apache.commons.lang3.StringUtils;
+import com.google.gson.JsonObject;
 import net.minecraft.client.Minecraft;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.gui.position.ScreenLocation;
 import fi.dy.masa.malilib.gui.widget.BaseWidget;
 import fi.dy.masa.malilib.listener.EventListener;
+import fi.dy.masa.malilib.overlay.InfoWidgetManager;
+import fi.dy.masa.malilib.util.JsonUtils;
 
 public abstract class InfoRendererWidget extends BaseWidget
 {
     protected ScreenLocation location = ScreenLocation.TOP_LEFT;
     @Nullable protected EventListener geometryChangeListener;
+    protected String name;
     protected boolean enabled = true;
+    protected boolean shouldSerialize;
     protected long previousGeometryUpdateTime = -1;
     protected long geometryShrinkDelay = (long) (5 * 1E9); // 5 seconds
     protected int sortIndex = 100;
@@ -32,9 +38,24 @@ public abstract class InfoRendererWidget extends BaseWidget
         return this.enabled;
     }
 
+    public boolean getShouldSerialize()
+    {
+        return this.shouldSerialize;
+    }
+
     public int getSortIndex()
     {
         return this.sortIndex;
+    }
+
+    public String getName()
+    {
+        return this.name != null ? this.name : this.location.getDisplayName();
+    }
+
+    public ScreenLocation getScreenLocation()
+    {
+        return this.location;
     }
 
     public void setEnabled(boolean enabled)
@@ -70,6 +91,16 @@ public abstract class InfoRendererWidget extends BaseWidget
     public void setLocation(ScreenLocation location)
     {
         this.location = location;
+
+        if (StringUtils.isBlank(this.name))
+        {
+            this.name = location.getDisplayName();
+        }
+    }
+
+    public void setName(String name)
+    {
+        this.name = name;
     }
 
     /**
@@ -129,5 +160,61 @@ public abstract class InfoRendererWidget extends BaseWidget
         }
     }
 
+    public JsonObject toJson()
+    {
+        JsonObject obj = new JsonObject();
+
+        obj.addProperty("type", this.getClass().getName());
+        obj.addProperty("name", this.getName());
+        obj.addProperty("enabled", this.isEnabled());
+        obj.addProperty("screen_location", this.getScreenLocation().getName());
+        obj.addProperty("sort_index", this.getSortIndex());
+
+        return obj;
+    }
+
+    public void fromJson(JsonObject obj)
+    {
+        if (JsonUtils.hasString(obj, "name"))
+        {
+            this.setName(obj.get("name").getAsString());
+        }
+
+        if (JsonUtils.hasBoolean(obj, "enabled"))
+        {
+            this.setEnabled(obj.get("enabled").getAsBoolean());
+        }
+
+        if (JsonUtils.hasString(obj, "screen_location"))
+        {
+            ScreenLocation location = ScreenLocation.findValueByName(obj.get("screen_location").getAsString(), ScreenLocation.VALUES);
+            this.setLocation(location);
+        }
+
+        if (JsonUtils.hasInteger(obj, "sort_index"))
+        {
+            this.setSortIndex(obj.get("sort_index").getAsInt());
+        }
+    }
+
     public abstract void renderAt(int x, int y, float z);
+
+    @Nullable
+    public static InfoRendererWidget createFromJson(JsonObject obj)
+    {
+        if (JsonUtils.hasString(obj, "type"))
+        {
+            String type = obj.get("type").getAsString();
+            InfoWidgetManager.InfoWidgetFactory factory = InfoWidgetManager.getWidgetFactory(type);
+
+            if (factory != null)
+            {
+                InfoRendererWidget widget = factory.create();
+                widget.fromJson(obj);
+                return widget;
+            }
+        }
+
+        return null;
+    }
 }

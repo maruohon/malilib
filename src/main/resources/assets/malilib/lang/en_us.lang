@@ -91,6 +91,8 @@ malilib.gui.button.config.hover.reset_all_filtered=Reset all the configs matchin
 malilib.gui.button.config.hover.selected_directory=Current directory:\n§3%s§r
 malilib.gui.button.config.hover.selected_file=Current file:\n§3%s§r
 
+malilib.gui.button.add_configs=Add Configs
+malilib.gui.button.add_selected_configs=Add Selected Configs
 malilib.gui.button.black_white_list_edit.entries=§e%s§r - §b%s§r entries
 malilib.gui.button.black_white_list_edit.none=Type: NONE
 malilib.gui.button.cancel=Cancel
@@ -105,13 +107,19 @@ malilib.gui.button.colored.cancel=§cCancel
 malilib.gui.button.colored.confirm=§aConfirm
 malilib.gui.button.colored.ok=§aOK
 
+malilib.gui.button.label.add_status_indicator_widget=Add Status Indicator Group
+malilib.gui.button.label.configure=Configure
+malilib.gui.button.label.remove=Remove
+
 malilib.gui.button.render_layers_gui.axis=Axis: %s
 malilib.gui.button.render_layers_gui.follow_player=Follow Player: %s
 malilib.gui.button.render_layers_gui.layers=Layers: %s
 malilib.gui.button.render_layers_gui.set_to_player=Set to player
 
+malilib.gui.button.hover.add_configs_to_status_indicator_group=Add configs to this config status indicator group
 malilib.gui.button.hover.black_white_list_edit.type=List Type: §3%s
 malilib.gui.button.hover.config.reset_all_filtered=Reset all the configs matching the current search filters back to their default values
+malilib.gui.button.hover.config_status_indicator=Config Status Indicator widgets
 malilib.gui.button.hover.directory_widget.create_directory=Create a new directory
 malilib.gui.button.hover.directory_widget.hold_shift_to_open_directory=You can shift click the directory path elements to open the directory in the system file manager
 malilib.gui.button.hover.directory_widget.root=To root/base directory
@@ -149,6 +157,8 @@ malilib.label.cancel_condition.always=Always
 malilib.label.cancel_condition.never=Never
 malilib.label.cancel_condition.on_failure=On Failure
 malilib.label.cancel_condition.on_success=On Success
+
+malilib.gui.hover.config_info_entry_widget=§7Display name: §f%s\n§7Internal name: §f%s
 
 malilib.gui.label.color_editor.current_color=Current color:
 
@@ -215,6 +225,7 @@ malilib.gui.title.black_white_list_edit=Edit Black/White List '%s'
 malilib.gui.title.block_list_edit=Edit block list '%s'
 malilib.gui.title.color_editor=Color Editor
 malilib.gui.title.configs=MaLiLib Configs
+malilib.gui.title.config_status_indicator_configuration=MaLiLib - Config Status Indicator widget configuration
 malilib.gui.title.confirm_config_reset=Confirm config reset
 malilib.gui.title.create_directory=Create a new directory
 malilib.gui.title.directory_browser=Directory Browser
@@ -286,6 +297,8 @@ malilib.label.colored.on.caps=§aON§r
 malilib.label.colored.off=§coff§r
 malilib.label.colored.on=§aon§r
 
+malilib.label.name.colon=Name:
+
 malilib.label.off=off
 malilib.label.on=on
 
@@ -302,6 +315,8 @@ malilib.message.formatting_code.error=§c
 malilib.message.formatting_code.info=§f
 malilib.message.formatting_code.success=§a
 malilib.message.formatting_code.warning=§6
+
+malilib.message.error.select_screen_location_in_dropdown=Select the screen location in the dropdown widget
 
 malilib.message.config_locked_off=%s is currently locked to §cOFF§r
 malilib.message.config_locked_on=%s is currently locked to §aON§r
