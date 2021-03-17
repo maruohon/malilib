@@ -2,9 +2,11 @@ package fi.dy.masa.malilib.render.text;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import javax.annotation.Nullable;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
@@ -13,7 +15,7 @@ import fi.dy.masa.malilib.util.StringUtils;
 
 public class StyledText
 {
-    protected static final Cache<String, StyledText> TEXT_CACHE = CacheBuilder.newBuilder().initialCapacity(1000).maximumSize(1000).expireAfterAccess(15 * 60, TimeUnit.SECONDS).build();
+    protected static final Cache<CacheKey, StyledText> TEXT_CACHE = CacheBuilder.newBuilder().initialCapacity(1000).maximumSize(1000).expireAfterAccess(15 * 60, TimeUnit.SECONDS).build();
 
     public final ImmutableList<StyledTextLine> lines;
 
@@ -50,17 +52,17 @@ public class StyledText
         TEXT_CACHE.invalidateAll();
     }
 
-    public static StyledText translatedOf(String translationKey)
+    public static StyledText translatedOf(String translationKey, Object... args)
     {
-        return of(StringUtils.translate(translationKey));
+        return of(StringUtils.translate(translationKey, args));
     }
 
     public static StyledText of(String str)
     {
         try
         {
-            //System.out.printf("StyledText: cache size: %d\n", TEXT_CACHE.size());
-            return TEXT_CACHE.get(str, () -> StyledTextParser.parseString(str));
+            CacheKey key = new CacheKey(str, null);
+            return TEXT_CACHE.get(key, () -> StyledTextParser.parseString(str));
         }
         catch (ExecutionException e)
         {
@@ -73,8 +75,8 @@ public class StyledText
     {
         try
         {
-            //System.out.printf("StyledText: cache size: %d\n", TEXT_CACHE.size());
-            return TEXT_CACHE.get(str, () -> StyledTextParser.parseStringWithStartingStyle(str, startingStyle));
+            CacheKey key = new CacheKey(str, startingStyle);
+            return TEXT_CACHE.get(key, () -> StyledTextParser.parseStringWithStartingStyle(str, startingStyle));
         }
         catch (ExecutionException e)
         {
@@ -168,6 +170,38 @@ public class StyledText
         {
             this.commitCurrentLine();
             return new StyledText(ImmutableList.copyOf(this.lines));
+        }
+    }
+
+    private static class CacheKey
+    {
+        public final String text;
+        @Nullable public final TextStyle startingStyle;
+
+        public CacheKey(String text, @Nullable TextStyle startingStyle)
+        {
+            this.text = text;
+            this.startingStyle = startingStyle;
+        }
+
+        @Override
+        public boolean equals(Object o)
+        {
+            if (this == o) { return true; }
+            if (o == null || this.getClass() != o.getClass()) { return false; }
+
+            CacheKey cacheKey = (CacheKey) o;
+
+            if (!this.text.equals(cacheKey.text)) { return false; }
+            return Objects.equals(this.startingStyle, cacheKey.startingStyle);
+        }
+
+        @Override
+        public int hashCode()
+        {
+            int result = this.text.hashCode();
+            result = 31 * result + (this.startingStyle != null ? this.startingStyle.hashCode() : 0);
+            return result;
         }
     }
 }
