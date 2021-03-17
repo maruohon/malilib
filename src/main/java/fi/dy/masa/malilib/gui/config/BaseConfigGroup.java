@@ -3,27 +3,35 @@ package fi.dy.masa.malilib.gui.config;
 import java.util.List;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
-import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.config.option.BaseConfig;
+import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.util.StringUtils;
+import fi.dy.masa.malilib.util.data.ModInfo;
 
 public abstract class BaseConfigGroup implements ConfigInfo
 {
+    protected final ModInfo modInfo;
     protected final String nameTranslationKey;
     protected final String commentTranslationKey;
     protected final Object[] commentArgs;
     protected ImmutableList<ConfigInfo> configs = ImmutableList.of();
     protected ImmutableList<String> searchStrings = ImmutableList.of();
 
-    public BaseConfigGroup(String name, String modId, List<ConfigInfo> configs)
+    public BaseConfigGroup(ModInfo modInfo, String name, List<ConfigInfo> configs)
     {
-        this(modId + ".config_group.name." + name, modId + ".config_group.comment." + name);
+        String modId = modInfo.getModId();
+
+        this.modInfo = modInfo;
+        this.nameTranslationKey = modId + ".config_group.name." + name;
+        this.commentTranslationKey = modId + ".config_group.comment." + name;
+        this.commentArgs = new Object[0];
 
         this.setConfigs(configs);
     }
 
-    public BaseConfigGroup(String nameTranslationKey, String commentTranslationKey, Object... commentArgs)
+    public BaseConfigGroup(ModInfo modInfo, String nameTranslationKey, String commentTranslationKey, Object... commentArgs)
     {
+        this.modInfo = modInfo;
         this.nameTranslationKey = nameTranslationKey;
         this.commentTranslationKey = commentTranslationKey;
         this.commentArgs = commentArgs;
@@ -54,6 +62,12 @@ public abstract class BaseConfigGroup implements ConfigInfo
     public ImmutableList<ConfigInfo> getConfigs()
     {
         return this.configs;
+    }
+
+    @Override
+    public ModInfo getModInfo()
+    {
+        return this.modInfo;
     }
 
     @Override

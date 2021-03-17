@@ -10,11 +10,6 @@ import fi.dy.masa.malilib.util.data.ModInfo;
 public interface ConfigOption<T> extends ConfigInfo
 {
     /**
-     * @return the ModInfo of the mod owning this config
-     */
-    ModInfo getModInfo();
-
-    /**
      * Sets the ModInfo owning this config.
      * This is automatically called in {@link fi.dy.masa.malilib.config.ConfigManager#registerConfigHandler(fi.dy.masa.malilib.config.ModConfig)}
      * using the ModInfo from {@link fi.dy.masa.malilib.config.ModConfig#getModInfo()}.

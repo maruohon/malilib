@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.listener.EventListener;
+import fi.dy.masa.malilib.util.data.ModInfo;
 
 public interface ConfigInfo
 {
@@ -18,6 +19,11 @@ public interface ConfigInfo
      * @return
      */
     String getDisplayName();
+
+    /**
+     * @return the ModInfo of the mod owning this config
+     */
+    ModInfo getModInfo();
 
     /**
      * Returns the comment displayed when hovering over the config name on the config screens.

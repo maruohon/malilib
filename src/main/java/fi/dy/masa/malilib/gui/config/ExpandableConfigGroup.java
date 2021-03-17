@@ -3,19 +3,20 @@ package fi.dy.masa.malilib.gui.config;
 import java.util.List;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.config.option.NestedConfig;
+import fi.dy.masa.malilib.util.data.ModInfo;
 
 public class ExpandableConfigGroup extends BaseConfigGroup
 {
     protected boolean isExpanded;
 
-    public ExpandableConfigGroup(String name, String modId, List<ConfigInfo> configs)
+    public ExpandableConfigGroup(ModInfo modInfo, String name, List<ConfigInfo> configs)
     {
-        super(name, modId, configs);
+        super(modInfo, name, configs);
     }
 
-    public ExpandableConfigGroup(String nameTranslationKey, String commentTranslationKey, Object... commentArgs)
+    public ExpandableConfigGroup(ModInfo modInfo, String nameTranslationKey, String commentTranslationKey, Object... commentArgs)
     {
-        super(nameTranslationKey, commentTranslationKey, commentArgs);
+        super(modInfo, nameTranslationKey, commentTranslationKey, commentArgs);
     }
 
     public boolean isExpanded()
