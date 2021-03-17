@@ -13,6 +13,7 @@ public class BaseScreenTab implements ScreenTab
     protected final Function<GuiScreen, BaseScreen> screenFactory;
     protected final Function<BaseTabbedScreen, ButtonActionListener> listenerFactory;
     protected final Predicate<GuiScreen> screenChecker;
+    @Nullable protected String hoverTextTranslationKey;
 
     public BaseScreenTab(String translationKey, Predicate<GuiScreen> screenChecker, Function<GuiScreen, BaseScreen> screenFactory)
     {
@@ -36,6 +37,19 @@ public class BaseScreenTab implements ScreenTab
     public String getDisplayName()
     {
         return StringUtils.translate(this.translationKey);
+    }
+
+    @Nullable
+    @Override
+    public String getHoverText()
+    {
+        return this.hoverTextTranslationKey;
+    }
+
+    public BaseScreenTab setHoverText(@Nullable String hoverTextTranslationKey)
+    {
+        this.hoverTextTranslationKey = hoverTextTranslationKey;
+        return this;
     }
 
     @Override

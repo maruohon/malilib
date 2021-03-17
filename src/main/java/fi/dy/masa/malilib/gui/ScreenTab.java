@@ -14,6 +14,14 @@ public interface ScreenTab
     String getDisplayName();
 
     /**
+     * Returns the tab switch button hover text translation key, if the
+     * button should have a hover text.
+     * @return hover text translation key, or null if no hover text should be used
+     */
+    @Nullable
+    String getHoverText();
+
+    /**
      * Returns the button action listener that should be used for this tab's selection button
      * @return the button action listener that handles this tab's button's presses
      */
