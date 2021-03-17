@@ -20,6 +20,9 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
     protected final GenericButton upButton;
     protected final GenericButton downButton;
     protected boolean dragged;
+    protected boolean useAddButton = true;
+    protected boolean useMoveButtons = true;
+    protected boolean useRemoveButton = true;
     protected int nextWidgetX;
     protected int dragStartX;
     protected int dragStartY;
@@ -53,17 +56,27 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
             this.addWidget(this.labelWidget);
         }
 
-        this.addWidget(this.addButton);
-        this.addWidget(this.removeButton);
-
-        if (this.canBeMoved(true))
+        if (this.useAddButton)
         {
-            this.addWidget(this.downButton);
+            this.addWidget(this.addButton);
         }
 
-        if (this.canBeMoved(false))
+        if (this.useRemoveButton)
         {
-            this.addWidget(this.upButton);
+            this.addWidget(this.removeButton);
+        }
+
+        if (this.useMoveButtons)
+        {
+            if (this.canBeMoved(true))
+            {
+                this.addWidget(this.downButton);
+            }
+
+            if (this.canBeMoved(false))
+            {
+                this.addWidget(this.upButton);
+            }
         }
     }
 
@@ -74,28 +87,37 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
 
         int x = this.getX();
         int y = this.getY();
+        int middleY = this.getY() + this.getHeight() / 2;
+        int buttonY = middleY - this.addButton.getHeight() / 2;
 
         if (this.labelWidget != null)
         {
-            this.labelWidget.setPosition(x + 3, y + 6);
+            this.labelWidget.setPosition(x + 3, middleY - this.labelWidget.getHeight() / 2);
             this.nextWidgetX = this.labelWidget.getRight() + 4;
         }
 
         this.updateSubWidgetsToGeometryChangesPre(this.nextWidgetX, y);
 
-        x = this.nextWidgetX;
-        this.addButton.setPosition(x, y + 2);
+        if (this.useAddButton)
+        {
+            this.addButton.setPosition(this.nextWidgetX, buttonY);
+            this.nextWidgetX = this.addButton.getRight() + 2;
+        }
 
-        x = this.addButton.getRight() + 2;
-        this.removeButton.setPosition(x, y + 2);
+        if (this.useRemoveButton)
+        {
+            this.removeButton.setPosition(this.nextWidgetX, buttonY);
+            this.nextWidgetX = this.removeButton.getRight() + 2;
+        }
 
-        x = this.removeButton.getRight() + 2;
-        this.upButton.setPosition(x, y + 2);
+        if (this.useMoveButtons)
+        {
+            this.upButton.setPosition(this.nextWidgetX, buttonY);
+            this.nextWidgetX = this.upButton.getRight() + 2;
 
-        x = this.upButton.getRight() + 2;
-        this.downButton.setPosition(x, y + 2);
-
-        this.nextWidgetX = this.downButton.getRight();
+            this.downButton.setPosition(this.nextWidgetX, buttonY);
+            this.nextWidgetX = this.downButton.getRight() + 2;
+        }
 
         this.updateSubWidgetsToGeometryChangesPost(this.nextWidgetX, y);
     }
