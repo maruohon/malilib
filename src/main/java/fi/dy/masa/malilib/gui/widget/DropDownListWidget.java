@@ -188,8 +188,13 @@ public class DropDownListWidget<T> extends ContainerWidget
     }
 
     @Nullable
-    public InteractableWidget createIconWidgetForEntry(int x, int y, int height, T entry)
+    public InteractableWidget createIconWidgetForEntry(int x, int y, int height, @Nullable T entry)
     {
+        if (entry == null)
+        {
+            return null;
+        }
+
         if (this.iconWidgetFactory != null)
         {
             BackgroundWidget widget = this.iconWidgetFactory.create(x, y, height - 2, entry);
@@ -378,15 +383,15 @@ public class DropDownListWidget<T> extends ContainerWidget
         return this.selectedEntry;
     }
 
-    public void onEntryClicked(T entry)
+    public void onEntryClicked(@Nullable T entry)
     {
         this.setSelectedEntry(entry);
         this.setOpen(false);
     }
 
-    public DropDownListWidget<T> setSelectedEntry(T entry)
+    public DropDownListWidget<T> setSelectedEntry(@Nullable T entry)
     {
-        if (this.entries.contains(entry))
+        if (entry == null || this.entries.contains(entry))
         {
             this.selectedEntry = entry;
             this.updateSelectionBar();
@@ -664,7 +669,7 @@ public class DropDownListWidget<T> extends ContainerWidget
         this.scrollBar.setTotalHeight(totalHeight);
     }
 
-    protected boolean entryMatchesFilter(T entry, String filterText)
+    protected boolean entryMatchesFilter(@Nullable T entry, String filterText)
     {
         return filterText.isEmpty() || this.getDisplayString(entry).toLowerCase().contains(filterText);
     }
@@ -674,7 +679,7 @@ public class DropDownListWidget<T> extends ContainerWidget
         return this.getDisplayString(this.getSelectedEntry());
     }
 
-    protected String getDisplayString(T entry)
+    protected String getDisplayString(@Nullable T entry)
     {
         if (entry != null)
         {
@@ -911,7 +916,7 @@ public class DropDownListWidget<T> extends ContainerWidget
 
     public static class DropDownListEntryWidget<T> extends ContainerWidget
     {
-        protected final T entry;
+        @Nullable protected final T entry;
         protected final int listIndex;
         protected final DropDownListWidget<T> dropDown;
         @Nullable protected InteractableWidget iconWidget;
@@ -921,7 +926,7 @@ public class DropDownListWidget<T> extends ContainerWidget
         protected int displayStringWidth;
         protected int textColor;
 
-        public DropDownListEntryWidget(int x, int y, int width, int height, int listIndex, T entry, int textColor, DropDownListWidget<T> dropDown)
+        public DropDownListEntryWidget(int x, int y, int width, int height, int listIndex, @Nullable T entry, int textColor, DropDownListWidget<T> dropDown)
         {
             super(x, y, width, height);
 
