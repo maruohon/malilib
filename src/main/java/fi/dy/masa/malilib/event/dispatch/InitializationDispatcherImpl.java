@@ -5,6 +5,7 @@ import java.util.List;
 import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.config.ConfigManagerImpl;
 import fi.dy.masa.malilib.event.InitializationHandler;
+import fi.dy.masa.malilib.input.HotkeyManager;
 
 public class InitializationDispatcherImpl implements InitializationDispatcher
 {
@@ -37,6 +38,6 @@ public class InitializationDispatcherImpl implements InitializationDispatcher
         }
 
         ((ConfigManagerImpl) ConfigManager.INSTANCE).loadAllConfigs();
-        KeyBindManager.INSTANCE.updateUsedKeys();
+        HotkeyManager.INSTANCE.updateUsedKeys();
     }
 }

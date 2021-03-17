@@ -9,7 +9,7 @@ import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.config.ConfigManagerImpl;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
-import fi.dy.masa.malilib.event.dispatch.KeyBindManager;
+import fi.dy.masa.malilib.input.HotkeyManager;
 import fi.dy.masa.malilib.gui.BaseListScreen;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.ScreenTab;
@@ -20,20 +20,21 @@ import fi.dy.masa.malilib.gui.widget.button.KeyBindConfigButton;
 import fi.dy.masa.malilib.gui.widget.list.ConfigOptionListWidget;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.util.StringUtils;
+import fi.dy.masa.malilib.util.data.ModInfo;
 
 public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? extends ConfigInfo>> implements KeybindEditingScreen
 {
-    protected final String modId;
+    protected final ModInfo modInfo;
     @Nullable protected EventListener configSaveListener;
     @Nullable protected KeyBindConfigButton activeKeyBindButton;
     protected int configElementsWidth = 120;
 
-    public BaseConfigScreen(String modId, @Nullable GuiScreen parent,
+    public BaseConfigScreen(ModInfo modInfo, @Nullable GuiScreen parent,
                             List<? extends ScreenTab> configTabs, @Nullable ConfigTab defaultTab, String titleKey, Object... args)
     {
-        super(10, 46, 20, 62, modId, configTabs, defaultTab);
+        super(10, 46, 20, 62, modInfo.getModId(), configTabs, defaultTab);
 
-        this.modId = modId;
+        this.modInfo = modInfo;
         this.title = StringUtils.translate(titleKey, args);
         this.shouldRestoreScrollbarPosition = MaLiLibConfigs.Generic.REMEMBER_CONFIG_TAB_SCROLL_POSITIONS.getBooleanValue();
 
@@ -51,7 +52,7 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
 
         if (tab instanceof ConfigTab)
         {
-            return ((ConfigTab) tab).getConfigWidth();
+            return ((ConfigTab) tab).getConfigWidgetsWidth();
         }
 
         return this.configElementsWidth;
@@ -76,7 +77,7 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
 
         if (tab instanceof ConfigTab)
         {
-            return ((ConfigTab) tab).getConfigsForDisplay();
+            return ((ConfigTab) tab).getConfigs();
         }
 
         return Collections.emptyList();
@@ -95,9 +96,9 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
     }
 
     @Override
-    public String getModId()
+    public ModInfo getModInfo()
     {
-        return this.modId;
+        return this.modInfo;
     }
 
     @Override
@@ -106,7 +107,7 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
         ConfigWidgetContext ctx = new ConfigWidgetContext(this::getListWidget, this, this::getDialogHandler, 0);
         ConfigOptionListWidget<? extends ConfigInfo> widget = ConfigOptionListWidget.createWithExpandedGroups(
                 listX, listY, listWidth, listHeight, this::getDefaultConfigElementWidth,
-                this.modId, this::getConfigs, ctx);
+                this.modInfo, this::getConfigs, ctx);
         widget.addConfigSearchBarWidget(this);
 
         return widget;
@@ -149,7 +150,7 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
 
     protected void onSettingsChanged()
     {
-        KeyBindManager.INSTANCE.updateUsedKeys();
+        HotkeyManager.INSTANCE.updateUsedKeys();
 
         if (this.configSaveListener != null)
         {

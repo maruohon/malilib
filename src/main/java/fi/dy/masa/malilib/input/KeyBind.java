@@ -5,14 +5,15 @@ import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonElement;
 import fi.dy.masa.malilib.input.callback.HotkeyCallback;
+import fi.dy.masa.malilib.util.data.ModInfo;
 
 public interface KeyBind
 {
     /**
-     * Sets the mod name owning this keybind. Used for the popup toast rendering.
-     * @param modName
+     * Sets the ModInfo owning this keybind. Used for the popup toast rendering.
+     * @param modInfo
      */
-    void setModName(String modName);
+    void setModInfo(ModInfo modInfo);
 
     void setNameTranslationKey(String nameTranslationKey);
 

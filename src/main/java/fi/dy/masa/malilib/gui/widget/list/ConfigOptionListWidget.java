@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
@@ -21,22 +20,23 @@ import fi.dy.masa.malilib.gui.widget.ConfigsSearchBarWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetFactory;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.BaseConfigWidget;
 import fi.dy.masa.malilib.util.data.ConfigOnTab;
+import fi.dy.masa.malilib.util.data.ModInfo;
 
 public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget<C>
 {
     protected final Map<ConfigsSearchBarWidget.Scope, List<ConfigOnTab>> cachedConfigs = new HashMap<>();
-    protected final String modId;
+    protected final ModInfo modInfo;
     protected final IntSupplier defaultElementWidthSupplier;
     @Nullable protected ConfigsSearchBarWidget configsSearchBarWidget;
     protected int maxLabelWidth;
 
     protected ConfigOptionListWidget(int x, int y, int width, int height, IntSupplier defaultElementWidthSupplier,
-                                     String modId, Supplier<List<C>> entrySupplier,
+                                     ModInfo modInfo, Supplier<List<C>> entrySupplier,
                                      ConfigWidgetContext ctx)
     {
         super(x, y, width, height, entrySupplier);
 
-        this.modId = modId;
+        this.modInfo = modInfo;
         this.defaultElementWidthSupplier = defaultElementWidthSupplier;
         this.fetchFromSupplierOnRefresh = true;
         this.allowKeyboardNavigation = true;
@@ -104,7 +104,7 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
             if (configs != null && listIndex < configs.size())
             {
                 ConfigTab tab = configs.get(listIndex).tab;
-                return tab.getModName() + " > " + tab.getDisplayName();
+                return tab.getModInfo().getModName() + " > " + tab.getDisplayName();
             }
         }
 
@@ -165,16 +165,16 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
                 {
                     List<ConfigTab> allModTabs = ConfigTabRegistry.INSTANCE.getAllRegisteredConfigTabs();
                     final List<ConfigOnTab> tmpList = configsInScope;
-                    allModTabs.forEach((tab) -> getTabbedConfigs(tab, tmpList::add));
+                    allModTabs.forEach((tab) -> tab.getTabbedExpandedConfigs(tmpList::add));
                 }
                 else
                 {
-                    Supplier<List<ConfigTab>> tabProvider = ConfigTabRegistry.INSTANCE.getConfigTabProviderFor(this.modId);
+                    Supplier<List<ConfigTab>> tabProvider = ConfigTabRegistry.INSTANCE.getConfigTabProviderFor(this.modInfo);
 
                     if (tabProvider != null)
                     {
                         final List<ConfigOnTab> tmpList = configsInScope;
-                        tabProvider.get().forEach((tab) -> getTabbedConfigs(tab, tmpList::add));
+                        tabProvider.get().forEach((tab) -> tab.getTabbedExpandedConfigs(tmpList::add));
                     }
                 }
 
@@ -202,36 +202,12 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
         this.cachedConfigs.clear();
     }
 
-    public static void getTabbedConfigs(@Nullable ConfigTab tab, Consumer<ConfigOnTab> configConsumer)
-    {
-        if (tab != null && tab.showOnConfigScreen())
-        {
-            ArrayList<ConfigInfo> expandedList = new ArrayList<>();
-
-            for (ConfigInfo config : tab.getConfigsForDisplay())
-            {
-                configConsumer.accept(new ConfigOnTab(config, tab));
-
-                expandedList.clear();
-                config.addNestedOptionsToList(expandedList, 1);
-
-                if (expandedList.isEmpty() == false)
-                {
-                    for (ConfigInfo nestedConfig : expandedList)
-                    {
-                        configConsumer.accept(new ConfigOnTab(nestedConfig, tab));
-                    }
-                }
-            }
-        }
-    }
-
     public static <C extends ConfigInfo> ConfigOptionListWidget<C> createWithExpandedGroups(
             int listX, int listY, int listWidth, int listHeight, IntSupplier defaultElementWidthSupplier,
-            String modId, Supplier<List<C>> entrySupplier, ConfigWidgetContext ctx)
+            ModInfo modInfo, Supplier<List<C>> entrySupplier, ConfigWidgetContext ctx)
     {
         return new ConfigOptionListWidget<>(listX, listY, listWidth, listHeight,
-                                            defaultElementWidthSupplier, modId,
+                                            defaultElementWidthSupplier, modInfo,
                                             createUnNestingConfigSupplier(entrySupplier), ctx);
     }
 

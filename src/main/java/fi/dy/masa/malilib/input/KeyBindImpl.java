@@ -26,6 +26,7 @@ import fi.dy.masa.malilib.input.callback.HotkeyCallback;
 import fi.dy.masa.malilib.message.MessageUtils;
 import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.StringUtils;
+import fi.dy.masa.malilib.util.data.ModInfo;
 
 public class KeyBindImpl implements KeyBind
 {
@@ -41,7 +42,7 @@ public class KeyBindImpl implements KeyBind
     private ImmutableList<Integer> lastSavedKeyCodes;
     private KeyBindSettings settings;
     private KeyBindSettings lastSavedSettings;
-    private String modName = "";
+    private ModInfo modInfo;
     private String nameTranslationKey = "";
     private boolean pressed;
     private boolean pressedLast;
@@ -59,9 +60,9 @@ public class KeyBindImpl implements KeyBind
     }
 
     @Override
-    public void setModName(String modName)
+    public void setModInfo(ModInfo modInfo)
     {
-        this.modName = modName;
+        this.modInfo = modInfo;
     }
 
     @Override
@@ -262,7 +263,7 @@ public class KeyBindImpl implements KeyBind
             if (val == KeybindDisplayMode.ACTIONS || val == KeybindDisplayMode.KEYS_ACTIONS)
             {
                 String name = StringUtils.translate(this.nameTranslationKey);
-                lines.add(StringUtils.translate("malilib.toast.keybind_display.action", this.modName, name));
+                lines.add(StringUtils.translate("malilib.toast.keybind_display.action", this.modInfo.getModName(), name));
             }
 
             HudAlignment align = MaLiLibConfigs.Generic.KEYBIND_DISPLAY_ALIGNMENT.getValue();

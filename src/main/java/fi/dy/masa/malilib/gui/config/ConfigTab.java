@@ -1,55 +1,65 @@
 package fi.dy.masa.malilib.gui.config;
 
+import java.util.ArrayList;
 import java.util.List;
-import fi.dy.masa.malilib.config.category.ConfigCategory;
+import java.util.function.Consumer;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.gui.ScreenTab;
+import fi.dy.masa.malilib.util.data.ConfigOnTab;
+import fi.dy.masa.malilib.util.data.ModInfo;
 
-public interface ConfigTab extends ConfigCategory, ScreenTab
+public interface ConfigTab extends ScreenTab
 {
     /**
-     * Returns the mod name this category belongs to.
-     * Used on the config screen when showing options from multiple categories or all mods.
+     * Returns the ModInfo of the mod this tab belongs to.<br>
+     * Used on the config screens when showing options from multiple categories
+     * or all mods, and also used by the config status indicator widgets.
      * @return
      */
-    String getModName();
+    ModInfo getModInfo();
 
     /**
-     * Returns whether or not this category should appear on the config screen
+     * Returns the width of the config option edit widgets on the config screen.
+     * This is used for nicely aligned positioning of the reset button after the edit widgets.
      * @return
      */
-    boolean showOnConfigScreen();
+    int getConfigWidgetsWidth();
 
     /**
-     * Returns the width of the config options on the config screen
+     * Returns the list of config options included on this tab.
      * @return
      */
-    int getConfigWidth();
+    List<? extends ConfigInfo> getConfigs();
 
     /**
-     * Returns the list of config options to display on this tab/in this category
-     * on the config screens.
+     * Returns a full list of configs on this tab, including the configs from
+     * any possible nested expandable/collapsible config groups.
      * @return
      */
-    List<? extends ConfigInfo> getConfigsForDisplay();
-
-    /**
-     * Returns the tab by the given name from the provided list
-     * @param tabName
-     * @param list
-     * @param defaultTab the default value to return, if no matches are found in the provided list
-     * @return the first found tab by the given name, or the provided default tab if there were no matches
-     */
-    static ConfigTab getTabByNameOrDefault(String tabName, List<ConfigTab> list, ConfigTab defaultTab)
+    default List<? extends ConfigInfo> getExpandedConfigs()
     {
-        for (ConfigTab tab : list)
+        ArrayList<ConfigInfo> expandedList = new ArrayList<>();
+
+        for (ConfigInfo config : this.getConfigs())
         {
-            if (tabName.equalsIgnoreCase(tab.getName()))
-            {
-                return tab;
-            }
+            expandedList.add(config);
+            config.addNestedOptionsToList(expandedList, 1);
         }
 
-        return defaultTab;
+        return expandedList;
+    }
+
+    /**
+     * Returns a full list of configs on this tab, including the configs from
+     * any possible nested expandable/collapsible config groups, wrapped in
+     * ConfigOnTab to include the tab information, which includes the owning mod.
+     * @param configConsumer
+     */
+    default void getTabbedExpandedConfigs(Consumer<ConfigOnTab> configConsumer)
+    {
+        for (ConfigInfo config : this.getExpandedConfigs())
+        {
+            configConsumer.accept(new ConfigOnTab(this, config));
+        }
     }
 }

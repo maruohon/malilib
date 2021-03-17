@@ -5,19 +5,19 @@ import java.util.List;
 import fi.dy.masa.malilib.config.category.ConfigOptionCategory;
 import fi.dy.masa.malilib.config.util.JsonConfigUtils;
 import fi.dy.masa.malilib.util.FileUtils;
+import fi.dy.masa.malilib.util.data.ModInfo;
 
 public class JsonModConfig extends BaseModConfig
 {
-    public JsonModConfig(String modId, String modName,
-                         List<ConfigOptionCategory> configOptionCategories, int configVersion)
+    public JsonModConfig(ModInfo modInfo, int configVersion, List<ConfigOptionCategory> configOptionCategories)
     {
-        this(modId, modName, modId + ".json", configOptionCategories, configVersion);
+        this(modInfo, modInfo.getModId() + ".json", configVersion, configOptionCategories);
     }
 
-    public JsonModConfig(String modId, String modName, String configFileName,
-                         List<ConfigOptionCategory> configOptionCategories, int configVersion)
+    public JsonModConfig(ModInfo modInfo, String configFileName, int configVersion,
+                         List<ConfigOptionCategory> configOptionCategories)
     {
-        super(modId, modName, configFileName, configOptionCategories, configVersion);
+        super(modInfo, configFileName, configVersion, configOptionCategories);
     }
 
     @Override

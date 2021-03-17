@@ -1,10 +1,12 @@
 package fi.dy.masa.malilib.gui;
 
+import java.util.List;
 import javax.annotation.Nullable;
 import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.gui.widget.button.ButtonActionListener;
+import fi.dy.masa.malilib.util.data.NameIdentifiable;
 
-public interface ScreenTab
+public interface ScreenTab extends NameIdentifiable
 {
     /**
      * Returns the display name for this config tab.
@@ -57,5 +59,25 @@ public interface ScreenTab
         }
 
         BaseScreen.openScreen(screen);
+    }
+
+    /**
+     * Returns the tab by the given name from the provided list
+     * @param tabName
+     * @param list
+     * @param defaultTab the default value to return, if no matches are found in the provided list
+     * @return the first found tab by the given name, or the provided default tab if there were no matches
+     */
+    static ScreenTab getTabByNameOrDefault(String tabName, List<ScreenTab> list, ScreenTab defaultTab)
+    {
+        for (ScreenTab tab : list)
+        {
+            if (tabName.equalsIgnoreCase(tab.getName()))
+            {
+                return tab;
+            }
+        }
+
+        return defaultTab;
     }
 }

@@ -5,12 +5,12 @@ import java.util.List;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import fi.dy.masa.malilib.MaLiLibConfigs;
-import fi.dy.masa.malilib.event.dispatch.KeyBindManager;
+import fi.dy.masa.malilib.input.HotkeyManager;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.config.KeybindEditingScreen;
 import fi.dy.masa.malilib.input.Hotkey;
 import fi.dy.masa.malilib.input.KeyBind;
-import fi.dy.masa.malilib.input.KeyBindCategory;
+import fi.dy.masa.malilib.input.HotkeyCategory;
 import fi.dy.masa.malilib.input.KeyBindImpl;
 import fi.dy.masa.malilib.input.Keys;
 import fi.dy.masa.malilib.listener.EventListener;
@@ -259,12 +259,12 @@ public class KeyBindConfigButton extends GenericButton
             return;
         }
 
-        List<KeyBindCategory> categories = KeyBindManager.INSTANCE.getKeyBindCategories();
+        List<HotkeyCategory> categories = HotkeyManager.INSTANCE.getHotkeyCategories();
         List<Hotkey> overlaps = new ArrayList<>();
         List<String> hoverStrings = new ArrayList<>();
         List<String> overlapInfo = new ArrayList<>();
 
-        for (KeyBindCategory category : categories)
+        for (HotkeyCategory category : categories)
         {
             List<? extends Hotkey> hotkeys = category.getHotkeys();
 
@@ -283,7 +283,7 @@ public class KeyBindConfigButton extends GenericButton
                     overlapInfo.add("--------");
                 }
 
-                overlapInfo.add(category.getModName());
+                overlapInfo.add(category.getModInfo().getModName());
                 overlapInfo.add(" > " + category.getCategoryName());
 
                 for (Hotkey overlap : overlaps)

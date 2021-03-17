@@ -6,20 +6,14 @@ import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.config.category.ConfigOptionCategory;
 import fi.dy.masa.malilib.config.option.ConfigOption;
 import fi.dy.masa.malilib.util.FileUtils;
+import fi.dy.masa.malilib.util.data.ModInfo;
 
 public interface ModConfig
 {
     /**
-     * Returns the mod ID this handler belongs to
+     * Returns the ModInfo of the mod this handler belongs to
      */
-    String getModId();
-
-    /**
-     * Returns a human-friendly mod name owning the configs of this handler.
-     * This is used in things like the hotkey info toast/popup for
-     * showing which which hotkey from which mod was triggered.
-     */
-    String getModName();
+    ModInfo getModInfo();
 
     /**
      * Returns the filename for the configs

@@ -13,8 +13,8 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.item.ItemStack;
 import fi.dy.masa.malilib.command.ClientCommandHandler;
-import fi.dy.masa.malilib.event.dispatch.InputDispatcher;
-import fi.dy.masa.malilib.event.dispatch.InputDispatcherImpl;
+import fi.dy.masa.malilib.input.InputDispatcher;
+import fi.dy.masa.malilib.input.InputDispatcherImpl;
 import fi.dy.masa.malilib.event.dispatch.RenderEventDispatcher;
 import fi.dy.masa.malilib.event.dispatch.RenderEventDispatcherImpl;
 

@@ -95,7 +95,7 @@ public class ValueListConfig<TYPE> extends BaseGenericConfig<ImmutableList<TYPE>
         this.prettyNameTranslationKey = other.prettyNameTranslationKey;
         this.commentTranslationKey = other.commentTranslationKey;
         this.commentArgs = other.commentArgs;
-        this.modId = other.modId;
+        this.modInfo = other.modInfo;
         this.setValidValues(other.validValues);
         this.setValues(other.getValue());
         this.setValueChangeCallback(other.valueChangeCallback);

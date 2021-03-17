@@ -1,31 +1,33 @@
 package fi.dy.masa.malilib.gui.config;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
+import fi.dy.masa.malilib.util.data.ModInfo;
 
 public class ConfigTabRegistryImpl implements ConfigTabRegistry
 {
-    private final Map<String, Supplier<List<ConfigTab>>> configTabProviders = new HashMap<>();
+    private final Map<ModInfo, Supplier<List<ConfigTab>>> configTabProviders = new HashMap<>();
 
     ConfigTabRegistryImpl()
     {
     }
 
     @Override
-    public void registerConfigTabProvider(String modId, Supplier<List<ConfigTab>> tabProvider)
+    public void registerConfigTabProvider(ModInfo modInfo, Supplier<List<ConfigTab>> tabProvider)
     {
-        this.configTabProviders.put(modId, tabProvider);
+        this.configTabProviders.put(modInfo, tabProvider);
     }
 
     @Override
     @Nullable
-    public Supplier<List<ConfigTab>> getConfigTabProviderFor(String modId)
+    public Supplier<List<ConfigTab>> getConfigTabProviderFor(ModInfo modInfo)
     {
-        return this.configTabProviders.get(modId);
+        return this.configTabProviders.get(modInfo);
     }
 
     @Override
@@ -38,6 +40,13 @@ public class ConfigTabRegistryImpl implements ConfigTabRegistry
             list.addAll(provider.get());
         }
 
+        return list;
+    }
+
+    public List<ModInfo> getAllModsWithConfigTabs()
+    {
+        ArrayList<ModInfo> list = new ArrayList<>(this.configTabProviders.keySet());
+        list.sort(Comparator.comparing(ModInfo::getModName));
         return list;
     }
 }

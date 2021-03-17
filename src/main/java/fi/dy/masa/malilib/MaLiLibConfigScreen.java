@@ -6,14 +6,17 @@ import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.gui.config.BaseConfigScreen;
 import fi.dy.masa.malilib.gui.config.BaseConfigTab;
 import fi.dy.masa.malilib.gui.config.ConfigTab;
+import fi.dy.masa.malilib.util.data.ModInfo;
 
 public class MaLiLibConfigScreen
 {
-    private static final BaseConfigTab GENERIC = new BaseConfigTab("malilib.gui.title.generic", MaLiLibReference.MOD_NAME, 120, MaLiLibConfigs.Generic.OPTIONS, MaLiLibConfigScreen::create);
-    private static final BaseConfigTab INFO    = new BaseConfigTab("malilib.gui.title.info",    MaLiLibReference.MOD_NAME,  -1, MaLiLibConfigs.Info.OPTIONS, MaLiLibConfigScreen::create);
-    private static final BaseConfigTab DEBUG   = new BaseConfigTab("malilib.gui.title.debug",   MaLiLibReference.MOD_NAME, 120, MaLiLibConfigs.Debug.OPTIONS, MaLiLibConfigScreen::create);
+    public static final ModInfo MOD_INFO = MaLiLibReference.MOD_INFO;
 
-    private static final ImmutableList<ConfigTab> TABS = ImmutableList.of(
+    public static final BaseConfigTab GENERIC = new BaseConfigTab(MOD_INFO, "generic", 120, MaLiLibConfigs.Generic.OPTIONS, MaLiLibConfigScreen::create);
+    public static final BaseConfigTab INFO    = new BaseConfigTab(MOD_INFO, "info",     -1, MaLiLibConfigs.Info.OPTIONS,    MaLiLibConfigScreen::create);
+    public static final BaseConfigTab DEBUG   = new BaseConfigTab(MOD_INFO, "debug",   120, MaLiLibConfigs.Debug.OPTIONS,   MaLiLibConfigScreen::create);
+
+    private static final ImmutableList<ConfigTab> CONFIG_TABS = ImmutableList.of(
             GENERIC,
             INFO,
             DEBUG
@@ -21,11 +24,11 @@ public class MaLiLibConfigScreen
 
     public static BaseConfigScreen create(@Nullable GuiScreen currentScreen)
     {
-        return new BaseConfigScreen(MaLiLibReference.MOD_ID, null, TABS, GENERIC, "malilib.gui.title.configs");
+        return new BaseConfigScreen(MOD_INFO, null, CONFIG_TABS, GENERIC, "malilib.gui.title.configs");
     }
 
     public static ImmutableList<ConfigTab> getConfigTabs()
     {
-        return TABS;
+        return CONFIG_TABS;
     }
 }

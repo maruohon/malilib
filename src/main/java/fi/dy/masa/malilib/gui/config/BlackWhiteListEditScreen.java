@@ -22,7 +22,7 @@ public class BlackWhiteListEditScreen<TYPE> extends BaseConfigGroupEditScreen
     public BlackWhiteListEditScreen(BlackWhiteListConfig<TYPE> config, EventListener saveListener,
                                     @Nullable DialogHandler dialogHandler, GuiScreen parent)
     {
-        super(config.getModId(), saveListener, dialogHandler, parent);
+        super(config.getModInfo(), saveListener, dialogHandler, parent);
 
         this.config = config;
         this.externalSaveListener = saveListener;

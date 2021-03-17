@@ -5,38 +5,22 @@ import java.util.List;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.ValueChangeCallback;
 import fi.dy.masa.malilib.config.ValueLoadCallback;
+import fi.dy.masa.malilib.util.data.ModInfo;
 
 public interface ConfigOption<T> extends ConfigInfo
 {
     /**
-     * Returns the mod ID owning this config.
-     * @return
+     * @return the ModInfo of the mod owning this config
      */
-    String getModId();
+    ModInfo getModInfo();
 
     /**
-     * Sets the mod ID owning this config.
-     * This is used for generating the default config localization keys.
+     * Sets the ModInfo owning this config.
      * This is automatically called in {@link fi.dy.masa.malilib.config.ConfigManager#registerConfigHandler(fi.dy.masa.malilib.config.ModConfig)}
-     * using the mod ID from {@link fi.dy.masa.malilib.config.ModConfig#getModId()}.
-     * @param modId
+     * using the ModInfo from {@link fi.dy.masa.malilib.config.ModConfig#getModInfo()}.
+     * @param modInfo
      */
-    void setModId(String modId);
-
-    /**
-     * Returns the mod name owning this config.
-     * @return
-     */
-    String getModName();
-
-    /**
-     * Sets the mod name owning this config.
-     * This is used for the hotkey toast popups.
-     * This is automatically called in {@link fi.dy.masa.malilib.config.ConfigManager#registerConfigHandler(fi.dy.masa.malilib.config.ModConfig)}
-     * using the mod ID from {@link fi.dy.masa.malilib.config.ModConfig#getModName()}
-     * @param modName
-     */
-    void setModName(String modName);
+    void setModInfo(ModInfo modInfo);
 
     /**
      * 

@@ -4,14 +4,15 @@ import java.util.List;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.gui.config.liteloader.DialogHandler;
+import fi.dy.masa.malilib.util.data.ModInfo;
 
 public interface ConfigScreen
 {
     /**
-     * Returns the Mod ID of the mod to which the configs on this GUI belong to
+     * Returns the ModInfo of the mod to which the configs on this config screen belong to
      * @return
      */
-    String getModId();
+    ModInfo getModInfo();
 
     /**
      * When called, the implementer should clear all the stored config options

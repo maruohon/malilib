@@ -116,7 +116,7 @@ public class Keys
         addFallBackNames(-201, "SCROLL_DOWN");
     }
 
-    private static void addFallBackNames(int keyCode, String... names)
+    public static void addFallBackNames(int keyCode, String... names)
     {
         for (String name : names)
         {
@@ -130,7 +130,7 @@ public class Keys
         }
     }
 
-    private static void addNameOverride(int keyCode, String name)
+    public static void addNameOverride(int keyCode, String name)
     {
         if (IDS_TO_NAMES.containsKey(keyCode) == false)
         {

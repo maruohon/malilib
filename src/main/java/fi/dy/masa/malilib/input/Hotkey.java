@@ -2,6 +2,11 @@ package fi.dy.masa.malilib.input;
 
 public interface Hotkey
 {
+    /**
+     * Returns the name of this hotkey.
+     * This is mostly used in the keybind conflict/overlap hover info
+     * @return
+     */
     String getName();
 
     /**

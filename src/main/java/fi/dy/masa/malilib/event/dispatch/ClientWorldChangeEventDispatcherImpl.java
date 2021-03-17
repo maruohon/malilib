@@ -8,6 +8,7 @@ import net.minecraft.client.multiplayer.WorldClient;
 import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.config.ConfigManagerImpl;
 import fi.dy.masa.malilib.event.ClientWorldChangeHandler;
+import fi.dy.masa.malilib.input.HotkeyManager;
 
 public class ClientWorldChangeEventDispatcherImpl implements ClientWorldChangeEventDispatcher
 {
@@ -60,7 +61,7 @@ public class ClientWorldChangeEventDispatcherImpl implements ClientWorldChangeEv
         else if (worldBefore == null)
         {
             ((ConfigManagerImpl) ConfigManager.INSTANCE).loadAllConfigs();
-            KeyBindManager.INSTANCE.updateUsedKeys();
+            HotkeyManager.INSTANCE.updateUsedKeys();
         }
 
         if (this.worldChangeHandlers.isEmpty() == false)

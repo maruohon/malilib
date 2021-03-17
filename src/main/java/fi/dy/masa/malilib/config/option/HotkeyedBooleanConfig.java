@@ -6,6 +6,7 @@ import fi.dy.masa.malilib.input.KeyBindImpl;
 import fi.dy.masa.malilib.input.KeyBindSettings;
 import fi.dy.masa.malilib.input.callback.ToggleBooleanWithMessageKeyCallback;
 import fi.dy.masa.malilib.util.StringUtils;
+import fi.dy.masa.malilib.util.data.ModInfo;
 
 public class HotkeyedBooleanConfig extends BooleanConfig implements Hotkey
 {
@@ -48,10 +49,11 @@ public class HotkeyedBooleanConfig extends BooleanConfig implements Hotkey
     }
 
     @Override
-    public void setModId(String modId)
+    public void setModInfo(ModInfo modInfo)
     {
-        super.setModId(modId);
+        super.setModInfo(modInfo);
         this.keyBind.setNameTranslationKey(this.nameTranslationKey);
+        this.keyBind.setModInfo(modInfo);
     }
 
     @Override

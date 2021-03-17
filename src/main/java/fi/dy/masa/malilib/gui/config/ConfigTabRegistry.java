@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.gui.config;
 import java.util.List;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
+import fi.dy.masa.malilib.util.data.ModInfo;
 
 public interface ConfigTabRegistry
 {
@@ -10,18 +11,16 @@ public interface ConfigTabRegistry
 
     /**
      * Registers a config tab provider for the given modId.
-     * @param modId
-     * @param tabProvider
      */
-    void registerConfigTabProvider(String modId, Supplier<List<ConfigTab>> tabProvider);
+    void registerConfigTabProvider(ModInfo modInfo, Supplier<List<ConfigTab>> tabProvider);
 
     /**
      * Returns the registered config tab provider for the given mod.
-     * @param modId
+     * @param modInfo
      * @return
      */
     @Nullable
-    Supplier<List<ConfigTab>> getConfigTabProviderFor(String modId);
+    Supplier<List<ConfigTab>> getConfigTabProviderFor(ModInfo modInfo);
 
     /**
      * Returns a list of all registered config tabs.

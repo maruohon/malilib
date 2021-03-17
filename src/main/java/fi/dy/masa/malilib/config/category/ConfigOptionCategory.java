@@ -2,8 +2,9 @@ package fi.dy.masa.malilib.config.category;
 
 import java.util.List;
 import fi.dy.masa.malilib.config.option.ConfigOption;
+import fi.dy.masa.malilib.util.data.NameIdentifiable;
 
-public interface ConfigOptionCategory extends ConfigCategory
+public interface ConfigOptionCategory extends NameIdentifiable
 {
     /**
      * Returns whether or not the configs in this category should be saved to file

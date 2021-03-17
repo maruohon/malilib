@@ -15,6 +15,7 @@ import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.config.BaseConfigScreen;
 import fi.dy.masa.malilib.gui.config.ModConfigScreen;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
+import fi.dy.masa.malilib.util.data.ModInfo;
 
 public abstract class BaseConfigPanel extends AbstractConfigPanel
 {
@@ -262,12 +263,12 @@ public abstract class BaseConfigPanel extends AbstractConfigPanel
         @Override
         public void openDialog(BaseScreen gui)
         {
-            String modId = this.selectedPanel.getModId();
+            ModInfo modInfo = this.selectedPanel.getModInfo();
             String title = this.selectedPanel.getTitle();
             gui.setPopupGuiZLevelBasedOn(GuiUtils.getCurrentScreen());
 
-            BaseConfigPanel.this.setSelectedSubPanel(
-                    new GuiConfigsWrapper(modId, title, this.selectedPanel.getConfigs(), this.selectedPanel, gui));
+            BaseConfigPanel.this.setSelectedSubPanel(new GuiConfigsWrapper(
+                    modInfo, title, this.selectedPanel.getConfigs(), this.selectedPanel, gui));
         }
 
         @Override
@@ -282,10 +283,10 @@ public abstract class BaseConfigPanel extends AbstractConfigPanel
         protected final GuiScreen backgroundGui;
         protected final BaseScreen foregroundGui;
 
-        public GuiConfigsWrapper(String modId, String title, List<? extends ConfigInfo> configs,
-                GuiScreen backgroundGui, BaseScreen foregroundGui)
+        public GuiConfigsWrapper(ModInfo modInfo, String title, List<? extends ConfigInfo> configs,
+                                 GuiScreen backgroundGui, BaseScreen foregroundGui)
         {
-            super(modId, configs, title);
+            super(modInfo, configs, title);
 
             this.backgroundGui = backgroundGui;
             this.foregroundGui = foregroundGui;

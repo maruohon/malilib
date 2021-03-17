@@ -1,13 +1,10 @@
-package fi.dy.masa.malilib.event.dispatch;
+package fi.dy.masa.malilib.input;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
-import fi.dy.masa.malilib.input.KeyBindImpl;
-import fi.dy.masa.malilib.input.KeyboardInputHandler;
-import fi.dy.masa.malilib.input.MouseInputHandler;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 
 public class InputDispatcherImpl implements InputDispatcher
@@ -76,14 +73,14 @@ public class InputDispatcherImpl implements InputDispatcher
         // Update the cached pressed keys status
         KeyBindImpl.onKeyInputPre(eventKey, 0, 0, eventChar, eventKeyState);
 
-        boolean cancel = ((KeyBindManagerImpl) KeyBindManager.INSTANCE).checkKeyBindsForChanges(eventKey);
+        boolean cancel = ((HotkeyManagerImpl) HotkeyManager.INSTANCE).checkKeyBindsForChanges(eventKey);
 
         // Since char-only keys can't be properly held down (there is no properly detectable release event,
         // the char value in the release event is not set), clear them immediately.
         if (isChar)
         {
             KeyBindImpl.onKeyInputPre(eventKey, 0, 0, eventChar, false);
-            ((KeyBindManagerImpl) KeyBindManager.INSTANCE).checkKeyBindsForChanges(eventKey);
+            ((HotkeyManagerImpl) HotkeyManager.INSTANCE).checkKeyBindsForChanges(eventKey);
         }
 
         if (this.keyboardHandlers.isEmpty() == false)
@@ -120,13 +117,13 @@ public class InputDispatcherImpl implements InputDispatcher
             // Update the cached pressed keys status
             KeyBindImpl.onKeyInputPre(keyCode, 0, 0, (char) 0, keyState);
 
-            cancel = ((KeyBindManagerImpl) KeyBindManager.INSTANCE).checkKeyBindsForChanges(keyCode);
+            cancel = ((HotkeyManagerImpl) HotkeyManager.INSTANCE).checkKeyBindsForChanges(keyCode);
 
             // Since scroll "keys" can't be held down, clear them immediately
             if (isScroll)
             {
                 KeyBindImpl.onKeyInputPre(keyCode, 0, 0, (char) 0, false);
-                ((KeyBindManagerImpl) KeyBindManager.INSTANCE).checkKeyBindsForChanges(keyCode);
+                ((HotkeyManagerImpl) HotkeyManager.INSTANCE).checkKeyBindsForChanges(keyCode);
             }
 
             if (this.mouseHandlers.isEmpty() == false)

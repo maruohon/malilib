@@ -1,7 +1,4 @@
-package fi.dy.masa.malilib.event.dispatch;
-
-import fi.dy.masa.malilib.input.KeyboardInputHandler;
-import fi.dy.masa.malilib.input.MouseInputHandler;
+package fi.dy.masa.malilib.input;
 
 public interface InputDispatcher
 {

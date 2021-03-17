@@ -1,47 +1,42 @@
-package fi.dy.masa.malilib.event.dispatch;
+package fi.dy.masa.malilib.input;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import com.google.common.collect.ArrayListMultimap;
-import fi.dy.masa.malilib.input.Hotkey;
-import fi.dy.masa.malilib.input.KeyBind;
-import fi.dy.masa.malilib.input.KeyBindCategory;
-import fi.dy.masa.malilib.input.KeyBindProvider;
-import fi.dy.masa.malilib.input.KeyUpdateResult;
 
-public class KeyBindManagerImpl implements KeyBindManager
+public class HotkeyManagerImpl implements HotkeyManager
 {
     private final ArrayListMultimap<Integer, KeyBind> hotkeyMap = ArrayListMultimap.create();
-    private final List<KeyBindCategory> keyBindCategories = new ArrayList<>();
-    private final List<KeyBindProvider> keyBindProviders = new ArrayList<>();
+    private final List<HotkeyCategory> keyBindCategories = new ArrayList<>();
+    private final List<HotkeyProvider> keyBindProviders = new ArrayList<>();
 
-    KeyBindManagerImpl()
+    HotkeyManagerImpl()
     {
     }
 
     @Override
-    public void registerKeyBindProvider(KeyBindProvider provider)
+    public void registerHotkeyProvider(HotkeyProvider provider)
     {
         if (this.keyBindProviders.contains(provider) == false)
         {
             this.keyBindProviders.add(provider);
         }
 
-        for (KeyBindCategory category : provider.getHotkeyCategoriesForCombinedView())
+        for (HotkeyCategory category : provider.getHotkeysByCategories())
         {
             this.addKeyBindCategory(category);
         }
     }
 
     @Override
-    public void unregisterKeyBindProvider(KeyBindProvider provider)
+    public void unregisterHotkeyProvider(HotkeyProvider provider)
     {
         this.keyBindProviders.remove(provider);
     }
 
     @Override
-    public List<KeyBindCategory> getKeyBindCategories()
+    public List<HotkeyCategory> getHotkeyCategories()
     {
         return this.keyBindCategories;
     }
@@ -51,7 +46,7 @@ public class KeyBindManagerImpl implements KeyBindManager
     {
         this.hotkeyMap.clear();
 
-        for (KeyBindProvider handler : this.keyBindProviders)
+        for (HotkeyProvider handler : this.keyBindProviders)
         {
             for (Hotkey hotkey : handler.getAllHotkeys())
             {
@@ -75,13 +70,16 @@ public class KeyBindManagerImpl implements KeyBindManager
         }
     }
 
-    private void addKeyBindCategory(KeyBindCategory category)
+    private void addKeyBindCategory(HotkeyCategory category)
     {
         // Remove a previous entry, if any (matched based on the modName and keyCategory only!)
         this.keyBindCategories.remove(category);
         this.keyBindCategories.add(category);
     }
 
+    /**
+     * NOT PUBLIC API - DO NOT CALL FROM MOD CODE
+     */
     boolean checkKeyBindsForChanges(int eventKey)
     {
         boolean cancel = false;

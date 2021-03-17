@@ -7,10 +7,11 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.MaLiLib;
+import fi.dy.masa.malilib.util.data.ModInfo;
 
 public class ConfigManagerImpl implements ConfigManager
 {
-    private final Map<String, ModConfig> configHandlers = new HashMap<>();
+    private final Map<ModInfo, ModConfig> configHandlers = new HashMap<>();
 
     ConfigManagerImpl()
     {
@@ -19,32 +20,30 @@ public class ConfigManagerImpl implements ConfigManager
     @Override
     public void registerConfigHandler(ModConfig handler)
     {
-        final String modId = handler.getModId();
-        final String modName = handler.getModName();
+        final ModInfo modInfo = handler.getModInfo();
 
-        if (this.configHandlers.containsKey(modId))
+        if (this.configHandlers.containsKey(modInfo))
         {
-            MaLiLib.LOGGER.warn("Tried to override an existing config handler for mod ID '{}'", modId);
+            MaLiLib.LOGGER.warn("Tried to override an existing config handler for mod ID '{}'", modInfo);
             return;
         }
 
-        handler.getConfigOptionCategories().forEach((category) -> category.getConfigOptions().forEach((config) -> config.setModId(modId)));
-        handler.getConfigOptionCategories().forEach((category) -> category.getConfigOptions().forEach((config) -> config.setModName(modName)));
+        handler.getConfigOptionCategories().forEach((category) -> category.getConfigOptions().forEach((config) -> config.setModInfo(modInfo)));
 
-        this.configHandlers.put(modId, handler);
+        this.configHandlers.put(modInfo, handler);
     }
 
     @Override
     @Nullable
-    public ModConfig getConfigHandler(String modId)
+    public ModConfig getConfigHandler(ModInfo modInfo)
     {
-        return this.configHandlers.get(modId);
+        return this.configHandlers.get(modInfo);
     }
 
     @Override
-    public boolean saveConfigsIfChanged(String modId)
+    public boolean saveConfigsIfChanged(ModInfo modInfo)
     {
-        ModConfig handler = this.configHandlers.get(modId);
+        ModConfig handler = this.configHandlers.get(modInfo);
 
         if (handler != null)
         {
@@ -55,12 +54,13 @@ public class ConfigManagerImpl implements ConfigManager
     }
 
     /**
+     * 
      * NOT PUBLIC API - DO NOT CALL
      */
     public List<ModConfig> getAllModConfigs()
     {
         ArrayList<ModConfig> list = new ArrayList<>(this.configHandlers.values());
-        list.sort(Comparator.comparing(ModConfig::getModName));
+        list.sort(Comparator.comparing(v -> v.getModInfo().getModName()));
         return list;
     }
 

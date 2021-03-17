@@ -10,21 +10,22 @@ import fi.dy.masa.malilib.gui.config.liteloader.DialogHandler;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.list.ConfigOptionListWidget;
 import fi.dy.masa.malilib.listener.EventListener;
+import fi.dy.masa.malilib.util.data.ModInfo;
 
 public class BaseConfigGroupEditScreen extends BaseListScreen<ConfigOptionListWidget<? extends ConfigInfo>>
 {
     protected final ArrayList<ConfigInfo> configs = new ArrayList<>();
-    protected final String modId;
+    protected final ModInfo modInfo;
     @Nullable protected EventListener saveListener;
     @Nullable protected KeybindEditingScreen keyBindEditingScreen;
     protected int elementsWidth = 200;
 
-    public BaseConfigGroupEditScreen(String modId, @Nullable EventListener saveListener,
+    public BaseConfigGroupEditScreen(ModInfo modInfo, @Nullable EventListener saveListener,
                                      @Nullable DialogHandler dialogHandler, GuiScreen parent)
     {
         super(8, 30, 14, 36);
 
-        this.modId = modId;
+        this.modInfo = modInfo;
         this.saveListener = saveListener;
         this.dialogHandler = dialogHandler;
 
@@ -97,6 +98,6 @@ public class BaseConfigGroupEditScreen extends BaseListScreen<ConfigOptionListWi
     {
         ConfigWidgetContext ctx = new ConfigWidgetContext(this::getListWidget, this.getKeybindEditingScreen(), () -> this.dialogHandler, 0);
         return ConfigOptionListWidget.createWithExpandedGroups(listX, listY, listWidth, listHeight,
-                                                               this::getElementsWidth, this.modId, this::getConfigs, ctx);
+                                                               this::getElementsWidth, this.modInfo, this::getConfigs, ctx);
     }
 }

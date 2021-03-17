@@ -6,31 +6,48 @@ import javax.annotation.Nullable;
 import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.gui.widget.button.ButtonActionListener;
 import fi.dy.masa.malilib.util.StringUtils;
+import fi.dy.masa.malilib.util.data.ModInfo;
 
 public class BaseScreenTab implements ScreenTab
 {
+    protected final String name;
     protected final String translationKey;
     protected final Function<GuiScreen, BaseScreen> screenFactory;
     protected final Function<BaseTabbedScreen, ButtonActionListener> listenerFactory;
     protected final Predicate<GuiScreen> screenChecker;
     @Nullable protected String hoverTextTranslationKey;
 
-    public BaseScreenTab(String translationKey, Predicate<GuiScreen> screenChecker, Function<GuiScreen, BaseScreen> screenFactory)
+    public BaseScreenTab(ModInfo modInfo, String name, Predicate<GuiScreen> screenChecker,
+                         Function<GuiScreen, BaseScreen> screenFactory)
     {
+        this(name, modInfo.getModId() + ".label.config_tab." + name, screenChecker, screenFactory);
+    }
+
+    public BaseScreenTab(String name, String translationKey, Predicate<GuiScreen> screenChecker,
+                         Function<GuiScreen, BaseScreen> screenFactory)
+    {
+        this.name = name;
         this.translationKey = translationKey;
         this.screenChecker = screenChecker;
         this.screenFactory = screenFactory;
         this.listenerFactory = (scr) -> (btn, mbtn) -> this.switchTab(scr);
     }
 
-    public BaseScreenTab(String translationKey, Predicate<GuiScreen> screenChecker,
+    public BaseScreenTab(String name, String translationKey, Predicate<GuiScreen> screenChecker,
                          Function<GuiScreen, BaseScreen> screenFactory,
                          Function<BaseTabbedScreen, ButtonActionListener> listenerFactory)
     {
+        this.name = name;
         this.translationKey = translationKey;
         this.screenChecker = screenChecker;
         this.screenFactory = screenFactory;
         this.listenerFactory = listenerFactory;
+    }
+
+    @Override
+    public String getName()
+    {
+        return this.name;
     }
 
     @Override

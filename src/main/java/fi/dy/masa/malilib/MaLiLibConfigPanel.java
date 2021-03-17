@@ -14,10 +14,10 @@ public class MaLiLibConfigPanel extends BaseConfigPanel
     @Override
     protected void createSubPanels()
     {
-        this.addSubPanel((new ModConfigScreen(MaLiLibReference.MOD_ID, MaLiLibConfigs.Generic.OPTIONS,
+        this.addSubPanel((new ModConfigScreen(MaLiLibReference.MOD_INFO, MaLiLibConfigs.Generic.OPTIONS,
                                               "malilib.gui.title.generic")).setConfigElementsWidth(240));
 
-        this.addSubPanel((new ModConfigScreen(MaLiLibReference.MOD_ID, MaLiLibConfigs.Debug.OPTIONS,
+        this.addSubPanel((new ModConfigScreen(MaLiLibReference.MOD_INFO, MaLiLibConfigs.Debug.OPTIONS,
                                               "malilib.gui.title.debug")).setConfigElementsWidth(120));
     }
 }

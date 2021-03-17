@@ -10,6 +10,7 @@ import fi.dy.masa.malilib.config.ValueChangeCallback;
 import fi.dy.masa.malilib.config.ValueLoadCallback;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.util.StringUtils;
+import fi.dy.masa.malilib.util.data.ModInfo;
 
 public abstract class BaseConfig<T> implements ConfigOption<T>
 {
@@ -19,8 +20,7 @@ public abstract class BaseConfig<T> implements ConfigOption<T>
     protected final List<String> oldNames = new ArrayList<>();
     protected String nameTranslationKey;
     protected String prettyNameTranslationKey;
-    protected String modId = "?";
-    protected String modName = "?";
+    protected ModInfo modInfo;
     protected boolean locked;
     protected Object[] commentArgs;
     @Nullable protected String commentTranslationKey;
@@ -51,15 +51,9 @@ public abstract class BaseConfig<T> implements ConfigOption<T>
     }
 
     @Override
-    public String getModId()
+    public ModInfo getModInfo()
     {
-        return this.modId;
-    }
-
-    @Override
-    public String getModName()
-    {
-        return this.modName;
+        return this.modInfo;
     }
 
     @Override
@@ -101,9 +95,11 @@ public abstract class BaseConfig<T> implements ConfigOption<T>
     }
 
     @Override
-    public void setModId(String modId)
+    public void setModInfo(ModInfo modInfo)
     {
-        this.modId = modId;
+        this.modInfo = modInfo;
+
+        String modId = modInfo.getModId();
 
         // If these are still using the default values, generate the proper keys
         if (this.nameTranslationKey.equals(this.name))
@@ -125,12 +121,6 @@ public abstract class BaseConfig<T> implements ConfigOption<T>
         {
             this.searchStrings.add(this.getPrettyName());
         }
-    }
-
-    @Override
-    public void setModName(String modName)
-    {
-        this.modName = modName;
     }
 
     protected String createNameTranslationKey(String modId)
