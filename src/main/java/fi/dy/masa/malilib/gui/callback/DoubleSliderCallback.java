@@ -1,33 +1,33 @@
 package fi.dy.masa.malilib.gui.callback;
 
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.config.option.DoubleConfig;
 import fi.dy.masa.malilib.listener.EventListener;
+import fi.dy.masa.malilib.util.data.RangedDoubleStorage;
 
 public class DoubleSliderCallback implements SteppedSliderCallback
 {
-    protected final DoubleConfig config;
+    protected final RangedDoubleStorage storage;
     @Nullable protected final EventListener changeListener;
     protected double stepSize = 0.0009765625; // 1 / 1024
     protected int maxSteps = Integer.MAX_VALUE;
 
-    public DoubleSliderCallback(DoubleConfig config, @Nullable EventListener changeListener)
+    public DoubleSliderCallback(RangedDoubleStorage storage, @Nullable EventListener changeListener)
     {
-        this.config = config;
+        this.storage = storage;
         this.changeListener = changeListener;
     }
 
     @Override
     public double getRelativeValue()
     {
-        return (this.config.getDoubleValue() - this.config.getMinDoubleValue()) / (this.config.getMaxDoubleValue() - this.config.getMinDoubleValue());
+        return (this.storage.getDoubleValue() - this.storage.getMinDoubleValue()) / (this.storage.getMaxDoubleValue() - this.storage.getMinDoubleValue());
     }
 
     @Override
     public void setRelativeValue(double relativeValue)
     {
-        double relValue = relativeValue * (this.config.getMaxDoubleValue() - this.config.getMinDoubleValue());
-        double value = relValue + this.config.getMinDoubleValue();
+        double relValue = relativeValue * (this.storage.getMaxDoubleValue() - this.storage.getMinDoubleValue());
+        double value = relValue + this.storage.getMinDoubleValue();
         double step = this.stepSize;
 
         if (step > 0)
@@ -35,7 +35,7 @@ public class DoubleSliderCallback implements SteppedSliderCallback
             value = value - ((value + step) % step);
         }
 
-        this.config.setValue(value);
+        this.storage.setDoubleValue(value);
 
         if (this.changeListener != null)
         {
@@ -69,6 +69,6 @@ public class DoubleSliderCallback implements SteppedSliderCallback
     @Override
     public String getFormattedDisplayValue()
     {
-        return String.format("%.4f", this.config.getDoubleValue());
+        return String.format("%.4f", this.storage.getDoubleValue());
     }
 }

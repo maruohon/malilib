@@ -3,8 +3,9 @@ package fi.dy.masa.malilib.config.option;
 import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.gui.callback.DoubleSliderCallback;
+import fi.dy.masa.malilib.util.data.RangedDoubleStorage;
 
-public class DoubleConfig extends BaseSliderConfig<Double> implements SliderConfig
+public class DoubleConfig extends BaseSliderConfig<Double> implements RangedDoubleStorage
 {
     protected double doubleValue;
     protected double minValue;
@@ -40,6 +41,7 @@ public class DoubleConfig extends BaseSliderConfig<Double> implements SliderConf
         this.sliderCallbackFactory = (listener) -> new DoubleSliderCallback(this, listener);
     }
 
+    @Override
     public double getDoubleValue()
     {
         return this.doubleValue;
@@ -52,6 +54,12 @@ public class DoubleConfig extends BaseSliderConfig<Double> implements SliderConf
 
     @Override
     public boolean setValue(Double newValue)
+    {
+        return this.setDoubleValue(newValue);
+    }
+
+    @Override
+    public boolean setDoubleValue(double newValue)
     {
         if (Double.isNaN(newValue) == false)
         {
@@ -67,11 +75,13 @@ public class DoubleConfig extends BaseSliderConfig<Double> implements SliderConf
         return false;
     }
 
+    @Override
     public double getMinDoubleValue()
     {
         return this.minValue;
     }
 
+    @Override
     public double getMaxDoubleValue()
     {
         return this.maxValue;

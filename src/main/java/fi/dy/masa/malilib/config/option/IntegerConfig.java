@@ -3,8 +3,9 @@ package fi.dy.masa.malilib.config.option;
 import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.gui.callback.IntegerSliderCallback;
+import fi.dy.masa.malilib.util.data.RangedIntegerStorage;
 
-public class IntegerConfig extends BaseSliderConfig<Integer>
+public class IntegerConfig extends BaseSliderConfig<Integer> implements RangedIntegerStorage
 {
     protected int integerValue;
     protected int minValue;
@@ -40,6 +41,7 @@ public class IntegerConfig extends BaseSliderConfig<Integer>
         this.sliderCallbackFactory = (listener) -> new IntegerSliderCallback(this, listener);
     }
 
+    @Override
     public int getIntegerValue()
     {
         return this.integerValue;
@@ -53,6 +55,12 @@ public class IntegerConfig extends BaseSliderConfig<Integer>
     @Override
     public boolean setValue(Integer newValue)
     {
+        return this.setIntegerValue(newValue);
+    }
+
+    @Override
+    public boolean setIntegerValue(int newValue)
+    {
         if (this.locked == false)
         {
             newValue = this.getClampedValue(newValue);
@@ -63,11 +71,13 @@ public class IntegerConfig extends BaseSliderConfig<Integer>
         return false;
     }
 
+    @Override
     public int getMinIntegerValue()
     {
         return this.minValue;
     }
 
+    @Override
     public int getMaxIntegerValue()
     {
         return this.maxValue;
