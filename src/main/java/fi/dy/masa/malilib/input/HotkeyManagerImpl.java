@@ -88,6 +88,9 @@ public class HotkeyManagerImpl implements HotkeyManager
 
         if (keyBinds.isEmpty() == false)
         {
+            // FIXME is there a better way to avoid CMEs when switching config screens?
+            keyBinds = new ArrayList<>(keyBinds);
+
             for (KeyBind keyBind : keyBinds)
             {
                 // Note: updateIsPressed() has to be called for key releases too, to reset the state
