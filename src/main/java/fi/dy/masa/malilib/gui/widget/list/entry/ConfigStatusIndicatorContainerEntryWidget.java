@@ -6,15 +6,18 @@ import fi.dy.masa.malilib.gui.config.ConfigStatusIndicatorGroupEditScreen;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
+import fi.dy.masa.malilib.gui.widget.button.OnOffButton;
+import fi.dy.masa.malilib.gui.widget.button.OnOffStyle;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
-import fi.dy.masa.malilib.render.RenderUtils;
-import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.overlay.InfoWidgetManager;
 import fi.dy.masa.malilib.overlay.widget.ConfigStatusIndicatorContainerWidget;
+import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.render.ShapeRenderUtils;
 
 public class ConfigStatusIndicatorContainerEntryWidget extends BaseDataListEntryWidget<ConfigStatusIndicatorContainerWidget>
 {
     protected final LabelWidget nameLabelWidget;
+    protected final GenericButton toggleButton;
     protected final GenericButton configureButton;
     protected final GenericButton removeButton;
 
@@ -26,6 +29,10 @@ public class ConfigStatusIndicatorContainerEntryWidget extends BaseDataListEntry
         super(x, y, width, height, listIndex, originalListIndex, data, listWidget);
 
         this.nameLabelWidget = new LabelWidget(0, 0, -1, -1, 0xFFFFFFFF, data.getName());
+
+        this.toggleButton = new OnOffButton(0, 0, -1, 20, OnOffStyle.SLIDER_ON_OFF, data::isEnabled, null);
+        this.toggleButton.setActionListener(data::toggleEnabled);
+
         this.configureButton = new GenericButton(0, 0, -1, 20, "malilib.gui.button.label.configure");
         this.configureButton.setActionListener(this::openEditScreen);
 
@@ -51,6 +58,7 @@ public class ConfigStatusIndicatorContainerEntryWidget extends BaseDataListEntry
     {
         super.reAddSubWidgets();
         
+        this.addWidget(this.toggleButton);
         this.addWidget(this.nameLabelWidget);
         this.addWidget(this.configureButton);
         this.addWidget(this.removeButton);
@@ -72,6 +80,9 @@ public class ConfigStatusIndicatorContainerEntryWidget extends BaseDataListEntry
 
         rightX -= this.configureButton.getWidth() + 2;
         this.configureButton.setPosition(rightX, y + 1);
+
+        rightX -= this.toggleButton.getWidth() + 2;
+        this.toggleButton.setPosition(rightX, y + 1);
     }
 
     @Override

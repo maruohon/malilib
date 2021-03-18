@@ -123,10 +123,11 @@ public class LabelWidget extends BackgroundWidget
         return this;
     }
 
-    public LabelWidget setLineHeight(int lineHeight)
+    @Override
+    public void setLineHeight(int lineHeight)
     {
+        super.setLineHeight(lineHeight);
         this.stringListRenderer.setLineHeight(lineHeight);
-        return this;
     }
     
     public LabelWidget setNormalTextColor(int color)

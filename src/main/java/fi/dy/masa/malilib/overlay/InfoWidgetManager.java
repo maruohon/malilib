@@ -10,6 +10,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.MaLiLibReference;
+import fi.dy.masa.malilib.message.InfoOverlay;
 import fi.dy.masa.malilib.message.InfoRendererWidget;
 import fi.dy.masa.malilib.overlay.widget.ConfigStatusIndicatorContainerWidget;
 import fi.dy.masa.malilib.util.FileUtils;
@@ -17,27 +18,45 @@ import fi.dy.masa.malilib.util.JsonUtils;
 
 public class InfoWidgetManager
 {
-    public static final InfoWidgetManager INSTANCE = new InfoWidgetManager();
+    public static final InfoWidgetManager INSTANCE = new InfoWidgetManager(InfoOverlay.INSTANCE);
 
     protected final ArrayListMultimap<Class<? extends InfoRendererWidget>, InfoRendererWidget> widgets = ArrayListMultimap.create();
+    protected final InfoOverlay infoOverlay;
+
+    public InfoWidgetManager(InfoOverlay infoOverlay)
+    {
+        this.infoOverlay = infoOverlay;
+    }
 
     public void addWidget(InfoRendererWidget widget)
     {
         if (this.widgets.containsEntry(widget.getClass(), widget) == false)
         {
             this.widgets.put(widget.getClass(), widget);
+            this.infoOverlay.getOrCreateInfoArea(widget.getScreenLocation()).addWidget(widget);
         }
     }
 
     public void removeWidget(InfoRendererWidget widget)
     {
         this.widgets.remove(widget.getClass(), widget);
+        this.infoOverlay.getOrCreateInfoArea(widget.getScreenLocation()).removeWidget(widget);
     }
 
     @SuppressWarnings("unchecked")
     public <WIDGET extends InfoRendererWidget> List<WIDGET> getAllWidgetsOfType(Class<WIDGET> clazz)
     {
         return (List<WIDGET>) this.widgets.get(clazz);
+    }
+
+    protected void clearWidgets()
+    {
+        for (InfoRendererWidget widget : this.widgets.values())
+        {
+            this.infoOverlay.getOrCreateInfoArea(widget.getScreenLocation()).removeWidget(widget);
+        }
+
+        this.widgets.clear();
     }
 
     public JsonObject toJson()
@@ -60,7 +79,7 @@ public class InfoWidgetManager
 
     public void fromJson(JsonObject obj)
     {
-        this.widgets.clear();
+        this.clearWidgets();
 
         if (JsonUtils.hasArray(obj, "info_widgets") == false)
         {
@@ -82,6 +101,7 @@ public class InfoWidgetManager
                 if (widget != null)
                 {
                     this.widgets.put(widget.getClass(), widget);
+                    this.infoOverlay.getOrCreateInfoArea(widget.getScreenLocation()).addWidget(widget);
                 }
             }
         }

@@ -42,6 +42,7 @@ public class BaseWidget
     protected boolean automaticWidth;
     protected boolean hasMaxHeight;
     protected boolean hasMaxWidth;
+    protected int lineHeight;
     protected int maxHeight;
     protected int maxWidth;
 
@@ -54,6 +55,7 @@ public class BaseWidget
         this.mc = Minecraft.getMinecraft();
         this.textRenderer = TextRenderer.INSTANCE;
         this.fontHeight = this.textRenderer.getFontHeight();
+        this.lineHeight = this.fontHeight + 2;
         this.padding.setChangeListener(this::updateSize);
 
         this.automaticWidth = width < 0;
@@ -87,8 +89,6 @@ public class BaseWidget
     /**
      * Returns the start position of any content, basically offsetting
      * the widget x-position by the left padding.
-     *
-     * @return
      */
     protected int getContentStartX()
     {
@@ -98,8 +98,6 @@ public class BaseWidget
     /**
      * Returns the end position of any content, basically offsetting
      * the widget right edge x-position by the right padding.
-     *
-     * @return
      */
     protected int getContentEndX()
     {
@@ -109,8 +107,6 @@ public class BaseWidget
     /**
      * Returns the start position of any content, basically offsetting
      * the widget y-position by the top padding.
-     *
-     * @return
      */
     protected int getContentStartY()
     {
@@ -120,8 +116,6 @@ public class BaseWidget
     /**
      * Returns the end position of any content, basically offsetting
      * the widget bottom edge y-position by the bottom padding.
-     *
-     * @return
      */
     protected int getContentEndY()
     {
@@ -265,6 +259,11 @@ public class BaseWidget
         return this.height;
     }
 
+    public int getLineHeight()
+    {
+        return this.lineHeight;
+    }
+
     public void setWidth(int width)
     {
         this.width = width;
@@ -286,6 +285,11 @@ public class BaseWidget
 
         this.updateHorizontalPositionIfRightAligned();
         this.onSizeChanged();
+    }
+
+    public void setLineHeight(int lineHeight)
+    {
+        this.lineHeight = lineHeight;
     }
 
     /**

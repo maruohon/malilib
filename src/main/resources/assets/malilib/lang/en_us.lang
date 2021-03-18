@@ -237,6 +237,8 @@ malilib.gui.title.keybind_settings.advanced=Advanced Keybind Settings for '%s'
 malilib.gui.title.status_effect_list_edit=Edit status effect list '%s'
 malilib.gui.title.string_list_edit=Edit string list '%s'
 
+malilib.button.hover.plus_minus_tip=Left click to increase\nRight click to decrease\nShift and/or Alt to increase the step size
+
 malilib.hotkeys.category.debug_hotkeys=Debug hotkeys
 malilib.hotkeys.category.generic_hotkeys=Generic hotkeys
 
@@ -297,7 +299,11 @@ malilib.label.colored.on.caps=§aON§r
 malilib.label.colored.off=§coff§r
 malilib.label.colored.on=§aon§r
 
+malilib.label.background.colon=Background:
+malilib.label.line_height.colon=Line height:
 malilib.label.name.colon=Name:
+malilib.label.render_name.colon=Render name:
+malilib.label.sort_index.colon=Sort index:
 
 malilib.label.off=off
 malilib.label.on=on

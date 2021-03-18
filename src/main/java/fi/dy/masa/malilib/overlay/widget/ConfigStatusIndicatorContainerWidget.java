@@ -9,6 +9,7 @@ import java.util.Set;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.minecraft.client.Minecraft;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.config.util.ConfigUtils;
 import fi.dy.masa.malilib.gui.config.ConfigStatusWidgetFactory;
@@ -22,6 +23,7 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
 {
     protected final Set<ConfigOnTab> configs = new HashSet<>();
     protected final List<BaseConfigStatusIndicatorWidget<?>> widgets = new ArrayList<>();
+    protected boolean needsReLayout;
 
     public ConfigStatusIndicatorContainerWidget()
     {
@@ -42,8 +44,11 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
             if (factory != null)
             {
                 BaseConfigStatusIndicatorWidget<?> widget = factory.create(config.config, config);
+                widget.setGeometryChangeListener(this::requestReLayout);
+                widget.setHeight(this.lineHeight);
                 this.widgets.add(widget);
                 this.configs.add(config);
+                this.requestReLayout();
             }
         }
     }
@@ -51,29 +56,118 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
     public void removeWidget(BaseConfigStatusIndicatorWidget<?> widget)
     {
         this.widgets.remove(widget);
+        this.requestReLayout();
     }
 
-    public List<BaseConfigStatusIndicatorWidget<?>> getStatusIndicatorWidgets()
+    public ArrayList<BaseConfigStatusIndicatorWidget<?>> getStatusIndicatorWidgets()
     {
+        // return a separate, modifiable list
         return new ArrayList<>(this.widgets);
     }
 
     public void setStatusIndicatorWidgets(List<BaseConfigStatusIndicatorWidget<?>> widgets)
     {
         this.widgets.clear();
-        this.widgets.addAll(widgets);
         this.configs.clear();
+
+        this.widgets.addAll(widgets);
 
         for (BaseConfigStatusIndicatorWidget<?> widget : widgets)
         {
             this.configs.add(widget.getConfigOnTab());
         }
+
+        this.requestReLayout();
     }
 
     @Override
-    public void renderAt(int x, int y, float z)
+    public void setLineHeight(int lineHeight)
     {
-        
+        super.setLineHeight(lineHeight);
+
+        for (BaseConfigStatusIndicatorWidget<?> widget : this.widgets)
+        {
+            widget.setHeight(this.lineHeight);
+        }
+
+        this.requestReLayout();
+    }
+
+    protected void requestReLayout()
+    {
+        this.needsReLayout = true;
+    }
+
+    protected void reLayoutWidgets()
+    {
+        this.updateSize();
+        this.updateWidgetPositions();
+        this.notifyContainerOfChanges(true);
+
+        this.needsReLayout = false;
+    }
+
+    @Override
+    protected void onPositionChanged(int oldX, int oldY)
+    {
+        this.updateWidgetPositions();
+    }
+
+    @Override
+    public void updateSize()
+    {
+        int maxLabelWidth = 0;
+        int maxValueWidth = 0;
+        int height = this.renderName ? this.lineHeight : 0;
+
+        for (BaseConfigStatusIndicatorWidget<?> widget : this.widgets)
+        {
+            maxLabelWidth = Math.max(maxLabelWidth, widget.getLabelRenderWidth());
+            maxValueWidth = Math.max(maxValueWidth, widget.getValueRenderWidth());
+            height += widget.getHeight();
+        }
+
+        int width = maxLabelWidth + maxValueWidth + 10;
+
+        this.setWidth(width);
+        this.setHeight(height);
+    }
+
+    public void updateWidgetPositions()
+    {
+        int x = this.getX();
+        int y = this.getY() + (this.renderName ? this.lineHeight : 0);
+        int width = this.getWidth();
+
+        for (BaseConfigStatusIndicatorWidget<?> widget : this.widgets)
+        {
+            widget.setWidth(width);
+            widget.setPosition(x, y);
+            y += widget.getHeight();
+        }
+    }
+
+    @Override
+    public void updateState(Minecraft mc)
+    {
+        for (BaseConfigStatusIndicatorWidget<?> widget : this.widgets)
+        {
+            widget.updateState();
+        }
+
+        if (this.needsReLayout)
+        {
+            this.reLayoutWidgets();
+        }
+    }
+
+    @Override
+    protected void renderContents(int x, int y, float z)
+    {
+        for (BaseConfigStatusIndicatorWidget<?> widget : this.widgets)
+        {
+            widget.render();
+        }
     }
 
     @Override
@@ -81,6 +175,8 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
     {
         JsonObject obj = super.toJson();
         JsonArray arr = new JsonArray();
+
+        obj.addProperty("line_height", this.lineHeight);
 
         for (BaseConfigStatusIndicatorWidget<?> widget : this.widgets)
         {
@@ -96,6 +192,8 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
     public void fromJson(JsonObject obj)
     {
         super.fromJson(obj);
+
+        this.lineHeight = JsonUtils.getIntegerOrDefault(obj, "line_height", this.lineHeight);
 
         this.widgets.clear();
 
@@ -119,9 +217,13 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
 
                 if (widget != null)
                 {
+                    widget.setHeight(this.lineHeight);
                     this.widgets.add(widget);
                 }
             }
         }
+
+        this.updateSize();
+        this.requestReLayout();
     }
 }

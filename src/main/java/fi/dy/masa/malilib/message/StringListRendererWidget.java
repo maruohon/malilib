@@ -91,13 +91,15 @@ public class StringListRendererWidget extends InfoRendererWidget
      */
     public void markDirty()
     {
+        //System.out.print("StringListRendererWidget#markDirty()\n");
         this.dirty = true;
     }
 
     protected void updateLines()
     {
-        boolean wasEnabled = this.isEnabled();
-        this.setEnabled(this.stringListFactory.hasNoProviders() == false);
+        //System.out.print("StringListRendererWidget#updateLines()\n");
+        //boolean wasEnabled = this.isEnabled();
+        //this.setEnabled(this.stringListFactory.hasNoProviders() == false);
         boolean isEnabled = this.isEnabled();
 
         if (isEnabled)
@@ -106,23 +108,28 @@ public class StringListRendererWidget extends InfoRendererWidget
             this.stringListRenderer.setStyledTextLines(this.stringListFactory.getStyledLines());
 
             this.updateSize();
+            this.notifyContainerOfChanges(false);
         }
 
+        /*
         if (isEnabled || wasEnabled)
         {
-            this.notifyContainerOfChanges();
+            this.notifyContainerOfChanges(false);
         }
+        */
     }
 
     @Override
     protected void onPositionChanged(int oldX, int oldY)
     {
+        //System.out.print("StringListRendererWidget#onPositionChanged()\n");
         super.onPositionChanged(oldX, oldY);
         this.updateStringListRendererPosition();
     }
 
     protected void updateStringListRendererPosition()
     {
+        //System.out.print("StringListRendererWidget#updateStringListRendererPosition()\n");
         HorizontalAlignment ha = this.location.horizontalLocation;
         VerticalAlignment va = this.location.verticalLocation;
 
@@ -176,7 +183,7 @@ public class StringListRendererWidget extends InfoRendererWidget
     }
 
     @Override
-    public void renderAt(int x, int y, float z)
+    protected void renderContents(int x, int y, float z)
     {
         if (this.scale != 1.0)
         {

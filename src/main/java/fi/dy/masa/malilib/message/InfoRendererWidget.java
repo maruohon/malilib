@@ -9,24 +9,32 @@ import fi.dy.masa.malilib.gui.position.ScreenLocation;
 import fi.dy.masa.malilib.gui.widget.BaseWidget;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.overlay.InfoWidgetManager;
+import fi.dy.masa.malilib.render.ShapeRenderUtils;
+import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.JsonUtils;
 
 public abstract class InfoRendererWidget extends BaseWidget
 {
     protected ScreenLocation location = ScreenLocation.TOP_LEFT;
     @Nullable protected EventListener geometryChangeListener;
-    protected String name;
+    @Nullable protected EventListener enabledChangeListener;
+    protected String name = "?";
+    @Nullable protected StyledTextLine styledName;
     protected boolean enabled = true;
+    protected boolean isOverlay;
+    protected boolean renderBackground;
+    protected boolean renderName;
     protected boolean shouldSerialize;
     protected long previousGeometryUpdateTime = -1;
     protected long geometryShrinkDelay = (long) (5 * 1E9); // 5 seconds
-    protected int sortIndex = 100;
+    protected int backgroundColor;
     protected int containerWidth;
     protected int containerHeight;
     protected int geometryShrinkThresholdX = 40;
     protected int geometryShrinkThresholdY = 10;
     protected int previousUpdatedWidth;
     protected int previousUpdatedHeight;
+    protected int sortIndex = 100;
 
     public InfoRendererWidget()
     {
@@ -38,6 +46,22 @@ public abstract class InfoRendererWidget extends BaseWidget
         return this.enabled;
     }
 
+    /**
+     * A widget that says it's an overlay will not get moved on the y direction
+     * by other widgets, but instead it will sit on top of the other widgets
+     * at the base location of the InfoArea.
+     */
+    public boolean isOverlay()
+    {
+        return this.isOverlay;
+    }
+
+    /**
+     * Returns whether or not this widget should get saved and loaded
+     * automatically. This should generally only return true for
+     * widgets that are created by the user via some configuration menu,
+     * and are thus handled via the InfoWidgetManager.
+     */
     public boolean getShouldSerialize()
     {
         return this.shouldSerialize;
@@ -46,6 +70,16 @@ public abstract class InfoRendererWidget extends BaseWidget
     public int getSortIndex()
     {
         return this.sortIndex;
+    }
+
+    public boolean isBackgroundEnabled()
+    {
+        return this.renderBackground;
+    }
+
+    public boolean getRenderName()
+    {
+        return this.renderName;
     }
 
     public String getName()
@@ -58,28 +92,66 @@ public abstract class InfoRendererWidget extends BaseWidget
         return this.location;
     }
 
+    public int getBackgroundColor()
+    {
+        return this.backgroundColor;
+    }
+
+    public void toggleEnabled()
+    {
+        this.setEnabled(! this.isEnabled());
+    }
+
     public void setEnabled(boolean enabled)
     {
-        this.enabled = enabled;
+        if (enabled != this.enabled && this.enabledChangeListener != null)
+        {
+            this.enabled = enabled;
+            this.enabledChangeListener.onEvent();
+        }
+    }
+
+    public void toggleBackgroundEnabled()
+    {
+        this.renderBackground = ! this.renderBackground;
+    }
+
+    public void toggleRenderName()
+    {
+        this.renderName = ! this.renderName;
+        this.updateSize();
+        this.notifyContainerOfChanges(true);
     }
 
     /**
      * Sets the sort index of this widget. Lower values come first (higher up).
-     * @param index
      */
     public void setSortIndex(int index)
     {
         this.sortIndex = index;
     }
 
+    public void setBackgroundColor(int color)
+    {
+        this.backgroundColor = color;
+    }
+
     /**
      * Sets a listener that should be notified if the dimensions of this widget get changed,
      * such as the widget height or width changing due to changes in the displayed contents.
-     * @param listener
      */
     public void setGeometryChangeListener(@Nullable EventListener listener)
     {
         this.geometryChangeListener = listener;
+    }
+
+    /**
+     * Sets a listener that should be notified if the dimensions of this widget get changed,
+     * such as the widget height or width changing due to changes in the displayed contents.
+     */
+    public void setEnabledChangeListener(@Nullable EventListener listener)
+    {
+        this.enabledChangeListener = listener;
     }
 
     public void setContainerDimensions(int width, int height)
@@ -94,22 +166,23 @@ public abstract class InfoRendererWidget extends BaseWidget
 
         if (StringUtils.isBlank(this.name))
         {
-            this.name = location.getDisplayName();
+            this.setName(location.getDisplayName());
         }
     }
 
     public void setName(String name)
     {
         this.name = name;
+        this.styledName = StyledTextLine.of(this.name);
     }
 
     /**
      * Requests the container to re-layout all the info widgets due to
      * this widget's dimensions changing.
      */
-    protected void notifyContainerOfChanges()
+    protected void notifyContainerOfChanges(boolean force)
     {
-        if (this.geometryChangeListener != null && this.needsGeometryUpdate())
+        if (this.geometryChangeListener != null && (force || this.needsGeometryUpdate()))
         {
             this.geometryChangeListener.onEvent();
             this.previousUpdatedWidth = this.getWidth();
@@ -155,7 +228,7 @@ public abstract class InfoRendererWidget extends BaseWidget
 
             if (MaLiLibConfigs.Debug.INFO_OVERLAY_DEBUG.getBooleanValue())
             {
-                this.renderDebug(0, 0, false, true, true);
+                this.renderDebug(0, 0, false, true, MaLiLibConfigs.Debug.GUI_DEBUG_INFO_ALWAYS.getBooleanValue());
             }
         }
     }
@@ -167,6 +240,9 @@ public abstract class InfoRendererWidget extends BaseWidget
         obj.addProperty("type", this.getClass().getName());
         obj.addProperty("name", this.getName());
         obj.addProperty("enabled", this.isEnabled());
+        obj.addProperty("render_name", this.renderName);
+        obj.addProperty("bg_enabled", this.renderBackground);
+        obj.addProperty("bg_color", this.backgroundColor);
         obj.addProperty("screen_location", this.getScreenLocation().getName());
         obj.addProperty("sort_index", this.getSortIndex());
 
@@ -175,29 +251,47 @@ public abstract class InfoRendererWidget extends BaseWidget
 
     public void fromJson(JsonObject obj)
     {
-        if (JsonUtils.hasString(obj, "name"))
-        {
-            this.setName(obj.get("name").getAsString());
-        }
-
-        if (JsonUtils.hasBoolean(obj, "enabled"))
-        {
-            this.setEnabled(obj.get("enabled").getAsBoolean());
-        }
+        this.enabled = JsonUtils.getBooleanOrDefault(obj, "enabled", false);
+        this.renderBackground = JsonUtils.getBooleanOrDefault(obj, "bg_enabled", false);
+        this.backgroundColor = JsonUtils.getIntegerOrDefault(obj, "bg_color", 0x30A0A0A0);
+        this.renderName = JsonUtils.getBooleanOrDefault(obj, "render_name", false);
+        this.setName(JsonUtils.getStringOrDefault(obj, "name", this.name));
+        this.setSortIndex(JsonUtils.getIntegerOrDefault(obj, "sort_index", 100));
 
         if (JsonUtils.hasString(obj, "screen_location"))
         {
             ScreenLocation location = ScreenLocation.findValueByName(obj.get("screen_location").getAsString(), ScreenLocation.VALUES);
             this.setLocation(location);
         }
+    }
 
-        if (JsonUtils.hasInteger(obj, "sort_index"))
+    protected void renderBackground(int x, int y, float z)
+    {
+        if (this.renderBackground)
         {
-            this.setSortIndex(obj.get("sort_index").getAsInt());
+            int width = this.getWidth();
+            int height = this.getHeight();
+
+            ShapeRenderUtils.renderRectangle(x, y, z, width, height, this.backgroundColor);
         }
     }
 
-    public abstract void renderAt(int x, int y, float z);
+    public void renderAt(int x, int y, float z)
+    {
+        this.renderBackground(x, y, z);
+
+        if (this.renderName && this.styledName != null)
+        {
+            this.renderTextLine(x, y, z, 0xFFFFFFFF, true, this.styledName);
+            y += this.lineHeight;
+        }
+
+        this.renderContents(x, y, z);
+    }
+
+    protected void renderContents(int x, int y, float z)
+    {
+    }
 
     @Nullable
     public static InfoRendererWidget createFromJson(JsonObject obj)

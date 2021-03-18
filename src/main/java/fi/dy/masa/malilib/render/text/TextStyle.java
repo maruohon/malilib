@@ -218,6 +218,12 @@ public class TextStyle
             return this;
         }
 
+        public Builder withColor(int color)
+        {
+            this.color = Color4f.fromColor(color);
+            return this;
+        }
+
         public Builder withShadowColor(@Nullable Color4f shadowColor)
         {
             this.shadowColor = shadowColor;

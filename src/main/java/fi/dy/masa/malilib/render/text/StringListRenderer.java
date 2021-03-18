@@ -27,7 +27,6 @@ public class StringListRenderer extends BaseWidget
     protected VerticalAlignment verticalAlignment = VerticalAlignment.TOP;
     protected LineClamper lineClamper;
     protected boolean hasClampedContent;
-    protected int lineHeight;
     protected int totalTextWidth;
     protected int totalTextHeight;
     protected int clampedTextWidth;
@@ -37,7 +36,6 @@ public class StringListRenderer extends BaseWidget
     {
         super(0, 0, 0, 0);
 
-        this.lineHeight = TextRenderer.INSTANCE.getFontHeight() + 1;
         this.textSettingsNormal.setTextColor(0xFFC0C0C0).setUseTextShadow(true);
         this.textSettingsHover.setTextColor(0xFFE0E0E0).setUseTextShadow(true);
         this.lineClamper = this::clampLineToWidth;
@@ -83,12 +81,6 @@ public class StringListRenderer extends BaseWidget
     public void setHoveredTextSettings(TextRenderSettings settings)
     {
         this.textSettingsHover.setFrom(settings);
-    }
-
-    public StringListRenderer setLineHeight(int lineHeight)
-    {
-        this.lineHeight = lineHeight;
-        return this;
     }
 
     public StringListRenderer setNormalTextColor(int color)

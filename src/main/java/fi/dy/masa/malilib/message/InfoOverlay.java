@@ -20,7 +20,7 @@ public class InfoOverlay implements PostGameOverlayRenderer, ClientTickHandler
 
     public InfoArea getOrCreateInfoArea(ScreenLocation location)
     {
-        return this.infoAreas.computeIfAbsent(location, (loc) -> new InfoArea(loc, this::notifyChange));
+        return this.infoAreas.computeIfAbsent(location, (loc) -> new InfoArea(loc, this::notifyWidgetChange));
     }
 
     @Override
@@ -39,9 +39,10 @@ public class InfoOverlay implements PostGameOverlayRenderer, ClientTickHandler
      * Notifies the InfoOverlay of a change in the set of enabled InfoRendererWidgets,
      * causing the enabled widgets to be fetched again.
      */
-    public void notifyChange()
+    public void notifyWidgetChange()
     {
         this.needsReFetch = true;
+        //System.out.printf("InfoOverlay#notifyWidgetChange() - size: %d\n", this.enabledInfoWidgets.size());
     }
 
     protected void fetchEnabledWidgets()
@@ -52,6 +53,7 @@ public class InfoOverlay implements PostGameOverlayRenderer, ClientTickHandler
         {
             this.enabledInfoWidgets.addAll(infoArea.getEnabledWidgets());
         }
+        //System.out.printf("InfoOverlay#fetchEnabledWidgets() - size: %d\n", this.enabledInfoWidgets.size());
     }
 
     /**
@@ -103,21 +105,18 @@ public class InfoOverlay implements PostGameOverlayRenderer, ClientTickHandler
     /**
      * Convenience method to get or create a text hud at the given screen location,
      * from the default InfoOverlay instance.
-     * @param location
-     * @return
      */
     public static StringListRendererWidget getTextHud(ScreenLocation location)
     {
         InfoArea area = INSTANCE.getOrCreateInfoArea(location);
-        String id = "text_hud";
-        InfoRendererWidget widget = area.getOrCreateWidget(id, StringListRendererWidget::new);
+        StringListRendererWidget widget = area.findWidget(StringListRendererWidget.class, (w) -> true);
 
-        if ((widget instanceof StringListRendererWidget) == false)
+        if (widget == null)
         {
             widget = new StringListRendererWidget();
-            area.putWidget(id, widget);
+            area.addWidget(widget);
         }
 
-        return (StringListRendererWidget) widget;
+        return widget;
     }
 }

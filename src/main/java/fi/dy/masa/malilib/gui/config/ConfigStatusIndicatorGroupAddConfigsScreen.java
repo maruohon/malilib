@@ -98,6 +98,7 @@ public class ConfigStatusIndicatorGroupAddConfigsScreen extends BaseListScreen<D
         }
 
         // TODO remove after the dropdown widget gets refresh support
+        this.removeWidget(this.categoriesDropDownWidget);
         this.categoriesDropDownWidget = new DropDownListWidget<>(10, 50, -1, 14, 160, 10, this.currentCategories, ConfigTab::getDisplayName, null);
         this.categoriesDropDownWidget.setSelectionListener(this::onCategorySelected);
 

@@ -6,29 +6,29 @@ import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.gui.config.ConfigStatusWidgetFactory;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetRegistry;
-import fi.dy.masa.malilib.gui.widget.ContainerWidget;
+import fi.dy.masa.malilib.message.InfoRendererWidget;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.data.ConfigOnTab;
 
-public abstract class BaseConfigStatusIndicatorWidget<C extends ConfigInfo> extends ContainerWidget
+public abstract class BaseConfigStatusIndicatorWidget<C extends ConfigInfo> extends InfoRendererWidget
 {
     protected final C config;
     protected final ConfigOnTab configOnTab;
-    protected String name;
     protected StyledTextLine styledName;
+    @Nullable protected StyledTextLine valueDisplayText;
     protected boolean nameShadow = true;
     protected boolean valueShadow = true;
     protected int nameColor = 0xFFFFFFFF;
     protected int valueColor = 0xFF00FFFF;
+    protected int valueRenderWidth;
 
     public BaseConfigStatusIndicatorWidget(C config, ConfigOnTab configOnTab)
     {
-        super(0, 0, -1, -1);
-
         this.config = config;
         this.configOnTab = configOnTab;
 
+        this.setHeight(this.lineHeight);
         this.setName(config.getDisplayName());
     }
 
@@ -42,14 +42,10 @@ public abstract class BaseConfigStatusIndicatorWidget<C extends ConfigInfo> exte
         return this.styledName;
     }
 
-    public String getName()
-    {
-        return this.name;
-    }
-
+    @Override
     public void setName(String name)
     {
-        this.name = name;
+        super.setName(name);
         this.styledName = StyledTextLine.of(name);
     }
 
@@ -93,13 +89,32 @@ public abstract class BaseConfigStatusIndicatorWidget<C extends ConfigInfo> exte
         this.valueShadow = valueShadow;
     }
 
+    public int getLabelRenderWidth()
+    {
+        return this.styledName.renderWidth;
+    }
+
+    protected int getValueRenderWidth()
+    {
+        return this.valueRenderWidth;
+    }
+
+    public abstract void updateState();
+
     @Override
-    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
+    protected void renderContents(int x, int y, float z)
     {
         int ty = y + this.getHeight() / 2 - this.fontHeight / 2;
         this.renderTextLine(x + 2, ty, z, this.nameColor, this.nameShadow, this.styledName);
+
+        if (this.valueDisplayText != null)
+        {
+            this.renderTextLine(this.getRight() - this.valueDisplayText.renderWidth, ty, z,
+                                this.valueColor, this.valueShadow, this.valueDisplayText);
+        }
     }
 
+    @Override
     public JsonObject toJson()
     {
         JsonObject obj = new JsonObject();
@@ -115,6 +130,7 @@ public abstract class BaseConfigStatusIndicatorWidget<C extends ConfigInfo> exte
         return obj;
     }
 
+    @Override
     public void fromJson(JsonObject obj)
     {
         if (JsonUtils.hasString(obj, "name"))
