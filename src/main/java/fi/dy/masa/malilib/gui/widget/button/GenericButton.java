@@ -299,7 +299,6 @@ public class GenericButton extends BaseButton
         GenericButton button = new GenericButton(x, y, iconSupplier);
 
         button.setRenderBackground(false);
-        button.setPlayClickSound(false);
         button.setRenderOutline(true);
         button.setOutlineColorNormal(0x00000000);
         button.setWidth(width);

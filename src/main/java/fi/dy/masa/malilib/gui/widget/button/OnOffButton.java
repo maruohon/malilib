@@ -52,7 +52,8 @@ public class OnOffButton extends GenericButton
     @Override
     protected String generateDisplayString()
     {
-        boolean value = this.statusSupplier.getAsBoolean();
+        // FIXME The null check here is required currently due to constructor hierarchy problems...
+        boolean value = this.statusSupplier != null && this.statusSupplier.getAsBoolean();
         boolean isSlider = this.style == OnOffStyle.SLIDER_ON_OFF;
         String valueStr = this.getDisplayStringForState(value);
 

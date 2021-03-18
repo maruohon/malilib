@@ -124,7 +124,7 @@ public abstract class BaseButton extends BackgroundWidget
     {
         super.onPositionOrSizeChanged(oldX, oldY);
 
-        // This check is required to prevent infinite recursion
+        // This check is required to prevent infinite recursion FIXME wtf
         if (this.automaticWidth == false)
         {
             this.updateDisplayString();
@@ -136,7 +136,7 @@ public abstract class BaseButton extends BackgroundWidget
     {
         super.onSizeChanged();
 
-        // This check is required to prevent infinite recursion
+        // This check is required to prevent infinite recursion FIXME wtf
         if (this.automaticWidth == false)
         {
             this.updateDisplayString();
@@ -165,6 +165,7 @@ public abstract class BaseButton extends BackgroundWidget
             if (this.actionListener != null)
             {
                 this.actionListener.actionPerformedWithButton(this, mouseButton);
+                this.updateButtonState();
             }
         }
 
