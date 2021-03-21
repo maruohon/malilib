@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.World;
@@ -16,28 +14,6 @@ import fi.dy.masa.malilib.util.data.LeftRight;
 
 public class StringUtils
 {
-    /**
-     * Parses the given string as a hexadecimal value, if it begins with '#' or '0x'.
-     * Otherwise tries to parse it as a regular base 10 integer.
-     * @param colorStr
-     * @param defaultColor
-     * @return
-     */
-    public static int getColor(String colorStr, int defaultColor)
-    {
-        Pattern pattern = Pattern.compile("(?:0x|#)([a-fA-F0-9]{1,8})");
-        Matcher matcher = pattern.matcher(colorStr);
-
-        if (matcher.matches())
-        {
-            try { return (int) Long.parseLong(matcher.group(1), 16); }
-            catch (NumberFormatException e) { return defaultColor; }
-        }
-
-        try { return Integer.parseInt(colorStr, 10); }
-        catch (NumberFormatException e) { return defaultColor; }
-    }
-
     /**
      * Removes the string <b>extension</b> from the end of <b>str</b>,
      * if <b>str</b> ends in <b>extension</b>

@@ -1,6 +1,5 @@
 package fi.dy.masa.malilib.config.option;
 
-import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.Color4f;
 
 public class ColorConfig extends IntegerConfig
@@ -14,7 +13,7 @@ public class ColorConfig extends IntegerConfig
 
     public ColorConfig(String name, String defaultValue, String comment)
     {
-        super(name, StringUtils.getColor(defaultValue, 0), comment);
+        super(name, Color4f.getColorFromString(defaultValue, 0), comment);
 
         this.color = Color4f.fromColor(this.getIntegerValue());
     }
@@ -39,7 +38,7 @@ public class ColorConfig extends IntegerConfig
     @Override
     public void setValueFromString(String value)
     {
-        this.setValue(StringUtils.getColor(value, 0));
+        this.setValue(Color4f.getColorFromString(value, 0));
     }
 
     @Override
@@ -59,7 +58,7 @@ public class ColorConfig extends IntegerConfig
     {
         try
         {
-            return StringUtils.getColor(newValue, 0) != this.getDefaultIntegerValue();
+            return Color4f.getColorFromString(newValue, 0) != this.getDefaultIntegerValue();
         }
         catch (Exception ignore)
         {
@@ -70,7 +69,7 @@ public class ColorConfig extends IntegerConfig
 
     public void loadColorValueFromString(String value)
     {
-        this.integerValue = this.getClampedValue(StringUtils.getColor(value, 0));
+        this.integerValue = this.getClampedValue(Color4f.getColorFromString(value, 0));
         this.value = this.integerValue;
         this.color = Color4f.fromColor(this.integerValue);
         this.cacheSavedValue();

@@ -120,7 +120,7 @@ public class ColorEditorHSVScreen extends BaseScreen
         int w = this.getStringWidth(str);
         this.addLabel(this.xH - w - 4, y + 6, 0xFFFFFFFF, str);
         this.textFieldFullColor = new BaseTextFieldWidget(this.xH - 1, y + 2, 68, 14);
-        this.textFieldFullColor.setTextValidator(BaseTextFieldWidget.VALIDATOR_HEX_COLOR_8);
+        this.textFieldFullColor.setTextValidator(BaseTextFieldWidget.VALIDATOR_HEX_COLOR_8_6_4_3);
         this.textFieldFullColor.setListener(new TextChangeListener(null, this));
         this.addWidget(this.textFieldFullColor);
 
@@ -795,7 +795,7 @@ public class ColorEditorHSVScreen extends BaseScreen
             if (this.type == null)
             {
                 this.gui.currentTextInputElement = Element.HEX;
-                this.gui.setColor(StringUtils.getColor(newText, colorOld));
+                this.gui.setColor(Color4f.getColorFromString(newText, colorOld));
             }
             else
             {

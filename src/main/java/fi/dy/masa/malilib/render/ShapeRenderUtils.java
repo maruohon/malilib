@@ -89,8 +89,6 @@ public class ShapeRenderUtils
 
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();
-
-        RenderUtils.color(1f, 1f, 1f, 1f);
     }
 
     /**

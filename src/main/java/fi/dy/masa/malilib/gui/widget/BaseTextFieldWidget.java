@@ -25,9 +25,11 @@ import fi.dy.masa.malilib.util.data.LeftRight;
 
 public class BaseTextFieldWidget extends BackgroundWidget
 {
+    public static final Pattern PATTERN_HEX_COLOR_8_6_4_3 = Pattern.compile("^(#|0x)([0-9a-fA-F]{8}|[0-9a-fA-F]{6}|[0-9a-fA-F]{4}|[0-9a-fA-F]{3})$");
     public static final Pattern PATTERN_HEX_COLOR_6_8 = Pattern.compile("^(#|0x)([0-9a-fA-F]{6}|[0-9a-fA-F]{8})$");
     public static final Pattern PATTERN_HEX_COLOR_8 = Pattern.compile("^(#|0x)[0-9a-fA-F]{8}$");
 
+    public static final TextFieldValidator VALIDATOR_HEX_COLOR_8_6_4_3 = (str) -> PATTERN_HEX_COLOR_8_6_4_3.matcher(str).matches();
     public static final TextFieldValidator VALIDATOR_HEX_COLOR_6_8     = (str) -> PATTERN_HEX_COLOR_6_8.matcher(str).matches();
     public static final TextFieldValidator VALIDATOR_HEX_COLOR_8       = (str) -> PATTERN_HEX_COLOR_8.matcher(str).matches();
     public static final TextFieldValidator VALIDATOR_DOUBLE            = new DoubleTextFieldWidget.DoubleValidator(Double.MIN_VALUE, Double.MAX_VALUE);

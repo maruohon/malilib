@@ -1,7 +1,15 @@
 package fi.dy.masa.malilib.util.data;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class Color4f
 {
+    public static final Pattern HEX_8 = Pattern.compile("(?:0x|#)([a-fA-F0-9]{8})");
+    public static final Pattern HEX_6 = Pattern.compile("(?:0x|#)([a-fA-F0-9]{6})");
+    public static final Pattern HEX_4 = Pattern.compile("(?:0x|#)([a-fA-F0-9]{4})");
+    public static final Pattern HEX_3 = Pattern.compile("(?:0x|#)([a-fA-F0-9]{3})");
+
     public static final Color4f WHITE = new Color4f(1F, 1F, 1F, 1F);
     public final float r;
     public final float g;
@@ -100,6 +108,79 @@ public class Color4f
     public static String getHexColorString(int color)
     {
         return String.format("#%08X", color);
+    }
+
+    /**
+     * Tries to parse the given string as a hexadecimal value,
+     * if it begins with '#' or '0x'.<br>
+     * Accepts 8, 6, 4 or 3 digits long values.
+     * The 4 and 3 digits long values will repeat each digit for each color channel,
+     * so for example F159 will become FF115599.<br>
+     * The 6 and 3 long versions will use 0xFF for the alpha channel.<br>
+     * If the hex parsing fails, then the input it attempted to be parsed as a regular base 10 integer.
+     * @param colorStr
+     * @param defaultColor the fallback color if the parsing fails
+     * @return the parsed color as an AARRGGBB int, or the fallback color if the parsing fails
+     */
+    public static int getColorFromString(String colorStr, int defaultColor)
+    {
+        Matcher matcher = HEX_8.matcher(colorStr);
+
+        if (matcher.matches())
+        {
+            try
+            {
+                return (int) Long.parseLong(matcher.group(1), 16);
+            }
+            catch (NumberFormatException ignore) {}
+        }
+
+        matcher = HEX_6.matcher(colorStr);
+
+        if (matcher.matches())
+        {
+            try
+            {
+                return 0xFF000000 | (int) Long.parseLong(matcher.group(1), 16);
+            }
+            catch (NumberFormatException ignore) { return defaultColor; }
+        }
+
+        matcher = HEX_4.matcher(colorStr);
+
+        if (matcher.matches())
+        {
+            try
+            {
+                String str = matcher.group(1);
+                int orig = Integer.parseInt(str, 16);
+                int a = ((orig & 0xF000) >>> 12) * 17;
+                int r = ((orig & 0x0F00) >>>  8) * 17;
+                int g = ((orig & 0x00F0) >>>  4) * 17;
+                int b = ((orig & 0x000F)       ) * 17;
+                return a << 24 | r << 16 | g << 8 | b;
+            }
+            catch (NumberFormatException ignore) {}
+        }
+
+        matcher = HEX_3.matcher(colorStr);
+
+        if (matcher.matches())
+        {
+            try
+            {
+                String str = matcher.group(1);
+                int orig = Integer.parseInt(str, 16);
+                int r = ((orig & 0x0F00) >>>  8) * 17;
+                int g = ((orig & 0x00F0) >>>  4) * 17;
+                int b = ((orig & 0x000F)       ) * 17;
+                return 0xFF000000 | r << 16 | g << 8 | b;
+            }
+            catch (NumberFormatException ignore) {}
+        }
+
+        try { return Integer.parseInt(colorStr, 10); }
+        catch (NumberFormatException e) { return defaultColor; }
     }
 
     public static float[] convertRgb2Hsv(int color)
