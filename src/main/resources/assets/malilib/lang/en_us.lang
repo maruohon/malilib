@@ -124,6 +124,7 @@ malilib.gui.button.hover.directory_widget.create_directory=Create a new director
 malilib.gui.button.hover.directory_widget.hold_shift_to_open_directory=You can shift click the directory path elements to open the directory in the system file manager
 malilib.gui.button.hover.directory_widget.root=To root/base directory
 malilib.gui.button.hover.directory_widget.up=Up to parent directory
+malilib.gui.button.hover.edge_int_values=Top: §b%s§r\nLeft: §b%s§r\nRight: §b%s§r\nBottom: §b%s
 malilib.gui.button.hover.entries_more=... and §b%s§r more
 malilib.gui.button.hover.entries_total=Total entries: §b%s§r
 malilib.gui.button.hover.hold_shift_for_info=§oHold Shift for more information§r
@@ -229,6 +230,8 @@ malilib.gui.title.config_status_indicator_configuration=MaLiLib - Config Status 
 malilib.gui.title.confirm_config_reset=Confirm config reset
 malilib.gui.title.create_directory=Create a new directory
 malilib.gui.title.directory_browser=Directory Browser
+malilib.gui.title.edit_margin=Edit Margin
+malilib.gui.title.edit_padding=Edit Padding
 malilib.gui.title.equipment_slot_list_edit=Edit equipment slot list '%s'
 malilib.gui.title.file_browser=File Browser
 malilib.gui.title.identifier_list_edit=Edit identifier list '%s'
@@ -256,6 +259,9 @@ malilib.label.alignment.center=Center
 malilib.label.alignment.center_left=Left Center
 malilib.label.alignment.center_right=Right Center
 
+malilib.label.config_status_indicator.background_odd.colon=BG odd:
+malilib.label.config_status_indicator.background_odd.hover=Use a different background color for odd rows
+
 malilib.label.config_tab.config_status_indicator.abbr=C.S.I.
 malilib.label.config_tab.debug=Debug
 malilib.label.config_tab.generic=Generic
@@ -282,6 +288,9 @@ malilib.label.key_context.ingame=In-Game
 malilib.label.list_type.blacklist=Black List
 malilib.label.list_type.none=None
 malilib.label.list_type.whitelist=White List
+
+malilib.label.margin=Margin
+malilib.label.padding=Padding
 
 malilib.label.vertical_alignment.bottom=Bottom
 malilib.label.vertical_alignment.center=Center

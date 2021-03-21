@@ -16,6 +16,7 @@ import net.minecraft.client.renderer.color.BlockColors;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -81,6 +82,46 @@ public class RenderUtils
     public static void enableGuiItemLighting()
     {
         RenderHelper.enableGUIStandardItemLighting();
+    }
+
+    /**
+     * Gets the BufferBuilder from the vanilla Tessellator and initializes
+     * it in the given mode/format.
+     * @param glMode
+     * @param format
+     * @return
+     */
+    public static BufferBuilder startBuffer(int glMode, VertexFormat format, boolean useTexture)
+    {
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder buffer = tessellator.getBuffer();
+
+        if (useTexture)
+        {
+            GlStateManager.enableTexture2D();
+        }
+        else
+        {
+            GlStateManager.disableTexture2D();
+        }
+
+        RenderUtils.setupBlend();
+
+        buffer.begin(glMode, format);
+
+        return buffer;
+    }
+
+    /**
+     * Draws the buffer in the vanilla Tessellator,
+     * and then enables Texture2D mode and disables blending
+     */
+    public static void drawBuffer()
+    {
+        Tessellator.getInstance().draw();
+
+        GlStateManager.enableTexture2D();
+        GlStateManager.disableBlend();
     }
 
     public static void setupScaledScreenRendering(double scaleFactor)

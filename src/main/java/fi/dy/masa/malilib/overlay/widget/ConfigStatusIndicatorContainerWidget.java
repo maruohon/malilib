@@ -6,16 +6,21 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.lwjgl.opengl.GL11;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.config.util.ConfigUtils;
 import fi.dy.masa.malilib.gui.config.ConfigStatusWidgetFactory;
 import fi.dy.masa.malilib.gui.config.ConfigTabRegistry;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetRegistry;
 import fi.dy.masa.malilib.message.InfoRendererWidget;
+import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.data.ConfigOnTab;
 
@@ -28,6 +33,8 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
     public ConfigStatusIndicatorContainerWidget()
     {
         this.shouldSerialize = true;
+        this.margin.setChangeListener(this::requestReLayout);
+        this.padding.setChangeListener(this::requestReLayout);
     }
 
     public Collection<ConfigOnTab> getConfigs()
@@ -127,7 +134,8 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
             height += widget.getHeight();
         }
 
-        int width = maxLabelWidth + maxValueWidth + 10;
+        int width = maxLabelWidth + maxValueWidth + 10 + this.padding.getHorizontalTotal();
+        height += this.padding.getVerticalTotal();
 
         this.setWidth(width);
         this.setHeight(height);
@@ -135,9 +143,9 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
 
     public void updateWidgetPositions()
     {
-        int x = this.getX();
-        int y = this.getY() + (this.renderName ? this.lineHeight : 0);
-        int width = this.getWidth();
+        int x = this.getX() + this.padding.getLeft();
+        int y = this.getY() + (this.renderName ? this.lineHeight : 0) + this.padding.getTop();
+        int width = this.getWidth() - this.padding.getHorizontalTotal();
 
         for (BaseConfigStatusIndicatorWidget<?> widget : this.widgets)
         {
@@ -159,6 +167,74 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
         {
             this.reLayoutWidgets();
         }
+    }
+
+    @Override
+    protected void renderBackground(int x, int y, float z)
+    {
+        if (this.renderBackground)
+        {
+            if (this.oddEvenBackground)
+            {
+                this.renderOddEvenLineBackgrounds(x, y, z);
+            }
+            else
+            {
+                int width = this.getWidth();
+                int height = this.getHeight();
+                ShapeRenderUtils.renderRectangle(x, y, z, width, height, this.backgroundColor);
+            }
+        }
+    }
+
+    protected void renderOddEvenLineBackgrounds(int x, int y, float z)
+    {
+        BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR, false);
+
+        int width = this.getWidth();
+        int size = this.widgets.size();
+        int i = 0;
+
+        if (this.renderName && this.styledName != null)
+        {
+            int height = this.lineHeight + this.padding.getTop();
+
+            if (size > 0)
+            {
+                BaseConfigStatusIndicatorWidget<?> widget = this.widgets.get(0);
+                height += widget.getHeight();
+            }
+            else
+            {
+                height += this.padding.getBottom();
+            }
+
+            ShapeRenderUtils.renderRectangle(x, y, z, width, height, this.backgroundColor, buffer);
+            y += height;
+            i = 1;
+        }
+
+        for (; i < size; ++i)
+        {
+            BaseConfigStatusIndicatorWidget<?> widget = this.widgets.get(i);
+            int height = widget.getHeight();
+
+            if (i == 0)
+            {
+                height += this.padding.getTop();
+            }
+
+            if (i == size - 1)
+            {
+                height += this.padding.getBottom();
+            }
+
+            int color = (i & 0x1) != 0 ? this.backgroundColorOdd : this.backgroundColor;
+            ShapeRenderUtils.renderRectangle(x, y, z, width, height, color, buffer);
+            y += height;
+        }
+
+        RenderUtils.drawBuffer();
     }
 
     @Override

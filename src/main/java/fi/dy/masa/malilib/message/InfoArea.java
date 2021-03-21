@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.function.IntSupplier;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
+import fi.dy.masa.malilib.gui.position.EdgeInt;
 import fi.dy.masa.malilib.gui.position.ScreenLocation;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.BaseWidget;
@@ -220,13 +221,19 @@ public class InfoArea
         //System.out.printf("InfoArea(%s)#updateSize() - all: %d, enabled: %d\n", this.location, this.allWidgets.size(), this.enabledInfoWidgets.size());
         int width = 0;
         int height = 0;
+        int prev = 0;
 
         for (InfoRendererWidget widget : this.enabledInfoWidgets)
         {
-            width = Math.max(width, widget.getWidth());
-            height += widget.getHeight();
+            EdgeInt margin = widget.getMargin();
+            int topGap = Math.max(prev, margin.getTop());
+            prev = margin.getBottom();
+
+            width = Math.max(width, widget.getWidth() + widget.getMargin().getHorizontalTotal());
+            height += widget.getHeight() + topGap;
         }
 
+        height += prev;
         this.width = width;
         this.height = height;
 
@@ -249,11 +256,17 @@ public class InfoArea
         this.y = this.location.getStartY(this.height, viewportHeight, this.offsetY);
 
         int y = this.y;
+        int prev = 0;
 
         for (InfoRendererWidget widget : this.enabledInfoWidgets)
         {
-            int x = this.location.getStartX(widget.getWidth(), viewportWidth, this.offsetX);
-            widget.setPosition(x, y);
+            EdgeInt margin = widget.getMargin();
+            int x = this.location.getStartX(widget.getWidth() + margin.getHorizontalTotal(), viewportWidth, this.offsetX);
+            int topGap = Math.max(prev, margin.getTop());
+            prev = margin.getBottom();
+            y += topGap;
+
+            widget.setPosition(x + margin.getLeft(), y);
             y += widget.getHeight();
         }
     }

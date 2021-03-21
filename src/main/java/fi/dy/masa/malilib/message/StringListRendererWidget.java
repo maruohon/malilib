@@ -76,14 +76,14 @@ public class StringListRendererWidget extends InfoRendererWidget
     public void updateWidth()
     {
         int width = (int) Math.ceil(this.stringListRenderer.getTotalRenderWidth() * this.scale);
-        this.setWidth(width + this.padding.getHorizontalTotalPadding());
+        this.setWidth(width + this.padding.getHorizontalTotal());
     }
 
     @Override
     public void updateHeight()
     {
         int height = (int) Math.ceil(this.stringListRenderer.getTotalRenderHeight() * this.scale);
-        this.setHeight(height + this.padding.getVerticalTotalPadding());
+        this.setHeight(height + this.padding.getVerticalTotal());
     }
 
     /**

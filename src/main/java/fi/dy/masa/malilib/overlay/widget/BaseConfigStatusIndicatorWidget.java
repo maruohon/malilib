@@ -27,6 +27,7 @@ public abstract class BaseConfigStatusIndicatorWidget<C extends ConfigInfo> exte
     {
         this.config = config;
         this.configOnTab = configOnTab;
+        this.oddEvenBackground = true;
 
         this.setHeight(this.lineHeight);
         this.setName(config.getDisplayName());
@@ -105,7 +106,7 @@ public abstract class BaseConfigStatusIndicatorWidget<C extends ConfigInfo> exte
     protected void renderContents(int x, int y, float z)
     {
         int ty = y + this.getHeight() / 2 - this.fontHeight / 2;
-        this.renderTextLine(x + 2, ty, z, this.nameColor, this.nameShadow, this.styledName);
+        this.renderTextLine(x, ty, z, this.nameColor, this.nameShadow, this.styledName);
 
         if (this.valueDisplayText != null)
         {
@@ -148,15 +149,8 @@ public abstract class BaseConfigStatusIndicatorWidget<C extends ConfigInfo> exte
             this.valueColor = obj.get("value_color").getAsInt();
         }
 
-        if (JsonUtils.hasBoolean(obj, "name_shadow"))
-        {
-            this.nameShadow = obj.get("name_shadow").getAsBoolean();
-        }
-
-        if (JsonUtils.hasBoolean(obj, "value_shadow"))
-        {
-            this.valueShadow = obj.get("value_shadow").getAsBoolean();
-        }
+        this.nameShadow = JsonUtils.getBooleanOrDefault(obj, "name_shadow", true);
+        this.valueShadow = JsonUtils.getBooleanOrDefault(obj, "value_shadow", true);
     }
 
     @Nullable

@@ -23,11 +23,13 @@ public abstract class InfoRendererWidget extends BaseWidget
     protected boolean enabled = true;
     protected boolean isOverlay;
     protected boolean renderBackground;
+    protected boolean oddEvenBackground;
     protected boolean renderName;
     protected boolean shouldSerialize;
     protected long previousGeometryUpdateTime = -1;
     protected long geometryShrinkDelay = (long) (5 * 1E9); // 5 seconds
-    protected int backgroundColor;
+    protected int backgroundColor = 0x30A0A0A0;
+    protected int backgroundColorOdd = 0x40A0A0A0;
     protected int containerWidth;
     protected int containerHeight;
     protected int geometryShrinkThresholdX = 40;
@@ -77,6 +79,11 @@ public abstract class InfoRendererWidget extends BaseWidget
         return this.renderBackground;
     }
 
+    public boolean isOddEvenBackgroundEnabled()
+    {
+        return this.oddEvenBackground;
+    }
+
     public boolean getRenderName()
     {
         return this.renderName;
@@ -95,6 +102,11 @@ public abstract class InfoRendererWidget extends BaseWidget
     public int getBackgroundColor()
     {
         return this.backgroundColor;
+    }
+
+    public int getOddBackgroundColor()
+    {
+        return this.backgroundColorOdd;
     }
 
     public void toggleEnabled()
@@ -116,6 +128,11 @@ public abstract class InfoRendererWidget extends BaseWidget
         this.renderBackground = ! this.renderBackground;
     }
 
+    public void toggleOddEvenBackgroundEnabled()
+    {
+        this.oddEvenBackground = ! this.oddEvenBackground;
+    }
+
     public void toggleRenderName()
     {
         this.renderName = ! this.renderName;
@@ -134,6 +151,11 @@ public abstract class InfoRendererWidget extends BaseWidget
     public void setBackgroundColor(int color)
     {
         this.backgroundColor = color;
+    }
+
+    public void setOddBackgroundColor(int color)
+    {
+        this.backgroundColorOdd = color;
     }
 
     /**
@@ -222,8 +244,8 @@ public abstract class InfoRendererWidget extends BaseWidget
     {
         if (this.isEnabled())
         {
-            int x = this.getContentStartX();
-            int y = this.getContentStartY();
+            int x = this.getX();
+            int y = this.getY();
             this.renderAt(x, y, this.getZLevel());
 
             if (MaLiLibConfigs.Debug.INFO_OVERLAY_DEBUG.getBooleanValue())
@@ -240,20 +262,26 @@ public abstract class InfoRendererWidget extends BaseWidget
         obj.addProperty("type", this.getClass().getName());
         obj.addProperty("name", this.getName());
         obj.addProperty("enabled", this.isEnabled());
+        obj.addProperty("screen_location", this.getScreenLocation().getName());
         obj.addProperty("render_name", this.renderName);
         obj.addProperty("bg_enabled", this.renderBackground);
+        obj.addProperty("bg_odd_even", this.oddEvenBackground);
         obj.addProperty("bg_color", this.backgroundColor);
-        obj.addProperty("screen_location", this.getScreenLocation().getName());
+        obj.addProperty("bg_color_odd", this.backgroundColorOdd);
         obj.addProperty("sort_index", this.getSortIndex());
+        obj.add("padding", this.padding.toJson());
+        obj.add("margin", this.margin.toJson());
 
         return obj;
     }
 
     public void fromJson(JsonObject obj)
     {
-        this.enabled = JsonUtils.getBooleanOrDefault(obj, "enabled", false);
+        this.enabled = JsonUtils.getBooleanOrDefault(obj, "enabled", true);
         this.renderBackground = JsonUtils.getBooleanOrDefault(obj, "bg_enabled", false);
+        this.oddEvenBackground = JsonUtils.getBooleanOrDefault(obj, "bg_odd_even", false);
         this.backgroundColor = JsonUtils.getIntegerOrDefault(obj, "bg_color", 0x30A0A0A0);
+        this.backgroundColorOdd = JsonUtils.getIntegerOrDefault(obj, "bg_color_odd", 0x40A0A0A0);
         this.renderName = JsonUtils.getBooleanOrDefault(obj, "render_name", false);
         this.setName(JsonUtils.getStringOrDefault(obj, "name", this.name));
         this.setSortIndex(JsonUtils.getIntegerOrDefault(obj, "sort_index", 100));
@@ -262,6 +290,16 @@ public abstract class InfoRendererWidget extends BaseWidget
         {
             ScreenLocation location = ScreenLocation.findValueByName(obj.get("screen_location").getAsString(), ScreenLocation.VALUES);
             this.setLocation(location);
+        }
+
+        if (JsonUtils.hasArray(obj, "padding"))
+        {
+            this.padding.fromJson(obj.get("padding").getAsJsonArray());
+        }
+
+        if (JsonUtils.hasArray(obj, "margin"))
+        {
+            this.margin.fromJson(obj.get("margin").getAsJsonArray());
         }
     }
 
@@ -282,7 +320,8 @@ public abstract class InfoRendererWidget extends BaseWidget
 
         if (this.renderName && this.styledName != null)
         {
-            this.renderTextLine(x, y, z, 0xFFFFFFFF, true, this.styledName);
+            y += this.padding.getTop();
+            this.renderTextLine(x + this.padding.getLeft(), y, z, 0xFFFFFFFF, true, this.styledName);
             y += this.lineHeight;
         }
 

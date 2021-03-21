@@ -28,6 +28,7 @@ public class BaseWidget
 
     protected final Minecraft mc;
     protected final TextRenderer textRenderer;
+    protected final EdgeInt margin = new EdgeInt();
     protected final EdgeInt padding = new EdgeInt();
     protected final int fontHeight;
     private int x;
@@ -189,14 +190,34 @@ public class BaseWidget
         }
     }
 
+    public EdgeInt getMargin()
+    {
+        return this.margin;
+    }
+
     public EdgeInt getPadding()
     {
         return this.padding;
     }
 
+    public void setMargin(EdgeInt margin)
+    {
+        this.margin.setFrom(margin);
+    }
+
+    public void setMargin(int top, int right, int bottom, int left)
+    {
+        this.margin.setAll(top, right, bottom, left);
+    }
+
     public void setPadding(EdgeInt padding)
     {
         this.padding.setFrom(padding);
+    }
+
+    public void setPadding(int top, int right, int bottom, int left)
+    {
+        this.padding.setAll(top, right, bottom, left);
     }
 
     protected void updateHorizontalPositionIfRightAligned()
