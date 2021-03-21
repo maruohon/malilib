@@ -38,9 +38,8 @@ public class IntegerEditWidget extends ContainerWidget implements RangedIntegerS
         this.sliderWidget = new SliderWidget(0, 0, -1, 16, new IntegerSliderCallback(this, this::updateValue));
         this.sliderToggleButton = GenericButton.createIconOnly(0, 0, () -> this.sliderActive ? DefaultIcons.BTN_TXTFIELD : DefaultIcons.BTN_SLIDER);
 
-        this.valueAdjustButton = GenericButton.createIconOnly(0, 0, DefaultIcons.BTN_PLUSMINUS_14);
+        this.valueAdjustButton = GenericButton.createIconOnly(0, 0, DefaultIcons.BTN_PLUSMINUS_16);
         this.valueAdjustButton.setCanScrollToClick(true);
-        this.valueAdjustButton.setOutlineColorNormal(0xFF000000);
         this.valueAdjustButton.setActionListener(this::onValueAdjustButtonClick);
         this.valueAdjustButton.addHoverStrings(StringUtils.translate("malilib.button.hover.plus_minus_tip"));
 

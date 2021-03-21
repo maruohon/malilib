@@ -138,7 +138,7 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
             this.addWidget(textField);
 
             int bx = textField.getX() + textField.getWidth() + 3;
-            GenericButton button2 = new GenericButton(bx, y + 1, this.getValueAdjustButtonIcon());
+            GenericButton button2 = GenericButton.createIconOnly(bx, y + 1, this::getValueAdjustButtonIcon);
 
             this.addButton(button2, (btn, mbtn) -> {
                 int change = mbtn == 1 ? -1 : 1;

@@ -7,7 +7,7 @@ import fi.dy.masa.malilib.render.ShapeRenderUtils;
 
 public class BaseIcon implements Icon
 {
-    public static final ResourceLocation MALILIB_GUI_TEXTURES = new ResourceLocation(MaLiLibReference.MOD_ID, "textures/gui/gui_widgets.png");
+    public static final ResourceLocation MALILIB_GUI_WIDGETS_TEXTURE = new ResourceLocation(MaLiLibReference.MOD_ID, "textures/gui/gui_widgets.png");
 
     protected final int u;
     protected final int v;
@@ -17,7 +17,7 @@ public class BaseIcon implements Icon
 
     BaseIcon(int u, int v, int w, int h)
     {
-        this(u, v, w, h, MALILIB_GUI_TEXTURES);
+        this(u, v, w, h, MALILIB_GUI_WIDGETS_TEXTURE);
     }
 
     public BaseIcon(int u, int v, int w, int h, ResourceLocation texture)

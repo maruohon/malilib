@@ -71,17 +71,6 @@ public class KeybindSettingsWidget extends InteractableWidget
         this.bindTexture(TEXTURE);
 
         KeyBindSettings settings = this.keyBind.getSettings();
-
-        int w = 18;
-        int vStart = 166;
-        int v1 = vStart + (settings.getActivateOn().getIconIndex() * w);
-        int v2 = vStart + (settings.getAllowExtraKeys() ? w : 0);
-        int v3 = vStart + (settings.isOrderSensitive() ? w : 0);
-        int v4 = vStart + (settings.isExclusive() ? w : 0);
-        int v5 = vStart + (settings.shouldCancel() != CancelCondition.NEVER ? w : 0); // TODO add separate icons for ON_SUCCESS and ON_FAILURE
-        int v6 = vStart + (settings.getAllowEmpty() ? w : 0);
-        int v7 = 202 + settings.getContext().getIconIndex() * w;
-
         int edgeColor = this.keyBind.areSettingsModified() ? 0xFFFFBB33 : 0xFFFFFFFF;
 
         ShapeRenderUtils.renderRectangle(x    , y    , z, 20, 20, edgeColor);
@@ -90,15 +79,23 @@ public class KeybindSettingsWidget extends InteractableWidget
         x += 1;
         y += 1;
 
-        RenderUtils.color(1f, 1f, 1f, 1f);
+        int w = 18;
+        int uDiff = 20;
+        int u1 = 1 + (settings.getActivateOn().getIconIndex() * uDiff);
+        int u2 = 1 + (settings.getAllowExtraKeys() ? uDiff : 0);
+        int u3 = 1 + (settings.isOrderSensitive() ? uDiff : 0);
+        int u4 = 1 + (settings.isExclusive() ? uDiff : 0);
+        int u5 = 1 + (settings.shouldCancel() != CancelCondition.NEVER ? uDiff : 0); // TODO add separate icons for ON_SUCCESS and ON_FAILURE
+        int u6 = 1 + (settings.getAllowEmpty() ? uDiff : 0);
+        int u7 = 61 + (settings.getContext().getIconIndex() * uDiff);
 
-        ShapeRenderUtils.renderTexturedRectangle(x, y, z,  0, v1, w, w);
-        ShapeRenderUtils.renderTexturedRectangle(x, y, z, 18, v2, w, w);
-        ShapeRenderUtils.renderTexturedRectangle(x, y, z, 36, v3, w, w);
-        ShapeRenderUtils.renderTexturedRectangle(x, y, z, 54, v4, w, w);
-        ShapeRenderUtils.renderTexturedRectangle(x, y, z, 72, v5, w, w);
-        ShapeRenderUtils.renderTexturedRectangle(x, y, z, 90, v6, w, w);
-        ShapeRenderUtils.renderTexturedRectangle(x, y, z, 90, v7, w, w);
+        ShapeRenderUtils.renderTexturedRectangle(x, y, z, u1, 137, w, w); // activate on
+        ShapeRenderUtils.renderTexturedRectangle(x, y, z, u2, 157, w, w); // allow extra
+        ShapeRenderUtils.renderTexturedRectangle(x, y, z, u3, 177, w, w); // order sensitive
+        ShapeRenderUtils.renderTexturedRectangle(x, y, z, u4, 197, w, w); // exclusive
+        ShapeRenderUtils.renderTexturedRectangle(x, y, z, u5, 217, w, w); // cancel
+        ShapeRenderUtils.renderTexturedRectangle(x, y, z, u6, 237, w, w); // allow empty
+        ShapeRenderUtils.renderTexturedRectangle(x, y, z, u7, 137, w, w); // context
     }
 
     protected List<String> rebuildHoverStrings()

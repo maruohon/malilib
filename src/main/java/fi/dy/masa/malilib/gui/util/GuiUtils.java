@@ -124,8 +124,9 @@ public class GuiUtils
         if (addButton)
         {
             String hover = StringUtils.translate("malilib.gui.button.hover.plus_minus_tip");
-            GenericButton button = new GenericButton(x, y, DefaultIcons.BTN_PLUSMINUS_16, hover);
+            GenericButton button = GenericButton.createIconOnly(x, y, () -> DefaultIcons.BTN_PLUSMINUS_16);
             button.setCanScrollToClick(true);
+            button.addHoverStrings(hover);
             gui.addButton(button, new ButtonListenerCoordinateInput(type, modifier));
         }
     }

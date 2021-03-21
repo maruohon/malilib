@@ -156,7 +156,6 @@ public class DropDownListWidget<T> extends ContainerWidget
     {
         this.noCurrentEntryBar = true;
         this.openCloseButton = GenericButton.createIconOnly(buttonX, buttonY, iconSupplier);
-        this.openCloseButton.setRenderOutline(false);
         this.openCloseButton.setActionListener((btn, mbtn) -> this.toggleOpen());
         this.reAddSubWidgets();
     }

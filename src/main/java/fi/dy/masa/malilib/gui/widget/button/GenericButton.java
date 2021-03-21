@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.gui.widget.button;
 import java.util.ArrayList;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
+import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 import fi.dy.masa.malilib.render.RenderUtils;
@@ -12,6 +13,7 @@ import fi.dy.masa.malilib.util.StringUtils;
 public class GenericButton extends BaseButton
 {
     @Nullable protected final Supplier<MultiIcon> iconSupplier;
+    protected MultiIcon backgroundIcon = DefaultIcons.BUTTON_BACKGROUND;
     protected HorizontalAlignment iconAlignment = HorizontalAlignment.LEFT;
     protected boolean customIconOffset;
     protected boolean renderBackground = true;
@@ -130,6 +132,12 @@ public class GenericButton extends BaseButton
         return this;
     }
 
+    public GenericButton setBackgroundIcon(MultiIcon icon)
+    {
+        this.backgroundIcon = icon;
+        return this;
+    }
+
     /**
      * Set the icon alignment.<br>
      * Note: Only LEFT and RIGHT alignments work properly.
@@ -181,11 +189,6 @@ public class GenericButton extends BaseButton
         return baseX + this.textOffsetX;
     }
 
-    protected int getTextureOffset(boolean isMouseOver)
-    {
-        return (this.enabled == false) ? 0 : (isMouseOver ? 2 : 1);
-    }
-
     @Override
     protected int getMaxDisplayStringWidth()
     {
@@ -201,15 +204,7 @@ public class GenericButton extends BaseButton
 
     protected void renderButtonBackground(int x, int y, float z, int width, int height, boolean hovered)
     {
-        this.bindTexture(BUTTON_TEXTURES);
-
-        int w1 = width / 2;
-        // Account for odd widths
-        int w2 = (width % 2) != 0 ? w1 + 1 : w1;
-        int buttonStyle = this.getTextureOffset(hovered);
-
-        ShapeRenderUtils.renderTexturedRectangle(x     , y, z,        0, 46 + buttonStyle * 20, w1, height);
-        ShapeRenderUtils.renderTexturedRectangle(x + w1, y, z, 200 - w2, 46 + buttonStyle * 20, w2, height);
+        this.backgroundIcon.renderFourSplicedAt(x, y, z, width, height, this.enabled, hovered);
     }
 
     @Override
@@ -224,7 +219,6 @@ public class GenericButton extends BaseButton
             boolean textBlank = this.styledDisplayString == null || this.styledDisplayString.renderWidth == 0;
 
             RenderUtils.color(1f, 1f, 1f, 1f);
-            RenderUtils.setupBlendSimple();
 
             if (this.renderOutline)
             {
@@ -285,24 +279,37 @@ public class GenericButton extends BaseButton
 
     public static GenericButton createIconOnly(int x, int y, MultiIcon icon)
     {
-        return createIconOnly(x, y, icon.getWidth() + 2, icon.getHeight() + 2, () -> icon);
+        return createIconOnly(x, y, icon.getWidth(), icon.getHeight(), () -> icon);
+    }
+
+    public static GenericButton createIconOnly(int x, int y, MultiIcon icon, int outlineColorNormal, int outlineColorHover)
+    {
+        return createIconOnly(x, y, icon.getWidth() + 2, icon.getHeight() + 2, () -> icon, outlineColorNormal, outlineColorHover);
     }
 
     public static GenericButton createIconOnly(int x, int y, Supplier<MultiIcon> iconSupplier)
     {
         MultiIcon icon = iconSupplier.get();
-        return createIconOnly(x, y, icon.getWidth() + 2, icon.getHeight() + 2, iconSupplier);
+        return createIconOnly(x, y, icon.getWidth(), icon.getHeight(), iconSupplier);
     }
 
-    public static GenericButton createIconOnly(int x, int y, int width, int height, Supplier<MultiIcon> iconSupplier)
+    public static GenericButton createIconOnly(int x, int y, int width, int height,
+                                               Supplier<MultiIcon> iconSupplier)
     {
-        GenericButton button = new GenericButton(x, y, iconSupplier);
-
+        GenericButton button =  new GenericButton(x, y, width, height, "", iconSupplier);
         button.setRenderBackground(false);
+        return button;
+    }
+
+    public static GenericButton createIconOnly(int x, int y, int width, int height,
+                                               Supplier<MultiIcon> iconSupplier,
+                                               int outlineColorNormal, int outlineColorHover)
+    {
+        GenericButton button = createIconOnly(x, y, width, height, iconSupplier);
+
         button.setRenderOutline(true);
-        button.setOutlineColorNormal(0x00000000);
-        button.setWidth(width);
-        button.setHeight(height);
+        button.setOutlineColorNormal(outlineColorNormal);
+        button.setOutlineColorHover(outlineColorHover);
 
         return button;
     }

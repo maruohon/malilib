@@ -133,7 +133,6 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
     protected GenericButton createListActionButton(int x, int y, ButtonType type)
     {
         GenericButton button = new GenericButton(x, y, type.getIcon(), type.getHoverKey());
-        button.setRenderOutline(true);
         button.setActionListener(type.createListener(this));
         return button;
     }

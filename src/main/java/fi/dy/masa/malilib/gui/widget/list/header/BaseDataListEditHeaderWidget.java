@@ -24,7 +24,6 @@ public class BaseDataListEditHeaderWidget<DATATYPE> extends DataListHeaderWidget
         this.dataFactory = dataFactory;
 
         this.addButton = new GenericButton(x, y, DefaultIcons.LIST_ADD_PLUS, buttonHover);
-        this.addButton.setRenderOutline(true);
         this.addButton.setActionListener((btn, mbtn) -> this.insertEntry());
     }
 
