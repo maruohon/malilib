@@ -160,7 +160,7 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
     {
         for (BaseConfigStatusIndicatorWidget<?> widget : this.widgets)
         {
-            widget.updateState();
+            widget.updateState(false);
         }
 
         if (this.needsReLayout)

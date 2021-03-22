@@ -16,9 +16,9 @@ public class IntegerConfigStatusWidget extends BaseConfigStatusIndicatorWidget<I
     }
 
     @Override
-    public void updateState()
+    public void updateState(boolean force)
     {
-        if (this.lastValue != this.config.getIntegerValue())
+        if (force || this.lastValue != this.config.getIntegerValue())
         {
             this.updateValue();
         }

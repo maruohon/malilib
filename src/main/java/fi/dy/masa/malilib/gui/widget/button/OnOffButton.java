@@ -6,6 +6,7 @@ import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
 import fi.dy.masa.malilib.message.MessageHelpers;
+import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 
@@ -136,25 +137,30 @@ public class OnOffButton extends GenericButton
         if (this.style == OnOffStyle.SLIDER_ON_OFF)
         {
             boolean value = this.statusSupplier.getAsBoolean();
-            MultiIcon icon = value ? DefaultIcons.SLIDER_GREEN : DefaultIcons.SLIDER_RED;
-
-            int iconWidth = icon.getWidth();
-            int iconHeight1 = height / 2 - 1;
-            int iconHeight2 = (height % 2) != 0 ? iconHeight1 + 1 : iconHeight1; // Account for odd height
-            int sliderX = value ? x + width - iconWidth - 1 : x + 1;
-            int variantIndex = icon.getVariantIndex(this.enabled, hovered);
-            int u = icon.getVariantU(variantIndex);
-            int v1 = icon.getVariantV(variantIndex);
-            int v2 = v1 + icon.getHeight() - iconHeight2;
-
-            this.bindTexture(icon.getTexture());
-
-            ShapeRenderUtils.renderTexturedRectangle(sliderX, y + 1              , z, u, v1, iconWidth, iconHeight1);
-            ShapeRenderUtils.renderTexturedRectangle(sliderX, y + 1 + iconHeight1, z, u, v2, iconWidth, iconHeight2);
+            renderOnOffSlider(x, y, z, width, height, value, this.enabled, hovered);
         }
         else
         {
             super.renderButtonBackground(x, y, z, width, height, hovered);
         }
+    }
+
+    public static void renderOnOffSlider(int x, int y, float z, int width, int height,
+                                         boolean state, boolean enabled, boolean hovered)
+    {
+        MultiIcon icon = state ? DefaultIcons.SLIDER_GREEN : DefaultIcons.SLIDER_RED;
+
+        int iconWidth = icon.getWidth();
+        int iconHeight1 = height / 2 - 1;
+        int iconHeight2 = (height & 0x1) != 0 ? iconHeight1 + 1 : iconHeight1; // Account for odd height
+        int sliderX = state ? x + width - iconWidth - 1 : x + 1;
+        int variantIndex = icon.getVariantIndex(enabled, hovered);
+        int u = icon.getVariantU(variantIndex);
+        int v1 = icon.getVariantV(variantIndex);
+        int v2 = v1 + icon.getHeight() - iconHeight2;
+
+        RenderUtils.bindTexture(icon.getTexture());
+        ShapeRenderUtils.renderTexturedRectangle(sliderX, y + 1              , z, u, v1, iconWidth, iconHeight1);
+        ShapeRenderUtils.renderTexturedRectangle(sliderX, y + 1 + iconHeight1, z, u, v2, iconWidth, iconHeight2);
     }
 }

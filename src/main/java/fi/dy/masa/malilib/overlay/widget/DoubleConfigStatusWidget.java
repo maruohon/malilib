@@ -16,9 +16,9 @@ public class DoubleConfigStatusWidget extends BaseConfigStatusIndicatorWidget<Do
     }
 
     @Override
-    public void updateState()
+    public void updateState(boolean force)
     {
-        if (this.lastValue != this.config.getDoubleValue())
+        if (force || this.lastValue != this.config.getDoubleValue())
         {
             this.updateValue();
         }

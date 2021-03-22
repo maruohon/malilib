@@ -4,8 +4,11 @@ import java.util.Map;
 import javax.annotation.Nullable;
 import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
+import fi.dy.masa.malilib.gui.BaseScreen;
+import fi.dy.masa.malilib.gui.config.BaseConfigStatusIndicatorEditScreen;
 import fi.dy.masa.malilib.gui.config.ConfigStatusWidgetFactory;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetRegistry;
+import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.message.InfoRendererWidget;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.JsonUtils;
@@ -48,6 +51,7 @@ public abstract class BaseConfigStatusIndicatorWidget<C extends ConfigInfo> exte
     {
         super.setName(name);
         this.styledName = StyledTextLine.of(name);
+        this.notifyContainerOfChanges(true);
     }
 
     public int getNameColor()
@@ -100,7 +104,13 @@ public abstract class BaseConfigStatusIndicatorWidget<C extends ConfigInfo> exte
         return this.valueRenderWidth;
     }
 
-    public abstract void updateState();
+    public void openEditScreen()
+    {
+        BaseConfigStatusIndicatorEditScreen<?, ?> screen = new BaseConfigStatusIndicatorEditScreen<>(this, GuiUtils.getCurrentScreen());
+        BaseScreen.openScreen(screen);
+    }
+
+    public abstract void updateState(boolean force);
 
     @Override
     protected void renderContents(int x, int y, float z)
@@ -136,7 +146,7 @@ public abstract class BaseConfigStatusIndicatorWidget<C extends ConfigInfo> exte
     {
         if (JsonUtils.hasString(obj, "name"))
         {
-            this.name = obj.get("name").getAsString();
+            this.setName(obj.get("name").getAsString());
         }
 
         if (JsonUtils.hasInteger(obj, "name_color"))
@@ -173,6 +183,7 @@ public abstract class BaseConfigStatusIndicatorWidget<C extends ConfigInfo> exte
                     @SuppressWarnings("unchecked")
                     BaseConfigStatusIndicatorWidget<?> widget = factory.create((C) configOnTab.config, configOnTab);
                     widget.fromJson(obj);
+                    widget.updateState(true);
                     return widget;
                 }
             }

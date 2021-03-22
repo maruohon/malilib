@@ -120,6 +120,7 @@ malilib.gui.button.hover.add_configs_to_status_indicator_group=Add configs to th
 malilib.gui.button.hover.black_white_list_edit.type=List Type: §3%s
 malilib.gui.button.hover.config.reset_all_filtered=Reset all the configs matching the current search filters back to their default values
 malilib.gui.button.hover.config_status_indicator=Config Status Indicator widgets
+malilib.gui.button.hover.config_status_indicator.reset_name=Reset the name back to the original config name
 malilib.gui.button.hover.directory_widget.create_directory=Create a new directory
 malilib.gui.button.hover.directory_widget.hold_shift_to_open_directory=You can shift click the directory path elements to open the directory in the system file manager
 malilib.gui.button.hover.directory_widget.root=To root/base directory
@@ -259,6 +260,12 @@ malilib.label.alignment.center=Center
 malilib.label.alignment.center_left=Left Center
 malilib.label.alignment.center_right=Right Center
 
+malilib.label.boolean_config_status_type.render_type.colon=Render Type:
+malilib.label.boolean_config_status_type.on_off_text=ON/OFF Text
+malilib.label.boolean_config_status_type.true_false_text=true/false Text
+malilib.label.boolean_config_status_type.on_off_slider=ON/OFF Slider
+malilib.label.boolean_config_status_type.on_off_light=ON/OFF "Light"
+
 malilib.label.config_status_indicator.background_odd.colon=BG odd:
 malilib.label.config_status_indicator.background_odd.hover=Use a different background color for odd rows
 
@@ -290,7 +297,9 @@ malilib.label.list_type.none=None
 malilib.label.list_type.whitelist=White List
 
 malilib.label.margin=Margin
+malilib.label.name_color.colon=Name color:
 malilib.label.padding=Padding
+malilib.label.value_color.colon=Value color:
 
 malilib.label.vertical_alignment.bottom=Bottom
 malilib.label.vertical_alignment.center=Center

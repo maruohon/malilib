@@ -20,9 +20,10 @@ public class HotkeyedBooleanConfigStatusWidget extends BaseConfigStatusIndicator
     }
 
     @Override
-    public void updateState()
+    public void updateState(boolean force)
     {
-        if (this.lastKeys.equals(this.config.getKeyBind().getKeys()) == false ||
+        if (force ||
+            this.lastKeys.equals(this.config.getKeyBind().getKeys()) == false ||
             this.lastBoolean != this.config.getBooleanValue())
         {
             this.updateValue();

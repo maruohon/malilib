@@ -40,11 +40,7 @@ public class ConfigStatusIndicatorEntryWidget extends BaseOrderableListEditEntry
 
     public void openEditScreen()
     {
-        /*
-        ConfigStatusIndicatorGroupEditScreen screen = new ConfigStatusIndicatorGroupEditScreen(this.data);
-        screen.setParent(GuiUtils.getCurrentScreen());
-        BaseScreen.openScreen(screen);
-        */
+        this.getData().openEditScreen();
     }
 
     @Override

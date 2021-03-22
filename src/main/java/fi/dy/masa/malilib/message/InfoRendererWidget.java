@@ -195,7 +195,7 @@ public abstract class InfoRendererWidget extends BaseWidget
     public void setName(String name)
     {
         this.name = name;
-        this.styledName = StyledTextLine.of(this.name);
+        this.styledName = StyledTextLine.of(name);
     }
 
     /**

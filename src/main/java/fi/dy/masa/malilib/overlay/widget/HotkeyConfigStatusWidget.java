@@ -19,9 +19,9 @@ public class HotkeyConfigStatusWidget extends BaseConfigStatusIndicatorWidget<Ho
     }
 
     @Override
-    public void updateState()
+    public void updateState(boolean force)
     {
-        if (this.lastValue.equals(this.config.getValue().getKeys()) == false)
+        if (force || this.lastValue.equals(this.config.getValue().getKeys()) == false)
         {
             this.updateValue();
         }

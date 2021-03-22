@@ -18,9 +18,9 @@ public class StringConfigStatusWidget extends BaseConfigStatusIndicatorWidget<St
     }
 
     @Override
-    public void updateState()
+    public void updateState(boolean force)
     {
-        if (this.lastValue.equals(this.config.getStringValue()) == false)
+        if (force || this.lastValue.equals(this.config.getStringValue()) == false)
         {
             this.updateValue();
         }
