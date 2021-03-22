@@ -56,17 +56,17 @@ public class DirectoryNavigationWidget extends SearchBarWidget
         this.iconProvider = iconProvider;
         this.rootDirDisplayName = rootDirDisplayName;
 
-        this.buttonRoot = GenericButton.createIconOnly(x, y, iconProvider.getIcon(FileBrowserIconType.ROOT), 0x00000000, 0xFFFFFFFF);
+        this.buttonRoot = GenericButton.createIconOnly(x, y, iconProvider.getIcon(FileBrowserIconType.ROOT));
         this.buttonRoot.translateAndAddHoverStrings("malilib.gui.button.hover.directory_widget.root");
         this.buttonRoot.setActionListener((btn, mbtn) -> { if (this.searchOpen == false) this.navigator.switchToRootDirectory(); });
         x += this.buttonRoot.getWidth() + 2;
 
-        this.buttonUp = GenericButton.createIconOnly(x, y, iconProvider.getIcon(FileBrowserIconType.UP), 0x00000000, 0xFFFFFFFF);
+        this.buttonUp = GenericButton.createIconOnly(x, y, iconProvider.getIcon(FileBrowserIconType.UP));
         this.buttonUp.translateAndAddHoverStrings("malilib.gui.button.hover.directory_widget.up");
         this.buttonUp.setActionListener((btn, mbtn) -> { if (this.searchOpen == false) this.navigator.switchToParentDirectory(); });
         x += this.buttonUp.getWidth() + 2;
 
-        this.buttonCreateDir = GenericButton.createIconOnly(x, y, iconProvider.getIcon(FileBrowserIconType.CREATE_DIR), 0x00000000, 0xFFFFFFFF);
+        this.buttonCreateDir = GenericButton.createIconOnly(x, y, iconProvider.getIcon(FileBrowserIconType.CREATE_DIR));
         this.buttonCreateDir.translateAndAddHoverStrings("malilib.gui.button.hover.directory_widget.create_directory");
         this.buttonCreateDir.setActionListener((btn, mbtn) -> {
             if (this.searchOpen == false)
@@ -109,21 +109,23 @@ public class DirectoryNavigationWidget extends SearchBarWidget
     {
         super.updateSubWidgetsToGeometryChanges();
 
-        int x = this.getX();
+        int x = this.getX() + 2;
         int y = this.getY();
 
-        this.buttonRoot.setPosition(x, y);
+        int by = y + this.getHeight() / 2 - this.buttonRoot.getHeight() / 2;
+        this.buttonRoot.setPosition(x, by);
 
         x += this.buttonRoot.getWidth() + 2;
-        this.buttonUp.setPosition(x, y);
+        this.buttonUp.setPosition(x, by);
 
         x += this.buttonUp.getWidth() + 2;
-        this.buttonCreateDir.setPosition(x, y);
+        this.buttonCreateDir.setPosition(x, by);
 
         int xRight = this.getX() + this.getWidth();
         int iw = this.infoWidget.getWidth();
-        this.buttonSearchToggle.setPosition(xRight - this.buttonSearchToggle.getWidth() - iw - 4, y);
-        this.infoWidget.setPosition(xRight - iw - 2, y + 1);
+
+        this.buttonSearchToggle.setPosition(xRight - this.buttonSearchToggle.getWidth() - iw - 4, by);
+        this.infoWidget.setPosition(xRight - iw - 2, y + this.getHeight() / 2 - this.infoWidget.getHeight() / 2);
 
         this.textField.setWidth(this.getWidth() - this.buttonSearchToggle.getWidth() - iw - 8);
 
@@ -193,12 +195,14 @@ public class DirectoryNavigationWidget extends SearchBarWidget
     protected void placePathElements(int x, int y, List<PathElement> elements)
     {
         Function<File, String> displayNameFactory = this::getDisplayNameForDirectory;
+        int bh = 14;
+        int by = y + this.getHeight() / 2 - bh / 2;
 
         for (final PathElement el : elements)
         {
             if (el.type == PathElement.Type.DIR)
             {
-                GenericButton button = new GenericButton(x, y, el.nameWidth + 4, 14, el.displayName);
+                GenericButton button = new GenericButton(x, by, el.nameWidth + 4, bh, el.displayName);
                 button.setHorizontalLabelPadding(2);
                 button.setRenderBackground(false);
                 button.setRenderOutline(true);
@@ -223,7 +227,7 @@ public class DirectoryNavigationWidget extends SearchBarWidget
                 {
                     final DropDownListWidget<File> dropdown = new DropDownListWidget<>(x + el.totalWidth, y + 16, -1, 12, 120, 10, dirs, displayNameFactory, null);
                     dropdown.setRightAlign(true, x + el.totalWidth, true);
-                    dropdown.setNoBarWhenClosed(x + el.totalWidth - 12, y + 2, () -> this.getNavBarIconSubdirs(dropdown.isOpen()));
+                    dropdown.setNoBarWhenClosed(x + el.totalWidth - 12, y + 3, () -> this.getNavBarIconSubdirs(dropdown.isOpen()));
                     dropdown.setSelectionListener(this.navigator::switchToDirectory);
                     this.addWidget(dropdown);
                 }

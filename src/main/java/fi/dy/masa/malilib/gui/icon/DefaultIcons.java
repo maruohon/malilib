@@ -16,6 +16,11 @@ public class DefaultIcons
     public static final BaseMultiIcon GROUP_EXPAND_PLUS             = new BaseMultiIcon(  0,  80,  8,  8);
     public static final BaseMultiIcon GROUP_COLLAPSE_MINUS          = new BaseMultiIcon(  0,  88,  8,  8);
 
+    public static final BaseMultiIcon LIGHT_GREEN_OFF               = new BaseMultiIcon( 40, 194,  8,  8, 0, 0);
+    public static final BaseMultiIcon LIGHT_GREEN_ON                = new BaseMultiIcon( 40, 202,  8,  8, 0, 0);
+    public static final BaseMultiIcon LIGHT_RED_OFF                 = new BaseMultiIcon( 40, 210,  8,  8, 0, 0);
+    public static final BaseMultiIcon LIGHT_RED_ON                  = new BaseMultiIcon( 40, 218,  8,  8, 0, 0);
+
     public static final BaseMultiIcon LOCK_UNLOCKED                 = new BaseMultiIcon( 24,   0,  9,  9, 0, 0);
     public static final BaseMultiIcon LOCK_LOCKED                   = new BaseMultiIcon( 33,   0,  9,  9, 0, 0);
 
@@ -25,6 +30,13 @@ public class DefaultIcons
     public static final BaseMultiIcon EXCLAMATION                   = new BaseMultiIcon( 81,  11, 11, 11);
     public static final BaseMultiIcon CHECKMARK_OFF                 = new BaseMultiIcon( 81,  22, 11, 11);
     public static final BaseMultiIcon CHECKMARK_ON                  = new BaseMultiIcon( 81,  33, 11, 11);
+
+    public static final BaseMultiIcon FILE_BROWSER_DIR              = new BaseMultiIcon(114,   0, 12, 12);
+    public static final BaseMultiIcon FILE_BROWSER_DIR_ROOT         = new BaseMultiIcon(114,  12, 12, 12);
+    public static final BaseMultiIcon FILE_BROWSER_DIR_UP           = new BaseMultiIcon(114,  24, 12, 12);
+    public static final BaseMultiIcon FILE_BROWSER_CREATE_DIR       = new BaseMultiIcon(114,  36, 12, 12);
+    public static final BaseMultiIcon SEARCH                        = new BaseMultiIcon(114,  48, 12, 12);
+    public static final BaseMultiIcon RESET_12                      = new BaseMultiIcon(114,  60, 12, 12);
 
     public static final BaseMultiIcon ARROW_UP                      = new BaseMultiIcon(150,   0, 13, 13);
     public static final BaseMultiIcon ARROW_DOWN                    = new BaseMultiIcon(150,  13, 13, 13);
@@ -43,12 +55,6 @@ public class DefaultIcons
 
     public static final BaseMultiIcon SLIDER_RED                    = new BaseMultiIcon(114,  96,  6, 40);
     public static final BaseMultiIcon SLIDER_GREEN                  = new BaseMultiIcon(132,  96,  6, 40);
-
-    public static final BaseMultiIcon SEARCH                        = new BaseMultiIcon(244,   0, 12, 12, 0, 0);
-    public static final BaseMultiIcon FILE_BROWSER_DIR              = new BaseMultiIcon(244,  12, 12, 12, 0, 0);
-    public static final BaseMultiIcon FILE_BROWSER_DIR_ROOT         = new BaseMultiIcon(244,  24, 12, 12, 0, 0);
-    public static final BaseMultiIcon FILE_BROWSER_DIR_UP           = new BaseMultiIcon(244,  36, 12, 12, 0, 0);
-    public static final BaseMultiIcon FILE_BROWSER_CREATE_DIR       = new BaseMultiIcon(244,  48, 12, 12, 0, 0);
 
 
     public static final BaseMultiIcon BUTTON_BACKGROUND             = new BaseMultiIcon( 56, 196, 200, 20, 0, 20);
