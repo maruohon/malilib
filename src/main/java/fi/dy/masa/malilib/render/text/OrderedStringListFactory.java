@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.message;
+package fi.dy.masa.malilib.render.text;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,8 +10,6 @@ import java.util.function.Supplier;
 import org.apache.commons.lang3.tuple.Pair;
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.MaLiLibConfigs;
-import fi.dy.masa.malilib.render.text.StyledText;
-import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.StyledTextUtils;
 

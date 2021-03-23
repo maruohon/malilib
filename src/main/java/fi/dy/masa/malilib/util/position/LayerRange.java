@@ -16,7 +16,7 @@ import fi.dy.masa.malilib.config.value.BaseOptionListConfigValue;
 import fi.dy.masa.malilib.config.value.LayerMode;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.listener.LayerRangeChangeListener;
-import fi.dy.masa.malilib.message.MessageUtils;
+import fi.dy.masa.malilib.overlay.message.MessageUtils;
 import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.PositionUtils;
 import fi.dy.masa.malilib.util.StringUtils;

@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.message;
+package fi.dy.masa.malilib.overlay.message;
 
 public interface MessageConsumer
 {

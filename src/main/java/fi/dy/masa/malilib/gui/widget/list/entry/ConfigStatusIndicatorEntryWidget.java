@@ -5,7 +5,7 @@ import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.overlay.widget.ConfigStatusIndicatorContainerWidget;
-import fi.dy.masa.malilib.overlay.widget.BaseConfigStatusIndicatorWidget;
+import fi.dy.masa.malilib.overlay.widget.sub.BaseConfigStatusIndicatorWidget;
 
 public class ConfigStatusIndicatorEntryWidget extends BaseOrderableListEditEntryWidget<BaseConfigStatusIndicatorWidget<?>>
 {
@@ -59,12 +59,6 @@ public class ConfigStatusIndicatorEntryWidget extends BaseOrderableListEditEntry
     }
 
     @Override
-    public void updateSubWidgetsToGeometryChanges()
-    {
-        super.updateSubWidgetsToGeometryChanges();
-    }
-
-    @Override
     protected void updateSubWidgetsToGeometryChangesPre(int x, int y)
     {
         super.updateSubWidgetsToGeometryChangesPre(x, y);
@@ -81,8 +75,6 @@ public class ConfigStatusIndicatorEntryWidget extends BaseOrderableListEditEntry
 
         this.nextWidgetX = this.configureButton.getX() - 36;
         this.draggableRegionEndX = this.nextWidgetX - 1;
-
-        //this.data.setSize(this.draggableRegionEndX - x, this.getHeight());
     }
 
     @Override
@@ -112,7 +104,5 @@ public class ConfigStatusIndicatorEntryWidget extends BaseOrderableListEditEntry
 
         int ly = y + height / 2 - this.fontHeight / 2;
         this.renderTextLine(x + 4, ly, z, 0xFFFFFFFF, true, this.data.getStyledName());
-
-        //this.data.renderAt(x + 4, ly, z + 1, mouseX, mouseY, isActiveGui, false);
     }
 }

@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.overlay.widget;
+package fi.dy.masa.malilib.overlay.widget.sub;
 
 import java.util.List;
 import fi.dy.masa.malilib.config.option.HotkeyConfig;

@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.message;
+package fi.dy.masa.malilib.overlay;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,6 +9,8 @@ import fi.dy.masa.malilib.event.ClientTickHandler;
 import fi.dy.masa.malilib.event.PostGameOverlayRenderer;
 import fi.dy.masa.malilib.gui.position.ScreenLocation;
 import fi.dy.masa.malilib.gui.widget.BaseWidget;
+import fi.dy.masa.malilib.overlay.widget.InfoRendererWidget;
+import fi.dy.masa.malilib.overlay.widget.StringListRendererWidget;
 
 public class InfoOverlay implements PostGameOverlayRenderer, ClientTickHandler
 {

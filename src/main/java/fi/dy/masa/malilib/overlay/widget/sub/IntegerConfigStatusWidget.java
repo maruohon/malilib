@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.overlay.widget;
+package fi.dy.masa.malilib.overlay.widget.sub;
 
 import fi.dy.masa.malilib.config.option.IntegerConfig;
 import fi.dy.masa.malilib.render.text.StyledTextLine;

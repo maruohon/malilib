@@ -5,7 +5,7 @@ import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.gui.widget.DropDownListWidget;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
-import fi.dy.masa.malilib.overlay.widget.BooleanConfigStatusWidget;
+import fi.dy.masa.malilib.overlay.widget.sub.BooleanConfigStatusWidget;
 
 public class BooleanConfigStatusIndicatorEditScreen
 extends BaseConfigStatusIndicatorEditScreen<BooleanConfig, BooleanConfigStatusWidget>

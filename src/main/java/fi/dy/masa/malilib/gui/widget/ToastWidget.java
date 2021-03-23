@@ -6,7 +6,7 @@ import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.config.value.HudAlignment;
 import fi.dy.masa.malilib.render.RenderUtils;
-import fi.dy.masa.malilib.message.ToastRenderer;
+import fi.dy.masa.malilib.overlay.message.ToastRenderer;
 import fi.dy.masa.malilib.render.TextRenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 

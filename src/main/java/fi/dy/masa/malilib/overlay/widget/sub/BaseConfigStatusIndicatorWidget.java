@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.overlay.widget;
+package fi.dy.masa.malilib.overlay.widget.sub;
 
 import java.util.Map;
 import javax.annotation.Nullable;
@@ -9,7 +9,7 @@ import fi.dy.masa.malilib.gui.config.BaseConfigStatusIndicatorEditScreen;
 import fi.dy.masa.malilib.gui.config.ConfigStatusWidgetFactory;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetRegistry;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
-import fi.dy.masa.malilib.message.InfoRendererWidget;
+import fi.dy.masa.malilib.overlay.widget.InfoRendererWidget;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.data.ConfigOnTab;
@@ -99,7 +99,7 @@ public abstract class BaseConfigStatusIndicatorWidget<C extends ConfigInfo> exte
         return this.styledName.renderWidth;
     }
 
-    protected int getValueRenderWidth()
+    public int getValueRenderWidth()
     {
         return this.valueRenderWidth;
     }

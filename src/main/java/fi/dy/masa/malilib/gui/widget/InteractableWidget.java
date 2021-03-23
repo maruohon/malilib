@@ -9,7 +9,7 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.listener.EventListener;
-import fi.dy.masa.malilib.message.OrderedStringListFactory;
+import fi.dy.masa.malilib.render.text.OrderedStringListFactory;
 import fi.dy.masa.malilib.render.TextRenderUtils;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.StringUtils;

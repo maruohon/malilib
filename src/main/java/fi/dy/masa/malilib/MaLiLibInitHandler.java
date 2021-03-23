@@ -9,7 +9,7 @@ import fi.dy.masa.malilib.event.dispatch.TickEventDispatcher;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.config.ConfigTabRegistry;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
-import fi.dy.masa.malilib.message.InfoOverlay;
+import fi.dy.masa.malilib.overlay.InfoOverlay;
 
 public class MaLiLibInitHandler implements InitializationHandler
 {

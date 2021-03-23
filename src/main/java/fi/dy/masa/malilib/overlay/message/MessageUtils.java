@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.message;
+package fi.dy.masa.malilib.overlay.message;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.ChatType;

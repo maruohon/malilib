@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.message;
+package fi.dy.masa.malilib.overlay.message;
 
 import java.util.Deque;
 import java.util.HashMap;

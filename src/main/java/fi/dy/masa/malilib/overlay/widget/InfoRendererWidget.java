@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.message;
+package fi.dy.masa.malilib.overlay.widget;
 
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;

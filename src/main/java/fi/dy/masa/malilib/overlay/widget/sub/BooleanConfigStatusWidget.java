@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.overlay.widget;
+package fi.dy.masa.malilib.overlay.widget.sub;
 
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;

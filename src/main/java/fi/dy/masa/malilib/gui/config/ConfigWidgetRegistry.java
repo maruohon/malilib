@@ -39,13 +39,13 @@ import fi.dy.masa.malilib.gui.widget.list.entry.config.list.IdentifierListConfig
 import fi.dy.masa.malilib.gui.widget.list.entry.config.list.ItemListConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.list.StatusEffectListConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.list.StringListConfigWidget;
-import fi.dy.masa.malilib.overlay.widget.BooleanConfigStatusWidget;
-import fi.dy.masa.malilib.overlay.widget.DoubleConfigStatusWidget;
-import fi.dy.masa.malilib.overlay.widget.HotkeyConfigStatusWidget;
-import fi.dy.masa.malilib.overlay.widget.HotkeyedBooleanConfigStatusWidget;
-import fi.dy.masa.malilib.overlay.widget.IntegerConfigStatusWidget;
-import fi.dy.masa.malilib.overlay.widget.OptionListConfigStatusWidget;
-import fi.dy.masa.malilib.overlay.widget.StringConfigStatusWidget;
+import fi.dy.masa.malilib.overlay.widget.sub.BooleanConfigStatusWidget;
+import fi.dy.masa.malilib.overlay.widget.sub.DoubleConfigStatusWidget;
+import fi.dy.masa.malilib.overlay.widget.sub.HotkeyConfigStatusWidget;
+import fi.dy.masa.malilib.overlay.widget.sub.HotkeyedBooleanConfigStatusWidget;
+import fi.dy.masa.malilib.overlay.widget.sub.IntegerConfigStatusWidget;
+import fi.dy.masa.malilib.overlay.widget.sub.OptionListConfigStatusWidget;
+import fi.dy.masa.malilib.overlay.widget.sub.StringConfigStatusWidget;
 
 public class ConfigWidgetRegistry
 {

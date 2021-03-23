@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.message;
+package fi.dy.masa.malilib.overlay.widget;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.position.ScreenLocation;
 import fi.dy.masa.malilib.gui.position.VerticalAlignment;
+import fi.dy.masa.malilib.render.text.OrderedStringListFactory;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.text.StringListRenderer;
 import fi.dy.masa.malilib.render.text.TextRenderSettings;
