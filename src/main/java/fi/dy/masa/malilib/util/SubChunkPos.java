@@ -2,9 +2,9 @@ package fi.dy.masa.malilib.util;
 
 import java.util.Comparator;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.vector.Vector3i;
 
-public class SubChunkPos extends Vec3i
+public class SubChunkPos extends Vector3i
 {
     public SubChunkPos(BlockPos pos)
     {

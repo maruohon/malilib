@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import javax.annotation.Nullable;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import fi.dy.masa.malilib.gui.interfaces.IDirectoryCache;
 import fi.dy.masa.malilib.gui.interfaces.IDirectoryNavigator;
 import fi.dy.masa.malilib.gui.interfaces.IFileBrowserIconProvider;
@@ -73,12 +74,12 @@ public abstract class WidgetFileBrowserBase extends WidgetListBase<DirectoryEntr
     }
 
     @Override
-    public void drawContents(int mouseX, int mouseY, float partialTicks)
+    public void drawContents(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
     {
         // Draw an outline around the entire file browser
         RenderUtils.drawOutlinedBox(this.posX, this.posY, this.browserWidth, this.browserHeight, 0xB0000000, COLOR_HORIZONTAL_BAR);
 
-        super.drawContents(mouseX, mouseY, partialTicks);
+        super.drawContents(matrixStack, mouseX, mouseY, partialTicks);
 
         this.drawAdditionalContents(mouseX, mouseY);
     }

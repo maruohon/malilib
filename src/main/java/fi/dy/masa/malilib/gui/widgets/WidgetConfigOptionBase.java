@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.gui.widgets;
 
 import javax.annotation.Nullable;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import fi.dy.masa.malilib.config.IConfigResettable;
 import fi.dy.masa.malilib.config.gui.ConfigOptionChangeListenerTextField;
 import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
@@ -126,11 +127,11 @@ public abstract class WidgetConfigOptionBase<TYPE> extends WidgetListEntryBase<T
         return false;
     }
 
-    protected void drawTextFields(int mouseX, int mouseY)
+    protected void drawTextFields(int mouseX, int mouseY, MatrixStack matrixStack)
     {
         if (this.textField != null)
         {
-            this.textField.getTextField().render(mouseX, mouseY, 0f);
+            this.textField.getTextField().render(matrixStack, mouseX, mouseY, 0f);
         }
     }
 }

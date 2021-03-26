@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import fi.dy.masa.malilib.gui.GuiScrollBar;
 import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
@@ -254,7 +255,7 @@ public class WidgetDropDownList<T> extends WidgetBase
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean selected)
+    public void render(int mouseX, int mouseY, boolean selected, MatrixStack matrixStack)
     {
         RenderUtils.color(1f, 1f, 1f, 1f);
 
@@ -268,7 +269,7 @@ public class WidgetDropDownList<T> extends WidgetBase
         String str = this.getDisplayString(this.getSelectedEntry());
         int txtX = this.x + 4;
         int txtY = this.y + this.height / 2 - this.fontHeight / 2;
-        this.drawString(txtX, txtY, 0xFFE0E0E0, str);
+        this.drawString(txtX, txtY, 0xFFE0E0E0, str, matrixStack);
         txtY += this.height + 1;
         int scrollWidth = 10;
 
@@ -276,7 +277,7 @@ public class WidgetDropDownList<T> extends WidgetBase
         {
             if (this.searchBar.getTextField().getText().isEmpty() == false)
             {
-                this.searchBar.draw(mouseX, mouseY);
+                this.searchBar.draw(mouseX, mouseY, matrixStack);
             }
 
             RenderUtils.drawOutline(this.x, this.y + this.height, this.width, visibleEntries * this.height + 2, 0xFFE0E0E0);
@@ -297,7 +298,7 @@ public class WidgetDropDownList<T> extends WidgetBase
 
                 RenderUtils.drawRect(this.x, y, this.width - scrollWidth, this.height, bg);
                 str = this.getDisplayString(list.get(i));
-                this.drawString(txtX, txtY, 0xFFE0E0E0, str);
+                this.drawString(txtX, txtY, 0xFFE0E0E0, str, matrixStack);
                 y += this.height;
                 txtY += this.height;
             }

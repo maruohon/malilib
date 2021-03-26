@@ -199,7 +199,7 @@ public class LayerRange
         this.axis = axis;
 
         this.refresher.updateAll();
-        String val = GuiBase.TXT_GREEN + axis.getName();
+        String val = GuiBase.TXT_GREEN + axis.getName2();
         InfoUtils.printActionbarMessage("malilib.message.set_layer_axis_to", val);
     }
 
@@ -395,7 +395,7 @@ public class LayerRange
 
     public boolean moveLayer(int amount)
     {
-        String axisName = this.axis.getName().toLowerCase();
+        String axisName = this.axis.getName2().toLowerCase();
         String strTo = GuiBase.TXT_GREEN + axisName + " = ";
 
         switch (this.layerMode)
@@ -459,7 +459,7 @@ public class LayerRange
 
         if (printMessage && moved)
         {
-            String axisName = this.axis.getName().toLowerCase();
+            String axisName = this.axis.getName2().toLowerCase();
 
             if (moveMin && moveMax)
             {

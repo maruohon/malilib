@@ -51,7 +51,7 @@ public class RenderEventHandler implements IRenderDispatcher
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public void onRenderGameOverlayPost(float partialTicks)
+    public void onRenderGameOverlayPost(float partialTicks, MatrixStack matrixStack)
     {
         if (this.overlayRenderers.isEmpty() == false)
         {
@@ -61,7 +61,7 @@ public class RenderEventHandler implements IRenderDispatcher
             }
         }
 
-        InfoUtils.renderInGameMessages();
+        InfoUtils.renderInGameMessages(matrixStack);
     }
 
     /**

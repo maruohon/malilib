@@ -15,7 +15,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import fi.dy.masa.malilib.MaLiLib;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 public class JsonUtils
 {
@@ -325,7 +325,7 @@ public class JsonUtils
         return vec3dFromJson(obj, name) != null;
     }
 
-    public static JsonArray vec3dToJson(Vec3d vec)
+    public static JsonArray vec3dToJson(Vector3d vec)
     {
         JsonArray arr = new JsonArray();
 
@@ -337,7 +337,7 @@ public class JsonUtils
     }
 
     @Nullable
-    public static Vec3d vec3dFromJson(JsonObject obj, String name)
+    public static Vector3d vec3dFromJson(JsonObject obj, String name)
     {
         if (hasArray(obj, name))
         {
@@ -347,7 +347,7 @@ public class JsonUtils
             {
                 try
                 {
-                    return new Vec3d(arr.get(0).getAsDouble(), arr.get(1).getAsDouble(), arr.get(2).getAsDouble());
+                    return new Vector3d(arr.get(0).getAsDouble(), arr.get(1).getAsDouble(), arr.get(2).getAsDouble());
                 }
                 catch (Exception e)
                 {

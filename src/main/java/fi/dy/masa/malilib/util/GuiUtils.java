@@ -4,7 +4,7 @@ import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.GuiTextFieldDouble;
 import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
@@ -53,7 +53,7 @@ public class GuiUtils
         createBlockPosInput(x, y + 34, textFieldWidth, CoordinateType.Z, pos, modifier, addButton, gui);
     }
 
-    public static void createVec3dInputsVertical(int x, int y, int textFieldWidth, Vec3d pos,
+    public static void createVec3dInputsVertical(int x, int y, int textFieldWidth, Vector3d pos,
             ICoordinateValueModifier modifier, boolean addButton, GuiBase gui)
     {
         createVec3dInput(x, y     , textFieldWidth, CoordinateType.X, pos, modifier, addButton, gui);
@@ -72,7 +72,7 @@ public class GuiUtils
         addTextFieldAndButton(x + textFieldWidth + 4, y, type, modifier, textField, addButton, gui);
     }
 
-    public static void createVec3dInput(int x, int y, int textFieldWidth, CoordinateType type, Vec3d pos,
+    public static void createVec3dInput(int x, int y, int textFieldWidth, CoordinateType type, Vector3d pos,
             ICoordinateValueModifier modifier, boolean addButton, GuiBase gui)
     {
         x = addLabel(x, y, type, gui);
@@ -111,7 +111,7 @@ public class GuiUtils
         return "";
     }
 
-    public static String getCoordinateValueString(CoordinateType type, Vec3d pos)
+    public static String getCoordinateValueString(CoordinateType type, Vector3d pos)
     {
         switch (type)
         {

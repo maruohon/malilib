@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.gui;
 import java.util.List;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import fi.dy.masa.malilib.config.options.ConfigBase;
 import fi.dy.masa.malilib.config.options.ConfigBoolean;
 import fi.dy.masa.malilib.config.options.ConfigOptionList;
@@ -126,14 +127,14 @@ public class GuiKeybindSettings extends GuiDialogBase
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTicks)
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
     {
         if (this.getParent() != null)
         {
-            this.getParent().render(mouseX, mouseY, partialTicks);
+            this.getParent().render(matrixStack, mouseX, mouseY, partialTicks);
         }
 
-        super.render(mouseX, mouseY, partialTicks);
+        super.render(matrixStack, mouseX, mouseY, partialTicks);
     }
 
     @Override
@@ -143,9 +144,9 @@ public class GuiKeybindSettings extends GuiDialogBase
     }
 
     @Override
-    protected void drawTitle(int mouseX, int mouseY, float partialTicks)
+    protected void drawTitle(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
     {
-        this.drawStringWithShadow(this.title, this.dialogLeft + 10, this.dialogTop + 6, COLOR_WHITE);
+        this.drawStringWithShadow(matrixStack, this.title, this.dialogLeft + 10, this.dialogTop + 6, COLOR_WHITE);
     }
 
     @Override

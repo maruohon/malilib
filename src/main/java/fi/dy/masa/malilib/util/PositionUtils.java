@@ -4,20 +4,20 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.AxisDirection;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 public class PositionUtils
 {
-    public static Vec3d modifyValue(CoordinateType type, Vec3d valueIn, double amount)
+    public static Vector3d modifyValue(CoordinateType type, Vector3d valueIn, double amount)
     {
         switch (type)
         {
             case X:
-                return new Vec3d(valueIn.x + amount, valueIn.y         , valueIn.z         );
+                return new Vector3d(valueIn.x + amount, valueIn.y         , valueIn.z         );
             case Y:
-                return new Vec3d(valueIn.x         , valueIn.y + amount, valueIn.z         );
+                return new Vector3d(valueIn.x         , valueIn.y + amount, valueIn.z         );
             case Z:
-                return new Vec3d(valueIn.x         , valueIn.y         , valueIn.z + amount);
+                return new Vector3d(valueIn.x         , valueIn.y         , valueIn.z + amount);
         }
 
         return valueIn;
@@ -38,16 +38,16 @@ public class PositionUtils
         return valueIn;
     }
 
-    public static Vec3d setValue(CoordinateType type, Vec3d valueIn, double newValue)
+    public static Vector3d setValue(CoordinateType type, Vector3d valueIn, double newValue)
     {
         switch (type)
         {
             case X:
-                return new Vec3d(newValue , valueIn.y, valueIn.z);
+                return new Vector3d(newValue , valueIn.y, valueIn.z);
             case Y:
-                return new Vec3d(valueIn.x, newValue , valueIn.z);
+                return new Vector3d(valueIn.x, newValue , valueIn.z);
             case Z:
-                return new Vec3d(valueIn.x, valueIn.y, newValue);
+                return new Vector3d(valueIn.x, valueIn.y, newValue);
         }
 
         return valueIn;
@@ -158,7 +158,7 @@ public class PositionUtils
      * @param facing
      * @return
      */
-    public static Vec3d getHitVecCenter(BlockPos basePos, Direction facing)
+    public static Vector3d getHitVecCenter(BlockPos basePos, Direction facing)
     {
         int x = basePos.getX();
         int y = basePos.getY();
@@ -166,13 +166,13 @@ public class PositionUtils
 
         switch (facing)
         {
-            case UP:    return new Vec3d(x + 0.5, y + 1  , z + 0.5);
-            case DOWN:  return new Vec3d(x + 0.5, y      , z + 0.5);
-            case NORTH: return new Vec3d(x + 0.5, y + 0.5, z      );
-            case SOUTH: return new Vec3d(x + 0.5, y + 0.5, z + 1  );
-            case WEST:  return new Vec3d(x      , y + 0.5, z      );
-            case EAST:  return new Vec3d(x + 1  , y + 0.5, z + 1);
-            default:    return new Vec3d(x, y, z);
+            case UP:    return new Vector3d(x + 0.5, y + 1  , z + 0.5);
+            case DOWN:  return new Vector3d(x + 0.5, y      , z + 0.5);
+            case NORTH: return new Vector3d(x + 0.5, y + 0.5, z      );
+            case SOUTH: return new Vector3d(x + 0.5, y + 0.5, z + 1  );
+            case WEST:  return new Vector3d(x      , y + 0.5, z      );
+            case EAST:  return new Vector3d(x + 1  , y + 0.5, z + 1);
+            default:    return new Vector3d(x, y, z);
         }
     }
 
@@ -185,9 +185,9 @@ public class PositionUtils
      * @param hitVec
      * @return
      */
-    public static HitPart getHitPart(Direction originalSide, Direction playerFacingH, BlockPos pos, Vec3d hitVec)
+    public static HitPart getHitPart(Direction originalSide, Direction playerFacingH, BlockPos pos, Vector3d hitVec)
     {
-        Vec3d positions = getHitPartPositions(originalSide, playerFacingH, pos, hitVec);
+        Vector3d positions = getHitPartPositions(originalSide, playerFacingH, pos, hitVec);
         double posH = positions.x;
         double posV = positions.y;
         double offH = Math.abs(posH - 0.5d);
@@ -210,7 +210,7 @@ public class PositionUtils
         }
     }
 
-    private static Vec3d getHitPartPositions(Direction originalSide, Direction playerFacingH, BlockPos pos, Vec3d hitVec)
+    private static Vector3d getHitPartPositions(Direction originalSide, Direction playerFacingH, BlockPos pos, Vector3d hitVec)
     {
         double x = hitVec.x - pos.getX();
         double y = hitVec.y - pos.getY();
@@ -261,7 +261,7 @@ public class PositionUtils
                 break;
         }
 
-        return new Vec3d(posH, posV, 0);
+        return new Vector3d(posH, posV, 0);
     }
 
     /**
@@ -272,9 +272,9 @@ public class PositionUtils
      * @param hitVec
      * @return
      */
-    public static Direction getTargetedDirection(Direction side, Direction playerFacingH, BlockPos pos, Vec3d hitVec)
+    public static Direction getTargetedDirection(Direction side, Direction playerFacingH, BlockPos pos, Vector3d hitVec)
     {
-        Vec3d positions = getHitPartPositions(side, playerFacingH, pos, hitVec);
+        Vector3d positions = getHitPartPositions(side, playerFacingH, pos, hitVec);
         double posH = positions.x;
         double posV = positions.y;
         double offH = Math.abs(posH - 0.5d);

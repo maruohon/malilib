@@ -2,7 +2,7 @@ package fi.dy.masa.malilib.util;
 
 import net.minecraft.nbt.IntArrayNBT;
 import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.vector.Vector3i;
 
 public class IntBoundingBox
 {
@@ -23,7 +23,7 @@ public class IntBoundingBox
         this.maxZ = maxZ;
     }
 
-    public boolean containsPos(Vec3i pos)
+    public boolean containsPos(Vector3i pos)
     {
         return pos.getX() >= this.minX &&
                pos.getX() <= this.maxX &&

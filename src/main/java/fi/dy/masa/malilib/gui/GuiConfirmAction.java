@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.gui;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.Screen;
 import fi.dy.masa.malilib.gui.Message.MessageType;
@@ -85,11 +86,11 @@ public class GuiConfirmAction extends GuiDialogBase implements ICompletionListen
     }
 
     @Override
-    public void drawContents(int mouseX, int mouseY, float partialTicks)
+    public void drawContents(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
     {
         if (this.getParent() != null)
         {
-            this.getParent().render(mouseX, mouseY, partialTicks);
+            this.getParent().render(matrixStack, mouseX, mouseY, partialTicks);
         }
 
         RenderSystem.pushMatrix();
@@ -98,16 +99,16 @@ public class GuiConfirmAction extends GuiDialogBase implements ICompletionListen
         RenderUtils.drawOutlinedBox(this.dialogLeft, this.dialogTop, this.dialogWidth, this.dialogHeight, 0xF0000000, COLOR_HORIZONTAL_BAR);
 
         // Draw the title
-        this.drawStringWithShadow(this.getTitleString(), this.dialogLeft + 10, this.dialogTop + 4, COLOR_WHITE);
+        this.drawStringWithShadow(matrixStack, this.getTitleString(), this.dialogLeft + 10, this.dialogTop + 4, COLOR_WHITE);
         int y = this.dialogTop + 20;
 
         for (String text : this.messageLines)
         {
-            this.drawString(text, this.dialogLeft + 10, y, this.textColor);
+            this.drawString(matrixStack, text, this.dialogLeft + 10, y, this.textColor);
             y += this.fontHeight + 1;
         }
 
-        this.drawButtons(mouseX, mouseY, partialTicks);
+        this.drawButtons(mouseX, mouseY, partialTicks, matrixStack);
         RenderSystem.popMatrix();
     }
 

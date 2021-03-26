@@ -18,7 +18,6 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -38,7 +37,8 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.storage.MapData;
 import fi.dy.masa.malilib.config.HudAlignment;
 import fi.dy.masa.malilib.gui.GuiBase;
@@ -55,8 +55,8 @@ public class RenderUtils
     public static final ResourceLocation TEXTURE_MAP_BACKGROUND = new ResourceLocation("textures/map/map_background.png");
 
     private static final Random RAND = new Random();
-    //private static final Vec3d LIGHT0_POS = (new Vec3d( 0.2D, 1.0D, -0.7D)).normalize();
-    //private static final Vec3d LIGHT1_POS = (new Vec3d(-0.2D, 1.0D,  0.7D)).normalize();
+    //private static final Vector3d LIGHT0_POS = (new Vector3d( 0.2D, 1.0D, -0.7D)).normalize();
+    //private static final Vector3d LIGHT1_POS = (new Vector3d(-0.2D, 1.0D,  0.7D)).normalize();
 
     public static void setupBlend()
     {
@@ -203,7 +203,7 @@ public class RenderUtils
         buffer.pos(x        , y         , zLevel).tex( u          * pixelWidth,  v           * pixelWidth).endVertex();
     }
 
-    public static void drawHoverText(int x, int y, List<String> textLines)
+    public static void drawHoverText(int x, int y, List<String> textLines, MatrixStack matrixStack)
     {
         Minecraft mc = mc();
 
@@ -265,7 +265,7 @@ public class RenderUtils
             for (int i = 0; i < textLines.size(); ++i)
             {
                 String str = textLines.get(i);
-                font.drawStringWithShadow(str, textStartX, textStartY, 0xFFFFFFFF);
+                font.drawStringWithShadow(matrixStack, str, textStartX, textStartY, 0xFFFFFFFF);
                 textStartY += lineHeight;
             }
 
@@ -310,10 +310,10 @@ public class RenderUtils
         RenderSystem.enableTexture();
     }
 
-    public static void drawCenteredString(int x, int y, int color, String text)
+    public static void drawCenteredString(int x, int y, int color, String text, MatrixStack matrixStack)
     {
         FontRenderer textRenderer = mc().fontRenderer;
-        textRenderer.drawStringWithShadow(text, x - textRenderer.getStringWidth(text) / 2, y, color);
+        textRenderer.drawStringWithShadow(matrixStack, text, x - textRenderer.getStringWidth(text) / 2, y, color);
     }
 
     public static void drawHorizontalLine(int x, int y, int width, int color)
@@ -326,29 +326,29 @@ public class RenderUtils
         drawRect(x, y, 1, height, color);
     }
 
-    public static void renderSprite(int x, int y, int width, int height, ResourceLocation atlas, ResourceLocation texture)
+    public static void renderSprite(int x, int y, int width, int height, ResourceLocation atlas, ResourceLocation texture, MatrixStack matrixStack)
     {
         if (texture != null)
         {
             TextureAtlasSprite sprite = mc().getAtlasSpriteGetter(atlas).apply(texture);
             RenderSystem.disableLighting();
-            AbstractGui.blit(x, y, 0, width, height, sprite);
+            AbstractGui.blit(matrixStack, x, y, 0, width, height, sprite);
         }
     }
 
-    public static void renderText(int x, int y, int color, String text)
+    public static void renderText(int x, int y, int color, String text, MatrixStack matrixStack)
     {
         String[] parts = text.split("\\\\n");
         FontRenderer textRenderer = mc().fontRenderer;
 
         for (String line : parts)
         {
-            textRenderer.drawStringWithShadow(line, x, y, color);
+            textRenderer.drawStringWithShadow(matrixStack, line, x, y, color);
             y += textRenderer.FONT_HEIGHT + 1;
         }
     }
 
-    public static void renderText(int x, int y, int color, List<String> lines)
+    public static void renderText(int x, int y, int color, List<String> lines, MatrixStack matrixStack)
     {
         if (lines.isEmpty() == false)
         {
@@ -356,14 +356,15 @@ public class RenderUtils
 
             for (String line : lines)
             {
-                textRenderer.drawString(line, x, y, color);
+                textRenderer.drawString(matrixStack, line, x, y, color);
                 y += textRenderer.FONT_HEIGHT + 2;
             }
         }
     }
 
     public static int renderText(int xOff, int yOff, double scale, int textColor, int bgColor,
-            HudAlignment alignment, boolean useBackground, boolean useShadow, List<String> lines)
+            HudAlignment alignment, boolean useBackground, boolean useShadow, List<String> lines,
+            MatrixStack matrixStack)
     {
         FontRenderer fontRenderer = mc().fontRenderer;
         final int scaledWidth = GuiUtils.getScaledWindowWidth();
@@ -422,11 +423,11 @@ public class RenderUtils
 
             if (useShadow)
             {
-                fontRenderer.drawStringWithShadow(line, x, y, textColor);
+                fontRenderer.drawStringWithShadow(matrixStack, line, x, y, textColor);
             }
             else
             {
-                fontRenderer.drawString(line, x, y, textColor);
+                fontRenderer.drawString(matrixStack, line, x, y, textColor);
             }
         }
 
@@ -702,18 +703,18 @@ public class RenderUtils
      * @param scale
      * @param mc
      */
-    public static void drawTextPlate(List<String> text, double x, double y, double z, float scale)
+    public static void drawTextPlate(List<String> text, double x, double y, double z, float scale, MatrixStack matrixStack)
     {
         Entity entity = mc().getRenderViewEntity();
 
         if (entity != null)
         {
-            drawTextPlate(text, x, y, z, entity.rotationYaw, entity.rotationPitch, scale, 0xFFFFFFFF, 0x40000000, true);
+            drawTextPlate(text, x, y, z, entity.rotationYaw, entity.rotationPitch, scale, 0xFFFFFFFF, 0x40000000, true, matrixStack);
         }
     }
 
     public static void drawTextPlate(List<String> text, double x, double y, double z, float yaw, float pitch,
-            float scale, int textColor, int bgColor, boolean disableDepth)
+            float scale, int textColor, int bgColor, boolean disableDepth, MatrixStack matrixStack)
     {
         FontRenderer textRenderer = mc().fontRenderer;
 
@@ -780,12 +781,12 @@ public class RenderUtils
                 RenderSystem.disableDepthTest();
             }
 
-            textRenderer.drawString(line, -strLenHalf, textY, 0x20000000 | (textColor & 0xFFFFFF));
+            textRenderer.drawString(matrixStack, line, -strLenHalf, textY, 0x20000000 | (textColor & 0xFFFFFF));
 
             RenderSystem.enableDepthTest();
             RenderSystem.depthMask(true);
 
-            textRenderer.drawString(line, -strLenHalf, textY, textColor);
+            textRenderer.drawString(matrixStack, line, -strLenHalf, textY, textColor);
             textY += textRenderer.FONT_HEIGHT;
         }
 
@@ -801,12 +802,12 @@ public class RenderUtils
         RenderSystem.popMatrix();
     }
 
-    public static void renderBlockTargetingOverlay(Entity entity, BlockPos pos, Direction side, Vec3d hitVec,
+    public static void renderBlockTargetingOverlay(Entity entity, BlockPos pos, Direction side, Vector3d hitVec,
             Color4f color, MatrixStack matrixStack, Minecraft mc)
     {
         Direction playerFacing = entity.getHorizontalFacing();
         HitPart part = PositionUtils.getHitPart(side, playerFacing, pos, hitVec);
-        Vec3d cameraPos = mc.gameRenderer.getActiveRenderInfo().getProjectedView();
+        Vector3d cameraPos = mc.gameRenderer.getActiveRenderInfo().getProjectedView();
 
         double x = pos.getX() + 0.5d - cameraPos.x;
         double y = pos.getY() + 0.5d - cameraPos.y;
@@ -908,7 +909,7 @@ public class RenderUtils
             Color4f color, MatrixStack matrixStack, Minecraft mc)
     {
         Direction playerFacing = entity.getHorizontalFacing();
-        Vec3d cameraPos = mc.gameRenderer.getActiveRenderInfo().getProjectedView();
+        Vector3d cameraPos = mc.gameRenderer.getActiveRenderInfo().getProjectedView();
 
         double x = pos.getX() + 0.5d - cameraPos.x;
         double y = pos.getY() + 0.5d - cameraPos.y;
@@ -1205,7 +1206,7 @@ public class RenderUtils
 
     private static void putQuadNormal(BufferBuilder renderer, BakedQuad quad)
     {
-        Vec3i direction = quad.getFace().getDirectionVec();
+        Vector3i direction = quad.getFace().getDirectionVec();
         renderer.putNormal(direction.getX(), direction.getY(), direction.getZ());
         */
     }

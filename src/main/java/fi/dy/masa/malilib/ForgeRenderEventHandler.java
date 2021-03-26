@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib;
 
 import fi.dy.masa.malilib.event.RenderEventHandler;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderTooltipEvent;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
@@ -13,7 +14,7 @@ class ForgeRenderEventHandler
     {
         if (event.getType() == RenderGameOverlayEvent.ElementType.ALL)
         {
-            ((RenderEventHandler) RenderEventHandler.getInstance()).onRenderGameOverlayPost(event.getPartialTicks());
+            ((RenderEventHandler) RenderEventHandler.getInstance()).onRenderGameOverlayPost(event.getPartialTicks(), event.getMatrixStack());
         }
     }
 

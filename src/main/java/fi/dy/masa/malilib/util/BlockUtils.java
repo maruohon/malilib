@@ -8,7 +8,7 @@ import javax.annotation.Nullable;
 import net.minecraft.block.BlockState;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.DirectionProperty;
-import net.minecraft.state.IProperty;
+import net.minecraft.state.Property;
 import net.minecraft.state.IntegerProperty;
 import net.minecraft.util.Direction;
 import fi.dy.masa.malilib.gui.GuiBase;
@@ -23,7 +23,7 @@ public class BlockUtils
     @Nullable
     public static DirectionProperty getFirstDirectionProperty(BlockState state)
     {
-        for (IProperty<?> prop : state.getProperties())
+        for (Property<?> prop : state.getProperties())
         {
             if (prop instanceof DirectionProperty)
             {
@@ -55,13 +55,13 @@ public class BlockUtils
 
     public static List<String> getFormattedBlockStateProperties(BlockState state, String separator)
     {
-        Collection<IProperty<?>> properties = state.getProperties();
+        Collection<Property<?>> properties = state.getProperties();
 
         if (properties.size() > 0)
         {
             List<String> lines = new ArrayList<>();
 
-            for (IProperty<?> prop : properties)
+            for (Property<?> prop : properties)
             {
                 Comparable<?> val = state.get(prop);
 

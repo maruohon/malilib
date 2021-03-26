@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.render;
 import java.util.ArrayList;
 import java.util.List;
 import org.lwjgl.opengl.GL11;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.block.Block;
 import net.minecraft.block.BrewingStandBlock;
@@ -167,7 +168,7 @@ public class InventoryOverlay
         RenderUtils.drawTexturedRectBatched(x +   7, y +   7,   7,  17, 162, 108, buffer); // middle
     }
 
-    public static void renderEquipmentOverlayBackground(int x, int y, LivingEntity entity)
+    public static void renderEquipmentOverlayBackground(int x, int y, LivingEntity entity, MatrixStack matrixStack)
     {
         RenderUtils.color(1f, 1f, 1f, 1f);
 
@@ -198,7 +199,7 @@ public class InventoryOverlay
         if (entity.getItemStackFromSlot(EquipmentSlotType.OFFHAND).isEmpty())
         {
             ResourceLocation texture = new ResourceLocation("minecraft:item/empty_armor_slot_shield");
-            RenderUtils.renderSprite(x + 28 + 1, y + 3 * 18 + 7 + 1, 16, 16, PlayerContainer.LOCATION_BLOCKS_TEXTURE, texture);
+            RenderUtils.renderSprite(x + 28 + 1, y + 3 * 18 + 7 + 1, 16, 16, PlayerContainer.LOCATION_BLOCKS_TEXTURE, texture, matrixStack);
         }
 
         for (int i = 0, xOff = 7, yOff = 7; i < 4; ++i, yOff += 18)
@@ -208,7 +209,7 @@ public class InventoryOverlay
             if (entity.getItemStackFromSlot(eqSlot).isEmpty())
             {
                 ResourceLocation texture = EMPTY_SLOT_TEXTURES[eqSlot.getIndex()];
-                RenderUtils.renderSprite(x + xOff + 1, y + yOff + 1, 16, 16, PlayerContainer.LOCATION_BLOCKS_TEXTURE, texture);
+                RenderUtils.renderSprite(x + xOff + 1, y + yOff + 1, 16, 16, PlayerContainer.LOCATION_BLOCKS_TEXTURE, texture, matrixStack);
             }
         }
     }
@@ -492,7 +493,7 @@ public class InventoryOverlay
         RenderSystem.popMatrix();
     }
 
-    public static void renderStackToolTip(int x, int y, ItemStack stack, Minecraft mc)
+    public static void renderStackToolTip(int x, int y, ItemStack stack, Minecraft mc, MatrixStack matrixStack)
     {
         List<ITextComponent> list = stack.getTooltip(mc.player, mc.gameSettings.advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL);
         List<String> lines = new ArrayList<>();
@@ -509,7 +510,7 @@ public class InventoryOverlay
             }
         }
 
-        RenderUtils.drawHoverText(x, y, lines);
+        RenderUtils.drawHoverText(x, y, lines, matrixStack);
     }
 
     public static class InventoryProperties

@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
@@ -152,12 +153,11 @@ public abstract class ButtonBase extends WidgetBase
         return (this.enabled == false) ? 0 : (isMouseOver ? 2 : 1);
     }
 
-    @Override
-    public void postRenderHovered(int mouseX, int mouseY, boolean selected)
+    public void postRenderHovered(int mouseX, int mouseY, boolean selected, MatrixStack matrixStack)
     {
         if (this.hasHoverText() && this.isMouseOver())
         {
-            RenderUtils.drawHoverText(mouseX, mouseY, this.getHoverStrings());
+            RenderUtils.drawHoverText(mouseX, mouseY, this.getHoverStrings(), matrixStack);
             RenderUtils.disableDiffuseLighting();
         }
     }

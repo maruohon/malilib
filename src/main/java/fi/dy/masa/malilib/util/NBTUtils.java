@@ -5,17 +5,17 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.DoubleNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3i;
 
 public class NBTUtils
 {
-    public static CompoundNBT createBlockPosTag(Vec3i pos)
+    public static CompoundNBT createBlockPosTag(Vector3i pos)
     {
         return writeBlockPosToTag(pos, new CompoundNBT());
     }
 
-    public static CompoundNBT writeBlockPosToTag(Vec3i pos, CompoundNBT tag)
+    public static CompoundNBT writeBlockPosToTag(Vector3i pos, CompoundNBT tag)
     {
         tag.putInt("x", pos.getX());
         tag.putInt("y", pos.getY());
@@ -37,7 +37,7 @@ public class NBTUtils
         return null;
     }
 
-    public static CompoundNBT writeVec3dToTag(Vec3d vec, CompoundNBT tag)
+    public static CompoundNBT writeVec3dToTag(Vector3d vec, CompoundNBT tag)
     {
         tag.putDouble("dx", vec.x);
         tag.putDouble("dy", vec.y);
@@ -45,7 +45,7 @@ public class NBTUtils
         return tag;
     }
 
-    public static CompoundNBT writeEntityPositionToTag(Vec3d pos, CompoundNBT tag)
+    public static CompoundNBT writeEntityPositionToTag(Vector3d pos, CompoundNBT tag)
     {
         ListNBT posList = new ListNBT();
 
@@ -58,21 +58,21 @@ public class NBTUtils
     }
 
     @Nullable
-    public static Vec3d readVec3d(@Nullable CompoundNBT tag)
+    public static Vector3d readVec3d(@Nullable CompoundNBT tag)
     {
         if (tag != null &&
             tag.contains("dx", Constants.NBT.TAG_DOUBLE) &&
             tag.contains("dy", Constants.NBT.TAG_DOUBLE) &&
             tag.contains("dz", Constants.NBT.TAG_DOUBLE))
         {
-            return new Vec3d(tag.getDouble("dx"), tag.getDouble("dy"), tag.getDouble("dz"));
+            return new Vector3d(tag.getDouble("dx"), tag.getDouble("dy"), tag.getDouble("dz"));
         }
 
         return null;
     }
 
     @Nullable
-    public static Vec3d readEntityPositionFromTag(@Nullable CompoundNBT tag)
+    public static Vector3d readEntityPositionFromTag(@Nullable CompoundNBT tag)
     {
         if (tag != null && tag.contains("Pos", Constants.NBT.TAG_LIST))
         {
@@ -80,7 +80,7 @@ public class NBTUtils
 
             if (tagList.getTagType() == Constants.NBT.TAG_DOUBLE && tagList.size() == 3)
             {
-                return new Vec3d(tagList.getDouble(0), tagList.getDouble(1), tagList.getDouble(2));
+                return new Vector3d(tagList.getDouble(0), tagList.getDouble(1), tagList.getDouble(2));
             }
         }
 

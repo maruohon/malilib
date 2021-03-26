@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.gui.widgets;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import fi.dy.masa.malilib.gui.LeftRight;
 import fi.dy.masa.malilib.gui.button.ConfigButtonKeybind;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
@@ -82,13 +83,13 @@ public class WidgetSearchBarConfigs extends WidgetSearchBar
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean selected)
+    public void render(int mouseX, int mouseY, boolean selected, MatrixStack matrixStack)
     {
-        super.render(mouseX, mouseY, selected);
+        super.render(mouseX, mouseY, selected, matrixStack);
 
         if (this.searchOpen)
         {
-            this.button.render(mouseX, mouseY, false);
+            this.button.render(mouseX, mouseY, false, matrixStack);
         }
     }
 }

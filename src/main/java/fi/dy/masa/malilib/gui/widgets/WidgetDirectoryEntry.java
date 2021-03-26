@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.gui.widgets;
 
 import java.io.File;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import fi.dy.masa.malilib.gui.interfaces.IDirectoryNavigator;
 import fi.dy.masa.malilib.gui.interfaces.IFileBrowserIconProvider;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
@@ -48,7 +49,7 @@ public class WidgetDirectoryEntry extends WidgetListEntryBase<DirectoryEntry>
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean selected)
+    public void render(int mouseX, int mouseY, boolean selected, MatrixStack matrixStack)
     {
         IGuiIcon icon = null;
 
@@ -94,9 +95,9 @@ public class WidgetDirectoryEntry extends WidgetListEntryBase<DirectoryEntry>
         }
 
         int yOffset = (this.height - this.fontHeight) / 2 + 1;
-        this.drawString(this.x + xOffset + 2, this.y + yOffset, 0xFFFFFFFF, this.getDisplayName());
+        this.drawString(this.x + xOffset + 2, this.y + yOffset, 0xFFFFFFFF, this.getDisplayName(), matrixStack);
 
-        super.render(mouseX, mouseY, selected);
+        super.render(mouseX, mouseY, selected, matrixStack);
     }
 
     protected String getDisplayName()

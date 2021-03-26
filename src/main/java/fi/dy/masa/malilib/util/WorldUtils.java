@@ -3,15 +3,16 @@ package fi.dy.masa.malilib.util;
 import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.integrated.IntegratedServer;
+import net.minecraft.util.RegistryKey;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.server.ServerWorld;
 
 public class WorldUtils
 {
-    public static int getDimensionId(World world)
+    public static RegistryKey<World> getDimensionId(World world)
     {
-        return world.dimension.getType().getId();
+        return world.getDimensionKey();
     }
 
     /**
@@ -27,7 +28,7 @@ public class WorldUtils
 
         if (mc.world != null && server != null)
         {
-            return server.getWorld(mc.world.dimension.getType());
+            return server.getWorld(mc.world.getDimensionKey());
         }
         else
         {
@@ -51,7 +52,7 @@ public class WorldUtils
 
         if (mc.world != null && server != null)
         {
-            ServerWorld world = server.getWorld(mc.world.dimension.getType());
+            ServerWorld world = server.getWorld(mc.world.getDimensionKey());
             chunk = world.getChunk(chunkX, chunkZ);
         }
 

@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.gui;
 
 import javax.annotation.Nullable;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.Screen;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
@@ -60,11 +61,11 @@ public abstract class GuiTextInputBase extends GuiDialogBase
     }
 
     @Override
-    public void drawContents(int mouseX, int mouseY, float partialTicks)
+    public void drawContents(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
     {
         if (this.getParent() != null)
         {
-            this.getParent().render(mouseX, mouseY, partialTicks);
+            this.getParent().render(matrixStack, mouseX, mouseY, partialTicks);
         }
 
         RenderSystem.pushMatrix();
@@ -73,12 +74,12 @@ public abstract class GuiTextInputBase extends GuiDialogBase
         RenderUtils.drawOutlinedBox(this.dialogLeft, this.dialogTop, this.dialogWidth, this.dialogHeight, 0xE0000000, COLOR_HORIZONTAL_BAR);
 
         // Draw the title
-        this.drawStringWithShadow(this.getTitleString(), this.dialogLeft + 10, this.dialogTop + 4, COLOR_WHITE);
+        this.drawStringWithShadow(matrixStack, this.getTitleString(), this.dialogLeft + 10, this.dialogTop + 4, COLOR_WHITE);
 
         //super.drawScreen(mouseX, mouseY, partialTicks);
-        this.textField.render(mouseX, mouseY, partialTicks);
+        this.textField.render(matrixStack, mouseX, mouseY, partialTicks);
 
-        this.drawButtons(mouseX, mouseY, partialTicks);
+        this.drawButtons(mouseX, mouseY, partialTicks, matrixStack);
         RenderSystem.popMatrix();
     }
 

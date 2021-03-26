@@ -13,6 +13,8 @@ loaderVersion="[31,)" #mandatory (26 is current forge version)
 # A URL to refer people to when problems occur with this mod
 issueTrackerURL="https://github.com/maruohon/malilib/issues" #optional
 
+license="Dunno, just porting this and fml wants a license"
+
 # A list of mods - how many allowed here is determined by the individual mod loader
 [[mods]] #mandatory
 
@@ -60,6 +62,6 @@ issueTrackerURL="https://github.com/maruohon/malilib/issues" #optional
 [[dependencies.malilib]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.15.2]"
+    versionRange="[1.16.2]"
     ordering="NONE"
     side="CLIENT"

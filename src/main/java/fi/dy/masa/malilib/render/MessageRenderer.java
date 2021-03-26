@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.render;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import fi.dy.masa.malilib.gui.Message;
 import fi.dy.masa.malilib.gui.Message.MessageType;
 
@@ -108,7 +109,7 @@ public class MessageRenderer
         return height;
     }
 
-    public void drawMessages(int x, int y)
+    public void drawMessages(int x, int y, MatrixStack matrixStack)
     {
         if (this.messages.isEmpty() == false)
         {
@@ -147,7 +148,7 @@ public class MessageRenderer
             for (int i = 0; i < this.messages.size(); ++i)
             {
                 Message message = this.messages.get(i);
-                y = message.renderAt(x, y, 0xFFFFFFFF);
+                y = message.renderAt(x, y, 0xFFFFFFFF, matrixStack);
 
                 if (message.hasExpired(currentTime))
                 {

@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.UUID;
 import javax.annotation.Nullable;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 
 public class StringUtils
@@ -78,7 +80,7 @@ public class StringUtils
         net.minecraft.util.text.StringTextComponent name = new net.minecraft.util.text.StringTextComponent(file.getName());
         name.getStyle().setClickEvent(new net.minecraft.util.text.event.ClickEvent(net.minecraft.util.text.event.ClickEvent.Action.OPEN_FILE, file.getAbsolutePath()));
         name.getStyle().setUnderlined(Boolean.valueOf(true));
-        sender.sendMessage(new net.minecraft.util.text.TranslationTextComponent(messageKey, name));
+        sender.sendMessage(new net.minecraft.util.text.TranslationTextComponent(messageKey, name), UUID.randomUUID());
     }
 
     /**
@@ -279,7 +281,7 @@ public class StringUtils
 
             if (server != null)
             {
-                return server.getFolderName();
+                return server.getDataDirectory().getName();
             }
         }
         else
@@ -382,8 +384,8 @@ public class StringUtils
         return net.minecraft.client.Minecraft.getInstance().fontRenderer.getStringWidth(text);
     }
 
-    public static void drawString(int x, int y, int color, String text)
+    public static void drawString(int x, int y, int color, String text, MatrixStack matrixStack)
     {
-        net.minecraft.client.Minecraft.getInstance().fontRenderer.drawString(text, x, y, color);
+        net.minecraft.client.Minecraft.getInstance().fontRenderer.drawString(matrixStack, text, x, y, color);
     }
 }

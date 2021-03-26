@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.gui.widgets;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
 import fi.dy.masa.malilib.render.RenderUtils;
@@ -164,18 +165,18 @@ public abstract class WidgetContainer extends WidgetBase
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean selected)
+    public void render(int mouseX, int mouseY, boolean selected, MatrixStack matrixStack)
     {
-        this.drawSubWidgets(mouseX, mouseY);
+        this.drawSubWidgets(mouseX, mouseY, matrixStack);
     }
 
     @Override
-    public void postRenderHovered(int mouseX, int mouseY, boolean selected)
+    public void postRenderHovered(int mouseX, int mouseY, boolean selected, MatrixStack matrixStack)
     {
-        this.drawHoveredSubWidget(mouseX, mouseY);
+        this.drawHoveredSubWidget(mouseX, mouseY, matrixStack);
     }
 
-    protected void drawSubWidgets(int mouseX, int mouseY)
+    protected void drawSubWidgets(int mouseX, int mouseY, MatrixStack matrixStack)
     {
         this.hoveredSubWidget = null;
 
@@ -183,7 +184,7 @@ public abstract class WidgetContainer extends WidgetBase
         {
             for (WidgetBase widget : this.subWidgets)
             {
-                widget.render(mouseX, mouseY, false);
+                widget.render(mouseX, mouseY, false, matrixStack);
 
                 if (widget.isMouseOver(mouseX, mouseY))
                 {
@@ -193,11 +194,11 @@ public abstract class WidgetContainer extends WidgetBase
         }
     }
 
-    protected void drawHoveredSubWidget(int mouseX, int mouseY)
+    protected void drawHoveredSubWidget(int mouseX, int mouseY, MatrixStack matrixStack)
     {
         if (this.hoveredSubWidget != null)
         {
-            this.hoveredSubWidget.postRenderHovered(mouseX, mouseY, false);
+            this.hoveredSubWidget.postRenderHovered(mouseX, mouseY, false, matrixStack);
             RenderUtils.disableDiffuseLighting();
         }
     }

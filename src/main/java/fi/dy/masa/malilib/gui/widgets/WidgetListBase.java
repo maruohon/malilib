@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nullable;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.gui.GuiBase;
@@ -378,13 +379,13 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
     }
 
     @Override
-    public void drawContents(int mouseX, int mouseY, float partialTicks)
+    public void drawContents(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
     {
         RenderUtils.color(1f, 1f, 1f, 1f);
 
         if (this.widgetSearchBar != null)
         {
-            this.widgetSearchBar.render(mouseX, mouseY, false);
+            this.widgetSearchBar.render(mouseX, mouseY, false, matrixStack);
         }
 
         WidgetBase hovered = null;
@@ -416,7 +417,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
             WIDGET widget = this.listWidgets.get(i);
             TYPE entry = widget.getEntry();
             boolean isSelected = this.allowMultiSelection ? this.selectedEntries.contains(entry) : entry != null && entry.equals(this.getLastSelectedEntry());
-            widget.render(mouseX, mouseY, isSelected);
+            widget.render(mouseX, mouseY, isSelected, matrixStack);
 
             if (widget.isMouseOver(mouseX, mouseY))
             {
@@ -432,7 +433,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
 
         if (hovered != null)
         {
-            hovered.postRenderHovered(mouseX, mouseY, hoveredSelected);
+            hovered.postRenderHovered(mouseX, mouseY, hoveredSelected, matrixStack);
         }
 
         RenderSystem.disableLighting();

@@ -4,6 +4,7 @@ import java.awt.Color;
 import javax.annotation.Nullable;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -153,14 +154,14 @@ public class GuiColorEditorHSV extends GuiDialogBase
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTicks)
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
     {
         if (this.getParent() != null)
         {
-            this.getParent().render(mouseX, mouseY, partialTicks);
+            this.getParent().render(matrixStack, mouseX, mouseY, partialTicks);
         }
 
-        super.render(mouseX, mouseY, partialTicks);
+        super.render(matrixStack, mouseX, mouseY, partialTicks);
 
         if (this.mouseDown)
         {
@@ -180,9 +181,9 @@ public class GuiColorEditorHSV extends GuiDialogBase
     }
 
     @Override
-    protected void drawTitle(int mouseX, int mouseY, float partialTicks)
+    protected void drawTitle(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
     {
-        this.drawStringWithShadow(this.title, this.dialogLeft + 10, this.dialogTop + 6, COLOR_WHITE);
+        this.drawStringWithShadow(matrixStack, this.title, this.dialogLeft + 10, this.dialogTop + 6, COLOR_WHITE);
     }
 
     @Override

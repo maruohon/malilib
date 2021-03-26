@@ -1,9 +1,11 @@
 package fi.dy.masa.malilib.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.util.text.ITextComponent;
 
 public class GuiTextFieldGeneric extends TextFieldWidget
 {
@@ -14,7 +16,7 @@ public class GuiTextFieldGeneric extends TextFieldWidget
 
     public GuiTextFieldGeneric(int x, int y, int width, int height, FontRenderer textRenderer)
     {
-        super(textRenderer, x, y, width, height, "");
+        super(textRenderer, x, y, width, height, ITextComponent.getTextComponentOrEmpty(""));
 
         this.x = x;
         this.y = y;
@@ -83,21 +85,20 @@ public class GuiTextFieldGeneric extends TextFieldWidget
         return this;
     }
 
-    @Override
-    public void render(int mouseX, int mouseY, float partialTicks)
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
     {
         if (this.getBlitOffset() != 0)
         {
             RenderSystem.pushMatrix();
             RenderSystem.translatef(0, 0, this.getBlitOffset());
 
-            super.render(mouseX, mouseY, partialTicks);
+            super.render(matrixStack, mouseX, mouseY, partialTicks);
 
             RenderSystem.popMatrix();
         }
         else
         {
-            super.render(mouseX, mouseY, partialTicks);
+            super.render(matrixStack, mouseX, mouseY, partialTicks);
         }
     }
 }

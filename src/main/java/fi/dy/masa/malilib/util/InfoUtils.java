@@ -1,5 +1,7 @@
 package fi.dy.masa.malilib.util;
 
+import java.util.UUID;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -138,7 +140,7 @@ public class InfoUtils
 
     public static void printActionbarMessage(String key, Object... args)
     {
-        Minecraft.getInstance().ingameGUI.addChatMessage(ChatType.GAME_INFO, new TranslationTextComponent(key, args));
+        Minecraft.getInstance().ingameGUI.sendChatMessage(ChatType.GAME_INFO, new TranslationTextComponent(key, args), UUID.randomUUID());
     }
 
     /**
@@ -176,12 +178,12 @@ public class InfoUtils
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public static void renderInGameMessages()
+    public static void renderInGameMessages(MatrixStack matrixStack)
     {
         int x = GuiUtils.getScaledWindowWidth() / 2;
         int y = GuiUtils.getScaledWindowHeight() - 76;
 
-        IN_GAME_MESSAGES.drawMessages(x, y);
+        IN_GAME_MESSAGES.drawMessages(x, y, matrixStack);
     }
 
     public static class InfoMessageConsumer implements IStringConsumer
@@ -190,7 +192,7 @@ public class InfoUtils
         public void setString(String string)
         {
             TranslationTextComponent message = new TranslationTextComponent(string);
-            Minecraft.getInstance().ingameGUI.addChatMessage(ChatType.GAME_INFO, message);
+            Minecraft.getInstance().ingameGUI.sendChatMessage(ChatType.GAME_INFO, message, UUID.randomUUID());
         }
     }
 }
