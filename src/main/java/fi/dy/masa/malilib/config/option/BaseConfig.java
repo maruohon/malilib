@@ -6,29 +6,21 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.config.ValueChangeCallback;
-import fi.dy.masa.malilib.config.ValueLoadCallback;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.ModInfo;
 
-public abstract class BaseConfig<T> implements ConfigOption<T>
+public class BaseConfig implements ConfigInfo
 {
     protected final String name;
     protected final List<String> searchStrings = new ArrayList<>();
-    protected final List<String> lockOverrideMessages = new ArrayList<>();
     protected final List<String> oldNames = new ArrayList<>();
     protected String nameTranslationKey;
-    protected String prettyNameTranslationKey;
     protected ModInfo modInfo;
     protected boolean locked;
     protected Object[] commentArgs;
     @Nullable protected String commentTranslationKey;
-    @Nullable protected ValueChangeCallback<T> valueChangeCallback;
-    @Nullable protected ValueLoadCallback<T> valueLoadCallback;
     @Nullable protected EventListener labelClickHandler;
-    @Nullable protected String lockMessage;
-    @Nullable protected String overrideMessage;
 
     public BaseConfig(String name)
     {
@@ -40,14 +32,55 @@ public abstract class BaseConfig<T> implements ConfigOption<T>
         this(name, name, name, commentTranslationKey, commentArgs);
     }
 
-    public BaseConfig(String name, String nameTranslationKey, String prettyNameTranslationKey,
+    public BaseConfig(String name, String nameTranslationKey,
                       @Nullable String commentTranslationKey, Object... commentArgs)
     {
         this.name = name;
         this.nameTranslationKey = nameTranslationKey;
-        this.prettyNameTranslationKey = prettyNameTranslationKey;
         this.commentTranslationKey = commentTranslationKey;
         this.commentArgs = commentArgs;
+    }
+
+    @Override
+    public String getName()
+    {
+        return this.name;
+    }
+
+    @Override
+    public String getDisplayName()
+    {
+        return getDefaultDisplayName(this, this.nameTranslationKey);
+    }
+
+    @Override
+    @Nullable
+    public String getComment()
+    {
+        if (this.commentTranslationKey != null)
+        {
+            return StringUtils.translate(this.commentTranslationKey, this.commentArgs);
+        }
+
+        return null;
+    }
+
+    public BaseConfig setCommentArgs(Object... args)
+    {
+        this.commentArgs = args;
+        return this;
+    }
+
+    public void setOldNames(String... names)
+    {
+        this.oldNames.clear();
+        this.oldNames.addAll(Arrays.asList(names));
+    }
+
+    @Override
+    public List<String> getSearchStrings()
+    {
+        return this.searchStrings;
     }
 
     @Override
@@ -57,44 +90,24 @@ public abstract class BaseConfig<T> implements ConfigOption<T>
     }
 
     @Override
-    public List<String> getSearchStrings()
+    @Nullable
+    public EventListener getLabelClickHandler()
     {
-        return this.searchStrings;
-    }
-
-    /**
-     * Returns the possible custom messages set to inform the user
-     * about a locked or overridden config value.
-     * @return
-     */
-    public List<String> getLockAndOverrideMessages()
-    {
-        return this.lockOverrideMessages;
-    }
-
-    public void setLockMessage(@Nullable String translationKey)
-    {
-        this.lockMessage = translationKey;
-        this.rebuildLockOverrideMessages();
-    }
-
-    public void setOverrideMessage(@Nullable String translationKey)
-    {
-        this.overrideMessage = translationKey;
-        this.rebuildLockOverrideMessages();
-    }
-
-    protected void rebuildLockOverrideMessages()
-    {
-        this.lockOverrideMessages.clear();
-
-        if (this.isLocked() && this.lockMessage != null)
-        {
-            StringUtils.translateAndLineSplit(this.lockOverrideMessages::add, this.lockMessage);
-        }
+        return this.labelClickHandler;
     }
 
     @Override
+    public boolean isModified()
+    {
+        return false;
+    }
+
+    @Override
+    public void resetToDefault()
+    {
+        // NO-OP
+    }
+
     public void setModInfo(ModInfo modInfo)
     {
         this.modInfo = modInfo;
@@ -107,11 +120,6 @@ public abstract class BaseConfig<T> implements ConfigOption<T>
             this.nameTranslationKey = this.createNameTranslationKey(modId);
         }
 
-        if (this.prettyNameTranslationKey.equals(this.name))
-        {
-            this.prettyNameTranslationKey = this.createPrettyNameTranslationKey(modId);
-        }
-
         if (this.commentTranslationKey != null && this.commentTranslationKey.equals(this.name))
         {
             this.commentTranslationKey = this.createCommentTranslationKey(modId);
@@ -119,8 +127,13 @@ public abstract class BaseConfig<T> implements ConfigOption<T>
 
         if (this.searchStrings.isEmpty())
         {
-            this.searchStrings.add(this.getPrettyName());
+            this.searchStrings.add(this.getDisplayName());
         }
+    }
+
+    public void setLabelClickHandler(@Nullable EventListener clickHandler)
+    {
+        this.labelClickHandler = clickHandler;
     }
 
     protected String createNameTranslationKey(String modId)
@@ -140,19 +153,13 @@ public abstract class BaseConfig<T> implements ConfigOption<T>
         return modId + ".config.comment." + nameLower;
     }
 
-    public BaseConfig<T> setNameTranslationKey(String key)
+    public BaseConfig setNameTranslationKey(String key)
     {
         this.nameTranslationKey = key;
         return this;
     }
 
-    public BaseConfig<T> setPrettyNameTranslationKey(String key)
-    {
-        this.prettyNameTranslationKey = key;
-        return this;
-    }
-
-    public BaseConfig<T> setCommentTranslationKey(@Nullable String key)
+    public BaseConfig setCommentTranslationKey(@Nullable String key)
     {
         this.commentTranslationKey = key;
         return this;
@@ -165,98 +172,10 @@ public abstract class BaseConfig<T> implements ConfigOption<T>
      * @param searchTerms
      * @return
      */
-    public BaseConfig<T> addSearchTerms(Collection<String> searchTerms)
+    public BaseConfig addSearchTerms(Collection<String> searchTerms)
     {
         this.searchStrings.addAll(searchTerms);
         return this;
-    }
-
-    @Override
-    public String getName()
-    {
-        return this.name;
-    }
-
-    @Override
-    public String getDisplayName()
-    {
-        return getDefaultDisplayName(this, this.nameTranslationKey);
-    }
-
-    @Override
-    public String getPrettyName()
-    {
-        return StringUtils.translate(this.prettyNameTranslationKey);
-    }
-
-    @Override
-    @Nullable
-    public String getComment()
-    {
-        if (this.commentTranslationKey != null)
-        {
-            return StringUtils.translate(this.commentTranslationKey, this.commentArgs);
-        }
-
-        return null;
-    }
-
-    public BaseConfig<T> setCommentArgs(Object... args)
-    {
-        this.commentArgs = args;
-        return this;
-    }
-
-    @Override
-    public List<String> getOldNames()
-    {
-        return this.oldNames;
-    }
-
-    public void setOldNames(String... names)
-    {
-        this.oldNames.clear();
-        this.oldNames.addAll(Arrays.asList(names));
-    }
-
-    @Override
-    @Nullable
-    public EventListener getLabelClickHandler()
-    {
-        return this.labelClickHandler;
-    }
-
-    public void setLabelClickHandler(@Nullable EventListener clickHandler)
-    {
-        this.labelClickHandler = clickHandler;
-    }
-
-    @Override
-    public void setValueChangeCallback(@Nullable ValueChangeCallback<T> callback)
-    {
-        this.valueChangeCallback = callback;
-    }
-
-    @Override
-    public void setValueLoadCallback(@Nullable ValueLoadCallback<T> callback)
-    {
-        this.valueLoadCallback = callback;
-    }
-
-    public void onValueChanged(T newValue, T oldValue)
-    {
-        if (this.valueChangeCallback != null)
-        {
-            this.valueChangeCallback.onValueChanged(newValue, oldValue);
-        }
-    }
-
-    public void onValueLoaded(T newValue)
-    {
-        if (this.valueLoadCallback != null)
-        {
-            this.valueLoadCallback.onValueLoaded(newValue);
-        }
     }
 
     public static String getDefaultDisplayName(ConfigInfo config, String nameTranslationKey)
@@ -266,27 +185,5 @@ public abstract class BaseConfig<T> implements ConfigOption<T>
 
         // If there is no translation for the config name, then show the actual base name
         return translatedName.equals(key) ? config.getName() : translatedName;
-    }
-
-    /**
-     * Whether or not this config is currently locked to its current value,
-     * and can not be changed without unlocking.
-     *
-     * @return true if the config is locked
-     */
-    @Override
-    public boolean isLocked()
-    {
-        return this.locked;
-    }
-
-    /**
-     * Set whether or not this config should be locked to its current value
-     * @param isLocked
-     */
-    @Override
-    public void setLocked(boolean isLocked)
-    {
-        this.locked = isLocked;
     }
 }

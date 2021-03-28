@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.gui.config;
 import java.util.List;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
-import fi.dy.masa.malilib.config.option.BaseConfig;
+import fi.dy.masa.malilib.config.option.BaseConfigOption;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.ModInfo;
@@ -79,7 +79,7 @@ public abstract class BaseConfigGroup implements ConfigInfo
     @Override
     public String getDisplayName()
     {
-        return BaseConfig.getDefaultDisplayName(this, this.nameTranslationKey);
+        return BaseConfigOption.getDefaultDisplayName(this, this.nameTranslationKey);
     }
 
     @Nullable

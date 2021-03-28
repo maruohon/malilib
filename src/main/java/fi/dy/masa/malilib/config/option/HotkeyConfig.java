@@ -9,7 +9,7 @@ import fi.dy.masa.malilib.input.KeyBindSettings;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.ModInfo;
 
-public class HotkeyConfig extends BaseConfig<KeyBind> implements Hotkey
+public class HotkeyConfig extends BaseConfigOption<KeyBind> implements Hotkey
 {
     protected final KeyBind keyBind;
 

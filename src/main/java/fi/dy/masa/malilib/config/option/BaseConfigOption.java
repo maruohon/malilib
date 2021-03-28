@@ -1,0 +1,157 @@
+package fi.dy.masa.malilib.config.option;
+
+import java.util.ArrayList;
+import java.util.List;
+import javax.annotation.Nullable;
+import fi.dy.masa.malilib.config.ValueChangeCallback;
+import fi.dy.masa.malilib.config.ValueLoadCallback;
+import fi.dy.masa.malilib.util.StringUtils;
+import fi.dy.masa.malilib.util.data.ModInfo;
+
+public abstract class BaseConfigOption<T> extends BaseConfig implements ConfigOption<T>
+{
+    protected final List<String> lockOverrideMessages = new ArrayList<>();
+    protected String prettyNameTranslationKey;
+    protected boolean locked;
+    @Nullable protected ValueChangeCallback<T> valueChangeCallback;
+    @Nullable protected ValueLoadCallback<T> valueLoadCallback;
+    @Nullable protected String lockMessage;
+    @Nullable protected String overrideMessage;
+
+    public BaseConfigOption(String name)
+    {
+        this(name, name, name, name);
+    }
+
+    public BaseConfigOption(String name, String commentTranslationKey, Object... commentArgs)
+    {
+        this(name, name, name, commentTranslationKey, commentArgs);
+    }
+
+    public BaseConfigOption(String name, String nameTranslationKey, String prettyNameTranslationKey,
+                            @Nullable String commentTranslationKey, Object... commentArgs)
+    {
+        super(name, nameTranslationKey, commentTranslationKey, commentArgs);
+
+        this.prettyNameTranslationKey = prettyNameTranslationKey;
+    }
+
+    @Override
+    public String getPrettyName()
+    {
+        return StringUtils.translate(this.prettyNameTranslationKey);
+    }
+
+    @Override
+    public List<String> getOldNames()
+    {
+        return this.oldNames;
+    }
+
+    /**
+     * Returns the possible custom messages set to inform the user
+     * about a locked or overridden config value.
+     * @return
+     */
+    public List<String> getLockAndOverrideMessages()
+    {
+        return this.lockOverrideMessages;
+    }
+
+    public void setLockMessage(@Nullable String translationKey)
+    {
+        this.lockMessage = translationKey;
+        this.rebuildLockOverrideMessages();
+    }
+
+    public void setOverrideMessage(@Nullable String translationKey)
+    {
+        this.overrideMessage = translationKey;
+        this.rebuildLockOverrideMessages();
+    }
+
+    protected void rebuildLockOverrideMessages()
+    {
+        this.lockOverrideMessages.clear();
+
+        if (this.isLocked() && this.lockMessage != null)
+        {
+            StringUtils.translateAndLineSplit(this.lockOverrideMessages::add, this.lockMessage);
+        }
+    }
+
+    public BaseConfigOption<T> setPrettyNameTranslationKey(String key)
+    {
+        this.prettyNameTranslationKey = key;
+        return this;
+    }
+
+    @Override
+    public void setModInfo(ModInfo modInfo)
+    {
+        this.modInfo = modInfo;
+
+        String modId = modInfo.getModId();
+
+        // If these are still using the default values, generate the proper keys
+        if (this.nameTranslationKey.equals(this.name))
+        {
+            this.nameTranslationKey = this.createNameTranslationKey(modId);
+        }
+
+        if (this.prettyNameTranslationKey.equals(this.name))
+        {
+            this.prettyNameTranslationKey = this.createPrettyNameTranslationKey(modId);
+        }
+
+        if (this.commentTranslationKey != null && this.commentTranslationKey.equals(this.name))
+        {
+            this.commentTranslationKey = this.createCommentTranslationKey(modId);
+        }
+
+        if (this.searchStrings.isEmpty())
+        {
+            this.searchStrings.add(this.getPrettyName());
+        }
+    }
+
+    @Override
+    public void setValueChangeCallback(@Nullable ValueChangeCallback<T> callback)
+    {
+        this.valueChangeCallback = callback;
+    }
+
+    @Override
+    public void setValueLoadCallback(@Nullable ValueLoadCallback<T> callback)
+    {
+        this.valueLoadCallback = callback;
+    }
+
+    public void onValueChanged(T newValue, T oldValue)
+    {
+        if (this.valueChangeCallback != null)
+        {
+            this.valueChangeCallback.onValueChanged(newValue, oldValue);
+        }
+    }
+
+    public void onValueLoaded(T newValue)
+    {
+        if (this.valueLoadCallback != null)
+        {
+            this.valueLoadCallback.onValueLoaded(newValue);
+        }
+    }
+
+    @Override
+    public boolean isLocked()
+    {
+        return this.locked;
+    }
+
+    @Override
+    public void setLocked(boolean isLocked)
+    {
+        this.locked = isLocked;
+    }
+}

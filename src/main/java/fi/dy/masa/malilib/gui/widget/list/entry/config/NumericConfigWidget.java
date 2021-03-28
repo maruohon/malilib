@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.gui.widget.list.entry.config;
 import java.util.List;
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.config.option.SliderConfig;
-import fi.dy.masa.malilib.config.option.BaseConfig;
+import fi.dy.masa.malilib.config.option.BaseConfigOption;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
@@ -11,7 +11,7 @@ import fi.dy.masa.malilib.gui.widget.SliderWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.util.StringUtils;
 
-public abstract class NumericConfigWidget<TYPE, CFG extends BaseConfig<TYPE> & SliderConfig> extends BaseConfigOptionWidget<TYPE, CFG>
+public abstract class NumericConfigWidget<TYPE, CFG extends BaseConfigOption<TYPE> & SliderConfig> extends BaseConfigOptionWidget<TYPE, CFG>
 {
     protected final BaseTextFieldWidget textField;
     protected final GenericButton sliderToggleButton;

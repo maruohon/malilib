@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.config.option;
 
-public abstract class BaseGenericConfig<T> extends BaseConfig<T>
+public abstract class BaseGenericConfig<T> extends BaseConfigOption<T>
 {
     protected final T defaultValue;
     protected T value;

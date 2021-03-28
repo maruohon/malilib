@@ -5,7 +5,7 @@ import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.config.ValueChangeCallback;
-import fi.dy.masa.malilib.config.option.BaseConfig;
+import fi.dy.masa.malilib.config.option.BaseConfigOption;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.config.option.IntegerConfig;
 import fi.dy.masa.malilib.config.option.OptionListConfig;
@@ -39,7 +39,7 @@ public class KeybindSettingsScreen extends BaseScreen
     protected final BooleanConfig cfgExclusive;
     protected final BooleanConfig cfgFirstOnly;
     protected final IntegerConfig cfgPriority;
-    protected final List<BaseConfig<?>> configList;
+    protected final List<BaseConfigOption<?>> configList;
     protected int labelWidth;
     protected int configWidth;
 
@@ -121,18 +121,18 @@ public class KeybindSettingsScreen extends BaseScreen
         int x = this.x + 10;
         int y = this.y + 24;
 
-        for (BaseConfig<?> config : this.configList)
+        for (BaseConfigOption<?> config : this.configList)
         {
             this.addConfig(x, y, this.labelWidth, this.configWidth, config);
             y += 22;
         }
     }
 
-    public int getMaxDisplayNameLength(List<BaseConfig<?>> configs)
+    public int getMaxDisplayNameLength(List<BaseConfigOption<?>> configs)
     {
         int width = 0;
 
-        for (BaseConfig<?> config : configs)
+        for (BaseConfigOption<?> config : configs)
         {
             width = Math.max(width, this.getStringWidth(config.getPrettyName()));
         }
@@ -140,7 +140,7 @@ public class KeybindSettingsScreen extends BaseScreen
         return width;
     }
 
-    protected void addConfig(int x, int y, int labelWidth, int configWidth, BaseConfig<?> config)
+    protected void addConfig(int x, int y, int labelWidth, int configWidth, BaseConfigOption<?> config)
     {
         int color = config.isModified() ? 0xFFFFFF55 : 0xFFAAAAAA;
         LabelWidget label = this.addLabel(x, y, labelWidth + 4, 20, color, config.getPrettyName());
