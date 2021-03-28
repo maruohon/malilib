@@ -10,7 +10,6 @@ import org.lwjgl.opengl.GL11;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
@@ -28,13 +27,11 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
 {
     protected final Set<ConfigOnTab> configs = new HashSet<>();
     protected final List<BaseConfigStatusIndicatorWidget<?>> widgets = new ArrayList<>();
-    protected boolean needsReLayout;
 
     public ConfigStatusIndicatorContainerWidget()
     {
+        super();
         this.shouldSerialize = true;
-        this.margin.setChangeListener(this::requestReLayout);
-        this.padding.setChangeListener(this::requestReLayout);
     }
 
     public Collection<ConfigOnTab> getConfigs()
@@ -51,11 +48,11 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
             if (factory != null)
             {
                 BaseConfigStatusIndicatorWidget<?> widget = factory.create(config.config, config);
-                widget.setGeometryChangeListener(this::requestReLayout);
+                widget.setGeometryChangeListener(this::requestConditionalReLayout);
                 widget.setHeight(this.lineHeight);
                 this.widgets.add(widget);
                 this.configs.add(config);
-                this.requestReLayout();
+                this.requestUnconditionalReLayout();
             }
         }
     }
@@ -63,7 +60,7 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
     public void removeWidget(BaseConfigStatusIndicatorWidget<?> widget)
     {
         this.widgets.remove(widget);
-        this.requestReLayout();
+        this.requestUnconditionalReLayout();
     }
 
     public ArrayList<BaseConfigStatusIndicatorWidget<?>> getStatusIndicatorWidgets()
@@ -84,7 +81,7 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
             this.configs.add(widget.getConfigOnTab());
         }
 
-        this.requestReLayout();
+        this.requestUnconditionalReLayout();
     }
 
     @Override
@@ -97,27 +94,7 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
             widget.setHeight(this.lineHeight);
         }
 
-        this.requestReLayout();
-    }
-
-    protected void requestReLayout()
-    {
-        this.needsReLayout = true;
-    }
-
-    protected void reLayoutWidgets()
-    {
-        this.updateSize();
-        this.updateWidgetPositions();
-        this.notifyContainerOfChanges(true);
-
-        this.needsReLayout = false;
-    }
-
-    @Override
-    protected void onPositionChanged(int oldX, int oldY)
-    {
-        this.updateWidgetPositions();
+        this.requestUnconditionalReLayout();
     }
 
     @Override
@@ -141,7 +118,8 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
         this.setHeight(height);
     }
 
-    public void updateWidgetPositions()
+    @Override
+    public void updateSubWidgetPositions()
     {
         int x = this.getX() + this.padding.getLeft();
         int y = this.getY() + (this.renderName ? this.lineHeight : 0) + this.padding.getTop();
@@ -156,37 +134,17 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
     }
 
     @Override
-    public void updateState(Minecraft mc)
+    public void updateState()
     {
         for (BaseConfigStatusIndicatorWidget<?> widget : this.widgets)
         {
             widget.updateState(false);
         }
 
-        if (this.needsReLayout)
-        {
-            this.reLayoutWidgets();
-        }
+        super.updateState();
     }
 
     @Override
-    protected void renderBackground(int x, int y, float z)
-    {
-        if (this.renderBackground)
-        {
-            if (this.oddEvenBackground)
-            {
-                this.renderOddEvenLineBackgrounds(x, y, z);
-            }
-            else
-            {
-                int width = this.getWidth();
-                int height = this.getHeight();
-                ShapeRenderUtils.renderRectangle(x, y, z, width, height, this.backgroundColor);
-            }
-        }
-    }
-
     protected void renderOddEvenLineBackgrounds(int x, int y, float z)
     {
         BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR, false);
@@ -300,6 +258,6 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
         }
 
         this.updateSize();
-        this.requestReLayout();
+        this.requestUnconditionalReLayout();
     }
 }

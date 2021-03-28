@@ -73,6 +73,16 @@ public class StringListRenderer extends BaseWidget
         return this.clampedHeight;
     }
 
+    public int getTotalLineCount()
+    {
+        return this.processedLinesFull.size();
+    }
+
+    public boolean isEmpty()
+    {
+        return this.processedLinesFull.isEmpty();
+    }
+
     public void setNormalTextSettings(TextRenderSettings settings)
     {
         this.textSettingsNormal.setFrom(settings);

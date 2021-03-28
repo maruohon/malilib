@@ -2,28 +2,35 @@ package fi.dy.masa.malilib.overlay.widget;
 
 import java.util.List;
 import java.util.function.Supplier;
-import net.minecraft.client.Minecraft;
+import org.lwjgl.opengl.GL11;
+import com.google.gson.JsonObject;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.position.ScreenLocation;
 import fi.dy.masa.malilib.gui.position.VerticalAlignment;
-import fi.dy.masa.malilib.render.text.OrderedStringListFactory;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.render.ShapeRenderUtils;
+import fi.dy.masa.malilib.render.text.OrderedStringListFactory;
 import fi.dy.masa.malilib.render.text.StringListRenderer;
-import fi.dy.masa.malilib.render.text.TextRenderSettings;
+import fi.dy.masa.malilib.util.JsonUtils;
 
 public class StringListRendererWidget extends InfoRendererWidget
 {
     protected final OrderedStringListFactory stringListFactory = new OrderedStringListFactory();
     protected final StringListRenderer stringListRenderer = new StringListRenderer();
-    protected double scale = 1.0;
+    protected double textScale = 1.0;
     protected boolean dirty;
+    protected int textColor = 0xFFFFFFFF;
     protected int stringListPosX;
     protected int stringListPosY;
 
     public StringListRendererWidget()
     {
-        this.stringListRenderer.setNormalTextColor(0xFFFFFFFF);
+        super();
+        this.shouldSerialize = true;
+        this.stringListRenderer.setNormalTextColor(this.textColor);
     }
 
     /**
@@ -62,29 +69,34 @@ public class StringListRendererWidget extends InfoRendererWidget
         this.stringListRenderer.setVerticalAlignment(this.location.verticalLocation);
     }
 
-    public void setScale(double scale)
+    public double getTextScale()
     {
-        this.scale = scale;
+        return this.textScale;
+    }
+
+    public void setTextScale(double scale)
+    {
+        this.textScale = scale;
         this.markDirty();
     }
 
-    public void setTextSettings(TextRenderSettings settings)
+    public int getTextColor()
     {
-        this.stringListRenderer.setNormalTextSettings(settings);
+        return this.textColor;
+    }
+
+    public void setTextColor(int color)
+    {
+        this.textColor = color;
+        this.stringListRenderer.setNormalTextColor(color);
     }
 
     @Override
-    public void updateWidth()
+    public void setLineHeight(int lineHeight)
     {
-        int width = (int) Math.ceil(this.stringListRenderer.getTotalRenderWidth() * this.scale);
-        this.setWidth(width + this.padding.getHorizontalTotal());
-    }
+        super.setLineHeight(lineHeight);
 
-    @Override
-    public void updateHeight()
-    {
-        int height = (int) Math.ceil(this.stringListRenderer.getTotalRenderHeight() * this.scale);
-        this.setHeight(height + this.padding.getVerticalTotal());
+        this.stringListRenderer.setLineHeight(lineHeight);
     }
 
     /**
@@ -108,8 +120,7 @@ public class StringListRendererWidget extends InfoRendererWidget
             this.stringListFactory.markDirty();
             this.stringListRenderer.setStyledTextLines(this.stringListFactory.getStyledLines());
 
-            this.updateSize();
-            this.notifyContainerOfChanges(false);
+            this.requestConditionalReLayout();
         }
 
         /*
@@ -126,6 +137,17 @@ public class StringListRendererWidget extends InfoRendererWidget
         //System.out.print("StringListRendererWidget#onPositionChanged()\n");
         super.onPositionChanged(oldX, oldY);
         this.updateStringListRendererPosition();
+    }
+
+    @Override
+    public void updateSize()
+    {
+        int height = this.renderName ? this.lineHeight : 0;
+        int width = (int) Math.ceil(this.stringListRenderer.getTotalRenderWidth() * this.textScale) + 10 + this.padding.getHorizontalTotal();
+        height += (int) Math.ceil(this.stringListRenderer.getTotalRenderHeight() * this.textScale) + this.padding.getVerticalTotal();
+
+        this.setWidth(width);
+        this.setHeight(height);
     }
 
     protected void updateStringListRendererPosition()
@@ -162,6 +184,28 @@ public class StringListRendererWidget extends InfoRendererWidget
     }
 
     @Override
+    public JsonObject toJson()
+    {
+        JsonObject obj = super.toJson();
+
+        obj.addProperty("text_scale", this.textScale);
+        obj.addProperty("text_color", this.textColor);
+
+        return obj;
+    }
+
+    @Override
+    public void fromJson(JsonObject obj)
+    {
+        super.fromJson(obj);
+
+        this.textScale = JsonUtils.getDoubleOrDefault(obj, "text_scale", 1.0);
+        this.setTextColor(JsonUtils.getIntegerOrDefault(obj, "text_color", 0xFFFFFFFF));
+
+        this.updateSize();
+    }
+
+    @Override
     protected int getContentStartX()
     {
         return this.stringListPosX;
@@ -174,23 +218,77 @@ public class StringListRendererWidget extends InfoRendererWidget
     }
 
     @Override
-    public void updateState(Minecraft mc)
+    public void updateState()
     {
         if (this.dirty)
         {
             this.updateLines();
             this.dirty = false;
         }
+
+        super.updateState();
+    }
+
+    @Override
+    protected void renderOddEvenLineBackgrounds(int x, int y, float z)
+    {
+        BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR, false);
+
+        int width = this.getWidth();
+        int size = this.stringListRenderer.getTotalLineCount();
+        int i = 0;
+
+        if (this.renderName && this.styledName != null)
+        {
+            int height = this.lineHeight + this.padding.getTop();
+
+            if (size > 0)
+            {
+                height += this.lineHeight;
+            }
+            else
+            {
+                height += this.padding.getBottom();
+            }
+
+            ShapeRenderUtils.renderRectangle(x, y, z, width, height, this.backgroundColor, buffer);
+            y += height;
+            i = 1;
+        }
+
+        for (; i < size; ++i)
+        {
+            int height = this.lineHeight;
+
+            if (i == 0)
+            {
+                height += this.padding.getTop();
+            }
+
+            if (i == size - 1)
+            {
+                height += this.padding.getBottom();
+            }
+
+            int color = (i & 0x1) != 0 ? this.backgroundColorOdd : this.backgroundColor;
+            ShapeRenderUtils.renderRectangle(x, y, z, width, height, color, buffer);
+            y += height;
+        }
+
+        RenderUtils.drawBuffer();
     }
 
     @Override
     protected void renderContents(int x, int y, float z)
     {
-        if (this.scale != 1.0)
+        x += this.padding.getLeft();
+        y += this.padding.getTop();
+
+        if (this.textScale != 1.0)
         {
             GlStateManager.pushMatrix();
             GlStateManager.translate(x, y, z);
-            GlStateManager.scale(this.scale, this.scale, 1);
+            GlStateManager.scale(this.textScale, this.textScale, 1);
 
             this.stringListRenderer.renderAt(0, 0, 0, false);
 

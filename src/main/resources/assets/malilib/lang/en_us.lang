@@ -322,6 +322,8 @@ malilib.label.line_height.colon=Line height:
 malilib.label.name.colon=Name:
 malilib.label.render_name.colon=Render name:
 malilib.label.sort_index.colon=Sort index:
+malilib.label.text_color.colon=Text Color:
+malilib.label.text_scale.colon=Text Scale:
 
 malilib.label.off=off
 malilib.label.on=on

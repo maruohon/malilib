@@ -57,7 +57,7 @@ public class ClientWorldChangeEventDispatcherImpl implements ClientWorldChangeEv
         if (worldAfter == null && worldBefore != null)
         {
             ((ConfigManagerImpl) ConfigManager.INSTANCE).saveAllConfigs();
-            //InfoWidgetManager.INSTANCE.saveToFile();
+            InfoWidgetManager.INSTANCE.saveToFileIfDirty();
         }
         // (Re-)Load all the configs from file when entering a world
         else if (worldBefore == null && worldAfter != null)

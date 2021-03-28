@@ -23,7 +23,7 @@ public class InfoArea
     protected final ScreenLocation location;
     protected final IntSupplier viewportWidthSupplier;
     protected final IntSupplier viewportHeightSupplier;
-    @Nullable protected final EventListener widgetChangeListener;
+    @Nullable protected final EventListener enabledWidgetsChangedListener;
     protected boolean needsReLayout;
     protected boolean needsWidgetUpdate;
     protected int x;
@@ -34,18 +34,18 @@ public class InfoArea
     protected int offsetY;
 
     public InfoArea(ScreenLocation location,
-                    @Nullable EventListener widgetChangeListener)
+                    @Nullable EventListener enabledWidgetsChangedListener)
     {
-        this(location, GuiUtils::getScaledWindowWidth, GuiUtils::getScaledWindowHeight, widgetChangeListener);
+        this(location, GuiUtils::getScaledWindowWidth, GuiUtils::getScaledWindowHeight, enabledWidgetsChangedListener);
     }
 
     public InfoArea(ScreenLocation location,
                     IntSupplier viewportWidthSupplier,
                     IntSupplier viewportHeightSupplier,
-                    @Nullable EventListener widgetChangeListener)
+                    @Nullable EventListener enabledWidgetsChangedListener)
     {
         this.location = location;
-        this.widgetChangeListener = widgetChangeListener;
+        this.enabledWidgetsChangedListener = enabledWidgetsChangedListener;
         this.viewportWidthSupplier = viewportWidthSupplier;
         this.viewportHeightSupplier = viewportHeightSupplier;
     }
@@ -55,13 +55,18 @@ public class InfoArea
      */
     @SuppressWarnings("unchecked")
     @Nullable
-    public <C extends InfoRendererWidget> C findWidget(Class<C> clazz, Predicate<InfoRendererWidget> predicate)
+    public <C extends InfoRendererWidget> C findWidget(Class<C> clazz, Predicate<C> predicate)
     {
         for (InfoRendererWidget widget : this.allWidgets)
         {
-            if (clazz.isAssignableFrom(widget.getClass()) && predicate.test(widget))
+            if (clazz.isAssignableFrom(widget.getClass()))
             {
-                return (C) widget;
+                C obj = clazz.cast(widget);
+
+                if (predicate.test(obj))
+                {
+                    return (C) widget;
+                }
             }
         }
 
@@ -75,7 +80,7 @@ public class InfoArea
         {
             boolean isOverlay = widget.isOverlay();
             this.addWidgetImpl(widget, isOverlay);
-            this.notifyWidgetChange(isOverlay == false);
+            this.notifyEnabledWidgetsChanged(isOverlay == false);
         }
     }
 
@@ -83,7 +88,7 @@ public class InfoArea
     {
         //System.out.printf("InfoArea(%s)#addWidgetImpl() - all: %d, enabled: %d\n", this.location, this.allWidgets.size(), this.enabledInfoWidgets.size());
         widget.setLocation(this.location);
-        widget.setEnabledChangeListener(() -> this.notifyWidgetChange(isOverlay == false));
+        widget.setEnabledChangeListener(() -> this.notifyEnabledWidgetsChanged(isOverlay == false));
         widget.setGeometryChangeListener(this::requestReLayout);
 
         this.allWidgets.add(widget);
@@ -105,7 +110,7 @@ public class InfoArea
             }
         }
 
-        this.notifyWidgetChange(true);
+        this.notifyEnabledWidgetsChanged(true);
     }
 
     public void removeWidget(InfoRendererWidget widget)
@@ -113,7 +118,7 @@ public class InfoArea
         //System.out.printf("InfoArea(%s)#removeWidget() - all: %d, enabled: %d\n", this.location, this.allWidgets.size(), this.enabledInfoWidgets.size());
         if (this.allWidgets.remove(widget))
         {
-            this.notifyWidgetChange(widget.isOverlay() == false);
+            this.notifyEnabledWidgetsChanged(widget.isOverlay() == false);
         }
     }
 
@@ -124,7 +129,7 @@ public class InfoArea
 
         if (this.allWidgets.removeAll(set))
         {
-            this.notifyWidgetChange(true);
+            this.notifyEnabledWidgetsChanged(true);
         }
     }
 
@@ -134,11 +139,6 @@ public class InfoArea
         if (this.needsWidgetUpdate)
         {
             this.updateEnabledWidgets();
-        }
-
-        if (this.needsReLayout)
-        {
-            this.reLayoutWidgets();
         }
 
         return this.allEnabledWidgets;
@@ -151,19 +151,17 @@ public class InfoArea
     public void requestReLayout()
     {
         this.needsReLayout = true;
-
-        if (this.widgetChangeListener != null)
-        {
-            this.widgetChangeListener.onEvent();
-        }
     }
 
     /**
      * Notifies the InfoArea that the set of enabled widgets has changed.
      * Note that this alone does not cause a re-layout of the widgets,
      * unless the needsReLayout argument is true.
+     * <br>
+     * This also notifies the listener (usually the InfoOverlay) that
+     * the set of enabled widgets has changed and should be re-fetched.
      */
-    public void notifyWidgetChange(boolean needsReLayout)
+    public void notifyEnabledWidgetsChanged(boolean needsReLayout)
     {
         //System.out.printf("InfoArea(%s)#notifyWidgetChange() - all: %d, enabled: %d\n", this.location, this.allWidgets.size(), this.enabledInfoWidgets.size());
         this.needsWidgetUpdate = true;
@@ -173,9 +171,9 @@ public class InfoArea
             this.requestReLayout();
         }
 
-        if (this.widgetChangeListener != null)
+        if (this.enabledWidgetsChangedListener != null)
         {
-            this.widgetChangeListener.onEvent();
+            this.enabledWidgetsChangedListener.onEvent();
         }
     }
 
@@ -213,6 +211,14 @@ public class InfoArea
         this.needsReLayout = false;
     }
 
+    public void updateState()
+    {
+        if (this.needsReLayout)
+        {
+            this.reLayoutWidgets();
+        }
+    }
+
     /**
      * Updates the size of the InfoArea so that it tightly encloses
      * all the currently enabled widgets.
@@ -230,7 +236,7 @@ public class InfoArea
             int topGap = Math.max(prev, margin.getTop());
             prev = margin.getBottom();
 
-            width = Math.max(width, widget.getWidth() + widget.getMargin().getHorizontalTotal());
+            width = Math.max(width, widget.getWidth() + margin.getHorizontalTotal());
             height += widget.getHeight() + topGap;
         }
 

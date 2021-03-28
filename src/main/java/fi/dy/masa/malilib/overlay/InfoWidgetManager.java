@@ -12,6 +12,7 @@ import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.overlay.widget.InfoRendererWidget;
 import fi.dy.masa.malilib.overlay.widget.ConfigStatusIndicatorContainerWidget;
+import fi.dy.masa.malilib.overlay.widget.StringListRendererWidget;
 import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.JsonUtils;
 
@@ -21,6 +22,7 @@ public class InfoWidgetManager
 
     protected final ArrayListMultimap<Class<? extends InfoRendererWidget>, InfoRendererWidget> widgets = ArrayListMultimap.create();
     protected final InfoOverlay infoOverlay;
+    protected boolean dirty;
 
     public InfoWidgetManager(InfoOverlay infoOverlay)
     {
@@ -33,6 +35,7 @@ public class InfoWidgetManager
         {
             this.widgets.put(widget.getClass(), widget);
             this.infoOverlay.getOrCreateInfoArea(widget.getScreenLocation()).addWidget(widget);
+            this.dirty = true;
         }
     }
 
@@ -40,6 +43,7 @@ public class InfoWidgetManager
     {
         this.widgets.remove(widget.getClass(), widget);
         this.infoOverlay.getOrCreateInfoArea(widget.getScreenLocation()).removeWidget(widget);
+        this.dirty = true;
     }
 
     @SuppressWarnings("unchecked")
@@ -127,6 +131,17 @@ public class InfoWidgetManager
         }
     }
 
+    public boolean saveToFileIfDirty()
+    {
+        if (this.dirty)
+        {
+            this.dirty = false;
+            return this.saveToFile();
+        }
+
+        return false;
+    }
+
     public boolean saveToFile()
     {
         File dir = FileUtils.getConfigDirectory();
@@ -167,7 +182,8 @@ public class InfoWidgetManager
 
     private static void registerDefaultFactories()
     {
-        registerWidgetFactory(ConfigStatusIndicatorContainerWidget.class, ConfigStatusIndicatorContainerWidget::new);
+        registerWidgetFactory(ConfigStatusIndicatorContainerWidget.class,   ConfigStatusIndicatorContainerWidget::new);
+        registerWidgetFactory(StringListRendererWidget.class,               StringListRendererWidget::new);
     }
 
     static
