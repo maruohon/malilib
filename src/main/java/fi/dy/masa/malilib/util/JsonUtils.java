@@ -1,8 +1,11 @@
 package fi.dy.masa.malilib.util;
 
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -441,7 +444,7 @@ public class JsonUtils
             try
             {
                 JsonParser parser = new JsonParser();
-                FileReader reader = new FileReader(file);
+                InputStreamReader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_16);
 
                 JsonElement element = parser.parse(reader);
                 reader.close();
@@ -477,7 +480,7 @@ public class JsonUtils
 
     public static boolean writeJsonToFile(Gson gson, JsonElement root, File file)
     {
-        FileWriter writer = null;
+        OutputStreamWriter writer = null;
         File fileTmp = new File(file.getParentFile(), file.getName() + ".tmp");
 
         if (fileTmp.exists())
@@ -487,7 +490,7 @@ public class JsonUtils
 
         try
         {
-            writer = new FileWriter(fileTmp);
+            writer = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_16);
             writer.write(gson.toJson(root));
             writer.close();
 
