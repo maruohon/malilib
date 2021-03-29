@@ -444,7 +444,7 @@ public class JsonUtils
             try
             {
                 JsonParser parser = new JsonParser();
-                InputStreamReader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_16);
+                InputStreamReader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
 
                 JsonElement element = parser.parse(reader);
                 reader.close();
@@ -490,7 +490,7 @@ public class JsonUtils
 
         try
         {
-            writer = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_16);
+            writer = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8);
             writer.write(gson.toJson(root));
             writer.close();
 
