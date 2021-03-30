@@ -29,7 +29,7 @@ public class BaseConfig implements ConfigInfo
 
     public BaseConfig(String name, String commentTranslationKey, Object... commentArgs)
     {
-        this(name, name, name, commentTranslationKey, commentArgs);
+        this(name, name, commentTranslationKey, commentArgs);
     }
 
     public BaseConfig(String name, String nameTranslationKey,
