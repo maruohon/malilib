@@ -243,11 +243,6 @@ public class InfoArea
         height += prev;
         this.width = width;
         this.height = height;
-
-        for (InfoRendererWidget widget : this.enabledInfoWidgets)
-        {
-            widget.setContainerDimensions(width, height);
-        }
     }
 
     /**

@@ -1,5 +1,7 @@
 package fi.dy.masa.malilib.gui.position;
 
+import java.util.Collections;
+import java.util.List;
 import javax.annotation.Nullable;
 import com.google.gson.JsonArray;
 import fi.dy.masa.malilib.listener.EventListener;
@@ -143,10 +145,10 @@ public class EdgeInt
         return this;
     }
 
-    public String getHoverTooltip()
+    public List<String> getHoverTooltip()
     {
-        return StringUtils.translate("malilib.gui.button.hover.edge_int_values",
-                                     this.top, this.left, this.right, this.bottom);
+        return Collections.singletonList(StringUtils.translate("malilib.gui.button.hover.edge_int_values",
+                                         this.top, this.left, this.right, this.bottom));
     }
 
     public JsonArray toJson()
@@ -178,6 +180,8 @@ public class EdgeInt
                 this.right = right;
                 this.bottom = bottom;
                 this.left = left;
+
+                this.notifyChange();
 
                 return true;
             }

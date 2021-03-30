@@ -30,7 +30,7 @@ public abstract class BaseConfigStatusIndicatorWidget<C extends ConfigInfo> exte
     {
         this.config = config;
         this.configOnTab = configOnTab;
-        this.oddEvenBackground = true;
+        this.getTextSettings().setUseOddEvenBackground(true);
 
         this.setHeight(this.lineHeight);
         this.setName(config.getDisplayName());

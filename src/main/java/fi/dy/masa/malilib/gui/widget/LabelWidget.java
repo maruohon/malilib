@@ -20,8 +20,8 @@ public class LabelWidget extends BackgroundWidget
     {
         super(x, y, width, height);
 
-        this.stringListRenderer.setNormalTextColor(textColor);
-        this.stringListRenderer.setHoverTextColor(textColor);
+        this.stringListRenderer.getNormalTextSettings().setTextColor(textColor);
+        this.stringListRenderer.getHoverTextSettings().setTextColor(textColor);
     }
 
     public LabelWidget(int x, int y, int textColor, String... text)
@@ -119,7 +119,7 @@ public class LabelWidget extends BackgroundWidget
 
     public LabelWidget setUseTextShadow(boolean useShadow)
     {
-        this.stringListRenderer.setUseTextShadow(useShadow);
+        this.stringListRenderer.getNormalTextSettings().setUseTextShadow(useShadow);
         return this;
     }
 
@@ -132,13 +132,13 @@ public class LabelWidget extends BackgroundWidget
     
     public LabelWidget setNormalTextColor(int color)
     {
-        this.stringListRenderer.setNormalTextColor(color);
+        this.stringListRenderer.getNormalTextSettings().setTextColor(color);
         return this;
     }
 
     public LabelWidget setHoverTextColor(int color)
     {
-        this.stringListRenderer.setHoverTextColor(color);
+        this.stringListRenderer.getHoverTextSettings().setTextColor(color);
         return this;
     }
 

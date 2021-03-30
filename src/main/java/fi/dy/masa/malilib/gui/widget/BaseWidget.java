@@ -87,42 +87,6 @@ public class BaseWidget
         return this.getY() + this.getHeight();
     }
 
-    /**
-     * Returns the start position of any content, basically offsetting
-     * the widget x-position by the left padding.
-     */
-    protected int getContentStartX()
-    {
-        return this.getX() + this.padding.getLeft();
-    }
-
-    /**
-     * Returns the end position of any content, basically offsetting
-     * the widget right edge x-position by the right padding.
-     */
-    protected int getContentEndX()
-    {
-        return this.getX() + this.getWidth() - this.padding.getRight() - 1;
-    }
-
-    /**
-     * Returns the start position of any content, basically offsetting
-     * the widget y-position by the top padding.
-     */
-    protected int getContentStartY()
-    {
-        return this.getY() + this.padding.getTop();
-    }
-
-    /**
-     * Returns the end position of any content, basically offsetting
-     * the widget bottom edge y-position by the bottom padding.
-     */
-    protected int getContentEndY()
-    {
-        return this.getY() + this.getHeight() - this.padding.getBottom() - 1;
-    }
-
     public final void setX(int x)
     {
         int oldX = this.x;

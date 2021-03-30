@@ -17,32 +17,28 @@ import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.overlay.InfoWidgetManager;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
+import fi.dy.masa.malilib.render.text.TextRenderSettings;
 import fi.dy.masa.malilib.util.JsonUtils;
 
 public abstract class InfoRendererWidget extends BaseWidget
 {
     protected final List<Consumer<ScreenLocation>> locationChangeListeners = new ArrayList<>();
     protected final Set<UUID> markers = new HashSet<>();
+    protected TextRenderSettings textSettings = new TextRenderSettings();
     protected ScreenLocation location = ScreenLocation.TOP_LEFT;
     protected String name = "?";
     @Nullable protected EventListener geometryChangeListener;
     @Nullable protected EventListener enabledChangeListener;
     @Nullable protected StyledTextLine styledName;
     protected boolean enabled = true;
-    protected boolean delaydGeometryUpdate;
+    protected boolean delayedGeometryUpdate;
     protected boolean forceNotifyGeometryChangeListener;
     protected boolean isOverlay;
     protected boolean needsReLayout;
-    protected boolean oddEvenBackground;
-    protected boolean renderBackground;
     protected boolean renderName;
     protected boolean shouldSerialize;
     protected long previousGeometryUpdateTime = -1;
-    protected long geometryShrinkDelay = (long) (5 * 1E9); // 5 seconds
-    protected int backgroundColor = 0x30A0A0A0;
-    protected int backgroundColorOdd = 0x40A0A0A0;
-    protected int containerWidth;
-    protected int containerHeight;
+    protected long geometryShrinkDelay = (long) (2 * 1E9); // 2 seconds
     protected int geometryShrinkThresholdX = 40;
     protected int geometryShrinkThresholdY = 10;
     protected int previousUpdatedWidth;
@@ -88,16 +84,6 @@ public abstract class InfoRendererWidget extends BaseWidget
         return this.sortIndex;
     }
 
-    public boolean isBackgroundEnabled()
-    {
-        return this.renderBackground;
-    }
-
-    public boolean isOddEvenBackgroundEnabled()
-    {
-        return this.oddEvenBackground;
-    }
-
     public boolean getRenderName()
     {
         return this.renderName;
@@ -113,14 +99,9 @@ public abstract class InfoRendererWidget extends BaseWidget
         return this.location;
     }
 
-    public int getBackgroundColor()
+    public TextRenderSettings getTextSettings()
     {
-        return this.backgroundColor;
-    }
-
-    public int getOddBackgroundColor()
-    {
-        return this.backgroundColorOdd;
+        return this.textSettings;
     }
 
     public void toggleEnabled()
@@ -139,16 +120,6 @@ public abstract class InfoRendererWidget extends BaseWidget
         }
     }
 
-    public void toggleBackgroundEnabled()
-    {
-        this.renderBackground = ! this.renderBackground;
-    }
-
-    public void toggleOddEvenBackgroundEnabled()
-    {
-        this.oddEvenBackground = ! this.oddEvenBackground;
-    }
-
     public void toggleRenderName()
     {
         this.renderName = ! this.renderName;
@@ -161,16 +132,6 @@ public abstract class InfoRendererWidget extends BaseWidget
     public void setSortIndex(int index)
     {
         this.sortIndex = index;
-    }
-
-    public void setBackgroundColor(int color)
-    {
-        this.backgroundColor = color;
-    }
-
-    public void setOddBackgroundColor(int color)
-    {
-        this.backgroundColorOdd = color;
     }
 
     /**
@@ -227,12 +188,6 @@ public abstract class InfoRendererWidget extends BaseWidget
     public boolean hasMarker(UUID marker)
     {
         return this.markers.contains(marker);
-    }
-
-    public void setContainerDimensions(int width, int height)
-    {
-        this.containerWidth = width;
-        this.containerHeight = height;
     }
 
     public void setLocation(ScreenLocation location)
@@ -299,7 +254,7 @@ public abstract class InfoRendererWidget extends BaseWidget
             this.previousUpdatedWidth = this.getWidth();
             this.previousUpdatedHeight = this.getHeight();
             this.previousGeometryUpdateTime = System.nanoTime();
-            this.delaydGeometryUpdate = false;
+            this.delayedGeometryUpdate = false;
         }
     }
 
@@ -316,7 +271,7 @@ public abstract class InfoRendererWidget extends BaseWidget
         if (width < (this.previousUpdatedWidth - this.geometryShrinkThresholdX) ||
             height < (this.previousUpdatedHeight - this.geometryShrinkThresholdY))
         {
-            this.delaydGeometryUpdate = true;
+            this.delayedGeometryUpdate = true;
             return System.nanoTime() - this.previousGeometryUpdateTime > this.geometryShrinkDelay;
         }
 
@@ -336,7 +291,7 @@ public abstract class InfoRendererWidget extends BaseWidget
 
         // Keep checking for geometry updates until the delay time runs out,
         // if the contents are set to shrink after a delay
-        if (this.delaydGeometryUpdate)
+        if (this.delayedGeometryUpdate)
         {
             this.notifyContainerOfChanges(false);
         }
@@ -360,32 +315,46 @@ public abstract class InfoRendererWidget extends BaseWidget
     public void renderAt(int x, int y, float z)
     {
         this.renderBackground(x, y, z);
+        y += this.renderName(x, y, z);
+        this.renderContents(x, y, z);
+    }
 
+    protected int renderName(int x, int y, float z)
+    {
         if (this.renderName && this.styledName != null)
         {
-            y += this.padding.getTop();
+            int paddingTop = this.padding.getTop();
+            y += paddingTop;
             this.renderTextLine(x + this.padding.getLeft(), y, z, 0xFFFFFFFF, true, this.styledName);
-            y += this.lineHeight;
+
+            return this.lineHeight + paddingTop;
         }
 
-        this.renderContents(x, y, z);
+        return 0;
     }
 
     protected void renderBackground(int x, int y, float z)
     {
-        if (this.renderBackground)
+        TextRenderSettings settings = this.getTextSettings();
+
+        if (settings.getUseBackground())
         {
-            if (this.oddEvenBackground)
+            if (settings.getUseOddEvenBackground())
             {
                 this.renderOddEvenLineBackgrounds(x, y, z);
             }
             else
             {
-                int width = this.getWidth();
-                int height = this.getHeight();
-                ShapeRenderUtils.renderRectangle(x, y, z, width, height, this.backgroundColor);
+                this.renderSingleBackground(x, y, z);
             }
         }
+    }
+
+    protected void renderSingleBackground(int x, int y, float z)
+    {
+        int width = this.getWidth();
+        int height = this.getHeight();
+        ShapeRenderUtils.renderRectangle(x, y, z, width, height, this.getTextSettings().getBackgroundColor());
     }
 
     protected void renderOddEvenLineBackgrounds(int x, int y, float z)
@@ -405,13 +374,10 @@ public abstract class InfoRendererWidget extends BaseWidget
         obj.addProperty("enabled", this.isEnabled());
         obj.addProperty("screen_location", this.getScreenLocation().getName());
         obj.addProperty("render_name", this.renderName);
-        obj.addProperty("bg_enabled", this.renderBackground);
-        obj.addProperty("bg_odd_even", this.oddEvenBackground);
-        obj.addProperty("bg_color", this.backgroundColor);
-        obj.addProperty("bg_color_odd", this.backgroundColorOdd);
         obj.addProperty("sort_index", this.getSortIndex());
         obj.add("padding", this.padding.toJson());
         obj.add("margin", this.margin.toJson());
+        obj.add("text_settings", this.getTextSettings().toJson());
 
         if (this.markers.isEmpty() == false)
         {
@@ -431,10 +397,6 @@ public abstract class InfoRendererWidget extends BaseWidget
     public void fromJson(JsonObject obj)
     {
         this.enabled = JsonUtils.getBooleanOrDefault(obj, "enabled", true);
-        this.renderBackground = JsonUtils.getBooleanOrDefault(obj, "bg_enabled", false);
-        this.oddEvenBackground = JsonUtils.getBooleanOrDefault(obj, "bg_odd_even", false);
-        this.backgroundColor = JsonUtils.getIntegerOrDefault(obj, "bg_color", 0x30A0A0A0);
-        this.backgroundColorOdd = JsonUtils.getIntegerOrDefault(obj, "bg_color_odd", 0x40A0A0A0);
         this.renderName = JsonUtils.getBooleanOrDefault(obj, "render_name", false);
         this.setName(JsonUtils.getStringOrDefault(obj, "name", this.name));
         this.setSortIndex(JsonUtils.getIntegerOrDefault(obj, "sort_index", 100));
@@ -453,6 +415,11 @@ public abstract class InfoRendererWidget extends BaseWidget
         if (JsonUtils.hasArray(obj, "margin"))
         {
             this.margin.fromJson(obj.get("margin").getAsJsonArray());
+        }
+
+        if (JsonUtils.hasObject(obj, "text_settings"))
+        {
+            this.getTextSettings().fromJson(obj.get("text_settings").getAsJsonObject());
         }
 
         this.markers.clear();

@@ -20,6 +20,7 @@ import fi.dy.masa.malilib.gui.config.ConfigWidgetRegistry;
 import fi.dy.masa.malilib.overlay.widget.sub.BaseConfigStatusIndicatorWidget;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
+import fi.dy.masa.malilib.render.text.TextRenderSettings;
 import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.data.ConfigOnTab;
 
@@ -31,6 +32,7 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
     public ConfigStatusIndicatorContainerWidget()
     {
         super();
+
         this.shouldSerialize = true;
     }
 
@@ -149,6 +151,9 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
     {
         BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR, false);
 
+        TextRenderSettings settings = this.getTextSettings();
+        int bgColor = settings.getBackgroundColor();
+        int bgColorOdd = settings.getOddRowBackgroundColor();
         int width = this.getWidth();
         int size = this.widgets.size();
         int i = 0;
@@ -167,7 +172,7 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
                 height += this.padding.getBottom();
             }
 
-            ShapeRenderUtils.renderRectangle(x, y, z, width, height, this.backgroundColor, buffer);
+            ShapeRenderUtils.renderRectangle(x, y, z, width, height, bgColor, buffer);
             y += height;
             i = 1;
         }
@@ -187,7 +192,7 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
                 height += this.padding.getBottom();
             }
 
-            int color = (i & 0x1) != 0 ? this.backgroundColorOdd : this.backgroundColor;
+            int color = (i & 0x1) != 0 ? bgColorOdd : bgColor;
             ShapeRenderUtils.renderRectangle(x, y, z, width, height, color, buffer);
             y += height;
         }
