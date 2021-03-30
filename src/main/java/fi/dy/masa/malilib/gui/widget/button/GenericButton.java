@@ -6,6 +6,7 @@ import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
+import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
@@ -275,6 +276,21 @@ public class GenericButton extends BaseButton
                 this.renderTextLine(tx, ty, z, color, this.textShadow, this.styledDisplayString);
             }
         }
+    }
+
+    public static GenericButton simple(int width, int height, String translationKey, EventListener actionListener)
+    {
+        GenericButton button = new GenericButton(0, 0, width, height, translationKey);
+        button.setActionListener(actionListener);
+        return button;
+    }
+
+    public static GenericButton simple(int width, int height, String translationKey,
+                                       EventListener actionListener, String hoverTextTranslationKey)
+    {
+        GenericButton button = new GenericButton(0, 0, width, height, translationKey, hoverTextTranslationKey);
+        button.setActionListener(actionListener);
+        return button;
     }
 
     public static GenericButton createIconOnly(int x, int y, MultiIcon icon)

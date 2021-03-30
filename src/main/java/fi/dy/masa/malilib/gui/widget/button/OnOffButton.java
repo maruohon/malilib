@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
+import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.overlay.message.MessageHelpers;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
@@ -162,5 +163,12 @@ public class OnOffButton extends GenericButton
         RenderUtils.bindTexture(icon.getTexture());
         ShapeRenderUtils.renderTexturedRectangle(sliderX, y + 1              , z, u, v1, iconWidth, iconHeight1);
         ShapeRenderUtils.renderTexturedRectangle(sliderX, y + 1 + iconHeight1, z, u, v2, iconWidth, iconHeight2);
+    }
+
+    public static OnOffButton simpleSlider(int height, BooleanSupplier statusSupplier, EventListener actionListener)
+    {
+        OnOffButton button = new OnOffButton(0, 0, -1, height, OnOffStyle.SLIDER_ON_OFF, statusSupplier, null);
+        button.setActionListener(actionListener);
+        return button;
     }
 }

@@ -14,12 +14,12 @@ import fi.dy.masa.malilib.gui.widget.IntegerEditWidget;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.button.OnOffButton;
-import fi.dy.masa.malilib.gui.widget.button.OnOffStyle;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.ConfigStatusIndicatorEntryWidget;
 import fi.dy.masa.malilib.overlay.InfoOverlay;
 import fi.dy.masa.malilib.overlay.widget.ConfigStatusIndicatorContainerWidget;
 import fi.dy.masa.malilib.overlay.widget.sub.BaseConfigStatusIndicatorWidget;
+import fi.dy.masa.malilib.render.text.TextRenderSettings;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataListWidget<BaseConfigStatusIndicatorWidget<?>>>
@@ -72,32 +72,22 @@ public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataLis
         this.priorityEditWidget = new IntegerEditWidget(0, 0, 72, 16, widget.getSortIndex(), -1000, 1000, widget::setSortIndex);
         this.lineHeightEditWidget = new IntegerEditWidget(0, 0, 72, 16, widget.getLineHeight(), 6, 40, widget::setLineHeight);
 
-        this.addConfigsButton = new GenericButton(0, 0, -1, 20, "malilib.gui.button.add_configs", "malilib.gui.button.hover.add_configs_to_status_indicator_group");
-        this.addConfigsButton.setActionListener(this::openAddConfigsScreen);
+        this.addConfigsButton = GenericButton.simple(-1, 20, "malilib.gui.button.add_configs", this::openAddConfigsScreen, "malilib.gui.button.hover.add_configs_to_status_indicator_group");
+        this.marginEditButton = GenericButton.simple(-1, 16, "malilib.label.margin", this::openMarginEditScreen);
+        this.marginEditButton.setHoverStringProvider("tooltip", this.widget.getMargin()::getHoverTooltip);
 
-        this.marginEditButton = new GenericButton(0, 0, -1, 16, "malilib.label.margin");
-        this.marginEditButton.addHoverStrings(this.widget.getMargin().getHoverTooltip());
-        this.marginEditButton.setActionListener(this::openMarginEditScreen);
+        this.paddingEditButton = GenericButton.simple(-1, 16, "malilib.label.padding", this::openPaddingEditScreen);
+        this.paddingEditButton.setHoverStringProvider("tooltip", this.widget.getPadding()::getHoverTooltip);
 
-        this.paddingEditButton = new GenericButton(0, 0, -1, 16, "malilib.label.padding");
-        this.paddingEditButton.addHoverStrings(this.widget.getPadding().getHoverTooltip());
-        this.paddingEditButton.setActionListener(this::openPaddingEditScreen);
-
-        this.groupEnabledToggleButton = new OnOffButton(0, 0, -1, 16, OnOffStyle.SLIDER_ON_OFF, widget::isEnabled, null);
-        this.groupEnabledToggleButton.setActionListener(widget::toggleEnabled);
-
-        this.backgroundEnabledToggleButton = new OnOffButton(0, 0, -1, 16, OnOffStyle.SLIDER_ON_OFF, widget::isBackgroundEnabled, null);
-        this.backgroundEnabledToggleButton.setActionListener(widget::toggleBackgroundEnabled);
-
-        this.oddEvenBackgroundToggleButton = new OnOffButton(0, 0, -1, 16, OnOffStyle.SLIDER_ON_OFF, widget::isOddEvenBackgroundEnabled, null);
-        this.oddEvenBackgroundToggleButton.setActionListener(widget::toggleOddEvenBackgroundEnabled);
+        final TextRenderSettings textSettings = widget.getTextSettings();
+        this.groupEnabledToggleButton = OnOffButton.simpleSlider(16, widget::isEnabled, widget::toggleEnabled);
+        this.backgroundEnabledToggleButton = OnOffButton.simpleSlider(16, textSettings::getUseBackground, textSettings::toggleUseBackground);
+        this.oddEvenBackgroundToggleButton = OnOffButton.simpleSlider(16, textSettings::getUseOddEvenBackground, textSettings::toggleUseOddEvenBackground);
         this.oddEvenBackgroundToggleButton.addHoverStrings(StringUtils.translate("malilib.label.config_status_indicator.background_odd.hover"));
+        this.renderNameToggleButton = OnOffButton.simpleSlider(16, widget::getRenderName, widget::toggleRenderName);
 
-        this.renderNameToggleButton = new OnOffButton(0, 0, -1, 16, OnOffStyle.SLIDER_ON_OFF, widget::getRenderName, null);
-        this.renderNameToggleButton.setActionListener(widget::toggleRenderName);
-
-        this.backgroundColorWidget = new ColorIndicatorWidget(0, 0, 16, 16, widget::getBackgroundColor, widget::setBackgroundColor);
-        this.oddBackgroundColorWidget = new ColorIndicatorWidget(0, 0, 16, 16, widget::getOddBackgroundColor, widget::setOddBackgroundColor);
+        this.backgroundColorWidget = new ColorIndicatorWidget(0, 0, 16, 16, textSettings::getBackgroundColor, textSettings::setBackgroundColor);
+        this.oddBackgroundColorWidget = new ColorIndicatorWidget(0, 0, 16, 16, textSettings::getOddRowBackgroundColor, textSettings::setOddRowBackgroundColor);
     }
 
     @Override
@@ -108,6 +98,9 @@ public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataLis
         int x = this.x + 10;
         int y = this.y + 24;
         int tmpX;
+
+        this.marginEditButton.updateHoverStrings();
+        this.paddingEditButton.updateHoverStrings();
 
         this.addConfigsButton.setPosition(x, y + 36);
 
