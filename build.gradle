@@ -85,6 +85,7 @@ group = config.group + "." + config.mod_id // http://maven.apache.org/guides/min
 archivesBaseName = config.mod_file_name + '-' + config.minecraft_version_out
 version = project.minecraft.mod_version
 
+/*
 configurations {
     embed
     implementation.extendsFrom(embed)
@@ -92,6 +93,7 @@ configurations {
     shade
     compile.extendsFrom shade
 }
+*/
 
 /*
 mixin {
@@ -100,6 +102,7 @@ mixin {
 */
 
 dependencies {
+    /*
     shade('org.spongepowered:mixin:0.7.11-SNAPSHOT') {
         exclude module: "asm-commons"
         exclude module: "asm-tree"
@@ -109,8 +112,13 @@ dependencies {
         exclude module: "gson"
         exclude module: "commons-io"
     }
-    
+
     compile 'org.jetbrains.java.decompiler:fernflower:sponge-SNAPSHOT'
+    */
+
+    compile ('org.spongepowered:mixin:0.7.11-SNAPSHOT') {
+        transitive = false
+    }
 }
 
 //tasks.withType(Jar)*.baseName = archivesBaseName
@@ -147,7 +155,7 @@ jar {
             'ForceLoadAsMod': 'true',
             'TweakOrder': 0
     )
-    
+    /*
     configurations.shade.each { dep ->
         from(project.zipTree(dep)){
             exclude 'META-INF', 'META-INF/**'
@@ -156,6 +164,7 @@ jar {
             include 'META-INF/services', 'META-INF/services/**'
         }
     }
+    */
 }
 
 task deobfJar(type: Jar) {
