@@ -248,37 +248,60 @@ public class FileUtils
         }
 
         String name = fileIn.getName();
+        String nameAndSuffix = name + suffix;
+        File backupFile = new File(backupDirectory, nameAndSuffix + "1");
 
-        for (int i = maxBackups; i > 1; --i)
+        // Only rotate the backups if the first name is in use
+        if (backupFile.exists())
         {
-            File tmp1 = new File(backupDirectory, name + suffix + (i - 1));
-            File tmp2 = new File(backupDirectory, name + suffix + i);
+            // If there are unused backup file names, only rotate the backups up to the first empty slot
+            int firstEmptySlot = maxBackups;
 
-            if (tmp2.exists() && tmp2.isFile())
+            for (int i = 1; i <= maxBackups; ++i)
             {
-                if (tmp2.delete() == false)
+                File tmp = new File(backupDirectory, nameAndSuffix + i);
+
+                if (tmp.exists() == false)
                 {
-                    MaLiLib.LOGGER.warn("Failed to delete config backup file '{}'", tmp2.getAbsolutePath());
+                    firstEmptySlot = i;
+                    break;
                 }
             }
 
-            if (tmp1.exists() && tmp1.renameTo(tmp2) == false)
+            for (int i = firstEmptySlot; i > 1; --i)
             {
-                MaLiLib.LOGGER.error("Failed to rename config backup file '{}' to '{}'",
-                                    tmp1.getAbsolutePath(), tmp2.getAbsolutePath());
-                return false;
+                File tmp1 = new File(backupDirectory, nameAndSuffix + (i - 1));
+                File tmp2 = new File(backupDirectory, nameAndSuffix + i);
+
+                if (tmp2.exists() && tmp2.isFile())
+                {
+                    if (tmp2.delete() == false)
+                    {
+                        MaLiLib.LOGGER.warn("Failed to delete backup file '{}'", tmp2.getAbsolutePath());
+                    }
+                }
+
+                if (tmp1.exists() && tmp1.renameTo(tmp2) == false)
+                {
+                    MaLiLib.LOGGER.error("Failed to rename backup file '{}' to '{}'",
+                                         tmp1.getAbsolutePath(), tmp2.getAbsolutePath());
+                    return false;
+                }
             }
         }
 
-        File backupFile = new File(backupDirectory, name + suffix + "1");
-
-        try
+        if (fileIn.exists())
         {
-            org.apache.commons.io.FileUtils.copyFile(fileIn, backupFile);
-        }
-        catch (Exception e)
-        {
-            MaLiLib.LOGGER.error("Failed to copy file '{}' to '{}'", fileIn.getAbsolutePath(), backupFile.getAbsolutePath());
+            try
+            {
+                org.apache.commons.io.FileUtils.copyFile(fileIn, backupFile);
+            }
+            catch (Exception e)
+            {
+                MaLiLib.LOGGER.error("Failed to copy file '{}' to '{}'",
+                                     fileIn.getAbsolutePath(), backupFile.getAbsolutePath(), e);
+                return false;
+            }
         }
 
         return true;
