@@ -2,7 +2,7 @@ package fi.dy.masa.malilib.gui.widget.list.entry;
 
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.BaseScreen;
-import fi.dy.masa.malilib.gui.config.ConfigStatusIndicatorGroupEditScreen;
+import fi.dy.masa.malilib.gui.config.indicator.ConfigStatusIndicatorGroupEditScreen;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;

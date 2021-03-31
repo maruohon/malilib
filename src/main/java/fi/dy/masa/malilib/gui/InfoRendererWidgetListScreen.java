@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.gui.config;
+package fi.dy.masa.malilib.gui;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -6,17 +6,15 @@ import javax.annotation.Nullable;
 import fi.dy.masa.malilib.MaLiLibConfigScreen;
 import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.config.value.OptionListConfigValue;
-import fi.dy.masa.malilib.gui.BaseListScreen;
-import fi.dy.masa.malilib.gui.ScreenTab;
 import fi.dy.masa.malilib.gui.position.ScreenLocation;
 import fi.dy.masa.malilib.gui.widget.DropDownListWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetFactory;
-import fi.dy.masa.malilib.overlay.widget.InfoRendererWidget;
+import fi.dy.masa.malilib.overlay.InfoWidgetManager;
 import fi.dy.masa.malilib.overlay.message.MessageType;
 import fi.dy.masa.malilib.overlay.message.MessageUtils;
-import fi.dy.masa.malilib.overlay.InfoWidgetManager;
+import fi.dy.masa.malilib.overlay.widget.InfoRendererWidget;
 
 public class InfoRendererWidgetListScreen<WIDGET extends InfoRendererWidget> extends BaseListScreen<DataListWidget<WIDGET>>
 {

@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.gui.config;
+package fi.dy.masa.malilib.gui.config.indicator;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.BaseListScreen;
+import fi.dy.masa.malilib.gui.config.ConfigTab;
+import fi.dy.masa.malilib.gui.config.ConfigTabRegistry;
+import fi.dy.masa.malilib.gui.config.ConfigTabRegistryImpl;
 import fi.dy.masa.malilib.gui.widget.DropDownListWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;

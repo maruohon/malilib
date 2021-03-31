@@ -5,7 +5,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.gui.BaseScreen;
-import fi.dy.masa.malilib.gui.config.BooleanConfigStatusIndicatorEditScreen;
+import fi.dy.masa.malilib.gui.config.indicator.BooleanConfigStatusIndicatorEditScreen;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.util.GuiUtils;

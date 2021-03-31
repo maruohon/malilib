@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.gui.config;
+package fi.dy.masa.malilib.gui.config.indicator;
 
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.value.OptionListConfigValue;

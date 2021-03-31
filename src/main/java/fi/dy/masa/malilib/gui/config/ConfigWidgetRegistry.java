@@ -22,6 +22,7 @@ import fi.dy.masa.malilib.config.option.list.IdentifierListConfig;
 import fi.dy.masa.malilib.config.option.list.ItemListConfig;
 import fi.dy.masa.malilib.config.option.list.StatusEffectListConfig;
 import fi.dy.masa.malilib.config.option.list.StringListConfig;
+import fi.dy.masa.malilib.gui.config.indicator.ConfigStatusWidgetFactory;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.BlackWhiteListConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.BooleanConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.ColorConfigWidget;

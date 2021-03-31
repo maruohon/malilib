@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.gui.config;
+package fi.dy.masa.malilib.gui.config.indicator;
 
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.overlay.widget.sub.BaseConfigStatusIndicatorWidget;
