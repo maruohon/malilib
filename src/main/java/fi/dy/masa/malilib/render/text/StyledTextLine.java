@@ -136,9 +136,9 @@ public class StyledTextLine
      * If the string has line breaks, the separate lines will be joined
      * and the line breaks will be replaced by the string '\n'.
      */
-    public static StyledTextLine translatedOf(String translationKey)
+    public static StyledTextLine translatedOf(String translationKey, Object... args)
     {
-        return of(StringUtils.translate(translationKey));
+        return of(StringUtils.translate(translationKey, args));
     }
 
     /**
@@ -147,9 +147,9 @@ public class StyledTextLine
      * and the line breaks will be replaced by the string '\n'.
      * Uses the given startingStyle as the style builder base style.
      */
-    public static StyledTextLine translatedOf(String translationKey, TextStyle startingStyle)
+    public static StyledTextLine translatedOf(String translationKey, TextStyle startingStyle, Object... args)
     {
-        return of(StringUtils.translate(translationKey), startingStyle);
+        return of(StringUtils.translate(translationKey, args), startingStyle);
     }
 
     /**

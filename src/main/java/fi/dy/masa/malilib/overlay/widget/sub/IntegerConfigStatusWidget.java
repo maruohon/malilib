@@ -11,8 +11,6 @@ public class IntegerConfigStatusWidget extends BaseConfigStatusIndicatorWidget<I
     public IntegerConfigStatusWidget(IntegerConfig config, ConfigOnTab configOnTab)
     {
         super(config, configOnTab);
-
-        this.updateValue();
     }
 
     @Override

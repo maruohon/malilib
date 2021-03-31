@@ -8,19 +8,17 @@ import fi.dy.masa.malilib.util.data.ConfigOnTab;
 public class StringConfigStatusWidget extends BaseConfigStatusIndicatorWidget<StringConfig>
 {
     protected TextStyle style = TextStyle.builder().withColor(0xFF00FFFF).build();
-    protected String lastValue;
+    protected String lastValue = "";
 
     public StringConfigStatusWidget(StringConfig config, ConfigOnTab configOnTab)
     {
         super(config, configOnTab);
-
-        this.updateValue();
     }
 
     @Override
     public void updateState(boolean force)
     {
-        if (force || this.lastValue.equals(this.config.getStringValue()) == false)
+        if (force || this.config.getStringValue().equals(this.lastValue) == false)
         {
             this.updateValue();
         }

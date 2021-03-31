@@ -14,8 +14,6 @@ public class HotkeyConfigStatusWidget extends BaseConfigStatusIndicatorWidget<Ho
     public HotkeyConfigStatusWidget(HotkeyConfig config, ConfigOnTab configOnTab)
     {
         super(config, configOnTab);
-
-        this.updateValue();
     }
 
     @Override

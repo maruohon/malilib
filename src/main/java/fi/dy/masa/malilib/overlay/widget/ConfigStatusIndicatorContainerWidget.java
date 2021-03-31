@@ -27,7 +27,9 @@ import fi.dy.masa.malilib.util.data.ConfigOnTab;
 public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
 {
     protected final Set<ConfigOnTab> configs = new HashSet<>();
-    protected final List<BaseConfigStatusIndicatorWidget<?>> widgets = new ArrayList<>();
+    protected final List<BaseConfigStatusIndicatorWidget<?>> allWidgets = new ArrayList<>();
+    protected final List<BaseConfigStatusIndicatorWidget<?>> enabledWidgets = new ArrayList<>();
+    protected boolean enabledWidgetsChanged;
 
     public ConfigStatusIndicatorContainerWidget()
     {
@@ -51,9 +53,11 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
             {
                 BaseConfigStatusIndicatorWidget<?> widget = factory.create(config.config, config);
                 widget.setGeometryChangeListener(this::requestConditionalReLayout);
+                widget.setEnabledChangeListener(this::notifyEnabledWidgetsChanged);
                 widget.setHeight(this.lineHeight);
-                this.widgets.add(widget);
+                this.allWidgets.add(widget);
                 this.configs.add(config);
+                this.notifyEnabledWidgetsChanged();
                 this.requestUnconditionalReLayout();
             }
         }
@@ -61,28 +65,35 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
 
     public void removeWidget(BaseConfigStatusIndicatorWidget<?> widget)
     {
-        this.widgets.remove(widget);
+        this.allWidgets.remove(widget);
+
+        if (widget.isEnabled())
+        {
+            this.notifyEnabledWidgetsChanged();
+        }
+
         this.requestUnconditionalReLayout();
     }
 
     public ArrayList<BaseConfigStatusIndicatorWidget<?>> getStatusIndicatorWidgets()
     {
         // return a separate, modifiable list
-        return new ArrayList<>(this.widgets);
+        return new ArrayList<>(this.allWidgets);
     }
 
     public void setStatusIndicatorWidgets(List<BaseConfigStatusIndicatorWidget<?>> widgets)
     {
-        this.widgets.clear();
+        this.allWidgets.clear();
         this.configs.clear();
 
-        this.widgets.addAll(widgets);
+        this.allWidgets.addAll(widgets);
 
         for (BaseConfigStatusIndicatorWidget<?> widget : widgets)
         {
             this.configs.add(widget.getConfigOnTab());
         }
 
+        this.notifyEnabledWidgetsChanged();
         this.requestUnconditionalReLayout();
     }
 
@@ -91,12 +102,37 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
     {
         super.setLineHeight(lineHeight);
 
-        for (BaseConfigStatusIndicatorWidget<?> widget : this.widgets)
+        for (BaseConfigStatusIndicatorWidget<?> widget : this.allWidgets)
         {
             widget.setHeight(this.lineHeight);
         }
 
         this.requestUnconditionalReLayout();
+    }
+
+    protected void notifyEnabledWidgetsChanged()
+    {
+        this.enabledWidgetsChanged = true;
+        this.requestUnconditionalReLayout();
+    }
+
+    protected void updateEnabledWidgets()
+    {
+        if (this.enabledWidgetsChanged)
+        {
+            this.enabledWidgets.clear();
+
+            for (BaseConfigStatusIndicatorWidget<?> widget : this.allWidgets)
+            {
+                if (widget.isEnabled())
+                {
+                    this.enabledWidgets.add(widget);
+                    widget.updateState(true);
+                }
+            }
+
+            this.enabledWidgetsChanged = false;
+        }
     }
 
     @Override
@@ -106,7 +142,9 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
         int maxValueWidth = 0;
         int height = this.renderName ? this.lineHeight : 0;
 
-        for (BaseConfigStatusIndicatorWidget<?> widget : this.widgets)
+        this.updateEnabledWidgets();
+        
+        for (BaseConfigStatusIndicatorWidget<?> widget : this.enabledWidgets)
         {
             maxLabelWidth = Math.max(maxLabelWidth, widget.getLabelRenderWidth());
             maxValueWidth = Math.max(maxValueWidth, widget.getValueRenderWidth());
@@ -127,7 +165,9 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
         int y = this.getY() + (this.renderName ? this.lineHeight : 0) + this.padding.getTop();
         int width = this.getWidth() - this.padding.getHorizontalTotal();
 
-        for (BaseConfigStatusIndicatorWidget<?> widget : this.widgets)
+        this.updateEnabledWidgets();
+
+        for (BaseConfigStatusIndicatorWidget<?> widget : this.enabledWidgets)
         {
             widget.setWidth(width);
             widget.setPosition(x, y);
@@ -138,7 +178,7 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
     @Override
     public void updateState()
     {
-        for (BaseConfigStatusIndicatorWidget<?> widget : this.widgets)
+        for (BaseConfigStatusIndicatorWidget<?> widget : this.allWidgets)
         {
             widget.updateState(false);
         }
@@ -155,7 +195,7 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
         int bgColor = settings.getBackgroundColor();
         int bgColorOdd = settings.getOddRowBackgroundColor();
         int width = this.getWidth();
-        int size = this.widgets.size();
+        int size = this.enabledWidgets.size();
         int i = 0;
 
         if (this.renderName && this.styledName != null)
@@ -164,7 +204,7 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
 
             if (size > 0)
             {
-                BaseConfigStatusIndicatorWidget<?> widget = this.widgets.get(0);
+                BaseConfigStatusIndicatorWidget<?> widget = this.enabledWidgets.get(0);
                 height += widget.getHeight();
             }
             else
@@ -179,7 +219,7 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
 
         for (; i < size; ++i)
         {
-            BaseConfigStatusIndicatorWidget<?> widget = this.widgets.get(i);
+            BaseConfigStatusIndicatorWidget<?> widget = this.enabledWidgets.get(i);
             int height = widget.getHeight();
 
             if (i == 0)
@@ -203,7 +243,7 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
     @Override
     protected void renderContents(int x, int y, float z)
     {
-        for (BaseConfigStatusIndicatorWidget<?> widget : this.widgets)
+        for (BaseConfigStatusIndicatorWidget<?> widget : this.enabledWidgets)
         {
             widget.render();
         }
@@ -217,7 +257,7 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
 
         obj.addProperty("line_height", this.lineHeight);
 
-        for (BaseConfigStatusIndicatorWidget<?> widget : this.widgets)
+        for (BaseConfigStatusIndicatorWidget<?> widget : this.allWidgets)
         {
             arr.add(widget.toJson());
         }
@@ -234,7 +274,7 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
 
         this.lineHeight = JsonUtils.getIntegerOrDefault(obj, "line_height", this.lineHeight);
 
-        this.widgets.clear();
+        this.allWidgets.clear();
 
         if (JsonUtils.hasArray(obj, "status_widgets") == false)
         {
@@ -256,12 +296,16 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
 
                 if (widget != null)
                 {
+                    widget.setGeometryChangeListener(this::requestConditionalReLayout);
+                    widget.setEnabledChangeListener(this::notifyEnabledWidgetsChanged);
                     widget.setHeight(this.lineHeight);
-                    this.widgets.add(widget);
+                    widget.updateState(true);
+                    this.allWidgets.add(widget);
                 }
             }
         }
 
+        this.notifyEnabledWidgetsChanged();
         this.updateSize();
         this.requestUnconditionalReLayout();
     }

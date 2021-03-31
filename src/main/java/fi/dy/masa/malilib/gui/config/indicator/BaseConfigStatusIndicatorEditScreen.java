@@ -2,7 +2,6 @@ package fi.dy.masa.malilib.gui.config.indicator;
 
 import javax.annotation.Nullable;
 import net.minecraft.client.gui.GuiScreen;
-import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
@@ -12,8 +11,7 @@ import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.overlay.widget.sub.BaseConfigStatusIndicatorWidget;
 import fi.dy.masa.malilib.util.StringUtils;
 
-public class BaseConfigStatusIndicatorEditScreen
-        <CFG extends ConfigInfo, WIDGET extends BaseConfigStatusIndicatorWidget<CFG>> extends BaseScreen
+public class BaseConfigStatusIndicatorEditScreen <WIDGET extends BaseConfigStatusIndicatorWidget<?>> extends BaseScreen
 {
     protected final WIDGET widget;
     protected final LabelWidget nameLabel;

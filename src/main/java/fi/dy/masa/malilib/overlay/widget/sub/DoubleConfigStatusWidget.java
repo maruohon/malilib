@@ -11,8 +11,6 @@ public class DoubleConfigStatusWidget extends BaseConfigStatusIndicatorWidget<Do
     public DoubleConfigStatusWidget(DoubleConfig config, ConfigOnTab configOnTab)
     {
         super(config, configOnTab);
-
-        this.updateValue();
     }
 
     @Override

@@ -25,9 +25,11 @@ public class BooleanConfigStatusWidget extends BaseConfigStatusIndicatorWidget<B
     protected final StyledTextLine textOn;
     protected final StyledTextLine textOff;
     protected final int sliderWidth;
+    protected EnabledCondition condition = EnabledCondition.ALWAYS;
     protected Style renderStyle = Style.ON_OFF_TEXT;
     @Nullable protected Icon icon;
     protected boolean lastValue;
+    protected int booleanValueRenderWidth;
 
     public BooleanConfigStatusWidget(BooleanConfig config, ConfigOnTab configOnTab)
     {
@@ -38,8 +40,6 @@ public class BooleanConfigStatusWidget extends BaseConfigStatusIndicatorWidget<B
         int sw = Math.max(this.textOn.renderWidth, this.textOff.renderWidth);
         sw += DefaultIcons.SLIDER_GREEN.getWidth() + 6;
         this.sliderWidth = sw;
-
-        this.updateValue();
     }
 
     public Style getRenderStyle()
@@ -53,51 +53,84 @@ public class BooleanConfigStatusWidget extends BaseConfigStatusIndicatorWidget<B
         this.updateValue();
     }
 
+    public EnabledCondition getEnabledCondition()
+    {
+        return this.condition;
+    }
+
+    public void setEnabledCondition(EnabledCondition condition)
+    {
+        this.condition = condition;
+        this.updateEnabledState();
+    }
+
     @Override
     public void openEditScreen()
     {
-        BooleanConfigStatusIndicatorEditScreen screen = new BooleanConfigStatusIndicatorEditScreen(this, GuiUtils.getCurrentScreen());
+        BooleanConfigStatusIndicatorEditScreen<?> screen = new BooleanConfigStatusIndicatorEditScreen<>(this, GuiUtils.getCurrentScreen());
         BaseScreen.openScreen(screen);
     }
 
     @Override
     public void updateState(boolean force)
     {
-        if (force || this.lastValue != this.config.getBooleanValue())
+        if (force || this.isModified())
         {
+            this.updateEnabledState();
             this.updateValue();
         }
+    }
+
+    protected boolean isModified()
+    {
+        return this.lastValue != this.config.getBooleanValue();
+    }
+
+    protected void updateEnabledState()
+    {
+        boolean enabled = this.condition == EnabledCondition.ALWAYS ||
+                          (this.condition == EnabledCondition.WHEN_ON) == this.lastValue;
+        this.setEnabled(enabled);
     }
 
     protected void updateValue()
     {
         this.lastValue = this.config.getBooleanValue();
         this.valueDisplayText = null;
+        this.valueRenderWidth = 0;
+        this.booleanValueRenderWidth = 0;
         this.icon = null;
 
-        TextStyle style = this.lastValue ? STYLE_ON : STYLE_OFF;
+        this.updateBooleanDisplayValue();
+        this.updateEnabledState();
+        this.notifyContainerOfChanges(false);
+    }
 
+    protected void updateBooleanDisplayValue()
+    {
         if (this.renderStyle == Style.ON_OFF_TEXT)
         {
             this.valueDisplayText = this.lastValue ? this.textOn : this.textOff;
-            this.valueRenderWidth = this.valueDisplayText.renderWidth;
+            this.booleanValueRenderWidth = this.valueDisplayText.renderWidth;
         }
         else if (this.renderStyle == Style.TRUE_FALSE_TEXT)
         {
             String translationKey = this.lastValue ? "malilib.label.true" : "malilib.label.false";
+            TextStyle style = this.lastValue ? STYLE_ON : STYLE_OFF;
             this.valueDisplayText = StyledTextLine.translatedOf(translationKey, style);
-            this.valueRenderWidth = this.valueDisplayText.renderWidth;
+            this.booleanValueRenderWidth = this.valueDisplayText.renderWidth;
         }
         else if (this.renderStyle == Style.ON_OFF_SLIDER)
         {
-            this.valueRenderWidth = this.sliderWidth;
+            this.booleanValueRenderWidth = this.sliderWidth;
         }
         else if (this.renderStyle == Style.ON_OFF_LIGHT)
         {
             this.icon = this.lastValue ? DefaultIcons.LIGHT_GREEN_ON : DefaultIcons.LIGHT_RED_OFF;
+            this.booleanValueRenderWidth = this.icon.getWidth();
         }
 
-        this.notifyContainerOfChanges(true);
+        this.valueRenderWidth = this.booleanValueRenderWidth;
     }
 
     protected int getSliderStyleTextStartX(int baseX, boolean state)
@@ -116,13 +149,28 @@ public class BooleanConfigStatusWidget extends BaseConfigStatusIndicatorWidget<B
     {
         super.renderContents(x, y, z);
 
+        this.renderValueIndicator(x, y, z);
+    }
+
+    protected void renderValueIndicator(int x, int y, float z)
+    {
+        this.renderIcon(x, y, z);
+        this.renderSlider(x, y, z);
+    }
+
+    protected void renderIcon(int x, int y, float z)
+    {
         if (this.icon != null)
         {
-            int ix = x + this.getWidth() - this.icon.getWidth();
+            int ix = x + this.getWidth() - this.booleanValueRenderWidth;
             int iy = y + this.getHeight() / 2 - this.icon.getHeight() / 2;
             this.icon.renderAt(ix, iy, z);
         }
-        else if (this.renderStyle == Style.ON_OFF_SLIDER)
+    }
+
+    protected void renderSlider(int x, int y, float z)
+    {
+        if (this.renderStyle == Style.ON_OFF_SLIDER)
         {
             int height = this.getHeight();
             int sx = x + this.getWidth() - this.sliderWidth;
@@ -142,6 +190,7 @@ public class BooleanConfigStatusWidget extends BaseConfigStatusIndicatorWidget<B
         JsonObject obj = super.toJson();
 
         obj.addProperty("render_style", this.renderStyle.getName());
+        obj.addProperty("condition", this.condition.getName());
 
         return obj;
     }
@@ -154,6 +203,11 @@ public class BooleanConfigStatusWidget extends BaseConfigStatusIndicatorWidget<B
         if (JsonUtils.hasString(obj, "render_style"))
         {
             this.renderStyle = Style.fromName(JsonUtils.getString(obj, "render_style"));
+        }
+
+        if (JsonUtils.hasString(obj, "condition"))
+        {
+            this.condition = EnabledCondition.fromName(JsonUtils.getString(obj, "condition"));
         }
     }
 
@@ -196,6 +250,47 @@ public class BooleanConfigStatusWidget extends BaseConfigStatusIndicatorWidget<B
             }
 
             return ON_OFF_TEXT;
+        }
+    }
+
+    public enum EnabledCondition
+    {
+        ALWAYS   ("always",   "malilib.label.always"),
+        WHEN_ON  ("when_on",  "malilib.label.when_on"),
+        WHEN_OFF ("when_off", "malilib.label.when_off");
+
+        protected final String name;
+        protected final String translationKey;
+
+        public static final ImmutableList<EnabledCondition> VALUES = ImmutableList.copyOf(values());
+
+        EnabledCondition(String name, String translationKey)
+        {
+            this.name = name;
+            this.translationKey = translationKey;
+        }
+
+        public String getName()
+        {
+            return this.name;
+        }
+
+        public String getDisplayName()
+        {
+            return StringUtils.translate(this.translationKey);
+        }
+
+        public static EnabledCondition fromName(String name)
+        {
+            for (EnabledCondition value : VALUES)
+            {
+                if (value.name.equalsIgnoreCase(name))
+                {
+                    return value;
+                }
+            }
+
+            return ALWAYS;
         }
     }
 }

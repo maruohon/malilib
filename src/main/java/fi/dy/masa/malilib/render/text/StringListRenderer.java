@@ -286,7 +286,7 @@ public class StringListRenderer extends BaseWidget
         int rightPadding = this.padding.getRight();
         int horizontalPadding = leftPadding + rightPadding;
         int textLineX = x + leftPadding;
-        int textLineY = y + this.padding.getTop() + 1;
+        int textLineY = y + this.padding.getTop() + 2;
         int backgroundX = x;
         int backgroundY = y;
         int lineHeight = this.lineHeight;

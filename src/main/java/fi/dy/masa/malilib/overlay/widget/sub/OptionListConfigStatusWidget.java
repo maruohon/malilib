@@ -14,7 +14,6 @@ public class OptionListConfigStatusWidget extends BaseConfigStatusIndicatorWidge
         super(config, configOnTab);
 
         this.valueColor = 0xFFFFA000;
-        this.updateValue();
     }
 
     @Override

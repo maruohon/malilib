@@ -106,7 +106,7 @@ public abstract class BaseConfigStatusIndicatorWidget<C extends ConfigInfo> exte
 
     public void openEditScreen()
     {
-        BaseConfigStatusIndicatorEditScreen<?, ?> screen = new BaseConfigStatusIndicatorEditScreen<>(this, GuiUtils.getCurrentScreen());
+        BaseConfigStatusIndicatorEditScreen<?> screen = new BaseConfigStatusIndicatorEditScreen<>(this, GuiUtils.getCurrentScreen());
         BaseScreen.openScreen(screen);
     }
 
@@ -116,11 +116,21 @@ public abstract class BaseConfigStatusIndicatorWidget<C extends ConfigInfo> exte
     protected void renderContents(int x, int y, float z)
     {
         int ty = y + this.getHeight() / 2 - this.fontHeight / 2;
-        this.renderTextLine(x, ty, z, this.nameColor, this.nameShadow, this.styledName);
 
+        this.renderNameText(x, ty, z);
+        this.renderValueDisplayText(x, ty, z);
+    }
+
+    protected void renderNameText(int x, int textY, float z)
+    {
+        this.renderTextLine(x, textY, z, this.nameColor, this.nameShadow, this.styledName);
+    }
+
+    protected void renderValueDisplayText(int x, int textY, float z)
+    {
         if (this.valueDisplayText != null)
         {
-            this.renderTextLine(this.getRight() - this.valueDisplayText.renderWidth, ty, z,
+            this.renderTextLine(this.getRight() - this.valueDisplayText.renderWidth, textY, z,
                                 this.valueColor, this.valueShadow, this.valueDisplayText);
         }
     }
@@ -149,16 +159,8 @@ public abstract class BaseConfigStatusIndicatorWidget<C extends ConfigInfo> exte
             this.setName(obj.get("name").getAsString());
         }
 
-        if (JsonUtils.hasInteger(obj, "name_color"))
-        {
-            this.nameColor = obj.get("name_color").getAsInt();
-        }
-
-        if (JsonUtils.hasInteger(obj, "value_color"))
-        {
-            this.valueColor = obj.get("value_color").getAsInt();
-        }
-
+        this.nameColor = JsonUtils.getIntegerOrDefault(obj, "name_color", 0xFFFFFFFF);
+        this.valueColor = JsonUtils.getIntegerOrDefault(obj, "value_color", 0xFF00FFFF);
         this.nameShadow = JsonUtils.getBooleanOrDefault(obj, "name_shadow", true);
         this.valueShadow = JsonUtils.getBooleanOrDefault(obj, "value_shadow", true);
     }

@@ -132,7 +132,6 @@ malilib.gui.button.hover.hold_shift_for_info=§oHold Shift for more information�
 malilib.gui.button.hover.hotkey_search_button=Search hotkeys for the given keys
 malilib.gui.button.hover.keybind.middle_click_to_clear=(Middle click to clear)
 malilib.gui.button.hover.keybind.possible_overlaps=Possible overlaps [<i>most are fine though!!</i>]:
-malilib.gui.button.hover.plus_minus_tip=Left click to increase\nRight click to decrease\nShift and/or Alt to increase the step size
 malilib.gui.button.hover.render_layers_gui.follow_player=If enabled, then the render layer follows the player
 malilib.gui.button.hover.text_field_slider_toggle=Toggle between a text field and a slider
 malilib.gui.button.hover.text_field_slider_toggle.not_allowed=§6Using a slider is currently disabled for this config
@@ -242,7 +241,7 @@ malilib.gui.title.status_effect_list_edit=Edit status effect list '%s'
 malilib.gui.title.string_list_edit=Edit string list '%s'
 malilib.gui.title.string_list_renderer_configuration=String List Renderer Configuration
 
-malilib.button.hover.plus_minus_tip=Left click to increase\nRight click to decrease\nShift and/or Alt to increase the step size
+malilib.button.hover.plus_minus_tip=- Left click to increase\n- Right click to decrease\n- Or scroll with the mouse over the button\n- Shift and/or Alt to increase the step size
 
 malilib.hotkeys.category.debug_hotkeys=Debug hotkeys
 malilib.hotkeys.category.generic_hotkeys=Generic hotkeys
@@ -250,7 +249,6 @@ malilib.hotkeys.category.generic_hotkeys=Generic hotkeys
 malilib.label.active_mode.always=Always
 malilib.label.active_mode.never=Never
 malilib.label.active_mode.with_key=With Key
-
 malilib.label.alignment.top_center=Top Center
 malilib.label.alignment.top_left=Top Left
 malilib.label.alignment.top_right=Top Right
@@ -260,51 +258,65 @@ malilib.label.alignment.bottom_right=Bottom Right
 malilib.label.alignment.center=Center
 malilib.label.alignment.center_left=Left Center
 malilib.label.alignment.center_right=Right Center
-
-malilib.label.boolean_config_status_type.render_type.colon=Render Type:
+malilib.label.always=Always
+malilib.label.background.colon=Background:
+malilib.label.boolean_config_status.enabled_condition.colon=Enabled:
+malilib.label.boolean_config_status.render_type.colon=Render Type:
 malilib.label.boolean_config_status_type.on_off_text=ON/OFF Text
 malilib.label.boolean_config_status_type.true_false_text=true/false Text
 malilib.label.boolean_config_status_type.on_off_slider=ON/OFF Slider
 malilib.label.boolean_config_status_type.on_off_light=ON/OFF "Light"
-
 malilib.label.config_status_indicator.background_odd.colon=BG odd:
 malilib.label.config_status_indicator.background_odd.hover=Use a different background color for odd rows
-
+malilib.label.config_status_indicator.hotkeys_string=[§b%s§r]
 malilib.label.config_tab.config_status_indicator.abbr=C.S.I.
 malilib.label.config_tab.debug=Debug
 malilib.label.config_tab.generic=Generic
 malilib.label.config_tab.info=Info
-
+malilib.label.false=false
 malilib.label.horizontal_alignment.center=Center
 malilib.label.horizontal_alignment.left=Left
 malilib.label.horizontal_alignment.right=Right
-
+malilib.label.hotkeyed_boolean_config_status.show_hotkey.colon=Show Hotkey:
+malilib.label.hotkeyed_boolean_config_status.show_toggle.colon=Show Toggle:
 malilib.label.info_type.chat=Chat
 malilib.label.info_type.hotbar.custom=Hotbar (custom)
 malilib.label.info_type.hotbar.vanilla=Hotbar (vanilla)
 malilib.label.info_type.message=Message Overlay
 malilib.label.info_type.none=None
-
 malilib.label.key_action.both=Both
 malilib.label.key_action.press=Press
 malilib.label.key_action.release=Release
-
 malilib.label.key_context.any=Any
 malilib.label.key_context.gui=GUI
 malilib.label.key_context.ingame=In-Game
-
+malilib.label.line_height.colon=Line height:
 malilib.label.list_type.blacklist=Black List
 malilib.label.list_type.none=None
 malilib.label.list_type.whitelist=White List
-
 malilib.label.margin=Margin
+malilib.label.name.colon=Name:
 malilib.label.name_color.colon=Name color:
+malilib.label.no=no
+malilib.label.off=off
+malilib.label.off.caps=OFF
+malilib.label.on=on
+malilib.label.on.caps=ON
 malilib.label.padding=Padding
+malilib.label.render_name.colon=Render name:
+malilib.label.sort_index.colon=Sort index:
+malilib.label.string_list_renderer.even_width_background.colon=Even width BG:
+malilib.label.text_color.colon=Text Color:
+malilib.label.text_scale.colon=Text Scale:
+malilib.label.text_shadow.colon=Text Shadow:
+malilib.label.true=true
 malilib.label.value_color.colon=Value color:
-
 malilib.label.vertical_alignment.bottom=Bottom
 malilib.label.vertical_alignment.center=Center
 malilib.label.vertical_alignment.top=Top
+malilib.label.when_on=When On
+malilib.label.when_off=When Off
+malilib.label.yes=yes
 
 malilib.label.colored.false=§cfalse§r
 malilib.label.colored.true=§atrue§r
@@ -317,28 +329,6 @@ malilib.label.colored.on.caps=§aON§r
 
 malilib.label.colored.off=§coff§r
 malilib.label.colored.on=§aon§r
-
-malilib.label.background.colon=Background:
-malilib.label.line_height.colon=Line height:
-malilib.label.name.colon=Name:
-malilib.label.render_name.colon=Render name:
-malilib.label.sort_index.colon=Sort index:
-malilib.label.string_list_renderer.even_width_background.colon=Even width BG:
-malilib.label.text_color.colon=Text Color:
-malilib.label.text_scale.colon=Text Scale:
-malilib.label.text_shadow.colon=Text Shadow:
-
-malilib.label.off=off
-malilib.label.on=on
-
-malilib.label.off.caps=OFF
-malilib.label.on.caps=ON
-
-malilib.label.false=false
-malilib.label.true=true
-
-malilib.label.no=no
-malilib.label.yes=yes
 
 malilib.message.formatting_code.error=§c
 malilib.message.formatting_code.info=§f

@@ -1,14 +1,20 @@
 package fi.dy.masa.malilib.overlay.widget.sub;
 
+import java.util.Collections;
 import java.util.List;
+import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.option.HotkeyedBooleanConfig;
+import fi.dy.masa.malilib.gui.BaseScreen;
+import fi.dy.masa.malilib.gui.config.indicator.HotkeyedBooleanConfigStatusIndicatorEditScreen;
+import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.data.ConfigOnTab;
 
-public class HotkeyedBooleanConfigStatusWidget extends BaseConfigStatusIndicatorWidget<HotkeyedBooleanConfig>
+public class HotkeyedBooleanConfigStatusWidget extends BooleanConfigStatusWidget
 {
-    protected boolean lastBoolean;
-    protected List<Integer> lastKeys;
+    protected final HotkeyedBooleanConfig hotkeyedConfig;
+    protected List<Integer> lastKeys = Collections.emptyList();
+    @Nullable protected StyledTextLine keysText;
     protected boolean showKeys;
     protected boolean showBoolean = true;
 
@@ -16,48 +22,96 @@ public class HotkeyedBooleanConfigStatusWidget extends BaseConfigStatusIndicator
     {
         super(config, configOnTab);
 
+        this.hotkeyedConfig = config;
+    }
+
+    public boolean getShowBoolean()
+    {
+        return this.showBoolean;
+    }
+
+    public boolean getShowHotkey()
+    {
+        return this.showKeys;
+    }
+
+    public void toggleShowBoolean()
+    {
+        this.showBoolean = ! this.showBoolean;
+        this.updateValue();
+    }
+
+    public void toggleShowHotkey()
+    {
+        this.showKeys = ! this.showKeys;
         this.updateValue();
     }
 
     @Override
-    public void updateState(boolean force)
+    public void openEditScreen()
     {
-        if (force ||
-            this.lastKeys.equals(this.config.getKeyBind().getKeys()) == false ||
-            this.lastBoolean != this.config.getBooleanValue())
+        HotkeyedBooleanConfigStatusIndicatorEditScreen screen = new HotkeyedBooleanConfigStatusIndicatorEditScreen(this, GuiUtils.getCurrentScreen());
+        BaseScreen.openScreen(screen);
+    }
+
+    @Override
+    protected boolean isModified()
+    {
+        return this.lastValue != this.config.getBooleanValue() ||
+               this.hotkeyedConfig.getKeyBind().getKeys().equals(this.lastKeys) == false;
+    }
+
+    @Override
+    protected void updateValue()
+    {
+        super.updateValue();
+
+        this.lastKeys = this.hotkeyedConfig.getKeyBind().getKeys();
+        this.keysText = null;
+
+        if (this.showKeys)
         {
-            this.updateValue();
+            String keysString = this.hotkeyedConfig.getKeyBind().getKeysDisplayString();
+            this.keysText = StyledTextLine.translatedOf("malilib.label.config_status_indicator.hotkeys_string", keysString);
+            this.valueRenderWidth += this.keysText.renderWidth + 4;
         }
     }
 
-    protected void updateValue()
+    @Override
+    protected void renderValueDisplayText(int x, int textY, float z)
     {
-        this.lastBoolean = this.config.getBooleanValue();
-        this.lastKeys = this.config.getKeyBind().getKeys();
-
         if (this.showBoolean)
         {
-            if (this.lastBoolean)
-            {
-                this.valueDisplayText = StyledTextLine.translatedOf("malilib.label.on.caps", BooleanConfigStatusWidget.STYLE_ON);
-            }
-            else
-            {
-                this.valueDisplayText = StyledTextLine.translatedOf("malilib.label.off.caps", BooleanConfigStatusWidget.STYLE_OFF);
-            }
+            super.renderValueDisplayText(x, textY, z);
         }
 
-        String keysString = this.config.getKeyBind().getKeysDisplayString();
-
-        if (this.showBoolean && this.showKeys)
+        if (this.showKeys)
         {
-            this.valueDisplayText = this.valueDisplayText.append(StyledTextLine.of(String.format(" [%s]", keysString)));
+            this.renderHotkeysValue(x, textY, z);
         }
-        else if (this.showKeys)
-        {
-            this.valueDisplayText = StyledTextLine.of(String.format("[%s]", keysString));
-        }
+    }
 
-        this.valueRenderWidth = this.valueDisplayText.renderWidth;
+    @Override
+    protected void renderValueIndicator(int x, int y, float z)
+    {
+        if (this.showBoolean)
+        {
+            super.renderValueIndicator(x, y, z);
+        }
+    }
+
+    protected void renderHotkeysValue(int x, int textY, float z)
+    {
+        if (this.keysText != null)
+        {
+            int tx = x + this.getWidth() - this.keysText.renderWidth;
+
+            if (this.showBoolean && this.booleanValueRenderWidth > 0)
+            {
+                tx -= this.booleanValueRenderWidth + 4;
+            }
+
+            this.renderTextLine(tx, textY, z, this.valueColor, this.valueShadow, this.keysText);
+        }
     }
 }
