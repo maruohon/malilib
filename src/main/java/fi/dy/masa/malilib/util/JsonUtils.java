@@ -490,7 +490,7 @@ public class JsonUtils
 
         try
         {
-            writer = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8);
+            writer = new OutputStreamWriter(new FileOutputStream(fileTmp), StandardCharsets.UTF_8);
             writer.write(gson.toJson(root));
             writer.close();
 
