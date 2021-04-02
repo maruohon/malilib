@@ -9,7 +9,7 @@ import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableSet;
 import fi.dy.masa.malilib.MaLiLib;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtIo;
 
 public class FileUtils
@@ -134,14 +134,14 @@ public class FileUtils
     }
 
     @Nullable
-    public static CompoundTag readNBTFile(File file)
+    public static NbtCompound readNBTFile(File file)
     {
         if (file.exists() && file.isFile() && file.canRead())
         {
             try
             {
                 FileInputStream is = new FileInputStream(file);
-                CompoundTag nbt = NbtIo.readCompressed(is);
+                NbtCompound nbt = NbtIo.readCompressed(is);
                 is.close();
                 return nbt;
             }

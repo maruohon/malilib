@@ -17,10 +17,7 @@ import net.minecraft.block.entity.HopperBlockEntity;
 import net.minecraft.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
+import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
@@ -60,6 +57,8 @@ public class InventoryOverlay
     {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.applyModelViewMatrix();
         buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
 
         if (type == InventoryRenderType.FURNACE)
@@ -473,11 +472,10 @@ public class InventoryOverlay
 
     public static void renderStackAt(ItemStack stack, float x, float y, float scale, MinecraftClient mc)
     {
-        RenderSystem.pushMatrix();
-        RenderSystem.translatef(x, y, 0);
-        RenderSystem.scalef(scale, scale, 1);
-        RenderSystem.disableLighting();
-        RenderSystem.enableRescaleNormal();
+        MatrixStack matrixStack = RenderSystem.getModelViewStack();
+        matrixStack.push();
+        matrixStack.translate(x, y, 0);
+        matrixStack.scale(scale, scale, 1);
 
         RenderUtils.enableDiffuseLightingGui3D();
         RenderUtils.color(1f, 1f, 1f, 1f);
@@ -490,7 +488,7 @@ public class InventoryOverlay
         mc.getItemRenderer().zOffset -= 100;
 
         RenderUtils.disableDiffuseLighting();
-        RenderSystem.popMatrix();
+        matrixStack.pop();
     }
 
     public static void renderStackToolTip(int x, int y, ItemStack stack, MinecraftClient mc, MatrixStack matrixStack)

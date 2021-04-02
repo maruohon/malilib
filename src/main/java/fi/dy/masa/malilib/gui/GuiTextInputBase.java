@@ -68,8 +68,8 @@ public abstract class GuiTextInputBase extends GuiDialogBase
             this.getParent().render(matrixStack, mouseX, mouseY, partialTicks);
         }
 
-        RenderSystem.pushMatrix();
-        RenderSystem.translatef(0, 0, this.getZOffset());
+        matrixStack.push();
+        matrixStack.translate(0, 0, this.getZOffset());
 
         RenderUtils.drawOutlinedBox(this.dialogLeft, this.dialogTop, this.dialogWidth, this.dialogHeight, 0xE0000000, COLOR_HORIZONTAL_BAR);
 
@@ -80,7 +80,7 @@ public abstract class GuiTextInputBase extends GuiDialogBase
         this.textField.render(matrixStack, mouseX, mouseY, partialTicks);
 
         this.drawButtons(mouseX, mouseY, partialTicks, matrixStack);
-        RenderSystem.popMatrix();
+        matrixStack.pop();
     }
 
     @Override
