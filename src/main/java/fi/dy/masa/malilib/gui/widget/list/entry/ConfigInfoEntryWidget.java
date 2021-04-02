@@ -20,7 +20,8 @@ public class ConfigInfoEntryWidget extends BaseDataListEntryWidget<ConfigOnTab>
 
         ConfigInfo config = data.config;
         String hoverText = StringUtils.translate("malilib.gui.hover.config_info_entry_widget",
-                                                 config.getDisplayName(), config.getName());
+                                                 config.getDisplayName(), config.getName(),
+                                                 config.getClass().getSimpleName());
         List<String> hoverLines = Collections.singletonList(hoverText);
         this.setHoverStrings(hoverLines);
 

@@ -105,4 +105,20 @@ public class ConfigStatusIndicatorEntryWidget extends BaseOrderableListEditEntry
         int ly = y + height / 2 - this.fontHeight / 2;
         this.renderTextLine(x + 4, ly, z, 0xFFFFFFFF, true, this.data.getStyledName());
     }
+
+    @Override
+    public void postRenderHovered(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
+    {
+        super.postRenderHovered(mouseX, mouseY, isActiveGui, hoveredWidgetId);
+
+        BaseConfigStatusIndicatorWidget<?> w = this.data;
+        int width = w.getWidth();
+        int height = w.getHeight();
+        float z = this.getZLevel();
+        int x = mouseX + 10;
+        int y = mouseY - 5;
+
+        ShapeRenderUtils.renderRectangle(x - 2, y - 2, z + 10f, width + 4, height + 4, 0xC0000000);
+        w.renderAt(x, y, z + 15f);
+    }
 }
