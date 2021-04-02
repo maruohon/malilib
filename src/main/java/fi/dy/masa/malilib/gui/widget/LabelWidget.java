@@ -237,6 +237,8 @@ public class LabelWidget extends BackgroundWidget
     {
         if (this.visible)
         {
+            RenderUtils.color(1f, 1f, 1f, 1f);
+
             if (hovered && this.backgroundEnabled == false && this.useBackgroundForHoverOverflow && this.stringListRenderer.hasClampedContent())
             {
                 z += 20;
@@ -255,8 +257,6 @@ public class LabelWidget extends BackgroundWidget
             y += this.padding.getTop() + bw;
 
             this.stringListRenderer.renderAt(x, y, z, hovered);
-
-            RenderUtils.color(1f, 1f, 1f, 1f);
         }
     }
 }

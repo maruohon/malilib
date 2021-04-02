@@ -456,6 +456,8 @@ public class ColorEditorHSVScreen extends BaseScreen
         int cw = this.sizeHS;
         int ch = 16;
 
+        RenderUtils.color(1f, 1f, 1f, 1f);
+
         ShapeRenderUtils.renderOutline(x, y, z, w, h, 1, 0xC0FFFFFF); // H
         y += yd;
         ShapeRenderUtils.renderOutline(x, y, z, w, h, 1, 0xC0FFFFFF); // S
@@ -490,8 +492,6 @@ public class ColorEditorHSVScreen extends BaseScreen
         GlStateManager.disableAlpha();
         GlStateManager.shadeModel(GL11.GL_SMOOTH);
         GlStateManager.alphaFunc(GL11.GL_GREATER, 0.01F);
-
-        RenderUtils.color(1, 1, 1, 1);
 
         GL20.glUseProgram(SHADER_HUE.getProgram());
         GL20.glUniform1f(GL20.glGetUniformLocation(SHADER_HUE.getProgram(), "hue_value"), this.relH);

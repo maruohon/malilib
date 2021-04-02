@@ -344,10 +344,10 @@ public abstract class ContainerWidget extends BackgroundWidget
     @Override
     public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
     {
+        RenderUtils.color(1f, 1f, 1f, 1f);
+
         super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hoveredWidgetId);
         this.renderSubWidgets(x, y, z, mouseX, mouseY, isActiveGui, hoveredWidgetId);
-
-        RenderUtils.color(1f, 1f, 1f, 1f);
     }
 
     protected void renderSubWidgets(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)

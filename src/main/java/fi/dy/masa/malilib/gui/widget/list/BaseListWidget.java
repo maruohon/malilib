@@ -707,9 +707,9 @@ public abstract class BaseListWidget extends ContainerWidget
         int diffY = y - this.getY();
         float diffZ = z - this.getZLevel();
 
-        super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hoveredWidgetId);
-
         RenderUtils.color(1f, 1f, 1f, 1f);
+
+        super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hoveredWidgetId);
 
         // Draw the currently visible widgets
         for (int i = 0; i < this.entryWidgets.size(); i++)
@@ -718,7 +718,6 @@ public abstract class BaseListWidget extends ContainerWidget
         }
 
         GlStateManager.disableLighting();
-        RenderUtils.color(1f, 1f, 1f, 1f);
     }
 
     protected void renderWidget(int widgetIndex, int diffX, int diffY, float diffZ, int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)

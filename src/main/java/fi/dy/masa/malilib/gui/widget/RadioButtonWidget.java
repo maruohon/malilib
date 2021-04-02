@@ -105,6 +105,8 @@ public class RadioButtonWidget<T extends Enum<T>> extends InteractableWidget
     @Override
     public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
     {
+        RenderUtils.color(1f, 1f, 1f, 1f);
+
         int count = Math.min(this.options.size(), this.displayStrings.size());
 
         for (int i = 0; i < count; ++i)
@@ -130,7 +132,5 @@ public class RadioButtonWidget<T extends Enum<T>> extends InteractableWidget
             this.renderTextLine(x + iconWidth, textY, z, textColor, true, displayString);
             y += this.entryHeight;
         }
-
-        RenderUtils.color(1f, 1f, 1f, 1f);
     }
 }

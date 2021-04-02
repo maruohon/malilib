@@ -293,6 +293,7 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
     public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
     {
         RenderUtils.color(1f, 1f, 1f, 1f);
+
         int width = this.getWidth();
         int height = this.getHeight();
         // Draw a slightly lighter background for even entries

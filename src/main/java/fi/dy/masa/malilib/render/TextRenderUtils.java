@@ -342,6 +342,7 @@ public class TextRenderUtils
         GlStateManager.disableLighting();
         GlStateManager.disableCull();
 
+        RenderUtils.color(1f, 1f, 1f, 1f);
         RenderUtils.setupBlend();
         GlStateManager.disableTexture2D();
 

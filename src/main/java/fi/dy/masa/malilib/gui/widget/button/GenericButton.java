@@ -213,13 +213,13 @@ public class GenericButton extends BaseButton
     {
         if (this.visible)
         {
+            RenderUtils.color(1f, 1f, 1f, 1f);
+
             super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hovered);
 
             int width = this.getWidth();
             int height = this.getHeight();
             boolean textBlank = this.styledDisplayString == null || this.styledDisplayString.renderWidth == 0;
-
-            RenderUtils.color(1f, 1f, 1f, 1f);
 
             if (this.renderOutline)
             {

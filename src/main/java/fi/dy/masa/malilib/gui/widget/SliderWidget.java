@@ -103,8 +103,6 @@ public class SliderWidget extends InteractableWidget
         int textWidth = text.renderWidth;
         int textColor = this.locked ? 0xFF909090 : 0xFFFFFFA0;
         this.renderTextLine(x + (width / 2) - textWidth / 2, y + this.getCenteredTextOffsetY(), z, textColor, false, text);
-
-        RenderUtils.color(1f, 1f, 1f, 1f);
     }
 
     protected double getRelativePosition(int mouseX)

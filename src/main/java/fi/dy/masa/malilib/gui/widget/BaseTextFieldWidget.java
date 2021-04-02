@@ -981,6 +981,8 @@ public class BaseTextFieldWidget extends BackgroundWidget
     @Override
     public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
     {
+        RenderUtils.color(1f, 1f, 1f, 1f);
+
         super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hovered);
 
         int color;
@@ -1025,8 +1027,6 @@ public class BaseTextFieldWidget extends BackgroundWidget
         {
             this.updateMessageRendererPosition();
         }
-
-        RenderUtils.color(1f, 1f, 1f, 1f);
     }
 
     public interface IInputCharacterValidator
