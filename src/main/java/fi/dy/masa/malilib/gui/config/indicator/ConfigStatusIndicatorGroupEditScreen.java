@@ -9,6 +9,7 @@ import fi.dy.masa.malilib.gui.position.ScreenLocation;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.ColorIndicatorWidget;
+import fi.dy.masa.malilib.gui.widget.DoubleEditWidget;
 import fi.dy.masa.malilib.gui.widget.DropDownListWidget;
 import fi.dy.masa.malilib.gui.widget.IntegerEditWidget;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
@@ -31,7 +32,7 @@ public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataLis
     protected final LabelWidget oddBackgroundLabelWidget;
     protected final LabelWidget priorityLabelWidget;
     protected final LabelWidget lineHeightLabelWidget;
-    protected final LabelWidget renderNameLabelWidget;
+    protected final LabelWidget textScaleLabelWidget;
     protected final GenericButton groupEnabledToggleButton;
     protected final GenericButton backgroundEnabledToggleButton;
     protected final GenericButton oddEvenBackgroundToggleButton;
@@ -43,11 +44,12 @@ public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataLis
     protected final ColorIndicatorWidget oddBackgroundColorWidget;
     protected final IntegerEditWidget priorityEditWidget;
     protected final IntegerEditWidget lineHeightEditWidget;
+    protected final DoubleEditWidget textScaleEditWidget;
     protected final BaseTextFieldWidget nameTextField;
 
     public ConfigStatusIndicatorGroupEditScreen(ConfigStatusIndicatorContainerWidget widget)
     {
-        super(10, 81, 20, 88);
+        super(10, 120, 20, 128);
 
         this.widget = widget;
         this.useTitleHierarchy = false;
@@ -61,8 +63,8 @@ public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataLis
         this.nameLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.name.colon");
         this.priorityLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.sort_index.colon");
         this.lineHeightLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.line_height.colon");
-        this.renderNameLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.name.colon");
         this.backgroundLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.background.colon");
+        this.textScaleLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.text_scale.colon");
         this.oddBackgroundLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.config_status_indicator.background_odd.colon");
         this.oddBackgroundLabelWidget.addHoverStrings(StringUtils.translate("malilib.label.config_status_indicator.background_odd.hover"));
 
@@ -71,8 +73,9 @@ public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataLis
 
         this.priorityEditWidget = new IntegerEditWidget(0, 0, 72, 16, widget.getSortIndex(), -1000, 1000, widget::setSortIndex);
         this.lineHeightEditWidget = new IntegerEditWidget(0, 0, 72, 16, widget.getLineHeight(), 6, 40, widget::setLineHeight);
+        this.textScaleEditWidget = new DoubleEditWidget(0, 0, 72, 16, widget.getScale(), 0.25, 20, widget::setScale);
 
-        this.addConfigsButton = GenericButton.simple(-1, 20, "malilib.gui.button.add_configs", this::openAddConfigsScreen, "malilib.gui.button.hover.add_configs_to_status_indicator_group");
+        this.addConfigsButton = GenericButton.simple(-1, 16, "malilib.gui.button.add_configs", this::openAddConfigsScreen, "malilib.gui.button.hover.add_configs_to_status_indicator_group");
         this.marginEditButton = GenericButton.simple(-1, 16, "malilib.label.margin", this::openMarginEditScreen);
         this.marginEditButton.setHoverStringProvider("tooltip", this.widget.getMargin()::getHoverTooltip);
 
@@ -102,70 +105,71 @@ public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataLis
         this.marginEditButton.updateHoverStrings();
         this.paddingEditButton.updateHoverStrings();
 
-        this.addConfigsButton.setPosition(x, y + 36);
+        this.marginEditButton.updateHoverStrings();
+        this.paddingEditButton.updateHoverStrings();
 
-        this.nameLabelWidget.setPosition(x, y + 3);
-        tmpX = this.nameLabelWidget.getRight() + 6;
-
-        this.nameTextField.setPosition(tmpX, y);
-
-        this.locationDropdownWidget.setPosition(this.nameTextField.getRight() + 6, y);
+        this.locationDropdownWidget.setPosition(x, y);
         this.groupEnabledToggleButton.setPosition(this.locationDropdownWidget.getRight() + 6, y);
 
-        y += 18;
-        this.renderNameLabelWidget.setPosition(x, y + 3);
-        this.renderNameToggleButton.setPosition(this.renderNameLabelWidget.getRight() + 6, y);
+        this.marginEditButton.setPosition(this.groupEnabledToggleButton.getRight() + 6, y);
+        this.paddingEditButton.setPosition(this.marginEditButton.getRight() + 6, y);
 
-        tmpX = this.renderNameToggleButton.getRight() + 10;
-        this.backgroundLabelWidget.setPosition(tmpX, y + 3);
+        y += 20;
+        this.nameLabelWidget.setPosition(x, y + 4);
+        this.nameTextField.setPosition(this.nameLabelWidget.getRight() + 6, y);
+        this.renderNameToggleButton.setPosition(this.nameTextField.getRight() + 6, y);
+
+        y += 19;
+        this.textScaleLabelWidget.setPosition(x, y + 4);
+        this.lineHeightLabelWidget.setPosition(x, y + 23);
+        this.priorityLabelWidget.setPosition(x, y + 42);
+
+        tmpX = Math.max(this.textScaleLabelWidget.getRight(), this.lineHeightLabelWidget.getRight());
+        tmpX = Math.max(tmpX, this.priorityLabelWidget.getRight()) + 6;
+        this.textScaleEditWidget.setPosition(tmpX, y);
+        this.lineHeightEditWidget.setPosition(tmpX, y + 19);
+        this.priorityEditWidget.setPosition(tmpX, y + 38);
+
+        tmpX = this.textScaleEditWidget.getRight() + 6;
+        this.backgroundLabelWidget.setPosition(tmpX, y + 4);
         this.oddBackgroundLabelWidget.setPosition(tmpX, y + 23);
 
         tmpX = Math.max(this.backgroundLabelWidget.getRight(), this.oddBackgroundLabelWidget.getRight()) + 6;
-        this.backgroundEnabledToggleButton.setPosition(tmpX, y);
-        this.oddEvenBackgroundToggleButton.setPosition(tmpX, y + 20);
-
-        tmpX = this.backgroundEnabledToggleButton.getRight() + 2;
         this.backgroundColorWidget.setPosition(tmpX, y);
-        this.oddBackgroundColorWidget.setPosition(tmpX, y + 20);
+        this.oddBackgroundColorWidget.setPosition(tmpX, y + 19);
 
-        tmpX = this.backgroundColorWidget.getRight() + 6;
-        this.marginEditButton.setPosition(tmpX, y);
-        this.paddingEditButton.setPosition(tmpX, y + 20);
+        tmpX += 22;
+        this.backgroundEnabledToggleButton.setPosition(tmpX, y);
+        this.oddEvenBackgroundToggleButton.setPosition(tmpX, y + 19);
 
-        tmpX = Math.max(this.marginEditButton.getRight(), this.paddingEditButton.getRight()) + 6;
-        this.lineHeightLabelWidget.setPosition(tmpX, y + 3);
-        this.priorityLabelWidget.setPosition(tmpX, y + 23);
+        tmpX = this.x + this.screenWidth - this.addConfigsButton.getWidth() - 9;
+        this.addConfigsButton.setPosition(tmpX, y + 38);
 
-        tmpX = Math.max(this.lineHeightLabelWidget.getRight(), this.priorityLabelWidget.getRight()) + 6;
-        this.lineHeightEditWidget.setPosition(tmpX, y);
-        this.priorityEditWidget.setPosition(tmpX, y + 20);
+        this.addWidget(this.locationDropdownWidget);
+        this.addWidget(this.groupEnabledToggleButton);
+        this.addWidget(this.marginEditButton);
+        this.addWidget(this.paddingEditButton);
 
         this.addWidget(this.nameLabelWidget);
         this.addWidget(this.nameTextField);
-        this.addWidget(this.locationDropdownWidget);
+        this.addWidget(this.renderNameToggleButton);
 
-        this.addWidget(this.priorityLabelWidget);
-        this.addWidget(this.priorityEditWidget);
-
-        this.addWidget(this.groupEnabledToggleButton);
+        this.addWidget(this.textScaleLabelWidget);
+        this.addWidget(this.textScaleEditWidget);
 
         this.addWidget(this.lineHeightLabelWidget);
         this.addWidget(this.lineHeightEditWidget);
 
-        this.addWidget(this.renderNameLabelWidget);
-        this.addWidget(this.renderNameToggleButton);
+        this.addWidget(this.priorityLabelWidget);
+        this.addWidget(this.priorityEditWidget);
 
         this.addWidget(this.backgroundLabelWidget);
-        this.addWidget(this.oddBackgroundLabelWidget);
-
-        this.addWidget(this.backgroundEnabledToggleButton);
-        this.addWidget(this.oddEvenBackgroundToggleButton);
-
         this.addWidget(this.backgroundColorWidget);
-        this.addWidget(this.oddBackgroundColorWidget);
+        this.addWidget(this.backgroundEnabledToggleButton);
 
-        this.addWidget(this.marginEditButton);
-        this.addWidget(this.paddingEditButton);
+        this.addWidget(this.oddBackgroundLabelWidget);
+        this.addWidget(this.oddBackgroundColorWidget);
+        this.addWidget(this.oddEvenBackgroundToggleButton);
 
         this.addWidget(this.addConfigsButton);
 
@@ -221,6 +225,7 @@ public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataLis
                                          new ConfigStatusIndicatorEntryWidget(wx, wy, ww, wh, li, oi,
                                                                               d, lw, this.widget));
         listWidget.setBorderWidth(1);
+        listWidget.setListEntryWidgetFixedHeight(16);
         listWidget.setFetchFromSupplierOnRefresh(true);
 
         return listWidget;

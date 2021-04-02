@@ -62,14 +62,14 @@ public class ExpandableConfigGroupWidget extends BaseConfigWidget<ExpandableConf
         int height = this.getHeight();
 
         this.plusMinusIconWidget.setIcon(this.getPlusMinusIcon());
-        this.plusMinusIconWidget.setPosition(x + 2, y + (height - this.plusMinusIconWidget.getHeight()) / 2);
+        this.plusMinusIconWidget.setPosition(x + 4, y + (height - this.plusMinusIconWidget.getHeight()) / 2);
         this.arrowIconWidget.setIcon(this.getArrowIcon());
         this.arrowIconWidget.setPosition(this.getElementsStartPosition(), y + (height - this.arrowIconWidget.getHeight()) / 2);
 
         int tx = this.plusMinusIconWidget.getRight();
         this.configOwnerAndNameLabelWidget.setX(tx);
 
-        int labelLeftPadding = this.getNestingOffset(this.ctx.getNestingLevel()) + 2;
+        int labelLeftPadding = this.getNestingOffset(this.ctx.getNestingLevel()) + 5;
         this.configOwnerAndNameLabelWidget.getPadding().setLeft(labelLeftPadding);
     }
 

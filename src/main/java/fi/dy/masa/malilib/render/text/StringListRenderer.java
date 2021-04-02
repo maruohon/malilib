@@ -38,7 +38,6 @@ public class StringListRenderer extends BaseWidget
         this.textSettingsNormal.setUseTextShadow(true);
         this.textSettingsHover.setTextColor(0xFFE0E0E0);
         this.textSettingsHover.setUseTextShadow(true);
-        this.padding.setAll(1, 2, 0, 2);
         this.lineClamper = this::clampLineToWidth;
     }
 
@@ -286,7 +285,7 @@ public class StringListRenderer extends BaseWidget
         int rightPadding = this.padding.getRight();
         int horizontalPadding = leftPadding + rightPadding;
         int textLineX = x + leftPadding;
-        int textLineY = y + this.padding.getTop() + 2;
+        int textLineY = y + this.padding.getTop();
         int backgroundX = x;
         int backgroundY = y;
         int lineHeight = this.lineHeight;
@@ -318,8 +317,6 @@ public class StringListRenderer extends BaseWidget
                 textLineX = x + width / 2 - line.renderWidth / 2;
             }
 
-            int bgHeight = lineHeight;
-
             if (renderBackground)
             {
                 int backgroundWidth = line.renderWidth + horizontalPadding;
@@ -337,24 +334,14 @@ public class StringListRenderer extends BaseWidget
                     backgroundX = x + width / 2 - backgroundWidth / 2;
                 }
 
-                if (i == 0)
-                {
-                    bgHeight += this.padding.getTop();
-                }
-
-                if (i == size - 1)
-                {
-                    bgHeight += this.padding.getBottom();
-                }
-
                 int bgColor = (i & 0x1) != 0 ? bgColorOdd : bgColorNormal;
-                ShapeRenderUtils.renderRectangle(backgroundX, backgroundY, z, backgroundWidth, bgHeight, bgColor, buffer);
-                backgroundY += bgHeight;
+                ShapeRenderUtils.renderRectangle(backgroundX, backgroundY, z, backgroundWidth, lineHeight, bgColor, buffer);
+                backgroundY += lineHeight;
             }
 
             TextRenderer.INSTANCE.renderLineToBuffer(textLineX, textLineY, z + 0.0125f, color, shadow, line);
             textLineY += lineHeight;
-            usedHeight += bgHeight;
+            usedHeight += lineHeight;
         }
 
         if (renderBackground)
@@ -364,43 +351,6 @@ public class StringListRenderer extends BaseWidget
 
         TextRenderer.INSTANCE.renderBuffers();
     }
-
-    /*
-    protected void renderTextBackgrounds(int x, int y, float z, List<StyledTextLine> lines, boolean checkHeight, int bgColor)
-    {
-        boolean rightAlign = this.horizontalAlignment == HorizontalAlignment.RIGHT;
-        boolean center = this.horizontalAlignment == HorizontalAlignment.CENTER;
-        int usedHeight = TextRenderer.INSTANCE.getFontHeight();
-        int lineX = x;
-
-        BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR, false);
-
-        for (StyledTextLine line : lines)
-        {
-            if (checkHeight && usedHeight > this.maxHeight)
-            {
-                break;
-            }
-
-            int lineWidth = line.renderWidth;
-
-            if (rightAlign)
-            {
-                lineX = x - lineWidth - 2;
-            }
-            else if (center)
-            {
-                lineX = x - lineWidth / 2 - 1;
-            }
-
-            ShapeRenderUtils.renderRectangle(lineX, y, z, lineWidth + 3, this.lineHeight, bgColor, buffer);
-            y += this.lineHeight;
-            usedHeight += this.lineHeight;
-        }
-
-        RenderUtils.drawBuffer();
-    }
-    */
 
     public interface LineClamper
     {

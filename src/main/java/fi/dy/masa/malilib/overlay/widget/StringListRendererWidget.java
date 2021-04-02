@@ -24,7 +24,7 @@ public class StringListRendererWidget extends InfoRendererWidget
 
         this.textSettings = this.stringListRenderer.getNormalTextSettings();
         this.padding.setChangeListener(this::onPaddingChanged);
-        this.padding.setTop(1);
+        this.padding.setAll(1, 2, 0, 2);
         this.shouldSerialize = true;
     }
 

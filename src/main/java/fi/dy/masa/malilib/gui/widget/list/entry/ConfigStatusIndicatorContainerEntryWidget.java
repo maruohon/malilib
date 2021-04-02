@@ -72,17 +72,20 @@ public class ConfigStatusIndicatorContainerEntryWidget extends BaseDataListEntry
         int x = this.getX();
         int y = this.getY();
         int rightX = x + this.getWidth();
+        int height = this.getHeight();
 
-        this.nameLabelWidget.setPosition(x + 2, y + 6);
+        int tmpY = y + height / 2 - this.nameLabelWidget.getHeight() / 2;
+        this.nameLabelWidget.setPosition(x + 2, tmpY);
 
+        tmpY = y + height / 2 - this.removeButton.getHeight() / 2;
         rightX -= this.removeButton.getWidth() + 2;
-        this.removeButton.setPosition(rightX, y + 1);
+        this.removeButton.setPosition(rightX, tmpY);
 
         rightX -= this.configureButton.getWidth() + 2;
-        this.configureButton.setPosition(rightX, y + 1);
+        this.configureButton.setPosition(rightX, tmpY);
 
         rightX -= this.toggleButton.getWidth() + 2;
-        this.toggleButton.setPosition(rightX, y + 1);
+        this.toggleButton.setPosition(rightX, tmpY);
     }
 
     @Override

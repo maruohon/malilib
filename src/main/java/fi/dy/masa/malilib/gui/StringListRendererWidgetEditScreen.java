@@ -117,16 +117,30 @@ public class StringListRendererWidgetEditScreen extends BaseScreen
         this.paddingEditButton.setPosition(this.marginEditButton.getRight() + 6, y);
 
         y += 20;
-        this.nameLabelWidget.setPosition(x, y + 2);
+        this.nameLabelWidget.setPosition(x, y + 4);
         this.nameTextField.setPosition(this.nameLabelWidget.getRight() + 6, y);
         this.renderNameToggleButton.setPosition(this.nameTextField.getRight() + 6, y);
 
         y += 20;
-        this.textColorLabelWidget.setPosition(x, y + 3);
-        this.backgroundLabelWidget.setPosition(x, y + 23);
-        this.oddBackgroundLabelWidget.setPosition(x, y + 43);
-        this.textShadowLabelWidget.setPosition(x, y + 63);
-        this.evenWidthBackgroundLabelWidget.setPosition(x, y + 83);
+        this.textScaleLabelWidget.setPosition(x, y + 4);
+        this.lineHeightLabelWidget.setPosition(x, y + 24);
+        this.priorityLabelWidget.setPosition(x, y + 44);
+        this.textShadowLabelWidget.setPosition(x, y + 64);
+
+        tmpX = Math.max(this.textScaleLabelWidget.getRight(), this.lineHeightLabelWidget.getRight());
+        tmpX = Math.max(tmpX, this.priorityLabelWidget.getRight()) + 6;
+        this.textScaleEditWidget.setPosition(tmpX, y);
+        this.lineHeightEditWidget.setPosition(tmpX, y + 20);
+        this.priorityEditWidget.setPosition(tmpX, y + 40);
+
+        tmpX = this.textShadowLabelWidget.getRight() + 6;
+        this.textShadowToggleButton.setPosition(tmpX, y + 60);
+
+        tmpX = this.priorityEditWidget.getRight() + 6;
+        this.textColorLabelWidget.setPosition(tmpX, y + 4);
+        this.backgroundLabelWidget.setPosition(tmpX, y + 24);
+        this.oddBackgroundLabelWidget.setPosition(tmpX, y + 44);
+        this.evenWidthBackgroundLabelWidget.setPosition(tmpX, y + 64);
 
         int tmpX1 = Math.max(this.textColorLabelWidget.getRight(), this.backgroundLabelWidget.getRight());
         int tmpX2 = Math.max(this.oddBackgroundLabelWidget.getRight(), this.textShadowLabelWidget.getRight());
@@ -139,55 +153,44 @@ public class StringListRendererWidgetEditScreen extends BaseScreen
         tmpX += 22;
         this.backgroundEnabledToggleButton.setPosition(tmpX, y + 20);
         this.oddEvenBackgroundToggleButton.setPosition(tmpX, y + 40);
-        this.textShadowToggleButton.setPosition(tmpX, y + 60);
-        this.evenWidthBackgroundToggleButton.setPosition(tmpX, y + 80);
 
-        tmpX += 40;
-        this.lineHeightLabelWidget.setPosition(tmpX, y + 3);
-        this.priorityLabelWidget.setPosition(tmpX, y + 23);
-        this.textScaleLabelWidget.setPosition(tmpX, y + 43);
+        tmpX = Math.max(tmpX, this.evenWidthBackgroundLabelWidget.getRight() + 6);
+        this.evenWidthBackgroundToggleButton.setPosition(tmpX, y + 60);
 
-        tmpX = Math.max(this.lineHeightLabelWidget.getRight(), this.priorityLabelWidget.getRight());
-        tmpX = Math.max(tmpX, this.textScaleLabelWidget.getRight()) + 6;
-        this.lineHeightEditWidget.setPosition(tmpX, y);
-        this.priorityEditWidget.setPosition(tmpX, y + 20);
-        this.textScaleEditWidget.setPosition(tmpX, y + 40);
+        this.addWidget(this.locationDropdownWidget);
+        this.addWidget(this.enabledToggleButton);
+        this.addWidget(this.marginEditButton);
+        this.addWidget(this.paddingEditButton);
 
         this.addWidget(this.nameLabelWidget);
         this.addWidget(this.nameTextField);
-        this.addWidget(this.locationDropdownWidget);
-        this.addWidget(this.enabledToggleButton);
+        this.addWidget(this.renderNameToggleButton);
 
         this.addWidget(this.textScaleLabelWidget);
         this.addWidget(this.textScaleEditWidget);
 
-        this.addWidget(this.textShadowLabelWidget);
-        this.addWidget(this.textShadowToggleButton);
+        this.addWidget(this.lineHeightLabelWidget);
+        this.addWidget(this.lineHeightEditWidget);
 
         this.addWidget(this.priorityLabelWidget);
         this.addWidget(this.priorityEditWidget);
 
-        this.addWidget(this.lineHeightLabelWidget);
-        this.addWidget(this.lineHeightEditWidget);
-
-        this.addWidget(this.renderNameToggleButton);
+        this.addWidget(this.textShadowLabelWidget);
+        this.addWidget(this.textShadowToggleButton);
 
         this.addWidget(this.textColorLabelWidget);
-        this.addWidget(this.backgroundLabelWidget);
-        this.addWidget(this.oddBackgroundLabelWidget);
+        this.addWidget(this.textColorWidget);
 
+        this.addWidget(this.backgroundLabelWidget);
+        this.addWidget(this.backgroundColorWidget);
         this.addWidget(this.backgroundEnabledToggleButton);
+
+        this.addWidget(this.oddBackgroundLabelWidget);
+        this.addWidget(this.oddBackgroundColorWidget);
         this.addWidget(this.oddEvenBackgroundToggleButton);
 
         this.addWidget(this.evenWidthBackgroundLabelWidget);
         this.addWidget(this.evenWidthBackgroundToggleButton);
-
-        this.addWidget(this.textColorWidget);
-        this.addWidget(this.backgroundColorWidget);
-        this.addWidget(this.oddBackgroundColorWidget);
-
-        this.addWidget(this.marginEditButton);
-        this.addWidget(this.paddingEditButton);
     }
 
     @Override

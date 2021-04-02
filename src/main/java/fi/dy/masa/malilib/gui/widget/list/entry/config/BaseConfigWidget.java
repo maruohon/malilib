@@ -41,16 +41,6 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
         String nameLabel = config.getDisplayName();
         @Nullable String ownerLabel = this.ctx.getListWidget().getModNameAndCategoryPrefix(originalListIndex);
 
-        if (ctx.getNestingLevel() > 0)
-        {
-            nameLabel = "> " + nameLabel;
-
-            if (ownerLabel != null)
-            {
-                ownerLabel = "> " + ownerLabel;
-            }
-        }
-
         this.ownerText = ownerLabel != null ? StyledTextLine.rawWithStyle(ownerLabel, TextStyle.normal(Color4f.fromColor(0xFF686868))) : null;
         this.nameText = StyledTextLine.of(nameLabel);
         this.configOwnerAndNameLabelWidget = new LabelWidget(x, y, this.getMaxLabelWidth(), height, 0xFFF0F0F0);
@@ -99,12 +89,12 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
 
         if (showOwner && this.ownerText != null)
         {
-            this.configOwnerAndNameLabelWidget.getPadding().setTop(1);
+            this.configOwnerAndNameLabelWidget.getPadding().setTop(2);
             this.configOwnerAndNameLabelWidget.setStyledTextLines(Lists.newArrayList(this.ownerText, this.nameText));
         }
         else
         {
-            this.configOwnerAndNameLabelWidget.getPadding().setTop(6);
+            this.configOwnerAndNameLabelWidget.getPadding().setTop(7);
             this.configOwnerAndNameLabelWidget.setStyledTextLines(Lists.newArrayList(this.nameText));
         }
     }
@@ -169,14 +159,13 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
 
     public int getNestingOffset(int nestingLevel)
     {
-        return nestingLevel * 6;
+        return nestingLevel * 13;
     }
 
     protected int getElementsStartPosition()
     {
         int nestingLevel = this.ctx.getNestingLevel();
-        // The +8 is to compensate for the added "> " prefix when nested
-        int offset = nestingLevel > 0 ? this.getNestingOffset(nestingLevel) + 8 : 0;
+        int offset = this.getNestingOffset(nestingLevel);
         return this.getX() + this.getMaxLabelWidth() + offset + 10;
     }
 
