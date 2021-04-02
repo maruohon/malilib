@@ -10,11 +10,13 @@ import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import net.minecraft.client.renderer.GlStateManager;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.gui.position.ScreenLocation;
 import fi.dy.masa.malilib.gui.widget.BaseWidget;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.overlay.InfoWidgetManager;
+import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.render.text.TextRenderSettings;
@@ -37,6 +39,7 @@ public abstract class InfoRendererWidget extends BaseWidget
     protected boolean needsReLayout;
     protected boolean renderName;
     protected boolean shouldSerialize;
+    protected double scale = 1.0;
     protected long previousGeometryUpdateTime = -1;
     protected long geometryShrinkDelay = (long) (2 * 1E9); // 2 seconds
     protected int geometryShrinkThresholdX = 40;
@@ -124,6 +127,17 @@ public abstract class InfoRendererWidget extends BaseWidget
     {
         this.renderName = ! this.renderName;
         this.requestUnconditionalReLayout();
+    }
+
+    public double getScale()
+    {
+        return this.scale;
+    }
+
+    public void setScale(double scale)
+    {
+        this.scale = scale;
+        this.requestConditionalReLayout();
     }
 
     /**
@@ -303,20 +317,42 @@ public abstract class InfoRendererWidget extends BaseWidget
         {
             int x = this.getX();
             int y = this.getY();
-            this.renderAt(x, y, this.getZLevel());
+            float z = this.getZLevel();
 
-            if (MaLiLibConfigs.Debug.INFO_OVERLAY_DEBUG.getBooleanValue())
-            {
-                this.renderDebug(0, 0, false, true, MaLiLibConfigs.Debug.GUI_DEBUG_INFO_ALWAYS.getBooleanValue());
-            }
+            this.renderAt(x, y, z);
         }
     }
 
     public void renderAt(int x, int y, float z)
     {
+        RenderUtils.color(1f, 1f, 1f, 1f);
+
+        boolean scaled = this.scale != 1.0;
+
+        if (scaled)
+        {
+            GlStateManager.pushMatrix();
+            GlStateManager.translate(x, y, z);
+            GlStateManager.scale(this.scale, this.scale, 1);
+
+            x = 0;
+            y = 0;
+            z = 0f;
+        }
+
         this.renderBackground(x, y, z);
         y += this.renderName(x, y, z);
         this.renderContents(x, y, z);
+
+        if (scaled)
+        {
+            GlStateManager.popMatrix();
+        }
+
+        if (MaLiLibConfigs.Debug.INFO_OVERLAY_DEBUG.getBooleanValue())
+        {
+            this.renderDebug(x, y, z, 0, 0, false, true, MaLiLibConfigs.Debug.GUI_DEBUG_INFO_ALWAYS.getBooleanValue());
+        }
     }
 
     protected int renderName(int x, int y, float z)
@@ -373,6 +409,7 @@ public abstract class InfoRendererWidget extends BaseWidget
         obj.addProperty("name", this.getName());
         obj.addProperty("enabled", this.isEnabled());
         obj.addProperty("screen_location", this.getScreenLocation().getName());
+        obj.addProperty("scale", this.scale);
         obj.addProperty("render_name", this.renderName);
         obj.addProperty("sort_index", this.getSortIndex());
         obj.add("padding", this.padding.toJson());
@@ -398,6 +435,7 @@ public abstract class InfoRendererWidget extends BaseWidget
     {
         this.enabled = JsonUtils.getBooleanOrDefault(obj, "enabled", true);
         this.renderName = JsonUtils.getBooleanOrDefault(obj, "render_name", false);
+        this.scale = JsonUtils.getDoubleOrDefault(obj, "scale", 1.0);
         this.setName(JsonUtils.getStringOrDefault(obj, "name", this.name));
         this.setSortIndex(JsonUtils.getIntegerOrDefault(obj, "sort_index", 100));
 

@@ -236,8 +236,10 @@ public class InfoArea
             int topGap = Math.max(prev, margin.getTop());
             prev = margin.getBottom();
 
-            width = Math.max(width, widget.getWidth() + margin.getHorizontalTotal());
-            height += widget.getHeight() + topGap;
+            int ww = (int) Math.ceil(widget.getWidth() * widget.getScale());
+            int wh = (int) Math.ceil(widget.getHeight() * widget.getScale());
+            width = Math.max(width, ww + margin.getHorizontalTotal());
+            height += wh + topGap;
         }
 
         height += prev;
@@ -263,13 +265,15 @@ public class InfoArea
         for (InfoRendererWidget widget : this.enabledInfoWidgets)
         {
             EdgeInt margin = widget.getMargin();
-            int x = this.location.getStartX(widget.getWidth() + margin.getHorizontalTotal(), viewportWidth, this.offsetX);
+            int width = (int) Math.ceil(widget.getWidth() * widget.getScale());
+            int height = (int) Math.ceil(widget.getHeight() * widget.getScale());
+            int x = this.location.getStartX(width + margin.getHorizontalTotal(), viewportWidth, this.offsetX);
             int topGap = Math.max(prev, margin.getTop());
             prev = margin.getBottom();
             y += topGap;
 
             widget.setPosition(x + margin.getLeft(), y);
-            y += widget.getHeight();
+            y += height;
         }
     }
 
@@ -278,8 +282,10 @@ public class InfoArea
         //System.out.printf("InfoArea(%s)#updateOverlayWidgetPosition() - all: %d, enabled: %d\n", this.location, this.allWidgets.size(), this.enabledInfoWidgets.size());
         int viewportWidth = this.viewportWidthSupplier.getAsInt();
         int viewportHeight = this.viewportHeightSupplier.getAsInt();
-        int x = this.location.getStartX(widget.getWidth(), viewportWidth, this.offsetX);
-        int y = this.location.getStartY(widget.getHeight(), viewportHeight, this.offsetY);
+        int width = (int) Math.ceil(widget.getWidth() * widget.getScale());
+        int height = (int) Math.ceil(widget.getHeight() * widget.getScale());
+        int x = this.location.getStartX(width, viewportWidth, this.offsetX);
+        int y = this.location.getStartY(height, viewportHeight, this.offsetY);
 
         widget.setPosition(x, y);
     }

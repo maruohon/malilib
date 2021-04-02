@@ -368,6 +368,12 @@ public class BaseWidget
         int x = this.getX();
         int y = this.getY();
         float z = this.getZLevel();
+
+        this.renderDebug(x, y, z, mouseX, mouseY, hovered, renderAll, infoAlways);
+    }
+
+    public void renderDebug(int x, int y, float z, int mouseX, int mouseY, boolean hovered, boolean renderAll, boolean infoAlways)
+    {
         int w = this.getWidth();
         int h = this.getHeight();
 

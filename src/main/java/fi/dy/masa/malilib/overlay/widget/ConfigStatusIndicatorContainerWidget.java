@@ -161,8 +161,10 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
     @Override
     public void updateSubWidgetPositions()
     {
-        int x = this.getX() + this.padding.getLeft();
-        int y = this.getY() + (this.renderName ? this.lineHeight : 0) + this.padding.getTop();
+        int x = this.getX();
+        int y = this.getY();
+        int subWidgetX = x + this.padding.getLeft();
+        int subWidgetY = y + (this.renderName ? 0 : this.padding.getTop());
         int width = this.getWidth() - this.padding.getHorizontalTotal();
 
         this.updateEnabledWidgets();
@@ -170,8 +172,9 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
         for (BaseConfigStatusIndicatorWidget<?> widget : this.enabledWidgets)
         {
             widget.setWidth(width);
-            widget.setPosition(x, y);
-            y += widget.getHeight();
+            // Use a relative position in case scaling is involved
+            widget.setPosition(subWidgetX - x, subWidgetY - y);
+            subWidgetY += widget.getHeight();
         }
     }
 
@@ -245,7 +248,12 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
     {
         for (BaseConfigStatusIndicatorWidget<?> widget : this.enabledWidgets)
         {
-            widget.render();
+            int wx = widget.getX();
+            int wy = widget.getY();
+            float wz = widget.getZLevel();
+
+            // Use a relative position in case scaling is involved
+            widget.renderAt(x + wx, y + wy, z + wz);
         }
     }
 

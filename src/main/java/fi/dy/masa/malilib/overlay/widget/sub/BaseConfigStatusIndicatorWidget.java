@@ -130,7 +130,7 @@ public abstract class BaseConfigStatusIndicatorWidget<C extends ConfigInfo> exte
     {
         if (this.valueDisplayText != null)
         {
-            this.renderTextLine(this.getRight() - this.valueDisplayText.renderWidth, textY, z,
+            this.renderTextLine(x + this.getWidth() - this.valueDisplayText.renderWidth, textY, z,
                                 this.valueColor, this.valueShadow, this.valueDisplayText);
         }
     }

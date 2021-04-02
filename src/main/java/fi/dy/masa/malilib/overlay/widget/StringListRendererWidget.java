@@ -3,19 +3,15 @@ package fi.dy.masa.malilib.overlay.widget;
 import java.util.List;
 import java.util.function.Supplier;
 import com.google.gson.JsonObject;
-import net.minecraft.client.renderer.GlStateManager;
 import fi.dy.masa.malilib.gui.position.ScreenLocation;
-import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.render.text.OrderedStringListFactory;
 import fi.dy.masa.malilib.render.text.StringListRenderer;
-import fi.dy.masa.malilib.util.JsonUtils;
 
 public class StringListRendererWidget extends InfoRendererWidget
 {
     protected final OrderedStringListFactory stringListFactory = new OrderedStringListFactory();
     protected final StringListRenderer stringListRenderer = new StringListRenderer();
-    protected double textScale = 1.0;
     protected boolean dirty;
 
     public StringListRendererWidget()
@@ -85,17 +81,6 @@ public class StringListRendererWidget extends InfoRendererWidget
         this.onPaddingChanged();
     }
 
-    public double getTextScale()
-    {
-        return this.textScale;
-    }
-
-    public void setTextScale(double scale)
-    {
-        this.textScale = scale;
-        this.markDirty();
-    }
-
     @Override
     public void setLineHeight(int lineHeight)
     {
@@ -129,31 +114,17 @@ public class StringListRendererWidget extends InfoRendererWidget
     @Override
     public void updateSize()
     {
-        int height = this.renderName ? this.lineHeight : 0;
-        int width = (int) Math.ceil(this.stringListRenderer.getTotalRenderWidth() * this.textScale);
-        height += (int) Math.ceil(this.stringListRenderer.getTotalRenderHeight() * this.textScale);
+        int width = this.stringListRenderer.getTotalRenderWidth();
+        int height = this.stringListRenderer.getTotalRenderHeight() + (this.renderName ? this.lineHeight : 0);
 
         this.setWidth(width);
         this.setHeight(height);
     }
 
     @Override
-    public JsonObject toJson()
-    {
-        JsonObject obj = super.toJson();
-
-        obj.addProperty("text_scale", this.textScale);
-
-        return obj;
-    }
-
-    @Override
     public void fromJson(JsonObject obj)
     {
         super.fromJson(obj);
-
-        this.textScale = JsonUtils.getDoubleOrDefault(obj, "text_scale", 1.0);
-
         this.updateSize();
     }
 
@@ -196,21 +167,6 @@ public class StringListRendererWidget extends InfoRendererWidget
     @Override
     protected void renderContents(int x, int y, float z)
     {
-        if (this.textScale != 1.0)
-        {
-            GlStateManager.pushMatrix();
-            GlStateManager.translate(x, y, z);
-            GlStateManager.scale(this.textScale, this.textScale, 1);
-
-            this.stringListRenderer.renderAt(0, 0, 0, false);
-
-            GlStateManager.popMatrix();
-        }
-        else
-        {
-            this.stringListRenderer.renderAt(x, y, z, false);
-        }
-
-        RenderUtils.color(1f, 1f, 1f, 1f);
+        this.stringListRenderer.renderAt(x, y, z, false);
     }
 }
