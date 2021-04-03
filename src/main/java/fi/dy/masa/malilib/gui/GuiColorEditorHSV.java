@@ -2,14 +2,13 @@ package fi.dy.masa.malilib.gui;
 
 import java.awt.*;
 import javax.annotation.Nullable;
+
+import net.minecraft.client.gl.GlProgramManager;
+import net.minecraft.client.render.*;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.config.IConfigInteger;
@@ -489,14 +488,9 @@ public class GuiColorEditorHSV extends GuiDialogBase
         RenderSystem.disableTexture();
         RenderUtils.setupBlend();
 
-        RenderSystem.disableRescaleNormal();
-        RenderSystem.disableAlphaTest();
-        RenderSystem.shadeModel(GL11.GL_SMOOTH);
-        RenderSystem.alphaFunc(GL11.GL_GREATER, 0.01F);
-
         RenderUtils.color(1, 1, 1, 1);
 
-        GL20.glUseProgram(SHADER_HUE.getProgram());
+        GlProgramManager.useProgram(SHADER_HUE.getProgram());
         GL20.glUniform1f(GL20.glGetUniformLocation(SHADER_HUE.getProgram(), "hue_value"), this.relH);
 
         buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
@@ -508,8 +502,7 @@ public class GuiColorEditorHSV extends GuiDialogBase
 
         tessellator.draw();
 
-        GL20.glUseProgram(0);
-
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
         buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
 
         float r = this.relR;
@@ -587,10 +580,6 @@ public class GuiColorEditorHSV extends GuiDialogBase
         y += yd;
 
         tessellator.draw();
-
-        RenderSystem.shadeModel(GL11.GL_FLAT);
-        RenderSystem.enableAlphaTest();
-        RenderSystem.enableRescaleNormal();
 
         RenderSystem.disableBlend();
         RenderSystem.enableTexture();

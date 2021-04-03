@@ -110,12 +110,12 @@ public class GuiTextFieldGeneric extends TextFieldWidget
     {
         if (this.getZOffset() != 0)
         {
-            RenderSystem.pushMatrix();
-            RenderSystem.translatef(0, 0, this.getZOffset());
+            matrixStack.push();
+            matrixStack.translate(0, 0, this.getZOffset());
 
             super.render(matrixStack, mouseX, mouseY, partialTicks);
 
-            RenderSystem.popMatrix();
+            matrixStack.pop();
         }
         else
         {

@@ -5,6 +5,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 import javax.annotation.Nullable;
+
+import net.minecraft.client.render.*;
+import net.minecraft.util.math.*;
 import org.lwjgl.opengl.GL11;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -14,12 +17,6 @@ import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawableHelper;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.DiffuseLighting;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.texture.Sprite;
@@ -37,10 +34,6 @@ import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3f;
 import fi.dy.masa.malilib.config.HudAlignment;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.util.Color4f;
@@ -71,18 +64,18 @@ public class RenderUtils
 
     public static void bindTexture(Identifier texture)
     {
-        mc().getTextureManager().bindTexture(texture);
+        RenderSystem.setShaderTexture(0, texture);
     }
 
     public static void color(float r, float g, float b, float a)
     {
-        RenderSystem.color4f(r, g, b, a);
+        RenderSystem.setShaderColor(r, g, b, a);
     }
 
     public static void disableDiffuseLighting()
     {
         // FIXME 1.15-pre4+
-        DiffuseLighting.disable();
+        DiffuseLighting.disableGuiDepthLighting();
     }
 
     public static void enableDiffuseLightingForLevel(MatrixStack matrixStack)
@@ -153,10 +146,11 @@ public class RenderUtils
         float g = (float) (color >>  8 & 255) / 255.0F;
         float b = (float) (color & 255) / 255.0F;
 
+        RenderSystem.setShader(GameRenderer::getPositionShader);
+        RenderSystem.applyModelViewMatrix();
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
 
-        RenderSystem.disableTexture();
         setupBlend();
         color(r, g, b, a);
 
@@ -169,13 +163,14 @@ public class RenderUtils
 
         tessellator.draw();
 
-        RenderSystem.enableTexture();
         RenderSystem.disableBlend();
     }
 
     public static void drawTexturedRect(int x, int y, int u, int v, int width, int height, float zLevel)
     {
         float pixelWidth = 0.00390625F;
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.applyModelViewMatrix();
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
 
@@ -212,9 +207,7 @@ public class RenderUtils
         if (textLines.isEmpty() == false && GuiUtils.getCurrentScreen() != null)
         {
             TextRenderer font = mc.textRenderer;
-            RenderSystem.disableRescaleNormal();
             disableDiffuseLighting();
-            RenderSystem.disableLighting();
             RenderSystem.disableDepthTest();
             int maxLineLength = 0;
             int maxWidth = GuiUtils.getCurrentScreen().width;
@@ -271,10 +264,8 @@ public class RenderUtils
                 textStartY += lineHeight;
             }
 
-            RenderSystem.enableLighting();
             RenderSystem.enableDepthTest();
             enableDiffuseLightingGui3D();
-            RenderSystem.enableRescaleNormal();
         }
     }
 
@@ -291,9 +282,9 @@ public class RenderUtils
         int eb = (endColor & 0xFF);
 
         RenderSystem.disableTexture();
-        RenderSystem.disableAlphaTest();
         setupBlend();
-        RenderSystem.shadeModel(GL11.GL_SMOOTH);
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        RenderSystem.applyModelViewMatrix();
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
@@ -306,9 +297,7 @@ public class RenderUtils
 
         tessellator.draw();
 
-        RenderSystem.shadeModel(GL11.GL_FLAT);
         RenderSystem.disableBlend();
-        RenderSystem.enableAlphaTest();
         RenderSystem.enableTexture();
     }
 
@@ -333,7 +322,6 @@ public class RenderUtils
         if (texture != null)
         {
             Sprite sprite = mc().getSpriteAtlas(atlas).apply(texture);
-            RenderSystem.disableLighting();
             DrawableHelper.drawSprite(matrixStack, x, y, 0, width, height, sprite);//.drawTexturedRect(x, y, sprite, width, height);
         }
     }
@@ -388,8 +376,9 @@ public class RenderUtils
                 yOff = (int) (yOff * scale);
             }
 
-            RenderSystem.pushMatrix();
-            RenderSystem.scaled(scale, scale, 0);
+            MatrixStack globalStack = RenderSystem.getModelViewStack();
+            globalStack.push();
+            globalStack.scale((float) scale, (float) scale, 0);
         }
 
         double posX = xOff + bgMargin;
@@ -435,7 +424,7 @@ public class RenderUtils
 
         if (scale != 1d)
         {
-            RenderSystem.popMatrix();
+            RenderSystem.getModelViewStack().pop();
         }
 
         return contentHeight + bgMargin * 2;
@@ -738,16 +727,16 @@ public class RenderUtils
     {
         TextRenderer textRenderer = mc().textRenderer;
 
-        RenderSystem.alphaFunc(GL11.GL_GREATER, 0.1F);
-        RenderSystem.pushMatrix();
-        RenderSystem.translatef((float) x, (float) y, (float) z);
-        RenderSystem.normal3f(0.0F, 1.0F, 0.0F);
+        MatrixStack globalStack = RenderSystem.getModelViewStack();
+        globalStack.push();
+        globalStack.translate(x, y, z);
 
-        RenderSystem.rotatef(-yaw, 0.0F, 1.0F, 0.0F);
-        RenderSystem.rotatef(pitch, 1.0F, 0.0F, 0.0F);
+        Quaternion rot = Vec3f.POSITIVE_Y.getDegreesQuaternion(-yaw);
+        rot.hamiltonProduct(Vec3f.POSITIVE_X.getDegreesQuaternion(pitch));
+        globalStack.multiply(rot);
 
-        RenderSystem.scalef(-scale, -scale, scale);
-        RenderSystem.disableLighting();
+        globalStack.scale(-scale, -scale, scale);
+        RenderSystem.applyModelViewMatrix();
         RenderSystem.disableCull();
 
         if (disableDepth)
@@ -759,6 +748,7 @@ public class RenderUtils
         setupBlend();
         RenderSystem.disableTexture();
 
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
         int maxLineLen = 0;
@@ -819,7 +809,7 @@ public class RenderUtils
         color(1f, 1f, 1f, 1f);
         RenderSystem.enableCull();
         RenderSystem.disableBlend();
-        RenderSystem.popMatrix();
+        globalStack.pop();
     }
 
     public static void renderBlockTargetingOverlay(Entity entity, BlockPos pos, Direction side, Vec3d hitVec,
@@ -833,11 +823,11 @@ public class RenderUtils
         double y = pos.getY() + 0.5d - cameraPos.y;
         double z = pos.getZ() + 0.5d - cameraPos.z;
 
-        RenderSystem.pushMatrix();
-
-        MatrixStack matrixStackTmp = new MatrixStack();
-        blockTargetingOverlayTranslations(x, y, z, side, playerFacing, matrixStackTmp);
-        RenderSystem.multMatrix(matrixStackTmp.peek().getModel());
+        MatrixStack globalStack = RenderSystem.getModelViewStack();
+        globalStack.push();
+        blockTargetingOverlayTranslations(x, y, z, side, playerFacing, globalStack);
+        RenderSystem.applyModelViewMatrix();
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
@@ -923,7 +913,7 @@ public class RenderUtils
         buffer.vertex(x + 0.25, y + 0.25, z).color(c, c, c, c).next();
         tessellator.draw();
 
-        RenderSystem.popMatrix();
+        globalStack.pop();
     }
 
     public static void renderBlockTargetingOverlaySimple(Entity entity, BlockPos pos, Direction side,
@@ -936,11 +926,12 @@ public class RenderUtils
         double y = pos.getY() + 0.5d - cameraPos.y;
         double z = pos.getZ() + 0.5d - cameraPos.z;
 
-        RenderSystem.pushMatrix();
+        MatrixStack globalStack = RenderSystem.getModelViewStack();
+        globalStack.push();
 
-        MatrixStack matrixStackTmp = new MatrixStack();
-        blockTargetingOverlayTranslations(x, y, z, side, playerFacing, matrixStackTmp);
-        RenderSystem.multMatrix(matrixStackTmp.peek().getModel());
+        blockTargetingOverlayTranslations(x, y, z, side, playerFacing, globalStack);
+        RenderSystem.applyModelViewMatrix();
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
@@ -963,7 +954,8 @@ public class RenderUtils
 
         RenderSystem.lineWidth(1.6f);
 
-        buffer.begin(VertexFormat.DrawMode.LINE_STRIP, VertexFormats.POSITION_COLOR);
+        // FIXME: DEBUG_LINE_STRIP ignores line width
+        buffer.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
 
         // Middle rectangle
         buffer.vertex(x - 0.375, y - 0.375, z).color(c, c, c, c).next();
@@ -973,7 +965,7 @@ public class RenderUtils
 
         tessellator.draw();
 
-        RenderSystem.popMatrix();
+        globalStack.pop();
     }
 
     private static void blockTargetingOverlayTranslations(double x, double y, double z,
@@ -1011,8 +1003,6 @@ public class RenderUtils
     {
         if (stack.getItem() instanceof FilledMapItem && GuiBase.isShiftDown())
         {
-            RenderSystem.pushMatrix();
-            RenderSystem.disableLighting();
             color(1f, 1f, 1f, 1f);
 
             int y1 = y - dimensions - 20;
@@ -1023,6 +1013,8 @@ public class RenderUtils
 
             bindTexture(fi.dy.masa.malilib.render.RenderUtils.TEXTURE_MAP_BACKGROUND);
 
+            RenderSystem.setShader(GameRenderer::getPositionTexShader);
+            RenderSystem.applyModelViewMatrix();
             Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder buffer = tessellator.getBuffer();
             buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
@@ -1042,13 +1034,13 @@ public class RenderUtils
                 z = 310;
                 VertexConsumerProvider.Immediate consumer = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
                 double scale = (double) (dimensions - 16) / 128.0D;
-                RenderSystem.translatef(x1, y1, z);
-                RenderSystem.scaled(scale, scale, 0);
-                mc().gameRenderer.getMapRenderer().draw(new MatrixStack(), consumer, mapId, mapState, false, 0xF000F0);
+                MatrixStack matrixStack = new MatrixStack();
+                matrixStack.push();
+                matrixStack.translate(x1, y1, z);
+                matrixStack.scale((float) scale, (float) scale, 0);
+                mc().gameRenderer.getMapRenderer().draw(matrixStack, consumer, mapId, mapState, false, 0xF000F0);
+                matrixStack.pop();
             }
-
-            RenderSystem.enableLighting();
-            RenderSystem.popMatrix();
         }
     }
 
@@ -1063,9 +1055,10 @@ public class RenderUtils
                 return;
             }
 
-            RenderSystem.pushMatrix();
+            MatrixStack matrixStack = RenderSystem.getModelViewStack();
+            matrixStack.push();
             disableDiffuseLighting();
-            RenderSystem.translatef(0F, 0F, 400F);
+            matrixStack.translate(0, 0, 400);
 
             InventoryOverlay.InventoryRenderType type = InventoryOverlay.getInventoryType(stack);
             InventoryOverlay.InventoryProperties props = InventoryOverlay.getInventoryPropsTemp(type, items.size());
@@ -1086,13 +1079,12 @@ public class RenderUtils
 
             enableDiffuseLightingGui3D();
             RenderSystem.enableDepthTest();
-            RenderSystem.enableRescaleNormal();
 
             Inventory inv = fi.dy.masa.malilib.util.InventoryUtils.getAsInventory(items);
             InventoryOverlay.renderInventoryStacks(type, inv, x + props.slotOffsetX, y + props.slotOffsetY, props.slotsPerRow, 0, -1, mc());
 
             RenderSystem.disableDepthTest();
-            RenderSystem.popMatrix();
+            matrixStack.pop();
         }
     }
 
@@ -1123,56 +1115,48 @@ public class RenderUtils
             return;
         }
 
-        RenderSystem.pushMatrix();
+        MatrixStack matrixStack = RenderSystem.getModelViewStack();
+        matrixStack.push();
         bindTexture(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
         mc().getTextureManager().getTexture(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE).setFilter(false, false);
 
-        RenderSystem.enableRescaleNormal();
-        RenderSystem.enableAlphaTest();
-        RenderSystem.alphaFunc(516, 0.1F);
         RenderSystem.enableBlend();
         setupBlendSimple();
         color(1f, 1f, 1f, 1f);
 
         setupGuiTransform(x, y, model.hasDepth(), zLevel);
         //model.getItemCameraTransforms().applyTransform(ItemCameraTransforms.TransformType.GUI);
-        RenderSystem.rotatef( 30, 1, 0, 0);
-        RenderSystem.rotatef(225, 0, 1, 0);
-        RenderSystem.scalef(0.625f, 0.625f, 0.625f);
+        matrixStack.multiply(new Quaternion(Vec3f.POSITIVE_X, 30, true));
+        matrixStack.multiply(new Quaternion(Vec3f.POSITIVE_Y, 225, true));
+        matrixStack.scale(0.625f, 0.625f, 0.625f);
 
         renderModel(model, state);
 
-        RenderSystem.disableAlphaTest();
-        RenderSystem.disableRescaleNormal();
-        RenderSystem.disableLighting();
-        RenderSystem.popMatrix();
+        matrixStack.pop();
     }
 
     public static void setupGuiTransform(int xPosition, int yPosition, boolean isGui3d, float zLevel)
     {
-        RenderSystem.translatef(xPosition, yPosition, 100.0F + zLevel);
-        RenderSystem.translatef(8.0F, 8.0F, 0.0F);
-        RenderSystem.scalef(1.0F, -1.0F, 1.0F);
-        RenderSystem.scalef(16.0F, 16.0F, 16.0F);
+        setupGuiTransform(RenderSystem.getModelViewStack(), xPosition, yPosition, zLevel);
+    }
 
-        if (isGui3d)
-        {
-            RenderSystem.enableLighting();
-        }
-        else
-        {
-            RenderSystem.disableLighting();
-        }
+    public static void setupGuiTransform(MatrixStack matrixStack, int xPosition, int yPosition, float zLevel)
+    {
+        matrixStack.translate(xPosition + 8.0, yPosition + 8.0, zLevel + 100.0);
+        matrixStack.scale(16, -16, 16);
     }
 
     private static void renderModel(BakedModel model, BlockState state)
     {
-        RenderSystem.pushMatrix();
-        RenderSystem.translatef(-0.5F, -0.5F, -0.5F);
+        MatrixStack matrixStack = RenderSystem.getModelViewStack();
+        matrixStack.push();
+        matrixStack.translate(-0.5, -0.5, -0.5);
         int color = 0xFFFFFFFF;
 
         if (model.isBuiltin() == false)
         {
+            RenderSystem.setShader(GameRenderer::getRenderTypeSolidShader);
+            RenderSystem.applyModelViewMatrix();
             Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder bufferbuilder = tessellator.getBuffer();
             bufferbuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR_TEXTURE_LIGHT_NORMAL);
@@ -1188,7 +1172,7 @@ public class RenderUtils
             tessellator.draw();
         }
 
-        RenderSystem.popMatrix();
+        matrixStack.pop();
     }
 
     private static void renderQuads(BufferBuilder renderer, List<BakedQuad> quads, BlockState state, int color)

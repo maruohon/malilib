@@ -436,7 +436,6 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
             hovered.postRenderHovered(mouseX, mouseY, hoveredSelected, matrixStack);
         }
 
-        RenderSystem.disableLighting();
         RenderUtils.color(1f, 1f, 1f, 1f);
     }
 

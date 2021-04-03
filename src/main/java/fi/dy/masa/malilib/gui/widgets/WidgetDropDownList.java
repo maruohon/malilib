@@ -258,8 +258,8 @@ public class WidgetDropDownList<T> extends WidgetBase
     {
         RenderUtils.color(1f, 1f, 1f, 1f);
 
-        RenderSystem.pushMatrix();
-        RenderSystem.translatef(0, 0, 1);
+        matrixStack.push();
+        matrixStack.translate(0, 0, 1);
         List<T> list = this.filteredEntries;
         int visibleEntries = Math.min(this.maxVisibleEntries, list.size());
 
@@ -316,7 +316,7 @@ public class WidgetDropDownList<T> extends WidgetBase
             RenderUtils.drawTexturedRect(this.x + this.width - 16, this.y + 2, i.getU() + i.getWidth(), i.getV(), i.getWidth(), i.getHeight());
         }
 
-        RenderSystem.popMatrix();
+        matrixStack.pop();
     }
 
     protected static class TextFieldListener implements ITextFieldListener<GuiTextFieldGeneric>

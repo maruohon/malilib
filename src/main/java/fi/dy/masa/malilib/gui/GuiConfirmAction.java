@@ -93,8 +93,8 @@ public class GuiConfirmAction extends GuiDialogBase implements ICompletionListen
             this.getParent().render(matrixStack, mouseX, mouseY, partialTicks);
         }
 
-        RenderSystem.pushMatrix();
-        RenderSystem.translatef(0, 0, this.getZOffset());
+        matrixStack.push();
+        matrixStack.translate(0, 0, this.getZOffset());
 
         RenderUtils.drawOutlinedBox(this.dialogLeft, this.dialogTop, this.dialogWidth, this.dialogHeight, 0xF0000000, COLOR_HORIZONTAL_BAR);
 
@@ -109,7 +109,7 @@ public class GuiConfirmAction extends GuiDialogBase implements ICompletionListen
         }
 
         this.drawButtons(mouseX, mouseY, partialTicks, matrixStack);
-        RenderSystem.popMatrix();
+        matrixStack.pop();
     }
 
     protected ButtonListener createActionListener(ButtonType type)
