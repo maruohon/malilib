@@ -1,14 +1,16 @@
 package fi.dy.masa.malilib.gui;
 
-import java.awt.*;
+import java.awt.Color;
 import javax.annotation.Nullable;
-
-import net.minecraft.client.gl.GlProgramManager;
-import net.minecraft.client.render.*;
-import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.gl.GlProgramManager;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormat;
+import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.config.IConfigInteger;

@@ -1,7 +1,6 @@
 package fi.dy.masa.malilib.gui;
 
 import javax.annotation.Nullable;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
@@ -42,7 +41,7 @@ public abstract class GuiTextInputBase extends GuiDialogBase
 
         x += this.createButton(x, y, ButtonType.OK) + 2;
         x += this.createButton(x, y, ButtonType.RESET) + 2;
-        x += this.createButton(x, y, ButtonType.CANCEL) + 2;
+        this.createButton(x, y, ButtonType.CANCEL);
 
         this.mc.keyboard.setRepeatEvents(true);
     }
@@ -181,7 +180,7 @@ public abstract class GuiTextInputBase extends GuiDialogBase
 
         private final String labelKey;
 
-        private ButtonType(String labelKey)
+        ButtonType(String labelKey)
         {
             this.labelKey = labelKey;
         }
