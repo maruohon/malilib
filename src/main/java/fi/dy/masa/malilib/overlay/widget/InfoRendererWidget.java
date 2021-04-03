@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
@@ -25,7 +24,7 @@ import fi.dy.masa.malilib.util.JsonUtils;
 public abstract class InfoRendererWidget extends BaseWidget
 {
     protected final List<Consumer<ScreenLocation>> locationChangeListeners = new ArrayList<>();
-    protected final Set<UUID> markers = new HashSet<>();
+    protected final Set<String> markers = new HashSet<>();
     protected TextRenderSettings textSettings = new TextRenderSettings();
     protected ScreenLocation location = ScreenLocation.TOP_LEFT;
     protected String name = "?";
@@ -141,7 +140,8 @@ public abstract class InfoRendererWidget extends BaseWidget
     }
 
     /**
-     * Sets the sort index of this widget. Lower values come first (higher up).
+     * Sets the sort index of this widget. Lower values come first (higher up) within the InfoArea.
+     * The default sort index is 100.
      */
     public void setSortIndex(int index)
     {
@@ -189,17 +189,17 @@ public abstract class InfoRendererWidget extends BaseWidget
      * InfoWidgetManager reloads the saved widgets, and a mod wants to re-attach to the
      * "same" widget it was using before, instead of creating new ones every time.
      */
-    public void addMarker(UUID marker)
+    public void addMarker(String marker)
     {
         this.markers.add(marker);
     }
 
-    public void removeMarker(UUID marker)
+    public void removeMarker(String marker)
     {
         this.markers.remove(marker);
     }
 
-    public boolean hasMarker(UUID marker)
+    public boolean hasMarker(String marker)
     {
         return this.markers.contains(marker);
     }
@@ -420,9 +420,9 @@ public abstract class InfoRendererWidget extends BaseWidget
         {
             JsonArray arr = new JsonArray();
 
-            for (UUID marker : this.markers)
+            for (String marker : this.markers)
             {
-                arr.add(marker.toString());
+                arr.add(marker);
             }
 
             obj.add("markers", arr);
@@ -469,12 +469,7 @@ public abstract class InfoRendererWidget extends BaseWidget
 
             for (int i = 0; i < size; ++i)
             {
-                try
-                {
-                    UUID marker = UUID.fromString(arr.get(i).getAsString());
-                    this.markers.add(marker);
-                }
-                catch (IllegalArgumentException ignore) {}
+                this.markers.add(arr.get(i).getAsString());
             }
         }
     }
