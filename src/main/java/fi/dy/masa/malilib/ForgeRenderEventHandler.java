@@ -14,7 +14,7 @@ class ForgeRenderEventHandler
     {
         if (event.getType() == RenderGameOverlayEvent.ElementType.ALL)
         {
-            ((RenderEventHandler) RenderEventHandler.getInstance()).onRenderGameOverlayPost(event.getPartialTicks(), event.getMatrixStack());
+            ((RenderEventHandler) RenderEventHandler.getInstance()).onRenderGameOverlayPost(net.minecraft.client.Minecraft.getInstance(), event.getPartialTicks(), event.getMatrixStack());
         }
     }
 
@@ -27,6 +27,6 @@ class ForgeRenderEventHandler
     @SubscribeEvent
     public void onRenderWorldLast(RenderWorldLastEvent event)
     {
-        ((RenderEventHandler) RenderEventHandler.getInstance()).onRenderWorldLast(event.getMatrixStack(), event.getPartialTicks());
+        ((RenderEventHandler) RenderEventHandler.getInstance()).onRenderWorldLast(event.getMatrixStack(), net.minecraft.client.Minecraft.getInstance(), event.getPartialTicks());
     }
 }
