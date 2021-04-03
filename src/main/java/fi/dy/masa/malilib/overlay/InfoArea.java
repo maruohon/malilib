@@ -30,8 +30,6 @@ public class InfoArea
     protected int y;
     protected int width;
     protected int height;
-    protected int offsetX;
-    protected int offsetY;
 
     public InfoArea(ScreenLocation location,
                     @Nullable EventListener enabledWidgetsChangedListener)
@@ -139,6 +137,11 @@ public class InfoArea
         if (this.needsWidgetUpdate)
         {
             this.updateEnabledWidgets();
+        }
+
+        if (this.needsReLayout)
+        {
+            this.reLayoutWidgets();
         }
 
         return this.allEnabledWidgets;
@@ -256,8 +259,8 @@ public class InfoArea
         int viewportWidth = this.viewportWidthSupplier.getAsInt();
         int viewportHeight = this.viewportHeightSupplier.getAsInt();
 
-        this.x = this.location.getStartX(this.width, viewportWidth, this.offsetX);
-        this.y = this.location.getStartY(this.height, viewportHeight, this.offsetY);
+        this.x = this.location.getStartX(this.width, viewportWidth, 0);
+        this.y = this.location.getStartY(this.height, viewportHeight, 0);
 
         int y = this.y;
         int prev = 0;
@@ -267,7 +270,7 @@ public class InfoArea
             EdgeInt margin = widget.getMargin();
             int width = (int) Math.ceil(widget.getWidth() * widget.getScale());
             int height = (int) Math.ceil(widget.getHeight() * widget.getScale());
-            int x = this.location.getStartX(width + margin.getHorizontalTotal(), viewportWidth, this.offsetX);
+            int x = this.location.getStartX(width + margin.getHorizontalTotal(), viewportWidth, 0);
             int topGap = Math.max(prev, margin.getTop());
             prev = margin.getBottom();
             y += topGap;
@@ -284,8 +287,8 @@ public class InfoArea
         int viewportHeight = this.viewportHeightSupplier.getAsInt();
         int width = (int) Math.ceil(widget.getWidth() * widget.getScale());
         int height = (int) Math.ceil(widget.getHeight() * widget.getScale());
-        int x = this.location.getStartX(width, viewportWidth, this.offsetX);
-        int y = this.location.getStartY(height, viewportHeight, this.offsetY);
+        int x = this.location.getStartX(width, viewportWidth, 0);
+        int y = this.location.getStartY(height, viewportHeight, 0);
 
         widget.setPosition(x, y);
     }
