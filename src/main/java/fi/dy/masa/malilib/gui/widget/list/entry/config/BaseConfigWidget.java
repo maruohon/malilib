@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
 import com.google.common.collect.Lists;
+import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.config.option.FileConfig;
 import fi.dy.masa.malilib.gui.BaseScreen;
@@ -66,7 +67,7 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
         this.resetButton = new GenericButton(x, y, -1, 20, "malilib.gui.button.reset.caps");
 
         this.setBackgroundColor(this.isOdd ? 0x70606060 : 0x70909090);
-        this.setBackgroundEnabled(true);
+        this.setBackgroundEnabled(MaLiLibConfigs.Generic.CONFIG_WIDGET_BACKGROUND.getBooleanValue());
     }
 
     @Override
