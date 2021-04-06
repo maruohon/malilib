@@ -25,6 +25,7 @@ public class MaLiLibConfigs
         public static final OptionListConfig<KeybindDisplayMode> KEYBIND_DISPLAY        = new OptionListConfig<>("keybindDisplay", KeybindDisplayMode.NONE, KeybindDisplayMode.VALUES);
         public static final OptionListConfig<HudAlignment> KEYBIND_DISPLAY_ALIGNMENT    = new OptionListConfig<>("keybindDisplayAlignment", HudAlignment.BOTTOM_RIGHT, HudAlignment.VALUES);
 
+        public static final IntegerConfig ACTION_BAR_MESSAGE_LIMIT              = new IntegerConfig("actionBarMessageLimit", 3, 1, 16);
         public static final IntegerConfig CONFIG_BACKUP_COUNT                   = new IntegerConfig("configBackupCount", 5, 0, 200);
         public static final IntegerConfig CUSTOM_SCREEN_SCALE                   = new IntegerConfig("customScreenScale", 2, 0, 8);
         public static final StringConfig DATA_DUMP_CSV_DELIMITER                = new StringConfig("dataDumpCsvDelimiter", ",");
@@ -39,6 +40,7 @@ public class MaLiLibConfigs
         public static final BooleanConfig REMEMBER_CONFIG_TAB_SCROLL_POSITIONS  = new BooleanConfig("rememberConfigTabScrollPositions", true);
 
         public static final ImmutableList<ConfigOption<?>> OPTIONS = ImmutableList.of(
+                ACTION_BAR_MESSAGE_LIMIT,
                 CONFIG_BACKUP_COUNT,
                 CONFIG_SEARCH_DEFAULT_SCOPE,
                 CUSTOM_SCREEN_SCALE,

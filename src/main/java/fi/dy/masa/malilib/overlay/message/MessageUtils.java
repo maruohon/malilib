@@ -134,7 +134,7 @@ public class MessageUtils
             widget.getMargin().setBottom(50);
             widget.setZLevel(200f);
             widget.setAutomaticWidth(true);
-            widget.setMaxMessages(3);
+            widget.setMaxMessages(MaLiLibConfigs.Generic.ACTION_BAR_MESSAGE_LIMIT.getIntegerValue());
             widget.setMessageGap(2);
             InfoWidgetManager.INSTANCE.addWidget(widget);
         }
