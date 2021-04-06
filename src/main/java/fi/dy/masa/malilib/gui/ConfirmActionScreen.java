@@ -1,6 +1,5 @@
 package fi.dy.masa.malilib.gui;
 
-import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
 import net.minecraft.client.gui.GuiScreen;
@@ -8,13 +7,14 @@ import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.listener.ConfirmationListener;
 import fi.dy.masa.malilib.listener.TaskCompletionListener;
-import fi.dy.masa.malilib.overlay.message.MessageConsumer;
-import fi.dy.masa.malilib.overlay.message.MessageType;
+import fi.dy.masa.malilib.render.text.StyledText;
+import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.StringUtils;
+import fi.dy.masa.malilib.util.StyledTextUtils;
 
 public class ConfirmActionScreen extends BaseScreen implements TaskCompletionListener
 {
-    protected final List<String> messageLines = new ArrayList<>();
+    protected final List<StyledTextLine> messageLines;
     protected final ConfirmationListener listener;
     protected int textColor = 0xFFC0C0C0;
 
@@ -26,7 +26,7 @@ public class ConfirmActionScreen extends BaseScreen implements TaskCompletionLis
         this.useTitleHierarchy = false;
         this.zLevel = 1f;
 
-        StringUtils.splitTextToLines(this.messageLines, StringUtils.translate(messageKey, args), width - 30);
+        this.messageLines = StyledTextUtils.wrapStyledTextToMaxWidth(StyledText.translatedOf(messageKey, args).lines, width - 30);
 
         this.setScreenWidthAndHeight(width, this.getMessageHeight() + 50);
         this.centerOnScreen();
@@ -65,19 +65,6 @@ public class ConfirmActionScreen extends BaseScreen implements TaskCompletionLis
     public int getMessageHeight()
     {
         return this.messageLines.size() * (this.fontHeight + 1) - 1 + 5;
-    }
-
-    @Override
-    public void addMessage(MessageType type, int lifeTime, String messageKey, Object... args)
-    {
-        if (this.getParent() instanceof MessageConsumer)
-        {
-            ((MessageConsumer) this.getParent()).addMessage(type, lifeTime, messageKey, args);
-        }
-        else
-        {
-            super.addMessage(type, lifeTime, messageKey, args);
-        }
     }
 
     @Override

@@ -25,6 +25,7 @@ public class MaLiLibInitHandler implements InitializationHandler
         MaLiLibConfigs.Generic.OPTION_LIST_CONFIG_DROPDOWN.setValueChangeCallback((n, o) -> GuiUtils.reInitCurrentScreen());
 
         RenderEventDispatcher.INSTANCE.registerGameOverlayRenderer(InfoOverlay.INSTANCE);
+        RenderEventDispatcher.INSTANCE.registerScreenPostRenderer(InfoOverlay.INSTANCE);
         TickEventDispatcher.INSTANCE.registerClientTickHandler(InfoOverlay.INSTANCE);
     }
 }

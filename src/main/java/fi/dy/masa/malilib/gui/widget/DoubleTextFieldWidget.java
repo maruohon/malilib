@@ -64,20 +64,20 @@ public class DoubleTextFieldWidget extends BaseTextFieldWidget
 
                 if (value < this.minValue)
                 {
-                    return StringUtils.translate("malilib.error.textfield.value_below_min", String.valueOf(value), String.valueOf(this.minValue));
+                    return StringUtils.translate("malilib.message.error.textfield.value_below_min", String.valueOf(value), String.valueOf(this.minValue));
                 }
                 else if (value > this.maxValue)
                 {
-                    return StringUtils.translate("malilib.error.textfield.value_above_max", String.valueOf(value), String.valueOf(this.maxValue));
+                    return StringUtils.translate("malilib.message.error.textfield.value_above_max", String.valueOf(value), String.valueOf(this.maxValue));
                 }
                 else if (Double.isNaN(value))
                 {
-                    return StringUtils.translate("malilib.error.textfield.invalid_value_floating_point_number", text);
+                    return StringUtils.translate("malilib.message.error.textfield.invalid_value_floating_point_number", text);
                 }
             }
             catch (Exception e)
             {
-                return StringUtils.translate("malilib.error.textfield.invalid_value_floating_point_number", text);
+                return StringUtils.translate("malilib.message.error.textfield.invalid_value_floating_point_number", text);
             }
 
             return null;

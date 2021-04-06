@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.event.dispatch;
 
 import fi.dy.masa.malilib.event.PostGameOverlayRenderer;
 import fi.dy.masa.malilib.event.PostItemTooltipRenderer;
+import fi.dy.masa.malilib.event.PostScreenRenderer;
 import fi.dy.masa.malilib.event.PostWorldRenderer;
 
 public interface RenderEventDispatcher
@@ -21,6 +22,13 @@ public interface RenderEventDispatcher
      * @param renderer
      */
     void registerTooltipPostRenderer(PostItemTooltipRenderer renderer);
+
+    /**
+     * Registers a renderer which will have its {@link PostScreenRenderer#onPostScreenRender(net.minecraft.client.Minecraft, float)}
+     * method called after the vanilla screen rendering method has been called.
+     * @param renderer
+     */
+    void registerScreenPostRenderer(PostScreenRenderer renderer);
 
     /**
      * Registers a renderer which will have its {@link PostWorldRenderer#onPostWorldRender(net.minecraft.client.Minecraft, float)}

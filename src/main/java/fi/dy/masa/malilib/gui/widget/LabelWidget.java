@@ -31,21 +31,21 @@ public class LabelWidget extends BackgroundWidget
 
     public LabelWidget(int x, int y, int width, int height, int textColor, String... text)
     {
-        this(x, y, width, height, textColor, Arrays.asList(text));
-    }
-
-    public LabelWidget(int x, int y, int width, int height, int textColor, List<String> lines)
-    {
         this(x, y, width, height, textColor);
 
-        this.setText(lines);
+        this.setText(Arrays.asList(text));
     }
 
     public LabelWidget(int x, int y, int width, int height, int textColor, StyledTextLine... lines)
     {
+        this(x, y, width, height, textColor, Arrays.asList(lines));
+    }
+
+    public LabelWidget(int x, int y, int width, int height, int textColor, List<StyledTextLine> lines)
+    {
         this(x, y, width, height, textColor);
 
-        this.setStyledTextLines(Arrays.asList(lines));
+        this.setStyledTextLines(lines);
     }
 
     public int getTotalWidth()

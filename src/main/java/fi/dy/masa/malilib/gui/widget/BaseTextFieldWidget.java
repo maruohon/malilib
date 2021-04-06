@@ -15,9 +15,9 @@ import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.util.TextRegion;
 import fi.dy.masa.malilib.gui.widget.util.TextFieldValidator;
 import fi.dy.masa.malilib.listener.TextChangeListener;
+import fi.dy.masa.malilib.overlay.message.Message;
+import fi.dy.masa.malilib.overlay.widget.MessageRendererWidget;
 import fi.dy.masa.malilib.render.RenderUtils;
-import fi.dy.masa.malilib.overlay.message.MessageRenderer;
-import fi.dy.masa.malilib.overlay.message.MessageType;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.render.text.TextRenderer;
 import fi.dy.masa.malilib.util.StringUtils;
@@ -38,9 +38,9 @@ public class BaseTextFieldWidget extends BackgroundWidget
     public static final TextFieldValidator VALIDATOR_INTEGER_POSITIVE  = new IntegerTextFieldWidget.IntValidator(1, Integer.MAX_VALUE);
 
     protected final TextRegion visibleText = new TextRegion();
-    protected MessageRenderer messageRenderer = new MessageRenderer();
+    protected final MessageRendererWidget messageRenderer = new MessageRendererWidget();
     private String text = "";
-    protected String lastNotifiedText = "";
+    protected String lastNotifiedText;
     @Nullable protected IInputCharacterValidator inputValidator;
     @Nullable protected TextFieldValidator textValidator;
     @Nullable protected TextChangeListener listener;
@@ -79,6 +79,10 @@ public class BaseTextFieldWidget extends BackgroundWidget
         this.padding.setRight(3);
         this.updateTextFieldSize();
         this.setText(text);
+
+        this.messageRenderer.setMessageGap(2);
+        this.messageRenderer.getPadding().setAll(4, 6, 4, 6);
+        this.messageRenderer.setAutomaticWidth(true);
     }
 
     @Override
@@ -106,7 +110,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
     @Override
     public void setZLevel(float zLevel)
     {
-        this.messageRenderer.setZLevel(zLevel + 10);
+        this.messageRenderer.setZLevel(zLevel + 100f);
         super.setZLevel(zLevel);
     }
 
@@ -204,7 +208,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
 
             if (message != null)
             {
-                this.messageRenderer.addMessage(MessageType.ERROR, 3000, message);
+                this.messageRenderer.addMessage(Message.ERROR, 3000, 200, message);
                 this.updateMessageRendererPosition();
             }
         }
@@ -516,7 +520,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
         }
     }
 
-    protected int getClickedTextIndex(int mouseX, int mouseY)
+    protected int getClickedTextIndex(int mouseX)
     {
         int relX = mouseX - (this.getX() + this.getTextStartRelativeX());
 
@@ -752,7 +756,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
             }
             else
             {
-                int clickedIndex = this.getClickedTextIndex(mouseX, mouseY);
+                int clickedIndex = this.getClickedTextIndex(mouseX);
                 boolean selectText = BaseScreen.isShiftDown();
                 this.setCursorPosition(clickedIndex, selectText);
             }
@@ -927,10 +931,6 @@ public class BaseTextFieldWidget extends BackgroundWidget
         }
     }
 
-    protected void renderTextSegment(int x, int y, float z, int startIndex, int textLength, int textColor, int backgroundColor)
-    {
-    }
-
     protected void renderVisibleText(int x, int y, float z, int textColor)
     {
         // A selection exists
@@ -1018,9 +1018,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
         }
 
         int messagesHeightPre = this.messageRenderer.getHeight();
-        int diffX = x - this.getX();
-        int diffY = y - this.getY();
-        this.messageRenderer.drawMessages(this.messageRenderer.getX() + diffX, this.messageRenderer.getY() + diffY, z + 0.1f);
+        this.messageRenderer.render();
 
         // Update the position when old messages are removed
         if (this.messageRenderer.getHeight() != messagesHeightPre)

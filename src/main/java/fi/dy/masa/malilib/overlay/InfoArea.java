@@ -51,7 +51,6 @@ public class InfoArea
     /**
      * Returns the first widget that passes the test, if any
      */
-    @SuppressWarnings("unchecked")
     @Nullable
     public <C extends InfoRendererWidget> C findWidget(Class<C> clazz, Predicate<C> predicate)
     {
@@ -63,7 +62,7 @@ public class InfoArea
 
                 if (predicate.test(obj))
                 {
-                    return (C) widget;
+                    return obj;
                 }
             }
         }
@@ -85,16 +84,12 @@ public class InfoArea
     protected void addWidgetImpl(InfoRendererWidget widget, final boolean isOverlay)
     {
         //System.out.printf("InfoArea(%s)#addWidgetImpl() - all: %d, enabled: %d\n", this.location, this.allWidgets.size(), this.enabledInfoWidgets.size());
+        widget.setViewportSizeSuppliers(this.viewportWidthSupplier, this.viewportHeightSupplier);
         widget.setLocation(this.location);
         widget.setEnabledChangeListener(() -> this.notifyEnabledWidgetsChanged(isOverlay == false));
         widget.setGeometryChangeListener(this::requestReLayout);
-
         this.allWidgets.add(widget);
-
-        if (isOverlay)
-        {
-            this.updateOverlayWidgetPosition(widget);
-        }
+        widget.onAdded();
     }
 
     public void addWidgets(Collection<InfoRendererWidget> widgets)
@@ -278,19 +273,6 @@ public class InfoArea
             widget.setPosition(x + margin.getLeft(), y);
             y += height;
         }
-    }
-
-    protected void updateOverlayWidgetPosition(InfoRendererWidget widget)
-    {
-        //System.out.printf("InfoArea(%s)#updateOverlayWidgetPosition() - all: %d, enabled: %d\n", this.location, this.allWidgets.size(), this.enabledInfoWidgets.size());
-        int viewportWidth = this.viewportWidthSupplier.getAsInt();
-        int viewportHeight = this.viewportHeightSupplier.getAsInt();
-        int width = (int) Math.ceil(widget.getWidth() * widget.getScale());
-        int height = (int) Math.ceil(widget.getHeight() * widget.getScale());
-        int x = this.location.getStartX(width, viewportWidth, 0);
-        int y = this.location.getStartY(height, viewportHeight, 0);
-
-        widget.setPosition(x, y);
     }
 
     public void renderDebug()

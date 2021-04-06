@@ -64,16 +64,16 @@ public class IntegerTextFieldWidget extends BaseTextFieldWidget
 
                 if (value < this.minValue)
                 {
-                    return StringUtils.translate("malilib.error.textfield.value_below_min", String.valueOf(value), String.valueOf(this.minValue));
+                    return StringUtils.translate("malilib.message.error.textfield.value_below_min", String.valueOf(value), String.valueOf(this.minValue));
                 }
                 else if (value > this.maxValue)
                 {
-                    return StringUtils.translate("malilib.error.textfield.value_above_max", String.valueOf(value), String.valueOf(this.maxValue));
+                    return StringUtils.translate("malilib.message.error.textfield.value_above_max", String.valueOf(value), String.valueOf(this.maxValue));
                 }
             }
             catch (Exception e)
             {
-                return StringUtils.translate("malilib.error.textfield.invalid_value_int", text);
+                return StringUtils.translate("malilib.message.error.textfield.invalid_value_int", text);
             }
 
             return null;

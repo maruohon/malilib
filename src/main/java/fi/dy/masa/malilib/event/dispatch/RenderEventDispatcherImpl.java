@@ -6,13 +6,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import fi.dy.masa.malilib.event.PostGameOverlayRenderer;
 import fi.dy.masa.malilib.event.PostItemTooltipRenderer;
+import fi.dy.masa.malilib.event.PostScreenRenderer;
 import fi.dy.masa.malilib.event.PostWorldRenderer;
-import fi.dy.masa.malilib.overlay.message.MessageUtils;
 import fi.dy.masa.malilib.overlay.message.ToastRenderer;
 
 public class RenderEventDispatcherImpl implements RenderEventDispatcher
 {
     private final List<PostGameOverlayRenderer> overlayRenderers = new ArrayList<>();
+    private final List<PostScreenRenderer> screenPostRenderers = new ArrayList<>();
     private final List<PostItemTooltipRenderer> tooltipLastRenderers = new ArrayList<>();
     private final List<PostWorldRenderer> worldLastRenderers = new ArrayList<>();
 
@@ -22,6 +23,15 @@ public class RenderEventDispatcherImpl implements RenderEventDispatcher
         if (this.overlayRenderers.contains(renderer) == false)
         {
             this.overlayRenderers.add(renderer);
+        }
+    }
+
+    @Override
+    public void registerScreenPostRenderer(PostScreenRenderer renderer)
+    {
+        if (this.screenPostRenderers.contains(renderer) == false)
+        {
+            this.screenPostRenderers.add(renderer);
         }
     }
 
@@ -60,10 +70,27 @@ public class RenderEventDispatcherImpl implements RenderEventDispatcher
             }
         }
 
-        mc.profiler.startSection("malilib_ingame_messages");
-        MessageUtils.renderInGameMessages();
         ToastRenderer.INSTANCE.render();
+
         mc.profiler.endSection();
+    }
+
+    /**
+     * NOT PUBLIC API - DO NOT CALL
+     */
+    public void onRenderScreenPost(Minecraft mc, float partialTicks)
+    {
+        mc.profiler.startSection("malilib_screen_post");
+
+        if (this.screenPostRenderers.isEmpty() == false)
+        {
+            for (PostScreenRenderer renderer : this.screenPostRenderers)
+            {
+                mc.profiler.func_194340_a(renderer.getProfilerSectionSupplier());
+                renderer.onPostScreenRender(mc, partialTicks);
+                mc.profiler.endSection();
+            }
+        }
 
         mc.profiler.endSection();
     }

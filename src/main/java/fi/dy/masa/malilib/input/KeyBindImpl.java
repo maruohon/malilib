@@ -575,7 +575,7 @@ public class KeyBindImpl implements KeyBind
 
         if (MaLiLibConfigs.Debug.KEYBIND_DEBUG_ACTIONBAR.getBooleanValue())
         {
-            MessageUtils.printActionbarMessage(msg);
+            MessageUtils.printCustomActionbarMessage(msg);
         }
     }
 

@@ -11,10 +11,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumFacing.Axis;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.TextFormatting;
 import fi.dy.masa.malilib.config.value.BaseOptionListConfigValue;
 import fi.dy.masa.malilib.config.value.LayerMode;
-import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.listener.LayerRangeChangeListener;
 import fi.dy.masa.malilib.overlay.message.MessageUtils;
 import fi.dy.masa.malilib.util.JsonUtils;
@@ -122,13 +120,12 @@ public class LayerRange
         switch (this.layerMode)
         {
             case ALL:
+            case ALL_BELOW:
                 return getWorldMinValueForAxis(this.axis);
             case SINGLE_LAYER:
                 return this.layerSingle;
             case ALL_ABOVE:
                 return this.layerAbove;
-            case ALL_BELOW:
-                return getWorldMinValueForAxis(this.axis);
             case LAYER_RANGE:
                 return this.layerRangeMin;
             default:
@@ -141,11 +138,10 @@ public class LayerRange
         switch (this.layerMode)
         {
             case ALL:
+            case ALL_ABOVE:
                 return getWorldMaxValueForAxis(this.axis);
             case SINGLE_LAYER:
                 return this.layerSingle;
-            case ALL_ABOVE:
-                return getWorldMaxValueForAxis(this.axis);
             case ALL_BELOW:
                 return this.layerBelow;
             case LAYER_RANGE:
@@ -215,8 +211,7 @@ public class LayerRange
 
         if (printMessage)
         {
-            String val = TextFormatting.GREEN.toString() + mode.getDisplayName();
-            MessageUtils.printActionbarMessage("malilib.message.set_layer_mode_to", val);
+            MessageUtils.printCustomActionbarMessage("malilib.message.set_layer_mode_to", mode.getDisplayName());
         }
     }
 
@@ -225,8 +220,7 @@ public class LayerRange
         this.axis = axis;
 
         this.refresher.updateAll();
-        String val = TextFormatting.GREEN.toString() + axis.getName();
-        MessageUtils.printActionbarMessage("malilib.message.set_layer_axis_to", val);
+        MessageUtils.printCustomActionbarMessage("malilib.message.set_layer_axis_to", axis.getName());
     }
 
     public void setPlayerFollowOffset(int offset)
@@ -453,7 +447,6 @@ public class LayerRange
     public boolean moveLayer(int amount)
     {
         String axisName = this.axis.getName().toLowerCase();
-        String strTo = BaseScreen.TXT_GREEN + axisName + " = ";
 
         switch (this.layerMode)
         {
@@ -462,22 +455,19 @@ public class LayerRange
             case SINGLE_LAYER:
             {
                 this.setLayerSingle(this.layerSingle + amount);
-                String val = strTo + this.layerSingle;
-                MessageUtils.printActionbarMessage("malilib.message.set_layer_to", val);
+                MessageUtils.printCustomActionbarMessage("malilib.message.set_layer_to", axisName, this.layerSingle);
                 break;
             }
             case ALL_ABOVE:
             {
                 this.setLayerAbove(this.layerAbove + amount);
-                String val = strTo + this.layerAbove;
-                MessageUtils.printActionbarMessage("malilib.message.moved_min_layer_to", val);
+                MessageUtils.printCustomActionbarMessage("malilib.message.moved_min_layer_to", axisName, this.layerAbove);
                 break;
             }
             case ALL_BELOW:
             {
                 this.setLayerBelow(this.layerBelow + amount);
-                String val = strTo + this.layerBelow;
-                MessageUtils.printActionbarMessage("malilib.message.moved_max_layer_to", val);
+                MessageUtils.printCustomActionbarMessage("malilib.message.moved_max_layer_to", axisName, this.layerBelow);
                 break;
             }
             case LAYER_RANGE:
@@ -486,7 +476,7 @@ public class LayerRange
 
                 if (player != null)
                 {
-                    this.moveLayerRange(amount, player, true);
+                    this.moveLayerRange(amount, player);
                 }
 
                 break;
@@ -497,7 +487,7 @@ public class LayerRange
         return true;
     }
 
-    protected void moveLayerRange(int amount, EntityPlayer player, boolean printMessage)
+    protected void moveLayerRange(int amount, EntityPlayer player)
     {
         Pair<Boolean, Boolean> moveMinMax = this.getMoveMinMax(player);
         boolean moveMin = moveMinMax.getLeft();
@@ -515,18 +505,18 @@ public class LayerRange
             moved |= this.setLayerRangeMax(this.layerRangeMax + amount, force);
         }
 
-        if (printMessage && moved)
+        if (moved)
         {
             String axisName = this.axis.getName().toLowerCase();
 
             if (moveMin && moveMax)
             {
-                MessageUtils.printActionbarMessage("malilib.message.moved_layer_range", String.valueOf(amount), axisName);
+                MessageUtils.printCustomActionbarMessage("malilib.message.moved_layer_range", String.valueOf(amount), axisName);
             }
             else
             {
-                String val1 = moveMin ? StringUtils.translate("malilib.message.layer_range.range_min") : StringUtils.translate("malilib.message.layer_range.range_max");
-                MessageUtils.printActionbarMessage("malilib.message.moved_layer_range_boundary", val1, String.valueOf(amount), axisName);
+                String val1 = StringUtils.translate(moveMin ? "malilib.message.layer_range.range_min" : "malilib.message.layer_range.range_max");
+                MessageUtils.printCustomActionbarMessage("malilib.message.moved_layer_range_boundary", val1, String.valueOf(amount), axisName);
             }
         }
     }

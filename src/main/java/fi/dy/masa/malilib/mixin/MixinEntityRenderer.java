@@ -40,4 +40,16 @@ public abstract class MixinEntityRenderer
             ((RenderEventDispatcherImpl) RenderEventDispatcher.INSTANCE).onRenderGameOverlayPost(this.mc, partialTicks);
         }
     }
+
+    @Inject(method = "updateCameraAndRender(FJ)V", at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/client/gui/GuiScreen;drawScreen(IIF)V",
+            shift = Shift.AFTER))
+    private void onRenderScreenPost(float partialTicks, long nanoTime, CallbackInfo ci)
+    {
+        if (this.mc.world != null && this.mc.player != null)
+        {
+            ((RenderEventDispatcherImpl) RenderEventDispatcher.INSTANCE).onRenderScreenPost(this.mc, partialTicks);
+        }
+    }
 }

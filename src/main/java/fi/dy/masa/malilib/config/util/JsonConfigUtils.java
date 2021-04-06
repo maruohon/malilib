@@ -6,11 +6,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import fi.dy.masa.malilib.MaLiLib;
+import fi.dy.masa.malilib.config.category.ConfigOptionCategory;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.config.option.ConfigOption;
-import fi.dy.masa.malilib.config.category.ConfigOptionCategory;
 import fi.dy.masa.malilib.config.serialization.JsonConfigSerializerRegistry;
-import fi.dy.masa.malilib.overlay.message.MessageType;
 import fi.dy.masa.malilib.overlay.message.MessageUtils;
 import fi.dy.masa.malilib.util.JsonUtils;
 
@@ -114,7 +113,7 @@ public class JsonConfigUtils
 
         if (success == false)
         {
-            MessageUtils.showGuiOrInGameMessage(MessageType.ERROR, "malilib.error.failed_to_save_all_configs");
+            MessageUtils.errorAndConsole("malilib.message.error.failed_to_save_all_configs");
         }
 
         return JsonUtils.writeJsonToFile(root, configFile);

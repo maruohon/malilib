@@ -3,9 +3,8 @@ package fi.dy.masa.malilib.util;
 import java.io.File;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.widget.util.DirectoryNavigator;
-import fi.dy.masa.malilib.util.consumer.StringConsumer;
-import fi.dy.masa.malilib.overlay.message.MessageType;
 import fi.dy.masa.malilib.overlay.message.MessageUtils;
+import fi.dy.masa.malilib.util.consumer.StringConsumer;
 
 public class DirectoryCreator implements StringConsumer
 {
@@ -23,7 +22,7 @@ public class DirectoryCreator implements StringConsumer
     {
         if (string.isEmpty())
         {
-            MessageUtils.showGuiOrActionBarMessage(MessageType.ERROR, "malilib.error.invalid_directory", string);
+            MessageUtils.error("malilib.message.error.invalid_directory", string);
             return false;
         }
 
@@ -31,13 +30,13 @@ public class DirectoryCreator implements StringConsumer
 
         if (file.exists())
         {
-            MessageUtils.showGuiOrActionBarMessage(MessageType.ERROR, "malilib.error.file_or_directory_already_exists", file.getAbsolutePath());
+            MessageUtils.error("malilib.message.error.file_or_directory_already_exists", file.getAbsolutePath());
             return false;
         }
 
         if (file.mkdirs() == false)
         {
-            MessageUtils.showGuiOrActionBarMessage(MessageType.ERROR, "malilib.error.failed_to_create_directory", file.getAbsolutePath());
+            MessageUtils.error("malilib.message.error.failed_to_create_directory", file.getAbsolutePath());
             return false;
         }
 
@@ -46,7 +45,7 @@ public class DirectoryCreator implements StringConsumer
             this.navigator.switchToDirectory(file);
         }
 
-        MessageUtils.showGuiOrActionBarMessage(MessageType.SUCCESS, "malilib.message.directory_created", string);
+        MessageUtils.success("malilib.message.success.directory_created", string);
 
         return true;
     }

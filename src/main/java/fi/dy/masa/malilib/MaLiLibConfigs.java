@@ -33,6 +33,7 @@ public class MaLiLibConfigs
         public static final BooleanConfig KEYBIND_DISPLAY_CALLBACK_ONLY         = new BooleanConfig("keybindDisplayCallbackOnly", true);
         public static final BooleanConfig KEYBIND_DISPLAY_CANCEL_ONLY           = new BooleanConfig("keybindDisplayCancelOnly", true);
         public static final IntegerConfig KEYBIND_DISPLAY_DURATION              = new IntegerConfig("keybindDisplayDuration", 5000, 0, 120000);
+        public static final IntegerConfig MESSAGE_FADE_TIME                     = new IntegerConfig("messageFadeTime", 500, 0, 10000);
         public static final HotkeyConfig OPEN_GUI_CONFIGS                       = new HotkeyConfig("openGuiConfigs", "A,C");
         public static final BooleanConfig OPTION_LIST_CONFIG_DROPDOWN           = new BooleanConfig("optionListConfigDropdown", false);
         public static final BooleanConfig REMEMBER_CONFIG_TAB_SCROLL_POSITIONS  = new BooleanConfig("rememberConfigTabScrollPositions", true);
@@ -49,6 +50,7 @@ public class MaLiLibConfigs
                 KEYBIND_DISPLAY_CALLBACK_ONLY,
                 KEYBIND_DISPLAY_CANCEL_ONLY,
                 KEYBIND_DISPLAY_DURATION,
+                MESSAGE_FADE_TIME,
                 OPEN_GUI_CONFIGS,
                 OPTION_LIST_CONFIG_DROPDOWN,
                 REMEMBER_CONFIG_TAB_SCROLL_POSITIONS

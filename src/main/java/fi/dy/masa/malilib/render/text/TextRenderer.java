@@ -340,6 +340,18 @@ public class TextRenderer implements IResourceManagerReloadListener
 
     public void renderLineToBuffer(int x, int y, float z, int defaultColor, boolean shadow, StyledTextLine line)
     {
+        this.renderLineToBuffer(x, y, z, defaultColor, -1.0f, shadow, line);
+    }
+
+    /**
+     * @param overrideAlpha the alpha override value to use. Values of 0.0f - 1.0f are valid,
+     *                      any other values will use the alpha from the active color.
+     *                      So using for example -1.0f will not override the alpha from the color argument
+     *                      or the active style.
+     */
+    public void renderLineToBuffer(int x, int y, float z, int defaultColor,
+                                   float overrideAlpha, boolean shadow, StyledTextLine line)
+    {
         if (this.textBuffer != null)
         {
             int segmentX = x;
@@ -349,15 +361,21 @@ public class TextRenderer implements IResourceManagerReloadListener
 
             for (StyledTextSegment segment : line.segments)
             {
-                segmentX += this.renderTextSegment(segmentX, y, z, defaultColor4f, shadow, segment);
+                segmentX += this.renderTextSegment(segmentX, y, z, defaultColor4f, overrideAlpha, shadow, segment);
             }
         }
     }
 
-    protected int renderTextSegment(int x, int y, float z, Color4f defaultColor, boolean shadow, StyledTextSegment segment)
+    protected int renderTextSegment(int x, int y, float z, Color4f defaultColor,
+                                    float overrideAlpha, boolean shadow, StyledTextSegment segment)
     {
         TextStyle style = segment.style;
         Color4f color = style.color != null ? style.color : defaultColor;
+
+        if (overrideAlpha >= 0.0f && overrideAlpha <= 1.0f)
+        {
+            color = color.withAlpha(overrideAlpha);
+        }
 
         // Reference equality is fine here, as the sheets are fixed/pre-determined
         if (this.currentFontTexture != segment.texture)

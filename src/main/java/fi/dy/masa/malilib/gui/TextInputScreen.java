@@ -3,8 +3,6 @@ package fi.dy.masa.malilib.gui;
 import javax.annotation.Nullable;
 import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.listener.TaskCompletionListener;
-import fi.dy.masa.malilib.overlay.message.MessageConsumer;
-import fi.dy.masa.malilib.overlay.message.MessageType;
 import fi.dy.masa.malilib.util.consumer.StringConsumer;
 
 public class TextInputScreen extends BaseTextInputScreen implements TaskCompletionListener
@@ -39,19 +37,6 @@ public class TextInputScreen extends BaseTextInputScreen implements TaskCompleti
         if (this.getParent() instanceof TaskCompletionListener)
         {
             ((TaskCompletionListener) this.getParent()).onTaskAborted();
-        }
-    }
-
-    @Override
-    public void addMessage(MessageType type, int lifeTime, String messageKey, Object... args)
-    {
-        if (this.getParent() instanceof MessageConsumer)
-        {
-            ((MessageConsumer) this.getParent()).addMessage(type, lifeTime, messageKey, args);
-        }
-        else
-        {
-            super.addMessage(type, lifeTime, messageKey, args);
         }
     }
 }

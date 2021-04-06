@@ -1,51 +1,162 @@
 package fi.dy.masa.malilib.overlay.message;
 
+import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.TextComponentTranslation;
 import fi.dy.masa.malilib.MaLiLib;
+import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
-import fi.dy.masa.malilib.config.value.HudAlignment;
 import fi.dy.masa.malilib.config.value.InfoType;
-import fi.dy.masa.malilib.gui.BaseScreen;
-import fi.dy.masa.malilib.gui.util.GuiUtils;
+import fi.dy.masa.malilib.gui.position.ScreenLocation;
+import fi.dy.masa.malilib.input.Context;
+import fi.dy.masa.malilib.overlay.InfoArea;
+import fi.dy.masa.malilib.overlay.InfoOverlay;
+import fi.dy.masa.malilib.overlay.InfoWidgetManager;
+import fi.dy.masa.malilib.overlay.widget.MessageRendererWidget;
 import fi.dy.masa.malilib.util.StringUtils;
-import fi.dy.masa.malilib.util.consumer.StringConsumer;
 
 public class MessageUtils
 {
-    private static final MessageRenderer IN_GAME_MESSAGES_CENTER = createMainMessageRenderer();
-    private static final MessageRenderer IN_GAME_MESSAGES_TOP_LEFT     = new MessageRenderer();
-    private static final MessageRenderer IN_GAME_MESSAGES_TOP_RIGHT    = new MessageRenderer();
-    private static final MessageRenderer IN_GAME_MESSAGES_BOTTOM_LEFT  = (new MessageRenderer()).setExpandUp(true);
-    private static final MessageRenderer IN_GAME_MESSAGES_BOTTOM_RIGHT = (new MessageRenderer()).setExpandUp(true);
+    public static final String CUSTOM_ACTION_BAR_MARKER = "malilib_actionbar";
 
-    public static final StringConsumer INFO_MESSAGE_CONSUMER = new InfoMessageConsumer();
-    public static final MessageConsumer INGAME_MESSAGE_CONSUMER = new InGameMessageConsumer();
-
-    private static MessageRenderer createMainMessageRenderer()
+    public static void info(String translationKey, Object... args)
     {
-        MessageRenderer renderer = new MessageRenderer();
-        renderer.setCentered(true, false).setExpandUp(true);
-        return renderer;
+        info(5000, translationKey, args);
     }
 
-    public static void showMessage(InfoType outputType, MessageType messageType, String translationKey, Object... args)
+    public static void info(int displayTimeMs, String translationKey, Object... args)
     {
-        showMessage(outputType, messageType, 5000, translationKey, args);
+        addMessage(Message.INFO, displayTimeMs, translationKey, args);
     }
 
-    public static void showMessage(InfoType outputType, MessageType messageType, int lifeTime, String translationKey, Object... args)
+    public static void success(String translationKey, Object... args)
+    {
+        success(5000, translationKey, args);
+    }
+
+    public static void success(int displayTimeMs, String translationKey, Object... args)
+    {
+        addMessage(Message.SUCCESS, displayTimeMs, translationKey, args);
+    }
+
+    public static void warning(String translationKey, Object... args)
+    {
+        warning(5000, translationKey, args);
+    }
+
+    public static void warning(int displayTimeMs, String translationKey, Object... args)
+    {
+        addMessage(Message.WARNING, displayTimeMs, translationKey, args);
+    }
+
+    public static void error(String translationKey, Object... args)
+    {
+        error(5000, translationKey, args);
+    }
+
+    public static void error(int displayTimeMs, String translationKey, Object... args)
+    {
+        addMessage(Message.ERROR, displayTimeMs, translationKey, args);
+    }
+
+    public static void errorAndConsole(String translationKey, Object... args)
+    {
+        errorAndConsole(5000, translationKey, args);
+    }
+
+    public static void errorAndConsole(int displayTimeMs, String translationKey, Object... args)
+    {
+        error(displayTimeMs, translationKey, args);
+        MaLiLib.LOGGER.error(StringUtils.translate(translationKey, args));
+    }
+
+    public static void addMessage(int color, int displayTimeMs, String translationKey, Object... args)
+    {
+        addMessage(color, displayTimeMs, MaLiLibConfigs.Generic.MESSAGE_FADE_TIME.getIntegerValue(), translationKey, args);
+    }
+
+    public static void addMessage(int color, int displayTimeMs, int fadeTimeMs, String translationKey, Object... args)
+    {
+        addMessage(ScreenLocation.CENTER, color, displayTimeMs, fadeTimeMs, translationKey, args);
+    }
+
+    public static void addMessage(ScreenLocation location, int color, int displayTimeMs, int fadeTimeMs, String translationKey, Object... args)
+    {
+        getMessageRendererWidget(location, null).addMessage(color, displayTimeMs, fadeTimeMs, translationKey, args);
+    }
+
+    public static MessageRendererWidget getMessageRendererWidget(ScreenLocation location, @Nullable final String marker)
+    {
+        InfoArea area = InfoOverlay.INSTANCE.getOrCreateInfoArea(location);
+        MessageRendererWidget widget;
+
+        if (marker != null)
+        {
+            widget = area.findWidget(MessageRendererWidget.class, w -> w.hasMarker(marker));
+        }
+        else
+        {
+            widget = area.findWidget(MessageRendererWidget.class, w -> true);
+        }
+
+        if (widget == null)
+        {
+            widget = new MessageRendererWidget();
+            widget.setLocation(location);
+            widget.setZLevel(200f);
+            widget.setWidth(300);
+            widget.setRenderContext(Context.ANY);
+
+            if (marker != null)
+            {
+                widget.addMarker(marker);
+            }
+
+            InfoWidgetManager.INSTANCE.addWidget(widget);
+        }
+
+        return widget;
+    }
+
+    public static MessageRendererWidget getCustomActionBarMessageRenderer()
+    {
+        String marker = CUSTOM_ACTION_BAR_MARKER;
+        InfoArea area = InfoOverlay.INSTANCE.getOrCreateInfoArea(ScreenLocation.BOTTOM_CENTER);
+        MessageRendererWidget widget = area.findWidget(MessageRendererWidget.class, w -> w.hasMarker(marker));
+
+        if (widget == null)
+        {
+            widget = new MessageRendererWidget();
+            widget.setLocation(ScreenLocation.BOTTOM_CENTER);
+            widget.addMarker(marker);
+            widget.setRenderBackground(false);
+            widget.getMargin().setBottom(50);
+            widget.setZLevel(200f);
+            widget.setAutomaticWidth(true);
+            widget.setMaxMessages(3);
+            widget.setMessageGap(2);
+            InfoWidgetManager.INSTANCE.addWidget(widget);
+        }
+
+        return widget;
+    }
+
+    public static void addMessage(InfoType outputType, int color, int displayTimeMs, String translationKey, Object... args)
     {
         if (outputType != InfoType.NONE)
         {
             if (outputType == InfoType.MESSAGE_OVERLAY)
             {
-                showGuiOrInGameMessage(messageType, lifeTime, translationKey, args);
+                addMessage(color, displayTimeMs, translationKey, args);
+            }
+            else if (outputType == InfoType.CUSTOM_HOTBAR)
+            {
+                printCustomActionbarMessage(color, displayTimeMs, 500, translationKey, args);
             }
             else if (outputType == InfoType.VANILLA_HOTBAR)
             {
-                printActionbarMessage(translationKey, args);
+                printVanillaActionbarMessage(translationKey, args);
             }
             else if (outputType == InfoType.CHAT)
             {
@@ -54,213 +165,19 @@ public class MessageUtils
         }
     }
 
-    /**
-     * Adds the message to the current GUI's message handler, if there is currently
-     * an IMessageConsumer GUI open.
-     * @param type
-     * @param translationKey
-     * @param args
-     */
-    public static void showGuiMessage(MessageType type, String translationKey, Object... args)
+    public static void printCustomActionbarMessage(String translationKey, Object... args)
     {
-        showGuiMessage(type, 5000, translationKey, args);
+        printCustomActionbarMessage(Message.INFO, 5000, 500, translationKey, args);
     }
 
-    /**
-     * Adds the message to the current GUI's message handler, if there is currently
-     * an IMessageConsumer GUI open.
-     * @param type
-     * @param lifeTime
-     * @param translationKey
-     * @param args
-     */
-    public static void showGuiMessage(MessageType type, int lifeTime, String translationKey, Object... args)
+    public static void printCustomActionbarMessage(int color, int displayTimeMs, int fadeTimeMs, String translationKey, Object... args)
     {
-        if (GuiUtils.getCurrentScreen() instanceof MessageConsumer)
-        {
-            ((MessageConsumer) GuiUtils.getCurrentScreen()).addMessage(type, lifeTime, translationKey, args);
-        }
+        getCustomActionBarMessageRenderer().addMessage(color, displayTimeMs, fadeTimeMs, translationKey, args);
     }
 
-    /**
-     * Adds the message to the current GUI's message handler, if there is currently
-     * an IMessageConsumer GUI open. Otherwise prints the message to the action bar.
-     * @param type
-     * @param translationKey
-     * @param args
-     */
-    public static void showGuiOrActionBarMessage(MessageType type, String translationKey, Object... args)
+    public static void printVanillaActionbarMessage(String translationKey, Object... args)
     {
-        showGuiOrActionBarMessage(type, 5000, translationKey, args);
-    }
-
-    /**
-     * Adds the message to the current GUI's message handler, if there is currently
-     * an IMessageConsumer GUI open. Otherwise prints the message to the action bar.
-     * @param type
-     * @param lifeTime
-     * @param translationKey
-     * @param args
-     */
-    public static void showGuiOrActionBarMessage(MessageType type, int lifeTime, String translationKey, Object... args)
-    {
-        if (GuiUtils.getCurrentScreen() instanceof MessageConsumer)
-        {
-            ((MessageConsumer) GuiUtils.getCurrentScreen()).addMessage(type, lifeTime, translationKey, args);
-        }
-        else
-        {
-            String msg = type.getFormatting() + StringUtils.translate(translationKey, args) + BaseScreen.TXT_RST;
-            printActionbarMessage(msg);
-        }
-    }
-
-    /**
-     * Adds the message to the current GUI's message handler, if there is currently
-     * an IMessageConsumer GUI open. Otherwise adds the message to the in-game message handler.
-     * @param type
-     * @param translationKey
-     * @param args
-     */
-    public static void showGuiOrInGameMessage(MessageType type, String translationKey, Object... args)
-    {
-        showGuiOrInGameMessage(type, 5000, translationKey, args);
-    }
-
-    /**
-     * Adds the message to the current GUI's message handler, if there is currently
-     * an IMessageConsumer GUI open. Otherwise adds the message to the in-game message handler.
-     * @param type
-     * @param lifeTime
-     * @param translationKey
-     * @param args
-     */
-    public static void showGuiOrInGameMessage(MessageType type, int lifeTime, String translationKey, Object... args)
-    {
-        /*
-        // For debugging
-        showInGameMessage(HudAlignment.CENTER, type, lifeTime, translationKey, args);
-        showInGameMessage(HudAlignment.TOP_LEFT, type, lifeTime, translationKey, args);
-        showInGameMessage(HudAlignment.TOP_RIGHT, type, lifeTime, translationKey, args);
-        showInGameMessage(HudAlignment.BOTTOM_LEFT, type, lifeTime, translationKey, args);
-        showInGameMessage(HudAlignment.BOTTOM_RIGHT, type, lifeTime, translationKey, args);
-        */
-
-        if (GuiUtils.getCurrentScreen() instanceof MessageConsumer)
-        {
-            ((MessageConsumer) GuiUtils.getCurrentScreen()).addMessage(type, lifeTime, translationKey, args);
-        }
-        else
-        {
-            showInGameMessage(type, lifeTime, translationKey, args);
-        }
-    }
-
-    /**
-     * Adds the message to the current GUI's message handler, if there is currently
-     * an IMessageConsumer GUI open.
-     * Also shows the message in the in-game message box.
-     * @param type
-     * @param translationKey
-     * @param args
-     */
-    public static void showGuiAndInGameMessage(MessageType type, String translationKey, Object... args)
-    {
-        showGuiAndInGameMessage(type, 5000, translationKey, args);
-    }
-
-    /**
-     * Adds the message to the current GUI's message handler, if there is currently
-     * an IMessageConsumer GUI open.
-     * Also shows the message in the in-game message box.
-     * @param type
-     * @param lifeTime
-     * @param translationKey
-     * @param args
-     */
-    public static void showGuiAndInGameMessage(MessageType type, int lifeTime, String translationKey, Object... args)
-    {
-        showGuiMessage(type, lifeTime, translationKey, args);
-        showInGameMessage(type, lifeTime, translationKey, args);
-    }
-
-    public static void printActionbarMessage(String key, Object... args)
-    {
-        Minecraft.getMinecraft().ingameGUI.addChatMessage(ChatType.GAME_INFO, new TextComponentTranslation(key, args));
-    }
-
-    /**
-     * Adds the message to the in-game message handler
-     * @param type
-     * @param translationKey
-     * @param args
-     */
-    public static void showInGameMessage(MessageType type, String translationKey, Object... args)
-    {
-        showInGameMessage(type, 5000, translationKey, args);
-    }
-
-    /**
-     * Adds the message to the in-game message handler
-     * @param type
-     * @param lifeTime
-     * @param translationKey
-     * @param args
-     */
-    public static void showInGameMessage(MessageType type, int lifeTime, String translationKey, Object... args)
-    {
-        synchronized (IN_GAME_MESSAGES_CENTER)
-        {
-            IN_GAME_MESSAGES_CENTER.addMessage(type, lifeTime, translationKey, args);
-        }
-    }
-
-    /**
-     * Adds a message to one of the specific message renderers that are aligned to different
-     * parts of the screen.
-     * @param renderPosition
-     * @param type
-     * @param lifeTime
-     * @param translationKey
-     * @param args
-     */
-    public static void showInGameMessage(HudAlignment renderPosition, MessageType type, int lifeTime, String translationKey, Object... args)
-    {
-        synchronized (IN_GAME_MESSAGES_CENTER)
-        {
-            if (renderPosition == HudAlignment.CENTER)
-            {
-                IN_GAME_MESSAGES_CENTER.addMessage(type, lifeTime, translationKey, args);
-            }
-            else if (renderPosition == HudAlignment.TOP_LEFT)
-            {
-                IN_GAME_MESSAGES_TOP_LEFT.addMessage(type, lifeTime, translationKey, args);
-            }
-            else if (renderPosition == HudAlignment.TOP_RIGHT)
-            {
-                IN_GAME_MESSAGES_TOP_RIGHT.addMessage(type, lifeTime, translationKey, args);
-            }
-            else if (renderPosition == HudAlignment.BOTTOM_LEFT)
-            {
-                IN_GAME_MESSAGES_BOTTOM_LEFT.addMessage(type, lifeTime, translationKey, args);
-            }
-            else if (renderPosition == HudAlignment.BOTTOM_RIGHT)
-            {
-                IN_GAME_MESSAGES_BOTTOM_RIGHT.addMessage(type, lifeTime, translationKey, args);
-            }
-        }
-    }
-
-    /**
-     * Prints an error message both to the in-game or GUI messages, and to the game console
-     * @param translationKey
-     * @param args
-     */
-    public static void printErrorMessage(String translationKey, Object... args)
-    {
-        String msg = StringUtils.translate(translationKey, args);
-        showGuiOrInGameMessage(MessageType.ERROR, msg);
-        MaLiLib.LOGGER.error(msg);
+        Minecraft.getMinecraft().ingameGUI.addChatMessage(ChatType.GAME_INFO, new TextComponentTranslation(translationKey, args));
     }
 
     public static void printBooleanConfigToggleMessage(BooleanConfig config)
@@ -281,46 +198,7 @@ public class MessageUtils
             msgKey = newValue ? "malilib.message.toggled_config_on" : "malilib.message.toggled_config_off";
         }
 
-        printActionbarMessage(msgKey, config.getPrettyName());
-    }
-
-    /**
-     * NOT PUBLIC API - DO NOT CALL
-     */
-    public static void renderInGameMessages()
-    {
-        int width = GuiUtils.getScaledWindowWidth();
-        int height = GuiUtils.getScaledWindowHeight();
-        int x = width / 2;
-        int y = height - 76;
-
-        synchronized (IN_GAME_MESSAGES_CENTER)
-        {
-            IN_GAME_MESSAGES_CENTER.drawMessages(x, y, 0);
-            IN_GAME_MESSAGES_TOP_LEFT.drawMessages(4, 4, 0);
-            IN_GAME_MESSAGES_TOP_RIGHT.drawMessages(width - IN_GAME_MESSAGES_TOP_RIGHT.getWidth() - 4, 4, 0);
-            IN_GAME_MESSAGES_BOTTOM_LEFT.drawMessages(4, height - 4, 0);
-            IN_GAME_MESSAGES_BOTTOM_RIGHT.drawMessages(width - IN_GAME_MESSAGES_BOTTOM_RIGHT.getWidth() - 4, height - 4, 0);
-        }
-    }
-
-    public static class InfoMessageConsumer implements StringConsumer
-    {
-        @Override
-        public boolean consumeString(String string)
-        {
-            TextComponentTranslation message = new TextComponentTranslation(string);
-            Minecraft.getMinecraft().ingameGUI.addChatMessage(ChatType.GAME_INFO, message);
-            return true;
-        }
-    }
-
-    public static class InGameMessageConsumer implements MessageConsumer
-    {
-        @Override
-        public void addMessage(MessageType type, int lifeTime, String translationKey, Object... args)
-        {
-            MessageUtils.showInGameMessage(type, lifeTime, translationKey, args);
-        }
+        // TODO add a system for overriding the default output type per-config
+        addMessage(InfoType.CUSTOM_HOTBAR, Message.INFO, 5000, msgKey, config.getPrettyName());
     }
 }

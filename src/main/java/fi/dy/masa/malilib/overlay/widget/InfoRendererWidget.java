@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.IntSupplier;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import com.google.gson.JsonArray;
@@ -12,7 +13,9 @@ import com.google.gson.JsonObject;
 import net.minecraft.client.renderer.GlStateManager;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.gui.position.ScreenLocation;
+import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.BaseWidget;
+import fi.dy.masa.malilib.input.Context;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.overlay.InfoWidgetManager;
 import fi.dy.masa.malilib.render.RenderUtils;
@@ -27,7 +30,10 @@ public abstract class InfoRendererWidget extends BaseWidget
     protected final Set<String> markers = new HashSet<>();
     protected TextRenderSettings textSettings = new TextRenderSettings();
     protected ScreenLocation location = ScreenLocation.TOP_LEFT;
+    protected Context renderContext = Context.INGAME;
     protected String name = "?";
+    protected IntSupplier viewportWidthSupplier = GuiUtils::getScaledWindowWidth;
+    protected IntSupplier viewportHeightSupplier = GuiUtils::getScaledWindowHeight;
     @Nullable protected EventListener geometryChangeListener;
     @Nullable protected EventListener enabledChangeListener;
     @Nullable protected StyledTextLine styledName;
@@ -182,6 +188,12 @@ public abstract class InfoRendererWidget extends BaseWidget
         this.locationChangeListeners.remove(listener);
     }
 
+    public void setViewportSizeSuppliers(IntSupplier viewportWidthSupplier, IntSupplier viewportHeightSupplier)
+    {
+        this.viewportWidthSupplier = viewportWidthSupplier;
+        this.viewportHeightSupplier = viewportHeightSupplier;
+    }
+
     /**
      * Adds a marker that a mod can use to recognize which of the possibly several
      * info widgets of the same type in the same InfoArea/location it has been using.
@@ -219,6 +231,11 @@ public abstract class InfoRendererWidget extends BaseWidget
         }
     }
 
+    public void setRenderContext(Context renderContext)
+    {
+        this.renderContext = renderContext;
+    }
+
     public void setName(String name)
     {
         this.name = name;
@@ -253,6 +270,13 @@ public abstract class InfoRendererWidget extends BaseWidget
     }
 
     public void updateSubWidgetPositions()
+    {
+    }
+
+    /**
+     * Called after the widget has been properly initialized and added to the InfoArea
+     */
+    public void onAdded()
     {
     }
 
@@ -309,6 +333,20 @@ public abstract class InfoRendererWidget extends BaseWidget
         {
             this.notifyContainerOfChanges(false);
         }
+    }
+
+    public boolean shouldRenderInContext(Context context)
+    {
+        return this.renderContext == context || this.renderContext == Context.ANY;
+    }
+
+    public boolean shouldRenderInContext(boolean isScreen)
+    {
+        // ANY and GUI can render inside a GUI.
+        // INGAME will only render when not in a GUI.
+        // ANY will render in the not-in-a-screen context only when no GUI is open
+        return (isScreen          && this.renderContext != Context.INGAME) ||
+               (isScreen == false && this.renderContext != Context.GUI);
     }
 
     public void render()

@@ -23,14 +23,10 @@ import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.button.BaseButton;
 import fi.dy.masa.malilib.gui.widget.button.ButtonActionListener;
 import fi.dy.masa.malilib.listener.TextChangeListener;
-import fi.dy.masa.malilib.overlay.message.MessageConsumer;
-import fi.dy.masa.malilib.overlay.message.MessageRenderer;
-import fi.dy.masa.malilib.overlay.message.MessageType;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
-import fi.dy.masa.malilib.util.consumer.StringConsumer;
 
-public abstract class BaseScreen extends GuiScreen implements MessageConsumer, StringConsumer
+public abstract class BaseScreen extends GuiScreen
 {
     public static final String TXT_AQUA = TextFormatting.AQUA.toString();
     public static final String TXT_BLACK = TextFormatting.BLACK.toString();
@@ -57,9 +53,6 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
 
     public static final String TXT_LIGHT_PURPLE = TextFormatting.LIGHT_PURPLE.toString();
 
-    protected static final String BUTTON_LABEL_ADD = TXT_DARK_GREEN + "+" + TXT_RST;
-    protected static final String BUTTON_LABEL_REMOVE = TXT_DARK_RED + "-" + TXT_RST;
-
     public static final int TOOLTIP_BACKGROUND   = 0xB0000000;
     public static final int COLOR_HORIZONTAL_BAR = 0xFF999999;
 
@@ -69,7 +62,6 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
     protected final List<Runnable> tasks = new ArrayList<>();
     private final List<BaseButton> buttons = new ArrayList<>();
     private final List<InteractableWidget> widgets = new ArrayList<>();
-    private final MessageRenderer messageRenderer;
     protected InteractableWidget hoveredWidget = null;
     protected String title = "";
     @Nullable private GuiScreen parent;
@@ -94,11 +86,6 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
 
     public BaseScreen()
     {
-        this.messageRenderer = new MessageRenderer();
-        this.messageRenderer.setBackgroundColor(0xDD000000).setNormalBorderColor(COLOR_HORIZONTAL_BAR);
-        this.messageRenderer.setCentered(true, true);
-        this.messageRenderer.setZLevel(100);
-
         int customScale = MaLiLibConfigs.Generic.CUSTOM_SCREEN_SCALE.getIntegerValue();
         this.useCustomScreenScaling = customScale != this.mc.gameSettings.guiScale && customScale > 0;
     }
@@ -346,7 +333,6 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
         this.drawContents(mouseX, mouseY, partialTicks);
 
         this.drawHoveredWidget(mouseX, mouseY, isActiveGui, hoveredWidgetId);
-        this.drawGuiMessages();
 
         if (MaLiLibConfigs.Debug.GUI_DEBUG.getBooleanValue() && MaLiLibConfigs.Debug.GUI_DEBUG_KEY.isHeld())
         {
@@ -628,40 +614,6 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
         return textFields;
     }
 
-    @Override
-    public boolean consumeString(String string)
-    {
-        this.messageRenderer.addMessage(3000, string);
-        return true;
-    }
-
-    @Override
-    public void addMessage(MessageType type, String messageKey, Object... args)
-    {
-        this.addGuiMessage(type, 5000, messageKey, args);
-    }
-
-    @Override
-    public void addMessage(MessageType type, int lifeTime, String messageKey, Object... args)
-    {
-        this.addGuiMessage(type, lifeTime, messageKey, args);
-    }
-
-    public void addGuiMessage(MessageType type, int displayTimeMs, String messageKey, Object... args)
-    {
-        this.messageRenderer.addMessage(type, displayTimeMs, messageKey, args);
-    }
-
-    public void setNextMessageType(MessageType type)
-    {
-        this.messageRenderer.setNextMessageType(type);
-    }
-
-    protected void drawGuiMessages()
-    {
-        this.messageRenderer.drawMessages(this.width / 2, this.height / 2, this.zLevel + 200);
-    }
-
     public void bindTexture(ResourceLocation texture)
     {
         this.mc.getTextureManager().bindTexture(texture);
@@ -681,8 +633,6 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
         {
             widget.setZLevelBasedOnParent(parentZLevel);
         }
-
-        this.messageRenderer.setZLevel(parentZLevel + 100);
 
         return this;
     }
@@ -737,7 +687,9 @@ public abstract class BaseScreen extends GuiScreen implements MessageConsumer, S
 
     public LabelWidget addLabel(int x, int y, int width, int height, int textColor, List<String> lines)
     {
-        return this.addWidget(new LabelWidget(x, y, width, height, textColor, lines));
+        LabelWidget widget = this.addWidget(new LabelWidget(x, y, width, height, textColor));
+        widget.setText(lines);
+        return widget;
     }
 
     protected boolean removeWidget(InteractableWidget widget)

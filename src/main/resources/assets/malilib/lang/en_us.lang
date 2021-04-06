@@ -13,6 +13,7 @@ malilib.config.comment.keybinddisplayalignment=The alignment for the keybind dis
 malilib.config.comment.keybinddisplaycallbackonly=If enabled, then only keybinds that have a defined action callback will be displayed on the keybind display toast
 malilib.config.comment.keybinddisplaycancelonly=If enabled, then only keybinds that are set to cancel further processing will be displayed on the keybind display toast. This prevents so called "modifier" keys from spamming the display.
 malilib.config.comment.keybinddisplayduration=The duration (in milliseconds) the keybind display toasts are shown
+malilib.config.comment.messagefadetime=The fade time for message renderer messages when they expire. Use 0 for no fading.
 malilib.config.comment.optionlistconfigdropdown=Use a DropDown widget instead of a cycle button for OptionList type configs
 malilib.config.comment.rememberconfigtabscrollpositions=Remember the config screen scrollbar position for each tab
 
@@ -45,6 +46,7 @@ malilib.config.name.keybinddisplayalignment=KeyBind Display Alignment
 malilib.config.name.keybinddisplaycallbackonly=KeyBind Display Callback Only
 malilib.config.name.keybinddisplaycancelonly=KeyBind Display Cancel Only
 malilib.config.name.keybinddisplayduration=KeyBind Display Duration
+malilib.config.name.messagefadetime=Message Fade Time
 malilib.config.name.optionlistconfigdropdown=Option List Config DropDown
 malilib.config.name.rememberconfigtabscrollpositions=Remember Config Screen Scroll Positions
 
@@ -63,23 +65,6 @@ malilib.hotkey.comment.openguiconfigs=Open the in-game malilib config menu
 malilib.hotkey.name.guidebugkey=GUI Debug Key
 malilib.hotkey.name.ignoredkeys=Ignored Keys
 malilib.hotkey.name.openguiconfigs=Open Config Menu
-
-malilib.error.failed_to_create_directory=Failed to create directory '%s'
-malilib.error.failed_to_save_all_configs=At least some config options failed to save properly
-malilib.error.file_delete_failed=Failed to delete the file '%s'
-malilib.error.file_or_directory_already_exists=File or directory '%s' already exists
-malilib.error.file_rename.file_already_exists=File rename failed, file '%s' already exists
-malilib.error.file_rename.rename_failed=Failed to rename the file '%s' to '%s'
-malilib.error.illegal_characters_in_file_name=Invalid characters in the given file name '%s'.\nFor example slashes are not allowed, and on Windows also many other special characters are not valid for file names!
-malilib.error.invalid_directory=Invalid directory name '%s'
-malilib.error.invalid_item_blacklist_entry=Invalid item name in a black- or whitelist: '%s'
-malilib.error.invalid_registry_name=Invalid registry name in a black- or whitelist: '%s'
-malilib.error.keybind.attempt_to_bind_ignored_key=The key '%s' is currently set to be ignored by malilib. See malilib configs Generic -> Ignored Keys
-
-malilib.error.textfield.invalid_value_floating_point_number='%s' is not a floating point number
-malilib.error.textfield.invalid_value_int='%s' is not an integer number
-malilib.error.textfield.value_above_max='%s' is above the maximum value '%s'
-malilib.error.textfield.value_below_min='%s' is below the minimum value '%s'
 
 malilib.gui.button.config.reset_all_filtered=Reset All
 malilib.gui.button.config.select_directory=Select Directory
@@ -330,27 +315,34 @@ malilib.label.colored.on.caps=§aON§r
 malilib.label.colored.off=§coff§r
 malilib.label.colored.on=§aon§r
 
-malilib.message.formatting_code.error=§c
-malilib.message.formatting_code.info=§f
-malilib.message.formatting_code.success=§a
-malilib.message.formatting_code.warning=§6
-
-malilib.message.error.select_screen_location_in_dropdown=Select the screen location in the dropdown widget
-
 malilib.message.config_locked_off=%s is currently locked to §cOFF§r
 malilib.message.config_locked_on=%s is currently locked to §aON§r
 malilib.message.config_overridden_off=%s is currently overridden to §cOFF§r
 malilib.message.config_overridden_on=%s is currently overridden to §aON§r
-malilib.message.directory_created=Directory '%s' created
+malilib.message.error.failed_to_create_directory=Failed to create directory '%s'
+malilib.message.error.failed_to_save_all_configs=At least some config options failed to save properly
+malilib.message.error.file_delete_failed=Failed to delete the file '%s'
+malilib.message.error.file_or_directory_already_exists=File or directory '%s' already exists
+malilib.message.error.file_rename.file_already_exists=File rename failed, file '%s' already exists
+malilib.message.error.file_rename.rename_failed=Failed to rename the file '%s' to '%s'
+malilib.message.error.illegal_characters_in_file_name=Invalid characters in the given file name '%s'.\nFor example slashes are not allowed, and on Windows also many other special characters are not valid for file names!
+malilib.message.error.invalid_directory=Invalid directory name '%s'
+malilib.message.error.keybind.attempt_to_bind_ignored_key=The key '%s' is currently set to be ignored by malilib. See malilib configs Generic -> Ignored Keys
+malilib.message.error.select_screen_location_in_dropdown=Select the screen location in the dropdown widget
+malilib.message.error.textfield.invalid_value_floating_point_number='%s' is not a floating point number
+malilib.message.error.textfield.invalid_value_int='%s' is not an integer number
+malilib.message.error.textfield.value_above_max='%s' is above the maximum value '%s'
+malilib.message.error.textfield.value_below_min='%s' is below the minimum value '%s'
 malilib.message.layer_range.range_max=max
 malilib.message.layer_range.range_min=min
 malilib.message.moved_layer_range=Moved the entire layer range by §a%s§r on the §a%s§r axis
 malilib.message.moved_layer_range_boundary=Moved layer range §a%s§r by §a%s§r on the §a%s§r axis
-malilib.message.moved_max_layer_to=Moved max layer to %s
-malilib.message.moved_min_layer_to=Moved min layer to %s
-malilib.message.set_layer_axis_to=Set layer axis to %s
-malilib.message.set_layer_mode_to=Set layer mode to %s
-malilib.message.set_layer_to=Set layer to %s
+malilib.message.moved_max_layer_to=Moved max layer to §a%s§r = §a%s
+malilib.message.moved_min_layer_to=Moved min layer to §a%s§r = §a%s
+malilib.message.set_layer_axis_to=Set layer axis to §a%s
+malilib.message.set_layer_mode_to=Set layer mode to §a%s
+malilib.message.set_layer_to=Set layer to §a%s§r = §a%s
+malilib.message.success.directory_created=Directory '%s' created
 malilib.message.toggled_config_off=Toggled %s §cOFF§r
 malilib.message.toggled_config_on=Toggled %s §aON§r
 malilib.message.value.off=OFF

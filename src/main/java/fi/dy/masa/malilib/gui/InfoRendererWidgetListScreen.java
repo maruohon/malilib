@@ -12,7 +12,6 @@ import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetFactory;
 import fi.dy.masa.malilib.overlay.InfoWidgetManager;
-import fi.dy.masa.malilib.overlay.message.MessageType;
 import fi.dy.masa.malilib.overlay.message.MessageUtils;
 import fi.dy.masa.malilib.overlay.widget.InfoRendererWidget;
 
@@ -79,7 +78,7 @@ public class InfoRendererWidgetListScreen<WIDGET extends InfoRendererWidget> ext
 
         if (location == null)
         {
-            MessageUtils.showGuiOrInGameMessage(MessageType.ERROR, "malilib.message.error.select_screen_location_in_dropdown");
+            MessageUtils.error("malilib.message.error.select_screen_location_in_dropdown");
             return;
         }
 

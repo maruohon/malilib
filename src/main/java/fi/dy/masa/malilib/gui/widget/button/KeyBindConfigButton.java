@@ -5,16 +5,15 @@ import java.util.List;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import fi.dy.masa.malilib.MaLiLibConfigs;
-import fi.dy.masa.malilib.input.HotkeyManager;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.config.KeybindEditingScreen;
 import fi.dy.masa.malilib.input.Hotkey;
-import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.input.HotkeyCategory;
+import fi.dy.masa.malilib.input.HotkeyManager;
+import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.input.KeyBindImpl;
 import fi.dy.masa.malilib.input.Keys;
 import fi.dy.masa.malilib.listener.EventListener;
-import fi.dy.masa.malilib.overlay.message.MessageType;
 import fi.dy.masa.malilib.overlay.message.MessageUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 
@@ -158,7 +157,7 @@ public class KeyBindConfigButton extends GenericButton
         if (MaLiLibConfigs.Generic.IGNORED_KEYS.getKeyBind().getKeys().contains(keyCode))
         {
             String str = Keys.getStorageStringForKeyCode(keyCode, KeyBindImpl::charAsCharacter);
-            MessageUtils.showGuiMessage(MessageType.WARNING, "malilib.error.keybind.attempt_to_bind_ignored_key", str);
+            MessageUtils.warning("malilib.message.error.keybind.attempt_to_bind_ignored_key", str);
             return;
         }
 

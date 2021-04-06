@@ -9,17 +9,21 @@ import net.minecraft.client.Minecraft;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.event.ClientTickHandler;
 import fi.dy.masa.malilib.event.PostGameOverlayRenderer;
+import fi.dy.masa.malilib.event.PostScreenRenderer;
 import fi.dy.masa.malilib.gui.position.ScreenLocation;
+import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.BaseWidget;
+import fi.dy.masa.malilib.input.Context;
 import fi.dy.masa.malilib.overlay.widget.InfoRendererWidget;
 import fi.dy.masa.malilib.overlay.widget.StringListRendererWidget;
 
-public class InfoOverlay implements PostGameOverlayRenderer, ClientTickHandler
+public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer, ClientTickHandler
 {
     public static final InfoOverlay INSTANCE = new InfoOverlay();
 
     protected final HashMap<ScreenLocation, InfoArea> infoAreas = new HashMap<>();
-    protected final List<InfoRendererWidget> enabledInfoWidgets = new ArrayList<>();
+    protected final List<InfoRendererWidget> enabledInGameWidgets = new ArrayList<>();
+    protected final List<InfoRendererWidget> enabledGuiWidgets = new ArrayList<>();
     protected final List<InfoArea> activeInfoAreas = new ArrayList<>();
     protected boolean needsReFetch;
 
@@ -33,8 +37,14 @@ public class InfoOverlay implements PostGameOverlayRenderer, ClientTickHandler
     {
         if (mc.gameSettings.hideGUI == false)
         {
-            this.render();
+            this.renderInGame();
         }
+    }
+
+    @Override
+    public void onPostScreenRender(Minecraft mc, float partialTicks)
+    {
+        this.renderScreen();
     }
 
     @Override
@@ -55,7 +65,8 @@ public class InfoOverlay implements PostGameOverlayRenderer, ClientTickHandler
 
     protected void fetchEnabledWidgets()
     {
-        this.enabledInfoWidgets.clear();
+        this.enabledInGameWidgets.clear();
+        this.enabledGuiWidgets.clear();
         this.activeInfoAreas.clear();
 
         for (InfoArea infoArea : this.infoAreas.values())
@@ -64,7 +75,19 @@ public class InfoOverlay implements PostGameOverlayRenderer, ClientTickHandler
 
             if (widgets.isEmpty() == false)
             {
-                this.enabledInfoWidgets.addAll(widgets);
+                for (InfoRendererWidget widget : widgets)
+                {
+                    if (widget.shouldRenderInContext(Context.GUI))
+                    {
+                        this.enabledGuiWidgets.add(widget);
+                    }
+
+                    if (widget.shouldRenderInContext(Context.INGAME))
+                    {
+                        this.enabledInGameWidgets.add(widget);
+                    }
+                }
+
                 this.activeInfoAreas.add(infoArea);
             }
         }
@@ -84,10 +107,21 @@ public class InfoOverlay implements PostGameOverlayRenderer, ClientTickHandler
             this.needsReFetch = false;
         }
 
-        for (InfoRendererWidget widget : this.enabledInfoWidgets)
+        if (GuiUtils.getCurrentScreen() != null)
         {
-            // This allows the widgets to update their contents, which may also change their dimensions
-            widget.updateState();
+            for (InfoRendererWidget widget : this.enabledGuiWidgets)
+            {
+                // This allows the widgets to update their contents, which may also change their dimensions
+                widget.updateState();
+            }
+        }
+        else
+        {
+            for (InfoRendererWidget widget : this.enabledInGameWidgets)
+            {
+                // This allows the widgets to update their contents, which may also change their dimensions
+                widget.updateState();
+            }
         }
 
         for (InfoArea infoArea : this.activeInfoAreas)
@@ -102,9 +136,11 @@ public class InfoOverlay implements PostGameOverlayRenderer, ClientTickHandler
      * Don't call this unless you have your own instance of the InfoOverlay,
      * ie. don't call this on InfoOverlay.INSTANCE
      */
-    public void render()
+    public void renderInGame()
     {
-        if (MaLiLibConfigs.Debug.INFO_OVERLAY_DEBUG.getBooleanValue())
+        boolean debug = MaLiLibConfigs.Debug.INFO_OVERLAY_DEBUG.getBooleanValue();
+
+        if (debug)
         {
             for (InfoArea area : this.infoAreas.values())
             {
@@ -112,12 +148,46 @@ public class InfoOverlay implements PostGameOverlayRenderer, ClientTickHandler
             }
         }
 
-        for (InfoRendererWidget widget : this.enabledInfoWidgets)
+        for (InfoRendererWidget widget : this.enabledInGameWidgets)
         {
-            widget.render();
+            if (widget.shouldRenderInContext(false))
+            {
+                widget.render();
+            }
         }
 
-        if (MaLiLibConfigs.Debug.INFO_OVERLAY_DEBUG.getBooleanValue())
+        if (debug)
+        {
+            BaseWidget.renderDebugTextAndClear();
+        }
+    }
+
+    /**
+     * Renders all the currently enabled widgets.
+     * Don't call this unless you have your own instance of the InfoOverlay,
+     * ie. don't call this on InfoOverlay.INSTANCE
+     */
+    public void renderScreen()
+    {
+        boolean debug = MaLiLibConfigs.Debug.INFO_OVERLAY_DEBUG.getBooleanValue();
+
+        if (debug)
+        {
+            for (InfoArea area : this.infoAreas.values())
+            {
+                area.renderDebug();
+            }
+        }
+
+        for (InfoRendererWidget widget : this.enabledGuiWidgets)
+        {
+            if (widget.shouldRenderInContext(true))
+            {
+                widget.render();
+            }
+        }
+
+        if (debug)
         {
             BaseWidget.renderDebugTextAndClear();
         }
