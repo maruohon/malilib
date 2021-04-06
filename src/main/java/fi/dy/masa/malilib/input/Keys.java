@@ -103,6 +103,9 @@ public class Keys
         addNameOverride(Keyboard.KEY_RSHIFT, "R_SHIFT");
         addNameOverride(Keyboard.KEY_LCONTROL, "L_CTRL");
         addNameOverride(Keyboard.KEY_RCONTROL, "R_CTRL");
+        addNameOverride(-100, "LMB");
+        addNameOverride(-99, "RMB");
+        addNameOverride(-98, "MMB");
         addNameOverride(-199, "SCROLL_UP");
         addNameOverride(-201, "SCROLL_DOWN");
 
@@ -112,6 +115,9 @@ public class Keys
         addFallBackNames(Keyboard.KEY_RSHIFT, "RSHIFT", "R_SHIFT", "RIGHT_SHIFT");
         addFallBackNames(Keyboard.KEY_LCONTROL, "LCTRL", "L_CTRL", "LEFT_CTRL", "LCONTROL", "L_CONTROL", "LEFT_CONTROL");
         addFallBackNames(Keyboard.KEY_RCONTROL, "RCTRL", "R_CTRL", "RIGHT_CTRL", "RCONTROL", "R_CONTROL", "RIGHT_CONTROL");
+        addFallBackNames(-100, "BUTTON0", "MOUSE0");
+        addFallBackNames(-99, "BUTTON1", "MOUSE1");
+        addFallBackNames(-98, "BUTTON2", "MOUSE2");
         addFallBackNames(-199, "SCROLL_UP");
         addFallBackNames(-201, "SCROLL_DOWN");
     }
