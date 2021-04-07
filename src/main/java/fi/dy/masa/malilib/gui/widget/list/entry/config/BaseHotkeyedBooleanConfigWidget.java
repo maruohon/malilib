@@ -61,10 +61,18 @@ public abstract class BaseHotkeyedBooleanConfigWidget extends BaseConfigWidget<C
         this.booleanButton.setPosition(x, y);
 
         int w = this.booleanButton.getWidth();
-        x += w + 2;
+        x += w + 4;
         this.hotkeyButton.setPosition(x, y);
 
-        w = elementWidth - w - 20 - 4;
+        if (elementWidth < 0)
+        {
+            w = 120;
+        }
+        else
+        {
+            w = elementWidth - w - 20 - 4;
+        }
+
         this.hotkeyButton.setWidth(w);
 
         x += w + 2;
