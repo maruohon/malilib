@@ -1,8 +1,10 @@
 package fi.dy.masa.malilib.util;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
+import com.google.common.collect.ImmutableList;
 
 public class ListUtils
 {
@@ -89,5 +91,13 @@ public class ListUtils
         }
 
         return currentValue;
+    }
+
+    public static <T> ImmutableList<T> getAppendedList(Collection<? extends T> originalList, Collection<? extends T> additionalEntries)
+    {
+        ImmutableList.Builder<T> builder = ImmutableList.builder();
+        builder.addAll(originalList);
+        builder.addAll(additionalEntries);
+        return builder.build();
     }
 }

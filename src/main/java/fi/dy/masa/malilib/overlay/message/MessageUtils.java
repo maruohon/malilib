@@ -9,6 +9,7 @@ import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.config.value.InfoType;
 import fi.dy.masa.malilib.gui.position.ScreenLocation;
+import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.input.Context;
 import fi.dy.masa.malilib.overlay.InfoArea;
 import fi.dy.masa.malilib.overlay.InfoOverlay;
@@ -199,6 +200,7 @@ public class MessageUtils
         }
 
         // TODO add a system for overriding the default output type per-config
-        addMessage(InfoType.CUSTOM_HOTBAR, Message.INFO, 5000, msgKey, config.getPrettyName());
+        InfoType type = GuiUtils.getCurrentScreen() != null ? InfoType.MESSAGE_OVERLAY : InfoType.CUSTOM_HOTBAR;
+        addMessage(type, Message.INFO, 5000, msgKey, config.getPrettyName());
     }
 }

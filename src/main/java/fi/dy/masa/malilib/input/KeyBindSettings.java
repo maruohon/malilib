@@ -6,17 +6,14 @@ import fi.dy.masa.malilib.util.JsonUtils;
 
 public class KeyBindSettings
 {
-    public static final KeyBindSettings INGAME_DEFAULT              = new KeyBindSettings(Context.INGAME, KeyAction.PRESS, false, true, false, CancelCondition.ALWAYS);
-    public static final KeyBindSettings INGAME_BOTH                 = new KeyBindSettings(Context.INGAME, KeyAction.BOTH, false, true, false, CancelCondition.ALWAYS);
+    public static final KeyBindSettings INGAME_DEFAULT              = new KeyBindSettings(Context.INGAME, KeyAction.PRESS, true, true, false, CancelCondition.ALWAYS);
+    public static final KeyBindSettings INGAME_BOTH                 = new KeyBindSettings(Context.INGAME, KeyAction.BOTH, true, true, false, CancelCondition.ALWAYS);
     public static final KeyBindSettings INGAME_MODIFIER             = new KeyBindSettings(Context.INGAME, KeyAction.PRESS, true, false, false, CancelCondition.NEVER);
     public static final KeyBindSettings INGAME_MODIFIER_EMPTY       = new KeyBindSettings(Context.INGAME, KeyAction.PRESS, true, false, false, CancelCondition.NEVER, true);
-    public static final KeyBindSettings INGAME_EXTRA                = new KeyBindSettings(Context.INGAME, KeyAction.PRESS, true, true, false, CancelCondition.ALWAYS);
-    public static final KeyBindSettings INGAME_NOCANCEL             = new KeyBindSettings(Context.INGAME, KeyAction.PRESS, false, true, false, CancelCondition.NEVER);
-    public static final KeyBindSettings INGAME_EXCLUSIVE            = new KeyBindSettings(Context.INGAME, KeyAction.PRESS, false, true, true, CancelCondition.ALWAYS);
-    public static final KeyBindSettings INGAME_RELEASE              = new KeyBindSettings(Context.INGAME, KeyAction.RELEASE, false, true, false, CancelCondition.NEVER);
-    public static final KeyBindSettings INGAME_RELEASE_EXTRA        = new KeyBindSettings(Context.INGAME, KeyAction.RELEASE, true, true, false, CancelCondition.NEVER);
-    public static final KeyBindSettings INGAME_RELEASE_EXCLUSIVE    = new KeyBindSettings(Context.INGAME, KeyAction.RELEASE, false, true, true, CancelCondition.NEVER);
-    public static final KeyBindSettings GUI_DEFAULT                 = new KeyBindSettings(Context.GUI, KeyAction.PRESS, false, true, false, CancelCondition.ALWAYS);
+    public static final KeyBindSettings INGAME_MODIFIER_BOTH        = new KeyBindSettings(Context.INGAME, KeyAction.BOTH, true, false, false, CancelCondition.NEVER);
+    public static final KeyBindSettings INGAME_RELEASE              = new KeyBindSettings(Context.INGAME, KeyAction.RELEASE, true, true, false, CancelCondition.NEVER);
+    public static final KeyBindSettings INGAME_RELEASE_EXCLUSIVE    = new KeyBindSettings(Context.INGAME, KeyAction.RELEASE, true, true, true, CancelCondition.NEVER);
+    public static final KeyBindSettings GUI_DEFAULT                 = new KeyBindSettings(Context.GUI, KeyAction.PRESS, true, true, false, CancelCondition.ALWAYS);
     public static final KeyBindSettings GUI_MODIFIER                = new KeyBindSettings(Context.GUI, KeyAction.PRESS, true, false, false, CancelCondition.NEVER);
 
     private final KeyAction activateOn;
