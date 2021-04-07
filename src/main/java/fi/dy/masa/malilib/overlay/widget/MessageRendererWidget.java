@@ -13,7 +13,7 @@ public class MessageRendererWidget extends InfoRendererWidget
 {
     protected final List<Message> messages = new ArrayList<>();
     protected boolean renderBackground = true;
-    protected int backgroundColor = 0xA0000000;
+    protected int backgroundColor = 0xC0000000;
     protected int borderColor = 0xFFC0C0C0;
     protected int messageGap = 3;
     protected int maxMessages = -1;
@@ -128,7 +128,14 @@ public class MessageRendererWidget extends InfoRendererWidget
                 width = Math.max(width, msg.getWidth());
             }
 
-            this.setWidth(width + this.getPadding().getHorizontalTotal());
+            width += this.getPadding().getHorizontalTotal();
+
+            // Don't shrink while there are active messages,
+            // to prevent an annoying horizontal move of the messages
+            if (width > this.getWidth() || this.messages.isEmpty())
+            {
+                this.setWidth(width);
+            }
         }
     }
 
@@ -207,8 +214,13 @@ public class MessageRendererWidget extends InfoRendererWidget
                 else
                 {
                     message.renderAt(x, y, z + 0.1f, this.lineHeight, currentTime);
-                    y += message.getLineCount() * this.lineHeight + this.messageGap;
                 }
+
+                // Always offset the position to prevent a flicker from the later
+                // messages jumping over the fading message when it disappears,
+                // before the entire widget gets resized and the messages possibly moving
+                // (if the widget is bottom-aligned).
+                y += message.getLineCount() * this.lineHeight + this.messageGap;
             }
 
             if (this.messages.size() != countBefore)

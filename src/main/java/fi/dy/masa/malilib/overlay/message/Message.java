@@ -56,7 +56,7 @@ public class Message
 
     protected boolean isFading(long currentTime)
     {
-        return currentTime >= (this.expireTime - this.fadeDuration);
+        return currentTime >= this.fadeTime;
     }
 
     public int getWidth()
@@ -82,8 +82,7 @@ public class Message
             if (this.isFading(currentTime))
             {
                 int alphaInt = (this.defaultTextColor & 0xFF000000) >>> 24;
-                long fadeStart = this.expireTime - this.fadeDuration;
-                double fadeProgress = 1.0 - (double) (currentTime - fadeStart) / (double) this.fadeDuration;
+                double fadeProgress = 1.0 - (double) (currentTime - this.fadeTime) / (double) this.fadeDuration;
                 float alpha = (float) alphaInt * (float) fadeProgress / 255.0f;
                 TextRenderer.INSTANCE.renderLineToBuffer(x, y, z, this.defaultTextColor, alpha, true, line);
             }

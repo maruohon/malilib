@@ -393,6 +393,12 @@ public class TextRenderer implements IResourceManagerReloadListener
         if (shadow)
         {
             Color4f shadowColor = style.shadowColor != null ? style.shadowColor : TextStyle.getDefaultShadowColor(color);
+
+            if (overrideAlpha >= 0.0f && overrideAlpha <= 1.0f)
+            {
+                shadowColor = shadowColor.withAlpha(overrideAlpha);
+            }
+
             float offset = this.unicode ? 0.5F : 1.0F;
             this.renderTextSegmentAndStylesWithColor(x + offset, y + offset, z, shadowColor, segment);
         }

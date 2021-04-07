@@ -105,7 +105,7 @@ public class MessageUtils
         {
             widget = new MessageRendererWidget();
             widget.setLocation(location);
-            widget.setZLevel(200f);
+            widget.setZLevel(300f);
             widget.setWidth(300);
             widget.setRenderContext(Context.ANY);
 
@@ -133,7 +133,7 @@ public class MessageUtils
             widget.addMarker(marker);
             widget.setRenderBackground(false);
             widget.getMargin().setBottom(50);
-            widget.setZLevel(200f);
+            widget.setZLevel(300f);
             widget.setAutomaticWidth(true);
             widget.setMaxMessages(MaLiLibConfigs.Generic.ACTION_BAR_MESSAGE_LIMIT.getIntegerValue());
             widget.setMessageGap(2);
