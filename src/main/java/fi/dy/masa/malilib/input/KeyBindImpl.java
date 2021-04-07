@@ -5,10 +5,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.function.Function;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -53,7 +51,7 @@ public class KeyBindImpl implements KeyBind
     private KeyBindImpl(String defaultStorageString, KeyBindSettings settings)
     {
         this.defaultSettings = settings;
-        this.defaultKeyCodes = readKeysFromStorageString(defaultStorageString);
+        this.defaultKeyCodes = Keys.readKeysFromStorageString(defaultStorageString);
         this.settings = settings;
 
         this.cacheSavedValue();
@@ -311,7 +309,7 @@ public class KeyBindImpl implements KeyBind
     @Override
     public String getKeysDisplayString()
     {
-        return writeKeysToString(this.keyCodes, " + ", KeyBindImpl::charAsCharacter);
+        return Keys.writeKeysToString(this.keyCodes, " + ", Keys::charAsCharacter);
     }
 
     /**
@@ -359,7 +357,7 @@ public class KeyBindImpl implements KeyBind
     public void setValueFromString(String str)
     {
         this.clearKeys();
-        this.keyCodes = readKeysFromStorageString(str);
+        this.keyCodes = Keys.readKeysFromStorageString(str);
     }
 
     @Override
@@ -479,7 +477,7 @@ public class KeyBindImpl implements KeyBind
     {
         JsonObject obj = new JsonObject();
 
-        String str = writeKeysToString(this.keyCodes, ",", KeyBindImpl::charAsStorageString);
+        String str = Keys.writeKeysToString(this.keyCodes, ",", Keys::charAsStorageString);
         obj.add("keys", new JsonPrimitive(str));
 
         if (this.areSettingsModified())
@@ -495,18 +493,6 @@ public class KeyBindImpl implements KeyBind
         KeyBindImpl keyBind = new KeyBindImpl(storageString, settings);
         keyBind.setValueFromString(storageString);
         return keyBind;
-    }
-
-    public static boolean isKeyDown(int keyCode)
-    {
-        if (keyCode > 0)
-        {
-            return keyCode < Keyboard.getKeyCount() && Keyboard.isKeyDown(keyCode);
-        }
-
-        keyCode += 100;
-
-        return keyCode >= 0 && keyCode < Mouse.getButtonCount() && Mouse.isButtonDown(keyCode);
     }
 
     /**
@@ -550,7 +536,7 @@ public class KeyBindImpl implements KeyBind
         {
             int keyCode = iter.next().intValue();
 
-            if (isKeyDown(keyCode) == false)
+            if (Keys.isKeyDown(keyCode) == false)
             {
                 iter.remove();
             }
@@ -563,10 +549,10 @@ public class KeyBindImpl implements KeyBind
         }
     }
 
-    private static void printKeyBindDebugMessage(int keyCode, int scanCode, int modifiers, char charIn, boolean keyState)
+    public static void printKeyBindDebugMessage(int keyCode, int scanCode, int modifiers, char charIn, boolean keyState)
     {
         String action = keyState ? "PRESS  " : "RELEASE";
-        String keyName = Keys.getStorageStringForKeyCode(keyCode, KeyBindImpl::charAsStorageString);
+        String keyName = Keys.getStorageStringForKeyCode(keyCode, Keys::charAsStorageString);
         String held = getActiveKeysString();
         String msg = String.format("%s '%s' (k: %d, s: %d, m: %d, c: '%c' = %d), held keys: %s",
                                    action, keyName, keyCode, scanCode, modifiers, charIn, (int) charIn, held);
@@ -593,7 +579,7 @@ public class KeyBindImpl implements KeyBind
                     sb.append(" + ");
                 }
 
-                String name = Keys.getStorageStringForKeyCode(key, KeyBindImpl::charAsCharacter);
+                String name = Keys.getStorageStringForKeyCode(key, Keys::charAsCharacter);
 
                 if (name != null)
                 {
@@ -607,62 +593,6 @@ public class KeyBindImpl implements KeyBind
         }
 
         return "<none>";
-    }
-
-    public static String charAsStorageString(int charIn)
-    {
-        return String.format("CHAR_%d", charIn);
-    }
-
-    public static String charAsCharacter(int charIn)
-    {
-        return String.valueOf((char) (charIn & 0xFF));
-    }
-
-    public static ImmutableList<Integer> readKeysFromStorageString(String str)
-    {
-        ArrayList<Integer> keyCodes = new ArrayList<>();
-        String[] keys = str.split(",");
-
-        for (String keyName : keys)
-        {
-            keyName = keyName.trim();
-
-            if (keyName.isEmpty() == false)
-            {
-                int keyCode = Keys.getKeyCodeForStorageString(keyName);
-
-                if (keyCode != Keyboard.KEY_NONE && keyCodes.contains(keyCode) == false)
-                {
-                    keyCodes.add(keyCode);
-                }
-            }
-        }
-
-        return ImmutableList.copyOf(keyCodes);
-    }
-
-    public static String writeKeysToString(List<Integer> keyCodes, String separator, Function<Integer, String> charEncoder)
-    {
-        StringBuilder sb = new StringBuilder(32);
-
-        for (int i = 0; i < keyCodes.size(); ++i)
-        {
-            if (i > 0)
-            {
-                sb.append(separator);
-            }
-
-            int keyCode = keyCodes.get(i).intValue();
-            String name = Keys.getStorageStringForKeyCode(keyCode, charEncoder);
-
-            if (name != null)
-            {
-                sb.append(name);
-            }
-        }
-
-        return sb.toString();
     }
 
     public static int getTriggeredCount()

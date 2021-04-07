@@ -11,7 +11,6 @@ import fi.dy.masa.malilib.input.Hotkey;
 import fi.dy.masa.malilib.input.HotkeyCategory;
 import fi.dy.masa.malilib.input.HotkeyManager;
 import fi.dy.masa.malilib.input.KeyBind;
-import fi.dy.masa.malilib.input.KeyBindImpl;
 import fi.dy.masa.malilib.input.Keys;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.overlay.message.MessageUtils;
@@ -156,7 +155,7 @@ public class KeyBindConfigButton extends GenericButton
     {
         if (MaLiLibConfigs.Generic.IGNORED_KEYS.getKeyBind().getKeys().contains(keyCode))
         {
-            String str = Keys.getStorageStringForKeyCode(keyCode, KeyBindImpl::charAsCharacter);
+            String str = Keys.getStorageStringForKeyCode(keyCode, Keys::charAsCharacter);
             MessageUtils.warning("malilib.message.error.keybind.attempt_to_bind_ignored_key", str);
             return;
         }
@@ -220,7 +219,7 @@ public class KeyBindConfigButton extends GenericButton
     protected String generateDisplayString()
     {
         List<Integer> keys = this.isSelected() ? this.newKeys : this.keyBind.getKeys();
-        String valueStr = KeyBindImpl.writeKeysToString(keys, " + ", KeyBindImpl::charAsCharacter);
+        String valueStr = Keys.writeKeysToString(keys, " + ", Keys::charAsCharacter);
 
         if (keys.size() == 0 || org.apache.commons.lang3.StringUtils.isBlank(valueStr))
         {
@@ -302,7 +301,7 @@ public class KeyBindConfigButton extends GenericButton
         //if (modified)
         {
             String label = StringUtils.translate("malilib.gui.button.default");
-            String defaultStr = KeyBindImpl.writeKeysToString(this.keyBind.getDefaultKeys(), " + ", KeyBindImpl::charAsCharacter);
+            String defaultStr = Keys.writeKeysToString(this.keyBind.getDefaultKeys(), " + ", Keys::charAsCharacter);
 
             if (org.apache.commons.lang3.StringUtils.isBlank(defaultStr))
             {
