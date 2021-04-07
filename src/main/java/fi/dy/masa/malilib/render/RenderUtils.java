@@ -522,7 +522,7 @@ public class RenderUtils
     {
         if (stack.hasTagCompound())
         {
-            NonNullList<ItemStack> items = InventoryUtils.getStoredItems(stack, -1);
+            NonNullList<ItemStack> items = InventoryUtils.getStoredItemsExact(stack, -1);
 
             if (items.size() == 0)
             {

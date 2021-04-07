@@ -6,23 +6,32 @@ import net.minecraft.util.ResourceLocation;
 
 /**
  * A wrapper around ItemStack, that implements hashCode() and equals().
- * Whether or not the NBT data is considered by those methods,
- * depends on the checkNBT argument to the constructor.
+ * Whether or not the NBT data and damage of damageable items are considered by those methods,
+ * depends on the ignoreDamage and checkNbt arguments to the constructor.
  */
 public class ItemType
 {
-    protected ItemStack stack;
-    protected boolean checkNBT;
+    protected final ItemStack stack;
+    protected final boolean checkNbt;
+    protected final boolean ignoreDamage;
+    protected final int hashCode;
 
     public ItemType(ItemStack stack)
     {
-        this(stack, true, true);
+        this(stack, true, false, true);
     }
 
-    public ItemType(ItemStack stack, boolean copy, boolean checkNBT)
+    public ItemType(ItemStack stack, boolean copy, boolean checkNbt)
+    {
+        this(stack, copy, false, checkNbt);
+    }
+
+    public ItemType(ItemStack stack, boolean copy, boolean ignoreDamage, boolean checkNbt)
     {
         this.stack = stack.isEmpty() ? ItemStack.EMPTY : (copy ? stack.copy() : stack);
-        this.checkNBT = checkNBT;
+        this.ignoreDamage = ignoreDamage;
+        this.checkNbt = checkNbt;
+        this.hashCode = this.calculateHashCode();
     }
 
     public ItemStack getStack()
@@ -30,25 +39,34 @@ public class ItemType
         return this.stack;
     }
 
-    public boolean checkNBT()
+    public boolean getIgnoreDamage()
     {
-        return this.checkNBT;
+        return this.ignoreDamage;
     }
 
-    public void setStack(ItemStack stack)
+    public boolean checkNbt()
     {
-        this.stack = stack;
+        return this.checkNbt;
     }
 
     @Override
     public int hashCode()
     {
+        return this.hashCode;
+    }
+
+    protected int calculateHashCode()
+    {
         final int prime = 31;
         int result = 1;
-        result = prime * result + this.stack.getMetadata();
         result = prime * result + this.stack.getItem().hashCode();
 
-        if (this.checkNBT())
+        if (this.ignoreDamage == false || this.stack.isItemStackDamageable() == false)
+        {
+            result = prime * result + this.stack.getMetadata();
+        }
+
+        if (this.checkNbt())
         {
             result = prime * result + (this.stack.getTagCompound() != null ? this.stack.getTagCompound().hashCode() : 0);
         }
@@ -63,40 +81,36 @@ public class ItemType
             return true;
         if (obj == null)
             return false;
-        if (getClass() != obj.getClass())
+        if (this.getClass() != obj.getClass())
             return false;
 
         ItemType other = (ItemType) obj;
 
         if (this.stack.isEmpty() || other.stack.isEmpty())
         {
-            if (this.stack.isEmpty() != other.stack.isEmpty())
-            {
-                return false;
-            }
+            return this.stack.isEmpty() == other.stack.isEmpty();
         }
         else
         {
-            if (this.stack.getMetadata() != other.stack.getMetadata())
-            {
-                return false;
-            }
-
             if (this.stack.getItem() != other.stack.getItem())
             {
                 return false;
             }
 
-            return this.checkNBT() == false || ItemStack.areItemStackTagsEqual(this.stack, other.stack);
-        }
+            if ((this.ignoreDamage == false || this.stack.isItemStackDamageable() == false) &&
+                this.stack.getMetadata() != other.stack.getMetadata())
+            {
+                return false;
+            }
 
-        return true;
+            return this.checkNbt() == false || ItemStack.areItemStackTagsEqual(this.stack, other.stack);
+        }
     }
 
     @Override
     public String toString()
     {
-        if (this.checkNBT())
+        if (this.checkNbt())
         {
             ResourceLocation rl = Item.REGISTRY.getNameForObject(this.stack.getItem());
             return rl.toString() + "@" + this.stack.getMetadata() + this.stack.getTagCompound();

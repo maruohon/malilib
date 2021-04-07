@@ -9,7 +9,6 @@ import net.minecraft.inventory.ContainerPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemShulkerBox;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -26,9 +25,6 @@ public class InventoryUtils
 
     /**
      * Check whether the stacks are identical otherwise, but ignoring the stack size
-     * @param stack1
-     * @param stack2
-     * @return
      */
     public static boolean areStacksEqual(ItemStack stack1, ItemStack stack2)
     {
@@ -38,10 +34,6 @@ public class InventoryUtils
     /**
      * Check whether the stacks are identical otherwise, but ignoring the stack size,
      * and optionally ignoring the NBT data
-     * @param stack1
-     * @param stack2
-     * @param ignoreNbt
-     * @return
      */
     public static boolean areStacksEqual(ItemStack stack1, ItemStack stack2, boolean ignoreNbt)
     {
@@ -50,9 +42,6 @@ public class InventoryUtils
 
     /**
      * Checks whether the given stacks are identical, ignoring the stack size and the durability of damageable items.
-     * @param stack1
-     * @param stack2
-     * @return
      */
     public static boolean areStacksEqualIgnoreDurability(ItemStack stack1, ItemStack stack2)
     {
@@ -62,9 +51,6 @@ public class InventoryUtils
     /**
      * Checks whether the given stacks are identical, ignoring the stack size and the durability of damageable items.
      * Also optionally ignores the NBT data.
-     * @param stack1
-     * @param stack2
-     * @return
      */
     public static boolean areStacksEqualIgnoreDurability(ItemStack stack1, ItemStack stack2, boolean ignoreNbt)
     {
@@ -73,9 +59,6 @@ public class InventoryUtils
 
     /**
      * Swaps the stack from the slot <b>slotNum</b> to the given hotbar slot <b>hotbarSlot</b>
-     * @param container
-     * @param slotNum
-     * @param hotbarSlot
      */
     public static void swapSlots(Container container, int slotNum, int hotbarSlot)
     {
@@ -87,9 +70,6 @@ public class InventoryUtils
      * Assuming that the slot is from the ContainerPlayer container,
      * returns whether the given slot number is one of the regular inventory slots.
      * This means that the crafting slots and armor slots are not valid.
-     * @param slotNumber
-     * @param allowOffhand
-     * @return
      */
     public static boolean isRegularInventorySlot(int slotNumber, boolean allowOffhand)
     {
@@ -99,9 +79,6 @@ public class InventoryUtils
     /**
      * Finds an empty slot in the player inventory. Armor slots are not valid for the return value of this method.
      * Whether or not the offhand slot is valid, depends on the <b>allowOffhand</b> argument.
-     * @param containerPlayer
-     * @param allowOffhand
-     * @param reverse
      * @return the slot number, or -1 if none were found
      */
     public static int findEmptySlotInPlayerInventory(Container containerPlayer, boolean allowOffhand, boolean reverse)
@@ -129,8 +106,6 @@ public class InventoryUtils
      * Finds a slot with an identical item to <b>stackReference</b> from the regular player inventory,
      * ignoring the durability of damageable items.
      * Does not allow crafting or armor slots or the off hand slot.
-     * @param container
-     * @param stackReference
      * @param reverse if true, then the slots are iterated in reverse order
      * @return the slot number, or -1 if none were found
      */
@@ -143,9 +118,6 @@ public class InventoryUtils
      * Finds a slot with an identical item to <b>stackReference</b> from the regular player inventory,
      * ignoring the durability of damageable items and optionally ignoring NBT data.
      * Does not allow crafting or armor slots or the off hand slot.
-     * @param container
-     * @param stackReference
-     * @param ignoreNbt
      * @param reverse if true, then the slots are iterated in reverse order
      * @return the slot number, or -1 if none were found
      */
@@ -177,10 +149,6 @@ public class InventoryUtils
     /**
      * Tries to find a slot with the given item for pick-blocking.
      * Prefers the hotbar to the rest of the inventory.
-     * @param container
-     * @param stackReference
-     * @param ignoreNbt
-     * @return
      */
     public static int findSlotWithItemToPickBlock(Container container, ItemStack stackReference, boolean ignoreNbt)
     {
@@ -229,7 +197,6 @@ public class InventoryUtils
 
     /**
      * Swap the given item to the player's main hand, if that item is found in the player's inventory.
-     * @param stackReference
      * @return true if an item was swapped to the main hand, false if it was already in the hand, or was not found in the inventory
      */
     public static boolean swapItemToMainHand(ItemStack stackReference)
@@ -239,8 +206,6 @@ public class InventoryUtils
 
     /**
      * Swap the given item to the player's main hand, if that item is found in the player's inventory.
-     * @param stackReference
-     * @param ignoreNbt
      * @return true if an item was swapped to the main hand, false if it was already in the hand, or was not found in the inventory
      */
     public static boolean swapItemToMainHand(ItemStack stackReference, boolean ignoreNbt)
@@ -278,8 +243,6 @@ public class InventoryUtils
 
     /**
      * Re-stocks more items to the stack in the player's current hotbar slot.
-     * @param player
-     * @param hand
      * @param threshold the number of items at or below which the re-stocking will happen
      * @param allowHotbar whether or not to allow taking items from other hotbar slots
      */
@@ -292,7 +255,7 @@ public class InventoryUtils
         if (stackHand.isEmpty() == false &&
             player.openContainer == player.inventoryContainer &&
             player.inventory.getItemStack().isEmpty() &&
-            (count <= threshold && count < max && max > 1))
+            (count <= threshold && count < max))
         {
             Minecraft mc = Minecraft.getMinecraft();
             Container container = player.inventoryContainer;
@@ -310,7 +273,7 @@ public class InventoryUtils
                 Slot slot = container.inventorySlots.get(slotNum);
                 ItemStack stackSlot = slot.getStack();
 
-                if (areStacksEqualIgnoreDurability(stackSlot, stackHand))
+                if (areStacksEqual(stackSlot, stackHand))
                 {
                     // If all the items from the found slot can fit into the current
                     // stack in hand, then left click, otherwise right click to split the stack
@@ -329,12 +292,10 @@ public class InventoryUtils
     /**
      * Checks if the given Shulker Box (or other storage item with the
      * same NBT data structure) currently contains any items.
-     * @param stackShulkerBox
-     * @return
      */
-    public static boolean shulkerBoxHasItems(ItemStack stackShulkerBox)
+    public static boolean shulkerBoxHasItems(ItemStack stack)
     {
-        NBTTagCompound nbt = stackShulkerBox.getTagCompound();
+        NBTTagCompound nbt = stack.getTagCompound();
 
         if (nbt != null && nbt.hasKey("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
         {
@@ -354,10 +315,8 @@ public class InventoryUtils
      * Returns the list of items currently stored in the given Shulker Box
      * (or other storage item with the same NBT data structure).
      * Does not keep empty slots.
-     * @param stackIn
-     * @return
      */
-    public static NonNullList<ItemStack> getStoredItems(ItemStack stackIn)
+    public static NonNullList<ItemStack> getStoredItemsNonEmpty(ItemStack stackIn)
     {
         NBTTagCompound nbt = stackIn.getTagCompound();
 
@@ -392,11 +351,9 @@ public class InventoryUtils
      * Returns the list of items currently stored in the given Shulker Box
      * (or other storage item with the same NBT data structure).
      * Preserves empty slots.
-     * @param stackIn
      * @param slotCount the maximum number of slots, and thus also the size of the list to create
-     * @return
      */
-    public static NonNullList<ItemStack> getStoredItems(ItemStack stackIn, int slotCount)
+    public static NonNullList<ItemStack> getStoredItemsExact(ItemStack stackIn, int slotCount)
     {
         NBTTagCompound nbt = stackIn.getTagCompound();
 
@@ -434,7 +391,7 @@ public class InventoryUtils
                     ItemStack stack = new ItemStack(tag);
                     int slot = tag.getByte("Slot");
 
-                    if (slot >= 0 && slot < items.size() && stack.isEmpty() == false)
+                    if (slot >= 0 && slot < slotCount && stack.isEmpty() == false)
                     {
                         items.set(slot, stack);
                     }
@@ -450,19 +407,17 @@ public class InventoryUtils
     /**
      * Returns a map of the stored item counts in the given Shulker Box
      * (or other storage item with the same NBT data structure).
-     * @param stackShulkerBox
-     * @return
      */
-    public static Object2IntOpenHashMap<ItemType> getStoredItemCounts(ItemStack stackShulkerBox)
+    public static Object2IntOpenHashMap<ItemType> getStoredItemCounts(ItemStack stackIn)
     {
         Object2IntOpenHashMap<ItemType> map = new Object2IntOpenHashMap<>();
-        NonNullList<ItemStack> items = getStoredItems(stackShulkerBox);
+        NonNullList<ItemStack> items = getStoredItemsNonEmpty(stackIn);
 
         for (ItemStack stack : items)
         {
             if (stack.isEmpty() == false)
             {
-                map.addTo(new ItemType(stack), stack.getCount());
+                map.addTo(new ItemType(stack, false, true), stack.getCount());
             }
         }
 
@@ -473,8 +428,6 @@ public class InventoryUtils
      * Returns a map of the stored item counts in the given inventory.
      * This also counts the contents of any Shulker Boxes
      * (or other storage item with the same NBT data structure).
-     * @param inv
-     * @return
      */
     public static Object2IntOpenHashMap<ItemType> getInventoryItemCounts(IInventory inv)
     {
@@ -489,7 +442,7 @@ public class InventoryUtils
             {
                 map.addTo(new ItemType(stack, false, true), stack.getCount());
 
-                if (stack.getItem() instanceof ItemShulkerBox && shulkerBoxHasItems(stack))
+                if (shulkerBoxHasItems(stack))
                 {
                     Object2IntOpenHashMap<ItemType> boxCounts = getStoredItemCounts(stack);
 
@@ -506,8 +459,6 @@ public class InventoryUtils
 
     /**
      * Returns the given list of items wrapped as an InventoryBasic
-     * @param items
-     * @return
      */
     public static IInventory getAsInventory(NonNullList<ItemStack> items)
     {
