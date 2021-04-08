@@ -12,6 +12,7 @@ import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.overlay.widget.InfoRendererWidget;
 import fi.dy.masa.malilib.overlay.widget.ConfigStatusIndicatorContainerWidget;
+import fi.dy.masa.malilib.overlay.widget.MessageRendererWidget;
 import fi.dy.masa.malilib.overlay.widget.StringListRendererWidget;
 import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.JsonUtils;
@@ -183,6 +184,7 @@ public class InfoWidgetManager
     private static void registerDefaultFactories()
     {
         registerWidgetFactory(ConfigStatusIndicatorContainerWidget.class,   ConfigStatusIndicatorContainerWidget::new);
+        registerWidgetFactory(MessageRendererWidget.class,                  MessageRendererWidget::new);
         registerWidgetFactory(StringListRendererWidget.class,               StringListRendererWidget::new);
     }
 

@@ -121,20 +121,6 @@ public class StringListRenderer extends BaseWidget
         return this;
     }
 
-    public StringListRenderer setMaxWidth(int maxWidth)
-    {
-        this.maxWidth = maxWidth;
-        this.hasMaxWidth = maxWidth > 0;
-        return this;
-    }
-
-    public StringListRenderer setMaxHeight(int maxHeight)
-    {
-        this.maxHeight = maxHeight;
-        this.hasMaxHeight = maxHeight > 0;
-        return this;
-    }
-
     public StringListRenderer setLineClamper(LineClamper clamper)
     {
         this.lineClamper = clamper;

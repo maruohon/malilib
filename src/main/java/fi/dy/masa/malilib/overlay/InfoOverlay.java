@@ -132,7 +132,7 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
     }
 
     /**
-     * Renders all the currently enabled widgets.
+     * Renders all the currently enabled widgets that are set to be rendered in the in-game context.
      * Don't call this unless you have your own instance of the InfoOverlay,
      * ie. don't call this on InfoOverlay.INSTANCE
      */
@@ -163,7 +163,7 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
     }
 
     /**
-     * Renders all the currently enabled widgets.
+     * Renders all the currently enabled widgets that are set to be rendered in the gui context.
      * Don't call this unless you have your own instance of the InfoOverlay,
      * ie. don't call this on InfoOverlay.INSTANCE
      */

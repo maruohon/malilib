@@ -13,9 +13,9 @@ import fi.dy.masa.malilib.gui.position.EdgeInt;
 import fi.dy.masa.malilib.render.RectangleRenderer;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
+import fi.dy.masa.malilib.render.TextRenderUtils;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.render.text.TextRenderer;
-import fi.dy.masa.malilib.render.TextRenderUtils;
 import fi.dy.masa.malilib.util.data.Color4f;
 
 public class BaseWidget
@@ -275,6 +275,38 @@ public class BaseWidget
     public void setLineHeight(int lineHeight)
     {
         this.lineHeight = lineHeight;
+    }
+
+    public int getMaxWidth()
+    {
+        return this.maxWidth;
+    }
+
+    public int getMaxHeight()
+    {
+        return this.maxHeight;
+    }
+
+    public void setMaxWidth(int maxWidth)
+    {
+        this.maxWidth = maxWidth;
+        this.hasMaxWidth = maxWidth > 0;
+    }
+
+    public void setMaxHeight(int maxHeight)
+    {
+        this.maxHeight = maxHeight;
+        this.hasMaxHeight = maxHeight > 0;
+    }
+
+    public void setAutomaticWidth(boolean automaticWidth)
+    {
+        this.automaticWidth = automaticWidth;
+    }
+
+    public void setAutomaticHeight(boolean automaticHeight)
+    {
+        this.automaticHeight = automaticHeight;
     }
 
     /**

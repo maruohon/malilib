@@ -75,7 +75,7 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
         this.requestUnconditionalReLayout();
     }
 
-    public ArrayList<BaseConfigStatusIndicatorWidget<?>> getStatusIndicatorWidgets()
+    public ArrayList<BaseConfigStatusIndicatorWidget<?>> getStatusIndicatorWidgetsForEditScreen()
     {
         // return a separate, modifiable list
         return new ArrayList<>(this.allWidgets);

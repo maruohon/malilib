@@ -3,7 +3,6 @@ package fi.dy.masa.malilib.overlay.widget;
 import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.JsonObject;
-import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.overlay.message.Message;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.render.text.TextRenderer;
@@ -12,18 +11,18 @@ import fi.dy.masa.malilib.util.JsonUtils;
 public class MessageRendererWidget extends InfoRendererWidget
 {
     protected final List<Message> messages = new ArrayList<>();
-    protected boolean renderBackground = true;
-    protected int backgroundColor = 0xC0000000;
-    protected int borderColor = 0xFFC0C0C0;
     protected int messageGap = 3;
     protected int maxMessages = -1;
 
     public MessageRendererWidget()
     {
         super();
+
         this.isOverlay = true;
-        this.setLineHeight(10);
+        this.renderBackground = true;
         this.padding.setAll(4, 6, 4, 6);
+        this.setLineHeight(10);
+        this.setMaxWidth(320);
     }
 
     public void clearMessages()
@@ -46,37 +45,8 @@ public class MessageRendererWidget extends InfoRendererWidget
 
     protected int getMaxMessageWidth()
     {
-        return this.automaticWidth ? GuiUtils.getScaledWindowWidth() - 80 : this.getWidth() - this.getPadding().getHorizontalTotal();
-    }
-
-    public boolean getRenderBackground()
-    {
-        return this.renderBackground;
-    }
-
-    public void setRenderBackground(boolean renderBackground)
-    {
-        this.renderBackground = renderBackground;
-    }
-
-    public int getBackgroundColor()
-    {
-        return this.backgroundColor;
-    }
-
-    public void setBackgroundColor(int backgroundColor)
-    {
-        this.backgroundColor = backgroundColor;
-    }
-
-    public int getBorderColor()
-    {
-        return this.borderColor;
-    }
-
-    public void setBorderColor(int borderColor)
-    {
-        this.borderColor = borderColor;
+        int baseWidth = this.automaticWidth ? this.maxWidth : this.getWidth();
+        return baseWidth - this.getPadding().getHorizontalTotal();
     }
 
     public int getMessageGap()
@@ -87,11 +57,6 @@ public class MessageRendererWidget extends InfoRendererWidget
     public void setMessageGap(int messageGap)
     {
         this.messageGap = messageGap;
-    }
-
-    public void setAutomaticWidth(boolean automaticWidth)
-    {
-        this.automaticWidth = automaticWidth;
     }
 
     /**
@@ -164,19 +129,6 @@ public class MessageRendererWidget extends InfoRendererWidget
         return 0;
     }
 
-    protected void updateWidgetPosition()
-    {
-        //System.out.printf("MessageRendererWidget(%s)#updateWidgetPosition()\n");
-        int viewportWidth = this.viewportWidthSupplier.getAsInt();
-        int viewportHeight = this.viewportHeightSupplier.getAsInt();
-        int width = (int) Math.ceil(this.getWidth() * this.getScale()) + this.margin.getHorizontalTotal();
-        int height = (int) Math.ceil(this.getHeight() * this.getScale()) + this.margin.getVerticalTotal();
-        int x = this.location.getStartX(width, viewportWidth, 0) + this.margin.getLeft();
-        int y = this.location.getStartY(height, viewportHeight, 0) + this.margin.getTop();
-
-        this.setPosition(x, y);
-    }
-
     @Override
     protected void renderBackground(int x, int y, float z)
     {
@@ -234,10 +186,14 @@ public class MessageRendererWidget extends InfoRendererWidget
     public JsonObject toJson()
     {
         JsonObject obj = super.toJson();
-        obj.addProperty("bg_enabled", this.renderBackground);
-        obj.addProperty("bg_color", this.backgroundColor);
-        obj.addProperty("border_color", this.borderColor);
         obj.addProperty("msg_gap", this.messageGap);
+        obj.addProperty("max_messages", this.maxMessages);
+
+        if (this.hasMaxWidth)
+        {
+            obj.addProperty("max_width", this.maxWidth);
+        }
+
         return obj;
     }
 
@@ -246,9 +202,12 @@ public class MessageRendererWidget extends InfoRendererWidget
     {
         super.fromJson(obj);
 
-        this.renderBackground = JsonUtils.getBooleanOrDefault(obj, "bg_enabled", this.renderBackground);
-        this.backgroundColor = JsonUtils.getIntegerOrDefault(obj, "bg_color", this.backgroundColor);
-        this.borderColor = JsonUtils.getIntegerOrDefault(obj, "border_color", this.borderColor);
         this.messageGap = JsonUtils.getIntegerOrDefault(obj, "msg_gap", this.messageGap);
+        this.maxMessages = JsonUtils.getIntegerOrDefault(obj, "max_messages", this.maxMessages);
+
+        if (JsonUtils.hasInteger(obj, "max_width"))
+        {
+            this.setMaxWidth(JsonUtils.getInteger(obj, "max_width"));
+        }
     }
 }

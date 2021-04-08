@@ -220,7 +220,7 @@ public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataLis
                                                                                   int listWidth, int listHeight)
     {
         DataListWidget<BaseConfigStatusIndicatorWidget<?>> listWidget 
-                = new DataListWidget<>(listX, listY, listWidth, listHeight, this.widget::getStatusIndicatorWidgets);
+                = new DataListWidget<>(listX, listY, listWidth, listHeight, this.widget::getStatusIndicatorWidgetsForEditScreen);
         listWidget.setEntryWidgetFactory((wx, wy, ww, wh, li, oi, d, lw) ->
                                          new ConfigStatusIndicatorEntryWidget(wx, wy, ww, wh, li, oi,
                                                                               d, lw, this.widget));

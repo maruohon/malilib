@@ -44,9 +44,12 @@ public abstract class InfoRendererWidget extends BaseWidget
     protected boolean needsReLayout;
     protected boolean renderName;
     protected boolean shouldSerialize;
+    protected boolean renderBackground;
     protected double scale = 1.0;
     protected long previousGeometryUpdateTime = -1;
     protected long geometryShrinkDelay = (long) (2 * 1E9); // 2 seconds
+    protected int backgroundColor = 0xC0000000;
+    protected int borderColor = 0xFFC0C0C0;
     protected int geometryShrinkThresholdX = 40;
     protected int geometryShrinkThresholdY = 10;
     protected int previousUpdatedWidth;
@@ -145,6 +148,36 @@ public abstract class InfoRendererWidget extends BaseWidget
         this.requestConditionalReLayout();
     }
 
+    public boolean getRenderBackground()
+    {
+        return this.renderBackground;
+    }
+
+    public void setRenderBackground(boolean renderBackground)
+    {
+        this.renderBackground = renderBackground;
+    }
+
+    public int getBackgroundColor()
+    {
+        return this.backgroundColor;
+    }
+
+    public void setBackgroundColor(int backgroundColor)
+    {
+        this.backgroundColor = backgroundColor;
+    }
+
+    public int getBorderColor()
+    {
+        return this.borderColor;
+    }
+
+    public void setBorderColor(int borderColor)
+    {
+        this.borderColor = borderColor;
+    }
+
     /**
      * Sets the sort index of this widget. Lower values come first (higher up) within the InfoArea.
      * The default sort index is 100.
@@ -240,6 +273,25 @@ public abstract class InfoRendererWidget extends BaseWidget
     {
         this.name = name;
         this.styledName = StyledTextLine.of(name);
+    }
+
+    /**
+     * Updates this widget's position, if this is an "overlay widget"
+     * that is not positioned automatically by the InfoArea.
+     */
+    protected void updateWidgetPosition()
+    {
+        if (this.isOverlay)
+        {
+            int viewportWidth = this.viewportWidthSupplier.getAsInt();
+            int viewportHeight = this.viewportHeightSupplier.getAsInt();
+            int width = (int) Math.ceil(this.getWidth() * this.getScale()) + this.margin.getHorizontalTotal();
+            int height = (int) Math.ceil(this.getHeight() * this.getScale()) + this.margin.getVerticalTotal();
+            int x = this.location.getStartX(width, viewportWidth, 0) + this.margin.getLeft();
+            int y = this.location.getStartY(height, viewportHeight, 0) + this.margin.getTop();
+
+            this.setPosition(x, y);
+        }
     }
 
     protected void requestConditionalReLayout()
@@ -450,6 +502,9 @@ public abstract class InfoRendererWidget extends BaseWidget
         obj.addProperty("scale", this.scale);
         obj.addProperty("render_name", this.renderName);
         obj.addProperty("sort_index", this.getSortIndex());
+        obj.addProperty("bg_enabled", this.renderBackground);
+        obj.addProperty("bg_color", this.backgroundColor);
+        obj.addProperty("border_color", this.borderColor);
         obj.add("padding", this.padding.toJson());
         obj.add("margin", this.margin.toJson());
         obj.add("text_settings", this.getTextSettings().toJson());
@@ -476,6 +531,9 @@ public abstract class InfoRendererWidget extends BaseWidget
         this.scale = JsonUtils.getDoubleOrDefault(obj, "scale", 1.0);
         this.setName(JsonUtils.getStringOrDefault(obj, "name", this.name));
         this.setSortIndex(JsonUtils.getIntegerOrDefault(obj, "sort_index", 100));
+        this.renderBackground = JsonUtils.getBooleanOrDefault(obj, "bg_enabled", this.renderBackground);
+        this.backgroundColor = JsonUtils.getIntegerOrDefault(obj, "bg_color", this.backgroundColor);
+        this.borderColor = JsonUtils.getIntegerOrDefault(obj, "border_color", this.borderColor);
 
         if (JsonUtils.hasString(obj, "screen_location"))
         {
