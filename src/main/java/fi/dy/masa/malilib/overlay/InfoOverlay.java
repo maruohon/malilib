@@ -25,6 +25,7 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
     protected final List<InfoRendererWidget> enabledInGameWidgets = new ArrayList<>();
     protected final List<InfoRendererWidget> enabledGuiWidgets = new ArrayList<>();
     protected final List<InfoArea> activeInfoAreas = new ArrayList<>();
+    protected final Minecraft mc = Minecraft.getMinecraft();
     protected boolean needsReFetch;
 
     public InfoArea getOrCreateInfoArea(ScreenLocation location)
@@ -138,27 +139,30 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
      */
     public void renderInGame()
     {
-        boolean debug = MaLiLibConfigs.Debug.INFO_OVERLAY_DEBUG.getBooleanValue();
-
-        if (debug)
+        if (this.mc.gameSettings.hideGUI == false)
         {
-            for (InfoArea area : this.infoAreas.values())
+            boolean debug = MaLiLibConfigs.Debug.INFO_OVERLAY_DEBUG.getBooleanValue();
+
+            if (debug)
             {
-                area.renderDebug();
+                for (InfoArea area : this.infoAreas.values())
+                {
+                    area.renderDebug();
+                }
             }
-        }
 
-        for (InfoRendererWidget widget : this.enabledInGameWidgets)
-        {
-            if (widget.shouldRenderInContext(false))
+            for (InfoRendererWidget widget : this.enabledInGameWidgets)
             {
-                widget.render();
+                if (widget.shouldRenderInContext(false))
+                {
+                    widget.render();
+                }
             }
-        }
 
-        if (debug)
-        {
-            BaseWidget.renderDebugTextAndClear();
+            if (debug)
+            {
+                BaseWidget.renderDebugTextAndClear();
+            }
         }
     }
 
