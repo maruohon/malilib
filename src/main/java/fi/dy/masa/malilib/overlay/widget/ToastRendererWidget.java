@@ -106,9 +106,12 @@ public class ToastRendererWidget extends InfoRendererWidget
     protected boolean tryAppendTextToExistingToast(StyledText toastText, int lifeTimeMs,
                                                    @Nullable String marker, boolean append)
     {
-        if (marker != null && this.activeToasts.isEmpty() == false)
+        if (marker != null)
         {
-            for (ToastWidget widget : this.activeToasts)
+            List<ToastWidget> list = new ArrayList<>(this.activeToasts);
+            list.addAll(this.toastQueue);
+
+            for (ToastWidget widget : list)
             {
                 if (widget.hasMarker(marker))
                 {
