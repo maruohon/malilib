@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.gui;
 
-import java.util.List;
 import javax.annotation.Nullable;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
@@ -14,7 +14,7 @@ import fi.dy.masa.malilib.util.StyledTextUtils;
 
 public class ConfirmActionScreen extends BaseScreen implements TaskCompletionListener
 {
-    protected final List<StyledTextLine> messageLines;
+    protected final ImmutableList<StyledTextLine> messageLines;
     protected final ConfirmationListener listener;
     protected int textColor = 0xFFC0C0C0;
 

@@ -8,7 +8,6 @@ import fi.dy.masa.malilib.event.PostGameOverlayRenderer;
 import fi.dy.masa.malilib.event.PostItemTooltipRenderer;
 import fi.dy.masa.malilib.event.PostScreenRenderer;
 import fi.dy.masa.malilib.event.PostWorldRenderer;
-import fi.dy.masa.malilib.overlay.message.ToastRenderer;
 
 public class RenderEventDispatcherImpl implements RenderEventDispatcher
 {
@@ -58,21 +57,19 @@ public class RenderEventDispatcherImpl implements RenderEventDispatcher
      */
     public void onRenderGameOverlayPost(Minecraft mc, float partialTicks)
     {
-        mc.profiler.startSection("malilib_game_overlay_last");
-
         if (this.overlayRenderers.isEmpty() == false)
         {
+            mc.profiler.startSection("malilib_game_overlay_last");
+
             for (PostGameOverlayRenderer renderer : this.overlayRenderers)
             {
                 mc.profiler.func_194340_a(renderer.getProfilerSectionSupplier());
                 renderer.onPostGameOverlayRender(mc, partialTicks);
                 mc.profiler.endSection();
             }
+
+            mc.profiler.endSection();
         }
-
-        ToastRenderer.INSTANCE.render();
-
-        mc.profiler.endSection();
     }
 
     /**
@@ -80,19 +77,19 @@ public class RenderEventDispatcherImpl implements RenderEventDispatcher
      */
     public void onRenderScreenPost(Minecraft mc, float partialTicks)
     {
-        mc.profiler.startSection("malilib_screen_post");
-
         if (this.screenPostRenderers.isEmpty() == false)
         {
+            mc.profiler.startSection("malilib_screen_post");
+
             for (PostScreenRenderer renderer : this.screenPostRenderers)
             {
                 mc.profiler.func_194340_a(renderer.getProfilerSectionSupplier());
                 renderer.onPostScreenRender(mc, partialTicks);
                 mc.profiler.endSection();
             }
-        }
 
-        mc.profiler.endSection();
+            mc.profiler.endSection();
+        }
     }
 
     /**

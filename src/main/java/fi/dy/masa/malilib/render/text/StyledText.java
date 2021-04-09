@@ -52,6 +52,23 @@ public class StyledText
         TEXT_CACHE.invalidateAll();
     }
 
+    public static StyledText ofLines(ImmutableList<StyledTextLine> lines)
+    {
+        return new StyledText(lines);
+    }
+
+    public static StyledText ofStrings(List<String> strings)
+    {
+        ImmutableList.Builder<StyledTextLine> builder = ImmutableList.builder();
+
+        for (String str : strings)
+        {
+            builder.add(StyledTextLine.of(str));
+        }
+
+        return new StyledText(builder.build());
+    }
+
     public static StyledText translatedOf(String translationKey, Object... args)
     {
         return of(StringUtils.translate(translationKey, args));

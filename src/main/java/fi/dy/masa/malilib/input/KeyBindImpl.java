@@ -16,12 +16,11 @@ import net.minecraft.client.settings.KeyBinding;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.MinecraftClientAccessor;
-import fi.dy.masa.malilib.config.value.HudAlignment;
 import fi.dy.masa.malilib.config.value.KeybindDisplayMode;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
-import fi.dy.masa.malilib.gui.widget.ToastWidget;
 import fi.dy.masa.malilib.input.callback.HotkeyCallback;
 import fi.dy.masa.malilib.overlay.message.MessageUtils;
+import fi.dy.masa.malilib.render.text.StyledText;
 import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.ModInfo;
@@ -264,8 +263,10 @@ public class KeyBindImpl implements KeyBind
                 lines.add(StringUtils.translate("malilib.toast.keybind_display.action", this.modInfo.getModName(), name));
             }
 
-            HudAlignment align = MaLiLibConfigs.Generic.KEYBIND_DISPLAY_ALIGNMENT.getValue();
-            ToastWidget.updateOrAddToast(align, lines, MaLiLibConfigs.Generic.KEYBIND_DISPLAY_DURATION.getIntegerValue());
+            StyledText text = StyledText.ofStrings(lines);
+            int lifeTimeMs = MaLiLibConfigs.Generic.KEYBIND_DISPLAY_DURATION.getIntegerValue();
+
+            MessageUtils.addToastMessage(text, lifeTimeMs, "keybind_display", true);
         }
     }
 

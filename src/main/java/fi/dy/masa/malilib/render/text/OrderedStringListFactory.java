@@ -242,11 +242,14 @@ public class OrderedStringListFactory
 
         if (this.maxTextRenderWidth > 16)
         {
-            styledLines = StyledTextUtils.wrapStyledTextToMaxWidth(styledLines, this.maxTextRenderWidth);
+            this.styledLines = StyledTextUtils.wrapStyledTextToMaxWidth(styledLines, this.maxTextRenderWidth);
+        }
+        else
+        {
+            this.styledLines = ImmutableList.copyOf(styledLines);
         }
 
         this.strings = ImmutableList.copyOf(allLines);
-        this.styledLines = ImmutableList.copyOf(styledLines);
         this.dirty = false;
     }
 }

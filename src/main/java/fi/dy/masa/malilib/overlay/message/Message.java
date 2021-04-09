@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.overlay.message;
 
-import java.util.List;
+import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.render.text.StyledText;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.render.text.TextRenderer;
@@ -13,7 +13,7 @@ public class Message
     public static final int WARNING = 0xFFFFAA00;
     public static final int ERROR = 0xFFFF5555;
 
-    protected final List<StyledTextLine> messageLines;
+    protected final ImmutableList<StyledTextLine> messageLines;
     protected final int defaultTextColor;
     protected final int width;
     protected final long expireTime;

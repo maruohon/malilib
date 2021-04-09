@@ -1,7 +1,8 @@
 package fi.dy.masa.malilib.util;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
+import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.render.text.Glyph;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.render.text.StyledTextSegment;
@@ -30,7 +31,7 @@ public class StyledTextUtils
      * @param maxRenderWidth
      * @return the new list of text lines that fit within the given maximum width
      */
-    public static List<StyledTextLine> wrapStyledTextToMaxWidth(List<StyledTextLine> linesIn, int maxRenderWidth)
+    public static ImmutableList<StyledTextLine> wrapStyledTextToMaxWidth(List<StyledTextLine> linesIn, int maxRenderWidth)
     {
         boolean needsWrapping = false;
 
@@ -45,24 +46,24 @@ public class StyledTextUtils
 
         if (needsWrapping == false)
         {
-            return linesIn;
+            return ImmutableList.copyOf(linesIn);
         }
 
-        List<StyledTextLine> linesOut = new ArrayList<>();
+        ImmutableList.Builder<StyledTextLine> builder = ImmutableList.builder();
 
         for (StyledTextLine line : linesIn)
         {
-            wrapStyledTextLineToMaxWidth(line, linesOut, maxRenderWidth);
+            wrapStyledTextLineToMaxWidth(line, builder::add, maxRenderWidth);
         }
 
-        return linesOut;
+        return builder.build();
     }
 
-    public static void wrapStyledTextLineToMaxWidth(StyledTextLine line, List<StyledTextLine> linesOut, int maxRenderWidth)
+    public static void wrapStyledTextLineToMaxWidth(StyledTextLine line, Consumer<StyledTextLine> lineConsumer, int maxRenderWidth)
     {
         if (line.renderWidth <= maxRenderWidth)
         {
-            linesOut.add(line);
+            lineConsumer.accept(line);
             return;
         }
 
@@ -98,7 +99,7 @@ public class StyledTextUtils
                 break;
             }
 
-            linesOut.add(subLine);
+            lineConsumer.accept(subLine);
             lineStartIndex = endIndex;
             remainingWidth -= subLine.renderWidth;
         }

@@ -9,8 +9,8 @@ import fi.dy.masa.malilib.config.option.HotkeyConfig;
 import fi.dy.masa.malilib.config.option.IntegerConfig;
 import fi.dy.masa.malilib.config.option.OptionListConfig;
 import fi.dy.masa.malilib.config.option.StringConfig;
-import fi.dy.masa.malilib.config.value.HudAlignment;
 import fi.dy.masa.malilib.config.value.KeybindDisplayMode;
+import fi.dy.masa.malilib.gui.position.ScreenLocation;
 import fi.dy.masa.malilib.gui.widget.ConfigsSearchBarWidget.Scope;
 import fi.dy.masa.malilib.input.CancelCondition;
 import fi.dy.masa.malilib.input.Context;
@@ -23,7 +23,7 @@ public class MaLiLibConfigs
     {
         public static final OptionListConfig<Scope> CONFIG_SEARCH_DEFAULT_SCOPE         = new OptionListConfig<>("configSearchDefaultScope", Scope.ALL_CATEGORIES, Scope.VALUES);
         public static final OptionListConfig<KeybindDisplayMode> KEYBIND_DISPLAY        = new OptionListConfig<>("keybindDisplay", KeybindDisplayMode.NONE, KeybindDisplayMode.VALUES);
-        public static final OptionListConfig<HudAlignment> KEYBIND_DISPLAY_ALIGNMENT    = new OptionListConfig<>("keybindDisplayAlignment", HudAlignment.BOTTOM_RIGHT, HudAlignment.VALUES);
+        public static final OptionListConfig<ScreenLocation> TOAST_RENDERER_LOCATION    = new OptionListConfig<>("toastRendererLocation", ScreenLocation.BOTTOM_RIGHT, ScreenLocation.VALUES);
 
         public static final IntegerConfig ACTION_BAR_MESSAGE_LIMIT              = new IntegerConfig("actionBarMessageLimit", 3, 1, 16);
         public static final IntegerConfig CONFIG_BACKUP_COUNT                   = new IntegerConfig("configBackupCount", 5, 0, 200);
@@ -50,14 +50,14 @@ public class MaLiLibConfigs
                 HOVER_TEXT_MAX_WIDTH,
                 IGNORED_KEYS,
                 KEYBIND_DISPLAY,
-                KEYBIND_DISPLAY_ALIGNMENT,
                 KEYBIND_DISPLAY_CALLBACK_ONLY,
                 KEYBIND_DISPLAY_CANCEL_ONLY,
                 KEYBIND_DISPLAY_DURATION,
                 MESSAGE_FADE_TIME,
                 OPEN_GUI_CONFIGS,
                 OPTION_LIST_CONFIG_DROPDOWN,
-                REMEMBER_CONFIG_TAB_SCROLL_POSITIONS
+                REMEMBER_CONFIG_TAB_SCROLL_POSITIONS,
+                TOAST_RENDERER_LOCATION
         );
     }
 

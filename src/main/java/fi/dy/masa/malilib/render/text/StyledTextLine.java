@@ -202,6 +202,22 @@ public class StyledTextLine
     }
 
     /**
+     * Returns the maximum render width of the given StyledTextLines
+     */
+    public static int getRenderWidth(List<StyledTextLine> lines)
+    {
+        int width = 0;
+
+        for (StyledTextLine line : lines)
+        {
+            width = Math.max(width, line.renderWidth);
+        }
+
+        return width;
+    }
+
+    /**
+     * 
      * Returns the string as a completely un-parsed raw StyledTextLine with the default TextStyle
      */
     public static StyledTextLine raw(String str)

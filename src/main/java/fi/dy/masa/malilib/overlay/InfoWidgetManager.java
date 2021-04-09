@@ -14,6 +14,7 @@ import fi.dy.masa.malilib.overlay.widget.InfoRendererWidget;
 import fi.dy.masa.malilib.overlay.widget.ConfigStatusIndicatorContainerWidget;
 import fi.dy.masa.malilib.overlay.widget.MessageRendererWidget;
 import fi.dy.masa.malilib.overlay.widget.StringListRendererWidget;
+import fi.dy.masa.malilib.overlay.widget.ToastRendererWidget;
 import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.JsonUtils;
 
@@ -186,6 +187,7 @@ public class InfoWidgetManager
         registerWidgetFactory(ConfigStatusIndicatorContainerWidget.class,   ConfigStatusIndicatorContainerWidget::new);
         registerWidgetFactory(MessageRendererWidget.class,                  MessageRendererWidget::new);
         registerWidgetFactory(StringListRendererWidget.class,               StringListRendererWidget::new);
+        registerWidgetFactory(ToastRendererWidget.class,                    ToastRendererWidget::new);
     }
 
     static

@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.overlay.message;
 
+import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.ChatType;
@@ -15,6 +16,8 @@ import fi.dy.masa.malilib.overlay.InfoArea;
 import fi.dy.masa.malilib.overlay.InfoOverlay;
 import fi.dy.masa.malilib.overlay.InfoWidgetManager;
 import fi.dy.masa.malilib.overlay.widget.MessageRendererWidget;
+import fi.dy.masa.malilib.overlay.widget.ToastRendererWidget;
+import fi.dy.masa.malilib.render.text.StyledText;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class MessageUtils
@@ -87,19 +90,44 @@ public class MessageUtils
         getMessageRendererWidget(location, null).addMessage(color, displayTimeMs, fadeTimeMs, translationKey, args);
     }
 
+    public static void addToastMessage(StyledText text, @Nullable final String marker, boolean append)
+    {
+        ScreenLocation location = MaLiLibConfigs.Generic.TOAST_RENDERER_LOCATION.getValue();
+        addToastMessage(text, marker, append, location);
+    }
+
+    public static void addToastMessage(StyledText text, int lifeTimeMs, @Nullable final String marker, boolean append)
+    {
+        ScreenLocation location = MaLiLibConfigs.Generic.TOAST_RENDERER_LOCATION.getValue();
+        addToastMessage(text, lifeTimeMs, marker, append, location);
+    }
+
+    public static void addToastMessage(StyledText text, @Nullable final String marker, boolean append, ScreenLocation location)
+    {
+        addToastMessage(text, 5000, marker, append, location);
+    }
+
+    public static void addToastMessage(StyledText text, int lifeTimeMs, @Nullable final String marker, boolean append, ScreenLocation location)
+    {
+        InfoArea area = InfoOverlay.INSTANCE.getOrCreateInfoArea(location);
+        ToastRendererWidget widget = area.findWidget(ToastRendererWidget.class, w -> true);
+
+        if (widget == null)
+        {
+            widget = new ToastRendererWidget();
+            widget.setLocation(location);
+            widget.setZLevel(310f);
+            InfoWidgetManager.INSTANCE.addWidget(widget);
+        }
+
+        widget.addToast(text, lifeTimeMs, marker, append);
+    }
+
     public static MessageRendererWidget getMessageRendererWidget(ScreenLocation location, @Nullable final String marker)
     {
         InfoArea area = InfoOverlay.INSTANCE.getOrCreateInfoArea(location);
-        MessageRendererWidget widget;
-
-        if (marker != null)
-        {
-            widget = area.findWidget(MessageRendererWidget.class, w -> w.hasMarker(marker));
-        }
-        else
-        {
-            widget = area.findWidget(MessageRendererWidget.class, w -> true);
-        }
+        Predicate<MessageRendererWidget> predicate = marker != null ? w -> w.hasMarker(marker) : w -> true;
+        MessageRendererWidget widget = area.findWidget(MessageRendererWidget.class, predicate);
 
         if (widget == null)
         {
