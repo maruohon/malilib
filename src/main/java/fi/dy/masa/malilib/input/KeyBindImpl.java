@@ -520,6 +520,23 @@ public class KeyBindImpl implements KeyBind
             PRESSED_KEYS.remove(valObj);
         }
 
+        if (MaLiLibConfigs.Generic.PRESSED_KEYS_TOAST.getBooleanValue())
+        {
+            String heldKeys;
+
+            if (PRESSED_KEYS.isEmpty())
+            {
+                heldKeys = StringUtils.translate("malilib.label.none.brackets");
+            }
+            else
+            {
+                heldKeys = Keys.writeKeysToString(PRESSED_KEYS, " + ", Keys::charAsStorageString);
+            }
+
+            StyledText text = StyledText.translatedOf("malilib.label.pressed_keys_toast", heldKeys);
+            MessageUtils.addToastMessage(text, 2000, "pressed_keys", false);
+        }
+
         if (MaLiLibConfigs.Debug.KEYBIND_DEBUG.getBooleanValue())
         {
             printKeyBindDebugMessage(keyCode, scanCode, modifiers, charIn, keyState);
@@ -563,6 +580,12 @@ public class KeyBindImpl implements KeyBind
         if (MaLiLibConfigs.Debug.KEYBIND_DEBUG_ACTIONBAR.getBooleanValue())
         {
             MessageUtils.printCustomActionbarMessage(msg);
+        }
+
+        if (MaLiLibConfigs.Debug.KEYBIND_DEBUG_TOAST.getBooleanValue())
+        {
+            StyledText text = StyledText.of(msg);
+            MessageUtils.addToastMessage(text, 5000, "keybind_debug", false);
         }
     }
 

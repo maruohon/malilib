@@ -16,6 +16,7 @@ malilib.config.comment.keybinddisplaycancelonly=If enabled, then only keybinds t
 malilib.config.comment.keybinddisplayduration=The duration (in milliseconds) the keybind display toasts are shown
 malilib.config.comment.messagefadetime=The fade time for message renderer messages when they expire. Use 0 for no fading.
 malilib.config.comment.optionlistconfigdropdown=Use a DropDown widget instead of a cycle button for OptionList type configs
+malilib.config.comment.pressedkeystoast=Show the currently pressed/held keys as a toast message
 malilib.config.comment.rememberconfigtabscrollpositions=Remember the config screen scrollbar position for each tab
 malilib.config.comment.toastrendererlocation=The screen location for the default toast message renderer
 
@@ -23,8 +24,9 @@ malilib.config.comment.guidebug=When enabled, all GUI widgets will draw their ou
 malilib.config.comment.guidebugall=If true, then all widgets will render the debug outline, otherwise only the hovered widget will render it
 malilib.config.comment.guidebuginfoalways=When enabled, the debug position and dimensions text is always rendered, even without hovering the widgets
 malilib.config.comment.infooverlaydebug=When enabled, the Info Overlay widgets and InfoAreas render debug outlines
-malilib.config.comment.keybinddebugging=When enabled, key presses and held keys are printed to the game console (and the action bar, if enabled)
-malilib.config.comment.keybinddebuggingingame=If enabled, then the messages from 'Keybind Debugging' are also printed to the in-game action bar
+malilib.config.comment.keybinddebug=When enabled, key presses and held keys are printed to the game console (and the action bar, if enabled)
+malilib.config.comment.keybinddebugactionbar=If enabled, then the messages from 'Keybind Debugging' are also printed to the action bar
+malilib.config.comment.keybinddebugtoast=If enabled, then the messages from 'Keybind Debugging' are shown as toast messages
 
 malilib.config.comment.dropdownsearchtip=Should the DropDown widget search tip about just starting to type to open the search be shown, or was it shown already
 
@@ -51,6 +53,7 @@ malilib.config.name.keybinddisplaycancelonly=KeyBind Display Cancel Only
 malilib.config.name.keybinddisplayduration=KeyBind Display Duration
 malilib.config.name.messagefadetime=Message Fade Time
 malilib.config.name.optionlistconfigdropdown=Option List Config DropDown
+malilib.config.name.pressedkeystoast=Pressed Keys Toast
 malilib.config.name.rememberconfigtabscrollpositions=Remember Config Screen Scroll Positions
 malilib.config.name.toastrendererlocation=Toast Renderer Location
 
@@ -58,8 +61,9 @@ malilib.config.name.guidebug=GUI Debug
 malilib.config.name.guidebugall=GUI Debug All
 malilib.config.name.guidebuginfoalways=GUI Debug Info Always
 malilib.config.name.infooverlaydebug=Info Overlay Debug
-malilib.config.name.keybinddebugging=KeyBind Debugging
-malilib.config.name.keybinddebuggingingame=KeyBind Debug In Action Bar
+malilib.config.name.keybinddebug=KeyBind Debugging
+malilib.config.name.keybinddebugactionbar=KeyBind Debug In Action Bar
+malilib.config.name.keybinddebugtoast=KeyBind Debug Toast
 
 malilib.config.name.dropdownsearchtip=Drop Down Search Tip
 
@@ -286,12 +290,14 @@ malilib.label.list_type.whitelist=White List
 malilib.label.margin=Margin
 malilib.label.name.colon=Name:
 malilib.label.name_color.colon=Name color:
+malilib.label.none.brackets=<none>
 malilib.label.no=no
 malilib.label.off=off
 malilib.label.off.caps=OFF
 malilib.label.on=on
 malilib.label.on.caps=ON
 malilib.label.padding=Padding
+malilib.label.pressed_keys_toast=§6Keys: §b%s
 malilib.label.render_name.colon=Render name:
 malilib.label.sort_index.colon=Sort index:
 malilib.label.string_list_renderer.even_width_background.colon=Even width BG:

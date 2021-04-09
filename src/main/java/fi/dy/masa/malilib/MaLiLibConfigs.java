@@ -38,6 +38,7 @@ public class MaLiLibConfigs
         public static final IntegerConfig MESSAGE_FADE_TIME                     = new IntegerConfig("messageFadeTime", 500, 0, 10000);
         public static final HotkeyConfig OPEN_GUI_CONFIGS                       = new HotkeyConfig("openGuiConfigs", "A,C");
         public static final BooleanConfig OPTION_LIST_CONFIG_DROPDOWN           = new BooleanConfig("optionListConfigDropdown", false);
+        public static final BooleanConfig PRESSED_KEYS_TOAST                    = new BooleanConfig("pressedKeysToast", false);
         public static final BooleanConfig REMEMBER_CONFIG_TAB_SCROLL_POSITIONS  = new BooleanConfig("rememberConfigTabScrollPositions", true);
 
         public static final ImmutableList<ConfigOption<?>> OPTIONS = ImmutableList.of(
@@ -56,6 +57,7 @@ public class MaLiLibConfigs
                 MESSAGE_FADE_TIME,
                 OPEN_GUI_CONFIGS,
                 OPTION_LIST_CONFIG_DROPDOWN,
+                PRESSED_KEYS_TOAST,
                 REMEMBER_CONFIG_TAB_SCROLL_POSITIONS,
                 TOAST_RENDERER_LOCATION
         );
@@ -79,8 +81,9 @@ public class MaLiLibConfigs
         public static final BooleanConfig GUI_DEBUG_INFO_ALWAYS     = new BooleanConfig("guiDebugInfoAlways", false);
         public static final HotkeyConfig GUI_DEBUG_KEY              = new HotkeyConfig("guiDebugKey", "LMENU", DBG_KS);
         public static final BooleanConfig INFO_OVERLAY_DEBUG        = new BooleanConfig("infoOverlayDebug", false);
-        public static final BooleanConfig KEYBIND_DEBUG             = new BooleanConfig("keybindDebugging", false);
-        public static final BooleanConfig KEYBIND_DEBUG_ACTIONBAR   = new BooleanConfig("keybindDebuggingIngame", true);
+        public static final BooleanConfig KEYBIND_DEBUG             = new BooleanConfig("keybindDebug", false);
+        public static final BooleanConfig KEYBIND_DEBUG_ACTIONBAR   = new BooleanConfig("keybindDebugActionBar", false);
+        public static final BooleanConfig KEYBIND_DEBUG_TOAST       = new BooleanConfig("keybindDebugToast", true);
 
         public static final ImmutableList<ConfigOption<?>> OPTIONS = ImmutableList.of(
                 GUI_DEBUG,
@@ -89,7 +92,8 @@ public class MaLiLibConfigs
                 GUI_DEBUG_KEY,
                 INFO_OVERLAY_DEBUG,
                 KEYBIND_DEBUG,
-                KEYBIND_DEBUG_ACTIONBAR
+                KEYBIND_DEBUG_ACTIONBAR,
+                KEYBIND_DEBUG_TOAST
         );
     }
 
