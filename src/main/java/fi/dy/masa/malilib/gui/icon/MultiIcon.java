@@ -95,29 +95,10 @@ public interface MultiIcon extends Icon
      */
     default void renderFourSplicedAt(int x, int y, float z, int width, int height, boolean enabled, boolean hovered)
     {
-        int textureWidth = this.getWidth();
-        int textureHeight = this.getHeight();
-
-        if (textureWidth == 0 || textureHeight == 0)
-        {
-            return;
-        }
-
         int variantIndex = this.getVariantIndex(enabled, hovered);
         int u = this.getVariantU(variantIndex);
         int v = this.getVariantV(variantIndex);
-        int w1 = width / 2;
-        int w2 = (width & 0x1) != 0 ? w1 + 1 : w1;
-        int h1 = height / 2;
-        int h2 = (height & 0x1) != 0 ? h1 + 1 : h1;
 
-        RenderUtils.color(1f, 1f, 1f, 1f);
-        RenderUtils.bindTexture(this.getTexture());
-
-        ShapeRenderUtils.renderTexturedRectangle(x, y     , z, u, v                     , w1, h1); // top left
-        ShapeRenderUtils.renderTexturedRectangle(x, y + h1, z, u, v + textureHeight - h2, w1, h2); // bottom left
-
-        ShapeRenderUtils.renderTexturedRectangle(x + w1, y     , z, u + textureWidth - w2, v                     , w2, h1); // top right
-        ShapeRenderUtils.renderTexturedRectangle(x + w1, y + h1, z, u + textureWidth - w2, v + textureHeight - h2, w2, h2); // bottom right
+        this.renderFourSplicedAt(x, y, z, u, v, width, height);
     }
 }

@@ -62,5 +62,5 @@ public class DefaultIcons
 
     public static final BaseMultiIcon BUTTON_BACKGROUND             = new BaseMultiIcon( 56, 196, 200, 20, 0, 20);
 
-    public static final BaseMultiIcon TOAST_BACKGROUND              = new BaseMultiIcon(  0,   0, 256, 128, 0, 0, new ResourceLocation(MaLiLibReference.MOD_ID, "textures/gui/toasts.png"));
+    public static final BaseIcon TOAST_BACKGROUND                   = new BaseIcon(  0,   0, 256, 128, new ResourceLocation(MaLiLibReference.MOD_ID, "textures/gui/toasts.png"));
 }

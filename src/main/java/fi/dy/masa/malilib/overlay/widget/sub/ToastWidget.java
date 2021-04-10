@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.overlay.widget.sub;
 
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
+import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 import fi.dy.masa.malilib.overlay.widget.InfoRendererWidget;
@@ -16,7 +17,7 @@ public class ToastWidget extends InfoRendererWidget
     protected final HorizontalAlignment horizontalAlignment;
     protected final long fadeInDuration;
     protected final long fadeOutDuration;
-    protected MultiIcon backgroundTexture = DefaultIcons.TOAST_BACKGROUND;
+    protected Icon backgroundTexture = DefaultIcons.TOAST_BACKGROUND;
     protected long lifeTimeMs = -1L;
     protected long fadeInEndTime;
     protected long fadeOutStartTime;
@@ -103,6 +104,11 @@ public class ToastWidget extends InfoRendererWidget
 
     protected void setLifeTime(int lifeTimeMs)
     {
+        if (this.lifeTimeMs < 0 && lifeTimeMs < 0)
+        {
+            lifeTimeMs = 5000;
+        }
+
         if (lifeTimeMs >= 0)
         {
             this.lifeTimeMs =  lifeTimeMs;
@@ -145,7 +151,7 @@ public class ToastWidget extends InfoRendererWidget
     @Override
     protected void renderBackground(int x, int y, float z)
     {
-        this.backgroundTexture.renderFourSplicedAt(x, y, z, this.getWidth(), this.getHeight(), false, false);
+        this.backgroundTexture.renderFourSplicedAt(x, y, z, this.getWidth(), this.getHeight());
     }
 
     @Override
