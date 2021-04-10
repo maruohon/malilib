@@ -13,7 +13,6 @@ import fi.dy.masa.malilib.event.PostScreenRenderer;
 import fi.dy.masa.malilib.gui.position.ScreenLocation;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.BaseWidget;
-import fi.dy.masa.malilib.input.Context;
 import fi.dy.masa.malilib.overlay.widget.InfoRendererWidget;
 import fi.dy.masa.malilib.overlay.widget.StringListRendererWidget;
 
@@ -78,12 +77,12 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
             {
                 for (InfoRendererWidget widget : widgets)
                 {
-                    if (widget.shouldRenderInContext(Context.GUI))
+                    if (widget.isVisibleInContext(RenderContext.GUI))
                     {
                         this.enabledGuiWidgets.add(widget);
                     }
 
-                    if (widget.shouldRenderInContext(Context.INGAME))
+                    if (widget.isVisibleInContext(RenderContext.INGAME))
                     {
                         this.enabledInGameWidgets.add(widget);
                     }
@@ -141,6 +140,7 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
     {
         if (this.mc.gameSettings.hideGUI == false)
         {
+            boolean isScreenOpen = GuiUtils.getCurrentScreen() != null;
             boolean debug = MaLiLibConfigs.Debug.INFO_OVERLAY_DEBUG.getBooleanValue();
 
             if (debug)
@@ -153,7 +153,7 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
 
             for (InfoRendererWidget widget : this.enabledInGameWidgets)
             {
-                if (widget.shouldRenderInContext(false))
+                if (widget.shouldRenderFromContext(RenderContext.INGAME, isScreenOpen))
                 {
                     widget.render();
                 }
@@ -173,6 +173,7 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
      */
     public void renderScreen()
     {
+        boolean isScreenOpen = GuiUtils.getCurrentScreen() != null;
         boolean debug = MaLiLibConfigs.Debug.INFO_OVERLAY_DEBUG.getBooleanValue();
 
         if (debug)
@@ -185,7 +186,7 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
 
         for (InfoRendererWidget widget : this.enabledGuiWidgets)
         {
-            if (widget.shouldRenderInContext(true))
+            if (widget.shouldRenderFromContext(RenderContext.GUI, isScreenOpen))
             {
                 widget.render();
             }
@@ -232,5 +233,12 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
         }
 
         return widget;
+    }
+
+    public enum RenderContext
+    {
+        INGAME,
+        GUI,
+        BOTH
     }
 }

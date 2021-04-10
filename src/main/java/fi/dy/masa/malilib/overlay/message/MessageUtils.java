@@ -11,7 +11,6 @@ import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.config.value.InfoType;
 import fi.dy.masa.malilib.gui.position.ScreenLocation;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
-import fi.dy.masa.malilib.input.Context;
 import fi.dy.masa.malilib.overlay.InfoArea;
 import fi.dy.masa.malilib.overlay.InfoOverlay;
 import fi.dy.masa.malilib.overlay.InfoWidgetManager;
@@ -135,7 +134,7 @@ public class MessageUtils
             widget.setLocation(location);
             widget.setZLevel(300f);
             widget.setWidth(300);
-            widget.setRenderContext(Context.ANY);
+            widget.setRenderAboveScreen(true);
 
             if (marker != null)
             {

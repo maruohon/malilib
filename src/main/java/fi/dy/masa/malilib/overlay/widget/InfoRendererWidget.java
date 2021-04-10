@@ -15,8 +15,8 @@ import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.gui.position.ScreenLocation;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.BaseWidget;
-import fi.dy.masa.malilib.input.Context;
 import fi.dy.masa.malilib.listener.EventListener;
+import fi.dy.masa.malilib.overlay.InfoOverlay;
 import fi.dy.masa.malilib.overlay.InfoWidgetManager;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
@@ -30,10 +30,10 @@ public abstract class InfoRendererWidget extends BaseWidget
     protected final Set<String> markers = new HashSet<>();
     protected TextRenderSettings textSettings = new TextRenderSettings();
     protected ScreenLocation location = ScreenLocation.TOP_LEFT;
-    protected Context renderContext = Context.INGAME;
     protected String name = "?";
     protected IntSupplier viewportWidthSupplier = GuiUtils::getScaledWindowWidth;
     protected IntSupplier viewportHeightSupplier = GuiUtils::getScaledWindowHeight;
+    protected InfoOverlay.RenderContext visibleInContext = InfoOverlay.RenderContext.BOTH;
     @Nullable protected EventListener geometryChangeListener;
     @Nullable protected EventListener enabledChangeListener;
     @Nullable protected StyledTextLine styledName;
@@ -42,6 +42,7 @@ public abstract class InfoRendererWidget extends BaseWidget
     protected boolean forceNotifyGeometryChangeListener;
     protected boolean isOverlay;
     protected boolean needsReLayout;
+    protected boolean renderAboveScreen;
     protected boolean renderName;
     protected boolean shouldSerialize;
     protected boolean renderBackground;
@@ -264,9 +265,18 @@ public abstract class InfoRendererWidget extends BaseWidget
         }
     }
 
-    public void setRenderContext(Context renderContext)
+    public void setVisibleInContext(InfoOverlay.RenderContext context)
     {
-        this.renderContext = renderContext;
+        this.visibleInContext = context;
+    }
+
+    /**
+     * Sets whether or not widgets that are visible in RenderContext.BOTH will render
+     * below or above the screen.
+     */
+    public void setRenderAboveScreen(boolean renderBelowScreen)
+    {
+        this.renderAboveScreen = renderBelowScreen;
     }
 
     public void setName(String name)
@@ -387,18 +397,39 @@ public abstract class InfoRendererWidget extends BaseWidget
         }
     }
 
-    public boolean shouldRenderInContext(Context context)
+    /**
+     * This method determines which "instance" or rather render call of the InfoOverlay
+     * should **potentially** handle rendering this widget.
+     * If the widget should always be visible and on top, then this should return BOTH.
+     * The other two values INGAME and GUI make the widget only render from one or the other,
+     * which means that if it's also visible INGAME then it can't be on top when a GUI is open,
+     * and if it renders only in a GUI context then it's obviously not rendered when in-game.
+     * <br>
+     * Note that the other {@link #shouldRenderFromContext(InfoOverlay.RenderContext, boolean)}
+     * method is used to check whether or not the widget will actually
+     * render, based on the current status of having a GUI open or not.
+     * So basically that method will prevent a widget from actually rendering twice if
+     * it's set to be visible in BOTH contexts.
+     */
+    public boolean isVisibleInContext(InfoOverlay.RenderContext context)
     {
-        return this.renderContext == context || this.renderContext == Context.ANY;
+        return this.visibleInContext == context || this.visibleInContext == InfoOverlay.RenderContext.BOTH;
     }
 
-    public boolean shouldRenderInContext(boolean isScreen)
+    public boolean shouldRenderFromContext(InfoOverlay.RenderContext context, boolean isScreenOpen)
     {
-        // ANY and GUI can render inside a GUI.
-        // INGAME will only render when not in a GUI.
-        // ANY will render in the not-in-a-screen context only when no GUI is open
-        return (isScreen          && this.renderContext != Context.INGAME) ||
-               (isScreen == false && this.renderContext != Context.GUI);
+        // Note that widgets that have visibleInContext = INGAME will never be called with the argument GUI here,
+        // or vice versa widgets with visibleInContext = GUI will never be called with the argument INGAME.
+        // Only widgets with visibleInContext = BOTH will be called with both arguments while a screen is open.
+
+        // The isScreenOpen == false condition allows all widgets that are in the INGAME list to render,
+        // since if there is no GUI open then they would not get rendered a second time from the GUI context.
+
+        // If a screen is open however, then widgets that are visible in both contexts
+        // can decide whether or not they want to render below or on top of the screen,
+        // by setting the value of the renderAboveScreen field.
+
+        return isScreenOpen == false || (this.renderAboveScreen == (context == InfoOverlay.RenderContext.GUI));
     }
 
     public void render()
