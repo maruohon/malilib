@@ -27,6 +27,13 @@ class ForgeRenderEventHandler
     @SubscribeEvent
     public void onRenderWorldLast(RenderWorldLastEvent event)
     {
+        net.minecraft.client.renderer.ActiveRenderInfo cam = net.minecraft.client.Minecraft.getInstance().gameRenderer.getActiveRenderInfo();
+        float yaw = cam.getYaw();
+        float pitch = cam.getPitch();
+        org.lwjgl.opengl.GL11.glPushMatrix();
+        org.lwjgl.opengl.GL11.glRotatef(pitch, 1, 0, 0);
+        org.lwjgl.opengl.GL11.glRotatef(yaw+180, 0, 1, 0);
         ((RenderEventHandler) RenderEventHandler.getInstance()).onRenderWorldLast(event.getMatrixStack(), net.minecraft.client.Minecraft.getInstance(), event.getPartialTicks());
+        org.lwjgl.opengl.GL11.glPopMatrix();
     }
 }
