@@ -9,7 +9,7 @@ public interface IRenderer
      * Called after the vanilla overlays have been rendered
      * @param partialTicks
      */
-    default void onRenderGameOverlayPost(float partialTicks) {}
+    default void onRenderGameOverlayPost(float partialTicks, MatrixStack matrixStack) {}
 
     /**
      * Called after vanilla world rendering

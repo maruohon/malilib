@@ -59,7 +59,7 @@ public class RenderEventHandler implements IRenderDispatcher
             for (IRenderer renderer : this.overlayRenderers)
             {
                 mc.getProfiler().startSection(renderer.getProfilerSectionSupplier());
-                renderer.onRenderGameOverlayPost(partialTicks);
+                renderer.onRenderGameOverlayPost(partialTicks, matrixStack);
                 mc.getProfiler().endSection();
             }
         }
