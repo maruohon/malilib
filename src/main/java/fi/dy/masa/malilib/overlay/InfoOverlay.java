@@ -1,10 +1,12 @@
 package fi.dy.masa.malilib.overlay;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.event.ClientTickHandler;
@@ -23,6 +25,7 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
     protected final HashMap<ScreenLocation, InfoArea> infoAreas = new HashMap<>();
     protected final List<InfoRendererWidget> enabledInGameWidgets = new ArrayList<>();
     protected final List<InfoRendererWidget> enabledGuiWidgets = new ArrayList<>();
+    protected final List<InfoRendererWidget> allEnabledWidgets = new ArrayList<>();
     protected final List<InfoArea> activeInfoAreas = new ArrayList<>();
     protected final Minecraft mc = Minecraft.getMinecraft();
     protected boolean needsReFetch;
@@ -67,6 +70,7 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
     {
         this.enabledInGameWidgets.clear();
         this.enabledGuiWidgets.clear();
+        this.allEnabledWidgets.clear();
         this.activeInfoAreas.clear();
 
         for (InfoArea infoArea : this.infoAreas.values())
@@ -77,6 +81,8 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
             {
                 for (InfoRendererWidget widget : widgets)
                 {
+                    this.allEnabledWidgets.add(widget);
+
                     if (widget.isVisibleInContext(RenderContext.GUI))
                     {
                         this.enabledGuiWidgets.add(widget);
@@ -214,6 +220,38 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
         }
 
         return widget;
+    }
+
+    /**
+     * Returns the first widget that passes the test, if any
+     */
+    @Nullable
+    public <C extends InfoRendererWidget> C findWidget(Class<C> clazz, Predicate<C> predicate)
+    {
+        return findWidget(clazz, predicate, this.allEnabledWidgets);
+    }
+
+    /**
+     * Returns the first widget that passes the test, if any
+     */
+    @Nullable
+    public static <C extends InfoRendererWidget> C findWidget(Class<C> clazz, Predicate<C> predicate,
+                                                              Collection<InfoRendererWidget> collection)
+    {
+        for (InfoRendererWidget widget : collection)
+        {
+            if (clazz.isAssignableFrom(widget.getClass()))
+            {
+                C obj = clazz.cast(widget);
+
+                if (predicate.test(obj))
+                {
+                    return obj;
+                }
+            }
+        }
+
+        return null;
     }
 
     /**

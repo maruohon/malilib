@@ -106,8 +106,11 @@ public class TextRenderSettings
     public void setFrom(TextRenderSettings other)
     {
         this.useBackground = other.useBackground;
+        this.useOddEvenBackground = other.useOddEvenBackground;
+        this.useEvenWidthBackground = other.useEvenWidthBackground;
         this.useTextShadow = other.useTextShadow;
         this.backgroundColor = other.backgroundColor;
+        this.backgroundColorOdd = other.backgroundColorOdd;
         this.textColor = other.textColor;
     }
 

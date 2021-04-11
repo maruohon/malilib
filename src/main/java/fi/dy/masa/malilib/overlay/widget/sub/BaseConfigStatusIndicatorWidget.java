@@ -104,6 +104,7 @@ public abstract class BaseConfigStatusIndicatorWidget<C extends ConfigInfo> exte
         return this.valueRenderWidth;
     }
 
+    @Override
     public void openEditScreen()
     {
         BaseConfigStatusIndicatorEditScreen<?> screen = new BaseConfigStatusIndicatorEditScreen<>(this, GuiUtils.getCurrentScreen());

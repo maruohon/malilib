@@ -54,20 +54,7 @@ public class InfoArea
     @Nullable
     public <C extends InfoRendererWidget> C findWidget(Class<C> clazz, Predicate<C> predicate)
     {
-        for (InfoRendererWidget widget : this.allWidgets)
-        {
-            if (clazz.isAssignableFrom(widget.getClass()))
-            {
-                C obj = clazz.cast(widget);
-
-                if (predicate.test(obj))
-                {
-                    return obj;
-                }
-            }
-        }
-
-        return null;
+        return InfoOverlay.findWidget(clazz, predicate, this.allWidgets);
     }
 
     public void addWidget(InfoRendererWidget widget)

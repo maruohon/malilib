@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.gui.position;
 import java.util.function.ToIntFunction;
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.config.value.BaseOptionListConfigValue;
+import fi.dy.masa.malilib.gui.widget.BaseWidget;
 
 public class VerticalAlignment extends BaseOptionListConfigValue
 {
@@ -26,6 +27,17 @@ public class VerticalAlignment extends BaseOptionListConfigValue
     public int getStartY(int contentHeight, int viewportHeight, int offset)
     {
         return this.startYPositionSource.getStartY(contentHeight, viewportHeight, offset);
+    }
+
+    public int getStartY(BaseWidget widget, int viewportHeight)
+    {
+        int offset = this.getMargin(widget.getMargin());
+        return this.startYPositionSource.getStartY(widget.getHeight(), viewportHeight, offset);
+    }
+
+    public int getMargin(EdgeInt margin)
+    {
+        return this == TOP ? margin.getTop() : (this == BOTTOM ? margin.getBottom() : 0);
     }
 
     public int getYStartOffset(int contentHeight)

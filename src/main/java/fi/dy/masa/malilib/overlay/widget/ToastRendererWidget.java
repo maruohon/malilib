@@ -6,7 +6,10 @@ import java.util.List;
 import javax.annotation.Nullable;
 import com.google.common.collect.Queues;
 import com.google.gson.JsonObject;
+import fi.dy.masa.malilib.gui.BaseScreen;
+import fi.dy.masa.malilib.gui.ToastRendererWidgetEditScreen;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
+import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.overlay.widget.sub.ToastWidget;
 import fi.dy.masa.malilib.render.text.StyledText;
 import fi.dy.masa.malilib.util.JsonUtils;
@@ -16,14 +19,68 @@ public class ToastRendererWidget extends InfoRendererWidget
     protected final List<ToastWidget> activeToasts = new ArrayList<>();
     protected final Deque<ToastWidget> toastQueue = Queues.newArrayDeque();
     protected int defaultLifeTime = 5000;
-    protected int fadeInTime = 250;
-    protected int fadeOutTime = 250;
-    protected int maxToastWidth = 320;
+    protected int defaultFadeInTime = 200;
+    protected int defaultFadeOutTime = 200;
     protected int maxToasts = 5;
+    protected int messageGap = 4;
 
     public ToastRendererWidget()
     {
         this.isOverlay = true;
+        this.shouldSerialize = true;
+        this.setName("Toast Renderer");
+        this.setMaxWidth(240);
+        this.padding.setAll(6, 10, 6, 10);
+    }
+
+    public int getMessageGap()
+    {
+        return this.messageGap;
+    }
+
+    public void setMessageGap(int messageGap)
+    {
+        this.messageGap = messageGap;
+    }
+
+    public int getDefaultLifeTime()
+    {
+        return this.defaultLifeTime;
+    }
+
+    public void setDefaultLifeTime(int defaultLifeTime)
+    {
+        this.defaultLifeTime = defaultLifeTime;
+    }
+
+    public int getDefaultFadeInTime()
+    {
+        return this.defaultFadeInTime;
+    }
+
+    public void setDefaultFadeInTime(int defaultFadeInTime)
+    {
+        this.defaultFadeInTime = defaultFadeInTime;
+    }
+
+    public int getDefaultFadeOutTime()
+    {
+        return this.defaultFadeOutTime;
+    }
+
+    public void setDefaultFadeOutTime(int defaultFadeOutTime)
+    {
+        this.defaultFadeOutTime = defaultFadeOutTime;
+    }
+
+    public int getMaxToasts()
+    {
+        return this.maxToasts;
+    }
+
+    public void setMaxToasts(int maxToasts)
+    {
+        this.maxToasts = maxToasts;
     }
 
     public void addToast(StyledText toastText)
@@ -33,7 +90,7 @@ public class ToastRendererWidget extends InfoRendererWidget
 
     public void addToast(StyledText toastText, int lifeTimeMs)
     {
-        this.addToast(toastText, lifeTimeMs, this.fadeInTime, this.fadeOutTime);
+        this.addToast(toastText, lifeTimeMs, this.defaultFadeInTime, this.defaultFadeOutTime);
     }
 
     public void addToast(StyledText toastText, int lifeTimeMs, int fadeInTimeMs, int fadeOutTimeMs)
@@ -52,7 +109,7 @@ public class ToastRendererWidget extends InfoRendererWidget
      */
     public void addToast(StyledText toastText, @Nullable String marker, boolean append)
     {
-        this.addToast(toastText, this.defaultLifeTime, this.fadeInTime, this.fadeOutTime, marker, append);
+        this.addToast(toastText, this.defaultLifeTime, this.defaultFadeInTime, this.defaultFadeOutTime, marker, append);
     }
 
     /**
@@ -67,7 +124,7 @@ public class ToastRendererWidget extends InfoRendererWidget
      */
     public void addToast(StyledText toastText, int lifeTimeMs, @Nullable String marker, boolean append)
     {
-        this.addToast(toastText, lifeTimeMs, this.fadeInTime, this.fadeOutTime, marker, append);
+        this.addToast(toastText, lifeTimeMs, this.defaultFadeInTime, this.defaultFadeOutTime, marker, append);
     }
 
     /**
@@ -91,8 +148,13 @@ public class ToastRendererWidget extends InfoRendererWidget
         }
 
         ToastWidget widget = new ToastWidget(fadeInTimeMs, fadeOutTimeMs, this.location.horizontalLocation);
-        widget.setMaxWidth(this.maxToastWidth);
+        widget.getPadding().setFrom(this.getPadding());
+        widget.setMaxWidth(this.getMaxWidth());
+        widget.setLineHeight(this.getLineHeight());
+        widget.setMessageGap(this.messageGap);
         widget.setZLevel(this.getZLevel() + 1f);
+        widget.getTextSettings().setFrom(this.getTextSettings());
+        // The text needs to be set after the max width and padding have been set
         widget.replaceText(toastText, lifeTimeMs);
 
         if (marker != null)
@@ -157,15 +219,13 @@ public class ToastRendererWidget extends InfoRendererWidget
             width = Math.max(width, widget.getWidth());
         }
 
-        width += this.getPadding().getHorizontalTotal();
-
         this.setWidth(width);
     }
 
     @Override
     public void updateHeight()
     {
-        this.setHeight(this.getTotalToastHeight() + this.getPadding().getVerticalTotal());
+        this.setHeight(this.getTotalToastHeight());
     }
 
     protected int getTotalToastHeight()
@@ -183,14 +243,14 @@ public class ToastRendererWidget extends InfoRendererWidget
     @Override
     public void updateSubWidgetPositions()
     {
-        int x;
-        int y = this.getY();
         int width = this.viewportWidthSupplier.getAsInt();
         HorizontalAlignment align = this.location.horizontalLocation;
+        int x;
+        int y = this.getY() + this.location.verticalLocation.getMargin(this.margin);
 
         for (ToastWidget widget : this.activeToasts)
         {
-            x = align.getStartX(widget.getWidth(), width, 0);
+            x = align.getStartX(widget.getWidth(), width, align.getMargin(this.margin));
             widget.setPosition(x, y);
             y += widget.getHeight();
         }
@@ -212,6 +272,14 @@ public class ToastRendererWidget extends InfoRendererWidget
 
             this.updateSizeAndPosition();
         }
+    }
+
+    @Override
+    public void openEditScreen()
+    {
+        ToastRendererWidgetEditScreen screen = new ToastRendererWidgetEditScreen(this);
+        screen.setParent(GuiUtils.getCurrentScreen());
+        BaseScreen.openScreen(screen);
     }
 
     @Override
@@ -268,10 +336,11 @@ public class ToastRendererWidget extends InfoRendererWidget
         JsonObject obj = super.toJson();
 
         obj.addProperty("max_toasts", this.maxToasts);
+        obj.addProperty("max_width", this.maxWidth);
+        obj.addProperty("message_gap", this.messageGap);
         obj.addProperty("toast_lifetime", this.defaultLifeTime);
-        obj.addProperty("toast_fade_in", this.fadeInTime);
-        obj.addProperty("toast_fade_out", this.fadeOutTime);
-        obj.addProperty("max_toast_width", this.maxToastWidth);
+        obj.addProperty("toast_fade_in", this.defaultFadeInTime);
+        obj.addProperty("toast_fade_out", this.defaultFadeOutTime);
 
         return obj;
     }
@@ -282,9 +351,10 @@ public class ToastRendererWidget extends InfoRendererWidget
         super.fromJson(obj);
 
         this.maxToasts = JsonUtils.getIntegerOrDefault(obj, "max_toasts", this.maxToasts);
+        this.messageGap = JsonUtils.getIntegerOrDefault(obj, "message_gap", this.messageGap);
+        this.setMaxWidth(JsonUtils.getIntegerOrDefault(obj, "max_width", this.maxWidth));
         this.defaultLifeTime = JsonUtils.getIntegerOrDefault(obj, "toast_lifetime", this.defaultLifeTime);
-        this.fadeInTime = JsonUtils.getIntegerOrDefault(obj, "toast_fade_in", this.fadeInTime);
-        this.fadeOutTime = JsonUtils.getIntegerOrDefault(obj, "toast_fade_out", this.fadeOutTime);
-        this.maxToastWidth = JsonUtils.getIntegerOrDefault(obj, "max_toast_width", this.maxToastWidth);
+        this.defaultFadeInTime = JsonUtils.getIntegerOrDefault(obj, "toast_fade_in", this.defaultFadeInTime);
+        this.defaultFadeOutTime = JsonUtils.getIntegerOrDefault(obj, "toast_fade_out", this.defaultFadeOutTime);
     }
 }

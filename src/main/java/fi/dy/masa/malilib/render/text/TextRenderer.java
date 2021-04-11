@@ -320,11 +320,22 @@ public class TextRenderer implements IResourceManagerReloadListener
 
     public void renderText(int x, int y, float z, int defaultColor, boolean shadow, StyledText text, int lineHeight)
     {
+        this.renderText(x, y, z, defaultColor, -1.0f, shadow, text, lineHeight);
+    }
+
+    /**
+     * @param overrideAlpha the alpha override value to use. Values of 0.0f - 1.0f are valid,
+     *                      any other values will use the alpha from the active color.
+     *                      So using for example -1.0f will not override the alpha from the color argument
+     *                      or the active style.
+     */
+    public void renderText(int x, int y, float z, int defaultColor, float overrideAlpha, boolean shadow, StyledText text, int lineHeight)
+    {
         this.startBuffers();
 
         for (StyledTextLine line : text.lines)
         {
-            this.renderLineToBuffer(x, y, z, defaultColor, shadow, line);
+            this.renderLineToBuffer(x, y, z, defaultColor, overrideAlpha, shadow, line);
             y += lineHeight;
         }
 

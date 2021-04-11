@@ -1,6 +1,5 @@
 package fi.dy.masa.malilib.overlay.message;
 
-import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.render.text.StyledText;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.render.text.TextRenderer;
@@ -13,7 +12,7 @@ public class Message
     public static final int WARNING = 0xFFFFAA00;
     public static final int ERROR = 0xFFFF5555;
 
-    protected final ImmutableList<StyledTextLine> messageLines;
+    protected final StyledText message;
     protected final int defaultTextColor;
     protected final int width;
     protected final long expireTime;
@@ -37,16 +36,8 @@ public class Message
         this.fadeDuration = Math.min((long) fadeTimeMs * 1000000L, (long) displayTimeMs * 1000000L / 2L);
         this.fadeTime = this.expireTime - this.fadeDuration;
 
-        this.messageLines = StyledTextUtils.wrapStyledTextToMaxWidth(StyledText.translatedOf(translationKey, args).lines, maxLineWidth);
-
-        int width = 0;
-
-        for (StyledTextLine line : this.messageLines)
-        {
-            width = Math.max(width, line.renderWidth);
-        }
-
-        this.width = width;
+        this.message = StyledTextUtils.wrapStyledTextToMaxWidth(StyledText.translatedOf(translationKey, args), maxLineWidth);
+        this.width = StyledTextLine.getRenderWidth(this.message.lines);
     }
 
     public boolean hasExpired(long currentTime)
@@ -66,34 +57,23 @@ public class Message
 
     public int getLineCount()
     {
-        return this.messageLines.size();
+        return this.message.lines.size();
     }
 
     /**
-     * Renders the lines for this message
-     * @return the y coordinate of the next message
+     * Renders the styled text for this message
      */
     public void renderAt(int x, int y, float z, int lineHeight, long currentTime)
     {
-        TextRenderer.INSTANCE.startBuffers();
+        float alpha = -1.0f;
 
-        for (StyledTextLine line : this.messageLines)
+        if (this.isFading(currentTime))
         {
-            if (this.isFading(currentTime))
-            {
-                int alphaInt = (this.defaultTextColor & 0xFF000000) >>> 24;
-                double fadeProgress = 1.0 - (double) (currentTime - this.fadeTime) / (double) this.fadeDuration;
-                float alpha = (float) alphaInt * (float) fadeProgress / 255.0f;
-                TextRenderer.INSTANCE.renderLineToBuffer(x, y, z, this.defaultTextColor, alpha, true, line);
-            }
-            else
-            {
-                TextRenderer.INSTANCE.renderLineToBuffer(x, y, z, this.defaultTextColor, true, line);
-            }
-
-            y += lineHeight;
+            int alphaInt = (this.defaultTextColor & 0xFF000000) >>> 24;
+            double fadeProgress = 1.0 - (double) (currentTime - this.fadeTime) / (double) this.fadeDuration;
+            alpha = (float) alphaInt * (float) fadeProgress / 255.0f;
         }
 
-        TextRenderer.INSTANCE.renderBuffers();
+        TextRenderer.INSTANCE.renderText(x, y, z, this.defaultTextColor, alpha, true, this.message, lineHeight);
     }
 }

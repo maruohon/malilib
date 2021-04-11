@@ -18,7 +18,6 @@ malilib.config.comment.messagefadetime=The fade time for message renderer messag
 malilib.config.comment.optionlistconfigdropdown=Use a DropDown widget instead of a cycle button for OptionList type configs
 malilib.config.comment.pressedkeystoast=Show the currently pressed/held keys as a toast message
 malilib.config.comment.rememberconfigtabscrollpositions=Remember the config screen scrollbar position for each tab
-malilib.config.comment.toastrendererlocation=The screen location for the default toast message renderer
 
 malilib.config.comment.guidebug=When enabled, all GUI widgets will draw their outlines, and when hovered, also their position and dimension info and the widget class name. If a key is set for Debug -> 'GUI Debug Key', then that key must be held for any of the debug rendering to happen.
 malilib.config.comment.guidebugall=If true, then all widgets will render the debug outline, otherwise only the hovered widget will render it
@@ -55,7 +54,6 @@ malilib.config.name.messagefadetime=Message Fade Time
 malilib.config.name.optionlistconfigdropdown=Option List Config DropDown
 malilib.config.name.pressedkeystoast=Pressed Keys Toast
 malilib.config.name.rememberconfigtabscrollpositions=Remember Config Screen Scroll Positions
-malilib.config.name.toastrendererlocation=Toast Renderer Location
 
 malilib.config.name.guidebug=GUI Debug
 malilib.config.name.guidebugall=GUI Debug All
@@ -128,6 +126,7 @@ malilib.gui.button.hover.keybind.possible_overlaps=Possible overlaps [<i>most ar
 malilib.gui.button.hover.render_layers_gui.follow_player=If enabled, then the render layer follows the player
 malilib.gui.button.hover.text_field_slider_toggle=Toggle between a text field and a slider
 malilib.gui.button.hover.text_field_slider_toggle.not_allowed=§6Using a slider is currently disabled for this config
+malilib.gui.button.hover.toast_renderer_configuration=Edit Toast Renderer settings
 
 malilib.gui.button.hover.list.add_after=Add an entry after
 malilib.gui.button.hover.list.add_first=Add an entry
@@ -177,6 +176,8 @@ malilib.gui.label.confirm_config_reset=Are you sure you wan to reset all the con
 malilib.gui.label_error.no_widget_factory_for_config_type=§cUnknown config type '%s' (no widget factory registered)§r
 
 malilib.gui.label.hover.config_search_default_scope=You can change the default scope value that this drop down widget is set to in malilib's configs: Generic > Config Search Default Scope
+malilib.gui.label.hover.screen_location=Screen Location: §b%s
+malilib.gui.label.hover.toast_renderer_entry_name=%s (§b%s§r)
 
 malilib.gui.label.keybind_display.actions=Actions
 malilib.gui.label.keybind_display.keys=Keys
@@ -233,6 +234,7 @@ malilib.gui.title.keybind_settings.advanced=Advanced Keybind Settings for '%s'
 malilib.gui.title.status_effect_list_edit=Edit status effect list '%s'
 malilib.gui.title.string_list_edit=Edit string list '%s'
 malilib.gui.title.string_list_renderer_configuration=String List Renderer Configuration
+malilib.gui.title.toast_renderer_configuration=Toast Renderer Configuration
 
 malilib.button.hover.plus_minus_tip=- Left click to increase\n- Right click to decrease\n- Or scroll with the mouse over the button\n- Shift and/or Alt to increase the step size
 
@@ -266,6 +268,10 @@ malilib.label.config_tab.config_status_indicator.abbr=C.S.I.
 malilib.label.config_tab.debug=Debug
 malilib.label.config_tab.generic=Generic
 malilib.label.config_tab.info=Info
+malilib.label.config_tab.toast_renderer.abbr=Toast
+malilib.label.default_duration.colon=Default duration (ms):
+malilib.label.default_fade_in_time.colon=Default fade-in time (ms):
+malilib.label.default_fade_out_time.colon=Default fade-out time (ms):
 malilib.label.false=false
 malilib.label.horizontal_alignment.center=Center
 malilib.label.horizontal_alignment.left=Left
@@ -288,6 +294,8 @@ malilib.label.list_type.blacklist=Black List
 malilib.label.list_type.none=None
 malilib.label.list_type.whitelist=White List
 malilib.label.margin=Margin
+malilib.label.max_width.colon=Max width:
+malilib.label.message_gap.colon=Message gap:
 malilib.label.name.colon=Name:
 malilib.label.name_color.colon=Name color:
 malilib.label.none.brackets=<none>
@@ -312,6 +320,7 @@ malilib.label.vertical_alignment.top=Top
 malilib.label.when_on=When On
 malilib.label.when_off=When Off
 malilib.label.yes=yes
+malilib.label.z_level.colon=Z-level:
 
 malilib.label.colored.false=§cfalse§r
 malilib.label.colored.true=§atrue§r
@@ -359,4 +368,4 @@ malilib.message.value.off=OFF
 malilib.message.value.on=ON
 
 malilib.toast.keybind_display.keys=§eKeys:§r §6%s§r
-malilib.toast.keybind_display.action=Action: §b%s => %s§r
+malilib.toast.keybind_display.action=§fAction: §b%s => %s

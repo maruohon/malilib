@@ -26,7 +26,7 @@ public class StringListRendererWidgetEditScreen extends BaseScreen
     protected final LabelWidget backgroundLabelWidget;
     protected final LabelWidget oddBackgroundLabelWidget;
     protected final LabelWidget evenWidthBackgroundLabelWidget;
-    protected final LabelWidget priorityLabelWidget;
+    protected final LabelWidget sortIndexLabelWidget;
     protected final LabelWidget lineHeightLabelWidget;
     protected final LabelWidget textScaleLabelWidget;
     protected final LabelWidget textShadowLabelWidget;
@@ -41,7 +41,7 @@ public class StringListRendererWidgetEditScreen extends BaseScreen
     protected final ColorIndicatorWidget textColorWidget;
     protected final ColorIndicatorWidget backgroundColorWidget;
     protected final ColorIndicatorWidget oddBackgroundColorWidget;
-    protected final IntegerEditWidget priorityEditWidget;
+    protected final IntegerEditWidget sortIndexEditWidget;
     protected final IntegerEditWidget lineHeightEditWidget;
     protected final DoubleEditWidget textScaleEditWidget;
     protected final BaseTextFieldWidget nameTextField;
@@ -58,7 +58,7 @@ public class StringListRendererWidgetEditScreen extends BaseScreen
         this.locationDropdownWidget.setSelectionListener(this::changeWidgetLocation);
 
         this.nameLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.name.colon");
-        this.priorityLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.sort_index.colon");
+        this.sortIndexLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.sort_index.colon");
         this.lineHeightLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.line_height.colon");
         this.textColorLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.text_color.colon");
         this.textScaleLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.text_scale.colon");
@@ -71,7 +71,7 @@ public class StringListRendererWidgetEditScreen extends BaseScreen
         this.nameTextField = new BaseTextFieldWidget(0, 0, 160, 16, widget.getName());
         this.nameTextField.setListener(widget::setName);
 
-        this.priorityEditWidget = new IntegerEditWidget(0, 0, 72, 16, widget.getSortIndex(), -1000, 1000, widget::setSortIndex);
+        this.sortIndexEditWidget = new IntegerEditWidget(0, 0, 72, 16, widget.getSortIndex(), -1000, 1000, widget::setSortIndex);
         this.lineHeightEditWidget = new IntegerEditWidget(0, 0, 72, 16, widget.getLineHeight(), 6, 40, widget::setLineHeight);
         this.textScaleEditWidget = new DoubleEditWidget(0, 0, 72, 16, widget.getScale(), 0.25, 20, widget::setScale);
 
@@ -124,19 +124,19 @@ public class StringListRendererWidgetEditScreen extends BaseScreen
         y += 20;
         this.textScaleLabelWidget.setPosition(x, y + 4);
         this.lineHeightLabelWidget.setPosition(x, y + 24);
-        this.priorityLabelWidget.setPosition(x, y + 44);
+        this.sortIndexLabelWidget.setPosition(x, y + 44);
         this.textShadowLabelWidget.setPosition(x, y + 64);
 
         tmpX = Math.max(this.textScaleLabelWidget.getRight(), this.lineHeightLabelWidget.getRight());
-        tmpX = Math.max(tmpX, this.priorityLabelWidget.getRight()) + 6;
+        tmpX = Math.max(tmpX, this.sortIndexLabelWidget.getRight()) + 6;
         this.textScaleEditWidget.setPosition(tmpX, y);
         this.lineHeightEditWidget.setPosition(tmpX, y + 20);
-        this.priorityEditWidget.setPosition(tmpX, y + 40);
+        this.sortIndexEditWidget.setPosition(tmpX, y + 40);
 
         tmpX = this.textShadowLabelWidget.getRight() + 6;
         this.textShadowToggleButton.setPosition(tmpX, y + 60);
 
-        tmpX = this.priorityEditWidget.getRight() + 6;
+        tmpX = this.sortIndexEditWidget.getRight() + 6;
         this.textColorLabelWidget.setPosition(tmpX, y + 4);
         this.backgroundLabelWidget.setPosition(tmpX, y + 24);
         this.oddBackgroundLabelWidget.setPosition(tmpX, y + 44);
@@ -172,8 +172,8 @@ public class StringListRendererWidgetEditScreen extends BaseScreen
         this.addWidget(this.lineHeightLabelWidget);
         this.addWidget(this.lineHeightEditWidget);
 
-        this.addWidget(this.priorityLabelWidget);
-        this.addWidget(this.priorityEditWidget);
+        this.addWidget(this.sortIndexLabelWidget);
+        this.addWidget(this.sortIndexEditWidget);
 
         this.addWidget(this.textShadowLabelWidget);
         this.addWidget(this.textShadowToggleButton);

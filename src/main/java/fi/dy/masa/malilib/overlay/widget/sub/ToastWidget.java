@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.overlay.widget.sub;
 
-import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
@@ -9,12 +10,12 @@ import fi.dy.masa.malilib.overlay.widget.InfoRendererWidget;
 import fi.dy.masa.malilib.render.text.StyledText;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.render.text.TextRenderer;
-import fi.dy.masa.malilib.util.ListUtils;
 import fi.dy.masa.malilib.util.StyledTextUtils;
 
 public class ToastWidget extends InfoRendererWidget
 {
     protected final HorizontalAlignment horizontalAlignment;
+    protected final List<StyledText> text = new ArrayList<>();
     protected final long fadeInDuration;
     protected final long fadeOutDuration;
     protected Icon backgroundTexture = DefaultIcons.TOAST_BACKGROUND;
@@ -22,19 +23,23 @@ public class ToastWidget extends InfoRendererWidget
     protected long fadeInEndTime;
     protected long fadeOutStartTime;
     protected long expireTime;
-    @Nullable protected StyledText text;
+    protected int messageGap;
 
     public ToastWidget(int fadeInTimeMs, int fadeOutTimeMs, HorizontalAlignment horizontalAlignment)
     {
         this.horizontalAlignment = horizontalAlignment;
         this.fadeInDuration = (long) fadeInTimeMs * 1000000L;
         this.fadeOutDuration = (long) fadeOutTimeMs * 1000000L;
-        this.padding.setAll(6, 10, 6, 10);
     }
 
     public void initialize(long currentTime)
     {
         this.fadeInEndTime = currentTime + this.fadeInDuration;
+    }
+
+    public void setMessageGap(int messageGap)
+    {
+        this.messageGap = messageGap;
     }
 
     public boolean hasExpired(long currentTime)
@@ -66,8 +71,9 @@ public class ToastWidget extends InfoRendererWidget
      */
     public void addText(StyledText text, int lifeTimeMs)
     {
-        text = this.text == null ? text : new StyledText(ListUtils.getAppendedList(this.text.lines, text.lines));
-        this.replaceText(text, lifeTimeMs);
+        this.text.add(this.wrapTextToWidth(text));
+        this.updateSize();
+        this.setLifeTime(lifeTimeMs);
     }
 
     /**
@@ -77,9 +83,8 @@ public class ToastWidget extends InfoRendererWidget
      */
     public void replaceText(StyledText text, int lifeTimeMs)
     {
-        this.wrapAndSetText(text);
-        this.updateSize();
-        this.setLifeTime(lifeTimeMs);
+        this.text.clear();
+        this.addText(text, lifeTimeMs);
     }
 
     public void setBackgroundTexture(MultiIcon backgroundTexture)
@@ -87,19 +92,26 @@ public class ToastWidget extends InfoRendererWidget
         this.backgroundTexture = backgroundTexture;
     }
 
-    protected void wrapAndSetText(StyledText text)
+    protected StyledText wrapTextToWidth(StyledText text)
     {
-        this.text = StyledText.ofLines(StyledTextUtils.wrapStyledTextToMaxWidth(text.lines, this.maxWidth));
+        return StyledTextUtils.wrapStyledTextToMaxWidth(text, this.maxWidth);
     }
 
     @Override
     public void updateSize()
     {
-        if (this.text != null)
+        int messageCount = this.text.size();
+        int width = 0;
+        int height = messageCount > 1 ? (messageCount - 1) * this.messageGap : 0;
+
+        for (StyledText text : this.text)
         {
-            this.setWidth(StyledTextLine.getRenderWidth(this.text.lines) + this.padding.getHorizontalTotal());
-            this.setHeight((this.text.lines.size() * this.lineHeight) + this.padding.getVerticalTotal());
+            width = Math.max(width, StyledTextLine.getRenderWidth(text.lines));
+            height += text.lines.size() * this.lineHeight;
         }
+
+        this.setWidth(width + this.padding.getHorizontalTotal());
+        this.setHeight(height + this.padding.getVerticalTotal());
     }
 
     protected void setLifeTime(int lifeTimeMs)
@@ -157,12 +169,18 @@ public class ToastWidget extends InfoRendererWidget
     @Override
     protected void renderContents(int x, int y, float z)
     {
-        if (this.text != null)
+        if (this.text.isEmpty() == false)
         {
             x += this.padding.getLeft();
             y += this.padding.getTop();
 
-            TextRenderer.INSTANCE.renderText(x, y, z, 0xFFFFFFFF, true, this.text, this.lineHeight);
+            int color = this.textSettings.getTextColor();
+
+            for (StyledText text : this.text)
+            {
+                TextRenderer.INSTANCE.renderText(x, y, z, color, true, text, this.lineHeight);
+                y += text.lines.size() * this.lineHeight + this.messageGap;
+            }
         }
     }
 }

@@ -3,7 +3,10 @@ package fi.dy.masa.malilib.overlay.widget;
 import java.util.List;
 import java.util.function.Supplier;
 import com.google.gson.JsonObject;
+import fi.dy.masa.malilib.gui.BaseScreen;
+import fi.dy.masa.malilib.gui.StringListRendererWidgetEditScreen;
 import fi.dy.masa.malilib.gui.position.ScreenLocation;
+import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.render.text.OrderedStringListFactory;
 import fi.dy.masa.malilib.render.text.StringListRenderer;
@@ -87,6 +90,14 @@ public class StringListRendererWidget extends InfoRendererWidget
         super.setLineHeight(lineHeight);
 
         this.stringListRenderer.setLineHeight(lineHeight);
+    }
+
+    @Override
+    public void openEditScreen()
+    {
+        StringListRendererWidgetEditScreen screen = new StringListRendererWidgetEditScreen(this);
+        screen.setParent(GuiUtils.getCurrentScreen());
+        BaseScreen.openScreen(screen);
     }
 
     /**

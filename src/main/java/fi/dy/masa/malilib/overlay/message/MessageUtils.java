@@ -11,7 +11,6 @@ import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.config.value.InfoType;
 import fi.dy.masa.malilib.gui.position.ScreenLocation;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
-import fi.dy.masa.malilib.overlay.InfoArea;
 import fi.dy.masa.malilib.overlay.InfoOverlay;
 import fi.dy.masa.malilib.overlay.InfoWidgetManager;
 import fi.dy.masa.malilib.overlay.widget.MessageRendererWidget;
@@ -84,37 +83,35 @@ public class MessageUtils
         addMessage(ScreenLocation.CENTER, color, displayTimeMs, fadeTimeMs, translationKey, args);
     }
 
-    public static void addMessage(ScreenLocation location, int color, int displayTimeMs, int fadeTimeMs, String translationKey, Object... args)
+    public static void addMessage(@Nullable ScreenLocation location, int color, int displayTimeMs, int fadeTimeMs, String translationKey, Object... args)
     {
         getMessageRendererWidget(location, null).addMessage(color, displayTimeMs, fadeTimeMs, translationKey, args);
     }
 
     public static void addToastMessage(StyledText text, @Nullable final String marker, boolean append)
     {
-        ScreenLocation location = MaLiLibConfigs.Generic.TOAST_RENDERER_LOCATION.getValue();
-        addToastMessage(text, marker, append, location);
+        addToastMessage(text, marker, append, null);
     }
 
     public static void addToastMessage(StyledText text, int lifeTimeMs, @Nullable final String marker, boolean append)
     {
-        ScreenLocation location = MaLiLibConfigs.Generic.TOAST_RENDERER_LOCATION.getValue();
-        addToastMessage(text, lifeTimeMs, marker, append, location);
+        addToastMessage(text, lifeTimeMs, marker, append, null);
     }
 
-    public static void addToastMessage(StyledText text, @Nullable final String marker, boolean append, ScreenLocation location)
+    public static void addToastMessage(StyledText text, @Nullable final String marker, boolean append, @Nullable ScreenLocation location)
     {
         addToastMessage(text, 5000, marker, append, location);
     }
 
-    public static void addToastMessage(StyledText text, int lifeTimeMs, @Nullable final String marker, boolean append, ScreenLocation location)
+    public static void addToastMessage(StyledText text, int lifeTimeMs, @Nullable final String marker, boolean append, final @Nullable ScreenLocation location)
     {
-        InfoArea area = InfoOverlay.INSTANCE.getOrCreateInfoArea(location);
-        ToastRendererWidget widget = area.findWidget(ToastRendererWidget.class, w -> true);
+        Predicate<ToastRendererWidget> predicateLocation = location != null ? w -> w.getScreenLocation() == location : w -> true;
+        ToastRendererWidget widget = InfoOverlay.INSTANCE.findWidget(ToastRendererWidget.class, predicateLocation);
 
         if (widget == null)
         {
             widget = new ToastRendererWidget();
-            widget.setLocation(location);
+            widget.setLocation(location != null ? location : ScreenLocation.TOP_RIGHT);
             widget.setZLevel(310f);
             InfoWidgetManager.INSTANCE.addWidget(widget);
         }
@@ -122,16 +119,16 @@ public class MessageUtils
         widget.addToast(text, lifeTimeMs, marker, append);
     }
 
-    public static MessageRendererWidget getMessageRendererWidget(ScreenLocation location, @Nullable final String marker)
+    public static MessageRendererWidget getMessageRendererWidget(final @Nullable ScreenLocation location, @Nullable final String marker)
     {
-        InfoArea area = InfoOverlay.INSTANCE.getOrCreateInfoArea(location);
-        Predicate<MessageRendererWidget> predicate = marker != null ? w -> w.hasMarker(marker) : w -> true;
-        MessageRendererWidget widget = area.findWidget(MessageRendererWidget.class, predicate);
+        Predicate<MessageRendererWidget> predicateLocation = location != null ? w -> w.getScreenLocation() == location : w -> true;
+        Predicate<MessageRendererWidget> predicateMarker = marker != null ? w -> w.hasMarker(marker) : w -> true;
+        MessageRendererWidget widget = InfoOverlay.INSTANCE.findWidget(MessageRendererWidget.class, predicateLocation.and(predicateMarker));
 
         if (widget == null)
         {
             widget = new MessageRendererWidget();
-            widget.setLocation(location);
+            widget.setLocation(location != null ? location : ScreenLocation.CENTER);
             widget.setZLevel(300f);
             widget.setWidth(300);
             widget.setRenderAboveScreen(true);
@@ -149,15 +146,13 @@ public class MessageUtils
 
     public static MessageRendererWidget getCustomActionBarMessageRenderer()
     {
-        String marker = CUSTOM_ACTION_BAR_MARKER;
-        InfoArea area = InfoOverlay.INSTANCE.getOrCreateInfoArea(ScreenLocation.BOTTOM_CENTER);
-        MessageRendererWidget widget = area.findWidget(MessageRendererWidget.class, w -> w.hasMarker(marker));
+        MessageRendererWidget widget = InfoOverlay.INSTANCE.findWidget(MessageRendererWidget.class, w -> w.hasMarker(CUSTOM_ACTION_BAR_MARKER));
 
         if (widget == null)
         {
             widget = new MessageRendererWidget();
             widget.setLocation(ScreenLocation.BOTTOM_CENTER);
-            widget.addMarker(marker);
+            widget.addMarker(CUSTOM_ACTION_BAR_MARKER);
             widget.setRenderBackground(false);
             widget.getMargin().setBottom(50);
             widget.setZLevel(300f);

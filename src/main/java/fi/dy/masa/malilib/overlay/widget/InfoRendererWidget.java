@@ -285,6 +285,10 @@ public abstract class InfoRendererWidget extends BaseWidget
         this.styledName = StyledTextLine.of(name);
     }
 
+    public void openEditScreen()
+    {
+    }
+
     /**
      * Updates this widget's position, if this is an "overlay widget"
      * that is not positioned automatically by the InfoArea.
@@ -295,10 +299,12 @@ public abstract class InfoRendererWidget extends BaseWidget
         {
             int viewportWidth = this.viewportWidthSupplier.getAsInt();
             int viewportHeight = this.viewportHeightSupplier.getAsInt();
-            int width = (int) Math.ceil(this.getWidth() * this.getScale()) + this.margin.getHorizontalTotal();
-            int height = (int) Math.ceil(this.getHeight() * this.getScale()) + this.margin.getVerticalTotal();
-            int x = this.location.getStartX(width, viewportWidth, 0) + this.margin.getLeft();
-            int y = this.location.getStartY(height, viewportHeight, 0) + this.margin.getTop();
+            int width = (int) Math.ceil(this.getWidth() * this.getScale());
+            int height = (int) Math.ceil(this.getHeight() * this.getScale());
+            int marginX = this.location.horizontalLocation.getMargin(this.getMargin());
+            int marginY = this.location.verticalLocation.getMargin(this.getMargin());
+            int x = this.location.getStartX(width, viewportWidth, marginX);
+            int y = this.location.getStartY(height, viewportHeight, marginY);
 
             this.setPosition(x, y);
         }
@@ -536,9 +542,19 @@ public abstract class InfoRendererWidget extends BaseWidget
         obj.addProperty("bg_enabled", this.renderBackground);
         obj.addProperty("bg_color", this.backgroundColor);
         obj.addProperty("border_color", this.borderColor);
-        obj.add("padding", this.padding.toJson());
-        obj.add("margin", this.margin.toJson());
+        obj.addProperty("z", this.getZLevel());
+
         obj.add("text_settings", this.getTextSettings().toJson());
+
+        if (this.margin.isEmpty() == false)
+        {
+            obj.add("margin", this.margin.toJson());
+        }
+
+        if (this.padding.isEmpty() == false)
+        {
+            obj.add("padding", this.padding.toJson());
+        }
 
         if (this.markers.isEmpty() == false)
         {
@@ -565,6 +581,7 @@ public abstract class InfoRendererWidget extends BaseWidget
         this.renderBackground = JsonUtils.getBooleanOrDefault(obj, "bg_enabled", this.renderBackground);
         this.backgroundColor = JsonUtils.getIntegerOrDefault(obj, "bg_color", this.backgroundColor);
         this.borderColor = JsonUtils.getIntegerOrDefault(obj, "border_color", this.borderColor);
+        this.setZLevel(JsonUtils.getFloatOrDefault(obj, "z", this.getZLevel()));
 
         if (JsonUtils.hasString(obj, "screen_location"))
         {

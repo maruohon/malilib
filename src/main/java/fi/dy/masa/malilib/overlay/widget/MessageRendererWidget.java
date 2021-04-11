@@ -19,7 +19,9 @@ public class MessageRendererWidget extends InfoRendererWidget
         super();
 
         this.isOverlay = true;
+        this.shouldSerialize = true;
         this.renderBackground = true;
+
         this.padding.setAll(4, 6, 4, 6);
         this.setLineHeight(10);
         this.setMaxWidth(320);
@@ -188,10 +190,21 @@ public class MessageRendererWidget extends InfoRendererWidget
         JsonObject obj = super.toJson();
         obj.addProperty("msg_gap", this.messageGap);
         obj.addProperty("max_messages", this.maxMessages);
+        obj.addProperty("width", this.getWidth());
 
         if (this.hasMaxWidth)
         {
             obj.addProperty("max_width", this.maxWidth);
+        }
+
+        if (this.automaticWidth)
+        {
+            obj.addProperty("width_auto", true);
+        }
+
+        if (this.renderAboveScreen)
+        {
+            obj.addProperty("above_screen", true);
         }
 
         return obj;
@@ -204,6 +217,9 @@ public class MessageRendererWidget extends InfoRendererWidget
 
         this.messageGap = JsonUtils.getIntegerOrDefault(obj, "msg_gap", this.messageGap);
         this.maxMessages = JsonUtils.getIntegerOrDefault(obj, "max_messages", this.maxMessages);
+        this.renderAboveScreen = JsonUtils.getBooleanOrDefault(obj, "above_screen", this.renderAboveScreen);
+        this.automaticWidth = JsonUtils.getBooleanOrDefault(obj, "width_auto", this.automaticWidth);
+        this.setWidth(JsonUtils.getIntegerOrDefault(obj, "width", this.getWidth()));
 
         if (JsonUtils.hasInteger(obj, "max_width"))
         {

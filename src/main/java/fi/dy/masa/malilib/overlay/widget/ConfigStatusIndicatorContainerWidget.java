@@ -14,9 +14,12 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.config.util.ConfigUtils;
-import fi.dy.masa.malilib.gui.config.indicator.ConfigStatusWidgetFactory;
+import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.config.ConfigTabRegistry;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetRegistry;
+import fi.dy.masa.malilib.gui.config.indicator.ConfigStatusIndicatorGroupEditScreen;
+import fi.dy.masa.malilib.gui.config.indicator.ConfigStatusWidgetFactory;
+import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.overlay.widget.sub.BaseConfigStatusIndicatorWidget;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
@@ -79,6 +82,14 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
     {
         // return a separate, modifiable list
         return new ArrayList<>(this.allWidgets);
+    }
+
+    @Override
+    public void openEditScreen()
+    {
+        ConfigStatusIndicatorGroupEditScreen screen = new ConfigStatusIndicatorGroupEditScreen(this);
+        screen.setParent(GuiUtils.getCurrentScreen());
+        BaseScreen.openScreen(screen);
     }
 
     public void setStatusIndicatorWidgets(List<BaseConfigStatusIndicatorWidget<?>> widgets)

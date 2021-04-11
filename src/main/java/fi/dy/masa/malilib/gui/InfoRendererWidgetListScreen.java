@@ -22,6 +22,7 @@ public class InfoRendererWidgetListScreen<WIDGET extends InfoRendererWidget> ext
     protected final Supplier<WIDGET> widgetFactory;
     protected final DropDownListWidget<ScreenLocation> locationDropdownWidget;
     protected final GenericButton createWidgetButton;
+    protected boolean canCreateNewWidgets;
 
     public InfoRendererWidgetListScreen(Supplier<List<WIDGET>> widgetSupplier,
                                         Supplier<WIDGET> widgetFactory,
@@ -54,10 +55,18 @@ public class InfoRendererWidgetListScreen<WIDGET extends InfoRendererWidget> ext
     @Override
     protected void initScreen()
     {
-        super.initScreen();
-
-        this.addWidget(this.locationDropdownWidget);
-        this.addWidget(this.createWidgetButton);
+        if (this.canCreateNewWidgets)
+        {
+            super.initScreen();
+            this.addWidget(this.locationDropdownWidget);
+            this.addWidget(this.createWidgetButton);
+        }
+        else
+        {
+            this.totalListMarginY = 56;
+            this.updateListPosition(10, 52);
+            super.initScreen();
+        }
     }
 
     @Override

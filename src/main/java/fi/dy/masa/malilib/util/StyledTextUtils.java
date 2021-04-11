@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.render.text.Glyph;
+import fi.dy.masa.malilib.render.text.StyledText;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.render.text.StyledTextSegment;
 import fi.dy.masa.malilib.util.data.LeftRight;
@@ -20,6 +21,20 @@ public class StyledTextUtils
         }
 
         return width;
+    }
+
+    /**
+     * Wraps the given StyledText to the given maximum render width.
+     * The lines are primarily attempted to be split from spaces, but if there are long
+     * lines without any spaces, then they are just hard cut to the maximum width.
+     * Any over long lines are split and added to the list, so no characters will be hidden.
+     * @param text
+     * @param maxRenderWidth
+     * @return the new StyledText that fit within the given maximum width
+     */
+    public static StyledText wrapStyledTextToMaxWidth(StyledText text, int maxRenderWidth)
+    {
+        return StyledText.ofLines(wrapStyledTextToMaxWidth(text.lines, maxRenderWidth));
     }
 
     /**

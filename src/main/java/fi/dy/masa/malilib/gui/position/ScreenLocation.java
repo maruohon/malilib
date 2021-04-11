@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.gui.position;
 
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.config.value.BaseOptionListConfigValue;
+import fi.dy.masa.malilib.gui.widget.BaseWidget;
 
 public class ScreenLocation extends BaseOptionListConfigValue implements HorizontalAlignment.StartXPositionSource, VerticalAlignment.StartYPositionSource
 {
@@ -35,10 +36,20 @@ public class ScreenLocation extends BaseOptionListConfigValue implements Horizon
         return this.horizontalLocation.getStartX(contentWidth, viewportWidth, offset);
     }
 
+    public int getStartX(BaseWidget widget, int viewportWidth)
+    {
+        return this.horizontalLocation.getStartX(widget, viewportWidth);
+    }
+
     @Override
     public int getStartY(int contentHeight, int viewportHeight, int offset)
     {
         return this.verticalLocation.getStartY(contentHeight, viewportHeight, offset);
+    }
+
+    public int getStartY(BaseWidget widget, int viewportHeight)
+    {
+        return this.verticalLocation.getStartY(widget, viewportHeight);
     }
 
     @Override
