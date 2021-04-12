@@ -11,16 +11,18 @@ public abstract class BaseModConfig implements ModConfig
     protected final ModInfo modInfo;
     protected final String configFileName;
     protected final List<ConfigOptionCategory> configOptionCategories;
-    protected final int configVersion;
+    protected final int currentConfigVersion;
+    protected String backupDirectoryName = "config_backups";
     protected int backupCount = MaLiLibConfigs.Generic.CONFIG_BACKUP_COUNT.getIntegerValue();
+    protected int savedConfigVersion;
 
-    public BaseModConfig(ModInfo modInfo, String configFileName, int configVersion,
+    public BaseModConfig(ModInfo modInfo, String configFileName, int currentConfigVersion,
                          List<ConfigOptionCategory> configOptionCategories)
     {
         this.modInfo = modInfo;
         this.configFileName = configFileName;
         this.configOptionCategories = configOptionCategories;
-        this.configVersion = configVersion;
+        this.currentConfigVersion = currentConfigVersion;
     }
 
     @Override
@@ -44,12 +46,12 @@ public abstract class BaseModConfig implements ModConfig
     @Override
     public int getConfigVersion()
     {
-        return this.configVersion;
+        return this.currentConfigVersion;
     }
 
     protected File getConfigBackupDirectory(File configDirectory)
     {
-        return new File(configDirectory, "config_backups");
+        return new File(configDirectory, this.backupDirectoryName);
     }
 
     /**

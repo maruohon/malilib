@@ -24,7 +24,7 @@ public class MaLiLibConfigs
         public static final OptionListConfig<KeybindDisplayMode> KEYBIND_DISPLAY        = new OptionListConfig<>("keybindDisplay", KeybindDisplayMode.NONE, KeybindDisplayMode.VALUES);
 
         public static final IntegerConfig ACTION_BAR_MESSAGE_LIMIT              = new IntegerConfig("actionBarMessageLimit", 3, 1, 16);
-        public static final IntegerConfig CONFIG_BACKUP_COUNT                   = new IntegerConfig("configBackupCount", 5, 0, 200);
+        public static final IntegerConfig CONFIG_BACKUP_COUNT                   = new IntegerConfig("configBackupCount", 20, 0, 200);
         public static final BooleanConfig CONFIG_WIDGET_BACKGROUND              = new BooleanConfig("configWidgetBackground", true);
         public static final IntegerConfig CUSTOM_SCREEN_SCALE                   = new IntegerConfig("customScreenScale", 2, 0, 8);
         public static final StringConfig DATA_DUMP_CSV_DELIMITER                = new StringConfig("dataDumpCsvDelimiter", ",");

@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.config.util;
 
 import java.io.File;
 import java.util.List;
+import java.util.function.BiConsumer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
@@ -15,18 +16,20 @@ import fi.dy.masa.malilib.util.JsonUtils;
 
 public class JsonConfigUtils
 {
-    public static void loadFromFile(File configFile, List<ConfigOptionCategory> categories)
+    public static void loadFromFile(File configFile, List<ConfigOptionCategory> categories,
+                                    BiConsumer<Integer, JsonObject> configVersionUpgrader)
     {
         JsonElement element = JsonUtils.parseJsonFile(configFile);
 
         if (element != null && element.isJsonObject())
         {
             JsonObject root = element.getAsJsonObject();
-            int configVersion = JsonUtils.getIntegerOrDefault(root, "config_version", -1);
+            int configVersion = JsonUtils.getIntegerOrDefault(root, "config_version", 0);
+            configVersionUpgrader.accept(configVersion, root);
 
             for (ConfigOptionCategory category : categories)
             {
-                readConfigs(root, category, configVersion);
+                readConfigs(root, category);
             }
         }
         else
@@ -41,7 +44,7 @@ public class JsonConfigUtils
         }
     }
 
-    public static void readConfigs(JsonObject root, ConfigOptionCategory category, int configVersion)
+    public static void readConfigs(JsonObject root, ConfigOptionCategory category)
     {
         String categoryName = category.getName();
         List<? extends ConfigOption<?>> options = category.getConfigOptions();

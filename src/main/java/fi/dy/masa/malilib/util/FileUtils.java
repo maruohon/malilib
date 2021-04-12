@@ -4,9 +4,11 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import javax.annotation.Nullable;
@@ -289,21 +291,55 @@ public class FileUtils
             }
         }
 
-        if (fileIn.exists())
+        return copyFile(fileIn, backupFile);
+    }
+
+    public static boolean createBackupFileForVersion(File fileIn, File backupDirectory, int configVersion)
+    {
+        if (backupDirectory.isDirectory() == false && backupDirectory.mkdirs() == false)
         {
+            MaLiLib.LOGGER.error("Failed to create the config backup directory '{}'", backupDirectory.getAbsolutePath());
+            return false;
+        }
+
+        String fullName = fileIn.getName();
+        String name = getNameWithoutExtension(fullName);
+        String dateStr = getDateTimeString();
+        String extension = getFileNameExtension(fullName);
+        String backupFileName = name + "_v" + configVersion + "_" + dateStr + "." + extension;
+
+        return copyFile(fileIn, new File(backupDirectory, backupFileName));
+    }
+
+    public static boolean copyFile(File sourceFile, File destinationFile)
+    {
+        if (sourceFile.exists())
+        {
+            if (destinationFile.exists())
+            {
+                MaLiLib.LOGGER.error("Won't copy file '{}' to '{}', the destination file already exists",
+                                     sourceFile.getAbsolutePath(), destinationFile.getAbsolutePath());
+                return false;
+            }
+
             try
             {
-                org.apache.commons.io.FileUtils.copyFile(fileIn, backupFile);
+                org.apache.commons.io.FileUtils.copyFile(sourceFile, destinationFile);
             }
             catch (Exception e)
             {
                 MaLiLib.LOGGER.error("Failed to copy file '{}' to '{}'",
-                                     fileIn.getAbsolutePath(), backupFile.getAbsolutePath(), e);
+                                     sourceFile.getAbsolutePath(), destinationFile.getAbsolutePath(), e);
                 return false;
             }
         }
 
         return true;
+    }
+
+    public static String getDateTimeString()
+    {
+        return new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date(System.currentTimeMillis()));
     }
 
     public static class FileRenamer implements StringConsumer
