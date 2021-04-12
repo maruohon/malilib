@@ -177,6 +177,10 @@ public class MessageUtils
             {
                 printCustomActionbarMessage(color, displayTimeMs, 500, translationKey, args);
             }
+            else if (outputType == InfoType.TOAST)
+            {
+                addToastMessage(StyledText.translatedOf(translationKey, args), null, false, null);
+            }
             else if (outputType == InfoType.VANILLA_HOTBAR)
             {
                 printVanillaActionbarMessage(translationKey, args);

@@ -18,6 +18,7 @@ malilib.config.comment.messagefadetime=The fade time for message renderer messag
 malilib.config.comment.optionlistconfigdropdown=Use a DropDown widget instead of a cycle button for OptionList type configs
 malilib.config.comment.pressedkeystoast=Show the currently pressed/held keys as a toast message
 malilib.config.comment.rememberconfigtabscrollpositions=Remember the config screen scrollbar position for each tab
+malilib.config.comment.servermessages=Allows a server-side mod to send messages via the malilib Message/Toast Renderers
 
 malilib.config.comment.guidebug=When enabled, all GUI widgets will draw their outlines, and when hovered, also their position and dimension info and the widget class name. If a key is set for Debug -> 'GUI Debug Key', then that key must be held for any of the debug rendering to happen.
 malilib.config.comment.guidebugall=If true, then all widgets will render the debug outline, otherwise only the hovered widget will render it
@@ -54,6 +55,7 @@ malilib.config.name.messagefadetime=Message Fade Time
 malilib.config.name.optionlistconfigdropdown=Option List Config DropDown
 malilib.config.name.pressedkeystoast=Pressed Keys Toast
 malilib.config.name.rememberconfigtabscrollpositions=Remember Config Screen Scroll Positions
+malilib.config.name.servermessages=Server Messages (receive)
 
 malilib.config.name.guidebug=GUI Debug
 malilib.config.name.guidebugall=GUI Debug All
@@ -283,6 +285,7 @@ malilib.label.info_type.hotbar.custom=Hotbar (custom)
 malilib.label.info_type.hotbar.vanilla=Hotbar (vanilla)
 malilib.label.info_type.message=Message Overlay
 malilib.label.info_type.none=None
+malilib.label.info_type.toast=Toast
 malilib.label.key_action.both=Both
 malilib.label.key_action.press=Press
 malilib.label.key_action.release=Release

@@ -9,6 +9,7 @@ import fi.dy.masa.malilib.event.dispatch.TickEventDispatcher;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.config.ConfigTabRegistry;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
+import fi.dy.masa.malilib.network.message.MessagePacketHandler;
 import fi.dy.masa.malilib.overlay.InfoOverlay;
 
 public class MaLiLibInitHandler implements InitializationHandler
@@ -23,6 +24,8 @@ public class MaLiLibInitHandler implements InitializationHandler
 
         MaLiLibConfigs.Generic.OPEN_GUI_CONFIGS.getKeyBind().setCallback((a, k) -> BaseScreen.openScreen(MaLiLibConfigScreen.create(null)));
         MaLiLibConfigs.Generic.OPTION_LIST_CONFIG_DROPDOWN.setValueChangeCallback((n, o) -> GuiUtils.reInitCurrentScreen());
+        MaLiLibConfigs.Generic.SERVER_MESSAGES.setValueChangeCallback((n, o) -> MessagePacketHandler.updateRegistration(n));
+        MaLiLibConfigs.Generic.SERVER_MESSAGES.setValueLoadCallback(MessagePacketHandler::updateRegistration);
 
         RenderEventDispatcher.INSTANCE.registerGameOverlayRenderer(InfoOverlay.INSTANCE);
         RenderEventDispatcher.INSTANCE.registerScreenPostRenderer(InfoOverlay.INSTANCE);
