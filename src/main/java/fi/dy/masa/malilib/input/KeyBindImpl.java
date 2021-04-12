@@ -44,8 +44,7 @@ public class KeyBindImpl implements KeyBind
     private boolean pressed;
     private boolean pressedLast;
     private int heldTime;
-    @Nullable
-    private HotkeyCallback callback;
+    @Nullable private HotkeyCallback callback;
 
     private KeyBindImpl(String defaultStorageString, KeyBindSettings settings)
     {
@@ -224,18 +223,18 @@ public class KeyBindImpl implements KeyBind
 
         if (this.callback == null)
         {
-            cancel = action == KeyAction.PRESS && this.settings.shouldCancel() == CancelCondition.ALWAYS;
-            this.addToastMessage(false, cancel);
+            cancel = action == KeyAction.PRESS && this.settings.getCancelCondition() == CancelCondition.ALWAYS;
         }
         else
         {
-            boolean success = this.callback.onKeyAction(action, this);
-            CancelCondition condition = this.settings.shouldCancel();
+            ActionResult result = this.callback.onKeyAction(action, this);
+            CancelCondition condition = this.settings.getCancelCondition();
             cancel = condition == CancelCondition.ALWAYS
-                     || (success && condition == CancelCondition.ON_SUCCESS)
-                     || (success == false && condition == CancelCondition.ON_FAILURE);
-            this.addToastMessage(true, cancel);
+                     || (result == ActionResult.SUCCESS && condition == CancelCondition.ON_SUCCESS)
+                     || (result == ActionResult.FAIL    && condition == CancelCondition.ON_FAILURE);
         }
+
+        this.addToastMessage(this.callback != null, cancel);
 
         return new KeyUpdateResult(cancel, true);
     }

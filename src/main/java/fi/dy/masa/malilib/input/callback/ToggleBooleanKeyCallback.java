@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.input.callback;
 
 import fi.dy.masa.malilib.config.option.BooleanConfig;
+import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.input.KeyAction;
 import fi.dy.masa.malilib.input.KeyBind;
 
@@ -14,9 +15,9 @@ public class ToggleBooleanKeyCallback implements HotkeyCallback
     }
 
     @Override
-    public boolean onKeyAction(KeyAction action, KeyBind key)
+    public ActionResult onKeyAction(KeyAction action, KeyBind key)
     {
         this.config.toggleBooleanValue();
-        return true;
+        return ActionResult.SUCCESS;
     }
 }

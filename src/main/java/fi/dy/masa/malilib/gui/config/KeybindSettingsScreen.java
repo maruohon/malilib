@@ -70,7 +70,7 @@ public class KeybindSettingsScreen extends BaseScreen
         KeyBindSettings defaultSettings = this.keybind.getDefaultSettings();
         this.cfgActivateOn     = new OptionListConfig<>("", defaultSettings.getActivateOn(), KeyAction.VALUES, "malilib.gui.label.keybind_settings.activate_on",               "malilib.config.comment.keybind_settings.activate_on");
         this.cfgContext        = new OptionListConfig<>("", defaultSettings.getContext(),    Context.VALUES, "malilib.gui.label.keybind_settings.context",                   "malilib.config.comment.keybind_settings.context");
-        this.cfgCancel         = new OptionListConfig<>("", defaultSettings.shouldCancel(), CancelCondition.VALUES, "malilib.gui.label.keybind_settings.cancel_further_processing", "malilib.config.comment.keybind_settings.cancel_further");
+        this.cfgCancel         = new OptionListConfig<>("", defaultSettings.getCancelCondition(), CancelCondition.VALUES, "malilib.gui.label.keybind_settings.cancel_further_processing", "malilib.config.comment.keybind_settings.cancel_further");
         this.cfgAllowEmpty     = new BooleanConfig("", defaultSettings.getAllowEmpty(),     "malilib.gui.label.keybind_settings.allow_empty_keybind",       "malilib.config.comment.keybind_settings.allow_empty_keybind");
         this.cfgAllowExtra     = new BooleanConfig("", defaultSettings.getAllowExtraKeys(), "malilib.gui.label.keybind_settings.allow_extra_keys",          "malilib.config.comment.keybind_settings.allow_extra_keys");
         this.cfgOrderSensitive = new BooleanConfig("", defaultSettings.isOrderSensitive(),  "malilib.gui.label.keybind_settings.order_sensitive",           "malilib.config.comment.keybind_settings.order_sensitive");
@@ -87,7 +87,7 @@ public class KeybindSettingsScreen extends BaseScreen
         this.cfgOrderSensitive.setValue(settings.isOrderSensitive());
         this.cfgExclusive.setValue(settings.isExclusive());
         this.cfgFirstOnly.setValue(settings.getFirstOnly());
-        this.cfgCancel.setValue(settings.shouldCancel());
+        this.cfgCancel.setValue(settings.getCancelCondition());
         this.cfgPriority.setValue(settings.getPriority());
 
         this.cfgActivateOn.setValueChangeCallback((nv, ov) -> this.initGui());

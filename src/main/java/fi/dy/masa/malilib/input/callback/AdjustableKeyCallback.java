@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.input.callback;
 
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
+import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.input.KeyAction;
 import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.input.KeyBindSettings;
@@ -35,7 +36,7 @@ public class AdjustableKeyCallback implements HotkeyCallback
     }
 
     @Override
-    public boolean onKeyAction(KeyAction action, KeyBind key)
+    public ActionResult onKeyAction(KeyAction action, KeyBind key)
     {
         KeyBindSettings settings = key.getSettings();
 
@@ -45,14 +46,14 @@ public class AdjustableKeyCallback implements HotkeyCallback
         {
             if (action == KeyAction.PRESS)
             {
-                return true;
+                return ActionResult.SUCCESS;
             }
 
             // Don't toggle the state if a value was adjusted
             if (valueChanged)
             {
                 valueChanged = false;
-                return true;
+                return ActionResult.SUCCESS;
             }
         }
 
@@ -65,9 +66,9 @@ public class AdjustableKeyCallback implements HotkeyCallback
         else if (this.config != null)
         {
             this.config.toggleBooleanValue();
-            return true;
+            return ActionResult.SUCCESS;
         }
 
-        return false;
+        return ActionResult.FAIL;
     }
 }

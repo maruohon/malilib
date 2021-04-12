@@ -85,7 +85,7 @@ public class KeybindSettingsWidget extends InteractableWidget
         int u2 = 1 + (settings.getAllowExtraKeys() ? uDiff : 0);
         int u3 = 1 + (settings.isOrderSensitive() ? uDiff : 0);
         int u4 = 1 + (settings.isExclusive() ? uDiff : 0);
-        int u5 = 1 + (settings.shouldCancel() != CancelCondition.NEVER ? uDiff : 0); // TODO add separate icons for ON_SUCCESS and ON_FAILURE
+        int u5 = 1 + (settings.getCancelCondition() != CancelCondition.NEVER ? uDiff : 0); // TODO add separate icons for ON_SUCCESS and ON_FAILURE
         int u6 = 1 + (settings.getAllowEmpty() ? uDiff : 0);
         int u7 = 61 + (settings.getContext().getIconIndex() * uDiff);
 
@@ -108,7 +108,7 @@ public class KeybindSettingsWidget extends InteractableWidget
 
         this.addOptionText(lines, "malilib.gui.label.keybind_settings.activate_on", settings.getActivateOn(), defaultSettings.getActivateOn(), this::getDisplayString);
         this.addOptionText(lines, "malilib.gui.label.keybind_settings.context", settings.getContext(), defaultSettings.getContext(), this::getDisplayString);
-        this.addOptionText(lines, "malilib.gui.label.keybind_settings.cancel_further", settings.shouldCancel(), defaultSettings.shouldCancel(), this::getDisplayString);
+        this.addOptionText(lines, "malilib.gui.label.keybind_settings.cancel_further", settings.getCancelCondition(), defaultSettings.getCancelCondition(), this::getDisplayString);
 
         this.addOptionText(lines, "malilib.gui.label.keybind_settings.allow_empty_keybind", settings.getAllowEmpty(), defaultSettings.getAllowEmpty(), this::getDisplayString);
         this.addOptionText(lines, "malilib.gui.label.keybind_settings.allow_extra_keys", settings.getAllowExtraKeys(), defaultSettings.getAllowExtraKeys(), this::getDisplayString);

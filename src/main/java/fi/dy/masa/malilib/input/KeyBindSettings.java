@@ -111,7 +111,7 @@ public class KeyBindSettings
         return this.priority;
     }
 
-    public CancelCondition shouldCancel()
+    public CancelCondition getCancelCondition()
     {
         return this.cancel;
     }
