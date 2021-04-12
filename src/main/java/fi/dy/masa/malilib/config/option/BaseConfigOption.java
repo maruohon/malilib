@@ -135,6 +135,7 @@ public abstract class BaseConfigOption<T> extends BaseConfig implements ConfigOp
         }
     }
 
+    @Override
     public void onValueLoaded(T newValue)
     {
         if (this.valueLoadCallback != null)

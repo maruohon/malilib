@@ -51,6 +51,12 @@ public interface ConfigOption<T> extends ConfigInfo
     T getValue();
 
     /**
+     * This method is be called when the config is loaded from file
+     * @param newValue the value that was set to the config
+     */
+    void onValueLoaded(T newValue);
+
+    /**
      * Returns a list of old internal names this config used to go by, if any.
      * This allows reading the user-set values from config files that still use
      * the old name, if the config has since been renamed.

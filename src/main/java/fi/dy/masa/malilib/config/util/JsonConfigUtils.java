@@ -95,6 +95,11 @@ public class JsonConfigUtils
 
         // Reset the config to default if it wasn't successfully read from the config file
         config.resetToDefault();
+
+        // This needs to be called in case the config did not exist in the file yet, and thus the value load
+        // callback was not called from the normal load method. And in such a case the reset method above also
+        // would not have changed the value, so a possible value change callback also didn't get called.
+        config.onValueLoaded(config.getValue());
     }
 
     public static boolean saveToFile(File configFile, List<ConfigOptionCategory> categories, int configVersion)
