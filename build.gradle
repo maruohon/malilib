@@ -88,7 +88,7 @@ jar {
             "Implementation-Version": "${config.mod_version}",
             "Implementation-Vendor": "${config.author}",
             "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
-            "MixinConfigs": "mixins.malilib.json"
+            "MixinConfigs": 'mixins.' + config.mod_id + '.json'
         ])
     }
 }
