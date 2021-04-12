@@ -2,15 +2,21 @@
 buildscript {
     repositories {
         maven { url = 'https://files.minecraftforge.net/maven' }
+        maven {
+            name = 'sponge'
+            url = 'https://repo.spongepowered.org/repository/maven-public/'
+        }
         jcenter()
         mavenCentral()
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
     }
 }
 
 apply plugin: 'net.minecraftforge.gradle'
+apply plugin: 'org.spongepowered.mixin'
 apply plugin: 'java'
 apply plugin: 'maven-publish'
 
@@ -81,17 +87,15 @@ jar {
             "Implementation-Title": "${config.mod_name}",
             "Implementation-Version": "${config.mod_version}",
             "Implementation-Vendor": "${config.author}",
-            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+            "MixinConfigs": "mixins.malilib.json"
         ])
     }
 }
 
-/*
 mixin {
-    defaultObfuscationEnv notch
     add sourceSets.main, 'mixins.' + config.mod_id + '.refmap.json'
 }
-*/
 
 processResources
 {

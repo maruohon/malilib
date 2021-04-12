@@ -32,7 +32,6 @@ public class MaLiLib
         MinecraftForge.EVENT_BUS.register(new ForgeInputEventHandler());
         MinecraftForge.EVENT_BUS.register(new ForgeRenderEventHandler());
         MinecraftForge.EVENT_BUS.register(new ForgeTickEventHandler());
-        MinecraftForge.EVENT_BUS.register(new ForgeWorldEventHandler());
 
         InitializationHandler.getInstance().registerInitializationHandler(new MaLiLibInitHandler());
         ((InitializationHandler) InitializationHandler.getInstance()).onGameInitDone();
