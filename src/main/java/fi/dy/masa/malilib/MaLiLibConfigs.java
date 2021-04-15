@@ -18,6 +18,8 @@ import fi.dy.masa.malilib.input.KeyBindSettings;
 
 public class MaLiLibConfigs
 {
+    public static final int CONFIG_VERSION = 1;
+
     public static class Generic
     {
         public static final OptionListConfig<Scope> CONFIG_SEARCH_DEFAULT_SCOPE         = new OptionListConfig<>("configSearchDefaultScope", Scope.ALL_CATEGORIES, Scope.VALUES);
@@ -29,12 +31,10 @@ public class MaLiLibConfigs
         public static final IntegerConfig CUSTOM_SCREEN_SCALE                   = new IntegerConfig("customScreenScale", 2, 0, 8);
         public static final StringConfig DATA_DUMP_CSV_DELIMITER                = new StringConfig("dataDumpCsvDelimiter", ",");
         public static final IntegerConfig HOVER_TEXT_MAX_WIDTH                  = new IntegerConfig("hoverTextMaxWidth", 310, 16, 4096);
-        public static final HotkeyConfig IGNORED_KEYS                           = new HotkeyConfig("ignoredKeys", "");
         public static final BooleanConfig KEYBIND_DISPLAY_CALLBACK_ONLY         = new BooleanConfig("keybindDisplayCallbackOnly", true);
         public static final BooleanConfig KEYBIND_DISPLAY_CANCEL_ONLY           = new BooleanConfig("keybindDisplayCancelOnly", true);
         public static final IntegerConfig KEYBIND_DISPLAY_DURATION              = new IntegerConfig("keybindDisplayDuration", 5000, 0, 120000);
         public static final IntegerConfig MESSAGE_FADE_TIME                     = new IntegerConfig("messageFadeTime", 500, 0, 10000);
-        public static final HotkeyConfig OPEN_GUI_CONFIGS                       = new HotkeyConfig("openGuiConfigs", "A,C");
         public static final BooleanConfig OPTION_LIST_CONFIG_DROPDOWN           = new BooleanConfig("optionListConfigDropdown", false);
         public static final BooleanConfig PRESSED_KEYS_TOAST                    = new BooleanConfig("pressedKeysToast", false);
         public static final BooleanConfig REMEMBER_CONFIG_TAB_SCROLL_POSITIONS  = new BooleanConfig("rememberConfigTabScrollPositions", true);
@@ -48,13 +48,11 @@ public class MaLiLibConfigs
                 CUSTOM_SCREEN_SCALE,
                 DATA_DUMP_CSV_DELIMITER,
                 HOVER_TEXT_MAX_WIDTH,
-                IGNORED_KEYS,
                 KEYBIND_DISPLAY,
                 KEYBIND_DISPLAY_CALLBACK_ONLY,
                 KEYBIND_DISPLAY_CANCEL_ONLY,
                 KEYBIND_DISPLAY_DURATION,
                 MESSAGE_FADE_TIME,
-                OPEN_GUI_CONFIGS,
                 OPTION_LIST_CONFIG_DROPDOWN,
                 PRESSED_KEYS_TOAST,
                 REMEMBER_CONFIG_TAB_SCROLL_POSITIONS,
@@ -68,6 +66,23 @@ public class MaLiLibConfigs
 
         public static final ImmutableList<ConfigOption<?>> OPTIONS = ImmutableList.of(
                 DROP_DOWN_SEARCH_TIP
+        );
+    }
+
+    public static class Hotkeys
+    {
+        public static final HotkeyConfig IGNORED_KEYS                           = new HotkeyConfig("ignoredKeys", "");
+        public static final HotkeyConfig OPEN_CONFIG_SCREEN                     = new HotkeyConfig("openConfigScreen", "A,C");
+        public static final HotkeyConfig SCROLL_VALUE_ADJUST_DECREASE           = new HotkeyConfig("scrollValueAdjustDecrease", "SCROLL_DOWN");
+        public static final HotkeyConfig SCROLL_VALUE_ADJUST_INCREASE           = new HotkeyConfig("scrollValueAdjustIncrease", "SCROLL_UP");
+        public static final HotkeyConfig SCROLL_VALUE_ADJUST_MODIFIER           = new HotkeyConfig("scrollValueAdjustModifier", "", KeyBindSettings.INGAME_MODIFIER_EMPTY);
+
+        public static final ImmutableList<HotkeyConfig> HOTKEYS = ImmutableList.of(
+                IGNORED_KEYS,
+                OPEN_CONFIG_SCREEN,
+                SCROLL_VALUE_ADJUST_DECREASE,
+                SCROLL_VALUE_ADJUST_INCREASE,
+                SCROLL_VALUE_ADJUST_MODIFIER
         );
     }
 
@@ -98,6 +113,7 @@ public class MaLiLibConfigs
 
     public static final ImmutableList<ConfigOptionCategory> CATEGORIES = ImmutableList.of(
             BaseConfigOptionCategory.normal("Generic",  Generic.OPTIONS),
+            BaseConfigOptionCategory.normal("Hotkeys",  Hotkeys.HOTKEYS),
             BaseConfigOptionCategory.normal("Info",     Info.OPTIONS),
             BaseConfigOptionCategory.normal("Debug",    Debug.OPTIONS)
     );

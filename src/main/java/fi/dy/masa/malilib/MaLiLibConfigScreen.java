@@ -23,6 +23,7 @@ public class MaLiLibConfigScreen
 
     public static final BaseConfigTab GENERIC = new BaseConfigTab(MOD_INFO, "generic", 120, MaLiLibConfigs.Generic.OPTIONS, MaLiLibConfigScreen::create);
     public static final BaseConfigTab INFO    = new BaseConfigTab(MOD_INFO, "info",     -1, MaLiLibConfigs.Info.OPTIONS,    MaLiLibConfigScreen::create);
+    public static final BaseConfigTab HOTKEYS = new BaseConfigTab(MOD_INFO, "hotkeys", 160, MaLiLibConfigs.Hotkeys.HOTKEYS, MaLiLibConfigScreen::create);
     public static final BaseConfigTab DEBUG   = new BaseConfigTab(MOD_INFO, "debug",   120, MaLiLibConfigs.Debug.OPTIONS,   MaLiLibConfigScreen::create);
     public static final BaseScreenTab CSI     = new BaseScreenTab(MOD_INFO, "config_status_indicator.abbr", (scr) -> scr instanceof ConfigStatusIndicatorWidgetListScreen, MaLiLibConfigScreen::createConfigStatusIndicatorListScreen).setHoverText("malilib.gui.button.hover.config_status_indicator");
     public static final BaseScreenTab TOAST   = new BaseScreenTab(MOD_INFO, "toast_renderer.abbr",          (scr) -> scr instanceof ToastRendererWidgetListScreen, MaLiLibConfigScreen::createToastRendererListScreen).setHoverText("malilib.gui.button.hover.toast_renderer_configuration");
@@ -30,12 +31,14 @@ public class MaLiLibConfigScreen
     private static final ImmutableList<ConfigTab> CONFIG_TABS = ImmutableList.of(
             GENERIC,
             INFO,
+            HOTKEYS,
             DEBUG
     );
 
     public static final ImmutableList<ScreenTab> ALL_TABS = ImmutableList.of(
             GENERIC,
             INFO,
+            HOTKEYS,
             DEBUG_STUFF_TAB,
             DEBUG,
             CSI,
@@ -47,6 +50,8 @@ public class MaLiLibConfigScreen
         return new BaseConfigScreen(MOD_INFO, null, CONFIG_TABS, GENERIC, "malilib.gui.title.configs");
 
     public static BaseTabbedScreen createConfigStatusIndicatorScreen(@Nullable GuiScreen currentScreen)
+        return new BaseConfigScreen(MOD_INFO, currentScreen, ALL_TABS, GENERIC, "malilib.gui.title.configs");
+    }
 
     public static BaseTabbedScreen createConfigStatusIndicatorListScreen(@Nullable GuiScreen currentScreen)
     {

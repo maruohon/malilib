@@ -1,7 +1,6 @@
 package fi.dy.masa.malilib.input;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -256,7 +255,7 @@ public class KeyBindImpl implements KeyBind
                 lines.add(StringUtils.translate("malilib.toast.keybind_display.keys", this.getKeysDisplayString()));
             }
 
-            if (val == KeybindDisplayMode.ACTIONS || val == KeybindDisplayMode.KEYS_ACTIONS)
+            if ((val == KeybindDisplayMode.ACTIONS || val == KeybindDisplayMode.KEYS_ACTIONS) && this.modInfo != null)
             {
                 String name = StringUtils.translate(this.nameTranslationKey);
                 lines.add(StringUtils.translate("malilib.toast.keybind_display.action", this.modInfo.getModName(), name));
@@ -506,7 +505,7 @@ public class KeyBindImpl implements KeyBind
         {
             if (PRESSED_KEYS.contains(valObj) == false)
             {
-                Collection<Integer> ignored = MaLiLibConfigs.Generic.IGNORED_KEYS.getKeyBind().getKeys();
+                List<Integer> ignored = MaLiLibConfigs.Hotkeys.IGNORED_KEYS.getKeyBind().getKeys();
 
                 if (ignored.size() == 0 || ignored.contains(valObj) == false)
                 {

@@ -153,7 +153,7 @@ public class KeyBindConfigButton extends GenericButton
 
     protected void addKey(int keyCode)
     {
-        if (MaLiLibConfigs.Generic.IGNORED_KEYS.getKeyBind().getKeys().contains(keyCode))
+        if (MaLiLibConfigs.Hotkeys.IGNORED_KEYS.getKeyBind().getKeys().contains(keyCode))
         {
             String str = Keys.getStorageStringForKeyCode(keyCode, Keys::charAsCharacter);
             MessageUtils.warning("malilib.message.error.keybind.attempt_to_bind_ignored_key", str);

@@ -9,7 +9,6 @@ malilib.config.comment.configsearchdefaultscope=This is the default scope value 
 malilib.config.comment.customscreenscale=Custom screen scale value for any screens using the malilib screen classes. Use 0 for the default vanilla GUI scale value.
 malilib.config.comment.datadumpcsvdelimiter=The column delimiter to use for CSV format data dumps
 malilib.config.comment.hovertextmaxwidth=The maximum width of the mouse over hover texts
-malilib.hotkey.comment.ignoredkeys=Any keys set here will be completely ignored from the hotkey system. This can be used to blacklist keys that cause issues or often get stuck for some reason.
 malilib.config.comment.keybinddisplay=Whether or not to display a small indicator/toast for pressed keys and triggered hotkeys/actions
 malilib.config.comment.keybinddisplaycallbackonly=If enabled, then only keybinds that have a defined action callback will be displayed on the keybind display toast
 malilib.config.comment.keybinddisplaycancelonly=If enabled, then only keybinds that are set to cancel further processing will be displayed on the keybind display toast. This prevents so called "modifier" keys from spamming the display.
@@ -68,11 +67,18 @@ malilib.config.name.keybinddebugtoast=KeyBind Debug Toast
 malilib.config.name.dropdownsearchtip=Drop Down Search Tip
 
 malilib.hotkey.comment.guidebugkey=If this is set, then the GUI debug only renders while this key is held down
-malilib.hotkey.comment.openguiconfigs=Open the in-game malilib config menu
+malilib.hotkey.comment.ignoredkeys=Any keys set here will be completely ignored from the hotkey system. This can be used to blacklist keys that cause issues or often get stuck for some reason.
+malilib.hotkey.comment.openconfigscreen=Open the malilib config screen
+malilib.hotkey.comment.scrollvalueadjustdecrease=The key to use for decreasing the value of "scroll-adjustable" configs
+malilib.hotkey.comment.scrollvalueadjustincrease=The key to use for increasing the value of "scroll-adjustable" configs
+malilib.hotkey.comment.scrollvalueadjustmodifier=The key that needs to be held for the scroll adjusting to be enabled.\nBy default this is set to NONE with Allow Empty Keybind enabled, that way you don't need to hold any extra keys in addition to the toggle keybind that the scroll adjusting is related to.\nIf you don't want scroll adjusting to happen "accidentally" while you are holding the toggle keybind and for example trying to scroll to change the selected hotbar slot, then you can set a key here (for example Shift) that you must additionally hold for the scroll adjusting to be possible.\nAlso note that the scroll adjusting is only enabled for the handful of toggle keys that have it, when the Activate On setting is set to §6BOTH§r.
 
 malilib.hotkey.name.guidebugkey=GUI Debug Key
 malilib.hotkey.name.ignoredkeys=Ignored Keys
-malilib.hotkey.name.openguiconfigs=Open Config Menu
+malilib.hotkey.name.openconfigscreen=Open Config Screen
+malilib.hotkey.name.scrollvalueadjustdecrease=Scroll Adjust Decrease
+malilib.hotkey.name.scrollvalueadjustincrease=Scroll Adjust Increase
+malilib.hotkey.name.scrollvalueadjustmodifier=Scroll Adjust Enable
 
 malilib.gui.button.config.reset_all_filtered=Reset All
 malilib.gui.button.config.select_directory=Select Directory
@@ -269,6 +275,7 @@ malilib.label.config_status_indicator.hotkeys_string=[§b%s§r]
 malilib.label.config_tab.config_status_indicator.abbr=C.S.I.
 malilib.label.config_tab.debug=Debug
 malilib.label.config_tab.generic=Generic
+malilib.label.config_tab.hotkeys=Hotkeys
 malilib.label.config_tab.info=Info
 malilib.label.config_tab.toast_renderer.abbr=Toast
 malilib.label.default_duration.colon=Default duration (ms):

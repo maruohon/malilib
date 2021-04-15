@@ -18,7 +18,7 @@ public class MaLiLibInitHandler implements InitializationHandler
     @Override
     public void registerModHandlers()
     {
-        ConfigManager.INSTANCE.registerConfigHandler(BaseModConfig.createDefaultModConfig(MaLiLibReference.MOD_INFO, 1, MaLiLibConfigs.CATEGORIES));
+        ConfigManager.INSTANCE.registerConfigHandler(BaseModConfig.createDefaultModConfig(MaLiLibReference.MOD_INFO, MaLiLibConfigs.CONFIG_VERSION, MaLiLibConfigs.CATEGORIES));
         ConfigTabRegistry.INSTANCE.registerConfigTabProvider(MaLiLibReference.MOD_INFO, MaLiLibConfigScreen::getConfigTabs);
 
         HotkeyManager.INSTANCE.registerHotkeyProvider(MaLiLibHotkeyProvider.INSTANCE);
