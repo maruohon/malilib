@@ -17,30 +17,38 @@ public class KeyBindSettings
     public static final KeyBindSettings GUI_DEFAULT                 = new KeyBindSettings(Context.GUI, KeyAction.PRESS, true, true, false, CancelCondition.ALWAYS);
     public static final KeyBindSettings GUI_MODIFIER                = new KeyBindSettings(Context.GUI, KeyAction.PRESS, true, false, false, CancelCondition.NEVER);
 
-    private final KeyAction activateOn;
-    private final Context context;
-    private final CancelCondition cancel;
-    private final boolean allowEmpty;
-    private final boolean allowExtraKeys;
-    private final boolean exclusive;
-    private final boolean firstOnly;
-    private final boolean orderSensitive;
-    private final int priority;
+    protected final KeyAction activateOn;
+    protected final Context context;
+    protected final CancelCondition cancel;
+    protected final boolean allowEmpty;
+    protected final boolean allowExtraKeys;
+    protected final boolean exclusive;
+    protected final boolean firstOnly;
+    protected final boolean orderSensitive;
+    protected final boolean showToast;
+    protected final int priority;
 
-    private KeyBindSettings(Context context, KeyAction activateOn, boolean allowExtraKeys, boolean orderSensitive,
+    protected KeyBindSettings(Context context, KeyAction activateOn, boolean allowExtraKeys, boolean orderSensitive,
                             boolean exclusive, CancelCondition cancel)
     {
         this(context, activateOn, allowExtraKeys, orderSensitive, exclusive, cancel, false);
     }
 
-    private KeyBindSettings(Context context, KeyAction activateOn, boolean allowExtraKeys, boolean orderSensitive,
+    protected KeyBindSettings(Context context, KeyAction activateOn, boolean allowExtraKeys, boolean orderSensitive,
                             boolean exclusive, CancelCondition cancel, boolean allowEmpty)
     {
         this(context, activateOn, allowExtraKeys, orderSensitive, exclusive, cancel, allowEmpty, 50, false);
     }
 
-    private KeyBindSettings(Context context, KeyAction activateOn, boolean allowExtraKeys, boolean orderSensitive,
+    protected KeyBindSettings(Context context, KeyAction activateOn, boolean allowExtraKeys, boolean orderSensitive,
                             boolean exclusive, CancelCondition cancel, boolean allowEmpty, int priority, boolean firstOnly)
+    {
+        this(context, activateOn, allowExtraKeys, orderSensitive, exclusive, cancel, allowEmpty, priority, firstOnly, true);
+    }
+
+    protected KeyBindSettings(Context context, KeyAction activateOn, boolean allowExtraKeys, boolean orderSensitive,
+                              boolean exclusive, CancelCondition cancel, boolean allowEmpty, int priority,
+                              boolean firstOnly, boolean showToast)
     {
         this.context = context;
         this.activateOn = activateOn;
@@ -51,6 +59,7 @@ public class KeyBindSettings
         this.allowEmpty = allowEmpty;
         this.priority = priority;
         this.firstOnly = firstOnly;
+        this.showToast = showToast;
     }
 
     public static KeyBindSettings create(Context context, KeyAction activateOn, boolean allowExtraKeys,
@@ -69,7 +78,16 @@ public class KeyBindSettings
                                          boolean orderSensitive, boolean exclusive, CancelCondition cancel,
                                          boolean allowEmpty, int priority, boolean firstOnly)
     {
-        return new KeyBindSettings(context, activateOn, allowExtraKeys, orderSensitive, exclusive, cancel, allowEmpty, priority, firstOnly);
+        return new KeyBindSettings(context, activateOn, allowExtraKeys, orderSensitive, exclusive, cancel,
+                                   allowEmpty, priority, firstOnly);
+    }
+
+    public static KeyBindSettings create(Context context, KeyAction activateOn, boolean allowExtraKeys,
+                                         boolean orderSensitive, boolean exclusive, CancelCondition cancel,
+                                         boolean allowEmpty, int priority, boolean firstOnly, boolean showToast)
+    {
+        return new KeyBindSettings(context, activateOn, allowExtraKeys, orderSensitive, exclusive, cancel,
+                                   allowEmpty, priority, firstOnly, showToast);
     }
 
     public Context getContext()
@@ -112,6 +130,11 @@ public class KeyBindSettings
         return this.priority;
     }
 
+    public boolean getShowToast()
+    {
+        return this.showToast;
+    }
+
     public CancelCondition getCancelCondition()
     {
         return this.cancel;
@@ -130,6 +153,7 @@ public class KeyBindSettings
         obj.addProperty("first_only", this.firstOnly);
         obj.addProperty("order_sensitive", this.orderSensitive);
         obj.addProperty("priority", this.priority);
+        obj.addProperty("show_toast", this.showToast);
 
         return obj;
     }
@@ -156,6 +180,7 @@ public class KeyBindSettings
         boolean orderSensitive = JsonUtils.getBooleanOrDefault(obj, "order_sensitive", true);
         boolean exclusive = JsonUtils.getBooleanOrDefault(obj, "exclusive", true);
         boolean firstOnly = JsonUtils.getBooleanOrDefault(obj, "first_only", false);
+        boolean showToast = JsonUtils.getBooleanOrDefault(obj, "show_toast", true);
         int priority = JsonUtils.getIntegerOrDefault(obj, "priority", 50);
         String cancelName = JsonUtils.getStringOrDefault(obj, "cancel", "false");
         CancelCondition cancel;
@@ -174,7 +199,7 @@ public class KeyBindSettings
             cancel = BaseOptionListConfigValue.findValueByName(cancelName, CancelCondition.VALUES);
         }
 
-        return create(context, activateOn, allowExtraKeys, orderSensitive, exclusive, cancel, allowEmpty, priority, firstOnly);
+        return create(context, activateOn, allowExtraKeys, orderSensitive, exclusive, cancel, allowEmpty, priority, firstOnly, showToast);
     }
 
     @Override
@@ -202,6 +227,8 @@ public class KeyBindSettings
         if (this.firstOnly != other.firstOnly)
             return false;
         if (this.priority != other.priority)
+            return false;
+        if (this.showToast != other.showToast)
             return false;
         return this.orderSensitive == other.orderSensitive;
     }

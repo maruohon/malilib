@@ -17,6 +17,7 @@ import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.MinecraftClientAccessor;
 import fi.dy.masa.malilib.config.value.KeybindDisplayMode;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
+import fi.dy.masa.malilib.input.callback.AdjustableValueHotkeyCallback;
 import fi.dy.masa.malilib.input.callback.HotkeyCallback;
 import fi.dy.masa.malilib.overlay.message.MessageUtils;
 import fi.dy.masa.malilib.render.text.StyledText;
@@ -228,25 +229,32 @@ public class KeyBindImpl implements KeyBind
         {
             ActionResult result = this.callback.onKeyAction(action, this);
             CancelCondition condition = this.settings.getCancelCondition();
-            cancel = condition == CancelCondition.ALWAYS
+            cancel = action == KeyAction.PRESS && (condition == CancelCondition.ALWAYS
                      || (result == ActionResult.SUCCESS && condition == CancelCondition.ON_SUCCESS)
-                     || (result == ActionResult.FAIL    && condition == CancelCondition.ON_FAILURE);
+                     || (result == ActionResult.FAIL    && condition == CancelCondition.ON_FAILURE));
         }
 
-        this.addToastMessage(this.callback != null, cancel);
+        this.addToastMessage(action, this.callback != null, cancel);
 
         return new KeyUpdateResult(cancel, true);
     }
 
-    private void addToastMessage(boolean hasCallback, boolean cancelled)
+    private void addToastMessage(KeyAction action, boolean hasCallback, boolean cancelled)
     {
         KeybindDisplayMode val = MaLiLibConfigs.Generic.KEYBIND_DISPLAY.getValue();
         boolean showCallbackOnly = MaLiLibConfigs.Generic.KEYBIND_DISPLAY_CALLBACK_ONLY.getBooleanValue();
         boolean showCancelledOnly = MaLiLibConfigs.Generic.KEYBIND_DISPLAY_CANCEL_ONLY.getBooleanValue();
+        boolean isBoth = this.settings.activateOn == KeyAction.BOTH;
 
-        if (val != KeybindDisplayMode.NONE &&
-            (showCancelledOnly == false || cancelled) &&
-            (showCallbackOnly == false || hasCallback))
+        // FIXME This check is not great here, but should reduce some spam from the scroll adjustable hotkeys
+        boolean isAdjustable = isBoth && this.callback instanceof AdjustableValueHotkeyCallback;
+        boolean canShowAdjustable = isAdjustable == false || action == KeyAction.RELEASE;
+
+        if (this.settings.getShowToast() &&
+            val != KeybindDisplayMode.NONE &&
+            (showCancelledOnly == false || cancelled || (isAdjustable && action == KeyAction.RELEASE)) &&
+            (showCallbackOnly == false || hasCallback) &&
+            canShowAdjustable)
         {
             List<String> lines = new ArrayList<>();
 

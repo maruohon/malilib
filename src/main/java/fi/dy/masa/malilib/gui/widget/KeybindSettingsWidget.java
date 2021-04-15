@@ -116,6 +116,7 @@ public class KeybindSettingsWidget extends InteractableWidget
         this.addOptionText(lines, "malilib.gui.label.keybind_settings.exclusive", settings.isExclusive(), defaultSettings.isExclusive(), this::getDisplayString);
         this.addOptionText(lines, "malilib.gui.label.keybind_settings.first_only", settings.getFirstOnly(), defaultSettings.getFirstOnly(), this::getDisplayString);
         this.addOptionText(lines, "malilib.gui.label.keybind_settings.priority", settings.getPriority(), defaultSettings.getPriority(), this::getDisplayString);
+        this.addOptionText(lines, "malilib.gui.label.keybind_settings.show_toast", settings.getShowToast(), defaultSettings.getShowToast(), this::getDisplayString);
 
         lines.add("");
         StringUtils.addTranslatedLines(lines, "malilib.gui.label.keybind_settings.tips");
@@ -140,9 +141,7 @@ public class KeybindSettingsWidget extends InteractableWidget
 
     protected String getDisplayString(boolean value)
     {
-        String strYes = StringUtils.translate("malilib.label.yes");
-        String strNo = StringUtils.translate("malilib.label.no");
-        return value ? (BaseScreen.TXT_GREEN + strYes) : (BaseScreen.TXT_RED + strNo);
+        return StringUtils.translate(value ? "malilib.label.colored.yes" : "malilib.label.colored.no");
     }
 
     protected String getDisplayString(OptionListConfigValue value)

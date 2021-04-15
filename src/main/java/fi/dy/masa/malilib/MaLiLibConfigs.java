@@ -71,10 +71,12 @@ public class MaLiLibConfigs
 
     public static class Hotkeys
     {
+        public static final KeyBindSettings SCROLL_ADJUST = KeyBindSettings.create(Context.INGAME, KeyAction.PRESS, true, true, false, CancelCondition.ON_SUCCESS, false, 50, false, false);
+
         public static final HotkeyConfig IGNORED_KEYS                           = new HotkeyConfig("ignoredKeys", "", KeyBindSettings.INGAME_SUCCESS);
         public static final HotkeyConfig OPEN_CONFIG_SCREEN                     = new HotkeyConfig("openConfigScreen", "A,C");
-        public static final HotkeyConfig SCROLL_VALUE_ADJUST_DECREASE           = new HotkeyConfig("scrollValueAdjustDecrease", "SCROLL_DOWN", KeyBindSettings.INGAME_SUCCESS);
-        public static final HotkeyConfig SCROLL_VALUE_ADJUST_INCREASE           = new HotkeyConfig("scrollValueAdjustIncrease", "SCROLL_UP", KeyBindSettings.INGAME_SUCCESS);
+        public static final HotkeyConfig SCROLL_VALUE_ADJUST_DECREASE           = new HotkeyConfig("scrollValueAdjustDecrease", "SCROLL_DOWN", SCROLL_ADJUST);
+        public static final HotkeyConfig SCROLL_VALUE_ADJUST_INCREASE           = new HotkeyConfig("scrollValueAdjustIncrease", "SCROLL_UP", SCROLL_ADJUST);
         public static final HotkeyConfig SCROLL_VALUE_ADJUST_MODIFIER           = new HotkeyConfig("scrollValueAdjustModifier", "", KeyBindSettings.INGAME_MODIFIER_EMPTY);
 
         public static final ImmutableList<HotkeyConfig> HOTKEYS = ImmutableList.of(
