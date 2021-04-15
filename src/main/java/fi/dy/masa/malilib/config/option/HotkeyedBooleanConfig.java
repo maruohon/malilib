@@ -1,16 +1,21 @@
 package fi.dy.masa.malilib.config.option;
 
+import java.util.function.Function;
+import javax.annotation.Nullable;
+import fi.dy.masa.malilib.action.Action;
+import fi.dy.masa.malilib.action.BooleanToggleAction;
 import fi.dy.masa.malilib.input.Hotkey;
 import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.input.KeyBindImpl;
 import fi.dy.masa.malilib.input.KeyBindSettings;
-import fi.dy.masa.malilib.input.callback.ToggleBooleanWithMessageKeyCallback;
+import fi.dy.masa.malilib.input.callback.HotkeyCallback;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.ModInfo;
 
 public class HotkeyedBooleanConfig extends BooleanConfig implements Hotkey
 {
     protected final KeyBind keyBind;
+    protected Action toggleAction;
 
     public HotkeyedBooleanConfig(String name, boolean defaultValue, String defaultHotkey)
     {
@@ -37,8 +42,8 @@ public class HotkeyedBooleanConfig extends BooleanConfig implements Hotkey
         super(name, defaultValue, prettyName, comment);
 
         this.keyBind = KeyBindImpl.fromStorageString(defaultHotkey, settings);
-        this.keyBind.setCallback(new ToggleBooleanWithMessageKeyCallback(this));
 
+        this.setSpecialToggleMessageFactory(null);
         this.cacheSavedValue();
     }
 
@@ -46,6 +51,25 @@ public class HotkeyedBooleanConfig extends BooleanConfig implements Hotkey
     public KeyBind getKeyBind()
     {
         return this.keyBind;
+    }
+
+    public Action getToggleAction()
+    {
+        return this.toggleAction;
+    }
+
+    /**
+     * This will replace the default hotkey callback with the variant that takes in the message factory
+     */
+    public void setSpecialToggleMessageFactory(@Nullable Function<BooleanConfig, String> messageFactory)
+    {
+        this.toggleAction = new BooleanToggleAction(this, messageFactory);
+        this.keyBind.setCallback(HotkeyCallback.of(this.toggleAction));
+    }
+
+    public void setHotkeyCallback(HotkeyCallback callback)
+    {
+        this.keyBind.setCallback(callback);
     }
 
     @Override

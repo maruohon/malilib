@@ -13,8 +13,8 @@ import fi.dy.masa.malilib.util.data.ModInfo;
 public class BaseConfig implements ConfigInfo
 {
     protected final String name;
-    protected final List<String> searchStrings = new ArrayList<>();
-    protected final List<String> oldNames = new ArrayList<>();
+    protected final List<String> searchStrings = new ArrayList<>(0);
+    protected final List<String> oldNames = new ArrayList<>(0);
     protected String nameTranslationKey;
     protected ModInfo modInfo;
     protected boolean locked;

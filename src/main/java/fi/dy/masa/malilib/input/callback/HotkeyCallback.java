@@ -1,5 +1,8 @@
 package fi.dy.masa.malilib.input.callback;
 
+import fi.dy.masa.malilib.action.Action;
+import fi.dy.masa.malilib.action.ActionContext;
+import fi.dy.masa.malilib.action.NamedAction;
 import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.input.KeyAction;
 import fi.dy.masa.malilib.input.KeyBind;
@@ -14,4 +17,20 @@ public interface HotkeyCallback
      * @return the action result of executing the callback
      */
     ActionResult onKeyAction(KeyAction action, KeyBind key);
+
+    /**
+     * Wraps an Action as a HotkeyCallback
+     */
+    static HotkeyCallback of(final Action action)
+    {
+        return (ka, k) -> action.execute(new ActionContext());
+    }
+
+    /**
+     * Wraps an NamedAction as a HotkeyCallback
+     */
+    static HotkeyCallback of(final NamedAction action)
+    {
+        return (ka, k) -> action.getAction().execute(new ActionContext());
+    }
 }

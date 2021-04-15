@@ -53,7 +53,6 @@ public abstract class BaseConfigOption<T> extends BaseConfig implements ConfigOp
     /**
      * Returns the possible custom messages set to inform the user
      * about a locked or overridden config value.
-     * @return
      */
     public List<String> getLockAndOverrideMessages()
     {

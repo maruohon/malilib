@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.overlay.message;
 
+import java.util.function.Function;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
@@ -209,24 +210,51 @@ public class MessageUtils
 
     public static void printBooleanConfigToggleMessage(BooleanConfig config)
     {
+        printBooleanConfigToggleMessage(config, null);
+    }
+
+    public static void printBooleanConfigToggleMessage(BooleanConfig config, @Nullable Function<BooleanConfig, String> messageFactory)
+    {
+        // TODO add a system for overriding the default output type per-config
+        String message = getBooleanConfigToggleMessage(config, messageFactory);
+
+        if (org.apache.commons.lang3.StringUtils.isBlank(message) == false)
+        {
+            InfoType type = GuiUtils.getCurrentScreen() != null ? InfoType.MESSAGE_OVERLAY : InfoType.CUSTOM_HOTBAR;
+            addMessage(type, Message.INFO, 5000, message);
+        }
+    }
+
+    public static String getBooleanConfigToggleMessage(BooleanConfig config, @Nullable Function<BooleanConfig, String> messageFactory)
+    {
         boolean newValue = config.getBooleanValue();
-        String msgKey;
+        String message;
 
         if (config.isOverridden())
         {
-            msgKey = newValue ? "malilib.message.config_overridden_on" : "malilib.message.config_overridden_off";
+            String msgKey = newValue ? "malilib.message.config_overridden_on" : "malilib.message.config_overridden_off";
+            message = StringUtils.translate(msgKey, config.getPrettyName());
         }
         else if (config.isLocked())
         {
-            msgKey = newValue ? "malilib.message.config_locked_on" : "malilib.message.config_locked_off";
+            String msgKey = newValue ? "malilib.message.config_locked_on" : "malilib.message.config_locked_off";
+            message = StringUtils.translate(msgKey, config.getPrettyName());
+        }
+        else if (messageFactory != null)
+        {
+            message = messageFactory.apply(config);
         }
         else
         {
-            msgKey = newValue ? "malilib.message.toggled_config_on" : "malilib.message.toggled_config_off";
+            message = getBasicBooleanConfigToggleMessage(config);
         }
 
-        // TODO add a system for overriding the default output type per-config
-        InfoType type = GuiUtils.getCurrentScreen() != null ? InfoType.MESSAGE_OVERLAY : InfoType.CUSTOM_HOTBAR;
-        addMessage(type, Message.INFO, 5000, msgKey, config.getPrettyName());
+        return message;
+    }
+
+    public static String getBasicBooleanConfigToggleMessage(BooleanConfig config)
+    {
+        String msgKey = config.getBooleanValue() ? "malilib.message.toggled_config_on" : "malilib.message.toggled_config_off";
+        return StringUtils.translate(msgKey, config.getPrettyName());
     }
 }
