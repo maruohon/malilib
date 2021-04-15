@@ -22,6 +22,7 @@ import fi.dy.masa.malilib.gui.widget.InteractableWidget;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.button.BaseButton;
 import fi.dy.masa.malilib.gui.widget.button.ButtonActionListener;
+import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.listener.TextChangeListener;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
@@ -815,6 +816,12 @@ public abstract class BaseScreen extends GuiScreen
     {
         Minecraft.getMinecraft().displayGuiScreen(screen);
         return true;
+    }
+
+    public static ActionResult openScreenAction(@Nullable GuiScreen screen)
+    {
+        openScreen(screen);
+        return ActionResult.SUCCESS;
     }
 
     /**
