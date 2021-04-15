@@ -57,6 +57,13 @@ public class HotkeyedBooleanConfig extends BooleanConfig implements Hotkey
     }
 
     @Override
+    public BaseConfig setNameTranslationKey(String key)
+    {
+        this.keyBind.setNameTranslationKey(key);
+        return super.setNameTranslationKey(key);
+    }
+
+    @Override
     public boolean isModified()
     {
         return super.isModified() || this.keyBind.isModified();

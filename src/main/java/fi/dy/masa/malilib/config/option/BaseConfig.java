@@ -96,6 +96,12 @@ public class BaseConfig implements ConfigInfo
         return this.labelClickHandler;
     }
 
+    @Nullable
+    public String getCommentTranslationKey()
+    {
+        return this.commentTranslationKey;
+    }
+
     @Override
     public boolean isModified()
     {
@@ -168,9 +174,6 @@ public class BaseConfig implements ConfigInfo
     /**
      * Adds additional search terms to this config.
      * By default the pretty name is used for searching against.
-     *
-     * @param searchTerms
-     * @return
      */
     public BaseConfig addSearchTerms(Collection<String> searchTerms)
     {

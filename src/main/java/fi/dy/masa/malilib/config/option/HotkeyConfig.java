@@ -6,6 +6,7 @@ import fi.dy.masa.malilib.input.Hotkey;
 import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.input.KeyBindImpl;
 import fi.dy.masa.malilib.input.KeyBindSettings;
+import fi.dy.masa.malilib.input.callback.HotkeyCallback;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.ModInfo;
 
@@ -65,6 +66,18 @@ public class HotkeyConfig extends BaseConfigOption<KeyBind> implements Hotkey
         super.setModInfo(modInfo);
         this.keyBind.setNameTranslationKey(this.nameTranslationKey);
         this.keyBind.setModInfo(modInfo);
+    }
+
+    @Override
+    public BaseConfig setNameTranslationKey(String key)
+    {
+        this.keyBind.setNameTranslationKey(key);
+        return super.setNameTranslationKey(key);
+    }
+
+    public void setHotkeyCallback(HotkeyCallback callback)
+    {
+        this.keyBind.setCallback(callback);
     }
 
     @Override
