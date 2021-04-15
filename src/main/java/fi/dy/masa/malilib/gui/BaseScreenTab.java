@@ -20,7 +20,7 @@ public class BaseScreenTab implements ScreenTab
     public BaseScreenTab(ModInfo modInfo, String name, Predicate<GuiScreen> screenChecker,
                          Function<GuiScreen, BaseScreen> screenFactory)
     {
-        this(name, modInfo.getModId() + ".label.config_tab." + name, screenChecker, screenFactory);
+        this(name, modInfo.getModId() + ".label.screen_tab." + name, screenChecker, screenFactory);
     }
 
     public BaseScreenTab(String name, String translationKey, Predicate<GuiScreen> screenChecker,
