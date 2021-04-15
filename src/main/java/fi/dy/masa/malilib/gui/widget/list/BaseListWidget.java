@@ -481,6 +481,11 @@ public abstract class BaseListWidget extends ContainerWidget
             }
         }
 
+        if (super.onKeyTyped(keyCode, scanCode, modifiers))
+        {
+            return true;
+        }
+
         if (this.allowKeyboardNavigation)
         {
                  if (keyCode == Keyboard.KEY_UP)    this.offsetSelectionOrScrollbar(-1, true);
@@ -489,12 +494,12 @@ public abstract class BaseListWidget extends ContainerWidget
             else if (keyCode == Keyboard.KEY_NEXT)  this.offsetSelectionOrScrollbar(this.visibleListEntries / 2, true);
             else if (keyCode == Keyboard.KEY_HOME)  this.offsetSelectionOrScrollbar(-this.getTotalListWidgetCount(), true);
             else if (keyCode == Keyboard.KEY_END)   this.offsetSelectionOrScrollbar(this.getTotalListWidgetCount(), true);
-            else return super.onKeyTyped(keyCode, scanCode, modifiers);
+            else return false;
 
             return true;
         }
 
-        return super.onKeyTyped(keyCode, scanCode, modifiers);
+        return false;
     }
 
     @Override
