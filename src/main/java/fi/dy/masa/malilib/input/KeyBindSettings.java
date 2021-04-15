@@ -7,6 +7,7 @@ import fi.dy.masa.malilib.util.JsonUtils;
 public class KeyBindSettings
 {
     public static final KeyBindSettings INGAME_DEFAULT              = new KeyBindSettings(Context.INGAME, KeyAction.PRESS, true, true, false, CancelCondition.ALWAYS);
+    public static final KeyBindSettings INGAME_SUCCESS              = new KeyBindSettings(Context.INGAME, KeyAction.PRESS, true, true, false, CancelCondition.ON_SUCCESS);
     public static final KeyBindSettings INGAME_BOTH                 = new KeyBindSettings(Context.INGAME, KeyAction.BOTH, true, true, false, CancelCondition.ALWAYS);
     public static final KeyBindSettings INGAME_MODIFIER             = new KeyBindSettings(Context.INGAME, KeyAction.PRESS, true, false, false, CancelCondition.NEVER);
     public static final KeyBindSettings INGAME_MODIFIER_EMPTY       = new KeyBindSettings(Context.INGAME, KeyAction.PRESS, true, false, false, CancelCondition.NEVER, true);

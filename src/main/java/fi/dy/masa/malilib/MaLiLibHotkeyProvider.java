@@ -20,7 +20,7 @@ public class MaLiLibHotkeyProvider implements HotkeyProvider
     @Override
     public List<? extends Hotkey> getAllHotkeys()
     {
-        return ListUtils.getAppendedList(MaLiLibConfigs.Hotkeys.HOTKEYS, Collections.singletonList(MaLiLibConfigs.Debug.GUI_DEBUG_KEY));
+        return ListUtils.getAppendedList(MaLiLibConfigs.Hotkeys.FUNCTIONAL_HOTKEYS, Collections.singletonList(MaLiLibConfigs.Debug.GUI_DEBUG_KEY));
     }
 
     @Override
@@ -30,6 +30,6 @@ public class MaLiLibHotkeyProvider implements HotkeyProvider
 
         return ImmutableList.of(
                 new HotkeyCategory(modInfo, "malilib.hotkeys.category.debug_hotkeys"  , ImmutableList.of(MaLiLibConfigs.Debug.GUI_DEBUG_KEY)),
-                new HotkeyCategory(modInfo, "malilib.hotkeys.category.generic_hotkeys", MaLiLibConfigs.Hotkeys.HOTKEYS));
+                new HotkeyCategory(modInfo, "malilib.hotkeys.category.generic_hotkeys", MaLiLibConfigs.Hotkeys.FUNCTIONAL_HOTKEYS));
     }
 }
