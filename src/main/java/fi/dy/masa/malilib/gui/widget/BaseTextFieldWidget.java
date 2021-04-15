@@ -752,7 +752,8 @@ public class BaseTextFieldWidget extends BackgroundWidget
             // Clear the text field on right click
             if (mouseButton == 1)
             {
-                this.setText("");
+                this.setTextInternal("");
+                this.setCursorToEnd();
             }
             else
             {
