@@ -5,12 +5,14 @@ import java.util.List;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.ValueChangeCallback;
 import fi.dy.masa.malilib.config.ValueLoadCallback;
+import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.ModInfo;
 
 public abstract class BaseConfigOption<T> extends BaseConfig implements ConfigOption<T>
 {
-    protected final List<String> lockOverrideMessages = new ArrayList<>();
+    protected final List<String> lockOverrideMessages = new ArrayList<>(0);
+    protected final List<EventListener> valueChangeListeners = new ArrayList<>(0);
     protected String prettyNameTranslationKey;
     protected boolean locked;
     @Nullable protected ValueChangeCallback<T> valueChangeCallback;
@@ -127,11 +129,22 @@ public abstract class BaseConfigOption<T> extends BaseConfig implements ConfigOp
         this.valueLoadCallback = callback;
     }
 
+    @Override
+    public void addValueChangeListener(EventListener listener)
+    {
+        this.valueChangeListeners.add(listener);
+    }
+
     public void onValueChanged(T newValue, T oldValue)
     {
         if (this.valueChangeCallback != null)
         {
             this.valueChangeCallback.onValueChanged(newValue, oldValue);
+        }
+
+        for (EventListener listener : this.valueChangeListeners)
+        {
+            listener.onEvent();
         }
     }
 

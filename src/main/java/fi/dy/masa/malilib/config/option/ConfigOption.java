@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.ValueChangeCallback;
 import fi.dy.masa.malilib.config.ValueLoadCallback;
+import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.util.data.ModInfo;
 
 public interface ConfigOption<T> extends ConfigInfo
@@ -31,7 +32,7 @@ public interface ConfigOption<T> extends ConfigInfo
     /**
      * Returns true if the value of this config has been changed since
      * it was last saved to file.
-     * @return
+     * @return true if the config has been modified since last saving
      */
     boolean isDirty();
 
@@ -46,7 +47,7 @@ public interface ConfigOption<T> extends ConfigInfo
      * type-specific methods to avoid boxing/unboxing.
      * This method is meant more for some of the config screen and other config
      * system related code, to make things a bit more generic there.
-     * @return
+     * @return the current value of the config
      */
     T getValue();
 
@@ -60,7 +61,7 @@ public interface ConfigOption<T> extends ConfigInfo
      * Returns a list of old internal names this config used to go by, if any.
      * This allows reading the user-set values from config files that still use
      * the old name, if the config has since been renamed.
-     * @return
+     * @return a list of old names to fall back to if the current name does not exist in the config file
      */
     default List<String> getOldNames()
     {
@@ -80,9 +81,15 @@ public interface ConfigOption<T> extends ConfigInfo
     void setValueLoadCallback(@Nullable ValueLoadCallback<T> callback);
 
     /**
+     * Adds a simple value change listener, which does not get the current value as an argument.
+     * There can be multiple listeners added simultaneously.
+     * @param listener the listener to add to the list
+     */
+    void addValueChangeListener(EventListener listener);
+
+    /**
      * Whether or not this config is currently locked to its current value,
      * and can not be changed without unlocking.
-     *
      * @return true if the config is locked
      */
     boolean isLocked();
