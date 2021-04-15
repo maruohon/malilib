@@ -1,11 +1,7 @@
 package fi.dy.masa.malilib.util.data;
 
-public interface RangedDoubleStorage
+public interface RangedDoubleStorage extends DoubleStorage
 {
-    double getDoubleValue();
-
-    boolean setDoubleValue(double newValue);
-
     double getMinDoubleValue();
 
     double getMaxDoubleValue();

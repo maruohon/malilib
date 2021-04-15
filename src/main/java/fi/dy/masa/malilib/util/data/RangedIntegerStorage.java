@@ -1,11 +1,7 @@
 package fi.dy.masa.malilib.util.data;
 
-public interface RangedIntegerStorage
+public interface RangedIntegerStorage extends IntegerStorage
 {
-    int getIntegerValue();
-
-    boolean setIntegerValue(int newValue);
-
     int getMinIntegerValue();
 
     int getMaxIntegerValue();
