@@ -117,7 +117,9 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
     public void switchToTab(ScreenTab tab)
     {
         this.saveScrollBarPositionForCurrentTab();
-        this.setCurrentTab(tab);
+
+        super.switchToTab(tab);
+
         this.restoreScrollBarPositionForCurrentTab();
         this.reCreateConfigWidgets();
     }

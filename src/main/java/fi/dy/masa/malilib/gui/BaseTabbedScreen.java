@@ -86,7 +86,7 @@ public abstract class BaseTabbedScreen extends BaseScreen
 
     public void switchToTab(ScreenTab tab)
     {
-        tab.openScreen(this);
+        this.setCurrentTab(tab);
     }
 
     @Override
@@ -96,7 +96,7 @@ public abstract class BaseTabbedScreen extends BaseScreen
 
         if (tab != null && tab.canUseCurrentScreen(this) == false)
         {
-            tab.openScreen(this);
+            tab.createAndOpenScreen(this);
             return;
         }
 

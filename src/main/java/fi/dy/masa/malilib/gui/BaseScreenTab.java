@@ -30,7 +30,7 @@ public class BaseScreenTab implements ScreenTab
         this.translationKey = translationKey;
         this.screenChecker = screenChecker;
         this.screenFactory = screenFactory;
-        this.listenerFactory = (scr) -> (btn, mbtn) -> this.switchTab(scr);
+        this.listenerFactory = (scr) -> (btn, mbtn) -> this.openTab(scr);
     }
 
     public BaseScreenTab(String name, String translationKey, Predicate<GuiScreen> screenChecker,
@@ -88,11 +88,10 @@ public class BaseScreenTab implements ScreenTab
     }
 
     /**
-     * Switches the active tab, or opens a new screen if the current screen
+     * Switches the active tab to this tab, or opens a new screen if the current screen
      * is not suitable for this tab.
-     * @param currentScreen
      */
-    public void switchTab(@Nullable BaseTabbedScreen currentScreen)
+    public void openTab(@Nullable BaseTabbedScreen currentScreen)
     {
         if (currentScreen != null && this.canUseCurrentScreen(currentScreen))
         {
@@ -100,7 +99,7 @@ public class BaseScreenTab implements ScreenTab
         }
         else
         {
-            this.openScreen(currentScreen);
+            this.createAndOpenScreen(currentScreen);
         }
     }
 }

@@ -49,7 +49,7 @@ public interface ScreenTab extends NameIdentifiable
      * Opens the screen for this tab
      * @param currentScreen
      */
-    default void openScreen(@Nullable GuiScreen currentScreen)
+    default void createAndOpenScreen(@Nullable GuiScreen currentScreen)
     {
         GuiScreen screen = this.createScreen(currentScreen);
 
