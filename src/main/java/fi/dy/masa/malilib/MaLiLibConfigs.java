@@ -28,6 +28,8 @@ public class MaLiLibConfigs
         public static final OptionListConfig<KeybindDisplayMode> KEYBIND_DISPLAY        = new OptionListConfig<>("keybindDisplay", KeybindDisplayMode.NONE, KeybindDisplayMode.VALUES);
 
         public static final IntegerConfig ACTION_BAR_MESSAGE_LIMIT              = new IntegerConfig("actionBarMessageLimit", 3, 1, 16);
+        public static final BooleanConfig ACTION_PROMPT_FUZZY_SEARCH            = new BooleanConfig("actionPromptFuzzySearch", false);
+        public static final BooleanConfig ACTION_PROMPT_REMEMBER_SEARCH         = new BooleanConfig("actionPromptRememberSearch", false);
         public static final IntegerConfig CONFIG_BACKUP_COUNT                   = new IntegerConfig("configBackupCount", 20, 0, 200);
         public static final BooleanConfig CONFIG_WIDGET_BACKGROUND              = new BooleanConfig("configWidgetBackground", true);
         public static final IntegerConfig CUSTOM_SCREEN_SCALE                   = new IntegerConfig("customScreenScale", 2, 0, 8);
@@ -44,6 +46,8 @@ public class MaLiLibConfigs
 
         public static final ImmutableList<ConfigOption<?>> OPTIONS = ImmutableList.of(
                 ACTION_BAR_MESSAGE_LIMIT,
+                ACTION_PROMPT_FUZZY_SEARCH,
+                ACTION_PROMPT_REMEMBER_SEARCH,
                 CONFIG_BACKUP_COUNT,
                 CONFIG_WIDGET_BACKGROUND,
                 CONFIG_SEARCH_DEFAULT_SCOPE,
@@ -76,12 +80,14 @@ public class MaLiLibConfigs
         public static final KeyBindSettings SCROLL_ADJUST = KeyBindSettings.create(Context.INGAME, KeyAction.PRESS, true, true, false, CancelCondition.ON_SUCCESS, false, 50, false, false);
 
         public static final HotkeyConfig IGNORED_KEYS                           = new HotkeyConfig("ignoredKeys", "", KeyBindSettings.INGAME_SUCCESS);
+        public static final HotkeyConfig OPEN_ACTION_PROMPT_SCREEN              = new HotkeyConfig("openActionPromptScreen", "");
         public static final HotkeyConfig OPEN_CONFIG_SCREEN                     = new HotkeyConfig("openConfigScreen", "A,C");
         public static final HotkeyConfig SCROLL_VALUE_ADJUST_DECREASE           = new HotkeyConfig("scrollValueAdjustDecrease", "SCROLL_DOWN", SCROLL_ADJUST);
         public static final HotkeyConfig SCROLL_VALUE_ADJUST_INCREASE           = new HotkeyConfig("scrollValueAdjustIncrease", "SCROLL_UP", SCROLL_ADJUST);
         public static final HotkeyConfig SCROLL_VALUE_ADJUST_MODIFIER           = new HotkeyConfig("scrollValueAdjustModifier", "", KeyBindSettings.INGAME_MODIFIER_EMPTY);
 
         public static final ImmutableList<HotkeyConfig> FUNCTIONAL_HOTKEYS = ImmutableList.of(
+                OPEN_ACTION_PROMPT_SCREEN,
                 OPEN_CONFIG_SCREEN,
                 SCROLL_VALUE_ADJUST_DECREASE,
                 SCROLL_VALUE_ADJUST_INCREASE,
@@ -116,10 +122,20 @@ public class MaLiLibConfigs
         );
     }
 
+    public static class Internal
+    {
+        public static final StringConfig ACTION_PROMPT_SEARCH_TEXT      = new StringConfig("actionPromptSearchText", "");
+
+        public static final ImmutableList<ConfigOption<?>> OPTIONS = ImmutableList.of(
+                ACTION_PROMPT_SEARCH_TEXT
+        );
+    }
+
     public static final ImmutableList<ConfigOptionCategory> CATEGORIES = ImmutableList.of(
             BaseConfigOptionCategory.normal("Generic",  Generic.OPTIONS),
             BaseConfigOptionCategory.normal("Hotkeys",  Hotkeys.HOTKEYS),
             BaseConfigOptionCategory.normal("Info",     Info.OPTIONS),
-            BaseConfigOptionCategory.normal("Debug",    Debug.OPTIONS)
+            BaseConfigOptionCategory.normal("Debug",    Debug.OPTIONS),
+            BaseConfigOptionCategory.normal("Internal", Internal.OPTIONS)
     );
 }

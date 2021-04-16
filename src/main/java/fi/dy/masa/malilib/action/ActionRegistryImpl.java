@@ -101,7 +101,7 @@ public class ActionRegistryImpl implements ActionRegistry
     protected List<NamedAction> getSortedActions()
     {
         List<NamedAction> list = new ArrayList<>(this.allActions);
-        list.sort(Comparator.comparing(NamedAction::getRegistryName));
+        list.sort(Comparator.comparing(NamedAction::getName));
         return list;
     }
 }

@@ -56,6 +56,33 @@ public class StringUtils
         return str;
     }
 
+    /**
+     * Returns true if all the characters from needle are found in haystack,
+     * and they are found in the same order. There can be an arbitrary number of characters between
+     * each found character in the haystack, as long as all of them are found,
+     * and such that for example the third character of needle is found after the second character's
+     * first valid match in haystack.
+     */
+    public static boolean containsOrderedCharacters(String needle, String haystack)
+    {
+        int needleLength = needle.length();
+        int startIndex = 0;
+
+        for (int i = 0; i < needleLength; ++i)
+        {
+            startIndex = haystack.indexOf(needle.charAt(i), startIndex);
+
+            if (startIndex == -1)
+            {
+                return false;
+            }
+
+            ++startIndex;
+        }
+
+        return true;
+    }
+
     public static void sendOpenFileChatMessage(net.minecraft.command.ICommandSender sender, String messageKey, File file)
     {
         net.minecraft.util.text.TextComponentString name = new net.minecraft.util.text.TextComponentString(file.getName());

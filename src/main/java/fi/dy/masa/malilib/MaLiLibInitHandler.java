@@ -22,6 +22,7 @@ public class MaLiLibInitHandler implements InitializationHandler
 
         HotkeyManager.INSTANCE.registerHotkeyProvider(MaLiLibHotkeyProvider.INSTANCE);
 
+        MaLiLibConfigs.Hotkeys.OPEN_ACTION_PROMPT_SCREEN.getKeyBind().setCallback(HotkeyCallback.of(MaLiLibActions.OPEN_ACTION_PROMPT_SCREEN));
         MaLiLibConfigs.Hotkeys.OPEN_CONFIG_SCREEN.getKeyBind().setCallback(HotkeyCallback.of(MaLiLibActions.OPEN_CONFIG_SCREEN));
         MaLiLibConfigs.Hotkeys.SCROLL_VALUE_ADJUST_DECREASE.getKeyBind().setCallback(HotkeyCallback.of(MaLiLibActions.SCROLL_VALUE_ADJUST_DECREASE.getAction()));
         MaLiLibConfigs.Hotkeys.SCROLL_VALUE_ADJUST_INCREASE.getKeyBind().setCallback(HotkeyCallback.of(MaLiLibActions.SCROLL_VALUE_ADJUST_INCREASE.getAction()));

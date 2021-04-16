@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.gui.widget;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
+import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.data.BooleanStorage;
@@ -17,11 +18,11 @@ public class CheckBoxWidget extends InteractableWidget
     protected int textColorChecked = 0xFFFFFFFF;
     protected int textColorUnchecked = 0xB0B0B0B0;
 
-    public CheckBoxWidget(int x, int y, MultiIcon iconUnchecked, MultiIcon iconChecked, @Nullable String text)
+    public CheckBoxWidget(int x, int y, MultiIcon iconUnchecked, MultiIcon iconChecked, @Nullable String translationKey)
     {
         super(x, y, 0, 0);
 
-        this.displayText = text != null ? StyledTextLine.of(text) : null;
+        this.displayText = translationKey != null ? StyledTextLine.translatedOf(translationKey) : null;
         this.widgetUnchecked = iconUnchecked;
         this.widgetChecked = iconChecked;
         this.storage = new BooleanConfig("", false);
@@ -32,9 +33,14 @@ public class CheckBoxWidget extends InteractableWidget
         this.setHeight(textWidth > 0 ? Math.max(this.fontHeight, ih) : ih);
     }
 
-    public CheckBoxWidget(int x, int y, MultiIcon iconUnchecked, MultiIcon iconChecked, @Nullable String text, String hoverInfoKey)
+    public CheckBoxWidget(int x, int y, @Nullable String translationKey, String hoverInfoKey)
     {
-        this(x, y, iconUnchecked, iconChecked, text);
+        this(x, y, DefaultIcons.CHECKMARK_OFF, DefaultIcons.CHECKMARK_ON, translationKey, hoverInfoKey);
+    }
+
+    public CheckBoxWidget(int x, int y, MultiIcon iconUnchecked, MultiIcon iconChecked, @Nullable String translationKey, String hoverInfoKey)
+    {
+        this(x, y, iconUnchecked, iconChecked, translationKey);
 
         this.translateAndAddHoverStrings(hoverInfoKey);
     }
@@ -104,7 +110,7 @@ public class CheckBoxWidget extends InteractableWidget
 
         if (this.displayText != null)
         {
-            this.renderTextLine(x + icon.getWidth() + 3, y + this.getCenteredTextOffsetY(), z, textColor, true, this.displayText);
+            this.renderTextLine(x + icon.getWidth() + 3, y + this.getCenteredTextOffsetY() - 1, z, textColor, true, this.displayText);
         }
     }
 }
