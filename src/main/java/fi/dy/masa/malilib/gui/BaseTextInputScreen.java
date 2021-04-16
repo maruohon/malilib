@@ -47,6 +47,7 @@ public abstract class BaseTextInputScreen extends BaseScreen
     {
         GenericButton button = new GenericButton(x, y, -1, 20, translationKey);
         button.setWidth(Math.max(40, button.getWidth()));
+        button.setAutomaticWidth(false);
         return this.addButton(button, listener).getWidth();
     }
 
