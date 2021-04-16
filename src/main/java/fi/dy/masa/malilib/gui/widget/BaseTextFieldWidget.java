@@ -275,11 +275,6 @@ public class BaseTextFieldWidget extends BackgroundWidget
             this.notifyListenerIfNeeded();
         }
 
-        if (this.isFocused)
-        {
-            Keyboard.enableRepeatEvents(true);
-        }
-
         return this;
     }
 

@@ -6,16 +6,15 @@ import java.util.Locale;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
-import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.position.EdgeInt;
+import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
-import fi.dy.masa.malilib.gui.widget.InteractableWidget;
 import fi.dy.masa.malilib.gui.widget.ContainerWidget;
+import fi.dy.masa.malilib.gui.widget.InteractableWidget;
 import fi.dy.masa.malilib.gui.widget.ScrollBarWidget;
 import fi.dy.masa.malilib.gui.widget.SearchBarWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.BaseListEntryWidget;
@@ -67,6 +66,11 @@ public abstract class BaseListWidget extends ContainerWidget
     public List<BaseListEntryWidget> getListEntryWidgets()
     {
         return this.entryWidgets;
+    }
+
+    public void setAllowKeyboardNavigation(boolean allowKeyboardNavigation)
+    {
+        this.allowKeyboardNavigation = allowKeyboardNavigation;
     }
 
     public void setRequestedScrollBarPosition(int position)
@@ -176,8 +180,6 @@ public abstract class BaseListWidget extends ContainerWidget
         this.reAddSubWidgets();
         this.updateSubWidgetsToGeometryChanges();
         this.refreshEntries();
-
-        Keyboard.enableRepeatEvents(true);
     }
 
     protected void updatePositioningAndElements()
@@ -721,8 +723,6 @@ public abstract class BaseListWidget extends ContainerWidget
         {
             this.renderWidget(i, diffX, diffY, diffZ, mouseX, mouseY, isActiveGui, hoveredWidgetId);
         }
-
-        GlStateManager.disableLighting();
     }
 
     protected void renderWidget(int widgetIndex, int diffX, int diffY, float diffZ, int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)

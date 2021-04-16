@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib;
 
+import java.util.Collections;
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.config.category.BaseConfigOptionCategory;
 import fi.dy.masa.malilib.config.category.ConfigOptionCategory;
@@ -15,6 +16,7 @@ import fi.dy.masa.malilib.input.CancelCondition;
 import fi.dy.masa.malilib.input.Context;
 import fi.dy.masa.malilib.input.KeyAction;
 import fi.dy.masa.malilib.input.KeyBindSettings;
+import fi.dy.masa.malilib.util.ListUtils;
 
 public class MaLiLibConfigs
 {
@@ -79,20 +81,14 @@ public class MaLiLibConfigs
         public static final HotkeyConfig SCROLL_VALUE_ADJUST_INCREASE           = new HotkeyConfig("scrollValueAdjustIncrease", "SCROLL_UP", SCROLL_ADJUST);
         public static final HotkeyConfig SCROLL_VALUE_ADJUST_MODIFIER           = new HotkeyConfig("scrollValueAdjustModifier", "", KeyBindSettings.INGAME_MODIFIER_EMPTY);
 
-        public static final ImmutableList<HotkeyConfig> HOTKEYS = ImmutableList.of(
-                IGNORED_KEYS,
-                OPEN_CONFIG_SCREEN,
-                SCROLL_VALUE_ADJUST_DECREASE,
-                SCROLL_VALUE_ADJUST_INCREASE,
-                SCROLL_VALUE_ADJUST_MODIFIER
-        );
-
         public static final ImmutableList<HotkeyConfig> FUNCTIONAL_HOTKEYS = ImmutableList.of(
                 OPEN_CONFIG_SCREEN,
                 SCROLL_VALUE_ADJUST_DECREASE,
                 SCROLL_VALUE_ADJUST_INCREASE,
                 SCROLL_VALUE_ADJUST_MODIFIER
         );
+
+        public static final ImmutableList<HotkeyConfig> HOTKEYS = ListUtils.getAppendedList(FUNCTIONAL_HOTKEYS, Collections.singletonList(IGNORED_KEYS));
     }
 
     public static class Debug

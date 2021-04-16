@@ -67,7 +67,7 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
         this.sourceSelectionDropdown = new DropDownListWidget<>(x, y - 16, -1, 15, 60, 10, Scope.VALUES, Scope::getDisplayName, null);
         this.sourceSelectionDropdown.setSelectedEntry(MaLiLibConfigs.Generic.CONFIG_SEARCH_DEFAULT_SCOPE.getValue());
         this.sourceSelectionDropdown.setSelectionListener((s) -> filterChangeListener.onEvent());
-        this.sourceSelectionDropdown.setOpenStateHoverText(StringUtils.translate("malilib.gui.label.hover.config_search_default_scope"));
+        this.sourceSelectionDropdown.setOpenStateHoverText(StringUtils.translate("malilib.gui.hover.config_search_default_scope"));
 
         this.typeFilterDropdown = new DropDownListWidget<>(x + 100, y - 16, -1, 15, 160, 10, TypeFilter.VALUES, TypeFilter::getDisplayName, null);
         this.typeFilterDropdown.setSelectedEntry(TypeFilter.ALL);

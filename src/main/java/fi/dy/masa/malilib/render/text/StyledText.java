@@ -63,7 +63,7 @@ public class StyledText
 
         for (String str : strings)
         {
-            builder.add(StyledTextLine.of(str));
+            builder.addAll(StyledText.of(str).lines);
         }
 
         return new StyledText(builder.build());

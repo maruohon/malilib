@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
-import org.lwjgl.input.Keyboard;
 import fi.dy.masa.malilib.gui.widget.CyclableContainerWidget;
 import fi.dy.masa.malilib.gui.widget.button.BaseButton;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
@@ -108,8 +107,6 @@ public abstract class BaseTabbedScreen extends BaseScreen
         {
             this.createTabButtonContainerWidget();
         }
-
-        Keyboard.enableRepeatEvents(true);
     }
 
     @Override

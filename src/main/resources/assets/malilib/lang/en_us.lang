@@ -161,6 +161,8 @@ malilib.label.cancel_condition.on_failure=On Failure
 malilib.label.cancel_condition.on_success=On Success
 
 malilib.gui.hover.config_info_entry_widget=§7Display name: §f%s\n§7Internal name: §f%s\n§7Config type: §6%s
+malilib.gui.hover.config_search_default_scope=You can change the default scope value that this drop down widget is set to in malilib's configs: Generic > Config Search Default Scope
+malilib.gui.hover.toast_renderer_entry_name=%s (§b%s§r)
 
 malilib.gui.label.color_editor.current_color=Current color:
 
@@ -184,9 +186,6 @@ malilib.gui.label.confirm_config_reset=Are you sure you wan to reset all the con
 
 malilib.gui.label_error.no_widget_factory_for_config_type=§cUnknown config type '%s' (no widget factory registered)§r
 
-malilib.gui.label.hover.config_search_default_scope=You can change the default scope value that this drop down widget is set to in malilib's configs: Generic > Config Search Default Scope
-malilib.gui.label.hover.screen_location=Screen Location: §b%s
-malilib.gui.label.hover.toast_renderer_entry_name=%s (§b%s§r)
 
 malilib.gui.label.keybind_display.actions=Actions
 malilib.gui.label.keybind_display.keys=Keys

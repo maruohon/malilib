@@ -41,8 +41,6 @@ public abstract class BaseTextInputScreen extends BaseScreen
         x += 2 + this.createButton(x, y, "malilib.gui.button.colored.ok", (btn, mbtn) -> this.closeScreenIfValueApplied());
         x += 2 + this.createButton(x, y, "malilib.gui.button.reset", (btn, mbtn) -> this.resetTextFieldToOriginalText());
         this.createButton(x, y, "malilib.gui.button.colored.cancel", (btn, mbtn) -> this.closeScreen(true));
-
-        Keyboard.enableRepeatEvents(true);
     }
 
     protected int createButton(int x, int y, String translationKey, ButtonActionListener listener)
