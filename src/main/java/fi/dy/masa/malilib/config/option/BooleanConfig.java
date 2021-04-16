@@ -1,8 +1,9 @@
 package fi.dy.masa.malilib.config.option;
 
 import fi.dy.masa.malilib.util.StringUtils;
+import fi.dy.masa.malilib.util.data.BooleanStorage;
 
-public class BooleanConfig extends BaseGenericConfig<Boolean>
+public class BooleanConfig extends BaseGenericConfig<Boolean> implements BooleanStorage
 {
     protected boolean booleanValue;
     protected boolean hasOverride;
@@ -25,9 +26,20 @@ public class BooleanConfig extends BaseGenericConfig<Boolean>
         this.booleanValue = defaultValue;
     }
 
+    @Override
     public boolean getBooleanValue()
     {
         return this.hasOverride ? this.overrideValue : this.booleanValue;
+    }
+
+    @Override
+    public void setBooleanValue(boolean value)
+    {
+        if (this.locked == false)
+        {
+            this.booleanValue = value;
+            super.setValue(value);
+        }
     }
 
     @Override
@@ -38,7 +50,7 @@ public class BooleanConfig extends BaseGenericConfig<Boolean>
 
     public void toggleBooleanValue()
     {
-        this.setValue(! this.booleanValue);
+        this.setBooleanValue(! this.booleanValue);
     }
 
     @Override
