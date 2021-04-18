@@ -1,7 +1,6 @@
 package fi.dy.masa.malilib.input.callback;
 
 import fi.dy.masa.malilib.action.Action;
-import fi.dy.masa.malilib.action.ActionContext;
 import fi.dy.masa.malilib.action.NamedAction;
 import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.input.KeyAction;
@@ -23,7 +22,7 @@ public interface HotkeyCallback
      */
     static HotkeyCallback of(final Action action)
     {
-        return (ka, k) -> action.execute(new ActionContext());
+        return new ActionHotkeyCallback(action);
     }
 
     /**
@@ -31,6 +30,6 @@ public interface HotkeyCallback
      */
     static HotkeyCallback of(final NamedAction action)
     {
-        return (ka, k) -> action.getAction().execute(new ActionContext());
+        return new NamedActionHotkeyCallback(action);
     }
 }

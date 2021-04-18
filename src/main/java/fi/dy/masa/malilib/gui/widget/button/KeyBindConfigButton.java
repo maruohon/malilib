@@ -118,7 +118,8 @@ public class KeyBindConfigButton extends GenericButton
         return false;
     }
 
-    public void onKeyPressed(int keyCode, int scanCode, int modifiers)
+    @Override
+    public boolean onKeyTyped(int keyCode, int scanCode, int modifiers)
     {
         if (this.isSelected())
         {
@@ -140,7 +141,11 @@ public class KeyBindConfigButton extends GenericButton
             }
 
             this.updateDisplayString();
+
+            return true;
         }
+
+        return false;
     }
 
     @Override

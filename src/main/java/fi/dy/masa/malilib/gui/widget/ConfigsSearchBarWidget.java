@@ -199,7 +199,7 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
     {
         if (this.isSearchOpen() && this.hotkeySearchButton.isSelected())
         {
-            this.hotkeySearchButton.onKeyPressed(keyCode, scanCode, modifiers);
+            this.hotkeySearchButton.onKeyTyped(keyCode, scanCode, modifiers);
 
             if (keyCode == Keyboard.KEY_ESCAPE)
             {

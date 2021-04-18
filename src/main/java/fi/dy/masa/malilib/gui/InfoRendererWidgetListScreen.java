@@ -73,6 +73,8 @@ public class InfoRendererWidgetListScreen<WIDGET extends InfoRendererWidget> ext
     public void onGuiClosed()
     {
         super.onGuiClosed();
+
+        // Unconditionally save here, since we don't track the individual info container widget changes
         InfoWidgetManager.INSTANCE.saveToFile();
     }
 

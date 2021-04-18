@@ -22,7 +22,7 @@ import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.ModInfo;
 
-public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? extends ConfigInfo>> implements KeybindEditingScreen
+public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? extends ConfigInfo>> implements ConfigScreen, KeybindEditingScreen
 {
     protected final ModInfo modInfo;
     @Nullable protected EventListener configSaveListener;
@@ -165,7 +165,7 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
     {
         if (this.activeKeyBindButton != null)
         {
-            this.activeKeyBindButton.onKeyPressed(keyCode, scanCode, modifiers);
+            this.activeKeyBindButton.onKeyTyped(keyCode, scanCode, modifiers);
             return true;
         }
         else

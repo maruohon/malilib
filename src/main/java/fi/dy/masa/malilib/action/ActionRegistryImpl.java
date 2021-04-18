@@ -323,7 +323,7 @@ public class ActionRegistryImpl implements ActionRegistry
             if (action == null)
             {
                 // Preserve entries in the config file if a mod is temporarily disabled/removed, for example
-                action = DUMMY;
+                action = new NamedAction(ModInfo.NO_MOD, name, registryName, name, (ctx) -> ActionResult.PASS);
             }
 
             AliasAction aliasAction = new AliasAction(name, action);

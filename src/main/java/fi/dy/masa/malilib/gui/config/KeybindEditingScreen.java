@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.gui.config;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.widget.button.KeyBindConfigButton;
 
-public interface KeybindEditingScreen extends ConfigScreen
+public interface KeybindEditingScreen
 {
     /**
      * Sets or clears the currently active/selected hotkey config button.

@@ -7,6 +7,7 @@ import fi.dy.masa.malilib.event.dispatch.RenderEventDispatcher;
 import fi.dy.masa.malilib.event.dispatch.TickEventDispatcher;
 import fi.dy.masa.malilib.gui.config.ConfigTabRegistry;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
+import fi.dy.masa.malilib.input.CustomHotkeyManager;
 import fi.dy.masa.malilib.input.HotkeyManager;
 import fi.dy.masa.malilib.input.callback.HotkeyCallback;
 import fi.dy.masa.malilib.network.message.MessagePacketHandler;
@@ -21,6 +22,7 @@ public class MaLiLibInitHandler implements InitializationHandler
         ConfigTabRegistry.INSTANCE.registerConfigTabProvider(MaLiLibReference.MOD_INFO, MaLiLibConfigScreen::getConfigTabs);
 
         HotkeyManager.INSTANCE.registerHotkeyProvider(MaLiLibHotkeyProvider.INSTANCE);
+        HotkeyManager.INSTANCE.registerHotkeyProvider(CustomHotkeyManager.INSTANCE);
 
         MaLiLibConfigs.Hotkeys.OPEN_ACTION_PROMPT_SCREEN.getKeyBind().setCallback(HotkeyCallback.of(MaLiLibActions.OPEN_ACTION_PROMPT_SCREEN));
         MaLiLibConfigs.Hotkeys.OPEN_CONFIG_SCREEN.getKeyBind().setCallback(HotkeyCallback.of(MaLiLibActions.OPEN_CONFIG_SCREEN));

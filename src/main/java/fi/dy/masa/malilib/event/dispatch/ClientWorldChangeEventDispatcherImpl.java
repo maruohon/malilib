@@ -10,6 +10,7 @@ import fi.dy.masa.malilib.action.ActionRegistryImpl;
 import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.config.ConfigManagerImpl;
 import fi.dy.masa.malilib.event.ClientWorldChangeHandler;
+import fi.dy.masa.malilib.input.CustomHotkeyManager;
 import fi.dy.masa.malilib.input.HotkeyManager;
 import fi.dy.masa.malilib.overlay.InfoWidgetManager;
 
@@ -66,6 +67,7 @@ public class ClientWorldChangeEventDispatcherImpl implements ClientWorldChangeEv
         {
             ((ConfigManagerImpl) ConfigManager.INSTANCE).loadAllConfigs();
             ((ActionRegistryImpl) ActionRegistry.INSTANCE).loadFromFile();
+            CustomHotkeyManager.INSTANCE.loadFromFile();
             InfoWidgetManager.INSTANCE.loadFromFile();
             HotkeyManager.INSTANCE.updateUsedKeys();
         }
