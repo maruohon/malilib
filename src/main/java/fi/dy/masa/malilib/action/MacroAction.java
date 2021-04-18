@@ -35,6 +35,14 @@ public class MacroAction extends NamedAction
     }
 
     @Override
+    public String getWidgetDisplayName()
+    {
+        String name = this.getName();
+        int size = this.getActionList().size();
+        return StringUtils.translate("malilib.label.macro_action_entry_widget.name", name, size);
+    }
+
+    @Override
     public List<String> getHoverInfo()
     {
         List<String> lines = new ArrayList<>();

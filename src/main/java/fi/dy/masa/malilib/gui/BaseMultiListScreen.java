@@ -41,6 +41,14 @@ public class BaseMultiListScreen extends BaseTabbedScreen
     }
 
     @Override
+    protected void clearElements()
+    {
+        super.clearElements();
+
+        this.listWidgets.clear();
+    }
+
+    @Override
     protected InteractableWidget getTopHoveredWidget(int mouseX, int mouseY, @Nullable InteractableWidget highestFoundWidget)
     {
         highestFoundWidget = super.getTopHoveredWidget(mouseX, mouseY, highestFoundWidget);

@@ -207,6 +207,13 @@ public class ActionRegistryImpl implements ActionRegistry
         return this.allActions.get(name);
     }
 
+    @Nullable
+    @Override
+    public MacroAction getMacro(String name)
+    {
+        return this.macros.get(name);
+    }
+
     @Override
     public ImmutableList<NamedAction> getBaseActions()
     {

@@ -80,6 +80,13 @@ public class NamedAction
         return null;
     }
 
+    public String getWidgetDisplayName()
+    {
+        String name = this.getName();
+        String modName = this.getMod().getModName();
+        return StringUtils.translate("malilib.label.named_action_entry_widget.name", name, modName);
+    }
+
     public List<String> getHoverInfo()
     {
         List<String> list = new ArrayList<>();

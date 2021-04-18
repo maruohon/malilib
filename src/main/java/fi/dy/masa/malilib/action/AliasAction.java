@@ -40,6 +40,15 @@ public class AliasAction extends NamedAction
     }
 
     @Override
+    public String getWidgetDisplayName()
+    {
+        String alias = this.getName();
+        String originalName = this.getOriginalName();
+        String modName = this.getMod().getModName();
+        return StringUtils.translate("malilib.label.named_action_alias_entry_widget.name", alias, modName, originalName);
+    }
+
+    @Override
     public List<String> getHoverInfo()
     {
         List<String> list = new ArrayList<>();

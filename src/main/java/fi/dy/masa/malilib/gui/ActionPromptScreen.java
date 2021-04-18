@@ -6,11 +6,12 @@ import java.util.Locale;
 import org.lwjgl.input.Keyboard;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.action.ActionContext;
-import fi.dy.masa.malilib.action.ActionRegistry;
+import fi.dy.masa.malilib.action.ActionList;
 import fi.dy.masa.malilib.action.NamedAction;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.CheckBoxWidget;
+import fi.dy.masa.malilib.gui.widget.DropDownListWidget;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.ActionPromptNamedActionEntryWidget;
 import fi.dy.masa.malilib.input.ActionResult;
@@ -19,15 +20,19 @@ import fi.dy.masa.malilib.util.StringUtils;
 public class ActionPromptScreen extends BaseListScreen<DataListWidget<NamedAction>>
 {
     protected final List<NamedAction> filteredActions = new ArrayList<>();
+    protected final DropDownListWidget<ActionList> dropDownWidget;
     protected final BaseTextFieldWidget searchTextField;
     protected final CheckBoxWidget fuzzySearchCheckBoxWidget;
     protected final CheckBoxWidget rememberSearchCheckBoxWidget;
 
     public ActionPromptScreen()
     {
-        super(0, 16, 0, 16);
+        super(0, 32, 0, 32);
 
-        this.setScreenWidthAndHeight(320, 132);
+        List<ActionList> lists = ActionList.getActionLists();
+        this.dropDownWidget = new DropDownListWidget<>(0, 0, -1, 16, 80, 4, lists, ActionList::getDisplayName, null);
+        this.dropDownWidget.setSelectedEntry(ActionList.getSelectedList(lists));
+        this.dropDownWidget.setSelectionListener(this::onListSelectionChanged);
 
         String label = "malilib.gui.label.action_prompt_screen.remember_search";
         String hoverKey = "malilib.gui.hover.action_prompt_screen.remember_search_text";
@@ -39,9 +44,12 @@ public class ActionPromptScreen extends BaseListScreen<DataListWidget<NamedActio
         this.fuzzySearchCheckBoxWidget = new CheckBoxWidget(0, 0, label, hoverKey);
         this.fuzzySearchCheckBoxWidget.setBooleanStorage(MaLiLibConfigs.Generic.ACTION_PROMPT_FUZZY_SEARCH);
 
-        this.searchTextField = new BaseTextFieldWidget(0, 0, this.screenWidth - 12, 16);
+        int screenWidth = 320;
+        this.searchTextField = new BaseTextFieldWidget(0, 0, screenWidth - 12, 16);
         this.searchTextField.setListener(this::updateFilteredList);
         this.searchTextField.setUpdateListenerAlways(true);
+
+        this.setScreenWidthAndHeight(screenWidth, 132);
     }
 
     @Override
@@ -51,15 +59,17 @@ public class ActionPromptScreen extends BaseListScreen<DataListWidget<NamedActio
 
         super.initScreen();
 
+        this.addWidget(this.dropDownWidget);
         this.addWidget(this.searchTextField);
         this.addWidget(this.rememberSearchCheckBoxWidget);
         this.addWidget(this.fuzzySearchCheckBoxWidget);
 
         int x = this.x + this.screenWidth - DefaultIcons.CHECKMARK_OFF.getWidth();
-        this.rememberSearchCheckBoxWidget.setPosition(x, this.y - 6);
-        this.fuzzySearchCheckBoxWidget.setPosition(x, this.y + 6);
-        this.searchTextField.setPosition(this.x, this.y);
+        this.rememberSearchCheckBoxWidget.setPosition(x, this.y);
+        this.fuzzySearchCheckBoxWidget.setPosition(x, this.y + 12);
 
+        this.dropDownWidget.setPosition(this.x, this.y);
+        this.searchTextField.setPosition(this.x, this.y + 16);
         this.searchTextField.setFocused(true);
 
         if (MaLiLibConfigs.Generic.ACTION_PROMPT_REMEMBER_SEARCH.getBooleanValue())
@@ -67,7 +77,7 @@ public class ActionPromptScreen extends BaseListScreen<DataListWidget<NamedActio
             this.searchTextField.setText(MaLiLibConfigs.Internal.ACTION_PROMPT_SEARCH_TEXT.getStringValue());
         }
 
-        this.updateFilteredList(this.searchTextField.getText());
+        this.updateFilteredList();
     }
 
     @Override
@@ -104,9 +114,9 @@ public class ActionPromptScreen extends BaseListScreen<DataListWidget<NamedActio
         return super.onKeyTyped(keyCode, scanCode, modifiers);
     }
 
-    protected List<NamedAction> getActions()
+    protected List<? extends NamedAction> getActions()
     {
-        return ActionRegistry.INSTANCE.getAllActions();
+        return this.dropDownWidget.getSelectedEntry().getActions();
     }
 
     protected List<NamedAction> getFilteredActions()
@@ -127,6 +137,17 @@ public class ActionPromptScreen extends BaseListScreen<DataListWidget<NamedActio
         }
 
         return text.contains(searchTerm);
+    }
+
+    protected void onListSelectionChanged(ActionList list)
+    {
+        MaLiLibConfigs.Internal.ACTION_PROMPT_SELECTED_LIST.setValue(list.getName());
+        this.updateFilteredList();
+    }
+
+    protected void updateFilteredList()
+    {
+        this.updateFilteredList(this.searchTextField.getText());
     }
 
     protected void updateFilteredList(String searchText)

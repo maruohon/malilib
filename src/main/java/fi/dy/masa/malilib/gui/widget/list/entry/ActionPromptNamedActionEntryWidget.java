@@ -10,14 +10,9 @@ public class ActionPromptNamedActionEntryWidget extends NamedActionEntryWidget
 {
     public ActionPromptNamedActionEntryWidget(int x, int y, int width, int height, int listIndex,
                                               int originalListIndex, @Nullable NamedAction data,
-                                              @Nullable DataListWidget<? extends NamedAction> listWidget)
+                                              @Nullable DataListWidget<NamedAction> listWidget)
     {
         super(x, y, width, height, listIndex, originalListIndex, data, listWidget);
-
-        this.renderHoverBackground = false;
-        this.borderEnabledHovered = true;
-        this.setHoveredBorderColor(0xFF00C0C0);
-        this.setHoveredBorderWidth(1);
     }
 
     @Override

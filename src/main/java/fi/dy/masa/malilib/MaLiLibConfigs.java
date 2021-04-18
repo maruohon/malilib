@@ -125,9 +125,11 @@ public class MaLiLibConfigs
     public static class Internal
     {
         public static final StringConfig ACTION_PROMPT_SEARCH_TEXT      = new StringConfig("actionPromptSearchText", "");
+        public static final StringConfig ACTION_PROMPT_SELECTED_LIST    = new StringConfig("actionPromptSelectedList", "all");
 
         public static final ImmutableList<ConfigOption<?>> OPTIONS = ImmutableList.of(
-                ACTION_PROMPT_SEARCH_TEXT
+                ACTION_PROMPT_SEARCH_TEXT,
+                ACTION_PROMPT_SELECTED_LIST
         );
     }
 

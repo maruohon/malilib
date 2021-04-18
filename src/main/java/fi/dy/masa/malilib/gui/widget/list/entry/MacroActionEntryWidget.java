@@ -36,11 +36,9 @@ public class MacroActionEntryWidget extends BaseDataListEntryWidget<MacroAction>
 
         this.renderHoverBackground = false;
         this.setHoveredBorderWidth(1);
-        this.setHoveredBorderColor(0xFFFF6000);
+        this.setHoveredBorderColor(0xFF00FF60);
 
-        String name = data.getName();
-        int size = data.getActionList().size();
-        StyledTextLine fullName = StyledTextLine.translatedOf("malilib.label.macro_action_entry_widget.name", name, size);
+        StyledTextLine fullName = StyledTextLine.of(data.getWidgetDisplayName());
         this.nameText = StyledTextUtils.clampStyledTextToMaxWidth(fullName, width - 16, LeftRight.RIGHT, " ...");
 
         this.getHoverInfoFactory().setStringListProvider("action_info", data::getHoverInfo);

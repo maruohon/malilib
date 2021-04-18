@@ -276,6 +276,10 @@ malilib.button.hover.plus_minus_tip=- Left click to increase\n- Right click to d
 malilib.hotkeys.category.debug_hotkeys=Debug hotkeys
 malilib.hotkeys.category.generic_hotkeys=Generic hotkeys
 
+malilib.label.actions.lists.all_actions=All
+malilib.label.actions.lists.all_aliases=Aliases
+malilib.label.actions.lists.macro=Macro: %s
+
 malilib.label.active_mode.always=Always
 malilib.label.active_mode.never=Never
 malilib.label.active_mode.with_key=With Key

@@ -52,9 +52,9 @@ public class ActionListScreen extends BaseMultiListScreen
         this.addMacroButton.setActionListener(this::openCreateMacroScreen);
         this.addMacroButton.translateAndAddHoverString("malilib.gui.hover.action_list_screen.create_macro");
 
-        this.actionSourceListWidget = this.createNamedActionListWidget(10, 68, 200, 120);
-        this.aliasListWidget = this.createAliasListWidget(220, 68, 200, 120);
-        this.macroListWidget = this.createMacroListWidget(220, 150, 200, 120);
+        this.actionSourceListWidget = this.createNamedActionListWidget();
+        this.aliasListWidget = this.createAliasListWidget();
+        this.macroListWidget = this.createMacroListWidget();
     }
 
     @Override
@@ -149,9 +149,9 @@ public class ActionListScreen extends BaseMultiListScreen
         this.actionSourceListWidget.refreshEntries();
     }
 
-    protected DataListWidget<NamedAction> createNamedActionListWidget(int x, int y, int width, int height)
+    protected DataListWidget<NamedAction> createNamedActionListWidget()
     {
-        DataListWidget<NamedAction> listWidget = new DataListWidget<>(x, y, width, height, this::getFilteredActions);
+        DataListWidget<NamedAction> listWidget = new DataListWidget<>(0, 0, 120, 120, this::getFilteredActions);
         listWidget.setListEntryWidgetFixedHeight(12);
         listWidget.setBorderWidth(1);
         listWidget.setFetchFromSupplierOnRefresh(true);
@@ -162,9 +162,9 @@ public class ActionListScreen extends BaseMultiListScreen
         return listWidget;
     }
 
-    protected DataListWidget<AliasAction> createAliasListWidget(int x, int y, int width, int height)
+    protected DataListWidget<AliasAction> createAliasListWidget()
     {
-        DataListWidget<AliasAction> listWidget = new DataListWidget<>(x, y, width, height, this::getAliases);
+        DataListWidget<AliasAction> listWidget = new DataListWidget<>(0, 0, 120, 120, this::getAliases);
         listWidget.setListEntryWidgetFixedHeight(13);
         listWidget.setBorderWidth(1);
         listWidget.setFetchFromSupplierOnRefresh(true);
@@ -172,9 +172,9 @@ public class ActionListScreen extends BaseMultiListScreen
         return listWidget;
     }
 
-    protected DataListWidget<MacroAction> createMacroListWidget(int x, int y, int width, int height)
+    protected DataListWidget<MacroAction> createMacroListWidget()
     {
-        DataListWidget<MacroAction> listWidget = new DataListWidget<>(x, y, width, height, this::getMacros);
+        DataListWidget<MacroAction> listWidget = new DataListWidget<>(0, 0, 120, 120, this::getMacros);
         listWidget.setListEntryWidgetFixedHeight(14);
         listWidget.setBorderWidth(1);
         listWidget.setFetchFromSupplierOnRefresh(true);

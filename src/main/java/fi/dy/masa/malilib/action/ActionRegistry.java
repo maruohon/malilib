@@ -39,6 +39,12 @@ public interface ActionRegistry
     void removeMacro(String name);
 
     /**
+     * Returns a MacroAction, if one exists by the given name
+     */
+    @Nullable
+    MacroAction getMacro(String name);
+
+    /**
      * 
      * Gets an action by name, if one exists. Otherwise returns null.
      * The name should be either the registry name, ie. "modid:actionName", or an existing alias.

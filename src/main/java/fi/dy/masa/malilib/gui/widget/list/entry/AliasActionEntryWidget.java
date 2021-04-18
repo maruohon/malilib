@@ -27,14 +27,10 @@ public class AliasActionEntryWidget extends BaseDataListEntryWidget<AliasAction>
 
         this.renderHoverBackground = false;
         this.setHoveredBorderWidth(1);
-        this.setHoveredBorderColor(0xFFFF6000);
+        this.setHoveredBorderColor(0xFF00FF60);
 
-        String alias = data.getName();
-        String originalName = data.getOriginalName();
-        String modName = data.getMod().getModName();
-        StyledTextLine fullName = StyledTextLine.translatedOf("malilib.label.named_action_alias_entry_widget.name",
-                                                              alias, modName, originalName);
-        this.nameText = StyledTextUtils.clampStyledTextToMaxWidth(fullName, width - 16, LeftRight.RIGHT, " ...");
+        StyledTextLine fullName = StyledTextLine.of(data.getWidgetDisplayName());
+        this.nameText = StyledTextUtils.clampStyledTextToMaxWidth(fullName, width - 20, LeftRight.RIGHT, " ...");
 
         this.getHoverInfoFactory().setStringListProvider("action_info", data::getHoverInfo);
     }
