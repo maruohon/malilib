@@ -8,10 +8,9 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.MaLiLibReference;
-import fi.dy.masa.malilib.overlay.widget.InfoRendererWidget;
 import fi.dy.masa.malilib.overlay.widget.ConfigStatusIndicatorContainerWidget;
+import fi.dy.masa.malilib.overlay.widget.InfoRendererWidget;
 import fi.dy.masa.malilib.overlay.widget.MessageRendererWidget;
 import fi.dy.masa.malilib.overlay.widget.StringListRendererWidget;
 import fi.dy.masa.malilib.overlay.widget.ToastRendererWidget;
@@ -147,26 +146,10 @@ public class InfoWidgetManager
     public boolean saveToFile()
     {
         File dir = FileUtils.getConfigDirectory();
-        File backupDir = new File(dir,"config_backups");
+        File backupDir = new File(dir, "config_backups");
         File saveFile = new File(dir, MaLiLibReference.MOD_ID + "_info_widgets.json");
 
-        return this.saveToFile(dir, backupDir, saveFile);
-    }
-
-    public boolean saveToFile(File dir, File backupDir, File saveFile)
-    {
-        if (dir.exists() == false && dir.mkdirs() == false)
-        {
-            MaLiLib.LOGGER.error("Failed to create config directory '{}'", dir.getName());
-        }
-
-        if (dir.exists() && dir.isDirectory())
-        {
-            FileUtils.createRollingBackup(saveFile, backupDir, 10, ".bak_");
-            return JsonUtils.writeJsonToFile(this.toJson(), saveFile);
-        }
-
-        return false;
+        return JsonUtils.saveToFile(dir, backupDir, saveFile, 10, this::toJson);
     }
 
     private static final HashMap<String, InfoWidgetFactory> WIDGET_FACTORIES_BY_TYPE = new HashMap<>();

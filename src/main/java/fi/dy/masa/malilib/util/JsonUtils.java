@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import com.google.gson.Gson;
@@ -521,5 +523,50 @@ public class JsonUtils
         }
 
         return false;
+    }
+
+    /**
+     * Saves JSON data to a file, optionally creating a rolling backup copy first.
+     * @param dir the directory the save file is in. This will be created if it doesn't exist.
+     * @param backupDir the directory to keep the rolling backups in, if enabled
+     * @param saveFile the file to save teh data to
+     * @param backupCount the number of backup copies to keep. Set to 0 to disable backups.
+     * @param dataSource the source of the JSON data
+     * @return true on success, false on failure
+     */
+    public static boolean saveToFile(File dir, File backupDir, File saveFile,
+                                     int backupCount, Supplier<JsonElement> dataSource)
+    {
+        if (dir.exists() == false && dir.mkdirs() == false)
+        {
+            MaLiLib.LOGGER.error("Failed to create directory '{}'", dir.getName());
+        }
+
+        if (dir.exists() && dir.isDirectory())
+        {
+            if (backupCount > 0)
+            {
+                FileUtils.createRollingBackup(saveFile, backupDir, backupCount, ".bak_");
+            }
+
+            return JsonUtils.writeJsonToFile(dataSource.get(), saveFile);
+        }
+
+        return false;
+    }
+
+    public static void loadFromFile(File dir, String fileName, Consumer<JsonElement> dataSink)
+    {
+        File saveFile = new File(dir, fileName);
+
+        if (saveFile.exists() && saveFile.isFile() && saveFile.canRead())
+        {
+            JsonElement element = JsonUtils.parseJsonFile(saveFile);
+
+            if (element != null)
+            {
+                dataSink.accept(element);
+            }
+        }
     }
 }
