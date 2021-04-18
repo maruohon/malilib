@@ -9,7 +9,6 @@ import fi.dy.masa.malilib.action.ActionContext;
 import fi.dy.masa.malilib.action.ActionRegistry;
 import fi.dy.masa.malilib.action.NamedAction;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
-import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.CheckBoxWidget;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
@@ -29,20 +28,18 @@ public class ActionPromptScreen extends BaseListScreen<DataListWidget<NamedActio
         super(0, 16, 0, 16);
 
         this.setScreenWidthAndHeight(320, 132);
-        this.setPosition(4, GuiUtils.getScaledWindowHeight() - this.screenHeight - 4);
 
-        int x = this.x + this.screenWidth - DefaultIcons.CHECKMARK_OFF.getWidth();
         String label = "malilib.gui.label.action_prompt_screen.remember_search";
         String hoverKey = "malilib.gui.hover.action_prompt_screen.remember_search_text";
-        this.rememberSearchCheckBoxWidget = new CheckBoxWidget(x, this.y - 6, label, hoverKey);
+        this.rememberSearchCheckBoxWidget = new CheckBoxWidget(0, 0, label, hoverKey);
         this.rememberSearchCheckBoxWidget.setBooleanStorage(MaLiLibConfigs.Generic.ACTION_PROMPT_REMEMBER_SEARCH);
 
         label = "malilib.gui.label.action_prompt_screen.fuzzy_search";
         hoverKey = "malilib.gui.hover.action_prompt_screen.use_fuzzy_search";
-        this.fuzzySearchCheckBoxWidget = new CheckBoxWidget(x, this.y + 6, label, hoverKey);
+        this.fuzzySearchCheckBoxWidget = new CheckBoxWidget(0, 0, label, hoverKey);
         this.fuzzySearchCheckBoxWidget.setBooleanStorage(MaLiLibConfigs.Generic.ACTION_PROMPT_FUZZY_SEARCH);
 
-        this.searchTextField = new BaseTextFieldWidget(this.x, this.y, this.screenWidth - 12, 16);
+        this.searchTextField = new BaseTextFieldWidget(0, 0, this.screenWidth - 12, 16);
         this.searchTextField.setListener(this::updateFilteredList);
         this.searchTextField.setUpdateListenerAlways(true);
     }
@@ -50,11 +47,18 @@ public class ActionPromptScreen extends BaseListScreen<DataListWidget<NamedActio
     @Override
     protected void initScreen()
     {
+        this.setPosition(4, this.height - this.screenHeight - 4);
+
         super.initScreen();
 
         this.addWidget(this.searchTextField);
         this.addWidget(this.rememberSearchCheckBoxWidget);
         this.addWidget(this.fuzzySearchCheckBoxWidget);
+
+        int x = this.x + this.screenWidth - DefaultIcons.CHECKMARK_OFF.getWidth();
+        this.rememberSearchCheckBoxWidget.setPosition(x, this.y - 6);
+        this.fuzzySearchCheckBoxWidget.setPosition(x, this.y + 6);
+        this.searchTextField.setPosition(this.x, this.y);
 
         this.searchTextField.setFocused(true);
 
@@ -100,28 +104,24 @@ public class ActionPromptScreen extends BaseListScreen<DataListWidget<NamedActio
         return super.onKeyTyped(keyCode, scanCode, modifiers);
     }
 
+    protected List<NamedAction> getActions()
+    {
+        return ActionRegistry.INSTANCE.getAllActions();
+    }
+
     protected List<NamedAction> getFilteredActions()
     {
         return this.filteredActions;
     }
 
-    @Override
-    protected DataListWidget<NamedAction> createListWidget(int listX, int listY, int listWidth, int listHeight)
+    protected boolean shouldUseFuzzySearch()
     {
-        DataListWidget<NamedAction> listWidget = new DataListWidget<>(listX, listY, listWidth, listHeight, this::getFilteredActions);
-        listWidget.setBackgroundEnabled(true);
-        listWidget.setBackgroundColor(0xC0000000);
-        listWidget.setAllowKeyboardNavigation(true);
-        listWidget.setListEntryWidgetFixedHeight(12);
-        listWidget.setFetchFromSupplierOnRefresh(true);
-        listWidget.getEntrySelectionHandler().setAllowSelection(true);
-        listWidget.setEntryWidgetFactory(ActionPromptNamedActionEntryWidget::new);
-        return listWidget;
+        return MaLiLibConfigs.Generic.ACTION_PROMPT_FUZZY_SEARCH.getBooleanValue();
     }
 
     protected boolean stringMatchesSearch(String searchTerm, String text)
     {
-        if (this.fuzzySearchCheckBoxWidget.isSelected())
+        if (this.shouldUseFuzzySearch())
         {
             return StringUtils.containsOrderedCharacters(searchTerm, text);
         }
@@ -135,13 +135,13 @@ public class ActionPromptScreen extends BaseListScreen<DataListWidget<NamedActio
 
         if (org.apache.commons.lang3.StringUtils.isBlank(searchText))
         {
-            this.filteredActions.addAll(ActionRegistry.INSTANCE.getAllActions());
+            this.filteredActions.addAll(this.getActions());
         }
         else
         {
             searchText = searchText.toLowerCase(Locale.ROOT);
 
-            for (NamedAction action : ActionRegistry.INSTANCE.getAllActions())
+            for (NamedAction action : this.getActions())
             {
                 if (this.stringMatchesSearch(searchText, action.getName().toLowerCase(Locale.ROOT)) ||
                     this.stringMatchesSearch(searchText, action.getDisplayName().toLowerCase(Locale.ROOT)))
@@ -158,6 +158,20 @@ public class ActionPromptScreen extends BaseListScreen<DataListWidget<NamedActio
             this.getListWidget().setLastSelectedEntry(-1);
             this.getListWidget().setLastSelectedEntry(0);
         }
+    }
+
+    @Override
+    protected DataListWidget<NamedAction> createListWidget(int listX, int listY, int listWidth, int listHeight)
+    {
+        DataListWidget<NamedAction> listWidget = new DataListWidget<>(listX, listY, listWidth, listHeight, this::getFilteredActions);
+        listWidget.setAllowKeyboardNavigation(true);
+        listWidget.setListEntryWidgetFixedHeight(12);
+        listWidget.setFetchFromSupplierOnRefresh(true);
+        listWidget.getEntrySelectionHandler().setAllowSelection(true);
+        listWidget.setBackgroundEnabled(true);
+        listWidget.setBackgroundColor(0xA0000000);
+        listWidget.setEntryWidgetFactory(ActionPromptNamedActionEntryWidget::new);
+        return listWidget;
     }
 
     public static ActionResult openActionPromptScreen(ActionContext ctx)

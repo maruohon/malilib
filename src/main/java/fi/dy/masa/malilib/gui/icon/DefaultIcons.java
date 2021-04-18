@@ -26,6 +26,8 @@ public class DefaultIcons
 
     public static final BaseMultiIcon LOCK_UNLOCKED                 = new BaseMultiIcon( 24,   0,  9,  9, 0, 0);
     public static final BaseMultiIcon LOCK_LOCKED                   = new BaseMultiIcon( 33,   0,  9,  9, 0, 0);
+    public static final BaseMultiIcon LIST_ADD_PLUS_9               = new BaseMultiIcon( 24,   9,  9,  9);
+    public static final BaseMultiIcon LIST_REMOVE_MINUS_9           = new BaseMultiIcon( 24,  18,  9,  9);
 
     public static final BaseMultiIcon BTN_PLUSMINUS_10              = new BaseMultiIcon( 51,   0, 10, 10);
 
@@ -45,8 +47,8 @@ public class DefaultIcons
     public static final BaseMultiIcon ARROW_DOWN                    = new BaseMultiIcon(150,  13, 13, 13);
     public static final BaseMultiIcon ARROW_RIGHT                   = new BaseMultiIcon(150,  26, 13, 13);
     public static final BaseMultiIcon ARROW_LEFT                    = new BaseMultiIcon(150,  39, 13, 13);
-    public static final BaseMultiIcon LIST_ADD_PLUS                 = new BaseMultiIcon(150,  52, 13, 13);
-    public static final BaseMultiIcon LIST_REMOVE_MINUS             = new BaseMultiIcon(150,  65, 13, 13);
+    public static final BaseMultiIcon LIST_ADD_PLUS_13              = new BaseMultiIcon(150,  52, 13, 13);
+    public static final BaseMultiIcon LIST_REMOVE_MINUS_13          = new BaseMultiIcon(150,  65, 13, 13);
 
     public static final BaseMultiIcon BTN_PLUSMINUS_14              = new BaseMultiIcon(189,   0, 14, 14);
 

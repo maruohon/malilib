@@ -5,6 +5,8 @@ import java.util.List;
 import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
+import fi.dy.masa.malilib.action.ActionRegistry;
+import fi.dy.masa.malilib.action.ActionRegistryImpl;
 import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.config.ConfigManagerImpl;
 import fi.dy.masa.malilib.event.ClientWorldChangeHandler;
@@ -63,6 +65,7 @@ public class ClientWorldChangeEventDispatcherImpl implements ClientWorldChangeEv
         else if (worldBefore == null && worldAfter != null)
         {
             ((ConfigManagerImpl) ConfigManager.INSTANCE).loadAllConfigs();
+            ((ActionRegistryImpl) ActionRegistry.INSTANCE).loadFromFile();
             InfoWidgetManager.INSTANCE.loadFromFile();
             HotkeyManager.INSTANCE.updateUsedKeys();
         }

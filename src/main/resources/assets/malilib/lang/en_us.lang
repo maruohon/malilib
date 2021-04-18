@@ -85,10 +85,15 @@ malilib.hotkey.name.scrollvalueadjustdecrease=Scroll Adjust Decrease
 malilib.hotkey.name.scrollvalueadjustincrease=Scroll Adjust Increase
 malilib.hotkey.name.scrollvalueadjustmodifier=Scroll Adjust Enable
 
-malilib.action.hover_info.display_name=§8Display name: §7%s
-malilib.action.hover_info.mod=§8Mod: §7%s
-malilib.action.hover_info.name=§8Name: §7%s
-malilib.action.hover_info.registryname=§8Registry name: §7%s
+malilib.hover_info.action.alias=§8Alias: §7%s
+malilib.hover_info.action.contained_actions=§8Contained actions (§b%s§8):
+malilib.hover_info.action.display_name=§8Display name: §7%s
+malilib.hover_info.action.mod=§8Mod: §7%s
+malilib.hover_info.action.name=§8Name: §7%s
+malilib.hover_info.action.original_registry_name=§8Original registry name: §7%s
+malilib.hover_info.action.registry_name=§8Registry name: §7%s
+malilib.hover_info.macro_edit_screen.add_actions=Add the selected actions to the macro
+malilib.hover_info.macro_edit_screen.remove_actions=Remove the selected actions from the macro
 
 malilib.gui.button.config.reset_all_filtered=Reset All
 malilib.gui.button.config.select_directory=Select Directory
@@ -100,6 +105,8 @@ malilib.gui.button.config.hover.reset_all_filtered=Reset all the configs matchin
 malilib.gui.button.config.hover.selected_directory=Current directory:\n§3%s§r
 malilib.gui.button.config.hover.selected_file=Current file:\n§3%s§r
 
+malilib.gui.button.actions.add_alias=Add an Alias
+malilib.gui.button.actions.add_macro=Create a Macro
 malilib.gui.button.add_configs=Add Configs
 malilib.gui.button.add_selected_configs=Add Selected Configs
 malilib.gui.button.black_white_list_edit.entries=§e%s§r - §b%s§r entries
@@ -169,12 +176,16 @@ malilib.label.cancel_condition.never=Never
 malilib.label.cancel_condition.on_failure=On Failure
 malilib.label.cancel_condition.on_success=On Success
 
+malilib.gui.hover.action_list_screen.create_macro=Create a Macro / Favorite actions list.\nSelect one or more actions from the list on the left, hold Ctrl to select multiple entries.\nMacros are basically the same thing as action (favorite) lists, macros just execute all the actions on the list.
 malilib.gui.hover.action_prompt_screen.remember_search_text=Remember the search text
 malilib.gui.hover.action_prompt_screen.use_fuzzy_search=Use "fuzzy search". In this mode all the characters from the search text must appear in the result in the correct order, but there can be other characters between them.
 malilib.gui.hover.config_info_entry_widget=§7Display name: §f%s\n§7Internal name: §f%s\n§7Config type: §6%s
 malilib.gui.hover.config_search_default_scope=You can change the default scope value that this drop down widget is set to in malilib's configs: Generic > Config Search Default Scope
 malilib.gui.hover.toast_renderer_entry_name=%s (§b%s§r)
 
+malilib.gui.label.action_list_screen.aliases=Action aliases:
+malilib.gui.label.action_list_screen.available_actions=Available actions:
+malilib.gui.label.action_list_screen.macros=Macros/action lists:
 malilib.gui.label.action_prompt_screen.fuzzy_search=Fuzzy search
 malilib.gui.label.action_prompt_screen.remember_search=Remember search
 
@@ -221,6 +232,8 @@ malilib.gui.label.layer_mode.all_below=All below
 malilib.gui.label.layer_mode.layer_range=Layer Range
 malilib.gui.label.layer_mode.single_layer=Single Layer
 
+malilib.gui.label.macro_edit_screen.macro_actions=Actions in macro:
+
 malilib.gui.label.option_list_hover.total_values.all=§7Total values: §b%s
 malilib.gui.label.option_list_hover.total_values.allowed=§7Allowed values: §b%s§7 / §b%s
 malilib.gui.label.option_list_hover.total_values.disallowed=§7Disallowed values: §b%s§7 / §b%s
@@ -232,6 +245,9 @@ malilib.gui.label.render_layers.player_follow_offset=Offset
 
 malilib.gui.tip.dropdown.type_to_search=Just start typing to search (in any DropDown widget)
 
+malilib.gui.title.action_aliases_and_macros=Manage Action Aliases and Macros
+malilib.gui.title.add_action_alias=Add an alias for action '§f%s§r'
+malilib.gui.title.add_action_macro=Create an action macro
 malilib.gui.title.all_hotkeys=All registered hotkeys
 malilib.gui.title.black_white_list_edit=Edit Black/White List '%s'
 malilib.gui.title.block_list_edit=Edit block list '%s'
@@ -240,7 +256,9 @@ malilib.gui.title.configs=MaLiLib Configs
 malilib.gui.title.config_status_indicator_configuration=MaLiLib - Config Status Indicator widget configuration
 malilib.gui.title.confirm_config_reset=Confirm config reset
 malilib.gui.title.create_directory=Create a new directory
+malilib.gui.title.create_macro=Create a Macro Action with the name:
 malilib.gui.title.directory_browser=Directory Browser
+malilib.gui.title.edit_macro=Edit Macro Action
 malilib.gui.title.edit_margin=Edit Margin
 malilib.gui.title.edit_padding=Edit Padding
 malilib.gui.title.equipment_slot_list_edit=Edit equipment slot list '%s'
@@ -288,6 +306,7 @@ malilib.label.config_tab.info=Info
 malilib.label.default_duration.colon=Default duration (ms):
 malilib.label.default_fade_in_time.colon=Default fade-in time (ms):
 malilib.label.default_fade_out_time.colon=Default fade-out time (ms):
+malilib.label.edit=Edit
 malilib.label.false=false
 malilib.label.horizontal_alignment.center=Center
 malilib.label.horizontal_alignment.left=Left
@@ -310,11 +329,15 @@ malilib.label.line_height.colon=Line height:
 malilib.label.list_type.blacklist=Black List
 malilib.label.list_type.none=None
 malilib.label.list_type.whitelist=White List
+malilib.label.macro.angle_brackets=<macro>
+malilib.label.macro_action_entry_widget.name=%s §8[§b%s§8 actions]
 malilib.label.margin=Margin
 malilib.label.max_width.colon=Max width:
 malilib.label.message_gap.colon=Message gap:
 malilib.label.name.colon=Name:
 malilib.label.name_color.colon=Name color:
+malilib.label.named_action_alias_entry_widget.name=%s §8[%s > %s]
+malilib.label.named_action_entry_widget.name=%s §8[%s]
 malilib.label.none.brackets=<none>
 malilib.label.no=no
 malilib.label.off=off
@@ -324,6 +347,7 @@ malilib.label.on.caps=ON
 malilib.label.padding=Padding
 malilib.label.pressed_keys_toast=§6Keys: §b%s
 malilib.label.render_name.colon=Render name:
+malilib.label.screen_tab.actions=Actions
 malilib.label.screen_tab.config_status_indicator.abbr=C.S.I.
 malilib.label.screen_tab.toast_renderer.abbr=Toast
 malilib.label.sort_index.colon=Sort index:
@@ -357,6 +381,8 @@ malilib.message.config_locked_off=%s is currently locked to §cOFF§r
 malilib.message.config_locked_on=%s is currently locked to §aON§r
 malilib.message.config_overridden_off=%s is currently overridden to §cOFF§r
 malilib.message.config_overridden_on=%s is currently overridden to §aON§r
+malilib.message.error.actions_edit.add_alias_select_one=To add an alias for an action, select exactly one action from the list!
+malilib.message.error.actions_edit.exists=An action already exists by the name '%s'
 malilib.message.error.failed_to_create_directory=Failed to create directory '%s'
 malilib.message.error.failed_to_save_all_configs=At least some config options failed to save properly
 malilib.message.error.file_delete_failed=Failed to delete the file '%s'
@@ -380,6 +406,7 @@ malilib.message.moved_min_layer_to=Moved min layer to §a%s§r = §a%s
 malilib.message.set_layer_axis_to=Set layer axis to §a%s
 malilib.message.set_layer_mode_to=Set layer mode to §a%s
 malilib.message.set_layer_to=Set layer to §a%s§r = §a%s
+malilib.message.success.added_alias_for_action=Added the alias '%s' for the action '%s'
 malilib.message.success.directory_created=Directory '%s' created
 malilib.message.toggled_config_off=Toggled %s §cOFF§r
 malilib.message.toggled_config_on=Toggled %s §aON§r

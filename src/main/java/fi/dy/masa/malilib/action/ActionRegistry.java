@@ -21,14 +21,25 @@ public interface ActionRegistry
     /**
      * Adds an alias for an action
      */
-    void addAlias(String alias, NamedAction action);
+    boolean addAlias(AliasAction action);
 
     /**
      * Removes the given alias
      */
-    void removeAlias(String alias);
+    void removeAlias(String name);
 
     /**
+     * Adds a macro action
+     */
+    boolean addMacro(MacroAction action);
+
+    /**
+     * Removes a macro action by the given name
+     */
+    void removeMacro(String name);
+
+    /**
+     * 
      * Gets an action by name, if one exists. Otherwise returns null.
      * The name should be either the registry name, ie. "modid:actionName", or an existing alias.
      */
@@ -36,7 +47,23 @@ public interface ActionRegistry
     NamedAction getAction(String name);
 
     /**
-     * Returns a list of all the registered actions
+     * @return Returns a list of all the registered "base" actions,
+     *         ie. excluding aliases and macros.
+     */
+    ImmutableList<NamedAction> getBaseActions();
+
+    /**
+     * @return a list of all the currently defined action aliases
+     */
+    ImmutableList<AliasAction> getAliases();
+
+    /**
+     * @return a list of all macros (which are lists of other actions or aliases or macros)
+     */
+    ImmutableList<MacroAction> getMacros();
+
+    /**
+     * @return returns a full list of all actions, including aliases and macros
      */
     ImmutableList<NamedAction> getAllActions();
 }

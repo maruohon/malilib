@@ -17,6 +17,7 @@ public class DataListEntrySelectionHandler<DATATYPE>
     @Nullable protected DATATYPE lastSelectedEntry;
     protected boolean allowMultiSelection;
     protected boolean allowSelection;
+    protected boolean modifierKeyMultiSelection;
     protected int lastSelectedEntryIndex = -1;
 
     public DataListEntrySelectionHandler(Supplier<List<DATATYPE>> dataListSupplier)
@@ -39,6 +40,12 @@ public class DataListEntrySelectionHandler<DATATYPE>
     public DataListEntrySelectionHandler<DATATYPE> setAllowMultiSelection(boolean allowMultiSelection)
     {
         this.allowMultiSelection = allowMultiSelection;
+        return this;
+    }
+
+    public DataListEntrySelectionHandler<DATATYPE> setModifierKeyMultiSelection(boolean modifierKeyMultiSelection)
+    {
+        this.modifierKeyMultiSelection = modifierKeyMultiSelection;
         return this;
     }
 
@@ -74,6 +81,11 @@ public class DataListEntrySelectionHandler<DATATYPE>
     public Set<DATATYPE> getSelectedEntries()
     {
         return this.selectedEntries;
+    }
+
+    public Set<Integer> getSelectedEntryIndices()
+    {
+        return this.selectedEntryIndices;
     }
 
     public boolean isEntrySelected(@Nullable DATATYPE entry)

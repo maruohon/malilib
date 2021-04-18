@@ -1,5 +1,7 @@
 package fi.dy.masa.malilib.action;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.function.Function;
 import javax.annotation.Nullable;
@@ -11,20 +13,35 @@ import fi.dy.masa.malilib.util.data.ModInfo;
 
 public class NamedAction
 {
-    protected final Action action;
     protected final ModInfo mod;
     protected final String name;
     protected final String registryName;
-    protected final String translationKey;
+    protected String translationKey;
+    protected Action action;
     @Nullable protected String commentTranslationKey;
 
     public NamedAction(ModInfo mod, String name, Action action)
     {
+        this(mod, name);
+
+        this.action = action;
+    }
+
+    protected NamedAction(ModInfo mod, String name)
+    {
         this.mod = mod;
         this.name = name;
-        this.action = action;
         this.registryName = createRegistryNameFor(mod, name);
         this.translationKey = createTranslationKeyFor(mod, name);
+    }
+
+    public NamedAction(ModInfo mod, String name, String registryName, String translationKey, @Nullable Action action)
+    {
+        this.mod = mod;
+        this.name = name;
+        this.registryName = registryName;
+        this.translationKey = translationKey;
+        this.action = action;
     }
 
     public ModInfo getMod()
@@ -63,9 +80,27 @@ public class NamedAction
         return null;
     }
 
-    public NamedAction setCommentTranslationKey(String commentTranslationKey)
+    public List<String> getHoverInfo()
     {
-        this.commentTranslationKey = commentTranslationKey;
+        List<String> list = new ArrayList<>();
+
+        list.add(StringUtils.translate("malilib.hover_info.action.mod", this.getMod().getModName()));
+        list.add(StringUtils.translate("malilib.hover_info.action.name", this.getName()));
+        list.add(StringUtils.translate("malilib.hover_info.action.display_name", this.getDisplayName()));
+        list.add(StringUtils.translate("malilib.hover_info.action.registry_name", this.getRegistryName()));
+
+        return list;
+    }
+
+    public NamedAction setNameTranslationKey(String translationKey)
+    {
+        this.translationKey = translationKey;
+        return this;
+    }
+
+    public NamedAction setCommentTranslationKey(String translationKey)
+    {
+        this.commentTranslationKey = translationKey;
         return this;
     }
 
@@ -146,11 +181,36 @@ public class NamedAction
     }
 
     /**
-     * Constructs the default translation key for the given action,
-     * in the format "modid.action.name.action_name".
+     * Constructs the default translation key for the given action.
+     * Tries, in order the keys in the format "modid.action.name.action_name",
+     * "modid.hotkey.name.action_name" and "modid.config.name.action_name"
+     * to see which one has a translation.
+     * If none of them do, then the name is returned as-is.
      */
     public static String createTranslationKeyFor(ModInfo modInfo, String name)
     {
-        return modInfo.getModId() + ".action.name." + name.toLowerCase(Locale.ROOT);
+        String modId = modInfo.getModId();
+        String key = modId + ".action.name." + name.toLowerCase(Locale.ROOT);
+
+        if (StringUtils.translate(key).equals(key) == false)
+        {
+            return key;
+        }
+
+        key = modId + ".hotkey.name." + name.toLowerCase(Locale.ROOT);
+
+        if (StringUtils.translate(key).equals(key) == false)
+        {
+            return key;
+        }
+
+        key = modId + ".config.name." + name.toLowerCase(Locale.ROOT);
+
+        if (StringUtils.translate(key).equals(key) == false)
+        {
+            return key;
+        }
+
+        return name;
     }
 }

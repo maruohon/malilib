@@ -3,6 +3,7 @@ package fi.dy.masa.malilib;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.gui.GuiScreen;
+import fi.dy.masa.malilib.gui.ActionListScreen;
 import fi.dy.masa.malilib.gui.BaseScreenTab;
 import fi.dy.masa.malilib.gui.BaseTabbedScreen;
 import fi.dy.masa.malilib.gui.ScreenTab;
@@ -25,6 +26,7 @@ public class MaLiLibConfigScreen
     public static final BaseConfigTab INFO    = new BaseConfigTab(MOD_INFO, "info",     -1, MaLiLibConfigs.Info.OPTIONS,    MaLiLibConfigScreen::create);
     public static final BaseConfigTab HOTKEYS = new BaseConfigTab(MOD_INFO, "hotkeys", 160, MaLiLibConfigs.Hotkeys.HOTKEYS, MaLiLibConfigScreen::create);
     public static final BaseConfigTab DEBUG   = new BaseConfigTab(MOD_INFO, "debug",   120, MaLiLibConfigs.Debug.OPTIONS,   MaLiLibConfigScreen::create);
+    public static final BaseScreenTab ACTIONS = new BaseScreenTab(MOD_INFO, "actions",                      (scr) -> scr instanceof ActionListScreen, ActionListScreen::createActionListScreen);
     public static final BaseScreenTab CSI     = new BaseScreenTab(MOD_INFO, "config_status_indicator.abbr", (scr) -> scr instanceof ConfigStatusIndicatorWidgetListScreen, MaLiLibConfigScreen::createConfigStatusIndicatorListScreen).setHoverText("malilib.gui.button.hover.config_status_indicator");
     public static final BaseScreenTab TOAST   = new BaseScreenTab(MOD_INFO, "toast_renderer.abbr",          (scr) -> scr instanceof ToastRendererWidgetListScreen, MaLiLibConfigScreen::createToastRendererListScreen).setHoverText("malilib.gui.button.hover.toast_renderer_configuration");
 
@@ -41,6 +43,7 @@ public class MaLiLibConfigScreen
             HOTKEYS,
             DEBUG_STUFF_TAB,
             DEBUG,
+            ACTIONS,
             CSI,
             TOAST
     );

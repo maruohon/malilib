@@ -2,6 +2,8 @@ package fi.dy.masa.malilib.util.data;
 
 public class ModInfo
 {
+    public static final ModInfo NO_MOD = new ModInfo("-", "-");
+
     protected final String modId;
     protected final String modName;
 
