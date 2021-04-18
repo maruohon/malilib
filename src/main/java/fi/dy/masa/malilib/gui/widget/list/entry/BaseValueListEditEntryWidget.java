@@ -26,6 +26,7 @@ public class BaseValueListEditEntryWidget<TYPE> extends BaseOrderableListEditEnt
 
         this.defaultValue = defaultValue;
         this.initialValue = initialValue;
+        this.newEntryFactory = () -> this.defaultValue;
 
         this.labelWidget = new LabelWidget(x + 2, y + 7, 20, 10, 0xC0C0C0C0, String.format("%3d:", originalListIndex + 1));
 
@@ -77,18 +78,11 @@ public class BaseValueListEditEntryWidget<TYPE> extends BaseOrderableListEditEnt
     {
         this.dropDownWidget.setPosition(x, y + 1);
         this.nextWidgetX = this.dropDownWidget.getRight() + 2;
-        this.draggableRegionEndX = this.getRight();
     }
 
     @Override
     protected void updateSubWidgetsToGeometryChangesPost(int x, int y)
     {
         this.resetButton.setPosition(x, y + 2);
-    }
-
-    @Override
-    protected TYPE getNewDataEntry()
-    {
-        return this.defaultValue;
     }
 }

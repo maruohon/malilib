@@ -11,11 +11,6 @@ public class IdentifierListEditEntryWidget extends BaseStringListEditEntryWidget
     {
         super(x, y, width, height, listIndex, originalListIndex, initialValue, defaultValue,
               ResourceLocation::toString, ResourceLocation::new, listWidget);
-    }
-
-    @Override
-    protected ResourceLocation getNewDataEntry()
-    {
-        return new ResourceLocation("minecraft:foo");
+        this.newEntryFactory = () -> new ResourceLocation("minecraft:foo");
     }
 }

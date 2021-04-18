@@ -44,12 +44,6 @@ public class ConfigStatusIndicatorEntryWidget extends BaseOrderableListEditEntry
     }
 
     @Override
-    protected BaseConfigStatusIndicatorWidget<?> getNewDataEntry()
-    {
-        return null;
-    }
-
-    @Override
     public void reAddSubWidgets()
     {
         super.reAddSubWidgets();

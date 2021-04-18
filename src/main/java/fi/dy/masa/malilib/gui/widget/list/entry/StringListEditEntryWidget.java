@@ -8,11 +8,7 @@ public class StringListEditEntryWidget extends BaseStringListEditEntryWidget<Str
                                      String initialValue, String defaultValue, DataListWidget<String> listWidget)
     {
         super(x, y, width, height, listIndex, originalListIndex, initialValue, defaultValue, (v) -> v, (s) -> s, listWidget);
-    }
 
-    @Override
-    protected String getNewDataEntry()
-    {
-        return "";
+        this.newEntryFactory = () -> "";
     }
 }

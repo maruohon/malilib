@@ -2,7 +2,9 @@ package fi.dy.masa.malilib.gui.widget.list.entry;
 
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import javax.annotation.Nullable;
+import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
@@ -19,6 +21,8 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
     protected final GenericButton removeButton;
     protected final GenericButton upButton;
     protected final GenericButton downButton;
+    protected Supplier<DATATYPE> newEntryFactory = () -> null;
+    protected boolean canReOrder = true;
     protected boolean dragged;
     protected boolean useAddButton = true;
     protected boolean useMoveButtons = true;
@@ -90,6 +94,8 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
         int middleY = this.getY() + this.getHeight() / 2;
         int buttonY = middleY - this.addButton.getHeight() / 2;
 
+        this.draggableRegionEndX = this.getRight();
+
         if (this.labelWidget != null)
         {
             this.labelWidget.setPosition(x + 3, middleY - this.labelWidget.getHeight() / 2);
@@ -130,9 +136,22 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
     {
     }
 
+    protected MultiIcon getIconForButton(ButtonType type)
+    {
+        switch (type)
+        {
+            case ADD:       return DefaultIcons.LIST_ADD_PLUS_13;
+            case REMOVE:    return DefaultIcons.LIST_REMOVE_MINUS_13;
+            case MOVE_UP:   return DefaultIcons.ARROW_UP;
+            case MOVE_DOWN: return DefaultIcons.ARROW_DOWN;
+        }
+
+        return DefaultIcons.EMPTY;
+    }
+
     protected GenericButton createListActionButton(int x, int y, ButtonType type)
     {
-        GenericButton button = new GenericButton(x, y, type.getIcon(), type.getHoverKey());
+        GenericButton button = new GenericButton(x, y, this.getIconForButton(type), type.getHoverKey());
         button.setActionListener(type.createListener(this));
         return button;
     }
@@ -140,7 +159,7 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
     @Override
     protected boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
-        if (this.canDragAt(mouseX, mouseY))
+        if (this.canReOrder() && this.canDragAt(mouseX, mouseY))
         {
             this.dragged = true;
             this.dragStartX = mouseX;
@@ -168,6 +187,11 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
         }
 
         super.onMouseReleased(mouseX, mouseY, mouseButton);
+    }
+
+    protected boolean canReOrder()
+    {
+        return this.canReOrder && BaseScreen.isShiftDown() == false && BaseScreen.isCtrlDown() == false;
     }
 
     protected boolean canDragAt(int mouseX, int mouseY)
@@ -210,32 +234,30 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
         return newIndex;
     }
 
-    protected abstract DATATYPE getNewDataEntry();
+    @Nullable
+    protected DATATYPE getNewDataEntry()
+    {
+        return this.newEntryFactory.get();
+    }
 
-    protected int getInsertionIndex(List<DATATYPE> list, boolean before)
+    protected int getInsertionIndex(List<DATATYPE> list)
     {
         final int size = list.size();
-        int index = this.originalListIndex < 0 ? size : (Math.min(this.originalListIndex, size));
-
-        if (before == false)
-        {
-            ++index;
-        }
-
+        int index = this.originalListIndex < 0 ? size : (Math.min(this.originalListIndex, size)) + 1;
         return Math.max(0, Math.min(size, index));
     }
 
     protected void insertEntryAfter()
     {
-        this.insertEntry(false);
-    }
+        DATATYPE entry = this.getNewDataEntry();
 
-    protected void insertEntry(boolean before)
-    {
-        int index = this.getInsertionIndex(this.dataList, before);
-        this.dataList.add(index, this.getNewDataEntry());
-        this.listWidget.reCreateListEntryWidgets();
-        this.listWidget.focusWidget(index);
+        if (entry != null)
+        {
+            int index = this.getInsertionIndex(this.dataList);
+            this.dataList.add(index, entry);
+            this.listWidget.reCreateListEntryWidgets();
+            this.listWidget.focusWidget(index);
+        }
     }
 
     protected void removeEntry()
@@ -290,20 +312,24 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
     }
 
     @Override
+    public boolean shouldRenderHoverInfo(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
+    {
+        return super.shouldRenderHoverInfo(mouseX, mouseY, isActiveGui, hoveredWidgetId) &&
+               BaseScreen.isCtrlDown() == false && BaseScreen.isShiftDown() == false;
+    }
+
+    @Override
     public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
     {
         RenderUtils.color(1f, 1f, 1f, 1f);
 
         int width = this.getWidth();
         int height = this.getHeight();
-        // Draw a slightly lighter background for even entries
-        int bgColor = this.isOdd ? 0x20FFFFFF : 0x30FFFFFF;
-
+        
         if (this.dragged)
         {
             int newIndex = this.getNewIndexFromDrag(mouseY);
             int off = (newIndex - this.listIndex) * height - 1;
-            bgColor = 0xFF303030;
 
             if (newIndex > this.listIndex)
             {
@@ -317,34 +343,28 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
             z += 60;
 
             ShapeRenderUtils.renderOutline(x - 1, y - 1, z, width + 2, height + 2, 1, 0xFFFFFFFF);
-        }
 
-        ShapeRenderUtils.renderRectangle(x, y, z, width, height, bgColor);
+            int bgColor = 0xFF303030;
+            ShapeRenderUtils.renderRectangle(x, y, z, width, height, bgColor);
+        }
 
         super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hoveredWidgetId);
     }
 
     protected enum ButtonType
     {
-        ADD         (DefaultIcons.LIST_ADD_PLUS_13, "malilib.gui.button.hover.list.add_after", BaseOrderableListEditEntryWidget::insertEntryAfter),
-        REMOVE      (DefaultIcons.LIST_REMOVE_MINUS_13, "malilib.gui.button.hover.list.remove", BaseOrderableListEditEntryWidget::removeEntry),
-        MOVE_UP     (DefaultIcons.ARROW_UP,          "malilib.gui.button.hover.list.move_up",   BaseOrderableListEditEntryWidget::moveEntryUp),
-        MOVE_DOWN   (DefaultIcons.ARROW_DOWN,        "malilib.gui.button.hover.list.move_down", BaseOrderableListEditEntryWidget::moveEntryDown);
+        ADD         ("malilib.gui.button.hover.list.add_after", BaseOrderableListEditEntryWidget::insertEntryAfter),
+        REMOVE      ("malilib.gui.button.hover.list.remove",    BaseOrderableListEditEntryWidget::removeEntry),
+        MOVE_UP     ("malilib.gui.button.hover.list.move_up",   BaseOrderableListEditEntryWidget::moveEntryUp),
+        MOVE_DOWN   ("malilib.gui.button.hover.list.move_down", BaseOrderableListEditEntryWidget::moveEntryDown);
 
-        protected final MultiIcon icon;
         protected final String translationKey;
         protected final Consumer<BaseOrderableListEditEntryWidget<?>> action;
 
-        ButtonType(MultiIcon icon, String translationKey, Consumer<BaseOrderableListEditEntryWidget<?>> action)
+        ButtonType(String translationKey, Consumer<BaseOrderableListEditEntryWidget<?>> action)
         {
-            this.icon = icon;
             this.translationKey = translationKey;
             this.action = action;
-        }
-
-        public MultiIcon getIcon()
-        {
-            return this.icon;
         }
 
         public String getHoverKey()
