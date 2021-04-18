@@ -905,7 +905,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
             if (this.cursorPosition == this.text.length() && this.selectionStartPosition == -1)
             {
                 int offX = this.visibleText.getStyledText().renderWidth;
-                ShapeRenderUtils.renderHorizontalLine(x + offX, y + this.fontHeight + 3, z + 0.1f, 5, color);
+                ShapeRenderUtils.renderHorizontalLine(x + offX, y + this.fontHeight + 1, z + 0.1f, 5, color);
             }
             else
             {
@@ -915,9 +915,8 @@ public class BaseTextFieldWidget extends BackgroundWidget
                 int cursorExtraHeight = 2;
 
                 int offX = this.getRawStringWidth(visibleText.substring(0, relIndex));
-                int offY = (this.getHeight() - (this.fontHeight + cursorExtraHeight * 2)) / 2;
-                int y1 = y + offY;
-                int y2 = y1 + cursorExtraHeight;
+                int y1 = y - cursorExtraHeight;
+                int y2 = y;
                 int y3 = y2 + this.fontHeight;
 
                 ShapeRenderUtils.renderVerticalLine(x + offX, y1, z + 0.1f, cursorExtraHeight    , color);
@@ -994,23 +993,23 @@ public class BaseTextFieldWidget extends BackgroundWidget
 
         x += this.getTextStartRelativeX();
 
+        int bw = this.borderEnabled ? this.borderWidth * 2 : 0;
+        // The font is usually 1 pixel "too high", as in it's touching the top, but not the bottom
+        int yOffset = Math.max((int) Math.ceil((this.getHeight() - bw - this.fontHeight) / 2.0) + 1, 0);
+
+        if ((yOffset & 0x1) == 1)
+        {
+            yOffset += 1;
+        }
+
         if (this.text.isEmpty() == false)
         {
-            int bw = this.borderEnabled ? this.borderWidth * 2 : 0;
-            // The font is usually 1 pixel "too high", as in it's touching the top, but not the bottom
-            int offset = Math.max((int) Math.ceil((this.getHeight() - bw - this.fontHeight) / 2.0) + 1, 0);
-
-            if ((offset & 0x1) == 1)
-            {
-                offset += 1;
-            }
-
-            this.renderVisibleText(x, y + offset, z + 0.1f, color);
+            this.renderVisibleText(x, y + yOffset, z + 0.1f, color);
         }
 
         if (this.isFocused())
         {
-            this.renderCursor(x, y, z + 0.1f, color);
+            this.renderCursor(x, y + yOffset - 1, z + 0.1f, color);
         }
 
         int messagesHeightPre = this.messageRenderer.getHeight();
