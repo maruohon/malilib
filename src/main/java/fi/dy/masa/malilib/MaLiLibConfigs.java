@@ -30,6 +30,7 @@ public class MaLiLibConfigs
         public static final IntegerConfig ACTION_BAR_MESSAGE_LIMIT              = new IntegerConfig("actionBarMessageLimit", 3, 1, 16);
         public static final BooleanConfig ACTION_PROMPT_FUZZY_SEARCH            = new BooleanConfig("actionPromptFuzzySearch", false);
         public static final BooleanConfig ACTION_PROMPT_REMEMBER_SEARCH         = new BooleanConfig("actionPromptRememberSearch", false);
+        public static final BooleanConfig ACTION_PROMPT_SEARCH_DISPLAY_NAME     = new BooleanConfig("actionPromptSearchDisplayName", false);
         public static final IntegerConfig CONFIG_BACKUP_COUNT                   = new IntegerConfig("configBackupCount", 20, 0, 200);
         public static final BooleanConfig CONFIG_WIDGET_BACKGROUND              = new BooleanConfig("configWidgetBackground", true);
         public static final IntegerConfig CUSTOM_SCREEN_SCALE                   = new IntegerConfig("customScreenScale", 2, 0, 8);
@@ -48,6 +49,7 @@ public class MaLiLibConfigs
                 ACTION_BAR_MESSAGE_LIMIT,
                 ACTION_PROMPT_FUZZY_SEARCH,
                 ACTION_PROMPT_REMEMBER_SEARCH,
+                ACTION_PROMPT_SEARCH_DISPLAY_NAME,
                 CONFIG_BACKUP_COUNT,
                 CONFIG_WIDGET_BACKGROUND,
                 CONFIG_SEARCH_DEFAULT_SCOPE,

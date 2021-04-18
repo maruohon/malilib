@@ -3,7 +3,9 @@ malilib.config.category.debug=Debug
 malilib.config.category.generic=Generic
 
 malilib.config.comment.actionbarmessagelimit=This is the maximum number of concurrent messages that will be shown in the custom "action bar" message renderer, which normally shows the config toggle messages etc.
+malilib.config.comment.actionpromptfuzzysearch=When enabled, the search uses a more lenient "fuzzy search", where all the characters from the search text must appear in that order in the target string, but there can be an arbitrary number or characters between them
 malilib.config.comment.actionpromptremembersearch=When enabled, the search bar in the Action Prompt screen will remember the search text from the last time it was open
+malilib.config.comment.actionpromptsearchdisplayname=When enabled, the search bar in the Action Prompt screen will also search against the display names of the actions, and not just against the "internal name"
 malilib.config.comment.configbackupcount=This is the number of backup copies that should be kept of each of the mod config files, whenever the configs are modified and get saved to the config file again
 malilib.config.comment.configwidgetbackground=Enables a background color for the config option widgets. This is by default a slightly different color for odd and even rows.
 malilib.config.comment.configsearchdefaultscope=This is the default scope value in the config menu search bars
@@ -42,7 +44,9 @@ malilib.config.comment.keybind_settings.priority=The priority of this keybind in
 malilib.config.comment.keybind_settings.show_toast=Should the toast message be shown for this hotkey. This allows turning off the toast message for this hotkey entirely. This is useful for hotkeys that trigger often and would spam the toast renderer, such as the malilib scroll adjustment keys.
 
 malilib.config.name.actionbarmessagelimit=Actionbar Message Limit
+malilib.config.name.actionpromptfuzzysearch=Action Prompt Fuzzy Search
 malilib.config.name.actionpromptremembersearch=Action Prompt Remember Search
+malilib.config.name.actionpromptsearchdisplayname=Action Prompt Search Display Name
 malilib.config.name.configbackupcount=Config Backup Count
 malilib.config.name.configwidgetbackground=Config Widget Background
 malilib.config.name.configsearchdefaultscope=Config Search Default Scope
@@ -178,6 +182,7 @@ malilib.label.cancel_condition.on_success=On Success
 
 malilib.gui.hover.action_list_screen.create_macro=Create a Macro / Favorite actions list.\nSelect one or more actions from the list on the left, hold Ctrl to select multiple entries.\nMacros are basically the same thing as action (favorite) lists, macros just execute all the actions on the list.
 malilib.gui.hover.action_prompt_screen.remember_search_text=Remember the search text
+malilib.gui.hover.action_prompt_screen.search_display_name=Also search against the display names of the actions, and not just against the "internal name"
 malilib.gui.hover.action_prompt_screen.use_fuzzy_search=Use "fuzzy search". In this mode all the characters from the search text must appear in the result in the correct order, but there can be other characters between them.
 malilib.gui.hover.config_info_entry_widget=§7Display name: §f%s\n§7Internal name: §f%s\n§7Config type: §6%s
 malilib.gui.hover.config_search_default_scope=You can change the default scope value that this drop down widget is set to in malilib's configs: Generic > Config Search Default Scope
@@ -188,6 +193,7 @@ malilib.gui.label.action_list_screen.available_actions=Available actions:
 malilib.gui.label.action_list_screen.macros=Macros/action lists:
 malilib.gui.label.action_prompt_screen.fuzzy_search=Fuzzy search
 malilib.gui.label.action_prompt_screen.remember_search=Remember search
+malilib.gui.label.action_prompt_screen.search_display_name=Display Name
 
 malilib.gui.label.color_editor.current_color=Current color:
 malilib.gui.label.config.hover.click_for_more_information=§b§oClick for more information

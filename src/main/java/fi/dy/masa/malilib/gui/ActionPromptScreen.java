@@ -24,6 +24,7 @@ public class ActionPromptScreen extends BaseListScreen<DataListWidget<NamedActio
     protected final BaseTextFieldWidget searchTextField;
     protected final CheckBoxWidget fuzzySearchCheckBoxWidget;
     protected final CheckBoxWidget rememberSearchCheckBoxWidget;
+    protected final CheckBoxWidget searchDisplayNameCheckBoxWidget;
 
     public ActionPromptScreen()
     {
@@ -43,6 +44,13 @@ public class ActionPromptScreen extends BaseListScreen<DataListWidget<NamedActio
         hoverKey = "malilib.gui.hover.action_prompt_screen.use_fuzzy_search";
         this.fuzzySearchCheckBoxWidget = new CheckBoxWidget(0, 0, label, hoverKey);
         this.fuzzySearchCheckBoxWidget.setBooleanStorage(MaLiLibConfigs.Generic.ACTION_PROMPT_FUZZY_SEARCH);
+        this.fuzzySearchCheckBoxWidget.setListener((v) -> this.updateFilteredList());
+
+        label = "malilib.gui.label.action_prompt_screen.search_display_name";
+        hoverKey = "malilib.gui.hover.action_prompt_screen.search_display_name";
+        this.searchDisplayNameCheckBoxWidget = new CheckBoxWidget(0, 0, label, hoverKey);
+        this.searchDisplayNameCheckBoxWidget.setBooleanStorage(MaLiLibConfigs.Generic.ACTION_PROMPT_SEARCH_DISPLAY_NAME);
+        this.searchDisplayNameCheckBoxWidget.setListener((v) -> this.updateFilteredList());
 
         int screenWidth = 320;
         this.searchTextField = new BaseTextFieldWidget(0, 0, screenWidth - 12, 16);
@@ -63,10 +71,12 @@ public class ActionPromptScreen extends BaseListScreen<DataListWidget<NamedActio
         this.addWidget(this.searchTextField);
         this.addWidget(this.rememberSearchCheckBoxWidget);
         this.addWidget(this.fuzzySearchCheckBoxWidget);
+        this.addWidget(this.searchDisplayNameCheckBoxWidget);
 
         int x = this.x + this.screenWidth - DefaultIcons.CHECKMARK_OFF.getWidth();
         this.rememberSearchCheckBoxWidget.setPosition(x, this.y);
-        this.fuzzySearchCheckBoxWidget.setPosition(x, this.y + 12);
+        this.fuzzySearchCheckBoxWidget.setPosition(x, this.y + 11);
+        this.searchDisplayNameCheckBoxWidget.setPosition(x, this.y + 22);
 
         this.dropDownWidget.setPosition(this.x, this.y);
         this.searchTextField.setPosition(this.x, this.y + 16);
@@ -114,6 +124,12 @@ public class ActionPromptScreen extends BaseListScreen<DataListWidget<NamedActio
         return super.onKeyTyped(keyCode, scanCode, modifiers);
     }
 
+    protected void onListSelectionChanged(ActionList list)
+    {
+        MaLiLibConfigs.Internal.ACTION_PROMPT_SELECTED_LIST.setValue(list.getName());
+        this.updateFilteredList();
+    }
+
     protected List<? extends NamedAction> getActions()
     {
         return this.dropDownWidget.getSelectedEntry().getActions();
@@ -139,10 +155,15 @@ public class ActionPromptScreen extends BaseListScreen<DataListWidget<NamedActio
         return text.contains(searchTerm);
     }
 
-    protected void onListSelectionChanged(ActionList list)
+    protected boolean actionMatchesSearch(String searchText, NamedAction action)
     {
-        MaLiLibConfigs.Internal.ACTION_PROMPT_SELECTED_LIST.setValue(list.getName());
-        this.updateFilteredList();
+        if (this.stringMatchesSearch(searchText, action.getName().toLowerCase(Locale.ROOT)))
+        {
+            return true;
+        }
+
+        return MaLiLibConfigs.Generic.ACTION_PROMPT_SEARCH_DISPLAY_NAME.getBooleanValue() &&
+               this.stringMatchesSearch(searchText, action.getDisplayName().toLowerCase(Locale.ROOT));
     }
 
     protected void updateFilteredList()
@@ -164,8 +185,7 @@ public class ActionPromptScreen extends BaseListScreen<DataListWidget<NamedActio
 
             for (NamedAction action : this.getActions())
             {
-                if (this.stringMatchesSearch(searchText, action.getName().toLowerCase(Locale.ROOT)) ||
-                    this.stringMatchesSearch(searchText, action.getDisplayName().toLowerCase(Locale.ROOT)))
+                if (this.actionMatchesSearch(searchText, action))
                 {
                     this.filteredActions.add(action);
                 }
