@@ -28,7 +28,7 @@ public class MacroActionEditScreen extends BaseMultiListScreen
     protected final DataListWidget<NamedAction> macroActionsListWidget;
     protected final ImmutableList<NamedAction> originalMacroActionsList;
     protected final List<NamedAction> filteredSourceActions = new ArrayList<>();
-    protected final ArrayList<NamedAction> macroActionsList;
+    protected final List<NamedAction> macroActionsList;
     protected final LabelWidget allActionsLabelWidget;
     protected final LabelWidget macroActionsLabelWidget;
     protected final LabelWidget macroNameLabelWidget;

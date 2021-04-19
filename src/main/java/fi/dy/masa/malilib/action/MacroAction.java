@@ -3,7 +3,11 @@ package fi.dy.masa.malilib.action;
 import java.util.ArrayList;
 import java.util.List;
 import com.google.common.collect.ImmutableList;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.input.ActionResult;
+import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.ModInfo;
 
@@ -69,6 +73,49 @@ public class MacroAction extends NamedAction
         }
 
         return lines;
+    }
+
+    @Override
+    public JsonObject toJson()
+    {
+        JsonObject obj = new JsonObject();
+        JsonArray arr = new JsonArray();
+
+        for (NamedAction action : this.actionList)
+        {
+            arr.add(action.getRegistryName());
+        }
+
+        obj.add("actions", arr);
+
+        return obj;
+    }
+
+    public static MacroAction macroFromJson(ActionRegistry registry, String name, JsonElement el)
+    {
+        ArrayList<NamedAction> actions = new ArrayList<>();
+
+        if (el.isJsonObject() && JsonUtils.hasArray(el.getAsJsonObject(), "actions"))
+        {
+            JsonArray arr = el.getAsJsonObject().get("actions").getAsJsonArray();
+            int size = arr.size();
+
+            for (int i = 0; i < size; ++i)
+            {
+                String registryName = arr.get(i).getAsString();
+                NamedAction action = registry.getAction(registryName);
+
+                if (action == null)
+                {
+                    // Preserve entries in the config file if a mod is temporarily disabled/removed, for example
+                    action = new NamedAction(ModInfo.NO_MOD, registryName, registryName, registryName, (ctx) -> ActionResult.PASS);
+                }
+
+                actions.add(action);
+            }
+        }
+
+        return new MacroAction(name, ImmutableList.copyOf(actions));
     }
 
     public static ModInfo getMacroModInfo()

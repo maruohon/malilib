@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.function.Function;
 import javax.annotation.Nullable;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.config.option.HotkeyedBooleanConfig;
 import fi.dy.masa.malilib.listener.EventListener;
@@ -16,47 +18,30 @@ public class NamedAction
     protected final ModInfo mod;
     protected final String name;
     protected final String registryName;
-    protected final boolean needsArguments;
     protected String translationKey;
+    @Nullable
+    protected String commentTranslationKey;
     protected Action action;
-    @Nullable protected BaseParameterizedAction parameterizedAction;
-    @Nullable protected String commentTranslationKey;
-
-    public NamedAction(ModInfo mod, String name, Action action)
-    {
-        this(mod, name);
-
-        this.action = action;
-    }
+    protected boolean needsArguments;
 
     protected NamedAction(ModInfo mod, String name)
     {
-        this(mod, name, createRegistryNameFor(mod, name), createTranslationKeyFor(mod, name), null, false);
+        this(mod, name, null);
+    }
+
+    public NamedAction(ModInfo mod, String name, Action action)
+    {
+        this(mod, name, createRegistryNameFor(mod, name), createTranslationKeyFor(mod, name), action);
     }
 
     public NamedAction(ModInfo mod, String name, String registryName,
                        String translationKey, @Nullable Action action)
-    {
-        this(mod, name, registryName, translationKey, action, false);
-    }
-
-    public NamedAction(ModInfo mod, String name, String registryName,
-                       String translationKey, BaseParameterizedAction action)
-    {
-        this(mod, name, registryName, translationKey, action, true);
-
-        this.parameterizedAction = action;
-    }
-
-    public NamedAction(ModInfo mod, String name, String registryName,
-                       String translationKey, @Nullable Action action, boolean needsArguments)
     {
         this.mod = mod;
         this.name = name;
         this.registryName = registryName;
         this.translationKey = translationKey;
         this.action = action;
-        this.needsArguments = needsArguments;
     }
 
     public ModInfo getMod()
@@ -91,13 +76,6 @@ public class NamedAction
 
     public AliasAction createAlias(String aliasName, @Nullable String argument)
     {
-        if (this.needsArguments && argument != null && this.parameterizedAction != null)
-        {
-            NamedAction action = new NamedAction(this.mod, this.name, this.registryName, this.translationKey,
-                                                 this.parameterizedAction.parameterize(argument));
-            return new AliasAction(aliasName, action);
-        }
-
         return new AliasAction(aliasName, this);
     }
 
@@ -123,10 +101,10 @@ public class NamedAction
     {
         List<String> list = new ArrayList<>();
 
-        list.add(StringUtils.translate("malilib.hover_info.action.mod", this.getMod().getModName()));
-        list.add(StringUtils.translate("malilib.hover_info.action.name", this.getName()));
+        list.add(StringUtils.translate("malilib.hover_info.action.mod", this.mod.getModName()));
+        list.add(StringUtils.translate("malilib.hover_info.action.name", this.name));
         list.add(StringUtils.translate("malilib.hover_info.action.display_name", this.getDisplayName()));
-        list.add(StringUtils.translate("malilib.hover_info.action.registry_name", this.getRegistryName()));
+        list.add(StringUtils.translate("malilib.hover_info.action.registry_name", this.registryName));
 
         return list;
     }
@@ -156,6 +134,17 @@ public class NamedAction
         {
             this.setCommentTranslationKey(key);
         }
+    }
+
+    @Nullable
+    public JsonObject toJson()
+    {
+        return null;
+    }
+
+    public NamedAction fromJson(JsonElement el)
+    {
+        return this;
     }
 
     public static NamedAction of(ModInfo mod, String name, Action action)
@@ -190,17 +179,6 @@ public class NamedAction
     public static NamedAction register(ModInfo modInfo, String name, Action action)
     {
         NamedAction namedAction = NamedAction.of(modInfo, name, action);
-        namedAction.setCommentIfTranslationExists(modInfo.getModId(), name);
-        ActionRegistry.INSTANCE.registerAction(namedAction);
-        return namedAction;
-    }
-
-    public static NamedAction register(ModInfo modInfo, String name, ParameterizedAction action)
-    {
-        NamedAction namedAction = new NamedAction(modInfo, name,
-                                                  createRegistryNameFor(modInfo, name),
-                                                  createTranslationKeyFor(modInfo, name),
-                                                  BaseParameterizedAction.of(action));
         namedAction.setCommentIfTranslationExists(modInfo.getModId(), name);
         ActionRegistry.INSTANCE.registerAction(namedAction);
         return namedAction;

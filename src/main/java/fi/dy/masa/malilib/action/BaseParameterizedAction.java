@@ -44,7 +44,8 @@ public class BaseParameterizedAction implements Action
     {
         if (this.argument == null)
         {
-            TextInputScreen screen = new TextInputScreen("malilib.gui.title.provide_arguments_for_action", "", null, this::runWithArgument);
+            TextInputScreen screen = new TextInputScreen("malilib.gui.title.provide_arguments_for_action",
+                                                         "", null, this::runWithArgument);
             BaseScreen.openScreen(screen);
             return ActionResult.SUCCESS;
         }

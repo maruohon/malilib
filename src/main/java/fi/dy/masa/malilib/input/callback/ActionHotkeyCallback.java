@@ -5,7 +5,6 @@ import fi.dy.masa.malilib.action.ActionContext;
 import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.input.KeyAction;
 import fi.dy.masa.malilib.input.KeyBind;
-import fi.dy.masa.malilib.input.callback.HotkeyCallback;
 
 public class ActionHotkeyCallback implements HotkeyCallback
 {

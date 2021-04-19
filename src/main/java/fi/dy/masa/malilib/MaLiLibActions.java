@@ -3,6 +3,7 @@ package fi.dy.masa.malilib;
 import fi.dy.masa.malilib.action.Action;
 import fi.dy.masa.malilib.action.ActionUtils;
 import fi.dy.masa.malilib.action.NamedAction;
+import fi.dy.masa.malilib.action.NamedParameterizedAction;
 import fi.dy.masa.malilib.action.ParameterizedAction;
 import fi.dy.masa.malilib.gui.ActionPromptScreen;
 import fi.dy.masa.malilib.input.callback.AdjustableValueHotkeyCallback;
@@ -32,6 +33,6 @@ public class MaLiLibActions
 
     private static NamedAction register(String name, ParameterizedAction action)
     {
-        return NamedAction.register(MaLiLibReference.MOD_INFO, name, action);
+        return NamedParameterizedAction.register(MaLiLibReference.MOD_INFO, name, action);
     }
 }

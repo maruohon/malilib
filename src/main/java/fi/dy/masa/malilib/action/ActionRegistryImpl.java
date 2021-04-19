@@ -10,7 +10,6 @@ import java.util.Map;
 import javax.annotation.Nullable;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableList;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.MaLiLib;
@@ -169,6 +168,7 @@ public class ActionRegistryImpl implements ActionRegistry
 
         if (this.allActions.containsKey(name) == false)
         {
+            // TODO/FIXME add checking for circular macros
             this.macros.put(name, action);
             this.allActions.put(name, action);
 
@@ -261,29 +261,9 @@ public class ActionRegistryImpl implements ActionRegistry
     public JsonObject toJson()
     {
         JsonObject obj = new JsonObject();
-        JsonObject aliases = new JsonObject();
-        JsonObject macros = new JsonObject();
 
-        for (Map.Entry<String, AliasAction> entry : this.aliases.entrySet())
-        {
-            aliases.addProperty(entry.getKey(), entry.getValue().getOriginalRegistryName());
-        }
-
-        for (Map.Entry<String, MacroAction> entry : this.macros.entrySet())
-        {
-            JsonArray arr = new JsonArray();
-            String name = entry.getKey();
-
-            for (NamedAction action : entry.getValue().getActionList())
-            {
-                arr.add(action.getRegistryName());
-            }
-
-            macros.add(name, arr);
-        }
-
-        obj.add("aliases", aliases);
-        obj.add("macros", macros);
+        this.writeAliases(obj);
+        this.writeMacros(obj);
 
         return obj;
     }
@@ -295,73 +275,65 @@ public class ActionRegistryImpl implements ActionRegistry
             return;
         }
 
-        this.clearAliasesAndMacros();
-
         JsonObject obj = el.getAsJsonObject();
 
+        this.clearAliasesAndMacros();
+        this.loadAliases(obj);
+        this.loadMacros(obj);
+    }
+
+    protected void loadAliases(JsonObject obj)
+    {
         if (JsonUtils.hasObject(obj, "aliases"))
         {
             JsonObject aliases = obj.get("aliases").getAsJsonObject();
-            this.loadAliases(aliases);
-        }
 
+            for (Map.Entry<String, JsonElement> entry : aliases.entrySet())
+            {
+                String name = entry.getKey();
+                AliasAction aliasAction = AliasAction.aliasFromJson(this, name, entry.getValue());
+                this.addAliasInternal(aliasAction);
+            }
+        }
+    }
+
+    protected void loadMacros(JsonObject obj)
+    {
         if (JsonUtils.hasObject(obj, "macros"))
         {
             JsonObject macros = obj.get("macros").getAsJsonObject();
-            this.loadMacros(macros);
-        }
-    }
 
-    protected void loadAliases(JsonObject aliases)
-    {
-        for (Map.Entry<String, JsonElement> entry : aliases.entrySet())
-        {
-            String name = entry.getKey();
-            String registryName = entry.getValue().getAsString();
-            NamedAction action = this.allActions.get(registryName);
-
-            if (action == null)
+            for (Map.Entry<String, JsonElement> entry : macros.entrySet())
             {
-                // Preserve entries in the config file if a mod is temporarily disabled/removed, for example
-                action = new NamedAction(ModInfo.NO_MOD, name, registryName, name, (ctx) -> ActionResult.PASS);
-            }
-
-            AliasAction aliasAction = new AliasAction(name, action);
-            this.addAliasInternal(aliasAction);
-        }
-    }
-
-    protected void loadMacros(JsonObject macros)
-    {
-        for (Map.Entry<String, JsonElement> entry : macros.entrySet())
-        {
-            JsonElement e = entry.getValue();
-
-            if (e.isJsonArray())
-            {
-                ArrayList<NamedAction> actions = new ArrayList<>();
                 String name = entry.getKey();
-                JsonArray arr = e.getAsJsonArray();
-                int size = arr.size();
-
-                for (int i = 0; i < size; ++i)
-                {
-                    String registryName = arr.get(i).getAsString();
-                    NamedAction action = this.allActions.get(registryName);
-
-                    if (action == null)
-                    {
-                        // Preserve entries in the config file if a mod is temporarily disabled/removed, for example
-                        action = DUMMY;
-                    }
-
-                    actions.add(action);
-                }
-
-                MacroAction macro = new MacroAction(name, ImmutableList.copyOf(actions));
+                MacroAction macro = MacroAction.macroFromJson(this, name, entry.getValue());
                 this.addMacroInternal(macro);
             }
         }
+    }
+
+    protected void writeAliases(JsonObject obj)
+    {
+        JsonObject aliases = new JsonObject();
+
+        for (Map.Entry<String, AliasAction> entry : this.aliases.entrySet())
+        {
+            aliases.add(entry.getKey(), entry.getValue().toJson());
+        }
+
+        obj.add("aliases", aliases);
+    }
+
+    protected void writeMacros(JsonObject obj)
+    {
+        JsonObject macros = new JsonObject();
+
+        for (Map.Entry<String, MacroAction> entry : this.macros.entrySet())
+        {
+            macros.add(entry.getKey(), entry.getValue().toJson());
+        }
+
+        obj.add("macros", macros);
     }
 
     public boolean saveToFileIfDirty()
