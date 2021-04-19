@@ -36,5 +36,7 @@ public class MaLiLibInitHandler implements InitializationHandler
         RenderEventDispatcher.INSTANCE.registerGameOverlayRenderer(InfoOverlay.INSTANCE);
         RenderEventDispatcher.INSTANCE.registerScreenPostRenderer(InfoOverlay.INSTANCE);
         TickEventDispatcher.INSTANCE.registerClientTickHandler(InfoOverlay.INSTANCE);
+
+        MaLiLibActions.init();
     }
 }

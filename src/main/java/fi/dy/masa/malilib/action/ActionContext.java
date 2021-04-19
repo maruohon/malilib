@@ -2,8 +2,8 @@ package fi.dy.masa.malilib.action;
 
 import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import fi.dy.masa.malilib.util.EntityUtils;
 
@@ -17,7 +17,7 @@ public class ActionContext
     }
 
     @Nullable
-    public EntityPlayer getPlayer()
+    public EntityPlayerSP getPlayer()
     {
         return this.mc.player;
     }

@@ -188,8 +188,19 @@ public class ActionListScreen extends BaseMultiListScreen
 
         if (action != null && this.actionSourceListWidget.getSelectedEntries().size() == 1)
         {
-            String title = StringUtils.translate("malilib.gui.title.add_action_alias", action.getRegistryName());
-            BaseScreen.openPopupScreen(new TextInputScreen(title, "", this, this::addAlias));
+            if (action.getNeedsArguments())
+            {
+                String title = StringUtils.translate("malilib.gui.title.add_action_alias_with_arguments",
+                                                     action.getRegistryName());
+                BaseScreen.openPopupScreen(new DualTextInputScreen(title, "malilib.label.name.colon",
+                                                                   "malilib.label.argument.colon",
+                                                                   "", "", this::addAlias, this));
+            }
+            else
+            {
+                String title = StringUtils.translate("malilib.gui.title.add_action_alias", action.getRegistryName());
+                BaseScreen.openPopupScreen(new TextInputScreen(title, "", this, this::addAlias));
+            }
         }
         else
         {
@@ -220,6 +231,11 @@ public class ActionListScreen extends BaseMultiListScreen
 
     protected boolean addAlias(String alias)
     {
+        return this.addAlias(alias, null);
+    }
+
+    protected boolean addAlias(String alias, @Nullable String argument)
+    {
         if (org.apache.commons.lang3.StringUtils.isBlank(alias))
         {
             return false;
@@ -233,7 +249,7 @@ public class ActionListScreen extends BaseMultiListScreen
 
         NamedAction action = this.actionSourceListWidget.getLastSelectedEntry();
 
-        if (action != null && ActionRegistry.INSTANCE.addAlias(new AliasAction(alias, action)))
+        if (action != null && ActionRegistry.INSTANCE.addAlias(action.createAlias(alias, argument)))
         {
             this.aliasListWidget.refreshEntries();
             MessageUtils.success("malilib.message.success.added_alias_for_action", alias, action.getRegistryName());

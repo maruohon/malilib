@@ -16,8 +16,10 @@ public class NamedAction
     protected final ModInfo mod;
     protected final String name;
     protected final String registryName;
+    protected final boolean needsArguments;
     protected String translationKey;
     protected Action action;
+    @Nullable protected BaseParameterizedAction parameterizedAction;
     @Nullable protected String commentTranslationKey;
 
     public NamedAction(ModInfo mod, String name, Action action)
@@ -29,19 +31,32 @@ public class NamedAction
 
     protected NamedAction(ModInfo mod, String name)
     {
-        this.mod = mod;
-        this.name = name;
-        this.registryName = createRegistryNameFor(mod, name);
-        this.translationKey = createTranslationKeyFor(mod, name);
+        this(mod, name, createRegistryNameFor(mod, name), createTranslationKeyFor(mod, name), null, false);
     }
 
-    public NamedAction(ModInfo mod, String name, String registryName, String translationKey, @Nullable Action action)
+    public NamedAction(ModInfo mod, String name, String registryName,
+                       String translationKey, @Nullable Action action)
+    {
+        this(mod, name, registryName, translationKey, action, false);
+    }
+
+    public NamedAction(ModInfo mod, String name, String registryName,
+                       String translationKey, BaseParameterizedAction action)
+    {
+        this(mod, name, registryName, translationKey, action, true);
+
+        this.parameterizedAction = action;
+    }
+
+    public NamedAction(ModInfo mod, String name, String registryName,
+                       String translationKey, @Nullable Action action, boolean needsArguments)
     {
         this.mod = mod;
         this.name = name;
         this.registryName = registryName;
         this.translationKey = translationKey;
         this.action = action;
+        this.needsArguments = needsArguments;
     }
 
     public ModInfo getMod()
@@ -67,6 +82,23 @@ public class NamedAction
     public Action getAction()
     {
         return this.action;
+    }
+
+    public boolean getNeedsArguments()
+    {
+        return this.needsArguments;
+    }
+
+    public AliasAction createAlias(String aliasName, @Nullable String argument)
+    {
+        if (this.needsArguments && argument != null && this.parameterizedAction != null)
+        {
+            NamedAction action = new NamedAction(this.mod, this.name, this.registryName, this.translationKey,
+                                                 this.parameterizedAction.parameterize(argument));
+            return new AliasAction(aliasName, action);
+        }
+
+        return new AliasAction(aliasName, this);
     }
 
     @Nullable
@@ -158,6 +190,17 @@ public class NamedAction
     public static NamedAction register(ModInfo modInfo, String name, Action action)
     {
         NamedAction namedAction = NamedAction.of(modInfo, name, action);
+        namedAction.setCommentIfTranslationExists(modInfo.getModId(), name);
+        ActionRegistry.INSTANCE.registerAction(namedAction);
+        return namedAction;
+    }
+
+    public static NamedAction register(ModInfo modInfo, String name, ParameterizedAction action)
+    {
+        NamedAction namedAction = new NamedAction(modInfo, name,
+                                                  createRegistryNameFor(modInfo, name),
+                                                  createTranslationKeyFor(modInfo, name),
+                                                  BaseParameterizedAction.of(action));
         namedAction.setCommentIfTranslationExists(modInfo.getModId(), name);
         ActionRegistry.INSTANCE.registerAction(namedAction);
         return namedAction;

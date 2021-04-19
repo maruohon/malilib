@@ -258,6 +258,7 @@ malilib.gui.tip.dropdown.type_to_search=Just start typing to search (in any Drop
 
 malilib.gui.title.action_aliases_and_macros=Manage Action Aliases and Macros
 malilib.gui.title.add_action_alias=Add an alias for action '§f%s§r'
+malilib.gui.title.add_action_alias_with_arguments=Add an alias and arguments for action '§f%s§r'
 malilib.gui.title.add_action_macro=Create an action macro
 malilib.gui.title.add_new_hotkey=Add a hotkey bound to an action
 malilib.gui.title.all_hotkeys=All registered hotkeys
@@ -308,6 +309,7 @@ malilib.label.alignment.center=Center
 malilib.label.alignment.center_left=Left Center
 malilib.label.alignment.center_right=Right Center
 malilib.label.always=Always
+malilib.label.argument.colon=Argument:
 malilib.label.background.colon=Background:
 malilib.label.boolean_config_status.enabled_condition.colon=Enabled:
 malilib.label.boolean_config_status.render_type.colon=Render Type:
