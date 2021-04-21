@@ -28,7 +28,7 @@ public class BlackWhiteListEditButton extends GenericButton
         this.saveListener = saveListener;
         this.setHoverStringProvider("value_preview", this::generateHoverStrings);
 
-        this.setActionListener((btn, mbtn) -> this.openEditScreen());
+        this.setActionListener(this::openEditScreen);
         this.updateDisplayString();
     }
 

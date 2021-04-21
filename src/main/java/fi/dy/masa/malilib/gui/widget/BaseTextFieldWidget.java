@@ -72,9 +72,9 @@ public class BaseTextFieldWidget extends BackgroundWidget
 
         this.setShouldReceiveOutsideClicks(true);
         this.setBackgroundColor(0xFF000000);
-        this.setBackgroundEnabled(true);
+        this.setRenderBackground(true);
         this.setNormalBorderColor(this.colorUnfocused);
-        this.setBorderWidth(1);
+        this.setNormalBorderWidth(1);
         this.padding.setLeft(3);
         this.padding.setRight(3);
         this.updateTextFieldSize();
@@ -547,7 +547,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
 
     protected int getTextStartRelativeX()
     {
-        return this.borderWidth + this.padding.getLeft();
+        return this.borderWidthNormal + this.padding.getLeft();
     }
 
     /**
@@ -558,9 +558,9 @@ public class BaseTextFieldWidget extends BackgroundWidget
     {
         int maxWidth = this.getWidth() - this.padding.getLeft() - this.padding.getRight();
 
-        if (this.borderEnabled)
+        if (this.renderBorder)
         {
-            maxWidth -= this.borderWidth * 2;
+            maxWidth -= this.borderWidthNormal * 2;
         }
 
         return maxWidth;
@@ -892,7 +892,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
         return super.onCharTyped(charIn, modifiers);
     }
 
-    protected void renderCursor(int x, int y, float z, int color)
+    protected void renderCursor(int x, int y, float z, int color, ScreenContext ctx)
     {
         int relIndex = this.cursorPosition - this.visibleText.getStartIndex();
         color = this.selectionStartPosition != -1 ? 0xFFFF5000 : color;
@@ -926,7 +926,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
         }
     }
 
-    protected void renderVisibleText(int x, int y, float z, int textColor)
+    protected void renderVisibleText(int x, int y, float z, int textColor, ScreenContext ctx)
     {
         // A selection exists
         if (this.selectionStartPosition >= 0)
@@ -945,7 +945,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
                 if (selStart > start)
                 {
                     String str = visibleText.substring(0, selStart - start);
-                    this.renderPlainString(x, y, z, textColor, false, str);
+                    this.renderPlainString(x, y, z, textColor, false, str, ctx);
                     x += this.getRawStringWidth(str);
                 }
 
@@ -955,14 +955,14 @@ public class BaseTextFieldWidget extends BackgroundWidget
                 int selWidth = this.getRawStringWidth(str);
 
                 ShapeRenderUtils.renderRectangle(x, y - 2, z, selWidth, this.fontHeight + 3, textColor);
-                this.renderPlainString(x, y, z, 0xFF000000, false, str);
+                this.renderPlainString(x, y, z, 0xFF000000, false, str, ctx);
                 x += selWidth;
 
                 // Non-selected text at the start
                 if (selEnd <= end)
                 {
                     str = visibleText.substring(selEnd - start, visLen);
-                    this.renderPlainString(x, y, z, textColor, false, str);
+                    this.renderPlainString(x, y, z, textColor, false, str, ctx);
                 }
 
                 return;
@@ -970,15 +970,15 @@ public class BaseTextFieldWidget extends BackgroundWidget
         }
 
         // No selection
-        this.renderTextLine(x, y, z, textColor, false, this.visibleText.getStyledText());
+        this.renderTextLine(x, y, z, textColor, false, ctx, this.visibleText.getStyledText());
     }
 
     @Override
-    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
+    public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
         RenderUtils.color(1f, 1f, 1f, 1f);
 
-        super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hovered);
+        super.renderAt(x, y, z, ctx);
 
         int color;
 
@@ -993,7 +993,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
 
         x += this.getTextStartRelativeX();
 
-        int bw = this.borderEnabled ? this.borderWidth * 2 : 0;
+        int bw = this.renderBorder ? this.borderWidthNormal * 2 : 0;
         // The font is usually 1 pixel "too high", as in it's touching the top, but not the bottom
         int yOffset = Math.max((int) Math.ceil((this.getHeight() - bw - this.fontHeight) / 2.0) + 1, 0);
 
@@ -1004,16 +1004,16 @@ public class BaseTextFieldWidget extends BackgroundWidget
 
         if (this.text.isEmpty() == false)
         {
-            this.renderVisibleText(x, y + yOffset, z + 0.1f, color);
+            this.renderVisibleText(x, y + yOffset, z + 0.1f, color, ctx);
         }
 
         if (this.isFocused())
         {
-            this.renderCursor(x, y + yOffset - 1, z + 0.1f, color);
+            this.renderCursor(x, y + yOffset - 1, z + 0.1f, color, ctx);
         }
 
         int messagesHeightPre = this.messageRenderer.getHeight();
-        this.messageRenderer.render();
+        this.messageRenderer.render(ctx);
 
         // Update the position when old messages are removed
         if (this.messageRenderer.getHeight() != messagesHeightPre)

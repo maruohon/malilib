@@ -40,20 +40,7 @@ public class OptionListConfigWidget extends BaseConfigWidget<OptionListConfig<Op
             this.updateResetButtonState();
         });
 
-        this.resetButton.setActionListener((btn, mbtn) -> {
-            this.config.resetToDefault();
-
-            if (MaLiLibConfigs.Generic.OPTION_LIST_CONFIG_DROPDOWN.getBooleanValue())
-            {
-                this.dropDownWidget.setSelectedEntry(this.config.getValue());
-            }
-            else
-            {
-                this.optionListButton.updateDisplayString();
-            }
-
-            this.updateResetButtonState();
-        });
+        this.resetButton.setActionListener(this::reset);
     }
 
     @Override
@@ -92,6 +79,22 @@ public class OptionListConfigWidget extends BaseConfigWidget<OptionListConfig<Op
     public boolean wasModified()
     {
         return this.config.getValue().equals(this.initialValue) == false;
+    }
+
+    protected void reset()
+    {
+        this.config.resetToDefault();
+
+        if (MaLiLibConfigs.Generic.OPTION_LIST_CONFIG_DROPDOWN.getBooleanValue())
+        {
+            this.dropDownWidget.setSelectedEntry(this.config.getValue());
+        }
+        else
+        {
+            this.optionListButton.updateDisplayString();
+        }
+
+        this.updateResetButtonState();
     }
 
     protected List<String> getOptionListPreviewHoverString(List<String> previousLines)

@@ -32,7 +32,7 @@ public class ItemStackWidget extends BaseModelWidget
     }
 
     @Override
-    protected void renderModel(int x, int y, float z, float scale)
+    protected void renderModel(int x, int y, float z, float scale, ScreenContext ctx)
     {
         if (this.stack.isEmpty() == false)
         {
@@ -45,7 +45,7 @@ public class ItemStackWidget extends BaseModelWidget
         ItemStackWidget widget = new ItemStackWidget(x, y, dimensions, new ItemStack(item));
         widget.setBackgroundColor(0xFF505050);
         widget.setBackgroundColorHovered(0xFF505050);
-        widget.setBackgroundEnabled(true);
+        widget.setRenderBackground(true);
         widget.setRenderHoverBackground(true);
         return widget;
     }

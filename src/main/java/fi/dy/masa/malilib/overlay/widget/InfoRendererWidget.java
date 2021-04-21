@@ -15,6 +15,7 @@ import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.gui.position.ScreenLocation;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.BaseWidget;
+import fi.dy.masa.malilib.gui.widget.ScreenContext;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.overlay.InfoOverlay;
 import fi.dy.masa.malilib.overlay.InfoWidgetManager;
@@ -438,7 +439,7 @@ public abstract class InfoRendererWidget extends BaseWidget
         return isScreenOpen == false || (this.renderAboveScreen == (context == InfoOverlay.RenderContext.GUI));
     }
 
-    public void render()
+    public void render(ScreenContext ctx)
     {
         if (this.isEnabled())
         {
@@ -446,11 +447,11 @@ public abstract class InfoRendererWidget extends BaseWidget
             int y = this.getY();
             float z = this.getZLevel();
 
-            this.renderAt(x, y, z);
+            this.renderAt(x, y, z, ctx);
         }
     }
 
-    public void renderAt(int x, int y, float z)
+    public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
         RenderUtils.color(1f, 1f, 1f, 1f);
 
@@ -467,9 +468,9 @@ public abstract class InfoRendererWidget extends BaseWidget
             z = 0f;
         }
 
-        this.renderBackground(x, y, z);
-        y += this.renderName(x, y, z);
-        this.renderContents(x, y, z);
+        this.renderBackground(x, y, z, ctx);
+        y += this.renderName(x, y, z, ctx);
+        this.renderContents(x, y, z, ctx);
 
         if (scaled)
         {
@@ -478,17 +479,17 @@ public abstract class InfoRendererWidget extends BaseWidget
 
         if (MaLiLibConfigs.Debug.INFO_OVERLAY_DEBUG.getBooleanValue())
         {
-            this.renderDebug(x, y, z, 0, 0, false, true, MaLiLibConfigs.Debug.GUI_DEBUG_INFO_ALWAYS.getBooleanValue());
+            this.renderDebug(x, y, z, false, ctx);
         }
     }
 
-    protected int renderName(int x, int y, float z)
+    protected int renderName(int x, int y, float z, ScreenContext ctx)
     {
         if (this.renderName && this.styledName != null)
         {
             int paddingTop = this.padding.getTop();
             y += paddingTop;
-            this.renderTextLine(x + this.padding.getLeft(), y, z, 0xFFFFFFFF, true, this.styledName);
+            this.renderTextLine(x + this.padding.getLeft(), y, z, 0xFFFFFFFF, true, ctx, this.styledName);
 
             return this.lineHeight + paddingTop;
         }
@@ -496,7 +497,7 @@ public abstract class InfoRendererWidget extends BaseWidget
         return 0;
     }
 
-    protected void renderBackground(int x, int y, float z)
+    protected void renderBackground(int x, int y, float z, ScreenContext ctx)
     {
         TextRenderSettings settings = this.getTextSettings();
 
@@ -504,27 +505,27 @@ public abstract class InfoRendererWidget extends BaseWidget
         {
             if (settings.getUseOddEvenBackground())
             {
-                this.renderOddEvenLineBackgrounds(x, y, z);
+                this.renderOddEvenLineBackgrounds(x, y, z, ctx);
             }
             else
             {
-                this.renderSingleBackground(x, y, z);
+                this.renderSingleBackground(x, y, z, ctx);
             }
         }
     }
 
-    protected void renderSingleBackground(int x, int y, float z)
+    protected void renderSingleBackground(int x, int y, float z, ScreenContext ctx)
     {
         int width = this.getWidth();
         int height = this.getHeight();
         ShapeRenderUtils.renderRectangle(x, y, z, width, height, this.getTextSettings().getBackgroundColor());
     }
 
-    protected void renderOddEvenLineBackgrounds(int x, int y, float z)
+    protected void renderOddEvenLineBackgrounds(int x, int y, float z, ScreenContext ctx)
     {
     }
 
-    protected void renderContents(int x, int y, float z)
+    protected void renderContents(int x, int y, float z, ScreenContext ctx)
     {
     }
 

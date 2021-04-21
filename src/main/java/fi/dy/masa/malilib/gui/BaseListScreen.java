@@ -5,10 +5,9 @@ import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
-import fi.dy.masa.malilib.MaLiLibConfigs;
-import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.InteractableWidget;
+import fi.dy.masa.malilib.gui.widget.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.list.BaseListWidget;
 
 public abstract class BaseListScreen<LISTWIDGET extends BaseListWidget> extends BaseTabbedScreen
@@ -275,26 +274,22 @@ public abstract class BaseListScreen<LISTWIDGET extends BaseListWidget> extends 
 
         if (listWidget != null)
         {
-            boolean isActiveGui = GuiUtils.getCurrentScreen() == this;
-            int hoveredId = isActiveGui && this.hoveredWidget != null ? this.hoveredWidget.getId() : -1;
+            ScreenContext ctx = this.getContext(mouseX, mouseY);
 
-            listWidget.renderAt(listWidget.getX(), listWidget.getY(), listWidget.getZLevel(), mouseX, mouseY, isActiveGui, hoveredId);
+            listWidget.renderAt(listWidget.getX(), listWidget.getY(), listWidget.getZLevel(), ctx);
         }
     }
 
     @Override
-    public void renderDebug(int mouseX, int mouseY)
+    public void renderDebug(ScreenContext ctx)
     {
-        super.renderDebug(mouseX, mouseY);
+        super.renderDebug(ctx);
 
         BaseListWidget widget = this.getListWidget();
 
-        if (widget != null && GuiUtils.getCurrentScreen() == this)
+        if (widget != null && ctx.isActiveScreen)
         {
-            boolean renderAll = MaLiLibConfigs.Debug.GUI_DEBUG_ALL.getBooleanValue();
-            boolean infoAlways = MaLiLibConfigs.Debug.GUI_DEBUG_INFO_ALWAYS.getBooleanValue();
-
-            widget.renderDebug(mouseX, mouseY, widget.isMouseOver(mouseX, mouseY), renderAll, infoAlways);
+            widget.renderDebug(widget.isMouseOver(ctx.mouseX, ctx.mouseY), ctx);
         }
     }
 }

@@ -6,6 +6,7 @@ import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
+import fi.dy.masa.malilib.gui.widget.ScreenContext;
 import fi.dy.masa.malilib.overlay.widget.InfoRendererWidget;
 import fi.dy.masa.malilib.render.text.StyledText;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
@@ -129,7 +130,7 @@ public class ToastWidget extends InfoRendererWidget
         }
     }
 
-    public void render(long currentTime)
+    public void render(long currentTime, ScreenContext ctx)
     {
         int offsetX = 0;
 
@@ -157,17 +158,17 @@ public class ToastWidget extends InfoRendererWidget
             x -= offsetX;
         }
 
-        super.renderAt(x, y, z);
+        super.renderAt(x, y, z, ctx);
     }
 
     @Override
-    protected void renderBackground(int x, int y, float z)
+    protected void renderBackground(int x, int y, float z, ScreenContext ctx)
     {
         this.backgroundTexture.renderFourSplicedAt(x, y, z, this.getWidth(), this.getHeight());
     }
 
     @Override
-    protected void renderContents(int x, int y, float z)
+    protected void renderContents(int x, int y, float z, ScreenContext ctx)
     {
         if (this.text.isEmpty() == false)
         {

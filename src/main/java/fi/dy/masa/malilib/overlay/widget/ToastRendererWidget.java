@@ -10,6 +10,7 @@ import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.ToastRendererWidgetEditScreen;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
+import fi.dy.masa.malilib.gui.widget.ScreenContext;
 import fi.dy.masa.malilib.overlay.widget.sub.ToastWidget;
 import fi.dy.masa.malilib.render.text.StyledText;
 import fi.dy.masa.malilib.util.JsonUtils;
@@ -290,12 +291,12 @@ public class ToastRendererWidget extends InfoRendererWidget
     }
 
     @Override
-    protected void renderContents(int x, int y, float z)
+    protected void renderContents(int x, int y, float z, ScreenContext ctx)
     {
-        this.drawMessages(x, y, z);
+        this.drawMessages(x, y, z, ctx);
     }
 
-    public void drawMessages(int x, int y, float z)
+    public void drawMessages(int x, int y, float z, ScreenContext ctx)
     {
         if (this.activeToasts.isEmpty() == false)
         {
@@ -313,7 +314,7 @@ public class ToastRendererWidget extends InfoRendererWidget
                 }
                 else
                 {
-                    widget.render(currentTime);
+                    widget.render(currentTime, ctx);
                 }
 
                 // Always offset the position to prevent a flicker from the later

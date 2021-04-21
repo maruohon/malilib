@@ -67,7 +67,7 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
         this.resetButton = new GenericButton(x, y, -1, 20, "malilib.gui.button.reset.caps");
 
         this.setBackgroundColor(this.isOdd ? 0x70606060 : 0x70909090);
-        this.setBackgroundEnabled(MaLiLibConfigs.Generic.CONFIG_WIDGET_BACKGROUND.getBooleanValue());
+        this.setRenderBackground(MaLiLibConfigs.Generic.CONFIG_WIDGET_BACKGROUND.getBooleanValue());
     }
 
     @Override
@@ -136,19 +136,20 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
         button.setHoverStringProvider("path", () -> lines, 100);
         button.setHoverStringProvider("locked", config::getLockAndOverrideMessages, 101);
         button.setEnabled(config.isLocked() == false);
-
-        this.addButton(button, (btn, mbtn) -> {
+        button.setActionListener(() -> {
             DirectorySelectorScreen browserScreen = screenFactory.create();
             browserScreen.setParent(GuiUtils.getCurrentScreen());
             BaseScreen.openPopupScreen(browserScreen);
         });
 
-        this.updateResetButton(x + elementWidth + 4, y + 1);
-
-        this.addButton(this.resetButton, (btn, mbtn) -> {
+        this.resetButton.setActionListener(() -> {
             config.resetToDefault();
             this.reAddSubWidgets();
         });
+
+        this.updateResetButton(x + elementWidth + 4, y + 1);
+        this.addWidget(button);
+        this.addWidget(this.resetButton);
 
         return button;
     }

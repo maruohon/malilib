@@ -214,7 +214,7 @@ public class MacroActionEditScreen extends BaseMultiListScreen
     {
         DataListWidget<NamedAction> listWidget = new DataListWidget<>(0, 0, 200, 200, listSupplier);
         listWidget.setListEntryWidgetFixedHeight(12);
-        listWidget.setBorderWidth(1);
+        listWidget.setNormalBorderWidth(1);
         listWidget.setFetchFromSupplierOnRefresh(orderable == false);
         listWidget.setEntryWidgetFactory(orderable ? OrderableNamedActionEntryWidget::new : NamedActionEntryWidget::new);
         listWidget.getEntrySelectionHandler().setAllowSelection(true);

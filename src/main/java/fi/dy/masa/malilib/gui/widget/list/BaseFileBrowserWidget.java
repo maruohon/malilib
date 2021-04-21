@@ -17,6 +17,7 @@ import fi.dy.masa.malilib.gui.icon.DefaultFileBrowserIconProvider;
 import fi.dy.masa.malilib.gui.icon.FileBrowserIconProvider;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.DirectoryNavigationWidget;
+import fi.dy.masa.malilib.gui.widget.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.list.BaseFileBrowserWidget.DirectoryEntry;
 import fi.dy.masa.malilib.gui.widget.list.entry.DirectoryEntryWidget;
 import fi.dy.masa.malilib.gui.widget.util.DirectoryCache;
@@ -66,9 +67,9 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
                                     new DirectoryEntryWidget(wx, wy, ww, wh, li, oi, entry, this, this, this.iconProvider));
 
         this.setBackgroundColor(0xB0000000);
-        this.setBackgroundEnabled(true);
+        this.setRenderBackground(true);
         this.setNormalBorderColor(BaseScreen.COLOR_HORIZONTAL_BAR);
-        this.setBorderWidth(1);
+        this.setNormalBorderWidth(1);
         this.listPosition.setRight(3);
         this.listPosition.setBottom(1);
     }
@@ -316,16 +317,16 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         return false;
     }
 
-    protected void drawAdditionalContents(int x, int y, float z, int mouseX, int mouseY)
+    protected void drawAdditionalContents(int x, int y, float z, ScreenContext ctx)
     {
     }
 
     @Override
-    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
+    public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
-        super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hovered);
+        super.renderAt(x, y, z, ctx);
 
-        this.drawAdditionalContents(x, y, z, mouseX, mouseY);
+        this.drawAdditionalContents(x, y, z, ctx);
     }
 
     public static class DirectoryEntry implements Comparable<DirectoryEntry>

@@ -22,4 +22,16 @@ public class BaseDataListEntryWidget<TYPE> extends BaseListEntryWidget
     {
         return this.data;
     }
+
+    @Override
+    protected boolean isSelected()
+    {
+        if (this.listWidget != null)
+        {
+            DataListEntrySelectionHandler<? extends TYPE> handler = this.listWidget.getEntrySelectionHandler();
+            return handler != null && handler.isEntrySelected(this.getListIndex());
+        }
+
+        return false;
+    }
 }

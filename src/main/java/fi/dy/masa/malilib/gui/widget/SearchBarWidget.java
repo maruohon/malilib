@@ -33,7 +33,7 @@ public class SearchBarWidget extends ContainerWidget
         this.toggleButtonAlignment = toggleButtonAlignment;
         this.searchBarOffsetX = searchBarOffsetX;
         this.buttonSearchToggle = GenericButton.createIconOnly(ix, y, toggleButtonIcon);
-        this.buttonSearchToggle.setActionListener((btn, mbtn) -> this.toggleSearchOpen());
+        this.buttonSearchToggle.setActionListener(this::toggleSearchOpen);
         this.buttonSearchToggle.setPlayClickSound(false);
 
         this.textField = new BaseTextFieldWidget(tx, y, width - iw - 7 - Math.abs(searchBarOffsetX), 14);

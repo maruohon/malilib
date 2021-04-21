@@ -21,11 +21,7 @@ public class StringConfigWidget extends BaseConfigOptionWidget<String, StringCon
             this.updateResetButtonState();
         });
 
-        this.resetButton.setActionListener((btn, mbtn) -> {
-            this.config.resetToDefault();
-            this.textField.setText(this.config.getStringValue());
-            this.updateResetButtonState();
-        });
+        this.resetButton.setActionListener(this::reset);
     }
 
     @Override
@@ -64,5 +60,12 @@ public class StringConfigWidget extends BaseConfigOptionWidget<String, StringCon
         {
             this.config.setValueFromString(text);
         }
+    }
+
+    protected void reset()
+    {
+        this.config.resetToDefault();
+        this.textField.setText(this.config.getStringValue());
+        this.updateResetButtonState();
     }
 }

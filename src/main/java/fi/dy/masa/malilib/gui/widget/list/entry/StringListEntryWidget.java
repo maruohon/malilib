@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.gui.widget.list.entry;
 
+import fi.dy.masa.malilib.gui.widget.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
@@ -18,7 +19,7 @@ public class StringListEntryWidget extends BaseDataListEntryWidget<String>
     }
 
     @Override
-    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId, boolean selected)
+    public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
         RenderUtils.color(1f, 1f, 1f, 1f);
 
@@ -26,7 +27,7 @@ public class StringListEntryWidget extends BaseDataListEntryWidget<String>
         int height = this.getHeight();
 
         // Draw a lighter background for the hovered entry
-        if (selected || (isActiveGui && this.getId() == hoveredWidgetId))
+        if (this.isSelected() || (ctx.isActiveScreen && this.getId() == ctx.hoveredWidgetId))
         {
             ShapeRenderUtils.renderRectangle(x, y, z, width, height, 0xA0707070);
         }
@@ -40,8 +41,8 @@ public class StringListEntryWidget extends BaseDataListEntryWidget<String>
             ShapeRenderUtils.renderRectangle(x, y, z, width, height, 0xA0303030);
         }
 
-        this.renderTextLine(x + 2, y + this.getCenteredTextOffsetY(), z, 0xFFFFFFFF, true, this.string);
+        this.renderTextLine(x + 2, y + this.getCenteredTextOffsetY(), z, 0xFFFFFFFF, true, ctx, this.string);
 
-        super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hoveredWidgetId, selected);
+        super.renderAt(x, y, z, ctx);
     }
 }

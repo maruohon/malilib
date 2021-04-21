@@ -23,7 +23,7 @@ public class BlockListConfigWidget extends BaseValueListConfigWidget<Block, Bloc
     {
         String title = StringUtils.translate("malilib.gui.title.block_list_edit", this.config.getDisplayName());
 
-        return new BaseValueListEditButton<>(0, 0, width, height, config, this::reset, ctx.getDialogHandler(),
+        return new BaseValueListEditButton<>(0, 0, width, height, config, this::updateButtonStates, ctx.getDialogHandler(),
                                              title, () -> Blocks.STONE,
                                              BlockUtils::getSortedBlockList,
                                              BlockUtils::getBlockRegistryName,

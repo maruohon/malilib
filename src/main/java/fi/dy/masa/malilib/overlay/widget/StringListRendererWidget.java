@@ -7,6 +7,7 @@ import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.StringListRendererWidgetEditScreen;
 import fi.dy.masa.malilib.gui.position.ScreenLocation;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
+import fi.dy.masa.malilib.gui.widget.ScreenContext;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.render.text.OrderedStringListFactory;
 import fi.dy.masa.malilib.render.text.StringListRenderer;
@@ -133,13 +134,6 @@ public class StringListRendererWidget extends InfoRendererWidget
     }
 
     @Override
-    public void fromJson(JsonObject obj)
-    {
-        super.fromJson(obj);
-        this.updateSize();
-    }
-
-    @Override
     public void updateState()
     {
         if (this.dirty)
@@ -152,7 +146,7 @@ public class StringListRendererWidget extends InfoRendererWidget
     }
 
     @Override
-    protected void renderSingleBackground(int x, int y, float z)
+    protected void renderSingleBackground(int x, int y, float z, ScreenContext ctx)
     {
         // Render the background for the title row
         if (this.getTextSettings().getUseBackground() && this.renderName && this.styledName != null)
@@ -164,7 +158,7 @@ public class StringListRendererWidget extends InfoRendererWidget
     }
 
     @Override
-    protected void renderOddEvenLineBackgrounds(int x, int y, float z)
+    protected void renderOddEvenLineBackgrounds(int x, int y, float z, ScreenContext ctx)
     {
         // Render the background for the title row
         if (this.getTextSettings().getUseOddEvenBackground() && this.renderName && this.styledName != null)
@@ -176,8 +170,15 @@ public class StringListRendererWidget extends InfoRendererWidget
     }
 
     @Override
-    protected void renderContents(int x, int y, float z)
+    protected void renderContents(int x, int y, float z, ScreenContext ctx)
     {
         this.stringListRenderer.renderAt(x, y, z, false);
+    }
+
+    @Override
+    public void fromJson(JsonObject obj)
+    {
+        super.fromJson(obj);
+        this.updateSize();
     }
 }

@@ -33,7 +33,7 @@ public class ColorConfigWidget extends BaseConfigOptionWidget<Integer, ColorConf
             this.updateResetButtonState();
         });
 
-        this.resetButton.setActionListener((btn, mbtn) -> {
+        this.resetButton.setActionListener(() -> {
             this.config.resetToDefault();
             this.reAddSubWidgets();
         });

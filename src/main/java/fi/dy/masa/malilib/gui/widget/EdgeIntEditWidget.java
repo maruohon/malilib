@@ -77,9 +77,9 @@ public class EdgeIntEditWidget extends ContainerWidget
     }
 
     @Override
-    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
+    public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
-        super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hovered);
+        super.renderAt(x, y, z, ctx);
 
         int width = this.getWidth();
         int height = this.getHeight();
@@ -92,7 +92,7 @@ public class EdgeIntEditWidget extends ContainerWidget
         {
             int tx = x + width / 2 - this.centerText.renderWidth / 2;
             int ty = y + height / 2 - this.fontHeight / 2;
-            this.renderTextLine(tx, ty, z, 0xFFFFFFFF, true, this.centerText);
+            this.renderTextLine(tx, ty, z, 0xFFFFFFFF, true, ctx, this.centerText);
         }
     }
 }

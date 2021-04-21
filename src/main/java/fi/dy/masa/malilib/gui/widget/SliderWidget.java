@@ -3,8 +3,8 @@ package fi.dy.masa.malilib.gui.widget;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.gui.callback.SliderCallback;
-import fi.dy.masa.malilib.render.RenderUtils;
-import fi.dy.masa.malilib.render.ShapeRenderUtils;
+import fi.dy.masa.malilib.gui.icon.DefaultIcons;
+import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 
 public class SliderWidget extends InteractableWidget
@@ -72,37 +72,35 @@ public class SliderWidget extends InteractableWidget
     }
 
     @Override
-    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
+    public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
+        int mouseX = ctx.mouseX;
+        int width = this.getWidth();
+        int height = this.getHeight();
+
         if (this.dragging && mouseX != this.lastMouseX)
         {
             this.callback.setRelativeValue(this.getRelativePosition(mouseX));
             this.lastMouseX = mouseX;
         }
 
-        int width = this.getWidth();
-
-        this.bindTexture(VANILLA_WIDGETS);
-        RenderUtils.color(1f, 1f, 1f, 1f);
-
-        // Render the slider background texture
-        ShapeRenderUtils.renderTexturedRectangle(x + 1        , y, z,   0, 46, width - 6, 20);
-        ShapeRenderUtils.renderTexturedRectangle(x + width - 5, y, z, 196, 46,         4, 20);
+        DefaultIcons.BUTTON_BACKGROUND.renderFourSplicedAt(x + 1, y, z, width - 2, height);
 
         double relPos = this.callback.getRelativeValue();
         int sw = this.sliderWidth;
         int usableWidth = width - 4 - sw;
-        int s = sw / 2;
-        int v = this.locked ? 46 : 66;
 
         // Render the slider bar texture
-        ShapeRenderUtils.renderTexturedRectangle(x + 2 + (int) (relPos * usableWidth)    , y, z,       0, v, s, 20);
-        ShapeRenderUtils.renderTexturedRectangle(x + 2 + (int) (relPos * usableWidth) + s, y, z, 200 - s, v, s, 20);
+        int sx = x + 2 + (int) (relPos * usableWidth);
+        boolean hovered = GuiUtils.isMouseInRegion(mouseX, ctx.mouseY, sx, y, sw, height);
+        DefaultIcons.BUTTON_BACKGROUND.renderFourSplicedAt(sx, y, z, sw, height, this.locked == false, hovered);
 
         StyledTextLine text = StyledTextLine.raw(this.callback.getFormattedDisplayValue());
         int textWidth = text.renderWidth;
         int textColor = this.locked ? 0xFF909090 : 0xFFFFFFA0;
-        this.renderTextLine(x + (width / 2) - textWidth / 2, y + this.getCenteredTextOffsetY(), z, textColor, false, text);
+        int tx = x + (width / 2) - textWidth / 2;
+        int ty = y + this.getCenteredTextOffsetY();
+        this.renderTextLine(tx, ty, z, textColor, false, ctx, text);
     }
 
     protected double getRelativePosition(int mouseX)

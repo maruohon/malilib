@@ -7,6 +7,7 @@ import fi.dy.masa.malilib.config.option.HotkeyedBooleanConfig;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.config.indicator.HotkeyedBooleanConfigStatusIndicatorEditScreen;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
+import fi.dy.masa.malilib.gui.widget.ScreenContext;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.data.ConfigOnTab;
 
@@ -78,29 +79,29 @@ public class HotkeyedBooleanConfigStatusWidget extends BooleanConfigStatusWidget
     }
 
     @Override
-    protected void renderValueDisplayText(int x, int textY, float z)
+    protected void renderValueDisplayText(int x, int textY, float z, ScreenContext ctx)
     {
         if (this.showBoolean)
         {
-            super.renderValueDisplayText(x, textY, z);
+            super.renderValueDisplayText(x, textY, z, ctx);
         }
 
         if (this.showKeys)
         {
-            this.renderHotkeysValue(x, textY, z);
+            this.renderHotkeysValue(x, textY, z, ctx);
         }
     }
 
     @Override
-    protected void renderValueIndicator(int x, int y, float z)
+    protected void renderValueIndicator(int x, int y, float z, ScreenContext ctx)
     {
         if (this.showBoolean)
         {
-            super.renderValueIndicator(x, y, z);
+            super.renderValueIndicator(x, y, z, ctx);
         }
     }
 
-    protected void renderHotkeysValue(int x, int textY, float z)
+    protected void renderHotkeysValue(int x, int textY, float z, ScreenContext ctx)
     {
         if (this.keysText != null)
         {
@@ -111,7 +112,7 @@ public class HotkeyedBooleanConfigStatusWidget extends BooleanConfigStatusWidget
                 tx -= this.booleanValueRenderWidth + 4;
             }
 
-            this.renderTextLine(tx, textY, z, this.valueColor, this.valueShadow, this.keysText);
+            this.renderTextLine(tx, textY, z, this.valueColor, this.valueShadow, ctx, this.keysText);
         }
     }
 }

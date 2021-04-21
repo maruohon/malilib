@@ -58,17 +58,17 @@ public class DirectoryNavigationWidget extends SearchBarWidget
 
         this.buttonRoot = GenericButton.createIconOnly(x, y, iconProvider.getIcon(FileBrowserIconType.ROOT));
         this.buttonRoot.translateAndAddHoverStrings("malilib.gui.button.hover.directory_widget.root");
-        this.buttonRoot.setActionListener((btn, mbtn) -> { if (this.searchOpen == false) this.navigator.switchToRootDirectory(); });
+        this.buttonRoot.setActionListener(() -> { if (this.searchOpen == false) this.navigator.switchToRootDirectory(); });
         x += this.buttonRoot.getWidth() + 2;
 
         this.buttonUp = GenericButton.createIconOnly(x, y, iconProvider.getIcon(FileBrowserIconType.UP));
         this.buttonUp.translateAndAddHoverStrings("malilib.gui.button.hover.directory_widget.up");
-        this.buttonUp.setActionListener((btn, mbtn) -> { if (this.searchOpen == false) this.navigator.switchToParentDirectory(); });
+        this.buttonUp.setActionListener(() -> { if (this.searchOpen == false) this.navigator.switchToParentDirectory(); });
         x += this.buttonUp.getWidth() + 2;
 
         this.buttonCreateDir = GenericButton.createIconOnly(x, y, iconProvider.getIcon(FileBrowserIconType.CREATE_DIR));
         this.buttonCreateDir.translateAndAddHoverStrings("malilib.gui.button.hover.directory_widget.create_directory");
-        this.buttonCreateDir.setActionListener((btn, mbtn) -> {
+        this.buttonCreateDir.setActionListener(() -> {
             if (this.searchOpen == false)
             {
                 DirectoryCreator creator = new DirectoryCreator(this.getCurrentDirectory(), this.navigator);
@@ -159,15 +159,16 @@ public class DirectoryNavigationWidget extends SearchBarWidget
     }
 
     @Override
-    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
+    public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
         if (this.searchOpen == false)
         {
             int diffX = x - this.getX();
-            ShapeRenderUtils.renderRectangle(this.pathStartX - 2 + diffX, y, z, this.getMaxPathBarWidth() + 4, this.getHeight(), 0xFF242424);
+            int rx = this.pathStartX - 2 + diffX;
+            ShapeRenderUtils.renderRectangle(rx, y, z, this.getMaxPathBarWidth() + 4, this.getHeight(), 0xFF242424);
         }
 
-        super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hovered);
+        super.renderAt(x, y, z, ctx);
     }
 
     protected String getDisplayNameForDirectory(File dir)
@@ -204,13 +205,11 @@ public class DirectoryNavigationWidget extends SearchBarWidget
             {
                 GenericButton button = new GenericButton(x, by, el.nameWidth + 4, bh, el.displayName);
                 button.setHorizontalLabelPadding(2);
-                button.setRenderBackground(false);
-                button.setRenderOutline(true);
-                button.setPlayClickSound(false);
+                button.setRenderButtonBackgroundTexture(false);
+                button.setRenderHoverBorder(true);
                 button.setUseTextShadow(false);
                 button.setTextColorHovered(0xFFFFFFFF);
-
-                this.addButton(button, (btn, mbtn) -> {
+                button.setActionListener(() -> {
                     if (BaseScreen.isShiftDown())
                     {
                         OpenGlHelper.openFile(el.dir);
@@ -220,6 +219,8 @@ public class DirectoryNavigationWidget extends SearchBarWidget
                         this.navigator.switchToDirectory(el.dir);
                     }
                 });
+
+                this.addWidget(button);
 
                 List<File> dirs = FileUtils.getSubDirectories(el.dir);
 

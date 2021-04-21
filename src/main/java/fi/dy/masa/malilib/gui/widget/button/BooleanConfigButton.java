@@ -13,7 +13,7 @@ public class BooleanConfigButton extends OnOffButton
     {
         super(x, y, width, height, style, config::getBooleanValue, null);
 
-        this.setActionListener((btn, mbtn) -> {
+        this.setActionListener(() -> {
             config.toggleBooleanValue();
             this.updateDisplayString();
         });

@@ -31,9 +31,9 @@ public class BaseValueListEditEntryWidget<TYPE> extends BaseOrderableListEditEnt
         this.labelWidget = new LabelWidget(x + 2, y + 7, 20, 10, 0xC0C0C0C0, String.format("%3d:", originalListIndex + 1));
 
         this.resetButton = new GenericButton(x, y, -1, 16, "malilib.gui.button.reset.caps");
-        this.resetButton.setRenderBackground(false);
-        this.resetButton.setRenderOutline(true);
-        this.resetButton.setOutlineColorNormal(0xFF404040);
+        this.resetButton.setRenderButtonBackgroundTexture(false);
+        this.resetButton.setRenderNormalBorder(true);
+        this.resetButton.setNormalBorderColor(0xFF404040);
         this.resetButton.setTextColorDisabled(0xFF505050);
 
         int ddWidth = width - this.resetButton.getWidth() - this.labelWidget.getWidth()
@@ -52,7 +52,7 @@ public class BaseValueListEditEntryWidget<TYPE> extends BaseOrderableListEditEnt
         });
 
         this.resetButton.setEnabled(initialValue.equals(this.defaultValue) == false);
-        this.resetButton.setActionListener((btn, mbtn) -> {
+        this.resetButton.setActionListener(() -> {
             this.dropDownWidget.setSelectedEntry(this.defaultValue);
 
             if (this.originalListIndex < this.dataList.size())

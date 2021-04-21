@@ -209,7 +209,7 @@ public class ActionPromptScreen extends BaseListScreen<DataListWidget<NamedActio
         listWidget.setListEntryWidgetFixedHeight(12);
         listWidget.setFetchFromSupplierOnRefresh(true);
         listWidget.getEntrySelectionHandler().setAllowSelection(true);
-        listWidget.setBackgroundEnabled(true);
+        listWidget.setRenderBackground(true);
         listWidget.setBackgroundColor(0xA0000000);
         listWidget.setEntryWidgetFactory(ActionPromptNamedActionEntryWidget::new);
         return listWidget;

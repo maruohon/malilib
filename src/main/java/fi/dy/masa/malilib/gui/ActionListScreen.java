@@ -153,7 +153,7 @@ public class ActionListScreen extends BaseMultiListScreen
     {
         DataListWidget<NamedAction> listWidget = new DataListWidget<>(0, 0, 120, 120, this::getFilteredActions);
         listWidget.setListEntryWidgetFixedHeight(12);
-        listWidget.setBorderWidth(1);
+        listWidget.setNormalBorderWidth(1);
         listWidget.setFetchFromSupplierOnRefresh(true);
         listWidget.setEntryWidgetFactory(NamedActionEntryWidget::new);
         listWidget.getEntrySelectionHandler().setAllowSelection(true);
@@ -166,7 +166,7 @@ public class ActionListScreen extends BaseMultiListScreen
     {
         DataListWidget<AliasAction> listWidget = new DataListWidget<>(0, 0, 120, 120, this::getAliases);
         listWidget.setListEntryWidgetFixedHeight(13);
-        listWidget.setBorderWidth(1);
+        listWidget.setNormalBorderWidth(1);
         listWidget.setFetchFromSupplierOnRefresh(true);
         listWidget.setEntryWidgetFactory(AliasActionEntryWidget::new);
         return listWidget;
@@ -176,7 +176,7 @@ public class ActionListScreen extends BaseMultiListScreen
     {
         DataListWidget<MacroAction> listWidget = new DataListWidget<>(0, 0, 120, 120, this::getMacros);
         listWidget.setListEntryWidgetFixedHeight(14);
-        listWidget.setBorderWidth(1);
+        listWidget.setNormalBorderWidth(1);
         listWidget.setFetchFromSupplierOnRefresh(true);
         listWidget.setEntryWidgetFactory(MacroActionEntryWidget::new);
         return listWidget;

@@ -5,10 +5,11 @@ import javax.annotation.Nullable;
 import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.gui.BaseScreen;
+import fi.dy.masa.malilib.gui.config.ConfigWidgetRegistry;
 import fi.dy.masa.malilib.gui.config.indicator.BaseConfigStatusIndicatorEditScreen;
 import fi.dy.masa.malilib.gui.config.indicator.ConfigStatusWidgetFactory;
-import fi.dy.masa.malilib.gui.config.ConfigWidgetRegistry;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
+import fi.dy.masa.malilib.gui.widget.ScreenContext;
 import fi.dy.masa.malilib.overlay.widget.InfoRendererWidget;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.JsonUtils;
@@ -114,25 +115,25 @@ public abstract class BaseConfigStatusIndicatorWidget<C extends ConfigInfo> exte
     public abstract void updateState(boolean force);
 
     @Override
-    protected void renderContents(int x, int y, float z)
+    protected void renderContents(int x, int y, float z, ScreenContext ctx)
     {
         int ty = y + this.getHeight() / 2 - this.fontHeight / 2;
 
-        this.renderNameText(x, ty, z);
-        this.renderValueDisplayText(x, ty, z);
+        this.renderNameText(x, ty, z, ctx);
+        this.renderValueDisplayText(x, ty, z, ctx);
     }
 
-    protected void renderNameText(int x, int textY, float z)
+    protected void renderNameText(int x, int textY, float z, ScreenContext ctx)
     {
-        this.renderTextLine(x, textY, z, this.nameColor, this.nameShadow, this.styledName);
+        this.renderTextLine(x, textY, z, this.nameColor, this.nameShadow, ctx, this.styledName);
     }
 
-    protected void renderValueDisplayText(int x, int textY, float z)
+    protected void renderValueDisplayText(int x, int textY, float z, ScreenContext ctx)
     {
         if (this.valueDisplayText != null)
         {
             this.renderTextLine(x + this.getWidth() - this.valueDisplayText.renderWidth, textY, z,
-                                this.valueColor, this.valueShadow, this.valueDisplayText);
+                                this.valueColor, this.valueShadow, ctx, this.valueDisplayText);
         }
     }
 

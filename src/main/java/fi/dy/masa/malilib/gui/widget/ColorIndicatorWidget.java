@@ -55,7 +55,7 @@ public class ColorIndicatorWidget extends InteractableWidget
     }
 
     @Override
-    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
+    public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
         int width = this.getWidth();
         int height = this.getHeight();

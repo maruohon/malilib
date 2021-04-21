@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.gui.config;
 
 import fi.dy.masa.malilib.config.option.ConfigInfo;
+import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.BaseConfigWidget;
 import fi.dy.masa.malilib.util.StringUtils;
 
@@ -29,8 +30,9 @@ public class MissingConfigTypeFactory implements ConfigOptionWidgetFactory<Confi
             int x = this.getElementsStartPosition();
             int y = this.getY();
 
-            this.addLabel(x, y + 7, 0xFFFFFFFF, StringUtils.translate(
-                    "malilib.gui.label_error.no_widget_factory_for_config_type", this.data.getClass().getName()));
+            String label = StringUtils.translate("malilib.gui.label_error.no_widget_factory_for_config_type",
+                                                 this.data.getClass().getName());
+            this.addWidget(new LabelWidget(x, y + 7, 0xFFFFFFFF, label));
         }
     }
 }

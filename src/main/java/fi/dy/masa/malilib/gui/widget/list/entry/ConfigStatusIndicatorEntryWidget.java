@@ -1,11 +1,12 @@
 package fi.dy.masa.malilib.gui.widget.list.entry;
 
+import fi.dy.masa.malilib.gui.widget.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
-import fi.dy.masa.malilib.render.RenderUtils;
-import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.overlay.widget.ConfigStatusIndicatorContainerWidget;
 import fi.dy.masa.malilib.overlay.widget.sub.BaseConfigStatusIndicatorWidget;
+import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.render.ShapeRenderUtils;
 
 public class ConfigStatusIndicatorEntryWidget extends BaseOrderableListEditEntryWidget<BaseConfigStatusIndicatorWidget<?>>
 {
@@ -72,7 +73,7 @@ public class ConfigStatusIndicatorEntryWidget extends BaseOrderableListEditEntry
     }
 
     @Override
-    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
+    public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
         RenderUtils.color(1f, 1f, 1f, 1f);
 
@@ -80,7 +81,7 @@ public class ConfigStatusIndicatorEntryWidget extends BaseOrderableListEditEntry
         int height = this.getHeight();
 
         // Draw a lighter background for the hovered and the selected entry
-        if (hovered)
+        if (this.isHoveredForRender(ctx))
         {
             ShapeRenderUtils.renderRectangle(x, y, z, width, height, 0x60FFFFFF);
         }
@@ -94,25 +95,25 @@ public class ConfigStatusIndicatorEntryWidget extends BaseOrderableListEditEntry
             ShapeRenderUtils.renderRectangle(x, y, z, width, height, 0x40FFFFFF);
         }
 
-        super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hovered);
+        super.renderAt(x, y, z, ctx);
 
         int ly = y + height / 2 - this.fontHeight / 2;
-        this.renderTextLine(x + 4, ly, z, 0xFFFFFFFF, true, this.data.getStyledName());
+        this.renderTextLine(x + 4, ly, z, 0xFFFFFFFF, true, ctx, this.data.getStyledName());
     }
 
     @Override
-    public void postRenderHovered(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
+    public void postRenderHovered(ScreenContext ctx)
     {
-        super.postRenderHovered(mouseX, mouseY, isActiveGui, hoveredWidgetId);
+        super.postRenderHovered(ctx);
 
-        BaseConfigStatusIndicatorWidget<?> w = this.data;
-        int width = w.getWidth();
-        int height = w.getHeight();
+        BaseConfigStatusIndicatorWidget<?> widget = this.data;
+        int width = widget.getWidth();
+        int height = widget.getHeight();
         float z = this.getZLevel();
-        int x = mouseX + 10;
-        int y = mouseY - 5;
+        int x = ctx.mouseX + 10;
+        int y = ctx.mouseY - 5;
 
         ShapeRenderUtils.renderRectangle(x - 2, y - 2, z + 10f, width + 4, height + 4, 0xC0000000);
-        w.renderAt(x, y, z + 15f);
+        widget.renderAt(x, y, z + 15f, ctx);
     }
 }

@@ -19,7 +19,7 @@ public abstract class BaseModelWidget extends BackgroundWidget
         super(x, y, dimensions, dimensions);
 
         this.dimensions = dimensions;
-        this.setBorderWidth(0);
+        this.setNormalBorderWidth(0);
 
         if (dimensions > 0)
         {
@@ -50,9 +50,9 @@ public abstract class BaseModelWidget extends BackgroundWidget
     {
         int width = this.dimensions;
 
-        if (this.backgroundEnabled)
+        if (this.renderBackground)
         {
-            width += this.padding.getLeft() + this.padding.getRight() + this.borderWidth * 2;
+            width += this.padding.getLeft() + this.padding.getRight() + this.borderWidthNormal * 2;
         }
 
         this.setWidth(width);
@@ -63,35 +63,35 @@ public abstract class BaseModelWidget extends BackgroundWidget
     {
         int height = this.dimensions;
 
-        if (this.backgroundEnabled)
+        if (this.renderBackground)
         {
-            height += this.padding.getTop() + this.padding.getBottom() + this.borderWidth * 2;
+            height += this.padding.getTop() + this.padding.getBottom() + this.borderWidthNormal * 2;
         }
 
         this.setHeight(height);
     }
 
-    protected abstract void renderModel(int x, int y, float z, float scale);
+    protected abstract void renderModel(int x, int y, float z, float scale, ScreenContext ctx);
 
     @Override
-    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
+    public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
-        super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hovered);
+        super.renderAt(x, y, z, ctx);
 
         int width = this.getWidth();
         int height = this.getHeight();
 
-        if (this.backgroundEnabled)
+        if (this.renderBackground)
         {
-            x += this.padding.getLeft() + this.borderWidth;
-            y += this.padding.getTop() + this.borderWidth;
+            x += this.padding.getLeft() + this.borderWidthNormal;
+            y += this.padding.getTop() + this.borderWidthNormal;
         }
 
-        if (this.doHighlight && hovered)
+        if (this.doHighlight && this.isHoveredForRender(ctx))
         {
             ShapeRenderUtils.renderRectangle(x, y, z, width, height, this.highlightColor);
         }
 
-        this.renderModel(x, y, z + 0.5f, this.scale);
+        this.renderModel(x, y, z + 0.5f, this.scale, ctx);
     }
 }

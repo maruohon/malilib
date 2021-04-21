@@ -9,6 +9,7 @@ import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.MacroActionEditScreen;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
+import fi.dy.masa.malilib.gui.widget.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
@@ -78,11 +79,11 @@ public class MacroActionEntryWidget extends BaseDataListEntryWidget<MacroAction>
     }
 
     @Override
-    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
+    public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
-        super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hovered);
+        super.renderAt(x, y, z, ctx);
 
         int ty = y + this.getHeight() / 2 - this.fontHeight / 2;
-        this.renderTextLine(x + 4, ty, z + 0.1f, 0xFFFFFFFF, true, this.nameText);
+        this.renderTextLine(x + 4, ty, z + 0.1f, 0xFFFFFFFF, true, ctx, this.nameText);
     }
 }

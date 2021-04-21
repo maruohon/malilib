@@ -8,6 +8,7 @@ import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
+import fi.dy.masa.malilib.gui.widget.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.button.ButtonActionListener;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
@@ -306,20 +307,21 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
     }
 
     @Override
-    public boolean isHoveredForRender(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
+    public boolean isHoveredForRender(ScreenContext ctx)
     {
-        return this.dragged == false && super.isHoveredForRender(mouseX, mouseY, isActiveGui, hoveredWidgetId);
+        return this.dragged == false && super.isHoveredForRender(ctx);
     }
 
     @Override
-    public boolean shouldRenderHoverInfo(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
+    public boolean shouldRenderHoverInfo(ScreenContext ctx)
     {
-        return super.shouldRenderHoverInfo(mouseX, mouseY, isActiveGui, hoveredWidgetId) &&
-               BaseScreen.isCtrlDown() == false && BaseScreen.isShiftDown() == false;
+        return super.shouldRenderHoverInfo(ctx) &&
+               BaseScreen.isCtrlDown() == false &&
+               BaseScreen.isShiftDown() == false;
     }
 
     @Override
-    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
+    public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
         RenderUtils.color(1f, 1f, 1f, 1f);
 
@@ -328,7 +330,7 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
         
         if (this.dragged)
         {
-            int newIndex = this.getNewIndexFromDrag(mouseY);
+            int newIndex = this.getNewIndexFromDrag(ctx.mouseY);
             int off = (newIndex - this.listIndex) * height - 1;
 
             if (newIndex > this.listIndex)
@@ -338,8 +340,8 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
 
             ShapeRenderUtils.renderRectangle(x - 2, y + off, z + 50, width + 4, 2, 0xFF00FFFF);
 
-            x += (mouseX - this.dragStartX);
-            y += (mouseY - this.dragStartY);
+            x += (ctx.mouseX - this.dragStartX);
+            y += (ctx.mouseY - this.dragStartY);
             z += 60;
 
             ShapeRenderUtils.renderOutline(x - 1, y - 1, z, width + 2, height + 2, 1, 0xFFFFFFFF);
@@ -348,7 +350,7 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
             ShapeRenderUtils.renderRectangle(x, y, z, width, height, bgColor);
         }
 
-        super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hoveredWidgetId);
+        super.renderAt(x, y, z, ctx);
     }
 
     protected enum ButtonType

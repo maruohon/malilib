@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
+import fi.dy.masa.malilib.gui.widget.ScreenContext;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.overlay.message.MessageHelpers;
 import fi.dy.masa.malilib.render.RenderUtils;
@@ -59,8 +60,8 @@ public class OnOffButton extends GenericButton
         boolean isSlider = this.style == OnOffStyle.SLIDER_ON_OFF;
         String valueStr = this.getDisplayStringForState(value);
 
-        this.setBorderWidth(isSlider ? 1 : 0);
-        this.backgroundEnabled = isSlider;
+        this.setNormalBorderWidth(isSlider ? 1 : 0);
+        this.renderBackground = isSlider;
         this.textColorNormal = isSlider ? (value ? 0xFFE0E0E0 : 0xFF909090) : 0xFFE0E0E0;
         this.textColorHovered = isSlider ? 0xFFF0F000 : 0xFFFFFFA0;
 
@@ -133,21 +134,22 @@ public class OnOffButton extends GenericButton
     }
 
     @Override
-    protected void renderButtonBackground(int x, int y, float z, int width, int height, boolean hovered)
+    protected void renderButtonBackground(int x, int y, float z, int width, int height,
+                                          boolean hovered, ScreenContext ctx)
     {
         if (this.style == OnOffStyle.SLIDER_ON_OFF)
         {
             boolean value = this.statusSupplier.getAsBoolean();
-            renderOnOffSlider(x, y, z, width, height, value, this.enabled, hovered);
+            renderOnOffSlider(x, y, z, width, height, value, this.enabled, hovered, ctx);
         }
         else
         {
-            super.renderButtonBackground(x, y, z, width, height, hovered);
+            super.renderButtonBackground(x, y, z, width, height, hovered, ctx);
         }
     }
 
     public static void renderOnOffSlider(int x, int y, float z, int width, int height,
-                                         boolean state, boolean enabled, boolean hovered)
+                                         boolean state, boolean enabled, boolean hovered, ScreenContext ctx)
     {
         MultiIcon icon = state ? DefaultIcons.SLIDER_GREEN : DefaultIcons.SLIDER_RED;
 

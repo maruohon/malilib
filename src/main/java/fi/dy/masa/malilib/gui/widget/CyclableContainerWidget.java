@@ -18,14 +18,12 @@ public class CyclableContainerWidget extends ContainerWidget
 
         this.cyclableWidgets = cyclableWidgets;
         this.leftButton = new GenericButton(x, y, 12, 20, "", DefaultIcons.MEDIUM_ARROW_LEFT, "malilib.gui.button.hover.cycle_widgets_left");
-        this.leftButton.setRenderBackground(true);
-        this.leftButton.setActionListener((btn, mbtn) -> {
+        this.leftButton.setActionListener(() -> {
             this.startIndex = Math.max(this.startIndex - 1, 0);
             this.reAddSubWidgets();
         });
         this.rightButton = new GenericButton(x, y, 12, 20, "", DefaultIcons.MEDIUM_ARROW_RIGHT, "malilib.gui.button.hover.cycle_widgets_right");
-        this.rightButton.setRenderBackground(true);
-        this.rightButton.setActionListener((btn, mbtn) -> {
+        this.rightButton.setActionListener(() -> {
             this.startIndex = Math.min(this.startIndex + 1, this.getMaxStartIndex());
             this.reAddSubWidgets();
         });

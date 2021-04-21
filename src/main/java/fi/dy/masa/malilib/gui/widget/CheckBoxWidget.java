@@ -100,7 +100,7 @@ public class CheckBoxWidget extends InteractableWidget
     }
 
     @Override
-    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
+    public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
         boolean selected = this.isSelected();
         MultiIcon icon = selected ? this.widgetChecked : this.widgetUnchecked;
@@ -110,7 +110,9 @@ public class CheckBoxWidget extends InteractableWidget
 
         if (this.displayText != null)
         {
-            this.renderTextLine(x + icon.getWidth() + 3, y + this.getCenteredTextOffsetY() - 1, z, textColor, true, this.displayText);
+            int tx = x + icon.getWidth() + 3;
+            int ty = y + this.getCenteredTextOffsetY() - 1;
+            this.renderTextLine(tx, ty, z, textColor, true, ctx, this.displayText);
         }
     }
 }

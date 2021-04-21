@@ -62,7 +62,7 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
         this.resetConfigsButton = new GenericButton(x + width - 150, y, 160, 20, "malilib.gui.button.config.reset_all_filtered");
         this.resetConfigsButton.translateAndAddHoverStrings("malilib.gui.button.hover.config.reset_all_filtered");
         final ConfirmActionScreen confirmScreen = new ConfirmActionScreen(240, "malilib.gui.title.confirm_config_reset", configResetter, GuiUtils.getCurrentScreen(), "malilib.gui.label.confirm_config_reset");
-        this.resetConfigsButton.setActionListener((btn, mbtn) -> BaseScreen.openPopupScreen(confirmScreen));
+        this.resetConfigsButton.setActionListener(() -> BaseScreen.openPopupScreen(confirmScreen));
 
         this.sourceSelectionDropdown = new DropDownListWidget<>(x, y - 16, -1, 15, 60, 10, Scope.VALUES, Scope::getDisplayName, null);
         this.sourceSelectionDropdown.setSelectedEntry(MaLiLibConfigs.Generic.CONFIG_SEARCH_DEFAULT_SCOPE.getValue());

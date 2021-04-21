@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.gui.widget.list.entry;
 
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.action.NamedAction;
+import fi.dy.masa.malilib.gui.widget.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.StyledTextUtils;
@@ -33,11 +34,11 @@ public class NamedActionEntryWidget extends BaseOrderableListEditEntryWidget<Nam
     }
 
     @Override
-    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
+    public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
-        super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hovered);
+        super.renderAt(x, y, z, ctx);
 
         int ty = y + this.getHeight() / 2 - this.fontHeight / 2;
-        this.renderTextLine(x + 4, ty, z + 0.1f, 0xFFFFFFFF, true, this.nameText);
+        this.renderTextLine(x + 4, ty, z + 0.1f, 0xFFFFFFFF, true, ctx, this.nameText);
     }
 }

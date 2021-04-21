@@ -6,9 +6,8 @@ import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
+import fi.dy.masa.malilib.gui.widget.ScreenContext;
 import fi.dy.masa.malilib.listener.EventListener;
-import fi.dy.masa.malilib.render.RenderUtils;
-import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class GenericButton extends BaseButton
@@ -17,16 +16,13 @@ public class GenericButton extends BaseButton
     protected MultiIcon backgroundIcon = DefaultIcons.BUTTON_BACKGROUND;
     protected HorizontalAlignment iconAlignment = HorizontalAlignment.LEFT;
     protected boolean customIconOffset;
-    protected boolean renderBackground = true;
-    protected boolean renderOutline;
+    protected boolean renderButtonBackgroundTexture;
     protected boolean textCentered;
     protected boolean textShadow = true;
     protected int iconOffsetX;
     protected int iconOffsetY;
     protected int textOffsetX;
     protected int textOffsetY;
-    protected int outlineColorHover = 0xFFFFFFFF;
-    protected int outlineColorNormal = 0x00000000;
     protected int textColorDisabled = 0xFF606060;
     protected int textColorNormal = 0xFFE0E0E0;
     protected int textColorHovered = 0xFFFFFFA0;
@@ -68,6 +64,10 @@ public class GenericButton extends BaseButton
             for (String key : hoverStrings) { hoverStringList.add(StringUtils.translate(key)); }
             this.setHoverStringProvider("_default", () -> hoverStringList);
         }
+
+        this.renderButtonBackgroundTexture = true;
+        this.setNormalBorderColor(0x00000000);
+        this.setHoveredBorderColor(0xFFFFFFFF);
     }
 
     public GenericButton(int x, int y, MultiIcon icon, String... hoverStrings)
@@ -79,7 +79,7 @@ public class GenericButton extends BaseButton
     {
         this(x, y, iconSupplier.get().getWidth(), iconSupplier.get().getHeight(), "", iconSupplier, hoverStrings);
 
-        this.setRenderBackground(false);
+        this.setRenderButtonBackgroundTexture(false);
     }
 
     public GenericButton setTextCentered(boolean centered)
@@ -139,6 +139,12 @@ public class GenericButton extends BaseButton
         return this;
     }
 
+    public GenericButton setRenderButtonBackgroundTexture(boolean renderButtonBackgroundTexture)
+    {
+        this.renderButtonBackgroundTexture = renderButtonBackgroundTexture;
+        return this;
+    }
+
     /**
      * Set the icon alignment.<br>
      * Note: Only LEFT and RIGHT alignments work properly.
@@ -148,30 +154,6 @@ public class GenericButton extends BaseButton
     public GenericButton setIconAlignment(HorizontalAlignment alignment)
     {
         this.iconAlignment = alignment;
-        return this;
-    }
-
-    public GenericButton setRenderBackground(boolean render)
-    {
-        this.renderBackground = render;
-        return this;
-    }
-
-    public GenericButton setRenderOutline(boolean render)
-    {
-        this.renderOutline = render;
-        return this;
-    }
-
-    public GenericButton setOutlineColorNormal(int color)
-    {
-        this.outlineColorNormal = color;
-        return this;
-    }
-
-    public GenericButton setOutlineColorHover(int color)
-    {
-        this.outlineColorHover = color;
         return this;
     }
 
@@ -203,33 +185,27 @@ public class GenericButton extends BaseButton
         return super.getMaxDisplayStringWidth();
     }
 
-    protected void renderButtonBackground(int x, int y, float z, int width, int height, boolean hovered)
+    protected void renderButtonBackground(int x, int y, float z, int width, int height,
+                                          boolean hovered, ScreenContext ctx)
     {
         this.backgroundIcon.renderFourSplicedAt(x, y, z, width, height, this.enabled, hovered);
     }
 
     @Override
-    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
+    public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
         if (this.visible)
         {
-            RenderUtils.color(1f, 1f, 1f, 1f);
-
-            super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hovered);
+            super.renderAt(x, y, z, ctx);
 
             int width = this.getWidth();
             int height = this.getHeight();
             boolean textBlank = this.styledDisplayString == null || this.styledDisplayString.renderWidth == 0;
+            boolean hovered = this.isHoveredForRender(ctx);
 
-            if (this.renderOutline)
+            if (this.renderButtonBackgroundTexture)
             {
-                int color = hovered && this.enabled ? this.outlineColorHover : this.outlineColorNormal;
-                ShapeRenderUtils.renderOutline(x, y, z, width, height, 1, color);
-            }
-
-            if (this.renderBackground)
-            {
-                this.renderButtonBackground(x, y, z, width, height, hovered);
+                this.renderButtonBackground(x, y, z, width, height, hovered, ctx);
             }
 
             int iconClearing = 0;
@@ -273,7 +249,7 @@ public class GenericButton extends BaseButton
                 }
 
                 int color = this.getTextColorForRender(hovered);
-                this.renderTextLine(tx, ty, z, color, this.textShadow, this.styledDisplayString);
+                this.renderTextLine(tx, ty, z, color, this.textShadow, ctx, this.styledDisplayString);
             }
         }
     }
@@ -313,7 +289,7 @@ public class GenericButton extends BaseButton
                                                Supplier<MultiIcon> iconSupplier)
     {
         GenericButton button =  new GenericButton(x, y, width, height, "", iconSupplier);
-        button.setRenderBackground(false);
+        button.setRenderButtonBackgroundTexture(false);
         return button;
     }
 
@@ -323,9 +299,9 @@ public class GenericButton extends BaseButton
     {
         GenericButton button = createIconOnly(x, y, width, height, iconSupplier);
 
-        button.setRenderOutline(true);
-        button.setOutlineColorNormal(outlineColorNormal);
-        button.setOutlineColorHover(outlineColorHover);
+        button.setRenderNormalBorder(true);
+        button.setNormalBorderColor(outlineColorNormal);
+        button.setHoveredBorderColor(outlineColorHover);
 
         return button;
     }

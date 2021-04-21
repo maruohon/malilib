@@ -271,11 +271,13 @@ public class ScrollBarWidget extends InteractableWidget
     }
 
     @Override
-    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
+    public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
         int width = this.getWidth();
         int height = this.getHeight();
         int totalHeight = this.totalHeight;
+        int mouseX = ctx.mouseX;
+        int mouseY = ctx.mouseY;
 
         RenderUtils.color(1f, 1f, 1f, 1f);
 

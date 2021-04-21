@@ -48,7 +48,7 @@ public class BlockModelWidget extends BaseModelWidget
     }
 
     @Override
-    protected void renderModel(int x, int y, float z, float scale)
+    protected void renderModel(int x, int y, float z, float scale, ScreenContext ctx)
     {
         if (this.model != null)
         {

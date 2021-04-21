@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.overlay.widget;
 import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.JsonObject;
+import fi.dy.masa.malilib.gui.widget.ScreenContext;
 import fi.dy.masa.malilib.overlay.message.Message;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.render.text.TextRenderer;
@@ -132,7 +133,7 @@ public class MessageRendererWidget extends InfoRendererWidget
     }
 
     @Override
-    protected void renderBackground(int x, int y, float z)
+    protected void renderBackground(int x, int y, float z, ScreenContext ctx)
     {
         if (this.renderBackground && this.messages.isEmpty() == false)
         {
@@ -141,12 +142,12 @@ public class MessageRendererWidget extends InfoRendererWidget
     }
 
     @Override
-    protected void renderContents(int x, int y, float z)
+    protected void renderContents(int x, int y, float z, ScreenContext ctx)
     {
-        this.drawMessages(x, y, z);
+        this.drawMessages(x, y, z, ctx);
     }
 
-    public void drawMessages(int x, int y, float z)
+    public void drawMessages(int x, int y, float z, ScreenContext ctx)
     {
         if (this.messages.isEmpty() == false)
         {
@@ -167,7 +168,7 @@ public class MessageRendererWidget extends InfoRendererWidget
                 }
                 else
                 {
-                    message.renderAt(x, y, z + 0.1f, this.lineHeight, currentTime);
+                    message.renderAt(x, y, z + 0.1f, this.lineHeight, currentTime, ctx);
                 }
 
                 // Always offset the position to prevent a flicker from the later

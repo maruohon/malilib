@@ -20,6 +20,7 @@ import fi.dy.masa.malilib.gui.config.ConfigWidgetRegistry;
 import fi.dy.masa.malilib.gui.config.indicator.ConfigStatusIndicatorGroupEditScreen;
 import fi.dy.masa.malilib.gui.config.indicator.ConfigStatusWidgetFactory;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
+import fi.dy.masa.malilib.gui.widget.ScreenContext;
 import fi.dy.masa.malilib.overlay.widget.sub.BaseConfigStatusIndicatorWidget;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
@@ -201,7 +202,7 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
     }
 
     @Override
-    protected void renderOddEvenLineBackgrounds(int x, int y, float z)
+    protected void renderOddEvenLineBackgrounds(int x, int y, float z, ScreenContext ctx)
     {
         BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR, false);
 
@@ -255,7 +256,7 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
     }
 
     @Override
-    protected void renderContents(int x, int y, float z)
+    protected void renderContents(int x, int y, float z, ScreenContext ctx)
     {
         for (BaseConfigStatusIndicatorWidget<?> widget : this.enabledWidgets)
         {
@@ -264,7 +265,7 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
             float wz = widget.getZLevel();
 
             // Use a relative position in case scaling is involved
-            widget.renderAt(x + wx, y + wy, z + wz);
+            widget.renderAt(x + wx, y + wy, z + wz, ctx);
         }
     }
 

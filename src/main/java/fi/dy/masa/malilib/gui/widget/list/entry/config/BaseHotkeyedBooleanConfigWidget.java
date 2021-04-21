@@ -32,7 +32,7 @@ public abstract class BaseHotkeyedBooleanConfigWidget extends BaseConfigWidget<C
 
         this.booleanButton = new BooleanConfigButton(x, y + 1, -1, 20, booleanConfig);
         this.booleanButton.setHoverStringProvider("locked", this.booleanConfig::getLockAndOverrideMessages);
-        this.booleanButton.setActionListener((btn, mbtn) -> {
+        this.booleanButton.setActionListener(() -> {
             this.booleanConfig.toggleBooleanValue();
             this.updateButtonStates();
         });
@@ -43,7 +43,7 @@ public abstract class BaseHotkeyedBooleanConfigWidget extends BaseConfigWidget<C
 
         this.settingsWidget = new KeybindSettingsWidget(x, y, 20, 20, keyBind, booleanConfig.getDisplayName(), ctx.getDialogHandler());
 
-        this.resetButton.setActionListener((btn, mbtn) -> {
+        this.resetButton.setActionListener(() -> {
             this.config.resetToDefault();
             this.updateButtonStates();
         });

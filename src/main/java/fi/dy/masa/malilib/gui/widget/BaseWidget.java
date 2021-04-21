@@ -380,7 +380,8 @@ public class BaseWidget
         return StyledTextLine.raw(str).renderWidth;
     }
 
-    public void renderTextLine(int x, int y, float z, int defaultColor, boolean shadow, StyledTextLine text)
+    public void renderTextLine(int x, int y, float z, int defaultColor, boolean shadow,
+                               ScreenContext ctx, StyledTextLine text)
     {
         this.textRenderer.renderLine(x, y, z, defaultColor, shadow, text);
     }
@@ -390,28 +391,28 @@ public class BaseWidget
      * <b>Note:</b> It's discouraged to use this method, if it's possible to easily
      * generate and cache the resulting StyledTextLine directly.
      */
-    public void renderPlainString(int x, int y, float z, int color, boolean shadow, String str)
+    public void renderPlainString(int x, int y, float z, int color, boolean shadow, String str, ScreenContext ctx)
     {
         this.textRenderer.renderLine(x, y, z, color, shadow, StyledTextLine.of(str));
     }
 
-    public void renderDebug(int mouseX, int mouseY, boolean hovered, boolean renderAll, boolean infoAlways)
+    public void renderDebug(boolean hovered, ScreenContext ctx)
     {
         int x = this.getX();
         int y = this.getY();
         float z = this.getZLevel();
 
-        this.renderDebug(x, y, z, mouseX, mouseY, hovered, renderAll, infoAlways);
+        this.renderDebug(x, y, z, hovered, ctx);
     }
 
-    public void renderDebug(int x, int y, float z, int mouseX, int mouseY, boolean hovered, boolean renderAll, boolean infoAlways)
+    public void renderDebug(int x, int y, float z, boolean hovered, ScreenContext ctx)
     {
         int w = this.getWidth();
         int h = this.getHeight();
 
-        if (hovered || renderAll)
+        if (hovered || ctx.debugRenderAll)
         {
-            renderDebugOutline(x, y, z, w, h, hovered);
+            renderDebugOutline(x, y, z, w, h, hovered, ctx);
 
             if (this.padding.isEmpty() == false)
             {
@@ -420,27 +421,29 @@ public class BaseWidget
                 int right = this.padding.getRight();
                 int bottom = this.padding.getBottom();
 
-                renderDebugOutline(x + left, y + top, z, w - left - right, h - top - bottom, false, 0xFFFFFFFF);
+                renderDebugOutline(x + left, y + top, z, w - left - right, h - top - bottom, false, 0xFFFFFFFF, ctx);
             }
         }
 
-        if (hovered || infoAlways)
+        if (hovered || ctx.debugInfoAlways)
         {
-            int posX = infoAlways ? x      : mouseX;
-            int posY = infoAlways ? y - 12 : mouseY;
+            int posX = ctx.debugInfoAlways ? x      : ctx.mouseX;
+            int posY = ctx.debugInfoAlways ? y - 12 : ctx.mouseY;
             addDebugText(posX, posY, x, y, z, w, h, this.getClass().getName());
         }
     }
 
-    public static void renderDebugOutline(double x, double y, double z, double w, double h, boolean hovered)
+    public static void renderDebugOutline(double x, double y, double z, double w, double h,
+                                          boolean hovered, ScreenContext ctx)
     {
         int color = Color4f.getColorFromHue(lastDebugOutlineColorHue);
         lastDebugOutlineColorHue += 40;
 
-        renderDebugOutline(x, y, z, w, h, hovered, color);
+        renderDebugOutline(x, y, z, w, h, hovered, color, ctx);
     }
 
-    public static void renderDebugOutline(double x, double y, double z, double w, double h, boolean hovered, int color)
+    public static void renderDebugOutline(double x, double y, double z, double w, double h,
+                                          boolean hovered, int color, ScreenContext ctx)
     {
         float a = (float) (color >> 24 & 255) / 255.0F;
         float r = (float) (color >> 16 & 255) / 255.0F;
@@ -480,7 +483,7 @@ public class BaseWidget
         DEBUG_STRINGS.put(posLong, str);
     }
 
-    public static void renderDebugTextAndClear()
+    public static void renderDebugTextAndClear(ScreenContext ctx)
     {
         if (DEBUG_STRINGS.isEmpty() == false)
         {

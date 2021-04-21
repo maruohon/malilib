@@ -65,7 +65,7 @@ public class KeybindSettingsWidget extends InteractableWidget
     }
 
     @Override
-    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
+    public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
         RenderUtils.color(1f, 1f, 1f, 1f);
         this.bindTexture(TEXTURE);

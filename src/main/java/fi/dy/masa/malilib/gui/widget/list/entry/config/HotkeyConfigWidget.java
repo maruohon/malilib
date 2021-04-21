@@ -23,13 +23,13 @@ public class HotkeyConfigWidget extends BaseConfigWidget<HotkeyConfig>
 
         this.keybindButton = new KeyBindConfigButton(x, y, 120, 20, this.config.getKeyBind(), ctx.getKeybindEditingScreen());
         this.keybindButton.setHoverStringProvider("locked", this.config::getLockAndOverrideMessages);
-        this.keybindButton.setActionListener((btn, mbtn) -> this.resetButton.setEnabled(this.config.isModified()));
+        this.keybindButton.setActionListener(() -> this.resetButton.setEnabled(this.config.isModified()));
         this.keybindButton.setValueChangeListener(() -> this.resetButton.setEnabled(this.config.isModified()));
 
         this.settingsWidget = new KeybindSettingsWidget(x, y, 20, 20, config.getKeyBind(),
                                                         config.getDisplayName(), ctx.getDialogHandler());
 
-        this.resetButton.setActionListener((btn, mbtn) -> {
+        this.resetButton.setActionListener(() -> {
             this.config.resetToDefault();
             this.keybindButton.updateDisplayString();
             this.resetButton.setEnabled(this.config.isModified());

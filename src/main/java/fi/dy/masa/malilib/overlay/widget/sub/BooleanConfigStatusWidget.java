@@ -9,6 +9,7 @@ import fi.dy.masa.malilib.gui.config.indicator.BooleanConfigStatusIndicatorEditS
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
+import fi.dy.masa.malilib.gui.widget.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.button.OnOffButton;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
@@ -145,20 +146,20 @@ public class BooleanConfigStatusWidget extends BaseConfigStatusIndicatorWidget<B
     }
 
     @Override
-    protected void renderContents(int x, int y, float z)
+    protected void renderContents(int x, int y, float z, ScreenContext ctx)
     {
-        super.renderContents(x, y, z);
+        super.renderContents(x, y, z, ctx);
 
-        this.renderValueIndicator(x, y, z);
+        this.renderValueIndicator(x, y, z, ctx);
     }
 
-    protected void renderValueIndicator(int x, int y, float z)
+    protected void renderValueIndicator(int x, int y, float z, ScreenContext ctx)
     {
-        this.renderIcon(x, y, z);
-        this.renderSlider(x, y, z);
+        this.renderIcon(x, y, z, ctx);
+        this.renderSlider(x, y, z, ctx);
     }
 
-    protected void renderIcon(int x, int y, float z)
+    protected void renderIcon(int x, int y, float z, ScreenContext ctx)
     {
         if (this.icon != null)
         {
@@ -168,7 +169,7 @@ public class BooleanConfigStatusWidget extends BaseConfigStatusIndicatorWidget<B
         }
     }
 
-    protected void renderSlider(int x, int y, float z)
+    protected void renderSlider(int x, int y, float z, ScreenContext ctx)
     {
         if (this.renderStyle == Style.ON_OFF_SLIDER)
         {
@@ -176,11 +177,11 @@ public class BooleanConfigStatusWidget extends BaseConfigStatusIndicatorWidget<B
             int sx = x + this.getWidth() - this.sliderWidth;
 
             ShapeRenderUtils.renderRectangle(sx, y, z, this.sliderWidth, height, 0x70000000);
-            OnOffButton.renderOnOffSlider(sx, y, z, this.sliderWidth, height, this.lastValue, true, false);
+            OnOffButton.renderOnOffSlider(sx, y, z, this.sliderWidth, height, this.lastValue, true, false, ctx);
 
             int tx = this.getSliderStyleTextStartX(sx + 4, this.lastValue);
             int ty = y + height / 2 - this.fontHeight / 2;
-            this.renderTextLine(tx, ty, z, -1, true, this.lastValue ? this.textOn : this.textOff);
+            this.renderTextLine(tx, ty, z, -1, true, ctx, this.lastValue ? this.textOn : this.textOff);
         }
     }
 

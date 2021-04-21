@@ -708,7 +708,7 @@ public abstract class BaseListWidget extends ContainerWidget
     }
 
     @Override
-    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
+    public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
         int diffX = x - this.getX();
         int diffY = y - this.getY();
@@ -716,28 +716,30 @@ public abstract class BaseListWidget extends ContainerWidget
 
         RenderUtils.color(1f, 1f, 1f, 1f);
 
-        super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hoveredWidgetId);
+        super.renderAt(x, y, z, ctx);
 
         // Draw the currently visible widgets
         for (int i = 0; i < this.entryWidgets.size(); i++)
         {
-            this.renderWidget(i, diffX, diffY, diffZ, mouseX, mouseY, isActiveGui, hoveredWidgetId);
+            this.renderWidget(i, diffX, diffY, diffZ, ctx);
         }
     }
 
-    protected void renderWidget(int widgetIndex, int diffX, int diffY, float diffZ, int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
+    protected void renderWidget(int widgetIndex, int diffX, int diffY, float diffZ, ScreenContext ctx)
     {
         BaseListEntryWidget widget =  this.entryWidgets.get(widgetIndex);
         int wx = widget.getX() + diffX;
         int wy = widget.getY() + diffY;
         float wz = widget.getZLevel() + diffZ;
-        widget.renderAt(wx, wy, wz, mouseX, mouseY, isActiveGui, hoveredWidgetId, false);
+
+        widget.renderAt(wx, wy, wz, ctx);
     }
 
     @Override
-    public void renderDebug(int mouseX, int mouseY, boolean hovered, boolean renderAll, boolean infoAlways)
+    public void renderDebug(boolean hovered, ScreenContext ctx)
     {
-        super.renderDebug(mouseX, mouseY, hovered, renderAll, infoAlways);
-        BaseScreen.renderWidgetDebug(this.entryWidgets, mouseX, mouseY, renderAll, infoAlways);
+        super.renderDebug(hovered, ctx);
+
+        BaseScreen.renderWidgetDebug(this.entryWidgets, ctx);
     }
 }

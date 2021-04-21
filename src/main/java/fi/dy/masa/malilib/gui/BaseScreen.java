@@ -20,6 +20,7 @@ import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.BaseWidget;
 import fi.dy.masa.malilib.gui.widget.InteractableWidget;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
+import fi.dy.masa.malilib.gui.widget.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.button.BaseButton;
 import fi.dy.masa.malilib.gui.widget.button.ButtonActionListener;
 import fi.dy.masa.malilib.input.ActionResult;
@@ -63,10 +64,11 @@ public abstract class BaseScreen extends GuiScreen
     protected final List<Runnable> tasks = new ArrayList<>();
     private final List<BaseButton> buttons = new ArrayList<>();
     private final List<InteractableWidget> widgets = new ArrayList<>();
-    protected InteractableWidget hoveredWidget = null;
     protected String title = "";
     @Nullable private GuiScreen parent;
     @Nullable protected DialogHandler dialogHandler;
+    @Nullable protected InteractableWidget hoveredWidget;
+    @Nullable protected ScreenContext context;
     protected int backgroundColor = TOOLTIP_BACKGROUND;
     protected int borderColor = COLOR_HORIZONTAL_BAR;
     protected int customScreenScale;
@@ -298,6 +300,20 @@ public abstract class BaseScreen extends GuiScreen
     protected void updateTopHoveredWidget(int mouseX, int mouseY, boolean isActiveGui)
     {
         this.hoveredWidget = isActiveGui ? this.getTopHoveredWidget(mouseX, mouseY, null) : null;
+        int hoveredWidgetId = this.hoveredWidget != null ? this.hoveredWidget.getId() : -1;
+        this.context = new ScreenContext(mouseX, mouseY, hoveredWidgetId, isActiveGui);
+    }
+
+    protected ScreenContext getContext(int mouseX, int mouseY)
+    {
+        if (this.context == null)
+        {
+            boolean isActiveGui = GuiUtils.getCurrentScreen() == this;
+            int hoveredWidgetId = this.hoveredWidget != null ? this.hoveredWidget.getId() : -1;
+            this.context = new ScreenContext(mouseX, mouseY, hoveredWidgetId, isActiveGui);
+        }
+
+        return this.context;
     }
 
     @Override
@@ -321,26 +337,25 @@ public abstract class BaseScreen extends GuiScreen
             mouseY = this.height - Mouse.getY() * this.height / this.mc.displayHeight - 1;
         }
 
-        boolean isActiveGui = GuiUtils.getCurrentScreen() == this;
-        int hoveredWidgetId = isActiveGui && this.hoveredWidget != null ? this.hoveredWidget.getId() : -1;
+        ScreenContext ctx = this.getContext(mouseX, mouseY);
 
         this.drawScreenBackground(mouseX, mouseY);
         this.drawTitle(mouseX, mouseY, partialTicks);
 
         // Draw base widgets
-        this.drawWidgets(mouseX, mouseY, isActiveGui, hoveredWidgetId);
+        this.drawWidgets(mouseX, mouseY, ctx);
         //super.drawScreen(mouseX, mouseY, partialTicks);
 
         this.drawContents(mouseX, mouseY, partialTicks);
 
-        this.drawHoveredWidget(mouseX, mouseY, isActiveGui, hoveredWidgetId);
+        this.drawHoveredWidget(ctx);
 
         if (MaLiLibConfigs.Debug.GUI_DEBUG.getBooleanValue() && MaLiLibConfigs.Debug.GUI_DEBUG_KEY.isHeld())
         {
-            this.renderDebug(mouseX, mouseY);
+            this.renderDebug(ctx);
         }
 
-        BaseWidget.renderDebugTextAndClear();
+        BaseWidget.renderDebugTextAndClear(ctx);
 
         if (this.useCustomScreenScaling())
         {
@@ -759,13 +774,13 @@ public abstract class BaseScreen extends GuiScreen
     {
     }
 
-    protected void drawWidgets(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
+    protected void drawWidgets(int mouseX, int mouseY, ScreenContext ctx)
     {
         if (this.widgets.isEmpty() == false)
         {
             for (InteractableWidget widget : this.widgets)
             {
-                widget.renderAt(widget.getX(), widget.getY(), widget.getZLevel(), mouseX, mouseY, isActiveGui, hoveredWidgetId);
+                widget.renderAt(widget.getX(), widget.getY(), widget.getZLevel(), ctx);
             }
         }
 
@@ -773,16 +788,16 @@ public abstract class BaseScreen extends GuiScreen
         {
             for (InteractableWidget widget : this.buttons)
             {
-                widget.renderAt(widget.getX(), widget.getY(), widget.getZLevel(), mouseX, mouseY, isActiveGui, hoveredWidgetId);
+                widget.renderAt(widget.getX(), widget.getY(), widget.getZLevel(), ctx);
             }
         }
     }
 
-    protected void drawHoveredWidget(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
+    protected void drawHoveredWidget(ScreenContext ctx)
     {
         if (this.hoveredWidget != null)
         {
-            this.hoveredWidget.postRenderHovered(mouseX, mouseY, isActiveGui, hoveredWidgetId);
+            this.hoveredWidget.postRenderHovered(ctx);
             RenderUtils.disableItemLighting();
         }
     }
@@ -856,26 +871,23 @@ public abstract class BaseScreen extends GuiScreen
         return isAltKeyDown();
     }
 
-    public void renderDebug(int mouseX, int mouseY)
+    public void renderDebug(ScreenContext ctx)
     {
-        if (GuiUtils.getCurrentScreen() == this)
+        if (ctx.isActiveScreen)
         {
-            boolean renderAll = MaLiLibConfigs.Debug.GUI_DEBUG_ALL.getBooleanValue();
-            boolean infoAlways = MaLiLibConfigs.Debug.GUI_DEBUG_INFO_ALWAYS.getBooleanValue();
-
-            renderWidgetDebug(this.buttons, mouseX, mouseY, renderAll, infoAlways);
-            renderWidgetDebug(this.widgets, mouseX, mouseY, renderAll, infoAlways);
+            renderWidgetDebug(this.buttons, ctx);
+            renderWidgetDebug(this.widgets, ctx);
         }
     }
 
-    public static void renderWidgetDebug(List<? extends InteractableWidget> widgets, int mouseX, int mouseY, boolean renderAll, boolean infoAlways)
+    public static void renderWidgetDebug(List<? extends InteractableWidget> widgets, ScreenContext ctx)
     {
         if (widgets.isEmpty() == false)
         {
             for (InteractableWidget widget : widgets)
             {
-                boolean hovered = widget.isMouseOver(mouseX, mouseY);
-                widget.renderDebug(mouseX, mouseY, hovered, renderAll, infoAlways);
+                boolean hovered = widget.isMouseOver(ctx.mouseX, ctx.mouseY);
+                widget.renderDebug(hovered, ctx);
             }
         }
     }

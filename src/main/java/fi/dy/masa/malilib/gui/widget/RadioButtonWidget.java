@@ -103,11 +103,16 @@ public class RadioButtonWidget<T extends Enum<T>> extends InteractableWidget
     }
 
     @Override
-    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
+    public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
         RenderUtils.color(1f, 1f, 1f, 1f);
 
         int count = Math.min(this.options.size(), this.displayStrings.size());
+        boolean hovered = this.isHoveredForRender(ctx);
+        int width = this.getWidth();
+        int wx = this.getX();
+        int mouseX = ctx.mouseX;
+        int mouseY = ctx.mouseY;
 
         for (int i = 0; i < count; ++i)
         {
@@ -122,14 +127,15 @@ public class RadioButtonWidget<T extends Enum<T>> extends InteractableWidget
                 iconWidth = icon.getWidth() + 3;
                 int iconHeight = icon.getHeight();
                 int iconY = y + (this.entryHeight - iconHeight) / 2;
-                boolean entryHovered = hovered && GuiUtils.isMouseInRegion(mouseX, mouseY, this.getX(), y, this.getWidth(), this.entryHeight);
+                boolean isMouseOverChoice = GuiUtils.isMouseInRegion(mouseX, mouseY, wx, y, width, this.entryHeight);
+                boolean entryHovered = hovered && isMouseOverChoice;
                 icon.renderAt(x, iconY, z, false, entryHovered);
             }
 
             int textY = y + 1 + (this.entryHeight - this.fontHeight) / 2;
             int textColor = entrySelected ? 0xFFFFFFFF : 0xB0B0B0B0;
 
-            this.renderTextLine(x + iconWidth, textY, z, textColor, true, displayString);
+            this.renderTextLine(x + iconWidth, textY, z, textColor, true, ctx, displayString);
             y += this.entryHeight;
         }
     }

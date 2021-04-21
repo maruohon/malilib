@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.overlay.message;
 
+import fi.dy.masa.malilib.gui.widget.ScreenContext;
 import fi.dy.masa.malilib.render.text.StyledText;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.render.text.TextRenderer;
@@ -63,7 +64,7 @@ public class Message
     /**
      * Renders the styled text for this message
      */
-    public void renderAt(int x, int y, float z, int lineHeight, long currentTime)
+    public void renderAt(int x, int y, float z, int lineHeight, long currentTime, ScreenContext ctx)
     {
         float alpha = -1.0f;
 

@@ -30,7 +30,7 @@ public class ConfigInfoEntryWidget extends BaseDataListEntryWidget<ConfigOnTab>
 
         int bgColor = this.isOdd ? 0x30FFFFFF : 0x20FFFFFF;
         this.setBackgroundColor(bgColor);
-        this.setBackgroundEnabled(true);
+        this.setRenderBackground(true);
     }
 
     @Override

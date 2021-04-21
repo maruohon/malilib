@@ -51,9 +51,9 @@ public class IconWidget extends BackgroundWidget
         {
             int width = this.icon.getWidth();
 
-            if (this.backgroundEnabled)
+            if (this.renderBackground)
             {
-                width += this.padding.getLeft() + this.padding.getRight() + this.borderWidth * 2;
+                width += this.padding.getLeft() + this.padding.getRight() + this.borderWidthNormal * 2;
             }
 
             this.setWidth(width);
@@ -71,9 +71,9 @@ public class IconWidget extends BackgroundWidget
         {
             int height = this.icon.getHeight();
 
-            if (this.backgroundEnabled)
+            if (this.renderBackground)
             {
-                height += this.padding.getTop() + this.padding.getBottom() + this.borderWidth * 2;
+                height += this.padding.getTop() + this.padding.getBottom() + this.borderWidthNormal * 2;
             }
 
             this.setHeight(height);
@@ -85,19 +85,19 @@ public class IconWidget extends BackgroundWidget
     }
 
     @Override
-    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
+    public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
         if (this.icon != null)
         {
-            super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hovered);
+            super.renderAt(x, y, z, ctx);
 
-            if (this.backgroundEnabled)
+            if (this.renderBackground)
             {
-                x += this.padding.getLeft() + this.borderWidth;
-                y += this.padding.getTop() + this.borderWidth;
+                x += this.padding.getLeft() + this.borderWidthNormal;
+                y += this.padding.getTop() + this.borderWidthNormal;
             }
 
-            this.icon.renderAt(x, y, z + 0.1f, this.enabled, this.doHighlight && hovered);
+            this.icon.renderAt(x, y, z + 0.1f, this.enabled, this.doHighlight && this.isHoveredForRender(ctx));
         }
     }
 }

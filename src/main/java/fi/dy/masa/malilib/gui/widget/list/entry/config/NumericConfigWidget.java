@@ -31,12 +31,12 @@ public abstract class NumericConfigWidget<TYPE, CFG extends BaseConfigOption<TYP
         this.sliderToggleButton = new GenericButton(x, y, () -> this.config.isSliderActive() ? DefaultIcons.BTN_TXTFIELD : DefaultIcons.BTN_SLIDER);
         this.sliderToggleButton.setHoverStringProvider("slider", this::getSliderMessages);
 
-        this.sliderToggleButton.setActionListener((btn, mbtn) -> {
+        this.sliderToggleButton.setActionListener(() -> {
             this.config.toggleSliderActive();
             this.reAddSubWidgets();
         });
 
-        this.resetButton.setActionListener((btn, mbtn) -> {
+        this.resetButton.setActionListener(() -> {
             this.config.resetToDefault();
             this.updateResetButtonState();
             this.reAddSubWidgets();

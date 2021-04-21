@@ -4,6 +4,7 @@ import java.io.File;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.icon.FileBrowserIconProvider;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
+import fi.dy.masa.malilib.gui.widget.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.list.BaseFileBrowserWidget.DirectoryEntry;
 import fi.dy.masa.malilib.gui.widget.list.BaseFileBrowserWidget.DirectoryEntryType;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
@@ -52,19 +53,20 @@ public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry
     }
 
     @Override
-    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId, boolean selected)
+    public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
         @Nullable MultiIcon icon = this.iconProvider != null ? this.iconProvider.getIconForEntry(this.entry) : null;
         int xOffset = 0;
         int width = this.getWidth();
         int height = this.getHeight();
+        boolean selected = this.isSelected();
 
         // Draw a lighter background for the hovered and the selected entry
         if (selected)
         {
             ShapeRenderUtils.renderRectangle(x, y, z, width, height, 0x70FFFFFF);
         }
-        else if (isActiveGui && this.getId() == hoveredWidgetId)
+        else if (ctx.isActiveScreen && this.getId() == ctx.hoveredWidgetId)
         {
             ShapeRenderUtils.renderRectangle(x, y, z, width, height, 0x60FFFFFF);
         }
@@ -91,9 +93,9 @@ public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry
         }
 
         int yOffset = (height - this.fontHeight) / 2 + 1;
-        this.renderTextLine(x + xOffset + 2, y + yOffset, z, 0xFFFFFFFF, false, this.displayText);
+        this.renderTextLine(x + xOffset + 2, y + yOffset, z, 0xFFFFFFFF, false, ctx, this.displayText);
 
-        super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hoveredWidgetId, selected);
+        super.renderAt(x, y, z, ctx);
     }
 
     protected String getDisplayName()

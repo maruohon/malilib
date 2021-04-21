@@ -211,52 +211,55 @@ public class LabelWidget extends BackgroundWidget
     }
 
     @Override
-    protected int getBackgroundWidth(int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
+    protected int getBackgroundWidth(boolean hovered, ScreenContext ctx)
     {
-        if (this.hasMaxWidth && isActiveGui && hovered)
+        if (this.hasMaxWidth && ctx.isActiveScreen && hovered)
         {
             return this.totalWidth;
         }
 
-        return super.getBackgroundWidth(mouseX, mouseY, isActiveGui, hovered);
+        return super.getBackgroundWidth(hovered, ctx);
     }
 
     @Override
-    protected int getBackgroundHeight(int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
+    protected int getBackgroundHeight(boolean hovered, ScreenContext ctx)
     {
-        if (this.hasMaxHeight && isActiveGui && hovered)
+        if (this.hasMaxHeight && ctx.isActiveScreen && hovered)
         {
             return this.totalHeight;
         }
 
-        return super.getBackgroundHeight(mouseX, mouseY, isActiveGui, hovered);
+        return super.getBackgroundHeight(hovered, ctx);
     }
 
     @Override
-    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
+    public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
         if (this.visible)
         {
             RenderUtils.color(1f, 1f, 1f, 1f);
 
-            if (hovered && this.backgroundEnabled == false && this.useBackgroundForHoverOverflow && this.stringListRenderer.hasClampedContent())
+            if (this.renderBackground == false &&
+                this.useBackgroundForHoverOverflow &&
+                this.stringListRenderer.hasClampedContent() &&
+                this.isHoveredForRender(ctx))
             {
                 z += 20;
                 int width = this.totalWidth;
                 int height = this.totalHeight;
-                this.renderBackground(x, y, z, width, height, mouseX, mouseY, isActiveGui, hovered, false);
-                this.renderBorder(x, y, z, width, height, mouseX, mouseY, isActiveGui, hovered, false);
+                this.renderBackground(x, y, z, width, height, this.borderWidthHovered, this.backgroundColorHovered, ctx);
+                this.renderBorder(x, y, z, width, height, this.borderWidthHovered, this.borderColorHovered, ctx);
             }
             else
             {
-                super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hovered);
+                super.renderAt(x, y, z, ctx);
             }
 
             int bw = this.getActiveBorderWidth();
             x += this.padding.getLeft() + bw;
             y += this.padding.getTop() + bw;
 
-            this.stringListRenderer.renderAt(x, y, z, hovered);
+            this.stringListRenderer.renderAt(x, y, z, this.isHoveredForRender(ctx));
         }
     }
 }

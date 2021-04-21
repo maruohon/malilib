@@ -82,7 +82,7 @@ public class ConfigStatusIndicatorGroupAddConfigsScreen extends BaseListScreen<D
         listWidget.setFetchFromSupplierOnRefresh(true);
         listWidget.getEntrySelectionHandler().setAllowSelection(true);
         listWidget.getEntrySelectionHandler().setAllowMultiSelection(true);
-        listWidget.setBorderWidth(1);
+        listWidget.setNormalBorderWidth(1);
         listWidget.setListEntryWidgetFixedHeight(15);
 
         return listWidget;

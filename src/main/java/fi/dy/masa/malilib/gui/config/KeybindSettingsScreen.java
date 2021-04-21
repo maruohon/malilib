@@ -180,7 +180,7 @@ public class KeybindSettingsScreen extends BaseScreen
 
             GenericButton sliderToggleButton = new GenericButton(x + 84, y, () -> intConfig.isSliderActive() ? DefaultIcons.BTN_TXTFIELD : DefaultIcons.BTN_SLIDER);
 
-            sliderToggleButton.setActionListener((btn, mbtn) -> {
+            sliderToggleButton.setActionListener(() -> {
                 intConfig.toggleSliderActive();
                 this.initGui();
             });

@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.gui.widget.list.entry;
 
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
+import fi.dy.masa.malilib.gui.widget.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.button.OnOffButton;
 import fi.dy.masa.malilib.gui.widget.button.OnOffStyle;
@@ -104,14 +105,14 @@ public abstract class BaseInfoRendererWidgetEntryWidget<TYPE extends InfoRendere
     }
 
     @Override
-    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
+    public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
         // Draw a lighter background for the hovered entry
         // Draw a slightly lighter background for even entries
-        int backgroundColor = hovered ? 0x60FFFFFF : (this.isOdd ? 0x20FFFFFF : 0x40FFFFFF);
+        int backgroundColor = this.isHoveredForRender(ctx) ? 0x60FFFFFF : (this.isOdd ? 0x20FFFFFF : 0x40FFFFFF);
 
         ShapeRenderUtils.renderRectangle(x, y, z, this.getWidth(), this.getHeight(), backgroundColor);
 
-        super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hovered);
+        super.renderAt(x, y, z, ctx);
     }
 }

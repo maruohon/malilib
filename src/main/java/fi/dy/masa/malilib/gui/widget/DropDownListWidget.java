@@ -156,7 +156,7 @@ public class DropDownListWidget<T> extends ContainerWidget
     {
         this.noCurrentEntryBar = true;
         this.openCloseButton = GenericButton.createIconOnly(buttonX, buttonY, iconSupplier);
-        this.openCloseButton.setActionListener((btn, mbtn) -> this.toggleOpen());
+        this.openCloseButton.setActionListener(this::toggleOpen);
         this.reAddSubWidgets();
     }
 
@@ -694,7 +694,7 @@ public class DropDownListWidget<T> extends ContainerWidget
     }
 
     @Override
-    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
+    public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
         // Render the open dropdown list
         if (this.isOpen())
@@ -718,11 +718,11 @@ public class DropDownListWidget<T> extends ContainerWidget
                 }
 
                 ShapeRenderUtils.renderOutlinedRectangle(tx, ty, z, sw + 10, 16, 0xFF000000, 0xFFFFFF20);
-                this.renderTextLine(tx + 4, ty + 4, z + 0.1f, 0xFFFFC000, false, this.searchTipText);
+                this.renderTextLine(tx + 4, ty + 4, z + 0.1f, 0xFFFFC000, false, ctx, this.searchTipText);
             }
         }
 
-        super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hovered);
+        super.renderAt(x, y, z, ctx);
     }
 
     public static class SelectionBarWidget<T> extends ContainerWidget
@@ -755,16 +755,17 @@ public class DropDownListWidget<T> extends ContainerWidget
                 this.nonTextWidth += this.iconWidget.getWidth() + 4;
             }
 
-            this.setBackgroundEnabled(true);
-            this.setBorderWidth(1);
+            this.setRenderBackground(true);
+            this.setNormalBorderWidth(1);
             this.setClickListener(dropDown::toggleOpen);
             this.setDisplayString(dropDown.getCurrentEntryDisplayString());
         }
 
-        protected boolean shouldRenderExpandedBackground(int mouseX, int mouseY, boolean isActiveGui)
+        protected boolean shouldRenderExpandedBackground(ScreenContext ctx)
         {
             int totalWidth = this.nonTextWidth + this.displayStringWidth;
-            return isActiveGui && totalWidth > this.getWidth() && this.isMouseOver(mouseX, mouseY);
+            return ctx.isActiveScreen && totalWidth > this.getWidth() &&
+                   this.isMouseOver(ctx.mouseX, ctx.mouseY);
         }
 
         protected void setDisplayString(String text)
@@ -792,14 +793,14 @@ public class DropDownListWidget<T> extends ContainerWidget
         }
 
         @Override
-        protected int getBackgroundWidth(int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
+        protected int getBackgroundWidth(boolean hovered, ScreenContext ctx)
         {
-            if (this.shouldRenderExpandedBackground(mouseX, mouseY, isActiveGui))
+            if (this.shouldRenderExpandedBackground(ctx))
             {
                 return this.nonTextWidth + this.displayStringWidth;
             }
 
-            return super.getBackgroundWidth(mouseX, mouseY, isActiveGui, hovered);
+            return super.getBackgroundWidth(hovered, ctx);
         }
 
         @Override
@@ -842,14 +843,14 @@ public class DropDownListWidget<T> extends ContainerWidget
         }
 
         @Override
-        public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
+        public void renderAt(int x, int y, float z, ScreenContext ctx)
         {
             DropDownListWidget<T> dropDown = this.dropdownWidget;
             this.setNormalBorderColor(dropDown.enabled ? (dropDown.isOpen() ? dropDown.borderColorOpen : dropDown.borderColorNormal.getTop()) : dropDown.borderColorDisabled);
 
-            super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hovered);
+            super.renderAt(x, y, z, ctx);
 
-            StyledTextLine text = this.isMouseOver(mouseX, mouseY) ? this.displayStringFull : this.displayStringClamped;
+            StyledTextLine text = this.isMouseOver(ctx.mouseX, ctx.mouseY) ? this.displayStringFull : this.displayStringClamped;
             int tx = x + 4;
             int ty = y + (this.getHeight() - this.fontHeight) / 2 + 1;
 
@@ -860,11 +861,11 @@ public class DropDownListWidget<T> extends ContainerWidget
             }
 
             int textColor = dropDown.enabled ? this.textColor : 0xFF505050;
-            this.renderTextLine(tx, ty, z, textColor, false, text);
+            this.renderTextLine(tx, ty, z, textColor, false, ctx, text);
         }
 
         @Override
-        protected void renderSubWidgets(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
+        protected void renderSubWidgets(int x, int y, float z, ScreenContext ctx)
         {
             int diffX = x - this.getX();
             int diffY = y - this.getY();
@@ -876,7 +877,7 @@ public class DropDownListWidget<T> extends ContainerWidget
                 int wy;
                 float wz = widget.getZLevel() + diffZ;
 
-                if (widget != this.openCloseIconWidget || this.shouldRenderExpandedBackground(mouseX, mouseY, isActiveGui) == false)
+                if (widget != this.openCloseIconWidget || this.shouldRenderExpandedBackground(ctx) == false)
                 {
                     wx = widget.getX() + diffX;
                     wy = widget.getY() + diffY;
@@ -887,19 +888,20 @@ public class DropDownListWidget<T> extends ContainerWidget
                     wy = y + (this.getHeight() - this.openCloseIconWidget.getHeight()) / 2 + 1;
                 }
 
-                widget.renderAt(wx, wy, wz, mouseX, mouseY, isActiveGui, hoveredWidgetId);
+                widget.renderAt(wx, wy, wz, ctx);
             }
         }
 
         @Override
-        public void postRenderHovered(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
+        public void postRenderHovered(ScreenContext ctx)
         {
-            super.postRenderHovered(mouseX, mouseY, isActiveGui, hoveredWidgetId);
-            this.dropdownWidget.postRenderHovered(mouseX, mouseY, isActiveGui, this.dropdownWidget.getId());
+            super.postRenderHovered(ctx);
+
+            this.dropdownWidget.postRenderHovered(ctx); // FIXME this used the dropdown ID
 
             if (this.dropdownWidget.isOpen() && this.openStateHoverText != null)
             {
-                TextRenderUtils.renderHoverText(mouseX + 4, mouseY + 4, this.getZLevel() + 50, this.openStateHoverText);
+                TextRenderUtils.renderHoverText(ctx.mouseX + 4, ctx.mouseY + 4, this.getZLevel() + 50, this.openStateHoverText);
             }
         }
 
@@ -937,7 +939,7 @@ public class DropDownListWidget<T> extends ContainerWidget
 
             this.setBackgroundColor((listIndex & 0x1) != 0 ? 0xFF202020 : 0xFF404040);
             this.setBackgroundColorHovered(0xFF606060);
-            this.setBackgroundEnabled(true);
+            this.setRenderBackground(true);
             this.setRenderHoverBackground(true);
 
             int iconWidth = 0;
@@ -978,14 +980,15 @@ public class DropDownListWidget<T> extends ContainerWidget
         }
 
         @Override
-        protected int getBackgroundWidth(int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
+        protected int getBackgroundWidth(boolean hovered, ScreenContext ctx)
         {
-            if (isActiveGui && this.totalWidth > this.getWidth() && this.isMouseOver(mouseX, mouseY))
+            if (ctx.isActiveScreen && this.totalWidth > this.getWidth() &&
+                this.isMouseOver(ctx.mouseX, ctx.mouseY))
             {
                 return this.totalWidth;
             }
 
-            return super.getBackgroundWidth(mouseX, mouseY, isActiveGui, hovered);
+            return super.getBackgroundWidth(hovered, ctx);
         }
 
         @Override
@@ -1012,15 +1015,15 @@ public class DropDownListWidget<T> extends ContainerWidget
         }
 
         @Override
-        public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
+        public void renderAt(int x, int y, float z, ScreenContext ctx)
         {
-            super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hovered);
+            super.renderAt(x, y, z, ctx);
 
-            StyledTextLine text = this.isMouseOver(mouseX, mouseY) ? this.displayStringFull : this.displayStringClamped;
+            StyledTextLine text = this.isMouseOver(ctx.mouseX, ctx.mouseY) ? this.displayStringFull : this.displayStringClamped;
             int tx = this.iconWidget != null ? this.iconWidget.getRight() + 4 : x + 4;
             int ty = y + (this.getHeight() - this.fontHeight) / 2 + 1;
 
-            this.renderTextLine(tx, ty, z, this.textColor, true, text);
+            this.renderTextLine(tx, ty, z, this.textColor, true, ctx, text);
         }
     }
 

@@ -16,12 +16,12 @@ public class BooleanConfigWidget extends BaseConfigOptionWidget<Boolean, Boolean
         this.booleanButton = new BooleanConfigButton(x, y, -1, 20, this.config);
         this.booleanButton.setHoverStringProvider("locked", this.config::getLockAndOverrideMessages);
 
-        this.booleanButton.setActionListener((btn, mbtn) -> {
+        this.booleanButton.setActionListener(() -> {
             this.config.toggleBooleanValue();
             this.updateButtonStates();
         });
 
-        this.resetButton.setActionListener((btn, mbtn) -> {
+        this.resetButton.setActionListener(() -> {
             this.config.resetToDefault();
             this.updateButtonStates();
         });

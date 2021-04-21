@@ -91,14 +91,15 @@ public abstract class InteractableWidget extends BaseWidget
                mouseY >= y && mouseY < y + this.getHeight();
     }
 
-    public boolean isHoveredForRender(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
+    public boolean isHoveredForRender(ScreenContext ctx)
     {
         if (this.renderHoverChecker != null)
         {
-            return this.renderHoverChecker.isHovered(mouseX, mouseY, isActiveGui, hoveredWidgetId);
+            return this.renderHoverChecker.isHovered(ctx);
         }
 
-        return hoveredWidgetId == this.getId() || (isActiveGui && this.isMouseOver(mouseX, mouseY));
+        return ctx.hoveredWidgetId == this.getId() ||
+               (ctx.isActiveScreen && this.isMouseOver(ctx.mouseX, ctx.mouseY));
     }
 
     public boolean getShouldReceiveOutsideClicks()
@@ -270,26 +271,22 @@ public abstract class InteractableWidget extends BaseWidget
         return Collections.emptyList();
     }
 
-    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
-    {
-        boolean hovered = this.isHoveredForRender(mouseX, mouseY, isActiveGui, hoveredWidgetId);
-        this.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hovered);
-    }
-
-    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, boolean hovered)
+    public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
     }
 
-    public boolean shouldRenderHoverInfo(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
+    public boolean shouldRenderHoverInfo(ScreenContext ctx)
     {
-        return this.getId() == hoveredWidgetId && this.canHoverAt(mouseX, mouseY, 0);
+        return this.getId() == ctx.hoveredWidgetId &&
+               this.isHoveredForRender(ctx) &&
+               this.canHoverAt(ctx.mouseX, ctx.mouseY, 0);
     }
 
-    public void postRenderHovered(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
+    public void postRenderHovered(ScreenContext ctx)
     {
-        if (this.hasHoverText() && this.shouldRenderHoverInfo(mouseX, mouseY, isActiveGui, hoveredWidgetId))
+        if (this.hasHoverText() && this.shouldRenderHoverInfo(ctx))
         {
-            TextRenderUtils.renderStyledHoverText(mouseX, mouseY, this.getZLevel() + 0.5f, this.getHoverText());
+            TextRenderUtils.renderStyledHoverText(ctx.mouseX, ctx.mouseY, this.getZLevel() + 0.5f, this.getHoverText());
         }
     }
 
@@ -321,6 +318,6 @@ public abstract class InteractableWidget extends BaseWidget
 
     public interface HoverChecker
     {
-        boolean isHovered(int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId);
+        boolean isHovered(ScreenContext ctx);
     }
 }

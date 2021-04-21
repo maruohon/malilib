@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.BaseScreen;
-import fi.dy.masa.malilib.gui.widget.button.BaseButton;
-import fi.dy.masa.malilib.gui.widget.button.ButtonActionListener;
-import fi.dy.masa.malilib.listener.TextChangeListener;
 import fi.dy.masa.malilib.render.RenderUtils;
 
 public abstract class ContainerWidget extends BackgroundWidget
@@ -128,30 +125,6 @@ public abstract class ContainerWidget extends BackgroundWidget
         this.onSubWidgetAdded(widget);
 
         return widget;
-    }
-
-    public <T extends BaseButton> T addButton(T button, ButtonActionListener listener)
-    {
-        button.setActionListener(listener);
-        this.addWidget(button);
-        return button;
-    }
-
-    public <T extends BaseTextFieldWidget> T addTextField(T widget, TextChangeListener listener)
-    {
-        widget.setListener(listener);
-        this.addWidget(widget);
-        return widget;
-    }
-
-    public LabelWidget addLabel(int x, int y, int textColor, String... lines)
-    {
-        return this.addLabel(x, y, -1, -1, textColor, lines);
-    }
-
-    public LabelWidget addLabel(int x, int y, int width, int height, int textColor, String... lines)
-    {
-        return this.addWidget(new LabelWidget(x, y, width, height, textColor, lines));
     }
 
     public void removeWidget(InteractableWidget widget)
@@ -342,15 +315,15 @@ public abstract class ContainerWidget extends BackgroundWidget
     }
 
     @Override
-    public void renderAt(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
+    public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
         RenderUtils.color(1f, 1f, 1f, 1f);
 
-        super.renderAt(x, y, z, mouseX, mouseY, isActiveGui, hoveredWidgetId);
-        this.renderSubWidgets(x, y, z, mouseX, mouseY, isActiveGui, hoveredWidgetId);
+        super.renderAt(x, y, z, ctx);
+        this.renderSubWidgets(x, y, z, ctx);
     }
 
-    protected void renderSubWidgets(int x, int y, float z, int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
+    protected void renderSubWidgets(int x, int y, float z, ScreenContext ctx)
     {
         if (this.subWidgets.isEmpty() == false)
         {
@@ -363,15 +336,16 @@ public abstract class ContainerWidget extends BackgroundWidget
                 int wx = widget.getX() + diffX;
                 int wy = widget.getY() + diffY;
                 float wz = widget.getZLevel() + diffZ;
-                widget.renderAt(wx, wy, wz, mouseX, mouseY, isActiveGui, hoveredWidgetId);
+                widget.renderAt(wx, wy, wz, ctx);
             }
         }
     }
 
     @Override
-    public void renderDebug(int mouseX, int mouseY, boolean hovered, boolean renderAll, boolean infoAlways)
+    public void renderDebug(boolean hovered, ScreenContext ctx)
     {
-        super.renderDebug(mouseX, mouseY, hovered, renderAll, infoAlways);
-        BaseScreen.renderWidgetDebug(this.subWidgets, mouseX, mouseY, renderAll, infoAlways);
+        super.renderDebug(hovered, ctx);
+
+        BaseScreen.renderWidgetDebug(this.subWidgets, ctx);
     }
 }

@@ -43,7 +43,7 @@ public class BaseValueListEditButton<TYPE> extends GenericButton
         this.widgetFactory = widgetFactory;
 
         this.setHoverStringProvider("preview", () -> this.hoverStrings);
-        this.setActionListener((btn, mbtn) -> this.openEditScreen());
+        this.setActionListener(this::openEditScreen);
         this.updateDisplayString();
     }
 

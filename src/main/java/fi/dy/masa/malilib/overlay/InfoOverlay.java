@@ -15,6 +15,7 @@ import fi.dy.masa.malilib.event.PostScreenRenderer;
 import fi.dy.masa.malilib.gui.position.ScreenLocation;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.BaseWidget;
+import fi.dy.masa.malilib.gui.widget.ScreenContext;
 import fi.dy.masa.malilib.overlay.widget.InfoRendererWidget;
 import fi.dy.masa.malilib.overlay.widget.StringListRendererWidget;
 
@@ -148,12 +149,13 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
         {
             boolean isScreenOpen = GuiUtils.getCurrentScreen() != null;
             boolean debug = MaLiLibConfigs.Debug.INFO_OVERLAY_DEBUG.getBooleanValue();
+            ScreenContext ctx = new ScreenContext(0, 0, -1, true);
 
             if (debug)
             {
                 for (InfoArea area : this.infoAreas.values())
                 {
-                    area.renderDebug();
+                    area.renderDebug(ctx);
                 }
             }
 
@@ -161,13 +163,13 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
             {
                 if (widget.shouldRenderFromContext(RenderContext.INGAME, isScreenOpen))
                 {
-                    widget.render();
+                    widget.render(ctx);
                 }
             }
 
             if (debug)
             {
-                BaseWidget.renderDebugTextAndClear();
+                BaseWidget.renderDebugTextAndClear(ctx);
             }
         }
     }
@@ -181,12 +183,13 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
     {
         boolean isScreenOpen = GuiUtils.getCurrentScreen() != null;
         boolean debug = MaLiLibConfigs.Debug.INFO_OVERLAY_DEBUG.getBooleanValue();
+        ScreenContext ctx = new ScreenContext(0, 0, -1, true);
 
         if (debug)
         {
             for (InfoArea area : this.infoAreas.values())
             {
-                area.renderDebug();
+                area.renderDebug(ctx);
             }
         }
 
@@ -194,13 +197,13 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
         {
             if (widget.shouldRenderFromContext(RenderContext.GUI, isScreenOpen))
             {
-                widget.render();
+                widget.render(ctx);
             }
         }
 
         if (debug)
         {
-            BaseWidget.renderDebugTextAndClear();
+            BaseWidget.renderDebugTextAndClear(ctx);
         }
     }
 

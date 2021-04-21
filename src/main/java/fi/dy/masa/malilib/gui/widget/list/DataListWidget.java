@@ -423,16 +423,8 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
         }
     }
 
-    @Override
-    protected void renderWidget(int widgetIndex, int diffX, int diffY, float diffZ, int mouseX, int mouseY, boolean isActiveGui, int hoveredWidgetId)
+    protected int getKeyboardNavigationIndex()
     {
-        BaseListEntryWidget widget = this.entryWidgets.get(widgetIndex);
-        DataListEntrySelectionHandler<DATATYPE> handler = this.getEntrySelectionHandler();
-        boolean isSelected = handler != null && handler.isEntrySelected(widget.getListIndex());
 
-        int wx = widget.getX() + diffX;
-        int wy = widget.getY() + diffY;
-        float wz = widget.getZLevel() + diffZ;
-        widget.renderAt(wx, wy, wz, mouseX, mouseY, isActiveGui, hoveredWidgetId, isSelected);
     }
 }

@@ -12,6 +12,7 @@ import fi.dy.masa.malilib.gui.position.EdgeInt;
 import fi.dy.masa.malilib.gui.position.ScreenLocation;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.BaseWidget;
+import fi.dy.masa.malilib.gui.widget.ScreenContext;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.overlay.widget.InfoRendererWidget;
 
@@ -262,8 +263,8 @@ public class InfoArea
         }
     }
 
-    public void renderDebug()
+    public void renderDebug(ScreenContext ctx)
     {
-        BaseWidget.renderDebugOutline(this.x, this.y, 0, this.width, this.height, false);
+        BaseWidget.renderDebugOutline(this.x, this.y, 0, this.width, this.height, false, ctx);
     }
 }
