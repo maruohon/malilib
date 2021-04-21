@@ -145,7 +145,7 @@ public class SearchBarWidget extends ContainerWidget
     @Override
     public boolean onCharTyped(char charIn, int modifiers)
     {
-        if (this.searchOpen == false)
+        if (this.searchOpen == false && charIn != ' ')
         {
             this.setSearchOpen(true);
             this.textField.onCharTyped(charIn, modifiers);
