@@ -234,19 +234,17 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
     }
 
     @Override
-    public void refreshEntries()
+    protected void fetchCurrentEntries()
     {
         if (this.fetchFromSupplierOnRefresh)
         {
             this.currentContents.clear();
             this.currentContents.addAll(this.entrySupplier.get());
         }
-
-        this.refreshFilteredEntries();
     }
 
     @Override
-    public void refreshFilteredEntries()
+    protected void reAddFilteredEntries()
     {
         this.filteredContents.clear();
         this.filteredIndices.clear();
@@ -266,9 +264,6 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
         {
             this.sortEntryList(this.filteredContents);
         }
-
-        this.onEntriesRefreshed();
-        this.reCreateListEntryWidgets();
     }
 
     protected void sortEntryList(List<DATATYPE> list)

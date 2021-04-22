@@ -46,9 +46,11 @@ public class DirectoryNavigationWidget extends SearchBarWidget
 
     public DirectoryNavigationWidget(int x, int y, int width, int height,
                                      File currentDir, File rootDir, DirectoryNavigator navigator,
-                                     FileBrowserIconProvider iconProvider, TextChangeListener textChangeListener, @Nullable String rootDirDisplayName)
+                                     FileBrowserIconProvider iconProvider,
+                                     TextChangeListener textChangeListener, @Nullable String rootDirDisplayName)
     {
-        super(x, y, width, height, 0, iconProvider.getIcon(FileBrowserIconType.SEARCH), HorizontalAlignment.RIGHT, textChangeListener);
+        super(x, y, width, height, 0, iconProvider.getIcon(FileBrowserIconType.SEARCH),
+              HorizontalAlignment.RIGHT, textChangeListener);
 
         this.currentDir = currentDir;
         this.rootDir = rootDir;

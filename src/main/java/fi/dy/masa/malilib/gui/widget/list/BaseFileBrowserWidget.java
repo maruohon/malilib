@@ -92,7 +92,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     }
 
     @Override
-    public void refreshEntries()
+    protected void reAddFilteredEntries()
     {
         this.filteredContents.clear();
 
@@ -109,8 +109,6 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
                 this.addNonFilteredContents(dir);
             }
         }
-
-        this.reCreateListEntryWidgets();
     }
 
     public void setFileFilter(FileFilter filter)

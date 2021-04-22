@@ -690,12 +690,23 @@ public abstract class BaseListWidget extends ContainerWidget
 
     public void refreshEntries()
     {
+        this.fetchCurrentEntries();
         this.refreshFilteredEntries();
     }
 
     public void refreshFilteredEntries()
     {
+        this.reAddFilteredEntries();
+        this.onEntriesRefreshed();
         this.reCreateListEntryWidgets();
+    }
+
+    protected void fetchCurrentEntries()
+    {
+    }
+
+    protected void reAddFilteredEntries()
+    {
     }
 
     public void focusWidget(int listIndex)
