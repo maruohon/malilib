@@ -17,6 +17,7 @@ import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.util.DirectoryNavigator;
+import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.listener.TextChangeListener;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.util.DirectoryCreator;
@@ -39,18 +40,23 @@ public class DirectoryNavigationWidget extends SearchBarWidget
 
     public DirectoryNavigationWidget(int x, int y, int width, int height,
                                      File currentDir, File rootDir, DirectoryNavigator navigator,
-                                     FileBrowserIconProvider iconProvider, TextChangeListener textChangeListener)
+                                     FileBrowserIconProvider iconProvider,
+                                     TextChangeListener textChangeListener,
+                                     @Nullable EventListener openCloseListener)
     {
-        this(x, y, width, height, currentDir, rootDir, navigator, iconProvider, textChangeListener, null);
+        this(x, y, width, height, currentDir, rootDir, navigator, iconProvider,
+             textChangeListener, openCloseListener, null);
     }
 
     public DirectoryNavigationWidget(int x, int y, int width, int height,
                                      File currentDir, File rootDir, DirectoryNavigator navigator,
                                      FileBrowserIconProvider iconProvider,
-                                     TextChangeListener textChangeListener, @Nullable String rootDirDisplayName)
+                                     TextChangeListener textChangeListener,
+                                     @Nullable EventListener openCloseListener,
+                                     @Nullable String rootDirDisplayName)
     {
         super(x, y, width, height, 0, iconProvider.getIcon(FileBrowserIconType.SEARCH),
-              HorizontalAlignment.RIGHT, textChangeListener);
+              HorizontalAlignment.RIGHT, textChangeListener, openCloseListener);
 
         this.currentDir = currentDir;
         this.rootDir = rootDir;

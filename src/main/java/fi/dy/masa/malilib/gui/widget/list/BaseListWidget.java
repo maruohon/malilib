@@ -309,7 +309,9 @@ public abstract class BaseListWidget extends ContainerWidget
     {
         this.searchBarWidget = new SearchBarWidget(this.getX() + 2, this.getY() + 3,
                                                    this.getWidth() - 14, 14, 0, DefaultIcons.SEARCH,
-                                                   HorizontalAlignment.LEFT, this::onSearchBarChange);
+                                                   HorizontalAlignment.LEFT,
+                                                   this::onSearchBarChange,
+                                                   this::refreshFilteredEntries);
     }
 
     public void onGuiClosed()
@@ -323,11 +325,6 @@ public abstract class BaseListWidget extends ContainerWidget
     @Override
     protected boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
-        if (this.onMouseClickedSearchBar(mouseX, mouseY, mouseButton))
-        {
-            return true;
-        }
-
         if (this.headerWidget != null && this.headerWidget.tryMouseClick(mouseX, mouseY, mouseButton))
         {
             return true;
@@ -436,31 +433,6 @@ public abstract class BaseListWidget extends ContainerWidget
     protected boolean onEntryWidgetClicked(BaseListEntryWidget widget, int mouseX, int mouseY, int mouseButton)
     {
         return widget.tryMouseClick(mouseX, mouseY, mouseButton);
-    }
-
-    protected boolean onMouseClickedSearchBar(int mouseX, int mouseY, int mouseButton)
-    {
-        SearchBarWidget widget = this.getSearchBarWidget();
-
-        if (widget != null)
-        {
-            boolean searchOpenPre = widget.isSearchOpen();
-            String filterPre = widget.getFilter();
-
-            if (widget.tryMouseClick(mouseX, mouseY, mouseButton))
-            {
-                // Toggled the search bar on or off, or cleared the filter with a right click
-                if (widget.isSearchOpen() != searchOpenPre || filterPre.equals(widget.getFilter()) == false)
-                {
-                    this.refreshFilteredEntries();
-                    this.resetScrollBarPosition();
-                }
-
-                return true;
-            }
-        }
-
-        return false;
     }
 
     public void onSearchBarChange(String text)
@@ -736,6 +708,13 @@ public abstract class BaseListWidget extends ContainerWidget
             widget.onAboutToDestroy();
         }
 
+        int max = this.getTotalListWidgetCount() - this.visibleListEntries;
+
+        if (this.getScrollbar().getValue() > max)
+        {
+            this.getScrollbar().setValue(max - 1);
+        }
+
         int usableHeight = this.listHeight;
         int usedHeight = 0;
         int x = this.entryWidgetStartX;
@@ -800,8 +779,13 @@ public abstract class BaseListWidget extends ContainerWidget
      */
     protected void onListEntryWidgetsCreated()
     {
-        this.scrollBar.setMaxValue(this.getTotalListWidgetCount() - this.visibleListEntries);
+        this.getScrollbar().setMaxValue(this.getTotalListWidgetCount() - this.visibleListEntries);
         this.updateScrollBarHeight();
+
+        if (this.getKeyboardNavigationIndex() >= this.getTotalListWidgetCount())
+        {
+            this.setKeyboardNavigationIndex(-1);
+        }
 
         if (this.requestedScrollBarPosition >= 0)
         {

@@ -46,7 +46,8 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
                                   ConfirmationListener configResetter,
                                   KeybindEditingScreen screen)
     {
-        super(x, y + 3, width - 160, 14, searchBarOffsetX, iconSearch, iconAlignment, textChangeListener);
+        super(x, y + 3, width - 160, 16, searchBarOffsetX, iconSearch,
+              iconAlignment, textChangeListener, filterChangeListener);
 
         this.openedHeight = openedHeight;
 

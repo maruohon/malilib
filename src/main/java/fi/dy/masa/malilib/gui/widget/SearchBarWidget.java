@@ -17,11 +17,14 @@ public class SearchBarWidget extends ContainerWidget
     protected final HorizontalAlignment toggleButtonAlignment;
     protected final int searchBarOffsetX;
     @Nullable protected EventListener geometryChangeListener;
+    @Nullable protected EventListener openCloseListener;
     protected boolean searchOpen;
 
     public SearchBarWidget(int x, int y, int width, int height, int searchBarOffsetX,
-                           MultiIcon toggleButtonIcon, HorizontalAlignment toggleButtonAlignment,
-                           TextChangeListener textChangeListener)
+                           MultiIcon toggleButtonIcon,
+                           HorizontalAlignment toggleButtonAlignment,
+                           TextChangeListener textChangeListener,
+                           @Nullable EventListener openCloseListener)
     {
         super(x, y, width, height);
 
@@ -32,11 +35,12 @@ public class SearchBarWidget extends ContainerWidget
         this.toggleButtonIcon = toggleButtonIcon;
         this.toggleButtonAlignment = toggleButtonAlignment;
         this.searchBarOffsetX = searchBarOffsetX;
+        this.openCloseListener = openCloseListener;
         this.buttonSearchToggle = GenericButton.createIconOnly(ix, y, toggleButtonIcon);
         this.buttonSearchToggle.setActionListener(this::toggleSearchOpen);
         this.buttonSearchToggle.setPlayClickSound(false);
 
-        this.textField = new BaseTextFieldWidget(tx, y, width - iw - 7 - Math.abs(searchBarOffsetX), 14);
+        this.textField = new BaseTextFieldWidget(tx, y, width - iw - 7 - Math.abs(searchBarOffsetX), height);
         this.textField.setUpdateListenerAlways(true);
         this.textField.setUpdateListenerFromTextSet(true);
         this.textField.setListener(textChangeListener);
@@ -104,6 +108,7 @@ public class SearchBarWidget extends ContainerWidget
 
     public void setSearchOpen(boolean isOpen)
     {
+        boolean wasOpen = this.searchOpen;
         this.searchOpen = isOpen;
 
         if (this.searchOpen)
@@ -112,6 +117,11 @@ public class SearchBarWidget extends ContainerWidget
         }
 
         this.reAddSubWidgets();
+
+        if (this.openCloseListener != null && wasOpen != isOpen)
+        {
+            this.openCloseListener.onEvent();
+        }
 
         // Update the parent or other listeners who may care about
         // the search bar opening/closing and maybe changing in size

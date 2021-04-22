@@ -144,8 +144,6 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
             // which is used because of the hover border used for the labels of configs with a click handler
             this.maxLabelWidth = Math.max(this.maxLabelWidth, this.getStringWidth(name) + 10);
         }
-
-        //this.resetScrollbarPosition();
     }
 
     @Override
