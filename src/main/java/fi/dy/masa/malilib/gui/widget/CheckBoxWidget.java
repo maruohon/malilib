@@ -10,9 +10,8 @@ import fi.dy.masa.malilib.util.data.BooleanStorage;
 
 public class CheckBoxWidget extends InteractableWidget
 {
-    protected final MultiIcon widgetUnchecked;
-    protected final MultiIcon widgetChecked;
-    @Nullable protected final StyledTextLine displayText;
+    protected final MultiIcon iconUnchecked;
+    protected final MultiIcon iconChecked;
     @Nullable protected Consumer<Boolean> listener;
     protected BooleanStorage storage;
     protected int textColorChecked = 0xFFFFFFFF;
@@ -22,12 +21,13 @@ public class CheckBoxWidget extends InteractableWidget
     {
         super(x, y, 0, 0);
 
-        this.displayText = translationKey != null ? StyledTextLine.translatedOf(translationKey) : null;
-        this.widgetUnchecked = iconUnchecked;
-        this.widgetChecked = iconChecked;
+        this.text = translationKey != null ? StyledTextLine.translatedOf(translationKey) : null;
+        this.iconUnchecked = iconUnchecked;
+        this.iconChecked = iconChecked;
         this.storage = new BooleanConfig("", false);
+        this.textOffsetY = -1;
 
-        int textWidth = this.displayText != null ? this.displayText.renderWidth : 0;
+        int textWidth = this.text != null ? this.text.renderWidth : 0;
         int ih = iconChecked.getHeight();
         this.setWidth(iconUnchecked.getWidth() + (textWidth > 0 ? textWidth + 3 : 0));
         this.setHeight(textWidth > 0 ? Math.max(this.fontHeight, ih) : ih);
@@ -103,16 +103,13 @@ public class CheckBoxWidget extends InteractableWidget
     public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
         boolean selected = this.isSelected();
-        MultiIcon icon = selected ? this.widgetChecked : this.widgetUnchecked;
-        int textColor = selected ? this.textColorChecked : this.textColorUnchecked;
+        MultiIcon icon = selected ? this.iconChecked : this.iconUnchecked;
+
+        this.defaultTextColor = selected ? this.textColorChecked : this.textColorUnchecked;
+        this.textOffsetX = icon.getWidth() + 3;
+
+        super.renderAt(x, y, z, ctx);
 
         icon.renderAt(x, y, z, false, false);
-
-        if (this.displayText != null)
-        {
-            int tx = x + icon.getWidth() + 3;
-            int ty = y + this.getCenteredTextOffsetY() - 1;
-            this.renderTextLine(tx, ty, z, textColor, true, ctx, this.displayText);
-        }
     }
 }

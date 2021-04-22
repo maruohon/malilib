@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.BaseScreen;
-import fi.dy.masa.malilib.render.RenderUtils;
 
 public abstract class ContainerWidget extends BackgroundWidget
 {
@@ -317,9 +316,8 @@ public abstract class ContainerWidget extends BackgroundWidget
     @Override
     public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
-        RenderUtils.color(1f, 1f, 1f, 1f);
-
         super.renderAt(x, y, z, ctx);
+
         this.renderSubWidgets(x, y, z, ctx);
     }
 

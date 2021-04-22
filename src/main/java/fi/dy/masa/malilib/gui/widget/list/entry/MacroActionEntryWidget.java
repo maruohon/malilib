@@ -9,7 +9,6 @@ import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.MacroActionEditScreen;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
-import fi.dy.masa.malilib.gui.widget.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
@@ -18,7 +17,6 @@ import fi.dy.masa.malilib.util.data.LeftRight;
 
 public class MacroActionEntryWidget extends BaseDataListEntryWidget<MacroAction>
 {
-    protected final StyledTextLine nameText;
     protected final GenericButton editButton;
     protected final GenericButton removeButton;
 
@@ -27,6 +25,9 @@ public class MacroActionEntryWidget extends BaseDataListEntryWidget<MacroAction>
                                   @Nullable DataListWidget<? extends MacroAction> listWidget)
     {
         super(x, y, width, height, listIndex, originalListIndex, data, listWidget);
+
+        StyledTextLine nameText = StyledTextLine.of(data.getWidgetDisplayName());
+        this.setText(StyledTextUtils.clampStyledTextToMaxWidth(nameText, width - 16, LeftRight.RIGHT, " ..."));
 
         this.editButton = new GenericButton(0, 0, -1, 12, "malilib.label.edit");
         this.editButton.setActionListener(this::editMacro);
@@ -38,9 +39,6 @@ public class MacroActionEntryWidget extends BaseDataListEntryWidget<MacroAction>
         this.renderHoverBackground = false;
         this.setHoveredBorderWidth(1);
         this.setHoveredBorderColor(0xFF00FF60);
-
-        StyledTextLine fullName = StyledTextLine.of(data.getWidgetDisplayName());
-        this.nameText = StyledTextUtils.clampStyledTextToMaxWidth(fullName, width - 16, LeftRight.RIGHT, " ...");
 
         this.getHoverInfoFactory().setStringListProvider("action_info", data::getHoverInfo);
     }
@@ -76,14 +74,5 @@ public class MacroActionEntryWidget extends BaseDataListEntryWidget<MacroAction>
     {
         ActionRegistry.INSTANCE.removeMacro(this.data.getRegistryName());
         this.listWidget.refreshEntries();
-    }
-
-    @Override
-    public void renderAt(int x, int y, float z, ScreenContext ctx)
-    {
-        super.renderAt(x, y, z, ctx);
-
-        int ty = y + this.getHeight() / 2 - this.fontHeight / 2;
-        this.renderTextLine(x + 4, ty, z + 0.1f, 0xFFFFFFFF, true, ctx, this.nameText);
     }
 }

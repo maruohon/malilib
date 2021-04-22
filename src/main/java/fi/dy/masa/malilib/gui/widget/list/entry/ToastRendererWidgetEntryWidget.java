@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.gui.widget.list.entry;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.overlay.widget.ToastRendererWidget;
+import fi.dy.masa.malilib.render.text.StyledTextLine;
 
 public class ToastRendererWidgetEntryWidget extends BaseInfoRendererWidgetEntryWidget<ToastRendererWidget>
 {
@@ -16,7 +17,7 @@ public class ToastRendererWidgetEntryWidget extends BaseInfoRendererWidgetEntryW
         this.canConfigure = true;
         this.canRemove = true;
 
-        this.nameLabelWidget.setText("malilib.gui.hover.toast_renderer_entry_name",
-                                     data.getName(), data.getScreenLocation().getDisplayName());
+        this.setText(StyledTextLine.translatedOf("malilib.gui.hover.toast_renderer_entry_name",
+                                                 data.getName(), data.getScreenLocation().getDisplayName()));
     }
 }

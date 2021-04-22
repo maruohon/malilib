@@ -23,9 +23,13 @@ public abstract class InteractableWidget extends BaseWidget
     @Nullable protected EventListener clickListener;
     @Nullable protected HoverChecker renderHoverChecker;
     @Nullable protected Consumer<Runnable> taskQueue;
-
+    @Nullable protected StyledTextLine text;
     protected boolean shouldReceiveOutsideClicks;
     protected boolean shouldReceiveOutsideScrolls;
+    protected boolean textShadow = true;
+    protected int defaultTextColor = 0xFFFFFFFF;
+    protected int textOffsetX = 4;
+    protected int textOffsetY;
 
     public InteractableWidget(int x, int y, int width, int height)
     {
@@ -43,6 +47,29 @@ public abstract class InteractableWidget extends BaseWidget
     public int getId()
     {
         return this.id;
+    }
+
+    /**
+     * Sets a simple single-line text to be rendered in the widget,
+     * without having to add a LabelWidget for it.
+     */
+    public void setText(@Nullable StyledTextLine text)
+    {
+        this.text = text;
+    }
+
+    /**
+     * Sets a simple single-line text to be rendered in the widget,
+     * without having to add a LabelWidget for it.
+     * @param textOffsetX an x offset for the text. By default this is 4 pixels from the left edge.
+     * @param textOffsetY an y offset for the text. Note: The text is already centered vertically,
+     *                    this is an additional offset on top of that!
+     */
+    public void setText(@Nullable StyledTextLine text, int textOffsetX, int textOffsetY)
+    {
+        this.text = text;
+        this.textOffsetX = textOffsetX;
+        this.textOffsetY = textOffsetY;
     }
 
     public void setTaskQueue(@Nullable Consumer<Runnable> taskQueue)
@@ -271,8 +298,30 @@ public abstract class InteractableWidget extends BaseWidget
         return Collections.emptyList();
     }
 
+    protected int getTextPositionX(int x)
+    {
+        return x + this.textOffsetX;
+    }
+
+    protected int getTextPositionY(int y)
+    {
+        return y + this.getCenteredTextOffsetY() + this.textOffsetY;
+    }
+
+    protected void renderText(int x, int y, float z, ScreenContext ctx)
+    {
+        if (this.text != null)
+        {
+            x = this.getTextPositionX(x);
+            y = this.getTextPositionY(y);
+
+            this.renderTextLine(x, y, z + 0.1f, this.defaultTextColor, this.textShadow, ctx, this.text);
+        }
+    }
+
     public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
+        this.renderText(x, y, z, ctx);
     }
 
     public boolean shouldRenderHoverInfo(ScreenContext ctx)

@@ -7,12 +7,12 @@ import fi.dy.masa.malilib.render.ShapeRenderUtils;
 
 public class BaseListEntryWidget extends ContainerWidget
 {
+    protected final EdgeInt selectedBorderColor = new EdgeInt(0xFFFFFFFF);
     protected final int listIndex;
     protected final int originalListIndex;
-    protected final EdgeInt selectedBorderColor = new EdgeInt(0xFFFFFFFF);
-    protected int selectedBackgroundColor = 0x50FFFFFF;
-    protected int keyboardNavigationHighlightColor = 0xFFFF5000;
     protected boolean isOdd;
+    protected int keyboardNavigationHighlightColor = 0xFFFF5000;
+    protected int selectedBackgroundColor = 0x50FFFFFF;
 
     public BaseListEntryWidget(int x, int y, int width, int height, int listIndex, int originalListIndex)
     {
@@ -23,12 +23,18 @@ public class BaseListEntryWidget extends ContainerWidget
 
         this.setIsOdd((listIndex & 0x1) != 0);
         this.setRenderHoverBackground(true);
+        this.setBackgroundColor(this.isOdd ? 0x20FFFFFF : 0x40FFFFFF);
         this.setBackgroundColorHovered(0x50FFFFFF);
     }
 
     public void setIsOdd(boolean isOdd)
     {
         this.isOdd = isOdd;
+    }
+
+    public void setSelectedBackgroundColor(int selectedBackgroundColor)
+    {
+        this.selectedBackgroundColor = selectedBackgroundColor;
     }
 
     public int getListIndex()

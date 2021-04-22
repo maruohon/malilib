@@ -17,7 +17,6 @@ import fi.dy.masa.malilib.util.data.LeftRight;
 public abstract class BaseButton extends BackgroundWidget
 {
     protected final ImmutableList<StyledTextLine> hoverHelp;
-    protected StyledTextLine styledDisplayString;
     protected String displayString;
     protected String fullDisplayString;
     protected boolean canScrollToClick;
@@ -112,7 +111,7 @@ public abstract class BaseButton extends BackgroundWidget
     {
         this.displayString = text;
         this.fullDisplayString = text;
-        this.styledDisplayString = StyledTextLine.of(text);
+        this.text = StyledTextLine.of(text);
         return this;
     }
 
@@ -214,7 +213,7 @@ public abstract class BaseButton extends BackgroundWidget
         }
 
         this.displayString = str;
-        this.styledDisplayString = StyledTextLine.of(str);
+        this.text = StyledTextLine.of(str);
 
         this.updateHoverStrings();
         this.updateWidth();

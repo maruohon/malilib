@@ -21,14 +21,9 @@ public class OnOffButton extends GenericButton
     /**
      * Pass -1 as the <b>width</b> to automatically set the width
      * to a value where the ON and OFF state buttons are the same width.
-     * @param x
-     * @param y
-     * @param width
-     * @param height
      * @param style The button style to use
      * @param statusSupplier The supplier for the current on/off status of this button
      * @param translationKey The translation key to use for the full button text. It should have one %s format specifier for the current status string. Pass null to use the status string directly, without any other labeling text.
-     * @param hoverStrings
      */
     public OnOffButton(int x, int y, int width, int height, OnOffStyle style, BooleanSupplier statusSupplier,
                        @Nullable String translationKey, String... hoverStrings)
@@ -140,7 +135,7 @@ public class OnOffButton extends GenericButton
         if (this.style == OnOffStyle.SLIDER_ON_OFF)
         {
             boolean value = this.statusSupplier.getAsBoolean();
-            renderOnOffSlider(x, y, z, width, height, value, this.enabled, hovered, ctx);
+            renderOnOffSlider(x, y, z + 1f, width, height, value, this.enabled, hovered, ctx);
         }
         else
         {

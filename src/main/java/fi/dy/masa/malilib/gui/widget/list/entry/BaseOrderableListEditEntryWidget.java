@@ -40,8 +40,6 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
     {
         super(x, y, width, height, listIndex, originalListIndex, initialValue, listWidget);
 
-        this.setBackgroundColorHovered(0x30FFFFFF);
-
         // This is a reference to the current entries list, which can be modified
         this.dataList = listWidget.getCurrentContents();
 

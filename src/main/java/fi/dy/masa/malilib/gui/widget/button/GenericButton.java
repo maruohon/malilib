@@ -18,11 +18,8 @@ public class GenericButton extends BaseButton
     protected boolean customIconOffset;
     protected boolean renderButtonBackgroundTexture;
     protected boolean textCentered;
-    protected boolean textShadow = true;
     protected int iconOffsetX;
     protected int iconOffsetY;
-    protected int textOffsetX;
-    protected int textOffsetY;
     protected int textColorDisabled = 0xFF606060;
     protected int textColorNormal = 0xFFE0E0E0;
     protected int textColorHovered = 0xFFFFFFA0;
@@ -50,6 +47,7 @@ public class GenericButton extends BaseButton
     {
         super(x, y, width, height, translationKey);
 
+        this.textOffsetX = 0;
         this.iconSupplier = iconSupplier;
         MultiIcon icon = iconSupplier != null ? iconSupplier.get() : null;
 
@@ -157,6 +155,19 @@ public class GenericButton extends BaseButton
         return this;
     }
 
+    @Override
+    protected int getMaxDisplayStringWidth()
+    {
+        MultiIcon icon = this.iconSupplier != null ? this.iconSupplier.get() : null;
+
+        if (icon != null)
+        {
+            return this.getWidth() - icon.getWidth() - this.horizontalLabelPadding * 3;
+        }
+
+        return super.getMaxDisplayStringWidth();
+    }
+
     protected int getTextColorForRender(boolean hovered)
     {
         return this.enabled == false ? this.textColorDisabled : (hovered ? this.textColorHovered : this.textColorNormal);
@@ -172,23 +183,56 @@ public class GenericButton extends BaseButton
         return baseX + this.textOffsetX;
     }
 
+    protected void renderButtonBackground(int x, int y, float z, int width, int height,
+                                          boolean hovered, ScreenContext ctx)
+    {
+        this.backgroundIcon.renderFourSplicedAt(x, y, z, width, height, this.enabled, hovered);
+    }
+
+    protected int getIconOffsetX(int width, MultiIcon icon)
+    {
+        if (this.customIconOffset)
+        {
+            return this.iconOffsetX;
+        }
+        // With icon-only buttons, center it horizontally
+        else if (this.text == null || this.text.renderWidth == 0)
+        {
+            return (width - icon.getWidth()) / 2;
+        }
+        else
+        {
+            return this.renderBackground ? 4 : 0;
+        }
+    }
+
     @Override
-    protected int getMaxDisplayStringWidth()
+    protected int getTextPositionX(int x)
+    {
+        MultiIcon icon = this.iconSupplier != null ? this.iconSupplier.get() : null;
+        x = this.getTextStartX(x, this.getWidth(), this.text.renderWidth);
+
+        if (this.iconAlignment == HorizontalAlignment.LEFT && icon != null)
+        {
+            x += icon.getWidth() + 2;
+        }
+
+        return x;
+    }
+
+    protected void renderIcon(int x, int y, float z, int width, int height, boolean hovered, ScreenContext ctx)
     {
         MultiIcon icon = this.iconSupplier != null ? this.iconSupplier.get() : null;
 
         if (icon != null)
         {
-            return this.getWidth() - icon.getWidth() - this.horizontalLabelPadding * 3;
+            boolean leftAligned = this.iconAlignment == HorizontalAlignment.LEFT;
+            int offX = this.getIconOffsetX(width, icon);
+            int offY = this.customIconOffset ? this.iconOffsetY : (height - icon.getHeight()) / 2;
+            int ix = leftAligned ? x + offX : x + width - icon.getWidth() - offX;
+
+            icon.renderAt(ix, y + offY, z + 0.1f, this.enabled, hovered);
         }
-
-        return super.getMaxDisplayStringWidth();
-    }
-
-    protected void renderButtonBackground(int x, int y, float z, int width, int height,
-                                          boolean hovered, ScreenContext ctx)
-    {
-        this.backgroundIcon.renderFourSplicedAt(x, y, z, width, height, this.enabled, hovered);
     }
 
     @Override
@@ -196,61 +240,19 @@ public class GenericButton extends BaseButton
     {
         if (this.visible)
         {
-            super.renderAt(x, y, z, ctx);
-
             int width = this.getWidth();
             int height = this.getHeight();
-            boolean textBlank = this.styledDisplayString == null || this.styledDisplayString.renderWidth == 0;
             boolean hovered = this.isHoveredForRender(ctx);
+            this.defaultTextColor = this.getTextColorForRender(hovered);
 
             if (this.renderButtonBackgroundTexture)
             {
                 this.renderButtonBackground(x, y, z, width, height, hovered, ctx);
             }
 
-            int iconClearing = 0;
-            MultiIcon icon = this.iconSupplier != null ? this.iconSupplier.get() : null;
+            this.renderIcon(x, y, z, width, height, hovered, ctx);
 
-            if (icon != null)
-            {
-                int offX;
-                int iconWidth = icon.getWidth();
-                iconClearing = iconWidth + 2;
-
-                if (this.customIconOffset)
-                {
-                    offX = this.iconOffsetX;
-                }
-                // With icon-only buttons, center it horizontally
-                else if (textBlank)
-                {
-                    offX = (width - iconWidth) / 2;
-                }
-                else
-                {
-                    offX = this.renderBackground ? 4 : 0;
-                }
-
-                int offY = this.customIconOffset ? this.iconOffsetY : (height - icon.getHeight()) / 2;
-                int ix = this.iconAlignment == HorizontalAlignment.LEFT ? x + offX : x + width - iconWidth - offX;
-                int iy = y + offY;
-
-                icon.renderAt(ix, iy, z + 0.1f, this.enabled, hovered);
-            }
-
-            if (textBlank == false)
-            {
-                int tx = this.getTextStartX(x, width, this.styledDisplayString.renderWidth);
-                int ty = y + height / 2 - this.getFontHeight() / 2 + this.textOffsetY;
-
-                if (this.iconAlignment == HorizontalAlignment.LEFT)
-                {
-                    tx += iconClearing;
-                }
-
-                int color = this.getTextColorForRender(hovered);
-                this.renderTextLine(tx, ty, z, color, this.textShadow, ctx, this.styledDisplayString);
-            }
+            super.renderAt(x, y, z, ctx);
         }
     }
 

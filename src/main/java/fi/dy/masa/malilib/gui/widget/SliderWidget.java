@@ -1,6 +1,5 @@
 package fi.dy.masa.malilib.gui.widget;
 
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.gui.callback.SliderCallback;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
@@ -9,8 +8,6 @@ import fi.dy.masa.malilib.render.text.StyledTextLine;
 
 public class SliderWidget extends InteractableWidget
 {
-    public static final ResourceLocation VANILLA_WIDGETS = new ResourceLocation("textures/gui/widgets.png");
-
     protected final SliderCallback callback;
     protected int sliderWidth;
     protected int lastMouseX;
@@ -84,6 +81,7 @@ public class SliderWidget extends InteractableWidget
             this.lastMouseX = mouseX;
         }
 
+        // Render the background texture
         DefaultIcons.BUTTON_BACKGROUND.renderFourSplicedAt(x + 1, y, z, width - 2, height);
 
         double relPos = this.callback.getRelativeValue();
@@ -100,6 +98,7 @@ public class SliderWidget extends InteractableWidget
         int textColor = this.locked ? 0xFF909090 : 0xFFFFFFA0;
         int tx = x + (width / 2) - textWidth / 2;
         int ty = y + this.getCenteredTextOffsetY();
+
         this.renderTextLine(tx, ty, z, textColor, false, ctx, text);
     }
 

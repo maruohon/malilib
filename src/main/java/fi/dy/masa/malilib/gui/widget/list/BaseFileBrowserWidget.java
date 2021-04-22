@@ -265,6 +265,10 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
             int index = this.keyboardNavigationPositions.computeIfAbsent(dir, (d) -> 0);
             this.setKeyboardNavigationIndex(index);
         }
+        else if (this.getKeyboardNavigationIndex() > 0)
+        {
+            this.setKeyboardNavigationIndex(0);
+        }
     }
 
     @Override

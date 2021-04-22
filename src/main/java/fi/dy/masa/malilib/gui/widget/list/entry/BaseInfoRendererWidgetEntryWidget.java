@@ -1,19 +1,16 @@
 package fi.dy.masa.malilib.gui.widget.list.entry;
 
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.gui.widget.LabelWidget;
-import fi.dy.masa.malilib.gui.widget.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.button.OnOffButton;
 import fi.dy.masa.malilib.gui.widget.button.OnOffStyle;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.overlay.InfoWidgetManager;
 import fi.dy.masa.malilib.overlay.widget.InfoRendererWidget;
-import fi.dy.masa.malilib.render.ShapeRenderUtils;
+import fi.dy.masa.malilib.render.text.StyledTextLine;
 
 public abstract class BaseInfoRendererWidgetEntryWidget<TYPE extends InfoRendererWidget> extends BaseDataListEntryWidget<TYPE>
 {
-    protected final LabelWidget nameLabelWidget;
     protected final GenericButton toggleButton;
     protected final GenericButton configureButton;
     protected final GenericButton removeButton;
@@ -28,8 +25,6 @@ public abstract class BaseInfoRendererWidgetEntryWidget<TYPE extends InfoRendere
     {
         super(x, y, width, height, listIndex, originalListIndex, data, listWidget);
 
-        this.nameLabelWidget = new LabelWidget(0, 0, -1, -1, 0xFFFFFFFF, data.getName());
-
         this.toggleButton = new OnOffButton(0, 0, -1, 20, OnOffStyle.SLIDER_ON_OFF, data::isEnabled, null);
         this.toggleButton.setActionListener(data::toggleEnabled);
 
@@ -38,6 +33,9 @@ public abstract class BaseInfoRendererWidgetEntryWidget<TYPE extends InfoRendere
 
         this.removeButton = new GenericButton(0, 0, -1, 20, "malilib.gui.button.label.remove");
         this.removeButton.setActionListener(this::removeInfoRendererWidget);
+
+        this.setText(StyledTextLine.of(data.getName()));
+        this.setRenderBackground(true);
     }
 
     public void removeInfoRendererWidget()
@@ -50,8 +48,6 @@ public abstract class BaseInfoRendererWidgetEntryWidget<TYPE extends InfoRendere
     public void reAddSubWidgets()
     {
         super.reAddSubWidgets();
-
-        this.addWidget(this.nameLabelWidget);
 
         if (this.canToggle)
         {
@@ -78,9 +74,7 @@ public abstract class BaseInfoRendererWidgetEntryWidget<TYPE extends InfoRendere
         int y = this.getY();
         int rightX = x + this.getWidth();
         int height = this.getHeight();
-
-        int tmpY = y + height / 2 - this.nameLabelWidget.getHeight() / 2;
-        this.nameLabelWidget.setPosition(x + 2, tmpY);
+        int tmpY;
 
         if (this.canRemove)
         {
@@ -102,17 +96,5 @@ public abstract class BaseInfoRendererWidgetEntryWidget<TYPE extends InfoRendere
             rightX -= this.toggleButton.getWidth() + 2;
             this.toggleButton.setPosition(rightX, tmpY);
         }
-    }
-
-    @Override
-    public void renderAt(int x, int y, float z, ScreenContext ctx)
-    {
-        // Draw a lighter background for the hovered entry
-        // Draw a slightly lighter background for even entries
-        int backgroundColor = this.isHoveredForRender(ctx) ? 0x60FFFFFF : (this.isOdd ? 0x20FFFFFF : 0x40FFFFFF);
-
-        ShapeRenderUtils.renderRectangle(x, y, z, this.getWidth(), this.getHeight(), backgroundColor);
-
-        super.renderAt(x, y, z, ctx);
     }
 }

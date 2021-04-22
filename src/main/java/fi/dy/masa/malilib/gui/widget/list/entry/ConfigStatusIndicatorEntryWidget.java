@@ -5,7 +5,6 @@ import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.overlay.widget.ConfigStatusIndicatorContainerWidget;
 import fi.dy.masa.malilib.overlay.widget.sub.BaseConfigStatusIndicatorWidget;
-import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 
 public class ConfigStatusIndicatorEntryWidget extends BaseOrderableListEditEntryWidget<BaseConfigStatusIndicatorWidget<?>>
@@ -26,11 +25,15 @@ public class ConfigStatusIndicatorEntryWidget extends BaseOrderableListEditEntry
         this.useRemoveButton = false;
 
         this.containerWidget = containerWidget;
+
         this.configureButton = new GenericButton(0, 0, -1, 16, "malilib.gui.button.label.configure");
         this.configureButton.setActionListener(this::openEditScreen);
 
         this.removeButton = new GenericButton(0, 0, -1, 16, "malilib.gui.button.label.remove");
         this.removeButton.setActionListener(this::removeInfoRendererWidget);
+
+        this.setText(data.getStyledName());
+        this.setRenderBackground(true);
     }
 
     public void removeInfoRendererWidget()
@@ -70,35 +73,6 @@ public class ConfigStatusIndicatorEntryWidget extends BaseOrderableListEditEntry
 
         this.nextWidgetX = this.configureButton.getX() - 36;
         this.draggableRegionEndX = this.nextWidgetX - 1;
-    }
-
-    @Override
-    public void renderAt(int x, int y, float z, ScreenContext ctx)
-    {
-        RenderUtils.color(1f, 1f, 1f, 1f);
-
-        int width = this.getWidth();
-        int height = this.getHeight();
-
-        // Draw a lighter background for the hovered and the selected entry
-        if (this.isHoveredForRender(ctx))
-        {
-            ShapeRenderUtils.renderRectangle(x, y, z, width, height, 0x60FFFFFF);
-        }
-        else if (this.isOdd)
-        {
-            ShapeRenderUtils.renderRectangle(x, y, z, width, height, 0x20FFFFFF);
-        }
-        // Draw a slightly lighter background for even entries
-        else
-        {
-            ShapeRenderUtils.renderRectangle(x, y, z, width, height, 0x40FFFFFF);
-        }
-
-        super.renderAt(x, y, z, ctx);
-
-        int ly = y + height / 2 - this.fontHeight / 2;
-        this.renderTextLine(x + 4, ly, z, 0xFFFFFFFF, true, ctx, this.data.getStyledName());
     }
 
     @Override
