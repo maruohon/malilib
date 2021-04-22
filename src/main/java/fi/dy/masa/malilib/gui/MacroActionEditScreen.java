@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
@@ -27,7 +26,6 @@ public class MacroActionEditScreen extends BaseMultiListScreen
     protected final DataListWidget<NamedAction> actionSourceListWidget;
     protected final DataListWidget<NamedAction> macroActionsListWidget;
     protected final ImmutableList<NamedAction> originalMacroActionsList;
-    protected final List<NamedAction> filteredSourceActions = new ArrayList<>();
     protected final List<NamedAction> macroActionsList;
     protected final LabelWidget allActionsLabelWidget;
     protected final LabelWidget macroActionsLabelWidget;
@@ -62,8 +60,8 @@ public class MacroActionEditScreen extends BaseMultiListScreen
         this.removeActionsButton.setActionListener(this::removeSelectedActions);
         this.removeActionsButton.translateAndAddHoverString("malilib.hover_info.macro_edit_screen.remove_actions");
 
-        this.actionSourceListWidget = this.createNamedActionListWidget(this::getFilteredActions, false);
-        this.macroActionsListWidget = this.createNamedActionListWidget(Collections::emptyList, true);
+        this.actionSourceListWidget = this.createNamedActionListWidget(this::getActions, true);
+        this.macroActionsListWidget = this.createNamedActionListWidget(Collections::emptyList, false);
 
         // fetch the backing list reference from the list widget
         this.macroActionsList = this.macroActionsListWidget.getCurrentContents();
@@ -109,7 +107,7 @@ public class MacroActionEditScreen extends BaseMultiListScreen
         this.macroActionsLabelWidget.setPosition(x + 2, y - 10);
         this.macroActionsListWidget.setPositionAndSize(x, y, w, h);
 
-        this.updateFilteredSourceActionsList("");
+        this.actionSourceListWidget.refreshEntries();
     }
 
     @Override
@@ -138,41 +136,6 @@ public class MacroActionEditScreen extends BaseMultiListScreen
     protected List<NamedAction> getActions()
     {
         return ActionRegistry.INSTANCE.getAllActions();
-    }
-
-    protected List<NamedAction> getFilteredActions()
-    {
-        return this.filteredSourceActions;
-    }
-
-    protected boolean stringMatchesSearch(String searchTerm, String text)
-    {
-        return text.contains(searchTerm);
-    }
-
-    protected void updateFilteredSourceActionsList(String searchText)
-    {
-        this.filteredSourceActions.clear();
-
-        if (org.apache.commons.lang3.StringUtils.isBlank(searchText))
-        {
-            this.filteredSourceActions.addAll(this.getActions());
-        }
-        else
-        {
-            searchText = searchText.toLowerCase(Locale.ROOT);
-
-            for (NamedAction action : this.getActions())
-            {
-                if (this.stringMatchesSearch(searchText, action.getName().toLowerCase(Locale.ROOT)) ||
-                            this.stringMatchesSearch(searchText, action.getDisplayName().toLowerCase(Locale.ROOT)))
-                {
-                    this.filteredSourceActions.add(action);
-                }
-            }
-        }
-
-        this.actionSourceListWidget.refreshEntries();
     }
 
     protected void addSelectedActions()
@@ -210,16 +173,24 @@ public class MacroActionEditScreen extends BaseMultiListScreen
         }
     }
 
-    protected DataListWidget<NamedAction> createNamedActionListWidget(Supplier<List<NamedAction>> listSupplier, boolean orderable)
+    protected DataListWidget<NamedAction> createNamedActionListWidget(Supplier<List<NamedAction>> listSupplier,
+                                                                      boolean isSourceList)
     {
         DataListWidget<NamedAction> listWidget = new DataListWidget<>(0, 0, 200, 200, listSupplier);
         listWidget.setListEntryWidgetFixedHeight(12);
         listWidget.setNormalBorderWidth(1);
-        listWidget.setFetchFromSupplierOnRefresh(orderable == false);
-        listWidget.setEntryWidgetFactory(orderable ? OrderableNamedActionEntryWidget::new : NamedActionEntryWidget::new);
+        listWidget.setFetchFromSupplierOnRefresh(isSourceList);
+        listWidget.setEntryWidgetFactory(isSourceList ? NamedActionEntryWidget::new : OrderableNamedActionEntryWidget::new);
         listWidget.getEntrySelectionHandler().setAllowSelection(true);
         listWidget.getEntrySelectionHandler().setAllowMultiSelection(true);
         listWidget.getEntrySelectionHandler().setModifierKeyMultiSelection(true);
+
+        if (isSourceList)
+        {
+            listWidget.addDefaultSearchBar();
+            listWidget.setEntryFilterStringFactory(NamedAction::getSearchString);
+        }
+
         return listWidget;
     }
 

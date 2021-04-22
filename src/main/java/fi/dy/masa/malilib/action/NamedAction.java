@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.function.Function;
 import javax.annotation.Nullable;
+import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
@@ -88,6 +89,11 @@ public class NamedAction
         }
 
         return null;
+    }
+
+    public List<String> getSearchString()
+    {
+        return ImmutableList.of(this.getName(), this.getDisplayName());
     }
 
     public String getWidgetDisplayName()

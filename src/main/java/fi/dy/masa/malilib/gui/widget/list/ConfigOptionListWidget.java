@@ -78,6 +78,7 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
                                                                  this::resetFilteredConfigsToDefaults,
                                                                  screen);
         this.configsSearchBarWidget.setGeometryChangeListener(this::updatePositioningAndElements);
+        this.configsSearchBarWidget.getMargin().setBottom(2);
         this.searchBarWidget = this.configsSearchBarWidget;
     }
 

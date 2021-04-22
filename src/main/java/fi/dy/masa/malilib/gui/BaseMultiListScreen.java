@@ -181,6 +181,11 @@ public class BaseMultiListScreen extends BaseTabbedScreen
     @Override
     public boolean onCharTyped(char charIn, int modifiers)
     {
+        if (super.onCharTyped(charIn, modifiers))
+        {
+            return true;
+        }
+
         for (BaseListWidget listWidget : this.listWidgets)
         {
             if (listWidget.onCharTyped(charIn, modifiers))
@@ -189,7 +194,7 @@ public class BaseMultiListScreen extends BaseTabbedScreen
             }
         }
 
-        return super.onCharTyped(charIn, modifiers);
+        return false;
     }
 
     @Override

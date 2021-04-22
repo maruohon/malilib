@@ -130,7 +130,7 @@ public abstract class BaseListWidget extends ContainerWidget
         if (searchBarWidget != null)
         {
             this.updateSearchBarPosition(x, startY, listWidth - bw * 2);
-            startY = searchBarWidget.getY() + searchBarWidget.getHeight() + 2;
+            startY = searchBarWidget.getBottom() + searchBarWidget.getMargin().getBottom();
         }
 
         if (this.headerWidget != null)

@@ -1,8 +1,6 @@
 package fi.dy.masa.malilib.gui;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 import javax.annotation.Nullable;
 import net.minecraft.client.gui.GuiScreen;
@@ -16,15 +14,14 @@ import fi.dy.masa.malilib.action.NamedAction;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
-import fi.dy.masa.malilib.gui.widget.list.entry.MacroActionEntryWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.AliasActionEntryWidget;
+import fi.dy.masa.malilib.gui.widget.list.entry.MacroActionEntryWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.NamedActionEntryWidget;
 import fi.dy.masa.malilib.overlay.message.MessageUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class ActionListScreen extends BaseMultiListScreen
 {
-    protected final List<NamedAction> filteredActions = new ArrayList<>();
     protected final DataListWidget<NamedAction> actionSourceListWidget;
     protected final DataListWidget<MacroAction> macroListWidget;
     protected final DataListWidget<AliasAction> aliasListWidget;
@@ -89,7 +86,7 @@ public class ActionListScreen extends BaseMultiListScreen
         this.macroListWidget.setPositionAndSize(x, y, w, h);
         this.macrosLabelWidget.setPosition(x + 2, y - 10);
 
-        this.updateFilteredSourceActionsList("");
+        this.actionSourceListWidget.refreshEntries();
     }
 
     @Override
@@ -114,44 +111,9 @@ public class ActionListScreen extends BaseMultiListScreen
         return ActionRegistry.INSTANCE.getAliases();
     }
 
-    protected List<NamedAction> getFilteredActions()
-    {
-        return this.filteredActions;
-    }
-
-    protected boolean stringMatchesSearch(String searchTerm, String text)
-    {
-        return text.contains(searchTerm);
-    }
-
-    protected void updateFilteredSourceActionsList(String searchText)
-    {
-        this.filteredActions.clear();
-
-        if (org.apache.commons.lang3.StringUtils.isBlank(searchText))
-        {
-            this.filteredActions.addAll(this.getActions());
-        }
-        else
-        {
-            searchText = searchText.toLowerCase(Locale.ROOT);
-
-            for (NamedAction action : this.getActions())
-            {
-                if (this.stringMatchesSearch(searchText, action.getName().toLowerCase(Locale.ROOT)) ||
-                    this.stringMatchesSearch(searchText, action.getDisplayName().toLowerCase(Locale.ROOT)))
-                {
-                    this.filteredActions.add(action);
-                }
-            }
-        }
-
-        this.actionSourceListWidget.refreshEntries();
-    }
-
     protected DataListWidget<NamedAction> createNamedActionListWidget()
     {
-        DataListWidget<NamedAction> listWidget = new DataListWidget<>(0, 0, 120, 120, this::getFilteredActions);
+        DataListWidget<NamedAction> listWidget = new DataListWidget<>(0, 0, 120, 120, this::getActions);
         listWidget.setListEntryWidgetFixedHeight(12);
         listWidget.setNormalBorderWidth(1);
         listWidget.setFetchFromSupplierOnRefresh(true);
@@ -159,6 +121,9 @@ public class ActionListScreen extends BaseMultiListScreen
         listWidget.getEntrySelectionHandler().setAllowSelection(true);
         listWidget.getEntrySelectionHandler().setAllowMultiSelection(true);
         listWidget.getEntrySelectionHandler().setModifierKeyMultiSelection(true);
+        listWidget.addDefaultSearchBar();
+        listWidget.setEntryFilterStringFactory(NamedAction::getSearchString);
+
         return listWidget;
     }
 
