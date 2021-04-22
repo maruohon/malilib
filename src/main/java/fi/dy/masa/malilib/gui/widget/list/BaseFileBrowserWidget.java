@@ -6,8 +6,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import com.google.common.collect.ImmutableList;
@@ -32,6 +34,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     public static final FileFilter ALWAYS_FALSE_FILE_FILTER = (file) -> false;
     public static final FileFilter ALWAYS_TRUE_FILE_FILTER = File::isFile;
 
+    protected final Map<File, Integer> keyboardNavigationPositions = new HashMap<>();
     protected final FileBrowserIconProvider iconProvider = new DefaultFileBrowserIconProvider();
     protected final DirectoryNavigationWidget navigationWidget;
     protected final File rootDirectory;
@@ -39,6 +42,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     protected FileFilter fileFilter;
     protected String browserContext;
     protected File currentDirectory;
+    protected boolean shouldStoreKeyboardNavigationPosition = true;
 
     public BaseFileBrowserWidget(int x, int y, int width, int height, File defaultDirectory, File rootDirectory,
                                  @Nullable DirectoryCache cache, @Nullable String browserContext)
@@ -243,6 +247,26 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         return this.currentDirectory.equals(this.getRootDirectory());
     }
 
+    protected void storeKeyboardNavigationPosition(File dir)
+    {
+        int index = this.getKeyboardNavigationIndex();
+
+        if (index != -1 && this.shouldStoreKeyboardNavigationPosition)
+        {
+            this.keyboardNavigationPositions.put(dir, index);
+        }
+    }
+
+    protected void restoreKeyboardNavigationPosition(File dir)
+    {
+        if (this.shouldStoreKeyboardNavigationPosition &&
+            this.keyboardNavigationPositions.containsKey(dir))
+        {
+            int index = this.keyboardNavigationPositions.computeIfAbsent(dir, (d) -> 0);
+            this.setKeyboardNavigationIndex(index);
+        }
+    }
+
     @Override
     public File getCurrentDirectory()
     {
@@ -253,6 +277,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     public void switchToDirectory(File dir)
     {
         this.clearSelection();
+        this.storeKeyboardNavigationPosition(this.currentDirectory);
 
         this.currentDirectory = FileUtils.getCanonicalFileIfPossible(dir);
 
@@ -264,6 +289,8 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         this.refreshEntries();
         this.updateDirectoryNavigationWidget();
         this.resetScrollBarPosition();
+        // The index needs to be restored after the entries have been refreshed
+        this.restoreKeyboardNavigationPosition(this.currentDirectory);
     }
 
     @Override
@@ -301,11 +328,15 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
             this.switchToParentDirectory();
             return true;
         }
-        else if ((keyCode == Keyboard.KEY_RIGHT || keyCode == Keyboard.KEY_RETURN) &&
-                 this.getLastSelectedEntry() != null && this.getLastSelectedEntry().getType() == DirectoryEntryType.DIRECTORY)
+        else if (keyCode == Keyboard.KEY_RIGHT || keyCode == Keyboard.KEY_RETURN)
         {
-            this.switchToDirectory(new File(this.getLastSelectedEntry().getDirectory(), this.getLastSelectedEntry().getName()));
-            return true;
+            DirectoryEntry entry = this.getKeyboardNavigationEntry();
+
+            if (entry != null && entry.getType() == DirectoryEntryType.DIRECTORY)
+            {
+                this.switchToDirectory(new File(entry.getDirectory(), entry.getName()));
+                return true;
+            }
         }
         else if (keyCode == Keyboard.KEY_N && BaseScreen.isCtrlDown() && BaseScreen.isShiftDown())
         {

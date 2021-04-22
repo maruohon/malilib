@@ -15,6 +15,7 @@ import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.ContainerWidget;
 import fi.dy.masa.malilib.gui.widget.InteractableWidget;
+import fi.dy.masa.malilib.gui.widget.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.ScrollBarWidget;
 import fi.dy.masa.malilib.gui.widget.SearchBarWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.BaseListEntryWidget;
@@ -41,6 +42,7 @@ public abstract class BaseListWidget extends ContainerWidget
     protected int entryWidgetStartY;
     protected int entryWidgetFixedHeight = 22;
     protected int entryWidgetWidth;
+    protected int keyboardNavigationIndex = -1;
     protected int listHeight;
     protected int requestedScrollBarPosition = -1;
     protected int visibleListEntries;
@@ -118,7 +120,7 @@ public abstract class BaseListWidget extends ContainerWidget
     {
         super.updateSubWidgetsToGeometryChanges();
 
-        int bw = this.borderEnabled ? this.borderWidth : 0;
+        int bw = this.renderBorder ? this.borderWidthNormal : 0;
         int x = this.getX() + bw;
         int startY = this.getY() + bw;
         int listWidth = this.getListMaxWidthForTotalWidth(this.getWidth());
@@ -398,7 +400,7 @@ public abstract class BaseListWidget extends ContainerWidget
         if (GuiUtils.isMouseInRegion(mouseX, mouseY, this.getX(), this.entryWidgetStartY, this.getWidth(), this.listHeight))
         {
             int amount = MathHelper.clamp(3, 1, this.visibleListEntries);
-            this.offsetSelectionOrScrollbar(mouseWheelDelta < 0 ? amount : -amount, false);
+            this.offsetScrollbarPosition(mouseWheelDelta < 0 ? amount : -amount);
             return true;
         }
 
@@ -490,12 +492,13 @@ public abstract class BaseListWidget extends ContainerWidget
 
         if (this.allowKeyboardNavigation)
         {
-                 if (keyCode == Keyboard.KEY_UP)    this.offsetSelectionOrScrollbar(-1, true);
-            else if (keyCode == Keyboard.KEY_DOWN)  this.offsetSelectionOrScrollbar( 1, true);
-            else if (keyCode == Keyboard.KEY_PRIOR) this.offsetSelectionOrScrollbar(-this.visibleListEntries / 2, true);
-            else if (keyCode == Keyboard.KEY_NEXT)  this.offsetSelectionOrScrollbar(this.visibleListEntries / 2, true);
-            else if (keyCode == Keyboard.KEY_HOME)  this.offsetSelectionOrScrollbar(-this.getTotalListWidgetCount(), true);
-            else if (keyCode == Keyboard.KEY_END)   this.offsetSelectionOrScrollbar(this.getTotalListWidgetCount(), true);
+                 if (keyCode == Keyboard.KEY_UP)    this.keyboardNavigateByOne(false);
+            else if (keyCode == Keyboard.KEY_DOWN)  this.keyboardNavigateByOne(true);
+            else if (keyCode == Keyboard.KEY_PRIOR) this.keyboardNavigateByOnePage(false);
+            else if (keyCode == Keyboard.KEY_NEXT)  this.keyboardNavigateByOnePage(true);
+            else if (keyCode == Keyboard.KEY_HOME)  this.keyboardNavigateToEnd(false);
+            else if (keyCode == Keyboard.KEY_END)   this.keyboardNavigateToEnd(true);
+            else if (keyCode == Keyboard.KEY_SPACE) this.toggleKeyboardNavigationPositionSelection();
             else return false;
 
             return true;
@@ -523,18 +526,107 @@ public abstract class BaseListWidget extends ContainerWidget
         return super.onCharTyped(charIn, modifiers);
     }
 
-    protected void offsetSelectionOrScrollbar(int amount, boolean changeSelection)
+    public void setKeyboardNavigationIndex(int listIndex)
     {
-        if (changeSelection == false)
-        {
-            int old = this.scrollBar.getValue();
-            this.scrollBar.offsetValue(amount);
+        this.keyboardNavigationIndex = listIndex;
+    }
 
-            if (old != this.scrollBar.getValue())
+    protected int getKeyboardNavigationIndex()
+    {
+        return this.keyboardNavigationIndex;
+    }
+
+    protected void offsetScrollbarPosition(int amount)
+    {
+        int old = this.scrollBar.getValue();
+        this.scrollBar.offsetValue(amount);
+
+        if (old != this.scrollBar.getValue())
+        {
+            this.reCreateListEntryWidgets();
+        }
+    }
+
+    protected void keyboardNavigateByOne(boolean down)
+    {
+        if (this.visibleListEntries <= 0)
+        {
+            return;
+        }
+
+        int visibleMinusOne = this.visibleListEntries - 1;
+        int offset = down ? 1 : -1;
+        int oldKeyboardIndex = this.getKeyboardNavigationIndex();
+        int scrollPosition = this.scrollBar.getValue();
+
+        // 1: No keyboard navigation index set currently, or
+        // 2: the keyboard index is currently off-screen:
+        // move the index to the first row
+        if (oldKeyboardIndex < 0 ||
+            oldKeyboardIndex < scrollPosition ||
+            oldKeyboardIndex > scrollPosition + visibleMinusOne)
+        {
+            int newKeyboardIndex = this.scrollBar.getValue();
+            this.setKeyboardNavigationIndex(newKeyboardIndex);
+        }
+        else
+        {
+            int totalCount = this.getTotalListWidgetCount();
+            int newKeyboardIndex = MathHelper.clamp(oldKeyboardIndex + offset, 0, totalCount - 1);
+            this.setKeyboardNavigationIndex(newKeyboardIndex);
+
+            // keyboard index went off-screen on the top
+            if (newKeyboardIndex < scrollPosition)
             {
-                this.reCreateListEntryWidgets();
+                // scroll up so the keyboard index is the second to last visible row
+                int newScrollIndex = newKeyboardIndex - visibleMinusOne + 1;
+                this.offsetScrollbarPosition(newScrollIndex - scrollPosition);
+            }
+            // keyboard index went off-screen on the bottom
+            else if (newKeyboardIndex > scrollPosition + visibleMinusOne)
+            {
+                // scroll down so the keyboard index is the second visible row
+                int newScrollIndex = newKeyboardIndex - 1;
+                this.offsetScrollbarPosition(newScrollIndex - scrollPosition);
             }
         }
+    }
+
+    protected void keyboardNavigateByOnePage(boolean down)
+    {
+        int visibleMinusOne = this.visibleListEntries - 1;
+        int scrollAmount = down ? visibleMinusOne : -visibleMinusOne;
+        int oldKeyboardIndex = this.getKeyboardNavigationIndex();
+        int scrollPosition = this.scrollBar.getValue();
+        int newKeyboardIndex;
+
+
+        // 1: No keyboard navigation index set currently, or
+        // 2: the keyboard index is currently off-screen:
+        // move the index to the first row or the last row, depending on the navigation direction
+        if (oldKeyboardIndex >= 0 &&
+            oldKeyboardIndex >= scrollPosition &&
+            oldKeyboardIndex <= scrollPosition + visibleMinusOne)
+        {
+            this.offsetScrollbarPosition(scrollAmount);
+        }
+
+        newKeyboardIndex = this.scrollBar.getValue() + (down ? visibleMinusOne : 0);
+
+        this.setKeyboardNavigationIndex(newKeyboardIndex);
+    }
+
+    protected void keyboardNavigateToEnd(boolean down)
+    {
+        int totalCount = this.getTotalListWidgetCount();
+        int newIndex = down ? totalCount - 1 : 0;
+
+        this.scrollBar.setValue(newIndex); // gets clamped
+        this.setKeyboardNavigationIndex(newIndex);
+    }
+
+    public void toggleKeyboardNavigationPositionSelection()
+    {
     }
 
     public void resetScrollBarPosition()

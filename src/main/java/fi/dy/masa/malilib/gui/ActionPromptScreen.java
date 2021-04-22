@@ -109,7 +109,7 @@ public class ActionPromptScreen extends BaseListScreen<DataListWidget<NamedActio
             // Close the screen before running the action, in case the action opens another screen
             this.closeScreen(false);
 
-            NamedAction action = this.getListWidget().getLastSelectedEntry();
+            NamedAction action = this.getListWidget().getKeyboardNavigationEntry();
 
             if (action != null)
             {
@@ -196,8 +196,7 @@ public class ActionPromptScreen extends BaseListScreen<DataListWidget<NamedActio
 
         if (this.filteredActions.isEmpty() == false)
         {
-            this.getListWidget().setLastSelectedEntry(-1);
-            this.getListWidget().setLastSelectedEntry(0);
+            this.getListWidget().getEntrySelectionHandler().setKeyboardNavigationIndex(0);
         }
     }
 
@@ -208,7 +207,6 @@ public class ActionPromptScreen extends BaseListScreen<DataListWidget<NamedActio
         listWidget.setAllowKeyboardNavigation(true);
         listWidget.setListEntryWidgetFixedHeight(12);
         listWidget.setFetchFromSupplierOnRefresh(true);
-        listWidget.getEntrySelectionHandler().setAllowSelection(true);
         listWidget.setRenderBackground(true);
         listWidget.setBackgroundColor(0xA0000000);
         listWidget.setEntryWidgetFactory(ActionPromptNamedActionEntryWidget::new);

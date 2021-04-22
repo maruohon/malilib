@@ -34,4 +34,16 @@ public class BaseDataListEntryWidget<TYPE> extends BaseListEntryWidget
 
         return false;
     }
+
+    @Override
+    protected boolean isKeyboardNavigationSelected()
+    {
+        if (this.listWidget != null)
+        {
+            DataListEntrySelectionHandler<? extends TYPE> handler = this.listWidget.getEntrySelectionHandler();
+            return handler != null && handler.getKeyboardNavigationIndex() == this.getListIndex();
+        }
+
+        return false;
+    }
 }

@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.gui.widget.list.entry;
 
+import fi.dy.masa.malilib.gui.position.EdgeInt;
 import fi.dy.masa.malilib.gui.widget.ContainerWidget;
 import fi.dy.masa.malilib.gui.widget.ScreenContext;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
@@ -8,6 +9,9 @@ public class BaseListEntryWidget extends ContainerWidget
 {
     protected final int listIndex;
     protected final int originalListIndex;
+    protected final EdgeInt selectedBorderColor = new EdgeInt(0xFFFFFFFF);
+    protected int selectedBackgroundColor = 0x50FFFFFF;
+    protected int keyboardNavigationHighlightColor = 0xFFFF5000;
     protected boolean isOdd;
 
     public BaseListEntryWidget(int x, int y, int width, int height, int listIndex, int originalListIndex)
@@ -65,14 +69,53 @@ public class BaseListEntryWidget extends ContainerWidget
         return false;
     }
 
+    protected boolean isKeyboardNavigationSelected()
+    {
+        return false;
+    }
+
+    @Override
+    protected void renderBackgroundIfEnabled(int x, int y, float z, int width, int height,
+                                             boolean hovered, ScreenContext ctx)
+    {
+        if (this.isSelected())
+        {
+            this.renderBackground(x, y, z, width, height, this.borderWidthNormal, this.selectedBackgroundColor, ctx);
+        }
+        else
+        {
+            super.renderBackgroundIfEnabled(x, y, z, width, height, hovered, ctx);
+        }
+    }
+
+    @Override
+    protected void renderBorderIfEnabled(int x, int y, float z, int width, int height,
+                                         boolean hovered, ScreenContext ctx)
+    {
+        if (this.isSelected())
+        {
+            this.renderBorder(x, y, z, width, height, this.borderWidthNormal, this.selectedBorderColor, ctx);
+        }
+        else
+        {
+            super.renderBorderIfEnabled(x, y, z, width, height, hovered, ctx);
+        }
+    }
+
+    protected void renderKeyboardNavigationHighlight(int x, int y, float z, int width, int height, ScreenContext ctx)
+    {
+        if (this.isKeyboardNavigationSelected())
+        {
+            ShapeRenderUtils.renderRectangle(x            , y, z, 2, height, this.keyboardNavigationHighlightColor);
+            ShapeRenderUtils.renderRectangle(x + width - 2, y, z, 2, height, this.keyboardNavigationHighlightColor);
+        }
+    }
+
     @Override
     public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
         super.renderAt(x, y, z, ctx);
 
-        if (this.isSelected())
-        {
-            ShapeRenderUtils.renderOutline(x, y, z, this.getWidth(), this.getHeight(), 1, 0xFFFFFFFF);
-        }
+        this.renderKeyboardNavigationHighlight(x, y, z, this.getWidth(), this.getHeight(), ctx);
     }
 }

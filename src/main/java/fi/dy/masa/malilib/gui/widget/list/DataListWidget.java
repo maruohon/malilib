@@ -9,7 +9,6 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
-import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.gui.widget.list.entry.BaseListEntryWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntrySelectionHandler;
 import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetFactory;
@@ -29,7 +28,6 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
     protected boolean fetchFromSupplierOnRefresh;
     protected boolean filterMatchesEmptyEntry;
     protected boolean shouldSortList;
-    protected int lastSelectedEntryIndex = -1;
 
     public DataListWidget(int x, int y, int width, int height, Supplier<List<DATATYPE>> entrySupplier)
     {
@@ -151,7 +149,7 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
 
             if (listIndex >= 0 && listIndex < this.getTotalListWidgetCount())
             {
-                this.setLastSelectedEntry(listIndex);
+                this.clickEntry(listIndex);
             }
         }
 
@@ -195,6 +193,14 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
     {
         DataListEntrySelectionHandler<DATATYPE> handler = this.getEntrySelectionHandler();
         return handler != null ? handler.getLastSelectedEntry() : null;
+    }
+
+    @Nullable
+    public DATATYPE getKeyboardNavigationEntry()
+    {
+        int index = this.getKeyboardNavigationIndex();
+        List<DATATYPE> list = this.getFilteredEntries();
+        return index >= 0 && index < list.size() ? list.get(index) : null;
     }
 
     public Set<DATATYPE> getSelectedEntries()
@@ -353,78 +359,52 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
         return false;
     }
 
-    protected int getLastSelectedEntryIndex()
-    {
-        if (this.getEntrySelectionHandler() != null)
-        {
-            return this.getEntrySelectionHandler().getLastSelectedEntryIndex();
-        }
-
-        return this.lastSelectedEntryIndex;
-    }
-
-    public void setLastSelectedEntry(int listIndex)
-    {
-        if (this.getEntrySelectionHandler() != null)
-        {
-            int index = listIndex >= 0 && listIndex < this.getTotalListWidgetCount() ? listIndex : -1;
-            this.getEntrySelectionHandler().setLastSelectedEntry(index);
-        }
-    }
-
     public void clearSelection()
     {
-        this.setLastSelectedEntry(-1);
+        if (this.getEntrySelectionHandler() != null)
+        {
+            this.getEntrySelectionHandler().clearSelection();
+        }
+    }
+
+    public void clickEntry(int listIndex)
+    {
+        if (this.getEntrySelectionHandler() != null)
+        {
+            this.getEntrySelectionHandler().clickEntry(listIndex);
+        }
     }
 
     @Override
-    protected void offsetSelectionOrScrollbar(int amount, boolean changeSelection)
+    protected int getKeyboardNavigationIndex()
     {
-        if (changeSelection == false)
+        if (this.getEntrySelectionHandler() != null)
         {
-            super.offsetSelectionOrScrollbar(amount, changeSelection);
+            return this.getEntrySelectionHandler().getKeyboardNavigationIndex();
+        }
+
+        return super.getKeyboardNavigationIndex();
+    }
+
+    @Override
+    public void setKeyboardNavigationIndex(int listIndex)
+    {
+        if (this.getEntrySelectionHandler() != null)
+        {
+            this.getEntrySelectionHandler().setKeyboardNavigationIndex(listIndex);
         }
         else
         {
-            final int totalEntryCount = this.getTotalListWidgetCount();
-            final int lastSelectedEntryIndex = this.getLastSelectedEntryIndex();
-
-            if (lastSelectedEntryIndex >= 0 && totalEntryCount > 0)
-            {
-                int index = MathHelper.clamp(lastSelectedEntryIndex + amount, 0, totalEntryCount - 1);
-
-                if (index != lastSelectedEntryIndex)
-                {
-                    if (index < this.scrollBar.getValue() ||
-                        index >= this.scrollBar.getValue() + this.visibleListEntries)
-                    {
-                        this.scrollBar.offsetValue(index - lastSelectedEntryIndex);
-                    }
-
-                    this.setLastSelectedEntry(index);
-                }
-            }
-            else
-            {
-                if (lastSelectedEntryIndex >= 0)
-                {
-                    this.scrollBar.offsetValue(amount);
-                }
-
-                int index = this.scrollBar.getValue();
-
-                if (index >= 0 && index < totalEntryCount)
-                {
-                    this.setLastSelectedEntry(index);
-                }
-            }
-
-            this.reCreateListEntryWidgets();
+            super.setKeyboardNavigationIndex(listIndex);
         }
     }
 
-    protected int getKeyboardNavigationIndex()
+    @Override
+    public void toggleKeyboardNavigationPositionSelection()
     {
-
+        if (this.getEntrySelectionHandler() != null)
+        {
+            this.getEntrySelectionHandler().toggleKeyboardNavigationPositionSelection();
+        }
     }
 }

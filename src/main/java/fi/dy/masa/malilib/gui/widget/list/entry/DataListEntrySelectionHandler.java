@@ -1,10 +1,13 @@
 package fi.dy.masa.malilib.gui.widget.list.entry;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
+import fi.dy.masa.malilib.gui.BaseScreen;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 
 public class DataListEntrySelectionHandler<DATATYPE>
@@ -18,7 +21,9 @@ public class DataListEntrySelectionHandler<DATATYPE>
     protected boolean allowMultiSelection;
     protected boolean allowSelection;
     protected boolean modifierKeyMultiSelection;
+    protected int lastClickedEntryIndex = -1;
     protected int lastSelectedEntryIndex = -1;
+    protected int keyboardNavigationEntryIndex = -1;
 
     public DataListEntrySelectionHandler(Supplier<List<DATATYPE>> dataListSupplier)
     {
@@ -72,6 +77,11 @@ public class DataListEntrySelectionHandler<DATATYPE>
         return this.lastSelectedEntryIndex;
     }
 
+    public int getKeyboardNavigationIndex()
+    {
+        return this.keyboardNavigationEntryIndex;
+    }
+
     @Nullable
     public DATATYPE getLastSelectedEntry()
     {
@@ -86,6 +96,11 @@ public class DataListEntrySelectionHandler<DATATYPE>
     public Set<Integer> getSelectedEntryIndices()
     {
         return this.selectedEntryIndices;
+    }
+
+    public int getListSize()
+    {
+        return this.dataListSupplier.get().size();
     }
 
     public boolean isEntrySelected(@Nullable DATATYPE entry)
@@ -103,32 +118,103 @@ public class DataListEntrySelectionHandler<DATATYPE>
         return this.allowMultiSelection ? this.selectedEntryIndices.contains(listIndex) : listIndex == this.lastSelectedEntryIndex;
     }
 
+    public void setSelectedEntry(@Nullable DATATYPE entry)
+    {
+        if (entry != null)
+        {
+            int index = this.dataListSupplier.get().indexOf(entry);
+
+            if (index >= 0)
+            {
+                this.setSelectedEntry(index);
+            }
+        }
+    }
+
+    public void setSelectedEntry(int listIndex)
+    {
+        this.setSelectedEntries(Collections.singletonList(listIndex));
+    }
+
+    public void setSelectedEntries(Collection<Integer> indices)
+    {
+        this.clearSelection();
+
+        List<DATATYPE> dataList = this.dataListSupplier.get();
+        int listSize = dataList.size();
+
+        for (int index : indices)
+        {
+            if (index >= 0 && index < listSize)
+            {
+                @Nullable DATATYPE entry = dataList.get(index);
+
+                if (entry != null)
+                {
+                    this.selectedEntryIndices.add(index);
+                    this.selectedEntries.add(entry);
+                }
+            }
+        }
+    }
+
     public void clearSelection()
     {
         this.lastSelectedEntryIndex = -1;
+        this.lastClickedEntryIndex = -1;
         this.lastSelectedEntry = null;
         this.selectedEntries.clear();
         this.selectedEntryIndices.clear();
     }
 
-    public void setLastSelectedEntry(int listIndex)
+    public void setKeyboardNavigationIndex(int listIndex)
+    {
+        if (listIndex >= -1 && listIndex < this.getListSize())
+        {
+            this.keyboardNavigationEntryIndex = listIndex;
+        }
+    }
+
+    public void toggleKeyboardNavigationPositionSelection()
+    {
+        if (this.keyboardNavigationEntryIndex >= 0 &&
+            this.keyboardNavigationEntryIndex < this.getListSize())
+        {
+            this.selectEntry(this.keyboardNavigationEntryIndex);
+        }
+    }
+
+    public void clickEntry(int listIndex)
+    {
+        if (listIndex >= 0 && listIndex < this.getListSize())
+        {
+            this.selectEntry(listIndex);
+            this.lastClickedEntryIndex = listIndex;
+        }
+    }
+
+    protected void selectEntry(int listIndex)
     {
         if (this.allowSelection == false)
         {
             return;
         }
 
-        List<DATATYPE> dataList = this.dataListSupplier.get();
-        boolean unselect = listIndex == this.lastSelectedEntryIndex || this.selectedEntryIndices.contains(listIndex);
-        boolean validIndex = listIndex >= 0 && listIndex < dataList.size();
-        @Nullable DATATYPE entry = validIndex ? dataList.get(listIndex) : null;
-
-        this.lastSelectedEntryIndex = validIndex && unselect == false ? listIndex : -1;
-        this.lastSelectedEntry = unselect ? null : entry;
-
-        if (this.allowMultiSelection && entry != null)
+        if (this.modifierKeyMultiSelection &&
+            BaseScreen.isCtrlDown() == false &&
+            BaseScreen.isShiftDown() == false)
         {
-            if (this.selectedEntries.contains(entry))
+            this.clearSelection();
+        }
+
+        boolean unselect = listIndex == this.lastSelectedEntryIndex || this.selectedEntryIndices.contains(listIndex);
+        List<DATATYPE> dataList = this.dataListSupplier.get();
+        @Nullable DATATYPE entry = dataList.get(listIndex);
+
+        if (this.doModifierKeyMultiSelection(listIndex, dataList) == false &&
+            this.allowMultiSelection && entry != null)
+        {
+            if (this.selectedEntryIndices.contains(listIndex))
             {
                 this.selectedEntries.remove(entry);
                 this.selectedEntryIndices.remove(listIndex);
@@ -140,9 +226,56 @@ public class DataListEntrySelectionHandler<DATATYPE>
             }
         }
 
+        this.lastSelectedEntryIndex = unselect ? -1 : listIndex;
+        this.lastSelectedEntry = unselect ? null : entry;
+
         if (this.selectionListener != null)
         {
             this.selectionListener.onSelectionChange(entry);
         }
+    }
+
+    protected boolean doModifierKeyMultiSelection(int clickedIndex, List<DATATYPE> dataList)
+    {
+        int lastClickedIndex = this.lastClickedEntryIndex;
+
+        if (this.allowMultiSelection && BaseScreen.isShiftDown() &&
+            lastClickedIndex >= 0 && clickedIndex >= 0)
+        {
+            int min = Math.min(lastClickedIndex, clickedIndex);
+            int max = Math.max(lastClickedIndex, clickedIndex);
+            max = Math.min(max, dataList.size() - 1);
+
+            // Don't toggle the previously clicked/selected entry,
+            // to be able to toggle ranges properly without inverting the starting end again.
+            if (lastClickedIndex < clickedIndex)
+            {
+                ++min;
+            }
+            else
+            {
+                --max;
+            }
+
+            for (int i = min; i <= max; ++i)
+            {
+                DATATYPE val = dataList.get(i);
+
+                if (this.selectedEntryIndices.contains(i))
+                {
+                    this.selectedEntries.remove(val);
+                    this.selectedEntryIndices.remove(i);
+                }
+                else
+                {
+                    this.selectedEntries.add(val);
+                    this.selectedEntryIndices.add(i);
+                }
+            }
+
+            return true;
+        }
+
+        return false;
     }
 }
