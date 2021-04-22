@@ -12,10 +12,10 @@ import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 
 public class DataListEntrySelectionHandler<DATATYPE>
 {
-    protected final Set<DATATYPE> selectedEntries = new HashSet<>();
     protected final IntOpenHashSet selectedEntryIndices = new IntOpenHashSet();
     protected final Supplier<List<DATATYPE>> dataListSupplier;
 
+    @Nullable protected Set<DATATYPE> selectedEntries;
     @Nullable protected SelectionListener<DATATYPE> selectionListener;
     @Nullable protected DATATYPE lastSelectedEntry;
     protected boolean allowMultiSelection;
@@ -90,6 +90,11 @@ public class DataListEntrySelectionHandler<DATATYPE>
 
     public Set<DATATYPE> getSelectedEntries()
     {
+        if (this.selectedEntries == null)
+        {
+            this.selectedEntries = this.rebuildSelectedEntries();
+        }
+
         return this.selectedEntries;
     }
 
@@ -110,7 +115,8 @@ public class DataListEntrySelectionHandler<DATATYPE>
             return false;
         }
 
-        return this.allowMultiSelection ? this.selectedEntries.contains(entry) : entry.equals(this.getLastSelectedEntry());
+        Set<DATATYPE> selectedEntries = this.getSelectedEntries();
+        return this.allowMultiSelection ? selectedEntries.contains(entry) : entry.equals(this.getLastSelectedEntry());
     }
 
     public boolean isEntrySelected(int listIndex)
@@ -147,13 +153,7 @@ public class DataListEntrySelectionHandler<DATATYPE>
         {
             if (index >= 0 && index < listSize)
             {
-                @Nullable DATATYPE entry = dataList.get(index);
-
-                if (entry != null)
-                {
-                    this.selectedEntryIndices.add(index);
-                    this.selectedEntries.add(entry);
-                }
+                this.selectedEntryIndices.add(index);
             }
         }
     }
@@ -163,7 +163,7 @@ public class DataListEntrySelectionHandler<DATATYPE>
         this.lastSelectedEntryIndex = -1;
         this.lastClickedEntryIndex = -1;
         this.lastSelectedEntry = null;
-        this.selectedEntries.clear();
+        this.selectedEntries = null;
         this.selectedEntryIndices.clear();
     }
 
@@ -216,14 +216,14 @@ public class DataListEntrySelectionHandler<DATATYPE>
         {
             if (this.selectedEntryIndices.contains(listIndex))
             {
-                this.selectedEntries.remove(entry);
                 this.selectedEntryIndices.remove(listIndex);
             }
             else if (unselect == false)
             {
-                this.selectedEntries.add(entry);
                 this.selectedEntryIndices.add(listIndex);
             }
+
+            this.selectedEntries = null; // re-build
         }
 
         this.lastSelectedEntryIndex = unselect ? -1 : listIndex;
@@ -259,23 +259,43 @@ public class DataListEntrySelectionHandler<DATATYPE>
 
             for (int i = min; i <= max; ++i)
             {
-                DATATYPE val = dataList.get(i);
-
                 if (this.selectedEntryIndices.contains(i))
                 {
-                    this.selectedEntries.remove(val);
                     this.selectedEntryIndices.remove(i);
                 }
                 else
                 {
-                    this.selectedEntries.add(val);
                     this.selectedEntryIndices.add(i);
                 }
             }
+
+            this.selectedEntries = null; // re-build
 
             return true;
         }
 
         return false;
+    }
+
+    protected Set<DATATYPE> rebuildSelectedEntries()
+    {
+        Set<DATATYPE> selectedEntries = new HashSet<>();
+        List<DATATYPE> dataList = this.dataListSupplier.get();
+        final int size = dataList.size();
+
+        for (int index : this.selectedEntryIndices)
+        {
+            if (index >= 0 && index < size)
+            {
+                DATATYPE val = dataList.get(index);
+
+                if (val != null)
+                {
+                    selectedEntries.add(val);
+                }
+            }
+        }
+
+        return selectedEntries;
     }
 }
