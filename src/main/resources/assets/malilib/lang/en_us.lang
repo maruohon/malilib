@@ -435,6 +435,7 @@ malilib.message.set_layer_mode_to=Set layer mode to §a%s
 malilib.message.set_layer_to=Set layer to §a%s§r = §a%s
 malilib.message.success.added_alias_for_action=Added the alias '%s' for the action '%s'
 malilib.message.success.directory_created=Directory '%s' created
+malilib.message.success.switched_config_profile=Switched to config profile '§f%s§r'
 malilib.message.toggled_config_off=Toggled %s §cOFF§r
 malilib.message.toggled_config_on=Toggled %s §aON§r
 malilib.message.value.off=OFF

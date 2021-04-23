@@ -5,6 +5,7 @@ import fi.dy.masa.malilib.action.ActionUtils;
 import fi.dy.masa.malilib.action.NamedAction;
 import fi.dy.masa.malilib.action.NamedParameterizedAction;
 import fi.dy.masa.malilib.action.ParameterizedAction;
+import fi.dy.masa.malilib.config.util.ConfigUtils;
 import fi.dy.masa.malilib.gui.ActionPromptScreen;
 import fi.dy.masa.malilib.input.callback.AdjustableValueHotkeyCallback;
 import fi.dy.masa.malilib.listener.EventListener;
@@ -18,7 +19,8 @@ public class MaLiLibActions
 
     public static void init()
     {
-        register("runCommand", ActionUtils.vanillaCommand());
+        register("runCommand", ActionUtils::runVanillaCommand);
+        register("switchConfigProfile", ConfigUtils::switchConfigProfile);
     }
 
     private static NamedAction register(String name, EventListener action)

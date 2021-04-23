@@ -58,6 +58,6 @@ public class LiteModMaLiLib implements Configurable, LiteMod, InitCompleteListen
     @Override
     public void onShutDown()
     {
-        ((ConfigManagerImpl) ConfigManager.INSTANCE).saveAllConfigs();
+        ((ConfigManagerImpl) ConfigManager.INSTANCE).saveIfDirty();
     }
 }

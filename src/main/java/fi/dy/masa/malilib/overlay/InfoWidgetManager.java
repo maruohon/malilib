@@ -9,12 +9,12 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.MaLiLibReference;
+import fi.dy.masa.malilib.config.util.ConfigUtils;
 import fi.dy.masa.malilib.overlay.widget.ConfigStatusIndicatorContainerWidget;
 import fi.dy.masa.malilib.overlay.widget.InfoRendererWidget;
 import fi.dy.masa.malilib.overlay.widget.MessageRendererWidget;
 import fi.dy.masa.malilib.overlay.widget.StringListRendererWidget;
 import fi.dy.masa.malilib.overlay.widget.ToastRendererWidget;
-import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.JsonUtils;
 
 public class InfoWidgetManager
@@ -81,9 +81,16 @@ public class InfoWidgetManager
         return obj;
     }
 
-    public void fromJson(JsonObject obj)
+    public void fromJson(JsonElement el)
     {
         this.clearWidgets();
+
+        if (el.isJsonObject() == false)
+        {
+            return;
+        }
+
+        JsonObject obj = el.getAsJsonObject();
 
         if (JsonUtils.hasArray(obj, "info_widgets") == false)
         {
@@ -95,11 +102,11 @@ public class InfoWidgetManager
 
         for (int i = 0; i < count; i++)
         {
-            JsonElement el = arr.get(i);
+            JsonElement arrayEl = arr.get(i);
 
-            if (el.isJsonObject())
+            if (arrayEl.isJsonObject())
             {
-                JsonObject entryObj = el.getAsJsonObject();
+                JsonObject entryObj = arrayEl.getAsJsonObject();
                 InfoRendererWidget widget = InfoRendererWidget.createFromJson(entryObj);
 
                 if (widget != null)
@@ -108,27 +115,6 @@ public class InfoWidgetManager
                     this.infoOverlay.getOrCreateInfoArea(widget.getScreenLocation()).addWidget(widget);
                 }
             }
-        }
-    }
-
-    public void loadFromFile()
-    {
-        File dir = FileUtils.getConfigDirectory();
-        File saveFile = new File(dir, MaLiLibReference.MOD_ID + "_info_widgets.json");
-
-        if (saveFile.exists() && saveFile.isFile() && saveFile.canRead())
-        {
-            this.loadFromFile(saveFile);
-        }
-    }
-
-    public void loadFromFile(File saveFile)
-    {
-        JsonElement element = JsonUtils.parseJsonFile(saveFile);
-
-        if (element != null && element.isJsonObject())
-        {
-            this.fromJson(element.getAsJsonObject());
         }
     }
 
@@ -143,9 +129,15 @@ public class InfoWidgetManager
         return false;
     }
 
+    public void loadFromFile()
+    {
+        File dir = ConfigUtils.getActiveConfigDirectory();
+        JsonUtils.loadFromFile(dir, MaLiLibReference.MOD_ID + "_info_widgets.json", this::fromJson);
+    }
+
     public boolean saveToFile()
     {
-        File dir = FileUtils.getConfigDirectory();
+        File dir = ConfigUtils.getActiveConfigDirectory();
         File backupDir = new File(dir, "config_backups");
         File saveFile = new File(dir, MaLiLibReference.MOD_ID + "_info_widgets.json");
 

@@ -144,7 +144,7 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
     {
         super.onGuiClosed();
 
-        if (((ConfigManagerImpl) ConfigManager.INSTANCE).saveAllConfigs())
+        if (((ConfigManagerImpl) ConfigManager.INSTANCE).saveIfDirty())
         {
             this.onSettingsChanged();
         }

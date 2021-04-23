@@ -78,7 +78,18 @@ public class ConfigManagerImpl implements ConfigManager
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public boolean saveAllConfigs()
+    public void saveAllConfigs()
+    {
+        for (ModConfig handler : this.configHandlers.values())
+        {
+            handler.saveToFile();
+        }
+    }
+
+    /**
+     * NOT PUBLIC API - DO NOT CALL
+     */
+    public boolean saveIfDirty()
     {
         boolean savedSomething = false;
 

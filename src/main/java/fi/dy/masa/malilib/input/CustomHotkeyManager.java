@@ -8,7 +8,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.MaLiLibReference;
-import fi.dy.masa.malilib.util.FileUtils;
+import fi.dy.masa.malilib.config.util.ConfigUtils;
 import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.data.ModInfo;
 
@@ -106,9 +106,9 @@ public class CustomHotkeyManager implements HotkeyProvider
         }
     }
 
-    protected boolean saveToFile()
+    public boolean saveToFile()
     {
-        File dir = FileUtils.getConfigDirectory();
+        File dir = ConfigUtils.getActiveConfigDirectory();
         File backupDir = new File(dir, "config_backups");
         File saveFile = new File(dir, MaLiLibReference.MOD_ID + "_custom_hotkeys.json");
 
@@ -117,7 +117,7 @@ public class CustomHotkeyManager implements HotkeyProvider
 
     public void loadFromFile()
     {
-        File dir = FileUtils.getConfigDirectory();
+        File dir = ConfigUtils.getActiveConfigDirectory();
         JsonUtils.loadFromFile(dir, MaLiLibReference.MOD_ID + "_custom_hotkeys.json", this::fromJson);
     }
 }

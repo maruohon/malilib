@@ -5,14 +5,8 @@ import java.util.List;
 import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
-import fi.dy.masa.malilib.action.ActionRegistry;
-import fi.dy.masa.malilib.action.ActionRegistryImpl;
-import fi.dy.masa.malilib.config.ConfigManager;
-import fi.dy.masa.malilib.config.ConfigManagerImpl;
+import fi.dy.masa.malilib.config.util.ConfigUtils;
 import fi.dy.masa.malilib.event.ClientWorldChangeHandler;
-import fi.dy.masa.malilib.input.CustomHotkeyManager;
-import fi.dy.masa.malilib.input.HotkeyManager;
-import fi.dy.masa.malilib.overlay.InfoWidgetManager;
 
 public class ClientWorldChangeEventDispatcherImpl implements ClientWorldChangeEventDispatcher
 {
@@ -59,17 +53,12 @@ public class ClientWorldChangeEventDispatcherImpl implements ClientWorldChangeEv
         // Save all the configs when exiting a world
         if (worldAfter == null && worldBefore != null)
         {
-            ((ConfigManagerImpl) ConfigManager.INSTANCE).saveAllConfigs();
-            InfoWidgetManager.INSTANCE.saveToFileIfDirty();
+            ConfigUtils.saveAllConfigsToFileIfDirty();
         }
         // (Re-)Load all the configs from file when entering a world
         else if (worldBefore == null && worldAfter != null)
         {
-            ((ConfigManagerImpl) ConfigManager.INSTANCE).loadAllConfigs();
-            ((ActionRegistryImpl) ActionRegistry.INSTANCE).loadFromFile();
-            CustomHotkeyManager.INSTANCE.loadFromFile();
-            InfoWidgetManager.INSTANCE.loadFromFile();
-            HotkeyManager.INSTANCE.updateUsedKeys();
+            ConfigUtils.loadAllConfigsFromFile();
         }
 
         if (this.worldChangeHandlers.isEmpty() == false)

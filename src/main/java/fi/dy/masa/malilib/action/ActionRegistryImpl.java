@@ -14,9 +14,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.MaLiLibReference;
+import fi.dy.masa.malilib.config.util.ConfigUtils;
 import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.overlay.message.MessageUtils;
-import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.data.ModInfo;
 
@@ -347,9 +347,9 @@ public class ActionRegistryImpl implements ActionRegistry
         return false;
     }
 
-    protected boolean saveToFile()
+    public boolean saveToFile()
     {
-        File dir = FileUtils.getConfigDirectory();
+        File dir = ConfigUtils.getActiveConfigDirectory();
         File backupDir = new File(dir, "config_backups");
         File saveFile = new File(dir, MaLiLibReference.MOD_ID + "_actions.json");
 
@@ -358,7 +358,7 @@ public class ActionRegistryImpl implements ActionRegistry
 
     public void loadFromFile()
     {
-        File dir = FileUtils.getConfigDirectory();
+        File dir = ConfigUtils.getActiveConfigDirectory();
         JsonUtils.loadFromFile(dir, MaLiLibReference.MOD_ID + "_actions.json", this::fromJson);
     }
 

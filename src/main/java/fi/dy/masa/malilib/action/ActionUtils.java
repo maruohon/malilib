@@ -90,15 +90,13 @@ public class ActionUtils
         };
     }
 
-    public static ParameterizedAction vanillaCommand()
+    public static ActionResult runVanillaCommand(ActionContext ctx, String arg)
     {
-        return (ctx, str) -> {
-            if (ctx.getPlayer() != null)
-            {
-                ctx.getPlayer().sendChatMessage(str);
-                return ActionResult.SUCCESS;
-            }
-            return ActionResult.FAIL;
-        };
+        if (ctx.getPlayer() != null)
+        {
+            ctx.getPlayer().sendChatMessage(arg);
+            return ActionResult.SUCCESS;
+        }
+        return ActionResult.FAIL;
     }
 }

@@ -5,7 +5,7 @@ import java.util.List;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.config.category.ConfigOptionCategory;
 import fi.dy.masa.malilib.config.option.ConfigOption;
-import fi.dy.masa.malilib.util.FileUtils;
+import fi.dy.masa.malilib.config.util.ConfigUtils;
 import fi.dy.masa.malilib.util.data.ModInfo;
 
 public interface ModConfig
@@ -57,7 +57,7 @@ public interface ModConfig
      */
     default File getConfigDirectory()
     {
-        File dir = FileUtils.getConfigDirectory();
+        File dir = ConfigUtils.getActiveConfigDirectory();
 
         if (dir.exists() == false && dir.mkdirs() == false)
         {
