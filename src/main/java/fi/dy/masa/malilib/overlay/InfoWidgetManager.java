@@ -116,6 +116,9 @@ public class InfoWidgetManager
                 }
             }
         }
+
+        // This causes all the widgets to get re-fetched immediately
+        InfoOverlay.INSTANCE.tick();
     }
 
     public boolean saveToFileIfDirty()

@@ -20,7 +20,6 @@ import fi.dy.masa.malilib.gui.config.ConfigTab;
 import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.input.CustomHotkeyManager;
 import fi.dy.masa.malilib.input.HotkeyManager;
-import fi.dy.masa.malilib.overlay.InfoOverlay;
 import fi.dy.masa.malilib.overlay.InfoWidgetManager;
 import fi.dy.masa.malilib.overlay.message.MessageUtils;
 import fi.dy.masa.malilib.util.FileUtils;
@@ -142,10 +141,6 @@ public class ConfigUtils
             MaLiLibConfigs.Internal.ACTIVE_CONFIG_PROFILE.setValue(profile);
             copyConfigsIfProfileNotExist(profile);
             loadAllConfigsFromFile();
-
-            // FIXME - why are these needed here for the message to work?
-            InfoOverlay.INSTANCE.notifyEnabledWidgetsChanged();
-            InfoOverlay.INSTANCE.tick();
 
             MessageUtils.success("malilib.message.success.switched_config_profile", profile);
 
