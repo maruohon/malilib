@@ -248,9 +248,11 @@ public class FileUtils
             return false;
         }
 
+        int numberLength = (int) Math.ceil(Math.log10(maxBackups));
+        String formatString = "%s%0" + numberLength + "d";
         String name = fileIn.getName();
         String nameAndSuffix = name + suffix;
-        File backupFile = new File(backupDirectory, nameAndSuffix + "1");
+        File backupFile = new File(backupDirectory, String.format(formatString, nameAndSuffix, 1));
 
         // Only rotate the backups if the first name is in use
         if (backupFile.exists())
@@ -260,7 +262,7 @@ public class FileUtils
 
             for (int i = 1; i <= maxBackups; ++i)
             {
-                File tmp = new File(backupDirectory, nameAndSuffix + i);
+                File tmp = new File(backupDirectory, String.format(formatString, nameAndSuffix, i));
 
                 if (tmp.exists() == false)
                 {
@@ -269,10 +271,12 @@ public class FileUtils
                 }
             }
 
+            File tmp1 = new File(backupDirectory, String.format(formatString, nameAndSuffix, firstEmptySlot));
+
             for (int i = firstEmptySlot; i > 1; --i)
             {
-                File tmp1 = new File(backupDirectory, nameAndSuffix + (i - 1));
-                File tmp2 = new File(backupDirectory, nameAndSuffix + i);
+                File tmp2 = tmp1;
+                tmp1 = new File(backupDirectory, String.format(formatString, nameAndSuffix, i - 1));
 
                 if (tmp2.exists() && tmp2.isFile())
                 {
