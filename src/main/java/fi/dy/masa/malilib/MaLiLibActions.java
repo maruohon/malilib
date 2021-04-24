@@ -9,6 +9,7 @@ import fi.dy.masa.malilib.config.util.ConfigUtils;
 import fi.dy.masa.malilib.gui.ActionPromptScreen;
 import fi.dy.masa.malilib.input.callback.AdjustableValueHotkeyCallback;
 import fi.dy.masa.malilib.listener.EventListener;
+import fi.dy.masa.malilib.overlay.message.MessageUtils;
 
 public class MaLiLibActions
 {
@@ -19,6 +20,8 @@ public class MaLiLibActions
 
     public static void init()
     {
+        register("addMessage", MessageUtils::addMessageAction);
+        register("addToast", MessageUtils::addToastAction);
         register("runCommand", ActionUtils::runVanillaCommand);
         register("switchConfigProfile", ConfigUtils::switchConfigProfile);
     }

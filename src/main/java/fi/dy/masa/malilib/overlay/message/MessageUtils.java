@@ -2,16 +2,20 @@ package fi.dy.masa.malilib.overlay.message;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.TextComponentTranslation;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.MaLiLibConfigs;
+import fi.dy.masa.malilib.action.ActionContext;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.config.value.InfoType;
 import fi.dy.masa.malilib.gui.position.ScreenLocation;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
+import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.overlay.InfoOverlay;
 import fi.dy.masa.malilib.overlay.InfoWidgetManager;
 import fi.dy.masa.malilib.overlay.widget.MessageRendererWidget;
@@ -21,6 +25,8 @@ import fi.dy.masa.malilib.util.StringUtils;
 
 public class MessageUtils
 {
+    protected static final Pattern PATTERN_TIME_MSG = Pattern.compile("time=(?<time>[0-9]+);(?<msg>.*)");
+
     public static final String CUSTOM_ACTION_BAR_MARKER = "malilib_actionbar";
 
     public static void info(String translationKey, Object... args)
@@ -180,7 +186,7 @@ public class MessageUtils
             }
             else if (outputType == InfoType.TOAST)
             {
-                addToastMessage(StyledText.translatedOf(translationKey, args), null, false, null);
+                addToastMessage(StyledText.translatedOf(translationKey, args), displayTimeMs, null, false, null);
             }
             else if (outputType == InfoType.VANILLA_HOTBAR)
             {
@@ -223,6 +229,36 @@ public class MessageUtils
             InfoType type = GuiUtils.getCurrentScreen() != null ? InfoType.MESSAGE_OVERLAY : InfoType.CUSTOM_HOTBAR;
             addMessage(type, Message.INFO, 5000, message);
         }
+    }
+
+    public static ActionResult addMessageAction(ActionContext ctx, String msg)
+    {
+        return addMessageAction(InfoType.MESSAGE_OVERLAY, msg);
+    }
+
+    public static ActionResult addToastAction(ActionContext ctx, String msg)
+    {
+        return addMessageAction(InfoType.TOAST, msg);
+    }
+
+    public static ActionResult addMessageAction(InfoType type, String msg)
+    {
+        int displayTimeMs = 5000;
+        Matcher matcher = PATTERN_TIME_MSG.matcher(msg);
+
+        try
+        {
+            if (matcher.matches())
+            {
+                displayTimeMs = Integer.parseInt(matcher.group("time"));
+                msg = matcher.group("msg");
+            }
+        }
+        catch (Exception ignore) {}
+
+        addMessage(type, Message.INFO, displayTimeMs, msg);
+
+        return ActionResult.SUCCESS;
     }
 
     public static String getBooleanConfigToggleMessage(BooleanConfig config, @Nullable Function<BooleanConfig, String> messageFactory)
