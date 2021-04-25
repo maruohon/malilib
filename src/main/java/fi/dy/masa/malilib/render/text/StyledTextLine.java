@@ -112,7 +112,13 @@ public class StyledTextLine
     @Override
     public String toString()
     {
-        return "StyledTextLine{" + this.displayText + "}";
+        return this.displayText;
+    }
+
+    public String getDebugString()
+    {
+        return String.format("StyledTextLine{displayText='%s', originalString='%s', segmentCount=%d, glyphCount=%d, renderWidth=%d}",
+                             this.displayText, this.originalString, this.segments.size(), this.glyphCount, this.renderWidth);
     }
 
     @Override
@@ -177,25 +183,48 @@ public class StyledTextLine
 
     public static StyledTextLine joinLines(StyledText text)
     {
-        final int size = text.lines.size();
+        final int lineCount = text.lines.size();
 
-        if (size == 1)
+        if (lineCount == 1)
         {
             return text.lines.get(0);
         }
-        else if (size > 1)
+        else if (lineCount > 1)
         {
-            List<StyledTextSegment> segments = new ArrayList<>();
-            String lineBreak = "\\n";
+            List<StyledTextSegment> newSegments = new ArrayList<>();
+            Glyph lineBreakGlyph = TextRenderer.INSTANCE.getGlyphFor('\n');
+            StyledTextSegment defaultLineBreakSegment = new StyledTextSegment(lineBreakGlyph.texture, TextStyle.DEFAULT,
+                                                                              ImmutableList.of(lineBreakGlyph), "", "");
 
-            for (StyledTextLine line : text.lines)
+            for (int lineIndex = 0; lineIndex < lineCount; ++lineIndex)
             {
-                segments.addAll(line.segments);
-                TextRendererUtils.generatePerFontTextureSegmentsFor(lineBreak, lineBreak, TextStyle.DEFAULT,
-                                                                    segments::add, TextRenderer.INSTANCE::getGlyphFor);
+                StyledTextLine line = text.lines.get(lineIndex);
+                List<StyledTextSegment> oldSegments = line.segments;
+                final int segmentCount = oldSegments.size();
+
+                if (segmentCount > 0)
+                {
+                    StyledTextSegment lineBreakSegment = new StyledTextSegment(lineBreakGlyph.texture,
+                                                                               oldSegments.get(segmentCount - 1).style,
+                                                                               ImmutableList.of(lineBreakGlyph), "", "");
+
+                    if (oldSegments.get(segmentCount - 1).canAppend(lineBreakSegment))
+                    {
+                        for (int segmentIndex = 0; segmentIndex < segmentCount - 1; ++segmentIndex)
+                        {
+                            newSegments.add(oldSegments.get(segmentIndex));
+                        }
+
+                        newSegments.add(oldSegments.get(segmentCount - 1).append(lineBreakSegment));
+                        continue;
+                    }
+                }
+
+                newSegments.addAll(oldSegments);
+                newSegments.add(defaultLineBreakSegment);
             }
 
-            return new StyledTextLine(ImmutableList.copyOf(segments));
+            return new StyledTextLine(ImmutableList.copyOf(newSegments));
         }
 
         return EMPTY;

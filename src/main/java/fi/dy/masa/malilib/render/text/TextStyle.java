@@ -75,17 +75,9 @@ public class TextStyle
     @Override
     public String toString()
     {
-        return "TextStyle{" +
-                       "bold=" + this.bold +
-                       ", italic=" + this.italic +
-                       ", underline=" + this.underline +
-                       ", strikeThrough=" + this.strikeThrough +
-                       ", random=" + this.random +
-                       ", color=" + this.color +
-                       ", shadowColor=" + this.shadowColor +
-                       ", gradient=" + this.gradient +
-                       ", shadow=" + this.shadow +
-                       '}';
+        return String.format("TextStyle{bold=%s, italic=%s, underline=%s, strikeThrough=%s, random=%s, shadow=%s, color=%s, shadowColor=%s, gradient=%s}",
+                             this.bold, this.italic, this.underline, this.strikeThrough, this.random,
+                             this.shadow, this.color, this.shadowColor, this.gradient);
     }
 
     public static TextStyle normal(Color4f color)

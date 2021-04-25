@@ -66,13 +66,8 @@ public class Color4f
     @Override
     public String toString()
     {
-        return "Color4f{hex=" + getHexColorString(this.intValue) + 
-                       ", a=" + this.a +
-                       ", r=" + this.r +
-                       ", g=" + this.g +
-                       ", b=" + this.b +
-                       ", intValue=" + this.intValue +
-                       '}';
+        return String.format("Color4f{hex=%s, a = %f, r = %f, g = %f, b = %f, intValue = %d}",
+                             getHexColorString(this.intValue), this.a, this.r, this.g, this.b, this.intValue);
     }
 
     public static Color4f fromColor(int color)

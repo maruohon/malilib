@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Objects;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.util.ResourceLocation;
+import fi.dy.masa.malilib.util.ListUtils;
 
 public class StyledTextSegment
 {
@@ -94,10 +95,42 @@ public class StyledTextSegment
         return new StyledTextSegment(this.texture, this.style, glyphs.build(), displayStringSegment, originalStringSegment);
     }
 
+    /**
+     * Checks if the texture sheet and style of the given segment are identical
+     * this this segment, and thus the segments could be merged.
+     */
+    public boolean canAppend(StyledTextSegment other)
+    {
+        return this.texture.equals(other.texture) && this.style.equals(other.style);
+    }
+
+    /**
+     * Appends the other segment to this segment, if both of them use the same texture sheet and style.
+     * Otherwise returns this segment as-is.
+     */
+    public StyledTextSegment append(StyledTextSegment other)
+    {
+        if (this.canAppend(other))
+        {
+            ImmutableList<Glyph> glyphs = ListUtils.getAppendedList(this.glyphs, other.glyphs);
+            String displayText = this.displayText + other.displayText;
+            String originalString = this.originalString + other.originalString;
+            return new StyledTextSegment(this.texture, this.style, glyphs, displayText, originalString);
+        }
+
+        return this;
+    }
+
     @Override
     public String toString()
     {
-        return "StyledTextSegment{displayText='" + this.displayText + "', style=" + this.style + "}";
+        return this.displayText;
+    }
+
+    public String getDebugString()
+    {
+        return String.format("StyledTextSegment{displayText='%s', originalString='%s', style='%s', glyphCount=%d, renderWidth=%d}",
+                             this.displayText, this.originalString, this.style.toString(), this.glyphCount, this.renderWidth);
     }
 
     @Override
