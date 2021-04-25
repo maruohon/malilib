@@ -31,7 +31,7 @@ public class TextRenderer implements IResourceManagerReloadListener
     public static final String VANILLA_COLOR_CODES = "0123456789abcdef";
     public static final ResourceLocation ASCII_TEXTURE = new ResourceLocation("textures/font/ascii.png");
 
-    protected static final Glyph EMPTY_GLYPH = new Glyph(' ', ASCII_TEXTURE, 0, 0, 0, 0, 4, 8, 4);
+    protected static final Glyph EMPTY_GLYPH = new Glyph(ASCII_TEXTURE, 0, 0, 0, 0, 4, 8, 4, true);
     protected static final ResourceLocation[] UNICODE_PAGE_LOCATIONS = new ResourceLocation[256];
 
     // This needs to be below the other static fields, because the resource manager reload will access the  other fields!
@@ -229,8 +229,9 @@ public class TextRenderer implements IResourceManagerReloadListener
         float v1 = (float) (c / 16) / 16.0F;
         float u2 = u1 + ((float) width / (float) this.asciiGlyphWidth / 16.0F);
         float v2 = v1 + 0.0625F;
+        boolean whiteSpace = c == ' ' || c == '\t' || c == '\n';
 
-        return new Glyph(c, this.asciiTexture, u1, v1, u2, v2, width, this.asciiGlyphHeight);
+        return new Glyph(this.asciiTexture, u1, v1, u2, v2, width, this.asciiGlyphHeight, whiteSpace);
     }
 
     protected Glyph generateUnicodeCharacterGlyph(char c)
@@ -256,8 +257,10 @@ public class TextRenderer implements IResourceManagerReloadListener
         float v1 = (float) (c & 0xF0) / sheetWidth;
         float u2 = u1 + (float) width / sheetWidth - 0.02F / sheetWidth;
         float v2 = v1 + 0.0625F - 0.02F / sheetWidth;
+        boolean whiteSpace = c == ' ' || c == '\t' || c == '\n';
 
-        return new Glyph(c, this.getUnicodePageLocation(c >> 8), u1, v1, u2, v2, width / 2, height / 2, width / 2 + 1);
+        return new Glyph(this.getUnicodePageLocation(c >> 8), u1, v1, u2, v2,
+                         width / 2, height / 2, width / 2 + 1, whiteSpace);
     }
 
     public void startBuffers()

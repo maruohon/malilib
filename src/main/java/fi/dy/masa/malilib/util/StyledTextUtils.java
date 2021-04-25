@@ -96,7 +96,7 @@ public class StyledTextUtils
             }
             else
             {
-                endIndex = getLastIndexOf(' ', lineStartIndex, maxRenderWidth, line);
+                endIndex = getLastWhiteSpace(lineStartIndex, maxRenderWidth, line);
             }
 
             // No spaces found to split from, just hard split to the maximum length
@@ -118,32 +118,6 @@ public class StyledTextUtils
             lineStartIndex = endIndex;
             remainingWidth -= subLine.renderWidth;
         }
-    }
-
-    public static int getFirstGlyphIndexOf(char character, int startIndex, StyledTextLine line)
-    {
-        int currentIndex = 0;
-
-        for (StyledTextSegment segment : line.segments)
-        {
-            if (currentIndex + segment.glyphCount <= startIndex)
-            {
-                currentIndex += segment.glyphCount;
-                continue;
-            }
-
-            for (Glyph glyph : segment.getOriginalGlyphs())
-            {
-                if (currentIndex >= startIndex && glyph.character == character)
-                {
-                    return currentIndex;
-                }
-
-                ++currentIndex;
-            }
-        }
-
-        return -1;
     }
 
     public static int getLastGlyphIndexWithinWidth(int startIndex, int maxRenderWidth, StyledTextLine line)
@@ -207,44 +181,12 @@ public class StyledTextUtils
         return currentIndex;
     }
 
-    public static int getRenderWidthUntilFirst(char character, int startIndex, StyledTextLine line)
-    {
-        int currentIndex = 0;
-        int renderWidth = 0;
-
-        for (StyledTextSegment segment : line.segments)
-        {
-            if (currentIndex + segment.glyphCount <= startIndex)
-            {
-                currentIndex += segment.glyphCount;
-                continue;
-            }
-
-            for (Glyph glyph : segment.getOriginalGlyphs())
-            {
-                if (currentIndex >= startIndex)
-                {
-                    if (glyph.character == character)
-                    {
-                        return renderWidth;
-                    }
-
-                    renderWidth += glyph.renderWidth;
-                }
-
-                ++currentIndex;
-            }
-        }
-
-        return -1;
-    }
-
     /**
-     * Returns the last index of the provided character within the given maximum render width
+     * Returns the last index of a space, tab or line break within the given maximum render width
      * in the provided StyledTextLine, starting from the Glyph at startIndex. Returns -1 if no
-     * matching glyph was found.
+     * whitespace was found.
      */
-    public static int getLastIndexOf(char character, int startIndex, int maxRenderWidth, StyledTextLine line)
+    public static int getLastWhiteSpace(int startIndex, int maxRenderWidth, StyledTextLine line)
     {
         int currentIndex = 0;
         int renderWidth = 0;
@@ -269,7 +211,7 @@ public class StyledTextUtils
                         return lastIndex;
                     }
 
-                    if (glyph.character == character)
+                    if (glyph.whiteSpace)
                     {
                         lastIndex = currentIndex;
                     }

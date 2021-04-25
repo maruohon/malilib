@@ -5,7 +5,6 @@ import net.minecraft.util.ResourceLocation;
 public class Glyph
 {
     public final ResourceLocation texture;
-    public final char character;
     public final float u1;
     public final float u2;
     public final float v1;
@@ -13,15 +12,17 @@ public class Glyph
     public final int width;
     public final int height;
     public final int renderWidth;
+    public final boolean whiteSpace;
 
-    public Glyph(char character, ResourceLocation texture, float u1, float v1, float u2, float v2, int width, int height)
+    public Glyph(ResourceLocation texture, float u1, float v1, float u2, float v2,
+                 int width, int height, boolean whiteSpace)
     {
-        this(character, texture, u1, v1, u2, v2, width, height, width);
+        this(texture, u1, v1, u2, v2, width, height, width, whiteSpace);
     }
 
-    public Glyph(char character, ResourceLocation texture, float u1, float v1, float u2, float v2, int width, int height, int renderWidth)
+    public Glyph(ResourceLocation texture, float u1, float v1, float u2, float v2,
+                 int width, int height, int renderWidth, boolean whiteSpace)
     {
-        this.character = character;
         this.texture = texture;
         this.u1 = u1;
         this.v1 = v1;
@@ -30,5 +31,6 @@ public class Glyph
         this.width = width;
         this.height = height;
         this.renderWidth = renderWidth;
+        this.whiteSpace = whiteSpace;
     }
 }
