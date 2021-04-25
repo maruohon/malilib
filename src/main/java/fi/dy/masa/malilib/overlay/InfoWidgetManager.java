@@ -8,6 +8,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.config.util.ConfigUtils;
 import fi.dy.masa.malilib.overlay.widget.ConfigStatusIndicatorContainerWidget;
@@ -143,8 +144,9 @@ public class InfoWidgetManager
         File dir = ConfigUtils.getActiveConfigDirectory();
         File backupDir = new File(dir, "config_backups");
         File saveFile = new File(dir, MaLiLibReference.MOD_ID + "_info_widgets.json");
+        boolean antiDuplicate = MaLiLibConfigs.Generic.CONFIG_BACKUP_ANTI_DUPLICATE.getBooleanValue();
 
-        return JsonUtils.saveToFile(dir, backupDir, saveFile, 10, this::toJson);
+        return JsonUtils.saveToFile(dir, backupDir, saveFile, 10, antiDuplicate, this::toJson);
     }
 
     private static final HashMap<String, InfoWidgetFactory> WIDGET_FACTORIES_BY_TYPE = new HashMap<>();

@@ -67,7 +67,7 @@ public class JsonModConfig extends BaseModConfig
 
         if (this.backupCount > 0)
         {
-            FileUtils.createRollingBackup(configFile, backupDirectory, this.backupCount, ".bak_");
+            FileUtils.createRollingBackup(configFile, backupDirectory, ".bak_", this.backupCount, this.antiDuplicate);
         }
 
         boolean success = JsonConfigUtils.saveToFile(configFile, this.getConfigOptionCategories(), currentConfigVersion);

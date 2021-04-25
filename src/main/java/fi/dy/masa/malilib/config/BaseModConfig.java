@@ -15,6 +15,7 @@ public abstract class BaseModConfig implements ModConfig
     protected String backupDirectoryName = "config_backups";
     protected int backupCount = MaLiLibConfigs.Generic.CONFIG_BACKUP_COUNT.getIntegerValue();
     protected int savedConfigVersion;
+    protected boolean antiDuplicate = MaLiLibConfigs.Generic.CONFIG_BACKUP_ANTI_DUPLICATE.getBooleanValue();
 
     public BaseModConfig(ModInfo modInfo, String configFileName, int currentConfigVersion,
                          List<ConfigOptionCategory> configOptionCategories)

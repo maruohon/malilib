@@ -13,6 +13,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.MaLiLib;
+import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.config.util.ConfigUtils;
 import fi.dy.masa.malilib.input.ActionResult;
@@ -352,8 +353,9 @@ public class ActionRegistryImpl implements ActionRegistry
         File dir = ConfigUtils.getActiveConfigDirectory();
         File backupDir = new File(dir, "config_backups");
         File saveFile = new File(dir, MaLiLibReference.MOD_ID + "_actions.json");
+        boolean antiDuplicate = MaLiLibConfigs.Generic.CONFIG_BACKUP_ANTI_DUPLICATE.getBooleanValue();
 
-        return JsonUtils.saveToFile(dir, backupDir, saveFile, 10, this::toJson);
+        return JsonUtils.saveToFile(dir, backupDir, saveFile, 10, antiDuplicate, this::toJson);
     }
 
     public void loadFromFile()
