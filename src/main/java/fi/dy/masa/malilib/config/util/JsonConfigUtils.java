@@ -124,7 +124,7 @@ public class JsonConfigUtils
             MessageUtils.errorAndConsole("malilib.message.error.failed_to_save_all_configs");
         }
 
-        return JsonUtils.writeJsonToFile(root, configFile);
+        return JsonUtils.writeJsonToFile(root, configFile) && success;
     }
 
     public static boolean writeConfigs(JsonObject root, ConfigOptionCategory category)
