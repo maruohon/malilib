@@ -7,8 +7,8 @@ import java.util.Set;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.option.OptionListConfig;
 import fi.dy.masa.malilib.config.value.OptionListConfigValue;
-import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.listener.EventListener;
+import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class OptionListConfigButton extends GenericButton
@@ -28,7 +28,7 @@ public class OptionListConfigButton extends GenericButton
 
         this.config = config;
         this.prefixTranslationKey = prefixTranslationKey;
-        this.setHoverStringProvider("list_preview", this::getOptionListPreviewHoverString, 100);
+        this.setHoverTextLineProvider("list_preview", this::getOptionListPreviewHoverString, 100);
 
         this.setActionListener((btn, mbtn) -> this.cycleValue(mbtn));
         this.updateDisplayString();
@@ -65,14 +65,14 @@ public class OptionListConfigButton extends GenericButton
         }
     }
 
-    protected List<String> getOptionListPreviewHoverString(List<String> previousLines)
+    protected List<StyledTextLine> getOptionListPreviewHoverString(List<StyledTextLine> previousLines)
     {
         return getOptionListPreviewHoverString(this.config, previousLines);
     }
 
-    public static List<String> getOptionListPreviewHoverString(OptionListConfig<?> config, List<String> previousLines)
+    public static List<StyledTextLine> getOptionListPreviewHoverString(OptionListConfig<?> config, List<StyledTextLine> previousLines)
     {
-        List<String> lines = new ArrayList<>();
+        List<StyledTextLine> lines = new ArrayList<>();
         List<OptionListConfigValue> allValues = new ArrayList<>(config.getAllValues());
         Set<OptionListConfigValue> allowedValues = new HashSet<>(config.getAllowedValues());
         OptionListConfigValue currentValue = config.getValue();
@@ -81,16 +81,16 @@ public class OptionListConfigButton extends GenericButton
 
         if (previousLines.isEmpty() == false)
         {
-            lines.add("");
+            lines.add(StyledTextLine.EMPTY);
         }
 
         if (totalValues == allowedValuesCount)
         {
-            lines.add(StringUtils.translate("malilib.gui.label.option_list_hover.total_values.all", totalValues));
+            lines.add(StyledTextLine.translate("malilib.gui.label.option_list_hover.total_values.all", totalValues));
         }
         else
         {
-            lines.add(StringUtils.translate("malilib.gui.label.option_list_hover.total_values.allowed", allowedValuesCount, totalValues));
+            lines.add(StyledTextLine.translate("malilib.gui.label.option_list_hover.total_values.allowed", allowedValuesCount, totalValues));
         }
 
         for (OptionListConfigValue value : allValues)
@@ -99,25 +99,25 @@ public class OptionListConfigButton extends GenericButton
             {
                 if (currentValue.equals(value))
                 {
-                    lines.add("> " + BaseScreen.TXT_GRAY + value.getDisplayName() + " <");
+                    lines.add(StyledTextLine.translate("malilib.hover_info.option_list_button.selected_value", value.getDisplayName()));
                 }
                 else
                 {
-                    lines.add("  " + BaseScreen.TXT_DARK_GRAY + value.getDisplayName());
+                    lines.add(StyledTextLine.translate("malilib.hover_info.option_list_button.non_selected_value", value.getDisplayName()));
                 }
             }
         }
 
         if (totalValues != allowedValuesCount)
         {
-            lines.add("");
-            lines.add(StringUtils.translate("malilib.gui.label.option_list_hover.total_values.disallowed", totalValues - allowedValuesCount, totalValues));
+            lines.add(StyledTextLine.EMPTY);
+            lines.add(StyledTextLine.translate("malilib.gui.label.option_list_hover.total_values.disallowed", totalValues - allowedValuesCount, totalValues));
 
             for (OptionListConfigValue value : allValues)
             {
                 if (allowedValues.contains(value) == false)
                 {
-                    lines.add(BaseScreen.TXT_DARK_GRAY + value.getDisplayName());
+                    lines.add(StyledTextLine.translate("malilib.hover_info.option_list_button.non_selected_value", value.getDisplayName()));
                 }
             }
         }

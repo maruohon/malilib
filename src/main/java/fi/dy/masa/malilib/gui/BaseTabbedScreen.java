@@ -1,7 +1,6 @@
 package fi.dy.masa.malilib.gui;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,7 +8,6 @@ import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.widget.CyclableContainerWidget;
 import fi.dy.masa.malilib.gui.widget.button.BaseButton;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
-import fi.dy.masa.malilib.util.StringUtils;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
 public abstract class BaseTabbedScreen extends BaseScreen
@@ -211,7 +209,7 @@ public abstract class BaseTabbedScreen extends BaseScreen
 
         if (hoverText != null)
         {
-            button.setHoverStrings(Collections.singletonList(StringUtils.translate(hoverText)));
+            button.translateAndAddHoverString(hoverText);
         }
 
         return button;

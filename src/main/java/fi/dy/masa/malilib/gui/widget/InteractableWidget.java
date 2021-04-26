@@ -9,8 +9,8 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.listener.EventListener;
-import fi.dy.masa.malilib.render.text.OrderedStringListFactory;
 import fi.dy.masa.malilib.render.TextRenderUtils;
+import fi.dy.masa.malilib.render.text.OrderedStringListFactory;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.StringUtils;
 
@@ -218,20 +218,11 @@ public abstract class InteractableWidget extends BaseWidget
     }
 
     /**
-     * Replaces the default hover strings with the provided strings.<br>
-     * <b>Note:</b> The strings should be localized already.
-     */
-    public void setHoverStrings(List<String> hoverStrings)
-    {
-        this.hoverInfoFactory.setLines("_default", hoverStrings);
-    }
-
-    /**
      * <b>Note:</b> The strings should be localized already.
      */
     public void addHoverStrings(String... hoverStrings)
     {
-        this.addHoverStrings(Arrays.asList(hoverStrings));
+        this.hoverInfoFactory.addStrings(Arrays.asList(hoverStrings));
     }
 
     /**
@@ -239,23 +230,17 @@ public abstract class InteractableWidget extends BaseWidget
      */
     public void addHoverStrings(List<String> hoverStrings)
     {
-        this.hoverInfoFactory.addLines(hoverStrings);
+        this.hoverInfoFactory.addStrings(hoverStrings);
     }
 
     public void translateAndAddHoverString(String translationKey, Object... args)
     {
-        String str = StringUtils.translate(translationKey, args);
-        this.hoverInfoFactory.addLines(str);
+        this.hoverInfoFactory.addStrings(StringUtils.translate(translationKey, args));
     }
 
     public void translateAndAddHoverStrings(String... hoverStrings)
     {
-        this.translateAndAddHoverStrings(Arrays.asList(hoverStrings));
-    }
-
-    public void translateAndAddHoverStrings(List<String> hoverStrings)
-    {
-        this.hoverInfoFactory.translateAndAddLines(hoverStrings);
+        this.hoverInfoFactory.translateAndAddStrings(Arrays.asList(hoverStrings));
     }
 
     /**
@@ -279,13 +264,12 @@ public abstract class InteractableWidget extends BaseWidget
     }
 
     /**
-     * Adds the provided hover string supplier, by using the provided key.<br>
+     * Adds the provided hover text line supplier, by using the provided key.<br>
      * The key can be used to remove this string provider later.<br>
-     * <b>Note:</b> The returned strings should be localized already.
      */
-    public void setHoverStringProvider(String key, Function<List<String>, List<String>> supplier, int priority)
+    public void setHoverTextLineProvider(String key, Function<List<StyledTextLine>, List<StyledTextLine>> supplier, int priority)
     {
-        this.hoverInfoFactory.setStringListProvider(key, supplier, priority);
+        this.hoverInfoFactory.setTextLineProvider(key, supplier, priority);
     }
 
     public void updateHoverStrings()

@@ -20,7 +20,7 @@ public class AliasActionEntryWidget extends BaseDataListEntryWidget<AliasAction>
     {
         super(x, y, width, height, listIndex, originalListIndex, data, listWidget);
 
-        StyledTextLine nameText = StyledTextLine.of(data.getWidgetDisplayName());
+        StyledTextLine nameText = data.getWidgetDisplayName();
         this.setText(StyledTextUtils.clampStyledTextToMaxWidth(nameText, width - 20, LeftRight.RIGHT, " ..."));
 
         this.removeButton = GenericButton.createIconOnly(0, 0, DefaultIcons.LIST_REMOVE_MINUS_9);
@@ -31,7 +31,7 @@ public class AliasActionEntryWidget extends BaseDataListEntryWidget<AliasAction>
         this.setHoveredBorderWidth(1);
         this.setHoveredBorderColor(0xFF00FF60);
 
-        this.getHoverInfoFactory().setStringListProvider("action_info", data::getHoverInfo);
+        this.getHoverInfoFactory().setTextLineProvider("action_info", data::getHoverInfo);
     }
 
     @Override

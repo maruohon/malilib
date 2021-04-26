@@ -4,8 +4,8 @@ import java.util.List;
 import javax.annotation.Nullable;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.JsonUtils;
-import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.ModInfo;
 
 public class NamedParameterizedAction extends NamedAction
@@ -36,14 +36,15 @@ public class NamedParameterizedAction extends NamedAction
     }
 
     @Override
-    public List<String> getHoverInfo()
+    public List<StyledTextLine> getHoverInfo()
     {
-        List<String> lines = super.getHoverInfo();
+        List<StyledTextLine> lines = super.getHoverInfo();
         String arg = this.parameterizedAction.getArgument();
 
         if (arg != null)
         {
-            lines.add(StringUtils.translate("malilib.hover_info.action.argument", arg));
+            StyledTextLine start = StyledTextLine.translate("malilib.hover_info.action.argument.colon");
+            lines.add(start.append(StyledTextLine.rawWithStyle(arg, start.getLastStyle())));
         }
 
         return lines;

@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
-import com.google.common.collect.Lists;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.config.option.FileConfig;
@@ -90,12 +89,12 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
         if (showOwner && this.ownerText != null)
         {
             this.configOwnerAndNameLabelWidget.getPadding().setTop(2);
-            this.configOwnerAndNameLabelWidget.setStyledTextLines(Lists.newArrayList(this.ownerText, this.nameText));
+            this.configOwnerAndNameLabelWidget.setStyledTextLines(this.ownerText, this.nameText);
         }
         else
         {
             this.configOwnerAndNameLabelWidget.getPadding().setTop(7);
-            this.configOwnerAndNameLabelWidget.setStyledTextLines(Lists.newArrayList(this.nameText));
+            this.configOwnerAndNameLabelWidget.setStyledTextLines(this.nameText);
         }
     }
 

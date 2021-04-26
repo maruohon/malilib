@@ -9,6 +9,7 @@ import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.widget.InteractableWidget;
 import fi.dy.masa.malilib.gui.widget.DropDownListWidget;
 import fi.dy.masa.malilib.gui.widget.button.OptionListConfigButton;
+import fi.dy.masa.malilib.render.text.StyledTextLine;
 
 public class OptionListConfigWidget extends BaseConfigWidget<OptionListConfig<OptionListConfigValue>>
 {
@@ -32,7 +33,7 @@ public class OptionListConfigWidget extends BaseConfigWidget<OptionListConfig<Op
         ArrayList<OptionListConfigValue> values = new ArrayList<>(config.getAllowedValues());
         this.dropDownWidget = new DropDownListWidget<>(x, y, 80, 16, 200, 20, values, OptionListConfigValue::getDisplayName, null);
         this.dropDownWidget.setSelectedEntry(config.getValue());
-        this.dropDownWidget.setHoverStringProvider("list_preview", this::getOptionListPreviewHoverString, 99);
+        this.dropDownWidget.setHoverTextLineProvider("list_preview", this::getOptionListPreviewHoverString, 99);
         this.dropDownWidget.setHoverStringProvider("locked", this.config::getLockAndOverrideMessages);
         this.dropDownWidget.setSelectionListener((v) -> {
             this.config.setValue(v);
@@ -97,7 +98,7 @@ public class OptionListConfigWidget extends BaseConfigWidget<OptionListConfig<Op
         this.updateResetButtonState();
     }
 
-    protected List<String> getOptionListPreviewHoverString(List<String> previousLines)
+    protected List<StyledTextLine> getOptionListPreviewHoverString(List<StyledTextLine> previousLines)
     {
         return OptionListConfigButton.getOptionListPreviewHoverString(this.config, previousLines);
     }

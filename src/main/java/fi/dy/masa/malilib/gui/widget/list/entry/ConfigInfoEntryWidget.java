@@ -1,7 +1,5 @@
 package fi.dy.masa.malilib.gui.widget.list.entry;
 
-import java.util.Collections;
-import java.util.List;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
@@ -20,8 +18,7 @@ public class ConfigInfoEntryWidget extends BaseDataListEntryWidget<ConfigOnTab>
         String hoverText = StringUtils.translate("malilib.gui.hover.config_info_entry_widget",
                                                  config.getDisplayName(), config.getName(),
                                                  config.getClass().getSimpleName());
-        List<String> hoverLines = Collections.singletonList(hoverText);
-        this.setHoverStrings(hoverLines);
+        this.addHoverStrings(hoverText);
 
         this.setText(StyledTextLine.of(config.getDisplayName()));
 

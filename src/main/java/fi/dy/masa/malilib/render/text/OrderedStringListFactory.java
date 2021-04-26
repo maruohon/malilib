@@ -15,11 +15,11 @@ import fi.dy.masa.malilib.util.StyledTextUtils;
 
 public class OrderedStringListFactory
 {
+    public static final int DEFAULT_PRIORITY = 100;
     protected static final String AUTOMATIC_KEY_PREFIX = "_auto_";
 
-    protected final HashMap<String, Pair<Integer, Function<List<String>, List<String>>>> providers = new HashMap<>();
-    protected final List<Function<List<String>, List<String>>> sortedProviders = new ArrayList<>();
-    protected ImmutableList<String> strings = ImmutableList.of();
+    protected final HashMap<String, Pair<Integer, Function<List<StyledTextLine>, List<StyledTextLine>>>> providers = new HashMap<>();
+    protected final List<Function<List<StyledTextLine>, List<StyledTextLine>>> sortedProviders = new ArrayList<>();
     protected ImmutableList<StyledTextLine> styledLines = ImmutableList.of();
     protected boolean dirty;
     protected int maxTextRenderWidth;
@@ -35,21 +35,6 @@ public class OrderedStringListFactory
     public void setMaxTextRenderWidth(int maxWidth)
     {
         this.maxTextRenderWidth = maxWidth;
-    }
-
-    /**
-     * 
-     * Returns the current built list of strings.
-     * Call {@link #updateList()} to rebuild the list from the current line providers.
-     */
-    public ImmutableList<String> getLines()
-    {
-        if (this.dirty)
-        {
-            this.updateList();
-        }
-
-        return this.strings;
     }
 
     /**
@@ -73,10 +58,10 @@ public class OrderedStringListFactory
 
     public boolean hasNoStrings()
     {
-        return this.strings.isEmpty() && this.dirty == false;
+        return this.styledLines.isEmpty() && this.dirty == false;
     }
 
-    public void translateAndAddLines(List<String> translationKeys)
+    public void translateAndAddStrings(List<String> translationKeys)
     {
         List<String> translated = new ArrayList<>();
 
@@ -85,36 +70,25 @@ public class OrderedStringListFactory
             translated.add(StringUtils.translate(key));
         }
 
-        this.addLines(translated);
+        this.addStrings(translated);
     }
 
     /**
      * Adds the provided lines, by creating a provider with an automatically generated key.
      * The lines should be already translated/localized.
-     * @param lines
      */
-    public void addLines(String... lines)
+    public void addStrings(String... lines)
     {
-        this.addLines(Arrays.asList(lines));
+        this.addStrings(Arrays.asList(lines));
     }
 
     /**
      * Adds the provided lines, by appending them to any previously added non-keyed lines.
      * The lines should be already translated/localized.
-     * @param linesIn
      */
-    public void addLines(List<String> linesIn)
+    public void addStrings(List<String> linesIn)
     {
-        if (this.providers.containsKey(AUTOMATIC_KEY_PREFIX))
-        {
-            List<String> newLines = new ArrayList<>(this.providers.get(AUTOMATIC_KEY_PREFIX).getValue().apply(Collections.emptyList()));
-            newLines.addAll(linesIn);
-            linesIn = newLines;
-        }
-
-        final List<String> lines = linesIn;
-
-        this.setStringListProvider(AUTOMATIC_KEY_PREFIX, () -> lines);
+        this.addTextLines(StyledText.ofStrings(linesIn).lines);
     }
 
     /**
@@ -122,9 +96,9 @@ public class OrderedStringListFactory
      * The key can be used to remove just these lines later.
      * The lines should be already translated/localized.
      */
-    public void setLines(String key, String... lines)
+    public void setStrings(String key, String... lines)
     {
-        this.setStringListProvider(key, () -> Arrays.asList(lines));
+        this.setStringListProvider(key, () -> Arrays.asList(lines), DEFAULT_PRIORITY);
     }
 
     /**
@@ -132,9 +106,9 @@ public class OrderedStringListFactory
      * The key can be used to remove just these lines later.
      * The lines should be already translated/localized.
      */
-    public void setLines(String key, List<String> lines)
+    public void setStrings(String key, List<String> lines)
     {
-        this.setStringListProvider(key, () -> lines);
+        this.setStringListProvider(key, () -> lines, DEFAULT_PRIORITY);
     }
 
     /**
@@ -144,7 +118,7 @@ public class OrderedStringListFactory
      */
     public void setStringListProvider(String key, Supplier<List<String>> supplier)
     {
-        this.setStringListProvider(key, supplier, 100);
+        this.setStringListProvider(key, supplier, DEFAULT_PRIORITY);
     }
 
     /**
@@ -160,17 +134,100 @@ public class OrderedStringListFactory
     }
 
     /**
-     * Adds the provided line supplier, by using the provided key.
-     * The key can be used to remove just these lines later.
-     * The priority is the sort order of all the line suppliers,
+     * Adds the provided string list supplier, by using the provided key.
+     * The key can be used to remove just this provider later on.
+     * The priority is the sort order of all the providers,
      * they are sorted by their numerical priority (so smaller priority value comes first).
-     * The Function gets in the current list of strings at the moment when the function is executed.
-     * This allows the function to do some conditional checks before adding its own lines,
-     * for example based on the number of existing lines. As an example not adding a preceding blank
+     * The Function gets in the current list of text lines at the moment when the function is executed.
+     * This allows the function to do some conditional checks before adding its own strings,
+     * for example based on the number of existing text lines. As an example not adding a preceding blank
      * line if the list is currently empty.
+     * <b>Note:</b> The strings should be already translated/localized.
+     */
+    public void setStringListProvider(String key, Function<List<StyledTextLine>, List<String>> supplierIn, int priority)
+    {
+        Function<List<StyledTextLine>, List<StyledTextLine>> provider = (oldLines) -> StyledText.ofStrings(supplierIn.apply(oldLines)).lines;
+
+        this.providers.put(key, Pair.of(priority, provider));
+        this.updateSortedProviders();
+        this.markDirty();
+    }
+
+    /**
+     * Adds the provided text lines, by appending them to any previously added non-keyed text lines.
+     */
+    public void addTextLines(StyledTextLine... textLines)
+    {
+        this.addTextLines(Arrays.asList(textLines));
+    }
+
+    /**
+     * Adds the provided text lines, by appending them to any previously added non-keyed text lines.
+     */
+    public void addTextLines(List<StyledTextLine> textLines)
+    {
+        final List<StyledTextLine> lines = new ArrayList<>(textLines);
+
+        if (this.providers.containsKey(AUTOMATIC_KEY_PREFIX))
+        {
+            List<StyledTextLine> oldLines = this.providers.get(AUTOMATIC_KEY_PREFIX).getValue().apply(Collections.emptyList());
+            lines.addAll(0, oldLines);
+        }
+
+        this.setTextLineProvider(AUTOMATIC_KEY_PREFIX, (old) -> lines, DEFAULT_PRIORITY);
+    }
+
+    /**
+     * Adds the provided lines, by using the provided key.
+     * The key can be used to remove just these lines later.
      * The lines should be already translated/localized.
      */
-    public void setStringListProvider(String key, Function<List<String>, List<String>> supplier, int priority)
+    public void setTextLines(String key, StyledTextLine... lines)
+    {
+        this.setTextLineProvider(key, () -> Arrays.asList(lines), DEFAULT_PRIORITY);
+    }
+
+    /**
+     * Adds the provided lines, by using the provided key.
+     * The key can be used to remove just these lines later.
+     * The lines should be already translated/localized.
+     */
+    public void setTextLines(String key, List<StyledTextLine> lines)
+    {
+        this.setTextLineProvider(key, () -> lines, DEFAULT_PRIORITY);
+    }
+
+    /**
+     * Adds the provided text line supplier, by using the provided key.
+     * The key can be used to remove just this provider later on.
+     */
+    public void setTextLineProvider(String key, Supplier<List<StyledTextLine>> supplier)
+    {
+        this.setTextLineProvider(key, supplier, DEFAULT_PRIORITY);
+    }
+
+    /**
+     * Adds the provided text line supplier, by using the provided key.
+     * The key can be used to remove just this provider later on.
+     * The priority is the sort order of all the text line providers.
+     * They are sorted by their numerical priority (so smaller priority value comes first).
+     */
+    public void setTextLineProvider(String key, Supplier<List<StyledTextLine>> supplier, int priority)
+    {
+        this.setTextLineProvider(key, (lines) -> supplier.get(), priority);
+    }
+
+    /**
+     * Adds the provided text line supplier, by using the provided key.
+     * The key can be used to remove just this provider later on.
+     * The priority is the sort order of all the providers.
+     * They are sorted by their numerical priority (so smaller priority value comes first).
+     * The Function gets in the current list of text lines at the moment when the function is executed.
+     * This allows the function to do some conditional checks before adding its own text lines,
+     * for example based on the number of existing lines. As an example not adding a preceding blank
+     * line if the list is currently empty.
+     */
+    public void setTextLineProvider(String key, Function<List<StyledTextLine>, List<StyledTextLine>> supplier, int priority)
     {
         this.providers.put(key, Pair.of(priority, supplier));
         this.updateSortedProviders();
@@ -202,7 +259,6 @@ public class OrderedStringListFactory
     public void removeAll()
     {
         this.providers.clear();
-        this.strings = ImmutableList.of();
         this.styledLines = ImmutableList.of();
     }
 
@@ -225,31 +281,23 @@ public class OrderedStringListFactory
      */
     public void updateList()
     {
-        ArrayList<String> allLines = new ArrayList<>();
+        ArrayList<StyledTextLine> allLines = new ArrayList<>();
 
-        for (Function<List<String>, List<String>> stringProvider : this.sortedProviders)
+        for (Function<List<StyledTextLine>, List<StyledTextLine>> stringProvider : this.sortedProviders)
         {
-            List<String> lines = stringProvider.apply(allLines);
+            List<StyledTextLine> lines = stringProvider.apply(allLines);
             allLines.addAll(lines);
-        }
-
-        List<StyledTextLine> styledLines = new ArrayList<>();
-
-        for (String str : allLines)
-        {
-            styledLines.addAll(StyledText.of(str).lines);
         }
 
         if (this.maxTextRenderWidth > 16)
         {
-            this.styledLines = StyledTextUtils.wrapStyledTextToMaxWidth(styledLines, this.maxTextRenderWidth);
+            this.styledLines = StyledTextUtils.wrapStyledTextToMaxWidth(allLines, this.maxTextRenderWidth);
         }
         else
         {
-            this.styledLines = ImmutableList.copyOf(styledLines);
+            this.styledLines = ImmutableList.copyOf(allLines);
         }
 
-        this.strings = ImmutableList.copyOf(allLines);
         this.dirty = false;
     }
 }

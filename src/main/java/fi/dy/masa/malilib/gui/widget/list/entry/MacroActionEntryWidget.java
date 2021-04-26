@@ -26,7 +26,7 @@ public class MacroActionEntryWidget extends BaseDataListEntryWidget<MacroAction>
     {
         super(x, y, width, height, listIndex, originalListIndex, data, listWidget);
 
-        StyledTextLine nameText = StyledTextLine.of(data.getWidgetDisplayName());
+        StyledTextLine nameText = data.getWidgetDisplayName();
         this.setText(StyledTextUtils.clampStyledTextToMaxWidth(nameText, width - 16, LeftRight.RIGHT, " ..."));
 
         this.editButton = new GenericButton(0, 0, -1, 12, "malilib.label.edit");
@@ -40,7 +40,7 @@ public class MacroActionEntryWidget extends BaseDataListEntryWidget<MacroAction>
         this.setHoveredBorderWidth(1);
         this.setHoveredBorderColor(0xFF00FF60);
 
-        this.getHoverInfoFactory().setStringListProvider("action_info", data::getHoverInfo);
+        this.getHoverInfoFactory().setTextLineProvider("action_info", data::getHoverInfo);
     }
 
     @Override

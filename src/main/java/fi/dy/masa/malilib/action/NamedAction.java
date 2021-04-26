@@ -11,6 +11,7 @@ import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.config.option.HotkeyedBooleanConfig;
 import fi.dy.masa.malilib.listener.EventListener;
+import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.ModInfo;
 
@@ -96,21 +97,21 @@ public class NamedAction
         return ImmutableList.of(this.getName(), this.getDisplayName());
     }
 
-    public String getWidgetDisplayName()
+    public StyledTextLine getWidgetDisplayName()
     {
         String name = this.getName();
         String modName = this.getMod().getModName();
-        return StringUtils.translate("malilib.label.named_action_entry_widget.name", name, modName);
+        return StyledTextLine.translate("malilib.label.named_action_entry_widget.name", name, modName);
     }
 
-    public List<String> getHoverInfo()
+    public List<StyledTextLine> getHoverInfo()
     {
-        List<String> list = new ArrayList<>();
+        List<StyledTextLine> list = new ArrayList<>();
 
-        list.add(StringUtils.translate("malilib.hover_info.action.mod", this.mod.getModName()));
-        list.add(StringUtils.translate("malilib.hover_info.action.name", this.name));
-        list.add(StringUtils.translate("malilib.hover_info.action.display_name", this.getDisplayName()));
-        list.add(StringUtils.translate("malilib.hover_info.action.registry_name", this.registryName));
+        list.add(StyledTextLine.translate("malilib.hover_info.action.mod", this.mod.getModName()));
+        list.add(StyledTextLine.translate("malilib.hover_info.action.name", this.name));
+        list.add(StyledTextLine.translate("malilib.hover_info.action.display_name", this.getDisplayName()));
+        list.add(StyledTextLine.translate("malilib.hover_info.action.registry_name", this.registryName));
 
         return list;
     }

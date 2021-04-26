@@ -91,6 +91,13 @@ public class LabelWidget extends BackgroundWidget
         return this;
     }
 
+    public LabelWidget setStyledTextLines(StyledTextLine... lines)
+    {
+        this.stringListRenderer.setStyledTextLines(Arrays.asList(lines));
+        this.updateLabelWidgetSize();
+        return this;
+    }
+
     public LabelWidget setStyledTextLines(List<StyledTextLine> lines)
     {
         this.stringListRenderer.setStyledTextLines(lines);

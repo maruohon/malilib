@@ -4,8 +4,8 @@ import java.util.List;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.input.ActionResult;
+import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.JsonUtils;
-import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.ModInfo;
 
 public class AliasAction extends NamedAction
@@ -35,22 +35,22 @@ public class AliasAction extends NamedAction
     }
 
     @Override
-    public String getWidgetDisplayName()
+    public StyledTextLine getWidgetDisplayName()
     {
         String alias = this.alias;
         String originalName = this.name;
         String modName = this.mod.getModName();
-        return StringUtils.translate("malilib.label.named_action_alias_entry_widget.name",
-                                     alias, modName, originalName);
+        return StyledTextLine.translate("malilib.label.named_action_alias_entry_widget.name",
+                                        alias, modName, originalName);
     }
 
     @Override
-    public List<String> getHoverInfo()
+    public List<StyledTextLine> getHoverInfo()
     {
-        List<String> list = this.originalAction.getHoverInfo();
+        List<StyledTextLine> list = this.originalAction.getHoverInfo();
 
-        list.add(0, StringUtils.translate("malilib.hover_info.action.alias", this.alias));
-        list.add(StringUtils.translate("malilib.hover_info.action.original_registry_name", this.originalRegistryName));
+        list.add(0, StyledTextLine.translate("malilib.hover_info.action.alias", this.alias));
+        list.add(StyledTextLine.translate("malilib.hover_info.action.original_registry_name", this.originalRegistryName));
 
         return list;
     }

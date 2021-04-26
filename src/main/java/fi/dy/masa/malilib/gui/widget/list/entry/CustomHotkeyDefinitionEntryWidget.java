@@ -1,7 +1,6 @@
 package fi.dy.masa.malilib.gui.widget.list.entry;
 
 import javax.annotation.Nullable;
-import com.google.common.collect.Lists;
 import fi.dy.masa.malilib.gui.CustomHotkeysEditScreen;
 import fi.dy.masa.malilib.gui.widget.KeybindSettingsWidget;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
@@ -36,13 +35,15 @@ public class CustomHotkeyDefinitionEntryWidget extends BaseDataListEntryWidget<C
 
         this.nameLabelWidget = new LabelWidget(x, y, -1, height, 0xFFF0F0F0);
         this.nameLabelWidget.getPadding().setTop(2).setLeft(4);
-        this.nameLabelWidget.setStyledTextLines(Lists.newArrayList(name, actionName));
+        this.nameLabelWidget.setStyledTextLines(name, actionName);
 
         this.keybindButton = new KeyBindConfigButton(x, y, 120, 20, data.getKeyBind(), screen);
         this.settingsWidget = new KeybindSettingsWidget(x, y, 20, 20, data.getKeyBind(), data.getName(), null);
 
         this.removeButton = new GenericButton(0, 0, -1, 20, "malilib.gui.button.label.remove");
         this.removeButton.setActionListener(this::removeHotkey);
+
+        this.setRenderBackground(true);
     }
 
     @Override

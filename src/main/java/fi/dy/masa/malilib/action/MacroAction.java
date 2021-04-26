@@ -7,6 +7,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.input.ActionResult;
+import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.ModInfo;
@@ -39,36 +40,36 @@ public class MacroAction extends NamedAction
     }
 
     @Override
-    public String getWidgetDisplayName()
+    public StyledTextLine getWidgetDisplayName()
     {
         String name = this.getName();
         int size = this.getActionList().size();
-        return StringUtils.translate("malilib.label.macro_action_entry_widget.name", name, size);
+        return StyledTextLine.translate("malilib.label.macro_action_entry_widget.name", name, size);
     }
 
     @Override
-    public List<String> getHoverInfo()
+    public List<StyledTextLine> getHoverInfo()
     {
-        List<String> lines = new ArrayList<>();
-        lines.add(StringUtils.translate("malilib.hover_info.action.name", this.getName()));
+        List<StyledTextLine> lines = new ArrayList<>();
+        lines.add(StyledTextLine.translate("malilib.hover_info.action.name", this.getName()));
 
         int size = this.actionList.size();
 
         if (size > 0)
         {
-            lines.add(StringUtils.translate("malilib.hover_info.action.contained_actions", size));
+            lines.add(StyledTextLine.translate("malilib.hover_info.action.contained_actions", size));
 
             int count = Math.min(size, 8);
 
             for (int i = 0; i < count; ++i)
             {
                 NamedAction action = this.actionList.get(i);
-                lines.add("  " + action.getName());
+                lines.add(StyledTextLine.of("  " + action.getName()));
             }
 
             if (size > count)
             {
-                lines.add(StringUtils.translate("malilib.gui.button.hover.entries_more", size - count));
+                lines.add(StyledTextLine.translate("malilib.gui.button.hover.entries_more", size - count));
             }
         }
 
