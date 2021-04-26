@@ -22,6 +22,7 @@ import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
+import fi.dy.masa.malilib.util.FloatUnaryOperator;
 import fi.dy.masa.malilib.util.data.Color4f;
 import it.unimi.dsi.fastutil.chars.Char2ObjectOpenHashMap;
 
@@ -35,7 +36,8 @@ public class TextRenderer implements IResourceManagerReloadListener
     protected static final ResourceLocation[] UNICODE_PAGE_LOCATIONS = new ResourceLocation[256];
 
     // This needs to be below the other static fields, because the resource manager reload will access the  other fields!
-    public static final TextRenderer INSTANCE = new TextRenderer(Minecraft.getMinecraft().getTextureManager(), ASCII_TEXTURE, false, false);
+    public static final TextRenderer INSTANCE = new TextRenderer(Minecraft.getMinecraft().getTextureManager(),
+                                                                 ASCII_TEXTURE, false, false);
 
     protected final Random rand = new Random();
     protected final WorldVertexBufferUploader vboUploader = new WorldVertexBufferUploader();
@@ -84,7 +86,8 @@ public class TextRenderer implements IResourceManagerReloadListener
 
     protected void readFontTexture()
     {
-        TextRendererUtils.readCharacterWidthsFromFontTexture(this.asciiTexture, this.charWidth, this::setAsciiGlyphWidth, this::setAsciiGlyphHeight);
+        TextRendererUtils.readCharacterWidthsFromFontTexture(this.asciiTexture, this.charWidth,
+                                                             this::setAsciiGlyphWidth, this::setAsciiGlyphHeight);
 
         int len = Math.min(VALID_ASCII_CHARACTERS.length(), this.charWidth.length);
 
@@ -92,7 +95,8 @@ public class TextRenderer implements IResourceManagerReloadListener
         {
             char c = VALID_ASCII_CHARACTERS.charAt(i);
             this.asciiCharacterWidths[c] = (byte) this.charWidth[i];
-            this.getGlyphFor(c); // generate all the glyphs so that the randomization always has all the valid alternatives available
+            // generate all the glyphs so that the randomization always has all the valid alternatives available
+            this.getGlyphFor(c);
         }
     }
 
@@ -323,22 +327,21 @@ public class TextRenderer implements IResourceManagerReloadListener
 
     public void renderText(int x, int y, float z, int defaultColor, boolean shadow, StyledText text, int lineHeight)
     {
-        this.renderText(x, y, z, defaultColor, -1.0f, shadow, text, lineHeight);
+        this.renderText(x, y, z, defaultColor, shadow, text, lineHeight, null);
     }
 
     /**
-     * @param overrideAlpha the alpha override value to use. Values of 0.0f - 1.0f are valid,
-     *                      any other values will use the alpha from the active color.
-     *                      So using for example -1.0f will not override the alpha from the color argument
-     *                      or the active style.
+     * @param alphaModifier allows modifying the alpha value of the color per text segment
      */
-    public void renderText(int x, int y, float z, int defaultColor, float overrideAlpha, boolean shadow, StyledText text, int lineHeight)
+    public void renderText(int x, int y, float z, int defaultColor,
+                           boolean shadow, StyledText text, int lineHeight,
+                           @Nullable FloatUnaryOperator alphaModifier)
     {
         this.startBuffers();
 
         for (StyledTextLine line : text.lines)
         {
-            this.renderLineToBuffer(x, y, z, defaultColor, overrideAlpha, shadow, line);
+            this.renderLineToBuffer(x, y, z, defaultColor, shadow, line, alphaModifier);
             y += lineHeight;
         }
 
@@ -354,17 +357,15 @@ public class TextRenderer implements IResourceManagerReloadListener
 
     public void renderLineToBuffer(int x, int y, float z, int defaultColor, boolean shadow, StyledTextLine line)
     {
-        this.renderLineToBuffer(x, y, z, defaultColor, -1.0f, shadow, line);
+        this.renderLineToBuffer(x, y, z, defaultColor, shadow, line, null);
     }
 
     /**
-     * @param overrideAlpha the alpha override value to use. Values of 0.0f - 1.0f are valid,
-     *                      any other values will use the alpha from the active color.
-     *                      So using for example -1.0f will not override the alpha from the color argument
-     *                      or the active style.
+     * @param alphaModifier allows modifying the alpha value of the color per text segment
      */
     public void renderLineToBuffer(int x, int y, float z, int defaultColor,
-                                   float overrideAlpha, boolean shadow, StyledTextLine line)
+                                   boolean shadow, StyledTextLine line,
+                                   @Nullable FloatUnaryOperator alphaModifier)
     {
         if (this.textBuffer != null)
         {
@@ -375,20 +376,21 @@ public class TextRenderer implements IResourceManagerReloadListener
 
             for (StyledTextSegment segment : line.segments)
             {
-                segmentX += this.renderTextSegment(segmentX, y, z, defaultColor4f, overrideAlpha, shadow, segment);
+                segmentX += this.renderTextSegment(segmentX, y, z, defaultColor4f, shadow, segment, alphaModifier);
             }
         }
     }
 
     protected int renderTextSegment(int x, int y, float z, Color4f defaultColor,
-                                    float overrideAlpha, boolean shadow, StyledTextSegment segment)
+                                    boolean shadow, StyledTextSegment segment,
+                                    @Nullable FloatUnaryOperator alphaModifier)
     {
         TextStyle style = segment.style;
         Color4f color = style.color != null ? style.color : defaultColor;
 
-        if (overrideAlpha >= 0.0f && overrideAlpha <= 1.0f)
+        if (alphaModifier != null)
         {
-            color = color.withAlpha(overrideAlpha);
+            color = color.withAlpha(alphaModifier.apply(color.a));
         }
 
         // Reference equality is fine here, as the sheets are fixed/pre-determined
@@ -408,9 +410,9 @@ public class TextRenderer implements IResourceManagerReloadListener
         {
             Color4f shadowColor = style.shadowColor != null ? style.shadowColor : TextStyle.getDefaultShadowColor(color);
 
-            if (overrideAlpha >= 0.0f && overrideAlpha <= 1.0f)
+            if (alphaModifier != null)
             {
-                shadowColor = shadowColor.withAlpha(overrideAlpha);
+                shadowColor = shadowColor.withAlpha(alphaModifier.apply(shadowColor.a));
             }
 
             float offset = this.unicode ? 0.5F : 1.0F;
@@ -420,26 +422,30 @@ public class TextRenderer implements IResourceManagerReloadListener
         return this.renderTextSegmentAndStylesWithColor(x, y, z, color, segment);
     }
 
-    protected int renderTextSegmentAndStylesWithColor(float x, float y, float z, Color4f color, StyledTextSegment segment)
+    protected int renderTextSegmentAndStylesWithColor(float x, float y, float z,
+                                                      Color4f color, StyledTextSegment segment)
     {
         TextStyle style = segment.style;
 
         if (style.underline)
         {
             float lineHeight = this.unicode ? 0.5F : 1.0F;
-            ShapeRenderUtils.renderRectangle(x - 1F, y + this.fontHeight - 1F, z, segment.renderWidth, lineHeight, color, this.styleBuffer);
+            ShapeRenderUtils.renderRectangle(x - 1F, y + this.fontHeight - 1F, z,
+                                             segment.renderWidth, lineHeight, color, this.styleBuffer);
         }
 
         if (style.strikeThrough)
         {
             float lineHeight = this.unicode ? 0.5F : 1.0F;
-            ShapeRenderUtils.renderRectangle(x - 1F, y + this.fontHeight / 2.0F - 1F, z, segment.renderWidth + 1, lineHeight, color, this.styleBuffer);
+            ShapeRenderUtils.renderRectangle(x - 1F, y + this.fontHeight / 2.0F - 1F, z,
+                                             segment.renderWidth + 1, lineHeight, color, this.styleBuffer);
         }
 
         return this.renderTextSegmentWithColor(x, y, z, segment, color, this.textBuffer);
     }
 
-    protected int renderTextSegmentWithColor(float x, float y, float z, StyledTextSegment segment, Color4f color, BufferBuilder buffer)
+    protected int renderTextSegmentWithColor(float x, float y, float z, StyledTextSegment segment,
+                                             Color4f color, BufferBuilder buffer)
     {
         TextStyle style = segment.style;
         List<Glyph> glyphs = segment.getGlyphsForRender();
@@ -453,7 +459,8 @@ public class TextRenderer implements IResourceManagerReloadListener
         return renderWidth;
     }
 
-    protected int renderGlyph(float x, float y, float z, Glyph glyph, Color4f color, TextStyle style, BufferBuilder buffer)
+    protected int renderGlyph(float x, float y, float z, Glyph glyph, Color4f color,
+                              TextStyle style, BufferBuilder buffer)
     {
         if (glyph == EMPTY_GLYPH)
         {

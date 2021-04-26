@@ -4,6 +4,7 @@ import fi.dy.masa.malilib.gui.widget.ScreenContext;
 import fi.dy.masa.malilib.render.text.StyledText;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.render.text.TextRenderer;
+import fi.dy.masa.malilib.util.FloatUnaryOperator;
 import fi.dy.masa.malilib.util.StyledTextUtils;
 
 public class Message
@@ -66,15 +67,16 @@ public class Message
      */
     public void renderAt(int x, int y, float z, int lineHeight, long currentTime, ScreenContext ctx)
     {
-        float alpha = -1.0f;
+        FloatUnaryOperator alphaModifier = null;
 
         if (this.isFading(currentTime))
         {
             int alphaInt = (this.defaultTextColor & 0xFF000000) >>> 24;
             double fadeProgress = 1.0 - (double) (currentTime - this.fadeTime) / (double) this.fadeDuration;
-            alpha = (float) alphaInt * (float) fadeProgress / 255.0f;
+            final float alpha = (float) alphaInt * (float) fadeProgress / 255.0f;
+            alphaModifier = (old) -> old * alpha;
         }
 
-        TextRenderer.INSTANCE.renderText(x, y, z, this.defaultTextColor, alpha, true, this.message, lineHeight);
+        TextRenderer.INSTANCE.renderText(x, y, z, this.defaultTextColor, true, this.message, lineHeight, alphaModifier);
     }
 }
