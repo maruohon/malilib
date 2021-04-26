@@ -1,27 +1,40 @@
 package fi.dy.masa.malilib.action;
 
 import java.util.function.Function;
+import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
+import fi.dy.masa.malilib.config.value.InfoType;
 import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.overlay.message.MessageUtils;
 
 public class BooleanToggleAction implements Action
 {
     protected final BooleanConfig config;
-    @Nullable Function<BooleanConfig, String> messageFactory;
+    @Nullable protected final Function<BooleanConfig, String> messageFactory;
+    @Nullable protected final Supplier<InfoType> messageTypeSupplier;
 
-    public BooleanToggleAction(BooleanConfig config, @Nullable Function<BooleanConfig, String> messageFactory)
+    public BooleanToggleAction(BooleanConfig config,
+                               @Nullable Function<BooleanConfig, String> messageFactory)
+    {
+        this(config, messageFactory, null);
+    }
+
+    public BooleanToggleAction(BooleanConfig config,
+                               @Nullable Function<BooleanConfig, String> messageFactory,
+                               @Nullable Supplier<InfoType> messageTypeSupplier)
     {
         this.config = config;
         this.messageFactory = messageFactory;
+        this.messageTypeSupplier = messageTypeSupplier;
     }
 
     @Override
     public ActionResult execute(ActionContext ctx)
     {
         this.config.toggleBooleanValue();
-        MessageUtils.printBooleanConfigToggleMessage(this.config, this.messageFactory);
+        InfoType messageType = this.messageTypeSupplier != null ? this.messageTypeSupplier.get() : null;
+        MessageUtils.printBooleanConfigToggleMessage(messageType, this.config, this.messageFactory);
         return ActionResult.SUCCESS;
     }
 

@@ -9,6 +9,7 @@ import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.input.KeyBindImpl;
 import fi.dy.masa.malilib.input.KeyBindSettings;
 import fi.dy.masa.malilib.input.callback.HotkeyCallback;
+import fi.dy.masa.malilib.input.callback.ToggleBooleanWithMessageKeyCallback;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.ModInfo;
 
@@ -32,12 +33,14 @@ public class HotkeyedBooleanConfig extends BooleanConfig implements Hotkey
         this(name, defaultValue, defaultHotkey, StringUtils.splitCamelCase(name), comment);
     }
 
-    public HotkeyedBooleanConfig(String name, boolean defaultValue, String defaultHotkey, String prettyName, String comment)
+    public HotkeyedBooleanConfig(String name, boolean defaultValue, String defaultHotkey,
+                                 String prettyName, String comment)
     {
         this(name, defaultValue, defaultHotkey, KeyBindSettings.INGAME_DEFAULT, prettyName, comment);
     }
 
-    public HotkeyedBooleanConfig(String name, boolean defaultValue, String defaultHotkey, KeyBindSettings settings, String prettyName, String comment)
+    public HotkeyedBooleanConfig(String name, boolean defaultValue, String defaultHotkey,
+                                 KeyBindSettings settings, String prettyName, String comment)
     {
         super(name, defaultValue, prettyName, comment);
 
@@ -63,8 +66,9 @@ public class HotkeyedBooleanConfig extends BooleanConfig implements Hotkey
      */
     public void setSpecialToggleMessageFactory(@Nullable Function<BooleanConfig, String> messageFactory)
     {
-        this.toggleAction = new BooleanToggleAction(this, messageFactory);
-        this.keyBind.setCallback(HotkeyCallback.of(this.toggleAction));
+        this.toggleAction = new BooleanToggleAction(this, messageFactory, this.keyBind.getSettings()::getMessageType);
+        HotkeyCallback callback = new ToggleBooleanWithMessageKeyCallback(this, messageFactory);
+        this.keyBind.setCallback(callback);
     }
 
     public void setHotkeyCallback(HotkeyCallback callback)

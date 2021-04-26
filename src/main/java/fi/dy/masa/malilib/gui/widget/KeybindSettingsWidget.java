@@ -117,6 +117,7 @@ public class KeybindSettingsWidget extends InteractableWidget
         this.addOptionText(lines, "malilib.gui.label.keybind_settings.first_only", settings.getFirstOnly(), defaultSettings.getFirstOnly(), this::getDisplayString);
         this.addOptionText(lines, "malilib.gui.label.keybind_settings.priority", settings.getPriority(), defaultSettings.getPriority(), this::getDisplayString);
         this.addOptionText(lines, "malilib.gui.label.keybind_settings.show_toast", settings.getShowToast(), defaultSettings.getShowToast(), this::getDisplayString);
+        this.addOptionText(lines, "malilib.gui.label.keybind_settings.message_type", settings.getMessageType(), defaultSettings.getMessageType(), this::getDisplayString);
 
         lines.add("");
         StringUtils.addTranslatedLines(lines, "malilib.gui.label.keybind_settings.tips");

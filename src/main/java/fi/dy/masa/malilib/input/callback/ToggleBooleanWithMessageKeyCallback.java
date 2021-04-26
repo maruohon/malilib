@@ -3,13 +3,15 @@ package fi.dy.masa.malilib.input.callback;
 import java.util.function.Function;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
+import fi.dy.masa.malilib.config.value.InfoType;
 import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.input.KeyAction;
 import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.overlay.message.MessageUtils;
 
-public class ToggleBooleanWithMessageKeyCallback extends ToggleBooleanKeyCallback
+public class ToggleBooleanWithMessageKeyCallback implements HotkeyCallback
 {
+    protected final BooleanConfig config;
     @Nullable protected final Function<BooleanConfig, String> messageFactory;
 
     public ToggleBooleanWithMessageKeyCallback(BooleanConfig config)
@@ -17,18 +19,19 @@ public class ToggleBooleanWithMessageKeyCallback extends ToggleBooleanKeyCallbac
         this(config, null);
     }
 
-    public ToggleBooleanWithMessageKeyCallback(BooleanConfig config, @Nullable Function<BooleanConfig, String> messageFactory)
+    public ToggleBooleanWithMessageKeyCallback(BooleanConfig config,
+                                               @Nullable Function<BooleanConfig, String> messageFactory)
     {
-        super(config);
-
+        this.config = config;
         this.messageFactory = messageFactory;
     }
 
     @Override
     public ActionResult onKeyAction(KeyAction action, KeyBind key)
     {
-        super.onKeyAction(action, key);
-        MessageUtils.printBooleanConfigToggleMessage(this.config, this.messageFactory);
+        this.config.toggleBooleanValue();
+        InfoType messageType = key.getSettings().getMessageType();
+        MessageUtils.printBooleanConfigToggleMessage(messageType, this.config, this.messageFactory);
         return ActionResult.SUCCESS;
     }
 }

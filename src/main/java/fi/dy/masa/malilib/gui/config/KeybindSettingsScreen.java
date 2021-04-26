@@ -9,6 +9,7 @@ import fi.dy.masa.malilib.config.option.BaseConfigOption;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.config.option.IntegerConfig;
 import fi.dy.masa.malilib.config.option.OptionListConfig;
+import fi.dy.masa.malilib.config.value.InfoType;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.config.liteloader.DialogHandler;
@@ -33,6 +34,7 @@ public class KeybindSettingsScreen extends BaseScreen
     protected final OptionListConfig<KeyAction> cfgActivateOn;
     protected final OptionListConfig<Context> cfgContext;
     protected final OptionListConfig<CancelCondition> cfgCancel;
+    protected final OptionListConfig<InfoType> cfgMessageType;
     protected final BooleanConfig cfgAllowEmpty;
     protected final BooleanConfig cfgAllowExtra;
     protected final BooleanConfig cfgOrderSensitive;
@@ -69,9 +71,10 @@ public class KeybindSettingsScreen extends BaseScreen
         this.title = BaseScreen.TXT_BOLD + StringUtils.translate("malilib.gui.title.keybind_settings.advanced", this.keybindName) + BaseScreen.TXT_RST;
 
         KeyBindSettings defaultSettings = this.keybind.getDefaultSettings();
-        this.cfgActivateOn     = new OptionListConfig<>("", defaultSettings.getActivateOn(), KeyAction.VALUES, "malilib.gui.label.keybind_settings.activate_on",               "malilib.config.comment.keybind_settings.activate_on");
-        this.cfgContext        = new OptionListConfig<>("", defaultSettings.getContext(),    Context.VALUES, "malilib.gui.label.keybind_settings.context",                   "malilib.config.comment.keybind_settings.context");
-        this.cfgCancel         = new OptionListConfig<>("", defaultSettings.getCancelCondition(), CancelCondition.VALUES, "malilib.gui.label.keybind_settings.cancel_further", "malilib.config.comment.keybind_settings.cancel_further");
+        this.cfgActivateOn     = new OptionListConfig<>("", defaultSettings.getActivateOn(), KeyAction.VALUES, "malilib.gui.label.keybind_settings.activate_on",    "malilib.config.comment.keybind_settings.activate_on");
+        this.cfgContext        = new OptionListConfig<>("", defaultSettings.getContext(),    Context.VALUES, "malilib.gui.label.keybind_settings.context",          "malilib.config.comment.keybind_settings.context");
+        this.cfgCancel         = new OptionListConfig<>("", defaultSettings.getCancelCondition(), CancelCondition.VALUES, "malilib.gui.label.keybind_settings.cancel_further",  "malilib.config.comment.keybind_settings.cancel_further");
+        this.cfgMessageType    = new OptionListConfig<>("", defaultSettings.getMessageType(), InfoType.VALUES, "malilib.gui.label.keybind_settings.message_type",               "malilib.config.comment.keybind_settings.message_type");
         this.cfgAllowEmpty     = new BooleanConfig("", defaultSettings.getAllowEmpty(),     "malilib.gui.label.keybind_settings.allow_empty_keybind",       "malilib.config.comment.keybind_settings.allow_empty_keybind");
         this.cfgAllowExtra     = new BooleanConfig("", defaultSettings.getAllowExtraKeys(), "malilib.gui.label.keybind_settings.allow_extra_keys",          "malilib.config.comment.keybind_settings.allow_extra_keys");
         this.cfgOrderSensitive = new BooleanConfig("", defaultSettings.isOrderSensitive(),  "malilib.gui.label.keybind_settings.order_sensitive",           "malilib.config.comment.keybind_settings.order_sensitive");
@@ -83,18 +86,20 @@ public class KeybindSettingsScreen extends BaseScreen
 
         KeyBindSettings settings = this.keybind.getSettings();
         this.cfgActivateOn.setValue(settings.getActivateOn());
-        this.cfgContext.setValue(settings.getContext());
         this.cfgAllowEmpty.setValue(settings.getAllowEmpty());
         this.cfgAllowExtra.setValue(settings.getAllowExtraKeys());
-        this.cfgOrderSensitive.setValue(settings.isOrderSensitive());
+        this.cfgCancel.setValue(settings.getCancelCondition());
+        this.cfgContext.setValue(settings.getContext());
         this.cfgExclusive.setValue(settings.isExclusive());
         this.cfgFirstOnly.setValue(settings.getFirstOnly());
-        this.cfgCancel.setValue(settings.getCancelCondition());
+        this.cfgOrderSensitive.setValue(settings.isOrderSensitive());
+        this.cfgMessageType.setValue(settings.getMessageType());
         this.cfgPriority.setValue(settings.getPriority());
         this.cfgShowToast.setValue(settings.getShowToast());
 
         this.cfgActivateOn.setValueChangeCallback((nv, ov) -> this.initGui());
         this.cfgContext.setValueChangeCallback((nv, ov) -> this.initGui());
+        this.cfgMessageType.setValueChangeCallback((nv, ov) -> this.initGui());
         ValueChangeCallback<Boolean> cbb = (nv, ov) -> this.initGui();
         this.cfgAllowEmpty.setValueChangeCallback(cbb);
         this.cfgAllowExtra.setValueChangeCallback(cbb);
@@ -106,7 +111,7 @@ public class KeybindSettingsScreen extends BaseScreen
 
         this.configList = ImmutableList.of(this.cfgActivateOn, this.cfgContext, this.cfgCancel, this.cfgAllowEmpty,
                                            this.cfgAllowExtra, this.cfgOrderSensitive, this.cfgExclusive,
-                                           this.cfgFirstOnly, this.cfgShowToast, this.cfgPriority);
+                                           this.cfgFirstOnly, this.cfgShowToast, this.cfgMessageType, this.cfgPriority);
         this.labelWidth = this.getMaxDisplayNameLength(this.configList);
         this.configWidth = 100;
 
@@ -202,9 +207,11 @@ public class KeybindSettingsScreen extends BaseScreen
         int priority = this.cfgPriority.getIntegerValue();
         boolean showToast = this.cfgShowToast.getBooleanValue();
         CancelCondition cancel = this.cfgCancel.getValue();
+        InfoType messageType = this.cfgMessageType.getValue();
 
         KeyBindSettings settingsNew = KeyBindSettings.create(context, activateOn, allowExtraKeys, orderSensitive,
-                                                             exclusive, cancel, allowEmpty, priority, firstOnly, showToast);
+                                                             exclusive, cancel, allowEmpty, priority, firstOnly,
+                                                             showToast, messageType);
         this.keybind.setSettings(settingsNew);
 
         super.onGuiClosed();

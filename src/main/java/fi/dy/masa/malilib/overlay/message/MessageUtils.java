@@ -14,7 +14,6 @@ import fi.dy.masa.malilib.action.ActionContext;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.config.value.InfoType;
 import fi.dy.masa.malilib.gui.position.ScreenLocation;
-import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.overlay.InfoOverlay;
 import fi.dy.masa.malilib.overlay.InfoWidgetManager;
@@ -219,15 +218,20 @@ public class MessageUtils
         printBooleanConfigToggleMessage(config, null);
     }
 
-    public static void printBooleanConfigToggleMessage(BooleanConfig config, @Nullable Function<BooleanConfig, String> messageFactory)
+    public static void printBooleanConfigToggleMessage(BooleanConfig config,
+                                                       @Nullable Function<BooleanConfig, String> messageFactory)
     {
-        // TODO add a system for overriding the default output type per-config
+        printBooleanConfigToggleMessage(InfoType.CUSTOM_HOTBAR, config, messageFactory);
+    }
+
+    public static void printBooleanConfigToggleMessage(InfoType messageType, BooleanConfig config,
+                                                       @Nullable Function<BooleanConfig, String> messageFactory)
+    {
         String message = getBooleanConfigToggleMessage(config, messageFactory);
 
         if (org.apache.commons.lang3.StringUtils.isBlank(message) == false)
         {
-            InfoType type = GuiUtils.getCurrentScreen() != null ? InfoType.MESSAGE_OVERLAY : InfoType.CUSTOM_HOTBAR;
-            addMessage(type, Message.INFO, 5000, message);
+            addMessage(messageType, Message.INFO, 5000, message);
         }
     }
 

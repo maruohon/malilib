@@ -16,6 +16,7 @@ import fi.dy.masa.malilib.action.Action;
 import fi.dy.masa.malilib.action.ActionContext;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.config.option.OptionListConfig;
+import fi.dy.masa.malilib.config.value.InfoType;
 import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.input.KeyAction;
 import fi.dy.masa.malilib.input.KeyBind;
@@ -35,7 +36,7 @@ public class AdjustableValueHotkeyCallback implements HotkeyCallback
     @Nullable protected final IntConsumer valueAdjuster;
     @Nullable protected BooleanSupplier enabledCondition;
     @Nullable protected HotkeyCallback callback;
-    @Nullable protected Action toggleAction;
+    @Nullable protected Action keyAction;
     @Nullable protected Function<BooleanConfig, String> toggleMessageFactory;
     protected boolean reverseDirection;
     protected boolean triggerAlwaysOnRelease;
@@ -56,9 +57,9 @@ public class AdjustableValueHotkeyCallback implements HotkeyCallback
         this.valueAdjuster = valueAdjuster;
     }
 
-    public AdjustableValueHotkeyCallback setToggleAction(@Nullable Action toggleAction)
+    public AdjustableValueHotkeyCallback setKeyAction(@Nullable Action keyAction)
     {
-        this.toggleAction = toggleAction;
+        this.keyAction = keyAction;
         return this;
     }
 
@@ -126,14 +127,14 @@ public class AdjustableValueHotkeyCallback implements HotkeyCallback
         {
             return this.callback.onKeyAction(action, key);
         }
-        else if (this.toggleAction != null)
+        else if (this.keyAction != null)
         {
-            return this.toggleAction.execute(new ActionContext());
+            return this.keyAction.execute(new ActionContext());
         }
         else if (this.toggleConfig != null)
         {
             this.toggleConfig.toggleBooleanValue();
-            this.printToggleMessage();
+            this.printToggleMessage(key);
             return ActionResult.SUCCESS;
         }
 
@@ -145,9 +146,10 @@ public class AdjustableValueHotkeyCallback implements HotkeyCallback
         return this.enabledCondition == null || this.enabledCondition.getAsBoolean();
     }
 
-    protected void printToggleMessage()
+    protected void printToggleMessage(KeyBind key)
     {
-        MessageUtils.printBooleanConfigToggleMessage(this.toggleConfig, this.toggleMessageFactory);
+        InfoType messageType = key.getSettings().getMessageType();
+        MessageUtils.printBooleanConfigToggleMessage(messageType, this.toggleConfig, this.toggleMessageFactory);
     }
 
     protected ActionResult adjustValue(int amount)
