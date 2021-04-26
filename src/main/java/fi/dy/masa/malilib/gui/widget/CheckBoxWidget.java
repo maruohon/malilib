@@ -21,7 +21,7 @@ public class CheckBoxWidget extends InteractableWidget
     {
         super(x, y, 0, 0);
 
-        this.text = translationKey != null ? StyledTextLine.translatedOf(translationKey) : null;
+        this.text = translationKey != null ? StyledTextLine.translate(translationKey) : null;
         this.iconUnchecked = iconUnchecked;
         this.iconChecked = iconChecked;
         this.storage = new BooleanConfig("", false);

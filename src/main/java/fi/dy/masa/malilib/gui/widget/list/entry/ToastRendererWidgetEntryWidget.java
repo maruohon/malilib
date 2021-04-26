@@ -17,7 +17,7 @@ public class ToastRendererWidgetEntryWidget extends BaseInfoRendererWidgetEntryW
         this.canConfigure = true;
         this.canRemove = true;
 
-        this.setText(StyledTextLine.translatedOf("malilib.gui.hover.toast_renderer_entry_name",
-                                                 data.getName(), data.getScreenLocation().getDisplayName()));
+        this.setText(StyledTextLine.translate("malilib.gui.hover.toast_renderer_entry_name",
+                                              data.getName(), data.getScreenLocation().getDisplayName()));
     }
 }

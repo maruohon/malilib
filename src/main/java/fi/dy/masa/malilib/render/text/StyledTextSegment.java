@@ -16,7 +16,8 @@ public class StyledTextSegment
     public final int glyphCount;
     public final int renderWidth;
 
-    public StyledTextSegment(ResourceLocation texture, TextStyle style, ImmutableList<Glyph> glyphs, String displayText, String originalString)
+    public StyledTextSegment(ResourceLocation texture, TextStyle style, ImmutableList<Glyph> glyphs,
+                             String displayText, String originalString)
     {
         this.texture = texture;
         this.style = style;
@@ -121,6 +122,11 @@ public class StyledTextSegment
         return this;
     }
 
+    public StyledTextSegment withStyle(TextStyle style)
+    {
+        return new StyledTextSegment(this.texture, style, this.glyphs, this.displayText, this.originalString);
+    }
+
     @Override
     public String toString()
     {
@@ -129,7 +135,7 @@ public class StyledTextSegment
 
     public String getDebugString()
     {
-        return String.format("StyledTextSegment{displayText='%s', originalString='%s', style='%s', glyphCount=%d, renderWidth=%d}",
+        return String.format("StyledTextSegment{displayText='%s', originalString='%s', style=%s, glyphCount=%d, renderWidth=%d}",
                              this.displayText, this.originalString, this.style.toString(), this.glyphCount, this.renderWidth);
     }
 

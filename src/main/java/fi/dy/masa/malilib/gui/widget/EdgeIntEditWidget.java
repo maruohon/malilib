@@ -22,7 +22,7 @@ public class EdgeIntEditWidget extends ContainerWidget
         super(x, y, width, height);
 
         this.value = value;
-        this.centerText = centerText != null ? StyledTextLine.translatedOf(centerText) : null;
+        this.centerText = centerText != null ? StyledTextLine.translate(centerText) : null;
         this.widgetWidth = 80;
         this.widgetHeight = 16;
 

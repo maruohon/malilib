@@ -59,14 +59,12 @@ public class StyledText
 
     public static StyledText ofStrings(List<String> strings)
     {
-        ImmutableList.Builder<StyledTextLine> builder = ImmutableList.builder();
+        return new StyledText(StyledTextLine.ofStrings(strings));
+    }
 
-        for (String str : strings)
-        {
-            builder.addAll(StyledText.of(str).lines);
-        }
-
-        return new StyledText(builder.build());
+    public static StyledText translatedOfStrings(List<String> strings)
+    {
+        return new StyledText(StyledTextLine.translatedOfStrings(strings));
     }
 
     public static StyledText translatedOf(String translationKey, Object... args)

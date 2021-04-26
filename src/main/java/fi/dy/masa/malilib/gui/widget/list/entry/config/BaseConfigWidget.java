@@ -20,7 +20,6 @@ import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.render.text.TextStyle;
 import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.StringUtils;
-import fi.dy.masa.malilib.util.data.Color4f;
 
 public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataListEntryWidget<CFG>
 {
@@ -42,7 +41,7 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
         String nameLabel = config.getDisplayName();
         @Nullable String ownerLabel = this.ctx.getListWidget().getModNameAndCategoryPrefix(originalListIndex);
 
-        this.ownerText = ownerLabel != null ? StyledTextLine.rawWithStyle(ownerLabel, TextStyle.normal(Color4f.fromColor(0xFF686868))) : null;
+        this.ownerText = ownerLabel != null ? StyledTextLine.rawWithStyle(ownerLabel, TextStyle.normal(0xFF686868)) : null;
         this.nameText = StyledTextLine.of(nameLabel);
         this.configOwnerAndNameLabelWidget = new LabelWidget(x, y, this.getMaxLabelWidth(), height, 0xFFF0F0F0);
 

@@ -30,9 +30,9 @@ public class CustomHotkeyDefinitionEntryWidget extends BaseDataListEntryWidget<C
 
         this.screen = screen;
 
-        StyledTextLine name = StyledTextLine.translatedOf("malilib.gui.label.custom_hotkey_name", data.getName());
-        TextStyle actionStyle = TextStyle.builder().withColor(0xFFC0C0C0).build();
-        StyledTextLine actionName = StyledTextLine.of(data.getAction().getWidgetDisplayName(), actionStyle);
+        StyledTextLine name = StyledTextLine.translate("malilib.gui.label.custom_hotkey_name", data.getName());
+        TextStyle actionStyle = TextStyle.normal(0xFFC0C0C0);
+        StyledTextLine actionName = data.getAction().getWidgetDisplayName().withStartingStyle(actionStyle);
 
         this.nameLabelWidget = new LabelWidget(x, y, -1, height, 0xFFF0F0F0);
         this.nameLabelWidget.getPadding().setTop(2).setLeft(4);

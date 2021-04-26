@@ -109,6 +109,18 @@ public class StyledTextLine
         return this.segments.isEmpty() ? TextStyle.DEFAULT : this.segments.get(this.segments.size() - 1).style;
     }
 
+    public StyledTextLine withStartingStyle(TextStyle style)
+    {
+        ImmutableList.Builder<StyledTextSegment> builder = ImmutableList.builder();
+
+        for (StyledTextSegment segment : this.segments)
+        {
+            builder.add(segment.withStyle(style.merge(segment.style)));
+        }
+
+        return new StyledTextLine(builder.build());
+    }
+
     @Override
     public String toString()
     {
@@ -119,6 +131,22 @@ public class StyledTextLine
     {
         return String.format("StyledTextLine{displayText='%s', originalString='%s', segmentCount=%d, glyphCount=%d, renderWidth=%d}",
                              this.displayText, this.originalString, this.segments.size(), this.glyphCount, this.renderWidth);
+    }
+
+    public String getDebugStringWithSegments()
+    {
+        StringBuilder sb = new StringBuilder();
+        int i = 0;
+
+        for (StyledTextSegment segment : this.segments)
+        {
+            if (i > 0) { sb.append(", "); }
+            sb.append(segment.getDebugString());
+            ++i;
+        }
+
+        return String.format("StyledTextLine{displayText='%s', originalString='%s', segmentCount=%d, glyphCount=%d, renderWidth=%d, segments=[%s]}",
+                             this.displayText, this.originalString, this.segments.size(), this.glyphCount, this.renderWidth, sb.toString());
     }
 
     @Override
@@ -142,7 +170,7 @@ public class StyledTextLine
      * If the string has line breaks, the separate lines will be joined
      * and the line breaks will be replaced by the string '\n'.
      */
-    public static StyledTextLine translatedOf(String translationKey, Object... args)
+    public static StyledTextLine translate(String translationKey, Object... args)
     {
         return of(StringUtils.translate(translationKey, args));
     }
@@ -153,7 +181,7 @@ public class StyledTextLine
      * and the line breaks will be replaced by the string '\n'.
      * Uses the given startingStyle as the style builder base style.
      */
-    public static StyledTextLine translatedOf(String translationKey, TextStyle startingStyle, Object... args)
+    public static StyledTextLine translate(String translationKey, TextStyle startingStyle, Object... args)
     {
         return of(StringUtils.translate(translationKey, args), startingStyle);
     }
@@ -179,6 +207,30 @@ public class StyledTextLine
     {
         StyledText text = StyledText.of(str, startingStyle);
         return joinLines(text);
+    }
+
+    public static ImmutableList<StyledTextLine> ofStrings(List<String> strings)
+    {
+        ImmutableList.Builder<StyledTextLine> builder = ImmutableList.builder();
+
+        for (String str : strings)
+        {
+            builder.addAll(StyledText.of(str).lines);
+        }
+
+        return builder.build();
+    }
+
+    public static ImmutableList<StyledTextLine> translatedOfStrings(List<String> strings)
+    {
+        ImmutableList.Builder<StyledTextLine> builder = ImmutableList.builder();
+
+        for (String str : strings)
+        {
+            builder.addAll(StyledText.translatedOf(str).lines);
+        }
+
+        return builder.build();
     }
 
     public static StyledTextLine joinLines(StyledText text)

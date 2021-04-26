@@ -36,8 +36,8 @@ public class BooleanConfigStatusWidget extends BaseConfigStatusIndicatorWidget<B
     {
         super(config, configOnTab);
 
-        this.textOn  = StyledTextLine.translatedOf("malilib.label.on.caps", STYLE_ON);
-        this.textOff = StyledTextLine.translatedOf("malilib.label.off.caps", STYLE_OFF);
+        this.textOn  = StyledTextLine.translate("malilib.label.on.caps", STYLE_ON);
+        this.textOff = StyledTextLine.translate("malilib.label.off.caps", STYLE_OFF);
         int sw = Math.max(this.textOn.renderWidth, this.textOff.renderWidth);
         sw += DefaultIcons.SLIDER_GREEN.getWidth() + 6;
         this.sliderWidth = sw;
@@ -118,7 +118,7 @@ public class BooleanConfigStatusWidget extends BaseConfigStatusIndicatorWidget<B
         {
             String translationKey = this.lastValue ? "malilib.label.true" : "malilib.label.false";
             TextStyle style = this.lastValue ? STYLE_ON : STYLE_OFF;
-            this.valueDisplayText = StyledTextLine.translatedOf(translationKey, style);
+            this.valueDisplayText = StyledTextLine.translate(translationKey, style);
             this.booleanValueRenderWidth = this.valueDisplayText.renderWidth;
         }
         else if (this.renderStyle == Style.ON_OFF_SLIDER)

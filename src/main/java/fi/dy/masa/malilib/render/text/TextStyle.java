@@ -47,6 +47,39 @@ public class TextStyle
     }
 
     /**
+     * Merges the other style to this style.
+     * For the optional/nullable values this means that if other has the value defined,
+     * then that value will override the value (if any) from this instance.
+     * For the "normal" booleans such as bold and italic, if other has the property enabled,
+     * then it will be enabled, otherwise the value from this instance will be used.
+     */
+    public TextStyle merge(TextStyle other)
+    {
+        TextStyle.Builder builder = builder().fromStyle(this);
+
+        if (other.bold)                 { builder.withBold(true); }
+        if (other.italic)               { builder.withItalic(true); }
+        if (other.underline)            { builder.withUnderline(true); }
+        if (other.strikeThrough)        { builder.withStrikeThrough(true); }
+        if (other.random)               { builder.withRandom(true); }
+        if (other.color != null)        { builder.withColor(other.color); }
+        if (other.gradient != null)     { builder.withGradient(other.gradient); }
+        if (other.shadow != null)       { builder.withShadow(other.shadow); }
+
+        if (other.shadowColor != null)
+        {
+            builder.withShadowColor(other.shadowColor);
+        }
+        // Don't keep the old shadow color if the main color got changed
+        else if (this.shadowColor != null && other.color != null)
+        {
+            builder.withShadowColor(null);
+        }
+
+        return builder.build();
+    }
+
+    /**
      * Use the provided color as the color and/or the shadow color,
      * if they are not set already.
      */
@@ -80,24 +113,24 @@ public class TextStyle
                              this.shadow, this.color, this.shadowColor, this.gradient);
     }
 
-    public static TextStyle normal(Color4f color)
+    public static TextStyle normal(int color)
     {
-        return new TextStyle(color, false, false, false);
+        return new TextStyle(Color4f.fromColor(color), false, false, false);
     }
 
-    public static TextStyle bold(Color4f color)
+    public static TextStyle bold(int color)
     {
-        return new TextStyle(color, true, false, false);
+        return new TextStyle(Color4f.fromColor(color), true, false, false);
     }
 
-    public static TextStyle italic(Color4f color)
+    public static TextStyle italic(int color)
     {
-        return new TextStyle(color, false, true, false);
+        return new TextStyle(Color4f.fromColor(color), false, true, false);
     }
 
-    public static TextStyle underlined(Color4f color)
+    public static TextStyle underlined(int color)
     {
-        return new TextStyle(color, false, false, true);
+        return new TextStyle(Color4f.fromColor(color), false, false, true);
     }
 
     @Nullable
