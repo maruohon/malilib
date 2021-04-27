@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
+import fi.dy.masa.malilib.config.util.ConfigOverrideUtils;
 import fi.dy.masa.malilib.config.util.ConfigUtils;
 import fi.dy.masa.malilib.event.ClientWorldChangeHandler;
 
@@ -53,12 +54,14 @@ public class ClientWorldChangeEventDispatcherImpl implements ClientWorldChangeEv
         // Save all the configs when exiting a world
         if (worldAfter == null && worldBefore != null)
         {
+            ConfigOverrideUtils.resetConfigOverrides();
             ConfigUtils.saveAllConfigsToFileIfDirty();
         }
         // (Re-)Load all the configs from file when entering a world
         else if (worldBefore == null && worldAfter != null)
         {
             ConfigUtils.loadAllConfigsFromFile();
+            ConfigOverrideUtils.applyConfigOverrides();
         }
 
         if (this.worldChangeHandlers.isEmpty() == false)

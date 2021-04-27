@@ -106,6 +106,7 @@ public class MaLiLibConfigs
     {
         public static final KeyBindSettings DBG_KS = KeyBindSettings.create(Context.GUI, KeyAction.PRESS, true, false, false, CancelCondition.NEVER, true);
 
+        public static final BooleanConfig DEBUG_MESSAGES            = new BooleanConfig("debugMessages", false);
         public static final BooleanConfig GUI_DEBUG                 = new BooleanConfig("guiDebug", false);
         public static final BooleanConfig GUI_DEBUG_ALL             = new BooleanConfig("guiDebugAll", true);
         public static final BooleanConfig GUI_DEBUG_INFO_ALWAYS     = new BooleanConfig("guiDebugInfoAlways", false);
@@ -116,6 +117,7 @@ public class MaLiLibConfigs
         public static final BooleanConfig KEYBIND_DEBUG_TOAST       = new BooleanConfig("keybindDebugToast", true);
 
         public static final ImmutableList<ConfigOption<?>> OPTIONS = ImmutableList.of(
+                DEBUG_MESSAGES,
                 GUI_DEBUG,
                 GUI_DEBUG_ALL,
                 GUI_DEBUG_INFO_ALWAYS,

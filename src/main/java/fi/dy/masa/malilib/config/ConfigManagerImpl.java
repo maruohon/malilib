@@ -53,11 +53,12 @@ public class ConfigManagerImpl implements ConfigManager
         return false;
     }
 
-    /**
-     * 
-     * NOT PUBLIC API - DO NOT CALL
-     */
     public List<ModConfig> getAllModConfigs()
+    {
+        return new ArrayList<>(this.configHandlers.values());
+    }
+
+    public List<ModConfig> getAllModConfigsSorted()
     {
         ArrayList<ModConfig> list = new ArrayList<>(this.configHandlers.values());
         list.sort(Comparator.comparing(v -> v.getModInfo().getModName()));
