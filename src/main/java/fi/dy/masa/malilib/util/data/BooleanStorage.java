@@ -2,7 +2,15 @@ package fi.dy.masa.malilib.util.data;
 
 public interface BooleanStorage
 {
+    /**
+     * @return the current value
+     */
     boolean getBooleanValue();
 
-    void setBooleanValue(boolean value);
+    /**
+     * Sets the value.
+     * @param value the new value
+     * @return true if the value changed (NOT the new value!)
+     */
+    boolean setBooleanValue(boolean value);
 }

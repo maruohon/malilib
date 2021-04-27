@@ -3,9 +3,11 @@ package fi.dy.masa.malilib.config.option;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.BooleanStorage;
 
-public class BooleanConfig extends BaseGenericConfig<Boolean> implements BooleanStorage
+public class BooleanConfig extends BaseGenericConfig<Boolean> implements BooleanStorage, OverridableConfig<Boolean>
 {
+    protected Boolean effectiveValue;
     protected boolean booleanValue;
+    protected boolean effectiveBooleanValue;
     protected boolean hasOverride;
     protected boolean overrideValue;
 
@@ -24,28 +26,44 @@ public class BooleanConfig extends BaseGenericConfig<Boolean> implements Boolean
         super(name, defaultValue, name, prettyName, comment);
 
         this.booleanValue = defaultValue;
-    }
-
-    @Override
-    public boolean getBooleanValue()
-    {
-        return this.hasOverride ? this.overrideValue : this.booleanValue;
-    }
-
-    @Override
-    public void setBooleanValue(boolean value)
-    {
-        if (this.locked == false)
-        {
-            this.booleanValue = value;
-            super.setValue(value);
-        }
+        this.effectiveBooleanValue = defaultValue;
+        this.effectiveValue = defaultValue;
     }
 
     @Override
     public Boolean getValue()
     {
-        return this.hasOverride ? this.overrideValue : this.value;
+        return this.effectiveValue;
+    }
+
+    @Override
+    public boolean setValue(Boolean newValue)
+    {
+        return this.setBooleanValue(newValue);
+    }
+
+    @Override
+    public boolean getBooleanValue()
+    {
+        return this.effectiveBooleanValue;
+    }
+
+    @Override
+    public boolean setBooleanValue(boolean newValue)
+    {
+        if (this.isLocked() == false)
+        {
+            boolean changed = this.booleanValue != newValue;
+
+            this.booleanValue = newValue;
+            // Update the effective value before the value change callback is called from the super method
+            this.updateEffectiveValue();
+            super.setValue(newValue);
+
+            return changed;
+        }
+
+        return false;
     }
 
     public void toggleBooleanValue()
@@ -53,16 +71,10 @@ public class BooleanConfig extends BaseGenericConfig<Boolean> implements Boolean
         this.setBooleanValue(! this.booleanValue);
     }
 
-    @Override
-    public boolean setValue(Boolean newValue)
+    protected void updateEffectiveValue()
     {
-        if (this.locked == false)
-        {
-            this.booleanValue = newValue;
-            return super.setValue(newValue);
-        }
-
-        return false;
+        this.effectiveBooleanValue = this.hasOverride ? this.overrideValue : this.booleanValue;
+        this.effectiveValue = this.effectiveBooleanValue;
     }
 
     @Override
@@ -71,15 +83,27 @@ public class BooleanConfig extends BaseGenericConfig<Boolean> implements Boolean
         return super.isLocked() || this.hasOverride;
     }
 
-    public boolean isOverridden()
+    @Override
+    public boolean hasOverride()
     {
         return this.hasOverride;
     }
 
-    public void setOverride(boolean overrideEnabled, boolean overrideValue)
+    @Override
+    public void enableOverrideWithValue(Boolean overrideValue)
     {
-        this.hasOverride = overrideEnabled;
+        this.hasOverride = true;
         this.overrideValue = overrideValue;
+        this.updateEffectiveValue();
+        this.rebuildLockOverrideMessages();
+    }
+
+    @Override
+    public void disableOverride()
+    {
+        this.hasOverride = false;
+        this.updateEffectiveValue();
+        this.rebuildLockOverrideMessages();
     }
 
     @Override
@@ -97,6 +121,7 @@ public class BooleanConfig extends BaseGenericConfig<Boolean> implements Boolean
     public void loadValueFromConfig(Boolean value)
     {
         this.booleanValue = value;
+        this.updateEffectiveValue();
         super.loadValueFromConfig(value);
     }
 }

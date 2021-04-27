@@ -166,5 +166,6 @@ public abstract class BaseConfigOption<T> extends BaseConfig implements ConfigOp
     public void setLocked(boolean isLocked)
     {
         this.locked = isLocked;
+        this.rebuildLockOverrideMessages();
     }
 }

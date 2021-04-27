@@ -270,7 +270,7 @@ public class MessageUtils
         boolean newValue = config.getBooleanValue();
         String message;
 
-        if (config.isOverridden())
+        if (config.hasOverride())
         {
             String msgKey = newValue ? "malilib.message.config_overridden_on" : "malilib.message.config_overridden_off";
             message = StringUtils.translate(msgKey, config.getPrettyName());

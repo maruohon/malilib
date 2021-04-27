@@ -49,9 +49,9 @@ public abstract class BaseGenericConfig<T> extends BaseConfigOption<T>
 
     public boolean setValue(T newValue)
     {
-        T oldValue = this.getValue();
+        T oldValue = this.value;
 
-        if (this.locked == false && oldValue.equals(newValue) == false)
+        if (this.isLocked() == false && oldValue.equals(newValue) == false)
         {
             this.value = newValue;
 
