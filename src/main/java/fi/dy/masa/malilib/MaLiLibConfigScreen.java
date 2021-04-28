@@ -3,15 +3,16 @@ package fi.dy.masa.malilib;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.gui.GuiScreen;
-import fi.dy.masa.malilib.gui.ActionListScreen;
+import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.BaseScreenTab;
 import fi.dy.masa.malilib.gui.BaseTabbedScreen;
 import fi.dy.masa.malilib.gui.CustomHotkeysEditScreen;
+import fi.dy.masa.malilib.gui.InfoRendererWidgetListScreen;
 import fi.dy.masa.malilib.gui.ScreenTab;
+import fi.dy.masa.malilib.gui.ActionListScreen;
 import fi.dy.masa.malilib.gui.config.BaseConfigScreen;
 import fi.dy.masa.malilib.gui.config.BaseConfigTab;
 import fi.dy.masa.malilib.gui.config.ConfigTab;
-import fi.dy.masa.malilib.gui.InfoRendererWidgetListScreen;
 import fi.dy.masa.malilib.gui.widget.list.entry.ConfigStatusIndicatorContainerEntryWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.ToastRendererWidgetEntryWidget;
 import fi.dy.masa.malilib.overlay.widget.ConfigStatusIndicatorContainerWidget;
@@ -43,7 +44,6 @@ public class MaLiLibConfigScreen
             GENERIC,
             INFO,
             HOTKEYS,
-            DEBUG_STUFF_TAB,
             DEBUG,
             ACTIONS,
             CUSTOM_HOTKEYS,
@@ -51,12 +51,16 @@ public class MaLiLibConfigScreen
             TOAST
     );
 
+    public static void open()
+    {
+        BaseScreen.openScreen(create(null));
+    }
+
     public static BaseConfigScreen create(@Nullable GuiScreen currentScreen)
     {
-        return new BaseConfigScreen(MOD_INFO, null, CONFIG_TABS, GENERIC, "malilib.gui.title.configs");
-
-    public static BaseTabbedScreen createConfigStatusIndicatorScreen(@Nullable GuiScreen currentScreen)
-        return new BaseConfigScreen(MOD_INFO, currentScreen, ALL_TABS, GENERIC, "malilib.gui.title.configs");
+        // The parent screen should not be set here, to prevent infinite recursion via
+        // the call to the parent's setWorldAndResolution -> initScreen -> switch tab -> etc.
+        return new BaseConfigScreen(MOD_INFO, null, ALL_TABS, GENERIC, "malilib.gui.title.configs");
     }
 
     public static BaseTabbedScreen createConfigStatusIndicatorListScreen(@Nullable GuiScreen currentScreen)
