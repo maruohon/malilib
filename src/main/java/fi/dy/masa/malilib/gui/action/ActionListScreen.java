@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.gui;
+package fi.dy.masa.malilib.gui.action;
 
 import java.util.List;
 import java.util.Set;
@@ -11,6 +11,11 @@ import fi.dy.masa.malilib.action.ActionRegistryImpl;
 import fi.dy.masa.malilib.action.AliasAction;
 import fi.dy.masa.malilib.action.MacroAction;
 import fi.dy.masa.malilib.action.NamedAction;
+import fi.dy.masa.malilib.gui.BaseMultiListScreen;
+import fi.dy.masa.malilib.gui.BaseScreen;
+import fi.dy.masa.malilib.gui.BaseTabbedScreen;
+import fi.dy.masa.malilib.gui.DualTextInputScreen;
+import fi.dy.masa.malilib.gui.TextInputScreen;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;

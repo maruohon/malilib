@@ -9,7 +9,7 @@ import fi.dy.masa.malilib.gui.BaseTabbedScreen;
 import fi.dy.masa.malilib.gui.CustomHotkeysEditScreen;
 import fi.dy.masa.malilib.gui.InfoRendererWidgetListScreen;
 import fi.dy.masa.malilib.gui.ScreenTab;
-import fi.dy.masa.malilib.gui.ActionListScreen;
+import fi.dy.masa.malilib.gui.action.ActionListScreen;
 import fi.dy.masa.malilib.gui.config.BaseConfigScreen;
 import fi.dy.masa.malilib.gui.config.BaseConfigTab;
 import fi.dy.masa.malilib.gui.config.ConfigTab;

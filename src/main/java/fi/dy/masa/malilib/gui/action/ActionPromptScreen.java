@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.gui;
+package fi.dy.masa.malilib.gui.action;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +8,8 @@ import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.action.ActionContext;
 import fi.dy.masa.malilib.action.ActionList;
 import fi.dy.masa.malilib.action.NamedAction;
+import fi.dy.masa.malilib.gui.BaseListScreen;
+import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.CheckBoxWidget;
