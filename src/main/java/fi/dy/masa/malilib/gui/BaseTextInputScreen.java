@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.gui;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import net.minecraft.client.gui.GuiScreen;
+import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.listener.EventListener;
@@ -84,7 +85,7 @@ public abstract class BaseTextInputScreen extends BaseScreen
     protected void closeScreenIfValueApplied()
     {
         // Only close the GUI if the value was successfully applied
-        if (this.applyValue(this.textField.getText()))
+        if (this.applyValue(this.textField.getText()) && GuiUtils.getCurrentScreen() == this)
         {
             this.closeScreen(true);
         }

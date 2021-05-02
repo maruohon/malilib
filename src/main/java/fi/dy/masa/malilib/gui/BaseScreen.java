@@ -235,11 +235,11 @@ public abstract class BaseScreen extends GuiScreen
     {
         if (showParent)
         {
-            this.mc.displayGuiScreen(this.parent);
+            openScreen(this.parent);
         }
         else
         {
-            this.mc.displayGuiScreen(null);
+            openScreen(null);
         }
     }
 
@@ -852,7 +852,7 @@ public abstract class BaseScreen extends GuiScreen
     {
         screen.setPopupGuiZLevelBasedOn(GuiUtils.getCurrentScreen());
         screen.setShouldRenderParent(shouldRenderParent);
-        Minecraft.getMinecraft().displayGuiScreen(screen);
+        openScreen(screen);
         return true;
     }
 
