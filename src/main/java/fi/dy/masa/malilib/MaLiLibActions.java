@@ -7,6 +7,7 @@ import fi.dy.masa.malilib.action.NamedParameterizedAction;
 import fi.dy.masa.malilib.action.ParameterizedAction;
 import fi.dy.masa.malilib.config.util.ConfigUtils;
 import fi.dy.masa.malilib.gui.action.ActionPromptScreen;
+import fi.dy.masa.malilib.gui.action.ActionWidgetScreen;
 import fi.dy.masa.malilib.input.callback.AdjustableValueHotkeyCallback;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.overlay.message.MessageUtils;
@@ -22,6 +23,7 @@ public class MaLiLibActions
     {
         register("addMessage", MessageUtils::addMessageAction);
         register("addToast", MessageUtils::addToastAction);
+        register("openActionWidgetScreen", ActionWidgetScreen::openActionWidgetScreen);
         register("runCommand", ActionUtils::runVanillaCommand);
         register("switchConfigProfile", ConfigUtils::switchConfigProfile);
     }

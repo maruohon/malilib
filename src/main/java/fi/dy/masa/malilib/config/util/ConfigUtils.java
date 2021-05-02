@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import net.minecraft.util.text.TextFormatting;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.action.ActionContext;
+import fi.dy.masa.malilib.action.ActionExecutionWidgetManager;
 import fi.dy.masa.malilib.action.ActionRegistry;
 import fi.dy.masa.malilib.action.ActionRegistryImpl;
 import fi.dy.masa.malilib.config.ConfigManager;
@@ -90,6 +91,7 @@ public class ConfigUtils
     {
         ((ConfigManagerImpl) ConfigManager.INSTANCE).loadAllConfigs();
         ((ActionRegistryImpl) ActionRegistry.INSTANCE).loadFromFile();
+        ActionExecutionWidgetManager.INSTANCE.loadFromFile();
         CustomHotkeyManager.INSTANCE.loadFromFile();
         InfoWidgetManager.INSTANCE.loadFromFile();
         HotkeyManager.INSTANCE.updateUsedKeys();
@@ -120,6 +122,7 @@ public class ConfigUtils
             {
                 ((ConfigManagerImpl) ConfigManager.INSTANCE).saveAllConfigs();
                 ((ActionRegistryImpl) ActionRegistry.INSTANCE).saveToFile();
+                ActionExecutionWidgetManager.INSTANCE.saveToFile();
                 CustomHotkeyManager.INSTANCE.saveToFile();
                 InfoWidgetManager.INSTANCE.saveToFile();
             }

@@ -2,6 +2,8 @@ package fi.dy.masa.malilib.util.data;
 
 public class Vec2i
 {
+    public static final Vec2i ZERO = new Vec2i(0, 0);
+
     public final int x;
     public final int y;
 
