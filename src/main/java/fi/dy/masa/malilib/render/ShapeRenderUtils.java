@@ -3,7 +3,6 @@ package fi.dy.masa.malilib.render;
 import org.lwjgl.opengl.GL11;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
@@ -23,15 +22,36 @@ public class ShapeRenderUtils
         renderRectangle(x, y, z, 1, height, color);
     }
 
+    public static void renderGrid(int x, int y, float z, int width, int height,
+                                  int gridInterval, int lineWidth, int color)
+    {
+        BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR, false);
+
+        renderGrid(x, y, z, width, height, gridInterval, lineWidth, color, buffer);
+
+        RenderUtils.drawBuffer();
+    }
+
+    public static void renderGrid(int x, int y, float z, int width, int height,
+                                  int gridInterval, int lineWidth, int color, BufferBuilder buffer)
+    {
+        int endX = x + width;
+        int endY = y + height;
+
+        for (int tmpX = x; tmpX <= endX; tmpX += gridInterval)
+        {
+            renderRectangle(tmpX, y, z, lineWidth, height, color, buffer);
+        }
+
+        for (int tmpY = y; tmpY <= endY; tmpY += gridInterval)
+        {
+            renderRectangle(x, tmpY, z - 0.001f, width, lineWidth, color, buffer);
+        }
+    }
+
     public static void renderOutlinedRectangle(int x, int y, float z, int width, int height, int colorBg, int colorBorder)
     {
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
-
-        GlStateManager.disableTexture2D();
-        RenderUtils.setupBlend();
-
-        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+        BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR, false);
 
         // Draw the background
         renderRectangle(x + 1, y + 1, z, width - 2, height - 2, colorBg, buffer);
@@ -39,26 +59,16 @@ public class ShapeRenderUtils
         // Draw the border
         renderOutline(x, y, z, width, height, 1, colorBorder, buffer);
 
-        tessellator.draw();
-
-        GlStateManager.enableTexture2D();
+        RenderUtils.drawBuffer();
     }
 
     public static void renderOutline(int x, int y, float z, int width, int height, int borderWidth, int colorBorder)
     {
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
-
-        GlStateManager.disableTexture2D();
-        RenderUtils.setupBlend();
-
-        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+        BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR, false);
 
         renderOutline(x, y, z, width, height, borderWidth, colorBorder, buffer);
 
-        tessellator.draw();
-
-        GlStateManager.enableTexture2D();
+        RenderUtils.drawBuffer();
     }
 
     /**
@@ -75,20 +85,11 @@ public class ShapeRenderUtils
 
     public static void renderRectangle(int x, int y, float z, int width, int height, int color)
     {
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
-
-        GlStateManager.disableTexture2D();
-        RenderUtils.setupBlend();
-
-        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+        BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR, false);
 
         renderRectangle(x, y, z, width, height, color, buffer);
 
-        tessellator.draw();
-
-        GlStateManager.enableTexture2D();
-        GlStateManager.disableBlend();
+        RenderUtils.drawBuffer();
     }
 
     /**
@@ -122,16 +123,11 @@ public class ShapeRenderUtils
 
     public static void renderTexturedRectangle(int x, int y, float z, int u, int v, int width, int height)
     {
-        GlStateManager.enableTexture2D();
-        RenderUtils.setupBlend();
-
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
-        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+        BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX, true);
 
         renderTexturedRectangle(x, y, z, u, v, width, height, buffer);
 
-        tessellator.draw();
+        RenderUtils.drawBuffer();
     }
 
     /**
@@ -153,23 +149,17 @@ public class ShapeRenderUtils
     public static void renderGradientRectangle(int left, int top, int right, int bottom, double z,
                                                int startColor, int endColor)
     {
-        GlStateManager.disableTexture2D();
         GlStateManager.disableAlpha();
-        RenderUtils.setupBlend();
         GlStateManager.shadeModel(GL11.GL_SMOOTH);
 
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
-        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+        BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR, false);
 
         renderGradientRectangle(left, top, right, bottom, z, startColor, endColor, buffer);
 
-        tessellator.draw();
+        RenderUtils.drawBuffer();
 
         GlStateManager.shadeModel(GL11.GL_FLAT);
-        GlStateManager.disableBlend();
         GlStateManager.enableAlpha();
-        GlStateManager.enableTexture2D();
     }
 
     /**

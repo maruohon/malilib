@@ -179,9 +179,7 @@ public class RenderUtils
     public static void renderNineSplicedTexture(int x, int y, float z, int u, int v, int width, int height,
                                                 int texWidth, int texHeight, int edgeThickness)
     {
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
-        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+        BufferBuilder buffer = startBuffer(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX, true);
 
         int e = edgeThickness;
         
@@ -270,7 +268,7 @@ public class RenderUtils
             ShapeRenderUtils.renderTexturedRectangle(x + e, y + e, z, u + e, v + e, width - 2 * e, height - 2 * e, buffer); // center
         }
 
-        tessellator.draw();
+        drawBuffer();
     }
 
     public static void renderBlockTargetingOverlay(Entity entity, BlockPos pos, EnumFacing side, Vec3d hitVec,
@@ -487,16 +485,14 @@ public class RenderUtils
 
             bindTexture(fi.dy.masa.malilib.render.RenderUtils.TEXTURE_MAP_BACKGROUND);
 
-            Tessellator tessellator = Tessellator.getInstance();
-            BufferBuilder buffer = tessellator.getBuffer();
+            BufferBuilder buffer = startBuffer(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX, true);
 
-            buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
             buffer.pos(x1, y2, z).tex(0.0D, 1.0D).endVertex();
             buffer.pos(x2, y2, z).tex(1.0D, 1.0D).endVertex();
             buffer.pos(x2, y1, z).tex(1.0D, 0.0D).endVertex();
             buffer.pos(x1, y1, z).tex(0.0D, 0.0D).endVertex();
 
-            tessellator.draw();
+            drawBuffer();
 
             MapData mapdata = Items.FILLED_MAP.getMapData(stack, mc().world);
 
@@ -657,17 +653,16 @@ public class RenderUtils
 
         if (model.isBuiltInRenderer() == false)
         {
-            Tessellator tessellator = Tessellator.getInstance();
-            BufferBuilder bufferbuilder = tessellator.getBuffer();
-            bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.ITEM);
+            BufferBuilder buffer = startBuffer(GL11.GL_QUADS, DefaultVertexFormats.ITEM, true);
 
-            for (EnumFacing enumfacing : EnumFacing.values())
+            for (EnumFacing enumfacing : PositionUtils.ALL_DIRECTIONS)
             {
-                renderQuads(bufferbuilder, model.getQuads(state, enumfacing, 0L), state, color);
+                renderQuads(buffer, model.getQuads(state, enumfacing, 0L), state, color);
             }
 
-            renderQuads(bufferbuilder, model.getQuads(state, null, 0L), state, color);
-            tessellator.draw();
+            renderQuads(buffer, model.getQuads(state, null, 0L), state, color);
+
+            drawBuffer();
         }
 
         GlStateManager.popMatrix();
@@ -677,7 +672,7 @@ public class RenderUtils
     {
         for (BakedQuad quad : quads)
         {
-            renderQuad(renderer, quad, state, 0xFFFFFFFF);
+            renderQuad(renderer, quad, state, color);
         }
     }
 
