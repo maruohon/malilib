@@ -121,6 +121,16 @@ public class BackgroundWidget extends InteractableWidget
         return hovered && this.renderHoverBorder;
     }
 
+    protected EdgeInt getNormalBorderColor()
+    {
+        return this.borderColorNormal;
+    }
+
+    protected EdgeInt getHoveredBorderColor()
+    {
+        return this.borderColorHovered;
+    }
+
     @Override
     public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
@@ -148,11 +158,11 @@ public class BackgroundWidget extends InteractableWidget
     {
         if (this.shouldRenderHoverBorder(hovered, ctx))
         {
-            this.renderBorder(x, y, z, width, height, this.borderWidthHovered, this.borderColorHovered, ctx);
+            this.renderBorder(x, y, z, width, height, this.borderWidthHovered, this.getHoveredBorderColor(), ctx);
         }
         else if (this.shouldRenderNormalBorder(hovered, ctx))
         {
-            this.renderBorder(x, y, z, width, height, this.borderWidthNormal, this.borderColorNormal, ctx);
+            this.renderBorder(x, y, z, width, height, this.borderWidthNormal, this.getNormalBorderColor(), ctx);
         }
     }
 

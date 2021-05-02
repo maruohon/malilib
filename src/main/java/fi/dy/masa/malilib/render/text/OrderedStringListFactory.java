@@ -92,26 +92,6 @@ public class OrderedStringListFactory
     }
 
     /**
-     * Adds the provided lines, by using the provided key.
-     * The key can be used to remove just these lines later.
-     * The lines should be already translated/localized.
-     */
-    public void setStrings(String key, String... lines)
-    {
-        this.setStringListProvider(key, () -> Arrays.asList(lines), DEFAULT_PRIORITY);
-    }
-
-    /**
-     * Adds the provided lines, by using the provided key.
-     * The key can be used to remove just these lines later.
-     * The lines should be already translated/localized.
-     */
-    public void setStrings(String key, List<String> lines)
-    {
-        this.setStringListProvider(key, () -> lines, DEFAULT_PRIORITY);
-    }
-
-    /**
      * Adds the provided line supplier, by using the provided key.
      * The key can be used to remove just these lines later.
      * The lines should be already translated/localized.
@@ -128,25 +108,9 @@ public class OrderedStringListFactory
      * they are sorted by their numerical priority (so smaller priority value comes first).
      * The lines should be already translated/localized.
      */
-    public void setStringListProvider(String key, Supplier<List<String>> supplier, int priority)
+    public void setStringListProvider(String key, Supplier<List<String>> supplierIn, int priority)
     {
-        this.setStringListProvider(key, (lines) -> supplier.get(), priority);
-    }
-
-    /**
-     * Adds the provided string list supplier, by using the provided key.
-     * The key can be used to remove just this provider later on.
-     * The priority is the sort order of all the providers,
-     * they are sorted by their numerical priority (so smaller priority value comes first).
-     * The Function gets in the current list of text lines at the moment when the function is executed.
-     * This allows the function to do some conditional checks before adding its own strings,
-     * for example based on the number of existing text lines. As an example not adding a preceding blank
-     * line if the list is currently empty.
-     * <b>Note:</b> The strings should be already translated/localized.
-     */
-    public void setStringListProvider(String key, Function<List<StyledTextLine>, List<String>> supplierIn, int priority)
-    {
-        Function<List<StyledTextLine>, List<StyledTextLine>> provider = (oldLines) -> StyledText.ofStrings(supplierIn.apply(oldLines)).lines;
+        Function<List<StyledTextLine>, List<StyledTextLine>> provider = (oldLines) -> StyledText.ofStrings(supplierIn.get()).lines;
 
         this.providers.put(key, Pair.of(priority, provider));
         this.updateSortedProviders();
@@ -235,9 +199,9 @@ public class OrderedStringListFactory
     }
 
     /**
-     * Removes the line supplier by the given key
+     * Removes the line provider by the given key
      */
-    public void removeStringListProvider(String key)
+    public void removeTextLineProvider(String key)
     {
         this.providers.remove(key);
         this.updateSortedProviders();

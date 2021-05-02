@@ -67,27 +67,27 @@ public class BaseWidget
         this.maxHeight = this.hasMaxHeight ? -height : height;
     }
 
-    public final int getX()
+    public int getX()
     {
         return this.x;
     }
 
-    public final int getY()
+    public int getY()
     {
         return this.y;
     }
 
-    public final int getRight()
+    public int getRight()
     {
         return this.getX() + this.getWidth();
     }
 
-    public final int getBottom()
+    public int getBottom()
     {
         return this.getY() + this.getHeight();
     }
 
-    public final void setX(int x)
+    public void setX(int x)
     {
         int oldX = this.x;
         int oldY = this.y;
@@ -97,7 +97,7 @@ public class BaseWidget
         this.onPositionChanged(oldX, oldY);
     }
 
-    public final void setY(int y)
+    public void setY(int y)
     {
         int oldX = this.x;
         int oldY = this.y;
@@ -107,7 +107,7 @@ public class BaseWidget
         this.onPositionChanged(oldX, oldY);
     }
 
-    public final void setPosition(int x, int y)
+    public void setPosition(int x, int y)
     {
         int oldX = this.x;
         int oldY = this.y;
@@ -124,7 +124,7 @@ public class BaseWidget
         this.y = y;
     }
 
-    public final void setPositionAndSize(int x, int y, int width, int height)
+    public void setPositionAndSize(int x, int y, int width, int height)
     {
         int oldX = this.x;
         int oldY = this.y;
@@ -141,6 +141,26 @@ public class BaseWidget
     {
         this.xRight = x;
         this.updateHorizontalPositionIfRightAligned();
+    }
+
+    public void setRight(int xRight)
+    {
+        int oldX = this.x;
+        int oldY = this.y;
+
+        this.x = xRight - this.width;
+
+        this.onPositionChanged(oldX, oldY);
+    }
+
+    public void setBottom(int yBottom)
+    {
+        int oldX = this.x;
+        int oldY = this.y;
+
+        this.y = yBottom - this.height;
+
+        this.onPositionChanged(oldX, oldY);
     }
 
     public void setRightAlign(boolean rightAlign, int xRight, boolean keepOnScreen)
@@ -307,6 +327,14 @@ public class BaseWidget
     public void setAutomaticHeight(boolean automaticHeight)
     {
         this.automaticHeight = automaticHeight;
+    }
+
+    public boolean intersects(EdgeInt rectangle)
+    {
+        return this.getX() <= rectangle.getRight() &&
+               this.getRight() >= rectangle.getLeft() &&
+               this.getY() <= rectangle.getBottom() &&
+               this.getBottom() >= rectangle.getTop();
     }
 
     /**

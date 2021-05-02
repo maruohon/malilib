@@ -52,7 +52,7 @@ public class StringListRendererWidget extends InfoRendererWidget
 
     public void removeStringListProvider(String key)
     {
-        this.stringListFactory.removeStringListProvider(key);
+        this.stringListFactory.removeTextLineProvider(key);
         this.markDirty();
     }
 
