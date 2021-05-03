@@ -71,8 +71,8 @@ public class BaseTextFieldWidget extends BackgroundWidget
         this.lastNotifiedText = text;
 
         this.setShouldReceiveOutsideClicks(true);
-        this.setBackgroundColor(0xFF000000);
-        this.setRenderBackground(true);
+        this.setNormalBackgroundColor(0xFF000000);
+        this.setRenderNormalBackground(true);
         this.setNormalBorderColor(this.colorUnfocused);
         this.setNormalBorderWidth(1);
         this.padding.setLeft(3);
@@ -547,7 +547,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
 
     protected int getTextStartRelativeX()
     {
-        return this.borderWidthNormal + this.padding.getLeft();
+        return this.normalBorderWidth + this.padding.getLeft();
     }
 
     /**
@@ -558,9 +558,9 @@ public class BaseTextFieldWidget extends BackgroundWidget
     {
         int maxWidth = this.getWidth() - this.padding.getLeft() - this.padding.getRight();
 
-        if (this.renderBorder)
+        if (this.renderNormalBorder)
         {
-            maxWidth -= this.borderWidthNormal * 2;
+            maxWidth -= this.normalBorderWidth * 2;
         }
 
         return maxWidth;
@@ -993,7 +993,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
 
         x += this.getTextStartRelativeX();
 
-        int bw = this.renderBorder ? this.borderWidthNormal * 2 : 0;
+        int bw = this.renderNormalBorder ? this.normalBorderWidth * 2 : 0;
         // The font is usually 1 pixel "too high", as in it's touching the top, but not the bottom
         int yOffset = Math.max((int) Math.ceil((this.getHeight() - bw - this.fontHeight) / 2.0) + 1, 0);
 

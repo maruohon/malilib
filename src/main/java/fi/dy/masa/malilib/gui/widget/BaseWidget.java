@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.gui.widget;
 
+import javax.annotation.Nullable;
 import org.lwjgl.opengl.GL11;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableList;
@@ -31,6 +32,7 @@ public class BaseWidget
     protected final EdgeInt margin = new EdgeInt();
     protected final EdgeInt padding = new EdgeInt();
     protected final int fontHeight;
+    @Nullable protected StyledTextLine text;
     private int x;
     private int y;
     private int height;
@@ -41,11 +43,17 @@ public class BaseWidget
     private boolean rightAlign;
     protected boolean automaticHeight;
     protected boolean automaticWidth;
+    protected boolean centerTextHorizontally;
+    protected boolean centerTextVertically = true;
     protected boolean hasMaxHeight;
     protected boolean hasMaxWidth;
+    protected boolean textShadow = true;
     protected int lineHeight;
     protected int maxHeight;
     protected int maxWidth;
+    protected int defaultTextColor = 0xFFFFFFFF;
+    protected int textOffsetX = 4;
+    protected int textOffsetY;
 
     public BaseWidget(int x, int y, int width, int height)
     {
@@ -383,9 +391,87 @@ public class BaseWidget
         return 2;
     }
 
+    public boolean getCenterTextHorizontally()
+    {
+        return this.centerTextHorizontally;
+    }
+
+    public boolean getCenterTextVertically()
+    {
+        return this.centerTextVertically;
+    }
+
+    public int getDefaultTextColor()
+    {
+        return this.defaultTextColor;
+    }
+
+    public int getTextOffsetX()
+    {
+        return this.textOffsetX;
+    }
+
+    public int getTextOffsetY()
+    {
+        return this.textOffsetY;
+    }
+
+    public void setCenterTextHorizontally(boolean centerTextHorizontally)
+    {
+        this.centerTextHorizontally = centerTextHorizontally;
+    }
+
+    public void setCenterTextVertically(boolean centerTextVertically)
+    {
+        this.centerTextVertically = centerTextVertically;
+    }
+
+    public void setDefaultTextColor(int defaultTextColor)
+    {
+        this.defaultTextColor = defaultTextColor;
+    }
+
+    public void setTextOffsetX(int textOffsetX)
+    {
+        this.textOffsetX = textOffsetX;
+    }
+
+    public void setTextOffsetY(int textOffsetY)
+    {
+        this.textOffsetY = textOffsetY;
+    }
+
+    /**
+     * Sets a simple single-line text to be rendered in the widget,
+     * without having to add a LabelWidget for it.
+     */
+    public void setText(@Nullable StyledTextLine text)
+    {
+        this.text = text;
+    }
+
+    /**
+     * Sets a simple single-line text to be rendered in the widget,
+     * without having to add a LabelWidget for it.
+     * @param textOffsetX an x offset for the text. By default this is 4 pixels from the left edge.
+     * @param textOffsetY an y offset for the text. Note: The text is by default already centered vertically,
+     *                    this is an additional offset on top of that!
+     */
+    public void setText(@Nullable StyledTextLine text, int textOffsetX, int textOffsetY)
+    {
+        this.text = text;
+        this.textOffsetX = textOffsetX;
+        this.textOffsetY = textOffsetY;
+    }
+
     public int getFontHeight()
     {
         return this.fontHeight;
+    }
+
+    protected int getCenteredElementOffsetX(int elementWidth)
+    {
+        return (this.getWidth() - elementWidth) / 2;
     }
 
     protected int getCenteredTextOffsetY()
@@ -408,6 +494,30 @@ public class BaseWidget
         return StyledTextLine.raw(str).renderWidth;
     }
 
+    protected int getTextPositionX(int x, int textWidth)
+    {
+        int position = x + this.textOffsetX;
+
+        if (this.centerTextHorizontally)
+        {
+            position += this.getCenteredElementOffsetX(textWidth);
+        }
+
+        return position;
+    }
+
+    protected int getTextPositionY(int y)
+    {
+        int position = y + this.textOffsetY;
+
+        if (this.centerTextVertically)
+        {
+            position += this.getCenteredTextOffsetY();
+        }
+
+        return position;
+    }
+
     public void renderTextLine(int x, int y, float z, int defaultColor, boolean shadow,
                                ScreenContext ctx, StyledTextLine text)
     {
@@ -422,6 +532,22 @@ public class BaseWidget
     public void renderPlainString(int x, int y, float z, int color, boolean shadow, String str, ScreenContext ctx)
     {
         this.textRenderer.renderLine(x, y, z, color, shadow, StyledTextLine.of(str));
+    }
+
+    protected void renderText(int x, int y, float z, ScreenContext ctx)
+    {
+        if (this.text != null)
+        {
+            x = this.getTextPositionX(x, this.text.renderWidth);
+            y = this.getTextPositionY(y);
+
+            this.renderTextLine(x, y, z + 0.1f, this.defaultTextColor, this.textShadow, ctx, this.text);
+        }
+    }
+
+    public void renderAt(int x, int y, float z, ScreenContext ctx)
+    {
+        this.renderText(x, y, z, ctx);
     }
 
     public void renderDebug(boolean hovered, ScreenContext ctx)

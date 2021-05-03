@@ -2,15 +2,22 @@ package fi.dy.masa.malilib.gui.widget;
 
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
+import fi.dy.masa.malilib.gui.position.EdgeInt;
 import fi.dy.masa.malilib.util.data.Color4f;
 
 public class ColorEditorWidget extends ContainerWidget
 {
     protected final IntSupplier colorInput;
     protected final IntConsumer colorOutput;
-    protected final int originalColor;
     protected final BaseTextFieldWidget textField;
     protected final ColorIndicatorWidget colorIndicator;
+    protected final int originalColor;
+
+    public ColorEditorWidget(int x, int y, int width, int height,
+                             EdgeInt colorStorage)
+    {
+        this(x, y, width, height, colorStorage::getTop, colorStorage::setAll);
+    }
 
     public ColorEditorWidget(int x, int y, int width, int height,
                              IntSupplier colorInput, IntConsumer colorOutput)
@@ -27,7 +34,7 @@ public class ColorEditorWidget extends ContainerWidget
         this.textField.setListener(this::setColorFromString);
 
         int size = height;
-        this.colorIndicator = new ColorIndicatorWidget(0, 0, size, size, colorInput, colorOutput);
+        this.colorIndicator = new ColorIndicatorWidget(0, 0, size, size, colorInput, this::setColorFromEditor);
     }
 
     @Override
@@ -53,6 +60,12 @@ public class ColorEditorWidget extends ContainerWidget
         this.textField.setWidth(width - height - 4);
 
         this.colorIndicator.setPosition(x + width - height, y);
+    }
+
+    protected void setColorFromEditor(int color)
+    {
+        this.textField.setText(String.format("#%08X", color));
+        this.colorOutput.accept(color);
     }
 
     protected void setColorFromString(String str)

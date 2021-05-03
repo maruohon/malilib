@@ -120,7 +120,7 @@ public abstract class BaseListWidget extends ContainerWidget
     {
         super.updateSubWidgetsToGeometryChanges();
 
-        int bw = this.renderBorder ? this.borderWidthNormal : 0;
+        int bw = this.renderNormalBorder ? this.normalBorderWidth : 0;
         int x = this.getX() + bw;
         int startY = this.getY() + bw;
         int listWidth = this.getListMaxWidthForTotalWidth(this.getWidth());

@@ -35,7 +35,7 @@ public abstract class BaseInfoRendererWidgetEntryWidget<TYPE extends InfoRendere
         this.removeButton.setActionListener(this::removeInfoRendererWidget);
 
         this.setText(StyledTextLine.of(data.getName()));
-        this.setRenderBackground(true);
+        this.setRenderNormalBackground(true);
     }
 
     public void removeInfoRendererWidget()

@@ -64,8 +64,8 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
         this.configOwnerAndNameLabelWidget.addHoverStrings(comments);
         this.resetButton = new GenericButton(x, y, -1, 20, "malilib.gui.button.reset.caps");
 
-        this.setBackgroundColor(this.isOdd ? 0x70606060 : 0x70909090);
-        this.setRenderBackground(MaLiLibConfigs.Generic.CONFIG_WIDGET_BACKGROUND.getBooleanValue());
+        this.setNormalBackgroundColor(this.isOdd ? 0x70606060 : 0x70909090);
+        this.setRenderNormalBackground(MaLiLibConfigs.Generic.CONFIG_WIDGET_BACKGROUND.getBooleanValue());
     }
 
     @Override

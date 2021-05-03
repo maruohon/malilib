@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.gui.widget;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
@@ -12,20 +13,23 @@ public class CheckBoxWidget extends InteractableWidget
 {
     protected final MultiIcon iconUnchecked;
     protected final MultiIcon iconChecked;
+    protected BooleanSupplier booleanSupplier;
+    protected Consumer<Boolean> booleanConsumer;
     @Nullable protected Consumer<Boolean> listener;
-    protected BooleanStorage storage;
     protected int textColorChecked = 0xFFFFFFFF;
     protected int textColorUnchecked = 0xB0B0B0B0;
 
-    public CheckBoxWidget(int x, int y, MultiIcon iconUnchecked, MultiIcon iconChecked, @Nullable String translationKey)
+    public CheckBoxWidget(int x, int y, MultiIcon iconUnchecked, MultiIcon iconChecked,
+                          @Nullable String translationKey)
     {
         super(x, y, 0, 0);
 
         this.text = translationKey != null ? StyledTextLine.translate(translationKey) : null;
         this.iconUnchecked = iconUnchecked;
         this.iconChecked = iconChecked;
-        this.storage = new BooleanConfig("", false);
         this.textOffsetY = -1;
+
+        this.setBooleanStorage(new BooleanConfig("", false));
 
         int textWidth = this.text != null ? this.text.renderWidth : 0;
         int ih = iconChecked.getHeight();
@@ -33,16 +37,20 @@ public class CheckBoxWidget extends InteractableWidget
         this.setHeight(textWidth > 0 ? Math.max(this.fontHeight, ih) : ih);
     }
 
-    public CheckBoxWidget(int x, int y, @Nullable String translationKey, String hoverInfoKey)
+    public CheckBoxWidget(int x, int y, @Nullable String translationKey, @Nullable String hoverInfoKey)
     {
         this(x, y, DefaultIcons.CHECKMARK_OFF, DefaultIcons.CHECKMARK_ON, translationKey, hoverInfoKey);
     }
 
-    public CheckBoxWidget(int x, int y, MultiIcon iconUnchecked, MultiIcon iconChecked, @Nullable String translationKey, String hoverInfoKey)
+    public CheckBoxWidget(int x, int y, MultiIcon iconUnchecked, MultiIcon iconChecked,
+                          @Nullable String translationKey, @Nullable String hoverInfoKey)
     {
         this(x, y, iconUnchecked, iconChecked, translationKey);
 
-        this.translateAndAddHoverStrings(hoverInfoKey);
+        if (hoverInfoKey != null)
+        {
+            this.translateAndAddHoverStrings(hoverInfoKey);
+        }
     }
 
     public CheckBoxWidget setTextColorChecked(int color)
@@ -59,7 +67,13 @@ public class CheckBoxWidget extends InteractableWidget
 
     public void setBooleanStorage(BooleanStorage storage)
     {
-        this.storage = storage;
+        this.setBooleanStorage(storage::getBooleanValue, storage::setBooleanValue);
+    }
+
+    public void setBooleanStorage(BooleanSupplier booleanSupplier, Consumer<Boolean> booleanConsumer)
+    {
+        this.booleanSupplier = booleanSupplier;
+        this.booleanConsumer = booleanConsumer;
     }
 
     public void setListener(@Nullable Consumer<Boolean> listener)
@@ -69,7 +83,7 @@ public class CheckBoxWidget extends InteractableWidget
 
     public boolean isSelected()
     {
-        return this.storage.getBooleanValue();
+        return this.booleanSupplier.getAsBoolean();
     }
 
     public void setSelected(boolean selected)
@@ -84,7 +98,7 @@ public class CheckBoxWidget extends InteractableWidget
      */
     public void setSelected(boolean selected, boolean notifyListener)
     {
-        this.storage.setBooleanValue(selected);
+        this.booleanConsumer.accept(selected);
 
         if (notifyListener && this.listener != null)
         {

@@ -25,10 +25,6 @@ public class MenuEntryWidget extends BackgroundWidget
         this.action = action;
 
         this.setText(text);
-        this.setBackgroundColor(0xFF000000);
-        this.setBackgroundColorHovered(0xFF009090);
-        this.setRenderBackground(true);
-        this.setRenderHoverBackground(true);
 
         this.setWidth(this.text.renderWidth + 10);
 

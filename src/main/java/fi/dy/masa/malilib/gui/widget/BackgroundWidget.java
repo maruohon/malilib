@@ -6,25 +6,25 @@ import fi.dy.masa.malilib.render.ShapeRenderUtils;
 
 public class BackgroundWidget extends InteractableWidget
 {
-    protected final EdgeInt borderColorNormal = new EdgeInt(0xFFC0C0C0);
-    protected final EdgeInt borderColorHovered = new EdgeInt(0xFFFFFFFF);
-    protected boolean renderBackground;
-    protected boolean renderBorder;
+    protected final EdgeInt normalBorderColor = new EdgeInt(0xFFC0C0C0);
+    protected final EdgeInt hoveredBorderColor = new EdgeInt(0xFFFFFFFF);
+    protected boolean renderNormalBackground;
+    protected boolean renderNormalBorder;
     protected boolean renderHoverBackground;
     protected boolean renderHoverBorder;
-    protected int backgroundColor = 0xFF101010;
-    protected int backgroundColorHovered = 0x50FFFFFF;
-    protected int borderWidthNormal = 1;
-    protected int borderWidthHovered = 1;
+    protected int normalBackgroundColor = 0xFF101010;
+    protected int hoveredBackgroundColor = 0x50FFFFFF;
+    protected int normalBorderWidth = 1;
+    protected int hoveredBorderWidth = 1;
 
     public BackgroundWidget(int x, int y, int width, int height)
     {
         super(x, y, width, height);
     }
 
-    public BackgroundWidget setRenderBackground(boolean enabled)
+    public BackgroundWidget setRenderNormalBackground(boolean enabled)
     {
-        this.renderBackground = enabled;
+        this.renderNormalBackground = enabled;
         this.updateSize();
         return this;
     }
@@ -37,7 +37,7 @@ public class BackgroundWidget extends InteractableWidget
 
     public BackgroundWidget setRenderNormalBorder(boolean renderBorder)
     {
-        this.renderBorder = renderBorder;
+        this.renderNormalBorder = renderBorder;
         return this;
     }
 
@@ -49,46 +49,66 @@ public class BackgroundWidget extends InteractableWidget
 
     public BackgroundWidget setNormalBorderWidth(int borderWidthNormal)
     {
-        this.borderWidthNormal = borderWidthNormal;
-        this.renderBorder = borderWidthNormal > 0;
+        this.normalBorderWidth = borderWidthNormal;
+        this.renderNormalBorder = borderWidthNormal > 0;
         this.updateSize();
         return this;
     }
 
     public BackgroundWidget setHoveredBorderWidth(int borderWidth)
     {
-        this.borderWidthHovered = borderWidth;
+        this.hoveredBorderWidth = borderWidth;
         this.renderHoverBorder = borderWidth > 0;
         return this;
     }
 
-    public BackgroundWidget setBackgroundColor(int backgroundColor)
+    public BackgroundWidget setNormalBackgroundColor(int normalBackgroundColor)
     {
-        this.backgroundColor = backgroundColor;
+        this.normalBackgroundColor = normalBackgroundColor;
         return this;
     }
 
-    public BackgroundWidget setBackgroundColorHovered(int backgroundColor)
+    public BackgroundWidget setHoveredBackgroundColor(int backgroundColor)
     {
-        this.backgroundColorHovered = backgroundColor;
+        this.hoveredBackgroundColor = backgroundColor;
         return this;
     }
 
     public BackgroundWidget setNormalBorderColor(int borderColor)
     {
-        this.borderColorNormal.setAll(borderColor);
+        this.normalBorderColor.setAll(borderColor);
         return this;
     }
 
     public BackgroundWidget setHoveredBorderColor(int borderColor)
     {
-        this.borderColorHovered.setAll(borderColor);
+        this.hoveredBorderColor.setAll(borderColor);
         return this;
+    }
+
+    public EdgeInt getNormalBorderColor()
+    {
+        return this.normalBorderColor;
+    }
+
+    public EdgeInt getHoveredBorderColor()
+    {
+        return this.hoveredBorderColor;
+    }
+
+    public int getNormalBackgroundColor()
+    {
+        return this.normalBackgroundColor;
+    }
+
+    public int getHoveredBackgroundColor()
+    {
+        return this.hoveredBackgroundColor;
     }
 
     public int getActiveBorderWidth()
     {
-        return this.renderBorder ? this.borderWidthNormal : 0;
+        return this.renderNormalBorder ? this.normalBorderWidth : 0;
     }
 
     protected int getBackgroundWidth(boolean hovered, ScreenContext ctx)
@@ -103,7 +123,7 @@ public class BackgroundWidget extends InteractableWidget
 
     protected boolean shouldRenderNormalBackground(boolean hovered, ScreenContext ctx)
     {
-        return this.renderBackground;
+        return this.renderNormalBackground;
     }
 
     protected boolean shouldRenderHoverBackground(boolean hovered, ScreenContext ctx)
@@ -113,7 +133,7 @@ public class BackgroundWidget extends InteractableWidget
 
     protected boolean shouldRenderNormalBorder(boolean hovered, ScreenContext ctx)
     {
-        return this.renderBorder;
+        return this.renderNormalBorder;
     }
 
     protected boolean shouldRenderHoverBorder(boolean hovered, ScreenContext ctx)
@@ -121,14 +141,14 @@ public class BackgroundWidget extends InteractableWidget
         return hovered && this.renderHoverBorder;
     }
 
-    protected EdgeInt getNormalBorderColor()
+    protected EdgeInt getNormalBorderColorForRender()
     {
-        return this.borderColorNormal;
+        return this.normalBorderColor;
     }
 
-    protected EdgeInt getHoveredBorderColor()
+    protected EdgeInt getHoveredBorderColorForRender()
     {
-        return this.borderColorHovered;
+        return this.hoveredBorderColor;
     }
 
     @Override
@@ -158,11 +178,11 @@ public class BackgroundWidget extends InteractableWidget
     {
         if (this.shouldRenderHoverBorder(hovered, ctx))
         {
-            this.renderBorder(x, y, z, width, height, this.borderWidthHovered, this.getHoveredBorderColor(), ctx);
+            this.renderBorder(x, y, z, width, height, this.hoveredBorderWidth, this.getHoveredBorderColorForRender(), ctx);
         }
         else if (this.shouldRenderNormalBorder(hovered, ctx))
         {
-            this.renderBorder(x, y, z, width, height, this.borderWidthNormal, this.getNormalBorderColor(), ctx);
+            this.renderBorder(x, y, z, width, height, this.normalBorderWidth, this.getNormalBorderColorForRender(), ctx);
         }
     }
 
@@ -188,13 +208,13 @@ public class BackgroundWidget extends InteractableWidget
     {
         if (this.shouldRenderHoverBackground(hovered, ctx))
         {
-            int borderWidth = this.renderHoverBorder ? this.borderWidthHovered : 0;
-            this.renderBackground(x, y, z, width, height, borderWidth, this.backgroundColorHovered, ctx);
+            int borderWidth = this.renderHoverBorder ? this.hoveredBorderWidth : 0;
+            this.renderBackground(x, y, z, width, height, borderWidth, this.hoveredBackgroundColor, ctx);
         }
         else if (this.shouldRenderNormalBackground(hovered, ctx))
         {
-            int borderWidth = this.renderBorder ? this.borderWidthNormal : 0;
-            this.renderBackground(x, y, z, width, height, borderWidth, this.backgroundColor, ctx);
+            int borderWidth = this.renderNormalBorder ? this.normalBorderWidth : 0;
+            this.renderBackground(x, y, z, width, height, borderWidth, this.normalBackgroundColor, ctx);
         }
     }
 

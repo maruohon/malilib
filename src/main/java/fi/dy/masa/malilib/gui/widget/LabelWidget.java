@@ -246,7 +246,7 @@ public class LabelWidget extends BackgroundWidget
         {
             RenderUtils.color(1f, 1f, 1f, 1f);
 
-            if (this.renderBackground == false &&
+            if (this.renderNormalBackground == false &&
                 this.useBackgroundForHoverOverflow &&
                 this.stringListRenderer.hasClampedContent() &&
                 this.isHoveredForRender(ctx))
@@ -254,8 +254,8 @@ public class LabelWidget extends BackgroundWidget
                 z += 20;
                 int width = this.totalWidth;
                 int height = this.totalHeight;
-                this.renderBackground(x, y, z, width, height, this.borderWidthHovered, this.backgroundColorHovered, ctx);
-                this.renderBorder(x, y, z, width, height, this.borderWidthHovered, this.borderColorHovered, ctx);
+                this.renderBackground(x, y, z, width, height, this.hoveredBorderWidth, this.hoveredBackgroundColor, ctx);
+                this.renderBorder(x, y, z, width, height, this.hoveredBorderWidth, this.hoveredBorderColor, ctx);
             }
             else
             {

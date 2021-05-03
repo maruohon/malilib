@@ -119,7 +119,7 @@ public class DropDownListWidget<T> extends ContainerWidget
 
         this.selectionBarWidget = new SelectionBarWidget<>(x, y, width, height, this.textColor, this);
         this.selectionBarWidget.setZLevel(2);
-        this.selectionBarWidget.setBackgroundColorHovered(0xFF202020);
+        this.selectionBarWidget.setHoveredBackgroundColor(0xFF202020);
         this.selectionBarWidget.setRenderHoverBackground(true);
 
         this.searchField = new BaseTextFieldWidget(x, y - 16, width, 16);
@@ -755,7 +755,7 @@ public class DropDownListWidget<T> extends ContainerWidget
                 this.nonTextWidth += this.iconWidget.getWidth() + 4;
             }
 
-            this.setRenderBackground(true);
+            this.setRenderNormalBackground(true);
             this.setNormalBorderWidth(1);
             this.setClickListener(dropDown::toggleOpen);
             this.setDisplayString(dropDown.getCurrentEntryDisplayString());
@@ -846,7 +846,7 @@ public class DropDownListWidget<T> extends ContainerWidget
         public void renderAt(int x, int y, float z, ScreenContext ctx)
         {
             DropDownListWidget<T> dropDown = this.dropdownWidget;
-            this.setNormalBorderColor(dropDown.enabled ? (dropDown.isOpen() ? dropDown.borderColorOpen : dropDown.borderColorNormal.getTop()) : dropDown.borderColorDisabled);
+            this.setNormalBorderColor(dropDown.enabled ? (dropDown.isOpen() ? dropDown.borderColorOpen : dropDown.normalBorderColor.getTop()) : dropDown.borderColorDisabled);
 
             super.renderAt(x, y, z, ctx);
 
@@ -937,9 +937,9 @@ public class DropDownListWidget<T> extends ContainerWidget
             this.textColor = textColor;
             this.setClickListener(this::onClicked);
 
-            this.setBackgroundColor((listIndex & 0x1) != 0 ? 0xFF202020 : 0xFF404040);
-            this.setBackgroundColorHovered(0xFF606060);
-            this.setRenderBackground(true);
+            this.setNormalBackgroundColor((listIndex & 0x1) != 0 ? 0xFF202020 : 0xFF404040);
+            this.setHoveredBackgroundColor(0xFF606060);
+            this.setRenderNormalBackground(true);
             this.setRenderHoverBackground(true);
 
             int iconWidth = 0;

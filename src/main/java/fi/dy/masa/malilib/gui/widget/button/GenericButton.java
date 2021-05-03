@@ -202,12 +202,12 @@ public class GenericButton extends BaseButton
         }
         else
         {
-            return this.renderBackground ? 4 : 0;
+            return this.renderNormalBackground ? 4 : 0;
         }
     }
 
     @Override
-    protected int getTextPositionX(int x)
+    protected int getTextPositionX(int x, int elementWidth)
     {
         MultiIcon icon = this.iconSupplier != null ? this.iconSupplier.get() : null;
         x = this.getTextStartX(x, this.getWidth(), this.text.renderWidth);

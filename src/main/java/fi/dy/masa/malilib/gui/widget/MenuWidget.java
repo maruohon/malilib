@@ -6,7 +6,10 @@ import java.util.List;
 
 public class MenuWidget extends ContainerWidget
 {
-    protected final List<InteractableWidget> menuEntries = new ArrayList<>();
+    protected final List<BackgroundWidget> menuEntries = new ArrayList<>();
+    protected boolean renderEntryBackground = true;
+    protected int hoveredEntryBackgroundColor = 0xFF009090;
+    protected int normalEntryBackgroundColor = 0xFF000000;
 
     public MenuWidget(int x, int y, int width, int height)
     {
@@ -17,12 +20,12 @@ public class MenuWidget extends ContainerWidget
         this.setRenderNormalBorder(true);
     }
 
-    public void setMenuEntries(InteractableWidget... menuEntries)
+    public void setMenuEntries(BackgroundWidget... menuEntries)
     {
         this.setMenuEntries(Arrays.asList(menuEntries));
     }
 
-    public void setMenuEntries(List<InteractableWidget> menuEntries)
+    public void setMenuEntries(List<BackgroundWidget> menuEntries)
     {
         this.menuEntries.clear();
         this.menuEntries.addAll(menuEntries);
@@ -30,6 +33,24 @@ public class MenuWidget extends ContainerWidget
         this.updateSize();
         this.updateSubWidgetsToGeometryChanges();
         this.reAddSubWidgets();
+    }
+
+    public MenuWidget setRenderEntryBackground(boolean renderEntryBackground)
+    {
+        this.renderEntryBackground = renderEntryBackground;
+        return this;
+    }
+
+    public MenuWidget setNormalEntryBackgroundColor(int normalEntryBackgroundColor)
+    {
+        this.normalEntryBackgroundColor = normalEntryBackgroundColor;
+        return this;
+    }
+
+    public MenuWidget setHoveredEntryBackgroundColor(int hoveredEntryBackgroundColor)
+    {
+        this.hoveredEntryBackgroundColor = hoveredEntryBackgroundColor;
+        return this;
     }
 
     @Override
@@ -53,9 +74,22 @@ public class MenuWidget extends ContainerWidget
     {
         super.reAddSubWidgets();
 
-        for (InteractableWidget widget : this.menuEntries)
+        for (BackgroundWidget widget : this.menuEntries)
         {
             this.addWidget(widget);
+
+            if (this.renderEntryBackground)
+            {
+                widget.setNormalBackgroundColor(this.normalEntryBackgroundColor);
+                widget.setHoveredBackgroundColor(this.hoveredEntryBackgroundColor);
+                widget.setRenderNormalBackground(true);
+                widget.setRenderHoverBackground(true);
+            }
+            else
+            {
+                widget.setRenderNormalBackground(false);
+                widget.setRenderHoverBackground(false);
+            }
         }
     }
 

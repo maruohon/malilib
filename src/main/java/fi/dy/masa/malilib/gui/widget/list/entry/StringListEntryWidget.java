@@ -11,8 +11,8 @@ public class StringListEntryWidget extends BaseDataListEntryWidget<String>
         super(x, y, width, height, listIndex, originalListIndex, entry, listWidget);
 
         this.setText(StyledTextLine.raw(entry));
-        this.setBackgroundColor(this.isOdd ? 0xA0101010 : 0xA0303030);
-        this.setBackgroundColorHovered(0xA0707070);
+        this.setNormalBackgroundColor(this.isOdd ? 0xA0101010 : 0xA0303030);
+        this.setHoveredBackgroundColor(0xA0707070);
         this.setSelectedBackgroundColor(0xA0707070);
     }
 }

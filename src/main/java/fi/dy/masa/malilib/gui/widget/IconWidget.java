@@ -51,9 +51,9 @@ public class IconWidget extends BackgroundWidget
         {
             int width = this.icon.getWidth();
 
-            if (this.renderBackground)
+            if (this.renderNormalBackground)
             {
-                width += this.padding.getLeft() + this.padding.getRight() + this.borderWidthNormal * 2;
+                width += this.padding.getLeft() + this.padding.getRight() + this.normalBorderWidth * 2;
             }
 
             this.setWidth(width);
@@ -71,9 +71,9 @@ public class IconWidget extends BackgroundWidget
         {
             int height = this.icon.getHeight();
 
-            if (this.renderBackground)
+            if (this.renderNormalBackground)
             {
-                height += this.padding.getTop() + this.padding.getBottom() + this.borderWidthNormal * 2;
+                height += this.padding.getTop() + this.padding.getBottom() + this.normalBorderWidth * 2;
             }
 
             this.setHeight(height);
@@ -91,10 +91,10 @@ public class IconWidget extends BackgroundWidget
         {
             super.renderAt(x, y, z, ctx);
 
-            if (this.renderBackground)
+            if (this.renderNormalBackground)
             {
-                x += this.padding.getLeft() + this.borderWidthNormal;
-                y += this.padding.getTop() + this.borderWidthNormal;
+                x += this.padding.getLeft() + this.normalBorderWidth;
+                y += this.padding.getTop() + this.normalBorderWidth;
             }
 
             this.icon.renderAt(x, y, z + 0.1f, this.enabled, this.doHighlight && this.isHoveredForRender(ctx));

@@ -43,9 +43,9 @@ public class ItemStackWidget extends BaseModelWidget
     public static ItemStackWidget createItemWidget(int x, int y, int dimensions, Item item)
     {
         ItemStackWidget widget = new ItemStackWidget(x, y, dimensions, new ItemStack(item));
-        widget.setBackgroundColor(0xFF505050);
-        widget.setBackgroundColorHovered(0xFF505050);
-        widget.setRenderBackground(true);
+        widget.setNormalBackgroundColor(0xFF505050);
+        widget.setHoveredBackgroundColor(0xFF505050);
+        widget.setRenderNormalBackground(true);
         widget.setRenderHoverBackground(true);
         return widget;
     }

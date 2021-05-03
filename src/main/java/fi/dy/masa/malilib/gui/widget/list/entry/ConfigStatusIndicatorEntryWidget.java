@@ -33,7 +33,7 @@ public class ConfigStatusIndicatorEntryWidget extends BaseOrderableListEditEntry
         this.removeButton.setActionListener(this::removeInfoRendererWidget);
 
         this.setText(data.getStyledName());
-        this.setRenderBackground(true);
+        this.setRenderNormalBackground(true);
     }
 
     public void removeInfoRendererWidget()

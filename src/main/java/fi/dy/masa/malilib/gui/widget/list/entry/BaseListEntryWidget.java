@@ -23,8 +23,8 @@ public class BaseListEntryWidget extends ContainerWidget
 
         this.setIsOdd((listIndex & 0x1) != 0);
         this.setRenderHoverBackground(true);
-        this.setBackgroundColor(this.isOdd ? 0x20FFFFFF : 0x30FFFFFF);
-        this.setBackgroundColorHovered(0x50B0FFFF);
+        this.setNormalBackgroundColor(this.isOdd ? 0x20FFFFFF : 0x30FFFFFF);
+        this.setHoveredBackgroundColor(0x50B0FFFF);
     }
 
     public void setIsOdd(boolean isOdd)
@@ -86,7 +86,7 @@ public class BaseListEntryWidget extends ContainerWidget
     {
         if (this.isSelected())
         {
-            this.renderBackground(x, y, z, width, height, this.borderWidthNormal, this.selectedBackgroundColor, ctx);
+            this.renderBackground(x, y, z, width, height, this.normalBorderWidth, this.selectedBackgroundColor, ctx);
         }
         else
         {
@@ -100,7 +100,7 @@ public class BaseListEntryWidget extends ContainerWidget
     {
         if (this.isSelected())
         {
-            this.renderBorder(x, y, z, width, height, this.borderWidthNormal, this.selectedBorderColor, ctx);
+            this.renderBorder(x, y, z, width, height, this.normalBorderWidth, this.selectedBorderColor, ctx);
         }
         else
         {

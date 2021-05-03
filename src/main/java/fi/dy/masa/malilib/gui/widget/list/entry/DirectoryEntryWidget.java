@@ -30,9 +30,9 @@ public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry
         this.textShadow = false;
 
         this.setText(StyledTextLine.raw(this.getDisplayName()));
-        this.setBackgroundColor(this.isOdd ? 0xFF202020 : 0xFF303030);
-        this.setBackgroundColorHovered(0xFF404040);
-        this.setRenderBackground(true);
+        this.setNormalBackgroundColor(this.isOdd ? 0xFF202020 : 0xFF303030);
+        this.setHoveredBackgroundColor(0xFF404040);
+        this.setRenderNormalBackground(true);
     }
 
     public DirectoryEntry getDirectoryEntry()
@@ -53,12 +53,6 @@ public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry
         }
 
         return true;
-    }
-
-    @Override
-    protected int getTextPositionX(int x)
-    {
-        return super.getTextPositionX(x);
     }
 
     @Override

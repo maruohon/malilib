@@ -40,11 +40,19 @@ public class ActionExecutionWidget extends ContainerWidget
     {
         super(0, 0, 40, 20);
 
-        this.setRenderNormalBorder(true);
+        this.centerTextHorizontally = true;
+        this.textOffsetX = 0;
+
         this.setNormalBorderWidth(1);
         this.setHoveredBorderWidth(2);
         this.setNormalBorderColor(0xFFFFFFFF);
         this.setHoveredBorderColor(0xFFE0E020);
+        this.setNormalBackgroundColor(0x00000000);
+        this.setHoveredBackgroundColor(0x00000000);
+
+        this.setRenderNormalBorder(true);
+        this.setRenderNormalBackground(true);
+        this.setRenderHoverBackground(true);
     }
 
     public Type getType()
@@ -256,25 +264,25 @@ public class ActionExecutionWidget extends ContainerWidget
     }
 
     @Override
-    protected EdgeInt getNormalBorderColor()
+    protected EdgeInt getNormalBorderColorForRender()
     {
         if (this.dragging || this.resizing || this.selected)
         {
             return this.editedBorderColor;
         }
 
-        return super.getNormalBorderColor();
+        return super.getNormalBorderColorForRender();
     }
 
     @Override
-    protected EdgeInt getHoveredBorderColor()
+    protected EdgeInt getHoveredBorderColorForRender()
     {
         if (this.dragging || this.resizing || this.selected)
         {
             return this.editedBorderColor;
         }
 
-        return super.getHoveredBorderColor();
+        return super.getHoveredBorderColorForRender();
     }
 
     @Override
@@ -308,8 +316,8 @@ public class ActionExecutionWidget extends ContainerWidget
         obj.addProperty("type", this.type.name().toLowerCase(Locale.ROOT));
         obj.addProperty("name", this.name);
         obj.addProperty("name_color", this.defaultTextColor);
-        obj.addProperty("bg_color", this.backgroundColor);
-        obj.addProperty("bg_color_hover", this.backgroundColorHovered);
+        obj.addProperty("bg_color", this.normalBackgroundColor);
+        obj.addProperty("bg_color_hover", this.hoveredBackgroundColor);
         obj.add("border_color", this.borderColorNormal.toJson());
         obj.add("border_color_hover", this.borderColorHovered.toJson());
 
@@ -348,17 +356,17 @@ public class ActionExecutionWidget extends ContainerWidget
 
         widget.setName(JsonUtils.getStringOrDefault(obj, "name", "?"));
         widget.defaultTextColor = JsonUtils.getIntegerOrDefault(obj, "name_color", widget.defaultTextColor);
-        widget.backgroundColor = JsonUtils.getIntegerOrDefault(obj, "bg_color", widget.backgroundColor);
-        widget.backgroundColorHovered = JsonUtils.getIntegerOrDefault(obj, "bg_color_hover", widget.backgroundColorHovered);
+        widget.normalBackgroundColor = JsonUtils.getIntegerOrDefault(obj, "bg_color", widget.normalBackgroundColor);
+        widget.hoveredBackgroundColor = JsonUtils.getIntegerOrDefault(obj, "bg_color_hover", widget.hoveredBackgroundColor);
 
         if (JsonUtils.hasArray(obj, "border_color"))
         {
-            widget.borderColorNormal.fromJson(obj.get("border_color").getAsJsonArray());
+            widget.normalBorderColor.fromJson(obj.get("border_color").getAsJsonArray());
         }
 
         if (JsonUtils.hasArray(obj, "border_color_hover"))
         {
-            widget.borderColorHovered.fromJson(obj.get("border_color_hover").getAsJsonArray());
+            widget.hoveredBorderColor.fromJson(obj.get("border_color_hover").getAsJsonArray());
         }
 
         // FIXME

@@ -451,6 +451,7 @@ public abstract class InfoRendererWidget extends BaseWidget
         }
     }
 
+    @Override
     public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
         RenderUtils.color(1f, 1f, 1f, 1f);
