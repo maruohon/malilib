@@ -8,7 +8,7 @@ public class MenuWidget extends ContainerWidget
 {
     protected final List<BackgroundWidget> menuEntries = new ArrayList<>();
     protected boolean renderEntryBackground = true;
-    protected int hoveredEntryBackgroundColor = 0xFF009090;
+    protected int hoveredEntryBackgroundColor = 0xFF206060;
     protected int normalEntryBackgroundColor = 0xFF000000;
 
     public MenuWidget(int x, int y, int width, int height)

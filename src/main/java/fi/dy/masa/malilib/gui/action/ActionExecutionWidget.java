@@ -84,11 +84,22 @@ public class ActionExecutionWidget extends ContainerWidget
         this.type = type;
     }
 
+    public String getName()
+    {
+        return this.name;
+    }
+
     public void setName(String name)
     {
         this.name = name;
         this.setText(StyledTextLine.of(name));
-        this.setWidth(this.text.renderWidth + 10);
+
+        int width = this.text.renderWidth + 10;
+
+        if (width > this.getWidth())
+        {
+            this.setWidth(width);
+        }
     }
 
     public void setGridSize(int gridSize)
@@ -170,8 +181,7 @@ public class ActionExecutionWidget extends ContainerWidget
 
             return false;
         }
-
-        if (this.action != null)
+        else if (mouseButton == 0 && this.action != null)
         {
             // Close the current screen first, in case the action opens another screen
             BaseScreen.openScreen(null);
@@ -303,7 +313,7 @@ public class ActionExecutionWidget extends ContainerWidget
         if (this.resizing || this.selected)
         {
             StyledTextLine line = StyledTextLine.raw(String.format("%d x %d", this.getWidth(), this.getHeight()));
-            this.renderTextLine(x, y - 11, z, 0xFFFFFFFF, true, ctx, line);
+            this.renderTextLine(x, y - 10, z, 0xFFFFFFFF, true, ctx, line);
         }
 
         super.renderAt(x, y, z, ctx);
@@ -318,8 +328,12 @@ public class ActionExecutionWidget extends ContainerWidget
         obj.addProperty("name_color", this.defaultTextColor);
         obj.addProperty("bg_color", this.normalBackgroundColor);
         obj.addProperty("bg_color_hover", this.hoveredBackgroundColor);
-        obj.add("border_color", this.borderColorNormal.toJson());
-        obj.add("border_color_hover", this.borderColorHovered.toJson());
+        obj.addProperty("name_centered_x", this.centerTextHorizontally);
+        obj.addProperty("name_centered_y", this.centerTextVertically);
+        obj.addProperty("name_x_offset", this.textOffsetX);
+        obj.addProperty("name_y_offset", this.textOffsetY);
+        obj.add("border_color", this.normalBorderColor.toJson());
+        obj.add("border_color_hover", this.hoveredBorderColor.toJson());
 
         if (this.action != null)
         {
@@ -358,6 +372,10 @@ public class ActionExecutionWidget extends ContainerWidget
         widget.defaultTextColor = JsonUtils.getIntegerOrDefault(obj, "name_color", widget.defaultTextColor);
         widget.normalBackgroundColor = JsonUtils.getIntegerOrDefault(obj, "bg_color", widget.normalBackgroundColor);
         widget.hoveredBackgroundColor = JsonUtils.getIntegerOrDefault(obj, "bg_color_hover", widget.hoveredBackgroundColor);
+        widget.centerTextHorizontally = JsonUtils.getBooleanOrDefault(obj, "name_centered_x", widget.centerTextHorizontally);
+        widget.centerTextVertically = JsonUtils.getBooleanOrDefault(obj, "name_centered_y", widget.centerTextVertically);
+        widget.textOffsetX = JsonUtils.getIntegerOrDefault(obj, "name_x_offset", widget.textOffsetX);
+        widget.textOffsetY = JsonUtils.getIntegerOrDefault(obj, "name_y_offset", widget.textOffsetY);
 
         if (JsonUtils.hasArray(obj, "border_color"))
         {

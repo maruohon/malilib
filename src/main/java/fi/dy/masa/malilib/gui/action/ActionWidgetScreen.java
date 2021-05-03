@@ -69,12 +69,18 @@ public class ActionWidgetScreen extends BaseScreen
 
         if (list != null)
         {
-            this.widgetList.addAll(list);
-
-            for (ActionExecutionWidget widget : this.widgetList)
+            for (ActionExecutionWidget widget : list)
             {
                 widget.setDirtyListener(this::markDirty);
+                this.widgetList.add(widget);
+
+                if (widget.isSelected())
+                {
+                    this.selectedWidgets.add(widget);
+                }
             }
+
+            this.hasGroupSelection = this.selectedWidgets.isEmpty() == false;
         }
     }
 
@@ -294,7 +300,6 @@ public class ActionWidgetScreen extends BaseScreen
     protected void openSingleWidgetMenu(int mouseX, int mouseY, ActionExecutionWidget widget)
     {
         this.menuWidget = new MenuWidget(mouseX + 4, mouseY, 10, 10);
-        this.menuWidget.setZLevel(this.zLevel + 20);
 
         StyledTextLine textEdit = StyledTextLine.translate("malilib.label.edit");
         StyledTextLine textRemove = StyledTextLine.translate("malilib.label.delete.colored");
@@ -302,19 +307,57 @@ public class ActionWidgetScreen extends BaseScreen
                                        new MenuEntryWidget(textRemove, () -> this.removeActionWidget(widget)));
 
         this.addWidget(this.menuWidget);
+        this.menuWidget.setZLevel(this.zLevel + 40);
         this.menuWidget.updateSubWidgetsToGeometryChanges();
     }
 
     protected void openGroupMenu(int mouseX, int mouseY)
     {
         this.menuWidget = new MenuWidget(mouseX + 4, mouseY, 10, 10);
-        this.menuWidget.setZLevel(this.zLevel + 20);
 
-        StyledTextLine text = StyledTextLine.translate("malilib.label.delete_selected.colored");
-        this.menuWidget.setMenuEntries(new MenuEntryWidget(text, this::deleteSelectedWidgets));
+        StyledTextLine textEdit = StyledTextLine.translate("malilib.label.edit_selected");
+        StyledTextLine textRemove = StyledTextLine.translate("malilib.label.delete_selected.colored");
+        this.menuWidget.setMenuEntries(new MenuEntryWidget(textEdit, this::editSelectedWidgets),
+                                       new MenuEntryWidget(textRemove, this::deleteSelectedWidgets));
 
         this.addWidget(this.menuWidget);
+        this.menuWidget.setZLevel(this.zLevel + 40);
         this.menuWidget.updateSubWidgetsToGeometryChanges();
+    }
+
+    protected void addActionWidget(ActionExecutionWidget widget)
+    {
+        int gridSize = this.gridEnabled ? this.gridSize : -1;
+
+        widget.setDirtyListener(this::markDirty);
+        widget.setEditMode(this.editMode);
+        widget.setGridSize(gridSize);
+        widget.setPosition(this.x + this.screenWidth / 2, this.y + 10);
+
+        this.widgetList.add(widget);
+        this.addWidget(widget);
+        this.markDirty();
+    }
+
+    protected void removeActionWidget(ActionExecutionWidget widget)
+    {
+        this.widgetList.remove(widget);
+        this.selectedWidgets.remove(widget);
+        this.removeWidget(widget);
+        this.markDirty();
+    }
+
+    protected void editActionWidget(ActionExecutionWidget widget)
+    {
+        this.openActionWidgetEditScreen(ImmutableList.of(widget));
+    }
+
+    protected void editSelectedWidgets()
+    {
+        if (this.selectedWidgets.isEmpty() == false)
+        {
+            this.openActionWidgetEditScreen(ImmutableList.copyOf(this.selectedWidgets));
+        }
     }
 
     protected void deleteSelectedWidgets()
@@ -332,13 +375,6 @@ public class ActionWidgetScreen extends BaseScreen
             this.hasGroupSelection = false;
             this.markDirty();
         }
-    }
-
-    protected void openAddWidgetScreen()
-    {
-        AddActionExecutionWidgetScreen screen = new AddActionExecutionWidgetScreen(this::addActionWidget);
-        screen.setParent(this);
-        BaseScreen.openPopupScreen(screen);
     }
 
     protected void clearSelectedWidgets()
@@ -390,30 +426,19 @@ public class ActionWidgetScreen extends BaseScreen
         }
     }
 
-    protected void addActionWidget(ActionExecutionWidget widget)
+    protected void openAddWidgetScreen()
     {
-        int gridSize = this.gridEnabled ? this.gridSize : -1;
-
-        widget.setDirtyListener(this::markDirty);
-        widget.setEditMode(this.editMode);
-        widget.setGridSize(gridSize);
-        widget.setPosition(this.x + this.screenWidth / 2, this.y + 10);
-
-        this.widgetList.add(widget);
-        this.addWidget(widget);
-        this.markDirty();
+        AddActionExecutionWidgetScreen screen = new AddActionExecutionWidgetScreen(this::addActionWidget);
+        screen.setParent(this);
+        BaseScreen.openPopupScreen(screen);
     }
 
-    protected void removeActionWidget(ActionExecutionWidget widget)
+    protected void openActionWidgetEditScreen(List<ActionExecutionWidget> widgets)
     {
-        this.widgetList.remove(widget);
-        this.selectedWidgets.remove(widget);
-        this.removeWidget(widget);
+        EditActionExecutionWidgetScreen screen = new EditActionExecutionWidgetScreen(widgets);
+        screen.setParent(this);
+        BaseScreen.openPopupScreen(screen);
         this.markDirty();
-    }
-
-    protected void editActionWidget(ActionExecutionWidget widget)
-    {
     }
 
     protected void markDirty()
@@ -441,7 +466,7 @@ public class ActionWidgetScreen extends BaseScreen
                 int maxX = Math.max(mouseX, this.selectionStart.x);
                 int maxY = Math.max(mouseY, this.selectionStart.y);
 
-                ShapeRenderUtils.renderOutlinedRectangle(minX, minY, this.zLevel + 0.5f,
+                ShapeRenderUtils.renderOutlinedRectangle(minX, minY, this.zLevel + 50f,
                                                          maxX - minX, maxY - minY, 0x30FFFFFF, 0xFFFFFFFF);
             }
         }
