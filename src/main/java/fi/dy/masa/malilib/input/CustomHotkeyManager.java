@@ -55,6 +55,18 @@ public class CustomHotkeyManager implements HotkeyProvider
         this.dirty = false;
     }
 
+    public void checkIfDirty()
+    {
+        for (CustomHotkeyDefinition hotkey : this.hotkeys)
+        {
+            if (hotkey.getKeyBind().isDirty())
+            {
+                this.dirty = true;
+                break;
+            }
+        }
+    }
+
     public boolean saveToFileIfDirty()
     {
         if (this.dirty)
@@ -74,6 +86,7 @@ public class CustomHotkeyManager implements HotkeyProvider
         for (CustomHotkeyDefinition hotkey : this.hotkeys)
         {
             arr.add(hotkey.toJson());
+            hotkey.getKeyBind().cacheSavedValue();
         }
 
         obj.add("hotkeys", arr);

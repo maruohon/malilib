@@ -48,6 +48,7 @@ public class CustomHotkeysEditScreen extends BaseListScreen<DataListWidget<Custo
     @Override
     public void onGuiClosed()
     {
+        CustomHotkeyManager.INSTANCE.checkIfDirty();
         CustomHotkeyManager.INSTANCE.saveToFileIfDirty();
         HotkeyManager.INSTANCE.updateUsedKeys();
 
@@ -78,7 +79,7 @@ public class CustomHotkeysEditScreen extends BaseListScreen<DataListWidget<Custo
 
             if (keyCode == Keyboard.KEY_ESCAPE && this.getParent() != GuiUtils.getCurrentScreen())
             {
-                BaseScreen.openScreen(this.getParent());
+                this.closeScreen(true);
                 return true;
             }
 
