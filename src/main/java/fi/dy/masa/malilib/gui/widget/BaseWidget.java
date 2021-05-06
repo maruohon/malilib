@@ -541,7 +541,7 @@ public class BaseWidget
             x = this.getTextPositionX(x, this.text.renderWidth);
             y = this.getTextPositionY(y);
 
-            this.renderTextLine(x, y, z + 0.1f, this.defaultTextColor, this.textShadow, ctx, this.text);
+            this.renderTextLine(x, y, z + 0.125f, this.defaultTextColor, this.textShadow, ctx, this.text);
         }
     }
 

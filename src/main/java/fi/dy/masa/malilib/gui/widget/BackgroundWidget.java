@@ -178,16 +178,16 @@ public class BackgroundWidget extends InteractableWidget
     {
         if (this.shouldRenderHoverBorder(hovered, ctx))
         {
-            this.renderBorder(x, y, z, width, height, this.hoveredBorderWidth, this.getHoveredBorderColorForRender(), ctx);
+            this.renderBorder(x, y, z, width, height, this.hoveredBorderWidth, hovered, this.getHoveredBorderColorForRender(), ctx);
         }
         else if (this.shouldRenderNormalBorder(hovered, ctx))
         {
-            this.renderBorder(x, y, z, width, height, this.normalBorderWidth, this.getNormalBorderColorForRender(), ctx);
+            this.renderBorder(x, y, z, width, height, this.normalBorderWidth, hovered, this.getNormalBorderColorForRender(), ctx);
         }
     }
 
     protected void renderBorder(int x, int y, float z, int width, int height, int borderWidth,
-                                EdgeInt color, ScreenContext ctx)
+                                boolean hovered, EdgeInt color, ScreenContext ctx)
     {
         int w = width;
         int h = height;
@@ -209,17 +209,17 @@ public class BackgroundWidget extends InteractableWidget
         if (this.shouldRenderHoverBackground(hovered, ctx))
         {
             int borderWidth = this.renderHoverBorder ? this.hoveredBorderWidth : 0;
-            this.renderBackground(x, y, z, width, height, borderWidth, this.hoveredBackgroundColor, ctx);
+            this.renderBackground(x, y, z, width, height, borderWidth, hovered, this.hoveredBackgroundColor, ctx);
         }
         else if (this.shouldRenderNormalBackground(hovered, ctx))
         {
             int borderWidth = this.renderNormalBorder ? this.normalBorderWidth : 0;
-            this.renderBackground(x, y, z, width, height, borderWidth, this.normalBackgroundColor, ctx);
+            this.renderBackground(x, y, z, width, height, borderWidth, hovered, this.normalBackgroundColor, ctx);
         }
     }
 
     protected void renderBackground(int x, int y, float z, int width, int height, int borderWidth,
-                                    int color, ScreenContext ctx)
+                                    boolean hovered, int color, ScreenContext ctx)
     {
         int bw = borderWidth;
         int b2 = bw * 2;

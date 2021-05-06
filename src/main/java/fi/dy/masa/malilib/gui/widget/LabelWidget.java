@@ -254,8 +254,9 @@ public class LabelWidget extends BackgroundWidget
                 z += 20;
                 int width = this.totalWidth;
                 int height = this.totalHeight;
-                this.renderBackground(x, y, z, width, height, this.hoveredBorderWidth, this.hoveredBackgroundColor, ctx);
-                this.renderBorder(x, y, z, width, height, this.hoveredBorderWidth, this.hoveredBorderColor, ctx);
+                int bw = this.hoveredBorderWidth;
+                this.renderBackground(x, y, z, width, height, bw, true, this.hoveredBackgroundColor, ctx);
+                this.renderBorder(x, y, z, width, height, bw, true, this.hoveredBorderColor, ctx);
             }
             else
             {

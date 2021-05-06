@@ -86,7 +86,7 @@ public class BaseListEntryWidget extends ContainerWidget
     {
         if (this.isSelected())
         {
-            this.renderBackground(x, y, z, width, height, this.normalBorderWidth, this.selectedBackgroundColor, ctx);
+            this.renderBackground(x, y, z, width, height, this.normalBorderWidth, hovered, this.selectedBackgroundColor, ctx);
         }
         else
         {
@@ -100,7 +100,7 @@ public class BaseListEntryWidget extends ContainerWidget
     {
         if (this.isSelected())
         {
-            this.renderBorder(x, y, z, width, height, this.normalBorderWidth, this.selectedBorderColor, ctx);
+            this.renderBorder(x, y, z, width, height, this.normalBorderWidth, hovered, this.selectedBorderColor, ctx);
         }
         else
         {
