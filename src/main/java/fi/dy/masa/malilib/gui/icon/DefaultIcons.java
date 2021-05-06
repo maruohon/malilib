@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.gui.icon;
 
-import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.MaLiLibReference;
+import fi.dy.masa.malilib.util.StringUtils;
 
 public class DefaultIcons
 {
@@ -64,5 +64,5 @@ public class DefaultIcons
 
     public static final BaseMultiIcon BUTTON_BACKGROUND             = new BaseMultiIcon( 56, 196, 200, 20, 0, 20);
 
-    public static final BaseIcon TOAST_BACKGROUND                   = new BaseIcon(  0,   0, 256, 128, new ResourceLocation(MaLiLibReference.MOD_ID, "textures/gui/toasts.png"));
+    public static final BaseIcon TOAST_BACKGROUND                   = new BaseIcon(0, 0, 256, 128, StringUtils.identifier(MaLiLibReference.MOD_ID, "textures/gui/toasts.png"));
 }

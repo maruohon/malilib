@@ -14,6 +14,7 @@ import fi.dy.masa.malilib.action.ActionContext;
 import fi.dy.masa.malilib.action.ActionRegistry;
 import fi.dy.masa.malilib.action.NamedAction;
 import fi.dy.masa.malilib.gui.BaseScreen;
+import fi.dy.masa.malilib.gui.icon.IconRegistry;
 import fi.dy.masa.malilib.gui.position.EdgeInt;
 import fi.dy.masa.malilib.gui.widget.ContainerWidget;
 import fi.dy.masa.malilib.gui.widget.ScreenContext;
@@ -29,11 +30,13 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
     @Nullable protected String hoverText = "";
     protected BooleanSupplier editModeSupplier = ActionWidgetScreen.ALWAYS_FALSE;
     protected IntSupplier gridSizeSupplier = ActionWidgetScreen.NO_GRID;
-    protected String name = "?";
+    protected String name = "";
     protected EdgeInt editedBorderColor = new EdgeInt(0xFFFF8000);
     protected boolean dragging;
     protected boolean resizing;
     protected boolean selected;
+    protected float iconScaleX = 1.0F;
+    protected float iconScaleY = 1.0F;
 
     public BaseActionExecutionWidget()
     {
@@ -82,14 +85,42 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
     public void setName(String name)
     {
         this.name = name;
-        this.setText(StyledTextLine.of(name));
 
-        int width = this.text.renderWidth + 10;
-
-        if (width > this.getWidth())
+        if (org.apache.commons.lang3.StringUtils.isBlank(name) == false)
         {
-            this.setWidth(width);
+            this.setText(StyledTextLine.of(name));
+
+            int width = this.text.renderWidth + 10;
+
+            if (width > this.getWidth())
+            {
+                this.setWidth(width);
+            }
         }
+        else
+        {
+            this.setText(null);
+        }
+    }
+
+    public float getIconScaleX()
+    {
+        return this.iconScaleX;
+    }
+
+    public float getIconScaleY()
+    {
+        return this.iconScaleY;
+    }
+
+    public void setIconScaleX(float iconScaleX)
+    {
+        this.iconScaleX = iconScaleX;
+    }
+
+    public void setIconScaleY(float iconScaleY)
+    {
+        this.iconScaleY = iconScaleY;
     }
 
     protected boolean isEditMode()
@@ -309,19 +340,50 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
         return super.shouldRenderHoverInfo(ctx);
     }
 
+    @Override
+    protected void renderIcon(int x, int y, float z, boolean enabled, boolean hovered, ScreenContext ctx)
+    {
+        if (this.icon != null)
+        {
+            x = this.getIconPositionX(x, this.icon.getWidth());
+            y = this.getIconPositionY(y, this.icon.getHeight());
+            int xSize = (int) (this.icon.getWidth() * this.iconScaleX);
+            int ySize = (int) (this.icon.getHeight() * this.iconScaleY);
+
+            this.icon.renderScaledAt(x, y, z + 0.025f, xSize, ySize, true, false);
+        }
+    }
+
     public JsonObject toJson()
     {
         JsonObject obj = new JsonObject();
 
         obj.addProperty("type", this.getType().name().toLowerCase(Locale.ROOT));
-        obj.addProperty("name", this.name);
-        obj.addProperty("name_color", this.defaultTextColor);
+
+        if (org.apache.commons.lang3.StringUtils.isBlank(this.name) == false)
+        {
+            obj.addProperty("name", this.name);
+        }
+
+        if (this.icon != null)
+        {
+            obj.addProperty("icon_name", IconRegistry.getKeyForIcon(this.icon));
+        }
+
+        obj.addProperty("name_color", this.defaultNormalTextColor);
+        obj.addProperty("name_color_hovered", this.defaultHoveredTextColor);
         obj.addProperty("bg_color", this.normalBackgroundColor);
         obj.addProperty("bg_color_hover", this.hoveredBackgroundColor);
         obj.addProperty("name_centered_x", this.centerTextHorizontally);
         obj.addProperty("name_centered_y", this.centerTextVertically);
         obj.addProperty("name_x_offset", this.textOffsetX);
         obj.addProperty("name_y_offset", this.textOffsetY);
+        obj.addProperty("icon_centered_x", this.centerIconHorizontally);
+        obj.addProperty("icon_centered_y", this.centerIconVertically);
+        obj.addProperty("icon_x_offset", this.iconOffsetX);
+        obj.addProperty("icon_y_offset", this.iconOffsetY);
+        obj.addProperty("icon_scale_x", this.iconScaleX);
+        obj.addProperty("icon_scale_y", this.iconScaleY);
         obj.add("border_color", this.normalBorderColor.toJson());
         obj.add("border_color_hover", this.hoveredBorderColor.toJson());
 
@@ -347,15 +409,31 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
 
     protected void fromJson(JsonObject obj)
     {
-        this.setName(JsonUtils.getStringOrDefault(obj, "name", "?"));
+        this.setName(JsonUtils.getStringOrDefault(obj, "name", ""));
+
+        if (JsonUtils.hasString(obj, "icon_name"))
+        {
+            this.setIcon(IconRegistry.INSTANCE.getIconByKey(JsonUtils.getStringOrDefault(obj, "icon_name", "")));
+        }
+
         this.setActionWidgetHoverText(JsonUtils.getString(obj, "hover_text"));
-        this.defaultTextColor = JsonUtils.getIntegerOrDefault(obj, "name_color", this.defaultTextColor);
+
+        this.defaultNormalTextColor = JsonUtils.getIntegerOrDefault(obj, "name_color", this.defaultNormalTextColor);
+        this.defaultHoveredTextColor = JsonUtils.getIntegerOrDefault(obj, "name_color_hovered", this.defaultHoveredTextColor);
         this.normalBackgroundColor = JsonUtils.getIntegerOrDefault(obj, "bg_color", this.normalBackgroundColor);
         this.hoveredBackgroundColor = JsonUtils.getIntegerOrDefault(obj, "bg_color_hover", this.hoveredBackgroundColor);
+
         this.centerTextHorizontally = JsonUtils.getBooleanOrDefault(obj, "name_centered_x", this.centerTextHorizontally);
         this.centerTextVertically = JsonUtils.getBooleanOrDefault(obj, "name_centered_y", this.centerTextVertically);
         this.textOffsetX = JsonUtils.getIntegerOrDefault(obj, "name_x_offset", this.textOffsetX);
         this.textOffsetY = JsonUtils.getIntegerOrDefault(obj, "name_y_offset", this.textOffsetY);
+
+        this.centerIconHorizontally = JsonUtils.getBooleanOrDefault(obj, "icon_centered_x", this.centerIconHorizontally);
+        this.centerIconVertically = JsonUtils.getBooleanOrDefault(obj, "icon_centered_y", this.centerIconVertically);
+        this.iconOffsetX = JsonUtils.getIntegerOrDefault(obj, "icon_x_offset", this.iconOffsetX);
+        this.iconOffsetY = JsonUtils.getIntegerOrDefault(obj, "icon_y_offset", this.iconOffsetY);
+        this.iconScaleX = JsonUtils.getFloatOrDefault(obj, "icon_scale_x", this.iconScaleX);
+        this.iconScaleY = JsonUtils.getFloatOrDefault(obj, "icon_scale_y", this.iconScaleY);
 
         if (JsonUtils.hasArray(obj, "border_color"))
         {

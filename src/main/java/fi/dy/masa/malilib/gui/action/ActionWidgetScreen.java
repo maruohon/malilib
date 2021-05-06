@@ -87,7 +87,6 @@ public class ActionWidgetScreen extends BaseScreen
         {
             for (BaseActionExecutionWidget widget : list)
             {
-                widget.setManagementData(this::markDirty, this::isEditMode, this::getGridSize);
                 this.widgetList.add(widget);
 
                 if (widget.isSelected())
@@ -95,8 +94,6 @@ public class ActionWidgetScreen extends BaseScreen
                     this.selectedWidgets.add(widget);
                 }
             }
-
-            this.hasGroupSelection = this.selectedWidgets.isEmpty() == false;
         }
     }
 
@@ -146,9 +143,12 @@ public class ActionWidgetScreen extends BaseScreen
 
         for (BaseActionExecutionWidget widget : this.widgetList)
         {
+            widget.setManagementData(this::markDirty, this::isEditMode, this::getGridSize);
             widget.onAdded(this);
             this.addWidget(widget);
         }
+
+        this.hasGroupSelection = this.selectedWidgets.isEmpty() == false;
     }
 
     @Override

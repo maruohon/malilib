@@ -1,35 +1,27 @@
 package fi.dy.masa.malilib.gui.widget;
 
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.gui.icon.MultiIcon;
+import fi.dy.masa.malilib.gui.icon.Icon;
 
 public class IconWidget extends BackgroundWidget
 {
-    @Nullable protected MultiIcon icon;
     protected boolean doHighlight;
     protected boolean enabled;
 
-    public IconWidget(int x, int y, @Nullable MultiIcon icon)
+    public IconWidget(int x, int y, @Nullable Icon icon)
     {
         super(x, y, icon.getWidth(), icon.getHeight());
 
         this.setIcon(icon);
     }
 
-    @Nullable
-    public MultiIcon getIcon()
+    @Override
+    public void setIcon(@Nullable Icon icon)
     {
-        return this.icon;
-    }
-
-    public IconWidget setIcon(@Nullable MultiIcon icon)
-    {
-        this.icon = icon;
+        super.setIcon(icon);
 
         this.updateWidth();
         this.updateHeight();
-
-        return this;
     }
 
     public IconWidget setEnabled(boolean enabled)
@@ -85,11 +77,20 @@ public class IconWidget extends BackgroundWidget
     }
 
     @Override
+    protected void renderIcon(int x, int y, float z, boolean enabled, boolean hovered, ScreenContext ctx)
+    {
+        super.renderIcon(x, y, z, enabled, hovered, ctx);
+    }
+
+    @Override
     public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
         if (this.icon != null)
         {
-            super.renderAt(x, y, z, ctx);
+            boolean hovered = this.doHighlight && this.isHoveredForRender(ctx);
+
+            this.renderWidgetBackground(x, y, z, ctx);
+            this.renderText(x, y, z, hovered, ctx);
 
             if (this.renderNormalBackground)
             {
@@ -97,7 +98,7 @@ public class IconWidget extends BackgroundWidget
                 y += this.padding.getTop() + this.normalBorderWidth;
             }
 
-            this.icon.renderAt(x, y, z + 0.1f, this.enabled, this.doHighlight && this.isHoveredForRender(ctx));
+            this.renderIcon(x, y, z, this.enabled, hovered, ctx);
         }
     }
 }

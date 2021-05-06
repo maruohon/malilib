@@ -154,6 +154,12 @@ public class BackgroundWidget extends InteractableWidget
     @Override
     public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
+        this.renderWidgetBackground(x, y, z, ctx);
+        super.renderAt(x, y, z, ctx);
+    }
+
+    protected void renderWidgetBackground(int x, int y, float z, ScreenContext ctx)
+    {
         boolean hovered = this.isHoveredForRender(ctx);
         int width = this.getBackgroundWidth(hovered, ctx);
         int height = this.getBackgroundHeight(hovered, ctx);
@@ -162,8 +168,6 @@ public class BackgroundWidget extends InteractableWidget
         RenderUtils.setupBlend();
 
         this.renderWidgetBackground(x, y, z, width, height,hovered, ctx);
-
-        super.renderAt(x, y, z, ctx);
     }
 
     protected void renderWidgetBackground(int x, int y, float z, int width, int height,

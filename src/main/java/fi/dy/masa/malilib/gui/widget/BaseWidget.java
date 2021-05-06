@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
+import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.position.EdgeInt;
 import fi.dy.masa.malilib.render.RectangleRenderer;
 import fi.dy.masa.malilib.render.RenderUtils;
@@ -26,12 +27,15 @@ public class BaseWidget
 
     private static final ArrayListMultimap<Long, String> DEBUG_STRINGS = ArrayListMultimap.create();
     private static int lastDebugOutlineColorHue;
+    private static int nextWidgetId;
 
+    private final int id;
     protected final Minecraft mc;
     protected final TextRenderer textRenderer;
     protected final EdgeInt margin = new EdgeInt();
     protected final EdgeInt padding = new EdgeInt();
     protected final int fontHeight;
+    @Nullable protected Icon icon;
     @Nullable protected StyledTextLine text;
     private int x;
     private int y;
@@ -43,20 +47,27 @@ public class BaseWidget
     private boolean rightAlign;
     protected boolean automaticHeight;
     protected boolean automaticWidth;
+    protected boolean centerIconHorizontally;
+    protected boolean centerIconVertically = true;
     protected boolean centerTextHorizontally;
     protected boolean centerTextVertically = true;
     protected boolean hasMaxHeight;
     protected boolean hasMaxWidth;
     protected boolean textShadow = true;
+    protected int iconOffsetX;
+    protected int iconOffsetY;
     protected int lineHeight;
     protected int maxHeight;
     protected int maxWidth;
-    protected int defaultTextColor = 0xFFFFFFFF;
+    protected int defaultHoveredTextColor = 0xFFFFFFFF;
+    protected int defaultNormalTextColor = 0xFFFFFFFF;
     protected int textOffsetX = 4;
     protected int textOffsetY;
 
     public BaseWidget(int x, int y, int width, int height)
     {
+        this.id = nextWidgetId++;
+
         this.x = x;
         this.y = y;
         this.width = width;
@@ -73,6 +84,16 @@ public class BaseWidget
         this.hasMaxHeight = height < -1;
         this.maxWidth = this.hasMaxWidth ? -width : width;
         this.maxHeight = this.hasMaxHeight ? -height : height;
+    }
+
+    /**
+     * Returns the unique(-ish) ID of this widget.
+     * The ID is increment by one for each widget that is created (starting from 0 for each game launch).
+     * This ID is mainly meant for things like identifying the top-most hovered widget.
+     */
+    public int getId()
+    {
+        return this.id;
     }
 
     public int getX()
@@ -401,9 +422,24 @@ public class BaseWidget
         return this.centerTextVertically;
     }
 
-    public int getDefaultTextColor()
+    public int getDefaultNormalTextColor()
     {
-        return this.defaultTextColor;
+        return this.defaultNormalTextColor;
+    }
+
+    public int getDefaultHoveredTextColor()
+    {
+        return this.defaultHoveredTextColor;
+    }
+
+    public boolean getCenterIconHorizontally()
+    {
+        return this.centerIconHorizontally;
+    }
+
+    public boolean getCenterIconVertically()
+    {
+        return this.centerIconVertically;
     }
 
     public int getTextOffsetX()
@@ -416,6 +452,16 @@ public class BaseWidget
         return this.textOffsetY;
     }
 
+    public int getIconOffsetX()
+    {
+        return this.iconOffsetX;
+    }
+
+    public int getIconOffsetY()
+    {
+        return this.iconOffsetY;
+    }
+
     public void setCenterTextHorizontally(boolean centerTextHorizontally)
     {
         this.centerTextHorizontally = centerTextHorizontally;
@@ -426,9 +472,24 @@ public class BaseWidget
         this.centerTextVertically = centerTextVertically;
     }
 
-    public void setDefaultTextColor(int defaultTextColor)
+    public void setCenterIconHorizontally(boolean centerIconHorizontally)
     {
-        this.defaultTextColor = defaultTextColor;
+        this.centerIconHorizontally = centerIconHorizontally;
+    }
+
+    public void setCenterIconVertically(boolean centerIconVertically)
+    {
+        this.centerIconVertically = centerIconVertically;
+    }
+
+    public void setDefaultNormalTextColor(int defaultNormalTextColor)
+    {
+        this.defaultNormalTextColor = defaultNormalTextColor;
+    }
+
+    public void setDefaultHoveredTextColor(int defaultHoveredTextColor)
+    {
+        this.defaultHoveredTextColor = defaultHoveredTextColor;
     }
 
     public void setTextOffsetX(int textOffsetX)
@@ -439,6 +500,16 @@ public class BaseWidget
     public void setTextOffsetY(int textOffsetY)
     {
         this.textOffsetY = textOffsetY;
+    }
+
+    public void setIconOffsetX(int iconOffsetX)
+    {
+        this.iconOffsetX = iconOffsetX;
+    }
+
+    public void setIconOffsetY(int iconOffsetY)
+    {
+        this.iconOffsetY = iconOffsetY;
     }
 
     /**
@@ -464,6 +535,21 @@ public class BaseWidget
         this.textOffsetY = textOffsetY;
     }
 
+    @Nullable
+    public Icon getIcon()
+    {
+        return this.icon;
+    }
+
+    /**
+     * Sets a simple icon to be rendered in the widget,
+     * without having to add a nested IconWidget or per-widget code.
+     */
+    public void setIcon(@Nullable Icon icon)
+    {
+        this.icon = icon;
+    }
+
     public int getFontHeight()
     {
         return this.fontHeight;
@@ -472,6 +558,11 @@ public class BaseWidget
     protected int getCenteredElementOffsetX(int elementWidth)
     {
         return (this.getWidth() - elementWidth) / 2;
+    }
+
+    protected int getCenteredElementOffsetY(int elementHeight)
+    {
+        return (this.getHeight() - elementHeight) / 2;
     }
 
     protected int getCenteredTextOffsetY()
@@ -518,6 +609,30 @@ public class BaseWidget
         return position;
     }
 
+    protected int getIconPositionX(int x, int iconWidth)
+    {
+        int position = x + this.iconOffsetX;
+
+        if (this.centerIconHorizontally)
+        {
+            position += this.getCenteredElementOffsetX(iconWidth);
+        }
+
+        return position;
+    }
+
+    protected int getIconPositionY(int y, int iconHeight)
+    {
+        int position = y + this.iconOffsetY;
+
+        if (this.centerIconVertically)
+        {
+            position += this.getCenteredElementOffsetY(iconHeight);
+        }
+
+        return position;
+    }
+
     public void renderTextLine(int x, int y, float z, int defaultColor, boolean shadow,
                                ScreenContext ctx, StyledTextLine text)
     {
@@ -534,20 +649,34 @@ public class BaseWidget
         this.textRenderer.renderLine(x, y, z, color, shadow, StyledTextLine.of(str));
     }
 
-    protected void renderText(int x, int y, float z, ScreenContext ctx)
+    protected void renderText(int x, int y, float z, boolean hovered, ScreenContext ctx)
     {
         if (this.text != null)
         {
             x = this.getTextPositionX(x, this.text.renderWidth);
             y = this.getTextPositionY(y);
+            int color = hovered ? this.defaultHoveredTextColor : this.defaultNormalTextColor;
 
-            this.renderTextLine(x, y, z + 0.125f, this.defaultTextColor, this.textShadow, ctx, this.text);
+            this.renderTextLine(x, y, z + 0.025f, color, this.textShadow, ctx, this.text);
+        }
+    }
+
+    protected void renderIcon(int x, int y, float z, boolean enabled, boolean hovered, ScreenContext ctx)
+    {
+        if (this.icon != null)
+        {
+            x = this.getIconPositionX(x, this.icon.getWidth());
+            y = this.getIconPositionY(y, this.icon.getHeight());
+
+            this.icon.renderAt(x, y, z + 0.025f, enabled, hovered);
         }
     }
 
     public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
-        this.renderText(x, y, z, ctx);
+        boolean hovered = ctx.isActiveScreen && ctx.hoveredWidgetId == this.getId();
+        this.renderIcon(x, y, z, true, hovered, ctx);
+        this.renderText(x, y, z, hovered, ctx);
     }
 
     public void renderDebug(boolean hovered, ScreenContext ctx)

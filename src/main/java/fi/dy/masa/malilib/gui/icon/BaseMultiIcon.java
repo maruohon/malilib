@@ -27,7 +27,13 @@ public class BaseMultiIcon extends BaseIcon implements MultiIcon
 
     public BaseMultiIcon(int u, int v, int w, int h, int variantOffsetU, int variantOffsetV, ResourceLocation texture)
     {
-        super(u, v, w, h, texture);
+        this(u, v, w, h, variantOffsetU, variantOffsetV, 256, 256, texture);
+    }
+
+    public BaseMultiIcon(int u, int v, int w, int h, int variantOffsetU, int variantOffsetV,
+                         int textureWidth, int textureHeight, ResourceLocation texture)
+    {
+        super(u, v, w, h, textureWidth, textureHeight, texture);
 
         this.variantOffsetU = variantOffsetU;
         this.variantOffsetV = variantOffsetV;

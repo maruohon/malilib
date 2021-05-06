@@ -5,9 +5,12 @@ import javax.annotation.Nullable;
 import fi.dy.masa.malilib.action.ActionRegistry;
 import fi.dy.masa.malilib.action.NamedAction;
 import fi.dy.masa.malilib.gui.BaseScreen;
+import fi.dy.masa.malilib.gui.icon.Icon;
+import fi.dy.masa.malilib.gui.icon.IconRegistry;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.CheckBoxWidget;
 import fi.dy.masa.malilib.gui.widget.DropDownListWidget;
+import fi.dy.masa.malilib.gui.widget.IconWidget;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.util.StringUtils;
@@ -17,9 +20,11 @@ public class AddActionExecutionWidgetScreen extends BaseScreen
     protected final Consumer<BaseActionExecutionWidget> widgetConsumer;
     protected final DropDownListWidget<NamedAction> actionDropDownWidget;
     protected final DropDownListWidget<BaseActionExecutionWidget.Type> typeDropDownWidget;
+    protected final DropDownListWidget<Icon> iconDropDownWidget;
     protected final LabelWidget actionLabelWidget;
     protected final LabelWidget typeLabelWidget;
     protected final LabelWidget nameLabelWidget;
+    protected final LabelWidget iconLabelWidget;
     protected final LabelWidget hoverTextLabelWidget;
     protected final LabelWidget argumentLabelWidget;
     protected final CheckBoxWidget addArgumentCheckbox;
@@ -38,8 +43,9 @@ public class AddActionExecutionWidgetScreen extends BaseScreen
 
         this.actionLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.action.colon");
         this.typeLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.type.colon");
-        this.nameLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.name.colon");
-        this.hoverTextLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.hover_text.colon");
+        this.nameLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.name_optional.colon");
+        this.iconLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.icon_optional.colon");
+        this.hoverTextLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.hover_text_optional.colon");
         this.argumentLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.argument.colon");
 
         this.actionDropDownWidget = new DropDownListWidget<>(0, 0, 160, 16, 240, 20,
@@ -51,6 +57,10 @@ public class AddActionExecutionWidgetScreen extends BaseScreen
                                                            BaseActionExecutionWidget.Type.VALUES,
                                                            BaseActionExecutionWidget.Type::getDisplayName, null);
         this.typeDropDownWidget.setSelectedEntry(BaseActionExecutionWidget.Type.RECTANGULAR);
+
+        this.iconDropDownWidget = new DropDownListWidget<>(0, 0, 120, 16, 120, 10,
+                                                           IconRegistry.INSTANCE.getAllIcons(),
+                                                           IconRegistry::getKeyForIcon, (x, y, h, i) -> new IconWidget(x, y, i));
 
         this.addArgumentCheckbox = new CheckBoxWidget(0, 0, "malilib.label.add_action_execution_widget.add_argument",
                                                       "malilib.hover_info.add_action_execution_widget.add_argument");
@@ -66,7 +76,7 @@ public class AddActionExecutionWidgetScreen extends BaseScreen
         this.cancelButton.setActionListener(this::cancel);
 
         this.backgroundColor = 0xFF101010;
-        this.setScreenWidthAndHeight(240, 170);
+        this.setScreenWidthAndHeight(240, 200);
         this.centerOnScreen();
     }
 
@@ -81,23 +91,31 @@ public class AddActionExecutionWidgetScreen extends BaseScreen
         this.actionLabelWidget.setPosition(x, y + 4);
         this.actionDropDownWidget.setPosition(this.actionLabelWidget.getRight() + 6, y);
 
-        y += 24;
+        y += 20;
         this.typeLabelWidget.setPosition(x, y + 4);
         this.typeDropDownWidget.setPosition(this.typeLabelWidget.getRight() + 6, y);
 
-        y += 24;
-        this.nameLabelWidget.setPosition(x, y + 4);
-        this.nameTextField.setPosition(this.nameLabelWidget.getRight() + 6, y);
+        y += 22;
+        this.nameLabelWidget.setPosition(x, y);
+        y += 10;
+        this.nameTextField.setPosition(x, y);
 
-        y += 24;
-        this.hoverTextLabelWidget.setPosition(x, y + 4);
-        this.hoverTextTextField.setPosition(this.hoverTextLabelWidget.getRight() + 6, y);
+        y += 22;
+        this.hoverTextLabelWidget.setPosition(x, y);
+        y += 10;
+        this.hoverTextTextField.setPosition(x, y);
 
-        y += 24;
+        y += 22;
+        this.iconLabelWidget.setPosition(x, y);
+        y += 10;
+        this.iconDropDownWidget.setPosition(x, y);
+
+        y += 22;
         this.addArgumentCheckbox.setPosition(x, y);
 
         y += 12;
-        this.argumentLabelWidget.setPosition(x, y + 4);
+        this.argumentLabelWidget.setPosition(x, y);
+        y += 16;
         this.argumentTextField.setPosition(this.argumentLabelWidget.getRight() + 6, y);
 
         y += 32;
@@ -116,19 +134,11 @@ public class AddActionExecutionWidgetScreen extends BaseScreen
         this.addWidget(this.hoverTextLabelWidget);
         this.addWidget(this.hoverTextTextField);
 
+        this.addWidget(this.iconLabelWidget);
+        this.addWidget(this.iconDropDownWidget);
+
         this.addWidget(this.addButton);
         this.addWidget(this.cancelButton);
-
-        /*
-        NamedAction action = this.actionDropDownWidget.getSelectedEntry();
-
-        if (action != null && action.getNeedsArguments())
-        {
-            this.addWidget(this.addArgumentCheckbox);
-            this.addWidget(this.argumentLabelWidget);
-            this.addWidget(this.argumentTextField);
-        }
-        */
     }
 
     protected void onActionSelected(@Nullable NamedAction action)
@@ -168,6 +178,7 @@ public class AddActionExecutionWidgetScreen extends BaseScreen
             BaseActionExecutionWidget widget = type.create();
             widget.setAction(action);
             widget.setName(this.nameTextField.getText());
+            widget.setIcon(this.iconDropDownWidget.getSelectedEntry());
             widget.setActionWidgetHoverText(this.hoverTextTextField.getText());
 
             this.widgetConsumer.accept(widget);

@@ -119,7 +119,7 @@ public class CheckBoxWidget extends InteractableWidget
         boolean selected = this.isSelected();
         MultiIcon icon = selected ? this.iconChecked : this.iconUnchecked;
 
-        this.defaultTextColor = selected ? this.textColorChecked : this.textColorUnchecked;
+        this.defaultNormalTextColor = selected ? this.textColorChecked : this.textColorUnchecked;
         this.textOffsetX = icon.getWidth() + 3;
 
         super.renderAt(x, y, z, ctx);

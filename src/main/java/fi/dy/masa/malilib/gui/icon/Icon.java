@@ -59,6 +59,16 @@ public interface Icon
     }
 
     /**
+     * Renders a possibly scaled/stretched version of this icon, with the given rendered width and height,
+     * possibly using an icon variant chosen by the given enabled and hover status arguments.
+     */
+    default void renderScaledAt(int x, int y, float z, int renderWidth, int renderHeight,
+                                boolean enabled, boolean hovered)
+    {
+        this.renderScaledAt(x, y, z, renderWidth, renderHeight);
+    }
+
+     /**
      * Renders a possibly scaled/stretched version of this icon, with the given rendered width and height
      */
     default void renderScaledAt(int x, int y, float z, int renderWidth, int renderHeight)

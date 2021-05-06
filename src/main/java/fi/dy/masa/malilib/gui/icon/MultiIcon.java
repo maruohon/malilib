@@ -43,6 +43,18 @@ public interface MultiIcon extends Icon
     }
 
     /**
+     * Renders a possibly scaled/stretched version of this icon at the given location,
+     * using an icon variant chosen by the given enabled and hover status.
+     */
+    @Override
+    default void renderScaledAt(int x, int y, float z, int renderWidth, int renderHeight,
+                                boolean enabled, boolean hovered)
+    {
+        int variantIndex = this.getVariantIndex(enabled, hovered);
+        this.renderScaledAt(x, y, z, variantIndex, renderWidth, renderHeight);
+    }
+
+    /**
      * Renders the icon at the given location, using the given icon variant index.
      * The variant index is basically an offset from the base UV location.
      * The implementation can define where and how the position is offset

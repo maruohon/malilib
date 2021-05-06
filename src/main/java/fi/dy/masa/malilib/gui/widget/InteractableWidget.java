@@ -16,9 +16,6 @@ import fi.dy.masa.malilib.util.StringUtils;
 
 public abstract class InteractableWidget extends BaseWidget
 {
-    private static int nextWidgetId;
-
-    private final int id;
     protected OrderedStringListFactory hoverInfoFactory = new OrderedStringListFactory();
     @Nullable protected EventListener clickListener;
     @Nullable protected HoverChecker renderHoverChecker;
@@ -30,18 +27,7 @@ public abstract class InteractableWidget extends BaseWidget
     {
         super(x, y, width, height);
 
-        this.id = nextWidgetId++;
-    }
-
-    /**
-     * Returns the unique(-ish) ID of this widget.
-     * The ID is increment by one for each widget that is created (starting from 0 for each game launch).
-     * This ID is mainly meant for things like identifying the top-most hovered widget.
-     * @return
-     */
-    public int getId()
-    {
-        return this.id;
+        this.hoverInfoFactory.setDynamic(true);
     }
 
     public void setTaskQueue(@Nullable Consumer<Runnable> taskQueue)

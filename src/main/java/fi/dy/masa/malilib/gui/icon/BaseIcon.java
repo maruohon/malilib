@@ -1,11 +1,13 @@
 package fi.dy.masa.malilib.gui.icon;
 
+import java.util.Objects;
 import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.MaLiLibReference;
+import fi.dy.masa.malilib.util.StringUtils;
 
 public class BaseIcon implements Icon
 {
-    public static final ResourceLocation MALILIB_GUI_WIDGETS_TEXTURE = new ResourceLocation(MaLiLibReference.MOD_ID, "textures/gui/gui_widgets.png");
+    public static final ResourceLocation MALILIB_GUI_WIDGETS_TEXTURE = StringUtils.identifier(MaLiLibReference.MOD_ID, "textures/gui/gui_widgets.png");
 
     protected final int u;
     protected final int v;
@@ -34,6 +36,8 @@ public class BaseIcon implements Icon
         this.texturePixelWidth = 1.0F / (float) textureWidth;
         this.texturePixelHeight = 1.0F / (float) textureHeight;
         this.texture = texture;
+
+        IconRegistry.INSTANCE.registerModIcon(this);
     }
 
     @Override
@@ -76,5 +80,35 @@ public class BaseIcon implements Icon
     public ResourceLocation getTexture()
     {
         return this.texture;
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) { return true; }
+        if (o == null || this.getClass() != o.getClass()) { return false; }
+
+        BaseIcon baseIcon = (BaseIcon) o;
+
+        if (this.u != baseIcon.u) { return false; }
+        if (this.v != baseIcon.v) { return false; }
+        if (this.w != baseIcon.w) { return false; }
+        if (this.h != baseIcon.h) { return false; }
+        if (Float.compare(baseIcon.texturePixelWidth, this.texturePixelWidth) != 0) { return false; }
+        if (Float.compare(baseIcon.texturePixelHeight, this.texturePixelHeight) != 0) { return false; }
+        return Objects.equals(this.texture, baseIcon.texture);
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int result = this.u;
+        result = 31 * result + this.v;
+        result = 31 * result + this.w;
+        result = 31 * result + this.h;
+        result = 31 * result + (this.texturePixelWidth != +0.0f ? Float.floatToIntBits(this.texturePixelWidth) : 0);
+        result = 31 * result + (this.texturePixelHeight != +0.0f ? Float.floatToIntBits(this.texturePixelHeight) : 0);
+        result = 31 * result + (this.texture != null ? this.texture.hashCode() : 0);
+        return result;
     }
 }

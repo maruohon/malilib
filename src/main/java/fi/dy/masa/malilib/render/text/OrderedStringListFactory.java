@@ -22,6 +22,7 @@ public class OrderedStringListFactory
     protected final List<Function<List<StyledTextLine>, List<StyledTextLine>>> sortedProviders = new ArrayList<>();
     protected ImmutableList<StyledTextLine> styledLines = ImmutableList.of();
     protected boolean dirty;
+    protected boolean dynamic;
     protected int maxTextRenderWidth;
 
     public OrderedStringListFactory()
@@ -38,12 +39,24 @@ public class OrderedStringListFactory
     }
 
     /**
+     * Marks the contents as "dynamic", which means that the lines will be fetched
+     * from the providers every time the {@link #getStyledLines()} method is called.
+     * Normally (when false), the lines are only fetched once every time after the
+     * {@link #markDirty()} method is called.
+     */
+    public void setDynamic(boolean dynamic)
+    {
+        this.dynamic = dynamic;
+    }
+
+    /**
      * Returns the current built list of styled text lines.
-     * Call {@link #updateList()} to rebuild the list from the current line providers.
+     * Calls {@link #updateList()} to rebuild the list from the current line providers,
+     * if the contents are marked as dirty or dynamic.
      */
     public ImmutableList<StyledTextLine> getStyledLines()
     {
-        if (this.dirty)
+        if (this.dirty || this.dynamic)
         {
             this.updateList();
         }

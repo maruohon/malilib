@@ -9,11 +9,27 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.util.data.LeftRight;
 
 public class StringUtils
 {
+    @Nullable
+    public static ResourceLocation identifier(String nameSpace, String path)
+    {
+        try
+        {
+            return new ResourceLocation(nameSpace, path);
+        }
+        catch (Exception e)
+        {
+            MaLiLib.LOGGER.error("Exception while trying to create a ResourceLocation: {}", e.getMessage());
+            return null;
+        }
+    }
+
     /**
      * Removes the string <b>extension</b> from the end of <b>str</b>,
      * if <b>str</b> ends in <b>extension</b>

@@ -243,7 +243,7 @@ public class GenericButton extends BaseButton
             int width = this.getWidth();
             int height = this.getHeight();
             boolean hovered = this.isHoveredForRender(ctx);
-            this.defaultTextColor = this.getTextColorForRender(hovered);
+            this.defaultNormalTextColor = this.getTextColorForRender(hovered);
 
             if (this.renderButtonBackgroundTexture)
             {
