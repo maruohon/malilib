@@ -183,11 +183,11 @@ public class RenderUtils
 
         int e = edgeThickness;
         
-        ShapeRenderUtils.renderTexturedRectangle(x, y             , z, u, v                , e, e, buffer); // top left
-        ShapeRenderUtils.renderTexturedRectangle(x, y + height - e, z, u, v + texHeight - e, e, e, buffer); // bottom left
+        ShapeRenderUtils.renderTexturedRectangle256(x, y             , z, u, v                , e, e, buffer); // top left
+        ShapeRenderUtils.renderTexturedRectangle256(x, y + height - e, z, u, v + texHeight - e, e, e, buffer); // bottom left
 
-        ShapeRenderUtils.renderTexturedRectangle(x + width - e, y             , z, u + texWidth - e, v                , e, e, buffer); // top right
-        ShapeRenderUtils.renderTexturedRectangle(x + width - e, y + height - e, z, u + texWidth - e, v + texHeight - e, e, e, buffer); // bottom right
+        ShapeRenderUtils.renderTexturedRectangle256(x + width - e, y             , z, u + texWidth - e, v                , e, e, buffer); // top right
+        ShapeRenderUtils.renderTexturedRectangle256(x + width - e, y + height - e, z, u + texWidth - e, v + texHeight - e, e, e, buffer); // bottom right
 
         // Texture is smaller than the requested width, repeat stuff horizontally
         if (texWidth < width)
@@ -199,8 +199,8 @@ public class RenderUtils
             {
                 tmpW = Math.min(repeatableWidth, requiredWidth - doneWidth);
 
-                ShapeRenderUtils.renderTexturedRectangle(tmpX, y             , z, u + e, v                , tmpW, e, buffer); // top center
-                ShapeRenderUtils.renderTexturedRectangle(tmpX, y + height - e, z, u + e, v + texHeight - e, tmpW, e, buffer); // bottom center
+                ShapeRenderUtils.renderTexturedRectangle256(tmpX, y             , z, u + e, v                , tmpW, e, buffer); // top center
+                ShapeRenderUtils.renderTexturedRectangle256(tmpX, y + height - e, z, u + e, v + texHeight - e, tmpW, e, buffer); // bottom center
 
                 tmpX += tmpW;
                 doneWidth += tmpW;
@@ -209,8 +209,8 @@ public class RenderUtils
         // Texture is wide enough, no need to repeat horizontally
         else
         {
-            ShapeRenderUtils.renderTexturedRectangle(x + e, y             , z, u + e, v                , width - 2 * e, e, buffer); // top center
-            ShapeRenderUtils.renderTexturedRectangle(x + e, y + height - e, z, u + e, v + texHeight - e, width - 2 * e, e, buffer); // bottom center
+            ShapeRenderUtils.renderTexturedRectangle256(x + e, y             , z, u + e, v                , width - 2 * e, e, buffer); // top center
+            ShapeRenderUtils.renderTexturedRectangle256(x + e, y + height - e, z, u + e, v + texHeight - e, width - 2 * e, e, buffer); // bottom center
         }
 
         // Texture is smaller than the requested height, repeat stuff vertically
@@ -223,8 +223,8 @@ public class RenderUtils
             {
                 tmpH = Math.min(repeatableHeight, requiredHeight - doneHeight);
 
-                ShapeRenderUtils.renderTexturedRectangle(x            , tmpY, z, u               , v + e, e, tmpH, buffer); // left center
-                ShapeRenderUtils.renderTexturedRectangle(x + width - e, tmpY, z, u + texWidth - e, v + e, e, tmpH, buffer); // right center
+                ShapeRenderUtils.renderTexturedRectangle256(x            , tmpY, z, u               , v + e, e, tmpH, buffer); // left center
+                ShapeRenderUtils.renderTexturedRectangle256(x + width - e, tmpY, z, u + texWidth - e, v + e, e, tmpH, buffer); // right center
 
                 tmpY += tmpH;
                 doneHeight += tmpH;
@@ -233,8 +233,8 @@ public class RenderUtils
         // Texture is tall enough, no need to repeat vertically
         else
         {
-            ShapeRenderUtils.renderTexturedRectangle(x            , y + e, z, u               , v + e, e, height - 2 * e, buffer); // left center
-            ShapeRenderUtils.renderTexturedRectangle(x + width - e, y + e, z, u + texWidth - e, v + e, e, height - 2 * e, buffer); // right center
+            ShapeRenderUtils.renderTexturedRectangle256(x            , y + e, z, u               , v + e, e, height - 2 * e, buffer); // left center
+            ShapeRenderUtils.renderTexturedRectangle256(x + width - e, y + e, z, u + texWidth - e, v + e, e, height - 2 * e, buffer); // right center
         }
 
         // The center part needs to be repeated
@@ -253,7 +253,7 @@ public class RenderUtils
                 {
                     tmpH = Math.min(repeatableHeight, requiredHeight - doneHeight);
 
-                    ShapeRenderUtils.renderTexturedRectangle(tmpX, tmpY, z, u + e, v + e, tmpW, tmpH, buffer); // center
+                    ShapeRenderUtils.renderTexturedRectangle256(tmpX, tmpY, z, u + e, v + e, tmpW, tmpH, buffer); // center
 
                     tmpY += tmpH;
                     doneHeight += tmpH;
@@ -265,7 +265,7 @@ public class RenderUtils
         }
         else
         {
-            ShapeRenderUtils.renderTexturedRectangle(x + e, y + e, z, u + e, v + e, width - 2 * e, height - 2 * e, buffer); // center
+            ShapeRenderUtils.renderTexturedRectangle256(x + e, y + e, z, u + e, v + e, width - 2 * e, height - 2 * e, buffer); // center
         }
 
         drawBuffer();

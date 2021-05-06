@@ -158,8 +158,8 @@ public class OnOffButton extends GenericButton
         int v2 = v1 + icon.getHeight() - iconHeight2;
 
         RenderUtils.bindTexture(icon.getTexture());
-        ShapeRenderUtils.renderTexturedRectangle(sliderX, y + 1              , z, u, v1, iconWidth, iconHeight1);
-        ShapeRenderUtils.renderTexturedRectangle(sliderX, y + 1 + iconHeight1, z, u, v2, iconWidth, iconHeight2);
+        ShapeRenderUtils.renderTexturedRectangle256(sliderX, y + 1              , z, u, v1, iconWidth, iconHeight1);
+        ShapeRenderUtils.renderTexturedRectangle256(sliderX, y + 1 + iconHeight1, z, u, v2, iconWidth, iconHeight2);
     }
 
     public static OnOffButton simpleSlider(int height, BooleanSupplier statusSupplier, EventListener actionListener)

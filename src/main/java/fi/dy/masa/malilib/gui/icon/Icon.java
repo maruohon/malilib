@@ -7,45 +7,78 @@ import fi.dy.masa.malilib.render.ShapeRenderUtils;
 public interface Icon
 {
     /**
-     * @return the width of this icon
+     * @return the width of this icon in pixels
      */
     int getWidth();
 
     /**
-     * @return the height of this icon
+     * @return the height of this icon in pixels
      */
     int getHeight();
 
     /**
-     * @return the texture U-coordinate (x-coordinate) of this icon
+     * @return the texture pixel u-coordinate (x-coordinate) of this icon's top left corner
      */
     int getU();
 
     /**
-     * @return the texture V-coordinate (y-coordinate) of this icon
+     * @return the texture pixel v-coordinate (y-coordinate) of this icon's top left corner
      */
     int getV();
 
     /**
-     * @return the identifier/location of the texture used for this icon
+     * @return the relative width of one pixel in the texture sheet
+     */
+    float getTexturePixelWidth();
+
+    /**
+     * @return the relative height of one pixel in the texture sheet
+     */
+    float getTexturePixelHeight();
+
+    /**
+     * @return the identifier/location of the texture sheet used for this icon
      */
     ResourceLocation getTexture();
 
     /**
      * Renders this icon at the given position
-     * @param x
-     * @param y
-     * @param z
      */
-    void renderAt(int x, int y, float z);
+    default void renderAt(int x, int y, float z)
+    {
+        this.renderScaledAt(x, y, z, this.getWidth(), this.getHeight());
+    }
+
+    /**
+     * Renders a possibly scaled/stretched version of this icon, with the given rendered width and height
+     */
+    default void renderScaledAt(int x, int y, float z, int renderWidth, int renderHeight)
+    {
+        int width = this.getWidth();
+        int height = this.getHeight();
+
+        if (width == 0 || height == 0)
+        {
+            return;
+        }
+
+        int u = this.getU();
+        int v = this.getV();
+        float pw = this.getTexturePixelWidth();
+        float ph = this.getTexturePixelHeight();
+
+        RenderUtils.color(1f, 1f, 1f, 1f);
+        RenderUtils.bindTexture(this.getTexture());
+        RenderUtils.setupBlend();
+
+        ShapeRenderUtils.renderScaledTexturedRectangle(x, y, z, u, v, renderWidth, renderHeight,
+                                                       width, height, pw, ph);
+    }
 
     /**
      * Renders a composite (smaller) icon by using a rectangular area
      * of each of the 4 corners of the texture. The width and height
      * arguments define what size texture is going to be rendered.
-     * @param x
-     * @param y
-     * @param z
      * @param width the width of the icon to render
      * @param height the height of the icon to render
      */
@@ -68,14 +101,18 @@ public interface Icon
         int w2 = (width & 0x1) != 0 ? w1 + 1 : w1;
         int h1 = height / 2;
         int h2 = (height & 0x1) != 0 ? h1 + 1 : h1;
+        int uRight = u + textureWidth - w2;
+        int vBottom = v + textureHeight - h2;
+        float pw = this.getTexturePixelWidth();
+        float ph = this.getTexturePixelHeight();
 
         RenderUtils.color(1f, 1f, 1f, 1f);
         RenderUtils.bindTexture(this.getTexture());
 
-        ShapeRenderUtils.renderTexturedRectangle(x, y     , z, u, v                     , w1, h1); // top left
-        ShapeRenderUtils.renderTexturedRectangle(x, y + h1, z, u, v + textureHeight - h2, w1, h2); // bottom left
+        ShapeRenderUtils.renderTexturedRectangle(x, y     , z, u, v      , w1, h1, pw, ph); // top left
+        ShapeRenderUtils.renderTexturedRectangle(x, y + h1, z, u, vBottom, w1, h2, pw, ph); // bottom left
 
-        ShapeRenderUtils.renderTexturedRectangle(x + w1, y     , z, u + textureWidth - w2, v                     , w2, h1); // top right
-        ShapeRenderUtils.renderTexturedRectangle(x + w1, y + h1, z, u + textureWidth - w2, v + textureHeight - h2, w2, h2); // bottom right
+        ShapeRenderUtils.renderTexturedRectangle(x + w1, y     , z, uRight, v      , w2, h1, pw, ph); // top right
+        ShapeRenderUtils.renderTexturedRectangle(x + w1, y + h1, z, uRight, vBottom, w2, h2, pw, ph); // bottom right
     }
 }

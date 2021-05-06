@@ -2,8 +2,6 @@ package fi.dy.masa.malilib.gui.icon;
 
 import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.MaLiLibReference;
-import fi.dy.masa.malilib.render.RenderUtils;
-import fi.dy.masa.malilib.render.ShapeRenderUtils;
 
 public class BaseIcon implements Icon
 {
@@ -13,6 +11,8 @@ public class BaseIcon implements Icon
     protected final int v;
     protected final int w;
     protected final int h;
+    protected final float texturePixelWidth;
+    protected final float texturePixelHeight;
     protected ResourceLocation texture;
 
     BaseIcon(int u, int v, int w, int h)
@@ -22,10 +22,17 @@ public class BaseIcon implements Icon
 
     public BaseIcon(int u, int v, int w, int h, ResourceLocation texture)
     {
+        this(u, v, w, h, 256, 256, texture);
+    }
+
+    public BaseIcon(int u, int v, int w, int h, int textureWidth, int textureHeight, ResourceLocation texture)
+    {
         this.u = u;
         this.v = v;
         this.w = w;
         this.h = h;
+        this.texturePixelWidth = 1.0F / (float) textureWidth;
+        this.texturePixelHeight = 1.0F / (float) textureHeight;
         this.texture = texture;
     }
 
@@ -54,21 +61,20 @@ public class BaseIcon implements Icon
     }
 
     @Override
-    public ResourceLocation getTexture()
+    public float getTexturePixelWidth()
     {
-        return this.texture;
+        return this.texturePixelWidth;
     }
 
     @Override
-    public void renderAt(int x, int y, float z)
+    public float getTexturePixelHeight()
     {
-        if (this.w == 0 || this.h == 0)
-        {
-            return;
-        }
+        return this.texturePixelHeight;
+    }
 
-        RenderUtils.color(1f, 1f, 1f, 1f);
-        RenderUtils.bindTexture(this.getTexture());
-        ShapeRenderUtils.renderTexturedRectangle(x, y, z, this.u, this.v, this.w, this.h);
+    @Override
+    public ResourceLocation getTexture()
+    {
+        return this.texture;
     }
 }

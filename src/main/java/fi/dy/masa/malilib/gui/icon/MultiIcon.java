@@ -7,26 +7,17 @@ public interface MultiIcon extends Icon
 {
     /**
      * Get the U coordinate for the given icon variant
-     * @param variantIndex
-     * @return
      */
     int getVariantU(int variantIndex);
 
     /**
      * Get the V coordinate for the given icon variant
-     * @param variantIndex
-     * @return
      */
     int getVariantV(int variantIndex);
 
     /**
      * Renders the icon at the given location, using an icon variant chosen
      * by the given enabled and hover status.
-     * @param x
-     * @param y
-     * @param z
-     * @param enabled
-     * @param hovered
      */
     default void renderAt(int x, int y, float z, boolean enabled, boolean hovered)
     {
@@ -39,9 +30,6 @@ public interface MultiIcon extends Icon
      * By default a disabled icon is at index 0, an enabled, non-hovered icon
      * is at index 1 and an enabled, hovered icon is at index 2.
      * Thus the hover status has no effect for disabled icons.
-     * @param enabled
-     * @param hovered
-     * @return
      */
     default int getVariantIndex(boolean enabled, boolean hovered)
     {
@@ -58,12 +46,20 @@ public interface MultiIcon extends Icon
      * The variant index is basically an offset from the base UV location.
      * The implementation can define where and how the position is offset
      * from the base location.
-     * @param x
-     * @param y
-     * @param z
-     * @param variantIndex
      */
     default void renderAt(int x, int y, float z, int variantIndex)
+    {
+        this.renderScaledAt(x, y, z, variantIndex, this.getWidth(), this.getHeight());
+    }
+
+    /**
+     * Renders a possibly scaled/stretched version of this icon, with the given
+     * rendered width and height, using the given icon variant index.
+     * The variant index is basically an offset from the base UV location.
+     * The implementation can define where and how the position is offset
+     * from the base location.
+     */
+    default void renderScaledAt(int x, int y, float z, int variantIndex, int renderWidth, int renderHeight)
     {
         int width = this.getWidth();
         int height = this.getHeight();
@@ -75,23 +71,23 @@ public interface MultiIcon extends Icon
 
         int u = this.getVariantU(variantIndex);
         int v = this.getVariantV(variantIndex);
+        float pw = this.getTexturePixelWidth();
+        float ph = this.getTexturePixelHeight();
 
         RenderUtils.color(1f, 1f, 1f, 1f);
         RenderUtils.bindTexture(this.getTexture());
-        ShapeRenderUtils.renderTexturedRectangle(x, y, z, u, v, width, height);
+        RenderUtils.setupBlend();
+
+        ShapeRenderUtils.renderScaledTexturedRectangle(x, y, z, u, v, renderWidth, renderHeight,
+                                                       width, height, pw, ph);
     }
 
     /**
      * Renders a composite (smaller) icon by using a rectangular area
      * of each of the 4 corners of the texture. The width and height
      * arguments define what size texture is going to be rendered.
-     * @param x
-     * @param y
-     * @param z
      * @param width the width of the icon to render
      * @param height the height of the icon to render
-     * @param enabled
-     * @param hovered
      */
     default void renderFourSplicedAt(int x, int y, float z, int width, int height, boolean enabled, boolean hovered)
     {

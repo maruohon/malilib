@@ -319,8 +319,8 @@ public class ScrollBarWidget extends InteractableWidget
                 int w = this.barTexture.getWidth();
                 int h = this.barTexture.getHeight();
 
-                ShapeRenderUtils.renderTexturedRectangle(x + 1, barPosition                , z, u, v        , w, barHeight - 2);
-                ShapeRenderUtils.renderTexturedRectangle(x + 1, barPosition + barHeight - 2, z, u, v + h - 2, w, 2);
+                ShapeRenderUtils.renderTexturedRectangle256(x + 1, barPosition                , z, u, v        , w, barHeight - 2);
+                ShapeRenderUtils.renderTexturedRectangle256(x + 1, barPosition + barHeight - 2, z, u, v + h - 2, w, 2);
             }
             else
             {

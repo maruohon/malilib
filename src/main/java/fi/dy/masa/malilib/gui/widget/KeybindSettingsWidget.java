@@ -89,13 +89,13 @@ public class KeybindSettingsWidget extends InteractableWidget
         int u6 = 1 + (settings.getAllowEmpty() ? uDiff : 0);
         int u7 = 61 + (settings.getContext().getIconIndex() * uDiff);
 
-        ShapeRenderUtils.renderTexturedRectangle(x, y, z, u1, 137, w, w); // activate on
-        ShapeRenderUtils.renderTexturedRectangle(x, y, z, u2, 157, w, w); // allow extra
-        ShapeRenderUtils.renderTexturedRectangle(x, y, z, u3, 177, w, w); // order sensitive
-        ShapeRenderUtils.renderTexturedRectangle(x, y, z, u4, 197, w, w); // exclusive
-        ShapeRenderUtils.renderTexturedRectangle(x, y, z, u5, 217, w, w); // cancel
-        ShapeRenderUtils.renderTexturedRectangle(x, y, z, u6, 237, w, w); // allow empty
-        ShapeRenderUtils.renderTexturedRectangle(x, y, z, u7, 137, w, w); // context
+        ShapeRenderUtils.renderTexturedRectangle256(x, y, z, u1, 137, w, w); // activate on
+        ShapeRenderUtils.renderTexturedRectangle256(x, y, z, u2, 157, w, w); // allow extra
+        ShapeRenderUtils.renderTexturedRectangle256(x, y, z, u3, 177, w, w); // order sensitive
+        ShapeRenderUtils.renderTexturedRectangle256(x, y, z, u4, 197, w, w); // exclusive
+        ShapeRenderUtils.renderTexturedRectangle256(x, y, z, u5, 217, w, w); // cancel
+        ShapeRenderUtils.renderTexturedRectangle256(x, y, z, u6, 237, w, w); // allow empty
+        ShapeRenderUtils.renderTexturedRectangle256(x, y, z, u7, 137, w, w); // context
     }
 
     protected List<String> rebuildHoverStrings()
