@@ -42,6 +42,15 @@ public interface Icon
     ResourceLocation getTexture();
 
     /**
+     * Renders the icon at the given location, possibly using an icon variant chosen
+     * by the given enabled and hover status arguments.
+     */
+    default void renderAt(int x, int y, float z, boolean enabled, boolean hovered)
+    {
+        this.renderAt(x, y, z);
+    }
+
+    /**
      * Renders this icon at the given position
      */
     default void renderAt(int x, int y, float z)

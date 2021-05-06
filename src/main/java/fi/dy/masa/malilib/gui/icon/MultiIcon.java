@@ -16,16 +16,6 @@ public interface MultiIcon extends Icon
     int getVariantV(int variantIndex);
 
     /**
-     * Renders the icon at the given location, using an icon variant chosen
-     * by the given enabled and hover status.
-     */
-    default void renderAt(int x, int y, float z, boolean enabled, boolean hovered)
-    {
-        int variantIndex = this.getVariantIndex(enabled, hovered);
-        this.renderAt(x, y, z, variantIndex);
-    }
-
-    /**
      * Returns the icon variant index to use for the given status of the icon.
      * By default a disabled icon is at index 0, an enabled, non-hovered icon
      * is at index 1 and an enabled, hovered icon is at index 2.
@@ -39,6 +29,17 @@ public interface MultiIcon extends Icon
         }
 
         return hovered ? 2 : 1;
+    }
+
+    /**
+     * Renders the icon at the given location, using an icon variant chosen
+     * by the given enabled and hover status.
+     */
+    @Override
+    default void renderAt(int x, int y, float z, boolean enabled, boolean hovered)
+    {
+        int variantIndex = this.getVariantIndex(enabled, hovered);
+        this.renderAt(x, y, z, variantIndex);
     }
 
     /**
