@@ -2,9 +2,13 @@ package fi.dy.masa.malilib.gui.action;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BooleanSupplier;
+import java.util.function.IntSupplier;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 import com.google.common.collect.ImmutableList;
+import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.action.ActionContext;
 import fi.dy.masa.malilib.action.ActionExecutionWidgetManager;
 import fi.dy.masa.malilib.gui.BaseScreen;
@@ -19,14 +23,19 @@ import fi.dy.masa.malilib.gui.widget.MenuWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.button.OnOffButton;
 import fi.dy.masa.malilib.input.ActionResult;
+import fi.dy.masa.malilib.input.KeyBind;
+import fi.dy.masa.malilib.input.KeyBindImpl;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.data.Vec2i;
 
 public class ActionWidgetScreen extends BaseScreen
 {
-    protected final List<ActionExecutionWidget> widgetList = new ArrayList<>();
-    protected final List<ActionExecutionWidget> selectedWidgets = new ArrayList<>();
+    public static final BooleanSupplier ALWAYS_FALSE = () -> false;
+    public static final IntSupplier NO_GRID = () -> -1;
+
+    protected final List<BaseActionExecutionWidget> widgetList = new ArrayList<>();
+    protected final List<BaseActionExecutionWidget> selectedWidgets = new ArrayList<>();
     protected final GenericButton addWidgetButton;
     protected final GenericButton editModeButton;
     protected final GenericButton gridEnabledButton;
@@ -36,6 +45,7 @@ public class ActionWidgetScreen extends BaseScreen
     protected final IntegerEditWidget gridEditWidget;
     protected final BaseTextFieldWidget nameTextField;
     protected final InfoIconWidget infoWidget;
+    @Nullable protected final KeyBind openKey;
     @Nullable protected MenuWidget menuWidget;
     protected final String name;
     protected Vec2i selectionStart = Vec2i.ZERO;
@@ -48,6 +58,12 @@ public class ActionWidgetScreen extends BaseScreen
 
     public ActionWidgetScreen(String name)
     {
+        this(name, null);
+    }
+
+    public ActionWidgetScreen(String name, @Nullable KeyBind openKey)
+    {
+        this.openKey = openKey;
         this.name = name;
 
         this.editModeLabel = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.edit_mode.colon");
@@ -65,13 +81,13 @@ public class ActionWidgetScreen extends BaseScreen
         this.gridEnabledButton = OnOffButton.simpleSlider(16, () -> this.gridEnabled, this::toggleGridEnabled);
         this.gridEditWidget = new IntegerEditWidget(0, 0, 40, 16, this.gridSize, 1, 256, this::setGridSize);
 
-        ImmutableList<ActionExecutionWidget> list = ActionExecutionWidgetManager.INSTANCE.getWidgetList(this.name);
+        ImmutableList<BaseActionExecutionWidget> list = ActionExecutionWidgetManager.INSTANCE.getWidgetList(this.name);
 
         if (list != null)
         {
-            for (ActionExecutionWidget widget : list)
+            for (BaseActionExecutionWidget widget : list)
             {
-                widget.setDirtyListener(this::markDirty);
+                widget.setManagementData(this::markDirty, this::isEditMode, this::getGridSize);
                 this.widgetList.add(widget);
 
                 if (widget.isSelected())
@@ -128,8 +144,9 @@ public class ActionWidgetScreen extends BaseScreen
             }
         }
 
-        for (ActionExecutionWidget widget : this.widgetList)
+        for (BaseActionExecutionWidget widget : this.widgetList)
         {
+            widget.onAdded(this);
             this.addWidget(widget);
         }
     }
@@ -139,9 +156,10 @@ public class ActionWidgetScreen extends BaseScreen
     {
         super.onGuiClosed();
 
-        for (ActionExecutionWidget widget : this.widgetList)
+        for (BaseActionExecutionWidget widget : this.widgetList)
         {
-            widget.setDirtyListener(null);
+            // Remove the references to this screen
+            widget.setManagementData(null, ALWAYS_FALSE, NO_GRID);
         }
 
         if (this.dirty)
@@ -192,7 +210,7 @@ public class ActionWidgetScreen extends BaseScreen
                     // Close any possible previous menu
                     this.closeMenu();
 
-                    ActionExecutionWidget widget = this.getHoveredActionWidget(mouseX, mouseY);
+                    BaseActionExecutionWidget widget = this.getHoveredActionWidget(mouseX, mouseY);
 
                     if (widget != null)
                     {
@@ -212,7 +230,7 @@ public class ActionWidgetScreen extends BaseScreen
 
         if (clickedWidget)
         {
-            for (ActionExecutionWidget widget : this.selectedWidgets)
+            for (BaseActionExecutionWidget widget : this.selectedWidgets)
             {
                 widget.startDragging(mouseX, mouseY);
             }
@@ -238,7 +256,7 @@ public class ActionWidgetScreen extends BaseScreen
             int maxY = Math.max(mouseY, this.selectionStart.y);
             EdgeInt selection = new EdgeInt(minY, maxX, maxY, minX);
 
-            for (ActionExecutionWidget widget : this.widgetList)
+            for (BaseActionExecutionWidget widget : this.widgetList)
             {
                 if (widget.intersects(selection))
                 {
@@ -260,12 +278,6 @@ public class ActionWidgetScreen extends BaseScreen
     }
 
     @Override
-    public boolean onMouseMoved(int mouseX, int mouseY)
-    {
-        return super.onMouseMoved(mouseX, mouseY);
-    }
-
-    @Override
     public boolean onKeyTyped(int keyCode, int scanCode, int modifiers)
     {
         if (keyCode == Keyboard.KEY_DELETE)
@@ -277,10 +289,32 @@ public class ActionWidgetScreen extends BaseScreen
         return super.onKeyTyped(keyCode, scanCode, modifiers);
     }
 
-    @Nullable
-    protected ActionExecutionWidget getHoveredActionWidget(int mouseX, int mouseY)
+    @Override
+    public boolean onKeyReleased(int keyCode, int scanCode, int modifiers)
     {
-        for (ActionExecutionWidget widget : this.widgetList)
+        if (this.editMode == false &&
+            MaLiLibConfigs.Generic.ACTION_SCREEN_CLOSE_ON_KEY_RELEASE.getBooleanValue() &&
+            KeyBindImpl.getCurrentlyPressedKeysCount() == 0)
+        {
+            this.closeScreen(false);
+
+            int mouseX = Mouse.getEventX() * this.width / this.mc.displayWidth;
+            int mouseY = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
+            BaseActionExecutionWidget widget = this.getHoveredActionWidget(mouseX, mouseY);
+
+            if (widget != null)
+            {
+                widget.executeAction();
+            }
+        }
+
+        return false;
+    }
+
+    @Nullable
+    protected BaseActionExecutionWidget getHoveredActionWidget(int mouseX, int mouseY)
+    {
+        for (BaseActionExecutionWidget widget : this.widgetList)
         {
             if (widget.isMouseOver(mouseX, mouseY))
             {
@@ -297,7 +331,7 @@ public class ActionWidgetScreen extends BaseScreen
         this.menuWidget = null;
     }
 
-    protected void openSingleWidgetMenu(int mouseX, int mouseY, ActionExecutionWidget widget)
+    protected void openSingleWidgetMenu(int mouseX, int mouseY, BaseActionExecutionWidget widget)
     {
         this.menuWidget = new MenuWidget(mouseX + 4, mouseY, 10, 10);
 
@@ -325,21 +359,18 @@ public class ActionWidgetScreen extends BaseScreen
         this.menuWidget.updateSubWidgetsToGeometryChanges();
     }
 
-    protected void addActionWidget(ActionExecutionWidget widget)
+    protected void addActionWidget(BaseActionExecutionWidget widget)
     {
-        int gridSize = this.gridEnabled ? this.gridSize : -1;
-
-        widget.setDirtyListener(this::markDirty);
-        widget.setEditMode(this.editMode);
-        widget.setGridSize(gridSize);
+        widget.setManagementData(this::markDirty, this::isEditMode, this::getGridSize);
         widget.setPosition(this.x + this.screenWidth / 2, this.y + 10);
+        widget.onAdded(this);
 
         this.widgetList.add(widget);
         this.addWidget(widget);
         this.markDirty();
     }
 
-    protected void removeActionWidget(ActionExecutionWidget widget)
+    protected void removeActionWidget(BaseActionExecutionWidget widget)
     {
         this.widgetList.remove(widget);
         this.selectedWidgets.remove(widget);
@@ -347,7 +378,7 @@ public class ActionWidgetScreen extends BaseScreen
         this.markDirty();
     }
 
-    protected void editActionWidget(ActionExecutionWidget widget)
+    protected void editActionWidget(BaseActionExecutionWidget widget)
     {
         this.openActionWidgetEditScreen(ImmutableList.of(widget));
     }
@@ -366,7 +397,7 @@ public class ActionWidgetScreen extends BaseScreen
         {
             this.widgetList.removeAll(this.selectedWidgets);
 
-            for (ActionExecutionWidget widget : this.selectedWidgets)
+            for (BaseActionExecutionWidget widget : this.selectedWidgets)
             {
                 this.removeWidget(widget);
             }
@@ -379,13 +410,23 @@ public class ActionWidgetScreen extends BaseScreen
 
     protected void clearSelectedWidgets()
     {
-        for (ActionExecutionWidget widget : this.selectedWidgets)
+        for (BaseActionExecutionWidget widget : this.selectedWidgets)
         {
             widget.setSelected(false);
         }
 
         this.selectedWidgets.clear();
         this.hasGroupSelection = false;
+    }
+
+    protected boolean isEditMode()
+    {
+        return this.editMode;
+    }
+
+    protected int getGridSize()
+    {
+        return this.gridEnabled ? this.gridSize : -1;
     }
 
     protected void toggleGridEnabled()
@@ -398,32 +439,17 @@ public class ActionWidgetScreen extends BaseScreen
         {
             this.addWidget(this.gridEditWidget);
         }
-
-        this.updateWidgetState();
     }
 
     protected void toggleEditMode()
     {
         this.editMode = ! this.editMode;
-        this.updateWidgetState();
         this.initScreen();
     }
 
     protected void setGridSize(int gridSize)
     {
         this.gridSize = gridSize;
-        this.updateWidgetState();
-    }
-
-    protected void updateWidgetState()
-    {
-        int gridSize = this.gridEnabled ? this.gridSize : -1;
-
-        for (ActionExecutionWidget widget : this.widgetList)
-        {
-            widget.setGridSize(gridSize);
-            widget.setEditMode(this.editMode);
-        }
     }
 
     protected void openAddWidgetScreen()
@@ -433,7 +459,7 @@ public class ActionWidgetScreen extends BaseScreen
         BaseScreen.openPopupScreen(screen);
     }
 
-    protected void openActionWidgetEditScreen(List<ActionExecutionWidget> widgets)
+    protected void openActionWidgetEditScreen(List<BaseActionExecutionWidget> widgets)
     {
         EditActionExecutionWidgetScreen screen = new EditActionExecutionWidgetScreen(widgets);
         screen.setParent(this);

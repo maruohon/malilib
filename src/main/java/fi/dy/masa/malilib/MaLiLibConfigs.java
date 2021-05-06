@@ -32,6 +32,8 @@ public class MaLiLibConfigs
         public static final BooleanConfig ACTION_PROMPT_FUZZY_SEARCH            = new BooleanConfig("actionPromptFuzzySearch", false);
         public static final BooleanConfig ACTION_PROMPT_REMEMBER_SEARCH         = new BooleanConfig("actionPromptRememberSearch", false);
         public static final BooleanConfig ACTION_PROMPT_SEARCH_DISPLAY_NAME     = new BooleanConfig("actionPromptSearchDisplayName", false);
+        public static final BooleanConfig ACTION_SCREEN_CLOSE_ON_EXECUTE        = new BooleanConfig("actionScreenCloseOnExecute", true);
+        public static final BooleanConfig ACTION_SCREEN_CLOSE_ON_KEY_RELEASE    = new BooleanConfig("actionScreenCloseOnKeyRelease", false);
         public static final BooleanConfig CONFIG_BACKUP_ANTI_DUPLICATE          = new BooleanConfig("configBackupAntiDuplicate", true);
         public static final IntegerConfig CONFIG_BACKUP_COUNT                   = new IntegerConfig("configBackupCount", 20, 0, 200);
         public static final BooleanConfig CONFIG_WIDGET_BACKGROUND              = new BooleanConfig("configWidgetBackground", true);
@@ -52,6 +54,8 @@ public class MaLiLibConfigs
                 ACTION_PROMPT_FUZZY_SEARCH,
                 ACTION_PROMPT_REMEMBER_SEARCH,
                 ACTION_PROMPT_SEARCH_DISPLAY_NAME,
+                ACTION_SCREEN_CLOSE_ON_EXECUTE,
+                ACTION_SCREEN_CLOSE_ON_KEY_RELEASE,
                 CONFIG_BACKUP_ANTI_DUPLICATE,
                 CONFIG_BACKUP_COUNT,
                 CONFIG_WIDGET_BACKGROUND,

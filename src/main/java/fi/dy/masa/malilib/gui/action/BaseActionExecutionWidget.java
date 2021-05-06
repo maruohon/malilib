@@ -1,47 +1,43 @@
 package fi.dy.masa.malilib.gui.action;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
+import java.util.function.BooleanSupplier;
+import java.util.function.IntSupplier;
+import java.util.function.Supplier;
 import javax.annotation.Nullable;
+import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonObject;
+import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.action.ActionContext;
 import fi.dy.masa.malilib.action.ActionRegistry;
 import fi.dy.masa.malilib.action.NamedAction;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.position.EdgeInt;
-import fi.dy.masa.malilib.gui.util.DraggedCorner;
 import fi.dy.masa.malilib.gui.widget.ContainerWidget;
 import fi.dy.masa.malilib.gui.widget.ScreenContext;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.JsonUtils;
-import fi.dy.masa.malilib.util.MathUtils;
-import fi.dy.masa.malilib.util.data.Vec2i;
+import fi.dy.masa.malilib.util.StringUtils;
 
-public class ActionExecutionWidget extends ContainerWidget
+public abstract class BaseActionExecutionWidget extends ContainerWidget
 {
     @Nullable protected NamedAction action;
-    @Nullable EventListener dirtyListener;
-    protected Type type = Type.RECTANGULAR;
-    protected DraggedCorner draggedCorner = DraggedCorner.BOTTOM_RIGHT;
-    protected Vec2i dragStartOffset = Vec2i.ZERO;
+    @Nullable protected EventListener dirtyListener;
+    @Nullable protected String hoverText = "";
+    protected BooleanSupplier editModeSupplier = ActionWidgetScreen.ALWAYS_FALSE;
+    protected IntSupplier gridSizeSupplier = ActionWidgetScreen.NO_GRID;
     protected String name = "?";
     protected EdgeInt editedBorderColor = new EdgeInt(0xFFFF8000);
     protected boolean dragging;
-    protected boolean editMode;
     protected boolean resizing;
     protected boolean selected;
-    protected int gridSize = -1;
-    protected int maxRadius;
-    protected int minRadius;
-    protected int sectorIndex;
-    protected int sectorRing;
 
-    public ActionExecutionWidget()
+    public BaseActionExecutionWidget()
     {
         super(0, 0, 40, 20);
-
-        this.centerTextHorizontally = true;
-        this.textOffsetX = 0;
 
         this.setNormalBorderWidth(1);
         this.setHoveredBorderWidth(2);
@@ -53,11 +49,6 @@ public class ActionExecutionWidget extends ContainerWidget
         this.setRenderNormalBorder(true);
         this.setRenderNormalBackground(true);
         this.setRenderHoverBackground(true);
-    }
-
-    public Type getType()
-    {
-        return this.type;
     }
 
     public void setAction(@Nullable NamedAction action)
@@ -74,14 +65,13 @@ public class ActionExecutionWidget extends ContainerWidget
         }
     }
 
-    public void setDirtyListener(@Nullable EventListener dirtyListener)
+    public void setManagementData(@Nullable EventListener dirtyListener,
+                                  BooleanSupplier editModeSupplier,
+                                  IntSupplier gridSizeSupplier)
     {
         this.dirtyListener = dirtyListener;
-    }
-
-    public void setType(Type type)
-    {
-        this.type = type;
+        this.editModeSupplier = editModeSupplier;
+        this.gridSizeSupplier = gridSizeSupplier;
     }
 
     public String getName()
@@ -102,34 +92,46 @@ public class ActionExecutionWidget extends ContainerWidget
         }
     }
 
-    public void setGridSize(int gridSize)
+    protected boolean isEditMode()
     {
-        this.gridSize = gridSize;
+        return this.editModeSupplier.getAsBoolean();
     }
 
-    public void setMinRadius(int minRadius)
+    protected int getGridSize()
     {
-        this.minRadius = minRadius;
+        return this.gridSizeSupplier.getAsInt();
     }
 
-    public void setMaxRadius(int maxRadius)
+    @Nullable
+    public String getActionWidgetHoverTextString()
     {
-        this.maxRadius = maxRadius;
+        return this.hoverText;
     }
 
-    public void setSectorIndex(int sectorIndex)
+    protected List<StyledTextLine> getActionWidgetHoverTextLines()
     {
-        this.sectorIndex = sectorIndex;
+        if (this.hoverText != null &&
+            (this.isEditMode() == false || (BaseScreen.isCtrlDown() == false && BaseScreen.isShiftDown() == false)))
+        {
+            return ImmutableList.of(StyledTextLine.translate(this.hoverText));
+        }
+
+        return Collections.emptyList();
     }
 
-    public void setSectorRing(int sectorRing)
+    public void setActionWidgetHoverText(@Nullable String hoverText)
     {
-        this.sectorRing = sectorRing;
-    }
+        if (org.apache.commons.lang3.StringUtils.isBlank(hoverText))
+        {
+            hoverText = null;
+            this.getHoverInfoFactory().removeTextLineProvider("widget_hover_tip");
+        }
+        else
+        {
+            this.getHoverInfoFactory().setTextLineProvider("widget_hover_tip", this::getActionWidgetHoverTextLines, 99);
+        }
 
-    public void setEditMode(boolean editMode)
-    {
-        this.editMode = editMode;
+        this.hoverText = hoverText;
     }
 
     public boolean isSelected()
@@ -160,10 +162,14 @@ public class ActionExecutionWidget extends ContainerWidget
         }
     }
 
+    public void onAdded(BaseScreen screen)
+    {
+    }
+
     @Override
     protected boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
-        if (this.editMode)
+        if (this.isEditMode())
         {
             if (mouseButton == 0)
             {
@@ -184,8 +190,12 @@ public class ActionExecutionWidget extends ContainerWidget
         else if (mouseButton == 0 && this.action != null)
         {
             // Close the current screen first, in case the action opens another screen
-            BaseScreen.openScreen(null);
-            this.action.getAction().execute(new ActionContext());
+            if (MaLiLibConfigs.Generic.ACTION_SCREEN_CLOSE_ON_EXECUTE.getBooleanValue())
+            {
+                BaseScreen.openScreen(null);
+            }
+
+            this.executeAction();
         }
 
         return true;
@@ -217,15 +227,23 @@ public class ActionExecutionWidget extends ContainerWidget
     @Override
     public void setSize(int width, int height)
     {
-        width = Math.max(width, this.text.renderWidth + 6);
-        height = Math.max(height, 10);
+        if (this.text != null)
+        {
+            width = Math.max(width, this.text.renderWidth + 6);
+            height = Math.max(height, 10);
+        }
+
         super.setSize(width, height);
     }
 
     @Override
     public void setWidth(int width)
     {
-        width = Math.max(width, this.text.renderWidth + 6);
+        if (this.text != null)
+        {
+            width = Math.max(width, this.text.renderWidth + 6);
+        }
+
         super.setWidth(width);
     }
 
@@ -236,42 +254,27 @@ public class ActionExecutionWidget extends ContainerWidget
         super.setHeight(height);
     }
 
+    protected abstract Type getType();
+
+    public void executeAction()
+    {
+        if (this.action != null)
+        {
+            this.action.getAction().execute(new ActionContext());
+        }
+    }
+
     public void startDragging(int mouseX, int mouseY)
     {
-        this.dragStartOffset = new Vec2i(mouseX - this.getX(),  mouseY - this.getY());
         this.dragging = true;
         this.notifyChange();
     }
 
-    protected void startResize(int mouseX, int mouseY)
-    {
-        if (this.getType() == ActionExecutionWidget.Type.RECTANGULAR)
-        {
-            this.draggedCorner = DraggedCorner.getFor(mouseX, mouseY, this);
-            this.resizing = true;
-            this.notifyChange();
-        }
-    }
+    protected abstract void startResize(int mouseX, int mouseY);
 
-    public void moveWidget(int mouseX, int mouseY)
-    {
-        if (this.getType() == ActionExecutionWidget.Type.RECTANGULAR)
-        {
-            int x = mouseX - this.dragStartOffset.x;
-            int y = mouseY - this.dragStartOffset.y;
-            x = MathUtils.roundDown(x, this.gridSize);
-            y = MathUtils.roundDown(y, this.gridSize);
-            this.setPosition(x, y);
-        }
-    }
+    public abstract void moveWidget(int mouseX, int mouseY);
 
-    protected void resizeWidget(int mouseX, int mouseY)
-    {
-        if (this.getType() == ActionExecutionWidget.Type.RECTANGULAR)
-        {
-            this.draggedCorner.updateWidgetSize(mouseX, mouseY, this.gridSize, this);
-        }
-    }
+    protected abstract void resizeWidget(int mouseX, int mouseY);
 
     @Override
     protected EdgeInt getNormalBorderColorForRender()
@@ -298,8 +301,7 @@ public class ActionExecutionWidget extends ContainerWidget
     @Override
     public boolean shouldRenderHoverInfo(ScreenContext ctx)
     {
-        if (this.editMode == false || this.dragging || this.resizing ||
-            BaseScreen.isShiftDown() || BaseScreen.isCtrlDown())
+        if (this.dragging || this.resizing || BaseScreen.isShiftDown() || BaseScreen.isCtrlDown())
         {
             return false;
         }
@@ -307,23 +309,11 @@ public class ActionExecutionWidget extends ContainerWidget
         return super.shouldRenderHoverInfo(ctx);
     }
 
-    @Override
-    public void renderAt(int x, int y, float z, ScreenContext ctx)
-    {
-        if (this.resizing || this.selected)
-        {
-            StyledTextLine line = StyledTextLine.raw(String.format("%d x %d", this.getWidth(), this.getHeight()));
-            this.renderTextLine(x, y - 10, z, 0xFFFFFFFF, true, ctx, line);
-        }
-
-        super.renderAt(x, y, z, ctx);
-    }
-
     public JsonObject toJson()
     {
         JsonObject obj = new JsonObject();
 
-        obj.addProperty("type", this.type.name().toLowerCase(Locale.ROOT));
+        obj.addProperty("type", this.getType().name().toLowerCase(Locale.ROOT));
         obj.addProperty("name", this.name);
         obj.addProperty("name_color", this.defaultTextColor);
         obj.addProperty("bg_color", this.normalBackgroundColor);
@@ -347,44 +337,34 @@ public class ActionExecutionWidget extends ContainerWidget
             }
         }
 
-        if (this.type == Type.RECTANGULAR)
+        if (org.apache.commons.lang3.StringUtils.isBlank(this.hoverText) == false)
         {
-            obj.addProperty("x", this.getX());
-            obj.addProperty("y", this.getY());
-            obj.addProperty("width", this.getWidth());
-            obj.addProperty("height", this.getHeight());
-        }
-        else
-        {
-            obj.addProperty("sector_index", this.sectorIndex);
-            obj.addProperty("sector_ring", this.sectorRing);
+            obj.addProperty("hover_text", this.hoverText);
         }
 
         return obj;
     }
 
-    @Nullable
-    public static ActionExecutionWidget fromJson(JsonObject obj)
+    protected void fromJson(JsonObject obj)
     {
-        ActionExecutionWidget widget = new ActionExecutionWidget();
-
-        widget.setName(JsonUtils.getStringOrDefault(obj, "name", "?"));
-        widget.defaultTextColor = JsonUtils.getIntegerOrDefault(obj, "name_color", widget.defaultTextColor);
-        widget.normalBackgroundColor = JsonUtils.getIntegerOrDefault(obj, "bg_color", widget.normalBackgroundColor);
-        widget.hoveredBackgroundColor = JsonUtils.getIntegerOrDefault(obj, "bg_color_hover", widget.hoveredBackgroundColor);
-        widget.centerTextHorizontally = JsonUtils.getBooleanOrDefault(obj, "name_centered_x", widget.centerTextHorizontally);
-        widget.centerTextVertically = JsonUtils.getBooleanOrDefault(obj, "name_centered_y", widget.centerTextVertically);
-        widget.textOffsetX = JsonUtils.getIntegerOrDefault(obj, "name_x_offset", widget.textOffsetX);
-        widget.textOffsetY = JsonUtils.getIntegerOrDefault(obj, "name_y_offset", widget.textOffsetY);
+        this.setName(JsonUtils.getStringOrDefault(obj, "name", "?"));
+        this.setActionWidgetHoverText(JsonUtils.getString(obj, "hover_text"));
+        this.defaultTextColor = JsonUtils.getIntegerOrDefault(obj, "name_color", this.defaultTextColor);
+        this.normalBackgroundColor = JsonUtils.getIntegerOrDefault(obj, "bg_color", this.normalBackgroundColor);
+        this.hoveredBackgroundColor = JsonUtils.getIntegerOrDefault(obj, "bg_color_hover", this.hoveredBackgroundColor);
+        this.centerTextHorizontally = JsonUtils.getBooleanOrDefault(obj, "name_centered_x", this.centerTextHorizontally);
+        this.centerTextVertically = JsonUtils.getBooleanOrDefault(obj, "name_centered_y", this.centerTextVertically);
+        this.textOffsetX = JsonUtils.getIntegerOrDefault(obj, "name_x_offset", this.textOffsetX);
+        this.textOffsetY = JsonUtils.getIntegerOrDefault(obj, "name_y_offset", this.textOffsetY);
 
         if (JsonUtils.hasArray(obj, "border_color"))
         {
-            widget.normalBorderColor.fromJson(obj.get("border_color").getAsJsonArray());
+            this.normalBorderColor.fromJson(obj.get("border_color").getAsJsonArray());
         }
 
         if (JsonUtils.hasArray(obj, "border_color_hover"))
         {
-            widget.hoveredBorderColor.fromJson(obj.get("border_color_hover").getAsJsonArray());
+            this.hoveredBorderColor.fromJson(obj.get("border_color_hover").getAsJsonArray());
         }
 
         // FIXME
@@ -397,31 +377,43 @@ public class ActionExecutionWidget extends ContainerWidget
                 action = action.fromJson(obj.get("action_data").getAsJsonObject());
             }
 
-            widget.setAction(action);
+            this.setAction(action);
         }
+    }
 
-        if (JsonUtils.getStringOrDefault(obj, "type", "?").equals("sector"))
-        {
-            widget.setType(Type.SECTOR);
-            widget.sectorIndex = JsonUtils.getIntegerOrDefault(obj, "sector_index", widget.sectorIndex);
-            widget.sectorRing = JsonUtils.getIntegerOrDefault(obj, "sector_ring", widget.sectorRing);
-        }
-        else
-        {
-            int x = JsonUtils.getIntegerOrDefault(obj, "x", 0);
-            int y = JsonUtils.getIntegerOrDefault(obj, "y", 0);
-            widget.setType(Type.RECTANGULAR);
-            widget.setPosition(x, y);
-            widget.setWidth(JsonUtils.getIntegerOrDefault(obj, "width", widget.getWidth()));
-            widget.setHeight(JsonUtils.getIntegerOrDefault(obj, "height", widget.getHeight()));
-        }
-
+    @Nullable
+    public static BaseActionExecutionWidget createFromJson(JsonObject obj)
+    {
+        Type type = JsonUtils.getStringOrDefault(obj, "type", "").equals("radial") ? Type.RADIAL : Type.RECTANGULAR;
+        BaseActionExecutionWidget widget = type.create();
+        widget.fromJson(obj);
         return widget;
     }
 
     public enum Type
     {
-        RECTANGULAR,
-        SECTOR
+        RECTANGULAR ("malilib.label.action_execution_widget.type.rectangular",  RectangularActionExecutionWidget::new),
+        RADIAL      ("malilib.label.action_execution_widget.type.radial",       RadialActionExecutionWidget::new);
+
+        public static final ImmutableList<Type> VALUES = ImmutableList.copyOf(values());
+
+        private final Supplier<BaseActionExecutionWidget> factory;
+        private final String translationKey;
+
+        Type(String translationKey, Supplier<BaseActionExecutionWidget> factory)
+        {
+            this.translationKey = translationKey;
+            this.factory = factory;
+        }
+
+        public String getDisplayName()
+        {
+            return StringUtils.translate(this.translationKey);
+        }
+
+        public BaseActionExecutionWidget create()
+        {
+            return this.factory.get();
+        }
     }
 }

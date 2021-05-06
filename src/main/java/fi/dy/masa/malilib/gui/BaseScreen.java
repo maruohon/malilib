@@ -255,6 +255,26 @@ public abstract class BaseScreen extends GuiScreen
         this.y = y;
     }
 
+    public int getX()
+    {
+        return this.x;
+    }
+
+    public int getY()
+    {
+        return this.y;
+    }
+
+    public int getScreenWidth()
+    {
+        return this.screenWidth;
+    }
+
+    public int getScreenHeight()
+    {
+        return this.screenHeight;
+    }
+
     public void centerOnScreen()
     {
         int x;
@@ -418,6 +438,18 @@ public abstract class BaseScreen extends GuiScreen
         {
             super.mouseReleased(mouseX, mouseY, mouseButton);
         }
+    }
+
+    @Override
+    public void handleKeyboardInput() throws IOException
+    {
+        if (Keyboard.getEventKeyState() == false &&
+            this.onKeyReleased(Keyboard.getEventKey(), 0, 0))
+        {
+            return;
+        }
+
+        super.handleKeyboardInput();
     }
 
     @Override
@@ -594,6 +626,11 @@ public abstract class BaseScreen extends GuiScreen
         this.runTasks();
 
         return handled;
+    }
+
+    public boolean onKeyReleased(int keyCode, int scanCode, int modifiers)
+    {
+        return false;
     }
 
     public boolean onCharTyped(char charIn, int modifiers)

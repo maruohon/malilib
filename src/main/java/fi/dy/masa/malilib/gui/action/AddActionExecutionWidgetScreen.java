@@ -14,18 +14,22 @@ import fi.dy.masa.malilib.util.StringUtils;
 
 public class AddActionExecutionWidgetScreen extends BaseScreen
 {
-    protected final Consumer<ActionExecutionWidget> widgetConsumer;
-    protected final DropDownListWidget<NamedAction> dropDownWidget;
+    protected final Consumer<BaseActionExecutionWidget> widgetConsumer;
+    protected final DropDownListWidget<NamedAction> actionDropDownWidget;
+    protected final DropDownListWidget<BaseActionExecutionWidget.Type> typeDropDownWidget;
     protected final LabelWidget actionLabelWidget;
+    protected final LabelWidget typeLabelWidget;
     protected final LabelWidget nameLabelWidget;
+    protected final LabelWidget hoverTextLabelWidget;
     protected final LabelWidget argumentLabelWidget;
     protected final CheckBoxWidget addArgumentCheckbox;
     protected final BaseTextFieldWidget nameTextField;
+    protected final BaseTextFieldWidget hoverTextTextField;
     protected final BaseTextFieldWidget argumentTextField;
     protected final GenericButton addButton;
     protected final GenericButton cancelButton;
 
-    public AddActionExecutionWidgetScreen(Consumer<ActionExecutionWidget> widgetConsumer)
+    public AddActionExecutionWidgetScreen(Consumer<BaseActionExecutionWidget> widgetConsumer)
     {
         this.widgetConsumer = widgetConsumer;
 
@@ -33,18 +37,26 @@ public class AddActionExecutionWidgetScreen extends BaseScreen
         this.useTitleHierarchy = false;
 
         this.actionLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.action.colon");
+        this.typeLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.type.colon");
         this.nameLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.name.colon");
+        this.hoverTextLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.hover_text.colon");
         this.argumentLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.argument.colon");
 
-        this.dropDownWidget = new DropDownListWidget<>(0, 0, 160, 16, 240, 20,
-                                                       ActionRegistry.INSTANCE.getAllActions(),
-                                                       NamedAction::getDisplayName, null);
-        this.dropDownWidget.setSelectionListener(this::onActionSelected);
+        this.actionDropDownWidget = new DropDownListWidget<>(0, 0, 160, 16, 240, 20,
+                                                             ActionRegistry.INSTANCE.getAllActions(),
+                                                             NamedAction::getDisplayName, null);
+        this.actionDropDownWidget.setSelectionListener(this::onActionSelected);
+
+        this.typeDropDownWidget = new DropDownListWidget<>(0, 0, -1, 16, 80, 4,
+                                                           BaseActionExecutionWidget.Type.VALUES,
+                                                           BaseActionExecutionWidget.Type::getDisplayName, null);
+        this.typeDropDownWidget.setSelectedEntry(BaseActionExecutionWidget.Type.RECTANGULAR);
 
         this.addArgumentCheckbox = new CheckBoxWidget(0, 0, "malilib.label.add_action_execution_widget.add_argument",
                                                       "malilib.hover_info.add_action_execution_widget.add_argument");
 
         this.nameTextField = new BaseTextFieldWidget(0, 0, 140, 16, "");
+        this.hoverTextTextField = new BaseTextFieldWidget(0, 0, 140, 16, "");
         this.argumentTextField = new BaseTextFieldWidget(0, 0, 160, 16, "");
 
         this.addButton = new GenericButton(0, 0, -1, 20, "malilib.gui.button.add");
@@ -54,7 +66,7 @@ public class AddActionExecutionWidgetScreen extends BaseScreen
         this.cancelButton.setActionListener(this::cancel);
 
         this.backgroundColor = 0xFF101010;
-        this.setScreenWidthAndHeight(240, 140);
+        this.setScreenWidthAndHeight(240, 170);
         this.centerOnScreen();
     }
 
@@ -67,11 +79,19 @@ public class AddActionExecutionWidgetScreen extends BaseScreen
         int y = this.y + 24;
 
         this.actionLabelWidget.setPosition(x, y + 4);
-        this.dropDownWidget.setPosition(this.actionLabelWidget.getRight() + 6, y);
+        this.actionDropDownWidget.setPosition(this.actionLabelWidget.getRight() + 6, y);
+
+        y += 24;
+        this.typeLabelWidget.setPosition(x, y + 4);
+        this.typeDropDownWidget.setPosition(this.typeLabelWidget.getRight() + 6, y);
 
         y += 24;
         this.nameLabelWidget.setPosition(x, y + 4);
         this.nameTextField.setPosition(this.nameLabelWidget.getRight() + 6, y);
+
+        y += 24;
+        this.hoverTextLabelWidget.setPosition(x, y + 4);
+        this.hoverTextTextField.setPosition(this.hoverTextLabelWidget.getRight() + 6, y);
 
         y += 24;
         this.addArgumentCheckbox.setPosition(x, y);
@@ -85,16 +105,22 @@ public class AddActionExecutionWidgetScreen extends BaseScreen
         this.cancelButton.setPosition(this.addButton.getRight() + 10, y);
 
         this.addWidget(this.actionLabelWidget);
-        this.addWidget(this.dropDownWidget);
+        this.addWidget(this.actionDropDownWidget);
+
+        this.addWidget(this.typeLabelWidget);
+        this.addWidget(this.typeDropDownWidget);
 
         this.addWidget(this.nameLabelWidget);
         this.addWidget(this.nameTextField);
+
+        this.addWidget(this.hoverTextLabelWidget);
+        this.addWidget(this.hoverTextTextField);
 
         this.addWidget(this.addButton);
         this.addWidget(this.cancelButton);
 
         /*
-        NamedAction action = this.dropDownWidget.getSelectedEntry();
+        NamedAction action = this.actionDropDownWidget.getSelectedEntry();
 
         if (action != null && action.getNeedsArguments())
         {
@@ -129,18 +155,20 @@ public class AddActionExecutionWidgetScreen extends BaseScreen
 
     protected void createActionWidget()
     {
-        NamedAction action = this.dropDownWidget.getSelectedEntry();
+        NamedAction action = this.actionDropDownWidget.getSelectedEntry();
+        BaseActionExecutionWidget.Type type = this.typeDropDownWidget.getSelectedEntry();
 
-        if (action != null)
+        if (action != null && type != null)
         {
             if (this.addArgumentCheckbox.isSelected() && action.getNeedsArguments())
             {
                 action = action.createAlias(action.getName() + "_parameterized", this.argumentTextField.getText());
             }
 
-            ActionExecutionWidget widget = new ActionExecutionWidget();
+            BaseActionExecutionWidget widget = type.create();
             widget.setAction(action);
             widget.setName(this.nameTextField.getText());
+            widget.setActionWidgetHoverText(this.hoverTextTextField.getText());
 
             this.widgetConsumer.accept(widget);
             this.closeScreen(true);

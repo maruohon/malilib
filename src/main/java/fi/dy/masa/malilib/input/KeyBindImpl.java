@@ -573,6 +573,16 @@ public class KeyBindImpl implements KeyBind
         }
     }
 
+    public static int getCurrentlyPressedKeysCount()
+    {
+        return PRESSED_KEYS.size();
+    }
+
+    public static int getTriggeredCount()
+    {
+        return triggeredCount;
+    }
+
     public static void printKeyBindDebugMessage(int keyCode, int scanCode, int modifiers, char charIn, boolean keyState)
     {
         String action = keyState ? "PRESS  " : "RELEASE";
@@ -623,10 +633,5 @@ public class KeyBindImpl implements KeyBind
         }
 
         return "<none>";
-    }
-
-    public static int getTriggeredCount()
-    {
-        return triggeredCount;
     }
 }

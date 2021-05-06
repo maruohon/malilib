@@ -11,23 +11,23 @@ import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.config.util.ConfigUtils;
-import fi.dy.masa.malilib.gui.action.ActionExecutionWidget;
+import fi.dy.masa.malilib.gui.action.BaseActionExecutionWidget;
 import fi.dy.masa.malilib.util.JsonUtils;
 
 public class ActionExecutionWidgetManager
 {
     public static final ActionExecutionWidgetManager INSTANCE = new ActionExecutionWidgetManager();
 
-    protected final Map<String, ImmutableList<ActionExecutionWidget>> widgetMap = new HashMap<>();
+    protected final Map<String, ImmutableList<BaseActionExecutionWidget>> widgetMap = new HashMap<>();
     protected boolean dirty;
 
     @Nullable
-    public ImmutableList<ActionExecutionWidget> getWidgetList(String name)
+    public ImmutableList<BaseActionExecutionWidget> getWidgetList(String name)
     {
         return this.widgetMap.get(name);
     }
 
-    public void putWidgetList(String name, ImmutableList<ActionExecutionWidget> list)
+    public void putWidgetList(String name, ImmutableList<BaseActionExecutionWidget> list)
     {
         this.widgetMap.put(name, list);
         this.dirty = true;
@@ -43,11 +43,11 @@ public class ActionExecutionWidgetManager
     {
         JsonObject obj = new JsonObject();
 
-        for (Map.Entry<String, ImmutableList<ActionExecutionWidget>> entry : this.widgetMap.entrySet())
+        for (Map.Entry<String, ImmutableList<BaseActionExecutionWidget>> entry : this.widgetMap.entrySet())
         {
             JsonArray arr = new JsonArray();
 
-            for (ActionExecutionWidget widget : entry.getValue())
+            for (BaseActionExecutionWidget widget : entry.getValue())
             {
                 arr.add(widget.toJson());
             }
@@ -73,7 +73,7 @@ public class ActionExecutionWidgetManager
 
             if (e.isJsonArray())
             {
-                ImmutableList.Builder<ActionExecutionWidget> builder = ImmutableList.builder();
+                ImmutableList.Builder<BaseActionExecutionWidget> builder = ImmutableList.builder();
                 JsonArray arr = e.getAsJsonArray();
                 int size = arr.size();
 
@@ -83,7 +83,7 @@ public class ActionExecutionWidgetManager
 
                     if (ae.isJsonObject())
                     {
-                        ActionExecutionWidget widget = ActionExecutionWidget.fromJson(ae.getAsJsonObject());
+                        BaseActionExecutionWidget widget = BaseActionExecutionWidget.createFromJson(ae.getAsJsonObject());
 
                         if (widget != null)
                         {

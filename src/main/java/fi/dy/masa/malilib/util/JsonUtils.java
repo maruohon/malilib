@@ -233,7 +233,8 @@ public class JsonUtils
         return defaultValue;
     }
 
-    public static String getStringOrDefault(JsonObject obj, String name, String defaultValue)
+    @Nullable
+    public static String getStringOrDefault(JsonObject obj, String name, @Nullable String defaultValue)
     {
         if (obj.has(name) && obj.get(name).isJsonPrimitive())
         {

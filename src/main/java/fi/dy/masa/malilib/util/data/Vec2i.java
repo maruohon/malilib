@@ -13,6 +13,19 @@ public class Vec2i
         this.y = y;
     }
 
+    public double getSquaredDistance(int x, int y)
+    {
+        double diffX = (double) x - (double) this.x;
+        double diffY = (double) y - (double) this.y;
+
+        return diffX * diffX + diffY * diffY;
+    }
+
+    public double getDistance(int x, int y)
+    {
+        return Math.sqrt(this.getSquaredDistance(x, y));
+    }
+
     @Override
     public boolean equals(Object o)
     {

@@ -184,6 +184,162 @@ public class ShapeRenderUtils
         buffer.pos(right, bottom, z).color(er, eg, eb, ea).endVertex();
     }
 
+    public static void renderArc(double centerX, double centerY, double z, double radius,
+                                 double startAngle, double endAngle, float lineWidth, int color)
+    {
+        if (radius < 1)
+        {
+            return;
+        }
+
+        float a = (float)(color >> 24 & 0xFF) / 255.0F;
+        float r = (float)(color >> 16 & 0xFF) / 255.0F;
+        float g = (float)(color >>  8 & 0xFF) / 255.0F;
+        float b = (float)(color & 0xFF) / 255.0F;
+
+        double twoPi = 2 * Math.PI;
+        double arcAngle = (endAngle - startAngle) % twoPi;
+
+        if (arcAngle < 0)
+        {
+            arcAngle += twoPi;
+        }
+
+        double arcLength = arcAngle * radius;
+        int steps = (int) Math.ceil(arcLength / 5.0);
+        double angleIncrement = arcAngle / (double) steps;
+        double lastAngle = startAngle;
+
+        BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION_COLOR, false);
+        GlStateManager.glLineWidth(lineWidth);
+
+        for (int i = 0; i <= steps; ++i)
+        {
+            double x = centerX + radius * Math.cos(lastAngle);
+            double y = centerY + radius * Math.sin(lastAngle);
+
+            buffer.pos(x, y, z).color(r, g, b, a).endVertex();
+
+            lastAngle += angleIncrement;
+        }
+
+        RenderUtils.drawBuffer();
+    }
+
+    /**
+     * Renders the outline for a circle sector/segment.
+     */
+    public static void renderSectorOutline(double centerX, double centerY, double z,
+                                           double innerRadius, double outerRadius,
+                                           double startAngle, double endAngle, float lineWidth, int color)
+    {
+        if (innerRadius < 1 || outerRadius < 1)
+        {
+            return;
+        }
+
+        float a = (float)(color >> 24 & 0xFF) / 255.0F;
+        float r = (float)(color >> 16 & 0xFF) / 255.0F;
+        float g = (float)(color >>  8 & 0xFF) / 255.0F;
+        float b = (float)(color & 0xFF) / 255.0F;
+
+        double twoPi = 2 * Math.PI;
+        double arcAngle = (endAngle - startAngle) % twoPi;
+
+        if (arcAngle < 0)
+        {
+            arcAngle += twoPi;
+        }
+
+        double arcLength = arcAngle * innerRadius;
+        int steps = (int) Math.ceil(arcLength / 5.0);
+        double angleIncrement = arcAngle / (double) steps;
+        double lastAngle = startAngle;
+
+        BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_LINE_LOOP, DefaultVertexFormats.POSITION_COLOR, false);
+        GlStateManager.glLineWidth(lineWidth);
+
+        // First render the inner arc in the positive direction
+        for (int i = 0; i <= steps; ++i)
+        {
+            double x = centerX + innerRadius * Math.cos(lastAngle);
+            double y = centerY + innerRadius * Math.sin(lastAngle);
+
+            buffer.pos(x, y, z).color(r, g, b, a).endVertex();
+
+            lastAngle += angleIncrement;
+        }
+
+        arcLength = arcAngle * outerRadius;
+        steps = (int) Math.ceil(arcLength / 5.0);
+        angleIncrement = arcAngle / (double) steps;
+
+        lastAngle = endAngle;
+
+        // Second render the outer arc in the negative direction.
+        // The end of the inner arc will connect to the start of the outer arc, and vice versa
+        for (int i = 0; i <= steps; ++i)
+        {
+            double x = centerX + outerRadius * Math.cos(lastAngle);
+            double y = centerY + outerRadius * Math.sin(lastAngle);
+
+            buffer.pos(x, y, z).color(r, g, b, a).endVertex();
+
+            lastAngle -= angleIncrement;
+        }
+
+        RenderUtils.drawBuffer();
+    }
+
+    public static void renderSectorFill(double centerX, double centerY, double z,
+                                        double innerRadius, double outerRadius,
+                                        double startAngle, double endAngle, int color)
+    {
+        if (innerRadius < 1 || outerRadius < 1)
+        {
+            return;
+        }
+
+        float a = (float)(color >> 24 & 0xFF) / 255.0F;
+        float r = (float)(color >> 16 & 0xFF) / 255.0F;
+        float g = (float)(color >>  8 & 0xFF) / 255.0F;
+        float b = (float)(color & 0xFF) / 255.0F;
+
+        double twoPi = 2 * Math.PI;
+        double arcAngle = (endAngle - startAngle) % twoPi;
+
+        if (arcAngle < 0)
+        {
+            arcAngle += twoPi;
+        }
+
+        BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_TRIANGLE_STRIP, DefaultVertexFormats.POSITION_COLOR, false);
+
+        double arcLength = arcAngle * outerRadius;
+        int steps = Math.max((int) Math.ceil(arcLength / 5.0), 2);
+        double angleIncrement = arcAngle / (double) steps;
+
+        double lastAngle = endAngle;
+        double x, y;
+
+        for (int i = 0; i <= steps; ++i)
+        {
+            x = centerX + innerRadius * Math.cos(lastAngle);
+            y = centerY + innerRadius * Math.sin(lastAngle);
+
+            buffer.pos(x, y, z).color(r, g, b, a).endVertex();
+
+            x = centerX + outerRadius * Math.cos(lastAngle);
+            y = centerY + outerRadius * Math.sin(lastAngle);
+
+            buffer.pos(x, y, z).color(r, g, b, a).endVertex();
+
+            lastAngle -= angleIncrement;
+        }
+
+        RenderUtils.drawBuffer();
+    }
+
     /**
      * Takes in a BufferBuilder initialized in GL_QUADS, POSITION_COLOR mode
      */
