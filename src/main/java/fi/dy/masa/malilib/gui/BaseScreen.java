@@ -275,6 +275,11 @@ public abstract class BaseScreen extends GuiScreen
         return this.screenHeight;
     }
 
+    public void setScreenWidth(int screenWidth)
+    {
+        this.screenWidth = screenWidth;
+    }
+
     public void centerOnScreen()
     {
         int x;

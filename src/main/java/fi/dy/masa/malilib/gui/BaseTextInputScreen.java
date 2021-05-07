@@ -7,7 +7,10 @@ import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.listener.EventListener;
+import fi.dy.masa.malilib.render.text.StyledText;
+import fi.dy.masa.malilib.render.text.TextRenderer;
 import fi.dy.masa.malilib.util.StringUtils;
+import fi.dy.masa.malilib.util.StyledTextUtils;
 
 public abstract class BaseTextInputScreen extends BaseScreen
 {
@@ -16,6 +19,9 @@ public abstract class BaseTextInputScreen extends BaseScreen
     protected final GenericButton resetButton;
     protected final GenericButton cancelButton;
     protected final String originalText;
+    @Nullable protected StyledText infoText;
+    @Nullable protected StyledText labelText;
+    protected int elementsOffsetY;
 
     public BaseTextInputScreen(String titleKey, String defaultText, @Nullable GuiScreen parent)
     {
@@ -31,7 +37,7 @@ public abstract class BaseTextInputScreen extends BaseScreen
         this.textField.setFocused(true);
 
         this.setParent(parent);
-        this.setScreenWidthAndHeight(260, 100);
+        this.setScreenWidthAndHeight(260, 80);
         this.centerOnScreen();
     }
 
@@ -41,11 +47,11 @@ public abstract class BaseTextInputScreen extends BaseScreen
         super.initScreen();
 
         int x = this.x + 10;
-        int y = this.y + 40;
+        int y = this.y + 26 + this.elementsOffsetY;
 
-        this.textField.setPosition(x + 2, y);
+        this.textField.setPosition(x, y);
 
-        y += 30;
+        y += 26;
         this.okButton.setPosition(x, y);
         this.resetButton.setPosition(this.okButton.getRight() + 6, y);
         this.cancelButton.setPosition(this.resetButton.getRight() + 6, y);
@@ -65,6 +71,49 @@ public abstract class BaseTextInputScreen extends BaseScreen
         return button;
     }
 
+    public void setInfoText(@Nullable StyledText infoText)
+    {
+        if (infoText != null)
+        {
+            infoText = StyledTextUtils.wrapStyledTextToMaxWidth(infoText, this.screenWidth - 20);
+        }
+
+        this.infoText = infoText;
+
+        this.updateElementPosition();
+    }
+
+    public void setLabelText(@Nullable StyledText labelText)
+    {
+        if (labelText != null)
+        {
+            labelText = StyledTextUtils.wrapStyledTextToMaxWidth(labelText, this.screenWidth - 20);
+        }
+
+        this.labelText = labelText;
+
+        this.updateElementPosition();
+    }
+
+    protected void updateElementPosition()
+    {
+        this.elementsOffsetY = 0;
+        int lineHeight = TextRenderer.INSTANCE.getFontHeight() + 1;
+
+        if (this.infoText != null)
+        {
+            this.elementsOffsetY += this.infoText.lines.size() * lineHeight + 16;
+        }
+
+        if (this.labelText != null)
+        {
+            this.elementsOffsetY += this.labelText.lines.size() * lineHeight + 4;
+        }
+
+        this.setScreenWidthAndHeight(260, 80 + this.elementsOffsetY);
+        this.centerOnScreen();
+    }
+
     @Override
     public boolean onKeyTyped(int keyCode, int scanCode, int modifiers)
     {
@@ -82,9 +131,32 @@ public abstract class BaseTextInputScreen extends BaseScreen
         return super.onKeyTyped(keyCode, scanCode, modifiers);
     }
 
+    @Override
+    protected void drawContents(int mouseX, int mouseY, float partialTicks)
+    {
+        super.drawContents(mouseX, mouseY, partialTicks);
+
+        if (this.infoText != null)
+        {
+            int x = this.x + 10;
+            int y = this.y + 28;
+
+            TextRenderer.INSTANCE.renderText(x, y, this.zLevel + 0.025f, 0xFFE0E0E0, true, this.infoText);
+        }
+
+        if (this.labelText != null)
+        {
+            int x = this.x + 10;
+            int y = this.textField.getY() - 12;
+
+            TextRenderer.INSTANCE.renderText(x, y, this.zLevel + 0.025f, 0xFFE0E0E0, true, this.labelText);
+        }
+    }
+
     protected void closeScreenIfValueApplied()
     {
-        // Only close the GUI if the value was successfully applied
+        // Only close the screen if the value was successfully applied,
+        // and this screen is still the active screen
         if (this.applyValue(this.textField.getText()) && GuiUtils.getCurrentScreen() == this)
         {
             this.closeScreen(true);
