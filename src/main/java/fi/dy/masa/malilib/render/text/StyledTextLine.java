@@ -221,13 +221,13 @@ public class StyledTextLine
         return builder.build();
     }
 
-    public static ImmutableList<StyledTextLine> translatedOfStrings(List<String> strings)
+    public static ImmutableList<StyledTextLine> translateStrings(List<String> strings)
     {
         ImmutableList.Builder<StyledTextLine> builder = ImmutableList.builder();
 
         for (String str : strings)
         {
-            builder.addAll(StyledText.translatedOf(str).lines);
+            builder.addAll(StyledText.translate(str).lines);
         }
 
         return builder.build();

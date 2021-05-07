@@ -38,7 +38,7 @@ public class Message
         this.fadeDuration = Math.min((long) fadeTimeMs * 1000000L, (long) displayTimeMs * 1000000L / 2L);
         this.fadeTime = this.expireTime - this.fadeDuration;
 
-        this.message = StyledTextUtils.wrapStyledTextToMaxWidth(StyledText.translatedOf(translationKey, args), maxLineWidth);
+        this.message = StyledTextUtils.wrapStyledTextToMaxWidth(StyledText.translate(translationKey, args), maxLineWidth);
         this.width = StyledTextLine.getRenderWidth(this.message.lines);
     }
 

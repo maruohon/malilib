@@ -539,7 +539,7 @@ public class KeyBindImpl implements KeyBind
                 heldKeys = Keys.writeKeysToString(PRESSED_KEYS, " + ", Keys::charAsStorageString);
             }
 
-            StyledText text = StyledText.translatedOf("malilib.label.pressed_keys_toast", heldKeys);
+            StyledText text = StyledText.translate("malilib.label.pressed_keys_toast", heldKeys);
             MessageUtils.addToastMessage(text, 2000, "pressed_keys", false);
         }
 

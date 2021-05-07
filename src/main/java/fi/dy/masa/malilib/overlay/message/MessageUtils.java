@@ -185,7 +185,7 @@ public class MessageUtils
             }
             else if (outputType == InfoType.TOAST)
             {
-                addToastMessage(StyledText.translatedOf(translationKey, args), displayTimeMs, null, false, null);
+                addToastMessage(StyledText.translate(translationKey, args), displayTimeMs, null, false, null);
             }
             else if (outputType == InfoType.VANILLA_HOTBAR)
             {

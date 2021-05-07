@@ -43,7 +43,7 @@ public abstract class BaseButton extends BackgroundWidget
         super(x, y, width, height);
 
         this.actionListener = actionListener;
-        this.hoverHelp = StyledText.translatedOf("malilib.gui.button.hover.hold_shift_for_info").lines;
+        this.hoverHelp = StyledText.translate("malilib.gui.button.hover.hold_shift_for_info").lines;
         this.setHoverStringProvider("full_label", this::getFullLabelHoverString, 99);
 
         this.setDisplayString(StringUtils.translate(translationKey));

@@ -26,7 +26,7 @@ public class ConfirmActionScreen extends BaseScreen implements TaskCompletionLis
         this.useTitleHierarchy = false;
         this.zLevel = 1f;
 
-        this.messageLines = StyledTextUtils.wrapStyledTextToMaxWidth(StyledText.translatedOf(messageKey, args).lines, width - 30);
+        this.messageLines = StyledTextUtils.wrapStyledTextToMaxWidth(StyledText.translate(messageKey, args).lines, width - 30);
 
         this.setScreenWidthAndHeight(width, this.getMessageHeight() + 50);
         this.centerOnScreen();

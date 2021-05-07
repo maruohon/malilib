@@ -62,12 +62,12 @@ public class StyledText
         return new StyledText(StyledTextLine.ofStrings(strings));
     }
 
-    public static StyledText translatedOfStrings(List<String> strings)
+    public static StyledText translateStrings(List<String> strings)
     {
-        return new StyledText(StyledTextLine.translatedOfStrings(strings));
+        return new StyledText(StyledTextLine.translateStrings(strings));
     }
 
-    public static StyledText translatedOf(String translationKey, Object... args)
+    public static StyledText translate(String translationKey, Object... args)
     {
         return of(StringUtils.translate(translationKey, args));
     }
