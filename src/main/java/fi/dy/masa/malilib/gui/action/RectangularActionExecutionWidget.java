@@ -67,7 +67,7 @@ public class RectangularActionExecutionWidget extends BaseActionExecutionWidget
     @Override
     public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
-        if (this.resizing || this.selected)
+        if (this.resizing || this.dragging || this.selected)
         {
             StyledTextLine line = StyledTextLine.raw(String.format("%d x %d", this.getWidth(), this.getHeight()));
             this.renderTextLine(x, y - 10, z, 0xFFFFFFFF, true, ctx, line);

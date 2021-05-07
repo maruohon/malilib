@@ -91,7 +91,6 @@ public class ConfigUtils
     {
         ((ConfigManagerImpl) ConfigManager.INSTANCE).loadAllConfigs();
         ((ActionRegistryImpl) ActionRegistry.INSTANCE).loadFromFile();
-        ActionExecutionWidgetManager.INSTANCE.loadFromFile();
         CustomHotkeyManager.INSTANCE.loadFromFile();
         InfoWidgetManager.INSTANCE.loadFromFile();
         HotkeyManager.INSTANCE.updateUsedKeys();
@@ -106,6 +105,7 @@ public class ConfigUtils
     {
         ((ConfigManagerImpl) ConfigManager.INSTANCE).saveIfDirty();
         InfoWidgetManager.INSTANCE.saveToFileIfDirty();
+        ActionExecutionWidgetManager.INSTANCE.clear();
 
         // These two should always already be saved when closing the corresponding config screens
         //((ActionRegistryImpl) ActionRegistry.INSTANCE).saveToFileIfDirty();
@@ -122,7 +122,7 @@ public class ConfigUtils
             {
                 ((ConfigManagerImpl) ConfigManager.INSTANCE).saveAllConfigs();
                 ((ActionRegistryImpl) ActionRegistry.INSTANCE).saveToFile();
-                ActionExecutionWidgetManager.INSTANCE.saveToFile();
+                ActionExecutionWidgetManager.INSTANCE.saveAllLoadedToFile();
                 CustomHotkeyManager.INSTANCE.saveToFile();
                 InfoWidgetManager.INSTANCE.saveToFile();
             }

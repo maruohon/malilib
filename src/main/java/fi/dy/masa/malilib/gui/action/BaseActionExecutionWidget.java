@@ -3,13 +3,10 @@ package fi.dy.masa.malilib.gui.action;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.function.BooleanSupplier;
-import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonObject;
-import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.action.ActionContext;
 import fi.dy.masa.malilib.action.ActionRegistry;
 import fi.dy.masa.malilib.action.NamedAction;
@@ -18,7 +15,6 @@ import fi.dy.masa.malilib.gui.icon.IconRegistry;
 import fi.dy.masa.malilib.gui.position.EdgeInt;
 import fi.dy.masa.malilib.gui.widget.ContainerWidget;
 import fi.dy.masa.malilib.gui.widget.ScreenContext;
-import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.StringUtils;
@@ -26,10 +22,8 @@ import fi.dy.masa.malilib.util.StringUtils;
 public abstract class BaseActionExecutionWidget extends ContainerWidget
 {
     @Nullable protected NamedAction action;
-    @Nullable protected EventListener dirtyListener;
-    @Nullable protected String hoverText = "";
-    protected BooleanSupplier editModeSupplier = ActionWidgetScreen.ALWAYS_FALSE;
-    protected IntSupplier gridSizeSupplier = ActionWidgetScreen.NO_GRID;
+    @Nullable protected String hoverText;
+    @Nullable protected ActionWidgetContainer container;
     protected String name = "";
     protected EdgeInt editedBorderColor = new EdgeInt(0xFFFF8000);
     protected boolean dragging;
@@ -68,13 +62,9 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
         }
     }
 
-    public void setManagementData(@Nullable EventListener dirtyListener,
-                                  BooleanSupplier editModeSupplier,
-                                  IntSupplier gridSizeSupplier)
+    public void setContainer(@Nullable ActionWidgetContainer container)
     {
-        this.dirtyListener = dirtyListener;
-        this.editModeSupplier = editModeSupplier;
-        this.gridSizeSupplier = gridSizeSupplier;
+        this.container = container;
     }
 
     public String getName()
@@ -125,12 +115,12 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
 
     protected boolean isEditMode()
     {
-        return this.editModeSupplier.getAsBoolean();
+        return this.container != null && this.container.isEditMode();
     }
 
     protected int getGridSize()
     {
-        return this.gridSizeSupplier.getAsInt();
+        return this.container != null ? this.container.getGridSize() : -1;
     }
 
     @Nullable
@@ -187,9 +177,9 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
 
     protected void notifyChange()
     {
-        if (this.dirtyListener != null)
+        if (this.container != null)
         {
-            this.dirtyListener.onEvent();
+            this.container.notifyWidgetEdited();
         }
     }
 
@@ -221,7 +211,7 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
         else if (mouseButton == 0 && this.action != null)
         {
             // Close the current screen first, in case the action opens another screen
-            if (MaLiLibConfigs.Generic.ACTION_SCREEN_CLOSE_ON_EXECUTE.getBooleanValue())
+            if (this.container != null && this.container.shouldCloseScreenOnExecute())
             {
                 BaseScreen.openScreen(null);
             }

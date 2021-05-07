@@ -222,13 +222,18 @@ public class RadialActionExecutionWidget extends BaseActionExecutionWidget
         return MathUtils.wrapRadianAngle(angle);
     }
 
+    protected double getSectorWidth()
+    {
+        return MathUtils.wrapRadianAngle(this.endAngle - this.startAngle);
+    }
+
     protected void updatePosition()
     {
-        double r = (this.innerRadius + this.outerRadius) / 2.0;
-        double angle = this.getMiddleAngle();
+        double radius = this.gridSnapValue(this.getMiddleRadius(), 128.0);
+        double angle  = this.gridSnapValue(this.getMiddleAngle(), 128.0);
 
-        this.setX(this.center.x + (int) (Math.cos(angle) * r));
-        this.setY(this.center.y + (int) (Math.sin(angle) * r));
+        this.setX(this.center.x + (int) (Math.cos(angle) * radius));
+        this.setY(this.center.y + (int) (Math.sin(angle) * radius));
     }
 
     @Override
@@ -262,6 +267,31 @@ public class RadialActionExecutionWidget extends BaseActionExecutionWidget
 
         ShapeRenderUtils.renderSectorFill(centerX, centerY, z, this.innerRadius, this.outerRadius,
                                           this.startAngle, this.endAngle, color);
+    }
+
+    @Override
+    public void renderAt(int x, int y, float z, ScreenContext ctx)
+    {
+        if (this.resizing || this.dragging)
+        {
+            StyledText text = StyledText.of(String.format("r: %.2f ... %.2f\\n%.4f rad\\n%.4f rad => %.4f rad",
+                                                          this.innerRadius, this.outerRadius,
+                                                          this.getSectorWidth(),
+                                                          this.startAngle, this.endAngle));
+
+            double middleAngle = this.getMiddleAngle();
+            int tx = (int) (this.center.x + Math.cos(middleAngle) * (this.outerRadius + 10));
+            int ty = (int) (this.center.y + Math.sin(middleAngle) * (this.outerRadius + 10));
+
+            if (middleAngle >= Math.PI / 2 && middleAngle <= Math.PI * 3 / 2)
+            {
+                tx -= 120;
+            }
+
+            this.textRenderer.renderText(tx, ty, z + 0.25f, 0xFFFFFFFF, true, text);
+        }
+
+        super.renderAt(x, y, z, ctx);
     }
 
     @Override

@@ -2,19 +2,18 @@ package fi.dy.masa.malilib.gui.action;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BooleanSupplier;
-import java.util.function.IntSupplier;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import com.google.common.collect.ImmutableList;
-import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.action.ActionContext;
 import fi.dy.masa.malilib.action.ActionExecutionWidgetManager;
 import fi.dy.masa.malilib.gui.BaseScreen;
+import fi.dy.masa.malilib.gui.TextInputScreen;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.position.EdgeInt;
-import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
+import fi.dy.masa.malilib.gui.util.GuiUtils;
+import fi.dy.masa.malilib.gui.widget.CheckBoxWidget;
 import fi.dy.masa.malilib.gui.widget.InfoIconWidget;
 import fi.dy.masa.malilib.gui.widget.IntegerEditWidget;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
@@ -23,47 +22,42 @@ import fi.dy.masa.malilib.gui.widget.MenuWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.button.OnOffButton;
 import fi.dy.masa.malilib.input.ActionResult;
-import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.input.KeyBindImpl;
+import fi.dy.masa.malilib.overlay.message.MessageUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
+import fi.dy.masa.malilib.render.text.StyledText;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.data.Vec2i;
 
-public class ActionWidgetScreen extends BaseScreen
+public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContainer
 {
-    public static final BooleanSupplier ALWAYS_FALSE = () -> false;
-    public static final IntSupplier NO_GRID = () -> -1;
-
+    protected final ActionWidgetScreenData data;
     protected final List<BaseActionExecutionWidget> widgetList = new ArrayList<>();
     protected final List<BaseActionExecutionWidget> selectedWidgets = new ArrayList<>();
     protected final GenericButton addWidgetButton;
     protected final GenericButton editModeButton;
     protected final GenericButton gridEnabledButton;
     protected final LabelWidget editModeLabel;
-    protected final LabelWidget nameLabel;
     protected final LabelWidget gridLabel;
     protected final IntegerEditWidget gridEditWidget;
-    protected final BaseTextFieldWidget nameTextField;
+    protected final CheckBoxWidget closeOnExecuteCheckbox;
+    protected final CheckBoxWidget closeOnKeyReleaseCheckbox;
     protected final InfoIconWidget infoWidget;
-    @Nullable protected final KeyBind openKey;
-    @Nullable protected MenuWidget menuWidget;
     protected final String name;
+    @Nullable protected MenuWidget menuWidget;
     protected Vec2i selectionStart = Vec2i.ZERO;
+    protected boolean closeScreenOnExecute;
+    protected boolean closeScreenOnKeyRelease;
     protected boolean dirty;
+    protected boolean dragSelecting;
     protected boolean editMode;
     protected boolean gridEnabled = true;
     protected boolean hasGroupSelection;
-    protected boolean dragSelecting;
     protected int gridSize = 8;
 
-    public ActionWidgetScreen(String name)
+    public ActionWidgetScreen(String name, ActionWidgetScreenData data)
     {
-        this(name, null);
-    }
-
-    public ActionWidgetScreen(String name, @Nullable KeyBind openKey)
-    {
-        this.openKey = openKey;
+        this.data = data;
         this.name = name;
 
         this.editModeLabel = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.edit_mode.colon");
@@ -71,8 +65,11 @@ public class ActionWidgetScreen extends BaseScreen
 
         this.infoWidget = new InfoIconWidget(0, 0, DefaultIcons.INFO_ICON_18, "");
 
-        this.nameLabel = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.name.colon");
-        this.nameTextField = new BaseTextFieldWidget(0, 0, 100, 16, name);
+        this.closeOnExecuteCheckbox = new CheckBoxWidget(0, 0, "malilib.label.checkbox.action_widget_screen.close_on_execute", "malilib.hover_info.action_widget_screen.close_screen_on_execute");
+        this.closeOnExecuteCheckbox.setBooleanStorage(this::shouldCloseScreenOnExecute, this::setCloseScreenOnExecute);
+
+        this.closeOnKeyReleaseCheckbox = new CheckBoxWidget(0, 0, "malilib.label.checkbox.action_widget_screen.close_on_key_release", "malilib.hover_info.action_widget_screen.close_screen_on_key_release");
+        this.closeOnKeyReleaseCheckbox.setBooleanStorage(() -> this.closeScreenOnKeyRelease, this::setCloseScreenOnKeyRelease);
 
         this.addWidgetButton = new GenericButton(0, 0, -1, 16, "malilib.label.button.add_action");
         this.addWidgetButton.setActionListener(this::openAddWidgetScreen);
@@ -81,20 +78,7 @@ public class ActionWidgetScreen extends BaseScreen
         this.gridEnabledButton = OnOffButton.simpleSlider(16, () -> this.gridEnabled, this::toggleGridEnabled);
         this.gridEditWidget = new IntegerEditWidget(0, 0, 40, 16, this.gridSize, 1, 256, this::setGridSize);
 
-        ImmutableList<BaseActionExecutionWidget> list = ActionExecutionWidgetManager.INSTANCE.getWidgetList(this.name);
-
-        if (list != null)
-        {
-            for (BaseActionExecutionWidget widget : list)
-            {
-                this.widgetList.add(widget);
-
-                if (widget.isSelected())
-                {
-                    this.selectedWidgets.add(widget);
-                }
-            }
-        }
+        this.readData(data);
     }
 
     @Override
@@ -116,19 +100,21 @@ public class ActionWidgetScreen extends BaseScreen
             this.gridLabel.setPosition(this.editModeButton.getRight() + 16, y + 4);
             this.gridEnabledButton.setPosition(this.gridLabel.getRight() + 6, y);
             this.gridEditWidget.setPosition(this.gridEnabledButton.getRight() + 6, y);
-
             y += 20;
-            this.nameLabel.setPosition(x, y + 4);
-            this.nameTextField.setPosition(this.nameLabel.getRight() + 6, y);
 
-            y += 20;
+            this.closeOnExecuteCheckbox.setPosition(x, y);
+            y += 12;
+            this.closeOnKeyReleaseCheckbox.setPosition(x, y);
+            y += 14;
+
             this.addWidgetButton.setPosition(x, y);
-
             y += 20;
+
             this.infoWidget.setPosition(x, y);
 
-            this.addWidget(this.nameLabel);
-            this.addWidget(this.nameTextField);
+            this.addWidget(this.closeOnExecuteCheckbox);
+            this.addWidget(this.closeOnKeyReleaseCheckbox);
+
             this.addWidget(this.addWidgetButton);
             this.addWidget(this.infoWidget);
 
@@ -143,7 +129,7 @@ public class ActionWidgetScreen extends BaseScreen
 
         for (BaseActionExecutionWidget widget : this.widgetList)
         {
-            widget.setManagementData(this::markDirty, this::isEditMode, this::getGridSize);
+            widget.setContainer(this);
             widget.onAdded(this);
             this.addWidget(widget);
         }
@@ -159,15 +145,17 @@ public class ActionWidgetScreen extends BaseScreen
         for (BaseActionExecutionWidget widget : this.widgetList)
         {
             // Remove the references to this screen
-            widget.setManagementData(null, ALWAYS_FALSE, NO_GRID);
+            widget.setContainer(null);
         }
 
-        if (this.dirty)
+        if (this.dirty ||
+            this.closeScreenOnExecute != this.data.closeScreenOnExecute ||
+            this.closeScreenOnKeyRelease != this.data.closeScreenOnKeyRelease)
         {
-            ActionExecutionWidgetManager.INSTANCE.removeWidgetList(this.name);
-            String newName = this.nameTextField.getText();
-            ActionExecutionWidgetManager.INSTANCE.putWidgetList(newName, ImmutableList.copyOf(this.widgetList));
-            ActionExecutionWidgetManager.INSTANCE.saveToFileIfDirty();
+            ActionWidgetScreenData data = new ActionWidgetScreenData(ImmutableList.copyOf(this.widgetList),
+                                                                     this.closeScreenOnExecute,
+                                                                     this.closeScreenOnKeyRelease);
+            ActionExecutionWidgetManager.INSTANCE.saveWidgetScreenData(this.name, data);
         }
     }
 
@@ -292,8 +280,7 @@ public class ActionWidgetScreen extends BaseScreen
     @Override
     public boolean onKeyReleased(int keyCode, int scanCode, int modifiers)
     {
-        if (this.editMode == false &&
-            MaLiLibConfigs.Generic.ACTION_SCREEN_CLOSE_ON_KEY_RELEASE.getBooleanValue() &&
+        if (this.editMode == false && this.closeScreenOnKeyRelease &&
             KeyBindImpl.getCurrentlyPressedKeysCount() == 0)
         {
             this.closeScreen(false);
@@ -309,6 +296,22 @@ public class ActionWidgetScreen extends BaseScreen
         }
 
         return false;
+    }
+
+    protected void readData(ActionWidgetScreenData data)
+    {
+        this.closeScreenOnExecute = data.closeScreenOnExecute;
+        this.closeScreenOnKeyRelease = data.closeScreenOnKeyRelease;
+
+        for (BaseActionExecutionWidget widget : data.widgets)
+        {
+            this.widgetList.add(widget);
+
+            if (widget.isSelected())
+            {
+                this.selectedWidgets.add(widget);
+            }
+        }
     }
 
     @Nullable
@@ -361,21 +364,22 @@ public class ActionWidgetScreen extends BaseScreen
 
     protected void addActionWidget(BaseActionExecutionWidget widget)
     {
-        widget.setManagementData(this::markDirty, this::isEditMode, this::getGridSize);
+        widget.setContainer(this);
         widget.setPosition(this.x + this.screenWidth / 2, this.y + 10);
         widget.onAdded(this);
 
         this.widgetList.add(widget);
         this.addWidget(widget);
-        this.markDirty();
+        this.notifyWidgetEdited();
     }
 
     protected void removeActionWidget(BaseActionExecutionWidget widget)
     {
+        widget.setContainer(null);
         this.widgetList.remove(widget);
         this.selectedWidgets.remove(widget);
         this.removeWidget(widget);
-        this.markDirty();
+        this.notifyWidgetEdited();
     }
 
     protected void editActionWidget(BaseActionExecutionWidget widget)
@@ -404,7 +408,7 @@ public class ActionWidgetScreen extends BaseScreen
 
             this.selectedWidgets.clear();
             this.hasGroupSelection = false;
-            this.markDirty();
+            this.notifyWidgetEdited();
         }
     }
 
@@ -419,14 +423,28 @@ public class ActionWidgetScreen extends BaseScreen
         this.hasGroupSelection = false;
     }
 
-    protected boolean isEditMode()
+    @Override
+    public boolean isEditMode()
     {
         return this.editMode;
     }
 
-    protected int getGridSize()
+    @Override
+    public int getGridSize()
     {
         return this.gridEnabled ? this.gridSize : -1;
+    }
+
+    @Override
+    public boolean shouldCloseScreenOnExecute()
+    {
+        return this.closeScreenOnExecute;
+    }
+
+    @Override
+    public void notifyWidgetEdited()
+    {
+        this.dirty = true;
     }
 
     protected void toggleGridEnabled()
@@ -439,6 +457,16 @@ public class ActionWidgetScreen extends BaseScreen
         {
             this.addWidget(this.gridEditWidget);
         }
+    }
+
+    public void setCloseScreenOnExecute(boolean closeScreenOnExecute)
+    {
+        this.closeScreenOnExecute = closeScreenOnExecute;
+    }
+
+    public void setCloseScreenOnKeyRelease(boolean closeScreenOnKeyRelease)
+    {
+        this.closeScreenOnKeyRelease = closeScreenOnKeyRelease;
     }
 
     protected void toggleEditMode()
@@ -464,12 +492,10 @@ public class ActionWidgetScreen extends BaseScreen
         EditActionExecutionWidgetScreen screen = new EditActionExecutionWidgetScreen(widgets);
         screen.setParent(this);
         BaseScreen.openPopupScreen(screen);
-        this.markDirty();
-    }
 
-    protected void markDirty()
-    {
-        this.dirty = true;
+        // Not technically correct... but micro-optimizing here and detecting
+        // widget changes is probably a waste of time
+        this.notifyWidgetEdited();
     }
 
     @Override
@@ -500,10 +526,30 @@ public class ActionWidgetScreen extends BaseScreen
         super.drawContents(mouseX, mouseY, partialTicks);
     }
 
+    public static void openCreateActionWidgetScreen()
+    {
+        TextInputScreen screen = new TextInputScreen("malilib.gui.title.create_action_widget_screen", "",
+                                                     GuiUtils.getCurrentScreen(),
+                                                     ActionExecutionWidgetManager::createActionWidgetScreen);
+        screen.setInfoText(StyledText.translate("malilib.gui.info.create_action_widget_screen.name_is_final"));
+        screen.setLabelText(StyledText.translate("malilib.label.name.colon"));
+        BaseScreen.openPopupScreen(screen);
+    }
+
     public static ActionResult openActionWidgetScreen(ActionContext ctx, String arg)
     {
-        ActionWidgetScreen screen = new ActionWidgetScreen(arg);
-        BaseScreen.openScreen(screen);
-        return ActionResult.SUCCESS;
+        ActionWidgetScreenData data = ActionExecutionWidgetManager.INSTANCE.getOrLoadWidgetScreenData(arg);
+
+        if (data != null)
+        {
+            ActionWidgetScreen screen = new ActionWidgetScreen(arg, data);
+            BaseScreen.openScreen(screen);
+            return ActionResult.SUCCESS;
+        }
+        else
+        {
+            MessageUtils.error("malilib.message.error.no_action_screen_found_by_name", arg);
+            return ActionResult.FAIL;
+        }
     }
 }

@@ -6,8 +6,6 @@ malilib.config.comment.actionbarmessagelimit=This is the maximum number of concu
 malilib.config.comment.actionpromptfuzzysearch=When enabled, the search uses a more lenient "fuzzy search", where all the characters from the search text must appear in that order in the target string, but there can be an arbitrary number or characters between them
 malilib.config.comment.actionpromptremembersearch=When enabled, the search bar in the Action Prompt screen will remember the search text from the last time it was open
 malilib.config.comment.actionpromptsearchdisplayname=When enabled, the search bar in the Action Prompt screen will also search against the display names of the actions, and not just against the "internal name"
-malilib.config.comment.actionscreencloseonexecute=Close the Action Execution Widget screen when an action is executed
-malilib.config.comment.actionscreencloseonkeyrelease=Close the Action Execution Widget screen when the hotkey to open the screen is released.\n<b>§fNote:</c></b>This will also execute the action that is being hovered!
 malilib.config.comment.configbackupantiduplicate=If enabled, then the rotated config backups are "anti-duplicated" such that if the to-be-created new config backup file is identical to an already found older backup, then that older backup is moved as the latest backup, instead of creating a new backup.\n\nBasically this prevents spamming new useless backups and overwriting older different backups if for example a single feature is toggled on and off often.\n\n§8(The configs are saved to file any time the config menu is closed, and any configs have changed since last being saved. So for example toggling on or off a feature, and then opening and closing the config menu for that mod would cause them to get saved.)
 malilib.config.comment.configbackupcount=This is the number of backup copies that should be kept of each of the mod config files, whenever the configs are modified and get saved to the config file again
 malilib.config.comment.configwidgetbackground=Enables a background color for the config option widgets. This is by default a slightly different color for odd and even rows.
@@ -52,8 +50,6 @@ malilib.config.name.actionbarmessagelimit=Actionbar Message Limit
 malilib.config.name.actionpromptfuzzysearch=Action Prompt Fuzzy Search
 malilib.config.name.actionpromptremembersearch=Action Prompt Remember Search
 malilib.config.name.actionpromptsearchdisplayname=Action Prompt Search Display Name
-malilib.config.name.actionscreencloseonexecute=Action Screen Close On Execute
-malilib.config.name.actionscreencloseonkeyrelease=Action Screen Close On Key Release
 malilib.config.name.configbackupantiduplicate=Config Backup Anti-Duplication
 malilib.config.name.configbackupcount=Config Backup Count
 malilib.config.name.configwidgetbackground=Config Widget Background
@@ -104,6 +100,8 @@ malilib.hover_info.action.contained_actions=§8Contained actions (§b%s§8):
 malilib.hover_info.action.display_name=§8Display name: §7%s
 malilib.hover_info.action.mod=§8Mod: §7%s
 malilib.hover_info.action.name=§8Name: §7%s
+malilib.hover_info.action_widget_screen.close_screen_on_execute=Close the screen when an action is executed
+malilib.hover_info.action_widget_screen.close_screen_on_key_release=Close the screen when all keys are released.\n<b>§eNote:</b> This will also execute the action that is being hovered!
 malilib.hover_info.action.original_registry_name=§8Original registry name: §7%s
 malilib.hover_info.action.registry_name=§8Registry name: §7%s
 malilib.hover_info.add_action_execution_widget.add_argument=Bind the argument to the action button directly.\nIf this is not set, then you will need to input the argument every time you run the action.
@@ -185,6 +183,8 @@ malilib.gui.button.hover.list.move_up=Move Up
 malilib.gui.button.hover.list.remove=Remove
 
 malilib.gui.hover.open_color_editor=Open color editor\nCurrent color: §f%s§7 (AARRGGBB)
+
+malilib.gui.info.create_action_widget_screen.name_is_final=§eNote:§r The name can't be changed later!\n§8(Except by renaming the corresponding save file manually.)§r\n\nThe name is only visible/used as the argument to the action to open the action screen. (And usually it will be set as the argument to the action in an action alias.)\n\nThe name should also be safe for a file name (it will also be automatically adjusted to be all lower case with underscores), as it will be the name of the file where the screen settings/configuration is saved.
 
 malilib.gui.label.black_white_list_edit.black_list=Black List
 malilib.gui.label.black_white_list_edit.type=List Type
@@ -285,6 +285,7 @@ malilib.gui.title.configs=MaLiLib Configs
 malilib.gui.title.config_status_indicator_configuration=MaLiLib - Config Status Indicator widget configuration
 malilib.gui.title.confirm_config_reset=Confirm config reset
 malilib.gui.title.create_action_execution_widget=Create an Action Execution Widget
+malilib.gui.title.create_action_widget_screen=Create a new Action Widget Screen
 malilib.gui.title.create_directory=Create a new directory
 malilib.gui.title.create_macro=Create a Macro Action with the name:
 malilib.gui.title.directory_browser=Directory Browser
@@ -317,6 +318,9 @@ malilib.label.actions.lists.macro=Macro: %s
 
 malilib.label.button.add_action=Add Action
 malilib.label.add_action_execution_widget.add_argument=Add Argument
+
+malilib.label.checkbox.action_widget_screen.close_on_execute=Close On Execute
+malilib.label.checkbox.action_widget_screen.close_on_key_release=Close On Key Release
 
 malilib.label.action.colon=Action:
 malilib.label.action_execution_widget.type.rectangular=Rectangular
@@ -446,10 +450,13 @@ malilib.label.colored.on.caps=§aON§r
 malilib.label.colored.off=§coff§r
 malilib.label.colored.on=§aon§r
 
+malilib.message.action_screen_created_by_name=Action screen created by the name '%s'
 malilib.message.config_locked_off=%s is currently locked to §cOFF§r
 malilib.message.config_locked_on=%s is currently locked to §aON§r
 malilib.message.config_overridden_off=%s is currently overridden to §cOFF§r
 malilib.message.config_overridden_on=%s is currently overridden to §aON§r
+
+malilib.message.error.action_screen_already_exists_by_name=Error: Action screen already exists by the name '%s'
 malilib.message.error.actions_edit.add_alias_select_one=To add an alias for an action, select exactly one action from the list!
 malilib.message.error.actions_edit.exists=An action already exists by the name '%s'
 malilib.message.error.custom_hotkey_add.give_name=You must give a name for the custom hotkey!
@@ -463,6 +470,7 @@ malilib.message.error.file_rename.rename_failed=Failed to rename the file '%s' t
 malilib.message.error.illegal_characters_in_file_name=Invalid characters in the given file name '%s'.\nFor example slashes are not allowed, and on Windows also many other special characters are not valid for file names!
 malilib.message.error.invalid_directory=Invalid directory name '%s'
 malilib.message.error.keybind.attempt_to_bind_ignored_key=The key '%s' is currently set to be ignored by malilib. See malilib configs Generic -> Ignored Keys
+malilib.message.error.no_action_screen_found_by_name=Error: No action screen found by the name '%s'
 malilib.message.error.select_screen_location_in_dropdown=Select the screen location in the dropdown widget
 malilib.message.error.textfield.invalid_value_floating_point_number='%s' is not a floating point number
 malilib.message.error.textfield.invalid_value_int='%s' is not an integer number

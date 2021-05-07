@@ -23,6 +23,7 @@ public class MaLiLibActions
     {
         register("addMessage", MessageUtils::addMessageAction);
         register("addToast", MessageUtils::addToastAction);
+        register("createActionWidgetScreen", ActionWidgetScreen::openCreateActionWidgetScreen);
         register("openActionWidgetScreen", ActionWidgetScreen::openActionWidgetScreen);
         register("runCommand", ActionUtils::runVanillaCommand);
         register("switchConfigProfile", ConfigUtils::switchConfigProfile);

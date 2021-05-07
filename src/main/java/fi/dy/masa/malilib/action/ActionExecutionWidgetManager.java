@@ -1,126 +1,111 @@
 package fi.dy.masa.malilib.action;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Nullable;
-import com.google.common.collect.ImmutableList;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.config.util.ConfigUtils;
-import fi.dy.masa.malilib.gui.action.BaseActionExecutionWidget;
+import fi.dy.masa.malilib.gui.action.ActionWidgetScreenData;
+import fi.dy.masa.malilib.overlay.message.MessageUtils;
+import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.JsonUtils;
 
 public class ActionExecutionWidgetManager
 {
     public static final ActionExecutionWidgetManager INSTANCE = new ActionExecutionWidgetManager();
 
-    protected final Map<String, ImmutableList<BaseActionExecutionWidget>> widgetMap = new HashMap<>();
-    protected boolean dirty;
+    protected final Map<String, ActionWidgetScreenData> widgetScreens = new HashMap<>();
 
     @Nullable
-    public ImmutableList<BaseActionExecutionWidget> getWidgetList(String name)
+    public ActionWidgetScreenData getWidgetScreenData(String name)
     {
-        return this.widgetMap.get(name);
+        return this.widgetScreens.get(name);
     }
 
-    public void putWidgetList(String name, ImmutableList<BaseActionExecutionWidget> list)
+    @Nullable
+    public ActionWidgetScreenData getOrLoadWidgetScreenData(String name)
     {
-        this.widgetMap.put(name, list);
-        this.dirty = true;
-    }
-
-    public void removeWidgetList(String name)
-    {
-        this.widgetMap.remove(name);
-        this.dirty = true;
-    }
-
-    public JsonObject toJson()
-    {
-        JsonObject obj = new JsonObject();
-
-        for (Map.Entry<String, ImmutableList<BaseActionExecutionWidget>> entry : this.widgetMap.entrySet())
+        if (this.widgetScreens.containsKey(name) == false)
         {
-            JsonArray arr = new JsonArray();
-
-            for (BaseActionExecutionWidget widget : entry.getValue())
-            {
-                arr.add(widget.toJson());
-            }
-
-            obj.add(entry.getKey(), arr);
+            this.loadFromFile(name);
         }
 
-        return obj;
+        return this.getWidgetScreenData(name);
     }
 
-    public void fromJson(JsonElement el)
+    public void saveWidgetScreenData(String name, ActionWidgetScreenData data)
     {
-        if (el.isJsonObject() == false)
+        this.widgetScreens.put(name, data);
+        this.saveDataToFile(name, data);
+    }
+
+    public void removeWidgetScreenData(String name)
+    {
+        this.widgetScreens.remove(name);
+    }
+
+    public void clear()
+    {
+        this.widgetScreens.clear();
+    }
+
+    public void saveAllLoadedToFile()
+    {
+        for (Map.Entry<String, ActionWidgetScreenData> entry : this.widgetScreens.entrySet())
         {
-            return;
-        }
-
-        JsonObject obj = el.getAsJsonObject();
-
-        for (Map.Entry<String, JsonElement> entry : obj.entrySet())
-        {
-            JsonElement e = entry.getValue();
-
-            if (e.isJsonArray())
-            {
-                ImmutableList.Builder<BaseActionExecutionWidget> builder = ImmutableList.builder();
-                JsonArray arr = e.getAsJsonArray();
-                int size = arr.size();
-
-                for (int i = 0; i < size; ++i)
-                {
-                    JsonElement ae = arr.get(i);
-
-                    if (ae.isJsonObject())
-                    {
-                        BaseActionExecutionWidget widget = BaseActionExecutionWidget.createFromJson(ae.getAsJsonObject());
-
-                        if (widget != null)
-                        {
-                            builder.add(widget);
-                        }
-                    }
-                }
-
-                this.widgetMap.put(entry.getKey(), builder.build());
-            }
+            this.saveDataToFile(entry.getKey(), entry.getValue());
         }
     }
 
-    public boolean saveToFileIfDirty()
+    protected void loadDataFromJson(String name, JsonElement el)
     {
-        if (this.dirty)
-        {
-            this.dirty = false;
-            return this.saveToFile();
-        }
+        ActionWidgetScreenData data = ActionWidgetScreenData.fromJson(el);
 
-        return false;
+        if (data != null)
+        {
+            this.widgetScreens.put(name, data);
+        }
     }
 
-    public boolean saveToFile()
+    protected boolean saveDataToFile(String name, ActionWidgetScreenData data)
     {
-        File dir = ConfigUtils.getActiveConfigDirectory();
-        File backupDir = new File(dir, "config_backups");
-        File saveFile = new File(dir, MaLiLibReference.MOD_ID + "_action_widgets.json");
+        name = FileUtils.generateSimpleSafeFileName(name);
+        File configDir = ConfigUtils.getActiveConfigDirectory();
+        File backupDir = configDir.toPath().resolve("config_backups").resolve(MaLiLibReference.MOD_ID).resolve("action_screens").toFile();
+        Path saveDir = configDir.toPath().resolve(MaLiLibReference.MOD_ID).resolve("action_screens");
+        File saveFile = saveDir.resolve(name + ".json").toFile();
         boolean antiDuplicate = MaLiLibConfigs.Generic.CONFIG_BACKUP_ANTI_DUPLICATE.getBooleanValue();
 
-        return JsonUtils.saveToFile(dir, backupDir, saveFile, 10, antiDuplicate, this::toJson);
+        return JsonUtils.saveToFile(saveDir.toFile(), backupDir, saveFile, 20, antiDuplicate, data::toJson);
     }
 
-    public void loadFromFile()
+    protected void loadFromFile(String name)
     {
-        File dir = ConfigUtils.getActiveConfigDirectory();
-        JsonUtils.loadFromFile(dir, MaLiLibReference.MOD_ID + "_action_widgets.json", this::fromJson);
+        final String safeName = FileUtils.generateSimpleSafeFileName(name);
+        File configDir = ConfigUtils.getActiveConfigDirectory();
+        Path saveDir = configDir.toPath().resolve(MaLiLibReference.MOD_ID).resolve("action_screens");
+        JsonUtils.loadFromFile(saveDir.toFile(), name + ".json", (el) -> this.loadDataFromJson(safeName, el));
+    }
+
+    public static boolean createActionWidgetScreen(String arg)
+    {
+        ActionWidgetScreenData data = INSTANCE.getOrLoadWidgetScreenData(arg);
+
+        if (data == null)
+        {
+            String name = FileUtils.generateSimpleSafeFileName(arg);
+            INSTANCE.saveWidgetScreenData(name, ActionWidgetScreenData.createEmpty());
+            MessageUtils.success("malilib.message.action_screen_created_by_name", name);
+            return true;
+        }
+        else
+        {
+            MessageUtils.warning("malilib.message.error.action_screen_already_exists_by_name", arg);
+            return false;
+        }
     }
 }
