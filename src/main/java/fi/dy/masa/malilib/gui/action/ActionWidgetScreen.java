@@ -3,9 +3,11 @@ package fi.dy.masa.malilib.gui.action;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
+import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import com.google.common.collect.ImmutableList;
+import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.action.ActionContext;
 import fi.dy.masa.malilib.action.ActionExecutionWidgetManager;
 import fi.dy.masa.malilib.gui.BaseScreen;
@@ -542,6 +544,7 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
 
         if (data != null)
         {
+            MaLiLibConfigs.Internal.PREVIOUS_ACTION_WIDGET_SCREEN.setValue(arg);
             ActionWidgetScreen screen = new ActionWidgetScreen(arg, data);
             BaseScreen.openScreen(screen);
             return ActionResult.SUCCESS;
@@ -551,5 +554,18 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
             MessageUtils.error("malilib.message.error.no_action_screen_found_by_name", arg);
             return ActionResult.FAIL;
         }
+    }
+
+    public static ActionResult openPreviousActionWidgetScreen(ActionContext ctx)
+    {
+        String name = MaLiLibConfigs.Internal.PREVIOUS_ACTION_WIDGET_SCREEN.getStringValue();
+
+        if (StringUtils.isBlank(name))
+        {
+            MessageUtils.error("malilib.message.error.no_previously_opened_action_screen");
+            return ActionResult.FAIL;
+        }
+
+        return openActionWidgetScreen(ctx, name);
     }
 }

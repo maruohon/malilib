@@ -134,11 +134,13 @@ public class MaLiLibConfigs
         public static final StringConfig ACTIVE_CONFIG_PROFILE          = new StringConfig("activeConfigProfile", "");
         public static final StringConfig ACTION_PROMPT_SEARCH_TEXT      = new StringConfig("actionPromptSearchText", "");
         public static final StringConfig ACTION_PROMPT_SELECTED_LIST    = new StringConfig("actionPromptSelectedList", "all");
+        public static final StringConfig PREVIOUS_ACTION_WIDGET_SCREEN  = new StringConfig("previousActionWidgetScreen", "");
 
         public static final ImmutableList<ConfigOption<?>> OPTIONS = ImmutableList.of(
                 ACTIVE_CONFIG_PROFILE,
                 ACTION_PROMPT_SEARCH_TEXT,
-                ACTION_PROMPT_SELECTED_LIST
+                ACTION_PROMPT_SELECTED_LIST,
+                PREVIOUS_ACTION_WIDGET_SCREEN
         );
     }
 
