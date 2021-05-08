@@ -16,7 +16,6 @@ import fi.dy.masa.malilib.gui.widget.IntegerEditWidget;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.util.StringUtils;
-import fi.dy.masa.malilib.util.data.Vec2i;
 
 public class EditActionExecutionWidgetScreen extends BaseScreen
 {
@@ -56,8 +55,6 @@ public class EditActionExecutionWidgetScreen extends BaseScreen
     protected final ColorEditorWidget normalBorderColorEditWidget;
     protected final GenericButton cancelButton;
     protected final GenericButton removeIconButton;
-    protected Vec2i dragStartOffset = Vec2i.ZERO;
-    protected boolean dragging;
     protected boolean shouldApplyValues = true;
 
     public EditActionExecutionWidgetScreen(List<BaseActionExecutionWidget> widgets)
@@ -150,11 +147,9 @@ public class EditActionExecutionWidgetScreen extends BaseScreen
     }
 
     @Override
-    protected void initScreen()
+    protected void reAddActiveWidgets()
     {
-        super.initScreen();
-
-        this.updateWidgetPositions();
+        super.reAddActiveWidgets();
 
         if (this.widgets.size() == 1)
         {
@@ -206,9 +201,13 @@ public class EditActionExecutionWidgetScreen extends BaseScreen
         this.addWidget(this.hoveredBorderColorLabelWidget);
         this.addWidget(this.hoveredBorderColorEditWidget);
 
-        this.addWidget(this.cancelButton);
+        if (this.widgets.size() > 1)
+        {
+            this.addWidget(this.cancelButton);
+        }
     }
 
+    @Override
     protected void updateWidgetPositions()
     {
         int x = this.x + 10;
@@ -299,44 +298,6 @@ public class EditActionExecutionWidgetScreen extends BaseScreen
         super.onGuiClosed();
 
         this.applyValues();
-    }
-
-    @Override
-    public boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
-    {
-        if (super.onMouseClicked(mouseX, mouseY, mouseButton))
-        {
-            return true;
-        }
-
-        this.dragStartOffset = new Vec2i(mouseX - this.getX(),  mouseY - this.getY());
-        this.dragging = true;
-
-        return true;
-    }
-
-    @Override
-    public boolean onMouseMoved(int mouseX, int mouseY)
-    {
-        if (this.dragging)
-        {
-            int x = mouseX - this.dragStartOffset.x;
-            int y = mouseY - this.dragStartOffset.y;
-
-            this.setPosition(x, y);
-            this.updateWidgetPositions();
-
-            return true;
-        }
-
-        return super.onMouseMoved(mouseX, mouseY);
-    }
-
-    @Override
-    protected void mouseReleased(int mouseX, int mouseY, int mouseButton)
-    {
-        this.dragging = false;
-        super.mouseReleased(mouseX, mouseY, mouseButton);
     }
 
     protected void cancel()

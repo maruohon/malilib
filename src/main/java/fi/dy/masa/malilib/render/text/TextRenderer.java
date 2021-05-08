@@ -148,6 +148,11 @@ public class TextRenderer implements IResourceManagerReloadListener
         return this.fontHeight;
     }
 
+    public int getLineHeight()
+    {
+        return this.lineHeight;
+    }
+
     public int getColorCode(char colorCodeChar)
     {
         int index = VANILLA_COLOR_CODES.indexOf(colorCodeChar);

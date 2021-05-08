@@ -21,6 +21,7 @@ public abstract class BaseTextInputScreen extends BaseScreen
     protected final String originalText;
     @Nullable protected StyledText infoText;
     @Nullable protected StyledText labelText;
+    protected int baseHeight = 80;
     protected int elementsOffsetY;
 
     public BaseTextInputScreen(String titleKey, String defaultText, @Nullable GuiScreen parent)
@@ -28,6 +29,8 @@ public abstract class BaseTextInputScreen extends BaseScreen
         this.title = StringUtils.translate(titleKey);
         this.useTitleHierarchy = false;
         this.originalText = defaultText;
+        this.screenWidth = 260;
+        this.backgroundColor = 0xFF000000;
 
         this.okButton = createButton("malilib.gui.button.colored.ok", this::closeScreenIfValueApplied);
         this.resetButton = createButton("malilib.gui.button.reset", this::resetTextFieldToOriginalText);
@@ -37,14 +40,30 @@ public abstract class BaseTextInputScreen extends BaseScreen
         this.textField.setFocused(true);
 
         this.setParent(parent);
-        this.setScreenWidthAndHeight(260, 80);
-        this.centerOnScreen();
     }
 
     @Override
     protected void initScreen()
     {
+        this.updateHeight();
         super.initScreen();
+    }
+
+    @Override
+    protected void reAddActiveWidgets()
+    {
+        super.reAddActiveWidgets();
+
+        this.addWidget(this.textField);
+        this.addWidget(this.okButton);
+        this.addWidget(this.resetButton);
+        this.addWidget(this.cancelButton);
+    }
+
+    @Override
+    protected void updateWidgetPositions()
+    {
+        super.updateWidgetPositions();
 
         int x = this.x + 10;
         int y = this.y + 26 + this.elementsOffsetY;
@@ -55,11 +74,29 @@ public abstract class BaseTextInputScreen extends BaseScreen
         this.okButton.setPosition(x, y);
         this.resetButton.setPosition(this.okButton.getRight() + 6, y);
         this.cancelButton.setPosition(this.resetButton.getRight() + 6, y);
+    }
 
-        this.addWidget(this.textField);
-        this.addWidget(this.okButton);
-        this.addWidget(this.resetButton);
-        this.addWidget(this.cancelButton);
+    protected void updateHeight()
+    {
+        this.updateTextHeightOffset();
+        this.setScreenWidthAndHeight(260, this.baseHeight + this.elementsOffsetY);
+        this.centerOnScreen();
+    }
+
+    protected void updateTextHeightOffset()
+    {
+        this.elementsOffsetY = 0;
+        int lineHeight = TextRenderer.INSTANCE.getFontHeight() + 1;
+
+        if (this.infoText != null)
+        {
+            this.elementsOffsetY += this.infoText.lines.size() * lineHeight + 16;
+        }
+
+        if (this.labelText != null)
+        {
+            this.elementsOffsetY += this.labelText.lines.size() * lineHeight + 4;
+        }
     }
 
     protected static GenericButton createButton(String translationKey, EventListener listener)
@@ -80,7 +117,7 @@ public abstract class BaseTextInputScreen extends BaseScreen
 
         this.infoText = infoText;
 
-        this.updateElementPosition();
+        this.updateHeight();
     }
 
     public void setLabelText(@Nullable StyledText labelText)
@@ -92,26 +129,7 @@ public abstract class BaseTextInputScreen extends BaseScreen
 
         this.labelText = labelText;
 
-        this.updateElementPosition();
-    }
-
-    protected void updateElementPosition()
-    {
-        this.elementsOffsetY = 0;
-        int lineHeight = TextRenderer.INSTANCE.getFontHeight() + 1;
-
-        if (this.infoText != null)
-        {
-            this.elementsOffsetY += this.infoText.lines.size() * lineHeight + 16;
-        }
-
-        if (this.labelText != null)
-        {
-            this.elementsOffsetY += this.labelText.lines.size() * lineHeight + 4;
-        }
-
-        this.setScreenWidthAndHeight(260, 80 + this.elementsOffsetY);
-        this.centerOnScreen();
+        this.updateHeight();
     }
 
     @Override

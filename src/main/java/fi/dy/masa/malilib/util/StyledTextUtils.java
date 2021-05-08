@@ -7,10 +7,16 @@ import fi.dy.masa.malilib.render.text.Glyph;
 import fi.dy.masa.malilib.render.text.StyledText;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.render.text.StyledTextSegment;
+import fi.dy.masa.malilib.render.text.TextRenderer;
 import fi.dy.masa.malilib.util.data.LeftRight;
 
 public class StyledTextUtils
 {
+    public static int getRenderHeight(List<StyledTextLine> lines)
+    {
+        return lines.size() * TextRenderer.INSTANCE.getLineHeight();
+    }
+
     public static int getMaxTextRenderWidth(List<StyledTextLine> lines)
     {
         int width = 0;

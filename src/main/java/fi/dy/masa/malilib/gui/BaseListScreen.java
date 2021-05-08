@@ -106,6 +106,17 @@ public abstract class BaseListScreen<LISTWIDGET extends BaseListWidget> extends 
     }
 
     @Override
+    protected void updateWidgetPositions()
+    {
+        super.updateWidgetPositions();
+
+        if (this.widget != null)
+        {
+            this.widget.setPosition(this.getListX(), this.getListY());
+        }
+    }
+
+    @Override
     protected int getCurrentScrollbarPosition()
     {
         LISTWIDGET listWidget = this.getListWidget();

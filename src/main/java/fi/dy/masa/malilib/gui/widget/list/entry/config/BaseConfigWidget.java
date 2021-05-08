@@ -137,7 +137,7 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
         button.setActionListener(() -> {
             DirectorySelectorScreen browserScreen = screenFactory.create();
             browserScreen.setParent(GuiUtils.getCurrentScreen());
-            BaseScreen.openPopupScreen(browserScreen);
+            BaseScreen.openScreen(browserScreen);
         });
 
         this.resetButton.setActionListener(() -> {

@@ -5,11 +5,11 @@ import javax.annotation.Nullable;
 import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
+import fi.dy.masa.malilib.render.text.StyledText;
 
 public class DualTextInputScreen extends BaseTextInputScreen
 {
     protected final BiFunction<String, String, Boolean> stringConsumer;
-    protected final LabelWidget labelWidget1;
     protected final LabelWidget labelWidget2;
     protected final BaseTextFieldWidget textField2;
     protected final String originalText2;
@@ -24,40 +24,40 @@ public class DualTextInputScreen extends BaseTextInputScreen
     {
         super(titleKey, defaultText1, parent);
 
+        this.baseHeight = 120;
         this.stringConsumer = stringConsumer;
         this.originalText2 = defaultText2;
 
-        this.labelWidget1 = new LabelWidget(0, 0, -1, 12, 0xFFFFFFFF, labelKey1);
         this.labelWidget2 = new LabelWidget(0, 0, -1, 12, 0xFFFFFFFF, labelKey2);
         this.textField2 = new BaseTextFieldWidget(0, 0, 240, 20, this.originalText2);
 
-        this.setScreenWidthAndHeight(280, 140);
-        this.centerOnScreen();
+        this.setLabelText(StyledText.translate(labelKey1));
     }
 
     @Override
-    protected void initScreen()
+    protected void reAddActiveWidgets()
     {
-        super.initScreen();
+        super.reAddActiveWidgets();
+
+        this.addWidget(this.labelWidget2);
+        this.addWidget(this.textField2);
+    }
+
+    @Override
+    protected void updateWidgetPositions()
+    {
+        super.updateWidgetPositions();
 
         int x = this.x + 10;
-        int y = this.y + 28;
+        int y = this.textField.getBottom() + 6;
 
-        this.labelWidget1.setPosition(x, y);
-        this.textField.setPosition(x, y + 12);
-
-        y += 40;
         this.labelWidget2.setPosition(x, y);
         this.textField2.setPosition(x, y + 12);
 
-        y += 40;
+        y = this.textField2.getBottom() + 6;
         this.okButton.setY(y);
         this.resetButton.setY(y);
         this.cancelButton.setY(y);
-
-        this.addWidget(this.labelWidget1);
-        this.addWidget(this.labelWidget2);
-        this.addWidget(this.textField2);
     }
 
     @Override

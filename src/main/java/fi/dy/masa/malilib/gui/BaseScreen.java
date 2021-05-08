@@ -27,6 +27,7 @@ import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.listener.TextChangeListener;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
+import fi.dy.masa.malilib.util.data.Vec2i;
 
 public abstract class BaseScreen extends GuiScreen
 {
@@ -65,6 +66,7 @@ public abstract class BaseScreen extends GuiScreen
     private final List<BaseButton> buttons = new ArrayList<>();
     private final List<InteractableWidget> widgets = new ArrayList<>();
     protected String title = "";
+    protected Vec2i dragStartOffset = Vec2i.ZERO;
     @Nullable private GuiScreen parent;
     @Nullable protected DialogHandler dialogHandler;
     @Nullable protected InteractableWidget hoveredWidget;
@@ -81,6 +83,8 @@ public abstract class BaseScreen extends GuiScreen
     protected int titleX = 10;
     protected int titleY = 6;
     protected int titleColor = 0xFFFFFFFF;
+    protected boolean canDragMove;
+    protected boolean dragging;
     protected boolean renderBorder;
     protected boolean shouldCenter;
     protected boolean shouldRenderParent;
@@ -104,6 +108,26 @@ public abstract class BaseScreen extends GuiScreen
         return this;
     }
 
+    public int getX()
+    {
+        return this.x;
+    }
+
+    public int getY()
+    {
+        return this.y;
+    }
+
+    public int getScreenWidth()
+    {
+        return this.screenWidth;
+    }
+
+    public int getScreenHeight()
+    {
+        return this.screenHeight;
+    }
+
     @Nullable
     public GuiScreen getParent()
     {
@@ -123,6 +147,11 @@ public abstract class BaseScreen extends GuiScreen
     public void setShouldRenderParent(boolean render)
     {
         this.shouldRenderParent = render;
+    }
+
+    public void setCanDragMove(boolean canDragMove)
+    {
+        this.canDragMove = canDragMove;
     }
 
     protected int getPopupGuiZLevelIncrement()
@@ -185,8 +214,30 @@ public abstract class BaseScreen extends GuiScreen
 
     protected void initScreen()
     {
-        this.clearElements();
+        this.reAddActiveWidgets();
+        this.updateWidgetPositions();
         Keyboard.enableRepeatEvents(true);
+    }
+
+    protected void reAddActiveWidgets()
+    {
+        this.clearElements();
+    }
+
+    protected void updateWidgetPositions()
+    {
+    }
+
+    protected void closeScreen(boolean showParent)
+    {
+        if (showParent)
+        {
+            openScreen(this.parent);
+        }
+        else
+        {
+            openScreen(null);
+        }
     }
 
     protected boolean useCustomScreenScaling()
@@ -231,18 +282,6 @@ public abstract class BaseScreen extends GuiScreen
         }
     }
 
-    protected void closeScreen(boolean showParent)
-    {
-        if (showParent)
-        {
-            openScreen(this.parent);
-        }
-        else
-        {
-            openScreen(null);
-        }
-    }
-
     protected void setScreenWidthAndHeight(int width, int height)
     {
         this.screenWidth = width;
@@ -253,31 +292,18 @@ public abstract class BaseScreen extends GuiScreen
     {
         this.x = x;
         this.y = y;
-    }
 
-    public int getX()
-    {
-        return this.x;
-    }
-
-    public int getY()
-    {
-        return this.y;
-    }
-
-    public int getScreenWidth()
-    {
-        return this.screenWidth;
-    }
-
-    public int getScreenHeight()
-    {
-        return this.screenHeight;
+        this.updateWidgetPositions();
     }
 
     public void setScreenWidth(int screenWidth)
     {
         this.screenWidth = screenWidth;
+    }
+
+    public void setScreenHeight(int screenHeight)
+    {
+        this.screenHeight = screenHeight;
     }
 
     public void centerOnScreen()
@@ -433,6 +459,8 @@ public abstract class BaseScreen extends GuiScreen
     @Override
     protected void mouseReleased(int mouseX, int mouseY, int mouseButton)
     {
+        this.dragging = false;
+
         if (this.useCustomScreenScaling())
         {
             mouseX = Mouse.getX() * this.width / this.mc.displayWidth;
@@ -519,7 +547,19 @@ public abstract class BaseScreen extends GuiScreen
         this.runTasks();
 
         // Only call super if the click wasn't handled
-        return clickedWidget != null;
+        if (clickedWidget != null)
+        {
+            return true;
+        }
+
+        if (this.canDragMove)
+        {
+            this.dragStartOffset = new Vec2i(mouseX - this.getX(),  mouseY - this.getY());
+            this.dragging = true;
+            return true;
+        }
+
+        return false;
     }
 
     public boolean onMouseReleased(int mouseX, int mouseY, int mouseButton)
@@ -571,6 +611,17 @@ public abstract class BaseScreen extends GuiScreen
 
     public boolean onMouseMoved(int mouseX, int mouseY)
     {
+        if (this.dragging)
+        {
+            int x = mouseX - this.dragStartOffset.x;
+            int y = mouseY - this.dragStartOffset.y;
+
+            this.setPosition(x, y);
+            this.updateWidgetPositions();
+
+            return true;
+        }
+
         boolean handled = false;
 
         if (this.hoveredWidget != null && this.hoveredWidget.onMouseMoved(mouseX, mouseY))
@@ -894,6 +945,7 @@ public abstract class BaseScreen extends GuiScreen
     {
         screen.setPopupGuiZLevelBasedOn(GuiUtils.getCurrentScreen());
         screen.setShouldRenderParent(shouldRenderParent);
+        screen.setCanDragMove(true);
         openScreen(screen);
         return true;
     }

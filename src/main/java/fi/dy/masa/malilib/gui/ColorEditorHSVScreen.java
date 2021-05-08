@@ -102,6 +102,8 @@ public class ColorEditorHSVScreen extends BaseScreen
     @Override
     protected void initScreen()
     {
+        this.canDragMove = false; // TODO enable after rewriting this screen
+
         super.initScreen();
 
         int xLabel = this.x + 148;

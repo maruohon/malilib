@@ -23,6 +23,7 @@ import fi.dy.masa.malilib.gui.widget.list.entry.AliasActionEntryWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.MacroActionEntryWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.NamedActionEntryWidget;
 import fi.dy.masa.malilib.overlay.message.MessageUtils;
+import fi.dy.masa.malilib.render.text.StyledText;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class ActionListScreen extends BaseMultiListScreen
@@ -160,16 +161,17 @@ public class ActionListScreen extends BaseMultiListScreen
         {
             if (action.getNeedsArguments())
             {
-                String title = StringUtils.translate("malilib.gui.title.add_action_alias_with_arguments",
-                                                     action.getRegistryName());
-                BaseScreen.openPopupScreen(new DualTextInputScreen(title, "malilib.label.name.colon",
+                String title = StringUtils.translate("malilib.gui.title.create_action_alias_with_argument");
+                BaseScreen.openPopupScreen(new DualTextInputScreen(title, "malilib.label.alias.colon",
                                                                    "malilib.label.argument.colon",
                                                                    "", "", this::addAlias, this));
             }
             else
             {
-                String title = StringUtils.translate("malilib.gui.title.add_action_alias", action.getRegistryName());
-                BaseScreen.openPopupScreen(new TextInputScreen(title, "", this, this::addAlias));
+                String title = StringUtils.translate("malilib.gui.title.create_action_alias");
+                TextInputScreen screen = new TextInputScreen(title, "", this, this::addAlias);
+                screen.setLabelText(StyledText.translate("malilib.label.alias.colon"));
+                BaseScreen.openPopupScreen(screen);
             }
         }
         else
@@ -181,7 +183,9 @@ public class ActionListScreen extends BaseMultiListScreen
     protected void openCreateMacroScreen()
     {
         String title = StringUtils.translate("malilib.gui.title.create_macro");
-        BaseScreen.openPopupScreen(new TextInputScreen(title, "", this, this::openCreateMacroScreen));
+        TextInputScreen screen = new TextInputScreen(title, "", this, this::openCreateMacroScreen);
+        screen.setLabelText(StyledText.translate("malilib.label.name.colon"));
+        BaseScreen.openPopupScreen(screen);
     }
 
     protected boolean openCreateMacroScreen(String macroName)

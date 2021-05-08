@@ -33,6 +33,7 @@ public class AddActionExecutionWidgetScreen extends BaseScreen
     protected final BaseTextFieldWidget argumentTextField;
     protected final GenericButton addButton;
     protected final GenericButton cancelButton;
+    protected boolean hasArgumentElements;
 
     public AddActionExecutionWidgetScreen(Consumer<BaseActionExecutionWidget> widgetConsumer)
     {
@@ -76,14 +77,45 @@ public class AddActionExecutionWidgetScreen extends BaseScreen
         this.cancelButton.setActionListener(this::cancel);
 
         this.backgroundColor = 0xFF101010;
-        this.setScreenWidthAndHeight(240, 200);
+        this.setScreenWidthAndHeight(240, 190);
         this.centerOnScreen();
     }
 
     @Override
-    protected void initScreen()
+    protected void reAddActiveWidgets()
     {
-        super.initScreen();
+        super.reAddActiveWidgets();
+
+        this.addWidget(this.actionLabelWidget);
+        this.addWidget(this.actionDropDownWidget);
+
+        this.addWidget(this.typeLabelWidget);
+        this.addWidget(this.typeDropDownWidget);
+
+        this.addWidget(this.nameLabelWidget);
+        this.addWidget(this.nameTextField);
+
+        this.addWidget(this.hoverTextLabelWidget);
+        this.addWidget(this.hoverTextTextField);
+
+        this.addWidget(this.iconLabelWidget);
+        this.addWidget(this.iconDropDownWidget);
+
+        this.addWidget(this.addButton);
+        this.addWidget(this.cancelButton);
+
+        if (this.hasArgumentElements)
+        {
+            this.addWidget(this.addArgumentCheckbox);
+            this.addWidget(this.argumentLabelWidget);
+            this.addWidget(this.argumentTextField);
+        }
+    }
+
+    @Override
+    protected void updateWidgetPositions()
+    {
+        super.updateWidgetPositions();
 
         int x = this.x + 10;
         int y = this.y + 24;
@@ -110,57 +142,42 @@ public class AddActionExecutionWidgetScreen extends BaseScreen
         y += 10;
         this.iconDropDownWidget.setPosition(x, y);
 
-        y += 22;
+        y += 24;
         this.addArgumentCheckbox.setPosition(x, y);
 
-        y += 12;
+        y += 14;
         this.argumentLabelWidget.setPosition(x, y);
-        y += 16;
-        this.argumentTextField.setPosition(this.argumentLabelWidget.getRight() + 6, y);
+        y += 10;
+        this.argumentTextField.setPosition(x, y);
 
-        y += 32;
+        if (this.hasArgumentElements)
+        {
+            y = this.argumentTextField.getBottom() + 6;
+        }
+        else
+        {
+            y = this.iconDropDownWidget.getBottom() + 6;
+        }
+
         this.addButton.setPosition(x, y);
         this.cancelButton.setPosition(this.addButton.getRight() + 10, y);
+    }
 
-        this.addWidget(this.actionLabelWidget);
-        this.addWidget(this.actionDropDownWidget);
-
-        this.addWidget(this.typeLabelWidget);
-        this.addWidget(this.typeDropDownWidget);
-
-        this.addWidget(this.nameLabelWidget);
-        this.addWidget(this.nameTextField);
-
-        this.addWidget(this.hoverTextLabelWidget);
-        this.addWidget(this.hoverTextTextField);
-
-        this.addWidget(this.iconLabelWidget);
-        this.addWidget(this.iconDropDownWidget);
-
-        this.addWidget(this.addButton);
-        this.addWidget(this.cancelButton);
+    protected void updateHeight()
+    {
+        int height = this.hasArgumentElements ? 238 : 190;
+        this.setScreenWidthAndHeight(240, height);
+        this.centerOnScreen();
     }
 
     protected void onActionSelected(@Nullable NamedAction action)
     {
-        String name = action != null ? action.getDisplayName() : "";
-
-        this.nameTextField.setText(name);
         this.argumentTextField.setText("");
         this.addArgumentCheckbox.setSelected(false);
+        this.hasArgumentElements = action != null && action.getNeedsArguments();
 
-        if (action != null && action.getNeedsArguments())
-        {
-            this.addWidget(this.addArgumentCheckbox);
-            this.addWidget(this.argumentLabelWidget);
-            this.addWidget(this.argumentTextField);
-        }
-        else
-        {
-            this.removeWidget(this.addArgumentCheckbox);
-            this.removeWidget(this.argumentLabelWidget);
-            this.removeWidget(this.argumentTextField);
-        }
+        this.reAddActiveWidgets();
+        this.updateHeight();
     }
 
     protected void createActionWidget()

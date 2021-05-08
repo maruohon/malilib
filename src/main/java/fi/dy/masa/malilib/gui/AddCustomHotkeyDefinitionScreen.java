@@ -27,11 +27,12 @@ public class AddCustomHotkeyDefinitionScreen extends BaseScreen
     {
         this.title = StringUtils.translate("malilib.gui.title.add_new_hotkey");
         this.useTitleHierarchy = false;
+        this.backgroundColor = 0xFF000000;
 
         this.nameLabelWidget = new LabelWidget(0, 0, -1, 12, 0xFFF0F0F0, "malilib.label.name.colon");
         this.actionLabelWidget = new LabelWidget(0, 0, -1, 12, 0xFFF0F0F0, "malilib.label.action.colon");
 
-        this.nameTextField = new BaseTextFieldWidget(0, 0, 120, 16);
+        this.nameTextField = new BaseTextFieldWidget(0, 0, 160, 16);
         this.addButton = new GenericButton(0, 0, 60, 20, "malilib.gui.button.add");
         this.addButton.setActionListener(this::onAddButtonClicked);
 
@@ -42,28 +43,16 @@ public class AddCustomHotkeyDefinitionScreen extends BaseScreen
                                                              ActionRegistry.INSTANCE.getAllActions(),
                                                              NamedAction::getName, null);
 
+        this.nameTextField.setFocused(true);
+
         this.setScreenWidthAndHeight(320, 120);
         this.centerOnScreen();
     }
 
     @Override
-    protected void initScreen()
+    protected void reAddActiveWidgets()
     {
-        super.initScreen();
-
-        int x = this.x + 10;
-        int y = this.y + 20;
-
-        this.nameLabelWidget.setPosition(x, y + 4);
-        this.nameTextField.setPosition(this.nameLabelWidget.getRight() + 6, y);
-
-        y += 20;
-        this.actionLabelWidget.setPosition(x, y + 4);
-        this.actionDropDownWidget.setPosition(this.actionLabelWidget.getRight() + 6, y);
-
-        y += 30;
-        this.addButton.setPosition(x, y);
-        this.cancelButton.setPosition(this.addButton.getRight() + 6, y);
+        super.reAddActiveWidgets();
 
         this.addWidget(this.nameLabelWidget);
         this.addWidget(this.nameTextField);
@@ -71,8 +60,28 @@ public class AddCustomHotkeyDefinitionScreen extends BaseScreen
         this.addWidget(this.actionDropDownWidget);
         this.addWidget(this.addButton);
         this.addWidget(this.cancelButton);
+    }
 
-        this.nameTextField.setFocused(true);
+    @Override
+    protected void updateWidgetPositions()
+    {
+        super.updateWidgetPositions();
+
+        int x = this.x + 10;
+        int y = this.y + 24;
+
+        this.nameLabelWidget.setPosition(x, y);
+        y += 12;
+        this.nameTextField.setPosition(x, y);
+
+        y += 24;
+        this.actionLabelWidget.setPosition(x, y);
+        y += 12;
+        this.actionDropDownWidget.setPosition(x, y);
+
+        y += 22;
+        this.addButton.setPosition(x, y);
+        this.cancelButton.setPosition(this.addButton.getRight() + 6, y);
     }
 
     protected void onAddButtonClicked()

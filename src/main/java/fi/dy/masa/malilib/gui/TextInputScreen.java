@@ -2,10 +2,9 @@ package fi.dy.masa.malilib.gui;
 
 import javax.annotation.Nullable;
 import net.minecraft.client.gui.GuiScreen;
-import fi.dy.masa.malilib.listener.TaskCompletionListener;
 import fi.dy.masa.malilib.util.consumer.StringConsumer;
 
-public class TextInputScreen extends BaseTextInputScreen implements TaskCompletionListener
+public class TextInputScreen extends BaseTextInputScreen
 {
     protected final StringConsumer stringConsumer;
 
@@ -20,23 +19,5 @@ public class TextInputScreen extends BaseTextInputScreen implements TaskCompleti
     protected boolean applyValue(String string)
     {
         return this.stringConsumer.consumeString(string);
-    }
-
-    @Override
-    public void onTaskCompleted()
-    {
-        if (this.getParent() instanceof TaskCompletionListener)
-        {
-            ((TaskCompletionListener) this.getParent()).onTaskCompleted();
-        }
-    }
-
-    @Override
-    public void onTaskAborted()
-    {
-        if (this.getParent() instanceof TaskCompletionListener)
-        {
-            ((TaskCompletionListener) this.getParent()).onTaskAborted();
-        }
     }
 }
