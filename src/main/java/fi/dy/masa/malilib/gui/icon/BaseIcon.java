@@ -86,7 +86,7 @@ public class BaseIcon implements Icon
     public boolean equals(Object o)
     {
         if (this == o) { return true; }
-        if (o == null || this.getClass() != o.getClass()) { return false; }
+        if ((o instanceof BaseIcon) == false) { return false; }
 
         BaseIcon baseIcon = (BaseIcon) o;
 

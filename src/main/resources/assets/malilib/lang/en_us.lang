@@ -131,6 +131,8 @@ malilib.gui.button.black_white_list_edit.entries=§e%s§r - §b%s§r entries
 malilib.gui.button.black_white_list_edit.none=Type: NONE
 malilib.gui.button.cancel=Cancel
 malilib.gui.button.default=Default
+malilib.gui.button.export=Export
+malilib.gui.button.import=Import
 malilib.gui.button.none.caps=NONE
 malilib.gui.button.ok=OK
 malilib.gui.button.reset=Reset
@@ -151,6 +153,8 @@ malilib.gui.button.render_layers_gui.follow_player=Follow Player: %s
 malilib.gui.button.render_layers_gui.layers=Layers: %s
 malilib.gui.button.render_layers_gui.set_to_player=Set to player
 
+malilib.gui.button.hover.action_widget_screen.export_settings=Export the settings for this screen to the system clipboard.\n§eCtrl + Shift + right click§r to directly copy the settings without opening the text input screen to copy them from manually.
+malilib.gui.button.hover.action_widget_screen.import_settings=Import the settings for this screen from the system clipboard.\n§eCtrl + Shift + right click§r to directly apply the settings from the clipboard without opening the text input screen to copy the settings string manually.\n§c<b>Warning:</b>§6 This will overwrite all the current settings and widgets on this screen!!
 malilib.gui.button.hover.add_configs_to_status_indicator_group=Add configs to this config status indicator group
 malilib.gui.button.hover.add_new_hotkey=Add a new custom hotkey bound to an action
 malilib.gui.button.hover.black_white_list_edit.type=List Type: §3%s
@@ -273,6 +277,8 @@ malilib.gui.label.render_layers.player_follow_offset=Offset
 malilib.gui.tip.dropdown.type_to_search=Just start typing to search (in any DropDown widget)
 
 malilib.gui.title.action_aliases_and_macros=Manage Action Aliases and Macros
+malilib.gui.title.action_screen.export_settings=Export Action Screen Settings
+malilib.gui.title.action_screen.import_settings=Import Action Screen Settings
 malilib.gui.title.add_action_alias=Add an alias for action '§f%s§r'
 malilib.gui.title.add_action_alias_with_arguments=Add an alias and arguments for action '§f%s§r'
 malilib.gui.title.add_action_macro=Create an action macro
@@ -451,6 +457,8 @@ malilib.label.colored.off=§coff§r
 malilib.label.colored.on=§aon§r
 
 malilib.message.action_screen_created_by_name=Action screen created by the name '%s'
+malilib.message.action_screen_settings_copied_to_clipboard=Action Screen settings copied to clipboard
+malilib.message.action_screen_settings_imported=Action Screen settings imported
 malilib.message.config_locked_off=%s is currently locked to §cOFF§r
 malilib.message.config_locked_on=%s is currently locked to §aON§r
 malilib.message.config_overridden_off=%s is currently overridden to §cOFF§r

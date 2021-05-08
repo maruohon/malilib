@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import com.google.common.collect.ImmutableList;
+import com.google.gson.JsonElement;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.action.ActionContext;
 import fi.dy.masa.malilib.action.ActionExecutionWidgetManager;
@@ -21,6 +22,7 @@ import fi.dy.masa.malilib.gui.widget.IntegerEditWidget;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.MenuEntryWidget;
 import fi.dy.masa.malilib.gui.widget.MenuWidget;
+import fi.dy.masa.malilib.gui.widget.button.BaseButton;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.button.OnOffButton;
 import fi.dy.masa.malilib.input.ActionResult;
@@ -29,6 +31,7 @@ import fi.dy.masa.malilib.overlay.message.MessageUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.render.text.StyledText;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
+import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.data.Vec2i;
 
 public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContainer
@@ -39,6 +42,8 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
     protected final GenericButton addWidgetButton;
     protected final GenericButton editModeButton;
     protected final GenericButton gridEnabledButton;
+    protected final GenericButton exportSettingsButton;
+    protected final GenericButton importSettingsButton;
     protected final LabelWidget editModeLabel;
     protected final LabelWidget gridLabel;
     protected final IntegerEditWidget gridEditWidget;
@@ -67,14 +72,24 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
 
         this.infoWidget = new InfoIconWidget(0, 0, DefaultIcons.INFO_ICON_18, "");
 
-        this.closeOnExecuteCheckbox = new CheckBoxWidget(0, 0, "malilib.label.checkbox.action_widget_screen.close_on_execute", "malilib.hover_info.action_widget_screen.close_screen_on_execute");
+        this.closeOnExecuteCheckbox = new CheckBoxWidget(0, 0, "malilib.label.checkbox.action_widget_screen.close_on_execute",
+                                                         "malilib.hover_info.action_widget_screen.close_screen_on_execute");
         this.closeOnExecuteCheckbox.setBooleanStorage(this::shouldCloseScreenOnExecute, this::setCloseScreenOnExecute);
 
-        this.closeOnKeyReleaseCheckbox = new CheckBoxWidget(0, 0, "malilib.label.checkbox.action_widget_screen.close_on_key_release", "malilib.hover_info.action_widget_screen.close_screen_on_key_release");
+        this.closeOnKeyReleaseCheckbox = new CheckBoxWidget(0, 0, "malilib.label.checkbox.action_widget_screen.close_on_key_release",
+                                                            "malilib.hover_info.action_widget_screen.close_screen_on_key_release");
         this.closeOnKeyReleaseCheckbox.setBooleanStorage(() -> this.closeScreenOnKeyRelease, this::setCloseScreenOnKeyRelease);
 
         this.addWidgetButton = new GenericButton(0, 0, -1, 16, "malilib.label.button.add_action");
         this.addWidgetButton.setActionListener(this::openAddWidgetScreen);
+
+        this.exportSettingsButton = new GenericButton(0, 0, -1, 16, "malilib.gui.button.export");
+        this.exportSettingsButton.translateAndAddHoverString("malilib.gui.button.hover.action_widget_screen.export_settings");
+        this.exportSettingsButton.setActionListener(this::onExportSettings);
+
+        this.importSettingsButton = new GenericButton(0, 0, -1, 16, "malilib.gui.button.import");
+        this.importSettingsButton.translateAndAddHoverString("malilib.gui.button.hover.action_widget_screen.import_settings");
+        this.importSettingsButton.setActionListener(this::onImportSettings);
 
         this.gridLabel = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.grid.colon");
         this.gridEnabledButton = OnOffButton.simpleSlider(16, () -> this.gridEnabled, this::toggleGridEnabled);
@@ -102,17 +117,19 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
             this.gridLabel.setPosition(this.editModeButton.getRight() + 16, y + 4);
             this.gridEnabledButton.setPosition(this.gridLabel.getRight() + 6, y);
             this.gridEditWidget.setPosition(this.gridEnabledButton.getRight() + 6, y);
+            this.exportSettingsButton.setPosition(this.gridEditWidget.getRight() + 6, y);
+            this.importSettingsButton.setPosition(this.exportSettingsButton.getRight() + 6, y);
             y += 20;
 
             this.closeOnExecuteCheckbox.setPosition(x, y);
             y += 12;
             this.closeOnKeyReleaseCheckbox.setPosition(x, y);
+
+            int tmpX = Math.max(this.closeOnExecuteCheckbox.getRight(), this.closeOnKeyReleaseCheckbox.getRight()) + 6;
+            this.infoWidget.setPosition(tmpX, this.closeOnExecuteCheckbox.getY());
             y += 14;
 
             this.addWidgetButton.setPosition(x, y);
-            y += 20;
-
-            this.infoWidget.setPosition(x, y);
 
             this.addWidget(this.closeOnExecuteCheckbox);
             this.addWidget(this.closeOnKeyReleaseCheckbox);
@@ -122,6 +139,9 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
 
             this.addWidget(this.gridLabel);
             this.addWidget(this.gridEnabledButton);
+
+            this.addWidget(this.exportSettingsButton);
+            this.addWidget(this.importSettingsButton);
 
             if (this.gridEnabled)
             {
@@ -144,21 +164,15 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
     {
         super.onGuiClosed();
 
-        for (BaseActionExecutionWidget widget : this.widgetList)
-        {
-            // Remove the references to this screen
-            widget.setContainer(null);
-        }
-
         if (this.dirty ||
             this.closeScreenOnExecute != this.data.closeScreenOnExecute ||
             this.closeScreenOnKeyRelease != this.data.closeScreenOnKeyRelease)
         {
-            ActionWidgetScreenData data = new ActionWidgetScreenData(ImmutableList.copyOf(this.widgetList),
-                                                                     this.closeScreenOnExecute,
-                                                                     this.closeScreenOnKeyRelease);
+            ActionWidgetScreenData data = this.getCurrentData();
             ActionExecutionWidgetManager.INSTANCE.saveWidgetScreenData(this.name, data);
         }
+
+        this.clearActionWidgetContainerData();
     }
 
     @Override
@@ -300,8 +314,22 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
         return false;
     }
 
+    protected void clearActionWidgetContainerData()
+    {
+        for (BaseActionExecutionWidget widget : this.widgetList)
+        {
+            // Remove the references to this screen
+            widget.setContainer(null);
+        }
+    }
+
     protected void readData(ActionWidgetScreenData data)
     {
+        this.clearActionWidgetContainerData();
+
+        this.widgetList.clear();
+        this.selectedWidgets.clear();
+
         this.closeScreenOnExecute = data.closeScreenOnExecute;
         this.closeScreenOnKeyRelease = data.closeScreenOnKeyRelease;
 
@@ -328,6 +356,12 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
         }
 
         return null;
+    }
+
+    protected ActionWidgetScreenData getCurrentData()
+    {
+        ImmutableList<BaseActionExecutionWidget> widgets = ImmutableList.copyOf(this.widgetList);
+        return new ActionWidgetScreenData(widgets, this.closeScreenOnExecute, this.closeScreenOnKeyRelease);
     }
 
     protected void closeMenu()
@@ -498,6 +532,70 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
         // Not technically correct... but micro-optimizing here and detecting
         // widget changes is probably a waste of time
         this.notifyWidgetEdited();
+    }
+
+    protected boolean onExportSettings(BaseButton button, int mouseButton)
+    {
+        if (mouseButton == 1 && isCtrlDown() && isShiftDown())
+        {
+            setClipboardString(this.getSettingsExportString());
+            MessageUtils.success("malilib.message.action_screen_settings_copied_to_clipboard");
+        }
+        else if (mouseButton == 0)
+        {
+            String str = this.getSettingsExportString();
+            TextInputScreen screen = new TextInputScreen("malilib.gui.title.action_screen.export_settings",
+                                                         str, this, (s) -> true);
+            openPopupScreen(screen);
+        }
+
+        return true;
+    }
+
+    protected boolean onImportSettings(BaseButton button, int mouseButton)
+    {
+        if (mouseButton == 1 && isCtrlDown() && isShiftDown())
+        {
+            this.applySettingsFromImportString(getClipboardString());
+        }
+        else if (mouseButton == 0)
+        {
+            TextInputScreen screen = new TextInputScreen("malilib.gui.title.action_screen.import_settings",
+                                                         "", this, this::applySettingsFromImportString);
+            openPopupScreen(screen);
+        }
+
+        return true;
+    }
+
+    protected String getSettingsExportString()
+    {
+        ActionWidgetScreenData data = this.getCurrentData();
+        return JsonUtils.jsonToString(data.toJson(), true);
+    }
+
+    protected boolean applySettingsFromImportString(@Nullable String str)
+    {
+        if (str != null)
+        {
+            JsonElement el = JsonUtils.parseJsonFromString(str);
+
+            if (el != null)
+            {
+                ActionWidgetScreenData data = ActionWidgetScreenData.fromJson(el);
+
+                if (data != null)
+                {
+                    this.readData(data);
+                    this.initScreen();
+                    this.notifyWidgetEdited();
+                    MessageUtils.success("malilib.message.action_screen_settings_imported");
+                    return true;
+                }
+            }
+        }
+    
+        return false;
     }
 
     @Override
