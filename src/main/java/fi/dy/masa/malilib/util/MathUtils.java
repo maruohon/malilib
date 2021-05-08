@@ -93,6 +93,25 @@ public class MathUtils
         }
     }
 
+    public static double roundDown(double value, double interval)
+    {
+        if (interval == 0.0 || value == 0.0)
+        {
+            return 0.0;
+        }
+        else
+        {
+            if (value < 0.0)
+            {
+                interval *= -1.0;
+            }
+
+            double remainder = value % interval;
+
+            return remainder == 0.0 ? value : value - remainder;
+        }
+    }
+
     public static int roundUp(int value, int interval)
     {
         if (interval == 0)

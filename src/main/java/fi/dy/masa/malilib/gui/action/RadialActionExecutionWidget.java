@@ -6,6 +6,7 @@ import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.position.EdgeInt;
 import fi.dy.masa.malilib.gui.widget.ScreenContext;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
+import fi.dy.masa.malilib.render.text.StyledText;
 import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.MathUtils;
 import fi.dy.masa.malilib.util.data.Vec2i;
@@ -61,7 +62,7 @@ public class RadialActionExecutionWidget extends BaseActionExecutionWidget
 
         if (distance >= this.innerRadius && distance <= this.outerRadius)
         {
-            double mouseAngle = this.getMouseAngle(mouseX, mouseY, false);
+            double mouseAngle = this.getMouseAngle(mouseX, mouseY);
             double start = this.startAngle;
             double end = this.endAngle;
 
@@ -103,16 +104,17 @@ public class RadialActionExecutionWidget extends BaseActionExecutionWidget
     @Override
     public void moveWidget(int mouseX, int mouseY)
     {
-        double mouseAngle = this.getMouseAngle(mouseX, mouseY, true);
-        double middleAngle = this.getMiddleAngle();
+        double radiusChange = this.getMouseRadius(mouseX, mouseY) - this.getMiddleRadius();
 
-        // Change the old values by an offset, to avoid re-calculating
-        // both values directly, as that could mis-align or collapse the range
-        // or otherwise mess up the edges in some cases.
-        double change = mouseAngle - middleAngle;
+        this.setInnerRadius(this.innerRadius + radiusChange);
+        this.setOuterRadius(this.outerRadius + radiusChange);
 
-        this.setStartAngle(this.startAngle + change);
-        this.setEndAngle(this.endAngle + change);
+        double sectorWidth = this.getSectorWidth();
+        double mouseAngle = this.gridSnapValue(this.getMouseAngle(mouseX, mouseY), 128.0);
+        //System.out.printf("mouse: %.4f, middle: %.4f, change: %.4f\n", mouseAngle, middleAngle, angleChange);
+
+        this.setStartAngle(mouseAngle - sectorWidth / 2.0);
+        this.setEndAngle(mouseAngle + sectorWidth / 2.0);
     }
 
     @Override
@@ -125,29 +127,21 @@ public class RadialActionExecutionWidget extends BaseActionExecutionWidget
 
         if (this.draggedEdge.isRadius())
         {
-            int gridSize = this.getGridSize();
-            double centerX = this.center.x;
-            double centerY = this.center.y;
-            double distMouse = Math.sqrt((mouseX - centerX) * (mouseX - centerX) +
-                                         (mouseY - centerY) * (mouseY - centerY));
-
-            if (gridSize > 1)
-            {
-                distMouse = MathUtils.roundUp(distMouse, gridSize);
-            }
+            double mouseRadius = this.getMouseRadius(mouseX, mouseY);
 
             if (this.draggedEdge == SectorEdge.INNER_RING)
             {
-                this.setInnerRadius(distMouse);
+                this.setInnerRadius(mouseRadius);
             }
             else
             {
-                this.setOuterRadius(distMouse);
+                this.setOuterRadius(mouseRadius);
             }
         }
         else
         {
-            double mouseAngle = this.getMouseAngle(mouseX, mouseY, true);
+            double mouseAngle = this.getMouseAngle(mouseX, mouseY);
+            mouseAngle = this.gridSnapValue(mouseAngle, 128.0);
 
             if (this.draggedEdge == SectorEdge.START_ANGLE)
             {
@@ -162,6 +156,7 @@ public class RadialActionExecutionWidget extends BaseActionExecutionWidget
 
     public void setInnerRadius(double innerRadius)
     {
+        innerRadius = this.gridSnapValue(innerRadius, 1.0);
         this.innerRadius = Math.max(innerRadius, 1);
         this.outerRadius = Math.max(this.innerRadius + 4, this.outerRadius);
         this.updatePosition();
@@ -169,6 +164,7 @@ public class RadialActionExecutionWidget extends BaseActionExecutionWidget
 
     public void setOuterRadius(double outerRadius)
     {
+        outerRadius = this.gridSnapValue(outerRadius, 1.0);
         this.outerRadius = Math.max(outerRadius, 2);
         this.innerRadius = Math.max(Math.min(this.outerRadius - 4, this.innerRadius), 1);
         this.updatePosition();
@@ -186,21 +182,25 @@ public class RadialActionExecutionWidget extends BaseActionExecutionWidget
         this.updatePosition();
     }
 
-    protected double getMouseAngle(int mouseX, int mouseY, boolean gridSnap)
+    protected double getMouseAngle(int mouseX, int mouseY)
     {
         // The zero angle will be on the middle right, because the coordinates are flipped here
         double diffX = this.center.x - mouseX;
         double diffY = this.center.y - mouseY;
         // Change from -pi .. pi to 0 .. 2 * pi.
         double angle = Math.atan2(diffY, diffX) + Math.PI;
-        int gridSize = this.getGridSize();
 
-        if (gridSnap && gridSize > 1)
-        {
-            angle = MathUtils.roundUp(angle, gridSize / 90.0);
-        }
+        return MathUtils.wrapRadianAngle(angle);
+    }
 
-        return angle;
+    protected double getMouseRadius(int mouseX, int mouseY)
+    {
+        double centerX = this.center.x;
+        double centerY = this.center.y;
+        double distX = mouseX - centerX;
+        double distY = mouseY - centerY;
+
+        return Math.sqrt(distX * distX + distY * distY);
     }
 
     protected double getMiddleAngle()
@@ -225,6 +225,23 @@ public class RadialActionExecutionWidget extends BaseActionExecutionWidget
     protected double getSectorWidth()
     {
         return MathUtils.wrapRadianAngle(this.endAngle - this.startAngle);
+    }
+
+    protected double getMiddleRadius()
+    {
+        return (this.innerRadius + this.outerRadius) / 2.0;
+    }
+
+    protected double gridSnapValue(double value, double divider)
+    {
+        int gridSize = this.getGridSize();
+
+        if (gridSize >= 1 && divider > 0)
+        {
+            value = MathUtils.roundUp(value, gridSize / divider);
+        }
+
+        return value;
     }
 
     protected void updatePosition()
