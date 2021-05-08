@@ -71,7 +71,7 @@ public class OrderedStringListFactory
 
     public boolean hasNoStrings()
     {
-        return this.styledLines.isEmpty() && this.dirty == false;
+        return this.dynamic == false && this.dirty == false && this.styledLines.isEmpty();
     }
 
     public void translateAndAddStrings(List<String> translationKeys)

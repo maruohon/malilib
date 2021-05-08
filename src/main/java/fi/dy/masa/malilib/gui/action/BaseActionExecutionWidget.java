@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.gui.action;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -21,6 +22,8 @@ import fi.dy.masa.malilib.util.StringUtils;
 
 public abstract class BaseActionExecutionWidget extends ContainerWidget
 {
+    protected final List<StyledTextLine> widgetHoverText = new ArrayList<>(1);
+    protected final List<StyledTextLine> combinedHoverText = new ArrayList<>(1);
     @Nullable protected NamedAction action;
     @Nullable protected String hoverText;
     @Nullable protected ActionWidgetContainer container;
@@ -46,20 +49,13 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
         this.setRenderNormalBorder(true);
         this.setRenderNormalBackground(true);
         this.setRenderHoverBackground(true);
+
+        this.getHoverInfoFactory().setTextLineProvider("widget_hover_tip", this::getActionWidgetHoverTextLines);
     }
 
     public void setAction(@Nullable NamedAction action)
     {
         this.action = action;
-
-        if (action != null)
-        {
-            this.getHoverInfoFactory().setTextLineProvider("action_info", action::getHoverInfo);
-        }
-        else
-        {
-            this.getHoverInfoFactory().removeTextLineProvider("action_info");
-        }
     }
 
     public void setContainer(@Nullable ActionWidgetContainer container)
@@ -131,10 +127,13 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
 
     protected List<StyledTextLine> getActionWidgetHoverTextLines()
     {
-        if (this.hoverText != null &&
-            (this.isEditMode() == false || (BaseScreen.isCtrlDown() == false && BaseScreen.isShiftDown() == false)))
+        if (this.isEditMode() == false)
         {
-            return ImmutableList.of(StyledTextLine.translate(this.hoverText));
+            return this.widgetHoverText;
+        }
+        else if (BaseScreen.isCtrlDown() == false && BaseScreen.isShiftDown() == false)
+        {
+            return this.combinedHoverText;
         }
 
         return Collections.emptyList();
@@ -145,14 +144,32 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
         if (org.apache.commons.lang3.StringUtils.isBlank(hoverText))
         {
             hoverText = null;
-            this.getHoverInfoFactory().removeTextLineProvider("widget_hover_tip");
-        }
-        else
-        {
-            this.getHoverInfoFactory().setTextLineProvider("widget_hover_tip", this::getActionWidgetHoverTextLines, 99);
         }
 
         this.hoverText = hoverText;
+        this.updateHoverTexts();
+    }
+
+    protected void updateHoverTexts()
+    {
+        this.widgetHoverText.clear();
+        this.combinedHoverText.clear();
+
+        if (this.hoverText != null)
+        {
+            this.widgetHoverText.add(StyledTextLine.translate(this.hoverText));
+            this.combinedHoverText.addAll(this.widgetHoverText);
+        }
+
+        if (this.action != null)
+        {
+            if (this.combinedHoverText.isEmpty() == false)
+            {
+                this.combinedHoverText.add(StyledTextLine.EMPTY);
+            }
+
+            this.combinedHoverText.addAll(this.action.getHoverInfo());
+        }
     }
 
     public boolean isSelected()
@@ -185,6 +202,7 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
 
     public void onAdded(BaseScreen screen)
     {
+        this.updateHoverTexts();
     }
 
     @Override

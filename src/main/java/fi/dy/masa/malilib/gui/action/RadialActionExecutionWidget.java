@@ -48,6 +48,8 @@ public class RadialActionExecutionWidget extends BaseActionExecutionWidget
     @Override
     public void onAdded(BaseScreen screen)
     {
+        super.onAdded(screen);
+
         int x = screen.getX() + screen.getScreenWidth() / 2;
         int y = screen.getY() + screen.getScreenHeight() / 2;
 
