@@ -48,7 +48,7 @@ public class InventoryOverlay
 
     private static final EntityEquipmentSlot[] ARMOR_EQUIPMENT_SLOTS = new EntityEquipmentSlot[] { EntityEquipmentSlot.HEAD, EntityEquipmentSlot.CHEST, EntityEquipmentSlot.LEGS, EntityEquipmentSlot.FEET };
 
-    public static void renderInventoryBackground(InventoryRenderType type, int x, int y, int z, int slotsPerRow, int totalSlots, Minecraft mc)
+    public static void renderInventoryBackground(InventoryRenderType type, int x, int y, int z, int slotsPerRow, int totalSlots)
     {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
@@ -102,11 +102,11 @@ public class InventoryOverlay
         }
         else if (type == InventoryRenderType.FIXED_27)
         {
-            renderInventoryBackground27(x, y, z, buffer, mc);
+            renderInventoryBackground27(x, y, z, buffer);
         }
         else if (type == InventoryRenderType.FIXED_54)
         {
-            renderInventoryBackground54(x, y, z, buffer, mc);
+            renderInventoryBackground54(x, y, z, buffer);
         }
         else
         {
@@ -140,7 +140,7 @@ public class InventoryOverlay
         tessellator.draw();
     }
 
-    public static void renderInventoryBackground27(int x, int y, int z, BufferBuilder buffer, Minecraft mc)
+    public static void renderInventoryBackground27(int x, int y, int z, BufferBuilder buffer)
     {
         RenderUtils.bindTexture(TEXTURE_SINGLE_CHEST);
         ShapeRenderUtils.renderTexturedRectangle256(x      , y     , z,   0,   0,   7,  61, buffer); // left (top)
@@ -150,7 +150,7 @@ public class InventoryOverlay
         ShapeRenderUtils.renderTexturedRectangle256(x +   7, y +  7, z,   7,  17, 162,  54, buffer); // middle
     }
 
-    public static void renderInventoryBackground54(int x, int y, int z, BufferBuilder buffer, Minecraft mc)
+    public static void renderInventoryBackground54(int x, int y, int z, BufferBuilder buffer)
     {
         RenderUtils.bindTexture(TEXTURE_DOUBLE_CHEST);
         ShapeRenderUtils.renderTexturedRectangle256(x      , y      , z,   0,   0,   7, 115, buffer); // left (top)
@@ -191,7 +191,7 @@ public class InventoryOverlay
         if (entity.getItemStackFromSlot(EntityEquipmentSlot.OFFHAND).isEmpty())
         {
             String texture = "minecraft:items/empty_armor_slot_shield";
-            RenderUtils.renderSprite(x + 28 + 1, y + 3 * 18 + 7 + 1, z, 16, 16, texture);
+            RenderUtils.renderAtlasSprite(x + 28 + 1, y + 3 * 18 + 7 + 1, z, 16, 16, texture);
         }
 
         for (int i = 0, xOff = 7, yOff = 7; i < 4; ++i, yOff += 18)
@@ -201,7 +201,7 @@ public class InventoryOverlay
             if (entity.getItemStackFromSlot(eqSlot).isEmpty())
             {
                 String texture = ItemArmor.EMPTY_SLOT_NAMES[eqSlot.getIndex()];
-                RenderUtils.renderSprite(x + xOff + 1, y + yOff + 1, z, 16, 16, texture);
+                RenderUtils.renderAtlasSprite(x + xOff + 1, y + yOff + 1, z, 16, 16, texture);
             }
         }
     }

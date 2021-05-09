@@ -86,10 +86,12 @@ public class RenderUtils
 
     /**
      * Gets the BufferBuilder from the vanilla Tessellator and initializes
-     * it in the given mode/format.
+     * it in the given mode/format.<br>
+     * <b>Note:</b> This method also enables blending
      * @param glMode
      * @param format
-     * @return
+     * @param useTexture determines if texture2D mode is enabled or disabled
+     * @return the initialized BufferBuilder
      */
     public static BufferBuilder startBuffer(int glMode, VertexFormat format, boolean useTexture)
     {
@@ -113,15 +115,12 @@ public class RenderUtils
     }
 
     /**
-     * Draws the buffer in the vanilla Tessellator,
-     * and then enables Texture2D mode and disables blending
+     * Draws the buffer in the vanilla Tessellator, and then enables Texture2D mode
      */
     public static void drawBuffer()
     {
         Tessellator.getInstance().draw();
-
         GlStateManager.enableTexture2D();
-        GlStateManager.disableBlend();
     }
 
     public static void setupScaledScreenRendering(double scaleFactor)
@@ -153,26 +152,32 @@ public class RenderUtils
     public static void setupScaledScreenRendering(double width, double height)
     {
         GlStateManager.clear(256);
-        GlStateManager.matrixMode(5889);
+        GlStateManager.matrixMode(GL11.GL_PROJECTION);
         GlStateManager.loadIdentity();
         GlStateManager.ortho(0.0D, width, height, 0.0D, 1000.0D, 3000.0D);
-        GlStateManager.matrixMode(5888);
+        GlStateManager.matrixMode(GL11.GL_MODELVIEW);
         GlStateManager.loadIdentity();
         GlStateManager.translate(0.0F, 0.0F, -2000.0F);
     }
 
-    public static void renderSprite(int x, int y, int z, int width, int height, String texture)
+    public static void renderAtlasSprite(float x, float y, float z, int width, int height, String texture)
     {
         if (texture != null)
         {
-            GlStateManager.pushMatrix();
-            GlStateManager.translate(0f, 0f, z);
-
-            GlStateManager.disableLighting();
             TextureAtlasSprite sprite = mc().getTextureMapBlocks().getAtlasSprite(texture);
-            mc().ingameGUI.drawTexturedModalRect(x, y, sprite, width, height);
+            BufferBuilder buffer = startBuffer(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX, true);
 
-            GlStateManager.popMatrix();
+            float u1 = sprite.getMinU();
+            float u2 = sprite.getMaxU();
+            float v1 = sprite.getMinV();
+            float v2 = sprite.getMaxV();
+
+            buffer.pos(x        , y + height, z).tex(u1, v2).endVertex();
+            buffer.pos(x + width, y + height, z).tex(u2, v2).endVertex();
+            buffer.pos(x + width, y         , z).tex(u2, v1).endVertex();
+            buffer.pos(x        , y         , z).tex(u1, v1).endVertex();
+
+            drawBuffer();
         }
     }
 
@@ -514,7 +519,8 @@ public class RenderUtils
         }
     }
 
-    public static void renderShulkerBoxPreview(ItemStack stack, int x, int y, boolean useBgColors)
+    public static void renderItemInventoryPreview(ItemStack stack, int mouseX, int mouseY,
+                                                  boolean useShulkerBackgroundColor)
     {
         if (stack.hasTagCompound())
         {
@@ -535,8 +541,8 @@ public class RenderUtils
             int screenWidth = GuiUtils.getScaledWindowWidth();
             int screenHeight = GuiUtils.getScaledWindowHeight();
             int z = 0;
-            x += 8;
-            y = Math.max(y - (props.height + 18), 2);
+            int x = mouseX + 8;
+            int y = Math.max(mouseY - (props.height + 18), 2);
 
             if (x + props.width + 2 > screenWidth)
             {
@@ -550,14 +556,14 @@ public class RenderUtils
 
             if (stack.getItem() instanceof ItemShulkerBox)
             {
-                setShulkerBoxBackgroundTintColor((BlockShulkerBox) ((ItemBlock) stack.getItem()).getBlock(), useBgColors);
+                setShulkerBoxBackgroundTintColor((BlockShulkerBox) ((ItemBlock) stack.getItem()).getBlock(), useShulkerBackgroundColor);
             }
             else
             {
                 color(1f, 1f, 1f, 1f);
             }
 
-            InventoryOverlay.renderInventoryBackground(type, x, y, z, props.slotsPerRow, items.size(), mc());
+            InventoryOverlay.renderInventoryBackground(type, x, y, z, props.slotsPerRow, items.size());
 
             enableGuiItemLighting();
             GlStateManager.enableDepth();
