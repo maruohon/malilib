@@ -3,9 +3,7 @@ package fi.dy.masa.malilib.gui;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.function.Consumer;
-import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.BaseFileBrowserWidget;
-import fi.dy.masa.malilib.util.StringUtils;
 
 public class FileSelectorScreen extends DirectorySelectorScreen
 {
@@ -13,7 +11,7 @@ public class FileSelectorScreen extends DirectorySelectorScreen
     {
         super(currentDirectory, rootDirectory, fileConsumer);
 
-        this.title = StringUtils.translate("malilib.gui.title.file_browser");
+        this.setTitle("malilib.gui.title.file_browser");
     }
 
     @Override
@@ -23,18 +21,20 @@ public class FileSelectorScreen extends DirectorySelectorScreen
     }
 
     @Override
-    protected void addConfirmationButton()
+    protected String getButtonLabel()
     {
-        GenericButton button = new GenericButton(10, this.height - 26, -1, 20, "malilib.gui.button.config.use_selected_file");
+        return "malilib.gui.button.config.use_selected_file";
+    }
 
-        this.addButton(button, (btn, mbtn) -> {
-            BaseFileBrowserWidget.DirectoryEntry entry = this.getListWidget().getEntrySelectionHandler().getLastSelectedEntry();
+    @Override
+    protected void onConfirm()
+    {
+        BaseFileBrowserWidget.DirectoryEntry entry = this.getListWidget().getEntrySelectionHandler().getLastSelectedEntry();
 
-            if (entry != null && entry.getType() == BaseFileBrowserWidget.DirectoryEntryType.FILE)
-            {
-                this.fileConsumer.accept(entry.getFullPath());
-                BaseScreen.openScreen(this.getParent());
-            }
-        });
+        if (entry != null && entry.getType() == BaseFileBrowserWidget.DirectoryEntryType.FILE)
+        {
+            this.fileConsumer.accept(entry.getFullPath());
+            BaseScreen.openScreen(this.getParent());
+        }
     }
 }

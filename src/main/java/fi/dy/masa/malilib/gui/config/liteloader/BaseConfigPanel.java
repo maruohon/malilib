@@ -34,7 +34,7 @@ public abstract class BaseConfigPanel extends AbstractConfigPanel
     {
         if (this.selectedSubPanel != null)
         {
-            return this.getPanelTitlePrefix() + " => " + this.selectedSubPanel.getTitle();
+            return this.getPanelTitlePrefix() + " => " + this.selectedSubPanel.getTitleString();
         }
 
         return this.getPanelTitlePrefix();
@@ -69,7 +69,7 @@ public abstract class BaseConfigPanel extends AbstractConfigPanel
         {
             BaseConfigScreen subPanel = this.subPanels.get(i);
             ButtonListenerPanelSelection<GuiButton> listener = new ButtonListenerPanelSelection<>(subPanel);
-            this.addControl(new GuiButton(i, x, y, buttonWidth, buttonHeight, subPanel.getTitle()), listener);
+            this.addControl(new GuiButton(i, x, y, buttonWidth, buttonHeight, subPanel.getTitleString()), listener);
             y += this.subPanelButtonHeight + 1;
         }
     }
@@ -264,7 +264,7 @@ public abstract class BaseConfigPanel extends AbstractConfigPanel
         public void openDialog(BaseScreen gui)
         {
             ModInfo modInfo = this.selectedPanel.getModInfo();
-            String title = this.selectedPanel.getTitle();
+            String title = this.selectedPanel.getTitleString();
             gui.setPopupGuiZLevelBasedOn(GuiUtils.getCurrentScreen());
 
             BaseConfigPanel.this.setSelectedSubPanel(new GuiConfigsWrapper(

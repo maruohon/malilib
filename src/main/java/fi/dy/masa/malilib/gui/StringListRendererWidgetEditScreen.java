@@ -50,7 +50,7 @@ public class StringListRendererWidgetEditScreen extends BaseScreen
     {
         this.widget = widget;
         this.useTitleHierarchy = false;
-        this.title = StringUtils.translate("malilib.gui.title.string_list_renderer_configuration");
+        this.setTitle("malilib.gui.title.string_list_renderer_configuration");
 
         this.locationDropdownWidget = new DropDownListWidget<>(0, 0, -1, 16, 160, 10, ScreenLocation.VALUES,
                                                                OptionListConfigValue::getDisplayName, null);
@@ -99,9 +99,50 @@ public class StringListRendererWidgetEditScreen extends BaseScreen
     }
 
     @Override
-    protected void initScreen()
+    protected void reAddActiveWidgets()
     {
-        super.initScreen();
+        super.reAddActiveWidgets();
+
+        this.addWidget(this.locationDropdownWidget);
+        this.addWidget(this.enabledToggleButton);
+        this.addWidget(this.marginEditButton);
+        this.addWidget(this.paddingEditButton);
+
+        this.addWidget(this.nameLabelWidget);
+        this.addWidget(this.nameTextField);
+        this.addWidget(this.renderNameToggleButton);
+
+        this.addWidget(this.textScaleLabelWidget);
+        this.addWidget(this.textScaleEditWidget);
+
+        this.addWidget(this.lineHeightLabelWidget);
+        this.addWidget(this.lineHeightEditWidget);
+
+        this.addWidget(this.sortIndexLabelWidget);
+        this.addWidget(this.sortIndexEditWidget);
+
+        this.addWidget(this.textShadowLabelWidget);
+        this.addWidget(this.textShadowToggleButton);
+
+        this.addWidget(this.textColorLabelWidget);
+        this.addWidget(this.textColorWidget);
+
+        this.addWidget(this.backgroundLabelWidget);
+        this.addWidget(this.backgroundColorWidget);
+        this.addWidget(this.backgroundEnabledToggleButton);
+
+        this.addWidget(this.oddBackgroundLabelWidget);
+        this.addWidget(this.oddBackgroundColorWidget);
+        this.addWidget(this.oddEvenBackgroundToggleButton);
+
+        this.addWidget(this.evenWidthBackgroundLabelWidget);
+        this.addWidget(this.evenWidthBackgroundToggleButton);
+    }
+
+    @Override
+    protected void updateWidgetPositions()
+    {
+        super.updateWidgetPositions();
 
         int x = this.x + 10;
         int y = this.y + 24;
@@ -156,41 +197,6 @@ public class StringListRendererWidgetEditScreen extends BaseScreen
 
         tmpX = Math.max(tmpX, this.evenWidthBackgroundLabelWidget.getRight() + 6);
         this.evenWidthBackgroundToggleButton.setPosition(tmpX, y + 60);
-
-        this.addWidget(this.locationDropdownWidget);
-        this.addWidget(this.enabledToggleButton);
-        this.addWidget(this.marginEditButton);
-        this.addWidget(this.paddingEditButton);
-
-        this.addWidget(this.nameLabelWidget);
-        this.addWidget(this.nameTextField);
-        this.addWidget(this.renderNameToggleButton);
-
-        this.addWidget(this.textScaleLabelWidget);
-        this.addWidget(this.textScaleEditWidget);
-
-        this.addWidget(this.lineHeightLabelWidget);
-        this.addWidget(this.lineHeightEditWidget);
-
-        this.addWidget(this.sortIndexLabelWidget);
-        this.addWidget(this.sortIndexEditWidget);
-
-        this.addWidget(this.textShadowLabelWidget);
-        this.addWidget(this.textShadowToggleButton);
-
-        this.addWidget(this.textColorLabelWidget);
-        this.addWidget(this.textColorWidget);
-
-        this.addWidget(this.backgroundLabelWidget);
-        this.addWidget(this.backgroundColorWidget);
-        this.addWidget(this.backgroundEnabledToggleButton);
-
-        this.addWidget(this.oddBackgroundLabelWidget);
-        this.addWidget(this.oddBackgroundColorWidget);
-        this.addWidget(this.oddEvenBackgroundToggleButton);
-
-        this.addWidget(this.evenWidthBackgroundLabelWidget);
-        this.addWidget(this.evenWidthBackgroundToggleButton);
     }
 
     @Override

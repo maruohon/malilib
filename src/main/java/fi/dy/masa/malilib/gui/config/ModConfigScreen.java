@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.gui.config;
 import java.util.List;
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
+import fi.dy.masa.malilib.gui.widget.ScreenContext;
 import fi.dy.masa.malilib.util.data.ModInfo;
 
 public class ModConfigScreen extends BaseConfigScreen
@@ -29,7 +30,7 @@ public class ModConfigScreen extends BaseConfigScreen
     }
 
     @Override
-    protected void drawTitle(int mouseX, int mouseY, float partialTicks)
+    protected void renderScreenTitle(int mouseX, int mouseY, ScreenContext ctx)
     {
         // NO-OP
     }

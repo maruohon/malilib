@@ -12,6 +12,8 @@ public class StringListSelectionScreen extends BaseListScreen<DataListWidget<Str
 {
     protected final ImmutableList<String> strings;
     protected final Consumer<Set<String>> consumer;
+    protected final GenericButton confirmButton;
+    protected final GenericButton cancelButton;
 
     public StringListSelectionScreen(Collection<String> strings, Consumer<Set<String>> consumer)
     {
@@ -19,6 +21,12 @@ public class StringListSelectionScreen extends BaseListScreen<DataListWidget<Str
 
         this.strings = ImmutableList.copyOf(strings);
         this.consumer = consumer;
+
+        this.confirmButton = new GenericButton(0, 0, -1, 20, "malilib.gui.button.ok");
+        this.confirmButton.setActionListener(this::onConfirm);
+
+        this.cancelButton = new GenericButton(0, 0, -1, 20, "malilib.gui.button.cancel");
+        this.cancelButton.setActionListener(this::onCancel);
     }
 
     public List<String> getStrings()
@@ -33,18 +41,33 @@ public class StringListSelectionScreen extends BaseListScreen<DataListWidget<Str
     }
 
     @Override
-    protected void initScreen()
+    protected void reAddActiveWidgets()
     {
-        super.initScreen();
+        super.reAddActiveWidgets();
+
+        this.addWidget(this.confirmButton);
+        this.addWidget(this.cancelButton);
+    }
+
+    @Override
+    protected void updateWidgetPositions()
+    {
+        super.updateWidgetPositions();
 
         int x = 12;
         int y = this.height - 32;
 
-        GenericButton button = new GenericButton(x, y, -1, 20, "litematica.gui.button.ok");
-        x = button.getRight() + 2;
-        this.addButton(button, (btn, mbtn) -> this.consumer.accept(this.getListWidget().getSelectedEntries()));
+        this.confirmButton.setPosition(x, y);
+        this.cancelButton.setPosition(this.confirmButton.getRight() + 6, y);
+    }
 
-        button = new GenericButton(x, y, -1, 20, "litematica.gui.button.cancel");
-        this.addButton(button, (btn, mbtn) -> BaseScreen.openScreen(this.getParent()));
+    protected void onConfirm()
+    {
+        this.consumer.accept(this.getListWidget().getSelectedEntries());
+    }
+
+    protected void onCancel()
+    {
+        this.closeScreen(true);
     }
 }

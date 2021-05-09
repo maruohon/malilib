@@ -21,7 +21,6 @@ import fi.dy.masa.malilib.overlay.InfoOverlay;
 import fi.dy.masa.malilib.overlay.widget.ConfigStatusIndicatorContainerWidget;
 import fi.dy.masa.malilib.overlay.widget.sub.BaseConfigStatusIndicatorWidget;
 import fi.dy.masa.malilib.render.text.TextRenderSettings;
-import fi.dy.masa.malilib.util.StringUtils;
 
 public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataListWidget<BaseConfigStatusIndicatorWidget<?>>>
 {
@@ -53,7 +52,7 @@ public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataLis
 
         this.widget = widget;
         this.useTitleHierarchy = false;
-        this.title = StringUtils.translate("malilib.gui.title.config_status_indicator_configuration");
+        this.setTitle("malilib.gui.title.config_status_indicator_configuration");
 
         this.locationDropdownWidget = new DropDownListWidget<>(0, 0, -1, 16, 160, 10, ScreenLocation.VALUES,
                                                                OptionListConfigValue::getDisplayName, null);
@@ -66,7 +65,7 @@ public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataLis
         this.backgroundLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.background.colon");
         this.textScaleLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.text_scale.colon");
         this.oddBackgroundLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.config_status_indicator.background_odd.colon");
-        this.oddBackgroundLabelWidget.addHoverStrings(StringUtils.translate("malilib.label.config_status_indicator.background_odd.hover"));
+        this.oddBackgroundLabelWidget.translateAndAddHoverString("malilib.label.config_status_indicator.background_odd.hover");
 
         this.nameTextField = new BaseTextFieldWidget(0, 0, 160, 16, widget.getName());
         this.nameTextField.setListener(widget::setName);
@@ -86,7 +85,7 @@ public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataLis
         this.groupEnabledToggleButton = OnOffButton.simpleSlider(16, widget::isEnabled, widget::toggleEnabled);
         this.backgroundEnabledToggleButton = OnOffButton.simpleSlider(16, textSettings::getUseBackground, textSettings::toggleUseBackground);
         this.oddEvenBackgroundToggleButton = OnOffButton.simpleSlider(16, textSettings::getUseOddEvenBackground, textSettings::toggleUseOddEvenBackground);
-        this.oddEvenBackgroundToggleButton.addHoverStrings(StringUtils.translate("malilib.label.config_status_indicator.background_odd.hover"));
+        this.oddEvenBackgroundToggleButton.translateAndAddHoverString("malilib.label.config_status_indicator.background_odd.hover");
         this.renderNameToggleButton = OnOffButton.simpleSlider(16, widget::getRenderName, widget::toggleRenderName);
 
         this.backgroundColorWidget = new ColorIndicatorWidget(0, 0, 16, 16, textSettings::getBackgroundColor, textSettings::setBackgroundColor);
@@ -98,15 +97,57 @@ public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataLis
     {
         super.initScreen();
 
+        this.marginEditButton.updateHoverStrings();
+        this.paddingEditButton.updateHoverStrings();
+
+        this.marginEditButton.updateHoverStrings();
+        this.paddingEditButton.updateHoverStrings();
+
+        this.getListWidget().refreshEntries();
+    }
+
+    @Override
+    protected void reAddActiveWidgets()
+    {
+        super.reAddActiveWidgets();
+
+        this.addWidget(this.locationDropdownWidget);
+        this.addWidget(this.groupEnabledToggleButton);
+        this.addWidget(this.marginEditButton);
+        this.addWidget(this.paddingEditButton);
+
+        this.addWidget(this.nameLabelWidget);
+        this.addWidget(this.nameTextField);
+        this.addWidget(this.renderNameToggleButton);
+
+        this.addWidget(this.textScaleLabelWidget);
+        this.addWidget(this.textScaleEditWidget);
+
+        this.addWidget(this.lineHeightLabelWidget);
+        this.addWidget(this.lineHeightEditWidget);
+
+        this.addWidget(this.priorityLabelWidget);
+        this.addWidget(this.priorityEditWidget);
+
+        this.addWidget(this.backgroundLabelWidget);
+        this.addWidget(this.backgroundColorWidget);
+        this.addWidget(this.backgroundEnabledToggleButton);
+
+        this.addWidget(this.oddBackgroundLabelWidget);
+        this.addWidget(this.oddBackgroundColorWidget);
+        this.addWidget(this.oddEvenBackgroundToggleButton);
+
+        this.addWidget(this.addConfigsButton);
+    }
+
+    @Override
+    protected void updateWidgetPositions()
+    {
+        super.updateWidgetPositions();
+
         int x = this.x + 10;
         int y = this.y + 24;
         int tmpX;
-
-        this.marginEditButton.updateHoverStrings();
-        this.paddingEditButton.updateHoverStrings();
-
-        this.marginEditButton.updateHoverStrings();
-        this.paddingEditButton.updateHoverStrings();
 
         this.locationDropdownWidget.setPosition(x, y);
         this.groupEnabledToggleButton.setPosition(this.locationDropdownWidget.getRight() + 6, y);
@@ -144,36 +185,6 @@ public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataLis
 
         tmpX = this.x + this.screenWidth - this.addConfigsButton.getWidth() - 9;
         this.addConfigsButton.setPosition(tmpX, y + 38);
-
-        this.addWidget(this.locationDropdownWidget);
-        this.addWidget(this.groupEnabledToggleButton);
-        this.addWidget(this.marginEditButton);
-        this.addWidget(this.paddingEditButton);
-
-        this.addWidget(this.nameLabelWidget);
-        this.addWidget(this.nameTextField);
-        this.addWidget(this.renderNameToggleButton);
-
-        this.addWidget(this.textScaleLabelWidget);
-        this.addWidget(this.textScaleEditWidget);
-
-        this.addWidget(this.lineHeightLabelWidget);
-        this.addWidget(this.lineHeightEditWidget);
-
-        this.addWidget(this.priorityLabelWidget);
-        this.addWidget(this.priorityEditWidget);
-
-        this.addWidget(this.backgroundLabelWidget);
-        this.addWidget(this.backgroundColorWidget);
-        this.addWidget(this.backgroundEnabledToggleButton);
-
-        this.addWidget(this.oddBackgroundLabelWidget);
-        this.addWidget(this.oddBackgroundColorWidget);
-        this.addWidget(this.oddEvenBackgroundToggleButton);
-
-        this.addWidget(this.addConfigsButton);
-
-        this.getListWidget().refreshEntries();
     }
 
     @Override

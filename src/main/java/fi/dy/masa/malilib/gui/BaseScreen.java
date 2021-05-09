@@ -8,9 +8,7 @@ import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import fi.dy.masa.malilib.MaLiLibConfigs;
@@ -27,6 +25,9 @@ import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.listener.TextChangeListener;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
+import fi.dy.masa.malilib.render.text.StyledTextLine;
+import fi.dy.masa.malilib.render.text.TextRenderer;
+import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.Vec2i;
 
 public abstract class BaseScreen extends GuiScreen
@@ -59,18 +60,18 @@ public abstract class BaseScreen extends GuiScreen
     public static final int TOOLTIP_BACKGROUND   = 0xB0000000;
     public static final int COLOR_HORIZONTAL_BAR = 0xFF999999;
 
-    public final Minecraft mc = Minecraft.getMinecraft();
-    public final FontRenderer textRenderer = this.mc.fontRenderer;
-    public final int fontHeight = this.textRenderer.FONT_HEIGHT;
+    protected final Minecraft mc = Minecraft.getMinecraft();
+    protected final TextRenderer textRenderer = TextRenderer.INSTANCE;
     protected final List<Runnable> tasks = new ArrayList<>();
     private final List<BaseButton> buttons = new ArrayList<>();
     private final List<InteractableWidget> widgets = new ArrayList<>();
-    protected String title = "";
-    protected Vec2i dragStartOffset = Vec2i.ZERO;
+    private String titleString = "";
+    @Nullable protected StyledTextLine titleText;
     @Nullable private GuiScreen parent;
     @Nullable protected DialogHandler dialogHandler;
     @Nullable protected InteractableWidget hoveredWidget;
     @Nullable protected ScreenContext context;
+    protected Vec2i dragStartOffset = Vec2i.ZERO;
     protected int backgroundColor = TOOLTIP_BACKGROUND;
     protected int borderColor = COLOR_HORIZONTAL_BAR;
     protected int customScreenScale;
@@ -134,14 +135,28 @@ public abstract class BaseScreen extends GuiScreen
         return this.parent;
     }
 
-    public String getTitle()
+    public String getTitleString()
     {
-        return (this.useTitleHierarchy && this.parent instanceof BaseScreen) ? (((BaseScreen) this.parent).getTitle() + " => " + this.title) : this.title;
+        if (this.useTitleHierarchy && this.parent instanceof BaseScreen)
+        {
+            return ((BaseScreen) this.parent).getTitleString() + " => " + this.titleString;
+        }
+
+        return this.titleString;
     }
 
-    public void setTitle(String title)
+    public void setTitle(@Nullable String titleKey, Object... args)
     {
-        this.title = title;
+        if (org.apache.commons.lang3.StringUtils.isBlank(titleKey))
+        {
+            this.titleString = "";
+            this.titleText = null;
+        }
+        else
+        {
+            this.titleString = StringUtils.translate(titleKey, args);
+            this.titleText = StyledTextLine.of(this.getTitleString());
+        }
     }
 
     public void setShouldRenderParent(boolean render)
@@ -390,16 +405,16 @@ public abstract class BaseScreen extends GuiScreen
 
         ScreenContext ctx = this.getContext(mouseX, mouseY);
 
-        this.drawScreenBackground(mouseX, mouseY);
-        this.drawTitle(mouseX, mouseY, partialTicks);
+        this.renderScreenBackground(mouseX, mouseY, ctx);
+        this.renderScreenTitle(mouseX, mouseY, ctx);
 
         // Draw base widgets
-        this.drawWidgets(mouseX, mouseY, ctx);
+        this.renderWidgets(mouseX, mouseY, ctx);
         //super.drawScreen(mouseX, mouseY, partialTicks);
 
-        this.drawContents(mouseX, mouseY, partialTicks);
+        this.renderCustomContents(mouseX, mouseY, ctx);
 
-        this.drawHoveredWidget(ctx);
+        this.renderHoveredWidget(ctx);
 
         if (MaLiLibConfigs.Debug.GUI_DEBUG.getBooleanValue() && MaLiLibConfigs.Debug.GUI_DEBUG_KEY.isHeld())
         {
@@ -846,7 +861,7 @@ public abstract class BaseScreen extends GuiScreen
         }
     }
 
-    protected void drawScreenBackground(int mouseX, int mouseY)
+    protected void renderScreenBackground(int mouseX, int mouseY, ScreenContext ctx)
     {
         if (this.renderBorder)
         {
@@ -858,16 +873,22 @@ public abstract class BaseScreen extends GuiScreen
         }
     }
 
-    protected void drawTitle(int mouseX, int mouseY, float partialTicks)
+    protected void renderScreenTitle(int mouseX, int mouseY, ScreenContext ctx)
     {
-        this.drawStringWithShadow(this.getTitle(), this.x + this.titleX, this.y + this.titleY, this.titleColor);
+        if (this.titleText != null)
+        {
+            int x = this.x + this.titleX;
+            int y = this.y + this.titleY;
+
+            this.textRenderer.renderLine(x, y, this.zLevel + 0.00125f, this.titleColor, true, this.titleText);
+        }
     }
 
-    protected void drawContents(int mouseX, int mouseY, float partialTicks)
+    protected void renderCustomContents(int mouseX, int mouseY, ScreenContext ctx)
     {
     }
 
-    protected void drawWidgets(int mouseX, int mouseY, ScreenContext ctx)
+    protected void renderWidgets(int mouseX, int mouseY, ScreenContext ctx)
     {
         if (this.widgets.isEmpty() == false)
         {
@@ -886,7 +907,7 @@ public abstract class BaseScreen extends GuiScreen
         }
     }
 
-    protected void drawHoveredWidget(ScreenContext ctx)
+    protected void renderHoveredWidget(ScreenContext ctx)
     {
         if (this.hoveredWidget != null)
         {
@@ -897,27 +918,7 @@ public abstract class BaseScreen extends GuiScreen
 
     public int getStringWidth(String text)
     {
-        return this.textRenderer.getStringWidth(text);
-    }
-
-    public void drawString(String text, int x, int y, int color)
-    {
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(0f, 0f, this.zLevel + 0.1f);
-
-        this.textRenderer.drawString(text, x, y, color);
-
-        GlStateManager.popMatrix();
-    }
-
-    public void drawStringWithShadow(String text, int x, int y, int color)
-    {
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(0f, 0f, this.zLevel + 0.1f);
-
-        this.textRenderer.drawStringWithShadow(text, x, y, color);
-
-        GlStateManager.popMatrix();
+        return StringUtils.getStringWidth(text);
     }
 
     public static boolean openScreen(@Nullable GuiScreen screen)

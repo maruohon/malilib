@@ -12,7 +12,6 @@ import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.input.KeyBindImpl;
 import fi.dy.masa.malilib.input.KeyBindSettings;
 import fi.dy.masa.malilib.overlay.message.MessageUtils;
-import fi.dy.masa.malilib.util.StringUtils;
 
 public class AddCustomHotkeyDefinitionScreen extends BaseScreen
 {
@@ -25,9 +24,9 @@ public class AddCustomHotkeyDefinitionScreen extends BaseScreen
 
     public AddCustomHotkeyDefinitionScreen()
     {
-        this.title = StringUtils.translate("malilib.gui.title.add_new_hotkey");
         this.useTitleHierarchy = false;
         this.backgroundColor = 0xFF000000;
+        this.setTitle("malilib.gui.title.add_new_hotkey");
 
         this.nameLabelWidget = new LabelWidget(0, 0, -1, 12, 0xFFF0F0F0, "malilib.label.name.colon");
         this.actionLabelWidget = new LabelWidget(0, 0, -1, 12, 0xFFF0F0F0, "malilib.label.action.colon");

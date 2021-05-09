@@ -198,12 +198,10 @@ public class BaseMultiListScreen extends BaseTabbedScreen
     }
 
     @Override
-    public void drawContents(int mouseX, int mouseY, float partialTicks)
+    protected void renderCustomContents(int mouseX, int mouseY, ScreenContext ctx)
     {
         for (BaseListWidget listWidget : this.listWidgets)
         {
-            ScreenContext ctx = this.getContext(mouseX, mouseY);
-
             listWidget.renderAt(listWidget.getX(), listWidget.getY(), listWidget.getZLevel(), ctx);
         }
     }

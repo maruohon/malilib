@@ -45,28 +45,46 @@ public class InfoRendererWidgetListScreen<WIDGET extends InfoRendererWidget> ext
         this.widgetFactory = widgetFactory;
         this.entryWidgetFactory = entryWidgetFactory;
 
-        this.locationDropdownWidget = new DropDownListWidget<>(10, 50, -1, 14, 160, 10, ScreenLocation.VALUES, OptionListConfigValue::getDisplayName, null);
+        this.locationDropdownWidget = new DropDownListWidget<>(0, 0, -1, 16, 160, 10, ScreenLocation.VALUES, OptionListConfigValue::getDisplayName, null);
 
-        int x = this.locationDropdownWidget.getRight() + 4;
-        this.createWidgetButton = new GenericButton(x, 47, -1, 20, "malilib.gui.button.label.add_status_indicator_widget");
+        this.createWidgetButton = new GenericButton(0, 0, -1, 16, "malilib.gui.button.label.add_status_indicator_widget");
         this.createWidgetButton.setActionListener(this::createInfoRendererWidget);
     }
 
     @Override
     protected void initScreen()
     {
-        if (this.canCreateNewWidgets)
-        {
-            super.initScreen();
-            this.addWidget(this.locationDropdownWidget);
-            this.addWidget(this.createWidgetButton);
-        }
-        else
+        if (this.canCreateNewWidgets == false)
         {
             this.totalListMarginY = 56;
             this.updateListPosition(10, 52);
-            super.initScreen();
         }
+
+        super.initScreen();
+    }
+
+    @Override
+    protected void reAddActiveWidgets()
+    {
+        super.reAddActiveWidgets();
+
+        if (this.canCreateNewWidgets)
+        {
+            this.addWidget(this.locationDropdownWidget);
+            this.addWidget(this.createWidgetButton);
+        }
+    }
+
+    @Override
+    protected void updateWidgetPositions()
+    {
+        super.updateWidgetPositions();
+
+        int x = this.x + 10;
+        int y = this.y + 50;
+
+        this.locationDropdownWidget.setPosition(x, y);
+        this.createWidgetButton.setPosition(this.locationDropdownWidget.getRight() + 4, y);
     }
 
     @Override

@@ -13,7 +13,6 @@ import fi.dy.masa.malilib.gui.widget.DropDownListWidget;
 import fi.dy.masa.malilib.gui.widget.IconWidget;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
-import fi.dy.masa.malilib.util.StringUtils;
 
 public class AddActionExecutionWidgetScreen extends BaseScreen
 {
@@ -39,7 +38,7 @@ public class AddActionExecutionWidgetScreen extends BaseScreen
     {
         this.widgetConsumer = widgetConsumer;
 
-        this.title = StringUtils.translate("malilib.gui.title.create_action_execution_widget");
+        this.setTitle("malilib.gui.title.create_action_execution_widget");
         this.useTitleHierarchy = false;
 
         this.actionLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.action.colon");

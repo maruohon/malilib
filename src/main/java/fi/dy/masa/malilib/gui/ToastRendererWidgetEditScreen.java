@@ -14,7 +14,6 @@ import fi.dy.masa.malilib.overlay.InfoOverlay;
 import fi.dy.masa.malilib.overlay.InfoWidgetManager;
 import fi.dy.masa.malilib.overlay.widget.ToastRendererWidget;
 import fi.dy.masa.malilib.render.text.TextRenderSettings;
-import fi.dy.masa.malilib.util.StringUtils;
 
 public class ToastRendererWidgetEditScreen extends BaseScreen
 {
@@ -47,7 +46,7 @@ public class ToastRendererWidgetEditScreen extends BaseScreen
     {
         this.widget = widget;
         this.useTitleHierarchy = false;
-        this.title = StringUtils.translate("malilib.gui.title.toast_renderer_configuration");
+        this.setTitle("malilib.gui.title.toast_renderer_configuration");
 
         this.locationDropdownWidget = new DropDownListWidget<>(0, 0, -1, 16, 160, 10, ScreenLocation.VALUES,
                                                                OptionListConfigValue::getDisplayName, null);
@@ -90,9 +89,50 @@ public class ToastRendererWidgetEditScreen extends BaseScreen
     }
 
     @Override
-    protected void initScreen()
+    protected void reAddActiveWidgets()
     {
-        super.initScreen();
+        super.reAddActiveWidgets();
+
+        this.addWidget(this.locationDropdownWidget);
+
+        this.addWidget(this.nameLabelWidget);
+        this.addWidget(this.nameTextField);
+
+        this.addWidget(this.marginEditButton);
+        this.addWidget(this.paddingEditButton);
+
+        this.addWidget(this.lineHeightLabelWidget);
+        this.addWidget(this.lineHeightEditWidget);
+
+        this.addWidget(this.messageGapLabelWidget);
+        this.addWidget(this.messageGapEditWidget);
+
+        this.addWidget(this.sortIndexLabelWidget);
+        this.addWidget(this.sortIndexEditWidget);
+
+        this.addWidget(this.maxWidthLabelWidget);
+        this.addWidget(this.maxWidthEditWidget);
+
+        this.addWidget(this.zLevelLabelWidget);
+        this.addWidget(this.zLevelEditWidget);
+
+        this.addWidget(this.defaultLifeTimeLabelWidget);
+        this.addWidget(this.defaultLifeTimeEditWidget);
+
+        this.addWidget(this.defaultFadeInTimeLabelWidget);
+        this.addWidget(this.defaultFadeInTimeEditWidget);
+
+        this.addWidget(this.defaultFadeOutTimeLabelWidget);
+        this.addWidget(this.defaultFadeOutTimeEditWidget);
+
+        this.addWidget(this.textColorLabelWidget);
+        this.addWidget(this.textColorEditWidget);
+    }
+
+    @Override
+    protected void updateWidgetPositions()
+    {
+        super.updateWidgetPositions();
 
         int x = this.x + 10;
         int y = this.y + 24;
@@ -139,41 +179,6 @@ public class ToastRendererWidgetEditScreen extends BaseScreen
         this.defaultFadeInTimeEditWidget.setPosition(tmpX, y + 20);
         this.defaultFadeOutTimeEditWidget.setPosition(tmpX, y + 40);
         this.textColorEditWidget.setPosition(tmpX, y + 60);
-
-        this.addWidget(this.locationDropdownWidget);
-
-        this.addWidget(this.nameLabelWidget);
-        this.addWidget(this.nameTextField);
-
-        this.addWidget(this.marginEditButton);
-        this.addWidget(this.paddingEditButton);
-
-        this.addWidget(this.lineHeightLabelWidget);
-        this.addWidget(this.lineHeightEditWidget);
-
-        this.addWidget(this.messageGapLabelWidget);
-        this.addWidget(this.messageGapEditWidget);
-
-        this.addWidget(this.sortIndexLabelWidget);
-        this.addWidget(this.sortIndexEditWidget);
-
-        this.addWidget(this.maxWidthLabelWidget);
-        this.addWidget(this.maxWidthEditWidget);
-
-        this.addWidget(this.zLevelLabelWidget);
-        this.addWidget(this.zLevelEditWidget);
-
-        this.addWidget(this.defaultLifeTimeLabelWidget);
-        this.addWidget(this.defaultLifeTimeEditWidget);
-
-        this.addWidget(this.defaultFadeInTimeLabelWidget);
-        this.addWidget(this.defaultFadeInTimeEditWidget);
-
-        this.addWidget(this.defaultFadeOutTimeLabelWidget);
-        this.addWidget(this.defaultFadeOutTimeEditWidget);
-
-        this.addWidget(this.textColorLabelWidget);
-        this.addWidget(this.textColorEditWidget);
     }
 
     @Override

@@ -9,7 +9,6 @@ import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.config.ConfigManagerImpl;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
-import fi.dy.masa.malilib.input.HotkeyManager;
 import fi.dy.masa.malilib.gui.BaseListScreen;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.ScreenTab;
@@ -18,8 +17,8 @@ import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.button.BaseButton;
 import fi.dy.masa.malilib.gui.widget.button.KeyBindConfigButton;
 import fi.dy.masa.malilib.gui.widget.list.ConfigOptionListWidget;
+import fi.dy.masa.malilib.input.HotkeyManager;
 import fi.dy.masa.malilib.listener.EventListener;
-import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.ModInfo;
 
 public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? extends ConfigInfo>> implements ConfigScreen, KeybindEditingScreen
@@ -35,9 +34,9 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
         super(10, 46, 20, 62, modInfo.getModId(), configTabs, defaultTab);
 
         this.modInfo = modInfo;
-        this.title = StringUtils.translate(titleKey, args);
         this.shouldRestoreScrollbarPosition = MaLiLibConfigs.Generic.REMEMBER_CONFIG_TAB_SCROLL_POSITIONS.getBooleanValue();
 
+        this.setTitle(titleKey, args);
         this.setParent(parent);
     }
 

@@ -34,8 +34,20 @@ extends BaseConfigStatusIndicatorEditScreen<WIDGET>
     }
 
     @Override
-    protected void addTypeSpecificWidgets()
+    protected void reAddTypeSpecificWidgets()
     {
+        this.addWidget(this.typeLabel);
+        this.addWidget(this.typeDropdown);
+
+        this.addWidget(this.conditionLabel);
+        this.addWidget(this.conditionDropdown);
+    }
+
+    @Override
+    protected void updateTypeSpecificWidgetPositions()
+    {
+        super.updateTypeSpecificWidgetPositions();
+
         int x = this.x + 10;
         int y = this.y + 70;
 
@@ -45,11 +57,5 @@ extends BaseConfigStatusIndicatorEditScreen<WIDGET>
         y += 20;
         this.conditionLabel.setPosition(x, y + 3);
         this.conditionDropdown.setPosition(this.conditionLabel.getRight() + 6, y);
-
-        this.addWidget(this.typeLabel);
-        this.addWidget(this.typeDropdown);
-
-        this.addWidget(this.conditionLabel);
-        this.addWidget(this.conditionDropdown);
     }
 }

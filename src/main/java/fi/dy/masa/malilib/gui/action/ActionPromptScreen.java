@@ -69,11 +69,31 @@ public class ActionPromptScreen extends BaseListScreen<DataListWidget<NamedActio
 
         super.initScreen();
 
+        if (MaLiLibConfigs.Generic.ACTION_PROMPT_REMEMBER_SEARCH.getBooleanValue())
+        {
+            this.searchTextField.setText(MaLiLibConfigs.Internal.ACTION_PROMPT_SEARCH_TEXT.getStringValue());
+        }
+
+        this.searchTextField.setFocused(true);
+        this.updateFilteredList();
+    }
+
+    @Override
+    protected void reAddActiveWidgets()
+    {
+        super.reAddActiveWidgets();
+
         this.addWidget(this.dropDownWidget);
         this.addWidget(this.searchTextField);
         this.addWidget(this.rememberSearchCheckBoxWidget);
         this.addWidget(this.fuzzySearchCheckBoxWidget);
         this.addWidget(this.searchDisplayNameCheckBoxWidget);
+    }
+
+    @Override
+    protected void updateWidgetPositions()
+    {
+        super.updateWidgetPositions();
 
         int x = this.x + this.screenWidth - DefaultIcons.CHECKMARK_OFF.getWidth();
         this.rememberSearchCheckBoxWidget.setPosition(x, this.y);
@@ -82,14 +102,6 @@ public class ActionPromptScreen extends BaseListScreen<DataListWidget<NamedActio
 
         this.dropDownWidget.setPosition(this.x, this.y);
         this.searchTextField.setPosition(this.x, this.y + 16);
-        this.searchTextField.setFocused(true);
-
-        if (MaLiLibConfigs.Generic.ACTION_PROMPT_REMEMBER_SEARCH.getBooleanValue())
-        {
-            this.searchTextField.setText(MaLiLibConfigs.Internal.ACTION_PROMPT_SEARCH_TEXT.getStringValue());
-        }
-
-        this.updateFilteredList();
     }
 
     @Override

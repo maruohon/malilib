@@ -41,7 +41,7 @@ public class ActionListScreen extends BaseMultiListScreen
     {
         super(MaLiLibReference.MOD_ID, MaLiLibConfigScreen.ALL_TABS, MaLiLibConfigScreen.GENERIC);
 
-        this.title = StringUtils.translate("malilib.gui.title.action_aliases_and_macros");
+        this.setTitle("malilib.gui.title.action_aliases_and_macros");
 
         this.baseActionsLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.gui.label.action_list_screen.available_actions");
         this.aliasesLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.gui.label.action_list_screen.aliases");
@@ -65,6 +65,14 @@ public class ActionListScreen extends BaseMultiListScreen
     {
         super.initScreen();
 
+        this.actionSourceListWidget.refreshEntries();
+    }
+
+    @Override
+    protected void reAddActiveWidgets()
+    {
+        super.reAddActiveWidgets();
+
         this.addWidget(this.baseActionsLabelWidget);
         this.addWidget(this.aliasesLabelWidget);
         this.addWidget(this.macrosLabelWidget);
@@ -75,6 +83,12 @@ public class ActionListScreen extends BaseMultiListScreen
         this.addListWidget(this.actionSourceListWidget);
         this.addListWidget(this.aliasListWidget);
         this.addListWidget(this.macroListWidget);
+    }
+
+    @Override
+    protected void updateWidgetPositions()
+    {
+        super.updateWidgetPositions();
 
         int x = 10;
         int y = this.addAliasButton.getBottom() + 15;
@@ -91,8 +105,6 @@ public class ActionListScreen extends BaseMultiListScreen
         y = this.aliasListWidget.getBottom() + 16;
         this.macroListWidget.setPositionAndSize(x, y, w, h);
         this.macrosLabelWidget.setPosition(x + 2, y - 10);
-
-        this.actionSourceListWidget.refreshEntries();
     }
 
     @Override

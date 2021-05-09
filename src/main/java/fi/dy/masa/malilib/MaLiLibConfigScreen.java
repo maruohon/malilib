@@ -17,7 +17,6 @@ import fi.dy.masa.malilib.gui.widget.list.entry.ConfigStatusIndicatorContainerEn
 import fi.dy.masa.malilib.gui.widget.list.entry.ToastRendererWidgetEntryWidget;
 import fi.dy.masa.malilib.overlay.widget.ConfigStatusIndicatorContainerWidget;
 import fi.dy.masa.malilib.overlay.widget.ToastRendererWidget;
-import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.ModInfo;
 
 public class MaLiLibConfigScreen
@@ -91,7 +90,7 @@ public class MaLiLibConfigScreen
                   ConfigStatusIndicatorContainerWidget::new,
                   ConfigStatusIndicatorContainerEntryWidget::new);
 
-            this.title = StringUtils.translate("malilib.gui.title.config_status_indicator_configuration");
+            this.setTitle("malilib.gui.title.config_status_indicator_configuration");
             this.canCreateNewWidgets = true;
         }
     }
@@ -104,7 +103,7 @@ public class MaLiLibConfigScreen
                   ToastRendererWidget::new,
                   ToastRendererWidgetEntryWidget::new);
 
-            this.title = StringUtils.translate("malilib.gui.title.toast_renderer_configuration");
+            this.setTitle("malilib.gui.title.toast_renderer_configuration");
         }
     }
 }

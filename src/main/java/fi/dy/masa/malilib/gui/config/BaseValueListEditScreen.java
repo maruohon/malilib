@@ -36,11 +36,11 @@ public class BaseValueListEditScreen<TYPE> extends BaseListScreen<DataListWidget
         this.newEntrySupplier = newEntrySupplier;
         this.widgetFactory = widgetFactory;
 
-        this.title = title;
         this.shouldCenter = true;
         this.renderBorder = true;
         this.useTitleHierarchy = false;
         this.backgroundColor = 0xFF000000;
+        this.setTitle(title);
 
         // When we have a dialog handler, then we are inside the Liteloader config menu.
         // In there we don't want to use the normal "GUI replacement and render parent first" trick.

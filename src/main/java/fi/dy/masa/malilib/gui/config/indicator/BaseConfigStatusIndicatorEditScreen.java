@@ -9,7 +9,6 @@ import fi.dy.masa.malilib.gui.widget.ColorEditorWidget;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.overlay.widget.sub.BaseConfigStatusIndicatorWidget;
-import fi.dy.masa.malilib.util.StringUtils;
 
 public class BaseConfigStatusIndicatorEditScreen <WIDGET extends BaseConfigStatusIndicatorWidget<?>> extends BaseScreen
 {
@@ -26,9 +25,9 @@ public class BaseConfigStatusIndicatorEditScreen <WIDGET extends BaseConfigStatu
     {
         this.widget = widget;
 
-        this.setParent(parent);
         this.useTitleHierarchy = false;
-        this.title = StringUtils.translate("malilib.gui.title.config_status_indicator_configuration");
+        this.setTitle("malilib.gui.title.config_status_indicator_configuration");
+        this.setParent(parent);
 
         this.nameLabel = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.name.colon");
         this.nameColorLabel = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.name_color.colon");
@@ -38,7 +37,7 @@ public class BaseConfigStatusIndicatorEditScreen <WIDGET extends BaseConfigStatu
         this.nameTextFieldWidget.setListener(this.widget::setName);
 
         this.nameResetButton = GenericButton.createIconOnly(0, 0, DefaultIcons.RESET_12);
-        this.nameResetButton.addHoverStrings(StringUtils.translate("malilib.gui.button.hover.config_status_indicator.reset_name"));
+        this.nameResetButton.translateAndAddHoverString("malilib.gui.button.hover.config_status_indicator.reset_name");
         this.nameResetButton.setActionListener(this::resetName);
 
         this.nameColorWidget = new ColorEditorWidget(0, 0, 90, 16, this.widget::getNameColor, this.widget::setNameColor);
@@ -46,9 +45,30 @@ public class BaseConfigStatusIndicatorEditScreen <WIDGET extends BaseConfigStatu
     }
 
     @Override
-    protected void initScreen()
+    protected void reAddActiveWidgets()
     {
-        super.initScreen();
+        super.reAddActiveWidgets();
+
+        this.addWidget(this.nameLabel);
+        this.addWidget(this.nameTextFieldWidget);
+        this.addWidget(this.nameResetButton);
+
+        this.addWidget(this.nameColorLabel);
+        this.addWidget(this.nameColorWidget);
+
+        this.reAddTypeSpecificWidgets();
+    }
+
+    protected void reAddTypeSpecificWidgets()
+    {
+        this.addWidget(this.valueColorLabel);
+        this.addWidget(this.valueColorWidget);
+    }
+
+    @Override
+    protected void updateWidgetPositions()
+    {
+        super.updateWidgetPositions();
 
         int x = this.x + 10;
         int y = this.y + 30;
@@ -61,17 +81,10 @@ public class BaseConfigStatusIndicatorEditScreen <WIDGET extends BaseConfigStatu
         this.nameColorLabel.setPosition(x, y + 3);
         this.nameColorWidget.setPosition(this.nameColorLabel.getRight() + 6, y);
 
-        this.addWidget(this.nameLabel);
-        this.addWidget(this.nameTextFieldWidget);
-        this.addWidget(this.nameResetButton);
-
-        this.addWidget(this.nameColorLabel);
-        this.addWidget(this.nameColorWidget);
-
-        this.addTypeSpecificWidgets();
+        this.updateTypeSpecificWidgetPositions();
     }
 
-    protected void addTypeSpecificWidgets()
+    protected void updateTypeSpecificWidgetPositions()
     {
         int x = this.x + 10;
         int y = this.y + 70;
@@ -81,9 +94,6 @@ public class BaseConfigStatusIndicatorEditScreen <WIDGET extends BaseConfigStatu
         x = Math.max(this.nameColorLabel.getRight(), this.valueColorLabel.getRight()) + 6;
         this.valueColorWidget.setPosition(x, y);
         this.nameColorWidget.setX(x);
-
-        this.addWidget(this.valueColorLabel);
-        this.addWidget(this.valueColorWidget);
     }
 
     protected void resetName()

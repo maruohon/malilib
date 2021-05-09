@@ -5,11 +5,11 @@ import org.lwjgl.input.Keyboard;
 import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
+import fi.dy.masa.malilib.gui.widget.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.render.text.StyledText;
 import fi.dy.masa.malilib.render.text.TextRenderer;
-import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.StyledTextUtils;
 
 public abstract class BaseTextInputScreen extends BaseScreen
@@ -26,11 +26,11 @@ public abstract class BaseTextInputScreen extends BaseScreen
 
     public BaseTextInputScreen(String titleKey, String defaultText, @Nullable GuiScreen parent)
     {
-        this.title = StringUtils.translate(titleKey);
         this.useTitleHierarchy = false;
         this.originalText = defaultText;
         this.screenWidth = 260;
         this.backgroundColor = 0xFF000000;
+        this.setTitle(titleKey);
 
         this.okButton = createButton("malilib.gui.button.colored.ok", this::closeScreenIfValueApplied);
         this.resetButton = createButton("malilib.gui.button.reset", this::resetTextFieldToOriginalText);
@@ -150,10 +150,8 @@ public abstract class BaseTextInputScreen extends BaseScreen
     }
 
     @Override
-    protected void drawContents(int mouseX, int mouseY, float partialTicks)
+    protected void renderCustomContents(int mouseX, int mouseY, ScreenContext ctx)
     {
-        super.drawContents(mouseX, mouseY, partialTicks);
-
         if (this.infoText != null)
         {
             int x = this.x + 10;

@@ -16,7 +16,6 @@ import fi.dy.masa.malilib.gui.widget.list.entry.CustomHotkeyDefinitionEntryWidge
 import fi.dy.masa.malilib.input.CustomHotkeyDefinition;
 import fi.dy.masa.malilib.input.CustomHotkeyManager;
 import fi.dy.masa.malilib.input.HotkeyManager;
-import fi.dy.masa.malilib.util.StringUtils;
 
 public class CustomHotkeysEditScreen extends BaseListScreen<DataListWidget<CustomHotkeyDefinition>> implements KeybindEditingScreen
 {
@@ -27,7 +26,7 @@ public class CustomHotkeysEditScreen extends BaseListScreen<DataListWidget<Custo
     {
         super(10, 74, 20, 84, MaLiLibReference.MOD_ID, MaLiLibConfigScreen.ALL_TABS, MaLiLibConfigScreen.GENERIC);
 
-        this.title = StringUtils.translate("malilib.gui.title.manage_custom_hotkeys");
+        this.setTitle("malilib.gui.title.manage_custom_hotkeys");
 
         this.addHotkeyButton = new GenericButton(0, 0, -1, 20, "malilib.gui.button.add_new_hotkey");
         this.addHotkeyButton.translateAndAddHoverStrings("malilib.gui.button.hover.add_new_hotkey");
@@ -35,14 +34,20 @@ public class CustomHotkeysEditScreen extends BaseListScreen<DataListWidget<Custo
     }
 
     @Override
-    protected void initScreen()
+    protected void reAddActiveWidgets()
     {
-        super.initScreen();
+        super.reAddActiveWidgets();
 
-        this.addHotkeyButton.setPosition(10, 50);
         this.addWidget(this.addHotkeyButton);
-
         this.getListWidget().refreshEntries();
+    }
+
+    @Override
+    protected void updateWidgetPositions()
+    {
+        super.updateWidgetPositions();
+
+        this.addHotkeyButton.setPosition(this.x + 10, this.y + 50);
     }
 
     @Override

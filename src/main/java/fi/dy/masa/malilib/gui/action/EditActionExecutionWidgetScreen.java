@@ -15,7 +15,6 @@ import fi.dy.masa.malilib.gui.widget.IconWidget;
 import fi.dy.masa.malilib.gui.widget.IntegerEditWidget;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
-import fi.dy.masa.malilib.util.StringUtils;
 
 public class EditActionExecutionWidgetScreen extends BaseScreen
 {
@@ -61,12 +60,12 @@ public class EditActionExecutionWidgetScreen extends BaseScreen
     {
         if (widgets.size() > 1)
         {
-            this.title = StringUtils.translate("malilib.gui.title.edit_action_execution_widget.multiple", widgets.size());
+            this.setTitle("malilib.gui.title.edit_action_execution_widget.multiple", widgets.size());
             this.setScreenWidthAndHeight(240, 164);
         }
         else
         {
-            this.title = StringUtils.translate("malilib.gui.title.edit_action_execution_widget");
+            this.setTitle("malilib.gui.title.edit_action_execution_widget");
             this.setScreenWidthAndHeight(240, 324);
         }
 

@@ -20,8 +20,8 @@ public class LabelWidget extends BackgroundWidget
     {
         super(x, y, width, height);
 
-        this.stringListRenderer.getNormalTextSettings().setTextColor(textColor);
-        this.stringListRenderer.getHoverTextSettings().setTextColor(textColor);
+        this.setNormalTextColor(textColor);
+        this.setHoverTextColor(textColor);
     }
 
     public LabelWidget(int x, int y, int textColor, String... text)

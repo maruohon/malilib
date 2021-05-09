@@ -15,7 +15,6 @@ import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.ConfigInfoEntryWidget;
 import fi.dy.masa.malilib.overlay.widget.ConfigStatusIndicatorContainerWidget;
-import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.ConfigOnTab;
 import fi.dy.masa.malilib.util.data.ModInfo;
 import fi.dy.masa.malilib.util.data.NameIdentifiable;
@@ -34,7 +33,7 @@ public class ConfigStatusIndicatorGroupAddConfigsScreen extends BaseListScreen<D
 
         this.widget = widget;
         this.useTitleHierarchy = false;
-        this.title = StringUtils.translate("malilib.gui.title.config_status_indicator_configuration");
+        this.setTitle("malilib.gui.title.config_status_indicator_configuration");
 
         List<ModInfo> mods = new ArrayList<>();
         mods.add(null);
@@ -51,9 +50,23 @@ public class ConfigStatusIndicatorGroupAddConfigsScreen extends BaseListScreen<D
     }
 
     @Override
-    protected void initScreen()
+    protected void reAddActiveWidgets()
     {
-        super.initScreen();
+        super.reAddActiveWidgets();
+
+        this.addWidget(this.modsDropDownWidget);
+        this.addWidget(this.addEntriesButton);
+
+        if (this.modsDropDownWidget.getSelectedEntry() != null)
+        {
+            this.addWidget(this.categoriesDropDownWidget);
+        }
+    }
+
+    @Override
+    protected void updateWidgetPositions()
+    {
+        super.updateWidgetPositions();
 
         int x = this.x + 10;
         int y = this.y + 24;
@@ -63,14 +76,6 @@ public class ConfigStatusIndicatorGroupAddConfigsScreen extends BaseListScreen<D
 
         y += 20;
         this.addEntriesButton.setPosition(x, y);
-
-        this.addWidget(this.modsDropDownWidget);
-        this.addWidget(this.addEntriesButton);
-
-        if (this.modsDropDownWidget.getSelectedEntry() != null)
-        {
-            this.addWidget(this.categoriesDropDownWidget);
-        }
     }
 
     @Nullable

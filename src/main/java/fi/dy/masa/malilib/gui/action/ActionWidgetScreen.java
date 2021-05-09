@@ -22,6 +22,7 @@ import fi.dy.masa.malilib.gui.widget.IntegerEditWidget;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.MenuEntryWidget;
 import fi.dy.masa.malilib.gui.widget.MenuWidget;
+import fi.dy.masa.malilib.gui.widget.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.button.BaseButton;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.button.OnOffButton;
@@ -103,14 +104,55 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
     {
         super.initScreen();
 
+        for (BaseActionExecutionWidget widget : this.widgetList)
+        {
+            widget.setContainer(this);
+            widget.onAdded(this);
+            this.addWidget(widget);
+        }
+
+        this.hasGroupSelection = this.selectedWidgets.isEmpty() == false;
+    }
+
+    @Override
+    protected void reAddActiveWidgets()
+    {
+        super.reAddActiveWidgets();
+
+        this.addWidget(this.editModeLabel);
+        this.addWidget(this.editModeButton);
+
+        if (this.editMode)
+        {
+            this.addWidget(this.closeOnExecuteCheckbox);
+            this.addWidget(this.closeOnKeyReleaseCheckbox);
+
+            this.addWidget(this.addWidgetButton);
+            this.addWidget(this.infoWidget);
+
+            this.addWidget(this.gridLabel);
+            this.addWidget(this.gridEnabledButton);
+
+            this.addWidget(this.exportSettingsButton);
+            this.addWidget(this.importSettingsButton);
+
+            if (this.gridEnabled)
+            {
+                this.addWidget(this.gridEditWidget);
+            }
+        }
+    }
+
+    @Override
+    protected void updateWidgetPositions()
+    {
+        super.updateWidgetPositions();
+
         int x = this.x + 10;
         int y = this.y + 2;
 
         this.editModeLabel.setPosition(x, y + 4);
         this.editModeButton.setPosition(this.editModeLabel.getRight() + 6, y);
-
-        this.addWidget(this.editModeLabel);
-        this.addWidget(this.editModeButton);
 
         if (this.editMode)
         {
@@ -130,33 +172,7 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
             y += 14;
 
             this.addWidgetButton.setPosition(x, y);
-
-            this.addWidget(this.closeOnExecuteCheckbox);
-            this.addWidget(this.closeOnKeyReleaseCheckbox);
-
-            this.addWidget(this.addWidgetButton);
-            this.addWidget(this.infoWidget);
-
-            this.addWidget(this.gridLabel);
-            this.addWidget(this.gridEnabledButton);
-
-            this.addWidget(this.exportSettingsButton);
-            this.addWidget(this.importSettingsButton);
-
-            if (this.gridEnabled)
-            {
-                this.addWidget(this.gridEditWidget);
-            }
         }
-
-        for (BaseActionExecutionWidget widget : this.widgetList)
-        {
-            widget.setContainer(this);
-            widget.onAdded(this);
-            this.addWidget(widget);
-        }
-
-        this.hasGroupSelection = this.selectedWidgets.isEmpty() == false;
     }
 
     @Override
@@ -599,7 +615,7 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
     }
 
     @Override
-    protected void drawContents(int mouseX, int mouseY, float partialTicks)
+    protected void renderCustomContents(int mouseX, int mouseY, ScreenContext ctx)
     {
         if (this.editMode)
         {
@@ -622,8 +638,6 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
                                                          maxX - minX, maxY - minY, 0x30FFFFFF, 0xFFFFFFFF);
             }
         }
-
-        super.drawContents(mouseX, mouseY, partialTicks);
     }
 
     public static void openCreateActionWidgetScreen()

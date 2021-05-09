@@ -21,7 +21,6 @@ import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.button.OptionListConfigButton;
 import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.input.KeyBindSettingsConfigs;
-import fi.dy.masa.malilib.util.StringUtils;
 
 public class KeybindSettingsScreen extends BaseScreen
 {
@@ -54,7 +53,7 @@ public class KeybindSettingsScreen extends BaseScreen
         this.backgroundColor = 0xFF000000;
         this.renderBorder = true;
         this.useTitleHierarchy = false;
-        this.title = StringUtils.translate("malilib.gui.title.keybind_settings.advanced", this.keybindName);
+        this.setTitle("malilib.gui.title.keybind_settings.advanced", this.keybindName);
 
         this.configs = new KeyBindSettingsConfigs(keybind, this::initScreen);
         this.configList = this.configs.getConfigList();
@@ -62,7 +61,7 @@ public class KeybindSettingsScreen extends BaseScreen
         this.configWidth = 100;
 
         int totalWidth = this.labelWidth + this.configWidth + 30;
-        totalWidth = Math.max(totalWidth, this.getStringWidth(this.title) + 20);
+        totalWidth = Math.max(totalWidth, this.titleText.renderWidth + 20);
         int totalHeight = this.configList.size() * 18 + 30;
 
         this.setScreenWidthAndHeight(totalWidth, totalHeight);

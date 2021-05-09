@@ -2,13 +2,12 @@ package fi.dy.masa.malilib.gui.config;
 
 import javax.annotation.Nullable;
 import net.minecraft.client.gui.GuiScreen;
-import fi.dy.masa.malilib.config.option.list.BlackWhiteListConfig;
 import fi.dy.masa.malilib.config.option.OptionListConfig;
+import fi.dy.masa.malilib.config.option.list.BlackWhiteListConfig;
 import fi.dy.masa.malilib.config.option.list.ValueListConfig;
 import fi.dy.masa.malilib.config.value.BlackWhiteList;
 import fi.dy.masa.malilib.gui.config.liteloader.DialogHandler;
 import fi.dy.masa.malilib.listener.EventListener;
-import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.restriction.UsageRestriction.ListType;
 
 public class BlackWhiteListEditScreen<TYPE> extends BaseConfigGroupEditScreen
@@ -26,11 +25,11 @@ public class BlackWhiteListEditScreen<TYPE> extends BaseConfigGroupEditScreen
 
         this.config = config;
         this.externalSaveListener = saveListener;
-        this.title = StringUtils.translate("malilib.gui.title.black_white_list_edit", config.getDisplayName());
-        BlackWhiteList<TYPE> bwList = config.getValue();
+        this.setTitle("malilib.gui.title.black_white_list_edit", config.getDisplayName());
 
         // Initialize them to the default value so that the reset button is active when they differ from the default value,
         // and also so that the reset restores them to the default value, not the value they were at when the screen was opened
+        BlackWhiteList<TYPE> bwList = config.getValue();
         this.typeConfig = new OptionListConfig<>("malilib.gui.label.black_white_list_edit.type",
                                                  config.getDefaultValue().getListType(), ListType.VALUES);
         this.typeConfig.setValue(bwList.getListType());

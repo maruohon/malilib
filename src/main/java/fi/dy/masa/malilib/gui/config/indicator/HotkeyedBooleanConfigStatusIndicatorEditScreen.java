@@ -26,9 +26,21 @@ extends BooleanConfigStatusIndicatorEditScreen<HotkeyedBooleanConfigStatusWidget
     }
 
     @Override
-    protected void addTypeSpecificWidgets()
+    protected void reAddTypeSpecificWidgets()
     {
-        super.addTypeSpecificWidgets();
+        super.reAddTypeSpecificWidgets();
+
+        this.addWidget(this.booleanEnabledLabel);
+        this.addWidget(this.booleanEnabledButton);
+
+        this.addWidget(this.hotkeyEnabledLabel);
+        this.addWidget(this.hotkeyEnabledButton);
+    }
+
+    @Override
+    protected void updateTypeSpecificWidgetPositions()
+    {
+        super.updateTypeSpecificWidgetPositions();
 
         int x = this.x + 10;
         int y = this.y + 110;
@@ -39,11 +51,5 @@ extends BooleanConfigStatusIndicatorEditScreen<HotkeyedBooleanConfigStatusWidget
         int tmpX = Math.max(this.booleanEnabledLabel.getRight(), this.hotkeyEnabledLabel.getRight()) + 6;
         this.booleanEnabledButton.setPosition(tmpX, y);
         this.hotkeyEnabledButton.setPosition(tmpX, y + 20);
-
-        this.addWidget(this.booleanEnabledLabel);
-        this.addWidget(this.booleanEnabledButton);
-
-        this.addWidget(this.hotkeyEnabledLabel);
-        this.addWidget(this.hotkeyEnabledButton);
     }
 }

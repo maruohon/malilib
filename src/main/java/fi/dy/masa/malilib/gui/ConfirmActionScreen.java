@@ -8,7 +8,6 @@ import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.listener.ConfirmationListener;
 import fi.dy.masa.malilib.render.text.StyledText;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
-import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.StyledTextUtils;
 
 public class ConfirmActionScreen extends BaseScreen
@@ -21,9 +20,9 @@ public class ConfirmActionScreen extends BaseScreen
 
     public ConfirmActionScreen(int width, String titleKey, ConfirmationListener listener, @Nullable GuiScreen parent, String messageKey, Object... args)
     {
-        this.title = StringUtils.translate(titleKey);
         this.listener = listener;
         this.useTitleHierarchy = false;
+        this.setTitle(titleKey);
 
         ImmutableList<StyledTextLine> messageLines = StyledTextUtils.wrapStyledTextToMaxWidth(StyledText.translate(messageKey, args).lines, width - 30);
         this.labelWidget = new LabelWidget(0, 0, -1, -1, 0xFFC0C0C0, messageLines);

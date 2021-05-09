@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.gui;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.function.IntConsumer;
 import javax.annotation.Nullable;
 import org.lwjgl.opengl.GL11;
@@ -14,10 +14,10 @@ import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.gui.config.liteloader.DialogHandler;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.IntegerTextFieldWidget;
+import fi.dy.masa.malilib.gui.widget.ScreenContext;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.render.shader.ShaderProgram;
-import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.Color4f;
 
 public class ColorEditorHSVScreen extends BaseScreen
@@ -75,8 +75,9 @@ public class ColorEditorHSVScreen extends BaseScreen
             this.setParent(parent);
         }
 
+        this.backgroundColor = 0xFF000000;
         this.useTitleHierarchy = false;
-        this.title = StringUtils.translate("malilib.gui.title.color_editor");
+        this.setTitle("malilib.gui.title.color_editor");
 
         this.setScreenWidthAndHeight(300, 180);
         this.centerOnScreen();
@@ -120,7 +121,7 @@ public class ColorEditorHSVScreen extends BaseScreen
 
         String str = "HEX:";
         int w = this.getStringWidth(str);
-        this.addLabel(this.xH - w - 4, y + 6, 0xFFFFFFFF, str);
+        this.addLabel(this.xH - w - 4, y + 6, 0xFFC0C0C0, str);
         this.textFieldFullColor = new BaseTextFieldWidget(this.xH - 1, y + 2, 68, 14);
         this.textFieldFullColor.setTextValidator(BaseTextFieldWidget.VALIDATOR_HEX_COLOR_8_6_4_3);
         this.textFieldFullColor.setListener(new TextChangeListener(null, this));
@@ -171,7 +172,7 @@ public class ColorEditorHSVScreen extends BaseScreen
             default:
         }
 
-        this.addLabel(xLabel, y + 3, 0xFFFFFF, element.name() + ":");
+        this.addLabel(xLabel, y + 3, 0xFFC0C0C0, element.name() + ":");
         this.addWidget(textField);
 
         return this.heightSlider + this.gapSlider;
@@ -186,7 +187,7 @@ public class ColorEditorHSVScreen extends BaseScreen
     }
 
     @Override
-    protected void drawContents(int mouseX, int mouseY, float partialTicks)
+    protected void renderCustomContents(int mouseX, int mouseY, ScreenContext ctx)
     {
         if (this.mouseDown)
         {

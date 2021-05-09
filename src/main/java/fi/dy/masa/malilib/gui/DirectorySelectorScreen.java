@@ -5,10 +5,10 @@ import java.io.FileFilter;
 import java.util.function.Consumer;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.BaseFileBrowserWidget;
-import fi.dy.masa.malilib.util.StringUtils;
 
 public class DirectorySelectorScreen extends BaseListScreen<BaseFileBrowserWidget>
 {
+    protected final GenericButton confirmButton;
     protected final File rootDirectory;
     protected final File currentDirectory;
     protected final Consumer<File> fileConsumer;
@@ -17,10 +17,14 @@ public class DirectorySelectorScreen extends BaseListScreen<BaseFileBrowserWidge
     {
         super(10, 28, 20, 58);
 
-        this.title = StringUtils.translate("malilib.gui.title.directory_browser");
         this.currentDirectory = currentDirectory;
         this.rootDirectory = rootDirectory;
         this.fileConsumer = fileConsumer;
+
+        this.confirmButton = new GenericButton(0, 0, -1, 20, this.getButtonLabel());
+        this.confirmButton.setActionListener(this::onConfirm);
+
+        this.setTitle("malilib.gui.title.directory_browser");
     }
 
     protected FileFilter getFileFilter()
@@ -28,22 +32,31 @@ public class DirectorySelectorScreen extends BaseListScreen<BaseFileBrowserWidge
         return BaseFileBrowserWidget.ALWAYS_FALSE_FILE_FILTER;
     }
 
-    protected void addConfirmationButton()
+    protected String getButtonLabel()
     {
-        GenericButton button = new GenericButton(10, this.height - 26, -1, 20, "malilib.gui.button.config.use_current_directory");
-
-        this.addButton(button, (btn, mbtn) -> {
-            this.fileConsumer.accept(this.getListWidget().getCurrentDirectory());
-            BaseScreen.openScreen(this.getParent());
-        });
+        return "malilib.gui.button.config.use_current_directory";
     }
 
     @Override
-    protected void initScreen()
+    protected void reAddActiveWidgets()
     {
-        super.initScreen();
+        super.reAddActiveWidgets();
 
-        this.addConfirmationButton();
+        this.addWidget(this.confirmButton);
+    }
+
+    @Override
+    protected void updateWidgetPositions()
+    {
+        super.updateWidgetPositions();
+
+        this.confirmButton.setPosition(this.x + 10, this.y + this.screenHeight - 26);
+    }
+
+    protected void onConfirm()
+    {
+        this.fileConsumer.accept(this.getListWidget().getCurrentDirectory());
+        BaseScreen.openScreen(this.getParent());
     }
 
     @Override

@@ -20,7 +20,6 @@ import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.NamedActionEntryWidget;
-import fi.dy.masa.malilib.util.StringUtils;
 
 public class MacroActionEditScreen extends BaseMultiListScreen
 {
@@ -45,7 +44,7 @@ public class MacroActionEditScreen extends BaseMultiListScreen
         this.originalName = name;
         this.creating = creating;
 
-        this.title = StringUtils.translate("malilib.gui.title.edit_macro");
+        this.setTitle("malilib.gui.title.edit_macro");
 
         this.macroNameLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.name.colon");
         this.allActionsLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.gui.label.action_list_screen.available_actions");
@@ -74,6 +73,14 @@ public class MacroActionEditScreen extends BaseMultiListScreen
     {
         super.initScreen();
 
+        this.actionSourceListWidget.refreshEntries();
+    }
+
+    @Override
+    protected void reAddActiveWidgets()
+    {
+        super.reAddActiveWidgets();
+
         this.addWidget(this.macroNameLabelWidget);
         this.addWidget(this.nameTextFieldWidget);
 
@@ -85,6 +92,12 @@ public class MacroActionEditScreen extends BaseMultiListScreen
 
         this.addListWidget(this.actionSourceListWidget);
         this.addListWidget(this.macroActionsListWidget);
+    }
+
+    @Override
+    protected void updateWidgetPositions()
+    {
+        super.updateWidgetPositions();
 
         int x = 10;
         int y = 20;
@@ -107,8 +120,6 @@ public class MacroActionEditScreen extends BaseMultiListScreen
         x += 19;
         this.macroActionsLabelWidget.setPosition(x + 2, y - 10);
         this.macroActionsListWidget.setPositionAndSize(x, y, w, h);
-
-        this.actionSourceListWidget.refreshEntries();
     }
 
     @Override
