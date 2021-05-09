@@ -19,8 +19,6 @@ import fi.dy.masa.malilib.gui.widget.BaseWidget;
 import fi.dy.masa.malilib.gui.widget.InteractableWidget;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.ScreenContext;
-import fi.dy.masa.malilib.gui.widget.button.BaseButton;
-import fi.dy.masa.malilib.gui.widget.button.ButtonActionListener;
 import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.listener.TextChangeListener;
 import fi.dy.masa.malilib.render.RenderUtils;
@@ -63,7 +61,6 @@ public abstract class BaseScreen extends GuiScreen
     protected final Minecraft mc = Minecraft.getMinecraft();
     protected final TextRenderer textRenderer = TextRenderer.INSTANCE;
     protected final List<Runnable> tasks = new ArrayList<>();
-    private final List<BaseButton> buttons = new ArrayList<>();
     private final List<InteractableWidget> widgets = new ArrayList<>();
     private String titleString = "";
     @Nullable protected StyledTextLine titleText;
@@ -96,17 +93,6 @@ public abstract class BaseScreen extends GuiScreen
     {
         int customScale = MaLiLibConfigs.Generic.CUSTOM_SCREEN_SCALE.getIntegerValue();
         this.useCustomScreenScaling = customScale != this.mc.gameSettings.guiScale && customScale > 0;
-    }
-
-    public BaseScreen setParent(@Nullable GuiScreen parent)
-    {
-        // Don't allow nesting the GUI with itself...
-        if (parent == null || parent.getClass() != this.getClass())
-        {
-            this.parent = parent;
-        }
-
-        return this;
     }
 
     public int getX()
@@ -157,6 +143,17 @@ public abstract class BaseScreen extends GuiScreen
             this.titleString = StringUtils.translate(titleKey, args);
             this.titleText = StyledTextLine.of(this.getTitleString());
         }
+    }
+
+    public BaseScreen setParent(@Nullable GuiScreen parent)
+    {
+        // Don't allow nesting the GUI with itself...
+        if (parent == null || parent.getClass() != this.getClass())
+        {
+            this.parent = parent;
+        }
+
+        return this;
     }
 
     public void setShouldRenderParent(boolean render)
@@ -358,9 +355,7 @@ public abstract class BaseScreen extends GuiScreen
 
     protected InteractableWidget getTopHoveredWidget(int mouseX, int mouseY, @Nullable InteractableWidget highestFoundWidget)
     {
-        highestFoundWidget = InteractableWidget.getTopHoveredWidgetFromList(this.buttons, mouseX, mouseY, highestFoundWidget);
-        highestFoundWidget = InteractableWidget.getTopHoveredWidgetFromList(this.widgets, mouseX, mouseY, highestFoundWidget);
-        return highestFoundWidget;
+        return InteractableWidget.getTopHoveredWidgetFromList(this.widgets, mouseX, mouseY, highestFoundWidget);
     }
 
     protected void updateTopHoveredWidget(int mouseX, int mouseY, boolean isActiveGui)
@@ -546,19 +541,6 @@ public abstract class BaseScreen extends GuiScreen
             }
         }
 
-        // Any widget didn't handle the click yet
-        if (clickedWidget == null)
-        {
-            for (BaseButton button : this.buttons)
-            {
-                if (button.tryMouseClick(mouseX, mouseY, mouseButton))
-                {
-                    clickedWidget = button;
-                    break;
-                }
-            }
-        }
-
         this.runTasks();
 
         // Only call super if the click wasn't handled
@@ -598,16 +580,6 @@ public abstract class BaseScreen extends GuiScreen
         }
 
         boolean handled = false;
-
-        for (BaseButton button : this.buttons)
-        {
-            if (button.tryMouseScroll(mouseX, mouseY, mouseWheelDelta))
-            {
-                // Don't call super if the button press got handled
-                handled = true;
-                break;
-            }
-        }
 
         for (InteractableWidget widget : this.widgets)
         {
@@ -748,11 +720,6 @@ public abstract class BaseScreen extends GuiScreen
         this.zLevel = zLevel;
         int parentZLevel = (int) this.zLevel;
 
-        for (InteractableWidget widget : this.buttons)
-        {
-            widget.setZLevelBasedOnParent(parentZLevel);
-        }
-
         for (InteractableWidget widget : this.widgets)
         {
             widget.setZLevelBasedOnParent(parentZLevel);
@@ -769,14 +736,6 @@ public abstract class BaseScreen extends GuiScreen
         }
 
         return this;
-    }
-
-    public <T extends BaseButton> T addButton(T button, ButtonActionListener listener)
-    {
-        button.setActionListener(listener);
-        this.buttons.add(button);
-        button.onWidgetAdded((int) this.zLevel);
-        return button;
     }
 
     public <T extends InteractableWidget> T addWidget(T widget)
@@ -830,17 +789,11 @@ public abstract class BaseScreen extends GuiScreen
     protected void clearElements()
     {
         this.clearWidgets();
-        this.clearButtons();
     }
 
     protected void clearWidgets()
     {
         this.widgets.clear();
-    }
-
-    protected void clearButtons()
-    {
-        this.buttons.clear();
     }
 
     private void addTask(Runnable task)
@@ -893,14 +846,6 @@ public abstract class BaseScreen extends GuiScreen
         if (this.widgets.isEmpty() == false)
         {
             for (InteractableWidget widget : this.widgets)
-            {
-                widget.renderAt(widget.getX(), widget.getY(), widget.getZLevel(), ctx);
-            }
-        }
-
-        if (this.buttons.isEmpty() == false)
-        {
-            for (InteractableWidget widget : this.buttons)
             {
                 widget.renderAt(widget.getX(), widget.getY(), widget.getZLevel(), ctx);
             }
@@ -970,7 +915,6 @@ public abstract class BaseScreen extends GuiScreen
     {
         if (ctx.isActiveScreen)
         {
-            renderWidgetDebug(this.buttons, ctx);
             renderWidgetDebug(this.widgets, ctx);
         }
     }

@@ -49,7 +49,8 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
         {
             ButtonListenerLayerEdit listener = new ButtonListenerLayerEdit(type, layerRange, this);
             GenericButton button = new GenericButton(x, y, -1, 20, type.getDisplayName(layerRange));
-            this.addButton(button, listener);
+            button.setActionListener(listener);
+            this.addWidget(button);
 
             return button.getWidth() + 2;
         }
@@ -123,10 +124,11 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
             String strLabel = "malilib.gui.button.render_layers_gui.follow_player";
             String strHover = "malilib.gui.button.hover.render_layers_gui.follow_player";
             final OnOffButton button = new OnOffButton(origX, y, -1, 20, OnOffStyle.SLIDER_ON_OFF, layerRange::shouldFollowPlayer, strLabel, strHover);
-            this.addButton(button, (btn, mbtn) -> {
+            button.setActionListener((btn, mbtn) -> {
                 layerRange.toggleShouldFollowPlayer();
                 btn.updateDisplayString();
             });
+            this.addWidget(button);
             y += 24;
 
             String label = StringUtils.translate("malilib.gui.label.render_layers.player_follow_offset") + ":";
@@ -139,14 +141,15 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
 
             int bx = textField.getX() + textField.getWidth() + 3;
             GenericButton button2 = GenericButton.createIconOnly(bx, y + 1, this::getValueAdjustButtonIcon);
-
-            this.addButton(button2, (btn, mbtn) -> {
+            button2.setActionListener((btn, mbtn) -> {
                 int change = mbtn == 1 ? -1 : 1;
                 if (BaseScreen.isShiftDown()) { change *= 2; }
                 if (BaseScreen.isCtrlDown())  { change *= 4; }
                 layerRange.setPlayerFollowOffset(layerRange.getPlayerFollowOffset() + change);
                 this.initGui();
             });
+
+            this.addWidget(button2);
         }
 
         return y;
@@ -170,8 +173,9 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
         LayerMode layerMode = layerRange.getLayerMode();
         ButtonListenerChangeValue listener = new ButtonListenerChangeValue(layerMode, layerRange, isSecondValue, this);
         GenericButton button = new GenericButton(x, y + 2, icon);
+        button.setActionListener(listener);
         button.setCanScrollToClick(true);
-        this.addButton(button, listener);
+        this.addWidget(button);
     }
 
     protected static class ButtonListenerLayerEdit implements ButtonActionListener

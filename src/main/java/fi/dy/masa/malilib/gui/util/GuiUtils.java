@@ -29,7 +29,6 @@ import fi.dy.masa.malilib.gui.widget.button.ButtonActionListener;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.util.PositionUtils.CoordinateType;
-import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.position.CoordinateValueModifier;
 
 public class GuiUtils
@@ -123,11 +122,11 @@ public class GuiUtils
 
         if (addButton)
         {
-            String hover = StringUtils.translate("malilib.button.hover.plus_minus_tip");
             GenericButton button = GenericButton.createIconOnly(x, y, () -> DefaultIcons.BTN_PLUSMINUS_16);
             button.setCanScrollToClick(true);
-            button.addHoverStrings(hover);
-            gui.addButton(button, new ButtonListenerCoordinateInput(type, modifier));
+            button.translateAndAddHoverString("malilib.button.hover.plus_minus_tip");
+            button.setActionListener(new ButtonListenerCoordinateInput(type, modifier));
+            gui.addWidget(button);
         }
     }
 
