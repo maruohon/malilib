@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.render;
 import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
 import fi.dy.masa.malilib.gui.BaseScreen;
@@ -19,7 +20,7 @@ public class ItemRenderUtils
         GlStateManager.pushMatrix();
         GlStateManager.translate(x, y, 0);
 
-        if (scale != 0f)
+        if (scale != 1f)
         {
             GlStateManager.scale(scale, scale, 1f);
         }
@@ -27,17 +28,19 @@ public class ItemRenderUtils
         GlStateManager.disableLighting();
         RenderUtils.enableGuiItemLighting();
 
-        float oldZ = mc.getRenderItem().zLevel;
+        RenderItem itemRenderer = mc.getRenderItem();
+        float oldZ = itemRenderer.zLevel;
+
         // Compensate for the extra z increments done in the RenderItem class.
         // The RenderItem essentially increases the z-level by 149.5, but if we
         // take all of that out, then the back side of the models already goes behind
         // the requested z-level.
         // -145 seems to work pretty well for things like boats where the issue occurs first,
         // but carpets actually need around -143 to not clip the back corner.
-        mc.getRenderItem().zLevel = z - 142f;
-        mc.getRenderItem().renderItemAndEffectIntoGUI(mc.player, stack, 0, 0);
-        mc.getRenderItem().renderItemOverlayIntoGUI(mc.fontRenderer, stack, 0, 0, null);
-        mc.getRenderItem().zLevel = oldZ;
+        itemRenderer.zLevel = z - 142f;
+        itemRenderer.renderItemAndEffectIntoGUI(mc.player, stack, 0, 0);
+        itemRenderer.renderItemOverlayIntoGUI(mc.fontRenderer, stack, 0, 0, null);
+        itemRenderer.zLevel = oldZ;
 
         //GlStateManager.disableBlend();
         RenderUtils.disableItemLighting();

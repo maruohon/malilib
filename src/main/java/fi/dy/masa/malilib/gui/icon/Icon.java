@@ -95,6 +95,32 @@ public interface Icon
     }
 
     /**
+     * Renders this icon at the given position, with a tint color
+     */
+    default void renderTintedAt(int x, int y, float z, int backgroundTintColor)
+    {
+        int width = this.getWidth();
+        int height = this.getHeight();
+
+        if (width == 0 || height == 0)
+        {
+            return;
+        }
+
+        int u = this.getU();
+        int v = this.getV();
+        float pw = this.getTexturePixelWidth();
+        float ph = this.getTexturePixelHeight();
+
+        RenderUtils.color(1f, 1f, 1f, 1f);
+        RenderUtils.bindTexture(this.getTexture());
+        RenderUtils.setupBlend();
+
+        ShapeRenderUtils.renderScaledTintedTexturedRectangle(x, y, z, u, v, width, height,
+                                                             width, height, pw, ph, backgroundTintColor);
+    }
+
+    /** 
      * Renders a composite (smaller) icon by using a rectangular area
      * of each of the 4 corners of the texture. The width and height
      * arguments define what size texture is going to be rendered.

@@ -3,7 +3,6 @@ package fi.dy.masa.malilib.render;
 import java.util.List;
 import javax.annotation.Nullable;
 import org.lwjgl.opengl.GL11;
-import net.minecraft.block.BlockShulkerBox;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -20,26 +19,22 @@ import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.EnumDyeColor;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemMap;
-import net.minecraft.item.ItemShulkerBox;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.storage.MapData;
 import fi.dy.masa.malilib.gui.BaseScreen;
+import fi.dy.masa.malilib.gui.icon.Icon;
+import fi.dy.masa.malilib.gui.icon.PositionedIcon;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
-import fi.dy.masa.malilib.render.overlay.InventoryOverlay;
 import fi.dy.masa.malilib.util.PositionUtils;
 import fi.dy.masa.malilib.util.PositionUtils.HitPart;
 import fi.dy.masa.malilib.util.data.Color4f;
-import fi.dy.masa.malilib.util.inventory.InventoryUtils;
+import fi.dy.masa.malilib.util.data.Vec2i;
 
 public class RenderUtils
 {
@@ -178,6 +173,30 @@ public class RenderUtils
             buffer.pos(x        , y         , z).tex(u1, v1).endVertex();
 
             drawBuffer();
+        }
+    }
+
+    /**
+     * Renders the given list of icons at their relative positions.
+     * If the tintColor is not 0xFFFFFFFF, then the icons will be tinted/colored.
+     */
+    public static void renderPositionedIcons(int x, int y, float z, int tintColor, List<PositionedIcon> icons)
+    {
+        for (PositionedIcon posIcon : icons)
+        {
+            Vec2i position = posIcon.pos;
+            Icon icon = posIcon.icon;
+            int posX = x + position.x;
+            int posY = y + position.y;
+
+            if (tintColor == 0xFFFFFFFF)
+            {
+                icon.renderAt(posX, posY, z);
+            }
+            else
+            {
+                icon.renderTintedAt(posX, posY, z, tintColor);
+            }
         }
     }
 
@@ -515,88 +534,6 @@ public class RenderUtils
             GlStateManager.enableLighting();
             GlStateManager.popMatrix();
 
-            color(1f, 1f, 1f, 1f);
-        }
-    }
-
-    public static void renderItemInventoryPreview(ItemStack stack, int mouseX, int mouseY,
-                                                  boolean useShulkerBackgroundColor)
-    {
-        if (stack.hasTagCompound())
-        {
-            NonNullList<ItemStack> items = InventoryUtils.getStoredItemsExact(stack, -1);
-
-            if (items.size() == 0)
-            {
-                return;
-            }
-
-            GlStateManager.pushMatrix();
-            disableItemLighting();
-            GlStateManager.translate(0F, 0F, 300F);
-
-            InventoryOverlay.InventoryRenderType type = InventoryOverlay.getInventoryType(stack);
-            InventoryOverlay.InventoryProperties props = InventoryOverlay.getInventoryPropsTemp(type, items.size());
-
-            int screenWidth = GuiUtils.getScaledWindowWidth();
-            int screenHeight = GuiUtils.getScaledWindowHeight();
-            int z = 0;
-            int x = mouseX + 8;
-            int y = Math.max(mouseY - (props.height + 18), 2);
-
-            if (x + props.width + 2 > screenWidth)
-            {
-                x = Math.max(x - props.width - 16, 2);
-            }
-
-            if (y + props.height + 2 > screenHeight)
-            {
-                y = screenHeight - props.height - 2;
-            }
-
-            if (stack.getItem() instanceof ItemShulkerBox)
-            {
-                setShulkerBoxBackgroundTintColor((BlockShulkerBox) ((ItemBlock) stack.getItem()).getBlock(), useShulkerBackgroundColor);
-            }
-            else
-            {
-                color(1f, 1f, 1f, 1f);
-            }
-
-            InventoryOverlay.renderInventoryBackground(type, x, y, z, props.slotsPerRow, items.size());
-
-            enableGuiItemLighting();
-            GlStateManager.enableDepth();
-            GlStateManager.enableRescaleNormal();
-
-            IInventory inv = InventoryUtils.getAsInventory(items);
-            InventoryOverlay.renderInventoryStacks(type, inv, x + props.slotOffsetX, y + props.slotOffsetY, z + 1, props.slotsPerRow, 0, -1, mc());
-
-            GlStateManager.disableDepth();
-            GlStateManager.popMatrix();
-
-            color(1f, 1f, 1f, 1f);
-        }
-    }
-
-    /**
-     * Calls RenderUtils.color() with the dye color of the provided shulker box block's color
-     * @param block
-     * @param useBgColors
-     */
-    public static void setShulkerBoxBackgroundTintColor(@Nullable BlockShulkerBox block, boolean useBgColors)
-    {
-        // In 1.13+ there is the separate uncolored Shulker Box variant,
-        // which returns null from getColor().
-        // In that case don't tint the background.
-        if (useBgColors && block != null && block.getColor() != null)
-        {
-            final EnumDyeColor dye = block.getColor();
-            final float[] colors = dye.getColorComponentValues();
-            color(colors[0], colors[1], colors[2], 1f);
-        }
-        else
-        {
             color(1f, 1f, 1f, 1f);
         }
     }

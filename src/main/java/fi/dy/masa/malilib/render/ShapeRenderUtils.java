@@ -207,6 +207,59 @@ public class ShapeRenderUtils
         buffer.pos(x        , y         , z).tex(u                  * pixelWidth, v                   * pixelHeight).endVertex();
     }
 
+    /**
+     * Renders a possibly scaled/stretched textured rectangle with a tint color, from a custom sized texture sheet.
+     * The sheet size is indicated by the pixelWidth and pixelHeight arguments, which are the
+     * relative width and height of one pixel on the sheet.
+     * The width and height parameters are the rendered size of the rectangle/texture, whereas the
+     * textureWidth and textureHeight parameters define which region of the texture sheet is used.
+     */
+    public static void renderScaledTintedTexturedRectangle(float x, float y, float z, int u, int v,
+                                                           int width, int height,
+                                                           int textureWidth, int textureHeight,
+                                                           float pixelWidth, float pixelHeight,
+                                                           int backgroundTintColor)
+    {
+        BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR, true);
+
+        renderScaledTintedTexturedRectangle(x, y, z, u, v, width, height, textureWidth, textureHeight,
+                                            pixelWidth, pixelHeight, backgroundTintColor, buffer);
+
+        RenderUtils.drawBuffer();
+    }
+
+    /**
+     * Renders a possibly scaled/stretched textured rectangle with a tint color, from a custom sized texture sheet.
+     * The sheet size is indicated by the pixelWidth and pixelHeight arguments, which are the
+     * relative width and height of one pixel on the sheet.
+     * The width and height parameters are the rendered size of the rectangle/texture, whereas the
+     * textureWidth and textureHeight parameters define which region of the texture sheet is used.
+     * Takes in a BufferBuilder initialized in GL_QUADS, POSITION_TEX_COLOR mode
+     */
+    public static void renderScaledTintedTexturedRectangle(float x, float y, float z, int u, int v,
+                                                           int width, int height,
+                                                           int textureWidth, int textureHeight,
+                                                           float pixelWidth, float pixelHeight,
+                                                           int backgroundTintColor, BufferBuilder buffer)
+    {
+        float a = (float) (backgroundTintColor >>> 24 & 0xFF) / 255.0F;
+        float r = (float) (backgroundTintColor >>> 16 & 0xFF) / 255.0F;
+        float g = (float) (backgroundTintColor >>>  8 & 0xFF) / 255.0F;
+        float b = (float) (backgroundTintColor & 0xFF) / 255.0F;
+
+        float x2 = x + width;
+        float y2 = y + height;
+        float u1 = u                  * pixelWidth;
+        float u2 = (u + textureWidth) * pixelWidth;
+        float v1 = v                   * pixelHeight;
+        float v2 = (v + textureHeight) * pixelHeight;
+
+        buffer.pos(x , y2, z).tex(u1, v2).color(r, g, b, a).endVertex();
+        buffer.pos(x2, y2, z).tex(u2, v2).color(r, g, b, a).endVertex();
+        buffer.pos(x2, y , z).tex(u2, v1).color(r, g, b, a).endVertex();
+        buffer.pos(x , y , z).tex(u1, v1).color(r, g, b, a).endVertex();
+    }
+
     public static void renderGradientRectangle(float left, float top, float right, float bottom, float z,
                                                int startColor, int endColor)
     {

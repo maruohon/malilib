@@ -1,9 +1,9 @@
 package fi.dy.masa.malilib.gui.position;
 
-import java.util.function.ToIntFunction;
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.config.value.BaseOptionListConfigValue;
 import fi.dy.masa.malilib.gui.widget.BaseWidget;
+import fi.dy.masa.malilib.util.Int2IntFunction;
 
 public class VerticalAlignment extends BaseOptionListConfigValue
 {
@@ -13,10 +13,11 @@ public class VerticalAlignment extends BaseOptionListConfigValue
 
     public static final ImmutableList<VerticalAlignment> VALUES = ImmutableList.of(TOP, BOTTOM, CENTER);
 
-    protected final ToIntFunction<Integer> yOffsetSource;
+    protected final Int2IntFunction yOffsetSource;
     protected final StartYPositionSource startYPositionSource;
 
-    public VerticalAlignment(String name, String translationKey, ToIntFunction<Integer> yOffsetSource, StartYPositionSource startYPositionSource)
+    public VerticalAlignment(String name, String translationKey,
+                             Int2IntFunction yOffsetSource, StartYPositionSource startYPositionSource)
     {
         super(name, translationKey);
 
@@ -40,9 +41,9 @@ public class VerticalAlignment extends BaseOptionListConfigValue
         return this == TOP ? margin.getTop() : (this == BOTTOM ? margin.getBottom() : 0);
     }
 
-    public int getYStartOffset(int contentHeight)
+    public int getYStartOffsetForEdgeAlignment(int contentHeight)
     {
-        return this.yOffsetSource.applyAsInt(contentHeight);
+        return this.yOffsetSource.apply(contentHeight);
     }
 
     public interface StartYPositionSource

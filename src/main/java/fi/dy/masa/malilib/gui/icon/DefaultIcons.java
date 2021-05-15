@@ -65,4 +65,30 @@ public class DefaultIcons
     public static final BaseMultiIcon BUTTON_BACKGROUND             = new BaseMultiIcon( 56, 196, 200, 20, 0, 20);
 
     public static final BaseIcon TOAST_BACKGROUND                   = new BaseIcon(0, 0, 256, 128, StringUtils.identifier(MaLiLibReference.MOD_ID, "textures/gui/toasts.png"));
+
+    public static final BaseIcon INV_BACKGROUND_EMPTY_13_X_13       = new BaseIcon(  0,   0, 248, 248, StringUtils.identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_empty_13x13.png"));
+    public static final BaseIcon INV_BACKGROUND_GENERIC_54          = new BaseIcon(  0,   0, 176, 122, StringUtils.identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_generic_54.png"));
+
+    public static final BaseIcon INV_BACKGROUND_BREWING_STAND       = new BaseIcon(128, 183, 117,  73, StringUtils.identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png"));
+    public static final BaseIcon INV_BACKGROUND_DROPPER             = new BaseIcon(176,   0,  68,  68, StringUtils.identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png"));
+    public static final BaseIcon INV_BACKGROUND_FURNACE             = new BaseIcon(  0, 188,  96,  68, StringUtils.identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png"));
+    public static final BaseIcon INV_BACKGROUND_GENERIC_27          = new BaseIcon(  0,   0, 176,  68, StringUtils.identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png"));
+    public static final BaseIcon INV_BACKGROUND_HOPPER              = new BaseIcon(  0,  68, 104,  32, StringUtils.identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png"));
+    public static final BaseIcon INV_BACKGROUND_HORSE_EQUIPMENT     = new BaseIcon( 96, 206,  32,  50, StringUtils.identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png"));
+    public static final BaseIcon INV_BACKGROUND_HORSE_INVENTORY     = new BaseIcon(103, 102, 105,  68, StringUtils.identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png"));
+    public static final BaseIcon INV_BACKGROUND_LIVING_ENTITY       = new BaseIcon(  0, 102,  53,  86, StringUtils.identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png"));
+    public static final BaseIcon INV_BACKGROUND_VILLAGER_INV        = new BaseIcon( 53, 102,  50,  86, StringUtils.identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png"));
+
+    public static final BaseIcon INV_BACKGROUND_14_SLOTS_HORIZONTAL = new BaseIcon(  4, 238, 252,  18, StringUtils.identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_generic_54.png"));
+    public static final BaseIcon INV_BACKGROUND_14_SLOTS_VERTICAL   = new BaseIcon(238,   4,  18, 252, StringUtils.identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_generic_54.png"));
+
+    public static final BaseIcon INV_SLOT_EQUIPMENT_ARMOR_HEAD      = new BaseIcon(104,  68,  18,  18, StringUtils.identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png"));
+    public static final BaseIcon INV_SLOT_EQUIPMENT_ARMOR_CHEST     = new BaseIcon(122,  68,  18,  18, StringUtils.identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png"));
+    public static final BaseIcon INV_SLOT_EQUIPMENT_ARMOR_LEGS      = new BaseIcon(140,  68,  18,  18, StringUtils.identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png"));
+    public static final BaseIcon INV_SLOT_EQUIPMENT_ARMOR_BOOTS     = new BaseIcon(158,  68,  18,  18, StringUtils.identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png"));
+    public static final BaseIcon INV_SLOT_EQUIPMENT_SHIELD          = new BaseIcon(176,  68,  18,  18, StringUtils.identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png"));
+
+    public static final BaseIcon INV_SLOT_HORSE_ARMOR               = new BaseIcon(194,  68,  18,  18, StringUtils.identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png"));
+    public static final BaseIcon INV_SLOT_HORSE_SADDLE              = new BaseIcon(212,  68,  18,  18, StringUtils.identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png"));
+    public static final BaseIcon INV_SLOT_LLAMA_CARPET              = new BaseIcon(230,  68,  18,  18, StringUtils.identifier(MaLiLibReference.MOD_ID, "textures/gui/inventory_background_misc.png"));
 }

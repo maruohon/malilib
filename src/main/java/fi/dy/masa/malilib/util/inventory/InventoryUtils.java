@@ -1,13 +1,14 @@
 package fi.dy.masa.malilib.util.inventory;
 
 import java.util.List;
+import java.util.function.Consumer;
+import org.apache.commons.lang3.tuple.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.ContainerPlayer;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -21,8 +22,6 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
 public class InventoryUtils
 {
-    private static final NonNullList<ItemStack> EMPTY_LIST = NonNullList.create();
-
     /**
      * Check whether the stacks are identical otherwise, but ignoring the stack size
      */
@@ -347,15 +346,29 @@ public class InventoryUtils
         return NonNullList.create();
     }
 
-    /**
-     * Returns the list of items currently stored in the given Shulker Box
-     * (or other storage item with the same NBT data structure).
-     * Preserves empty slots.
-     * @param slotCount the maximum number of slots, and thus also the size of the list to create
-     */
-    public static NonNullList<ItemStack> getStoredItemsExact(ItemStack stackIn, int slotCount)
+    public static InventoryView getExactStoredItemsView(ItemStack stackIn)
     {
-        NBTTagCompound nbt = stackIn.getTagCompound();
+        ListBackedInventoryView inv = new ListBackedInventoryView();
+        readStoredItems(stackIn, (pair) -> inv.setStackInSlot(pair.getKey(), pair.getValue()));
+        return inv;
+    }
+
+    public static InventoryView getNonEmptyStoredItemsView(ItemStack stackIn)
+    {
+        ListBackedInventoryView inv = new ListBackedInventoryView();
+        readStoredItems(stackIn, (pair) -> inv.addStack(pair.getValue()));
+        return inv;
+    }
+
+    /* TODO
+    public static InventoryView getCompactedStoredItemsView(ItemStack stackIn)
+    {
+    }
+    */
+
+    public static void readStoredItems(ItemStack containerStack, Consumer<Pair<Integer, ItemStack>> consumer)
+    {
+        NBTTagCompound nbt = containerStack.getTagCompound();
 
         if (nbt != null && nbt.hasKey("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
         {
@@ -365,25 +378,6 @@ public class InventoryUtils
             {
                 NBTTagList tagList = tagBlockEntity.getTagList("Items", Constants.NBT.TAG_COMPOUND);
                 final int count = tagList.tagCount();
-                int maxSlot = -1;
-
-                if (slotCount <= 0)
-                {
-                    for (int i = 0; i < count; ++i)
-                    {
-                        NBTTagCompound tag = tagList.getCompoundTagAt(i);
-                        int slot = tag.getByte("Slot");
-
-                        if (slot > maxSlot)
-                        {
-                            maxSlot = slot;
-                        }
-                    }
-
-                    slotCount = maxSlot + 1;
-                }
-
-                NonNullList<ItemStack> items = NonNullList.withSize(slotCount, ItemStack.EMPTY);
 
                 for (int i = 0; i < count; ++i)
                 {
@@ -391,17 +385,22 @@ public class InventoryUtils
                     ItemStack stack = new ItemStack(tag);
                     int slot = tag.getByte("Slot");
 
-                    if (slot >= 0 && slot < slotCount && stack.isEmpty() == false)
+                    if (slot >= 0 && stack.isEmpty() == false)
                     {
-                        items.set(slot, stack);
+                        consumer.accept(Pair.of(slot, stack));
                     }
                 }
-
-                return items;
             }
         }
+    }
 
-        return EMPTY_LIST;
+    /**
+     * @return a combined view of both inventories appended after each other.
+     * inventory1 will be first, and inventory2 will be appended after it.
+     */
+    public static InventoryView getCombinedInventoryView(InventoryView inventory1, InventoryView inventory2)
+    {
+        return new CombinedInventoryView(inventory1, inventory2);
     }
 
     /**
@@ -455,20 +454,5 @@ public class InventoryUtils
         }
 
         return map;
-    }
-
-    /**
-     * Returns the given list of items wrapped as an InventoryBasic
-     */
-    public static IInventory getAsInventory(NonNullList<ItemStack> items)
-    {
-        InventoryBasic inv = new InventoryBasic("", false, items.size());
-
-        for (int slot = 0; slot < items.size(); ++slot)
-        {
-            inv.setInventorySlotContents(slot, items.get(slot));
-        }
-
-        return inv;
     }
 }
