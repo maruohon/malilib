@@ -11,6 +11,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
@@ -323,5 +324,15 @@ public class BlockUtils
         }
 
         return Collections.emptyList();
+    }
+
+    public static boolean isFluidBlock(IBlockState state)
+    {
+        return state.getMaterial().isLiquid();
+    }
+
+    public static boolean isFluidSourceBlock(IBlockState state)
+    {
+        return state.getBlock() instanceof BlockLiquid && state.getValue(BlockLiquid.LEVEL).intValue() == 0;
     }
 }
