@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.gui.widget;
 import java.util.Arrays;
 import java.util.List;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
+import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.render.text.StringListRenderer;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.text.StyledText;

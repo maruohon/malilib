@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.gui.widget;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.render.ItemRenderUtils;
 import fi.dy.masa.malilib.util.ItemUtils;
 

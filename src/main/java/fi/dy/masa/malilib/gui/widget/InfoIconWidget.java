@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.gui.widget;
 
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
+import fi.dy.masa.malilib.gui.util.ScreenContext;
 
 public class InfoIconWidget extends HoverInfoWidget
 {

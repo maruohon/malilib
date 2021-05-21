@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.gui.widget;
 
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.icon.Icon;
+import fi.dy.masa.malilib.gui.util.ScreenContext;
 
 public class IconWidget extends BackgroundWidget
 {

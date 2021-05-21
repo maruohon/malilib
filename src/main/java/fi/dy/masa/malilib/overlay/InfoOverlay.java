@@ -15,7 +15,7 @@ import fi.dy.masa.malilib.event.PostScreenRenderer;
 import fi.dy.masa.malilib.gui.position.ScreenLocation;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.BaseWidget;
-import fi.dy.masa.malilib.gui.widget.ScreenContext;
+import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.overlay.widget.InfoRendererWidget;
 import fi.dy.masa.malilib.overlay.widget.StringListRendererWidget;
 
@@ -84,12 +84,12 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
                 {
                     this.allEnabledWidgets.add(widget);
 
-                    if (widget.isVisibleInContext(RenderContext.GUI))
+                    if (widget.isVisibleInContext(OverlayRenderContext.GUI))
                     {
                         this.enabledGuiWidgets.add(widget);
                     }
 
-                    if (widget.isVisibleInContext(RenderContext.INGAME))
+                    if (widget.isVisibleInContext(OverlayRenderContext.INGAME))
                     {
                         this.enabledInGameWidgets.add(widget);
                     }
@@ -161,7 +161,7 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
 
             for (InfoRendererWidget widget : this.enabledInGameWidgets)
             {
-                if (widget.shouldRenderFromContext(RenderContext.INGAME, isScreenOpen))
+                if (widget.shouldRenderFromContext(OverlayRenderContext.INGAME, isScreenOpen))
                 {
                     widget.render(ctx);
                 }
@@ -195,7 +195,7 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
 
         for (InfoRendererWidget widget : this.enabledGuiWidgets)
         {
-            if (widget.shouldRenderFromContext(RenderContext.GUI, isScreenOpen))
+            if (widget.shouldRenderFromContext(OverlayRenderContext.GUI, isScreenOpen))
             {
                 widget.render(ctx);
             }
@@ -276,7 +276,7 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
         return widget;
     }
 
-    public enum RenderContext
+    public enum OverlayRenderContext
     {
         INGAME,
         GUI,

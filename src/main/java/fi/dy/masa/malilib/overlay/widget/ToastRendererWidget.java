@@ -10,7 +10,7 @@ import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.ToastRendererWidgetEditScreen;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
-import fi.dy.masa.malilib.gui.widget.ScreenContext;
+import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.overlay.widget.sub.ToastWidget;
 import fi.dy.masa.malilib.render.text.StyledText;
 import fi.dy.masa.malilib.util.JsonUtils;

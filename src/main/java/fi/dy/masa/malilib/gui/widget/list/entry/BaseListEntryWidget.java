@@ -2,7 +2,7 @@ package fi.dy.masa.malilib.gui.widget.list.entry;
 
 import fi.dy.masa.malilib.gui.position.EdgeInt;
 import fi.dy.masa.malilib.gui.widget.ContainerWidget;
-import fi.dy.masa.malilib.gui.widget.ScreenContext;
+import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 
 public class BaseListEntryWidget extends ContainerWidget

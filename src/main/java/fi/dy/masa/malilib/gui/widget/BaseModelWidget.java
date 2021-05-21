@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.gui.widget;
 
+import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 
 public abstract class BaseModelWidget extends BackgroundWidget

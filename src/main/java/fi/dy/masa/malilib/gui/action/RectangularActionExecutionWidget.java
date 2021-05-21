@@ -2,7 +2,7 @@ package fi.dy.masa.malilib.gui.action;
 
 import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.gui.util.DraggedCorner;
-import fi.dy.masa.malilib.gui.widget.ScreenContext;
+import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.MathUtils;

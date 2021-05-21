@@ -1,8 +1,9 @@
-package fi.dy.masa.malilib.gui.widget;
+package fi.dy.masa.malilib.gui.util;
 
 import fi.dy.masa.malilib.MaLiLibConfigs;
+import fi.dy.masa.malilib.render.RenderContext;
 
-public class ScreenContext
+public class ScreenContext extends RenderContext
 {
     public final int mouseX;
     public final int mouseY;

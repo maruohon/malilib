@@ -4,6 +4,7 @@ import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.gui.callback.SliderCallback;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
+import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 
 public class SliderWidget extends InteractableWidget

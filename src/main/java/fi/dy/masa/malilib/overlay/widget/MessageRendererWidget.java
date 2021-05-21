@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.overlay.widget;
 import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.JsonObject;
-import fi.dy.masa.malilib.gui.widget.ScreenContext;
+import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.overlay.message.Message;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.render.text.TextRenderer;

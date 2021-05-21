@@ -12,6 +12,7 @@ import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
+import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.gui.util.TextRegion;
 import fi.dy.masa.malilib.gui.widget.util.TextFieldValidator;
 import fi.dy.masa.malilib.listener.TextChangeListener;

@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.gui.widget;
 
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.position.EdgeInt;
+import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 
