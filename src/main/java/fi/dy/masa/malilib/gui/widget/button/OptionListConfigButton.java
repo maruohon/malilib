@@ -30,7 +30,7 @@ public class OptionListConfigButton extends GenericButton
         this.prefixTranslationKey = prefixTranslationKey;
         this.setHoverTextLineProvider("list_preview", this::getOptionListPreviewHoverString, 100);
 
-        this.setActionListener((btn, mbtn) -> this.cycleValue(mbtn));
+        this.setActionListener(this::cycleValue);
         this.updateDisplayString();
     }
 
@@ -39,7 +39,7 @@ public class OptionListConfigButton extends GenericButton
         this.changeListener = changeListener;
     }
 
-    protected void cycleValue(int mouseButton)
+    protected boolean cycleValue(int mouseButton)
     {
         this.config.cycleValue(mouseButton != 0);
         this.updateDisplayString();
@@ -48,6 +48,8 @@ public class OptionListConfigButton extends GenericButton
         {
             this.changeListener.onEvent();
         }
+
+        return true;
     }
 
     @Override

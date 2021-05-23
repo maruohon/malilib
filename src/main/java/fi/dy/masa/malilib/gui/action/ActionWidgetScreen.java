@@ -16,14 +16,13 @@ import fi.dy.masa.malilib.gui.TextInputScreen;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.position.EdgeInt;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
+import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.CheckBoxWidget;
 import fi.dy.masa.malilib.gui.widget.InfoIconWidget;
 import fi.dy.masa.malilib.gui.widget.IntegerEditWidget;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.MenuEntryWidget;
 import fi.dy.masa.malilib.gui.widget.MenuWidget;
-import fi.dy.masa.malilib.gui.util.ScreenContext;
-import fi.dy.masa.malilib.gui.widget.button.BaseButton;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.button.OnOffButton;
 import fi.dy.masa.malilib.input.ActionResult;
@@ -547,7 +546,7 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
         this.notifyWidgetEdited();
     }
 
-    protected boolean onExportSettings(BaseButton button, int mouseButton)
+    protected boolean onExportSettings(int mouseButton)
     {
         if (mouseButton == 1 && isCtrlDown() && isShiftDown())
         {
@@ -565,7 +564,7 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
         return true;
     }
 
-    protected boolean onImportSettings(BaseButton button, int mouseButton)
+    protected boolean onImportSettings(int mouseButton)
     {
         if (mouseButton == 1 && isCtrlDown() && isShiftDown())
         {

@@ -52,11 +52,13 @@ public abstract class BaseButton extends BackgroundWidget
 
     public BaseButton setActionListener(EventListener actionListener)
     {
-        this.actionListener = (btn, mbtn) -> {
-            if (mbtn == 0)
+        this.actionListener = (btn) -> {
+            if (btn == 0)
             {
                 actionListener.onEvent();
+                return true;
             }
+            return false;
         };
         return this;
     }
@@ -151,18 +153,17 @@ public abstract class BaseButton extends BackgroundWidget
     @Override
     protected boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
-        if (this.enabled && this.visible)
+        if (this.enabled &&
+            this.visible &&
+            this.actionListener != null &&
+            this.actionListener.actionPerformedWithButton(mouseButton))
         {
             if (this.playClickSound)
             {
                 this.mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
             }
 
-            if (this.actionListener != null)
-            {
-                this.actionListener.actionPerformedWithButton(this, mouseButton);
-                this.updateButtonState();
-            }
+            this.updateButtonState();
         }
 
         return true;

@@ -49,7 +49,7 @@ public class ActionListScreen extends BaseMultiListScreen
 
         this.addAliasButton = GenericButton.simple(16, "malilib.gui.button.actions.add_alias", this::openAddAliasScreen);
 
-        this.addMacroButton = GenericButton.simple(16, "malilib.gui.button.actions.add_macro", this::openCreateMacroScreen);
+        this.addMacroButton = GenericButton.simple(16, "malilib.gui.button.actions.add_macro", this::openCreateMacroScreenNameInput);
         this.addMacroButton.translateAndAddHoverString("malilib.gui.hover.action_list_screen.create_macro");
 
         this.actionSourceListWidget = this.createNamedActionListWidget();
@@ -195,7 +195,7 @@ public class ActionListScreen extends BaseMultiListScreen
         }
     }
 
-    protected void openCreateMacroScreen()
+    protected void openCreateMacroScreenNameInput()
     {
         String title = StringUtils.translate("malilib.gui.title.create_macro");
         TextInputScreen screen = new TextInputScreen(title, "", this, this::openCreateMacroScreen);

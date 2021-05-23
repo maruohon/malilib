@@ -3,7 +3,6 @@ package fi.dy.masa.malilib.gui.widget;
 import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.callback.FloatSliderCallback;
-import fi.dy.masa.malilib.gui.widget.button.BaseButton;
 import fi.dy.masa.malilib.util.FloatConsumer;
 import fi.dy.masa.malilib.util.data.RangedFloatStorage;
 
@@ -35,7 +34,7 @@ public class FloatEditWidget extends BaseNumberEditWidget implements RangedFloat
     }
 
     @Override
-    protected void onValueAdjustButtonClick(BaseButton button, int mouseButton)
+    protected boolean onValueAdjustButtonClick(int mouseButton)
     {
         float amount = mouseButton == 1 ? -0.25F : 0.25F;
         if (BaseScreen.isShiftDown()) { amount *= 4.0F; }
@@ -43,6 +42,8 @@ public class FloatEditWidget extends BaseNumberEditWidget implements RangedFloat
 
         this.setFloatValue(this.value + amount);
         this.updateValue();
+
+        return true;
     }
 
     protected void updateValue()

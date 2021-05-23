@@ -3,7 +3,6 @@ package fi.dy.masa.malilib.gui.listener;
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
 import fi.dy.masa.malilib.gui.BaseScreen;
-import fi.dy.masa.malilib.gui.widget.button.BaseButton;
 import fi.dy.masa.malilib.gui.widget.button.ButtonActionListener;
 
 public class IntegerModifierButtonListener implements ButtonActionListener
@@ -29,7 +28,7 @@ public class IntegerModifierButtonListener implements ButtonActionListener
     }
 
     @Override
-    public void actionPerformedWithButton(BaseButton button, int mouseButton)
+    public boolean actionPerformedWithButton(int mouseButton)
     {
         int amount = mouseButton == 1 ? -1 : 1;
 
@@ -38,5 +37,7 @@ public class IntegerModifierButtonListener implements ButtonActionListener
         if (BaseScreen.isAltDown())   { amount *= this.modifierAlt; }
 
         this.consumer.accept(this.supplier.getAsInt() + amount);
+
+        return true;
     }
 }

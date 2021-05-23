@@ -24,7 +24,6 @@ import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.DoubleTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.IntegerTextFieldWidget;
-import fi.dy.masa.malilib.gui.widget.button.BaseButton;
 import fi.dy.masa.malilib.gui.widget.button.ButtonActionListener;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.listener.EventListener;
@@ -353,13 +352,15 @@ public class GuiUtils
         }
 
         @Override
-        public void actionPerformedWithButton(BaseButton button, int mouseButton)
+        public boolean actionPerformedWithButton(int mouseButton)
         {
             int amount = mouseButton == 1 ? -1 : 1;
             if (BaseScreen.isShiftDown()) { amount *= 8; }
             if (BaseScreen.isAltDown())   { amount *= 4; }
 
             this.modifier.modifyValue(this.type, amount);
+
+            return true;
         }
 
         public enum Type

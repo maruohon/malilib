@@ -8,7 +8,6 @@ import fi.dy.masa.malilib.gui.listener.IntegerTextFieldListener;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.CheckBoxWidget;
 import fi.dy.masa.malilib.gui.widget.IntegerTextFieldWidget;
-import fi.dy.masa.malilib.gui.widget.button.BaseButton;
 import fi.dy.masa.malilib.gui.widget.button.ButtonActionListener;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.button.OnOffButton;
@@ -127,9 +126,9 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
             String strHover = "malilib.gui.button.hover.render_layers_gui.follow_player";
             final OnOffButton button = new OnOffButton(-1, 20, OnOffStyle.SLIDER_ON_OFF, layerRange::shouldFollowPlayer, strLabel, strHover);
             button.setPosition(origX, y);
-            button.setActionListener((btn, mbtn) -> {
+            button.setActionListener((btn) -> {
                 layerRange.toggleShouldFollowPlayer();
-                btn.updateDisplayString();
+                return true;
             });
             this.addWidget(button);
             y += 24;
@@ -146,12 +145,13 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
             int bx = textField.getX() + textField.getWidth() + 3;
             GenericButton button2 = GenericButton.createIconOnly(this::getValueAdjustButtonIcon);
             button2.setPosition(bx, y + 1);
-            button2.setActionListener((btn, mbtn) -> {
-                int change = mbtn == 1 ? -1 : 1;
+            button2.setActionListener((btn) -> {
+                int change = btn == 1 ? -1 : 1;
                 if (BaseScreen.isShiftDown()) { change *= 2; }
                 if (BaseScreen.isCtrlDown())  { change *= 4; }
                 layerRange.setPlayerFollowOffset(layerRange.getPlayerFollowOffset() + change);
                 this.initGui();
+                return true;
             });
 
             this.addWidget(button2);
@@ -198,7 +198,7 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
         }
 
         @Override
-        public void actionPerformedWithButton(BaseButton button, int mouseButton)
+        public boolean actionPerformedWithButton(int mouseButton)
         {
             if (this.type == Type.MODE)
             {
@@ -217,6 +217,8 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
             }
 
             this.parent.initGui();
+
+            return true;
         }
 
         public enum Type
@@ -263,7 +265,7 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
         }
 
         @Override
-        public void actionPerformedWithButton(BaseButton button, int mouseButton)
+        public boolean actionPerformedWithButton(int mouseButton)
         {
             int change = mouseButton == 1 ? -1 : 1;
 
@@ -294,6 +296,8 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
             }
 
             this.parent.updateTextFieldValues(this.layerRange);
+
+            return true;
         }
     }
 

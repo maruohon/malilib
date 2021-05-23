@@ -4,7 +4,6 @@ import java.util.function.IntConsumer;
 import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.callback.IntegerSliderCallback;
-import fi.dy.masa.malilib.gui.widget.button.BaseButton;
 import fi.dy.masa.malilib.util.data.RangedIntegerStorage;
 
 public class IntegerEditWidget extends BaseNumberEditWidget implements RangedIntegerStorage
@@ -35,7 +34,7 @@ public class IntegerEditWidget extends BaseNumberEditWidget implements RangedInt
     }
 
     @Override
-    protected void onValueAdjustButtonClick(BaseButton button, int mouseButton)
+    protected boolean onValueAdjustButtonClick(int mouseButton)
     {
         int amount = mouseButton == 1 ? -1 : 1;
         if (BaseScreen.isShiftDown()) { amount *= 8; }
@@ -43,6 +42,8 @@ public class IntegerEditWidget extends BaseNumberEditWidget implements RangedInt
 
         this.setIntegerValue(this.value + amount);
         this.updateValue();
+
+        return true;
     }
 
     protected void updateValue()

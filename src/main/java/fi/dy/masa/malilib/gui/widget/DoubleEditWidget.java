@@ -4,7 +4,6 @@ import java.util.function.DoubleConsumer;
 import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.callback.DoubleSliderCallback;
-import fi.dy.masa.malilib.gui.widget.button.BaseButton;
 import fi.dy.masa.malilib.util.data.RangedDoubleStorage;
 
 public class DoubleEditWidget extends BaseNumberEditWidget implements RangedDoubleStorage
@@ -35,7 +34,7 @@ public class DoubleEditWidget extends BaseNumberEditWidget implements RangedDoub
     }
 
     @Override
-    protected void onValueAdjustButtonClick(BaseButton button, int mouseButton)
+    protected boolean onValueAdjustButtonClick(int mouseButton)
     {
         double amount = mouseButton == 1 ? -0.25 : 0.25;
         if (BaseScreen.isShiftDown()) { amount *= 4.0; }
@@ -43,6 +42,8 @@ public class DoubleEditWidget extends BaseNumberEditWidget implements RangedDoub
 
         this.setDoubleValue(this.value + amount);
         this.updateValue();
+
+        return true;
     }
 
     protected void updateValue()

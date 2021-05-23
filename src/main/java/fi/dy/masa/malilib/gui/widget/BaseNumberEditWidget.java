@@ -1,7 +1,8 @@
 package fi.dy.masa.malilib.gui.widget;
 
+import java.util.function.Supplier;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
-import fi.dy.masa.malilib.gui.widget.button.BaseButton;
+import fi.dy.masa.malilib.gui.icon.MultiIcon;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.util.StringUtils;
 
@@ -20,7 +21,8 @@ public abstract class BaseNumberEditWidget extends ContainerWidget
     {
         super(width, height);
 
-        this.sliderToggleButton = GenericButton.createIconOnly(() -> this.sliderActive ? DefaultIcons.BTN_TXTFIELD : DefaultIcons.BTN_SLIDER);
+        Supplier<MultiIcon> supplier = () -> this.sliderActive ? DefaultIcons.BTN_TXTFIELD : DefaultIcons.BTN_SLIDER;
+        this.sliderToggleButton = GenericButton.createIconOnly(supplier);
         this.sliderToggleButton.setActionListener(this::toggleSliderActive);
 
         this.valueAdjustButton = GenericButton.createIconOnly(DefaultIcons.BTN_PLUSMINUS_16);
@@ -137,5 +139,5 @@ public abstract class BaseNumberEditWidget extends ContainerWidget
 
     protected abstract SliderWidget createSliderWidget();
 
-    protected abstract void onValueAdjustButtonClick(BaseButton button, int mouseButton);
+    protected abstract boolean onValueAdjustButtonClick(int mouseButton);
 }

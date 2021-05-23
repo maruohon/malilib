@@ -1,14 +1,14 @@
 package fi.dy.masa.malilib.gui.widget.list.entry;
 
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
-import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
+import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.button.ButtonActionListener;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
@@ -246,7 +246,7 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
         return Math.max(0, Math.min(size, index));
     }
 
-    protected void insertEntryAfter()
+    protected boolean insertEntryAfter()
     {
         DATATYPE entry = this.getNewDataEntry();
 
@@ -256,10 +256,13 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
             this.dataList.add(index, entry);
             this.listWidget.reCreateListEntryWidgets();
             this.listWidget.focusWidget(index);
+            return  true;
         }
+
+        return false;
     }
 
-    protected void removeEntry()
+    protected boolean removeEntry()
     {
         final int size = this.dataList.size();
 
@@ -267,20 +270,23 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
         {
             this.dataList.remove(this.originalListIndex);
             this.listWidget.reCreateListEntryWidgets();
+            return true;
         }
+
+        return false;
     }
 
-    protected void moveEntryDown()
+    protected boolean moveEntryDown()
     {
-        this.moveEntry(this.originalListIndex + 1);
+        return this.moveEntry(this.originalListIndex + 1);
     }
 
-    protected void moveEntryUp()
+    protected boolean moveEntryUp()
     {
-        this.moveEntry(this.originalListIndex - 1);
+        return this.moveEntry(this.originalListIndex - 1);
     }
 
-    protected void moveEntry(int newIndex)
+    protected boolean moveEntry(int newIndex)
     {
         List<DATATYPE> list = this.dataList;
         final int size = list.size();
@@ -294,7 +300,10 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
             list.add(newIndex, entry);
 
             this.listWidget.reCreateListEntryWidgets();
+            return true;
         }
+
+        return false;
     }
 
     protected boolean canBeMoved(boolean down)
@@ -359,9 +368,9 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
         MOVE_DOWN   ("malilib.gui.button.hover.list.move_down", BaseOrderableListEditEntryWidget::moveEntryDown);
 
         protected final String translationKey;
-        protected final Consumer<BaseOrderableListEditEntryWidget<?>> action;
+        protected final Function<BaseOrderableListEditEntryWidget<?>, Boolean> action;
 
-        ButtonType(String translationKey, Consumer<BaseOrderableListEditEntryWidget<?>> action)
+        ButtonType(String translationKey, Function<BaseOrderableListEditEntryWidget<?>, Boolean> action)
         {
             this.translationKey = translationKey;
             this.action = action;
@@ -374,7 +383,7 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
 
         public ButtonActionListener createListener(final BaseOrderableListEditEntryWidget<?> widget)
         {
-            return (btn, mbtn) -> this.action.accept(widget);
+            return (btn) -> this.action.apply(widget);
         }
     }
 }

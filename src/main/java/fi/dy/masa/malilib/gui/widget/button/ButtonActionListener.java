@@ -4,8 +4,8 @@ public interface ButtonActionListener
 {
     /**
      * Called when a button is clicked with the mouse
-     * @param button
      * @param mouseButton
+     * @return true if the action was successful
      */
-    void actionPerformedWithButton(BaseButton button, int mouseButton);
+    boolean actionPerformedWithButton(int mouseButton);
 }
