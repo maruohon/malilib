@@ -17,10 +17,9 @@ public class EdgeIntEditWidget extends ContainerWidget
     protected final int widgetWidth;
     protected final int widgetHeight;
 
-    public EdgeIntEditWidget(int x, int y, int width, int height, EdgeInt value,
-                             boolean isColor, @Nullable String centerText)
+    public EdgeIntEditWidget(int width, int height, EdgeInt value, boolean isColor, @Nullable String centerText)
     {
-        super(x, y, width, height);
+        super(width, height);
 
         this.value = value;
         this.centerText = centerText != null ? StyledTextLine.translate(centerText) : null;
@@ -32,19 +31,19 @@ public class EdgeIntEditWidget extends ContainerWidget
 
         if (isColor)
         {
-            this.topEdgeEditorWidget    = new ColorEditorWidget(0, 0, ww, wh, value::getTop,    value::setTop);
-            this.rightEdgeEditorWidget  = new ColorEditorWidget(0, 0, ww, wh, value::getRight,  value::setRight);
-            this.bottomEdgeEditorWidget = new ColorEditorWidget(0, 0, ww, wh, value::getBottom, value::setBottom);
-            this.leftEdgeEditorWidget   = new ColorEditorWidget(0, 0, ww, wh, value::getLeft,   value::setLeft);
+            this.topEdgeEditorWidget    = new ColorEditorWidget(ww, wh, value::getTop,    value::setTop);
+            this.rightEdgeEditorWidget  = new ColorEditorWidget(ww, wh, value::getRight,  value::setRight);
+            this.bottomEdgeEditorWidget = new ColorEditorWidget(ww, wh, value::getBottom, value::setBottom);
+            this.leftEdgeEditorWidget   = new ColorEditorWidget(ww, wh, value::getLeft,   value::setLeft);
         }
         else
         {
             int min = 0;
             int max = 4096;
-            this.topEdgeEditorWidget    = new IntegerEditWidget(0, 0, ww, wh, value.getTop(),    min, max, value::setTop);
-            this.rightEdgeEditorWidget  = new IntegerEditWidget(0, 0, ww, wh, value.getRight(),  min, max, value::setRight);
-            this.bottomEdgeEditorWidget = new IntegerEditWidget(0, 0, ww, wh, value.getBottom(), min, max, value::setBottom);
-            this.leftEdgeEditorWidget   = new IntegerEditWidget(0, 0, ww, wh, value.getLeft(),   min, max, value::setLeft);
+            this.topEdgeEditorWidget    = new IntegerEditWidget(ww, wh, value.getTop(),    min, max, value::setTop);
+            this.rightEdgeEditorWidget  = new IntegerEditWidget(ww, wh, value.getRight(),  min, max, value::setRight);
+            this.bottomEdgeEditorWidget = new IntegerEditWidget(ww, wh, value.getBottom(), min, max, value::setBottom);
+            this.leftEdgeEditorWidget   = new IntegerEditWidget(ww, wh, value.getLeft(),   min, max, value::setLeft);
         }
     }
 

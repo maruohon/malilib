@@ -16,14 +16,14 @@ public abstract class BaseNumberEditWidget extends ContainerWidget
     protected boolean sliderActive;
     protected boolean useValueAdjustButton = true;
 
-    public BaseNumberEditWidget(int x, int y, int width, int height)
+    public BaseNumberEditWidget(int width, int height)
     {
-        super(x, y, width, height);
+        super(width, height);
 
-        this.sliderToggleButton = GenericButton.createIconOnly(0, 0, () -> this.sliderActive ? DefaultIcons.BTN_TXTFIELD : DefaultIcons.BTN_SLIDER);
+        this.sliderToggleButton = GenericButton.createIconOnly(() -> this.sliderActive ? DefaultIcons.BTN_TXTFIELD : DefaultIcons.BTN_SLIDER);
         this.sliderToggleButton.setActionListener(this::toggleSliderActive);
 
-        this.valueAdjustButton = GenericButton.createIconOnly(0, 0, DefaultIcons.BTN_PLUSMINUS_16);
+        this.valueAdjustButton = GenericButton.createIconOnly(DefaultIcons.BTN_PLUSMINUS_16);
         this.valueAdjustButton.setCanScrollToClick(true);
         this.valueAdjustButton.setActionListener(this::onValueAdjustButtonClick);
         this.valueAdjustButton.addHoverStrings(StringUtils.translate("malilib.button.hover.plus_minus_tip"));

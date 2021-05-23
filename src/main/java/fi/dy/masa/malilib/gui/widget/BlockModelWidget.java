@@ -12,19 +12,19 @@ public class BlockModelWidget extends BaseModelWidget
     @Nullable protected IBlockState state;
     @Nullable protected IBakedModel model;
 
-    public BlockModelWidget(int x, int y, @Nullable IBlockState state)
+    public BlockModelWidget(@Nullable IBlockState state)
     {
-        this(x, y, 16, state);
+        this(16, state);
     }
 
-    public BlockModelWidget(int x, int y, int dimensions, @Nullable Block block)
+    public BlockModelWidget(int dimensions, @Nullable Block block)
     {
-        this(x, y, dimensions, block != null ? block.getDefaultState() : null);
+        this(dimensions, block != null ? block.getDefaultState() : null);
     }
 
-    public BlockModelWidget(int x, int y, int dimensions, @Nullable IBlockState state)
+    public BlockModelWidget(int dimensions, @Nullable IBlockState state)
     {
-        super(x, y, dimensions);
+        super(dimensions);
 
         this.setState(state);
     }

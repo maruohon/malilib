@@ -48,8 +48,8 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
         if (type == ButtonListenerLayerEdit.Type.MODE || layerRange.getLayerMode() != LayerMode.ALL)
         {
             ButtonListenerLayerEdit listener = new ButtonListenerLayerEdit(type, layerRange, this);
-            GenericButton button = new GenericButton(x, y, -1, 20, type.getDisplayName(layerRange));
-            button.setActionListener(listener);
+            GenericButton button = GenericButton.simple(type.getDisplayName(layerRange), listener);
+            button.setPosition(x, y);
             this.addWidget(button);
 
             return button.getWidth() + 2;
@@ -92,7 +92,8 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
 
         if (layerMode == LayerMode.LAYER_RANGE)
         {
-            this.textField2 = new BaseTextFieldWidget(x, y, width, 20);
+            this.textField2 = new BaseTextFieldWidget(width, 20);
+            this.textField2.setPosition(x, y);
             this.textField2.setTextValidator(BaseTextFieldWidget.VALIDATOR_INTEGER);
             this.textField2.setListener(new TextChangeListener(layerMode, layerRange, true));
             this.addWidget(this.textField2);
@@ -107,7 +108,8 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
             this.textField2 = null;
         }
 
-        this.textField1 = new BaseTextFieldWidget(x, y, width, 20);
+        this.textField1 = new BaseTextFieldWidget(width, 20);
+        this.textField1.setPosition(x, y);
         this.textField1.setTextValidator(BaseTextFieldWidget.VALIDATOR_INTEGER);
         this.textField1.setListener(new TextChangeListener(layerMode, layerRange, false));
         this.addWidget(this.textField1);
@@ -123,7 +125,8 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
         {
             String strLabel = "malilib.gui.button.render_layers_gui.follow_player";
             String strHover = "malilib.gui.button.hover.render_layers_gui.follow_player";
-            final OnOffButton button = new OnOffButton(origX, y, -1, 20, OnOffStyle.SLIDER_ON_OFF, layerRange::shouldFollowPlayer, strLabel, strHover);
+            final OnOffButton button = new OnOffButton(-1, 20, OnOffStyle.SLIDER_ON_OFF, layerRange::shouldFollowPlayer, strLabel, strHover);
+            button.setPosition(origX, y);
             button.setActionListener((btn, mbtn) -> {
                 layerRange.toggleShouldFollowPlayer();
                 btn.updateDisplayString();
@@ -134,13 +137,15 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
             String label = StringUtils.translate("malilib.gui.label.render_layers.player_follow_offset") + ":";
             int w = this.addLabel(origX, y + 5, 0xFFFFFF, label).getWidth();
 
-            final IntegerTextFieldWidget textField = new IntegerTextFieldWidget(origX + w + 4, y, 40, 18, layerRange.getPlayerFollowOffset());
+            final IntegerTextFieldWidget textField = new IntegerTextFieldWidget(40, 18, layerRange.getPlayerFollowOffset());
+            textField.setPosition(origX + w + 4, y);
             textField.setUpdateListenerAlways(true);
             textField.setListener(new IntegerTextFieldListener(layerRange::setPlayerFollowOffset));
             this.addWidget(textField);
 
             int bx = textField.getX() + textField.getWidth() + 3;
-            GenericButton button2 = GenericButton.createIconOnly(bx, y + 1, this::getValueAdjustButtonIcon);
+            GenericButton button2 = GenericButton.createIconOnly(this::getValueAdjustButtonIcon);
+            button2.setPosition(bx, y + 1);
             button2.setActionListener((btn, mbtn) -> {
                 int change = mbtn == 1 ? -1 : 1;
                 if (BaseScreen.isShiftDown()) { change *= 2; }
@@ -172,7 +177,8 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
     {
         LayerMode layerMode = layerRange.getLayerMode();
         ButtonListenerChangeValue listener = new ButtonListenerChangeValue(layerMode, layerRange, isSecondValue, this);
-        GenericButton button = new GenericButton(x, y + 2, icon);
+        GenericButton button = new GenericButton(icon);
+        button.setPosition(x, y + 2);
         button.setActionListener(listener);
         button.setCanScrollToClick(true);
         this.addWidget(button);

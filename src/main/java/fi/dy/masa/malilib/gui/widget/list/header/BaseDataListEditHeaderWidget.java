@@ -12,18 +12,28 @@ public class BaseDataListEditHeaderWidget<DATATYPE> extends DataListHeaderWidget
     protected final List<DATATYPE> dataList;
     protected final Supplier<DATATYPE> dataFactory;
     protected final GenericButton addButton;
+    protected int fixedWidth;
+    protected int fixedHeight;
 
-    public BaseDataListEditHeaderWidget(int x, int y, int width, int height,
-                                        DataListWidget<DATATYPE> listWidget, String buttonHover,
+    public BaseDataListEditHeaderWidget(DataListWidget<DATATYPE> listWidget, String buttonHover,
                                         Supplier<DATATYPE> dataFactory)
     {
-        super(x, y, 15, 15, listWidget);
+        this(15, 15, listWidget, buttonHover, dataFactory);
+    }
+
+    public BaseDataListEditHeaderWidget(int width, int height, DataListWidget<DATATYPE> listWidget, String buttonHover,
+                                        Supplier<DATATYPE> dataFactory)
+    {
+        super(width, height, listWidget);
+
+        this.fixedWidth = width > 0 ? width : -1;
+        this.fixedHeight = height > 0 ? height : -1;
 
         // This is a reference to the current entries list, which can be modified
         this.dataList = listWidget.getCurrentContents();
         this.dataFactory = dataFactory;
 
-        this.addButton = new GenericButton(x, y, DefaultIcons.LIST_ADD_PLUS_13, buttonHover);
+        this.addButton = new GenericButton(DefaultIcons.LIST_ADD_PLUS_13, buttonHover);
         this.addButton.setActionListener(this::insertEntry);
     }
 
@@ -41,6 +51,15 @@ public class BaseDataListEditHeaderWidget<DATATYPE> extends DataListHeaderWidget
         super.updateSubWidgetsToGeometryChanges();
 
         this.addButton.setPosition(this.getX(), this.getY());
+    }
+
+    @Override
+    public void setHeaderWidgetSize(int width, int height)
+    {
+        width = this.fixedWidth > 0 ? this.fixedWidth : (width > 0 ? width : this.getWidth());
+        height = this.fixedHeight > 0 ? this.fixedHeight : (height > 0 ? height : this.getHeight());
+
+        this.setSize(width, height);
     }
 
     protected DATATYPE getNewDataEntry()

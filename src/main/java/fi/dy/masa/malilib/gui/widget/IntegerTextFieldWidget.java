@@ -6,24 +6,24 @@ import fi.dy.masa.malilib.util.StringUtils;
 
 public class IntegerTextFieldWidget extends BaseTextFieldWidget
 {
-    public IntegerTextFieldWidget(int x, int y, int width, int height)
+    public IntegerTextFieldWidget(int width, int height)
     {
-        this(x, y, width, height, 0);
+        this(width, height, 0);
     }
 
-    public IntegerTextFieldWidget(int x, int y, int width, int height, int value)
+    public IntegerTextFieldWidget(int width, int height, int value)
     {
-        this(x, y, width, height, value, Integer.MIN_VALUE, Integer.MAX_VALUE);
+        this(width, height, value, Integer.MIN_VALUE, Integer.MAX_VALUE);
     }
 
-    public IntegerTextFieldWidget(int x, int y, int width, int height, int initialValue, int minValue, int maxValue)
+    public IntegerTextFieldWidget(int width, int height, int initialValue, int minValue, int maxValue)
     {
-        this(x, y, width, height, String.valueOf(initialValue), minValue, maxValue);
+        this(width, height, String.valueOf(initialValue), minValue, maxValue);
     }
 
-    public IntegerTextFieldWidget(int x, int y, int width, int height, String initialValue, int minValue, int maxValue)
+    public IntegerTextFieldWidget(int width, int height, String initialValue, int minValue, int maxValue)
     {
-        super(x, y, width, height, initialValue);
+        super(width, height, initialValue);
 
         this.setTextValidator(new IntValidator(minValue, maxValue));
     }

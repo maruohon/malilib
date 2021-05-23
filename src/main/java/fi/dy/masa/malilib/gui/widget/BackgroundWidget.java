@@ -18,6 +18,11 @@ public class BackgroundWidget extends InteractableWidget
     protected int normalBorderWidth = 1;
     protected int hoveredBorderWidth = 1;
 
+    public BackgroundWidget(int width, int height)
+    {
+        super(width, height);
+    }
+
     public BackgroundWidget(int x, int y, int width, int height)
     {
         super(x, y, width, height);

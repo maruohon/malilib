@@ -17,7 +17,7 @@ import fi.dy.masa.malilib.util.data.LeftRight;
 public abstract class BaseButton extends BackgroundWidget
 {
     protected final ImmutableList<StyledTextLine> hoverHelp;
-    protected String displayString;
+    protected String displayString = "";
     protected String fullDisplayString;
     protected boolean canScrollToClick;
     protected boolean enabled = true;
@@ -28,25 +28,25 @@ public abstract class BaseButton extends BackgroundWidget
     @Nullable protected ButtonActionListener actionListener;
     @Nullable protected BooleanSupplier enabledStatusSupplier;
 
-    public BaseButton(int x, int y, int width, int height)
+    public BaseButton(int width, int height, @Nullable String translationKey)
     {
-        this(x, y, width, height, "");
+        this(width, height, translationKey, null);
     }
 
-    public BaseButton(int x, int y, int width, int height, String translationKey)
+    public BaseButton(int width, int height, @Nullable String translationKey,
+                      @Nullable ButtonActionListener actionListener)
     {
-        this(x, y, width, height, translationKey, null);
-    }
-
-    public BaseButton(int x, int y, int width, int height, String translationKey, @Nullable ButtonActionListener actionListener)
-    {
-        super(x, y, width, height);
+        super(width, height);
 
         this.actionListener = actionListener;
         this.hoverHelp = StyledText.translate("malilib.gui.button.hover.hold_shift_for_info").lines;
         this.setHoverStringProvider("full_label", this::getFullLabelHoverString, 99);
 
-        this.setDisplayString(StringUtils.translate(translationKey));
+        if (org.apache.commons.lang3.StringUtils.isBlank(translationKey) == false)
+        {
+            this.setDisplayString(StringUtils.translate(translationKey));
+        }
+
         this.updateWidth();
     }
 

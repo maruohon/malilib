@@ -88,13 +88,13 @@ public class BaseValueListEditScreen<TYPE> extends BaseListScreen<DataListWidget
                                                     listWidget::onSearchBarChange,
                                                     listWidget::refreshFilteredEntries));
 
-        listWidget.setHeaderWidgetFactory((x, y, w, h, lw) -> new BaseDataListEditHeaderWidget<>(x, y, w, h, lw, "malilib.gui.button.hover.list.add_first", this.newEntrySupplier));
+        listWidget.setHeaderWidgetFactory((lw) -> new BaseDataListEditHeaderWidget<>(lw, "malilib.gui.button.hover.list.add_first", this.newEntrySupplier));
         listWidget.setSearchBarPositioner((wgt, x, y, w) -> {
             wgt.setPosition(x + 17, y);
             wgt.setWidth(w - 17);
         });
         listWidget.setHeaderWidgetPositioner((wgt, x, y, w) -> {
-            wgt.setPosition(x, y - 16);
+            wgt.setPosition(x, y - 14);
             wgt.setWidth(15);
         });
 

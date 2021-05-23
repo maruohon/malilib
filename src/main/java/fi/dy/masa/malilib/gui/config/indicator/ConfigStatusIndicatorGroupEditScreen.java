@@ -54,31 +54,31 @@ public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataLis
         this.useTitleHierarchy = false;
         this.setTitle("malilib.gui.title.config_status_indicator_configuration");
 
-        this.locationDropdownWidget = new DropDownListWidget<>(0, 0, -1, 16, 160, 10, ScreenLocation.VALUES,
-                                                               OptionListConfigValue::getDisplayName, null);
+        this.locationDropdownWidget = new DropDownListWidget<>(-1, 16, 160, 10, ScreenLocation.VALUES,
+                                                               OptionListConfigValue::getDisplayName);
         this.locationDropdownWidget.setSelectedEntry(widget.getScreenLocation());
         this.locationDropdownWidget.setSelectionListener(this::changeWidgetLocation);
 
-        this.nameLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.name.colon");
-        this.priorityLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.sort_index.colon");
-        this.lineHeightLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.line_height.colon");
-        this.backgroundLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.background.colon");
-        this.textScaleLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.text_scale.colon");
-        this.oddBackgroundLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.config_status_indicator.background_odd.colon");
+        this.nameLabelWidget = new LabelWidget("malilib.label.name.colon");
+        this.priorityLabelWidget = new LabelWidget("malilib.label.sort_index.colon");
+        this.lineHeightLabelWidget = new LabelWidget("malilib.label.line_height.colon");
+        this.backgroundLabelWidget = new LabelWidget("malilib.label.background.colon");
+        this.textScaleLabelWidget = new LabelWidget("malilib.label.text_scale.colon");
+        this.oddBackgroundLabelWidget = new LabelWidget("malilib.label.config_status_indicator.background_odd.colon");
         this.oddBackgroundLabelWidget.translateAndAddHoverString("malilib.label.config_status_indicator.background_odd.hover");
 
-        this.nameTextField = new BaseTextFieldWidget(0, 0, 160, 16, widget.getName());
+        this.nameTextField = new BaseTextFieldWidget(160, 16, widget.getName());
         this.nameTextField.setListener(widget::setName);
 
-        this.priorityEditWidget = new IntegerEditWidget(0, 0, 72, 16, widget.getSortIndex(), -1000, 1000, widget::setSortIndex);
-        this.lineHeightEditWidget = new IntegerEditWidget(0, 0, 72, 16, widget.getLineHeight(), 6, 40, widget::setLineHeight);
-        this.textScaleEditWidget = new DoubleEditWidget(0, 0, 72, 16, widget.getScale(), 0.25, 20, widget::setScale);
+        this.priorityEditWidget = new IntegerEditWidget(72, 16, widget.getSortIndex(), -1000, 1000, widget::setSortIndex);
+        this.lineHeightEditWidget = new IntegerEditWidget(72, 16, widget.getLineHeight(), 6, 40, widget::setLineHeight);
+        this.textScaleEditWidget = new DoubleEditWidget(72, 16, widget.getScale(), 0.25, 20, widget::setScale);
 
-        this.addConfigsButton = GenericButton.simple(-1, 16, "malilib.gui.button.add_configs", this::openAddConfigsScreen, "malilib.gui.button.hover.add_configs_to_status_indicator_group");
-        this.marginEditButton = GenericButton.simple(-1, 16, "malilib.label.margin", this::openMarginEditScreen);
+        this.addConfigsButton = GenericButton.simple(16, "malilib.gui.button.add_configs", this::openAddConfigsScreen, "malilib.gui.button.hover.add_configs_to_status_indicator_group");
+        this.marginEditButton = GenericButton.simple(16, "malilib.label.margin", this::openMarginEditScreen);
         this.marginEditButton.setHoverStringProvider("tooltip", this.widget.getMargin()::getHoverTooltip);
 
-        this.paddingEditButton = GenericButton.simple(-1, 16, "malilib.label.padding", this::openPaddingEditScreen);
+        this.paddingEditButton = GenericButton.simple(16, "malilib.label.padding", this::openPaddingEditScreen);
         this.paddingEditButton.setHoverStringProvider("tooltip", this.widget.getPadding()::getHoverTooltip);
 
         final TextRenderSettings textSettings = widget.getTextSettings();
@@ -88,8 +88,8 @@ public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataLis
         this.oddEvenBackgroundToggleButton.translateAndAddHoverString("malilib.label.config_status_indicator.background_odd.hover");
         this.renderNameToggleButton = OnOffButton.simpleSlider(16, widget::getRenderName, widget::toggleRenderName);
 
-        this.backgroundColorWidget = new ColorIndicatorWidget(0, 0, 16, 16, textSettings::getBackgroundColor, textSettings::setBackgroundColor);
-        this.oddBackgroundColorWidget = new ColorIndicatorWidget(0, 0, 16, 16, textSettings::getOddRowBackgroundColor, textSettings::setOddRowBackgroundColor);
+        this.backgroundColorWidget = new ColorIndicatorWidget(16, 16, textSettings::getBackgroundColor, textSettings::setBackgroundColor);
+        this.oddBackgroundColorWidget = new ColorIndicatorWidget(16, 16, textSettings::getOddRowBackgroundColor, textSettings::setOddRowBackgroundColor);
     }
 
     @Override

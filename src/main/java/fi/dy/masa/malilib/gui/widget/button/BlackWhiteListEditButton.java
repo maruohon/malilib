@@ -18,10 +18,10 @@ public class BlackWhiteListEditButton extends GenericButton
     protected final EventListener saveListener;
     @Nullable protected final DialogHandler dialogHandler;
 
-    public BlackWhiteListEditButton(int x, int y, int width, int height, BlackWhiteListConfig<?> config,
+    public BlackWhiteListEditButton(int width, int height, BlackWhiteListConfig<?> config,
                                     EventListener saveListener, @Nullable DialogHandler dialogHandler)
     {
-        super(x, y, width, height, "");
+        super(width, height, "");
 
         this.config = config;
         this.dialogHandler = dialogHandler;

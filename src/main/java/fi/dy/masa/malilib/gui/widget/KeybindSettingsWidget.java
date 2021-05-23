@@ -27,10 +27,9 @@ public class KeybindSettingsWidget extends InteractableWidget
     protected final KeyBind keyBind;
     @Nullable protected final DialogHandler dialogHandler;
 
-    public KeybindSettingsWidget(int x, int y, int width, int height, KeyBind keyBind,
-                                 String keyBindName, @Nullable DialogHandler dialogHandler)
+    public KeybindSettingsWidget(KeyBind keyBind, String keyBindName, @Nullable DialogHandler dialogHandler)
     {
-        super(x, y, width, height);
+        super(20, 20);
 
         this.keyBind = keyBind;
         this.keyBindName = keyBindName;

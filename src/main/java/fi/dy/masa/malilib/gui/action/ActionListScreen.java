@@ -43,16 +43,13 @@ public class ActionListScreen extends BaseMultiListScreen
 
         this.setTitle("malilib.gui.title.action_aliases_and_macros");
 
-        this.baseActionsLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.gui.label.action_list_screen.available_actions");
-        this.aliasesLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.gui.label.action_list_screen.aliases");
-        this.macrosLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.gui.label.action_list_screen.macros");
+        this.baseActionsLabelWidget = new LabelWidget("malilib.gui.label.action_list_screen.available_actions");
+        this.aliasesLabelWidget = new LabelWidget("malilib.gui.label.action_list_screen.aliases");
+        this.macrosLabelWidget = new LabelWidget("malilib.gui.label.action_list_screen.macros");
 
-        this.addAliasButton = new GenericButton(10, 48, -1, 16, "malilib.gui.button.actions.add_alias");
-        this.addAliasButton.setActionListener(this::openAddAliasScreen);
+        this.addAliasButton = GenericButton.simple(16, "malilib.gui.button.actions.add_alias", this::openAddAliasScreen);
 
-        int x = this.addAliasButton.getRight() + 6;
-        this.addMacroButton = new GenericButton(x, 48, -1, 16, "malilib.gui.button.actions.add_macro");
-        this.addMacroButton.setActionListener(this::openCreateMacroScreen);
+        this.addMacroButton = GenericButton.simple(16, "malilib.gui.button.actions.add_macro", this::openCreateMacroScreen);
         this.addMacroButton.translateAndAddHoverString("malilib.gui.hover.action_list_screen.create_macro");
 
         this.actionSourceListWidget = this.createNamedActionListWidget();
@@ -91,7 +88,13 @@ public class ActionListScreen extends BaseMultiListScreen
         super.updateWidgetPositions();
 
         int x = 10;
-        int y = this.addAliasButton.getBottom() + 15;
+        int y = this.y + 48;
+
+        this.addAliasButton.setPosition(x, y);
+        this.addMacroButton.setPosition(this.addAliasButton.getRight() + 6, y);
+
+        y = this.addAliasButton.getBottom() + 15;
+
         int w = (this.screenWidth - 30) / 2;
         int h = this.screenHeight - y - 6;
         this.actionSourceListWidget.setPositionAndSize(x, y, w, h);

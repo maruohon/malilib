@@ -28,12 +28,12 @@ public class BaseValueListEditButton<TYPE> extends GenericButton
     protected final ValueListEditEntryWidgetFactory<TYPE> widgetFactory;
     protected final List<String> hoverStrings = new ArrayList<>();
 
-    public BaseValueListEditButton(int x, int y, int width, int height, ValueListConfig<TYPE> config,
+    public BaseValueListEditButton(int width, int height, ValueListConfig<TYPE> config,
                                    @Nullable EventListener saveListener, @Nullable DialogHandler dialogHandler,
                                    String screenTitle, Supplier<TYPE> newEntryFactory,
                                    ValueListEditEntryWidgetFactory<TYPE> widgetFactory)
     {
-        super(x, y, width, height, "");
+        super(width, height, "");
 
         this.config = config;
         this.dialogHandler = dialogHandler;
@@ -47,14 +47,14 @@ public class BaseValueListEditButton<TYPE> extends GenericButton
         this.updateDisplayString();
     }
 
-    public BaseValueListEditButton(int x, int y, int width, int height, ValueListConfig<TYPE> config,
+    public BaseValueListEditButton(int width, int height, ValueListConfig<TYPE> config,
                                    @Nullable EventListener saveListener, @Nullable DialogHandler dialogHandler,
                                    String screenTitle, Supplier<TYPE> newEntryFactory,
                                    Supplier<List<TYPE>> possibleValuesSupplier,
                                    Function<TYPE, String> displayNameFactory,
                                    @Nullable IconWidgetFactory<TYPE> iconWidgetFactory)
     {
-        this(x, y, width, height, config, saveListener, dialogHandler, screenTitle, newEntryFactory,
+        this(width, height, config, saveListener, dialogHandler, screenTitle, newEntryFactory,
              (wx, wy, ww, wh, li, oi, iv, dv, lw) ->
                  new BaseValueListEditEntryWidget<>(wx, wy, ww, wh, li, oi, iv, dv, lw,
                                                     possibleValuesSupplier.get(), displayNameFactory, iconWidgetFactory));

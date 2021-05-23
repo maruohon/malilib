@@ -7,9 +7,9 @@ public class InfoIconWidget extends HoverInfoWidget
 {
     protected final MultiIcon icon;
 
-    public InfoIconWidget(int x, int y, MultiIcon icon, String key, Object... args)
+    public InfoIconWidget(MultiIcon icon, String key, Object... args)
     {
-        super(x, y, icon.getWidth(), icon.getHeight(), key, args);
+        super(icon.getWidth(), icon.getHeight(), key, args);
 
         this.icon = icon;
     }

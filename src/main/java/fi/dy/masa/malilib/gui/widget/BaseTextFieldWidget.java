@@ -60,14 +60,14 @@ public class BaseTextFieldWidget extends BackgroundWidget
     protected boolean updateListenerFromTextSet;
     protected boolean visibleTextNeedsUpdate;
 
-    public BaseTextFieldWidget(int x, int y, int width, int height)
+    public BaseTextFieldWidget(int width, int height)
     {
-        this(x, y, width, height, "");
+        this(width, height, "");
     }
 
-    public BaseTextFieldWidget(int x, int y, int width, int height, String text)
+    public BaseTextFieldWidget(int width, int height, String text)
     {
-        super(x, y, width, height);
+        super(width, height);
 
         this.lastNotifiedText = text;
 

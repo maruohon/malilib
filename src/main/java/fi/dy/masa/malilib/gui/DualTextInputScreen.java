@@ -28,8 +28,8 @@ public class DualTextInputScreen extends BaseTextInputScreen
         this.stringConsumer = stringConsumer;
         this.originalText2 = defaultText2;
 
-        this.labelWidget2 = new LabelWidget(0, 0, -1, 12, 0xFFFFFFFF, labelKey2);
-        this.textField2 = new BaseTextFieldWidget(0, 0, 240, 20, this.originalText2);
+        this.labelWidget2 = new LabelWidget(labelKey2);
+        this.textField2 = new BaseTextFieldWidget(240, 20, this.originalText2);
 
         this.setLabelText(StyledText.translate(labelKey1));
     }

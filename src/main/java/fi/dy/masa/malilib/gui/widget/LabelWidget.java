@@ -17,36 +17,41 @@ public class LabelWidget extends BackgroundWidget
     protected int totalHeight;
     protected int totalWidth;
 
+    public LabelWidget(String... text)
+    {
+        this(0xFFFFFFFF, text);
+    }
+
+    public LabelWidget(int textColor, String... text)
+    {
+        this(0, 0, -1, -1, textColor);
+
+        this.setText(Arrays.asList(text));
+    }
+
+    public LabelWidget(int textColor, StyledTextLine... lines)
+    {
+        this(textColor, Arrays.asList(lines));
+    }
+
+    public LabelWidget(int textColor, List<StyledTextLine> lines)
+    {
+        this(0, 0, -1, -1, textColor);
+
+        this.setStyledTextLines(lines);
+    }
+
+    public LabelWidget(int width, int height, int textColor)
+    {
+        this(0, 0, width, height, textColor);
+    }
+
     public LabelWidget(int x, int y, int width, int height, int textColor)
     {
         super(x, y, width, height);
 
         this.setNormalTextColor(textColor);
         this.setHoverTextColor(textColor);
-    }
-
-    public LabelWidget(int x, int y, int textColor, String... text)
-    {
-        this(x, y, -1, -1, textColor, text);
-    }
-
-    public LabelWidget(int x, int y, int width, int height, int textColor, String... text)
-    {
-        this(x, y, width, height, textColor);
-
-        this.setText(Arrays.asList(text));
-    }
-
-    public LabelWidget(int x, int y, int width, int height, int textColor, StyledTextLine... lines)
-    {
-        this(x, y, width, height, textColor, Arrays.asList(lines));
-    }
-
-    public LabelWidget(int x, int y, int width, int height, int textColor, List<StyledTextLine> lines)
-    {
-        this(x, y, width, height, textColor);
-
-        this.setStyledTextLines(lines);
     }
 
     public int getTotalWidth()

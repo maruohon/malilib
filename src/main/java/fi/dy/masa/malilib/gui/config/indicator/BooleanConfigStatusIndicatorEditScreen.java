@@ -18,17 +18,17 @@ extends BaseConfigStatusIndicatorEditScreen<WIDGET>
     {
         super(widget, parent);
 
-        this.typeLabel = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.boolean_config_status.render_type.colon");
-        this.conditionLabel = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.boolean_config_status.enabled_condition.colon");
+        this.typeLabel = new LabelWidget("malilib.label.boolean_config_status.render_type.colon");
+        this.conditionLabel = new LabelWidget("malilib.label.boolean_config_status.enabled_condition.colon");
 
-        this.typeDropdown = new DropDownListWidget<>(0, 0, -1, 16, 160, 10, BooleanConfigStatusWidget.Style.VALUES,
-                                                     BooleanConfigStatusWidget.Style::getDisplayName, null);
+        this.typeDropdown = new DropDownListWidget<>(-1, 16, 160, 10, BooleanConfigStatusWidget.Style.VALUES,
+                                                     BooleanConfigStatusWidget.Style::getDisplayName);
         this.typeDropdown.setSelectedEntry(widget.getRenderStyle());
         this.typeDropdown.setSelectionListener(this.widget::setRenderStyle);
 
-        this.conditionDropdown = new DropDownListWidget<>(0, 0, -1, 16, 160, 10,
+        this.conditionDropdown = new DropDownListWidget<>(-1, 16, 160, 10,
                                                           BooleanConfigStatusWidget.EnabledCondition.VALUES,
-                                                          BooleanConfigStatusWidget.EnabledCondition::getDisplayName, null);
+                                                          BooleanConfigStatusWidget.EnabledCondition::getDisplayName);
         this.conditionDropdown.setSelectedEntry(widget.getEnabledCondition());
         this.conditionDropdown.setSelectionListener(this.widget::setEnabledCondition);
     }

@@ -37,7 +37,7 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
 
     public BaseActionExecutionWidget()
     {
-        super(0, 0, 40, 20);
+        super(40, 20);
 
         this.setNormalBorderWidth(1);
         this.setHoveredBorderWidth(2);

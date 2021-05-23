@@ -20,10 +20,9 @@ public class CheckBoxWidget extends InteractableWidget
     protected int textColorChecked = 0xFFFFFFFF;
     protected int textColorUnchecked = 0xB0B0B0B0;
 
-    public CheckBoxWidget(int x, int y, MultiIcon iconUnchecked, MultiIcon iconChecked,
-                          @Nullable String translationKey)
+    public CheckBoxWidget(MultiIcon iconUnchecked, MultiIcon iconChecked, @Nullable String translationKey)
     {
-        super(x, y, 0, 0);
+        super(0, 0);
 
         this.text = translationKey != null ? StyledTextLine.translate(translationKey) : null;
         this.iconUnchecked = iconUnchecked;
@@ -38,15 +37,15 @@ public class CheckBoxWidget extends InteractableWidget
         this.setHeight(textWidth > 0 ? Math.max(this.fontHeight, ih) : ih);
     }
 
-    public CheckBoxWidget(int x, int y, @Nullable String translationKey, @Nullable String hoverInfoKey)
+    public CheckBoxWidget(@Nullable String translationKey, @Nullable String hoverInfoKey)
     {
-        this(x, y, DefaultIcons.CHECKMARK_OFF, DefaultIcons.CHECKMARK_ON, translationKey, hoverInfoKey);
+        this(DefaultIcons.CHECKMARK_OFF, DefaultIcons.CHECKMARK_ON, translationKey, hoverInfoKey);
     }
 
-    public CheckBoxWidget(int x, int y, MultiIcon iconUnchecked, MultiIcon iconChecked,
+    public CheckBoxWidget(MultiIcon iconUnchecked, MultiIcon iconChecked,
                           @Nullable String translationKey, @Nullable String hoverInfoKey)
     {
-        this(x, y, iconUnchecked, iconChecked, translationKey);
+        this(iconUnchecked, iconChecked, translationKey);
 
         if (hoverInfoKey != null)
         {

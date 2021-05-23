@@ -6,24 +6,24 @@ import fi.dy.masa.malilib.util.StringUtils;
 
 public class DoubleTextFieldWidget extends BaseTextFieldWidget
 {
-    public DoubleTextFieldWidget(int x, int y, int width, int height)
+    public DoubleTextFieldWidget(int width, int height)
     {
-        this(x, y, width, height, 0);
+        this(width, height, 0);
     }
 
-    public DoubleTextFieldWidget(int x, int y, int width, int height, double value)
+    public DoubleTextFieldWidget(int width, int height, double value)
     {
-        this(x, y, width, height, value, Double.MIN_VALUE, Double.MAX_VALUE);
+        this(width, height, value, Double.MIN_VALUE, Double.MAX_VALUE);
     }
 
-    public DoubleTextFieldWidget(int x, int y, int width, int height, double initialValue, double minValue, double maxValue)
+    public DoubleTextFieldWidget(int width, int height, double initialValue, double minValue, double maxValue)
     {
-        this(x, y, width, height, String.valueOf(initialValue), minValue, maxValue);
+        this(width, height, String.valueOf(initialValue), minValue, maxValue);
     }
 
-    public DoubleTextFieldWidget(int x, int y, int width, int height, String initialValue, double minValue, double maxValue)
+    public DoubleTextFieldWidget(int width, int height, String initialValue, double minValue, double maxValue)
     {
-        super(x, y, width, height, initialValue);
+        super(width, height, initialValue);
 
         this.setTextValidator(new DoubleValidator(minValue, maxValue));
     }

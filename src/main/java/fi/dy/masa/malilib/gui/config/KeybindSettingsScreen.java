@@ -99,7 +99,9 @@ public class KeybindSettingsScreen extends BaseScreen
     protected void createLabelAndConfigWidget(int x, int y, int labelWidth, int configWidth, BaseConfigOption<?> config)
     {
         int color = config.isModified() ? 0xFFFFFF55 : 0xFFAAAAAA;
-        LabelWidget label = new LabelWidget(x, y, labelWidth + 4, 16, color, config.getPrettyName());
+        LabelWidget label = new LabelWidget(color, config.getPrettyName());
+        label.setSize(labelWidth + 4, 16);
+        label.setPosition(x, y);
         label.addHoverStrings(config.getComment());
         label.getPadding().setTop(3);
         this.addWidget(label);
@@ -107,11 +109,15 @@ public class KeybindSettingsScreen extends BaseScreen
 
         if (config instanceof BooleanConfig)
         {
-            this.addWidget(new BooleanConfigButton(x, y, -1, 16, (BooleanConfig) config));
+            BooleanConfigButton btn = new BooleanConfigButton(-1, 16, (BooleanConfig) config);
+            btn.setPosition(x, y);
+            this.addWidget(btn);
         }
         else if (config instanceof OptionListConfig)
         {
-            this.addWidget(new OptionListConfigButton(x, y, configWidth, 16, (OptionListConfig<?>) config));
+            OptionListConfigButton btn = new OptionListConfigButton(configWidth, 16, (OptionListConfig<?>) config);
+            btn.setPosition(x, y);
+            this.addWidget(btn);
         }
         else if (config instanceof IntegerConfig)
         {
@@ -119,11 +125,14 @@ public class KeybindSettingsScreen extends BaseScreen
 
             if (intConfig.isSliderActive())
             {
-                this.addWidget(new SliderWidget(x, y, 82, 16, intConfig.getSliderCallback(null)));
+                SliderWidget widget = new SliderWidget(82, 16, intConfig.getSliderCallback(null));
+                widget.setPosition(x, y);
+                this.addWidget(widget);
             }
             else
             {
-                BaseTextFieldWidget textField = new BaseTextFieldWidget(x, y, 82, 16);
+                BaseTextFieldWidget textField = new BaseTextFieldWidget(82, 16);
+                textField.setPosition(x, y);
                 textField.setText(intConfig.getStringValue());
                 int min = intConfig.getMinIntegerValue();
                 int max = intConfig.getMaxIntegerValue();
@@ -133,7 +142,8 @@ public class KeybindSettingsScreen extends BaseScreen
             }
 
             Supplier<MultiIcon> iconSupplier = () -> intConfig.isSliderActive() ? DefaultIcons.BTN_TXTFIELD : DefaultIcons.BTN_SLIDER;
-            GenericButton sliderToggleButton = new GenericButton(x + 84, y, iconSupplier);
+            GenericButton sliderToggleButton = new GenericButton(iconSupplier);
+            sliderToggleButton.setPosition(x + 84, y);
 
             sliderToggleButton.setActionListener(() -> {
                 intConfig.toggleSliderActive();

@@ -42,7 +42,7 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
 
         this.ownerText = ownerLabel != null ? StyledTextLine.rawWithStyle(ownerLabel, TextStyle.normal(0xFF686868)) : null;
         this.nameText = StyledTextLine.of(nameLabel);
-        this.configOwnerAndNameLabelWidget = new LabelWidget(x, y, this.getMaxLabelWidth(), height, 0xFFF0F0F0);
+        this.configOwnerAndNameLabelWidget = new LabelWidget(this.getMaxLabelWidth(), height, 0xFFF0F0F0);
 
         EventListener clickHandler = config.getLabelClickHandler();
         List<String> comments = new ArrayList<>();
@@ -62,7 +62,7 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
         }
 
         this.configOwnerAndNameLabelWidget.addHoverStrings(comments);
-        this.resetButton = new GenericButton(x, y, -1, 20, "malilib.gui.button.reset.caps");
+        this.resetButton = new GenericButton("malilib.gui.button.reset.caps");
 
         this.setNormalBackgroundColor(this.isOdd ? 0x70606060 : 0x70909090);
         this.setRenderNormalBackground(MaLiLibConfigs.Generic.CONFIG_WIDGET_BACKGROUND.getBooleanValue());
@@ -84,6 +84,7 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
         int nesting = this.getNestingOffset(this.ctx.getNestingLevel());
         boolean showOwner = this.ctx.getListWidget().isShowingOptionsFromOtherCategories();
 
+        this.configOwnerAndNameLabelWidget.setPosition(this.getX(), this.getY());
         this.configOwnerAndNameLabelWidget.getPadding().setLeft(nesting + 4);
 
         if (showOwner && this.ownerText != null)
@@ -130,7 +131,8 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
         ArrayList<String> lines = new ArrayList<>();
         StringUtils.splitTextToLines(lines, StringUtils.translate(hoverTextKey, file.getAbsolutePath()), 280);
 
-        GenericButton button = new GenericButton(x, y + 1, elementWidth, 20, buttonText);
+        GenericButton button = new GenericButton(elementWidth, 20, buttonText);
+        button.setPosition(x, y + 1);
         button.setHoverStringProvider("path", () -> lines, 100);
         button.setHoverStringProvider("locked", config::getLockAndOverrideMessages, 101);
         button.setEnabled(config.isLocked() == false);

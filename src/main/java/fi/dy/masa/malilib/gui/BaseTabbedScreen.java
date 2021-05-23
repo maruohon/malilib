@@ -120,6 +120,20 @@ public abstract class BaseTabbedScreen extends BaseScreen
         this.saveScrollBarPositionForCurrentTab();
     }
 
+    @Override
+    protected void updateWidgetPositions()
+    {
+        super.updateWidgetPositions();
+
+        int x = this.x + this.tabButtonContainerWidgetX;
+        int y = this.y + this.tabButtonContainerWidgetY;
+
+        if (this.tabButtonContainerWidget != null)
+        {
+            this.tabButtonContainerWidget.setPosition(x, y);
+        }
+    }
+
     public void saveScrollBarPositionForCurrentTab()
     {
         if (this.shouldRestoreScrollBarPosition())
@@ -176,11 +190,12 @@ public abstract class BaseTabbedScreen extends BaseScreen
             this.getTabState().visibleTabsStartIndex = this.tabButtonContainerWidget.getStartIndex();
         }
 
-        int x = this.tabButtonContainerWidgetX;
-        int y = this.tabButtonContainerWidgetY;
+        int x = this.x + this.tabButtonContainerWidgetX;
+        int y = this.y + this.tabButtonContainerWidgetY;
         int width = this.getTabButtonContainerWidgetWidth();
 
-        this.tabButtonContainerWidget = new CyclableContainerWidget(x, y, width, 20, this.createTabButtons());
+        this.tabButtonContainerWidget = new CyclableContainerWidget(width, 20, this.createTabButtons());
+        this.tabButtonContainerWidget.setPosition(x, y);
         this.tabButtonContainerWidget.setStartIndex(this.getTabState().visibleTabsStartIndex);
         this.addWidget(this.tabButtonContainerWidget);
     }
@@ -200,10 +215,9 @@ public abstract class BaseTabbedScreen extends BaseScreen
     protected GenericButton createTabButton(final ScreenTab tab)
     {
         // The CyclableContainerWidget will re-position all the fitting buttons
-        GenericButton button = new GenericButton(0, 0, -1, 20, tab.getDisplayName());
+        GenericButton button = GenericButton.simple(tab.getDisplayName(), tab.getButtonActionListener(this));
         button.setEnabled(this.getCurrentTab() != tab);
         button.setEnabledStatusSupplier(() -> this.getCurrentTab() != tab);
-        button.setActionListener(tab.getButtonActionListener(this));
 
         String hoverText = tab.getHoverText();
 

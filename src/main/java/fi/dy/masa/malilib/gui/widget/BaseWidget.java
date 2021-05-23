@@ -30,14 +30,15 @@ public class BaseWidget
     private static int lastDebugOutlineColorHue;
     private static int nextWidgetId;
 
-    private final int id;
     protected final Minecraft mc;
-    protected final TextRenderer textRenderer;
     protected final EdgeInt margin = new EdgeInt();
     protected final EdgeInt padding = new EdgeInt();
-    protected final int fontHeight;
+    private final int id;
+
     @Nullable protected Icon icon;
     @Nullable protected StyledTextLine text;
+
+    protected TextRenderer textRenderer;
     private int x;
     private int y;
     private int height;
@@ -55,6 +56,7 @@ public class BaseWidget
     protected boolean hasMaxHeight;
     protected boolean hasMaxWidth;
     protected boolean textShadow = true;
+    protected int fontHeight;
     protected int iconOffsetX;
     protected int iconOffsetY;
     protected int lineHeight;
@@ -64,6 +66,16 @@ public class BaseWidget
     protected int defaultNormalTextColor = 0xFFFFFFFF;
     protected int textOffsetX = 4;
     protected int textOffsetY;
+
+    public BaseWidget()
+    {
+        this(0, 0, -1, -1);
+    }
+
+    public BaseWidget(int width, int height)
+    {
+        this(0, 0, width, height);
+    }
 
     public BaseWidget(int x, int y, int width, int height)
     {
@@ -337,12 +349,18 @@ public class BaseWidget
         return this.maxHeight;
     }
 
+    /**
+     * Sets the maximum width, and enables the maximum width if the value is > 0
+     */
     public void setMaxWidth(int maxWidth)
     {
         this.maxWidth = maxWidth;
         this.hasMaxWidth = maxWidth > 0;
     }
 
+    /**
+     * Sets the maximum height, and enables the maximum height if the value is > 0
+     */
     public void setMaxHeight(int maxHeight)
     {
         this.maxHeight = maxHeight;

@@ -25,10 +25,10 @@ public class OnOffButton extends GenericButton
      * @param statusSupplier The supplier for the current on/off status of this button
      * @param translationKey The translation key to use for the full button text. It should have one %s format specifier for the current status string. Pass null to use the status string directly, without any other labeling text.
      */
-    public OnOffButton(int x, int y, int width, int height, OnOffStyle style, BooleanSupplier statusSupplier,
+    public OnOffButton(int width, int height, OnOffStyle style, BooleanSupplier statusSupplier,
                        @Nullable String translationKey, String... hoverStrings)
     {
-        super(x, y, width, height, "", hoverStrings);
+        super(width, height, "", hoverStrings);
 
         this.translationKey = translationKey;
         this.statusSupplier = statusSupplier;
@@ -164,7 +164,7 @@ public class OnOffButton extends GenericButton
 
     public static OnOffButton simpleSlider(int height, BooleanSupplier statusSupplier, EventListener actionListener)
     {
-        OnOffButton button = new OnOffButton(0, 0, -1, height, OnOffStyle.SLIDER_ON_OFF, statusSupplier, null);
+        OnOffButton button = new OnOffButton(-1, height, OnOffStyle.SLIDER_ON_OFF, statusSupplier, null);
         button.setActionListener(actionListener);
         return button;
     }

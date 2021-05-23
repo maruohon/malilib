@@ -29,14 +29,14 @@ public class ScrollBarWidget extends InteractableWidget
     protected int dragStartY = 0;
     protected int totalHeight;
 
-    public ScrollBarWidget(int x, int y, int width, int height)
+    public ScrollBarWidget(int width, int height)
     {
-        this(x, y, width, height, null);
+        this(width, height, null);
     }
 
-    public ScrollBarWidget(int x, int y, int width, int height, @Nullable Icon barTexture)
+    public ScrollBarWidget(int width, int height, @Nullable Icon barTexture)
     {
-        super(x, y, width, height);
+        super(width, height);
 
         this.barTexture = barTexture;
     }

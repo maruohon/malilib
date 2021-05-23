@@ -29,19 +29,17 @@ public class CustomHotkeyDefinitionEntryWidget extends BaseDataListEntryWidget<C
 
         this.screen = screen;
 
-        StyledTextLine name = StyledTextLine.translate("malilib.gui.label.custom_hotkey_name", data.getName());
         TextStyle actionStyle = TextStyle.normal(0xFFC0C0C0);
+        StyledTextLine name = StyledTextLine.translate("malilib.gui.label.custom_hotkey_name", data.getName());
         StyledTextLine actionName = data.getAction().getWidgetDisplayName().withStartingStyle(actionStyle);
 
-        this.nameLabelWidget = new LabelWidget(x, y, -1, height, 0xFFF0F0F0);
+        this.nameLabelWidget = new LabelWidget(-1, height, 0xFFF0F0F0);
         this.nameLabelWidget.getPadding().setTop(2).setLeft(4);
         this.nameLabelWidget.setStyledTextLines(name, actionName);
 
-        this.keybindButton = new KeyBindConfigButton(x, y, 120, 20, data.getKeyBind(), screen);
-        this.settingsWidget = new KeybindSettingsWidget(x, y, 20, 20, data.getKeyBind(), data.getName(), null);
-
-        this.removeButton = new GenericButton(0, 0, -1, 20, "malilib.gui.button.label.remove");
-        this.removeButton.setActionListener(this::removeHotkey);
+        this.keybindButton = new KeyBindConfigButton(120, 20, data.getKeyBind(), screen);
+        this.settingsWidget = new KeybindSettingsWidget(data.getKeyBind(), data.getName(), null);
+        this.removeButton = GenericButton.simple("malilib.gui.button.label.remove", this::removeHotkey);
 
         this.setRenderNormalBackground(true);
     }

@@ -10,14 +10,9 @@ public abstract class BaseModelWidget extends BackgroundWidget
     protected float scale = 1f;
     protected boolean doHighlight;
 
-    public BaseModelWidget(int x, int y)
+    public BaseModelWidget(int dimensions)
     {
-        this(x, y, 16);
-    }
-
-    public BaseModelWidget(int x, int y, int dimensions)
-    {
-        super(x, y, dimensions, dimensions);
+        super(dimensions, dimensions);
 
         this.dimensions = dimensions;
         this.setNormalBorderWidth(0);

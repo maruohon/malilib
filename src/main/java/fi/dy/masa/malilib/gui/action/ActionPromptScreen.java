@@ -33,29 +33,29 @@ public class ActionPromptScreen extends BaseListScreen<DataListWidget<NamedActio
         super(0, 32, 0, 32);
 
         List<ActionList> lists = ActionList.getActionLists();
-        this.dropDownWidget = new DropDownListWidget<>(0, 0, -1, 16, 80, 4, lists, ActionList::getDisplayName, null);
+        this.dropDownWidget = new DropDownListWidget<>(-1, 16, 80, 4, lists, ActionList::getDisplayName);
         this.dropDownWidget.setSelectedEntry(ActionList.getSelectedList(lists));
         this.dropDownWidget.setSelectionListener(this::onListSelectionChanged);
 
         String label = "malilib.gui.label.action_prompt_screen.remember_search";
         String hoverKey = "malilib.gui.hover.action_prompt_screen.remember_search_text";
-        this.rememberSearchCheckBoxWidget = new CheckBoxWidget(0, 0, label, hoverKey);
+        this.rememberSearchCheckBoxWidget = new CheckBoxWidget(label, hoverKey);
         this.rememberSearchCheckBoxWidget.setBooleanStorage(MaLiLibConfigs.Generic.ACTION_PROMPT_REMEMBER_SEARCH);
 
         label = "malilib.gui.label.action_prompt_screen.fuzzy_search";
         hoverKey = "malilib.gui.hover.action_prompt_screen.use_fuzzy_search";
-        this.fuzzySearchCheckBoxWidget = new CheckBoxWidget(0, 0, label, hoverKey);
+        this.fuzzySearchCheckBoxWidget = new CheckBoxWidget(label, hoverKey);
         this.fuzzySearchCheckBoxWidget.setBooleanStorage(MaLiLibConfigs.Generic.ACTION_PROMPT_FUZZY_SEARCH);
         this.fuzzySearchCheckBoxWidget.setListener((v) -> this.updateFilteredList());
 
         label = "malilib.gui.label.action_prompt_screen.search_display_name";
         hoverKey = "malilib.gui.hover.action_prompt_screen.search_display_name";
-        this.searchDisplayNameCheckBoxWidget = new CheckBoxWidget(0, 0, label, hoverKey);
+        this.searchDisplayNameCheckBoxWidget = new CheckBoxWidget(label, hoverKey);
         this.searchDisplayNameCheckBoxWidget.setBooleanStorage(MaLiLibConfigs.Generic.ACTION_PROMPT_SEARCH_DISPLAY_NAME);
         this.searchDisplayNameCheckBoxWidget.setListener((v) -> this.updateFilteredList());
 
         int screenWidth = 320;
-        this.searchTextField = new BaseTextFieldWidget(0, 0, screenWidth - 12, 16);
+        this.searchTextField = new BaseTextFieldWidget(screenWidth - 12, 16);
         this.searchTextField.setListener(this::updateFilteredList);
         this.searchTextField.setUpdateListenerAlways(true);
 

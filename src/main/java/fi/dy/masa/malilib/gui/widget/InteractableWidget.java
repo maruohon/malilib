@@ -24,6 +24,11 @@ public abstract class InteractableWidget extends BaseWidget
     protected boolean shouldReceiveOutsideClicks;
     protected boolean shouldReceiveOutsideScrolls;
 
+    public InteractableWidget(int width, int height)
+    {
+        this(0, 0, width, height);
+    }
+
     public InteractableWidget(int x, int y, int width, int height)
     {
         super(x, y, width, height);

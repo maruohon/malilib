@@ -10,17 +10,17 @@ public class MenuEntryWidget extends BackgroundWidget
 
     public MenuEntryWidget(StyledTextLine text, EventListener action)
     {
-        this(0, 0, 10, 12, text, action);
+        this(10, 12, text, action, null);
     }
 
-    public MenuEntryWidget(int x, int y, int width, int height, StyledTextLine text, EventListener action)
+    public MenuEntryWidget(int width, int height, StyledTextLine text, EventListener action)
     {
-        this(x, y, width, height, text, action, null);
+        this(width, height, text, action, null);
     }
 
-    public MenuEntryWidget(int x, int y, int width, int height, StyledTextLine text, EventListener action, @Nullable String hoverText)
+    public MenuEntryWidget(int width, int height, StyledTextLine text, EventListener action, @Nullable String hoverText)
     {
-        super(x, y, width, height);
+        super(width, height);
 
         this.action = action;
 

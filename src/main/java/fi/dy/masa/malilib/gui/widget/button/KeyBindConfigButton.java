@@ -28,9 +28,9 @@ public class KeyBindConfigButton extends GenericButton
     protected boolean selected;
     protected boolean updateImmediately;
 
-    public KeyBindConfigButton(int x, int y, int width, int height, KeyBind keyBind, @Nullable KeybindEditingScreen host)
+    public KeyBindConfigButton(int width, int height, KeyBind keyBind, @Nullable KeybindEditingScreen host)
     {
-        super(x, y, width, height, "");
+        super(width, height, "");
 
         this.host = host;
         this.keyBind = keyBind;

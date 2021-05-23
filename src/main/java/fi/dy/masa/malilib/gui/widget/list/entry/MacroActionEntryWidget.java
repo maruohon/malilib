@@ -29,12 +29,10 @@ public class MacroActionEntryWidget extends BaseDataListEntryWidget<MacroAction>
         StyledTextLine nameText = data.getWidgetDisplayName();
         this.setText(StyledTextUtils.clampStyledTextToMaxWidth(nameText, width - 16, LeftRight.RIGHT, " ..."));
 
-        this.editButton = new GenericButton(0, 0, -1, 12, "malilib.label.edit");
-        this.editButton.setActionListener(this::editMacro);
+        this.editButton = GenericButton.simple(12, "malilib.label.edit", this::editMacro);
 
-        this.removeButton = GenericButton.createIconOnly(0, 0, DefaultIcons.LIST_REMOVE_MINUS_9);
+        this.removeButton = GenericButton.createIconOnly(DefaultIcons.LIST_REMOVE_MINUS_9, this::removeMacro);
         this.removeButton.translateAndAddHoverStrings("malilib.gui.button.hover.list.remove");
-        this.removeButton.setActionListener(this::removeMacro);
 
         this.renderHoverBackground = false;
         this.setHoveredBorderWidth(1);

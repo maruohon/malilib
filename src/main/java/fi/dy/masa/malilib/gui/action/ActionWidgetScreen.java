@@ -68,33 +68,30 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
         this.data = data;
         this.name = name;
 
-        this.editModeLabel = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.edit_mode.colon");
+        this.editModeLabel = new LabelWidget("malilib.label.edit_mode.colon");
         this.editModeButton = OnOffButton.simpleSlider(16, () -> this.editMode, this::toggleEditMode);
 
-        this.infoWidget = new InfoIconWidget(0, 0, DefaultIcons.INFO_ICON_18, "");
+        this.infoWidget = new InfoIconWidget(DefaultIcons.INFO_ICON_18, "");
 
-        this.closeOnExecuteCheckbox = new CheckBoxWidget(0, 0, "malilib.label.checkbox.action_widget_screen.close_on_execute",
+        this.closeOnExecuteCheckbox = new CheckBoxWidget("malilib.label.checkbox.action_widget_screen.close_on_execute",
                                                          "malilib.hover_info.action_widget_screen.close_screen_on_execute");
         this.closeOnExecuteCheckbox.setBooleanStorage(this::shouldCloseScreenOnExecute, this::setCloseScreenOnExecute);
 
-        this.closeOnKeyReleaseCheckbox = new CheckBoxWidget(0, 0, "malilib.label.checkbox.action_widget_screen.close_on_key_release",
+        this.closeOnKeyReleaseCheckbox = new CheckBoxWidget("malilib.label.checkbox.action_widget_screen.close_on_key_release",
                                                             "malilib.hover_info.action_widget_screen.close_screen_on_key_release");
         this.closeOnKeyReleaseCheckbox.setBooleanStorage(() -> this.closeScreenOnKeyRelease, this::setCloseScreenOnKeyRelease);
 
-        this.addWidgetButton = new GenericButton(0, 0, -1, 16, "malilib.label.button.add_action");
-        this.addWidgetButton.setActionListener(this::openAddWidgetScreen);
+        this.addWidgetButton = GenericButton.simple(16, "malilib.label.button.add_action", this::openAddWidgetScreen);
 
-        this.exportSettingsButton = new GenericButton(0, 0, -1, 16, "malilib.gui.button.export");
+        this.exportSettingsButton = GenericButton.simple(16, "malilib.gui.button.export", this::onExportSettings);
         this.exportSettingsButton.translateAndAddHoverString("malilib.gui.button.hover.action_widget_screen.export_settings");
-        this.exportSettingsButton.setActionListener(this::onExportSettings);
 
-        this.importSettingsButton = new GenericButton(0, 0, -1, 16, "malilib.gui.button.import");
+        this.importSettingsButton = GenericButton.simple(16, "malilib.gui.button.import", this::onImportSettings);
         this.importSettingsButton.translateAndAddHoverString("malilib.gui.button.hover.action_widget_screen.import_settings");
-        this.importSettingsButton.setActionListener(this::onImportSettings);
 
-        this.gridLabel = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.grid.colon");
+        this.gridLabel = new LabelWidget("malilib.label.grid.colon");
         this.gridEnabledButton = OnOffButton.simpleSlider(16, () -> this.gridEnabled, this::toggleGridEnabled);
-        this.gridEditWidget = new IntegerEditWidget(0, 0, 40, 16, this.gridSize, 1, 256, this::setGridSize);
+        this.gridEditWidget = new IntegerEditWidget(40, 16, this.gridSize, 1, 256, this::setGridSize);
 
         this.readData(data);
     }

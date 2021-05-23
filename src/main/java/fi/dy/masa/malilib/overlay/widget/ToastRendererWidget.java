@@ -27,6 +27,8 @@ public class ToastRendererWidget extends InfoRendererWidget
 
     public ToastRendererWidget()
     {
+        super();
+
         this.isOverlay = true;
         this.shouldSerialize = true;
         this.setName("Toast Renderer");

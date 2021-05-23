@@ -41,39 +41,36 @@ public class AddActionExecutionWidgetScreen extends BaseScreen
         this.setTitle("malilib.gui.title.create_action_execution_widget");
         this.useTitleHierarchy = false;
 
-        this.actionLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.action.colon");
-        this.typeLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.type.colon");
-        this.nameLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.name_optional.colon");
-        this.iconLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.icon_optional.colon");
-        this.hoverTextLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.hover_text_optional.colon");
-        this.argumentLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.argument.colon");
+        this.actionLabelWidget = new LabelWidget("malilib.label.action.colon");
+        this.typeLabelWidget = new LabelWidget("malilib.label.type.colon");
+        this.nameLabelWidget = new LabelWidget("malilib.label.name_optional.colon");
+        this.iconLabelWidget = new LabelWidget("malilib.label.icon_optional.colon");
+        this.hoverTextLabelWidget = new LabelWidget("malilib.label.hover_text_optional.colon");
+        this.argumentLabelWidget = new LabelWidget("malilib.label.argument.colon");
 
-        this.actionDropDownWidget = new DropDownListWidget<>(0, 0, 160, 16, 240, 20,
+        this.actionDropDownWidget = new DropDownListWidget<>(160, 16, 240, 20,
                                                              ActionRegistry.INSTANCE.getAllActions(),
-                                                             NamedAction::getDisplayName, null);
+                                                             NamedAction::getDisplayName);
         this.actionDropDownWidget.setSelectionListener(this::onActionSelected);
 
-        this.typeDropDownWidget = new DropDownListWidget<>(0, 0, -1, 16, 80, 4,
+        this.typeDropDownWidget = new DropDownListWidget<>(-1, 16, 80, 4,
                                                            BaseActionExecutionWidget.Type.VALUES,
-                                                           BaseActionExecutionWidget.Type::getDisplayName, null);
+                                                           BaseActionExecutionWidget.Type::getDisplayName);
         this.typeDropDownWidget.setSelectedEntry(BaseActionExecutionWidget.Type.RECTANGULAR);
 
-        this.iconDropDownWidget = new DropDownListWidget<>(0, 0, 120, 16, 120, 10,
+        this.iconDropDownWidget = new DropDownListWidget<>(120, 16, 120, 10,
                                                            IconRegistry.INSTANCE.getAllIcons(),
-                                                           IconRegistry::getKeyForIcon, (x, y, h, i) -> new IconWidget(x, y, i));
+                                                           IconRegistry::getKeyForIcon, (h, i) -> new IconWidget(i));
 
-        this.addArgumentCheckbox = new CheckBoxWidget(0, 0, "malilib.label.add_action_execution_widget.add_argument",
+        this.addArgumentCheckbox = new CheckBoxWidget("malilib.label.add_action_execution_widget.add_argument",
                                                       "malilib.hover_info.add_action_execution_widget.add_argument");
 
-        this.nameTextField = new BaseTextFieldWidget(0, 0, 140, 16, "");
-        this.hoverTextTextField = new BaseTextFieldWidget(0, 0, 140, 16, "");
-        this.argumentTextField = new BaseTextFieldWidget(0, 0, 160, 16, "");
+        this.nameTextField = new BaseTextFieldWidget(140, 16);
+        this.hoverTextTextField = new BaseTextFieldWidget(140, 16);
+        this.argumentTextField = new BaseTextFieldWidget(160, 16);
 
-        this.addButton = new GenericButton(0, 0, -1, 20, "malilib.gui.button.add");
-        this.addButton.setActionListener(this::createActionWidget);
-
-        this.cancelButton = new GenericButton(0, 0, -1, 20, "malilib.gui.button.cancel");
-        this.cancelButton.setActionListener(this::cancel);
+        this.addButton = GenericButton.simple("malilib.gui.button.add", this::createActionWidget);
+        this.cancelButton = GenericButton.simple("malilib.gui.button.cancel", this::cancel);
 
         this.backgroundColor = 0xFF101010;
         this.setScreenWidthAndHeight(240, 190);

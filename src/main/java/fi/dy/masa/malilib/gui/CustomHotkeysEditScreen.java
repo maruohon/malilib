@@ -28,9 +28,8 @@ public class CustomHotkeysEditScreen extends BaseListScreen<DataListWidget<Custo
 
         this.setTitle("malilib.gui.title.manage_custom_hotkeys");
 
-        this.addHotkeyButton = new GenericButton(0, 0, -1, 20, "malilib.gui.button.add_new_hotkey");
+        this.addHotkeyButton = GenericButton.simple("malilib.gui.button.add_new_hotkey", this::openAddHotkeyScreen);
         this.addHotkeyButton.translateAndAddHoverStrings("malilib.gui.button.hover.add_new_hotkey");
-        this.addHotkeyButton.setActionListener(this::openAddHotkeyScreen);
     }
 
     @Override

@@ -13,7 +13,7 @@ public class StringConfigWidget extends BaseConfigOptionWidget<String, StringCon
     {
         super(x, y, width, height, listIndex, originalListIndex, config, ctx);
 
-        this.textField = new BaseTextFieldWidget(x, y, 20, 16, this.config.getStringValue());
+        this.textField = new BaseTextFieldWidget(20, 16, this.config.getStringValue());
         this.textField.setHoverStringProvider("locked", this.config::getLockAndOverrideMessages);
 
         this.textField.setListener((str) -> {

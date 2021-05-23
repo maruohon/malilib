@@ -24,28 +24,40 @@ public class GenericButton extends BaseButton
     protected int textColorNormal = 0xFFE0E0E0;
     protected int textColorHovered = 0xFFFFFFA0;
 
-    public GenericButton(int x, int y, int width, boolean rightAlign, String translationKey, Object... args)
+    public GenericButton(@Nullable String translationKey)
     {
-        this(x, y, width, 20, StringUtils.translate(translationKey, args));
-
-        this.setRightAlign(rightAlign, x, true);
+        this(-1, 20, translationKey);
     }
 
-    public GenericButton(int x, int y, int width, int height, String translationKey, String... hoverStrings)
+    public GenericButton(int height, @Nullable String translationKey)
     {
-        this(x, y, width, height, translationKey, (Supplier<MultiIcon>) null, hoverStrings);
+        this(-1, height, translationKey);
+    }
+
+    public GenericButton(int width, boolean rightAlign, @Nullable String translationKey, Object... args)
+    {
+        this(width, 20, StringUtils.translate(translationKey, args));
+
+        this.setRightAlign(rightAlign, 0, true);
+    }
+
+    public GenericButton(int width, int height, @Nullable String translationKey, String... hoverStrings)
+    {
+        this(width, height, translationKey, (Supplier<MultiIcon>) null, hoverStrings);
 
         this.textCentered = true;
     }
 
-    public GenericButton(int x, int y, int width, int height, String translationKey, MultiIcon icon, String... hoverStrings)
+    public GenericButton(int width, int height, @Nullable String translationKey,
+                         MultiIcon icon, String... hoverStrings)
     {
-        this(x, y, width, height, translationKey, () -> icon, hoverStrings);
+        this(width, height, translationKey, () -> icon, hoverStrings);
     }
 
-    public GenericButton(int x, int y, int width, int height, String translationKey, @Nullable Supplier<MultiIcon> iconSupplier, String... hoverStrings)
+    public GenericButton(int width, int height, @Nullable String translationKey,
+                         @Nullable Supplier<MultiIcon> iconSupplier, String... hoverStrings)
     {
-        super(x, y, width, height, translationKey);
+        super(width, height, translationKey);
 
         this.textOffsetX = 0;
         this.iconSupplier = iconSupplier;
@@ -68,14 +80,14 @@ public class GenericButton extends BaseButton
         this.setHoveredBorderColor(0xFFFFFFFF);
     }
 
-    public GenericButton(int x, int y, MultiIcon icon, String... hoverStrings)
+    public GenericButton(MultiIcon icon, String... hoverStrings)
     {
-        this(x, y, () -> icon, hoverStrings);
+        this(() -> icon, hoverStrings);
     }
 
-    public GenericButton(int x, int y, Supplier<MultiIcon> iconSupplier, String... hoverStrings)
+    public GenericButton(Supplier<MultiIcon> iconSupplier, String... hoverStrings)
     {
-        this(x, y, iconSupplier.get().getWidth(), iconSupplier.get().getHeight(), "", iconSupplier, hoverStrings);
+        this(iconSupplier.get().getWidth(), iconSupplier.get().getHeight(), "", iconSupplier, hoverStrings);
 
         this.setRenderButtonBackgroundTexture(false);
     }
@@ -256,55 +268,64 @@ public class GenericButton extends BaseButton
         }
     }
 
-    public static GenericButton simple(int width, int height, String translationKey, EventListener actionListener)
+    public static GenericButton simple(String translationKey, EventListener actionListener)
     {
-        GenericButton button = new GenericButton(0, 0, width, height, translationKey);
+        GenericButton button = new GenericButton(translationKey);
         button.setActionListener(actionListener);
         return button;
     }
 
-    public static GenericButton simple(int width, int height, String translationKey,
+    public static GenericButton simple(String translationKey, ButtonActionListener actionListener)
+    {
+        GenericButton button = new GenericButton(translationKey);
+        button.setActionListener(actionListener);
+        return button;
+    }
+
+    public static GenericButton simple(int height, String translationKey, EventListener actionListener)
+    {
+        GenericButton button = new GenericButton(height, translationKey);
+        button.setActionListener(actionListener);
+        return button;
+    }
+
+    public static GenericButton simple(int height, String translationKey, ButtonActionListener actionListener)
+    {
+        GenericButton button = new GenericButton(height, translationKey);
+        button.setActionListener(actionListener);
+        return button;
+    }
+
+    public static GenericButton simple(int height, String translationKey,
                                        EventListener actionListener, String hoverTextTranslationKey)
     {
-        GenericButton button = new GenericButton(0, 0, width, height, translationKey, hoverTextTranslationKey);
+        GenericButton button = new GenericButton(-1, height, translationKey, hoverTextTranslationKey);
         button.setActionListener(actionListener);
         return button;
     }
 
-    public static GenericButton createIconOnly(int x, int y, MultiIcon icon)
+    public static GenericButton createIconOnly(MultiIcon icon)
     {
-        return createIconOnly(x, y, icon.getWidth(), icon.getHeight(), () -> icon);
+        return createIconOnly(icon.getWidth(), icon.getHeight(), () -> icon);
     }
 
-    public static GenericButton createIconOnly(int x, int y, MultiIcon icon, int outlineColorNormal, int outlineColorHover)
+    public static GenericButton createIconOnly(MultiIcon icon, EventListener actionListener)
     {
-        return createIconOnly(x, y, icon.getWidth() + 2, icon.getHeight() + 2, () -> icon, outlineColorNormal, outlineColorHover);
-    }
-
-    public static GenericButton createIconOnly(int x, int y, Supplier<MultiIcon> iconSupplier)
-    {
-        MultiIcon icon = iconSupplier.get();
-        return createIconOnly(x, y, icon.getWidth(), icon.getHeight(), iconSupplier);
-    }
-
-    public static GenericButton createIconOnly(int x, int y, int width, int height,
-                                               Supplier<MultiIcon> iconSupplier)
-    {
-        GenericButton button =  new GenericButton(x, y, width, height, "", iconSupplier);
-        button.setRenderButtonBackgroundTexture(false);
+        GenericButton button = createIconOnly(icon);
+        button.setActionListener(actionListener);
         return button;
     }
 
-    public static GenericButton createIconOnly(int x, int y, int width, int height,
-                                               Supplier<MultiIcon> iconSupplier,
-                                               int outlineColorNormal, int outlineColorHover)
+    public static GenericButton createIconOnly(Supplier<MultiIcon> iconSupplier)
     {
-        GenericButton button = createIconOnly(x, y, width, height, iconSupplier);
+        MultiIcon icon = iconSupplier.get();
+        return createIconOnly(icon.getWidth(), icon.getHeight(), iconSupplier);
+    }
 
-        button.setRenderNormalBorder(true);
-        button.setNormalBorderColor(outlineColorNormal);
-        button.setHoveredBorderColor(outlineColorHover);
-
+    public static GenericButton createIconOnly(int width, int height, Supplier<MultiIcon> iconSupplier)
+    {
+        GenericButton button =  new GenericButton(width, height, "", iconSupplier);
+        button.setRenderButtonBackgroundTexture(false);
         return button;
     }
 }

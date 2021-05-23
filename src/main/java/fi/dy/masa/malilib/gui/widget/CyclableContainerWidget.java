@@ -12,21 +12,17 @@ public class CyclableContainerWidget extends ContainerWidget
     protected int startIndex;
     protected int widgetGap = 2;
 
-    public CyclableContainerWidget(int x, int y, int width, int height, List<? extends InteractableWidget> cyclableWidgets)
+    public CyclableContainerWidget(int width, int height, List<? extends InteractableWidget> cyclableWidgets)
     {
-        super(x, y, width, height);
+        super(width, height);
 
         this.cyclableWidgets = cyclableWidgets;
-        this.leftButton = new GenericButton(x, y, 12, 20, "", DefaultIcons.MEDIUM_ARROW_LEFT, "malilib.gui.button.hover.cycle_widgets_left");
-        this.leftButton.setActionListener(() -> {
-            this.startIndex = Math.max(this.startIndex - 1, 0);
-            this.reAddSubWidgets();
-        });
-        this.rightButton = new GenericButton(x, y, 12, 20, "", DefaultIcons.MEDIUM_ARROW_RIGHT, "malilib.gui.button.hover.cycle_widgets_right");
-        this.rightButton.setActionListener(() -> {
-            this.startIndex = Math.min(this.startIndex + 1, this.getMaxStartIndex());
-            this.reAddSubWidgets();
-        });
+
+        this.leftButton = new GenericButton(12, 20, "", DefaultIcons.MEDIUM_ARROW_LEFT, "malilib.gui.button.hover.cycle_widgets_left");
+        this.leftButton.setActionListener(this::cycleLeft);
+
+        this.rightButton = new GenericButton(12, 20, "", DefaultIcons.MEDIUM_ARROW_RIGHT, "malilib.gui.button.hover.cycle_widgets_right");
+        this.rightButton.setActionListener(this::cycleRight);
     }
 
     public CyclableContainerWidget setWidgetGap(int gap)
@@ -59,9 +55,21 @@ public class CyclableContainerWidget extends ContainerWidget
         super.updateSubWidgetsToGeometryChanges();
     }
 
+    protected void cycleLeft()
+    {
+        this.startIndex = Math.max(this.startIndex - 1, 0);
+        this.reAddSubWidgets();
+    }
+
+    protected void cycleRight()
+    {
+        this.startIndex = Math.min(this.startIndex + 1, this.getMaxStartIndex());
+        this.reAddSubWidgets();
+    }
+
     protected int getMaxStartIndex()
     {
-        int allWidgetsWidth = this.getAllWidgetsWidth();
+        int allWidgetsWidth = this.getTotalCyclableWidgetsWidth();
 
         if (allWidgetsWidth <= this.getWidth())
         {
@@ -88,7 +96,7 @@ public class CyclableContainerWidget extends ContainerWidget
         return index;
     }
 
-    protected int getAllWidgetsWidth()
+    protected int getTotalCyclableWidgetsWidth()
     {
         int widgetCount = this.cyclableWidgets.size();
         int allWidgetsWidth = 0;
@@ -109,7 +117,7 @@ public class CyclableContainerWidget extends ContainerWidget
     protected void reAddFittingWidgets()
     {
         int width = this.getWidth();
-        int allWidgetsWidth = this.getAllWidgetsWidth();
+        int allWidgetsWidth = this.getTotalCyclableWidgetsWidth();
 
         int x = this.getX();
         int y = this.getY();
@@ -124,7 +132,7 @@ public class CyclableContainerWidget extends ContainerWidget
             x = this.leftButton.getRight() + this.widgetGap;
             this.leftButton.setEnabled(this.startIndex > 0);
 
-            this.rightButton.setPosition(this.getRight() - this.rightButton.getWidth(), y);
+            this.rightButton.setPosition(maxX - this.rightButton.getWidth(), y);
             maxX = this.rightButton.getX() - this.widgetGap;
             this.rightButton.setEnabled(this.startIndex < this.getMaxStartIndex());
 

@@ -22,12 +22,12 @@ public class ExpandableConfigGroupWidget extends BaseConfigWidget<ExpandableConf
         this.setNormalBorderColor(0xFFFFFFFF);
         this.setHoveredBorderWidth(1);
 
-        this.arrowIconWidget = new IconWidget(0, 0, this.getArrowIcon());
+        this.arrowIconWidget = new IconWidget(this.getArrowIcon());
         this.arrowIconWidget.setEnabled(true);
         this.arrowIconWidget.setDoHighlight(true);
         this.arrowIconWidget.setRenderHoverChecker(this::isHoveredForRender);
 
-        this.plusMinusIconWidget = new IconWidget(0, 0, this.getPlusMinusIcon());
+        this.plusMinusIconWidget = new IconWidget(this.getPlusMinusIcon());
         this.plusMinusIconWidget.setEnabled(true);
         this.plusMinusIconWidget.setDoHighlight(true);
         this.plusMinusIconWidget.setRenderHoverChecker(this::isHoveredForRender);

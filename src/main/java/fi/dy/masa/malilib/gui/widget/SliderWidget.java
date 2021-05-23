@@ -15,9 +15,9 @@ public class SliderWidget extends InteractableWidget
     protected boolean dragging;
     protected boolean locked;
 
-    public SliderWidget(int x, int y, int width, int height, SliderCallback callback)
+    public SliderWidget(int width, int height, SliderCallback callback)
     {
-        super(x, y, width, height);
+        super(width, height);
 
         this.callback = callback;
         int usableWidth = this.getWidth() - 4;

@@ -19,6 +19,7 @@ import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.ScrollBarWidget;
 import fi.dy.masa.malilib.gui.widget.SearchBarWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.BaseListEntryWidget;
+import fi.dy.masa.malilib.gui.widget.list.entry.DataListHeaderWidget;
 import fi.dy.masa.malilib.gui.widget.util.DefaultWidgetPositioner;
 import fi.dy.masa.malilib.gui.widget.util.WidgetPositioner;
 import fi.dy.masa.malilib.listener.EventListener;
@@ -26,7 +27,7 @@ import fi.dy.masa.malilib.render.RenderUtils;
 
 public abstract class BaseListWidget extends ContainerWidget
 {
-    protected final ArrayList<BaseListEntryWidget> entryWidgets = new ArrayList<>();
+    protected final List<BaseListEntryWidget> entryWidgets = new ArrayList<>();
     protected final EdgeInt listPosition = new EdgeInt(2, 2, 2, 2);
     protected final ScrollBarWidget scrollBar;
 
@@ -35,7 +36,7 @@ public abstract class BaseListWidget extends ContainerWidget
 
     @Nullable protected BaseScreen parentScreen;
     @Nullable protected SearchBarWidget searchBarWidget;
-    @Nullable protected ContainerWidget headerWidget;
+    @Nullable protected DataListHeaderWidget<?> headerWidget;
     @Nullable protected EventListener entryRefreshListener;
 
     protected int entryWidgetStartX;
@@ -55,7 +56,7 @@ public abstract class BaseListWidget extends ContainerWidget
         super(x, y, width, height);
 
         // The position gets updated in setSize()
-        this.scrollBar = new ScrollBarWidget(0, 0, 8, height);
+        this.scrollBar = new ScrollBarWidget(8, height);
         this.scrollBar.setArrowTextures(DefaultIcons.SMALL_ARROW_UP, DefaultIcons.SMALL_ARROW_DOWN);
         this.scrollBar.setValueChangeListener(this::reCreateListEntryWidgets);
     }

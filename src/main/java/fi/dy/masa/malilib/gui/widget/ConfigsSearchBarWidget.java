@@ -54,23 +54,23 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
         KeyBindSettings settings = KeyBindSettings.create(Context.ANY, KeyAction.BOTH, true, true, false, CancelCondition.NEVER, false);
         this.searchKey = KeyBindImpl.fromStorageString("", settings);
 
-        this.hotkeySearchButton = new KeyBindConfigButton(x + width - 150, y, 160, 20, this.searchKey, screen);
+        this.hotkeySearchButton = new KeyBindConfigButton(160, 16, this.searchKey, screen);
         this.hotkeySearchButton.setUpdateKeyBindImmediately();
         this.hotkeySearchButton.translateAndAddHoverStrings("malilib.gui.button.hover.hotkey_search_button");
         this.hotkeySearchButton.setHoverInfoRequiresShift(false);
         this.hotkeySearchButton.setValueChangeListener(filterChangeListener);
 
-        this.resetConfigsButton = new GenericButton(x + width - 150, y, 160, 20, "malilib.gui.button.config.reset_all_filtered");
+        this.resetConfigsButton = new GenericButton(160, 16, "malilib.gui.button.config.reset_all_filtered");
         this.resetConfigsButton.translateAndAddHoverStrings("malilib.gui.button.hover.config.reset_all_filtered");
         final ConfirmActionScreen confirmScreen = new ConfirmActionScreen(240, "malilib.gui.title.confirm_config_reset", configResetter, GuiUtils.getCurrentScreen(), "malilib.gui.label.confirm_config_reset");
         this.resetConfigsButton.setActionListener(() -> BaseScreen.openPopupScreen(confirmScreen));
 
-        this.sourceSelectionDropdown = new DropDownListWidget<>(x, y - 16, -1, 15, 60, 10, Scope.VALUES, Scope::getDisplayName, null);
+        this.sourceSelectionDropdown = new DropDownListWidget<>(-1, 15, 60, 10, Scope.VALUES, Scope::getDisplayName);
         this.sourceSelectionDropdown.setSelectedEntry(MaLiLibConfigs.Generic.CONFIG_SEARCH_DEFAULT_SCOPE.getValue());
         this.sourceSelectionDropdown.setSelectionListener((s) -> filterChangeListener.onEvent());
         this.sourceSelectionDropdown.setOpenStateHoverText(StringUtils.translate("malilib.gui.hover.config_search_default_scope"));
 
-        this.typeFilterDropdown = new DropDownListWidget<>(x + 100, y - 16, -1, 15, 160, 10, TypeFilter.VALUES, TypeFilter::getDisplayName, null);
+        this.typeFilterDropdown = new DropDownListWidget<>(-1, 15, 160, 10, TypeFilter.VALUES, TypeFilter::getDisplayName);
         this.typeFilterDropdown.setSelectedEntry(TypeFilter.ALL);
         this.typeFilterDropdown.setSelectionListener((s) -> filterChangeListener.onEvent());
     }
@@ -114,15 +114,16 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
         int x = this.getX();
         int y = this.getY();
         int width = this.getWidth();
-        int height = this.getHeight();
 
         this.sourceSelectionDropdown.setPosition(x + 18, y);
         this.typeFilterDropdown.setPosition(this.sourceSelectionDropdown.getRight() + 4, y);
 
         int btnX = x + width - this.hotkeySearchButton.getWidth() - 1;
-        this.resetConfigsButton.setPosition(btnX, y - 9);
-        this.hotkeySearchButton.setPosition(btnX, y + height - this.hotkeySearchButton.getHeight());
-        this.textField.setY(y + this.sourceSelectionDropdown.getHeight() + 2);
+        this.resetConfigsButton.setPosition(btnX, y);
+        y += this.sourceSelectionDropdown.getHeight() + 2;
+
+        this.hotkeySearchButton.setPosition(btnX, y);
+        this.textField.setY(y);
         this.textField.setWidth(width - this.hotkeySearchButton.getWidth() - 20);
     }
 

@@ -17,14 +17,14 @@ public class OptionListConfigButton extends GenericButton
     @Nullable protected final String prefixTranslationKey;
     @Nullable protected EventListener changeListener;
 
-    public OptionListConfigButton(int x, int y, int width, int height, OptionListConfig<?> config)
+    public OptionListConfigButton(int width, int height, OptionListConfig<?> config)
     {
-        this(x, y, width, height, config, null);
+        this(width, height, config, null);
     }
 
-    public OptionListConfigButton(int x, int y, int width, int height, OptionListConfig<?> config, @Nullable String prefixTranslationKey)
+    public OptionListConfigButton(int width, int height, OptionListConfig<?> config, @Nullable String prefixTranslationKey)
     {
-        super(x, y, width, height, "");
+        super(width, height, "");
 
         this.config = config;
         this.prefixTranslationKey = prefixTranslationKey;

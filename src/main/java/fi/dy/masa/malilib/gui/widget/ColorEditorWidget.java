@@ -13,28 +13,26 @@ public class ColorEditorWidget extends ContainerWidget
     protected final ColorIndicatorWidget colorIndicator;
     protected final int originalColor;
 
-    public ColorEditorWidget(int x, int y, int width, int height,
-                             EdgeInt colorStorage)
+    public ColorEditorWidget(int width, int height, EdgeInt colorStorage)
     {
-        this(x, y, width, height, colorStorage::getTop, colorStorage::setAll);
+        this(width, height, colorStorage::getTop, colorStorage::setAll);
     }
 
-    public ColorEditorWidget(int x, int y, int width, int height,
-                             IntSupplier colorInput, IntConsumer colorOutput)
+    public ColorEditorWidget(int width, int height, IntSupplier colorInput, IntConsumer colorOutput)
     {
-        super(x, y, width, height);
+        super(width, height);
 
         this.colorInput = colorInput;
         this.colorOutput = colorOutput;
         this.originalColor = colorInput.getAsInt();
 
         int w = width - height - 4;
-        this.textField = new BaseTextFieldWidget(x, y, w, 16, String.format("#%08X", this.originalColor));
+        this.textField = new BaseTextFieldWidget(w, 16, String.format("#%08X", this.originalColor));
         this.textField.setTextValidator(BaseTextFieldWidget.VALIDATOR_HEX_COLOR_8_6_4_3);
         this.textField.setListener(this::setColorFromString);
 
         int size = height;
-        this.colorIndicator = new ColorIndicatorWidget(0, 0, size, size, colorInput, this::setColorFromEditor);
+        this.colorIndicator = new ColorIndicatorWidget(size, size, colorInput, this::setColorFromEditor);
     }
 
     @Override

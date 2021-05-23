@@ -16,10 +16,16 @@ public class MissingConfigTypeFactory implements ConfigOptionWidgetFactory<Confi
 
     public static class MissingConfigWidget extends BaseConfigWidget<ConfigInfo>
     {
+        protected final LabelWidget labelWidget;
+
         public MissingConfigWidget(int x, int y, int width, int height, int listIndex,
                                    int originalListIndex, ConfigInfo config, ConfigWidgetContext ctx)
         {
             super(x, y, width, height, listIndex, originalListIndex, config, ctx);
+
+            String label = StringUtils.translate("malilib.gui.label_error.no_widget_factory_for_config_type",
+                                                 this.data.getClass().getName());
+            this.labelWidget = new LabelWidget(label);
         }
 
         @Override
@@ -27,12 +33,18 @@ public class MissingConfigTypeFactory implements ConfigOptionWidgetFactory<Confi
         {
             super.reAddSubWidgets();
 
+            this.addWidget(this.labelWidget);
+        }
+
+        @Override
+        public void updateSubWidgetsToGeometryChanges()
+        {
+            super.updateSubWidgetsToGeometryChanges();
+
             int x = this.getElementsStartPosition();
             int y = this.getY();
 
-            String label = StringUtils.translate("malilib.gui.label_error.no_widget_factory_for_config_type",
-                                                 this.data.getClass().getName());
-            this.addWidget(new LabelWidget(x, y + 7, 0xFFFFFFFF, label));
+            this.labelWidget.setPosition(x, y + 7);
         }
     }
 }

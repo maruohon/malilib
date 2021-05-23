@@ -30,18 +30,18 @@ public abstract class BaseHotkeyedBooleanConfigWidget extends BaseConfigWidget<C
         this.initialBooleanValue = booleanConfig.getBooleanValue();
         this.initialHotkeyValue = this.keyBind.getKeys();
 
-        this.booleanButton = new BooleanConfigButton(x, y + 1, -1, 20, booleanConfig);
+        this.booleanButton = new BooleanConfigButton(-1, 20, booleanConfig);
         this.booleanButton.setHoverStringProvider("locked", this.booleanConfig::getLockAndOverrideMessages);
         this.booleanButton.setActionListener(() -> {
             this.booleanConfig.toggleBooleanValue();
             this.updateButtonStates();
         });
 
-        this.hotkeyButton = new KeyBindConfigButton(x, y + 1, 120, 20, keyBind, ctx.getKeybindEditingScreen());
+        this.hotkeyButton = new KeyBindConfigButton(120, 20, keyBind, ctx.getKeybindEditingScreen());
         this.hotkeyButton.setHoverStringProvider("locked", this.booleanConfig::getLockAndOverrideMessages);
         this.hotkeyButton.setValueChangeListener(this::updateButtonStates);
 
-        this.settingsWidget = new KeybindSettingsWidget(x, y, 20, 20, keyBind, booleanConfig.getDisplayName(), ctx.getDialogHandler());
+        this.settingsWidget = new KeybindSettingsWidget(keyBind, booleanConfig.getDisplayName(), ctx.getDialogHandler());
 
         this.resetButton.setActionListener(() -> {
             this.config.resetToDefault();

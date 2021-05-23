@@ -46,17 +46,17 @@ public class MacroActionEditScreen extends BaseMultiListScreen
 
         this.setTitle("malilib.gui.title.edit_macro");
 
-        this.macroNameLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.name.colon");
-        this.allActionsLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.gui.label.action_list_screen.available_actions");
-        this.macroActionsLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.gui.label.macro_edit_screen.macro_actions");
+        this.macroNameLabelWidget = new LabelWidget("malilib.label.name.colon");
+        this.allActionsLabelWidget = new LabelWidget("malilib.gui.label.action_list_screen.available_actions");
+        this.macroActionsLabelWidget = new LabelWidget("malilib.gui.label.macro_edit_screen.macro_actions");
 
-        this.nameTextFieldWidget = new BaseTextFieldWidget(0, 0, 200, 16, name);
+        this.nameTextFieldWidget = new BaseTextFieldWidget(200, 16, name);
 
-        this.addActionsButton = GenericButton.createIconOnly(0, 0, DefaultIcons.LIST_ADD_PLUS_13);
+        this.addActionsButton = GenericButton.createIconOnly(DefaultIcons.LIST_ADD_PLUS_13);
         this.addActionsButton.setActionListener(this::addSelectedActions);
         this.addActionsButton.translateAndAddHoverString("malilib.hover_info.macro_edit_screen.add_actions");
 
-        this.removeActionsButton = GenericButton.createIconOnly(0, 0, DefaultIcons.LIST_REMOVE_MINUS_13);
+        this.removeActionsButton = GenericButton.createIconOnly(DefaultIcons.LIST_REMOVE_MINUS_13);
         this.removeActionsButton.setActionListener(this::removeSelectedActions);
         this.removeActionsButton.translateAndAddHoverString("malilib.hover_info.macro_edit_screen.remove_actions");
 

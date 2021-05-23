@@ -10,14 +10,14 @@ public class ItemStackWidget extends BaseModelWidget
 {
     protected ItemStack stack;
 
-    public ItemStackWidget(int x, int y, ItemStack stack)
+    public ItemStackWidget(ItemStack stack)
     {
-        this(x, y, 16, stack);
+        this(16, stack);
     }
 
-    public ItemStackWidget(int x, int y, int dimensions, ItemStack stack)
+    public ItemStackWidget(int dimensions, ItemStack stack)
     {
-        super(x, y, dimensions);
+        super(dimensions);
 
         this.setStack(stack);
     }
@@ -41,9 +41,9 @@ public class ItemStackWidget extends BaseModelWidget
         }
     }
 
-    public static ItemStackWidget createItemWidget(int x, int y, int dimensions, Item item)
+    public static ItemStackWidget createItemWidget(int dimensions, Item item)
     {
-        ItemStackWidget widget = new ItemStackWidget(x, y, dimensions, new ItemStack(item));
+        ItemStackWidget widget = new ItemStackWidget(dimensions, new ItemStack(item));
         widget.setNormalBackgroundColor(0xFF505050);
         widget.setHoveredBackgroundColor(0xFF505050);
         widget.setRenderNormalBackground(true);

@@ -28,6 +28,8 @@ public class ToastWidget extends InfoRendererWidget
 
     public ToastWidget(int fadeInTimeMs, int fadeOutTimeMs, HorizontalAlignment horizontalAlignment)
     {
+        super();
+
         this.horizontalAlignment = horizontalAlignment;
         this.fadeInDuration = (long) fadeInTimeMs * 1000000L;
         this.fadeOutDuration = (long) fadeOutTimeMs * 1000000L;

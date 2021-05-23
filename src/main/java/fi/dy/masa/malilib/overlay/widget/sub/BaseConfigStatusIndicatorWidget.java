@@ -29,6 +29,8 @@ public abstract class BaseConfigStatusIndicatorWidget<C extends ConfigInfo> exte
 
     public BaseConfigStatusIndicatorWidget(C config, ConfigOnTab configOnTab)
     {
+        super();
+
         this.config = config;
         this.configOnTab = configOnTab;
         this.getTextSettings().setUseOddEvenBackground(true);

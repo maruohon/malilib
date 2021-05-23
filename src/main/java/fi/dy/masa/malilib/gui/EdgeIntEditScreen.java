@@ -13,7 +13,7 @@ public class EdgeIntEditScreen extends BaseScreen
         this.useTitleHierarchy = false;
         this.setTitle(titleKey);
 
-        this.editWidget = new EdgeIntEditWidget(0, 0, 300, 100, value, isColor, centerText);
+        this.editWidget = new EdgeIntEditWidget(300, 100, value, isColor, centerText);
 
         this.setScreenWidthAndHeight(320, 130);
         this.centerOnScreen();

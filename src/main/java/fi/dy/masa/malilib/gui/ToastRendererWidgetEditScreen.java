@@ -48,44 +48,44 @@ public class ToastRendererWidgetEditScreen extends BaseScreen
         this.useTitleHierarchy = false;
         this.setTitle("malilib.gui.title.toast_renderer_configuration");
 
-        this.locationDropdownWidget = new DropDownListWidget<>(0, 0, -1, 16, 160, 10, ScreenLocation.VALUES,
-                                                               OptionListConfigValue::getDisplayName, null);
+        this.locationDropdownWidget = new DropDownListWidget<>(-1, 16, 160, 10, ScreenLocation.VALUES,
+                                                               OptionListConfigValue::getDisplayName);
         this.locationDropdownWidget.setSelectedEntry(widget.getScreenLocation());
         this.locationDropdownWidget.setSelectionListener(this::changeWidgetLocation);
 
-        this.nameLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.name.colon");
-        this.defaultLifeTimeLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.default_duration.colon");
-        this.defaultFadeInTimeLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.default_fade_in_time.colon");
-        this.defaultFadeOutTimeLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.default_fade_out_time.colon");
-        this.lineHeightLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.line_height.colon");
-        this.maxWidthLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.max_width.colon");
-        this.messageGapLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.message_gap.colon");
-        this.sortIndexLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.sort_index.colon");
-        this.textColorLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.text_color.colon");
-        this.zLevelLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.z_level.colon");
+        this.nameLabelWidget = new LabelWidget("malilib.label.name.colon");
+        this.defaultLifeTimeLabelWidget = new LabelWidget("malilib.label.default_duration.colon");
+        this.defaultFadeInTimeLabelWidget = new LabelWidget("malilib.label.default_fade_in_time.colon");
+        this.defaultFadeOutTimeLabelWidget = new LabelWidget("malilib.label.default_fade_out_time.colon");
+        this.lineHeightLabelWidget = new LabelWidget("malilib.label.line_height.colon");
+        this.maxWidthLabelWidget = new LabelWidget("malilib.label.max_width.colon");
+        this.messageGapLabelWidget = new LabelWidget("malilib.label.message_gap.colon");
+        this.sortIndexLabelWidget = new LabelWidget("malilib.label.sort_index.colon");
+        this.textColorLabelWidget = new LabelWidget("malilib.label.text_color.colon");
+        this.zLevelLabelWidget = new LabelWidget("malilib.label.z_level.colon");
         //this.textScaleLabelWidget = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.text_scale.colon");
 
-        this.nameTextField = new BaseTextFieldWidget(0, 0, 160, 16, widget.getName());
+        this.nameTextField = new BaseTextFieldWidget(160, 16, widget.getName());
         this.nameTextField.setListener(widget::setName);
 
-        this.defaultLifeTimeEditWidget = new IntegerEditWidget(0, 0, 72, 16, widget.getDefaultLifeTime(), 5, 120000, widget::setDefaultLifeTime);
-        this.defaultFadeInTimeEditWidget = new IntegerEditWidget(0, 0, 72, 16, widget.getDefaultFadeInTime(), 0, 10000, widget::setDefaultFadeInTime);
-        this.defaultFadeOutTimeEditWidget = new IntegerEditWidget(0, 0, 72, 16, widget.getDefaultFadeOutTime(), 0, 10000, widget::setDefaultFadeOutTime);
-        this.lineHeightEditWidget = new IntegerEditWidget(0, 0, 72, 16, widget.getLineHeight(), 6, 40, widget::setLineHeight);
-        this.maxWidthEditWidget = new IntegerEditWidget(0, 0, 72, 16, widget.getMaxWidth(), 32, 1920, widget::setMaxWidth);
-        this.messageGapEditWidget = new IntegerEditWidget(0, 0, 72, 16, widget.getMessageGap(), 0, 100, widget::setMessageGap);
-        this.sortIndexEditWidget = new IntegerEditWidget(0, 0, 72, 16, widget.getSortIndex(), -1000, 1000, widget::setSortIndex);
-        this.zLevelEditWidget = new DoubleEditWidget(0, 0, 72, 16, widget.getZLevel(), -1000, 1000, (v) -> widget.setZLevel((float) v));
+        this.defaultLifeTimeEditWidget = new IntegerEditWidget(72, 16, widget.getDefaultLifeTime(), 5, 120000, widget::setDefaultLifeTime);
+        this.defaultFadeInTimeEditWidget = new IntegerEditWidget(72, 16, widget.getDefaultFadeInTime(), 0, 10000, widget::setDefaultFadeInTime);
+        this.defaultFadeOutTimeEditWidget = new IntegerEditWidget(72, 16, widget.getDefaultFadeOutTime(), 0, 10000, widget::setDefaultFadeOutTime);
+        this.lineHeightEditWidget = new IntegerEditWidget(72, 16, widget.getLineHeight(), 6, 40, widget::setLineHeight);
+        this.maxWidthEditWidget = new IntegerEditWidget(72, 16, widget.getMaxWidth(), 32, 1920, widget::setMaxWidth);
+        this.messageGapEditWidget = new IntegerEditWidget(72, 16, widget.getMessageGap(), 0, 100, widget::setMessageGap);
+        this.sortIndexEditWidget = new IntegerEditWidget(72, 16, widget.getSortIndex(), -1000, 1000, widget::setSortIndex);
+        this.zLevelEditWidget = new DoubleEditWidget(72, 16, widget.getZLevel(), -1000, 1000, (v) -> widget.setZLevel((float) v));
         //this.textScaleEditWidget = new DoubleEditWidget(0, 0, 72, 16, widget.getScale(), 0.25, 20, widget::setScale);
 
-        this.marginEditButton = GenericButton.simple(-1, 16, "malilib.label.margin", this::openMarginEditScreen);
+        this.marginEditButton = GenericButton.simple(16, "malilib.label.margin", this::openMarginEditScreen);
         this.marginEditButton.setHoverStringProvider("tooltip", this.widget.getMargin()::getHoverTooltip);
 
-        this.paddingEditButton = GenericButton.simple(-1, 16, "malilib.label.padding", this::openPaddingEditScreen);
+        this.paddingEditButton = GenericButton.simple(16, "malilib.label.padding", this::openPaddingEditScreen);
         this.paddingEditButton.setHoverStringProvider("tooltip", this.widget.getPadding()::getHoverTooltip);
 
         final TextRenderSettings textSettings = widget.getTextSettings();
-        this.textColorEditWidget = new ColorIndicatorWidget(0, 0, 16, 16, textSettings::getTextColor, textSettings::setTextColor);
+        this.textColorEditWidget = new ColorIndicatorWidget(16, 16, textSettings::getTextColor, textSettings::setTextColor);
     }
 
     @Override

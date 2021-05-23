@@ -9,9 +9,9 @@ public class IconWidget extends BackgroundWidget
     protected boolean doHighlight;
     protected boolean enabled;
 
-    public IconWidget(int x, int y, @Nullable Icon icon)
+    public IconWidget(@Nullable Icon icon)
     {
-        super(x, y, icon.getWidth(), icon.getHeight());
+        super(icon.getWidth(), icon.getHeight());
 
         this.setIcon(icon);
     }

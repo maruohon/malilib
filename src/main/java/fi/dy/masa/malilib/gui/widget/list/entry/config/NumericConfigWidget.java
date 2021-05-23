@@ -22,13 +22,13 @@ public abstract class NumericConfigWidget<TYPE, CFG extends BaseConfigOption<TYP
     {
         super(x, y, width, height, listIndex, originalListIndex, config, ctx);
 
-        this.textField = new BaseTextFieldWidget(x, y, 60, 16);
+        this.textField = new BaseTextFieldWidget(60, 16);
         this.textField.setHoverStringProvider("lock", config::getLockAndOverrideMessages);
 
-        this.sliderWidget = new SliderWidget(x, y, 60, 20, config.getSliderCallback(this::updateResetButtonState));
+        this.sliderWidget = new SliderWidget(60, 20, config.getSliderCallback(this::updateResetButtonState));
         this.sliderWidget.setHoverStringProvider("lock", config::getLockAndOverrideMessages);
 
-        this.sliderToggleButton = new GenericButton(x, y, () -> this.config.isSliderActive() ? DefaultIcons.BTN_TXTFIELD : DefaultIcons.BTN_SLIDER);
+        this.sliderToggleButton = new GenericButton(() -> this.config.isSliderActive() ? DefaultIcons.BTN_TXTFIELD : DefaultIcons.BTN_SLIDER);
         this.sliderToggleButton.setHoverStringProvider("slider", this::getSliderMessages);
 
         this.sliderToggleButton.setActionListener(() -> {

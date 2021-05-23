@@ -17,26 +17,21 @@ public class ColorIndicatorWidget extends InteractableWidget
     protected final IntConsumer valueConsumer;
     @Nullable protected IntegerConfig config;
 
-    public ColorIndicatorWidget(int x, int y, int width, int height, Color4f color, IntConsumer consumer)
+    public ColorIndicatorWidget(int width, int height, int color, IntConsumer consumer)
     {
-        this(x, y, width, height, color.intValue, consumer);
+        this(width, height, () -> color, consumer);
     }
 
-    public ColorIndicatorWidget(int x, int y, int width, int height, int color, IntConsumer consumer)
+    public ColorIndicatorWidget(int width, int height, IntegerConfig config, IntConsumer consumer)
     {
-        this(x, y, width, height, () -> color, consumer);
-    }
-
-    public ColorIndicatorWidget(int x, int y, int width, int height, IntegerConfig config, IntConsumer consumer)
-    {
-        this(x, y, width, height, config::getIntegerValue, consumer);
+        this(width, height, config::getIntegerValue, consumer);
 
         this.config = config;
     }
 
-    public ColorIndicatorWidget(int x, int y, int width, int height, IntSupplier valueSupplier, IntConsumer consumer)
+    public ColorIndicatorWidget(int width, int height, IntSupplier valueSupplier, IntConsumer consumer)
     {
-        super(x, y, width, height);
+        super(width, height);
 
         this.valueSupplier = valueSupplier;
         this.valueConsumer = consumer;

@@ -23,14 +23,14 @@ public class RadioButtonWidget<T extends Enum<T>> extends InteractableWidget
     @Nullable protected T selectedEntry;
     @Nullable protected SelectionListener<RadioButtonWidget<T>> listener;
 
-    public RadioButtonWidget(int x, int y, List<T> options, Function<T, String> displayStringFunction)
+    public RadioButtonWidget(List<T> options, Function<T, String> displayStringFunction)
     {
-        this(x, y, options, displayStringFunction, null);
+        this(options, displayStringFunction, null);
     }
 
-    public RadioButtonWidget(int x, int y, List<T> options, Function<T, String> displayStringFunction, @Nullable String hoverInfoKey)
+    public RadioButtonWidget(List<T> options, Function<T, String> displayStringFunction, @Nullable String hoverInfoKey)
     {
-        super(x, y, 10, 10);
+        super(10, 10);
 
         int width = 0;
 

@@ -28,19 +28,16 @@ public class AddCustomHotkeyDefinitionScreen extends BaseScreen
         this.backgroundColor = 0xFF000000;
         this.setTitle("malilib.gui.title.add_new_hotkey");
 
-        this.nameLabelWidget = new LabelWidget(0, 0, -1, 12, 0xFFF0F0F0, "malilib.label.name.colon");
-        this.actionLabelWidget = new LabelWidget(0, 0, -1, 12, 0xFFF0F0F0, "malilib.label.action.colon");
+        this.nameLabelWidget = new LabelWidget(0xFFF0F0F0, "malilib.label.name.colon");
+        this.actionLabelWidget = new LabelWidget(0xFFF0F0F0, "malilib.label.action.colon");
 
-        this.nameTextField = new BaseTextFieldWidget(0, 0, 160, 16);
-        this.addButton = new GenericButton(0, 0, 60, 20, "malilib.gui.button.add");
-        this.addButton.setActionListener(this::onAddButtonClicked);
+        this.nameTextField = new BaseTextFieldWidget(160, 16);
+        this.addButton = GenericButton.simple("malilib.gui.button.add", this::onAddButtonClicked);
+        this.cancelButton = GenericButton.simple("malilib.gui.button.cancel", this::onCancelButtonClicked);
 
-        this.cancelButton = new GenericButton(0, 0, 60, 20, "malilib.gui.button.cancel");
-        this.cancelButton.setActionListener(this::onCancelButtonClicked);
-
-        this.actionDropDownWidget = new DropDownListWidget<>(0, 0, -1, 16, 160, 10,
+        this.actionDropDownWidget = new DropDownListWidget<>(-1, 16, 160, 10,
                                                              ActionRegistry.INSTANCE.getAllActions(),
-                                                             NamedAction::getName, null);
+                                                             NamedAction::getName);
 
         this.nameTextField.setFocused(true);
 

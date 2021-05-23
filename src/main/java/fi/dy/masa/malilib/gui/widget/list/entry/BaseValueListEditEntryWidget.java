@@ -28,9 +28,9 @@ public class BaseValueListEditEntryWidget<TYPE> extends BaseOrderableListEditEnt
         this.initialValue = initialValue;
         this.newEntryFactory = () -> this.defaultValue;
 
-        this.labelWidget = new LabelWidget(x + 2, y + 7, 20, 10, 0xC0C0C0C0, String.format("%3d:", originalListIndex + 1));
+        this.labelWidget = new LabelWidget(0xC0C0C0C0, String.format("%3d:", originalListIndex + 1));
 
-        this.resetButton = new GenericButton(x, y, -1, 16, "malilib.gui.button.reset.caps");
+        this.resetButton = new GenericButton(16, "malilib.gui.button.reset.caps");
         this.resetButton.setRenderButtonBackgroundTexture(false);
         this.resetButton.setRenderNormalBorder(true);
         this.resetButton.setNormalBorderColor(0xFF404040);
@@ -39,7 +39,7 @@ public class BaseValueListEditEntryWidget<TYPE> extends BaseOrderableListEditEnt
         int ddWidth = width - this.resetButton.getWidth() - this.labelWidget.getWidth()
                             - this.addButton.getWidth() - this.removeButton.getWidth()
                             - this.upButton.getWidth() - this.downButton.getWidth() - 20;
-        this.dropDownWidget = new DropDownListWidget<>(x, y, -ddWidth, 18, 216, 12, possibleValues, toStringConverter, iconWidgetFactory);
+        this.dropDownWidget = new DropDownListWidget<>(-ddWidth, 18, 216, 12, possibleValues, toStringConverter, iconWidgetFactory);
 
         this.dropDownWidget.setSelectedEntry(this.initialValue);
         this.dropDownWidget.setSelectionListener((entry) -> {
@@ -76,6 +76,8 @@ public class BaseValueListEditEntryWidget<TYPE> extends BaseOrderableListEditEnt
     @Override
     protected void updateSubWidgetsToGeometryChangesPre(int x, int y)
     {
+        int lx = this.getX();
+        this.labelWidget.setPosition(lx + 2, y + 6);
         this.dropDownWidget.setPosition(x, y + 1);
         this.nextWidgetX = this.dropDownWidget.getRight() + 2;
     }

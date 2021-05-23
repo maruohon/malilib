@@ -99,7 +99,8 @@ public class GuiUtils
     {
         x = addLabel(x, y, type, gui);
 
-        IntegerTextFieldWidget textField = new IntegerTextFieldWidget(x, y, textFieldWidth, 16, getCoordinateValue(type, pos));
+        IntegerTextFieldWidget textField = new IntegerTextFieldWidget(textFieldWidth, 16, getCoordinateValue(type, pos));
+        textField.setPosition(x, y);
         textField.setUpdateListenerAlways(true);
         addTextFieldAndButton(x + textFieldWidth + 4, y, type, modifier, textField, addButton, gui);
     }
@@ -109,7 +110,8 @@ public class GuiUtils
     {
         x = addLabel(x, y, type, gui);
 
-        DoubleTextFieldWidget textField = new DoubleTextFieldWidget(x, y, textFieldWidth, 16, getCoordinateValue(type, pos));
+        DoubleTextFieldWidget textField = new DoubleTextFieldWidget(textFieldWidth, 16, getCoordinateValue(type, pos));
+        textField.setPosition(x, y);
         textField.setUpdateListenerAlways(true);
         addTextFieldAndButton(x + textFieldWidth + 4, y, type, modifier, textField, addButton, gui);
     }
@@ -122,7 +124,8 @@ public class GuiUtils
 
         if (addButton)
         {
-            GenericButton button = GenericButton.createIconOnly(x, y, () -> DefaultIcons.BTN_PLUSMINUS_16);
+            GenericButton button = GenericButton.createIconOnly(() -> DefaultIcons.BTN_PLUSMINUS_16);
+            button.setPosition(x, y);
             button.setCanScrollToClick(true);
             button.translateAndAddHoverString("malilib.button.hover.plus_minus_tip");
             button.setActionListener(new ButtonListenerCoordinateInput(type, modifier));

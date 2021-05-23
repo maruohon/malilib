@@ -30,10 +30,10 @@ public abstract class BaseStringListEditEntryWidget<TYPE> extends BaseOrderableL
 
         int textFieldWidth = width - 142;
 
-        this.labelWidget = new LabelWidget(x + 2, y + 7, 32, 10, 0xC0C0C0C0, String.format("%5d:", originalListIndex + 1));
-        this.textField = new BaseTextFieldWidget(x + 28, y + 2, textFieldWidth, 16, toStringConverter.apply(initialValue));
+        this.labelWidget = new LabelWidget(0xC0C0C0C0, String.format("%5d:", originalListIndex + 1));
+        this.textField = new BaseTextFieldWidget(textFieldWidth, 16, toStringConverter.apply(initialValue));
 
-        this.resetButton = new GenericButton(x, y, -1, 16, "malilib.gui.button.reset.caps");
+        this.resetButton = new GenericButton(16, "malilib.gui.button.reset.caps");
         this.resetButton.setRenderButtonBackgroundTexture(false);
         this.resetButton.setRenderNormalBorder(true);
         this.resetButton.setNormalBorderColor(0xFF404040);
@@ -85,6 +85,8 @@ public abstract class BaseStringListEditEntryWidget<TYPE> extends BaseOrderableL
     @Override
     protected void updateSubWidgetsToGeometryChangesPre(int x, int y)
     {
+        int lx = this.getX();
+        this.labelWidget.setPosition(lx + 2, y + 6);
         this.textField.setPosition(x, y + 2);
         this.nextWidgetX = this.textField.getRight() + 2;
         this.draggableRegionEndX = x - 1;

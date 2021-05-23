@@ -23,7 +23,7 @@ public class AliasActionEntryWidget extends BaseDataListEntryWidget<AliasAction>
         StyledTextLine nameText = data.getWidgetDisplayName();
         this.setText(StyledTextUtils.clampStyledTextToMaxWidth(nameText, width - 20, LeftRight.RIGHT, " ..."));
 
-        this.removeButton = GenericButton.createIconOnly(0, 0, DefaultIcons.LIST_REMOVE_MINUS_9);
+        this.removeButton = GenericButton.createIconOnly(DefaultIcons.LIST_REMOVE_MINUS_9);
         this.removeButton.translateAndAddHoverStrings("malilib.gui.button.hover.list.remove");
         this.removeButton.setActionListener(this::removeAlias);
 

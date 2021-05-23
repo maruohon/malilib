@@ -26,12 +26,12 @@ public class OptionListConfigWidget extends BaseConfigWidget<OptionListConfig<Op
         this.config = config;
         this.initialValue = this.config.getValue();
 
-        this.optionListButton = new OptionListConfigButton(x, y, 80, 20, this.config);
+        this.optionListButton = new OptionListConfigButton(80, 20, this.config);
         this.optionListButton.setHoverStringProvider("locked", this.config::getLockAndOverrideMessages);
         this.optionListButton.setChangeListener(this::updateResetButtonState);
 
         ArrayList<OptionListConfigValue> values = new ArrayList<>(config.getAllowedValues());
-        this.dropDownWidget = new DropDownListWidget<>(x, y, 80, 16, 200, 20, values, OptionListConfigValue::getDisplayName, null);
+        this.dropDownWidget = new DropDownListWidget<>(80, 16, 200, 20, values, OptionListConfigValue::getDisplayName);
         this.dropDownWidget.setSelectedEntry(config.getValue());
         this.dropDownWidget.setHoverTextLineProvider("list_preview", this::getOptionListPreviewHoverString, 99);
         this.dropDownWidget.setHoverStringProvider("locked", this.config::getLockAndOverrideMessages);
@@ -74,6 +74,17 @@ public class OptionListConfigWidget extends BaseConfigWidget<OptionListConfig<Op
 
         this.addWidget(widget);
         this.addWidget(this.resetButton);
+    }
+
+    @Override
+    public void updateSubWidgetsToGeometryChanges()
+    {
+        super.updateSubWidgetsToGeometryChanges();
+
+        int x = this.getElementsStartPosition();
+        int y = this.getY();
+        this.optionListButton.setPosition(x, y);
+        this.dropDownWidget.setPosition(x, y);
     }
 
     @Override

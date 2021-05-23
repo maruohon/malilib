@@ -39,14 +39,13 @@ public class ConfigStatusIndicatorGroupAddConfigsScreen extends BaseListScreen<D
         mods.add(null);
         mods.addAll(((ConfigTabRegistryImpl) ConfigTabRegistry.INSTANCE).getAllModsWithConfigTabs());
 
-        this.modsDropDownWidget = new DropDownListWidget<>(10, 50, -1, 14, 160, 10, mods, ModInfo::getModName, null);
+        this.modsDropDownWidget = new DropDownListWidget<>(-1, 14, 160, 10, mods, ModInfo::getModName);
         this.modsDropDownWidget.setSelectionListener(this::onModSelected);
 
-        this.categoriesDropDownWidget = new DropDownListWidget<>(10, 50, -1, 14, 160, 10, this.currentCategories, ConfigTab::getDisplayName, null);
+        this.categoriesDropDownWidget = new DropDownListWidget<>(-1, 14, 160, 10, this.currentCategories, ConfigTab::getDisplayName);
         this.categoriesDropDownWidget.setSelectionListener(this::onCategorySelected);
 
-        this.addEntriesButton = new GenericButton(0, 0, -1, 20, "malilib.gui.button.add_selected_configs");
-        this.addEntriesButton.setActionListener(this::addSelectedConfigs);
+        this.addEntriesButton = GenericButton.simple("malilib.gui.button.add_selected_configs", this::addSelectedConfigs);
     }
 
     @Override
@@ -107,7 +106,7 @@ public class ConfigStatusIndicatorGroupAddConfigsScreen extends BaseListScreen<D
 
         // TODO remove after the dropdown widget gets refresh support
         this.removeWidget(this.categoriesDropDownWidget);
-        this.categoriesDropDownWidget = new DropDownListWidget<>(10, 50, -1, 14, 160, 10, this.currentCategories, ConfigTab::getDisplayName, null);
+        this.categoriesDropDownWidget = new DropDownListWidget<>(-1, 14, 160, 10, this.currentCategories, ConfigTab::getDisplayName);
         this.categoriesDropDownWidget.setSelectionListener(this::onCategorySelected);
 
         int x = this.modsDropDownWidget.getRight() + 8;

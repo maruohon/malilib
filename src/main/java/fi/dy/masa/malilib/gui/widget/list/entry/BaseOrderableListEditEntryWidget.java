@@ -43,10 +43,10 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
         // This is a reference to the current entries list, which can be modified
         this.dataList = listWidget.getCurrentContents();
 
-        this.addButton    = this.createListActionButton(x, y, ButtonType.ADD);
-        this.removeButton = this.createListActionButton(x, y, ButtonType.REMOVE);
-        this.upButton     = this.createListActionButton(x, y, ButtonType.MOVE_UP);
-        this.downButton   = this.createListActionButton(x, y, ButtonType.MOVE_DOWN);
+        this.addButton    = this.createListActionButton(ButtonType.ADD);
+        this.removeButton = this.createListActionButton(ButtonType.REMOVE);
+        this.upButton     = this.createListActionButton(ButtonType.MOVE_UP);
+        this.downButton   = this.createListActionButton(ButtonType.MOVE_DOWN);
     }
 
     @Override
@@ -148,9 +148,9 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
         return DefaultIcons.EMPTY;
     }
 
-    protected GenericButton createListActionButton(int x, int y, ButtonType type)
+    protected GenericButton createListActionButton(ButtonType type)
     {
-        GenericButton button = new GenericButton(x, y, this.getIconForButton(type), type.getHoverKey());
+        GenericButton button = new GenericButton(this.getIconForButton(type), type.getHoverKey());
         button.setActionListener(type.createListener(this));
         return button;
     }

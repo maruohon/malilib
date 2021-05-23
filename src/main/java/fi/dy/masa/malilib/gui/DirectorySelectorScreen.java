@@ -20,9 +20,7 @@ public class DirectorySelectorScreen extends BaseListScreen<BaseFileBrowserWidge
         this.currentDirectory = currentDirectory;
         this.rootDirectory = rootDirectory;
         this.fileConsumer = fileConsumer;
-
-        this.confirmButton = new GenericButton(0, 0, -1, 20, this.getButtonLabel());
-        this.confirmButton.setActionListener(this::onConfirm);
+        this.confirmButton = GenericButton.simple(this.getButtonLabel(), this::onConfirm);
 
         this.setTitle("malilib.gui.title.directory_browser");
     }

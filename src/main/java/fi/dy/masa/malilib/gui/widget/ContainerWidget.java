@@ -11,6 +11,11 @@ public abstract class ContainerWidget extends BackgroundWidget
     protected final List<InteractableWidget> subWidgets = new ArrayList<>();
     protected final List<Runnable> tasks = new ArrayList<>();
 
+    public ContainerWidget(int width, int height)
+    {
+        super(width, height);
+    }
+
     public ContainerWidget(int x, int y, int width, int height)
     {
         super(x, y, width, height);

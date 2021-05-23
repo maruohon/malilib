@@ -3,7 +3,6 @@ package fi.dy.masa.malilib.gui.widget.list.entry;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.button.OnOffButton;
-import fi.dy.masa.malilib.gui.widget.button.OnOffStyle;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.overlay.InfoWidgetManager;
 import fi.dy.masa.malilib.overlay.widget.InfoRendererWidget;
@@ -25,14 +24,10 @@ public abstract class BaseInfoRendererWidgetEntryWidget<TYPE extends InfoRendere
     {
         super(x, y, width, height, listIndex, originalListIndex, data, listWidget);
 
-        this.toggleButton = new OnOffButton(0, 0, -1, 20, OnOffStyle.SLIDER_ON_OFF, data::isEnabled, null);
-        this.toggleButton.setActionListener(data::toggleEnabled);
+        this.toggleButton = OnOffButton.simpleSlider(20, data::isEnabled, data::toggleEnabled);
 
-        this.configureButton = new GenericButton(0, 0, -1, 20, "malilib.gui.button.label.configure");
-        this.configureButton.setActionListener(data::openEditScreen);
-
-        this.removeButton = new GenericButton(0, 0, -1, 20, "malilib.gui.button.label.remove");
-        this.removeButton.setActionListener(this::removeInfoRendererWidget);
+        this.configureButton = GenericButton.simple("malilib.gui.button.label.configure", data::openEditScreen);
+        this.removeButton = GenericButton.simple("malilib.gui.button.label.remove", this::removeInfoRendererWidget);
 
         this.setText(StyledTextLine.of(data.getName()));
         this.setRenderNormalBackground(true);

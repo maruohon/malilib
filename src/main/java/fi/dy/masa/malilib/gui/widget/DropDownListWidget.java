@@ -66,31 +66,40 @@ public class DropDownListWidget<T> extends ContainerWidget
     protected int totalHeight;
     protected int visibleEntries;
 
-    public DropDownListWidget(int x, int y, int width, int height, int maxHeight,
-                              int maxVisibleEntries, List<T> entries)
+    /**
+     * A dropdown selection widget for entries in the given list.
+     * This constructor uses the provided string retriever to get the display string for each entry.
+     * @param width either fixed width (>= 0) or an automatic width (== -1) or an automatic width with a max value (< -1, where max width -width)
+     * @param height the height of one entry in the list
+     * @param maxHeight the maximum total height of the dropdown widget, when open
+     * @param maxVisibleEntries the maximum number of visible list entries when open
+     * @param entries the list of entries to show in the widget
+     * @param stringFactory the function to convert the list entries to a display string
+     */
+    public DropDownListWidget(int width, int height, int maxHeight,
+                              int maxVisibleEntries, List<T> entries,
+                              @Nullable Function<T, String> stringFactory)
     {
-        this(x, y, width, height, maxHeight, maxVisibleEntries, entries, null, null);
+        this(width, height, maxHeight, maxVisibleEntries, entries, stringFactory, null);
     }
 
     /**
      * A dropdown selection widget for entries in the given list.
      * This constructor uses the provided string retriever to get the display string for each entry.
-     * @param x
-     * @param y
      * @param width either fixed width (>= 0) or an automatic width (== -1) or an automatic width with a max value (< -1, where max width -width)
-     * @param height
+     * @param height the height of one entry in the list
      * @param maxHeight the maximum total height of the dropdown widget, when open
      * @param maxVisibleEntries the maximum number of visible list entries when open
-     * @param entries
-     * @param stringFactory
-     * @param iconWidgetFactory
+     * @param entries the list of entries to show in the widget
+     * @param stringFactory the function to convert the list entries to a display string
+     * @param iconWidgetFactory a factory to create the icon for each entry, if any
      */
-    public DropDownListWidget(int x, int y, int width, int height, int maxHeight,
+    public DropDownListWidget(int width, int height, int maxHeight,
                               int maxVisibleEntries, List<T> entries,
                               @Nullable Function<T, String> stringFactory,
                               @Nullable IconWidgetFactory<T> iconWidgetFactory)
     {
-        super(x, y, width, height);
+        super(width, height);
 
         this.lineHeight = height;
         this.maxHeight = maxHeight;
@@ -113,17 +122,17 @@ public class DropDownListWidget<T> extends ContainerWidget
         int scrollbarHeight = this.maxVisibleEntries * this.lineHeight;
 
         // The position gets updated in updateSubWidgetsToGeometryChanges
-        this.scrollBar = new ScrollBarWidget(0, 0, scrollbarWidth, scrollbarHeight);
+        this.scrollBar = new ScrollBarWidget(scrollbarWidth, scrollbarHeight);
         this.scrollBar.setMaxValue(this.entries.size() - this.maxVisibleEntries);
         this.scrollBar.setArrowTextures(DefaultIcons.SMALL_ARROW_UP, DefaultIcons.SMALL_ARROW_DOWN);
         this.scrollBar.setValueChangeListener(this::onScrolled);
 
-        this.selectionBarWidget = new SelectionBarWidget<>(x, y, width, height, this.textColor, this);
+        this.selectionBarWidget = new SelectionBarWidget<>(width, height, this.textColor, this);
         this.selectionBarWidget.setZLevel(2);
         this.selectionBarWidget.setHoveredBackgroundColor(0xFF202020);
         this.selectionBarWidget.setRenderHoverBackground(true);
 
-        this.searchField = new BaseTextFieldWidget(x, y - 16, width, 16);
+        this.searchField = new BaseTextFieldWidget(width, 16);
         this.searchField.setUpdateListenerAlways(true);
         this.searchField.setUpdateListenerFromTextSet(true);
         this.searchField.setListener(this::onSearchTextChange);
@@ -156,7 +165,8 @@ public class DropDownListWidget<T> extends ContainerWidget
     public void setNoBarWhenClosed(int buttonX, int buttonY, Supplier<MultiIcon> iconSupplier)
     {
         this.noCurrentEntryBar = true;
-        this.openCloseButton = GenericButton.createIconOnly(buttonX, buttonY, iconSupplier);
+        this.openCloseButton = GenericButton.createIconOnly(iconSupplier);
+        this.openCloseButton.setPosition(buttonX, buttonY);
         this.openCloseButton.setActionListener(this::toggleOpen);
         this.reAddSubWidgets();
     }
@@ -188,7 +198,7 @@ public class DropDownListWidget<T> extends ContainerWidget
     }
 
     @Nullable
-    public InteractableWidget createIconWidgetForEntry(int x, int y, int height, @Nullable T entry)
+    public InteractableWidget createIconWidgetForEntry(int height, @Nullable T entry)
     {
         if (entry == null)
         {
@@ -197,14 +207,13 @@ public class DropDownListWidget<T> extends ContainerWidget
 
         if (this.iconWidgetFactory != null)
         {
-            BackgroundWidget widget = this.iconWidgetFactory.create(x, y, height - 2, entry);
+            BackgroundWidget widget = this.iconWidgetFactory.create(height - 2, entry);
             return widget;
         }
         else if (this.iconProvider != null)
         {
             MultiIcon icon = this.iconProvider.getIconFor(entry);
-            int offY = (height - icon.getHeight()) / 2;
-            return new IconWidget(x, y + offY, icon);
+            return new IconWidget(icon);
         }
 
         return null;
@@ -254,9 +263,15 @@ public class DropDownListWidget<T> extends ContainerWidget
     @Override
     public void updateSubWidgetsToGeometryChanges()
     {
+        this.updateMaxSize();
+
         super.updateSubWidgetsToGeometryChanges();
 
-        this.updateMaxSize();
+        int x = this.getX();
+        int y = this.getY();
+
+        this.selectionBarWidget.setPosition(x, y);
+        this.searchField.setPosition(x, y - 16);
     }
 
     protected void updateMaxSize()
@@ -334,7 +349,9 @@ public class DropDownListWidget<T> extends ContainerWidget
 
         for (int i = startIndex; i < max; ++i)
         {
-            this.listEntryWidgets.add(new DropDownListEntryWidget<>(x, y, width, height, i, list.get(i), this.textColor, this));
+            DropDownListEntryWidget<T> widget = new DropDownListEntryWidget<>(width, height, i, list.get(i), this.textColor, this);
+            widget.setPosition(x, y);
+            this.listEntryWidgets.add(widget);
             y += height;
         }
 
@@ -363,7 +380,7 @@ public class DropDownListWidget<T> extends ContainerWidget
 
             if (entries.size() > 0)
             {
-                InteractableWidget iconWidget = this.createIconWidgetForEntry(0, 0, this.lineHeight, entries.get(0));
+                InteractableWidget iconWidget = this.createIconWidgetForEntry(this.lineHeight, entries.get(0));
 
                 if (iconWidget != null)
                 {
@@ -738,16 +755,16 @@ public class DropDownListWidget<T> extends ContainerWidget
         protected int nonTextWidth;
         protected int textColor;
 
-        public SelectionBarWidget(int x, int y, int width, int height, int textColor, DropDownListWidget<T> dropDown)
+        public SelectionBarWidget(int width, int height, int textColor, DropDownListWidget<T> dropDown)
         {
-            super(x, y, width, height);
+            super(width, height);
 
             this.textColor = textColor;
             this.dropdownWidget = dropDown;
-            this.iconWidget = dropDown.createIconWidgetForEntry(x + 2, y, height, dropDown.getSelectedEntry());
+            this.iconWidget = dropDown.createIconWidgetForEntry(height, dropDown.getSelectedEntry());
 
             MultiIcon iconOpen = dropDown.isOpen() ? DefaultIcons.ARROW_UP : DefaultIcons.ARROW_DOWN;
-            this.openCloseIconWidget = new IconWidget(0, 0, iconOpen);
+            this.openCloseIconWidget = new IconWidget(iconOpen);
             this.openCloseIconWidget.setEnabled(true).setDoHighlight(true);
             this.nonTextWidth = this.openCloseIconWidget.getWidth() + 6;
 
@@ -909,7 +926,7 @@ public class DropDownListWidget<T> extends ContainerWidget
         public void update()
         {
             DropDownListWidget<T> dropDown = this.dropdownWidget;
-            this.iconWidget = dropDown.createIconWidgetForEntry(this.getX() + 2, this.getY(), this.getHeight(), dropDown.getSelectedEntry());
+            this.iconWidget = dropDown.createIconWidgetForEntry(this.getHeight(), dropDown.getSelectedEntry());
 
             this.updateSubWidgetsToGeometryChanges();
             this.reAddSubWidgets();
@@ -928,9 +945,9 @@ public class DropDownListWidget<T> extends ContainerWidget
         protected int displayStringWidth;
         protected int textColor;
 
-        public DropDownListEntryWidget(int x, int y, int width, int height, int listIndex, @Nullable T entry, int textColor, DropDownListWidget<T> dropDown)
+        public DropDownListEntryWidget(int width, int height, int listIndex, @Nullable T entry, int textColor, DropDownListWidget<T> dropDown)
         {
-            super(x, y, width, height);
+            super(width, height);
 
             this.listIndex = listIndex;
             this.entry = entry;
@@ -945,7 +962,7 @@ public class DropDownListWidget<T> extends ContainerWidget
 
             int iconWidth = 0;
 
-            this.iconWidget = dropDown.createIconWidgetForEntry(x + 2, y, height, entry);
+            this.iconWidget = dropDown.createIconWidgetForEntry(height, entry);
 
             if (this.iconWidget != null)
             {
@@ -1030,6 +1047,6 @@ public class DropDownListWidget<T> extends ContainerWidget
 
     public interface IconWidgetFactory<T>
     {
-        BackgroundWidget create(int x, int y, int height, T data);
+        BackgroundWidget create(int height, T data);
     }
 }

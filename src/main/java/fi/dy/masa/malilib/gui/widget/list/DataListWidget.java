@@ -12,6 +12,7 @@ import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.widget.list.entry.BaseListEntryWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntrySelectionHandler;
 import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetFactory;
+import fi.dy.masa.malilib.gui.widget.list.entry.DataListHeaderWidget;
 
 public class DataListWidget<DATATYPE> extends BaseListWidget
 {
@@ -19,7 +20,7 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
     protected final ArrayList<DATATYPE> currentContents;
     protected final ArrayList<DATATYPE> filteredContents = new ArrayList<>();
     protected final ArrayList<Integer> filteredIndices = new ArrayList<>();
-    @Nullable protected ListHeaderWidgetFactory<DATATYPE> headerWidgetFactory;
+    @Nullable protected Function<DataListWidget<DATATYPE>, DataListHeaderWidget<DATATYPE>> headerWidgetFactory;
     @Nullable protected DataListEntryWidgetFactory<DATATYPE> entryWidgetFactory;
     @Nullable protected DataListEntrySelectionHandler<DATATYPE> selectionHandler;
     @Nullable protected Comparator<DATATYPE> listSortComparator;
@@ -50,7 +51,7 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
         return this;
     }
 
-    public DataListWidget<DATATYPE> setHeaderWidgetFactory(@Nullable ListHeaderWidgetFactory<DATATYPE> factory)
+    public DataListWidget<DATATYPE> setHeaderWidgetFactory(@Nullable Function<DataListWidget<DATATYPE>, DataListHeaderWidget<DATATYPE>> factory)
     {
         this.headerWidgetFactory = factory;
         return this;
@@ -136,7 +137,9 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
         {
             int x = this.getX() + this.listPosition.getLeft();
             int y = this.getY();
-            this.headerWidget = this.headerWidgetFactory.createWidget(x, y, this.entryWidgetWidth, -1, this);
+            this.headerWidget = this.headerWidgetFactory.apply(this);
+            this.headerWidget.setPosition(x, y);
+            this.headerWidget.setHeaderWidgetSize(this.entryWidgetWidth, -1);
         }
     }
 

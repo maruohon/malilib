@@ -18,8 +18,8 @@ extends BooleanConfigStatusIndicatorEditScreen<HotkeyedBooleanConfigStatusWidget
     {
         super(widget, parent);
 
-        this.booleanEnabledLabel = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.hotkeyed_boolean_config_status.show_toggle.colon");
-        this.hotkeyEnabledLabel = new LabelWidget(0, 0, 0xFFFFFFFF, "malilib.label.hotkeyed_boolean_config_status.show_hotkey.colon");
+        this.booleanEnabledLabel = new LabelWidget("malilib.label.hotkeyed_boolean_config_status.show_toggle.colon");
+        this.hotkeyEnabledLabel = new LabelWidget("malilib.label.hotkeyed_boolean_config_status.show_hotkey.colon");
 
         this.booleanEnabledButton = OnOffButton.simpleSlider(16, widget::getShowBoolean, widget::toggleShowBoolean);
         this.hotkeyEnabledButton = OnOffButton.simpleSlider(16, widget::getShowHotkey, widget::toggleShowHotkey);

@@ -13,8 +13,7 @@ public class GenericButtonConfigWidget extends BaseConfigWidget<GenericButtonCon
     {
         super(x, y, width, height, listIndex, originalListIndex, config, ctx);
 
-        this.button = new GenericButton(0, 0, -1, 20, config.getButtonText());
-        this.button.setActionListener(config.getButtonActionListener());
+        this.button = GenericButton.simple(config.getButtonText(), config.getButtonActionListener());
     }
 
     @Override

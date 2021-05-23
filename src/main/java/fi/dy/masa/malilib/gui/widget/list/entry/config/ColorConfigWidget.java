@@ -19,13 +19,13 @@ public class ColorConfigWidget extends BaseConfigOptionWidget<Integer, ColorConf
 
         this.initialStringValue = Color4f.getHexColorString(this.initialValue);
 
-        this.colorIndicatorWidget = new ColorIndicatorWidget(x, y, 18, 18, this.config, (newValue) -> {
+        this.colorIndicatorWidget = new ColorIndicatorWidget(18, 18, this.config, (newValue) -> {
             this.config.setValue(newValue);
             this.reAddSubWidgets();
         });
         this.colorIndicatorWidget.setHoverStringProvider("locked", this.config::getLockAndOverrideMessages, 110);
 
-        this.textField = new BaseTextFieldWidget(x, y, 70, 16, this.config.getStringValue());
+        this.textField = new BaseTextFieldWidget(70, 16, this.config.getStringValue());
         this.textField.setHoverStringProvider("locked", this.config::getLockAndOverrideMessages);
 
         this.textField.setListener((str) -> {

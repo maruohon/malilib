@@ -14,24 +14,24 @@ public class DoubleEditWidget extends BaseNumberEditWidget implements RangedDoub
     protected final double maxValue;
     protected double value;
 
-    public DoubleEditWidget(int x, int y, int width, int height, double originalValue,
+    public DoubleEditWidget(int width, int height, double originalValue,
                             double minValue, double maxValue, DoubleConsumer consumer)
     {
-        super(x, y, width, height);
+        super(width, height);
 
         this.consumer = consumer;
         this.minValue = minValue;
         this.maxValue = maxValue;
         this.setDoubleValue(originalValue);
 
-        this.textFieldWidget = new DoubleTextFieldWidget(0, 0, width, 16, originalValue, minValue, maxValue);
+        this.textFieldWidget = new DoubleTextFieldWidget(width, 16, originalValue, minValue, maxValue);
         this.textFieldWidget.setListener(this::setValueFromString);
     }
 
     @Override
     protected SliderWidget createSliderWidget()
     {
-        return new SliderWidget(0, 0, -1, 16, new DoubleSliderCallback(this, this::updateValue));
+        return new SliderWidget(-1, 16, new DoubleSliderCallback(this, this::updateValue));
     }
 
     @Override

@@ -36,7 +36,7 @@ public abstract class BaseTextInputScreen extends BaseScreen
         this.resetButton = createButton("malilib.gui.button.reset", this::resetTextFieldToOriginalText);
         this.cancelButton = createButton("malilib.gui.button.cancel", () -> this.closeScreen(true));
 
-        this.textField = new BaseTextFieldWidget(this.x + 12, this.y + 40, 240, 20, this.originalText);
+        this.textField = new BaseTextFieldWidget(240, 20, this.originalText);
         this.textField.setFocused(true);
 
         this.setParent(parent);
@@ -101,8 +101,7 @@ public abstract class BaseTextInputScreen extends BaseScreen
 
     protected static GenericButton createButton(String translationKey, EventListener listener)
     {
-        GenericButton button = new GenericButton(0, 0, -1, 20, translationKey);
-        button.setActionListener(listener);
+        GenericButton button = GenericButton.simple(translationKey, listener);
         button.setWidth(Math.max(40, button.getWidth()));
         button.setAutomaticWidth(false);
         return button;
