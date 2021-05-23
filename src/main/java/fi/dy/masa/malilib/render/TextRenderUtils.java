@@ -6,6 +6,7 @@ import java.util.List;
 import org.lwjgl.opengl.GL11;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -120,33 +121,35 @@ public class TextRenderUtils
 
     public static Vec2i getScreenClampedHoverTextStartPosition(int x, int y, int renderWidth, int renderHeight)
     {
-        int maxWidth = GuiUtils.getCurrentScreen().width;
-        int textStartX = x + 4;
-        int textStartY = Math.max(8, y - renderHeight - 6);
+        GuiScreen screen = GuiUtils.getCurrentScreen();
+        int maxWidth = screen != null ? screen.width : GuiUtils.getScaledWindowWidth();
+        int textStartX = x;
+        int textStartY = Math.max(0, y - renderHeight - 6);
 
         // The text can't fit from the cursor to the right edge of the screen
-        if (textStartX + renderWidth + 6 > maxWidth)
+        if (textStartX + renderWidth > maxWidth)
         {
-            int leftX = x - renderWidth - 8;
+            int leftX = x - renderWidth - 2;
 
             // If the text fits from the cursor to the left edge of the screen...
-            if (leftX >= 4)
+            if (leftX >= 0)
             {
                 textStartX = leftX;
             }
             // otherwise move it to touching the edge of the screen that the cursor is closest to
             else
             {
-                textStartX = x < (maxWidth / 2) ? 4 : Math.max(4, maxWidth - renderWidth - 6);
+                textStartX = x < (maxWidth / 2) ? 0 : Math.max(0, maxWidth - renderWidth - 1);
             }
         }
 
         // The hover info would overlap the cursor vertically
         // (because the hover info was clamped to the top of the screen),
         // move it below the cursor instead
-        if (textStartY < y && y < textStartY + renderHeight)
+        if (y >= textStartY && y < textStartY + renderHeight &&
+            x >= textStartX && x < textStartX + renderWidth)
         {
-            textStartY = y + 16;
+            textStartY = y + 12;
         }
 
         return new Vec2i(textStartX, textStartY);
@@ -194,16 +197,18 @@ public class TextRenderUtils
 
             int lineHeight = font.FONT_HEIGHT + 1;
             int textHeight = textLines.size() * lineHeight - 2;
-            Vec2i startPos = getScreenClampedHoverTextStartPosition(x, y, maxLineLength, textHeight);
-            int textStartX = startPos.x;
-            int textStartY = startPos.y;
+            int backgroundWidth = maxLineLength + 8;
+            int backgroundHeight = textHeight + 8;
+            Vec2i startPos = getScreenClampedHoverTextStartPosition(x, y, backgroundWidth, backgroundHeight);
+            int textStartX = startPos.x + 4;
+            int textStartY = startPos.y + 4;
 
             GlStateManager.disableRescaleNormal();
             RenderUtils.disableItemLighting();
             GlStateManager.disableLighting();
             GlStateManager.disableDepth();
 
-            backgroundRenderer.render(textStartX, textStartY, z, maxLineLength, textHeight);
+            backgroundRenderer.render(startPos.x, startPos.y, z, backgroundWidth, backgroundHeight);
 
             for (String str : textLines)
             {
@@ -229,28 +234,21 @@ public class TextRenderUtils
         if (textLines.isEmpty() == false && GuiUtils.getCurrentScreen() != null)
         {
             TextRenderer textRenderer = TextRenderer.INSTANCE;
-            int maxLineLength = 0;
-
-            for (StyledTextLine line : textLines)
-            {
-                if (line.renderWidth > maxLineLength)
-                {
-                    maxLineLength = line.renderWidth;
-                }
-            }
-
-            final int lineHeight = textRenderer.getFontHeight() + 1;
+            final int lineHeight = textRenderer.getLineHeight();
+            int maxLineLength = StyledTextLine.getRenderWidth(textLines);
             int textHeight = textLines.size() * lineHeight - 2;
-            Vec2i startPos = getScreenClampedHoverTextStartPosition(x, y, maxLineLength, textHeight);
-            int textStartX = startPos.x;
-            int textStartY = startPos.y;
+            int backgroundWidth = maxLineLength + 8;
+            int backgroundHeight = textHeight + 8;
+            Vec2i startPos = getScreenClampedHoverTextStartPosition(x, y, backgroundWidth, backgroundHeight);
+            int textStartX = startPos.x + 4;
+            int textStartY = startPos.y + 4;
 
             GlStateManager.disableRescaleNormal();
             RenderUtils.disableItemLighting();
             GlStateManager.disableLighting();
             GlStateManager.disableDepth();
 
-            backgroundRenderer.render(textStartX, textStartY, z, maxLineLength, textHeight);
+            backgroundRenderer.render(startPos.x, startPos.y, z, backgroundWidth, backgroundHeight);
             textRenderer.startBuffers();
 
             for (StyledTextLine line : textLines)
@@ -269,15 +267,15 @@ public class TextRenderUtils
 
     public static void renderDefaultHoverTextBackground(int x, int y, float z, int width, int height)
     {
-        int borderColor = 0xF0100010;
-        int fillColor1 = 0x505000FF;
-        int fillColor2 = 0x5028007F;
+        int fillColor = 0xF0180018;
+        int borderColor1 = 0xC05000FF;
+        int borderColor2 = 0xC028007F;
 
-        renderHoverTextBackground(x, y, z, width, height, borderColor, fillColor1, fillColor2);
+        renderHoverTextBackground(x, y, z, width, height, fillColor, borderColor1, borderColor2);
     }
 
     public static void renderHoverTextBackground(int x, int y, float z, int width, int height,
-                                                 int borderColor, int fillColor1, int fillColor2)
+                                                 int fillColor, int borderColor1, int borderColor2)
     {
         GlStateManager.disableTexture2D();
         GlStateManager.disableAlpha();
@@ -288,16 +286,29 @@ public class TextRenderUtils
         BufferBuilder buffer = tessellator.getBuffer();
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
 
-        ShapeRenderUtils.renderGradientRectangle(x - 3        , y - 4         , x + width + 3, y - 3         , z, borderColor, borderColor, buffer);
-        ShapeRenderUtils.renderGradientRectangle(x - 3        , y + height + 3, x + width + 3, y + height + 4, z, borderColor, borderColor, buffer);
-        ShapeRenderUtils.renderGradientRectangle(x - 3        , y - 3         , x + width + 3, y + height + 3, z, borderColor, borderColor, buffer);
-        ShapeRenderUtils.renderGradientRectangle(x - 4        , y - 3         , x - 3        , y + height + 3, z, borderColor, borderColor, buffer);
-        ShapeRenderUtils.renderGradientRectangle(x + width + 3, y - 3         , x + width + 4, y + height + 3, z, borderColor, borderColor, buffer);
+        int xl1 = x;
+        int xl2 = xl1 + 1;
+        int xl3 = xl2 + 1;
+        int xr1 = x + width - 2;
+        int xr2 = xr1 + 1;
+        int xr3 = xr2 + 1;
+        int yt1 = y;
+        int yt2 = yt1 + 1;
+        int yt3 = yt2 + 1;
+        int yb1 = y + height - 2;
+        int yb2 = yb1 + 1;
+        int yb3 = yb2 + 1;
 
-        ShapeRenderUtils.renderGradientRectangle(x - 3        , y - 3 + 1     , x - 3 + 1    , y + height + 3 - 1, z, fillColor1, fillColor2, buffer);
-        ShapeRenderUtils.renderGradientRectangle(x + width + 2, y - 3 + 1     , x + width + 3, y + height + 3 - 1, z, fillColor1, fillColor2, buffer);
-        ShapeRenderUtils.renderGradientRectangle(x - 3        , y - 3         , x + width + 3, y - 3 + 1         , z, fillColor1, fillColor1, buffer);
-        ShapeRenderUtils.renderGradientRectangle(x - 3        , y + height + 2, x + width + 3, y + height + 3    , z, fillColor2, fillColor2, buffer);
+        ShapeRenderUtils.renderGradientRectangle(xl2, yt1, xr2, yt2, z, fillColor, fillColor, buffer);
+        ShapeRenderUtils.renderGradientRectangle(xl2, yb2, xr2, yb3, z, fillColor, fillColor, buffer);
+        ShapeRenderUtils.renderGradientRectangle(xl2, yt2, xr2, yb2, z, fillColor, fillColor, buffer);
+        ShapeRenderUtils.renderGradientRectangle(xl1, yt2, xl2, yb2, z, fillColor, fillColor, buffer);
+        ShapeRenderUtils.renderGradientRectangle(xr2, yt2, xr3, yb2, z, fillColor, fillColor, buffer);
+
+        ShapeRenderUtils.renderGradientRectangle(xl2, yt3, xl3, yb1, z, borderColor1, borderColor2, buffer);
+        ShapeRenderUtils.renderGradientRectangle(xr1, yt3, xr2, yb1, z, borderColor1, borderColor2, buffer);
+        ShapeRenderUtils.renderGradientRectangle(xl2, yt2, xr2, yt3, z, borderColor1, borderColor1, buffer);
+        ShapeRenderUtils.renderGradientRectangle(xl2, yb1, xr2, yb2, z, borderColor2, borderColor2, buffer);
 
         tessellator.draw();
 
