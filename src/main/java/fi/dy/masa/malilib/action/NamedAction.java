@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.config.option.HotkeyedBooleanConfig;
+import fi.dy.masa.malilib.config.value.InfoType;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.StringUtils;
@@ -175,6 +177,13 @@ public class NamedAction
         return new NamedAction(mod, name, BooleanToggleAction.of(config, messageFactory));
     }
 
+    public static NamedAction createToggleActionWithToggleMessage(ModInfo mod, String name, BooleanConfig config,
+                                                                  @Nullable Function<BooleanConfig, String> messageFactory,
+                                                                  @Nullable Supplier<InfoType> messageTypeSupplier)
+    {
+        return new NamedAction(mod, name, BooleanToggleAction.of(config, messageFactory, messageTypeSupplier));
+    }
+
     public static NamedAction register(ModInfo modInfo, String name, EventListener action)
     {
         NamedAction namedAction = NamedAction.of(modInfo, name, action);
@@ -193,7 +202,15 @@ public class NamedAction
 
     public static NamedAction registerToggle(ModInfo modInfo, String name, BooleanConfig config)
     {
-        NamedAction namedAction = NamedAction.createToggleActionWithToggleMessage(modInfo, name, config);
+        return registerToggle(modInfo, name, config, null, null);
+    }
+
+    public static NamedAction registerToggle(ModInfo modInfo, String name, BooleanConfig config,
+                                             @Nullable Function<BooleanConfig, String> messageFactory,
+                                             @Nullable Supplier<InfoType> messageTypeSupplier)
+    {
+        NamedAction namedAction = NamedAction.createToggleActionWithToggleMessage(modInfo, name, config,
+                                                                                  messageFactory, messageTypeSupplier);
         namedAction.setCommentTranslationKey(config.getCommentTranslationKey());
         ActionRegistry.INSTANCE.registerAction(namedAction);
         return namedAction;

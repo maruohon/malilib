@@ -33,13 +33,21 @@ public class BooleanToggleAction implements Action
     public ActionResult execute(ActionContext ctx)
     {
         this.config.toggleBooleanValue();
-        InfoType messageType = this.messageTypeSupplier != null ? this.messageTypeSupplier.get() : null;
+        InfoType messageType = this.messageTypeSupplier != null ? this.messageTypeSupplier.get() : InfoType.CUSTOM_HOTBAR;
         MessageUtils.printBooleanConfigToggleMessage(messageType, this.config, this.messageFactory);
         return ActionResult.SUCCESS;
     }
 
-    public static BooleanToggleAction of(BooleanConfig config, @Nullable Function<BooleanConfig, String> messageFactory)
+    public static BooleanToggleAction of(BooleanConfig config,
+                                         @Nullable Function<BooleanConfig, String> messageFactory)
     {
         return new BooleanToggleAction(config, messageFactory);
+    }
+
+    public static BooleanToggleAction of(BooleanConfig config,
+                                         @Nullable Function<BooleanConfig, String> messageFactory,
+                                         @Nullable Supplier<InfoType> messageTypeSupplier)
+    {
+        return new BooleanToggleAction(config, messageFactory, messageTypeSupplier);
     }
 }
