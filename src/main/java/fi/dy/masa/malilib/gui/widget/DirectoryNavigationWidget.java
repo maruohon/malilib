@@ -35,9 +35,9 @@ public class DirectoryNavigationWidget extends SearchBarWidget
     protected final GenericButton buttonCreateDir;
     protected final InfoIconWidget infoWidget;
     protected final File rootDir;
-    protected final int pathStartX;
     @Nullable protected final String rootDirDisplayName;
     protected File currentDir;
+    protected int pathStartX;
 
     public DirectoryNavigationWidget(int x, int y, int width, int height,
                                      File currentDir, File rootDir, DirectoryNavigator navigator,
@@ -68,12 +68,10 @@ public class DirectoryNavigationWidget extends SearchBarWidget
         this.buttonRoot = GenericButton.createIconOnly(iconProvider.getIcon(FileBrowserIconType.ROOT));
         this.buttonRoot.translateAndAddHoverStrings("malilib.gui.button.hover.directory_widget.root");
         this.buttonRoot.setActionListener(() -> { if (this.searchOpen == false) this.navigator.switchToRootDirectory(); });
-        x += this.buttonRoot.getWidth() + 2;
 
         this.buttonUp = GenericButton.createIconOnly(iconProvider.getIcon(FileBrowserIconType.UP));
         this.buttonUp.translateAndAddHoverStrings("malilib.gui.button.hover.directory_widget.up");
         this.buttonUp.setActionListener(() -> { if (this.searchOpen == false) this.navigator.switchToParentDirectory(); });
-        x += this.buttonUp.getWidth() + 2;
 
         this.buttonCreateDir = GenericButton.createIconOnly(iconProvider.getIcon(FileBrowserIconType.CREATE_DIR));
         this.buttonCreateDir.translateAndAddHoverStrings("malilib.gui.button.hover.directory_widget.create_directory");
@@ -85,16 +83,8 @@ public class DirectoryNavigationWidget extends SearchBarWidget
                 BaseScreen.openPopupScreen(gui);
             }
         });
-        this.pathStartX = this.buttonCreateDir.getX() + this.buttonCreateDir.getWidth() + 6;
 
-        MultiIcon icon = DefaultIcons.INFO_ICON_11;
-        int iw = icon.getWidth();
-
-        x = this.getX();
-        this.infoWidget = new InfoIconWidget(icon, "malilib.gui.button.hover.directory_widget.hold_shift_to_open_directory");
-
-        this.buttonSearchToggle.setX(x + width - this.buttonSearchToggle.getWidth() - iw - 4);
-        this.textField.setWidth(this.getWidth() - this.buttonSearchToggle.getWidth() - iw - 8);
+        this.infoWidget = new InfoIconWidget(DefaultIcons.INFO_ICON_11, "malilib.gui.button.hover.directory_widget.hold_shift_to_open_directory");
     }
 
     @Override
@@ -120,8 +110,10 @@ public class DirectoryNavigationWidget extends SearchBarWidget
 
         int x = this.getX() + 2;
         int y = this.getY();
+        int height = this.getHeight();
+        int middleY = y + height / 2;
 
-        int by = y + this.getHeight() / 2 - this.buttonRoot.getHeight() / 2;
+        int by = middleY - this.buttonRoot.getHeight() / 2;
         this.buttonRoot.setPosition(x, by);
 
         x += this.buttonRoot.getWidth() + 2;
@@ -130,13 +122,16 @@ public class DirectoryNavigationWidget extends SearchBarWidget
         x += this.buttonUp.getWidth() + 2;
         this.buttonCreateDir.setPosition(x, by);
 
-        int xRight = this.getX() + this.getWidth();
+        int xRight = this.getRight();
         int iw = this.infoWidget.getWidth();
+        int ih = this.infoWidget.getHeight();
+        int tw = this.buttonSearchToggle.getWidth();
 
-        this.buttonSearchToggle.setPosition(xRight - this.buttonSearchToggle.getWidth() - iw - 4, by);
-        this.infoWidget.setPosition(xRight - iw - 2, y + this.getHeight() / 2 - this.infoWidget.getHeight() / 2);
+        this.buttonSearchToggle.setPosition(xRight - tw - iw - 4, by);
+        this.infoWidget.setPosition(xRight - iw - 2, middleY - ih / 2 - 1);
 
-        this.textField.setWidth(this.getWidth() - this.buttonSearchToggle.getWidth() - iw - 8);
+        this.textField.setWidth(this.getWidth() - tw - iw - 8);
+        this.pathStartX = this.buttonCreateDir.getRight() + 6;
 
         this.reAddSubWidgets();
     }
