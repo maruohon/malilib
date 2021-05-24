@@ -611,7 +611,7 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
     }
 
     @Override
-    protected void renderCustomContents(int mouseX, int mouseY, ScreenContext ctx)
+    protected void renderCustomContents(ScreenContext ctx)
     {
         if (this.editMode)
         {
@@ -625,10 +625,10 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
 
             if (this.dragSelecting)
             {
-                int minX = Math.min(mouseX, this.selectionStart.x);
-                int minY = Math.min(mouseY, this.selectionStart.y);
-                int maxX = Math.max(mouseX, this.selectionStart.x);
-                int maxY = Math.max(mouseY, this.selectionStart.y);
+                int minX = Math.min(ctx.mouseX, this.selectionStart.x);
+                int minY = Math.min(ctx.mouseY, this.selectionStart.y);
+                int maxX = Math.max(ctx.mouseX, this.selectionStart.x);
+                int maxY = Math.max(ctx.mouseY, this.selectionStart.y);
 
                 ShapeRenderUtils.renderOutlinedRectangle(minX, minY, this.zLevel + 50f,
                                                          maxX - minX, maxY - minY, 0x30FFFFFF, 0xFFFFFFFF);

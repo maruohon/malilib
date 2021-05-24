@@ -189,13 +189,13 @@ public class ColorEditorHSVScreen extends BaseScreen
     }
 
     @Override
-    protected void renderCustomContents(int mouseX, int mouseY, ScreenContext ctx)
+    protected void renderCustomContents(ScreenContext ctx)
     {
         if (this.mouseDown)
         {
             if (this.clickedElement != null)
             {
-                this.updateColorFromMouseInput(this.clickedElement, mouseX, mouseY);
+                this.updateColorFromMouseInput(this.clickedElement, ctx.mouseX, ctx.mouseY);
             }
         }
 

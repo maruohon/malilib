@@ -21,4 +21,12 @@ public class ScreenContext extends RenderContext
         this.debugRenderAll = MaLiLibConfigs.Debug.GUI_DEBUG_ALL.getBooleanValue();
         this.debugInfoAlways = MaLiLibConfigs.Debug.GUI_DEBUG_INFO_ALWAYS.getBooleanValue();
     }
+
+    public boolean matches(int mouseX, int mouseY, boolean isActiveScreen, int hoveredWidgetId)
+    {
+        return this.isActiveScreen == isActiveScreen &&
+               this.hoveredWidgetId == hoveredWidgetId &&
+               this.mouseX == mouseX &&
+               this.mouseY == mouseY;
+    }
 }

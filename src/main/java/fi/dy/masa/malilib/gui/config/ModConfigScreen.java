@@ -30,7 +30,7 @@ public class ModConfigScreen extends BaseConfigScreen
     }
 
     @Override
-    protected void renderScreenTitle(int mouseX, int mouseY, ScreenContext ctx)
+    protected void renderScreenTitle(ScreenContext ctx)
     {
         // NO-OP
     }

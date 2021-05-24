@@ -375,25 +375,28 @@ public abstract class BaseScreen extends GuiScreen
         this.setPosition(x, y);
     }
 
-    protected InteractableWidget getTopHoveredWidget(int mouseX, int mouseY, @Nullable InteractableWidget highestFoundWidget)
+    protected InteractableWidget getTopHoveredWidget(int mouseX, int mouseY,
+                                                     @Nullable InteractableWidget highestFoundWidget)
     {
         return InteractableWidget.getTopHoveredWidgetFromList(this.widgets, mouseX, mouseY, highestFoundWidget);
     }
 
-    protected void updateTopHoveredWidget(int mouseX, int mouseY, boolean isActiveGui)
+    protected void updateTopHoveredWidget(int mouseX, int mouseY, boolean isActiveScreen)
     {
-        this.hoveredWidget = isActiveGui ? this.getTopHoveredWidget(mouseX, mouseY, null) : null;
-        int hoveredWidgetId = this.hoveredWidget != null ? this.hoveredWidget.getId() : -1;
-        this.context = new ScreenContext(mouseX, mouseY, hoveredWidgetId, isActiveGui);
+        this.hoveredWidget = isActiveScreen ? this.getTopHoveredWidget(mouseX, mouseY, null) : null;
     }
 
-    protected ScreenContext getContext(int mouseX, int mouseY)
+    public ScreenContext getContext()
     {
-        if (this.context == null)
+        int mouseX = Mouse.getX() * this.width / this.mc.displayWidth;
+        int mouseY = this.height - Mouse.getY() * this.height / this.mc.displayHeight - 1;
+        boolean isActiveScreen = GuiUtils.getCurrentScreen() == this;
+        int hoveredWidgetId = this.hoveredWidget != null ? this.hoveredWidget.getId() : -1;
+
+        if (this.context == null ||
+            this.context.matches(mouseX, mouseY, isActiveScreen, hoveredWidgetId) == false)
         {
-            boolean isActiveGui = GuiUtils.getCurrentScreen() == this;
-            int hoveredWidgetId = this.hoveredWidget != null ? this.hoveredWidget.getId() : -1;
-            this.context = new ScreenContext(mouseX, mouseY, hoveredWidgetId, isActiveGui);
+            this.context = new ScreenContext(mouseX, mouseY, hoveredWidgetId, isActiveScreen);
         }
 
         return this.context;
@@ -402,7 +405,7 @@ public abstract class BaseScreen extends GuiScreen
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
-        if (this.getParent() != null && this.shouldRenderParent)
+        if (this.shouldRenderParent && this.getParent() != null)
         {
             this.getParent().drawScreen(mouseX, mouseY, partialTicks);
         }
@@ -416,24 +419,23 @@ public abstract class BaseScreen extends GuiScreen
         if (this.useCustomScreenScaling())
         {
             RenderUtils.setupScaledScreenRendering(this.customScreenScale);
-            mouseX = Mouse.getX() * this.width / this.mc.displayWidth;
-            mouseY = this.height - Mouse.getY() * this.height / this.mc.displayHeight - 1;
         }
 
-        ScreenContext ctx = this.getContext(mouseX, mouseY);
+        ScreenContext ctx = this.getContext();
 
-        this.renderScreenBackground(mouseX, mouseY, ctx);
-        this.renderScreenTitle(mouseX, mouseY, ctx);
+        this.renderScreenBackground(ctx);
+        this.renderScreenTitle(ctx);
 
         // Draw base widgets
-        this.renderWidgets(mouseX, mouseY, ctx);
+        this.renderWidgets(ctx);
         //super.drawScreen(mouseX, mouseY, partialTicks);
 
-        this.renderCustomContents(mouseX, mouseY, ctx);
+        this.renderCustomContents(ctx);
 
         this.renderHoveredWidget(ctx);
 
-        if (MaLiLibConfigs.Debug.GUI_DEBUG.getBooleanValue() && MaLiLibConfigs.Debug.GUI_DEBUG_KEY.isHeld())
+        if (MaLiLibConfigs.Debug.GUI_DEBUG.getBooleanValue() &&
+            MaLiLibConfigs.Debug.GUI_DEBUG_KEY.isHeld())
         {
             this.renderDebug(ctx);
         }
@@ -551,7 +553,8 @@ public abstract class BaseScreen extends GuiScreen
             tf.setFocused(false);
         }
 
-        if (this.hoveredWidget != null && this.hoveredWidget.tryMouseClick(mouseX, mouseY, mouseButton))
+        if (this.hoveredWidget != null &&
+            this.hoveredWidget.tryMouseClick(mouseX, mouseY, mouseButton))
         {
             clickedWidget = this.hoveredWidget;
         }
@@ -595,7 +598,8 @@ public abstract class BaseScreen extends GuiScreen
 
     public boolean onMouseScrolled(int mouseX, int mouseY, double mouseWheelDelta)
     {
-        if (this.hoveredWidget != null && this.hoveredWidget.tryMouseScroll(mouseX, mouseY, mouseWheelDelta))
+        if (this.hoveredWidget != null &&
+            this.hoveredWidget.tryMouseScroll(mouseX, mouseY, mouseWheelDelta))
         {
             return true;
         }
@@ -648,7 +652,8 @@ public abstract class BaseScreen extends GuiScreen
             this.dialogHandler.closeDialog();
             return true;
         }
-        else if (keyCode == Keyboard.KEY_TAB && GuiUtils.changeTextFieldFocus(this.getAllTextFields(), isShiftDown()))
+        else if (keyCode == Keyboard.KEY_TAB &&
+                 GuiUtils.changeTextFieldFocus(this.getAllTextFields(), isShiftDown()))
         {
             return true;
         }
@@ -812,19 +817,23 @@ public abstract class BaseScreen extends GuiScreen
         }
     }
 
-    protected void renderScreenBackground(int mouseX, int mouseY, ScreenContext ctx)
+    protected void renderScreenBackground(ScreenContext ctx)
     {
         if (this.renderBorder)
         {
-            ShapeRenderUtils.renderOutlinedRectangle(this.x, this.y, this.zLevel, this.screenWidth, this.screenHeight, this.backgroundColor, this.borderColor);
+            ShapeRenderUtils.renderOutlinedRectangle(this.x, this.y, this.zLevel,
+                                                     this.screenWidth, this.screenHeight,
+                                                     this.backgroundColor, this.borderColor);
         }
         else
         {
-            ShapeRenderUtils.renderRectangle(this.x, this.y, this.zLevel, this.screenWidth, this.screenHeight, this.backgroundColor);
+            ShapeRenderUtils.renderRectangle(this.x, this.y, this.zLevel,
+                                             this.screenWidth, this.screenHeight,
+                                             this.backgroundColor);
         }
     }
 
-    protected void renderScreenTitle(int mouseX, int mouseY, ScreenContext ctx)
+    protected void renderScreenTitle(ScreenContext ctx)
     {
         if (this.titleText != null)
         {
@@ -835,11 +844,11 @@ public abstract class BaseScreen extends GuiScreen
         }
     }
 
-    protected void renderCustomContents(int mouseX, int mouseY, ScreenContext ctx)
+    protected void renderCustomContents(ScreenContext ctx)
     {
     }
 
-    protected void renderWidgets(int mouseX, int mouseY, ScreenContext ctx)
+    protected void renderWidgets(ScreenContext ctx)
     {
         if (this.widgets.isEmpty() == false)
         {

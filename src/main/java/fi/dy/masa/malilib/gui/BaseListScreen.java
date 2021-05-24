@@ -279,7 +279,7 @@ public abstract class BaseListScreen<LISTWIDGET extends BaseListWidget> extends 
     }
 
     @Override
-    protected void renderCustomContents(int mouseX, int mouseY, ScreenContext ctx)
+    protected void renderCustomContents(ScreenContext ctx)
     {
         BaseListWidget listWidget = this.getListWidget();
 

@@ -198,7 +198,7 @@ public class BaseMultiListScreen extends BaseTabbedScreen
     }
 
     @Override
-    protected void renderCustomContents(int mouseX, int mouseY, ScreenContext ctx)
+    protected void renderCustomContents(ScreenContext ctx)
     {
         for (BaseListWidget listWidget : this.listWidgets)
         {

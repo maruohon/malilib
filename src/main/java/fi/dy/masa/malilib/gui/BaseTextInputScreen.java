@@ -149,7 +149,7 @@ public abstract class BaseTextInputScreen extends BaseScreen
     }
 
     @Override
-    protected void renderCustomContents(int mouseX, int mouseY, ScreenContext ctx)
+    protected void renderCustomContents(ScreenContext ctx)
     {
         if (this.infoText != null)
         {
