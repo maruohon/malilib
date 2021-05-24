@@ -2,10 +2,8 @@ package fi.dy.masa.malilib.event.dispatch;
 
 import java.util.ArrayList;
 import java.util.List;
-import fi.dy.masa.malilib.config.ConfigManager;
-import fi.dy.masa.malilib.config.ConfigManagerImpl;
+import fi.dy.masa.malilib.config.util.ConfigUtils;
 import fi.dy.masa.malilib.event.InitializationHandler;
-import fi.dy.masa.malilib.input.HotkeyManager;
 
 public class InitializationDispatcherImpl implements InitializationDispatcher
 {
@@ -37,7 +35,6 @@ public class InitializationDispatcherImpl implements InitializationDispatcher
             }
         }
 
-        ((ConfigManagerImpl) ConfigManager.INSTANCE).loadAllConfigs();
-        HotkeyManager.INSTANCE.updateUsedKeys();
+        ConfigUtils.loadAllConfigsFromFile();
     }
 }

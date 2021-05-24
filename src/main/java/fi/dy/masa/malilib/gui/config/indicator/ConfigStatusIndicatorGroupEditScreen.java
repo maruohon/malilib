@@ -5,6 +5,7 @@ import fi.dy.masa.malilib.config.value.OptionListConfigValue;
 import fi.dy.masa.malilib.gui.BaseListScreen;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.EdgeIntEditScreen;
+import fi.dy.masa.malilib.gui.config.KeybindEditingScreen;
 import fi.dy.masa.malilib.gui.position.ScreenLocation;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
@@ -12,17 +13,20 @@ import fi.dy.masa.malilib.gui.widget.ColorIndicatorWidget;
 import fi.dy.masa.malilib.gui.widget.DoubleEditWidget;
 import fi.dy.masa.malilib.gui.widget.DropDownListWidget;
 import fi.dy.masa.malilib.gui.widget.IntegerEditWidget;
+import fi.dy.masa.malilib.gui.widget.KeybindSettingsWidget;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
+import fi.dy.masa.malilib.gui.widget.button.KeyBindConfigButton;
 import fi.dy.masa.malilib.gui.widget.button.OnOffButton;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.ConfigStatusIndicatorEntryWidget;
+import fi.dy.masa.malilib.input.HotkeyManager;
 import fi.dy.masa.malilib.overlay.InfoOverlay;
 import fi.dy.masa.malilib.overlay.widget.ConfigStatusIndicatorContainerWidget;
 import fi.dy.masa.malilib.overlay.widget.sub.BaseConfigStatusIndicatorWidget;
 import fi.dy.masa.malilib.render.text.TextRenderSettings;
 
-public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataListWidget<BaseConfigStatusIndicatorWidget<?>>>
+public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataListWidget<BaseConfigStatusIndicatorWidget<?>>> implements KeybindEditingScreen
 {
     protected final ConfigStatusIndicatorContainerWidget widget;
     protected final DropDownListWidget<ScreenLocation> locationDropdownWidget;
@@ -32,6 +36,7 @@ public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataLis
     protected final LabelWidget priorityLabelWidget;
     protected final LabelWidget lineHeightLabelWidget;
     protected final LabelWidget textScaleLabelWidget;
+    protected final LabelWidget toggleKeyLabelWidget;
     protected final GenericButton groupEnabledToggleButton;
     protected final GenericButton backgroundEnabledToggleButton;
     protected final GenericButton oddEvenBackgroundToggleButton;
@@ -45,6 +50,9 @@ public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataLis
     protected final IntegerEditWidget lineHeightEditWidget;
     protected final DoubleEditWidget textScaleEditWidget;
     protected final BaseTextFieldWidget nameTextField;
+    protected final KeyBindConfigButton keybindButton;
+    protected final KeybindSettingsWidget settingsWidget;
+    @Nullable protected KeyBindConfigButton activeKeyBindButton;
 
     public ConfigStatusIndicatorGroupEditScreen(ConfigStatusIndicatorContainerWidget widget)
     {
@@ -64,6 +72,7 @@ public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataLis
         this.lineHeightLabelWidget = new LabelWidget("malilib.label.line_height.colon");
         this.backgroundLabelWidget = new LabelWidget("malilib.label.background.colon");
         this.textScaleLabelWidget = new LabelWidget("malilib.label.text_scale.colon");
+        this.toggleKeyLabelWidget = new LabelWidget("malilib.label.csi.toggle_hotkey.colon");
         this.oddBackgroundLabelWidget = new LabelWidget("malilib.label.config_status_indicator.background_odd.colon");
         this.oddBackgroundLabelWidget.translateAndAddHoverString("malilib.label.config_status_indicator.background_odd.hover");
 
@@ -90,6 +99,9 @@ public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataLis
 
         this.backgroundColorWidget = new ColorIndicatorWidget(16, 16, textSettings::getBackgroundColor, textSettings::setBackgroundColor);
         this.oddBackgroundColorWidget = new ColorIndicatorWidget(16, 16, textSettings::getOddRowBackgroundColor, textSettings::setOddRowBackgroundColor);
+
+        this.keybindButton = new KeyBindConfigButton(120, 20, widget.getHotkey().getKeyBind(), this);
+        this.settingsWidget = new KeybindSettingsWidget(widget.getHotkey().getKeyBind(), widget.getHotkey().getName(), null);
     }
 
     @Override
@@ -137,6 +149,10 @@ public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataLis
         this.addWidget(this.oddBackgroundColorWidget);
         this.addWidget(this.oddEvenBackgroundToggleButton);
 
+        this.addWidget(this.toggleKeyLabelWidget);
+        this.addWidget(this.keybindButton);
+        this.addWidget(this.settingsWidget);
+
         this.addWidget(this.addConfigsButton);
     }
 
@@ -174,10 +190,14 @@ public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataLis
         tmpX = this.textScaleEditWidget.getRight() + 6;
         this.backgroundLabelWidget.setPosition(tmpX, y + 4);
         this.oddBackgroundLabelWidget.setPosition(tmpX, y + 23);
+        this.toggleKeyLabelWidget.setPosition(tmpX, y + 42);
 
         tmpX = Math.max(this.backgroundLabelWidget.getRight(), this.oddBackgroundLabelWidget.getRight()) + 6;
         this.backgroundColorWidget.setPosition(tmpX, y);
         this.oddBackgroundColorWidget.setPosition(tmpX, y + 19);
+
+        this.keybindButton.setPosition(this.toggleKeyLabelWidget.getRight() + 6, y + 36);
+        this.settingsWidget.setPosition(this.keybindButton.getRight() + 2, y + 36);
 
         tmpX += 22;
         this.backgroundEnabledToggleButton.setPosition(tmpX, y);
@@ -191,8 +211,39 @@ public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataLis
     public void onGuiClosed()
     {
         this.widget.setStatusIndicatorWidgets(this.getListWidget().getCurrentContents());
+        HotkeyManager.INSTANCE.updateUsedKeys();
 
         super.onGuiClosed();
+    }
+
+    @Override
+    public boolean onKeyTyped(int keyCode, int scanCode, int modifiers)
+    {
+        if (this.activeKeyBindButton != null)
+        {
+            this.activeKeyBindButton.onKeyTyped(keyCode, scanCode, modifiers);
+            return true;
+        }
+
+        return super.onKeyTyped(keyCode, scanCode, modifiers);
+    }
+
+    @Override
+    public boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
+    {
+        if (super.onMouseClicked(mouseX, mouseY, mouseButton))
+        {
+            return true;
+        }
+
+        // When clicking on not-a-button, clear the selection
+        if (this.activeKeyBindButton != null && mouseButton == 0)
+        {
+            this.setActiveKeyBindButton(null);
+            return true;
+        }
+
+        return false;
     }
 
     protected void changeWidgetLocation(ScreenLocation location)
@@ -240,5 +291,21 @@ public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataLis
         listWidget.setFetchFromSupplierOnRefresh(true);
 
         return listWidget;
+    }
+
+    @Override
+    public void setActiveKeyBindButton(@Nullable KeyBindConfigButton button)
+    {
+        if (this.activeKeyBindButton != null)
+        {
+            this.activeKeyBindButton.onClearSelection();
+        }
+
+        this.activeKeyBindButton = button;
+
+        if (this.activeKeyBindButton != null)
+        {
+            this.activeKeyBindButton.onSelected();
+        }
     }
 }

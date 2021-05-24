@@ -12,15 +12,25 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
+import fi.dy.masa.malilib.config.option.HotkeyConfig;
 import fi.dy.masa.malilib.config.util.ConfigUtils;
 import fi.dy.masa.malilib.gui.BaseScreen;
+import fi.dy.masa.malilib.gui.config.ConfigTab;
 import fi.dy.masa.malilib.gui.config.ConfigTabRegistry;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetRegistry;
 import fi.dy.masa.malilib.gui.config.indicator.ConfigStatusIndicatorGroupEditScreen;
 import fi.dy.masa.malilib.gui.config.indicator.ConfigStatusWidgetFactory;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
+import fi.dy.masa.malilib.input.ActionResult;
+import fi.dy.masa.malilib.input.Hotkey;
+import fi.dy.masa.malilib.input.HotkeyProvider;
+import fi.dy.masa.malilib.input.KeyAction;
+import fi.dy.masa.malilib.input.KeyBind;
+import fi.dy.masa.malilib.input.SimpleHotkeyProvider;
+import fi.dy.masa.malilib.overlay.InfoWidgetManager;
 import fi.dy.masa.malilib.overlay.widget.sub.BaseConfigStatusIndicatorWidget;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
@@ -33,18 +43,26 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
     protected final Set<ConfigOnTab> configs = new HashSet<>();
     protected final List<BaseConfigStatusIndicatorWidget<?>> allWidgets = new ArrayList<>();
     protected final List<BaseConfigStatusIndicatorWidget<?>> enabledWidgets = new ArrayList<>();
+    protected final HotkeyConfig hotkey = new HotkeyConfig("csiToggleKey", "");
     protected boolean enabledWidgetsChanged;
 
     public ConfigStatusIndicatorContainerWidget()
     {
         super();
 
+        this.hotkey.getKeyBind().setCallback(this::toggleIndicatorGroupEnabled);
+        this.hotkey.setModInfo(MaLiLibReference.MOD_INFO);
         this.shouldSerialize = true;
     }
 
     public Collection<ConfigOnTab> getConfigs()
     {
         return this.configs;
+    }
+
+    public Hotkey getHotkey()
+    {
+        return this.hotkey;
     }
 
     public void addWidgetForConfig(ConfigOnTab config)
@@ -145,6 +163,12 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
 
             this.enabledWidgetsChanged = false;
         }
+    }
+
+    protected ActionResult toggleIndicatorGroupEnabled(KeyAction action, KeyBind key)
+    {
+        this.toggleEnabled();
+        return ActionResult.SUCCESS;
     }
 
     @Override
@@ -276,6 +300,7 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
         JsonArray arr = new JsonArray();
 
         obj.addProperty("line_height", this.lineHeight);
+        obj.add("hotkey", this.hotkey.getKeyBind().getAsJsonElement());
 
         for (BaseConfigStatusIndicatorWidget<?> widget : this.allWidgets)
         {
@@ -294,33 +319,37 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
 
         this.lineHeight = JsonUtils.getIntegerOrDefault(obj, "line_height", this.lineHeight);
 
-        this.allWidgets.clear();
-
-        if (JsonUtils.hasArray(obj, "status_widgets") == false)
+        if (obj.has("hotkey"))
         {
-            return;
+            this.hotkey.getKeyBind().setValueFromJsonElement(obj.get("hotkey"), "");
         }
 
-        Map<String, ConfigOnTab> configMap = ConfigUtils.getConfigIdToConfigMapFromTabs(ConfigTabRegistry.INSTANCE.getAllRegisteredConfigTabs());
-        JsonArray arr = obj.get("status_widgets").getAsJsonArray();
-        final int count = arr.size();
+        this.allWidgets.clear();
 
-        for (int i = 0; i < count; i++)
+        if (JsonUtils.hasArray(obj, "status_widgets"))
         {
-            JsonElement el = arr.get(i);
+            List<ConfigTab> tabs = ConfigTabRegistry.INSTANCE.getAllRegisteredConfigTabs();
+            Map<String, ConfigOnTab> configMap = ConfigUtils.getConfigIdToConfigMapFromTabs(tabs);
+            JsonArray arr = obj.get("status_widgets").getAsJsonArray();
+            final int count = arr.size();
 
-            if (el.isJsonObject())
+            for (int i = 0; i < count; i++)
             {
-                JsonObject entryObj = el.getAsJsonObject();
-                BaseConfigStatusIndicatorWidget<?> widget = BaseConfigStatusIndicatorWidget.fromJson(entryObj, configMap);
+                JsonElement el = arr.get(i);
 
-                if (widget != null)
+                if (el.isJsonObject())
                 {
-                    widget.setGeometryChangeListener(this::requestConditionalReLayout);
-                    widget.setEnabledChangeListener(this::notifyEnabledWidgetsChanged);
-                    widget.setHeight(this.lineHeight);
-                    widget.updateState(true);
-                    this.allWidgets.add(widget);
+                    JsonObject entryObj = el.getAsJsonObject();
+                    BaseConfigStatusIndicatorWidget<?> widget = BaseConfigStatusIndicatorWidget.fromJson(entryObj, configMap);
+
+                    if (widget != null)
+                    {
+                        widget.setGeometryChangeListener(this::requestConditionalReLayout);
+                        widget.setEnabledChangeListener(this::notifyEnabledWidgetsChanged);
+                        widget.setHeight(this.lineHeight);
+                        widget.updateState(true);
+                        this.allWidgets.add(widget);
+                    }
                 }
             }
         }
@@ -328,5 +357,29 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
         this.notifyEnabledWidgetsChanged();
         this.updateSize();
         this.requestUnconditionalReLayout();
+    }
+
+    public static List<? extends Hotkey> getToggleHotkeys()
+    {
+        List<ConfigStatusIndicatorContainerWidget> widgets = InfoWidgetManager.INSTANCE.getAllWidgetsOfType(ConfigStatusIndicatorContainerWidget.class);
+        ArrayList<Hotkey> hotkeys = new ArrayList<>();
+
+        for (ConfigStatusIndicatorContainerWidget widget : widgets)
+        {
+            hotkeys.add(widget.getHotkey());
+        }
+
+        return hotkeys;
+    }
+
+    /**
+     * Convenience method for malilib to register the C.S.I. toggle hotkeys.
+     * This should not be useful for or used by other mods.
+     */
+    public static HotkeyProvider getHotkeyProvider()
+    {
+        return new SimpleHotkeyProvider(MaLiLibReference.MOD_INFO,
+                                        "malilib.hotkeys.category.csi_toggles",
+                                        ConfigStatusIndicatorContainerWidget::getToggleHotkeys);
     }
 }

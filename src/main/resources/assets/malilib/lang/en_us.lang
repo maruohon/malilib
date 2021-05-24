@@ -86,6 +86,7 @@ malilib.hotkey.comment.scrollvalueadjustdecrease=The key to use for decreasing t
 malilib.hotkey.comment.scrollvalueadjustincrease=The key to use for increasing the value of "scroll-adjustable" configs
 malilib.hotkey.comment.scrollvalueadjustmodifier=The key that needs to be held for the scroll adjusting to be enabled.\nBy default this is set to NONE with Allow Empty Keybind enabled, that way you don't need to hold any extra keys in addition to the toggle keybind that the scroll adjusting is related to.\nIf you don't want scroll adjusting to happen "accidentally" while you are holding the toggle keybind and for example trying to scroll to change the selected hotbar slot, then you can set a key here (for example Shift) that you must additionally hold for the scroll adjusting to be possible.\nAlso note that the scroll adjusting is only enabled for the handful of toggle keys that have it, when the Activate On setting is set to §6BOTH§r.
 
+malilib.hotkey.name.csitogglekey=Toggle C.S.I. Group Enabled
 malilib.hotkey.name.guidebugkey=GUI Debug Key
 malilib.hotkey.name.ignoredkeys=Ignored Keys
 malilib.hotkey.name.openactionpromptscreen=Open Action Prompt Screen
@@ -315,6 +316,7 @@ malilib.gui.title.toast_renderer_configuration=Toast Renderer Configuration
 
 malilib.button.hover.plus_minus_tip=- Left click to increase\n- Right click to decrease\n- Or scroll with the mouse over the button\n- Shift and/or Alt to increase the step size
 
+malilib.hotkeys.category.csi_toggles=C.S.I. Toggle Hotkeys
 malilib.hotkeys.category.custom=Custom Hotkeys
 malilib.hotkeys.category.debug_hotkeys=Debug Hotkeys
 malilib.hotkeys.category.generic_hotkeys=Generic Hotkeys
@@ -363,6 +365,7 @@ malilib.label.config_tab.debug=Debug
 malilib.label.config_tab.generic=Generic
 malilib.label.config_tab.hotkeys=Hotkeys
 malilib.label.config_tab.info=Info
+malilib.label.csi.toggle_hotkey.colon=Toggle key:
 malilib.label.custom=Custom
 malilib.label.default_duration.colon=Default duration (ms):
 malilib.label.default_fade_in_time.colon=Default fade-in time (ms):

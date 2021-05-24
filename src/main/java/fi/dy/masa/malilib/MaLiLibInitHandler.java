@@ -12,6 +12,7 @@ import fi.dy.masa.malilib.input.HotkeyManager;
 import fi.dy.masa.malilib.input.callback.HotkeyCallback;
 import fi.dy.masa.malilib.network.message.MessagePacketHandler;
 import fi.dy.masa.malilib.overlay.InfoOverlay;
+import fi.dy.masa.malilib.overlay.widget.ConfigStatusIndicatorContainerWidget;
 
 public class MaLiLibInitHandler implements InitializationHandler
 {
@@ -23,6 +24,7 @@ public class MaLiLibInitHandler implements InitializationHandler
 
         HotkeyManager.INSTANCE.registerHotkeyProvider(MaLiLibHotkeyProvider.INSTANCE);
         HotkeyManager.INSTANCE.registerHotkeyProvider(CustomHotkeyManager.INSTANCE);
+        HotkeyManager.INSTANCE.registerHotkeyProvider(ConfigStatusIndicatorContainerWidget.getHotkeyProvider());
 
         MaLiLibConfigs.Hotkeys.OPEN_ACTION_PROMPT_SCREEN.getKeyBind().setCallback(HotkeyCallback.of(MaLiLibActions.OPEN_ACTION_PROMPT_SCREEN));
         MaLiLibConfigs.Hotkeys.OPEN_CONFIG_SCREEN.getKeyBind().setCallback(HotkeyCallback.of(MaLiLibActions.OPEN_CONFIG_SCREEN));
