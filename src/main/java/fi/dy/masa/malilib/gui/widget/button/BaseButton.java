@@ -155,8 +155,8 @@ public abstract class BaseButton extends BackgroundWidget
     {
         if (this.enabled &&
             this.visible &&
-            this.actionListener != null &&
-            this.actionListener.actionPerformedWithButton(mouseButton))
+            (this.actionListener == null ||
+             this.actionListener.actionPerformedWithButton(mouseButton)))
         {
             if (this.playClickSound)
             {
