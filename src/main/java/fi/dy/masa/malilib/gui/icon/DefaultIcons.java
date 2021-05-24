@@ -28,6 +28,7 @@ public class DefaultIcons
     public static final BaseMultiIcon LOCK_LOCKED                   = new BaseMultiIcon( 33,   0,  9,  9, 0, 0);
     public static final BaseMultiIcon LIST_ADD_PLUS_9               = new BaseMultiIcon( 24,   9,  9,  9);
     public static final BaseMultiIcon LIST_REMOVE_MINUS_9           = new BaseMultiIcon( 24,  18,  9,  9);
+    public static final BaseMultiIcon CLOSE_BUTTON_9                = new BaseMultiIcon( 24,  27,  9,  9);
 
     public static final BaseMultiIcon BTN_PLUSMINUS_10              = new BaseMultiIcon( 51,   0, 10, 10);
 

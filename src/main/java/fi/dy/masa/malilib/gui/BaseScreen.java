@@ -13,12 +13,14 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.gui.config.liteloader.DialogHandler;
+import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.BaseWidget;
 import fi.dy.masa.malilib.gui.widget.InteractableWidget;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
+import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.listener.TextChangeListener;
 import fi.dy.masa.malilib.render.RenderUtils;
@@ -68,6 +70,7 @@ public abstract class BaseScreen extends GuiScreen
     @Nullable protected DialogHandler dialogHandler;
     @Nullable protected InteractableWidget hoveredWidget;
     @Nullable protected ScreenContext context;
+    protected GenericButton closeButton;
     protected Vec2i dragStartOffset = Vec2i.ZERO;
     protected int backgroundColor = TOOLTIP_BACKGROUND;
     protected int borderColor = COLOR_HORIZONTAL_BAR;
@@ -81,6 +84,7 @@ public abstract class BaseScreen extends GuiScreen
     protected int titleX = 10;
     protected int titleY = 6;
     protected int titleColor = 0xFFFFFFFF;
+    protected boolean addCloseButton = true;
     protected boolean canDragMove;
     protected boolean dragging;
     protected boolean renderBorder;
@@ -93,6 +97,8 @@ public abstract class BaseScreen extends GuiScreen
     {
         int customScale = MaLiLibConfigs.Generic.CUSTOM_SCREEN_SCALE.getIntegerValue();
         this.useCustomScreenScaling = customScale != this.mc.gameSettings.guiScale && customScale > 0;
+        this.closeButton = GenericButton.createIconOnly(DefaultIcons.CLOSE_BUTTON_9, this::closeScreen);
+        this.closeButton.translateAndAddHoverString("malilib.hover_info.close_screen");
     }
 
     public int getX()
@@ -234,10 +240,26 @@ public abstract class BaseScreen extends GuiScreen
     protected void reAddActiveWidgets()
     {
         this.clearElements();
+
+        if (this.addCloseButton && this.closeButton != null)
+        {
+            this.addWidget(this.closeButton);
+        }
     }
 
     protected void updateWidgetPositions()
     {
+        if (this.closeButton != null)
+        {
+            int x = this.x + this.screenWidth - this.closeButton.getWidth() - 2;
+            int y = this.y + 2;
+            this.closeButton.setPosition(x, y);
+        }
+    }
+
+    protected void closeScreen()
+    {
+        this.closeScreen(isShiftDown() == false);
     }
 
     protected void closeScreen(boolean showParent)
@@ -662,7 +684,7 @@ public abstract class BaseScreen extends GuiScreen
 
         if (handled == false && keyCode == Keyboard.KEY_ESCAPE)
         {
-            this.closeScreen(isShiftDown() == false);
+            this.closeScreen();
             handled = true;
         }
 

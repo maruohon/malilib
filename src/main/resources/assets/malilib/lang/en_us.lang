@@ -105,6 +105,7 @@ malilib.hover_info.action_widget_screen.close_screen_on_key_release=Close the sc
 malilib.hover_info.action.original_registry_name=§8Original registry name: §7%s
 malilib.hover_info.action.registry_name=§8Registry name: §7%s
 malilib.hover_info.add_action_execution_widget.add_argument=Bind the argument to the action button directly.\nIf this is not set, then you will need to input the argument every time you run the action.
+malilib.hover_info.close_screen=Close the screen
 malilib.hover_info.config_override_fallback=§cError retrieving server info.\n§6All features have been disabled as a fall-back.
 malilib.hover_info.macro_edit_screen.add_actions=Add the selected actions to the macro
 malilib.hover_info.macro_edit_screen.remove_actions=Remove the selected actions from the macro

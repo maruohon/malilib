@@ -99,6 +99,7 @@ public class ActionPromptScreen extends BaseListScreen<DataListWidget<NamedActio
         this.rememberSearchCheckBoxWidget.setPosition(x, this.y);
         this.fuzzySearchCheckBoxWidget.setPosition(x, this.y + 11);
         this.searchDisplayNameCheckBoxWidget.setPosition(x, this.y + 22);
+        this.closeButton.setX(x - this.closeButton.getWidth() - 2);
 
         this.dropDownWidget.setPosition(this.x, this.y);
         this.searchTextField.setPosition(this.x, this.y + 16);
