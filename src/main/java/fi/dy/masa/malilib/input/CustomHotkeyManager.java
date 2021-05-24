@@ -29,7 +29,7 @@ public class CustomHotkeyManager implements HotkeyProvider
     @Override
     public List<HotkeyCategory> getHotkeysByCategories()
     {
-        return ImmutableList.of(new HotkeyCategory(ModInfo.NO_MOD, "malilib.hotkeys.category.custom" , this.getAllHotkeys()));
+        return ImmutableList.of(new HotkeyCategory(ModInfo.NO_MOD, "malilib.hotkeys.category.custom" , this::getAllHotkeys));
     }
 
     public List<CustomHotkeyDefinition> getAllCustomHotkeys()

@@ -241,7 +241,7 @@ public class KeyBindImpl implements KeyBind
 
     private void addToastMessage(KeyAction action, boolean hasCallback, boolean cancelled)
     {
-        KeybindDisplayMode val = MaLiLibConfigs.Generic.KEYBIND_DISPLAY.getValue();
+        KeybindDisplayMode mode = MaLiLibConfigs.Generic.KEYBIND_DISPLAY.getValue();
         boolean showCallbackOnly = MaLiLibConfigs.Generic.KEYBIND_DISPLAY_CALLBACK_ONLY.getBooleanValue();
         boolean showCancelledOnly = MaLiLibConfigs.Generic.KEYBIND_DISPLAY_CANCEL_ONLY.getBooleanValue();
         boolean isBoth = this.settings.activateOn == KeyAction.BOTH;
@@ -251,19 +251,19 @@ public class KeyBindImpl implements KeyBind
         boolean canShowAdjustable = isAdjustable == false || action == KeyAction.RELEASE;
 
         if (this.settings.getShowToast() &&
-            val != KeybindDisplayMode.NONE &&
+            mode != KeybindDisplayMode.NONE &&
             (showCancelledOnly == false || cancelled || (isAdjustable && action == KeyAction.RELEASE)) &&
             (showCallbackOnly == false || hasCallback) &&
             canShowAdjustable)
         {
             List<String> lines = new ArrayList<>();
 
-            if (val == KeybindDisplayMode.KEYS || val == KeybindDisplayMode.KEYS_ACTIONS)
+            if (mode == KeybindDisplayMode.KEYS || mode == KeybindDisplayMode.KEYS_ACTIONS)
             {
                 lines.add(StringUtils.translate("malilib.toast.keybind_display.keys", this.getKeysDisplayString()));
             }
 
-            if ((val == KeybindDisplayMode.ACTIONS || val == KeybindDisplayMode.KEYS_ACTIONS) && this.modInfo != null)
+            if ((mode == KeybindDisplayMode.ACTIONS || mode == KeybindDisplayMode.KEYS_ACTIONS) && this.modInfo != null)
             {
                 String name = StringUtils.translate(this.nameTranslationKey);
                 lines.add(StringUtils.translate("malilib.toast.keybind_display.action", this.modInfo.getModName(), name));

@@ -292,7 +292,7 @@ public class KeyBindConfigButton extends GenericButton
                 for (Hotkey overlap : overlaps)
                 {
                     String key = " [ " + BaseScreen.TXT_GOLD + overlap.getKeyBind().getKeysDisplayString() + BaseScreen.TXT_RST + " ]";
-                    overlapInfo.add("    - " + overlap.getName() + key);
+                    overlapInfo.add("    - " + overlap.getDisplayName() + key);
                 }
 
                 overlaps.clear();

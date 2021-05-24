@@ -21,6 +21,7 @@ import fi.dy.masa.malilib.gui.widget.button.OnOffButton;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.ConfigStatusIndicatorEntryWidget;
 import fi.dy.masa.malilib.input.HotkeyManager;
+import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.overlay.InfoOverlay;
 import fi.dy.masa.malilib.overlay.widget.ConfigStatusIndicatorContainerWidget;
 import fi.dy.masa.malilib.overlay.widget.sub.BaseConfigStatusIndicatorWidget;
@@ -100,8 +101,9 @@ public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataLis
         this.backgroundColorWidget = new ColorIndicatorWidget(16, 16, textSettings::getBackgroundColor, textSettings::setBackgroundColor);
         this.oddBackgroundColorWidget = new ColorIndicatorWidget(16, 16, textSettings::getOddRowBackgroundColor, textSettings::setOddRowBackgroundColor);
 
-        this.keybindButton = new KeyBindConfigButton(120, 20, widget.getHotkey().getKeyBind(), this);
-        this.settingsWidget = new KeybindSettingsWidget(widget.getHotkey().getKeyBind(), widget.getHotkey().getName(), null);
+        KeyBind keyBind = widget.getHotkey().getKeyBind();
+        this.keybindButton = new KeyBindConfigButton(120, 20, keyBind, this);
+        this.settingsWidget = new KeybindSettingsWidget(keyBind, widget.getHotkey().getDisplayName(), null);
     }
 
     @Override

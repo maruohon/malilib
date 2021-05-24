@@ -27,6 +27,6 @@ public class SimpleHotkeyProvider implements HotkeyProvider
     @Override
     public List<HotkeyCategory> getHotkeysByCategories()
     {
-        return ImmutableList.of(new HotkeyCategory(this.modInfo, this.categoryName , this.getAllHotkeys()));
+        return ImmutableList.of(new HotkeyCategory(this.modInfo, this.categoryName , this.hotkeySupplier));
     }
 }

@@ -10,6 +10,13 @@ public interface Hotkey
     String getName();
 
     /**
+     * Returns the pretty/human readable display name for this hotkey.
+     * This is used in the overlap info.
+     * @return
+     */
+    String getDisplayName();
+
+    /**
      * Returns the keybind used by this hotkey
      * @return
      */

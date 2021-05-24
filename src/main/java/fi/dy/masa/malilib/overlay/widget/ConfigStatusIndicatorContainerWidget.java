@@ -60,7 +60,7 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
         return this.configs;
     }
 
-    public Hotkey getHotkey()
+    public HotkeyConfig getHotkey()
     {
         return this.hotkey;
     }

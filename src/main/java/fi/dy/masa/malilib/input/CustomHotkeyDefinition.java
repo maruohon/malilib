@@ -33,6 +33,12 @@ public class CustomHotkeyDefinition implements Hotkey
     }
 
     @Override
+    public String getDisplayName()
+    {
+        return this.name;
+    }
+
+    @Override
     public KeyBind getKeyBind()
     {
         return this.keyBind;

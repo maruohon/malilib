@@ -1,20 +1,26 @@
 package fi.dy.masa.malilib.input;
 
 import java.util.List;
+import java.util.function.Supplier;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.ModInfo;
 
 public class HotkeyCategory implements Comparable<HotkeyCategory>
 {
-    private final ModInfo modInfo;
-    private final String categoryName;
-    private final List<? extends Hotkey> hotkeys;
+    protected final ModInfo modInfo;
+    protected final String categoryName;
+    protected final Supplier<List<? extends Hotkey>> hotkeySupplier;
 
     public HotkeyCategory(ModInfo modInfo, String categoryName, List<? extends Hotkey> hotkeys)
     {
+        this(modInfo, categoryName, () -> hotkeys);
+    }
+
+    public HotkeyCategory(ModInfo modInfo, String categoryName, Supplier<List<? extends Hotkey>> hotkeySupplier)
+    {
         this.modInfo = modInfo;
         this.categoryName = categoryName;
-        this.hotkeys = hotkeys;
+        this.hotkeySupplier = hotkeySupplier;
     }
 
     public ModInfo getModInfo()
@@ -29,7 +35,7 @@ public class HotkeyCategory implements Comparable<HotkeyCategory>
 
     public List<? extends Hotkey> getHotkeys()
     {
-        return this.hotkeys;
+        return this.hotkeySupplier.get();
     }
 
     @Override
@@ -56,7 +62,7 @@ public class HotkeyCategory implements Comparable<HotkeyCategory>
 
         if (!this.modInfo.equals(that.modInfo)) { return false; }
         if (!this.categoryName.equals(that.categoryName)) { return false; }
-        return this.hotkeys.equals(that.hotkeys);
+        return this.hotkeySupplier.get().equals(that.hotkeySupplier.get());
     }
 
     @Override
@@ -64,7 +70,7 @@ public class HotkeyCategory implements Comparable<HotkeyCategory>
     {
         int result = this.modInfo.hashCode();
         result = 31 * result + this.categoryName.hashCode();
-        result = 31 * result + this.hotkeys.hashCode();
+        result = 31 * result + this.hotkeySupplier.get().hashCode();
         return result;
     }
 }

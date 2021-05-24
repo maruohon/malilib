@@ -20,7 +20,8 @@ public class MaLiLibHotkeyProvider implements HotkeyProvider
     @Override
     public List<? extends Hotkey> getAllHotkeys()
     {
-        return ListUtils.getAppendedList(MaLiLibConfigs.Hotkeys.FUNCTIONAL_HOTKEYS, Collections.singletonList(MaLiLibConfigs.Debug.GUI_DEBUG_KEY));
+        return ListUtils.getAppendedList(MaLiLibConfigs.Hotkeys.FUNCTIONAL_HOTKEYS,
+                                         Collections.singletonList(MaLiLibConfigs.Debug.GUI_DEBUG_KEY));
     }
 
     @Override
