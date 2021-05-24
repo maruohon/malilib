@@ -468,6 +468,8 @@ public abstract class BaseScreen extends GuiScreen
             super.handleMouseInput();
         }
 
+        this.runTasks();
+
         // Update again after the input is handled
         isActiveGui = GuiUtils.getCurrentScreen() == this;
         this.updateTopHoveredWidget(mouseX, mouseY, isActiveGui);
@@ -534,6 +536,8 @@ public abstract class BaseScreen extends GuiScreen
         {
             this.onCharTyped(charIn, 0);
         }
+
+        this.runTasks();
     }
 
     public boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
@@ -563,8 +567,6 @@ public abstract class BaseScreen extends GuiScreen
             }
         }
 
-        this.runTasks();
-
         // Only call super if the click wasn't handled
         if (clickedWidget != null)
         {
@@ -588,8 +590,6 @@ public abstract class BaseScreen extends GuiScreen
             widget.onMouseReleased(mouseX, mouseY, mouseButton);
         }
 
-        this.runTasks();
-
         return false;
     }
 
@@ -597,25 +597,19 @@ public abstract class BaseScreen extends GuiScreen
     {
         if (this.hoveredWidget != null && this.hoveredWidget.tryMouseScroll(mouseX, mouseY, mouseWheelDelta))
         {
-            this.runTasks();
             return true;
         }
-
-        boolean handled = false;
 
         for (InteractableWidget widget : this.widgets)
         {
             if (widget.tryMouseScroll(mouseX, mouseY, mouseWheelDelta))
             {
                 // Don't call super if the action got handled
-                handled = true;
-                break;
+                return true;
             }
         }
 
-        this.runTasks();
-
-        return handled;
+        return false;
     }
 
     public boolean onMouseMoved(int mouseX, int mouseY)
@@ -631,66 +625,53 @@ public abstract class BaseScreen extends GuiScreen
             return true;
         }
 
-        boolean handled = false;
-
         if (this.hoveredWidget != null && this.hoveredWidget.onMouseMoved(mouseX, mouseY))
         {
-            handled = true;
+            return true;
         }
 
-        if (handled == false)
+        for (InteractableWidget widget : this.widgets)
         {
-            for (InteractableWidget widget : this.widgets)
+            if (widget.onMouseMoved(mouseX, mouseY))
             {
-                if (widget.onMouseMoved(mouseX, mouseY))
-                {
-                    handled = true;
-                    break;
-                }
+                return true;
             }
         }
 
-        this.runTasks();
-
-        return handled;
+        return false;
     }
 
     public boolean onKeyTyped(int keyCode, int scanCode, int modifiers)
     {
-        boolean handled = false;
-
         if (keyCode == Keyboard.KEY_ESCAPE && this.dialogHandler != null)
         {
             this.dialogHandler.closeDialog();
-            handled = true;
+            return true;
         }
         else if (keyCode == Keyboard.KEY_TAB && GuiUtils.changeTextFieldFocus(this.getAllTextFields(), isShiftDown()))
         {
-            handled = true;
+            return true;
         }
 
-        if (handled == false && this.widgets.isEmpty() == false)
+        if (this.widgets.isEmpty() == false)
         {
             for (InteractableWidget widget : this.widgets)
             {
                 if (widget.onKeyTyped(keyCode, scanCode, modifiers))
                 {
                     // Don't call super if the button press got handled
-                    handled = true;
-                    break;
+                    return true;
                 }
             }
         }
 
-        if (handled == false && keyCode == Keyboard.KEY_ESCAPE)
+        if (keyCode == Keyboard.KEY_ESCAPE)
         {
             this.closeScreen();
-            handled = true;
+            return true;
         }
 
-        this.runTasks();
-
-        return handled;
+        return false;
     }
 
     public boolean onKeyReleased(int keyCode, int scanCode, int modifiers)
@@ -700,21 +681,16 @@ public abstract class BaseScreen extends GuiScreen
 
     public boolean onCharTyped(char charIn, int modifiers)
     {
-        boolean handled = false;
-
         for (InteractableWidget widget : this.widgets)
         {
             if (widget.onCharTyped(charIn, modifiers))
             {
                 // Don't call super if the button press got handled
-                handled = true;
-                break;
+                return true;
             }
         }
 
-        this.runTasks();
-
-        return handled;
+        return false;
     }
 
     protected List<BaseTextFieldWidget> getAllTextFields()
