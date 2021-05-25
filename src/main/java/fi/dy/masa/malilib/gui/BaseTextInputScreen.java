@@ -34,7 +34,7 @@ public abstract class BaseTextInputScreen extends BaseScreen
 
         this.okButton = createButton("malilib.gui.button.colored.ok", this::closeScreenIfValueApplied);
         this.resetButton = createButton("malilib.gui.button.reset", this::resetTextFieldToOriginalText);
-        this.cancelButton = createButton("malilib.gui.button.cancel", () -> this.closeScreen(true));
+        this.cancelButton = createButton("malilib.gui.button.cancel", this::openParentScreen);
 
         this.textField = new BaseTextFieldWidget(240, 20, this.originalText);
         this.textField.setFocused(true);
@@ -141,7 +141,7 @@ public abstract class BaseTextInputScreen extends BaseScreen
         }
         else if (keyCode == Keyboard.KEY_ESCAPE)
         {
-            this.closeScreen(true);
+            this.openParentScreen();
             return true;
         }
 
@@ -174,7 +174,7 @@ public abstract class BaseTextInputScreen extends BaseScreen
         // and this screen is still the active screen
         if (this.applyValue(this.textField.getText()) && GuiUtils.getCurrentScreen() == this)
         {
-            this.closeScreen(true);
+            this.openParentScreen();
         }
     }
 

@@ -23,7 +23,7 @@ public class StringListSelectionScreen extends BaseListScreen<DataListWidget<Str
         this.consumer = consumer;
 
         this.confirmButton = GenericButton.simple("malilib.gui.button.ok", this::onConfirm);
-        this.cancelButton = GenericButton.simple("malilib.gui.button.cancel", this::onCancel);
+        this.cancelButton = GenericButton.simple("malilib.gui.button.cancel", this::openParentScreen);
     }
 
     public List<String> getStrings()
@@ -61,10 +61,5 @@ public class StringListSelectionScreen extends BaseListScreen<DataListWidget<Str
     protected void onConfirm()
     {
         this.consumer.accept(this.getListWidget().getSelectedEntries());
-    }
-
-    protected void onCancel()
-    {
-        this.closeScreen(true);
     }
 }

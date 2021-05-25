@@ -70,7 +70,7 @@ public class AddActionExecutionWidgetScreen extends BaseScreen
         this.argumentTextField = new BaseTextFieldWidget(160, 16);
 
         this.addButton = GenericButton.simple("malilib.gui.button.add", this::createActionWidget);
-        this.cancelButton = GenericButton.simple("malilib.gui.button.cancel", this::cancel);
+        this.cancelButton = GenericButton.simple("malilib.gui.button.cancel", this::openParentScreen);
 
         this.backgroundColor = 0xFF101010;
         this.setScreenWidthAndHeight(240, 190);
@@ -195,12 +195,7 @@ public class AddActionExecutionWidgetScreen extends BaseScreen
             widget.setActionWidgetHoverText(this.hoverTextTextField.getText());
 
             this.widgetConsumer.accept(widget);
-            this.closeScreen(true);
+            this.openParentScreen();
         }
-    }
-
-    protected void cancel()
-    {
-        this.closeScreen(true);
     }
 }

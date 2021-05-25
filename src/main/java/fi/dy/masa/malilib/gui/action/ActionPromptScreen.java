@@ -122,7 +122,7 @@ public class ActionPromptScreen extends BaseListScreen<DataListWidget<NamedActio
         if (keyCode == Keyboard.KEY_RETURN)
         {
             // Close the screen before running the action, in case the action opens another screen
-            this.closeScreen(false);
+            this.closeScreen();
 
             NamedAction action = this.getListWidget().getKeyboardNavigationEntry();
 
@@ -133,7 +133,7 @@ public class ActionPromptScreen extends BaseListScreen<DataListWidget<NamedActio
         }
         else if (keyCode == Keyboard.KEY_ESCAPE)
         {
-            this.closeScreen(false);
+            this.closeScreen();
         }
 
         return super.onKeyTyped(keyCode, scanCode, modifiers);

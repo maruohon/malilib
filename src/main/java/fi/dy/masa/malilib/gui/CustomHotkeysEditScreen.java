@@ -83,7 +83,7 @@ public class CustomHotkeysEditScreen extends BaseListScreen<DataListWidget<Custo
 
             if (keyCode == Keyboard.KEY_ESCAPE && this.getParent() != GuiUtils.getCurrentScreen())
             {
-                this.closeScreen(true);
+                this.openParentScreen();
                 return true;
             }
 

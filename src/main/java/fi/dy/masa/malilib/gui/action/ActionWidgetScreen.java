@@ -311,7 +311,7 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
         if (this.editMode == false && this.closeScreenOnKeyRelease &&
             KeyBindImpl.getCurrentlyPressedKeysCount() == 0)
         {
-            this.closeScreen(false);
+            this.closeScreen();
 
             int mouseX = Mouse.getEventX() * this.width / this.mc.displayWidth;
             int mouseY = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;

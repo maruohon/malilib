@@ -300,7 +300,7 @@ public class EditActionExecutionWidgetScreen extends BaseScreen
     protected void cancel()
     {
         this.shouldApplyValues = false;
-        this.closeScreen(true);
+        this.openParentScreen();
     }
 
     protected void removeIcon()

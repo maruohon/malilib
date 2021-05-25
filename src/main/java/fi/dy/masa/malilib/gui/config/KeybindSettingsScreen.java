@@ -71,8 +71,11 @@ public class KeybindSettingsScreen extends BaseScreen
     @Override
     protected void updateWidgetPositions()
     {
+        super.updateWidgetPositions();
+
         // TODO fix this stuff when there is a proper element placer/helper available
         this.clearWidgets();
+        this.addWidget(this.closeButton);
 
         int x = this.x + 10;
         int y = this.y + 24;

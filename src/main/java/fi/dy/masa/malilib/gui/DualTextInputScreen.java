@@ -66,7 +66,7 @@ public class DualTextInputScreen extends BaseTextInputScreen
         // Only close the GUI if the value was successfully applied
         if (this.stringConsumer.apply(this.textField.getText(), this.textField2.getText()))
         {
-            this.closeScreen(true);
+            this.openParentScreen();
         }
     }
 

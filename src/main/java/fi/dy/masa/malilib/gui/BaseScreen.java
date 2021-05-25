@@ -97,8 +97,9 @@ public abstract class BaseScreen extends GuiScreen
     {
         int customScale = MaLiLibConfigs.Generic.CUSTOM_SCREEN_SCALE.getIntegerValue();
         this.useCustomScreenScaling = customScale != this.mc.gameSettings.guiScale && customScale > 0;
-        this.closeButton = GenericButton.createIconOnly(DefaultIcons.CLOSE_BUTTON_9, this::closeScreen);
+        this.closeButton = GenericButton.createIconOnly(DefaultIcons.CLOSE_BUTTON_9, this::closeScreenOrShowParent);
         this.closeButton.translateAndAddHoverString("malilib.hover_info.close_screen");
+        this.closeButton.setPlayClickSound(false);
     }
 
     public int getX()
@@ -201,7 +202,7 @@ public abstract class BaseScreen extends GuiScreen
 
         this.updateCustomScreenScale();
 
-        if (this.useCustomScreenScaling())
+        if (this.shouldUseCustomScreenScaling())
         {
             width = this.width;
             height = this.height;
@@ -257,24 +258,33 @@ public abstract class BaseScreen extends GuiScreen
         }
     }
 
-    protected void closeScreen()
+    /**
+     * Shows the parent screen (if one is set), unless the shift key is held,
+     * in which case the screen is closed entirely.
+     */
+    protected void closeScreenOrShowParent()
     {
-        this.closeScreen(isShiftDown() == false);
-    }
-
-    protected void closeScreen(boolean showParent)
-    {
-        if (showParent)
+        if (isShiftDown())
         {
-            openScreen(this.parent);
+            this.closeScreen();
         }
         else
         {
-            openScreen(null);
+            this.openParentScreen();
         }
     }
 
-    protected boolean useCustomScreenScaling()
+    protected void closeScreen()
+    {
+        openScreen(null);
+    }
+
+    protected void openParentScreen()
+    {
+        openScreen(this.parent);
+    }
+
+    protected boolean shouldUseCustomScreenScaling()
     {
         return this.useCustomScreenScaling;
     }
@@ -285,21 +295,23 @@ public abstract class BaseScreen extends GuiScreen
 
         if (currentValue != this.customScreenScale)
         {
-            boolean oldUseCustomScale = this.useCustomScreenScaling;
+            boolean oldUseCustomScale = this.shouldUseCustomScreenScaling();
             this.useCustomScreenScaling = currentValue > 0 && currentValue != this.mc.gameSettings.guiScale;
             this.customScreenScale = currentValue;
 
-            if (oldUseCustomScale || this.useCustomScreenScaling())
+            if (oldUseCustomScale || this.shouldUseCustomScreenScaling())
             {
-                this.setCustomScreenScale(currentValue);
+                this.setDimensionsForScreenScale(currentValue);
             }
         }
     }
 
-    protected void setCustomScreenScale(double scaleFactor)
+    protected void setDimensionsForScreenScale(double scaleFactor)
     {
         int width = (int) Math.ceil((double) this.mc.displayWidth / scaleFactor);
         int height = (int) Math.ceil((double) this.mc.displayHeight / scaleFactor);
+        // Only set the screen size if it was originally the same as the window dimensions,
+        // ie. the screen was not a smaller (popup?) screen.
         boolean setScreenSize = this.screenWidth == this.width && this.screenHeight == this.height;
 
         if (this.width != width || this.height != height)
@@ -311,8 +323,6 @@ public abstract class BaseScreen extends GuiScreen
             {
                 this.setScreenWidthAndHeight(width, height);
             }
-
-            this.initScreen();
         }
     }
 
@@ -414,9 +424,7 @@ public abstract class BaseScreen extends GuiScreen
         // can/will also both enable and disable the custom scale,
         // so it needs to be enabled here again in any case after
         // rendering the parent screen.
-        this.updateCustomScreenScale();
-
-        if (this.useCustomScreenScaling())
+        if (this.shouldUseCustomScreenScaling())
         {
             RenderUtils.setupScaledScreenRendering(this.customScreenScale);
         }
@@ -442,7 +450,7 @@ public abstract class BaseScreen extends GuiScreen
 
         BaseWidget.renderDebugTextAndClear(ctx);
 
-        if (this.useCustomScreenScaling())
+        if (this.shouldUseCustomScreenScaling())
         {
             RenderUtils.setupScaledScreenRendering(RenderUtils.getVanillaScreenScale());
         }
@@ -480,7 +488,7 @@ public abstract class BaseScreen extends GuiScreen
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
     {
-        if (this.useCustomScreenScaling())
+        if (this.shouldUseCustomScreenScaling())
         {
             mouseX = Mouse.getX() * this.width / this.mc.displayWidth;
             mouseY = this.height - Mouse.getY() * this.height / this.mc.displayHeight - 1;
@@ -497,7 +505,7 @@ public abstract class BaseScreen extends GuiScreen
     {
         this.dragging = false;
 
-        if (this.useCustomScreenScaling())
+        if (this.shouldUseCustomScreenScaling())
         {
             mouseX = Mouse.getX() * this.width / this.mc.displayWidth;
             mouseY = this.height - Mouse.getY() * this.height / this.mc.displayHeight - 1;
@@ -658,21 +666,18 @@ public abstract class BaseScreen extends GuiScreen
             return true;
         }
 
-        if (this.widgets.isEmpty() == false)
+        for (InteractableWidget widget : this.widgets)
         {
-            for (InteractableWidget widget : this.widgets)
+            if (widget.onKeyTyped(keyCode, scanCode, modifiers))
             {
-                if (widget.onKeyTyped(keyCode, scanCode, modifiers))
-                {
-                    // Don't call super if the button press got handled
-                    return true;
-                }
+                // Don't call super if the button press got handled
+                return true;
             }
         }
 
         if (keyCode == Keyboard.KEY_ESCAPE)
         {
-            this.closeScreen();
+            this.closeScreenOrShowParent();
             return true;
         }
 
@@ -702,12 +707,9 @@ public abstract class BaseScreen extends GuiScreen
     {
         List<BaseTextFieldWidget> textFields = new ArrayList<>();
 
-        if (this.widgets.isEmpty() == false)
+        for (InteractableWidget widget : this.widgets)
         {
-            for (InteractableWidget widget : this.widgets)
-            {
-                textFields.addAll(widget.getAllTextFields());
-            }
+            textFields.addAll(widget.getAllTextFields());
         }
 
         return textFields;
@@ -718,14 +720,13 @@ public abstract class BaseScreen extends GuiScreen
         this.mc.getTextureManager().bindTexture(texture);
     }
 
-    public BaseScreen setZLevel(float zLevel)
+    public BaseScreen setZ(float z)
     {
-        this.zLevel = zLevel;
-        int parentZLevel = (int) this.zLevel;
+        this.zLevel = z;
 
         for (InteractableWidget widget : this.widgets)
         {
-            widget.setZLevelBasedOnParent(parentZLevel);
+            widget.setZLevelBasedOnParent(z);
         }
 
         return this;
@@ -735,7 +736,7 @@ public abstract class BaseScreen extends GuiScreen
     {
         if (gui instanceof BaseScreen)
         {
-            this.setZLevel(((BaseScreen) gui).zLevel + this.getPopupGuiZLevelIncrement());
+            this.setZ(((BaseScreen) gui).zLevel + this.getPopupGuiZLevelIncrement());
         }
 
         return this;
@@ -850,12 +851,9 @@ public abstract class BaseScreen extends GuiScreen
 
     protected void renderWidgets(ScreenContext ctx)
     {
-        if (this.widgets.isEmpty() == false)
+        for (InteractableWidget widget : this.widgets)
         {
-            for (InteractableWidget widget : this.widgets)
-            {
-                widget.renderAt(widget.getX(), widget.getY(), widget.getZLevel(), ctx);
-            }
+            widget.renderAt(widget.getX(), widget.getY(), widget.getZLevel(), ctx);
         }
     }
 
@@ -886,21 +884,37 @@ public abstract class BaseScreen extends GuiScreen
     }
 
     /**
-     * Opens a popup GUI, which is meant to open on top of another GUI.
-     * This will set the Z level on that GUI based on the current GUI
+     * Opens a popup screen, which is meant to open on top of another screen.
+     * This will set the Z level of that screen based on the current screen,
+     * and the screen will also be marked as draggable.
      */
     public static boolean openPopupScreen(BaseScreen screen)
     {
         return openPopupScreen(screen, true);
     }
 
+    /**
+     * Opens a popup screen, which is meant to open on top of another screen.
+     * This will set the Z level of that screen based on the current screen,
+     * and the screen will also be marked as draggable.
+     */
     public static boolean openPopupScreen(BaseScreen screen, boolean shouldRenderParent)
     {
         screen.setPopupGuiZLevelBasedOn(GuiUtils.getCurrentScreen());
         screen.setShouldRenderParent(shouldRenderParent);
         screen.setCanDragMove(true);
-        openScreen(screen);
-        return true;
+        return openScreen(screen);
+    }
+
+    public static void applyCustomScreenScaleChange()
+    {
+        GuiScreen screen = GuiUtils.getCurrentScreen();
+
+        if (screen instanceof BaseScreen)
+        {
+            ((BaseScreen) screen).updateCustomScreenScale();
+            screen.initGui();
+        }
     }
 
     public static boolean isShiftDown()
@@ -928,13 +942,10 @@ public abstract class BaseScreen extends GuiScreen
 
     public static void renderWidgetDebug(List<? extends InteractableWidget> widgets, ScreenContext ctx)
     {
-        if (widgets.isEmpty() == false)
+        for (InteractableWidget widget : widgets)
         {
-            for (InteractableWidget widget : widgets)
-            {
-                boolean hovered = widget.isMouseOver(ctx.mouseX, ctx.mouseY);
-                widget.renderDebug(hovered, ctx);
-            }
+            boolean hovered = widget.isMouseOver(ctx.mouseX, ctx.mouseY);
+            widget.renderDebug(hovered, ctx);
         }
     }
 }
