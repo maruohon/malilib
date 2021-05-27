@@ -67,14 +67,17 @@ public class DirectoryNavigationWidget extends SearchBarWidget
 
         this.buttonRoot = GenericButton.createIconOnly(iconProvider.getIcon(FileBrowserIconType.ROOT));
         this.buttonRoot.translateAndAddHoverStrings("malilib.gui.button.hover.directory_widget.root");
+        this.buttonRoot.setPlayClickSound(false);
         this.buttonRoot.setActionListener(() -> { if (this.searchOpen == false) this.navigator.switchToRootDirectory(); });
 
         this.buttonUp = GenericButton.createIconOnly(iconProvider.getIcon(FileBrowserIconType.UP));
         this.buttonUp.translateAndAddHoverStrings("malilib.gui.button.hover.directory_widget.up");
+        this.buttonUp.setPlayClickSound(false);
         this.buttonUp.setActionListener(() -> { if (this.searchOpen == false) this.navigator.switchToParentDirectory(); });
 
         this.buttonCreateDir = GenericButton.createIconOnly(iconProvider.getIcon(FileBrowserIconType.CREATE_DIR));
         this.buttonCreateDir.translateAndAddHoverStrings("malilib.gui.button.hover.directory_widget.create_directory");
+        this.buttonCreateDir.setPlayClickSound(false);
         this.buttonCreateDir.setActionListener(() -> {
             if (this.searchOpen == false)
             {
@@ -209,6 +212,7 @@ public class DirectoryNavigationWidget extends SearchBarWidget
             {
                 GenericButton button = new GenericButton(el.nameWidth + 4, bh, el.displayName);
                 button.setPosition(x, by);
+                button.setPlayClickSound(false);
                 button.setHorizontalLabelPadding(2);
                 button.setRenderButtonBackgroundTexture(false);
                 button.setRenderHoverBorder(true);
