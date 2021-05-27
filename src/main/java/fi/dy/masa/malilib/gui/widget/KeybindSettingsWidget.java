@@ -85,7 +85,8 @@ public class KeybindSettingsWidget extends InteractableWidget
         int u2 = 1 + (settings.getAllowExtraKeys() ? uDiff : 0);
         int u3 = 1 + (settings.isOrderSensitive() ? uDiff : 0);
         int u4 = 1 + (settings.isExclusive() ? uDiff : 0);
-        int u5 = 1 + (settings.getCancelCondition() != CancelCondition.NEVER ? uDiff : 0); // TODO add separate icons for ON_SUCCESS and ON_FAILURE
+        // TODO add separate icons for ON_SUCCESS and ON_FAILURE ?
+        int u5 = 1 + (settings.getCancelCondition() != CancelCondition.NEVER ? uDiff : 0);
         int u6 = 1 + (settings.getAllowEmpty() ? uDiff : 0);
         int u7 = 61 + (settings.getContext().getIconIndex() * uDiff);
 
@@ -104,7 +105,7 @@ public class KeybindSettingsWidget extends InteractableWidget
         KeyBindSettings settings = this.keyBind.getSettings();
         KeyBindSettings defaultSettings = this.keyBind.getDefaultSettings();
 
-        lines.add(BaseScreen.TXT_WHITE + StringUtils.translate("malilib.gui.label.keybind_settings.title_advanced_keybind_settings"));
+        lines.add(StringUtils.translate("malilib.gui.label.keybind_settings.title_advanced_keybind_settings"));
 
         this.addOptionText(lines, "malilib.gui.label.keybind_settings.activate_on", settings.getActivateOn(), defaultSettings.getActivateOn(), this::getDisplayString);
         this.addOptionText(lines, "malilib.gui.label.keybind_settings.context", settings.getContext(), defaultSettings.getContext(), this::getDisplayString);
@@ -128,16 +129,20 @@ public class KeybindSettingsWidget extends InteractableWidget
     protected <T> void addOptionText(List<String> lines, String translationKey, T value, T defaultValue, Function<T, String> displayValueFunction)
     {
         boolean modified = value.equals(defaultValue) == false;
-        String gray = BaseScreen.TXT_GRAY;
-        String nameColor = modified ? BaseScreen.TXT_YELLOW : gray;
-
         String name = StringUtils.translate(translationKey);
         String valStr = displayValueFunction.apply(value);
-        String defValStr = displayValueFunction.apply(defaultValue);
-        String def = StringUtils.translate("malilib.gui.label.keybind_settings.default");
-        String defFull = modified ? String.format(" %s[%s: %s%s]", gray, def, defValStr, gray) : "";
 
-        lines.add(String.format("%s%s: %s%s", nameColor, name, valStr, defFull));
+        if (modified)
+        {
+            String key = "malilib.gui.label.keybind_settings.name_and_value.modified";
+            String defValStr = displayValueFunction.apply(defaultValue);
+            lines.add(StringUtils.translate(key, name, valStr, defValStr));
+        }
+        else
+        {
+            String key = "malilib.gui.label.keybind_settings.name_and_value.default";
+            lines.add(StringUtils.translate(key, name, valStr));
+        }
     }
 
     protected String getDisplayString(boolean value)
@@ -147,11 +152,11 @@ public class KeybindSettingsWidget extends InteractableWidget
 
     protected String getDisplayString(OptionListConfigValue value)
     {
-        return BaseScreen.TXT_BLUE + value.getDisplayName();
+        return StringUtils.translate("malilib.gui.label.keybind_settings.value.option_list", value.getDisplayName());
     }
 
     protected String getDisplayString(int value)
     {
-        return BaseScreen.TXT_AQUA + value;
+        return StringUtils.translate("malilib.gui.label.keybind_settings.value.integer", value);
     }
 }

@@ -9,7 +9,6 @@ import java.util.Map;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.tuple.Pair;
 import com.google.common.base.Splitter;
-import com.google.common.collect.ImmutableMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.properties.IProperty;
@@ -21,7 +20,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.util.data.Constants;
 
 public class BlockUtils
@@ -91,11 +89,9 @@ public class BlockUtils
             {
                 BlockStateContainer blockState = block.getBlockState();
                 String propStr = str.substring(index + 1, str.length() - 1);
-                Iterator<String> propIter = COMMA_SPLITTER.split(propStr).iterator();
 
-                while (propIter.hasNext())
+                for (String propAndVal : COMMA_SPLITTER.split(propStr))
                 {
-                    String propAndVal = propIter.next();
                     Iterator<String> valIter = EQUAL_SPLITTER.split(propAndVal).iterator();
 
                     if (valIter.hasNext() == false)
@@ -148,11 +144,9 @@ public class BlockUtils
         {
             NBTTagCompound propsTag = new NBTTagCompound();
             String propStr = stateString.substring(index + 1, stateString.length() - 1);
-            Iterator<String> propIter = COMMA_SPLITTER.split(propStr).iterator();
 
-            while (propIter.hasNext())
+            for (String propAndVal : COMMA_SPLITTER.split(propStr))
             {
-                String propAndVal = propIter.next();
                 Iterator<String> valIter = EQUAL_SPLITTER.split(propAndVal).iterator();
 
                 if (valIter.hasNext() == false)
@@ -237,7 +231,7 @@ public class BlockUtils
     @Nullable
     public static <T extends Comparable<T>> T getPropertyValueByName(IProperty<T> prop, String valStr)
     {
-        return (T) (prop.parseValue(valStr).orNull());
+        return prop.parseValue(valStr).orNull();
     }
 
     /**
@@ -286,9 +280,7 @@ public class BlockUtils
 
             try
             {
-                ImmutableMap<IProperty<?>, Comparable<?>> properties = state.getProperties();
-
-                for (Map.Entry<IProperty<?>, Comparable<?>> entry : properties.entrySet())
+                for (Map.Entry<IProperty<?>, Comparable<?>> entry : state.getProperties().entrySet())
                 {
                     @SuppressWarnings("unchecked")
                     IProperty<T> prop = (IProperty<T>) entry.getKey();
@@ -298,24 +290,27 @@ public class BlockUtils
                     String propName = prop.getName();
                     @SuppressWarnings("unchecked")
                     String valStr = prop.getName((T) val);
+                    String key;
 
                     if (prop instanceof PropertyBool)
                     {
-                        String pre = val.equals(Boolean.TRUE) ? BaseScreen.TXT_GREEN : BaseScreen.TXT_RED;
-                        lines.add(propName + separator + pre + valStr);
+                        key = val.equals(Boolean.TRUE) ? "malilib.info.block_state_properties.boolean.true" :
+                                                         "malilib.info.block_state_properties.boolean.false";
                     }
                     else if (prop instanceof PropertyDirection)
                     {
-                        lines.add(propName + separator + BaseScreen.TXT_GOLD + valStr);
+                        key = "malilib.info.block_state_properties.direction";
                     }
                     else if (prop instanceof PropertyInteger)
                     {
-                        lines.add(propName + separator + BaseScreen.TXT_AQUA + valStr);
+                        key = "malilib.info.block_state_properties.integer";
                     }
                     else
                     {
-                        lines.add(propName + separator + valStr);
+                        key = "malilib.info.block_state_properties.generic";
                     }
+
+                    lines.add(StringUtils.translate(key, propName, separator, valStr));
                 }
             }
             catch (Exception ignore) {}

@@ -5,7 +5,6 @@ import java.util.List;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import fi.dy.masa.malilib.MaLiLibConfigs;
-import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.config.KeybindEditingScreen;
 import fi.dy.masa.malilib.input.Hotkey;
 import fi.dy.masa.malilib.input.HotkeyCategory;
@@ -235,13 +234,13 @@ public class KeyBindConfigButton extends GenericButton
 
         if (this.isSelected())
         {
-            return "> " + BaseScreen.TXT_YELLOW + valueStr + BaseScreen.TXT_RST + " <";
+            return StringUtils.translate("malilib.gui.button.keybind_button.selected", valueStr);
         }
         else
         {
             if (this.overlapInfoSize > 0)
             {
-                return BaseScreen.TXT_GOLD + valueStr + BaseScreen.TXT_RST;
+                return StringUtils.translate("malilib.gui.button.keybind_button.overlapping", valueStr);
             }
             else
             {
@@ -291,8 +290,10 @@ public class KeyBindConfigButton extends GenericButton
 
                 for (Hotkey overlap : overlaps)
                 {
-                    String key = " [ " + BaseScreen.TXT_GOLD + overlap.getKeyBind().getKeysDisplayString() + BaseScreen.TXT_RST + " ]";
-                    overlapInfo.add("    - " + overlap.getDisplayName() + key);
+                    String translationKey = "malilib.gui.button.hover.keybind.overlap_line";
+                    String name = overlap.getDisplayName();
+                    String keys = overlap.getKeyBind().getKeysDisplayString();
+                    overlapInfo.add(StringUtils.translate(translationKey, name, keys));
                 }
 
                 overlaps.clear();

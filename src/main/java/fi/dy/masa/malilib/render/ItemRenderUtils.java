@@ -6,7 +6,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.ItemStack;
-import fi.dy.masa.malilib.gui.BaseScreen;
+import fi.dy.masa.malilib.util.StringUtils;
 
 public class ItemRenderUtils
 {
@@ -64,7 +64,7 @@ public class ItemRenderUtils
             }
             else
             {
-                list.set(i, BaseScreen.TXT_GRAY + list.get(i));
+                list.set(i, StringUtils.translate("malilib.info.item_tooltip_lines", list.get(i)));
             }
         }
 

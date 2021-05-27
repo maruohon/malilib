@@ -13,8 +13,8 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagLong;
 import net.minecraft.nbt.NBTTagShort;
 import net.minecraft.nbt.NBTTagString;
-import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.mixin.IMixinNBTTagLongArray;
+import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.Constants;
 
 public abstract class BaseNbtStringifier
@@ -24,10 +24,10 @@ public abstract class BaseNbtStringifier
     protected final boolean useNumberSuffix;
 
     protected String tagNameQuote = "\"";
-    protected String keyColor = BaseScreen.TXT_YELLOW;
-    protected String numberColor = BaseScreen.TXT_GOLD;
-    protected String numberTypeColor = BaseScreen.TXT_RED;
-    protected String stringColor = BaseScreen.TXT_GREEN;
+    protected String keyColor;
+    protected String numberColor;
+    protected String numberTypeColor;
+    protected String stringColor;
 
     public BaseNbtStringifier(boolean useNumberSuffix)
     {
@@ -39,6 +39,10 @@ public abstract class BaseNbtStringifier
         this.colored = colored;
         this.useNumberSuffix = useNumberSuffix;
         this.baseColor = baseColor;
+        this.keyColor = StringUtils.translate("malilib.info.nbt_tooltip.key_color");
+        this.numberColor = StringUtils.translate("malilib.info.nbt_tooltip.number_color");
+        this.numberTypeColor = StringUtils.translate("malilib.info.nbt_tooltip.number_type_color");
+        this.stringColor = StringUtils.translate("malilib.info.nbt_tooltip.string_color");
     }
 
     protected String getFormattedTagName(String name)

@@ -10,16 +10,15 @@ import org.lwjgl.input.Mouse;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextFormatting;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.gui.config.liteloader.DialogHandler;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
+import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.BaseWidget;
 import fi.dy.masa.malilib.gui.widget.InteractableWidget;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
-import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.listener.TextChangeListener;
@@ -32,31 +31,6 @@ import fi.dy.masa.malilib.util.data.Vec2i;
 
 public abstract class BaseScreen extends GuiScreen
 {
-    public static final String TXT_AQUA = TextFormatting.AQUA.toString();
-    public static final String TXT_BLACK = TextFormatting.BLACK.toString();
-    public static final String TXT_BLUE = TextFormatting.BLUE.toString();
-    public static final String TXT_GOLD = TextFormatting.GOLD.toString();
-    public static final String TXT_GRAY = TextFormatting.GRAY.toString();
-    public static final String TXT_GREEN = TextFormatting.GREEN.toString();
-    public static final String TXT_RED = TextFormatting.RED.toString();
-    public static final String TXT_WHITE = TextFormatting.WHITE.toString();
-    public static final String TXT_YELLOW = TextFormatting.YELLOW.toString();
-
-    public static final String TXT_BOLD = TextFormatting.BOLD.toString();
-    public static final String TXT_ITALIC = TextFormatting.ITALIC.toString();
-    public static final String TXT_RST = TextFormatting.RESET.toString();
-    public static final String TXT_STRIKETHROUGH = TextFormatting.STRIKETHROUGH.toString();
-    public static final String TXT_UNDERLINE = TextFormatting.UNDERLINE.toString();
-
-    public static final String TXT_DARK_AQUA = TextFormatting.DARK_AQUA.toString();
-    public static final String TXT_DARK_BLUE = TextFormatting.DARK_BLUE.toString();
-    public static final String TXT_DARK_GRAY = TextFormatting.DARK_GRAY.toString();
-    public static final String TXT_DARK_GREEN = TextFormatting.DARK_GREEN.toString();
-    public static final String TXT_DARK_PURPLE = TextFormatting.DARK_PURPLE.toString();
-    public static final String TXT_DARK_RED = TextFormatting.DARK_RED.toString();
-
-    public static final String TXT_LIGHT_PURPLE = TextFormatting.LIGHT_PURPLE.toString();
-
     public static final int TOOLTIP_BACKGROUND   = 0xB0000000;
     public static final int COLOR_HORIZONTAL_BAR = 0xFF999999;
 

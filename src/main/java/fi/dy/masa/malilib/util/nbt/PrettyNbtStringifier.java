@@ -15,9 +15,14 @@ public class PrettyNbtStringifier extends BaseNbtStringifier
     protected int indentationLevel;
     private String indentation = "";
 
-    public PrettyNbtStringifier(boolean colored, String baseColor)
+    public PrettyNbtStringifier()
     {
-        super(colored, false, baseColor);
+        super(false, false, "");
+    }
+
+    public PrettyNbtStringifier(String baseColor)
+    {
+        super(true, false, baseColor);
     }
 
     public List<String> getNbtLines(NBTTagCompound tag)

@@ -250,7 +250,7 @@ public abstract class BaseButton extends BackgroundWidget
             org.apache.commons.lang3.StringUtils.isBlank(str) == false &&
             this.getStringWidth(str) > maxWidth)
         {
-            return ImmutableList.of(BaseScreen.TXT_WHITE + str);
+            return ImmutableList.of(StringUtils.translate("malilib.gui.button.hover.full_label", str));
         }
 
         return EMPTY_STRING_LIST;

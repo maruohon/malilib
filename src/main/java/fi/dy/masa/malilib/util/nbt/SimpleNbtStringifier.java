@@ -12,9 +12,14 @@ public class SimpleNbtStringifier extends BaseNbtStringifier
 {
     protected StringBuilder stringBuilder;
 
-    public SimpleNbtStringifier(boolean colored, String baseColor)
+    public SimpleNbtStringifier()
     {
-        super(colored, true, baseColor);
+        super(false, true, "");
+    }
+
+    public SimpleNbtStringifier(String baseColor)
+    {
+        super(true, true, baseColor);
     }
 
     public String getNbtString(NBTTagCompound tag)
