@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.util.nbt;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 import com.google.common.collect.Lists;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -12,8 +13,9 @@ import fi.dy.masa.malilib.util.data.Constants;
 public class PrettyNbtStringifier extends BaseNbtStringifier
 {
     protected List<String> lines;
+    protected String indentation = "";
+    protected boolean printTagType;
     protected int indentationLevel;
-    private String indentation = "";
 
     public PrettyNbtStringifier()
     {
@@ -23,6 +25,11 @@ public class PrettyNbtStringifier extends BaseNbtStringifier
     public PrettyNbtStringifier(String baseColor)
     {
         super(true, false, baseColor);
+    }
+
+    public void setPrintTagType(boolean printTagType)
+    {
+        this.printTagType = printTagType;
     }
 
     public List<String> getNbtLines(NBTTagCompound tag)
@@ -67,11 +74,22 @@ public class PrettyNbtStringifier extends BaseNbtStringifier
     @Override
     protected void appendPrimitive(String tagName, NBTBase tag)
     {
-        String tagType = NBTBase.getTypeName(tag.getId());
         String value = this.getFormattedPrimitiveString(tag);
         String name = this.getFormattedTagName(tagName);
 
-        this.addIndentedLine(String.format("[%s] %s: %s", tagType, name, value));
+        if (this.printTagType)
+        {
+            String tagType = NBTBase.getTypeName(tag.getId());
+            this.addIndentedLine(String.format("[%s] %s: %s", tagType, name, value));
+        }
+        else if (StringUtils.isBlank(name) == false)
+        {
+            this.addIndentedLine(String.format("%s: %s", name, value));
+        }
+        else
+        {
+            this.addIndentedLine(value);
+        }
     }
 
     @Override
@@ -80,9 +98,17 @@ public class PrettyNbtStringifier extends BaseNbtStringifier
         List<String> keys = Lists.newArrayList(compound.getKeySet());
         Collections.sort(keys);
 
-        String tagType = NBTBase.getTypeName(compound.getId());
         String name = this.getFormattedTagName(tagName);
-        this.addIndentedLine(String.format("[%s (%d values)] %s", tagType, keys.size(), name));
+
+        if (this.printTagType)
+        {
+            String tagType = NBTBase.getTypeName(compound.getId());
+            this.addIndentedLine(String.format("[%s (%d values)] %s", tagType, keys.size(), name));
+        }
+        else
+        {
+            this.addIndentedLine(String.format("%s (%d values)", name, keys.size()));
+        }
 
         this.addIndentedLine("{");
         this.setIndentationLevel(this.indentationLevel + 1);
@@ -102,11 +128,19 @@ public class PrettyNbtStringifier extends BaseNbtStringifier
     {
         final int size = list.tagCount();
 
-        String tagType = NBTBase.getTypeName(list.getId());
         int containedId = list.getTagType();
         String containedTypeName = containedId > 0 ? NBTBase.getTypeName(containedId) : "?";
         String name = this.getFormattedTagName(tagName);
-        this.addIndentedLine(String.format("[%s (%d values of type %s)] %s", tagType, size, containedTypeName, name));
+
+        if (this.printTagType)
+        {
+            String tagType = NBTBase.getTypeName(list.getId());
+            this.addIndentedLine(String.format("[%s (%d values of type %s)] %s", tagType, size, containedTypeName, name));
+        }
+        else
+        {
+            this.addIndentedLine(String.format("%s (%d values of type %s)", name, size, containedTypeName));
+        }
 
         this.addIndentedLine("[");
         this.setIndentationLevel(this.indentationLevel + 1);
@@ -123,9 +157,17 @@ public class PrettyNbtStringifier extends BaseNbtStringifier
 
     protected void appendNumericArrayStart(String tagName, int tagId, int arraySize)
     {
-        String tagType = NBTBase.getTypeName(tagId);
         String name = this.getFormattedTagName(tagName);
-        this.addIndentedLine(String.format("[%s (%d entries)] %s", tagType, arraySize, name));
+
+        if (this.printTagType)
+        {
+            String tagType = NBTBase.getTypeName(tagId);
+            this.addIndentedLine(String.format("[%s (%d entries)] %s", tagType, arraySize, name));
+        }
+        else
+        {
+            this.addIndentedLine(String.format("%s (%d entries)", name, arraySize));
+        }
 
         this.addIndentedLine("[");
     }
