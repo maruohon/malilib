@@ -125,7 +125,9 @@ public class ShapeRenderUtils
      * Renders a textured rectangle.<br>
      * Assumes the bound texture sheet dimensions to be 256 x 256 pixels.
      */
-    public static void renderTexturedRectangle256(float x, float y, float z, int u, int v, int width, int height)
+    public static void renderTexturedRectangle256(float x, float y, float z,
+                                                  int u, int v,
+                                                  int width, int height)
     {
         BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX, true);
 
@@ -139,8 +141,10 @@ public class ShapeRenderUtils
      * Assumes the bound texture sheet dimensions to be 256 x 256 pixels.<br>
      * Takes in a BufferBuilder initialized in GL_QUADS, POSITION_TEX mode
      */
-    public static void renderTexturedRectangle256(float x, float y, float z, int u, int v,
-                                                  int width, int height, BufferBuilder buffer)
+    public static void renderTexturedRectangle256(float x, float y, float z,
+                                                  int u, int v,
+                                                  int width, int height,
+                                                  BufferBuilder buffer)
     {
         float pixelSize = 0.00390625F; // 1 / 256
         renderTexturedRectangle(x, y, z, u, v, width, height, pixelSize, pixelSize, buffer);
@@ -151,10 +155,15 @@ public class ShapeRenderUtils
      * is indicated by the pixelWidth and pixelHeight arguments, which are the
      * relative width and height of one pixel on the sheet.
      */
-    public static void renderTexturedRectangle(float x, float y, float z, int u, int v,
-                                               int width, int height, float pixelWidth, float pixelHeight)
+    public static void renderTexturedRectangle(float x, float y, float z,
+                                               int u, int v,
+                                               int renderWidth, int renderHeight,
+                                               float pixelWidth, float pixelHeight)
     {
-        renderScaledTexturedRectangle(x, y, z, u, v, width, height, width, height, pixelWidth, pixelHeight);
+        renderScaledTexturedRectangle(x, y, z, u, v,
+                                      renderWidth, renderHeight,
+                                      renderWidth, renderHeight,
+                                      pixelWidth, pixelHeight);
     }
 
     /**
@@ -163,27 +172,36 @@ public class ShapeRenderUtils
      * relative width and height of one pixel on the sheet.
      * Takes in a BufferBuilder initialized in GL_QUADS, POSITION_TEX mode
      */
-    public static void renderTexturedRectangle(float x, float y, float z, int u, int v,
-                                               int width, int height,
-                                               float pixelWidth, float pixelHeight, BufferBuilder buffer)
+    public static void renderTexturedRectangle(float x, float y, float z,
+                                               int u, int v,
+                                               int renderWidth, int renderHeight,
+                                               float pixelWidth, float pixelHeight,
+                                               BufferBuilder buffer)
     {
-        renderScaledTexturedRectangle(x, y, z, u, v, width, height, width, height, pixelWidth, pixelHeight, buffer);
+        renderScaledTexturedRectangle(x, y, z, u, v,
+                                      renderWidth, renderHeight,
+                                      renderWidth, renderHeight,
+                                      pixelWidth, pixelHeight, buffer);
     }
 
     /**
      * Renders a possibly scaled/stretched textured rectangle with a custom sized texture sheet.
      * The sheet size is indicated by the pixelWidth and pixelHeight arguments, which are the
      * relative width and height of one pixel on the sheet.
-     * The width and height parameters are the rendered size of the rectangle/texture, whereas the
+     * The renderWidth and renderHeight parameters are the rendered size of the rectangle/texture, whereas the
      * textureWidth and textureHeight parameters define which region of the texture sheet is used.
      */
-    public static void renderScaledTexturedRectangle(float x, float y, float z, int u, int v,
-                                                     int width, int height, int textureWidth, int textureHeight,
+    public static void renderScaledTexturedRectangle(float x, float y, float z,
+                                                     int u, int v,
+                                                     int renderWidth, int renderHeight,
+                                                     int textureWidth, int textureHeight,
                                                      float pixelWidth, float pixelHeight)
     {
         BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX, true);
 
-        renderScaledTexturedRectangle(x, y, z, u, v, width, height, textureWidth, textureHeight,
+        renderScaledTexturedRectangle(x, y, z, u, v,
+                                      renderWidth, renderHeight,
+                                      textureWidth, textureHeight,
                                       pixelWidth, pixelHeight, buffer);
 
         RenderUtils.drawBuffer();
@@ -197,14 +215,23 @@ public class ShapeRenderUtils
      * textureWidth and textureHeight parameters define which region of the texture sheet is used.
      * Takes in a BufferBuilder initialized in GL_QUADS, POSITION_TEX mode
      */
-    public static void renderScaledTexturedRectangle(float x, float y, float z, int u, int v,
-                                                     int width, int height, int textureWidth, int textureHeight,
+    public static void renderScaledTexturedRectangle(float x, float y, float z,
+                                                     int u, int v,
+                                                     int renderWidth, int renderHeight,
+                                                     int textureWidth, int textureHeight,
                                                      float pixelWidth, float pixelHeight, BufferBuilder buffer)
     {
-        buffer.pos(x        , y + height, z).tex(u                  * pixelWidth, (v + textureHeight) * pixelHeight).endVertex();
-        buffer.pos(x + width, y + height, z).tex((u + textureWidth) * pixelWidth, (v + textureHeight) * pixelHeight).endVertex();
-        buffer.pos(x + width, y         , z).tex((u + textureWidth) * pixelWidth, v                   * pixelHeight).endVertex();
-        buffer.pos(x        , y         , z).tex(u                  * pixelWidth, v                   * pixelHeight).endVertex();
+        float x2 = x + renderWidth;
+        float y2 = y + renderHeight;
+        float u1 = u                  * pixelWidth;
+        float u2 = (u + textureWidth) * pixelWidth;
+        float v1 = v                   * pixelHeight;
+        float v2 = (v + textureHeight) * pixelHeight;
+
+        buffer.pos(x , y2, z).tex(u1, v2).endVertex();
+        buffer.pos(x2, y2, z).tex(u2, v2).endVertex();
+        buffer.pos(x2, y , z).tex(u2, v1).endVertex();
+        buffer.pos(x , y , z).tex(u1, v1).endVertex();
     }
 
     /**
@@ -215,14 +242,14 @@ public class ShapeRenderUtils
      * textureWidth and textureHeight parameters define which region of the texture sheet is used.
      */
     public static void renderScaledTintedTexturedRectangle(float x, float y, float z, int u, int v,
-                                                           int width, int height,
+                                                           int renderWidth, int renderHeight,
                                                            int textureWidth, int textureHeight,
                                                            float pixelWidth, float pixelHeight,
                                                            int backgroundTintColor)
     {
         BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR, true);
 
-        renderScaledTintedTexturedRectangle(x, y, z, u, v, width, height, textureWidth, textureHeight,
+        renderScaledTintedTexturedRectangle(x, y, z, u, v, renderWidth, renderHeight, textureWidth, textureHeight,
                                             pixelWidth, pixelHeight, backgroundTintColor, buffer);
 
         RenderUtils.drawBuffer();
@@ -237,7 +264,7 @@ public class ShapeRenderUtils
      * Takes in a BufferBuilder initialized in GL_QUADS, POSITION_TEX_COLOR mode
      */
     public static void renderScaledTintedTexturedRectangle(float x, float y, float z, int u, int v,
-                                                           int width, int height,
+                                                           int renderWidth, int renderHeight,
                                                            int textureWidth, int textureHeight,
                                                            float pixelWidth, float pixelHeight,
                                                            int backgroundTintColor, BufferBuilder buffer)
@@ -247,8 +274,8 @@ public class ShapeRenderUtils
         float g = (float) (backgroundTintColor >>>  8 & 0xFF) / 255.0F;
         float b = (float) (backgroundTintColor & 0xFF) / 255.0F;
 
-        float x2 = x + width;
-        float y2 = y + height;
+        float x2 = x + renderWidth;
+        float y2 = y + renderHeight;
         float u1 = u                  * pixelWidth;
         float u2 = (u + textureWidth) * pixelWidth;
         float v1 = v                   * pixelHeight;
