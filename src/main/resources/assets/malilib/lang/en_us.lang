@@ -133,10 +133,12 @@ malilib.gui.button.black_white_list_edit.entries=§e%s§r - §b%s§r entries
 malilib.gui.button.black_white_list_edit.none=Type: NONE
 malilib.gui.button.cancel=Cancel
 malilib.gui.button.default=Default
+malilib.gui.button.edit=Edit
 malilib.gui.button.export=Export
 malilib.gui.button.import=Import
 malilib.gui.button.none.caps=NONE
 malilib.gui.button.ok=OK
+malilib.gui.button.remove=Remove
 malilib.gui.button.reset=Reset
 malilib.gui.button.reset.caps=RESET
 
@@ -144,6 +146,8 @@ malilib.gui.button.reset.caps=RESET
 malilib.gui.button.colored.cancel=§cCancel
 malilib.gui.button.colored.confirm=§aConfirm
 malilib.gui.button.colored.ok=§aOK
+
+malilib.gui.button.custom_icon_list_screen.add_icon=Add Icon
 
 malilib.gui.button.keybind_button.selected=> §e%s§r <
 malilib.gui.button.keybind_button.overlapping=§6%s
@@ -167,6 +171,7 @@ malilib.gui.button.hover.config.reset_all_filtered=Reset all the configs matchin
 malilib.gui.button.hover.config_status_indicator=Config Status Indicator widgets
 malilib.gui.button.hover.config_status_indicator.reset_name=Reset the name back to the original config name
 malilib.gui.button.hover.custom_hotkeys_configuration=Add, remove or change custom hotkeys bound to actions
+malilib.gui.button.hover.custom_icons_configuration=Add or manage custom icon definitions
 malilib.gui.button.hover.directory_widget.create_directory=Create a new directory
 malilib.gui.button.hover.directory_widget.hold_shift_to_open_directory=You can shift click the directory path elements to open the directory in the system file manager
 malilib.gui.button.hover.directory_widget.root=To root/base directory
@@ -240,6 +245,15 @@ malilib.gui.label.config_type_filter.bound_hotkey=Bound hotkeys
 malilib.gui.label.config_type_filter.modified_hotkey=Modified hotkeys
 malilib.gui.label.config_type_filter.unbound_hotkey=Unbound hotkeys
 malilib.gui.label.confirm_config_reset=Are you sure you wan to reset all the configs matching the current search filters back to their default values?
+malilib.gui.label.coordinate.u.colon=U:
+malilib.gui.label.coordinate.v.colon=V:
+malilib.gui.label.custom_icon_edit.icon_height=Icon Height:
+malilib.gui.label.custom_icon_edit.icon_preview=Preview (downscaled to 64):
+malilib.gui.label.custom_icon_edit.icon_width=Icon Width:
+malilib.gui.label.custom_icon_edit.texture_name=Texture Name:
+malilib.gui.label.custom_icon_edit.texture_sheet_height=Sheet Height:
+malilib.gui.label.custom_icon_edit.texture_sheet_width=Sheet Width:
+malilib.gui.label.custom_icon_edit.variant_offset_uv=Enabled/Hover offset U and V:
 malilib.gui.label.custom_hotkey_name=§e%s
 
 malilib.gui.label_error.no_widget_factory_for_config_type=§cUnknown config type '%s' (no widget factory registered)§r
@@ -286,7 +300,7 @@ malilib.gui.label.render_layers.player_follow_offset=Offset
 
 malilib.gui.tip.dropdown.type_to_search=Just start typing to search (in any DropDown widget)
 
-malilib.gui.title.action_aliases_and_macros=Manage Action Aliases and Macros
+malilib.gui.title.action_aliases_and_macros=MaLiLib - Manage Action Aliases and Macros
 malilib.gui.title.action_screen.export_settings=Export Action Screen Settings
 malilib.gui.title.action_screen.import_settings=Import Action Screen Settings
 malilib.gui.title.add_action_macro=Create an action macro
@@ -304,6 +318,9 @@ malilib.gui.title.create_action_execution_widget=Create an Action Execution Widg
 malilib.gui.title.create_action_widget_screen=Create a new Action Widget Screen
 malilib.gui.title.create_directory=Create a new directory
 malilib.gui.title.create_macro=Create a Macro Action
+malilib.gui.title.custom_hotkeys=MaLiLib - Manage Custom Hotkeys
+malilib.gui.title.custom_icons_edit_screen=Edit Custom Icon
+malilib.gui.title.custom_icons_list_screen=MaLiLib - Manage Custom Icon Definitions
 malilib.gui.title.directory_browser=Directory Browser
 malilib.gui.title.edit_action_execution_widget=Edit Action Execution Widget
 malilib.gui.title.edit_action_execution_widget.multiple=Edit §b%s§r Action Execution Widgets at once
@@ -315,12 +332,11 @@ malilib.gui.title.file_browser=File Browser
 malilib.gui.title.identifier_list_edit=Edit identifier list '%s'
 malilib.gui.title.item_list_edit=Edit item list '%s'
 malilib.gui.title.keybind_settings.advanced=Advanced Keybind Settings for '%s'
-malilib.gui.title.manage_custom_hotkeys=Manage Custom Hotkeys
 malilib.gui.title.provide_arguments_for_action=Provide the argument(s) for the action
 malilib.gui.title.status_effect_list_edit=Edit status effect list '%s'
 malilib.gui.title.string_list_edit=Edit string list '%s'
 malilib.gui.title.string_list_renderer_configuration=String List Renderer Configuration
-malilib.gui.title.toast_renderer_configuration=Toast Renderer Configuration
+malilib.gui.title.toast_renderer_configuration=MaLiLib - Toast Renderer Configuration
 
 malilib.button.hover.plus_minus_tip=- Left click to increase\n- Right click to decrease\n- Or scroll with the mouse over the button\n- Shift and/or Alt to increase the step size
 
@@ -450,6 +466,7 @@ malilib.label.pressed_keys_toast=§6Keys: §b%s
 malilib.label.render_name.colon=Render name:
 malilib.label.screen_tab.actions=Actions
 malilib.label.screen_tab.config_status_indicator.abbr=C.S.I.
+malilib.label.screen_tab.custom_icons=Icons
 malilib.label.screen_tab.custom_hotkeys=Custom Hotkeys
 malilib.label.screen_tab.toast_renderer.abbr=Toast
 malilib.label.sort_index.colon=Sort index:

@@ -1,8 +1,12 @@
 package fi.dy.masa.malilib.gui.icon;
 
+import javax.annotation.Nullable;
+import com.google.gson.JsonObject;
 import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
+import fi.dy.masa.malilib.util.JsonUtils;
+import fi.dy.masa.malilib.util.StringUtils;
 
 public interface Icon
 {
@@ -25,6 +29,16 @@ public interface Icon
      * @return the texture pixel v-coordinate (y-coordinate) of this icon's top left corner
      */
     int getV();
+
+    /**
+     * @return the texture sheet width this icons is on
+     */
+    int getTextureSheetWidth();
+
+    /**
+     * @return the texture sheet height this icons is on
+     */
+    int getTextureSheetHeight();
 
     /**
      * @return the relative width of one pixel in the texture sheet
@@ -159,5 +173,52 @@ public interface Icon
 
         ShapeRenderUtils.renderTexturedRectangle(x + w1, y     , z, uRight, v      , w2, h1, pw, ph); // top right
         ShapeRenderUtils.renderTexturedRectangle(x + w1, y + h1, z, uRight, vBottom, w2, h2, pw, ph); // bottom right
+    }
+
+    default JsonObject toJson()
+    {
+        JsonObject obj = new JsonObject();
+
+        obj.addProperty("texture", this.getTexture().toString());
+        obj.addProperty("u", this.getU());
+        obj.addProperty("v", this.getV());
+        obj.addProperty("w", this.getWidth());
+        obj.addProperty("h", this.getHeight());
+        obj.addProperty("tw", this.getTextureSheetWidth());
+        obj.addProperty("th", this.getTextureSheetHeight());
+
+        return obj;
+    }
+
+    @Nullable
+    static Icon fromJson(JsonObject obj)
+    {
+        ResourceLocation texture = StringUtils.identifier(JsonUtils.getStringOrDefault(obj, "texture", ""));
+
+        if (texture == null)
+        {
+            return null;
+        }
+
+        int u = JsonUtils.getIntegerOrDefault(obj, "u", 0);
+        int v = JsonUtils.getIntegerOrDefault(obj, "v", 0);
+        int w = JsonUtils.getIntegerOrDefault(obj, "w", 0);
+        int h = JsonUtils.getIntegerOrDefault(obj, "h", 0);
+        int tw = JsonUtils.getIntegerOrDefault(obj, "tw", 0);
+        int th = JsonUtils.getIntegerOrDefault(obj, "th", 0);
+        int vu = JsonUtils.getIntegerOrDefault(obj, "var_u", 0);
+        int vv = JsonUtils.getIntegerOrDefault(obj, "var_v", 0);
+
+        if (w > 0 && h > 0 && tw > 0 && th > 0)
+        {
+            if (vu != 0 || vv != 0)
+            {
+                return new BaseMultiIcon(u, v, w, h, vu, vv, tw, th, texture);
+            }
+
+            return new BaseIcon(u, v, w, h, tw, th, texture);
+        }
+
+        return null;
     }
 }

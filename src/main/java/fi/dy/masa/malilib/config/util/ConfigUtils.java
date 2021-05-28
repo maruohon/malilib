@@ -18,6 +18,7 @@ import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.config.ConfigManagerImpl;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.gui.config.ConfigTab;
+import fi.dy.masa.malilib.gui.icon.IconRegistry;
 import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.input.CustomHotkeyManager;
 import fi.dy.masa.malilib.input.HotkeyManager;
@@ -89,6 +90,7 @@ public class ConfigUtils
      */
     public static void loadAllConfigsFromFile()
     {
+        IconRegistry.INSTANCE.loadFromFile();
         ((ConfigManagerImpl) ConfigManager.INSTANCE).loadAllConfigs();
         ((ActionRegistryImpl) ActionRegistry.INSTANCE).loadFromFile();
         CustomHotkeyManager.INSTANCE.loadFromFile();
@@ -107,9 +109,10 @@ public class ConfigUtils
         InfoWidgetManager.INSTANCE.saveToFileIfDirty();
         ActionExecutionWidgetManager.INSTANCE.clear();
 
-        // These two should always already be saved when closing the corresponding config screens
-        //((ActionRegistryImpl) ActionRegistry.INSTANCE).saveToFileIfDirty();
-        //CustomHotkeyManager.INSTANCE.saveToFileIfDirty();
+        // These should always already be saved when closing the corresponding config screens
+        IconRegistry.INSTANCE.saveToFileIfDirty();
+        ((ActionRegistryImpl) ActionRegistry.INSTANCE).saveToFileIfDirty();
+        CustomHotkeyManager.INSTANCE.saveToFileIfDirty();
     }
 
     private static void copyConfigsIfProfileNotExist(String profile)
@@ -120,6 +123,7 @@ public class ConfigUtils
 
             if (dir.exists() == false && dir.mkdirs())
             {
+                IconRegistry.INSTANCE.saveToFile();
                 ((ConfigManagerImpl) ConfigManager.INSTANCE).saveAllConfigs();
                 ((ActionRegistryImpl) ActionRegistry.INSTANCE).saveToFile();
                 ActionExecutionWidgetManager.INSTANCE.saveAllLoadedToFile();

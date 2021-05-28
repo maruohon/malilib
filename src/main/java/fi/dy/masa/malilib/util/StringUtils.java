@@ -17,6 +17,20 @@ import fi.dy.masa.malilib.util.data.LeftRight;
 public class StringUtils
 {
     @Nullable
+    public static ResourceLocation identifier(String fullPath)
+    {
+        try
+        {
+            return new ResourceLocation(fullPath);
+        }
+        catch (Exception e)
+        {
+            MaLiLib.LOGGER.error("Exception while trying to create a ResourceLocation: {}", e.getMessage());
+            return null;
+        }
+    }
+
+    @Nullable
     public static ResourceLocation identifier(String nameSpace, String path)
     {
         try

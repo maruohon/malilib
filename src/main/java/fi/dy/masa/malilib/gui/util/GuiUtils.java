@@ -62,6 +62,19 @@ public class GuiUtils
         return Minecraft.getMinecraft().currentScreen;
     }
 
+    @Nullable
+    public static <T> T getCurrentScreenIfMatches(Class<T> clazz)
+    {
+        GuiScreen screen = Minecraft.getMinecraft().currentScreen;
+
+        if (clazz.isAssignableFrom(screen.getClass()))
+        {
+            return clazz.cast(screen);
+        }
+
+        return null;
+    }
+
     public static void reInitCurrentScreen()
     {
         Minecraft mc = Minecraft.getMinecraft();

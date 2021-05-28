@@ -13,6 +13,8 @@ public class BaseIcon implements Icon
     protected final int v;
     protected final int w;
     protected final int h;
+    protected final int textureSheetWidth;
+    protected final int textureSheetHeight;
     protected final float texturePixelWidth;
     protected final float texturePixelHeight;
     protected ResourceLocation texture;
@@ -33,11 +35,11 @@ public class BaseIcon implements Icon
         this.v = v;
         this.w = w;
         this.h = h;
+        this.textureSheetWidth = textureWidth;
+        this.textureSheetHeight = textureHeight;
         this.texturePixelWidth = 1.0F / (float) textureWidth;
         this.texturePixelHeight = 1.0F / (float) textureHeight;
         this.texture = texture;
-
-        IconRegistry.INSTANCE.registerModIcon(this);
     }
 
     @Override
@@ -62,6 +64,18 @@ public class BaseIcon implements Icon
     public int getV()
     {
         return this.v;
+    }
+
+    @Override
+    public int getTextureSheetWidth()
+    {
+        return this.textureSheetWidth;
+    }
+
+    @Override
+    public int getTextureSheetHeight()
+    {
+        return this.textureSheetHeight;
     }
 
     @Override

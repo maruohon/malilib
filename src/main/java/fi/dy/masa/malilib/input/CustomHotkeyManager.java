@@ -71,7 +71,6 @@ public class CustomHotkeyManager implements HotkeyProvider
     {
         if (this.dirty)
         {
-            this.dirty = false;
             return this.saveToFile();
         }
 
@@ -126,6 +125,8 @@ public class CustomHotkeyManager implements HotkeyProvider
         File backupDir = new File(dir, "config_backups");
         File saveFile = new File(dir, MaLiLibReference.MOD_ID + "_custom_hotkeys.json");
         boolean antiDuplicate = MaLiLibConfigs.Generic.CONFIG_BACKUP_ANTI_DUPLICATE.getBooleanValue();
+
+        this.dirty = false;
 
         return JsonUtils.saveToFile(dir, backupDir, saveFile, 10, antiDuplicate, this::toJson);
     }
