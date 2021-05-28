@@ -389,6 +389,8 @@ public abstract class BaseScreen extends GuiScreen
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks)
     {
+        this.runTasks();
+
         if (this.shouldRenderParent && this.getParent() != null)
         {
             this.getParent().drawScreen(mouseX, mouseY, partialTicks);
@@ -451,8 +453,6 @@ public abstract class BaseScreen extends GuiScreen
         {
             super.handleMouseInput();
         }
-
-        this.runTasks();
 
         // Update again after the input is handled
         isActiveGui = GuiUtils.getCurrentScreen() == this;
@@ -520,8 +520,6 @@ public abstract class BaseScreen extends GuiScreen
         {
             this.onCharTyped(charIn, 0);
         }
-
-        this.runTasks();
     }
 
     public boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
@@ -720,7 +718,7 @@ public abstract class BaseScreen extends GuiScreen
     {
         this.widgets.add(widget);
         widget.setTaskQueue(this::addTask);
-        widget.onWidgetAdded((int) this.zLevel);
+        widget.onWidgetAdded(this.zLevel);
         return widget;
     }
 
@@ -774,7 +772,7 @@ public abstract class BaseScreen extends GuiScreen
         this.widgets.clear();
     }
 
-    private void addTask(Runnable task)
+    protected void addTask(Runnable task)
     {
         this.tasks.add(task);
     }

@@ -2,14 +2,14 @@ package fi.dy.masa.malilib.gui.widget;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 
 public abstract class ContainerWidget extends BackgroundWidget
 {
-    protected final List<InteractableWidget> subWidgets = new ArrayList<>();
-    protected final List<Runnable> tasks = new ArrayList<>();
+    protected final List<InteractableWidget> subWidgets = new ArrayList<>(1);
 
     public ContainerWidget(int width, int height)
     {
@@ -106,24 +106,6 @@ public abstract class ContainerWidget extends BackgroundWidget
         return widget;
     }
 
-    private void addTask(Runnable task)
-    {
-        this.tasks.add(task);
-    }
-
-    protected void runTasks()
-    {
-        if (this.tasks.isEmpty() == false)
-        {
-            for (Runnable task : this.tasks)
-            {
-                task.run();
-            }
-
-            this.tasks.clear();
-        }
-    }
-
     public <T extends InteractableWidget> T addWidget(T widget)
     {
         this.subWidgets.add(widget);
@@ -144,8 +126,19 @@ public abstract class ContainerWidget extends BackgroundWidget
 
     public void onSubWidgetAdded(InteractableWidget widget)
     {
-        widget.setTaskQueue(this::addTask);
+        widget.setTaskQueue(this.taskQueue);
         widget.onWidgetAdded(this.getZLevel());
+    }
+
+    @Override
+    public void setTaskQueue(@Nullable Consumer<Runnable> taskQueue)
+    {
+        super.setTaskQueue(taskQueue);
+
+        for (InteractableWidget widget : this.subWidgets)
+        {
+            widget.setTaskQueue(taskQueue);
+        }
     }
 
     @Override
@@ -197,13 +190,10 @@ public abstract class ContainerWidget extends BackgroundWidget
             {
                 if (widget.tryMouseClick(mouseX, mouseY, mouseButton))
                 {
-                    this.runTasks();
                     // Don't call super if the button press got handled
                     return true;
                 }
             }
-
-            this.runTasks();
         }
 
         return super.onMouseClicked(mouseX, mouseY, mouseButton);
@@ -218,8 +208,6 @@ public abstract class ContainerWidget extends BackgroundWidget
             {
                 widget.onMouseReleased(mouseX, mouseY, mouseButton);
             }
-
-            this.runTasks();
         }
     }
 
@@ -232,12 +220,9 @@ public abstract class ContainerWidget extends BackgroundWidget
             {
                 if (widget.tryMouseScroll(mouseX, mouseY, mouseWheelDelta))
                 {
-                    this.runTasks();
                     return true;
                 }
             }
-
-            this.runTasks();
         }
 
         return super.onMouseScrolled(mouseX, mouseY, mouseWheelDelta);
@@ -250,12 +235,9 @@ public abstract class ContainerWidget extends BackgroundWidget
         {
             if (widget.onMouseMoved(mouseX, mouseY))
             {
-                this.runTasks();
                 return true;
             }
         }
-
-        this.runTasks();
 
         return super.onMouseMoved(mouseX, mouseY);
     }
