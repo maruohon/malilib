@@ -32,6 +32,7 @@ public abstract class BaseStringListEditEntryWidget<TYPE> extends BaseOrderableL
 
         this.labelWidget = new LabelWidget(0xC0C0C0C0, String.format("%5d:", originalListIndex + 1));
         this.textField = new BaseTextFieldWidget(textFieldWidth, 16, toStringConverter.apply(initialValue));
+        this.textField.setShowCursorPosition(true);
 
         this.resetButton = new GenericButton(16, "malilib.gui.button.reset.caps");
         this.resetButton.setRenderButtonBackgroundTexture(false);

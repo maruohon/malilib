@@ -20,6 +20,7 @@ import fi.dy.masa.malilib.overlay.message.Message;
 import fi.dy.masa.malilib.overlay.widget.MessageRendererWidget;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
+import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.render.text.TextRenderer;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.LeftRight;
@@ -56,6 +57,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
     protected boolean enabled = true;
     protected boolean isFocused;
     protected boolean isValidInput = true;
+    protected boolean showCursorPosition;
     protected boolean updateListenerAlways;
     protected boolean updateListenerFromTextSet;
     protected boolean visibleTextNeedsUpdate;
@@ -120,6 +122,11 @@ public class BaseTextFieldWidget extends BackgroundWidget
         return this.text;
     }
 
+    public int getTextLength()
+    {
+        return this.getText().length();
+    }
+
     @Override
     public List<BaseTextFieldWidget> getAllTextFields()
     {
@@ -159,6 +166,12 @@ public class BaseTextFieldWidget extends BackgroundWidget
     public BaseTextFieldWidget setColorWarning(int color)
     {
         this.colorWarning = color;
+        return this;
+    }
+
+    public BaseTextFieldWidget setShowCursorPosition(boolean showCursorPosition)
+    {
+        this.showCursorPosition = showCursorPosition;
         return this;
     }
 
@@ -399,7 +412,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
         }
 
         // The cursor can go after the last character, so not length - 1 here
-        this.cursorPosition = MathHelper.clamp(position, 0, this.text.length());
+        this.cursorPosition = MathHelper.clamp(position, 0, this.getTextLength());
 
         if (this.cursorPosition <= this.visibleText.getStartIndex() ||
             this.visibleText.isIndexVisibleWithCurrentStart(this.cursorPosition, this.text) == false)
@@ -414,7 +427,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
 
     protected void moveCursorToEndOfWord(LeftRight direction, boolean allowNonAlphaNumeric, boolean selectText)
     {
-        int end = this.text.length();
+        int end = this.getTextLength();
 
         if (end == 0)
         {
@@ -484,7 +497,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
 
     public BaseTextFieldWidget setCursorToEnd()
     {
-        return this.setCursorPosition(this.text.length(), false);
+        return this.setCursorPosition(this.getTextLength(), false);
     }
 
     protected BaseTextFieldWidget setCursorToBeginning(boolean selectText)
@@ -494,7 +507,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
 
     protected BaseTextFieldWidget setCursorToEnd(boolean selectText)
     {
-        return this.setCursorPosition(this.text.length(), selectText);
+        return this.setCursorPosition(this.getTextLength(), selectText);
     }
 
     protected void updateVisibleTextIfNeeded()
@@ -590,7 +603,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
             this.deleteSelectedText();
         }
 
-        int oldLength = this.text.length();
+        int oldLength = this.getTextLength();
         StringBuilder sb = new StringBuilder(oldLength + text.length());
 
         if (this.cursorPosition > 0)
@@ -612,7 +625,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
 
     protected boolean deleteCharacterAtCursor(boolean forward)
     {
-        int oldLength = this.text.length();
+        int oldLength = this.getTextLength();
         int index = forward ? this.cursorPosition : this.cursorPosition - 1;
 
         if (index >= 0 && index < oldLength)
@@ -641,7 +654,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
     {
         int start = Math.min(this.cursorPosition, this.selectionStartPosition);
         int end   = Math.max(this.cursorPosition, this.selectionStartPosition);
-        int textLen = this.text.length();
+        int textLen = this.getTextLength();
 
         if (start < 0 || end < 0 || start >= textLen || end > textLen)
         {
@@ -663,7 +676,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
 
     protected boolean deleteSelectionOrCharacter(boolean forward)
     {
-        if (this.text.length() == 0)
+        if (this.getTextLength() == 0)
         {
             return false;
         }
@@ -685,7 +698,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
         {
             int start = Math.min(this.cursorPosition, this.selectionStartPosition);
             int end   = Math.max(this.cursorPosition, this.selectionStartPosition);
-            int textLen = this.text.length();
+            int textLen = this.getTextLength();
 
             if (start >= 0 && end >= 0 && start < textLen && end <= textLen)
             {
@@ -773,7 +786,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
     protected boolean onMouseScrolled(int mouseX, int mouseY, double mouseWheelDelta)
     {
         // Allow selecting text or moving the cursor by scrolling
-        if (this.isFocused() && this.text.length() > 0)
+        if (this.isFocused() && this.getTextLength() > 0)
         {
             boolean selectText = BaseScreen.isShiftDown();
             this.setCursorPosition(this.cursorPosition + (mouseWheelDelta < 0 ? 1 : -1), selectText);
@@ -903,7 +916,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
             String visibleText = this.visibleText.getText();
 
             // The cursor is at the end of the text, use an underscore cursor
-            if (this.cursorPosition == this.text.length() && this.selectionStartPosition == -1)
+            if (this.cursorPosition == this.getTextLength() && this.selectionStartPosition == -1)
             {
                 int offX = this.visibleText.getStyledText().renderWidth;
                 ShapeRenderUtils.renderHorizontalLine(x + offX, y + this.fontHeight + 1, z + 0.1f, 5, color);
@@ -974,6 +987,35 @@ public class BaseTextFieldWidget extends BackgroundWidget
         this.renderTextLine(x, y, z, textColor, false, ctx, this.visibleText.getStyledText());
     }
 
+    protected void renderCursorPositionInfo(int x, int y, float z, ScreenContext ctx)
+    {
+        int pos = this.cursorPosition;
+        int len = this.getTextLength();
+        int start = this.visibleText.getStartIndex();
+        int end = this.visibleText.getEndIndex();
+        String str;
+
+        if (start > 0 || end < len - 1)
+        {
+            str = String.format("%d / %d [%d - %d]", pos, len, start, end);
+        }
+        else
+        {
+            str = String.format("%d / %d", pos, len);
+        }
+
+        StyledTextLine text = StyledTextLine.of(str);
+        int tl = text.renderWidth;
+        int bw = tl + 10;
+        int bh = 12;
+        int bx = x + this.getWidth() - bw;
+        int by = y + this.getHeight();
+
+        ShapeRenderUtils.renderOutlinedRectangle(bx, by, z, bw, bh, this.normalBackgroundColor,
+                                                 this.normalBorderColor.getTop());
+        this.renderTextLine(bx + 5, by + 2, z + 0.0125f, 0xFFA0A0A0, true, ctx, text);
+    }
+
     @Override
     public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
@@ -992,7 +1034,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
             color = this.enabled ? this.colorError : this.colorErrorDisabled;
         }
 
-        x += this.getTextStartRelativeX();
+        int textX = x + this.getTextStartRelativeX();
 
         int bw = this.renderNormalBorder ? this.normalBorderWidth * 2 : 0;
         // The font is usually 1 pixel "too high", as in it's touching the top, but not the bottom
@@ -1005,12 +1047,17 @@ public class BaseTextFieldWidget extends BackgroundWidget
 
         if (this.text.isEmpty() == false)
         {
-            this.renderVisibleText(x, y + yOffset, z + 0.1f, color, ctx);
+            this.renderVisibleText(textX, y + yOffset, z + 0.1f, color, ctx);
         }
 
         if (this.isFocused())
         {
-            this.renderCursor(x, y + yOffset - 1, z + 0.1f, color, ctx);
+            this.renderCursor(textX, y + yOffset - 1, z + 0.1f, color, ctx);
+
+            if (this.showCursorPosition)
+            {
+                this.renderCursorPositionInfo(x, y, z + 50f, ctx);
+            }
         }
 
         int messagesHeightPre = this.messageRenderer.getHeight();

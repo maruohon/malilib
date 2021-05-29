@@ -15,6 +15,7 @@ public class StringConfigWidget extends BaseConfigOptionWidget<String, StringCon
 
         this.textField = new BaseTextFieldWidget(20, 16, this.config.getStringValue());
         this.textField.setHoverStringProvider("locked", this.config::getLockAndOverrideMessages);
+        this.textField.setShowCursorPosition(true);
 
         this.textField.setListener((str) -> {
             this.config.setValueFromString(str);
