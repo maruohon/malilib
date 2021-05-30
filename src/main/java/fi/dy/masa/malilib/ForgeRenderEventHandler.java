@@ -21,7 +21,7 @@ class ForgeRenderEventHandler
     @SubscribeEvent
     public void onRenderTooltipPost(RenderTooltipEvent.Pre event)
     {
-        ((RenderEventHandler) RenderEventHandler.getInstance()).onRenderTooltipLast(event.getStack(), event.getX(), event.getY());
+        ((RenderEventHandler) RenderEventHandler.getInstance()).onRenderTooltipLast(event.getMatrixStack(), event.getStack(), event.getX(), event.getY());
     }
 
     @SubscribeEvent

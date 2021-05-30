@@ -5,7 +5,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 
 public class GuiTextFieldGeneric extends TextFieldWidget
 {
@@ -16,7 +16,7 @@ public class GuiTextFieldGeneric extends TextFieldWidget
 
     public GuiTextFieldGeneric(int x, int y, int width, int height, FontRenderer textRenderer)
     {
-        super(textRenderer, x, y, width, height, ITextComponent.getTextComponentOrEmpty(""));
+        super(textRenderer, x, y, width, height, new StringTextComponent(""));
 
         this.x = x;
         this.y = y;
@@ -85,6 +85,7 @@ public class GuiTextFieldGeneric extends TextFieldWidget
         return this;
     }
 
+    @Override
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
     {
         if (this.getBlitOffset() != 0)

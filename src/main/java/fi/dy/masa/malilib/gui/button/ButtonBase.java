@@ -153,6 +153,7 @@ public abstract class ButtonBase extends WidgetBase
         return (this.enabled == false) ? 0 : (isMouseOver ? 2 : 1);
     }
 
+    @Override
     public void postRenderHovered(int mouseX, int mouseY, boolean selected, MatrixStack matrixStack)
     {
         if (this.hasHoverText() && this.isMouseOver())

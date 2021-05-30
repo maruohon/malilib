@@ -3,6 +3,8 @@ package fi.dy.masa.malilib.event;
 import java.util.ArrayList;
 import java.util.List;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.shader.Framebuffer;
 import fi.dy.masa.malilib.interfaces.IRenderDispatcher;
 import fi.dy.masa.malilib.interfaces.IRenderer;
 import fi.dy.masa.malilib.util.InfoUtils;
@@ -74,7 +76,7 @@ public class RenderEventHandler implements IRenderDispatcher
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public void onRenderTooltipLast(net.minecraft.item.ItemStack stack, int x, int y)
+    public void onRenderTooltipLast(com.mojang.blaze3d.matrix.MatrixStack matrixStack, net.minecraft.item.ItemStack stack, int x, int y)
     {
         if (this.tooltipLastRenderers.isEmpty() == false)
         {
@@ -94,11 +96,23 @@ public class RenderEventHandler implements IRenderDispatcher
         {
             mc.getProfiler().endStartSection("malilib_renderworldlast");
 
+            Framebuffer fb = Minecraft.isFabulousGraphicsEnabled() ? mc.worldRenderer.getTranslucentFrameBuffer() : null;
+
+            if (fb != null)
+            {
+                fb.bindFramebuffer(false);
+            }
+
             for (IRenderer renderer : this.worldLastRenderers)
             {
                 mc.getProfiler().startSection(renderer.getProfilerSectionSupplier());
                 renderer.onRenderWorldLast(partialTicks, matrixStack);
                 mc.getProfiler().endSection();
+            }
+
+            if (fb != null)
+            {
+                mc.getFramebuffer().bindFramebuffer(false);
             }
         }
     }

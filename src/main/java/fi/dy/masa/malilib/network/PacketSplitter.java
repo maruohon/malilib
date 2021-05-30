@@ -68,16 +68,16 @@ public class PacketSplitter
 
     /*
     @Nullable
-    public static PacketByteBuf receive(ServerPlayNetworkHandler networkHandler, CustomPayloadC2SPacket message)
+    public static PacketBuffer receive(ServerPlayNetHandler networkHandler, CCustomPayloadPacket message)
     {
         return receive(networkHandler, message, DEFAULT_MAX_RECEIVE_SIZE_C2S);
     }
 
     @Nullable
-    private static PacketByteBuf receive(ServerPlayNetworkHandler networkHandler, CustomPayloadC2SPacket message, int maxLength)
+    private static PacketBuffer receive(ServerPlayNetHandler networkHandler, CCustomPayloadPacket message, int maxLength)
     {
         CustomPayloadC2SPacketAccessor messageAccessor = (CustomPayloadC2SPacketAccessor) message;
-        Pair<PacketListener, ResourceLocation> key = Pair.of(networkHandler, messageAccessor.getChannel());
+        Pair<INetHandler, ResourceLocation> key = Pair.of(networkHandler, messageAccessor.getChannel());
 
         return READING_SESSIONS.computeIfAbsent(key, ReadingSession::new).receive(messageAccessor.getData(), maxLength);
     }

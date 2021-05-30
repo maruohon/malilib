@@ -72,6 +72,11 @@ public class PositionUtils
         return valueIn;
     }
 
+    public static BlockPos getEntityBlockPos(Entity entity)
+    {
+        return new BlockPos(Math.floor(entity.getPosX()), Math.floor(entity.getPosY()), Math.floor(entity.getPosZ()));
+    }
+
     /**
      * Returns the closest direction the given entity is looking towards,
      * with a vertical/pitch threshold of 60 degrees.

@@ -77,10 +77,13 @@ public class StringUtils
 
     public static void sendOpenFileChatMessage(net.minecraft.entity.Entity sender, String messageKey, File file)
     {
-        net.minecraft.util.text.StringTextComponent name = new net.minecraft.util.text.StringTextComponent(file.getName());
-        name.getStyle().setClickEvent(new net.minecraft.util.text.event.ClickEvent(net.minecraft.util.text.event.ClickEvent.Action.OPEN_FILE, file.getAbsolutePath()));
-        name.getStyle().setUnderlined(Boolean.valueOf(true));
-        sender.sendMessage(new net.minecraft.util.text.TranslationTextComponent(messageKey, name), UUID.randomUUID());
+        net.minecraft.util.text.ITextComponent name = (new net.minecraft.util.text.StringTextComponent(file.getName()))
+            .mergeStyle(net.minecraft.util.text.TextFormatting.UNDERLINE)
+            .modifyStyle((style) -> {
+                return style.setClickEvent(new net.minecraft.util.text.event.ClickEvent(net.minecraft.util.text.event.ClickEvent.Action.OPEN_FILE, file.getAbsolutePath()));
+            });
+
+        sender.sendMessage(new net.minecraft.util.text.TranslationTextComponent(messageKey, name), sender.getUniqueID());
     }
 
     /**
@@ -88,7 +91,6 @@ public class StringUtils
      * @param linesOut
      * @param textIn
      * @param maxLineLength
-     * @param font
      */
     public static void splitTextToLines(List<String> linesOut, String textIn, int maxLineLength)
     {
@@ -281,33 +283,36 @@ public class StringUtils
 
             if (server != null)
             {
-                return server.getDataDirectory().getName();
+                // This used to be just MinecraftServer::getLevelName().
+                // Getting the name would now require an @Accessor for MinecraftServer.field_23784
+                return server.getServerConfiguration().getWorldName(); 
             }
         }
         else
         {
+            if (mc.isConnectedToRealms())
+            {
+                if (MaLiLibConfigs.Generic.REALMS_COMMON_CONFIG.getBooleanValue())
+                {
+                    return "realms";
+                }
+                else
+                {
+                    net.minecraft.client.network.play.ClientPlayNetHandler handler = mc.getConnection();
+                    net.minecraft.network.NetworkManager connection = handler != null ? handler.getNetworkManager() : null;
+
+                    if (connection != null)
+                    {
+                        return "realms_" + stringifyAddress(connection.getRemoteAddress());
+                    }
+                }
+            }
+
             net.minecraft.client.multiplayer.ServerData server = mc.getCurrentServerData();
 
             if (server != null)
             {
                 return server.serverIP.replace(':', '_');
-            }
-
-            // If the server entry was null, then that most likely means we are on a Realms server
-
-            if (MaLiLibConfigs.Generic.REALMS_COMMON_CONFIG.getBooleanValue())
-            {
-                return "realms";
-            }
-            else
-            {
-                net.minecraft.client.network.play.ClientPlayNetHandler handler = mc.getConnection();
-                net.minecraft.network.NetworkManager connection = handler != null ? handler.getNetworkManager() : null;
-
-                if (connection != null)
-                {
-                    return "realms_" + stringifyAddress(connection.getRemoteAddress());
-                }
             }
         }
 
@@ -338,7 +343,7 @@ public class StringUtils
 
             if (world != null)
             {
-                return prefix + name + "_dim" + WorldUtils.getDimensionId(world) + suffix;
+                return prefix + name + "_dim_" + WorldUtils.getDimensionId(world) + suffix;
             }
         }
 

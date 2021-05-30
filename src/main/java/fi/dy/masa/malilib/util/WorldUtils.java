@@ -3,16 +3,17 @@ package fi.dy.masa.malilib.util;
 import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.integrated.IntegratedServer;
-import net.minecraft.util.RegistryKey;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.server.ServerWorld;
 
 public class WorldUtils
 {
-    public static RegistryKey<World> getDimensionId(World world)
+    public static String getDimensionId(World world)
     {
-        return world.getDimensionKey();
+        ResourceLocation id = world.getDimensionKey().getLocation();
+        return id != null ? id.getNamespace() + "_" + id.getPath() : "__fallback";
     }
 
     /**
@@ -53,7 +54,11 @@ public class WorldUtils
         if (mc.world != null && server != null)
         {
             ServerWorld world = server.getWorld(mc.world.getDimensionKey());
-            chunk = world.getChunk(chunkX, chunkZ);
+
+            if (world != null)
+            {
+                chunk = world.getChunk(chunkX, chunkZ);
+            }
         }
 
         if (chunk != null)
@@ -61,6 +66,6 @@ public class WorldUtils
             return chunk;
         }
 
-        return mc.world.getChunk(chunkX, chunkZ);
+        return mc.world != null ? mc.world.getChunk(chunkX, chunkZ) : null;
     }
 }

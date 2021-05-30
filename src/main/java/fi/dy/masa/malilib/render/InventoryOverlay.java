@@ -483,7 +483,7 @@ public class InventoryOverlay
         RenderUtils.color(1f, 1f, 1f, 1f);
 
         mc.getItemRenderer().zLevel += 100;
-        mc.getItemRenderer().renderItemAndEffectIntoGUI(mc.player, stack, 0, 0);
+        mc.getItemRenderer().renderItemAndEffectIntoGUI(stack, 0, 0);
 
         RenderUtils.color(1f, 1f, 1f, 1f);
         mc.getItemRenderer().renderItemOverlayIntoGUI(mc.fontRenderer, stack, 0, 0, null);

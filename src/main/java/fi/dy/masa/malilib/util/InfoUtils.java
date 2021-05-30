@@ -1,6 +1,5 @@
 package fi.dy.masa.malilib.util;
 
-import java.util.UUID;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.ChatType;
@@ -140,7 +139,12 @@ public class InfoUtils
 
     public static void printActionbarMessage(String key, Object... args)
     {
-        Minecraft.getInstance().ingameGUI.sendChatMessage(ChatType.GAME_INFO, new TranslationTextComponent(key, args), UUID.randomUUID());
+        Minecraft mc = Minecraft.getInstance();
+
+        if (mc.player != null)
+        {
+            mc.ingameGUI.sendChatMessage(ChatType.GAME_INFO, new TranslationTextComponent(key, args), mc.player.getUniqueID());
+        }
     }
 
     /**
@@ -191,8 +195,12 @@ public class InfoUtils
         @Override
         public void setString(String string)
         {
-            TranslationTextComponent message = new TranslationTextComponent(string);
-            Minecraft.getInstance().ingameGUI.sendChatMessage(ChatType.GAME_INFO, message, UUID.randomUUID());
+            Minecraft mc = Minecraft.getInstance();
+
+            if (mc.player != null)
+            {
+                mc.ingameGUI.sendChatMessage(ChatType.GAME_INFO, new TranslationTextComponent(string), mc.player.getUniqueID());
+            }
         }
     }
 }

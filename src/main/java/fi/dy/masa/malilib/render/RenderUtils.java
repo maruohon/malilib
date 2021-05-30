@@ -1120,7 +1120,7 @@ public class RenderUtils
 
         RenderSystem.pushMatrix();
         bindTexture(PlayerContainer.LOCATION_BLOCKS_TEXTURE);
-        mc().getTextureManager().getTexture(PlayerContainer.LOCATION_BLOCKS_TEXTURE).setBlurMipmap(false, false);;
+        mc().getTextureManager().getTexture(PlayerContainer.LOCATION_BLOCKS_TEXTURE).setBlurMipmap(false, false);
 
         RenderSystem.enableRescaleNormal();
         RenderSystem.enableAlphaTest();
