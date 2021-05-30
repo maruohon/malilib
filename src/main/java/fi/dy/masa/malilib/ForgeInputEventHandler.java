@@ -20,16 +20,15 @@ class ForgeInputEventHandler
     }
 
     @SubscribeEvent
-    public void onMouseInputEvent(InputEvent.MouseInputEvent event)
+    public void onMouseInputEvent(InputEvent.RawMouseEvent event)
     {
         int mouseX = 0;
         int mouseY = 0;
 
-        // This event isn't cancellable, so it needs to be handled by a Mixin
         if (Minecraft.getInstance().currentScreen == null &&
             ((InputEventHandler) InputEventHandler.getInputManager()).onMouseClick(mouseX, mouseY, event.getButton(), event.getAction() != 0))
         {
-            //event.setCanceled(true);
+            event.setCanceled(true);
         }
     }
 
