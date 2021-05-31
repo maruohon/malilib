@@ -1,5 +1,7 @@
 package fi.dy.masa.malilib.input;
 
+import javax.annotation.Nullable;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.action.ActionRegistry;
 import fi.dy.masa.malilib.action.NamedAction;
@@ -60,8 +62,15 @@ public class CustomHotkeyDefinition implements Hotkey
         return obj;
     }
 
-    public static CustomHotkeyDefinition fromJson(JsonObject obj)
+    @Nullable
+    public static CustomHotkeyDefinition fromJson(JsonElement el)
     {
+        if (el.isJsonObject())
+        {
+            return null;
+        }
+
+        JsonObject obj = el.getAsJsonObject();
         KeyBind keyBind = KeyBindImpl.fromStorageString("", KeyBindSettings.INGAME_DEFAULT);
 
         if (JsonUtils.hasObject(obj, "hotkey"))

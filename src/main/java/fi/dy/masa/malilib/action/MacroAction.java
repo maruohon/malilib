@@ -96,27 +96,26 @@ public class MacroAction extends NamedAction
     {
         ArrayList<NamedAction> actions = new ArrayList<>();
 
-        if (el.isJsonObject() && JsonUtils.hasArray(el.getAsJsonObject(), "actions"))
+        if (el.isJsonObject())
         {
-            JsonArray arr = el.getAsJsonObject().get("actions").getAsJsonArray();
-            int size = arr.size();
-
-            for (int i = 0; i < size; ++i)
-            {
-                String registryName = arr.get(i).getAsString();
-                NamedAction action = registry.getAction(registryName);
-
-                if (action == null)
-                {
-                    // Preserve entries in the config file if a mod is temporarily disabled/removed, for example
-                    action = new NamedAction(ModInfo.NO_MOD, registryName, registryName, registryName, (ctx) -> ActionResult.PASS);
-                }
-
-                actions.add(action);
-            }
+            JsonUtils.readArrayElementsIfPresent(el.getAsJsonObject(), "actions", (e) -> MacroAction.readAction(e, registry, actions));
         }
 
         return new MacroAction(name, ImmutableList.copyOf(actions));
+    }
+
+    protected static void readAction(JsonElement el, ActionRegistry registry, ArrayList<NamedAction> actions)
+    {
+        String registryName = el.getAsString();
+        NamedAction action = registry.getAction(registryName);
+
+        if (action == null)
+        {
+            // Preserve entries in the config file if a mod is temporarily disabled/removed, for example
+            action = new NamedAction(ModInfo.NO_MOD, registryName, registryName, registryName, (ctx) -> ActionResult.PASS);
+        }
+
+        actions.add(action);
     }
 
     public static ModInfo getMacroModInfo()

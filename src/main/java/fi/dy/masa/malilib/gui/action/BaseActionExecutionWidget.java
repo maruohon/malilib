@@ -7,6 +7,7 @@ import java.util.Locale;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.action.ActionContext;
 import fi.dy.masa.malilib.action.ActionRegistry;
@@ -443,36 +444,33 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
         this.iconScaleX = JsonUtils.getFloatOrDefault(obj, "icon_scale_x", this.iconScaleX);
         this.iconScaleY = JsonUtils.getFloatOrDefault(obj, "icon_scale_y", this.iconScaleY);
 
-        if (JsonUtils.hasArray(obj, "border_color"))
-        {
-            this.normalBorderColor.fromJson(obj.get("border_color").getAsJsonArray());
-        }
-
-        if (JsonUtils.hasArray(obj, "border_color_hover"))
-        {
-            this.hoveredBorderColor.fromJson(obj.get("border_color_hover").getAsJsonArray());
-        }
+        JsonUtils.readArrayIfPresent(obj, "border_color", this.normalBorderColor::fromJson);
+        JsonUtils.readArrayIfPresent(obj, "border_color_hover", this.hoveredBorderColor::fromJson);
 
         // FIXME
         NamedAction action = ActionRegistry.INSTANCE.getAction(JsonUtils.getStringOrDefault(obj, "action_name", "?"));
 
         if (action != null)
         {
-            if (JsonUtils.hasObject(obj, "action_data"))
-            {
-                action = action.fromJson(obj.get("action_data").getAsJsonObject());
-            }
-
+            JsonUtils.readObjectIfPresent(obj, "action_data", action::fromJson);
             this.setAction(action);
         }
     }
 
     @Nullable
-    public static BaseActionExecutionWidget createFromJson(JsonObject obj)
+    public static BaseActionExecutionWidget createFromJson(JsonElement el)
     {
+        if (el.isJsonObject() == false)
+        {
+            return null;
+        }
+
+        JsonObject obj = el.getAsJsonObject();
         Type type = JsonUtils.getStringOrDefault(obj, "type", "").equals("radial") ? Type.RADIAL : Type.RECTANGULAR;
         BaseActionExecutionWidget widget = type.create();
+
         widget.fromJson(obj);
+
         return widget;
     }
 

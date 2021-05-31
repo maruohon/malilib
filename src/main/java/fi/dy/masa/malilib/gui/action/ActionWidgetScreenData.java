@@ -49,30 +49,21 @@ public class ActionWidgetScreenData
         JsonObject obj = el.getAsJsonObject();
         boolean closeScreenOnExecute = JsonUtils.getBooleanOrDefault(obj, "close_on_execute", false);
         boolean closeScreenOnKeyRelease = JsonUtils.getBooleanOrDefault(obj, "close_on_key_release", false);
+
         ImmutableList.Builder<BaseActionExecutionWidget> builder = ImmutableList.builder();
-
-        if (JsonUtils.hasArray(obj, "widgets"))
-        {
-            JsonArray arr = obj.get("widgets").getAsJsonArray();
-            final int size = arr.size();
-
-            for (int i = 0; i < size; ++i)
-            {
-                JsonElement ae = arr.get(i);
-
-                if (ae.isJsonObject())
-                {
-                    BaseActionExecutionWidget widget = BaseActionExecutionWidget.createFromJson(ae.getAsJsonObject());
-
-                    if (widget != null)
-                    {
-                        builder.add(widget);
-                    }
-                }
-            }
-        }
+        JsonUtils.readArrayElementsIfPresent(obj, "widgets", (e) -> ActionWidgetScreenData.readAndAddWidget(e, builder));
 
         return new ActionWidgetScreenData(builder.build(), closeScreenOnExecute, closeScreenOnKeyRelease);
+    }
+
+    protected static void readAndAddWidget(JsonElement el, ImmutableList.Builder<BaseActionExecutionWidget> builder)
+    {
+        BaseActionExecutionWidget widget = BaseActionExecutionWidget.createFromJson(el);
+
+        if (widget != null)
+        {
+            builder.add(widget);
+        }
     }
 
     public static ActionWidgetScreenData createEmpty()

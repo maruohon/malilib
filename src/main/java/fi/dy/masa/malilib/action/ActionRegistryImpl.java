@@ -279,37 +279,27 @@ public class ActionRegistryImpl implements ActionRegistry
         JsonObject obj = el.getAsJsonObject();
 
         this.clearAliasesAndMacros();
-        this.loadAliases(obj);
-        this.loadMacros(obj);
+        JsonUtils.readObjectIfPresent(obj, "aliases", this::loadAliases);
+        JsonUtils.readObjectIfPresent(obj, "macros", this::loadMacros);
     }
 
     protected void loadAliases(JsonObject obj)
     {
-        if (JsonUtils.hasObject(obj, "aliases"))
+        for (Map.Entry<String, JsonElement> entry : obj.entrySet())
         {
-            JsonObject aliases = obj.get("aliases").getAsJsonObject();
-
-            for (Map.Entry<String, JsonElement> entry : aliases.entrySet())
-            {
-                String name = entry.getKey();
-                AliasAction aliasAction = AliasAction.aliasFromJson(this, name, entry.getValue());
-                this.addAliasInternal(aliasAction);
-            }
+            String name = entry.getKey();
+            AliasAction aliasAction = AliasAction.aliasFromJson(this, name, entry.getValue());
+            this.addAliasInternal(aliasAction);
         }
     }
 
     protected void loadMacros(JsonObject obj)
     {
-        if (JsonUtils.hasObject(obj, "macros"))
+        for (Map.Entry<String, JsonElement> entry : obj.entrySet())
         {
-            JsonObject macros = obj.get("macros").getAsJsonObject();
-
-            for (Map.Entry<String, JsonElement> entry : macros.entrySet())
-            {
-                String name = entry.getKey();
-                MacroAction macro = MacroAction.macroFromJson(this, name, entry.getValue());
-                this.addMacroInternal(macro);
-            }
+            String name = entry.getKey();
+            MacroAction macro = MacroAction.macroFromJson(this, name, entry.getValue());
+            this.addMacroInternal(macro);
         }
     }
 

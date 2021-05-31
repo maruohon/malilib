@@ -100,22 +100,17 @@ public class CustomHotkeyManager implements HotkeyProvider
         if (el.isJsonObject())
         {
             JsonObject obj = el.getAsJsonObject();
+            JsonUtils.readArrayElementsIfPresent(obj, "hotkeys", this::readAndAddHotkey);
+        }
+    }
 
-            if (JsonUtils.hasArray(obj, "hotkeys"))
-            {
-                JsonArray arr = obj.get("hotkeys").getAsJsonArray();
-                int count = arr.size();
+    protected void readAndAddHotkey(JsonElement el)
+    {
+        CustomHotkeyDefinition hotkey = CustomHotkeyDefinition.fromJson(el);
 
-                for (int i = 0; i < count; ++i)
-                {
-                    JsonElement e = arr.get(i);
-
-                    if (e.isJsonObject())
-                    {
-                        this.hotkeys.add(CustomHotkeyDefinition.fromJson(e.getAsJsonObject()));
-                    }
-                }
-            }
+        if (hotkey != null)
+        {
+            this.hotkeys.add(hotkey);
         }
     }
 

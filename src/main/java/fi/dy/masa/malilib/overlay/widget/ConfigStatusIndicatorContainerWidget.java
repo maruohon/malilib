@@ -326,37 +326,27 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
 
         this.allWidgets.clear();
 
-        if (JsonUtils.hasArray(obj, "status_widgets"))
-        {
-            List<ConfigTab> tabs = ConfigTabRegistry.INSTANCE.getAllRegisteredConfigTabs();
-            Map<String, ConfigOnTab> configMap = ConfigUtils.getConfigIdToConfigMapFromTabs(tabs);
-            JsonArray arr = obj.get("status_widgets").getAsJsonArray();
-            final int count = arr.size();
-
-            for (int i = 0; i < count; i++)
-            {
-                JsonElement el = arr.get(i);
-
-                if (el.isJsonObject())
-                {
-                    JsonObject entryObj = el.getAsJsonObject();
-                    BaseConfigStatusIndicatorWidget<?> widget = BaseConfigStatusIndicatorWidget.fromJson(entryObj, configMap);
-
-                    if (widget != null)
-                    {
-                        widget.setGeometryChangeListener(this::requestConditionalReLayout);
-                        widget.setEnabledChangeListener(this::notifyEnabledWidgetsChanged);
-                        widget.setHeight(this.lineHeight);
-                        widget.updateState(true);
-                        this.allWidgets.add(widget);
-                    }
-                }
-            }
-        }
+        List<ConfigTab> tabs = ConfigTabRegistry.INSTANCE.getAllRegisteredConfigTabs();
+        Map<String, ConfigOnTab> configMap = ConfigUtils.getConfigIdToConfigMapFromTabs(tabs);
+        JsonUtils.readArrayElementsIfPresent(obj, "status_widgets", (e) -> this.readAndAddWidget(e, configMap));
 
         this.notifyEnabledWidgetsChanged();
         this.updateSize();
         this.requestUnconditionalReLayout();
+    }
+
+    protected void readAndAddWidget(JsonElement el, Map<String, ConfigOnTab> configMap)
+    {
+        BaseConfigStatusIndicatorWidget<?> widget = BaseConfigStatusIndicatorWidget.fromJson(el, configMap);
+
+        if (widget != null)
+        {
+            widget.setGeometryChangeListener(this::requestConditionalReLayout);
+            widget.setEnabledChangeListener(this::notifyEnabledWidgetsChanged);
+            widget.setHeight(this.lineHeight);
+            widget.updateState(true);
+            this.allWidgets.add(widget);
+        }
     }
 
     public static List<? extends Hotkey> getToggleHotkeys()

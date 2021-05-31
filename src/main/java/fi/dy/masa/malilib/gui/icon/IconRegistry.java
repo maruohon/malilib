@@ -134,26 +134,16 @@ public class IconRegistry
         this.dirty = false;
 
         JsonObject obj = el.getAsJsonObject();
+        JsonUtils.readArrayElementsIfPresent(obj, "custom_icons", this::readAndAddIcon);
+    }
 
-        if (JsonUtils.hasArray(obj, "custom_icons"))
+    protected void readAndAddIcon(JsonElement el)
+    {
+        Icon icon = Icon.fromJson(el);
+
+        if (icon != null && this.userIcons.contains(icon) == false)
         {
-            JsonArray arr = obj.get("custom_icons").getAsJsonArray();
-            int size = arr.size();
-
-            for (int i = 0; i < size; ++i)
-            {
-                JsonElement e = arr.get(i);
-
-                if (e.isJsonObject())
-                {
-                    Icon icon = Icon.fromJson(e.getAsJsonObject());
-
-                    if (icon != null && this.userIcons.contains(icon) == false)
-                    {
-                        this.userIcons.add(icon);
-                    }
-                }
-            }
+            this.userIcons.add(icon);
         }
     }
 

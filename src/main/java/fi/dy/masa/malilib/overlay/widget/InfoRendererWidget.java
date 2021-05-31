@@ -9,6 +9,7 @@ import java.util.function.IntSupplier;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.client.renderer.GlStateManager;
 import fi.dy.masa.malilib.MaLiLibConfigs;
@@ -598,38 +599,24 @@ public abstract class InfoRendererWidget extends BaseWidget
             this.setLocation(location);
         }
 
-        if (JsonUtils.hasArray(obj, "padding"))
-        {
-            this.padding.fromJson(obj.get("padding").getAsJsonArray());
-        }
-
-        if (JsonUtils.hasArray(obj, "margin"))
-        {
-            this.margin.fromJson(obj.get("margin").getAsJsonArray());
-        }
-
-        if (JsonUtils.hasObject(obj, "text_settings"))
-        {
-            this.getTextSettings().fromJson(obj.get("text_settings").getAsJsonObject());
-        }
+        JsonUtils.readArrayIfPresent(obj, "padding", this.padding::fromJson);
+        JsonUtils.readArrayIfPresent(obj, "margin", this.margin::fromJson);
+        JsonUtils.readObjectIfPresent(obj, "text_settings", this.getTextSettings()::fromJson);
 
         this.markers.clear();
-
-        if (JsonUtils.hasArray(obj, "markers"))
-        {
-            JsonArray arr = obj.get("markers").getAsJsonArray();
-            int size = arr.size();
-
-            for (int i = 0; i < size; ++i)
-            {
-                this.markers.add(arr.get(i).getAsString());
-            }
-        }
+        JsonUtils.readArrayElementsIfPresent(obj, "markers", (e) -> this.markers.add(e.getAsString()));
     }
 
     @Nullable
-    public static InfoRendererWidget createFromJson(JsonObject obj)
+    public static InfoRendererWidget createFromJson(JsonElement el)
     {
+        if (el.isJsonObject() == false)
+        {
+            return null;
+        }
+
+        JsonObject obj = el.getAsJsonObject();
+
         if (JsonUtils.hasString(obj, "type"))
         {
             String type = obj.get("type").getAsString();

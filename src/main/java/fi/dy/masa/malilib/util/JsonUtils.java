@@ -376,6 +376,39 @@ public class JsonUtils
         return list;
     }
 
+    public static void readArrayElementsIfPresent(JsonObject obj, String arrayName, Consumer<JsonElement> elementConsumer)
+    {
+        if (hasArray(obj, arrayName))
+        {
+            JsonArray arr = obj.get(arrayName).getAsJsonArray();
+            int size = arr.size();
+
+            for (int i = 0; i < size; ++i)
+            {
+                JsonElement e = arr.get(i);
+                elementConsumer.accept(e);
+            }
+        }
+    }
+
+    public static void readArrayIfPresent(JsonObject obj, String arrayName, Consumer<JsonArray> arrayConsumer)
+    {
+        if (hasArray(obj, arrayName))
+        {
+            JsonArray arr = obj.get(arrayName).getAsJsonArray();
+            arrayConsumer.accept(arr);
+        }
+    }
+
+    public static void readObjectIfPresent(JsonObject obj, String arrayName, Consumer<JsonObject> objectConsumer)
+    {
+        if (hasObject(obj, arrayName))
+        {
+            JsonObject arr = obj.get(arrayName).getAsJsonObject();
+            objectConsumer.accept(arr);
+        }
+    }
+
     // https://stackoverflow.com/questions/29786197/gson-jsonobject-copy-value-affected-others-jsonobject-instance
     @Nonnull
     public static JsonObject deepCopy(@Nonnull JsonObject jsonObject)

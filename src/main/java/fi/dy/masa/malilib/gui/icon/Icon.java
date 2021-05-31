@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.gui.icon;
 
 import javax.annotation.Nullable;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.render.RenderUtils;
@@ -191,8 +192,14 @@ public interface Icon
     }
 
     @Nullable
-    static Icon fromJson(JsonObject obj)
+    static Icon fromJson(JsonElement el)
     {
+        if (el.isJsonObject() == false)
+        {
+            return null;
+        }
+
+        JsonObject obj = el.getAsJsonObject();
         ResourceLocation texture = StringUtils.identifier(JsonUtils.getStringOrDefault(obj, "texture", ""));
 
         if (texture == null)

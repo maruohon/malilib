@@ -92,34 +92,21 @@ public class InfoWidgetManager
         }
 
         JsonObject obj = el.getAsJsonObject();
-
-        if (JsonUtils.hasArray(obj, "info_widgets") == false)
-        {
-            return;
-        }
-
-        JsonArray arr = obj.get("info_widgets").getAsJsonArray();
-        final int count = arr.size();
-
-        for (int i = 0; i < count; i++)
-        {
-            JsonElement arrayEl = arr.get(i);
-
-            if (arrayEl.isJsonObject())
-            {
-                JsonObject entryObj = arrayEl.getAsJsonObject();
-                InfoRendererWidget widget = InfoRendererWidget.createFromJson(entryObj);
-
-                if (widget != null)
-                {
-                    this.widgets.put(widget.getClass(), widget);
-                    this.infoOverlay.getOrCreateInfoArea(widget.getScreenLocation()).addWidget(widget);
-                }
-            }
-        }
+        JsonUtils.readArrayElementsIfPresent(obj, "info_widgets", this::readAndAddWidget);
 
         // This causes all the widgets to get re-fetched immediately
         InfoOverlay.INSTANCE.tick();
+    }
+
+    protected void readAndAddWidget(JsonElement el)
+    {
+        InfoRendererWidget widget = InfoRendererWidget.createFromJson(el);
+
+        if (widget != null)
+        {
+            this.widgets.put(widget.getClass(), widget);
+            this.infoOverlay.getOrCreateInfoArea(widget.getScreenLocation()).addWidget(widget);
+        }
     }
 
     public boolean saveToFileIfDirty()

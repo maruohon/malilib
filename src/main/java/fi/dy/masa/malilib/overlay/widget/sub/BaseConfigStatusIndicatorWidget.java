@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.overlay.widget.sub;
 
 import java.util.Map;
 import javax.annotation.Nullable;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.gui.BaseScreen;
@@ -170,8 +171,15 @@ public abstract class BaseConfigStatusIndicatorWidget<C extends ConfigInfo> exte
     }
 
     @Nullable
-    public static <C extends  ConfigInfo> BaseConfigStatusIndicatorWidget<?> fromJson(JsonObject obj, Map<String, ConfigOnTab> configMap)
+    public static <C extends  ConfigInfo> BaseConfigStatusIndicatorWidget<?> fromJson(JsonElement el, Map<String, ConfigOnTab> configMap)
     {
+        if (el.isJsonObject() == false)
+        {
+            return null;
+        }
+
+        JsonObject obj = el.getAsJsonObject();
+
         if (JsonUtils.hasString(obj, "type") &&
             JsonUtils.hasString(obj, "config_path"))
         {
