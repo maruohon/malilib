@@ -271,13 +271,18 @@ public abstract class InfoRendererWidget extends BaseWidget
         this.visibleInContext = context;
     }
 
+    public boolean getRenderAboveScreen()
+    {
+        return this.renderAboveScreen;
+    }
+
     /**
      * Sets whether or not widgets that are visible in RenderContext.BOTH will render
      * below or above the screen.
      */
-    public void setRenderAboveScreen(boolean renderBelowScreen)
+    public void setRenderAboveScreen(boolean renderAboveScreen)
     {
-        this.renderAboveScreen = renderBelowScreen;
+        this.renderAboveScreen = renderAboveScreen;
     }
 
     public void setName(String name)
@@ -537,6 +542,7 @@ public abstract class InfoRendererWidget extends BaseWidget
         obj.addProperty("type", this.getClass().getName());
         obj.addProperty("name", this.getName());
         obj.addProperty("enabled", this.isEnabled());
+        obj.addProperty("above_screen", this.getRenderAboveScreen());
         obj.addProperty("screen_location", this.getScreenLocation().getName());
         obj.addProperty("scale", this.scale);
         obj.addProperty("render_name", this.renderName);
@@ -576,6 +582,7 @@ public abstract class InfoRendererWidget extends BaseWidget
     public void fromJson(JsonObject obj)
     {
         this.enabled = JsonUtils.getBooleanOrDefault(obj, "enabled", true);
+        this.setRenderAboveScreen(JsonUtils.getBooleanOrDefault(obj, "above_screen", false));
         this.renderName = JsonUtils.getBooleanOrDefault(obj, "render_name", false);
         this.scale = JsonUtils.getDoubleOrDefault(obj, "scale", 1.0);
         this.setName(JsonUtils.getStringOrDefault(obj, "name", this.name));

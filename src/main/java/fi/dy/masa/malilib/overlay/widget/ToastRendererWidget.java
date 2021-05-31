@@ -31,6 +31,7 @@ public class ToastRendererWidget extends InfoRendererWidget
 
         this.isOverlay = true;
         this.shouldSerialize = true;
+        this.renderAboveScreen = true;
         this.setName("Toast Renderer");
         this.setMaxWidth(240);
         this.padding.setAll(6, 10, 6, 10);
