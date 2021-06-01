@@ -96,11 +96,11 @@ public class PositionUtils
      */
     public static Direction getClosestLookingDirection(Entity entity, float verticalThreshold)
     {
-        if (entity.pitch >= verticalThreshold)
+        if (entity.getPitch() >= verticalThreshold)
         {
             return Direction.DOWN;
         }
-        else if (entity.yaw <= -verticalThreshold)
+        else if (entity.getYaw() <= -verticalThreshold)
         {
             return Direction.UP;
         }
@@ -134,11 +134,11 @@ public class PositionUtils
         double w = entity.getWidth();
         BlockPos pos = new BlockPos(x, y, z);
 
-        if (entity.pitch >= verticalThreshold)
+        if (entity.getPitch() >= verticalThreshold)
         {
             return pos.down(1);
         }
-        else if (entity.pitch <= -verticalThreshold)
+        else if (entity.getPitch() <= -verticalThreshold)
         {
             return new BlockPos(x, Math.ceil(entity.getBoundingBox().maxY), z);
         }

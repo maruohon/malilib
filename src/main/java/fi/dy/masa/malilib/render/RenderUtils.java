@@ -728,7 +728,7 @@ public class RenderUtils
 
         if (entity != null)
         {
-            drawTextPlate(text, x, y, z, entity.yaw, entity.pitch, scale, 0xFFFFFFFF, 0x40000000, true, matrixStack);
+            drawTextPlate(text, x, y, z, entity.getYaw(), entity.getPitch(), scale, 0xFFFFFFFF, 0x40000000, true, matrixStack);
         }
     }
 
