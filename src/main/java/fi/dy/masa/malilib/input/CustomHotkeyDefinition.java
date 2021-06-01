@@ -65,7 +65,7 @@ public class CustomHotkeyDefinition implements Hotkey
     @Nullable
     public static CustomHotkeyDefinition fromJson(JsonElement el)
     {
-        if (el.isJsonObject())
+        if (el.isJsonObject() == false)
         {
             return null;
         }
