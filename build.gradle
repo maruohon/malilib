@@ -21,6 +21,10 @@ plugins {
 }
 */
 
+repositories {
+    maven { url 'https://maven.terraformersmc.com/releases/' }
+}
+
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
@@ -44,7 +48,7 @@ dependencies {
     modCompile "net.fabricmc.fabric-api:fabric-resource-loader-v0:${config.fabric_resource_loader_version}"
     include "net.fabricmc.fabric-api:fabric-resource-loader-v0:${config.fabric_resource_loader_version}"
 
-    modCompileOnly "io.github.prospector:modmenu:${config.mod_menu_version}"
+    modCompileOnly "com.terraformersmc:modmenu:${config.mod_menu_version}"
 }
 
 minecraft {
