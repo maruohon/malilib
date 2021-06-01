@@ -154,20 +154,19 @@ public class RenderUtils
         float g = (float) (color >>  8 & 255) / 255.0F;
         float b = (float) (color & 255) / 255.0F;
 
-        RenderSystem.setShader(GameRenderer::getPositionShader);
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
         RenderSystem.applyModelViewMatrix();
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
 
         setupBlend();
-        color(r, g, b, a);
 
-        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
+        buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
 
-        buffer.vertex(x        , y         , zLevel).next();
-        buffer.vertex(x        , y + height, zLevel).next();
-        buffer.vertex(x + width, y + height, zLevel).next();
-        buffer.vertex(x + width, y         , zLevel).next();
+        buffer.vertex(x        , y         , zLevel).color(r, g, b, a).next();
+        buffer.vertex(x        , y + height, zLevel).color(r, g, b, a).next();
+        buffer.vertex(x + width, y + height, zLevel).color(r, g, b, a).next();
+        buffer.vertex(x + width, y         , zLevel).color(r, g, b, a).next();
 
         tessellator.draw();
 
@@ -371,12 +370,15 @@ public class RenderUtils
         final int bgMargin = 2;
 
         // Only Chuck Norris can divide by zero
-        if (scale == 0d)
+        if (scale < 0.0125)
         {
             return 0;
         }
 
-        if (scale != 1d)
+        MatrixStack globalStack = RenderSystem.getModelViewStack();
+        boolean scaled = scale != 1.0;
+
+        if (scaled)
         {
             if (scale != 0)
             {
@@ -384,7 +386,6 @@ public class RenderUtils
                 yOff = (int) (yOff * scale);
             }
 
-            MatrixStack globalStack = RenderSystem.getModelViewStack();
             globalStack.push();
             globalStack.scale((float) scale, (float) scale, 0);
         }
@@ -430,9 +431,10 @@ public class RenderUtils
             }
         }
 
-        if (scale != 1d)
+        if (scaled)
         {
-            RenderSystem.getModelViewStack().pop();
+            globalStack.pop();
+            RenderSystem.applyModelViewMatrix();
         }
 
         return contentHeight + bgMargin * 2;

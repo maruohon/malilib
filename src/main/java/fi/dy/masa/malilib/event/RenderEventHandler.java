@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gl.Framebuffer;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.Matrix4f;
 import fi.dy.masa.malilib.interfaces.IRenderDispatcher;
 import fi.dy.masa.malilib.interfaces.IRenderer;
 import fi.dy.masa.malilib.util.InfoUtils;
@@ -51,7 +54,7 @@ public class RenderEventHandler implements IRenderDispatcher
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public void onRenderGameOverlayPost(net.minecraft.client.MinecraftClient mc, float partialTicks, net.minecraft.client.util.math.MatrixStack matrixStack)
+    public void onRenderGameOverlayPost(MatrixStack matrixStack, MinecraftClient mc, float partialTicks)
     {
         mc.getProfiler().push("malilib_rendergameoverlaypost");
 
@@ -60,7 +63,7 @@ public class RenderEventHandler implements IRenderDispatcher
             for (IRenderer renderer : this.overlayRenderers)
             {
                 mc.getProfiler().push(renderer.getProfilerSectionSupplier());
-                renderer.onRenderGameOverlayPost(partialTicks, matrixStack);
+                renderer.onRenderGameOverlayPost(matrixStack);
                 mc.getProfiler().pop();
             }
         }
@@ -75,7 +78,7 @@ public class RenderEventHandler implements IRenderDispatcher
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public void onRenderTooltipLast(net.minecraft.client.util.math.MatrixStack matrixStack, net.minecraft.item.ItemStack stack, int x, int y)
+    public void onRenderTooltipLast(MatrixStack matrixStack, ItemStack stack, int x, int y)
     {
         if (this.tooltipLastRenderers.isEmpty() == false)
         {
@@ -89,7 +92,7 @@ public class RenderEventHandler implements IRenderDispatcher
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public void onRenderWorldLast(net.minecraft.client.util.math.MatrixStack matrixStack, net.minecraft.client.MinecraftClient mc, float partialTicks)
+    public void onRenderWorldLast(MatrixStack matrixStack, Matrix4f projMatrix, MinecraftClient mc)
     {
         if (this.worldLastRenderers.isEmpty() == false)
         {
@@ -105,7 +108,7 @@ public class RenderEventHandler implements IRenderDispatcher
             for (IRenderer renderer : this.worldLastRenderers)
             {
                 mc.getProfiler().push(renderer.getProfilerSectionSupplier());
-                renderer.onRenderWorldLast(partialTicks, matrixStack);
+                renderer.onRenderWorldLast(matrixStack, projMatrix);
                 mc.getProfiler().pop();
             }
 
