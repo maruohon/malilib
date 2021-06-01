@@ -837,7 +837,9 @@ public class RenderUtils
         globalStack.push();
         blockTargetingOverlayTranslations(x, y, z, side, playerFacing, globalStack);
         RenderSystem.applyModelViewMatrix();
+
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        RenderSystem.disableTexture();
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
@@ -893,9 +895,10 @@ public class RenderUtils
 
         tessellator.draw();
 
+        // FIXME: line width doesn't work currently
         RenderSystem.lineWidth(1.6f);
 
-        buffer.begin(VertexFormat.DrawMode.LINE_STRIP, VertexFormats.POSITION_COLOR);
+        buffer.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
 
         // Middle small rectangle
         buffer.vertex(x - 0.25, y - 0.25, z).color(c, c, c, c).next();
@@ -905,7 +908,7 @@ public class RenderUtils
         buffer.vertex(x - 0.25, y - 0.25, z).color(c, c, c, c).next();
         tessellator.draw();
 
-        buffer.begin(VertexFormat.DrawMode.LINES, VertexFormats.POSITION_COLOR);
+        buffer.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
         // Bottom left
         buffer.vertex(x - 0.50, y - 0.50, z).color(c, c, c, c).next();
         buffer.vertex(x - 0.25, y - 0.25, z).color(c, c, c, c).next();
@@ -962,9 +965,9 @@ public class RenderUtils
 
         tessellator.draw();
 
+        // FIXME: line width doesn't work currently
         RenderSystem.lineWidth(1.6f);
 
-        // FIXME: DEBUG_LINE_STRIP ignores line width
         buffer.begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
 
         // Middle rectangle
