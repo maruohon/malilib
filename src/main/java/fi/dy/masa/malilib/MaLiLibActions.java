@@ -26,7 +26,7 @@ public class MaLiLibActions
         register("addToast", MessageUtils::addToastAction);
         register("createActionWidgetScreen", ActionWidgetScreen::openCreateActionWidgetScreen);
         register("openActionWidgetScreen", ActionWidgetScreen::openActionWidgetScreen);
-        register("openCustomIconsListScreen", CustomIconListScreen::openCustomIconListScreen);
+        register("openCustomIconsListScreen", CustomIconListScreen::openCustomIconListScreenAction);
         register("openPreviousActionWidgetScreen", ActionWidgetScreen::openPreviousActionWidgetScreen);
         register("runCommand", ActionUtils::runVanillaCommand);
         register("switchConfigProfile", ConfigUtils::switchConfigProfile);

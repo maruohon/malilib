@@ -87,7 +87,7 @@ public class CustomIconListScreen extends BaseListScreen<DataListWidget<Icon>>
         BaseScreen.openPopupScreen(screen);
     }
 
-    public static ActionResult openCustomIconListScreen(ActionContext ctx)
+    public static ActionResult openCustomIconListScreenAction(ActionContext ctx)
     {
         CustomIconListScreen screen = new CustomIconListScreen();
         screen.setCurrentTab(MaLiLibConfigScreen.ICONS);
