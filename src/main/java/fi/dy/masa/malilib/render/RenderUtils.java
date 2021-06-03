@@ -23,7 +23,6 @@ import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.util.math.AffineTransformation;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.effect.StatusEffect;
@@ -40,6 +39,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Quaternion;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3f;
@@ -734,13 +734,17 @@ public class RenderUtils
     }
 
     public static void drawTextPlate(List<String> text, double x, double y, double z, float yaw, float pitch,
-            float scale, int textColor, int bgColor, boolean disableDepth)
+                                     float scale, int textColor, int bgColor, boolean disableDepth)
     {
+        Vec3d cameraPos = mc().gameRenderer.getCamera().getPos();
+        double cx = cameraPos.x;
+        double cy = cameraPos.y;
+        double cz = cameraPos.z;
         TextRenderer textRenderer = mc().textRenderer;
 
         MatrixStack globalStack = RenderSystem.getModelViewStack();
         globalStack.push();
-        globalStack.translate(x, y, z);
+        globalStack.translate(x - cx, y - cy, z - cz);
 
         Quaternion rot = Vec3f.POSITIVE_Y.getDegreesQuaternion(-yaw);
         rot.hamiltonProduct(Vec3f.POSITIVE_X.getDegreesQuaternion(pitch));
@@ -793,21 +797,22 @@ public class RenderUtils
             RenderSystem.polygonOffset(-0.6f, -1.2f);
         }
 
+        Matrix4f modelMatrix = new Matrix4f();
+        modelMatrix.loadIdentity();
+
         for (String line : text)
         {
             if (disableDepth)
             {
-                RenderSystem.enableAlphaTest();
                 VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(buffer);
-                textRenderer.draw(line, -strLenHalf, textY, 0x20000000 | (textColor & 0xFFFFFF), false, AffineTransformation.identity().getMatrix(), immediate, true, 0, 15728880);
+                textRenderer.draw(line, -strLenHalf, textY, 0x20000000 | (textColor & 0xFFFFFF), false, modelMatrix, immediate, true, 0, 15728880);
                 immediate.draw();
                 RenderSystem.enableDepthTest();
                 RenderSystem.depthMask(true);
             }
 
-            RenderSystem.enableAlphaTest();
             VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(buffer);
-            textRenderer.draw(line, -strLenHalf, textY, textColor, false, AffineTransformation.identity().getMatrix(), immediate, true, 0, 15728880);
+            textRenderer.draw(line, -strLenHalf, textY, textColor, false, modelMatrix, immediate, true, 0, 15728880);
             immediate.draw();
             textY += textRenderer.fontHeight;
         }
@@ -1026,7 +1031,10 @@ public class RenderUtils
             int x2 = x1 + dimensions;
             int z = 300;
 
-            Identifier bgTexture = mapData == null ? TEXTURE_MAP_BACKGROUND : TEXTURE_MAP_BACKGROUND_CHECKERBOARD;
+            Integer mapId = FilledMapItem.getMapId(stack);
+            MapState mapState = FilledMapItem.getMapState(mapId, mc().world);
+
+            Identifier bgTexture = mapState == null ? TEXTURE_MAP_BACKGROUND : TEXTURE_MAP_BACKGROUND_CHECKERBOARD;
             bindTexture(bgTexture);
             setupBlend();
 
@@ -1042,21 +1050,19 @@ public class RenderUtils
             tessellator.draw();
             RenderSystem.disableBlend();
 
-            Integer mapId = FilledMapItem.getMapId(stack);
-            MapState mapState = FilledMapItem.getMapState(mapId, mc().world);
-
             if (mapState != null)
             {
                 x1 += 8;
                 y1 += 8;
                 z = 310;
-                VertexConsumerProvider.Immediate consumer = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
+                VertexConsumerProvider.Immediate consumer = VertexConsumerProvider.immediate(buffer);
                 double scale = (double) (dimensions - 16) / 128.0D;
                 MatrixStack matrixStack = new MatrixStack();
                 matrixStack.push();
                 matrixStack.translate(x1, y1, z);
                 matrixStack.scale((float) scale, (float) scale, 0);
                 mc().gameRenderer.getMapRenderer().draw(matrixStack, consumer, mapId, mapState, false, 0xF000F0);
+                consumer.draw();
                 matrixStack.pop();
             }
         }
