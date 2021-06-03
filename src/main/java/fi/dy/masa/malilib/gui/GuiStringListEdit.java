@@ -71,20 +71,13 @@ public class GuiStringListEdit extends GuiListBase<String, WidgetStringListEditE
     }
 
     @Override
-    public void init(MinecraftClient mc, int width, int height)
+    public void initGui()
     {
-        if (this.getParent() != null)
-        {
-            this.getParent().init(mc, width, height);
-        }
-
-        super.init(mc, width, height);
-
         this.setWidthAndHeight();
         this.centerOnScreen();
-
         this.reCreateListWidget();
-        this.initGui();
+
+        super.initGui();
     }
 
     public IConfigStringList getConfig()

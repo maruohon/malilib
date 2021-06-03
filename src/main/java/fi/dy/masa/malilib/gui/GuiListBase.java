@@ -160,13 +160,13 @@ public abstract class GuiListBase<TYPE, WIDGET extends WidgetListEntryBase<TYPE>
     }
 
     @Override
-    public void init(MinecraftClient minecraftClient_1, int width, int height)
+    public void resize(MinecraftClient mc, int width, int height)
     {
-        super.init(mc, width, height);
+        super.resize(mc, width, height);
 
         if (this.getListWidget() != null)
         {
-            this.getListWidget().init(mc, width, height);
+            this.getListWidget().resize(mc, width, height);
         }
     }
 
