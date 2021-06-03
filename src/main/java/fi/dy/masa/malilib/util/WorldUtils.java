@@ -15,8 +15,7 @@ public class WorldUtils
 {
     public static String getDimensionId(World world)
     {
-        Optional<? extends Registry<DimensionType>> optional = world.getRegistryManager().getOptional(Registry.DIMENSION_TYPE_KEY);
-        Identifier id = optional.map(dimensionTypes -> dimensionTypes.getId(world.getDimension())).orElse(null);
+        Identifier id = world.getRegistryKey().getValue();
         return id != null ? id.getNamespace() + "_" + id.getPath() : "__fallback";
     }
 

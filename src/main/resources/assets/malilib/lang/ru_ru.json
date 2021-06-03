@@ -1,0 +1,113 @@
+{
+    "malilib.config.comment.keybind_settings.activate_on": "Активируется ли связка клавиш при нажатии или отпускании комбинации клавиш",
+    "malilib.config.comment.keybind_settings.allow_empty_keybind": "Является ли пустой набор ключей действительным\n(всегда будет считаться активным)",
+    "malilib.config.comment.keybind_settings.allow_extra_keys": "Можно ли удерживать дополнительные ключи, чтобы активировать привязку клавиш",
+    "malilib.config.comment.keybind_settings.cancel_further": "Отменить дальнейшую (ванильную) обработку\nпоследней нажатой клавиши, когда активируется связка клавиш",
+    "malilib.config.comment.keybind_settings.context": "Можно ли активировать связку клавиш в игре или в графическом интерфейсе",
+    "malilib.config.comment.keybind_settings.exclusive": "Если true, то никакие другие привязки клавиш\nне могут быть активированы до рассматриваемой привязки клавиш.\nЭта проверка сбрасывается, когда все ключи отпускаются.",
+    "malilib.config.comment.keybind_settings.order_sensitive": "Если клавиши клавиш были нажаты\nв определенном порядке, в котором они были определены",
+
+    "malilib.error.failed_to_create_directory": "Не удалось создать каталог '%s'",
+    "malilib.error.file_or_directory_already_exists": "Файл или каталог '%s' уже существует",
+    "malilib.error.invalid_directory": "Неверное имя каталога '%s'",
+    "malilib.error.invalid_block_blacklist_entry": "Недопустимый блок в черном или белом списке: '%s'",
+    "malilib.error.invalid_item_blacklist_entry": "Неверное имя предмета в черном или белом списке: '%s'",
+
+    "malilib.gui.button.cancel": "Отменить",
+    "malilib.gui.button.ok": "ОК",
+    "malilib.gui.button.reset": "Сбросить",
+    "malilib.gui.button.reset.caps": "СБРОСИТЬ",
+
+    "malilib.gui.button.render_layers_gui.axis": "Ось: %s",
+    "malilib.gui.button.render_layers_gui.layers": "Слои: %s",
+    "malilib.gui.button.render_layers_gui.set_here": "Установить в текущем высота",
+
+    "malilib.gui.button.hover.directory_widget.create_directory": "Создать новый каталог",
+    "malilib.gui.button.hover.directory_widget.root": "В корневой/базовый каталог",
+    "malilib.gui.button.hover.directory_widget.up": "До родительского каталога",
+    "malilib.gui.button.hover.hold_shift_for_info": "§oУдерживайте Shift для получения дополнительной информации§r",
+    "malilib.gui.button.hover.plus_minus_tip": "Левый клик для увеличения\nПравый клик для уменьшения\nShift или Alt для увеличения размера шага",
+
+    "malilib.gui.label.block_snap.center": "Центр",
+    "malilib.gui.label.block_snap.corner": "Угол",
+    "malilib.gui.label.block_snap.none": "Ничего",
+
+    "malilib.gui.label_colored.off": "§cВЫКЛЮЧЕН§r",
+    "malilib.gui.label_colored.on": "§aВКЛЮЧЕН§r",
+
+    "malilib.gui.label.color_editor.current_color": "Текущий цвет:",
+
+    "malilib.gui.label.keybind_settings.activate_on": "Активированы",
+    "malilib.gui.label.keybind_settings.allow_empty_keybind": "Разрешить пустое связывание клавиш",
+    "malilib.gui.label.keybind_settings.allow_extra_keys": "Разрешить дополнительные ключи",
+    "malilib.gui.label.keybind_settings.cancel_further": "Отменить дальнейшую обработку",
+    "malilib.gui.label.keybind_settings.context": "Контекст",
+    "malilib.gui.label.keybind_settings.exclusive": "Исключительно",
+    "malilib.gui.label.keybind_settings.order_sensitive": "Чувствительная порядка",
+    "malilib.gui.label.keybind_settings.tips": "- Левая кнопка мыши, чтобы настроить\n- Правая кнопка мыши, чтобы очистить по умолчанию",
+    "malilib.gui.label.keybind_settings.title_advanced_keybind_settings": "Расширенные настройки привязки клавиш",
+
+    "malilib.gui.label.layer_mode.all": "Все слои",
+    "malilib.gui.label.layer_mode.all_above": "Все выше",
+    "malilib.gui.label.layer_mode.all_below": "Все ниже",
+    "malilib.gui.label.layer_mode.layer_range": "Диапазон слоя",
+    "malilib.gui.label.layer_mode.single_layer": "Одиночный слой",
+
+    "malilib.gui.label.no": "Нет",
+    "malilib.gui.label.yes": "Да",
+
+    "malilib.gui.label.render_layers.layer": "Слой",
+    "malilib.gui.label.render_layers.layer_max": "Максимальный слой",
+    "malilib.gui.label.render_layers.layer_min": "Минимальный слой",
+
+    "malilib.gui.title.all_hotkeys": "Все зарегистированные кнопки",
+    "malilib.gui.title.color_editor": "Редактор цвета",
+    "malilib.gui.title.configs": "Конфиги мода Malilib",
+    "malilib.gui.title.create_directory": "Создать новый каталог",
+    "malilib.gui.title.debug": "Дебаг",
+    "malilib.gui.title.generic": "Общие",
+    "malilib.gui.title.keybind_settings.advanced": "Расширенные настройки клавиш для %s",
+    "malilib.gui.title.string_list_edit": "Изменить список строк для '%s'",
+
+    "malilib.label.active_mode.always": "Всегда",
+    "malilib.label.active_mode.never": "Никогда",
+    "malilib.label.active_mode.with_key": "С ключом",
+
+    "malilib.label.key_action.both": "ОБА",
+    "malilib.label.key_action.press": "НАЖМИТЕ",
+    "malilib.label.key_action.release": "РЕЛИЗИРОВАТЬ",
+
+    "malilib.label.key_context.any": "Любой",
+    "malilib.label.key_context.gui": "Графический интерфейс",
+    "malilib.label.key_context.ingame": "В игре",
+
+    "malilib.label.list_type.blacklist": "Чёрный список",
+    "malilib.label.list_type.none": "Ничего",
+    "malilib.label.list_type.whitelist": "Белый список",
+
+    "malilib.label.alignment.top_left": "Верхний левый",
+    "malilib.label.alignment.top_right": "Верхний правый",
+    "malilib.label.alignment.bottom_left": "Нижный левый",
+    "malilib.label.alignment.bottom_right": "Нижный правый",
+    "malilib.label.alignment.center": "Центр",
+
+    "malilib.message.directory_created": "Каталог '%s' создан",
+    "malilib.message.toggled": "Переключен %s %s",
+    "malilib.message.value.off": "ВЫКЛЮЧЕН",
+    "malilib.message.value.on": "ВКЛЮЧЕН",
+
+    "malilib.message.formatting_code.error": "§c",
+    "malilib.message.formatting_code.info": "§f",
+    "malilib.message.formatting_code.success": "§a",
+    "malilib.message.formatting_code.warning": "§6",
+
+    "malilib.message.layer_range.range_max": "максимальный",
+    "malilib.message.layer_range.range_min": "минимальный",
+    "malilib.message.moved_layer_range": "Передвижено весь диапазон слоев по §a%s§r на §a%s§r оси",
+    "malilib.message.moved_layer_range_boundary": "Передвижено диапазон слоев §a%s§r на §a%s§r по §a%s§r оси",
+    "malilib.message.moved_max_layer_to": "Передвижено максимальный слой на %s",
+    "malilib.message.moved_min_layer_to": "Передвижено минимальный слой на %s",
+    "malilib.message.set_layer_axis_to": "Установлен ось слоя на %s",
+    "malilib.message.set_layer_mode_to": "Установлен режим слоя на %s",
+    "malilib.message.set_layer_to": "Установлен слой на %s"
+}

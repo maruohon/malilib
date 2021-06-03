@@ -172,7 +172,7 @@ public class ConfigTypeWrapper implements IConfigBoolean, IConfigDouble, IConfig
         }
         catch (Exception e)
         {
-            MaLiLib.logger.warn("Failed to read config value for {} from the JSON config", this.getName(), e);
+            MaLiLib.logger.warn("Failed to set the config value for '{}' from string '{}'", this.getName(), value, e);
         }
     }
 

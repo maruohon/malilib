@@ -531,4 +531,8 @@ public class KeybindMulti implements IKeybind
     {
         return triggeredCount;
     }
+
+    public IHotkeyCallback getCallback() {
+        return callback;
+    }
 }

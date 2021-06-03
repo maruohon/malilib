@@ -281,33 +281,35 @@ public class StringUtils
             {
                 // This used to be just MinecraftServer::getLevelName().
                 // Getting the name would now require an @Accessor for MinecraftServer.field_23784
-                return server.getSaveProperties().getLevelName(); 
+                String name = server.getSaveProperties().getLevelName();
+                return FileUtils.generateSimpleSafeFileName(name); 
             }
         }
         else
         {
+            if (mc.isConnectedToRealms())
+            {
+                if (MaLiLibConfigs.Generic.REALMS_COMMON_CONFIG.getBooleanValue())
+                {
+                    return "realms";
+                }
+                else
+                {
+                    net.minecraft.client.network.ClientPlayNetworkHandler handler = mc.getNetworkHandler();
+                    net.minecraft.network.ClientConnection connection = handler != null ? handler.getConnection() : null;
+
+                    if (connection != null)
+                    {
+                        return "realms_" + stringifyAddress(connection.getAddress());
+                    }
+                }
+            }
+
             net.minecraft.client.network.ServerInfo server = mc.getCurrentServerEntry();
 
             if (server != null)
             {
                 return server.address.replace(':', '_');
-            }
-
-            // If the server entry was null, then that most likely means we are on a Realms server
-
-            if (MaLiLibConfigs.Generic.REALMS_COMMON_CONFIG.getBooleanValue())
-            {
-                return "realms";
-            }
-            else
-            {
-                net.minecraft.client.network.ClientPlayNetworkHandler handler = mc.getNetworkHandler();
-                net.minecraft.network.ClientConnection connection = handler != null ? handler.getConnection() : null;
-
-                if (connection != null)
-                {
-                    return "realms_" + stringifyAddress(connection.getAddress());
-                }
             }
         }
 

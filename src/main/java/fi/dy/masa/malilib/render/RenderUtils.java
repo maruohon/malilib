@@ -23,6 +23,7 @@ import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.util.math.AffineTransformation;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.effect.StatusEffect;
@@ -54,6 +55,7 @@ import fi.dy.masa.malilib.util.PositionUtils.HitPart;
 public class RenderUtils
 {
     public static final Identifier TEXTURE_MAP_BACKGROUND = new Identifier("textures/map/map_background.png");
+    public static final Identifier TEXTURE_MAP_BACKGROUND_CHECKERBOARD = new Identifier("textures/map/map_background_checkerboard.png");
 
     private static final Random RAND = new Random();
     //private static final Vec3d LIGHT0_POS = (new Vec3d( 0.2D, 1.0D, -0.7D)).normalize();
@@ -720,20 +722,19 @@ public class RenderUtils
      * @param y
      * @param z
      * @param scale
-     * @param matrixStack
      */
-    public static void drawTextPlate(List<String> text, double x, double y, double z, float scale, MatrixStack matrixStack)
+    public static void drawTextPlate(List<String> text, double x, double y, double z, float scale)
     {
         Entity entity = mc().getCameraEntity();
 
         if (entity != null)
         {
-            drawTextPlate(text, x, y, z, entity.getYaw(), entity.getPitch(), scale, 0xFFFFFFFF, 0x40000000, true, matrixStack);
+            drawTextPlate(text, x, y, z, entity.getYaw(), entity.getPitch(), scale, 0xFFFFFFFF, 0x40000000, true);
         }
     }
 
     public static void drawTextPlate(List<String> text, double x, double y, double z, float yaw, float pitch,
-            float scale, int textColor, int bgColor, boolean disableDepth, MatrixStack matrixStack)
+            float scale, int textColor, int bgColor, boolean disableDepth)
     {
         TextRenderer textRenderer = mc().textRenderer;
 
@@ -748,12 +749,6 @@ public class RenderUtils
         globalStack.scale(-scale, -scale, scale);
         RenderSystem.applyModelViewMatrix();
         RenderSystem.disableCull();
-
-        if (disableDepth)
-        {
-            RenderSystem.depthMask(false);
-            RenderSystem.disableDepthTest();
-        }
 
         setupBlend();
         RenderSystem.disableTexture();
@@ -775,6 +770,12 @@ public class RenderUtils
         int bgg = ((bgColor >>>  8) & 0xFF);
         int bgb = (bgColor          & 0xFF);
 
+        if (disableDepth)
+        {
+            RenderSystem.depthMask(false);
+            RenderSystem.disableDepthTest();
+        }
+
         buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
         buffer.vertex(-strLenHalf - 1,          -1, 0.0D).color(bgr, bgg, bgb, bga).next();
         buffer.vertex(-strLenHalf - 1,  textHeight, 0.0D).color(bgr, bgg, bgb, bga).next();
@@ -790,23 +791,24 @@ public class RenderUtils
         {
             RenderSystem.enablePolygonOffset();
             RenderSystem.polygonOffset(-0.6f, -1.2f);
-            //RenderSystem.translate(0, 0, -0.02);
         }
 
         for (String line : text)
         {
             if (disableDepth)
             {
-                RenderSystem.depthMask(false);
-                RenderSystem.disableDepthTest();
+                RenderSystem.enableAlphaTest();
+                VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(buffer);
+                textRenderer.draw(line, -strLenHalf, textY, 0x20000000 | (textColor & 0xFFFFFF), false, AffineTransformation.identity().getMatrix(), immediate, true, 0, 15728880);
+                immediate.draw();
+                RenderSystem.enableDepthTest();
+                RenderSystem.depthMask(true);
             }
 
-            textRenderer.draw(matrixStack, line, -strLenHalf, textY, 0x20000000 | (textColor & 0xFFFFFF));
-
-            RenderSystem.enableDepthTest();
-            RenderSystem.depthMask(true);
-
-            textRenderer.draw(matrixStack, line, -strLenHalf, textY, textColor);
+            RenderSystem.enableAlphaTest();
+            VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(buffer);
+            textRenderer.draw(line, -strLenHalf, textY, textColor, false, AffineTransformation.identity().getMatrix(), immediate, true, 0, 15728880);
+            immediate.draw();
             textY += textRenderer.fontHeight;
         }
 
@@ -1024,7 +1026,9 @@ public class RenderUtils
             int x2 = x1 + dimensions;
             int z = 300;
 
-            bindTexture(fi.dy.masa.malilib.render.RenderUtils.TEXTURE_MAP_BACKGROUND);
+            Identifier bgTexture = mapData == null ? TEXTURE_MAP_BACKGROUND : TEXTURE_MAP_BACKGROUND_CHECKERBOARD;
+            bindTexture(bgTexture);
+            setupBlend();
 
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.applyModelViewMatrix();
@@ -1036,6 +1040,7 @@ public class RenderUtils
             buffer.vertex(x2, y1, z).texture(1.0f, 0.0f).next();
             buffer.vertex(x1, y1, z).texture(0.0f, 0.0f).next();
             tessellator.draw();
+            RenderSystem.disableBlend();
 
             Integer mapId = FilledMapItem.getMapId(stack);
             MapState mapState = FilledMapItem.getMapState(mapId, mc().world);
@@ -1045,7 +1050,7 @@ public class RenderUtils
                 x1 += 8;
                 y1 += 8;
                 z = 310;
-                VertexConsumerProvider.Immediate consumer = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
+                VertexConsumerProvider.Immediate consumer = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
                 double scale = (double) (dimensions - 16) / 128.0D;
                 MatrixStack matrixStack = new MatrixStack();
                 matrixStack.push();
