@@ -18,27 +18,17 @@ public class Message
     protected final int defaultTextColor;
     protected final int width;
     protected final long expireTime;
-    protected final long fadeDuration;
-    protected final long fadeTime;
+    protected final long fadeOutDuration;
+    protected final long fadeOutTime;
 
-    public Message(int defaultTextColor, int displayTimeMs, String translationKey, Object... args)
-    {
-        this(defaultTextColor, displayTimeMs, 1000, 300, translationKey, args);
-    }
-
-    public Message(int defaultTextColor, int displayTimeMs, int maxLineWidth, String translationKey, Object... args)
-    {
-        this(defaultTextColor, displayTimeMs, 1000, maxLineWidth, translationKey, args);
-    }
-
-    public Message(int defaultTextColor, int displayTimeMs, int fadeTimeMs, int maxLineWidth, String translationKey, Object... args)
+    public Message(StyledText text, int defaultTextColor, int displayTimeMs, int fadeTimeMs, int maxLineWidth)
     {
         this.defaultTextColor = defaultTextColor;
         this.expireTime = System.nanoTime() + (long) displayTimeMs * 1000000L;
-        this.fadeDuration = Math.min((long) fadeTimeMs * 1000000L, (long) displayTimeMs * 1000000L / 2L);
-        this.fadeTime = this.expireTime - this.fadeDuration;
+        this.fadeOutDuration = Math.min((long) fadeTimeMs * 1000000L, (long) displayTimeMs * 1000000L / 2L);
+        this.fadeOutTime = this.expireTime - this.fadeOutDuration;
 
-        this.message = StyledTextUtils.wrapStyledTextToMaxWidth(StyledText.translate(translationKey, args), maxLineWidth);
+        this.message = StyledTextUtils.wrapStyledTextToMaxWidth(text, maxLineWidth);
         this.width = StyledTextLine.getRenderWidth(this.message.lines);
     }
 
@@ -49,7 +39,7 @@ public class Message
 
     protected boolean isFading(long currentTime)
     {
-        return currentTime >= this.fadeTime;
+        return currentTime >= this.fadeOutTime;
     }
 
     public int getWidth()
@@ -72,7 +62,7 @@ public class Message
         if (this.isFading(currentTime))
         {
             int alphaInt = (this.defaultTextColor & 0xFF000000) >>> 24;
-            double fadeProgress = 1.0 - (double) (currentTime - this.fadeTime) / (double) this.fadeDuration;
+            double fadeProgress = 1.0 - (double) (currentTime - this.fadeOutTime) / (double) this.fadeOutDuration;
             final float alpha = (float) alphaInt * (float) fadeProgress / 255.0f;
             alphaModifier = (old) -> old * alpha;
         }

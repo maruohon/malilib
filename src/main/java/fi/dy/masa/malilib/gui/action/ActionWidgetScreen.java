@@ -27,7 +27,7 @@ import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.button.OnOffButton;
 import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.input.KeyBindImpl;
-import fi.dy.masa.malilib.overlay.message.MessageUtils;
+import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.render.text.StyledText;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
@@ -551,7 +551,7 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
         if (mouseButton == 1 && isCtrlDown() && isShiftDown())
         {
             setClipboardString(this.getSettingsExportString());
-            MessageUtils.success("malilib.message.action_screen_settings_copied_to_clipboard");
+            MessageDispatcher.success("malilib.message.action_screen_settings_copied_to_clipboard");
         }
         else if (mouseButton == 0)
         {
@@ -601,7 +601,7 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
                     this.readData(data);
                     this.initScreen();
                     this.notifyWidgetEdited();
-                    MessageUtils.success("malilib.message.action_screen_settings_imported");
+                    MessageDispatcher.success("malilib.message.action_screen_settings_imported");
                     return true;
                 }
             }
@@ -659,7 +659,7 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
         }
         else
         {
-            MessageUtils.error("malilib.message.error.no_action_screen_found_by_name", arg);
+            MessageDispatcher.error("malilib.message.error.no_action_screen_found_by_name", arg);
             return ActionResult.FAIL;
         }
     }
@@ -670,7 +670,7 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
 
         if (StringUtils.isBlank(name))
         {
-            MessageUtils.error("malilib.message.error.no_previously_opened_action_screen");
+            MessageDispatcher.error("malilib.message.error.no_previously_opened_action_screen");
             return ActionResult.FAIL;
         }
 

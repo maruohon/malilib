@@ -22,7 +22,7 @@ import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.AliasActionEntryWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.MacroActionEntryWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.NamedActionEntryWidget;
-import fi.dy.masa.malilib.overlay.message.MessageUtils;
+import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
 import fi.dy.masa.malilib.render.text.StyledText;
 import fi.dy.masa.malilib.util.StringUtils;
 
@@ -191,7 +191,7 @@ public class ActionListScreen extends BaseMultiListScreen
         }
         else
         {
-            MessageUtils.error("malilib.message.error.actions_edit.add_alias_select_one");
+            MessageDispatcher.error("malilib.message.error.actions_edit.add_alias_select_one");
         }
     }
 
@@ -207,7 +207,7 @@ public class ActionListScreen extends BaseMultiListScreen
     {
         if (ActionRegistry.INSTANCE.getAction(macroName) != null)
         {
-            MessageUtils.error("malilib.message.error.actions_edit.exists", macroName);
+            MessageDispatcher.error("malilib.message.error.actions_edit.exists", macroName);
             return false;
         }
 
@@ -232,7 +232,7 @@ public class ActionListScreen extends BaseMultiListScreen
 
         if (ActionRegistry.INSTANCE.getAction(alias) != null)
         {
-            MessageUtils.error("malilib.message.error.actions_edit.exists", alias);
+            MessageDispatcher.error("malilib.message.error.actions_edit.exists", alias);
             return false;
         }
 
@@ -241,7 +241,7 @@ public class ActionListScreen extends BaseMultiListScreen
         if (action != null && ActionRegistry.INSTANCE.addAlias(action.createAlias(alias, argument)))
         {
             this.aliasListWidget.refreshEntries();
-            MessageUtils.success("malilib.message.success.added_alias_for_action", alias, action.getRegistryName());
+            MessageDispatcher.success("malilib.message.success.added_alias_for_action", alias, action.getRegistryName());
             return true;
         }
 

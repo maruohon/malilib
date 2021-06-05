@@ -20,6 +20,7 @@ import fi.dy.masa.malilib.overlay.message.Message;
 import fi.dy.masa.malilib.overlay.widget.MessageRendererWidget;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
+import fi.dy.masa.malilib.render.text.StyledText;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.render.text.TextRenderer;
 import fi.dy.masa.malilib.util.StringUtils;
@@ -83,7 +84,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
         this.updateTextFieldSize();
         this.setText(text);
 
-        this.messageRenderer.setMessageGap(2);
+        this.messageRenderer.setMaxMessages(1);
         this.messageRenderer.getPadding().setAll(4, 6, 4, 6);
         this.messageRenderer.setAutomaticWidth(true);
     }
@@ -222,7 +223,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
 
             if (message != null)
             {
-                this.messageRenderer.addMessage(Message.ERROR, 3000, 200, message);
+                this.messageRenderer.addMessage(StyledText.of(message), Message.ERROR, 3000, 200);
                 this.updateMessageRendererPosition();
             }
         }

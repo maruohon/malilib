@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.input.callback;
 import java.util.function.Function;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
-import fi.dy.masa.malilib.config.value.InfoType;
+import fi.dy.masa.malilib.overlay.message.MessageType;
 import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.input.KeyAction;
 import fi.dy.masa.malilib.input.KeyBind;
@@ -30,7 +30,7 @@ public class ToggleBooleanWithMessageKeyCallback implements HotkeyCallback
     public ActionResult onKeyAction(KeyAction action, KeyBind key)
     {
         this.config.toggleBooleanValue();
-        InfoType messageType = key.getSettings().getMessageType();
+        MessageType messageType = key.getSettings().getMessageType();
         MessageUtils.printBooleanConfigToggleMessage(messageType, this.config, this.messageFactory);
         return ActionResult.SUCCESS;
     }

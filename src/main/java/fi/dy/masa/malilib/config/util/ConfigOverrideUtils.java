@@ -24,8 +24,7 @@ import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.gui.config.ConfigSearchInfo;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetRegistry;
 import fi.dy.masa.malilib.input.ActionResult;
-import fi.dy.masa.malilib.overlay.message.Message;
-import fi.dy.masa.malilib.overlay.message.MessageUtils;
+import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
 import fi.dy.masa.malilib.util.JsonUtils;
 
 public class ConfigOverrideUtils
@@ -191,7 +190,7 @@ public class ConfigOverrideUtils
                 MaLiLib.LOGGER.info("Applied {} feature overrides", overrideCount);
             }
 
-            MessageUtils.addMessage(Message.WARNING, 8000, "malilib.message.feature_overrides_applied", overrideCount);
+            MessageDispatcher.warning().time(8000).translate("malilib.message.feature_overrides_applied", overrideCount);
         }
     }
 

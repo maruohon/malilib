@@ -11,6 +11,7 @@ import fi.dy.masa.malilib.gui.ToastRendererWidgetEditScreen;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
+import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
 import fi.dy.masa.malilib.overlay.widget.sub.ToastWidget;
 import fi.dy.masa.malilib.render.text.StyledText;
 import fi.dy.masa.malilib.util.JsonUtils;
@@ -87,54 +88,24 @@ public class ToastRendererWidget extends InfoRendererWidget
         this.maxToasts = maxToasts;
     }
 
-    public void addToast(StyledText toastText)
+    public void addToast(String translatedMessage, MessageDispatcher messageDispatcher)
     {
-        this.addToast(toastText, this.defaultLifeTime);
+        StyledText text = StyledText.of(translatedMessage);
+        this.addToast(text, messageDispatcher);
     }
 
-    public void addToast(StyledText toastText, int lifeTimeMs)
+    public void addToast(StyledText text, MessageDispatcher messageDispatcher)
     {
-        this.addToast(toastText, lifeTimeMs, this.defaultFadeInTime, this.defaultFadeOutTime);
-    }
+        int displayTimeMs = messageDispatcher.getDisplayTimeMs();
+        int fadeInTimeMs = messageDispatcher.getFadeInTimeMs();
+        int fadeOutTimeMs = messageDispatcher.getFadeOutTimeMs();
+        boolean append = messageDispatcher.getAppend();
+        String messageMarker = messageDispatcher.getMessageMarker();
 
-    public void addToast(StyledText toastText, int lifeTimeMs, int fadeInTimeMs, int fadeOutTimeMs)
-    {
-        this.addToast(toastText, lifeTimeMs, fadeInTimeMs, fadeOutTimeMs, null, false);
-    }
-
-    /**
-     * Adds a toast message
-     * @param toastText the message to use
-     * @param marker the widget marker, if any. If a marker is set, then the same existing
-     *               toast widget can be used for other future messages as well, by using the same marker.
-     * @param append if true, and a marker was used and a matching existing toast widget was found,
-     *               then the text will be appended to the old toast. If false, then the text
-     *               will replace the existing text in the existing toast widget.
-     */
-    public void addToast(StyledText toastText, @Nullable String marker, boolean append)
-    {
-        this.addToast(toastText, this.defaultLifeTime, this.defaultFadeInTime, this.defaultFadeOutTime, marker, append);
+        this.addToast(text, displayTimeMs, fadeInTimeMs, fadeOutTimeMs, messageMarker, append);
     }
 
     /**
-     * Adds a toast message
-     * @param toastText the message to use
-     * @param lifeTimeMs the display time of the toast, in milliseconds
-     * @param marker the widget marker, if any. If a marker is set, then the same existing
-     *               toast widget can be used for other future messages as well, by using the same marker.
-     * @param append if true, and a marker was used and a matching existing toast widget was found,
-     *               then the text will be appended to the old toast. If false, then the text
-     *               will replace the existing text in the existing toast widget.
-     */
-    public void addToast(StyledText toastText, int lifeTimeMs, @Nullable String marker, boolean append)
-    {
-        this.addToast(toastText, lifeTimeMs, this.defaultFadeInTime, this.defaultFadeOutTime, marker, append);
-    }
-
-    /**
-     * Adds a toast message
-     * @param toastText the message to use
-     * @param lifeTimeMs the display time of the toast, in milliseconds
      * @param fadeInTimeMs the fade in time (or rather slide in time) in milliseconds
      * @param fadeOutTimeMs the fade out time (or rather slide out time) in milliseconds
      * @param marker the widget marker, if any. If a marker is set, then the same existing
@@ -142,11 +113,29 @@ public class ToastRendererWidget extends InfoRendererWidget
      * @param append if true, and a marker was used and a matching existing toast widget was found,
      *               then the text will be appended to the old toast. If false, then the text
      *               will replace the existing text in the existing toast widget.
+     *               Has no effect/meaning if the marker is not used to target an existing toast.
      */
-    public void addToast(StyledText toastText, int lifeTimeMs, int fadeInTimeMs, int fadeOutTimeMs,
+    public void addToast(String message, int displayTimeMs, int fadeInTimeMs, int fadeOutTimeMs,
                          @Nullable String marker, boolean append)
     {
-        if (this.tryAppendTextToExistingToast(toastText, lifeTimeMs, marker, append))
+        StyledText text = StyledText.of(message);
+        this.addToast(text, displayTimeMs, fadeInTimeMs, fadeOutTimeMs, marker, append);
+    }
+
+    /**
+     * @param fadeInTimeMs the fade in time (or rather slide in time) in milliseconds
+     * @param fadeOutTimeMs the fade out time (or rather slide out time) in milliseconds
+     * @param marker the widget marker, if any. If a marker is set, then the same existing
+     *               toast widget can be used for other future messages as well, by using the same marker.
+     * @param append if true, and a marker was used and a matching existing toast widget was found,
+     *               then the text will be appended to the old toast. If false, then the text
+     *               will replace the existing text in the existing toast widget.
+     *               Has no effect/meaning if the marker is not used to target an existing toast.
+     */
+    public void addToast(StyledText text, int displayTimeMs, int fadeInTimeMs, int fadeOutTimeMs,
+                         @Nullable String marker, boolean append)
+    {
+        if (this.tryAppendTextToExistingToast(text, displayTimeMs, marker, append))
         {
             return;
         }
@@ -158,8 +147,9 @@ public class ToastRendererWidget extends InfoRendererWidget
         widget.setMessageGap(this.messageGap);
         widget.setZLevel(this.getZLevel() + 1f);
         widget.getTextSettings().setFrom(this.getTextSettings());
+
         // The text needs to be set after the max width and padding have been set
-        widget.replaceText(toastText, lifeTimeMs);
+        widget.replaceText(text, displayTimeMs);
 
         if (marker != null)
         {
@@ -169,7 +159,7 @@ public class ToastRendererWidget extends InfoRendererWidget
         this.toastQueue.add(widget);
     }
 
-    protected boolean tryAppendTextToExistingToast(StyledText toastText, int lifeTimeMs,
+    protected boolean tryAppendTextToExistingToast(StyledText text, int displayTimeMs,
                                                    @Nullable String marker, boolean append)
     {
         if (marker != null)
@@ -179,20 +169,22 @@ public class ToastRendererWidget extends InfoRendererWidget
 
             for (ToastWidget widget : list)
             {
-                if (widget.hasMarker(marker))
+                if (widget.hasMarker(marker) == false)
                 {
-                    if (append && widget.getRelativeAge() <= 0.25f)
-                    {
-                        widget.addText(toastText, -1);
-                        this.updateSizeAndPosition();
-                        return true;
-                    }
-                    else if (append == false)
-                    {
-                        widget.replaceText(toastText, lifeTimeMs);
-                        this.updateSizeAndPosition();
-                        return true;
-                    }
+                    continue;
+                }
+
+                if (append == false)
+                {
+                    widget.replaceText(text, displayTimeMs);
+                    this.updateSizeAndPosition();
+                    return true;
+                }
+                else if (widget.getRelativeAge() <= 0.25f)
+                {
+                    widget.addText(text, -1);
+                    this.updateSizeAndPosition();
+                    return true;
                 }
             }
         }
@@ -251,11 +243,13 @@ public class ToastRendererWidget extends InfoRendererWidget
         HorizontalAlignment align = this.location.horizontalLocation;
         int x;
         int y = this.getY() + this.location.verticalLocation.getMargin(this.margin);
+        float z = this.getZLevel();
 
         for (ToastWidget widget : this.activeToasts)
         {
             x = align.getStartX(widget.getWidth(), width, align.getMargin(this.margin));
             widget.setPosition(x, y);
+            widget.setZLevelBasedOnParent(z);
             y += widget.getHeight();
         }
     }
@@ -296,10 +290,10 @@ public class ToastRendererWidget extends InfoRendererWidget
     @Override
     protected void renderContents(int x, int y, float z, ScreenContext ctx)
     {
-        this.drawMessages(x, y, z, ctx);
+        this.drawMessages(ctx);
     }
 
-    public void drawMessages(int x, int y, float z, ScreenContext ctx)
+    public void drawMessages(ScreenContext ctx)
     {
         if (this.activeToasts.isEmpty() == false)
         {
@@ -319,12 +313,6 @@ public class ToastRendererWidget extends InfoRendererWidget
                 {
                     widget.render(currentTime, ctx);
                 }
-
-                // Always offset the position to prevent a flicker from the later
-                // messages jumping over the fading message when it disappears,
-                // before the entire widget gets resized and the messages possibly moving
-                // (if the widget is bottom-aligned).
-                y += widget.getHeight();
             }
 
             if (this.activeToasts.size() < countBefore)

@@ -11,7 +11,7 @@ import fi.dy.masa.malilib.input.CustomHotkeyManager;
 import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.input.KeyBindImpl;
 import fi.dy.masa.malilib.input.KeyBindSettings;
-import fi.dy.masa.malilib.overlay.message.MessageUtils;
+import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
 
 public class AddCustomHotkeyDefinitionScreen extends BaseScreen
 {
@@ -87,13 +87,13 @@ public class AddCustomHotkeyDefinitionScreen extends BaseScreen
 
         if (org.apache.commons.lang3.StringUtils.isBlank(name))
         {
-            MessageUtils.error("malilib.message.error.custom_hotkey_add.give_name");
+            MessageDispatcher.error("malilib.message.error.custom_hotkey_add.give_name");
             return;
         }
 
         if (action == null)
         {
-            MessageUtils.error("malilib.message.error.custom_hotkey_add.select_action");
+            MessageDispatcher.error("malilib.message.error.custom_hotkey_add.select_action");
             return;
         }
 

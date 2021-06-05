@@ -11,7 +11,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.config.option.HotkeyedBooleanConfig;
-import fi.dy.masa.malilib.config.value.InfoType;
+import fi.dy.masa.malilib.overlay.message.MessageType;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.StringUtils;
@@ -179,7 +179,7 @@ public class NamedAction
 
     public static NamedAction createToggleActionWithToggleMessage(ModInfo mod, String name, BooleanConfig config,
                                                                   @Nullable Function<BooleanConfig, String> messageFactory,
-                                                                  @Nullable Supplier<InfoType> messageTypeSupplier)
+                                                                  @Nullable Supplier<MessageType> messageTypeSupplier)
     {
         return new NamedAction(mod, name, BooleanToggleAction.of(config, messageFactory, messageTypeSupplier));
     }
@@ -207,7 +207,7 @@ public class NamedAction
 
     public static NamedAction registerToggle(ModInfo modInfo, String name, BooleanConfig config,
                                              @Nullable Function<BooleanConfig, String> messageFactory,
-                                             @Nullable Supplier<InfoType> messageTypeSupplier)
+                                             @Nullable Supplier<MessageType> messageTypeSupplier)
     {
         NamedAction namedAction = NamedAction.createToggleActionWithToggleMessage(modInfo, name, config,
                                                                                   messageFactory, messageTypeSupplier);

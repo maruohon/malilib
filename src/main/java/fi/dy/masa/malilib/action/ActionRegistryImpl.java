@@ -17,7 +17,7 @@ import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.config.util.ConfigUtils;
 import fi.dy.masa.malilib.input.ActionResult;
-import fi.dy.masa.malilib.overlay.message.MessageUtils;
+import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
 import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.data.ModInfo;
 
@@ -124,7 +124,7 @@ public class ActionRegistryImpl implements ActionRegistry
         }
         else
         {
-            MessageUtils.errorAndConsole("malilib.message.error.actions_edit.exists", name);
+            MessageDispatcher.error().console().translate("malilib.message.error.actions_edit.exists", name);
             return false;
         }
     }
@@ -181,7 +181,7 @@ public class ActionRegistryImpl implements ActionRegistry
         }
         else
         {
-            MessageUtils.errorAndConsole("malilib.message.error.actions_edit.add_macro_exists", name);
+            MessageDispatcher.error().console().translate("malilib.message.error.actions_edit.add_macro_exists", name);
         }
 
         return false;

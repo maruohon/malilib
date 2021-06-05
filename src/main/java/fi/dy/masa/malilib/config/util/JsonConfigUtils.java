@@ -11,7 +11,7 @@ import fi.dy.masa.malilib.config.category.ConfigOptionCategory;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.config.option.ConfigOption;
 import fi.dy.masa.malilib.config.serialization.JsonConfigSerializerRegistry;
-import fi.dy.masa.malilib.overlay.message.MessageUtils;
+import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
 import fi.dy.masa.malilib.util.JsonUtils;
 
 public class JsonConfigUtils
@@ -121,7 +121,7 @@ public class JsonConfigUtils
 
         if (success == false)
         {
-            MessageUtils.errorAndConsole("malilib.message.error.failed_to_save_all_configs");
+            MessageDispatcher.error().console().translate("malilib.message.error.failed_to_save_all_configs");
         }
 
         return JsonUtils.writeJsonToFile(root, configFile) && success;

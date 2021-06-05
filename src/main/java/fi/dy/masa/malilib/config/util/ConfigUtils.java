@@ -23,7 +23,7 @@ import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.input.CustomHotkeyManager;
 import fi.dy.masa.malilib.input.HotkeyManager;
 import fi.dy.masa.malilib.overlay.InfoWidgetManager;
-import fi.dy.masa.malilib.overlay.message.MessageUtils;
+import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
 import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.data.ConfigOnTab;
 import fi.dy.masa.malilib.util.data.ModInfo;
@@ -149,7 +149,7 @@ public class ConfigUtils
             copyConfigsIfProfileNotExist(profile);
             loadAllConfigsFromFile();
 
-            MessageUtils.success("malilib.message.success.switched_config_profile", profile);
+            MessageDispatcher.success("malilib.message.success.switched_config_profile", profile);
 
             return ActionResult.SUCCESS;
         }

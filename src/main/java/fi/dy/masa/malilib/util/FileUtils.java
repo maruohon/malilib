@@ -23,7 +23,7 @@ import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.listener.ConfirmationListener;
-import fi.dy.masa.malilib.overlay.message.MessageUtils;
+import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
 import fi.dy.masa.malilib.util.consumer.StringConsumer;
 
 public class FileUtils
@@ -506,7 +506,7 @@ public class FileUtils
         {
             if (FileUtils.doesFilenameContainIllegalCharacters(string))
             {
-                MessageUtils.error("malilib.message.error.illegal_characters_in_file_name", string);
+                MessageDispatcher.error("malilib.message.error.illegal_characters_in_file_name", string);
                 return false;
             }
 
@@ -531,12 +531,12 @@ public class FileUtils
                 }
                 else
                 {
-                    MessageUtils.error("malilib.message.error.file_rename.rename_failed", this.oldName, newName);
+                    MessageDispatcher.error("malilib.message.error.file_rename.rename_failed", this.oldName, newName);
                 }
             }
             else
             {
-                MessageUtils.error("malilib.message.error.file_rename.file_already_exists", newName);
+                MessageDispatcher.error("malilib.message.error.file_rename.file_already_exists", newName);
             }
 
             return false;
@@ -561,7 +561,7 @@ public class FileUtils
             }
             catch (Exception e)
             {
-                MessageUtils.error("malilib.message.error.file_delete_failed", this.file.getAbsolutePath());
+                MessageDispatcher.error("malilib.message.error.file_delete_failed", this.file.getAbsolutePath());
             }
 
             return false;

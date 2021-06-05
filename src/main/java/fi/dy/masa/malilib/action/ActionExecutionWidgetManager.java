@@ -10,7 +10,7 @@ import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.config.util.ConfigUtils;
 import fi.dy.masa.malilib.gui.action.ActionWidgetScreenData;
-import fi.dy.masa.malilib.overlay.message.MessageUtils;
+import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
 import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.JsonUtils;
 
@@ -99,12 +99,12 @@ public class ActionExecutionWidgetManager
         {
             String name = FileUtils.generateSimpleSafeFileName(arg);
             INSTANCE.saveWidgetScreenData(name, ActionWidgetScreenData.createEmpty());
-            MessageUtils.success("malilib.message.action_screen_created_by_name", name);
+            MessageDispatcher.success("malilib.message.action_screen_created_by_name", name);
             return true;
         }
         else
         {
-            MessageUtils.warning("malilib.message.error.action_screen_already_exists_by_name", arg);
+            MessageDispatcher.warning("malilib.message.error.action_screen_already_exists_by_name", arg);
             return false;
         }
     }

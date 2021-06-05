@@ -15,10 +15,12 @@ import net.minecraft.client.settings.KeyBinding;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.MinecraftClientAccessor;
+import fi.dy.masa.malilib.overlay.message.MessageType;
 import fi.dy.masa.malilib.config.value.KeybindDisplayMode;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.input.callback.AdjustableValueHotkeyCallback;
 import fi.dy.masa.malilib.input.callback.HotkeyCallback;
+import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
 import fi.dy.masa.malilib.overlay.message.MessageUtils;
 import fi.dy.masa.malilib.render.text.StyledText;
 import fi.dy.masa.malilib.util.JsonUtils;
@@ -269,10 +271,10 @@ public class KeyBindImpl implements KeyBind
                 lines.add(StringUtils.translate("malilib.toast.keybind_display.action", this.modInfo.getModName(), name));
             }
 
+            int displayTimeMs = MaLiLibConfigs.Generic.KEYBIND_DISPLAY_DURATION.getIntegerValue();
             StyledText text = StyledText.ofStrings(lines);
-            int lifeTimeMs = MaLiLibConfigs.Generic.KEYBIND_DISPLAY_DURATION.getIntegerValue();
-
-            MessageUtils.addToastMessage(text, lifeTimeMs, "keybind_display", true);
+            MessageDispatcher.generic().type(MessageType.TOAST).time(displayTimeMs)
+                             .messageMarker("keybind_display").append(true).send(text);
         }
     }
 
@@ -539,8 +541,8 @@ public class KeyBindImpl implements KeyBind
                 heldKeys = Keys.writeKeysToString(PRESSED_KEYS, " + ", Keys::charAsStorageString);
             }
 
-            StyledText text = StyledText.translate("malilib.label.pressed_keys_toast", heldKeys);
-            MessageUtils.addToastMessage(text, 2000, "pressed_keys", false);
+            MessageDispatcher.generic().type(MessageType.TOAST).time(2000).messageMarker("pressed_keys")
+                             .translate("malilib.label.pressed_keys_toast", heldKeys);
         }
 
         if (MaLiLibConfigs.Debug.KEYBIND_DEBUG.getBooleanValue())
@@ -600,8 +602,7 @@ public class KeyBindImpl implements KeyBind
 
         if (MaLiLibConfigs.Debug.KEYBIND_DEBUG_TOAST.getBooleanValue())
         {
-            StyledText text = StyledText.of(msg);
-            MessageUtils.addToastMessage(text, 5000, "keybind_debug", false);
+            MessageDispatcher.generic().type(MessageType.TOAST).time(5000).messageMarker("keybind_debug").send(msg);
         }
     }
 

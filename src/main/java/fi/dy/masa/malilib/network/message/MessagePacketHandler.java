@@ -5,12 +5,11 @@ import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
-import fi.dy.masa.malilib.config.value.InfoType;
+import fi.dy.masa.malilib.overlay.message.MessageType;
 import fi.dy.masa.malilib.gui.position.ScreenLocation;
 import fi.dy.masa.malilib.network.ClientPacketChannelHandler;
 import fi.dy.masa.malilib.network.PluginChannelHandler;
-import fi.dy.masa.malilib.overlay.message.MessageUtils;
-import fi.dy.masa.malilib.render.text.StyledText;
+import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
 
 /**
  * This packet is for receiving messages from the server that should be displayed
@@ -55,11 +54,11 @@ public class MessagePacketHandler implements PluginChannelHandler
 
         @Nullable ScreenLocation location = null;
         @Nullable String marker = null;
-        InfoType type = InfoType.findValueByName(buf.readString(16), InfoType.VALUES);
+        MessageType type = MessageType.findValueByName(buf.readString(16), MessageType.VALUES);
         boolean hasLocation = buf.readBoolean();
         boolean hasMarker = buf.readBoolean();
         int displayTimeMs = buf.readVarInt();
-        int defaultColor = type != InfoType.TOAST ? buf.readInt() : 0;
+        int defaultColor = type != MessageType.TOAST ? buf.readInt() : 0xFFFFFFFF;
         String message;
 
         if (hasLocation)
@@ -74,14 +73,11 @@ public class MessagePacketHandler implements PluginChannelHandler
 
         message = buf.readString(8192);
 
-        if (type == InfoType.TOAST)
-        {
-            MessageUtils.addToastMessage(StyledText.of(message), displayTimeMs, marker, true, location);
-        }
-        else
-        {
-            MessageUtils.addMessage(type, defaultColor, displayTimeMs, message);
-        }
+        MessageDispatcher.generic(defaultColor)
+                      .type(type).location(location)
+                      .time(displayTimeMs)
+                      .rendererMarker(marker).append(true)
+                      .send(message);
     }
 
     public static void updateRegistration(boolean enabled)

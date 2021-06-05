@@ -5,7 +5,9 @@ import java.util.List;
 import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.overlay.message.Message;
+import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
+import fi.dy.masa.malilib.render.text.StyledText;
 import fi.dy.masa.malilib.render.text.TextRenderer;
 import fi.dy.masa.malilib.util.JsonUtils;
 
@@ -34,7 +36,20 @@ public class MessageRendererWidget extends InfoRendererWidget
         this.updateSizeAndPosition();
     }
 
-    public void addMessage(int defaultColor, int displayTimeMs, int fadeTimeMs, String translationKey, Object... args)
+    public void addMessage(String translatedMessage, MessageDispatcher messageDispatcher)
+    {
+        this.addMessage(StyledText.of(translatedMessage), messageDispatcher);
+    }
+
+    public void addMessage(StyledText text, MessageDispatcher messageDispatcher)
+    {
+        int defaultTextColor = messageDispatcher.getDefaultTextColor();
+        int displayTimeMs = messageDispatcher.getDisplayTimeMs();
+        int fadeOutTimeMs = messageDispatcher.getFadeOutTimeMs();
+        this.addMessage(text, defaultTextColor, displayTimeMs, fadeOutTimeMs);
+    }
+
+    public void addMessage(StyledText text, int defaultTextColor, int displayTimeMs, int fadeOutTimeMs)
     {
         if (this.maxMessages > 0 && this.messages.size() >= this.maxMessages)
         {
@@ -42,7 +57,7 @@ public class MessageRendererWidget extends InfoRendererWidget
         }
 
         int width = this.getMaxMessageWidth();
-        this.messages.add(new Message(defaultColor, displayTimeMs, fadeTimeMs, width, translationKey, args));
+        this.messages.add(new Message(text, defaultTextColor, displayTimeMs, fadeOutTimeMs, width));
         this.updateSizeAndPosition();
     }
 
