@@ -5,6 +5,7 @@ import java.util.List;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
+import fi.dy.masa.malilib.gui.position.EdgeInt;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.overlay.widget.InfoRendererWidget;
@@ -20,19 +21,25 @@ public class ToastWidget extends InfoRendererWidget
     protected final long fadeInDuration;
     protected final long fadeOutDuration;
     protected Icon backgroundTexture = DefaultIcons.TOAST_BACKGROUND;
-    protected long lifeTimeMs = -1L;
+    protected long displayTimeMs = -1L;
     protected long fadeInEndTime;
     protected long fadeOutStartTime;
     protected long expireTime;
     protected int messageGap;
 
-    public ToastWidget(int fadeInTimeMs, int fadeOutTimeMs, HorizontalAlignment horizontalAlignment)
+    public ToastWidget(int maxWidth, int lineHeight, int messageGap, EdgeInt padding,
+                       int fadeInTimeMs, int fadeOutTimeMs,
+                       HorizontalAlignment horizontalAlignment)
     {
         super();
 
         this.horizontalAlignment = horizontalAlignment;
         this.fadeInDuration = (long) fadeInTimeMs * 1000000L;
         this.fadeOutDuration = (long) fadeOutTimeMs * 1000000L;
+        this.messageGap = messageGap;
+        this.padding.setFrom(padding);
+        this.setLineHeight(lineHeight);
+        this.setMaxWidth(maxWidth);
     }
 
     public void initialize(long currentTime)
@@ -64,30 +71,30 @@ public class ToastWidget extends InfoRendererWidget
 
         long remainingAge = this.expireTime - currentTime;
 
-        return 1.0f - (float) ((double) remainingAge / (double) (this.lifeTimeMs * 1000000L));
+        return 1.0f - (float) ((double) remainingAge / (double) (this.displayTimeMs * 1000000L));
     }
 
     /**
      * Adds the given text to the current text.
      * @param text the text to add to the end of the current text
-     * @param lifeTimeMs the new life time of the toast. Use -1 to not update/refresh the current life time.
+     * @param displayTimeMs the new life time of the toast. Use -1 to not update/refresh the current life time.
      */
-    public void addText(StyledText text, int lifeTimeMs)
+    public void addText(StyledText text, int displayTimeMs)
     {
         this.text.add(this.wrapTextToWidth(text));
         this.updateSize();
-        this.setLifeTime(lifeTimeMs);
+        this.setDisplayTime(displayTimeMs);
     }
 
     /**
      * Replaces the current text with the given text.
      * @param text the new text to set in the toast
-     * @param lifeTimeMs the new life time of the toast. Use -1 to not update/refresh the current life time.
+     * @param displayTimeMs the new life time of the toast. Use -1 to not update/refresh the current life time.
      */
-    public void replaceText(StyledText text, int lifeTimeMs)
+    public void replaceText(StyledText text, int displayTimeMs)
     {
         this.text.clear();
-        this.addText(text, lifeTimeMs);
+        this.addText(text, displayTimeMs);
     }
 
     public void setBackgroundTexture(MultiIcon backgroundTexture)
@@ -117,17 +124,17 @@ public class ToastWidget extends InfoRendererWidget
         this.setHeight(height + this.padding.getVerticalTotal());
     }
 
-    protected void setLifeTime(int lifeTimeMs)
+    protected void setDisplayTime(int displayTimeMs)
     {
-        if (this.lifeTimeMs < 0 && lifeTimeMs < 0)
+        if (this.displayTimeMs < 0 && displayTimeMs < 0)
         {
-            lifeTimeMs = 5000;
+            displayTimeMs = 5000;
         }
 
-        if (lifeTimeMs >= 0)
+        if (displayTimeMs >= 0)
         {
-            this.lifeTimeMs =  lifeTimeMs;
-            this.expireTime = System.nanoTime() + this.lifeTimeMs * 1000000L;
+            this.displayTimeMs =  displayTimeMs;
+            this.expireTime = System.nanoTime() + this.displayTimeMs * 1000000L;
             this.fadeOutStartTime = this.expireTime - this.fadeOutDuration;
         }
     }

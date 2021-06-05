@@ -135,20 +135,16 @@ public class ToastRendererWidget extends InfoRendererWidget
     public void addToast(StyledText text, int displayTimeMs, int fadeInTimeMs, int fadeOutTimeMs,
                          @Nullable String marker, boolean append)
     {
-        if (this.tryAppendTextToExistingToast(text, displayTimeMs, marker, append))
+        if (this.tryAppendTextToExistingToasts(text, displayTimeMs, marker, append))
         {
             return;
         }
 
-        ToastWidget widget = new ToastWidget(fadeInTimeMs, fadeOutTimeMs, this.location.horizontalLocation);
-        widget.getPadding().setFrom(this.getPadding());
-        widget.setMaxWidth(this.getMaxWidth());
-        widget.setLineHeight(this.getLineHeight());
-        widget.setMessageGap(this.messageGap);
+        ToastWidget widget = new ToastWidget(this.getMaxWidth(), this.getLineHeight(), this.messageGap,
+                                             this.getPadding(), fadeInTimeMs, fadeOutTimeMs,
+                                             this.location.horizontalLocation);
         widget.setZLevel(this.getZLevel() + 1f);
         widget.getTextSettings().setFrom(this.getTextSettings());
-
-        // The text needs to be set after the max width and padding have been set
         widget.replaceText(text, displayTimeMs);
 
         if (marker != null)
@@ -159,37 +155,51 @@ public class ToastRendererWidget extends InfoRendererWidget
         this.toastQueue.add(widget);
     }
 
-    protected boolean tryAppendTextToExistingToast(StyledText text, int displayTimeMs,
-                                                   @Nullable String marker, boolean append)
+    protected boolean tryAppendTextToExistingToasts(StyledText text, int displayTimeMs,
+                                                    @Nullable String marker, boolean append)
     {
         if (marker != null)
         {
             List<ToastWidget> list = new ArrayList<>(this.activeToasts);
             list.addAll(this.toastQueue);
 
-            for (ToastWidget widget : list)
+            for (ToastWidget toast : list)
             {
-                if (widget.hasMarker(marker) == false)
+                if (this.tryAppendTextToExistingToast(toast, text, displayTimeMs, marker, append))
                 {
-                    continue;
-                }
-
-                if (append == false)
-                {
-                    widget.replaceText(text, displayTimeMs);
-                    this.updateSizeAndPosition();
-                    return true;
-                }
-                else if (widget.getRelativeAge() <= 0.25f)
-                {
-                    widget.addText(text, -1);
-                    this.updateSizeAndPosition();
                     return true;
                 }
             }
         }
 
         return false;
+    }
+
+    protected boolean tryAppendTextToExistingToast(ToastWidget toast, StyledText text,
+                                                   int displayTimeMs, @Nullable String marker, boolean append)
+    {
+        if (toast.hasMarker(marker))
+        {
+            if (append == false)
+            {
+                toast.replaceText(text, displayTimeMs);
+                this.updateSizeAndPosition();
+                return true;
+            }
+            else if (this.canAppendToToast(toast))
+            {
+                toast.addText(text, -1);
+                this.updateSizeAndPosition();
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    protected boolean canAppendToToast(ToastWidget toast)
+    {
+        return toast.getRelativeAge() <= 0.25f;
     }
 
     @Override
