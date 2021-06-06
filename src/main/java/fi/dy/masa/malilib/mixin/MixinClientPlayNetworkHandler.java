@@ -9,10 +9,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.play.ClientPlayNetHandler;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.network.play.server.SCustomPayloadPlayPacket;
 import net.minecraft.network.play.server.SJoinGamePacket;
 import fi.dy.masa.malilib.event.WorldLoadHandler;
-import fi.dy.masa.malilib.network.ClientPacketChannelHandler;
 
 @Mixin(ClientPlayNetHandler.class)
 public abstract class MixinClientPlayNetworkHandler

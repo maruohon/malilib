@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.UUID;
 import javax.annotation.Nullable;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import fi.dy.masa.malilib.MaLiLibConfigs;
