@@ -643,9 +643,9 @@ public class DropDownListWidget<T> extends ContainerWidget
 
     protected void onSearchTextChange(String searchText)
     {
-        if (MaLiLibConfigs.Info.DROP_DOWN_SEARCH_TIP.getBooleanValue())
+        if (MaLiLibConfigs.Generic.DROP_DOWN_SEARCH_TIP.getBooleanValue())
         {
-            MaLiLibConfigs.Info.DROP_DOWN_SEARCH_TIP.setValue(false);
+            MaLiLibConfigs.Generic.DROP_DOWN_SEARCH_TIP.setValue(false);
         }
 
         this.updateFilteredEntries(searchText);
@@ -722,7 +722,7 @@ public class DropDownListWidget<T> extends ContainerWidget
             RenderUtils.color(1f, 1f, 1f, 1f);
             ShapeRenderUtils.renderOutlinedRectangle(x, this.dropdownTopY + diffY, z, this.getWidth(), this.dropdownHeight, 0xFF000000, this.borderColorOpen);
 
-            if (this.searchOpen == false && MaLiLibConfigs.Info.DROP_DOWN_SEARCH_TIP.getBooleanValue())
+            if (this.searchOpen == false && MaLiLibConfigs.Generic.DROP_DOWN_SEARCH_TIP.getBooleanValue())
             {
                 int tx = this.searchField.getX();
                 int ty = this.searchField.getY();

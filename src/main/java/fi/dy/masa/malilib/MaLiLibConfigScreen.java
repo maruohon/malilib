@@ -25,7 +25,6 @@ public class MaLiLibConfigScreen
     public static final ModInfo MOD_INFO = MaLiLibReference.MOD_INFO;
 
     public static final BaseConfigTab GENERIC           = new BaseConfigTab(MOD_INFO, "generic", 120, MaLiLibConfigs.Generic.OPTIONS, MaLiLibConfigScreen::create);
-    public static final BaseConfigTab INFO              = new BaseConfigTab(MOD_INFO, "info",     -1, MaLiLibConfigs.Info.OPTIONS,    MaLiLibConfigScreen::create);
     public static final BaseConfigTab HOTKEYS           = new BaseConfigTab(MOD_INFO, "hotkeys", 160, MaLiLibConfigs.Hotkeys.HOTKEYS, MaLiLibConfigScreen::create);
     public static final BaseConfigTab DEBUG             = new BaseConfigTab(MOD_INFO, "debug",   120, MaLiLibConfigs.Debug.OPTIONS,   MaLiLibConfigScreen::create);
     public static final BaseScreenTab ACTIONS           = new BaseScreenTab(MOD_INFO, "actions",                      (scr) -> scr instanceof ActionListScreen, ActionListScreen::createActionListScreen);
@@ -36,14 +35,12 @@ public class MaLiLibConfigScreen
 
     private static final ImmutableList<ConfigTab> CONFIG_TABS = ImmutableList.of(
             GENERIC,
-            INFO,
             HOTKEYS,
             DEBUG
     );
 
     public static final ImmutableList<ScreenTab> ALL_TABS = ImmutableList.of(
             GENERIC,
-            INFO,
             HOTKEYS,
             DEBUG,
             ACTIONS,

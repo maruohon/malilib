@@ -37,6 +37,7 @@ public class MaLiLibConfigs
         public static final BooleanConfig CONFIG_WIDGET_BACKGROUND              = new BooleanConfig("configWidgetBackground", true);
         public static final IntegerConfig CUSTOM_SCREEN_SCALE                   = new IntegerConfig("customScreenScale", 2, 0, 8);
         public static final StringConfig DATA_DUMP_CSV_DELIMITER                = new StringConfig("dataDumpCsvDelimiter", ",");
+        public static final BooleanConfig DROP_DOWN_SEARCH_TIP                  = new BooleanConfig("dropDownSearchTip", true);
         public static final IntegerConfig HOVER_TEXT_MAX_WIDTH                  = new IntegerConfig("hoverTextMaxWidth", 310, 16, 4096);
         public static final BooleanConfig KEYBIND_DISPLAY_CALLBACK_ONLY         = new BooleanConfig("keybindDisplayCallbackOnly", true);
         public static final BooleanConfig KEYBIND_DISPLAY_CANCEL_ONLY           = new BooleanConfig("keybindDisplayCancelOnly", true);
@@ -58,6 +59,7 @@ public class MaLiLibConfigs
                 CONFIG_SEARCH_DEFAULT_SCOPE,
                 CUSTOM_SCREEN_SCALE,
                 DATA_DUMP_CSV_DELIMITER,
+                DROP_DOWN_SEARCH_TIP,
                 HOVER_TEXT_MAX_WIDTH,
                 KEYBIND_DISPLAY,
                 KEYBIND_DISPLAY_CALLBACK_ONLY,
@@ -68,15 +70,6 @@ public class MaLiLibConfigs
                 PRESSED_KEYS_TOAST,
                 REMEMBER_CONFIG_TAB_SCROLL_POSITIONS,
                 SERVER_MESSAGES
-        );
-    }
-
-    public static class Info
-    {
-        public static final BooleanConfig DROP_DOWN_SEARCH_TIP          = new BooleanConfig("dropDownSearchTip", true);
-
-        public static final ImmutableList<ConfigOption<?>> OPTIONS = ImmutableList.of(
-                DROP_DOWN_SEARCH_TIP
         );
     }
 
@@ -147,7 +140,6 @@ public class MaLiLibConfigs
     public static final ImmutableList<ConfigOptionCategory> CATEGORIES = ImmutableList.of(
             BaseConfigOptionCategory.normal("Generic",  Generic.OPTIONS),
             BaseConfigOptionCategory.normal("Hotkeys",  Hotkeys.HOTKEYS),
-            BaseConfigOptionCategory.normal("Info",     Info.OPTIONS),
             BaseConfigOptionCategory.normal("Debug",    Debug.OPTIONS),
             BaseConfigOptionCategory.normal("Internal", Internal.OPTIONS)
     );
