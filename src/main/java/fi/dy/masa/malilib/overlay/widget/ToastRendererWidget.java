@@ -178,7 +178,7 @@ public class ToastRendererWidget extends InfoRendererWidget
     protected boolean tryAppendTextToExistingToast(ToastWidget toast, StyledText text,
                                                    int displayTimeMs, @Nullable String marker, boolean append)
     {
-        if (toast.hasMarker(marker))
+        if (toast.matchesMarker(marker))
         {
             if (append == false)
             {

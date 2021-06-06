@@ -96,7 +96,7 @@ public class MessageUtils
                                                                   @Nullable final String marker)
     {
         Predicate<T> predicateLocation = location != null ? w -> w.getScreenLocation() == location : w -> true;
-        Predicate<T> predicateMarker = marker != null ? w -> w.hasMarker(marker) : w -> true;
+        Predicate<T> predicateMarker = w -> w.matchesMarker(marker);
         Predicate<T> filter = predicateLocation.and(predicateMarker);
         return InfoOverlay.INSTANCE.findWidget(widgetClass, filter);
     }

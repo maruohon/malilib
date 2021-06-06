@@ -247,9 +247,13 @@ public abstract class InfoRendererWidget extends BaseWidget
         this.markers.remove(marker);
     }
 
-    public boolean hasMarker(String marker)
+    /**
+     * Checks if the widget has the given marker.
+     * If the given marker is null, then the widget must not have any markers to "match".
+     */
+    public boolean matchesMarker(@Nullable String marker)
     {
-        return this.markers.contains(marker);
+        return marker != null ? this.markers.contains(marker) : this.markers.isEmpty();
     }
 
     public void setLocation(ScreenLocation location)
