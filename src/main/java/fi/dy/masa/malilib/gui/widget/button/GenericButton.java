@@ -20,9 +20,7 @@ public class GenericButton extends BaseButton
     protected boolean textCentered;
     protected int iconOffsetX;
     protected int iconOffsetY;
-    protected int textColorDisabled = 0xFF606060;
-    protected int textColorNormal = 0xFFE0E0E0;
-    protected int textColorHovered = 0xFFFFFFA0;
+    protected int disabledTextColor = 0xFF606060;
 
     public GenericButton(@Nullable String translationKey)
     {
@@ -59,6 +57,8 @@ public class GenericButton extends BaseButton
     {
         super(width, height, translationKey);
 
+        this.defaultNormalTextColor = 0xFFE0E0E0;
+        this.defaultHoveredTextColor = 0xFFFFFFA0;
         this.textOffsetX = 0;
         this.iconSupplier = iconSupplier;
         MultiIcon icon = iconSupplier != null ? iconSupplier.get() : null;
@@ -125,21 +125,9 @@ public class GenericButton extends BaseButton
         return this;
     }
 
-    public GenericButton setTextColorDisabled(int color)
+    public GenericButton setDisabledTextColor(int color)
     {
-        this.textColorDisabled = color;
-        return this;
-    }
-
-    public GenericButton setTextColorNormal(int color)
-    {
-        this.textColorNormal = color;
-        return this;
-    }
-
-    public GenericButton setTextColorHovered(int color)
-    {
-        this.textColorHovered = color;
+        this.disabledTextColor = color;
         return this;
     }
 
@@ -180,9 +168,15 @@ public class GenericButton extends BaseButton
         return super.getMaxDisplayStringWidth();
     }
 
+    @Override
     protected int getTextColorForRender(boolean hovered)
     {
-        return this.enabled == false ? this.textColorDisabled : (hovered ? this.textColorHovered : this.textColorNormal);
+        if (this.enabled == false)
+        {
+            return this.disabledTextColor;
+        }
+
+        return hovered ? this.defaultHoveredTextColor : this.defaultNormalTextColor;
     }
 
     protected int getTextStartX(int baseX, int usableWidth, int textWidth)
@@ -255,7 +249,6 @@ public class GenericButton extends BaseButton
             int width = this.getWidth();
             int height = this.getHeight();
             boolean hovered = this.isHoveredForRender(ctx);
-            this.defaultNormalTextColor = this.getTextColorForRender(hovered);
 
             if (this.renderButtonBackgroundTexture)
             {

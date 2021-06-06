@@ -668,13 +668,18 @@ public class BaseWidget
         this.textRenderer.renderLine(x, y, z, color, shadow, StyledTextLine.of(str));
     }
 
+    protected int getTextColorForRender(boolean hovered)
+    {
+        return hovered ? this.defaultHoveredTextColor : this.defaultNormalTextColor;
+    }
+
     protected void renderText(int x, int y, float z, boolean hovered, ScreenContext ctx)
     {
         if (this.text != null)
         {
             x = this.getTextPositionX(x, this.text.renderWidth);
             y = this.getTextPositionY(y);
-            int color = hovered ? this.defaultHoveredTextColor : this.defaultNormalTextColor;
+            int color = this.getTextColorForRender(hovered);
 
             this.renderTextLine(x, y, z + 0.025f, color, this.textShadow, ctx, this.text);
         }

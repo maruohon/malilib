@@ -38,7 +38,7 @@ public abstract class BaseStringListEditEntryWidget<TYPE> extends BaseOrderableL
         this.resetButton.setRenderButtonBackgroundTexture(false);
         this.resetButton.setRenderNormalBorder(true);
         this.resetButton.setNormalBorderColor(0xFF404040);
-        this.resetButton.setTextColorDisabled(0xFF505050);
+        this.resetButton.setDisabledTextColor(0xFF505050);
 
         this.resetButton.setEnabled(initialValue.equals(this.defaultValue) == false);
         this.resetButton.setActionListener(() -> {

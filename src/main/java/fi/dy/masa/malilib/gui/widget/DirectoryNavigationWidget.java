@@ -217,7 +217,7 @@ public class DirectoryNavigationWidget extends SearchBarWidget
                 button.setRenderButtonBackgroundTexture(false);
                 button.setRenderHoverBorder(true);
                 button.setUseTextShadow(false);
-                button.setTextColorHovered(0xFFFFFFFF);
+                button.setDefaultHoveredTextColor(0xFFFFFFFF);
                 button.setActionListener(() -> {
                     if (BaseScreen.isShiftDown())
                     {

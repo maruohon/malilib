@@ -34,7 +34,7 @@ public class BaseValueListEditEntryWidget<TYPE> extends BaseOrderableListEditEnt
         this.resetButton.setRenderButtonBackgroundTexture(false);
         this.resetButton.setRenderNormalBorder(true);
         this.resetButton.setNormalBorderColor(0xFF404040);
-        this.resetButton.setTextColorDisabled(0xFF505050);
+        this.resetButton.setDisabledTextColor(0xFF505050);
 
         int ddWidth = width - this.resetButton.getWidth() - this.labelWidget.getWidth()
                             - this.addButton.getWidth() - this.removeButton.getWidth()
