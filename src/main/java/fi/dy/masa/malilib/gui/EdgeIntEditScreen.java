@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.gui;
 
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.gui.position.EdgeInt;
+import fi.dy.masa.malilib.gui.util.EdgeInt;
 import fi.dy.masa.malilib.gui.widget.EdgeIntEditWidget;
 
 public class EdgeIntEditScreen extends BaseScreen

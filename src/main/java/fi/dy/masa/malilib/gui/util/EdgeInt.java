@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.gui.position;
+package fi.dy.masa.malilib.gui.util;
 
 import java.util.Collections;
 import java.util.List;
