@@ -7,14 +7,17 @@ import javax.annotation.Nullable;
 import com.google.common.collect.Queues;
 import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.gui.BaseScreen;
-import fi.dy.masa.malilib.gui.ToastRendererWidgetEditScreen;
+import fi.dy.masa.malilib.gui.config.overlay.ToastRendererWidgetEditScreen;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
+import fi.dy.masa.malilib.gui.widget.list.entry.BaseInfoRendererWidgetEntryWidget;
 import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
 import fi.dy.masa.malilib.overlay.widget.sub.ToastWidget;
 import fi.dy.masa.malilib.render.text.StyledText;
+import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.JsonUtils;
+import fi.dy.masa.malilib.util.StringUtils;
 
 public class ToastRendererWidget extends InfoRendererWidget
 {
@@ -33,7 +36,7 @@ public class ToastRendererWidget extends InfoRendererWidget
         this.isOverlay = true;
         this.shouldSerialize = true;
         this.renderAboveScreen = true;
-        this.setName("Toast Renderer");
+        this.setName(StringUtils.translate("malilib.label.default_toast_renderer"));
         this.setMaxWidth(240);
         this.padding.setAll(6, 10, 6, 10);
     }
@@ -288,6 +291,15 @@ public class ToastRendererWidget extends InfoRendererWidget
         ToastRendererWidgetEditScreen screen = new ToastRendererWidgetEditScreen(this);
         screen.setParent(GuiUtils.getCurrentScreen());
         BaseScreen.openScreen(screen);
+    }
+
+    @Override
+    public void initListEntryWidget(BaseInfoRendererWidgetEntryWidget widget)
+    {
+        widget.setCanConfigure(true);
+        widget.setCanRemove(true);
+        widget.setText(StyledTextLine.translate("malilib.gui.hover.toast_renderer_entry_name",
+                                                this.getName(), this.getScreenLocation().getDisplayName()));
     }
 
     @Override

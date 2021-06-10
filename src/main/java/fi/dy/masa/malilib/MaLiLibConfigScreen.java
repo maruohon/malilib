@@ -7,17 +7,16 @@ import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.BaseScreenTab;
 import fi.dy.masa.malilib.gui.BaseTabbedScreen;
 import fi.dy.masa.malilib.gui.CustomHotkeysEditScreen;
-import fi.dy.masa.malilib.gui.InfoRendererWidgetListScreen;
+import fi.dy.masa.malilib.gui.config.overlay.InfoRendererWidgetListScreen;
 import fi.dy.masa.malilib.gui.ScreenTab;
 import fi.dy.masa.malilib.gui.action.ActionListScreen;
 import fi.dy.masa.malilib.gui.config.BaseConfigScreen;
 import fi.dy.masa.malilib.gui.config.BaseConfigTab;
 import fi.dy.masa.malilib.gui.config.ConfigTab;
 import fi.dy.masa.malilib.gui.config.CustomIconListScreen;
-import fi.dy.masa.malilib.gui.widget.list.entry.ConfigStatusIndicatorContainerEntryWidget;
-import fi.dy.masa.malilib.gui.widget.list.entry.ToastRendererWidgetEntryWidget;
+import fi.dy.masa.malilib.gui.widget.list.entry.BaseInfoRendererWidgetEntryWidget;
 import fi.dy.masa.malilib.overlay.widget.ConfigStatusIndicatorContainerWidget;
-import fi.dy.masa.malilib.overlay.widget.ToastRendererWidget;
+import fi.dy.masa.malilib.overlay.widget.InfoRendererWidget;
 import fi.dy.masa.malilib.util.data.ModInfo;
 
 public class MaLiLibConfigScreen
@@ -31,7 +30,7 @@ public class MaLiLibConfigScreen
     public static final BaseScreenTab CSI               = new BaseScreenTab(MOD_INFO, "config_status_indicator.abbr", (scr) -> scr instanceof ConfigStatusIndicatorWidgetListScreen, MaLiLibConfigScreen::createConfigStatusIndicatorListScreen).setHoverText("malilib.gui.button.hover.config_status_indicator");
     public static final BaseScreenTab ICONS             = new BaseScreenTab(MOD_INFO, "custom_icons",                 (scr) -> scr instanceof CustomIconListScreen, CustomIconListScreen::openCustomIconListScreen).setHoverText("malilib.gui.button.hover.custom_icons_configuration");
     public static final BaseScreenTab CUSTOM_HOTKEYS    = new BaseScreenTab(MOD_INFO, "custom_hotkeys",               (scr) -> scr instanceof CustomHotkeysEditScreen, MaLiLibConfigScreen::createCustomHotkeysEditScreen).setHoverText("malilib.gui.button.hover.custom_hotkeys_configuration");
-    public static final BaseScreenTab TOAST             = new BaseScreenTab(MOD_INFO, "toast_renderer.abbr",          (scr) -> scr instanceof ToastRendererWidgetListScreen, MaLiLibConfigScreen::createToastRendererListScreen).setHoverText("malilib.gui.button.hover.toast_renderer_configuration");
+    public static final BaseScreenTab INFO_RENDERERS    = new BaseScreenTab(MOD_INFO, "info_renderers",               (scr) -> scr instanceof AllInfoWidgetsListScreen, MaLiLibConfigScreen::createInfoRendererWidgetsListScreen).setHoverText("malilib.gui.button.hover.info_renderers_configuration");
 
     private static final ImmutableList<ConfigTab> CONFIG_TABS = ImmutableList.of(
             GENERIC,
@@ -47,7 +46,7 @@ public class MaLiLibConfigScreen
             CSI,
             ICONS,
             CUSTOM_HOTKEYS,
-            TOAST
+            INFO_RENDERERS
     );
 
     public static void open()
@@ -67,9 +66,9 @@ public class MaLiLibConfigScreen
         return new ConfigStatusIndicatorWidgetListScreen();
     }
 
-    public static BaseTabbedScreen createToastRendererListScreen(@Nullable GuiScreen currentScreen)
+    public static BaseTabbedScreen createInfoRendererWidgetsListScreen(@Nullable GuiScreen currentScreen)
     {
-        return new ToastRendererWidgetListScreen();
+        return new AllInfoWidgetsListScreen();
     }
 
     public static BaseTabbedScreen createCustomHotkeysEditScreen(@Nullable GuiScreen currentScreen)
@@ -86,24 +85,24 @@ public class MaLiLibConfigScreen
     {
         public ConfigStatusIndicatorWidgetListScreen()
         {
-            super(InfoRendererWidgetListScreen.createSupplierFromInfoManager(ConfigStatusIndicatorContainerWidget.class),
+            super(InfoRendererWidgetListScreen.createSupplierFromInfoManagerForExactType(ConfigStatusIndicatorContainerWidget.class),
                   ConfigStatusIndicatorContainerWidget::new,
-                  ConfigStatusIndicatorContainerEntryWidget::new);
+                  BaseInfoRendererWidgetEntryWidget::new);
 
             this.setTitle("malilib.gui.title.config_status_indicator_configuration");
             this.canCreateNewWidgets = true;
         }
     }
 
-    public static class ToastRendererWidgetListScreen extends InfoRendererWidgetListScreen<ToastRendererWidget>
+    public static class AllInfoWidgetsListScreen extends InfoRendererWidgetListScreen<InfoRendererWidget>
     {
-        public ToastRendererWidgetListScreen()
+        public AllInfoWidgetsListScreen()
         {
-            super(InfoRendererWidgetListScreen.createSupplierFromInfoManager(ToastRendererWidget.class),
-                  ToastRendererWidget::new,
-                  ToastRendererWidgetEntryWidget::new);
+            super(InfoRendererWidgetListScreen.createSupplierFromInfoManagerForSubtypes(InfoRendererWidget.class),
+                  null,
+                  BaseInfoRendererWidgetEntryWidget::new);
 
-            this.setTitle("malilib.gui.title.toast_renderer_configuration");
+            this.setTitle("malilib.gui.title.info_renderer_widgets");
         }
     }
 }

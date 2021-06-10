@@ -1,7 +1,8 @@
-package fi.dy.masa.malilib.gui;
+package fi.dy.masa.malilib.gui.config;
 
 import fi.dy.masa.malilib.action.ActionRegistry;
 import fi.dy.masa.malilib.action.NamedAction;
+import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.DropDownListWidget;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;

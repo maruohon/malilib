@@ -24,6 +24,7 @@ import fi.dy.masa.malilib.gui.config.indicator.ConfigStatusIndicatorGroupEditScr
 import fi.dy.masa.malilib.gui.config.indicator.ConfigStatusWidgetFactory;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
+import fi.dy.masa.malilib.gui.widget.list.entry.BaseInfoRendererWidgetEntryWidget;
 import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.input.Hotkey;
 import fi.dy.masa.malilib.input.HotkeyProvider;
@@ -109,6 +110,14 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
         ConfigStatusIndicatorGroupEditScreen screen = new ConfigStatusIndicatorGroupEditScreen(this);
         screen.setParent(GuiUtils.getCurrentScreen());
         BaseScreen.openScreen(screen);
+    }
+
+    @Override
+    public void initListEntryWidget(BaseInfoRendererWidgetEntryWidget widget)
+    {
+        widget.setCanConfigure(true);
+        widget.setCanRemove(true);
+        widget.setCanToggle(true);
     }
 
     public void setStatusIndicatorWidgets(List<BaseConfigStatusIndicatorWidget<?>> widgets)
@@ -351,7 +360,7 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
 
     public static List<? extends Hotkey> getToggleHotkeys()
     {
-        List<ConfigStatusIndicatorContainerWidget> widgets = InfoWidgetManager.INSTANCE.getAllWidgetsOfType(ConfigStatusIndicatorContainerWidget.class);
+        List<ConfigStatusIndicatorContainerWidget> widgets = InfoWidgetManager.INSTANCE.getAllWidgetsExtendingType(ConfigStatusIndicatorContainerWidget.class);
         ArrayList<Hotkey> hotkeys = new ArrayList<>();
 
         for (ConfigStatusIndicatorContainerWidget widget : widgets)

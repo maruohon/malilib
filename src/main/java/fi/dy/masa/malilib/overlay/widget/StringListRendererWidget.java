@@ -4,10 +4,11 @@ import java.util.List;
 import java.util.function.Supplier;
 import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.gui.BaseScreen;
-import fi.dy.masa.malilib.gui.StringListRendererWidgetEditScreen;
+import fi.dy.masa.malilib.gui.config.overlay.StringListRendererWidgetEditScreen;
 import fi.dy.masa.malilib.gui.position.ScreenLocation;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
+import fi.dy.masa.malilib.gui.widget.list.entry.BaseInfoRendererWidgetEntryWidget;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.render.text.OrderedStringListFactory;
 import fi.dy.masa.malilib.render.text.StringListRenderer;
@@ -26,6 +27,12 @@ public class StringListRendererWidget extends InfoRendererWidget
         this.padding.setChangeListener(this::onPaddingChanged);
         this.padding.setAll(1, 2, 0, 2);
         this.shouldSerialize = true;
+    }
+
+    @Override
+    public void initListEntryWidget(BaseInfoRendererWidgetEntryWidget widget)
+    {
+        widget.setCanConfigure(true);
     }
 
     /**

@@ -15,8 +15,9 @@ import net.minecraft.client.renderer.GlStateManager;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.gui.position.ScreenLocation;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
-import fi.dy.masa.malilib.gui.widget.BaseWidget;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
+import fi.dy.masa.malilib.gui.widget.BaseWidget;
+import fi.dy.masa.malilib.gui.widget.list.entry.BaseInfoRendererWidgetEntryWidget;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.overlay.InfoOverlay;
 import fi.dy.masa.malilib.overlay.InfoWidgetManager;
@@ -48,6 +49,7 @@ public abstract class InfoRendererWidget extends BaseWidget
     protected boolean renderName;
     protected boolean shouldSerialize;
     protected boolean renderBackground;
+    protected boolean valid = true;
     protected double scale = 1.0;
     protected long previousGeometryUpdateTime = -1;
     protected long geometryShrinkDelay = (long) (2 * 1E9); // 2 seconds
@@ -181,6 +183,11 @@ public abstract class InfoRendererWidget extends BaseWidget
         this.borderColor = borderColor;
     }
 
+    public boolean isValid()
+    {
+        return this.valid;
+    }
+
     /**
      * Sets the sort index of this widget. Lower values come first (higher up) within the InfoArea.
      * The default sort index is 100.
@@ -296,7 +303,19 @@ public abstract class InfoRendererWidget extends BaseWidget
         this.styledName = StyledTextLine.of(name);
     }
 
+    /**
+     * Called when the widget is removed from the InfoWidgetManager
+     */
+    public void invalidate()
+    {
+        this.valid = false;
+    }
+
     public void openEditScreen()
+    {
+    }
+
+    public void initListEntryWidget(BaseInfoRendererWidgetEntryWidget widget)
     {
     }
 

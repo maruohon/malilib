@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.overlay;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import javax.annotation.Nullable;
@@ -45,13 +46,29 @@ public class InfoWidgetManager
     {
         this.widgets.remove(widget.getClass(), widget);
         this.infoOverlay.getOrCreateInfoArea(widget.getScreenLocation()).removeWidget(widget);
+        widget.invalidate();
         this.dirty = true;
     }
 
     @SuppressWarnings("unchecked")
-    public <WIDGET extends InfoRendererWidget> List<WIDGET> getAllWidgetsOfType(Class<WIDGET> clazz)
+    public <WIDGET extends InfoRendererWidget> List<WIDGET> getAllWidgetsOfExactType(Class<WIDGET> clazz)
     {
         return (List<WIDGET>) this.widgets.get(clazz);
+    }
+
+    public <WIDGET extends InfoRendererWidget> List<WIDGET> getAllWidgetsExtendingType(Class<WIDGET> clazz)
+    {
+        ArrayList<WIDGET> list = new ArrayList<>();
+
+        for (InfoRendererWidget widget : this.widgets.values())
+        {
+            if (clazz.isInstance(widget))
+            {
+                list.add(clazz.cast(widget));
+            }
+        }
+
+        return list;
     }
 
     protected void clearWidgets()

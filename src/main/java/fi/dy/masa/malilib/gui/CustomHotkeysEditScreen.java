@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import fi.dy.masa.malilib.MaLiLibConfigScreen;
 import fi.dy.masa.malilib.MaLiLibReference;
+import fi.dy.masa.malilib.gui.config.AddCustomHotkeyDefinitionScreen;
 import fi.dy.masa.malilib.gui.config.KeybindEditingScreen;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;

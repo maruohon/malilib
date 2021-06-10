@@ -15,6 +15,7 @@ import fi.dy.masa.malilib.overlay.InfoWidgetManager;
 import fi.dy.masa.malilib.overlay.widget.InfoRendererWidget;
 import fi.dy.masa.malilib.overlay.widget.MessageRendererWidget;
 import fi.dy.masa.malilib.overlay.widget.ToastRendererWidget;
+import fi.dy.masa.malilib.util.StringUtils;
 
 public class MessageUtils
 {
@@ -60,6 +61,7 @@ public class MessageUtils
             widget.getMargin().setBottom(50);
             widget.setZLevel(300f);
             widget.setAutomaticWidth(true);
+            widget.setName(StringUtils.translate("malilib.label.default_custom_hotbar_message_renderer"));
             widget.setMaxMessages(MaLiLibConfigs.Generic.ACTION_BAR_MESSAGE_LIMIT.getIntegerValue());
             widget.setMessageGap(2);
             InfoWidgetManager.INSTANCE.addWidget(widget);

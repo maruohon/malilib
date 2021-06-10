@@ -3,13 +3,18 @@ package fi.dy.masa.malilib.overlay.widget;
 import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.JsonObject;
+import fi.dy.masa.malilib.gui.BaseScreen;
+import fi.dy.masa.malilib.gui.config.overlay.MessageRendererWidgetEditScreen;
+import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
+import fi.dy.masa.malilib.gui.widget.list.entry.BaseInfoRendererWidgetEntryWidget;
 import fi.dy.masa.malilib.overlay.message.Message;
 import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.render.text.StyledText;
 import fi.dy.masa.malilib.render.text.TextRenderer;
 import fi.dy.masa.malilib.util.JsonUtils;
+import fi.dy.masa.malilib.util.StringUtils;
 
 public class MessageRendererWidget extends InfoRendererWidget
 {
@@ -26,8 +31,24 @@ public class MessageRendererWidget extends InfoRendererWidget
         this.renderBackground = true;
 
         this.padding.setAll(4, 6, 4, 6);
+        this.setName(StringUtils.translate("malilib.label.default_message_renderer"));
         this.setLineHeight(10);
         this.setMaxWidth(320);
+    }
+
+    @Override
+    public void initListEntryWidget(BaseInfoRendererWidgetEntryWidget widget)
+    {
+        widget.setCanConfigure(true);
+        widget.setCanRemove(true);
+    }
+
+    @Override
+    public void openEditScreen()
+    {
+        MessageRendererWidgetEditScreen screen = new MessageRendererWidgetEditScreen(this);
+        screen.setParent(GuiUtils.getCurrentScreen());
+        BaseScreen.openScreen(screen);
     }
 
     public void clearMessages()

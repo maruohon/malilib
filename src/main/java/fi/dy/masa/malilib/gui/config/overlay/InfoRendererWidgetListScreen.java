@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.gui;
+package fi.dy.masa.malilib.gui.config.overlay;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -6,6 +6,8 @@ import javax.annotation.Nullable;
 import fi.dy.masa.malilib.MaLiLibConfigScreen;
 import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.config.value.OptionListConfigValue;
+import fi.dy.masa.malilib.gui.BaseListScreen;
+import fi.dy.masa.malilib.gui.ScreenTab;
 import fi.dy.masa.malilib.gui.position.ScreenLocation;
 import fi.dy.masa.malilib.gui.widget.DropDownListWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
@@ -19,13 +21,13 @@ public class InfoRendererWidgetListScreen<WIDGET extends InfoRendererWidget> ext
 {
     protected final Supplier<List<WIDGET>> widgetSupplier;
     protected final DataListEntryWidgetFactory<WIDGET> entryWidgetFactory;
-    protected final Supplier<WIDGET> widgetFactory;
+    @Nullable protected final Supplier<WIDGET> widgetFactory;
     protected final DropDownListWidget<ScreenLocation> locationDropdownWidget;
     protected final GenericButton createWidgetButton;
     protected boolean canCreateNewWidgets;
 
     public InfoRendererWidgetListScreen(Supplier<List<WIDGET>> widgetSupplier,
-                                        Supplier<WIDGET> widgetFactory,
+                                        @Nullable Supplier<WIDGET> widgetFactory,
                                         DataListEntryWidgetFactory<WIDGET> entryWidgetFactory)
     {
         this(10, 82, 20, 88,
@@ -36,7 +38,7 @@ public class InfoRendererWidgetListScreen<WIDGET extends InfoRendererWidget> ext
     public InfoRendererWidgetListScreen(int listX, int listY, int totalListMarginX, int totalListMarginY,
                                         String screenId, List<ScreenTab> tabs, @Nullable ScreenTab defaultTab,
                                         Supplier<List<WIDGET>> widgetSupplier,
-                                        Supplier<WIDGET> widgetFactory,
+                                        @Nullable Supplier<WIDGET> widgetFactory,
                                         DataListEntryWidgetFactory<WIDGET> entryWidgetFactory)
     {
         super(listX, listY, totalListMarginX, totalListMarginY, screenId, tabs, defaultTab);
@@ -96,7 +98,10 @@ public class InfoRendererWidgetListScreen<WIDGET extends InfoRendererWidget> ext
 
     protected void createInfoRendererWidget()
     {
-        this.addInfoRendererWidget(this.widgetFactory.get());
+        if (this.widgetFactory != null)
+        {
+            this.addInfoRendererWidget(this.widgetFactory.get());
+        }
     }
 
     protected void addInfoRendererWidget(InfoRendererWidget widget)
@@ -124,8 +129,13 @@ public class InfoRendererWidgetListScreen<WIDGET extends InfoRendererWidget> ext
         return listWidget;
     }
 
-    public static <WIDGET extends InfoRendererWidget> Supplier<List<WIDGET>> createSupplierFromInfoManager(final Class<WIDGET> clazz)
+    public static <WIDGET extends InfoRendererWidget> Supplier<List<WIDGET>> createSupplierFromInfoManagerForExactType(final Class<WIDGET> clazz)
     {
-        return () -> InfoWidgetManager.INSTANCE.getAllWidgetsOfType(clazz);
+        return () -> InfoWidgetManager.INSTANCE.getAllWidgetsOfExactType(clazz);
+    }
+
+    public static <WIDGET extends InfoRendererWidget> Supplier<List<WIDGET>> createSupplierFromInfoManagerForSubtypes(final Class<WIDGET> clazz)
+    {
+        return () -> InfoWidgetManager.INSTANCE.getAllWidgetsExtendingType(clazz);
     }
 }

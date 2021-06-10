@@ -1,6 +1,8 @@
-package fi.dy.masa.malilib.gui;
+package fi.dy.masa.malilib.gui.config.overlay;
 
 import fi.dy.masa.malilib.config.value.OptionListConfigValue;
+import fi.dy.masa.malilib.gui.BaseScreen;
+import fi.dy.masa.malilib.gui.EdgeIntEditScreen;
 import fi.dy.masa.malilib.gui.position.ScreenLocation;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;

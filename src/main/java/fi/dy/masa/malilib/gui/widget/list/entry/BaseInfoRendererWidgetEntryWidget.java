@@ -8,7 +8,7 @@ import fi.dy.masa.malilib.overlay.InfoWidgetManager;
 import fi.dy.masa.malilib.overlay.widget.InfoRendererWidget;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 
-public abstract class BaseInfoRendererWidgetEntryWidget<TYPE extends InfoRendererWidget> extends BaseDataListEntryWidget<TYPE>
+public class BaseInfoRendererWidgetEntryWidget extends BaseDataListEntryWidget<InfoRendererWidget>
 {
     protected final GenericButton toggleButton;
     protected final GenericButton configureButton;
@@ -19,24 +19,19 @@ public abstract class BaseInfoRendererWidgetEntryWidget<TYPE extends InfoRendere
 
     public BaseInfoRendererWidgetEntryWidget(int x, int y, int width, int height,
                                              int listIndex, int originalListIndex,
-                                             TYPE data,
-                                             @Nullable DataListWidget<? extends TYPE> listWidget)
+                                             InfoRendererWidget data,
+                                             @Nullable DataListWidget<? extends InfoRendererWidget> listWidget)
     {
         super(x, y, width, height, listIndex, originalListIndex, data, listWidget);
 
         this.toggleButton = OnOffButton.simpleSlider(20, data::isEnabled, data::toggleEnabled);
-
         this.configureButton = GenericButton.simple("malilib.gui.button.label.configure", data::openEditScreen);
         this.removeButton = GenericButton.simple("malilib.gui.button.label.remove", this::removeInfoRendererWidget);
 
         this.setText(StyledTextLine.of(data.getName()));
         this.setRenderNormalBackground(true);
-    }
 
-    public void removeInfoRendererWidget()
-    {
-        InfoWidgetManager.INSTANCE.removeWidget(this.data);
-        this.listWidget.refreshEntries();
+        this.data.initListEntryWidget(this);
     }
 
     @Override
@@ -91,5 +86,28 @@ public abstract class BaseInfoRendererWidgetEntryWidget<TYPE extends InfoRendere
             rightX -= this.toggleButton.getWidth() + 2;
             this.toggleButton.setPosition(rightX, tmpY);
         }
+    }
+
+    public void setCanConfigure(boolean canConfigure)
+    {
+        this.canConfigure = canConfigure;
+    }
+
+    public void setCanRemove(boolean canRemove)
+    {
+        this.canRemove = canRemove;
+    }
+
+    public void setCanToggle(boolean canToggle)
+    {
+        this.canToggle = canToggle;
+    }
+
+    public void removeInfoRendererWidget()
+    {
+        this.scheduleTask(() -> {
+            InfoWidgetManager.INSTANCE.removeWidget(this.data);
+            this.listWidget.refreshEntries();
+        });
     }
 }
