@@ -29,7 +29,7 @@ public class BaseInfoRendererWidgetEntryWidget extends BaseDataListEntryWidget<I
         this.removeButton = GenericButton.simple("malilib.gui.button.label.remove", this::removeInfoRendererWidget);
 
         this.setText(StyledTextLine.of(data.getName()));
-        this.setRenderNormalBackground(true);
+        this.getBackgroundRenderer().getNormalSettings().setEnabled(true);
 
         this.data.initListEntryWidget(this);
     }

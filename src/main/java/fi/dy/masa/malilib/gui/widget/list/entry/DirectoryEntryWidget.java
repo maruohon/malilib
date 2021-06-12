@@ -30,9 +30,8 @@ public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry
         this.textShadow = false;
 
         this.setText(StyledTextLine.raw(this.getDisplayName()));
-        this.setNormalBackgroundColor(this.isOdd ? 0xFF202020 : 0xFF303030);
-        this.setHoveredBackgroundColor(0xFF404040);
-        this.setRenderNormalBackground(true);
+        this.getBackgroundRenderer().getNormalSettings().setEnabledAndColor(true, this.isOdd ? 0xFF202020 : 0xFF303030);
+        this.getBackgroundRenderer().getHoverSettings().setColor(0xFF404040);
     }
 
     public DirectoryEntry getDirectoryEntry()

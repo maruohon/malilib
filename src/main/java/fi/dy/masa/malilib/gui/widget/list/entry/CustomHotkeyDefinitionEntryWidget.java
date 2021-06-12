@@ -41,7 +41,7 @@ public class CustomHotkeyDefinitionEntryWidget extends BaseDataListEntryWidget<C
         this.settingsWidget = new KeybindSettingsWidget(data.getKeyBind(), data.getName(), null);
         this.removeButton = GenericButton.simple("malilib.gui.button.label.remove", this::removeHotkey);
 
-        this.setRenderNormalBackground(true);
+        this.getBackgroundRenderer().getNormalSettings().setEnabled(true);
     }
 
     @Override

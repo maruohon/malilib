@@ -7,14 +7,14 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.init.SoundEvents;
 import fi.dy.masa.malilib.gui.BaseScreen;
-import fi.dy.masa.malilib.gui.widget.BackgroundWidget;
+import fi.dy.masa.malilib.gui.widget.InteractableWidget;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.render.text.StyledText;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.LeftRight;
 
-public abstract class BaseButton extends BackgroundWidget
+public abstract class BaseButton extends InteractableWidget
 {
     protected final ImmutableList<StyledTextLine> hoverHelp;
     protected String displayString = "";

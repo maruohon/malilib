@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import fi.dy.masa.malilib.gui.util.EdgeInt;
 import fi.dy.masa.malilib.util.data.Color4f;
 import fi.dy.masa.malilib.util.data.IntBoundingBox;
 
@@ -62,11 +63,20 @@ public class ShapeRenderUtils
         RenderUtils.drawBuffer();
     }
 
-    public static void renderOutline(float x, float y, float z, int width, int height, int borderWidth, int colorBorder)
+    public static void renderOutline(float x, float y, float z, int width, int height, int borderWidth, int color)
     {
         BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR, false);
 
-        renderOutline(x, y, z, width, height, borderWidth, colorBorder, buffer);
+        renderOutline(x, y, z, width, height, borderWidth, color, buffer);
+
+        RenderUtils.drawBuffer();
+    }
+
+    public static void renderOutline(float x, float y, float z, int width, int height, int borderWidth, EdgeInt color)
+    {
+        BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR, false);
+
+        renderOutline(x, y, z, width, height, borderWidth, color, buffer);
 
         RenderUtils.drawBuffer();
     }
@@ -75,12 +85,24 @@ public class ShapeRenderUtils
      * Takes in a BufferBuilder initialized in GL_QUADS, POSITION_COLOR mode
      */
     public static void renderOutline(float x, float y, float z, int width, int height,
-                                     int borderWidth, int colorBorder, BufferBuilder buffer)
+                                     int borderWidth, int color, BufferBuilder buffer)
     {
-        renderRectangle(x                      , y                       , z, borderWidth            , height     , colorBorder, buffer); // left edge
-        renderRectangle(x + width - borderWidth, y                       , z, borderWidth            , height     , colorBorder, buffer); // right edge
-        renderRectangle(x + borderWidth        , y                       , z, width - 2 * borderWidth, borderWidth, colorBorder, buffer); // top edge
-        renderRectangle(x + borderWidth        , y + height - borderWidth, z, width - 2 * borderWidth, borderWidth, colorBorder, buffer); // bottom edge
+        renderRectangle(x                      , y                       , z, borderWidth            , height     , color, buffer); // left edge
+        renderRectangle(x + width - borderWidth, y                       , z, borderWidth            , height     , color, buffer); // right edge
+        renderRectangle(x + borderWidth        , y                       , z, width - 2 * borderWidth, borderWidth, color, buffer); // top edge
+        renderRectangle(x + borderWidth        , y + height - borderWidth, z, width - 2 * borderWidth, borderWidth, color, buffer); // bottom edge
+    }
+
+    /**
+     * Takes in a BufferBuilder initialized in GL_QUADS, POSITION_COLOR mode
+     */
+    public static void renderOutline(float x, float y, float z, int width, int height,
+                                     int borderWidth, EdgeInt color, BufferBuilder buffer)
+    {
+        renderRectangle(x                      , y                       , z, borderWidth            , height     , color.getLeft(),   buffer); // left edge
+        renderRectangle(x + width - borderWidth, y                       , z, borderWidth            , height     , color.getRight(),  buffer); // right edge
+        renderRectangle(x + borderWidth        , y                       , z, width - 2 * borderWidth, borderWidth, color.getTop(),    buffer); // top edge
+        renderRectangle(x + borderWidth        , y + height - borderWidth, z, width - 2 * borderWidth, borderWidth, color.getBottom(), buffer); // bottom edge
     }
 
     public static void renderRectangle(float x, float y, float z, int width, int height, int color)

@@ -73,10 +73,8 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
                                     new DirectoryEntryWidget(wx, wy, ww, wh, li, oi, entry, this, this, this.iconProvider));
 
         this.setAllowSelection(true);
-        this.setNormalBackgroundColor(0xB0000000);
-        this.setRenderNormalBackground(true);
-        this.setNormalBorderColor(BaseScreen.COLOR_HORIZONTAL_BAR);
-        this.setNormalBorderWidth(1);
+        this.getBackgroundRenderer().getNormalSettings().setEnabledAndColor(true, 0xB0000000);
+        this.getBorderRenderer().getNormalSettings().setBorderWidthAndColor(1, 0xFF999999);
         this.listPosition.setRight(3);
         this.listPosition.setBottom(1);
     }

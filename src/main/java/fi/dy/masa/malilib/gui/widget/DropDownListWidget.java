@@ -129,8 +129,7 @@ public class DropDownListWidget<T> extends ContainerWidget
 
         this.selectionBarWidget = new SelectionBarWidget<>(width, height, this.textColor, this);
         this.selectionBarWidget.setZLevel(2);
-        this.selectionBarWidget.setHoveredBackgroundColor(0xFF202020);
-        this.selectionBarWidget.setRenderHoverBackground(true);
+        this.selectionBarWidget.getBackgroundRenderer().getHoverSettings().setEnabledAndColor(true, 0xFF202020);
 
         this.searchField = new BaseTextFieldWidget(width, 16);
         this.searchField.setUpdateListenerAlways(true);
@@ -207,8 +206,7 @@ public class DropDownListWidget<T> extends ContainerWidget
 
         if (this.iconWidgetFactory != null)
         {
-            BackgroundWidget widget = this.iconWidgetFactory.create(height - 2, entry);
-            return widget;
+            return this.iconWidgetFactory.create(height - 2, entry);
         }
         else if (this.iconProvider != null)
         {
@@ -773,8 +771,8 @@ public class DropDownListWidget<T> extends ContainerWidget
                 this.nonTextWidth += this.iconWidget.getWidth() + 4;
             }
 
-            this.setRenderNormalBackground(true);
-            this.setNormalBorderWidth(1);
+            this.getBackgroundRenderer().getNormalSettings().setEnabled(true);
+            this.getBorderRenderer().getNormalSettings().setBorderWidth(1);
             this.setClickListener(dropDown::toggleOpen);
             this.setDisplayString(dropDown.getCurrentEntryDisplayString());
         }
@@ -864,7 +862,9 @@ public class DropDownListWidget<T> extends ContainerWidget
         public void renderAt(int x, int y, float z, ScreenContext ctx)
         {
             DropDownListWidget<T> dropDown = this.dropdownWidget;
-            this.setNormalBorderColor(dropDown.enabled ? (dropDown.isOpen() ? dropDown.borderColorOpen : dropDown.normalBorderColor.getTop()) : dropDown.borderColorDisabled);
+            int ddColor = dropDown.getBorderRenderer().getNormalSettings().getColor().getTop();
+            int color = dropDown.enabled ? (dropDown.isOpen() ? dropDown.borderColorOpen : ddColor) : dropDown.borderColorDisabled;
+            this.getBorderRenderer().getNormalSettings().setColor(color);
 
             super.renderAt(x, y, z, ctx);
 
@@ -955,10 +955,9 @@ public class DropDownListWidget<T> extends ContainerWidget
             this.textColor = textColor;
             this.setClickListener(this::onClicked);
 
-            this.setNormalBackgroundColor((listIndex & 0x1) != 0 ? 0xFF202020 : 0xFF404040);
-            this.setHoveredBackgroundColor(0xFF606060);
-            this.setRenderNormalBackground(true);
-            this.setRenderHoverBackground(true);
+            int normalBgColor = (listIndex & 0x1) != 0 ? 0xFF202020 : 0xFF404040;
+            this.getBackgroundRenderer().getNormalSettings().setEnabledAndColor(true, normalBgColor);
+            this.getBackgroundRenderer().getHoverSettings().setEnabledAndColor(true, 0xFF606060);
 
             int iconWidth = 0;
 
@@ -1047,6 +1046,6 @@ public class DropDownListWidget<T> extends ContainerWidget
 
     public interface IconWidgetFactory<T>
     {
-        BackgroundWidget create(int height, T data);
+        InteractableWidget create(int height, T data);
     }
 }

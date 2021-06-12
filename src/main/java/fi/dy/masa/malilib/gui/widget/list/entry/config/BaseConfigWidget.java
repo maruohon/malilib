@@ -52,8 +52,7 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
         {
             comments.add(StringUtils.translate("malilib.gui.label.config.hover.click_for_more_information"));
             this.configOwnerAndNameLabelWidget.setClickListener(clickHandler);
-            this.configOwnerAndNameLabelWidget.setHoveredBorderColor(0xFF15D6F0);
-            this.configOwnerAndNameLabelWidget.setHoveredBorderWidth(1);
+            this.configOwnerAndNameLabelWidget.getBorderRenderer().getHoverSettings().setBorderWidthAndColor(1, 0xFF15D6F0);
         }
 
         if (comment != null)
@@ -64,8 +63,8 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
         this.configOwnerAndNameLabelWidget.addHoverStrings(comments);
         this.resetButton = new GenericButton("malilib.gui.button.reset.caps");
 
-        this.setNormalBackgroundColor(this.isOdd ? 0x70606060 : 0x70909090);
-        this.setRenderNormalBackground(MaLiLibConfigs.Generic.CONFIG_WIDGET_BACKGROUND.getBooleanValue());
+        boolean bgEnabled = MaLiLibConfigs.Generic.CONFIG_WIDGET_BACKGROUND.getBooleanValue();
+        this.getBackgroundRenderer().getNormalSettings().setEnabledAndColor(bgEnabled, this.isOdd ? 0x70606060 : 0x70909090);
     }
 
     @Override

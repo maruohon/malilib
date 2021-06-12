@@ -14,7 +14,7 @@ import fi.dy.masa.malilib.action.ActionRegistry;
 import fi.dy.masa.malilib.action.NamedAction;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.icon.IconRegistry;
-import fi.dy.masa.malilib.gui.util.EdgeInt;
+import fi.dy.masa.malilib.gui.util.BorderSettings;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.ContainerWidget;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
@@ -25,11 +25,11 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
 {
     protected final List<StyledTextLine> widgetHoverText = new ArrayList<>(1);
     protected final List<StyledTextLine> combinedHoverText = new ArrayList<>(1);
+    protected final BorderSettings editedBorderSettings = new BorderSettings(2, 0xFFFF8000);
     @Nullable protected NamedAction action;
     @Nullable protected String hoverText;
     @Nullable protected ActionWidgetContainer container;
     protected String name = "";
-    protected EdgeInt editedBorderColor = new EdgeInt(0xFFFF8000);
     protected boolean dragging;
     protected boolean resizing;
     protected boolean selected;
@@ -40,16 +40,11 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
     {
         super(40, 20);
 
-        this.setNormalBorderWidth(1);
-        this.setHoveredBorderWidth(2);
-        this.setNormalBorderColor(0xFFFFFFFF);
-        this.setHoveredBorderColor(0xFFE0E020);
-        this.setNormalBackgroundColor(0x00000000);
-        this.setHoveredBackgroundColor(0x00000000);
+        this.getBorderRenderer().getNormalSettings().setBorderWidthAndColor(1, 0xFFFFFFFF);
+        this.getBorderRenderer().getHoverSettings().setBorderWidthAndColor(2, 0xFFE0E020);
 
-        this.setRenderNormalBorder(true);
-        this.setRenderNormalBackground(true);
-        this.setRenderHoverBackground(true);
+        this.getBackgroundRenderer().getNormalSettings().setEnabledAndColor(true, 0x00000000);
+        this.getBackgroundRenderer().getHoverSettings().setEnabledAndColor(true, 0x00000000);
 
         this.getHoverInfoFactory().setTextLineProvider("widget_hover_tip", this::getActionWidgetHoverTextLines);
     }
@@ -317,25 +312,14 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
     protected abstract void resizeWidget(int mouseX, int mouseY);
 
     @Override
-    protected EdgeInt getNormalBorderColorForRender()
+    protected BorderSettings getActiveBorderSettings(ScreenContext ctx)
     {
         if (this.dragging || this.resizing || this.selected)
         {
-            return this.editedBorderColor;
+            return this.editedBorderSettings;
         }
 
-        return super.getNormalBorderColorForRender();
-    }
-
-    @Override
-    protected EdgeInt getHoveredBorderColorForRender()
-    {
-        if (this.dragging || this.resizing || this.selected)
-        {
-            return this.editedBorderColor;
-        }
-
-        return super.getHoveredBorderColorForRender();
+        return super.getActiveBorderSettings(ctx);
     }
 
     @Override
@@ -381,8 +365,8 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
 
         obj.addProperty("name_color", this.defaultNormalTextColor);
         obj.addProperty("name_color_hovered", this.defaultHoveredTextColor);
-        obj.addProperty("bg_color", this.normalBackgroundColor);
-        obj.addProperty("bg_color_hover", this.hoveredBackgroundColor);
+        obj.addProperty("bg_color", this.getBackgroundRenderer().getNormalSettings().getColor());
+        obj.addProperty("bg_color_hover", this.getBackgroundRenderer().getHoverSettings().getColor());
         obj.addProperty("name_centered_x", this.centerTextHorizontally);
         obj.addProperty("name_centered_y", this.centerTextVertically);
         obj.addProperty("name_x_offset", this.textOffsetX);
@@ -393,8 +377,8 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
         obj.addProperty("icon_y_offset", this.iconOffsetY);
         obj.addProperty("icon_scale_x", this.iconScaleX);
         obj.addProperty("icon_scale_y", this.iconScaleY);
-        obj.add("border_color", this.normalBorderColor.toJson());
-        obj.add("border_color_hover", this.hoveredBorderColor.toJson());
+        obj.add("border_color", this.getBorderRenderer().getNormalSettings().getColor().toJson());
+        obj.add("border_color_hover", this.getBorderRenderer().getHoverSettings().getColor().toJson());
 
         if (this.action != null)
         {
@@ -429,8 +413,12 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
 
         this.defaultNormalTextColor = JsonUtils.getIntegerOrDefault(obj, "name_color", this.defaultNormalTextColor);
         this.defaultHoveredTextColor = JsonUtils.getIntegerOrDefault(obj, "name_color_hovered", this.defaultHoveredTextColor);
-        this.normalBackgroundColor = JsonUtils.getIntegerOrDefault(obj, "bg_color", this.normalBackgroundColor);
-        this.hoveredBackgroundColor = JsonUtils.getIntegerOrDefault(obj, "bg_color_hover", this.hoveredBackgroundColor);
+
+        int color = JsonUtils.getIntegerOrDefault(obj, "bg_color", this.getBackgroundRenderer().getNormalSettings().getColor());
+        this.getBackgroundRenderer().getNormalSettings().setColor(color);
+
+        color = JsonUtils.getIntegerOrDefault(obj, "bg_color_hover", this.getBackgroundRenderer().getHoverSettings().getColor());
+        this.getBackgroundRenderer().getHoverSettings().setColor(color);
 
         this.centerTextHorizontally = JsonUtils.getBooleanOrDefault(obj, "name_centered_x", this.centerTextHorizontally);
         this.centerTextVertically = JsonUtils.getBooleanOrDefault(obj, "name_centered_y", this.centerTextVertically);
@@ -444,8 +432,8 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
         this.iconScaleX = JsonUtils.getFloatOrDefault(obj, "icon_scale_x", this.iconScaleX);
         this.iconScaleY = JsonUtils.getFloatOrDefault(obj, "icon_scale_y", this.iconScaleY);
 
-        JsonUtils.readArrayIfPresent(obj, "border_color", this.normalBorderColor::fromJson);
-        JsonUtils.readArrayIfPresent(obj, "border_color_hover", this.hoveredBorderColor::fromJson);
+        JsonUtils.readArrayIfPresent(obj, "border_color", this.getBorderRenderer().getNormalSettings().getColor()::fromJson);
+        JsonUtils.readArrayIfPresent(obj, "border_color_hover", this.getBorderRenderer().getHoverSettings().getColor()::fromJson);
 
         // FIXME
         NamedAction action = ActionRegistry.INSTANCE.getAction(JsonUtils.getStringOrDefault(obj, "action_name", "?"));

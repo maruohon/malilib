@@ -67,7 +67,7 @@ public class CustomIconListScreen extends BaseListScreen<DataListWidget<Icon>>
     {
         DataListWidget<Icon> listWidget = new DataListWidget<>(listX, listY, listWidth, listHeight,
                                                                IconRegistry.INSTANCE::getUserIcons);
-        listWidget.setNormalBorderWidth(1);
+        listWidget.getBorderRenderer().getNormalSettings().setBorderWidth(1);
         listWidget.setListEntryWidgetFixedHeight(22);
         listWidget.setFetchFromSupplierOnRefresh(true);
         listWidget.setEntryWidgetFactory(IconEntryWidget::new);

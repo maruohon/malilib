@@ -3,6 +3,8 @@ package fi.dy.masa.malilib.gui.action;
 import javax.annotation.Nullable;
 import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.gui.BaseScreen;
+import fi.dy.masa.malilib.gui.util.BackgroundSettings;
+import fi.dy.masa.malilib.gui.util.BorderSettings;
 import fi.dy.masa.malilib.gui.util.EdgeInt;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
@@ -30,8 +32,8 @@ public class RadialActionExecutionWidget extends BaseActionExecutionWidget
         this.setStartAngle(0.5);
         this.setEndAngle(1.2);
 
-        this.setNormalBorderWidth(3);
-        this.setHoveredBorderWidth(5);
+        this.getBorderRenderer().getNormalSettings().setBorderWidth(3);
+        this.getBorderRenderer().getHoverSettings().setBorderWidth(5);
     }
 
     @Override
@@ -256,12 +258,16 @@ public class RadialActionExecutionWidget extends BaseActionExecutionWidget
     }
 
     @Override
-    protected void renderBorder(int x, int y, float z, int width, int height, int borderWidth,
-                                boolean hovered, EdgeInt color, ScreenContext ctx)
+    protected void renderWidgetBackgroundAndBorder(int x, int y, float z, ScreenContext ctx)
     {
         double centerX = this.center.x;
         double centerY = this.center.y;
-        int borderColor = color.getTop();
+        boolean hovered = this.isHoveredForRender(ctx);
+        BorderSettings borderSettings = this.getBorderRenderer().getActiveSettings(hovered);
+        BackgroundSettings backgroundSettings = this.getBackgroundRenderer().getActiveSettings(hovered);
+        int borderColor = borderSettings.getColor().getTop();
+        int borderWidth = borderSettings.getActiveBorderWidth();
+        int bgColor = backgroundSettings.getColor();
 
         if (hovered)
         {
@@ -270,22 +276,9 @@ public class RadialActionExecutionWidget extends BaseActionExecutionWidget
 
         ShapeRenderUtils.renderSectorOutline(centerX, centerY, z, this.innerRadius, this.outerRadius,
                                              this.startAngle, this.endAngle, borderWidth, borderColor);
-    }
-
-    @Override
-    protected void renderBackground(int x, int y, float z, int width, int height, int borderWidth,
-                                    boolean hovered, int color, ScreenContext ctx)
-    {
-        double centerX = this.center.x;
-        double centerY = this.center.y;
-
-        if (hovered)
-        {
-            z += 0.0125f;
-        }
 
         ShapeRenderUtils.renderSectorFill(centerX, centerY, z, this.innerRadius, this.outerRadius,
-                                          this.startAngle, this.endAngle, color);
+                                          this.startAngle, this.endAngle, bgColor);
     }
 
     @Override

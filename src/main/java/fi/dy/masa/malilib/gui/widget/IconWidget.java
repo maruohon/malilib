@@ -4,7 +4,7 @@ import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 
-public class IconWidget extends BackgroundWidget
+public class IconWidget extends InteractableWidget
 {
     protected boolean doHighlight;
     protected boolean enabled;
@@ -44,9 +44,10 @@ public class IconWidget extends BackgroundWidget
         {
             int width = this.icon.getWidth();
 
-            if (this.renderNormalBackground)
+            if (this.getBackgroundRenderer().getNormalSettings().isEnabled())
             {
-                width += this.padding.getLeft() + this.padding.getRight() + this.normalBorderWidth * 2;
+                int bw = this.getBorderRenderer().getNormalSettings().getActiveBorderWidth();
+                width += this.padding.getLeft() + this.padding.getRight() + bw * 2;
             }
 
             this.setWidth(width);
@@ -64,9 +65,10 @@ public class IconWidget extends BackgroundWidget
         {
             int height = this.icon.getHeight();
 
-            if (this.renderNormalBackground)
+            if (this.getBackgroundRenderer().getNormalSettings().isEnabled())
             {
-                height += this.padding.getTop() + this.padding.getBottom() + this.normalBorderWidth * 2;
+                int bw = this.getBorderRenderer().getNormalSettings().getActiveBorderWidth();
+                height += this.padding.getTop() + this.padding.getBottom() + bw * 2;
             }
 
             this.setHeight(height);
@@ -90,13 +92,14 @@ public class IconWidget extends BackgroundWidget
         {
             boolean hovered = this.doHighlight && this.isHoveredForRender(ctx);
 
-            this.renderWidgetBackground(x, y, z, ctx);
+            this.renderWidgetBackgroundAndBorder(x, y, z, ctx);
             this.renderText(x, y, z, hovered, ctx);
 
-            if (this.renderNormalBackground)
+            if (this.getBackgroundRenderer().getNormalSettings().isEnabled())
             {
-                x += this.padding.getLeft() + this.normalBorderWidth;
-                y += this.padding.getTop() + this.normalBorderWidth;
+                int bw = this.getBorderRenderer().getNormalSettings().getActiveBorderWidth();
+                x += this.padding.getLeft() + bw;
+                y += this.padding.getTop() + bw;
             }
 
             this.renderIcon(x, y, z, this.enabled, hovered, ctx);

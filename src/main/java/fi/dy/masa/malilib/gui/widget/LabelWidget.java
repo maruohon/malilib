@@ -3,13 +3,15 @@ package fi.dy.masa.malilib.gui.widget;
 import java.util.Arrays;
 import java.util.List;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
+import fi.dy.masa.malilib.gui.util.BackgroundSettings;
+import fi.dy.masa.malilib.gui.util.BorderSettings;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.render.text.StringListRenderer;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.text.StyledText;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 
-public class LabelWidget extends BackgroundWidget
+public class LabelWidget extends InteractableWidget
 {
     protected final StringListRenderer stringListRenderer = new StringListRenderer();
     protected boolean useBackgroundForHoverOverflow = true;
@@ -178,7 +180,7 @@ public class LabelWidget extends BackgroundWidget
     {
         int width = this.hasMaxWidth ? this.maxWidth : this.getWidth();
         int height = this.hasMaxHeight ? this.maxHeight : this.getHeight();
-        int bw = this.getActiveBorderWidth() * 2;
+        int bw = this.getBorderRenderer().getNormalSettings().getActiveBorderWidth() * 2;
 
         this.stringListRenderer.setMaxWidth(width - this.padding.getLeft() - this.padding.getRight() - bw);
         this.stringListRenderer.setMaxHeight(height - this.padding.getTop() - this.padding.getBottom() - bw);
@@ -189,7 +191,7 @@ public class LabelWidget extends BackgroundWidget
     public void updateWidth()
     {
         this.totalWidth = this.stringListRenderer.getTotalTextWidth() + this.padding.getLeft() + this.padding.getRight();
-        this.totalWidth += this.getActiveBorderWidth() * 2;
+        this.totalWidth += this.getBorderRenderer().getNormalSettings().getActiveBorderWidth() * 2;
 
         if (this.automaticWidth)
         {
@@ -208,7 +210,7 @@ public class LabelWidget extends BackgroundWidget
     public void updateHeight()
     {
         this.totalHeight = this.stringListRenderer.getTotalTextHeight() + this.padding.getTop() + this.padding.getBottom();
-        this.totalHeight += this.getActiveBorderWidth() * 2;
+        this.totalHeight += this.getBorderRenderer().getNormalSettings().getActiveBorderWidth() * 2;
 
         if (this.automaticHeight)
         {
@@ -252,7 +254,7 @@ public class LabelWidget extends BackgroundWidget
         {
             RenderUtils.color(1f, 1f, 1f, 1f);
 
-            if (this.renderNormalBackground == false &&
+            if (this.getBackgroundRenderer().getNormalSettings().isEnabled() == false &&
                 this.useBackgroundForHoverOverflow &&
                 this.stringListRenderer.hasClampedContent() &&
                 this.isHoveredForRender(ctx))
@@ -260,16 +262,17 @@ public class LabelWidget extends BackgroundWidget
                 z += 20;
                 int width = this.totalWidth;
                 int height = this.totalHeight;
-                int bw = this.hoveredBorderWidth;
-                this.renderBackground(x, y, z, width, height, bw, true, this.hoveredBackgroundColor, ctx);
-                this.renderBorder(x, y, z, width, height, bw, true, this.hoveredBorderColor, ctx);
+                BorderSettings borderSettings = this.getBorderRenderer().getHoverSettings();
+                BackgroundSettings bgSettings = this.getBackgroundRenderer().getHoverSettings();
+                this.getBackgroundRenderer().renderBackground(x, y, z, width, height, bgSettings, ctx);
+                this.getBorderRenderer().renderBorder(x, y, z, width, height, borderSettings, ctx);
             }
             else
             {
                 super.renderAt(x, y, z, ctx);
             }
 
-            int bw = this.getActiveBorderWidth();
+            int bw = this.getBorderRenderer().getNormalSettings().getActiveBorderWidth();
             x += this.padding.getLeft() + bw;
             y += this.padding.getTop() + bw;
 

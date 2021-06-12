@@ -4,7 +4,7 @@ import javax.annotation.Nullable;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 
-public class MenuEntryWidget extends BackgroundWidget
+public class MenuEntryWidget extends InteractableWidget
 {
     public final EventListener action;
 

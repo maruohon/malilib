@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 
-public abstract class ContainerWidget extends BackgroundWidget
+public abstract class ContainerWidget extends InteractableWidget
 {
     protected final List<InteractableWidget> subWidgets = new ArrayList<>(1);
 

@@ -23,7 +23,6 @@ public class ConfigInfoEntryWidget extends BaseDataListEntryWidget<ConfigOnTab>
         this.setText(StyledTextLine.of(config.getDisplayName()));
 
         int bgColor = this.isOdd ? 0x30FFFFFF : 0x20FFFFFF;
-        this.setNormalBackgroundColor(bgColor);
-        this.setRenderNormalBackground(true);
+        this.getBackgroundRenderer().getNormalSettings().setEnabledAndColor(true, bgColor);
     }
 }

@@ -215,7 +215,7 @@ public class DirectoryNavigationWidget extends SearchBarWidget
                 button.setPlayClickSound(false);
                 button.setHorizontalLabelPadding(2);
                 button.setRenderButtonBackgroundTexture(false);
-                button.setRenderHoverBorder(true);
+                button.getBorderRenderer().getHoverSettings().setEnabled(true);
                 button.setUseTextShadow(false);
                 button.setDefaultHoveredTextColor(0xFFFFFFFF);
                 button.setActionListener(() -> {

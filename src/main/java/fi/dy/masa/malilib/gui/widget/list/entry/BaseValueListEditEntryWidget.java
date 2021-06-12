@@ -31,9 +31,9 @@ public class BaseValueListEditEntryWidget<TYPE> extends BaseOrderableListEditEnt
         this.labelWidget = new LabelWidget(0xC0C0C0C0, String.format("%3d:", originalListIndex + 1));
 
         this.resetButton = new GenericButton(16, "malilib.gui.button.reset.caps");
+        this.resetButton.getBorderRenderer().getNormalSettings().setBorderWidthAndColor(1, 0xFF404040);
+
         this.resetButton.setRenderButtonBackgroundTexture(false);
-        this.resetButton.setRenderNormalBorder(true);
-        this.resetButton.setNormalBorderColor(0xFF404040);
         this.resetButton.setDisabledTextColor(0xFF505050);
 
         int ddWidth = width - this.resetButton.getWidth() - this.labelWidget.getWidth()

@@ -20,9 +20,8 @@ public class NamedActionEntryWidget extends BaseOrderableListEditEntryWidget<Nam
         this.useRemoveButton = false;
         this.useMoveButtons = false;
 
-        this.renderHoverBackground = false;
-        this.setHoveredBorderWidth(1);
-        this.setHoveredBorderColor(0xFF00FF60);
+        this.getBorderRenderer().getHoverSettings().setBorderWidthAndColor(1, 0xFF00FF60);
+        this.getBackgroundRenderer().getHoverSettings().setEnabled(false);
 
         StyledTextLine fullName = data.getWidgetDisplayName();
         this.setText(StyledTextUtils.clampStyledTextToMaxWidth(fullName, width - 16, LeftRight.RIGHT, " ..."));

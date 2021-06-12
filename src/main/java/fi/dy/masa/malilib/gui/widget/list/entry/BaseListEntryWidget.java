@@ -1,13 +1,15 @@
 package fi.dy.masa.malilib.gui.widget.list.entry;
 
-import fi.dy.masa.malilib.gui.util.EdgeInt;
+import fi.dy.masa.malilib.gui.util.BackgroundSettings;
+import fi.dy.masa.malilib.gui.util.BorderSettings;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.ContainerWidget;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 
 public class BaseListEntryWidget extends ContainerWidget
 {
-    protected final EdgeInt selectedBorderColor = new EdgeInt(0xFFFFFFFF);
+    protected final BackgroundSettings selectedBgSettings = new BackgroundSettings(0x50FFFFFF);
+    protected final BorderSettings selectedBorderSettings = new BorderSettings(0xFFFFFFFF);
     protected final int listIndex;
     protected final int originalListIndex;
     protected boolean isOdd;
@@ -21,10 +23,12 @@ public class BaseListEntryWidget extends ContainerWidget
         this.listIndex = listIndex;
         this.originalListIndex = originalListIndex;
 
+        this.selectedBgSettings.setEnabled(true);
+        this.selectedBorderSettings.setEnabled(true);
+
         this.setIsOdd((listIndex & 0x1) != 0);
-        this.setRenderHoverBackground(true);
-        this.setNormalBackgroundColor(this.isOdd ? 0x20FFFFFF : 0x30FFFFFF);
-        this.setHoveredBackgroundColor(0x50B0FFFF);
+        this.getBackgroundRenderer().getNormalSettings().setColor(this.isOdd ? 0x20FFFFFF : 0x30FFFFFF);
+        this.getBackgroundRenderer().getHoverSettings().setEnabledAndColor(true, 0x50B0FFFF);
     }
 
     public void setIsOdd(boolean isOdd)
@@ -81,31 +85,25 @@ public class BaseListEntryWidget extends ContainerWidget
     }
 
     @Override
-    protected void renderBackgroundIfEnabled(int x, int y, float z, int width, int height,
-                                             boolean hovered, ScreenContext ctx)
+    protected BackgroundSettings getActiveBackgroundSettings(ScreenContext ctx)
     {
         if (this.isSelected())
         {
-            this.renderBackground(x, y, z, width, height, this.normalBorderWidth, hovered, this.selectedBackgroundColor, ctx);
+            return this.selectedBgSettings;
         }
-        else
-        {
-            super.renderBackgroundIfEnabled(x, y, z, width, height, hovered, ctx);
-        }
+
+        return super.getActiveBackgroundSettings(ctx);
     }
 
     @Override
-    protected void renderBorderIfEnabled(int x, int y, float z, int width, int height,
-                                         boolean hovered, ScreenContext ctx)
+    protected BorderSettings getActiveBorderSettings(ScreenContext ctx)
     {
         if (this.isSelected())
         {
-            this.renderBorder(x, y, z, width, height, this.normalBorderWidth, hovered, this.selectedBorderColor, ctx);
+            return this.selectedBorderSettings;
         }
-        else
-        {
-            super.renderBorderIfEnabled(x, y, z, width, height, hovered, ctx);
-        }
+
+        return super.getActiveBorderSettings(ctx);
     }
 
     protected void renderKeyboardNavigationHighlight(int x, int y, float z, int width, int height, ScreenContext ctx)

@@ -133,11 +133,11 @@ public class EditActionExecutionWidgetScreen extends BaseScreen
         this.nameNormalColorEditWidget = new ColorEditorWidget(90, 16, widget::getDefaultNormalTextColor, widget::setDefaultNormalTextColor);
         this.nameHoveredColorEditWidget = new ColorEditorWidget(90, 16, widget::getDefaultHoveredTextColor, widget::setDefaultHoveredTextColor);
 
-        this.normalBackgroundColorEditWidget    = new ColorEditorWidget(90, 16, widget::getNormalBackgroundColor, widget::setNormalBackgroundColor);
-        this.hoveredBackgroundColorEditWidget   = new ColorEditorWidget(90, 16, widget::getHoveredBackgroundColor, widget::setHoveredBackgroundColor);
+        this.normalBackgroundColorEditWidget    = new ColorEditorWidget(90, 16, widget.getBackgroundRenderer().getNormalSettings()::getColor, widget.getBackgroundRenderer().getNormalSettings()::setColor);
+        this.hoveredBackgroundColorEditWidget   = new ColorEditorWidget(90, 16, widget.getBackgroundRenderer().getHoverSettings()::getColor, widget.getBackgroundRenderer().getHoverSettings()::setColor);
 
-        this.normalBorderColorEditWidget        = new ColorEditorWidget(90, 16, widget.getNormalBorderColor());
-        this.hoveredBorderColorEditWidget       = new ColorEditorWidget(90, 16, widget.getHoveredBorderColor());
+        this.normalBorderColorEditWidget        = new ColorEditorWidget(90, 16, widget.getBorderRenderer().getNormalSettings().getColor());
+        this.hoveredBorderColorEditWidget       = new ColorEditorWidget(90, 16, widget.getBorderRenderer().getHoverSettings().getColor());
 
         this.backgroundColor = 0xFF101010;
         this.centerOnScreen();
@@ -323,10 +323,10 @@ public class EditActionExecutionWidgetScreen extends BaseScreen
         {
             int normalNameColor = this.firstWidget.getDefaultNormalTextColor();
             int hoveredNameColor = this.firstWidget.getDefaultHoveredTextColor();
-            int normalBg = this.firstWidget.getNormalBackgroundColor();
-            int hoverBg = this.firstWidget.getHoveredBackgroundColor();
-            EdgeInt normalBorder = this.firstWidget.getNormalBorderColor();
-            EdgeInt hoverBorder = this.firstWidget.getHoveredBorderColor();
+            int normalBg = this.firstWidget.getBackgroundRenderer().getNormalSettings().getColor();
+            int hoverBg = this.firstWidget.getBackgroundRenderer().getHoverSettings().getColor();
+            EdgeInt normalBorder = this.firstWidget.getBorderRenderer().getNormalSettings().getColor();
+            EdgeInt hoverBorder = this.firstWidget.getBorderRenderer().getHoverSettings().getColor();
 
             for (int i = 1; i < size; ++i)
             {
@@ -334,11 +334,11 @@ public class EditActionExecutionWidgetScreen extends BaseScreen
                 widget.setDefaultNormalTextColor(normalNameColor);
                 widget.setDefaultHoveredTextColor(hoveredNameColor);
 
-                widget.setNormalBackgroundColor(normalBg);
-                widget.setHoveredBackgroundColor(hoverBg);
+                widget.getBackgroundRenderer().getNormalSettings().setColor(normalBg);
+                widget.getBackgroundRenderer().getHoverSettings().setColor(hoverBg);
 
-                widget.getNormalBorderColor().setFrom(normalBorder);
-                widget.getHoveredBorderColor().setFrom(hoverBorder);
+                widget.getBorderRenderer().getNormalSettings().getColor().setFrom(normalBorder);
+                widget.getBorderRenderer().getHoverSettings().getColor().setFrom(hoverBorder);
             }
         }
     }

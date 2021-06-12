@@ -6,7 +6,7 @@ import java.util.List;
 
 public class MenuWidget extends ContainerWidget
 {
-    protected final List<BackgroundWidget> menuEntries = new ArrayList<>();
+    protected final List<InteractableWidget> menuEntries = new ArrayList<>();
     protected boolean renderEntryBackground = true;
     protected int hoveredEntryBackgroundColor = 0xFF206060;
     protected int normalEntryBackgroundColor = 0xFF000000;
@@ -15,17 +15,15 @@ public class MenuWidget extends ContainerWidget
     {
         super(x, y, width, height);
 
-        this.setNormalBorderColor(0xFFC0C0C0);
-        this.setNormalBorderWidth(1);
-        this.setRenderNormalBorder(true);
+        this.getBorderRenderer().getNormalSettings().setBorderWidthAndColor(1, 0xFFC0C0C0);
     }
 
-    public void setMenuEntries(BackgroundWidget... menuEntries)
+    public void setMenuEntries(InteractableWidget... menuEntries)
     {
         this.setMenuEntries(Arrays.asList(menuEntries));
     }
 
-    public void setMenuEntries(List<BackgroundWidget> menuEntries)
+    public void setMenuEntries(List<InteractableWidget> menuEntries)
     {
         this.menuEntries.clear();
         this.menuEntries.addAll(menuEntries);
@@ -74,21 +72,19 @@ public class MenuWidget extends ContainerWidget
     {
         super.reAddSubWidgets();
 
-        for (BackgroundWidget widget : this.menuEntries)
+        for (InteractableWidget widget : this.menuEntries)
         {
             this.addWidget(widget);
 
             if (this.renderEntryBackground)
             {
-                widget.setNormalBackgroundColor(this.normalEntryBackgroundColor);
-                widget.setHoveredBackgroundColor(this.hoveredEntryBackgroundColor);
-                widget.setRenderNormalBackground(true);
-                widget.setRenderHoverBackground(true);
+                widget.getBackgroundRenderer().getNormalSettings().setEnabledAndColor(true, this.normalEntryBackgroundColor);
+                widget.getBackgroundRenderer().getHoverSettings().setEnabledAndColor(true, this.hoveredEntryBackgroundColor);
             }
             else
             {
-                widget.setRenderNormalBackground(false);
-                widget.setRenderHoverBackground(false);
+                widget.getBackgroundRenderer().getNormalSettings().setEnabled(false);
+                widget.getBackgroundRenderer().getHoverSettings().setEnabled(false);
             }
         }
     }

@@ -1,9 +1,11 @@
 package fi.dy.masa.malilib.gui.widget;
 
+import fi.dy.masa.malilib.gui.util.BackgroundSettings;
+import fi.dy.masa.malilib.gui.util.BorderSettings;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 
-public abstract class BaseModelWidget extends BackgroundWidget
+public abstract class BaseModelWidget extends InteractableWidget
 {
     protected int dimensions;
     protected int highlightColor;
@@ -15,7 +17,6 @@ public abstract class BaseModelWidget extends BackgroundWidget
         super(dimensions, dimensions);
 
         this.dimensions = dimensions;
-        this.setNormalBorderWidth(0);
 
         if (dimensions > 0)
         {
@@ -45,10 +46,13 @@ public abstract class BaseModelWidget extends BackgroundWidget
     public void updateWidth()
     {
         int width = this.dimensions;
+        BackgroundSettings settings = this.getBackgroundRenderer().getActiveSettings(false);
 
-        if (this.renderNormalBackground)
+        if (settings.isEnabled())
         {
-            width += this.padding.getLeft() + this.padding.getRight() + this.normalBorderWidth * 2;
+            BorderSettings borderSettings = this.getBorderRenderer().getActiveSettings(false);
+            int bw = borderSettings.getActiveBorderWidth();
+            width += this.padding.getLeft() + this.padding.getRight() + bw * 2;
         }
 
         this.setWidth(width);
@@ -58,10 +62,13 @@ public abstract class BaseModelWidget extends BackgroundWidget
     public void updateHeight()
     {
         int height = this.dimensions;
+        BackgroundSettings settings = this.getBackgroundRenderer().getActiveSettings(false);
 
-        if (this.renderNormalBackground)
+        if (settings.isEnabled())
         {
-            height += this.padding.getTop() + this.padding.getBottom() + this.normalBorderWidth * 2;
+            BorderSettings borderSettings = this.getBorderRenderer().getActiveSettings(false);
+            int bw = borderSettings.getActiveBorderWidth();
+            height += this.padding.getTop() + this.padding.getBottom() + bw * 2;
         }
 
         this.setHeight(height);
@@ -76,11 +83,14 @@ public abstract class BaseModelWidget extends BackgroundWidget
 
         int width = this.getWidth();
         int height = this.getHeight();
+        BackgroundSettings settings = this.getBackgroundRenderer().getActiveSettings(false);
 
-        if (this.renderNormalBackground)
+        if (settings.isEnabled())
         {
-            x += this.padding.getLeft() + this.normalBorderWidth;
-            y += this.padding.getTop() + this.normalBorderWidth;
+            BorderSettings borderSettings = this.getBorderRenderer().getActiveSettings(false);
+            int bw = borderSettings.getActiveBorderWidth();
+            x += this.padding.getLeft() + bw;
+            y += this.padding.getTop() + bw;
         }
 
         if (this.doHighlight && this.isHoveredForRender(ctx))

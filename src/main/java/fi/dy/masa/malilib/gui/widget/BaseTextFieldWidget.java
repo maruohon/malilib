@@ -11,6 +11,7 @@ import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
+import fi.dy.masa.malilib.gui.util.BorderSettings;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.gui.util.TextRegion;
@@ -26,7 +27,7 @@ import fi.dy.masa.malilib.render.text.TextRenderer;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.LeftRight;
 
-public class BaseTextFieldWidget extends BackgroundWidget
+public class BaseTextFieldWidget extends InteractableWidget
 {
     public static final Pattern PATTERN_HEX_COLOR_8_6_4_3 = Pattern.compile("^(#|0x)([0-9a-fA-F]{8}|[0-9a-fA-F]{6}|[0-9a-fA-F]{4}|[0-9a-fA-F]{3})$");
     public static final Pattern PATTERN_HEX_COLOR_6_8 = Pattern.compile("^(#|0x)([0-9a-fA-F]{6}|[0-9a-fA-F]{8})$");
@@ -75,10 +76,8 @@ public class BaseTextFieldWidget extends BackgroundWidget
         this.lastNotifiedText = text;
 
         this.setShouldReceiveOutsideClicks(true);
-        this.setNormalBackgroundColor(0xFF000000);
-        this.setRenderNormalBackground(true);
-        this.setNormalBorderColor(this.colorUnfocused);
-        this.setNormalBorderWidth(1);
+        this.getBackgroundRenderer().getNormalSettings().setEnabledAndColor(true, 0xFF000000);
+        this.getBorderRenderer().getNormalSettings().setBorderWidthAndColor(1, this.colorUnfocused);
         this.padding.setLeft(3);
         this.padding.setRight(3);
         this.updateTextFieldSize();
@@ -296,7 +295,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
     public void updateColors()
     {
         int borderColor = this.enabled ? (this.isFocused ? this.colorFocused : this.colorUnfocused) : this.colorDisabled;
-        this.setNormalBorderColor(borderColor);
+        this.getBorderRenderer().getNormalSettings().setColor(borderColor);
     }
 
     public BaseTextFieldWidget setInputValidator(@Nullable IInputCharacterValidator inputValidator)
@@ -562,7 +561,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
 
     protected int getTextStartRelativeX()
     {
-        return this.normalBorderWidth + this.padding.getLeft();
+        return this.getBorderRenderer().getNormalSettings().getActiveBorderWidth() + this.padding.getLeft();
     }
 
     /**
@@ -572,10 +571,11 @@ public class BaseTextFieldWidget extends BackgroundWidget
     protected int getMaxTextWidth()
     {
         int maxWidth = this.getWidth() - this.padding.getLeft() - this.padding.getRight();
+        BorderSettings settings = this.getBorderRenderer().getNormalSettings();
 
-        if (this.renderNormalBorder)
+        if (settings.isEnabled())
         {
-            maxWidth -= this.normalBorderWidth * 2;
+            maxWidth -= settings.getActiveBorderWidth() * 2;
         }
 
         return maxWidth;
@@ -920,7 +920,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
             if (this.cursorPosition == this.getTextLength() && this.selectionStartPosition == -1)
             {
                 int offX = this.visibleText.getStyledText().renderWidth;
-                ShapeRenderUtils.renderHorizontalLine(x + offX, y + this.fontHeight + 1, z + 0.1f, 5, color);
+                ShapeRenderUtils.renderHorizontalLine(x + offX, y + this.fontHeight, z + 0.1f, 5, color);
             }
             else
             {
@@ -1011,9 +1011,10 @@ public class BaseTextFieldWidget extends BackgroundWidget
         int bh = 12;
         int bx = x + this.getWidth() - bw;
         int by = y + this.getHeight();
+        int bgColor = this.getBackgroundRenderer().getNormalSettings().getColor();
+        int borderColor = this.getBorderRenderer().getNormalSettings().getColor().getTop();
 
-        ShapeRenderUtils.renderOutlinedRectangle(bx, by, z, bw, bh, this.normalBackgroundColor,
-                                                 this.normalBorderColor.getTop());
+        ShapeRenderUtils.renderOutlinedRectangle(bx, by, z, bw, bh, bgColor, borderColor);
         this.renderTextLine(bx + 5, by + 2, z + 0.0125f, 0xFFA0A0A0, true, ctx, text);
     }
 
@@ -1037,7 +1038,7 @@ public class BaseTextFieldWidget extends BackgroundWidget
 
         int textX = x + this.getTextStartRelativeX();
 
-        int bw = this.renderNormalBorder ? this.normalBorderWidth * 2 : 0;
+        int bw = this.getBorderRenderer().getNormalSettings().getActiveBorderWidth() * 2;
         // The font is usually 1 pixel "too high", as in it's touching the top, but not the bottom
         int yOffset = Math.max((int) Math.ceil((this.getHeight() - bw - this.fontHeight) / 2.0) + 1, 0);
 

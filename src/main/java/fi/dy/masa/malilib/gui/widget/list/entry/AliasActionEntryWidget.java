@@ -27,9 +27,8 @@ public class AliasActionEntryWidget extends BaseDataListEntryWidget<AliasAction>
         this.removeButton.translateAndAddHoverStrings("malilib.gui.button.hover.list.remove");
         this.removeButton.setActionListener(this::removeAlias);
 
-        this.renderHoverBackground = false;
-        this.setHoveredBorderWidth(1);
-        this.setHoveredBorderColor(0xFF00FF60);
+        this.getBackgroundRenderer().getHoverSettings().setEnabled(false);
+        this.getBorderRenderer().getHoverSettings().setBorderWidthAndColor(1, 0xFF00FF60);
 
         this.getHoverInfoFactory().setTextLineProvider("action_info", data::getHoverInfo);
     }

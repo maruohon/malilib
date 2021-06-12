@@ -288,7 +288,7 @@ public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataLis
         listWidget.setEntryWidgetFactory((wx, wy, ww, wh, li, oi, d, lw) ->
                                          new ConfigStatusIndicatorEntryWidget(wx, wy, ww, wh, li, oi,
                                                                               d, lw, this.widget));
-        listWidget.setNormalBorderWidth(1);
+        listWidget.getBorderRenderer().getNormalSettings().setBorderWidth(1);
         listWidget.setListEntryWidgetFixedHeight(16);
         listWidget.setFetchFromSupplierOnRefresh(true);
 

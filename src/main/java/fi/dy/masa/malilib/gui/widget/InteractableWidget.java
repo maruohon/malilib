@@ -15,7 +15,7 @@ import fi.dy.masa.malilib.render.text.OrderedStringListFactory;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.StringUtils;
 
-public abstract class InteractableWidget extends BaseWidget
+public abstract class InteractableWidget extends BackgroundWidget
 {
     protected OrderedStringListFactory hoverInfoFactory = new OrderedStringListFactory();
     @Nullable protected EventListener clickListener;
@@ -82,6 +82,7 @@ public abstract class InteractableWidget extends BaseWidget
                mouseY >= y && mouseY < y + this.getHeight();
     }
 
+    @Override
     public boolean isHoveredForRender(ScreenContext ctx)
     {
         if (this.renderHoverChecker != null)

@@ -19,8 +19,8 @@ public class ExpandableConfigGroupWidget extends BaseConfigWidget<ExpandableConf
 
         this.config = config;
 
-        this.setNormalBorderColor(0xFFFFFFFF);
-        this.setHoveredBorderWidth(1);
+        this.getBorderRenderer().getNormalSettings().setColor(0xFFFFFFFF);
+        this.getBorderRenderer().getHoverSettings().setBorderWidth(1);
 
         this.arrowIconWidget = new IconWidget(this.getArrowIcon());
         this.arrowIconWidget.setEnabled(true);

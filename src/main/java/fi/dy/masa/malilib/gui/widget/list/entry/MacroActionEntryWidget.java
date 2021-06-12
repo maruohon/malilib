@@ -34,9 +34,8 @@ public class MacroActionEntryWidget extends BaseDataListEntryWidget<MacroAction>
         this.removeButton = GenericButton.createIconOnly(DefaultIcons.LIST_REMOVE_MINUS_9, this::removeMacro);
         this.removeButton.translateAndAddHoverStrings("malilib.gui.button.hover.list.remove");
 
-        this.renderHoverBackground = false;
-        this.setHoveredBorderWidth(1);
-        this.setHoveredBorderColor(0xFF00FF60);
+        this.getBorderRenderer().getHoverSettings().setBorderWidthAndColor(1, 0xFF00FF60);
+        this.getBackgroundRenderer().getHoverSettings().setEnabled(false);
 
         this.getHoverInfoFactory().setTextLineProvider("action_info", data::getHoverInfo);
     }

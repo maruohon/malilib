@@ -76,8 +76,7 @@ public class GenericButton extends BaseButton
         }
 
         this.renderButtonBackgroundTexture = true;
-        this.setNormalBorderColor(0x00000000);
-        this.setHoveredBorderColor(0xFFFFFFFF);
+        this.getBorderRenderer().getNormalSettings().setColor(0x00000000);
     }
 
     public GenericButton(MultiIcon icon, String... hoverStrings)
@@ -208,7 +207,8 @@ public class GenericButton extends BaseButton
         }
         else
         {
-            return this.renderNormalBackground ? 4 : 0;
+            boolean bgEnabled = this.getBackgroundRenderer().getNormalSettings().isEnabled();
+            return bgEnabled ? 4 : 0;
         }
     }
 

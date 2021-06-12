@@ -33,9 +33,8 @@ public class OnOffButton extends GenericButton
         this.translationKey = translationKey;
         this.statusSupplier = statusSupplier;
 
-        this.setNormalBackgroundColor(0xFF303030);
-        this.setNormalBorderColor(0xFF000000);
-        this.setRenderHoverBackground(false);
+        this.getBorderRenderer().getNormalSettings().setBorderWidthAndColor(1, 0xFF000000);
+        this.getBackgroundRenderer().getNormalSettings().setColor(0xFF303030);
         this.setStyle(style);
         this.updateWidth();
         this.updateDisplayString();
@@ -55,8 +54,8 @@ public class OnOffButton extends GenericButton
         boolean isSlider = this.style == OnOffStyle.SLIDER_ON_OFF;
         String valueStr = this.getDisplayStringForState(value);
 
-        this.setNormalBorderWidth(isSlider ? 1 : 0);
-        this.renderNormalBackground = isSlider;
+        this.getBorderRenderer().getNormalSettings().setBorderWidth(isSlider ? 1 : 0);
+        this.getBackgroundRenderer().getNormalSettings().setEnabled(isSlider);
         this.defaultNormalTextColor = isSlider ? (value ? 0xFFE0E0E0 : 0xFF909090) : 0xFFE0E0E0;
         this.defaultHoveredTextColor = isSlider ? 0xFFF0F000 : 0xFFFFFFA0;
 
