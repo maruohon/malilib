@@ -32,8 +32,9 @@ public class RadialActionExecutionWidget extends BaseActionExecutionWidget
         this.setStartAngle(0.5);
         this.setEndAngle(1.2);
 
-        this.getBorderRenderer().getNormalSettings().setBorderWidth(3);
+        this.getBorderRenderer().getNormalSettings().setBorderWidth(2);
         this.getBorderRenderer().getHoverSettings().setBorderWidth(5);
+        this.editedBorderSettings.setBorderWidth(5);
     }
 
     @Override
@@ -263,7 +264,7 @@ public class RadialActionExecutionWidget extends BaseActionExecutionWidget
         double centerX = this.center.x;
         double centerY = this.center.y;
         boolean hovered = this.isHoveredForRender(ctx);
-        BorderSettings borderSettings = this.getBorderRenderer().getActiveSettings(hovered);
+        BorderSettings borderSettings = this.getActiveBorderSettings(ctx);
         BackgroundSettings backgroundSettings = this.getBackgroundRenderer().getActiveSettings(hovered);
         int borderColor = borderSettings.getColor().getTop();
         int borderWidth = borderSettings.getActiveBorderWidth();
@@ -274,11 +275,11 @@ public class RadialActionExecutionWidget extends BaseActionExecutionWidget
             z += 0.0125f;
         }
 
-        ShapeRenderUtils.renderSectorOutline(centerX, centerY, z, this.innerRadius, this.outerRadius,
-                                             this.startAngle, this.endAngle, borderWidth, borderColor);
-
         ShapeRenderUtils.renderSectorFill(centerX, centerY, z, this.innerRadius, this.outerRadius,
                                           this.startAngle, this.endAngle, bgColor);
+
+        ShapeRenderUtils.renderSectorOutline(centerX, centerY, z, this.innerRadius, this.outerRadius,
+                                             this.startAngle, this.endAngle, borderWidth, borderColor);
     }
 
     @Override

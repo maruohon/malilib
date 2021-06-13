@@ -25,7 +25,7 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
 {
     protected final List<StyledTextLine> widgetHoverText = new ArrayList<>(1);
     protected final List<StyledTextLine> combinedHoverText = new ArrayList<>(1);
-    protected final BorderSettings editedBorderSettings = new BorderSettings(2, 0xFFFF8000);
+    protected final BorderSettings editedBorderSettings = new BorderSettings(3, 0xFFFF8000);
     @Nullable protected NamedAction action;
     @Nullable protected String hoverText;
     @Nullable protected ActionWidgetContainer container;
