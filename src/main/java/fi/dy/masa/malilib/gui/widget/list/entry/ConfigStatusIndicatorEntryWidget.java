@@ -79,7 +79,7 @@ public class ConfigStatusIndicatorEntryWidget extends BaseOrderableListEditEntry
         BaseConfigStatusIndicatorWidget<?> widget = this.data;
         int width = widget.getWidth();
         int height = widget.getHeight();
-        float z = this.getZLevel();
+        float z = this.getZ();
         int x = ctx.mouseX + 10;
         int y = ctx.mouseY - 5;
 

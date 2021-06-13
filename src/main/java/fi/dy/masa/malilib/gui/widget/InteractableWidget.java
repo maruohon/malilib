@@ -11,18 +11,22 @@ import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.render.TextRenderUtils;
+import fi.dy.masa.malilib.render.text.MultiLineTextRenderSettings;
 import fi.dy.masa.malilib.render.text.OrderedStringListFactory;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public abstract class InteractableWidget extends BackgroundWidget
 {
-    protected OrderedStringListFactory hoverInfoFactory = new OrderedStringListFactory();
+    protected final OrderedStringListFactory hoverInfoFactory = new OrderedStringListFactory();
+    private final MultiLineTextRenderSettings textSettings = new MultiLineTextRenderSettings();
     @Nullable protected EventListener clickListener;
     @Nullable protected HoverChecker renderHoverChecker;
     @Nullable protected Consumer<Runnable> taskQueue;
+    protected boolean canInteract = true;
     protected boolean shouldReceiveOutsideClicks;
     protected boolean shouldReceiveOutsideScrolls;
+    protected int defaultHoveredTextColor = 0xFFFFFFFF;
 
     public InteractableWidget(int width, int height)
     {
@@ -34,6 +38,12 @@ public abstract class InteractableWidget extends BackgroundWidget
         super(x, y, width, height);
 
         this.hoverInfoFactory.setDynamic(true);
+    }
+
+    @Override
+    public MultiLineTextRenderSettings getTextSettings()
+    {
+        return this.textSettings;
     }
 
     public void setTaskQueue(@Nullable Consumer<Runnable> taskQueue)
@@ -71,6 +81,16 @@ public abstract class InteractableWidget extends BackgroundWidget
     public void setShouldReceiveOutsideScrolls(boolean shouldReceiveOutsideScrolls)
     {
         this.shouldReceiveOutsideScrolls = shouldReceiveOutsideScrolls;
+    }
+
+    public int getDefaultHoveredTextColor()
+    {
+        return this.defaultHoveredTextColor;
+    }
+
+    public void setDefaultHoveredTextColor(int defaultHoveredTextColor)
+    {
+        this.defaultHoveredTextColor = defaultHoveredTextColor;
     }
 
     public boolean isMouseOver(int mouseX, int mouseY)
@@ -254,19 +274,58 @@ public abstract class InteractableWidget extends BackgroundWidget
                this.canHoverAt(ctx.mouseX, ctx.mouseY, 0);
     }
 
+    protected int getTextColorForRender(boolean hovered)
+    {
+        return hovered ? this.defaultHoveredTextColor : this.getTextSettings().getTextColor();
+    }
+
+    protected void renderText(int x, int y, float z, boolean hovered, ScreenContext ctx)
+    {
+        if (this.text != null)
+        {
+            x = this.getTextPositionX(x, this.text.renderWidth);
+            y = this.getTextPositionY(y);
+            int color = this.getTextColorForRender(hovered);
+            boolean shadow = this.getTextSettings().getTextShadowEnabled();
+
+            this.renderTextLine(x, y, z + 0.0125f, color, shadow, ctx, this.text);
+        }
+    }
+
+    protected void renderIcon(int x, int y, float z, boolean enabled, boolean hovered, ScreenContext ctx)
+    {
+        if (this.icon != null)
+        {
+            x = this.getIconPositionX(x, this.icon.getWidth());
+            y = this.getIconPositionY(y, this.icon.getHeight());
+
+            this.icon.renderAt(x, y, z + 0.0125f, enabled, hovered);
+        }
+    }
+
+    @Override
+    public void renderAt(int x, int y, float z, ScreenContext ctx)
+    {
+        this.renderWidgetBackgroundAndBorder(x, y, z, ctx);
+
+        boolean hovered = this.isHoveredForRender(ctx);
+        this.renderIcon(x, y, z, true, false, ctx);
+        this.renderText(x, y, z, hovered, ctx);
+    }
+
     public void postRenderHovered(ScreenContext ctx)
     {
         if (this.hasHoverText() && this.shouldRenderHoverInfo(ctx))
         {
-            TextRenderUtils.renderStyledHoverText(ctx.mouseX, ctx.mouseY, this.getZLevel() + 0.5f, this.getHoverText());
+            TextRenderUtils.renderStyledHoverText(ctx.mouseX, ctx.mouseY, this.getZ() + 0.5f, this.getHoverText());
         }
     }
 
     @Nullable
     public InteractableWidget getTopHoveredWidget(int mouseX, int mouseY, @Nullable InteractableWidget highestFoundWidget)
     {
-        if (this.isMouseOver(mouseX, mouseY) &&
-            (highestFoundWidget == null || this.getZLevel() > highestFoundWidget.getZLevel()))
+        if (this.canInteract() && this.isMouseOver(mouseX, mouseY) &&
+            (highestFoundWidget == null || this.getZ() > highestFoundWidget.getZ()))
         {
             return this;
         }

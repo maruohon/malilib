@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.gui.icon.Icon;
+import fi.dy.masa.malilib.gui.position.ElementOffset;
 import fi.dy.masa.malilib.gui.util.EdgeInt;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.render.RectangleRenderer;
@@ -18,6 +19,7 @@ import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.render.TextRenderUtils;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
+import fi.dy.masa.malilib.render.text.TextRenderSettings;
 import fi.dy.masa.malilib.render.text.TextRenderer;
 import fi.dy.masa.malilib.util.data.Color4f;
 
@@ -38,34 +40,19 @@ public class BaseWidget
     @Nullable protected Icon icon;
     @Nullable protected StyledTextLine text;
 
+    protected final ElementOffset iconOffset = new ElementOffset();
+    protected final ElementOffset textOffset = new ElementOffset();
+    private final TextRenderSettings textSettings = new TextRenderSettings();
     protected TextRenderer textRenderer;
     private int x;
     private int y;
+    private float z;
     private int height;
     private int width;
-    private int xRight;
-    private float zLevel;
-    private boolean keepOnScreen;
-    private boolean rightAlign;
     protected boolean automaticHeight;
     protected boolean automaticWidth;
-    protected boolean centerIconHorizontally;
-    protected boolean centerIconVertically = true;
-    protected boolean centerTextHorizontally;
-    protected boolean centerTextVertically = true;
-    protected boolean hasMaxHeight;
-    protected boolean hasMaxWidth;
-    protected boolean textShadow = true;
-    protected int fontHeight;
-    protected int iconOffsetX;
-    protected int iconOffsetY;
-    protected int lineHeight;
     protected int maxHeight;
     protected int maxWidth;
-    protected int defaultHoveredTextColor = 0xFFFFFFFF;
-    protected int defaultNormalTextColor = 0xFFFFFFFF;
-    protected int textOffsetX = 4;
-    protected int textOffsetY;
 
     public BaseWidget()
     {
@@ -87,16 +74,14 @@ public class BaseWidget
         this.height = height;
         this.mc = Minecraft.getMinecraft();
         this.textRenderer = TextRenderer.INSTANCE;
-        this.fontHeight = this.textRenderer.getFontHeight();
-        this.lineHeight = this.fontHeight + 2;
         this.padding.setChangeListener(this::updateSize);
+        this.textOffset.setXOffset(4);
 
         this.automaticWidth = width < 0;
         this.automaticHeight = height < 0;
-        this.hasMaxWidth = width < -1;
-        this.hasMaxHeight = height < -1;
-        this.maxWidth = this.hasMaxWidth ? -width : width;
-        this.maxHeight = this.hasMaxHeight ? -height : height;
+
+        this.setMaxWidth(width < -1 ? -width : width);
+        this.setMaxHeight(height < -1 ? -height : height);
     }
 
     /**
@@ -119,6 +104,11 @@ public class BaseWidget
         return this.y;
     }
 
+    public float getZ()
+    {
+        return this.z;
+    }
+
     public int getRight()
     {
         return this.getX() + this.getWidth();
@@ -127,6 +117,41 @@ public class BaseWidget
     public int getBottom()
     {
         return this.getY() + this.getHeight();
+    }
+
+    public int getWidth()
+    {
+        return this.width;
+    }
+
+    public int getHeight()
+    {
+        return this.height;
+    }
+
+    public int getMaxWidth()
+    {
+        return this.maxWidth;
+    }
+
+    public int getMaxHeight()
+    {
+        return this.maxHeight;
+    }
+
+    public boolean hasMaxWidth()
+    {
+        return this.maxWidth > 0;
+    }
+
+    public boolean hasMaxHeight()
+    {
+        return this.maxHeight > 0;
+    }
+
+    public int getLineHeight()
+    {
+        return this.getTextSettings().getLineHeight();
     }
 
     public void setX(int x)
@@ -147,6 +172,11 @@ public class BaseWidget
         this.y = y;
 
         this.onPositionChanged(oldX, oldY);
+    }
+
+    public void setZ(float z)
+    {
+        this.z = z;
     }
 
     public void setPosition(int x, int y)
@@ -179,12 +209,6 @@ public class BaseWidget
         this.onPositionOrSizeChanged(oldX, oldY);
     }
 
-    public void setRightX(int x)
-    {
-        this.xRight = x;
-        this.updateHorizontalPositionIfRightAligned();
-    }
-
     public void setRight(int xRight)
     {
         int oldX = this.x;
@@ -203,17 +227,6 @@ public class BaseWidget
         this.y = yBottom - this.height;
 
         this.onPositionChanged(oldX, oldY);
-    }
-
-    public void setRightAlign(boolean rightAlign, int xRight, boolean keepOnScreen)
-    {
-        this.rightAlign = rightAlign;
-        this.keepOnScreen = keepOnScreen;
-
-        if (rightAlign)
-        {
-            this.setRightX(xRight);
-        }
     }
 
     public EdgeInt getMargin()
@@ -244,25 +257,6 @@ public class BaseWidget
     public void setPadding(int top, int right, int bottom, int left)
     {
         this.padding.setAll(top, right, bottom, left);
-    }
-
-    protected void updateHorizontalPositionIfRightAligned()
-    {
-        if (this.rightAlign)
-        {
-            int oldX = this.x;
-            int oldY = this.y;
-
-            this.x = this.xRight - this.width;
-
-            if (this.keepOnScreen && this.x < 0)
-            {
-                this.xRight += -this.x + 4;
-                this.x = 4;
-            }
-
-            this.onPositionChanged(oldX, oldY);
-        }
     }
 
     public void updateSize()
@@ -296,26 +290,10 @@ public class BaseWidget
     {
     }
 
-    public int getWidth()
-    {
-        return this.width;
-    }
-
-    public int getHeight()
-    {
-        return this.height;
-    }
-
-    public int getLineHeight()
-    {
-        return this.lineHeight;
-    }
-
     public void setWidth(int width)
     {
         this.width = width;
 
-        this.updateHorizontalPositionIfRightAligned();
         this.onSizeChanged();
     }
 
@@ -330,23 +308,12 @@ public class BaseWidget
         this.width = width;
         this.height = height;
 
-        this.updateHorizontalPositionIfRightAligned();
         this.onSizeChanged();
     }
 
     public void setLineHeight(int lineHeight)
     {
-        this.lineHeight = lineHeight;
-    }
-
-    public int getMaxWidth()
-    {
-        return this.maxWidth;
-    }
-
-    public int getMaxHeight()
-    {
-        return this.maxHeight;
+        this.getTextSettings().setLineHeight(lineHeight);
     }
 
     /**
@@ -355,7 +322,6 @@ public class BaseWidget
     public void setMaxWidth(int maxWidth)
     {
         this.maxWidth = maxWidth;
-        this.hasMaxWidth = maxWidth > 0;
     }
 
     /**
@@ -364,7 +330,6 @@ public class BaseWidget
     public void setMaxHeight(int maxHeight)
     {
         this.maxHeight = maxHeight;
-        this.hasMaxHeight = maxHeight > 0;
     }
 
     public void setAutomaticWidth(boolean automaticWidth)
@@ -402,19 +367,9 @@ public class BaseWidget
     {
     }
 
-    public float getZLevel()
-    {
-        return this.zLevel;
-    }
-
-    public void setZLevel(float zLevel)
-    {
-        this.zLevel = zLevel;
-    }
-
     public void setZLevelBasedOnParent(float parentZLevel)
     {
-        this.setZLevel(parentZLevel + this.getSubWidgetZLevelIncrement());
+        this.setZ(parentZLevel + this.getSubWidgetZLevelIncrement());
     }
 
     /**
@@ -431,104 +386,24 @@ public class BaseWidget
         return 2;
     }
 
-    public boolean getCenterTextHorizontally()
+    public boolean canInteract()
     {
-        return this.centerTextHorizontally;
+        return false;
     }
 
-    public boolean getCenterTextVertically()
+    public ElementOffset getIconOffset()
     {
-        return this.centerTextVertically;
+        return this.iconOffset;
     }
 
-    public int getDefaultNormalTextColor()
+    public ElementOffset getTextOffset()
     {
-        return this.defaultNormalTextColor;
+        return this.textOffset;
     }
 
-    public int getDefaultHoveredTextColor()
+    public TextRenderSettings getTextSettings()
     {
-        return this.defaultHoveredTextColor;
-    }
-
-    public boolean getCenterIconHorizontally()
-    {
-        return this.centerIconHorizontally;
-    }
-
-    public boolean getCenterIconVertically()
-    {
-        return this.centerIconVertically;
-    }
-
-    public int getTextOffsetX()
-    {
-        return this.textOffsetX;
-    }
-
-    public int getTextOffsetY()
-    {
-        return this.textOffsetY;
-    }
-
-    public int getIconOffsetX()
-    {
-        return this.iconOffsetX;
-    }
-
-    public int getIconOffsetY()
-    {
-        return this.iconOffsetY;
-    }
-
-    public void setCenterTextHorizontally(boolean centerTextHorizontally)
-    {
-        this.centerTextHorizontally = centerTextHorizontally;
-    }
-
-    public void setCenterTextVertically(boolean centerTextVertically)
-    {
-        this.centerTextVertically = centerTextVertically;
-    }
-
-    public void setCenterIconHorizontally(boolean centerIconHorizontally)
-    {
-        this.centerIconHorizontally = centerIconHorizontally;
-    }
-
-    public void setCenterIconVertically(boolean centerIconVertically)
-    {
-        this.centerIconVertically = centerIconVertically;
-    }
-
-    public void setDefaultNormalTextColor(int defaultNormalTextColor)
-    {
-        this.defaultNormalTextColor = defaultNormalTextColor;
-    }
-
-    public void setDefaultHoveredTextColor(int defaultHoveredTextColor)
-    {
-        this.defaultHoveredTextColor = defaultHoveredTextColor;
-    }
-
-    public void setTextOffsetX(int textOffsetX)
-    {
-        this.textOffsetX = textOffsetX;
-    }
-
-    public void setTextOffsetY(int textOffsetY)
-    {
-        this.textOffsetY = textOffsetY;
-    }
-
-    public void setIconOffsetX(int iconOffsetX)
-    {
-        this.iconOffsetX = iconOffsetX;
-    }
-
-    public void setIconOffsetY(int iconOffsetY)
-    {
-        this.iconOffsetY = iconOffsetY;
+        return this.textSettings;
     }
 
     /**
@@ -550,8 +425,8 @@ public class BaseWidget
     public void setText(@Nullable StyledTextLine text, int textOffsetX, int textOffsetY)
     {
         this.text = text;
-        this.textOffsetX = textOffsetX;
-        this.textOffsetY = textOffsetY;
+        this.textOffset.setXOffset(textOffsetX);
+        this.textOffset.setYOffset(textOffsetY);
     }
 
     @Nullable
@@ -569,11 +444,6 @@ public class BaseWidget
         this.icon = icon;
     }
 
-    public int getFontHeight()
-    {
-        return this.fontHeight;
-    }
-
     protected int getCenteredElementOffsetX(int elementWidth)
     {
         return (this.getWidth() - elementWidth) / 2;
@@ -586,7 +456,7 @@ public class BaseWidget
 
     protected int getCenteredTextOffsetY()
     {
-        return (this.getHeight() - this.fontHeight) / 2 + 1;
+        return (this.getHeight() - this.getFontHeight()) / 2 + 1;
     }
 
     public void bindTexture(ResourceLocation texture)
@@ -594,21 +464,27 @@ public class BaseWidget
         RenderUtils.bindTexture(texture);
     }
 
+    public int getFontHeight()
+    {
+        return this.textRenderer.getFontHeight();
+    }
+
     public int getStringWidth(String str)
     {
         return this.textRenderer.getStringWidth(str);
     }
 
-    public int getRawStringWidth(String str)
+    public int getRawStyledTextWidth(String str)
     {
         return StyledTextLine.raw(str).renderWidth;
     }
 
     protected int getTextPositionX(int x, int textWidth)
     {
-        int position = x + this.textOffsetX;
+        ElementOffset offset = this.textOffset;
+        int position = x + offset.getXOffset();
 
-        if (this.centerTextHorizontally)
+        if (offset.getCenterHorizontally())
         {
             position += this.getCenteredElementOffsetX(textWidth);
         }
@@ -618,9 +494,10 @@ public class BaseWidget
 
     protected int getTextPositionY(int y)
     {
-        int position = y + this.textOffsetY;
+        ElementOffset offset = this.textOffset;
+        int position = y + offset.getYOffset();
 
-        if (this.centerTextVertically)
+        if (offset.getCenterVertically())
         {
             position += this.getCenteredTextOffsetY();
         }
@@ -630,9 +507,10 @@ public class BaseWidget
 
     protected int getIconPositionX(int x, int iconWidth)
     {
-        int position = x + this.iconOffsetX;
+        ElementOffset offset = this.iconOffset;
+        int position = x + offset.getXOffset();
 
-        if (this.centerIconHorizontally)
+        if (offset.getCenterHorizontally())
         {
             position += this.getCenteredElementOffsetX(iconWidth);
         }
@@ -642,9 +520,10 @@ public class BaseWidget
 
     protected int getIconPositionY(int y, int iconHeight)
     {
-        int position = y + this.iconOffsetY;
+        ElementOffset offset = this.iconOffset;
+        int position = y + offset.getYOffset();
 
-        if (this.centerIconVertically)
+        if (offset.getCenterVertically())
         {
             position += this.getCenteredElementOffsetY(iconHeight);
         }
@@ -668,46 +547,41 @@ public class BaseWidget
         this.textRenderer.renderLine(x, y, z, color, shadow, StyledTextLine.of(str));
     }
 
-    protected int getTextColorForRender(boolean hovered)
-    {
-        return hovered ? this.defaultHoveredTextColor : this.defaultNormalTextColor;
-    }
-
-    protected void renderText(int x, int y, float z, boolean hovered, ScreenContext ctx)
+    protected void renderText(int x, int y, float z, ScreenContext ctx)
     {
         if (this.text != null)
         {
             x = this.getTextPositionX(x, this.text.renderWidth);
             y = this.getTextPositionY(y);
-            int color = this.getTextColorForRender(hovered);
+            int color = this.getTextSettings().getTextColor();
+            boolean shadow = this.getTextSettings().getTextShadowEnabled();
 
-            this.renderTextLine(x, y, z + 0.025f, color, this.textShadow, ctx, this.text);
+            this.renderTextLine(x, y, z + 0.0125f, color, shadow, ctx, this.text);
         }
     }
 
-    protected void renderIcon(int x, int y, float z, boolean enabled, boolean hovered, ScreenContext ctx)
+    protected void renderIcon(int x, int y, float z, boolean enabled, ScreenContext ctx)
     {
         if (this.icon != null)
         {
             x = this.getIconPositionX(x, this.icon.getWidth());
             y = this.getIconPositionY(y, this.icon.getHeight());
 
-            this.icon.renderAt(x, y, z + 0.025f, enabled, hovered);
+            this.icon.renderAt(x, y, z + 0.0125f, enabled, false);
         }
     }
 
     public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
-        boolean hovered = ctx.isActiveScreen && ctx.hoveredWidgetId == this.getId();
-        this.renderIcon(x, y, z, true, hovered, ctx);
-        this.renderText(x, y, z, hovered, ctx);
+        this.renderIcon(x, y, z, true, ctx);
+        this.renderText(x, y, z, ctx);
     }
 
     public void renderDebug(boolean hovered, ScreenContext ctx)
     {
         int x = this.getX();
         int y = this.getY();
-        float z = this.getZLevel();
+        float z = this.getZ();
 
         this.renderDebug(x, y, z, hovered, ctx);
     }

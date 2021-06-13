@@ -825,7 +825,7 @@ public abstract class BaseScreen extends GuiScreen
     {
         for (InteractableWidget widget : this.widgets)
         {
-            widget.renderAt(widget.getX(), widget.getY(), widget.getZLevel(), ctx);
+            widget.renderAt(widget.getX(), widget.getY(), widget.getZ(), ctx);
         }
     }
 

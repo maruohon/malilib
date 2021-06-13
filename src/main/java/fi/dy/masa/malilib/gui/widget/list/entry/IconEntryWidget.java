@@ -36,8 +36,8 @@ public class IconEntryWidget extends BaseDataListEntryWidget<Icon>
         int v = data.getV();
         String texture = data.getTexture().toString();
 
-        this.iconOffsetX = 4;
-        this.textOffsetX = 28;
+        this.iconOffset.setXOffset(4);
+        this.textOffset.setXOffset(28);
         this.icon = data;
         this.setText(StyledTextLine.of(String.format("%d x %d @ [ %d, %d ] @ %s", w, h, u, v, texture)));
     }

@@ -33,7 +33,7 @@ public class MessageUtils
         {
             widget = new MessageRendererWidget();
             widget.setLocation(location != null ? location : ScreenLocation.CENTER);
-            widget.setZLevel(300f);
+            widget.setZ(300f);
             widget.setWidth(300);
             widget.setRenderAboveScreen(true);
 
@@ -59,7 +59,7 @@ public class MessageUtils
             widget.addMarker(CUSTOM_ACTION_BAR_MARKER);
             widget.setRenderBackground(false);
             widget.getMargin().setBottom(50);
-            widget.setZLevel(300f);
+            widget.setZ(300f);
             widget.setAutomaticWidth(true);
             widget.setName(StringUtils.translate("malilib.label.default_custom_hotbar_message_renderer"));
             widget.setMaxMessages(MaLiLibConfigs.Generic.ACTION_BAR_MESSAGE_LIMIT.getIntegerValue());
@@ -79,7 +79,7 @@ public class MessageUtils
         {
             widget = new ToastRendererWidget();
             widget.setLocation(location != null ? location : ScreenLocation.TOP_RIGHT);
-            widget.setZLevel(310f);
+            widget.setZ(310f);
 
             if (marker != null)
             {

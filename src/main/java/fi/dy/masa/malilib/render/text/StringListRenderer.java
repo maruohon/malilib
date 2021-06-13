@@ -19,8 +19,8 @@ public class StringListRenderer extends BaseWidget
     protected final List<StyledTextLine> originalTextLines = new ArrayList<>();
     protected final List<StyledTextLine> processedLinesClamped = new ArrayList<>();
     protected final List<StyledTextLine> processedLinesFull = new ArrayList<>();
-    protected final TextRenderSettings textSettingsNormal = new TextRenderSettings();
-    protected final TextRenderSettings textSettingsHover = new TextRenderSettings();
+    protected final MultiLineTextRenderSettings textSettingsNormal = new MultiLineTextRenderSettings();
+    protected final MultiLineTextRenderSettings textSettingsHover = new MultiLineTextRenderSettings();
     protected HorizontalAlignment horizontalAlignment = HorizontalAlignment.LEFT;
     protected VerticalAlignment verticalAlignment = VerticalAlignment.TOP;
     protected LineClamper lineClamper;
@@ -35,9 +35,9 @@ public class StringListRenderer extends BaseWidget
         super(0, 0, 0, 0);
 
         this.textSettingsNormal.setTextColor(0xFFC0C0C0);
-        this.textSettingsNormal.setUseTextShadow(true);
+        this.textSettingsNormal.setTextShadowEnabled(true);
         this.textSettingsHover.setTextColor(0xFFE0E0E0);
-        this.textSettingsHover.setUseTextShadow(true);
+        this.textSettingsHover.setTextShadowEnabled(true);
         this.lineClamper = this::clampLineToWidth;
     }
 
@@ -53,13 +53,13 @@ public class StringListRenderer extends BaseWidget
 
     public int getClampedRenderWidth()
     {
-        int bgWidth = this.textSettingsNormal.useBackground ? this.padding.getHorizontalTotal() : 0;
+        int bgWidth = this.textSettingsNormal.getBackgroundEnabled() ? this.padding.getHorizontalTotal() : 0;
         return this.clampedTextWidth + bgWidth;
     }
 
     public int getTotalRenderWidth()
     {
-        int bgWidth = this.textSettingsNormal.useBackground ? this.padding.getHorizontalTotal() : 0;
+        int bgWidth = this.textSettingsNormal.getBackgroundEnabled() ? this.padding.getHorizontalTotal() : 0;
         return this.totalTextWidth + bgWidth;
     }
 
@@ -70,7 +70,7 @@ public class StringListRenderer extends BaseWidget
 
     public int getTotalRenderHeight()
     {
-        int bgHeight = this.textSettingsNormal.useBackground ? this.padding.getVerticalTotal() : 0;
+        int bgHeight = this.textSettingsNormal.getBackgroundEnabled() ? this.padding.getVerticalTotal() : 0;
         return this.totalTextHeight + bgHeight;
     }
 
@@ -99,12 +99,12 @@ public class StringListRenderer extends BaseWidget
         this.textSettingsHover.setFrom(settings);
     }
 
-    public TextRenderSettings getNormalTextSettings()
+    public MultiLineTextRenderSettings getNormalTextSettings()
     {
         return this.textSettingsNormal;
     }
 
-    public TextRenderSettings getHoverTextSettings()
+    public MultiLineTextRenderSettings getHoverTextSettings()
     {
         return this.textSettingsHover;
     }
@@ -217,11 +217,12 @@ public class StringListRenderer extends BaseWidget
     {
         StyledTextLine clampedLine = line;
         int lineWidth = line.renderWidth;
-        this.totalTextHeight += this.processedLinesFull.size() > 0 ? this.lineHeight : TextRenderer.INSTANCE.getFontHeight();
+        int lineHeight = this.getLineHeight();
+        this.totalTextHeight += this.processedLinesFull.size() > 0 ? lineHeight : TextRenderer.INSTANCE.getFontHeight();
         this.totalTextWidth = Math.max(this.totalTextWidth, lineWidth);
         this.processedLinesFull.add(line);
 
-        if (this.hasMaxWidth && lineWidth > this.maxWidth)
+        if (this.hasMaxWidth() && lineWidth > this.maxWidth)
         {
             clampedLine = this.lineClamper.clampLineToWidth(line, this.maxWidth);
             lineWidth = clampedLine.renderWidth;
@@ -230,13 +231,13 @@ public class StringListRenderer extends BaseWidget
 
         this.clampedTextWidth = Math.max(this.clampedTextWidth, lineWidth);
 
-        if (this.hasMaxHeight == false || this.totalTextHeight <= this.maxHeight)
+        if (this.hasMaxHeight() == false || this.totalTextHeight <= this.maxHeight)
         {
             this.processedLinesClamped.add(clampedLine);
             this.clampedHeight = this.totalTextHeight;
         }
 
-        if (this.hasMaxHeight)
+        if (this.hasMaxHeight())
         {
             this.hasClampedContent |= this.totalTextHeight > this.maxHeight;
         }
@@ -254,17 +255,17 @@ public class StringListRenderer extends BaseWidget
 
     public void renderAt(int x, int y, float z, boolean hovered)
     {
-        TextRenderSettings settings = hovered ? this.textSettingsHover : this.textSettingsNormal;
+        MultiLineTextRenderSettings settings = hovered ? this.textSettingsHover : this.textSettingsNormal;
         List<StyledTextLine> lines = hovered ? this.processedLinesFull : this.processedLinesClamped;
         boolean rightAlign = this.horizontalAlignment == HorizontalAlignment.RIGHT;
         boolean center = this.horizontalAlignment == HorizontalAlignment.CENTER;
-        boolean shadow = settings.useTextShadow;
-        boolean renderBackground = settings.useBackground;
-        boolean oddEvenBackground = settings.useOddEvenBackground;
-        boolean checkHeight = hovered == false && this.hasMaxHeight;
-        int color = settings.textColor;
-        int bgColorNormal = settings.backgroundColor;
-        int bgColorOdd = oddEvenBackground ? settings.backgroundColorOdd : bgColorNormal;
+        boolean shadow = settings.getTextShadowEnabled();
+        boolean renderBackground = settings.getBackgroundEnabled();
+        boolean oddEvenBackground = settings.getOddEvenBackgroundEnabled();
+        boolean checkHeight = hovered == false && this.hasMaxHeight();
+        int color = settings.getTextColor();
+        int bgColorNormal = settings.getBackgroundColor();
+        int bgColorOdd = oddEvenBackground ? settings.getOddRowBackgroundColor() : bgColorNormal;
         int usedHeight = TextRenderer.INSTANCE.getFontHeight();
         int width = hovered ? this.getTotalRenderWidth() : this.getClampedRenderWidth();
         int leftPadding = this.padding.getLeft();
@@ -274,7 +275,7 @@ public class StringListRenderer extends BaseWidget
         int textLineY = y + this.padding.getTop();
         int backgroundX = x;
         int backgroundY = y;
-        int lineHeight = this.lineHeight;
+        int lineHeight = this.getLineHeight();
         int size = lines.size();
         BufferBuilder buffer = null;
 
@@ -307,7 +308,7 @@ public class StringListRenderer extends BaseWidget
             {
                 int backgroundWidth = line.renderWidth + horizontalPadding;
 
-                if (settings.useEvenWidthBackground)
+                if (settings.evenWidthBackgroundEnabled)
                 {
                     backgroundWidth = width;
                 }

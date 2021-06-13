@@ -216,7 +216,7 @@ public class DirectoryNavigationWidget extends SearchBarWidget
                 button.setHorizontalLabelPadding(2);
                 button.setRenderButtonBackgroundTexture(false);
                 button.getBorderRenderer().getHoverSettings().setEnabled(true);
-                button.setUseTextShadow(false);
+                button.getTextSettings().setTextShadowEnabled(false);
                 button.setDefaultHoveredTextColor(0xFFFFFFFF);
                 button.setActionListener(() -> {
                     if (BaseScreen.isShiftDown())
@@ -236,8 +236,8 @@ public class DirectoryNavigationWidget extends SearchBarWidget
                 if (dirs.isEmpty() == false)
                 {
                     final DropDownListWidget<File> dropdown = new DropDownListWidget<>(-1, 12, 120, 10, dirs, displayNameFactory);
-                    dropdown.setPosition(x + el.totalWidth, y + 16);
-                    dropdown.setRightAlign(true, x + el.totalWidth, true);
+                    dropdown.setY(y + 16);
+                    dropdown.setRight(x + el.totalWidth);
                     dropdown.setNoBarWhenClosed(x + el.totalWidth - 12, y + 3, () -> this.getNavBarIconSubdirs(dropdown.isOpen()));
                     dropdown.setSelectionListener(this.navigator::switchToDirectory);
                     this.addWidget(dropdown);

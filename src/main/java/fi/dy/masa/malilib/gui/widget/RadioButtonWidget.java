@@ -65,10 +65,11 @@ public class RadioButtonWidget<T extends Enum<T>> extends InteractableWidget
     protected void updateSizes()
     {
         MultiIcon icon = this.iconUnselected;
+        int fontHeight = this.getFontHeight();
         int iconWidth = icon != null ? icon.getWidth() + 3 : 0;
-        int iconHeight = icon != null ? icon.getHeight() : this.fontHeight + 1;
+        int iconHeight = icon != null ? icon.getHeight() : fontHeight + 1;
 
-        this.entryHeight = Math.max((this.fontHeight + 1), iconHeight);
+        this.entryHeight = Math.max((fontHeight + 1), iconHeight);
 
         this.setWidth(this.textWidth + iconWidth);
         this.setHeight(this.entryHeight * this.options.size());
@@ -133,7 +134,7 @@ public class RadioButtonWidget<T extends Enum<T>> extends InteractableWidget
                 icon.renderAt(x, iconY, z, false, entryHovered);
             }
 
-            int textY = y + 1 + (this.entryHeight - this.fontHeight) / 2;
+            int textY = y + 1 + (this.entryHeight - this.getFontHeight()) / 2;
             int textColor = entrySelected ? 0xFFFFFFFF : 0xB0B0B0B0;
 
             this.renderTextLine(x + iconWidth, textY, z, textColor, true, ctx, displayString);

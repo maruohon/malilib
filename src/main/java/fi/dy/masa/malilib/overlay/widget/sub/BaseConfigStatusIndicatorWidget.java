@@ -34,9 +34,9 @@ public abstract class BaseConfigStatusIndicatorWidget<C extends ConfigInfo> exte
 
         this.config = config;
         this.configOnTab = configOnTab;
-        this.getTextSettings().setUseOddEvenBackground(true);
+        this.getTextSettings().setOddEvenBackgroundEnabled(true);
 
-        this.setHeight(this.lineHeight);
+        this.setHeight(this.getLineHeight());
         this.setName(config.getDisplayName());
     }
 
@@ -120,7 +120,7 @@ public abstract class BaseConfigStatusIndicatorWidget<C extends ConfigInfo> exte
     @Override
     protected void renderContents(int x, int y, float z, ScreenContext ctx)
     {
-        int ty = y + this.getHeight() / 2 - this.fontHeight / 2;
+        int ty = y + this.getHeight() / 2 - this.getFontHeight() / 2;
 
         this.renderNameText(x, ty, z, ctx);
         this.renderValueDisplayText(x, ty, z, ctx);

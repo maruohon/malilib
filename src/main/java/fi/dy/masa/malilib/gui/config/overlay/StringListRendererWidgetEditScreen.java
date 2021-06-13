@@ -16,7 +16,7 @@ import fi.dy.masa.malilib.gui.widget.button.OnOffButton;
 import fi.dy.masa.malilib.overlay.InfoOverlay;
 import fi.dy.masa.malilib.overlay.InfoWidgetManager;
 import fi.dy.masa.malilib.overlay.widget.StringListRendererWidget;
-import fi.dy.masa.malilib.render.text.TextRenderSettings;
+import fi.dy.masa.malilib.render.text.MultiLineTextRenderSettings;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class StringListRendererWidgetEditScreen extends BaseScreen
@@ -85,14 +85,14 @@ public class StringListRendererWidgetEditScreen extends BaseScreen
 
         this.enabledToggleButton = OnOffButton.simpleSlider(16, widget::isEnabled, widget::toggleEnabled);
 
-        final TextRenderSettings textSettings = widget.getTextSettings();
+        final MultiLineTextRenderSettings textSettings = widget.getTextSettings();
 
-        this.backgroundEnabledToggleButton = OnOffButton.simpleSlider(16, textSettings::getUseBackground, textSettings::toggleUseBackground);
-        this.oddEvenBackgroundToggleButton = OnOffButton.simpleSlider(16, textSettings::getUseOddEvenBackground, textSettings::toggleUseOddEvenBackground);
+        this.backgroundEnabledToggleButton = OnOffButton.simpleSlider(16, textSettings::getBackgroundEnabled, textSettings::toggleUseBackground);
+        this.oddEvenBackgroundToggleButton = OnOffButton.simpleSlider(16, textSettings::getOddEvenBackgroundEnabled, textSettings::toggleUseOddEvenBackground);
         this.oddEvenBackgroundToggleButton.addHoverStrings(StringUtils.translate("malilib.label.config_status_indicator.background_odd.hover"));
 
-        this.evenWidthBackgroundToggleButton = OnOffButton.simpleSlider(16, textSettings::getUseEvenWidthBackground, textSettings::toggleUseEvenWidthBackground);
-        this.textShadowToggleButton = OnOffButton.simpleSlider(16, textSettings::getUseTextShadow, textSettings::toggleUseTextShadow);
+        this.evenWidthBackgroundToggleButton = OnOffButton.simpleSlider(16, textSettings::getEvenWidthBackgroundEnabled, textSettings::toggleUseEvenWidthBackground);
+        this.textShadowToggleButton = OnOffButton.simpleSlider(16, textSettings::getTextShadowEnabled, textSettings::toggleUseTextShadow);
         this.renderNameToggleButton = OnOffButton.simpleSlider(16, widget::getRenderName, widget::toggleRenderName);
 
         this.textColorWidget = new ColorIndicatorWidget(16, 16, textSettings::getTextColor, textSettings::setTextColor);

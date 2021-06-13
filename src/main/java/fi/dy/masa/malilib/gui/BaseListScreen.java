@@ -82,7 +82,7 @@ public abstract class BaseListScreen<LISTWIDGET extends BaseListWidget> extends 
         if (this.widget != null)
         {
             this.widget.setTaskQueue(this::addTask);
-            this.widget.setZLevel((int) this.zLevel + 2);
+            this.widget.setZ((int) this.zLevel + 2);
             this.widget.initWidget();
         }
     }
@@ -286,7 +286,7 @@ public abstract class BaseListScreen<LISTWIDGET extends BaseListWidget> extends 
 
         if (listWidget != null)
         {
-            listWidget.renderAt(listWidget.getX(), listWidget.getY(), listWidget.getZLevel(), ctx);
+            listWidget.renderAt(listWidget.getX(), listWidget.getY(), listWidget.getZ(), ctx);
         }
     }
 

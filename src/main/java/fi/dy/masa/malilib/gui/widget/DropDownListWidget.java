@@ -128,7 +128,7 @@ public class DropDownListWidget<T> extends ContainerWidget
         this.scrollBar.setValueChangeListener(this::onScrolled);
 
         this.selectionBarWidget = new SelectionBarWidget<>(width, height, this.textColor, this);
-        this.selectionBarWidget.setZLevel(2);
+        this.selectionBarWidget.setZ(2);
         this.selectionBarWidget.getBackgroundRenderer().getHoverSettings().setEnabledAndColor(true, 0xFF202020);
 
         this.searchField = new BaseTextFieldWidget(width, 16);
@@ -167,6 +167,7 @@ public class DropDownListWidget<T> extends ContainerWidget
         this.openCloseButton = GenericButton.createIconOnly(iconSupplier);
         this.openCloseButton.setPosition(buttonX, buttonY);
         this.openCloseButton.setActionListener(this::toggleOpen);
+        this.openCloseButton.setPlayClickSound(false);
         this.reAddSubWidgets();
     }
 
@@ -458,13 +459,13 @@ public class DropDownListWidget<T> extends ContainerWidget
 
         if (this.isOpen == false)
         {
-            this.setZLevel(this.getZLevel() - 50);
+            this.setZ(this.getZ() - 50);
             this.setSearchOpen(false);
         }
         // setSearchOpen() already re-adds the widgets
         else
         {
-            this.setZLevel(this.getZLevel() + 50);
+            this.setZ(this.getZ() + 50);
             // Add/remove the sub widgets as needed
             this.reAddSubWidgets();
         }
@@ -870,7 +871,7 @@ public class DropDownListWidget<T> extends ContainerWidget
 
             StyledTextLine text = this.isMouseOver(ctx.mouseX, ctx.mouseY) ? this.displayStringFull : this.displayStringClamped;
             int tx = x + 4;
-            int ty = y + (this.getHeight() - this.fontHeight) / 2 + 1;
+            int ty = y + (this.getHeight() - this.getFontHeight()) / 2 + 1;
 
             if (this.iconWidget != null)
             {
@@ -887,13 +888,13 @@ public class DropDownListWidget<T> extends ContainerWidget
         {
             int diffX = x - this.getX();
             int diffY = y - this.getY();
-            float diffZ = z - this.getZLevel();
+            float diffZ = z - this.getZ();
 
             for (InteractableWidget widget : this.subWidgets)
             {
                 int wx;
                 int wy;
-                float wz = widget.getZLevel() + diffZ;
+                float wz = widget.getZ() + diffZ;
 
                 if (widget != this.openCloseIconWidget || this.shouldRenderExpandedBackground(ctx) == false)
                 {
@@ -919,7 +920,7 @@ public class DropDownListWidget<T> extends ContainerWidget
 
             if (this.dropdownWidget.isOpen() && this.openStateHoverText != null)
             {
-                TextRenderUtils.renderHoverText(ctx.mouseX + 4, ctx.mouseY + 4, this.getZLevel() + 50, this.openStateHoverText);
+                TextRenderUtils.renderHoverText(ctx.mouseX + 4, ctx.mouseY + 4, this.getZ() + 50, this.openStateHoverText);
             }
         }
 
@@ -1038,7 +1039,7 @@ public class DropDownListWidget<T> extends ContainerWidget
 
             StyledTextLine text = this.isMouseOver(ctx.mouseX, ctx.mouseY) ? this.displayStringFull : this.displayStringClamped;
             int tx = this.iconWidget != null ? this.iconWidget.getRight() + 4 : x + 4;
-            int ty = y + (this.getHeight() - this.fontHeight) / 2 + 1;
+            int ty = y + (this.getHeight() - this.getFontHeight()) / 2 + 1;
 
             this.renderTextLine(tx, ty, z, this.textColor, true, ctx, text);
         }

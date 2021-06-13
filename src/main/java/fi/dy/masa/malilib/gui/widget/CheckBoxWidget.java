@@ -6,7 +6,6 @@ import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
-import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.data.BooleanStorage;
 
@@ -14,9 +13,9 @@ public class CheckBoxWidget extends InteractableWidget
 {
     protected final MultiIcon iconUnchecked;
     protected final MultiIcon iconChecked;
-    protected BooleanSupplier booleanSupplier;
-    protected Consumer<Boolean> booleanConsumer;
     @Nullable protected Consumer<Boolean> listener;
+    protected BooleanSupplier booleanSupplier = () -> false;
+    protected Consumer<Boolean> booleanConsumer = (v) -> {};
     protected int textColorChecked = 0xFFFFFFFF;
     protected int textColorUnchecked = 0xB0B0B0B0;
 
@@ -27,14 +26,16 @@ public class CheckBoxWidget extends InteractableWidget
         this.text = translationKey != null ? StyledTextLine.translate(translationKey) : null;
         this.iconUnchecked = iconUnchecked;
         this.iconChecked = iconChecked;
-        this.textOffsetY = -1;
+        this.textOffset.setYOffset(-1);
 
         this.setBooleanStorage(new BooleanConfig("", false));
 
         int textWidth = this.text != null ? this.text.renderWidth : 0;
         int ih = iconChecked.getHeight();
         this.setWidth(iconUnchecked.getWidth() + (textWidth > 0 ? textWidth + 3 : 0));
-        this.setHeight(textWidth > 0 ? Math.max(this.fontHeight, ih) : ih);
+        this.setHeight(textWidth > 0 ? Math.max(this.getFontHeight(), ih) : ih);
+
+        this.updateState();
     }
 
     public CheckBoxWidget(@Nullable String translationKey, @Nullable String hoverInfoKey)
@@ -56,12 +57,14 @@ public class CheckBoxWidget extends InteractableWidget
     public CheckBoxWidget setTextColorChecked(int color)
     {
         this.textColorChecked = color;
+        this.updateState();
         return this;
     }
 
     public CheckBoxWidget setTextColorUnchecked(int color)
     {
         this.textColorUnchecked = color;
+        this.updateState();
         return this;
     }
 
@@ -74,6 +77,7 @@ public class CheckBoxWidget extends InteractableWidget
     {
         this.booleanSupplier = booleanSupplier;
         this.booleanConsumer = booleanConsumer;
+        this.updateState();
     }
 
     public void setListener(@Nullable Consumer<Boolean> listener)
@@ -99,6 +103,7 @@ public class CheckBoxWidget extends InteractableWidget
     public void setSelected(boolean selected, boolean notifyListener)
     {
         this.booleanConsumer.accept(selected);
+        this.updateState();
 
         if (notifyListener && this.listener != null)
         {
@@ -106,24 +111,21 @@ public class CheckBoxWidget extends InteractableWidget
         }
     }
 
+    protected void updateState()
+    {
+        boolean selected = this.isSelected();
+
+        this.getTextSettings().setTextColor(selected ? this.textColorChecked : this.textColorUnchecked);
+        this.setIcon(selected ? this.iconChecked : this.iconUnchecked);
+
+        int textXOffset = this.icon != null ? this.icon.getWidth() + 3 : 3;
+        this.getTextOffset().setXOffset(textXOffset);
+    }
+
     @Override
     protected boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
         this.setSelected(! this.isSelected());
         return true;
-    }
-
-    @Override
-    public void renderAt(int x, int y, float z, ScreenContext ctx)
-    {
-        boolean selected = this.isSelected();
-        MultiIcon icon = selected ? this.iconChecked : this.iconUnchecked;
-
-        this.defaultNormalTextColor = selected ? this.textColorChecked : this.textColorUnchecked;
-        this.textOffsetX = icon.getWidth() + 3;
-
-        super.renderAt(x, y, z, ctx);
-
-        icon.renderAt(x, y, z, false, false);
     }
 }

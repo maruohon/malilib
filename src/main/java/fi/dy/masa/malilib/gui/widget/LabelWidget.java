@@ -134,7 +134,7 @@ public class LabelWidget extends InteractableWidget
 
     public LabelWidget setUseTextShadow(boolean useShadow)
     {
-        this.stringListRenderer.getNormalTextSettings().setUseTextShadow(useShadow);
+        this.stringListRenderer.getNormalTextSettings().setTextShadowEnabled(useShadow);
         return this;
     }
 
@@ -178,8 +178,8 @@ public class LabelWidget extends InteractableWidget
 
     protected void updateStringRendererSize()
     {
-        int width = this.hasMaxWidth ? this.maxWidth : this.getWidth();
-        int height = this.hasMaxHeight ? this.maxHeight : this.getHeight();
+        int width = this.hasMaxWidth() ? this.maxWidth : this.getWidth();
+        int height = this.hasMaxHeight() ? this.maxHeight : this.getHeight();
         int bw = this.getBorderRenderer().getNormalSettings().getActiveBorderWidth() * 2;
 
         this.stringListRenderer.setMaxWidth(width - this.padding.getLeft() - this.padding.getRight() - bw);
@@ -197,7 +197,7 @@ public class LabelWidget extends InteractableWidget
         {
             int width = this.totalWidth;
 
-            if (this.hasMaxWidth)
+            if (this.hasMaxWidth())
             {
                 width = Math.min(width, this.maxWidth);
             }
@@ -216,7 +216,7 @@ public class LabelWidget extends InteractableWidget
         {
             int height = this.totalHeight;
 
-            if (this.hasMaxHeight)
+            if (this.hasMaxHeight())
             {
                 height = Math.min(height, this.maxHeight);
             }
@@ -228,7 +228,7 @@ public class LabelWidget extends InteractableWidget
     @Override
     protected int getBackgroundWidth(boolean hovered, ScreenContext ctx)
     {
-        if (this.hasMaxWidth && ctx.isActiveScreen && hovered)
+        if (this.hasMaxWidth() && ctx.isActiveScreen && hovered)
         {
             return this.totalWidth;
         }
@@ -239,7 +239,7 @@ public class LabelWidget extends InteractableWidget
     @Override
     protected int getBackgroundHeight(boolean hovered, ScreenContext ctx)
     {
-        if (this.hasMaxHeight && ctx.isActiveScreen && hovered)
+        if (this.hasMaxHeight() && ctx.isActiveScreen && hovered)
         {
             return this.totalHeight;
         }

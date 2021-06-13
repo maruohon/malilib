@@ -81,7 +81,7 @@ public class ToastRendererWidgetEditScreen extends BaseScreen
         this.maxWidthEditWidget = new IntegerEditWidget(72, 16, widget.getMaxWidth(), 32, 1920, widget::setMaxWidth);
         this.messageGapEditWidget = new IntegerEditWidget(72, 16, widget.getMessageGap(), 0, 100, widget::setMessageGap);
         this.sortIndexEditWidget = new IntegerEditWidget(72, 16, widget.getSortIndex(), -1000, 1000, widget::setSortIndex);
-        this.zLevelEditWidget = new DoubleEditWidget(72, 16, widget.getZLevel(), -1000, 1000, (v) -> this.widget.setZLevel((float) v));
+        this.zLevelEditWidget = new DoubleEditWidget(72, 16, widget.getZ(), -1000, 1000, (v) -> this.widget.setZ((float) v));
         //this.textScaleEditWidget = new DoubleEditWidget(0, 0, 72, 16, widget.getScale(), 0.25, 20, widget::setScale);
 
         this.marginEditButton = GenericButton.simple(16, "malilib.label.margin", this::openMarginEditScreen);

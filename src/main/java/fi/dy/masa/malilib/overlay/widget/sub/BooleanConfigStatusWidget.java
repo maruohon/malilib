@@ -180,7 +180,7 @@ public class BooleanConfigStatusWidget extends BaseConfigStatusIndicatorWidget<B
             OnOffButton.renderOnOffSlider(sx, y, z, this.sliderWidth, height, this.lastValue, true, false, ctx);
 
             int tx = this.getSliderStyleTextStartX(sx + 4, this.lastValue);
-            int ty = y + height / 2 - this.fontHeight / 2;
+            int ty = y + height / 2 - this.getFontHeight() / 2;
             this.renderTextLine(tx, ty, z, -1, true, ctx, this.lastValue ? this.textOn : this.textOff);
         }
     }

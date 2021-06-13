@@ -35,7 +35,7 @@ import fi.dy.masa.malilib.overlay.InfoWidgetManager;
 import fi.dy.masa.malilib.overlay.widget.sub.BaseConfigStatusIndicatorWidget;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
-import fi.dy.masa.malilib.render.text.TextRenderSettings;
+import fi.dy.masa.malilib.render.text.MultiLineTextRenderSettings;
 import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.data.ConfigOnTab;
 
@@ -77,7 +77,7 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
                 BaseConfigStatusIndicatorWidget<?> widget = factory.create(config.config, config);
                 widget.setGeometryChangeListener(this::requestConditionalReLayout);
                 widget.setEnabledChangeListener(this::notifyEnabledWidgetsChanged);
-                widget.setHeight(this.lineHeight);
+                widget.setHeight(this.getLineHeight());
                 this.allWidgets.add(widget);
                 this.configs.add(config);
                 this.notifyEnabledWidgetsChanged();
@@ -143,7 +143,7 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
 
         for (BaseConfigStatusIndicatorWidget<?> widget : this.allWidgets)
         {
-            widget.setHeight(this.lineHeight);
+            widget.setHeight(this.getLineHeight());
         }
 
         this.requestUnconditionalReLayout();
@@ -185,7 +185,7 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
     {
         int maxLabelWidth = 0;
         int maxValueWidth = 0;
-        int height = this.renderName ? this.lineHeight : 0;
+        int height = this.renderName ? this.getLineHeight() : 0;
 
         this.updateEnabledWidgets();
         
@@ -239,7 +239,7 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
     {
         BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR, false);
 
-        TextRenderSettings settings = this.getTextSettings();
+        MultiLineTextRenderSettings settings = this.getTextSettings();
         int bgColor = settings.getBackgroundColor();
         int bgColorOdd = settings.getOddRowBackgroundColor();
         int width = this.getWidth();
@@ -248,7 +248,7 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
 
         if (this.renderName && this.styledName != null)
         {
-            int height = this.lineHeight + this.padding.getTop();
+            int height = this.getLineHeight() + this.padding.getTop();
 
             if (size > 0)
             {
@@ -295,7 +295,7 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
         {
             int wx = widget.getX();
             int wy = widget.getY();
-            float wz = widget.getZLevel();
+            float wz = widget.getZ();
 
             // Use a relative position in case scaling is involved
             widget.renderAt(x + wx, y + wy, z + wz, ctx);
@@ -308,7 +308,6 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
         JsonObject obj = super.toJson();
         JsonArray arr = new JsonArray();
 
-        obj.addProperty("line_height", this.lineHeight);
         obj.add("hotkey", this.hotkey.getKeyBind().getAsJsonElement());
 
         for (BaseConfigStatusIndicatorWidget<?> widget : this.allWidgets)
@@ -325,8 +324,6 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
     public void fromJson(JsonObject obj)
     {
         super.fromJson(obj);
-
-        this.lineHeight = JsonUtils.getIntegerOrDefault(obj, "line_height", this.lineHeight);
 
         if (obj.has("hotkey"))
         {
@@ -352,7 +349,7 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
         {
             widget.setGeometryChangeListener(this::requestConditionalReLayout);
             widget.setEnabledChangeListener(this::notifyEnabledWidgetsChanged);
-            widget.setHeight(this.lineHeight);
+            widget.setHeight(this.getLineHeight());
             widget.updateState(true);
             this.allWidgets.add(widget);
         }

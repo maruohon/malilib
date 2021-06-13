@@ -34,7 +34,7 @@ public class BaseMultiListScreen extends BaseTabbedScreen
     protected void addListWidget(BaseListWidget widget)
     {
         widget.setTaskQueue(this::addTask);
-        widget.setZLevel((int) this.zLevel + 2);
+        widget.setZ((int) this.zLevel + 2);
         widget.initWidget();
 
         this.listWidgets.add(widget);
@@ -203,7 +203,7 @@ public class BaseMultiListScreen extends BaseTabbedScreen
     {
         for (BaseListWidget listWidget : this.listWidgets)
         {
-            listWidget.renderAt(listWidget.getX(), listWidget.getY(), listWidget.getZLevel(), ctx);
+            listWidget.renderAt(listWidget.getX(), listWidget.getY(), listWidget.getZ(), ctx);
         }
     }
 

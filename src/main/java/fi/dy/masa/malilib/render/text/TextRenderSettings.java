@@ -5,32 +5,25 @@ import fi.dy.masa.malilib.util.JsonUtils;
 
 public class TextRenderSettings
 {
-    protected boolean useBackground;
-    protected boolean useOddEvenBackground;
-    protected boolean useEvenWidthBackground;
-    protected boolean useTextShadow = true;
+    protected boolean backgroundEnabled;
+    protected boolean textShadowEnabled = true;
     protected int backgroundColor = 0xA0505050;
-    protected int backgroundColorOdd = 0x70A0A0A0;
     protected int textColor = 0xFFFFFFFF;
+    protected int lineHeight;
 
-    public boolean getUseBackground()
+    public TextRenderSettings()
     {
-        return this.useBackground;
+        this.lineHeight = TextRenderer.INSTANCE.getFontHeight() + 2;
     }
 
-    public boolean getUseOddEvenBackground()
+    public boolean getBackgroundEnabled()
     {
-        return this.useOddEvenBackground;
+        return this.backgroundEnabled;
     }
 
-    public boolean getUseEvenWidthBackground()
+    public boolean getTextShadowEnabled()
     {
-        return this.useEvenWidthBackground;
-    }
-
-    public boolean getUseTextShadow()
-    {
-        return this.useTextShadow;
+        return this.textShadowEnabled;
     }
 
     public int getBackgroundColor()
@@ -38,34 +31,24 @@ public class TextRenderSettings
         return this.backgroundColor;
     }
 
-    public int getOddRowBackgroundColor()
-    {
-        return this.backgroundColorOdd;
-    }
-
     public int getTextColor()
     {
         return this.textColor;
     }
 
-    public void setUseBackground(boolean useBackground)
+    public int getLineHeight()
     {
-        this.useBackground = useBackground;
+        return this.lineHeight;
     }
 
-    public void setUseOddEvenBackground(boolean useOddEvenBackground)
+    public void setBackgroundEnabled(boolean backgroundEnabled)
     {
-        this.useOddEvenBackground = useOddEvenBackground;
+        this.backgroundEnabled = backgroundEnabled;
     }
 
-    public void setUseEvenWidthBackground(boolean useEvenWidthBackground)
+    public void setTextShadowEnabled(boolean textShadowEnabled)
     {
-        this.useEvenWidthBackground = useEvenWidthBackground;
-    }
-
-    public void setUseTextShadow(boolean useTextShadow)
-    {
-        this.useTextShadow = useTextShadow;
+        this.textShadowEnabled = textShadowEnabled;
     }
 
     public void setBackgroundColor(int color)
@@ -73,44 +56,31 @@ public class TextRenderSettings
         this.backgroundColor = color;
     }
 
-    public void setOddRowBackgroundColor(int color)
-    {
-        this.backgroundColorOdd = color;
-    }
-
     public void setTextColor(int color)
     {
         this.textColor = color;
     }
 
+    public void setLineHeight(int lineHeight)
+    {
+        this.lineHeight = lineHeight;
+    }
+
     public void toggleUseBackground()
     {
-        this.useBackground = ! this.useBackground;
-    }
-
-    public void toggleUseOddEvenBackground()
-    {
-        this.useOddEvenBackground = ! this.useOddEvenBackground;
-    }
-
-    public void toggleUseEvenWidthBackground()
-    {
-        this.useEvenWidthBackground = ! this.useEvenWidthBackground;
+        this.backgroundEnabled = ! this.backgroundEnabled;
     }
 
     public void toggleUseTextShadow()
     {
-        this.useTextShadow = ! this.useTextShadow;
+        this.textShadowEnabled = ! this.textShadowEnabled;
     }
 
     public void setFrom(TextRenderSettings other)
     {
-        this.useBackground = other.useBackground;
-        this.useOddEvenBackground = other.useOddEvenBackground;
-        this.useEvenWidthBackground = other.useEvenWidthBackground;
-        this.useTextShadow = other.useTextShadow;
+        this.backgroundEnabled = other.backgroundEnabled;
+        this.textShadowEnabled = other.textShadowEnabled;
         this.backgroundColor = other.backgroundColor;
-        this.backgroundColorOdd = other.backgroundColorOdd;
         this.textColor = other.textColor;
     }
 
@@ -118,13 +88,11 @@ public class TextRenderSettings
     {
         JsonObject obj = new JsonObject();
 
-        obj.addProperty("bg_enabled", this.useBackground);
-        obj.addProperty("bg_odd_even", this.useOddEvenBackground);
-        obj.addProperty("bg_even_width", this.useOddEvenBackground);
+        obj.addProperty("bg_enabled", this.backgroundEnabled);
         obj.addProperty("bg_color", this.backgroundColor);
-        obj.addProperty("bg_color_odd", this.backgroundColorOdd);
-        obj.addProperty("text_shadow", this.useTextShadow);
+        obj.addProperty("text_shadow", this.textShadowEnabled);
         obj.addProperty("text_color", this.textColor);
+        obj.addProperty("line_height", this.lineHeight);
 
 
         return obj;
@@ -132,12 +100,10 @@ public class TextRenderSettings
 
     public void fromJson(JsonObject obj)
     {
-        this.useBackground = JsonUtils.getBooleanOrDefault(obj, "bg_enabled", false);
-        this.useOddEvenBackground = JsonUtils.getBooleanOrDefault(obj, "bg_odd_even", false);
-        this.useEvenWidthBackground = JsonUtils.getBooleanOrDefault(obj, "bg_even_width", false);
+        this.backgroundEnabled = JsonUtils.getBooleanOrDefault(obj, "bg_enabled", false);
         this.backgroundColor = JsonUtils.getIntegerOrDefault(obj, "bg_color", 0xA0505050);
-        this.backgroundColorOdd = JsonUtils.getIntegerOrDefault(obj, "bg_color_odd", 0x70A0A0A0);
-        this.useTextShadow = JsonUtils.getBooleanOrDefault(obj, "text_shadow", true);
+        this.textShadowEnabled = JsonUtils.getBooleanOrDefault(obj, "text_shadow", true);
         this.textColor = JsonUtils.getIntegerOrDefault(obj, "text_color", 0xFFFFFFFF);
+        this.lineHeight = JsonUtils.getIntegerOrDefault(obj, "line_height", TextRenderer.INSTANCE.getFontHeight() + 2);
     }
 }

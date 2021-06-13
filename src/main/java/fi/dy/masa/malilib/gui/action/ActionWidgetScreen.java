@@ -392,7 +392,7 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
                                        new MenuEntryWidget(textRemove, () -> this.removeActionWidget(widget)));
 
         this.addWidget(this.menuWidget);
-        this.menuWidget.setZLevel(this.zLevel + 40);
+        this.menuWidget.setZ(this.zLevel + 40);
         this.menuWidget.updateSubWidgetsToGeometryChanges();
     }
 
@@ -406,7 +406,7 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
                                        new MenuEntryWidget(textRemove, this::deleteSelectedWidgets));
 
         this.addWidget(this.menuWidget);
-        this.menuWidget.setZLevel(this.zLevel + 40);
+        this.menuWidget.setZ(this.zLevel + 40);
         this.menuWidget.updateSubWidgetsToGeometryChanges();
     }
 

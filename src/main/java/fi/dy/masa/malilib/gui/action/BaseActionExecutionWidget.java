@@ -363,22 +363,15 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
             obj.addProperty("icon_name", IconRegistry.getKeyForIcon(this.icon));
         }
 
-        obj.addProperty("name_color", this.defaultNormalTextColor);
-        obj.addProperty("name_color_hovered", this.defaultHoveredTextColor);
         obj.addProperty("bg_color", this.getBackgroundRenderer().getNormalSettings().getColor());
         obj.addProperty("bg_color_hover", this.getBackgroundRenderer().getHoverSettings().getColor());
-        obj.addProperty("name_centered_x", this.centerTextHorizontally);
-        obj.addProperty("name_centered_y", this.centerTextVertically);
-        obj.addProperty("name_x_offset", this.textOffsetX);
-        obj.addProperty("name_y_offset", this.textOffsetY);
-        obj.addProperty("icon_centered_x", this.centerIconHorizontally);
-        obj.addProperty("icon_centered_y", this.centerIconVertically);
-        obj.addProperty("icon_x_offset", this.iconOffsetX);
-        obj.addProperty("icon_y_offset", this.iconOffsetY);
         obj.addProperty("icon_scale_x", this.iconScaleX);
         obj.addProperty("icon_scale_y", this.iconScaleY);
         obj.add("border_color", this.getBorderRenderer().getNormalSettings().getColor().toJson());
         obj.add("border_color_hover", this.getBorderRenderer().getHoverSettings().getColor().toJson());
+        obj.add("icon_offset", this.iconOffset.toJson());
+        obj.add("text_offset", this.textOffset.toJson());
+        obj.add("text_settings", this.getTextSettings().toJson());
 
         if (this.action != null)
         {
@@ -411,8 +404,7 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
 
         this.setActionWidgetHoverText(JsonUtils.getString(obj, "hover_text"));
 
-        this.defaultNormalTextColor = JsonUtils.getIntegerOrDefault(obj, "name_color", this.defaultNormalTextColor);
-        this.defaultHoveredTextColor = JsonUtils.getIntegerOrDefault(obj, "name_color_hovered", this.defaultHoveredTextColor);
+        JsonUtils.readObjectIfPresent(obj, "text_settings", this.getTextSettings()::fromJson);
 
         int color = JsonUtils.getIntegerOrDefault(obj, "bg_color", this.getBackgroundRenderer().getNormalSettings().getColor());
         this.getBackgroundRenderer().getNormalSettings().setColor(color);
@@ -420,15 +412,9 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
         color = JsonUtils.getIntegerOrDefault(obj, "bg_color_hover", this.getBackgroundRenderer().getHoverSettings().getColor());
         this.getBackgroundRenderer().getHoverSettings().setColor(color);
 
-        this.centerTextHorizontally = JsonUtils.getBooleanOrDefault(obj, "name_centered_x", this.centerTextHorizontally);
-        this.centerTextVertically = JsonUtils.getBooleanOrDefault(obj, "name_centered_y", this.centerTextVertically);
-        this.textOffsetX = JsonUtils.getIntegerOrDefault(obj, "name_x_offset", this.textOffsetX);
-        this.textOffsetY = JsonUtils.getIntegerOrDefault(obj, "name_y_offset", this.textOffsetY);
+        JsonUtils.readObjectIfPresent(obj, "text_offset", this.textOffset::fromJson);
+        JsonUtils.readObjectIfPresent(obj, "icon_offset", this.iconOffset::fromJson);
 
-        this.centerIconHorizontally = JsonUtils.getBooleanOrDefault(obj, "icon_centered_x", this.centerIconHorizontally);
-        this.centerIconVertically = JsonUtils.getBooleanOrDefault(obj, "icon_centered_y", this.centerIconVertically);
-        this.iconOffsetX = JsonUtils.getIntegerOrDefault(obj, "icon_x_offset", this.iconOffsetX);
-        this.iconOffsetY = JsonUtils.getIntegerOrDefault(obj, "icon_y_offset", this.iconOffsetY);
         this.iconScaleX = JsonUtils.getFloatOrDefault(obj, "icon_scale_x", this.iconScaleX);
         this.iconScaleY = JsonUtils.getFloatOrDefault(obj, "icon_scale_y", this.iconScaleY);
 

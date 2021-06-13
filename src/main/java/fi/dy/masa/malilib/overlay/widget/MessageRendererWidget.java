@@ -12,7 +12,6 @@ import fi.dy.masa.malilib.overlay.message.Message;
 import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.render.text.StyledText;
-import fi.dy.masa.malilib.render.text.TextRenderer;
 import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 
@@ -156,13 +155,14 @@ public class MessageRendererWidget extends InfoRendererWidget
         if (messageCount > 0)
         {
             int height = (messageCount - 1) * this.messageGap;
+            int lineHeight = this.getLineHeight();
 
             for (Message message : this.messages)
             {
-                height += message.getLineCount() * this.lineHeight;
+                height += message.getLineCount() * lineHeight;
             }
 
-            return height - (this.lineHeight - TextRenderer.INSTANCE.getFontHeight());
+            return height - (lineHeight - this.getFontHeight());
         }
 
         return 0;
@@ -192,6 +192,7 @@ public class MessageRendererWidget extends InfoRendererWidget
 
             long currentTime = System.nanoTime();
             int countBefore = this.messages.size();
+            int lineHeight = this.getLineHeight();
 
             for (int i = 0; i < this.messages.size(); ++i)
             {
@@ -204,14 +205,14 @@ public class MessageRendererWidget extends InfoRendererWidget
                 }
                 else
                 {
-                    message.renderAt(x, y, z + 0.1f, this.lineHeight, currentTime, ctx);
+                    message.renderAt(x, y, z + 0.1f, lineHeight, currentTime, ctx);
                 }
 
                 // Always offset the position to prevent a flicker from the later
                 // messages jumping over the fading message when it disappears,
                 // before the entire widget gets resized and the messages possibly moving
                 // (if the widget is bottom-aligned).
-                y += message.getLineCount() * this.lineHeight + this.messageGap;
+                y += message.getLineCount() * lineHeight + this.messageGap;
             }
 
             if (this.messages.size() != countBefore)
@@ -229,7 +230,7 @@ public class MessageRendererWidget extends InfoRendererWidget
         obj.addProperty("max_messages", this.maxMessages);
         obj.addProperty("width", this.getWidth());
 
-        if (this.hasMaxWidth)
+        if (this.hasMaxWidth())
         {
             obj.addProperty("max_width", this.maxWidth);
         }

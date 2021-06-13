@@ -113,11 +113,12 @@ public class ToastWidget extends InfoRendererWidget
         int messageCount = this.text.size();
         int width = 0;
         int height = messageCount > 1 ? (messageCount - 1) * this.messageGap : 0;
+        int lineHeight = this.getLineHeight();
 
         for (StyledText text : this.text)
         {
             width = Math.max(width, StyledTextLine.getRenderWidth(text.lines));
-            height += text.lines.size() * this.lineHeight;
+            height += text.lines.size() * lineHeight;
         }
 
         this.setWidth(width + this.padding.getHorizontalTotal());
@@ -156,7 +157,7 @@ public class ToastWidget extends InfoRendererWidget
 
         int x = this.getX();
         int y = this.getY();
-        float z = this.getZLevel();
+        float z = this.getZ();
 
         if (this.horizontalAlignment == HorizontalAlignment.RIGHT)
         {
@@ -185,11 +186,12 @@ public class ToastWidget extends InfoRendererWidget
             y += this.padding.getTop();
 
             int color = this.textSettings.getTextColor();
+            int lineHeight = this.getLineHeight();
 
             for (StyledText text : this.text)
             {
-                TextRenderer.INSTANCE.renderText(x, y, z, color, true, text, this.lineHeight);
-                y += text.lines.size() * this.lineHeight + this.messageGap;
+                TextRenderer.INSTANCE.renderText(x, y, z, color, true, text, lineHeight);
+                y += text.lines.size() * lineHeight + this.messageGap;
             }
         }
     }

@@ -23,15 +23,15 @@ import fi.dy.masa.malilib.overlay.InfoOverlay;
 import fi.dy.masa.malilib.overlay.InfoWidgetManager;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
+import fi.dy.masa.malilib.render.text.MultiLineTextRenderSettings;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
-import fi.dy.masa.malilib.render.text.TextRenderSettings;
 import fi.dy.masa.malilib.util.JsonUtils;
 
 public abstract class InfoRendererWidget extends BaseWidget
 {
     protected final List<Consumer<ScreenLocation>> locationChangeListeners = new ArrayList<>();
     protected final Set<String> markers = new HashSet<>();
-    protected TextRenderSettings textSettings = new TextRenderSettings();
+    protected MultiLineTextRenderSettings textSettings = new MultiLineTextRenderSettings();
     protected ScreenLocation location = ScreenLocation.TOP_LEFT;
     protected String name = "?";
     protected IntSupplier viewportWidthSupplier = GuiUtils::getScaledWindowWidth;
@@ -115,7 +115,8 @@ public abstract class InfoRendererWidget extends BaseWidget
         return this.location;
     }
 
-    public TextRenderSettings getTextSettings()
+    @Override
+    public MultiLineTextRenderSettings getTextSettings()
     {
         return this.textSettings;
     }
@@ -474,7 +475,7 @@ public abstract class InfoRendererWidget extends BaseWidget
         {
             int x = this.getX();
             int y = this.getY();
-            float z = this.getZLevel();
+            float z = this.getZ();
 
             this.renderAt(x, y, z, ctx);
         }
@@ -521,7 +522,7 @@ public abstract class InfoRendererWidget extends BaseWidget
             y += paddingTop;
             this.renderTextLine(x + this.padding.getLeft(), y, z, 0xFFFFFFFF, true, ctx, this.styledName);
 
-            return this.lineHeight + paddingTop;
+            return this.getLineHeight() + paddingTop;
         }
 
         return 0;
@@ -529,11 +530,11 @@ public abstract class InfoRendererWidget extends BaseWidget
 
     protected void renderBackground(int x, int y, float z, ScreenContext ctx)
     {
-        TextRenderSettings settings = this.getTextSettings();
+        MultiLineTextRenderSettings settings = this.getTextSettings();
 
-        if (settings.getUseBackground())
+        if (settings.getBackgroundEnabled())
         {
-            if (settings.getUseOddEvenBackground())
+            if (settings.getOddEvenBackgroundEnabled())
             {
                 this.renderOddEvenLineBackgrounds(x, y, z, ctx);
             }
@@ -574,7 +575,7 @@ public abstract class InfoRendererWidget extends BaseWidget
         obj.addProperty("bg_enabled", this.renderBackground);
         obj.addProperty("bg_color", this.backgroundColor);
         obj.addProperty("border_color", this.borderColor);
-        obj.addProperty("z", this.getZLevel());
+        obj.addProperty("z", this.getZ());
 
         obj.add("text_settings", this.getTextSettings().toJson());
 
@@ -614,7 +615,7 @@ public abstract class InfoRendererWidget extends BaseWidget
         this.renderBackground = JsonUtils.getBooleanOrDefault(obj, "bg_enabled", this.renderBackground);
         this.backgroundColor = JsonUtils.getIntegerOrDefault(obj, "bg_color", this.backgroundColor);
         this.borderColor = JsonUtils.getIntegerOrDefault(obj, "border_color", this.borderColor);
-        this.setZLevel(JsonUtils.getFloatOrDefault(obj, "z", this.getZLevel()));
+        this.setZ(JsonUtils.getFloatOrDefault(obj, "z", this.getZ()));
 
         if (JsonUtils.hasString(obj, "screen_location"))
         {

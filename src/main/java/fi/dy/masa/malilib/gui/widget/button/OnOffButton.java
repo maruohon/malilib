@@ -56,7 +56,7 @@ public class OnOffButton extends GenericButton
 
         this.getBorderRenderer().getNormalSettings().setBorderWidth(isSlider ? 1 : 0);
         this.getBackgroundRenderer().getNormalSettings().setEnabled(isSlider);
-        this.defaultNormalTextColor = isSlider ? (value ? 0xFFE0E0E0 : 0xFF909090) : 0xFFE0E0E0;
+        this.getTextSettings().setTextColor(isSlider ? (value ? 0xFFE0E0E0 : 0xFF909090) : 0xFFE0E0E0);
         this.defaultHoveredTextColor = isSlider ? 0xFFF0F000 : 0xFFFFFFA0;
 
         return valueStr;

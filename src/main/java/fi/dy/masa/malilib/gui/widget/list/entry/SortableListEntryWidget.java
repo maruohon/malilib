@@ -58,7 +58,7 @@ public abstract class SortableListEntryWidget<TYPE> extends BaseDataListEntryWid
         int height = this.getHeight();
 
         MultiIcon icon = reverse ? iconReverse : iconNatural;
-        icon.renderAt(iconX, y + 3, this.getZLevel(), true, sortColumn == mouseOverColumn);
+        icon.renderAt(iconX, y + 3, this.getZ(), true, sortColumn == mouseOverColumn);
 
         for (int i = 0; i < this.getColumnCount(); ++i)
         {
@@ -66,7 +66,7 @@ public abstract class SortableListEntryWidget<TYPE> extends BaseDataListEntryWid
             int xStart = this.getColumnPosX(i);
             int xEnd = this.getColumnPosX(i + 1);
 
-            ShapeRenderUtils.renderOutline(xStart - 3, y + 1, this.getZLevel(), xEnd - xStart - 2, height - 2, 1, outlineColor);
+            ShapeRenderUtils.renderOutline(xStart - 3, y + 1, this.getZ(), xEnd - xStart - 2, height - 2, 1, outlineColor);
         }
     }
 }

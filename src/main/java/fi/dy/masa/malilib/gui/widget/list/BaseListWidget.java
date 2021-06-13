@@ -800,7 +800,7 @@ public abstract class BaseListWidget extends ContainerWidget
     {
         int diffX = x - this.getX();
         int diffY = y - this.getY();
-        float diffZ = z - this.getZLevel();
+        float diffZ = z - this.getZ();
 
         RenderUtils.color(1f, 1f, 1f, 1f);
 
@@ -818,7 +818,7 @@ public abstract class BaseListWidget extends ContainerWidget
         BaseListEntryWidget widget =  this.entryWidgets.get(widgetIndex);
         int wx = widget.getX() + diffX;
         int wy = widget.getY() + diffY;
-        float wz = widget.getZLevel() + diffZ;
+        float wz = widget.getZ() + diffZ;
 
         widget.renderAt(wx, wy, wz, ctx);
     }

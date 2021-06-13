@@ -146,7 +146,7 @@ public class ToastRendererWidget extends InfoRendererWidget
         ToastWidget widget = new ToastWidget(this.getMaxWidth(), this.getLineHeight(), this.messageGap,
                                              this.getPadding(), fadeInTimeMs, fadeOutTimeMs,
                                              this.location.horizontalLocation);
-        widget.setZLevel(this.getZLevel() + 1f);
+        widget.setZ(this.getZ() + 1f);
         widget.getTextSettings().setFrom(this.getTextSettings());
         widget.replaceText(text, displayTimeMs);
 
@@ -256,7 +256,7 @@ public class ToastRendererWidget extends InfoRendererWidget
         HorizontalAlignment align = this.location.horizontalLocation;
         int x;
         int y = this.getY() + this.location.verticalLocation.getMargin(this.margin);
-        float z = this.getZLevel();
+        float z = this.getZ();
 
         for (ToastWidget widget : this.activeToasts)
         {

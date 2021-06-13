@@ -134,7 +134,8 @@ public class StringListRendererWidget extends InfoRendererWidget
     public void updateSize()
     {
         int width = this.stringListRenderer.getTotalRenderWidth();
-        int height = this.stringListRenderer.getTotalRenderHeight() + (this.renderName ? this.lineHeight : 0);
+        int lineHeight = this.getLineHeight();
+        int height = this.stringListRenderer.getTotalRenderHeight() + (this.renderName ? lineHeight : 0);
 
         this.setWidth(width);
         this.setHeight(height);
@@ -156,10 +157,10 @@ public class StringListRendererWidget extends InfoRendererWidget
     protected void renderSingleBackground(int x, int y, float z, ScreenContext ctx)
     {
         // Render the background for the title row
-        if (this.getTextSettings().getUseBackground() && this.renderName && this.styledName != null)
+        if (this.getTextSettings().getBackgroundEnabled() && this.renderName && this.styledName != null)
         {
             int width = this.getWidth();
-            int height = this.lineHeight + this.padding.getTop();
+            int height = this.getLineHeight() + this.padding.getTop();
             ShapeRenderUtils.renderRectangle(x, y, z, width, height, this.getTextSettings().getBackgroundColor());
         }
     }
@@ -168,10 +169,10 @@ public class StringListRendererWidget extends InfoRendererWidget
     protected void renderOddEvenLineBackgrounds(int x, int y, float z, ScreenContext ctx)
     {
         // Render the background for the title row
-        if (this.getTextSettings().getUseOddEvenBackground() && this.renderName && this.styledName != null)
+        if (this.getTextSettings().getOddEvenBackgroundEnabled() && this.renderName && this.styledName != null)
         {
             int width = this.getWidth();
-            int height = this.lineHeight + this.padding.getTop();
+            int height = this.getLineHeight() + this.padding.getTop();
             ShapeRenderUtils.renderRectangle(x, y, z, width, height, this.getTextSettings().getBackgroundColor());
         }
     }

@@ -4,7 +4,6 @@ import java.io.File;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.icon.FileBrowserIconProvider;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
-import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.list.BaseFileBrowserWidget.DirectoryEntry;
 import fi.dy.masa.malilib.gui.widget.list.BaseFileBrowserWidget.DirectoryEntryType;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
@@ -16,7 +15,6 @@ public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry
 {
     protected final DirectoryNavigator navigator;
     protected final DirectoryEntry entry;
-    @Nullable protected final FileBrowserIconProvider iconProvider;
 
     public DirectoryEntryWidget(int x, int y, int width, int height, int listIndex, int originalListIndex,
                                 DirectoryEntry entry, DataListWidget<DirectoryEntry> listWidget,
@@ -26,12 +24,23 @@ public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry
 
         this.entry = entry;
         this.navigator = navigator;
-        this.iconProvider = iconProvider;
-        this.textShadow = false;
+        this.getTextSettings().setTextShadowEnabled(false);
 
         this.setText(StyledTextLine.raw(this.getDisplayName()));
         this.getBackgroundRenderer().getNormalSettings().setEnabledAndColor(true, this.isOdd ? 0xFF202020 : 0xFF303030);
         this.getBackgroundRenderer().getHoverSettings().setColor(0xFF404040);
+
+        int textXOffset = 2;
+        @Nullable MultiIcon icon = iconProvider != null ? iconProvider.getIconForEntry(entry) : null;
+
+        if (icon != null)
+        {
+            textXOffset += iconProvider.getEntryIconWidth(entry) + 2;
+            this.iconOffset.setXOffset(2);
+            this.setIcon(icon);
+        }
+
+        this.textOffset.setXOffset(textXOffset);
     }
 
     public DirectoryEntry getDirectoryEntry()
@@ -52,23 +61,6 @@ public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry
         }
 
         return true;
-    }
-
-    @Override
-    public void renderAt(int x, int y, float z, ScreenContext ctx)
-    {
-        @Nullable MultiIcon icon = this.iconProvider != null ? this.iconProvider.getIconForEntry(this.entry) : null;
-        int height = this.getHeight();
-
-        this.textOffsetX = 2;
-
-        if (icon != null)
-        {
-            this.textOffsetX += this.iconProvider.getEntryIconWidth(this.entry) + 2;
-            icon.renderAt(x, y + (height - icon.getHeight()) / 2, z + 0.1f, false, false);
-        }
-
-        super.renderAt(x, y, z, ctx);
     }
 
     protected String getDisplayName()

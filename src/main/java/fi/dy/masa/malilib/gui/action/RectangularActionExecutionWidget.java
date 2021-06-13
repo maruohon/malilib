@@ -17,8 +17,8 @@ public class RectangularActionExecutionWidget extends BaseActionExecutionWidget
     {
         super();
 
-        this.centerTextHorizontally = true;
-        this.textOffsetX = 0;
+        this.getTextOffset().setCenterHorizontally(true);
+        this.getTextOffset().setXOffset(0);
     }
 
     @Override

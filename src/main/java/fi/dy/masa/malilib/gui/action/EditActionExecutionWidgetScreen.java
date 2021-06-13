@@ -15,6 +15,7 @@ import fi.dy.masa.malilib.gui.widget.IconWidget;
 import fi.dy.masa.malilib.gui.widget.IntegerEditWidget;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
+import fi.dy.masa.malilib.render.text.TextRenderSettings;
 
 public class EditActionExecutionWidgetScreen extends BaseScreen
 {
@@ -109,28 +110,29 @@ public class EditActionExecutionWidgetScreen extends BaseScreen
         this.removeIconButton = GenericButton.createIconOnly(DefaultIcons.LIST_REMOVE_MINUS_13, this::removeIcon);
         this.removeIconButton.translateAndAddHoverString("malilib.gui.button.label.remove_icon");
 
-        this.nameXOffsetEditWidget = new IntegerEditWidget(72, 16, widget.getTextOffsetX(), -512, 512, widget::setTextOffsetX);
-        this.nameYOffsetEditWidget = new IntegerEditWidget(72, 16, widget.getTextOffsetY(), -512, 512, widget::setTextOffsetY);
+        this.nameXOffsetEditWidget = new IntegerEditWidget(72, 16, widget.getTextOffset().getXOffset(), -512, 512, widget.getTextOffset()::setXOffset);
+        this.nameYOffsetEditWidget = new IntegerEditWidget(72, 16, widget.getTextOffset().getYOffset(), -512, 512, widget.getTextOffset()::setYOffset);
 
         this.nameCenteredOnXCheckbox = new CheckBoxWidget("malilib.label.center", null);
-        this.nameCenteredOnXCheckbox.setBooleanStorage(widget::getCenterTextHorizontally, widget::setCenterTextHorizontally);
+        this.nameCenteredOnXCheckbox.setBooleanStorage(widget.getTextOffset()::getCenterHorizontally, widget.getTextOffset()::setCenterHorizontally);
 
         this.nameCenteredOnYCheckbox = new CheckBoxWidget("malilib.label.center", null);
-        this.nameCenteredOnYCheckbox.setBooleanStorage(widget::getCenterTextVertically, widget::setCenterTextVertically);
+        this.nameCenteredOnYCheckbox.setBooleanStorage(widget.getTextOffset()::getCenterVertically, widget.getTextOffset()::setCenterVertically);
 
-        this.iconXOffsetEditWidget = new IntegerEditWidget(72, 16, widget.getIconOffsetX(), -512, 512, widget::setIconOffsetX);
-        this.iconYOffsetEditWidget = new IntegerEditWidget(72, 16, widget.getIconOffsetY(), -512, 512, widget::setIconOffsetY);
+        this.iconXOffsetEditWidget = new IntegerEditWidget(72, 16, widget.getIconOffset().getXOffset(), -512, 512, widget.getIconOffset()::setXOffset);
+        this.iconYOffsetEditWidget = new IntegerEditWidget(72, 16, widget.getIconOffset().getYOffset(), -512, 512, widget.getIconOffset()::setYOffset);
 
         this.iconCenteredOnXCheckbox = new CheckBoxWidget("malilib.label.center", null);
-        this.iconCenteredOnXCheckbox.setBooleanStorage(widget::getCenterIconHorizontally, widget::setCenterIconHorizontally);
+        this.iconCenteredOnXCheckbox.setBooleanStorage(widget.getIconOffset()::getCenterHorizontally, widget.getIconOffset()::setCenterHorizontally);
 
         this.iconCenteredOnYCheckbox = new CheckBoxWidget("malilib.label.center", null);
-        this.iconCenteredOnYCheckbox.setBooleanStorage(widget::getCenterIconVertically, widget::setCenterIconVertically);
+        this.iconCenteredOnYCheckbox.setBooleanStorage(widget.getIconOffset()::getCenterVertically, widget.getIconOffset()::setCenterVertically);
 
         this.iconScaleXEditWidget = new FloatEditWidget(72, 16, widget.getIconScaleX(), 0, 100, widget::setIconScaleX);
         this.iconScaleYEditWidget = new FloatEditWidget(72, 16, widget.getIconScaleY(), 0, 100, widget::setIconScaleY);
 
-        this.nameNormalColorEditWidget = new ColorEditorWidget(90, 16, widget::getDefaultNormalTextColor, widget::setDefaultNormalTextColor);
+        TextRenderSettings settings = widget.getTextSettings();
+        this.nameNormalColorEditWidget = new ColorEditorWidget(90, 16, settings::getTextColor, settings::setTextColor);
         this.nameHoveredColorEditWidget = new ColorEditorWidget(90, 16, widget::getDefaultHoveredTextColor, widget::setDefaultHoveredTextColor);
 
         this.normalBackgroundColorEditWidget    = new ColorEditorWidget(90, 16, widget.getBackgroundRenderer().getNormalSettings()::getColor, widget.getBackgroundRenderer().getNormalSettings()::setColor);
@@ -321,7 +323,7 @@ public class EditActionExecutionWidgetScreen extends BaseScreen
         // Copy the values from the first widget, to which they get set from the edit widgets
         if (size > 1)
         {
-            int normalNameColor = this.firstWidget.getDefaultNormalTextColor();
+            int normalNameColor = this.firstWidget.getTextSettings().getTextColor();
             int hoveredNameColor = this.firstWidget.getDefaultHoveredTextColor();
             int normalBg = this.firstWidget.getBackgroundRenderer().getNormalSettings().getColor();
             int hoverBg = this.firstWidget.getBackgroundRenderer().getHoverSettings().getColor();
@@ -331,7 +333,7 @@ public class EditActionExecutionWidgetScreen extends BaseScreen
             for (int i = 1; i < size; ++i)
             {
                 BaseActionExecutionWidget widget = this.widgets.get(i);
-                widget.setDefaultNormalTextColor(normalNameColor);
+                widget.getTextSettings().setTextColor(normalNameColor);
                 widget.setDefaultHoveredTextColor(hoveredNameColor);
 
                 widget.getBackgroundRenderer().getNormalSettings().setColor(normalBg);

@@ -127,7 +127,7 @@ public abstract class ContainerWidget extends InteractableWidget
     public void onSubWidgetAdded(InteractableWidget widget)
     {
         widget.setTaskQueue(this.taskQueue);
-        widget.onWidgetAdded(this.getZLevel());
+        widget.onWidgetAdded(this.getZ());
     }
 
     @Override
@@ -150,14 +150,14 @@ public abstract class ContainerWidget extends InteractableWidget
     }
 
     @Override
-    public void setZLevel(float zLevel)
+    public void setZ(float z)
     {
         for (InteractableWidget widget : this.subWidgets)
         {
-            widget.setZLevelBasedOnParent(zLevel);
+            widget.setZLevelBasedOnParent(z);
         }
 
-        super.setZLevel(zLevel);
+        super.setZ(z);
     }
 
     @Override
@@ -315,13 +315,13 @@ public abstract class ContainerWidget extends InteractableWidget
         {
             int diffX = x - this.getX();
             int diffY = y - this.getY();
-            float diffZ = z - this.getZLevel();
+            float diffZ = z - this.getZ();
 
             for (InteractableWidget widget : this.subWidgets)
             {
                 int wx = widget.getX() + diffX;
                 int wy = widget.getY() + diffY;
-                float wz = widget.getZLevel() + diffZ;
+                float wz = widget.getZ() + diffZ;
                 widget.renderAt(wx, wy, wz, ctx);
             }
         }

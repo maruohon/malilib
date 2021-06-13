@@ -15,11 +15,7 @@ public class GenericButton extends BaseButton
     @Nullable protected final Supplier<MultiIcon> iconSupplier;
     protected MultiIcon backgroundIcon = DefaultIcons.BUTTON_BACKGROUND;
     protected HorizontalAlignment iconAlignment = HorizontalAlignment.LEFT;
-    protected boolean customIconOffset;
     protected boolean renderButtonBackgroundTexture;
-    protected boolean textCentered;
-    protected int iconOffsetX;
-    protected int iconOffsetY;
     protected int disabledTextColor = 0xFF606060;
 
     public GenericButton(@Nullable String translationKey)
@@ -32,18 +28,11 @@ public class GenericButton extends BaseButton
         this(-1, height, translationKey);
     }
 
-    public GenericButton(int width, boolean rightAlign, @Nullable String translationKey, Object... args)
-    {
-        this(width, 20, StringUtils.translate(translationKey, args));
-
-        this.setRightAlign(rightAlign, 0, true);
-    }
-
     public GenericButton(int width, int height, @Nullable String translationKey, String... hoverStrings)
     {
         this(width, height, translationKey, (Supplier<MultiIcon>) null, hoverStrings);
 
-        this.textCentered = true;
+        this.textOffset.setCenterHorizontally(true);
     }
 
     public GenericButton(int width, int height, @Nullable String translationKey,
@@ -57,9 +46,10 @@ public class GenericButton extends BaseButton
     {
         super(width, height, translationKey);
 
-        this.defaultNormalTextColor = 0xFFE0E0E0;
+        this.getTextSettings().setTextColor(0xFFE0E0E0);
         this.defaultHoveredTextColor = 0xFFFFFFA0;
-        this.textOffsetX = 0;
+        this.textOffset.setXOffset(0);
+        this.iconOffset.setXOffset(0);
         this.iconSupplier = iconSupplier;
         MultiIcon icon = iconSupplier != null ? iconSupplier.get() : null;
 
@@ -89,39 +79,6 @@ public class GenericButton extends BaseButton
         this(iconSupplier.get().getWidth(), iconSupplier.get().getHeight(), "", iconSupplier, hoverStrings);
 
         this.setRenderButtonBackgroundTexture(false);
-    }
-
-    public GenericButton setTextCentered(boolean centered)
-    {
-        this.textCentered = centered;
-
-        if (centered == false)
-        {
-            this.textOffsetX = 6;
-        }
-
-        return this;
-    }
-
-    public GenericButton setUseTextShadow(boolean useShadow)
-    {
-        this.textShadow = useShadow;
-        return this;
-    }
-
-    public GenericButton setIconOffset(int offsetX, int offsetY)
-    {
-        this.iconOffsetX = offsetX;
-        this.iconOffsetY = offsetY;
-        this.customIconOffset = true;
-        return this;
-    }
-
-    public GenericButton setTextOffset(int offsetX, int offsetY)
-    {
-        this.textOffsetX = offsetX;
-        this.textOffsetY = offsetY;
-        return this;
     }
 
     public GenericButton setDisabledTextColor(int color)
@@ -175,17 +132,19 @@ public class GenericButton extends BaseButton
             return this.disabledTextColor;
         }
 
-        return hovered ? this.defaultHoveredTextColor : this.defaultNormalTextColor;
+        return hovered ? this.defaultHoveredTextColor : this.getTextSettings().getTextColor();
     }
 
     protected int getTextStartX(int baseX, int usableWidth, int textWidth)
     {
-        if (this.textCentered)
+        int textXOffset = this.textOffset.getXOffset();
+
+        if (this.textOffset.getCenterHorizontally())
         {
-            return baseX + usableWidth / 2 - textWidth / 2 + this.textOffsetX;
+            return baseX + usableWidth / 2 - textWidth / 2 + textXOffset;
         }
 
-        return baseX + this.textOffsetX;
+        return baseX + textXOffset;
     }
 
     protected void renderButtonBackground(int x, int y, float z, int width, int height,
@@ -196,9 +155,11 @@ public class GenericButton extends BaseButton
 
     protected int getIconOffsetX(int width, MultiIcon icon)
     {
-        if (this.customIconOffset)
+        int iconXOffset = this.iconOffset.getXOffset();
+
+        if (iconXOffset > 0)
         {
-            return this.iconOffsetX;
+            return iconXOffset;
         }
         // With icon-only buttons, center it horizontally
         else if (this.text == null || this.text.renderWidth == 0)
@@ -233,8 +194,9 @@ public class GenericButton extends BaseButton
         if (icon != null)
         {
             boolean leftAligned = this.iconAlignment == HorizontalAlignment.LEFT;
+            int iconYOffset = this.iconOffset.getYOffset();
             int offX = this.getIconOffsetX(width, icon);
-            int offY = this.customIconOffset ? this.iconOffsetY : (height - icon.getHeight()) / 2;
+            int offY = iconYOffset > 0 ? iconYOffset : (height - icon.getHeight()) / 2;
             int ix = leftAligned ? x + offX : x + width - icon.getWidth() - offX;
 
             icon.renderAt(ix, y + offY, z + 0.1f, this.enabled, hovered);

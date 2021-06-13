@@ -111,10 +111,10 @@ public class BaseTextFieldWidget extends InteractableWidget
     }
 
     @Override
-    public void setZLevel(float zLevel)
+    public void setZ(float z)
     {
-        this.messageRenderer.setZLevel(zLevel + 100f);
-        super.setZLevel(zLevel);
+        this.messageRenderer.setZ(z + 100f);
+        super.setZ(z);
     }
 
     public String getText()
@@ -547,7 +547,7 @@ public class BaseTextFieldWidget extends InteractableWidget
         // if the click position is on the right half of the character.
         if (visibleText.length() > textLeftLength)
         {
-            int xPosInChar = relX - this.getRawStringWidth(textLeftOfCursor);
+            int xPosInChar = relX - this.getRawStyledTextWidth(textLeftOfCursor);
             int charWidth = TextRenderer.INSTANCE.getGlyphFor(visibleText.charAt(textLeftLength)).renderWidth;
 
             if (xPosInChar >= charWidth / 2)
@@ -915,12 +915,13 @@ public class BaseTextFieldWidget extends InteractableWidget
         if (relIndex >= 0)
         {
             String visibleText = this.visibleText.getText();
+            int fontHeight = this.getFontHeight();
 
             // The cursor is at the end of the text, use an underscore cursor
             if (this.cursorPosition == this.getTextLength() && this.selectionStartPosition == -1)
             {
                 int offX = this.visibleText.getStyledText().renderWidth;
-                ShapeRenderUtils.renderHorizontalLine(x + offX, y + this.fontHeight, z + 0.1f, 5, color);
+                ShapeRenderUtils.renderHorizontalLine(x + offX, y + fontHeight, z + 0.1f, 5, color);
             }
             else
             {
@@ -929,13 +930,13 @@ public class BaseTextFieldWidget extends InteractableWidget
                 int colorTr = (color & 0x00FFFFFF) | 0x50000000;
                 int cursorExtraHeight = 2;
 
-                int offX = this.getRawStringWidth(visibleText.substring(0, relIndex));
+                int offX = this.getRawStyledTextWidth(visibleText.substring(0, relIndex));
                 int y1 = y - cursorExtraHeight;
                 int y2 = y;
-                int y3 = y2 + this.fontHeight;
+                int y3 = y2 + fontHeight;
 
                 ShapeRenderUtils.renderVerticalLine(x + offX, y1, z + 0.1f, cursorExtraHeight    , color);
-                ShapeRenderUtils.renderVerticalLine(x + offX, y2, z + 0.1f, this.fontHeight      , colorTr);
+                ShapeRenderUtils.renderVerticalLine(x + offX, y2, z + 0.1f, fontHeight           , colorTr);
                 ShapeRenderUtils.renderVerticalLine(x + offX, y3, z + 0.1f, cursorExtraHeight + 1, color);
             }
         }
@@ -961,15 +962,16 @@ public class BaseTextFieldWidget extends InteractableWidget
                 {
                     String str = visibleText.substring(0, selStart - start);
                     this.renderPlainString(x, y, z, textColor, false, str, ctx);
-                    x += this.getRawStringWidth(str);
+                    x += this.getRawStyledTextWidth(str);
                 }
 
                 int p1 = Math.max(0     , selStart - start);
                 int p2 = Math.min(visLen, selEnd - start);
                 String str = visibleText.substring(p1, p2);
-                int selWidth = this.getRawStringWidth(str);
+                int selWidth = this.getRawStyledTextWidth(str);
+                int fontHeight = this.getFontHeight();
 
-                ShapeRenderUtils.renderRectangle(x, y - 2, z, selWidth, this.fontHeight + 3, textColor);
+                ShapeRenderUtils.renderRectangle(x, y - 2, z, selWidth, fontHeight + 3, textColor);
                 this.renderPlainString(x, y, z, 0xFF000000, false, str, ctx);
                 x += selWidth;
 
@@ -1039,8 +1041,9 @@ public class BaseTextFieldWidget extends InteractableWidget
         int textX = x + this.getTextStartRelativeX();
 
         int bw = this.getBorderRenderer().getNormalSettings().getActiveBorderWidth() * 2;
+        int fontHeight = this.getFontHeight();
         // The font is usually 1 pixel "too high", as in it's touching the top, but not the bottom
-        int yOffset = Math.max((int) Math.ceil((this.getHeight() - bw - this.fontHeight) / 2.0) + 1, 0);
+        int yOffset = Math.max((int) Math.ceil((this.getHeight() - bw - fontHeight) / 2.0) + 1, 0);
 
         if ((yOffset & 0x1) == 1)
         {

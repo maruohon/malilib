@@ -25,7 +25,7 @@ import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.overlay.InfoOverlay;
 import fi.dy.masa.malilib.overlay.widget.ConfigStatusIndicatorContainerWidget;
 import fi.dy.masa.malilib.overlay.widget.sub.BaseConfigStatusIndicatorWidget;
-import fi.dy.masa.malilib.render.text.TextRenderSettings;
+import fi.dy.masa.malilib.render.text.MultiLineTextRenderSettings;
 
 public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataListWidget<BaseConfigStatusIndicatorWidget<?>>> implements KeybindEditingScreen
 {
@@ -91,10 +91,10 @@ public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataLis
         this.paddingEditButton = GenericButton.simple(16, "malilib.label.padding", this::openPaddingEditScreen);
         this.paddingEditButton.setHoverStringProvider("tooltip", this.widget.getPadding()::getHoverTooltip);
 
-        final TextRenderSettings textSettings = widget.getTextSettings();
+        final MultiLineTextRenderSettings textSettings = widget.getTextSettings();
         this.groupEnabledToggleButton = OnOffButton.simpleSlider(16, widget::isEnabled, widget::toggleEnabled);
-        this.backgroundEnabledToggleButton = OnOffButton.simpleSlider(16, textSettings::getUseBackground, textSettings::toggleUseBackground);
-        this.oddEvenBackgroundToggleButton = OnOffButton.simpleSlider(16, textSettings::getUseOddEvenBackground, textSettings::toggleUseOddEvenBackground);
+        this.backgroundEnabledToggleButton = OnOffButton.simpleSlider(16, textSettings::getBackgroundEnabled, textSettings::toggleUseBackground);
+        this.oddEvenBackgroundToggleButton = OnOffButton.simpleSlider(16, textSettings::getOddEvenBackgroundEnabled, textSettings::toggleUseOddEvenBackground);
         this.oddEvenBackgroundToggleButton.translateAndAddHoverString("malilib.label.config_status_indicator.background_odd.hover");
         this.renderNameToggleButton = OnOffButton.simpleSlider(16, widget::getRenderName, widget::toggleRenderName);
 
