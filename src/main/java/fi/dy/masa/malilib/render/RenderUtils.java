@@ -804,6 +804,8 @@ public class RenderUtils
         {
             if (disableDepth)
             {
+                RenderSystem.depthMask(false);
+                RenderSystem.disableDepthTest();
                 VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(buffer);
                 textRenderer.draw(line, -strLenHalf, textY, 0x20000000 | (textColor & 0xFFFFFF), false, modelMatrix, immediate, true, 0, 15728880);
                 immediate.draw();
