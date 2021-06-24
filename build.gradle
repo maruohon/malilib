@@ -1,10 +1,10 @@
 buildscript {
     repositories {
-        jcenter()    
         maven {
             name = "Fabric"
             url = "https://maven.fabricmc.net/"
         }
+        jcenter()
     }
     dependencies {
         classpath 'net.fabricmc:fabric-loom:0.5-SNAPSHOT'
