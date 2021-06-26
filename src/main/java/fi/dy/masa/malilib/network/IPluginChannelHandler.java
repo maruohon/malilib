@@ -9,4 +9,6 @@ public interface IPluginChannelHandler
     List<Identifier> getChannels();
 
     void onPacketReceived(PacketByteBuf buf);
+
+    PacketByteBuf onPacketSend();
 }
