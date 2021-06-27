@@ -63,7 +63,7 @@ public class InfoArea
         //System.out.printf("InfoArea(%s)#addWidget() - all: %d, enabled: %d\n", this.location, this.allWidgets.size(), this.enabledInfoWidgets.size());
         if (this.allWidgets.contains(widget) == false)
         {
-            boolean isOverlay = widget.isOverlay();
+            boolean isOverlay = widget.isFixedPosition();
             this.addWidgetImpl(widget, isOverlay);
             this.notifyEnabledWidgetsChanged(isOverlay == false);
         }
@@ -87,7 +87,7 @@ public class InfoArea
         {
             if (this.allWidgets.contains(widget) == false)
             {
-                this.addWidgetImpl(widget, widget.isOverlay());
+                this.addWidgetImpl(widget, widget.isFixedPosition());
             }
         }
 
@@ -99,7 +99,7 @@ public class InfoArea
         //System.out.printf("InfoArea(%s)#removeWidget() - all: %d, enabled: %d\n", this.location, this.allWidgets.size(), this.enabledInfoWidgets.size());
         if (this.allWidgets.remove(widget))
         {
-            this.notifyEnabledWidgetsChanged(widget.isOverlay() == false);
+            this.notifyEnabledWidgetsChanged(widget.isFixedPosition() == false);
         }
     }
 
@@ -175,7 +175,7 @@ public class InfoArea
             {
                 this.allEnabledWidgets.add(widget);
 
-                if (widget.isOverlay() == false)
+                if (widget.isFixedPosition() == false)
                 {
                     this.enabledInfoWidgets.add(widget);
                 }

@@ -104,7 +104,7 @@ public class BooleanConfigStatusWidget extends BaseConfigStatusIndicatorWidget<B
 
         this.updateBooleanDisplayValue();
         this.updateEnabledState();
-        this.notifyContainerOfChanges(false);
+        this.geometryResizeNotifier.checkAndNotifyContainerOfChanges(false);
     }
 
     protected void updateBooleanDisplayValue()
@@ -146,17 +146,23 @@ public class BooleanConfigStatusWidget extends BaseConfigStatusIndicatorWidget<B
     }
 
     @Override
-    protected void renderContents(int x, int y, float z, ScreenContext ctx)
+    public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
-        super.renderContents(x, y, z, ctx);
+        super.renderAt(x, y, z, ctx);
 
         this.renderValueIndicator(x, y, z, ctx);
     }
 
     protected void renderValueIndicator(int x, int y, float z, ScreenContext ctx)
     {
-        this.renderIcon(x, y, z, ctx);
-        this.renderSlider(x, y, z, ctx);
+        if (this.renderStyle == Style.ON_OFF_SLIDER)
+        {
+            this.renderSlider(x, y, z, ctx);
+        }
+        else
+        {
+            this.renderIcon(x, y, z, ctx);
+        }
     }
 
     protected void renderIcon(int x, int y, float z, ScreenContext ctx)
@@ -171,18 +177,15 @@ public class BooleanConfigStatusWidget extends BaseConfigStatusIndicatorWidget<B
 
     protected void renderSlider(int x, int y, float z, ScreenContext ctx)
     {
-        if (this.renderStyle == Style.ON_OFF_SLIDER)
-        {
-            int height = this.getHeight();
-            int sx = x + this.getWidth() - this.sliderWidth;
+        int height = this.getHeight();
+        int sx = x + this.getWidth() - this.sliderWidth;
 
-            ShapeRenderUtils.renderRectangle(sx, y, z, this.sliderWidth, height, 0x70000000);
-            OnOffButton.renderOnOffSlider(sx, y, z, this.sliderWidth, height, this.lastValue, true, false, ctx);
+        ShapeRenderUtils.renderRectangle(sx, y, z, this.sliderWidth, height, 0x70000000);
+        OnOffButton.renderOnOffSlider(sx, y, z, this.sliderWidth, height, this.lastValue, true, false, ctx);
 
-            int tx = this.getSliderStyleTextStartX(sx + 4, this.lastValue);
-            int ty = y + height / 2 - this.getFontHeight() / 2;
-            this.renderTextLine(tx, ty, z, -1, true, ctx, this.lastValue ? this.textOn : this.textOff);
-        }
+        int tx = this.getSliderStyleTextStartX(sx + 4, this.lastValue);
+        int ty = y + height / 2 - this.getFontHeight() / 2;
+        this.renderTextLine(tx, ty, z, -1, true, ctx, this.lastValue ? this.textOn : this.textOff);
     }
 
     @Override

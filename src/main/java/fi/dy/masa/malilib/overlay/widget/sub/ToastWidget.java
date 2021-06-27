@@ -2,22 +2,26 @@ package fi.dy.masa.malilib.overlay.widget.sub;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.util.EdgeInt;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
-import fi.dy.masa.malilib.overlay.widget.InfoRendererWidget;
+import fi.dy.masa.malilib.gui.widget.BaseWidget;
 import fi.dy.masa.malilib.render.text.StyledText;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.render.text.TextRenderer;
 import fi.dy.masa.malilib.util.StyledTextUtils;
+import fi.dy.masa.malilib.util.data.MarkerManager;
 
-public class ToastWidget extends InfoRendererWidget
+public class ToastWidget extends BaseWidget
 {
-    protected final HorizontalAlignment horizontalAlignment;
+    protected final MarkerManager<String> markerManager = new MarkerManager<>(JsonPrimitive::new, JsonElement::getAsString);
     protected final List<StyledText> text = new ArrayList<>();
+    protected final HorizontalAlignment horizontalAlignment;
     protected final long fadeInDuration;
     protected final long fadeOutDuration;
     protected Icon backgroundTexture = DefaultIcons.TOAST_BACKGROUND;
@@ -72,6 +76,11 @@ public class ToastWidget extends InfoRendererWidget
         long remainingAge = this.expireTime - currentTime;
 
         return 1.0f - (float) ((double) remainingAge / (double) (this.displayTimeMs * 1000000L));
+    }
+
+    public MarkerManager<String> getMarkerManager()
+    {
+        return this.markerManager;
     }
 
     /**
@@ -168,24 +177,23 @@ public class ToastWidget extends InfoRendererWidget
             x -= offsetX;
         }
 
-        super.renderAt(x, y, z, ctx);
+        this.renderToastBackground(x, y, z, ctx);
+        this.renderToastText(x, y, z, ctx);
     }
 
-    @Override
-    protected void renderBackground(int x, int y, float z, ScreenContext ctx)
+    protected void renderToastBackground(int x, int y, float z, ScreenContext ctx)
     {
         this.backgroundTexture.renderFourSplicedAt(x, y, z, this.getWidth(), this.getHeight());
     }
 
-    @Override
-    protected void renderContents(int x, int y, float z, ScreenContext ctx)
+    protected void renderToastText(int x, int y, float z, ScreenContext ctx)
     {
         if (this.text.isEmpty() == false)
         {
             x += this.padding.getLeft();
             y += this.padding.getTop();
 
-            int color = this.textSettings.getTextColor();
+            int color = this.getTextSettings().getTextColor();
             int lineHeight = this.getLineHeight();
 
             for (StyledText text : this.text)

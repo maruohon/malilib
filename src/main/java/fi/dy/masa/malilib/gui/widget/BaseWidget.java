@@ -35,24 +35,24 @@ public class BaseWidget
     protected final Minecraft mc;
     protected final EdgeInt margin = new EdgeInt();
     protected final EdgeInt padding = new EdgeInt();
-    private final int id;
+    protected final ElementOffset iconOffset = new ElementOffset();
+    protected final ElementOffset textOffset = new ElementOffset();
 
     @Nullable protected Icon icon;
     @Nullable protected StyledTextLine text;
-
-    protected final ElementOffset iconOffset = new ElementOffset();
-    protected final ElementOffset textOffset = new ElementOffset();
-    private final TextRenderSettings textSettings = new TextRenderSettings();
     protected TextRenderer textRenderer;
+    protected boolean automaticHeight;
+    protected boolean automaticWidth;
+    protected int maxHeight;
+    protected int maxWidth;
+
+    private final TextRenderSettings textSettings = new TextRenderSettings();
+    private final int id;
     private int x;
     private int y;
     private float z;
     private int height;
     private int width;
-    protected boolean automaticHeight;
-    protected boolean automaticWidth;
-    protected int maxHeight;
-    protected int maxWidth;
 
     public BaseWidget()
     {

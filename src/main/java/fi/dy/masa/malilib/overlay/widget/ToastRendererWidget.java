@@ -9,6 +9,7 @@ import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.config.overlay.ToastRendererWidgetEditScreen;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
+import fi.dy.masa.malilib.gui.position.ScreenLocation;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.list.entry.BaseInfoRendererWidgetEntryWidget;
@@ -33,12 +34,17 @@ public class ToastRendererWidget extends InfoRendererWidget
     {
         super();
 
-        this.isOverlay = true;
         this.shouldSerialize = true;
         this.renderAboveScreen = true;
         this.setName(StringUtils.translate("malilib.label.default_toast_renderer"));
         this.setMaxWidth(240);
         this.padding.setAll(6, 10, 6, 10);
+    }
+
+    @Override
+    public boolean isFixedPosition()
+    {
+        return true;
     }
 
     public int getMessageGap()
@@ -145,14 +151,14 @@ public class ToastRendererWidget extends InfoRendererWidget
 
         ToastWidget widget = new ToastWidget(this.getMaxWidth(), this.getLineHeight(), this.messageGap,
                                              this.getPadding(), fadeInTimeMs, fadeOutTimeMs,
-                                             this.location.horizontalLocation);
+                                             this.getScreenLocation().horizontalLocation);
         widget.setZ(this.getZ() + 1f);
         widget.getTextSettings().setFrom(this.getTextSettings());
         widget.replaceText(text, displayTimeMs);
 
         if (marker != null)
         {
-            widget.addMarker(marker);
+            widget.getMarkerManager().addMarker(marker);
         }
 
         this.toastQueue.add(widget);
@@ -181,7 +187,7 @@ public class ToastRendererWidget extends InfoRendererWidget
     protected boolean tryAppendTextToExistingToast(ToastWidget toast, StyledText text,
                                                    int displayTimeMs, @Nullable String marker, boolean append)
     {
-        if (toast.matchesMarker(marker))
+        if (toast.getMarkerManager().matchesMarker(marker))
         {
             if (append == false)
             {
@@ -252,15 +258,17 @@ public class ToastRendererWidget extends InfoRendererWidget
     @Override
     public void updateSubWidgetPositions()
     {
-        int width = this.viewportWidthSupplier.getAsInt();
-        HorizontalAlignment align = this.location.horizontalLocation;
+        ScreenLocation location = this.getScreenLocation();
+        HorizontalAlignment align = location.horizontalLocation;
         int x;
-        int y = this.getY() + this.location.verticalLocation.getMargin(this.margin);
+        int y = this.getY() + location.getMarginY(this.margin);
         float z = this.getZ();
+        int width = this.viewportWidthSupplier.getAsInt();
+        int marginX = location.getMarginX(this.margin);
 
         for (ToastWidget widget : this.activeToasts)
         {
-            x = align.getStartX(widget.getWidth(), width, align.getMargin(this.margin));
+            x = align.getStartX(widget.getWidth(), width, marginX);
             widget.setPosition(x, y);
             widget.setZLevelBasedOnParent(z);
             y += widget.getHeight();

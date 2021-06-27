@@ -11,15 +11,18 @@ import fi.dy.masa.malilib.gui.config.indicator.BaseConfigStatusIndicatorEditScre
 import fi.dy.masa.malilib.gui.config.indicator.ConfigStatusWidgetFactory;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
-import fi.dy.masa.malilib.overlay.widget.InfoRendererWidget;
+import fi.dy.masa.malilib.overlay.widget.BaseOverlayWidget;
+import fi.dy.masa.malilib.render.text.MultiLineTextRenderSettings;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.data.ConfigOnTab;
 
-public abstract class BaseConfigStatusIndicatorWidget<C extends ConfigInfo> extends InfoRendererWidget
+public abstract class BaseConfigStatusIndicatorWidget<C extends ConfigInfo> extends BaseOverlayWidget
 {
     protected final C config;
     protected final ConfigOnTab configOnTab;
+    protected final MultiLineTextRenderSettings textSettings = new MultiLineTextRenderSettings();
+    protected String name = "?";
     protected StyledTextLine styledName;
     @Nullable protected StyledTextLine valueDisplayText;
     protected boolean nameShadow = true;
@@ -40,6 +43,12 @@ public abstract class BaseConfigStatusIndicatorWidget<C extends ConfigInfo> exte
         this.setName(config.getDisplayName());
     }
 
+    @Override
+    public MultiLineTextRenderSettings getTextSettings()
+    {
+        return this.textSettings;
+    }
+
     public ConfigOnTab getConfigOnTab()
     {
         return this.configOnTab;
@@ -50,12 +59,16 @@ public abstract class BaseConfigStatusIndicatorWidget<C extends ConfigInfo> exte
         return this.styledName;
     }
 
-    @Override
+    public String getName()
+    {
+        return this.name;
+    }
+
     public void setName(String name)
     {
-        super.setName(name);
+        this.name = name;
         this.styledName = StyledTextLine.of(name);
-        this.notifyContainerOfChanges(true);
+        this.geometryResizeNotifier.notifyContainerOfChanges();
     }
 
     public int getNameColor()
@@ -108,7 +121,6 @@ public abstract class BaseConfigStatusIndicatorWidget<C extends ConfigInfo> exte
         return this.valueRenderWidth;
     }
 
-    @Override
     public void openEditScreen()
     {
         BaseConfigStatusIndicatorEditScreen<?> screen = new BaseConfigStatusIndicatorEditScreen<>(this, GuiUtils.getCurrentScreen());
@@ -118,7 +130,7 @@ public abstract class BaseConfigStatusIndicatorWidget<C extends ConfigInfo> exte
     public abstract void updateState(boolean force);
 
     @Override
-    protected void renderContents(int x, int y, float z, ScreenContext ctx)
+    public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
         int ty = y + this.getHeight() / 2 - this.getFontHeight() / 2;
 
@@ -143,7 +155,7 @@ public abstract class BaseConfigStatusIndicatorWidget<C extends ConfigInfo> exte
     @Override
     public JsonObject toJson()
     {
-        JsonObject obj = new JsonObject();
+        JsonObject obj = super.toJson();
 
         obj.addProperty("type", this.getClass().getName());
         obj.addProperty("config_path", this.configOnTab.getConfigPath());
@@ -159,6 +171,8 @@ public abstract class BaseConfigStatusIndicatorWidget<C extends ConfigInfo> exte
     @Override
     public void fromJson(JsonObject obj)
     {
+        super.fromJson(obj);
+
         if (JsonUtils.hasString(obj, "name"))
         {
             this.setName(obj.get("name").getAsString());

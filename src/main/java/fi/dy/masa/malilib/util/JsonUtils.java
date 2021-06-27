@@ -381,13 +381,18 @@ public class JsonUtils
         if (hasArray(obj, arrayName))
         {
             JsonArray arr = obj.get(arrayName).getAsJsonArray();
-            int size = arr.size();
+            readArrayElements(arr, elementConsumer);
+        }
+    }
 
-            for (int i = 0; i < size; ++i)
-            {
-                JsonElement e = arr.get(i);
-                elementConsumer.accept(e);
-            }
+    public static void readArrayElements(JsonArray arr, Consumer<JsonElement> elementConsumer)
+    {
+        int size = arr.size();
+
+        for (int i = 0; i < size; ++i)
+        {
+            JsonElement e = arr.get(i);
+            elementConsumer.accept(e);
         }
     }
 

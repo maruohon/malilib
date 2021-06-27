@@ -1,24 +1,20 @@
 package fi.dy.masa.malilib.overlay.widget;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.IntSupplier;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.client.renderer.GlStateManager;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.gui.position.ScreenLocation;
+import fi.dy.masa.malilib.gui.util.EdgeInt;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
-import fi.dy.masa.malilib.gui.widget.BaseWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.BaseInfoRendererWidgetEntryWidget;
-import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.overlay.InfoOverlay;
 import fi.dy.masa.malilib.overlay.InfoWidgetManager;
 import fi.dy.masa.malilib.render.RenderUtils;
@@ -27,61 +23,40 @@ import fi.dy.masa.malilib.render.text.MultiLineTextRenderSettings;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.JsonUtils;
 
-public abstract class InfoRendererWidget extends BaseWidget
+public abstract class InfoRendererWidget extends BaseOverlayWidget
 {
     protected final List<Consumer<ScreenLocation>> locationChangeListeners = new ArrayList<>();
-    protected final Set<String> markers = new HashSet<>();
     protected MultiLineTextRenderSettings textSettings = new MultiLineTextRenderSettings();
-    protected ScreenLocation location = ScreenLocation.TOP_LEFT;
-    protected String name = "?";
-    protected IntSupplier viewportWidthSupplier = GuiUtils::getScaledWindowWidth;
-    protected IntSupplier viewportHeightSupplier = GuiUtils::getScaledWindowHeight;
     protected InfoOverlay.OverlayRenderContext visibleInContext = InfoOverlay.OverlayRenderContext.BOTH;
-    @Nullable protected EventListener geometryChangeListener;
-    @Nullable protected EventListener enabledChangeListener;
+    protected ScreenLocation location = ScreenLocation.TOP_LEFT;
+    protected IntSupplier viewportHeightSupplier = GuiUtils::getScaledWindowHeight;
+    protected IntSupplier viewportWidthSupplier = GuiUtils::getScaledWindowWidth;
+    protected String name = "?";
     @Nullable protected StyledTextLine styledName;
-    protected boolean enabled = true;
-    protected boolean delayedGeometryUpdate;
-    protected boolean forceNotifyGeometryChangeListener;
-    protected boolean isOverlay;
-    protected boolean needsReLayout;
     protected boolean renderAboveScreen;
     protected boolean renderName;
     protected boolean shouldSerialize;
     protected boolean renderBackground;
     protected boolean valid = true;
     protected double scale = 1.0;
-    protected long previousGeometryUpdateTime = -1;
-    protected long geometryShrinkDelay = (long) (2 * 1E9); // 2 seconds
+
     protected int backgroundColor = 0xC0000000;
     protected int borderColor = 0xFFC0C0C0;
-    protected int geometryShrinkThresholdX = 40;
-    protected int geometryShrinkThresholdY = 10;
-    protected int previousUpdatedWidth;
-    protected int previousUpdatedHeight;
     protected int sortIndex = 100;
 
     public InfoRendererWidget()
     {
-        super(0, 0, 0, 0);
-
-        this.margin.setChangeListener(this::requestUnconditionalReLayout);
-        this.padding.setChangeListener(this::requestUnconditionalReLayout);
-    }
-
-    public boolean isEnabled()
-    {
-        return this.enabled;
+        super();
     }
 
     /**
-     * A widget that says it's an overlay will not get moved on the y direction
+     * A widget that is "fixed position" will not get moved on the y direction
      * by other widgets, but instead it will sit on top of the other widgets
      * at the base location of the InfoArea.
      */
-    public boolean isOverlay()
+    public boolean isFixedPosition()
     {
-        return this.isOverlay;
+        return false;
     }
 
     /**
@@ -107,7 +82,7 @@ public abstract class InfoRendererWidget extends BaseWidget
 
     public String getName()
     {
-        return this.name != null ? this.name : this.location.getDisplayName();
+        return this.name;
     }
 
     public ScreenLocation getScreenLocation()
@@ -119,22 +94,6 @@ public abstract class InfoRendererWidget extends BaseWidget
     public MultiLineTextRenderSettings getTextSettings()
     {
         return this.textSettings;
-    }
-
-    public void toggleEnabled()
-    {
-        this.setEnabled(! this.isEnabled());
-    }
-
-    public void setEnabled(boolean enabled)
-    {
-        boolean wasEnabled = this.enabled;
-        this.enabled = enabled;
-
-        if (enabled != wasEnabled && this.enabledChangeListener != null)
-        {
-            this.enabledChangeListener.onEvent();
-        }
     }
 
     public void toggleRenderName()
@@ -151,7 +110,7 @@ public abstract class InfoRendererWidget extends BaseWidget
     public void setScale(double scale)
     {
         this.scale = scale;
-        this.requestConditionalReLayout();
+        this.requestUnconditionalReLayout();
     }
 
     public boolean getRenderBackground()
@@ -199,24 +158,6 @@ public abstract class InfoRendererWidget extends BaseWidget
     }
 
     /**
-     * Sets a listener that should be notified if the dimensions of this widget get changed,
-     * such as the widget height or width changing due to changes in the displayed contents.
-     */
-    public void setGeometryChangeListener(@Nullable EventListener listener)
-    {
-        this.geometryChangeListener = listener;
-    }
-
-    /**
-     * Sets a listener that should be notified if the dimensions of this widget get changed,
-     * such as the widget height or width changing due to changes in the displayed contents.
-     */
-    public void setEnabledChangeListener(@Nullable EventListener listener)
-    {
-        this.enabledChangeListener = listener;
-    }
-
-    /**
      * Adds a listener that gets notified when the ScreenLocation of this widget gets changed.
      */
     public void addLocationChangeListener(Consumer<ScreenLocation> listener)
@@ -236,32 +177,6 @@ public abstract class InfoRendererWidget extends BaseWidget
     {
         this.viewportWidthSupplier = viewportWidthSupplier;
         this.viewportHeightSupplier = viewportHeightSupplier;
-    }
-
-    /**
-     * Adds a marker that a mod can use to recognize which of the possibly several
-     * info widgets of the same type in the same InfoArea/location it has been using.
-     * This is mostly useful after game restarts or world re-logs, when the
-     * InfoWidgetManager reloads the saved widgets, and a mod wants to re-attach to the
-     * "same" widget it was using before, instead of creating new ones every time.
-     */
-    public void addMarker(String marker)
-    {
-        this.markers.add(marker);
-    }
-
-    public void removeMarker(String marker)
-    {
-        this.markers.remove(marker);
-    }
-
-    /**
-     * Checks if the widget has the given marker.
-     * If the given marker is null, then the widget must not have any markers to "match".
-     */
-    public boolean matchesMarker(@Nullable String marker)
-    {
-        return marker != null ? this.markers.contains(marker) : this.markers.isEmpty();
     }
 
     public void setLocation(ScreenLocation location)
@@ -326,50 +241,28 @@ public abstract class InfoRendererWidget extends BaseWidget
      */
     protected void updateWidgetPosition()
     {
-        if (this.isOverlay)
+        if (this.isFixedPosition())
         {
-            int viewportWidth = this.viewportWidthSupplier.getAsInt();
-            int viewportHeight = this.viewportHeightSupplier.getAsInt();
-            int width = (int) Math.ceil(this.getWidth() * this.getScale());
-            int height = (int) Math.ceil(this.getHeight() * this.getScale());
-            int marginX = this.location.horizontalLocation.getMargin(this.getMargin());
-            int marginY = this.location.verticalLocation.getMargin(this.getMargin());
-            int x = this.location.getStartX(width, viewportWidth, marginX);
-            int y = this.location.getStartY(height, viewportHeight, marginY);
-
-            this.setPosition(x, y);
+            this.updateFixedPositionWidgetPosition();
         }
     }
 
-    protected void requestConditionalReLayout()
+    protected void updateFixedPositionWidgetPosition()
     {
-        this.needsReLayout = true;
-    }
+        int viewportWidth = this.viewportWidthSupplier.getAsInt();
+        int viewportHeight = this.viewportHeightSupplier.getAsInt();
+        double scale = this.getScale();
+        int width = (int) Math.ceil(this.getWidth() * scale);
+        int height = (int) Math.ceil(this.getHeight() * scale);
 
-    protected void requestUnconditionalReLayout()
-    {
-        this.needsReLayout = true;
-        this.forceNotifyGeometryChangeListener = true;
-    }
+        ScreenLocation location = this.getScreenLocation();
+        EdgeInt margin = this.getMargin();
+        int marginX = location.getMarginX(margin);
+        int marginY = location.getMarginY(margin);
+        int x = location.getStartX(width, viewportWidth, marginX);
+        int y = location.getStartY(height, viewportHeight, marginY);
 
-    protected void reLayoutWidgets(boolean forceNotify)
-    {
-        this.updateSize();
-        this.updateSubWidgetPositions();
-        this.notifyContainerOfChanges(forceNotify);
-
-        this.needsReLayout = false;
-        this.forceNotifyGeometryChangeListener = false;
-    }
-
-    @Override
-    protected void onPositionChanged(int oldX, int oldY)
-    {
-        this.updateSubWidgetPositions();
-    }
-
-    public void updateSubWidgetPositions()
-    {
+        this.setPosition(x, y);
     }
 
     /**
@@ -377,61 +270,6 @@ public abstract class InfoRendererWidget extends BaseWidget
      */
     public void onAdded()
     {
-    }
-
-    /**
-     * Requests the container to re-layout all the info widgets due to
-     * this widget's dimensions changing.
-     */
-    protected void notifyContainerOfChanges(boolean forceNotify)
-    {
-        if (this.geometryChangeListener != null && (forceNotify || this.needsGeometryUpdate()))
-        {
-            this.geometryChangeListener.onEvent();
-            this.previousUpdatedWidth = this.getWidth();
-            this.previousUpdatedHeight = this.getHeight();
-            this.previousGeometryUpdateTime = System.nanoTime();
-            this.delayedGeometryUpdate = false;
-        }
-    }
-
-    protected boolean needsGeometryUpdate()
-    {
-        int height = this.getHeight();
-        int width = this.getWidth();
-
-        if (width > this.previousUpdatedWidth || height > this.previousUpdatedHeight)
-        {
-            return true;
-        }
-
-        if (width < (this.previousUpdatedWidth - this.geometryShrinkThresholdX) ||
-            height < (this.previousUpdatedHeight - this.geometryShrinkThresholdY))
-        {
-            this.delayedGeometryUpdate = true;
-            return System.nanoTime() - this.previousGeometryUpdateTime > this.geometryShrinkDelay;
-        }
-
-        return false;
-    }
-
-    /**
-     * 
-     * Called to allow the widget to update its state before all the enabled widgets are rendered.
-     */
-    public void updateState()
-    {
-        if (this.needsReLayout)
-        {
-            this.reLayoutWidgets(this.forceNotifyGeometryChangeListener);
-        }
-
-        // Keep checking for geometry updates until the delay time runs out,
-        // if the contents are set to shrink after a delay
-        if (this.delayedGeometryUpdate)
-        {
-            this.notifyContainerOfChanges(false);
-        }
     }
 
     /**
@@ -519,8 +357,9 @@ public abstract class InfoRendererWidget extends BaseWidget
         if (this.renderName && this.styledName != null)
         {
             int paddingTop = this.padding.getTop();
+            x += this.padding.getLeft();
             y += paddingTop;
-            this.renderTextLine(x + this.padding.getLeft(), y, z, 0xFFFFFFFF, true, ctx, this.styledName);
+            this.renderTextLine(x, y, z, 0xFFFFFFFF, true, ctx, this.styledName);
 
             return this.getLineHeight() + paddingTop;
         }
@@ -562,11 +401,9 @@ public abstract class InfoRendererWidget extends BaseWidget
 
     public JsonObject toJson()
     {
-        JsonObject obj = new JsonObject();
+        JsonObject obj = super.toJson();
 
-        obj.addProperty("type", this.getClass().getName());
         obj.addProperty("name", this.getName());
-        obj.addProperty("enabled", this.isEnabled());
         obj.addProperty("above_screen", this.getRenderAboveScreen());
         obj.addProperty("screen_location", this.getScreenLocation().getName());
         obj.addProperty("scale", this.scale);
@@ -575,38 +412,14 @@ public abstract class InfoRendererWidget extends BaseWidget
         obj.addProperty("bg_enabled", this.renderBackground);
         obj.addProperty("bg_color", this.backgroundColor);
         obj.addProperty("border_color", this.borderColor);
-        obj.addProperty("z", this.getZ());
-
-        obj.add("text_settings", this.getTextSettings().toJson());
-
-        if (this.margin.isEmpty() == false)
-        {
-            obj.add("margin", this.margin.toJson());
-        }
-
-        if (this.padding.isEmpty() == false)
-        {
-            obj.add("padding", this.padding.toJson());
-        }
-
-        if (this.markers.isEmpty() == false)
-        {
-            JsonArray arr = new JsonArray();
-
-            for (String marker : this.markers)
-            {
-                arr.add(marker);
-            }
-
-            obj.add("markers", arr);
-        }
 
         return obj;
     }
 
     public void fromJson(JsonObject obj)
     {
-        this.enabled = JsonUtils.getBooleanOrDefault(obj, "enabled", true);
+        super.fromJson(obj);
+
         this.setRenderAboveScreen(JsonUtils.getBooleanOrDefault(obj, "above_screen", false));
         this.renderName = JsonUtils.getBooleanOrDefault(obj, "render_name", false);
         this.scale = JsonUtils.getDoubleOrDefault(obj, "scale", 1.0);
@@ -615,20 +428,12 @@ public abstract class InfoRendererWidget extends BaseWidget
         this.renderBackground = JsonUtils.getBooleanOrDefault(obj, "bg_enabled", this.renderBackground);
         this.backgroundColor = JsonUtils.getIntegerOrDefault(obj, "bg_color", this.backgroundColor);
         this.borderColor = JsonUtils.getIntegerOrDefault(obj, "border_color", this.borderColor);
-        this.setZ(JsonUtils.getFloatOrDefault(obj, "z", this.getZ()));
 
         if (JsonUtils.hasString(obj, "screen_location"))
         {
             ScreenLocation location = ScreenLocation.findValueByName(obj.get("screen_location").getAsString(), ScreenLocation.VALUES);
             this.setLocation(location);
         }
-
-        JsonUtils.readArrayIfPresent(obj, "padding", this.padding::fromJson);
-        JsonUtils.readArrayIfPresent(obj, "margin", this.margin::fromJson);
-        JsonUtils.readObjectIfPresent(obj, "text_settings", this.getTextSettings()::fromJson);
-
-        this.markers.clear();
-        JsonUtils.readArrayElementsIfPresent(obj, "markers", (e) -> this.markers.add(e.getAsString()));
     }
 
     @Nullable

@@ -67,8 +67,8 @@ public class StringListRendererWidget extends InfoRendererWidget
     public void setLocation(ScreenLocation location)
     {
         super.setLocation(location);
-        this.stringListRenderer.setHorizontalAlignment(this.location.horizontalLocation);
-        this.stringListRenderer.setVerticalAlignment(this.location.verticalLocation);
+        this.stringListRenderer.setHorizontalAlignment(this.getScreenLocation().horizontalLocation);
+        this.stringListRenderer.setVerticalAlignment(this.getScreenLocation().verticalLocation);
     }
 
     protected void onPaddingChanged()

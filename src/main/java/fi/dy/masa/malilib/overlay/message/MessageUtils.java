@@ -39,7 +39,7 @@ public class MessageUtils
 
             if (marker != null)
             {
-                widget.addMarker(marker);
+                widget.getMarkerManager().addMarker(marker);
             }
 
             InfoWidgetManager.INSTANCE.addWidget(widget);
@@ -56,7 +56,7 @@ public class MessageUtils
         {
             widget = new MessageRendererWidget();
             widget.setLocation(ScreenLocation.BOTTOM_CENTER);
-            widget.addMarker(CUSTOM_ACTION_BAR_MARKER);
+            widget.getMarkerManager().addMarker(CUSTOM_ACTION_BAR_MARKER);
             widget.setRenderBackground(false);
             widget.getMargin().setBottom(50);
             widget.setZ(300f);
@@ -83,7 +83,7 @@ public class MessageUtils
 
             if (marker != null)
             {
-                widget.addMarker(marker);
+                widget.getMarkerManager().addMarker(marker);
             }
 
             InfoWidgetManager.INSTANCE.addWidget(widget);
@@ -98,7 +98,7 @@ public class MessageUtils
                                                                   @Nullable final String marker)
     {
         Predicate<T> predicateLocation = location != null ? w -> w.getScreenLocation() == location : w -> true;
-        Predicate<T> predicateMarker = w -> w.matchesMarker(marker);
+        Predicate<T> predicateMarker = w -> w.getMarkerManager().matchesMarker(marker);
         Predicate<T> filter = predicateLocation.and(predicateMarker);
         return InfoOverlay.INSTANCE.findWidget(widgetClass, filter);
     }

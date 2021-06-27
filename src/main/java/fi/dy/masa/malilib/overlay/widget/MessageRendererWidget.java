@@ -25,7 +25,6 @@ public class MessageRendererWidget extends InfoRendererWidget
     {
         super();
 
-        this.isOverlay = true;
         this.shouldSerialize = true;
         this.renderBackground = true;
 
@@ -33,6 +32,12 @@ public class MessageRendererWidget extends InfoRendererWidget
         this.setName(StringUtils.translate("malilib.label.default_message_renderer"));
         this.setLineHeight(10);
         this.setMaxWidth(320);
+    }
+
+    @Override
+    public boolean isFixedPosition()
+    {
+        return true;
     }
 
     @Override
