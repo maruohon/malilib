@@ -1,13 +1,12 @@
 package fi.dy.masa.malilib.overlay.widget.sub;
 
-import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonObject;
+import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.config.indicator.BooleanConfigStatusIndicatorEditScreen;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
-import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.button.OnOffButton;
@@ -27,14 +26,18 @@ public class BooleanConfigStatusWidget extends BaseConfigStatusIndicatorWidget<B
     protected final StyledTextLine textOff;
     protected final int sliderWidth;
     protected EnabledCondition condition = EnabledCondition.ALWAYS;
-    protected Style renderStyle = Style.ON_OFF_TEXT;
-    @Nullable protected Icon icon;
+    protected Style renderStyle = Style.ON_OFF_SLIDER;
     protected boolean lastValue;
     protected int booleanValueRenderWidth;
 
     public BooleanConfigStatusWidget(BooleanConfig config, ConfigOnTab configOnTab)
     {
-        super(config, configOnTab);
+        this(config, configOnTab, MaLiLibReference.MOD_ID + ":csi_value_boolean");
+    }
+
+    public BooleanConfigStatusWidget(BooleanConfig config, ConfigOnTab configOnTab, String widgetTypeId)
+    {
+        super(config, configOnTab, widgetTypeId);
 
         this.textOn  = StyledTextLine.translate("malilib.label.on.caps", STYLE_ON);
         this.textOff = StyledTextLine.translate("malilib.label.off.caps", STYLE_OFF);

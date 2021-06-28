@@ -4,9 +4,10 @@ import java.util.Map;
 import javax.annotation.Nullable;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.gui.BaseScreen;
-import fi.dy.masa.malilib.gui.config.ConfigWidgetRegistry;
+import fi.dy.masa.malilib.gui.config.ConfigStatusWidgetRegistry;
 import fi.dy.masa.malilib.gui.config.indicator.BaseConfigStatusIndicatorEditScreen;
 import fi.dy.masa.malilib.gui.config.indicator.ConfigStatusWidgetFactory;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
@@ -22,6 +23,7 @@ public abstract class BaseConfigStatusIndicatorWidget<C extends ConfigInfo> exte
     protected final C config;
     protected final ConfigOnTab configOnTab;
     protected final MultiLineTextRenderSettings textSettings = new MultiLineTextRenderSettings();
+    protected final String widgetTypeId;
     protected String name = "?";
     protected StyledTextLine styledName;
     @Nullable protected StyledTextLine valueDisplayText;
@@ -31,16 +33,23 @@ public abstract class BaseConfigStatusIndicatorWidget<C extends ConfigInfo> exte
     protected int valueColor = 0xFF00FFFF;
     protected int valueRenderWidth;
 
-    public BaseConfigStatusIndicatorWidget(C config, ConfigOnTab configOnTab)
+    public BaseConfigStatusIndicatorWidget(C config, ConfigOnTab configOnTab, String widgetTypeId)
     {
         super();
 
         this.config = config;
         this.configOnTab = configOnTab;
-        this.getTextSettings().setOddEvenBackgroundEnabled(true);
+        this.widgetTypeId = widgetTypeId;
 
+        this.getTextSettings().setOddEvenBackgroundEnabled(true);
         this.setHeight(this.getLineHeight());
         this.setName(config.getDisplayName());
+    }
+
+    @Override
+    public String getWidgetTypeId()
+    {
+        return this.widgetTypeId;
     }
 
     @Override
@@ -157,7 +166,6 @@ public abstract class BaseConfigStatusIndicatorWidget<C extends ConfigInfo> exte
     {
         JsonObject obj = super.toJson();
 
-        obj.addProperty("type", this.getClass().getName());
         obj.addProperty("config_path", this.configOnTab.getConfigPath());
         obj.addProperty("name", this.name);
         obj.addProperty("name_color", this.nameColor);
@@ -203,16 +211,25 @@ public abstract class BaseConfigStatusIndicatorWidget<C extends ConfigInfo> exte
             if (configOnTab != null)
             {
                 String type = obj.get("type").getAsString();
-                @SuppressWarnings("unchecked")
-                ConfigStatusWidgetFactory<C> factory = (ConfigStatusWidgetFactory<C>) ConfigWidgetRegistry.INSTANCE.getConfigStatusWidgetFactory(type);
 
-                if (factory != null)
+                try
                 {
                     @SuppressWarnings("unchecked")
-                    BaseConfigStatusIndicatorWidget<?> widget = factory.create((C) configOnTab.config, configOnTab);
-                    widget.fromJson(obj);
-                    widget.updateState(true);
-                    return widget;
+                    ConfigStatusWidgetFactory<C> factory = (ConfigStatusWidgetFactory<C>) ConfigStatusWidgetRegistry.INSTANCE.getConfigStatusWidgetFactory(type);
+
+                    if (factory != null)
+                    {
+                        @SuppressWarnings("unchecked")
+                        BaseConfigStatusIndicatorWidget<?> widget = factory.create((C) configOnTab.config, configOnTab);
+                        widget.fromJson(obj);
+                        widget.updateState(true);
+                        return widget;
+                    }
+                }
+                catch (Exception e)
+                {
+                    MaLiLib.LOGGER.error("Failed to create a config status indicator widget of type '{}' for config '{}'",
+                                         type, configPath, e);
                 }
             }
         }

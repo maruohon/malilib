@@ -2,18 +2,22 @@ package fi.dy.masa.malilib.overlay.widget.sub;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Supplier;
 import javax.annotation.Nullable;
+import fi.dy.masa.malilib.MaLiLibReference;
+import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.config.option.HotkeyedBooleanConfig;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.config.indicator.HotkeyedBooleanConfigStatusIndicatorEditScreen;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
+import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.data.ConfigOnTab;
 
 public class HotkeyedBooleanConfigStatusWidget extends BooleanConfigStatusWidget
 {
-    protected final HotkeyedBooleanConfig hotkeyedConfig;
+    protected final Supplier<KeyBind> keyBindSupplier;
     protected List<Integer> lastKeys = Collections.emptyList();
     @Nullable protected StyledTextLine keysText;
     protected boolean showKeys;
@@ -21,9 +25,20 @@ public class HotkeyedBooleanConfigStatusWidget extends BooleanConfigStatusWidget
 
     public HotkeyedBooleanConfigStatusWidget(HotkeyedBooleanConfig config, ConfigOnTab configOnTab)
     {
-        super(config, configOnTab);
+        this(config, configOnTab, MaLiLibReference.MOD_ID + ":csi_value_hotkeyed_boolean");
+    }
 
-        this.hotkeyedConfig = config;
+    public HotkeyedBooleanConfigStatusWidget(HotkeyedBooleanConfig config, ConfigOnTab configOnTab, String widgetTypeId)
+    {
+        this(config, config::getKeyBind, configOnTab, widgetTypeId);
+    }
+
+    public HotkeyedBooleanConfigStatusWidget(BooleanConfig booleanConfig, Supplier<KeyBind> keyBindSupplier,
+                                             ConfigOnTab configOnTab, String widgetTypeId)
+    {
+        super(booleanConfig, configOnTab, widgetTypeId);
+
+        this.keyBindSupplier = keyBindSupplier;
     }
 
     public boolean getShowBoolean()
@@ -59,7 +74,7 @@ public class HotkeyedBooleanConfigStatusWidget extends BooleanConfigStatusWidget
     protected boolean isModified()
     {
         return this.lastValue != this.config.getBooleanValue() ||
-               this.hotkeyedConfig.getKeyBind().getKeys().equals(this.lastKeys) == false;
+               this.keyBindSupplier.get().getKeys().equals(this.lastKeys) == false;
     }
 
     @Override
@@ -67,12 +82,12 @@ public class HotkeyedBooleanConfigStatusWidget extends BooleanConfigStatusWidget
     {
         super.updateValue();
 
-        this.lastKeys = this.hotkeyedConfig.getKeyBind().getKeys();
+        this.lastKeys = this.keyBindSupplier.get().getKeys();
         this.keysText = null;
 
         if (this.showKeys)
         {
-            String keysString = this.hotkeyedConfig.getKeyBind().getKeysDisplayString();
+            String keysString = this.keyBindSupplier.get().getKeysDisplayString();
             this.keysText = StyledTextLine.translate("malilib.label.config_status_indicator.hotkeys_string", keysString);
             this.valueRenderWidth += this.keysText.renderWidth + 4;
         }

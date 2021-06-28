@@ -2,9 +2,7 @@ package fi.dy.masa.malilib.overlay;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import javax.annotation.Nullable;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -12,11 +10,7 @@ import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.config.util.ConfigUtils;
-import fi.dy.masa.malilib.overlay.widget.ConfigStatusIndicatorContainerWidget;
 import fi.dy.masa.malilib.overlay.widget.InfoRendererWidget;
-import fi.dy.masa.malilib.overlay.widget.MessageRendererWidget;
-import fi.dy.masa.malilib.overlay.widget.StringListRendererWidget;
-import fi.dy.masa.malilib.overlay.widget.ToastRendererWidget;
 import fi.dy.masa.malilib.util.JsonUtils;
 
 public class InfoWidgetManager
@@ -152,36 +146,5 @@ public class InfoWidgetManager
         this.dirty = false;
 
         return JsonUtils.saveToFile(dir, backupDir, saveFile, 10, antiDuplicate, this::toJson);
-    }
-
-    private static final HashMap<String, InfoWidgetFactory> WIDGET_FACTORIES_BY_TYPE = new HashMap<>();
-
-    public static void registerWidgetFactory(Class<? extends InfoRendererWidget> clazz, InfoWidgetFactory factory)
-    {
-        WIDGET_FACTORIES_BY_TYPE.put(clazz.getName(), factory);
-    }
-
-    @Nullable
-    public static InfoWidgetFactory getWidgetFactory(String type)
-    {
-        return WIDGET_FACTORIES_BY_TYPE.get(type);
-    }
-
-    private static void registerDefaultFactories()
-    {
-        registerWidgetFactory(ConfigStatusIndicatorContainerWidget.class,   ConfigStatusIndicatorContainerWidget::new);
-        registerWidgetFactory(MessageRendererWidget.class,                  MessageRendererWidget::new);
-        registerWidgetFactory(StringListRendererWidget.class,               StringListRendererWidget::new);
-        registerWidgetFactory(ToastRendererWidget.class,                    ToastRendererWidget::new);
-    }
-
-    static
-    {
-        registerDefaultFactories();
-    }
-
-    public interface InfoWidgetFactory
-    {
-        InfoRendererWidget create();
     }
 }

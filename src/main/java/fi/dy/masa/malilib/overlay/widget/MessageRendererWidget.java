@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.overlay.widget;
 import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.JsonObject;
+import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.config.overlay.MessageRendererWidgetEditScreen;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
@@ -32,6 +33,12 @@ public class MessageRendererWidget extends InfoRendererWidget
         this.setName(StringUtils.translate("malilib.label.default_message_renderer"));
         this.setLineHeight(10);
         this.setMaxWidth(320);
+    }
+
+    @Override
+    public String getWidgetTypeId()
+    {
+        return MaLiLibReference.MOD_ID + ":message_renderer";
     }
 
     @Override

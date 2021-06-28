@@ -10,7 +10,7 @@ import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.data.MarkerManager;
 
-public class BaseOverlayWidget extends BaseWidget
+public abstract class BaseOverlayWidget extends BaseWidget
 {
     protected final MarkerManager<String> markerManager = new MarkerManager<>(JsonPrimitive::new, JsonElement::getAsString);
     protected final GeometryResizeNotifier geometryResizeNotifier;
@@ -27,6 +27,13 @@ public class BaseOverlayWidget extends BaseWidget
         this.margin.setChangeListener(this::requestUnconditionalReLayout);
         this.padding.setChangeListener(this::requestUnconditionalReLayout);
     }
+
+    /**
+     * Returns a unique id for the widget type. The id is used in the registry
+     * to register the widget factories, and it is also saved to the config file when
+     * serializing and de-serializing widgets.
+     */
+    public abstract String getWidgetTypeId();
 
     /**
      * Sets a listener that should be notified if the dimensions of this widget get changed,
@@ -120,9 +127,8 @@ public class BaseOverlayWidget extends BaseWidget
     {
         JsonObject obj = new JsonObject();
 
-        obj.addProperty("type", this.getClass().getName());
+        obj.addProperty("type", this.getWidgetTypeId());
         obj.addProperty("enabled", this.isEnabled());
-        obj.addProperty("z", this.getZ());
 
         obj.add("text_settings", this.getTextSettings().toJson());
 
@@ -136,23 +142,15 @@ public class BaseOverlayWidget extends BaseWidget
             obj.add("padding", this.padding.toJson());
         }
 
-        obj.add("markers", this.markerManager.toJson());
-
         return obj;
     }
 
     public void fromJson(JsonObject obj)
     {
         this.enabled = JsonUtils.getBooleanOrDefault(obj, "enabled", true);
-        this.setZ(JsonUtils.getFloatOrDefault(obj, "z", this.getZ()));
 
         JsonUtils.readArrayIfPresent(obj, "padding", this.padding::fromJson);
         JsonUtils.readArrayIfPresent(obj, "margin", this.margin::fromJson);
         JsonUtils.readObjectIfPresent(obj, "text_settings", this.getTextSettings()::fromJson);
-
-        if (obj.has("markers"))
-        {
-            this.markerManager.fromJson(obj.get("markers"));
-        }
     }
 }

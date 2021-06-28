@@ -16,7 +16,7 @@ import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.list.entry.BaseInfoRendererWidgetEntryWidget;
 import fi.dy.masa.malilib.overlay.InfoOverlay;
-import fi.dy.masa.malilib.overlay.InfoWidgetManager;
+import fi.dy.masa.malilib.overlay.InfoWidgetRegistry;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.render.text.MultiLineTextRenderSettings;
@@ -399,35 +399,41 @@ public abstract class InfoRendererWidget extends BaseOverlayWidget
     {
     }
 
+    @Override
     public JsonObject toJson()
     {
         JsonObject obj = super.toJson();
 
         obj.addProperty("name", this.getName());
+        obj.addProperty("render_name", this.renderName);
         obj.addProperty("above_screen", this.getRenderAboveScreen());
         obj.addProperty("screen_location", this.getScreenLocation().getName());
         obj.addProperty("scale", this.scale);
-        obj.addProperty("render_name", this.renderName);
         obj.addProperty("sort_index", this.getSortIndex());
+        obj.addProperty("z", this.getZ());
         obj.addProperty("bg_enabled", this.renderBackground);
         obj.addProperty("bg_color", this.backgroundColor);
         obj.addProperty("border_color", this.borderColor);
+        obj.add("markers", this.markerManager.toJson());
 
         return obj;
     }
 
+    @Override
     public void fromJson(JsonObject obj)
     {
         super.fromJson(obj);
 
-        this.setRenderAboveScreen(JsonUtils.getBooleanOrDefault(obj, "above_screen", false));
         this.renderName = JsonUtils.getBooleanOrDefault(obj, "render_name", false);
-        this.scale = JsonUtils.getDoubleOrDefault(obj, "scale", 1.0);
         this.setName(JsonUtils.getStringOrDefault(obj, "name", this.name));
+        this.setRenderAboveScreen(JsonUtils.getBooleanOrDefault(obj, "above_screen", false));
+        this.scale = JsonUtils.getDoubleOrDefault(obj, "scale", 1.0);
         this.setSortIndex(JsonUtils.getIntegerOrDefault(obj, "sort_index", 100));
+        this.setZ(JsonUtils.getFloatOrDefault(obj, "z", this.getZ()));
         this.renderBackground = JsonUtils.getBooleanOrDefault(obj, "bg_enabled", this.renderBackground);
         this.backgroundColor = JsonUtils.getIntegerOrDefault(obj, "bg_color", this.backgroundColor);
         this.borderColor = JsonUtils.getIntegerOrDefault(obj, "border_color", this.borderColor);
+        JsonUtils.readObjectIfPresent(obj, "markers", this.getMarkerManager()::fromJson);
 
         if (JsonUtils.hasString(obj, "screen_location"))
         {
@@ -449,7 +455,7 @@ public abstract class InfoRendererWidget extends BaseOverlayWidget
         if (JsonUtils.hasString(obj, "type"))
         {
             String type = obj.get("type").getAsString();
-            InfoWidgetManager.InfoWidgetFactory factory = InfoWidgetManager.getWidgetFactory(type);
+            InfoWidgetRegistry.InfoWidgetFactory factory = InfoWidgetRegistry.INSTANCE.getWidgetFactory(type);
 
             if (factory != null)
             {

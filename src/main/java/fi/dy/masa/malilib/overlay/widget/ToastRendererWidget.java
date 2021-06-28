@@ -6,6 +6,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 import com.google.common.collect.Queues;
 import com.google.gson.JsonObject;
+import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.config.overlay.ToastRendererWidgetEditScreen;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
@@ -39,6 +40,12 @@ public class ToastRendererWidget extends InfoRendererWidget
         this.setName(StringUtils.translate("malilib.label.default_toast_renderer"));
         this.setMaxWidth(240);
         this.padding.setAll(6, 10, 6, 10);
+    }
+
+    @Override
+    public String getWidgetTypeId()
+    {
+        return MaLiLibReference.MOD_ID + ":toast_renderer";
     }
 
     @Override

@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.overlay.widget.sub;
 
 import java.util.List;
+import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.config.option.HotkeyConfig;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.render.text.TextStyle;
@@ -13,7 +14,12 @@ public class HotkeyConfigStatusWidget extends BaseConfigStatusIndicatorWidget<Ho
 
     public HotkeyConfigStatusWidget(HotkeyConfig config, ConfigOnTab configOnTab)
     {
-        super(config, configOnTab);
+        this(config, configOnTab, MaLiLibReference.MOD_ID + ":csi_value_hotkey");
+    }
+
+    public HotkeyConfigStatusWidget(HotkeyConfig config, ConfigOnTab configOnTab, String widgetTypeId)
+    {
+        super(config, configOnTab, widgetTypeId);
     }
 
     @Override

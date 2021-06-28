@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.overlay.widget;
 import java.util.List;
 import java.util.function.Supplier;
 import com.google.gson.JsonObject;
+import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.config.overlay.StringListRendererWidgetEditScreen;
 import fi.dy.masa.malilib.gui.position.ScreenLocation;
@@ -27,6 +28,12 @@ public class StringListRendererWidget extends InfoRendererWidget
         this.padding.setChangeListener(this::onPaddingChanged);
         this.padding.setAll(1, 2, 0, 2);
         this.shouldSerialize = true;
+    }
+
+    @Override
+    public String getWidgetTypeId()
+    {
+        return MaLiLibReference.MOD_ID + ":string_list_renderer";
     }
 
     @Override

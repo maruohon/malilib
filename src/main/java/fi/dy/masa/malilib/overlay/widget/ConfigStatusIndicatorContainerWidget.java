@@ -17,9 +17,9 @@ import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.config.option.HotkeyConfig;
 import fi.dy.masa.malilib.config.util.ConfigUtils;
 import fi.dy.masa.malilib.gui.BaseScreen;
+import fi.dy.masa.malilib.gui.config.ConfigStatusWidgetRegistry;
 import fi.dy.masa.malilib.gui.config.ConfigTab;
 import fi.dy.masa.malilib.gui.config.ConfigTabRegistry;
-import fi.dy.masa.malilib.gui.config.ConfigWidgetRegistry;
 import fi.dy.masa.malilib.gui.config.indicator.ConfigStatusIndicatorGroupEditScreen;
 import fi.dy.masa.malilib.gui.config.indicator.ConfigStatusWidgetFactory;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
@@ -56,6 +56,12 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
         this.shouldSerialize = true;
     }
 
+    @Override
+    public String getWidgetTypeId()
+    {
+        return MaLiLibReference.MOD_ID + ":csi_container";
+    }
+
     public Collection<ConfigOnTab> getConfigs()
     {
         return this.configs;
@@ -70,7 +76,7 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
     {
         if (this.configs.contains(config) == false)
         {
-            ConfigStatusWidgetFactory<ConfigInfo> factory = ConfigWidgetRegistry.INSTANCE.getConfigStatusWidgetFactory(config.config);
+            ConfigStatusWidgetFactory<ConfigInfo> factory = ConfigStatusWidgetRegistry.INSTANCE.getConfigStatusWidgetFactory(config.config);
 
             if (factory != null)
             {

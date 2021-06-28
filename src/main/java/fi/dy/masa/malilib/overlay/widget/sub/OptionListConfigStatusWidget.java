@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.overlay.widget.sub;
 
+import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.config.option.OptionListConfig;
 import fi.dy.masa.malilib.config.value.OptionListConfigValue;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
@@ -11,7 +12,13 @@ public class OptionListConfigStatusWidget extends BaseConfigStatusIndicatorWidge
 
     public OptionListConfigStatusWidget(OptionListConfig<OptionListConfigValue> config, ConfigOnTab configOnTab)
     {
-        super(config, configOnTab);
+        this(config, configOnTab, MaLiLibReference.MOD_ID + ":csi_value_option_list");
+    }
+
+    public OptionListConfigStatusWidget(OptionListConfig<OptionListConfigValue> config,
+                                        ConfigOnTab configOnTab, String widgetTypeId)
+    {
+        super(config, configOnTab, widgetTypeId);
 
         this.valueColor = 0xFFFFA000;
     }

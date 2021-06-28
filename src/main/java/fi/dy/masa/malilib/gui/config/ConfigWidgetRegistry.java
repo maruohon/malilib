@@ -22,7 +22,6 @@ import fi.dy.masa.malilib.config.option.list.IdentifierListConfig;
 import fi.dy.masa.malilib.config.option.list.ItemListConfig;
 import fi.dy.masa.malilib.config.option.list.StatusEffectListConfig;
 import fi.dy.masa.malilib.config.option.list.StringListConfig;
-import fi.dy.masa.malilib.gui.config.indicator.ConfigStatusWidgetFactory;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.BlackWhiteListConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.BooleanConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.ColorConfigWidget;
@@ -42,21 +41,12 @@ import fi.dy.masa.malilib.gui.widget.list.entry.config.list.IdentifierListConfig
 import fi.dy.masa.malilib.gui.widget.list.entry.config.list.ItemListConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.list.StatusEffectListConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.list.StringListConfigWidget;
-import fi.dy.masa.malilib.overlay.widget.sub.BooleanConfigStatusWidget;
-import fi.dy.masa.malilib.overlay.widget.sub.DoubleConfigStatusWidget;
-import fi.dy.masa.malilib.overlay.widget.sub.HotkeyConfigStatusWidget;
-import fi.dy.masa.malilib.overlay.widget.sub.HotkeyedBooleanConfigStatusWidget;
-import fi.dy.masa.malilib.overlay.widget.sub.IntegerConfigStatusWidget;
-import fi.dy.masa.malilib.overlay.widget.sub.OptionListConfigStatusWidget;
-import fi.dy.masa.malilib.overlay.widget.sub.StringConfigStatusWidget;
 
 public class ConfigWidgetRegistry
 {
     public static final ConfigWidgetRegistry INSTANCE = new ConfigWidgetRegistry();
 
     private final HashMap<Class<? extends ConfigInfo>, ConfigOptionWidgetFactory<?>> configWidgetFactories = new HashMap<>();
-    private final HashMap<Class<? extends ConfigInfo>, ConfigStatusWidgetFactory<?>> configStatusWidgetFactories = new HashMap<>();
-    private final HashMap<String, ConfigStatusWidgetFactory<?>> configStatusWidgetFactoriesById = new HashMap<>();
     private final HashMap<Class<? extends ConfigInfo>, ConfigSearchInfo<?>> configSearchInfoMap = new HashMap<>();
     private final ConfigOptionWidgetFactory<?> missingTypeFactory = new MissingConfigTypeFactory();
 
@@ -64,7 +54,6 @@ public class ConfigWidgetRegistry
     {
         this.registerDefaultWidgetFactories();
         this.registerDefaultSearchInfos();
-        this.registerDefaultStatusWidgetFactories();
     }
 
     /**
@@ -75,20 +64,6 @@ public class ConfigWidgetRegistry
     public <C extends ConfigInfo> void registerConfigWidgetFactory(Class<C> type, ConfigOptionWidgetFactory<C> factory)
     {
         this.configWidgetFactories.put(type, factory);
-    }
-
-    /**
-     * Registers a config status widget factory for the given config type.
-     * These status widgets can be used to show the current status of the
-     * config option on the info HUD.
-     * @param type
-     * @param factory
-     */
-    public <C extends ConfigInfo>
-    void registerConfigStatusWidgetFactory(Class<C> type, Class<?> widgetType, ConfigStatusWidgetFactory<C> factory)
-    {
-        this.configStatusWidgetFactories.put(type, factory);
-        this.configStatusWidgetFactoriesById.put(widgetType.getName(), factory);
     }
 
     /**
@@ -108,19 +83,6 @@ public class ConfigWidgetRegistry
     public <C extends ConfigInfo> ConfigOptionWidgetFactory<C> getWidgetFactory(C config)
     {
         return (ConfigOptionWidgetFactory<C>) this.configWidgetFactories.getOrDefault(config.getClass(), this.missingTypeFactory);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Nullable
-    public <C extends ConfigInfo> ConfigStatusWidgetFactory<C> getConfigStatusWidgetFactory(C config)
-    {
-        return (ConfigStatusWidgetFactory<C>) this.configStatusWidgetFactories.get(config.getClass());
-    }
-
-    @Nullable
-    public ConfigStatusWidgetFactory<?> getConfigStatusWidgetFactory(String id)
-    {
-        return this.configStatusWidgetFactoriesById.get(id);
     }
 
     public ConfigOptionWidgetFactory<?> getMissingTypeFactory()
@@ -164,16 +126,5 @@ public class ConfigWidgetRegistry
         this.registerConfigSearchInfo(BooleanConfig.class,          new ConfigSearchInfo<BooleanConfig>(true, false).setBooleanConfigGetter((c) -> c));
         this.registerConfigSearchInfo(HotkeyConfig.class,           new ConfigSearchInfo<HotkeyConfig>(false, true).setKeyBindGetter(HotkeyConfig::getKeyBind));
         this.registerConfigSearchInfo(HotkeyedBooleanConfig.class,  new ConfigSearchInfo<HotkeyedBooleanConfig>(true, true).setBooleanConfigGetter((c) -> c).setKeyBindGetter(HotkeyedBooleanConfig::getKeyBind));
-    }
-
-    private void registerDefaultStatusWidgetFactories()
-    {
-        this.registerConfigStatusWidgetFactory(BooleanConfig.class,         BooleanConfigStatusWidget.class,            BooleanConfigStatusWidget::new);
-        this.registerConfigStatusWidgetFactory(DoubleConfig.class,          DoubleConfigStatusWidget.class,             DoubleConfigStatusWidget::new);
-        this.registerConfigStatusWidgetFactory(HotkeyConfig.class,          HotkeyConfigStatusWidget.class,             HotkeyConfigStatusWidget::new);
-        this.registerConfigStatusWidgetFactory(HotkeyedBooleanConfig.class, HotkeyedBooleanConfigStatusWidget.class,    HotkeyedBooleanConfigStatusWidget::new);
-        this.registerConfigStatusWidgetFactory(IntegerConfig.class,         IntegerConfigStatusWidget.class,            IntegerConfigStatusWidget::new);
-        this.registerConfigStatusWidgetFactory(OptionListConfig.class,      OptionListConfigStatusWidget.class,         OptionListConfigStatusWidget::new);
-        this.registerConfigStatusWidgetFactory(StringConfig.class,          StringConfigStatusWidget.class,             StringConfigStatusWidget::new);
     }
 }
