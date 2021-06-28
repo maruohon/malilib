@@ -30,6 +30,30 @@ public class ElementOffset
         return this.yOffset;
     }
 
+    public int getElementPositionX(int baseX, int parentSize, int elementSize)
+    {
+        int position = baseX + this.getXOffset();
+
+        if (this.getCenterHorizontally())
+        {
+            position += getCenteredElementOffset(parentSize, elementSize);
+        }
+
+        return position;
+    }
+
+    public int getElementPositionY(int baseY, int parentSize, int elementSize)
+    {
+        int position = baseY + this.getYOffset();
+
+        if (this.getCenterVertically())
+        {
+            position += getCenteredElementOffset(parentSize, elementSize);
+        }
+
+        return position;
+    }
+
     public void setCenterHorizontally(boolean centerHorizontally)
     {
         this.centerHorizontally = centerHorizontally;
@@ -68,5 +92,10 @@ public class ElementOffset
         this.centerVertically = JsonUtils.getBooleanOrDefault(obj, "center_v", true);
         this.xOffset = JsonUtils.getIntegerOrDefault(obj, "off_x", 4);
         this.yOffset = JsonUtils.getIntegerOrDefault(obj, "off_y", 0);
+    }
+
+    public static int getCenteredElementOffset(int parentSize, int elementSize)
+    {
+        return (parentSize - elementSize) / 2;
     }
 }

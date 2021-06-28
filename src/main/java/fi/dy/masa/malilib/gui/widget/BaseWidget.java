@@ -76,6 +76,7 @@ public class BaseWidget
         this.textRenderer = TextRenderer.INSTANCE;
         this.padding.setChangeListener(this::updateSize);
         this.textOffset.setXOffset(4);
+        this.textOffset.setYOffset(1);
 
         this.automaticWidth = width < 0;
         this.automaticHeight = height < 0;
@@ -444,21 +445,6 @@ public class BaseWidget
         this.icon = icon;
     }
 
-    protected int getCenteredElementOffsetX(int elementWidth)
-    {
-        return (this.getWidth() - elementWidth) / 2;
-    }
-
-    protected int getCenteredElementOffsetY(int elementHeight)
-    {
-        return (this.getHeight() - elementHeight) / 2;
-    }
-
-    protected int getCenteredTextOffsetY()
-    {
-        return (this.getHeight() - this.getFontHeight()) / 2 + 1;
-    }
-
     public void bindTexture(ResourceLocation texture)
     {
         RenderUtils.bindTexture(texture);
@@ -481,54 +467,22 @@ public class BaseWidget
 
     protected int getTextPositionX(int x, int textWidth)
     {
-        ElementOffset offset = this.textOffset;
-        int position = x + offset.getXOffset();
-
-        if (offset.getCenterHorizontally())
-        {
-            position += this.getCenteredElementOffsetX(textWidth);
-        }
-
-        return position;
+        return this.textOffset.getElementPositionX(x, this.getWidth(), textWidth);
     }
 
     protected int getTextPositionY(int y)
     {
-        ElementOffset offset = this.textOffset;
-        int position = y + offset.getYOffset();
-
-        if (offset.getCenterVertically())
-        {
-            position += this.getCenteredTextOffsetY();
-        }
-
-        return position;
+        return this.textOffset.getElementPositionY(y, this.getHeight(), this.getFontHeight());
     }
 
     protected int getIconPositionX(int x, int iconWidth)
     {
-        ElementOffset offset = this.iconOffset;
-        int position = x + offset.getXOffset();
-
-        if (offset.getCenterHorizontally())
-        {
-            position += this.getCenteredElementOffsetX(iconWidth);
-        }
-
-        return position;
+        return this.iconOffset.getElementPositionX(x, this.getWidth(), iconWidth);
     }
 
     protected int getIconPositionY(int y, int iconHeight)
     {
-        ElementOffset offset = this.iconOffset;
-        int position = y + offset.getYOffset();
-
-        if (offset.getCenterVertically())
-        {
-            position += this.getCenteredElementOffsetY(iconHeight);
-        }
-
-        return position;
+        return this.iconOffset.getElementPositionY(y, this.getHeight(), iconHeight);
     }
 
     public void renderTextLine(int x, int y, float z, int defaultColor, boolean shadow,

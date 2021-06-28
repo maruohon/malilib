@@ -164,18 +164,14 @@ public class BooleanConfigStatusWidget extends BaseConfigStatusIndicatorWidget<B
         }
         else
         {
-            this.renderIcon(x, y, z, ctx);
+            this.renderIcon(x, y, z, true, ctx);
         }
     }
 
-    protected void renderIcon(int x, int y, float z, ScreenContext ctx)
+    @Override
+    protected int getIconPositionX(int x, int iconWidth)
     {
-        if (this.icon != null)
-        {
-            int ix = x + this.getWidth() - this.booleanValueRenderWidth;
-            int iy = y + this.getHeight() / 2 - this.icon.getHeight() / 2;
-            this.icon.renderAt(ix, iy, z);
-        }
+        return x + this.getWidth() - this.booleanValueRenderWidth;
     }
 
     protected void renderSlider(int x, int y, float z, ScreenContext ctx)
@@ -187,7 +183,7 @@ public class BooleanConfigStatusWidget extends BaseConfigStatusIndicatorWidget<B
         OnOffButton.renderOnOffSlider(sx, y, z, this.sliderWidth, height, this.lastValue, true, false, ctx);
 
         int tx = this.getSliderStyleTextStartX(sx + 4, this.lastValue);
-        int ty = y + height / 2 - this.getFontHeight() / 2;
+        int ty = this.getTextPositionY(y);
         this.renderTextLine(tx, ty, z, -1, true, ctx, this.lastValue ? this.textOn : this.textOff);
     }
 
