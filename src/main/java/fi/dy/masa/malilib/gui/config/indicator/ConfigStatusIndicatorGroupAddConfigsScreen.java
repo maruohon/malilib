@@ -134,7 +134,10 @@ public class ConfigStatusIndicatorGroupAddConfigsScreen extends BaseListScreen<D
 
     protected void addSelectedConfigs()
     {
-        for (ConfigOnTab config : this.getListWidget().getSelectedEntries())
+        ArrayList<ConfigOnTab> list = new ArrayList<>(this.getListWidget().getSelectedEntries());
+        list.sort(Comparator.comparing(cot -> cot.config.getDisplayName()));
+
+        for (ConfigOnTab config : list)
         {
             this.widget.addWidgetForConfig(config);
         }
