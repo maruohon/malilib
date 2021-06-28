@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.BaseListScreen;
+import fi.dy.masa.malilib.gui.config.ConfigStatusWidgetRegistry;
 import fi.dy.masa.malilib.gui.config.ConfigTab;
 import fi.dy.masa.malilib.gui.config.ConfigTabRegistry;
 import fi.dy.masa.malilib.gui.config.ConfigTabRegistryImpl;
@@ -165,7 +167,7 @@ public class ConfigStatusIndicatorGroupAddConfigsScreen extends BaseListScreen<D
 
             if (configTab == null)
             {
-                tabProvider.get().forEach((tab) -> tab.getTabbedExpandedConfigs(configsInScope::add));
+                tabProvider.get().forEach((tab) -> this.addConfigsHavingStatusWidgetFactory(tab, configsInScope::add));
             }
             else
             {
@@ -173,7 +175,7 @@ public class ConfigStatusIndicatorGroupAddConfigsScreen extends BaseListScreen<D
                 {
                     if (tab == configTab)
                     {
-                        tab.getTabbedExpandedConfigs(configsInScope::add);
+                        this.addConfigsHavingStatusWidgetFactory(tab, configsInScope::add);
                         break;
                     }
                 }
@@ -184,5 +186,18 @@ public class ConfigStatusIndicatorGroupAddConfigsScreen extends BaseListScreen<D
         configsInScope.removeAll(existingConfigs);
 
         return configsInScope;
+    }
+
+    protected void addConfigsHavingStatusWidgetFactory(ConfigTab tab, Consumer<ConfigOnTab> consumer)
+    {
+        tab.getTabbedExpandedConfigs((c) -> this.addConfigIfHasStatusWidgetFactory(c, consumer));
+    }
+
+    protected void addConfigIfHasStatusWidgetFactory(ConfigOnTab cfg, Consumer<ConfigOnTab> consumer)
+    {
+        if (ConfigStatusWidgetRegistry.INSTANCE.getConfigStatusWidgetFactory(cfg.config) != null)
+        {
+            consumer.accept(cfg);
+        }
     }
 }
