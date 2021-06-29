@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.gui.widget.list.entry;
 
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
+import fi.dy.masa.malilib.gui.widget.button.OnOffButton;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.overlay.widget.ConfigStatusIndicatorContainerWidget;
 import fi.dy.masa.malilib.overlay.widget.sub.BaseConfigStatusIndicatorWidget;
@@ -10,6 +11,7 @@ import fi.dy.masa.malilib.render.ShapeRenderUtils;
 public class ConfigStatusIndicatorEntryWidget extends BaseOrderableListEditEntryWidget<BaseConfigStatusIndicatorWidget<?>>
 {
     protected final ConfigStatusIndicatorContainerWidget containerWidget;
+    protected final GenericButton toggleButton;
     protected final GenericButton configureButton;
     protected final GenericButton removeButton;
 
@@ -23,8 +25,10 @@ public class ConfigStatusIndicatorEntryWidget extends BaseOrderableListEditEntry
 
         this.useAddButton = false;
         this.useRemoveButton = false;
+        this.useMoveButtons = false;
         this.containerWidget = containerWidget;
 
+        this.toggleButton = OnOffButton.simpleSlider(16, this.data::isEnabled, this.data::toggleEnabled);
         this.configureButton = GenericButton.simple(16, "malilib.gui.button.label.configure", this::openEditScreen);
         this.removeButton = GenericButton.simple(16, "malilib.gui.button.label.remove", this::removeInfoRendererWidget);
 
@@ -48,6 +52,7 @@ public class ConfigStatusIndicatorEntryWidget extends BaseOrderableListEditEntry
     {
         super.reAddSubWidgets();
 
+        this.addWidget(this.toggleButton);
         this.addWidget(this.configureButton);
         this.addWidget(this.removeButton);
     }
@@ -67,7 +72,10 @@ public class ConfigStatusIndicatorEntryWidget extends BaseOrderableListEditEntry
         rightX -= this.configureButton.getWidth() + 2;
         this.configureButton.setPosition(rightX, y);
 
-        this.nextWidgetX = this.configureButton.getX() - 36;
+        rightX -= this.toggleButton.getWidth() + 2;
+        this.toggleButton.setPosition(rightX, y);
+
+        this.nextWidgetX = this.toggleButton.getX() - 36;
         this.draggableRegionEndX = this.nextWidgetX - 1;
     }
 
