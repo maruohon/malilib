@@ -433,7 +433,7 @@ public abstract class InfoRendererWidget extends BaseOverlayWidget
         this.renderBackground = JsonUtils.getBooleanOrDefault(obj, "bg_enabled", this.renderBackground);
         this.backgroundColor = JsonUtils.getIntegerOrDefault(obj, "bg_color", this.backgroundColor);
         this.borderColor = JsonUtils.getIntegerOrDefault(obj, "border_color", this.borderColor);
-        JsonUtils.readObjectIfPresent(obj, "markers", this.getMarkerManager()::fromJson);
+        JsonUtils.readArrayIfPresent(obj, "markers", this.getMarkerManager()::fromJson);
 
         if (JsonUtils.hasString(obj, "screen_location"))
         {
