@@ -162,7 +162,7 @@ public class StringListRendererWidget extends InfoRendererWidget
     }
 
     @Override
-    protected void renderSingleBackground(int x, int y, float z, ScreenContext ctx)
+    protected void renderSingleTextBackground(int x, int y, float z, ScreenContext ctx)
     {
         // Render the background for the title row
         if (this.getTextSettings().getBackgroundEnabled() && this.renderName && this.styledName != null)
@@ -174,7 +174,7 @@ public class StringListRendererWidget extends InfoRendererWidget
     }
 
     @Override
-    protected void renderOddEvenLineBackgrounds(int x, int y, float z, ScreenContext ctx)
+    protected void renderOddEvenTextLineBackgrounds(int x, int y, float z, ScreenContext ctx)
     {
         // Render the background for the title row
         if (this.getTextSettings().getOddEvenBackgroundEnabled() && this.renderName && this.styledName != null)

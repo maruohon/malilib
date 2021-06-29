@@ -241,7 +241,7 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
     }
 
     @Override
-    protected void renderOddEvenLineBackgrounds(int x, int y, float z, ScreenContext ctx)
+    protected void renderOddEvenTextLineBackgrounds(int x, int y, float z, ScreenContext ctx)
     {
         BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR, false);
 

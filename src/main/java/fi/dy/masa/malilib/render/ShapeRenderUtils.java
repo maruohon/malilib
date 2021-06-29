@@ -105,6 +105,24 @@ public class ShapeRenderUtils
         renderRectangle(x + borderWidth        , y + height - borderWidth, z, width - 2 * borderWidth, borderWidth, color.getBottom(), buffer); // bottom edge
     }
 
+    /**
+     * Takes in a BufferBuilder initialized in GL_TRIANGLES, POSITION_COLOR mode
+     */
+    public static void renderTriangle(float x1, float y1, float z1,
+                                      float x2, float y2, float z2,
+                                      float x3, float y3, float z3,
+                                      int color, BufferBuilder buffer)
+    {
+        int a = (color >> 24) & 0xFF;
+        int r = (color >> 16) & 0xFF;
+        int g = (color >>  8) & 0xFF;
+        int b =  color        & 0xFF;
+
+        buffer.pos(x1, y1, z1).color(r, g, b, a).endVertex();
+        buffer.pos(x2, y2, z2).color(r, g, b, a).endVertex();
+        buffer.pos(x3, y3, z3).color(r, g, b, a).endVertex();
+    }
+
     public static void renderRectangle(float x, float y, float z, int width, int height, int color)
     {
         BufferBuilder buffer = RenderUtils.startBuffer(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR, false);

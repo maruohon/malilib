@@ -11,7 +11,6 @@ import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.list.entry.BaseInfoRendererWidgetEntryWidget;
 import fi.dy.masa.malilib.overlay.message.Message;
 import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
-import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.render.text.StyledText;
 import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.StringUtils;
@@ -27,7 +26,9 @@ public class MessageRendererWidget extends InfoRendererWidget
         super();
 
         this.shouldSerialize = true;
-        this.renderBackground = true;
+        this.getBackgroundSettings().setEnabled(true);
+        this.getBackgroundSettings().setColor(0xC0000000);
+        this.getBorderSettings().setEnabled(true);
 
         this.padding.setAll(4, 6, 4, 6);
         this.setName(StringUtils.translate("malilib.label.default_message_renderer"));
@@ -181,11 +182,29 @@ public class MessageRendererWidget extends InfoRendererWidget
     }
 
     @Override
-    protected void renderBackground(int x, int y, float z, ScreenContext ctx)
+    protected void renderTextBackground(int x, int y, float z, ScreenContext ctx)
     {
-        if (this.renderBackground && this.messages.isEmpty() == false)
+        if (this.messages.isEmpty() == false)
         {
-            ShapeRenderUtils.renderOutlinedRectangle(x, y, z, this.getWidth(), this.getHeight(), this.backgroundColor, this.borderColor);
+            super.renderTextBackground(x, y, z, ctx);
+        }
+    }
+
+    @Override
+    protected void renderWidgetBackground(int x, int y, float z, ScreenContext ctx)
+    {
+        if (this.messages.isEmpty() == false)
+        {
+            super.renderWidgetBackground(x, y, z, ctx);
+        }
+    }
+
+    @Override
+    protected void renderWidgetBorder(int x, int y, float z, ScreenContext ctx)
+    {
+        if (this.messages.isEmpty() == false)
+        {
+            super.renderWidgetBorder(x, y, z, ctx);
         }
     }
 

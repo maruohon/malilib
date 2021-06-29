@@ -4,6 +4,8 @@ import fi.dy.masa.malilib.config.value.OptionListConfigValue;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.EdgeIntEditScreen;
 import fi.dy.masa.malilib.gui.position.ScreenLocation;
+import fi.dy.masa.malilib.gui.util.BackgroundSettings;
+import fi.dy.masa.malilib.gui.util.BorderSettings;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.ColorIndicatorWidget;
@@ -11,6 +13,7 @@ import fi.dy.masa.malilib.gui.widget.DoubleEditWidget;
 import fi.dy.masa.malilib.gui.widget.DropDownListWidget;
 import fi.dy.masa.malilib.gui.widget.IntegerEditWidget;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
+import fi.dy.masa.malilib.gui.widget.QuadColorIndicatorWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.button.OnOffButton;
 import fi.dy.masa.malilib.overlay.InfoOverlay;
@@ -37,7 +40,7 @@ public class MessageRendererWidgetEditScreen extends BaseScreen
     protected final GenericButton textShadowToggleButton;
     protected final ColorIndicatorWidget textColorWidget;
     protected final ColorIndicatorWidget backgroundColorWidget;
-    protected final ColorIndicatorWidget borderColorWidget;
+    protected final QuadColorIndicatorWidget borderColorWidget;
     protected final IntegerEditWidget lineHeightEditWidget;
     protected final DoubleEditWidget textScaleEditWidget;
     protected final BaseTextFieldWidget nameTextField;
@@ -76,15 +79,17 @@ public class MessageRendererWidgetEditScreen extends BaseScreen
         this.enabledToggleButton = OnOffButton.simpleSlider(16, widget::isEnabled, widget::toggleEnabled);
 
         final TextRenderSettings textSettings = widget.getTextSettings();
+        final BackgroundSettings bgSettings = widget.getBackgroundSettings();
+        final BorderSettings borderSettings = widget.getBorderSettings();
 
-        this.backgroundEnabledToggleButton = OnOffButton.simpleSlider(16, textSettings::getBackgroundEnabled, textSettings::toggleUseBackground);
-        this.borderEnabledToggleButton = OnOffButton.simpleSlider(16, textSettings::getBackgroundEnabled, textSettings::toggleUseBackground); // FIXME
+        this.backgroundEnabledToggleButton = OnOffButton.simpleSlider(16, bgSettings::isEnabled, bgSettings::toggleEnabled);
+        this.borderEnabledToggleButton = OnOffButton.simpleSlider(16, borderSettings::isEnabled, borderSettings::toggleEnabled);
 
         this.textShadowToggleButton = OnOffButton.simpleSlider(16, textSettings::getTextShadowEnabled, textSettings::toggleUseTextShadow);
 
-        this.textColorWidget = new ColorIndicatorWidget(16, 16, textSettings::getTextColor, textSettings::setTextColor);
-        this.backgroundColorWidget = new ColorIndicatorWidget(16, 16, textSettings::getBackgroundColor, textSettings::setBackgroundColor);
-        this.borderColorWidget = new ColorIndicatorWidget(16, 16, textSettings::getBackgroundColor, textSettings::setBackgroundColor); // FIXME
+        this.textColorWidget       = new ColorIndicatorWidget(16, 16, textSettings::getTextColor, textSettings::setTextColor);
+        this.backgroundColorWidget = new ColorIndicatorWidget(16, 16, bgSettings::getColor, bgSettings::setColor);
+        this.borderColorWidget     = new QuadColorIndicatorWidget(16, 16, borderSettings.getColor());
     }
 
     @Override

@@ -11,6 +11,10 @@ import com.google.gson.JsonObject;
 import net.minecraft.client.renderer.GlStateManager;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.gui.position.ScreenLocation;
+import fi.dy.masa.malilib.gui.util.BackgroundRenderer;
+import fi.dy.masa.malilib.gui.util.BackgroundSettings;
+import fi.dy.masa.malilib.gui.util.BorderRenderer;
+import fi.dy.masa.malilib.gui.util.BorderSettings;
 import fi.dy.masa.malilib.gui.util.EdgeInt;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
@@ -26,6 +30,8 @@ import fi.dy.masa.malilib.util.JsonUtils;
 public abstract class InfoRendererWidget extends BaseOverlayWidget
 {
     protected final List<Consumer<ScreenLocation>> locationChangeListeners = new ArrayList<>();
+    protected final BackgroundRenderer backgroundRenderer = new BackgroundRenderer();
+    protected final BorderRenderer borderRenderer = new BorderRenderer();
     protected MultiLineTextRenderSettings textSettings = new MultiLineTextRenderSettings();
     protected InfoOverlay.OverlayRenderContext visibleInContext = InfoOverlay.OverlayRenderContext.BOTH;
     protected ScreenLocation location = ScreenLocation.TOP_LEFT;
@@ -36,12 +42,8 @@ public abstract class InfoRendererWidget extends BaseOverlayWidget
     protected boolean renderAboveScreen;
     protected boolean renderName;
     protected boolean shouldSerialize;
-    protected boolean renderBackground;
     protected boolean valid = true;
     protected double scale = 1.0;
-
-    protected int backgroundColor = 0xC0000000;
-    protected int borderColor = 0xFFC0C0C0;
     protected int sortIndex = 100;
 
     public InfoRendererWidget()
@@ -96,6 +98,16 @@ public abstract class InfoRendererWidget extends BaseOverlayWidget
         return this.textSettings;
     }
 
+    public BackgroundSettings getBackgroundSettings()
+    {
+        return this.backgroundRenderer.getNormalSettings();
+    }
+
+    public BorderSettings getBorderSettings()
+    {
+        return this.borderRenderer.getNormalSettings();
+    }
+
     public void toggleRenderName()
     {
         this.renderName = ! this.renderName;
@@ -111,36 +123,6 @@ public abstract class InfoRendererWidget extends BaseOverlayWidget
     {
         this.scale = scale;
         this.requestUnconditionalReLayout();
-    }
-
-    public boolean getRenderBackground()
-    {
-        return this.renderBackground;
-    }
-
-    public void setRenderBackground(boolean renderBackground)
-    {
-        this.renderBackground = renderBackground;
-    }
-
-    public int getBackgroundColor()
-    {
-        return this.backgroundColor;
-    }
-
-    public void setBackgroundColor(int backgroundColor)
-    {
-        this.backgroundColor = backgroundColor;
-    }
-
-    public int getBorderColor()
-    {
-        return this.borderColor;
-    }
-
-    public void setBorderColor(int borderColor)
-    {
-        this.borderColor = borderColor;
     }
 
     public boolean isValid()
@@ -323,6 +305,7 @@ public abstract class InfoRendererWidget extends BaseOverlayWidget
     public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
         RenderUtils.color(1f, 1f, 1f, 1f);
+        RenderUtils.setupBlend();
 
         boolean scaled = this.scale != 1.0;
 
@@ -337,7 +320,9 @@ public abstract class InfoRendererWidget extends BaseOverlayWidget
             z = 0f;
         }
 
-        this.renderBackground(x, y, z, ctx);
+        this.renderWidgetBackground(x, y, z, ctx);
+        this.renderWidgetBorder(x, y, z, ctx);
+        this.renderTextBackground(x, y, z, ctx);
         y += this.renderName(x, y, z, ctx);
         this.renderContents(x, y, z, ctx);
 
@@ -367,7 +352,19 @@ public abstract class InfoRendererWidget extends BaseOverlayWidget
         return 0;
     }
 
-    protected void renderBackground(int x, int y, float z, ScreenContext ctx)
+    protected void renderWidgetBackground(int x, int y, float z, ScreenContext ctx)
+    {
+        BackgroundSettings settings = this.backgroundRenderer.getNormalSettings();
+        this.backgroundRenderer.renderBackgroundIfEnabled(x, y, z, this.getWidth(), this.getHeight(), settings, ctx);
+    }
+
+    protected void renderWidgetBorder(int x, int y, float z, ScreenContext ctx)
+    {
+        BorderSettings settings = this.borderRenderer.getNormalSettings();
+        this.borderRenderer.renderBorderIfEnabled(x, y, z, this.getWidth(), this.getHeight(), settings, ctx);
+    }
+
+    protected void renderTextBackground(int x, int y, float z, ScreenContext ctx)
     {
         MultiLineTextRenderSettings settings = this.getTextSettings();
 
@@ -375,23 +372,23 @@ public abstract class InfoRendererWidget extends BaseOverlayWidget
         {
             if (settings.getOddEvenBackgroundEnabled())
             {
-                this.renderOddEvenLineBackgrounds(x, y, z, ctx);
+                this.renderOddEvenTextLineBackgrounds(x, y, z, ctx);
             }
             else
             {
-                this.renderSingleBackground(x, y, z, ctx);
+                this.renderSingleTextBackground(x, y, z, ctx);
             }
         }
     }
 
-    protected void renderSingleBackground(int x, int y, float z, ScreenContext ctx)
+    protected void renderSingleTextBackground(int x, int y, float z, ScreenContext ctx)
     {
         int width = this.getWidth();
         int height = this.getHeight();
         ShapeRenderUtils.renderRectangle(x, y, z, width, height, this.getTextSettings().getBackgroundColor());
     }
 
-    protected void renderOddEvenLineBackgrounds(int x, int y, float z, ScreenContext ctx)
+    protected void renderOddEvenTextLineBackgrounds(int x, int y, float z, ScreenContext ctx)
     {
     }
 
@@ -411,10 +408,9 @@ public abstract class InfoRendererWidget extends BaseOverlayWidget
         obj.addProperty("scale", this.scale);
         obj.addProperty("sort_index", this.getSortIndex());
         obj.addProperty("z", this.getZ());
-        obj.addProperty("bg_enabled", this.renderBackground);
-        obj.addProperty("bg_color", this.backgroundColor);
-        obj.addProperty("border_color", this.borderColor);
         obj.add("text_settings", this.getTextSettings().toJson());
+        obj.add("bg", this.backgroundRenderer.getNormalSettings().toJson());
+        obj.add("border", this.borderRenderer.getNormalSettings().toJson());
         obj.add("markers", this.markerManager.toJson());
 
         return obj;
@@ -431,10 +427,9 @@ public abstract class InfoRendererWidget extends BaseOverlayWidget
         this.scale = JsonUtils.getDoubleOrDefault(obj, "scale", 1.0);
         this.setSortIndex(JsonUtils.getIntegerOrDefault(obj, "sort_index", 100));
         this.setZ(JsonUtils.getFloatOrDefault(obj, "z", this.getZ()));
-        this.renderBackground = JsonUtils.getBooleanOrDefault(obj, "bg_enabled", this.renderBackground);
-        this.backgroundColor = JsonUtils.getIntegerOrDefault(obj, "bg_color", this.backgroundColor);
-        this.borderColor = JsonUtils.getIntegerOrDefault(obj, "border_color", this.borderColor);
         JsonUtils.readObjectIfPresent(obj, "text_settings", this.getTextSettings()::fromJson);
+        JsonUtils.readObjectIfPresent(obj, "bg", this.backgroundRenderer.getNormalSettings()::fromJson);
+        JsonUtils.readObjectIfPresent(obj, "border", this.borderRenderer.getNormalSettings()::fromJson);
         JsonUtils.readArrayIfPresent(obj, "markers", this.getMarkerManager()::fromJson);
 
         if (JsonUtils.hasString(obj, "screen_location"))

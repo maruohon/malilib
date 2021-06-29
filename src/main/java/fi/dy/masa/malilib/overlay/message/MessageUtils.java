@@ -57,13 +57,12 @@ public class MessageUtils
             widget = new MessageRendererWidget();
             widget.setLocation(ScreenLocation.BOTTOM_CENTER);
             widget.getMarkerManager().addMarker(CUSTOM_ACTION_BAR_MARKER);
-            widget.setRenderBackground(false);
-            widget.getMargin().setBottom(50);
             widget.setZ(300f);
+            widget.getMargin().setBottom(50);
+            widget.setMessageGap(2);
             widget.setAutomaticWidth(true);
             widget.setName(StringUtils.translate("malilib.label.default_custom_hotbar_message_renderer"));
             widget.setMaxMessages(MaLiLibConfigs.Generic.ACTION_BAR_MESSAGE_LIMIT.getIntegerValue());
-            widget.setMessageGap(2);
             InfoWidgetManager.INSTANCE.addWidget(widget);
         }
 

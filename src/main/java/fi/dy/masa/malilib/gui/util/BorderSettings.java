@@ -1,7 +1,9 @@
 package fi.dy.masa.malilib.gui.util;
 
 import javax.annotation.Nullable;
+import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.listener.EventListener;
+import fi.dy.masa.malilib.util.JsonUtils;
 
 public class BorderSettings
 {
@@ -60,6 +62,11 @@ public class BorderSettings
         return this;
     }
 
+    public void toggleEnabled()
+    {
+        this.enabled = ! this.enabled;
+    }
+
     public boolean isEnabled()
     {
         return this.enabled;
@@ -86,5 +93,21 @@ public class BorderSettings
         {
             this.sizeChangeListener.onEvent();
         }
+    }
+
+    public JsonObject toJson()
+    {
+        JsonObject obj = new JsonObject();
+        obj.addProperty("enabled", this.isEnabled());
+        obj.addProperty("width", this.borderWidth);
+        obj.add("color", this.borderColor.toJson());
+        return obj;
+    }
+
+    public void fromJson(JsonObject obj)
+    {
+        this.enabled = JsonUtils.getBooleanOrDefault(obj, "enabled", this.enabled);
+        this.borderWidth = JsonUtils.getIntegerOrDefault(obj, "width", this.borderWidth);
+        JsonUtils.readArrayIfPresent(obj, "color", this.borderColor::fromJson);
     }
 }

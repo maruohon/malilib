@@ -199,6 +199,7 @@ malilib.gui.button.hover.list.move_up=Move Up
 malilib.gui.button.hover.list.remove=Remove
 
 malilib.gui.hover.open_color_editor=Open color editor\nCurrent color: §f%s§7 (AARRGGBB)
+malilib.gui.hover.open_quad_color_editor=Open color editor\nCurrent colors (AARRGGBB):\n  Top: §f%s§r\n  Bottom: §f%s§r\n  Left: §f%s§r\n  Right: §f%s§r
 
 malilib.gui.info.create_action_widget_screen.name_is_final=§eNote:§r The name can't be changed later!\n§8(Except by renaming the corresponding save file manually.)§r\n\nThe name is only visible/used as the argument to the action to open the action screen. (And usually it will be set as the argument to the action in an action alias.)\n\nThe name should also be safe for a file name (it will also be automatically adjusted to be all lower case with underscores), as it will be the name of the file where the screen settings/configuration is saved.
 
@@ -327,6 +328,7 @@ malilib.gui.title.custom_icons_list_screen=MaLiLib - Manage Custom Icon Definiti
 malilib.gui.title.directory_browser=Directory Browser
 malilib.gui.title.edit_action_execution_widget=Edit Action Execution Widget
 malilib.gui.title.edit_action_execution_widget.multiple=Edit §b%s§r Action Execution Widgets at once
+malilib.gui.title.edit_edge_colors=Edit Edge Colors
 malilib.gui.title.edit_macro=Edit Macro Action
 malilib.gui.title.edit_margin=Edit Margin
 malilib.gui.title.edit_padding=Edit Padding
@@ -399,6 +401,7 @@ malilib.label.boolean_config_status_type.on_off_light=ON/OFF "Light"
 malilib.label.border.colon=Border:
 malilib.label.border_color.colon=Border Color:
 malilib.label.center=Center
+malilib.label.colors=Colors
 malilib.label.config_status_indicator.background_odd.colon=BG odd:
 malilib.label.config_status_indicator.background_odd.hover=Use a different background color for odd rows
 malilib.label.config_status_indicator.hotkeys_string=[§b%s§r]
