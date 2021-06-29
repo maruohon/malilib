@@ -13,7 +13,6 @@ import fi.dy.masa.malilib.gui.config.indicator.ConfigStatusWidgetFactory;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.overlay.widget.BaseOverlayWidget;
-import fi.dy.masa.malilib.render.text.MultiLineTextRenderSettings;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.data.ConfigOnTab;
@@ -22,7 +21,6 @@ public abstract class BaseConfigStatusIndicatorWidget<C extends ConfigInfo> exte
 {
     protected final C config;
     protected final ConfigOnTab configOnTab;
-    protected final MultiLineTextRenderSettings textSettings = new MultiLineTextRenderSettings();
     protected final String widgetTypeId;
     protected String name = "?";
     protected StyledTextLine styledName;
@@ -41,7 +39,6 @@ public abstract class BaseConfigStatusIndicatorWidget<C extends ConfigInfo> exte
         this.configOnTab = configOnTab;
         this.widgetTypeId = widgetTypeId;
 
-        this.getTextSettings().setOddEvenBackgroundEnabled(true);
         this.setHeight(this.getLineHeight());
         this.setName(config.getDisplayName());
     }
@@ -50,12 +47,6 @@ public abstract class BaseConfigStatusIndicatorWidget<C extends ConfigInfo> exte
     public String getWidgetTypeId()
     {
         return this.widgetTypeId;
-    }
-
-    @Override
-    public MultiLineTextRenderSettings getTextSettings()
-    {
-        return this.textSettings;
     }
 
     public ConfigOnTab getConfigOnTab()

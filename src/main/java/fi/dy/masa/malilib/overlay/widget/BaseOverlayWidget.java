@@ -130,8 +130,6 @@ public abstract class BaseOverlayWidget extends BaseWidget
         obj.addProperty("type", this.getWidgetTypeId());
         obj.addProperty("enabled", this.isEnabled());
 
-        obj.add("text_settings", this.getTextSettings().toJson());
-
         if (this.margin.isEmpty() == false)
         {
             obj.add("margin", this.margin.toJson());
@@ -151,6 +149,5 @@ public abstract class BaseOverlayWidget extends BaseWidget
 
         JsonUtils.readArrayIfPresent(obj, "padding", this.padding::fromJson);
         JsonUtils.readArrayIfPresent(obj, "margin", this.margin::fromJson);
-        JsonUtils.readObjectIfPresent(obj, "text_settings", this.getTextSettings()::fromJson);
     }
 }

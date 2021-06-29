@@ -40,6 +40,7 @@ public class StringListRendererWidget extends InfoRendererWidget
     public void initListEntryWidget(BaseInfoRendererWidgetEntryWidget widget)
     {
         widget.setCanConfigure(true);
+        widget.setCanRemove(true);
     }
 
     /**
