@@ -3,10 +3,13 @@ package fi.dy.masa.malilib.gui.widget;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import javax.annotation.Nullable;
+import fi.dy.masa.malilib.listener.EventListener;
 
 public class MenuWidget extends ContainerWidget
 {
-    protected final List<InteractableWidget> menuEntries = new ArrayList<>();
+    protected final List<MenuEntryWidget> menuEntries = new ArrayList<>();
+    @Nullable protected EventListener menuCloseHook;
     protected boolean renderEntryBackground = true;
     protected int hoveredEntryBackgroundColor = 0xFF206060;
     protected int normalEntryBackgroundColor = 0xFF000000;
@@ -15,20 +18,27 @@ public class MenuWidget extends ContainerWidget
     {
         super(x, y, width, height);
 
+        this.shouldReceiveOutsideClicks = true;
         this.getBorderRenderer().getNormalSettings().setBorderWidthAndColor(1, 0xFFC0C0C0);
     }
 
-    public void setMenuEntries(InteractableWidget... menuEntries)
+    public void setMenuEntries(MenuEntryWidget... menuEntries)
     {
         this.setMenuEntries(Arrays.asList(menuEntries));
     }
 
-    public void setMenuEntries(List<InteractableWidget> menuEntries)
+    public void setMenuEntries(List<MenuEntryWidget> menuEntries)
     {
         this.menuEntries.clear();
         this.menuEntries.addAll(menuEntries);
 
+        for (MenuEntryWidget widget : this.menuEntries)
+        {
+            widget.setMenuCloseHook(this.menuCloseHook);
+        }
+
         this.updateSize();
+        this.clampToScreen();
         this.updateSubWidgetsToGeometryChanges();
         this.reAddSubWidgets();
     }
@@ -51,13 +61,26 @@ public class MenuWidget extends ContainerWidget
         return this;
     }
 
+    public void setMenuCloseHook(@Nullable EventListener menuCloseHook)
+    {
+        this.menuCloseHook = menuCloseHook;
+    }
+
+    public void tryCloseMenu()
+    {
+        if (this.menuCloseHook != null)
+        {
+            this.scheduleTask(this.menuCloseHook::onEvent);
+        }
+    }
+
     @Override
     public void updateSize()
     {
         int width = 0;
         int height = 0;
 
-        for (InteractableWidget widget : this.menuEntries)
+        for (MenuEntryWidget widget : this.menuEntries)
         {
             width = Math.max(width, widget.getWidth());
             height += widget.getHeight();
@@ -72,7 +95,7 @@ public class MenuWidget extends ContainerWidget
     {
         super.reAddSubWidgets();
 
-        for (InteractableWidget widget : this.menuEntries)
+        for (MenuEntryWidget widget : this.menuEntries)
         {
             this.addWidget(widget);
 
@@ -98,11 +121,19 @@ public class MenuWidget extends ContainerWidget
         int y = this.getY() + 1;
         int width = this.getWidth() - 2;
 
-        for (InteractableWidget widget : this.menuEntries)
+        for (MenuEntryWidget widget : this.menuEntries)
         {
             widget.setPosition(x, y);
             widget.setWidth(width);
             y += widget.getHeight();
         }
+    }
+
+    @Override
+    protected boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
+    {
+        super.onMouseClicked(mouseX, mouseY, mouseButton);
+        this.tryCloseMenu();
+        return true;
     }
 }

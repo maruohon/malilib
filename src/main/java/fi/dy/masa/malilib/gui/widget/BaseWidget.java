@@ -13,6 +13,7 @@ import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.position.ElementOffset;
 import fi.dy.masa.malilib.gui.util.EdgeInt;
+import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.render.RectangleRenderer;
 import fi.dy.masa.malilib.render.RenderUtils;
@@ -310,6 +311,29 @@ public class BaseWidget
         this.height = height;
 
         this.onSizeChanged();
+    }
+
+    public void clampToScreen()
+    {
+        int screenRight = GuiUtils.getScaledWindowWidth();
+        int screenBottom = GuiUtils.getScaledWindowHeight();
+        int x = this.getX();
+        int y = this.getY();
+
+        if (this.getRight() > screenRight)
+        {
+            x = screenRight - this.getWidth() - 2;
+        }
+
+        if (this.getBottom() > screenBottom)
+        {
+            y = screenBottom - this.getHeight() - 2;
+        }
+
+        x = Math.max(x, 0);
+        y = Math.max(y, 0);
+
+        this.setPosition(x, y);
     }
 
     public void setLineHeight(int lineHeight)
