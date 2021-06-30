@@ -202,6 +202,28 @@ public class FileUtils
         return sb.toString().replaceAll("COM", "").replaceAll("PRN", "");
     }
 
+    public static String getPrettyFileSizeText(long fileSize, int decimalPlaces)
+    {
+        String[] units = {"B", "KiB", "MiB", "GiB", "TiB"};
+        String unitStr = "";
+        double size = fileSize;
+
+        for (String unit : units)
+        {
+            unitStr = unit;
+
+            if (size < 1024.0)
+            {
+                break;
+            }
+
+            size /= 1024.0;
+        }
+
+        String fmt = "%." + decimalPlaces + "f %s";
+        return String.format(fmt, size, unitStr);
+    }
+
     /**
      * Checks if the given filename contains characters or strings that would be invalid in file names.
      * Most of these are just invalid on Windows...

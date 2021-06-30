@@ -6,9 +6,11 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
+import fi.dy.masa.malilib.gui.widget.list.entry.BaseDataListEntryWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.BaseListEntryWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntrySelectionHandler;
 import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetFactory;
@@ -20,10 +22,12 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
     protected final ArrayList<DATATYPE> currentContents;
     protected final ArrayList<DATATYPE> filteredContents = new ArrayList<>();
     protected final ArrayList<Integer> filteredIndices = new ArrayList<>();
+    protected final ArrayList<BaseDataListEntryWidget<DATATYPE>> entryWidgets = new ArrayList<>();
     @Nullable protected Function<DataListWidget<DATATYPE>, DataListHeaderWidget<DATATYPE>> headerWidgetFactory;
     @Nullable protected DataListEntryWidgetFactory<DATATYPE> entryWidgetFactory;
     @Nullable protected DataListEntrySelectionHandler<DATATYPE> selectionHandler;
     @Nullable protected Comparator<DATATYPE> listSortComparator;
+    @Nullable protected Consumer<BaseDataListEntryWidget<DATATYPE>> widgetInitializer;
     protected Function<DATATYPE, List<String>> entryFilterStringFactory = (e) -> Collections.singletonList(e.toString());
 
     protected boolean fetchFromSupplierOnRefresh;
@@ -37,6 +41,19 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
         this.entrySupplier = entrySupplier;
         this.currentContents = new ArrayList<>(entrySupplier.get());
         this.selectionHandler = new DataListEntrySelectionHandler<>(this::getFilteredEntries);
+    }
+
+    @Override
+    public List<BaseDataListEntryWidget<DATATYPE>> getEntryWidgetList()
+    {
+        return this.entryWidgets;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    protected void addNewEntryWidget(BaseListEntryWidget widget)
+    {
+        this.entryWidgets.add((BaseDataListEntryWidget<DATATYPE>) widget);
     }
 
     public DataListWidget<DATATYPE> setAllowSelection(boolean allowSelection)
@@ -266,6 +283,49 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
         if (this.shouldSortList())
         {
             this.sortEntryList(this.filteredContents);
+        }
+    }
+
+    @Override
+    protected void onEntriesRefreshed()
+    {
+        super.onEntriesRefreshed();
+
+        this.clearWidgetInitializer();
+    }
+
+    @Override
+    protected void onListEntryWidgetsCreated()
+    {
+        super.onListEntryWidgetsCreated();
+
+        this.createWidgetInitializer();
+        this.applyWidgetInitializer();
+    }
+
+    protected void clearWidgetInitializer()
+    {
+        this.widgetInitializer = null;
+    }
+
+    @SuppressWarnings("unchecked")
+    protected void createWidgetInitializer()
+    {
+        if (this.widgetInitializer == null && this.entryWidgets.isEmpty() == false)
+        {
+            BaseDataListEntryWidget<DATATYPE> widget = this.entryWidgets.get(0);
+            this.widgetInitializer = (Consumer<BaseDataListEntryWidget<DATATYPE>>) widget.createWidgetInitializer(this.getFilteredEntries());
+        }
+    }
+
+    protected void applyWidgetInitializer()
+    {
+        if (this.widgetInitializer != null)
+        {
+            for (BaseDataListEntryWidget<DATATYPE> widget : this.getEntryWidgetList())
+            {
+                this.widgetInitializer.accept(widget);
+            }
         }
     }
 

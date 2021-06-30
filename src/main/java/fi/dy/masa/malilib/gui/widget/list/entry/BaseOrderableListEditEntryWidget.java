@@ -200,7 +200,7 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
 
     protected int getNewIndexFromDrag(int mouseY)
     {
-        List<BaseListEntryWidget> list = this.listWidget.getListEntryWidgets();
+        List<? extends BaseListEntryWidget> list = this.listWidget.getEntryWidgetList();
         int newIndex = this.listIndex;
 
         if (mouseY > this.dragStartY)

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import net.minecraft.client.renderer.OpenGlHelper;
 import fi.dy.masa.malilib.gui.BaseScreen;
@@ -35,7 +36,7 @@ public class DirectoryNavigationWidget extends SearchBarWidget
     protected final GenericButton buttonCreateDir;
     protected final InfoIconWidget infoWidget;
     protected final File rootDir;
-    @Nullable protected final String rootDirDisplayName;
+    @Nullable protected final Supplier<String> rootDirDisplayNameSupplier;
     protected File currentDir;
     protected int pathStartX;
 
@@ -54,7 +55,7 @@ public class DirectoryNavigationWidget extends SearchBarWidget
                                      FileBrowserIconProvider iconProvider,
                                      TextChangeListener textChangeListener,
                                      @Nullable EventListener openCloseListener,
-                                     @Nullable String rootDirDisplayName)
+                                     @Nullable Supplier<String> rootDirDisplayNameSupplier)
     {
         super(x, y, width, height, 0, iconProvider.getIcon(FileBrowserIconType.SEARCH),
               HorizontalAlignment.RIGHT, textChangeListener, openCloseListener);
@@ -63,7 +64,7 @@ public class DirectoryNavigationWidget extends SearchBarWidget
         this.rootDir = rootDir;
         this.navigator = navigator;
         this.iconProvider = iconProvider;
-        this.rootDirDisplayName = rootDirDisplayName;
+        this.rootDirDisplayNameSupplier = rootDirDisplayNameSupplier;
 
         this.buttonRoot = GenericButton.createIconOnly(iconProvider.getIcon(FileBrowserIconType.ROOT));
         this.buttonRoot.translateAndAddHoverStrings("malilib.gui.button.hover.directory_widget.root");
@@ -182,9 +183,9 @@ public class DirectoryNavigationWidget extends SearchBarWidget
     {
         String name;
 
-        if (this.rootDirDisplayName != null && this.rootDir.equals(dir))
+        if (this.rootDirDisplayNameSupplier != null && this.rootDir.equals(dir))
         {
-            name = this.rootDirDisplayName;
+            name = this.rootDirDisplayNameSupplier.get();
         }
         else
         {

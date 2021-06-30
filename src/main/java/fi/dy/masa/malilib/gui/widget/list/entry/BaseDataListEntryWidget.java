@@ -1,5 +1,7 @@
 package fi.dy.masa.malilib.gui.widget.list.entry;
 
+import java.util.List;
+import java.util.function.Consumer;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 
@@ -45,5 +47,11 @@ public class BaseDataListEntryWidget<TYPE> extends BaseListEntryWidget
         }
 
         return false;
+    }
+
+    @Nullable
+    public Consumer<? extends BaseDataListEntryWidget<TYPE>> createWidgetInitializer(List<TYPE> dataList)
+    {
+        return null;
     }
 }

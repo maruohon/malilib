@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import javax.annotation.Nullable;
+import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.input.Keyboard;
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.gui.BaseScreen;
@@ -34,17 +36,29 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     public static final FileFilter ALWAYS_FALSE_FILE_FILTER = (file) -> false;
     public static final FileFilter ALWAYS_TRUE_FILE_FILTER = File::isFile;
 
+    protected final Map<Pair<File, FileFilter>, List<File>> directoryContentsCache = new HashMap<>();
     protected final Map<File, Integer> keyboardNavigationPositions = new HashMap<>();
-    protected final FileBrowserIconProvider iconProvider = new DefaultFileBrowserIconProvider();
     protected final DirectoryNavigationWidget navigationWidget;
     protected final File rootDirectory;
     @Nullable protected final DirectoryCache cache;
-    protected FileFilter fileFilter;
+    @Nullable protected String rootDirectoryDisplayName;
+    protected FileFilter directoryFilter = FileUtils.DIRECTORY_FILTER;
+    protected FileFilter fileFilter = ALWAYS_FALSE_FILE_FILTER;
     protected String browserContext;
     protected File currentDirectory;
     protected boolean shouldStoreKeyboardNavigationPosition = true;
+    protected boolean showFileSize;
+    protected boolean showFileModificationTime;
 
     public BaseFileBrowserWidget(int x, int y, int width, int height, File defaultDirectory, File rootDirectory,
+                                 @Nullable DirectoryCache cache, @Nullable String browserContext)
+    {
+        this(x, y, width, height, defaultDirectory, rootDirectory,
+             new DefaultFileBrowserIconProvider(), cache, browserContext);
+    }
+
+    public BaseFileBrowserWidget(int x, int y, int width, int height, File defaultDirectory, File rootDirectory,
+                                 FileBrowserIconProvider iconProvider,
                                  @Nullable DirectoryCache cache, @Nullable String browserContext)
     {
         super(x, y, width, height, Collections::emptyList);
@@ -63,14 +77,16 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         }
 
         this.navigationWidget = new DirectoryNavigationWidget(this.getX() + 2, this.getY() + 3, width, 14,
-                                                              this.currentDirectory, rootDirectory, this, this.getIconProvider(),
+                                                              this.currentDirectory, rootDirectory, this, iconProvider,
                                                               this::onSearchBarChange,
                                                               this::refreshFilteredEntries,
-                                                              this.getRootDirectoryDisplayName());
+                                                              this::getRootDirectoryDisplayName);
         this.searchBarWidget = this.navigationWidget;
+        this.listSortComparator = Comparator.naturalOrder();
+        this.entryFilterStringFactory = (entry) -> ImmutableList.of(FileUtils.getNameWithoutExtension(entry.getName().toLowerCase(Locale.ROOT)));
 
         this.setEntryWidgetFactory((wx, wy, ww, wh, li, oi, entry, lw) ->
-                                    new DirectoryEntryWidget(wx, wy, ww, wh, li, oi, entry, this, this, this.iconProvider));
+                                    new DirectoryEntryWidget(wx, wy, ww, wh, li, oi, entry, this, iconProvider));
 
         this.setAllowSelection(true);
         this.getBackgroundRenderer().getNormalSettings().setEnabledAndColor(true, 0xB0000000);
@@ -86,9 +102,56 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         this.searchBarWidget.setWidth(defaultWidth);
     }
 
-    public FileBrowserIconProvider getIconProvider()
+    public void setFileFilter(FileFilter filter)
     {
-        return this.iconProvider;
+        this.fileFilter = filter;
+    }
+
+    public void setDirectoryFilter(FileFilter directoryFilter)
+    {
+        this.directoryFilter = directoryFilter;
+    }
+
+    public void setRootDirectoryDisplayName(@Nullable String rootDirectoryDisplayName)
+    {
+        this.rootDirectoryDisplayName = rootDirectoryDisplayName;
+    }
+
+    public boolean getShowFileSize()
+    {
+        return this.showFileSize;
+    }
+
+    public boolean getShowFileModificationTime()
+    {
+        return this.showFileModificationTime;
+    }
+
+    public void setShowFileSize(boolean showFileSize)
+    {
+        this.showFileSize = showFileSize;
+    }
+
+    public void setShowFileModificationTime(boolean showFileModificationTime)
+    {
+        this.showFileModificationTime = showFileModificationTime;
+    }
+
+    @Nullable
+    protected String getRootDirectoryDisplayName()
+    {
+        return this.rootDirectoryDisplayName;
+    }
+
+    protected void updateDirectoryNavigationWidget()
+    {
+        this.navigationWidget.setCurrentDirectory(this.currentDirectory);
+    }
+
+    @Override
+    public List<DirectoryEntry> getFilteredEntries()
+    {
+        return this.filteredContents;
     }
 
     @Override
@@ -111,45 +174,17 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         }
     }
 
-    public void setFileFilter(FileFilter filter)
-    {
-        this.fileFilter = filter;
-    }
-
-    @Override
-    protected Comparator<DirectoryEntry> getComparator()
-    {
-        return Comparator.naturalOrder();
-    }
-
-    @Nullable
-    protected String getRootDirectoryDisplayName()
-    {
-        return null;
-    }
-
-    protected void updateDirectoryNavigationWidget()
-    {
-        this.navigationWidget.setCurrentDirectory(this.currentDirectory);
-    }
-
-    @Override
-    public List<DirectoryEntry> getFilteredEntries()
-    {
-        return this.filteredContents;
-    }
-
     protected void addNonFilteredContents(File dir)
     {
         List<DirectoryEntry> list = new ArrayList<>();
 
         // Show directories at the top
-        this.addMatchingEntriesToList(this.getDirectoryFilter(), dir, list, null, null);
-        Collections.sort(list);
+        this.addMatchingEntriesToList(dir, list, this.getDirectoryFilter(), null, null);
+        list.sort(Comparator.comparing(e -> e.name.toLowerCase(Locale.ROOT)));
         this.filteredContents.addAll(list);
         list.clear();
 
-        this.addMatchingEntriesToList(this.getFileFilter(), dir, list, null, null);
+        this.addMatchingEntriesToList(dir, list, this.getFileFilter(), null, null);
         this.sortEntryList(list);
         this.filteredContents.addAll(list);
     }
@@ -165,12 +200,12 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     protected void addFilteredContents(File dir, String filterText, List<DirectoryEntry> listOut, @Nullable String prefix)
     {
         List<DirectoryEntry> list = new ArrayList<>();
-        this.addMatchingEntriesToList(this.getDirectoryFilter(), dir, list, filterText, prefix);
-        Collections.sort(list);
+        this.addMatchingEntriesToList(dir, list, this.getDirectoryFilter(), filterText, prefix);
+        list.sort(Comparator.comparing(e -> e.name.toLowerCase(Locale.ROOT)));
         listOut.addAll(list);
         list.clear();
 
-        for (File subDir : FileUtils.getSubDirectories(dir))
+        for (File subDir : this.getContents(dir, FileUtils.DIRECTORY_FILTER))
         {
             String pre;
 
@@ -189,28 +224,31 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
             list.clear();
         }
 
-        this.addMatchingEntriesToList(this.getFileFilter(), dir, list, filterText, prefix);
+        this.addMatchingEntriesToList(dir, list, this.getFileFilter(), filterText, prefix);
         this.sortEntryList(list);
         listOut.addAll(list);
     }
 
-    protected void addMatchingEntriesToList(FileFilter filter, File dir, List<DirectoryEntry> list, @Nullable String filterText, @Nullable String displayNamePrefix)
+    protected void addMatchingEntriesToList(final File dir, List<DirectoryEntry> outputList, final FileFilter filter,
+                                            @Nullable String filterText, @Nullable String displayNamePrefix)
     {
-        for (File file : dir.listFiles(filter))
+        for (File file : this.getContents(dir, filter))
         {
-            DirectoryEntry entry = new DirectoryEntry(DirectoryEntryType.fromFile(file), dir, file.getName(), displayNamePrefix);
+            String fileName = file.getName();
+            String searchTerm = FileUtils.getNameWithoutExtension(fileName.toLowerCase(Locale.ROOT));
 
-            if (filterText == null || this.searchTermsMatchFilter(this.getSearchStringsForEntry(entry), filterText))
+            if (filterText == null || this.searchTermsMatchFilter(searchTerm, filterText))
             {
-                list.add(entry);
+                DirectoryEntryType type = DirectoryEntryType.fromFile(file);
+                outputList.add(new DirectoryEntry(type, dir, fileName, displayNamePrefix));
             }
         }
     }
 
-    @Override
-    protected List<String> getSearchStringsForEntry(DirectoryEntry entry)
+    protected List<File> getContents(final File dir, final FileFilter filter)
     {
-        return ImmutableList.of(FileUtils.getNameWithoutExtension(entry.getName().toLowerCase()));
+        Pair<File, FileFilter> cacheKey = Pair.of(dir, filter);
+        return this.directoryContentsCache.computeIfAbsent(cacheKey, (k) -> Arrays.asList(dir.listFiles(filter)));
     }
 
     protected File getRootDirectory()
@@ -220,12 +258,12 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
 
     protected FileFilter getDirectoryFilter()
     {
-        return FileUtils.DIRECTORY_FILTER;
+        return this.directoryFilter;
     }
 
     protected FileFilter getFileFilter()
     {
-        return this.fileFilter != null ? this.fileFilter : ALWAYS_FALSE_FILE_FILTER;
+        return this.fileFilter;
     }
 
     @Override
@@ -365,17 +403,17 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
 
     public static class DirectoryEntry implements Comparable<DirectoryEntry>
     {
-        private final DirectoryEntryType type;
-        private final File dir;
-        private final String name;
-        @Nullable private final String displaynamePrefix;
+        protected final DirectoryEntryType type;
+        protected final File dir;
+        protected final String name;
+        @Nullable protected final String displayNamePrefix;
 
-        public DirectoryEntry(DirectoryEntryType type, File dir, String name, @Nullable String displaynamePrefix)
+        public DirectoryEntry(DirectoryEntryType type, File dir, String name, @Nullable String displayNamePrefix)
         {
             this.type = type;
             this.dir = dir;
             this.name = name;
-            this.displaynamePrefix = displaynamePrefix;
+            this.displayNamePrefix = displayNamePrefix;
         }
 
         public DirectoryEntryType getType()
@@ -396,12 +434,12 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         @Nullable
         public String getDisplayNamePrefix()
         {
-            return this.displaynamePrefix;
+            return this.displayNamePrefix;
         }
 
         public String getDisplayName()
         {
-            return this.displaynamePrefix != null ? this.displaynamePrefix + this.name : this.name;
+            return this.displayNamePrefix != null ? this.displayNamePrefix + this.name : this.name;
         }
 
         public File getFullPath()
@@ -428,14 +466,17 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
             {
                 return INVALID;
             }
-            else if (file.isDirectory())
+
+            if (file.isDirectory())
             {
                 return DIRECTORY;
             }
-            else
+            else if (file.isFile())
             {
                 return FILE;
             }
+
+            return INVALID;
         }
     }
 }

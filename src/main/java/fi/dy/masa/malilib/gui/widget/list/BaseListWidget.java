@@ -27,7 +27,6 @@ import fi.dy.masa.malilib.render.RenderUtils;
 
 public abstract class BaseListWidget extends ContainerWidget
 {
-    protected final List<BaseListEntryWidget> entryWidgets = new ArrayList<>();
     protected final EdgeInt listPosition = new EdgeInt(2, 2, 2, 2);
     protected final ScrollBarWidget scrollBar;
 
@@ -66,10 +65,9 @@ public abstract class BaseListWidget extends ContainerWidget
     @Nullable
     protected abstract BaseListEntryWidget createListEntryWidget(int x, int y, int listIndex);
 
-    public List<BaseListEntryWidget> getListEntryWidgets()
-    {
-        return this.entryWidgets;
-    }
+    public abstract List<? extends BaseListEntryWidget> getEntryWidgetList();
+
+    protected abstract void addNewEntryWidget(BaseListEntryWidget widget);
 
     public void setAllowKeyboardNavigation(boolean allowKeyboardNavigation)
     {
@@ -219,13 +217,13 @@ public abstract class BaseListWidget extends ContainerWidget
 
     protected int getHeightForExistingListEntryWidget(int listIndex)
     {
-        if (this.areEntriesFixedHeight || listIndex >= this.entryWidgets.size())
+        if (this.areEntriesFixedHeight || listIndex >= this.getEntryWidgetList().size())
         {
             return this.entryWidgetFixedHeight;
         }
         else
         {
-            return this.entryWidgets.get(listIndex).getHeight();
+            return this.getEntryWidgetList().get(listIndex).getHeight();
         }
     }
 
@@ -317,7 +315,7 @@ public abstract class BaseListWidget extends ContainerWidget
 
     public void onGuiClosed()
     {
-        for (BaseListEntryWidget widget : this.entryWidgets)
+        for (BaseListEntryWidget widget : this.getEntryWidgetList())
         {
             widget.onAboutToDestroy();
         }
@@ -340,7 +338,7 @@ public abstract class BaseListWidget extends ContainerWidget
             return true;
         }
 
-        for (BaseListEntryWidget widget : this.entryWidgets)
+        for (BaseListEntryWidget widget : this.getEntryWidgetList())
         {
             if (widget.tryMouseClick(mouseX, mouseY, mouseButton))
             {
@@ -359,7 +357,7 @@ public abstract class BaseListWidget extends ContainerWidget
             this.headerWidget.onMouseReleased(mouseX, mouseY, mouseButton);
         }
 
-        for (BaseListEntryWidget widget : this.entryWidgets)
+        for (BaseListEntryWidget widget : this.getEntryWidgetList())
         {
             widget.onMouseReleased(mouseX, mouseY, mouseButton);
         }
@@ -387,7 +385,7 @@ public abstract class BaseListWidget extends ContainerWidget
             return true;
         }
 
-        for (BaseListEntryWidget widget : this.entryWidgets)
+        for (BaseListEntryWidget widget : this.getEntryWidgetList())
         {
             if (widget.tryMouseScroll(mouseX, mouseY, mouseWheelDelta))
             {
@@ -420,7 +418,7 @@ public abstract class BaseListWidget extends ContainerWidget
             return true;
         }
 
-        for (BaseListEntryWidget widget : this.entryWidgets)
+        for (BaseListEntryWidget widget : this.getEntryWidgetList())
         {
             if (widget.onMouseMoved(mouseX, mouseY))
             {
@@ -450,7 +448,7 @@ public abstract class BaseListWidget extends ContainerWidget
             return true;
         }
 
-        for (BaseListEntryWidget widget : this.entryWidgets)
+        for (BaseListEntryWidget widget : this.getEntryWidgetList())
         {
             if (widget.onKeyTyped(keyCode, scanCode, modifiers))
             {
@@ -488,7 +486,7 @@ public abstract class BaseListWidget extends ContainerWidget
             return true;
         }
 
-        for (BaseListEntryWidget widget : this.entryWidgets)
+        for (BaseListEntryWidget widget : this.getEntryWidgetList())
         {
             if (widget.onCharTyped(charIn, modifiers))
             {
@@ -620,11 +618,11 @@ public abstract class BaseListWidget extends ContainerWidget
             if (this.areEntriesFixedHeight)
             {
                 int relIndex = relativeY / this.entryWidgetFixedHeight;
-                return relIndex < this.entryWidgets.size() ? this.entryWidgets.get(relIndex) : null;
+                return relIndex < this.getEntryWidgetList().size() ? this.getEntryWidgetList().get(relIndex) : null;
             }
             else
             {
-                for (BaseListEntryWidget widget : this.entryWidgets)
+                for (BaseListEntryWidget widget : this.getEntryWidgetList())
                 {
                     if (widget.isMouseOver(mouseX, mouseY))
                     {
@@ -641,7 +639,7 @@ public abstract class BaseListWidget extends ContainerWidget
     public InteractableWidget getTopHoveredWidget(int mouseX, int mouseY, InteractableWidget highestFoundWidget)
     {
         highestFoundWidget = super.getTopHoveredWidget(mouseX, mouseY, highestFoundWidget);
-        highestFoundWidget = InteractableWidget.getTopHoveredWidgetFromList(this.entryWidgets, mouseX, mouseY, highestFoundWidget);
+        highestFoundWidget = InteractableWidget.getTopHoveredWidgetFromList(this.getEntryWidgetList(), mouseX, mouseY, highestFoundWidget);
         return highestFoundWidget;
     }
 
@@ -650,9 +648,9 @@ public abstract class BaseListWidget extends ContainerWidget
     {
         List<BaseTextFieldWidget> textFields = new ArrayList<>(super.getAllTextFields());
 
-        if (this.entryWidgets.isEmpty() == false)
+        if (this.getEntryWidgetList().isEmpty() == false)
         {
-            for (InteractableWidget widget : this.entryWidgets)
+            for (InteractableWidget widget : this.getEntryWidgetList())
             {
                 textFields.addAll(widget.getAllTextFields());
             }
@@ -684,7 +682,7 @@ public abstract class BaseListWidget extends ContainerWidget
 
     public void focusWidget(int listIndex)
     {
-        for (BaseListEntryWidget widget : this.entryWidgets)
+        for (BaseListEntryWidget widget : this.getEntryWidgetList())
         {
             if (widget.getListIndex() == listIndex)
             {
@@ -704,7 +702,7 @@ public abstract class BaseListWidget extends ContainerWidget
 
     public void reCreateListEntryWidgets()
     {
-        for (BaseListEntryWidget widget : this.entryWidgets)
+        for (BaseListEntryWidget widget : this.getEntryWidgetList())
         {
             widget.onAboutToDestroy();
         }
@@ -721,7 +719,7 @@ public abstract class BaseListWidget extends ContainerWidget
         int x = this.entryWidgetStartX;
         int y = this.entryWidgetStartY;
 
-        this.entryWidgets.clear();
+        this.getEntryWidgetList().clear();
         this.visibleListEntries = 0;
 
         int listIndex = this.getListStartIndex();
@@ -747,7 +745,7 @@ public abstract class BaseListWidget extends ContainerWidget
             }
 
             this.onSubWidgetAdded(widget);
-            this.entryWidgets.add(widget);
+            this.addNewEntryWidget(widget);
             ++this.visibleListEntries;
 
             usedHeight += widgetHeight;
@@ -807,7 +805,7 @@ public abstract class BaseListWidget extends ContainerWidget
         super.renderAt(x, y, z, ctx);
 
         // Draw the currently visible widgets
-        for (int i = 0; i < this.entryWidgets.size(); i++)
+        for (int i = 0; i < this.getEntryWidgetList().size(); i++)
         {
             this.renderWidget(i, diffX, diffY, diffZ, ctx);
         }
@@ -815,7 +813,7 @@ public abstract class BaseListWidget extends ContainerWidget
 
     protected void renderWidget(int widgetIndex, int diffX, int diffY, float diffZ, ScreenContext ctx)
     {
-        BaseListEntryWidget widget =  this.entryWidgets.get(widgetIndex);
+        BaseListEntryWidget widget =  this.getEntryWidgetList().get(widgetIndex);
         int wx = widget.getX() + diffX;
         int wy = widget.getY() + diffY;
         float wz = widget.getZ() + diffZ;
@@ -828,6 +826,6 @@ public abstract class BaseListWidget extends ContainerWidget
     {
         super.renderDebug(hovered, ctx);
 
-        BaseScreen.renderWidgetDebug(this.entryWidgets, ctx);
+        BaseScreen.renderWidgetDebug(this.getEntryWidgetList(), ctx);
     }
 }
