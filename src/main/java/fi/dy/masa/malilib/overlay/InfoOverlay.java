@@ -18,6 +18,7 @@ import fi.dy.masa.malilib.gui.widget.BaseWidget;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.overlay.widget.InfoRendererWidget;
 import fi.dy.masa.malilib.overlay.widget.StringListRendererWidget;
+import fi.dy.masa.malilib.render.RenderUtils;
 
 public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer, ClientTickHandler
 {
@@ -184,6 +185,7 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
         boolean isScreenOpen = GuiUtils.getCurrentScreen() != null;
         boolean debug = MaLiLibConfigs.Debug.INFO_OVERLAY_DEBUG.getBooleanValue();
         ScreenContext ctx = new ScreenContext(0, 0, -1, true);
+        RenderUtils.disableItemLighting();
 
         if (debug)
         {
