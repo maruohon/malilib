@@ -20,12 +20,15 @@ import fi.dy.masa.malilib.gui.TextInputScreen;
 import fi.dy.masa.malilib.gui.icon.DefaultFileBrowserIconProvider;
 import fi.dy.masa.malilib.gui.icon.FileBrowserIconProvider;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
-import fi.dy.masa.malilib.gui.widget.DirectoryNavigationWidget;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
+import fi.dy.masa.malilib.gui.widget.DirectoryNavigationWidget;
+import fi.dy.masa.malilib.gui.widget.MenuEntryWidget;
+import fi.dy.masa.malilib.gui.widget.MenuWidget;
 import fi.dy.masa.malilib.gui.widget.list.BaseFileBrowserWidget.DirectoryEntry;
 import fi.dy.masa.malilib.gui.widget.list.entry.DirectoryEntryWidget;
 import fi.dy.masa.malilib.gui.widget.util.DirectoryCache;
 import fi.dy.masa.malilib.gui.widget.util.DirectoryNavigator;
+import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.DirectoryCreator;
 import fi.dy.masa.malilib.util.FileUtils;
 
@@ -130,11 +133,23 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     public void setShowFileSize(boolean showFileSize)
     {
         this.showFileSize = showFileSize;
+        this.reInitializeWidgets();
     }
 
     public void setShowFileModificationTime(boolean showFileModificationTime)
     {
         this.showFileModificationTime = showFileModificationTime;
+        this.reInitializeWidgets();
+    }
+
+    public void toggleShowFileSize()
+    {
+        this.setShowFileSize(! this.showFileSize);
+    }
+
+    public void toggleShowModificationTime()
+    {
+        this.setShowFileModificationTime(! this.showFileModificationTime);
     }
 
     @Nullable
@@ -307,6 +322,24 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         }
     }
 
+    protected void openSettingsContextMenu(int mouseX, int mouseY)
+    {
+        MenuWidget menuWidget = new MenuWidget(mouseX + 4, mouseY, 10, 10);
+        menuWidget.setMenuCloseHook(() -> this.removeWidget(menuWidget));
+
+        String sizeKey = this.showFileSize ? "malilib.label.hide_file_size" : "malilib.label.show_file_size";
+        String mTimeKey = this.showFileModificationTime ? "malilib.label.hide_file_mtime" : "malilib.label.show_file_mtime";
+        StyledTextLine textShowSize = StyledTextLine.translate(sizeKey);
+        StyledTextLine textShowDate = StyledTextLine.translate(mTimeKey);
+        menuWidget.setMenuEntries(new MenuEntryWidget(textShowSize, this::toggleShowFileSize),
+                                  new MenuEntryWidget(textShowDate, this::toggleShowModificationTime));
+
+        this.addWidget(menuWidget);
+        menuWidget.updateSubWidgetsToGeometryChanges();
+        // Changing/raising the z-level needs to happen after adding the widget to the container
+        menuWidget.setZ(this.getZ() + 40);
+    }
+
     @Override
     public File getCurrentDirectory()
     {
@@ -353,6 +386,23 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         {
             this.switchToRootDirectory();
         }
+    }
+
+    @Override
+    protected boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
+    {
+        if (super.onMouseClicked(mouseX, mouseY, mouseButton))
+        {
+            return true;
+        }
+
+        if (mouseButton == 1 && this.isMouseOverListArea(mouseX, mouseY) == false)
+        {
+            this.openSettingsContextMenu(mouseX, mouseY);
+            return true;
+        }
+
+        return false;
     }
 
     @Override

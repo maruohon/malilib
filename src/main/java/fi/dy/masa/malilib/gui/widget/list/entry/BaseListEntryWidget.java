@@ -71,7 +71,7 @@ public class BaseListEntryWidget extends ContainerWidget
      */
     public boolean canSelectAt(int mouseX, int mouseY, int mouseButton)
     {
-        return true;
+        return mouseButton == 0;
     }
 
     protected boolean isSelected()

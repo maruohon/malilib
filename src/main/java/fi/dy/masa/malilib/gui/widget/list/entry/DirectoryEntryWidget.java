@@ -74,7 +74,7 @@ public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry
     @Override
     protected boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
-        if (this.entry.getType() == DirectoryEntryType.DIRECTORY)
+        if (mouseButton == 0 && this.entry.getType() == DirectoryEntryType.DIRECTORY)
         {
             this.fileBrowserWidget.switchToDirectory(new File(this.entry.getDirectory(), this.entry.getName()));
         }

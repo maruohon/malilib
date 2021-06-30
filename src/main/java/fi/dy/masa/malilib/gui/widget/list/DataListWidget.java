@@ -169,7 +169,7 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
 
             if (listIndex >= 0 && listIndex < this.getTotalListWidgetCount())
             {
-                this.clickEntry(listIndex);
+                return this.clickEntry(listIndex);
             }
         }
 
@@ -308,6 +308,13 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
         this.widgetInitializer = null;
     }
 
+    protected void reInitializeWidgets()
+    {
+        this.clearWidgetInitializer();
+        this.createWidgetInitializer();
+        this.applyWidgetInitializer();
+    }
+
     @SuppressWarnings("unchecked")
     protected void createWidgetInitializer()
     {
@@ -425,12 +432,15 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
         }
     }
 
-    public void clickEntry(int listIndex)
+    public boolean clickEntry(int listIndex)
     {
         if (this.getEntrySelectionHandler() != null)
         {
             this.getEntrySelectionHandler().clickEntry(listIndex);
+            return true;
         }
+
+        return false;
     }
 
     @Override

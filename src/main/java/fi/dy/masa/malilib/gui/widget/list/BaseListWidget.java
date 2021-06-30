@@ -605,6 +605,15 @@ public abstract class BaseListWidget extends ContainerWidget
         this.scrollBar.setValue(0);
     }
 
+    protected boolean isMouseOverListArea(int mouseX, int mouseY)
+    {
+        final int relativeY = mouseY - this.entryWidgetStartY;
+
+        return relativeY >= 0 && mouseY <= this.entryWidgetStartY + this.listHeight &&
+               mouseX >= this.entryWidgetStartX &&
+               mouseX < this.entryWidgetStartX + this.entryWidgetWidth;
+    }
+
     @Nullable
     protected BaseListEntryWidget getHoveredListWidget(int mouseX, int mouseY)
     {
