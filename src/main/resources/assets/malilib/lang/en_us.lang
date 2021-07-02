@@ -259,6 +259,10 @@ malilib.gui.label.custom_hotkey_name=§e%s
 
 malilib.gui.label_error.no_widget_factory_for_config_type=§cUnknown config type '%s' (no widget factory registered)§r
 
+malilib.gui.label.file_browser_column.name=Name
+malilib.gui.label.file_browser_column.size=File Size
+malilib.gui.label.file_browser_column.mtime=Last Modified
+
 malilib.gui.label.keybind_display.actions=Actions
 malilib.gui.label.keybind_display.keys=Keys
 malilib.gui.label.keybind_display.keys_and_actions=Keys & Actions
@@ -301,6 +305,10 @@ malilib.gui.label.render_layers.layer=Layer
 malilib.gui.label.render_layers.layer_max=Max layer
 malilib.gui.label.render_layers.layer_min=Min layer
 malilib.gui.label.render_layers.player_follow_offset=Offset
+
+malilib.gui.label.sort_direction.ascending=Ascending
+malilib.gui.label.sort_direction.descending=Descending
+malilib.gui.label.sort_direction.none=None
 
 malilib.gui.tip.dropdown.type_to_search=Just start typing to search (in any DropDown widget)
 

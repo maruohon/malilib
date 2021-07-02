@@ -5,7 +5,6 @@ import java.util.function.Supplier;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
-import fi.dy.masa.malilib.gui.widget.list.entry.DataListHeaderWidget;
 
 public class BaseDataListEditHeaderWidget<DATATYPE> extends DataListHeaderWidget<DATATYPE>
 {

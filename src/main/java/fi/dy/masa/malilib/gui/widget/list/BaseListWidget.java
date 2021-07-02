@@ -19,7 +19,7 @@ import fi.dy.masa.malilib.gui.widget.InteractableWidget;
 import fi.dy.masa.malilib.gui.widget.ScrollBarWidget;
 import fi.dy.masa.malilib.gui.widget.SearchBarWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.BaseListEntryWidget;
-import fi.dy.masa.malilib.gui.widget.list.entry.DataListHeaderWidget;
+import fi.dy.masa.malilib.gui.widget.list.header.DataListHeaderWidget;
 import fi.dy.masa.malilib.gui.widget.util.DefaultWidgetPositioner;
 import fi.dy.masa.malilib.gui.widget.util.WidgetPositioner;
 import fi.dy.masa.malilib.listener.EventListener;
@@ -82,7 +82,7 @@ public abstract class BaseListWidget extends ContainerWidget
     /**
      * Creates a header widget, that will be displayed before the first entry of the list.
      */
-    protected void createHeaderWidget()
+    protected void createAndSetHeaderWidget()
     {
     }
 
@@ -135,7 +135,7 @@ public abstract class BaseListWidget extends ContainerWidget
         if (this.headerWidget != null)
         {
             this.updateHeaderWidgetPosition(x, startY, this.entryWidgetWidth);
-            startY = this.headerWidget.getY() + this.headerWidget.getHeight() + 2;
+            startY = this.headerWidget.getBottom() + this.headerWidget.getMargin().getBottom();
         }
 
         int rightPadding = this.listPosition.getRight();
@@ -173,11 +173,11 @@ public abstract class BaseListWidget extends ContainerWidget
         }
     }
 
-    public void initWidget()
+    public void initListWidget()
     {
         this.clearWidgets();
 
-        this.createHeaderWidget();
+        this.createAndSetHeaderWidget();
         this.reAddSubWidgets();
         this.updateSubWidgetsToGeometryChanges();
         this.refreshEntries();

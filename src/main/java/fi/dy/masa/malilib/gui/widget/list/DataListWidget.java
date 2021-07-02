@@ -5,16 +5,19 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
+import fi.dy.masa.malilib.config.value.SortDirection;
 import fi.dy.masa.malilib.gui.widget.list.entry.BaseDataListEntryWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.BaseListEntryWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntrySelectionHandler;
 import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetFactory;
-import fi.dy.masa.malilib.gui.widget.list.entry.DataListHeaderWidget;
+import fi.dy.masa.malilib.gui.widget.list.header.DataColumn;
+import fi.dy.masa.malilib.gui.widget.list.header.DataListHeaderWidget;
 
 public class DataListWidget<DATATYPE> extends BaseListWidget
 {
@@ -23,15 +26,23 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
     protected final ArrayList<DATATYPE> filteredContents = new ArrayList<>();
     protected final ArrayList<Integer> filteredIndices = new ArrayList<>();
     protected final ArrayList<BaseDataListEntryWidget<DATATYPE>> entryWidgets = new ArrayList<>();
+    protected final ArrayList<DataColumn<DATATYPE>> columns = new ArrayList<>();
+    protected Function<DATATYPE, List<String>> entryFilterStringFactory = (e) -> Collections.singletonList(e.toString());
+    protected SortDirection sortDirection = SortDirection.ASCENDING;
     @Nullable protected Function<DataListWidget<DATATYPE>, DataListHeaderWidget<DATATYPE>> headerWidgetFactory;
+    @Nullable protected Function<DataListWidget<DATATYPE>, DataListHeaderWidget<DATATYPE>> defaultHeaderWidgetFactory;
     @Nullable protected DataListEntryWidgetFactory<DATATYPE> entryWidgetFactory;
     @Nullable protected DataListEntrySelectionHandler<DATATYPE> selectionHandler;
-    @Nullable protected Comparator<DATATYPE> listSortComparator;
+    @Nullable protected Comparator<DATATYPE> activeListSortComparator;
+    @Nullable protected Comparator<DATATYPE> defaultListSortComparator;
     @Nullable protected Consumer<BaseDataListEntryWidget<DATATYPE>> widgetInitializer;
-    protected Function<DATATYPE, List<String>> entryFilterStringFactory = (e) -> Collections.singletonList(e.toString());
+    @Nullable protected DataColumn<DATATYPE> activeSortColumn;
+    @Nullable protected DataColumn<DATATYPE> defaultSortColumn;
+    @Nullable protected Supplier<List<DataColumn<DATATYPE>>> columnSupplier;
 
     protected boolean fetchFromSupplierOnRefresh;
     protected boolean filterMatchesEmptyEntry;
+    protected boolean hasDataColumns;
     protected boolean shouldSortList;
 
     public DataListWidget(int x, int y, int width, int height, Supplier<List<DATATYPE>> entrySupplier)
@@ -71,6 +82,7 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
     public DataListWidget<DATATYPE> setHeaderWidgetFactory(@Nullable Function<DataListWidget<DATATYPE>, DataListHeaderWidget<DATATYPE>> factory)
     {
         this.headerWidgetFactory = factory;
+        this.defaultHeaderWidgetFactory = factory;
         return this;
     }
 
@@ -115,6 +127,22 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
         return this;
     }
 
+    public void setColumnSupplier(@Nullable Supplier<List<DataColumn<DATATYPE>>> columnSupplier)
+    {
+        this.columnSupplier = columnSupplier;
+    }
+
+    public void setDataColumns(List<DataColumn<DATATYPE>> columns)
+    {
+        this.columns.clear();
+        this.columns.addAll(columns);
+    }
+
+    public void setHasDataColumns(boolean hasDataColumns)
+    {
+        this.hasDataColumns = hasDataColumns;
+    }
+
     /**
      * Sets the comparator used for sorting the list contents.
      * A header widget which wants to sort the list contents based on the column
@@ -125,7 +153,36 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
      */
     public void setListSortComparator(@Nullable Comparator<DATATYPE> comparator)
     {
-        this.listSortComparator = comparator;
+        this.activeListSortComparator = comparator;
+        this.defaultListSortComparator = comparator;
+    }
+
+    public void updateActiveColumns()
+    {
+        if (this.hasDataColumns)
+        {
+            this.createColumns();
+            this.headerWidgetFactory = this.defaultHeaderWidgetFactory;
+        }
+        else
+        {
+            this.columns.clear();
+            this.activeSortColumn = this.defaultSortColumn;
+            this.activeListSortComparator = this.defaultListSortComparator;
+            this.headerWidgetFactory = null;
+        }
+
+        this.initListWidget();
+    }
+
+    protected void createColumns()
+    {
+        this.columns.clear();
+
+        if (this.columnSupplier != null)
+        {
+            this.columns.addAll(this.columnSupplier.get());
+        }
     }
 
     @Override
@@ -148,15 +205,23 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
     }
 
     @Override
-    protected void createHeaderWidget()
+    protected void createAndSetHeaderWidget()
     {
         if (this.headerWidgetFactory != null)
         {
-            int x = this.getX() + this.listPosition.getLeft();
-            int y = this.getY();
             this.headerWidget = this.headerWidgetFactory.apply(this);
-            this.headerWidget.setPosition(x, y);
-            this.headerWidget.setHeaderWidgetSize(this.entryWidgetWidth, -1);
+
+            if (this.headerWidget != null)
+            {
+                int x = this.getX() + this.listPosition.getLeft();
+                int y = this.getY();
+                this.headerWidget.setPosition(x, y);
+                this.headerWidget.setHeaderWidgetSize(this.entryWidgetWidth, -1);
+            }
+        }
+        else
+        {
+            this.headerWidget = null;
         }
     }
 
@@ -229,10 +294,53 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
         return handler != null ? handler.getSelectedEntries() : Collections.emptySet();
     }
 
+    public Optional<SortDirection> getSortDirectionFor(DataColumn<DATATYPE> column)
+    {
+        if (this.activeSortColumn == column)
+        {
+            return Optional.ofNullable(this.sortDirection);
+        }
+
+        return Optional.empty();
+    }
+
+    public void toggleSortByColumn(DataColumn<DATATYPE> column)
+    {
+        if (column.getCanSortBy())
+        {
+            if (this.activeSortColumn == column)
+            {
+                this.sortDirection = this.sortDirection.getOpposite();
+            }
+            else
+            {
+                this.sortDirection = SortDirection.ASCENDING;
+            }
+
+            Optional<Comparator<DATATYPE>> optional = column.getComparator();
+
+            if (optional.isPresent())
+            {
+                if (this.sortDirection == SortDirection.DESCENDING)
+                {
+                    this.activeListSortComparator = optional.get().reversed();
+                }
+                else
+                {
+                    this.activeListSortComparator = optional.get();
+                }
+            }
+
+            this.activeSortColumn = column;
+
+            this.refreshFilteredEntries();
+        }
+    }
+
     @Nullable
     protected Comparator<DATATYPE> getComparator()
     {
-        return this.listSortComparator;
+        return this.activeListSortComparator;
     }
 
     @Nullable

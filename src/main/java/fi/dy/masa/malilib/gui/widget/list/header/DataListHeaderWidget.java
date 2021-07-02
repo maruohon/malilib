@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.gui.widget.list.entry;
+package fi.dy.masa.malilib.gui.widget.list.header;
 
 import fi.dy.masa.malilib.gui.widget.ContainerWidget;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;

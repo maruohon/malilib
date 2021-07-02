@@ -26,6 +26,9 @@ import fi.dy.masa.malilib.gui.widget.MenuEntryWidget;
 import fi.dy.masa.malilib.gui.widget.MenuWidget;
 import fi.dy.masa.malilib.gui.widget.list.BaseFileBrowserWidget.DirectoryEntry;
 import fi.dy.masa.malilib.gui.widget.list.entry.DirectoryEntryWidget;
+import fi.dy.masa.malilib.gui.widget.list.header.ColumnizedDataListHeaderWidget;
+import fi.dy.masa.malilib.gui.widget.list.header.DataColumn;
+import fi.dy.masa.malilib.gui.widget.list.header.DataListHeaderWidget;
 import fi.dy.masa.malilib.gui.widget.util.DirectoryCache;
 import fi.dy.masa.malilib.gui.widget.util.DirectoryNavigator;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
@@ -85,8 +88,14 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
                                                               this::refreshFilteredEntries,
                                                               this::getRootDirectoryDisplayName);
         this.searchBarWidget = this.navigationWidget;
-        this.listSortComparator = Comparator.naturalOrder();
         this.entryFilterStringFactory = (entry) -> ImmutableList.of(FileUtils.getNameWithoutExtension(entry.getName().toLowerCase(Locale.ROOT)));
+
+        this.activeListSortComparator = Comparator.naturalOrder();
+        this.defaultListSortComparator = this.activeListSortComparator;
+        this.defaultHeaderWidgetFactory = this::createFileListHeaderWidget;
+        this.activeSortColumn = DirectoryEntryWidget.NAME_COLUMN;
+        this.defaultSortColumn = DirectoryEntryWidget.NAME_COLUMN;
+        this.setColumnSupplier(this::createFileBrowserColumns);
 
         this.setEntryWidgetFactory((wx, wy, ww, wh, li, oi, entry, lw) ->
                                     new DirectoryEntryWidget(wx, wy, ww, wh, li, oi, entry, this, iconProvider));
@@ -133,13 +142,15 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     public void setShowFileSize(boolean showFileSize)
     {
         this.showFileSize = showFileSize;
-        this.reInitializeWidgets();
+        this.hasDataColumns = this.showFileSize || this.showFileModificationTime;
+        this.updateActiveColumns();
     }
 
     public void setShowFileModificationTime(boolean showFileModificationTime)
     {
         this.showFileModificationTime = showFileModificationTime;
-        this.reInitializeWidgets();
+        this.hasDataColumns = this.showFileSize || this.showFileModificationTime;
+        this.updateActiveColumns();
     }
 
     public void toggleShowFileSize()
@@ -150,6 +161,24 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     public void toggleShowModificationTime()
     {
         this.setShowFileModificationTime(! this.showFileModificationTime);
+    }
+
+    protected List<DataColumn<DirectoryEntry>> createFileBrowserColumns()
+    {
+        ArrayList<DataColumn<DirectoryEntry>> list = new ArrayList<>();
+        list.add(DirectoryEntryWidget.NAME_COLUMN);
+
+        if (this.showFileSize)
+        {
+            list.add(DirectoryEntryWidget.SIZE_COLUMN);
+        }
+
+        if (this.showFileModificationTime)
+        {
+            list.add(DirectoryEntryWidget.TIME_COLUMN);
+        }
+
+        return list;
     }
 
     @Nullable
@@ -195,7 +224,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
 
         // Show directories at the top
         this.addMatchingEntriesToList(dir, list, this.getDirectoryFilter(), null, null);
-        list.sort(Comparator.comparing(e -> e.name.toLowerCase(Locale.ROOT)));
+        list.sort(this.activeListSortComparator);
         this.filteredContents.addAll(list);
         list.clear();
 
@@ -320,6 +349,14 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         {
             this.setKeyboardNavigationIndex(0);
         }
+    }
+
+    protected DataListHeaderWidget<DirectoryEntry> createFileListHeaderWidget(DataListWidget<DirectoryEntry> listWidget)
+    {
+        ColumnizedDataListHeaderWidget<DirectoryEntry> widget =
+                new ColumnizedDataListHeaderWidget<>(this.entryWidgetWidth, 14, this, this.columns);
+        widget.getMargin().setAll(2, 0, 0, 1);
+        return widget;
     }
 
     protected void openSettingsContextMenu(int mouseX, int mouseY)
