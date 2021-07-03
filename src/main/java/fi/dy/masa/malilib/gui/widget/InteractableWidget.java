@@ -110,8 +110,8 @@ public abstract class InteractableWidget extends BackgroundWidget
             return this.renderHoverChecker.isHovered(ctx);
         }
 
-        return ctx.hoveredWidgetId == this.getId() ||
-               (ctx.isActiveScreen && this.isMouseOver(ctx.mouseX, ctx.mouseY));
+        return ctx.hoveredWidgetId == this.getId();/* ||
+               (ctx.isActiveScreen && this.isMouseOver(ctx.mouseX, ctx.mouseY));*/
     }
 
     public boolean getShouldReceiveOutsideClicks()

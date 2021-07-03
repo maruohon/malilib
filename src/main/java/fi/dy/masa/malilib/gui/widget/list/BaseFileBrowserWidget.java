@@ -8,14 +8,17 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.input.Keyboard;
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.gui.BaseScreen;
+import fi.dy.masa.malilib.gui.ConfirmActionScreen;
 import fi.dy.masa.malilib.gui.TextInputScreen;
 import fi.dy.masa.malilib.gui.icon.DefaultFileBrowserIconProvider;
 import fi.dy.masa.malilib.gui.icon.FileBrowserIconProvider;
@@ -25,15 +28,19 @@ import fi.dy.masa.malilib.gui.widget.DirectoryNavigationWidget;
 import fi.dy.masa.malilib.gui.widget.MenuEntryWidget;
 import fi.dy.masa.malilib.gui.widget.MenuWidget;
 import fi.dy.masa.malilib.gui.widget.list.BaseFileBrowserWidget.DirectoryEntry;
+import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntrySelectionHandler;
 import fi.dy.masa.malilib.gui.widget.list.entry.DirectoryEntryWidget;
 import fi.dy.masa.malilib.gui.widget.list.header.ColumnizedDataListHeaderWidget;
 import fi.dy.masa.malilib.gui.widget.list.header.DataColumn;
 import fi.dy.masa.malilib.gui.widget.list.header.DataListHeaderWidget;
 import fi.dy.masa.malilib.gui.widget.util.DirectoryCache;
 import fi.dy.masa.malilib.gui.widget.util.DirectoryNavigator;
+import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
+import fi.dy.masa.malilib.render.text.StyledText;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.DirectoryCreator;
 import fi.dy.masa.malilib.util.FileUtils;
+import fi.dy.masa.malilib.util.consumer.DataIteratingTask;
 
 public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implements DirectoryNavigator
 {
@@ -44,6 +51,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
 
     protected final Map<Pair<File, FileFilter>, List<File>> directoryContentsCache = new HashMap<>();
     protected final Map<File, Integer> keyboardNavigationPositions = new HashMap<>();
+    protected final Set<File> operatedOnFiles = new HashSet<>();
     protected final DirectoryNavigationWidget navigationWidget;
     protected final File rootDirectory;
     @Nullable protected final DirectoryCache cache;
@@ -52,6 +60,8 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     protected FileFilter fileFilter = ALWAYS_FALSE_FILE_FILTER;
     protected String browserContext;
     protected File currentDirectory;
+    protected boolean allowFileOperations;
+    protected boolean pendingOperationIsCut;
     protected boolean shouldStoreKeyboardNavigationPosition = true;
     protected boolean showFileSize;
     protected boolean showFileModificationTime;
@@ -96,6 +106,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         this.activeSortColumn = DirectoryEntryWidget.NAME_COLUMN;
         this.defaultSortColumn = DirectoryEntryWidget.NAME_COLUMN;
         this.setColumnSupplier(this::createFileBrowserColumns);
+        this.setAllowFileOperations(true); // FIXME debug remove
 
         this.setEntryWidgetFactory((wx, wy, ww, wh, li, oi, entry, lw) ->
                                     new DirectoryEntryWidget(wx, wy, ww, wh, li, oi, entry, this, iconProvider));
@@ -112,6 +123,13 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     {
         this.searchBarWidget.setPosition(defaultX, defaultY + 3);
         this.searchBarWidget.setWidth(defaultWidth);
+    }
+
+    public void setAllowFileOperations(boolean allowFileOperations)
+    {
+        this.allowFileOperations = allowFileOperations;
+        this.getEntrySelectionHandler().setAllowMultiSelection(allowFileOperations);
+        this.getEntrySelectionHandler().setModifierKeyMultiSelection(allowFileOperations);
     }
 
     public void setFileFilter(FileFilter filter)
@@ -362,19 +380,205 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     protected void openSettingsContextMenu(int mouseX, int mouseY)
     {
         MenuWidget menuWidget = new MenuWidget(mouseX + 4, mouseY, 10, 10);
-        menuWidget.setMenuCloseHook(() -> this.removeWidget(menuWidget));
+        menuWidget.setMenuEntries(this.getColumnToggleMenuEntries());
+        menuWidget.setMenuCloseHook(this::closeCurrentContextMenu);
+        this.openContextMenu(menuWidget);
+    }
 
+    public void openContextMenuForEntry(int mouseX, int mouseY, int listIndex)
+    {
+        if (this.allowFileOperations == false)
+        {
+            return;
+        }
+
+        DataListEntrySelectionHandler<DirectoryEntry> handler = this.getEntrySelectionHandler();
+
+        // If right clicking on a non-selected entry, clear the selection and select just that one entry
+        // (This is to mimic the behavior of the windblows explorer context menu)
+        if (listIndex >= 0 && handler.isEntrySelected(listIndex) == false)
+        {
+            handler.clearSelection();
+            handler.setSelectedEntry(listIndex);
+        }
+
+        MenuWidget menuWidget = new MenuWidget(mouseX + 4, mouseY, 10, 10);
+        menuWidget.setMenuCloseHook(this::closeCurrentContextMenu);
+
+        List<MenuEntryWidget> entries = new ArrayList<>(listIndex >= 0 ?
+                                                        this.getFileOperationMenuEntriesForFile() :
+                                                        this.getFileOperationMenuEntriesForNonFile());
+        entries.addAll(this.getColumnToggleMenuEntries());
+        menuWidget.setMenuEntries(entries);
+
+        this.openContextMenu(menuWidget);
+    }
+
+    protected List<MenuEntryWidget> getFileOperationMenuEntriesForNonFile()
+    {
+        if (this.operatedOnFiles.isEmpty())
+        {
+            return Collections.emptyList();
+        }
+
+        StyledTextLine textPaste  = StyledTextLine.translate("malilib.gui.label.file_browser.context_menu.paste");
+        return ImmutableList.of(new MenuEntryWidget(textPaste,  this::pasteFiles));
+    }
+
+    protected List<MenuEntryWidget> getFileOperationMenuEntriesForFile()
+    {
+        StyledTextLine textCopy   = StyledTextLine.translate("malilib.gui.label.file_browser.context_menu.copy");
+        StyledTextLine textCut    = StyledTextLine.translate("malilib.gui.label.file_browser.context_menu.cut");
+        StyledTextLine textPaste  = StyledTextLine.translate("malilib.gui.label.file_browser.context_menu.paste");
+        StyledTextLine textDelete = StyledTextLine.translate("malilib.gui.label.file_browser.context_menu.delete");
+        StyledTextLine textRename = StyledTextLine.translate("malilib.gui.label.file_browser.context_menu.rename");
+
+        return ImmutableList.of(new MenuEntryWidget(textCopy,   this::copyFiles),
+                                new MenuEntryWidget(textCut,    this::cutFiles),
+                                new MenuEntryWidget(textPaste,  this::pasteFiles),
+                                new MenuEntryWidget(textDelete, this::deleteFiles),
+                                new MenuEntryWidget(textRename, this::renameFiles));
+    }
+
+    protected List<MenuEntryWidget> getColumnToggleMenuEntries()
+    {
         String sizeKey = this.showFileSize ? "malilib.label.hide_file_size" : "malilib.label.show_file_size";
         String mTimeKey = this.showFileModificationTime ? "malilib.label.hide_file_mtime" : "malilib.label.show_file_mtime";
         StyledTextLine textShowSize = StyledTextLine.translate(sizeKey);
         StyledTextLine textShowDate = StyledTextLine.translate(mTimeKey);
-        menuWidget.setMenuEntries(new MenuEntryWidget(textShowSize, this::toggleShowFileSize),
-                                  new MenuEntryWidget(textShowDate, this::toggleShowModificationTime));
 
-        this.addWidget(menuWidget);
-        menuWidget.updateSubWidgetsToGeometryChanges();
-        // Changing/raising the z-level needs to happen after adding the widget to the container
-        menuWidget.setZ(this.getZ() + 40);
+        return ImmutableList.of(new MenuEntryWidget(textShowSize, this::toggleShowFileSize),
+                                new MenuEntryWidget(textShowDate, this::toggleShowModificationTime));
+    }
+
+    protected void copyFiles()
+    {
+        this.storeSelectionAsOperatedOnFiles();
+        this.pendingOperationIsCut = false;
+    }
+
+    protected void cutFiles()
+    {
+        this.storeSelectionAsOperatedOnFiles();
+        this.pendingOperationIsCut = true;
+    }
+
+    protected void pasteFiles()
+    {
+        List<String> messages = new ArrayList<>();
+
+        if (this.pendingOperationIsCut)
+        {
+            FileUtils.moveFilesToDirectory(this.operatedOnFiles, this.getCurrentDirectory(), messages::add);
+        }
+        else
+        {
+            FileUtils.copyFilesToDirectory(this.operatedOnFiles, this.getCurrentDirectory(), messages::add);
+        }
+
+        this.endFileOperation(messages);
+    }
+
+    protected void deleteFiles()
+    {
+        this.storeSelectionAsOperatedOnFiles();
+
+        ConfirmActionScreen screen = new ConfirmActionScreen(320, "malilib.gui.title.confirm_file_deletion",
+                                                             this::executeDeleteFiles, null,
+                                                             "malilib.gui.label.confirm_file_deletion",
+                                                             this.operatedOnFiles.size());
+        screen.setParent(GuiUtils.getCurrentScreen());
+        BaseScreen.openPopupScreen(screen);
+    }
+
+    protected boolean executeDeleteFiles()
+    {
+        List<String> messages = new ArrayList<>();
+        FileUtils.deleteFiles(this.operatedOnFiles, messages::add);
+        this.endFileOperation(messages);
+        return true;
+    }
+
+    protected void renameFiles()
+    {
+        this.storeSelectionAsOperatedOnFiles();
+
+        List<File> files = new ArrayList<>(this.operatedOnFiles);
+        files.sort(Comparator.comparing(File::getName));
+
+        DataIteratingTask<File> task = new DataIteratingTask<>(files, this::renameFile, this::endFileOperation);
+        task.advance();
+    }
+
+    protected void renameFile(File file, DataIteratingTask<File> task)
+    {
+        String originalFileName = file.getName();
+        String name = FileUtils.getNameWithoutExtension(originalFileName);
+
+        TextInputScreen screen = new TextInputScreen("malilib.gui.title.rename_file",
+                                                     name, GuiUtils.getCurrentScreen(),
+                                                     (n) -> this.renameFile(file, n));
+        screen.setInfoText(StyledText.translate("malilib.gui.label.file_browser.rename_file.info", originalFileName));
+        screen.setLabelText(StyledText.translate("malilib.gui.label.file_browser.rename_file.label"));
+        screen.setConfirmListener(task::advance);
+        screen.setCancelListener(task::cancel);
+
+        BaseScreen.openPopupScreen(screen);
+    }
+
+    protected boolean renameFile(File file, String newName)
+    {
+        String originalFileName = file.getName();
+
+        // Same name, NO-OP
+        if (newName.equals(FileUtils.getNameWithoutExtension(originalFileName)))
+        {
+            return true;
+        }
+
+        File dir = file.getParentFile();
+        String extension = FileUtils.getFileNameExtension(originalFileName);
+
+        if (extension.length() > 0)
+        {
+            extension = "." + extension;
+        }
+
+        return FileUtils.renameFile(file, new File(dir, newName + extension), MessageDispatcher.error()::send);
+    }
+
+    protected void endFileOperation(List<String> messages)
+    {
+        this.endFileOperation();
+
+        if (messages.isEmpty() == false)
+        {
+            for (String msg : messages)
+            {
+                MessageDispatcher.error().send(msg);
+            }
+        }
+    }
+
+    protected void endFileOperation()
+    {
+        this.operatedOnFiles.clear();
+        this.directoryContentsCache.clear();
+        this.getEntrySelectionHandler().clearSelection();
+        this.pendingOperationIsCut = false;
+        this.refreshEntries();
+    }
+
+    protected void storeSelectionAsOperatedOnFiles()
+    {
+        this.operatedOnFiles.clear();
+
+        DataListEntrySelectionHandler<DirectoryEntry> handler = this.getEntrySelectionHandler();
+
+        for (DirectoryEntry entry : handler.getSelectedEntries())
+        {
+            this.operatedOnFiles.add(entry.getFullPath());
+        }
     }
 
     @Override
@@ -390,6 +594,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         this.storeKeyboardNavigationPosition(this.currentDirectory);
 
         this.currentDirectory = FileUtils.getCanonicalFileIfPossible(dir);
+        this.directoryContentsCache.clear();
 
         if (this.cache != null)
         {
@@ -428,14 +633,22 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     @Override
     protected boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
-        if (super.onMouseClicked(mouseX, mouseY, mouseButton))
+        if (mouseButton == 1)
         {
+            if (this.isMouseOverListArea(mouseX, mouseY) == false)
+            {
+                this.openSettingsContextMenu(mouseX, mouseY);
+            }
+            else
+            {
+                this.openContextMenuForEntry(mouseX, mouseY, -1);
+            }
+
             return true;
         }
 
-        if (mouseButton == 1 && this.isMouseOverListArea(mouseX, mouseY) == false)
+        if (super.onMouseClicked(mouseX, mouseY, mouseButton))
         {
-            this.openSettingsContextMenu(mouseX, mouseY);
             return true;
         }
 

@@ -22,6 +22,12 @@ public class MenuWidget extends ContainerWidget
         this.getBorderRenderer().getNormalSettings().setBorderWidthAndColor(1, 0xFFC0C0C0);
     }
 
+    @Override
+    protected int getSubWidgetZLevelIncrement()
+    {
+        return 50;
+    }
+
     public void setMenuEntries(MenuEntryWidget... menuEntries)
     {
         this.setMenuEntries(Arrays.asList(menuEntries));

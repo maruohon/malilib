@@ -10,6 +10,7 @@ import fi.dy.masa.malilib.gui.util.ScreenContext;
 public abstract class ContainerWidget extends InteractableWidget
 {
     protected final List<InteractableWidget> subWidgets = new ArrayList<>(1);
+    @Nullable protected MenuWidget activeContextMenuWidget;
 
     public ContainerWidget(int width, int height)
     {
@@ -31,6 +32,21 @@ public abstract class ContainerWidget extends InteractableWidget
     public void reAddSubWidgets()
     {
         this.clearWidgets();
+    }
+
+    public void closeCurrentContextMenu()
+    {
+        if (this.activeContextMenuWidget != null)
+        {
+            this.removeWidget(this.activeContextMenuWidget);
+        }
+    }
+
+    public void openContextMenu(MenuWidget widget)
+    {
+        this.closeCurrentContextMenu();
+        this.activeContextMenuWidget = widget;
+        this.addWidget(widget);
     }
 
     @Override
