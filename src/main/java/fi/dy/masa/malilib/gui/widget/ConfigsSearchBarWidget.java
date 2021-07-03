@@ -25,7 +25,6 @@ import fi.dy.masa.malilib.input.KeyAction;
 import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.input.KeyBindImpl;
 import fi.dy.masa.malilib.input.KeyBindSettings;
-import fi.dy.masa.malilib.listener.ConfirmationListener;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.listener.TextChangeListener;
 import fi.dy.masa.malilib.util.StringUtils;
@@ -43,7 +42,7 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
                                   MultiIcon iconSearch, HorizontalAlignment iconAlignment,
                                   TextChangeListener textChangeListener,
                                   final EventListener filterChangeListener,
-                                  ConfirmationListener configResetter,
+                                  EventListener configResetter,
                                   KeybindEditingScreen screen)
     {
         super(x, y + 3, width - 160, 16, searchBarOffsetX, iconSearch,
@@ -62,7 +61,12 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
 
         this.resetConfigsButton = new GenericButton(160, 16, "malilib.gui.button.config.reset_all_filtered");
         this.resetConfigsButton.translateAndAddHoverStrings("malilib.gui.button.hover.config.reset_all_filtered");
-        final ConfirmActionScreen confirmScreen = new ConfirmActionScreen(240, "malilib.gui.title.confirm_config_reset", configResetter, GuiUtils.getCurrentScreen(), "malilib.gui.label.confirm_config_reset");
+        final ConfirmActionScreen confirmScreen = new ConfirmActionScreen(240,
+                                                                          "malilib.gui.title.confirm_config_reset",
+                                                                          configResetter,
+                                                                          null,
+                                                                          "malilib.gui.label.confirm_config_reset");
+        confirmScreen.setParent(GuiUtils.getCurrentScreen());
         this.resetConfigsButton.setActionListener(() -> BaseScreen.openPopupScreen(confirmScreen));
 
         this.sourceSelectionDropdown = new DropDownListWidget<>(-1, 15, 60, 10, Scope.VALUES, Scope::getDisplayName);

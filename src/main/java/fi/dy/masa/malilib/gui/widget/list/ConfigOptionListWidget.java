@@ -82,7 +82,7 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
         this.searchBarWidget = this.configsSearchBarWidget;
     }
 
-    protected boolean resetFilteredConfigsToDefaults()
+    protected void resetFilteredConfigsToDefaults()
     {
         for (C config : this.filteredContents)
         {
@@ -90,8 +90,6 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
         }
 
         this.refreshEntries();
-
-        return true;
     }
 
     @Nullable

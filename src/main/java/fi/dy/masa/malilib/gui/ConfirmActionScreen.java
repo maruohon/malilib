@@ -2,25 +2,29 @@ package fi.dy.masa.malilib.gui;
 
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
-import fi.dy.masa.malilib.listener.ConfirmationListener;
+import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.render.text.StyledText;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.StyledTextUtils;
 
 public class ConfirmActionScreen extends BaseScreen
 {
-    protected final ConfirmationListener listener;
+    protected final EventListener confirmListener;
+    @Nullable protected final EventListener cancelListener;
     protected final LabelWidget labelWidget;
     protected final GenericButton confirmButton;
     protected final GenericButton cancelButton;
-    protected int textColor = 0xFFC0C0C0;
 
-    public ConfirmActionScreen(int width, String titleKey, ConfirmationListener listener, @Nullable GuiScreen parent, String messageKey, Object... args)
+    public ConfirmActionScreen(int width,
+                               String titleKey,
+                               EventListener confirmListener,
+                               @Nullable EventListener cancelListener,
+                               String messageKey, Object... args)
     {
-        this.listener = listener;
+        this.confirmListener = confirmListener;
+        this.cancelListener = cancelListener;
         this.useTitleHierarchy = false;
         this.setTitle(titleKey);
 
@@ -30,7 +34,6 @@ public class ConfirmActionScreen extends BaseScreen
         this.confirmButton = GenericButton.simple("malilib.gui.button.colored.confirm", this::onConfirm);
         this.cancelButton = GenericButton.simple("malilib.gui.button.colored.cancel", this::onCancel);
 
-        this.setParent(parent);
         this.setScreenWidthAndHeight(width, 50 + StyledTextUtils.getRenderHeight(messageLines));
         this.centerOnScreen();
     }
@@ -60,15 +63,28 @@ public class ConfirmActionScreen extends BaseScreen
         this.cancelButton.setPosition(this.confirmButton.getRight() + 10, y);
     }
 
+    public void setTextColor(int color)
+    {
+        this.labelWidget.getTextSettings().setTextColor(color);
+    }
+
     protected void onConfirm()
     {
         BaseScreen.openScreen(this.getParent());
-        this.listener.onActionConfirmed();
+
+        if (this.confirmListener != null)
+        {
+            this.confirmListener.onEvent();
+        }
     }
 
     protected void onCancel()
     {
         BaseScreen.openScreen(this.getParent());
-        this.listener.onActionCancelled();
+
+        if (this.cancelListener != null)
+        {
+            this.cancelListener.onEvent();
+        }
     }
 }

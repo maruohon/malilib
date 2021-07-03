@@ -4,8 +4,8 @@ import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
-import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
+import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.render.text.StyledText;
@@ -19,6 +19,8 @@ public abstract class BaseTextInputScreen extends BaseScreen
     protected final GenericButton resetButton;
     protected final GenericButton cancelButton;
     protected final String originalText;
+    @Nullable protected EventListener confirmListener;
+    @Nullable protected EventListener cancelListener;
     @Nullable protected StyledText infoText;
     @Nullable protected StyledText labelText;
     protected int baseHeight = 80;
@@ -34,7 +36,7 @@ public abstract class BaseTextInputScreen extends BaseScreen
 
         this.okButton = createButton("malilib.gui.button.colored.ok", this::closeScreenIfValueApplied);
         this.resetButton = createButton("malilib.gui.button.reset", this::resetTextFieldToOriginalText);
-        this.cancelButton = createButton("malilib.gui.button.cancel", this::openParentScreen);
+        this.cancelButton = createButton("malilib.gui.button.cancel", this::cancel);
 
         this.textField = new BaseTextFieldWidget(240, 20, this.originalText);
         this.textField.setFocused(true);
@@ -107,6 +109,16 @@ public abstract class BaseTextInputScreen extends BaseScreen
         return button;
     }
 
+    public void setConfirmListener(@Nullable EventListener confirmListener)
+    {
+        this.confirmListener = confirmListener;
+    }
+
+    public void setCancelListener(@Nullable EventListener cancelListener)
+    {
+        this.cancelListener = cancelListener;
+    }
+
     public void setInfoText(@Nullable StyledText infoText)
     {
         if (infoText != null)
@@ -170,11 +182,19 @@ public abstract class BaseTextInputScreen extends BaseScreen
 
     protected void closeScreenIfValueApplied()
     {
-        // Only close the screen if the value was successfully applied,
-        // and this screen is still the active screen
-        if (this.applyValue(this.textField.getText()) && GuiUtils.getCurrentScreen() == this)
+        if (this.applyValue(this.textField.getText()))
         {
-            this.openParentScreen();
+            // Only close the screen if the value was successfully applied,
+            // and this screen is still the active screen
+            if (GuiUtils.getCurrentScreen() == this)
+            {
+                this.openParentScreen();
+            }
+
+            if (this.confirmListener != null)
+            {
+                this.confirmListener.onEvent();
+            }
         }
     }
 
@@ -183,6 +203,16 @@ public abstract class BaseTextInputScreen extends BaseScreen
         this.textField.setText(this.originalText);
         this.textField.setCursorToStart();
         this.textField.setFocused(true);
+    }
+
+    protected void cancel()
+    {
+        this.openParentScreen();
+
+        if (this.cancelListener != null)
+        {
+            this.cancelListener.onEvent();
+        }
     }
 
     protected abstract boolean applyValue(String string);
