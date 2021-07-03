@@ -13,4 +13,9 @@ public interface BooleanStorage
      * @return true if the value changed (NOT the new value!)
      */
     boolean setBooleanValue(boolean value);
+
+    default void toggleBooleanValue()
+    {
+        this.setBooleanValue(! this.getBooleanValue());
+    }
 }

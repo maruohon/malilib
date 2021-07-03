@@ -161,7 +161,7 @@ public class FileUtils
     public static String getFileNameExtension(String name)
     {
         int i = name.lastIndexOf(".");
-        return i != -1 && name.length() > 1 ? name.substring(i + 1) : name;
+        return i != -1 && name.length() > 1 ? name.substring(i + 1) : "";
     }
 
     public static String getNameWithoutExtension(String name)
@@ -313,7 +313,7 @@ public class FileUtils
                     return true;
                 }
 
-                String tmpName = name + UUID.randomUUID().toString();
+                String tmpName = name + UUID.randomUUID();
                 existingIdenticalBackup = new File(backupDirectory, tmpName);
 
                 // Move the existing identical backup to a temporary name.
@@ -416,7 +416,12 @@ public class FileUtils
         String name = getNameWithoutExtension(fullName);
         String dateStr = getDateTimeString();
         String extension = getFileNameExtension(fullName);
-        String backupFileName = name + "_v" + configVersion + "_" + dateStr + "." + extension;
+        String backupFileName = name + "_v" + configVersion + "_" + dateStr;
+
+        if (extension.length() > 0)
+        {
+            backupFileName += "." + extension;
+        }
 
         return copyFile(fileIn, new File(backupDirectory, backupFileName));
     }
