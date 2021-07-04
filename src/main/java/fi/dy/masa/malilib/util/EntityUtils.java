@@ -9,8 +9,7 @@ import net.minecraft.util.math.Vec3d;
 public class EntityUtils
 {
     /**
-     * Returns the camera entity, if it's not null, otherwise returns the client player entity.
-     * @return
+     * @return The camera entity, if it's not null, otherwise returns the client player entity.
      */
     @Nullable
     public static Entity getCameraEntity()

@@ -462,9 +462,6 @@ public class RayTraceUtils
     {
         /**
          * A handler method, usually for checking for a collision at the given position along the ray trace
-         * @param data
-         * @param world
-         * @param ignoreNonCollidable
          * @return true if the ray should stop here and the current trace result from the RayTraceCalcsData should be returned
          */
         boolean handleRayTracePosition(RayTraceCalculationData data, World world, boolean ignoreNonCollidable);

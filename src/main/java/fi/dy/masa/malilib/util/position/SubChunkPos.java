@@ -35,7 +35,7 @@ public class SubChunkPos extends Vec3i
             double dist1 = pos1.distanceSq(x, y, z);
             double dist2 = pos2.distanceSq(x, y, z);
 
-            return dist1 < dist2 ? -1 : (dist1 > dist2 ? 1 : 0);
+            return Double.compare(dist1, dist2);
         }
     }
 }

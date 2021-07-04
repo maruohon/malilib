@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.tuple.Pair;
 import com.google.common.base.Splitter;
@@ -39,7 +40,6 @@ public class BlockUtils
         }
     }
 
-    @Nullable
     public static Block getBlockByRegistryName(String name)
     {
         try
@@ -70,11 +70,8 @@ public class BlockUtils
      * Parses the provided string into the full block state.<br>
      * The string should be in either one of the following formats:<br>
      * 'minecraft:stone' or 'minecraft:smooth_stone_slab[half=top,waterlogged=false]'
-     * @param str
-     * @return
      */
-    @Nullable
-    public static IBlockState getBlockStateFromString(String str)
+    public static Optional<IBlockState> getBlockStateFromString(String str)
     {
         int index = str.indexOf("["); // [f=b]
         String blockName = index != -1 ? str.substring(0, index) : str;
@@ -115,10 +112,10 @@ public class BlockUtils
                 }
             }
 
-            return state;
+            return Optional.of(state);
         }
 
-        return null;
+        return Optional.empty();
     }
 
     /**
@@ -129,8 +126,6 @@ public class BlockUtils
      * 'minecraft:stone' or 'minecraft:smooth_stone_slab[half=top,waterlogged=false]'.<br>
      * None of the values are checked for validity here, and this can be used for
      * parsing strings for states from another Minecraft version, such as 1.12 <-> 1.13+.
-     * @param stateString
-     * @return
      */
     public static NBTTagCompound getBlockStateTagFromString(String stateString)
     {
@@ -176,7 +171,6 @@ public class BlockUtils
      * Parses the input tag representing a block state, and produces a string
      * in the same format as the toString() method in the vanilla block state.
      * This string format is what the Sponge schematic format uses in the palette.
-     * @param stateTag
      * @return an equivalent of IBlockState.toString() of the given tag representing a block state
      */
     public static String getBlockStateStringFromTag(NBTTagCompound stateTag)
@@ -236,35 +230,30 @@ public class BlockUtils
 
     /**
      * Returns the first PropertyDirection property from the provided state, if any.
-     * @param state
-     * @return the first PropertyDirection, or null if there are no such properties
+     * @return the first PropertyDirection, or empty() if there are no such properties
      */
-    @Nullable
-    public static PropertyDirection getFirstDirectionProperty(IBlockState state)
+    public static Optional<PropertyDirection> getFirstDirectionProperty(IBlockState state)
     {
         for (IProperty<?> prop : state.getProperties().keySet())
         {
             if (prop instanceof PropertyDirection)
             {
-                return (PropertyDirection) prop;
+                return Optional.of((PropertyDirection) prop);
             }
         }
 
-        return null;
+        return Optional.empty();
     }
 
     /**
      * Returns the EnumFacing value of the first found PropertyDirection
-     * type blockstate property in the given state, if any.
-     * If there are no PropertyDirection properties, then null is returned.
-     * @param state
-     * @return
+     * type block state property in the given state, if any.
+     * If there are no PropertyDirection properties, then empty() is returned.
      */
-    @Nullable
-    public static EnumFacing getFirstPropertyFacingValue(IBlockState state)
+    public static Optional<EnumFacing> getFirstPropertyFacingValue(IBlockState state)
     {
-        PropertyDirection prop = getFirstDirectionProperty(state);
-        return prop != null ? state.getValue(prop) : null;
+        Optional<PropertyDirection> propOptional = getFirstDirectionProperty(state);
+        return propOptional.isPresent() ? Optional.ofNullable(state.getValue(propOptional.get())) : Optional.empty();
     }
 
     public static List<String> getFormattedBlockStateProperties(IBlockState state)

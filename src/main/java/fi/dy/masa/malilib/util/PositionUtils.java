@@ -14,6 +14,8 @@ public class PositionUtils
     public static final EnumFacing[] ALL_DIRECTIONS = new EnumFacing[] { EnumFacing.DOWN, EnumFacing.UP, EnumFacing.NORTH, EnumFacing.SOUTH, EnumFacing.WEST, EnumFacing.EAST };
     public static final EnumFacing[] HORIZONTAL_DIRECTIONS = new EnumFacing[] { EnumFacing.NORTH, EnumFacing.SOUTH, EnumFacing.WEST, EnumFacing.EAST };
     public static final EnumFacing[] VERTICAL_DIRECTIONS = new EnumFacing[] { EnumFacing.DOWN, EnumFacing.UP };
+    public static final Mirror[] MIRROR_VALUES = Mirror.values();
+    public static final Rotation[] ROTATION_VALUES = Rotation.values();
 
     public static BlockPos getMinCorner(BlockPos pos1, BlockPos pos2)
     {
@@ -36,12 +38,9 @@ public class PositionUtils
     {
         switch (type)
         {
-            case X:
-                return new Vec3d(valueIn.x + amount, valueIn.y         , valueIn.z         );
-            case Y:
-                return new Vec3d(valueIn.x         , valueIn.y + amount, valueIn.z         );
-            case Z:
-                return new Vec3d(valueIn.x         , valueIn.y         , valueIn.z + amount);
+            case X: return new Vec3d(valueIn.x + amount, valueIn.y         , valueIn.z         );
+            case Y: return new Vec3d(valueIn.x         , valueIn.y + amount, valueIn.z         );
+            case Z: return new Vec3d(valueIn.x         , valueIn.y         , valueIn.z + amount);
         }
 
         return valueIn;
@@ -51,12 +50,9 @@ public class PositionUtils
     {
         switch (type)
         {
-            case X:
-                return new BlockPos(valueIn.getX() + amount, valueIn.getY()         , valueIn.getZ()         );
-            case Y:
-                return new BlockPos(valueIn.getX()         , valueIn.getY() + amount, valueIn.getZ()         );
-            case Z:
-                return new BlockPos(valueIn.getX()         , valueIn.getZ()         , valueIn.getZ() + amount);
+            case X: return new BlockPos(valueIn.getX() + amount, valueIn.getY()         , valueIn.getZ()         );
+            case Y: return new BlockPos(valueIn.getX()         , valueIn.getY() + amount, valueIn.getZ()         );
+            case Z: return new BlockPos(valueIn.getX()         , valueIn.getZ()         , valueIn.getZ() + amount);
         }
 
         return valueIn;
@@ -66,12 +62,9 @@ public class PositionUtils
     {
         switch (type)
         {
-            case X:
-                return new Vec3d(newValue , valueIn.y, valueIn.z);
-            case Y:
-                return new Vec3d(valueIn.x, newValue , valueIn.z);
-            case Z:
-                return new Vec3d(valueIn.x, valueIn.y, newValue);
+            case X: return new Vec3d(newValue , valueIn.y, valueIn.z);
+            case Y: return new Vec3d(valueIn.x, newValue , valueIn.z);
+            case Z: return new Vec3d(valueIn.x, valueIn.y, newValue );
         }
 
         return valueIn;
@@ -81,12 +74,9 @@ public class PositionUtils
     {
         switch (type)
         {
-            case X:
-                return new BlockPos(newValue      , valueIn.getY(), valueIn.getZ());
-            case Y:
-                return new BlockPos(valueIn.getX(), newValue      , valueIn.getZ());
-            case Z:
-                return new BlockPos(valueIn.getX(), valueIn.getZ(), newValue      );
+            case X: return new BlockPos(newValue      , valueIn.getY(), valueIn.getZ());
+            case Y: return new BlockPos(valueIn.getX(), newValue      , valueIn.getZ());
+            case Z: return new BlockPos(valueIn.getX(), valueIn.getZ(), newValue      );
         }
 
         return valueIn;
@@ -98,14 +88,14 @@ public class PositionUtils
 
         if (reverse)
         {
-            ordinal = ordinal == 0 ? Rotation.values().length - 1 : ordinal - 1;
+            ordinal = ordinal == 0 ? ROTATION_VALUES.length - 1 : ordinal - 1;
         }
         else
         {
-            ordinal = ordinal >= Rotation.values().length - 1 ? 0 : ordinal + 1;
+            ordinal = ordinal >= ROTATION_VALUES.length - 1 ? 0 : ordinal + 1;
         }
 
-        return Rotation.values()[ordinal];
+        return ROTATION_VALUES[ordinal];
     }
 
     public static Mirror cycleMirror(Mirror mirror, boolean reverse)
@@ -114,14 +104,14 @@ public class PositionUtils
 
         if (reverse)
         {
-            ordinal = ordinal == 0 ? Mirror.values().length - 1 : ordinal - 1;
+            ordinal = ordinal == 0 ? MIRROR_VALUES.length - 1 : ordinal - 1;
         }
         else
         {
-            ordinal = ordinal >= Mirror.values().length - 1 ? 0 : ordinal + 1;
+            ordinal = ordinal >= MIRROR_VALUES.length - 1 ? 0 : ordinal + 1;
         }
 
-        return Mirror.values()[ordinal];
+        return MIRROR_VALUES[ordinal];
     }
 
     public static EnumFacing cycleDirection(EnumFacing direction, boolean reverse)
@@ -143,8 +133,6 @@ public class PositionUtils
     /**
      * Returns the closest direction the given entity is looking towards,
      * with a vertical/pitch threshold of 60 degrees.
-     * @param entity
-     * @return
      */
     public static EnumFacing getClosestLookingDirection(Entity entity)
     {
@@ -153,9 +141,7 @@ public class PositionUtils
 
     /**
      * Returns the closest direction the given entity is looking towards.
-     * @param entity
      * @param verticalThreshold the pitch threshold to return the up or down facing instead of horizontals
-     * @return
      */
     public static EnumFacing getClosestLookingDirection(Entity entity, float verticalThreshold)
     {
@@ -173,8 +159,6 @@ public class PositionUtils
 
     /**
      * Returns the closest side direction to the entity's yaw facing that is 90 degrees from the entity's forward direction
-     * @param entity
-     * @return
      */
     public static EnumFacing getClosestSideDirection(Entity entity)
     {
@@ -195,8 +179,6 @@ public class PositionUtils
     /**
      * Returns the closest block position directly infront of the
      * given entity that is not colliding with it.
-     * @param entity
-     * @return
      */
     public static BlockPos getPositionInfrontOfEntity(Entity entity)
     {
@@ -206,9 +188,6 @@ public class PositionUtils
     /**
      * Returns the closest block position directly infront of the
      * given entity that is not colliding with it.
-     * @param entity
-     * @param verticalThreshold
-     * @return
      */
     public static BlockPos getPositionInfrontOfEntity(Entity entity, float verticalThreshold)
     {
@@ -245,9 +224,6 @@ public class PositionUtils
      * Get the rotation that will go from facingOriginal to facingRotated, if possible.
      * If it's not possible to rotate between the given facings
      * (at least one of them is vertical, but they are not the same), then null is returned.
-     * @param directionFrom
-     * @param directionTo
-     * @return
      */
     @Nullable
     public static Rotation getRotation(EnumFacing directionFrom, EnumFacing directionTo)
@@ -272,9 +248,6 @@ public class PositionUtils
 
     /**
      * Returns the hit vector at the center point of the given side/face of the given block position.
-     * @param basePos
-     * @param facing
-     * @return
      */
     public static Vec3d getHitVecCenter(BlockPos basePos, EnumFacing facing)
     {
@@ -297,11 +270,6 @@ public class PositionUtils
     /**
      * Returns the part of the block face the player is currently targeting.
      * The block face is divided into four side segments and a center segment.
-     * @param originalSide
-     * @param playerFacingH
-     * @param pos
-     * @param hitVec
-     * @return
      */
     public static HitPart getHitPart(EnumFacing originalSide, EnumFacing playerFacingH, BlockPos pos, Vec3d hitVec)
     {
@@ -384,11 +352,6 @@ public class PositionUtils
 
     /**
      * Returns the direction the targeted part of the targeting overlay is pointing towards.
-     * @param side
-     * @param playerFacingH
-     * @param pos
-     * @param hitVec
-     * @return
      */
     public static EnumFacing getTargetedDirection(EnumFacing side, EnumFacing playerFacingH, BlockPos pos, Vec3d hitVec)
     {
@@ -437,10 +400,6 @@ public class PositionUtils
     /**
      * Adjusts the (usually ray traced) position so that the provided entity
      * will not clip inside the presumable block side.
-     * @param pos
-     * @param entity
-     * @param side
-     * @return
      */
     public static Vec3d adjustPositionToSideOfEntity(Vec3d pos, Entity entity, EnumFacing side)
     {

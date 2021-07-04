@@ -7,7 +7,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.icon.PositionedIcon;
 import fi.dy.masa.malilib.render.RenderUtils;
-import fi.dy.masa.malilib.util.Int2IntFunction;
+import fi.dy.masa.malilib.util.data.Int2IntFunction;
 import fi.dy.masa.malilib.util.data.Vec2i;
 import fi.dy.masa.malilib.util.inventory.InventoryView;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;

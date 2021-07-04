@@ -6,7 +6,7 @@ import javax.annotation.Nullable;
 import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.config.category.ConfigOptionCategory;
 import fi.dy.masa.malilib.config.util.JsonConfigUtils;
-import fi.dy.masa.malilib.util.FileUtils;
+import fi.dy.masa.malilib.util.BackupUtils;
 import fi.dy.masa.malilib.util.data.ModInfo;
 
 public class JsonModConfig extends BaseModConfig
@@ -62,12 +62,12 @@ public class JsonModConfig extends BaseModConfig
 
         if (this.savedConfigVersion != currentConfigVersion)
         {
-            FileUtils.createBackupFileForVersion(configFile, backupDirectory, this.savedConfigVersion);
+            BackupUtils.createBackupFileForVersion(configFile, backupDirectory, this.savedConfigVersion);
         }
 
         if (this.backupCount > 0)
         {
-            FileUtils.createRollingBackup(configFile, backupDirectory, ".bak_", this.backupCount, this.antiDuplicate);
+            BackupUtils.createRollingBackup(configFile, backupDirectory, ".bak_", this.backupCount, this.antiDuplicate);
         }
 
         boolean success = JsonConfigUtils.saveToFile(configFile, this.getConfigOptionCategories(), currentConfigVersion);

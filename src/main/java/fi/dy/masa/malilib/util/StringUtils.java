@@ -9,7 +9,15 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ServerData;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.world.World;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.util.data.LeftRight;
@@ -113,12 +121,12 @@ public class StringUtils
         return true;
     }
 
-    public static void sendOpenFileChatMessage(net.minecraft.command.ICommandSender sender, String messageKey, File file)
+    public static void sendOpenFileChatMessage(ICommandSender sender, String messageKey, File file)
     {
-        net.minecraft.util.text.TextComponentString name = new net.minecraft.util.text.TextComponentString(file.getName());
-        name.getStyle().setClickEvent(new net.minecraft.util.text.event.ClickEvent(net.minecraft.util.text.event.ClickEvent.Action.OPEN_FILE, file.getAbsolutePath()));
+        TextComponentString name = new TextComponentString(file.getName());
+        name.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, file.getAbsolutePath()));
         name.getStyle().setUnderlined(Boolean.TRUE);
-        sender.sendMessage(new net.minecraft.util.text.TextComponentTranslation(messageKey, name));
+        sender.sendMessage(new TextComponentTranslation(messageKey, name));
     }
 
     public static int getMaxStringRenderWidth(String... strings)
@@ -150,7 +158,7 @@ public class StringUtils
 
     public static void addTranslatedLines(List<String> linesOut, String translationKey)
     {
-        String[] parts = StringUtils.translate(translationKey).split("\\\\n");
+        String[] parts = translate(translationKey).split("\\\\n");
         Collections.addAll(linesOut, parts);
     }
 
@@ -423,7 +431,7 @@ public class StringUtils
 
         if (side == LeftRight.LEFT)
         {
-            return indicator + sb.reverse().toString();
+            return indicator + sb.reverse();
         }
 
         sb.append(indicator);
@@ -434,20 +442,20 @@ public class StringUtils
     @Nullable
     public static String getWorldOrServerName()
     {
-        net.minecraft.client.Minecraft mc = net.minecraft.client.Minecraft.getMinecraft();
+        Minecraft mc = Minecraft.getMinecraft();
 
         if (mc.isSingleplayer())
         {
-            net.minecraft.server.integrated.IntegratedServer server = mc.getIntegratedServer();
+            IntegratedServer server = mc.getIntegratedServer();
 
             if (server != null)
             {
-                return FileUtils.generateSimpleSafeFileName(server.getFolderName());
+                return FileNameUtils.generateSimpleSafeFileName(server.getFolderName());
             }
         }
         else
         {
-            net.minecraft.client.multiplayer.ServerData server = mc.getCurrentServerData();
+            ServerData server = mc.getCurrentServerData();
 
             if (server != null)
             {
@@ -483,7 +491,7 @@ public class StringUtils
 
                 if (world != null)
                 {
-                    name = prefix + name + "_dim" + WorldUtils.getDimensionId(world) + suffix;
+                    name = prefix + name + "_dim" + WorldUtils.getDimensionAsString(world) + suffix;
                 }
             }
         }
@@ -492,22 +500,43 @@ public class StringUtils
             name = prefix + defaultName + suffix;
         }
 
-        return FileUtils.generateSimpleSafeFileName(name);
+        return FileNameUtils.generateSimpleSafeFileName(name);
     }
 
-    public static String getStackString(net.minecraft.item.ItemStack stack)
+    public static String getStackString(ItemStack stack)
     {
         if (stack.isEmpty() == false)
         {
-            net.minecraft.util.ResourceLocation rl = net.minecraft.item.Item.REGISTRY.getNameForObject(stack.getItem());
+            ResourceLocation rl = Item.REGISTRY.getNameForObject(stack.getItem());
 
             return String.format("[%s @ %d - display: %s - NBT: %s] (%s)",
                     rl != null ? rl.toString() : "null", stack.getMetadata(), stack.getDisplayName(),
-                    stack.getTagCompound() != null ? stack.getTagCompound().toString() : "<no NBT>",
-                    stack.toString());
+                    stack.getTagCompound() != null ? stack.getTagCompound().toString() : "<no NBT>", stack);
         }
 
         return "<empty>";
+    }
+
+    public static String getPrettyFileSizeText(long fileSize, int decimalPlaces)
+    {
+        String[] units = {"B", "KiB", "MiB", "GiB", "TiB"};
+        String unitStr = "";
+        double size = fileSize;
+
+        for (String unit : units)
+        {
+            unitStr = unit;
+
+            if (size < 1024.0)
+            {
+                break;
+            }
+
+            size /= 1024.0;
+        }
+
+        String fmt = "%." + decimalPlaces + "f %s";
+        return String.format(fmt, size, unitStr);
     }
 
     public static List<String> translateAndLineSplit(String translationKey, Object... args)
@@ -552,7 +581,7 @@ public class StringUtils
      */
     public static int getFontHeight()
     {
-        return net.minecraft.client.Minecraft.getMinecraft().fontRenderer.FONT_HEIGHT;
+        return Minecraft.getMinecraft().fontRenderer.FONT_HEIGHT;
     }
 
     /**
@@ -562,11 +591,6 @@ public class StringUtils
      */
     public static int getStringWidth(String text)
     {
-        return net.minecraft.client.Minecraft.getMinecraft().fontRenderer.getStringWidth(text);
-    }
-
-    public static void drawString(int x, int y, int color, String text)
-    {
-        net.minecraft.client.Minecraft.getMinecraft().fontRenderer.drawString(text, x, y, color);
+        return Minecraft.getMinecraft().fontRenderer.getStringWidth(text);
     }
 }

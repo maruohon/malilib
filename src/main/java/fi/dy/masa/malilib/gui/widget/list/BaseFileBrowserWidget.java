@@ -39,6 +39,7 @@ import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
 import fi.dy.masa.malilib.render.text.StyledText;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.DirectoryCreator;
+import fi.dy.masa.malilib.util.FileNameUtils;
 import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.consumer.DataIteratingTask;
 
@@ -98,7 +99,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
                                                               this::refreshFilteredEntries,
                                                               this::getRootDirectoryDisplayName);
         this.searchBarWidget = this.navigationWidget;
-        this.entryFilterStringFactory = (entry) -> ImmutableList.of(FileUtils.getNameWithoutExtension(entry.getName().toLowerCase(Locale.ROOT)));
+        this.entryFilterStringFactory = (entry) -> ImmutableList.of(FileNameUtils.getFileNameWithoutExtension(entry.getName().toLowerCase(Locale.ROOT)));
 
         this.activeListSortComparator = Comparator.naturalOrder();
         this.defaultListSortComparator = this.activeListSortComparator;
@@ -297,7 +298,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         for (File file : this.getContents(dir, filter))
         {
             String fileName = file.getName();
-            String searchTerm = FileUtils.getNameWithoutExtension(fileName.toLowerCase(Locale.ROOT));
+            String searchTerm = FileNameUtils.getFileNameWithoutExtension(fileName.toLowerCase(Locale.ROOT));
 
             if (filterText == null || this.searchTermsMatchFilter(searchTerm, filterText))
             {
@@ -513,7 +514,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     protected void renameFile(File file, DataIteratingTask<File> task)
     {
         String originalFileName = file.getName();
-        String name = FileUtils.getNameWithoutExtension(originalFileName);
+        String name = FileNameUtils.getFileNameWithoutExtension(originalFileName);
 
         TextInputScreen screen = new TextInputScreen("malilib.gui.title.rename_file",
                                                      name, GuiUtils.getCurrentScreen(),
@@ -531,13 +532,13 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         String originalFileName = file.getName();
 
         // Same name, NO-OP
-        if (newName.equals(FileUtils.getNameWithoutExtension(originalFileName)))
+        if (newName.equals(FileNameUtils.getFileNameWithoutExtension(originalFileName)))
         {
             return true;
         }
 
         File dir = file.getParentFile();
-        String extension = FileUtils.getFileNameExtension(originalFileName);
+        String extension = FileNameUtils.getFileNameExtension(originalFileName);
 
         if (extension.length() > 0)
         {

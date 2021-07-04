@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.config.value.BaseOptionListConfigValue;
 import fi.dy.masa.malilib.gui.util.EdgeInt;
 import fi.dy.masa.malilib.gui.widget.BaseWidget;
-import fi.dy.masa.malilib.util.Int2IntFunction;
+import fi.dy.masa.malilib.util.data.Int2IntFunction;
 
 public class VerticalAlignment extends BaseOptionListConfigValue
 {

@@ -22,8 +22,8 @@ import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
-import fi.dy.masa.malilib.util.FloatUnaryOperator;
 import fi.dy.masa.malilib.util.data.Color4f;
+import fi.dy.masa.malilib.util.data.FloatUnaryOperator;
 import it.unimi.dsi.fastutil.chars.Char2ObjectOpenHashMap;
 
 public class TextRenderer implements IResourceManagerReloadListener

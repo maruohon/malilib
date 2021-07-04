@@ -4,8 +4,8 @@ import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.render.text.StyledText;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.render.text.TextRenderer;
-import fi.dy.masa.malilib.util.FloatUnaryOperator;
 import fi.dy.masa.malilib.util.StyledTextUtils;
+import fi.dy.masa.malilib.util.data.FloatUnaryOperator;
 
 public class Message
 {

@@ -503,10 +503,8 @@ public class JsonUtils
 
     /**
      * Converts the given JsonElement tree into its string representation.
-     * If <b>compact</b> is true, then it's written in one line without spaces or line breaks.
-     * @param element
-     * @param compact
-     * @return
+     * @param compact if true, then the output is written on one line without spaces or line breaks.
+     * @return The string representation of the given JSON element
      */
     public static String jsonToString(JsonElement element, boolean compact)
     {
@@ -526,7 +524,7 @@ public class JsonUtils
 
         if (fileTmp.exists())
         {
-            fileTmp = new File(file.getParentFile(), UUID.randomUUID().toString() + ".tmp");
+            fileTmp = new File(file.getParentFile(), UUID.randomUUID() + ".tmp");
         }
 
         try
@@ -601,7 +599,7 @@ public class JsonUtils
         {
             if (backupCount > 0)
             {
-                FileUtils.createRollingBackup(saveFile, backupDir, ".bak_", backupCount, deDuplicate);
+                BackupUtils.createRollingBackup(saveFile, backupDir, ".bak_", backupCount, deDuplicate);
             }
 
             return JsonUtils.writeJsonToFile(dataSource.get(), saveFile);
@@ -610,7 +608,7 @@ public class JsonUtils
         return false;
     }
 
-    public static void loadFromFile(File dir, String fileName, Consumer<JsonElement> dataSink)
+    public static void loadFromFile(File dir, String fileName, Consumer<JsonElement> dataConsumer)
     {
         File saveFile = new File(dir, fileName);
 
@@ -620,7 +618,7 @@ public class JsonUtils
 
             if (element != null)
             {
-                dataSink.accept(element);
+                dataConsumer.accept(element);
             }
         }
     }

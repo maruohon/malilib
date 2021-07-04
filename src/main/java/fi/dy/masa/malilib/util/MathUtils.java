@@ -3,9 +3,7 @@ package fi.dy.masa.malilib.util;
 public class MathUtils
 {
     /**
-     * Returns the average value of the elements in the given array
-     * @param arr
-     * @return
+     * @return The average value of the elements in the given array
      */
     public static double average(int[] arr)
     {
@@ -27,9 +25,7 @@ public class MathUtils
     }
 
     /**
-     * Returns the average value of the elements in the given array
-     * @param arr
-     * @return
+     * @return The average value of the elements in the given array
      */
     public static double average(long[] arr)
     {
@@ -51,9 +47,7 @@ public class MathUtils
     }
 
     /**
-     * Returns the average value of the elements in the given array
-     * @param arr
-     * @return
+     * @return The average value of the elements in the given array
      */
     public static double average(double[] arr)
     {
@@ -210,9 +204,7 @@ public class MathUtils
     }
 
     /**
-     * Returns the minimum value from the given array
-     * @param arr
-     * @return
+     * @return The minimum value from the given array
      */
     public static int getMinValue(int[] arr)
     {
@@ -236,9 +228,7 @@ public class MathUtils
     }
 
     /**
-     * Returns the maximum value from the given array
-     * @param arr
-     * @return
+     * @return The maximum value from the given array
      */
     public static int getMaxValue(int[] arr)
     {
@@ -262,9 +252,7 @@ public class MathUtils
     }
 
     /**
-     * Returns the minimum value from the given array
-     * @param arr
-     * @return
+     * @return The minimum value from the given array
      */
     public static long getMinValue(long[] arr)
     {
@@ -288,9 +276,7 @@ public class MathUtils
     }
 
     /**
-     * Returns the maximum value from the given array
-     * @param arr
-     * @return
+     * @return The maximum value from the given array
      */
     public static long getMaxValue(long[] arr)
     {

@@ -14,10 +14,6 @@ public class PlacementUtils
      * of the block, and then later checks if the block can be placed in the new offset position
      * based on the replaceability of the material instead. If <b>checkMaterial</b> is true, then the
      * replaceability of the material can override the non-replaceability of the block for the return value.
-     * @param world
-     * @param pos
-     * @param checkMaterial
-     * @return
      */
     public static boolean isReplaceable(World world, BlockPos pos, boolean checkMaterial)
     {
@@ -37,10 +33,7 @@ public class PlacementUtils
      * based on the replaceability of the material instead. If <b>checkMaterial</b> is true, then the position
      * is only offset if both of them say they are not replaceable. If <b>checkMaterial</b> is false, then only
      * the block's replaceability is checked, and it's enough for the position to be offset.
-     * @param world
-     * @param originalPos
      * @param checkMaterial whether or not to check the replaceability of the material too, or only the block
-     * @return
      */
     public static HitPosition getPlacementPositionForClickPosition(World world, HitPosition originalPos, boolean checkMaterial)
     {

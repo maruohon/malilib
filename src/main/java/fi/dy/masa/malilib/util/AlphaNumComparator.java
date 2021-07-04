@@ -38,7 +38,7 @@ import java.util.Comparator;
  *
  * To use this class:
  *   Use the static "sort" method from the java.util.Collections class:
- *   Collections.sort(your list, new AlphanumComparator());
+ *   Collections.sort(your list, new AlphaNumComparator());
  */
 public class AlphaNumComparator
 {

@@ -11,7 +11,7 @@ import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.config.util.ConfigUtils;
 import fi.dy.masa.malilib.gui.action.ActionWidgetScreenData;
 import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
-import fi.dy.masa.malilib.util.FileUtils;
+import fi.dy.masa.malilib.util.FileNameUtils;
 import fi.dy.masa.malilib.util.JsonUtils;
 
 public class ActionExecutionWidgetManager
@@ -73,7 +73,7 @@ public class ActionExecutionWidgetManager
 
     protected boolean saveDataToFile(String name, ActionWidgetScreenData data)
     {
-        name = FileUtils.generateSimpleSafeFileName(name);
+        name = FileNameUtils.generateSimpleSafeFileName(name);
         File configDir = ConfigUtils.getActiveConfigDirectory();
         File backupDir = configDir.toPath().resolve("config_backups").resolve(MaLiLibReference.MOD_ID).resolve("action_screens").toFile();
         Path saveDir = configDir.toPath().resolve(MaLiLibReference.MOD_ID).resolve("action_screens");
@@ -85,7 +85,7 @@ public class ActionExecutionWidgetManager
 
     protected void loadFromFile(String name)
     {
-        final String safeName = FileUtils.generateSimpleSafeFileName(name);
+        final String safeName = FileNameUtils.generateSimpleSafeFileName(name);
         File configDir = ConfigUtils.getActiveConfigDirectory();
         Path saveDir = configDir.toPath().resolve(MaLiLibReference.MOD_ID).resolve("action_screens");
         JsonUtils.loadFromFile(saveDir.toFile(), name + ".json", (el) -> this.loadDataFromJson(safeName, el));
@@ -97,7 +97,7 @@ public class ActionExecutionWidgetManager
 
         if (data == null)
         {
-            String name = FileUtils.generateSimpleSafeFileName(arg);
+            String name = FileNameUtils.generateSimpleSafeFileName(arg);
             INSTANCE.saveWidgetScreenData(name, ActionWidgetScreenData.createEmpty());
             MessageDispatcher.success("malilib.message.action_screen_created_by_name", name);
             return true;

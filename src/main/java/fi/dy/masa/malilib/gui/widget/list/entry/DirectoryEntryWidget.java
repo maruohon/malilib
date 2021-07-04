@@ -16,7 +16,7 @@ import fi.dy.masa.malilib.gui.widget.list.BaseFileBrowserWidget.DirectoryEntry;
 import fi.dy.masa.malilib.gui.widget.list.BaseFileBrowserWidget.DirectoryEntryType;
 import fi.dy.masa.malilib.gui.widget.list.header.DataColumn;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
-import fi.dy.masa.malilib.util.FileUtils;
+import fi.dy.masa.malilib.util.FileNameUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry>
@@ -120,7 +120,7 @@ public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry
         }
         else
         {
-            return FileUtils.getNameWithoutExtension(this.entry.getDisplayName());
+            return FileNameUtils.getFileNameWithoutExtension(this.entry.getDisplayName());
         }
     }
 

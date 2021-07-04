@@ -34,8 +34,6 @@ public class StyledTextUtils
      * The lines are primarily attempted to be split from spaces, but if there are long
      * lines without any spaces, then they are just hard cut to the maximum width.
      * Any over long lines are split and added to the list, so no characters will be hidden.
-     * @param text
-     * @param maxRenderWidth
      * @return the new StyledText that fit within the given maximum width
      */
     public static StyledText wrapStyledTextToMaxWidth(StyledText text, int maxRenderWidth)
@@ -48,8 +46,6 @@ public class StyledTextUtils
      * The lines are primarily attempted to be split from spaces, but if there are long
      * lines without any spaces, then they are just hard cut to the maximum width.
      * Any over long lines are split and added to the list, so no characters will be hidden.
-     * @param linesIn
-     * @param maxRenderWidth
      * @return the new list of text lines that fit within the given maximum width
      */
     public static ImmutableList<StyledTextLine> wrapStyledTextToMaxWidth(List<StyledTextLine> linesIn, int maxRenderWidth)
@@ -234,11 +230,8 @@ public class StyledTextUtils
      * Shrinks the given text line until it can fit into the provided maximum width,
      * and adds the provided clamping indicator to indicate that the string is longer
      * than what is shown.
-     * @param line
-     * @param maxRenderWidth
      * @param side the side from which to shrink the string
      * @param clampIndicator the appended shrinkage indicator, for example " ..."
-     * @return
      */
     public static StyledTextLine clampStyledTextToMaxWidth(StyledTextLine line, int maxRenderWidth,
                                                            LeftRight side, String clampIndicator)

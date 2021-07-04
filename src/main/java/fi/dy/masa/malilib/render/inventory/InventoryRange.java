@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.render.inventory;
 
-import fi.dy.masa.malilib.util.Int2IntFunction;
+import fi.dy.masa.malilib.util.data.Int2IntFunction;
 import fi.dy.masa.malilib.util.data.Vec2i;
 
 public class InventoryRange
