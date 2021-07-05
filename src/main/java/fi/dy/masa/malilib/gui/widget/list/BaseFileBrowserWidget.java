@@ -648,12 +648,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
             return true;
         }
 
-        if (super.onMouseClicked(mouseX, mouseY, mouseButton))
-        {
-            return true;
-        }
-
-        return false;
+        return super.onMouseClicked(mouseX, mouseY, mouseButton);
     }
 
     @Override

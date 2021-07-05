@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.function.Consumer;
 import com.mumfrey.liteloader.core.LiteLoader;
 import net.minecraft.client.Minecraft;
-import fi.dy.masa.malilib.MaLiLib;
 
 public class FileUtils
 {
@@ -100,17 +99,16 @@ public class FileUtils
         return dirs;
     }
 
-    public static boolean copyFilesToDirectory(Collection<File> files, File destinationDir,
+    public static boolean copyFilesToDirectory(Collection<File> files,
+                                               File destinationDir,
                                                Consumer<String> messageConsumer)
     {
         boolean success = true;
 
         for (File file : files)
         {
-            if (copyFileToDirectory(file, destinationDir) == false)
+            if (copyFileToDirectory(file, destinationDir, messageConsumer) == false)
             {
-                messageConsumer.accept(StringUtils.translate("malilib.message.error.failed_to_copy_file",
-                                                             file.getName(), destinationDir.getName()));
                 success = false;
             }
         }
@@ -118,20 +116,21 @@ public class FileUtils
         return success;
     }
 
-    public static boolean copyFileToDirectory(File sourceFile, File destinationDir)
+    public static boolean copyFileToDirectory(File sourceFile, File destinationDir, Consumer<String> messageConsumer)
     {
         File destinationFile = new File(destinationDir, sourceFile.getName());
-        return copyFile(sourceFile, destinationFile);
+        return copyFile(sourceFile, destinationFile, messageConsumer);
     }
 
-    public static boolean copyFile(File sourceFile, File destinationFile)
+    public static boolean copyFile(File sourceFile, File destinationFile, Consumer<String> messageConsumer)
     {
         if (sourceFile.exists())
         {
             if (destinationFile.exists())
             {
-                MaLiLib.LOGGER.error("Won't copy file '{}' to '{}', the destination file already exists",
-                                     sourceFile.getAbsolutePath(), destinationFile.getAbsolutePath());
+                String msg = StringUtils.translate("malilib.message.error.failed_to_copy_file.destination_exists",
+                                                   sourceFile.getAbsolutePath(), destinationFile.getAbsolutePath());
+                messageConsumer.accept(msg);
                 return false;
             }
 
@@ -142,25 +141,26 @@ public class FileUtils
             }
             catch (Exception e)
             {
-                MaLiLib.LOGGER.error("Failed to copy file '{}' to '{}'",
-                                     sourceFile.getAbsolutePath(), destinationFile.getAbsolutePath(), e);
+                String msg = StringUtils.translate("malilib.message.error.failed_to_copy_file",
+                                                   sourceFile.getAbsolutePath(), destinationFile.getAbsolutePath());
+                messageConsumer.accept(msg);
+                messageConsumer.accept(e.getMessage());
             }
         }
 
         return false;
     }
 
-    public static boolean moveFilesToDirectory(Collection<File> files, File destinationDir,
+    public static boolean moveFilesToDirectory(Collection<File> files,
+                                               File destinationDir,
                                                Consumer<String> messageConsumer)
     {
         boolean success = true;
 
         for (File file : files)
         {
-            if (moveFileToDirectory(file, destinationDir) == false)
+            if (moveFileToDirectory(file, destinationDir, messageConsumer) == false)
             {
-                messageConsumer.accept(StringUtils.translate("malilib.message.error.failed_to_move_file",
-                                                             file.getName(), destinationDir.getName()));
                 success = false;
             }
         }
@@ -168,20 +168,21 @@ public class FileUtils
         return success;
     }
 
-    public static boolean moveFileToDirectory(File sourceFile, File destinationDir)
+    public static boolean moveFileToDirectory(File sourceFile, File destinationDir, Consumer<String> messageConsumer)
     {
         File destinationFile = new File(destinationDir, sourceFile.getName());
-        return moveFile(sourceFile, destinationFile);
+        return moveFile(sourceFile, destinationFile, messageConsumer);
     }
 
-    public static boolean moveFile(File sourceFile, File destinationFile)
+    public static boolean moveFile(File sourceFile, File destinationFile, Consumer<String> messageConsumer)
     {
         if (sourceFile.exists())
         {
             if (destinationFile.exists())
             {
-                MaLiLib.LOGGER.error("Won't move file '{}' to '{}', the destination file already exists",
-                                     sourceFile.getAbsolutePath(), destinationFile.getAbsolutePath());
+                String msg = StringUtils.translate("malilib.message.error.failed_to_move_file.destination_exists",
+                                                   sourceFile.getAbsolutePath(), destinationFile.getAbsolutePath());
+                messageConsumer.accept(msg);
                 return false;
             }
 
@@ -192,8 +193,10 @@ public class FileUtils
             }
             catch (Exception e)
             {
-                MaLiLib.LOGGER.error("Failed to move file '{}' to '{}'",
-                                     sourceFile.getAbsolutePath(), destinationFile.getAbsolutePath(), e);
+                String msg = StringUtils.translate("malilib.message.error.failed_to_move_file",
+                                                   sourceFile.getAbsolutePath(), destinationFile.getAbsolutePath());
+                messageConsumer.accept(msg);
+                messageConsumer.accept(e.getMessage());
             }
         }
 

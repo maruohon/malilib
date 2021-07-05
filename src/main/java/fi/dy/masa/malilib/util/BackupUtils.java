@@ -88,7 +88,7 @@ public class BackupUtils
                                  existingIdenticalBackup.getAbsolutePath(), backupFile.getAbsolutePath());
         }
 
-        return FileUtils.copyFile(fileIn, backupFile);
+        return FileUtils.copyFile(fileIn, backupFile, MaLiLib.LOGGER::error);
     }
 
     /**
@@ -168,7 +168,7 @@ public class BackupUtils
             backupFileName += "." + extension;
         }
 
-        return FileUtils.copyFile(fileIn, new File(backupDirectory, backupFileName));
+        return FileUtils.copyFile(fileIn, new File(backupDirectory, backupFileName), MaLiLib.LOGGER::error);
     }
 
     public static List<File> findIdenticalBackupFiles(File backupDirectory, File fileIn, int maxBackups, String suffix)
