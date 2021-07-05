@@ -27,7 +27,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.storage.MapData;
-import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.icon.PositionedIcon;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
@@ -480,9 +479,9 @@ public class RenderUtils
         GlStateManager.translate(-x, -y, -z + 0.501);
     }
 
-    public static void renderMapPreview(ItemStack stack, int x, int y, int dimensions)
+    public static void renderMapPreview(ItemStack stack, int x, int y, float z, int dimensions)
     {
-        if (stack.getItem() instanceof ItemMap && BaseScreen.isShiftDown())
+        if (stack.getItem() instanceof ItemMap)
         {
             GlStateManager.pushMatrix();
             GlStateManager.disableLighting();
@@ -505,16 +504,15 @@ public class RenderUtils
             int x1 = x + 8;
             int x2 = x1 + dimensions;
             int y2 = y1 + dimensions;
-            int z = 300;
 
             bindTexture(fi.dy.masa.malilib.render.RenderUtils.TEXTURE_MAP_BACKGROUND);
 
             BufferBuilder buffer = startBuffer(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX, true);
 
-            buffer.pos(x1, y2, z).tex(0.0D, 1.0D).endVertex();
-            buffer.pos(x2, y2, z).tex(1.0D, 1.0D).endVertex();
-            buffer.pos(x2, y1, z).tex(1.0D, 0.0D).endVertex();
-            buffer.pos(x1, y1, z).tex(0.0D, 0.0D).endVertex();
+            buffer.pos(x1, y2, z).tex(0.0, 1.0).endVertex();
+            buffer.pos(x2, y2, z).tex(1.0, 1.0).endVertex();
+            buffer.pos(x2, y1, z).tex(1.0, 0.0).endVertex();
+            buffer.pos(x1, y1, z).tex(0.0, 0.0).endVertex();
 
             drawBuffer();
 
@@ -524,9 +522,8 @@ public class RenderUtils
             {
                 x1 += 8;
                 y1 += 8;
-                z = 310;
-                double scale = (double) (dimensions - 16) / 128.0D;
-                GlStateManager.translate(x1, y1, z);
+                double scale = (double) (dimensions - 16) / 128.0;
+                GlStateManager.translate(x1, y1, z + 1f);
                 GlStateManager.scale(scale, scale, 0);
                 mc().entityRenderer.getMapItemRenderer().renderMap(mapdata, false);
             }
