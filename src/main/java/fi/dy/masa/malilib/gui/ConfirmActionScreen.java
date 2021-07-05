@@ -26,6 +26,7 @@ public class ConfirmActionScreen extends BaseScreen
         this.confirmListener = confirmListener;
         this.cancelListener = cancelListener;
         this.useTitleHierarchy = false;
+        this.renderBorder = true;
         this.setTitle(titleKey);
 
         ImmutableList<StyledTextLine> messageLines = StyledTextUtils.wrapStyledTextToMaxWidth(StyledText.translate(messageKey, args).lines, width - 30);

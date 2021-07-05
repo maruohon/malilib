@@ -106,6 +106,7 @@ public class CustomIconEditScreen extends BaseScreen
         this.variantOffsetVEditWidget       = new IntegerEditWidget(fieldWidth, 16, this.variantOffsetV, -32768, 32767, (val) -> this.variantOffsetV = val);
 
         this.backgroundColor = 0xF0000000;
+        this.renderBorder = true;
         this.setScreenWidthAndHeight(300, 272);
         this.centerOnScreen();
     }

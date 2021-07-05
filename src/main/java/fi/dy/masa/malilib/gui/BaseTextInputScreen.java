@@ -32,6 +32,7 @@ public abstract class BaseTextInputScreen extends BaseScreen
         this.originalText = defaultText;
         this.screenWidth = 260;
         this.backgroundColor = 0xFF000000;
+        this.renderBorder = true;
         this.setTitle(titleKey);
 
         this.okButton = createButton("malilib.gui.button.colored.ok", this::closeScreenIfValueApplied);

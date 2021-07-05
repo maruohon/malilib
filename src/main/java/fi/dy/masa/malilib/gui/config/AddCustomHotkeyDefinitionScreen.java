@@ -27,6 +27,7 @@ public class AddCustomHotkeyDefinitionScreen extends BaseScreen
     {
         this.useTitleHierarchy = false;
         this.backgroundColor = 0xFF000000;
+        this.renderBorder = true;
         this.setTitle("malilib.gui.title.add_new_hotkey");
 
         this.nameLabelWidget = new LabelWidget(0xFFF0F0F0, "malilib.label.name.colon");

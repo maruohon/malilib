@@ -76,6 +76,7 @@ public class ColorEditorHSVScreen extends BaseScreen
         }
 
         this.backgroundColor = 0xFF000000;
+        this.renderBorder = true;
         this.useTitleHierarchy = false;
         this.setTitle("malilib.gui.title.color_editor");
 

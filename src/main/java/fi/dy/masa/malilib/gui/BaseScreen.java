@@ -31,9 +31,6 @@ import fi.dy.masa.malilib.util.data.Vec2i;
 
 public abstract class BaseScreen extends GuiScreen
 {
-    public static final int TOOLTIP_BACKGROUND   = 0xB0000000;
-    public static final int COLOR_HORIZONTAL_BAR = 0xFF999999;
-
     protected final Minecraft mc = Minecraft.getMinecraft();
     protected final TextRenderer textRenderer = TextRenderer.INSTANCE;
     protected final List<Runnable> tasks = new ArrayList<>();
@@ -46,8 +43,8 @@ public abstract class BaseScreen extends GuiScreen
     @Nullable protected ScreenContext context;
     protected GenericButton closeButton;
     protected Vec2i dragStartOffset = Vec2i.ZERO;
-    protected int backgroundColor = TOOLTIP_BACKGROUND;
-    protected int borderColor = COLOR_HORIZONTAL_BAR;
+    protected int backgroundColor = 0xB0000000;
+    protected int borderColor = 0xFF999999;
     protected int customScreenScale;
     protected int x;
     protected int y;
@@ -55,17 +52,17 @@ public abstract class BaseScreen extends GuiScreen
     protected int lastMouseY = -1;
     protected int screenWidth;
     protected int screenHeight;
+    protected int titleColor = 0xFFFFFFFF;
     protected int titleX = 10;
     protected int titleY = 6;
-    protected int titleColor = 0xFFFFFFFF;
     protected boolean addCloseButton = true;
     protected boolean canDragMove;
     protected boolean dragging;
     protected boolean renderBorder;
     protected boolean shouldCenter;
     protected boolean shouldRenderParent;
-    protected boolean useTitleHierarchy = true;
     protected boolean useCustomScreenScaling;
+    protected boolean useTitleHierarchy = true;
 
     public BaseScreen()
     {
@@ -135,6 +132,11 @@ public abstract class BaseScreen extends GuiScreen
         }
 
         return this;
+    }
+
+    public void setRenderBorder(boolean renderBorder)
+    {
+        this.renderBorder = renderBorder;
     }
 
     public void setShouldRenderParent(boolean render)
