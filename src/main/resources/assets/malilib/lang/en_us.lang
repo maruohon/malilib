@@ -156,6 +156,7 @@ malilib.gui.button.label.add_status_indicator_widget=Add Status Indicator Group
 malilib.gui.button.label.configure=Configure
 malilib.gui.button.label.remove=Remove
 malilib.gui.button.label.remove_icon=Remove Icon
+malilib.gui.button.label.show_configs=Show Configs
 
 malilib.gui.button.render_layers_gui.axis=Axis: %s
 malilib.gui.button.render_layers_gui.follow_player=Follow Player: %s

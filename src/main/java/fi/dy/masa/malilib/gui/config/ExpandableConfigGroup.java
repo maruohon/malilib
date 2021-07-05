@@ -14,9 +14,9 @@ public class ExpandableConfigGroup extends BaseConfigGroup
         super(modInfo, name, configs);
     }
 
-    public ExpandableConfigGroup(ModInfo modInfo, String nameTranslationKey, String commentTranslationKey, Object... commentArgs)
+    public ExpandableConfigGroup(ModInfo modInfo, String name, String nameTranslationKey, String commentTranslationKey, Object... commentArgs)
     {
-        super(modInfo, nameTranslationKey, commentTranslationKey, commentArgs);
+        super(modInfo, name, nameTranslationKey, commentTranslationKey, commentArgs);
     }
 
     public boolean isExpanded()

@@ -50,7 +50,7 @@ public class BaseConfig implements ConfigInfo
     @Override
     public String getDisplayName()
     {
-        return getDefaultDisplayName(this, this.nameTranslationKey);
+        return getDefaultDisplayName(this.getName(), this.nameTranslationKey);
     }
 
     @Override
@@ -181,12 +181,12 @@ public class BaseConfig implements ConfigInfo
         return this;
     }
 
-    public static String getDefaultDisplayName(ConfigInfo config, String nameTranslationKey)
+    public static String getDefaultDisplayName(String baseName, String nameTranslationKey)
     {
         String key = nameTranslationKey;
         String translatedName = StringUtils.translate(key);
 
         // If there is no translation for the config name, then show the actual base name
-        return translatedName.equals(key) ? config.getName() : translatedName;
+        return translatedName.equals(key) ? baseName : translatedName;
     }
 }

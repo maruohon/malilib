@@ -11,6 +11,7 @@ import fi.dy.masa.malilib.util.data.ModInfo;
 public abstract class BaseConfigGroup implements ConfigInfo
 {
     protected final ModInfo modInfo;
+    protected final String name;
     protected final String nameTranslationKey;
     protected final String commentTranslationKey;
     protected final Object[] commentArgs;
@@ -22,6 +23,7 @@ public abstract class BaseConfigGroup implements ConfigInfo
         String modId = modInfo.getModId();
 
         this.modInfo = modInfo;
+        this.name = name;
         this.nameTranslationKey = modId + ".config_group.name." + name;
         this.commentTranslationKey = modId + ".config_group.comment." + name;
         this.commentArgs = new Object[0];
@@ -29,9 +31,10 @@ public abstract class BaseConfigGroup implements ConfigInfo
         this.setConfigs(configs);
     }
 
-    public BaseConfigGroup(ModInfo modInfo, String nameTranslationKey, String commentTranslationKey, Object... commentArgs)
+    public BaseConfigGroup(ModInfo modInfo, String name, String nameTranslationKey, String commentTranslationKey, Object... commentArgs)
     {
         this.modInfo = modInfo;
+        this.name = name;
         this.nameTranslationKey = nameTranslationKey;
         this.commentTranslationKey = commentTranslationKey;
         this.commentArgs = commentArgs;
@@ -73,13 +76,13 @@ public abstract class BaseConfigGroup implements ConfigInfo
     @Override
     public String getName()
     {
-        return this.getDisplayName();
+        return this.name;
     }
 
     @Override
     public String getDisplayName()
     {
-        return BaseConfigOption.getDefaultDisplayName(this, this.nameTranslationKey);
+        return BaseConfigOption.getDefaultDisplayName(this.getName(), this.nameTranslationKey);
     }
 
     @Nullable

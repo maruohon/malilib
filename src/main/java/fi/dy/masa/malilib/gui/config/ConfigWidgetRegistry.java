@@ -34,6 +34,7 @@ import fi.dy.masa.malilib.gui.widget.list.entry.config.HotkeyConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.HotkeyedBooleanConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.IntegerConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.OptionListConfigWidget;
+import fi.dy.masa.malilib.gui.widget.list.entry.config.PopupConfigGroupWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.StringConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.list.BlockListConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.list.EquipmentSlotListConfigWidget;
@@ -116,6 +117,7 @@ public class ConfigWidgetRegistry
         this.registerConfigWidgetFactory(ItemListConfig.class,          ItemListConfigWidget::new);
         this.registerConfigWidgetFactory(NestedConfig.class,            new NestedConfigWidgetFactory());
         this.registerConfigWidgetFactory(OptionListConfig.class,        OptionListConfigWidget::new);
+        this.registerConfigWidgetFactory(PopupConfigGroup.class,        PopupConfigGroupWidget::new);
         this.registerConfigWidgetFactory(StatusEffectListConfig.class,  StatusEffectListConfigWidget::new);
         this.registerConfigWidgetFactory(StringConfig.class,            StringConfigWidget::new);
         this.registerConfigWidgetFactory(StringListConfig.class,        StringListConfigWidget::new);

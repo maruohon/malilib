@@ -20,8 +20,10 @@ public class BaseConfigGroupEditScreen extends BaseListScreen<ConfigOptionListWi
     @Nullable protected KeybindEditingScreen keyBindEditingScreen;
     protected int elementsWidth = 200;
 
-    public BaseConfigGroupEditScreen(ModInfo modInfo, @Nullable EventListener saveListener,
-                                     @Nullable DialogHandler dialogHandler, GuiScreen parent)
+    public BaseConfigGroupEditScreen(ModInfo modInfo,
+                                     @Nullable EventListener saveListener,
+                                     @Nullable DialogHandler dialogHandler,
+                                     @Nullable GuiScreen parent)
     {
         super(8, 30, 14, 36);
 
