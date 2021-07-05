@@ -417,13 +417,9 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
 
     protected List<MenuEntryWidget> getFileOperationMenuEntriesForNonFile()
     {
-        if (this.operatedOnFiles.isEmpty())
-        {
-            return Collections.emptyList();
-        }
-
         StyledTextLine textPaste  = StyledTextLine.translate("malilib.gui.label.file_browser.context_menu.paste");
-        return ImmutableList.of(new MenuEntryWidget(textPaste,  this::pasteFiles));
+        boolean hasFiles = this.operatedOnFiles.isEmpty() == false;
+        return ImmutableList.of(new MenuEntryWidget(textPaste,  this::pasteFiles).setEnabled(hasFiles));
     }
 
     protected List<MenuEntryWidget> getFileOperationMenuEntriesForFile()
@@ -433,10 +429,11 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         StyledTextLine textPaste  = StyledTextLine.translate("malilib.gui.label.file_browser.context_menu.paste");
         StyledTextLine textDelete = StyledTextLine.translate("malilib.gui.label.file_browser.context_menu.delete");
         StyledTextLine textRename = StyledTextLine.translate("malilib.gui.label.file_browser.context_menu.rename");
+        boolean hasFiles = this.operatedOnFiles.isEmpty() == false;
 
         return ImmutableList.of(new MenuEntryWidget(textCopy,   this::copyFiles),
                                 new MenuEntryWidget(textCut,    this::cutFiles),
-                                new MenuEntryWidget(textPaste,  this::pasteFiles),
+                                new MenuEntryWidget(textPaste,  this::pasteFiles).setEnabled(hasFiles),
                                 new MenuEntryWidget(textDelete, this::deleteFiles),
                                 new MenuEntryWidget(textRename, this::renameFiles));
     }
@@ -516,11 +513,16 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         String originalFileName = file.getName();
         String name = FileNameUtils.getFileNameWithoutExtension(originalFileName);
 
-        TextInputScreen screen = new TextInputScreen("malilib.gui.title.rename_file",
+        boolean isDir = file.isDirectory();
+        String titleKey = isDir ? "malilib.gui.title.rename_directory" :
+                                  "malilib.gui.title.rename_file";
+        TextInputScreen screen = new TextInputScreen(titleKey,
                                                      name, GuiUtils.getCurrentScreen(),
                                                      (n) -> this.renameFile(file, n));
-        screen.setInfoText(StyledText.translate("malilib.gui.label.file_browser.rename_file.info", originalFileName));
-        screen.setLabelText(StyledText.translate("malilib.gui.label.file_browser.rename_file.label"));
+        String infoKey = isDir ? "malilib.gui.label.file_browser.rename.info.directory" :
+                                 "malilib.gui.label.file_browser.rename.info.file";
+        screen.setInfoText(StyledText.translate(infoKey, originalFileName));
+        screen.setLabelText(StyledText.translate("malilib.gui.label.file_browser.rename.new_name"));
         screen.setConfirmListener(task::advance);
         screen.setCancelListener(task::cancel);
 

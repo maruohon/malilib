@@ -269,8 +269,9 @@ malilib.gui.label.file_browser.context_menu.cut=Cut
 malilib.gui.label.file_browser.context_menu.delete=§cDelete
 malilib.gui.label.file_browser.context_menu.paste=Paste
 malilib.gui.label.file_browser.context_menu.rename=Rename
-malilib.gui.label.file_browser.rename_file.info=Provide a new name for the file:\n  §b%s
-malilib.gui.label.file_browser.rename_file.label=New file name:
+malilib.gui.label.file_browser.rename.info.directory=Provide a new name for the directory:\n  <c=ee2>%s
+malilib.gui.label.file_browser.rename.info.file=Provide a new name for the file:\n  §b%s
+malilib.gui.label.file_browser.rename.new_name=New name:
 
 malilib.gui.label.keybind_display.actions=Actions
 malilib.gui.label.keybind_display.keys=Keys
@@ -358,6 +359,7 @@ malilib.gui.title.item_list_edit=Edit item list '%s'
 malilib.gui.title.keybind_settings.advanced=Advanced Keybind Settings for '%s'
 malilib.gui.title.message_renderer_configuration=Message Renderer Configuration
 malilib.gui.title.provide_arguments_for_action=Provide the argument(s) for the action
+malilib.gui.title.rename_directory=Rename Directory
 malilib.gui.title.rename_file=Rename File
 malilib.gui.title.status_effect_list_edit=Edit status effect list '%s'
 malilib.gui.title.string_list_edit=Edit string list '%s'
