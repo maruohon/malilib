@@ -389,7 +389,8 @@ public class RenderUtils
             }
 
             globalStack.push();
-            globalStack.scale((float) scale, (float) scale, 0);
+            globalStack.scale((float) scale, (float) scale, 1.0f);
+            RenderSystem.applyModelViewMatrix();
         }
 
         double posX = xOff + bgMargin;
