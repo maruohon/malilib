@@ -13,9 +13,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import fi.dy.masa.malilib.MaLiLib;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import fi.dy.masa.malilib.MaLiLib;
 
 public class JsonUtils
 {

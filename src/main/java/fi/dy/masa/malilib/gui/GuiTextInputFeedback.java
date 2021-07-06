@@ -1,8 +1,8 @@
 package fi.dy.masa.malilib.gui;
 
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.interfaces.IStringConsumerFeedback;
 import net.minecraft.client.gui.screen.Screen;
+import fi.dy.masa.malilib.interfaces.IStringConsumerFeedback;
 
 public class GuiTextInputFeedback extends GuiTextInputBase
 {

@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.gui.widgets;
 import java.io.File;
 import java.util.Arrays;
 import javax.annotation.Nullable;
+import net.minecraft.client.util.math.MatrixStack;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.GuiTextInputFeedback;
 import fi.dy.masa.malilib.gui.LeftRight;
@@ -13,7 +14,6 @@ import fi.dy.masa.malilib.util.DirectoryCreator;
 import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.GuiUtils;
 import fi.dy.masa.malilib.util.StringUtils;
-import net.minecraft.client.util.math.MatrixStack;
 
 public class WidgetDirectoryNavigation extends WidgetSearchBar
 {

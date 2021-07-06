@@ -1,12 +1,12 @@
 package fi.dy.masa.malilib.config.gui;
 
 import javax.annotation.Nullable;
+import net.minecraft.client.gui.widget.TextFieldWidget;
 import fi.dy.masa.malilib.config.IConfigResettable;
 import fi.dy.masa.malilib.config.IStringRepresentable;
 import fi.dy.masa.malilib.gui.button.ButtonBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import fi.dy.masa.malilib.gui.button.IButtonActionListener;
-import net.minecraft.client.gui.widget.TextFieldWidget;
 
 public class ConfigOptionListenerResetConfig implements IButtonActionListener
 {

@@ -7,10 +7,10 @@ import java.util.Locale;
 import java.util.Set;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableSet;
-import fi.dy.masa.malilib.MaLiLib;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtIo;
+import fi.dy.masa.malilib.MaLiLib;
 
 public class FileUtils
 {

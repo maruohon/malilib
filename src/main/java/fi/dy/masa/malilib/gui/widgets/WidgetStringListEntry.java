@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.gui.widgets;
 
-import fi.dy.masa.malilib.render.RenderUtils;
 import net.minecraft.client.util.math.MatrixStack;
+import fi.dy.masa.malilib.render.RenderUtils;
 
 public class WidgetStringListEntry extends WidgetListEntryBase<String>
 {

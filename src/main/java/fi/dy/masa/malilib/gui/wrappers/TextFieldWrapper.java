@@ -1,9 +1,9 @@
 package fi.dy.masa.malilib.gui.wrappers;
 
+import net.minecraft.client.util.math.MatrixStack;
 import fi.dy.masa.malilib.gui.GuiTextFieldGeneric;
 import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
 import fi.dy.masa.malilib.util.KeyCodes;
-import net.minecraft.client.util.math.MatrixStack;
 
 public class TextFieldWrapper<T extends GuiTextFieldGeneric>
 {

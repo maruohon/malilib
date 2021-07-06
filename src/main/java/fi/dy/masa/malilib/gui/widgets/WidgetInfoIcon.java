@@ -1,8 +1,8 @@
 package fi.dy.masa.malilib.gui.widgets;
 
+import net.minecraft.client.util.math.MatrixStack;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.render.RenderUtils;
-import net.minecraft.client.util.math.MatrixStack;
 
 public class WidgetInfoIcon extends WidgetHoverInfo
 {

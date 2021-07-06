@@ -1,9 +1,9 @@
 package fi.dy.masa.malilib.config.gui;
 
 import java.util.List;
+import net.minecraft.client.util.math.MatrixStack;
 import fi.dy.masa.malilib.config.IConfigBase;
 import fi.dy.masa.malilib.gui.GuiConfigsBase;
-import net.minecraft.client.util.math.MatrixStack;
 
 public class GuiModConfigs extends GuiConfigsBase
 {

@@ -1,12 +1,12 @@
 package fi.dy.masa.malilib.gui;
 
 import javax.annotation.Nullable;
+import net.minecraft.client.gui.screen.Screen;
 import fi.dy.masa.malilib.gui.Message.MessageType;
 import fi.dy.masa.malilib.gui.interfaces.IMessageConsumer;
 import fi.dy.masa.malilib.interfaces.ICompletionListener;
 import fi.dy.masa.malilib.interfaces.IStringConsumer;
 import fi.dy.masa.malilib.interfaces.IStringConsumerFeedback;
-import net.minecraft.client.gui.screen.Screen;
 
 public class GuiTextInput extends GuiTextInputBase implements ICompletionListener
 {

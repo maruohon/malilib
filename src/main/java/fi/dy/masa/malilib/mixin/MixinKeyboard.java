@@ -6,10 +6,10 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import fi.dy.masa.malilib.event.InputEventHandler;
-import fi.dy.masa.malilib.util.IF3KeyStateSetter;
 import net.minecraft.client.Keyboard;
 import net.minecraft.client.MinecraftClient;
+import fi.dy.masa.malilib.event.InputEventHandler;
+import fi.dy.masa.malilib.util.IF3KeyStateSetter;
 
 @Mixin(Keyboard.class)
 public abstract class MixinKeyboard implements IF3KeyStateSetter

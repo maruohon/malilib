@@ -1,10 +1,10 @@
 package fi.dy.masa.malilib.gui.widgets;
 
-import fi.dy.masa.malilib.render.RenderUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
+import fi.dy.masa.malilib.render.RenderUtils;
 
 public abstract class WidgetBase
 {

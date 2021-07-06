@@ -1,10 +1,10 @@
 package fi.dy.masa.malilib.gui;
 
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
-import fi.dy.masa.malilib.render.RenderUtils;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.math.MathHelper;
+import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
+import fi.dy.masa.malilib.render.RenderUtils;
 
 public class GuiScrollBar
 {
