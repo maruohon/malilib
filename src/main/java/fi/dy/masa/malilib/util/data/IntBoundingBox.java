@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.util.data;
 import javax.annotation.Nullable;
 import com.google.gson.JsonArray;
 import net.minecraft.nbt.NBTTagIntArray;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import fi.dy.masa.malilib.MaLiLib;
@@ -46,12 +47,36 @@ public class IntBoundingBox
                this.minY <= box.maxY;
     }
 
+    public int getMinValueForAxis(EnumFacing.Axis axis)
+    {
+        switch (axis)
+        {
+            case X: return this.minX;
+            case Y: return this.minY;
+            case Z: return this.minZ;
+        }
+
+        return 0;
+    }
+
+    public int getMaxValueForAxis(EnumFacing.Axis axis)
+    {
+        switch (axis)
+        {
+            case X: return this.maxX;
+            case Y: return this.maxY;
+            case Z: return this.maxZ;
+        }
+
+        return 0;
+    }
+
     public StructureBoundingBox toVanillaBox()
     {
         return new StructureBoundingBox(this.minX, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ);
     }
 
-    public NBTTagIntArray toNBTIntArray()
+    public NBTTagIntArray toNbtIntArray()
     {
         return new NBTTagIntArray(new int[] { this.minX, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ });
     }
@@ -87,7 +112,7 @@ public class IntBoundingBox
             }
             catch (Exception e)
             {
-                MaLiLib.LOGGER.warn("Failed to read an IntBoundingBox from JSON '" + arr.toString() + "'");
+                MaLiLib.LOGGER.warn("Failed to read an IntBoundingBox from JSON '" + arr + "'");
             }
         }
 
@@ -128,12 +153,12 @@ public class IntBoundingBox
         final int prime = 31;
         int result = 1;
 
-        result = prime * result + maxX;
-        result = prime * result + maxY;
-        result = prime * result + maxZ;
-        result = prime * result + minX;
-        result = prime * result + minY;
-        result = prime * result + minZ;
+        result = prime * result + this.maxX;
+        result = prime * result + this.maxY;
+        result = prime * result + this.maxZ;
+        result = prime * result + this.minX;
+        result = prime * result + this.minY;
+        result = prime * result + this.minZ;
 
         return result;
     }
@@ -166,6 +191,8 @@ public class IntBoundingBox
     public String toString()
     {
         return String.format("%s:{minX:%d,minY:%d,minZ:%d,maxX:%d,maxY:%d,maxZ:%d}\n",
-                this.getClass().getSimpleName(), this.minX, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ);
+                             this.getClass().getSimpleName(),
+                             this.minX, this.minY, this.minZ,
+                             this.maxX, this.maxY, this.maxZ);
     }
 }

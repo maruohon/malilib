@@ -13,6 +13,7 @@ import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.button.OnOffButton;
 import fi.dy.masa.malilib.gui.widget.button.OnOffStyle;
 import fi.dy.masa.malilib.gui.widget.list.entry.SelectionListener;
+import fi.dy.masa.malilib.util.EntityUtils;
 import fi.dy.masa.malilib.util.ListUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.position.LayerRange;
@@ -21,8 +22,8 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
 {
     protected BaseTextFieldWidget textField1;
     protected BaseTextFieldWidget textField2;
-    protected int nextY;
     protected boolean addPlayerFollowingOptions;
+    protected int nextY;
 
     protected abstract LayerRange getLayerRange();
 
@@ -213,7 +214,7 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
             }
             else if (this.type == Type.SET_TO_PLAYER && this.parent.mc.player != null)
             {
-                this.layerRange.setSingleBoundaryToPosition(this.parent.mc.player);
+                this.layerRange.setSingleBoundaryToPosition(EntityUtils.getCameraEntity());
             }
 
             this.parent.initGui();
