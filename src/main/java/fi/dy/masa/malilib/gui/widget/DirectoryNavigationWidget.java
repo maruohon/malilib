@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -36,6 +35,7 @@ public class DirectoryNavigationWidget extends SearchBarWidget
     protected final GenericButton buttonCreateDir;
     protected final InfoIconWidget infoWidget;
     protected final File rootDir;
+    protected final List<PathPart> pathParts = new ArrayList<>();
     @Nullable protected final Supplier<String> rootDirDisplayNameSupplier;
     protected File currentDir;
     protected int pathStartX;
@@ -89,6 +89,8 @@ public class DirectoryNavigationWidget extends SearchBarWidget
         });
 
         this.infoWidget = new InfoIconWidget(DefaultIcons.INFO_ICON_11, "malilib.gui.button.hover.directory_widget.hold_shift_to_open_directory");
+
+        this.generatePathParts(currentDir);
     }
 
     @Override
@@ -103,7 +105,7 @@ public class DirectoryNavigationWidget extends SearchBarWidget
             this.addWidget(this.buttonCreateDir);
             this.addWidget(this.infoWidget);
 
-            this.placePathElements(this.pathStartX, this.getY(), this.generatePathElements());
+            this.placePathParts(this.pathStartX, this.getY());
         }
     }
 
@@ -135,7 +137,7 @@ public class DirectoryNavigationWidget extends SearchBarWidget
         this.infoWidget.setPosition(xRight - iw - 2, middleY - ih / 2 - 1);
 
         this.textField.setWidth(this.getWidth() - tw - iw - 8);
-        this.pathStartX = this.buttonCreateDir.getRight() + 6;
+        this.pathStartX = this.buttonCreateDir.getRight() + 2;
 
         this.reAddSubWidgets();
     }
@@ -148,6 +150,7 @@ public class DirectoryNavigationWidget extends SearchBarWidget
     public void setCurrentDirectory(File dir)
     {
         this.currentDir = dir;
+        this.generatePathParts(dir);
         this.reAddSubWidgets();
     }
 
@@ -156,27 +159,14 @@ public class DirectoryNavigationWidget extends SearchBarWidget
         return this.iconProvider.getIcon(isOpen ? FileBrowserIconType.NAVBAR_ROOT_PATH_OPEN : FileBrowserIconType.NAVBAR_ROOT_PATH_CLOSED);
     }
 
-    public MultiIcon getNavBarIconSubdirs(boolean isOpen)
+    public MultiIcon getNavBarIconSubDirectories(boolean isOpen)
     {
         return this.iconProvider.getIcon(isOpen ? FileBrowserIconType.NAVBAR_SUBDIRS_OPEN : FileBrowserIconType.NAVBAR_SUBDIRS_CLOSED);
     }
 
     protected int getMaxPathBarWidth()
     {
-        return this.getWidth() - this.pathStartX - 30;
-    }
-
-    @Override
-    public void renderAt(int x, int y, float z, ScreenContext ctx)
-    {
-        if (this.searchOpen == false)
-        {
-            int diffX = x - this.getX();
-            int rx = this.pathStartX - 2 + diffX;
-            ShapeRenderUtils.renderRectangle(rx, y, z, this.getMaxPathBarWidth() + 4, this.getHeight(), 0xFF242424);
-        }
-
-        super.renderAt(x, y, z, ctx);
+        return this.getWidth() - (this.pathStartX - this.getX()) - 28;
     }
 
     protected String getDisplayNameForDirectory(File dir)
@@ -201,107 +191,87 @@ public class DirectoryNavigationWidget extends SearchBarWidget
         return name;
     }
 
-    protected void placePathElements(int x, int y, List<PathElement> elements)
+    protected int getFirstFittingPathPartIndex()
     {
-        Function<File, String> displayNameFactory = this::getDisplayNameForDirectory;
-        int bh = 14;
-        int by = y + this.getHeight() / 2 - bh / 2;
+        final int size = this.pathParts.size();
+        int maxWidth = this.getMaxPathBarWidth();
+        int rootElementWidth = 11;
 
-        for (final PathElement el : elements)
+        for (int i = 0; i < size; ++i)
         {
-            if (el.type == PathElement.Type.DIR)
+            if (this.pathParts.get(i).widthSumUntil < maxWidth)
             {
-                GenericButton button = new GenericButton(el.nameWidth + 4, bh, el.displayName);
-                button.setPosition(x, by);
-                button.setPlayClickSound(false);
-                button.setHorizontalLabelPadding(2);
-                button.setRenderButtonBackgroundTexture(false);
-                button.getBorderRenderer().getHoverSettings().setEnabled(true);
-                button.getTextSettings().setTextShadowEnabled(false);
-                button.setDefaultHoveredTextColor(0xFFFFFFFF);
-                button.setActionListener(() -> {
-                    if (BaseScreen.isShiftDown())
-                    {
-                        OpenGlHelper.openFile(el.dir);
-                    }
-                    else
-                    {
-                        this.navigator.switchToDirectory(el.dir);
-                    }
-                });
-
-                this.addWidget(button);
-
-                List<File> dirs = FileUtils.getSubDirectories(el.dir);
-
-                if (dirs.isEmpty() == false)
-                {
-                    final DropDownListWidget<File> dropdown = new DropDownListWidget<>(-1, 12, 120, 10, dirs, displayNameFactory);
-                    dropdown.setY(y + 16);
-                    dropdown.setRight(x + el.totalWidth);
-                    dropdown.setNoBarWhenClosed(x + el.totalWidth - 12, y + 3, () -> this.getNavBarIconSubdirs(dropdown.isOpen()));
-                    dropdown.setSelectionListener(this.navigator::switchToDirectory);
-                    this.addWidget(dropdown);
-                }
-            }
-            else
-            {
-                List<File> dirs = FileUtils.getDirsForRootPath(el.dir, this.rootDir);
-                final DropDownListWidget<File> dropdown = new DropDownListWidget<>(-1, 12, 120, 10, dirs, displayNameFactory);
-                dropdown.setPosition(x, y + 16);
-                dropdown.setNoBarWhenClosed(x, y + 2, () -> this.getNavBarIconRoot(dropdown.isOpen()));
-                dropdown.setSelectionListener(this.navigator::switchToDirectory);
-                this.addWidget(dropdown);
+                return i;
             }
 
-            x += el.totalWidth;
+            // If the entire path did not fit, then the root element will get added,
+            // so account for the width of that element.
+            if (i == 0)
+            {
+                maxWidth -= rootElementWidth;
+            }
+        }
+
+        return -1;
+    }
+
+    protected void placePathParts(int x, int y)
+    {
+        final int size = this.pathParts.size();
+        int buttonHeight = 14;
+        int rootElementWidth = 11;
+        int bx = x + 2;
+        int by = y + this.getHeight() / 2 - buttonHeight / 2;
+        int index = this.getFirstFittingPathPartIndex();
+        boolean addRootPathElements = index > 0;
+
+        // No parts fit entirely
+        if (index < 0 || index >= this.pathParts.size())
+        {
+            // Even the current directory would not fit, show a shrunk version of it
+            if (this.pathParts.isEmpty() == false)
+            {
+                PathPart part = this.pathParts.get(this.pathParts.size() - 1);
+                final int maxWidth = this.getMaxPathBarWidth();
+                this.addShrunkPathPartElement(bx, by, buttonHeight, maxWidth, part);
+            }
+
+            return;
+        }
+
+        for (; index < size; ++index)
+        {
+            PathPart part = this.pathParts.get(index);
+
+            if (addRootPathElements)
+            {
+                this.addRootPathElements(part, bx, by);
+                bx += rootElementWidth;
+            }
+
+            addRootPathElements = false;
+            this.addPathPartElements(bx, by, buttonHeight, part);
+            bx += part.totalWidth;
         }
     }
 
-    protected List<PathElement> generatePathElements()
+    protected void generatePathParts(File currentDirectory)
     {
-        ArrayList<PathElement> list = new ArrayList<>();
-        File root = this.rootDir;
-        File dir = this.currentDir;
-        int maxWidth = this.getMaxPathBarWidth();
-        int usedWidth = 0;
-        int adjDirsIconWidth = this.getNavBarIconSubdirs(false).getWidth();
+        this.pathParts.clear();
+
+        final File root = this.rootDir;
+        final int extraWidth = this.getNavBarIconSubDirectories(false).getWidth() + 6;
+        File dir = currentDirectory;
+        int widthSum = 0;
 
         while (dir != null)
         {
             String name = this.getDisplayNameForDirectory(dir);
             int nameWidth = this.getStringWidth(name);
-            int entryWidth = nameWidth + adjDirsIconWidth + 8;
+            int totalWidth = nameWidth + extraWidth;
+            widthSum += totalWidth;
 
-            // The current path element doesn't fit.
-            // This thus also means that all the elements didn't fit, and they will be cut from the beginning.
-            // This also means that the root paths dropdown widget should be shown.
-            if (usedWidth + entryWidth > maxWidth)
-            {
-                // This is the current directory, show as much of it as possible
-                if (usedWidth == 0)
-                {
-                    name = StringUtils.clampTextToRenderLength(name, maxWidth - adjDirsIconWidth, LeftRight.RIGHT, "...");
-                    list.add(new PathElement(dir, PathElement.Type.DIR, name, nameWidth, entryWidth));
-
-                    if (root.equals(dir) == false)
-                    {
-                        dir = dir.getParentFile();
-                    }
-                }
-
-                if (dir != null)
-                {
-                    int w = this.getNavBarIconRoot(false).getWidth() + 4;
-                    list.add(new PathElement(dir, PathElement.Type.ROOT_PATH, "", w, w));
-                }
-
-                break;
-            }
-
-            list.add(new PathElement(dir, PathElement.Type.DIR, name, nameWidth, entryWidth));
-
-            usedWidth += entryWidth;
+            this.pathParts.add(new PathPart(dir, name, nameWidth, totalWidth, widthSum));
 
             if (root.equals(dir))
             {
@@ -311,32 +281,107 @@ public class DirectoryNavigationWidget extends SearchBarWidget
             dir = dir.getParentFile();
         }
 
-        Collections.reverse(list);
-
-        return list;
+        Collections.reverse(this.pathParts);
     }
 
-    public static class PathElement
+    protected void addRootPathElements(PathPart part, int x, int y)
+    {
+        List<File> dirs = FileUtils.getDirsForRootPath(part.dir, this.rootDir);
+        final DropDownListWidget<File> dropdown = new DropDownListWidget<>(-1, 12, 120, 10, dirs, this::getDisplayNameForDirectory);
+        dropdown.setPosition(x, y + 16);
+        dropdown.setNoBarWhenClosed(x, y + 3, () -> this.getNavBarIconRoot(dropdown.isOpen()));
+        dropdown.setSelectionListener(this.navigator::switchToDirectory);
+        this.addWidget(dropdown);
+    }
+
+    protected void addPathPartElements(int x, int y, int buttonHeight, PathPart part)
+    {
+        this.addPathPartElements(x, y, buttonHeight, part.dir, part.displayName, part.nameWidth, part.totalWidth);
+    }
+
+    protected void addPathPartElements(int x, int y, int buttonHeight, File dir, String displayName, int nameWidth, int totalWidth)
+    {
+        GenericButton button = this.createPathPartButton(dir, displayName, nameWidth + 5, buttonHeight);
+        button.setPosition(x, y);
+
+        this.addWidget(button);
+
+        List<File> dirs = FileUtils.getSubDirectories(dir);
+
+        if (dirs.isEmpty() == false)
+        {
+            DropDownListWidget<File> dropdown = new DropDownListWidget<>(-1, 12, 120, 10, dirs, this::getDisplayNameForDirectory);
+            dropdown.setY(y + 16);
+            dropdown.setRight(x + totalWidth);
+            dropdown.setNoBarWhenClosed(x + totalWidth - 9, y + 3, () -> this.getNavBarIconSubDirectories(dropdown.isOpen()));
+            dropdown.setSelectionListener(this.navigator::switchToDirectory);
+            this.addWidget(dropdown);
+        }
+    }
+
+    protected void addShrunkPathPartElement(int x, int y, int buttonHeight, int maxWidth, PathPart part)
+    {
+        final int adjDirsIconWidth = this.getNavBarIconSubDirectories(false).getWidth() + 4;
+        String name = StringUtils.clampTextToRenderLength(part.displayName, maxWidth - adjDirsIconWidth, LeftRight.RIGHT, "...");
+        int nameWidth = StringUtils.getStringWidth(name);
+        this.addPathPartElements(x, y, buttonHeight, part.dir, name, nameWidth, nameWidth + adjDirsIconWidth + 4);
+    }
+
+    protected GenericButton createPathPartButton(final File dir, String displayName, int width, int height)
+    {
+        GenericButton button = new GenericButton(width, height, displayName);
+
+        button.setPlayClickSound(false);
+        button.setHorizontalLabelPadding(2);
+        button.setRenderButtonBackgroundTexture(false);
+        button.getBorderRenderer().getHoverSettings().setEnabled(true);
+        button.getTextSettings().setTextShadowEnabled(false);
+        button.setDefaultHoveredTextColor(0xFFFFFFFF);
+        button.setActionListener(() -> this.onDirectoryButtonClicked(dir));
+
+        return button;
+    }
+
+    protected void onDirectoryButtonClicked(File dir)
+    {
+        if (BaseScreen.isShiftDown())
+        {
+            OpenGlHelper.openFile(dir);
+        }
+        else
+        {
+            this.navigator.switchToDirectory(dir);
+        }
+    }
+
+    @Override
+    public void renderAt(int x, int y, float z, ScreenContext ctx)
+    {
+        if (this.searchOpen == false)
+        {
+            int rx = this.pathStartX;
+            int width = this.getMaxPathBarWidth();
+            ShapeRenderUtils.renderRectangle(rx, y, z, width, this.getHeight(), 0xFF202020);
+        }
+
+        super.renderAt(x, y, z, ctx);
+    }
+
+    public static class PathPart
     {
         public final File dir;
-        public final Type type;
         public final String displayName;
         public final int nameWidth;
         public final int totalWidth;
+        public final int widthSumUntil;
 
-        public PathElement(File dir, Type type, String displayName, int nameWidth, int totalWidth)
+        public PathPart(File dir, String displayName, int nameWidth, int totalWidth, int widthSumUntil)
         {
             this.dir = dir;
-            this.type = type;
             this.displayName = displayName;
             this.nameWidth = nameWidth;
             this.totalWidth = totalWidth;
-        }
-
-        public enum Type
-        {
-            ROOT_PATH,
-            DIR
+            this.widthSumUntil = widthSumUntil;
         }
     }
 }
