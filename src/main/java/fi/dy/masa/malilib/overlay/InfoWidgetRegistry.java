@@ -14,7 +14,7 @@ public class InfoWidgetRegistry
 {
     public static final InfoWidgetRegistry INSTANCE = new InfoWidgetRegistry();
 
-    protected final Map<String, InfoWidgetFactory> widgetFactoriesbyType = new HashMap<>();
+    protected final Map<String, InfoWidgetFactory> widgetFactoriesByType = new HashMap<>();
 
     private InfoWidgetRegistry()
     {
@@ -23,13 +23,13 @@ public class InfoWidgetRegistry
 
     public void registerWidgetFactory(InfoWidgetFactory factory, String id)
     {
-        this.widgetFactoriesbyType.put(id, factory);
+        this.widgetFactoriesByType.put(id, factory);
     }
 
     @Nullable
     public InfoWidgetFactory getWidgetFactory(String type)
     {
-        return this.widgetFactoriesbyType.get(type);
+        return this.widgetFactoriesByType.get(type);
     }
 
     private void registerDefaultFactories()

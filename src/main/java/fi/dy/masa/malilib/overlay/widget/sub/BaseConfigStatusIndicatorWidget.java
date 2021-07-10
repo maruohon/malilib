@@ -2,12 +2,16 @@ package fi.dy.masa.malilib.overlay.widget.sub;
 
 import java.util.Map;
 import javax.annotation.Nullable;
+import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.MaLiLib;
+import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.gui.BaseScreen;
+import fi.dy.masa.malilib.gui.config.BaseConfigTab;
 import fi.dy.masa.malilib.gui.config.ConfigStatusWidgetRegistry;
+import fi.dy.masa.malilib.gui.config.ConfigTab;
 import fi.dy.masa.malilib.gui.config.indicator.BaseConfigStatusIndicatorEditScreen;
 import fi.dy.masa.malilib.gui.config.indicator.ConfigStatusWidgetFactory;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
@@ -222,6 +226,14 @@ public abstract class BaseConfigStatusIndicatorWidget<C extends ConfigInfo> exte
                     MaLiLib.LOGGER.error("Failed to create a config status indicator widget of type '{}' for config '{}'",
                                          type, configPath, e);
                 }
+            }
+            else
+            {
+                ConfigTab dummyTab = new BaseConfigTab(MaLiLibReference.MOD_INFO, "?", -1, ImmutableList.of(PlaceholderConfigStatusIndicatorWidget.DUMMY_CONFIG), (g) -> null);
+                configOnTab = new ConfigOnTab(dummyTab, PlaceholderConfigStatusIndicatorWidget.DUMMY_CONFIG);
+                BaseConfigStatusIndicatorWidget<?> widget = new PlaceholderConfigStatusIndicatorWidget(configOnTab.config, configOnTab);
+                widget.fromJson(obj);
+                return widget;
             }
         }
 
