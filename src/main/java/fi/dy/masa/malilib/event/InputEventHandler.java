@@ -5,6 +5,9 @@ import java.util.Collection;
 import java.util.List;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import net.minecraft.client.MinecraftClient;
+import fi.dy.masa.malilib.MaLiLib;
+import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.hotkeys.IHotkey;
 import fi.dy.masa.malilib.hotkeys.IInputManager;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
@@ -21,15 +24,18 @@ public class InputEventHandler implements IKeybindManager, IInputManager
 {
     private static final InputEventHandler INSTANCE = new InputEventHandler();
 
+    private final MinecraftClient mc;
     private final Multimap<Integer, IKeybind> hotkeyMap = ArrayListMultimap.create();
     private final List<KeybindCategory> allKeybinds = new ArrayList<>();
     private final IntOpenHashSet modifierKeys = new IntOpenHashSet();
     private final List<IKeybindProvider> keybindProviders = new ArrayList<>();
     private final List<IKeyboardInputHandler> keyboardHandlers = new ArrayList<>();
     private final List<IMouseInputHandler> mouseHandlers = new ArrayList<>();
+    private double mouseWheelDeltaSum;
 
     private InputEventHandler()
     {
+        this.mc = MinecraftClient.getInstance();
         this.modifierKeys.add(KeyCodes.KEY_LEFT_SHIFT);
         this.modifierKeys.add(KeyCodes.KEY_RIGHT_SHIFT);
         this.modifierKeys.add(KeyCodes.KEY_LEFT_CONTROL);
@@ -192,14 +198,35 @@ public class InputEventHandler implements IKeybindManager, IInputManager
     /**
      * NOT PUBLIC API - DO NOT CALL
      */
-    public boolean onMouseScroll(final int mouseX, final int mouseY, final double amount)
+    public boolean onMouseScroll(final int mouseX, final int mouseY, final double xOffset, final double yOffset)
     {
-        boolean cancel = false;
+        boolean discrete = this.mc.options.discreteMouseScroll;
+        double sensitivity = this.mc.options.mouseWheelSensitivity;
+        double amount = (discrete ? Math.signum(yOffset) : yOffset) * sensitivity;
 
-        if (amount != 0)
+        if (MaLiLibConfigs.Debug.MOUSE_SCROLL_DEBUG.getBooleanValue())
         {
-            if (this.mouseHandlers.isEmpty() == false)
+            int time = (int) (System.currentTimeMillis() & 0xFFFF);
+            int tick = this.mc.world != null ? (int) (this.mc.world.getTime() & 0xFFFF) : 0;
+            String timeStr = String.format("time: %04X, tick: %04X", time, tick);
+            MaLiLib.logger.info("{} - xOffset: {}, yOffset: {}, discrete: {}, sensitivity: {}, amount: {}",
+                                timeStr, xOffset, yOffset, discrete, sensitivity, amount);
+        }
+
+        if (amount != 0 && this.mouseHandlers.isEmpty() == false)
+        {
+            if (this.mouseWheelDeltaSum != 0.0 && Math.signum(amount) != Math.signum(this.mouseWheelDeltaSum))
             {
+                this.mouseWheelDeltaSum = 0.0;
+            }
+
+            this.mouseWheelDeltaSum += amount;
+            amount = (int) this.mouseWheelDeltaSum;
+
+            if (amount != 0.0)
+            {
+                this.mouseWheelDeltaSum -= amount;
+
                 for (IMouseInputHandler handler : this.mouseHandlers)
                 {
                     if (handler.onMouseScroll(mouseX, mouseY, amount))
@@ -210,7 +237,7 @@ public class InputEventHandler implements IKeybindManager, IInputManager
             }
         }
 
-        return cancel;
+        return false;
     }
 
     /**

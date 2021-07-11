@@ -72,6 +72,7 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
     protected String title = "";
     protected boolean useTitleHierarchy = true;
     private int keyInputCount;
+    private double mouseWheelDeltaSum;
     @Nullable
     private Screen parent;
 
@@ -182,12 +183,25 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double amount)
     {
-        if (amount == 0 || this.onMouseScrolled((int) mouseX, (int) mouseY, amount))
+        if (this.mouseWheelDeltaSum != 0.0 && Math.signum(amount) != Math.signum(this.mouseWheelDeltaSum))
         {
-            return super.mouseScrolled(mouseX, mouseY, amount);
+            this.mouseWheelDeltaSum = 0.0;
         }
 
-        return false;
+        this.mouseWheelDeltaSum += amount;
+        amount = (int) this.mouseWheelDeltaSum;
+
+        if (amount != 0.0)
+        {
+            this.mouseWheelDeltaSum -= amount;
+
+            if (this.onMouseScrolled((int) mouseX, (int) mouseY, amount))
+            {
+                return true;
+            }
+        }
+
+        return super.mouseScrolled(mouseX, mouseY, amount);
     }
 
     @Override

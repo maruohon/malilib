@@ -15,9 +15,8 @@ import fi.dy.masa.malilib.event.InputEventHandler;
 @Mixin(Mouse.class)
 public abstract class MixinMouse
 {
-    @Shadow
-    @Final
-    private MinecraftClient client;
+    @Shadow @Final private MinecraftClient client;
+    @Shadow private double eventDeltaWheel;
 
     @Inject(method = "onCursorPos",
             at = @At(value = "FIELD", target = "Lnet/minecraft/client/Mouse;hasResolutionChanged:Z", ordinal = 0))
@@ -32,15 +31,15 @@ public abstract class MixinMouse
 
     @Inject(method = "onMouseScroll", cancellable = true,
             at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;currentScreen:Lnet/minecraft/client/gui/screen/Screen;", ordinal = 0))
-    private void hookOnMouseScroll(long handle, double xoffset, double yoffset, CallbackInfo ci)
+    private void hookOnMouseScroll(long handle, double xOffset, double yOffset, CallbackInfo ci)
     {
         Window window = this.client.getWindow();
         int mouseX = (int) (((Mouse) (Object) this).getX() * (double) window.getScaledWidth() / (double) window.getWidth());
         int mouseY = (int) (((Mouse) (Object) this).getY() * (double) window.getScaledHeight() / (double) window.getHeight());
-        double amount = yoffset * this.client.options.mouseWheelSensitivity;
 
-        if (((InputEventHandler) InputEventHandler.getInputManager()).onMouseScroll(mouseX, mouseY, amount))
+        if (((InputEventHandler) InputEventHandler.getInputManager()).onMouseScroll(mouseX, mouseY, xOffset, yOffset))
         {
+            this.eventDeltaWheel = 0.0;
             ci.cancel();
         }
     }
