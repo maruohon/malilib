@@ -72,6 +72,7 @@ public abstract class BaseTextInputScreen extends BaseScreen
         int y = this.y + 26 + this.elementsOffsetY;
 
         this.textField.setPosition(x, y);
+        this.textField.setWidth(this.screenWidth - 20);
 
         y += 26;
         this.okButton.setPosition(x, y);
@@ -82,7 +83,7 @@ public abstract class BaseTextInputScreen extends BaseScreen
     protected void updateHeight()
     {
         this.updateTextHeightOffset();
-        this.setScreenWidthAndHeight(260, this.baseHeight + this.elementsOffsetY);
+        this.setScreenHeight(this.baseHeight + this.elementsOffsetY);
         this.centerOnScreen();
     }
 
@@ -120,6 +121,11 @@ public abstract class BaseTextInputScreen extends BaseScreen
         this.cancelListener = cancelListener;
     }
 
+    public void setInfoText(String translationKey)
+    {
+        this.setInfoText(StyledText.translate(translationKey));
+    }
+
     public void setInfoText(@Nullable StyledText infoText)
     {
         if (infoText != null)
@@ -130,6 +136,11 @@ public abstract class BaseTextInputScreen extends BaseScreen
         this.infoText = infoText;
 
         this.updateHeight();
+    }
+
+    public void setLabelText(String translationKey)
+    {
+        this.setLabelText(StyledText.translate(translationKey));
     }
 
     public void setLabelText(@Nullable StyledText labelText)
