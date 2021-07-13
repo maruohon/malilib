@@ -54,14 +54,12 @@ public class ClientWorldChangeEventDispatcherImpl implements ClientWorldChangeEv
         // Save all the configs when exiting a world
         if (worldAfter == null && worldBefore != null)
         {
-            ConfigOverrideUtils.resetConfigOverrides();
-            ConfigUtils.saveAllConfigsToFileIfDirty();
+            this.onExitWorld();
         }
         // (Re-)Load all the configs from file when entering a world
         else if (worldBefore == null && worldAfter != null)
         {
-            ConfigUtils.loadAllConfigsFromFile();
-            ConfigOverrideUtils.applyConfigOverrides();
+            this.onEnterWorld();
         }
 
         if (this.worldChangeHandlers.isEmpty() == false)
@@ -71,5 +69,17 @@ public class ClientWorldChangeEventDispatcherImpl implements ClientWorldChangeEv
                 listener.onPostClientWorldChange(worldBefore, worldAfter, mc);
             }
         }
+    }
+
+    private void onExitWorld()
+    {
+        ConfigOverrideUtils.resetConfigOverrides();
+        ConfigUtils.saveAllConfigsToFileIfDirty();
+    }
+
+    private void onEnterWorld()
+    {
+        ConfigUtils.loadAllConfigsFromFile();
+        ConfigOverrideUtils.applyConfigOverrides();
     }
 }

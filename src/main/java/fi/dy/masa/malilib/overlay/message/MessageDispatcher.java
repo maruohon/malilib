@@ -2,6 +2,11 @@ package fi.dy.masa.malilib.overlay.message;
 
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.util.text.event.HoverEvent;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.gui.position.ScreenLocation;
@@ -146,16 +151,24 @@ public class MessageDispatcher
 
     public void translate(String translationKey, Object... args)
     {
-        this.send(StringUtils.translate(translationKey, args));
+        if (MaLiLibConfigs.Debug.MESSAGE_KEY_TO_CHAT.getBooleanValue())
+        {
+            TextComponentString message = new TextComponentString(translationKey);
+            TextComponentTranslation hoverMessage = new TextComponentTranslation("malilib.gui.label.add_to_chat_field");
+            message.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, translationKey));
+            message.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverMessage));
+            Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(message);
+        }
+
+        MessageOutput output = MessageRedirectManager.INSTANCE.getRedirectedMessageOutput(translationKey, this.type);
+        String translatedMessage = StringUtils.translate(translationKey, args);
+        this.printToConsoleIfEnabled(translatedMessage);
+        output.send(translatedMessage, this);
     }
 
     public void send(String translatedMessage)
     {
-        if (this.console)
-        {
-            this.printToConsole(translatedMessage);
-        }
-
+        this.printToConsoleIfEnabled(translatedMessage);
         this.type.send(translatedMessage, this);
     }
 
@@ -167,6 +180,14 @@ public class MessageDispatcher
         }
 
         this.type.send(text, this);
+    }
+
+    protected void printToConsoleIfEnabled(String translatedMessage)
+    {
+        if (this.console)
+        {
+            this.printToConsole(translatedMessage);
+        }
     }
 
     public void printToConsole(String translatedMessage)

@@ -32,6 +32,7 @@ malilib.config.comment.infooverlaydebug=When enabled, the Info Overlay widgets a
 malilib.config.comment.keybinddebug=When enabled, key presses and held keys are printed to the game console (and the action bar, if enabled)
 malilib.config.comment.keybinddebugactionbar=If enabled, then the messages from 'Keybind Debugging' are also printed to the action bar
 malilib.config.comment.keybinddebugtoast=If enabled, then the messages from 'Keybind Debugging' are shown as toast messages
+malilib.config.comment.messagekeytochat=If enabled, then any messages that are sent using the translation key will print that translation key to the game chat. This allows copying the translation key from chat if you want to add a message redirect/override for that message (via the config menu that opens by running the §eopenMessageRedirectsListScreen§r action).
 
 malilib.config.comment.dropdownsearchtip=Should the DropDown widget search tip about just starting to type to open the search be shown, or was it shown already
 
@@ -77,6 +78,7 @@ malilib.config.name.infooverlaydebug=Info Overlay Debug
 malilib.config.name.keybinddebug=KeyBind Debugging
 malilib.config.name.keybinddebugactionbar=KeyBind Debug In Action Bar
 malilib.config.name.keybinddebugtoast=KeyBind Debug Toast
+malilib.config.name.messagekeytochat=Message Key To Chat
 
 malilib.config.name.dropdownsearchtip=Drop Down Search Tip
 
@@ -160,6 +162,8 @@ malilib.gui.button.label.remove=Remove
 malilib.gui.button.label.remove_icon=Remove Icon
 malilib.gui.button.label.show_configs=Show Configs
 
+malilib.gui.button.message_redirect_list_screen.add_redirect=Add New Redirect
+
 malilib.gui.button.render_layers_gui.axis=Axis: %s
 malilib.gui.button.render_layers_gui.follow_player=Follow Player: %s
 malilib.gui.button.render_layers_gui.layers=Layers: %s
@@ -234,6 +238,8 @@ malilib.gui.label.action_prompt_screen.fuzzy_search=Fuzzy search
 malilib.gui.label.action_prompt_screen.remember_search=Remember search
 malilib.gui.label.action_prompt_screen.search_display_name=Display Name
 
+malilib.gui.label.add_message_redirect_for_key=Add a message redirect for the given translation key. You can easily see and copy the translation key for a given message by enabling the Debug -> '§eMessage Key To Chat§r' option and then causing the message to get shown.
+malilib.gui.label.add_to_chat_field=Add to the chat input field
 malilib.gui.label.color_editor.current_color=Current color:
 malilib.gui.label.config.hover.click_for_more_information=§b§oClick for more information
 malilib.gui.label.config_scope.all_categories=From all categories in this mod
@@ -328,6 +334,7 @@ malilib.gui.title.action_aliases_and_macros=MaLiLib - Manage Action Aliases and 
 malilib.gui.title.action_screen.export_settings=Export Action Screen Settings
 malilib.gui.title.action_screen.import_settings=Import Action Screen Settings
 malilib.gui.title.add_action_macro=Create an action macro
+malilib.gui.title.add_message_redirect=Add a Message Redirect
 malilib.gui.title.add_new_hotkey=Add a hotkey bound to an action
 malilib.gui.title.all_hotkeys=All registered hotkeys
 malilib.gui.title.black_white_list_edit=Edit Black/White List '%s'
@@ -359,6 +366,7 @@ malilib.gui.title.identifier_list_edit=Edit identifier list '%s'
 malilib.gui.title.info_renderer_widgets=MaLiLib - Info Renderer Widgets
 malilib.gui.title.item_list_edit=Edit item list '%s'
 malilib.gui.title.keybind_settings.advanced=Advanced Keybind Settings for '%s'
+malilib.gui.title.message_redirect_list_screen=Manage Message Redirects
 malilib.gui.title.message_renderer_configuration=Message Renderer Configuration
 malilib.gui.title.provide_arguments_for_action=Provide the argument(s) for the action
 malilib.gui.title.rename_directory=Rename Directory

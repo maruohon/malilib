@@ -110,6 +110,7 @@ public class MaLiLibConfigs
         public static final BooleanConfig KEYBIND_DEBUG             = new BooleanConfig("keybindDebug", false);
         public static final BooleanConfig KEYBIND_DEBUG_ACTIONBAR   = new BooleanConfig("keybindDebugActionBar", false);
         public static final BooleanConfig KEYBIND_DEBUG_TOAST       = new BooleanConfig("keybindDebugToast", true);
+        public static final BooleanConfig MESSAGE_KEY_TO_CHAT       = new BooleanConfig("messageKeyToChat", false);
 
         public static final ImmutableList<ConfigOption<?>> OPTIONS = ImmutableList.of(
                 DEBUG_MESSAGES,
@@ -120,7 +121,8 @@ public class MaLiLibConfigs
                 INFO_OVERLAY_DEBUG,
                 KEYBIND_DEBUG,
                 KEYBIND_DEBUG_ACTIONBAR,
-                KEYBIND_DEBUG_TOAST
+                KEYBIND_DEBUG_TOAST,
+                MESSAGE_KEY_TO_CHAT
         );
     }
 

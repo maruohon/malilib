@@ -24,6 +24,7 @@ import fi.dy.masa.malilib.input.CustomHotkeyManager;
 import fi.dy.masa.malilib.input.HotkeyManager;
 import fi.dy.masa.malilib.overlay.InfoWidgetManager;
 import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
+import fi.dy.masa.malilib.overlay.message.MessageRedirectManager;
 import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.data.ConfigOnTab;
 import fi.dy.masa.malilib.util.data.ModInfo;
@@ -95,6 +96,7 @@ public class ConfigUtils
         ((ActionRegistryImpl) ActionRegistry.INSTANCE).loadFromFile();
         CustomHotkeyManager.INSTANCE.loadFromFile();
         InfoWidgetManager.INSTANCE.loadFromFile();
+        MessageRedirectManager.INSTANCE.loadFromFile();
         HotkeyManager.INSTANCE.updateUsedKeys();
     }
 
@@ -107,6 +109,7 @@ public class ConfigUtils
     {
         ((ConfigManagerImpl) ConfigManager.INSTANCE).saveIfDirty();
         InfoWidgetManager.INSTANCE.saveToFileIfDirty();
+        MessageRedirectManager.INSTANCE.saveToFileIfDirty();
         ActionExecutionWidgetManager.INSTANCE.clear();
 
         // These should always already be saved when closing the corresponding config screens
@@ -129,6 +132,7 @@ public class ConfigUtils
                 ActionExecutionWidgetManager.INSTANCE.saveAllLoadedToFile();
                 CustomHotkeyManager.INSTANCE.saveToFile();
                 InfoWidgetManager.INSTANCE.saveToFile();
+                MessageRedirectManager.INSTANCE.saveToFile();
             }
         }
     }

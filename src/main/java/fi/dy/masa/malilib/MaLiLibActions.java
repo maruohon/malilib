@@ -9,6 +9,7 @@ import fi.dy.masa.malilib.config.util.ConfigUtils;
 import fi.dy.masa.malilib.gui.action.ActionPromptScreen;
 import fi.dy.masa.malilib.gui.action.ActionWidgetScreen;
 import fi.dy.masa.malilib.gui.config.CustomIconListScreen;
+import fi.dy.masa.malilib.gui.config.MessageRedirectListScreen;
 import fi.dy.masa.malilib.input.callback.AdjustableValueHotkeyCallback;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.overlay.message.MessageUtils;
@@ -27,6 +28,7 @@ public class MaLiLibActions
         register("createActionWidgetScreen", ActionWidgetScreen::openCreateActionWidgetScreen);
         register("openActionWidgetScreen", ActionWidgetScreen::openActionWidgetScreen);
         register("openCustomIconsListScreen", CustomIconListScreen::openCustomIconListScreenAction);
+        register("openMessageRedirectsListScreen", MessageRedirectListScreen::openMessageRedirectListScreenAction);
         register("openPreviousActionWidgetScreen", ActionWidgetScreen::openPreviousActionWidgetScreen);
         register("runCommand", ActionUtils::runVanillaCommand);
         register("switchConfigProfile", ConfigUtils::switchConfigProfile);

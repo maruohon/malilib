@@ -100,4 +100,54 @@ public class ListUtils
         builder.addAll(additionalEntries);
         return builder.build();
     }
+
+    public static <T> ImmutableList<T> getAppendedList(Collection<? extends T> originalList, T newEntry)
+    {
+        ImmutableList.Builder<T> builder = ImmutableList.builder();
+        builder.addAll(originalList);
+        builder.add(newEntry);
+        return builder.build();
+    }
+
+    public static <T> ImmutableList<T> getPrependedList(T newEntry, Collection<? extends T> originalList)
+    {
+        ImmutableList.Builder<T> builder = ImmutableList.builder();
+        builder.add(newEntry);
+        builder.addAll(originalList);
+        return builder.build();
+    }
+
+    /**
+     * Returns a new list where the value oldValue is replaced by the value newValue.
+     * If replaceInPlace is true, then the value is replaced in the same list position.
+     * If replaceInPlace is false, then the old value is omitted, and the new value is added
+     * at the end of the list.
+     * If the old value was not found at all, then the new value is appended at the end of the list.
+     */
+    public static <T> ImmutableList<T> replaceOrAddValue(Collection<? extends T> originalList,
+                                                         T oldValue, T newValue, boolean replaceInPlace)
+    {
+        ImmutableList.Builder<T> builder = ImmutableList.builder();
+        boolean replaced = false;
+
+        for (T value : originalList)
+        {
+            if (value.equals(oldValue) == false)
+            {
+                builder.add(value);
+            }
+            else if (replaceInPlace)
+            {
+                builder.add(newValue);
+                replaced = true;
+            }
+        }
+
+        if (replaceInPlace == false || replaced == false)
+        {
+            builder.add(newValue);
+        }
+
+        return builder.build();
+    }
 }
