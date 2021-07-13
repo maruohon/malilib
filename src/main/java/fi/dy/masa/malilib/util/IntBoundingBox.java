@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.util;
 
 import net.minecraft.nbt.NbtIntArray;
 import net.minecraft.util.math.BlockBox;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3i;
 
 public class IntBoundingBox
@@ -41,6 +42,30 @@ public class IntBoundingBox
                this.minZ <= box.maxZ &&
                this.maxY >= box.minY &&
                this.minY <= box.maxY;
+    }
+
+    public int getMinValueForAxis(Direction.Axis axis)
+    {
+        switch (axis)
+        {
+            case X: return this.minX;
+            case Y: return this.minY;
+            case Z: return this.minZ;
+        }
+
+        return 0;
+    }
+
+    public int getMaxValueForAxis(Direction.Axis axis)
+    {
+        switch (axis)
+        {
+            case X: return this.maxX;
+            case Y: return this.maxY;
+            case Z: return this.maxZ;
+        }
+
+        return 0;
     }
 
     public BlockBox toVanillaBox()

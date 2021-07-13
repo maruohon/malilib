@@ -8,6 +8,7 @@ import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;
 import fi.dy.masa.malilib.gui.interfaces.ISelectionListener;
 import fi.dy.masa.malilib.gui.interfaces.ITextFieldListener;
 import fi.dy.masa.malilib.gui.widgets.WidgetCheckBox;
+import fi.dy.masa.malilib.util.EntityUtils;
 import fi.dy.masa.malilib.util.LayerMode;
 import fi.dy.masa.malilib.util.LayerRange;
 import fi.dy.masa.malilib.util.StringUtils;
@@ -160,9 +161,9 @@ public abstract class GuiRenderLayerEditBase extends GuiBase
                 axis = Direction.Axis.values()[next % 3];
                 this.layerRange.setAxis(axis);
             }
-            else if (this.type == Type.SET_HERE)
+            else if (this.type == Type.SET_HERE && this.parent.mc.player != null)
             {
-                this.layerRange.setToPosition(this.parent.mc.player);
+                this.layerRange.setSingleBoundaryToPosition(EntityUtils.getCameraEntity());
             }
 
             this.parent.initGui();
