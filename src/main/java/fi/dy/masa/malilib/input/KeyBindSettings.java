@@ -2,7 +2,7 @@ package fi.dy.masa.malilib.input;
 
 import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.config.value.BaseOptionListConfigValue;
-import fi.dy.masa.malilib.overlay.message.MessageType;
+import fi.dy.masa.malilib.overlay.message.MessageOutput;
 import fi.dy.masa.malilib.util.JsonUtils;
 
 public class KeyBindSettings
@@ -21,7 +21,7 @@ public class KeyBindSettings
     protected final KeyAction activateOn;
     protected final Context context;
     protected final CancelCondition cancel;
-    protected final MessageType messageType;
+    protected final MessageOutput messageOutput;
     protected final boolean allowEmpty;
     protected final boolean allowExtraKeys;
     protected final boolean exclusive;
@@ -53,12 +53,12 @@ public class KeyBindSettings
                               boolean firstOnly, boolean showToast)
     {
         this(context, activateOn, allowExtraKeys, orderSensitive, exclusive, cancel, allowEmpty,
-             priority, firstOnly, showToast, MessageType.CUSTOM_HOTBAR);
+             priority, firstOnly, showToast, MessageOutput.CUSTOM_HOTBAR);
     }
 
     protected KeyBindSettings(Context context, KeyAction activateOn, boolean allowExtraKeys, boolean orderSensitive,
                               boolean exclusive, CancelCondition cancel, boolean allowEmpty, int priority,
-                              boolean firstOnly, boolean showToast, MessageType messageType)
+                              boolean firstOnly, boolean showToast, MessageOutput messageOutput)
     {
         this.context = context;
         this.activateOn = activateOn;
@@ -70,7 +70,7 @@ public class KeyBindSettings
         this.priority = priority;
         this.firstOnly = firstOnly;
         this.showToast = showToast;
-        this.messageType = messageType;
+        this.messageOutput = messageOutput;
     }
 
     public static KeyBindSettings create(Context context, KeyAction activateOn, boolean allowExtraKeys,
@@ -104,10 +104,10 @@ public class KeyBindSettings
     public static KeyBindSettings create(Context context, KeyAction activateOn, boolean allowExtraKeys,
                                          boolean orderSensitive, boolean exclusive, CancelCondition cancel,
                                          boolean allowEmpty, int priority, boolean firstOnly,
-                                         boolean showToast, MessageType messageType)
+                                         boolean showToast, MessageOutput messageOutput)
     {
         return new KeyBindSettings(context, activateOn, allowExtraKeys, orderSensitive, exclusive, cancel,
-                                   allowEmpty, priority, firstOnly, showToast, messageType);
+                                   allowEmpty, priority, firstOnly, showToast, messageOutput);
     }
 
     public Context getContext()
@@ -160,9 +160,9 @@ public class KeyBindSettings
         return this.showToast;
     }
 
-    public MessageType getMessageType()
+    public MessageOutput getMessageType()
     {
-        return this.messageType;
+        return this.messageOutput;
     }
 
     public JsonObject toJson()
@@ -179,7 +179,7 @@ public class KeyBindSettings
         obj.addProperty("order_sensitive", this.orderSensitive);
         obj.addProperty("priority", this.priority);
         obj.addProperty("show_toast", this.showToast);
-        obj.addProperty("message_type", this.messageType.getName());
+        obj.addProperty("message_output", this.messageOutput.getName());
 
         return obj;
     }
@@ -188,10 +188,10 @@ public class KeyBindSettings
     {
         Context context = Context.INGAME;
         KeyAction activateOn = KeyAction.PRESS;
-        MessageType messageType = MessageType.CUSTOM_HOTBAR;
+        MessageOutput messageOutput = MessageOutput.CUSTOM_HOTBAR;
         String contextStr = JsonUtils.getString(obj, "context");
         String activateStr = JsonUtils.getString(obj, "activate_on");
-        String messageTypeStr = JsonUtils.getString(obj, "message_type");
+        String messageTypeStr = JsonUtils.getString(obj, "message_output");
 
         if (contextStr != null)
         {
@@ -205,7 +205,7 @@ public class KeyBindSettings
 
         if (messageTypeStr != null)
         {
-            messageType = BaseOptionListConfigValue.findValueByName(messageTypeStr, MessageType.VALUES);
+            messageOutput = BaseOptionListConfigValue.findValueByName(messageTypeStr, MessageOutput.getValues());
         }
 
         boolean allowEmpty = JsonUtils.getBoolean(obj, "allow_empty");
@@ -233,7 +233,7 @@ public class KeyBindSettings
         }
 
         return create(context, activateOn, allowExtraKeys, orderSensitive, exclusive, cancel, allowEmpty,
-                      priority, firstOnly, showToast, messageType);
+                      priority, firstOnly, showToast, messageOutput);
     }
 
     @Override
@@ -264,7 +264,7 @@ public class KeyBindSettings
             return false;
         if (this.showToast != other.showToast)
             return false;
-        if (this.messageType != other.messageType)
+        if (this.messageOutput != other.messageOutput)
             return false;
         return this.orderSensitive == other.orderSensitive;
     }

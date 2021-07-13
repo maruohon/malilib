@@ -5,7 +5,7 @@ import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
-import fi.dy.masa.malilib.overlay.message.MessageType;
+import fi.dy.masa.malilib.overlay.message.MessageOutput;
 import fi.dy.masa.malilib.gui.position.ScreenLocation;
 import fi.dy.masa.malilib.network.ClientPacketChannelHandler;
 import fi.dy.masa.malilib.network.PluginChannelHandler;
@@ -54,11 +54,11 @@ public class MessagePacketHandler implements PluginChannelHandler
 
         @Nullable ScreenLocation location = null;
         @Nullable String marker = null;
-        MessageType type = MessageType.findValueByName(buf.readString(16), MessageType.VALUES);
+        MessageOutput type = MessageOutput.findValueByName(buf.readString(16), MessageOutput.getValues());
         boolean hasLocation = buf.readBoolean();
         boolean hasMarker = buf.readBoolean();
         int displayTimeMs = buf.readVarInt();
-        int defaultColor = type != MessageType.TOAST ? buf.readInt() : 0xFFFFFFFF;
+        int defaultColor = type != MessageOutput.TOAST ? buf.readInt() : 0xFFFFFFFF;
         String message;
 
         if (hasLocation)

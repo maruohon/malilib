@@ -11,7 +11,7 @@ import fi.dy.masa.malilib.util.StringUtils;
 
 public class MessageDispatcher
 {
-    protected MessageType type = MessageType.MESSAGE_OVERLAY;
+    protected MessageOutput type = MessageOutput.MESSAGE_OVERLAY;
     @Nullable protected ScreenLocation location;
     @Nullable protected String rendererMarker;
     @Nullable protected String messageMarker;
@@ -30,7 +30,7 @@ public class MessageDispatcher
         this.consoleMessageConsumer = MaLiLib.LOGGER::info;
     }
 
-    public MessageDispatcher type(MessageType type)
+    public MessageDispatcher type(MessageOutput type)
     {
         this.type = type;
         return this;
@@ -96,7 +96,7 @@ public class MessageDispatcher
         return this;
     }
 
-    public MessageType getType()
+    public MessageOutput getType()
     {
         return this.type;
     }

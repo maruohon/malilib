@@ -10,7 +10,7 @@ import fi.dy.masa.malilib.config.option.HotkeyConfig;
 import fi.dy.masa.malilib.config.option.IntegerConfig;
 import fi.dy.masa.malilib.config.option.OptionListConfig;
 import fi.dy.masa.malilib.config.option.StringConfig;
-import fi.dy.masa.malilib.overlay.message.MessageType;
+import fi.dy.masa.malilib.overlay.message.MessageOutput;
 import fi.dy.masa.malilib.config.value.KeybindDisplayMode;
 import fi.dy.masa.malilib.gui.widget.ConfigsSearchBarWidget.Scope;
 import fi.dy.masa.malilib.input.CancelCondition;
@@ -77,7 +77,7 @@ public class MaLiLibConfigs
 
     public static class Hotkeys
     {
-        public static final KeyBindSettings SCROLL_ADJUST = KeyBindSettings.create(Context.INGAME, KeyAction.PRESS, true, true, false, CancelCondition.ON_SUCCESS, false, 50, false, false, MessageType.NONE);
+        public static final KeyBindSettings SCROLL_ADJUST = KeyBindSettings.create(Context.INGAME, KeyAction.PRESS, true, true, false, CancelCondition.ON_SUCCESS, false, 50, false, false, MessageOutput.NONE);
 
         public static final HotkeyConfig IGNORED_KEYS                           = new HotkeyConfig("ignoredKeys", "", KeyBindSettings.INGAME_SUCCESS);
         public static final HotkeyConfig OPEN_ACTION_PROMPT_SCREEN              = new HotkeyConfig("openActionPromptScreen", "");

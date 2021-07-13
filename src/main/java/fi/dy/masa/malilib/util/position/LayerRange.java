@@ -12,7 +12,7 @@ import fi.dy.masa.malilib.config.value.BaseOptionListConfigValue;
 import fi.dy.masa.malilib.config.value.LayerMode;
 import fi.dy.masa.malilib.listener.LayerRangeChangeListener;
 import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
-import fi.dy.masa.malilib.overlay.message.MessageType;
+import fi.dy.masa.malilib.overlay.message.MessageOutput;
 import fi.dy.masa.malilib.util.EntityUtils;
 import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.PositionUtils;
@@ -706,7 +706,7 @@ public class LayerRange
 
     protected void sendMessage(String translationKey, Object... args)
     {
-        MessageDispatcher.generic().type(MessageType.CUSTOM_HOTBAR).translate(translationKey, args);
+        MessageDispatcher.generic().type(MessageOutput.CUSTOM_HOTBAR).translate(translationKey, args);
     }
 
     public LayerRange copy()

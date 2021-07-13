@@ -67,7 +67,7 @@ public class DefaultMessageDispatchers
     public static void sendVanillaChatMessageString(String translatedMessage, MessageDispatcher messageDispatcher)
     {
         TextComponentString msg = new TextComponentString(translatedMessage);
-        Minecraft.getMinecraft().ingameGUI.addChatMessage(ChatType.GAME_INFO, msg);
+        Minecraft.getMinecraft().ingameGUI.addChatMessage(ChatType.CHAT, msg);
     }
 
     public static void sendVanillaChatMessageText(StyledText text, MessageDispatcher messageDispatcher)
@@ -75,7 +75,7 @@ public class DefaultMessageDispatchers
         if (text.lines.size() > 0)
         {
             TextComponentString msg = new TextComponentString(text.lines.get(0).displayText);
-            Minecraft.getMinecraft().ingameGUI.addChatMessage(ChatType.GAME_INFO, msg);
+            Minecraft.getMinecraft().ingameGUI.addChatMessage(ChatType.CHAT, msg);
         }
     }
 

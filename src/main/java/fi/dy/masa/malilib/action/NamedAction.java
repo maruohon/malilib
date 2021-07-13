@@ -11,7 +11,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.config.option.HotkeyedBooleanConfig;
-import fi.dy.masa.malilib.overlay.message.MessageType;
+import fi.dy.masa.malilib.overlay.message.MessageOutput;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.StringUtils;
@@ -23,8 +23,7 @@ public class NamedAction
     protected final String name;
     protected final String registryName;
     protected String translationKey;
-    @Nullable
-    protected String commentTranslationKey;
+    @Nullable protected String commentTranslationKey;
     protected Action action;
     protected boolean needsArguments;
 
@@ -179,7 +178,7 @@ public class NamedAction
 
     public static NamedAction createToggleActionWithToggleMessage(ModInfo mod, String name, BooleanConfig config,
                                                                   @Nullable Function<BooleanConfig, String> messageFactory,
-                                                                  @Nullable Supplier<MessageType> messageTypeSupplier)
+                                                                  @Nullable Supplier<MessageOutput> messageTypeSupplier)
     {
         return new NamedAction(mod, name, BooleanToggleAction.of(config, messageFactory, messageTypeSupplier));
     }
@@ -207,7 +206,7 @@ public class NamedAction
 
     public static NamedAction registerToggle(ModInfo modInfo, String name, BooleanConfig config,
                                              @Nullable Function<BooleanConfig, String> messageFactory,
-                                             @Nullable Supplier<MessageType> messageTypeSupplier)
+                                             @Nullable Supplier<MessageOutput> messageTypeSupplier)
     {
         NamedAction namedAction = NamedAction.createToggleActionWithToggleMessage(modInfo, name, config,
                                                                                   messageFactory, messageTypeSupplier);

@@ -16,7 +16,7 @@ import fi.dy.masa.malilib.action.Action;
 import fi.dy.masa.malilib.action.ActionContext;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.config.option.OptionListConfig;
-import fi.dy.masa.malilib.overlay.message.MessageType;
+import fi.dy.masa.malilib.overlay.message.MessageOutput;
 import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.input.KeyAction;
 import fi.dy.masa.malilib.input.KeyBind;
@@ -148,8 +148,8 @@ public class AdjustableValueHotkeyCallback implements HotkeyCallback
 
     protected void printToggleMessage(KeyBind key)
     {
-        MessageType messageType = key.getSettings().getMessageType();
-        MessageUtils.printBooleanConfigToggleMessage(messageType, this.toggleConfig, this.toggleMessageFactory);
+        MessageOutput messageOutput = key.getSettings().getMessageType();
+        MessageUtils.printBooleanConfigToggleMessage(messageOutput, this.toggleConfig, this.toggleMessageFactory);
     }
 
     protected ActionResult adjustValue(int amount)

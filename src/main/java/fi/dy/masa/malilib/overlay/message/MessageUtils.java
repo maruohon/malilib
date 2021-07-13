@@ -104,10 +104,10 @@ public class MessageUtils
 
     public static void printCustomActionbarMessage(String translationKey, Object... args)
     {
-        MessageDispatcher.generic().type(MessageType.CUSTOM_HOTBAR).time(5000).fadeOut(500).translate(translationKey, args);
+        MessageDispatcher.generic().type(MessageOutput.CUSTOM_HOTBAR).time(5000).fadeOut(500).translate(translationKey, args);
     }
 
-    public static void printBooleanConfigToggleMessage(MessageType type, BooleanConfig config,
+    public static void printBooleanConfigToggleMessage(MessageOutput type, BooleanConfig config,
                                                        @Nullable Function<BooleanConfig, String> messageFactory)
     {
         String msg = MessageHelpers.getBooleanConfigToggleMessage(config, messageFactory);
@@ -120,15 +120,15 @@ public class MessageUtils
 
     public static ActionResult addMessageAction(ActionContext ctx, String msg)
     {
-        return addMessageAction(MessageType.MESSAGE_OVERLAY, msg);
+        return addMessageAction(MessageOutput.MESSAGE_OVERLAY, msg);
     }
 
     public static ActionResult addToastAction(ActionContext ctx, String msg)
     {
-        return addMessageAction(MessageType.TOAST, msg);
+        return addMessageAction(MessageOutput.TOAST, msg);
     }
 
-    public static ActionResult addMessageAction(MessageType type, String msg)
+    public static ActionResult addMessageAction(MessageOutput type, String msg)
     {
         int displayTimeMs = 5000;
         Matcher matcher = PATTERN_TIME_MSG.matcher(msg);

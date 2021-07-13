@@ -15,7 +15,7 @@ import net.minecraft.client.settings.KeyBinding;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.MinecraftClientAccessor;
-import fi.dy.masa.malilib.overlay.message.MessageType;
+import fi.dy.masa.malilib.overlay.message.MessageOutput;
 import fi.dy.masa.malilib.config.value.KeybindDisplayMode;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.input.callback.AdjustableValueHotkeyCallback;
@@ -273,7 +273,7 @@ public class KeyBindImpl implements KeyBind
 
             int displayTimeMs = MaLiLibConfigs.Generic.KEYBIND_DISPLAY_DURATION.getIntegerValue();
             StyledText text = StyledText.ofStrings(lines);
-            MessageDispatcher.generic().type(MessageType.TOAST).time(displayTimeMs)
+            MessageDispatcher.generic().type(MessageOutput.TOAST).time(displayTimeMs)
                              .messageMarker("keybind_display").append(true).send(text);
         }
     }
@@ -541,7 +541,7 @@ public class KeyBindImpl implements KeyBind
                 heldKeys = Keys.writeKeysToString(PRESSED_KEYS, " + ", Keys::charAsStorageString);
             }
 
-            MessageDispatcher.generic().type(MessageType.TOAST).time(2000).messageMarker("pressed_keys")
+            MessageDispatcher.generic().type(MessageOutput.TOAST).time(2000).messageMarker("pressed_keys")
                              .translate("malilib.label.pressed_keys_toast", heldKeys);
         }
 
@@ -602,7 +602,7 @@ public class KeyBindImpl implements KeyBind
 
         if (MaLiLibConfigs.Debug.KEYBIND_DEBUG_TOAST.getBooleanValue())
         {
-            MessageDispatcher.generic().type(MessageType.TOAST).time(5000).messageMarker("keybind_debug").send(msg);
+            MessageDispatcher.generic().type(MessageOutput.TOAST).time(5000).messageMarker("keybind_debug").send(msg);
         }
     }
 
