@@ -9,7 +9,6 @@ import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import fi.dy.masa.malilib.action.ActionContext;
 import fi.dy.masa.malilib.action.ActionRegistry;
 import fi.dy.masa.malilib.action.NamedAction;
 import fi.dy.masa.malilib.gui.BaseScreen;
@@ -295,7 +294,7 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
     {
         if (this.action != null)
         {
-            this.action.getAction().execute(new ActionContext());
+            this.action.execute();
         }
     }
 

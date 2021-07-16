@@ -3,15 +3,11 @@ package fi.dy.masa.malilib.action;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.function.Function;
-import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import fi.dy.masa.malilib.config.option.BooleanConfig;
-import fi.dy.masa.malilib.config.option.HotkeyedBooleanConfig;
-import fi.dy.masa.malilib.overlay.message.MessageOutput;
+import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.StringUtils;
@@ -34,7 +30,9 @@ public class NamedAction
 
     public NamedAction(ModInfo mod, String name, Action action)
     {
-        this(mod, name, createRegistryNameFor(mod, name), createTranslationKeyFor(mod, name), action);
+        this(mod, name,
+             ActionUtils.createRegistryNameFor(mod, name),
+             ActionUtils.createTranslationKeyFor(mod, name), action);
     }
 
     public NamedAction(ModInfo mod, String name, String registryName,
@@ -75,6 +73,16 @@ public class NamedAction
     public boolean getNeedsArguments()
     {
         return this.needsArguments;
+    }
+
+    public ActionResult execute()
+    {
+        return this.execute(new ActionContext());
+    }
+
+    public ActionResult execute(ActionContext ctx)
+    {
+        return this.action.execute(ctx);
     }
 
     public AliasAction createAlias(String aliasName, @Nullable String argument)
@@ -165,103 +173,4 @@ public class NamedAction
         return new NamedAction(mod, name, EventAction.of(listener));
     }
 
-    public static NamedAction createToggleActionWithToggleMessage(ModInfo mod, String name, BooleanConfig config)
-    {
-        return createToggleActionWithToggleMessage(mod, name, config, null);
-    }
-
-    public static NamedAction createToggleActionWithToggleMessage(ModInfo mod, String name, BooleanConfig config,
-                                                                  @Nullable Function<BooleanConfig, String> messageFactory)
-    {
-        return new NamedAction(mod, name, BooleanToggleAction.of(config, messageFactory));
-    }
-
-    public static NamedAction createToggleActionWithToggleMessage(ModInfo mod, String name, BooleanConfig config,
-                                                                  @Nullable Function<BooleanConfig, String> messageFactory,
-                                                                  @Nullable Supplier<MessageOutput> messageTypeSupplier)
-    {
-        return new NamedAction(mod, name, BooleanToggleAction.of(config, messageFactory, messageTypeSupplier));
-    }
-
-    public static NamedAction register(ModInfo modInfo, String name, EventListener action)
-    {
-        NamedAction namedAction = NamedAction.of(modInfo, name, action);
-        namedAction.setCommentIfTranslationExists(modInfo.getModId(), name);
-        ActionRegistry.INSTANCE.registerAction(namedAction);
-        return namedAction;
-    }
-
-    public static NamedAction register(ModInfo modInfo, String name, Action action)
-    {
-        NamedAction namedAction = NamedAction.of(modInfo, name, action);
-        namedAction.setCommentIfTranslationExists(modInfo.getModId(), name);
-        ActionRegistry.INSTANCE.registerAction(namedAction);
-        return namedAction;
-    }
-
-    public static NamedAction registerToggle(ModInfo modInfo, String name, BooleanConfig config)
-    {
-        return registerToggle(modInfo, name, config, null, null);
-    }
-
-    public static NamedAction registerToggle(ModInfo modInfo, String name, BooleanConfig config,
-                                             @Nullable Function<BooleanConfig, String> messageFactory,
-                                             @Nullable Supplier<MessageOutput> messageTypeSupplier)
-    {
-        NamedAction namedAction = NamedAction.createToggleActionWithToggleMessage(modInfo, name, config,
-                                                                                  messageFactory, messageTypeSupplier);
-        namedAction.setCommentTranslationKey(config.getCommentTranslationKey());
-        ActionRegistry.INSTANCE.registerAction(namedAction);
-        return namedAction;
-    }
-
-    public static NamedAction registerToggleKey(ModInfo modInfo, String name, HotkeyedBooleanConfig config)
-    {
-        NamedAction namedAction = of(modInfo, name, config.getToggleAction());
-        ActionRegistry.INSTANCE.registerAction(namedAction);
-        return namedAction;
-    }
-
-    /**
-     * Constructs the default registry name for the given action,
-     * in the format "modid:action_name".
-     */
-    public static String createRegistryNameFor(ModInfo modInfo, String name)
-    {
-        return modInfo.getModId() + ":" + name;
-    }
-
-    /**
-     * Constructs the default translation key for the given action.
-     * Tries, in order the keys in the format "modid.action.name.action_name",
-     * "modid.hotkey.name.action_name" and "modid.config.name.action_name"
-     * to see which one has a translation.
-     * If none of them do, then the name is returned as-is.
-     */
-    public static String createTranslationKeyFor(ModInfo modInfo, String name)
-    {
-        String modId = modInfo.getModId();
-        String key = modId + ".action.name." + name.toLowerCase(Locale.ROOT);
-
-        if (StringUtils.translate(key).equals(key) == false)
-        {
-            return key;
-        }
-
-        key = modId + ".hotkey.name." + name.toLowerCase(Locale.ROOT);
-
-        if (StringUtils.translate(key).equals(key) == false)
-        {
-            return key;
-        }
-
-        key = modId + ".config.name." + name.toLowerCase(Locale.ROOT);
-
-        if (StringUtils.translate(key).equals(key) == false)
-        {
-            return key;
-        }
-
-        return name;
-    }
 }

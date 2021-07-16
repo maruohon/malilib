@@ -88,8 +88,8 @@ public class NamedParameterizedAction extends NamedAction
 
     public static NamedAction register(ModInfo modInfo, String name, ParameterizedAction action)
     {
-        NamedAction namedAction = new NamedParameterizedAction(modInfo, name, createRegistryNameFor(modInfo, name),
-                                                               createTranslationKeyFor(modInfo, name),
+        NamedAction namedAction = new NamedParameterizedAction(modInfo, name, ActionUtils.createRegistryNameFor(modInfo, name),
+                                                               ActionUtils.createTranslationKeyFor(modInfo, name),
                                                                BaseParameterizedAction.of(action));
         namedAction.setCommentIfTranslationExists(modInfo.getModId(), name);
         ActionRegistry.INSTANCE.registerAction(namedAction);

@@ -191,6 +191,16 @@ public class AdjustableValueHotkeyCallback implements HotkeyCallback
         return ActionResult.PASS;
     }
 
+    public static ActionResult scrollAdjustDecrease(ActionContext ctx)
+    {
+        return onScrollAdjust(-1);
+    }
+
+    public static ActionResult scrollAdjustIncrease(ActionContext ctx)
+    {
+        return onScrollAdjust(1);
+    }
+
     public static AdjustableValueHotkeyCallback create(@Nullable BooleanConfig toggleConfig, OptionListConfig<?> config)
     {
         IntConsumer adjuster = (v) -> config.cycleValue(v > 0);

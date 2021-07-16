@@ -1,7 +1,6 @@
 package fi.dy.masa.malilib.gui.widget.list.entry;
 
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.action.ActionContext;
 import fi.dy.masa.malilib.action.NamedAction;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
@@ -20,7 +19,7 @@ public class ActionPromptNamedActionEntryWidget extends NamedActionEntryWidget
     {
         // Close the current screen first, in case the action opens another screen
         BaseScreen.openScreen(null);
-        this.data.getAction().execute(new ActionContext());
+        this.data.execute();
         return true;
     }
 }

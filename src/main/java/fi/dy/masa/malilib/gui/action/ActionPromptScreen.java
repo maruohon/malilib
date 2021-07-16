@@ -128,7 +128,7 @@ public class ActionPromptScreen extends BaseListScreen<DataListWidget<NamedActio
 
             if (action != null)
             {
-                action.getAction().execute(new ActionContext());
+                action.execute();
             }
         }
         else if (keyCode == Keyboard.KEY_ESCAPE)

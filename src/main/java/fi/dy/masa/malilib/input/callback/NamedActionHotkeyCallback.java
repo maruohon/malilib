@@ -1,6 +1,5 @@
 package fi.dy.masa.malilib.input.callback;
 
-import fi.dy.masa.malilib.action.ActionContext;
 import fi.dy.masa.malilib.action.NamedAction;
 import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.input.KeyAction;
@@ -23,6 +22,6 @@ public class NamedActionHotkeyCallback implements HotkeyCallback
     @Override
     public ActionResult onKeyAction(KeyAction action, KeyBind key)
     {
-        return this.action.getAction().execute(new ActionContext());
+        return this.action.execute();
     }
 }

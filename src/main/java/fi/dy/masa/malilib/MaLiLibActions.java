@@ -18,8 +18,8 @@ public class MaLiLibActions
 {
     public static final NamedAction OPEN_ACTION_PROMPT_SCREEN       = register("openActionPromptScreen", ActionPromptScreen::openActionPromptScreen);
     public static final NamedAction OPEN_CONFIG_SCREEN              = register("openConfigScreen", MaLiLibConfigScreen::open);
-    public static final NamedAction SCROLL_VALUE_ADJUST_DECREASE    = register("scrollValueAdjustDecrease", (ctx) -> AdjustableValueHotkeyCallback.onScrollAdjust(-1));
-    public static final NamedAction SCROLL_VALUE_ADJUST_INCREASE    = register("scrollValueAdjustIncrease", (ctx) -> AdjustableValueHotkeyCallback.onScrollAdjust(1));
+    public static final NamedAction SCROLL_VALUE_ADJUST_DECREASE    = register("scrollValueAdjustDecrease", AdjustableValueHotkeyCallback::scrollAdjustDecrease);
+    public static final NamedAction SCROLL_VALUE_ADJUST_INCREASE    = register("scrollValueAdjustIncrease", AdjustableValueHotkeyCallback::scrollAdjustIncrease);
 
     public static void init()
     {
@@ -36,12 +36,12 @@ public class MaLiLibActions
 
     private static NamedAction register(String name, EventListener action)
     {
-        return NamedAction.register(MaLiLibReference.MOD_INFO, name, action);
+        return ActionUtils.register(MaLiLibReference.MOD_INFO, name, action);
     }
 
     private static NamedAction register(String name, Action action)
     {
-        return NamedAction.register(MaLiLibReference.MOD_INFO, name, action);
+        return ActionUtils.register(MaLiLibReference.MOD_INFO, name, action);
     }
 
     private static NamedAction register(String name, ParameterizedAction action)

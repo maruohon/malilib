@@ -33,7 +33,7 @@ public class MacroAction extends NamedAction
     {
         for (NamedAction action : this.actionList)
         {
-            action.getAction().execute(ctx);
+            action.execute(ctx);
         }
 
         return ActionResult.SUCCESS;
@@ -98,7 +98,8 @@ public class MacroAction extends NamedAction
 
         if (el.isJsonObject())
         {
-            JsonUtils.readArrayElementsIfPresent(el.getAsJsonObject(), "actions", (e) -> MacroAction.readAction(e, registry, actions));
+            JsonUtils.readArrayElementsIfPresent(el.getAsJsonObject(), "actions",
+                                                 (e) -> MacroAction.readAction(e, registry, actions));
         }
 
         return new MacroAction(name, ImmutableList.copyOf(actions));
@@ -112,7 +113,8 @@ public class MacroAction extends NamedAction
         if (action == null)
         {
             // Preserve entries in the config file if a mod is temporarily disabled/removed, for example
-            action = new NamedAction(ModInfo.NO_MOD, registryName, registryName, registryName, (ctx) -> ActionResult.PASS);
+            action = new NamedAction(ModInfo.NO_MOD, registryName, registryName, registryName,
+                                     (ctx) -> ActionResult.PASS);
         }
 
         actions.add(action);

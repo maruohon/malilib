@@ -10,6 +10,7 @@ import fi.dy.masa.malilib.gui.config.ConfigTabRegistry;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.input.CustomHotkeyManager;
 import fi.dy.masa.malilib.input.HotkeyManager;
+import fi.dy.masa.malilib.input.callback.AdjustableValueHotkeyCallback;
 import fi.dy.masa.malilib.input.callback.HotkeyCallback;
 import fi.dy.masa.malilib.network.message.MessagePacketHandler;
 import fi.dy.masa.malilib.overlay.InfoOverlay;
@@ -29,8 +30,8 @@ public class MaLiLibInitHandler implements InitializationHandler
 
         MaLiLibConfigs.Hotkeys.OPEN_ACTION_PROMPT_SCREEN.getKeyBind().setCallback(HotkeyCallback.of(MaLiLibActions.OPEN_ACTION_PROMPT_SCREEN));
         MaLiLibConfigs.Hotkeys.OPEN_CONFIG_SCREEN.getKeyBind().setCallback(HotkeyCallback.of(MaLiLibActions.OPEN_CONFIG_SCREEN));
-        MaLiLibConfigs.Hotkeys.SCROLL_VALUE_ADJUST_DECREASE.getKeyBind().setCallback(HotkeyCallback.of(MaLiLibActions.SCROLL_VALUE_ADJUST_DECREASE.getAction()));
-        MaLiLibConfigs.Hotkeys.SCROLL_VALUE_ADJUST_INCREASE.getKeyBind().setCallback(HotkeyCallback.of(MaLiLibActions.SCROLL_VALUE_ADJUST_INCREASE.getAction()));
+        MaLiLibConfigs.Hotkeys.SCROLL_VALUE_ADJUST_DECREASE.getKeyBind().setCallback(HotkeyCallback.of(AdjustableValueHotkeyCallback::scrollAdjustDecrease));
+        MaLiLibConfigs.Hotkeys.SCROLL_VALUE_ADJUST_INCREASE.getKeyBind().setCallback(HotkeyCallback.of(AdjustableValueHotkeyCallback::scrollAdjustIncrease));
 
         MaLiLibConfigs.Generic.OPTION_LIST_CONFIG_DROPDOWN.addValueChangeListener(GuiUtils::reInitCurrentScreen);
         MaLiLibConfigs.Generic.CUSTOM_SCREEN_SCALE.addValueChangeListener(BaseScreen::applyCustomScreenScaleChange);
