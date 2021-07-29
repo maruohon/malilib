@@ -23,13 +23,6 @@ public class MessageOutput extends BaseOptionListConfigValue
     protected final BiConsumer<String, MessageDispatcher> stringMessageDispatcher;
     protected final BiConsumer<StyledText, MessageDispatcher> styledTextMessageDispatcher;
 
-    private MessageOutput(String name,
-                          BiConsumer<String, MessageDispatcher> stringMessageDispatcher,
-                          BiConsumer<StyledText, MessageDispatcher> styledTextMessageDispatcher)
-    {
-        this(name, "malilib.label.message_output." + name, stringMessageDispatcher, styledTextMessageDispatcher);
-    }
-
     public MessageOutput(String name,
                          String translationKey,
                          BiConsumer<String, MessageDispatcher> stringMessageDispatcher,
