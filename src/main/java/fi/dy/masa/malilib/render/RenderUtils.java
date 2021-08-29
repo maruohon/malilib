@@ -39,6 +39,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Quaternion;
 import net.minecraft.util.math.Vec3d;
@@ -1071,7 +1072,7 @@ public class RenderUtils
         }
     }
 
-    public static void renderShulkerBoxPreview(ItemStack stack, int x, int y, boolean useBgColors)
+    public static void renderShulkerBoxPreview(ItemStack stack, int baseX, int baseY, boolean useBgColors)
     {
         if (stack.hasNbt())
         {
@@ -1082,16 +1083,14 @@ public class RenderUtils
                 return;
             }
 
-            MatrixStack matrixStack = RenderSystem.getModelViewStack();
-            matrixStack.push();
-            disableDiffuseLighting();
-            matrixStack.translate(0, 0, 400);
-
             InventoryOverlay.InventoryRenderType type = InventoryOverlay.getInventoryType(stack);
             InventoryOverlay.InventoryProperties props = InventoryOverlay.getInventoryPropsTemp(type, items.size());
 
-            x += 8;
-            y -= (props.height + 18);
+            int screenWidth = GuiUtils.getScaledWindowWidth();
+            int screenHeight = GuiUtils.getScaledWindowHeight();
+            int height = props.height + 18;
+            int x = MathHelper.clamp(baseX + 8     , 0, screenWidth - props.width);
+            int y = MathHelper.clamp(baseY - height, 0, screenHeight - height);
 
             if (stack.getItem() instanceof BlockItem && ((BlockItem) stack.getItem()).getBlock() instanceof ShulkerBoxBlock)
             {
@@ -1102,16 +1101,20 @@ public class RenderUtils
                 color(1f, 1f, 1f, 1f);
             }
 
+            disableDiffuseLighting();
+            MatrixStack matrixStack = RenderSystem.getModelViewStack();
+            matrixStack.push();
+            matrixStack.translate(0, 0, 400);
+
             InventoryOverlay.renderInventoryBackground(type, x, y, props.slotsPerRow, items.size(), mc());
 
             enableDiffuseLightingGui3D();
-            RenderSystem.enableDepthTest();
 
             Inventory inv = fi.dy.masa.malilib.util.InventoryUtils.getAsInventory(items);
             InventoryOverlay.renderInventoryStacks(type, inv, x + props.slotOffsetX, y + props.slotOffsetY, props.slotsPerRow, 0, -1, mc());
 
-            RenderSystem.disableDepthTest();
             matrixStack.pop();
+            RenderSystem.applyModelViewMatrix();
         }
     }
 
