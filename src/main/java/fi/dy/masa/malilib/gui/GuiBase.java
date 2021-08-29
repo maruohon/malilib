@@ -154,7 +154,7 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
     {
         if (showParent)
         {
-            this.mc.openScreen(this.parent);
+            this.mc.setScreen(this.parent);
         }
         else
         {
@@ -641,7 +641,7 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
 
     public static void openGui(Screen gui)
     {
-        MinecraftClient.getInstance().openScreen(gui);
+        MinecraftClient.getInstance().setScreen(gui);
     }
 
     public static boolean isShiftDown()

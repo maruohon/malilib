@@ -1073,7 +1073,7 @@ public class RenderUtils
 
     public static void renderShulkerBoxPreview(ItemStack stack, int x, int y, boolean useBgColors)
     {
-        if (stack.hasTag())
+        if (stack.hasNbt())
         {
             DefaultedList<ItemStack> items = InventoryUtils.getStoredItems(stack, -1);
 

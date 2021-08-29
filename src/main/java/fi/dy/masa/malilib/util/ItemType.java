@@ -12,7 +12,7 @@ import net.minecraft.util.registry.Registry;
 public class ItemType
 {
     private ItemStack stack;
-    private boolean checkNBT;
+    private final boolean checkNBT;
 
     public ItemType(ItemStack stack)
     {
@@ -49,7 +49,7 @@ public class ItemType
 
         if (this.checkNBT())
         {
-            result = prime * result + (this.stack.getTag() != null ? this.stack.getTag().hashCode() : 0);
+            result = prime * result + (this.stack.getNbt() != null ? this.stack.getNbt().hashCode() : 0);
         }
 
         return result;
@@ -62,17 +62,14 @@ public class ItemType
             return true;
         if (obj == null)
             return false;
-        if (getClass() != obj.getClass())
+        if (this.getClass() != obj.getClass())
             return false;
 
         ItemType other = (ItemType) obj;
 
         if (this.stack.isEmpty() || other.stack.isEmpty())
         {
-            if (this.stack.isEmpty() != other.stack.isEmpty())
-            {
-                return false;
-            }
+            return this.stack.isEmpty() == other.stack.isEmpty();
         }
         else
         {
@@ -81,10 +78,8 @@ public class ItemType
                 return false;
             }
 
-            return this.checkNBT() == false || ItemStack.areTagsEqual(this.stack, other.stack);
+            return this.checkNBT() == false || ItemStack.areNbtEqual(this.stack, other.stack);
         }
-
-        return true;
     }
 
     @Override
@@ -93,12 +88,11 @@ public class ItemType
         if (this.checkNBT())
         {
             Identifier rl = Registry.ITEM.getId(this.stack.getItem());
-            return rl.toString() + " " + this.stack.getTag();
+            return rl + " " + this.stack.getNbt();
         }
         else
         {
-            Identifier rl = Registry.ITEM.getId(this.stack.getItem());
-            return rl.toString();
+            return Registry.ITEM.getId(this.stack.getItem()).toString();
         }
     }
 }

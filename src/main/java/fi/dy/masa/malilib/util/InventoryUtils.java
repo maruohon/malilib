@@ -37,7 +37,7 @@ public class InventoryUtils
      */
     public static boolean areStacksEqual(ItemStack stack1, ItemStack stack2)
     {
-        return ItemStack.areItemsEqual(stack1, stack2) && ItemStack.areTagsEqual(stack1, stack2);
+        return ItemStack.areItemsEqual(stack1, stack2) && ItemStack.areNbtEqual(stack1, stack2);
     }
 
     /**
@@ -49,7 +49,7 @@ public class InventoryUtils
      */
     public static boolean areStacksEqualIgnoreDurability(ItemStack stack1, ItemStack stack2)
     {
-        return ItemStack.areItemsEqualIgnoreDamage(stack1, stack2) && ItemStack.areTagsEqual(stack1, stack2);
+        return ItemStack.areItemsEqualIgnoreDamage(stack1, stack2) && ItemStack.areNbtEqual(stack1, stack2);
     }
 
     /**
@@ -193,9 +193,8 @@ public class InventoryUtils
         // The method in World now checks that the caller is from the same thread...
         BlockEntity te = world.getWorldChunk(pos).getBlockEntity(pos);
 
-        if (te instanceof Inventory)
+        if (te instanceof Inventory inv)
         {
-            Inventory inv = (Inventory) te;
             BlockState state = world.getBlockState(pos);
 
             if (state.getBlock() instanceof ChestBlock && te instanceof ChestBlockEntity)
@@ -239,7 +238,7 @@ public class InventoryUtils
      */
     public static boolean shulkerBoxHasItems(ItemStack stackShulkerBox)
     {
-        NbtCompound nbt = stackShulkerBox.getTag();
+        NbtCompound nbt = stackShulkerBox.getNbt();
 
         if (nbt != null && nbt.contains("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
         {
@@ -264,7 +263,7 @@ public class InventoryUtils
      */
     public static DefaultedList<ItemStack> getStoredItems(ItemStack stackIn)
     {
-        NbtCompound nbt = stackIn.getTag();
+        NbtCompound nbt = stackIn.getNbt();
 
         if (nbt != null && nbt.contains("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
         {
@@ -303,7 +302,7 @@ public class InventoryUtils
      */
     public static DefaultedList<ItemStack> getStoredItems(ItemStack stackIn, int slotCount)
     {
-        NbtCompound nbt = stackIn.getTag();
+        NbtCompound nbt = stackIn.getNbt();
 
         if (nbt != null && nbt.contains("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
         {
@@ -363,10 +362,8 @@ public class InventoryUtils
         Object2IntOpenHashMap<ItemType> map = new Object2IntOpenHashMap<>();
         DefaultedList<ItemStack> items = getStoredItems(stackShulkerBox);
 
-        for (int slot = 0; slot < items.size(); ++slot)
+        for (ItemStack stack : items)
         {
-            ItemStack stack = items.get(slot);
-
             if (stack.isEmpty() == false)
             {
                 map.addTo(new ItemType(stack), stack.getCount());
