@@ -18,8 +18,7 @@ import fi.dy.masa.malilib.hotkeys.IKeyboardInputHandler;
 import fi.dy.masa.malilib.hotkeys.IMouseInputHandler;
 import fi.dy.masa.malilib.hotkeys.KeybindCategory;
 import fi.dy.masa.malilib.hotkeys.KeybindMulti;
-import fi.dy.masa.malilib.util.KeyCodes;
-import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import fi.dy.masa.malilib.util.InfoUtils;
 
 public class InputEventHandler implements IKeybindManager, IInputManager
 {
@@ -28,7 +27,6 @@ public class InputEventHandler implements IKeybindManager, IInputManager
     private final MinecraftClient mc;
     private final Multimap<Integer, IKeybind> hotkeyMap = ArrayListMultimap.create();
     private final List<KeybindCategory> allKeybinds = new ArrayList<>();
-    private final IntOpenHashSet modifierKeys = new IntOpenHashSet();
     private final List<IKeybindProvider> keybindProviders = new ArrayList<>();
     private final List<IKeyboardInputHandler> keyboardHandlers = new ArrayList<>();
     private final List<IMouseInputHandler> mouseHandlers = new ArrayList<>();
@@ -37,12 +35,6 @@ public class InputEventHandler implements IKeybindManager, IInputManager
     private InputEventHandler()
     {
         this.mc = MinecraftClient.getInstance();
-        this.modifierKeys.add(KeyCodes.KEY_LEFT_SHIFT);
-        this.modifierKeys.add(KeyCodes.KEY_RIGHT_SHIFT);
-        this.modifierKeys.add(KeyCodes.KEY_LEFT_CONTROL);
-        this.modifierKeys.add(KeyCodes.KEY_RIGHT_CONTROL);
-        this.modifierKeys.add(KeyCodes.KEY_LEFT_ALT);
-        this.modifierKeys.add(KeyCodes.KEY_RIGHT_ALT);
     }
 
     public static IKeybindManager getKeybindManager()
@@ -162,10 +154,7 @@ public class InputEventHandler implements IKeybindManager, IInputManager
             }
         }
 
-        // Somewhat hacky fix to prevent eating the modifier keys... >_>
-        // A proper fix would likely require adding a context for the keys,
-        // and only cancel if the context is currently active/valid.
-        return cancel && this.isModifierKey(keyCode) == false;
+        return cancel;
     }
 
     /**
@@ -266,11 +255,6 @@ public class InputEventHandler implements IKeybindManager, IInputManager
                 handler.onMouseMove(mouseX, mouseY);
             }
         }
-    }
-
-    private boolean isModifierKey(int eventKey)
-    {
-        return this.modifierKeys.contains(eventKey);
     }
 
     private boolean checkKeyBindsForChanges(int eventKey)
