@@ -8,6 +8,7 @@ import com.google.common.collect.Multimap;
 import net.minecraft.client.MinecraftClient;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.MaLiLibConfigs;
+import fi.dy.masa.malilib.gui.Message;
 import fi.dy.masa.malilib.hotkeys.IHotkey;
 import fi.dy.masa.malilib.hotkeys.IInputManager;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
@@ -155,6 +156,7 @@ public class InputEventHandler implements IKeybindManager, IInputManager
             {
                 if (handler.onKeyInput(keyCode, scanCode, modifiers, eventKeyState))
                 {
+                    this.printInputCancellationDebugMessage(handler);
                     return true;
                 }
             }
@@ -186,6 +188,7 @@ public class InputEventHandler implements IKeybindManager, IInputManager
                 {
                     if (handler.onMouseClick(mouseX, mouseY, eventButton, eventButtonState))
                     {
+                        this.printInputCancellationDebugMessage(handler);
                         return true;
                     }
                 }
@@ -193,6 +196,16 @@ public class InputEventHandler implements IKeybindManager, IInputManager
         }
 
         return cancel;
+    }
+
+    private void printInputCancellationDebugMessage(Object handler)
+    {
+        if (MaLiLibConfigs.Debug.INPUT_CANCELLATION_DEBUG.getBooleanValue())
+        {
+            String msg = String.format("Cancel requested by input handler '%s'", handler.getClass().getName());
+            InfoUtils.showInGameMessage(Message.MessageType.INFO, msg);
+            MaLiLib.logger.info(msg);
+        }
     }
 
     /**
@@ -231,6 +244,7 @@ public class InputEventHandler implements IKeybindManager, IInputManager
                 {
                     if (handler.onMouseScroll(mouseX, mouseY, amount))
                     {
+                        this.printInputCancellationDebugMessage(handler);
                         return true;
                     }
                 }

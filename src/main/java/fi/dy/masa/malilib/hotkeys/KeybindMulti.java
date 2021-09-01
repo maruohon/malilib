@@ -12,6 +12,7 @@ import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.MaLiLibConfigs;
+import fi.dy.masa.malilib.gui.Message;
 import fi.dy.masa.malilib.hotkeys.KeybindSettings.Context;
 import fi.dy.masa.malilib.util.GuiUtils;
 import fi.dy.masa.malilib.util.IF3KeyStateSetter;
@@ -183,6 +184,13 @@ public class KeybindMulti implements IKeybind
             {
                 cancel = this.callback.onKeyAction(KeyAction.PRESS, this);
             }
+        }
+
+        if (cancel && MaLiLibConfigs.Debug.INPUT_CANCELLATION_DEBUG.getBooleanValue())
+        {
+            String msg = String.format("Cancel requested by callback '%s'", this.callback.getClass().getName());
+            InfoUtils.showInGameMessage(Message.MessageType.INFO, msg);
+            MaLiLib.logger.info(msg);
         }
 
         return cancel;
