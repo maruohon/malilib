@@ -51,6 +51,21 @@ public class WidgetDirectoryEntry extends WidgetListEntryBase<DirectoryEntry>
     @Override
     public void render(int mouseX, int mouseY, boolean selected, MatrixStack matrixStack)
     {
+        // Draw a lighter background for the hovered and the selected entry
+        if (selected || this.isMouseOver(mouseX, mouseY))
+        {
+            RenderUtils.drawRect(this.x, this.y, this.width, this.height, 0x70FFFFFF);
+        }
+        else if (this.isOdd)
+        {
+            RenderUtils.drawRect(this.x, this.y, this.width, this.height, 0x20FFFFFF);
+        }
+        // Draw a slightly lighter background for even entries
+        else
+        {
+            RenderUtils.drawRect(this.x, this.y, this.width, this.height, 0x38FFFFFF);
+        }
+
         IGuiIcon icon = null;
 
         switch (this.entry.getType())
@@ -70,22 +85,7 @@ public class WidgetDirectoryEntry extends WidgetListEntryBase<DirectoryEntry>
         {
             RenderUtils.color(1f, 1f, 1f, 1f);
             this.bindTexture(icon.getTexture());
-            icon.renderAt(this.x, this.y + (this.height - icon.getHeight()) / 2, this.zLevel + 1, false, false);
-        }
-
-        // Draw a lighter background for the hovered and the selected entry
-        if (selected || this.isMouseOver(mouseX, mouseY))
-        {
-            RenderUtils.drawRect(this.x, this.y, this.width, this.height, 0x70FFFFFF);
-        }
-        else if (this.isOdd)
-        {
-            RenderUtils.drawRect(this.x, this.y, this.width, this.height, 0x20FFFFFF);
-        }
-        // Draw a slightly lighter background for even entries
-        else
-        {
-            RenderUtils.drawRect(this.x, this.y, this.width, this.height, 0x38FFFFFF);
+            icon.renderAt(this.x, this.y + (this.height - icon.getHeight()) / 2, this.zLevel + 10, false, false);
         }
 
         // Draw an outline if this is the currently selected entry
