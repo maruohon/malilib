@@ -60,9 +60,9 @@
     "malilib.gui.label.render_layers.layer_max": "Максимальный слой",
     "malilib.gui.label.render_layers.layer_min": "Минимальный слой",
 
-    "malilib.gui.title.all_hotkeys": "Все зарегистированные клавиши",
+    "malilib.gui.title.all_hotkeys": "Все зарегистрированные клавиши",
     "malilib.gui.title.color_editor": "Редактор цвета",
-    "malilib.gui.title.configs": "Настройки мода Malilib",
+    "malilib.gui.title.configs": "Настройки Malilib",
     "malilib.gui.title.create_directory": "Создать новую папку",
     "malilib.gui.title.debug": "Отладка",
     "malilib.gui.title.generic": "Общие",
