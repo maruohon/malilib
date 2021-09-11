@@ -1,6 +1,6 @@
 {
     "malilib.config.comment.keybind_settings.activate_on": "Активируется ли действие при нажатии\nили отпускании сочетания клавиш",
-    "malilib.config.comment.keybind_settings.allow_empty_keybind": "Если сочетание клавиш не задано, другие\nсочетания при проверке будут считать его\nвсегда активным",
+    "malilib.config.comment.keybind_settings.allow_empty_keybind": "Если сочетание клавиш не задано, другие\nсочетания всегда будут считать его активным,\n если их срабатывание требует его активации",
     "malilib.config.comment.keybind_settings.allow_extra_keys": "Можно ли удерживать сторонние клавиши\nво время нажатия сочетания",
     "malilib.config.comment.keybind_settings.cancel_further": "Отключает обработку игрой последней клавиши сочетания,\nчтобы избежать двойного срабатывания клавиши\n(напимер, при открытии окна с поиском)",
     "malilib.config.comment.keybind_settings.context": "Срабатывает ли сочетание клавиш в\nигре или в графическом интерфейсе",
