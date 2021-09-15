@@ -602,7 +602,7 @@ public class JsonUtils
                 BackupUtils.createRollingBackup(saveFile, backupDir, ".bak_", backupCount, deDuplicate);
             }
 
-            return JsonUtils.writeJsonToFile(dataSource.get(), saveFile);
+            return writeJsonToFile(dataSource.get(), saveFile);
         }
 
         return false;
@@ -614,7 +614,7 @@ public class JsonUtils
 
         if (saveFile.exists() && saveFile.isFile() && saveFile.canRead())
         {
-            JsonElement element = JsonUtils.parseJsonFile(saveFile);
+            JsonElement element = parseJsonFile(saveFile);
 
             if (element != null)
             {

@@ -68,9 +68,17 @@ public class KeyBindSettingsConfigs
         this.cfgShowToast.setValueChangeCallback(cbb);
         this.cfgCancel.setValueChangeCallback((nv, ov) -> this.onValueChanged());
 
-        this.configList = ImmutableList.of(this.cfgActivateOn, this.cfgContext, this.cfgCancel, this.cfgAllowEmpty,
-                                           this.cfgAllowExtra, this.cfgOrderSensitive, this.cfgExclusive,
-                                           this.cfgFirstOnly, this.cfgShowToast, this.cfgMessageType, this.cfgPriority);
+        this.configList = ImmutableList.of(this.cfgActivateOn,
+                                           this.cfgContext,
+                                           this.cfgCancel,
+                                           this.cfgAllowEmpty,
+                                           this.cfgAllowExtra,
+                                           this.cfgOrderSensitive,
+                                           this.cfgExclusive,
+                                           this.cfgFirstOnly,
+                                           this.cfgPriority,
+                                           this.cfgMessageType,
+                                           this.cfgShowToast);
     }
 
     protected void onValueChanged()
