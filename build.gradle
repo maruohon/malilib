@@ -7,7 +7,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'net.fabricmc:fabric-loom:0.5-SNAPSHOT'
+        classpath 'net.fabricmc:fabric-loom:0.7-SNAPSHOT'
     }
 }
 
@@ -20,6 +20,10 @@ plugins {
     id 'maven-publish'
 }
 */
+
+repositories {
+    maven { url 'https://maven.terraformersmc.com/releases/' }
+}
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
@@ -35,13 +39,13 @@ configFile.withReader {
 dependencies {
     minecraft "com.mojang:minecraft:${config.minecraft_version}"
     mappings "net.fabricmc:yarn:${config.mappings_version}:v2"
-    modCompile "net.fabricmc:fabric-loader:${config.fabric_loader_version}"
-    compile "com.google.code.findbugs:jsr305:3+"
+    modImplementation "net.fabricmc:fabric-loader:${config.fabric_loader_version}"
+    implementation "com.google.code.findbugs:jsr305:3+"
 
     // Fabric API. This is technically optional, but you probably want it anyway.
-    //modCompile "net.fabricmc.fabric-api:fabric-api:" + config.fabric_version
+    //modImplementation "net.fabricmc.fabric-api:fabric-api:" + config.fabric_version
 
-    modCompile "net.fabricmc.fabric-api:fabric-resource-loader-v0:${config.fabric_resource_loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-resource-loader-v0:${config.fabric_resource_loader_version}"
     include "net.fabricmc.fabric-api:fabric-resource-loader-v0:${config.fabric_resource_loader_version}"
 
     modCompileOnly "io.github.prospector:modmenu:${config.mod_menu_version}"

@@ -8,7 +8,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 import org.lwjgl.glfw.GLFW;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.options.KeyBinding;
+import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.MaLiLibConfigs;

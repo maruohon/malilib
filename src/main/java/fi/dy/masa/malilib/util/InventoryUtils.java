@@ -14,8 +14,8 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
@@ -239,15 +239,15 @@ public class InventoryUtils
      */
     public static boolean shulkerBoxHasItems(ItemStack stackShulkerBox)
     {
-        CompoundTag nbt = stackShulkerBox.getTag();
+        NbtCompound nbt = stackShulkerBox.getTag();
 
         if (nbt != null && nbt.contains("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
         {
-            CompoundTag tag = nbt.getCompound("BlockEntityTag");
+            NbtCompound tag = nbt.getCompound("BlockEntityTag");
 
             if (tag.contains("Items", Constants.NBT.TAG_LIST))
             {
-                ListTag tagList = tag.getList("Items", Constants.NBT.TAG_COMPOUND);
+                NbtList tagList = tag.getList("Items", Constants.NBT.TAG_COMPOUND);
                 return tagList.size() > 0;
             }
         }
@@ -264,21 +264,21 @@ public class InventoryUtils
      */
     public static DefaultedList<ItemStack> getStoredItems(ItemStack stackIn)
     {
-        CompoundTag nbt = stackIn.getTag();
+        NbtCompound nbt = stackIn.getTag();
 
         if (nbt != null && nbt.contains("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
         {
-            CompoundTag tagBlockEntity = nbt.getCompound("BlockEntityTag");
+            NbtCompound tagBlockEntity = nbt.getCompound("BlockEntityTag");
 
             if (tagBlockEntity.contains("Items", Constants.NBT.TAG_LIST))
             {
                 DefaultedList<ItemStack> items = DefaultedList.of();
-                ListTag tagList = tagBlockEntity.getList("Items", Constants.NBT.TAG_COMPOUND);
+                NbtList tagList = tagBlockEntity.getList("Items", Constants.NBT.TAG_COMPOUND);
                 final int count = tagList.size();
 
                 for (int i = 0; i < count; ++i)
                 {
-                    ItemStack stack = ItemStack.fromTag(tagList.getCompound(i));
+                    ItemStack stack = ItemStack.fromNbt(tagList.getCompound(i));
 
                     if (stack.isEmpty() == false)
                     {
@@ -303,15 +303,15 @@ public class InventoryUtils
      */
     public static DefaultedList<ItemStack> getStoredItems(ItemStack stackIn, int slotCount)
     {
-        CompoundTag nbt = stackIn.getTag();
+        NbtCompound nbt = stackIn.getTag();
 
         if (nbt != null && nbt.contains("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
         {
-            CompoundTag tagBlockEntity = nbt.getCompound("BlockEntityTag");
+            NbtCompound tagBlockEntity = nbt.getCompound("BlockEntityTag");
 
             if (tagBlockEntity.contains("Items", Constants.NBT.TAG_LIST))
             {
-                ListTag tagList = tagBlockEntity.getList("Items", Constants.NBT.TAG_COMPOUND);
+                NbtList tagList = tagBlockEntity.getList("Items", Constants.NBT.TAG_COMPOUND);
                 final int count = tagList.size();
                 int maxSlot = -1;
 
@@ -319,7 +319,7 @@ public class InventoryUtils
                 {
                     for (int i = 0; i < count; ++i)
                     {
-                        CompoundTag tag = tagList.getCompound(i);
+                        NbtCompound tag = tagList.getCompound(i);
                         int slot = tag.getByte("Slot");
 
                         if (slot > maxSlot)
@@ -335,8 +335,8 @@ public class InventoryUtils
 
                 for (int i = 0; i < count; ++i)
                 {
-                    CompoundTag tag = tagList.getCompound(i);
-                    ItemStack stack = ItemStack.fromTag(tag);
+                    NbtCompound tag = tagList.getCompound(i);
+                    ItemStack stack = ItemStack.fromNbt(tag);
                     int slot = tag.getByte("Slot");
 
                     if (slot >= 0 && slot < items.size() && stack.isEmpty() == false)
