@@ -20,9 +20,9 @@ public class ClientPacketChannelHandlerImpl implements ClientPacketChannelHandle
     public static final ResourceLocation REGISTER = new ResourceLocation("minecraft:register");
     public static final ResourceLocation UNREGISTER = new ResourceLocation("minecraft:unregister");
 
-    private final ArrayListMultimap<ResourceLocation, PluginChannelHandler> handlers = ArrayListMultimap.create();
+    protected final ArrayListMultimap<ResourceLocation, PluginChannelHandler> handlers = ArrayListMultimap.create();
 
-    ClientPacketChannelHandlerImpl()
+    public ClientPacketChannelHandlerImpl()
     {
     }
 
@@ -94,7 +94,7 @@ public class ClientPacketChannelHandlerImpl implements ClientPacketChannelHandle
         return false;
     }
 
-    private void sendRegisterPacket(ResourceLocation type, List<ResourceLocation> channels)
+    protected void sendRegisterPacket(ResourceLocation type, List<ResourceLocation> channels)
     {
         String joinedChannels = channels.stream().map(ResourceLocation::toString).collect(Collectors.joining("\0"));
         ByteBuf payload = Unpooled.wrappedBuffer(joinedChannels.getBytes(Charsets.UTF_8));

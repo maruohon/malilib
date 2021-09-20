@@ -4,8 +4,6 @@ import java.util.List;
 
 public interface HotkeyManager
 {
-    HotkeyManager INSTANCE = new HotkeyManagerImpl();
-
     /**
      * Registers a hotkey provider, which will want to register
      * some hotkeys whenever the key -> keybinds maps need to be rebuilt.<br>

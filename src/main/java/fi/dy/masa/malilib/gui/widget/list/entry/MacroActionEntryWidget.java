@@ -2,7 +2,6 @@ package fi.dy.masa.malilib.gui.widget.list.entry;
 
 import java.util.List;
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.action.ActionRegistry;
 import fi.dy.masa.malilib.action.MacroAction;
 import fi.dy.masa.malilib.action.NamedAction;
 import fi.dy.masa.malilib.gui.BaseScreen;
@@ -11,6 +10,7 @@ import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
+import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.StyledTextUtils;
 import fi.dy.masa.malilib.util.data.LeftRight;
@@ -69,7 +69,7 @@ public class MacroActionEntryWidget extends BaseDataListEntryWidget<MacroAction>
 
     protected void removeMacro()
     {
-        ActionRegistry.INSTANCE.removeMacro(this.data.getRegistryName());
+        Registry.ACTION_REGISTRY.removeMacro(this.data.getRegistryName());
         this.listWidget.refreshEntries();
     }
 }

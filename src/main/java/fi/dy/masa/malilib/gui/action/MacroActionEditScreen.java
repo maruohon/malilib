@@ -9,7 +9,6 @@ import java.util.Set;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
-import fi.dy.masa.malilib.action.ActionRegistry;
 import fi.dy.masa.malilib.action.ActionRegistryImpl;
 import fi.dy.masa.malilib.action.MacroAction;
 import fi.dy.masa.malilib.action.NamedAction;
@@ -20,6 +19,7 @@ import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.NamedActionEntryWidget;
+import fi.dy.masa.malilib.registry.Registry;
 
 public class MacroActionEditScreen extends BaseMultiListScreen
 {
@@ -133,13 +133,13 @@ public class MacroActionEditScreen extends BaseMultiListScreen
         {
             if (this.creating == false)
             {
-                ActionRegistry.INSTANCE.removeMacro(this.originalName);
+                Registry.ACTION_REGISTRY.removeMacro(this.originalName);
             }
 
             MacroAction macro = new MacroAction(name, ImmutableList.copyOf(this.macroActionsList));
-            ActionRegistry.INSTANCE.addMacro(macro);
+            Registry.ACTION_REGISTRY.addMacro(macro);
 
-            ((ActionRegistryImpl) ActionRegistry.INSTANCE).saveToFileIfDirty();
+            ((ActionRegistryImpl) Registry.ACTION_REGISTRY).saveToFileIfDirty();
         }
 
         super.onGuiClosed();
@@ -147,7 +147,7 @@ public class MacroActionEditScreen extends BaseMultiListScreen
 
     protected List<NamedAction> getActions()
     {
-        return ActionRegistry.INSTANCE.getAllActions();
+        return Registry.ACTION_REGISTRY.getAllActions();
     }
 
     protected void addSelectedActions()

@@ -5,15 +5,16 @@ import java.util.Comparator;
 import java.util.List;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
+import fi.dy.masa.malilib.registry.Registry;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 
 public class InputDispatcherImpl implements InputDispatcher
 {
-    private final IntOpenHashSet modifierKeys = new IntOpenHashSet();
-    private final List<KeyboardInputHandler> keyboardHandlers = new ArrayList<>();
-    private final List<MouseInputHandler> mouseHandlers = new ArrayList<>();
+    protected final IntOpenHashSet modifierKeys = new IntOpenHashSet();
+    protected final List<KeyboardInputHandler> keyboardHandlers = new ArrayList<>();
+    protected final List<MouseInputHandler> mouseHandlers = new ArrayList<>();
 
-    InputDispatcherImpl()
+    public InputDispatcherImpl()
     {
         this.modifierKeys.add(Keyboard.KEY_LSHIFT);
         this.modifierKeys.add(Keyboard.KEY_RSHIFT);
@@ -73,14 +74,14 @@ public class InputDispatcherImpl implements InputDispatcher
         // Update the cached pressed keys status
         KeyBindImpl.onKeyInputPre(eventKey, 0, 0, eventChar, eventKeyState);
 
-        boolean cancel = ((HotkeyManagerImpl) HotkeyManager.INSTANCE).checkKeyBindsForChanges(eventKey);
+        boolean cancel = ((HotkeyManagerImpl) Registry.HOTKEY_MANAGER).checkKeyBindsForChanges(eventKey);
 
         // Since char-only keys can't be properly held down (there is no properly detectable release event,
         // the char value in the release event is not set), clear them immediately.
         if (isChar)
         {
             KeyBindImpl.onKeyInputPre(eventKey, 0, 0, eventChar, false);
-            ((HotkeyManagerImpl) HotkeyManager.INSTANCE).checkKeyBindsForChanges(eventKey);
+            ((HotkeyManagerImpl) Registry.HOTKEY_MANAGER).checkKeyBindsForChanges(eventKey);
         }
 
         if (this.keyboardHandlers.isEmpty() == false)
@@ -117,13 +118,13 @@ public class InputDispatcherImpl implements InputDispatcher
             // Update the cached pressed keys status
             KeyBindImpl.onKeyInputPre(keyCode, 0, 0, (char) 0, keyState);
 
-            cancel = ((HotkeyManagerImpl) HotkeyManager.INSTANCE).checkKeyBindsForChanges(keyCode);
+            cancel = ((HotkeyManagerImpl) Registry.HOTKEY_MANAGER).checkKeyBindsForChanges(keyCode);
 
             // Since scroll "keys" can't be held down, clear them immediately
             if (isScroll)
             {
                 KeyBindImpl.onKeyInputPre(keyCode, 0, 0, (char) 0, false);
-                ((HotkeyManagerImpl) HotkeyManager.INSTANCE).checkKeyBindsForChanges(keyCode);
+                ((HotkeyManagerImpl) Registry.HOTKEY_MANAGER).checkKeyBindsForChanges(keyCode);
             }
 
             if (this.mouseHandlers.isEmpty() == false)
@@ -148,7 +149,7 @@ public class InputDispatcherImpl implements InputDispatcher
         return cancel;
     }
 
-    private boolean isModifierKey(int eventKey)
+    protected boolean isModifierKey(int eventKey)
     {
         return this.modifierKeys.contains(eventKey);
     }

@@ -9,8 +9,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.EntityRenderer;
-import fi.dy.masa.malilib.event.dispatch.RenderEventDispatcher;
 import fi.dy.masa.malilib.event.dispatch.RenderEventDispatcherImpl;
+import fi.dy.masa.malilib.registry.Registry;
 
 @Mixin(EntityRenderer.class)
 public abstract class MixinEntityRenderer
@@ -25,7 +25,7 @@ public abstract class MixinEntityRenderer
     {
         if (this.mc.world != null && this.mc.player != null)
         {
-            ((RenderEventDispatcherImpl) RenderEventDispatcher.INSTANCE).onRenderWorldLast(this.mc, partialTicks);
+            ((RenderEventDispatcherImpl) Registry.RENDER_EVENT_DISPATCHER).onRenderWorldLast(this.mc, partialTicks);
         }
     }
 
@@ -37,7 +37,7 @@ public abstract class MixinEntityRenderer
     {
         if (this.mc.world != null && this.mc.player != null)
         {
-            ((RenderEventDispatcherImpl) RenderEventDispatcher.INSTANCE).onRenderGameOverlayPost(this.mc, partialTicks);
+            ((RenderEventDispatcherImpl) Registry.RENDER_EVENT_DISPATCHER).onRenderGameOverlayPost(this.mc, partialTicks);
         }
     }
 
@@ -49,7 +49,7 @@ public abstract class MixinEntityRenderer
     {
         if (this.mc.world != null && this.mc.player != null)
         {
-            ((RenderEventDispatcherImpl) RenderEventDispatcher.INSTANCE).onRenderScreenPost(this.mc, partialTicks);
+            ((RenderEventDispatcherImpl) Registry.RENDER_EVENT_DISPATCHER).onRenderScreenPost(this.mc, partialTicks);
         }
     }
 }

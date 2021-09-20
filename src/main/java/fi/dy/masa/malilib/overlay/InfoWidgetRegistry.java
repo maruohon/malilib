@@ -12,11 +12,9 @@ import fi.dy.masa.malilib.overlay.widget.ToastRendererWidget;
 
 public class InfoWidgetRegistry
 {
-    public static final InfoWidgetRegistry INSTANCE = new InfoWidgetRegistry();
-
     protected final Map<String, InfoWidgetFactory> widgetFactoriesByType = new HashMap<>();
 
-    private InfoWidgetRegistry()
+    public InfoWidgetRegistry()
     {
         this.registerDefaultFactories();
     }

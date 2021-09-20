@@ -10,11 +10,10 @@ import fi.dy.masa.malilib.action.ActionContext;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.gui.position.ScreenLocation;
 import fi.dy.masa.malilib.input.ActionResult;
-import fi.dy.masa.malilib.overlay.InfoOverlay;
-import fi.dy.masa.malilib.overlay.InfoWidgetManager;
 import fi.dy.masa.malilib.overlay.widget.InfoRendererWidget;
 import fi.dy.masa.malilib.overlay.widget.MessageRendererWidget;
 import fi.dy.masa.malilib.overlay.widget.ToastRendererWidget;
+import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class MessageUtils
@@ -42,7 +41,7 @@ public class MessageUtils
                 widget.getMarkerManager().addMarker(marker);
             }
 
-            InfoWidgetManager.INSTANCE.addWidget(widget);
+            Registry.INFO_WIDGET_MANAGER.addWidget(widget);
         }
 
         return widget;
@@ -63,7 +62,7 @@ public class MessageUtils
             widget.setAutomaticWidth(true);
             widget.setName(StringUtils.translate("malilib.label.default_custom_hotbar_message_renderer"));
             widget.setMaxMessages(MaLiLibConfigs.Generic.ACTION_BAR_MESSAGE_LIMIT.getIntegerValue());
-            InfoWidgetManager.INSTANCE.addWidget(widget);
+            Registry.INFO_WIDGET_MANAGER.addWidget(widget);
         }
 
         return widget;
@@ -85,7 +84,7 @@ public class MessageUtils
                 widget.getMarkerManager().addMarker(marker);
             }
 
-            InfoWidgetManager.INSTANCE.addWidget(widget);
+            Registry.INFO_WIDGET_MANAGER.addWidget(widget);
         }
 
         return widget;
@@ -99,7 +98,7 @@ public class MessageUtils
         Predicate<T> predicateLocation = location != null ? w -> w.getScreenLocation() == location : w -> true;
         Predicate<T> predicateMarker = w -> w.getMarkerManager().matchesMarker(marker);
         Predicate<T> filter = predicateLocation.and(predicateMarker);
-        return InfoOverlay.INSTANCE.findWidget(widgetClass, filter);
+        return Registry.INFO_OVERLAY.findWidget(widgetClass, filter);
     }
 
     public static void printCustomActionbarMessage(String translationKey, Object... args)

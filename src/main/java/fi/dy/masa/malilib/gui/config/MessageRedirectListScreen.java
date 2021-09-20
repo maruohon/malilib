@@ -10,8 +10,8 @@ import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.MessageRedirectEntryWidget;
 import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.overlay.message.MessageOutput;
-import fi.dy.masa.malilib.overlay.message.MessageRedirectManager;
 import fi.dy.masa.malilib.overlay.message.MessageRedirectManager.MessageRedirect;
+import fi.dy.masa.malilib.registry.Registry;
 
 public class MessageRedirectListScreen extends BaseListScreen<DataListWidget<MessageRedirect>>
 {
@@ -30,7 +30,7 @@ public class MessageRedirectListScreen extends BaseListScreen<DataListWidget<Mes
     @Override
     public void onGuiClosed()
     {
-        MessageRedirectManager.INSTANCE.saveToFileIfDirty();
+        Registry.MESSAGE_REDIRECT_MANAGER.saveToFileIfDirty();
         super.onGuiClosed();
     }
 
@@ -58,7 +58,7 @@ public class MessageRedirectListScreen extends BaseListScreen<DataListWidget<Mes
     protected DataListWidget<MessageRedirect> createListWidget(int listX, int listY, int listWidth, int listHeight)
     {
         DataListWidget<MessageRedirect> listWidget = new DataListWidget<>(listX, listY, listWidth, listHeight,
-                                                                          MessageRedirectManager.INSTANCE::getAllRedirects);
+                                                                          Registry.MESSAGE_REDIRECT_MANAGER::getAllRedirects);
         listWidget.getBorderRenderer().getNormalSettings().setBorderWidth(1);
         listWidget.setListEntryWidgetFixedHeight(16);
         listWidget.setFetchFromSupplierOnRefresh(true);
@@ -69,7 +69,7 @@ public class MessageRedirectListScreen extends BaseListScreen<DataListWidget<Mes
     public boolean addRedirect(String translationKey)
     {
         MessageRedirect redirect = new MessageRedirect(translationKey, MessageOutput.MESSAGE_OVERLAY);
-        MessageRedirectManager.INSTANCE.addRedirect(translationKey, redirect);
+        Registry.MESSAGE_REDIRECT_MANAGER.addRedirect(translationKey, redirect);
         this.getListWidget().refreshEntries();
         return true;
     }

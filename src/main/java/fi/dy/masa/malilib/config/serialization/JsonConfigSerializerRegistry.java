@@ -20,12 +20,10 @@ import fi.dy.masa.malilib.config.option.list.ValueListConfig;
 
 public class JsonConfigSerializerRegistry
 {
-    public static final JsonConfigSerializerRegistry INSTANCE = new JsonConfigSerializerRegistry();
-
     private final HashMap<Class<? extends ConfigInfo>, JsonConfigSerializer<?>> serializers = new HashMap<>();
     private final HashMap<Class<? extends ConfigInfo>, JsonConfigDeSerializer<?>> deSerializers = new HashMap<>();
 
-    protected JsonConfigSerializerRegistry()
+    public JsonConfigSerializerRegistry()
     {
         this.registerDefaultSerializers();
     }
@@ -92,7 +90,7 @@ public class JsonConfigSerializerRegistry
         return deSerializer;
     }
 
-    private void registerDefaultSerializers()
+    protected void registerDefaultSerializers()
     {
         this.registerSerializers(BooleanConfig.class,   (c) -> new JsonPrimitive(c.getBooleanValue()),  (c, d, n) -> JsonConfigSerializers.loadGenericConfig(c::loadValueFromConfig,        d::getAsBoolean, d, n));
         this.registerSerializers(ColorConfig.class,     (c) -> new JsonPrimitive(c.getStringValue()),   (c, d, n) -> JsonConfigSerializers.loadGenericConfig(c::loadColorValueFromString,   d::getAsString, d, n));

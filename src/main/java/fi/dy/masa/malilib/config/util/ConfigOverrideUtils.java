@@ -15,16 +15,15 @@ import net.minecraft.client.multiplayer.ServerData;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.action.ActionContext;
-import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.config.ConfigManagerImpl;
 import fi.dy.masa.malilib.config.ModConfig;
 import fi.dy.masa.malilib.config.category.ConfigOptionCategory;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.gui.config.ConfigSearchInfo;
-import fi.dy.masa.malilib.gui.config.ConfigWidgetRegistry;
 import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
+import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.util.JsonUtils;
 
 public class ConfigOverrideUtils
@@ -90,7 +89,7 @@ public class ConfigOverrideUtils
     protected static ArrayListMultimap<String, BooleanConfig> getAllToggleConfigs()
     {
         ArrayListMultimap<String, BooleanConfig> configs = ArrayListMultimap.create();
-        List<ModConfig> modConfigs = ((ConfigManagerImpl) ConfigManager.INSTANCE).getAllModConfigs();
+        List<ModConfig> modConfigs = ((ConfigManagerImpl) Registry.CONFIG_MANAGER).getAllModConfigs();
 
         for (ModConfig modConfig : modConfigs)
         {
@@ -98,7 +97,7 @@ public class ConfigOverrideUtils
             {
                 for (ConfigInfo config : category.getConfigOptions())
                 {
-                    ConfigSearchInfo<ConfigInfo> info = ConfigWidgetRegistry.INSTANCE.getSearchInfo(config);
+                    ConfigSearchInfo<ConfigInfo> info = Registry.CONFIG_WIDGET.getSearchInfo(config);
 
                     if (info != null)
                     {

@@ -8,15 +8,14 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.BaseListScreen;
-import fi.dy.masa.malilib.gui.config.ConfigStatusWidgetRegistry;
 import fi.dy.masa.malilib.gui.config.ConfigTab;
-import fi.dy.masa.malilib.gui.config.ConfigTabRegistry;
 import fi.dy.masa.malilib.gui.config.ConfigTabRegistryImpl;
 import fi.dy.masa.malilib.gui.widget.DropDownListWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.ConfigInfoEntryWidget;
 import fi.dy.masa.malilib.overlay.widget.ConfigStatusIndicatorContainerWidget;
+import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.util.data.ConfigOnTab;
 import fi.dy.masa.malilib.util.data.ModInfo;
 import fi.dy.masa.malilib.util.data.NameIdentifiable;
@@ -39,7 +38,7 @@ public class ConfigStatusIndicatorGroupAddConfigsScreen extends BaseListScreen<D
 
         List<ModInfo> mods = new ArrayList<>();
         mods.add(null);
-        mods.addAll(((ConfigTabRegistryImpl) ConfigTabRegistry.INSTANCE).getAllModsWithConfigTabs());
+        mods.addAll(((ConfigTabRegistryImpl) Registry.CONFIG_TAB).getAllModsWithConfigTabs());
 
         this.modsDropDownWidget = new DropDownListWidget<>(-1, 14, 160, 10, mods, ModInfo::getModName);
         this.modsDropDownWidget.setSelectionListener(this::onModSelected);
@@ -98,7 +97,7 @@ public class ConfigStatusIndicatorGroupAddConfigsScreen extends BaseListScreen<D
     {
         this.currentCategories.clear();
 
-        Supplier<List<ConfigTab>> tabProvider = mod != null ? ConfigTabRegistry.INSTANCE.getConfigTabProviderFor(mod) : null;
+        Supplier<List<ConfigTab>> tabProvider = mod != null ? Registry.CONFIG_TAB.getConfigTabProviderFor(mod) : null;
 
         if (tabProvider != null)
         {
@@ -162,7 +161,7 @@ public class ConfigStatusIndicatorGroupAddConfigsScreen extends BaseListScreen<D
             return configsInScope;
         }
 
-        Supplier<List<ConfigTab>> tabProvider = ConfigTabRegistry.INSTANCE.getConfigTabProviderFor(mod);
+        Supplier<List<ConfigTab>> tabProvider = Registry.CONFIG_TAB.getConfigTabProviderFor(mod);
 
         if (tabProvider != null)
         {
@@ -198,7 +197,7 @@ public class ConfigStatusIndicatorGroupAddConfigsScreen extends BaseListScreen<D
 
     protected void addConfigIfHasStatusWidgetFactory(ConfigOnTab cfg, Consumer<ConfigOnTab> consumer)
     {
-        if (ConfigStatusWidgetRegistry.INSTANCE.getConfigStatusWidgetFactory(cfg.config) != null)
+        if (Registry.CONFIG_STATUS_WIDGET.getConfigStatusWidgetFactory(cfg.config) != null)
         {
             consumer.accept(cfg);
         }

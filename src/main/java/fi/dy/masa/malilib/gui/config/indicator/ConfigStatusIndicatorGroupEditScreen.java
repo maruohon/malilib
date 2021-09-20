@@ -20,11 +20,10 @@ import fi.dy.masa.malilib.gui.widget.button.KeyBindConfigButton;
 import fi.dy.masa.malilib.gui.widget.button.OnOffButton;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.ConfigStatusIndicatorEntryWidget;
-import fi.dy.masa.malilib.input.HotkeyManager;
 import fi.dy.masa.malilib.input.KeyBind;
-import fi.dy.masa.malilib.overlay.InfoOverlay;
 import fi.dy.masa.malilib.overlay.widget.ConfigStatusIndicatorContainerWidget;
 import fi.dy.masa.malilib.overlay.widget.sub.BaseConfigStatusIndicatorWidget;
+import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.render.text.MultiLineTextRenderSettings;
 
 public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataListWidget<BaseConfigStatusIndicatorWidget<?>>> implements KeybindEditingScreen
@@ -213,7 +212,7 @@ public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataLis
     public void onGuiClosed()
     {
         this.widget.setStatusIndicatorWidgets(this.getListWidget().getCurrentContents());
-        HotkeyManager.INSTANCE.updateUsedKeys();
+        Registry.HOTKEY_MANAGER.updateUsedKeys();
 
         super.onGuiClosed();
     }
@@ -250,9 +249,9 @@ public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataLis
 
     protected void changeWidgetLocation(ScreenLocation location)
     {
-        InfoOverlay.INSTANCE.getOrCreateInfoArea(this.widget.getScreenLocation()).removeWidget(this.widget);
+        Registry.INFO_OVERLAY.getOrCreateInfoArea(this.widget.getScreenLocation()).removeWidget(this.widget);
         // This also sets the location in the widget
-        InfoOverlay.INSTANCE.getOrCreateInfoArea(location).addWidget(this.widget);
+        Registry.INFO_OVERLAY.getOrCreateInfoArea(location).addWidget(this.widget);
     }
 
     protected void openAddConfigsScreen()

@@ -12,6 +12,7 @@ import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.config.option.ConfigOption;
 import fi.dy.masa.malilib.config.serialization.JsonConfigSerializerRegistry;
 import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
+import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.util.JsonUtils;
 
 public class JsonConfigUtils
@@ -68,7 +69,7 @@ public class JsonConfigUtils
 
     public static <T, C extends ConfigOption<T>> void tryLoadConfig(JsonObject obj, C config, String categoryName)
     {
-        JsonConfigSerializerRegistry.JsonConfigDeSerializer<C> deSerializer = JsonConfigSerializerRegistry.INSTANCE.getDeSerializer(config);
+        JsonConfigSerializerRegistry.JsonConfigDeSerializer<C> deSerializer = Registry.JSON_CONFIG_SERIALIZER.getDeSerializer(config);
 
         if (deSerializer != null)
         {
@@ -145,7 +146,7 @@ public class JsonConfigUtils
 
     public static <C extends ConfigInfo> boolean tryWriteConfig(JsonObject obj, C config, String categoryName)
     {
-        JsonConfigSerializerRegistry.JsonConfigSerializer<C> serializer = JsonConfigSerializerRegistry.INSTANCE.getSerializer(config);
+        JsonConfigSerializerRegistry.JsonConfigSerializer<C> serializer = Registry.JSON_CONFIG_SERIALIZER.getSerializer(config);
 
         if (serializer != null)
         {

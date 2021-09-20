@@ -7,11 +7,11 @@ import com.google.common.collect.ArrayListMultimap;
 
 public class HotkeyManagerImpl implements HotkeyManager
 {
-    private final ArrayListMultimap<Integer, KeyBind> hotkeyMap = ArrayListMultimap.create();
-    private final List<HotkeyCategory> keyBindCategories = new ArrayList<>();
-    private final List<HotkeyProvider> keyBindProviders = new ArrayList<>();
+    protected final ArrayListMultimap<Integer, KeyBind> hotkeyMap = ArrayListMultimap.create();
+    protected final List<HotkeyCategory> keyBindCategories = new ArrayList<>();
+    protected final List<HotkeyProvider> keyBindProviders = new ArrayList<>();
 
-    HotkeyManagerImpl()
+    public HotkeyManagerImpl()
     {
     }
 
@@ -60,7 +60,7 @@ public class HotkeyManagerImpl implements HotkeyManager
         }
     }
 
-    private void addKeyBindToMap(KeyBind keybind)
+    protected void addKeyBindToMap(KeyBind keybind)
     {
         List<Integer> keys = keybind.getKeys();
 
@@ -70,7 +70,7 @@ public class HotkeyManagerImpl implements HotkeyManager
         }
     }
 
-    private void addKeyBindCategory(HotkeyCategory category)
+    protected void addKeyBindCategory(HotkeyCategory category)
     {
         // Remove a previous entry, if any (matched based on the modName and keyCategory only!)
         this.keyBindCategories.remove(category);

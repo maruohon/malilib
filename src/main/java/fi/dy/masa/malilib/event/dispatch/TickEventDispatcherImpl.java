@@ -7,9 +7,9 @@ import fi.dy.masa.malilib.event.ClientTickHandler;
 
 public class TickEventDispatcherImpl implements TickEventDispatcher
 {
-    private final List<ClientTickHandler> clientTickHandlers = new ArrayList<>();
+    protected final List<ClientTickHandler> clientTickHandlers = new ArrayList<>();
 
-    TickEventDispatcherImpl()
+    public TickEventDispatcherImpl()
     {
     }
 

@@ -1,8 +1,6 @@
 package fi.dy.masa.malilib.command;
 
 import java.util.List;
-import fi.dy.masa.malilib.MaLiLib;
-import fi.dy.masa.malilib.gui.util.GuiUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.command.CommandHandler;
@@ -11,11 +9,11 @@ import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
+import fi.dy.masa.malilib.MaLiLib;
+import fi.dy.masa.malilib.gui.util.GuiUtils;
 
 public class ClientCommandHandler extends CommandHandler
 {
-    public static final ClientCommandHandler INSTANCE = new ClientCommandHandler();
-
     public String[] latestAutoComplete = null;
 
     /**
@@ -42,7 +40,6 @@ public class ClientCommandHandler extends CommandHandler
         String commandName = temp[0];
         System.arraycopy(temp, 1, args, 0, args.length);
         ICommand command = this.getCommands().get(commandName);
-        TextFormatting red = TextFormatting.RED;
 
         try
         {
@@ -58,22 +55,22 @@ public class ClientCommandHandler extends CommandHandler
             }
             else
             {
-                sender.sendMessage(this.format(red, "commands.generic.permission"));
+                sender.sendMessage(this.format("commands.generic.permission"));
             }
         }
         catch (Throwable t)
         {
-            sender.sendMessage(this.format(red, "commands.generic.exception"));
+            sender.sendMessage(this.format("commands.generic.exception"));
             MaLiLib.LOGGER.error("Command '{}' threw an exception:", message, t);
         }
 
         return -1;
     }
 
-    private TextComponentTranslation format(TextFormatting color, String str, Object... args)
+    private TextComponentTranslation format(String str, Object... args)
     {
         TextComponentTranslation ret = new TextComponentTranslation(str, args);
-        ret.getStyle().setColor(color);
+        ret.getStyle().setColor(TextFormatting.RED);
         return ret;
     }
 

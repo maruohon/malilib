@@ -9,6 +9,7 @@ import fi.dy.masa.malilib.config.option.HotkeyedBooleanConfig;
 import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.overlay.message.MessageOutput;
+import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.ModInfo;
 
@@ -47,7 +48,7 @@ public class ActionUtils
     {
         NamedAction namedAction = NamedAction.of(modInfo, name, action);
         namedAction.setCommentIfTranslationExists(modInfo.getModId(), name);
-        ActionRegistry.INSTANCE.registerAction(namedAction);
+        Registry.ACTION_REGISTRY.registerAction(namedAction);
         return namedAction;
     }
 
@@ -55,7 +56,7 @@ public class ActionUtils
     {
         NamedAction namedAction = NamedAction.of(modInfo, name, action);
         namedAction.setCommentIfTranslationExists(modInfo.getModId(), name);
-        ActionRegistry.INSTANCE.registerAction(namedAction);
+        Registry.ACTION_REGISTRY.registerAction(namedAction);
         return namedAction;
     }
 
@@ -71,14 +72,14 @@ public class ActionUtils
         NamedAction namedAction = createToggleActionWithToggleMessage(modInfo, name, config,
                                                                       messageFactory, messageTypeSupplier);
         namedAction.setCommentTranslationKey(config.getCommentTranslationKey());
-        ActionRegistry.INSTANCE.registerAction(namedAction);
+        Registry.ACTION_REGISTRY.registerAction(namedAction);
         return namedAction;
     }
 
     public static NamedAction registerToggleKey(ModInfo modInfo, String name, HotkeyedBooleanConfig config)
     {
         NamedAction namedAction = NamedAction.of(modInfo, name, config.getToggleAction());
-        ActionRegistry.INSTANCE.registerAction(namedAction);
+        Registry.ACTION_REGISTRY.registerAction(namedAction);
         return namedAction;
     }
 

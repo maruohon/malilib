@@ -11,9 +11,9 @@ import fi.dy.masa.malilib.util.data.ModInfo;
 
 public class ConfigManagerImpl implements ConfigManager
 {
-    private final Map<ModInfo, ModConfig> configHandlers = new HashMap<>();
+    protected final Map<ModInfo, ModConfig> configHandlers = new HashMap<>();
 
-    ConfigManagerImpl()
+    public ConfigManagerImpl()
     {
     }
 

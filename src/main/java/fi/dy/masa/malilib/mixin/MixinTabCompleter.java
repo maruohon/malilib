@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import fi.dy.masa.malilib.command.ClientCommandHandler;
+import fi.dy.masa.malilib.registry.Registry;
 import net.minecraft.util.TabCompleter;
 
 @Mixin(TabCompleter.class)
@@ -20,7 +20,7 @@ public abstract class MixinTabCompleter
     {
         if (prefix.length() >= 1)
         {
-            ClientCommandHandler.INSTANCE.autoComplete(prefix);
+            Registry.CLIENT_COMMAND_HANDLER.autoComplete(prefix);
         }
     }
 
@@ -33,7 +33,7 @@ public abstract class MixinTabCompleter
                 target = "Ljava/util/List;clear()V"))
     private String[] addCompletionsAndRemoveFormattingCodes2(String[] newCompl)
     {
-        String[] complete = ClientCommandHandler.INSTANCE.latestAutoComplete;
+        String[] complete = Registry.CLIENT_COMMAND_HANDLER.latestAutoComplete;
 
         if (complete != null)
         {

@@ -4,8 +4,6 @@ import fi.dy.masa.malilib.event.ClientWorldChangeHandler;
 
 public interface ClientWorldChangeEventDispatcher
 {
-    ClientWorldChangeEventDispatcher INSTANCE = new ClientWorldChangeEventDispatcherImpl();
-
     /**
      * Registers a handler for listening to client world changes.
      * @param listener

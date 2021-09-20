@@ -11,9 +11,9 @@ import fi.dy.masa.malilib.event.ClientWorldChangeHandler;
 
 public class ClientWorldChangeEventDispatcherImpl implements ClientWorldChangeEventDispatcher
 {
-    private final List<ClientWorldChangeHandler> worldChangeHandlers = new ArrayList<>();
+    protected final List<ClientWorldChangeHandler> worldChangeHandlers = new ArrayList<>();
 
-    ClientWorldChangeEventDispatcherImpl()
+    public ClientWorldChangeEventDispatcherImpl()
     {
     }
 
@@ -71,13 +71,13 @@ public class ClientWorldChangeEventDispatcherImpl implements ClientWorldChangeEv
         }
     }
 
-    private void onExitWorld()
+    protected void onExitWorld()
     {
         ConfigOverrideUtils.resetConfigOverrides();
         ConfigUtils.saveAllConfigsToFileIfDirty();
     }
 
-    private void onEnterWorld()
+    protected void onEnterWorld()
     {
         ConfigUtils.loadAllConfigsFromFile();
         ConfigOverrideUtils.applyConfigOverrides();

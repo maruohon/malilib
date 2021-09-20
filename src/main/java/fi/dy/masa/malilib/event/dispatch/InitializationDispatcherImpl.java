@@ -7,9 +7,9 @@ import fi.dy.masa.malilib.event.InitializationHandler;
 
 public class InitializationDispatcherImpl implements InitializationDispatcher
 {
-    private final List<InitializationHandler> handlers = new ArrayList<>();
+    protected final List<InitializationHandler> handlers = new ArrayList<>();
 
-    InitializationDispatcherImpl()
+    public InitializationDispatcherImpl()
     {
     }
 

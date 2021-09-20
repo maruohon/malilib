@@ -11,7 +11,7 @@ import fi.dy.masa.malilib.util.data.ModInfo;
 
 public class MaLiLibHotkeyProvider implements HotkeyProvider
 {
-    public static final MaLiLibHotkeyProvider INSTANCE = new MaLiLibHotkeyProvider();
+    static final MaLiLibHotkeyProvider INSTANCE = new MaLiLibHotkeyProvider();
 
     private MaLiLibHotkeyProvider()
     {

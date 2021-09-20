@@ -15,6 +15,7 @@ import fi.dy.masa.malilib.gui.widget.IconWidget;
 import fi.dy.masa.malilib.gui.widget.IntegerEditWidget;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
+import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.render.text.TextRenderSettings;
 
 public class EditActionExecutionWidgetScreen extends BaseScreen
@@ -82,7 +83,7 @@ public class EditActionExecutionWidgetScreen extends BaseScreen
         this.nameTextField.setListener(this.firstWidget::setName);
 
         this.iconDropDownWidget = new DropDownListWidget<>(120, 16, 120, 10,
-                                                           IconRegistry.INSTANCE.getAllIcons(),
+                                                           Registry.ICON.getAllIcons(),
                                                            IconRegistry::getKeyForIcon, (h, i) -> new IconWidget(i));
         this.iconDropDownWidget.setSelectedEntry(widget.getIcon());
         this.iconDropDownWidget.setSelectionListener(this.firstWidget::setIcon);

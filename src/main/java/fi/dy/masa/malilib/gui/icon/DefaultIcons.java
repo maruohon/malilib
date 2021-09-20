@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.gui.icon;
 
 import fi.dy.masa.malilib.MaLiLibReference;
+import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class DefaultIcons
@@ -95,7 +96,7 @@ public class DefaultIcons
 
     public static <T extends Icon> T register(T icon)
     {
-        IconRegistry.INSTANCE.registerModIcon(icon);
+        Registry.ICON.registerModIcon(icon);
         return icon;
     }
 }

@@ -12,19 +12,13 @@ import net.minecraft.util.text.TextFormatting;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.action.ActionContext;
 import fi.dy.masa.malilib.action.ActionExecutionWidgetManager;
-import fi.dy.masa.malilib.action.ActionRegistry;
 import fi.dy.masa.malilib.action.ActionRegistryImpl;
-import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.config.ConfigManagerImpl;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.gui.config.ConfigTab;
-import fi.dy.masa.malilib.gui.icon.IconRegistry;
 import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.input.CustomHotkeyManager;
-import fi.dy.masa.malilib.input.HotkeyManager;
-import fi.dy.masa.malilib.overlay.InfoWidgetManager;
 import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
-import fi.dy.masa.malilib.overlay.message.MessageRedirectManager;
 import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.data.ConfigOnTab;
@@ -97,13 +91,13 @@ public class ConfigUtils
      */
     public static void loadAllConfigsFromFile()
     {
-        IconRegistry.INSTANCE.loadFromFile();
-        ((ConfigManagerImpl) ConfigManager.INSTANCE).loadAllConfigs();
-        ((ActionRegistryImpl) ActionRegistry.INSTANCE).loadFromFile();
+        Registry.ICON.loadFromFile();
+        ((ConfigManagerImpl) Registry.CONFIG_MANAGER).loadAllConfigs();
+        ((ActionRegistryImpl) Registry.ACTION_REGISTRY).loadFromFile();
         CustomHotkeyManager.INSTANCE.loadFromFile();
-        InfoWidgetManager.INSTANCE.loadFromFile();
-        MessageRedirectManager.INSTANCE.loadFromFile();
-        HotkeyManager.INSTANCE.updateUsedKeys();
+        Registry.INFO_WIDGET_MANAGER.loadFromFile();
+        Registry.MESSAGE_REDIRECT_MANAGER.loadFromFile();
+        Registry.HOTKEY_MANAGER.updateUsedKeys();
     }
 
     /**
@@ -113,14 +107,14 @@ public class ConfigUtils
      */
     public static void saveAllConfigsToFileIfDirty()
     {
-        ((ConfigManagerImpl) ConfigManager.INSTANCE).saveIfDirty();
-        InfoWidgetManager.INSTANCE.saveToFileIfDirty();
-        MessageRedirectManager.INSTANCE.saveToFileIfDirty();
+        ((ConfigManagerImpl) Registry.CONFIG_MANAGER).saveIfDirty();
+        Registry.INFO_WIDGET_MANAGER.saveToFileIfDirty();
+        Registry.MESSAGE_REDIRECT_MANAGER.saveToFileIfDirty();
         ActionExecutionWidgetManager.INSTANCE.clear();
 
         // These should always already be saved when closing the corresponding config screens
-        IconRegistry.INSTANCE.saveToFileIfDirty();
-        ((ActionRegistryImpl) ActionRegistry.INSTANCE).saveToFileIfDirty();
+        Registry.ICON.saveToFileIfDirty();
+        ((ActionRegistryImpl) Registry.ACTION_REGISTRY).saveToFileIfDirty();
         CustomHotkeyManager.INSTANCE.saveToFileIfDirty();
     }
 
@@ -132,13 +126,13 @@ public class ConfigUtils
 
             if (dir.exists() == false && dir.mkdirs())
             {
-                IconRegistry.INSTANCE.saveToFile();
-                ((ConfigManagerImpl) ConfigManager.INSTANCE).saveAllConfigs();
-                ((ActionRegistryImpl) ActionRegistry.INSTANCE).saveToFile();
+                Registry.ICON.saveToFile();
+                ((ConfigManagerImpl) Registry.CONFIG_MANAGER).saveAllConfigs();
+                ((ActionRegistryImpl) Registry.ACTION_REGISTRY).saveToFile();
                 ActionExecutionWidgetManager.INSTANCE.saveAllLoadedToFile();
                 CustomHotkeyManager.INSTANCE.saveToFile();
-                InfoWidgetManager.INSTANCE.saveToFile();
-                MessageRedirectManager.INSTANCE.saveToFile();
+                Registry.INFO_WIDGET_MANAGER.saveToFile();
+                Registry.MESSAGE_REDIRECT_MANAGER.saveToFile();
             }
         }
     }

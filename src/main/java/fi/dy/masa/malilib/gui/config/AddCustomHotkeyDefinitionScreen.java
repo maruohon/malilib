@@ -1,6 +1,5 @@
 package fi.dy.masa.malilib.gui.config;
 
-import fi.dy.masa.malilib.action.ActionRegistry;
 import fi.dy.masa.malilib.action.NamedAction;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
@@ -13,6 +12,7 @@ import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.input.KeyBindImpl;
 import fi.dy.masa.malilib.input.KeyBindSettings;
 import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
+import fi.dy.masa.malilib.registry.Registry;
 
 public class AddCustomHotkeyDefinitionScreen extends BaseScreen
 {
@@ -38,7 +38,7 @@ public class AddCustomHotkeyDefinitionScreen extends BaseScreen
         this.cancelButton = GenericButton.simple("malilib.gui.button.cancel", this::onCancelButtonClicked);
 
         this.actionDropDownWidget = new DropDownListWidget<>(-1, 16, 160, 10,
-                                                             ActionRegistry.INSTANCE.getAllActions(),
+                                                             Registry.ACTION_REGISTRY.getAllActions(),
                                                              NamedAction::getName);
 
         this.nameTextField.setFocused(true);

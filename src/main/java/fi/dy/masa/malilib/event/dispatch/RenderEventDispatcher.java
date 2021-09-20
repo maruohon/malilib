@@ -7,8 +7,6 @@ import fi.dy.masa.malilib.event.PostWorldRenderer;
 
 public interface RenderEventDispatcher
 {
-    RenderEventDispatcher INSTANCE = new RenderEventDispatcherImpl();
-
     /**
      * Registers a renderer which will have its {@link PostGameOverlayRenderer#onPostGameOverlayRender(net.minecraft.client.Minecraft, float)}
      * method called after the vanilla game overlay rendering is done.

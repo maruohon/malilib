@@ -1,11 +1,11 @@
 package fi.dy.masa.malilib.gui.widget.list.entry;
 
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.action.ActionRegistry;
 import fi.dy.masa.malilib.action.AliasAction;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
+import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.StyledTextUtils;
 import fi.dy.masa.malilib.util.data.LeftRight;
@@ -51,7 +51,7 @@ public class AliasActionEntryWidget extends BaseDataListEntryWidget<AliasAction>
 
     protected void removeAlias()
     {
-        ActionRegistry.INSTANCE.removeAlias(this.data.getRegistryName());
+        Registry.ACTION_REGISTRY.removeAlias(this.data.getRegistryName());
         this.listWidget.refreshEntries();
     }
 }

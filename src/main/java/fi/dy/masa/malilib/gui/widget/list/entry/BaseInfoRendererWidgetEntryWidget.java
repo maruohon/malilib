@@ -4,8 +4,8 @@ import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.button.OnOffButton;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
-import fi.dy.masa.malilib.overlay.InfoWidgetManager;
 import fi.dy.masa.malilib.overlay.widget.InfoRendererWidget;
+import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 
 public class BaseInfoRendererWidgetEntryWidget extends BaseDataListEntryWidget<InfoRendererWidget>
@@ -106,7 +106,7 @@ public class BaseInfoRendererWidgetEntryWidget extends BaseDataListEntryWidget<I
     public void removeInfoRendererWidget()
     {
         this.scheduleTask(() -> {
-            InfoWidgetManager.INSTANCE.removeWidget(this.data);
+            Registry.INFO_WIDGET_MANAGER.removeWidget(this.data);
             this.listWidget.refreshEntries();
         });
     }

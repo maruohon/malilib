@@ -13,9 +13,9 @@ import fi.dy.masa.malilib.gui.widget.DropDownListWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetFactory;
-import fi.dy.masa.malilib.overlay.InfoWidgetManager;
 import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
 import fi.dy.masa.malilib.overlay.widget.InfoRendererWidget;
+import fi.dy.masa.malilib.registry.Registry;
 
 public class InfoRendererWidgetListScreen<WIDGET extends InfoRendererWidget> extends BaseListScreen<DataListWidget<WIDGET>>
 {
@@ -93,7 +93,7 @@ public class InfoRendererWidgetListScreen<WIDGET extends InfoRendererWidget> ext
         super.onGuiClosed();
 
         // Unconditionally save here, since we don't track the individual info container widget changes
-        InfoWidgetManager.INSTANCE.saveToFile();
+        Registry.INFO_WIDGET_MANAGER.saveToFile();
     }
 
     protected void createInfoRendererWidget()
@@ -115,7 +115,7 @@ public class InfoRendererWidgetListScreen<WIDGET extends InfoRendererWidget> ext
         }
 
         widget.setLocation(location);
-        InfoWidgetManager.INSTANCE.addWidget(widget);
+        Registry.INFO_WIDGET_MANAGER.addWidget(widget);
         this.getListWidget().refreshEntries();
     }
 
@@ -131,11 +131,11 @@ public class InfoRendererWidgetListScreen<WIDGET extends InfoRendererWidget> ext
 
     public static <WIDGET extends InfoRendererWidget> Supplier<List<WIDGET>> createSupplierFromInfoManagerForExactType(final Class<WIDGET> clazz)
     {
-        return () -> InfoWidgetManager.INSTANCE.getAllWidgetsOfExactType(clazz);
+        return () -> Registry.INFO_WIDGET_MANAGER.getAllWidgetsOfExactType(clazz);
     }
 
     public static <WIDGET extends InfoRendererWidget> Supplier<List<WIDGET>> createSupplierFromInfoManagerForSubtypes(final Class<WIDGET> clazz)
     {
-        return () -> InfoWidgetManager.INSTANCE.getAllWidgetsExtendingType(clazz);
+        return () -> Registry.INFO_WIDGET_MANAGER.getAllWidgetsExtendingType(clazz);
     }
 }

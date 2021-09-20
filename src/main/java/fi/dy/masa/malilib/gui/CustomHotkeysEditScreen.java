@@ -16,7 +16,7 @@ import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.CustomHotkeyDefinitionEntryWidget;
 import fi.dy.masa.malilib.input.CustomHotkeyDefinition;
 import fi.dy.masa.malilib.input.CustomHotkeyManager;
-import fi.dy.masa.malilib.input.HotkeyManager;
+import fi.dy.masa.malilib.registry.Registry;
 
 public class CustomHotkeysEditScreen extends BaseListScreen<DataListWidget<CustomHotkeyDefinition>> implements KeybindEditingScreen
 {
@@ -55,7 +55,7 @@ public class CustomHotkeysEditScreen extends BaseListScreen<DataListWidget<Custo
     {
         CustomHotkeyManager.INSTANCE.checkIfDirty();
         CustomHotkeyManager.INSTANCE.saveToFileIfDirty();
-        HotkeyManager.INSTANCE.updateUsedKeys();
+        Registry.HOTKEY_MANAGER.updateUsedKeys();
 
         super.onGuiClosed();
     }

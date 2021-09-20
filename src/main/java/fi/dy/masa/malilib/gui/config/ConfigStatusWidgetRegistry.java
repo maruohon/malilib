@@ -22,12 +22,10 @@ import fi.dy.masa.malilib.overlay.widget.sub.StringConfigStatusWidget;
 
 public class ConfigStatusWidgetRegistry
 {
-    public static final ConfigStatusWidgetRegistry INSTANCE = new ConfigStatusWidgetRegistry();
+    protected final HashMap<Class<? extends ConfigInfo>, ConfigStatusWidgetFactory<?>> configStatusWidgetFactories = new HashMap<>();
+    protected final HashMap<String, ConfigStatusWidgetFactory<?>> configStatusWidgetFactoriesById = new HashMap<>();
 
-    private final HashMap<Class<? extends ConfigInfo>, ConfigStatusWidgetFactory<?>> configStatusWidgetFactories = new HashMap<>();
-    private final HashMap<String, ConfigStatusWidgetFactory<?>> configStatusWidgetFactoriesById = new HashMap<>();
-
-    private ConfigStatusWidgetRegistry()
+    public ConfigStatusWidgetRegistry()
     {
         this.registerDefaultStatusWidgetFactories();
     }
@@ -57,7 +55,7 @@ public class ConfigStatusWidgetRegistry
         return this.configStatusWidgetFactoriesById.get(id);
     }
 
-    private void registerDefaultStatusWidgetFactories()
+    protected void registerDefaultStatusWidgetFactories()
     {
         this.registerConfigStatusWidgetFactory(BooleanConfig.class,         BooleanConfigStatusWidget::new,         MaLiLibReference.MOD_ID + ":csi_value_boolean");
         this.registerConfigStatusWidgetFactory(DoubleConfig.class,          DoubleConfigStatusWidget::new,          MaLiLibReference.MOD_ID + ":csi_value_double");

@@ -10,6 +10,7 @@ import net.minecraft.util.text.event.HoverEvent;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.gui.position.ScreenLocation;
+import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.render.text.StyledText;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.StringUtils;
@@ -160,7 +161,7 @@ public class MessageDispatcher
             Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(message);
         }
 
-        MessageOutput output = MessageRedirectManager.INSTANCE.getRedirectedMessageOutput(translationKey, this.type);
+        MessageOutput output = Registry.MESSAGE_REDIRECT_MANAGER.getRedirectedMessageOutput(translationKey, this.type);
         String translatedMessage = StringUtils.translate(translationKey, args);
         this.printToConsoleIfEnabled(translatedMessage);
         output.send(translatedMessage, this);

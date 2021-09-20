@@ -8,11 +8,11 @@ import fi.dy.masa.malilib.action.ActionContext;
 import fi.dy.masa.malilib.gui.BaseListScreen;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.icon.Icon;
-import fi.dy.masa.malilib.gui.icon.IconRegistry;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.IconEntryWidget;
 import fi.dy.masa.malilib.input.ActionResult;
+import fi.dy.masa.malilib.registry.Registry;
 
 public class CustomIconListScreen extends BaseListScreen<DataListWidget<Icon>>
 {
@@ -38,7 +38,7 @@ public class CustomIconListScreen extends BaseListScreen<DataListWidget<Icon>>
     @Override
     public void onGuiClosed()
     {
-        IconRegistry.INSTANCE.saveToFileIfDirty();
+        Registry.ICON.saveToFileIfDirty();
         super.onGuiClosed();
     }
 
@@ -66,7 +66,7 @@ public class CustomIconListScreen extends BaseListScreen<DataListWidget<Icon>>
     protected DataListWidget<Icon> createListWidget(int listX, int listY, int listWidth, int listHeight)
     {
         DataListWidget<Icon> listWidget = new DataListWidget<>(listX, listY, listWidth, listHeight,
-                                                               IconRegistry.INSTANCE::getUserIcons);
+                                                               Registry.ICON::getUserIcons);
         listWidget.getBorderRenderer().getNormalSettings().setBorderWidth(1);
         listWidget.setListEntryWidgetFixedHeight(22);
         listWidget.setFetchFromSupplierOnRefresh(true);
@@ -76,7 +76,7 @@ public class CustomIconListScreen extends BaseListScreen<DataListWidget<Icon>>
 
     public void addIcon(Icon icon)
     {
-        IconRegistry.INSTANCE.registerUserIcon(icon);
+        Registry.ICON.registerUserIcon(icon);
         this.getListWidget().refreshEntries();
     }
 

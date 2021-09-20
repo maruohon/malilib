@@ -7,9 +7,9 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.overlay.message.MessageOutput;
 import fi.dy.masa.malilib.gui.position.ScreenLocation;
-import fi.dy.masa.malilib.network.ClientPacketChannelHandler;
 import fi.dy.masa.malilib.network.PluginChannelHandler;
 import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
+import fi.dy.masa.malilib.registry.Registry;
 
 /**
  * This packet is for receiving messages from the server that should be displayed
@@ -32,7 +32,8 @@ public class MessagePacketHandler implements PluginChannelHandler
 {
     public static final String CHANNEL_NAME = "malilib:message";
     public static final List<ResourceLocation> CHANNELS = ImmutableList.of(new ResourceLocation(CHANNEL_NAME));
-    public static final MessagePacketHandler INSTANCE = new MessagePacketHandler();
+
+    private static final MessagePacketHandler INSTANCE = new MessagePacketHandler();
 
     @Override
     public List<ResourceLocation> getChannels()
@@ -84,11 +85,11 @@ public class MessagePacketHandler implements PluginChannelHandler
     {
         if (enabled)
         {
-            ClientPacketChannelHandler.INSTANCE.registerClientChannelHandler(INSTANCE);
+            Registry.CLIENT_PACKET_CHANNEL_HANDLER.registerClientChannelHandler(INSTANCE);
         }
         else
         {
-            ClientPacketChannelHandler.INSTANCE.unregisterClientChannelHandler(INSTANCE);
+            Registry.CLIENT_PACKET_CHANNEL_HANDLER.unregisterClientChannelHandler(INSTANCE);
         }
     }
 }

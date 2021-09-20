@@ -17,9 +17,7 @@ import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.config.option.HotkeyConfig;
 import fi.dy.masa.malilib.config.util.ConfigUtils;
 import fi.dy.masa.malilib.gui.BaseScreen;
-import fi.dy.masa.malilib.gui.config.ConfigStatusWidgetRegistry;
 import fi.dy.masa.malilib.gui.config.ConfigTab;
-import fi.dy.masa.malilib.gui.config.ConfigTabRegistry;
 import fi.dy.masa.malilib.gui.config.indicator.ConfigStatusIndicatorGroupEditScreen;
 import fi.dy.masa.malilib.gui.config.indicator.ConfigStatusWidgetFactory;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
@@ -31,8 +29,8 @@ import fi.dy.masa.malilib.input.HotkeyProvider;
 import fi.dy.masa.malilib.input.KeyAction;
 import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.input.SimpleHotkeyProvider;
-import fi.dy.masa.malilib.overlay.InfoWidgetManager;
 import fi.dy.masa.malilib.overlay.widget.sub.BaseConfigStatusIndicatorWidget;
+import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.render.text.MultiLineTextRenderSettings;
@@ -76,7 +74,7 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
     {
         if (this.configs.contains(config) == false)
         {
-            ConfigStatusWidgetFactory<ConfigInfo> factory = ConfigStatusWidgetRegistry.INSTANCE.getConfigStatusWidgetFactory(config.config);
+            ConfigStatusWidgetFactory<ConfigInfo> factory = Registry.CONFIG_STATUS_WIDGET.getConfigStatusWidgetFactory(config.config);
 
             if (factory != null)
             {
@@ -338,7 +336,7 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
 
         this.allWidgets.clear();
 
-        List<ConfigTab> tabs = ConfigTabRegistry.INSTANCE.getAllRegisteredConfigTabs();
+        List<ConfigTab> tabs = Registry.CONFIG_TAB.getAllRegisteredConfigTabs();
         Map<String, ConfigOnTab> configMap = ConfigUtils.getConfigIdToConfigMapFromTabs(tabs);
         JsonUtils.readArrayElementsIfPresent(obj, "status_widgets", (e) -> this.readAndAddWidget(e, configMap));
 
@@ -363,7 +361,7 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
 
     public static List<? extends Hotkey> getToggleHotkeys()
     {
-        List<ConfigStatusIndicatorContainerWidget> widgets = InfoWidgetManager.INSTANCE.getAllWidgetsExtendingType(ConfigStatusIndicatorContainerWidget.class);
+        List<ConfigStatusIndicatorContainerWidget> widgets = Registry.INFO_WIDGET_MANAGER.getAllWidgetsExtendingType(ConfigStatusIndicatorContainerWidget.class);
         ArrayList<Hotkey> hotkeys = new ArrayList<>();
 
         for (ConfigStatusIndicatorContainerWidget widget : widgets)

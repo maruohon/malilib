@@ -5,11 +5,11 @@ import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.config.CustomIconEditScreen;
 import fi.dy.masa.malilib.gui.config.CustomIconListScreen;
 import fi.dy.masa.malilib.gui.icon.Icon;
-import fi.dy.masa.malilib.gui.icon.IconRegistry;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
+import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 
 public class IconEntryWidget extends BaseDataListEntryWidget<Icon>
@@ -103,8 +103,8 @@ public class IconEntryWidget extends BaseDataListEntryWidget<Icon>
     protected void replaceIcon(Icon icon)
     {
         this.scheduleTask(() -> {
-            IconRegistry.INSTANCE.unregisterUserIcon(this.data);
-            IconRegistry.INSTANCE.registerUserIcon(icon);
+            Registry.ICON.unregisterUserIcon(this.data);
+            Registry.ICON.registerUserIcon(icon);
             this.listWidget.refreshEntries();
         });
     }
@@ -112,7 +112,7 @@ public class IconEntryWidget extends BaseDataListEntryWidget<Icon>
     protected void removeIcon()
     {
         this.scheduleTask(() -> {
-            IconRegistry.INSTANCE.unregisterUserIcon(this.data);
+            Registry.ICON.unregisterUserIcon(this.data);
             this.listWidget.refreshEntries();
         });
     }

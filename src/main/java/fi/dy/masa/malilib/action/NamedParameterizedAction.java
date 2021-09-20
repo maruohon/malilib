@@ -92,7 +92,7 @@ public class NamedParameterizedAction extends NamedAction
                                                                ActionUtils.createTranslationKeyFor(modInfo, name),
                                                                BaseParameterizedAction.of(action));
         namedAction.setCommentIfTranslationExists(modInfo.getModId(), name);
-        ActionRegistry.INSTANCE.registerAction(namedAction);
+        Registry.ACTION_REGISTRY.registerAction(namedAction);
         return namedAction;
     }
 }

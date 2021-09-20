@@ -13,9 +13,8 @@ import fi.dy.masa.malilib.gui.widget.IntegerEditWidget;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.button.OnOffButton;
-import fi.dy.masa.malilib.overlay.InfoOverlay;
-import fi.dy.masa.malilib.overlay.InfoWidgetManager;
 import fi.dy.masa.malilib.overlay.widget.StringListRendererWidget;
+import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.render.text.MultiLineTextRenderSettings;
 import fi.dy.masa.malilib.util.StringUtils;
 
@@ -206,14 +205,14 @@ public class StringListRendererWidgetEditScreen extends BaseScreen
     {
         super.onGuiClosed();
 
-        InfoWidgetManager.INSTANCE.saveToFile();
+        Registry.INFO_WIDGET_MANAGER.saveToFile();
     }
 
     protected void changeWidgetLocation(ScreenLocation location)
     {
-        InfoOverlay.INSTANCE.getOrCreateInfoArea(this.widget.getScreenLocation()).removeWidget(this.widget);
+        Registry.INFO_OVERLAY.getOrCreateInfoArea(this.widget.getScreenLocation()).removeWidget(this.widget);
         // This also sets the location in the widget
-        InfoOverlay.INSTANCE.getOrCreateInfoArea(location).addWidget(this.widget);
+        Registry.INFO_OVERLAY.getOrCreateInfoArea(location).addWidget(this.widget);
     }
 
     protected void openMarginEditScreen()

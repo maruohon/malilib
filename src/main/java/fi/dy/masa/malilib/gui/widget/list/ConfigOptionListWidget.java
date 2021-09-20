@@ -10,15 +10,14 @@ import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.gui.config.ConfigOptionWidgetFactory;
 import fi.dy.masa.malilib.gui.config.ConfigTab;
-import fi.dy.masa.malilib.gui.config.ConfigTabRegistry;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
-import fi.dy.masa.malilib.gui.config.ConfigWidgetRegistry;
 import fi.dy.masa.malilib.gui.config.KeybindEditingScreen;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.widget.ConfigsSearchBarWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetFactory;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.BaseConfigWidget;
+import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.util.data.ConfigOnTab;
 import fi.dy.masa.malilib.util.data.ModInfo;
 
@@ -160,13 +159,13 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
 
                 if (scope == ConfigsSearchBarWidget.Scope.ALL_MODS)
                 {
-                    List<ConfigTab> allModTabs = ConfigTabRegistry.INSTANCE.getAllRegisteredConfigTabs();
+                    List<ConfigTab> allModTabs = Registry.CONFIG_TAB.getAllRegisteredConfigTabs();
                     final List<ConfigOnTab> tmpList = configsInScope;
                     allModTabs.forEach((tab) -> tab.getTabbedExpandedConfigs(tmpList::add));
                 }
                 else
                 {
-                    Supplier<List<ConfigTab>> tabProvider = ConfigTabRegistry.INSTANCE.getConfigTabProviderFor(this.modInfo);
+                    Supplier<List<ConfigTab>> tabProvider = Registry.CONFIG_TAB.getConfigTabProviderFor(this.modInfo);
 
                     if (tabProvider != null)
                     {
@@ -239,7 +238,7 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
                                                                    int listIndex, int originalListIndex,
                                                                    C config, DataListWidget<C> listWidget)
         {
-            ConfigOptionWidgetFactory<C> factory = ConfigWidgetRegistry.INSTANCE.getWidgetFactory(config);
+            ConfigOptionWidgetFactory<C> factory = Registry.CONFIG_WIDGET.getWidgetFactory(config);
             return factory.create(x, y, width, height, listIndex, originalListIndex, config, this.ctx);
         }
     }

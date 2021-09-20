@@ -10,13 +10,13 @@ import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.config.BaseConfigTab;
-import fi.dy.masa.malilib.gui.config.ConfigStatusWidgetRegistry;
 import fi.dy.masa.malilib.gui.config.ConfigTab;
 import fi.dy.masa.malilib.gui.config.indicator.BaseConfigStatusIndicatorEditScreen;
 import fi.dy.masa.malilib.gui.config.indicator.ConfigStatusWidgetFactory;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.overlay.widget.BaseOverlayWidget;
+import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.data.ConfigOnTab;
@@ -210,7 +210,7 @@ public abstract class BaseConfigStatusIndicatorWidget<C extends ConfigInfo> exte
                 try
                 {
                     @SuppressWarnings("unchecked")
-                    ConfigStatusWidgetFactory<C> factory = (ConfigStatusWidgetFactory<C>) ConfigStatusWidgetRegistry.INSTANCE.getConfigStatusWidgetFactory(type);
+                    ConfigStatusWidgetFactory<C> factory = (ConfigStatusWidgetFactory<C>) Registry.CONFIG_STATUS_WIDGET.getConfigStatusWidgetFactory(type);
 
                     if (factory != null)
                     {

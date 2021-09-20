@@ -18,12 +18,11 @@ import fi.dy.masa.malilib.gui.widget.BaseWidget;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.overlay.widget.InfoRendererWidget;
 import fi.dy.masa.malilib.overlay.widget.StringListRendererWidget;
+import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.render.RenderUtils;
 
 public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer, ClientTickHandler
 {
-    public static final InfoOverlay INSTANCE = new InfoOverlay();
-
     protected final HashMap<ScreenLocation, InfoArea> infoAreas = new HashMap<>();
     protected final List<InfoRendererWidget> enabledInGameWidgets = new ArrayList<>();
     protected final List<InfoRendererWidget> enabledGuiWidgets = new ArrayList<>();
@@ -215,7 +214,7 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
      */
     public static StringListRendererWidget getTextHud(ScreenLocation location)
     {
-        InfoArea area = INSTANCE.getOrCreateInfoArea(location);
+        InfoArea area = Registry.INFO_OVERLAY.getOrCreateInfoArea(location);
         StringListRendererWidget widget = area.findWidget(StringListRendererWidget.class, (w) -> true);
 
         if (widget == null)
@@ -266,7 +265,7 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
     public static <C extends InfoRendererWidget>
     C findOrCreateWidget(ScreenLocation location, Class<C> clazz, Predicate<C> validator, Supplier<C> factory)
     {
-        InfoArea area = INSTANCE.getOrCreateInfoArea(location);
+        InfoArea area = Registry.INFO_OVERLAY.getOrCreateInfoArea(location);
         C widget = area.findWidget(clazz, validator);
 
         if (widget == null)

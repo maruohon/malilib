@@ -15,7 +15,6 @@ import fi.dy.masa.malilib.util.JsonUtils;
 
 public class MessageRedirectManager
 {
-    public static final MessageRedirectManager INSTANCE = new MessageRedirectManager();
 
     protected final Map<String, MessageRedirect> messageRedirects = new HashMap<>();
     protected boolean dirty;

@@ -7,8 +7,6 @@ import fi.dy.masa.malilib.util.data.ModInfo;
 
 public interface ConfigTabRegistry
 {
-    ConfigTabRegistry INSTANCE = new ConfigTabRegistryImpl();
-
     /**
      * Registers a config tab provider for the given modId.
      */

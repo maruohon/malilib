@@ -2,7 +2,6 @@ package fi.dy.masa.malilib.gui.action;
 
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.action.ActionRegistry;
 import fi.dy.masa.malilib.action.NamedAction;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.icon.Icon;
@@ -13,6 +12,7 @@ import fi.dy.masa.malilib.gui.widget.DropDownListWidget;
 import fi.dy.masa.malilib.gui.widget.IconWidget;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
+import fi.dy.masa.malilib.registry.Registry;
 
 public class AddActionExecutionWidgetScreen extends BaseScreen
 {
@@ -49,7 +49,7 @@ public class AddActionExecutionWidgetScreen extends BaseScreen
         this.argumentLabelWidget = new LabelWidget("malilib.label.argument.colon");
 
         this.actionDropDownWidget = new DropDownListWidget<>(160, 16, 240, 20,
-                                                             ActionRegistry.INSTANCE.getAllActions(),
+                                                             Registry.ACTION_REGISTRY.getAllActions(),
                                                              NamedAction::getDisplayName);
         this.actionDropDownWidget.setSelectionListener(this::onActionSelected);
 
@@ -59,7 +59,7 @@ public class AddActionExecutionWidgetScreen extends BaseScreen
         this.typeDropDownWidget.setSelectedEntry(BaseActionExecutionWidget.Type.RECTANGULAR);
 
         this.iconDropDownWidget = new DropDownListWidget<>(120, 16, 120, 10,
-                                                           IconRegistry.INSTANCE.getAllIcons(),
+                                                           Registry.ICON.getAllIcons(),
                                                            IconRegistry::getKeyForIcon, (h, i) -> new IconWidget(i));
 
         this.addArgumentCheckbox = new CheckBoxWidget("malilib.label.add_action_execution_widget.add_argument",

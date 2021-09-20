@@ -5,8 +5,6 @@ import com.google.common.collect.ImmutableList;
 
 public interface ActionRegistry
 {
-    ActionRegistry INSTANCE = new ActionRegistryImpl();
-
     /**
      * Registers the given action.
      * The registry name of the action will be "modid:actionName"

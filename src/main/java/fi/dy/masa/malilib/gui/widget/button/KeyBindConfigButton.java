@@ -8,11 +8,11 @@ import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.gui.config.KeybindEditingScreen;
 import fi.dy.masa.malilib.input.Hotkey;
 import fi.dy.masa.malilib.input.HotkeyCategory;
-import fi.dy.masa.malilib.input.HotkeyManager;
 import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.input.Keys;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
+import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class KeyBindConfigButton extends GenericButton
@@ -261,7 +261,7 @@ public class KeyBindConfigButton extends GenericButton
             return;
         }
 
-        List<HotkeyCategory> categories = HotkeyManager.INSTANCE.getHotkeyCategories();
+        List<HotkeyCategory> categories = Registry.HOTKEY_MANAGER.getHotkeyCategories();
         List<Hotkey> overlaps = new ArrayList<>();
         List<String> hoverStrings = new ArrayList<>();
         List<String> overlapInfo = new ArrayList<>();

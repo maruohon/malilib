@@ -5,8 +5,6 @@ import fi.dy.masa.malilib.util.data.ModInfo;
 
 public interface ConfigManager
 {
-    ConfigManager INSTANCE = new ConfigManagerImpl();
-
     /**
      * Registers a config handler
      * @param handler

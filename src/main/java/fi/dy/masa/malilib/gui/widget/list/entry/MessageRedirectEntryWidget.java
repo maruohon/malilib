@@ -5,8 +5,8 @@ import fi.dy.masa.malilib.gui.widget.DropDownListWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.overlay.message.MessageOutput;
-import fi.dy.masa.malilib.overlay.message.MessageRedirectManager;
 import fi.dy.masa.malilib.overlay.message.MessageRedirectManager.MessageRedirect;
+import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.LeftRight;
@@ -65,8 +65,8 @@ public class MessageRedirectEntryWidget extends BaseDataListEntryWidget<MessageR
         this.scheduleTask(() -> {
             String translationKey = this.data.getTranslationKey();
             MessageRedirect redirect = new MessageRedirect(translationKey, output);
-            MessageRedirectManager.INSTANCE.removeRedirect(translationKey);
-            MessageRedirectManager.INSTANCE.addRedirect(translationKey, redirect);
+            Registry.MESSAGE_REDIRECT_MANAGER.removeRedirect(translationKey);
+            Registry.MESSAGE_REDIRECT_MANAGER.addRedirect(translationKey, redirect);
             this.listWidget.refreshEntries();
         });
     }
@@ -74,7 +74,7 @@ public class MessageRedirectEntryWidget extends BaseDataListEntryWidget<MessageR
     protected void removeRedirect()
     {
         this.scheduleTask(() -> {
-            MessageRedirectManager.INSTANCE.removeRedirect(this.data.getTranslationKey());
+            Registry.MESSAGE_REDIRECT_MANAGER.removeRedirect(this.data.getTranslationKey());
             this.listWidget.refreshEntries();
         });
     }

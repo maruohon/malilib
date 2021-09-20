@@ -11,9 +11,9 @@ import fi.dy.masa.malilib.util.data.ModInfo;
 
 public class ConfigTabRegistryImpl implements ConfigTabRegistry
 {
-    private final Map<ModInfo, Supplier<List<ConfigTab>>> configTabProviders = new HashMap<>();
+    protected final Map<ModInfo, Supplier<List<ConfigTab>>> configTabProviders = new HashMap<>();
 
-    ConfigTabRegistryImpl()
+    public ConfigTabRegistryImpl()
     {
     }
 

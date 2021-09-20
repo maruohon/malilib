@@ -6,7 +6,6 @@ import javax.annotation.Nullable;
 import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.MaLiLibConfigScreen;
 import fi.dy.masa.malilib.MaLiLibReference;
-import fi.dy.masa.malilib.action.ActionRegistry;
 import fi.dy.masa.malilib.action.ActionRegistryImpl;
 import fi.dy.masa.malilib.action.AliasAction;
 import fi.dy.masa.malilib.action.MacroAction;
@@ -23,6 +22,7 @@ import fi.dy.masa.malilib.gui.widget.list.entry.AliasActionEntryWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.MacroActionEntryWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.NamedActionEntryWidget;
 import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
+import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.render.text.StyledText;
 import fi.dy.masa.malilib.util.StringUtils;
 
@@ -113,23 +113,23 @@ public class ActionListScreen extends BaseMultiListScreen
     @Override
     public void onGuiClosed()
     {
-        ((ActionRegistryImpl) ActionRegistry.INSTANCE).saveToFileIfDirty();
+        ((ActionRegistryImpl) Registry.ACTION_REGISTRY).saveToFileIfDirty();
         super.onGuiClosed();
     }
 
     protected List<NamedAction> getActions()
     {
-        return ActionRegistry.INSTANCE.getAllActions();
+        return Registry.ACTION_REGISTRY.getAllActions();
     }
 
     protected List<MacroAction> getMacros()
     {
-        return ActionRegistry.INSTANCE.getMacros();
+        return Registry.ACTION_REGISTRY.getMacros();
     }
 
     protected List<AliasAction> getAliases()
     {
-        return ActionRegistry.INSTANCE.getAliases();
+        return Registry.ACTION_REGISTRY.getAliases();
     }
 
     protected DataListWidget<NamedAction> createNamedActionListWidget()
@@ -205,7 +205,7 @@ public class ActionListScreen extends BaseMultiListScreen
 
     protected boolean openCreateMacroScreen(String macroName)
     {
-        if (ActionRegistry.INSTANCE.getAction(macroName) != null)
+        if (Registry.ACTION_REGISTRY.getAction(macroName) != null)
         {
             MessageDispatcher.error("malilib.message.error.actions_edit.exists", macroName);
             return false;
@@ -230,7 +230,7 @@ public class ActionListScreen extends BaseMultiListScreen
             return false;
         }
 
-        if (ActionRegistry.INSTANCE.getAction(alias) != null)
+        if (Registry.ACTION_REGISTRY.getAction(alias) != null)
         {
             MessageDispatcher.error("malilib.message.error.actions_edit.exists", alias);
             return false;
@@ -238,7 +238,7 @@ public class ActionListScreen extends BaseMultiListScreen
 
         NamedAction action = this.actionSourceListWidget.getLastSelectedEntry();
 
-        if (action != null && ActionRegistry.INSTANCE.addAlias(action.createAlias(alias, argument)))
+        if (action != null && Registry.ACTION_REGISTRY.addAlias(action.createAlias(alias, argument)))
         {
             this.aliasListWidget.refreshEntries();
             MessageDispatcher.success("malilib.message.success.added_alias_for_action", alias, action.getRegistryName());

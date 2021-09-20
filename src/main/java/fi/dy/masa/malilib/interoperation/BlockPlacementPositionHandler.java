@@ -6,11 +6,9 @@ import net.minecraft.util.math.BlockPos;
 
 public class BlockPlacementPositionHandler
 {
-    public static final BlockPlacementPositionHandler INSTANCE = new BlockPlacementPositionHandler();
+    protected final ArrayList<BlockPlacementPositionProvider> providers = new ArrayList<>();
 
-    private final ArrayList<BlockPlacementPositionProvider> providers = new ArrayList<>();
-
-    private BlockPlacementPositionHandler()
+    public BlockPlacementPositionHandler()
     {
     }
 

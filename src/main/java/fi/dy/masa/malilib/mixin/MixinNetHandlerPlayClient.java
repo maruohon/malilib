@@ -4,8 +4,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import fi.dy.masa.malilib.network.ClientPacketChannelHandler;
 import fi.dy.masa.malilib.network.ClientPacketChannelHandlerImpl;
+import fi.dy.masa.malilib.registry.Registry;
 
 @Mixin(net.minecraft.client.network.NetHandlerPlayClient.class)
 public abstract class MixinNetHandlerPlayClient
@@ -14,6 +14,6 @@ public abstract class MixinNetHandlerPlayClient
     private void onCustomPayload(net.minecraft.network.play.server.SPacketCustomPayload packet, CallbackInfo ci)
     {
         net.minecraft.client.network.NetHandlerPlayClient handler = (net.minecraft.client.network.NetHandlerPlayClient) (Object) this;
-        ((ClientPacketChannelHandlerImpl) ClientPacketChannelHandler.INSTANCE).processPacketFromServer(packet, handler);
+        ((ClientPacketChannelHandlerImpl) Registry.CLIENT_PACKET_CHANNEL_HANDLER).processPacketFromServer(packet, handler);
     }
 }

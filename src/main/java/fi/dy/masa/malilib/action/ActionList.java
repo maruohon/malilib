@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 import fi.dy.masa.malilib.MaLiLibConfigs;
+import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class ActionList
 {
-    public static final ActionList ALL_ACTIONS = new ActionList("all", "malilib.label.actions.lists.all_actions", ActionRegistry.INSTANCE::getAllActions);
-    public static final ActionList ALIASES = new ActionList("aliases", "malilib.label.actions.lists.all_aliases", ActionRegistry.INSTANCE::getAliases);
+    public static final ActionList ALL_ACTIONS = new ActionList("all", "malilib.label.actions.lists.all_actions", Registry.ACTION_REGISTRY::getAllActions);
+    public static final ActionList ALIASES = new ActionList("aliases", "malilib.label.actions.lists.all_aliases", Registry.ACTION_REGISTRY::getAliases);
 
     protected final String name;
     protected final String displayName;
@@ -44,7 +45,7 @@ public class ActionList
         list.add(ALL_ACTIONS);
         list.add(ALIASES);
 
-        for (MacroAction macro : ActionRegistry.INSTANCE.getMacros())
+        for (MacroAction macro : Registry.ACTION_REGISTRY.getMacros())
         {
             String name = "macro:" + macro.getRegistryName();
             String displayName = StringUtils.translate("malilib.label.actions.lists.macro", macro.getName());

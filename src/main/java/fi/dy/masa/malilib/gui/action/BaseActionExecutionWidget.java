@@ -9,13 +9,13 @@ import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import fi.dy.masa.malilib.action.ActionRegistry;
 import fi.dy.masa.malilib.action.NamedAction;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.icon.IconRegistry;
 import fi.dy.masa.malilib.gui.util.BorderSettings;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.ContainerWidget;
+import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.StringUtils;
@@ -398,7 +398,7 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
 
         if (JsonUtils.hasString(obj, "icon_name"))
         {
-            this.setIcon(IconRegistry.INSTANCE.getIconByKey(JsonUtils.getStringOrDefault(obj, "icon_name", "")));
+            this.setIcon(Registry.ICON.getIconByKey(JsonUtils.getStringOrDefault(obj, "icon_name", "")));
         }
 
         this.setActionWidgetHoverText(JsonUtils.getString(obj, "hover_text"));
@@ -421,7 +421,7 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
         JsonUtils.readArrayIfPresent(obj, "border_color_hover", this.getBorderRenderer().getHoverSettings().getColor()::fromJson);
 
         // FIXME
-        NamedAction action = ActionRegistry.INSTANCE.getAction(JsonUtils.getStringOrDefault(obj, "action_name", "?"));
+        NamedAction action = Registry.ACTION_REGISTRY.getAction(JsonUtils.getStringOrDefault(obj, "action_name", "?"));
 
         if (action != null)
         {

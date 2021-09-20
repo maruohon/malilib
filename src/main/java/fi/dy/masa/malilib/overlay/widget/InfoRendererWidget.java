@@ -21,6 +21,7 @@ import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.list.entry.BaseInfoRendererWidgetEntryWidget;
 import fi.dy.masa.malilib.overlay.InfoOverlay;
 import fi.dy.masa.malilib.overlay.InfoWidgetRegistry;
+import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.render.text.MultiLineTextRenderSettings;
@@ -452,7 +453,7 @@ public abstract class InfoRendererWidget extends BaseOverlayWidget
         if (JsonUtils.hasString(obj, "type"))
         {
             String type = obj.get("type").getAsString();
-            InfoWidgetRegistry.InfoWidgetFactory factory = InfoWidgetRegistry.INSTANCE.getWidgetFactory(type);
+            InfoWidgetRegistry.InfoWidgetFactory factory = Registry.INFO_WIDGET.getWidgetFactory(type);
 
             if (factory != null)
             {

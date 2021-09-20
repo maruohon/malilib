@@ -11,12 +11,11 @@ import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.config.util.ConfigUtils;
 import fi.dy.masa.malilib.overlay.widget.InfoRendererWidget;
+import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.util.JsonUtils;
 
 public class InfoWidgetManager
 {
-    public static final InfoWidgetManager INSTANCE = new InfoWidgetManager(InfoOverlay.INSTANCE);
-
     protected final ArrayListMultimap<Class<? extends InfoRendererWidget>, InfoRendererWidget> widgets = ArrayListMultimap.create();
     protected final InfoOverlay infoOverlay;
     protected boolean dirty;
@@ -106,7 +105,7 @@ public class InfoWidgetManager
         JsonUtils.readArrayElementsIfPresent(obj, "info_widgets", this::readAndAddWidget);
 
         // This causes all the widgets to get re-fetched immediately
-        InfoOverlay.INSTANCE.tick();
+        Registry.INFO_OVERLAY.tick();
     }
 
     protected void readAndAddWidget(JsonElement el)

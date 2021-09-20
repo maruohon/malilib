@@ -45,13 +45,11 @@ import fi.dy.masa.malilib.gui.widget.list.entry.config.list.StringListConfigWidg
 
 public class ConfigWidgetRegistry
 {
-    public static final ConfigWidgetRegistry INSTANCE = new ConfigWidgetRegistry();
+    protected final HashMap<Class<? extends ConfigInfo>, ConfigOptionWidgetFactory<?>> configWidgetFactories = new HashMap<>();
+    protected final HashMap<Class<? extends ConfigInfo>, ConfigSearchInfo<?>> configSearchInfoMap = new HashMap<>();
+    protected final ConfigOptionWidgetFactory<?> missingTypeFactory = new MissingConfigTypeFactory();
 
-    private final HashMap<Class<? extends ConfigInfo>, ConfigOptionWidgetFactory<?>> configWidgetFactories = new HashMap<>();
-    private final HashMap<Class<? extends ConfigInfo>, ConfigSearchInfo<?>> configSearchInfoMap = new HashMap<>();
-    private final ConfigOptionWidgetFactory<?> missingTypeFactory = new MissingConfigTypeFactory();
-
-    private ConfigWidgetRegistry()
+    public ConfigWidgetRegistry()
     {
         this.registerDefaultWidgetFactories();
         this.registerDefaultSearchInfos();
@@ -98,7 +96,7 @@ public class ConfigWidgetRegistry
         return (ConfigSearchInfo<C>) this.configSearchInfoMap.get(config.getClass());
     }
 
-    private void registerDefaultWidgetFactories()
+    protected void registerDefaultWidgetFactories()
     {
         this.registerConfigWidgetFactory(BlackWhiteListConfig.class,    BlackWhiteListConfigWidget::new);
         this.registerConfigWidgetFactory(BlockListConfig.class,         BlockListConfigWidget::new);
@@ -123,7 +121,7 @@ public class ConfigWidgetRegistry
         this.registerConfigWidgetFactory(StringListConfig.class,        StringListConfigWidget::new);
     }
 
-    private void registerDefaultSearchInfos()
+    protected void registerDefaultSearchInfos()
     {
         this.registerConfigSearchInfo(BooleanConfig.class,          new ConfigSearchInfo<BooleanConfig>(true, false).setBooleanConfigGetter((c) -> c));
         this.registerConfigSearchInfo(HotkeyConfig.class,           new ConfigSearchInfo<HotkeyConfig>(false, true).setKeyBindGetter(HotkeyConfig::getKeyBind));

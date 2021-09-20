@@ -3,9 +3,9 @@ package fi.dy.masa.malilib.input;
 import javax.annotation.Nullable;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import fi.dy.masa.malilib.action.ActionRegistry;
 import fi.dy.masa.malilib.action.NamedAction;
 import fi.dy.masa.malilib.input.callback.HotkeyCallback;
+import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.ModInfo;
@@ -80,11 +80,11 @@ public class CustomHotkeyDefinition implements Hotkey
 
         String name = JsonUtils.getStringOrDefault(obj, "name", "?");
         String actionName = JsonUtils.getStringOrDefault(obj, "action", "");
-        NamedAction action = ActionRegistry.INSTANCE.getAction(actionName);
+        NamedAction action = Registry.ACTION_REGISTRY.getAction(actionName);
 
         if (action == null)
         {
-            action = new NamedAction(ModInfo.NO_MOD, actionName, actionName, actionName, (ctx) -> ActionResult.PASS);
+            action = new NamedAction(ModInfo.NO_MOD, actionName, (ctx) -> ActionResult.PASS, actionName, actionName);
         }
 
         return new CustomHotkeyDefinition(name, keyBind, action);

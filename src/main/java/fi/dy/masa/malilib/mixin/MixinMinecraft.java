@@ -10,13 +10,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.multiplayer.WorldClient;
 import fi.dy.masa.malilib.MinecraftClientAccessor;
-import fi.dy.masa.malilib.event.dispatch.ClientWorldChangeEventDispatcher;
 import fi.dy.masa.malilib.event.dispatch.ClientWorldChangeEventDispatcherImpl;
-import fi.dy.masa.malilib.input.InputDispatcher;
 import fi.dy.masa.malilib.input.InputDispatcherImpl;
-import fi.dy.masa.malilib.event.dispatch.TickEventDispatcher;
 import fi.dy.masa.malilib.event.dispatch.TickEventDispatcherImpl;
 import fi.dy.masa.malilib.input.KeyBindImpl;
+import fi.dy.masa.malilib.registry.Registry;
 
 @Mixin(Minecraft.class)
 public abstract class MixinMinecraft implements MinecraftClientAccessor
@@ -37,7 +35,7 @@ public abstract class MixinMinecraft implements MinecraftClientAccessor
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;dispatchKeypresses()V"))
     private void onKeyboardInput(CallbackInfo ci)
     {
-        if (((InputDispatcherImpl) InputDispatcher.INSTANCE).onKeyInput())
+        if (((InputDispatcherImpl) Registry.INPUT_DISPATCHER).onKeyInput())
         {
             ci.cancel();
         }
@@ -47,7 +45,7 @@ public abstract class MixinMinecraft implements MinecraftClientAccessor
             at = @At(value = "INVOKE", target = "Lorg/lwjgl/input/Mouse;getEventButton()I", remap = false))
     private void onMouseInput(CallbackInfo ci)
     {
-        if (((InputDispatcherImpl) InputDispatcher.INSTANCE).onMouseInput())
+        if (((InputDispatcherImpl) Registry.INPUT_DISPATCHER).onMouseInput())
         {
             ci.cancel();
         }
@@ -64,7 +62,7 @@ public abstract class MixinMinecraft implements MinecraftClientAccessor
     {
         if (this.world != null && this.player != null)
         {
-            ((TickEventDispatcherImpl) TickEventDispatcher.INSTANCE).onClientTick((Minecraft) (Object) this);
+            ((TickEventDispatcherImpl) Registry.TICK_EVENT_DISPATCHER).onClientTick((Minecraft) (Object) this);
         }
     }
 
@@ -72,13 +70,13 @@ public abstract class MixinMinecraft implements MinecraftClientAccessor
     private void onLoadWorldPre(@Nullable WorldClient worldClientIn, String loadingMessage, CallbackInfo ci)
     {
         this.worldBefore = this.world;
-        ((ClientWorldChangeEventDispatcherImpl) ClientWorldChangeEventDispatcher.INSTANCE).onWorldLoadPre(this.world, worldClientIn, (Minecraft)(Object) this);
+        ((ClientWorldChangeEventDispatcherImpl) Registry.CLIENT_WORLD_CHANGE_EVENT_DISPATCHER).onWorldLoadPre(this.world, worldClientIn, (Minecraft)(Object) this);
     }
 
     @Inject(method = "loadWorld(Lnet/minecraft/client/multiplayer/WorldClient;Ljava/lang/String;)V", at = @At("RETURN"))
     private void onLoadWorldPost(@Nullable WorldClient worldClientIn, String loadingMessage, CallbackInfo ci)
     {
-        ((ClientWorldChangeEventDispatcherImpl) ClientWorldChangeEventDispatcher.INSTANCE).onWorldLoadPost(this.worldBefore, worldClientIn, (Minecraft)(Object) this);
+        ((ClientWorldChangeEventDispatcherImpl) Registry.CLIENT_WORLD_CHANGE_EVENT_DISPATCHER).onWorldLoadPost(this.worldBefore, worldClientIn, (Minecraft)(Object) this);
         this.worldBefore = null;
     }
 }

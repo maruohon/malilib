@@ -6,7 +6,6 @@ import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.MaLiLibConfigs;
-import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.config.ConfigManagerImpl;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.gui.BaseListScreen;
@@ -17,8 +16,8 @@ import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.button.BaseButton;
 import fi.dy.masa.malilib.gui.widget.button.KeyBindConfigButton;
 import fi.dy.masa.malilib.gui.widget.list.ConfigOptionListWidget;
-import fi.dy.masa.malilib.input.HotkeyManager;
 import fi.dy.masa.malilib.listener.EventListener;
+import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.util.data.ModInfo;
 
 public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? extends ConfigInfo>> implements ConfigScreen, KeybindEditingScreen
@@ -143,7 +142,7 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
     {
         super.onGuiClosed();
 
-        if (((ConfigManagerImpl) ConfigManager.INSTANCE).saveIfDirty())
+        if (((ConfigManagerImpl) Registry.CONFIG_MANAGER).saveIfDirty())
         {
             this.onSettingsChanged();
         }
@@ -151,7 +150,7 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
 
     protected void onSettingsChanged()
     {
-        HotkeyManager.INSTANCE.updateUsedKeys();
+        Registry.HOTKEY_MANAGER.updateUsedKeys();
 
         if (this.configSaveListener != null)
         {

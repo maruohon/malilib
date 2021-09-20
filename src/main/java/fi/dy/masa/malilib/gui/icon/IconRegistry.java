@@ -17,8 +17,6 @@ import fi.dy.masa.malilib.util.JsonUtils;
 
 public class IconRegistry
 {
-    public static final IconRegistry INSTANCE = new IconRegistry();
-
     protected final List<Icon> modIcons = new ArrayList<>();
     protected final List<Icon> userIcons = new ArrayList<>();
     protected final Map<String, Icon> iconMap = new HashMap<>();
