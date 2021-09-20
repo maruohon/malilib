@@ -194,34 +194,34 @@ public class StyledTextParser
             String str = reader.subString();
             int len = str.length();
 
-            if (len >= 7 && PATTERN_COLOR_6.matcher(str.substring(0, 7)).matches())
-            {
-                int colorInt = (int) Long.parseLong(str.substring(0, 6), 16);
-                color = Color4f.fromColor(colorInt, 1f);
-                tokenValueLen += 6;
-            }
-            else if (len >= 9 && PATTERN_COLOR_8.matcher(str.substring(0, 9)).matches())
+            if (len >= 9 && PATTERN_COLOR_8.matcher(str.substring(0, 9)).matches())
             {
                 int colorInt = (int) Long.parseLong(str.substring(0, 8), 16);
                 color = Color4f.fromColor(colorInt);
                 tokenValueLen += 8;
             }
-            else if (len >= 4 && PATTERN_COLOR_3.matcher(str.substring(0, 4)).matches())
+            else if (len >= 7 && PATTERN_COLOR_6.matcher(str.substring(0, 7)).matches())
             {
-                int r = (int) Long.parseLong(str.substring(0, 1), 16) * 17;
-                int g = (int) Long.parseLong(str.substring(1, 2), 16) * 17;
-                int b = (int) Long.parseLong(str.substring(2, 3), 16) * 17;
-                color = Color4f.fromColor(r << 16 | g << 8 | b, 1f);
-                tokenValueLen += 3;
+                int colorInt = Integer.parseInt(str.substring(0, 6), 16);
+                color = Color4f.fromColor(colorInt, 1f);
+                tokenValueLen += 6;
             }
             else if (len >= 5 && PATTERN_COLOR_4.matcher(str.substring(0, 5)).matches())
             {
-                int a = (int) Long.parseLong(str.substring(0, 1), 16) * 17;
-                int r = (int) Long.parseLong(str.substring(1, 2), 16) * 17;
-                int g = (int) Long.parseLong(str.substring(2, 3), 16) * 17;
-                int b = (int) Long.parseLong(str.substring(3, 4), 16) * 17;
+                int a = Integer.parseInt(str.substring(0, 1), 16) * 17;
+                int r = Integer.parseInt(str.substring(1, 2), 16) * 17;
+                int g = Integer.parseInt(str.substring(2, 3), 16) * 17;
+                int b = Integer.parseInt(str.substring(3, 4), 16) * 17;
                 color = Color4f.fromColor(a << 24 | r << 16 | g << 8 | b);
                 tokenValueLen += 4;
+            }
+            else if (len >= 4 && PATTERN_COLOR_3.matcher(str.substring(0, 4)).matches())
+            {
+                int r = Integer.parseInt(str.substring(0, 1), 16) * 17;
+                int g = Integer.parseInt(str.substring(1, 2), 16) * 17;
+                int b = Integer.parseInt(str.substring(2, 3), 16) * 17;
+                color = Color4f.fromColor(r << 16 | g << 8 | b, 1f);
+                tokenValueLen += 3;
             }
 
             if (color != null)
