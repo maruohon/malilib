@@ -23,6 +23,7 @@ malilib.config.comment.optionlistconfigdropdown=Use a DropDown widget instead of
 malilib.config.comment.pressedkeystoast=Show the currently pressed/held keys as a toast message
 malilib.config.comment.rememberconfigtabscrollpositions=Remember the config screen scrollbar position for each tab
 malilib.config.comment.servermessages=Allows a server-side mod to send messages via the malilib Message/Toast Renderers
+malilib.config.comment.sortextensionmodoptions=Sorts the config list shown on the config screen by the config display name after any possible extension mod configs have been added to the end of the list of configs in the base mod. Note that this would also cause the base mod's configs to be sorted alphabetically, in case they weren't by default.
 
 malilib.config.comment.debugmessages=Enables some debug messages to the game console
 malilib.config.comment.guidebug=When enabled, all GUI widgets will draw their outlines, and when hovered, also their position and dimension info and the widget class name. If a key is set for Debug -> 'GUI Debug Key', then that key must be held for any of the debug rendering to happen.
@@ -69,6 +70,7 @@ malilib.config.name.optionlistconfigdropdown=Option List Config DropDown
 malilib.config.name.pressedkeystoast=Pressed Keys Toast
 malilib.config.name.rememberconfigtabscrollpositions=Remember Config Screen Scroll Positions
 malilib.config.name.servermessages=Server Messages (receive)
+malilib.config.name.sortextensionmodoptions=Sort Extension Mod Options
 
 malilib.config.name.debugmessages=Debug Messages
 malilib.config.name.guidebug=GUI Debug

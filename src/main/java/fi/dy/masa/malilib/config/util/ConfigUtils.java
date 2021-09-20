@@ -25,6 +25,7 @@ import fi.dy.masa.malilib.input.HotkeyManager;
 import fi.dy.masa.malilib.overlay.InfoWidgetManager;
 import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
 import fi.dy.masa.malilib.overlay.message.MessageRedirectManager;
+import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.data.ConfigOnTab;
 import fi.dy.masa.malilib.util.data.ModInfo;
@@ -59,6 +60,11 @@ public class ConfigUtils
     public static void sortConfigsByDisplayName(ArrayList<ConfigInfo> configs)
     {
         configs.sort(Comparator.comparing((c) -> TextFormatting.getTextWithoutFormattingCodes(c.getDisplayName())));
+    }
+
+    public static List<? extends ConfigInfo> getExtendedList(List<? extends ConfigInfo> baseList)
+    {
+        return Registry.CONFIG_TAB_EXTENSION.getExtendedList(baseList, MaLiLibConfigs.Generic.SORT_EXTENSION_MOD_OPTIONS.getBooleanValue());
     }
 
     /**
