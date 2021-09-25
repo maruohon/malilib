@@ -2,8 +2,11 @@ package fi.dy.masa.malilib.util.nbt;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.Collection;
+import java.util.function.Function;
 import javax.annotation.Nullable;
 import net.minecraft.nbt.CompressedStreamTools;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagDouble;
 import net.minecraft.nbt.NBTTagInt;
@@ -31,6 +34,18 @@ public class NbtUtils
         }
 
         return nbt;
+    }
+
+    public static <T> NBTTagList asListTag(Collection<T> values, Function<T, NBTBase> tagFactory)
+    {
+        NBTTagList list = new NBTTagList();
+
+        for (T val : values)
+        {
+            list.appendTag(tagFactory.apply(val));
+        }
+
+        return list;
     }
 
     public static NBTTagCompound createBlockPosTag(Vec3i pos)

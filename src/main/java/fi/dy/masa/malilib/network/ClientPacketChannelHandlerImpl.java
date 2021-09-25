@@ -3,6 +3,8 @@ package fi.dy.masa.malilib.network;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ArrayListMultimap;
 import net.minecraft.client.Minecraft;
@@ -12,8 +14,6 @@ import net.minecraft.network.play.client.CPacketCustomPayload;
 import net.minecraft.network.play.server.SPacketCustomPayload;
 import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.MaLiLib;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 
 public class ClientPacketChannelHandlerImpl implements ClientPacketChannelHandler
 {
