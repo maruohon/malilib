@@ -442,11 +442,9 @@ public class StringUtils
     @Nullable
     public static String getWorldOrServerName()
     {
-        Minecraft mc = Minecraft.getMinecraft();
-
-        if (mc.isSingleplayer())
+        if (GameUtils.isSinglePlayer())
         {
-            IntegratedServer server = mc.getIntegratedServer();
+            IntegratedServer server = GameUtils.getClient().getIntegratedServer();
 
             if (server != null)
             {
@@ -455,7 +453,7 @@ public class StringUtils
         }
         else
         {
-            ServerData server = mc.getCurrentServerData();
+            ServerData server = GameUtils.getClient().getCurrentServerData();
 
             if (server != null)
             {
@@ -487,7 +485,7 @@ public class StringUtils
             }
             else
             {
-                World world = Minecraft.getMinecraft().world;
+                World world = GameUtils.getClient().world;
 
                 if (world != null)
                 {
@@ -581,7 +579,7 @@ public class StringUtils
      */
     public static int getFontHeight()
     {
-        return Minecraft.getMinecraft().fontRenderer.FONT_HEIGHT;
+        return GameUtils.getClient().fontRenderer.FONT_HEIGHT;
     }
 
     /**
@@ -591,6 +589,6 @@ public class StringUtils
      */
     public static int getStringWidth(String text)
     {
-        return Minecraft.getMinecraft().fontRenderer.getStringWidth(text);
+        return GameUtils.getClient().fontRenderer.getStringWidth(text);
     }
 }

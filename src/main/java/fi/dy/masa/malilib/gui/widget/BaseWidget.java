@@ -22,6 +22,7 @@ import fi.dy.masa.malilib.render.TextRenderUtils;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.render.text.TextRenderSettings;
 import fi.dy.masa.malilib.render.text.TextRenderer;
+import fi.dy.masa.malilib.util.GameUtils;
 import fi.dy.masa.malilib.util.data.Color4f;
 
 public class BaseWidget
@@ -33,7 +34,7 @@ public class BaseWidget
     private static int lastDebugOutlineColorHue;
     private static int nextWidgetId;
 
-    protected final Minecraft mc;
+    protected final Minecraft mc = GameUtils.getClient();
     protected final EdgeInt margin = new EdgeInt();
     protected final EdgeInt padding = new EdgeInt();
     protected final ElementOffset iconOffset = new ElementOffset();
@@ -73,7 +74,6 @@ public class BaseWidget
         this.y = y;
         this.width = width;
         this.height = height;
-        this.mc = Minecraft.getMinecraft();
         this.textRenderer = TextRenderer.INSTANCE;
         this.padding.setChangeListener(this::updateSize);
         this.textOffset.setXOffset(4);

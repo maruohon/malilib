@@ -49,6 +49,7 @@ import fi.dy.masa.malilib.mixin.IMixinAbstractHorse;
 import fi.dy.masa.malilib.render.ItemRenderUtils;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
+import fi.dy.masa.malilib.util.GameUtils;
 import fi.dy.masa.malilib.util.RayTraceUtils;
 import fi.dy.masa.malilib.util.WorldUtils;
 import fi.dy.masa.malilib.util.data.Vec2i;
@@ -70,7 +71,6 @@ public class InventoryRenderUtils
                                                    Int2ObjectOpenHashMap<Vec2i> customSlotPositions)
     {
         final int invSize = inv.getSlots();
-        Minecraft mc = Minecraft.getMinecraft();
 
         RenderUtils.enableGuiItemLighting();
         GlStateManager.enableDepth();
@@ -85,7 +85,7 @@ public class InventoryRenderUtils
 
                 if (stack.isEmpty() == false && pos != null)
                 {
-                    ItemRenderUtils.renderStackAt(stack, x + pos.x, y + pos.y, z, 1f, mc);
+                    ItemRenderUtils.renderStackAt(stack, x + pos.x, y + pos.y, z, 1f, GameUtils.getClient());
                 }
             }
         }
@@ -298,7 +298,6 @@ public class InventoryRenderUtils
                                                    int slotsPerRow, Vec2i slotOffset, InventoryView inv)
     {
         final int invSize = inv.getSlots();
-        Minecraft mc = Minecraft.getMinecraft();
 
         if (maxSlotCount < 0)
         {
@@ -329,7 +328,7 @@ public class InventoryRenderUtils
 
             if (stack.isEmpty() == false)
             {
-                ItemRenderUtils.renderStackAt(stack, x, y, z, 1f, mc);
+                ItemRenderUtils.renderStackAt(stack, x, y, z, 1f, GameUtils.getClient());
             }
 
             if (++slotOnRow >= slotsPerRow)

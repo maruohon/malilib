@@ -1,7 +1,6 @@
 package fi.dy.masa.malilib.gui.widget;
 
 import javax.annotation.Nullable;
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.icon.Icon;
@@ -17,7 +16,6 @@ public class ScrollBarWidget extends InteractableWidget
     @Nullable protected MultiIcon arrowTextureUp;
     @Nullable protected MultiIcon arrowTextureDown;
     @Nullable protected EventListener changeListener;
-    protected final Minecraft mc = Minecraft.getMinecraft();
     protected boolean mouseOver = false;
     protected boolean dragging = false;
     protected boolean renderScrollbarBackgroundColor = true;

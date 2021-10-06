@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.lwjgl.opengl.GL11;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -18,6 +17,7 @@ import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.render.text.TextRenderer;
 import fi.dy.masa.malilib.util.EntityUtils;
+import fi.dy.masa.malilib.util.GameUtils;
 import fi.dy.masa.malilib.util.data.Vec2i;
 
 public class TextRenderUtils
@@ -25,7 +25,7 @@ public class TextRenderUtils
     public static void renderText(int x, int y, int color, String text)
     {
         String[] parts = text.split("\\\\n");
-        FontRenderer textRenderer = Minecraft.getMinecraft().fontRenderer;
+        FontRenderer textRenderer = GameUtils.getClient().fontRenderer;
 
         for (String line : parts)
         {
@@ -38,7 +38,7 @@ public class TextRenderUtils
     {
         if (lines.isEmpty() == false)
         {
-            FontRenderer textRenderer = Minecraft.getMinecraft().fontRenderer;
+            FontRenderer textRenderer = GameUtils.getClient().fontRenderer;
 
             for (String line : lines)
             {
@@ -51,8 +51,7 @@ public class TextRenderUtils
     public static int renderText(int xOff, int yOff, int z, double scale, int textColor, int bgColor,
                                  HudAlignment alignment, boolean useBackground, boolean useShadow, List<String> lines)
     {
-        Minecraft mc = Minecraft.getMinecraft();
-        FontRenderer fontRenderer = mc.fontRenderer;
+        FontRenderer fontRenderer = GameUtils.getClient().fontRenderer;
         final int scaledWidth = GuiUtils.getScaledWindowWidth();
         final int lineHeight = fontRenderer.FONT_HEIGHT + 2;
         final int contentHeight = lines.size() * lineHeight - 2;
@@ -77,7 +76,7 @@ public class TextRenderUtils
         double posY = yOff + bgMargin;
 
         posY = GuiUtils.getHudPosY((int) posY, yOff, contentHeight, scale, alignment);
-        posY += GuiUtils.getHudOffsetForPotions(alignment, scale, mc.player);
+        posY += GuiUtils.getHudOffsetForPotions(alignment, scale, GameUtils.getClientPlayer());
 
         for (String line : lines)
         {
@@ -168,12 +167,10 @@ public class TextRenderUtils
     public static void renderHoverText(int x, int y, float z, List<String> textLines,
                                        int textColor, RectangleRenderer backgroundRenderer)
     {
-        Minecraft mc = Minecraft.getMinecraft();
-
         if (textLines.isEmpty() == false && GuiUtils.getCurrentScreen() != null)
         {
             List<String> linesNew = new ArrayList<>();
-            FontRenderer font = mc.fontRenderer;
+            FontRenderer font = GameUtils.getClient().fontRenderer;
             int maxLineLength = 0;
 
             for (String lineOrig : textLines)
@@ -339,7 +336,7 @@ public class TextRenderUtils
     public static void renderTextPlate(List<String> text, double x, double y, double z, float yaw, float pitch,
                                        float scale, int textColor, int bgColor, boolean disableDepth)
     {
-        FontRenderer textRenderer = Minecraft.getMinecraft().fontRenderer;
+        FontRenderer textRenderer = GameUtils.getClient().fontRenderer;
 
         GlStateManager.alphaFunc(GL11.GL_GREATER, 0.1F);
         GlStateManager.pushMatrix();

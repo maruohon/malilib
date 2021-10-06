@@ -30,6 +30,7 @@ import net.minecraft.world.storage.MapData;
 import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.icon.PositionedIcon;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
+import fi.dy.masa.malilib.util.GameUtils;
 import fi.dy.masa.malilib.util.PositionUtils;
 import fi.dy.masa.malilib.util.PositionUtils.HitPart;
 import fi.dy.masa.malilib.util.data.Color4f;
@@ -55,7 +56,7 @@ public class RenderUtils
 
     public static void bindTexture(ResourceLocation texture)
     {
-        mc().getTextureManager().bindTexture(texture);
+        GameUtils.getClient().getTextureManager().bindTexture(texture);
     }
 
     public static void color(float r, float g, float b, float a)
@@ -119,16 +120,15 @@ public class RenderUtils
 
     public static void setupScaledScreenRendering(double scaleFactor)
     {
-        Minecraft mc = Minecraft.getMinecraft();
-        double width = mc.displayWidth / scaleFactor;
-        double height = mc.displayHeight / scaleFactor;
+        double width = GuiUtils.getDisplayWidth() / scaleFactor;
+        double height = GuiUtils.getDisplayHeight() / scaleFactor;
 
         setupScaledScreenRendering(width, height);
     }
 
     public static int getVanillaScreenScale()
     {
-        Minecraft mc = Minecraft.getMinecraft();
+        Minecraft mc = GameUtils.getClient();
         int displayWidth = mc.displayWidth;
         int displayHeight = mc.displayHeight;
         int scale = Math.min(displayWidth / 320, displayHeight / 240);
@@ -158,7 +158,7 @@ public class RenderUtils
     {
         if (texture != null)
         {
-            TextureAtlasSprite sprite = mc().getTextureMapBlocks().getAtlasSprite(texture);
+            TextureAtlasSprite sprite = GameUtils.getClient().getTextureMapBlocks().getAtlasSprite(texture);
             BufferBuilder buffer = startBuffer(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX, true);
 
             float u1 = sprite.getMinU();
@@ -516,7 +516,7 @@ public class RenderUtils
 
             drawBuffer();
 
-            MapData mapdata = Items.FILLED_MAP.getMapData(stack, mc().world);
+            MapData mapdata = Items.FILLED_MAP.getMapData(stack, GameUtils.getClient().world);
 
             if (mapdata != null)
             {
@@ -525,7 +525,7 @@ public class RenderUtils
                 double scale = (double) (dimensions - 16) / 128.0;
                 GlStateManager.translate(x1, y1, z + 1f);
                 GlStateManager.scale(scale, scale, 0);
-                mc().entityRenderer.getMapItemRenderer().renderMap(mapdata, false);
+                GameUtils.getClient().entityRenderer.getMapItemRenderer().renderMap(mapdata, false);
             }
 
             GlStateManager.enableLighting();
@@ -623,7 +623,7 @@ public class RenderUtils
 
         if (quad.hasTintIndex())
         {
-            BlockColors blockColors = mc().getBlockColors();
+            BlockColors blockColors = GameUtils.getClient().getBlockColors();
             int m = blockColors.colorMultiplier(state, null, null, quad.getTintIndex());
 
             float r = (float) (m >>> 16 & 0xFF) / 255F;
@@ -691,11 +691,6 @@ public class RenderUtils
             buffer.putPosition(pos.x, pos.y, pos.z);
             putQuadNormal(buffer, quad);
         }
-    }
-
-    private static Minecraft mc()
-    {
-        return Minecraft.getMinecraft();
     }
 
     /*

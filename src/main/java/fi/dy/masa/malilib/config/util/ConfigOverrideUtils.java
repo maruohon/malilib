@@ -24,6 +24,7 @@ import fi.dy.masa.malilib.gui.config.ConfigSearchInfo;
 import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
 import fi.dy.masa.malilib.registry.Registry;
+import fi.dy.masa.malilib.util.GameUtils;
 import fi.dy.masa.malilib.util.JsonUtils;
 
 public class ConfigOverrideUtils
@@ -41,14 +42,14 @@ public class ConfigOverrideUtils
 
     public static void applyConfigOverrides()
     {
-        Minecraft mc = Minecraft.getMinecraft();
-        ServerData server = mc.getCurrentServerData();
-
-        if (mc.isSingleplayer() == false)
+        if (GameUtils.isSinglePlayer() == false)
         {
-            if (server != null)
+            Minecraft mc = GameUtils.getClient();
+            ServerData serverData = mc.getCurrentServerData();
+
+            if (serverData != null)
             {
-                String motd = server.serverMOTD;
+                String motd = serverData.serverMOTD;
                 String[] lines = motd.split("\\n");
 
                 if (lines.length >= 4 && lines[3].isEmpty() == false && lines[3].charAt(0) == '{')

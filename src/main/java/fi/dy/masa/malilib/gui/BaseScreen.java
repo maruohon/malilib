@@ -26,12 +26,13 @@ import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.render.text.TextRenderer;
+import fi.dy.masa.malilib.util.GameUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.Vec2i;
 
 public abstract class BaseScreen extends GuiScreen
 {
-    protected final Minecraft mc = Minecraft.getMinecraft();
+    protected final Minecraft mc = GameUtils.getClient();
     protected final TextRenderer textRenderer = TextRenderer.INSTANCE;
     protected final List<Runnable> tasks = new ArrayList<>();
     private final List<InteractableWidget> widgets = new ArrayList<>();
@@ -847,7 +848,7 @@ public abstract class BaseScreen extends GuiScreen
 
     public static boolean openScreen(@Nullable GuiScreen screen)
     {
-        Minecraft.getMinecraft().displayGuiScreen(screen);
+        GameUtils.getClient().displayGuiScreen(screen);
         return true;
     }
 

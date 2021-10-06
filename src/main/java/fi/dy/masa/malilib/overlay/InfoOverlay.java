@@ -14,12 +14,13 @@ import fi.dy.masa.malilib.event.PostGameOverlayRenderer;
 import fi.dy.masa.malilib.event.PostScreenRenderer;
 import fi.dy.masa.malilib.gui.position.ScreenLocation;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
-import fi.dy.masa.malilib.gui.widget.BaseWidget;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
+import fi.dy.masa.malilib.gui.widget.BaseWidget;
 import fi.dy.masa.malilib.overlay.widget.InfoRendererWidget;
 import fi.dy.masa.malilib.overlay.widget.StringListRendererWidget;
 import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.util.GameUtils;
 
 public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer, ClientTickHandler
 {
@@ -28,7 +29,7 @@ public class InfoOverlay implements PostGameOverlayRenderer, PostScreenRenderer,
     protected final List<InfoRendererWidget> enabledGuiWidgets = new ArrayList<>();
     protected final List<InfoRendererWidget> allEnabledWidgets = new ArrayList<>();
     protected final List<InfoArea> activeInfoAreas = new ArrayList<>();
-    protected final Minecraft mc = Minecraft.getMinecraft();
+    protected final Minecraft mc = GameUtils.getClient();
     protected boolean needsReFetch;
 
     public InfoArea getOrCreateInfoArea(ScreenLocation location)

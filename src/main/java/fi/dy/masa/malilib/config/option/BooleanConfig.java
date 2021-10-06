@@ -66,6 +66,7 @@ public class BooleanConfig extends BaseGenericConfig<Boolean> implements Boolean
         return false;
     }
 
+    @Override
     public void toggleBooleanValue()
     {
         this.setBooleanValue(! this.booleanValue);

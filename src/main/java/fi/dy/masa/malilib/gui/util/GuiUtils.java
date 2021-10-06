@@ -8,7 +8,6 @@ import java.util.Locale;
 import java.util.Set;
 import javax.annotation.Nullable;
 import com.google.common.collect.Sets;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiConfirmOpenLink;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
@@ -27,6 +26,7 @@ import fi.dy.masa.malilib.gui.widget.IntegerTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.button.ButtonActionListener;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.listener.EventListener;
+import fi.dy.masa.malilib.util.GameUtils;
 import fi.dy.masa.malilib.util.PositionUtils.CoordinateType;
 import fi.dy.masa.malilib.util.position.CoordinateValueModifier;
 
@@ -36,36 +36,36 @@ public class GuiUtils
 
     public static int getScaledWindowWidth()
     {
-        ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
+        ScaledResolution sr = new ScaledResolution(GameUtils.getClient());
         return sr.getScaledWidth();
     }
 
     public static int getScaledWindowHeight()
     {
-        ScaledResolution sr = new ScaledResolution(Minecraft.getMinecraft());
+        ScaledResolution sr = new ScaledResolution(GameUtils.getClient());
         return sr.getScaledHeight();
     }
 
     public static int getDisplayWidth()
     {
-        return Minecraft.getMinecraft().displayWidth;
+        return GameUtils.getClient().displayWidth;
     }
 
     public static int getDisplayHeight()
     {
-        return Minecraft.getMinecraft().displayHeight;
+        return GameUtils.getClient().displayHeight;
     }
 
     @Nullable
     public static GuiScreen getCurrentScreen()
     {
-        return Minecraft.getMinecraft().currentScreen;
+        return GameUtils.getClient().currentScreen;
     }
 
     @Nullable
     public static <T> T getCurrentScreenIfMatches(Class<T> clazz)
     {
-        GuiScreen screen = Minecraft.getMinecraft().currentScreen;
+        GuiScreen screen = getCurrentScreen();
 
         if (clazz.isAssignableFrom(screen.getClass()))
         {
@@ -77,11 +77,11 @@ public class GuiUtils
 
     public static void reInitCurrentScreen()
     {
-        Minecraft mc = Minecraft.getMinecraft();
+        GuiScreen screen = getCurrentScreen();
 
-        if (mc.currentScreen != null)
+        if (screen != null)
         {
-            mc.currentScreen.initGui();
+            screen.initGui();
         }
     }
 
@@ -299,7 +299,6 @@ public class GuiUtils
     {
         try
         {
-            Minecraft mc = Minecraft.getMinecraft();
             URI uri = new URI(urlString);
             String s = uri.getScheme();
 
@@ -315,7 +314,7 @@ public class GuiUtils
 
             final GuiScreen currentScreen = getCurrentScreen();
 
-            if (mc.gameSettings.chatLinksPrompt)
+            if (GameUtils.getClient().gameSettings.chatLinksPrompt)
             {
                 //BaseScreen.openGui(new ConfirmActionScreen(320, "", () -> openWebLink(uri), getCurrentScreen(), ""));
                 BaseScreen.openScreen(new GuiConfirmOpenLink((result, id) -> {

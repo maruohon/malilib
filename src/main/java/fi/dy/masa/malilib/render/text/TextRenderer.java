@@ -22,6 +22,7 @@ import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
+import fi.dy.masa.malilib.util.GameUtils;
 import fi.dy.masa.malilib.util.data.Color4f;
 import fi.dy.masa.malilib.util.data.FloatUnaryOperator;
 import it.unimi.dsi.fastutil.chars.Char2ObjectOpenHashMap;
@@ -36,7 +37,7 @@ public class TextRenderer implements IResourceManagerReloadListener
     protected static final ResourceLocation[] UNICODE_PAGE_LOCATIONS = new ResourceLocation[256];
 
     // This needs to be below the other static fields, because the resource manager reload will access the  other fields!
-    public static final TextRenderer INSTANCE = new TextRenderer(Minecraft.getMinecraft().getTextureManager(),
+    public static final TextRenderer INSTANCE = new TextRenderer(GameUtils.getClient().getTextureManager(),
                                                                  ASCII_TEXTURE, false, false);
 
     protected final Random rand = new Random();
@@ -71,7 +72,7 @@ public class TextRenderer implements IResourceManagerReloadListener
 
         this.setColorCodes(anaglyph);
 
-        ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener(this);
+        ((IReloadableResourceManager) GameUtils.getClient().getResourceManager()).registerReloadListener(this);
     }
 
     protected void setColorCodes(boolean anaglyph)
@@ -123,7 +124,7 @@ public class TextRenderer implements IResourceManagerReloadListener
     @Override
     public void onResourceManagerReload(@Nonnull IResourceManager resourceManager)
     {
-        Minecraft mc = Minecraft.getMinecraft();
+        Minecraft mc = GameUtils.getClient();
         this.unicode = mc.isUnicode();
 
         if (mc.gameSettings.anaglyph != this.anaglyph)
@@ -274,7 +275,7 @@ public class TextRenderer implements IResourceManagerReloadListener
 
     public void startBuffers()
     {
-        Minecraft mc = Minecraft.getMinecraft();
+        Minecraft mc = GameUtils.getClient();
 
         if (this.unicode != mc.isUnicode())
         {

@@ -6,6 +6,7 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 import fi.dy.masa.malilib.util.EntityUtils;
+import fi.dy.masa.malilib.util.GameUtils;
 
 public class ActionContext
 {
@@ -13,7 +14,7 @@ public class ActionContext
 
     public ActionContext()
     {
-        this.mc = Minecraft.getMinecraft();
+        this.mc = GameUtils.getClient();
     }
 
     @Nullable

@@ -10,19 +10,19 @@ import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.MinecraftClientAccessor;
-import fi.dy.masa.malilib.overlay.message.MessageOutput;
 import fi.dy.masa.malilib.config.value.KeybindDisplayMode;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.input.callback.AdjustableValueHotkeyCallback;
 import fi.dy.masa.malilib.input.callback.HotkeyCallback;
 import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
+import fi.dy.masa.malilib.overlay.message.MessageOutput;
 import fi.dy.masa.malilib.overlay.message.MessageUtils;
 import fi.dy.masa.malilib.render.text.StyledText;
+import fi.dy.masa.malilib.util.GameUtils;
 import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.ModInfo;
@@ -207,7 +207,7 @@ public class KeyBindImpl implements KeyBind
             if (this.keyCodes.contains(Keyboard.KEY_F3))
             {
                 // Prevent the debug GUI from opening after the F3 key is released
-                ((MinecraftClientAccessor) Minecraft.getMinecraft()).setActionKeyF3(true);
+                ((MinecraftClientAccessor) GameUtils.getClient()).setActionKeyF3(true);
             }
 
             if (activateOn == KeyAction.PRESS || activateOn == KeyAction.BOTH)

@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
+import io.netty.buffer.Unpooled;
 import org.apache.commons.lang3.tuple.Pair;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.network.INetHandler;
 import net.minecraft.network.NetHandlerPlayServer;
@@ -13,7 +13,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.client.CPacketCustomPayload;
 import net.minecraft.network.play.server.SPacketCustomPayload;
 import net.minecraft.util.ResourceLocation;
-import io.netty.buffer.Unpooled;
+import fi.dy.masa.malilib.util.GameUtils;
 
 /**
  * Network packet splitter code from QuickCarpet by skyrising
@@ -105,7 +105,7 @@ public class PacketSplitter
     @Nullable
     private static PacketBuffer receive(String channelName, PacketBuffer rawData, int maxLength)
     {
-        Pair<INetHandler, ResourceLocation> key = Pair.of(Minecraft.getMinecraft().getConnection(), new ResourceLocation(channelName));
+        Pair<INetHandler, ResourceLocation> key = Pair.of(GameUtils.getClient().getConnection(), new ResourceLocation(channelName));
 
         return READING_SESSIONS.computeIfAbsent(key, ReadingSession::new).receive(rawData, maxLength);
     }

@@ -11,11 +11,11 @@ import com.google.common.collect.ImmutableList;
 import com.ibm.icu.text.ArabicShaping;
 import com.ibm.icu.text.ArabicShapingException;
 import com.ibm.icu.text.Bidi;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.MaLiLib;
+import fi.dy.masa.malilib.util.GameUtils;
 
 public class TextRendererUtils
 {
@@ -57,7 +57,7 @@ public class TextRendererUtils
 
         try
         {
-            resource = Minecraft.getMinecraft().getResourceManager().getResource(new ResourceLocation("font/glyph_sizes.bin"));
+            resource = GameUtils.getClient().getResourceManager().getResource(new ResourceLocation("font/glyph_sizes.bin"));
 
             if (resource.getInputStream().read(glyphWidth) <= 0)
             {
@@ -82,7 +82,7 @@ public class TextRendererUtils
 
         try
         {
-            resource = Minecraft.getMinecraft().getResourceManager().getResource(texture);
+            resource = GameUtils.getClient().getResourceManager().getResource(texture);
             bufferedImage = TextureUtil.readBufferedImage(resource.getInputStream());
         }
         catch (IOException ioexception)

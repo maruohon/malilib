@@ -5,10 +5,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
-import fi.dy.masa.malilib.MaLiLib;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.util.ResourceLocation;
+import fi.dy.masa.malilib.MaLiLib;
+import fi.dy.masa.malilib.util.GameUtils;
 
 /**
  * This class has been directly taken from Schematica by Lunatrius & contributors
@@ -16,13 +16,10 @@ import net.minecraft.util.ResourceLocation;
  */
 public class ShaderProgram
 {
-    private final Minecraft mc;
     private int program;
 
     public ShaderProgram(final String domain, final String vertShaderFilename, final String fragShaderFilename)
     {
-        this.mc = Minecraft.getMinecraft();
-
         try
         {
             this.init(domain, vertShaderFilename, fragShaderFilename);
@@ -118,7 +115,7 @@ public class ShaderProgram
         try
         {
             final StringBuilder code = new StringBuilder();
-            final InputStream inputStream = this.mc.getResourceManager().getResource(resourceLocation).getInputStream();
+            final InputStream inputStream = GameUtils.getClient().getResourceManager().getResource(resourceLocation).getInputStream();
             final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
             String line;

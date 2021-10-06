@@ -24,7 +24,7 @@ public class FileUtils
 
     public static File getMinecraftDirectory()
     {
-        return Minecraft.getMinecraft().gameDir;
+        return GameUtils.getClient().gameDir;
     }
 
     /**

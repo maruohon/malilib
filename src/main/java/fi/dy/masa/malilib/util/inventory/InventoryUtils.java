@@ -15,6 +15,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
+import fi.dy.masa.malilib.util.GameUtils;
 import fi.dy.masa.malilib.util.data.Constants;
 import fi.dy.masa.malilib.util.data.IntRange;
 import fi.dy.masa.malilib.util.data.ItemType;
@@ -61,7 +62,7 @@ public class InventoryUtils
      */
     public static void swapSlots(Container container, int slotNum, int hotbarSlot)
     {
-        Minecraft mc = Minecraft.getMinecraft();
+        Minecraft mc = GameUtils.getClient();
         mc.playerController.windowClick(container.windowId, slotNum, hotbarSlot, ClickType.SWAP, mc.player);
     }
 
@@ -209,7 +210,7 @@ public class InventoryUtils
      */
     public static boolean swapItemToMainHand(ItemStack stackReference, boolean ignoreNbt)
     {
-        Minecraft mc = Minecraft.getMinecraft();
+        Minecraft mc = GameUtils.getClient();
         EntityPlayer player = mc.player;
         boolean isCreative = player.capabilities.isCreativeMode;
 
@@ -256,7 +257,7 @@ public class InventoryUtils
             player.inventory.getItemStack().isEmpty() &&
             (count <= threshold && count < max))
         {
-            Minecraft mc = Minecraft.getMinecraft();
+            Minecraft mc = GameUtils.getClient();
             Container container = player.inventoryContainer;
             int endSlot = allowHotbar ? 44 : 35;
             int currentMainHandSlot = player.inventory.currentItem + 36;

@@ -1,16 +1,17 @@
 package fi.dy.masa.malilib.command;
 
 import java.util.List;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.command.CommandHandler;
 import net.minecraft.command.ICommand;
 import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
+import fi.dy.masa.malilib.util.GameUtils;
 
 public class ClientCommandHandler extends CommandHandler
 {
@@ -84,8 +85,8 @@ public class ClientCommandHandler extends CommandHandler
 
             if (GuiUtils.getCurrentScreen() instanceof GuiChat)
             {
-                Minecraft mc = Minecraft.getMinecraft();
-                List<String> commands = this.getTabCompletions(mc.player, leftOfCursor, mc.player.getPosition());
+                EntityPlayer player = GameUtils.getClientPlayer();
+                List<String> commands = this.getTabCompletions(player, leftOfCursor, player.getPosition());
 
                 if (commands.isEmpty() == false)
                 {
@@ -116,6 +117,6 @@ public class ClientCommandHandler extends CommandHandler
     @Override
     protected MinecraftServer getServer()
     {
-        return Minecraft.getMinecraft().getIntegratedServer();
+        return GameUtils.getClient().getIntegratedServer();
     }
 }

@@ -7,13 +7,13 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ArrayListMultimap;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.client.CPacketCustomPayload;
 import net.minecraft.network.play.server.SPacketCustomPayload;
 import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.MaLiLib;
+import fi.dy.masa.malilib.util.GameUtils;
 
 public class ClientPacketChannelHandlerImpl implements ClientPacketChannelHandler
 {
@@ -100,7 +100,7 @@ public class ClientPacketChannelHandlerImpl implements ClientPacketChannelHandle
         ByteBuf payload = Unpooled.wrappedBuffer(joinedChannels.getBytes(Charsets.UTF_8));
         CPacketCustomPayload packet = new CPacketCustomPayload(type.toString(), new PacketBuffer(payload));
 
-        NetHandlerPlayClient handler = Minecraft.getMinecraft().getConnection();
+        NetHandlerPlayClient handler = GameUtils.getClient().getConnection();
 
         if (handler != null)
         {

@@ -2,7 +2,6 @@ package fi.dy.masa.malilib.overlay.message;
 
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.event.ClickEvent;
@@ -13,6 +12,7 @@ import fi.dy.masa.malilib.gui.position.ScreenLocation;
 import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.render.text.StyledText;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
+import fi.dy.masa.malilib.util.GameUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class MessageDispatcher
@@ -158,7 +158,7 @@ public class MessageDispatcher
             TextComponentTranslation hoverMessage = new TextComponentTranslation("malilib.gui.label.add_to_chat_field");
             message.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, translationKey));
             message.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverMessage));
-            Minecraft.getMinecraft().ingameGUI.getChatGUI().printChatMessage(message);
+            GameUtils.getClient().ingameGUI.getChatGUI().printChatMessage(message);
         }
 
         MessageOutput output = Registry.MESSAGE_REDIRECT_MANAGER.getRedirectedMessageOutput(translationKey, this.type);
