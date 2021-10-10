@@ -2,6 +2,8 @@ package fi.dy.masa.malilib.gui.widgets;
 
 import fi.dy.masa.malilib.interfaces.IStringListProvider;
 
+import java.util.Collection;
+
 public class WidgetListStringSelection extends WidgetListBase<String, WidgetStringListEntry>
 {
     protected final IStringListProvider stringProvider;
@@ -16,12 +18,9 @@ public class WidgetListStringSelection extends WidgetListBase<String, WidgetStri
     }
 
     @Override
-    protected void refreshBrowserEntries()
+    protected Collection<String> getAllEntries()
     {
-        this.listContents.clear();
-        this.listContents.addAll(this.stringProvider.getStrings());
-
-        this.reCreateListEntryWidgets();
+        return this.stringProvider.getStrings();
     }
 
     @Override
