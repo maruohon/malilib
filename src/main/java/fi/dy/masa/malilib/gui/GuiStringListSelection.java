@@ -102,8 +102,8 @@ public class GuiStringListSelection extends GuiListBase<String, WidgetStringList
 
         public enum Type
         {
-            OK      ("litematica.gui.button.ok"),
-            CANCEL  ("litematica.gui.button.cancel");
+            OK      ("malilib.gui.button.ok"),
+            CANCEL  ("malilib.gui.button.cancel");
 
             private final String translationKey;
 
