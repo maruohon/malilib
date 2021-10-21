@@ -1,32 +1,29 @@
 package fi.dy.masa.malilib.gui.widgets;
 
+import java.util.Collection;
 import fi.dy.masa.malilib.config.IConfigStringList;
 import fi.dy.masa.malilib.gui.GuiStringListEdit;
 
 public class WidgetListStringListEdit extends WidgetListConfigOptionsBase<String, WidgetStringListEditEntry>
 {
-    protected final GuiStringListEdit parent;
+    protected final IConfigStringList config;
 
     public WidgetListStringListEdit(int x, int y, int width, int height, int configWidth, GuiStringListEdit parent)
     {
         super(x, y, width, height, configWidth);
 
-        this.parent = parent;
+        this.config = parent.getConfig();;
+    }
+
+    public IConfigStringList getConfig()
+    {
+        return this.config;
     }
 
     @Override
-    public GuiStringListEdit getParent()
+    protected Collection<String> getAllEntries()
     {
-        return this.parent;
-    }
-
-    @Override
-    protected void refreshBrowserEntries()
-    {
-        this.listContents.clear();
-        this.listContents.addAll(this.parent.getConfig().getStrings());
-
-        this.reCreateListEntryWidgets();
+        return this.config.getStrings();
     }
 
     @Override
@@ -53,7 +50,7 @@ public class WidgetListStringListEdit extends WidgetListConfigOptionsBase<String
     @Override
     protected WidgetStringListEditEntry createListEntryWidget(int x, int y, int listIndex, boolean isOdd, String entry)
     {
-        IConfigStringList config = this.parent.getConfig();
+        IConfigStringList config = this.config;
 
         if (listIndex >= 0 && listIndex < config.getStrings().size())
         {
@@ -65,7 +62,7 @@ public class WidgetListStringListEdit extends WidgetListConfigOptionsBase<String
         else
         {
             return new WidgetStringListEditEntry(x, y, this.browserEntryWidth, this.browserEntryHeight,
-                    listIndex, isOdd, "", "", this);
+                                                 listIndex, isOdd, "", "", this);
         }
     }
 }
