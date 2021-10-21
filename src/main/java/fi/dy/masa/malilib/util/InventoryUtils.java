@@ -185,7 +185,10 @@ public class InventoryUtils
     @Nullable
     public static Inventory getInventory(World world, BlockPos pos)
     {
-        if (world.isChunkLoaded(pos) == false)
+        @SuppressWarnings("deprecation")
+        boolean isLoaded = world.isChunkLoaded(pos);
+
+        if (isLoaded == false)
         {
             return null;
         }
@@ -204,8 +207,10 @@ public class InventoryUtils
                 if (type != ChestType.SINGLE)
                 {
                     BlockPos posAdj = pos.offset(ChestBlock.getFacing(state));
+                    @SuppressWarnings("deprecation")
+                    boolean isLoadedAdj = world.isChunkLoaded(posAdj);
 
-                    if (world.isChunkLoaded(posAdj))
+                    if (isLoadedAdj)
                     {
                         BlockState stateAdj = world.getBlockState(posAdj);
                         // The method in World now checks that the caller is from the same thread...
