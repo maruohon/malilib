@@ -1,8 +1,9 @@
 package fi.dy.masa.malilib.util;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
@@ -415,13 +416,10 @@ public class JsonUtils
         {
             String fileName = file.getAbsolutePath();
 
-            try
+            try (InputStreamReader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8))
             {
                 JsonParser parser = new JsonParser();
-                FileReader reader = new FileReader(file);
-
                 JsonElement element = parser.parse(reader);
-                reader.close();
 
                 return element;
             }
@@ -436,7 +434,6 @@ public class JsonUtils
 
     public static boolean writeJsonToFile(JsonObject root, File file)
     {
-        OutputStreamWriter writer = null;
         File fileTmp = new File(file.getParentFile(), file.getName() + ".tmp");
 
         if (fileTmp.exists())
@@ -444,9 +441,8 @@ public class JsonUtils
             fileTmp = new File(file.getParentFile(), UUID.randomUUID() + ".tmp");
         }
 
-        try
+        try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(fileTmp), StandardCharsets.UTF_8))
         {
-            writer = new OutputStreamWriter(new FileOutputStream(fileTmp), StandardCharsets.UTF_8);
             writer.write(GSON.toJson(root));
             writer.close();
 
@@ -460,20 +456,6 @@ public class JsonUtils
         catch (Exception e)
         {
             MaLiLib.logger.warn("Failed to write JSON data to file '{}'", fileTmp.getAbsolutePath(), e);
-        }
-        finally
-        {
-            try
-            {
-                if (writer != null)
-                {
-                    writer.close();
-                }
-            }
-            catch (Exception e)
-            {
-                MaLiLib.logger.warn("Failed to close JSON file", e);
-            }
         }
 
         return false;
