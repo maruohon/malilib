@@ -1,7 +1,9 @@
 package fi.dy.masa.malilib.util;
 
+import javax.annotation.Nullable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.multiplayer.WorldClient;
 
 public class GameUtils
 {
@@ -10,9 +12,21 @@ public class GameUtils
         return Minecraft.getMinecraft();
     }
 
+    @Nullable
+    public static WorldClient getClientWorld()
+    {
+        return getClient().world;
+    }
+
+    @Nullable
     public static EntityPlayerSP getClientPlayer()
     {
         return getClient().player;
+    }
+
+    public static int getRenderDistanceChunks()
+    {
+        return getClient().gameSettings.renderDistanceChunks;
     }
 
     public static boolean isSinglePlayer()

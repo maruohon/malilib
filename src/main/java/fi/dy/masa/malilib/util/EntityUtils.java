@@ -16,13 +16,7 @@ public class EntityUtils
     {
         Minecraft mc = GameUtils.getClient();
         Entity entity = mc.getRenderViewEntity();
-
-        if (entity == null)
-        {
-            entity = mc.player;
-        }
-
-        return entity;
+        return entity != null ? entity : mc.player;
     }
 
     public static BlockPos getCameraEntityBlockPos()

@@ -11,7 +11,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
 import com.mumfrey.liteloader.core.LiteLoader;
-import net.minecraft.client.Minecraft;
 
 public class FileUtils
 {

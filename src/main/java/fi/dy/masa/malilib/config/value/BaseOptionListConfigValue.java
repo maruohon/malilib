@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.config.value;
 
 import java.util.List;
+import javax.annotation.Nullable;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class BaseOptionListConfigValue implements OptionListConfigValue
@@ -33,14 +34,19 @@ public class BaseOptionListConfigValue implements OptionListConfigValue
     }
 
     /**
-     * 
      * Finds the value by the given name from the provided list.
-     * If none of the entries match, then the first entry is returned as a fall-back.
-     * @param name
-     * @param values
-     * @return
+     * If none of the entries match, then the first entry is returned as a fallback.
      */
     public static <T extends OptionListConfigValue> T findValueByName(String name, List<T> values)
+    {
+        return findValueByName(name, values, values.get(0));
+    }
+
+    /**
+     * Finds the value by the given name from the provided list.
+     * If none of the entries match, then the fallback value is returned.
+     */
+    public static <T extends OptionListConfigValue> T findValueByName(String name, List<T> values, @Nullable T fallback)
     {
         for (T val : values)
         {
@@ -50,6 +56,6 @@ public class BaseOptionListConfigValue implements OptionListConfigValue
             }
         }
 
-        return values.get(0);
+        return fallback;
     }
 }

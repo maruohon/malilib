@@ -8,7 +8,6 @@ import java.util.Locale;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import javax.annotation.Nullable;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.item.Item;
