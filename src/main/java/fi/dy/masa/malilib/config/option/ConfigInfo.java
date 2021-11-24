@@ -4,41 +4,14 @@ import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.listener.EventListener;
-import fi.dy.masa.malilib.util.data.ModInfo;
 
-public interface ConfigInfo
+public interface ConfigInfo extends BaseInfo
 {
     /**
-     * Returns the (internal) name of this config, used for example in the config files
-     * @return the internal name of this config
-     */
-    String getName();
-
-    /**
-     * Returns the display name used for this config on the config screens
-     * @return
-     */
-    String getDisplayName();
-
-    /**
-     * @return the ModInfo of the mod owning this config
-     */
-    ModInfo getModInfo();
-
-    /**
-     * Returns the comment displayed when hovering over the config name on the config screens.
-     * Newlines can be added with "\n". Can be null if there is no comment for this config.
-     * @return the (localized) comment, or null if no comment has been set
-     */
-    @Nullable
-    String getComment();
-
-    /**
-     * Returns a list of strings that the config screen search bar is matching against.
+     * @return a list of strings that the config screen search bar is matching against.
      * Each string is tried until a match is found.
      * The match is by default checked by stringInList.contains(searchTerm)
      * where both values are first converted to lower case.
-     * @return
      */
     default List<String> getSearchStrings()
     {
@@ -46,11 +19,10 @@ public interface ConfigInfo
     }
 
     /**
-     * Returns a click handler for the config name label widget.
+     * @return a click handler for the config name label widget.
      * If this returns a non-null value, then the hover info will
      * by default get a prefix saying "Click for more information"
      * and the label widget will get this event handler set as the click action.
-     * @return
      */
     @Nullable
     default EventListener getLabelClickHandler()
@@ -69,9 +41,7 @@ public interface ConfigInfo
     }
 
     /**
-     * 
-     * Returns true if the value has been changed from the default value
-     * @return
+     * @return true if the value has been changed from the default value
      */
     boolean isModified();
 

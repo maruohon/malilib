@@ -10,21 +10,16 @@ import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.ModInfo;
 
-public class BaseConfig implements ConfigInfo
+public class BaseConfig extends CommonDescription implements ConfigInfo
 {
-    protected final String name;
     protected final List<String> searchStrings = new ArrayList<>(0);
     protected final List<String> oldNames = new ArrayList<>(0);
-    protected String nameTranslationKey;
-    protected ModInfo modInfo;
     protected boolean locked;
-    protected Object[] commentArgs;
-    @Nullable protected String commentTranslationKey;
     @Nullable protected EventListener labelClickHandler;
 
     public BaseConfig(String name)
     {
-        this(name, name, name, name);
+        this(name, name, name);
     }
 
     public BaseConfig(String name, String commentTranslationKey, Object... commentArgs)
@@ -35,40 +30,7 @@ public class BaseConfig implements ConfigInfo
     public BaseConfig(String name, String nameTranslationKey,
                       @Nullable String commentTranslationKey, Object... commentArgs)
     {
-        this.name = name;
-        this.nameTranslationKey = nameTranslationKey;
-        this.commentTranslationKey = commentTranslationKey;
-        this.commentArgs = commentArgs;
-    }
-
-    @Override
-    public String getName()
-    {
-        return this.name;
-    }
-
-    @Override
-    public String getDisplayName()
-    {
-        return getDefaultDisplayName(this.getName(), this.nameTranslationKey);
-    }
-
-    @Override
-    @Nullable
-    public String getComment()
-    {
-        if (this.commentTranslationKey != null)
-        {
-            return StringUtils.translate(this.commentTranslationKey, this.commentArgs);
-        }
-
-        return null;
-    }
-
-    public BaseConfig setCommentArgs(Object... args)
-    {
-        this.commentArgs = args;
-        return this;
+        super(name, nameTranslationKey, commentTranslationKey, commentArgs);
     }
 
     public void setOldNames(String... names)
@@ -84,22 +46,10 @@ public class BaseConfig implements ConfigInfo
     }
 
     @Override
-    public ModInfo getModInfo()
-    {
-        return this.modInfo;
-    }
-
-    @Override
     @Nullable
     public EventListener getLabelClickHandler()
     {
         return this.labelClickHandler;
-    }
-
-    @Nullable
-    public String getCommentTranslationKey()
-    {
-        return this.commentTranslationKey;
     }
 
     @Override
@@ -114,9 +64,10 @@ public class BaseConfig implements ConfigInfo
         // NO-OP
     }
 
+    @Override
     public void setModInfo(ModInfo modInfo)
     {
-        this.modInfo = modInfo;
+        super.setModInfo(modInfo);
 
         String modId = modInfo.getModId();
 
@@ -159,18 +110,6 @@ public class BaseConfig implements ConfigInfo
         return modId + ".config.comment." + nameLower;
     }
 
-    public BaseConfig setNameTranslationKey(String key)
-    {
-        this.nameTranslationKey = key;
-        return this;
-    }
-
-    public BaseConfig setCommentTranslationKey(@Nullable String key)
-    {
-        this.commentTranslationKey = key;
-        return this;
-    }
-
     /**
      * Adds additional search terms to this config.
      * By default the pretty name is used for searching against.
@@ -183,10 +122,9 @@ public class BaseConfig implements ConfigInfo
 
     public static String getDefaultDisplayName(String baseName, String nameTranslationKey)
     {
-        String key = nameTranslationKey;
-        String translatedName = StringUtils.translate(key);
+        String translatedName = StringUtils.translate(nameTranslationKey);
 
         // If there is no translation for the config name, then show the actual base name
-        return translatedName.equals(key) ? baseName : translatedName;
+        return translatedName.equals(nameTranslationKey) ? baseName : translatedName;
     }
 }

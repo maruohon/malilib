@@ -64,15 +64,17 @@ public class HotkeyConfig extends BaseConfigOption<KeyBind> implements Hotkey
     public void setModInfo(ModInfo modInfo)
     {
         super.setModInfo(modInfo);
+
         this.keyBind.setNameTranslationKey(this.nameTranslationKey);
         this.keyBind.setModInfo(modInfo);
     }
 
     @Override
-    public BaseConfig setNameTranslationKey(String key)
+    public void setNameTranslationKey(String key)
     {
         this.keyBind.setNameTranslationKey(key);
-        return super.setNameTranslationKey(key);
+
+        super.setNameTranslationKey(key);
     }
 
     public void setHotkeyCallback(HotkeyCallback callback)

@@ -90,29 +90,13 @@ public abstract class BaseConfigOption<T> extends BaseConfig implements ConfigOp
     @Override
     public void setModInfo(ModInfo modInfo)
     {
-        this.modInfo = modInfo;
+        super.setModInfo(modInfo);
 
-        String modId = modInfo.getModId();
-
-        // If these are still using the default values, generate the proper keys
-        if (this.nameTranslationKey.equals(this.name))
-        {
-            this.nameTranslationKey = this.createNameTranslationKey(modId);
-        }
+        // TODO this method used to use getPrettyName() for the search strings... does that matter?
 
         if (this.prettyNameTranslationKey.equals(this.name))
         {
-            this.prettyNameTranslationKey = this.createPrettyNameTranslationKey(modId);
-        }
-
-        if (this.commentTranslationKey != null && this.commentTranslationKey.equals(this.name))
-        {
-            this.commentTranslationKey = this.createCommentTranslationKey(modId);
-        }
-
-        if (this.searchStrings.isEmpty())
-        {
-            this.searchStrings.add(this.getPrettyName());
+            this.prettyNameTranslationKey = this.createPrettyNameTranslationKey(this.getModInfo().getModId());
         }
     }
 

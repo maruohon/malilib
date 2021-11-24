@@ -1,40 +1,31 @@
-package fi.dy.masa.malilib.gui.config;
+package fi.dy.masa.malilib.config.option;
 
 import java.util.List;
-import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
-import fi.dy.masa.malilib.config.option.BaseConfigOption;
-import fi.dy.masa.malilib.config.option.ConfigInfo;
-import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.ModInfo;
 
-public abstract class BaseConfigGroup implements ConfigInfo
+public abstract class BaseConfigGroup extends CommonDescription implements ConfigInfo
 {
-    protected final ModInfo modInfo;
-    protected final String name;
-    protected final String nameTranslationKey;
-    protected final String commentTranslationKey;
-    protected final Object[] commentArgs;
     protected ImmutableList<ConfigInfo> configs = ImmutableList.of();
     protected ImmutableList<String> searchStrings = ImmutableList.of();
 
     public BaseConfigGroup(ModInfo modInfo, String name, List<ConfigInfo> configs)
     {
+        super(name, modInfo);
+
         String modId = modInfo.getModId();
 
-        this.modInfo = modInfo;
-        this.name = name;
         this.nameTranslationKey = modId + ".config_group.name." + name;
         this.commentTranslationKey = modId + ".config_group.comment." + name;
-        this.commentArgs = new Object[0];
 
         this.setConfigs(configs);
     }
 
-    public BaseConfigGroup(ModInfo modInfo, String name, String nameTranslationKey, String commentTranslationKey, Object... commentArgs)
+    public BaseConfigGroup(ModInfo modInfo, String name, String nameTranslationKey,
+                           String commentTranslationKey, Object... commentArgs)
     {
-        this.modInfo = modInfo;
-        this.name = name;
+        super(name, modInfo);
+
         this.nameTranslationKey = nameTranslationKey;
         this.commentTranslationKey = commentTranslationKey;
         this.commentArgs = commentArgs;
@@ -65,31 +56,6 @@ public abstract class BaseConfigGroup implements ConfigInfo
     public ImmutableList<ConfigInfo> getConfigs()
     {
         return this.configs;
-    }
-
-    @Override
-    public ModInfo getModInfo()
-    {
-        return this.modInfo;
-    }
-
-    @Override
-    public String getName()
-    {
-        return this.name;
-    }
-
-    @Override
-    public String getDisplayName()
-    {
-        return BaseConfigOption.getDefaultDisplayName(this.getName(), this.nameTranslationKey);
-    }
-
-    @Nullable
-    @Override
-    public String getComment()
-    {
-        return StringUtils.translate(this.commentTranslationKey, this.commentArgs);
     }
 
     @Override
