@@ -4,95 +4,80 @@ import java.util.List;
 import javax.annotation.Nullable;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import fi.dy.masa.malilib.input.ActionResult;
+import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.data.ModInfo;
 
 public class NamedParameterizedAction extends NamedAction
 {
-    protected final BaseParameterizedAction parameterizedAction;
+    protected final ParameterizedAction action;
+    protected final String argument;
 
-    public NamedParameterizedAction(ModInfo mod, String name, String registryName,
-                                    String translationKey, BaseParameterizedAction action)
+    public NamedParameterizedAction(ParameterizedAction action, ModInfo mod, String name,
+                                    String registryName, String translationKey, String argument)
     {
-        super(mod, name, registryName, translationKey, action);
+        super(mod, name, registryName, translationKey);
 
-        this.parameterizedAction = action;
-        this.needsArguments = true;
+        this.action = action;
+        this.argument = argument;
     }
 
     @Override
-    public AliasAction createAlias(String aliasName, @Nullable String argument)
+    public ActionResult execute(ActionContext ctx)
     {
-        if (this.needsArguments && argument != null)
-        {
-            NamedAction action = new NamedParameterizedAction(this.mod, this.name, this.registryName,
-                                                              this.translationKey,
-                                                              this.parameterizedAction.parameterize(argument));
-            return new AliasAction(aliasName, action);
-        }
-
-        return super.createAlias(aliasName, argument);
+        return this.action.executeWithArgument(ctx, this.argument);
     }
 
     @Override
     public List<StyledTextLine> getHoverInfo()
     {
         List<StyledTextLine> lines = super.getHoverInfo();
-        String arg = this.parameterizedAction.getArgument();
 
-        if (arg != null)
-        {
-            StyledTextLine start = StyledTextLine.translate("malilib.hover_info.action.argument.colon");
-            lines.add(start.append(StyledTextLine.rawWithStyle(arg, start.getLastStyle())));
-        }
+        StyledTextLine start = StyledTextLine.translate("malilib.hover_info.action.argument.colon");
+        lines.add(start.append(StyledTextLine.rawWithStyle(this.argument, start.getLastStyle())));
 
         return lines;
     }
 
     @Nullable
-    @Override
     public JsonObject toJson()
     {
-        @Nullable String argument = this.parameterizedAction.getArgument();
-
-        if (argument != null)
-        {
-            JsonObject obj = new JsonObject();
-            obj.addProperty("argument", argument);
-            return obj;
-        }
-
-        return null;
+        JsonObject obj = new JsonObject();
+        obj.addProperty("reg_name", this.registryName);
+        obj.addProperty("arg", this.argument);
+        return obj;
     }
 
-    @Override
-    public NamedParameterizedAction fromJson(JsonElement el)
+    @Nullable
+    public static NamedParameterizedAction fromJson(JsonElement el)
     {
         if (el.isJsonObject())
         {
             JsonObject obj = el.getAsJsonObject();
 
-            if (JsonUtils.hasString(obj, "argument"))
+            if (JsonUtils.hasString(obj, "reg_name") &&
+                JsonUtils.hasString(obj, "argument"))
             {
-                String argument = JsonUtils.getString(obj, "argument");
+                String regName = JsonUtils.getString(obj, "reg_name");
+                NamedAction baseAction = Registry.ACTION_REGISTRY.getAction(regName);
 
-                return new NamedParameterizedAction(this.mod, this.name, this.registryName,
-                                                    this.translationKey,
-                                                    this.parameterizedAction.parameterize(argument));
+                if (baseAction instanceof NamedParameterizableAction)
+                {
+                    String argument = JsonUtils.getString(obj, "argument");
+                    return ((NamedParameterizableAction) baseAction).parameterize(argument);
+                }
             }
         }
 
-        return this;
+        return null;
     }
 
-    public static NamedAction register(ModInfo modInfo, String name, ParameterizedAction action)
+    public static NamedParameterizedAction of(NamedParameterizableAction action, String argument)
     {
-        NamedAction namedAction = new NamedParameterizedAction(modInfo, name, ActionUtils.createRegistryNameFor(modInfo, name),
-                                                               ActionUtils.createTranslationKeyFor(modInfo, name),
-                                                               BaseParameterizedAction.of(action));
-        namedAction.setCommentIfTranslationExists(modInfo.getModId(), name);
-        Registry.ACTION_REGISTRY.registerAction(namedAction);
-        return namedAction;
+        // FIXME registry name??
+        return new NamedParameterizedAction(action.action, action.getModInfo(), action.getName(),
+                                            action.getRegistryName(), action.getNameTranslationKey(), argument);
     }
 }

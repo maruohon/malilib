@@ -15,14 +15,9 @@ public class ActionHotkeyCallback implements HotkeyCallback
         this.action = action;
     }
 
-    public Action getAction()
-    {
-        return this.action;
-    }
-
     @Override
     public ActionResult onKeyAction(KeyAction action, KeyBind key)
     {
-        return this.action.execute(new ActionContext());
+        return this.action.execute(ActionContext.COMMON);
     }
 }

@@ -26,59 +26,64 @@ public class ActionUtils
         return ActionResult.FAIL;
     }
 
-    public static NamedAction createToggleActionWithToggleMessage(ModInfo mod, String name, BooleanConfig config)
+    public static SimpleNamedAction createToggleActionWithToggleMessage(ModInfo mod, String name, BooleanConfig config)
     {
         return createToggleActionWithToggleMessage(mod, name, config, null);
     }
 
-    public static NamedAction createToggleActionWithToggleMessage(ModInfo mod, String name, BooleanConfig config,
-                                                                  @Nullable Function<BooleanConfig, String> messageFactory)
+    public static SimpleNamedAction createToggleActionWithToggleMessage(ModInfo mod, String name, BooleanConfig config,
+                                                                        @Nullable Function<BooleanConfig, String> messageFactory)
     {
-        return new NamedAction(mod, name, BooleanToggleAction.of(config, messageFactory));
+        return SimpleNamedAction.of(mod, name, BooleanToggleAction.of(config, messageFactory));
     }
 
-    public static NamedAction createToggleActionWithToggleMessage(ModInfo mod, String name, BooleanConfig config,
+    public static SimpleNamedAction createToggleActionWithToggleMessage(ModInfo mod, String name, BooleanConfig config,
                                                                   @Nullable Function<BooleanConfig, String> messageFactory,
                                                                   @Nullable Supplier<MessageOutput> messageTypeSupplier)
     {
-        return new NamedAction(mod, name, BooleanToggleAction.of(config, messageFactory, messageTypeSupplier));
+        return SimpleNamedAction.of(mod, name, BooleanToggleAction.of(config, messageFactory, messageTypeSupplier));
     }
 
-    public static NamedAction register(ModInfo modInfo, String name, EventListener action)
+    public static SimpleNamedAction register(ModInfo modInfo, String name, EventListener action)
     {
-        NamedAction namedAction = NamedAction.of(modInfo, name, action);
-        namedAction.setCommentIfTranslationExists(modInfo.getModId(), name);
+        SimpleNamedAction namedAction = SimpleNamedAction.of(modInfo, name, action);
         Registry.ACTION_REGISTRY.registerAction(namedAction);
         return namedAction;
     }
 
-    public static NamedAction register(ModInfo modInfo, String name, Action action)
+    public static SimpleNamedAction register(ModInfo modInfo, String name, Action action)
     {
-        NamedAction namedAction = NamedAction.of(modInfo, name, action);
-        namedAction.setCommentIfTranslationExists(modInfo.getModId(), name);
+        SimpleNamedAction namedAction = SimpleNamedAction.of(modInfo, name, action);
         Registry.ACTION_REGISTRY.registerAction(namedAction);
         return namedAction;
     }
 
-    public static NamedAction registerToggle(ModInfo modInfo, String name, BooleanConfig config)
+    public static NamedParameterizableAction register(ModInfo modInfo, String name, ParameterizedAction action)
+    {
+        NamedParameterizableAction namedAction = NamedParameterizableAction.of(modInfo, name, action);
+        Registry.ACTION_REGISTRY.registerAction(namedAction);
+        return namedAction;
+    }
+
+    public static SimpleNamedAction registerToggle(ModInfo modInfo, String name, BooleanConfig config)
     {
         return registerToggle(modInfo, name, config, null, null);
     }
 
-    public static NamedAction registerToggle(ModInfo modInfo, String name, BooleanConfig config,
-                                             @Nullable Function<BooleanConfig, String> messageFactory,
-                                             @Nullable Supplier<MessageOutput> messageTypeSupplier)
+    public static SimpleNamedAction registerToggle(ModInfo modInfo, String name, BooleanConfig config,
+                                                   @Nullable Function<BooleanConfig, String> messageFactory,
+                                                   @Nullable Supplier<MessageOutput> messageTypeSupplier)
     {
-        NamedAction namedAction = createToggleActionWithToggleMessage(modInfo, name, config,
-                                                                      messageFactory, messageTypeSupplier);
+        SimpleNamedAction namedAction = createToggleActionWithToggleMessage(modInfo, name, config,
+                                                                            messageFactory, messageTypeSupplier);
         namedAction.setCommentTranslationKey(config.getCommentTranslationKey());
         Registry.ACTION_REGISTRY.registerAction(namedAction);
         return namedAction;
     }
 
-    public static NamedAction registerToggleKey(ModInfo modInfo, String name, HotkeyedBooleanConfig config)
+    public static SimpleNamedAction registerToggleKey(ModInfo modInfo, String name, HotkeyedBooleanConfig config)
     {
-        NamedAction namedAction = NamedAction.of(modInfo, name, config.getToggleAction());
+        SimpleNamedAction namedAction = SimpleNamedAction.of(modInfo, name, config.getToggleAction());
         Registry.ACTION_REGISTRY.registerAction(namedAction);
         return namedAction;
     }

@@ -174,7 +174,7 @@ public class ActionListScreen extends BaseMultiListScreen
 
         if (action != null && this.actionSourceListWidget.getSelectedEntries().size() == 1)
         {
-            if (action.getNeedsArguments())
+            if (action.needsArgument())
             {
                 String title = StringUtils.translate("malilib.gui.title.create_action_alias_with_argument");
                 BaseScreen.openPopupScreen(new DualTextInputScreen(title, "malilib.label.alias.colon",
@@ -238,12 +238,14 @@ public class ActionListScreen extends BaseMultiListScreen
 
         NamedAction action = this.actionSourceListWidget.getLastSelectedEntry();
 
+        /* TODO
         if (action != null && Registry.ACTION_REGISTRY.addAlias(action.createAlias(alias, argument)))
         {
             this.aliasListWidget.refreshEntries();
             MessageDispatcher.success("malilib.message.success.added_alias_for_action", alias, action.getRegistryName());
             return true;
         }
+        */
 
         return false;
     }

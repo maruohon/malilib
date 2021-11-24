@@ -10,6 +10,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.action.NamedAction;
+import fi.dy.masa.malilib.action.NamedParameterizableAction;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.icon.IconRegistry;
 import fi.dy.masa.malilib.gui.util.BorderSettings;
@@ -376,12 +377,15 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
         {
             obj.addProperty("action_name", this.action.getRegistryName());
 
+            // TODO?
+            /*
             JsonObject actionData = this.action.toJson();
 
             if (actionData != null)
             {
                 obj.add("action_data", actionData);
             }
+            */
         }
 
         if (org.apache.commons.lang3.StringUtils.isBlank(this.hoverText) == false)
@@ -423,9 +427,9 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
         // FIXME
         NamedAction action = Registry.ACTION_REGISTRY.getAction(JsonUtils.getStringOrDefault(obj, "action_name", "?"));
 
-        if (action != null)
+        if (action instanceof NamedParameterizableAction && JsonUtils.hasString(obj, "action_data"))
         {
-            JsonUtils.readObjectIfPresent(obj, "action_data", action::fromJson);
+            action = ((NamedParameterizableAction) action).parameterize(JsonUtils.getString(obj, "action_data"));
             this.setAction(action);
         }
     }

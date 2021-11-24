@@ -18,13 +18,15 @@ public class ConfigActions
             try
             {
                 str = str.toLowerCase(Locale.ROOT).trim();
-                boolean trueValue = str.equals("true") || str.equals("on") || str.equals("yes");
-                boolean falseValue = str.equals("false") || str.equals("off") || str.equals("no");
 
-                // Check that the input represents some kind of valid boolean-like value...
-                if (trueValue || falseValue)
+                if (str.equals("true") || str.equals("on") || str.equals("yes"))
                 {
-                    config.setBooleanValue(trueValue);
+                    config.setBooleanValue(true);
+                    return ActionResult.SUCCESS;
+                }
+                else if (str.equals("false") || str.equals("off") || str.equals("no"))
+                {
+                    config.setBooleanValue(false);
                     return ActionResult.SUCCESS;
                 }
             }
@@ -43,10 +45,9 @@ public class ConfigActions
                 config.setIntegerValue(value);
                 return ActionResult.SUCCESS;
             }
-            catch (Exception ignore)
-            {
-                return ActionResult.FAIL;
-            }
+            catch (Exception ignore) {}
+
+            return ActionResult.FAIL;
         };
     }
 
@@ -59,10 +60,9 @@ public class ConfigActions
                 config.setDoubleValue(value);
                 return ActionResult.SUCCESS;
             }
-            catch (Exception ignore)
-            {
-                return ActionResult.FAIL;
-            }
+            catch (Exception ignore) {}
+
+            return ActionResult.FAIL;
         };
     }
 
@@ -79,14 +79,17 @@ public class ConfigActions
         return (ctx, str) -> {
             try
             {
-                T value = BaseOptionListConfigValue.findValueByName(str.trim(), config.getAllValues());
-                config.setValue(value);
-                return ActionResult.SUCCESS;
+                T value = BaseOptionListConfigValue.findValueByName(str.trim(), config.getAllValues(), null);
+
+                if (value != null)
+                {
+                    config.setValue(value);
+                    return ActionResult.SUCCESS;
+                }
             }
-            catch (Exception ignore)
-            {
-                return ActionResult.FAIL;
-            }
+            catch (Exception ignore) {}
+
+            return ActionResult.FAIL;
         };
     }
 }

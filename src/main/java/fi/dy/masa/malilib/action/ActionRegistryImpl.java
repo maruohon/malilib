@@ -23,7 +23,7 @@ import fi.dy.masa.malilib.util.data.ModInfo;
 
 public class ActionRegistryImpl implements ActionRegistry
 {
-    protected static final NamedAction DUMMY = NamedAction.of(ModInfo.NO_MOD, "-", (ctx) -> ActionResult.PASS);
+    protected static final SimpleNamedAction DUMMY = SimpleNamedAction.of(ModInfo.NO_MOD, "-", (ctx) -> ActionResult.PASS);
 
     protected final HashMap<String, NamedAction> baseActions = new HashMap<>();
     protected final HashMap<String, AliasAction> aliases = new HashMap<>();

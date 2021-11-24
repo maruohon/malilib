@@ -14,13 +14,14 @@ import fi.dy.masa.malilib.util.data.ModInfo;
 
 public class MacroAction extends NamedAction
 {
+    protected static final ModInfo MACRO_MOD_INFO = getMacroModInfo();
+
     protected ImmutableList<NamedAction> actionList;
 
     public MacroAction(String name, ImmutableList<NamedAction> actionList)
     {
-        super(getMacroModInfo(), name, name, name, null);
+        super(MACRO_MOD_INFO, name, name, name);
 
-        this.action = this::executeMacro;
         this.actionList = actionList;
     }
 
@@ -29,7 +30,8 @@ public class MacroAction extends NamedAction
         return this.actionList;
     }
 
-    public ActionResult executeMacro(ActionContext ctx)
+    @Override
+    public ActionResult execute(ActionContext ctx)
     {
         for (NamedAction action : this.actionList)
         {
@@ -76,7 +78,6 @@ public class MacroAction extends NamedAction
         return lines;
     }
 
-    @Override
     public JsonObject toJson()
     {
         JsonObject obj = new JsonObject();
@@ -113,8 +114,8 @@ public class MacroAction extends NamedAction
         if (action == null)
         {
             // Preserve entries in the config file if a mod is temporarily disabled/removed, for example
-            action = new NamedAction(ModInfo.NO_MOD, registryName, registryName, registryName,
-                                     (ctx) -> ActionResult.PASS);
+            action = new SimpleNamedAction((ctx) -> ActionResult.PASS, ModInfo.NO_MOD, registryName,
+                                           registryName, registryName);
         }
 
         actions.add(action);

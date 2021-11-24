@@ -3,7 +3,6 @@ package fi.dy.masa.malilib;
 import fi.dy.masa.malilib.action.Action;
 import fi.dy.masa.malilib.action.ActionUtils;
 import fi.dy.masa.malilib.action.NamedAction;
-import fi.dy.masa.malilib.action.NamedParameterizedAction;
 import fi.dy.masa.malilib.action.ParameterizedAction;
 import fi.dy.masa.malilib.config.util.ConfigUtils;
 import fi.dy.masa.malilib.gui.action.ActionPromptScreen;
@@ -46,6 +45,6 @@ public class MaLiLibActions
 
     private static NamedAction register(String name, ParameterizedAction action)
     {
-        return NamedParameterizedAction.register(MaLiLibReference.MOD_INFO, name, action);
+        return ActionUtils.register(MaLiLibReference.MOD_INFO, name, action);
     }
 }

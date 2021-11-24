@@ -31,7 +31,7 @@ public class ConfigOverrideUtils
 {
     public static ActionResult resetConfigOverrides()
     {
-        return resetConfigOverrides(new ActionContext());
+        return resetConfigOverrides(ActionContext.COMMON);
     }
 
     public static ActionResult resetConfigOverrides(ActionContext ctx)

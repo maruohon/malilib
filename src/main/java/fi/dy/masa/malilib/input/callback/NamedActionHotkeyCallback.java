@@ -14,11 +14,6 @@ public class NamedActionHotkeyCallback implements HotkeyCallback
         this.action = action;
     }
 
-    public NamedAction getAction()
-    {
-        return this.action;
-    }
-
     @Override
     public ActionResult onKeyAction(KeyAction action, KeyBind key)
     {

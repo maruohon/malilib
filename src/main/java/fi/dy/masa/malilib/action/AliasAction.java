@@ -16,7 +16,7 @@ public class AliasAction extends NamedAction
 
     public AliasAction(String alias, NamedAction action)
     {
-        super(action.mod, action.name, alias, action.translationKey, action.getAction());
+        super(action.getModInfo(), action.getName(), "alias:" + alias, action.getNameTranslationKey());
 
         this.alias = alias;
         this.originalRegistryName = action.registryName;
@@ -35,11 +35,17 @@ public class AliasAction extends NamedAction
     }
 
     @Override
+    public ActionResult execute(ActionContext ctx)
+    {
+        return this.originalAction.execute(ctx);
+    }
+
+    @Override
     public StyledTextLine getWidgetDisplayName()
     {
         String alias = this.alias;
         String originalName = this.name;
-        String modName = this.mod.getModName();
+        String modName = this.modInfo.getModName();
         return StyledTextLine.translate("malilib.label.named_action_alias_entry_widget.name",
                                         alias, modName, originalName);
     }
@@ -55,19 +61,10 @@ public class AliasAction extends NamedAction
         return list;
     }
 
-    @Override
     public JsonObject toJson()
     {
         JsonObject obj = new JsonObject();
-        JsonObject actionData = this.originalAction.toJson();
-
         obj.addProperty("reg_name", this.originalAction.getRegistryName());
-
-        if (actionData != null)
-        {
-            obj.add("data", actionData);
-        }
-
         return obj;
     }
 
@@ -84,11 +81,6 @@ public class AliasAction extends NamedAction
             {
                 regName = JsonUtils.getString(obj, "reg_name");
                 action = registry.getAction(regName);
-
-                if (action != null && obj.has("data"))
-                {
-                    action = action.fromJson(obj.get("data"));
-                }
             }
         }
 
@@ -96,7 +88,8 @@ public class AliasAction extends NamedAction
         {
             // Preserve entries in the config file if a mod is temporarily disabled/removed, for example
             // FIXME use a DummyAction that contains the JsonObject?
-            action = new NamedAction(ModInfo.NO_MOD, aliasName, regName, aliasName, (ctx) -> ActionResult.PASS);
+            action = new SimpleNamedAction((ctx) -> ActionResult.PASS, ModInfo.NO_MOD,
+                                           aliasName, regName, aliasName);
         }
 
         return new AliasAction(aliasName, action);
