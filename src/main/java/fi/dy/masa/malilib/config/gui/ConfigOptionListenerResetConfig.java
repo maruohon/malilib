@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.config.gui;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import fi.dy.masa.malilib.config.IConfigResettable;
 import fi.dy.masa.malilib.config.IStringRepresentable;

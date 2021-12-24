@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.gui.widgets;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import net.minecraft.client.util.math.MatrixStack;
 import fi.dy.masa.malilib.config.IConfigResettable;
 import fi.dy.masa.malilib.config.gui.ConfigOptionChangeListenerTextField;

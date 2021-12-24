@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.gui.widgets;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public class WidgetListEntryBase<TYPE> extends WidgetContainer
 {

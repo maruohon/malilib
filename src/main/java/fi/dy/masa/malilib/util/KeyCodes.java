@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.util;
 
 import java.lang.reflect.Field;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import fi.dy.masa.malilib.MaLiLib;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;

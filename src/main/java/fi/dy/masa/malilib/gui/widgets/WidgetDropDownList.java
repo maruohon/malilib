@@ -2,7 +2,7 @@ package fi.dy.masa.malilib.gui.widgets;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.math.MatrixStack;
 import fi.dy.masa.malilib.gui.GuiScrollBar;

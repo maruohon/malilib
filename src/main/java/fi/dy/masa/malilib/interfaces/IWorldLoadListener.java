@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.interfaces;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.world.ClientWorld;
 

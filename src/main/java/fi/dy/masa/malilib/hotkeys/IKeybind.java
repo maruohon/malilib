@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.hotkeys;
 
 import java.util.List;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import fi.dy.masa.malilib.config.IConfigResettable;
 import fi.dy.masa.malilib.config.IStringRepresentable;
 

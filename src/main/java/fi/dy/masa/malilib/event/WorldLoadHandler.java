@@ -2,7 +2,7 @@ package fi.dy.masa.malilib.event;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.world.ClientWorld;
 import fi.dy.masa.malilib.config.ConfigManager;

@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.gui.button;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import fi.dy.masa.malilib.config.IConfigOptionList;
 import fi.dy.masa.malilib.util.StringUtils;
 

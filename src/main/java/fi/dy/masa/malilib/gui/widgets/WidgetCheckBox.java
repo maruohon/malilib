@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.gui.widgets;
 
 import java.util.List;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.util.math.MatrixStack;
 import fi.dy.masa.malilib.gui.interfaces.IGuiIcon;

@@ -8,8 +8,8 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.UUID;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -362,8 +362,8 @@ public class JsonUtils
     }
 
     // https://stackoverflow.com/questions/29786197/gson-jsonobject-copy-value-affected-others-jsonobject-instance
-    @Nonnull
-    public static JsonObject deepCopy(@Nonnull JsonObject jsonObject)
+    @NotNull
+    public static JsonObject deepCopy(@NotNull JsonObject jsonObject)
     {
         JsonObject result = new JsonObject();
 
@@ -375,8 +375,8 @@ public class JsonUtils
         return result;
     }
 
-    @Nonnull
-    public static JsonArray deepCopy(@Nonnull JsonArray jsonArray)
+    @NotNull
+    public static JsonArray deepCopy(@NotNull JsonArray jsonArray)
     {
         JsonArray result = new JsonArray();
 
@@ -388,8 +388,8 @@ public class JsonUtils
         return result;
     }
 
-    @Nonnull
-    public static JsonElement deepCopy(@Nonnull JsonElement jsonElement)
+    @NotNull
+    public static JsonElement deepCopy(@NotNull JsonElement jsonElement)
     {
         if (jsonElement.isJsonPrimitive() || jsonElement.isJsonNull())
         {

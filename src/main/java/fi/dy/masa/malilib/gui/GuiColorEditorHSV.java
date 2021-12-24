@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.gui;
 
 import java.awt.Color;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.BufferBuilder;

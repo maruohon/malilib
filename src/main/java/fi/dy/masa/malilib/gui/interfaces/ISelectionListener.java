@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.gui.interfaces;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public interface ISelectionListener<T>
 {
