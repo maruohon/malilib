@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.hotkeys;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import fi.dy.masa.malilib.config.IConfigBoolean;
 
 public class KeyCallbackAdjustable implements IHotkeyCallback

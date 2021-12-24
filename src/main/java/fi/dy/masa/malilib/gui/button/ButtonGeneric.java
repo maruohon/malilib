@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.gui.button;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import net.minecraft.client.util.math.MatrixStack;
 import fi.dy.masa.malilib.gui.LeftRight;

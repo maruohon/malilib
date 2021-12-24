@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.gui;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.gui.screen.Screen;
 import fi.dy.masa.malilib.config.ConfigManager;

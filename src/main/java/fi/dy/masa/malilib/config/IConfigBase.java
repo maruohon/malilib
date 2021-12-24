@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.config;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import com.google.gson.JsonElement;
 
 public interface IConfigBase

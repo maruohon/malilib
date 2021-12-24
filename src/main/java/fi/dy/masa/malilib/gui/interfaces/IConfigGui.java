@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.gui.interfaces;
 
 import java.util.List;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import fi.dy.masa.malilib.config.gui.ButtonPressDirtyListenerSimple;
 import fi.dy.masa.malilib.gui.GuiConfigsBase.ConfigOptionWrapper;
 
