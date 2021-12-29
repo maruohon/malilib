@@ -18,6 +18,11 @@ public class Buildscript extends FabricProject {
     }
 
     @Override
+    public String getMavenGroup() {
+        return "fi.dy.masa.malilib";
+    }
+
+    @Override
     public String getVersion() {
         return "0.10.0-dev.26";
     }
