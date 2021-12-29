@@ -62,7 +62,7 @@ public class WidgetListConfigOptions extends WidgetListConfigOptionsBase<ConfigO
             final String name = config.getName();
             final String translate = StringUtils.translate(name);
             if (Objects.nonNull(translate) && !name.equals(translate)) {
-                return ImmutableList.of(name.toLowerCase(), translate);
+                return ImmutableList.of(name.toLowerCase(), translate.toLowerCase());
             }
             return ImmutableList.of(name.toLowerCase());
         }
