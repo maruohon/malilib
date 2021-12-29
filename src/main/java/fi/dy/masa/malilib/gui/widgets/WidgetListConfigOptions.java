@@ -1,9 +1,5 @@
 package fi.dy.masa.malilib.gui.widgets;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.config.ConfigType;
 import fi.dy.masa.malilib.config.IConfigBase;
@@ -14,6 +10,9 @@ import fi.dy.masa.malilib.gui.MaLiLibIcons;
 import fi.dy.masa.malilib.hotkeys.IHotkey;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
 import fi.dy.masa.malilib.util.AlphaNumComparator;
+import fi.dy.masa.malilib.util.StringUtils;
+
+import java.util.*;
 
 public class WidgetListConfigOptions extends WidgetListConfigOptionsBase<ConfigOptionWrapper, WidgetConfigOption>
 {
@@ -60,7 +59,12 @@ public class WidgetListConfigOptions extends WidgetListConfigOptionsBase<ConfigO
 
         if (config != null)
         {
-            return ImmutableList.of(config.getName().toLowerCase());
+            final String name = config.getName();
+            final String translate = StringUtils.translate(name);
+            if (Objects.nonNull(translate) && !name.equals(translate)) {
+                return ImmutableList.of(name.toLowerCase(), translate);
+            }
+            return ImmutableList.of(name.toLowerCase());
         }
 
         return Collections.emptyList();
