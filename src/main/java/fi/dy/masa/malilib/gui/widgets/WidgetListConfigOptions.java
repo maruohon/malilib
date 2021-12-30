@@ -71,7 +71,7 @@ public class WidgetListConfigOptions extends WidgetListConfigOptionsBase<ConfigO
     {
         if (this.widgetSearchConfigs != null)
         {
-            String filterText = this.widgetSearchConfigs.getFilter();
+            String filterText = this.widgetSearchConfigs.getFilter().toLowerCase();
             IKeybind filterKeys = this.widgetSearchConfigs.getKeybind();
 
             for (ConfigOptionWrapper entry : entries)
