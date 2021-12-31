@@ -303,7 +303,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
 
     protected String getFilterText()
     {
-        return this.widgetSearchBar != null ? this.widgetSearchBar.getFilter().toLowerCase() : "";
+        return this.widgetSearchBar != null ? this.widgetSearchBar.getFilter() : "";
     }
 
     protected boolean entryMatchesFilter(TYPE entry, String filterText)
@@ -345,7 +345,7 @@ public abstract class WidgetListBase<TYPE, WIDGET extends WidgetListEntryBase<TY
 
         for (String filter : filterText.split("\\|"))
         {
-            if (entryString.indexOf(filter) != -1)
+            if (entryString.contains(filter))
             {
                 return true;
             }

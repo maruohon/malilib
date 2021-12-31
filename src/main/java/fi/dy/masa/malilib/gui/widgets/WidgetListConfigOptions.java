@@ -14,6 +14,7 @@ import fi.dy.masa.malilib.gui.MaLiLibIcons;
 import fi.dy.masa.malilib.hotkeys.IHotkey;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
 import fi.dy.masa.malilib.util.AlphaNumComparator;
+import fi.dy.masa.malilib.util.StringUtils;
 
 public class WidgetListConfigOptions extends WidgetListConfigOptionsBase<ConfigOptionWrapper, WidgetConfigOption>
 {
@@ -60,7 +61,15 @@ public class WidgetListConfigOptions extends WidgetListConfigOptionsBase<ConfigO
 
         if (config != null)
         {
-            return ImmutableList.of(config.getName().toLowerCase());
+            String name = config.getName();
+            String translated = StringUtils.translate(name);
+
+            if (name.equals(translated) == false)
+            {
+                return ImmutableList.of(name.toLowerCase(), translated.toLowerCase());
+            }
+
+            return ImmutableList.of(name.toLowerCase());
         }
 
         return Collections.emptyList();
@@ -71,7 +80,7 @@ public class WidgetListConfigOptions extends WidgetListConfigOptionsBase<ConfigO
     {
         if (this.widgetSearchConfigs != null)
         {
-            String filterText = this.widgetSearchConfigs.getFilter().toLowerCase();
+            String filterText = this.widgetSearchConfigs.getFilter();
             IKeybind filterKeys = this.widgetSearchConfigs.getKeybind();
 
             for (ConfigOptionWrapper entry : entries)
