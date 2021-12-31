@@ -178,6 +178,8 @@ public class InventoryOverlay
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.applyModelViewMatrix();
         buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
 
         RenderUtils.bindTexture(TEXTURE_DISPENSER);
