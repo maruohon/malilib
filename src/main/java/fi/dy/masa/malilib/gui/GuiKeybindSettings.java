@@ -95,7 +95,7 @@ public class GuiKeybindSettings extends GuiDialogBase
 
     protected void addConfig(int x, int y, int labelWidth, int configWidth, ConfigBase<?> config)
     {
-        this.addLabel(x, y + 4, labelWidth, 10, 0xFFFFFFFF, StringUtils.translate(config.getPrettyName()));
+        this.addLabel(x, y + 4, labelWidth, 10, 0xFFFFFFFF, StringUtils.translate(config.getConfigGuiDisplayName()));
         this.addWidget(new WidgetHoverInfo(x, y + 2, labelWidth, 12, config.getComment()));
         x += labelWidth + 10;
 

@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.config;
 
 import javax.annotation.Nullable;
 import com.google.gson.JsonElement;
+import fi.dy.masa.malilib.util.StringUtils;
 
 public interface IConfigBase
 {
@@ -42,7 +43,7 @@ public interface IConfigBase
      */
     default String getConfigGuiDisplayName()
     {
-        return this.getName();
+        return StringUtils.getTranslatedOrFallback("config.name." + this.getName().toLowerCase(), this.getName());
     }
 
     /**

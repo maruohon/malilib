@@ -633,7 +633,7 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
 
         for (IConfigBase config : configs)
         {
-            width = Math.max(width, this.getStringWidth(config.getPrettyName()));
+            width = Math.max(width, this.getStringWidth(config.getConfigGuiDisplayName()));
         }
 
         return width;

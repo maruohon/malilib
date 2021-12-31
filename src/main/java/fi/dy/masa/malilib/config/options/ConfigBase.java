@@ -52,7 +52,7 @@ public abstract class ConfigBase<T extends IConfigBase> implements IConfigBase, 
     @Nullable
     public String getComment()
     {
-        return StringUtils.translate(this.comment);
+        return StringUtils.getTranslatedOrFallback("config.comment." + this.getName().toLowerCase(), this.comment);
     }
 
     public void setComment(String comment)

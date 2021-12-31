@@ -359,6 +359,19 @@ public class StringUtils
         return str.replace(':', '_');
     }
 
+    @Nullable
+    public static String getTranslatedOrFallback(String key, @Nullable String fallback)
+    {
+        String translated = translate(key);
+
+        if (key.equals(translated) == false)
+        {
+            return translated;
+        }
+
+        return fallback;
+    }
+
     // Some MCP vs. Yarn vs. MC versions compatibility/wrapper stuff below this
 
     /**
