@@ -3,16 +3,16 @@ package fi.dy.masa.malilib.render;
 import java.util.ArrayList;
 import java.util.List;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.block.AbstractFurnaceBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BrewingStandBlock;
 import net.minecraft.block.ChestBlock;
 import net.minecraft.block.DispenserBlock;
-import net.minecraft.block.FurnaceBlock;
 import net.minecraft.block.HopperBlock;
 import net.minecraft.block.ShulkerBoxBlock;
+import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.block.entity.BrewingStandBlockEntity;
 import net.minecraft.block.entity.DispenserBlockEntity;
-import net.minecraft.block.entity.FurnaceBlockEntity;
 import net.minecraft.block.entity.HopperBlockEntity;
 import net.minecraft.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.client.MinecraftClient;
@@ -230,7 +230,7 @@ public class InventoryOverlay
         {
             return InventoryRenderType.FIXED_54;
         }
-        else if (inv instanceof FurnaceBlockEntity)
+        else if (inv instanceof AbstractFurnaceBlockEntity)
         {
             return InventoryRenderType.FURNACE;
         }
@@ -268,7 +268,7 @@ public class InventoryOverlay
             {
                 return InventoryRenderType.FIXED_27;
             }
-            else if (block instanceof FurnaceBlock)
+            else if (block instanceof AbstractFurnaceBlock)
             {
                 return InventoryRenderType.FURNACE;
             }
