@@ -1,12 +1,13 @@
 package fi.dy.masa.malilib.gui.widgets;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.config.ConfigType;
 import fi.dy.masa.malilib.config.IConfigBase;
+import fi.dy.masa.malilib.config.IConfigResettable;
 import fi.dy.masa.malilib.gui.GuiConfigsBase;
 import fi.dy.masa.malilib.gui.GuiConfigsBase.ConfigOptionWrapper;
 import fi.dy.masa.malilib.gui.LeftRight;
@@ -14,7 +15,6 @@ import fi.dy.masa.malilib.gui.MaLiLibIcons;
 import fi.dy.masa.malilib.hotkeys.IHotkey;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
 import fi.dy.masa.malilib.util.AlphaNumComparator;
-import fi.dy.masa.malilib.util.StringUtils;
 
 public class WidgetListConfigOptions extends WidgetListConfigOptionsBase<ConfigOptionWrapper, WidgetConfigOption>
 {
@@ -61,15 +61,23 @@ public class WidgetListConfigOptions extends WidgetListConfigOptionsBase<ConfigO
 
         if (config != null)
         {
+            ArrayList<String> list = new ArrayList<>();
             String name = config.getName();
-            String translated = StringUtils.translate(name);
+            String translated = config.getConfigGuiDisplayName();
+
+            list.add(name.toLowerCase());
 
             if (name.equals(translated) == false)
             {
-                return ImmutableList.of(name.toLowerCase(), translated.toLowerCase());
+                list.add(translated.toLowerCase());
             }
 
-            return ImmutableList.of(name.toLowerCase());
+            if (config instanceof IConfigResettable && ((IConfigResettable) config).isModified())
+            {
+                list.add("modified");
+            }
+
+            return list;
         }
 
         return Collections.emptyList();
