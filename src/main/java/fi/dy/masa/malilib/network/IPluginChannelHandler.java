@@ -9,4 +9,14 @@ public interface IPluginChannelHandler
     List<Identifier> getChannels();
 
     void onPacketReceived(PacketByteBuf buf);
+
+    default boolean usePacketSplitter()
+    {
+        return true;
+    }
+
+    default boolean registerToServer()
+    {
+        return true;
+    }
 }

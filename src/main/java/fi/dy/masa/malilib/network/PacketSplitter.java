@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
+import io.netty.buffer.Unpooled;
 import org.apache.commons.lang3.tuple.Pair;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.PacketByteBuf;
@@ -13,7 +14,7 @@ import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
 import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.util.Identifier;
-import io.netty.buffer.Unpooled;
+import fi.dy.masa.malilib.util.PacketUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
@@ -98,7 +99,7 @@ public class PacketSplitter
     {
         Pair<PacketListener, Identifier> key = Pair.of(networkHandler, message.getChannel());
 
-        return READING_SESSIONS.computeIfAbsent(key, ReadingSession::new).receive(message.getData(), maxLength);
+        return READING_SESSIONS.computeIfAbsent(key, ReadingSession::new).receive(PacketUtils.retainedSlice(message.getData()), maxLength);
     }
 
     private static class ReadingSession
