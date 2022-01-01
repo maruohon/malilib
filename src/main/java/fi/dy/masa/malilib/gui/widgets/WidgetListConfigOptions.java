@@ -121,7 +121,7 @@ public class WidgetListConfigOptions extends WidgetListConfigOptionsBase<ConfigO
         {
             if (wrapper.getType() == ConfigOptionWrapper.Type.CONFIG)
             {
-                width = Math.max(width, this.getStringWidth(wrapper.getConfig().getName()));
+                width = Math.max(width, this.getStringWidth(wrapper.getConfig().getConfigGuiDisplayName()));
             }
         }
 
