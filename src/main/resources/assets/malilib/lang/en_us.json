@@ -53,6 +53,10 @@
     "malilib.gui.label.layer_mode.layer_range": "Layer Range",
     "malilib.gui.label.layer_mode.single_layer": "Single Layer",
 
+    "malilib.label.message_output_type.none": "None",
+    "malilib.label.message_output_type.actionbar": "Actionbar",
+    "malilib.label.message_output_type.message": "Message",
+
     "malilib.gui.label.no": "no",
     "malilib.gui.label.yes": "yes",
 
