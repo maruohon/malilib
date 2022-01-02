@@ -1,7 +1,6 @@
 package fi.dy.masa.malilib.gui.interfaces;
 
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.config.gui.ConfigOptionChangeListenerKeybind;
 import fi.dy.masa.malilib.gui.button.ConfigButtonKeybind;
 
 public interface IKeybindConfigGui extends IConfigGui
@@ -12,7 +11,7 @@ public interface IKeybindConfigGui extends IConfigGui
      * for updating the hotkey config buttons in the GUI.
      * @param listener
      */
-    void addKeybindChangeListener(ConfigOptionChangeListenerKeybind listener);
+    void addKeybindChangeListener(Runnable listener);
 
     /**
      * Sets or clears the currently active/selected hotkey config button.

@@ -9,7 +9,6 @@ import net.minecraft.client.gui.screen.Screen;
 import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.config.IConfigBase;
 import fi.dy.masa.malilib.config.gui.ButtonPressDirtyListenerSimple;
-import fi.dy.masa.malilib.config.gui.ConfigOptionChangeListenerKeybind;
 import fi.dy.masa.malilib.event.InputEventHandler;
 import fi.dy.masa.malilib.gui.GuiConfigsBase.ConfigOptionWrapper;
 import fi.dy.masa.malilib.gui.button.ConfigButtonKeybind;
@@ -24,7 +23,7 @@ import fi.dy.masa.malilib.util.StringUtils;
 
 public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, WidgetConfigOption, WidgetListConfigOptions> implements IKeybindConfigGui
 {
-    protected final List<ConfigOptionChangeListenerKeybind> hotkeyChangeListeners = new ArrayList<>();
+    protected final List<Runnable> hotkeyChangeListeners = new ArrayList<>();
     protected final ButtonPressDirtyListenerSimple dirtyListener = new ButtonPressDirtyListenerSimple();
     protected final String modId;
     protected final List<String> initialConfigValues = new ArrayList<>();
@@ -213,7 +212,7 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
     }
 
     @Override
-    public void addKeybindChangeListener(ConfigOptionChangeListenerKeybind listener)
+    public void addKeybindChangeListener(Runnable listener)
     {
         this.hotkeyChangeListeners.add(listener);
     }
@@ -243,9 +242,9 @@ public abstract class GuiConfigsBase extends GuiListBase<ConfigOptionWrapper, Wi
 
     protected void updateKeybindButtons()
     {
-        for (ConfigOptionChangeListenerKeybind listener : this.hotkeyChangeListeners)
+        for (Runnable listener : this.hotkeyChangeListeners)
         {
-            listener.updateButtons();
+            listener.run();
         }
     }
 

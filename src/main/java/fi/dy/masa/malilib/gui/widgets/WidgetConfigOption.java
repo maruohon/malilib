@@ -23,6 +23,7 @@ import fi.dy.masa.malilib.config.gui.ConfigOptionListenerResetConfig.ConfigReset
 import fi.dy.masa.malilib.config.gui.ConfigOptionListenerResetConfig.ConfigResetterTextField;
 import fi.dy.masa.malilib.config.gui.SliderCallbackDouble;
 import fi.dy.masa.malilib.config.gui.SliderCallbackInteger;
+import fi.dy.masa.malilib.config.options.BooleanHotkeyGuiWrapper;
 import fi.dy.masa.malilib.config.options.ConfigColor;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.gui.GuiConfigsBase.ConfigOptionWrapper;
@@ -52,6 +53,7 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
     @Nullable protected final KeybindSettings initialKeybindSettings;
     @Nullable protected ImmutableList<String> initialStringList;
     protected int colorDisplayPosX;
+    private boolean initialBoolean;
 
     public WidgetConfigOption(int x, int y, int width, int height, int labelWidth, int configWidth,
             ConfigOptionWrapper wrapper, int listIndex, IKeybindConfigGui host, WidgetListConfigOptionsBase<?, ?> parent)
@@ -65,9 +67,14 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
         {
             IConfigBase config = wrapper.getConfig();
 
-            if (wrapper.getConfig() instanceof IStringRepresentable)
+            if (config instanceof BooleanHotkeyGuiWrapper booleanHotkey)
             {
-                IStringRepresentable configStr = (IStringRepresentable) config;
+                this.initialBoolean = booleanHotkey.getBooleanValue();
+                this.initialStringValue = booleanHotkey.getHotkey().getKeybind().getStringValue();
+                this.initialKeybindSettings = booleanHotkey.getHotkey().getKeybind().getSettings();
+            }
+            else if (config instanceof IStringRepresentable configStr)
+            {
                 this.initialStringValue = configStr.getStringValue();
                 this.lastAppliedValue = configStr.getStringValue();
                 this.initialKeybindSettings = config.getType() == ConfigType.HOTKEY ? ((IHotkey) config).getKeybind().getSettings() : null;
@@ -78,13 +85,13 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
                 this.lastAppliedValue = null;
                 this.initialKeybindSettings = null;
 
-                if (wrapper.getConfig() instanceof IConfigStringList)
+                if (config instanceof IConfigStringList)
                 {
-                    this.initialStringList = ImmutableList.copyOf(((IConfigStringList) wrapper.getConfig()).getStrings());
+                    this.initialStringList = ImmutableList.copyOf(((IConfigStringList) config).getStrings());
                 }
             }
 
-            this.addConfigOption(x, y, zLevel, labelWidth, configWidth, config);
+            this.addConfigOption(x, y, this.zLevel, labelWidth, configWidth, config);
         }
         else
         {
@@ -124,45 +131,40 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
 
         x += labelWidth + 10;
 
-        if (type == ConfigType.BOOLEAN)
+        if (config instanceof BooleanHotkeyGuiWrapper booleanHotkey)
+        {
+            this.addBooleanAndHotkeyWidgets(x, y, configWidth, booleanHotkey);
+        }
+        else if (type == ConfigType.BOOLEAN)
         {
             ConfigButtonBoolean optionButton = new ConfigButtonBoolean(x, y, configWidth, configHeight, (IConfigBoolean) config);
-            this.addConfigButtonEntry(x + configWidth + 4, y, (IConfigResettable) config, optionButton);
+            this.addConfigButtonEntry(x + configWidth + 2, y, (IConfigResettable) config, optionButton);
         }
         else if (type == ConfigType.OPTION_LIST)
         {
             ConfigButtonOptionList optionButton = new ConfigButtonOptionList(x, y, configWidth, configHeight, (IConfigOptionList) config);
-            this.addConfigButtonEntry(x + configWidth + 4, y, (IConfigResettable) config, optionButton);
+            this.addConfigButtonEntry(x + configWidth + 2, y, (IConfigResettable) config, optionButton);
         }
         else if (type == ConfigType.STRING_LIST)
         {
             ConfigButtonStringList optionButton = new ConfigButtonStringList(x, y, configWidth, configHeight, (IConfigStringList) config, this.host, this.host.getDialogHandler());
-            this.addConfigButtonEntry(x + configWidth + 4, y, (IConfigResettable) config, optionButton);
+            this.addConfigButtonEntry(x + configWidth + 2, y, (IConfigResettable) config, optionButton);
         }
         else if (type == ConfigType.HOTKEY)
         {
-            configWidth -= 25; // adjust the width to match other configs due to the settings widget
-            IKeybind keybind = ((IHotkey) config).getKeybind();
-            ConfigButtonKeybind keybindButton = new ConfigButtonKeybind(x, y, configWidth, configHeight, keybind, this.host);
-            x += configWidth + 4;
-
-            this.addWidget(new WidgetKeybindSettings(x, y, 20, 20, keybind, config.getName(), this.parent, this.host.getDialogHandler()));
-            x += 25;
-
-            this.addButton(keybindButton, this.host.getButtonPressListener());
-            this.addKeybindResetButton(x, y, keybind, keybindButton);
+            this.addHotkeyConfigElements(x, y, configWidth, config.getName(), (IHotkey) config);
         }
         else if (type == ConfigType.STRING ||
                  type == ConfigType.COLOR ||
                  type == ConfigType.INTEGER ||
                  type == ConfigType.DOUBLE)
         {
-            int resetX = x + configWidth + 4;
+            int resetX = x + configWidth + 2;
 
             if (type == ConfigType.COLOR)
             {
-                configWidth -= 24; // adjust the width to match other configs due to the color display
-                this.colorDisplayPosX = x + configWidth + 4;
+                configWidth -= 22; // adjust the width to match other configs due to the color display
+                this.colorDisplayPosX = x + configWidth + 2;
             }
             else if (type == ConfigType.INTEGER || type == ConfigType.DOUBLE)
             {
@@ -197,7 +199,14 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
             IConfigBase config = this.wrapper.getConfig();
             boolean modified = false;
 
-            if (this.wrapper.getConfig() instanceof IStringRepresentable)
+            if (config instanceof BooleanHotkeyGuiWrapper booleanHotkey)
+            {
+                IKeybind keybind = booleanHotkey.getHotkey().getKeybind();
+                return this.initialBoolean != booleanHotkey.getBooleanValue() ||
+                       this.initialStringValue.equals(keybind.getStringValue()) == false ||
+                       this.initialKeybindSettings.equals(keybind.getSettings()) == false;
+            }
+            else if (config instanceof IStringRepresentable)
             {
                 if (this.textField != null)
                 {
@@ -211,21 +220,21 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
 
                 return modified || this.initialStringValue.equals(((IStringRepresentable) config).getStringValue()) == false;
             }
-            else if (this.initialStringList != null && this.wrapper.getConfig() instanceof IConfigStringList)
+            else if (this.initialStringList != null && config instanceof IConfigStringList)
             {
-                return this.initialStringList.equals(((IConfigStringList) this.wrapper.getConfig()).getStrings()) == false;
+                return this.initialStringList.equals(((IConfigStringList) config).getStrings()) == false;
             }
         }
 
         return false;
     }
 
+    @Override
     public void applyNewValueToConfig()
     {
-        if (this.wrapper.getType() == ConfigOptionWrapper.Type.CONFIG && this.wrapper.getConfig() instanceof IStringRepresentable)
+        if (this.wrapper.getType() == ConfigOptionWrapper.Type.CONFIG &&
+            this.wrapper.getConfig() instanceof IStringRepresentable config)
         {
-            IStringRepresentable config = (IStringRepresentable) this.wrapper.getConfig();
-
             if (this.textField != null && this.hasPendingModifications())
             {
                 config.setValueFromString(this.textField.getTextField().getText());
@@ -238,6 +247,47 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
     protected void addConfigComment(int x, int y, int width, int height, String comment)
     {
         this.addWidget(new WidgetHoverInfo(x, y, width, height, comment));
+    }
+
+    protected void addHotkeyConfigElements(int x, int y, int configWidth, String configName, IHotkey hotkey)
+    {
+        configWidth -= 22; // adjust the width to match other configs due to the settings widget
+        IKeybind keybind = hotkey.getKeybind();
+        ConfigButtonKeybind keybindButton = new ConfigButtonKeybind(x, y, configWidth, 20, keybind, this.host);
+        x += configWidth + 2;
+
+        this.addWidget(new WidgetKeybindSettings(x, y, 20, 20, keybind, configName, this.parent, this.host.getDialogHandler()));
+        x += 22;
+
+        this.addButton(keybindButton, this.host.getButtonPressListener());
+        this.addKeybindResetButton(x, y, keybind, keybindButton);
+    }
+
+    protected void addBooleanAndHotkeyWidgets(int x, int y, int configWidth, BooleanHotkeyGuiWrapper config)
+    {
+        int booleanBtnWidth = 60;
+        IConfigBoolean booleanConfig = config.getBooleanConfig();
+        ConfigButtonBoolean booleanButton = new ConfigButtonBoolean(x, y, booleanBtnWidth, 20, booleanConfig);
+        x += booleanBtnWidth + 2;
+        configWidth -= booleanBtnWidth + 2 + 22;
+
+        IKeybind keybind = config.getHotkey().getKeybind();
+        ConfigButtonKeybind keybindButton = new ConfigButtonKeybind(x, y, configWidth, 20, keybind, this.host);
+        x += configWidth + 2;
+
+        this.addWidget(new WidgetKeybindSettings(x, y, 20, 20, keybind, booleanConfig.getName(), this.parent, this.host.getDialogHandler()));
+        x += 22;
+
+        ButtonGeneric resetButton = this.createResetButton(x, y, config);
+
+        ConfigOptionChangeListenerButton booleanChangeListener = new ConfigOptionChangeListenerButton(config, resetButton, null);
+        HotkeyedBooleanResetListener resetListener = new HotkeyedBooleanResetListener(config, booleanButton, keybindButton, resetButton, this.host);
+
+        this.host.addKeybindChangeListener(resetListener::updateButtons);
+
+        this.addButton(booleanButton, booleanChangeListener);
+        this.addButton(keybindButton, this.host.getButtonPressListener());
+        this.addButton(resetButton, resetListener);
     }
 
     protected void addConfigButtonEntry(int xReset, int yReset, IConfigResettable config, ButtonBase optionButton)
@@ -294,7 +344,7 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
         ButtonGeneric button = this.createResetButton(x, y, keybind);
 
         ConfigOptionChangeListenerKeybind listener = new ConfigOptionChangeListenerKeybind(keybind, buttonHotkey, button, this.host);
-        this.host.addKeybindChangeListener(listener);
+        this.host.addKeybindChangeListener(listener::updateButtons);
         this.addButton(button, listener);
     }
 
@@ -341,6 +391,43 @@ public class WidgetConfigOption extends WidgetConfigOptionBase<ConfigOptionWrapp
             {
                 ((GuiBase) gui).initGui();
             }
+        }
+    }
+
+    public static class HotkeyedBooleanResetListener implements IButtonActionListener
+    {
+        private final BooleanHotkeyGuiWrapper config;
+        private final ButtonGeneric booleanButton;
+        private final ConfigButtonKeybind hotkeyButton;
+        private final ButtonGeneric resetButton;
+        private final IKeybindConfigGui host;
+
+        public HotkeyedBooleanResetListener(BooleanHotkeyGuiWrapper config,
+                                            ButtonGeneric booleanButton,
+                                            ConfigButtonKeybind hotkeyButton,
+                                            ButtonGeneric resetButton,
+                                            IKeybindConfigGui host)
+        {
+            this.config = config;
+            this.booleanButton = booleanButton;
+            this.hotkeyButton = hotkeyButton;
+            this.resetButton = resetButton;
+            this.host = host;
+        }
+
+        @Override
+        public void actionPerformedWithButton(ButtonBase button, int mouseButton)
+        {
+            this.config.resetToDefault();
+            this.host.getButtonPressListener().actionPerformedWithButton(button, mouseButton);
+            this.updateButtons();
+        }
+
+        public void updateButtons()
+        {
+            this.booleanButton.updateDisplayString();
+            this.hotkeyButton.updateDisplayString();
+            this.resetButton.setEnabled(this.config.isModified());
         }
     }
 }

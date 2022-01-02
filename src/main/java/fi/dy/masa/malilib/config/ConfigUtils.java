@@ -118,7 +118,7 @@ public class ConfigUtils
      * @param toWrap
      * @return
      */
-    public static List<? extends IConfigValue> createConfigWrapperForType(ConfigType wrappedType, List<? extends IConfigValue> toWrap)
+    public static List<ConfigTypeWrapper> createConfigWrapperForType(ConfigType wrappedType, List<? extends IConfigValue> toWrap)
     {
         ImmutableList.Builder<ConfigTypeWrapper> builder = ImmutableList.builder();
 
