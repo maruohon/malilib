@@ -36,10 +36,18 @@ public class ConfigBooleanHotkeyed extends ConfigBoolean implements IHotkeyToggl
     }
 
     @Override
+    public boolean isModified()
+    {
+        // Note: calling isModified() for the IHotkey here directly would not work
+        // with multi-type configs like the FeatureToggle in Tweakeroo!
+        // Thus we need to get the IKeybind and call it for that specifically.
+        return super.isModified() || this.getKeybind().isModified();
+    }
+
+    @Override
     public void resetToDefault()
     {
         super.resetToDefault();
-
         this.keybind.resetToDefault();
     }
 }

@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.config.options;
 
 import fi.dy.masa.malilib.config.IConfigBoolean;
-import fi.dy.masa.malilib.hotkeys.IHotkey;
+import fi.dy.masa.malilib.hotkeys.IKeybind;
 
 /**
  * @Deprecated
@@ -14,13 +14,13 @@ import fi.dy.masa.malilib.hotkeys.IHotkey;
 public class BooleanHotkeyGuiWrapper extends ConfigBoolean
 {
     protected final IConfigBoolean booleanConfig;
-    protected final IHotkey hotkey;
+    protected final IKeybind keybind;
 
-    public BooleanHotkeyGuiWrapper(String name, IConfigBoolean booleanConfig, IHotkey hotkey)
+    public BooleanHotkeyGuiWrapper(String name, IConfigBoolean booleanConfig, IKeybind keybind)
     {
         super(name, booleanConfig.getDefaultBooleanValue(), booleanConfig.getComment());
         this.booleanConfig = booleanConfig;
-        this.hotkey = hotkey;
+        this.keybind = keybind;
     }
 
     @Override
@@ -41,15 +41,14 @@ public class BooleanHotkeyGuiWrapper extends ConfigBoolean
         // Note: calling isModified() for the IHotkey here directly would not work
         // with multi-type configs like the FeatureToggle in Tweakeroo!
         // Thus we need to get the IKeybind and call it for that specifically.
-        return this.booleanConfig.isModified() ||
-               this.hotkey.getKeybind().isModified();
+        return this.booleanConfig.isModified() || this.getKeybind().isModified();
     }
 
     @Override
     public void resetToDefault()
     {
         this.booleanConfig.resetToDefault();
-        this.hotkey.getKeybind().resetToDefault();
+        this.getKeybind().resetToDefault();
     }
 
     public IConfigBoolean getBooleanConfig()
@@ -57,8 +56,8 @@ public class BooleanHotkeyGuiWrapper extends ConfigBoolean
         return this.booleanConfig;
     }
 
-    public IHotkey getHotkey()
+    public IKeybind getKeybind()
     {
-        return this.hotkey;
+        return this.keybind;
     }
 }
