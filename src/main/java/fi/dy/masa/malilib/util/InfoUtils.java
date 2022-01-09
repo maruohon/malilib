@@ -5,6 +5,7 @@ import fi.dy.masa.malilib.gui.Message.MessageType;
 import fi.dy.masa.malilib.gui.interfaces.IMessageConsumer;
 import fi.dy.masa.malilib.interfaces.IStringConsumer;
 import fi.dy.masa.malilib.render.MessageRenderer;
+import net.minecraft.util.Util;
 
 public class InfoUtils
 {
@@ -137,10 +138,7 @@ public class InfoUtils
     {
         net.minecraft.client.MinecraftClient mc = net.minecraft.client.MinecraftClient.getInstance();
 
-        if (mc.player != null)
-        {
-            mc.inGameHud.addChatMessage(net.minecraft.network.MessageType.GAME_INFO, new net.minecraft.text.TranslatableText(key, args), mc.player.getUuid());
-        }
+        mc.inGameHud.addChatMessage(net.minecraft.network.MessageType.GAME_INFO, new net.minecraft.text.TranslatableText(key, args), Util.NIL_UUID);
     }
 
     /**
@@ -193,10 +191,7 @@ public class InfoUtils
         {
             net.minecraft.client.MinecraftClient mc = net.minecraft.client.MinecraftClient.getInstance();
 
-            if (mc.player != null)
-            {
-                mc.inGameHud.addChatMessage(net.minecraft.network.MessageType.GAME_INFO, new net.minecraft.text.TranslatableText(string), mc.player.getUuid());
-            }
+            mc.inGameHud.addChatMessage(net.minecraft.network.MessageType.GAME_INFO, new net.minecraft.text.TranslatableText(string), Util.NIL_UUID);
         }
     }
 }
