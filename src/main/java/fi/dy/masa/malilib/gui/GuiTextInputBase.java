@@ -54,9 +54,9 @@ public abstract class GuiTextInputBase extends GuiDialogBase
     }
 
     @Override
-    public boolean isPauseScreen()
+    public boolean shouldPause()
     {
-        return this.getParent() != null && this.getParent().isPauseScreen();
+        return this.getParent() != null && this.getParent().shouldPause();
     }
 
     @Override

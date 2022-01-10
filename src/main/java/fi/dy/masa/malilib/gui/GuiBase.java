@@ -121,7 +121,7 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
     }
 
     @Override
-    public boolean isPauseScreen()
+    public boolean shouldPause()
     {
         return false;
     }
