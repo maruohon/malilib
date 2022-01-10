@@ -1104,7 +1104,8 @@ public class RenderUtils
             disableDiffuseLighting();
             MatrixStack matrixStack = RenderSystem.getModelViewStack();
             matrixStack.push();
-            matrixStack.translate(0, 0, 400);
+            matrixStack.translate(0, 0, 500);
+            RenderSystem.applyModelViewMatrix();
 
             InventoryOverlay.renderInventoryBackground(type, x, y, props.slotsPerRow, items.size(), mc());
 
