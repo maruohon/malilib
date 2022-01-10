@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.gui.widgets;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.math.MatrixStack;
 import fi.dy.masa.malilib.gui.GuiScrollBar;
@@ -253,21 +254,28 @@ public class WidgetDropDownList<T> extends WidgetBase
     }
 
     @Override
-    public void render(int mouseX, int mouseY, boolean selected, MatrixStack matrixStack)
+    public void render(int mouseX, int mouseY, boolean selected, MatrixStack matrixStackIn)
     {
         RenderUtils.color(1f, 1f, 1f, 1f);
 
+        MatrixStack matrixStack = RenderSystem.getModelViewStack();
         matrixStack.push();
-        matrixStack.translate(0, 0, 1);
+        matrixStack.translate(0, 0, 10);
+        matrixStackIn.push();
+        matrixStackIn.translate(0, 0, 10);
+        RenderSystem.applyModelViewMatrix();
+
         List<T> list = this.filteredEntries;
         int visibleEntries = Math.min(this.maxVisibleEntries, list.size());
 
+        RenderSystem.depthMask(true);
+        RenderSystem.enableDepthTest();
         RenderUtils.drawOutlinedBox(this.x + 1, this.y, this.width - 2, this.height - 1, 0xFF101010, 0xFFC0C0C0);
 
         String str = this.getDisplayString(this.getSelectedEntry());
         int txtX = this.x + 4;
         int txtY = this.y + this.height / 2 - this.fontHeight / 2;
-        this.drawString(txtX, txtY, 0xFFE0E0E0, str, matrixStack);
+        this.drawString(txtX, txtY, 0xFFE0E0E0, str, matrixStackIn);
         txtY += this.height + 1;
         int scrollWidth = 10;
 
@@ -278,6 +286,8 @@ public class WidgetDropDownList<T> extends WidgetBase
                 this.searchBar.draw(mouseX, mouseY, matrixStack);
             }
 
+            RenderSystem.depthMask(true);
+            RenderSystem.enableDepthTest();
             RenderUtils.drawOutline(this.x, this.y + this.height, this.width, visibleEntries * this.height + 2, 0xFFE0E0E0);
 
             int y = this.y + this.height + 1;
@@ -294,9 +304,11 @@ public class WidgetDropDownList<T> extends WidgetBase
                     bg = 0x60FFFFFF;
                 }
 
+                RenderSystem.depthMask(true);
+                RenderSystem.enableDepthTest();
                 RenderUtils.drawRect(this.x, y, this.width - scrollWidth, this.height, bg);
                 str = this.getDisplayString(list.get(i));
-                this.drawString(txtX, txtY, 0xFFE0E0E0, str, matrixStack);
+                this.drawString(txtX, txtY, 0xFFE0E0E0, str, matrixStackIn);
                 y += this.height;
                 txtY += this.height;
             }
@@ -306,6 +318,8 @@ public class WidgetDropDownList<T> extends WidgetBase
             int h = visibleEntries * this.height;
             int totalHeight = Math.max(h, list.size() * this.height);
 
+            RenderSystem.depthMask(true);
+            RenderSystem.enableDepthTest();
             this.scrollBar.render(mouseX, mouseY, 0, x, y, this.scrollbarWidth, h, totalHeight);
         }
         else
@@ -316,6 +330,7 @@ public class WidgetDropDownList<T> extends WidgetBase
         }
 
         matrixStack.pop();
+        matrixStackIn.pop();
     }
 
     protected static class TextFieldListener implements ITextFieldListener<GuiTextFieldGeneric>
