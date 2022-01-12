@@ -494,8 +494,8 @@ public class InventoryOverlay
         mc.getItemRenderer().renderGuiItemOverlay(mc.textRenderer, stack, 0, 0, null);
         mc.getItemRenderer().zOffset -= 100;
 
-        RenderUtils.disableDiffuseLighting();
         matrixStack.pop();
+        RenderUtils.color(1f, 1f, 1f, 1f);
     }
 
     public static void renderStackToolTip(int x, int y, ItemStack stack, MinecraftClient mc, MatrixStack matrixStack)
