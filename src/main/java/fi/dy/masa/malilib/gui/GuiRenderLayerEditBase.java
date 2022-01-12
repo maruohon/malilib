@@ -163,7 +163,7 @@ public abstract class GuiRenderLayerEditBase extends GuiBase
             }
             else if (this.type == Type.SET_HERE && this.parent.mc.player != null)
             {
-                this.layerRange.setSingleBoundaryToPosition(EntityUtils.getCameraEntity());
+                this.layerRange.setToPosition(EntityUtils.getCameraEntity());
             }
 
             this.parent.initGui();

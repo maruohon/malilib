@@ -273,7 +273,16 @@ public class LayerRange
 
     public void setToPosition(Entity entity)
     {
-        this.setSingleBoundaryToPosition(entity);
+        if (this.layerMode == LayerMode.LAYER_RANGE)
+        {
+            int pos = this.getPositionFromEntity(entity);
+            this.setLayerRangeMin(pos, true);
+            this.setLayerRangeMax(pos, true);
+        }
+        else
+        {
+            this.setSingleBoundaryToPosition(entity);
+        }
     }
 
     protected void markAffectedLayersForRenderUpdate(IntBoundingBox limits)
