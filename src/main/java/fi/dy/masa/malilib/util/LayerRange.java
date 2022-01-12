@@ -8,6 +8,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Direction.Axis;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.World;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.interfaces.IRangeChangeListener;
 
@@ -89,7 +90,7 @@ public class LayerRange
         switch (this.layerMode)
         {
             case ALL:
-            case ALL_BELOW:     return Integer.MIN_VALUE;
+            case ALL_BELOW:     return -30000000;
             case SINGLE_LAYER:  return this.layerSingle;
             case ALL_ABOVE:     return this.layerAbove;
             case LAYER_RANGE:   return this.layerRangeMin;
@@ -103,7 +104,7 @@ public class LayerRange
         switch (this.layerMode)
         {
             case ALL:
-            case ALL_ABOVE:     return Integer.MAX_VALUE;
+            case ALL_ABOVE:     return 30000000;
             case SINGLE_LAYER:  return this.layerSingle;
             case ALL_BELOW:     return this.layerBelow;
             case LAYER_RANGE:   return this.layerRangeMax;
@@ -635,6 +636,45 @@ public class LayerRange
             default:
                 return null;
         }
+    }
+
+    /**
+     * Returns a box clamped by the world bounds and this LayerRange,
+     * which is expanded by the expandAmount (if possible) in both
+     * directions on the axis that this LayerRange is set to.
+     */
+    public IntBoundingBox getExpandedBox(World world, int expandAmount)
+    {
+        int worldMinH = -30000000;
+        int worldMaxH =  30000000;
+        int worldMinY = world != null ? world.getBottomY() : -64;
+        int worldMaxY = world != null ? world.getTopY() - 1 : 319;
+        int minX = worldMinH;
+        int minY = worldMinY;
+        int minZ = worldMinH;
+        int maxX = worldMaxH;
+        int maxY = worldMaxY;
+        int maxZ = worldMaxH;
+
+        switch (this.axis)
+        {
+            case X:
+                minX = Math.max(minX, this.getLayerMin() - expandAmount);
+                maxX = Math.min(maxX, this.getLayerMax() + expandAmount);
+                break;
+
+            case Y:
+                minY = Math.max(minY, this.getLayerMin() - expandAmount);
+                maxY = Math.min(maxY, this.getLayerMax() + expandAmount);
+                break;
+
+            case Z:
+                minZ = Math.max(minZ, this.getLayerMin() - expandAmount);
+                maxZ = Math.min(maxZ, this.getLayerMax() + expandAmount);
+                break;
+        }
+
+        return IntBoundingBox.createProper(minX, minY, minZ, maxX, maxY, maxZ);
     }
 
     @Nullable
