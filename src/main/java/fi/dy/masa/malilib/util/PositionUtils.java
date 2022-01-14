@@ -36,7 +36,7 @@ public class PositionUtils
             case Y:
                 return new BlockPos(valueIn.getX()         , valueIn.getY() + amount, valueIn.getZ()         );
             case Z:
-                return new BlockPos(valueIn.getX()         , valueIn.getZ()         , valueIn.getZ() + amount);
+                return new BlockPos(valueIn.getX()         , valueIn.getY()         , valueIn.getZ() + amount);
         }
 
         return valueIn;
@@ -66,7 +66,7 @@ public class PositionUtils
             case Y:
                 return new BlockPos(valueIn.getX(), newValue      , valueIn.getZ());
             case Z:
-                return new BlockPos(valueIn.getX(), valueIn.getZ(), newValue      );
+                return new BlockPos(valueIn.getX(), valueIn.getY(), newValue      );
         }
 
         return valueIn;
