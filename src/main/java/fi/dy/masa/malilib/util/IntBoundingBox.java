@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.util;
 import javax.annotation.Nullable;
 import net.minecraft.nbt.NbtIntArray;
 import net.minecraft.util.math.BlockBox;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
@@ -34,6 +35,16 @@ public class IntBoundingBox
                pos.getZ() <= this.maxZ &&
                pos.getY() >= this.minY &&
                pos.getY() <= this.maxY;
+    }
+
+    public boolean containsPos(long pos)
+    {
+        int x = BlockPos.unpackLongX(pos);
+        int y = BlockPos.unpackLongY(pos);
+        int z = BlockPos.unpackLongZ(pos);
+
+        return x >= this.minX && y <= this.maxX && z >= this.minZ &&
+               x <= this.maxZ && y >= this.minY && z <= this.maxY;
     }
 
     public boolean intersects(IntBoundingBox box)
