@@ -10,7 +10,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.RunArgs;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.world.ClientWorld;
-import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.event.InitializationHandler;
 import fi.dy.masa.malilib.event.TickHandler;
 import fi.dy.masa.malilib.event.WorldLoadHandler;
@@ -29,12 +28,6 @@ public abstract class MixinMinecraftClient
     {
         // Register all mod handlers
         ((InitializationHandler) InitializationHandler.getInstance()).onGameInitDone();
-    }
-
-    @Inject(method = "scheduleStop()V", at = @At("RETURN"))
-    private void onStop(CallbackInfo ci)
-    {
-        ((ConfigManager) ConfigManager.getInstance()).saveAllConfigs();
     }
 
     @Inject(method = "tick()V", at = @At("RETURN"))
