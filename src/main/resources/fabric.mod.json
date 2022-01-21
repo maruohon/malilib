@@ -2,7 +2,7 @@
 	"schemaVersion": 1,
 	"id": "malilib",
 	"name": "MaLiLib",
-	"version": "${mod_version}",
+	"version": "0.11.5",
 
 	"description": "A library mod required by masa's client-side mods",
 	"authors": [
