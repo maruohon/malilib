@@ -3,6 +3,7 @@ import io.github.coolcrabs.brachyura.fabric.FabricLoader;
 import io.github.coolcrabs.brachyura.fabric.FabricMaven;
 import io.github.coolcrabs.brachyura.fabric.FabricProject;
 import io.github.coolcrabs.brachyura.fabric.Yarn;
+import io.github.coolcrabs.brachyura.maven.Maven;
 import io.github.coolcrabs.brachyura.maven.MavenId;
 import net.fabricmc.mappingio.tree.MappingTree;
 
@@ -41,6 +42,7 @@ public class Buildscript extends FabricProject {
     public void getModDependencies(ModDependencyCollector d) {
         d.addMaven(FabricMaven.URL, new MavenId(FabricMaven.GROUP_ID + ".fabric-api", "fabric-resource-loader-v0", "0.4.16+55dca1a4d2"), ModDependencyFlag.RUNTIME, ModDependencyFlag.COMPILE, ModDependencyFlag.JIJ);
         d.addMaven("https://maven.terraformersmc.com/releases/", new MavenId("com.terraformersmc:modmenu:3.1.0"), ModDependencyFlag.COMPILE);
+        d.addMaven(Maven.MAVEN_CENTRAL, new MavenId("com.google.code.findbugs:jsr305:3.0.2"), ModDependencyFlag.COMPILE);
     }
 
     @Override
