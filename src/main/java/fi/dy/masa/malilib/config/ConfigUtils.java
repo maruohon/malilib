@@ -7,7 +7,6 @@ import com.google.gson.JsonPrimitive;
 import fi.dy.masa.malilib.config.options.ConfigTypeWrapper;
 import fi.dy.masa.malilib.hotkeys.IHotkey;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
-import fi.dy.masa.malilib.hotkeys.KeybindSettings;
 import fi.dy.masa.malilib.util.JsonUtils;
 
 public class ConfigUtils
@@ -20,9 +19,11 @@ public class ConfigUtils
         {
             for (IConfigBase option : options)
             {
-                if (obj.has(option.getName()))
+                String name = option.getName();
+
+                if (obj.has(name))
                 {
-                    option.setValueFromJsonElement(obj.get(option.getName()));
+                    option.setValueFromJsonElement(obj.get(name));
                 }
             }
         }
@@ -36,31 +37,17 @@ public class ConfigUtils
         {
             for (IHotkey hotkey : hotkeys)
             {
-                String keyVal = null;
-                IKeybind keybind = hotkey.getKeybind();
-                JsonObject objKeybind = JsonUtils.getNestedObject(objHotkeys, hotkey.getName(), false);
+                String name = hotkey.getName();
+                JsonObject objKeybind = JsonUtils.getNestedObject(objHotkeys, name, false);
 
                 if (objKeybind != null)
                 {
-                    if (JsonUtils.hasString(objKeybind, "keys"))
-                    {
-                        keyVal = objKeybind.get("keys").getAsString();
-                    }
-
-                    if (JsonUtils.hasObject(objKeybind, "settings"))
-                    {
-                        keybind.setSettings(KeybindSettings.fromJson(objKeybind.getAsJsonObject("settings")));
-                    }
+                    hotkey.getKeybind().setValueFromJsonElement(objKeybind);
                 }
                 // Backwards compatibility for reading the old simple keybinds
-                else if (JsonUtils.hasString(objHotkeys, hotkey.getName()))
+                else if (JsonUtils.hasString(objHotkeys, name))
                 {
-                    keyVal = JsonUtils.getString(objHotkeys, hotkey.getName());
-                }
-
-                if (keyVal != null)
-                {
-                    hotkey.getKeybind().setValueFromString(keyVal);
+                    hotkey.getKeybind().setValueFromString(JsonUtils.getString(objHotkeys, name));
                 }
             }
         }
@@ -89,15 +76,25 @@ public class ConfigUtils
         }
     }
 
-    public static void writeHotkeys(JsonObject root, String keyHotkey, List<? extends IHotkey> hotkeys)
+    public static void writeHotkeys(JsonObject root, String category, List<? extends IHotkey> hotkeys)
     {
-        JsonObject objHotkeys = JsonUtils.getNestedObject(root, keyHotkey, true);
+        // Note: This method can't just call writeConfigBase, as the base config type might
+        // not serialize the hotkey, but instead some other config data.
+        // But of course all of this is just a mess in this old code base...
+
+        JsonObject objHotkeys = JsonUtils.getNestedObject(root, category, true);
 
         for (IHotkey hotkey : hotkeys)
         {
+            IKeybind keybind = hotkey.getKeybind();
             JsonObject obj = new JsonObject();
-            obj.add("keys", new JsonPrimitive(hotkey.getKeybind().getStringValue()));
-            obj.add("settings", hotkey.getKeybind().getSettings().toJson());
+
+            obj.add("keys", new JsonPrimitive(keybind.getStringValue()));
+
+            if (keybind.areSettingsModified())
+            {
+                obj.add("settings", keybind.getSettings().toJson());
+            }
 
             objHotkeys.add(hotkey.getName(), obj);
         }

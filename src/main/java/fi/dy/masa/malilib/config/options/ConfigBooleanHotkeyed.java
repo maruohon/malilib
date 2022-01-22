@@ -1,10 +1,14 @@
 package fi.dy.masa.malilib.config.options;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.config.IHotkeyTogglable;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
 import fi.dy.masa.malilib.hotkeys.KeyCallbackToggleBooleanConfigWithMessage;
 import fi.dy.masa.malilib.hotkeys.KeybindMulti;
 import fi.dy.masa.malilib.hotkeys.KeybindSettings;
+import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class ConfigBooleanHotkeyed extends ConfigBoolean implements IHotkeyTogglable
@@ -49,5 +53,45 @@ public class ConfigBooleanHotkeyed extends ConfigBoolean implements IHotkeyToggl
     {
         super.resetToDefault();
         this.keybind.resetToDefault();
+    }
+
+    @Override
+    public void setValueFromJsonElement(JsonElement element)
+    {
+        try
+        {
+            if (element.isJsonObject())
+            {
+                JsonObject obj = element.getAsJsonObject();
+
+                if (JsonUtils.hasBoolean(obj, "enabled"))
+                {
+                    super.setValueFromJsonElement(obj.get("enabled"));
+                }
+
+                if (JsonUtils.hasObject(obj, "hotkey"))
+                {
+                    JsonObject hotkeyObj = obj.getAsJsonObject("hotkey");
+                    this.keybind.setValueFromJsonElement(hotkeyObj);
+                }
+            }
+            else
+            {
+                MaLiLib.logger.warn("Failed to set config value for '{}' from the JSON element '{}'", this.getName(), element);
+            }
+        }
+        catch (Exception e)
+        {
+            MaLiLib.logger.warn("Failed to set config value for '{}' from the JSON element '{}'", this.getName(), element, e);
+        }
+    }
+
+    @Override
+    public JsonElement getAsJsonElement()
+    {
+        JsonObject obj = new JsonObject();
+        obj.add("enabled", super.getAsJsonElement());
+        obj.add("hotkey", this.getKeybind().getAsJsonElement());
+        return obj;
     }
 }

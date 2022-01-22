@@ -2,8 +2,12 @@ package fi.dy.masa.malilib.hotkeys;
 
 import java.util.List;
 import javax.annotation.Nullable;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import fi.dy.masa.malilib.config.IConfigResettable;
 import fi.dy.masa.malilib.config.IStringRepresentable;
+import fi.dy.masa.malilib.util.JsonUtils;
 
 public interface IKeybind extends IConfigResettable, IStringRepresentable
 {
@@ -63,4 +67,35 @@ public interface IKeybind extends IConfigResettable, IStringRepresentable
     boolean areSettingsModified();
 
     void resetSettingsToDefaults();
+
+    default JsonElement getAsJsonElement()
+    {
+        JsonObject obj = new JsonObject();
+        obj.add("keys", new JsonPrimitive(this.getStringValue()));
+
+        if (this.areSettingsModified())
+        {
+            obj.add("settings", this.getSettings().toJson());
+        }
+
+        return obj;
+    }
+
+    default void setValueFromJsonElement(JsonElement element)
+    {
+        if (element.isJsonObject())
+        {
+            JsonObject obj = element.getAsJsonObject();
+
+            if (JsonUtils.hasString(obj, "keys"))
+            {
+                this.setValueFromString(obj.get("keys").getAsString());
+            }
+
+            if (JsonUtils.hasObject(obj, "settings"))
+            {
+                this.setSettings(KeybindSettings.fromJson(obj.getAsJsonObject("settings")));
+            }
+        }
+    }
 }
