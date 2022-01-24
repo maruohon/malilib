@@ -68,6 +68,7 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
     private final List<WidgetBase> widgets = new ArrayList<>();
     private final List<TextFieldWrapper<? extends GuiTextFieldGeneric>> textFields = new ArrayList<>();
     private final MessageRenderer messageRenderer = new MessageRenderer(0xDD000000, COLOR_HORIZONTAL_BAR);
+    private final long openTime;
     protected WidgetBase hoveredWidget = null;
     protected String title = "";
     protected boolean useTitleHierarchy = true;
@@ -79,6 +80,7 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
     protected GuiBase()
     {
         super(new LiteralText(""));
+        this.openTime = System.nanoTime();
     }
 
     public GuiBase setParent(@Nullable Screen parent)
@@ -245,8 +247,11 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
         // This is an ugly fix for the issue that the key press from the hotkey that
         // opens a GUI would then also get into any text fields or search bars, as the
         // charTyped() event always fires after the keyPressed() event in any case >_>
-        if (this.keyInputCount <= 0)
+        // The 100ms timeout is to not indefinitely block the first character,
+        // as otherwise IME methods wouldn't work at all, as they don't trigger a key press.
+        if (this.keyInputCount <= 0 && System.nanoTime() - this.openTime <= 100000000)
         {
+            this.keyInputCount++;
             return true;
         }
 
