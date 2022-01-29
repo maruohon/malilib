@@ -68,6 +68,17 @@ public abstract class InteractableWidget extends BackgroundWidget
         }
     }
 
+    @Override
+    public boolean canInteract()
+    {
+        return this.canInteract;
+    }
+
+    public void setCanInteract(boolean canInteract)
+    {
+        this.canInteract = canInteract;
+    }
+
     public void setClickListener(@Nullable EventListener listener)
     {
         this.clickListener = listener;
