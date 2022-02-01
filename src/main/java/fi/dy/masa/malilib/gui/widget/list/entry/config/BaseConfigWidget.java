@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.gui.widget.list.entry.config;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
@@ -46,7 +47,7 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
 
         EventListener clickHandler = config.getLabelClickHandler();
         List<String> comments = new ArrayList<>();
-        String comment = config.getComment();
+        Optional<String> o = Optional.empty(); o.ifPresent(comments::add);
 
         if (clickHandler != null)
         {
@@ -55,10 +56,7 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
             this.configOwnerAndNameLabelWidget.getBorderRenderer().getHoverSettings().setBorderWidthAndColor(1, 0xFF15D6F0);
         }
 
-        if (comment != null)
-        {
-            comments.add(comment);
-        }
+        config.getComment().ifPresent(comments::add);
 
         this.configOwnerAndNameLabelWidget.addHoverStrings(comments);
         this.resetButton = new GenericButton("malilib.gui.button.reset.caps");

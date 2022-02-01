@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.config.option;
 
-import javax.annotation.Nullable;
+import java.util.Optional;
 import fi.dy.masa.malilib.util.data.ModInfo;
 
 /**
@@ -46,9 +46,8 @@ public class NestedConfig implements ConfigInfo
         return this.config.getDisplayName();
     }
 
-    @Nullable
     @Override
-    public String getComment()
+    public Optional<String> getComment()
     {
         return this.config.getComment();
     }

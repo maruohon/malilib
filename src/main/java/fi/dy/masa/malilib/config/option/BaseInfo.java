@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.config.option;
 
-import javax.annotation.Nullable;
+import java.util.Optional;
 import fi.dy.masa.malilib.util.data.ModInfo;
 
 public interface BaseInfo
@@ -25,8 +25,7 @@ public interface BaseInfo
      * Returns the comment or description for this object. It can be for example displayed
      * when hovering over the object's name or other related screen element on some screens.
      * Newlines can be added with "\n". Can be null if there is no comment for this object.
-     * @return the (localized) comment, or null if no comment has been set
+     * @return the (localized) comment, if one exists
      */
-    @Nullable
-    String getComment();
+    Optional<String> getComment();
 }

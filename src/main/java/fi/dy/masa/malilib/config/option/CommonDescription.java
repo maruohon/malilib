@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.config.option;
 
+import java.util.Optional;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.ModInfo;
@@ -54,15 +55,14 @@ public abstract class CommonDescription implements BaseInfo
     }
 
     @Override
-    @Nullable
-    public String getComment()
+    public Optional<String> getComment()
     {
         if (this.commentTranslationKey != null)
         {
-            return StringUtils.translate(this.commentTranslationKey, this.commentArgs);
+            return Optional.of(StringUtils.translate(this.commentTranslationKey, this.commentArgs));
         }
 
-        return null;
+        return Optional.empty();
     }
 
     public String getNameTranslationKey()

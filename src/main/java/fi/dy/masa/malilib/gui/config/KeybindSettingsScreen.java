@@ -105,7 +105,7 @@ public class KeybindSettingsScreen extends BaseScreen
         LabelWidget label = new LabelWidget(color, config.getPrettyName());
         label.setSize(labelWidth + 4, 16);
         label.setPosition(x, y);
-        label.addHoverStrings(config.getComment());
+        config.getComment().ifPresent(label::addHoverStrings);
         label.getPadding().setTop(3);
         this.addWidget(label);
         x += labelWidth + 10;
