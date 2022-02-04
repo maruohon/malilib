@@ -25,8 +25,14 @@ public abstract class BaseTextInputScreen extends BaseScreen
     @Nullable protected StyledText labelText;
     protected int baseHeight = 80;
     protected int elementsOffsetY;
+    protected boolean closeScreenWhenApplied = true;
 
-    public BaseTextInputScreen(String titleKey, String defaultText, @Nullable GuiScreen parent)
+    public BaseTextInputScreen(String titleKey)
+    {
+        this(titleKey, "");
+    }
+
+    public BaseTextInputScreen(String titleKey, String defaultText)
     {
         this.useTitleHierarchy = false;
         this.originalText = defaultText;
@@ -35,12 +41,17 @@ public abstract class BaseTextInputScreen extends BaseScreen
         this.renderBorder = true;
         this.setTitle(titleKey);
 
-        this.okButton = createButton("malilib.gui.button.colored.ok", this::closeScreenIfValueApplied);
-        this.resetButton = createButton("malilib.gui.button.reset", this::resetTextFieldToOriginalText);
-        this.cancelButton = createButton("malilib.gui.button.cancel", this::cancel);
+        this.okButton = createButton("malilib.button.label.ok.colored", this::closeScreenIfValueApplied);
+        this.resetButton = createButton("malilib.button.label.reset", this::resetTextFieldToOriginalText);
+        this.cancelButton = createButton("malilib.button.label.cancel", this::cancel);
 
         this.textField = new BaseTextFieldWidget(240, 20, this.originalText);
         this.textField.setFocused(true);
+    }
+
+    public BaseTextInputScreen(String titleKey, String defaultText, @Nullable GuiScreen parent)
+    {
+        this(titleKey, defaultText);
 
         this.setParent(parent);
     }
@@ -78,6 +89,11 @@ public abstract class BaseTextInputScreen extends BaseScreen
         this.okButton.setPosition(x, y);
         this.resetButton.setPosition(this.okButton.getRight() + 6, y);
         this.cancelButton.setPosition(this.resetButton.getRight() + 6, y);
+    }
+
+    public void setCloseScreenWhenApplied(boolean closeScreenWhenApplied)
+    {
+        this.closeScreenWhenApplied = closeScreenWhenApplied;
     }
 
     protected void updateHeight()
@@ -121,6 +137,17 @@ public abstract class BaseTextInputScreen extends BaseScreen
         this.cancelListener = cancelListener;
     }
 
+    @Nullable
+    protected StyledText wrapTextToWidth(@Nullable StyledText text)
+    {
+        if (text != null)
+        {
+            return StyledTextUtils.wrapStyledTextToMaxWidth(text, this.screenWidth - 20);
+        }
+
+        return null;
+    }
+
     public void setInfoText(String translationKey)
     {
         this.setInfoText(StyledText.translate(translationKey));
@@ -128,13 +155,7 @@ public abstract class BaseTextInputScreen extends BaseScreen
 
     public void setInfoText(@Nullable StyledText infoText)
     {
-        if (infoText != null)
-        {
-            infoText = StyledTextUtils.wrapStyledTextToMaxWidth(infoText, this.screenWidth - 20);
-        }
-
-        this.infoText = infoText;
-
+        this.infoText = this.wrapTextToWidth(infoText);
         this.updateHeight();
     }
 
@@ -145,13 +166,7 @@ public abstract class BaseTextInputScreen extends BaseScreen
 
     public void setLabelText(@Nullable StyledText labelText)
     {
-        if (labelText != null)
-        {
-            labelText = StyledTextUtils.wrapStyledTextToMaxWidth(labelText, this.screenWidth - 20);
-        }
-
-        this.labelText = labelText;
-
+        this.labelText = this.wrapTextToWidth(labelText);
         this.updateHeight();
     }
 
@@ -194,11 +209,11 @@ public abstract class BaseTextInputScreen extends BaseScreen
 
     protected void closeScreenIfValueApplied()
     {
-        if (this.applyValue(this.textField.getText()))
+        if (this.applyValue())
         {
             // Only close the screen if the value was successfully applied,
             // and this screen is still the active screen
-            if (GuiUtils.getCurrentScreen() == this)
+            if (this.closeScreenWhenApplied && GuiUtils.getCurrentScreen() == this)
             {
                 this.openParentScreen();
             }
@@ -227,5 +242,5 @@ public abstract class BaseTextInputScreen extends BaseScreen
         }
     }
 
-    protected abstract boolean applyValue(String string);
+    protected abstract boolean applyValue();
 }

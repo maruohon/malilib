@@ -8,16 +8,29 @@ public class TextInputScreen extends BaseTextInputScreen
 {
     protected final StringConsumer stringConsumer;
 
-    public TextInputScreen(String titleKey, String defaultText, @Nullable GuiScreen parent, StringConsumer stringConsumer)
+    public TextInputScreen(String titleKey, StringConsumer stringConsumer)
     {
-        super(titleKey, defaultText, parent);
+        this(titleKey, "", stringConsumer);
+    }
+
+    public TextInputScreen(String titleKey, String defaultText, StringConsumer stringConsumer)
+    {
+        super(titleKey, defaultText);
 
         this.stringConsumer = stringConsumer;
     }
 
-    @Override
-    protected boolean applyValue(String string)
+    public TextInputScreen(String titleKey, String defaultText,
+                           StringConsumer stringConsumer, @Nullable GuiScreen parent)
     {
-        return this.stringConsumer.consumeString(string);
+        this(titleKey, defaultText, stringConsumer);
+
+        this.setParent(parent);
+    }
+
+    @Override
+    protected boolean applyValue()
+    {
+        return this.stringConsumer.consumeString(this.textField.getText());
     }
 }

@@ -15,6 +15,21 @@ public class DualTextInputScreen extends BaseTextInputScreen
     protected final String originalText2;
 
     public DualTextInputScreen(String titleKey,
+                               String defaultText1,
+                               String defaultText2,
+                               BiFunction<String, String, Boolean> stringConsumer)
+    {
+        super(titleKey, defaultText1);
+
+        this.baseHeight = 120;
+        this.stringConsumer = stringConsumer;
+        this.originalText2 = defaultText2;
+
+        this.labelWidget2 = new LabelWidget();
+        this.textField2 = new BaseTextFieldWidget(240, 20, this.originalText2);
+    }
+
+    public DualTextInputScreen(String titleKey,
                                String labelKey1,
                                String labelKey2,
                                String defaultText1,
@@ -22,16 +37,11 @@ public class DualTextInputScreen extends BaseTextInputScreen
                                BiFunction<String, String, Boolean> stringConsumer,
                                @Nullable GuiScreen parent)
     {
-        super(titleKey, defaultText1, parent);
+        this(titleKey, defaultText1, defaultText2, stringConsumer);
 
-        this.baseHeight = 120;
-        this.stringConsumer = stringConsumer;
-        this.originalText2 = defaultText2;
-
-        this.labelWidget2 = new LabelWidget(labelKey2);
-        this.textField2 = new BaseTextFieldWidget(240, 20, this.originalText2);
-
-        this.setLabelText(StyledText.translate(labelKey1));
+        this.setLabelText(labelKey1);
+        this.labelWidget2.setText(labelKey2);
+        this.setParent(parent);
     }
 
     @Override
@@ -60,14 +70,25 @@ public class DualTextInputScreen extends BaseTextInputScreen
         this.cancelButton.setY(y);
     }
 
-    @Override
-    protected void closeScreenIfValueApplied()
+    public void setLabelText2(String translationKey)
     {
-        // Only close the GUI if the value was successfully applied
-        if (this.stringConsumer.apply(this.textField.getText(), this.textField2.getText()))
+        this.setLabelText2(StyledText.translate(translationKey));
+    }
+
+    public void setLabelText2(@Nullable StyledText labelText)
+    {
+        StyledText text = this.wrapTextToWidth(labelText);
+
+        if (text != null)
         {
-            this.openParentScreen();
+            this.labelWidget2.setStyledText(text);
         }
+        else
+        {
+            this.labelWidget2.clearText();
+        }
+
+        this.updateHeight();
     }
 
     @Override
@@ -79,8 +100,8 @@ public class DualTextInputScreen extends BaseTextInputScreen
     }
 
     @Override
-    protected boolean applyValue(String string)
+    protected boolean applyValue()
     {
-        return false;
+        return this.stringConsumer.apply(this.textField.getText(), this.textField2.getText());
     }
 }

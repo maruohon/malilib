@@ -77,7 +77,7 @@ public class MessageRedirectListScreen extends BaseListScreen<DataListWidget<Mes
     protected void openAddRedirectScreen()
     {
         TextInputScreen screen = new TextInputScreen("malilib.gui.title.add_message_redirect",
-                                                     "", this, this::addRedirect);
+                                                     "", this::addRedirect, this);
         screen.setScreenWidth(300);
         screen.setInfoText("malilib.gui.label.add_message_redirect_for_key");
         BaseScreen.openPopupScreen(screen);

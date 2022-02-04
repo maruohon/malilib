@@ -198,7 +198,7 @@ public class ActionListScreen extends BaseMultiListScreen
     protected void openCreateMacroScreenNameInput()
     {
         String title = StringUtils.translate("malilib.gui.title.create_macro");
-        TextInputScreen screen = new TextInputScreen(title, "", this, this::openCreateMacroScreen);
+        TextInputScreen screen = new TextInputScreen(title, "", this::openCreateMacroScreen, this);
         screen.setLabelText(StyledText.translate("malilib.label.name.colon"));
         BaseScreen.openPopupScreen(screen);
     }

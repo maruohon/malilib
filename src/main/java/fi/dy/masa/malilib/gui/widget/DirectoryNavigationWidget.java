@@ -83,7 +83,8 @@ public class DirectoryNavigationWidget extends SearchBarWidget
             if (this.searchOpen == false)
             {
                 DirectoryCreator creator = new DirectoryCreator(this.getCurrentDirectory(), this.navigator);
-                TextInputScreen gui = new TextInputScreen("malilib.gui.title.create_directory", "", GuiUtils.getCurrentScreen(), creator);
+                TextInputScreen gui = new TextInputScreen("malilib.gui.title.create_directory", "",
+                                                          creator, GuiUtils.getCurrentScreen());
                 BaseScreen.openPopupScreen(gui);
             }
         });
