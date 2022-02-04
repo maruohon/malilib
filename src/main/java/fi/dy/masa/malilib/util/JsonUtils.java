@@ -7,10 +7,12 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -376,13 +378,41 @@ public class JsonUtils
         return list;
     }
 
-    public static void readArrayElementsIfPresent(JsonObject obj, String arrayName, Consumer<JsonElement> elementConsumer)
+    public static void readObjectIfPresent(JsonElement el, String arrayName, Consumer<JsonObject> objectConsumer)
     {
+        if (el.isJsonObject() == false)
+        {
+            return;
+        }
+
+        JsonObject obj = el.getAsJsonObject();
+
+        if (hasObject(obj, arrayName))
+        {
+            JsonObject arr = obj.get(arrayName).getAsJsonObject();
+            objectConsumer.accept(arr);
+        }
+    }
+
+    public static void readArrayIfPresent(JsonElement el, String arrayName, Consumer<JsonArray> arrayConsumer)
+    {
+        if (el.isJsonObject() == false)
+        {
+            return;
+        }
+
+        JsonObject obj = el.getAsJsonObject();
+
         if (hasArray(obj, arrayName))
         {
             JsonArray arr = obj.get(arrayName).getAsJsonArray();
-            readArrayElements(arr, elementConsumer);
+            arrayConsumer.accept(arr);
         }
+    }
+
+    public static void readArrayElementsIfPresent(JsonElement el, String arrayName, Consumer<JsonElement> elementConsumer)
+    {
+        readArrayIfPresent(el, arrayName, (arr) -> readArrayElements(arr, elementConsumer));
     }
 
     public static void readArrayElements(JsonArray arr, Consumer<JsonElement> elementConsumer)
@@ -391,27 +421,20 @@ public class JsonUtils
 
         for (int i = 0; i < size; ++i)
         {
-            JsonElement e = arr.get(i);
-            elementConsumer.accept(e);
+            elementConsumer.accept(arr.get(i));
         }
     }
 
-    public static void readArrayIfPresent(JsonObject obj, String arrayName, Consumer<JsonArray> arrayConsumer)
+    public static <T> JsonArray toArray(Collection<T> values, Function<T, JsonElement> elementSerializer)
     {
-        if (hasArray(obj, arrayName))
-        {
-            JsonArray arr = obj.get(arrayName).getAsJsonArray();
-            arrayConsumer.accept(arr);
-        }
-    }
+        JsonArray arr = new JsonArray();
 
-    public static void readObjectIfPresent(JsonObject obj, String arrayName, Consumer<JsonObject> objectConsumer)
-    {
-        if (hasObject(obj, arrayName))
+        for (T value : values)
         {
-            JsonObject arr = obj.get(arrayName).getAsJsonObject();
-            objectConsumer.accept(arr);
+            arr.add(elementSerializer.apply(value));
         }
+
+        return arr;
     }
 
     // https://stackoverflow.com/questions/29786197/gson-jsonobject-copy-value-affected-others-jsonobject-instance
