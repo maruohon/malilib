@@ -86,6 +86,16 @@ public abstract class BaseButton extends InteractableWidget
         this.enabled = enabled;
     }
 
+    public boolean isEnabled()
+    {
+        if (this.enabledStatusSupplier != null)
+        {
+            return this.enabledStatusSupplier.getAsBoolean();
+        }
+
+        return this.enabled;
+    }
+
     /**
      * Sets the horizontal padding for the display string (on one side)
      * @param padding
@@ -153,7 +163,7 @@ public abstract class BaseButton extends InteractableWidget
     @Override
     protected boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
-        if (this.enabled &&
+        if (this.isEnabled() &&
             this.visible &&
             (this.actionListener == null ||
              this.actionListener.actionPerformedWithButton(mouseButton)))

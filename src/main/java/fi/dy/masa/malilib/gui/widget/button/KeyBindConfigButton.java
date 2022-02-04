@@ -57,7 +57,7 @@ public class KeyBindConfigButton extends GenericButton
     @Override
     protected boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
-        if (this.enabled == false || this.visible == false)
+        if (this.isEnabled() == false || this.visible == false)
         {
             return false;
         }
@@ -106,7 +106,7 @@ public class KeyBindConfigButton extends GenericButton
     @Override
     protected boolean onMouseScrolled(int mouseX, int mouseY, double mouseWheelDelta)
     {
-        if (this.enabled && this.visible && this.isSelected())
+        if (this.isEnabled() && this.visible && this.isSelected())
         {
             int keyCode = mouseWheelDelta < 0 ? -201 : -199;
             this.addKey(keyCode);
@@ -216,7 +216,7 @@ public class KeyBindConfigButton extends GenericButton
 
     public boolean isSelected()
     {
-        return this.selected && this.enabled;
+        return this.selected && this.isEnabled();
     }
 
     @Override
@@ -251,7 +251,7 @@ public class KeyBindConfigButton extends GenericButton
 
     protected List<String> getKeyBindHoverStrings()
     {
-        return this.isSelected() || this.enabled == false ? EMPTY_STRING_LIST : this.hoverStrings;
+        return this.isSelected() || this.isSelected() == false ? EMPTY_STRING_LIST : this.hoverStrings;
     }
 
     protected void updateConflicts()

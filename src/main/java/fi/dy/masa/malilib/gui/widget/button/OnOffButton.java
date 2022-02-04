@@ -134,7 +134,7 @@ public class OnOffButton extends GenericButton
         if (this.style == OnOffStyle.SLIDER_ON_OFF)
         {
             boolean value = this.statusSupplier.getAsBoolean();
-            renderOnOffSlider(x, y, z + 1f, width, height, value, this.enabled, hovered, ctx);
+            renderOnOffSlider(x, y, z + 1f, width, height, value, this.isEnabled(), hovered, ctx);
         }
         else
         {

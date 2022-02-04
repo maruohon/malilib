@@ -127,7 +127,7 @@ public class GenericButton extends BaseButton
     @Override
     protected int getTextColorForRender(boolean hovered)
     {
-        if (this.enabled == false)
+        if (this.isEnabled() == false)
         {
             return this.disabledTextColor;
         }
@@ -150,7 +150,7 @@ public class GenericButton extends BaseButton
     protected void renderButtonBackground(int x, int y, float z, int width, int height,
                                           boolean hovered, ScreenContext ctx)
     {
-        this.backgroundIcon.renderFourSplicedAt(x, y, z, width, height, this.enabled, hovered);
+        this.backgroundIcon.renderFourSplicedAt(x, y, z, width, height, this.isEnabled(), hovered);
     }
 
     protected int getIconOffsetX(int width, MultiIcon icon)
@@ -199,7 +199,7 @@ public class GenericButton extends BaseButton
             int offY = iconYOffset > 0 ? iconYOffset : (height - icon.getHeight()) / 2;
             int ix = leftAligned ? x + offX : x + width - icon.getWidth() - offX;
 
-            icon.renderAt(ix, y + offY, z + 0.1f, this.enabled, hovered);
+            icon.renderAt(ix, y + offY, z + 0.1f, this.isEnabled(), hovered);
         }
     }
 

@@ -66,7 +66,7 @@ public class LabelWidget extends InteractableWidget
         return this.totalHeight;
     }
 
-    protected void clearText()
+    public void clearText()
     {
         this.stringListRenderer.clearText();
     }
