@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Locale;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.listener.EventListener;
-import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.ModInfo;
 
 public class BaseConfig extends CommonDescription implements ConfigInfo
@@ -118,13 +117,5 @@ public class BaseConfig extends CommonDescription implements ConfigInfo
     {
         this.searchStrings.addAll(searchTerms);
         return this;
-    }
-
-    public static String getDefaultDisplayName(String baseName, String nameTranslationKey)
-    {
-        String translatedName = StringUtils.translate(nameTranslationKey);
-
-        // If there is no translation for the config name, then show the actual base name
-        return translatedName.equals(nameTranslationKey) ? baseName : translatedName;
     }
 }

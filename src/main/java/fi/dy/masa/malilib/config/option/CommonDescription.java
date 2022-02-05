@@ -44,7 +44,7 @@ public abstract class CommonDescription implements BaseInfo
     @Override
     public String getDisplayName()
     {
-        return BaseConfigOption.getDefaultDisplayName(this.getName(), this.nameTranslationKey);
+        return getDefaultDisplayName(this.getName(), this.nameTranslationKey);
     }
 
     @Override
@@ -94,5 +94,27 @@ public abstract class CommonDescription implements BaseInfo
     public void setCommentArgs(Object... args)
     {
         this.commentArgs = args;
+    }
+
+    /**
+     * Sets the comment translation key and args if a translation exists for the provided key
+     */
+    public void setCommentIfTranslationExists(String key, Object... args)
+    {
+        String translated = StringUtils.translate(key, args);
+
+        if (key.equals(translated) == false)
+        {
+            this.setCommentTranslationKey(key);
+            this.setCommentArgs(args);
+        }
+    }
+
+    public static String getDefaultDisplayName(String baseName, String nameTranslationKey)
+    {
+        String translatedName = StringUtils.translate(nameTranslationKey);
+
+        // If there is no translation for the config name, then show the actual base name
+        return translatedName.equals(nameTranslationKey) ? baseName : translatedName;
     }
 }
