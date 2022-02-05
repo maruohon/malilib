@@ -146,7 +146,7 @@ public class StyledTextLine
         }
 
         return String.format("StyledTextLine{displayText='%s', originalString='%s', segmentCount=%d, glyphCount=%d, renderWidth=%d, segments=[%s]}",
-                             this.displayText, this.originalString, this.segments.size(), this.glyphCount, this.renderWidth, sb.toString());
+                             this.displayText, this.originalString, this.segments.size(), this.glyphCount, this.renderWidth, sb);
     }
 
     @Override

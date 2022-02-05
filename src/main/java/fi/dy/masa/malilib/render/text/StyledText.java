@@ -144,24 +144,24 @@ public class StyledText
 
             if (this.styleBuilder.equalsStyle(styleBefore) == false)
             {
-                this.commitCurrentSegmentUsingStyle(styleBefore);
+                this.commitCurrentSegmentUsingStyle(styleBefore, false);
             }
         }
 
         public void addLineBeak()
         {
-            this.commitCurrentLine();
+            this.commitCurrentLine(false);
             this.segmentsForCurrentLine.clear();
         }
 
-        protected void commitCurrentSegment()
+        protected void commitCurrentSegment(boolean force)
         {
-            this.commitCurrentSegmentUsingStyle(this.styleBuilder.build());
+            this.commitCurrentSegmentUsingStyle(this.styleBuilder.build(), force);
         }
 
-        protected void commitCurrentSegmentUsingStyle(TextStyle style)
+        protected void commitCurrentSegmentUsingStyle(TextStyle style, boolean force)
         {
-            if (this.displayStringForCurrentSegment.length() > 0)
+            if (force || this.displayStringForCurrentSegment.length() > 0)
             {
                 String displayString = this.displayStringForCurrentSegment.toString();
                 String originalString = this.originalTextStringForCurrentSegment.toString();
@@ -175,15 +175,15 @@ public class StyledText
             }
         }
 
-        protected void commitCurrentLine()
+        protected void commitCurrentLine(boolean force)
         {
-            this.commitCurrentSegment();
+            this.commitCurrentSegment(force);
             this.lines.add(new StyledTextLine(ImmutableList.copyOf(this.segmentsForCurrentLine)));
         }
 
         public StyledText build()
         {
-            this.commitCurrentLine();
+            this.commitCurrentLine(true); // force commit empty strings with only style
             return new StyledText(ImmutableList.copyOf(this.lines));
         }
     }

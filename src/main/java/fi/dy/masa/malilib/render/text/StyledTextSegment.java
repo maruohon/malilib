@@ -98,7 +98,7 @@ public class StyledTextSegment
 
     /**
      * Checks if the texture sheet and style of the given segment are identical
-     * this this segment, and thus the segments could be merged.
+     * to this segment, and thus the segments could be merged.
      */
     public boolean canAppend(StyledTextSegment other)
     {
