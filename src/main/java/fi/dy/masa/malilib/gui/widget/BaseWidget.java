@@ -22,6 +22,7 @@ import fi.dy.masa.malilib.render.TextRenderUtils;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.render.text.TextRenderSettings;
 import fi.dy.masa.malilib.render.text.TextRenderer;
+import fi.dy.masa.malilib.render.text.TextStyle;
 import fi.dy.masa.malilib.util.GameUtils;
 import fi.dy.masa.malilib.util.data.Color4f;
 
@@ -229,6 +230,17 @@ public class BaseWidget
         this.y = yBottom - this.height;
 
         this.onPositionChanged(oldX, oldY);
+    }
+
+    public void centerVerticallyInside(BaseWidget containerWidget)
+    {
+        this.centerVerticallyInside(containerWidget, 0);
+    }
+
+    public void centerVerticallyInside(BaseWidget containerWidget, int offset)
+    {
+        int yOffset = (containerWidget.getHeight() - this.getHeight()) / 2 + offset;
+        this.setY(containerWidget.getY() + yOffset);
     }
 
     public EdgeInt getMargin()
@@ -452,6 +464,19 @@ public class BaseWidget
         this.text = text;
         this.textOffset.setXOffset(textOffsetX);
         this.textOffset.setYOffset(textOffsetY);
+    }
+
+    /**
+     * Sets the starting style for the text. Note that the text must have been set already,
+     * otherwise this does nothing.
+     * @param style the new starting style for the text, to which any styles defined in the text will be merged to
+     */
+    public void setStartingStyleForText(TextStyle style)
+    {
+        if (this.text != null)
+        {
+            this.setText(this.text.withStartingStyle(style));
+        }
     }
 
     @Nullable
