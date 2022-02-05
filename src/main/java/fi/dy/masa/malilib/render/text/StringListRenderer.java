@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.lwjgl.opengl.GL11;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.position.VerticalAlignment;
@@ -333,7 +334,9 @@ public class StringListRenderer extends BaseWidget
 
         if (renderBackground)
         {
+            GlStateManager.disableTexture2D();
             RenderUtils.drawBuffer();
+            GlStateManager.enableTexture2D();
         }
 
         TextRenderer.INSTANCE.renderBuffers();

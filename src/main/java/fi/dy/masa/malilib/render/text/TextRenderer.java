@@ -317,8 +317,10 @@ public class TextRenderer implements IResourceManagerReloadListener
 
             if (this.currentFontTexture != null)
             {
+                GlStateManager.enableTexture2D();
                 this.textureManager.bindTexture(this.currentFontTexture);
                 this.vboUploader.draw(this.textBuffer);
+                GlStateManager.disableTexture2D();
             }
 
             this.currentFontTexture = null;
