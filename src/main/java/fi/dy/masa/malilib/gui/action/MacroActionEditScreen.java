@@ -7,9 +7,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
-import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
-import fi.dy.masa.malilib.action.ActionRegistryImpl;
 import fi.dy.masa.malilib.action.MacroAction;
 import fi.dy.masa.malilib.action.NamedAction;
 import fi.dy.masa.malilib.gui.BaseMultiListScreen;
@@ -18,7 +16,8 @@ import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
-import fi.dy.masa.malilib.gui.widget.list.entry.NamedActionEntryWidget;
+import fi.dy.masa.malilib.gui.widget.list.entry.BaseListEntryWidget;
+import fi.dy.masa.malilib.gui.widget.list.entry.action.ActionListBaseActionEntryWidget;
 import fi.dy.masa.malilib.registry.Registry;
 
 public class MacroActionEditScreen extends BaseMultiListScreen
@@ -52,12 +51,10 @@ public class MacroActionEditScreen extends BaseMultiListScreen
 
         this.nameTextFieldWidget = new BaseTextFieldWidget(200, 16, name);
 
-        this.addActionsButton = GenericButton.createIconOnly(DefaultIcons.LIST_ADD_PLUS_13);
-        this.addActionsButton.setActionListener(this::addSelectedActions);
+        this.addActionsButton = GenericButton.createIconOnly(DefaultIcons.LIST_ADD_PLUS_13, this::addSelectedActions);
         this.addActionsButton.translateAndAddHoverString("malilib.hover_info.macro_edit_screen.add_actions");
 
-        this.removeActionsButton = GenericButton.createIconOnly(DefaultIcons.LIST_REMOVE_MINUS_13);
-        this.removeActionsButton.setActionListener(this::removeSelectedActions);
+        this.removeActionsButton = GenericButton.createIconOnly(DefaultIcons.LIST_REMOVE_MINUS_13, this::removeSelectedActions);
         this.removeActionsButton.translateAndAddHoverString("malilib.hover_info.macro_edit_screen.remove_actions");
 
         this.actionSourceListWidget = this.createNamedActionListWidget(this::getActions, true);
@@ -115,7 +112,7 @@ public class MacroActionEditScreen extends BaseMultiListScreen
         x = this.actionSourceListWidget.getRight();
         y += 10;
         this.addActionsButton.setPosition(x + 3, y);
-        this.removeActionsButton.setPosition(x + 3, y + 30);
+        this.removeActionsButton.setPosition(x + 3, y + 20);
 
         x += 19;
         this.macroActionsLabelWidget.setPosition(x + 2, y - 10);
@@ -138,8 +135,7 @@ public class MacroActionEditScreen extends BaseMultiListScreen
 
             MacroAction macro = new MacroAction(name, ImmutableList.copyOf(this.macroActionsList));
             Registry.ACTION_REGISTRY.addMacro(macro);
-
-            ((ActionRegistryImpl) Registry.ACTION_REGISTRY).saveToFileIfDirty();
+            Registry.ACTION_REGISTRY.saveToFileIfDirty();
         }
 
         super.onGuiClosed();
@@ -189,13 +185,14 @@ public class MacroActionEditScreen extends BaseMultiListScreen
                                                                       boolean isSourceList)
     {
         DataListWidget<NamedAction> listWidget = new DataListWidget<>(0, 0, 200, 200, listSupplier);
-        listWidget.setListEntryWidgetFixedHeight(12);
+        listWidget.setListEntryWidgetFixedHeight(14);
         listWidget.getBorderRenderer().getNormalSettings().setBorderWidth(1);
         listWidget.setFetchFromSupplierOnRefresh(isSourceList);
-        listWidget.setEntryWidgetFactory(isSourceList ? NamedActionEntryWidget::new : OrderableNamedActionEntryWidget::new);
-        listWidget.getEntrySelectionHandler().setAllowSelection(true);
-        listWidget.getEntrySelectionHandler().setAllowMultiSelection(true);
-        listWidget.getEntrySelectionHandler().setModifierKeyMultiSelection(true);
+        listWidget.setEntryWidgetFactory(isSourceList ? ActionListScreen::createEntryWidget : this::createReOrderableWidget);
+        listWidget.getEntrySelectionHandler()
+                .setAllowSelection(true)
+                .setAllowMultiSelection(true)
+                .setModifierKeyMultiSelection(true);
 
         if (isSourceList)
         {
@@ -206,16 +203,14 @@ public class MacroActionEditScreen extends BaseMultiListScreen
         return listWidget;
     }
 
-    public static class OrderableNamedActionEntryWidget extends NamedActionEntryWidget
+    public BaseListEntryWidget createReOrderableWidget(int x, int y, int width, int height,
+                                                       int listIndex, int originalListIndex,
+                                                       NamedAction data, DataListWidget<NamedAction> listWidget)
     {
-
-        public OrderableNamedActionEntryWidget(int x, int y, int width, int height, int listIndex,
-                                               int originalListIndex, @Nullable NamedAction data,
-                                               @Nullable DataListWidget<NamedAction> listWidget)
-        {
-            super(x, y, width, height, listIndex, originalListIndex, data, listWidget);
-
-            this.canReOrder = true;
-        }
+        ActionListBaseActionEntryWidget widget = ActionListScreen.createEntryWidget(x, y, width, height,
+                                                                                    listIndex, originalListIndex,
+                                                                                    data, listWidget);
+        widget.setCanReOrder(true);
+        return widget;
     }
 }

@@ -170,7 +170,7 @@ public class AddActionExecutionWidgetScreen extends BaseScreen
     {
         this.argumentTextField.setText("");
         this.addArgumentCheckbox.setSelected(false);
-        this.hasArgumentElements = action != null && action.needsArgument();
+        //this.hasArgumentElements = action != null && action.needsArgument(); // TODO
 
         this.reAddActiveWidgets();
         this.updateHeight();
@@ -183,11 +183,13 @@ public class AddActionExecutionWidgetScreen extends BaseScreen
 
         if (action != null && type != null)
         {
+            // TODO
+            /*
             if (this.addArgumentCheckbox.isSelected() && action.needsArgument())
             {
-                // TODO
-                //action = action.createAlias(action.getName() + "_parameterized", this.argumentTextField.getText());
+                action = action.createAlias(action.getName() + "_parameterized", this.argumentTextField.getText());
             }
+            */
 
             BaseActionExecutionWidget widget = type.create();
             widget.setAction(action);

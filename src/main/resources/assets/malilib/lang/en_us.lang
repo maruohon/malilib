@@ -101,6 +101,27 @@ malilib.hotkey.name.scrollvalueadjustdecrease=Scroll Adjust Decrease
 malilib.hotkey.name.scrollvalueadjustincrease=Scroll Adjust Increase
 malilib.hotkey.name.scrollvalueadjustmodifier=Scroll Adjust Enable
 
+malilib.button.label.action.alias_name.colon=Alias:
+malilib.button.label.action_list_screen.create_macro=Create Macro
+malilib.button.label.action_list_screen_widget.create_alias=Alias
+malilib.button.label.action_list_screen_widget.parameterize=Parameterize
+
+malilib.button.label.cancel=Cancel
+malilib.button.label.ok.colored=§aOK
+malilib.button.label.reset=Reset
+
+malilib.button.hover.create_alias_for_action=Create an alias action, which is basically just a different (shorter/easier) name for the action. This is only useful if you want to run the action often via the Action Prompt by typing in the name to search for it.
+malilib.button.hover.list.remove=Remove
+malilib.button.hover.parameterize_action=Create a new copy of the action with the string argument already bound to a given value. This allows directly executing that action without having to input the string argument via the text input prompt screen.
+
+malilib.gui.prompt.title.create_alias_action=Create an alias action
+malilib.gui.prompt.title.parameterize_action=Create a parameterized copy of the action
+
+malilib.label.action.parameterized_action_name=Name for the created action:
+malilib.label.action.parameterized_action_argument=Bound argument:
+
+malilib.info.action.create_parameterized_copy=Create a copy of the action, with the argument bound to the given value. This allows directly executing the created action with that arument, without having to type it into the text input prompt window every time.
+
 malilib.hover_info.action.alias=§8Alias: §7%s
 malilib.hover_info.action.argument.colon=§8Argument:§7 
 malilib.hover_info.action.contained_actions=§8Contained actions (§b%s§8):
@@ -111,6 +132,7 @@ malilib.hover_info.action_widget_screen.close_screen_on_execute=Close the screen
 malilib.hover_info.action_widget_screen.close_screen_on_key_release=Close the screen when all keys are released.\n<b>§eNote:</b> This will also execute the action that is being hovered!
 malilib.hover_info.action.original_registry_name=§8Original registry name: §7%s
 malilib.hover_info.action.registry_name=§8Registry name: §7%s
+malilib.hover_info.action_types_explanation=- All: All actions currently in the registry\n- Alias: User-added aliases (= renamed copies)\n- Base: All mod-added "base" actions (= no user-added\n  actions ie. aliases, macros or the bound paramaterized actions)\n- Macro: User-created macros (= lists of actions)\n- Parameterizable: Base actions that need a string argument\n- Parameterized: User-added copies of parameterizable\n  actions, where the argument is set already\n- Simple: Non-parameterizable base actions\n- User-added: All user-added actions\n  (= aliases, macros and parameterized actions)
 malilib.hover_info.add_action_execution_widget.add_argument=Bind the argument to the action button directly.\nIf this is not set, then you will need to input the argument every time you run the action.
 malilib.hover_info.close_screen=Close the screen
 malilib.hover_info.config_override_fallback=§cError retrieving server info.\n§6All features have been disabled as a fall-back.
@@ -118,6 +140,20 @@ malilib.hover_info.macro_edit_screen.add_actions=Add the selected actions to the
 malilib.hover_info.macro_edit_screen.remove_actions=Remove the selected actions from the macro
 malilib.hover_info.option_list_button.non_selected_value=  §8%s
 malilib.hover_info.option_list_button.selected_value=> §7%s§r <
+
+malilib.name.action_type.alias=Alias
+malilib.name.action_type.all=All
+malilib.name.action_type.base=Base
+malilib.name.action_type.macro=Macro
+malilib.name.action_type.parameterizable=Parameterizable
+malilib.name.action_type.parameterized=Parameterized (arg. set)
+malilib.name.action_type.simple=Simple
+malilib.name.action_type.user_added=User-added
+
+malilib.style.action_list_screen.widget.alias=<c=47FE24>
+malilib.style.action_list_screen.widget.macro=<c=24B8FE>
+malilib.style.action_list_screen.widget.parameterizable=<c=FEFE24>
+malilib.style.action_list_screen.widget.parameterized=<c=FEC424>
 
 malilib.gui.button.config.reset_all_filtered=Reset All
 malilib.gui.button.config.select_directory=Select Directory
@@ -145,13 +181,11 @@ malilib.gui.button.import=Import
 malilib.gui.button.none.caps=NONE
 malilib.gui.button.ok=OK
 malilib.gui.button.remove=Remove
-malilib.gui.button.reset=Reset
 malilib.gui.button.reset.caps=RESET
 
 
 malilib.gui.button.colored.cancel=§cCancel
 malilib.gui.button.colored.confirm=§aConfirm
-malilib.gui.button.colored.ok=§aOK
 
 malilib.gui.button.custom_icon_list_screen.add_icon=Add Icon
 
@@ -332,7 +366,7 @@ malilib.gui.label.sort_direction.none=None
 
 malilib.gui.tip.dropdown.type_to_search=Just start typing to search (in any DropDown widget)
 
-malilib.gui.title.action_aliases_and_macros=MaLiLib - Manage Action Aliases and Macros
+malilib.gui.title.action_list_screen=MaLiLib %s - Manage Actions
 malilib.gui.title.action_screen.export_settings=Export Action Screen Settings
 malilib.gui.title.action_screen.import_settings=Import Action Screen Settings
 malilib.gui.title.add_action_macro=Create an action macro
@@ -396,9 +430,13 @@ malilib.info.nbt_tooltip.number_color=§6
 malilib.info.nbt_tooltip.number_type_color=§c
 malilib.info.nbt_tooltip.string_color=§a
 
+malilib.label.actions.alias.angle_brackets=<alias>
+malilib.label.actions.alias_action=Alias Action
 malilib.label.actions.lists.all_actions=All
 malilib.label.actions.lists.all_aliases=Aliases
 malilib.label.actions.lists.macro=Macro: %s
+malilib.label.actions.macro.angle_brackets=<macro>
+malilib.label.actions.macro_action=Macro Action
 
 malilib.label.button.add_action=Add Action
 malilib.label.add_action_execution_widget.add_argument=Add Argument
@@ -481,7 +519,6 @@ malilib.label.line_height.colon=Line height:
 malilib.label.list_type.blacklist=Black List
 malilib.label.list_type.none=None
 malilib.label.list_type.whitelist=White List
-malilib.label.macro.angle_brackets=<macro>
 malilib.label.macro_action_entry_widget.name=%s §8[§b%s§8 actions]
 malilib.label.margin=Margin
 malilib.label.max_width.colon=Max width:
@@ -545,6 +582,14 @@ malilib.label.colored.on.caps=§aON§r
 malilib.label.colored.off=§coff§r
 malilib.label.colored.on=§aon§r
 
+malilib.name.action_type.all=All Actions
+malilib.name.action_type.alias=Alias Actions
+malilib.name.action_type.base=Base Actions
+malilib.name.action_type.macro=Macro Actions
+malilib.name.action_type.parameterizable=Parameterizable Actions
+malilib.name.action_type.parameterized=parameterized Actions
+malilib.name.action_type.simple=Simple Actions
+
 malilib.message.action_screen_created_by_name=Action screen created by the name '%s'
 malilib.message.action_screen_settings_copied_to_clipboard=Action Screen settings copied to clipboard
 malilib.message.action_screen_settings_imported=Action Screen settings imported
@@ -553,9 +598,9 @@ malilib.message.config_locked_on=%s is currently locked to §aON§r
 malilib.message.config_overridden_off=%s is currently overridden to §cOFF§r
 malilib.message.config_overridden_on=%s is currently overridden to §aON§r
 
+malilib.message.error.action.action_name_exists=An action already exist by the name '%s'
 malilib.message.error.action_screen_already_exists_by_name=Error: Action screen already exists by the name '%s'
 malilib.message.error.actions_edit.add_alias_select_one=To add an alias for an action, select exactly one action from the list!
-malilib.message.error.actions_edit.exists=An action already exists by the name '%s'
 malilib.message.error.custom_hotkey_add.give_name=You must give a name for the custom hotkey!
 malilib.message.error.custom_hotkey_add.select_action=You must select an action from the dropdown to bind to the custom hotkey
 malilib.message.error.failed_to_copy_file=Failed to copy file '%s' to '%s'

@@ -85,8 +85,8 @@ public class CustomHotkeyDefinition implements Hotkey
 
         if (action == null)
         {
-            action = new SimpleNamedAction((ctx) -> ActionResult.PASS, ModInfo.NO_MOD,
-                                           actionName, actionName, actionName);
+            action = new SimpleNamedAction(actionName, actionName, actionName,
+                                           ModInfo.NO_MOD, (ctx) -> ActionResult.PASS);
         }
 
         return new CustomHotkeyDefinition(name, keyBind, action);

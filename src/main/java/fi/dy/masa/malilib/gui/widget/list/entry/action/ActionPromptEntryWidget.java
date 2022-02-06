@@ -1,15 +1,15 @@
-package fi.dy.masa.malilib.gui.widget.list.entry;
+package fi.dy.masa.malilib.gui.widget.list.entry.action;
 
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.action.NamedAction;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 
-public class ActionPromptNamedActionEntryWidget extends NamedActionEntryWidget
+public class ActionPromptEntryWidget extends NamedActionEntryWidget
 {
-    public ActionPromptNamedActionEntryWidget(int x, int y, int width, int height, int listIndex,
-                                              int originalListIndex, @Nullable NamedAction data,
-                                              @Nullable DataListWidget<NamedAction> listWidget)
+    public ActionPromptEntryWidget(int x, int y, int width, int height, int listIndex,
+                                   int originalListIndex, @Nullable NamedAction data,
+                                   @Nullable DataListWidget<NamedAction> listWidget)
     {
         super(x, y, width, height, listIndex, originalListIndex, data, listWidget);
     }

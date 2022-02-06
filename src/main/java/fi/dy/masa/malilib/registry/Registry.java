@@ -1,7 +1,6 @@
 package fi.dy.masa.malilib.registry;
 
 import fi.dy.masa.malilib.action.ActionRegistry;
-import fi.dy.masa.malilib.action.ActionRegistryImpl;
 import fi.dy.masa.malilib.command.ClientCommandHandler;
 import fi.dy.masa.malilib.config.ConfigManager;
 import fi.dy.masa.malilib.config.ConfigManagerImpl;
@@ -35,7 +34,7 @@ import fi.dy.masa.malilib.overlay.message.MessageRedirectManager;
 public class Registry
 {
     // Registries
-    public static final ActionRegistry ACTION_REGISTRY = new ActionRegistryImpl();
+    public static final ActionRegistry ACTION_REGISTRY = new ActionRegistry();
     public static final ConfigStatusWidgetRegistry CONFIG_STATUS_WIDGET = new ConfigStatusWidgetRegistry();
     public static final ConfigTabRegistry CONFIG_TAB = new ConfigTabRegistryImpl();
     public static final ConfigTabExtensionRegistry CONFIG_TAB_EXTENSION = new ConfigTabExtensionRegistry();

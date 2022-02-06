@@ -4,6 +4,7 @@ import java.util.Locale;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
+import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.config.option.HotkeyedBooleanConfig;
 import fi.dy.masa.malilib.input.ActionResult;
@@ -58,9 +59,9 @@ public class ActionUtils
         return namedAction;
     }
 
-    public static NamedParameterizableAction register(ModInfo modInfo, String name, ParameterizedAction action)
+    public static ParameterizableNamedAction register(ModInfo modInfo, String name, ParameterizedAction action)
     {
-        NamedParameterizableAction namedAction = NamedParameterizableAction.of(modInfo, name, action);
+        ParameterizableNamedAction namedAction = ParameterizableNamedAction.of(modInfo, name, action);
         Registry.ACTION_REGISTRY.registerAction(namedAction);
         return namedAction;
     }
@@ -129,5 +130,52 @@ public class ActionUtils
         }
 
         return name;
+    }
+
+    public static ImmutableList<SimpleNamedAction> getSimpleActions()
+    {
+        ImmutableList.Builder<SimpleNamedAction> builder = ImmutableList.builder();
+
+        for (NamedAction action : Registry.ACTION_REGISTRY.getBaseActions())
+        {
+            if (action instanceof SimpleNamedAction)
+            {
+                builder.add((SimpleNamedAction) action);
+            }
+        }
+
+        return builder.build();
+    }
+
+    public static ImmutableList<ParameterizableNamedAction> getParameterizableActions()
+    {
+        ImmutableList.Builder<ParameterizableNamedAction> builder = ImmutableList.builder();
+
+        for (NamedAction action : Registry.ACTION_REGISTRY.getBaseActions())
+        {
+            if (action instanceof ParameterizableNamedAction)
+            {
+                builder.add((ParameterizableNamedAction) action);
+            }
+        }
+
+        return builder.build();
+    }
+
+    public static ImmutableList<NamedAction> getUserAddedActions()
+    {
+        ImmutableList.Builder<NamedAction> builder = ImmutableList.builder();
+
+        for (NamedAction action : Registry.ACTION_REGISTRY.getAllActions())
+        {
+            if (action instanceof ParameterizedNamedAction ||
+                action instanceof AliasAction ||
+                action instanceof MacroAction)
+            {
+                builder.add(action);
+            }
+        }
+
+        return builder.build();
     }
 }

@@ -127,34 +127,6 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
         this.updateSubWidgetsToGeometryChangesPost(this.nextWidgetX, y);
     }
 
-    protected void updateSubWidgetsToGeometryChangesPre(int x, int y)
-    {
-    }
-
-    protected void updateSubWidgetsToGeometryChangesPost(int x, int y)
-    {
-    }
-
-    protected MultiIcon getIconForButton(ButtonType type)
-    {
-        switch (type)
-        {
-            case ADD:       return DefaultIcons.LIST_ADD_PLUS_13;
-            case REMOVE:    return DefaultIcons.LIST_REMOVE_MINUS_13;
-            case MOVE_UP:   return DefaultIcons.ARROW_UP;
-            case MOVE_DOWN: return DefaultIcons.ARROW_DOWN;
-        }
-
-        return DefaultIcons.EMPTY;
-    }
-
-    protected GenericButton createListActionButton(ButtonType type)
-    {
-        GenericButton button = new GenericButton(this.getIconForButton(type), type.getHoverKey());
-        button.setActionListener(type.createListener(this));
-        return button;
-    }
-
     @Override
     protected boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
@@ -186,6 +158,39 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
         }
 
         super.onMouseReleased(mouseX, mouseY, mouseButton);
+    }
+
+    protected void updateSubWidgetsToGeometryChangesPre(int x, int y)
+    {
+    }
+
+    protected void updateSubWidgetsToGeometryChangesPost(int x, int y)
+    {
+    }
+
+    protected MultiIcon getIconForButton(ButtonType type)
+    {
+        switch (type)
+        {
+            case ADD:       return DefaultIcons.LIST_ADD_PLUS_13;
+            case REMOVE:    return DefaultIcons.LIST_REMOVE_MINUS_13;
+            case MOVE_UP:   return DefaultIcons.ARROW_UP;
+            case MOVE_DOWN: return DefaultIcons.ARROW_DOWN;
+        }
+
+        return DefaultIcons.EMPTY;
+    }
+
+    protected GenericButton createListActionButton(ButtonType type)
+    {
+        GenericButton button = new GenericButton(this.getIconForButton(type), type.getHoverKey());
+        button.setActionListener(type.createListener(this));
+        return button;
+    }
+
+    public void setCanReOrder(boolean canReOrder)
+    {
+        this.canReOrder = canReOrder;
     }
 
     protected boolean canReOrder()
@@ -367,8 +372,8 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
         MOVE_UP     ("malilib.gui.button.hover.list.move_up",   BaseOrderableListEditEntryWidget::moveEntryUp),
         MOVE_DOWN   ("malilib.gui.button.hover.list.move_down", BaseOrderableListEditEntryWidget::moveEntryDown);
 
-        protected final String translationKey;
-        protected final Function<BaseOrderableListEditEntryWidget<?>, Boolean> action;
+        private final String translationKey;
+        private final Function<BaseOrderableListEditEntryWidget<?>, Boolean> action;
 
         ButtonType(String translationKey, Function<BaseOrderableListEditEntryWidget<?>, Boolean> action)
         {

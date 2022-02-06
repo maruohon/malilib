@@ -10,7 +10,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.action.NamedAction;
-import fi.dy.masa.malilib.action.NamedParameterizableAction;
+import fi.dy.masa.malilib.action.ParameterizableNamedAction;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.icon.IconRegistry;
 import fi.dy.masa.malilib.gui.util.BorderSettings;
@@ -425,11 +425,12 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
         JsonUtils.readArrayIfPresent(obj, "border_color_hover", this.getBorderRenderer().getHoverSettings().getColor()::fromJson);
 
         // FIXME
-        NamedAction action = Registry.ACTION_REGISTRY.getAction(JsonUtils.getStringOrDefault(obj, "action_name", "?"));
+        String actionName = JsonUtils.getStringOrDefault(obj, "action_name", "?");
+        NamedAction action = Registry.ACTION_REGISTRY.getAction(actionName);
 
-        if (action instanceof NamedParameterizableAction && JsonUtils.hasString(obj, "action_data"))
+        if (action instanceof ParameterizableNamedAction && JsonUtils.hasString(obj, "action_data"))
         {
-            action = ((NamedParameterizableAction) action).parameterize(JsonUtils.getString(obj, "action_data"));
+            action = ((ParameterizableNamedAction) action).parameterize(actionName, JsonUtils.getString(obj, "action_data"));
             this.setAction(action);
         }
     }

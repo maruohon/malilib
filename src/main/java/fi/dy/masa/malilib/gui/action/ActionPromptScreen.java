@@ -15,7 +15,7 @@ import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.CheckBoxWidget;
 import fi.dy.masa.malilib.gui.widget.DropDownListWidget;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
-import fi.dy.masa.malilib.gui.widget.list.entry.ActionPromptNamedActionEntryWidget;
+import fi.dy.masa.malilib.gui.widget.list.entry.action.ActionPromptEntryWidget;
 import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.util.StringUtils;
 
@@ -223,7 +223,7 @@ public class ActionPromptScreen extends BaseListScreen<DataListWidget<NamedActio
         listWidget.setListEntryWidgetFixedHeight(12);
         listWidget.setFetchFromSupplierOnRefresh(true);
         listWidget.getBackgroundRenderer().getNormalSettings().setEnabledAndColor(true, 0xA0000000);
-        listWidget.setEntryWidgetFactory(ActionPromptNamedActionEntryWidget::new);
+        listWidget.setEntryWidgetFactory(ActionPromptEntryWidget::new);
         return listWidget;
     }
 

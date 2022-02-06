@@ -12,7 +12,6 @@ import net.minecraft.util.text.TextFormatting;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.action.ActionContext;
 import fi.dy.masa.malilib.action.ActionExecutionWidgetManager;
-import fi.dy.masa.malilib.action.ActionRegistryImpl;
 import fi.dy.masa.malilib.config.ConfigManagerImpl;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.gui.config.ConfigTab;
@@ -93,7 +92,7 @@ public class ConfigUtils
     {
         Registry.ICON.loadFromFile();
         ((ConfigManagerImpl) Registry.CONFIG_MANAGER).loadAllConfigs();
-        ((ActionRegistryImpl) Registry.ACTION_REGISTRY).loadFromFile();
+        Registry.ACTION_REGISTRY.loadFromFile();
         CustomHotkeyManager.INSTANCE.loadFromFile();
         Registry.INFO_WIDGET_MANAGER.loadFromFile();
         Registry.MESSAGE_REDIRECT_MANAGER.loadFromFile();
@@ -114,7 +113,7 @@ public class ConfigUtils
 
         // These should always already be saved when closing the corresponding config screens
         Registry.ICON.saveToFileIfDirty();
-        ((ActionRegistryImpl) Registry.ACTION_REGISTRY).saveToFileIfDirty();
+        Registry.ACTION_REGISTRY.saveToFileIfDirty();
         CustomHotkeyManager.INSTANCE.saveToFileIfDirty();
     }
 
@@ -128,7 +127,7 @@ public class ConfigUtils
             {
                 Registry.ICON.saveToFile();
                 ((ConfigManagerImpl) Registry.CONFIG_MANAGER).saveAllConfigs();
-                ((ActionRegistryImpl) Registry.ACTION_REGISTRY).saveToFile();
+                Registry.ACTION_REGISTRY.saveToFile();
                 ActionExecutionWidgetManager.INSTANCE.saveAllLoadedToFile();
                 CustomHotkeyManager.INSTANCE.saveToFile();
                 Registry.INFO_WIDGET_MANAGER.saveToFile();

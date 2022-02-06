@@ -264,6 +264,13 @@ public class GenericButton extends BaseButton
         return createIconOnly(icon.getWidth(), icon.getHeight(), () -> icon);
     }
 
+    public static GenericButton createIconOnly(int height, MultiIcon icon, EventListener actionListener)
+    {
+        GenericButton button =  createIconOnly(Math.max(icon.getWidth(), height), height, () -> icon);
+        button.setActionListener(actionListener);
+        return button;
+    }
+
     public static GenericButton createIconOnly(MultiIcon icon, EventListener actionListener)
     {
         GenericButton button = createIconOnly(icon);

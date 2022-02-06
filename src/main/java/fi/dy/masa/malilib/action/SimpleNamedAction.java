@@ -8,10 +8,13 @@ public class SimpleNamedAction extends NamedAction
 {
     protected Action action;
 
-    public SimpleNamedAction(Action action, ModInfo mod, String name,
-                             String registryName, String translationKey)
+    public SimpleNamedAction(String name,
+                             String registryName,
+                             String translationKey,
+                             ModInfo mod,
+                             Action action)
     {
-        super(mod, name, registryName, translationKey);
+        super(name, registryName, translationKey, mod);
 
         this.action = action;
     }
@@ -24,16 +27,18 @@ public class SimpleNamedAction extends NamedAction
 
     public static SimpleNamedAction of(ModInfo mod, String name, Action action)
     {
-        return new SimpleNamedAction(action, mod, name,
+        return new SimpleNamedAction(name,
                                      ActionUtils.createRegistryNameFor(mod, name),
-                                     ActionUtils.createTranslationKeyFor(mod, name));
+                                     ActionUtils.createTranslationKeyFor(mod, name),
+                                     mod, action);
     }
 
     public static SimpleNamedAction of(ModInfo mod, String name, EventListener listener)
     {
-        return new SimpleNamedAction(EventAction.of(listener), mod, name,
+        return new SimpleNamedAction(name,
                                      ActionUtils.createRegistryNameFor(mod, name),
-                                     ActionUtils.createTranslationKeyFor(mod, name));
+                                     ActionUtils.createTranslationKeyFor(mod, name),
+                                     mod, EventAction.of(listener));
     }
 
 }
