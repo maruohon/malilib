@@ -42,6 +42,8 @@ public class CustomHotkeyDefinitionEntryWidget extends BaseDataListEntryWidget<C
         this.removeButton = GenericButton.simple("malilib.gui.button.label.remove", this::removeHotkey);
 
         this.getBackgroundRenderer().getNormalSettings().setEnabled(true);
+        this.getBackgroundRenderer().getNormalSettings().setColor(this.isOdd ? 0x30707070 : 0x50707070);
+        this.getBackgroundRenderer().getHoverSettings().setColor(0x50909090);
     }
 
     @Override

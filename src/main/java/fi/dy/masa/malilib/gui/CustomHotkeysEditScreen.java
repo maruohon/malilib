@@ -25,11 +25,11 @@ public class CustomHotkeysEditScreen extends BaseListScreen<DataListWidget<Custo
 
     public CustomHotkeysEditScreen()
     {
-        super(10, 74, 20, 84, MaLiLibReference.MOD_ID, MaLiLibConfigScreen.ALL_TABS, MaLiLibConfigScreen.GENERIC);
+        super(10, 74, 20, 80, MaLiLibReference.MOD_ID, MaLiLibConfigScreen.ALL_TABS, MaLiLibConfigScreen.GENERIC);
 
         this.setTitle("malilib.gui.title.custom_hotkeys");
 
-        this.addHotkeyButton = GenericButton.simple("malilib.gui.button.add_new_hotkey", this::openAddHotkeyScreen);
+        this.addHotkeyButton = GenericButton.simple(16, "malilib.gui.button.add_new_hotkey", this::openAddHotkeyScreen);
         this.addHotkeyButton.translateAndAddHoverStrings("malilib.gui.button.hover.add_new_hotkey");
     }
 
@@ -47,7 +47,7 @@ public class CustomHotkeysEditScreen extends BaseListScreen<DataListWidget<Custo
     {
         super.updateWidgetPositions();
 
-        this.addHotkeyButton.setPosition(this.x + 10, this.y + 50);
+        this.addHotkeyButton.setPosition(this.x + 10, this.y + 57);
     }
 
     @Override
@@ -125,6 +125,7 @@ public class CustomHotkeysEditScreen extends BaseListScreen<DataListWidget<Custo
         listWidget.setListEntryWidgetFixedHeight(22);
         listWidget.setFetchFromSupplierOnRefresh(true);
         listWidget.setEntryWidgetFactory(this::createWidget);
+        listWidget.getBorderRenderer().getNormalSettings().setBorderWidth(1);
         return listWidget;
     }
 

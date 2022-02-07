@@ -30,7 +30,7 @@ public class InfoRendererWidgetListScreen<WIDGET extends InfoRendererWidget> ext
                                         @Nullable Supplier<WIDGET> widgetFactory,
                                         DataListEntryWidgetFactory<WIDGET> entryWidgetFactory)
     {
-        this(10, 82, 20, 88,
+        this(10, 74, 20, 80,
              MaLiLibReference.MOD_ID, MaLiLibConfigScreen.ALL_TABS, MaLiLibConfigScreen.GENERIC,
              widgetSupplier, widgetFactory, entryWidgetFactory);
     }
@@ -81,7 +81,7 @@ public class InfoRendererWidgetListScreen<WIDGET extends InfoRendererWidget> ext
         super.updateWidgetPositions();
 
         int x = this.x + 10;
-        int y = this.y + 50;
+        int y = this.y + 57;
 
         this.locationDropdownWidget.setPosition(x, y);
         this.createWidgetButton.setPosition(this.locationDropdownWidget.getRight() + 4, y);
@@ -125,6 +125,7 @@ public class InfoRendererWidgetListScreen<WIDGET extends InfoRendererWidget> ext
         DataListWidget<WIDGET> listWidget = new DataListWidget<>(listX, listY, listWidth, listHeight, this.widgetSupplier);
         listWidget.setEntryWidgetFactory(this.entryWidgetFactory);
         listWidget.setFetchFromSupplierOnRefresh(true);
+        listWidget.getBorderRenderer().getNormalSettings().setBorderWidth(1);
 
         return listWidget;
     }

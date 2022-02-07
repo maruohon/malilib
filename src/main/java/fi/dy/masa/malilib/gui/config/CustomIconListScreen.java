@@ -20,13 +20,10 @@ public class CustomIconListScreen extends BaseListScreen<DataListWidget<Icon>>
 
     public CustomIconListScreen()
     {
-        super(10, 74, 20, 86,
-              MaLiLibReference.MOD_ID, MaLiLibConfigScreen.ALL_TABS, MaLiLibConfigScreen.GENERIC);
+        super(10, 74, 20, 80, MaLiLibReference.MOD_ID, MaLiLibConfigScreen.ALL_TABS, MaLiLibConfigScreen.GENERIC);
 
         this.setTitle("malilib.gui.title.custom_icons_list_screen");
-
-        this.addIconButton = new GenericButton("malilib.gui.button.custom_icon_list_screen.add_icon");
-        this.addIconButton.setActionListener(this::openAddIconScreen);
+        this.addIconButton = GenericButton.simple(16, "malilib.gui.button.custom_icon_list_screen.add_icon", this::openAddIconScreen);
     }
 
     @Override
@@ -55,10 +52,7 @@ public class CustomIconListScreen extends BaseListScreen<DataListWidget<Icon>>
     {
         super.updateWidgetPositions();
 
-        int x = this.x + 10;
-        int y = this.y + 50;
-
-        this.addIconButton.setPosition(x, y);
+        this.addIconButton.setPosition(this.x + 10, this.y + 57);
     }
 
     @Nullable
