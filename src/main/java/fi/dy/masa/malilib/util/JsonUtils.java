@@ -425,6 +425,26 @@ public class JsonUtils
         }
     }
 
+    public static void readArrayElementsIfObjectsAndPresent(JsonElement el, String arrayName, Consumer<JsonObject> elementConsumer)
+    {
+        readArrayIfPresent(el, arrayName, (arr) -> readArrayElementObjects(arr, elementConsumer));
+    }
+
+    public static void readArrayElementObjects(JsonArray arr, Consumer<JsonObject> elementConsumer)
+    {
+        int size = arr.size();
+
+        for (int i = 0; i < size; ++i)
+        {
+            JsonElement el = arr.get(i);
+
+            if (el.isJsonObject())
+            {
+                elementConsumer.accept(el.getAsJsonObject());
+            }
+        }
+    }
+
     public static <T> JsonArray toArray(Collection<T> values, Function<T, JsonElement> elementSerializer)
     {
         JsonArray arr = new JsonArray();
