@@ -82,7 +82,7 @@ public class BaseValueListEditScreen<TYPE> extends BaseListScreen<DataListWidget
         DataListWidget<TYPE> listWidget = new DataListWidget<>(listX, listY, listWidth, listHeight, this.config::getValue);
 
         listWidget.setListEntryWidgetFixedHeight(20);
-        listWidget.addSearchBar(new SearchBarWidget(listWidget.getX() + 17, listWidget.getY() + 3,
+        listWidget.setSearchBar(new SearchBarWidget(listWidget.getX() + 17, listWidget.getY() + 3,
                                                     listWidget.getWidth() - 31, 14, 0, DefaultIcons.SEARCH,
                                                     HorizontalAlignment.RIGHT,
                                                     listWidget::onSearchBarChange,

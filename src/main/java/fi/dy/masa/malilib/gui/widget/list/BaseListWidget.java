@@ -299,7 +299,7 @@ public abstract class BaseListWidget extends ContainerWidget
         return this;
     }
 
-    public void addSearchBar(SearchBarWidget widget)
+    public void setSearchBar(@Nullable SearchBarWidget widget)
     {
         this.searchBarWidget = widget;
     }
