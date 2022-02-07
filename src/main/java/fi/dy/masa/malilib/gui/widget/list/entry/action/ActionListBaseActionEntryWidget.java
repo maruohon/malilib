@@ -1,8 +1,7 @@
 package fi.dy.masa.malilib.gui.widget.list.entry.action;
 
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.action.ActionRegistry;
 import fi.dy.masa.malilib.action.AliasAction;
 import fi.dy.masa.malilib.action.NamedAction;
 import fi.dy.masa.malilib.gui.BaseScreen;
@@ -22,9 +21,11 @@ public class ActionListBaseActionEntryWidget extends BaseOrderableListEditEntryW
 {
     protected final GenericButton createAliasButton;
     protected final GenericButton removeActionButton;
-    @Nullable protected BiConsumer<ActionRegistry, String> actionRemoveFunction;
+    @Nullable protected Consumer<NamedAction> actionRemoveFunction;
     protected boolean addCreateAliasButton = true;
     protected boolean addRemoveButton;
+    protected boolean noRemoveButtons;
+    protected int nextElementRight;
 
     public ActionListBaseActionEntryWidget(int x, int y, int width, int height, int listIndex,
                                            int originalListIndex, @Nullable NamedAction data,
@@ -74,6 +75,8 @@ public class ActionListBaseActionEntryWidget extends BaseOrderableListEditEntryW
     {
         super.updateSubWidgetsToGeometryChanges();
 
+        this.nextElementRight = this.getRight() - (this.noRemoveButtons ? 1 : 15);
+
         if (this.addRemoveButton)
         {
             this.removeActionButton.setRight(this.getRight() - 1);
@@ -82,8 +85,9 @@ public class ActionListBaseActionEntryWidget extends BaseOrderableListEditEntryW
 
         if (this.addCreateAliasButton)
         {
-            this.createAliasButton.setRight(this.getRight() - 14);
+            this.createAliasButton.setRight(this.nextElementRight);
             this.createAliasButton.centerVerticallyInside(this);
+            this.nextElementRight = this.createAliasButton.getX() - 2;
         }
     }
 
@@ -92,7 +96,12 @@ public class ActionListBaseActionEntryWidget extends BaseOrderableListEditEntryW
         this.addCreateAliasButton = addCreateAliasButton;
     }
 
-    public void setActionRemoveFunction(@Nullable BiConsumer<ActionRegistry, String> actionRemoveFunction)
+    public void setNoRemoveButtons()
+    {
+        this.noRemoveButtons = true;
+    }
+
+    public void setActionRemoveFunction(@Nullable Consumer<NamedAction> actionRemoveFunction)
     {
         this.actionRemoveFunction = actionRemoveFunction;
         this.addRemoveButton = true;
@@ -102,7 +111,7 @@ public class ActionListBaseActionEntryWidget extends BaseOrderableListEditEntryW
     {
         if (this.actionRemoveFunction != null)
         {
-            this.actionRemoveFunction.accept(Registry.ACTION_REGISTRY, this.data.getRegistryName());
+            this.actionRemoveFunction.accept(this.data);
             this.listWidget.refreshEntries();
         }
     }
@@ -119,12 +128,6 @@ public class ActionListBaseActionEntryWidget extends BaseOrderableListEditEntryW
     {
         if (org.apache.commons.lang3.StringUtils.isBlank(aliasName))
         {
-            return false;
-        }
-
-        if (Registry.ACTION_REGISTRY.getAction(aliasName) != null)
-        {
-            MessageDispatcher.error("malilib.message.error.action.action_name_exists", aliasName);
             return false;
         }
 

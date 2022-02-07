@@ -1,165 +1,120 @@
 package fi.dy.masa.malilib.gui.action;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Supplier;
 import com.google.common.collect.ImmutableList;
+import fi.dy.masa.malilib.action.AliasAction;
 import fi.dy.masa.malilib.action.MacroAction;
 import fi.dy.masa.malilib.action.NamedAction;
-import fi.dy.masa.malilib.gui.BaseMultiListScreen;
+import fi.dy.masa.malilib.action.ParameterizableNamedAction;
+import fi.dy.masa.malilib.action.ParameterizedNamedAction;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
-import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.BaseListEntryWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.action.ActionListBaseActionEntryWidget;
+import fi.dy.masa.malilib.gui.widget.list.entry.action.ParameterizableActionEntryWidget;
 import fi.dy.masa.malilib.registry.Registry;
 
-public class MacroActionEditScreen extends BaseMultiListScreen
+public class MacroActionEditScreen extends BaseActionListScreen
 {
-    protected final DataListWidget<NamedAction> actionSourceListWidget;
-    protected final DataListWidget<NamedAction> macroActionsListWidget;
+    protected final DataListWidget<NamedAction> rightSideListWidget;
     protected final ImmutableList<NamedAction> originalMacroActionsList;
     protected final List<NamedAction> macroActionsList;
-    protected final LabelWidget allActionsLabelWidget;
     protected final LabelWidget macroActionsLabelWidget;
-    protected final LabelWidget macroNameLabelWidget;
     protected final GenericButton addActionsButton;
-    protected final GenericButton removeActionsButton;
-    protected final BaseTextFieldWidget nameTextFieldWidget;
-    protected final String originalName;
-    protected final boolean creating;
+    protected final MacroAction macro;
 
-    public MacroActionEditScreen(String name, Collection<NamedAction> actions, boolean creating)
+    public MacroActionEditScreen(MacroAction macro)
     {
         super("", Collections.emptyList(), null);
 
-        this.originalMacroActionsList = ImmutableList.copyOf(actions);
-        this.originalName = name;
-        this.creating = creating;
+        this.macro = macro;
+        this.originalMacroActionsList = macro.getActionList();
+        this.centerGap = 20;
 
         this.setTitle("malilib.gui.title.edit_macro");
 
-        this.macroNameLabelWidget = new LabelWidget("malilib.label.name.colon");
-        this.allActionsLabelWidget = new LabelWidget("malilib.gui.label.action_list_screen.available_actions");
         this.macroActionsLabelWidget = new LabelWidget("malilib.gui.label.macro_edit_screen.macro_actions");
-
-        this.nameTextFieldWidget = new BaseTextFieldWidget(200, 16, name);
 
         this.addActionsButton = GenericButton.createIconOnly(DefaultIcons.LIST_ADD_PLUS_13, this::addSelectedActions);
         this.addActionsButton.translateAndAddHoverString("malilib.hover_info.macro_edit_screen.add_actions");
 
-        this.removeActionsButton = GenericButton.createIconOnly(DefaultIcons.LIST_REMOVE_MINUS_13, this::removeSelectedActions);
-        this.removeActionsButton.translateAndAddHoverString("malilib.hover_info.macro_edit_screen.remove_actions");
-
-        this.actionSourceListWidget = this.createNamedActionListWidget(this::getActions, true);
-        this.macroActionsListWidget = this.createNamedActionListWidget(Collections::emptyList, false);
+        this.leftSideListWidget.setEntryWidgetFactory(this::createMacroSourceActionsWidget);
+        this.rightSideListWidget = this.createRightSideActionListWidget();
 
         // fetch the backing list reference from the list widget
-        this.macroActionsList = this.macroActionsListWidget.getCurrentContents();
-        this.macroActionsList.addAll(actions);
+        this.macroActionsList = this.rightSideListWidget.getCurrentContents();
+        this.macroActionsList.addAll(this.originalMacroActionsList);
     }
 
     @Override
-    protected void initScreen()
+    protected void addActionListScreenWidgets()
     {
-        super.initScreen();
+        super.addActionListScreenWidgets();
 
-        this.actionSourceListWidget.refreshEntries();
-    }
-
-    @Override
-    protected void reAddActiveWidgets()
-    {
-        super.reAddActiveWidgets();
-
-        this.addWidget(this.macroNameLabelWidget);
-        this.addWidget(this.nameTextFieldWidget);
-
-        this.addWidget(this.allActionsLabelWidget);
         this.addWidget(this.macroActionsLabelWidget);
-
         this.addWidget(this.addActionsButton);
-        this.addWidget(this.removeActionsButton);
-
-        this.addListWidget(this.actionSourceListWidget);
-        this.addListWidget(this.macroActionsListWidget);
+        this.addListWidget(this.rightSideListWidget);
     }
 
     @Override
-    protected void updateWidgetPositions()
+    protected void updateActionListScreenWidgetPositions(int x, int y, int w)
     {
-        super.updateWidgetPositions();
+        super.updateActionListScreenWidgetPositions(x, y, w);
 
-        int x = 10;
-        int y = 20;
+        x = this.leftSideListWidget.getRight();
+        y = this.leftSideListWidget.getY();
+        this.addActionsButton.setPosition(x + 3, y + 4);
 
-        this.macroNameLabelWidget.setPosition(x + 2, y + 4);
-        this.nameTextFieldWidget.setPosition(this.macroNameLabelWidget.getRight() + 6, y);
-
-        y += 22;
-        int w = (this.screenWidth - 40) / 2;
-        int h = this.screenHeight - y - 16;
-
-        this.allActionsLabelWidget.setPosition(x + 2, y);
-        this.actionSourceListWidget.setPositionAndSize(x, y + 10, w, h);
-
-        x = this.actionSourceListWidget.getRight();
-        y += 10;
-        this.addActionsButton.setPosition(x + 3, y);
-        this.removeActionsButton.setPosition(x + 3, y + 20);
-
-        x += 19;
-        this.macroActionsLabelWidget.setPosition(x + 2, y - 10);
-        this.macroActionsListWidget.setPositionAndSize(x, y, w, h);
+        x += this.centerGap;
+        int h = this.screenHeight - y - 6;
+        this.rightSideListWidget.setPositionAndSize(x, y, w, h);
+        this.macroActionsLabelWidget.setPosition(x + 2, y - 12);
     }
 
     @Override
-    public void onGuiClosed()
+    protected void saveChangesOnScreenClose()
     {
-        String name = this.nameTextFieldWidget.getText();
-
-        if (this.creating ||
-            this.originalName.equals(name) == false ||
-            this.originalMacroActionsList.equals(this.macroActionsList) == false)
+        if (this.originalMacroActionsList.equals(this.macroActionsList) == false)
         {
-            if (this.creating == false)
-            {
-                Registry.ACTION_REGISTRY.removeMacro(this.originalName);
-            }
-
-            MacroAction macro = new MacroAction(name, ImmutableList.copyOf(this.macroActionsList));
-            Registry.ACTION_REGISTRY.addMacro(macro);
-            Registry.ACTION_REGISTRY.saveToFileIfDirty();
+            this.macro.setActionList(ImmutableList.copyOf(this.macroActionsList));
+            Registry.ACTION_REGISTRY.saveToFile();
         }
-
-        super.onGuiClosed();
-    }
-
-    protected List<NamedAction> getActions()
-    {
-        return Registry.ACTION_REGISTRY.getAllActions();
     }
 
     protected void addSelectedActions()
     {
-        Set<NamedAction> selectedActions = this.actionSourceListWidget.getSelectedEntries();
+        Set<NamedAction> selectedActions = this.leftSideListWidget.getSelectedEntries();
 
         if (selectedActions.isEmpty() == false)
         {
             this.macroActionsList.addAll(selectedActions);
-            this.macroActionsListWidget.refreshEntries();
+            this.rightSideListWidget.refreshEntries();
         }
+    }
+
+    protected boolean addAction(NamedAction action)
+    {
+        this.macroActionsList.add(action);
+        this.rightSideListWidget.refreshEntries();
+        return true;
+    }
+
+    protected void removeAction(NamedAction action)
+    {
+        this.macroActionsList.remove(action);
+        this.rightSideListWidget.getEntrySelectionHandler().clearSelection();
+        this.rightSideListWidget.refreshEntries();
     }
 
     protected void removeSelectedActions()
     {
-        Set<Integer> selectedActions = this.macroActionsListWidget.getEntrySelectionHandler().getSelectedEntryIndices();
+        Set<Integer> selectedActions = this.rightSideListWidget.getEntrySelectionHandler().getSelectedEntryIndices();
 
         if (selectedActions.isEmpty() == false)
         {
@@ -176,41 +131,83 @@ public class MacroActionEditScreen extends BaseMultiListScreen
                 }
             }
 
-            this.macroActionsListWidget.getEntrySelectionHandler().clearSelection();
-            this.macroActionsListWidget.refreshEntries();
+            this.rightSideListWidget.getEntrySelectionHandler().clearSelection();
+            this.rightSideListWidget.refreshEntries();
         }
     }
 
-    protected DataListWidget<NamedAction> createNamedActionListWidget(Supplier<List<NamedAction>> listSupplier,
-                                                                      boolean isSourceList)
+    @Override
+    protected DataListWidget<NamedAction> createRightSideActionListWidget()
     {
-        DataListWidget<NamedAction> listWidget = new DataListWidget<>(0, 0, 200, 200, listSupplier);
-        listWidget.setListEntryWidgetFixedHeight(14);
-        listWidget.getBorderRenderer().getNormalSettings().setBorderWidth(1);
-        listWidget.setFetchFromSupplierOnRefresh(isSourceList);
-        listWidget.setEntryWidgetFactory(isSourceList ? ActionListScreen::createEntryWidget : this::createReOrderableWidget);
-        listWidget.getEntrySelectionHandler()
-                .setAllowSelection(true)
-                .setAllowMultiSelection(true)
-                .setModifierKeyMultiSelection(true);
+        DataListWidget<NamedAction> listWidget = this.createBaseActionListWidget(Collections::emptyList);
 
-        if (isSourceList)
-        {
-            listWidget.addDefaultSearchBar();
-            listWidget.setEntryFilterStringFactory(NamedAction::getSearchString);
-        }
+        listWidget.setFetchFromSupplierOnRefresh(false);
+        listWidget.setEntryWidgetFactory(this::createMacroMemberWidget);
 
         return listWidget;
     }
 
-    public BaseListEntryWidget createReOrderableWidget(int x, int y, int width, int height,
-                                                       int listIndex, int originalListIndex,
-                                                       NamedAction data, DataListWidget<NamedAction> listWidget)
+    protected ActionListBaseActionEntryWidget createBaseMacroEditScreenActionWidget(
+            int x, int y, int width, int height, int listIndex, int originalListIndex,
+            NamedAction data, DataListWidget<NamedAction> listWidget)
     {
-        ActionListBaseActionEntryWidget widget = ActionListScreen.createEntryWidget(x, y, width, height,
-                                                                                    listIndex, originalListIndex,
-                                                                                    data, listWidget);
+        ActionListBaseActionEntryWidget widget;
+
+        if (data instanceof ParameterizableNamedAction)
+        {
+            ParameterizableActionEntryWidget parWidget = new ParameterizableActionEntryWidget(
+                    x, y, width, height, listIndex, originalListIndex, data, listWidget);
+            parWidget.setParameterizedActionConsumer(this::addAction);
+            parWidget.setParameterizationButtonHoverText("malilib.button.hover.parameterize_action_for_macro");
+            setWidgetStartingStyleFrom(parWidget, "malilib.style.action_list_screen.widget.parameterizable");
+            widget = parWidget;
+        }
+        else
+        {
+            widget = new ActionListBaseActionEntryWidget(
+                    x, y, width, height, listIndex, originalListIndex, data, listWidget);
+        }
+
+        if (data instanceof MacroAction)
+        {
+            setWidgetStartingStyleFrom(widget, "malilib.style.action_list_screen.widget.macro");
+        }
+        else if (data instanceof AliasAction)
+        {
+            setWidgetStartingStyleFrom(widget, "malilib.style.action_list_screen.widget.alias");
+        }
+        else if (data instanceof ParameterizedNamedAction)
+        {
+            setWidgetStartingStyleFrom(widget, "malilib.style.action_list_screen.widget.parameterized");
+        }
+
+        widget.setAddCreateAliasButton(false);
+
+        return widget;
+    }
+
+    protected BaseListEntryWidget createMacroSourceActionsWidget(
+            int x, int y, int width, int height, int listIndex, int originalListIndex,
+            NamedAction data, DataListWidget<NamedAction> listWidget)
+    {
+        ActionListBaseActionEntryWidget widget = this.createBaseMacroEditScreenActionWidget(
+                x, y, width, height, listIndex, originalListIndex, data, listWidget);
+
+        widget.setNoRemoveButtons();
+
+        return widget;
+    }
+
+    protected BaseListEntryWidget createMacroMemberWidget(
+            int x, int y, int width, int height, int listIndex, int originalListIndex,
+            NamedAction data, DataListWidget<NamedAction> listWidget)
+    {
+        ActionListBaseActionEntryWidget widget = this.createBaseMacroEditScreenActionWidget(
+                x, y, width, height, listIndex, originalListIndex, data, listWidget);
+
         widget.setCanReOrder(true);
+        widget.setActionRemoveFunction(this::removeAction);
+
         return widget;
     }
 }

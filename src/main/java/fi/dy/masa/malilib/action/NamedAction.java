@@ -3,26 +3,30 @@ package fi.dy.masa.malilib.action;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
+import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.config.option.CommonDescription;
 import fi.dy.masa.malilib.input.ActionResult;
+import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
+import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.data.ModInfo;
 
 public abstract class NamedAction extends CommonDescription
 {
-    protected final String registryName;
+    protected final ActionType<?> type;
+    @Nullable protected String registryName;
 
-    public NamedAction(String name,
-                       String registryName,
+    public NamedAction(ActionType<?> type,
+                       String name,
                        String translationKey,
                        ModInfo mod)
     {
         super(name, mod);
 
-        this.registryName = registryName;
+        this.type = type;
         this.nameTranslationKey = translationKey;
-
         this.setActionCommentIfTranslationExists(mod.getModId(), name);
     }
 
@@ -33,9 +37,15 @@ public abstract class NamedAction extends CommonDescription
         return this.execute(ActionContext.COMMON);
     }
 
+    @Nullable
     public String getRegistryName()
     {
         return this.registryName;
+    }
+
+    public void setRegistryName(@Nullable String registryName)
+    {
+        this.registryName = registryName;
     }
 
     public List<String> getSearchString()
@@ -57,7 +67,11 @@ public abstract class NamedAction extends CommonDescription
         list.add(StyledTextLine.translate("malilib.hover_info.action.mod", this.modInfo.getModName()));
         list.add(StyledTextLine.translate("malilib.hover_info.action.name", this.name));
         list.add(StyledTextLine.translate("malilib.hover_info.action.display_name", this.getDisplayName()));
-        list.add(StyledTextLine.translate("malilib.hover_info.action.registry_name", this.registryName));
+
+        if (this.registryName != null)
+        {
+            list.add(StyledTextLine.translate("malilib.hover_info.action.registry_name", this.registryName));
+        }
 
         return list;
     }
@@ -75,5 +89,36 @@ public abstract class NamedAction extends CommonDescription
     public AliasAction createAlias(String aliasName)
     {
         return new AliasAction(aliasName, this);
+    }
+
+    public JsonObject toJson()
+    {
+        JsonObject obj = new JsonObject();
+
+        obj.addProperty("type", this.type.getId());
+
+        if (this.registryName != null)
+        {
+            obj.addProperty("reg_name", this.registryName);
+        }
+
+        return obj;
+    }
+
+    public NamedAction loadFromJson(JsonObject obj)
+    {
+        return this;
+    }
+
+    @Nullable
+    public static NamedAction baseActionFromJson(JsonObject obj)
+    {
+        if (JsonUtils.hasString(obj, "reg_name"))
+        {
+            String regName = JsonUtils.getString(obj, "reg_name");
+            return Registry.ACTION_REGISTRY.getAction(regName);
+        }
+
+        return null;
     }
 }

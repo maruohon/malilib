@@ -6,7 +6,6 @@ import fi.dy.masa.malilib.action.ParameterizableNamedAction;
 import fi.dy.masa.malilib.action.ParameterizedNamedAction;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.DualTextInputScreen;
-import fi.dy.masa.malilib.gui.position.ElementOffset;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
@@ -14,10 +13,12 @@ import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.StyledTextUtils;
 import fi.dy.masa.malilib.util.data.LeftRight;
+import fi.dy.masa.malilib.util.data.ToBooleanFunction;
 
 public class ParameterizableActionEntryWidget extends ActionListBaseActionEntryWidget
 {
     protected final GenericButton parameterizeButton;
+    protected ToBooleanFunction<ParameterizedNamedAction> parameterizedActionConsumer;
 
     public ParameterizableActionEntryWidget(int x, int y, int width, int height, int listIndex,
                                             int originalListIndex, @Nullable NamedAction data,
@@ -28,9 +29,9 @@ public class ParameterizableActionEntryWidget extends ActionListBaseActionEntryW
         StyledTextLine nameText = data.getWidgetDisplayName();
         this.setText(StyledTextUtils.clampStyledTextToMaxWidth(nameText, width - 20, LeftRight.RIGHT, " ..."));
 
+        this.parameterizedActionConsumer = Registry.ACTION_REGISTRY::addParameterizedAction;
         this.parameterizeButton = GenericButton.simple(14, "malilib.button.label.action_list_screen_widget.parameterize",
                                                        this::openParameterizationPrompt);
-        this.parameterizeButton.translateAndAddHoverStrings("malilib.button.hover.parameterize_action");
 
         this.getBackgroundRenderer().getHoverSettings().setEnabled(false);
         this.getBorderRenderer().getHoverSettings().setBorderWidthAndColor(1, 0xFF00FF60);
@@ -49,8 +50,21 @@ public class ParameterizableActionEntryWidget extends ActionListBaseActionEntryW
     public void updateSubWidgetsToGeometryChanges()
     {
         super.updateSubWidgetsToGeometryChanges();
-        this.parameterizeButton.setY(this.getY() + ElementOffset.getCenteredElementOffset(this.getHeight(), this.parameterizeButton.getHeight()));
-        this.parameterizeButton.setRight(this.createAliasButton.getX() - 2);
+
+        this.parameterizeButton.centerVerticallyInside(this);
+        this.parameterizeButton.setRight(this.nextElementRight);
+        this.nextElementRight = this.parameterizeButton.getX() - 2;
+    }
+
+    public void setParameterizedActionConsumer(ToBooleanFunction<ParameterizedNamedAction> actionConsumer)
+    {
+        this.parameterizedActionConsumer = actionConsumer;
+    }
+
+    public void setParameterizationButtonHoverText(String translationKey)
+    {
+        this.parameterizeButton.getHoverInfoFactory().removeAll();
+        this.parameterizeButton.translateAndAddHoverStrings(translationKey);
     }
 
     protected void openParameterizationPrompt()
@@ -67,6 +81,6 @@ public class ParameterizableActionEntryWidget extends ActionListBaseActionEntryW
     protected boolean parameterizeAction(String name, String arg)
     {
         ParameterizedNamedAction action = ((ParameterizableNamedAction) this.data).parameterize(name, arg);
-        return Registry.ACTION_REGISTRY.addParameterizedAction(action);
+        return this.parameterizedActionConsumer.applyAsBoolean(action);
     }
 }

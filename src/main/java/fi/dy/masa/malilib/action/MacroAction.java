@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.action;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -21,7 +22,7 @@ public class MacroAction extends NamedAction
 
     public MacroAction(String name, ImmutableList<NamedAction> actionList)
     {
-        super(name, "<macro>:" + name, name, MACRO_MOD_INFO);
+        super(ActionType.MACRO, name, name, MACRO_MOD_INFO);
 
         this.actionList = actionList;
     }
@@ -29,6 +30,11 @@ public class MacroAction extends NamedAction
     public ImmutableList<NamedAction> getActionList()
     {
         return this.actionList;
+    }
+
+    public void setActionList(ImmutableList<NamedAction> actionList)
+    {
+        this.actionList = actionList;
     }
 
     @Override
@@ -79,14 +85,15 @@ public class MacroAction extends NamedAction
         return lines;
     }
 
+    @Override
     public JsonObject toJson()
     {
-        JsonObject obj = new JsonObject();
+        JsonObject obj = super.toJson();
         JsonArray arr = new JsonArray();
 
         for (NamedAction action : this.actionList)
         {
-            arr.add(action.getRegistryName());
+            arr.add(action.toJson());
         }
 
         obj.addProperty("name", this.name);
@@ -95,40 +102,37 @@ public class MacroAction extends NamedAction
         return obj;
     }
 
-    public static MacroAction macroFromJson(ActionRegistry registry, JsonElement el)
+    @Nullable
+    public static MacroAction macroActionFromJson(JsonObject obj)
     {
         ImmutableList.Builder<NamedAction> builder = ImmutableList.builder();
-        String name = "?";
 
-        if (el.isJsonObject())
+        if (JsonUtils.hasArray(obj, "actions") &&
+            JsonUtils.hasString(obj, "name"))
         {
-            JsonObject obj = el.getAsJsonObject();
+            String name = JsonUtils.getString(obj, "name");
+            JsonUtils.readArrayElementsIfPresent(obj, "actions", (e) -> readMacroMemberAction(e, builder::add));
 
-            if (JsonUtils.hasString(obj, "name"))
-            {
-                name = JsonUtils.getString(obj, "name");
-            }
-
-            JsonUtils.readArrayElementsIfPresent(obj, "actions",
-                                                 (e) -> MacroAction.readAction(e, registry, builder::add));
+            return new MacroAction(name, builder.build());
         }
 
-        return new MacroAction(name, builder.build());
+        return null;
     }
 
-    public static void readAction(JsonElement el, ActionRegistry registry, Consumer<NamedAction> consumer)
+    protected static void readMacroMemberAction(JsonElement el, Consumer<NamedAction> consumer)
     {
-        String registryName = el.getAsString();
-        NamedAction action = registry.getAction(registryName);
-
-        if (action == null)
+        if (el.isJsonObject())
         {
-            // Preserve entries in the config file if a mod is temporarily disabled/removed, for example
-            action = new SimpleNamedAction(registryName, registryName, registryName,
-                                           ModInfo.NO_MOD, (ctx) -> ActionResult.PASS);
-        }
+            NamedAction action = ActionType.loadActionFromJson(el);
 
-        consumer.accept(action);
+            if (action == null)
+            {
+                // Preserve entries in the config file if a mod is temporarily disabled/removed, for example
+                //action = new PlaceholderAction(el.getAsJsonObject());
+            }
+
+            consumer.accept(action);
+        }
     }
 
     public static ModInfo getMacroModInfo()

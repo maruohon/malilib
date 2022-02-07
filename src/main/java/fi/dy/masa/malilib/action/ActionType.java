@@ -1,42 +1,88 @@
 package fi.dy.masa.malilib.action;
 
-import java.util.List;
-import java.util.function.Supplier;
+import java.util.function.Function;
+import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
-import fi.dy.masa.malilib.registry.Registry;
-import fi.dy.masa.malilib.util.StringUtils;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import fi.dy.masa.malilib.util.JsonUtils;
 
-public enum ActionType
+public class ActionType<T extends NamedAction>
 {
-    ALL             ("malilib.name.action_type.all",             Registry.ACTION_REGISTRY::getAllActions),
-    BASE            ("malilib.name.action_type.base",            Registry.ACTION_REGISTRY::getBaseActions),
-    ALIAS           ("malilib.name.action_type.alias",           Registry.ACTION_REGISTRY::getAliases),
-    MACRO           ("malilib.name.action_type.macro",           Registry.ACTION_REGISTRY::getMacros),
-    PARAMETERIZED   ("malilib.name.action_type.parameterized",   Registry.ACTION_REGISTRY::getParameterizedActions),
-    PARAMETERIZABLE ("malilib.name.action_type.parameterizable", ActionUtils::getParameterizableActions),
-    USER_ADDED      ("malilib.name.action_type.user_added",      ActionUtils::getUserAddedActions),
-    SIMPLE          ("malilib.name.action_type.simple",          ActionUtils::getSimpleActions);
+    public static final ActionType<NamedAction>                SIMPLE          = new ActionType<>("simple",          NamedAction.class, NamedAction::baseActionFromJson);
+    public static final ActionType<AliasAction>                ALIAS           = new ActionType<>("alias",           AliasAction.class, AliasAction::aliasActionFromJson);
+    public static final ActionType<MacroAction>                MACRO           = new ActionType<>("macro",           MacroAction.class, MacroAction::macroActionFromJson);
+    public static final ActionType<ParameterizableNamedAction> PARAMETERIZABLE = new ActionType<>("parameterizable", ParameterizableNamedAction.class, ParameterizableNamedAction::parameterizableActionFromJson);
+    public static final ActionType<ParameterizedNamedAction>   PARAMETERIZED   = new ActionType<>("parameterized",   ParameterizedNamedAction.class,   ParameterizedNamedAction::parameterizedActionFromJson);
 
-    public static final ImmutableList<ActionType> VALUES = ImmutableList.copyOf(values());
-    public static final ImmutableList<ActionType> VALUES_USER_ADDED = ImmutableList.of(ALIAS, MACRO, PARAMETERIZED, USER_ADDED);
+    public static final ImmutableList<ActionType<?>> VALUES = ImmutableList.of(SIMPLE, ALIAS, MACRO, PARAMETERIZABLE, PARAMETERIZED);
 
-    private final Supplier<List<? extends NamedAction>> listSource;
-    private final String translationKey;
+    protected final String id;
+    protected final Function<JsonObject, T> fromJsonFunction;
+    protected final Class<T> clazz;
 
-    ActionType(String translationKey, Supplier<List<? extends NamedAction>> listSource)
+    public ActionType(String id, Class<T> clazz, Function<JsonObject, T> fromJsonFunction)
     {
-        this.translationKey = translationKey;
-        this.listSource = listSource;
+        this.id = id;
+        this.fromJsonFunction = fromJsonFunction;
+        this.clazz = clazz;
     }
 
-    public String getDisplayName()
+    public String getId()
     {
-        return StringUtils.translate(this.translationKey);
+        return this.id;
     }
 
-    @SuppressWarnings("unchecked")
-    public List<NamedAction> getActions()
+    @Nullable
+    public T loadFromJson(JsonObject obj)
     {
-        return (List<NamedAction>) this.listSource.get();
+        NamedAction action = this.fromJsonFunction.apply(obj);
+
+        if (action != null)
+        {
+            action = action.loadFromJson(obj);
+
+            if (this.clazz.isAssignableFrom(action.getClass()))
+            {
+                return this.clazz.cast(action);
+            }
+        }
+
+        return null;
+    }
+
+    @Nullable
+    public static ActionType<?> fromId(String id)
+    {
+        for (ActionType<?> type : VALUES)
+        {
+            if (type.id.equals(id))
+            {
+                return type;
+            }
+        }
+
+        return null;
+    }
+
+    @Nullable
+    public static NamedAction loadActionFromJson(JsonElement el)
+    {
+        if (el.isJsonObject())
+        {
+            JsonObject obj = el.getAsJsonObject();
+
+            if (JsonUtils.hasString(obj, "type"))
+            {
+                ActionType<?> type = fromId(JsonUtils.getString(obj, "type"));
+
+                if (type != null)
+                {
+                    return type.loadFromJson(obj);
+                }
+            }
+        }
+
+        return null;
     }
 }

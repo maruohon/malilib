@@ -41,17 +41,18 @@ public class ActionRegistry
      */
     public boolean registerAction(NamedAction action)
     {
-        String name = action.getRegistryName();
+        String regName = ActionUtils.createRegistryNameFor(action.getModInfo(), action.getName());
 
-        if (this.baseActions.contains(name) == false)
+        if (this.baseActions.contains(regName) == false)
         {
-            this.baseActions.put(name, action);
-            this.allActions.put(name, action);
+            action.setRegistryName(regName);
+            this.baseActions.put(regName, action);
+            this.allActions.put(regName, action);
             return true;
         }
         else
         {
-            MaLiLib.LOGGER.warn("The action '{}' already exists, not registering it again", name);
+            MaLiLib.LOGGER.warn("The action '{}' already exists, not registering it again", regName);
         }
 
         return false;
@@ -63,18 +64,19 @@ public class ActionRegistry
      */
     public boolean addAlias(AliasAction action)
     {
-        String name = action.getRegistryName();
+        String regName = ActionUtils.createRegistryNameFor(action.getModInfo(), action.getName());
 
-        if (this.allActions.contains(name) == false)
+        if (this.allActions.contains(regName) == false)
         {
-            this.aliases.put(name, action);
-            this.allActions.put(name, action);
+            action.setRegistryName(regName);
+            this.aliases.put(regName, action);
+            this.allActions.put(regName, action);
             this.dirty = true;
             return true;
         }
         else
         {
-            MessageDispatcher.error().console().translate("malilib.message.error.action.action_name_exists", name);
+            MessageDispatcher.error().console().translate("malilib.message.error.action.action_name_exists", regName);
         }
 
         return false;
@@ -86,19 +88,20 @@ public class ActionRegistry
      */
     public boolean addMacro(MacroAction action)
     {
-        String name = action.getRegistryName();
+        String regName = ActionUtils.createRegistryNameFor(action.getModInfo(), action.getName());
 
-        if (this.allActions.contains(name) == false)
+        if (this.allActions.contains(regName) == false)
         {
             // TODO/FIXME add checking for circular macros
-            this.macros.put(name, action);
-            this.allActions.put(name, action);
+            action.setRegistryName(regName);
+            this.macros.put(regName, action);
+            this.allActions.put(regName, action);
             this.dirty = true;
             return true;
         }
         else
         {
-            MessageDispatcher.error().console().translate("malilib.message.error.action.action_name_exists", name);
+            MessageDispatcher.error().console().translate("malilib.message.error.action.action_name_exists", regName);
         }
 
         return false;
@@ -115,18 +118,21 @@ public class ActionRegistry
             return false;
         }
 
-        String name = action.getRegistryName();
+        String regName = "<parameterized>:" +
+                         ActionUtils.createRegistryNameFor(action.getModInfo(), action.getName()) +
+                         ";" + action.getArgument();
 
-        if (this.allActions.contains(name) == false)
+        if (this.allActions.contains(regName) == false)
         {
-            this.parameterized.put(name, action);
-            this.allActions.put(name, action);
+            action.setRegistryName(regName);
+            this.parameterized.put(regName, action);
+            this.allActions.put(regName, action);
             this.dirty = true;
             return true;
         }
         else
         {
-            MessageDispatcher.error().console().translate("malilib.message.error.action.action_name_exists", name);
+            MessageDispatcher.error().console().translate("malilib.message.error.action.action_name_exists", regName);
         }
 
         return false;
@@ -137,8 +143,11 @@ public class ActionRegistry
      */
     public void removeAlias(String name)
     {
-        if (this.aliases.remove(name) != null)
+        NamedAction action = this.aliases.remove(name);
+
+        if (action != null)
         {
+            action.setRegistryName(null);
             this.allActions.remove(name);
             this.dirty = true;
         }
@@ -149,8 +158,11 @@ public class ActionRegistry
      */
     public void removeMacro(String name)
     {
-        if (this.macros.remove(name) != null)
+        NamedAction action = this.macros.remove(name);
+
+        if (action != null)
         {
+            action.setRegistryName(null);
             this.allActions.remove(name);
             this.dirty = true;
         }
@@ -161,8 +173,11 @@ public class ActionRegistry
      */
     public void removeParameterizedAction(String name)
     {
-        if (this.parameterized.remove(name) != null)
+        NamedAction action = this.parameterized.remove(name);
+
+        if (action != null)
         {
+            action.setRegistryName(null);
             this.allActions.remove(name);
             this.dirty = true;
         }
@@ -234,8 +249,8 @@ public class ActionRegistry
         JsonObject obj = new JsonObject();
 
         obj.add("aliases", JsonUtils.toArray(this.aliases.getActionList(), AliasAction::toJson));
-        obj.add("macros", JsonUtils.toArray(this.macros.getActionList(), MacroAction::toJson));
         obj.add("parameterized", JsonUtils.toArray(this.parameterized.getActionList(), ParameterizedNamedAction::toJson));
+        obj.add("macros", JsonUtils.toArray(this.macros.getActionList(), MacroAction::toJson));
 
         return obj;
     }
@@ -243,9 +258,9 @@ public class ActionRegistry
     public void fromJson(JsonElement el)
     {
         this.clearUserAddedActions();
-        JsonUtils.readArrayElementsIfPresent(el, "aliases", (e) -> this.addAlias(AliasAction.aliasFromJson(this, e)));
-        JsonUtils.readArrayElementsIfPresent(el, "macros", (e) -> this.addMacro(MacroAction.macroFromJson(this, e)));
-        JsonUtils.readArrayElementsIfPresent(el, "parameterized", (e) -> this.addParameterizedAction(ParameterizedNamedAction.fromJson(this, e)));
+        JsonUtils.readArrayElementsIfObjectsAndPresent(el, "aliases", (o) -> this.addAlias(AliasAction.aliasActionFromJson(o)));
+        JsonUtils.readArrayElementsIfObjectsAndPresent(el, "parameterized", (o) -> this.addParameterizedAction(ParameterizedNamedAction.parameterizedActionFromJson(o)));
+        JsonUtils.readArrayElementsIfObjectsAndPresent(el, "macros", (o) -> this.addMacro(MacroAction.macroActionFromJson(o)));
         this.dirty = false;
     }
 

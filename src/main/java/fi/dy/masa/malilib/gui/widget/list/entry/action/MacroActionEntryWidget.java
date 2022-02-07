@@ -1,8 +1,6 @@
 package fi.dy.masa.malilib.gui.widget.list.entry.action;
 
-import java.util.List;
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.action.ActionRegistry;
 import fi.dy.masa.malilib.action.MacroAction;
 import fi.dy.masa.malilib.action.NamedAction;
 import fi.dy.masa.malilib.gui.BaseScreen;
@@ -22,8 +20,6 @@ public class MacroActionEntryWidget extends ActionListBaseActionEntryWidget
         super(x, y, width, height, listIndex, originalListIndex, data, listWidget);
 
         this.editButton = GenericButton.simple(14, "malilib.label.edit", this::editMacro);
-
-        this.setActionRemoveFunction(ActionRegistry::removeMacro);
     }
 
     @Override
@@ -44,8 +40,7 @@ public class MacroActionEntryWidget extends ActionListBaseActionEntryWidget
 
     protected void editMacro()
     {
-        List<NamedAction> actions = ((MacroAction) this.data).getActionList();
-        MacroActionEditScreen screen = new MacroActionEditScreen(this.data.getName(), actions, false);
+        MacroActionEditScreen screen = new MacroActionEditScreen((MacroAction) this.data);
         screen.setParent(GuiUtils.getCurrentScreen());
         BaseScreen.openScreen(screen);
     }

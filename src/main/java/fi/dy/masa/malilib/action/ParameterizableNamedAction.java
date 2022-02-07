@@ -1,9 +1,12 @@
 package fi.dy.masa.malilib.action;
 
+import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
+import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.TextInputScreen;
 import fi.dy.masa.malilib.input.ActionResult;
+import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.data.ModInfo;
 
 public class ParameterizableNamedAction extends NamedAction
@@ -11,12 +14,11 @@ public class ParameterizableNamedAction extends NamedAction
     protected final ParameterizedAction action;
 
     public ParameterizableNamedAction(String name,
-                                      String registryName,
                                       String translationKey,
                                       ModInfo mod,
                                       ParameterizedAction action)
     {
-        super(name, registryName, translationKey, mod);
+        super(ActionType.PARAMETERIZABLE, name, translationKey, mod);
 
         this.action = action;
     }
@@ -49,9 +51,34 @@ public class ParameterizableNamedAction extends NamedAction
 
     public static ParameterizableNamedAction of(ModInfo mod, String name, ParameterizedAction action)
     {
-        return new ParameterizableNamedAction(name,
-                                              ActionUtils.createRegistryNameFor(mod, name),
-                                              ActionUtils.createTranslationKeyFor(mod, name),
-                                              mod, action);
+        String translationKey = ActionUtils.createTranslationKeyFor(mod, name);
+        return new ParameterizableNamedAction(name, translationKey, mod, action);
+    }
+
+    @Override
+    public NamedAction loadFromJson(JsonObject obj)
+    {
+        if (JsonUtils.hasString(obj, "name") &&
+            JsonUtils.hasString(obj, "arg"))
+        {
+            String name = JsonUtils.getString(obj, "name");
+            String arg = JsonUtils.getString(obj, "arg");
+            return this.parameterize(name, arg);
+        }
+
+        return this;
+    }
+
+    @Nullable
+    public static ParameterizableNamedAction parameterizableActionFromJson(JsonObject obj)
+    {
+        NamedAction action = NamedAction.baseActionFromJson(obj);
+
+        if (action instanceof ParameterizableNamedAction)
+        {
+            return (ParameterizableNamedAction) action;
+        }
+
+        return null;
     }
 }

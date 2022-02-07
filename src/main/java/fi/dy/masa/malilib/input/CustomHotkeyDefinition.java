@@ -3,10 +3,10 @@ package fi.dy.masa.malilib.input;
 import javax.annotation.Nullable;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import fi.dy.masa.malilib.action.ActionType;
 import fi.dy.masa.malilib.action.NamedAction;
 import fi.dy.masa.malilib.action.SimpleNamedAction;
 import fi.dy.masa.malilib.input.callback.HotkeyCallback;
-import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.ModInfo;
@@ -57,8 +57,8 @@ public class CustomHotkeyDefinition implements Hotkey
         JsonObject obj = new JsonObject();
 
         obj.addProperty("name", this.name);
-        obj.addProperty("action", this.action.getRegistryName());
         obj.add("hotkey", this.keyBind.getAsJsonElement());
+        obj.add("action", this.action.toJson());
 
         return obj;
     }
@@ -72,6 +72,7 @@ public class CustomHotkeyDefinition implements Hotkey
         }
 
         JsonObject obj = el.getAsJsonObject();
+        String name = JsonUtils.getStringOrDefault(obj, "name", "?");
         KeyBind keyBind = KeyBindImpl.fromStorageString("", KeyBindSettings.INGAME_DEFAULT);
 
         if (JsonUtils.hasObject(obj, "hotkey"))
@@ -79,14 +80,16 @@ public class CustomHotkeyDefinition implements Hotkey
             keyBind.setValueFromJsonElement(obj.get("hotkey"), "?");
         }
 
-        String name = JsonUtils.getStringOrDefault(obj, "name", "?");
-        String actionName = JsonUtils.getStringOrDefault(obj, "action", "");
-        NamedAction action = Registry.ACTION_REGISTRY.getAction(actionName);
+        NamedAction action = null;
+
+        if (JsonUtils.hasObject(obj, "action"))
+        {
+            action = ActionType.loadActionFromJson(JsonUtils.getNestedObject(obj, "action", true));
+        }
 
         if (action == null)
         {
-            action = new SimpleNamedAction(actionName, actionName, actionName,
-                                           ModInfo.NO_MOD, (ctx) -> ActionResult.PASS);
+            action = new SimpleNamedAction("?", "?", ModInfo.NO_MOD, (ctx) -> ActionResult.PASS);
         }
 
         return new CustomHotkeyDefinition(name, keyBind, action);
