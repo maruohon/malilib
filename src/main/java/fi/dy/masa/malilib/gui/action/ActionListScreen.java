@@ -107,7 +107,7 @@ public class ActionListScreen extends BaseActionListScreen
         if (Registry.ACTION_REGISTRY.addMacro(macro))
         {
             this.leftSideListWidget.getEntrySelectionHandler().clearSelection();
-            ActionListBaseActionEntryWidget.editMacro(macro);
+            ActionListBaseActionEntryWidget.openMacroEditScreen(macro, this);
             
             return true;
         }

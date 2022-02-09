@@ -150,7 +150,7 @@ public abstract class BaseActionListScreen extends BaseMultiListScreen
             }
             else if (data instanceof MacroAction)
             {
-                widget.setActionEditFunction((i, a) -> ActionListBaseActionEntryWidget.editMacro(a));
+                widget.setActionEditFunction((i, a) -> ActionListBaseActionEntryWidget.openMacroEditScreen(a, this));
                 widget.setActionRemoveFunction((i, a) -> this.removeAction(a, Registry.ACTION_REGISTRY::removeMacro));
             }
             else if (data instanceof ParameterizedNamedAction)

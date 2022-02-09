@@ -5,7 +5,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
+import com.google.gson.JsonElement;
 import fi.dy.masa.malilib.action.ActionUtils;
 import fi.dy.masa.malilib.action.MacroAction;
 import fi.dy.masa.malilib.action.NamedAction;
@@ -13,6 +15,7 @@ import fi.dy.masa.malilib.action.ParameterizableNamedAction;
 import fi.dy.masa.malilib.action.ParameterizedNamedAction;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.DualTextInputScreen;
+import fi.dy.masa.malilib.gui.SettingsExportImportScreen;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
@@ -21,6 +24,7 @@ import fi.dy.masa.malilib.gui.widget.list.entry.action.ActionListBaseActionEntry
 import fi.dy.masa.malilib.gui.widget.list.entry.action.ParameterizableActionEntryWidget;
 import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
 import fi.dy.masa.malilib.registry.Registry;
+import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class MacroActionEditScreen extends BaseActionListScreen
@@ -29,6 +33,7 @@ public class MacroActionEditScreen extends BaseActionListScreen
     protected final List<NamedAction> macroActionsList;
     protected final LabelWidget macroActionsLabelWidget;
     protected final GenericButton addActionsButton;
+    protected final GenericButton exportImportButton;
     protected final MacroAction macro;
 
     public MacroActionEditScreen(MacroAction macro)
@@ -43,9 +48,11 @@ public class MacroActionEditScreen extends BaseActionListScreen
         String label = StringUtils.translate("malilib.gui.label.macro_edit_screen.macro_actions", macro.getName());
         this.macroActionsLabelWidget = new LabelWidget(label);
 
-        this.addActionsButton = GenericButton.simple(14, "malilib.label.button.macro_edit_screen.add_actions", this::addSelectedActions);
+        this.addActionsButton = GenericButton.simple(15, "malilib.label.button.macro_edit_screen.add_actions", this::addSelectedActions);
         this.addActionsButton.translateAndAddHoverString("malilib.hover_info.macro_edit_screen.add_actions");
         this.addActionsButton.setEnabledStatusSupplier(this::canAddActions);
+
+        this.exportImportButton = GenericButton.simple(15, "malilib.label.button.export_slash_import", this::openExportImportScreen);
 
         this.leftSideListWidget.setEntryWidgetFactory(this::createMacroSourceActionsWidget);
         this.rightSideListWidget = this.createRightSideActionListWidget();
@@ -62,6 +69,7 @@ public class MacroActionEditScreen extends BaseActionListScreen
 
         this.addWidget(this.macroActionsLabelWidget);
         this.addWidget(this.addActionsButton);
+        this.addWidget(this.exportImportButton);
         this.addListWidget(this.rightSideListWidget);
     }
 
@@ -77,7 +85,9 @@ public class MacroActionEditScreen extends BaseActionListScreen
         y = this.leftSideListWidget.getY();
         int h = this.screenHeight - y - 6;
         this.rightSideListWidget.setPositionAndSize(x, y, w, h);
-        this.macroActionsLabelWidget.setPosition(x, y - 16);
+        this.macroActionsLabelWidget.setPosition(x + 2, y - 10);
+        this.exportImportButton.setY(y - 16);
+        this.exportImportButton.setRight(this.rightSideListWidget.getRight());
     }
 
     @Override
@@ -199,6 +209,64 @@ public class MacroActionEditScreen extends BaseActionListScreen
         return false;
     }
 
+    protected void openExportImportScreen()
+    {
+        String title = "malilib.title.screen.macro_edit.export_import";
+        MacroAction macro = new MacroAction(this.macro.getName(), ImmutableList.copyOf(this.macroActionsList));
+        String settingsStr = JsonUtils.jsonToString(macro.toJson(), false);
+        SettingsExportImportScreen screen = new SettingsExportImportScreen(title, settingsStr, this::importOverwrite);
+        screen.setAppendStringConsumer(this::importAppend);
+        screen.setRadioWidgetHoverText("malilib.hover.macro_action_export_import_screen.append_overwrite");
+        screen.setParent(this);
+        BaseScreen.openPopupScreen(screen);
+    }
+
+    protected boolean importOverwrite(String settingsStr)
+    {
+        MacroAction macro = this.readMacroFromSettings(settingsStr);
+
+        if (macro != null)
+        {
+            this.macroActionsList.clear();
+            this.macroActionsList.addAll(macro.getActionList());
+            this.rightSideListWidget.refreshEntries();
+            return true;
+        }
+
+        MessageDispatcher.error("malilib.message.error.macro_import_from_string_failed");
+
+        return false;
+    }
+
+    protected boolean importAppend(String settingsStr)
+    {
+        MacroAction macro = this.readMacroFromSettings(settingsStr);
+
+        if (macro != null)
+        {
+            this.macroActionsList.addAll(macro.getActionList());
+            this.rightSideListWidget.refreshEntries();
+            return true;
+        }
+
+        MessageDispatcher.error("malilib.message.error.macro_import_from_string_failed");
+
+        return false;
+    }
+
+    @Nullable
+    protected MacroAction readMacroFromSettings(String settingsStr)
+    {
+        JsonElement el = JsonUtils.parseJsonFromString(settingsStr);
+
+        if (el != null && el.isJsonObject())
+        {
+            return MacroAction.macroActionFromJson(el.getAsJsonObject());
+        }
+
+        return null;
+    }
+
     @Override
     protected DataListWidget<NamedAction> createRightSideActionListWidget()
     {
@@ -257,7 +325,7 @@ public class MacroActionEditScreen extends BaseActionListScreen
         }
         else if (data instanceof MacroAction)
         {
-            widget.setActionEditFunction((i, a) -> ActionListBaseActionEntryWidget.editMacro(a));
+            widget.setActionEditFunction((i, a) -> ActionListBaseActionEntryWidget.openMacroEditScreen(a, this));
         }
 
         widget.setCanReOrder(true);

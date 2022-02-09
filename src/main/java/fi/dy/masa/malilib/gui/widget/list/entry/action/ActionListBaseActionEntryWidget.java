@@ -182,12 +182,12 @@ public class ActionListBaseActionEntryWidget extends BaseOrderableListEditEntryW
         return false;
     }
 
-    public static void editMacro(NamedAction action)
+    public static void openMacroEditScreen(NamedAction action, BaseScreen parent)
     {
         if (action instanceof MacroAction)
         {
             MacroActionEditScreen screen = new MacroActionEditScreen((MacroAction) action);
-            screen.setParent(GuiUtils.getCurrentScreen());
+            screen.setParent(parent);
             BaseScreen.openScreen(screen);
         }
     }

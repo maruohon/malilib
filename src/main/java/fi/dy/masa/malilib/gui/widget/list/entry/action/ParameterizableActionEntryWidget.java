@@ -83,7 +83,7 @@ public class ParameterizableActionEntryWidget extends ActionListBaseActionEntryW
                                                              name, arg, consumer);
 
         String part1 = StringUtils.translate("malilib.info.action.create_parameterized_copy");
-        String part2 = StringUtils.translate("malilib.info.action.action_name_immutable");
+        String part2 = StringUtils.translate("malilib.info.action.action_name_and_arg_immutable");
         screen.setInfoText(StyledText.of(part1 + "\n\n" + part2));
         screen.setLabelText("malilib.label.action.parameterized_action_name");
         screen.setLabelText2("malilib.label.action.parameterized_action_argument");
