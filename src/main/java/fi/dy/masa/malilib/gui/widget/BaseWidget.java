@@ -306,7 +306,6 @@ public class BaseWidget
     public void setWidth(int width)
     {
         this.width = width;
-
         this.onSizeChanged();
     }
 
@@ -320,7 +319,6 @@ public class BaseWidget
     {
         this.width = width;
         this.height = height;
-
         this.onSizeChanged();
     }
 

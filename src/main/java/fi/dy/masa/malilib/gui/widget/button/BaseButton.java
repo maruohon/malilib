@@ -124,6 +124,7 @@ public abstract class BaseButton extends InteractableWidget
         this.displayString = text;
         this.fullDisplayString = text;
         this.text = StyledTextLine.of(text);
+        this.updateWidth();
         return this;
     }
 

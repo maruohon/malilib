@@ -54,24 +54,28 @@ public class ElementOffset
         return position;
     }
 
-    public void setCenterHorizontally(boolean centerHorizontally)
+    public ElementOffset setCenterHorizontally(boolean centerHorizontally)
     {
         this.centerHorizontally = centerHorizontally;
+        return this;
     }
 
-    public void setCenterVertically(boolean centerVertically)
+    public ElementOffset setCenterVertically(boolean centerVertically)
     {
         this.centerVertically = centerVertically;
+        return this;
     }
 
-    public void setXOffset(int xOffset)
+    public ElementOffset setXOffset(int xOffset)
     {
         this.xOffset = xOffset;
+        return this;
     }
 
-    public void setYOffset(int yOffset)
+    public ElementOffset setYOffset(int yOffset)
     {
         this.yOffset = yOffset;
+        return this;
     }
 
     public JsonObject toJson()
