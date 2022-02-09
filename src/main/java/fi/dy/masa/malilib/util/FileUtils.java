@@ -2,7 +2,10 @@ package fi.dy.masa.malilib.util;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,11 +13,16 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
+import javax.annotation.Nullable;
 import com.mumfrey.liteloader.core.LiteLoader;
+import fi.dy.masa.malilib.MaLiLib;
 
 public class FileUtils
 {
     public static final FileFilter DIRECTORY_FILTER = (file) -> file.isDirectory() && file.getName().equals(".") == false && file.getName().equals("..") == false;
+    public static final FileFilter ALWAYS_FALSE_FILEFILTER = (file) -> false;
+    public static final FileFilter ANY_FILE_FILEFILTER = File::isFile;
+    public static final FileFilter JSON_FILEFILTER = (f) -> f.isFile() && f.getName().endsWith(".json");
 
     public static File getConfigDirectory()
     {
@@ -24,6 +32,11 @@ public class FileUtils
     public static File getMinecraftDirectory()
     {
         return GameUtils.getClient().gameDir;
+    }
+
+    public static File getRootDirectory()
+    {
+        return new File("/");
     }
 
     /**
@@ -261,5 +274,45 @@ public class FileUtils
         }
 
         return success;
+    }
+
+    @Nullable
+    public static String readFileAsString(File file, int maxFileSize)
+    {
+        if (file.exists() && file.isFile() && file.canRead()&&
+            (maxFileSize == -1 || file.length() <= maxFileSize))
+        {
+            try
+            {
+                byte[] encoded = Files.readAllBytes(file.toPath());
+                return new String(encoded, StandardCharsets.UTF_8);
+            }
+            catch (Exception ignore) {}
+        }
+
+        return null;
+    }
+
+    public static boolean writeStringToFile(String str, File file, boolean override)
+    {
+        if (file.getParentFile().isDirectory() == false)
+        {
+            return false;
+        }
+
+        if (file.exists() == false || (override && file.canWrite()))
+        {
+            try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8))
+            {
+                writer.write(str);
+                return true;
+            }
+            catch (Exception e)
+            {
+                MaLiLib.LOGGER.warn("Failed to write string to file '{}'", file.getAbsolutePath(), e);
+            }
+        }
+
+        return false;
     }
 }
