@@ -68,7 +68,7 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
     private final List<WidgetBase> widgets = new ArrayList<>();
     private final List<TextFieldWrapper<? extends GuiTextFieldGeneric>> textFields = new ArrayList<>();
     private final MessageRenderer messageRenderer = new MessageRenderer(0xDD000000, COLOR_HORIZONTAL_BAR);
-    private final long openTime;
+    private long openTime;
     protected WidgetBase hoveredWidget = null;
     protected String title = "";
     protected boolean useTitleHierarchy = true;
@@ -80,7 +80,6 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
     protected GuiBase()
     {
         super(new LiteralText(""));
-        this.openTime = System.nanoTime();
     }
 
     public GuiBase setParent(@Nullable Screen parent)
@@ -145,6 +144,7 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
         super.init();
 
         this.initGui();
+        this.openTime = System.nanoTime();
     }
 
     public void initGui()
