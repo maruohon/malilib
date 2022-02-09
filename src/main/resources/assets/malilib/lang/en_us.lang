@@ -101,9 +101,18 @@ malilib.hotkey.name.scrollvalueadjustdecrease=Scroll Adjust Decrease
 malilib.hotkey.name.scrollvalueadjustincrease=Scroll Adjust Increase
 malilib.hotkey.name.scrollvalueadjustmodifier=Scroll Adjust Enable
 
+malilib.hover.button.export_import_screen.copy_to_clipboard=Copy the string from the text field to the clipboard
+malilib.hover.button.export_import_screen.paste_from_clipboard=Paste the contents of the clipboard to the text field
+malilib.hover.button.export_import_screen.read_from_file=Read the settings from a file to the text field\n(opens a file browser screen)
+malilib.hover.button.export_import_screen.write_to_file=Write the settings from the text field to a file\n(opens a file browser screen to select the file to save to)
 malilib.label.button.action_list_screen.create_macro=Create Macro
 malilib.label.button.action_list_screen_widget.create_alias=Alias
 malilib.label.button.action_list_screen_widget.parameterize=Parameterize
+
+malilib.label.button.export_import_screen.copy_to_clipboard=Copy to Clipboard
+malilib.label.button.export_import_screen.paste_from_clipboard=Paste from Clipboard
+malilib.label.button.export_import_screen.read_from_file=Read from File
+malilib.label.button.export_import_screen.write_to_file=Write to File
 malilib.label.button.macro_edit_screen.add_actions=Add Actions
 
 malilib.label.button.cancel=Cancel
@@ -117,6 +126,9 @@ malilib.hover.button.list.remove=Remove
 malilib.hover.button.parameterize_action=Create a new copy of the action with the string argument already bound to a given value. This allows directly executing that action without having to input the string argument via the text input prompt screen.
 malilib.hover.button.parameterize_action_for_macro=Create a new copy of the action with the string argument already bound to a given value. This allows directly executing that action without having to input the string argument via the text input prompt screen.\n<c=da0>Note: This button only adds the parameterized action to this macro, it does not get added to the registry and won't be available in the global list.
 malilib.hover.button.re_parameterize_action_for_macro=Create a new parameterized copy of the action with the string argument bound to a new given value. This old version of the action will be removed and replaced with the newly created action with the given name and argument.
+malilib.label.name.append=Append
+malilib.label.name.overwrite=Overwrite
+
 malilib.message.error.failed_to_write_string_to_file=Failed to write the string to file '%s'
 malilib.message.error.file_already_exists_hold_shift_to_override=File already exists. Hold shift when clicking the save button to override the existing file.
 
