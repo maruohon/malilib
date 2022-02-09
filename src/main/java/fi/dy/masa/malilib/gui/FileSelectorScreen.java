@@ -2,7 +2,6 @@ package fi.dy.masa.malilib.gui;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.util.function.Consumer;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
@@ -10,6 +9,7 @@ import fi.dy.masa.malilib.gui.widget.list.BaseFileBrowserWidget;
 import fi.dy.masa.malilib.util.FileNameUtils;
 import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.StringUtils;
+import fi.dy.masa.malilib.util.data.ToBooleanFunction;
 
 public class FileSelectorScreen extends BaseListScreen<BaseFileBrowserWidget>
 {
@@ -17,12 +17,12 @@ public class FileSelectorScreen extends BaseListScreen<BaseFileBrowserWidget>
     protected final BaseTextFieldWidget fileNameTextField;
     protected final File rootDirectory;
     protected final File currentDirectory;
-    protected final Consumer<File> fileConsumer;
+    protected final ToBooleanFunction<File> fileConsumer;
     protected FileFilter fileFilter = FileUtils.ANY_FILE_FILEFILTER;
     protected String fileNameExtension = "json";
     protected boolean allowCreatingFiles;
 
-    public FileSelectorScreen(File currentDirectory, File rootDirectory, Consumer<File> fileConsumer)
+    public FileSelectorScreen(File currentDirectory, File rootDirectory, ToBooleanFunction<File> fileConsumer)
     {
         super(10, 28, 20, 58);
 
@@ -104,24 +104,33 @@ public class FileSelectorScreen extends BaseListScreen<BaseFileBrowserWidget>
     {
         BaseFileBrowserWidget.DirectoryEntry entry = this.getListWidget().getEntrySelectionHandler().getLastSelectedEntry();
 
-        if (entry != null && entry.getType() == BaseFileBrowserWidget.DirectoryEntryType.FILE)
+        if (this.allowCreatingFiles)
         {
-            this.fileConsumer.accept(entry.getFullPath());
-            BaseScreen.openScreen(this.getParent());
-        }
-        else if (this.allowCreatingFiles &&
-                 org.apache.commons.lang3.StringUtils.isBlank(this.fileNameTextField.getText()) == false)
-        {
-            File dir = this.getListWidget().getCurrentDirectory();
             String name = this.fileNameTextField.getText();
+
+            if (org.apache.commons.lang3.StringUtils.isBlank(name))
+            {
+                return;
+            }
+
+            File dir = this.getListWidget().getCurrentDirectory();
 
             if (name.endsWith("." + this.fileNameExtension) == false)
             {
                 name += "." + this.fileNameExtension;
             }
 
-            this.fileConsumer.accept(new File(dir, name));
-            BaseScreen.openScreen(this.getParent());
+            if (this.fileConsumer.applyAsBoolean(new File(dir, name)))
+            {
+                BaseScreen.openScreen(this.getParent());
+            }
+        }
+        else if (entry != null && entry.getType() == BaseFileBrowserWidget.DirectoryEntryType.FILE)
+        {
+            if (this.fileConsumer.applyAsBoolean(entry.getFullPath()))
+            {
+                BaseScreen.openScreen(this.getParent());
+            }
         }
     }
 

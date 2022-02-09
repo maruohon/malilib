@@ -1,12 +1,12 @@
 package fi.dy.masa.malilib.gui;
 
 import java.io.File;
-import java.util.function.Consumer;
 import fi.dy.masa.malilib.util.FileUtils;
+import fi.dy.masa.malilib.util.data.ToBooleanFunction;
 
 public class DirectorySelectorScreen extends FileSelectorScreen
 {
-    public DirectorySelectorScreen(File currentDirectory, File rootDirectory, Consumer<File> fileConsumer)
+    public DirectorySelectorScreen(File currentDirectory, File rootDirectory, ToBooleanFunction<File> fileConsumer)
     {
         super(currentDirectory, rootDirectory, fileConsumer);
 
@@ -23,7 +23,9 @@ public class DirectorySelectorScreen extends FileSelectorScreen
     @Override
     protected void onConfirm()
     {
-        this.fileConsumer.accept(this.getListWidget().getCurrentDirectory());
-        BaseScreen.openScreen(this.getParent());
+        if (this.fileConsumer.applyAsBoolean(this.getListWidget().getCurrentDirectory()))
+        {
+            BaseScreen.openScreen(this.getParent());
+        }
     }
 }

@@ -1,7 +1,6 @@
 package fi.dy.masa.malilib.gui;
 
 import java.io.File;
-import java.util.function.Consumer;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.gui.GuiScreen;
@@ -11,6 +10,7 @@ import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
 import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.consumer.StringConsumer;
+import fi.dy.masa.malilib.util.data.ToBooleanFunction;
 
 public class SettingsExportImportScreen extends TextInputScreen
 {
@@ -185,6 +185,9 @@ public class SettingsExportImportScreen extends TextInputScreen
             this.textField.setText(str);
             this.textField.setCursorToStart();
             this.textField.setFocused(true);
+
+            MessageDispatcher.success("malilib.message.success.settings_read_from_file_to_text_field");
+
             return true;
         }
 
@@ -201,6 +204,7 @@ public class SettingsExportImportScreen extends TextInputScreen
         {
             if (FileUtils.writeStringToFile(this.textField.getText(), file, override))
             {
+                MessageDispatcher.success("malilib.message.success.settings_written_to_file");
                 return true;
             }
 
@@ -228,7 +232,7 @@ public class SettingsExportImportScreen extends TextInputScreen
         BaseScreen.openScreen(screen);
     }
 
-    protected FileSelectorScreen createFileSelectorScreen(Consumer<File> consumer)
+    protected FileSelectorScreen createFileSelectorScreen(ToBooleanFunction<File> consumer)
     {
         File currentDir = FileUtils.getCanonicalFileIfPossible(new File("."));
         File rootDir = FileUtils.getRootDirectory();

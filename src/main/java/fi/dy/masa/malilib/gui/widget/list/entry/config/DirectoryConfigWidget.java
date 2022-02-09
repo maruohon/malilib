@@ -26,6 +26,7 @@ public class DirectoryConfigWidget extends BaseConfigOptionWidget<File, Director
         FileSelectorScreenFactory factory = () -> new DirectorySelectorScreen(dir, rootDir, (d) -> {
             this.config.setValueFromString(d.getAbsolutePath());
             this.reAddSubWidgets();
+            return true;
         });
 
         this.createFileSelectorWidgets(this.getY(), this.config, factory,

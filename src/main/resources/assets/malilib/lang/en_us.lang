@@ -140,6 +140,8 @@ malilib.message.error.macro_import_from_string_failed=Failed to read a macro fro
 malilib.message.error.setting_string_failed_to_read_from_file=Failed to read a settings string from file
 malilib.message.success.setting_string_copied_to_clipboard=Setting string from the text field copied to the clipboard
 malilib.message.success.setting_string_pasted_from_clipboard=Setting string pasted from the clipboard to the text field
+malilib.message.success.settings_read_from_file_to_text_field=Settings read from file and placed to the text field
+malilib.message.success.settings_written_to_file=Settings written to file
 
 malilib.title.screen.macro_edit.export_import=Export or Import Macro
 
