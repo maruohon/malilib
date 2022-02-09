@@ -269,14 +269,13 @@ public abstract class BaseListScreen<LISTWIDGET extends BaseListWidget> extends 
     @Override
     public boolean onCharTyped(char charIn, int modifiers)
     {
-        BaseListWidget listWidget = this.getListWidget();
-
-        if (listWidget != null && listWidget.onCharTyped(charIn, modifiers))
+        if (super.onCharTyped(charIn, modifiers))
         {
             return true;
         }
 
-        return super.onCharTyped(charIn, modifiers);
+        BaseListWidget listWidget = this.getListWidget();
+        return listWidget != null && listWidget.onCharTyped(charIn, modifiers);
     }
 
     @Override
