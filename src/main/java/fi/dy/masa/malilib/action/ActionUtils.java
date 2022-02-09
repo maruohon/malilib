@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.action;
 
+import java.util.Collection;
 import java.util.Locale;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -177,5 +178,28 @@ public class ActionUtils
         }
 
         return builder.build();
+    }
+
+    public static boolean containsMacroLoop(MacroAction macro, Collection<NamedAction> actions)
+    {
+        for (NamedAction action : actions)
+        {
+            if (action == macro)
+            {
+                return true;
+            }
+
+            if (action instanceof MacroAction)
+            {
+                MacroAction m = (MacroAction) action;
+
+                if (containsMacroLoop(macro, m.getActionList()))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }

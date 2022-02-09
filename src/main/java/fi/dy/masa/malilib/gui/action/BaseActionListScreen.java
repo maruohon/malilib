@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.gui.action;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
@@ -12,19 +13,18 @@ import fi.dy.masa.malilib.action.ParameterizableNamedAction;
 import fi.dy.masa.malilib.action.ParameterizedNamedAction;
 import fi.dy.masa.malilib.gui.BaseMultiListScreen;
 import fi.dy.masa.malilib.gui.ScreenTab;
-import fi.dy.masa.malilib.gui.widget.BaseWidget;
 import fi.dy.masa.malilib.gui.widget.DropDownListWidget;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.action.ActionListBaseActionEntryWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.action.MacroActionEntryWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.action.ParameterizableActionEntryWidget;
 import fi.dy.masa.malilib.registry.Registry;
-import fi.dy.masa.malilib.render.text.StyledTextLine;
 
 public abstract class BaseActionListScreen extends BaseMultiListScreen
 {
     protected final DropDownListWidget<ActionGroup> allActionTypesDropdown;
     protected final DataListWidget<NamedAction> leftSideListWidget;
+    protected DataListWidget<NamedAction> rightSideListWidget;
     protected int centerGap = 10;
 
     public BaseActionListScreen(String screenId, List<? extends ScreenTab> screenTabs, @Nullable ScreenTab defaultTab)
@@ -103,7 +103,7 @@ public abstract class BaseActionListScreen extends BaseMultiListScreen
         listWidget.setListEntryWidgetFixedHeight(14);
         listWidget.getBorderRenderer().getNormalSettings().setBorderWidth(1);
         listWidget.setFetchFromSupplierOnRefresh(true);
-        listWidget.setEntryWidgetFactory(BaseActionListScreen::createEntryWidget);
+        listWidget.setEntryWidgetFactory(this::createEntryWidget);
         listWidget.setEntryFilterStringFactory(NamedAction::getSearchString);
 
         return listWidget;
@@ -120,81 +120,54 @@ public abstract class BaseActionListScreen extends BaseMultiListScreen
         return listWidget;
     }
 
+    protected void refreshBothLists()
+    {
+        this.leftSideListWidget.refreshEntries();
+        this.rightSideListWidget.refreshEntries();
+    }
+
     protected abstract DataListWidget<NamedAction> createRightSideActionListWidget();
 
-    public static ActionListBaseActionEntryWidget createEntryWidget(int x, int y, int width, int height,
-                                                                    int listIndex, int originalListIndex,
-                                                                    NamedAction data,
-                                                                    DataListWidget<NamedAction> listWidget)
+    protected ActionListBaseActionEntryWidget createEntryWidget(int x, int y, int width, int height,
+            int listIndex, int originalListIndex, NamedAction data, DataListWidget<NamedAction> listWidget)
     {
-        if (data instanceof AliasAction)
+        ActionListBaseActionEntryWidget widget;
+
+        if (data instanceof ParameterizableNamedAction)
         {
-            ActionListBaseActionEntryWidget widget = new ActionListBaseActionEntryWidget(
+            ParameterizableActionEntryWidget parWidget = new ParameterizableActionEntryWidget(
                     x, y, width, height, listIndex, originalListIndex, data, listWidget);
-            widget.setActionRemoveFunction(BaseActionListScreen::removeAliasFromRegistry);
-            setWidgetStartingStyleFrom(widget, "malilib.style.action_list_screen.widget.alias");
-            return widget;
-        }
-        else if (data instanceof ParameterizedNamedAction)
-        {
-            ActionListBaseActionEntryWidget widget = new ActionListBaseActionEntryWidget(
-                    x, y, width, height, listIndex, originalListIndex, data, listWidget);
-            widget.setActionRemoveFunction(BaseActionListScreen::removeParameterizedActionFromRegistry);
-            setWidgetStartingStyleFrom(widget, "malilib.style.action_list_screen.widget.parameterized");
-            return widget;
-        }
-        else if (data instanceof ParameterizableNamedAction)
-        {
-            ParameterizableActionEntryWidget widget = new ParameterizableActionEntryWidget(
-                    x, y, width, height, listIndex, originalListIndex, data, listWidget);
-            widget.setParameterizationButtonHoverText("malilib.button.hover.parameterize_action");
-            setWidgetStartingStyleFrom(widget, "malilib.style.action_list_screen.widget.parameterizable");
-            return widget;
+            parWidget.setParameterizationButtonHoverText("malilib.button.hover.parameterize_action");
+            widget = parWidget;
         }
         else if (data instanceof MacroAction)
         {
-            ActionListBaseActionEntryWidget widget = new MacroActionEntryWidget(
+            widget = new MacroActionEntryWidget(x, y, width, height, listIndex, originalListIndex, data, listWidget);
+            widget.setActionRemoveFunction((i, a) -> this.removeAction(a, Registry.ACTION_REGISTRY::removeMacro));
+        }
+        else
+        {
+            widget = new ActionListBaseActionEntryWidget(
                     x, y, width, height, listIndex, originalListIndex, data, listWidget);
-            widget.setActionRemoveFunction(BaseActionListScreen::removeMacroFromRegistry);
-            setWidgetStartingStyleFrom(widget, "malilib.style.action_list_screen.widget.macro");
-            return widget;
+
+            if (data instanceof AliasAction)
+            {
+                widget.setActionRemoveFunction((i, a) -> this.removeAction(a, Registry.ACTION_REGISTRY::removeAlias));
+            }
+            else if (data instanceof ParameterizedNamedAction)
+            {
+                widget.setActionRemoveFunction((i, a) -> this.removeAction(a, Registry.ACTION_REGISTRY::removeParameterizedAction));
+            }
         }
 
-        return new ActionListBaseActionEntryWidget(x, y, width, height, listIndex, originalListIndex, data, listWidget);
+        widget.setAddCreateAliasButton(true);
+
+        return widget;
     }
 
-    protected static void removeAliasFromRegistry(NamedAction action)
+    protected void removeAction(NamedAction action, Consumer<NamedAction> removeFunction)
     {
-        String regName = action.getRegistryName();
-
-        if (regName != null)
-        {
-            Registry.ACTION_REGISTRY.removeAlias(regName);
-        }
-    }
-
-    protected static void removeMacroFromRegistry(NamedAction action)
-    {
-        String regName = action.getRegistryName();
-
-        if (regName != null)
-        {
-            Registry.ACTION_REGISTRY.removeMacro(regName);
-        }
-    }
-
-    protected static void removeParameterizedActionFromRegistry(NamedAction action)
-    {
-        String regName = action.getRegistryName();
-
-        if (regName != null)
-        {
-            Registry.ACTION_REGISTRY.removeParameterizedAction(regName);
-        }
-    }
-
-    protected static void setWidgetStartingStyleFrom(BaseWidget widget, String translationKey)
-    {
-        widget.setStartingStyleForText(StyledTextLine.translate(translationKey).getLastStyle());
+        removeFunction.accept(action);
+        this.refreshBothLists();
     }
 }

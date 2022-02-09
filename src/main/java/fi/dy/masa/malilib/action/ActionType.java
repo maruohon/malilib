@@ -9,21 +9,23 @@ import fi.dy.masa.malilib.util.JsonUtils;
 
 public class ActionType<T extends NamedAction>
 {
-    public static final ActionType<NamedAction>                SIMPLE          = new ActionType<>("simple",          NamedAction.class, NamedAction::baseActionFromJson);
-    public static final ActionType<AliasAction>                ALIAS           = new ActionType<>("alias",           AliasAction.class, AliasAction::aliasActionFromJson);
-    public static final ActionType<MacroAction>                MACRO           = new ActionType<>("macro",           MacroAction.class, MacroAction::macroActionFromJson);
-    public static final ActionType<ParameterizableNamedAction> PARAMETERIZABLE = new ActionType<>("parameterizable", ParameterizableNamedAction.class, ParameterizableNamedAction::parameterizableActionFromJson);
-    public static final ActionType<ParameterizedNamedAction>   PARAMETERIZED   = new ActionType<>("parameterized",   ParameterizedNamedAction.class,   ParameterizedNamedAction::parameterizedActionFromJson);
+    public static final ActionType<NamedAction>                SIMPLE          = new ActionType<>("simple",          ActionGroup.SIMPLE,          NamedAction.class,                NamedAction::baseActionFromJson);
+    public static final ActionType<AliasAction>                ALIAS           = new ActionType<>("alias",           ActionGroup.ALIAS,           AliasAction.class,                AliasAction::aliasActionFromJson);
+    public static final ActionType<MacroAction>                MACRO           = new ActionType<>("macro",           ActionGroup.MACRO,           MacroAction.class,                MacroAction::macroActionFromJson);
+    public static final ActionType<ParameterizableNamedAction> PARAMETERIZABLE = new ActionType<>("parameterizable", ActionGroup.PARAMETERIZABLE, ParameterizableNamedAction.class, ParameterizableNamedAction::parameterizableActionFromJson);
+    public static final ActionType<ParameterizedNamedAction>   PARAMETERIZED   = new ActionType<>("parameterized",   ActionGroup.PARAMETERIZED,   ParameterizedNamedAction.class,   ParameterizedNamedAction::parameterizedActionFromJson);
 
     public static final ImmutableList<ActionType<?>> VALUES = ImmutableList.of(SIMPLE, ALIAS, MACRO, PARAMETERIZABLE, PARAMETERIZED);
 
     protected final String id;
+    protected final ActionGroup group;
     protected final Function<JsonObject, T> fromJsonFunction;
     protected final Class<T> clazz;
 
-    public ActionType(String id, Class<T> clazz, Function<JsonObject, T> fromJsonFunction)
+    public ActionType(String id, ActionGroup group, Class<T> clazz, Function<JsonObject, T> fromJsonFunction)
     {
         this.id = id;
+        this.group = group;
         this.fromJsonFunction = fromJsonFunction;
         this.clazz = clazz;
     }
@@ -31,6 +33,11 @@ public class ActionType<T extends NamedAction>
     public String getId()
     {
         return this.id;
+    }
+
+    public ActionGroup getGroup()
+    {
+        return this.group;
     }
 
     @Nullable

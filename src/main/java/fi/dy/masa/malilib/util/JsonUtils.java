@@ -425,12 +425,12 @@ public class JsonUtils
         }
     }
 
-    public static void readArrayElementsIfObjectsAndPresent(JsonElement el, String arrayName, Consumer<JsonObject> elementConsumer)
+    public static void readArrayElementsIfObjects(JsonElement el, String arrayName, Consumer<JsonObject> elementConsumer)
     {
-        readArrayIfPresent(el, arrayName, (arr) -> readArrayElementObjects(arr, elementConsumer));
+        readArrayIfPresent(el, arrayName, (arr) -> readArrayElementsAsObjects(arr, elementConsumer));
     }
 
-    public static void readArrayElementObjects(JsonArray arr, Consumer<JsonObject> elementConsumer)
+    public static void readArrayElementsAsObjects(JsonArray arr, Consumer<JsonObject> elementConsumer)
     {
         int size = arr.size();
 

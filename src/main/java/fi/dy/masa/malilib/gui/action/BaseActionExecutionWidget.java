@@ -375,7 +375,7 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
 
         if (this.action != null)
         {
-            obj.addProperty("action_name", this.action.getRegistryName());
+            //obj.addProperty("action_name", this.action.getRegistryName());
 
             // TODO?
             /*

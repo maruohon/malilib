@@ -21,6 +21,7 @@ public class ParameterizableNamedAction extends NamedAction
         super(ActionType.PARAMETERIZABLE, name, translationKey, mod);
 
         this.action = action;
+        this.coloredDisplayNameTranslationKey = "malilib.label.name.action.parameterizable_entry_widget_name";
     }
 
     @Override

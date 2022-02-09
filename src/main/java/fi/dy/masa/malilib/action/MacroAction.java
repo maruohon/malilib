@@ -6,7 +6,6 @@ import java.util.function.Consumer;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
@@ -25,6 +24,7 @@ public class MacroAction extends NamedAction
         super(ActionType.MACRO, name, name, MACRO_MOD_INFO);
 
         this.actionList = actionList;
+        this.coloredDisplayNameTranslationKey = "malilib.label.name.action.macro_entry_widget_name";
     }
 
     public ImmutableList<NamedAction> getActionList()
@@ -49,11 +49,11 @@ public class MacroAction extends NamedAction
     }
 
     @Override
-    public StyledTextLine getWidgetDisplayName()
+    public StyledTextLine getColoredWidgetDisplayName()
     {
         String name = this.getName();
         int size = this.getActionList().size();
-        return StyledTextLine.translate("malilib.label.macro_action_entry_widget.name", name, size);
+        return StyledTextLine.translate(this.coloredDisplayNameTranslationKey, name, size);
     }
 
     @Override
@@ -61,6 +61,7 @@ public class MacroAction extends NamedAction
     {
         List<StyledTextLine> lines = new ArrayList<>();
         lines.add(StyledTextLine.translate("malilib.hover_info.action.name", this.getName()));
+        lines.add(StyledTextLine.translate("malilib.hover_info.action.action_type", this.type.getGroup().getDisplayName()));
 
         int size = this.actionList.size();
 
@@ -111,7 +112,7 @@ public class MacroAction extends NamedAction
             JsonUtils.hasString(obj, "name"))
         {
             String name = JsonUtils.getString(obj, "name");
-            JsonUtils.readArrayElementsIfPresent(obj, "actions", (e) -> readMacroMemberAction(e, builder::add));
+            JsonUtils.readArrayElementsIfObjects(obj, "actions", (o) -> readMacroMemberAction(o, builder::add));
 
             return new MacroAction(name, builder.build());
         }
@@ -119,18 +120,12 @@ public class MacroAction extends NamedAction
         return null;
     }
 
-    protected static void readMacroMemberAction(JsonElement el, Consumer<NamedAction> consumer)
+    protected static void readMacroMemberAction(JsonObject obj, Consumer<NamedAction> consumer)
     {
-        if (el.isJsonObject())
+        NamedAction action = ActionType.loadActionFromJson(obj);
+
+        if (action != null)
         {
-            NamedAction action = ActionType.loadActionFromJson(el);
-
-            if (action == null)
-            {
-                // Preserve entries in the config file if a mod is temporarily disabled/removed, for example
-                //action = new PlaceholderAction(el.getAsJsonObject());
-            }
-
             consumer.accept(action);
         }
     }

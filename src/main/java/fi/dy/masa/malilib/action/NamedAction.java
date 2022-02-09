@@ -16,6 +16,7 @@ import fi.dy.masa.malilib.util.data.ModInfo;
 public abstract class NamedAction extends CommonDescription
 {
     protected final ActionType<?> type;
+    protected String coloredDisplayNameTranslationKey = "malilib.label.name.action.simple_entry_widget_name";
     @Nullable protected String registryName;
 
     public NamedAction(ActionType<?> type,
@@ -53,27 +54,28 @@ public abstract class NamedAction extends CommonDescription
         return ImmutableList.of(this.getName(), this.getDisplayName());
     }
 
-    public StyledTextLine getWidgetDisplayName()
+    public StyledTextLine getColoredWidgetDisplayName()
     {
         String name = this.getName();
         String modName = this.modInfo.getModName();
-        return StyledTextLine.translate("malilib.label.named_action_entry_widget.name", name, modName);
+        return StyledTextLine.translate(this.coloredDisplayNameTranslationKey, name, modName);
     }
 
     public List<StyledTextLine> getHoverInfo()
     {
-        List<StyledTextLine> list = new ArrayList<>();
+        List<StyledTextLine> lines = new ArrayList<>();
 
-        list.add(StyledTextLine.translate("malilib.hover_info.action.mod", this.modInfo.getModName()));
-        list.add(StyledTextLine.translate("malilib.hover_info.action.name", this.name));
-        list.add(StyledTextLine.translate("malilib.hover_info.action.display_name", this.getDisplayName()));
+        lines.add(StyledTextLine.translate("malilib.hover_info.action.mod", this.modInfo.getModName()));
+        lines.add(StyledTextLine.translate("malilib.hover_info.action.name", this.name));
+        lines.add(StyledTextLine.translate("malilib.hover_info.action.display_name", this.getDisplayName()));
+        lines.add(StyledTextLine.translate("malilib.hover_info.action.action_type", this.type.getGroup().getDisplayName()));
 
         if (this.registryName != null)
         {
-            list.add(StyledTextLine.translate("malilib.hover_info.action.registry_name", this.registryName));
+            lines.add(StyledTextLine.translate("malilib.hover_info.action.registry_name", this.registryName));
         }
 
-        return list;
+        return lines;
     }
 
     /**

@@ -15,14 +15,12 @@ import fi.dy.masa.malilib.gui.TextInputScreen;
 import fi.dy.masa.malilib.gui.widget.DropDownListWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
-import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
 import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class ActionListScreen extends BaseActionListScreen
 {
     protected final DropDownListWidget<ActionGroup> userAddedActionTypesDropdown;
-    protected final DataListWidget<NamedAction> rightSideListWidget;
     protected final GenericButton addMacroButton;
 
     public ActionListScreen()
@@ -36,7 +34,7 @@ public class ActionListScreen extends BaseActionListScreen
         this.userAddedActionTypesDropdown.setSelectionListener((t) -> this.initScreen());
         this.userAddedActionTypesDropdown.addHoverStrings("malilib.hover_info.action_types_explanation");
 
-        this.addMacroButton = GenericButton.simple(14, "malilib.button.label.action_list_screen.create_macro", this::openCreateMacroScreenNameInput);
+        this.addMacroButton = GenericButton.simple(14, "malilib.button.label.action_list_screen.create_macro", this::openMacroNameInput);
         this.addMacroButton.translateAndAddHoverString("malilib.gui.hover.action_list_screen.create_macro");
         this.addMacroButton.setEnabledStatusSupplier(this::canCreateMacro);
 
@@ -90,26 +88,27 @@ public class ActionListScreen extends BaseActionListScreen
         return this.leftSideListWidget.getEntrySelectionHandler().getSelectedEntries().isEmpty() == false;
     }
 
-    protected void openCreateMacroScreenNameInput()
+    protected void openMacroNameInput()
     {
         String title = StringUtils.translate("malilib.gui.title.create_macro");
-        TextInputScreen screen = new TextInputScreen(title, "", this::openCreateMacroScreen, this);
+        TextInputScreen screen = new TextInputScreen(title, "", this::openMacroEditScreen, this);
         screen.setCloseScreenWhenApplied(false);
         screen.setLabelText("malilib.label.name.colon");
-        screen.setInfoText("malilib.info.action.macro_name_immutable");
+        screen.setInfoText("malilib.info.action.action_name_immutable");
         BaseScreen.openPopupScreen(screen);
     }
 
-    protected boolean openCreateMacroScreen(String macroName)
+    protected boolean openMacroEditScreen(String macroName)
     {
-        if (Registry.ACTION_REGISTRY.getAction(macroName) != null)
+        Set<NamedAction> actions = this.leftSideListWidget.getSelectedEntries();
+        MacroAction macro = new MacroAction(macroName, ImmutableList.copyOf(actions));
+
+        if (Registry.ACTION_REGISTRY.addMacro(macro) == false)
         {
-            MessageDispatcher.error("malilib.message.error.action.action_name_exists", macroName);
             return false;
         }
 
-        Set<NamedAction> actions = this.leftSideListWidget.getSelectedEntries();
-        MacroAction macro = new MacroAction(macroName, ImmutableList.copyOf(actions));
+        this.leftSideListWidget.getEntrySelectionHandler().clearSelection();
         MacroActionEditScreen screen = new MacroActionEditScreen(macro);
         screen.setParent(this);
         BaseScreen.openScreen(screen);

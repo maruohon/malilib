@@ -101,10 +101,10 @@ malilib.hotkey.name.scrollvalueadjustdecrease=Scroll Adjust Decrease
 malilib.hotkey.name.scrollvalueadjustincrease=Scroll Adjust Increase
 malilib.hotkey.name.scrollvalueadjustmodifier=Scroll Adjust Enable
 
-malilib.button.label.action.alias_name.colon=Alias:
 malilib.button.label.action_list_screen.create_macro=Create Macro
 malilib.button.label.action_list_screen_widget.create_alias=Alias
 malilib.button.label.action_list_screen_widget.parameterize=Parameterize
+malilib.button.label.macro_edit_screen.add_actions=Add Actions
 
 malilib.button.label.cancel=Cancel
 malilib.button.label.ok.colored=§aOK
@@ -118,12 +118,20 @@ malilib.button.hover.parameterize_action_for_macro=Create a new copy of the acti
 malilib.gui.prompt.title.create_alias_action=Create an alias action
 malilib.gui.prompt.title.parameterize_action=Create a parameterized copy of the action
 
+malilib.label.action.alias_name.colon=Alias name:
 malilib.label.action.parameterized_action_name=Name for the created action:
 malilib.label.action.parameterized_action_argument=Bound argument:
 
-malilib.info.action.create_parameterized_copy=Create a copy of the action, with the argument bound to the given value. This allows directly executing the created action with that arument, without having to type it into the text input prompt window every time.
-malilib.info.action.macro_name_immutable=<c=ff0>Note: You can't change the macro name later.</c> The only way to "change" the name is to delete the macro and create a new macro with the new name.
+malilib.label.name.action.alias_entry_widget_name=<c=24FEFA>%s §8[%s > %s]
+malilib.label.name.action.macro_entry_widget_name=<c=FE24F3>%s §8[§b%s §8actions]
+malilib.label.name.action.parameterizable_entry_widget_name=<c=FEFE24>%s §8[%s]
+malilib.label.name.action.parameterized_entry_widget_name=<c=47FE24>%s §8[%s > %s]
+malilib.label.name.action.simple_entry_widget_name=%s §8[%s]
 
+malilib.info.action.create_parameterized_copy=Create a copy of the action, with the argument bound to the given value. This allows directly executing the created action with that argument, without having to type it into the text input prompt window every time.\n\nNote: You can't change the action name later.</c>
+malilib.info.action.action_name_immutable=<c=ff0>Note: You can't change the action name later.</c>\n\nThe only way to "change" the name (in-game) is to delete the action and create a new action with the new name.\n\nYou could of course manually edit the config file to change it though...
+
+malilib.hover_info.action.action_type=§8Type: <c=aaa>%s
 malilib.hover_info.action.alias=§8Alias: §7%s
 malilib.hover_info.action.argument.colon=§8Argument:§7 
 malilib.hover_info.action.base_action_name=§8Base Action Name: §7%s
@@ -131,10 +139,10 @@ malilib.hover_info.action.contained_actions=§8Contained actions (§b%s§8):
 malilib.hover_info.action.display_name=§8Display name: §7%s
 malilib.hover_info.action.mod=§8Mod: §7%s
 malilib.hover_info.action.name=§8Name: §7%s
-malilib.hover_info.action_widget_screen.close_screen_on_execute=Close the screen when an action is executed
-malilib.hover_info.action_widget_screen.close_screen_on_key_release=Close the screen when all keys are released.\n<b>§eNote:</b> This will also execute the action that is being hovered!
 malilib.hover_info.action.original_registry_name=§8Original registry name: §7%s
 malilib.hover_info.action.registry_name=§8Registry name: §7%s
+malilib.hover_info.action_widget_screen.close_screen_on_execute=Close the screen when an action is executed
+malilib.hover_info.action_widget_screen.close_screen_on_key_release=Close the screen when all keys are released.\n<b>§eNote:</b> This will also execute the action that is being hovered!
 malilib.hover_info.action_types_explanation=- All: All actions currently in the registry\n- Alias: User-added aliases (= renamed copies)\n- Base: All mod-added "base" actions (= no user-added\n  actions ie. aliases, macros or the bound paramaterized actions)\n- Macro: User-created macros (= lists of actions)\n- Parameterizable: Base actions that need a string argument\n- Parameterized: User-added copies of parameterizable\n  actions, where the argument is set already\n- Simple: Non-parameterizable base actions\n- User-added: All user-added actions\n  (= aliases, macros and parameterized actions)
 malilib.hover_info.add_action_execution_widget.add_argument=Bind the argument to the action button directly.\nIf this is not set, then you will need to input the argument every time you run the action.
 malilib.hover_info.close_screen=Close the screen
@@ -144,19 +152,14 @@ malilib.hover_info.macro_edit_screen.remove_actions=Remove the selected actions 
 malilib.hover_info.option_list_button.non_selected_value=  §8%s
 malilib.hover_info.option_list_button.selected_value=> §7%s§r <
 
-malilib.name.action_type.alias=Alias Actions
-malilib.name.action_type.all=All Actions
-malilib.name.action_type.base=Base Actions (mod-added)
-malilib.name.action_type.macro=Macro Actions
-malilib.name.action_type.parameterizable=Parameterizable Actions
-malilib.name.action_type.parameterized=Parameterized (arg. set)
-malilib.name.action_type.simple=Simple Actions
-malilib.name.action_type.user_added=Any User-Added Actions
-
-malilib.style.action_list_screen.widget.alias=<c=24FEFA>
-malilib.style.action_list_screen.widget.macro=<c=24B8FE>
-malilib.style.action_list_screen.widget.parameterizable=<c=FEFE24>
-malilib.style.action_list_screen.widget.parameterized=<c=47FE24>
+malilib.name.action_group.alias=Alias Actions
+malilib.name.action_group.all=All Actions
+malilib.name.action_group.base=Base Actions (mod-added)
+malilib.name.action_group.macro=Macro Actions
+malilib.name.action_group.parameterizable=Parameterizable Actions
+malilib.name.action_group.parameterized=Parameterized (arg. set)
+malilib.name.action_group.simple=Simple Actions
+malilib.name.action_group.user_added=Any User-Added Actions
 
 malilib.gui.button.config.reset_all_filtered=Reset All
 malilib.gui.button.config.select_directory=Select Directory
@@ -349,7 +352,7 @@ malilib.gui.label.layer_mode.all_below=All below
 malilib.gui.label.layer_mode.layer_range=Layer Range
 malilib.gui.label.layer_mode.single_layer=Single Layer
 
-malilib.gui.label.macro_edit_screen.macro_actions=Actions in macro:
+malilib.gui.label.macro_edit_screen.macro_actions=Actions in macro '%s':
 
 malilib.gui.label.option_list_hover.total_values.all=§7Total values: §b%s
 malilib.gui.label.option_list_hover.total_values.allowed=§7Allowed values: §b%s§7 / §b%s
@@ -522,7 +525,6 @@ malilib.label.line_height.colon=Line height:
 malilib.label.list_type.blacklist=Black List
 malilib.label.list_type.none=None
 malilib.label.list_type.whitelist=White List
-malilib.label.macro_action_entry_widget.name=%s §8[§b%s§8 actions]
 malilib.label.margin=Margin
 malilib.label.max_width.colon=Max width:
 malilib.label.message_gap.colon=Message gap:
@@ -539,8 +541,6 @@ malilib.label.name_color_normal.colon=Name Color (normal):
 malilib.label.name_optional.colon=Name (optional):
 malilib.label.name_x_offset.colon=Name X Offset:
 malilib.label.name_y_offset.colon=Name Y Offset:
-malilib.label.named_action_alias_entry_widget.name=%s §8[%s > %s]
-malilib.label.named_action_entry_widget.name=%s §8[%s]
 malilib.label.none.brackets=<none>
 malilib.label.no=no
 malilib.label.off=off
@@ -594,6 +594,7 @@ malilib.message.config_overridden_off=%s is currently overridden to §cOFF§r
 malilib.message.config_overridden_on=%s is currently overridden to §aON§r
 
 malilib.message.error.action.action_name_exists=An action already exist by the name '%s'
+malilib.message.error.action.macro_add_actions_loop_detected=Error: Can't add the selected action(s), as they either directly or indirectly contain this macro itself! That would create an infinite loop when trying to save or execute the macro.
 malilib.message.error.action_screen_already_exists_by_name=Error: Action screen already exists by the name '%s'
 malilib.message.error.actions_edit.add_alias_select_one=To add an alias for an action, select exactly one action from the list!
 malilib.message.error.custom_hotkey_add.give_name=You must give a name for the custom hotkey!

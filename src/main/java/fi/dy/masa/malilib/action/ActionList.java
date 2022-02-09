@@ -47,7 +47,7 @@ public class ActionList
 
         for (MacroAction macro : Registry.ACTION_REGISTRY.getMacros())
         {
-            String name = "macro:" + macro.getRegistryName();
+            String name = macro.getRegistryName();
             String displayName = StringUtils.translate("malilib.label.actions.lists.macro", macro.getName());
             list.add(new ActionList(name, displayName, macro::getActionList));
         }

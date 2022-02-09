@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.action;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nullable;
 import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.registry.Registry;
@@ -21,6 +22,7 @@ public class AliasAction extends NamedAction
         super(ActionType.ALIAS, alias, action.getNameTranslationKey(), ALIAS_MOD_INFO);
 
         this.baseAction = action;
+        this.coloredDisplayNameTranslationKey = "malilib.label.name.action.alias_entry_widget_name";
     }
 
     @Override
@@ -30,19 +32,18 @@ public class AliasAction extends NamedAction
     }
 
     @Override
-    public StyledTextLine getWidgetDisplayName()
+    public StyledTextLine getColoredWidgetDisplayName()
     {
+        String name = this.getName();
         String originalName = this.baseAction.getName();
         String modName = this.baseAction.getModInfo().getModName();
-        return StyledTextLine.translate("malilib.label.named_action_alias_entry_widget.name",
-                                        this.getName(), modName, originalName);
+        return StyledTextLine.translate(this.coloredDisplayNameTranslationKey, name, modName, originalName);
     }
 
     @Override
     public List<StyledTextLine> getHoverInfo()
     {
         List<StyledTextLine> lines = new ArrayList<>();
-        String origRegName = this.baseAction.getRegistryName();
 
         lines.add(StyledTextLine.translate("malilib.hover_info.action.alias", this.getName()));
 
@@ -51,9 +52,12 @@ public class AliasAction extends NamedAction
             lines.add(StyledTextLine.translate("malilib.hover_info.action.registry_name", this.registryName));
         }
 
+        lines.add(StyledTextLine.translate("malilib.hover_info.action.mod", this.baseAction.getModInfo().getModName()));
         lines.add(StyledTextLine.translate("malilib.hover_info.action.base_action_name", this.baseAction.getName()));
         lines.add(StyledTextLine.translate("malilib.hover_info.action.display_name", this.baseAction.getDisplayName()));
-        lines.add(StyledTextLine.translate("malilib.hover_info.action.mod", this.baseAction.getModInfo().getModName()));
+        lines.add(StyledTextLine.translate("malilib.hover_info.action.action_type", this.type.getGroup().getDisplayName()));
+
+        String origRegName = this.baseAction.getRegistryName();
 
         if (origRegName != null)
         {
@@ -79,6 +83,7 @@ public class AliasAction extends NamedAction
         return obj;
     }
 
+    @Nullable
     public static AliasAction aliasActionFromJson(JsonObject obj)
     {
         NamedAction action = NamedAction.baseActionFromJson(obj);
@@ -88,25 +93,24 @@ public class AliasAction extends NamedAction
             return (AliasAction) action;
         }
 
-        String aliasName = "?";
-        NamedAction baseAction = null;
-
         if (JsonUtils.hasString(obj, "parent") &&
             JsonUtils.hasString(obj, "alias"))
         {
-            String regName = JsonUtils.getString(obj, "parent");
-            aliasName = JsonUtils.getString(obj, "alias");
-            baseAction = Registry.ACTION_REGISTRY.getAction(regName);
+            String parentRegName = JsonUtils.getString(obj, "parent");
+            String aliasName = JsonUtils.getString(obj, "alias");
+            NamedAction baseAction = Registry.ACTION_REGISTRY.getAction(parentRegName);
+
+            if (baseAction == null)
+            {
+                // Preserve entries in the config if the mod adding the action is temporarily disabled/removed
+                baseAction = new SimpleNamedAction("?", "?", ModInfo.NO_MOD, (ctx) -> ActionResult.PASS);
+                baseAction.setRegistryName(parentRegName);
+            }
+
+            return new AliasAction(aliasName, baseAction);
         }
 
-        if (baseAction == null)
-        {
-            // Preserve entries in the config file if a mod is temporarily disabled/removed, for example
-            // FIXME use a DummyAction that contains the JsonObject?
-            baseAction = new SimpleNamedAction(aliasName, aliasName, ModInfo.NO_MOD, (ctx) -> ActionResult.PASS);
-        }
-
-        return new AliasAction(aliasName, baseAction);
+        return null;
     }
 
     public static ModInfo createAliasModInfo()

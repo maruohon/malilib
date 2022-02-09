@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.gui.widget.list.entry.action;
 
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.action.AliasAction;
 import fi.dy.masa.malilib.action.NamedAction;
@@ -21,8 +21,8 @@ public class ActionListBaseActionEntryWidget extends BaseOrderableListEditEntryW
 {
     protected final GenericButton createAliasButton;
     protected final GenericButton removeActionButton;
-    @Nullable protected Consumer<NamedAction> actionRemoveFunction;
-    protected boolean addCreateAliasButton = true;
+    @Nullable protected BiConsumer<Integer, NamedAction> actionRemoveFunction;
+    protected boolean addCreateAliasButton;
     protected boolean addRemoveButton;
     protected boolean noRemoveButtons;
     protected int nextElementRight;
@@ -38,7 +38,7 @@ public class ActionListBaseActionEntryWidget extends BaseOrderableListEditEntryW
         this.useRemoveButton = false; // don't add the simple list remove button
         this.useMoveButtons = false;
 
-        StyledTextLine nameText = data.getWidgetDisplayName();
+        StyledTextLine nameText = data.getColoredWidgetDisplayName();
         this.setText(StyledTextUtils.clampStyledTextToMaxWidth(nameText, width - 20, LeftRight.RIGHT, " ..."));
 
         this.createAliasButton = GenericButton.simple(14, "malilib.button.label.action_list_screen_widget.create_alias",
@@ -48,8 +48,8 @@ public class ActionListBaseActionEntryWidget extends BaseOrderableListEditEntryW
         this.removeActionButton = GenericButton.createIconOnly(DefaultIcons.LIST_REMOVE_MINUS_13, this::removeAction);
         this.removeActionButton.translateAndAddHoverStrings("malilib.button.hover.list.remove");
 
+        this.getBorderRenderer().getHoverSettings().setBorderWidthAndColor(1, 0xFFF0B000);
         this.getBackgroundRenderer().getHoverSettings().setEnabled(false);
-        this.getBorderRenderer().getHoverSettings().setBorderWidthAndColor(1, 0xFFF0A000);
 
         this.getHoverInfoFactory().setTextLineProvider("action_info", data::getHoverInfo);
     }
@@ -101,7 +101,7 @@ public class ActionListBaseActionEntryWidget extends BaseOrderableListEditEntryW
         this.noRemoveButtons = true;
     }
 
-    public void setActionRemoveFunction(@Nullable Consumer<NamedAction> actionRemoveFunction)
+    public void setActionRemoveFunction(@Nullable BiConsumer<Integer, NamedAction> actionRemoveFunction)
     {
         this.actionRemoveFunction = actionRemoveFunction;
         this.addRemoveButton = true;
@@ -111,7 +111,7 @@ public class ActionListBaseActionEntryWidget extends BaseOrderableListEditEntryW
     {
         if (this.actionRemoveFunction != null)
         {
-            this.actionRemoveFunction.accept(this.data);
+            this.actionRemoveFunction.accept(this.originalListIndex, this.data);
             this.listWidget.refreshEntries();
         }
     }
@@ -120,7 +120,7 @@ public class ActionListBaseActionEntryWidget extends BaseOrderableListEditEntryW
     {
         TextInputScreen screen = new TextInputScreen("malilib.gui.prompt.title.create_alias_action", "",
                                                      this::addAlias, GuiUtils.getCurrentScreen());
-        screen.setLabelText("malilib.button.label.action.alias_name.colon");
+        screen.setLabelText("malilib.label.action.alias_name.colon");
         BaseScreen.openPopupScreen(screen);
     }
 

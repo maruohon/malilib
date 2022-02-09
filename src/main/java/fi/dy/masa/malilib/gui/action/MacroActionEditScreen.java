@@ -6,23 +6,22 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import com.google.common.collect.ImmutableList;
-import fi.dy.masa.malilib.action.AliasAction;
+import fi.dy.masa.malilib.action.ActionUtils;
 import fi.dy.masa.malilib.action.MacroAction;
 import fi.dy.masa.malilib.action.NamedAction;
 import fi.dy.masa.malilib.action.ParameterizableNamedAction;
-import fi.dy.masa.malilib.action.ParameterizedNamedAction;
-import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.BaseListEntryWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.action.ActionListBaseActionEntryWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.action.ParameterizableActionEntryWidget;
+import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
 import fi.dy.masa.malilib.registry.Registry;
+import fi.dy.masa.malilib.util.StringUtils;
 
 public class MacroActionEditScreen extends BaseActionListScreen
 {
-    protected final DataListWidget<NamedAction> rightSideListWidget;
     protected final ImmutableList<NamedAction> originalMacroActionsList;
     protected final List<NamedAction> macroActionsList;
     protected final LabelWidget macroActionsLabelWidget;
@@ -35,14 +34,15 @@ public class MacroActionEditScreen extends BaseActionListScreen
 
         this.macro = macro;
         this.originalMacroActionsList = macro.getActionList();
-        this.centerGap = 20;
 
         this.setTitle("malilib.gui.title.edit_macro");
 
-        this.macroActionsLabelWidget = new LabelWidget("malilib.gui.label.macro_edit_screen.macro_actions");
+        String label = StringUtils.translate("malilib.gui.label.macro_edit_screen.macro_actions", macro.getName());
+        this.macroActionsLabelWidget = new LabelWidget(label);
 
-        this.addActionsButton = GenericButton.createIconOnly(DefaultIcons.LIST_ADD_PLUS_13, this::addSelectedActions);
+        this.addActionsButton = GenericButton.simple(14, "malilib.button.label.macro_edit_screen.add_actions", this::addSelectedActions);
         this.addActionsButton.translateAndAddHoverString("malilib.hover_info.macro_edit_screen.add_actions");
+        this.addActionsButton.setEnabledStatusSupplier(this::canAddActions);
 
         this.leftSideListWidget.setEntryWidgetFactory(this::createMacroSourceActionsWidget);
         this.rightSideListWidget = this.createRightSideActionListWidget();
@@ -67,14 +67,14 @@ public class MacroActionEditScreen extends BaseActionListScreen
     {
         super.updateActionListScreenWidgetPositions(x, y, w);
 
-        x = this.leftSideListWidget.getRight();
-        y = this.leftSideListWidget.getY();
-        this.addActionsButton.setPosition(x + 3, y + 4);
+        this.addActionsButton.setY(y);
+        this.addActionsButton.setRight(this.leftSideListWidget.getRight());
 
-        x += this.centerGap;
+        x = this.leftSideListWidget.getRight() + this.centerGap;
+        y = this.leftSideListWidget.getY();
         int h = this.screenHeight - y - 6;
         this.rightSideListWidget.setPositionAndSize(x, y, w, h);
-        this.macroActionsLabelWidget.setPosition(x + 2, y - 12);
+        this.macroActionsLabelWidget.setPosition(x, y - 16);
     }
 
     @Override
@@ -87,12 +87,23 @@ public class MacroActionEditScreen extends BaseActionListScreen
         }
     }
 
+    protected boolean canAddActions()
+    {
+        return this.leftSideListWidget.getEntrySelectionHandler().getSelectedEntries().isEmpty() == false;
+    }
+
     protected void addSelectedActions()
     {
         Set<NamedAction> selectedActions = this.leftSideListWidget.getSelectedEntries();
 
         if (selectedActions.isEmpty() == false)
         {
+            if (ActionUtils.containsMacroLoop(this.macro, selectedActions))
+            {
+                MessageDispatcher.error("malilib.message.error.action.macro_add_actions_loop_detected");
+                return;
+            }
+
             this.macroActionsList.addAll(selectedActions);
             this.rightSideListWidget.refreshEntries();
         }
@@ -100,14 +111,25 @@ public class MacroActionEditScreen extends BaseActionListScreen
 
     protected boolean addAction(NamedAction action)
     {
+        if (ActionUtils.containsMacroLoop(this.macro, Collections.singletonList(action)))
+        {
+            MessageDispatcher.error("malilib.message.error.action.macro_add_actions_loop_detected");
+            return false;
+        }
+
         this.macroActionsList.add(action);
         this.rightSideListWidget.refreshEntries();
+
         return true;
     }
 
-    protected void removeAction(NamedAction action)
+    protected void removeAction(int originalListIndex, NamedAction action)
     {
-        this.macroActionsList.remove(action);
+        if (originalListIndex >= 0 && originalListIndex < this.macroActionsList.size())
+        {
+            this.macroActionsList.remove(originalListIndex);
+        }
+
         this.rightSideListWidget.getEntrySelectionHandler().clearSelection();
         this.rightSideListWidget.refreshEntries();
     }
@@ -159,7 +181,6 @@ public class MacroActionEditScreen extends BaseActionListScreen
                     x, y, width, height, listIndex, originalListIndex, data, listWidget);
             parWidget.setParameterizedActionConsumer(this::addAction);
             parWidget.setParameterizationButtonHoverText("malilib.button.hover.parameterize_action_for_macro");
-            setWidgetStartingStyleFrom(parWidget, "malilib.style.action_list_screen.widget.parameterizable");
             widget = parWidget;
         }
         else
@@ -168,27 +189,11 @@ public class MacroActionEditScreen extends BaseActionListScreen
                     x, y, width, height, listIndex, originalListIndex, data, listWidget);
         }
 
-        if (data instanceof MacroAction)
-        {
-            setWidgetStartingStyleFrom(widget, "malilib.style.action_list_screen.widget.macro");
-        }
-        else if (data instanceof AliasAction)
-        {
-            setWidgetStartingStyleFrom(widget, "malilib.style.action_list_screen.widget.alias");
-        }
-        else if (data instanceof ParameterizedNamedAction)
-        {
-            setWidgetStartingStyleFrom(widget, "malilib.style.action_list_screen.widget.parameterized");
-        }
-
-        widget.setAddCreateAliasButton(false);
-
         return widget;
     }
 
-    protected BaseListEntryWidget createMacroSourceActionsWidget(
-            int x, int y, int width, int height, int listIndex, int originalListIndex,
-            NamedAction data, DataListWidget<NamedAction> listWidget)
+    protected BaseListEntryWidget createMacroSourceActionsWidget(int x, int y, int width, int height,
+            int listIndex, int originalListIndex, NamedAction data, DataListWidget<NamedAction> listWidget)
     {
         ActionListBaseActionEntryWidget widget = this.createBaseMacroEditScreenActionWidget(
                 x, y, width, height, listIndex, originalListIndex, data, listWidget);
@@ -198,9 +203,8 @@ public class MacroActionEditScreen extends BaseActionListScreen
         return widget;
     }
 
-    protected BaseListEntryWidget createMacroMemberWidget(
-            int x, int y, int width, int height, int listIndex, int originalListIndex,
-            NamedAction data, DataListWidget<NamedAction> listWidget)
+    protected BaseListEntryWidget createMacroMemberWidget(int x, int y, int width, int height,
+            int listIndex, int originalListIndex, NamedAction data, DataListWidget<NamedAction> listWidget)
     {
         ActionListBaseActionEntryWidget widget = this.createBaseMacroEditScreenActionWidget(
                 x, y, width, height, listIndex, originalListIndex, data, listWidget);
