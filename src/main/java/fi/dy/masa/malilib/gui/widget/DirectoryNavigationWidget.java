@@ -183,8 +183,8 @@ public class DirectoryNavigationWidget extends SearchBarWidget
             name = dir.getName();
         }
 
-        // The partition root on windows returns an empty string... ('C:\' -> '')
-        if (name.length() == 0)
+        // The partition root on Windows returns an empty string... ('C:\' -> '')
+        if (name == null || name.length() == 0)
         {
             name = dir.toString();
         }

@@ -9,7 +9,7 @@ import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.config.option.FileConfig;
 import fi.dy.masa.malilib.gui.BaseScreen;
-import fi.dy.masa.malilib.gui.DirectorySelectorScreen;
+import fi.dy.masa.malilib.gui.FileSelectorScreen;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
@@ -134,7 +134,7 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
         button.setHoverStringProvider("locked", config::getLockAndOverrideMessages, 101);
         button.setEnabled(config.isLocked() == false);
         button.setActionListener(() -> {
-            DirectorySelectorScreen browserScreen = screenFactory.create();
+            FileSelectorScreen browserScreen = screenFactory.create();
             browserScreen.setParent(GuiUtils.getCurrentScreen());
             BaseScreen.openScreen(browserScreen);
         });
@@ -170,6 +170,6 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
 
     public interface FileSelectorScreenFactory
     {
-        DirectorySelectorScreen create();
+        FileSelectorScreen create();
     }
 }

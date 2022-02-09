@@ -110,12 +110,15 @@ malilib.label.button.cancel=Cancel
 malilib.label.button.edit=Edit
 malilib.label.button.ok.colored=§aOK
 malilib.label.button.reset=Reset
+malilib.label.button.save_to_file=Save to File
 
 malilib.hover.button.create_alias_for_action=Create an alias action, which is basically just a different (shorter/easier) name for the action. This is only useful if you want to run the action often via the Action Prompt by typing in the name to search for it.
 malilib.hover.button.list.remove=Remove
 malilib.hover.button.parameterize_action=Create a new copy of the action with the string argument already bound to a given value. This allows directly executing that action without having to input the string argument via the text input prompt screen.
 malilib.hover.button.parameterize_action_for_macro=Create a new copy of the action with the string argument already bound to a given value. This allows directly executing that action without having to input the string argument via the text input prompt screen.\n<c=da0>Note: This button only adds the parameterized action to this macro, it does not get added to the registry and won't be available in the global list.
 malilib.hover.button.re_parameterize_action_for_macro=Create a new parameterized copy of the action with the string argument bound to a new given value. This old version of the action will be removed and replaced with the newly created action with the given name and argument.
+malilib.message.error.failed_to_write_string_to_file=Failed to write the string to file '%s'
+malilib.message.error.file_already_exists_hold_shift_to_override=File already exists. Hold shift when clicking the save button to override the existing file.
 
 malilib.gui.prompt.title.create_alias_action=Create an alias action
 malilib.gui.prompt.title.parameterize_action=Create a parameterized copy of the action

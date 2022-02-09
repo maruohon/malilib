@@ -19,8 +19,8 @@ public class DirectoryConfigWidget extends BaseConfigOptionWidget<File, Director
     {
         super.reAddSubWidgets();
 
-        File file = FileUtils.getCanonicalFileIfPossible(this.config.getValue().getAbsoluteFile());
-        final File rootDir = new File("/");
+        final File rootDir = FileUtils.getRootDirectory();
+        final File file = FileUtils.getCanonicalFileIfPossible(this.config.getValue().getAbsoluteFile());
         final File dir = file == null || file.isDirectory() == false ? (file != null ? file.getParentFile() : rootDir) : file;
 
         FileSelectorScreenFactory factory = () -> new DirectorySelectorScreen(dir, rootDir, (d) -> {

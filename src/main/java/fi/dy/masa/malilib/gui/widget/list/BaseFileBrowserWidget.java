@@ -47,9 +47,6 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
 {
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    public static final FileFilter ALWAYS_FALSE_FILE_FILTER = (file) -> false;
-    public static final FileFilter ALWAYS_TRUE_FILE_FILTER = File::isFile;
-
     protected final Map<Pair<File, FileFilter>, List<File>> directoryContentsCache = new HashMap<>();
     protected final Map<File, Integer> keyboardNavigationPositions = new HashMap<>();
     protected final Set<File> operatedOnFiles = new HashSet<>();
@@ -58,7 +55,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     @Nullable protected final DirectoryCache cache;
     @Nullable protected String rootDirectoryDisplayName;
     protected FileFilter directoryFilter = FileUtils.DIRECTORY_FILTER;
-    protected FileFilter fileFilter = ALWAYS_FALSE_FILE_FILTER;
+    protected FileFilter fileFilter = FileUtils.ALWAYS_FALSE_FILEFILTER;
     protected String browserContext;
     protected File currentDirectory;
     protected boolean allowFileOperations;
@@ -107,7 +104,6 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         this.activeSortColumn = DirectoryEntryWidget.NAME_COLUMN;
         this.defaultSortColumn = DirectoryEntryWidget.NAME_COLUMN;
         this.setColumnSupplier(this::createFileBrowserColumns);
-        this.setAllowFileOperations(true); // FIXME debug remove
 
         this.setEntryWidgetFactory((wx, wy, ww, wh, li, oi, entry, lw) ->
                                     new DirectoryEntryWidget(wx, wy, ww, wh, li, oi, entry, this, iconProvider));

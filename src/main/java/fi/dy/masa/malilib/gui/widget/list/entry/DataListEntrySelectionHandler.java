@@ -36,7 +36,7 @@ public class DataListEntrySelectionHandler<DATATYPE>
         this.allowMultiSelection = allowMultiSelection;
     }
 
-    public DataListEntrySelectionHandler<DATATYPE> setSelectionListener(SelectionListener<DATATYPE> listener)
+    public DataListEntrySelectionHandler<DATATYPE> setSelectionListener(@Nullable SelectionListener<DATATYPE> listener)
     {
         this.selectionListener = listener;
         return this;

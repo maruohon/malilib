@@ -4,6 +4,7 @@ import java.io.File;
 import fi.dy.masa.malilib.config.option.FileConfig;
 import fi.dy.masa.malilib.gui.FileSelectorScreen;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
+import fi.dy.masa.malilib.util.FileUtils;
 
 public class FileConfigWidget extends BaseConfigOptionWidget<File, FileConfig>
 {
@@ -18,8 +19,8 @@ public class FileConfigWidget extends BaseConfigOptionWidget<File, FileConfig>
     {
         super.reAddSubWidgets();
 
-        File file = this.config.getValue().getAbsoluteFile();
-        final File rootDir = new File("/");
+        final File rootDir = FileUtils.getRootDirectory();
+        final File file = this.config.getValue().getAbsoluteFile();
         final File dir = file == null || file.isDirectory() == false ? (file != null ? file.getParentFile() : rootDir) : file;
 
         FileSelectorScreenFactory factory = () -> new FileSelectorScreen(dir, rootDir, (d) -> {
