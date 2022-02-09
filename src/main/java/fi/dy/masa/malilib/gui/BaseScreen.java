@@ -127,7 +127,7 @@ public abstract class BaseScreen extends GuiScreen
     public BaseScreen setParent(@Nullable GuiScreen parent)
     {
         // Don't allow nesting the GUI with itself...
-        if (parent == null || parent.getClass() != this.getClass())
+        if (parent != this)
         {
             this.parent = parent;
         }

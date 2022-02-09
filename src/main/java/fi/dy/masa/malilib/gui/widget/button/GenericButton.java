@@ -237,6 +237,11 @@ public class GenericButton extends BaseButton
         return button;
     }
 
+    public static GenericButton simple(int height, String translationKey)
+    {
+        return new GenericButton(height, translationKey);
+    }
+
     public static GenericButton simple(int height, String translationKey, EventListener actionListener)
     {
         GenericButton button = new GenericButton(height, translationKey);

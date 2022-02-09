@@ -10,6 +10,9 @@ import fi.dy.masa.malilib.action.ActionUtils;
 import fi.dy.masa.malilib.action.MacroAction;
 import fi.dy.masa.malilib.action.NamedAction;
 import fi.dy.masa.malilib.action.ParameterizableNamedAction;
+import fi.dy.masa.malilib.action.ParameterizedNamedAction;
+import fi.dy.masa.malilib.gui.BaseScreen;
+import fi.dy.masa.malilib.gui.DualTextInputScreen;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
@@ -40,7 +43,7 @@ public class MacroActionEditScreen extends BaseActionListScreen
         String label = StringUtils.translate("malilib.gui.label.macro_edit_screen.macro_actions", macro.getName());
         this.macroActionsLabelWidget = new LabelWidget(label);
 
-        this.addActionsButton = GenericButton.simple(14, "malilib.button.label.macro_edit_screen.add_actions", this::addSelectedActions);
+        this.addActionsButton = GenericButton.simple(14, "malilib.label.button.macro_edit_screen.add_actions", this::addSelectedActions);
         this.addActionsButton.translateAndAddHoverString("malilib.hover_info.macro_edit_screen.add_actions");
         this.addActionsButton.setEnabledStatusSupplier(this::canAddActions);
 
@@ -158,6 +161,44 @@ public class MacroActionEditScreen extends BaseActionListScreen
         }
     }
 
+    protected void openParameterizedActionEditScreen(int originalListIndex)
+    {
+        if (originalListIndex >= 0 && originalListIndex < this.macroActionsList.size())
+        {
+            NamedAction action = this.macroActionsList.get(originalListIndex);
+
+            if (action instanceof ParameterizedNamedAction)
+            {
+                ParameterizedNamedAction parAction = (ParameterizedNamedAction) action;
+                DualTextInputScreen screen = ParameterizableActionEntryWidget.createParameterizationPrompt(
+                        action.getName(), parAction.getArgument(),
+                        (str1, str2) -> this.editParameterizedAction(originalListIndex, parAction, str1, str2));
+                BaseScreen.openPopupScreen(screen);
+            }
+        }
+    }
+
+    protected boolean editParameterizedAction(int originalListIndex,
+                                              ParameterizedNamedAction originalAction,
+                                              String newName,
+                                              String newArgument)
+    {
+        NamedAction newAction = originalAction.createCopy(newName, newArgument);
+        return this.editParameterizedAction(originalListIndex, newAction);
+    }
+
+    protected boolean editParameterizedAction(int originalListIndex, NamedAction action)
+    {
+        if (originalListIndex >= 0 && originalListIndex < this.macroActionsList.size())
+        {
+            this.macroActionsList.set(originalListIndex, action);
+            this.rightSideListWidget.refreshEntries();
+            return true;
+        }
+
+        return false;
+    }
+
     @Override
     protected DataListWidget<NamedAction> createRightSideActionListWidget()
     {
@@ -180,7 +221,7 @@ public class MacroActionEditScreen extends BaseActionListScreen
             ParameterizableActionEntryWidget parWidget = new ParameterizableActionEntryWidget(
                     x, y, width, height, listIndex, originalListIndex, data, listWidget);
             parWidget.setParameterizedActionConsumer(this::addAction);
-            parWidget.setParameterizationButtonHoverText("malilib.button.hover.parameterize_action_for_macro");
+            parWidget.setParameterizationButtonHoverText("malilib.hover.button.parameterize_action_for_macro");
             widget = parWidget;
         }
         else
@@ -208,6 +249,16 @@ public class MacroActionEditScreen extends BaseActionListScreen
     {
         ActionListBaseActionEntryWidget widget = this.createBaseMacroEditScreenActionWidget(
                 x, y, width, height, listIndex, originalListIndex, data, listWidget);
+
+        if (data instanceof ParameterizedNamedAction)
+        {
+            widget.setActionEditFunction((i, a) -> this.openParameterizedActionEditScreen(i));
+            widget.setEditButtonHoverText("malilib.hover.button.re_parameterize_action_for_macro");
+        }
+        else if (data instanceof MacroAction)
+        {
+            widget.setActionEditFunction((i, a) -> ActionListBaseActionEntryWidget.editMacro(a));
+        }
 
         widget.setCanReOrder(true);
         widget.setActionRemoveFunction(this::removeAction);

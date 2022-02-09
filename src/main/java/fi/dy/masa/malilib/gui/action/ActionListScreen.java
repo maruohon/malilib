@@ -15,6 +15,7 @@ import fi.dy.masa.malilib.gui.TextInputScreen;
 import fi.dy.masa.malilib.gui.widget.DropDownListWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
+import fi.dy.masa.malilib.gui.widget.list.entry.action.ActionListBaseActionEntryWidget;
 import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.util.StringUtils;
 
@@ -34,7 +35,7 @@ public class ActionListScreen extends BaseActionListScreen
         this.userAddedActionTypesDropdown.setSelectionListener((t) -> this.initScreen());
         this.userAddedActionTypesDropdown.addHoverStrings("malilib.hover_info.action_types_explanation");
 
-        this.addMacroButton = GenericButton.simple(14, "malilib.button.label.action_list_screen.create_macro", this::openMacroNameInput);
+        this.addMacroButton = GenericButton.simple(14, "malilib.label.button.action_list_screen.create_macro", this::openMacroNameInput);
         this.addMacroButton.translateAndAddHoverString("malilib.gui.hover.action_list_screen.create_macro");
         this.addMacroButton.setEnabledStatusSupplier(this::canCreateMacro);
 
@@ -103,17 +104,15 @@ public class ActionListScreen extends BaseActionListScreen
         Set<NamedAction> actions = this.leftSideListWidget.getSelectedEntries();
         MacroAction macro = new MacroAction(macroName, ImmutableList.copyOf(actions));
 
-        if (Registry.ACTION_REGISTRY.addMacro(macro) == false)
+        if (Registry.ACTION_REGISTRY.addMacro(macro))
         {
-            return false;
+            this.leftSideListWidget.getEntrySelectionHandler().clearSelection();
+            ActionListBaseActionEntryWidget.editMacro(macro);
+            
+            return true;
         }
 
-        this.leftSideListWidget.getEntrySelectionHandler().clearSelection();
-        MacroActionEditScreen screen = new MacroActionEditScreen(macro);
-        screen.setParent(this);
-        BaseScreen.openScreen(screen);
-
-        return true;
+        return false;
     }
 
     public static BaseTabbedScreen createActionListScreen(@Nullable GuiScreen currentScreen)

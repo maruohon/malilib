@@ -79,6 +79,11 @@ public class ParameterizedNamedAction extends NamedAction
         return obj;
     }
 
+    public ParameterizedNamedAction createCopy(String newName, String newArgument)
+    {
+        return this.baseAction.parameterize(newName, newArgument);
+    }
+
     @Nullable
     public static ParameterizedNamedAction parameterizedActionFromJson(JsonObject obj)
     {

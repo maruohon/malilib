@@ -90,14 +90,13 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
 
         int x = this.getX();
         int y = this.getY();
-        int middleY = this.getY() + this.getHeight() / 2;
-        int buttonY = middleY - this.addButton.getHeight() / 2;
 
         this.draggableRegionEndX = this.getRight();
 
         if (this.labelWidget != null)
         {
-            this.labelWidget.setPosition(x + 3, middleY - this.labelWidget.getHeight() / 2);
+            this.labelWidget.setX(x + 3);
+            this.labelWidget.centerVerticallyInside(this);
             this.nextWidgetX = this.labelWidget.getRight() + 4;
         }
 
@@ -105,22 +104,26 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
 
         if (this.useAddButton)
         {
-            this.addButton.setPosition(this.nextWidgetX, buttonY);
+            this.addButton.setX(this.nextWidgetX);
+            this.addButton.centerVerticallyInside(this);
             this.nextWidgetX = this.addButton.getRight() + 2;
         }
 
         if (this.useRemoveButton)
         {
-            this.removeButton.setPosition(this.nextWidgetX, buttonY);
+            this.removeButton.setX(this.nextWidgetX);
+            this.removeButton.centerVerticallyInside(this);
             this.nextWidgetX = this.removeButton.getRight() + 2;
         }
 
         if (this.useMoveButtons)
         {
-            this.upButton.setPosition(this.nextWidgetX, buttonY);
+            this.upButton.setX(this.nextWidgetX);
+            this.upButton.centerVerticallyInside(this);
             this.nextWidgetX = this.upButton.getRight() + 2;
 
-            this.downButton.setPosition(this.nextWidgetX, buttonY);
+            this.downButton.setX(this.nextWidgetX);
+            this.downButton.centerVerticallyInside(this);
             this.nextWidgetX = this.downButton.getRight() + 2;
         }
 

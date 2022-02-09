@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.gui.widget.list.entry.action;
 
+import java.util.function.BiFunction;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.action.NamedAction;
 import fi.dy.masa.malilib.action.ParameterizableNamedAction;
@@ -32,7 +33,7 @@ public class ParameterizableActionEntryWidget extends ActionListBaseActionEntryW
         this.setText(StyledTextUtils.clampStyledTextToMaxWidth(nameText, width - 20, LeftRight.RIGHT, " ..."));
 
         this.parameterizedActionConsumer = Registry.ACTION_REGISTRY::addParameterizedAction;
-        this.parameterizeButton = GenericButton.simple(14, "malilib.button.label.action_list_screen_widget.parameterize",
+        this.parameterizeButton = GenericButton.simple(14, "malilib.label.button.action_list_screen_widget.parameterize",
                                                        this::openParameterizationPrompt);
 
         this.getBackgroundRenderer().getHoverSettings().setEnabled(false);
@@ -71,15 +72,24 @@ public class ParameterizableActionEntryWidget extends ActionListBaseActionEntryW
 
     protected void openParameterizationPrompt()
     {
+        DualTextInputScreen screen = createParameterizationPrompt("", "", this::parameterizeAction);
+        BaseScreen.openPopupScreen(screen);
+    }
+
+    public static DualTextInputScreen createParameterizationPrompt(String name, String arg,
+                                                                   BiFunction<String, String, Boolean> consumer)
+    {
         DualTextInputScreen screen = new DualTextInputScreen("malilib.gui.prompt.title.parameterize_action",
-                                                             "", "", this::parameterizeAction);
+                                                             name, arg, consumer);
+
         String part1 = StringUtils.translate("malilib.info.action.create_parameterized_copy");
         String part2 = StringUtils.translate("malilib.info.action.action_name_immutable");
         screen.setInfoText(StyledText.of(part1 + "\n\n" + part2));
         screen.setLabelText("malilib.label.action.parameterized_action_name");
         screen.setLabelText2("malilib.label.action.parameterized_action_argument");
         screen.setParent(GuiUtils.getCurrentScreen());
-        BaseScreen.openPopupScreen(screen);
+
+        return screen;
     }
 
     protected boolean parameterizeAction(String name, String arg)

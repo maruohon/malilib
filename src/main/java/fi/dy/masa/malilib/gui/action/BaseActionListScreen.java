@@ -16,7 +16,6 @@ import fi.dy.masa.malilib.gui.ScreenTab;
 import fi.dy.masa.malilib.gui.widget.DropDownListWidget;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.action.ActionListBaseActionEntryWidget;
-import fi.dy.masa.malilib.gui.widget.list.entry.action.MacroActionEntryWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.action.ParameterizableActionEntryWidget;
 import fi.dy.masa.malilib.registry.Registry;
 
@@ -137,13 +136,8 @@ public abstract class BaseActionListScreen extends BaseMultiListScreen
         {
             ParameterizableActionEntryWidget parWidget = new ParameterizableActionEntryWidget(
                     x, y, width, height, listIndex, originalListIndex, data, listWidget);
-            parWidget.setParameterizationButtonHoverText("malilib.button.hover.parameterize_action");
+            parWidget.setParameterizationButtonHoverText("malilib.hover.button.parameterize_action");
             widget = parWidget;
-        }
-        else if (data instanceof MacroAction)
-        {
-            widget = new MacroActionEntryWidget(x, y, width, height, listIndex, originalListIndex, data, listWidget);
-            widget.setActionRemoveFunction((i, a) -> this.removeAction(a, Registry.ACTION_REGISTRY::removeMacro));
         }
         else
         {
@@ -153,6 +147,11 @@ public abstract class BaseActionListScreen extends BaseMultiListScreen
             if (data instanceof AliasAction)
             {
                 widget.setActionRemoveFunction((i, a) -> this.removeAction(a, Registry.ACTION_REGISTRY::removeAlias));
+            }
+            else if (data instanceof MacroAction)
+            {
+                widget.setActionEditFunction((i, a) -> ActionListBaseActionEntryWidget.editMacro(a));
+                widget.setActionRemoveFunction((i, a) -> this.removeAction(a, Registry.ACTION_REGISTRY::removeMacro));
             }
             else if (data instanceof ParameterizedNamedAction)
             {
