@@ -78,7 +78,6 @@ public class BaseWidget
         this.textRenderer = TextRenderer.INSTANCE;
         this.padding.setChangeListener(this::updateSize);
         this.textOffset.setXOffset(4);
-        this.textOffset.setYOffset(1);
 
         this.automaticWidth = width < 0;
         this.automaticHeight = height < 0;

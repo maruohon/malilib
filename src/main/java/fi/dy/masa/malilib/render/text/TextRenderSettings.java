@@ -13,7 +13,7 @@ public class TextRenderSettings
 
     public TextRenderSettings()
     {
-        this.lineHeight = TextRenderer.INSTANCE.getFontHeight() + 2;
+        this.lineHeight = TextRenderer.INSTANCE.getLineHeight();
     }
 
     public boolean getBackgroundEnabled()
@@ -104,6 +104,6 @@ public class TextRenderSettings
         this.backgroundColor = JsonUtils.getIntegerOrDefault(obj, "bg_color", 0xA0505050);
         this.textShadowEnabled = JsonUtils.getBooleanOrDefault(obj, "text_shadow", true);
         this.textColor = JsonUtils.getIntegerOrDefault(obj, "text_color", 0xFFFFFFFF);
-        this.lineHeight = JsonUtils.getIntegerOrDefault(obj, "line_height", TextRenderer.INSTANCE.getFontHeight() + 2);
+        this.lineHeight = JsonUtils.getIntegerOrDefault(obj, "line_height", TextRenderer.INSTANCE.getLineHeight());
     }
 }

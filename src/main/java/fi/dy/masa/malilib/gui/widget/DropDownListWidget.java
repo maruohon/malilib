@@ -871,7 +871,7 @@ public class DropDownListWidget<T> extends ContainerWidget
 
             StyledTextLine text = this.isMouseOver(ctx.mouseX, ctx.mouseY) ? this.displayStringFull : this.displayStringClamped;
             int tx = x + 4;
-            int ty = y + (this.getHeight() - this.getFontHeight()) / 2 + 1;
+            int ty = y + (this.getHeight() - this.getFontHeight()) / 2;
 
             if (this.iconWidget != null)
             {
@@ -1039,7 +1039,7 @@ public class DropDownListWidget<T> extends ContainerWidget
 
             StyledTextLine text = this.isMouseOver(ctx.mouseX, ctx.mouseY) ? this.displayStringFull : this.displayStringClamped;
             int tx = this.iconWidget != null ? this.iconWidget.getRight() + 4 : x + 4;
-            int ty = y + (this.getHeight() - this.getFontHeight()) / 2 + 1;
+            int ty = y + (this.getHeight() - this.getFontHeight()) / 2;
 
             this.renderTextLine(tx, ty, z, this.textColor, true, ctx, text);
         }

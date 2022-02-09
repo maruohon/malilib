@@ -58,7 +58,7 @@ public class TextRenderer implements IResourceManagerReloadListener
     protected boolean unicode;
     protected boolean buildingStyleBuffer;
     protected boolean buildingTextBuffer;
-    protected int fontHeight = 9;
+    protected int fontHeight = 8;
     protected int lineHeight = 10;
     protected int asciiGlyphWidth = 8;
     protected int asciiGlyphHeight = 8;
@@ -438,7 +438,7 @@ public class TextRenderer implements IResourceManagerReloadListener
         if (style.underline)
         {
             float lineHeight = this.unicode ? 0.5F : 1.0F;
-            ShapeRenderUtils.renderRectangle(x - 1F, y + this.fontHeight - 1F, z,
+            ShapeRenderUtils.renderRectangle(x - 1F, y + this.fontHeight, z,
                                              segment.renderWidth, lineHeight, color, this.styleBuffer);
         }
 

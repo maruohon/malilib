@@ -294,12 +294,12 @@ public abstract class InteractableWidget extends BackgroundWidget
     {
         if (this.text != null)
         {
-            x = this.getTextPositionX(x, this.text.renderWidth);
-            y = this.getTextPositionY(y);
+            int textX = this.getTextPositionX(x, this.text.renderWidth);
+            int textY = this.getTextPositionY(y);
             int color = this.getTextColorForRender(hovered);
             boolean shadow = this.getTextSettings().getTextShadowEnabled();
 
-            this.renderTextLine(x, y, z + 0.0125f, color, shadow, ctx, this.text);
+            this.renderTextLine(textX, textY, z + 0.0125f, color, shadow, ctx, this.text);
         }
     }
 

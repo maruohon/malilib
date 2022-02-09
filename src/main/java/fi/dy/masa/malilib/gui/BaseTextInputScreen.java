@@ -106,7 +106,7 @@ public abstract class BaseTextInputScreen extends BaseScreen
     protected void updateTextHeightOffset()
     {
         this.elementsOffsetY = 0;
-        int lineHeight = TextRenderer.INSTANCE.getFontHeight() + 1;
+        int lineHeight = TextRenderer.INSTANCE.getLineHeight();
 
         if (this.infoText != null)
         {

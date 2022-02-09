@@ -219,7 +219,7 @@ public class StringListRenderer extends BaseWidget
         StyledTextLine clampedLine = line;
         int lineWidth = line.renderWidth;
         int lineHeight = this.getLineHeight();
-        this.totalTextHeight += this.processedLinesFull.size() > 0 ? lineHeight : TextRenderer.INSTANCE.getFontHeight();
+        this.totalTextHeight += this.processedLinesFull.size() > 0 ? lineHeight : TextRenderer.INSTANCE.getLineHeight();
         this.totalTextWidth = Math.max(this.totalTextWidth, lineWidth);
         this.processedLinesFull.add(line);
 
@@ -267,7 +267,7 @@ public class StringListRenderer extends BaseWidget
         int color = settings.getTextColor();
         int bgColorNormal = settings.getBackgroundColor();
         int bgColorOdd = oddEvenBackground ? settings.getOddRowBackgroundColor() : bgColorNormal;
-        int usedHeight = TextRenderer.INSTANCE.getFontHeight();
+        int usedHeight = TextRenderer.INSTANCE.getLineHeight();
         int width = hovered ? this.getTotalRenderWidth() : this.getClampedRenderWidth();
         int leftPadding = this.padding.getLeft();
         int rightPadding = this.padding.getRight();

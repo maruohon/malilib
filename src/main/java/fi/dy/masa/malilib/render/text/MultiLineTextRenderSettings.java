@@ -11,7 +11,7 @@ public class MultiLineTextRenderSettings extends TextRenderSettings
 
     public MultiLineTextRenderSettings()
     {
-        this.lineHeight = TextRenderer.INSTANCE.getFontHeight() + 2;
+        this.lineHeight = TextRenderer.INSTANCE.getLineHeight();
     }
 
     public boolean getOddEvenBackgroundEnabled()
