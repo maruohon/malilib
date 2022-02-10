@@ -23,6 +23,7 @@ public class ActionListScreen extends BaseActionListScreen
 {
     protected final DropDownListWidget<ActionGroup> userAddedActionTypesDropdown;
     protected final GenericButton addMacroButton;
+    protected final GenericButton executeActionButton;
 
     public ActionListScreen()
     {
@@ -36,8 +37,12 @@ public class ActionListScreen extends BaseActionListScreen
         this.userAddedActionTypesDropdown.addHoverStrings("malilib.hover_info.action_types_explanation");
 
         this.addMacroButton = GenericButton.simple(14, "malilib.label.button.action_list_screen.create_macro", this::openMacroNameInput);
-        this.addMacroButton.translateAndAddHoverString("malilib.gui.hover.action_list_screen.create_macro");
+        this.addMacroButton.translateAndAddHoverString("malilib.hover.button.action_list_screen.create_macro");
         this.addMacroButton.setEnabledStatusSupplier(this::canCreateMacro);
+
+        this.executeActionButton = GenericButton.simple(14, "malilib.label.button.action_list_screen.execute_action", this::executeSelectedAction);
+        this.executeActionButton.translateAndAddHoverString("malilib.hover.button.action_list_screen.execute_action");
+        this.executeActionButton.setEnabledStatusSupplier(this::canExecuteAction);
 
         this.rightSideListWidget = this.createRightSideActionListWidget();
     }
@@ -48,6 +53,7 @@ public class ActionListScreen extends BaseActionListScreen
         super.addActionListScreenWidgets();
 
         this.addWidget(this.addMacroButton);
+        this.addWidget(this.executeActionButton);
         this.addWidget(this.userAddedActionTypesDropdown);
         this.addListWidget(this.rightSideListWidget);
     }
@@ -57,14 +63,21 @@ public class ActionListScreen extends BaseActionListScreen
     {
         super.updateActionListScreenWidgetPositions(x, y, w);
 
-        this.addMacroButton.setY(y);
-        this.addMacroButton.setRight(this.leftSideListWidget.getRight());
+        this.executeActionButton.setX(x);
 
-        x = this.leftSideListWidget.getRight() + this.centerGap;
+        x = this.leftSideListWidget.getRight();
+        this.addMacroButton.setRight(x);
+        this.addMacroButton.setY(y);
+
+        x += this.centerGap;
         y = this.leftSideListWidget.getY();
-        int h = this.screenHeight - y - 6;
-        this.rightSideListWidget.setPositionAndSize(x, y, w, h);
+        int h = this.screenHeight - y;
+
+        this.leftSideListWidget.setHeight(h - 22);
+        this.executeActionButton.setY(this.leftSideListWidget.getBottom() + 2);
+
         this.userAddedActionTypesDropdown.setPosition(x, y - 16);
+        this.rightSideListWidget.setPositionAndSize(x, y, w, h - 6);
     }
 
     @Override
@@ -87,6 +100,21 @@ public class ActionListScreen extends BaseActionListScreen
     protected boolean canCreateMacro()
     {
         return this.leftSideListWidget.getEntrySelectionHandler().getSelectedEntries().isEmpty() == false;
+    }
+
+    protected boolean canExecuteAction()
+    {
+        return this.leftSideListWidget.getEntrySelectionHandler().getSelectedEntries().size() == 1;
+    }
+
+    protected void executeSelectedAction()
+    {
+        NamedAction action = this.leftSideListWidget.getEntrySelectionHandler().getLastSelectedEntry();
+
+        if (action != null)
+        {
+            action.execute();
+        }
     }
 
     protected void openMacroNameInput()

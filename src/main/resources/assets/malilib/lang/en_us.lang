@@ -101,6 +101,8 @@ malilib.hotkey.name.scrollvalueadjustdecrease=Scroll Adjust Decrease
 malilib.hotkey.name.scrollvalueadjustincrease=Scroll Adjust Increase
 malilib.hotkey.name.scrollvalueadjustmodifier=Scroll Adjust Enable
 
+malilib.hover.button.action_list_screen.create_macro=Create a Macro Action (or a "favorite actions list").\n- Select one or more actions from the list on the left.\n- You can hold Ctrl and/or Shift to select multiple entries.\n- Macros are basically just action lists.\n- Executing a macro runs all the actions on the list, in order.\n- The action lists/macros can also be used in the Action Prompt screen to "pre-filter" the list of shown actions.
+malilib.hover.button.action_list_screen.execute_action=Execute the selected action
 malilib.hover.button.create_alias_for_action=Create an alias action, which is basically just a different (shorter/easier) name for the action. This is only useful if you want to run the action often via the Action Prompt by typing in the name to search for it.
 malilib.hover.button.export_import_screen.copy_to_clipboard=Copy the string from the text field to the clipboard
 malilib.hover.button.export_import_screen.paste_from_clipboard=Paste the contents of the clipboard to the text field
@@ -114,6 +116,7 @@ malilib.hover.button.re_parameterize_action_for_macro=Create a new parameterized
 malilib.hover.macro_action_export_import_screen.append_overwrite=- Append = add the actions from the imported macro to the end of the current actions in the macro\n- Overwrite = replace all the actions in the macro with the imported actions
 
 malilib.label.button.action_list_screen.create_macro=Create Macro
+malilib.label.button.action_list_screen.execute_action=Execute
 malilib.label.button.action_list_screen_widget.create_alias=Alias
 malilib.label.button.action_list_screen_widget.parameterize=Parameterize
 
@@ -296,7 +299,6 @@ malilib.label.cancel_condition.never=Never
 malilib.label.cancel_condition.on_failure=On Failure
 malilib.label.cancel_condition.on_success=On Success
 
-malilib.gui.hover.action_list_screen.create_macro=Create a Macro / Favorite actions list.\nSelect one or more actions from the list on the left, hold Ctrl and/or Shift to select multiple entries.\nMacros are basically the same thing as action lists. If you run a macro, it just executes all the actions on the list.\nThe action lists/macros can also be used in the Action Prompt screen to "pre-filter" the list of shown actions.
 malilib.gui.hover.action_prompt_screen.remember_search_text=Remember the search text
 malilib.gui.hover.action_prompt_screen.search_display_name=Also search against the display names of the actions, and not just against the "internal name"
 malilib.gui.hover.action_prompt_screen.use_fuzzy_search=Use "fuzzy search". In this mode all the characters from the search text must appear in the result in the correct order, but there can be other characters between them.
