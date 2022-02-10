@@ -559,7 +559,7 @@ public abstract class BaseScreen extends GuiScreen
             return true;
         }
 
-        if (this.canDragMove)
+        if (this.canDragMove && this.isMouseOver(mouseX, mouseY))
         {
             this.dragStartOffset = new Vec2i(mouseX - this.getX(),  mouseY - this.getY());
             this.dragging = true;
@@ -626,6 +626,12 @@ public abstract class BaseScreen extends GuiScreen
         }
 
         return false;
+    }
+
+    public boolean isMouseOver(int mouseX, int mouseY)
+    {
+        return mouseX >= this.x && mouseX <= this.x + this.screenWidth &&
+               mouseY >= this.y && mouseY <= this.y + this.screenHeight;
     }
 
     public boolean onKeyTyped(int keyCode, int scanCode, int modifiers)
