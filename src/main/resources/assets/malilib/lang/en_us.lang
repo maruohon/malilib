@@ -169,12 +169,11 @@ malilib.hover_info.action.action_type=§8Type: <c=aaa>%s
 malilib.hover_info.action.alias=§8Alias: §7%s
 malilib.hover_info.action.argument.colon=§8Argument:§7 
 malilib.hover_info.action.base_action_name=§8Base action name: §7%s
-malilib.hover_info.action.base_action_registry_name=§8Base action registry name: §7%s
+malilib.hover_info.action.base_action_registry_name=§8Base action reg.name: §7%s
 malilib.hover_info.action.contained_actions=§8Contained actions (§b%s§8):
 malilib.hover_info.action.display_name=§8Display name: §7%s
 malilib.hover_info.action.mod=§8Mod: §7%s
 malilib.hover_info.action.name=§8Name: §7%s
-malilib.hover_info.action.original_registry_name=§8Original registry name: §7%s
 malilib.hover_info.action.registry_name=§8Registry name: §7%s
 malilib.hover_info.action_widget_screen.close_screen_on_execute=Close the screen when an action is executed
 malilib.hover_info.action_widget_screen.close_screen_on_key_release=Close the screen when all keys are released.\n<b>§eNote:</b> This will also execute the action that is being hovered!
@@ -195,6 +194,12 @@ malilib.name.action_group.parameterizable=Parameterizable Actions
 malilib.name.action_group.parameterized=Parameterized (arg. set)
 malilib.name.action_group.simple=Simple Actions
 malilib.name.action_group.user_added=Any User-Added Actions
+
+malilib.name.action_type.alias=Alias Action
+malilib.name.action_type.macro=Macro Action
+malilib.name.action_type.parameterizable=Parameterizable Action
+malilib.name.action_type.parameterized=Parameterized Action (arg. set)
+malilib.name.action_type.simple=Simple Action
 
 malilib.gui.button.config.reset_all_filtered=Reset All
 malilib.gui.button.config.select_directory=Select Directory

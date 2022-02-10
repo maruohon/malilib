@@ -65,10 +65,10 @@ public abstract class NamedAction extends CommonDescription
     {
         List<StyledTextLine> lines = new ArrayList<>();
 
-        lines.add(StyledTextLine.translate("malilib.hover_info.action.mod", this.modInfo.getModName()));
         lines.add(StyledTextLine.translate("malilib.hover_info.action.name", this.name));
+        lines.add(StyledTextLine.translate("malilib.hover_info.action.mod", this.modInfo.getModName()));
         lines.add(StyledTextLine.translate("malilib.hover_info.action.display_name", this.getDisplayName()));
-        lines.add(StyledTextLine.translate("malilib.hover_info.action.action_type", this.type.getGroup().getDisplayName()));
+        lines.add(StyledTextLine.translate("malilib.hover_info.action.action_type", this.type.getDisplayName()));
 
         if (this.registryName != null)
         {

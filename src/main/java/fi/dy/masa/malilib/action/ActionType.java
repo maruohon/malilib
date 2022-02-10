@@ -6,26 +6,27 @@ import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.util.JsonUtils;
+import fi.dy.masa.malilib.util.StringUtils;
 
 public class ActionType<T extends NamedAction>
 {
-    public static final ActionType<NamedAction>                SIMPLE          = new ActionType<>("simple",          ActionGroup.SIMPLE,          NamedAction.class,                NamedAction::baseActionFromJson);
-    public static final ActionType<AliasAction>                ALIAS           = new ActionType<>("alias",           ActionGroup.ALIAS,           AliasAction.class,                AliasAction::aliasActionFromJson);
-    public static final ActionType<MacroAction>                MACRO           = new ActionType<>("macro",           ActionGroup.MACRO,           MacroAction.class,                MacroAction::macroActionFromJson);
-    public static final ActionType<ParameterizableNamedAction> PARAMETERIZABLE = new ActionType<>("parameterizable", ActionGroup.PARAMETERIZABLE, ParameterizableNamedAction.class, ParameterizableNamedAction::parameterizableActionFromJson);
-    public static final ActionType<ParameterizedNamedAction>   PARAMETERIZED   = new ActionType<>("parameterized",   ActionGroup.PARAMETERIZED,   ParameterizedNamedAction.class,   ParameterizedNamedAction::parameterizedActionFromJson);
+    public static final ActionType<NamedAction>                SIMPLE          = new ActionType<>("simple",          "malilib.name.action_type.simple",          NamedAction.class,                NamedAction::baseActionFromJson);
+    public static final ActionType<AliasAction>                ALIAS           = new ActionType<>("alias",           "malilib.name.action_type.alias",           AliasAction.class,                AliasAction::aliasActionFromJson);
+    public static final ActionType<MacroAction>                MACRO           = new ActionType<>("macro",           "malilib.name.action_type.macro",           MacroAction.class,                MacroAction::macroActionFromJson);
+    public static final ActionType<ParameterizableNamedAction> PARAMETERIZABLE = new ActionType<>("parameterizable", "malilib.name.action_type.parameterizable", ParameterizableNamedAction.class, ParameterizableNamedAction::parameterizableActionFromJson);
+    public static final ActionType<ParameterizedNamedAction>   PARAMETERIZED   = new ActionType<>("parameterized",   "malilib.name.action_type.parameterized",   ParameterizedNamedAction.class,   ParameterizedNamedAction::parameterizedActionFromJson);
 
     public static final ImmutableList<ActionType<?>> VALUES = ImmutableList.of(SIMPLE, ALIAS, MACRO, PARAMETERIZABLE, PARAMETERIZED);
 
     protected final String id;
-    protected final ActionGroup group;
+    protected final String translationKey;
     protected final Function<JsonObject, T> fromJsonFunction;
     protected final Class<T> clazz;
 
-    public ActionType(String id, ActionGroup group, Class<T> clazz, Function<JsonObject, T> fromJsonFunction)
+    public ActionType(String id, String translationKey, Class<T> clazz, Function<JsonObject, T> fromJsonFunction)
     {
         this.id = id;
-        this.group = group;
+        this.translationKey = translationKey;
         this.fromJsonFunction = fromJsonFunction;
         this.clazz = clazz;
     }
@@ -35,9 +36,9 @@ public class ActionType<T extends NamedAction>
         return this.id;
     }
 
-    public ActionGroup getGroup()
+    public String getDisplayName()
     {
-        return this.group;
+        return StringUtils.translate(this.translationKey);
     }
 
     @Nullable

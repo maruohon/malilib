@@ -61,7 +61,7 @@ public class MacroAction extends NamedAction
     {
         List<StyledTextLine> lines = new ArrayList<>();
         lines.add(StyledTextLine.translate("malilib.hover_info.action.name", this.getName()));
-        lines.add(StyledTextLine.translate("malilib.hover_info.action.action_type", this.type.getGroup().getDisplayName()));
+        lines.add(StyledTextLine.translate("malilib.hover_info.action.action_type", this.type.getDisplayName()));
 
         if (this.registryName != null)
         {
