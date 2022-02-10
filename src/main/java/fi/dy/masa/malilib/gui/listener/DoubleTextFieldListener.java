@@ -1,9 +1,9 @@
 package fi.dy.masa.malilib.gui.listener;
 
+import java.util.function.Consumer;
 import java.util.function.DoubleConsumer;
-import fi.dy.masa.malilib.listener.TextChangeListener;
 
-public class DoubleTextFieldListener implements TextChangeListener
+public class DoubleTextFieldListener implements Consumer<String>
 {
     protected final DoubleConsumer consumer;
 
@@ -13,12 +13,12 @@ public class DoubleTextFieldListener implements TextChangeListener
     }
 
     @Override
-    public void onTextChange(String newText)
+    public void accept(String newText)
     {
         try
         {
             this.consumer.accept(Double.parseDouble(newText));
         }
-        catch (Exception e) {}
+        catch (Exception ignore) {}
     }
 }

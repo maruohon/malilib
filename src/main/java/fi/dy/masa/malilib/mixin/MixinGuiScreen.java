@@ -12,8 +12,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.item.ItemStack;
-import fi.dy.masa.malilib.input.InputDispatcherImpl;
 import fi.dy.masa.malilib.event.dispatch.RenderEventDispatcherImpl;
+import fi.dy.masa.malilib.input.InputDispatcherImpl;
 import fi.dy.masa.malilib.registry.Registry;
 
 @Mixin(GuiScreen.class)

@@ -4,6 +4,7 @@ import javax.annotation.Nullable;
 import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.util.JsonUtils;
+import fi.dy.masa.malilib.util.data.EdgeInt;
 
 public class BorderSettings
 {

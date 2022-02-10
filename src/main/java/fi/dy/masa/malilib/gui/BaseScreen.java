@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -21,14 +22,13 @@ import fi.dy.masa.malilib.gui.widget.InteractableWidget;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.input.ActionResult;
-import fi.dy.masa.malilib.listener.TextChangeListener;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.render.text.TextRenderer;
 import fi.dy.masa.malilib.util.GameUtils;
 import fi.dy.masa.malilib.util.StringUtils;
-import fi.dy.masa.malilib.util.data.Vec2i;
+import fi.dy.masa.malilib.util.position.Vec2i;
 
 public abstract class BaseScreen extends GuiScreen
 {
@@ -731,7 +731,7 @@ public abstract class BaseScreen extends GuiScreen
         return widget;
     }
 
-    public <T extends BaseTextFieldWidget> T addTextField(T widget, TextChangeListener listener)
+    public <T extends BaseTextFieldWidget> T addTextField(T widget, Consumer<String> listener)
     {
         widget.setListener(listener);
         this.addWidget(widget);

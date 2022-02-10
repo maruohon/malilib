@@ -39,11 +39,11 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.ILockableContainer;
 import net.minecraft.world.World;
+import fi.dy.masa.malilib.config.value.HorizontalAlignment;
+import fi.dy.masa.malilib.config.value.VerticalAlignment;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.icon.PositionedIcon;
-import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
-import fi.dy.masa.malilib.gui.position.VerticalAlignment;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.mixin.IMixinAbstractHorse;
 import fi.dy.masa.malilib.render.ItemRenderUtils;
@@ -52,13 +52,13 @@ import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.util.GameUtils;
 import fi.dy.masa.malilib.util.RayTraceUtils;
 import fi.dy.masa.malilib.util.WorldUtils;
-import fi.dy.masa.malilib.util.data.Vec2i;
 import fi.dy.masa.malilib.util.inventory.ColoredVanillaInventoryView;
 import fi.dy.masa.malilib.util.inventory.CombinedInventoryView;
 import fi.dy.masa.malilib.util.inventory.EquipmentInventoryView;
 import fi.dy.masa.malilib.util.inventory.InventoryUtils;
 import fi.dy.masa.malilib.util.inventory.InventoryView;
 import fi.dy.masa.malilib.util.inventory.VanillaInventoryView;
+import fi.dy.masa.malilib.util.position.Vec2i;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
 public class InventoryRenderUtils
@@ -100,7 +100,7 @@ public class InventoryRenderUtils
     {
         for (InventoryRange range : inventoryRanges)
         {
-            int slotsPerRow = range.slotsPerRowFunction.apply(inv.getSlots());
+            int slotsPerRow = range.slotsPerRowFunction.applyAsInt(inv.getSlots());
             int slotCount = range.slotCount;
             Vec2i startPos = range.startPos;
 

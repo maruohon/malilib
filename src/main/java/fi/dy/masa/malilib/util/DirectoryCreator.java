@@ -4,9 +4,9 @@ import java.io.File;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.widget.util.DirectoryNavigator;
 import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
-import fi.dy.masa.malilib.util.consumer.StringConsumer;
+import fi.dy.masa.malilib.util.data.ResultingStringConsumer;
 
-public class DirectoryCreator implements StringConsumer
+public class DirectoryCreator implements ResultingStringConsumer
 {
     protected final File dir;
     @Nullable protected final DirectoryNavigator navigator;

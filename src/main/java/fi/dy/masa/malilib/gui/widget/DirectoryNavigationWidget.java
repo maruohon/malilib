@@ -4,22 +4,22 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import net.minecraft.client.renderer.OpenGlHelper;
+import fi.dy.masa.malilib.config.value.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.TextInputScreen;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.icon.FileBrowserIconProvider;
 import fi.dy.masa.malilib.gui.icon.FileBrowserIconProvider.FileBrowserIconType;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
-import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.util.DirectoryNavigator;
 import fi.dy.masa.malilib.listener.EventListener;
-import fi.dy.masa.malilib.listener.TextChangeListener;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.util.DirectoryCreator;
 import fi.dy.masa.malilib.util.FileUtils;
@@ -43,7 +43,7 @@ public class DirectoryNavigationWidget extends SearchBarWidget
     public DirectoryNavigationWidget(int x, int y, int width, int height,
                                      File currentDir, File rootDir, DirectoryNavigator navigator,
                                      FileBrowserIconProvider iconProvider,
-                                     TextChangeListener textChangeListener,
+                                     Consumer<String> textChangeListener,
                                      @Nullable EventListener openCloseListener)
     {
         this(x, y, width, height, currentDir, rootDir, navigator, iconProvider,
@@ -53,7 +53,7 @@ public class DirectoryNavigationWidget extends SearchBarWidget
     public DirectoryNavigationWidget(int x, int y, int width, int height,
                                      File currentDir, File rootDir, DirectoryNavigator navigator,
                                      FileBrowserIconProvider iconProvider,
-                                     TextChangeListener textChangeListener,
+                                     Consumer<String> textChangeListener,
                                      @Nullable EventListener openCloseListener,
                                      @Nullable Supplier<String> rootDirDisplayNameSupplier)
     {

@@ -10,13 +10,13 @@ import fi.dy.masa.malilib.config.option.HotkeyConfig;
 import fi.dy.masa.malilib.config.option.IntegerConfig;
 import fi.dy.masa.malilib.config.option.OptionListConfig;
 import fi.dy.masa.malilib.config.option.StringConfig;
-import fi.dy.masa.malilib.overlay.message.MessageOutput;
 import fi.dy.masa.malilib.config.value.KeybindDisplayMode;
 import fi.dy.masa.malilib.gui.widget.ConfigsSearchBarWidget.Scope;
 import fi.dy.masa.malilib.input.CancelCondition;
 import fi.dy.masa.malilib.input.Context;
 import fi.dy.masa.malilib.input.KeyAction;
 import fi.dy.masa.malilib.input.KeyBindSettings;
+import fi.dy.masa.malilib.overlay.message.MessageOutput;
 import fi.dy.masa.malilib.util.ListUtils;
 
 public class MaLiLibConfigs

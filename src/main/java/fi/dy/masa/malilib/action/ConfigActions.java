@@ -12,7 +12,7 @@ import fi.dy.masa.malilib.util.data.IntegerStorage;
 
 public class ConfigActions
 {
-    public static ParameterizedAction setBooleanValue(BooleanStorage config)
+    public static ParameterizedAction createSetBooleanValueAction(BooleanStorage config)
     {
         return (ctx, str) -> {
             try
@@ -36,7 +36,7 @@ public class ConfigActions
         };
     }
 
-    public static ParameterizedAction setIntValue(IntegerStorage config)
+    public static ParameterizedAction createSetIntValueAction(IntegerStorage config)
     {
         return (ctx, str) -> {
             try
@@ -51,7 +51,7 @@ public class ConfigActions
         };
     }
 
-    public static ParameterizedAction setDoubleValue(DoubleStorage config)
+    public static ParameterizedAction createSetDoubleValueAction(DoubleStorage config)
     {
         return (ctx, str) -> {
             try
@@ -66,7 +66,7 @@ public class ConfigActions
         };
     }
 
-    public static ParameterizedAction setStringValue(StringConfig config)
+    public static ParameterizedAction createSetStringValueAction(StringConfig config)
     {
         return (ctx, str) -> {
             config.setValue(str);
@@ -74,7 +74,8 @@ public class ConfigActions
         };
     }
 
-    public static <T extends OptionListConfigValue> ParameterizedAction setOptionListValue(OptionListConfig<T> config)
+    public static <T extends OptionListConfigValue>
+    ParameterizedAction createSetOptionListValueAction(OptionListConfig<T> config)
     {
         return (ctx, str) -> {
             try

@@ -12,7 +12,7 @@ import fi.dy.masa.malilib.action.NamedAction;
 import fi.dy.masa.malilib.action.ParameterizableNamedAction;
 import fi.dy.masa.malilib.action.ParameterizedNamedAction;
 import fi.dy.masa.malilib.gui.BaseMultiListScreen;
-import fi.dy.masa.malilib.gui.ScreenTab;
+import fi.dy.masa.malilib.gui.tab.ScreenTab;
 import fi.dy.masa.malilib.gui.widget.DropDownListWidget;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.action.ActionListBaseActionEntryWidget;

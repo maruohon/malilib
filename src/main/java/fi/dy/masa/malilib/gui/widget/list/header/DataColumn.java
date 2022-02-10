@@ -3,9 +3,9 @@ package fi.dy.masa.malilib.gui.widget.list.header;
 import java.util.Comparator;
 import java.util.Optional;
 import javax.annotation.Nullable;
+import fi.dy.masa.malilib.config.value.HorizontalAlignment;
 import fi.dy.masa.malilib.config.value.SortDirection;
 import fi.dy.masa.malilib.gui.icon.Icon;
-import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 
 public class DataColumn<DATATYPE>

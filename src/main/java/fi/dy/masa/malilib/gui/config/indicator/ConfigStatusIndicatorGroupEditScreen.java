@@ -2,11 +2,11 @@ package fi.dy.masa.malilib.gui.config.indicator;
 
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.value.OptionListConfigValue;
+import fi.dy.masa.malilib.config.value.ScreenLocation;
 import fi.dy.masa.malilib.gui.BaseListScreen;
 import fi.dy.masa.malilib.gui.BaseScreen;
-import fi.dy.masa.malilib.gui.EdgeIntEditScreen;
 import fi.dy.masa.malilib.gui.config.KeybindEditingScreen;
-import fi.dy.masa.malilib.gui.position.ScreenLocation;
+import fi.dy.masa.malilib.gui.edit.EdgeIntEditScreen;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.ColorIndicatorWidget;

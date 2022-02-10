@@ -110,7 +110,7 @@ public class HotkeyedBooleanConfig extends BooleanConfig implements Hotkey
     {
         super.cacheSavedValue();
 
-        // Tis method unfortunately gets called already from the super constructor,
+        // FIXME This method unfortunately gets called already from the super constructor,
         // before the field is set in this class's constructor.
         if (this.keyBind != null)
         {

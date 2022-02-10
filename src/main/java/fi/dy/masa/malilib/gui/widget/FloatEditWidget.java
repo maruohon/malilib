@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.gui.widget;
 import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.callback.FloatSliderCallback;
-import fi.dy.masa.malilib.util.consumer.FloatConsumer;
+import fi.dy.masa.malilib.util.data.FloatConsumer;
 import fi.dy.masa.malilib.util.data.RangedFloatStorage;
 
 public class FloatEditWidget extends BaseNumberEditWidget implements RangedFloatStorage

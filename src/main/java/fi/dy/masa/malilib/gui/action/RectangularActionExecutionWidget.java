@@ -6,7 +6,7 @@ import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.MathUtils;
-import fi.dy.masa.malilib.util.data.Vec2i;
+import fi.dy.masa.malilib.util.position.Vec2i;
 
 public class RectangularActionExecutionWidget extends BaseActionExecutionWidget
 {

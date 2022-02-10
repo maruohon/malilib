@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.gui.widget;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import javax.annotation.Nullable;
@@ -9,14 +10,13 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraft.util.math.MathHelper;
+import fi.dy.masa.malilib.config.value.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.BaseScreen;
-import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.util.BorderSettings;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.gui.util.TextRegion;
 import fi.dy.masa.malilib.gui.widget.util.TextFieldValidator;
-import fi.dy.masa.malilib.listener.TextChangeListener;
 import fi.dy.masa.malilib.overlay.message.Message;
 import fi.dy.masa.malilib.overlay.widget.MessageRendererWidget;
 import fi.dy.masa.malilib.render.RenderUtils;
@@ -47,7 +47,7 @@ public class BaseTextFieldWidget extends InteractableWidget
     protected String lastNotifiedText;
     @Nullable protected IInputCharacterValidator inputValidator;
     @Nullable protected TextFieldValidator textValidator;
-    @Nullable protected TextChangeListener listener;
+    @Nullable protected Consumer<String> listener;
     protected int colorError = 0xFFE04040;
     protected int colorErrorDisabled = 0xFFB01010;
     protected int colorDisabled = 0xFF707070;
@@ -317,21 +317,17 @@ public class BaseTextFieldWidget extends InteractableWidget
      * or the text field loses focus.
      * If the listener should be notified on every change (characters written or removed etc.),
      * then call {@link BaseTextFieldWidget#setUpdateListenerAlways(boolean)}
-     * @param listener
-     * @return
      */
-    public BaseTextFieldWidget setListener(@Nullable TextChangeListener listener)
+    public BaseTextFieldWidget setListener(@Nullable Consumer<String> listener)
     {
         this.listener = listener;
         return this;
     }
 
     /**
-     * Set whether or not to update the listener on every text change (from typing) or not.
+     * Set whether to update the listener on every text change (from typing) or not.
      * If this is set to false, then the listener is only notified
      * when Enter is pressed or the text field loses focus.
-     * @param updateAlways
-     * @return
      */
     public BaseTextFieldWidget setUpdateListenerAlways(boolean updateAlways)
     {
@@ -362,7 +358,7 @@ public class BaseTextFieldWidget extends InteractableWidget
             this.text.equals(this.lastNotifiedText) == false &&
             this.isValidText(this.text))
         {
-            this.listener.onTextChange(this.text);
+            this.listener.accept(this.text);
             this.lastNotifiedText = this.text;
         }
     }

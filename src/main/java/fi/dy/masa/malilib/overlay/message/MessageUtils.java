@@ -8,7 +8,7 @@ import javax.annotation.Nullable;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.action.ActionContext;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
-import fi.dy.masa.malilib.gui.position.ScreenLocation;
+import fi.dy.masa.malilib.config.value.ScreenLocation;
 import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.overlay.widget.InfoRendererWidget;
 import fi.dy.masa.malilib.overlay.widget.MessageRendererWidget;

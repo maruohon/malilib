@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.gui.widget.list.entry;
 import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
+import fi.dy.masa.malilib.gui.widget.list.DataListEntrySelectionHandler;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 
 public class BaseDataListEntryWidget<TYPE> extends BaseListEntryWidget

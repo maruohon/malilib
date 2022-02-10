@@ -28,7 +28,6 @@ import fi.dy.masa.malilib.gui.widget.DirectoryNavigationWidget;
 import fi.dy.masa.malilib.gui.widget.MenuEntryWidget;
 import fi.dy.masa.malilib.gui.widget.MenuWidget;
 import fi.dy.masa.malilib.gui.widget.list.BaseFileBrowserWidget.DirectoryEntry;
-import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntrySelectionHandler;
 import fi.dy.masa.malilib.gui.widget.list.entry.DirectoryEntryWidget;
 import fi.dy.masa.malilib.gui.widget.list.header.ColumnizedDataListHeaderWidget;
 import fi.dy.masa.malilib.gui.widget.list.header.DataColumn;
@@ -38,10 +37,10 @@ import fi.dy.masa.malilib.gui.widget.util.DirectoryNavigator;
 import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
 import fi.dy.masa.malilib.render.text.StyledText;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
+import fi.dy.masa.malilib.util.DataIteratingTask;
 import fi.dy.masa.malilib.util.DirectoryCreator;
 import fi.dy.masa.malilib.util.FileNameUtils;
 import fi.dy.masa.malilib.util.FileUtils;
-import fi.dy.masa.malilib.util.consumer.DataIteratingTask;
 
 public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implements DirectoryNavigator
 {

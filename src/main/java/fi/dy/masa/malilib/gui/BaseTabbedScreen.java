@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
+import fi.dy.masa.malilib.gui.tab.ScreenTab;
+import fi.dy.masa.malilib.gui.tab.TabbedScreenState;
 import fi.dy.masa.malilib.gui.widget.CyclableContainerWidget;
 import fi.dy.masa.malilib.gui.widget.button.BaseButton;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;

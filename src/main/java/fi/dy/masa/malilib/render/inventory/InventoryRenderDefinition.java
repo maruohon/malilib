@@ -2,14 +2,14 @@ package fi.dy.masa.malilib.render.inventory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.IntUnaryOperator;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.renderer.GlStateManager;
 import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.icon.PositionedIcon;
 import fi.dy.masa.malilib.render.RenderUtils;
-import fi.dy.masa.malilib.util.data.Int2IntFunction;
-import fi.dy.masa.malilib.util.data.Vec2i;
 import fi.dy.masa.malilib.util.inventory.InventoryView;
+import fi.dy.masa.malilib.util.position.Vec2i;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
 public class InventoryRenderDefinition
@@ -18,17 +18,17 @@ public class InventoryRenderDefinition
     protected final ImmutableList<InventoryRange> inventoryRanges;
     protected final Int2ObjectOpenHashMap<PositionedIcon> emptySlotTextures;
     protected final Int2ObjectOpenHashMap<Vec2i> customSlotPositions;
-    protected final Int2IntFunction renderWidthFunction;
-    protected final Int2IntFunction renderHeightFunction;
-    protected final Int2IntFunction slotsPerRowFunction;
+    protected final IntUnaryOperator renderWidthFunction;
+    protected final IntUnaryOperator renderHeightFunction;
+    protected final IntUnaryOperator slotsPerRowFunction;
     protected final Vec2i slotOffset;
     protected final boolean hasCustomSlotPositions;
     protected final boolean hasEmptySlotTextures;
     protected final boolean hasInventoryRanges;
 
-    public InventoryRenderDefinition(Int2IntFunction slotsPerRowFunction,
-                                     Int2IntFunction renderWidthFunction,
-                                     Int2IntFunction renderHeightFunction,
+    public InventoryRenderDefinition(IntUnaryOperator slotsPerRowFunction,
+                                     IntUnaryOperator renderWidthFunction,
+                                     IntUnaryOperator renderHeightFunction,
                                      Vec2i slotOffset,
                                      List<PositionedIcon> backgroundTextures,
                                      Int2ObjectOpenHashMap<Vec2i> customSlotPositions,
@@ -50,12 +50,12 @@ public class InventoryRenderDefinition
 
     public int getRenderWidth(InventoryView inv)
     {
-        return this.renderWidthFunction.apply(inv.getSlots());
+        return this.renderWidthFunction.applyAsInt(inv.getSlots());
     }
 
     public int getRenderHeight(InventoryView inv)
     {
-        return this.renderHeightFunction.apply(inv.getSlots());
+        return this.renderHeightFunction.applyAsInt(inv.getSlots());
     }
 
     public void renderInventory(int x, int y, float z, int backgroundTintColor, InventoryView inv)
@@ -85,7 +85,7 @@ public class InventoryRenderDefinition
 
         if (this.hasCustomSlotPositions == false && this.hasInventoryRanges == false)
         {
-            int slotsPerRow = this.slotsPerRowFunction.apply(inv.getSlots());
+            int slotsPerRow = this.slotsPerRowFunction.applyAsInt(inv.getSlots());
             InventoryRenderUtils.renderGenericInventoryItems(x, y, 100f, 0, -1, slotsPerRow, this.slotOffset, inv);
         }
 
@@ -102,7 +102,7 @@ public class InventoryRenderDefinition
         }
         else
         {
-            int slotsPerRow = this.slotsPerRowFunction.apply(inv.getSlots());
+            int slotsPerRow = this.slotsPerRowFunction.applyAsInt(inv.getSlots());
             int slotCount = inv.getSlots();
             InventoryRenderUtils.renderDynamicInventoryBackground(x, y, z, backgroundTintColor, slotsPerRow, slotCount);
         }
@@ -120,9 +120,9 @@ public class InventoryRenderDefinition
         protected final List<PositionedIcon> backgroundTextures = new ArrayList<>();
         protected final List<InventoryRange> inventoryRanges = new ArrayList<>();
         protected Vec2i slotOffset = new Vec2i(8, 8);
-        protected Int2IntFunction renderWidthFunction = (slots) -> 176;
-        protected Int2IntFunction renderHeightFunction = (slots) -> 68;
-        protected Int2IntFunction slotsPerRowFunction = (slots) -> 9;
+        protected IntUnaryOperator renderWidthFunction = (slots) -> 176;
+        protected IntUnaryOperator renderHeightFunction = (slots) -> 68;
+        protected IntUnaryOperator slotsPerRowFunction = (slots) -> 9;
 
         public Builder withSlotsPerRow(int slotsPerRow)
         {
@@ -130,7 +130,7 @@ public class InventoryRenderDefinition
             return this;
         }
 
-        public Builder withSlotsPerRowFunction(Int2IntFunction slotsPerRowFunction)
+        public Builder withSlotsPerRowFunction(IntUnaryOperator slotsPerRowFunction)
         {
             this.slotsPerRowFunction = slotsPerRowFunction;
             return this;
@@ -143,8 +143,8 @@ public class InventoryRenderDefinition
             return this;
         }
 
-        public Builder withRenderSizeFunctions(Int2IntFunction renderWidthFunction,
-                                               Int2IntFunction renderHeightFunction)
+        public Builder withRenderSizeFunctions(IntUnaryOperator renderWidthFunction,
+                                               IntUnaryOperator renderHeightFunction)
         {
             this.renderWidthFunction = renderWidthFunction;
             this.renderHeightFunction = renderHeightFunction;
@@ -184,14 +184,14 @@ public class InventoryRenderDefinition
         }
 
         public Builder withInventoryRange(int startSlot, int slotCount,
-                                          Int2IntFunction slotsPerRowFunction,
+                                          IntUnaryOperator slotsPerRowFunction,
                                           int offsetX, int offsetY)
         {
             return this.withInventoryRange(startSlot, slotCount, slotsPerRowFunction, offsetX, offsetY, false);
         }
 
         public Builder withInventoryRange(int startSlot, int slotCount,
-                                          Int2IntFunction slotsPerRowFunction,
+                                          IntUnaryOperator slotsPerRowFunction,
                                           int offsetX, int offsetY, boolean renderSlots)
         {
             this.inventoryRanges.add(InventoryRange.of(startSlot, slotCount, renderSlots,

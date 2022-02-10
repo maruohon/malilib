@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.gui.widget.util;
 
-import fi.dy.masa.malilib.gui.util.EdgeInt;
 import fi.dy.masa.malilib.gui.widget.InteractableWidget;
+import fi.dy.masa.malilib.util.data.EdgeInt;
 
 public class DefaultWidgetPositioner implements WidgetPositioner
 {

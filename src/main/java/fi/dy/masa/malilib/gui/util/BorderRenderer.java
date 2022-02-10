@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.gui.util;
 
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
+import fi.dy.masa.malilib.util.data.EdgeInt;
 
 public class BorderRenderer
 {

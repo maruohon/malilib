@@ -34,7 +34,7 @@ import fi.dy.masa.malilib.util.GameUtils;
 import fi.dy.masa.malilib.util.PositionUtils;
 import fi.dy.masa.malilib.util.PositionUtils.HitPart;
 import fi.dy.masa.malilib.util.data.Color4f;
-import fi.dy.masa.malilib.util.data.Vec2i;
+import fi.dy.masa.malilib.util.position.Vec2i;
 
 public class RenderUtils
 {

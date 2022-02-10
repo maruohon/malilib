@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.gui.widget.list.entry;
 
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.gui.CustomHotkeysEditScreen;
+import fi.dy.masa.malilib.gui.edit.CustomHotkeysEditScreen;
 import fi.dy.masa.malilib.gui.widget.KeybindSettingsWidget;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;

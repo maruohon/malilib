@@ -14,7 +14,6 @@ import fi.dy.masa.malilib.action.ActionExecutionWidgetManager;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.TextInputScreen;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
-import fi.dy.masa.malilib.gui.util.EdgeInt;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.CheckBoxWidget;
@@ -32,7 +31,8 @@ import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.render.text.StyledText;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.JsonUtils;
-import fi.dy.masa.malilib.util.data.Vec2i;
+import fi.dy.masa.malilib.util.data.EdgeInt;
+import fi.dy.masa.malilib.util.position.Vec2i;
 
 public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContainer
 {

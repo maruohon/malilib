@@ -8,13 +8,13 @@ import java.util.List;
 import java.util.function.IntSupplier;
 import java.util.function.Predicate;
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.gui.position.ScreenLocation;
-import fi.dy.masa.malilib.gui.util.EdgeInt;
+import fi.dy.masa.malilib.config.value.ScreenLocation;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.BaseWidget;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.overlay.widget.InfoRendererWidget;
+import fi.dy.masa.malilib.util.data.EdgeInt;
 
 public class InfoArea
 {

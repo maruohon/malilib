@@ -11,8 +11,8 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.multiplayer.WorldClient;
 import fi.dy.masa.malilib.MinecraftClientAccessor;
 import fi.dy.masa.malilib.event.dispatch.ClientWorldChangeEventDispatcherImpl;
-import fi.dy.masa.malilib.input.InputDispatcherImpl;
 import fi.dy.masa.malilib.event.dispatch.TickEventDispatcherImpl;
+import fi.dy.masa.malilib.input.InputDispatcherImpl;
 import fi.dy.masa.malilib.input.KeyBindImpl;
 import fi.dy.masa.malilib.registry.Registry;
 

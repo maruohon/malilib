@@ -7,7 +7,7 @@ import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.config.util.ConfigUtils;
 import fi.dy.masa.malilib.gui.BaseScreen;
-import fi.dy.masa.malilib.gui.BaseScreenTab;
+import fi.dy.masa.malilib.gui.tab.BaseScreenTab;
 import fi.dy.masa.malilib.util.data.ModInfo;
 
 public class BaseConfigTab extends BaseScreenTab implements ConfigTab

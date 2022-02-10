@@ -1,9 +1,9 @@
 package fi.dy.masa.malilib.gui.listener;
 
+import java.util.function.Consumer;
 import java.util.function.IntConsumer;
-import fi.dy.masa.malilib.listener.TextChangeListener;
 
-public class IntegerTextFieldListener implements TextChangeListener
+public class IntegerTextFieldListener implements Consumer<String>
 {
     protected final IntConsumer consumer;
 
@@ -13,12 +13,12 @@ public class IntegerTextFieldListener implements TextChangeListener
     }
 
     @Override
-    public void onTextChange(String newText)
+    public void accept(String newText)
     {
         try
         {
             this.consumer.accept(Integer.parseInt(newText));
         }
-        catch (Exception e) {}
+        catch (Exception ignore) {}
     }
 }

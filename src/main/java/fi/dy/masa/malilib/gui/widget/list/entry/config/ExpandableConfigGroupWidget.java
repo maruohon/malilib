@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.gui.widget.list.entry.config;
 
+import fi.dy.masa.malilib.config.group.ExpandableConfigGroup;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
-import fi.dy.masa.malilib.gui.config.ExpandableConfigGroup;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
 import fi.dy.masa.malilib.gui.widget.IconWidget;

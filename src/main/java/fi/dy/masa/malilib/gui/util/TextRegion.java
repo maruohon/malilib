@@ -1,9 +1,9 @@
 package fi.dy.masa.malilib.gui.util;
 
-import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
+import fi.dy.masa.malilib.config.value.HorizontalAlignment;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
-import fi.dy.masa.malilib.util.data.LeftRight;
 import fi.dy.masa.malilib.util.StringUtils;
+import fi.dy.masa.malilib.util.data.LeftRight;
 
 public class TextRegion
 {

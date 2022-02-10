@@ -7,10 +7,9 @@ import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.math.MathHelper;
+import fi.dy.masa.malilib.config.value.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
-import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
-import fi.dy.masa.malilib.gui.util.EdgeInt;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
@@ -24,6 +23,7 @@ import fi.dy.masa.malilib.gui.widget.util.DefaultWidgetPositioner;
 import fi.dy.masa.malilib.gui.widget.util.WidgetPositioner;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.render.RenderUtils;
+import fi.dy.masa.malilib.util.data.EdgeInt;
 
 public abstract class BaseListWidget extends ContainerWidget
 {

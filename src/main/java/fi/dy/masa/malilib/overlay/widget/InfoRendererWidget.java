@@ -10,12 +10,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.client.renderer.GlStateManager;
 import fi.dy.masa.malilib.MaLiLibConfigs;
-import fi.dy.masa.malilib.gui.position.ScreenLocation;
+import fi.dy.masa.malilib.config.value.ScreenLocation;
 import fi.dy.masa.malilib.gui.util.BackgroundRenderer;
 import fi.dy.masa.malilib.gui.util.BackgroundSettings;
 import fi.dy.masa.malilib.gui.util.BorderRenderer;
 import fi.dy.masa.malilib.gui.util.BorderSettings;
-import fi.dy.masa.malilib.gui.util.EdgeInt;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.list.entry.BaseInfoRendererWidgetEntryWidget;
@@ -27,6 +26,7 @@ import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.render.text.MultiLineTextRenderSettings;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.JsonUtils;
+import fi.dy.masa.malilib.util.data.EdgeInt;
 
 public abstract class InfoRendererWidget extends BaseOverlayWidget
 {

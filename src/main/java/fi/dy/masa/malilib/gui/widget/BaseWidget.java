@@ -11,8 +11,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.gui.icon.Icon;
-import fi.dy.masa.malilib.gui.position.ElementOffset;
-import fi.dy.masa.malilib.gui.util.EdgeInt;
+import fi.dy.masa.malilib.gui.util.ElementOffset;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.render.RectangleRenderer;
@@ -25,6 +24,7 @@ import fi.dy.masa.malilib.render.text.TextRenderer;
 import fi.dy.masa.malilib.render.text.TextStyle;
 import fi.dy.masa.malilib.util.GameUtils;
 import fi.dy.masa.malilib.util.data.Color4f;
+import fi.dy.masa.malilib.util.data.EdgeInt;
 
 public class BaseWidget
 {

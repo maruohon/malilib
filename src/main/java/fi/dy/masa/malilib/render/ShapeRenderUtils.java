@@ -7,9 +7,9 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import fi.dy.masa.malilib.gui.util.EdgeInt;
 import fi.dy.masa.malilib.util.data.Color4f;
-import fi.dy.masa.malilib.util.data.IntBoundingBox;
+import fi.dy.masa.malilib.util.data.EdgeInt;
+import fi.dy.masa.malilib.util.position.IntBoundingBox;
 
 public class ShapeRenderUtils
 {

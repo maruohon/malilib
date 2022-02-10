@@ -2,9 +2,9 @@ package fi.dy.masa.malilib.gui.widget.list.entry.config;
 
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.config.option.HotkeyConfig;
-import fi.dy.masa.malilib.gui.widget.button.KeyBindConfigButton;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.widget.KeybindSettingsWidget;
+import fi.dy.masa.malilib.gui.widget.button.KeyBindConfigButton;
 
 public class HotkeyConfigWidget extends BaseConfigWidget<HotkeyConfig>
 {

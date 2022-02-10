@@ -4,8 +4,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
-import fi.dy.masa.malilib.overlay.message.MessageOutput;
 import fi.dy.masa.malilib.input.ActionResult;
+import fi.dy.masa.malilib.overlay.message.MessageOutput;
 import fi.dy.masa.malilib.overlay.message.MessageUtils;
 
 public class BooleanToggleAction implements Action

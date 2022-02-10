@@ -1,13 +1,13 @@
 package fi.dy.masa.malilib.gui.widget;
 
+import java.util.function.Consumer;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
+import fi.dy.masa.malilib.config.value.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
-import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.listener.EventListener;
-import fi.dy.masa.malilib.listener.TextChangeListener;
 
 public class SearchBarWidget extends ContainerWidget
 {
@@ -23,7 +23,7 @@ public class SearchBarWidget extends ContainerWidget
     public SearchBarWidget(int x, int y, int width, int height, int searchBarOffsetX,
                            MultiIcon toggleButtonIcon,
                            HorizontalAlignment toggleButtonAlignment,
-                           TextChangeListener textChangeListener,
+                           Consumer<String> textChangeListener,
                            @Nullable EventListener openCloseListener)
     {
         super(x, y, width, height);
@@ -73,7 +73,7 @@ public class SearchBarWidget extends ContainerWidget
         this.textField.setWidth(this.getWidth() -  iw - 7 - Math.abs(offX));
     }
 
-    public void setTextFieldListener(@Nullable TextChangeListener listener)
+    public void setTextFieldListener(@Nullable Consumer<String> listener)
     {
         this.textField.setListener(listener);
     }

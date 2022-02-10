@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.gui.icon;
 
-import fi.dy.masa.malilib.util.data.Vec2i;
+import fi.dy.masa.malilib.util.position.Vec2i;
 
 public class PositionedIcon
 {

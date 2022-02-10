@@ -4,13 +4,13 @@ import org.lwjgl.opengl.GL11;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import fi.dy.masa.malilib.gui.BaseScreen;
-import fi.dy.masa.malilib.gui.EdgeIntEditScreen;
-import fi.dy.masa.malilib.gui.util.EdgeInt;
+import fi.dy.masa.malilib.gui.edit.EdgeIntEditScreen;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.util.data.Color4f;
+import fi.dy.masa.malilib.util.data.EdgeInt;
 
 public class QuadColorIndicatorWidget extends InteractableWidget
 {

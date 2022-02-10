@@ -2,14 +2,14 @@ package fi.dy.masa.malilib.gui.widget.list.header;
 
 import java.util.List;
 import java.util.Optional;
+import fi.dy.masa.malilib.config.value.HorizontalAlignment;
 import fi.dy.masa.malilib.config.value.SortDirection;
 import fi.dy.masa.malilib.gui.icon.Icon;
-import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
-import fi.dy.masa.malilib.gui.util.EdgeInt;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
+import fi.dy.masa.malilib.util.data.EdgeInt;
 
 public class ColumnizedDataListHeaderWidget<DATATYPE> extends DataListHeaderWidget<DATATYPE>
 {

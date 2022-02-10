@@ -5,9 +5,10 @@ import java.util.Collections;
 import java.util.List;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
+import fi.dy.masa.malilib.gui.tab.ScreenTab;
+import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.InteractableWidget;
-import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.list.BaseListWidget;
 
 public abstract class BaseListScreen<LISTWIDGET extends BaseListWidget> extends BaseTabbedScreen

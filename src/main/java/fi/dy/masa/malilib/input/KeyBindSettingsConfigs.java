@@ -6,8 +6,8 @@ import fi.dy.masa.malilib.config.option.BaseConfigOption;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.config.option.IntegerConfig;
 import fi.dy.masa.malilib.config.option.OptionListConfig;
-import fi.dy.masa.malilib.overlay.message.MessageOutput;
 import fi.dy.masa.malilib.listener.EventListener;
+import fi.dy.masa.malilib.overlay.message.MessageOutput;
 
 public class KeyBindSettingsConfigs
 {

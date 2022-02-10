@@ -2,8 +2,8 @@ package fi.dy.masa.malilib.gui.widget;
 
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
-import fi.dy.masa.malilib.gui.util.EdgeInt;
 import fi.dy.masa.malilib.util.data.Color4f;
+import fi.dy.masa.malilib.util.data.EdgeInt;
 
 public class ColorEditorWidget extends ContainerWidget
 {

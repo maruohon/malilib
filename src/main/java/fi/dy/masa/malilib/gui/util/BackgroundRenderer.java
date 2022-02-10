@@ -4,8 +4,8 @@ import fi.dy.masa.malilib.render.ShapeRenderUtils;
 
 public class BackgroundRenderer
 {
-    BackgroundSettings normalSettings = new BackgroundSettings(0xFF101010);
-    BackgroundSettings hoverSettings = new BackgroundSettings(0x50FFFFFF);
+    protected BackgroundSettings normalSettings = new BackgroundSettings(0xFF101010);
+    protected BackgroundSettings hoverSettings = new BackgroundSettings(0x50FFFFFF);
 
     public BackgroundSettings getNormalSettings()
     {

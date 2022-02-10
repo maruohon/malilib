@@ -47,9 +47,7 @@ public class DoubleTextFieldWidget extends BaseTextFieldWidget
                 double value = Double.parseDouble(text);
                 return value >= this.minValue && value <= this.maxValue;
             }
-            catch (Exception e)
-            {
-            }
+            catch (Exception ignore) {}
 
             return false;
         }

@@ -52,19 +52,7 @@ public abstract class BaseStringListEditEntryWidget<TYPE> extends BaseOrderableL
         });
 
         this.textField.setUpdateListenerAlways(true);
-        this.textField.setListener((newText) -> {
-            if (this.originalListIndex < this.dataList.size())
-            {
-                TYPE value = this.fromStringConverter.apply(newText);
-
-                if (value != null)
-                {
-                    this.dataList.set(this.originalListIndex, value);
-                }
-            }
-
-            this.resetButton.setEnabled(newText.equals(this.toStringConverter.apply(this.defaultValue)) == false);
-        });
+        this.textField.setListener(this::onTextChanged);
     }
 
     @Override
@@ -96,5 +84,20 @@ public abstract class BaseStringListEditEntryWidget<TYPE> extends BaseOrderableL
     protected void updateSubWidgetsToGeometryChangesPost(int x, int y)
     {
         this.resetButton.setPosition(x, y + 2);
+    }
+
+    protected void onTextChanged(String newText)
+    {
+        if (this.originalListIndex < this.dataList.size())
+        {
+            TYPE value = this.fromStringConverter.apply(newText);
+
+            if (value != null)
+            {
+                this.dataList.set(this.originalListIndex, value);
+            }
+        }
+
+        this.resetButton.setEnabled(newText.equals(this.toStringConverter.apply(this.defaultValue)) == false);
     }
 }

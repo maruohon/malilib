@@ -5,7 +5,7 @@ import java.util.List;
 import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.gui.BaseScreen;
-import fi.dy.masa.malilib.gui.config.overlay.MessageRendererWidgetEditScreen;
+import fi.dy.masa.malilib.gui.edit.overlay.MessageRendererWidgetEditScreen;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.list.entry.BaseInfoRendererWidgetEntryWidget;

@@ -1,9 +1,9 @@
 package fi.dy.masa.malilib.gui.widget.list.entry.config;
 
+import fi.dy.masa.malilib.config.group.PopupConfigGroup;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.config.BaseConfigGroupEditScreen;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
-import fi.dy.masa.malilib.gui.config.PopupConfigGroup;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 

@@ -2,8 +2,8 @@ package fi.dy.masa.malilib.gui.widget.list.entry;
 
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.BaseScreen;
-import fi.dy.masa.malilib.gui.config.CustomIconEditScreen;
-import fi.dy.masa.malilib.gui.config.CustomIconListScreen;
+import fi.dy.masa.malilib.gui.edit.CustomIconEditScreen;
+import fi.dy.masa.malilib.gui.edit.CustomIconListScreen;
 import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.util.ScreenContext;

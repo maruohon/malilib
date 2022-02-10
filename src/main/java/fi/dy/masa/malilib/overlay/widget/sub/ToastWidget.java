@@ -4,17 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
+import fi.dy.masa.malilib.config.value.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
-import fi.dy.masa.malilib.gui.position.HorizontalAlignment;
-import fi.dy.masa.malilib.gui.util.EdgeInt;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.BaseWidget;
 import fi.dy.masa.malilib.render.text.StyledText;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.render.text.TextRenderer;
 import fi.dy.masa.malilib.util.StyledTextUtils;
+import fi.dy.masa.malilib.util.data.EdgeInt;
 import fi.dy.masa.malilib.util.data.MarkerManager;
 
 public class ToastWidget extends BaseWidget

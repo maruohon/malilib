@@ -4,7 +4,7 @@ import javax.annotation.Nullable;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import fi.dy.masa.malilib.gui.position.GeometryResizeNotifier;
+import fi.dy.masa.malilib.gui.util.GeometryResizeNotifier;
 import fi.dy.masa.malilib.gui.widget.BaseWidget;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.util.JsonUtils;

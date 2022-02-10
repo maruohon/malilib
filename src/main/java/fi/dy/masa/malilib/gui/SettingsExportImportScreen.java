@@ -9,7 +9,7 @@ import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
 import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.StringUtils;
-import fi.dy.masa.malilib.util.consumer.StringConsumer;
+import fi.dy.masa.malilib.util.data.ResultingStringConsumer;
 import fi.dy.masa.malilib.util.data.ToBooleanFunction;
 
 public class SettingsExportImportScreen extends TextInputScreen
@@ -19,7 +19,7 @@ public class SettingsExportImportScreen extends TextInputScreen
     protected final GenericButton readFromFileButton;
     protected final GenericButton writeToFileButton;
     protected final RadioButtonWidget<AppendOverwrite> appendOverwriteRadioWidget;
-    @Nullable protected StringConsumer appendStringConsumer;
+    @Nullable protected ResultingStringConsumer appendStringConsumer;
     protected boolean addAppendOverwriteSelection;
     protected String copyToClipboardMessage = "malilib.message.success.setting_string_copied_to_clipboard";
     protected String pasteFromClipboardMessage = "malilib.message.success.setting_string_pasted_from_clipboard";
@@ -27,7 +27,7 @@ public class SettingsExportImportScreen extends TextInputScreen
 
     public SettingsExportImportScreen(String titleKey,
                                       String exportString,
-                                      StringConsumer overwriteStringConsumer,
+                                      ResultingStringConsumer overwriteStringConsumer,
                                       @Nullable GuiScreen parent)
     {
         this(titleKey, exportString, overwriteStringConsumer);
@@ -37,7 +37,7 @@ public class SettingsExportImportScreen extends TextInputScreen
 
     public SettingsExportImportScreen(String titleKey,
                                       String exportString,
-                                      StringConsumer overwriteStringConsumer)
+                                      ResultingStringConsumer overwriteStringConsumer)
     {
         super(titleKey, exportString, overwriteStringConsumer);
 
@@ -121,7 +121,7 @@ public class SettingsExportImportScreen extends TextInputScreen
         this.cancelButton.setY(y);
     }
 
-    public void setAppendStringConsumer(@Nullable StringConsumer appendStringConsumer)
+    public void setAppendStringConsumer(@Nullable ResultingStringConsumer appendStringConsumer)
     {
         this.appendStringConsumer = appendStringConsumer;
         this.addAppendOverwriteSelection = appendStringConsumer != null;

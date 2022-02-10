@@ -2,18 +2,18 @@ package fi.dy.masa.malilib.gui;
 
 import javax.annotation.Nullable;
 import net.minecraft.client.gui.GuiScreen;
-import fi.dy.masa.malilib.util.consumer.StringConsumer;
+import fi.dy.masa.malilib.util.data.ResultingStringConsumer;
 
 public class TextInputScreen extends BaseTextInputScreen
 {
-    protected final StringConsumer stringConsumer;
+    protected final ResultingStringConsumer stringConsumer;
 
-    public TextInputScreen(String titleKey, StringConsumer stringConsumer)
+    public TextInputScreen(String titleKey, ResultingStringConsumer stringConsumer)
     {
         this(titleKey, "", stringConsumer);
     }
 
-    public TextInputScreen(String titleKey, String defaultText, StringConsumer stringConsumer)
+    public TextInputScreen(String titleKey, String defaultText, ResultingStringConsumer stringConsumer)
     {
         super(titleKey, defaultText);
 
@@ -21,7 +21,7 @@ public class TextInputScreen extends BaseTextInputScreen
     }
 
     public TextInputScreen(String titleKey, String defaultText,
-                           StringConsumer stringConsumer, @Nullable GuiScreen parent)
+                           ResultingStringConsumer stringConsumer, @Nullable GuiScreen parent)
     {
         this(titleKey, defaultText, stringConsumer);
 
