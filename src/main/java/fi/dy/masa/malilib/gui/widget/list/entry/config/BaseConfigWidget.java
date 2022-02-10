@@ -17,7 +17,6 @@ import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.entry.BaseDataListEntryWidget;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
-import fi.dy.masa.malilib.render.text.TextStyle;
 import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 
@@ -28,7 +27,8 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
     protected final GenericButton resetButton;
     protected final LabelWidget configOwnerAndNameLabelWidget;
     protected final StyledTextLine nameText;
-    @Nullable protected final StyledTextLine ownerText;
+    protected final StyledTextLine internalNameText;
+    @Nullable protected final StyledTextLine categoryText;
 
     public BaseConfigWidget(int x, int y, int width, int height, int listIndex,
                             int originalListIndex, CFG config, ConfigWidgetContext ctx)
@@ -38,12 +38,11 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
         this.config = config;
         this.ctx = ctx;
 
-        String nameLabel = config.getDisplayName();
-        @Nullable String ownerLabel = this.ctx.getListWidget().getModNameAndCategoryPrefix(originalListIndex);
-
-        this.ownerText = ownerLabel != null ? StyledTextLine.rawWithStyle(ownerLabel, TextStyle.normal(0xFF686868)) : null;
-        this.nameText = StyledTextLine.of(nameLabel);
-        this.configOwnerAndNameLabelWidget = new LabelWidget(this.getMaxLabelWidth(), height, 0xFFF0F0F0);
+        @Nullable String ownerLabel = this.getOwnerText(originalListIndex);
+        this.categoryText = ownerLabel != null ? StyledTextLine.of(ownerLabel) : null;
+        this.nameText = StyledTextLine.translate("malilib.label.config.config_display_name", config.getDisplayName());
+        this.internalNameText = StyledTextLine.translate("malilib.label.config.config_internal_name", config.getName());
+        this.configOwnerAndNameLabelWidget = new LabelWidget(this.getMaxLabelWidth(), height, 0xFFFFFFFF);
 
         EventListener clickHandler = config.getLabelClickHandler();
         List<String> comments = new ArrayList<>();
@@ -79,21 +78,37 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
         super.updateSubWidgetsToGeometryChanges();
 
         int nesting = this.getNestingOffset(this.ctx.getNestingLevel());
-        boolean showOwner = this.ctx.getListWidget().isShowingOptionsFromOtherCategories();
+        boolean showCategory = this.ctx.getListWidget().isShowingOptionsFromOtherCategories();
 
         this.configOwnerAndNameLabelWidget.setPosition(this.getX(), this.getY());
         this.configOwnerAndNameLabelWidget.getPadding().setLeft(nesting + 4);
 
-        if (showOwner && this.ownerText != null)
+        if (showCategory && this.categoryText != null)
         {
             this.configOwnerAndNameLabelWidget.getPadding().setTop(2);
-            this.configOwnerAndNameLabelWidget.setStyledTextLines(this.ownerText, this.nameText);
+            this.configOwnerAndNameLabelWidget.setStyledTextLines(this.nameText, this.categoryText);
+        }
+        else if (this.shouldShowInternalName())
+        {
+            this.configOwnerAndNameLabelWidget.getPadding().setTop(2);
+            this.configOwnerAndNameLabelWidget.setStyledTextLines(this.nameText, this.internalNameText);
         }
         else
         {
             this.configOwnerAndNameLabelWidget.getPadding().setTop(7);
             this.configOwnerAndNameLabelWidget.setStyledTextLines(this.nameText);
         }
+    }
+
+    protected boolean shouldShowInternalName()
+    {
+        return MaLiLibConfigs.Generic.SHOW_INTERNAL_CONFIG_NAME.getBooleanValue();
+    }
+
+    @Nullable
+    protected String getOwnerText(int originalListIndex)
+    {
+        return this.ctx.getListWidget().getModNameAndCategory(originalListIndex, this.shouldShowInternalName());
     }
 
     protected int getElementWidth()

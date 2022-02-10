@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
+import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.config.value.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.config.ConfigOptionWidgetFactory;
@@ -18,6 +19,7 @@ import fi.dy.masa.malilib.gui.widget.ConfigsSearchBarWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetFactory;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.BaseConfigWidget;
 import fi.dy.masa.malilib.registry.Registry;
+import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.ConfigOnTab;
 import fi.dy.masa.malilib.util.data.ModInfo;
 
@@ -92,17 +94,29 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
     }
 
     @Nullable
-    public String getModNameAndCategoryPrefix(int listIndex)
+    public String getModNameAndCategory(int listIndex, boolean showInternalName)
     {
-        if (this.configsSearchBarWidget != null &&
-            this.configsSearchBarWidget.getCurrentScope() != ConfigsSearchBarWidget.Scope.CURRENT_CATEGORY)
+        if (this.configsSearchBarWidget != null)
         {
             List<ConfigOnTab> configs = this.cachedConfigs.get(this.configsSearchBarWidget.getCurrentScope());
 
             if (configs != null && listIndex < configs.size())
             {
-                ConfigTab tab = configs.get(listIndex).tab;
-                return tab.getModInfo().getModName() + " > " + tab.getDisplayName();
+                ConfigOnTab configOnTab = configs.get(listIndex);
+                ConfigTab tab = configOnTab.getTab();
+                String modName = tab.getModInfo().getModName();
+                String tabName = tab.getDisplayName();
+
+                if (showInternalName)
+                {
+                    String configName = configOnTab.getConfig().getName();
+                    return StringUtils.translate("malilib.label.config.mod_category_internal_name",
+                                                 modName, tabName, configName);
+                }
+                else
+                {
+                    return StringUtils.translate("malilib.label.config.mod_category", modName, tabName);
+                }
             }
         }
 
@@ -123,24 +137,39 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
 
         List<C> list = this.getCurrentContents();
         final int size = list.size();
-        boolean showOwner = this.isShowingOptionsFromOtherCategories();
-        this.maxLabelWidth = 0;
+        boolean showCategory = this.isShowingOptionsFromOtherCategories();
+        boolean showInternalName = MaLiLibConfigs.Generic.SHOW_INTERNAL_CONFIG_NAME.getBooleanValue();
+        int maxLabelWidth = 0;
 
         for (int i = 0; i < size; ++i)
         {
             ConfigInfo config = list.get(i);
-            String name = config.getDisplayName();
-            String owner = showOwner ? this.getModNameAndCategoryPrefix(i) : null;
-
-            if (owner != null)
-            {
-                this.maxLabelWidth = Math.max(this.maxLabelWidth, this.getStringWidth(owner) + 10);
-            }
-
-            // The +10 here compensates for the left padding of the label widgets,
-            // which is used because of the hover border used for the labels of configs with a click handler
-            this.maxLabelWidth = Math.max(this.maxLabelWidth, this.getStringWidth(name) + 10);
+            int width = this.getEntryNameColumnWidth(i, config, showCategory, showInternalName);
+            maxLabelWidth = Math.max(maxLabelWidth, width);
         }
+
+        this.maxLabelWidth = maxLabelWidth;
+    }
+
+    protected int getEntryNameColumnWidth(int listIndex, ConfigInfo config,
+                                          boolean showCategory, boolean showInternalName)
+    {
+        int labelWidth = 0;
+
+        if (showCategory)
+        {
+            String str = this.getModNameAndCategory(listIndex, showInternalName);
+            labelWidth = this.getStringWidth(str);
+        }
+
+        if (showInternalName)
+        {
+            labelWidth = Math.max(labelWidth, this.getStringWidth(config.getName()));
+        }
+
+        // The +10 here compensates for the left padding of the label widgets,
+        // which is used because of the hover border used for the labels of configs with a click handler
+        return Math.max(labelWidth, this.getStringWidth(config.getDisplayName())) + 10;
     }
 
     @Override
@@ -150,44 +179,50 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
             this.configsSearchBarWidget.getCurrentScope() != ConfigsSearchBarWidget.Scope.CURRENT_CATEGORY)
         {
             ConfigsSearchBarWidget.Scope scope = this.configsSearchBarWidget.getCurrentScope();
-            List<ConfigOnTab> configsInScope = this.cachedConfigs.get(scope);
-            ArrayList<C> list = new ArrayList<>();
-
-            if (configsInScope == null)
-            {
-                configsInScope = new ArrayList<>();
-
-                if (scope == ConfigsSearchBarWidget.Scope.ALL_MODS)
-                {
-                    List<ConfigTab> allModTabs = Registry.CONFIG_TAB.getAllRegisteredConfigTabs();
-                    final List<ConfigOnTab> tmpList = configsInScope;
-                    allModTabs.forEach((tab) -> tab.getTabbedExpandedConfigs(tmpList::add));
-                }
-                else
-                {
-                    Supplier<List<ConfigTab>> tabProvider = Registry.CONFIG_TAB.getConfigTabProviderFor(this.modInfo);
-
-                    if (tabProvider != null)
-                    {
-                        final List<ConfigOnTab> tmpList = configsInScope;
-                        tabProvider.get().forEach((tab) -> tab.getTabbedExpandedConfigs(tmpList::add));
-                    }
-                }
-
-                this.cachedConfigs.put(scope, configsInScope);
-            }
-
-            for (ConfigOnTab cfg : configsInScope)
-            {
-                @SuppressWarnings("unchecked")
-                C c = (C) cfg.config;
-                list.add(c);
-            }
-
-            return list;
+            return this.getAndCacheConfigsFromScope(scope);
         }
 
         return super.getCurrentContents();
+    }
+
+    protected ArrayList<C> getAndCacheConfigsFromScope(ConfigsSearchBarWidget.Scope scope)
+    {
+        List<ConfigOnTab> configsInScope = this.cachedConfigs.get(scope);
+
+        if (configsInScope == null)
+        {
+            configsInScope = new ArrayList<>();
+
+            if (scope == ConfigsSearchBarWidget.Scope.ALL_MODS)
+            {
+                List<ConfigTab> allModTabs = Registry.CONFIG_TAB.getAllRegisteredConfigTabs();
+                final List<ConfigOnTab> tmpList = configsInScope;
+                allModTabs.forEach((tab) -> tab.getTabbedExpandedConfigs(tmpList::add));
+            }
+            else
+            {
+                Supplier<List<ConfigTab>> tabProvider = Registry.CONFIG_TAB.getConfigTabProviderFor(this.modInfo);
+
+                if (tabProvider != null)
+                {
+                    final List<ConfigOnTab> tmpList = configsInScope;
+                    tabProvider.get().forEach((tab) -> tab.getTabbedExpandedConfigs(tmpList::add));
+                }
+            }
+
+            this.cachedConfigs.put(scope, configsInScope);
+        }
+
+        ArrayList<C> list = new ArrayList<>();
+
+        for (ConfigOnTab cfg : configsInScope)
+        {
+            @SuppressWarnings("unchecked")
+            C c = (C) cfg.getConfig();
+            list.add(c);
+        }
+
+        return list;
     }
 
     /**

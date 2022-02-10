@@ -134,7 +134,7 @@ public class ConfigStatusIndicatorGroupAddConfigsScreen extends BaseListScreen<D
     protected void addSelectedConfigs()
     {
         ArrayList<ConfigOnTab> list = new ArrayList<>(this.getListWidget().getSelectedEntries());
-        list.sort(Comparator.comparing(cot -> cot.config.getDisplayName()));
+        list.sort(Comparator.comparing(cot -> cot.getConfig().getDisplayName()));
 
         for (ConfigOnTab config : list)
         {
@@ -197,7 +197,7 @@ public class ConfigStatusIndicatorGroupAddConfigsScreen extends BaseListScreen<D
 
     protected void addConfigIfHasStatusWidgetFactory(ConfigOnTab cfg, Consumer<ConfigOnTab> consumer)
     {
-        if (Registry.CONFIG_STATUS_WIDGET.getConfigStatusWidgetFactory(cfg.config) != null)
+        if (Registry.CONFIG_STATUS_WIDGET.getConfigStatusWidgetFactory(cfg.getConfig()) != null)
         {
             consumer.accept(cfg);
         }

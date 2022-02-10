@@ -215,7 +215,7 @@ public abstract class BaseConfigStatusIndicatorWidget<C extends ConfigInfo> exte
                     if (factory != null)
                     {
                         @SuppressWarnings("unchecked")
-                        BaseConfigStatusIndicatorWidget<?> widget = factory.create((C) configOnTab.config, configOnTab);
+                        BaseConfigStatusIndicatorWidget<?> widget = factory.create((C) configOnTab.getConfig(), configOnTab);
                         widget.fromJson(obj);
                         widget.updateState(true);
                         return widget;
@@ -231,7 +231,7 @@ public abstract class BaseConfigStatusIndicatorWidget<C extends ConfigInfo> exte
             {
                 ConfigTab dummyTab = new BaseConfigTab(MaLiLibReference.MOD_INFO, "?", -1, ImmutableList.of(PlaceholderConfigStatusIndicatorWidget.DUMMY_CONFIG), (g) -> null);
                 configOnTab = new ConfigOnTab(dummyTab, PlaceholderConfigStatusIndicatorWidget.DUMMY_CONFIG);
-                BaseConfigStatusIndicatorWidget<?> widget = new PlaceholderConfigStatusIndicatorWidget(configOnTab.config, configOnTab);
+                BaseConfigStatusIndicatorWidget<?> widget = new PlaceholderConfigStatusIndicatorWidget(configOnTab.getConfig(), configOnTab);
                 widget.fromJson(obj);
                 return widget;
             }

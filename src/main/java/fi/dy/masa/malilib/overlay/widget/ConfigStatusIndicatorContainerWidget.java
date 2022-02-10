@@ -74,11 +74,12 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
     {
         if (this.configs.contains(config) == false)
         {
-            ConfigStatusWidgetFactory<ConfigInfo> factory = Registry.CONFIG_STATUS_WIDGET.getConfigStatusWidgetFactory(config.config);
+            ConfigStatusWidgetFactory<ConfigInfo> factory = Registry.CONFIG_STATUS_WIDGET
+                    .getConfigStatusWidgetFactory(config.getConfig());
 
             if (factory != null)
             {
-                BaseConfigStatusIndicatorWidget<?> widget = factory.create(config.config, config);
+                BaseConfigStatusIndicatorWidget<?> widget = factory.create(config.getConfig(), config);
                 widget.setGeometryChangeListener(this::requestConditionalReLayout);
                 widget.setEnabledChangeListener(this::notifyEnabledWidgetsChanged);
                 widget.setHeight(this.getLineHeight());

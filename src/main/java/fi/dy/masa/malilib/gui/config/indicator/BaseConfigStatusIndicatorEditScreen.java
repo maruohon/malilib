@@ -98,7 +98,7 @@ public class BaseConfigStatusIndicatorEditScreen <WIDGET extends BaseConfigStatu
 
     protected void resetName()
     {
-        String name = this.widget.getConfigOnTab().config.getDisplayName();
+        String name = this.widget.getConfigOnTab().getConfig().getDisplayName();
         this.widget.setName(name);
         this.nameTextFieldWidget.setText(name);
     }

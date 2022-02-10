@@ -5,13 +5,23 @@ import fi.dy.masa.malilib.gui.config.ConfigTab;
 
 public class ConfigOnTab
 {
-    public final ConfigTab tab;
-    public final ConfigInfo config;
+    protected final ConfigTab tab;
+    protected final ConfigInfo config;
 
     public ConfigOnTab(ConfigTab tab, ConfigInfo config)
     {
         this.tab = tab;
         this.config = config;
+    }
+
+    public ConfigTab getTab()
+    {
+        return this.tab;
+    }
+
+    public ConfigInfo getConfig()
+    {
+        return this.config;
     }
 
     public String getConfigPath()

@@ -48,6 +48,7 @@ public class MaLiLibConfigs
         public static final BooleanConfig PRESSED_KEYS_TOAST                    = new BooleanConfig("pressedKeysToast", false);
         public static final BooleanConfig REMEMBER_CONFIG_TAB_SCROLL_POSITIONS  = new BooleanConfig("rememberConfigTabScrollPositions", true);
         public static final BooleanConfig SERVER_MESSAGES                       = new BooleanConfig("serverMessages", true);
+        public static final BooleanConfig SHOW_INTERNAL_CONFIG_NAME             = new BooleanConfig("showInternalConfigName", false);
         public static final BooleanConfig SORT_EXTENSION_MOD_OPTIONS            = new BooleanConfig("sortExtensionModOptions", false);
 
         public static final ImmutableList<ConfigOption<?>> OPTIONS = ImmutableList.of(
@@ -73,6 +74,7 @@ public class MaLiLibConfigs
                 PRESSED_KEYS_TOAST,
                 REMEMBER_CONFIG_TAB_SCROLL_POSITIONS,
                 SERVER_MESSAGES,
+                SHOW_INTERNAL_CONFIG_NAME,
                 SORT_EXTENSION_MOD_OPTIONS
         );
     }
