@@ -114,7 +114,7 @@ public class ParameterizedNamedAction extends NamedAction
             if ((baseAction instanceof ParameterizableNamedAction) == false)
             {
                 // Preserve entries in the config if the mod adding the action is temporarily disabled/removed
-                baseAction = new ParameterizableNamedAction("?", "?", ModInfo.NO_MOD, (ctx, a) -> ActionResult.PASS);
+                baseAction = new ParameterizableNamedAction("<N/A>", "<N/A>", ModInfo.NO_MOD, (ctx, a) -> ActionResult.PASS);
                 baseAction.setRegistryName(parentRegName);
             }
 

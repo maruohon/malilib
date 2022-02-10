@@ -63,6 +63,11 @@ public class MacroAction extends NamedAction
         lines.add(StyledTextLine.translate("malilib.hover_info.action.name", this.getName()));
         lines.add(StyledTextLine.translate("malilib.hover_info.action.action_type", this.type.getGroup().getDisplayName()));
 
+        if (this.registryName != null)
+        {
+            lines.add(StyledTextLine.translate("malilib.hover_info.action.registry_name", this.registryName));
+        }
+
         int size = this.actionList.size();
 
         if (size > 0)
@@ -106,11 +111,17 @@ public class MacroAction extends NamedAction
     @Nullable
     public static MacroAction macroActionFromJson(JsonObject obj)
     {
-        ImmutableList.Builder<NamedAction> builder = ImmutableList.builder();
+        NamedAction action = NamedAction.baseActionFromJson(obj);
+
+        if (action instanceof MacroAction)
+        {
+            return (MacroAction) action;
+        }
 
         if (JsonUtils.hasArray(obj, "actions") &&
             JsonUtils.hasString(obj, "name"))
         {
+            ImmutableList.Builder<NamedAction> builder = ImmutableList.builder();
             String name = JsonUtils.getString(obj, "name");
             JsonUtils.readArrayElementsIfObjects(obj, "actions", (o) -> readMacroMemberAction(o, builder::add));
 

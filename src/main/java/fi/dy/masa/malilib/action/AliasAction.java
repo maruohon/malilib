@@ -103,7 +103,7 @@ public class AliasAction extends NamedAction
             if (baseAction == null)
             {
                 // Preserve entries in the config if the mod adding the action is temporarily disabled/removed
-                baseAction = new SimpleNamedAction("?", "?", ModInfo.NO_MOD, (ctx) -> ActionResult.PASS);
+                baseAction = new SimpleNamedAction("<N/A>", "<N/A>", ModInfo.NO_MOD, (ctx) -> ActionResult.PASS);
                 baseAction.setRegistryName(parentRegName);
             }
 
