@@ -1,7 +1,12 @@
 package fi.dy.masa.malilib.gui.widget.list.entry;
 
+import java.util.ArrayList;
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.gui.edit.CustomHotkeysEditScreen;
+import fi.dy.masa.malilib.action.MacroAction;
+import fi.dy.masa.malilib.gui.BaseScreen;
+import fi.dy.masa.malilib.gui.edit.CustomHotkeyEditScreen;
+import fi.dy.masa.malilib.gui.edit.CustomHotkeysListScreen;
+import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.KeybindSettingsWidget;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
@@ -14,24 +19,25 @@ import fi.dy.masa.malilib.render.text.TextStyle;
 
 public class CustomHotkeyDefinitionEntryWidget extends BaseDataListEntryWidget<CustomHotkeyDefinition>
 {
-    protected final CustomHotkeysEditScreen screen;
+    protected final CustomHotkeysListScreen screen;
     protected final LabelWidget nameLabelWidget;
     protected final KeyBindConfigButton keybindButton;
     protected final KeybindSettingsWidget settingsWidget;
+    protected final GenericButton editButton;
     protected final GenericButton removeButton;
 
     public CustomHotkeyDefinitionEntryWidget(int x, int y, int width, int height, int listIndex, int originalListIndex,
                                              @Nullable CustomHotkeyDefinition data,
                                              @Nullable DataListWidget<? extends CustomHotkeyDefinition> listWidget,
-                                             CustomHotkeysEditScreen screen)
+                                             CustomHotkeysListScreen screen)
     {
         super(x, y, width, height, listIndex, originalListIndex, data, listWidget);
 
         this.screen = screen;
 
         TextStyle actionStyle = TextStyle.normal(0xFFC0C0C0);
-        StyledTextLine name = StyledTextLine.translate("malilib.gui.label.custom_hotkey_name", data.getName());
-        StyledTextLine actionName = data.getAction().getColoredWidgetDisplayName().withStartingStyle(actionStyle);
+        StyledTextLine name = StyledTextLine.translate("malilib.label.custom_hotkey.widget.name", data.getName());
+        StyledTextLine actionName = data.getActionDisplayName().withStartingStyle(actionStyle);
 
         this.nameLabelWidget = new LabelWidget(-1, height, 0xFFF0F0F0);
         this.nameLabelWidget.getPadding().setTop(2).setLeft(4);
@@ -39,11 +45,16 @@ public class CustomHotkeyDefinitionEntryWidget extends BaseDataListEntryWidget<C
 
         this.keybindButton = new KeyBindConfigButton(120, 20, data.getKeyBind(), screen);
         this.settingsWidget = new KeybindSettingsWidget(data.getKeyBind(), data.getName(), null);
-        this.removeButton = GenericButton.simple("malilib.gui.button.label.remove", this::removeHotkey);
+        this.editButton = GenericButton.simple("malilib.label.button.edit", this::editHotkey);
+        this.removeButton = GenericButton.simple("malilib.label.button.remove", this::removeHotkey);
 
         this.getBackgroundRenderer().getNormalSettings().setEnabled(true);
         this.getBackgroundRenderer().getNormalSettings().setColor(this.isOdd ? 0x30707070 : 0x50707070);
         this.getBackgroundRenderer().getHoverSettings().setColor(0x50909090);
+
+        ArrayList<StyledTextLine> lines = new ArrayList<>();
+        MacroAction.getContainedActionsTooltip(data.getActionList(), lines::add, 8);
+        this.hoverInfoFactory.addTextLines(lines);
     }
 
     @Override
@@ -54,6 +65,7 @@ public class CustomHotkeyDefinitionEntryWidget extends BaseDataListEntryWidget<C
         this.addWidget(this.nameLabelWidget);
         this.addWidget(this.keybindButton);
         this.addWidget(this.settingsWidget);
+        this.addWidget(this.editButton);
         this.addWidget(this.removeButton);
 
         this.keybindButton.updateHoverStrings();
@@ -66,18 +78,20 @@ public class CustomHotkeyDefinitionEntryWidget extends BaseDataListEntryWidget<C
 
         int x = this.getX();
         int y = this.getY();
-        int midY = y + this.getHeight() / 2;
 
         this.nameLabelWidget.setPosition(x, y);
 
-        x = this.getRight() - this.removeButton.getWidth() - 2;
-        this.removeButton.setPosition(x, midY - this.removeButton.getHeight() / 2);
+        this.removeButton.setRight(this.getRight() - 2);
+        this.removeButton.centerVerticallyInside(this);
 
-        x = this.removeButton.getX() - this.settingsWidget.getWidth() - 4;
-        this.settingsWidget.setPosition(x, midY - this.settingsWidget.getHeight() / 2);
+        this.settingsWidget.setRight(this.removeButton.getX() - 2);
+        this.settingsWidget.centerVerticallyInside(this);
 
-        x = this.settingsWidget.getX() - this.keybindButton.getWidth() - 4;
-        this.keybindButton.setPosition(x, midY - this.keybindButton.getHeight() / 2);
+        this.keybindButton.setRight(this.settingsWidget.getX() - 2);
+        this.keybindButton.centerVerticallyInside(this);
+
+        this.editButton.setRight(this.keybindButton.getX() - 2);
+        this.editButton.centerVerticallyInside(this);
     }
 
     protected void removeHotkey()
@@ -86,5 +100,12 @@ public class CustomHotkeyDefinitionEntryWidget extends BaseDataListEntryWidget<C
             CustomHotkeyManager.INSTANCE.removeCustomHotkey(this.data);
             this.screen.getListWidget().refreshEntries();
         });
+    }
+
+    protected void editHotkey()
+    {
+        CustomHotkeyEditScreen screen = new CustomHotkeyEditScreen(this.data);
+        screen.setParent(GuiUtils.getCurrentScreen());
+        BaseScreen.openScreen(screen);
     }
 }

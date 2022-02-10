@@ -2,16 +2,19 @@ package fi.dy.masa.malilib.action;
 
 import java.util.Collection;
 import java.util.Locale;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
+import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.config.option.HotkeyedBooleanConfig;
 import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.overlay.message.MessageOutput;
 import fi.dy.masa.malilib.registry.Registry;
+import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.ModInfo;
 
@@ -201,5 +204,22 @@ public class ActionUtils
         }
 
         return false;
+    }
+
+    public static ImmutableList<NamedAction> readActionsFromList(JsonObject obj, String arrayName)
+    {
+        ImmutableList.Builder<NamedAction> builder = ImmutableList.builder();
+        JsonUtils.readArrayElementsIfObjects(obj, arrayName, (o) -> loadActionFrom(o, builder::add));
+        return builder.build();
+    }
+
+    public static void loadActionFrom(JsonObject obj, Consumer<NamedAction> consumer)
+    {
+        NamedAction action = ActionType.loadActionFromJson(obj);
+
+        if (action != null)
+        {
+            consumer.accept(action);
+        }
     }
 }

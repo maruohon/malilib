@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
@@ -68,43 +67,41 @@ public class MacroAction extends NamedAction
             lines.add(StyledTextLine.translate("malilib.hover_info.action.registry_name", this.registryName));
         }
 
-        int size = this.actionList.size();
+        getContainedActionsTooltip(this.actionList, lines::add, 8);
+
+        return lines;
+    }
+
+    public static void getContainedActionsTooltip(List<NamedAction> actions,
+                                                  Consumer<StyledTextLine> consumer,
+                                                  int maxEntriesShown)
+    {
+        int size = actions.size();
 
         if (size > 0)
         {
-            lines.add(StyledTextLine.translate("malilib.hover_info.action.contained_actions", size));
+            consumer.accept(StyledTextLine.translate("malilib.hover_info.action.contained_actions", size));
 
-            int count = Math.min(size, 8);
+            int count = Math.min(size, maxEntriesShown);
 
             for (int i = 0; i < count; ++i)
             {
-                NamedAction action = this.actionList.get(i);
-                lines.add(StyledTextLine.of("  " + action.getName()));
+                consumer.accept(StyledTextLine.of("  " + actions.get(i).getName()));
             }
 
             if (size > count)
             {
-                lines.add(StyledTextLine.translate("malilib.gui.button.hover.entries_more", size - count));
+                consumer.accept(StyledTextLine.translate("malilib.hover_info.action.contained_actions.more", size - count));
             }
         }
-
-        return lines;
     }
 
     @Override
     public JsonObject toJson()
     {
         JsonObject obj = super.toJson();
-        JsonArray arr = new JsonArray();
-
-        for (NamedAction action : this.actionList)
-        {
-            arr.add(action.toJson());
-        }
-
         obj.addProperty("name", this.name);
-        obj.add("actions", arr);
-
+        obj.add("actions", JsonUtils.toArray(this.actionList, NamedAction::toJson));
         return obj;
     }
 
@@ -121,24 +118,11 @@ public class MacroAction extends NamedAction
         if (JsonUtils.hasArray(obj, "actions") &&
             JsonUtils.hasString(obj, "name"))
         {
-            ImmutableList.Builder<NamedAction> builder = ImmutableList.builder();
             String name = JsonUtils.getString(obj, "name");
-            JsonUtils.readArrayElementsIfObjects(obj, "actions", (o) -> readMacroMemberAction(o, builder::add));
-
-            return new MacroAction(name, builder.build());
+            return new MacroAction(name, ActionUtils.readActionsFromList(obj, "actions"));
         }
 
         return null;
-    }
-
-    protected static void readMacroMemberAction(JsonObject obj, Consumer<NamedAction> consumer)
-    {
-        NamedAction action = ActionType.loadActionFromJson(obj);
-
-        if (action != null)
-        {
-            consumer.accept(action);
-        }
     }
 
     public static ModInfo getMacroModInfo()

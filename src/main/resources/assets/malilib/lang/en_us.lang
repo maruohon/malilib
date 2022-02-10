@@ -115,6 +115,7 @@ malilib.hover.button.parameterize_action=Create a new copy of the action with th
 malilib.hover.button.parameterize_action_for_macro=Create a new copy of the action with the string argument already bound to a given value. This allows directly executing that action without having to input the string argument via the text input prompt screen.\n<c=da0>Note: This button only adds the parameterized action to this macro, it does not get added to the registry and won't be available in the global list.
 malilib.hover.button.re_parameterize_action_for_macro=Create a new parameterized copy of the action with the string argument bound to a new given value. This old version of the action will be removed and replaced with the newly created action with the given name and argument.
 
+malilib.hover.custom_hotkey_export_import_screen.append_overwrite=- Append = add the actions from the import to the end of the current actions in the hotkey\n- Overwrite = replace all the actions in the hotkey with the imported actions
 malilib.hover.macro_action_export_import_screen.append_overwrite=- Append = add the actions from the imported macro to the end of the current actions in the macro\n- Overwrite = replace all the actions in the macro with the imported actions
 
 malilib.label.button.action_list_screen.create_macro=Create Macro
@@ -133,6 +134,7 @@ malilib.label.button.macro_edit_screen.add_actions=Add Actions
 malilib.label.button.cancel=Cancel
 malilib.label.button.edit=Edit
 malilib.label.button.ok.colored=§aOK
+malilib.label.button.remove=Remove
 malilib.label.button.reset=Reset
 malilib.label.button.save_to_file=Save to File
 
@@ -140,10 +142,14 @@ malilib.label.config.config_display_name=<c=f0f0f0>%s
 malilib.label.config.config_internal_name=<c=808080>%s
 malilib.label.config.mod_category=<c=808080>%s > %s
 malilib.label.config.mod_category_internal_name=<c=808080>%s > %s > %s
+malilib.label.custom_hotkey_edit.actions=Actions bound to the hotkey:
+malilib.label.custom_hotkey.multiple_actions=§8Contains §b%s§8 actions
+malilib.label.custom_hotkey.widget.name=§e%s
 
 malilib.label.name.append=Append
 malilib.label.name.overwrite=Overwrite
 
+malilib.message.error.custom_hotkey_import_from_string_failed=Failed to read a custom hotkey from the given settings string
 malilib.message.error.failed_to_write_string_to_file=Failed to write the string to file '%s'
 malilib.message.error.file_already_exists_hold_shift_to_override=File already exists. Hold shift when clicking the save button to override the existing file.
 malilib.message.error.macro_import_from_string_failed=Failed to read a macro from the given settings string
@@ -153,6 +159,9 @@ malilib.message.success.setting_string_pasted_from_clipboard=Setting string past
 malilib.message.success.settings_read_from_file_to_text_field=Settings read from file and placed to the text field
 malilib.message.success.settings_written_to_file=Settings written to file
 
+malilib.title.screen.custom_hotkey_create=Create a new custom hotkey
+malilib.title.screen.custom_hotkey_edit=Edit Custom Hotkey
+malilib.title.screen.custom_hotkey_edit.export_import=Export or Import Custom Hotkey
 malilib.title.screen.macro_edit.export_import=Export or Import Macro
 
 malilib.gui.prompt.title.create_alias_action=Create an alias action
@@ -161,6 +170,8 @@ malilib.gui.prompt.title.parameterize_action=Create a parameterized copy of the 
 malilib.label.action.alias_name.colon=Alias name:
 malilib.label.action.parameterized_action_name=Name for the created action:
 malilib.label.action.parameterized_action_argument=Bound argument:
+
+malilib.label.custom_hotkey.name=Hotkey name:
 
 malilib.label.name.action.alias_entry_widget_name=<c=24FEFA>%s §8[%s > %s]
 malilib.label.name.action.macro_entry_widget_name=<c=FE24F3>%s §8[§b%s §8actions]
@@ -171,6 +182,8 @@ malilib.label.name.action.simple_entry_widget_name=%s §8[%s]
 malilib.info.action.create_parameterized_copy=Create a copy of the action, with the argument bound to the given value. This allows directly executing the created action with that argument, without having to type it into the text input prompt window every time.
 malilib.info.action.action_name_and_arg_immutable=<c=ff0>Note: You can't change the action name or argument later.</c>\n\nThe only way to "change" the name or argument (in-game) is to delete the action and create a new action with the new name.
 malilib.info.action.action_name_immutable=<c=ff0>Note: You can't change the action name later.</c>\n\nThe only way to "change" the name (in-game) is to delete the action and create a new action with the new name.
+malilib.info.custom_hotkey.name_immutable=<c=ff0>Note: You can't change the name later.</c>\n\nThe only way to "change" the name (in-game) is to delete the hotkey and create a new hotkey with the new name.
+
 
 malilib.hover_info.action.action_type=§8Type: <c=aaa>%s
 malilib.hover_info.action.alias=§8Alias: §7%s
@@ -178,6 +191,7 @@ malilib.hover_info.action.argument.colon=§8Argument:§7
 malilib.hover_info.action.base_action_name=§8Base action name: §7%s
 malilib.hover_info.action.base_action_registry_name=§8Base action reg.name: §7%s
 malilib.hover_info.action.contained_actions=§8Contained actions (§b%s§8):
+malilib.hover_info.action.contained_actions.more=... and §b%s§r more
 malilib.hover_info.action.display_name=§8Display name: §7%s
 malilib.hover_info.action.mod=§8Mod: §7%s
 malilib.hover_info.action.name=§8Name: §7%s
@@ -188,6 +202,7 @@ malilib.hover_info.action_types_explanation=- All: All actions currently in the 
 malilib.hover_info.add_action_execution_widget.add_argument=Bind the argument to the action button directly.\nIf this is not set, then you will need to input the argument every time you run the action.
 malilib.hover_info.close_screen=Close the screen
 malilib.hover_info.config_override_fallback=§cError retrieving server info.\n§6All features have been disabled as a fall-back.
+malilib.hover_info.custom_hotkey_edit_screen.add_actions=Add the selected actions to the hotkey
 malilib.hover_info.macro_edit_screen.add_actions=Add the selected actions to the macro
 malilib.hover_info.macro_edit_screen.remove_actions=Remove the selected actions from the macro
 malilib.hover_info.option_list_button.non_selected_value=  §8%s
@@ -353,7 +368,6 @@ malilib.gui.label.custom_icon_edit.texture_name=Texture Name:
 malilib.gui.label.custom_icon_edit.texture_sheet_height=Sheet Height:
 malilib.gui.label.custom_icon_edit.texture_sheet_width=Sheet Width:
 malilib.gui.label.custom_icon_edit.variant_offset_uv=Enabled/Hover offset U and V:
-malilib.gui.label.custom_hotkey_name=§e%s
 
 malilib.gui.label_error.no_widget_factory_for_config_type=§cUnknown config type '%s' (no widget factory registered)§r
 
@@ -423,7 +437,6 @@ malilib.gui.title.action_screen.export_settings=Export Action Screen Settings
 malilib.gui.title.action_screen.import_settings=Import Action Screen Settings
 malilib.gui.title.add_action_macro=Create an action macro
 malilib.gui.title.add_message_redirect=Add a Message Redirect
-malilib.gui.title.add_new_hotkey=Add a hotkey bound to an action
 malilib.gui.title.all_hotkeys=All registered hotkeys
 malilib.gui.title.black_white_list_edit=Edit Black/White List '%s'
 malilib.gui.title.block_list_edit=Edit block list '%s'
@@ -643,8 +656,7 @@ malilib.message.error.action.action_name_exists=An action already exist by the n
 malilib.message.error.action.macro_add_actions_loop_detected=Error: Can't add the selected action(s), as they either directly or indirectly contain this macro itself! That would create an infinite loop when trying to save or execute the macro.
 malilib.message.error.action_screen_already_exists_by_name=Error: Action screen already exists by the name '%s'
 malilib.message.error.actions_edit.add_alias_select_one=To add an alias for an action, select exactly one action from the list!
-malilib.message.error.custom_hotkey_add.give_name=You must give a name for the custom hotkey!
-malilib.message.error.custom_hotkey_add.select_action=You must select an action from the dropdown to bind to the custom hotkey
+malilib.message.error.custom_hotkey_create.no_name=You must give a name for the custom hotkey!
 malilib.message.error.failed_to_copy_file=Failed to copy file '%s' to '%s'
 malilib.message.error.failed_to_copy_file.destination_exists=Won't copy file '%s' to '%s', the destination file already exists
 malilib.message.error.failed_to_delete_file=Failed to delete file '%s'

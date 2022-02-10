@@ -9,7 +9,7 @@ import fi.dy.masa.malilib.gui.action.ActionListScreen;
 import fi.dy.masa.malilib.gui.config.BaseConfigScreen;
 import fi.dy.masa.malilib.gui.config.BaseConfigTab;
 import fi.dy.masa.malilib.gui.config.ConfigTab;
-import fi.dy.masa.malilib.gui.edit.CustomHotkeysEditScreen;
+import fi.dy.masa.malilib.gui.edit.CustomHotkeysListScreen;
 import fi.dy.masa.malilib.gui.edit.CustomIconListScreen;
 import fi.dy.masa.malilib.gui.edit.overlay.InfoRendererWidgetListScreen;
 import fi.dy.masa.malilib.gui.tab.BaseScreenTab;
@@ -29,7 +29,7 @@ public class MaLiLibConfigScreen
     public static final BaseScreenTab ACTIONS           = new BaseScreenTab(MOD_INFO, "actions",                      (scr) -> scr instanceof ActionListScreen, ActionListScreen::createActionListScreen);
     public static final BaseScreenTab CSI               = new BaseScreenTab(MOD_INFO, "config_status_indicator.abbr", (scr) -> scr instanceof ConfigStatusIndicatorWidgetListScreen, MaLiLibConfigScreen::createConfigStatusIndicatorListScreen).setHoverText("malilib.gui.button.hover.config_status_indicator");
     public static final BaseScreenTab ICONS             = new BaseScreenTab(MOD_INFO, "custom_icons",                 (scr) -> scr instanceof CustomIconListScreen, CustomIconListScreen::openCustomIconListScreen).setHoverText("malilib.gui.button.hover.custom_icons_configuration");
-    public static final BaseScreenTab CUSTOM_HOTKEYS    = new BaseScreenTab(MOD_INFO, "custom_hotkeys",               (scr) -> scr instanceof CustomHotkeysEditScreen, MaLiLibConfigScreen::createCustomHotkeysEditScreen).setHoverText("malilib.gui.button.hover.custom_hotkeys_configuration");
+    public static final BaseScreenTab CUSTOM_HOTKEYS    = new BaseScreenTab(MOD_INFO, "custom_hotkeys",               (scr) -> scr instanceof CustomHotkeysListScreen, MaLiLibConfigScreen::createCustomHotkeysEditScreen).setHoverText("malilib.gui.button.hover.custom_hotkeys_configuration");
     public static final BaseScreenTab INFO_RENDERERS    = new BaseScreenTab(MOD_INFO, "info_renderers",               (scr) -> scr instanceof AllInfoWidgetsListScreen, MaLiLibConfigScreen::createInfoRendererWidgetsListScreen).setHoverText("malilib.gui.button.hover.info_renderers_configuration");
 
     private static final ImmutableList<ConfigTab> CONFIG_TABS = ImmutableList.of(
@@ -73,7 +73,7 @@ public class MaLiLibConfigScreen
 
     public static BaseTabbedScreen createCustomHotkeysEditScreen(@Nullable GuiScreen currentScreen)
     {
-        return new CustomHotkeysEditScreen();
+        return new CustomHotkeysListScreen();
     }
 
     public static ImmutableList<ConfigTab> getConfigTabs()

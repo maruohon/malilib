@@ -55,7 +55,12 @@ public class CustomHotkeyManager implements HotkeyProvider
         this.dirty = false;
     }
 
-    public void checkIfDirty()
+    public void markDirty()
+    {
+        this.dirty = true;
+    }
+
+    public boolean checkIfDirty()
     {
         for (CustomHotkeyDefinition hotkey : this.hotkeys)
         {
@@ -65,6 +70,8 @@ public class CustomHotkeyManager implements HotkeyProvider
                 break;
             }
         }
+
+        return this.dirty;
     }
 
     public boolean saveToFileIfDirty()

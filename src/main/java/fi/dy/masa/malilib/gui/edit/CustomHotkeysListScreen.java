@@ -5,10 +5,12 @@ import java.util.Comparator;
 import java.util.List;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
+import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.MaLiLibConfigScreen;
 import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.gui.BaseListScreen;
 import fi.dy.masa.malilib.gui.BaseScreen;
+import fi.dy.masa.malilib.gui.TextInputScreen;
 import fi.dy.masa.malilib.gui.config.KeybindEditingScreen;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
@@ -17,14 +19,17 @@ import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.CustomHotkeyDefinitionEntryWidget;
 import fi.dy.masa.malilib.input.CustomHotkeyDefinition;
 import fi.dy.masa.malilib.input.CustomHotkeyManager;
+import fi.dy.masa.malilib.input.KeyBind;
+import fi.dy.masa.malilib.input.KeyBindImpl;
+import fi.dy.masa.malilib.input.KeyBindSettings;
 import fi.dy.masa.malilib.registry.Registry;
 
-public class CustomHotkeysEditScreen extends BaseListScreen<DataListWidget<CustomHotkeyDefinition>> implements KeybindEditingScreen
+public class CustomHotkeysListScreen extends BaseListScreen<DataListWidget<CustomHotkeyDefinition>> implements KeybindEditingScreen
 {
     protected final GenericButton addHotkeyButton;
     @Nullable protected KeyBindConfigButton activeKeyBindButton;
 
-    public CustomHotkeysEditScreen()
+    public CustomHotkeysListScreen()
     {
         super(10, 74, 20, 80, MaLiLibReference.MOD_ID, MaLiLibConfigScreen.ALL_TABS, MaLiLibConfigScreen.GENERIC);
 
@@ -54,18 +59,40 @@ public class CustomHotkeysEditScreen extends BaseListScreen<DataListWidget<Custo
     @Override
     public void onGuiClosed()
     {
-        CustomHotkeyManager.INSTANCE.checkIfDirty();
-        CustomHotkeyManager.INSTANCE.saveToFileIfDirty();
-        Registry.HOTKEY_MANAGER.updateUsedKeys();
+        if (CustomHotkeyManager.INSTANCE.checkIfDirty())
+        {
+            CustomHotkeyManager.INSTANCE.saveToFileIfDirty();
+            Registry.HOTKEY_MANAGER.updateUsedKeys();
+        }
 
         super.onGuiClosed();
     }
 
     protected void openAddHotkeyScreen()
     {
-        AddCustomHotkeyDefinitionScreen screen = new AddCustomHotkeyDefinitionScreen();
+        String title = "malilib.title.screen.custom_hotkey_create";
+        TextInputScreen screen = new TextInputScreen(title, "", this::openEditHotkeyScreen);
         screen.setParent(this);
+        screen.setLabelText("malilib.label.custom_hotkey.name");
+        screen.setInfoText("malilib.info.custom_hotkey.name_immutable");
         BaseScreen.openPopupScreen(screen);
+    }
+
+    protected boolean openEditHotkeyScreen(String name)
+    {
+        if (name.isEmpty())
+        {
+            return false;
+        }
+
+        KeyBind keyBind = KeyBindImpl.fromStorageString("", KeyBindSettings.INGAME_SUCCESS);
+        CustomHotkeyDefinition hotkey = new CustomHotkeyDefinition(name, keyBind, ImmutableList.of());
+        CustomHotkeyManager.INSTANCE.addCustomHotkey(hotkey);
+        CustomHotkeyEditScreen screen = new CustomHotkeyEditScreen(hotkey);
+        screen.setParent(this);
+        BaseScreen.openScreen(screen);
+
+        return true;
     }
 
     @Override

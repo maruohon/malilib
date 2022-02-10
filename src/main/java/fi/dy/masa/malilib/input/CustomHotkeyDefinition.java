@@ -1,12 +1,14 @@
 package fi.dy.masa.malilib.input;
 
 import javax.annotation.Nullable;
+import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import fi.dy.masa.malilib.action.ActionType;
+import fi.dy.masa.malilib.action.ActionContext;
+import fi.dy.masa.malilib.action.ActionUtils;
 import fi.dy.masa.malilib.action.NamedAction;
-import fi.dy.masa.malilib.action.SimpleNamedAction;
 import fi.dy.masa.malilib.input.callback.HotkeyCallback;
+import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.ModInfo;
@@ -15,18 +17,18 @@ public class CustomHotkeyDefinition implements Hotkey
 {
     protected final String name;
     protected final KeyBind keyBind;
-    protected final NamedAction action;
+    protected ImmutableList<NamedAction> actions;
 
-    public CustomHotkeyDefinition(String name, KeyBind keyBind, NamedAction action)
+    public CustomHotkeyDefinition(String name, KeyBind keyBind, ImmutableList<NamedAction> actions)
     {
         this.name = name;
         this.keyBind = keyBind;
-        this.action = action;
+        this.actions = actions;
 
         String custom = StringUtils.translate("malilib.label.custom");
         this.keyBind.setModInfo(new ModInfo(custom, custom));
-        this.keyBind.setCallback(HotkeyCallback.of(action));
-        this.keyBind.setNameTranslationKey(action.getDisplayName());
+        this.keyBind.setCallback(HotkeyCallback.of(this::execute));
+        this.keyBind.setNameTranslationKey(name);
     }
 
     @Override
@@ -47,9 +49,34 @@ public class CustomHotkeyDefinition implements Hotkey
         return this.keyBind;
     }
 
-    public NamedAction getAction()
+    public ImmutableList<NamedAction> getActionList()
     {
-        return this.action;
+        return this.actions;
+    }
+
+    public void setActionList(ImmutableList<NamedAction> actions)
+    {
+        this.actions = actions;
+    }
+
+    public StyledTextLine getActionDisplayName()
+    {
+        if (this.actions.size() == 1)
+        {
+            return this.actions.get(0).getColoredWidgetDisplayName();
+        }
+
+        return StyledTextLine.translate("malilib.label.custom_hotkey.multiple_actions", this.actions.size());
+    }
+
+    protected ActionResult execute(ActionContext ctx)
+    {
+        for (NamedAction action : this.actions)
+        {
+            action.execute(ctx);
+        }
+
+        return ActionResult.SUCCESS;
     }
 
     public JsonObject toJson()
@@ -58,7 +85,7 @@ public class CustomHotkeyDefinition implements Hotkey
 
         obj.addProperty("name", this.name);
         obj.add("hotkey", this.keyBind.getAsJsonElement());
-        obj.add("action", this.action.toJson());
+        obj.add("actions", JsonUtils.toArray(this.actions, NamedAction::toJson));
 
         return obj;
     }
@@ -77,21 +104,9 @@ public class CustomHotkeyDefinition implements Hotkey
 
         if (JsonUtils.hasObject(obj, "hotkey"))
         {
-            keyBind.setValueFromJsonElement(obj.get("hotkey"), "?");
+            keyBind.setValueFromJsonElement(obj.get("hotkey"), name);
         }
 
-        NamedAction action = null;
-
-        if (JsonUtils.hasObject(obj, "action"))
-        {
-            action = ActionType.loadActionFromJson(JsonUtils.getNestedObject(obj, "action", true));
-        }
-
-        if (action == null)
-        {
-            action = new SimpleNamedAction("?", "?", ModInfo.NO_MOD, (ctx) -> ActionResult.PASS);
-        }
-
-        return new CustomHotkeyDefinition(name, keyBind, action);
+        return new CustomHotkeyDefinition(name, keyBind, ActionUtils.readActionsFromList(obj, "actions"));
     }
 }
