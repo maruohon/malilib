@@ -911,6 +911,37 @@ public abstract class BaseScreen extends GuiScreen
     {
         if (ctx.isActiveScreen)
         {
+            String str = String.format("%s @ x: %d, y: %d, w: %d, h: %d",
+                                       this.getClass().getName(),
+                                       this.x, this.y, this.screenWidth, this.screenHeight);
+            StyledTextLine line = StyledTextLine.of(str);
+
+            int x = this.x + 1;
+            int y = this.y + 1;
+            float z = this.zLevel + 20;
+            int w = line.renderWidth + 4;
+
+            // if this is a popup-screen or other screen that does not extend
+            // to the bottom of the display, then render the info bar below the
+            // screen area, to not obstruct other widgets.
+            if (this.y + this.screenHeight + 14 < this.height)
+            {
+                x = this.x;
+                y = this.y + this.screenHeight + 1;
+            }
+            else if (this.y >= 15)
+            {
+                x = this.x;
+                y = this.y - 15;
+            }
+            else if (ctx.mouseY < this.height / 2)
+            {
+                y = this.y + this.screenHeight - 15;
+            }
+
+            ShapeRenderUtils.renderOutlinedRectangle(x, y, z, w, 14, 0xFF000000, 0xFFA0A0A0);
+            this.textRenderer.renderLine(x + 2, y + 3, z + 0.00125f, 0xFF00FFFF, true, line);
+
             renderWidgetDebug(this.widgets, ctx);
         }
     }
