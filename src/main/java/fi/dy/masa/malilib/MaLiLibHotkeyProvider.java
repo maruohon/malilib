@@ -1,6 +1,5 @@
 package fi.dy.masa.malilib;
 
-import java.util.Collections;
 import java.util.List;
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.input.Hotkey;
@@ -21,7 +20,7 @@ public class MaLiLibHotkeyProvider implements HotkeyProvider
     public List<? extends Hotkey> getAllHotkeys()
     {
         return ListUtils.getAppendedList(MaLiLibConfigs.Hotkeys.FUNCTIONAL_HOTKEYS,
-                                         Collections.singletonList(MaLiLibConfigs.Debug.GUI_DEBUG_KEY));
+                                         MaLiLibConfigs.Debug.HOTKEYS);
     }
 
     @Override
@@ -30,7 +29,7 @@ public class MaLiLibHotkeyProvider implements HotkeyProvider
         ModInfo modInfo = MaLiLibReference.MOD_INFO;
 
         return ImmutableList.of(
-                new HotkeyCategory(modInfo, "malilib.hotkeys.category.debug_hotkeys"  , ImmutableList.of(MaLiLibConfigs.Debug.GUI_DEBUG_KEY)),
+                new HotkeyCategory(modInfo, "malilib.hotkeys.category.debug_hotkeys"  , MaLiLibConfigs.Debug.HOTKEYS),
                 new HotkeyCategory(modInfo, "malilib.hotkeys.category.generic_hotkeys", MaLiLibConfigs.Hotkeys.FUNCTIONAL_HOTKEYS));
     }
 }

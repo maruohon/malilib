@@ -36,7 +36,7 @@ public class MaLiLibConfigs
         public static final IntegerConfig CONFIG_BACKUP_COUNT                   = new IntegerConfig("configBackupCount", 20, 0, 200);
         public static final BooleanConfig CONFIG_WIDGET_BACKGROUND              = new BooleanConfig("configWidgetBackground", true);
         public static final IntegerConfig CUSTOM_SCREEN_SCALE                   = new IntegerConfig("customScreenScale", 2, 0, 8);
-        public static final StringConfig DATA_DUMP_CSV_DELIMITER                = new StringConfig("dataDumpCsvDelimiter", ",");
+        public static final StringConfig  DATA_DUMP_CSV_DELIMITER               = new StringConfig("dataDumpCsvDelimiter", ",");
         public static final BooleanConfig DROP_DOWN_SEARCH_TIP                  = new BooleanConfig("dropDownSearchTip", true);
         public static final BooleanConfig HIDE_ALL_COORDINATES                  = new BooleanConfig("hideAllCoordinates", false);
         public static final IntegerConfig HOVER_TEXT_MAX_WIDTH                  = new IntegerConfig("hoverTextMaxWidth", 310, 16, 4096);
@@ -107,7 +107,7 @@ public class MaLiLibConfigs
         public static final BooleanConfig GUI_DEBUG                 = new BooleanConfig("guiDebug", false);
         public static final BooleanConfig GUI_DEBUG_ALL             = new BooleanConfig("guiDebugAll", true);
         public static final BooleanConfig GUI_DEBUG_INFO_ALWAYS     = new BooleanConfig("guiDebugInfoAlways", false);
-        public static final HotkeyConfig GUI_DEBUG_KEY              = new HotkeyConfig("guiDebugKey", "LMENU", DBG_KS);
+        public static final HotkeyConfig  GUI_DEBUG_KEY             = new HotkeyConfig("guiDebugKey", "LMENU", DBG_KS);
         public static final BooleanConfig INFO_OVERLAY_DEBUG        = new BooleanConfig("infoOverlayDebug", false);
         public static final BooleanConfig KEYBIND_DEBUG             = new BooleanConfig("keybindDebug", false);
         public static final BooleanConfig KEYBIND_DEBUG_ACTIONBAR   = new BooleanConfig("keybindDebugActionBar", false);
@@ -126,6 +126,8 @@ public class MaLiLibConfigs
                 KEYBIND_DEBUG_TOAST,
                 MESSAGE_KEY_TO_CHAT
         );
+
+        public static final ImmutableList<HotkeyConfig> HOTKEYS = ImmutableList.of(GUI_DEBUG_KEY);
     }
 
     public static class Internal
