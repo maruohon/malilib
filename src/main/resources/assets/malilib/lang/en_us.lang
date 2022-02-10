@@ -168,7 +168,8 @@ malilib.info.action.action_name_immutable=<c=ff0>Note: You can't change the acti
 malilib.hover_info.action.action_type=§8Type: <c=aaa>%s
 malilib.hover_info.action.alias=§8Alias: §7%s
 malilib.hover_info.action.argument.colon=§8Argument:§7 
-malilib.hover_info.action.base_action_name=§8Base Action Name: §7%s
+malilib.hover_info.action.base_action_name=§8Base action name: §7%s
+malilib.hover_info.action.base_action_registry_name=§8Base action registry name: §7%s
 malilib.hover_info.action.contained_actions=§8Contained actions (§b%s§8):
 malilib.hover_info.action.display_name=§8Display name: §7%s
 malilib.hover_info.action.mod=§8Mod: §7%s

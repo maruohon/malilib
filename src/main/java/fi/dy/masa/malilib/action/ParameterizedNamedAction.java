@@ -55,6 +55,14 @@ public class ParameterizedNamedAction extends NamedAction
         lines.add(StyledTextLine.translate("malilib.hover_info.action.action_type", this.type.getGroup().getDisplayName()));
         lines.add(StyledTextLine.translate("malilib.hover_info.action.mod", this.baseAction.getModInfo().getModName()));
         lines.add(StyledTextLine.translate("malilib.hover_info.action.base_action_name", this.baseAction.getName()));
+
+        String regName = this.baseAction.getRegistryName();
+
+        if (regName != null)
+        {
+            lines.add(StyledTextLine.translate("malilib.hover_info.action.base_action_registry_name", regName));
+        }
+
         StyledTextLine start = StyledTextLine.translate("malilib.hover_info.action.argument.colon");
         lines.add(start.append(StyledTextLine.rawWithStyle(this.argument, start.getLastStyle())));
 
