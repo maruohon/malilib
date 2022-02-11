@@ -115,6 +115,14 @@ malilib.hover.button.parameterize_action=Create a new copy of the action with th
 malilib.hover.button.parameterize_action_for_macro=Create a new copy of the action with the string argument already bound to a given value. This allows directly executing that action without having to input the string argument via the text input prompt screen.\n<c=da0>Note: This button only adds the parameterized action to this macro, it does not get added to the registry and won't be available in the global list.
 malilib.hover.button.re_parameterize_action_for_macro=Create a new parameterized copy of the action with the string argument bound to a new given value. This old version of the action will be removed and replaced with the newly created action with the given name and argument.
 
+malilib.hover.config.numeric.range_and_default=Range: §b%s§r ... §b%s§r\nDefault: §b%s
+malilib.hover.config.option_list.default_value=Default: <c=66f>%s
+malilib.hover.config.option_list.non_selected_value=  §8%s
+malilib.hover.config.option_list.selected_value=> <c=66f>%s§r <
+malilib.hover.config.option_list.total_values.all=Total values: §b%s
+malilib.hover.config.option_list.total_values.allowed=Allowed values: §b%s§r / §b%s
+malilib.hover.config.option_list.total_values.disallowed=Disallowed values: §b%s§r / §b%s
+malilib.hover.config.string.default_value=Default: §a%s
 malilib.hover.custom_hotkey_export_import_screen.append_overwrite=- Append = add the actions from the import to the end of the current actions in the hotkey\n- Overwrite = replace all the actions in the hotkey with the imported actions
 malilib.hover.macro_action_export_import_screen.append_overwrite=- Append = add the actions from the imported macro to the end of the current actions in the macro\n- Overwrite = replace all the actions in the macro with the imported actions
 
@@ -205,8 +213,6 @@ malilib.hover_info.config_override_fallback=§cError retrieving server info.\n§
 malilib.hover_info.custom_hotkey_edit_screen.add_actions=Add the selected actions to the hotkey
 malilib.hover_info.macro_edit_screen.add_actions=Add the selected actions to the macro
 malilib.hover_info.macro_edit_screen.remove_actions=Remove the selected actions from the macro
-malilib.hover_info.option_list_button.non_selected_value=  §8%s
-malilib.hover_info.option_list_button.selected_value=> §7%s§r <
 
 malilib.name.action_group.alias=Alias Actions
 malilib.name.action_group.all=All Actions
@@ -413,10 +419,6 @@ malilib.gui.label.layer_mode.layer_range=Layer Range
 malilib.gui.label.layer_mode.single_layer=Single Layer
 
 malilib.gui.label.macro_edit_screen.macro_actions=Actions in macro <c=FE24F3>%s</c>
-
-malilib.gui.label.option_list_hover.total_values.all=§7Total values: §b%s
-malilib.gui.label.option_list_hover.total_values.allowed=§7Allowed values: §b%s§7 / §b%s
-malilib.gui.label.option_list_hover.total_values.disallowed=§7Disallowed values: §b%s§7 / §b%s
 
 malilib.gui.label.default_text_color.colon=Default Text Color:
 malilib.gui.label.render_above_screen.colon=Render Above Screen:

@@ -6,37 +6,18 @@ import fi.dy.masa.malilib.gui.widget.DoubleTextFieldWidget;
 
 public class DoubleConfigWidget extends NumericConfigWidget<Double, DoubleConfig>
 {
-    protected final String initialStringValue;
-
     public DoubleConfigWidget(int x, int y, int width, int height, int listIndex,
                               int originalListIndex, DoubleConfig config, ConfigWidgetContext ctx)
     {
-        super(x, y, width, height, listIndex, originalListIndex, config, ctx);
+        super(x, y, width, height, listIndex, originalListIndex, config, ctx,
+              DoubleConfig::setValueFromString, DoubleConfig::getStringValue);
 
-        this.initialStringValue = String.valueOf(this.initialValue);
-
-        this.textField.setTextValidator(new DoubleTextFieldWidget.DoubleValidator(this.config.getMinDoubleValue(), this.config.getMaxDoubleValue()));
-        this.textField.setListener((str) -> {
-            this.config.setValueFromString(str);
-            this.updateResetButtonState();
-        });
-    }
-
-    @Override
-    protected String getCurrentValueAsString()
-    {
-        return String.valueOf(this.config.getDoubleValue());
-    }
-
-    @Override
-    public void onAboutToDestroy()
-    {
-        String text = this.textField.getText();
-
-        if (this.config.isSliderActive() == false && text.equals(this.initialStringValue) == false)
-        {
-            this.config.setValueFromString(text);
-        }
+        this.textField.setTextValidator(new DoubleTextFieldWidget.DoubleValidator(config.getMinDoubleValue(),
+                                                                                  config.getMaxDoubleValue()));
+        this.textField.translateAndAddHoverString("malilib.hover.config.numeric.range_and_default",
+                                                  config.getMinDoubleValue(),
+                                                  config.getMaxDoubleValue(),
+                                                  config.getDefaultValue());
     }
 }
 

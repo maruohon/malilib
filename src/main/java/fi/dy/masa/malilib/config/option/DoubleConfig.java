@@ -52,6 +52,11 @@ public class DoubleConfig extends BaseSliderConfig<Double> implements RangedDoub
         return (float) this.doubleValue;
     }
 
+    public double getDefaultDoubleValue()
+    {
+        return this.defaultValue;
+    }
+
     @Override
     public boolean setValue(Double newValue)
     {

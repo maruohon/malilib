@@ -1,6 +1,8 @@
 package fi.dy.masa.malilib.gui.widget.list.entry.config;
 
 import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.config.option.BaseConfigOption;
 import fi.dy.masa.malilib.config.option.SliderConfig;
@@ -15,15 +17,29 @@ public abstract class NumericConfigWidget<TYPE, CFG extends BaseConfigOption<TYP
 {
     protected final BaseTextFieldWidget textField;
     protected final GenericButton sliderToggleButton;
+    protected final String initialStringValue;
+    protected final BiConsumer<CFG, String> fromStringSetter;
+    protected final Function<CFG, String> toStringConverter;
     protected SliderWidget sliderWidget;
 
-    public NumericConfigWidget(int x, int y, int width, int height, int listIndex,
-                               int originalListIndex, CFG config, ConfigWidgetContext ctx)
+    protected NumericConfigWidget(int x, int y, int width, int height, int listIndex,
+                                  int originalListIndex, CFG config,
+                                  ConfigWidgetContext ctx,
+                                  BiConsumer<CFG, String> fromStringSetter,
+                                  Function<CFG, String> toStringConverter)
     {
         super(x, y, width, height, listIndex, originalListIndex, config, ctx);
 
+        this.fromStringSetter = fromStringSetter;
+        this.toStringConverter = toStringConverter;
+        this.initialStringValue = String.valueOf(this.initialValue);
+
         this.textField = new BaseTextFieldWidget(60, 16);
         this.textField.setHoverStringProvider("lock", config::getLockAndOverrideMessages);
+        this.textField.setListener((str) -> {
+            this.fromStringSetter.accept(this.config, str);
+            this.updateResetButtonState();
+        });
 
         this.sliderWidget = new SliderWidget(60, 20, config.getSliderCallback(this::updateResetButtonState));
         this.sliderWidget.setHoverStringProvider("lock", config::getLockAndOverrideMessages);
@@ -84,6 +100,17 @@ public abstract class NumericConfigWidget<TYPE, CFG extends BaseConfigOption<TYP
         this.addWidget(this.resetButton);
     }
 
+    @Override
+    public void onAboutToDestroy()
+    {
+        String text = this.textField.getText();
+
+        if (this.config.isSliderActive() == false && text.equals(this.initialStringValue) == false)
+        {
+            this.fromStringSetter.accept(this.config, text);
+        }
+    }
+
     protected List<String> getSliderMessages()
     {
         if (this.config.allowSlider() == false)
@@ -95,5 +122,8 @@ public abstract class NumericConfigWidget<TYPE, CFG extends BaseConfigOption<TYP
         return ImmutableList.of(StringUtils.translate("malilib.gui.button.hover.text_field_slider_toggle"));
     }
 
-    protected abstract String getCurrentValueAsString();
+    protected String getCurrentValueAsString()
+    {
+        return this.toStringConverter.apply(this.config);
+    }
 }

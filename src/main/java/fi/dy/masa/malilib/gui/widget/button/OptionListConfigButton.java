@@ -72,7 +72,8 @@ public class OptionListConfigButton extends GenericButton
         return getOptionListPreviewHoverString(this.config, previousLines);
     }
 
-    public static List<StyledTextLine> getOptionListPreviewHoverString(OptionListConfig<?> config, List<StyledTextLine> previousLines)
+    public static List<StyledTextLine> getOptionListPreviewHoverString(OptionListConfig<?> config,
+                                                                       List<StyledTextLine> previousLines)
     {
         List<StyledTextLine> lines = new ArrayList<>();
         List<OptionListConfigValue> allValues = new ArrayList<>(config.getAllValues());
@@ -88,11 +89,12 @@ public class OptionListConfigButton extends GenericButton
 
         if (totalValues == allowedValuesCount)
         {
-            lines.add(StyledTextLine.translate("malilib.gui.label.option_list_hover.total_values.all", totalValues));
+            lines.add(StyledTextLine.translate("malilib.hover.config.option_list.total_values.all", totalValues));
         }
         else
         {
-            lines.add(StyledTextLine.translate("malilib.gui.label.option_list_hover.total_values.allowed", allowedValuesCount, totalValues));
+            lines.add(StyledTextLine.translate("malilib.hover.config.option_list.total_values.allowed",
+                                               allowedValuesCount, totalValues));
         }
 
         for (OptionListConfigValue value : allValues)
@@ -101,11 +103,13 @@ public class OptionListConfigButton extends GenericButton
             {
                 if (currentValue.equals(value))
                 {
-                    lines.add(StyledTextLine.translate("malilib.hover_info.option_list_button.selected_value", value.getDisplayName()));
+                    lines.add(StyledTextLine.translate("malilib.hover.config.option_list.selected_value",
+                                                       value.getDisplayName()));
                 }
                 else
                 {
-                    lines.add(StyledTextLine.translate("malilib.hover_info.option_list_button.non_selected_value", value.getDisplayName()));
+                    lines.add(StyledTextLine.translate("malilib.hover.config.option_list.non_selected_value",
+                                                       value.getDisplayName()));
                 }
             }
         }
@@ -113,16 +117,22 @@ public class OptionListConfigButton extends GenericButton
         if (totalValues != allowedValuesCount)
         {
             lines.add(StyledTextLine.EMPTY);
-            lines.add(StyledTextLine.translate("malilib.gui.label.option_list_hover.total_values.disallowed", totalValues - allowedValuesCount, totalValues));
+            lines.add(StyledTextLine.translate("malilib.hover.config.option_list.total_values.disallowed",
+                                               totalValues - allowedValuesCount, totalValues));
 
             for (OptionListConfigValue value : allValues)
             {
                 if (allowedValues.contains(value) == false)
                 {
-                    lines.add(StyledTextLine.translate("malilib.hover_info.option_list_button.non_selected_value", value.getDisplayName()));
+                    lines.add(StyledTextLine.translate("malilib.hover.config.option_list.non_selected_value",
+                                                       value.getDisplayName()));
                 }
             }
         }
+
+        lines.add(StyledTextLine.EMPTY);
+        lines.add(StyledTextLine.translate("malilib.hover.config.option_list.default_value",
+                                           config.getDefaultValue().getDisplayName()));
 
         return lines;
     }
