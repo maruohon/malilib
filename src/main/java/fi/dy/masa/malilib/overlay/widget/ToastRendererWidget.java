@@ -161,7 +161,7 @@ public class ToastRendererWidget extends InfoRendererWidget
                                              this.getScreenLocation().horizontalLocation);
         widget.setZ(this.getZ() + 1f);
         widget.getTextSettings().setFrom(this.getTextSettings());
-        widget.replaceText(text, displayTimeMs);
+        widget.addText(text, displayTimeMs);
 
         if (marker != null)
         {
@@ -236,9 +236,9 @@ public class ToastRendererWidget extends InfoRendererWidget
     {
         int width = 0;
 
-        for (ToastWidget widget : this.activeToasts)
+        for (ToastWidget toast : this.activeToasts)
         {
-            width = Math.max(width, widget.getWidth());
+            width = Math.max(width, toast.getWidth());
         }
 
         this.setWidth(width);
@@ -254,9 +254,9 @@ public class ToastRendererWidget extends InfoRendererWidget
     {
         int height = 0;
 
-        for (ToastWidget widget : this.activeToasts)
+        for (ToastWidget toast : this.activeToasts)
         {
-            height += widget.getHeight();
+            height += toast.getHeight();
         }
 
         return height;
@@ -273,12 +273,12 @@ public class ToastRendererWidget extends InfoRendererWidget
         int width = this.viewportWidthSupplier.getAsInt();
         int marginX = location.getMarginX(this.margin);
 
-        for (ToastWidget widget : this.activeToasts)
+        for (ToastWidget toast : this.activeToasts)
         {
-            x = align.getStartX(widget.getWidth(), width, marginX);
-            widget.setPosition(x, y);
-            widget.setZLevelBasedOnParent(z);
-            y += widget.getHeight();
+            x = align.getStartX(toast.getWidth(), width, marginX);
+            toast.setPosition(x, y);
+            toast.setZLevelBasedOnParent(z);
+            y += toast.getHeight();
         }
     }
 
@@ -291,9 +291,9 @@ public class ToastRendererWidget extends InfoRendererWidget
 
             for (int i = 0; i < countToAdd; ++i)
             {
-                ToastWidget widget = this.toastQueue.remove();
-                widget.initialize(currentTime);
-                this.activeToasts.add(widget);
+                ToastWidget toast = this.toastQueue.remove();
+                toast.onBecomeActive(currentTime);
+                this.activeToasts.add(toast);
             }
 
             this.updateSizeAndPosition();
@@ -339,16 +339,16 @@ public class ToastRendererWidget extends InfoRendererWidget
 
             for (int i = 0; i < this.activeToasts.size(); ++i)
             {
-                ToastWidget widget = this.activeToasts.get(i);
+                ToastWidget toast = this.activeToasts.get(i);
 
-                if (widget.hasExpired(currentTime))
+                if (toast.hasExpired(currentTime))
                 {
                     this.activeToasts.remove(i);
                     --i;
                 }
                 else
                 {
-                    widget.render(currentTime, ctx);
+                    toast.render(currentTime, ctx);
                 }
             }
 

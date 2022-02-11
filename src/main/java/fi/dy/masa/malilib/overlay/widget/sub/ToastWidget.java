@@ -46,9 +46,10 @@ public class ToastWidget extends BaseWidget
         this.setMaxWidth(maxWidth);
     }
 
-    public void initialize(long currentTime)
+    public void onBecomeActive(long currentTime)
     {
         this.fadeInEndTime = currentTime + this.fadeInDuration;
+        this.updateExpireTime(currentTime);
     }
 
     public void setMessageGap(int messageGap)
@@ -86,19 +87,28 @@ public class ToastWidget extends BaseWidget
     /**
      * Adds the given text to the current text.
      * @param text the text to add to the end of the current text
-     * @param displayTimeMs the new life time of the toast. Use -1 to not update/refresh the current life time.
      */
-    public void addText(StyledText text, int displayTimeMs)
+    public void addText(StyledText text)
     {
         this.text.add(this.wrapTextToWidth(text));
         this.updateSize();
+    }
+
+    /**
+     * Adds the given text to the current text.
+     * @param text the text to add to the end of the current text
+     * @param displayTimeMs the new lifetime of the toast. Use -1 to not update/refresh the current life time.
+     */
+    public void addText(StyledText text, int displayTimeMs)
+    {
+        this.addText(text);
         this.setDisplayTime(displayTimeMs);
     }
 
     /**
      * Replaces the current text with the given text.
      * @param text the new text to set in the toast
-     * @param displayTimeMs the new life time of the toast. Use -1 to not update/refresh the current life time.
+     * @param displayTimeMs the new lifetime of the toast. Use -1 to not update/refresh the current life time.
      */
     public void replaceText(StyledText text, int displayTimeMs)
     {
@@ -136,17 +146,14 @@ public class ToastWidget extends BaseWidget
 
     protected void setDisplayTime(int displayTimeMs)
     {
-        if (this.displayTimeMs < 0 && displayTimeMs < 0)
-        {
-            displayTimeMs = 5000;
-        }
+        this.displayTimeMs =  displayTimeMs < 0 ? 5000 : displayTimeMs;
+        this.updateExpireTime(System.nanoTime());
+    }
 
-        if (displayTimeMs >= 0)
-        {
-            this.displayTimeMs =  displayTimeMs;
-            this.expireTime = System.nanoTime() + this.displayTimeMs * 1000000L;
-            this.fadeOutStartTime = this.expireTime - this.fadeOutDuration;
-        }
+    protected void updateExpireTime(long currentTime)
+    {
+        this.expireTime = currentTime + this.displayTimeMs * 1000000L;
+        this.fadeOutStartTime = this.expireTime - this.fadeOutDuration;
     }
 
     public void render(long currentTime, ScreenContext ctx)
