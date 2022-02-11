@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.gui.action;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import org.lwjgl.input.Keyboard;
@@ -160,25 +161,41 @@ public class ActionPromptScreen extends BaseListScreen<DataListWidget<NamedActio
         return MaLiLibConfigs.Generic.ACTION_PROMPT_FUZZY_SEARCH.getBooleanValue();
     }
 
-    protected boolean stringMatchesSearch(String searchTerm, String text)
+    protected boolean stringMatchesSearch(List<String> searchTerms, String text)
     {
         if (this.shouldUseFuzzySearch())
         {
-            return StringUtils.containsOrderedCharacters(searchTerm, text);
+            for (String searchTerm : searchTerms)
+            {
+                if (StringUtils.containsOrderedCharacters(searchTerm, text))
+                {
+                    return true;
+                }
+            }
+        }
+        else
+        {
+            for (String searchTerm : searchTerms)
+            {
+                if (text.contains(searchTerm))
+                {
+                    return true;
+                }
+            }
         }
 
-        return text.contains(searchTerm);
+        return false;
     }
 
-    protected boolean actionMatchesSearch(String searchText, NamedAction action)
+    protected boolean actionMatchesSearch(List<String> searchTerms, NamedAction action)
     {
-        if (this.stringMatchesSearch(searchText, action.getName().toLowerCase(Locale.ROOT)))
+        if (this.stringMatchesSearch(searchTerms, action.getName().toLowerCase(Locale.ROOT)))
         {
             return true;
         }
 
         return MaLiLibConfigs.Generic.ACTION_PROMPT_SEARCH_DISPLAY_NAME.getBooleanValue() &&
-               this.stringMatchesSearch(searchText, action.getDisplayName().toLowerCase(Locale.ROOT));
+               this.stringMatchesSearch(searchTerms, action.getDisplayName().toLowerCase(Locale.ROOT));
     }
 
     protected void updateFilteredList()
@@ -197,10 +214,11 @@ public class ActionPromptScreen extends BaseListScreen<DataListWidget<NamedActio
         else
         {
             searchText = searchText.toLowerCase(Locale.ROOT);
+            List<String> searchTerms = Arrays.asList(searchText.split("\\|"));
 
             for (NamedAction action : this.getActions())
             {
-                if (this.actionMatchesSearch(searchText, action))
+                if (this.actionMatchesSearch(searchTerms, action))
                 {
                     this.filteredActions.add(action);
                 }
