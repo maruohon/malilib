@@ -102,7 +102,7 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
 
     protected boolean shouldShowInternalName()
     {
-        return MaLiLibConfigs.Generic.SHOW_INTERNAL_CONFIG_NAME.getBooleanValue();
+        return this.ctx.getListWidget().getShowInternalConfigName();
     }
 
     @Nullable

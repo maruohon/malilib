@@ -29,6 +29,7 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
     protected final ModInfo modInfo;
     protected final IntSupplier defaultElementWidthSupplier;
     @Nullable protected ConfigsSearchBarWidget configsSearchBarWidget;
+    protected boolean showInternalConfigName;
     protected int maxLabelWidth;
 
     protected ConfigOptionListWidget(int x, int y, int width, int height, IntSupplier defaultElementWidthSupplier,
@@ -41,6 +42,7 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
         this.defaultElementWidthSupplier = defaultElementWidthSupplier;
         this.fetchFromSupplierOnRefresh = true;
         this.allowKeyboardNavigation = true;
+        this.showInternalConfigName = MaLiLibConfigs.Generic.SHOW_INTERNAL_CONFIG_NAME.getBooleanValue();
 
         this.setEntryWidgetFactory(new ConfigOptionListEntryWidgetFactory<>(ctx));
         this.setEntryFilterStringFactory(ConfigInfo::getSearchStrings);
@@ -62,6 +64,16 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
         }
 
         return this.defaultElementWidthSupplier.getAsInt();
+    }
+
+    public boolean getShowInternalConfigName()
+    {
+        return this.showInternalConfigName;
+    }
+
+    public void setShowInternalConfigName(boolean showInternalConfigName)
+    {
+        this.showInternalConfigName = showInternalConfigName;
     }
 
     public boolean isShowingOptionsFromOtherCategories()
@@ -138,13 +150,12 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
         List<C> list = this.getCurrentContents();
         final int size = list.size();
         boolean showCategory = this.isShowingOptionsFromOtherCategories();
-        boolean showInternalName = MaLiLibConfigs.Generic.SHOW_INTERNAL_CONFIG_NAME.getBooleanValue();
         int maxLabelWidth = 0;
 
         for (int i = 0; i < size; ++i)
         {
             ConfigInfo config = list.get(i);
-            int width = this.getEntryNameColumnWidth(i, config, showCategory, showInternalName);
+            int width = this.getEntryNameColumnWidth(i, config, showCategory, this.showInternalConfigName);
             maxLabelWidth = Math.max(maxLabelWidth, width);
         }
 
