@@ -89,12 +89,12 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
             this.currentDirectory = defaultDirectory;
         }
 
-        this.navigationWidget = new DirectoryNavigationWidget(this.getX() + 2, this.getY() + 3, width, 14,
-                                                              this.currentDirectory, rootDirectory, this, iconProvider,
-                                                              this::onSearchBarChange,
-                                                              this::refreshFilteredEntries,
+        this.navigationWidget = new DirectoryNavigationWidget(width, 14, this.currentDirectory,
+                                                              rootDirectory, this, iconProvider,
+                                                              this::onSearchBarChange, this::refreshFilteredEntries,
                                                               this::getRootDirectoryDisplayName);
         this.searchBarWidget = this.navigationWidget;
+        this.searchBarWidget.getMargin().setTop(2);
         this.entryFilterStringFactory = (entry) -> ImmutableList.of(FileNameUtils.getFileNameWithoutExtension(entry.getName().toLowerCase(Locale.ROOT)));
 
         this.activeListSortComparator = Comparator.naturalOrder();
@@ -112,13 +112,6 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         this.getBorderRenderer().getNormalSettings().setBorderWidthAndColor(1, 0xFF999999);
         this.listPosition.setRight(3);
         this.listPosition.setBottom(1);
-    }
-
-    @Override
-    protected void updateSearchBarPosition(int defaultX, int defaultY, int defaultWidth)
-    {
-        this.searchBarWidget.setPosition(defaultX, defaultY + 3);
-        this.searchBarWidget.setWidth(defaultWidth);
     }
 
     public void setAllowFileOperations(boolean allowFileOperations)

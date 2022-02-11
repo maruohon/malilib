@@ -13,6 +13,16 @@ public class Vec2i
         this.y = y;
     }
 
+    public int getX()
+    {
+        return this.x;
+    }
+
+    public int getY()
+    {
+        return this.y;
+    }
+
     public double getSquaredDistance(int x, int y)
     {
         double diffX = (double) x - (double) this.x;

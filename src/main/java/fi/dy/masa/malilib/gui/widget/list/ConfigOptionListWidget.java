@@ -9,7 +9,6 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
-import fi.dy.masa.malilib.config.value.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.config.ConfigOptionWidgetFactory;
 import fi.dy.masa.malilib.gui.config.ConfigTab;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
@@ -84,12 +83,9 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
 
     public void addConfigSearchBarWidget(KeybindEditingScreen screen)
     {
-        this.configsSearchBarWidget = new ConfigsSearchBarWidget(this.getX(), this.getY(), this.getWidth(), 32, 0,
-                                                                 DefaultIcons.SEARCH, HorizontalAlignment.LEFT,
-                                                                 this::onSearchBarChange,
-                                                                 this::refreshEntries,
-                                                                 this::resetFilteredConfigsToDefaults,
-                                                                 screen);
+        this.configsSearchBarWidget = new ConfigsSearchBarWidget(this.getWidth(), 32, this::onSearchBarChange,
+                                                                 this::refreshEntries, DefaultIcons.SEARCH,
+                                                                 this::resetFilteredConfigsToDefaults, screen);
         this.configsSearchBarWidget.setGeometryChangeListener(this::updatePositioningAndElements);
         this.configsSearchBarWidget.getMargin().setBottom(2);
         this.searchBarWidget = this.configsSearchBarWidget;

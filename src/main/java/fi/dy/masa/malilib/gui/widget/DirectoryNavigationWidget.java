@@ -40,47 +40,47 @@ public class DirectoryNavigationWidget extends SearchBarWidget
     protected File currentDir;
     protected int pathStartX;
 
-    public DirectoryNavigationWidget(int x, int y, int width, int height,
+    public DirectoryNavigationWidget(int width, int height,
                                      File currentDir, File rootDir, DirectoryNavigator navigator,
                                      FileBrowserIconProvider iconProvider,
                                      Consumer<String> textChangeListener,
                                      @Nullable EventListener openCloseListener)
     {
-        this(x, y, width, height, currentDir, rootDir, navigator, iconProvider,
+        this(width, height, currentDir, rootDir, navigator, iconProvider,
              textChangeListener, openCloseListener, null);
     }
 
-    public DirectoryNavigationWidget(int x, int y, int width, int height,
+    public DirectoryNavigationWidget(int width, int height,
                                      File currentDir, File rootDir, DirectoryNavigator navigator,
                                      FileBrowserIconProvider iconProvider,
                                      Consumer<String> textChangeListener,
                                      @Nullable EventListener openCloseListener,
                                      @Nullable Supplier<String> rootDirDisplayNameSupplier)
     {
-        super(x, y, width, height, 0, iconProvider.getIcon(FileBrowserIconType.SEARCH),
-              HorizontalAlignment.RIGHT, textChangeListener, openCloseListener);
+        super(width, height, textChangeListener, openCloseListener, iconProvider.getIcon(FileBrowserIconType.SEARCH));
 
         this.currentDir = currentDir;
         this.rootDir = rootDir;
         this.navigator = navigator;
         this.iconProvider = iconProvider;
         this.rootDirDisplayNameSupplier = rootDirDisplayNameSupplier;
+        this.setToggleButtonAlignment(HorizontalAlignment.RIGHT);
 
         this.buttonRoot = GenericButton.createIconOnly(iconProvider.getIcon(FileBrowserIconType.ROOT));
         this.buttonRoot.translateAndAddHoverStrings("malilib.gui.button.hover.directory_widget.root");
         this.buttonRoot.setPlayClickSound(false);
-        this.buttonRoot.setActionListener(() -> { if (this.searchOpen == false) this.navigator.switchToRootDirectory(); });
+        this.buttonRoot.setActionListener(() -> { if (this.isSearchOpen == false) this.navigator.switchToRootDirectory(); });
 
         this.buttonUp = GenericButton.createIconOnly(iconProvider.getIcon(FileBrowserIconType.UP));
         this.buttonUp.translateAndAddHoverStrings("malilib.gui.button.hover.directory_widget.up");
         this.buttonUp.setPlayClickSound(false);
-        this.buttonUp.setActionListener(() -> { if (this.searchOpen == false) this.navigator.switchToParentDirectory(); });
+        this.buttonUp.setActionListener(() -> { if (this.isSearchOpen == false) this.navigator.switchToParentDirectory(); });
 
         this.buttonCreateDir = GenericButton.createIconOnly(iconProvider.getIcon(FileBrowserIconType.CREATE_DIR));
         this.buttonCreateDir.translateAndAddHoverStrings("malilib.gui.button.hover.directory_widget.create_directory");
         this.buttonCreateDir.setPlayClickSound(false);
         this.buttonCreateDir.setActionListener(() -> {
-            if (this.searchOpen == false)
+            if (this.isSearchOpen == false)
             {
                 DirectoryCreator creator = new DirectoryCreator(this.getCurrentDirectory(), this.navigator);
                 TextInputScreen gui = new TextInputScreen("malilib.gui.title.create_directory", "",
@@ -132,9 +132,9 @@ public class DirectoryNavigationWidget extends SearchBarWidget
         int xRight = this.getRight();
         int iw = this.infoWidget.getWidth();
         int ih = this.infoWidget.getHeight();
-        int tw = this.buttonSearchToggle.getWidth();
+        int tw = this.searchToggleButton.getWidth();
 
-        this.buttonSearchToggle.setPosition(xRight - tw - iw - 4, by);
+        this.searchToggleButton.setPosition(xRight - tw - iw - 4, by);
         this.infoWidget.setPosition(xRight - iw - 2, middleY - ih / 2 - 1);
 
         this.textField.setWidth(this.getWidth() - tw - iw - 8);
@@ -358,7 +358,7 @@ public class DirectoryNavigationWidget extends SearchBarWidget
     @Override
     public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
-        if (this.searchOpen == false)
+        if (this.isSearchOpen == false)
         {
             int rx = this.pathStartX;
             int width = this.getMaxPathBarWidth();

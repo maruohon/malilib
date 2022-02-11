@@ -7,7 +7,6 @@ import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.math.MathHelper;
-import fi.dy.masa.malilib.config.value.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
@@ -306,11 +305,8 @@ public abstract class BaseListWidget extends ContainerWidget
 
     public void addDefaultSearchBar()
     {
-        this.searchBarWidget = new SearchBarWidget(this.getX() + 2, this.getY() + 3,
-                                                   this.getWidth() - 14, 14, 0, DefaultIcons.SEARCH,
-                                                   HorizontalAlignment.LEFT,
-                                                   this::onSearchBarChange,
-                                                   this::refreshFilteredEntries);
+        this.searchBarWidget = new SearchBarWidget(this.getWidth() - 14, 14, this::onSearchBarChange,
+                                                   this::refreshFilteredEntries, DefaultIcons.SEARCH);
     }
 
     public void onGuiClosed()

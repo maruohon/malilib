@@ -9,7 +9,6 @@ import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.config.value.BaseOptionListConfigValue;
-import fi.dy.masa.malilib.config.value.HorizontalAlignment;
 import fi.dy.masa.malilib.config.value.OptionListConfigValue;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.ConfirmActionScreen;
@@ -38,15 +37,15 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
     protected final DropDownListWidget<TypeFilter> typeFilterDropdown;
     protected int openedHeight;
 
-    public ConfigsSearchBarWidget(int x, int y, int width, int openedHeight, int searchBarOffsetX,
-                                  MultiIcon iconSearch, HorizontalAlignment iconAlignment,
+    public ConfigsSearchBarWidget(int width,
+                                  int openedHeight,
                                   Consumer<String> textChangeListener,
-                                  final EventListener filterChangeListener,
+                                  EventListener filterChangeListener,
+                                  MultiIcon iconSearch,
                                   EventListener configResetter,
                                   KeybindEditingScreen screen)
     {
-        super(x, y + 3, width - 160, 16, searchBarOffsetX, iconSearch,
-              iconAlignment, textChangeListener, filterChangeListener);
+        super(width - 160, 14, textChangeListener, filterChangeListener, iconSearch);
 
         this.openedHeight = openedHeight;
 
@@ -69,12 +68,12 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
         confirmScreen.setParent(GuiUtils.getCurrentScreen());
         this.resetConfigsButton.setActionListener(() -> BaseScreen.openPopupScreen(confirmScreen));
 
-        this.sourceSelectionDropdown = new DropDownListWidget<>(-1, 15, 60, 10, Scope.VALUES, Scope::getDisplayName);
+        this.sourceSelectionDropdown = new DropDownListWidget<>(-1, 14, 60, 10, Scope.VALUES, Scope::getDisplayName);
         this.sourceSelectionDropdown.setSelectedEntry(MaLiLibConfigs.Generic.CONFIG_SEARCH_DEFAULT_SCOPE.getValue());
         this.sourceSelectionDropdown.setSelectionListener((s) -> filterChangeListener.onEvent());
         this.sourceSelectionDropdown.setOpenStateHoverText(StringUtils.translate("malilib.gui.hover.config_search_default_scope"));
 
-        this.typeFilterDropdown = new DropDownListWidget<>(-1, 15, 160, 10, TypeFilter.VALUES, TypeFilter::getDisplayName);
+        this.typeFilterDropdown = new DropDownListWidget<>(-1, 14, 160, 10, TypeFilter.VALUES, TypeFilter::getDisplayName);
         this.typeFilterDropdown.setSelectedEntry(TypeFilter.ALL);
         this.typeFilterDropdown.setSelectionListener((s) -> filterChangeListener.onEvent());
     }
@@ -98,7 +97,7 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
 
         this.clearWidgets();
 
-        this.addWidget(this.buttonSearchToggle);
+        this.addWidget(this.searchToggleButton);
 
         if (this.isSearchOpen())
         {
@@ -119,15 +118,21 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
         int y = this.getY();
         int width = this.getWidth();
 
-        this.sourceSelectionDropdown.setPosition(x + 18, y);
+        this.sourceSelectionDropdown.setPosition(x + 16, y);
         this.typeFilterDropdown.setPosition(this.sourceSelectionDropdown.getRight() + 4, y);
 
         int btnX = x + width - this.hotkeySearchButton.getWidth() - 1;
         this.resetConfigsButton.setPosition(btnX, y);
-        y += this.sourceSelectionDropdown.getHeight() + 2;
+
+        if (this.searchToggleButton != null)
+        {
+            this.searchToggleButton.setY(y + 1);
+        }
+
+        y = this.sourceSelectionDropdown.getBottom() + 2;
 
         this.hotkeySearchButton.setPosition(btnX, y);
-        this.textField.setY(y);
+        this.textField.setPosition(this.sourceSelectionDropdown.getX(), y + 1);
         this.textField.setWidth(width - this.hotkeySearchButton.getWidth() - 20);
     }
 

@@ -252,7 +252,7 @@ public class BaseWidget
         return this.padding;
     }
 
-    public void setMargin(EdgeInt margin)
+    public void setMarginFrom(EdgeInt margin)
     {
         this.margin.setFrom(margin);
     }

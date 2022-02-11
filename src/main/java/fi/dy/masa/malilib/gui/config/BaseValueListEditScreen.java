@@ -82,11 +82,11 @@ public class BaseValueListEditScreen<TYPE> extends BaseListScreen<DataListWidget
         DataListWidget<TYPE> listWidget = new DataListWidget<>(listX, listY, listWidth, listHeight, this.config::getValue);
 
         listWidget.setListEntryWidgetFixedHeight(20);
-        listWidget.setSearchBar(new SearchBarWidget(listWidget.getX() + 17, listWidget.getY() + 3,
-                                                    listWidget.getWidth() - 31, 14, 0, DefaultIcons.SEARCH,
-                                                    HorizontalAlignment.RIGHT,
-                                                    listWidget::onSearchBarChange,
-                                                    listWidget::refreshFilteredEntries));
+        SearchBarWidget searchBar = new SearchBarWidget(listWidget.getWidth() - 31, 14,
+                                                        listWidget::onSearchBarChange,
+                                                        listWidget::refreshFilteredEntries, DefaultIcons.SEARCH);
+        searchBar.setToggleButtonAlignment(HorizontalAlignment.RIGHT);
+        listWidget.setSearchBar(searchBar);
 
         listWidget.setHeaderWidgetFactory((lw) -> new BaseDataListEditHeaderWidget<>(lw, "malilib.gui.button.hover.list.add_first", this.newEntrySupplier));
         listWidget.setSearchBarPositioner((wgt, x, y, w) -> {

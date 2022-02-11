@@ -8,39 +8,48 @@ import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.listener.EventListener;
+import fi.dy.masa.malilib.util.position.Vec2i;
 
 public class SearchBarWidget extends ContainerWidget
 {
     protected final BaseTextFieldWidget textField;
-    protected final GenericButton buttonSearchToggle;
-    protected final MultiIcon toggleButtonIcon;
-    protected final HorizontalAlignment toggleButtonAlignment;
-    protected final int searchBarOffsetX;
+    protected HorizontalAlignment toggleButtonAlignment = HorizontalAlignment.LEFT;
+    protected Vec2i searchBarOffset = Vec2i.ZERO;
+    @Nullable protected GenericButton searchToggleButton;
     @Nullable protected EventListener geometryChangeListener;
     @Nullable protected EventListener openCloseListener;
-    protected boolean searchOpen;
+    protected boolean alwaysOpen;
+    protected boolean isSearchOpen;
 
-    public SearchBarWidget(int x, int y, int width, int height, int searchBarOffsetX,
-                           MultiIcon toggleButtonIcon,
-                           HorizontalAlignment toggleButtonAlignment,
+    public SearchBarWidget(int width,
+                           int height,
                            Consumer<String> textChangeListener,
                            @Nullable EventListener openCloseListener)
     {
-        super(x, y, width, height);
+        super(width, height);
 
-        this.toggleButtonIcon = toggleButtonIcon;
-        this.toggleButtonAlignment = toggleButtonAlignment;
-        this.searchBarOffsetX = searchBarOffsetX;
         this.openCloseListener = openCloseListener;
-        this.buttonSearchToggle = GenericButton.createIconOnly(toggleButtonIcon);
-        this.buttonSearchToggle.setActionListener(this::toggleSearchOpen);
-        this.buttonSearchToggle.setPlayClickSound(false);
+        this.margin.setTop(1);
 
-        int iw = toggleButtonIcon.getWidth();
-        this.textField = new BaseTextFieldWidget(width - iw - 7 - Math.abs(searchBarOffsetX), height);
+        this.textField = new BaseTextFieldWidget(width - 7, height);
         this.textField.setUpdateListenerAlways(true);
         this.textField.setUpdateListenerFromTextSet(true);
         this.textField.setListener(textChangeListener);
+    }
+
+    public SearchBarWidget(int width,
+                           int height,
+                           Consumer<String> textChangeListener,
+                           @Nullable EventListener openCloseListener,
+                           MultiIcon toggleButtonIcon)
+    {
+        this(width, height, textChangeListener, openCloseListener);
+
+        this.searchToggleButton = GenericButton.createIconOnly(toggleButtonIcon);
+        this.searchToggleButton.setActionListener(this::toggleSearchOpen);
+        this.searchToggleButton.setPlayClickSound(false);
+
+        this.textField.setWidth(width - this.searchToggleButton.getWidth() - 4);
     }
 
     @Override
@@ -48,9 +57,9 @@ public class SearchBarWidget extends ContainerWidget
     {
         super.reAddSubWidgets();
 
-        this.addWidget(this.buttonSearchToggle);
+        this.addWidgetIfNotNull(this.searchToggleButton);
 
-        if (this.searchOpen)
+        if (this.isSearchOpen())
         {
             this.addWidget(this.textField);
         }
@@ -63,14 +72,45 @@ public class SearchBarWidget extends ContainerWidget
 
         int x = this.getX();
         int y = this.getY();
-        int offX = this.searchBarOffsetX;
-        int iw = this.toggleButtonIcon.getWidth();
-        int ix = this.toggleButtonAlignment == HorizontalAlignment.RIGHT ? x + this.getWidth() - iw - 2 : x + 2;
-        int tx = this.toggleButtonAlignment == HorizontalAlignment.RIGHT ? x - offX + 1 : x + iw + 6 + offX;
 
-        this.buttonSearchToggle.setPosition(ix, y + 1);
-        this.textField.setPosition(tx, y);
-        this.textField.setWidth(this.getWidth() -  iw - 7 - Math.abs(offX));
+        int offX = this.searchBarOffset.x;
+        int offY = this.searchBarOffset.y;
+        int tx = x + offX + 1;
+        int ty = y + offY + 1;
+        int tw = this.getWidth() - offX - 2;
+        boolean rightAlignButton = this.toggleButtonAlignment == HorizontalAlignment.RIGHT;
+
+        if (this.searchToggleButton != null)
+        {
+            int buttonWidth = this.searchToggleButton.getWidth();
+            this.searchToggleButton.setX(rightAlignButton ? this.getRight() - buttonWidth - 2 : x + 2);
+            this.searchToggleButton.centerVerticallyInside(this);
+            tw -= buttonWidth + 3;
+
+            if (rightAlignButton == false)
+            {
+                tx += buttonWidth + 3;
+            }
+        }
+
+        this.textField.setPosition(tx, ty);
+        this.textField.centerVerticallyInside(this);
+        this.textField.setWidth(tw);
+    }
+
+    public void setAlwaysOpen(boolean alwaysOpen)
+    {
+        this.alwaysOpen = alwaysOpen;
+    }
+
+    public void setToggleButtonAlignment(HorizontalAlignment toggleButtonAlignment)
+    {
+        this.toggleButtonAlignment = toggleButtonAlignment;
+    }
+
+    public void setSearchBarOffset(Vec2i searchBarOffset)
+    {
+        this.searchBarOffset = searchBarOffset;
     }
 
     public void setTextFieldListener(@Nullable Consumer<String> listener)
@@ -85,30 +125,35 @@ public class SearchBarWidget extends ContainerWidget
 
     public String getFilter()
     {
-        return this.searchOpen ? this.textField.getText() : "";
+        return this.isSearchOpen() ? this.textField.getText() : "";
     }
 
     public boolean hasFilter()
     {
-        return this.getFilter().isEmpty() == false;
+        return this.isSearchOpen() && this.getFilter().isEmpty() == false;
     }
 
     public boolean isSearchOpen()
     {
-        return this.searchOpen;
+        return this.alwaysOpen || this.isSearchOpen;
     }
 
     public void toggleSearchOpen()
     {
-        this.setSearchOpen(! this.searchOpen);
+        this.setSearchOpen(! this.isSearchOpen);
     }
 
     public void setSearchOpen(boolean isOpen)
     {
-        boolean wasOpen = this.searchOpen;
-        this.searchOpen = isOpen;
+        if (this.alwaysOpen)
+        {
+            return;
+        }
 
-        if (this.searchOpen)
+        boolean wasOpen = this.isSearchOpen;
+        this.isSearchOpen = isOpen;
+
+        if (this.isSearchOpen)
         {
             this.textField.setFocused(true);
         }
@@ -131,7 +176,7 @@ public class SearchBarWidget extends ContainerWidget
     @Override
     public boolean onKeyTyped(int keyCode, int scanCode, int modifiers)
     {
-        if (this.searchOpen && keyCode == Keyboard.KEY_ESCAPE)
+        if (this.isSearchOpen && this.alwaysOpen == false && keyCode == Keyboard.KEY_ESCAPE)
         {
             if (BaseScreen.isShiftDown())
             {
@@ -152,7 +197,7 @@ public class SearchBarWidget extends ContainerWidget
     @Override
     public boolean onCharTyped(char charIn, int modifiers)
     {
-        if (this.searchOpen == false && charIn != ' ')
+        if (this.isSearchOpen() == false && charIn != ' ')
         {
             this.setSearchOpen(true);
             this.textField.onCharTyped(charIn, modifiers);
