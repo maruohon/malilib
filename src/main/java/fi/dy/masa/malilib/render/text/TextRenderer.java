@@ -160,17 +160,9 @@ public class TextRenderer implements IResourceManagerReloadListener
         return index >= 0 && index < 16 ? this.colorCode[index] : 0;
     }
 
-    public int getStringWidth(String str)
+    public int getRenderWidth(String str)
     {
-        StyledText text = StyledText.of(str);
-        int width = 0;
-
-        for (StyledTextLine line : text.lines)
-        {
-            width = Math.max(width, line.renderWidth);
-        }
-
-        return width;
+        return StyledText.of(str).getRenderWidth();
     }
 
     public Glyph getGlyphFor(char c)

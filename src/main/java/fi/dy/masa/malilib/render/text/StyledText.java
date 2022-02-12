@@ -18,10 +18,33 @@ public class StyledText
     protected static final Cache<CacheKey, StyledText> TEXT_CACHE = CacheBuilder.newBuilder().initialCapacity(1000).maximumSize(1000).expireAfterAccess(15 * 60, TimeUnit.SECONDS).build();
 
     public final ImmutableList<StyledTextLine> lines;
+    private int renderWidth = -1;
 
     public StyledText(ImmutableList<StyledTextLine> lines)
     {
         this.lines = lines;
+    }
+
+    public ImmutableList<StyledTextLine> getLines()
+    {
+        return this.lines;
+    }
+
+    public int getRenderWidth()
+    {
+        if (this.renderWidth < 0)
+        {
+            int width = 0;
+
+            for (StyledTextLine line : this.lines)
+            {
+                width = Math.max(width, line.renderWidth);
+            }
+
+            this.renderWidth = width;
+        }
+
+        return this.renderWidth;
     }
 
     @Override

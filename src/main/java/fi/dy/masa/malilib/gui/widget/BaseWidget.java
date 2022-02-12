@@ -485,7 +485,7 @@ public class BaseWidget
 
     public int getStringWidth(String str)
     {
-        return this.textRenderer.getStringWidth(str);
+        return this.textRenderer.getRenderWidth(str);
     }
 
     public int getRawStyledTextWidth(String str)
