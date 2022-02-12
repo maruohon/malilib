@@ -31,7 +31,8 @@ public class DoubleConfig extends BaseSliderConfig<Double> implements RangedDoub
         this(name, defaultValue, minValue, maxValue, false, comment);
     }
 
-    public DoubleConfig(String name, double defaultValue, double minValue, double maxValue, boolean sliderActive, String comment)
+    public DoubleConfig(String name, double defaultValue, double minValue, double maxValue,
+                        boolean sliderActive, String comment)
     {
         super(name, defaultValue, comment, sliderActive);
 

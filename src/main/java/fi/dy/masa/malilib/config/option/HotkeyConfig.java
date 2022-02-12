@@ -7,7 +7,6 @@ import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.input.KeyBindImpl;
 import fi.dy.masa.malilib.input.KeyBindSettings;
 import fi.dy.masa.malilib.input.callback.HotkeyCallback;
-import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.ModInfo;
 
 public class HotkeyConfig extends BaseConfigOption<KeyBind> implements Hotkey
@@ -16,33 +15,12 @@ public class HotkeyConfig extends BaseConfigOption<KeyBind> implements Hotkey
 
     public HotkeyConfig(String name, String defaultStorageString)
     {
-        this(name, defaultStorageString, name);
-    }
-
-    public HotkeyConfig(String name, String defaultStorageString, String comment)
-    {
-        this(name, defaultStorageString, name, comment);
+        this(name, defaultStorageString, KeyBindSettings.INGAME_DEFAULT);
     }
 
     public HotkeyConfig(String name, String defaultStorageString, KeyBindSettings settings)
     {
-        this(name, defaultStorageString, settings, name);
-    }
-
-    public HotkeyConfig(String name, String defaultStorageString, KeyBindSettings settings, String comment)
-    {
-        this(name, defaultStorageString, settings, StringUtils.splitCamelCase(name), comment);
-    }
-
-    public HotkeyConfig(String name, String defaultStorageString, String prettyName, String comment)
-    {
-        this(name, defaultStorageString, KeyBindSettings.INGAME_DEFAULT, prettyName, comment);
-    }
-
-    public HotkeyConfig(String name, String defaultStorageString, KeyBindSettings settings, String prettyName, String comment)
-    {
-        super(name, name, prettyName, comment);
-
+        super(name);
         this.keyBind = KeyBindImpl.fromStorageString(defaultStorageString, settings);
     }
 
