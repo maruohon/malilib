@@ -514,9 +514,9 @@ public class BaseWidget
     }
 
     public void renderTextLine(int x, int y, float z, int defaultColor, boolean shadow,
-                               ScreenContext ctx, StyledTextLine text)
+                               StyledTextLine text, ScreenContext ctx)
     {
-        this.textRenderer.renderLine(x, y, z, defaultColor, shadow, text);
+        this.textRenderer.renderLine(x, y, z, defaultColor, shadow, text, ctx);
     }
 
     /**
@@ -526,7 +526,7 @@ public class BaseWidget
      */
     public void renderPlainString(int x, int y, float z, int color, boolean shadow, String str, ScreenContext ctx)
     {
-        this.textRenderer.renderLine(x, y, z, color, shadow, StyledTextLine.of(str));
+        this.textRenderer.renderLine(x, y, z, color, shadow, StyledTextLine.of(str), ctx);
     }
 
     protected void renderText(int x, int y, float z, ScreenContext ctx)
@@ -538,7 +538,7 @@ public class BaseWidget
             int color = this.getTextSettings().getTextColor();
             boolean shadow = this.getTextSettings().getTextShadowEnabled();
 
-            this.renderTextLine(x, y, z + 0.0125f, color, shadow, ctx, this.text);
+            this.renderTextLine(x, y, z + 0.0125f, color, shadow, this.text, ctx);
         }
     }
 

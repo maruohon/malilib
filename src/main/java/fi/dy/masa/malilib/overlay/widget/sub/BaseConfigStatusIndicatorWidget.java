@@ -144,7 +144,7 @@ public abstract class BaseConfigStatusIndicatorWidget<C extends ConfigInfo> exte
 
     protected void renderNameText(int x, int textY, float z, ScreenContext ctx)
     {
-        this.renderTextLine(x, textY, z, this.nameColor, this.nameShadow, ctx, this.styledName);
+        this.renderTextLine(x, textY, z, this.nameColor, this.nameShadow, this.styledName, ctx);
     }
 
     protected void renderValueDisplayText(int x, int textY, float z, ScreenContext ctx)
@@ -152,7 +152,7 @@ public abstract class BaseConfigStatusIndicatorWidget<C extends ConfigInfo> exte
         if (this.valueDisplayText != null)
         {
             this.renderTextLine(x + this.getWidth() - this.valueDisplayText.renderWidth, textY, z,
-                                this.valueColor, this.valueShadow, ctx, this.valueDisplayText);
+                                this.valueColor, this.valueShadow, this.valueDisplayText, ctx);
         }
     }
 

@@ -735,7 +735,7 @@ public class DropDownListWidget<T> extends ContainerWidget
                 }
 
                 ShapeRenderUtils.renderOutlinedRectangle(tx, ty, z, sw + 10, 16, 0xFF000000, 0xFFFFFF20);
-                this.renderTextLine(tx + 4, ty + 4, z + 0.1f, 0xFFFFC000, false, ctx, this.searchTipText);
+                this.renderTextLine(tx + 4, ty + 4, z + 0.1f, 0xFFFFC000, false, this.searchTipText, ctx);
             }
         }
 
@@ -880,7 +880,7 @@ public class DropDownListWidget<T> extends ContainerWidget
             }
 
             int textColor = dropDown.enabled ? this.textColor : 0xFF505050;
-            this.renderTextLine(tx, ty, z, textColor, false, ctx, text);
+            this.renderTextLine(tx, ty, z, textColor, false, text, ctx);
         }
 
         @Override
@@ -1041,7 +1041,7 @@ public class DropDownListWidget<T> extends ContainerWidget
             int tx = this.iconWidget != null ? this.iconWidget.getRight() + 4 : x + 4;
             int ty = y + (this.getHeight() - this.getFontHeight()) / 2;
 
-            this.renderTextLine(tx, ty, z, this.textColor, true, ctx, text);
+            this.renderTextLine(tx, ty, z, this.textColor, true, text, ctx);
         }
     }
 

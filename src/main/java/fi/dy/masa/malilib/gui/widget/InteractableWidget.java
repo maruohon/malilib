@@ -299,7 +299,7 @@ public abstract class InteractableWidget extends BackgroundWidget
             int color = this.getTextColorForRender(hovered);
             boolean shadow = this.getTextSettings().getTextShadowEnabled();
 
-            this.renderTextLine(textX, textY, z + 0.0125f, color, shadow, ctx, this.text);
+            this.renderTextLine(textX, textY, z + 0.0125f, color, shadow, this.text, ctx);
         }
     }
 

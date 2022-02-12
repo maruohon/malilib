@@ -345,7 +345,7 @@ public abstract class InfoRendererWidget extends BaseOverlayWidget
             int paddingTop = this.padding.getTop();
             x += this.padding.getLeft();
             y += paddingTop;
-            this.renderTextLine(x, y, z, 0xFFFFFFFF, true, ctx, this.styledName);
+            this.renderTextLine(x, y, z, 0xFFFFFFFF, true, this.styledName, ctx);
 
             return this.getLineHeight() + paddingTop;
         }

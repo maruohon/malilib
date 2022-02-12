@@ -983,7 +983,7 @@ public class BaseTextFieldWidget extends InteractableWidget
         }
 
         // No selection
-        this.renderTextLine(x, y, z, textColor, false, ctx, this.visibleText.getStyledText());
+        this.renderTextLine(x, y, z, textColor, false, this.visibleText.getStyledText(), ctx);
     }
 
     protected void renderCursorPositionInfo(int x, int y, float z, ScreenContext ctx)
@@ -1013,7 +1013,7 @@ public class BaseTextFieldWidget extends InteractableWidget
         int borderColor = this.getBorderRenderer().getNormalSettings().getColor().getTop();
 
         ShapeRenderUtils.renderOutlinedRectangle(bx, by, z, bw, bh, bgColor, borderColor);
-        this.renderTextLine(bx + 5, by + 2, z + 0.0125f, 0xFFA0A0A0, true, ctx, text);
+        this.renderTextLine(bx + 5, by + 2, z + 0.0125f, 0xFFA0A0A0, true, text, ctx);
     }
 
     @Override

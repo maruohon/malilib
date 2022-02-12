@@ -20,6 +20,7 @@ import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.IResourceManagerReloadListener;
 import net.minecraft.util.ResourceLocation;
+import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.util.GameUtils;
@@ -348,7 +349,8 @@ public class TextRenderer implements IResourceManagerReloadListener
         this.renderBuffers();
     }
 
-    public void renderLine(int x, int y, float z, int defaultColor, boolean shadow, StyledTextLine line)
+    public void renderLine(int x, int y, float z, int defaultColor, boolean shadow,
+                           StyledTextLine line, ScreenContext ctx)
     {
         this.startBuffers();
         this.renderLineToBuffer(x, y, z, defaultColor, shadow, line);

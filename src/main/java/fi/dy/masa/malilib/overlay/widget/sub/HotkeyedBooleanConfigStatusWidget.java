@@ -127,7 +127,7 @@ public class HotkeyedBooleanConfigStatusWidget extends BooleanConfigStatusWidget
                 tx -= this.booleanValueRenderWidth + 4;
             }
 
-            this.renderTextLine(tx, textY, z, this.valueColor, this.valueShadow, ctx, this.keysText);
+            this.renderTextLine(tx, textY, z, this.valueColor, this.valueShadow, this.keysText, ctx);
         }
     }
 }

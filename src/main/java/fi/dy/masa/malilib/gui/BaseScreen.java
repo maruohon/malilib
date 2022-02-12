@@ -822,7 +822,7 @@ public abstract class BaseScreen extends GuiScreen
             int x = this.x + this.titleX;
             int y = this.y + this.titleY;
 
-            this.textRenderer.renderLine(x, y, this.zLevel + 0.00125f, this.titleColor, true, this.titleText);
+            this.textRenderer.renderLine(x, y, this.zLevel + 0.125f, this.titleColor, true, this.titleText, ctx);
         }
     }
 
@@ -946,7 +946,7 @@ public abstract class BaseScreen extends GuiScreen
             }
 
             ShapeRenderUtils.renderOutlinedRectangle(x, y, z, w, 14, 0xFF000000, 0xFFA0A0A0);
-            this.textRenderer.renderLine(x + 2, y + 3, z + 0.00125f, 0xFF00FFFF, true, line);
+            this.textRenderer.renderLine(x + 2, y + 3, z + 0.00125f, 0xFF00FFFF, true, line, ctx);
 
             renderWidgetDebug(this.widgets, ctx);
         }

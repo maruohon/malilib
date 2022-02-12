@@ -184,7 +184,7 @@ public class BooleanConfigStatusWidget extends BaseConfigStatusIndicatorWidget<B
 
         int tx = this.getSliderStyleTextStartX(sx + 4, this.lastValue);
         int ty = this.getTextPositionY(y);
-        this.renderTextLine(tx, ty, z, -1, true, ctx, this.lastValue ? this.textOn : this.textOff);
+        this.renderTextLine(tx, ty, z, -1, true, this.lastValue ? this.textOn : this.textOff, ctx);
     }
 
     @Override

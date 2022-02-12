@@ -92,7 +92,7 @@ public class EdgeIntEditWidget extends ContainerWidget
         {
             int tx = x + width / 2 - this.centerText.renderWidth / 2;
             int ty = y + height / 2 - this.getFontHeight() / 2;
-            this.renderTextLine(tx, ty, z, 0xFFFFFFFF, true, ctx, this.centerText);
+            this.renderTextLine(tx, ty, z, 0xFFFFFFFF, true, this.centerText, ctx);
         }
     }
 }

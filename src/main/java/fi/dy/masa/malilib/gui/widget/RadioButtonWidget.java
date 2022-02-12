@@ -148,7 +148,7 @@ public class RadioButtonWidget<T extends Enum<T>> extends InteractableWidget
             final int textColor = entrySelected ? this.selectedTextColor : this.unselectedTextColor;
 
             StyledTextLine displayString = this.displayStrings.get(i);
-            this.renderTextLine(x + textOffsetX, textY, z, textColor, true, ctx, displayString);
+            this.renderTextLine(x + textOffsetX, textY, z, textColor, true, displayString, ctx);
 
             y += this.entryHeight;
         }

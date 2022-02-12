@@ -100,7 +100,7 @@ public class SliderWidget extends InteractableWidget
         int tx = x + (width / 2) - textWidth / 2;
         int ty = this.getTextPositionY(y);
 
-        this.renderTextLine(tx, ty, z, textColor, false, ctx, text);
+        this.renderTextLine(tx, ty, z, textColor, false, text, ctx);
     }
 
     protected double getRelativePosition(int mouseX)

@@ -106,7 +106,7 @@ public class ColumnizedDataListHeaderWidget<DATATYPE> extends DataListHeaderWidg
 
             if (nameOptional.isPresent())
             {
-                this.renderTextLine(tx, ty, z, textColor, shadow, ctx, nameOptional.get());
+                this.renderTextLine(tx, ty, z, textColor, shadow, nameOptional.get(), ctx);
             }
         }
     }

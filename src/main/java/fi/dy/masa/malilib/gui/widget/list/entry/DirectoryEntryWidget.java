@@ -178,12 +178,12 @@ public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry
 
         if (this.showSize)
         {
-            this.renderTextLine(this.sizeColumnStartX, ty, z, color, false, ctx, this.fileSizeText);
+            this.renderTextLine(this.sizeColumnStartX, ty, z, color, false, this.fileSizeText, ctx);
         }
 
         if (this.showMTime)
         {
-            this.renderTextLine(this.mTimeColumnStartX, ty, z, color, false, ctx, this.modificationTimeText);
+            this.renderTextLine(this.mTimeColumnStartX, ty, z, color, false, this.modificationTimeText, ctx);
         }
     }
 
