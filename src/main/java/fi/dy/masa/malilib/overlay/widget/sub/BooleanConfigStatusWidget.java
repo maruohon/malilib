@@ -164,7 +164,7 @@ public class BooleanConfigStatusWidget extends BaseConfigStatusIndicatorWidget<B
         }
         else
         {
-            this.renderIcon(x, y, z, true, ctx);
+            this.renderIcon(x, y, z, ctx);
         }
     }
 

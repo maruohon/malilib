@@ -542,20 +542,20 @@ public class BaseWidget
         }
     }
 
-    protected void renderIcon(int x, int y, float z, boolean enabled, ScreenContext ctx)
+    protected void renderIcon(int x, int y, float z, ScreenContext ctx)
     {
         if (this.icon != null)
         {
             x = this.getIconPositionX(x, this.icon.getWidth());
             y = this.getIconPositionY(y, this.icon.getHeight());
 
-            this.icon.renderAt(x, y, z + 0.0125f, enabled, false);
+            this.icon.renderAt(x, y, z + 0.0125f, true, false);
         }
     }
 
     public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
-        this.renderIcon(x, y, z, true, ctx);
+        this.renderIcon(x, y, z, ctx);
         this.renderText(x, y, z, ctx);
     }
 
