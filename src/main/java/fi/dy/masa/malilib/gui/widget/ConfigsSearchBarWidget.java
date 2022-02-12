@@ -54,12 +54,12 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
 
         this.hotkeySearchButton = new KeyBindConfigButton(160, 16, this.searchKey, screen);
         this.hotkeySearchButton.setUpdateKeyBindImmediately();
-        this.hotkeySearchButton.translateAndAddHoverStrings("malilib.gui.button.hover.hotkey_search_button");
+        this.hotkeySearchButton.translateAndAddHoverString("malilib.gui.button.hover.hotkey_search_button");
         this.hotkeySearchButton.setHoverInfoRequiresShift(false);
         this.hotkeySearchButton.setValueChangeListener(filterChangeListener);
 
         this.resetConfigsButton = new GenericButton(160, 16, "malilib.gui.button.config.reset_all_filtered");
-        this.resetConfigsButton.translateAndAddHoverStrings("malilib.gui.button.hover.config.reset_all_filtered");
+        this.resetConfigsButton.translateAndAddHoverString("malilib.gui.button.hover.config.reset_all_filtered");
         final ConfirmActionScreen confirmScreen = new ConfirmActionScreen(240,
                                                                           "malilib.gui.title.confirm_config_reset",
                                                                           configResetter,

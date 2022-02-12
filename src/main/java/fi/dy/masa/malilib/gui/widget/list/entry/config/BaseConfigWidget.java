@@ -52,16 +52,18 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
         {
             comments.add(StringUtils.translate("malilib.gui.label.config.hover.click_for_more_information"));
             this.configOwnerAndNameLabelWidget.setClickListener(clickHandler);
-            this.configOwnerAndNameLabelWidget.getBorderRenderer().getHoverSettings().setBorderWidthAndColor(1, 0xFF15D6F0);
+            this.configOwnerAndNameLabelWidget.getBorderRenderer()
+                    .getHoverSettings().setBorderWidthAndColor(1, 0xFF15D6F0);
         }
 
         config.getComment().ifPresent(comments::add);
 
-        this.configOwnerAndNameLabelWidget.addHoverStrings(comments);
+        this.configOwnerAndNameLabelWidget.getHoverInfoFactory().addStrings(comments);
         this.resetButton = new GenericButton("malilib.gui.button.reset.caps");
 
         boolean bgEnabled = MaLiLibConfigs.Generic.CONFIG_WIDGET_BACKGROUND.getBooleanValue();
-        this.getBackgroundRenderer().getNormalSettings().setEnabledAndColor(bgEnabled, this.isOdd ? 0x70606060 : 0x70909090);
+        this.getBackgroundRenderer().getNormalSettings()
+                .setEnabledAndColor(bgEnabled, this.isOdd ? 0x70606060 : 0x70909090);
     }
 
     @Override
@@ -145,8 +147,8 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
 
         GenericButton button = new GenericButton(elementWidth, 20, buttonText);
         button.setPosition(x, y + 1);
-        button.setHoverStringProvider("path", () -> lines, 100);
-        button.setHoverStringProvider("locked", config::getLockAndOverrideMessages, 101);
+        button.getHoverInfoFactory().setStringListProvider("path", () -> lines, 100);
+        button.getHoverInfoFactory().setStringListProvider("locked", config::getLockAndOverrideMessages, 101);
         button.setEnabled(config.isLocked() == false);
         button.setActionListener(() -> {
             FileSelectorScreen browserScreen = screenFactory.create();

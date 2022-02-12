@@ -31,10 +31,10 @@ public class MessageRedirectEntryWidget extends BaseDataListEntryWidget<MessageR
         this.outputDropdown.setSelectionListener(this::replaceRedirect);
 
         int textWidth = width - this.removeButton.getWidth() - this.outputDropdown.getWidth() - 20;
-        String key = StringUtils.clampTextToRenderLength(data.getTranslationKey(), textWidth, LeftRight.RIGHT, "...");
+        String key = StringUtils.clampTextToRenderLength(data.getMessageTranslationKey(), textWidth, LeftRight.RIGHT, "...");
 
         this.setText(StyledTextLine.of(key));
-        this.addHoverStrings(data.getTranslationKey());
+        this.addHoverStrings(data.getMessageTranslationKey());
     }
 
     @Override
@@ -63,7 +63,7 @@ public class MessageRedirectEntryWidget extends BaseDataListEntryWidget<MessageR
     protected void replaceRedirect(MessageOutput output)
     {
         this.scheduleTask(() -> {
-            String translationKey = this.data.getTranslationKey();
+            String translationKey = this.data.getMessageTranslationKey();
             MessageRedirect redirect = new MessageRedirect(translationKey, output);
             Registry.MESSAGE_REDIRECT_MANAGER.removeRedirect(translationKey);
             Registry.MESSAGE_REDIRECT_MANAGER.addRedirect(translationKey, redirect);
@@ -74,7 +74,7 @@ public class MessageRedirectEntryWidget extends BaseDataListEntryWidget<MessageR
     protected void removeRedirect()
     {
         this.scheduleTask(() -> {
-            Registry.MESSAGE_REDIRECT_MANAGER.removeRedirect(this.data.getTranslationKey());
+            Registry.MESSAGE_REDIRECT_MANAGER.removeRedirect(this.data.getMessageTranslationKey());
             this.listWidget.refreshEntries();
         });
     }

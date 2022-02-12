@@ -48,12 +48,12 @@ public class ActionListBaseActionEntryWidget extends BaseOrderableListEditEntryW
 
         this.createAliasButton = GenericButton.simple(14, "malilib.label.button.action_list_screen_widget.create_alias",
                                                       this::openAddAliasScreen);
-        this.createAliasButton.translateAndAddHoverStrings("malilib.hover.button.create_alias_for_action");
+        this.createAliasButton.translateAndAddHoverString("malilib.hover.button.create_alias_for_action");
 
         this.editButton = GenericButton.simple(14, "malilib.label.button.edit", this::editAction);
 
         this.removeActionButton = GenericButton.createIconOnly(DefaultIcons.LIST_REMOVE_MINUS_13, this::removeAction);
-        this.removeActionButton.translateAndAddHoverStrings("malilib.hover.button.list.remove");
+        this.removeActionButton.translateAndAddHoverString("malilib.hover.button.list.remove");
 
         this.getBorderRenderer().getHoverSettings().setBorderWidthAndColor(1, 0xFFF0B000);
         this.getBackgroundRenderer().getHoverSettings().setEnabled(false);
@@ -135,7 +135,7 @@ public class ActionListBaseActionEntryWidget extends BaseOrderableListEditEntryW
     public void setEditButtonHoverText(String translationKey)
     {
         this.editButton.getHoverInfoFactory().removeAll();
-        this.editButton.translateAndAddHoverStrings(translationKey);
+        this.editButton.translateAndAddHoverString(translationKey);
     }
 
     protected void editAction()

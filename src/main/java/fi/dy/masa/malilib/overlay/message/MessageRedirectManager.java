@@ -15,7 +15,6 @@ import fi.dy.masa.malilib.util.JsonUtils;
 
 public class MessageRedirectManager
 {
-
     protected final Map<String, MessageRedirect> messageRedirects = new HashMap<>();
     protected boolean dirty;
 
@@ -30,7 +29,7 @@ public class MessageRedirectManager
             this.output = output;
         }
 
-        public String getTranslationKey()
+        public String getMessageTranslationKey()
         {
             return this.translationKey;
         }
@@ -68,7 +67,7 @@ public class MessageRedirectManager
     public List<MessageRedirect> getAllRedirects()
     {
         List<MessageRedirect> list = new ArrayList<>(this.messageRedirects.values());
-        list.sort(Comparator.comparing(MessageRedirect::getTranslationKey));
+        list.sort(Comparator.comparing(MessageRedirect::getMessageTranslationKey));
         return list;
     }
 
@@ -78,7 +77,7 @@ public class MessageRedirectManager
 
         for (MessageRedirect redirect : this.getAllRedirects())
         {
-            obj.addProperty(redirect.getTranslationKey(), redirect.getOutput().getName());
+            obj.addProperty(redirect.getMessageTranslationKey(), redirect.getOutput().getName());
         }
 
         return obj;

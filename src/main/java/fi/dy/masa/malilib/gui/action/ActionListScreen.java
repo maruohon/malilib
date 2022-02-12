@@ -34,7 +34,7 @@ public class ActionListScreen extends BaseActionListScreen
         this.userAddedActionTypesDropdown = new DropDownListWidget<>(-1, 14, 140, 10, ActionGroup.VALUES_USER_ADDED, ActionGroup::getDisplayName);
         this.userAddedActionTypesDropdown.setSelectedEntry(ActionGroup.USER_ADDED);
         this.userAddedActionTypesDropdown.setSelectionListener((t) -> this.initScreen());
-        this.userAddedActionTypesDropdown.addHoverStrings("malilib.hover_info.action_types_explanation");
+        this.userAddedActionTypesDropdown.translateAndAddHoverString("malilib.hover_info.action_types_explanation");
 
         this.addMacroButton = GenericButton.simple(14, "malilib.label.button.action_list_screen.create_macro", this::openMacroNameInput);
         this.addMacroButton.translateAndAddHoverString("malilib.hover.button.action_list_screen.create_macro");

@@ -4,7 +4,6 @@ import java.util.function.Supplier;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
-import fi.dy.masa.malilib.util.StringUtils;
 
 public abstract class BaseNumberEditWidget extends ContainerWidget
 {
@@ -28,7 +27,7 @@ public abstract class BaseNumberEditWidget extends ContainerWidget
         this.valueAdjustButton = GenericButton.createIconOnly(DefaultIcons.BTN_PLUSMINUS_16);
         this.valueAdjustButton.setCanScrollToClick(true);
         this.valueAdjustButton.setActionListener(this::onValueAdjustButtonClick);
-        this.valueAdjustButton.addHoverStrings(StringUtils.translate("malilib.button.hover.plus_minus_tip"));
+        this.valueAdjustButton.translateAndAddHoverString("malilib.button.hover.plus_minus_tip");
 
         this.sliderWidget = this.createSliderWidget();
     }

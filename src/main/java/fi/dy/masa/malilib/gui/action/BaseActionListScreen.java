@@ -33,7 +33,7 @@ public abstract class BaseActionListScreen extends BaseMultiListScreen
         this.allActionTypesDropdown = new DropDownListWidget<>(-1, 14, 140, 10, ActionGroup.VALUES, ActionGroup::getDisplayName);
         this.allActionTypesDropdown.setSelectedEntry(ActionGroup.ALL);
         this.allActionTypesDropdown.setSelectionListener((t) -> this.initScreen());
-        this.allActionTypesDropdown.addHoverStrings("malilib.hover_info.action_types_explanation");
+        this.allActionTypesDropdown.translateAndAddHoverString("malilib.hover_info.action_types_explanation");
 
         this.leftSideListWidget = this.createLeftSideActionListWidget();
     }

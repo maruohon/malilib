@@ -67,7 +67,7 @@ public class ParameterizableActionEntryWidget extends ActionListBaseActionEntryW
     public void setParameterizationButtonHoverText(String translationKey)
     {
         this.parameterizeButton.getHoverInfoFactory().removeAll();
-        this.parameterizeButton.translateAndAddHoverStrings(translationKey);
+        this.parameterizeButton.translateAndAddHoverString(translationKey);
     }
 
     protected void openParameterizationPrompt()

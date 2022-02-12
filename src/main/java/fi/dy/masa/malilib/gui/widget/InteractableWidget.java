@@ -222,22 +222,9 @@ public abstract class InteractableWidget extends BackgroundWidget
         this.hoverInfoFactory.addStrings(Arrays.asList(hoverStrings));
     }
 
-    /**
-     * <b>Note:</b> The strings should be localized already.
-     */
-    public void addHoverStrings(List<String> hoverStrings)
-    {
-        this.hoverInfoFactory.addStrings(hoverStrings);
-    }
-
     public void translateAndAddHoverString(String translationKey, Object... args)
     {
         this.hoverInfoFactory.addStrings(StringUtils.translate(translationKey, args));
-    }
-
-    public void translateAndAddHoverStrings(String... hoverStrings)
-    {
-        this.hoverInfoFactory.translateAndAddStrings(Arrays.asList(hoverStrings));
     }
 
     /**
@@ -248,25 +235,6 @@ public abstract class InteractableWidget extends BackgroundWidget
     public void setHoverStringProvider(String key, Supplier<List<String>> supplier)
     {
         this.hoverInfoFactory.setStringListProvider(key, supplier);
-    }
-
-    /**
-     * Adds the provided hover string supplier, by using the provided key.<br>
-     * The key can be used to remove this string provider later.<br>
-     * <b>Note:</b> The returned strings should be localized already.
-     */
-    public void setHoverStringProvider(String key, Supplier<List<String>> supplier, int priority)
-    {
-        this.hoverInfoFactory.setStringListProvider(key, supplier, priority);
-    }
-
-    /**
-     * Adds the provided hover text line supplier, by using the provided key.<br>
-     * The key can be used to remove this string provider later.<br>
-     */
-    public void setHoverTextLineProvider(String key, Function<List<StyledTextLine>, List<StyledTextLine>> supplier, int priority)
-    {
-        this.hoverInfoFactory.setTextLineProvider(key, supplier, priority);
     }
 
     public void updateHoverStrings()

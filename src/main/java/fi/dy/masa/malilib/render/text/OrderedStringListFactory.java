@@ -123,7 +123,8 @@ public class OrderedStringListFactory
      */
     public void setStringListProvider(String key, Supplier<List<String>> supplierIn, int priority)
     {
-        Function<List<StyledTextLine>, List<StyledTextLine>> provider = (oldLines) -> StyledText.ofStrings(supplierIn.get()).lines;
+        Function<List<StyledTextLine>, List<StyledTextLine>> provider =
+                (oldLines) -> StyledText.ofStrings(supplierIn.get()).lines;
 
         this.providers.put(key, Pair.of(priority, provider));
         this.updateSortedProviders();

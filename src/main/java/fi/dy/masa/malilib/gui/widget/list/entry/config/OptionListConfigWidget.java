@@ -18,8 +18,8 @@ public class OptionListConfigWidget extends BaseConfigWidget<OptionListConfig<Op
     protected final OptionListConfigButton optionListButton;
     protected final DropDownListWidget<OptionListConfigValue> dropDownWidget;
 
-    public OptionListConfigWidget(int x, int y, int width, int height, int listIndex,
-                                  int originalListIndex, OptionListConfig<OptionListConfigValue> config, ConfigWidgetContext ctx)
+    public OptionListConfigWidget(int x, int y, int width, int height, int listIndex, int originalListIndex,
+                                  OptionListConfig<OptionListConfigValue> config, ConfigWidgetContext ctx)
     {
         super(x, y, width, height, listIndex, originalListIndex, config, ctx);
 
@@ -33,7 +33,8 @@ public class OptionListConfigWidget extends BaseConfigWidget<OptionListConfig<Op
         ArrayList<OptionListConfigValue> values = new ArrayList<>(config.getAllowedValues());
         this.dropDownWidget = new DropDownListWidget<>(80, 16, 200, 20, values, OptionListConfigValue::getDisplayName);
         this.dropDownWidget.setSelectedEntry(config.getValue());
-        this.dropDownWidget.setHoverTextLineProvider("list_preview", this::getOptionListPreviewHoverString, 99);
+        this.dropDownWidget.getHoverInfoFactory()
+                .setTextLineProvider("list_preview", this::getOptionListPreviewHoverString, 99);
         this.dropDownWidget.setHoverStringProvider("locked", this.config::getLockAndOverrideMessages);
         this.dropDownWidget.setSelectionListener((v) -> {
             this.config.setValue(v);

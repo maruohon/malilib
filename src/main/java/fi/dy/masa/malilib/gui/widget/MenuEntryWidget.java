@@ -12,26 +12,16 @@ public class MenuEntryWidget extends InteractableWidget
 
     public MenuEntryWidget(StyledTextLine text, EventListener action)
     {
-        this(10, 12, text, action, null);
+        this(10, 12, text, action);
     }
 
     public MenuEntryWidget(int width, int height, StyledTextLine text, EventListener action)
-    {
-        this(width, height, text, action, null);
-    }
-
-    public MenuEntryWidget(int width, int height, StyledTextLine text, EventListener action, @Nullable String hoverText)
     {
         super(width, height);
 
         this.action = action;
         this.setText(text);
         this.setWidth(this.text.renderWidth + 10);
-
-        if (hoverText != null)
-        {
-            this.addHoverStrings(hoverText);
-        }
     }
 
     public MenuEntryWidget setEnabled(boolean enabled)

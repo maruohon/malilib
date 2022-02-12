@@ -51,7 +51,7 @@ public class CheckBoxWidget extends InteractableWidget
 
         if (hoverInfoKey != null)
         {
-            this.translateAndAddHoverStrings(hoverInfoKey);
+            this.translateAndAddHoverString(hoverInfoKey);
         }
     }
 
