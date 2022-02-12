@@ -23,12 +23,12 @@ public class ExpandableConfigGroupWidget extends BaseConfigWidget<ExpandableConf
         this.getBorderRenderer().getHoverSettings().setBorderWidth(1);
 
         this.arrowIconWidget = new IconWidget(this.getArrowIcon());
-        this.arrowIconWidget.setEnabled(true);
+        this.arrowIconWidget.setUseEnabledVariant(true);
         this.arrowIconWidget.setDoHighlight(true);
         this.arrowIconWidget.setRenderHoverChecker(this::isHoveredForRender);
 
         this.plusMinusIconWidget = new IconWidget(this.getPlusMinusIcon());
-        this.plusMinusIconWidget.setEnabled(true);
+        this.plusMinusIconWidget.setUseEnabledVariant(true);
         this.plusMinusIconWidget.setDoHighlight(true);
         this.plusMinusIconWidget.setRenderHoverChecker(this::isHoveredForRender);
     }

@@ -764,7 +764,7 @@ public class DropDownListWidget<T> extends ContainerWidget
 
             MultiIcon iconOpen = dropDown.isOpen() ? DefaultIcons.ARROW_UP : DefaultIcons.ARROW_DOWN;
             this.openCloseIconWidget = new IconWidget(iconOpen);
-            this.openCloseIconWidget.setEnabled(true).setDoHighlight(true);
+            this.openCloseIconWidget.setUseEnabledVariant(true).setDoHighlight(true);
             this.nonTextWidth = this.openCloseIconWidget.getWidth() + 6;
 
             if (this.iconWidget != null)

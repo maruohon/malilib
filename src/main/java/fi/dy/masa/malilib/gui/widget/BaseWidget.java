@@ -544,12 +544,14 @@ public class BaseWidget
 
     protected void renderIcon(int x, int y, float z, ScreenContext ctx)
     {
-        if (this.icon != null)
-        {
-            x = this.getIconPositionX(x, this.icon.getWidth());
-            y = this.getIconPositionY(y, this.icon.getHeight());
+        Icon icon = this.getIcon();
 
-            this.icon.renderAt(x, y, z + 0.0125f, true, false);
+        if (icon != null)
+        {
+            x = this.getIconPositionX(x, icon.getWidth());
+            y = this.getIconPositionY(y, icon.getHeight());
+
+            icon.renderAt(x, y, z + 0.0125f, true, false);
         }
     }
 

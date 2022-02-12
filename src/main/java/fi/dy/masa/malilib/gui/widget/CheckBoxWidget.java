@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
+import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.data.BooleanStorage;
@@ -114,12 +115,12 @@ public class CheckBoxWidget extends InteractableWidget
     protected void updateState()
     {
         boolean selected = this.isSelected();
+        Icon icon = selected ? this.iconChecked : this.iconUnchecked;
+        int textXOffset = icon.getWidth() + 3;
 
         this.getTextSettings().setTextColor(selected ? this.textColorChecked : this.textColorUnchecked);
-        this.setIcon(selected ? this.iconChecked : this.iconUnchecked);
-
-        int textXOffset = this.icon != null ? this.icon.getWidth() + 3 : 3;
         this.getTextOffset().setXOffset(textXOffset);
+        this.setIcon(icon);
     }
 
     @Override

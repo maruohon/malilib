@@ -103,8 +103,8 @@ public class BooleanConfigStatusWidget extends BaseConfigStatusIndicatorWidget<B
         this.valueDisplayText = null;
         this.valueRenderWidth = 0;
         this.booleanValueRenderWidth = 0;
-        this.icon = null;
 
+        this.setIcon(null);
         this.updateBooleanDisplayValue();
         this.updateEnabledState();
         this.geometryResizeNotifier.checkAndNotifyContainerOfChanges(false);
@@ -130,8 +130,8 @@ public class BooleanConfigStatusWidget extends BaseConfigStatusIndicatorWidget<B
         }
         else if (this.renderStyle == Style.ON_OFF_LIGHT)
         {
-            this.icon = this.lastValue ? DefaultIcons.LIGHT_GREEN_ON : DefaultIcons.LIGHT_RED_OFF;
-            this.booleanValueRenderWidth = this.icon.getWidth();
+            this.setIcon(this.lastValue ? DefaultIcons.LIGHT_GREEN_ON : DefaultIcons.LIGHT_RED_OFF);
+            this.booleanValueRenderWidth = this.getIcon().getWidth();
         }
 
         this.valueRenderWidth = this.booleanValueRenderWidth;
@@ -221,8 +221,8 @@ public class BooleanConfigStatusWidget extends BaseConfigStatusIndicatorWidget<B
         ON_OFF_SLIDER   ("on_off_slider",   "malilib.label.boolean_config_status_type.on_off_slider"),
         ON_OFF_LIGHT    ("on_off_light",    "malilib.label.boolean_config_status_type.on_off_light");
 
-        protected final String name;
-        protected final String translationKey;
+        private final String name;
+        private final String translationKey;
 
         public static final ImmutableList<Style> VALUES = ImmutableList.copyOf(values());
 
@@ -262,8 +262,8 @@ public class BooleanConfigStatusWidget extends BaseConfigStatusIndicatorWidget<B
         WHEN_ON  ("when_on",  "malilib.label.when_on"),
         WHEN_OFF ("when_off", "malilib.label.when_off");
 
-        protected final String name;
-        protected final String translationKey;
+        private final String name;
+        private final String translationKey;
 
         public static final ImmutableList<EnabledCondition> VALUES = ImmutableList.copyOf(values());
 

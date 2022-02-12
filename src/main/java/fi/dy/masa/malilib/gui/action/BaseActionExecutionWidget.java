@@ -12,6 +12,7 @@ import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.action.NamedAction;
 import fi.dy.masa.malilib.action.ParameterizableNamedAction;
 import fi.dy.masa.malilib.gui.BaseScreen;
+import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.icon.IconRegistry;
 import fi.dy.masa.malilib.gui.util.BorderSettings;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
@@ -336,14 +337,16 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
     @Override
     protected void renderIcon(int x, int y, float z, boolean enabled, boolean hovered, ScreenContext ctx)
     {
-        if (this.icon != null)
-        {
-            x = this.getIconPositionX(x, this.icon.getWidth());
-            y = this.getIconPositionY(y, this.icon.getHeight());
-            int xSize = (int) (this.icon.getWidth() * this.iconScaleX);
-            int ySize = (int) (this.icon.getHeight() * this.iconScaleY);
+        Icon icon = this.getIcon();
 
-            this.icon.renderScaledAt(x, y, z + 0.025f, xSize, ySize, true, false);
+        if (icon != null)
+        {
+            x = this.getIconPositionX(x, icon.getWidth());
+            y = this.getIconPositionY(y, icon.getHeight());
+            int xSize = (int) (icon.getWidth() * this.iconScaleX);
+            int ySize = (int) (icon.getHeight() * this.iconScaleY);
+
+            icon.renderScaledAt(x, y, z + 0.025f, xSize, ySize, true, false);
         }
     }
 
@@ -358,9 +361,11 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
             obj.addProperty("name", this.name);
         }
 
-        if (this.icon != null)
+        Icon icon = this.getIcon();
+
+        if (icon != null)
         {
-            obj.addProperty("icon_name", IconRegistry.getKeyForIcon(this.icon));
+            obj.addProperty("icon_name", IconRegistry.getKeyForIcon(icon));
         }
 
         obj.addProperty("bg_color", this.getBackgroundRenderer().getNormalSettings().getColor());

@@ -38,7 +38,7 @@ public class IconEntryWidget extends BaseDataListEntryWidget<Icon>
 
         this.iconOffset.setXOffset(4);
         this.textOffset.setXOffset(28);
-        this.icon = data;
+        this.setIcon(data);
         this.setText(StyledTextLine.of(String.format("%d x %d @ [ %d, %d ] @ %s", w, h, u, v, texture)));
     }
 
@@ -68,10 +68,12 @@ public class IconEntryWidget extends BaseDataListEntryWidget<Icon>
     @Override
     protected void renderIcon(int x, int y, float z, boolean enabled, boolean hovered, ScreenContext ctx)
     {
-        if (this.icon != null)
+        Icon icon = this.getIcon();
+
+        if (icon != null)
         {
-            int width = this.icon.getWidth();
-            int height = this.icon.getHeight();
+            int width = icon.getWidth();
+            int height = icon.getHeight();
             int maxSize = this.getHeight() - 2;
 
             if (width > maxSize || height > maxSize)
@@ -84,7 +86,7 @@ public class IconEntryWidget extends BaseDataListEntryWidget<Icon>
             x = this.getIconPositionX(x, width);
             y = this.getIconPositionY(y, height);
 
-            this.icon.renderScaledAt(x, y, z + 0.025f, width, height);
+            icon.renderScaledAt(x, y, z + 0.025f, width, height);
         }
     }
 

@@ -8,6 +8,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
+import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.render.TextRenderUtils;
@@ -305,12 +306,14 @@ public abstract class InteractableWidget extends BackgroundWidget
 
     protected void renderIcon(int x, int y, float z, boolean enabled, boolean hovered, ScreenContext ctx)
     {
-        if (this.icon != null)
-        {
-            x = this.getIconPositionX(x, this.icon.getWidth());
-            y = this.getIconPositionY(y, this.icon.getHeight());
+        Icon icon = this.getIcon();
 
-            this.icon.renderAt(x, y, z + 0.0125f, enabled, hovered);
+        if (icon != null)
+        {
+            x = this.getIconPositionX(x, icon.getWidth());
+            y = this.getIconPositionY(y, icon.getHeight());
+
+            icon.renderAt(x, y, z + 0.0125f, enabled, hovered);
         }
     }
 

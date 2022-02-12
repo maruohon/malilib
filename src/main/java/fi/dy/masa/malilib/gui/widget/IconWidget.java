@@ -25,7 +25,7 @@ public class IconWidget extends InteractableWidget
         this.updateHeight();
     }
 
-    public IconWidget setEnabled(boolean enabled)
+    public IconWidget setUseEnabledVariant(boolean enabled)
     {
         this.enabled = enabled;
         return this;
@@ -40,9 +40,11 @@ public class IconWidget extends InteractableWidget
     @Override
     public void updateWidth()
     {
-        if (this.icon != null)
+        Icon icon = this.getIcon();
+
+        if (icon != null)
         {
-            int width = this.icon.getWidth();
+            int width = icon.getWidth();
 
             if (this.getBackgroundRenderer().getNormalSettings().isEnabled())
             {
@@ -61,9 +63,11 @@ public class IconWidget extends InteractableWidget
     @Override
     public void updateHeight()
     {
-        if (this.icon != null)
+        Icon icon = this.getIcon();
+
+        if (icon != null)
         {
-            int height = this.icon.getHeight();
+            int height = icon.getHeight();
 
             if (this.getBackgroundRenderer().getNormalSettings().isEnabled())
             {
@@ -80,29 +84,20 @@ public class IconWidget extends InteractableWidget
     }
 
     @Override
-    protected void renderIcon(int x, int y, float z, boolean enabled, boolean hovered, ScreenContext ctx)
-    {
-        super.renderIcon(x, y, z, enabled, hovered, ctx);
-    }
-
-    @Override
     public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
-        if (this.icon != null)
+        boolean hovered = this.doHighlight && this.isHoveredForRender(ctx);
+
+        this.renderWidgetBackgroundAndBorder(x, y, z, ctx);
+        this.renderText(x, y, z, hovered, ctx);
+
+        if (this.getBackgroundRenderer().getNormalSettings().isEnabled())
         {
-            boolean hovered = this.doHighlight && this.isHoveredForRender(ctx);
-
-            this.renderWidgetBackgroundAndBorder(x, y, z, ctx);
-            this.renderText(x, y, z, hovered, ctx);
-
-            if (this.getBackgroundRenderer().getNormalSettings().isEnabled())
-            {
-                int bw = this.getBorderRenderer().getNormalSettings().getActiveBorderWidth();
-                x += this.padding.getLeft() + bw;
-                y += this.padding.getTop() + bw;
-            }
-
-            this.renderIcon(x, y, z, this.enabled, hovered, ctx);
+            int bw = this.getBorderRenderer().getNormalSettings().getActiveBorderWidth();
+            x += this.padding.getLeft() + bw;
+            y += this.padding.getTop() + bw;
         }
+
+        this.renderIcon(x, y, z, this.enabled, hovered, ctx);
     }
 }
