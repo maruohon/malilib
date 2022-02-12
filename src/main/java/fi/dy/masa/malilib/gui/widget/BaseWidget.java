@@ -151,11 +151,6 @@ public class BaseWidget
         return this.maxHeight > 0;
     }
 
-    public int getLineHeight()
-    {
-        return this.getTextSettings().getLineHeight();
-    }
-
     public void setX(int x)
     {
         int oldX = this.x;
@@ -231,78 +226,6 @@ public class BaseWidget
         this.onPositionChanged(oldX, oldY);
     }
 
-    public void centerVerticallyInside(BaseWidget containerWidget)
-    {
-        this.centerVerticallyInside(containerWidget, 0);
-    }
-
-    public void centerVerticallyInside(BaseWidget containerWidget, int offset)
-    {
-        int yOffset = (containerWidget.getHeight() - this.getHeight()) / 2 + offset;
-        this.setY(containerWidget.getY() + yOffset);
-    }
-
-    public EdgeInt getMargin()
-    {
-        return this.margin;
-    }
-
-    public EdgeInt getPadding()
-    {
-        return this.padding;
-    }
-
-    public void setMarginFrom(EdgeInt margin)
-    {
-        this.margin.setFrom(margin);
-    }
-
-    public void setMargin(int top, int right, int bottom, int left)
-    {
-        this.margin.setAll(top, right, bottom, left);
-    }
-
-    public void setPadding(EdgeInt padding)
-    {
-        this.padding.setFrom(padding);
-    }
-
-    public void setPadding(int top, int right, int bottom, int left)
-    {
-        this.padding.setAll(top, right, bottom, left);
-    }
-
-    public void updateSize()
-    {
-        this.updateWidth();
-        this.updateHeight();
-    }
-
-    /**
-     * This method is called after the widget position is changed
-     * @param oldX the x position before the position was changed
-     * @param oldY the y position before the position was changed
-     */
-    protected void onPositionChanged(int oldX, int oldY)
-    {
-    }
-
-    /**
-     * This method is called after the widget size is changed
-     */
-    protected void onSizeChanged()
-    {
-    }
-
-    /**
-     * This method is called after either the widget position or size is changed.
-     * This is meant for cases where it's necessary or beneficial to avoid the
-     * calls for both size and position changes separately.
-     */
-    protected void onPositionOrSizeChanged(int oldX, int oldY)
-    {
-    }
-
     public void setWidth(int width)
     {
         this.width = width;
@@ -320,34 +243,6 @@ public class BaseWidget
         this.width = width;
         this.height = height;
         this.onSizeChanged();
-    }
-
-    public void clampToScreen()
-    {
-        int screenRight = GuiUtils.getScaledWindowWidth();
-        int screenBottom = GuiUtils.getScaledWindowHeight();
-        int x = this.getX();
-        int y = this.getY();
-
-        if (this.getRight() > screenRight)
-        {
-            x = screenRight - this.getWidth() - 2;
-        }
-
-        if (this.getBottom() > screenBottom)
-        {
-            y = screenBottom - this.getHeight() - 2;
-        }
-
-        x = Math.max(x, 0);
-        y = Math.max(y, 0);
-
-        this.setPosition(x, y);
-    }
-
-    public void setLineHeight(int lineHeight)
-    {
-        this.getTextSettings().setLineHeight(lineHeight);
     }
 
     /**
@@ -376,12 +271,42 @@ public class BaseWidget
         this.automaticHeight = automaticHeight;
     }
 
-    public boolean intersects(EdgeInt rectangle)
+    public void centerVerticallyInside(BaseWidget containerWidget)
     {
-        return this.getX() <= rectangle.getRight() &&
-               this.getRight() >= rectangle.getLeft() &&
-               this.getY() <= rectangle.getBottom() &&
-               this.getBottom() >= rectangle.getTop();
+        this.centerVerticallyInside(containerWidget, 0);
+    }
+
+    public void centerVerticallyInside(BaseWidget containerWidget, int offset)
+    {
+        int yOffset = (containerWidget.getHeight() - this.getHeight()) / 2 + offset;
+        this.setY(containerWidget.getY() + yOffset);
+    }
+
+    /**
+     * This method is called after the widget position is changed
+     * @param oldX the x position before the position was changed
+     * @param oldY the y position before the position was changed
+     */
+    protected void onPositionChanged(int oldX, int oldY)
+    {
+    }
+
+    /**
+     * This method is called after the widget size is changed
+     */
+    protected void onSizeChanged()
+    {
+    }
+
+    /**
+     * This method is called after either the widget position or size is changed.
+     * This is meant for cases where it's necessary or beneficial to avoid the
+     * calls for both size and position changes separately.
+     * @param oldX the x position before the position was changed
+     * @param oldY the y position before the position was changed
+     */
+    protected void onPositionOrSizeChanged(int oldX, int oldY)
+    {
     }
 
     /**
@@ -393,12 +318,54 @@ public class BaseWidget
     {
     }
 
+    public void updateSize()
+    {
+        this.updateWidth();
+        this.updateHeight();
+    }
+
     public void updateWidth()
     {
     }
 
     public void updateHeight()
     {
+    }
+
+    public void clampToScreen()
+    {
+        int screenRight = GuiUtils.getScaledWindowWidth();
+        int screenBottom = GuiUtils.getScaledWindowHeight();
+        int x = this.getX();
+        int y = this.getY();
+
+        if (this.getRight() > screenRight)
+        {
+            x = screenRight - this.getWidth() - 2;
+        }
+
+        if (this.getBottom() > screenBottom)
+        {
+            y = screenBottom - this.getHeight() - 2;
+        }
+
+        x = Math.max(x, 0);
+        y = Math.max(y, 0);
+
+        this.setPosition(x, y);
+    }
+
+    public boolean intersects(EdgeInt rectangle)
+    {
+        return this.getX()      <= rectangle.getRight() &&
+               this.getRight()  >= rectangle.getLeft() &&
+               this.getY()      <= rectangle.getBottom() &&
+               this.getBottom() >= rectangle.getTop();
+    }
+
+    public void setLineHeight(int lineHeight)
+    {
+        this.getTextSettings().setLineHeight(lineHeight);
     }
 
     public void setZLevelBasedOnParent(float parentZLevel)
@@ -408,7 +375,7 @@ public class BaseWidget
 
     /**
      * This method is called whenever a widget gets added to its parent widget or GUI.
-     * By default it updates the widget's own rendering Z-level based on the parent's Z-level.
+     * By default, it updates the widget's own rendering Z-level based on the parent's Z-level.
      */
     public void onWidgetAdded(float parentZLevel)
     {
@@ -423,6 +390,16 @@ public class BaseWidget
     public boolean canInteract()
     {
         return false;
+    }
+
+    public EdgeInt getMargin()
+    {
+        return this.margin;
+    }
+
+    public EdgeInt getPadding()
+    {
+        return this.padding;
     }
 
     public ElementOffset getIconOffset()
@@ -494,6 +471,11 @@ public class BaseWidget
     public void bindTexture(ResourceLocation texture)
     {
         RenderUtils.bindTexture(texture);
+    }
+
+    public int getLineHeight()
+    {
+        return this.getTextSettings().getLineHeight();
     }
 
     public int getFontHeight()
