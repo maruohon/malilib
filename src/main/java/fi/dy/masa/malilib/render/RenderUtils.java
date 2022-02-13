@@ -941,6 +941,7 @@ public class RenderUtils
         tessellator.draw();
 
         globalStack.pop();
+        RenderSystem.applyModelViewMatrix();
     }
 
     public static void renderBlockTargetingOverlaySimple(Entity entity, BlockPos pos, Direction side,
@@ -993,6 +994,7 @@ public class RenderUtils
         tessellator.draw();
 
         globalStack.pop();
+        RenderSystem.applyModelViewMatrix();
     }
 
     private static void blockTargetingOverlayTranslations(double x, double y, double z,
