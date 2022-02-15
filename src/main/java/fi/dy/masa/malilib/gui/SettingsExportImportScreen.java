@@ -41,19 +41,19 @@ public class SettingsExportImportScreen extends TextInputScreen
     {
         super(titleKey, exportString, overwriteStringConsumer);
 
-        this.copyToClipboardButton = GenericButton.simple(14, "malilib.label.button.export_import_screen.copy_to_clipboard", this::copyToClipboard);
+        this.copyToClipboardButton = GenericButton.create(14, "malilib.label.button.export_import_screen.copy_to_clipboard", this::copyToClipboard);
         this.copyToClipboardButton.translateAndAddHoverString("malilib.hover.button.export_import_screen.copy_to_clipboard");
         this.copyToClipboardButton.getTextOffset().setCenterHorizontally(false).setXOffset(5);
 
-        this.pasteFromClipboardButton = GenericButton.simple(14, "malilib.label.button.export_import_screen.paste_from_clipboard", this::pasteFromClipboard);
+        this.pasteFromClipboardButton = GenericButton.create(14, "malilib.label.button.export_import_screen.paste_from_clipboard", this::pasteFromClipboard);
         this.pasteFromClipboardButton.translateAndAddHoverString("malilib.hover.button.export_import_screen.paste_from_clipboard");
         this.pasteFromClipboardButton.getTextOffset().setCenterHorizontally(false).setXOffset(5);
 
-        this.readFromFileButton = GenericButton.simple(14, "malilib.label.button.export_import_screen.read_from_file", this::readFromFile);
+        this.readFromFileButton = GenericButton.create(14, "malilib.label.button.export_import_screen.read_from_file", this::readFromFile);
         this.readFromFileButton.translateAndAddHoverString("malilib.hover.button.export_import_screen.read_from_file");
         this.readFromFileButton.getTextOffset().setCenterHorizontally(false).setXOffset(5);
 
-        this.writeToFileButton = GenericButton.simple(14, "malilib.label.button.export_import_screen.write_to_file", this::writeToFile);
+        this.writeToFileButton = GenericButton.create(14, "malilib.label.button.export_import_screen.write_to_file", this::writeToFile);
         this.writeToFileButton.translateAndAddHoverString("malilib.hover.button.export_import_screen.write_to_file");
         this.writeToFileButton.getTextOffset().setCenterHorizontally(false).setXOffset(5);
 

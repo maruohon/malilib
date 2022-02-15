@@ -74,7 +74,9 @@ public class FileUtils
 
     public static List<File> getSubDirectories(File dir)
     {
-        return Arrays.asList(dir.listFiles(DIRECTORY_FILTER));
+        List<File> list = new ArrayList<>(Arrays.asList(dir.listFiles(DIRECTORY_FILTER)));
+        list.sort(Comparator.comparing(File::getName));
+        return list;
     }
 
     public static List<File> getDirsForRootPath(File dir, File root)

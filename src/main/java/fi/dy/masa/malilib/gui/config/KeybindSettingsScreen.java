@@ -1,7 +1,6 @@
 package fi.dy.masa.malilib.gui.config;
 
 import java.util.List;
-import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.config.option.BaseConfigOption;
@@ -144,8 +143,8 @@ public class KeybindSettingsScreen extends BaseScreen
                 this.addWidget(textField);
             }
 
-            Supplier<MultiIcon> iconSupplier = () -> intConfig.isSliderActive() ? DefaultIcons.BTN_TXTFIELD : DefaultIcons.BTN_SLIDER;
-            GenericButton sliderToggleButton = new GenericButton(iconSupplier);
+            MultiIcon icon = intConfig.isSliderActive() ? DefaultIcons.BTN_TXTFIELD : DefaultIcons.BTN_SLIDER;
+            GenericButton sliderToggleButton = GenericButton.create(icon);
             sliderToggleButton.setPosition(x + 84, y);
 
             sliderToggleButton.setActionListener(() -> {

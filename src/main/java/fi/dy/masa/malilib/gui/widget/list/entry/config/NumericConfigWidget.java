@@ -8,6 +8,7 @@ import fi.dy.masa.malilib.config.option.BaseConfigOption;
 import fi.dy.masa.malilib.config.option.SliderConfig;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
+import fi.dy.masa.malilib.gui.icon.MultiIcon;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.SliderWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
@@ -44,19 +45,10 @@ public abstract class NumericConfigWidget<TYPE, CFG extends BaseConfigOption<TYP
         this.sliderWidget = new SliderWidget(60, 20, config.getSliderCallback(this::updateResetButtonState));
         this.sliderWidget.setHoverStringProvider("lock", config::getLockAndOverrideMessages);
 
-        this.sliderToggleButton = new GenericButton(() -> this.config.isSliderActive() ? DefaultIcons.BTN_TXTFIELD : DefaultIcons.BTN_SLIDER);
+        this.sliderToggleButton = GenericButton.create(this::getSliderToggleButtonIcon, this::toggleSlider);
         this.sliderToggleButton.setHoverStringProvider("slider", this::getSliderMessages);
 
-        this.sliderToggleButton.setActionListener(() -> {
-            this.config.toggleSliderActive();
-            this.reAddSubWidgets();
-        });
-
-        this.resetButton.setActionListener(() -> {
-            this.config.resetToDefault();
-            this.updateResetButtonState();
-            this.reAddSubWidgets();
-        });
+        this.resetButton.setActionListener(this::reset);
     }
 
     @Override
@@ -64,40 +56,45 @@ public abstract class NumericConfigWidget<TYPE, CFG extends BaseConfigOption<TYP
     {
         super.reAddSubWidgets();
 
+        if (this.config.isSliderActive())
+        {
+            this.addWidget(this.sliderWidget);
+        }
+        else
+        {
+            this.addWidget(this.textField);
+        }
+
+        this.addWidget(this.sliderToggleButton);
+        this.addWidget(this.resetButton);
+    }
+
+    @Override
+    public void updateSubWidgetsToGeometryChanges()
+    {
+        super.updateSubWidgetsToGeometryChanges();
+
         int x = this.getElementsStartPosition();
         int y = this.getY();
         int elementWidth = this.getElementWidth();
         boolean locked = this.config.isLocked();
 
-        if (this.config.isSliderActive())
-        {
-            this.sliderWidget.setLocked(locked);
-            this.sliderWidget.setPosition(x, y + 1);
-            this.sliderWidget.setWidth(elementWidth - 18);
-            x += this.sliderWidget.getWidth() + 2;
+        this.sliderWidget.setLocked(locked);
+        this.sliderWidget.setPosition(x, y + 1);
+        this.sliderWidget.setWidth(elementWidth - 18);
 
-            this.addWidget(this.sliderWidget);
-        }
-        else
-        {
-            this.textField.setEnabled(locked == false);
-            this.textField.updateHoverStrings();
-            this.textField.setPosition(x, y + 3);
-            this.textField.setWidth(elementWidth - 18);
-            this.textField.setText(this.getCurrentValueAsString());
-            x += this.textField.getWidth() + 2;
+        this.textField.setEnabled(locked == false);
+        this.textField.updateHoverStrings();
+        this.textField.setPosition(x, y + 3);
+        this.textField.setWidth(elementWidth - 18);
+        this.textField.setText(this.getCurrentValueAsString());
 
-            this.addWidget(this.textField);
-        }
-
+        x += elementWidth - 16;
         this.sliderToggleButton.setPosition(x, y + 3);
         this.sliderToggleButton.setEnabled(this.config.allowSlider());
         this.sliderToggleButton.updateHoverStrings();
 
         this.updateResetButton(x + 20, y + 1);
-
-        this.addWidget(this.sliderToggleButton);
-        this.addWidget(this.resetButton);
     }
 
     @Override
@@ -109,6 +106,24 @@ public abstract class NumericConfigWidget<TYPE, CFG extends BaseConfigOption<TYP
         {
             this.fromStringSetter.accept(this.config, text);
         }
+    }
+
+    protected void toggleSlider()
+    {
+        this.config.toggleSliderActive();
+        this.reAddSubWidgets();
+    }
+
+    protected void reset()
+    {
+        this.config.resetToDefault();
+        this.updateResetButtonState();
+        this.reAddSubWidgets();
+    }
+
+    protected MultiIcon getSliderToggleButtonIcon()
+    {
+        return this.config.isSliderActive() ? DefaultIcons.BTN_TXTFIELD : DefaultIcons.BTN_SLIDER;
     }
 
     protected List<String> getSliderMessages()

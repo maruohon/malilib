@@ -23,7 +23,7 @@ public class CustomIconListScreen extends BaseListScreen<DataListWidget<Icon>>
         super(10, 74, 20, 80, MaLiLibReference.MOD_ID, MaLiLibConfigScreen.ALL_TABS, MaLiLibConfigScreen.GENERIC);
 
         this.setTitle("malilib.gui.title.custom_icons_list_screen");
-        this.addIconButton = GenericButton.simple(16, "malilib.gui.button.custom_icon_list_screen.add_icon", this::openAddIconScreen);
+        this.addIconButton = GenericButton.create(16, "malilib.gui.button.custom_icon_list_screen.add_icon", this::openAddIconScreen);
     }
 
     @Override

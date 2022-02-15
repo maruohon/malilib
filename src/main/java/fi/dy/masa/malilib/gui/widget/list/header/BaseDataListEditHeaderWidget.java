@@ -14,13 +14,16 @@ public class BaseDataListEditHeaderWidget<DATATYPE> extends DataListHeaderWidget
     protected int fixedWidth;
     protected int fixedHeight;
 
-    public BaseDataListEditHeaderWidget(DataListWidget<DATATYPE> listWidget, String buttonHover,
+    public BaseDataListEditHeaderWidget(DataListWidget<DATATYPE> listWidget,
+                                        String buttonHover,
                                         Supplier<DATATYPE> dataFactory)
     {
         this(15, 15, listWidget, buttonHover, dataFactory);
     }
 
-    public BaseDataListEditHeaderWidget(int width, int height, DataListWidget<DATATYPE> listWidget, String buttonHover,
+    public BaseDataListEditHeaderWidget(int width, int height,
+                                        DataListWidget<DATATYPE> listWidget,
+                                        String buttonHover,
                                         Supplier<DATATYPE> dataFactory)
     {
         super(width, height, listWidget);
@@ -32,8 +35,8 @@ public class BaseDataListEditHeaderWidget<DATATYPE> extends DataListHeaderWidget
         this.dataList = listWidget.getCurrentContents();
         this.dataFactory = dataFactory;
 
-        this.addButton = new GenericButton(DefaultIcons.LIST_ADD_PLUS_13, buttonHover);
-        this.addButton.setActionListener(this::insertEntry);
+        this.addButton = GenericButton.create(DefaultIcons.LIST_ADD_PLUS_13, this::insertEntry);
+        this.addButton.translateAndAddHoverString(buttonHover);
     }
 
     @Override

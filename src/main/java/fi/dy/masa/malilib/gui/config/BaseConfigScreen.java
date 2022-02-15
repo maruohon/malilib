@@ -13,7 +13,7 @@ import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.config.liteloader.DialogHandler;
 import fi.dy.masa.malilib.gui.tab.ScreenTab;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
-import fi.dy.masa.malilib.gui.widget.button.BaseButton;
+import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.button.KeyBindConfigButton;
 import fi.dy.masa.malilib.gui.widget.list.ConfigOptionListWidget;
 import fi.dy.masa.malilib.listener.EventListener;
@@ -124,7 +124,7 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
 
     public void reCreateConfigWidgets()
     {
-        for (BaseButton tabButton : this.tabButtons)
+        for (GenericButton tabButton : this.tabButtons)
         {
             tabButton.updateButtonState();
         }

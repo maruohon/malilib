@@ -121,7 +121,7 @@ public abstract class BaseTextInputScreen extends BaseScreen
 
     protected static GenericButton createButton(String translationKey, EventListener listener)
     {
-        GenericButton button = GenericButton.simple(translationKey, listener);
+        GenericButton button = GenericButton.create(translationKey, listener);
         button.setWidth(Math.max(40, button.getWidth()));
         button.setAutomaticWidth(false);
         return button;

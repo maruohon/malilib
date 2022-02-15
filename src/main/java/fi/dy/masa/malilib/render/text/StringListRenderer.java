@@ -7,7 +7,6 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import fi.dy.masa.malilib.config.value.HorizontalAlignment;
-import fi.dy.masa.malilib.config.value.VerticalAlignment;
 import fi.dy.masa.malilib.gui.widget.BaseWidget;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
@@ -20,10 +19,8 @@ public class StringListRenderer extends BaseWidget
     protected final List<StyledTextLine> originalTextLines = new ArrayList<>();
     protected final List<StyledTextLine> processedLinesClamped = new ArrayList<>();
     protected final List<StyledTextLine> processedLinesFull = new ArrayList<>();
-    protected final MultiLineTextRenderSettings textSettingsNormal = new MultiLineTextRenderSettings();
     protected final MultiLineTextRenderSettings textSettingsHover = new MultiLineTextRenderSettings();
     protected HorizontalAlignment horizontalAlignment = HorizontalAlignment.LEFT;
-    protected VerticalAlignment verticalAlignment = VerticalAlignment.TOP;
     protected LineClamper lineClamper;
     protected boolean hasClampedContent;
     protected int totalTextWidth;
@@ -35,8 +32,8 @@ public class StringListRenderer extends BaseWidget
     {
         super(0, 0, 0, 0);
 
-        this.textSettingsNormal.setTextColor(0xFFC0C0C0);
-        this.textSettingsNormal.setTextShadowEnabled(true);
+        this.textSettings.setTextColor(0xFFC0C0C0);
+        this.textSettings.setTextShadowEnabled(true);
         this.textSettingsHover.setTextColor(0xFFE0E0E0);
         this.textSettingsHover.setTextShadowEnabled(true);
         this.lineClamper = this::clampLineToWidth;
@@ -54,13 +51,13 @@ public class StringListRenderer extends BaseWidget
 
     public int getClampedRenderWidth()
     {
-        int bgWidth = this.textSettingsNormal.getBackgroundEnabled() ? this.padding.getHorizontalTotal() : 0;
+        int bgWidth = this.textSettings.getBackgroundEnabled() ? this.padding.getHorizontalTotal() : 0;
         return this.clampedTextWidth + bgWidth;
     }
 
     public int getTotalRenderWidth()
     {
-        int bgWidth = this.textSettingsNormal.getBackgroundEnabled() ? this.padding.getHorizontalTotal() : 0;
+        int bgWidth = this.textSettings.getBackgroundEnabled() ? this.padding.getHorizontalTotal() : 0;
         return this.totalTextWidth + bgWidth;
     }
 
@@ -71,7 +68,7 @@ public class StringListRenderer extends BaseWidget
 
     public int getTotalRenderHeight()
     {
-        int bgHeight = this.textSettingsNormal.getBackgroundEnabled() ? this.padding.getVerticalTotal() : 0;
+        int bgHeight = this.textSettings.getBackgroundEnabled() ? this.padding.getVerticalTotal() : 0;
         return this.totalTextHeight + bgHeight;
     }
 
@@ -92,7 +89,7 @@ public class StringListRenderer extends BaseWidget
 
     public void setNormalTextSettingsFrom(TextRenderSettings settings)
     {
-        this.textSettingsNormal.setFrom(settings);
+        this.textSettings.setFrom(settings);
     }
 
     public void setHoveredTextSettingsFrom(TextRenderSettings settings)
@@ -102,7 +99,7 @@ public class StringListRenderer extends BaseWidget
 
     public MultiLineTextRenderSettings getNormalTextSettings()
     {
-        return this.textSettingsNormal;
+        return this.textSettings;
     }
 
     public MultiLineTextRenderSettings getHoverTextSettings()
@@ -116,12 +113,6 @@ public class StringListRenderer extends BaseWidget
         return this;
     }
 
-    public StringListRenderer setVerticalAlignment(VerticalAlignment verticalAlignment)
-    {
-        this.verticalAlignment = verticalAlignment;
-        return this;
-    }
-
     public StringListRenderer setLineClamper(LineClamper clamper)
     {
         this.lineClamper = clamper;
@@ -129,7 +120,7 @@ public class StringListRenderer extends BaseWidget
     }
 
     /**
-     * Clears the process/split/clamped strings and the computed total width and height
+     * Clears the processed/split/clamped strings and the computed total width and height
      * AND also the original strings.
      */
     public void clearText()
@@ -256,7 +247,7 @@ public class StringListRenderer extends BaseWidget
 
     public void renderAt(int x, int y, float z, boolean hovered)
     {
-        MultiLineTextRenderSettings settings = hovered ? this.textSettingsHover : this.textSettingsNormal;
+        MultiLineTextRenderSettings settings = hovered ? this.textSettingsHover : this.textSettings;
         List<StyledTextLine> lines = hovered ? this.processedLinesFull : this.processedLinesClamped;
         boolean rightAlign = this.horizontalAlignment == HorizontalAlignment.RIGHT;
         boolean center = this.horizontalAlignment == HorizontalAlignment.CENTER;

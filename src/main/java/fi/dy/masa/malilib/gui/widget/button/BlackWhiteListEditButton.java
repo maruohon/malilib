@@ -21,15 +21,15 @@ public class BlackWhiteListEditButton extends GenericButton
     public BlackWhiteListEditButton(int width, int height, BlackWhiteListConfig<?> config,
                                     EventListener saveListener, @Nullable DialogHandler dialogHandler)
     {
-        super(width, height, "");
+        super(width, height);
 
         this.config = config;
         this.dialogHandler = dialogHandler;
         this.saveListener = saveListener;
-        this.setHoverStringProvider("value_preview", this::generateHoverStrings);
 
+        this.setHoverStringProvider("value_preview", this::generateHoverStrings);
         this.setActionListener(this::openEditScreen);
-        this.updateDisplayString();
+        this.setDisplayStringSupplier(this::getCurrentDisplayString);
     }
 
     protected void openEditScreen()
@@ -44,11 +44,8 @@ public class BlackWhiteListEditButton extends GenericButton
         }
     }
 
-    @Override
-    protected String generateDisplayString()
+    protected String getCurrentDisplayString()
     {
-        this.hoverInfoFactory.updateList();
-
         ListType type = this.config.getValue().getListType();
 
         if (type == ListType.NONE)

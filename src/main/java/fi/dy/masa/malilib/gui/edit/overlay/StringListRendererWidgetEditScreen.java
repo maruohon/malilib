@@ -75,10 +75,10 @@ public class StringListRendererWidgetEditScreen extends BaseScreen
         this.lineHeightEditWidget = new IntegerEditWidget(72, 16, widget.getLineHeight(), 6, 40, widget::setLineHeight);
         this.textScaleEditWidget = new DoubleEditWidget(72, 16, widget.getScale(), 0.25, 20, widget::setScale);
 
-        this.marginEditButton = GenericButton.simple(16, "malilib.label.margin", this::openMarginEditScreen);
+        this.marginEditButton = GenericButton.create(16, "malilib.label.margin", this::openMarginEditScreen);
         this.marginEditButton.setHoverStringProvider("tooltip", this.widget.getMargin()::getHoverTooltip);
 
-        this.paddingEditButton = GenericButton.simple(16, "malilib.label.padding", this::openPaddingEditScreen);
+        this.paddingEditButton = GenericButton.create(16, "malilib.label.padding", this::openPaddingEditScreen);
         this.paddingEditButton.setHoverStringProvider("tooltip", this.widget.getPadding()::getHoverTooltip);
 
         this.enabledToggleButton = OnOffButton.simpleSlider(16, widget::isEnabled, widget::toggleEnabled);

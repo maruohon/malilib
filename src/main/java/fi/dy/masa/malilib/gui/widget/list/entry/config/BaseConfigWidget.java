@@ -59,7 +59,7 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
         config.getComment().ifPresent(comments::add);
 
         this.configOwnerAndNameLabelWidget.getHoverInfoFactory().addStrings(comments);
-        this.resetButton = new GenericButton("malilib.gui.button.reset.caps");
+        this.resetButton = GenericButton.create("malilib.gui.button.reset.caps");
 
         boolean bgEnabled = MaLiLibConfigs.Generic.CONFIG_WIDGET_BACKGROUND.getBooleanValue();
         this.getBackgroundRenderer().getNormalSettings()
@@ -145,8 +145,7 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
         ArrayList<String> lines = new ArrayList<>();
         StringUtils.splitTextToLines(lines, StringUtils.translate(hoverTextKey, file.getAbsolutePath()), 280);
 
-        GenericButton button = new GenericButton(elementWidth, 20, buttonText);
-        button.setPosition(x, y + 1);
+        GenericButton button = GenericButton.create(elementWidth, 20, buttonText);
         button.getHoverInfoFactory().setStringListProvider("path", () -> lines, 100);
         button.getHoverInfoFactory().setStringListProvider("locked", config::getLockAndOverrideMessages, 101);
         button.setEnabled(config.isLocked() == false);
@@ -155,11 +154,9 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
             browserScreen.setParent(GuiUtils.getCurrentScreen());
             BaseScreen.openScreen(browserScreen);
         });
+        button.setPosition(x, y + 1);
 
-        this.resetButton.setActionListener(() -> {
-            config.resetToDefault();
-            this.reAddSubWidgets();
-        });
+        this.resetButton.setActionListener(this::onResetButtonClicked);
 
         this.updateResetButton(x + elementWidth + 4, y + 1);
         this.addWidget(button);
@@ -183,6 +180,12 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
         int nestingLevel = this.ctx.getNestingLevel();
         int offset = this.getNestingOffset(nestingLevel);
         return this.getX() + this.getMaxLabelWidth() + offset + 10;
+    }
+
+    protected void onResetButtonClicked()
+    {
+        this.config.resetToDefault();
+        this.reAddSubWidgets();
     }
 
     public interface FileSelectorScreenFactory

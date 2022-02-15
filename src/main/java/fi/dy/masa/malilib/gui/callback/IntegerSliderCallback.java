@@ -3,17 +3,20 @@ package fi.dy.masa.malilib.gui.callback;
 import javax.annotation.Nullable;
 import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.listener.EventListener;
+import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.data.RangedIntegerStorage;
 
 public class IntegerSliderCallback implements SliderCallback
 {
     protected final RangedIntegerStorage storage;
     @Nullable protected final EventListener changeListener;
+    protected StyledTextLine displayText;
 
     public IntegerSliderCallback(RangedIntegerStorage storage, @Nullable EventListener changeListener)
     {
         this.storage = storage;
         this.changeListener = changeListener;
+        this.updateDisplayText();
     }
 
     @Override
@@ -32,8 +35,12 @@ public class IntegerSliderCallback implements SliderCallback
     @Override
     public void setRelativeValue(double relativeValue)
     {
-        long relValue = (long) (relativeValue * ((long) this.storage.getMaxIntegerValue() - (long) this.storage.getMinIntegerValue()));
-        this.storage.setIntegerValue((int) (relValue + this.storage.getMinIntegerValue()));
+        long maxValue = this.storage.getMaxIntegerValue();
+        long minValue = this.storage.getMinIntegerValue();
+        long relValue = (long) (relativeValue * (maxValue - minValue));
+
+        this.storage.setIntegerValue((int) (relValue + minValue));
+        this.updateDisplayText();
 
         if (this.changeListener != null)
         {
@@ -41,9 +48,15 @@ public class IntegerSliderCallback implements SliderCallback
         }
     }
 
-    @Override
-    public String getFormattedDisplayValue()
+    protected void updateDisplayText()
     {
-        return String.valueOf(this.storage.getIntegerValue());
+        this.displayText = StyledTextLine.translate("malilib.label.config.slider_value.integer",
+                                                    this.storage.getIntegerValue());
+    }
+
+    @Override
+    public StyledTextLine getDisplayText()
+    {
+        return this.displayText;
     }
 }

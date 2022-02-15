@@ -32,6 +32,15 @@ public class BooleanConfigWidget extends BaseConfigOptionWidget<Boolean, Boolean
     {
         super.reAddSubWidgets();
 
+        this.addWidget(this.booleanButton);
+        this.addWidget(this.resetButton);
+    }
+
+    @Override
+    public void updateSubWidgetsToGeometryChanges()
+    {
+        super.updateSubWidgetsToGeometryChanges();
+
         int x = this.getElementsStartPosition();
         int y = this.getY() + 1;
         int elementWidth = this.getElementWidth();
@@ -46,15 +55,12 @@ public class BooleanConfigWidget extends BaseConfigOptionWidget<Boolean, Boolean
 
         this.resetButton.setPosition(x + elementWidth + 4, y);
         this.updateButtonStates();
-
-        this.addWidget(this.booleanButton);
-        this.addWidget(this.resetButton);
     }
 
     protected void updateButtonStates()
     {
         this.booleanButton.setEnabled(this.config.isLocked() == false);
-        this.booleanButton.updateDisplayString();
+        this.booleanButton.updateButtonState();
         this.booleanButton.updateHoverStrings();
         this.updateResetButtonState();
     }

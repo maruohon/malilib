@@ -136,11 +136,11 @@ public class GuiUtils
 
         if (addButton)
         {
-            GenericButton button = GenericButton.createIconOnly(() -> DefaultIcons.BTN_PLUSMINUS_16);
-            button.setPosition(x, y);
-            button.setCanScrollToClick(true);
-            button.translateAndAddHoverString("malilib.button.hover.plus_minus_tip");
+            GenericButton button = GenericButton.create(DefaultIcons.BTN_PLUSMINUS_16);
             button.setActionListener(new ButtonListenerCoordinateInput(type, modifier));
+            button.translateAndAddHoverString("malilib.button.hover.plus_minus_tip");
+            button.setCanScrollToClick(true);
+            button.setPosition(x, y);
             gui.addWidget(button);
         }
     }

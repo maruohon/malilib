@@ -46,13 +46,13 @@ public class ActionListBaseActionEntryWidget extends BaseOrderableListEditEntryW
         StyledTextLine nameText = data.getColoredWidgetDisplayName();
         this.setText(StyledTextUtils.clampStyledTextToMaxWidth(nameText, width - 20, LeftRight.RIGHT, " ..."));
 
-        this.createAliasButton = GenericButton.simple(14, "malilib.label.button.action_list_screen_widget.create_alias",
+        this.createAliasButton = GenericButton.create(14, "malilib.label.button.action_list_screen_widget.create_alias",
                                                       this::openAddAliasScreen);
         this.createAliasButton.translateAndAddHoverString("malilib.hover.button.create_alias_for_action");
 
-        this.editButton = GenericButton.simple(14, "malilib.label.button.edit", this::editAction);
+        this.editButton = GenericButton.create(14, "malilib.label.button.edit", this::editAction);
 
-        this.removeActionButton = GenericButton.createIconOnly(DefaultIcons.LIST_REMOVE_MINUS_13, this::removeAction);
+        this.removeActionButton = GenericButton.create(DefaultIcons.LIST_REMOVE_MINUS_13, this::removeAction);
         this.removeActionButton.translateAndAddHoverString("malilib.hover.button.list.remove");
 
         this.getBorderRenderer().getHoverSettings().setBorderWidthAndColor(1, 0xFFF0B000);

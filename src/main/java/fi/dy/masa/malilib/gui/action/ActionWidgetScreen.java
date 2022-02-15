@@ -80,12 +80,14 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
                                                             "malilib.hover_info.action_widget_screen.close_screen_on_key_release");
         this.closeOnKeyReleaseCheckbox.setBooleanStorage(() -> this.closeScreenOnKeyRelease, this::setCloseScreenOnKeyRelease);
 
-        this.addWidgetButton = GenericButton.simple(16, "malilib.label.button.add_action", this::openAddWidgetScreen);
+        this.addWidgetButton = GenericButton.create(16, "malilib.label.button.add_action", this::openAddWidgetScreen);
 
-        this.exportSettingsButton = GenericButton.simple(16, "malilib.gui.button.export", this::onExportSettings);
+        this.exportSettingsButton = GenericButton.create(16, "malilib.gui.button.export");
+        this.exportSettingsButton.setActionListener(this::onExportSettings);
         this.exportSettingsButton.translateAndAddHoverString("malilib.gui.button.hover.action_widget_screen.export_settings");
 
-        this.importSettingsButton = GenericButton.simple(16, "malilib.gui.button.import", this::onImportSettings);
+        this.importSettingsButton = GenericButton.create(16, "malilib.gui.button.import");
+        this.importSettingsButton.setActionListener(this::onImportSettings);
         this.importSettingsButton.translateAndAddHoverString("malilib.gui.button.hover.action_widget_screen.import_settings");
 
         this.gridLabel = new LabelWidget("malilib.label.grid.colon");

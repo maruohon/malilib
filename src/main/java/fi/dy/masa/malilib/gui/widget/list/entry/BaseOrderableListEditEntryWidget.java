@@ -9,9 +9,9 @@ import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
-import fi.dy.masa.malilib.gui.widget.button.ButtonActionListener;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
+import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 
@@ -186,8 +186,8 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
 
     protected GenericButton createListActionButton(ButtonType type)
     {
-        GenericButton button = new GenericButton(this.getIconForButton(type), type.getHoverKey());
-        button.setActionListener(type.createListener(this));
+        GenericButton button = GenericButton.create(this.getIconForButton(type), type.createListener(this));
+        button.translateAndAddHoverString(type.getHoverKey());
         return button;
     }
 
@@ -389,9 +389,9 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
             return this.translationKey;
         }
 
-        public ButtonActionListener createListener(final BaseOrderableListEditEntryWidget<?> widget)
+        public EventListener createListener(final BaseOrderableListEditEntryWidget<?> widget)
         {
-            return (btn) -> this.action.apply(widget);
+            return () -> this.action.apply(widget);
         }
     }
 }

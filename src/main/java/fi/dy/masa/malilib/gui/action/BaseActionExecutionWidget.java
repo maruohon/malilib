@@ -341,8 +341,10 @@ public abstract class BaseActionExecutionWidget extends ContainerWidget
 
         if (icon != null)
         {
-            x = this.getIconPositionX(x, icon.getWidth());
-            y = this.getIconPositionY(y, icon.getHeight());
+            int usableWidth = this.getWidth() - this.padding.getHorizontalTotal();
+            int usableHeight = this.getHeight() - this.padding.getVerticalTotal();
+            x = this.getIconPositionX(x, usableWidth, icon.getWidth());
+            y = this.getIconPositionY(y, usableHeight, icon.getHeight());
             int xSize = (int) (icon.getWidth() * this.iconScaleX);
             int ySize = (int) (icon.getHeight() * this.iconScaleY);
 

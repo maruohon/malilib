@@ -173,8 +173,10 @@ public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry
 
     protected void renderInfoColumns(int x, int y, float z, ScreenContext ctx)
     {
-        int color = this.getTextSettings().getTextColor();
-        int ty = this.getTextPositionY(y);
+        boolean hovered = this.isHoveredForRender(ctx);
+        int color = this.getTextSettings().getEffectiveTextColor(hovered);
+        int usableHeight = this.getHeight() - this.padding.getVerticalTotal();
+        int ty = this.getTextPositionY(y, usableHeight, this.getLineHeight());
 
         if (this.showSize)
         {

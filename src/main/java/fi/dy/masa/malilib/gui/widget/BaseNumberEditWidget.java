@@ -21,13 +21,12 @@ public abstract class BaseNumberEditWidget extends ContainerWidget
         super(width, height);
 
         Supplier<MultiIcon> supplier = () -> this.sliderActive ? DefaultIcons.BTN_TXTFIELD : DefaultIcons.BTN_SLIDER;
-        this.sliderToggleButton = GenericButton.createIconOnly(supplier);
-        this.sliderToggleButton.setActionListener(this::toggleSliderActive);
+        this.sliderToggleButton = GenericButton.create(supplier, this::toggleSliderActive);
 
-        this.valueAdjustButton = GenericButton.createIconOnly(DefaultIcons.BTN_PLUSMINUS_16);
-        this.valueAdjustButton.setCanScrollToClick(true);
+        this.valueAdjustButton = GenericButton.create(DefaultIcons.BTN_PLUSMINUS_16);
         this.valueAdjustButton.setActionListener(this::onValueAdjustButtonClick);
         this.valueAdjustButton.translateAndAddHoverString("malilib.button.hover.plus_minus_tip");
+        this.valueAdjustButton.setCanScrollToClick(true);
 
         this.sliderWidget = this.createSliderWidget();
     }

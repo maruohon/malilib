@@ -36,11 +36,11 @@ public class ActionListScreen extends BaseActionListScreen
         this.userAddedActionTypesDropdown.setSelectionListener((t) -> this.initScreen());
         this.userAddedActionTypesDropdown.translateAndAddHoverString("malilib.hover_info.action_types_explanation");
 
-        this.addMacroButton = GenericButton.simple(14, "malilib.label.button.action_list_screen.create_macro", this::openMacroNameInput);
+        this.addMacroButton = GenericButton.create(14, "malilib.label.button.action_list_screen.create_macro", this::openMacroNameInput);
         this.addMacroButton.translateAndAddHoverString("malilib.hover.button.action_list_screen.create_macro");
         this.addMacroButton.setEnabledStatusSupplier(this::canCreateMacro);
 
-        this.executeActionButton = GenericButton.simple(14, "malilib.label.button.action_list_screen.execute_action", this::executeSelectedAction);
+        this.executeActionButton = GenericButton.create(14, "malilib.label.button.action_list_screen.execute_action", this::executeSelectedAction);
         this.executeActionButton.translateAndAddHoverString("malilib.hover.button.action_list_screen.execute_action");
         this.executeActionButton.setEnabledStatusSupplier(this::canExecuteAction);
 

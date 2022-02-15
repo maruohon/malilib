@@ -99,12 +99,12 @@ public abstract class BaseHotkeyedBooleanConfigWidget extends BaseConfigWidget<C
     protected void updateButtonStates()
     {
         this.booleanButton.setEnabled(this.booleanConfig.isLocked() == false);
-        this.booleanButton.updateDisplayString();
+        this.booleanButton.updateButtonState();
         this.booleanButton.updateHoverStrings();
 
         this.hotkeyButton.setEnabled(this.booleanConfig.isLocked() == false);
         this.hotkeyButton.setHoverInfoRequiresShift(this.booleanConfig.isLocked() == false);
-        this.hotkeyButton.updateDisplayString();
+        this.hotkeyButton.updateButtonState();
         this.hotkeyButton.updateHoverStrings();
 
         this.resetButton.setEnabled(this.config.isModified() && this.booleanConfig.isLocked() == false);

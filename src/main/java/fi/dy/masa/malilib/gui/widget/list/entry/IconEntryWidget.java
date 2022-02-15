@@ -24,11 +24,8 @@ public class IconEntryWidget extends BaseDataListEntryWidget<Icon>
     {
         super(x, y, width, height, listIndex, originalListIndex, data, listWidget);
 
-        this.editButton = new GenericButton(20, "malilib.gui.button.edit");
-        this.editButton.setActionListener(this::openEditScreen);
-
-        this.removeButton = new GenericButton(20, "malilib.gui.button.remove");
-        this.removeButton.setActionListener(this::removeIcon);
+        this.editButton = GenericButton.create(20, "malilib.gui.button.edit", this::openEditScreen);
+        this.removeButton = GenericButton.create(20, "malilib.gui.button.remove", this::removeIcon);
 
         int w = data.getWidth();
         int h = data.getHeight();
@@ -83,8 +80,10 @@ public class IconEntryWidget extends BaseDataListEntryWidget<Icon>
                 height = (int) Math.floor(scale * height);
             }
 
-            x = this.getIconPositionX(x, width);
-            y = this.getIconPositionY(y, height);
+            int usableWidth = this.getWidth() - this.padding.getHorizontalTotal();
+            int usableHeight = this.getHeight() - this.padding.getVerticalTotal();
+            x = this.getIconPositionX(x, usableWidth, width);
+            y = this.getIconPositionY(y, usableHeight, height);
 
             icon.renderScaledAt(x, y, z + 0.025f, width, height);
         }

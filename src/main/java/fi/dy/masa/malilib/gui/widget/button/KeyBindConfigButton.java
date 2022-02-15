@@ -29,15 +29,15 @@ public class KeyBindConfigButton extends GenericButton
 
     public KeyBindConfigButton(int width, int height, KeyBind keyBind, @Nullable KeybindEditingScreen host)
     {
-        super(width, height, "");
+        super(width, height);
 
         this.host = host;
         this.keyBind = keyBind;
-        this.setHoverStringProvider("overlap_info", this::getKeyBindHoverStrings);
 
+        this.setHoverStringProvider("overlap_info", this::getKeyBindHoverStrings);
         this.setShouldReceiveOutsideClicks(true);
-        this.updateDisplayString();
         this.setHoverInfoRequiresShift(true);
+        this.setDisplayStringSupplier(this::getCurrentDisplayString);
     }
 
     public void setValueChangeListener(@Nullable EventListener valueChangeListener)
@@ -57,7 +57,7 @@ public class KeyBindConfigButton extends GenericButton
     @Override
     protected boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
-        if (this.isEnabled() == false || this.visible == false)
+        if (this.isEnabled() == false)
         {
             return false;
         }
@@ -69,7 +69,7 @@ public class KeyBindConfigButton extends GenericButton
             if (mouseButton != 0 || this.isMouseOver(mouseX, mouseY))
             {
                 this.addKey(mouseButton - 100);
-                this.updateDisplayString();
+                this.updateButtonState();
                 handled = true;
             }
         }
@@ -85,7 +85,7 @@ public class KeyBindConfigButton extends GenericButton
         else if (mouseButton == 2 && this.isMouseOver(mouseX, mouseY))
         {
             this.keyBind.clearKeys();
-            this.updateDisplayString();
+            this.updateButtonState();
             handled = true;
 
             if (this.valueChangeListener != null)
@@ -106,11 +106,11 @@ public class KeyBindConfigButton extends GenericButton
     @Override
     protected boolean onMouseScrolled(int mouseX, int mouseY, double mouseWheelDelta)
     {
-        if (this.isEnabled() && this.visible && this.isSelected())
+        if (this.isEnabled() && this.isSelected())
         {
             int keyCode = mouseWheelDelta < 0 ? -201 : -199;
             this.addKey(keyCode);
-            this.updateDisplayString();
+            this.updateButtonState();
             return true;
         }
 
@@ -139,7 +139,7 @@ public class KeyBindConfigButton extends GenericButton
                 this.addKey(keyCode);
             }
 
-            this.updateDisplayString();
+            this.updateButtonState();
 
             return true;
         }
@@ -193,7 +193,7 @@ public class KeyBindConfigButton extends GenericButton
         this.newKeys.clear();
         this.newKeys.addAll(this.keyBind.getKeys());
         this.setHoverInfoRequiresShift(false);
-        this.updateDisplayString();
+        this.updateButtonState();
     }
 
     public void onClearSelection()
@@ -206,7 +206,8 @@ public class KeyBindConfigButton extends GenericButton
         this.selected = false;
         this.newKeys.clear();
         this.setHoverInfoRequiresShift(true);
-        this.updateDisplayString();
+        this.updateConflicts();
+        this.updateButtonState();
 
         if (this.valueChangeListener != null)
         {
@@ -219,8 +220,7 @@ public class KeyBindConfigButton extends GenericButton
         return this.selected && this.isEnabled();
     }
 
-    @Override
-    protected String generateDisplayString()
+    protected String getCurrentDisplayString()
     {
         List<Integer> keys = this.isSelected() ? this.newKeys : this.keyBind.getKeys();
         String valueStr = Keys.writeKeysToString(keys, " + ", Keys::charAsCharacter);
@@ -229,8 +229,6 @@ public class KeyBindConfigButton extends GenericButton
         {
             valueStr = StringUtils.translate("malilib.gui.button.none.caps");
         }
-
-        this.updateConflicts();
 
         if (this.isSelected())
         {

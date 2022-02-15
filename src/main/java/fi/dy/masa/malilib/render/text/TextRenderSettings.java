@@ -5,10 +5,16 @@ import fi.dy.masa.malilib.util.JsonUtils;
 
 public class TextRenderSettings
 {
+    protected static final int DEFAULT_BG_COLOR = 0xA0505050;
+    protected static final int DEFAULT_TEXT_COLOR = 0xFFFFFFFF;
+    protected static final int DEFAULT_HOVERED_TEXT_COLOR = 0xFFFFFFFF;
+
     protected boolean backgroundEnabled;
     protected boolean textShadowEnabled = true;
-    protected int backgroundColor = 0xA0505050;
-    protected int textColor = 0xFFFFFFFF;
+    protected boolean useHoverTextColor;
+    protected int backgroundColor = DEFAULT_BG_COLOR;
+    protected int hoveredTextColor = DEFAULT_HOVERED_TEXT_COLOR;
+    protected int textColor = DEFAULT_TEXT_COLOR;
     protected int lineHeight;
 
     public TextRenderSettings()
@@ -26,6 +32,11 @@ public class TextRenderSettings
         return this.textShadowEnabled;
     }
 
+    public boolean getUseHoverTextColor()
+    {
+        return this.useHoverTextColor;
+    }
+
     public int getBackgroundColor()
     {
         return this.backgroundColor;
@@ -34,6 +45,21 @@ public class TextRenderSettings
     public int getTextColor()
     {
         return this.textColor;
+    }
+
+    public int getEffectiveTextColor(boolean hovered)
+    {
+        if (hovered && this.useHoverTextColor)
+        {
+            return this.hoveredTextColor;
+        }
+
+        return this.textColor;
+    }
+
+    public int getHoveredTextColor()
+    {
+        return this.hoveredTextColor;
     }
 
     public int getLineHeight()
@@ -51,6 +77,11 @@ public class TextRenderSettings
         this.textShadowEnabled = textShadowEnabled;
     }
 
+    public void setUseHoverTextColor(boolean useHoverTextColor)
+    {
+        this.useHoverTextColor = useHoverTextColor;
+    }
+
     public void setBackgroundColor(int color)
     {
         this.backgroundColor = color;
@@ -59,6 +90,11 @@ public class TextRenderSettings
     public void setTextColor(int color)
     {
         this.textColor = color;
+    }
+
+    public void setHoveredTextColor(int hoveredTextColor)
+    {
+        this.hoveredTextColor = hoveredTextColor;
     }
 
     public void setLineHeight(int lineHeight)
@@ -88,12 +124,40 @@ public class TextRenderSettings
     {
         JsonObject obj = new JsonObject();
 
-        obj.addProperty("bg_enabled", this.backgroundEnabled);
-        obj.addProperty("bg_color", this.backgroundColor);
-        obj.addProperty("text_shadow", this.textShadowEnabled);
-        obj.addProperty("text_color", this.textColor);
-        obj.addProperty("line_height", this.lineHeight);
+        if (this.backgroundEnabled)
+        {
+            obj.addProperty("bg_enabled", this.backgroundEnabled);
+        }
 
+        if (this.textShadowEnabled == false)
+        {
+            obj.addProperty("text_shadow", this.textShadowEnabled);
+        }
+
+        if (this.backgroundColor != DEFAULT_BG_COLOR)
+        {
+            obj.addProperty("bg_color", this.backgroundColor);
+        }
+
+        if (this.textColor != DEFAULT_TEXT_COLOR)
+        {
+            obj.addProperty("text_color", this.textColor);
+        }
+
+        if (this.hoveredTextColor != DEFAULT_HOVERED_TEXT_COLOR)
+        {
+            obj.addProperty("hover_text_color", this.hoveredTextColor);
+        }
+
+        if (this.lineHeight != TextRenderer.INSTANCE.getLineHeight())
+        {
+            obj.addProperty("line_height", this.lineHeight);
+        }
+
+        if (this.useHoverTextColor)
+        {
+            obj.addProperty("use_hover_text_color", this.useHoverTextColor);
+        }
 
         return obj;
     }
@@ -101,9 +165,11 @@ public class TextRenderSettings
     public void fromJson(JsonObject obj)
     {
         this.backgroundEnabled = JsonUtils.getBooleanOrDefault(obj, "bg_enabled", false);
-        this.backgroundColor = JsonUtils.getIntegerOrDefault(obj, "bg_color", 0xA0505050);
+        this.backgroundColor = JsonUtils.getIntegerOrDefault(obj, "bg_color", DEFAULT_BG_COLOR);
         this.textShadowEnabled = JsonUtils.getBooleanOrDefault(obj, "text_shadow", true);
-        this.textColor = JsonUtils.getIntegerOrDefault(obj, "text_color", 0xFFFFFFFF);
+        this.useHoverTextColor = JsonUtils.getBooleanOrDefault(obj, "use_hover_text_color", false);
+        this.textColor = JsonUtils.getIntegerOrDefault(obj, "text_color", DEFAULT_TEXT_COLOR);
+        this.hoveredTextColor = JsonUtils.getIntegerOrDefault(obj, "hover_text_color", DEFAULT_HOVERED_TEXT_COLOR);
         this.lineHeight = JsonUtils.getIntegerOrDefault(obj, "line_height", TextRenderer.INSTANCE.getLineHeight());
     }
 }

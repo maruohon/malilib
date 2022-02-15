@@ -36,6 +36,7 @@ import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.render.text.MultiLineTextRenderSettings;
 import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.data.ConfigOnTab;
+import fi.dy.masa.malilib.util.data.EdgeInt;
 
 public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
 {
@@ -201,11 +202,11 @@ public class ConfigStatusIndicatorContainerWidget extends InfoRendererWidget
             height += widget.getHeight();
         }
 
-        int width = maxLabelWidth + maxValueWidth + 10 + this.padding.getHorizontalTotal();
-        height += this.padding.getVerticalTotal();
+        EdgeInt padding = this.padding;
+        int width = maxLabelWidth + maxValueWidth + 10 + padding.getHorizontalTotal();
+        height += padding.getVerticalTotal();
 
-        this.setWidth(width);
-        this.setHeight(height);
+        this.setSizeNoUpdate(width, height);
     }
 
     @Override

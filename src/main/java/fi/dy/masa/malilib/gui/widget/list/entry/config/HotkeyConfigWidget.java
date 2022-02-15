@@ -31,7 +31,7 @@ public class HotkeyConfigWidget extends BaseConfigWidget<HotkeyConfig>
 
         this.resetButton.setActionListener(() -> {
             this.config.resetToDefault();
-            this.keybindButton.updateDisplayString();
+            this.keybindButton.updateButtonState();
             this.resetButton.setEnabled(this.config.isModified());
         });
     }
@@ -40,6 +40,16 @@ public class HotkeyConfigWidget extends BaseConfigWidget<HotkeyConfig>
     public void reAddSubWidgets()
     {
         super.reAddSubWidgets();
+
+        this.addWidget(this.keybindButton);
+        this.addWidget(this.settingsWidget);
+        this.addWidget(this.resetButton);
+    }
+
+    @Override
+    public void updateSubWidgetsToGeometryChanges()
+    {
+        super.updateSubWidgetsToGeometryChanges();
 
         int x = this.getElementsStartPosition();
         int y = this.getY() + 1;
@@ -56,10 +66,6 @@ public class HotkeyConfigWidget extends BaseConfigWidget<HotkeyConfig>
 
         x += this.settingsWidget.getWidth() + 4;
         this.updateResetButton(x, y);
-
-        this.addWidget(this.keybindButton);
-        this.addWidget(this.settingsWidget);
-        this.addWidget(this.resetButton);
     }
 
     @Override

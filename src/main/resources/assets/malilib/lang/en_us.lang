@@ -114,6 +114,7 @@ malilib.hover.button.list.remove=Remove
 malilib.hover.button.parameterize_action=Create a new copy of the action with the string argument already bound to a given value. This allows directly executing that action without having to input the string argument via the text input prompt screen.
 malilib.hover.button.parameterize_action_for_macro=Create a new copy of the action with the string argument already bound to a given value. This allows directly executing that action without having to input the string argument via the text input prompt screen.\n<c=da0>Note: This button only adds the parameterized action to this macro, it does not get added to the registry and won't be available in the global list.
 malilib.hover.button.re_parameterize_action_for_macro=Create a new parameterized copy of the action with the string argument bound to a new given value. This old version of the action will be removed and replaced with the newly created action with the given name and argument.
+malilib.hover.button.value_list_edit.entry=§7%s
 
 malilib.hover.config.numeric.range_and_default=Range: §b%s§r ... §b%s§r\nDefault: §b%s
 malilib.hover.config.option_list.default_value=Default: <c=66f>%s
@@ -124,6 +125,7 @@ malilib.hover.config.option_list.total_values.allowed=Allowed values: §b%s§r /
 malilib.hover.config.option_list.total_values.disallowed=Disallowed values: §b%s§r / §b%s
 malilib.hover.config.string.default_value=Default: §a%s
 malilib.hover.custom_hotkey_export_import_screen.append_overwrite=- Append = add the actions from the import to the end of the current actions in the hotkey\n- Overwrite = replace all the actions in the hotkey with the imported actions
+malilib.hover.generic.hold_shift_for_info=§oHold Shift for more information§r
 malilib.hover.macro_action_export_import_screen.append_overwrite=- Append = add the actions from the imported macro to the end of the current actions in the macro\n- Overwrite = replace all the actions in the macro with the imported actions
 
 malilib.label.button.action_list_screen.create_macro=Create Macro
@@ -138,6 +140,12 @@ malilib.label.button.export_import_screen.write_to_file=Write to File
 
 malilib.label.button.export_slash_import=Export/Import
 malilib.label.button.macro_edit_screen.add_actions=Add Actions
+malilib.label.button.onoff.text_on_off.off=§cOFF
+malilib.label.button.onoff.text_on_off.on=§aON
+malilib.label.button.onoff.text_true_false.off=§cfalse
+malilib.label.button.onoff.text_true_false.on=§atrue
+malilib.label.button.onoff.slider_on_off.off=OFF
+malilib.label.button.onoff.slider_on_off.on=ON
 
 malilib.label.button.cancel=Cancel
 malilib.label.button.edit=Edit
@@ -150,6 +158,9 @@ malilib.label.config.config_display_name=<c=f0f0f0>%s
 malilib.label.config.config_internal_name=<c=808080>%s
 malilib.label.config.mod_category=<c=808080>%s > %s
 malilib.label.config.mod_category_internal_name=<c=808080>%s > %s > %s
+malilib.label.config.slider_value.double=%s
+malilib.label.config.slider_value.float=%s
+malilib.label.config.slider_value.integer=%s
 malilib.label.custom_hotkey_edit.actions=Actions bound to the hotkey:
 malilib.label.custom_hotkey.multiple_actions=§8Contains §b%s§8 actions
 malilib.label.custom_hotkey.widget.name=§e%s
@@ -297,7 +308,6 @@ malilib.gui.button.hover.edge_int_values=Top: §b%s§r\nLeft: §b%s§r\nRight: �
 malilib.gui.button.hover.entries_more=... and §b%s§r more
 malilib.gui.button.hover.entries_total=Total entries: §b%s§r
 malilib.gui.button.hover.full_label=§f%s
-malilib.gui.button.hover.hold_shift_for_info=§oHold Shift for more information§r
 malilib.gui.button.hover.hotkey_search_button=Search hotkeys for the given keys
 malilib.gui.button.hover.info_renderers_configuration=Edit/manage Info Renderer Widgets
 malilib.gui.button.hover.keybind.middle_click_to_clear=(Middle click to clear)

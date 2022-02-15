@@ -13,6 +13,7 @@ import fi.dy.masa.malilib.gui.widget.list.entry.BaseInfoRendererWidgetEntryWidge
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.render.text.OrderedStringListFactory;
 import fi.dy.masa.malilib.render.text.StringListRenderer;
+import fi.dy.masa.malilib.util.data.EdgeInt;
 
 public class StringListRendererWidget extends InfoRendererWidget
 {
@@ -76,7 +77,6 @@ public class StringListRendererWidget extends InfoRendererWidget
     {
         super.setLocation(location);
         this.stringListRenderer.setHorizontalAlignment(this.getScreenLocation().horizontalLocation);
-        this.stringListRenderer.setVerticalAlignment(this.getScreenLocation().verticalLocation);
     }
 
     protected void onPaddingChanged()
@@ -145,8 +145,11 @@ public class StringListRendererWidget extends InfoRendererWidget
         int lineHeight = this.getLineHeight();
         int height = this.stringListRenderer.getTotalRenderHeight() + (this.renderName ? lineHeight : 0);
 
-        this.setWidth(width);
-        this.setHeight(height);
+        EdgeInt padding = this.padding;
+        width += padding.getHorizontalTotal();
+        height += padding.getVerticalTotal();
+
+        this.setSizeNoUpdate(width, height);
     }
 
     @Override

@@ -4,30 +4,30 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
+import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.render.TextRenderUtils;
-import fi.dy.masa.malilib.render.text.MultiLineTextRenderSettings;
 import fi.dy.masa.malilib.render.text.OrderedStringListFactory;
+import fi.dy.masa.malilib.render.text.StyledText;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public abstract class InteractableWidget extends BackgroundWidget
 {
     protected final OrderedStringListFactory hoverInfoFactory = new OrderedStringListFactory();
-    private final MultiLineTextRenderSettings textSettings = new MultiLineTextRenderSettings();
+    @Nullable protected ImmutableList<StyledTextLine> hoverHelp;
     @Nullable protected EventListener clickListener;
     @Nullable protected HoverChecker renderHoverChecker;
     @Nullable protected Consumer<Runnable> taskQueue;
     protected boolean canInteract = true;
+    protected boolean hoverInfoRequiresShift;
     protected boolean shouldReceiveOutsideClicks;
     protected boolean shouldReceiveOutsideScrolls;
-    protected int defaultHoveredTextColor = 0xFFFFFFFF;
 
     public InteractableWidget(int width, int height)
     {
@@ -42,9 +42,14 @@ public abstract class InteractableWidget extends BackgroundWidget
     }
 
     @Override
-    public MultiLineTextRenderSettings getTextSettings()
+    public boolean canInteract()
     {
-        return this.textSettings;
+        return this.canInteract;
+    }
+
+    public List<BaseTextFieldWidget> getAllTextFields()
+    {
+        return Collections.emptyList();
     }
 
     public void setTaskQueue(@Nullable Consumer<Runnable> taskQueue)
@@ -55,24 +60,6 @@ public abstract class InteractableWidget extends BackgroundWidget
     public void setRenderHoverChecker(@Nullable HoverChecker checker)
     {
         this.renderHoverChecker = checker;
-    }
-
-    /**
-     * Schedules a task to run after any widget iterations are finished, to not cause CMEs
-     * if the task needs to modify the data list or the widget list in some way.
-     */
-    protected void scheduleTask(Runnable task)
-    {
-        if (this.taskQueue != null)
-        {
-            this.taskQueue.accept(task);
-        }
-    }
-
-    @Override
-    public boolean canInteract()
-    {
-        return this.canInteract;
     }
 
     public void setCanInteract(boolean canInteract)
@@ -95,35 +82,9 @@ public abstract class InteractableWidget extends BackgroundWidget
         this.shouldReceiveOutsideScrolls = shouldReceiveOutsideScrolls;
     }
 
-    public int getDefaultHoveredTextColor()
+    public void setHoverInfoRequiresShift(boolean requireShift)
     {
-        return this.defaultHoveredTextColor;
-    }
-
-    public void setDefaultHoveredTextColor(int defaultHoveredTextColor)
-    {
-        this.defaultHoveredTextColor = defaultHoveredTextColor;
-    }
-
-    public boolean isMouseOver(int mouseX, int mouseY)
-    {
-        int x = this.getX();
-        int y = this.getY();
-
-        return mouseX >= x && mouseX < x + this.getWidth() &&
-               mouseY >= y && mouseY < y + this.getHeight();
-    }
-
-    @Override
-    public boolean isHoveredForRender(ScreenContext ctx)
-    {
-        if (this.renderHoverChecker != null)
-        {
-            return this.renderHoverChecker.isHovered(ctx);
-        }
-
-        return ctx.hoveredWidgetId == this.getId();/* ||
-               (ctx.isActiveScreen && this.isMouseOver(ctx.mouseX, ctx.mouseY));*/
+        this.hoverInfoRequiresShift = requireShift;
     }
 
     public boolean getShouldReceiveOutsideClicks()
@@ -134,6 +95,32 @@ public abstract class InteractableWidget extends BackgroundWidget
     public boolean getShouldReceiveOutsideScrolls()
     {
         return this.shouldReceiveOutsideScrolls;
+    }
+
+    protected int getTextColorForRender(boolean hovered)
+    {
+        return this.getTextSettings().getEffectiveTextColor(hovered);
+    }
+
+    /**
+     * Schedules a task to run after any widget iterations are finished, to not cause CMEs
+     * if the task needs to modify the data list or the widget list in some way.
+     */
+    protected void scheduleTask(Runnable task)
+    {
+        if (this.taskQueue != null)
+        {
+            this.taskQueue.accept(task);
+        }
+    }
+
+    public boolean isMouseOver(int mouseX, int mouseY)
+    {
+        int x = this.getX();
+        int y = this.getY();
+
+        return mouseX >= x && mouseX < x + this.getWidth() &&
+               mouseY >= y && mouseY < y + this.getHeight();
     }
 
     public boolean tryMouseClick(int mouseX, int mouseY, int mouseButton)
@@ -204,14 +191,34 @@ public abstract class InteractableWidget extends BackgroundWidget
         return this.hoverInfoFactory.hasNoStrings() == false;
     }
 
+    public ImmutableList<StyledTextLine> getHoverHelp()
+    {
+        if (this.hoverHelp == null)
+        {
+            this.hoverHelp = StyledText.translate("malilib.hover.generic.hold_shift_for_info").lines;
+        }
+
+        return this.hoverHelp;
+    }
+
     public ImmutableList<StyledTextLine> getHoverText()
     {
+        if (this.hoverInfoRequiresShift && BaseScreen.isShiftDown() == false)
+        {
+            return this.getHoverHelp();
+        }
+
         return this.hoverInfoFactory.getStyledLines();
     }
 
     public OrderedStringListFactory getHoverInfoFactory()
     {
         return this.hoverInfoFactory;
+    }
+
+    public void updateHoverStrings()
+    {
+        this.hoverInfoFactory.updateList();
     }
 
     /**
@@ -237,14 +244,16 @@ public abstract class InteractableWidget extends BackgroundWidget
         this.hoverInfoFactory.setStringListProvider(key, supplier);
     }
 
-    public void updateHoverStrings()
+    @Override
+    public boolean isHoveredForRender(ScreenContext ctx)
     {
-        this.hoverInfoFactory.updateList();
-    }
+        if (this.renderHoverChecker != null)
+        {
+            return this.renderHoverChecker.isHovered(ctx);
+        }
 
-    public List<BaseTextFieldWidget> getAllTextFields()
-    {
-        return Collections.emptyList();
+        return ctx.hoveredWidgetId == this.getId();/* ||
+               (ctx.isActiveScreen && this.isMouseOver(ctx.mouseX, ctx.mouseY));*/
     }
 
     public boolean shouldRenderHoverInfo(ScreenContext ctx)
@@ -254,32 +263,16 @@ public abstract class InteractableWidget extends BackgroundWidget
                this.canHoverAt(ctx.mouseX, ctx.mouseY, 0);
     }
 
-    protected int getTextColorForRender(boolean hovered)
-    {
-        return hovered ? this.defaultHoveredTextColor : this.getTextSettings().getTextColor();
-    }
-
-    protected void renderText(int x, int y, float z, boolean hovered, ScreenContext ctx)
-    {
-        if (this.text != null)
-        {
-            int textX = this.getTextPositionX(x, this.text.renderWidth);
-            int textY = this.getTextPositionY(y);
-            int color = this.getTextColorForRender(hovered);
-            boolean shadow = this.getTextSettings().getTextShadowEnabled();
-
-            this.renderTextLine(textX, textY, z + 0.0125f, color, shadow, this.text, ctx);
-        }
-    }
-
     protected void renderIcon(int x, int y, float z, boolean enabled, boolean hovered, ScreenContext ctx)
     {
         Icon icon = this.getIcon();
 
         if (icon != null)
         {
-            x = this.getIconPositionX(x, icon.getWidth());
-            y = this.getIconPositionY(y, icon.getHeight());
+            int usableWidth = this.getWidth() - this.padding.getHorizontalTotal();
+            int usableHeight = this.getHeight() - this.padding.getVerticalTotal();
+            x = this.getIconPositionX(x, usableWidth, icon.getWidth());
+            y = this.getIconPositionY(y, usableHeight, icon.getHeight());
 
             icon.renderAt(x, y, z + 0.0125f, enabled, hovered);
         }
@@ -291,15 +284,16 @@ public abstract class InteractableWidget extends BackgroundWidget
         this.renderWidgetBackgroundAndBorder(x, y, z, ctx);
 
         boolean hovered = this.isHoveredForRender(ctx);
+        int color = this.getTextColorForRender(hovered);
         this.renderIcon(x, y, z, true, false, ctx);
-        this.renderText(x, y, z, hovered, ctx);
+        this.renderText(x, y, z, color, ctx);
     }
 
     public void postRenderHovered(ScreenContext ctx)
     {
         if (this.hasHoverText() && this.shouldRenderHoverInfo(ctx))
         {
-            TextRenderUtils.renderStyledHoverText(ctx.mouseX, ctx.mouseY, this.getZ() + 0.5f, this.getHoverText());
+            TextRenderUtils.renderStyledHoverText(ctx.mouseX, ctx.mouseY, this.getZ() + 50f, this.getHoverText());
         }
     }
 

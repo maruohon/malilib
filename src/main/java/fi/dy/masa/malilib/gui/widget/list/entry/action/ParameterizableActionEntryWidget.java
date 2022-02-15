@@ -33,7 +33,7 @@ public class ParameterizableActionEntryWidget extends ActionListBaseActionEntryW
         this.setText(StyledTextUtils.clampStyledTextToMaxWidth(nameText, width - 20, LeftRight.RIGHT, " ..."));
 
         this.parameterizedActionConsumer = Registry.ACTION_REGISTRY::addParameterizedAction;
-        this.parameterizeButton = GenericButton.simple(14, "malilib.label.button.action_list_screen_widget.parameterize",
+        this.parameterizeButton = GenericButton.create(14, "malilib.label.button.action_list_screen_widget.parameterize",
                                                        this::openParameterizationPrompt);
 
         this.getBackgroundRenderer().getHoverSettings().setEnabled(false);

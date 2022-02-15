@@ -83,10 +83,10 @@ public class ToastRendererWidgetEditScreen extends BaseScreen
         this.zLevelEditWidget = new DoubleEditWidget(72, 16, widget.getZ(), -1000, 1000, (v) -> this.widget.setZ((float) v));
         //this.textScaleEditWidget = new DoubleEditWidget(0, 0, 72, 16, widget.getScale(), 0.25, 20, widget::setScale);
 
-        this.marginEditButton = GenericButton.simple(16, "malilib.label.margin", this::openMarginEditScreen);
+        this.marginEditButton = GenericButton.create(16, "malilib.label.margin", this::openMarginEditScreen);
         this.marginEditButton.setHoverStringProvider("tooltip", this.widget.getMargin()::getHoverTooltip);
 
-        this.paddingEditButton = GenericButton.simple(16, "malilib.label.padding", this::openPaddingEditScreen);
+        this.paddingEditButton = GenericButton.create(16, "malilib.label.padding", this::openPaddingEditScreen);
         this.paddingEditButton.setHoverStringProvider("tooltip", this.widget.getPadding()::getHoverTooltip);
 
         this.renderAboveScreenButton = OnOffButton.simpleSlider(16, this.widget::getRenderAboveScreen, this::toggleRenderAboveScreen);

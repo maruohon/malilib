@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.gui.callback;
 
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.listener.EventListener;
+import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.data.RangedDoubleStorage;
 
 public class DoubleSliderCallback implements SteppedSliderCallback
@@ -10,11 +11,13 @@ public class DoubleSliderCallback implements SteppedSliderCallback
     @Nullable protected final EventListener changeListener;
     protected double stepSize = 0.0009765625; // 1 / 1024
     protected int maxSteps = Integer.MAX_VALUE;
+    protected StyledTextLine displayText;
 
     public DoubleSliderCallback(RangedDoubleStorage storage, @Nullable EventListener changeListener)
     {
         this.storage = storage;
         this.changeListener = changeListener;
+        this.updateDisplayText();
     }
 
     @Override
@@ -36,6 +39,7 @@ public class DoubleSliderCallback implements SteppedSliderCallback
         }
 
         this.storage.setDoubleValue(value);
+        this.updateDisplayText();
 
         if (this.changeListener != null)
         {
@@ -66,9 +70,15 @@ public class DoubleSliderCallback implements SteppedSliderCallback
         this.maxSteps = maxSteps;
     }
 
-    @Override
-    public String getFormattedDisplayValue()
+    protected void updateDisplayText()
     {
-        return String.format("%.4f", this.storage.getDoubleValue());
+        this.displayText = StyledTextLine.translate("malilib.label.config.slider_value.double",
+                                                    String.format("%.4f", this.storage.getDoubleValue()));
+    }
+
+    @Override
+    public StyledTextLine getDisplayText()
+    {
+        return this.displayText;
     }
 }

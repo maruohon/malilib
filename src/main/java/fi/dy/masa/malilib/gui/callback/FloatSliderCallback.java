@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.gui.callback;
 
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.listener.EventListener;
+import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.data.RangedFloatStorage;
 
 public class FloatSliderCallback implements SteppedSliderCallback
@@ -10,11 +11,13 @@ public class FloatSliderCallback implements SteppedSliderCallback
     @Nullable protected final EventListener changeListener;
     protected double stepSize = 0.0009765625F; // 1 / 1024
     protected int maxSteps = Integer.MAX_VALUE;
+    protected StyledTextLine displayText;
 
     public FloatSliderCallback(RangedFloatStorage storage, @Nullable EventListener changeListener)
     {
         this.storage = storage;
         this.changeListener = changeListener;
+        this.updateDisplayText();
     }
 
     @Override
@@ -40,6 +43,7 @@ public class FloatSliderCallback implements SteppedSliderCallback
         }
 
         this.storage.setFloatValue((float) value);
+        this.updateDisplayText();
 
         if (this.changeListener != null)
         {
@@ -70,9 +74,15 @@ public class FloatSliderCallback implements SteppedSliderCallback
         this.maxSteps = maxSteps;
     }
 
-    @Override
-    public String getFormattedDisplayValue()
+    protected void updateDisplayText()
     {
-        return String.format("%.4f", this.storage.getFloatValue());
+        this.displayText = StyledTextLine.translate("malilib.label.config.slider_value.float",
+                                                    String.format("%.4f", this.storage.getFloatValue()));
+    }
+
+    @Override
+    public StyledTextLine getDisplayText()
+    {
+        return this.displayText;
     }
 }

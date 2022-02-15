@@ -21,19 +21,19 @@ import fi.dy.masa.malilib.util.StringUtils;
 public class BaseValueListEditButton<TYPE> extends GenericButton
 {
     protected final ValueListConfig<TYPE> config;
-    @Nullable protected final DialogHandler dialogHandler;
-    @Nullable protected final EventListener saveListener;
     protected final String screenTitle;
     protected final Supplier<TYPE> newEntryFactory;
     protected final ValueListEditEntryWidgetFactory<TYPE> widgetFactory;
-    protected final List<String> hoverStrings = new ArrayList<>();
+    @Nullable protected final DialogHandler dialogHandler;
+    @Nullable protected final EventListener saveListener;
+    protected ImmutableList<String> valueStrings;
 
     public BaseValueListEditButton(int width, int height, ValueListConfig<TYPE> config,
                                    @Nullable EventListener saveListener, @Nullable DialogHandler dialogHandler,
                                    String screenTitle, Supplier<TYPE> newEntryFactory,
                                    ValueListEditEntryWidgetFactory<TYPE> widgetFactory)
     {
-        super(width, height, "");
+        super(width, height);
 
         this.config = config;
         this.dialogHandler = dialogHandler;
@@ -41,10 +41,11 @@ public class BaseValueListEditButton<TYPE> extends GenericButton
         this.screenTitle = screenTitle;
         this.newEntryFactory = newEntryFactory;
         this.widgetFactory = widgetFactory;
+        this.valueStrings = config.getValuesAsString();
 
-        this.setHoverStringProvider("preview", () -> this.hoverStrings);
+        this.setHoverStringProvider("preview", this::getHoverStrings);
         this.setActionListener(this::openEditScreen);
-        this.updateDisplayString();
+        this.setDisplayStringSupplier(this::getCurrentDisplayString);
     }
 
     public BaseValueListEditButton(int width, int height, ValueListConfig<TYPE> config,
@@ -78,27 +79,22 @@ public class BaseValueListEditButton<TYPE> extends GenericButton
         }
     }
 
-    @Override
-    protected String generateDisplayString()
+    protected String getCurrentDisplayString()
     {
-        ImmutableList<String> valueStrings = this.config.getValuesAsString();
-        this.updateHoverStrings(valueStrings);
-
-        return StringUtils.getDisplayStringForList(valueStrings, this.getWidth() - 10, "'", "[ ", " ]");
+        return StringUtils.getDisplayStringForList(this.valueStrings, this.getWidth() - 10, "'", "[ ", " ]");
     }
 
-    protected void updateHoverStrings(ImmutableList<String> valueStrings)
+    protected List<String> getHoverStrings()
     {
-        List<String> hoverStrings = this.hoverStrings;
-        int total = valueStrings.size();
+        List<String> hoverStrings = new ArrayList<>();
+        int total = this.valueStrings.size();
         int max = Math.min(10, total);
 
-        hoverStrings.clear();
         hoverStrings.add(StringUtils.translate("malilib.gui.button.hover.entries_total", total));
 
         for (int i = 0; i < max; ++i)
         {
-            hoverStrings.add("§7" + valueStrings.get(i));
+            hoverStrings.add(StringUtils.translate("malilib.hover.button.value_list_edit.entry", this.valueStrings.get(i)));
         }
 
         if (total > max)
@@ -106,6 +102,6 @@ public class BaseValueListEditButton<TYPE> extends GenericButton
             hoverStrings.add(StringUtils.translate("malilib.gui.button.hover.entries_more", total - max));
         }
 
-        this.updateHoverStrings();
+        return hoverStrings;
     }
 }

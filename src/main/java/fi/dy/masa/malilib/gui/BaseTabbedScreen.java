@@ -8,7 +8,6 @@ import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.tab.ScreenTab;
 import fi.dy.masa.malilib.gui.tab.TabbedScreenState;
 import fi.dy.masa.malilib.gui.widget.CyclableContainerWidget;
-import fi.dy.masa.malilib.gui.widget.button.BaseButton;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
@@ -18,7 +17,7 @@ public abstract class BaseTabbedScreen extends BaseScreen
     protected static final Object2IntOpenHashMap<ScreenTab> SCROLLBAR_POSITIONS = new Object2IntOpenHashMap<>();
 
     protected final List<? extends ScreenTab> screenTabs;
-    protected final List<BaseButton> tabButtons = new ArrayList<>();
+    protected final List<GenericButton> tabButtons = new ArrayList<>();
     protected final String screenId;
     @Nullable protected final ScreenTab defaultTab;
     @Nullable protected CyclableContainerWidget tabButtonContainerWidget;
@@ -202,7 +201,7 @@ public abstract class BaseTabbedScreen extends BaseScreen
         this.addWidget(this.tabButtonContainerWidget);
     }
 
-    protected List<BaseButton> createTabButtons()
+    protected List<GenericButton> createTabButtons()
     {
         this.tabButtons.clear();
 
@@ -217,8 +216,8 @@ public abstract class BaseTabbedScreen extends BaseScreen
     protected GenericButton createTabButton(final ScreenTab tab)
     {
         // The CyclableContainerWidget will re-position all the fitting buttons
-        GenericButton button = GenericButton.simple(tab.getDisplayName(), tab.getButtonActionListener(this));
-        button.setEnabled(this.getCurrentTab() != tab);
+        GenericButton button = GenericButton.create(tab.getDisplayName());
+        button.setActionListener(tab.getButtonActionListener(this));
         button.setEnabledStatusSupplier(() -> this.getCurrentTab() != tab);
 
         String hoverText = tab.getHoverText();

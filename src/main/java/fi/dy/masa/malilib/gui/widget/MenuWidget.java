@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.listener.EventListener;
+import fi.dy.masa.malilib.util.data.EdgeInt;
 
 public class MenuWidget extends ContainerWidget
 {
@@ -92,8 +93,12 @@ public class MenuWidget extends ContainerWidget
             height += widget.getHeight();
         }
 
-        this.setWidth(width + 2);
-        this.setHeight(height + 2);
+        EdgeInt padding = this.padding;
+        int borderWidth = this.getBorderRenderer().getNormalSettings().getActiveBorderWidth() * 2;
+        width += padding.getHorizontalTotal() + borderWidth;
+        height += padding.getVerticalTotal() + borderWidth;
+
+        this.setSizeNoUpdate(width, height);
     }
 
     @Override

@@ -83,11 +83,13 @@ public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataLis
         this.lineHeightEditWidget = new IntegerEditWidget(72, 16, widget.getLineHeight(), 6, 40, widget::setLineHeight);
         this.textScaleEditWidget = new DoubleEditWidget(72, 16, widget.getScale(), 0.25, 20, widget::setScale);
 
-        this.addConfigsButton = GenericButton.simple(16, "malilib.gui.button.add_configs", this::openAddConfigsScreen, "malilib.gui.button.hover.add_configs_to_status_indicator_group");
-        this.marginEditButton = GenericButton.simple(16, "malilib.label.margin", this::openMarginEditScreen);
+        this.addConfigsButton = GenericButton.create(16, "malilib.gui.button.add_configs", this::openAddConfigsScreen);
+        this.addConfigsButton.translateAndAddHoverString("malilib.gui.button.hover.add_configs_to_status_indicator_group");
+
+        this.marginEditButton = GenericButton.create(16, "malilib.label.margin", this::openMarginEditScreen);
         this.marginEditButton.setHoverStringProvider("tooltip", this.widget.getMargin()::getHoverTooltip);
 
-        this.paddingEditButton = GenericButton.simple(16, "malilib.label.padding", this::openPaddingEditScreen);
+        this.paddingEditButton = GenericButton.create(16, "malilib.label.padding", this::openPaddingEditScreen);
         this.paddingEditButton.setHoverStringProvider("tooltip", this.widget.getPadding()::getHoverTooltip);
 
         final MultiLineTextRenderSettings textSettings = widget.getTextSettings();

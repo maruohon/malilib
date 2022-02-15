@@ -48,7 +48,7 @@ public class InfoRendererWidgetListScreen<WIDGET extends InfoRendererWidget> ext
         this.entryWidgetFactory = entryWidgetFactory;
 
         this.locationDropdownWidget = new DropDownListWidget<>(-1, 16, 160, 10, ScreenLocation.VALUES, OptionListConfigValue::getDisplayName);
-        this.createWidgetButton = GenericButton.simple(16, "malilib.gui.button.label.add_status_indicator_widget", this::createInfoRendererWidget);
+        this.createWidgetButton = GenericButton.create(16, "malilib.gui.button.label.add_status_indicator_widget", this::createInfoRendererWidget);
     }
 
     @Override

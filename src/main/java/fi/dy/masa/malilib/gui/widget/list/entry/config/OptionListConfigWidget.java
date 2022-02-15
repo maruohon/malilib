@@ -7,7 +7,6 @@ import fi.dy.masa.malilib.config.option.OptionListConfig;
 import fi.dy.masa.malilib.config.value.OptionListConfigValue;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.widget.DropDownListWidget;
-import fi.dy.masa.malilib.gui.widget.InteractableWidget;
 import fi.dy.masa.malilib.gui.widget.button.OptionListConfigButton;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 
@@ -50,30 +49,16 @@ public class OptionListConfigWidget extends BaseConfigWidget<OptionListConfig<Op
     {
         super.reAddSubWidgets();
 
-        int x = this.getElementsStartPosition();
-        int y = this.getY() + 1;
-        int elementWidth = this.getElementWidth();
         boolean useDropDown = MaLiLibConfigs.Generic.OPTION_LIST_CONFIG_DROPDOWN.getBooleanValue();
+        int x = this.getElementsStartPosition();
+        int elementWidth = this.getElementWidth();
 
-        this.updateResetButton(x + elementWidth + 4, y);
+        this.updateResetButton(x + elementWidth + 4, this.getY());
 
-        InteractableWidget widget = useDropDown ? this.dropDownWidget : this.optionListButton;
+        this.dropDownWidget.setWidth(elementWidth);
+        this.optionListButton.setWidth(elementWidth);
 
-        if (useDropDown)
-        {
-            y += 2;
-            this.dropDownWidget.setEnabled(this.config.isLocked() == false);
-        }
-        else
-        {
-            this.optionListButton.setEnabled(this.config.isLocked() == false);
-        }
-
-        widget.setPosition(x, y);
-        widget.setWidth(elementWidth);
-        widget.updateHoverStrings();
-
-        this.addWidget(widget);
+        this.addWidget(useDropDown ? this.dropDownWidget : this.optionListButton);
         this.addWidget(this.resetButton);
     }
 
@@ -84,8 +69,15 @@ public class OptionListConfigWidget extends BaseConfigWidget<OptionListConfig<Op
 
         int x = this.getElementsStartPosition();
         int y = this.getY();
+
+        this.dropDownWidget.setEnabled(this.config.isLocked() == false);
+        this.optionListButton.setEnabled(this.config.isLocked() == false);
+
+        this.dropDownWidget.updateHoverStrings();
+        this.optionListButton.updateHoverStrings();
+
         this.optionListButton.setPosition(x, y);
-        this.dropDownWidget.setPosition(x, y);
+        this.dropDownWidget.setPosition(x, y + 2);
     }
 
     @Override
@@ -104,7 +96,7 @@ public class OptionListConfigWidget extends BaseConfigWidget<OptionListConfig<Op
         }
         else
         {
-            this.optionListButton.updateDisplayString();
+            this.optionListButton.updateButtonState();
         }
 
         this.updateResetButtonState();

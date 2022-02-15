@@ -9,7 +9,7 @@ import fi.dy.masa.malilib.gui.util.ScreenContext;
 
 public abstract class ContainerWidget extends InteractableWidget
 {
-    protected final List<InteractableWidget> subWidgets = new ArrayList<>(1);
+    protected final List<InteractableWidget> subWidgets = new ArrayList<>(4);
     @Nullable protected MenuWidget activeContextMenuWidget;
 
     public ContainerWidget(int width, int height)
@@ -22,16 +22,55 @@ public abstract class ContainerWidget extends InteractableWidget
         super(x, y, width, height);
     }
 
+    public void clearWidgets()
+    {
+        this.subWidgets.clear();
+    }
+
+    public <T extends InteractableWidget> T addWidget(T widget)
+    {
+        this.subWidgets.add(widget);
+        this.onSubWidgetAdded(widget);
+
+        return widget;
+    }
+
+    @Nullable
+    public <T extends InteractableWidget> T addWidgetIfNotNull(@Nullable T widget)
+    {
+        return widget != null ? this.addWidget(widget) : null;
+    }
+
+    public void removeWidget(InteractableWidget widget)
+    {
+        this.subWidgets.remove(widget);
+    }
+
     /**
      * This method should be overridden to add any widgets from
      * (final) fields to the ContainerWidget lists.
      * This should be called whenever the collection of (active)
      * sub widgets should change for whatever reason (such as a widget
      * becoming active or inactive and maybe covering other widgets).
+     * Overriding classes should generally call super to clear the old widgets
+     * and to allow the parent classes to add their sub widgets.
      */
     public void reAddSubWidgets()
     {
         this.clearWidgets();
+    }
+
+    public void onSubWidgetAdded(InteractableWidget widget)
+    {
+        widget.setTaskQueue(this.taskQueue);
+        widget.onWidgetAdded(this.getZ());
+    }
+
+    public void openContextMenu(MenuWidget widget)
+    {
+        this.closeCurrentContextMenu();
+        this.activeContextMenuWidget = widget;
+        this.addWidget(widget);
     }
 
     public void closeCurrentContextMenu()
@@ -40,13 +79,6 @@ public abstract class ContainerWidget extends InteractableWidget
         {
             this.removeWidget(this.activeContextMenuWidget);
         }
-    }
-
-    public void openContextMenu(MenuWidget widget)
-    {
-        this.closeCurrentContextMenu();
-        this.activeContextMenuWidget = widget;
-        this.addWidget(widget);
     }
 
     @Override
@@ -83,12 +115,23 @@ public abstract class ContainerWidget extends InteractableWidget
         }
     }
 
+    @Override
+    public void setZ(float z)
+    {
+        for (InteractableWidget widget : this.subWidgets)
+        {
+            widget.setZLevelBasedOnParent(z);
+        }
+
+        super.setZ(z);
+    }
+
     /**
      * Moves all the sub widgets by the specified amount.
      * Used for example when the window is resized or maybe some
      * widgets are dragged around.
-     * @param diffX
-     * @param diffY
+     * @param diffX the relative change to the x-coordinate
+     * @param diffY the relative change to the y-coordinate
      */
     public void moveSubWidgets(int diffX, int diffY)
     {
@@ -99,62 +142,13 @@ public abstract class ContainerWidget extends InteractableWidget
     }
 
     /**
-     *
      * This method should be overridden to update any sub widget
      * positions to the current position of this container widget,
      * or to any other changes such as width or height changes.
      */
     public void updateSubWidgetsToGeometryChanges()
     {
-        for (InteractableWidget widget : this.subWidgets)
-        {
-            widget.onContainerGeometryChanged();
-        }
-    }
-
-    public <T extends InteractableWidget> T addWidgetIfNotNull(@Nullable T widget)
-    {
-        if (widget != null)
-        {
-            this.addWidget(widget);
-        }
-
-        return widget;
-    }
-
-    public <T extends InteractableWidget> T addWidget(T widget)
-    {
-        this.subWidgets.add(widget);
-        this.onSubWidgetAdded(widget);
-
-        return widget;
-    }
-
-    public void removeWidget(InteractableWidget widget)
-    {
-        this.subWidgets.remove(widget);
-    }
-
-    public void clearWidgets()
-    {
-        this.subWidgets.clear();
-    }
-
-    public void onSubWidgetAdded(InteractableWidget widget)
-    {
-        widget.setTaskQueue(this.taskQueue);
-        widget.onWidgetAdded(this.getZ());
-    }
-
-    @Override
-    public void setTaskQueue(@Nullable Consumer<Runnable> taskQueue)
-    {
-        super.setTaskQueue(taskQueue);
-
-        for (InteractableWidget widget : this.subWidgets)
-        {
-            widget.setTaskQueue(taskQueue);
-        }
+        this.onContainerGeometryChanged();
     }
 
     @Override
@@ -166,14 +160,23 @@ public abstract class ContainerWidget extends InteractableWidget
     }
 
     @Override
-    public void setZ(float z)
+    public void onContainerGeometryChanged()
     {
         for (InteractableWidget widget : this.subWidgets)
         {
-            widget.setZLevelBasedOnParent(z);
+            widget.onContainerGeometryChanged();
         }
+    }
 
-        super.setZ(z);
+    @Override
+    public void setTaskQueue(@Nullable Consumer<Runnable> taskQueue)
+    {
+        super.setTaskQueue(taskQueue);
+
+        for (InteractableWidget widget : this.subWidgets)
+        {
+            widget.setTaskQueue(taskQueue);
+        }
     }
 
     @Override

@@ -30,7 +30,7 @@ public class BaseValueListEditEntryWidget<TYPE> extends BaseOrderableListEditEnt
 
         this.labelWidget = new LabelWidget(0xC0C0C0C0, String.format("%3d:", originalListIndex + 1));
 
-        this.resetButton = new GenericButton(16, "malilib.gui.button.reset.caps");
+        this.resetButton = GenericButton.create(16, "malilib.gui.button.reset.caps");
         this.resetButton.getBorderRenderer().getNormalSettings().setBorderWidthAndColor(1, 0xFF404040);
 
         this.resetButton.setRenderButtonBackgroundTexture(false);

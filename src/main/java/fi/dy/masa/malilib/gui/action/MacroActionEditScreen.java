@@ -48,11 +48,11 @@ public class MacroActionEditScreen extends BaseActionListScreen
         String label = StringUtils.translate("malilib.gui.label.macro_edit_screen.macro_actions", macro.getName());
         this.macroActionsLabelWidget = new LabelWidget(label);
 
-        this.addActionsButton = GenericButton.simple(15, "malilib.label.button.macro_edit_screen.add_actions", this::addSelectedActions);
+        this.addActionsButton = GenericButton.create(15, "malilib.label.button.macro_edit_screen.add_actions", this::addSelectedActions);
         this.addActionsButton.translateAndAddHoverString("malilib.hover_info.macro_edit_screen.add_actions");
         this.addActionsButton.setEnabledStatusSupplier(this::canAddActions);
 
-        this.exportImportButton = GenericButton.simple(15, "malilib.label.button.export_slash_import", this::openExportImportScreen);
+        this.exportImportButton = GenericButton.create(15, "malilib.label.button.export_slash_import", this::openExportImportScreen);
 
         this.leftSideListWidget.setEntryWidgetFactory(this::createMacroSourceActionsWidget);
         this.rightSideListWidget = this.createRightSideActionListWidget();

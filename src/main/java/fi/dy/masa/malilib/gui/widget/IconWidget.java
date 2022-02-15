@@ -3,13 +3,14 @@ package fi.dy.masa.malilib.gui.widget;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
+import fi.dy.masa.malilib.util.data.EdgeInt;
 
 public class IconWidget extends InteractableWidget
 {
     protected boolean doHighlight;
     protected boolean enabled;
 
-    public IconWidget(@Nullable Icon icon)
+    public IconWidget(Icon icon)
     {
         super(icon.getWidth(), icon.getHeight());
 
@@ -20,9 +21,7 @@ public class IconWidget extends InteractableWidget
     public void setIcon(@Nullable Icon icon)
     {
         super.setIcon(icon);
-
-        this.updateWidth();
-        this.updateHeight();
+        this.updateSize();
     }
 
     public IconWidget setUseEnabledVariant(boolean enabled)
@@ -41,61 +40,57 @@ public class IconWidget extends InteractableWidget
     public void updateWidth()
     {
         Icon icon = this.getIcon();
+        int width = 0;
 
         if (icon != null)
         {
-            int width = icon.getWidth();
+            width = icon.getWidth();
 
             if (this.getBackgroundRenderer().getNormalSettings().isEnabled())
             {
                 int bw = this.getBorderRenderer().getNormalSettings().getActiveBorderWidth();
-                width += this.padding.getLeft() + this.padding.getRight() + bw * 2;
+                width += this.padding.getHorizontalTotal() + bw * 2;
             }
+        }
 
-            this.setWidth(width);
-        }
-        else
-        {
-            this.setWidth(0);
-        }
+        this.setWidthNoUpdate(width);
     }
 
     @Override
     public void updateHeight()
     {
         Icon icon = this.getIcon();
+        int height = 0;
 
         if (icon != null)
         {
-            int height = icon.getHeight();
+            height = icon.getHeight();
 
             if (this.getBackgroundRenderer().getNormalSettings().isEnabled())
             {
                 int bw = this.getBorderRenderer().getNormalSettings().getActiveBorderWidth();
-                height += this.padding.getTop() + this.padding.getBottom() + bw * 2;
+                height += this.padding.getVerticalTotal() + bw * 2;
             }
+        }
 
-            this.setHeight(height);
-        }
-        else
-        {
-            this.setHeight(0);
-        }
+        this.setHeightNoUpdate(height);
     }
 
     @Override
     public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
         boolean hovered = this.doHighlight && this.isHoveredForRender(ctx);
+        int color = this.getTextColorForRender(hovered);
 
         this.renderWidgetBackgroundAndBorder(x, y, z, ctx);
-        this.renderText(x, y, z, hovered, ctx);
+        this.renderText(x, y, z, color, ctx);
 
         if (this.getBackgroundRenderer().getNormalSettings().isEnabled())
         {
             int bw = this.getBorderRenderer().getNormalSettings().getActiveBorderWidth();
-            x += this.padding.getLeft() + bw;
-            y += this.padding.getTop() + bw;
+            EdgeInt padding = this.padding;
+            x += padding.getLeft() + bw;
+            y += padding.getTop() + bw;
         }
 
         this.renderIcon(x, y, z, this.enabled, hovered, ctx);

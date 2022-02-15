@@ -97,7 +97,7 @@ public class MessageRendererWidget extends InfoRendererWidget
     protected int getMaxMessageWidth()
     {
         int baseWidth = this.automaticWidth ? this.maxWidth : this.getWidth();
-        return baseWidth - this.getPadding().getHorizontalTotal();
+        return baseWidth - this.padding.getHorizontalTotal();
     }
 
     public int getMessageGap()
@@ -144,7 +144,7 @@ public class MessageRendererWidget extends InfoRendererWidget
                 width = Math.max(width, msg.getWidth());
             }
 
-            width += this.getPadding().getHorizontalTotal();
+            width += this.padding.getHorizontalTotal();
 
             // Don't shrink while there are active messages,
             // to prevent an annoying horizontal move of the messages
@@ -158,7 +158,7 @@ public class MessageRendererWidget extends InfoRendererWidget
     @Override
     public void updateHeight()
     {
-        this.setHeight(this.getMessagesHeight() + this.getPadding().getVerticalTotal());
+        this.setHeight(this.getMessagesHeight() + this.padding.getVerticalTotal());
     }
 
     protected int getMessagesHeight()
@@ -218,8 +218,8 @@ public class MessageRendererWidget extends InfoRendererWidget
     {
         if (this.messages.isEmpty() == false)
         {
-            x += this.getPadding().getLeft();
-            y += this.getPadding().getTop();
+            x += this.padding.getLeft();
+            y += this.padding.getTop();
 
             long currentTime = System.nanoTime();
             int countBefore = this.messages.size();

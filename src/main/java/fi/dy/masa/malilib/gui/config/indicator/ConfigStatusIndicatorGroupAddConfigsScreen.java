@@ -46,7 +46,7 @@ public class ConfigStatusIndicatorGroupAddConfigsScreen extends BaseListScreen<D
         this.categoriesDropDownWidget = new DropDownListWidget<>(-1, 14, 160, 10, this.currentCategories, ConfigTab::getDisplayName);
         this.categoriesDropDownWidget.setSelectionListener(this::onCategorySelected);
 
-        this.addEntriesButton = GenericButton.simple("malilib.gui.button.add_selected_configs", this::addSelectedConfigs);
+        this.addEntriesButton = GenericButton.create("malilib.gui.button.add_selected_configs", this::addSelectedConfigs);
     }
 
     @Override

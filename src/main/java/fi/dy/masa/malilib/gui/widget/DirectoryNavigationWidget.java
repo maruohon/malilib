@@ -66,17 +66,17 @@ public class DirectoryNavigationWidget extends SearchBarWidget
         this.rootDirDisplayNameSupplier = rootDirDisplayNameSupplier;
         this.setToggleButtonAlignment(HorizontalAlignment.RIGHT);
 
-        this.buttonRoot = GenericButton.createIconOnly(iconProvider.getIcon(FileBrowserIconType.ROOT));
+        this.buttonRoot = GenericButton.create(iconProvider.getIcon(FileBrowserIconType.ROOT));
         this.buttonRoot.translateAndAddHoverString("malilib.gui.button.hover.directory_widget.root");
         this.buttonRoot.setPlayClickSound(false);
         this.buttonRoot.setActionListener(() -> { if (this.isSearchOpen == false) this.navigator.switchToRootDirectory(); });
 
-        this.buttonUp = GenericButton.createIconOnly(iconProvider.getIcon(FileBrowserIconType.UP));
+        this.buttonUp = GenericButton.create(iconProvider.getIcon(FileBrowserIconType.UP));
         this.buttonUp.translateAndAddHoverString("malilib.gui.button.hover.directory_widget.up");
         this.buttonUp.setPlayClickSound(false);
         this.buttonUp.setActionListener(() -> { if (this.isSearchOpen == false) this.navigator.switchToParentDirectory(); });
 
-        this.buttonCreateDir = GenericButton.createIconOnly(iconProvider.getIcon(FileBrowserIconType.CREATE_DIR));
+        this.buttonCreateDir = GenericButton.create(iconProvider.getIcon(FileBrowserIconType.CREATE_DIR));
         this.buttonCreateDir.translateAndAddHoverString("malilib.gui.button.hover.directory_widget.create_directory");
         this.buttonCreateDir.setPlayClickSound(false);
         this.buttonCreateDir.setActionListener(() -> {
@@ -302,7 +302,7 @@ public class DirectoryNavigationWidget extends SearchBarWidget
 
     protected void addPathPartElements(int x, int y, int buttonHeight, File dir, String displayName, int nameWidth, int totalWidth)
     {
-        GenericButton button = this.createPathPartButton(dir, displayName, nameWidth + 5, buttonHeight);
+        GenericButton button = this.createPathPartButton(dir, displayName, nameWidth + 6, buttonHeight);
         button.setPosition(x, y);
 
         this.addWidget(button);
@@ -330,15 +330,15 @@ public class DirectoryNavigationWidget extends SearchBarWidget
 
     protected GenericButton createPathPartButton(final File dir, String displayName, int width, int height)
     {
-        GenericButton button = new GenericButton(width, height, displayName);
+        GenericButton button = GenericButton.create(width, height, displayName);
 
         button.setPlayClickSound(false);
-        button.setHorizontalLabelPadding(2);
         button.setRenderButtonBackgroundTexture(false);
         button.getBorderRenderer().getHoverSettings().setEnabled(true);
         button.getTextSettings().setTextShadowEnabled(false);
-        button.setDefaultHoveredTextColor(0xFFFFFFFF);
         button.setActionListener(() -> this.onDirectoryButtonClicked(dir));
+        button.getPadding().setLeftRight(2);
+        button.updateButtonState();
 
         return button;
     }

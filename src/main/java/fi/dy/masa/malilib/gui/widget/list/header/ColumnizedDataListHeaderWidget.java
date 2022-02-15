@@ -58,7 +58,8 @@ public class ColumnizedDataListHeaderWidget<DATATYPE> extends DataListHeaderWidg
         EdgeInt normalBorderColor = this.getBorderRenderer().getNormalSettings().getColor();
         EdgeInt hoveredBorderColor = this.getBorderRenderer().getHoverSettings().getColor();
         int height = this.getHeight();
-        int ty = this.getTextPositionY(y);
+        int usableHeight = this.getHeight() - this.padding.getVerticalTotal();
+        int ty = this.getTextPositionY(y, usableHeight, this.getLineHeight());
         boolean hoveredY = ctx.mouseY >= y && ctx.mouseY < y + height;
         boolean shadow = this.getTextSettings().getTextShadowEnabled();
 
@@ -85,7 +86,7 @@ public class ColumnizedDataListHeaderWidget<DATATYPE> extends DataListHeaderWidg
                         Icon icon = iconOptional.get();
                         HorizontalAlignment align = column.getIconPosition();
                         int ix = cx + align.getStartX(icon.getWidth(), column.getWidth(), 2);
-                        int iy = this.getIconPositionY(y, icon.getHeight());
+                        int iy = this.getIconPositionY(y, usableHeight, icon.getHeight());
 
                         if (align == HorizontalAlignment.LEFT)
                         {

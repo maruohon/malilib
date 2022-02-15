@@ -143,7 +143,7 @@ public class StyledTextUtils
 
                     if (renderWidth > maxRenderWidth)
                     {
-                        return currentIndex;
+                        return currentIndex - 1;
                     }
                 }
 

@@ -5,7 +5,6 @@ import fi.dy.masa.malilib.gui.callback.SliderCallback;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
-import fi.dy.masa.malilib.render.text.StyledTextLine;
 
 public class SliderWidget extends InteractableWidget
 {
@@ -22,6 +21,7 @@ public class SliderWidget extends InteractableWidget
         this.callback = callback;
         int usableWidth = this.getWidth() - 4;
         this.sliderWidth = MathHelper.clamp(usableWidth / callback.getMaxSteps(), 8, usableWidth / 2);
+        this.textOffset.setCenterHorizontally(true);
     }
 
     public void setLocked(boolean locked)
@@ -70,37 +70,37 @@ public class SliderWidget extends InteractableWidget
     }
 
     @Override
-    public void renderAt(int x, int y, float z, ScreenContext ctx)
+    public boolean onMouseMoved(int mouseX, int mouseY)
     {
-        int mouseX = ctx.mouseX;
-        int width = this.getWidth();
-        int height = this.getHeight();
-
         if (this.dragging && mouseX != this.lastMouseX)
         {
             this.callback.setRelativeValue(this.getRelativePosition(mouseX));
             this.lastMouseX = mouseX;
+            return true;
         }
+
+        return false;
+    }
+
+    @Override
+    public void renderAt(int x, int y, float z, ScreenContext ctx)
+    {
+        int width = this.getWidth();
+        int height = this.getHeight();
 
         // Render the background texture
         DefaultIcons.BUTTON_BACKGROUND.renderFourSplicedAt(x + 1, y, z, width - 2, height);
 
+        // Render the slider bar texture
         double relPos = this.callback.getRelativeValue();
         int sw = this.sliderWidth;
-        int usableWidth = width - 4 - sw;
-
-        // Render the slider bar texture
+        int usableWidth = width - sw - 4;
         int sx = x + 2 + (int) (relPos * usableWidth);
-        boolean hovered = GuiUtils.isMouseInRegion(mouseX, ctx.mouseY, sx, y, sw, height);
+        boolean hovered = GuiUtils.isMouseInRegion(ctx.mouseX, ctx.mouseY, sx, y, sw, height);
         DefaultIcons.BUTTON_BACKGROUND.renderFourSplicedAt(sx, y, z, sw, height, this.locked == false, hovered);
 
-        StyledTextLine text = StyledTextLine.raw(this.callback.getFormattedDisplayValue());
-        int textWidth = text.renderWidth;
         int textColor = this.locked ? 0xFF909090 : 0xFFFFFFA0;
-        int tx = x + (width / 2) - textWidth / 2;
-        int ty = this.getTextPositionY(y);
-
-        this.renderTextLine(tx, ty, z, textColor, false, text, ctx);
+        this.renderTextLine(x, y, z, textColor, this.callback.getDisplayText(), ctx);
     }
 
     protected double getRelativePosition(int mouseX)

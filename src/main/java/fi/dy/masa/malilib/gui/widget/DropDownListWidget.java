@@ -164,9 +164,8 @@ public class DropDownListWidget<T> extends ContainerWidget
     public void setNoBarWhenClosed(int buttonX, int buttonY, Supplier<MultiIcon> iconSupplier)
     {
         this.noCurrentEntryBar = true;
-        this.openCloseButton = GenericButton.createIconOnly(iconSupplier);
+        this.openCloseButton = GenericButton.create(iconSupplier, this::toggleOpen);
         this.openCloseButton.setPosition(buttonX, buttonY);
-        this.openCloseButton.setActionListener(this::toggleOpen);
         this.openCloseButton.setPlayClickSound(false);
         this.reAddSubWidgets();
     }

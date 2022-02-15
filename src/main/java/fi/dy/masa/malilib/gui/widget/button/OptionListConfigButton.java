@@ -17,21 +17,24 @@ public class OptionListConfigButton extends GenericButton
     @Nullable protected final String prefixTranslationKey;
     @Nullable protected EventListener changeListener;
 
-    public OptionListConfigButton(int width, int height, OptionListConfig<?> config)
+    public OptionListConfigButton(int width, int height,
+                                  OptionListConfig<?> config)
     {
         this(width, height, config, null);
     }
 
-    public OptionListConfigButton(int width, int height, OptionListConfig<?> config, @Nullable String prefixTranslationKey)
+    public OptionListConfigButton(int width, int height,
+                                  OptionListConfig<?> config,
+                                  @Nullable String prefixTranslationKey)
     {
-        super(width, height, "");
+        super(width, height);
 
         this.config = config;
         this.prefixTranslationKey = prefixTranslationKey;
-        this.getHoverInfoFactory().setTextLineProvider("list_preview", this::getOptionListPreviewHoverString, 100);
 
+        this.getHoverInfoFactory().setTextLineProvider("list_preview", this::getOptionListPreviewHoverString, 100);
         this.setActionListener(this::cycleValue);
-        this.updateDisplayString();
+        this.setDisplayStringSupplier(this::getCurrentDisplayString);
     }
 
     public void setChangeListener(@Nullable EventListener changeListener)
@@ -42,7 +45,6 @@ public class OptionListConfigButton extends GenericButton
     protected boolean cycleValue(int mouseButton)
     {
         this.config.cycleValue(mouseButton != 0);
-        this.updateDisplayString();
 
         if (this.changeListener != null)
         {
@@ -52,8 +54,7 @@ public class OptionListConfigButton extends GenericButton
         return true;
     }
 
-    @Override
-    protected String generateDisplayString()
+    protected String getCurrentDisplayString()
     {
         String configDisplayText = this.config.getValue().getDisplayName();
 

@@ -23,8 +23,8 @@ public class MessageRedirectListScreen extends BaseListScreen<DataListWidget<Mes
 
         this.setTitle("malilib.gui.title.message_redirect_list_screen");
 
-        this.addRedirectButton = new GenericButton("malilib.gui.button.message_redirect_list_screen.add_redirect");
-        this.addRedirectButton.setActionListener(this::openAddRedirectScreen);
+        String key = "malilib.gui.button.message_redirect_list_screen.add_redirect";
+        this.addRedirectButton = GenericButton.create(key, this::openAddRedirectScreen);
     }
 
     @Override

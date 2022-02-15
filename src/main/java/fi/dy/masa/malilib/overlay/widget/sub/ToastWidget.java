@@ -140,8 +140,11 @@ public class ToastWidget extends BaseWidget
             height += text.lines.size() * lineHeight;
         }
 
-        this.setWidth(width + this.padding.getHorizontalTotal());
-        this.setHeight(height + this.padding.getVerticalTotal());
+        EdgeInt padding = this.padding;
+        width += padding.getHorizontalTotal();
+        height += padding.getVerticalTotal();
+
+        this.setSizeNoUpdate(width, height);
     }
 
     protected void setDisplayTime(int displayTimeMs)

@@ -29,7 +29,7 @@ public class FileSelectorScreen extends BaseListScreen<BaseFileBrowserWidget>
         this.currentDirectory = currentDirectory;
         this.rootDirectory = rootDirectory;
         this.fileConsumer = fileConsumer;
-        this.confirmButton = new GenericButton(-1, 16, this.getButtonLabel());
+        this.confirmButton = GenericButton.create(16, this.getButtonLabel());
         this.confirmButton.setActionListener(this::onConfirm);
 
         this.fileNameTextField = new BaseTextFieldWidget(300, 16);

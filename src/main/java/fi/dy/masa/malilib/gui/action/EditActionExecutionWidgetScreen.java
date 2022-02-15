@@ -106,9 +106,9 @@ public class EditActionExecutionWidgetScreen extends BaseScreen
         this.normalBorderColorLabelWidget = new LabelWidget("malilib.label.border_color.colon");
         this.hoveredBorderColorLabelWidget = new LabelWidget("malilib.label.hovered_border.colon");
 
-        this.cancelButton = GenericButton.simple(16, "malilib.gui.button.cancel", this::cancel);
+        this.cancelButton = GenericButton.create(16, "malilib.gui.button.cancel", this::cancel);
 
-        this.removeIconButton = GenericButton.createIconOnly(DefaultIcons.LIST_REMOVE_MINUS_13, this::removeIcon);
+        this.removeIconButton = GenericButton.create(DefaultIcons.LIST_REMOVE_MINUS_13, this::removeIcon);
         this.removeIconButton.translateAndAddHoverString("malilib.gui.button.label.remove_icon");
 
         this.nameXOffsetEditWidget = new IntegerEditWidget(72, 16, widget.getTextOffset().getXOffset(), -512, 512, widget.getTextOffset()::setXOffset);
@@ -134,7 +134,7 @@ public class EditActionExecutionWidgetScreen extends BaseScreen
 
         TextRenderSettings settings = widget.getTextSettings();
         this.nameNormalColorEditWidget = new ColorEditorWidget(90, 16, settings::getTextColor, settings::setTextColor);
-        this.nameHoveredColorEditWidget = new ColorEditorWidget(90, 16, widget::getDefaultHoveredTextColor, widget::setDefaultHoveredTextColor);
+        this.nameHoveredColorEditWidget = new ColorEditorWidget(90, 16, settings::getHoveredTextColor, settings::setHoveredTextColor);
 
         this.normalBackgroundColorEditWidget    = new ColorEditorWidget(90, 16, widget.getBackgroundRenderer().getNormalSettings()::getColor, widget.getBackgroundRenderer().getNormalSettings()::setColor);
         this.hoveredBackgroundColorEditWidget   = new ColorEditorWidget(90, 16, widget.getBackgroundRenderer().getHoverSettings()::getColor, widget.getBackgroundRenderer().getHoverSettings()::setColor);
@@ -325,7 +325,7 @@ public class EditActionExecutionWidgetScreen extends BaseScreen
         if (size > 1)
         {
             int normalNameColor = this.firstWidget.getTextSettings().getTextColor();
-            int hoveredNameColor = this.firstWidget.getDefaultHoveredTextColor();
+            int hoveredNameColor = this.firstWidget.getTextSettings().getHoveredTextColor();
             int normalBg = this.firstWidget.getBackgroundRenderer().getNormalSettings().getColor();
             int hoverBg = this.firstWidget.getBackgroundRenderer().getHoverSettings().getColor();
             EdgeInt normalBorder = this.firstWidget.getBorderRenderer().getNormalSettings().getColor();
@@ -335,7 +335,7 @@ public class EditActionExecutionWidgetScreen extends BaseScreen
             {
                 BaseActionExecutionWidget widget = this.widgets.get(i);
                 widget.getTextSettings().setTextColor(normalNameColor);
-                widget.setDefaultHoveredTextColor(hoveredNameColor);
+                widget.getTextSettings().setHoveredTextColor(hoveredNameColor);
 
                 widget.getBackgroundRenderer().getNormalSettings().setColor(normalBg);
                 widget.getBackgroundRenderer().getHoverSettings().setColor(hoverBg);

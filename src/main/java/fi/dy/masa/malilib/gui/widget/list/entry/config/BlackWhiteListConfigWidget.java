@@ -33,25 +33,30 @@ public class BlackWhiteListConfigWidget extends BaseConfigWidget<BlackWhiteListC
     {
         super.reAddSubWidgets();
 
+        this.addWidget(this.button);
+        this.addWidget(this.resetButton);
+    }
+
+    @Override
+    public void updateSubWidgetsToGeometryChanges()
+    {
+        super.updateSubWidgetsToGeometryChanges();
+
         int x = this.getElementsStartPosition();
         int y = this.getY() + 1;
         int elementWidth = this.getElementWidth();
 
         this.button.setPosition(x, y);
         this.button.setWidth(elementWidth);
-        this.button.setEnabled(this.config.isLocked() == false);
-        this.button.updateDisplayString();
         this.button.updateHoverStrings();
+        this.button.setEnabled(this.config.isLocked() == false);
 
         this.updateResetButton(x + elementWidth + 4, y);
-
-        this.addWidget(this.button);
-        this.addWidget(this.resetButton);
     }
 
     public void updateButtons()
     {
-        this.button.updateDisplayString();
+        this.button.updateButtonState();
         this.updateResetButtonState();
     }
 

@@ -4,6 +4,7 @@ import fi.dy.masa.malilib.gui.util.BackgroundSettings;
 import fi.dy.masa.malilib.gui.util.BorderSettings;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
+import fi.dy.masa.malilib.util.data.EdgeInt;
 
 public abstract class BaseModelWidget extends InteractableWidget
 {
@@ -52,10 +53,10 @@ public abstract class BaseModelWidget extends InteractableWidget
         {
             BorderSettings borderSettings = this.getBorderRenderer().getActiveSettings(false);
             int bw = borderSettings.getActiveBorderWidth();
-            width += this.padding.getLeft() + this.padding.getRight() + bw * 2;
+            width += this.padding.getHorizontalTotal() + bw * 2;
         }
 
-        this.setWidth(width);
+        this.setWidthNoUpdate(width);
     }
 
     @Override
@@ -68,10 +69,10 @@ public abstract class BaseModelWidget extends InteractableWidget
         {
             BorderSettings borderSettings = this.getBorderRenderer().getActiveSettings(false);
             int bw = borderSettings.getActiveBorderWidth();
-            height += this.padding.getTop() + this.padding.getBottom() + bw * 2;
+            height += this.padding.getVerticalTotal() + bw * 2;
         }
 
-        this.setHeight(height);
+        this.setHeightNoUpdate(height);
     }
 
     protected abstract void renderModel(int x, int y, float z, float scale, ScreenContext ctx);
@@ -89,8 +90,9 @@ public abstract class BaseModelWidget extends InteractableWidget
         {
             BorderSettings borderSettings = this.getBorderRenderer().getActiveSettings(false);
             int bw = borderSettings.getActiveBorderWidth();
-            x += this.padding.getLeft() + bw;
-            y += this.padding.getTop() + bw;
+            EdgeInt padding = this.padding;
+            x += padding.getLeft() + bw;
+            y += padding.getTop() + bw;
         }
 
         if (this.doHighlight && this.isHoveredForRender(ctx))

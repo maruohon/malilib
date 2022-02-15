@@ -136,7 +136,8 @@ public abstract class BaseConfigStatusIndicatorWidget<C extends ConfigInfo> exte
     @Override
     public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
-        int ty = this.getTextPositionY(y);
+        int usableHeight = this.getHeight() - this.padding.getVerticalTotal();
+        int ty = this.getTextPositionY(y, usableHeight, this.getLineHeight());
 
         this.renderNameText(x, ty, z, ctx);
         this.renderValueDisplayText(x, ty, z, ctx);

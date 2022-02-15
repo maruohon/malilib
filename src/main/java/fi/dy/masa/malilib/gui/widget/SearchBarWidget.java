@@ -45,8 +45,7 @@ public class SearchBarWidget extends ContainerWidget
     {
         this(width, height, textChangeListener, openCloseListener);
 
-        this.searchToggleButton = GenericButton.createIconOnly(toggleButtonIcon);
-        this.searchToggleButton.setActionListener(this::toggleSearchOpen);
+        this.searchToggleButton = GenericButton.create(toggleButtonIcon, this::toggleSearchOpen);
         this.searchToggleButton.setPlayClickSound(false);
 
         this.textField.setWidth(width - this.searchToggleButton.getWidth() - 4);

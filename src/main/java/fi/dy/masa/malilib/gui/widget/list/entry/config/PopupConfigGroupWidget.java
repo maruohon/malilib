@@ -19,7 +19,7 @@ public class PopupConfigGroupWidget extends BaseConfigWidget<PopupConfigGroup>
 
         this.config = config;
 
-        this.groupOpenButton = GenericButton.simple("malilib.gui.button.label.show_configs",
+        this.groupOpenButton = GenericButton.create("malilib.gui.button.label.show_configs",
                                                     this::openConfigGroupEditScreen);
     }
 

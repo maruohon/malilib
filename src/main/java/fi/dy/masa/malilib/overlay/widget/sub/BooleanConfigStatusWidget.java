@@ -169,7 +169,7 @@ public class BooleanConfigStatusWidget extends BaseConfigStatusIndicatorWidget<B
     }
 
     @Override
-    protected int getIconPositionX(int x, int iconWidth)
+    protected int getIconPositionX(int x, int usableWidth, int iconWidth)
     {
         return x + this.getWidth() - this.booleanValueRenderWidth;
     }
@@ -180,10 +180,12 @@ public class BooleanConfigStatusWidget extends BaseConfigStatusIndicatorWidget<B
         int sx = x + this.getWidth() - this.sliderWidth;
 
         ShapeRenderUtils.renderRectangle(sx, y, z, this.sliderWidth, height, 0x70000000);
-        OnOffButton.renderOnOffSlider(sx, y, z, this.sliderWidth, height, this.lastValue, true, false, ctx);
+        OnOffButton.renderOnOffSlider(sx, y, z, this.sliderWidth, height, this.lastValue, true, false,
+                                      DefaultIcons.SLIDER_GREEN, DefaultIcons.SLIDER_RED, ctx);
 
+        int usableHeight = this.getHeight() - this.padding.getVerticalTotal();
         int tx = this.getSliderStyleTextStartX(sx + 4, this.lastValue);
-        int ty = this.getTextPositionY(y);
+        int ty = this.getTextPositionY(y, usableHeight, this.getLineHeight());
         this.renderTextLine(tx, ty, z, -1, true, this.lastValue ? this.textOn : this.textOff, ctx);
     }
 

@@ -18,8 +18,8 @@ import fi.dy.masa.malilib.render.RectangleRenderer;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.render.TextRenderUtils;
+import fi.dy.masa.malilib.render.text.MultiLineTextRenderSettings;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
-import fi.dy.masa.malilib.render.text.TextRenderSettings;
 import fi.dy.masa.malilib.render.text.TextRenderer;
 import fi.dy.masa.malilib.render.text.TextStyle;
 import fi.dy.masa.malilib.util.GameUtils;
@@ -40,44 +40,45 @@ public class BaseWidget
     protected final EdgeInt padding = new EdgeInt();
     protected final ElementOffset iconOffset = new ElementOffset();
     protected final ElementOffset textOffset = new ElementOffset();
+    protected final MultiLineTextRenderSettings textSettings = new MultiLineTextRenderSettings();
+    protected final int id;
 
-    @Nullable protected Icon icon;
-    @Nullable protected StyledTextLine text;
-    protected TextRenderer textRenderer;
-    protected boolean automaticHeight;
-    protected boolean automaticWidth;
-    protected int maxHeight;
-    protected int maxWidth;
-
-    private final TextRenderSettings textSettings = new TextRenderSettings();
-    private final int id;
     private int x;
     private int y;
     private float z;
     private int height;
     private int width;
 
+    protected TextRenderer textRenderer;
+    @Nullable protected Icon icon;
+    @Nullable protected StyledTextLine text;
+    protected boolean automaticHeight;
+    protected boolean automaticWidth;
+    protected int maxHeight;
+    protected int maxWidth;
+
     public BaseWidget()
     {
-        this(0, 0, -1, -1);
-    }
-
-    public BaseWidget(int width, int height)
-    {
-        this(0, 0, width, height);
+        this(-1, -1);
     }
 
     public BaseWidget(int x, int y, int width, int height)
     {
-        this.id = nextWidgetId++;
+        this(width, height);
 
         this.x = x;
         this.y = y;
+    }
+
+    public BaseWidget(int width, int height)
+    {
+        this.id = nextWidgetId++;
+        this.textRenderer = TextRenderer.INSTANCE;
+        this.textOffset.setXOffset(4);
+        this.textOffset.setYOffset(1);
+
         this.width = width;
         this.height = height;
-        this.textRenderer = TextRenderer.INSTANCE;
-        this.padding.setChangeListener(this::updateSize);
-        this.textOffset.setXOffset(4);
 
         this.automaticWidth = width < 0;
         this.automaticHeight = height < 0;
@@ -158,7 +159,10 @@ public class BaseWidget
 
         this.x = x;
 
-        this.onPositionChanged(oldX, oldY);
+        if (oldX != x)
+        {
+            this.onPositionChanged(oldX, oldY);
+        }
     }
 
     public void setY(int y)
@@ -168,7 +172,10 @@ public class BaseWidget
 
         this.y = y;
 
-        this.onPositionChanged(oldX, oldY);
+        if (oldY != y)
+        {
+            this.onPositionChanged(oldX, oldY);
+        }
     }
 
     public void setZ(float z)
@@ -184,7 +191,10 @@ public class BaseWidget
         this.x = x;
         this.y = y;
 
-        this.onPositionChanged(oldX, oldY);
+        if (oldX != x || oldY != y)
+        {
+            this.onPositionChanged(oldX, oldY);
+        }
     }
 
     public void setPositionNoUpdate(int x, int y)
@@ -197,13 +207,23 @@ public class BaseWidget
     {
         int oldX = this.x;
         int oldY = this.y;
+        int oldWidth = this.width;
+        int oldHeight = this.height;
 
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
 
-        this.onPositionOrSizeChanged(oldX, oldY);
+        if (oldX != x || oldY != y)
+        {
+            this.onPositionChanged(oldX, oldY);
+        }
+
+        if (oldWidth != width || oldHeight != height)
+        {
+            this.onSizeChanged();
+        }
     }
 
     public void setRight(int xRight)
@@ -213,7 +233,10 @@ public class BaseWidget
 
         this.x = xRight - this.width;
 
-        this.onPositionChanged(oldX, oldY);
+        if (oldX != this.x)
+        {
+            this.onPositionChanged(oldX, oldY);
+        }
     }
 
     public void setBottom(int yBottom)
@@ -223,26 +246,62 @@ public class BaseWidget
 
         this.y = yBottom - this.height;
 
-        this.onPositionChanged(oldX, oldY);
+        if (oldY != this.y)
+        {
+            this.onPositionChanged(oldX, oldY);
+        }
     }
 
     public void setWidth(int width)
     {
+        int old = this.width;
         this.width = width;
-        this.onSizeChanged();
+
+        if (old != width)
+        {
+            this.onSizeChanged();
+        }
     }
 
     public void setHeight(int height)
     {
+        int old = this.height;
         this.height = height;
-        this.onSizeChanged();
+
+        if (old != height)
+        {
+            this.onSizeChanged();
+        }
     }
 
     public void setSize(int width, int height)
     {
+        int oldWidth = this.width;
+        int oldHeight = this.height;
+
         this.width = width;
         this.height = height;
-        this.onSizeChanged();
+
+        if (oldWidth != width || oldHeight != height)
+        {
+            this.onSizeChanged();
+        }
+    }
+
+    public void setWidthNoUpdate(int width)
+    {
+        this.width = width;
+    }
+
+    public void setHeightNoUpdate(int height)
+    {
+        this.height = height;
+    }
+
+    public void setSizeNoUpdate(int width, int height)
+    {
+        this.width = width;
+        this.height = height;
     }
 
     /**
@@ -412,7 +471,7 @@ public class BaseWidget
         return this.textOffset;
     }
 
-    public TextRenderSettings getTextSettings()
+    public MultiLineTextRenderSettings getTextSettings()
     {
         return this.textSettings;
     }
@@ -493,24 +552,24 @@ public class BaseWidget
         return StyledTextLine.raw(str).renderWidth;
     }
 
-    protected int getTextPositionX(int x, int textWidth)
+    protected int getTextPositionX(int x, int usableWidth, int textWidth)
     {
-        return this.textOffset.getElementPositionX(x, this.getWidth(), textWidth);
+        return this.textOffset.getElementPositionX(x, usableWidth, textWidth);
     }
 
-    protected int getTextPositionY(int y)
+    protected int getTextPositionY(int y, int usableHeight, int textHeight)
     {
-        return this.textOffset.getElementPositionY(y, this.getHeight(), this.getFontHeight());
+        return this.textOffset.getElementPositionY(y, usableHeight, textHeight);
     }
 
-    protected int getIconPositionX(int x, int iconWidth)
+    protected int getIconPositionX(int x, int usableWidth, int iconWidth)
     {
-        return this.iconOffset.getElementPositionX(x, this.getWidth(), iconWidth);
+        return this.iconOffset.getElementPositionX(x, usableWidth, iconWidth);
     }
 
-    protected int getIconPositionY(int y, int iconHeight)
+    protected int getIconPositionY(int y, int usableHeight, int iconHeight)
     {
-        return this.iconOffset.getElementPositionY(y, this.getHeight(), iconHeight);
+        return this.iconOffset.getElementPositionY(y, usableHeight, iconHeight);
     }
 
     public void renderTextLine(int x, int y, float z, int defaultColor, boolean shadow,
@@ -529,17 +588,24 @@ public class BaseWidget
         this.textRenderer.renderLine(x, y, z, color, shadow, StyledTextLine.of(str), ctx);
     }
 
-    protected void renderText(int x, int y, float z, ScreenContext ctx)
+    protected void renderText(int x, int y, float z, int color, ScreenContext ctx)
     {
         if (this.text != null)
         {
-            x = this.getTextPositionX(x, this.text.renderWidth);
-            y = this.getTextPositionY(y);
-            int color = this.getTextSettings().getTextColor();
-            boolean shadow = this.getTextSettings().getTextShadowEnabled();
-
-            this.renderTextLine(x, y, z + 0.0125f, color, shadow, this.text, ctx);
+            this.renderTextLine(x, y, z, color, this.text, ctx);
         }
+    }
+
+    protected void renderTextLine(int x, int y, float z, int color, StyledTextLine text, ScreenContext ctx)
+    {
+        EdgeInt padding = this.padding;
+        int usableWidth = this.getWidth() - padding.getHorizontalTotal();
+        int usableHeight = this.getHeight() - padding.getVerticalTotal();
+        x = this.getTextPositionX(x + padding.getLeft(), usableWidth, text.renderWidth);
+        y = this.getTextPositionY(y + padding.getTop(), usableHeight, this.getLineHeight());
+        boolean shadow = this.getTextSettings().getTextShadowEnabled();
+
+        this.renderTextLine(x, y, z + 0.0125f, color, shadow, text, ctx);
     }
 
     protected void renderIcon(int x, int y, float z, ScreenContext ctx)
@@ -548,8 +614,10 @@ public class BaseWidget
 
         if (icon != null)
         {
-            x = this.getIconPositionX(x, icon.getWidth());
-            y = this.getIconPositionY(y, icon.getHeight());
+            int usableWidth = this.getWidth() - this.padding.getHorizontalTotal();
+            int usableHeight = this.getHeight() - this.padding.getVerticalTotal();
+            x = this.getIconPositionX(x, usableWidth, icon.getWidth());
+            y = this.getIconPositionY(y, usableHeight, icon.getHeight());
 
             icon.renderAt(x, y, z + 0.0125f, true, false);
         }
@@ -557,8 +625,9 @@ public class BaseWidget
 
     public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
+        int color = this.getTextSettings().getTextColor();
         this.renderIcon(x, y, z, ctx);
-        this.renderText(x, y, z, ctx);
+        this.renderText(x, y, z, color, ctx);
     }
 
     public void renderDebug(boolean hovered, ScreenContext ctx)
