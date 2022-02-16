@@ -80,18 +80,26 @@ public class MacroAction extends NamedAction
 
         if (size > 0)
         {
-            consumer.accept(StyledTextLine.translate("malilib.hover_info.action.contained_actions", size));
-
+            String titleKey = "malilib.hover.action.contained_actions";
+            String entryKey = "malilib.hover.action.contained_actions.entry";
             int count = Math.min(size, maxEntriesShown);
+
+            if (maxEntriesShown == size - 1)
+            {
+                count = size;
+            }
+
+            consumer.accept(StyledTextLine.translate(titleKey, size));
 
             for (int i = 0; i < count; ++i)
             {
-                consumer.accept(StyledTextLine.of("  " + actions.get(i).getName()));
+                consumer.accept(StyledTextLine.translate(entryKey, actions.get(i).getName()));
             }
 
             if (size > count)
             {
-                consumer.accept(StyledTextLine.translate("malilib.hover_info.action.contained_actions.more", size - count));
+                String footerKey = "malilib.hover.action.contained_actions.more";
+                consumer.accept(StyledTextLine.translate(footerKey, size - count));
             }
         }
     }

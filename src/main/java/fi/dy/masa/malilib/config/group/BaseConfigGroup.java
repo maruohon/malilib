@@ -52,8 +52,7 @@ public abstract class BaseConfigGroup extends CommonDescription implements Confi
     }
 
     /**
-     * Returns the list of configs contained within this group
-     * @return
+     * @return the list of configs contained within this group
      */
     public ImmutableList<ConfigInfo> getConfigs()
     {

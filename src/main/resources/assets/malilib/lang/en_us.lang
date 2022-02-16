@@ -116,6 +116,12 @@ malilib.hover.button.parameterize_action_for_macro=Create a new copy of the acti
 malilib.hover.button.re_parameterize_action_for_macro=Create a new parameterized copy of the action with the string argument bound to a new given value. This old version of the action will be removed and replaced with the newly created action with the given name and argument.
 malilib.hover.button.value_list_edit.entry=§7%s
 
+malilib.hover.action.contained_actions=§8Contained actions (§b%s§8):
+malilib.hover.action.contained_actions.entry=  %s
+malilib.hover.action.contained_actions.more=... and §b%s§r more
+malilib.hover.config.expandable_config_group.config_entry=<c=909090>%s §8[%s]
+malilib.hover.config.expandable_config_group.contained_configs=<c=606060>Contained configs (§b%s<c=777>):
+malilib.hover.config.expandable_config_group.more=<c=606060>... and §b%s<c=606060> more
 malilib.hover.config.numeric.range_and_default=Range: §b%s§r ... §b%s§r\nDefault: §b%s
 malilib.hover.config.option_list.default_value=Default: <c=66f>%s
 malilib.hover.config.option_list.non_selected_value=  §8%s
@@ -209,8 +215,6 @@ malilib.hover_info.action.alias=§8Alias: §7%s
 malilib.hover_info.action.argument.colon=§8Argument:§7 
 malilib.hover_info.action.base_action_name=§8Base action name: §7%s
 malilib.hover_info.action.base_action_registry_name=§8Base action reg.name: §7%s
-malilib.hover_info.action.contained_actions=§8Contained actions (§b%s§8):
-malilib.hover_info.action.contained_actions.more=... and §b%s§r more
 malilib.hover_info.action.display_name=§8Display name: §7%s
 malilib.hover_info.action.mod=§8Mod: §7%s
 malilib.hover_info.action.name=§8Name: §7%s

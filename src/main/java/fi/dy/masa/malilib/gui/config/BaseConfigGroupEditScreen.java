@@ -53,7 +53,7 @@ public class BaseConfigGroupEditScreen extends BaseListScreen<ConfigOptionListWi
     @Override
     protected void setScreenWidthAndHeight(int width, int height)
     {
-        this.screenWidth = 400;
+        this.screenWidth = Math.max(520, GuiUtils.getScaledWindowWidth() - 80);
         this.screenHeight = GuiUtils.getScaledWindowHeight() - 90;
     }
 

@@ -1,10 +1,14 @@
 package fi.dy.masa.malilib.gui.widget.list.entry.config;
 
+import java.util.ArrayList;
+import java.util.List;
 import fi.dy.masa.malilib.config.group.ExpandableConfigGroup;
+import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
 import fi.dy.masa.malilib.gui.widget.IconWidget;
+import fi.dy.masa.malilib.render.text.StyledTextLine;
 
 public class ExpandableConfigGroupWidget extends BaseConfigWidget<ExpandableConfigGroup>
 {
@@ -21,6 +25,8 @@ public class ExpandableConfigGroupWidget extends BaseConfigWidget<ExpandableConf
 
         this.getBorderRenderer().getNormalSettings().setColor(0xFFFFFFFF);
         this.getBorderRenderer().getHoverSettings().setBorderWidth(1);
+        this.getHoverInfoFactory().setTextLineProvider("config_list", this::getContainedConfigsHoverInfo);
+        this.getHoverInfoFactory().setDynamic(false);
 
         this.arrowIconWidget = new IconWidget(this.getArrowIcon());
         this.arrowIconWidget.setUseEnabledVariant(true);
@@ -83,5 +89,44 @@ public class ExpandableConfigGroupWidget extends BaseConfigWidget<ExpandableConf
         this.ctx.getListWidget().refreshEntries();
 
         return true;
+    }
+
+    protected List<StyledTextLine> getContainedConfigsHoverInfo()
+    {
+        return getContainedConfigsHoverInfo(this.config.getConfigs());
+    }
+
+    public static List<StyledTextLine> getContainedConfigsHoverInfo(List<ConfigInfo> configs)
+    {
+        List<StyledTextLine> lines = new ArrayList<>();
+
+        String titleKey = "malilib.hover.config.expandable_config_group.contained_configs";
+        String entryKey = "malilib.hover.config.expandable_config_group.config_entry";
+        final int size = configs.size();
+        final int maxEntriesShown = 10;
+        int count = Math.min(size, maxEntriesShown);
+
+        if (maxEntriesShown == size - 1)
+        {
+            count = size;
+        }
+
+        lines.add(StyledTextLine.translate(titleKey, size));
+
+        for (int i = 0; i < count; ++i)
+        {
+            ConfigInfo config = configs.get(i);
+            String name = config.getDisplayName();
+            String className = config.getClass().getSimpleName();
+            lines.add(StyledTextLine.translate(entryKey, name, className));
+        }
+
+        if (size > count)
+        {
+            String footerKey = "malilib.hover.config.expandable_config_group.more";
+            lines.add(StyledTextLine.translate(footerKey, size - count));
+        }
+
+        return lines;
     }
 }
