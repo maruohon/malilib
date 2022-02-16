@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.config.category.BaseConfigOptionCategory;
 import fi.dy.masa.malilib.config.category.ConfigOptionCategory;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
+import fi.dy.masa.malilib.config.option.ColorConfig;
 import fi.dy.masa.malilib.config.option.ConfigOption;
 import fi.dy.masa.malilib.config.option.HotkeyConfig;
 import fi.dy.masa.malilib.config.option.IntegerConfig;
@@ -39,6 +40,7 @@ public class MaLiLibConfigs
         public static final StringConfig  DATA_DUMP_CSV_DELIMITER               = new StringConfig("dataDumpCsvDelimiter", ",");
         public static final BooleanConfig DROP_DOWN_SEARCH_TIP                  = new BooleanConfig("dropDownSearchTip", true);
         public static final BooleanConfig HIDE_ALL_COORDINATES                  = new BooleanConfig("hideAllCoordinates", false);
+        public static final ColorConfig   HOVERED_LIST_ENTRY_COLOR              = new ColorConfig("hoveredListEntryColor", "#50B0FFFF");
         public static final IntegerConfig HOVER_TEXT_MAX_WIDTH                  = new IntegerConfig("hoverTextMaxWidth", 310, 16, 4096);
         public static final BooleanConfig KEYBIND_DISPLAY_CALLBACK_ONLY         = new BooleanConfig("keybindDisplayCallbackOnly", true);
         public static final BooleanConfig KEYBIND_DISPLAY_CANCEL_ONLY           = new BooleanConfig("keybindDisplayCancelOnly", true);
@@ -47,6 +49,7 @@ public class MaLiLibConfigs
         public static final BooleanConfig OPTION_LIST_CONFIG_DROPDOWN           = new BooleanConfig("optionListConfigDropdown", false);
         public static final BooleanConfig PRESSED_KEYS_TOAST                    = new BooleanConfig("pressedKeysToast", false);
         public static final BooleanConfig REMEMBER_CONFIG_TAB_SCROLL_POSITIONS  = new BooleanConfig("rememberConfigTabScrollPositions", true);
+        public static final ColorConfig   SELECTED_LIST_ENTRY_COLOR             = new ColorConfig("selectedListEntryColor", "#FFFFFFFF");
         public static final BooleanConfig SERVER_MESSAGES                       = new BooleanConfig("serverMessages", true);
         public static final BooleanConfig SHOW_INTERNAL_CONFIG_NAME             = new BooleanConfig("showInternalConfigName", false);
         public static final BooleanConfig SORT_EXTENSION_MOD_OPTIONS            = new BooleanConfig("sortExtensionModOptions", false);
@@ -65,6 +68,7 @@ public class MaLiLibConfigs
                 DROP_DOWN_SEARCH_TIP,
                 HIDE_ALL_COORDINATES,
                 HOVER_TEXT_MAX_WIDTH,
+                HOVERED_LIST_ENTRY_COLOR,
                 KEYBIND_DISPLAY,
                 KEYBIND_DISPLAY_CALLBACK_ONLY,
                 KEYBIND_DISPLAY_CANCEL_ONLY,
@@ -73,6 +77,7 @@ public class MaLiLibConfigs
                 OPTION_LIST_CONFIG_DROPDOWN,
                 PRESSED_KEYS_TOAST,
                 REMEMBER_CONFIG_TAB_SCROLL_POSITIONS,
+                SELECTED_LIST_ENTRY_COLOR,
                 SERVER_MESSAGES,
                 SHOW_INTERNAL_CONFIG_NAME,
                 SORT_EXTENSION_MOD_OPTIONS

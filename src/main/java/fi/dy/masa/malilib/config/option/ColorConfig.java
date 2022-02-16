@@ -42,12 +42,16 @@ public class ColorConfig extends IntegerConfig
     }
 
     @Override
-    public boolean setValue(Integer newValue)
+    public boolean setIntegerValue(int newValue)
     {
         if (this.locked == false)
         {
-            this.color = Color4f.fromColor(newValue);
-            return super.setValue(newValue); // This also calls the callback, if set
+            if (newValue != this.integerValue)
+            {
+                this.color = Color4f.fromColor(newValue);
+            }
+
+            return super.setIntegerValue(newValue);
         }
 
         return false;

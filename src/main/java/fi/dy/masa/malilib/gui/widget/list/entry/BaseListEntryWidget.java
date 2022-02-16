@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.gui.widget.list.entry;
 
+import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.gui.util.BackgroundSettings;
 import fi.dy.masa.malilib.gui.util.BorderSettings;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
@@ -9,7 +10,7 @@ import fi.dy.masa.malilib.render.ShapeRenderUtils;
 public class BaseListEntryWidget extends ContainerWidget
 {
     protected final BackgroundSettings selectedBgSettings = new BackgroundSettings(0x50FFFFFF);
-    protected final BorderSettings selectedBorderSettings = new BorderSettings(0xFFFFFFFF);
+    protected final BorderSettings selectedBorderSettings = new BorderSettings();
     protected final int listIndex;
     protected final int originalListIndex;
     protected boolean isOdd;
@@ -25,10 +26,12 @@ public class BaseListEntryWidget extends ContainerWidget
 
         this.selectedBgSettings.setEnabled(true);
         this.selectedBorderSettings.setEnabled(true);
+        this.selectedBorderSettings.setColor(MaLiLibConfigs.Generic.SELECTED_LIST_ENTRY_COLOR.getIntegerValue());
 
-        this.setIsOdd((listIndex & 0x1) != 0);
+        int hoverColor = MaLiLibConfigs.Generic.HOVERED_LIST_ENTRY_COLOR.getIntegerValue();
+        this.getBackgroundRenderer().getHoverSettings().setEnabledAndColor(true, hoverColor);
         this.getBackgroundRenderer().getNormalSettings().setColor(this.isOdd ? 0x20FFFFFF : 0x30FFFFFF);
-        this.getBackgroundRenderer().getHoverSettings().setEnabledAndColor(true, 0x50B0FFFF);
+        this.setIsOdd((listIndex & 0x1) != 0);
     }
 
     public void setIsOdd(boolean isOdd)

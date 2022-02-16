@@ -13,6 +13,11 @@ public class BorderSettings
     protected boolean enabled;
     protected int borderWidth = 1;
 
+    public BorderSettings()
+    {
+        this(0xFFFFFFFF);
+    }
+
     public BorderSettings(int defaultColor)
     {
         this.borderColor = new EdgeInt(defaultColor);
