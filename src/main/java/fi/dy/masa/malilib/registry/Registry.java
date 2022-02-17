@@ -14,6 +14,7 @@ import fi.dy.masa.malilib.event.dispatch.RenderEventDispatcherImpl;
 import fi.dy.masa.malilib.event.dispatch.TickEventDispatcher;
 import fi.dy.masa.malilib.event.dispatch.TickEventDispatcherImpl;
 import fi.dy.masa.malilib.gui.config.indicator.ConfigStatusWidgetRegistry;
+import fi.dy.masa.malilib.gui.config.registry.ConfigScreenRegistry;
 import fi.dy.masa.malilib.gui.config.registry.ConfigTabExtensionRegistry;
 import fi.dy.masa.malilib.gui.config.registry.ConfigTabRegistry;
 import fi.dy.masa.malilib.gui.config.registry.ConfigTabRegistryImpl;
@@ -36,6 +37,7 @@ public class Registry
     // Registries
     public static final ActionRegistry ACTION_REGISTRY = new ActionRegistry();
     public static final ConfigStatusWidgetRegistry CONFIG_STATUS_WIDGET = new ConfigStatusWidgetRegistry();
+    public static final ConfigScreenRegistry CONFIG_SCREEN = new ConfigScreenRegistry();
     public static final ConfigTabRegistry CONFIG_TAB = new ConfigTabRegistryImpl();
     public static final ConfigTabExtensionRegistry CONFIG_TAB_EXTENSION = new ConfigTabExtensionRegistry();
     public static final ConfigWidgetRegistry CONFIG_WIDGET = new ConfigWidgetRegistry();

@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.gui.config;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import net.minecraft.client.gui.GuiScreen;
@@ -13,6 +14,7 @@ import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.config.liteloader.DialogHandler;
 import fi.dy.masa.malilib.gui.tab.ScreenTab;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
+import fi.dy.masa.malilib.gui.widget.DropDownListWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.button.KeyBindConfigButton;
 import fi.dy.masa.malilib.gui.widget.list.ConfigOptionListWidget;
@@ -23,8 +25,10 @@ import fi.dy.masa.malilib.util.data.ModInfo;
 public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? extends ConfigInfo>> implements ConfigScreen, KeybindEditingScreen
 {
     protected final ModInfo modInfo;
+    protected final DropDownListWidget<ModInfo> modSwitcherDropdown;
     @Nullable protected EventListener configSaveListener;
     @Nullable protected KeyBindConfigButton activeKeyBindButton;
+    protected boolean addModSwitcherDropdown = true;
     protected int configElementsWidth = 120;
 
     public BaseConfigScreen(ModInfo modInfo, @Nullable GuiScreen parent,
@@ -34,107 +38,12 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
 
         this.modInfo = modInfo;
         this.shouldRestoreScrollbarPosition = MaLiLibConfigs.Generic.REMEMBER_CONFIG_TAB_SCROLL_POSITIONS.getBooleanValue();
+        this.modSwitcherDropdown = new DropDownListWidget<>(-1, 16, 160, 10, Registry.CONFIG_SCREEN.getAllModsWithConfigScreens(), ModInfo::getModName);
+        this.modSwitcherDropdown.setSelectedEntry(modInfo);
+        this.modSwitcherDropdown.setSelectionListener(this::switchConfigScreenToMod);
 
         this.setTitle(titleKey, args);
         this.setParent(parent);
-    }
-
-    public void setConfigSaveListener(@Nullable EventListener configSaveListener)
-    {
-        this.configSaveListener = configSaveListener;
-    }
-
-    public int getDefaultConfigElementWidth()
-    {
-        ScreenTab tab = this.getCurrentTab();
-
-        if (tab instanceof ConfigTab)
-        {
-            return ((ConfigTab) tab).getConfigWidgetsWidth();
-        }
-
-        return this.configElementsWidth;
-    }
-
-    /**
-     * Sets the requested config elements width for this screen.
-     * Use -1 to indicate automatic/default width decided by the widgets.
-     * @param configElementsWidth
-     * @return
-     */
-    public BaseConfigScreen setConfigElementsWidth(int configElementsWidth)
-    {
-        this.configElementsWidth = configElementsWidth;
-        return this;
-    }
-
-    @Override
-    public List<? extends ConfigInfo> getConfigs()
-    {
-        ScreenTab tab = this.getCurrentTab();
-
-        if (tab instanceof ConfigTab)
-        {
-            return ((ConfigTab) tab).getConfigs();
-        }
-
-        return Collections.emptyList();
-    }
-
-    @Override
-    @Nullable
-    public DialogHandler getDialogHandler()
-    {
-        return this.dialogHandler;
-    }
-
-    public void setDialogHandler(@Nullable DialogHandler handler)
-    {
-        this.dialogHandler = handler;
-    }
-
-    @Override
-    public ModInfo getModInfo()
-    {
-        return this.modInfo;
-    }
-
-    @Override
-    protected ConfigOptionListWidget<? extends ConfigInfo> createListWidget(int listX, int listY, int listWidth, int listHeight)
-    {
-        ConfigWidgetContext ctx = new ConfigWidgetContext(this::getListWidget, this, this::getDialogHandler, 0);
-        ConfigOptionListWidget<? extends ConfigInfo> widget = ConfigOptionListWidget.createWithExpandedGroups(
-                listX, listY, listWidth, listHeight, this::getDefaultConfigElementWidth,
-                this.modInfo, this::getConfigs, ctx);
-        widget.addConfigSearchBarWidget(this);
-
-        return widget;
-    }
-
-    @Override
-    public void switchToTab(ScreenTab tab)
-    {
-        this.saveScrollBarPositionForCurrentTab();
-
-        super.switchToTab(tab);
-
-        this.restoreScrollBarPositionForCurrentTab();
-        this.reCreateConfigWidgets();
-    }
-
-    public void reCreateConfigWidgets()
-    {
-        for (GenericButton tabButton : this.tabButtons)
-        {
-            tabButton.updateButtonState();
-        }
-
-        ConfigOptionListWidget<?> listWidget = this.getListWidget();
-
-        if (listWidget != null)
-        {
-            listWidget.refreshEntries();
-        }
     }
 
     @Override
@@ -148,14 +57,25 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
         }
     }
 
-    protected void onSettingsChanged()
+    @Override
+    protected void reAddActiveWidgets()
     {
-        Registry.HOTKEY_MANAGER.updateUsedKeys();
+        super.reAddActiveWidgets();
 
-        if (this.configSaveListener != null)
+        if (this.addModSwitcherDropdown)
         {
-            this.configSaveListener.onEvent();
+            this.addWidget(this.modSwitcherDropdown);
         }
+    }
+
+    @Override
+    protected void updateWidgetPositions()
+    {
+        super.updateWidgetPositions();
+
+        int x = this.x + this.screenWidth - 16;
+        this.modSwitcherDropdown.setRight(x);
+        this.modSwitcherDropdown.setY(this.y + 2);
     }
 
     @Override
@@ -199,6 +119,130 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
         }
 
         return false;
+    }
+
+    public void setConfigSaveListener(@Nullable EventListener configSaveListener)
+    {
+        this.configSaveListener = configSaveListener;
+    }
+
+    public int getDefaultConfigElementWidth()
+    {
+        ScreenTab tab = this.getCurrentTab();
+
+        if (tab instanceof ConfigTab)
+        {
+            return ((ConfigTab) tab).getConfigWidgetsWidth();
+        }
+
+        return this.configElementsWidth;
+    }
+
+    /**
+     * Sets the requested config elements width for this screen.
+     * Use -1 to indicate automatic/default width decided by the widgets.
+     */
+    public BaseConfigScreen setConfigElementsWidth(int configElementsWidth)
+    {
+        this.configElementsWidth = configElementsWidth;
+        return this;
+    }
+
+    protected void switchConfigScreenToMod(@Nullable ModInfo modInfo)
+    {
+        if (modInfo != null)
+        {
+            Supplier<BaseScreen> factory = Registry.CONFIG_SCREEN.getConfigScreenFactoryFor(modInfo);
+
+            if (factory != null)
+            {
+                BaseScreen screen = factory.get();
+
+                if (screen != null)
+                {
+                    openScreen(screen);
+                }
+            }
+        }
+    }
+
+    @Override
+    public List<? extends ConfigInfo> getConfigs()
+    {
+        ScreenTab tab = this.getCurrentTab();
+
+        if (tab instanceof ConfigTab)
+        {
+            return ((ConfigTab) tab).getConfigs();
+        }
+
+        return Collections.emptyList();
+    }
+
+    @Override
+    @Nullable
+    public DialogHandler getDialogHandler()
+    {
+        return this.dialogHandler;
+    }
+
+    public void setDialogHandler(@Nullable DialogHandler handler)
+    {
+        this.dialogHandler = handler;
+    }
+
+    @Override
+    public ModInfo getModInfo()
+    {
+        return this.modInfo;
+    }
+
+    @Override
+    public void switchToTab(ScreenTab tab)
+    {
+        this.saveScrollBarPositionForCurrentTab();
+
+        super.switchToTab(tab);
+
+        this.restoreScrollBarPositionForCurrentTab();
+        this.reCreateConfigWidgets();
+    }
+
+    public void reCreateConfigWidgets()
+    {
+        for (GenericButton tabButton : this.tabButtons)
+        {
+            tabButton.updateButtonState();
+        }
+
+        ConfigOptionListWidget<?> listWidget = this.getListWidget();
+
+        if (listWidget != null)
+        {
+            listWidget.refreshEntries();
+        }
+    }
+
+    protected void onSettingsChanged()
+    {
+        Registry.HOTKEY_MANAGER.updateUsedKeys();
+
+        if (this.configSaveListener != null)
+        {
+            this.configSaveListener.onEvent();
+        }
+    }
+
+    @Override
+    protected ConfigOptionListWidget<? extends ConfigInfo> createListWidget(int listX, int listY, int listWidth, int listHeight)
+    {
+        ConfigWidgetContext ctx = new ConfigWidgetContext(this::getListWidget, this, this::getDialogHandler, 0);
+        ConfigOptionListWidget<? extends ConfigInfo> widget = ConfigOptionListWidget.createWithExpandedGroups(
+                listX, listY, listWidth, listHeight, this::getDefaultConfigElementWidth,
+                this.modInfo, this::getConfigs, ctx);
+        widget.addConfigSearchBarWidget(this);
+
+        return widget;
     }
 
     @Override

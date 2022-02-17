@@ -51,7 +51,14 @@ public class MaLiLibConfigScreen
 
     public static void open()
     {
-        BaseScreen.openScreen(create(null));
+        BaseScreen.openScreen(create());
+    }
+
+    public static BaseConfigScreen create()
+    {
+        // The parent screen should not be set here, to prevent infinite recursion via
+        // the call to the parent's setWorldAndResolution -> initScreen -> switch tab -> etc.
+        return new BaseConfigScreen(MOD_INFO, null, ALL_TABS, GENERIC, "malilib.gui.title.configs");
     }
 
     public static BaseConfigScreen create(@Nullable GuiScreen currentScreen)
