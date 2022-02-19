@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.gui.config.indicator;
 
 import javax.annotation.Nullable;
 import net.minecraft.client.gui.GuiScreen;
+import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
@@ -26,7 +27,7 @@ public class BaseConfigStatusIndicatorEditScreen <WIDGET extends BaseConfigStatu
         this.widget = widget;
 
         this.useTitleHierarchy = false;
-        this.setTitle("malilib.title.screen.config_status_indicator_configuration");
+        this.setTitle("malilib.title.screen.configs.config_status_indicator_configuration", MaLiLibReference.MOD_VERSION);
         this.setParent(parent);
 
         this.nameLabel = new LabelWidget("malilib.label.misc.name.colon");

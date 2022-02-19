@@ -29,7 +29,7 @@ public class ActionListScreen extends BaseActionListScreen
     {
         super(MaLiLibReference.MOD_ID, MaLiLibConfigScreen.ALL_TABS, MaLiLibConfigScreen.GENERIC);
 
-        this.setTitle("malilib.title.screen.action_list_screen", MaLiLibReference.MOD_VERSION);
+        this.setTitle("malilib.title.screen.configs.action_list_screen", MaLiLibReference.MOD_VERSION);
 
         this.userAddedActionTypesDropdown = new DropDownListWidget<>(-1, 14, 140, 10, ActionGroup.VALUES_USER_ADDED, ActionGroup::getDisplayName);
         this.userAddedActionTypesDropdown.setSelectedEntry(ActionGroup.USER_ADDED);

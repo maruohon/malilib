@@ -32,7 +32,9 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
     protected int configElementsWidth = 120;
 
     public BaseConfigScreen(ModInfo modInfo, @Nullable GuiScreen parent,
-                            List<? extends ScreenTab> configTabs, @Nullable ConfigTab defaultTab, String titleKey, Object... args)
+                            List<? extends ScreenTab> configTabs,
+                            @Nullable ConfigTab defaultTab,
+                            String titleKey, Object... args)
     {
         super(10, 46, 20, 62, modInfo.getModId(), configTabs, defaultTab);
 

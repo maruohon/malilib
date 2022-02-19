@@ -58,14 +58,14 @@ public class MaLiLibConfigScreen
     {
         // The parent screen should not be set here, to prevent infinite recursion via
         // the call to the parent's setWorldAndResolution -> initScreen -> switch tab -> etc.
-        return new BaseConfigScreen(MOD_INFO, null, ALL_TABS, GENERIC, "malilib.title.screen.configs");
+        return new BaseConfigScreen(MOD_INFO, null, ALL_TABS, GENERIC, "malilib.title.screen.configs", MaLiLibReference.MOD_VERSION);
     }
 
     public static BaseConfigScreen create(@Nullable GuiScreen currentScreen)
     {
         // The parent screen should not be set here, to prevent infinite recursion via
         // the call to the parent's setWorldAndResolution -> initScreen -> switch tab -> etc.
-        return new BaseConfigScreen(MOD_INFO, null, ALL_TABS, GENERIC, "malilib.title.screen.configs");
+        return new BaseConfigScreen(MOD_INFO, null, ALL_TABS, GENERIC, "malilib.title.screen.configs", MaLiLibReference.MOD_VERSION);
     }
 
     public static BaseTabbedScreen createConfigStatusIndicatorListScreen(@Nullable GuiScreen currentScreen)
@@ -96,7 +96,7 @@ public class MaLiLibConfigScreen
                   ConfigStatusIndicatorContainerWidget::new,
                   BaseInfoRendererWidgetEntryWidget::new);
 
-            this.setTitle("malilib.title.screen.config_status_indicator_configuration");
+            this.setTitle("malilib.title.screen.configs.config_status_indicator_configuration", MaLiLibReference.MOD_VERSION);
             this.canCreateNewWidgets = true;
         }
     }
@@ -109,7 +109,7 @@ public class MaLiLibConfigScreen
                   null,
                   BaseInfoRendererWidgetEntryWidget::new);
 
-            this.setTitle("malilib.title.screen.info_renderer_widgets");
+            this.setTitle("malilib.title.screen.configs.info_renderer_widgets", MaLiLibReference.MOD_VERSION);
         }
     }
 }
