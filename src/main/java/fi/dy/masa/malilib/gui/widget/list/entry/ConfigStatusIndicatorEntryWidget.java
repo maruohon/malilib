@@ -34,6 +34,8 @@ public class ConfigStatusIndicatorEntryWidget extends BaseOrderableListEditEntry
 
         this.setText(data.getStyledName());
         this.getBackgroundRenderer().getNormalSettings().setEnabled(true);
+        this.getBackgroundRenderer().getNormalSettings().setColor(this.isOdd ? 0x30707070 : 0x50707070);
+        this.getBackgroundRenderer().getHoverSettings().setColor(0x50909090);
     }
 
     public void removeInfoRendererWidget()
