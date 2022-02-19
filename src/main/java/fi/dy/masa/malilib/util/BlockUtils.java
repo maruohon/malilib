@@ -283,20 +283,20 @@ public class BlockUtils
 
                     if (prop instanceof PropertyBool)
                     {
-                        key = val.equals(Boolean.TRUE) ? "malilib.info.block_state_properties.boolean.true" :
-                                                         "malilib.info.block_state_properties.boolean.false";
+                        key = val.equals(Boolean.TRUE) ? "malilib.label.block_state_properties.boolean.true" :
+                                                         "malilib.label.block_state_properties.boolean.false";
                     }
                     else if (prop instanceof PropertyDirection)
                     {
-                        key = "malilib.info.block_state_properties.direction";
+                        key = "malilib.label.block_state_properties.direction";
                     }
                     else if (prop instanceof PropertyInteger)
                     {
-                        key = "malilib.info.block_state_properties.integer";
+                        key = "malilib.label.block_state_properties.integer";
                     }
                     else
                     {
-                        key = "malilib.info.block_state_properties.generic";
+                        key = "malilib.label.block_state_properties.generic";
                     }
 
                     lines.add(StringUtils.translate(key, propName, separator, valStr));

@@ -22,7 +22,7 @@ public class AliasAction extends NamedAction
         super(ActionType.ALIAS, alias, action.getNameTranslationKey(), ALIAS_MOD_INFO);
 
         this.baseAction = action;
-        this.coloredDisplayNameTranslationKey = "malilib.label.name.action.alias_entry_widget_name";
+        this.coloredDisplayNameTranslationKey = "malilib.label.actions.alias_entry_widget_name";
     }
 
     @Override
@@ -45,23 +45,23 @@ public class AliasAction extends NamedAction
     {
         List<StyledTextLine> lines = new ArrayList<>();
 
-        lines.add(StyledTextLine.translate("malilib.hover_info.action.alias", this.getName()));
-        lines.add(StyledTextLine.translate("malilib.hover_info.action.mod", this.baseAction.getModInfo().getModName()));
-        lines.add(StyledTextLine.translate("malilib.hover_info.action.display_name", this.baseAction.getDisplayName()));
-        lines.add(StyledTextLine.translate("malilib.hover_info.action.action_type", this.type.getDisplayName()));
+        lines.add(StyledTextLine.translate("malilib.hover.action.alias", this.getName()));
+        lines.add(StyledTextLine.translate("malilib.hover.action.mod", this.baseAction.getModInfo().getModName()));
+        lines.add(StyledTextLine.translate("malilib.hover.action.display_name", this.baseAction.getDisplayName()));
+        lines.add(StyledTextLine.translate("malilib.hover.action.action_type", this.type.getDisplayName()));
 
         if (this.registryName != null)
         {
-            lines.add(StyledTextLine.translate("malilib.hover_info.action.registry_name", this.registryName));
+            lines.add(StyledTextLine.translate("malilib.hover.action.registry_name", this.registryName));
         }
 
-        lines.add(StyledTextLine.translate("malilib.hover_info.action.base_action_name", this.baseAction.getName()));
+        lines.add(StyledTextLine.translate("malilib.hover.action.base_action_name", this.baseAction.getName()));
 
         String origRegName = this.baseAction.getRegistryName();
 
         if (origRegName != null)
         {
-            lines.add(StyledTextLine.translate("malilib.hover_info.action.base_action_registry_name", origRegName));
+            lines.add(StyledTextLine.translate("malilib.hover.action.base_action_registry_name", origRegName));
         }
 
         return lines;

@@ -29,8 +29,8 @@ public class DirectoryConfigWidget extends BaseConfigOptionWidget<File, Director
             return true;
         });
 
-        this.createFileSelectorWidgets(this.getY(), this.config, factory,
-                                       "malilib.gui.button.config.select_directory",
-                                       "malilib.gui.button.config.hover.selected_directory");
+        String labelKey = "malilib.button.config.select_directory";
+        String hoverKey = "malilib.hover.button.config.selected_directory";
+        this.createFileSelectorWidgets(this.getY(), this.config, factory, labelKey, hoverKey);
     }
 }

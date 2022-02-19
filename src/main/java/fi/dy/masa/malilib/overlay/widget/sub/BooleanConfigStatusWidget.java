@@ -39,8 +39,8 @@ public class BooleanConfigStatusWidget extends BaseConfigStatusIndicatorWidget<B
     {
         super(config, configOnTab, widgetTypeId);
 
-        this.textOn  = StyledTextLine.translate("malilib.label.on.caps", STYLE_ON);
-        this.textOff = StyledTextLine.translate("malilib.label.off.caps", STYLE_OFF);
+        this.textOn  = StyledTextLine.translate("malilib.label.misc.on.caps", STYLE_ON);
+        this.textOff = StyledTextLine.translate("malilib.label.misc.off.caps", STYLE_OFF);
         int sw = Math.max(this.textOn.renderWidth, this.textOff.renderWidth);
         sw += DefaultIcons.SLIDER_GREEN.getWidth() + 6;
         this.sliderWidth = sw;
@@ -119,7 +119,7 @@ public class BooleanConfigStatusWidget extends BaseConfigStatusIndicatorWidget<B
         }
         else if (this.renderStyle == Style.TRUE_FALSE_TEXT)
         {
-            String translationKey = this.lastValue ? "malilib.label.true" : "malilib.label.false";
+            String translationKey = this.lastValue ? "malilib.label.misc.true.lower_case" : "malilib.label.misc.false.lower_case";
             TextStyle style = this.lastValue ? STYLE_ON : STYLE_OFF;
             this.valueDisplayText = StyledTextLine.translate(translationKey, style);
             this.booleanValueRenderWidth = this.valueDisplayText.renderWidth;
@@ -218,10 +218,10 @@ public class BooleanConfigStatusWidget extends BaseConfigStatusIndicatorWidget<B
 
     public enum Style
     {
-        ON_OFF_TEXT     ("on_off_text",     "malilib.label.boolean_config_status_type.on_off_text"),
-        TRUE_FALSE_TEXT ("true_false_text", "malilib.label.boolean_config_status_type.true_false_text"),
-        ON_OFF_SLIDER   ("on_off_slider",   "malilib.label.boolean_config_status_type.on_off_slider"),
-        ON_OFF_LIGHT    ("on_off_light",    "malilib.label.boolean_config_status_type.on_off_light");
+        ON_OFF_TEXT     ("on_off_text",     "malilib.label.boolean_config_status.style.on_off_text"),
+        TRUE_FALSE_TEXT ("true_false_text", "malilib.label.boolean_config_status.style.true_false_text"),
+        ON_OFF_SLIDER   ("on_off_slider",   "malilib.label.boolean_config_status.style.on_off_slider"),
+        ON_OFF_LIGHT    ("on_off_light",    "malilib.label.boolean_config_status.style.on_off_light");
 
         private final String name;
         private final String translationKey;
@@ -260,9 +260,9 @@ public class BooleanConfigStatusWidget extends BaseConfigStatusIndicatorWidget<B
 
     public enum EnabledCondition
     {
-        ALWAYS   ("always",   "malilib.label.always"),
-        WHEN_ON  ("when_on",  "malilib.label.when_on"),
-        WHEN_OFF ("when_off", "malilib.label.when_off");
+        ALWAYS   ("always",   "malilib.name.enabled_condition.always"),
+        WHEN_ON  ("when_on",  "malilib.name.enabled_condition.when_on"),
+        WHEN_OFF ("when_off", "malilib.name.enabled_condition.when_off");
 
         private final String name;
         private final String translationKey;

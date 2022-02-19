@@ -64,7 +64,7 @@ public class ItemRenderUtils
             }
             else
             {
-                list.set(i, StringUtils.translate("malilib.info.item_tooltip_lines", list.get(i)));
+                list.set(i, StringUtils.translate("malilib.hover.item_tooltip_lines", list.get(i)));
             }
         }
 

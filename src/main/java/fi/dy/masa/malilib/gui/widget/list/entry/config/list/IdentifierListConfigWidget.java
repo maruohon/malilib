@@ -23,7 +23,7 @@ public class IdentifierListConfigWidget extends BaseValueListConfigWidget<Resour
     @Override
     protected GenericButton createButton(int width, int height, IdentifierListConfig config, ConfigWidgetContext ctx)
     {
-        String title = StringUtils.translate("malilib.gui.title.identifier_list_edit", this.config.getDisplayName());
+        String title = StringUtils.translate("malilib.title.screen.identifier_list_edit", this.config.getDisplayName());
         ImmutableSet<ResourceLocation> validValues = this.config.getValidValues();
 
         if (validValues != null && validValues.isEmpty() == false)

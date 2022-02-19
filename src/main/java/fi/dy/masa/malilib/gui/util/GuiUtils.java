@@ -138,7 +138,7 @@ public class GuiUtils
         {
             GenericButton button = GenericButton.create(DefaultIcons.BTN_PLUSMINUS_16);
             button.setActionListener(new ButtonListenerCoordinateInput(type, modifier));
-            button.translateAndAddHoverString("malilib.button.hover.plus_minus_tip");
+            button.translateAndAddHoverString("malilib.hover.button.plus_minus_tip");
             button.setCanScrollToClick(true);
             button.setPosition(x, y);
             gui.addWidget(button);

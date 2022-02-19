@@ -80,7 +80,7 @@ public class ConfigOverrideUtils
             else
             {
                 getAllToggleConfigs().values().forEach((cfg) -> {
-                    cfg.setOverrideMessage("malilib.hover_info.config_override_fallback");
+                    cfg.setOverrideMessage("malilib.hover.config_override.error_getting_server_info_applying_fallback");
                     cfg.enableOverrideWithValue(false);
                 });
             }
@@ -190,7 +190,7 @@ public class ConfigOverrideUtils
                 MaLiLib.LOGGER.info("Applied {} feature overrides", overrideCount);
             }
 
-            MessageDispatcher.warning().time(8000).translate("malilib.message.feature_overrides_applied", overrideCount);
+            MessageDispatcher.warning().time(8000).translate("malilib.message.info.feature_overrides_applied", overrideCount);
         }
     }
 

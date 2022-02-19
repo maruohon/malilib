@@ -195,7 +195,7 @@ public abstract class InteractableWidget extends BackgroundWidget
     {
         if (this.hoverHelp == null)
         {
-            this.hoverHelp = StyledText.translate("malilib.hover.generic.hold_shift_for_info").lines;
+            this.hoverHelp = StyledText.translate("malilib.hover.misc.hold_shift_for_info").lines;
         }
 
         return this.hoverHelp;

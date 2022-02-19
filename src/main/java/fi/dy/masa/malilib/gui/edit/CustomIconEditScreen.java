@@ -68,7 +68,7 @@ public class CustomIconEditScreen extends BaseScreen
 
     public CustomIconEditScreen(Icon icon, Consumer<Icon> iconConsumer, int variantOffsetU, int variantOffsetV)
     {
-        this.setTitle("malilib.gui.title.custom_icons_edit_screen");
+        this.setTitle("malilib.title.screen.custom_icons_edit_screen");
 
         this.originalIcon = icon;
         this.texture = icon.getTexture();
@@ -82,15 +82,15 @@ public class CustomIconEditScreen extends BaseScreen
         this.variantOffsetV = variantOffsetV;
         this.iconConsumer = iconConsumer;
 
-        this.textureNameLabel           = new LabelWidget("malilib.gui.label.custom_icon_edit.texture_name");
-        this.uLabel                     = new LabelWidget("malilib.gui.label.coordinate.u.colon");
-        this.vLabel                     = new LabelWidget("malilib.gui.label.coordinate.v.colon");
-        this.iconWidthLabel             = new LabelWidget("malilib.gui.label.custom_icon_edit.icon_width");
-        this.iconHeightLabel            = new LabelWidget("malilib.gui.label.custom_icon_edit.icon_height");
-        this.textureSheetWidthLabel     = new LabelWidget("malilib.gui.label.custom_icon_edit.texture_sheet_width");
-        this.textureSheetHeightLabel    = new LabelWidget("malilib.gui.label.custom_icon_edit.texture_sheet_height");
-        this.variantOffsetLabel         = new LabelWidget("malilib.gui.label.custom_icon_edit.variant_offset_uv");
-        this.previewLabel               = new LabelWidget("malilib.gui.label.custom_icon_edit.icon_preview");
+        this.textureNameLabel           = new LabelWidget("malilib.label.custom_icon_edit.texture_name");
+        this.uLabel                     = new LabelWidget("malilib.label.custom_icon_edit.coordinate.u");
+        this.vLabel                     = new LabelWidget("malilib.label.custom_icon_edit.coordinate.v");
+        this.iconWidthLabel             = new LabelWidget("malilib.label.custom_icon_edit.icon_width");
+        this.iconHeightLabel            = new LabelWidget("malilib.label.custom_icon_edit.icon_height");
+        this.textureSheetWidthLabel     = new LabelWidget("malilib.label.custom_icon_edit.texture_sheet_width");
+        this.textureSheetHeightLabel    = new LabelWidget("malilib.label.custom_icon_edit.texture_sheet_height");
+        this.variantOffsetLabel         = new LabelWidget("malilib.label.custom_icon_edit.variant_offset_uv");
+        this.previewLabel               = new LabelWidget("malilib.label.custom_icon_edit.icon_preview");
 
         this.textureNameTextField = new BaseTextFieldWidget(280, 16, this.texture.toString());
         this.textureNameTextField.setListener(this::setTextureName);

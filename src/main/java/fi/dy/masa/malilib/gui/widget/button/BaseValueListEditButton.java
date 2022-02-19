@@ -90,7 +90,7 @@ public class BaseValueListEditButton<TYPE> extends GenericButton
         int total = this.valueStrings.size();
         int max = Math.min(10, total);
 
-        hoverStrings.add(StringUtils.translate("malilib.gui.button.hover.entries_total", total));
+        hoverStrings.add(StringUtils.translate("malilib.hover.button.config_list.total_entries", total));
 
         for (int i = 0; i < max; ++i)
         {
@@ -99,7 +99,7 @@ public class BaseValueListEditButton<TYPE> extends GenericButton
 
         if (total > max)
         {
-            hoverStrings.add(StringUtils.translate("malilib.gui.button.hover.entries_more", total - max));
+            hoverStrings.add(StringUtils.translate("malilib.hover.button.config_list.more_entries", total - max));
         }
 
         return hoverStrings;

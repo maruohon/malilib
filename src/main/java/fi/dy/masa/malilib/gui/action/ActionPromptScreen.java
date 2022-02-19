@@ -38,19 +38,19 @@ public class ActionPromptScreen extends BaseListScreen<DataListWidget<NamedActio
         this.dropDownWidget.setSelectedEntry(ActionList.getSelectedList(lists));
         this.dropDownWidget.setSelectionListener(this::onListSelectionChanged);
 
-        String label = "malilib.gui.label.action_prompt_screen.remember_search";
-        String hoverKey = "malilib.gui.hover.action_prompt_screen.remember_search_text";
+        String label = "malilib.checkbox.action_prompt_screen.remember_search";
+        String hoverKey = "malilib.hover.action.prompt_screen.remember_search_text";
         this.rememberSearchCheckBoxWidget = new CheckBoxWidget(label, hoverKey);
         this.rememberSearchCheckBoxWidget.setBooleanStorage(MaLiLibConfigs.Generic.ACTION_PROMPT_REMEMBER_SEARCH);
 
-        label = "malilib.gui.label.action_prompt_screen.fuzzy_search";
-        hoverKey = "malilib.gui.hover.action_prompt_screen.use_fuzzy_search";
+        label = "malilib.checkbox.action_prompt_screen.fuzzy_search";
+        hoverKey = "malilib.hover.action.prompt_screen.use_fuzzy_search";
         this.fuzzySearchCheckBoxWidget = new CheckBoxWidget(label, hoverKey);
         this.fuzzySearchCheckBoxWidget.setBooleanStorage(MaLiLibConfigs.Generic.ACTION_PROMPT_FUZZY_SEARCH);
         this.fuzzySearchCheckBoxWidget.setListener((v) -> this.updateFilteredList());
 
-        label = "malilib.gui.label.action_prompt_screen.search_display_name";
-        hoverKey = "malilib.gui.hover.action_prompt_screen.search_display_name";
+        label = "malilib.checkbox.action_prompt_screen.search_display_name";
+        hoverKey = "malilib.hover.action.prompt_screen.search_display_name";
         this.searchDisplayNameCheckBoxWidget = new CheckBoxWidget(label, hoverKey);
         this.searchDisplayNameCheckBoxWidget.setBooleanStorage(MaLiLibConfigs.Generic.ACTION_PROMPT_SEARCH_DISPLAY_NAME);
         this.searchDisplayNameCheckBoxWidget.setListener((v) -> this.updateFilteredList());

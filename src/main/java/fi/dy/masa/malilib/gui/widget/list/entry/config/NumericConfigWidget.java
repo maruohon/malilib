@@ -130,11 +130,11 @@ public abstract class NumericConfigWidget<TYPE, CFG extends BaseConfigOption<TYP
     {
         if (this.config.allowSlider() == false)
         {
-            return ImmutableList.of(StringUtils.translate("malilib.gui.button.hover.text_field_slider_toggle"),
-                                    StringUtils.translate("malilib.gui.button.hover.text_field_slider_toggle.not_allowed"));
+            return ImmutableList.of(StringUtils.translate("malilib.hover.button.config.text_field.slider_toggle"),
+                                    StringUtils.translate("malilib.hover.button.config.text_field.slider_toggle.not_allowed"));
         }
 
-        return ImmutableList.of(StringUtils.translate("malilib.gui.button.hover.text_field_slider_toggle"));
+        return ImmutableList.of(StringUtils.translate("malilib.hover.button.config.text_field.slider_toggle"));
     }
 
     protected String getCurrentValueAsString()

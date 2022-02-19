@@ -76,8 +76,8 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
 
         if (layerMode == LayerMode.LAYER_RANGE)
         {
-            String labelMin = StringUtils.translate("malilib.gui.label.render_layers.layer_min") + ":";
-            String labelMax = StringUtils.translate("malilib.gui.label.render_layers.layer_max") + ":";
+            String labelMin = StringUtils.translate("malilib.label.render_layers_screen.layer_min");
+            String labelMax = StringUtils.translate("malilib.label.render_layers_screen.layer_max");
             int w1 = this.addLabel(x, y +  5, 0xFFFFFF, labelMax).getWidth();
             int w2 = this.addLabel(x, y + 28, 0xFFFFFF, labelMin).getWidth();
 
@@ -85,7 +85,7 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
         }
         else
         {
-            String label = StringUtils.translate("malilib.gui.label.render_layers.layer") + ":";
+            String label = StringUtils.translate("malilib.label.render_layers_screen.layer");
             x += this.addLabel(x, y + 5, 0xFFFFFF, label).getWidth() + 4;
         }
 
@@ -124,9 +124,9 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
 
         if (this.addPlayerFollowingOptions)
         {
-            String strLabel = "malilib.gui.button.render_layers_gui.follow_player";
+            String strLabel = "malilib.button.render_layers.follow_player";
             final OnOffButton button = new OnOffButton(-1, 20, OnOffButton.OnOffStyle.SLIDER_ON_OFF, layerRange::shouldFollowPlayer, strLabel);
-            button.translateAndAddHoverString("malilib.gui.button.hover.render_layers_gui.follow_player");
+            button.translateAndAddHoverString("malilib.hover.button.render_layers.follow_player");
             button.setPosition(origX, y);
             button.setActionListener((btn) -> {
                 layerRange.toggleShouldFollowPlayer();
@@ -135,7 +135,7 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
             this.addWidget(button);
             y += 24;
 
-            String label = StringUtils.translate("malilib.gui.label.render_layers.player_follow_offset") + ":";
+            String label = StringUtils.translate("malilib.label.render_layers_screen.player_follow_offset");
             int w = this.addLabel(origX, y + 5, 0xFFFFFF, label).getWidth();
 
             final IntegerTextFieldWidget textField = new IntegerTextFieldWidget(40, 18, layerRange.getPlayerFollowOffset());
@@ -225,9 +225,9 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
 
         public enum Type
         {
-            MODE            ("malilib.gui.button.render_layers_gui.layers"),
-            AXIS            ("malilib.gui.button.render_layers_gui.axis"),
-            SET_TO_PLAYER   ("malilib.gui.button.render_layers_gui.set_to_player");
+            MODE            ("malilib.button.render_layers.layers"),
+            AXIS            ("malilib.button.render_layers.axis"),
+            SET_TO_PLAYER   ("malilib.button.render_layers.set_to_player");
 
             private final String translationKey;
 

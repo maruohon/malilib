@@ -29,8 +29,8 @@ public class ConfigStatusIndicatorEntryWidget extends BaseOrderableListEditEntry
         this.containerWidget = containerWidget;
 
         this.toggleButton = OnOffButton.simpleSlider(16, this.data::isEnabled, this.data::toggleEnabled);
-        this.configureButton = GenericButton.create(16, "malilib.gui.button.label.configure", this::openEditScreen);
-        this.removeButton = GenericButton.create(16, "malilib.gui.button.label.remove", this::removeInfoRendererWidget);
+        this.configureButton = GenericButton.create(16, "malilib.button.misc.configure", this::openEditScreen);
+        this.removeButton = GenericButton.create(16, "malilib.button.misc.remove", this::removeInfoRendererWidget);
 
         this.setText(data.getStyledName());
         this.getBackgroundRenderer().getNormalSettings().setEnabled(true);

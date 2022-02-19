@@ -36,13 +36,13 @@ public class CustomHotkeyEditScreen extends BaseActionListScreen
         this.originalActionsList = hotkey.getActionList();
         this.setTitle("malilib.title.screen.custom_hotkey_edit");
 
-        this.actionsLabelWidget = new LabelWidget(0xFFF0F0F0, "malilib.label.custom_hotkey_edit.actions");
+        this.actionsLabelWidget = new LabelWidget(0xFFF0F0F0, "malilib.label.custom_hotkeys.edit.bound_actions");
 
-        this.addActionsButton = GenericButton.create(15, "malilib.label.button.macro_edit_screen.add_actions", this::addSelectedActions);
-        this.addActionsButton.translateAndAddHoverString("malilib.hover_info.custom_hotkey_edit_screen.add_actions");
+        this.addActionsButton = GenericButton.create(15, "malilib.button.custom_hotkey_edit_screen.add_actions", this::addSelectedActions);
+        this.addActionsButton.translateAndAddHoverString("malilib.hover.custom_hotkey_edit_screen.add_actions");
         this.addActionsButton.setEnabledStatusSupplier(this::canAddActions);
 
-        this.exportImportButton = GenericButton.create(15, "malilib.label.button.export_slash_import", this::openExportImportScreen);
+        this.exportImportButton = GenericButton.create(15, "malilib.button.export_slash_import", this::openExportImportScreen);
 
         this.leftSideListWidget.setEntryWidgetFactory(ActionListBaseActionEntryWidget::new);
         this.rightSideListWidget = this.createRightSideActionListWidget();

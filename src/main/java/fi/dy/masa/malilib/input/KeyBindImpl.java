@@ -534,7 +534,7 @@ public class KeyBindImpl implements KeyBind
 
             if (PRESSED_KEYS.isEmpty())
             {
-                heldKeys = StringUtils.translate("malilib.label.none.brackets");
+                heldKeys = StringUtils.translate("malilib.label.misc.none.brackets");
             }
             else
             {
@@ -542,7 +542,7 @@ public class KeyBindImpl implements KeyBind
             }
 
             MessageDispatcher.generic().type(MessageOutput.TOAST).time(2000).messageMarker("pressed_keys")
-                             .translate("malilib.label.pressed_keys_toast", heldKeys);
+                             .translate("malilib.label.toast.pressed_keys", heldKeys);
         }
 
         if (MaLiLibConfigs.Debug.KEYBIND_DEBUG.getBooleanValue())

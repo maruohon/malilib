@@ -16,7 +16,7 @@ import fi.dy.masa.malilib.util.data.ModInfo;
 public abstract class NamedAction extends CommonDescription
 {
     protected final ActionType<?> type;
-    protected String coloredDisplayNameTranslationKey = "malilib.label.name.action.simple_entry_widget_name";
+    protected String coloredDisplayNameTranslationKey = "malilib.label.actions.simple_entry_widget_name";
     @Nullable protected String registryName;
 
     public NamedAction(ActionType<?> type,
@@ -65,14 +65,14 @@ public abstract class NamedAction extends CommonDescription
     {
         List<StyledTextLine> lines = new ArrayList<>();
 
-        lines.add(StyledTextLine.translate("malilib.hover_info.action.name", this.name));
-        lines.add(StyledTextLine.translate("malilib.hover_info.action.mod", this.modInfo.getModName()));
-        lines.add(StyledTextLine.translate("malilib.hover_info.action.display_name", this.getDisplayName()));
-        lines.add(StyledTextLine.translate("malilib.hover_info.action.action_type", this.type.getDisplayName()));
+        lines.add(StyledTextLine.translate("malilib.hover.action.name", this.name));
+        lines.add(StyledTextLine.translate("malilib.hover.action.mod", this.modInfo.getModName()));
+        lines.add(StyledTextLine.translate("malilib.hover.action.display_name", this.getDisplayName()));
+        lines.add(StyledTextLine.translate("malilib.hover.action.action_type", this.type.getDisplayName()));
 
         if (this.registryName != null)
         {
-            lines.add(StyledTextLine.translate("malilib.hover_info.action.registry_name", this.registryName));
+            lines.add(StyledTextLine.translate("malilib.hover.action.registry_name", this.registryName));
         }
 
         return lines;

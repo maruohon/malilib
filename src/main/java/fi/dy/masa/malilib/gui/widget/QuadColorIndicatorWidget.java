@@ -27,14 +27,14 @@ public class QuadColorIndicatorWidget extends InteractableWidget
         String colorBottom = Color4f.getHexColorString(colorStorage.getBottom());
         String colorLeft   = Color4f.getHexColorString(colorStorage.getLeft());
         String colorRight  = Color4f.getHexColorString(colorStorage.getRight());
-        this.translateAndAddHoverString("malilib.gui.hover.open_quad_color_editor",
+        this.translateAndAddHoverString("malilib.hover.config.open_quad_color_editor",
                                         colorTop, colorBottom, colorLeft, colorRight);
     }
 
     protected void openColorEditorScreen()
     {
-        String title = "malilib.gui.title.edit_edge_colors";
-        String centerStr = "malilib.label.colors";
+        String title = "malilib.title.screen.edit_edge_colors";
+        String centerStr = "malilib.label.misc.colors";
         EdgeIntEditScreen screen = new EdgeIntEditScreen(this.colorStorage, true, title, centerStr);
         screen.setParent(GuiUtils.getCurrentScreen());
         BaseScreen.openPopupScreen(screen);

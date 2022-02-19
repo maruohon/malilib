@@ -35,6 +35,7 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
     protected final GenericButton resetConfigsButton;
     protected final DropDownListWidget<Scope> sourceSelectionDropdown;
     protected final DropDownListWidget<TypeFilter> typeFilterDropdown;
+    protected final EventListener configResetter;
     protected int openedHeight;
 
     public ConfigsSearchBarWidget(int width,
@@ -48,30 +49,25 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
         super(width - 160, 14, textChangeListener, filterChangeListener, iconSearch);
 
         this.openedHeight = openedHeight;
+        this.configResetter = configResetter;
 
         KeyBindSettings settings = KeyBindSettings.create(Context.ANY, KeyAction.BOTH, true, true, false, CancelCondition.NEVER, false);
         this.searchKey = KeyBindImpl.fromStorageString("", settings);
 
         this.hotkeySearchButton = new KeyBindConfigButton(160, 16, this.searchKey, screen);
         this.hotkeySearchButton.setUpdateKeyBindImmediately();
-        this.hotkeySearchButton.translateAndAddHoverString("malilib.gui.button.hover.hotkey_search_button");
+        this.hotkeySearchButton.translateAndAddHoverString("malilib.hover.button.config.hotkey_search_button");
         this.hotkeySearchButton.setHoverInfoRequiresShift(false);
         this.hotkeySearchButton.setValueChangeListener(filterChangeListener);
 
-        this.resetConfigsButton = GenericButton.create(160, 16, "malilib.gui.button.config.reset_all_filtered");
-        this.resetConfigsButton.translateAndAddHoverString("malilib.gui.button.hover.config.reset_all_filtered");
-        final ConfirmActionScreen confirmScreen = new ConfirmActionScreen(240,
-                                                                          "malilib.gui.title.confirm_config_reset",
-                                                                          configResetter,
-                                                                          null,
-                                                                          "malilib.gui.label.confirm_config_reset");
-        confirmScreen.setParent(GuiUtils.getCurrentScreen());
-        this.resetConfigsButton.setActionListener(() -> BaseScreen.openPopupScreen(confirmScreen));
+        this.resetConfigsButton = GenericButton.create(160, 16, "malilib.button.config.reset_all_filtered");
+        this.resetConfigsButton.translateAndAddHoverString("malilib.hover.button.config.reset_all_filtered");
+        this.resetConfigsButton.setActionListener(this::openResetConfigsConfirmationScreen);
 
         this.sourceSelectionDropdown = new DropDownListWidget<>(-1, 14, 60, 10, Scope.VALUES, Scope::getDisplayName);
         this.sourceSelectionDropdown.setSelectedEntry(MaLiLibConfigs.Generic.CONFIG_SEARCH_DEFAULT_SCOPE.getValue());
         this.sourceSelectionDropdown.setSelectionListener((s) -> filterChangeListener.onEvent());
-        this.sourceSelectionDropdown.setOpenStateHoverText(StringUtils.translate("malilib.gui.hover.config_search_default_scope"));
+        this.sourceSelectionDropdown.setOpenStateHoverText(StringUtils.translate("malilib.hover.config.search_default_scope"));
 
         this.typeFilterDropdown = new DropDownListWidget<>(-1, 14, 160, 10, TypeFilter.VALUES, TypeFilter::getDisplayName);
         this.typeFilterDropdown.setSelectedEntry(TypeFilter.ALL);
@@ -223,11 +219,20 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
         return super.onKeyTyped(keyCode, scanCode, modifiers);
     }
 
+    protected void openResetConfigsConfirmationScreen()
+    {
+        String title = "malilib.title.screen.confirm_config_reset";
+        String message = "malilib.label.confirm.selected_configs_reset";
+        ConfirmActionScreen confirmScreen = new ConfirmActionScreen(240, title, this.configResetter, null, message);
+        confirmScreen.setParent(GuiUtils.getCurrentScreen());
+        BaseScreen.openPopupScreen(confirmScreen);
+    }
+
     public static class Scope extends BaseOptionListConfigValue
     {
-        public static final Scope CURRENT_CATEGORY = new Scope("malilib.gui.label.config_scope.current_category");
-        public static final Scope ALL_CATEGORIES   = new Scope("malilib.gui.label.config_scope.all_categories");
-        public static final Scope ALL_MODS         = new Scope("malilib.gui.label.config_scope.all_mods");
+        public static final Scope CURRENT_CATEGORY = new Scope("malilib.label.config.search.scope.current_category");
+        public static final Scope ALL_CATEGORIES   = new Scope("malilib.label.config.search.scope.all_categories");
+        public static final Scope ALL_MODS         = new Scope("malilib.label.config.search.scope.all_mods");
 
         public static final ImmutableList<Scope> VALUES = ImmutableList.of(CURRENT_CATEGORY, ALL_CATEGORIES, ALL_MODS);
 
@@ -241,15 +246,15 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
     {
         public static final List<TypeFilter> VALUES = new ArrayList<>();
 
-        public static final TypeFilter ALL             = register("malilib.gui.label.config_type_filter.all",                (i, c) -> true);
-        public static final TypeFilter MODIFIED        = register("malilib.gui.label.config_type_filter.modified",           (i, c) -> c.isModified());
-        public static final TypeFilter MODIFIED_TOGGLE = register("malilib.gui.label.config_type_filter.modified_toggle",    (i, c) -> i != null && i.hasModifiedToggle(c));
-        public static final TypeFilter ENABLED_TOGGLE  = register("malilib.gui.label.config_type_filter.enabled_toggle",     (i, c) -> i != null && i.hasEnabledToggle(c));
-        public static final TypeFilter DISABLED_TOGGLE = register("malilib.gui.label.config_type_filter.disabled_toggle",    (i, c) -> i != null && i.hasDisabledToggle(c));
-        public static final TypeFilter ANY_HOTKEY      = register("malilib.gui.label.config_type_filter.any_hotkey",         (i, c) -> i != null && i.hasHotkey);
-        public static final TypeFilter MODIFIED_HOTKEY = register("malilib.gui.label.config_type_filter.modified_hotkey",    (i, c) -> i != null && i.hasModifiedHotkey(c));
-        public static final TypeFilter BOUND_HOTKEY    = register("malilib.gui.label.config_type_filter.bound_hotkey",       (i, c) -> i != null && i.hasBoundHotkey(c));
-        public static final TypeFilter UNBOUND_HOTKEY  = register("malilib.gui.label.config_type_filter.unbound_hotkey",     (i, c) -> i != null && i.hasUnboundHotkey(c));
+        public static final TypeFilter ALL             = register("malilib.label.config.search.type_filter.all",             (i, c) -> true);
+        public static final TypeFilter MODIFIED        = register("malilib.label.config.search.type_filter.modified",        (i, c) -> c.isModified());
+        public static final TypeFilter MODIFIED_TOGGLE = register("malilib.label.config.search.type_filter.modified_toggle", (i, c) -> i != null && i.hasModifiedToggle(c));
+        public static final TypeFilter ENABLED_TOGGLE  = register("malilib.label.config.search.type_filter.enabled_toggle",  (i, c) -> i != null && i.hasEnabledToggle(c));
+        public static final TypeFilter DISABLED_TOGGLE = register("malilib.label.config.search.type_filter.disabled_toggle", (i, c) -> i != null && i.hasDisabledToggle(c));
+        public static final TypeFilter ANY_HOTKEY      = register("malilib.label.config.search.type_filter.any_hotkey",      (i, c) -> i != null && i.hasHotkey);
+        public static final TypeFilter MODIFIED_HOTKEY = register("malilib.label.config.search.type_filter.modified_hotkey", (i, c) -> i != null && i.hasModifiedHotkey(c));
+        public static final TypeFilter BOUND_HOTKEY    = register("malilib.label.config.search.type_filter.bound_hotkey",    (i, c) -> i != null && i.hasBoundHotkey(c));
+        public static final TypeFilter UNBOUND_HOTKEY  = register("malilib.label.config.search.type_filter.unbound_hotkey",  (i, c) -> i != null && i.hasUnboundHotkey(c));
 
         private final String translationKey;
         private final TypeFilterTest tester;

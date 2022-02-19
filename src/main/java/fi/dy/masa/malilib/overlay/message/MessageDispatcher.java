@@ -155,7 +155,7 @@ public class MessageDispatcher
         if (MaLiLibConfigs.Debug.MESSAGE_KEY_TO_CHAT.getBooleanValue())
         {
             TextComponentString message = new TextComponentString(translationKey);
-            TextComponentTranslation hoverMessage = new TextComponentTranslation("malilib.gui.label.add_to_chat_field");
+            TextComponentTranslation hoverMessage = new TextComponentTranslation("malilib.label.message_debug.add_key_to_chat");
             message.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, translationKey));
             message.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverMessage));
             GameUtils.getClient().ingameGUI.getChatGUI().printChatMessage(message);

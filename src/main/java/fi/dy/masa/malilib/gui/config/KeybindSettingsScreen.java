@@ -52,7 +52,7 @@ public class KeybindSettingsScreen extends BaseScreen
         this.backgroundColor = 0xFF000000;
         this.renderBorder = true;
         this.useTitleHierarchy = false;
-        this.setTitle("malilib.gui.title.keybind_settings.advanced", this.keybindName);
+        this.setTitle("malilib.title.screen.keybind_settings.advanced", this.keybindName);
 
         this.configs = new KeyBindSettingsConfigs(keybind, this::initScreen);
         this.configList = this.configs.getConfigList();

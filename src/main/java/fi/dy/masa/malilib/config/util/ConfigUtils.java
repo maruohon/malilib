@@ -152,7 +152,7 @@ public class ConfigUtils
             copyConfigsIfProfileNotExist(profile);
             loadAllConfigsFromFile();
 
-            MessageDispatcher.success("malilib.message.success.switched_config_profile", profile);
+            MessageDispatcher.success("malilib.message.info.switched_config_profile", profile);
 
             return ActionResult.SUCCESS;
         }

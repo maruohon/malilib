@@ -29,8 +29,8 @@ public class FileConfigWidget extends BaseConfigOptionWidget<File, FileConfig>
             return true;
         });
 
-        this.createFileSelectorWidgets(this.getY(), this.config, factory,
-                                       "malilib.gui.button.config.select_file",
-                                       "malilib.gui.button.config.hover.selected_file");
+        String labelKey = "malilib.button.config.select_file";
+        String hoverKey = "malilib.hover.button.config.selected_file";
+        this.createFileSelectorWidgets(this.getY(), this.config, factory, labelKey, hoverKey);
     }
 }

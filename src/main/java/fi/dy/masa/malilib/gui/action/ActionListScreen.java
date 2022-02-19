@@ -29,18 +29,18 @@ public class ActionListScreen extends BaseActionListScreen
     {
         super(MaLiLibReference.MOD_ID, MaLiLibConfigScreen.ALL_TABS, MaLiLibConfigScreen.GENERIC);
 
-        this.setTitle("malilib.gui.title.action_list_screen", MaLiLibReference.MOD_VERSION);
+        this.setTitle("malilib.title.screen.action_list_screen", MaLiLibReference.MOD_VERSION);
 
         this.userAddedActionTypesDropdown = new DropDownListWidget<>(-1, 14, 140, 10, ActionGroup.VALUES_USER_ADDED, ActionGroup::getDisplayName);
         this.userAddedActionTypesDropdown.setSelectedEntry(ActionGroup.USER_ADDED);
         this.userAddedActionTypesDropdown.setSelectionListener((t) -> this.initScreen());
-        this.userAddedActionTypesDropdown.translateAndAddHoverString("malilib.hover_info.action_types_explanation");
+        this.userAddedActionTypesDropdown.translateAndAddHoverString("malilib.hover.action.action_types_explanation");
 
-        this.addMacroButton = GenericButton.create(14, "malilib.label.button.action_list_screen.create_macro", this::openMacroNameInput);
+        this.addMacroButton = GenericButton.create(14, "malilib.button.action_list_screen.create_macro", this::openMacroNameInput);
         this.addMacroButton.translateAndAddHoverString("malilib.hover.button.action_list_screen.create_macro");
         this.addMacroButton.setEnabledStatusSupplier(this::canCreateMacro);
 
-        this.executeActionButton = GenericButton.create(14, "malilib.label.button.action_list_screen.execute_action", this::executeSelectedAction);
+        this.executeActionButton = GenericButton.create(14, "malilib.button.action_list_screen.execute_action", this::executeSelectedAction);
         this.executeActionButton.translateAndAddHoverString("malilib.hover.button.action_list_screen.execute_action");
         this.executeActionButton.setEnabledStatusSupplier(this::canExecuteAction);
 
@@ -119,10 +119,10 @@ public class ActionListScreen extends BaseActionListScreen
 
     protected void openMacroNameInput()
     {
-        String title = StringUtils.translate("malilib.gui.title.create_macro");
+        String title = StringUtils.translate("malilib.title.screen.create_macro");
         TextInputScreen screen = new TextInputScreen(title, "", this::openMacroEditScreen, this);
         screen.setCloseScreenWhenApplied(false);
-        screen.setLabelText("malilib.label.name.colon");
+        screen.setLabelText("malilib.label.misc.name.colon");
         screen.setInfoText("malilib.info.action.action_name_immutable");
         BaseScreen.openPopupScreen(screen);
     }

@@ -67,29 +67,30 @@ public class DirectoryNavigationWidget extends SearchBarWidget
         this.setToggleButtonAlignment(HorizontalAlignment.RIGHT);
 
         this.buttonRoot = GenericButton.create(iconProvider.getIcon(FileBrowserIconType.ROOT));
-        this.buttonRoot.translateAndAddHoverString("malilib.gui.button.hover.directory_widget.root");
+        this.buttonRoot.translateAndAddHoverString("malilib.hover.button.directory_navigation_widget.root");
         this.buttonRoot.setPlayClickSound(false);
         this.buttonRoot.setActionListener(() -> { if (this.isSearchOpen == false) this.navigator.switchToRootDirectory(); });
 
         this.buttonUp = GenericButton.create(iconProvider.getIcon(FileBrowserIconType.UP));
-        this.buttonUp.translateAndAddHoverString("malilib.gui.button.hover.directory_widget.up");
+        this.buttonUp.translateAndAddHoverString("malilib.hover.button.directory_navigation_widget.up");
         this.buttonUp.setPlayClickSound(false);
         this.buttonUp.setActionListener(() -> { if (this.isSearchOpen == false) this.navigator.switchToParentDirectory(); });
 
         this.buttonCreateDir = GenericButton.create(iconProvider.getIcon(FileBrowserIconType.CREATE_DIR));
-        this.buttonCreateDir.translateAndAddHoverString("malilib.gui.button.hover.directory_widget.create_directory");
+        this.buttonCreateDir.translateAndAddHoverString("malilib.hover.button.directory_navigation_widget.create_directory");
         this.buttonCreateDir.setPlayClickSound(false);
         this.buttonCreateDir.setActionListener(() -> {
             if (this.isSearchOpen == false)
             {
                 DirectoryCreator creator = new DirectoryCreator(this.getCurrentDirectory(), this.navigator);
-                TextInputScreen gui = new TextInputScreen("malilib.gui.title.create_directory", "",
+                TextInputScreen gui = new TextInputScreen("malilib.title.screen.create_directory", "",
                                                           creator, GuiUtils.getCurrentScreen());
                 BaseScreen.openPopupScreen(gui);
             }
         });
 
-        this.infoWidget = new InfoIconWidget(DefaultIcons.INFO_ICON_11, "malilib.gui.button.hover.directory_widget.hold_shift_to_open_directory");
+        String hoverKey = "malilib.hover.button.directory_navigation_widget.hold_shift_to_open_directory";
+        this.infoWidget = new InfoIconWidget(DefaultIcons.INFO_ICON_11, hoverKey);
 
         this.generatePathParts(currentDir);
     }

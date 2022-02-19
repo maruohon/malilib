@@ -45,7 +45,7 @@ public class DirectoryCreator implements ResultingStringConsumer
             this.navigator.switchToDirectory(file);
         }
 
-        MessageDispatcher.success("malilib.message.success.directory_created", string);
+        MessageDispatcher.success("malilib.message.info.directory_created", string);
 
         return true;
     }

@@ -21,7 +21,7 @@ public class ItemListConfigWidget extends BaseValueListConfigWidget<Item, ItemLi
     @Override
     protected GenericButton createButton(int width, int height, ItemListConfig config, ConfigWidgetContext ctx)
     {
-        String title = StringUtils.translate("malilib.gui.title.item_list_edit", this.config.getDisplayName());
+        String title = StringUtils.translate("malilib.title.screen.item_list_edit", this.config.getDisplayName());
 
         return new BaseValueListEditButton<>(width, height, config, this::updateButtonStates, ctx.getDialogHandler(),
                                              title, () -> Items.STICK,

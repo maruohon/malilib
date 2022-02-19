@@ -19,11 +19,11 @@ public class CyclableContainerWidget extends ContainerWidget
         this.cyclableWidgets = cyclableWidgets;
 
         this.leftButton = GenericButton.create(12, 20, DefaultIcons.MEDIUM_ARROW_LEFT);
-        this.leftButton.translateAndAddHoverString("malilib.gui.button.hover.cycle_widgets_left");
+        this.leftButton.translateAndAddHoverString("malilib.hover.button.cycle_left");
         this.leftButton.setActionListener(this::cycleLeft);
 
         this.rightButton = GenericButton.create(12, 20, DefaultIcons.MEDIUM_ARROW_RIGHT);
-        this.rightButton.translateAndAddHoverString("malilib.gui.button.hover.cycle_widgets_right");
+        this.rightButton.translateAndAddHoverString("malilib.hover.button.cycle_right");
         this.rightButton.setActionListener(this::cycleRight);
     }
 

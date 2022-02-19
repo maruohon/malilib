@@ -23,7 +23,7 @@ public class MacroAction extends NamedAction
         super(ActionType.MACRO, name, name, MACRO_MOD_INFO);
 
         this.actionList = actionList;
-        this.coloredDisplayNameTranslationKey = "malilib.label.name.action.macro_entry_widget_name";
+        this.coloredDisplayNameTranslationKey = "malilib.label.actions.macro_entry_widget_name";
     }
 
     public ImmutableList<NamedAction> getActionList()
@@ -59,12 +59,12 @@ public class MacroAction extends NamedAction
     public List<StyledTextLine> getHoverInfo()
     {
         List<StyledTextLine> lines = new ArrayList<>();
-        lines.add(StyledTextLine.translate("malilib.hover_info.action.name", this.getName()));
-        lines.add(StyledTextLine.translate("malilib.hover_info.action.action_type", this.type.getDisplayName()));
+        lines.add(StyledTextLine.translate("malilib.hover.action.name", this.getName()));
+        lines.add(StyledTextLine.translate("malilib.hover.action.action_type", this.type.getDisplayName()));
 
         if (this.registryName != null)
         {
-            lines.add(StyledTextLine.translate("malilib.hover_info.action.registry_name", this.registryName));
+            lines.add(StyledTextLine.translate("malilib.hover.action.registry_name", this.registryName));
         }
 
         getContainedActionsTooltip(this.actionList, lines::add, 8);

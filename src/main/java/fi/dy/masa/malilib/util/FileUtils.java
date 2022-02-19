@@ -223,7 +223,7 @@ public class FileUtils
         {
             if (destinationFile.exists())
             {
-                messageConsumer.accept(StringUtils.translate("malilib.message.error.failed_to_rename_file_exists",
+                messageConsumer.accept(StringUtils.translate("malilib.message.error.failed_to_rename_file.exists",
                                                              sourceFile.getName(), destinationFile.getName()));
                 return false;
             }
@@ -234,7 +234,7 @@ public class FileUtils
             }
             catch (Exception e)
             {
-                messageConsumer.accept(StringUtils.translate("malilib.message.error.failed_to_rename_file_exception",
+                messageConsumer.accept(StringUtils.translate("malilib.message.error.failed_to_rename_file.exception",
                                                              sourceFile.getName(), destinationFile.getName(),
                                                              e.getMessage()));
             }

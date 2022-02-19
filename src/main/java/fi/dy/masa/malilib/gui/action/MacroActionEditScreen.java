@@ -43,16 +43,16 @@ public class MacroActionEditScreen extends BaseActionListScreen
         this.macro = macro;
         this.originalMacroActionsList = macro.getActionList();
 
-        this.setTitle("malilib.gui.title.edit_macro");
+        this.setTitle("malilib.title.screen.edit_macro");
 
-        String label = StringUtils.translate("malilib.gui.label.macro_edit_screen.macro_actions", macro.getName());
+        String label = StringUtils.translate("malilib.label.actions.macro_edit_screen.contained_actions", macro.getName());
         this.macroActionsLabelWidget = new LabelWidget(label);
 
-        this.addActionsButton = GenericButton.create(15, "malilib.label.button.macro_edit_screen.add_actions", this::addSelectedActions);
-        this.addActionsButton.translateAndAddHoverString("malilib.hover_info.macro_edit_screen.add_actions");
+        this.addActionsButton = GenericButton.create(15, "malilib.button.macro_edit_screen.add_actions", this::addSelectedActions);
+        this.addActionsButton.translateAndAddHoverString("malilib.hover.macro_edit_screen.add_actions");
         this.addActionsButton.setEnabledStatusSupplier(this::canAddActions);
 
-        this.exportImportButton = GenericButton.create(15, "malilib.label.button.export_slash_import", this::openExportImportScreen);
+        this.exportImportButton = GenericButton.create(15, "malilib.button.export_slash_import", this::openExportImportScreen);
 
         this.leftSideListWidget.setEntryWidgetFactory(this::createMacroSourceActionsWidget);
         this.rightSideListWidget = this.createRightSideActionListWidget();

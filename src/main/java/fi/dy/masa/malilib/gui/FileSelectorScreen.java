@@ -34,7 +34,7 @@ public class FileSelectorScreen extends BaseListScreen<BaseFileBrowserWidget>
 
         this.fileNameTextField = new BaseTextFieldWidget(300, 16);
 
-        this.setTitle("malilib.gui.title.file_browser");
+        this.setTitle("malilib.title.screen.file_browser");
     }
 
     @Override
@@ -97,7 +97,7 @@ public class FileSelectorScreen extends BaseListScreen<BaseFileBrowserWidget>
 
     protected String getButtonLabel()
     {
-        return "malilib.gui.button.config.use_selected_file";
+        return "malilib.button.config.use_selected_file";
     }
 
     protected void onConfirm()

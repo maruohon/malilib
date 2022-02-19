@@ -34,7 +34,7 @@ public abstract class BaseStringListEditEntryWidget<TYPE> extends BaseOrderableL
         this.textField = new BaseTextFieldWidget(textFieldWidth, 16, toStringConverter.apply(initialValue));
         this.textField.setShowCursorPosition(true);
 
-        this.resetButton = GenericButton.create(16, "malilib.gui.button.reset.caps");
+        this.resetButton = GenericButton.create(16, "malilib.button.misc.reset.caps");
         this.resetButton.getBorderRenderer().getNormalSettings().setBorderWidthAndColor(1, 0xFF404040);
         this.resetButton.setRenderButtonBackgroundTexture(false);
         this.resetButton.setDisabledTextColor(0xFF505050);

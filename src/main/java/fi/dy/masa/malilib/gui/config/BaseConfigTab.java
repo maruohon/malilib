@@ -19,7 +19,7 @@ public class BaseConfigTab extends BaseScreenTab implements ConfigTab
     public BaseConfigTab(ModInfo modInfo, String name, int configWidth,
                          List<? extends ConfigInfo> configs, Function<GuiScreen, BaseScreen> screenFactory)
     {
-        this(modInfo, name, modInfo.getModId() + ".label.config_tab." + name, configWidth, configs, screenFactory);
+        this(modInfo, name, modInfo.getModId() + ".config.tab." + name, configWidth, configs, screenFactory);
     }
 
     public BaseConfigTab(ModInfo modInfo, String name, String translationKey, int configWidth,

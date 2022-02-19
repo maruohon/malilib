@@ -99,7 +99,7 @@ public class ActionExecutionWidgetManager
         {
             String name = FileNameUtils.generateSimpleSafeFileName(arg);
             INSTANCE.saveWidgetScreenData(name, ActionWidgetScreenData.createEmpty());
-            MessageDispatcher.success("malilib.message.action_screen_created_by_name", name);
+            MessageDispatcher.success("malilib.message.info.action_screen_created_by_name", name);
             return true;
         }
         else

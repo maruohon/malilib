@@ -39,10 +39,10 @@ public abstract class BaseNbtStringifier
         this.colored = colored;
         this.useNumberSuffix = useNumberSuffix;
         this.baseColor = baseColor;
-        this.keyColor = StringUtils.translate("malilib.info.nbt_tooltip.key_color");
-        this.numberColor = StringUtils.translate("malilib.info.nbt_tooltip.number_color");
-        this.numberTypeColor = StringUtils.translate("malilib.info.nbt_tooltip.number_type_color");
-        this.stringColor = StringUtils.translate("malilib.info.nbt_tooltip.string_color");
+        this.keyColor        = StringUtils.translate("malilib.label.nbt_tooltip.key_color");
+        this.numberColor     = StringUtils.translate("malilib.label.nbt_tooltip.number_color");
+        this.numberTypeColor = StringUtils.translate("malilib.label.nbt_tooltip.number_type_color");
+        this.stringColor     = StringUtils.translate("malilib.label.nbt_tooltip.string_color");
     }
 
     protected String getFormattedTagName(String name)

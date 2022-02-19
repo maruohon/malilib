@@ -22,17 +22,17 @@ import fi.dy.masa.malilib.util.StringUtils;
 public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry>
 {
     public static final DataColumn<DirectoryEntry> NAME_COLUMN =
-            new DataColumn<DirectoryEntry>("malilib.gui.label.file_browser_column.name",
+            new DataColumn<DirectoryEntry>("malilib.label.file_browser.column.file_name",
                                            DefaultIcons.SMALL_ARROW_UP, DefaultIcons.SMALL_ARROW_DOWN,
                                            Comparator.naturalOrder());
 
     public static final DataColumn<DirectoryEntry> SIZE_COLUMN =
-            new DataColumn<>("malilib.gui.label.file_browser_column.size",
+            new DataColumn<>("malilib.label.file_browser.column.file_size",
                              DefaultIcons.SMALL_ARROW_UP, DefaultIcons.SMALL_ARROW_DOWN,
                              Comparator.comparingLong((e) -> e.getFullPath().length()));
 
     public static final DataColumn<DirectoryEntry> TIME_COLUMN =
-            new DataColumn<>("malilib.gui.label.file_browser_column.mtime",
+            new DataColumn<>("malilib.label.file_browser.column.last_modified",
                              DefaultIcons.SMALL_ARROW_UP, DefaultIcons.SMALL_ARROW_DOWN,
                              Comparator.comparingLong((e) -> e.getFullPath().lastModified()));
 

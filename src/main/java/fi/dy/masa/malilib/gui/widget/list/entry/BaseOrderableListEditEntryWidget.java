@@ -370,10 +370,10 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
 
     protected enum ButtonType
     {
-        ADD         ("malilib.gui.button.hover.list.add_after", BaseOrderableListEditEntryWidget::insertEntryAfter),
-        REMOVE      ("malilib.gui.button.hover.list.remove",    BaseOrderableListEditEntryWidget::removeEntry),
-        MOVE_UP     ("malilib.gui.button.hover.list.move_up",   BaseOrderableListEditEntryWidget::moveEntryUp),
-        MOVE_DOWN   ("malilib.gui.button.hover.list.move_down", BaseOrderableListEditEntryWidget::moveEntryDown);
+        ADD         ("malilib.hover.button.list.add_after", BaseOrderableListEditEntryWidget::insertEntryAfter),
+        REMOVE      ("malilib.hover.button.list.remove",    BaseOrderableListEditEntryWidget::removeEntry),
+        MOVE_UP     ("malilib.hover.button.list.move_up",   BaseOrderableListEditEntryWidget::moveEntryUp),
+        MOVE_DOWN   ("malilib.hover.button.list.move_down", BaseOrderableListEditEntryWidget::moveEntryDown);
 
         private final String translationKey;
         private final Function<BaseOrderableListEditEntryWidget<?>, Boolean> action;

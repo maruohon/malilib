@@ -21,13 +21,13 @@ public class ParameterizableNamedAction extends NamedAction
         super(ActionType.PARAMETERIZABLE, name, translationKey, mod);
 
         this.action = action;
-        this.coloredDisplayNameTranslationKey = "malilib.label.name.action.parameterizable_entry_widget_name";
+        this.coloredDisplayNameTranslationKey = "malilib.label.actions.parameterizable_entry_widget_name";
     }
 
     @Override
     public ActionResult execute(ActionContext ctx)
     {
-        TextInputScreen screen = new TextInputScreen("malilib.gui.title.provide_arguments_for_action",
+        TextInputScreen screen = new TextInputScreen("malilib.title.screen.provide_arguments_for_action",
                                                      this::executeWithArgument);
         BaseScreen.openScreen(screen);
 

@@ -106,7 +106,7 @@ public class DropDownListWidget<T> extends ContainerWidget
         this.entries = entries;
         this.stringFactory = stringFactory;
         this.iconWidgetFactory = iconWidgetFactory;
-        this.searchTipText = StyledTextLine.of(StringUtils.translate("malilib.gui.tip.dropdown.type_to_search"));
+        this.searchTipText = StyledTextLine.translate("malilib.label.misc.dropdown.type_to_search");
 
         int v = Math.min(maxVisibleEntries, entries.size());
         v = Math.min(v, maxHeight / height);

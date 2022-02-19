@@ -37,7 +37,7 @@ public class ToastRendererWidget extends InfoRendererWidget
 
         this.shouldSerialize = true;
         this.renderAboveScreen = true;
-        this.setName(StringUtils.translate("malilib.label.default_toast_renderer"));
+        this.setName(StringUtils.translate("malilib.label.misc.default_toast_renderer"));
         this.setMaxWidth(240);
         this.padding.setAll(6, 10, 6, 10);
     }
@@ -313,7 +313,7 @@ public class ToastRendererWidget extends InfoRendererWidget
     {
         widget.setCanConfigure(true);
         widget.setCanRemove(true);
-        widget.setText(StyledTextLine.translate("malilib.gui.hover.toast_renderer_entry_name",
+        widget.setText(StyledTextLine.translate("malilib.hover.toast_renderer.entry_name",
                                                 this.getName(), this.getScreenLocation().getDisplayName()));
     }
 

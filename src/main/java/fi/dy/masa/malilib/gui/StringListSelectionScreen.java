@@ -22,8 +22,8 @@ public class StringListSelectionScreen extends BaseListScreen<DataListWidget<Str
         this.strings = ImmutableList.copyOf(strings);
         this.consumer = consumer;
 
-        this.confirmButton = GenericButton.create("malilib.gui.button.ok", this::onConfirm);
-        this.cancelButton = GenericButton.create("malilib.gui.button.cancel", this::openParentScreen);
+        this.confirmButton = GenericButton.create("malilib.button.misc.ok.caps", this::onConfirm);
+        this.cancelButton = GenericButton.create("malilib.button.misc.cancel", this::openParentScreen);
     }
 
     public List<String> getStrings()

@@ -147,7 +147,7 @@ public class EdgeInt
 
     public List<String> getHoverTooltip()
     {
-        return Collections.singletonList(StringUtils.translate("malilib.gui.button.hover.edge_int_values",
+        return Collections.singletonList(StringUtils.translate("malilib.hover.button.edge_int_values",
                                          this.top, this.left, this.right, this.bottom));
     }
 

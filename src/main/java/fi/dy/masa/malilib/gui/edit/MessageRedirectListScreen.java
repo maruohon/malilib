@@ -21,9 +21,9 @@ public class MessageRedirectListScreen extends BaseListScreen<DataListWidget<Mes
     {
         super(10, 52, 20, 64);
 
-        this.setTitle("malilib.gui.title.message_redirect_list_screen");
+        this.setTitle("malilib.title.screen.message_redirect_list_screen");
 
-        String key = "malilib.gui.button.message_redirect_list_screen.add_redirect";
+        String key = "malilib.button.message_redirect.add_redirect";
         this.addRedirectButton = GenericButton.create(key, this::openAddRedirectScreen);
     }
 
@@ -76,10 +76,10 @@ public class MessageRedirectListScreen extends BaseListScreen<DataListWidget<Mes
 
     protected void openAddRedirectScreen()
     {
-        TextInputScreen screen = new TextInputScreen("malilib.gui.title.add_message_redirect",
+        TextInputScreen screen = new TextInputScreen("malilib.title.screen.add_message_redirect",
                                                      "", this::addRedirect, this);
         screen.setScreenWidth(300);
-        screen.setInfoText("malilib.gui.label.add_message_redirect_for_key");
+        screen.setInfoText("malilib.label.message_redirect.add_redirect_for_key");
         BaseScreen.openPopupScreen(screen);
     }
 

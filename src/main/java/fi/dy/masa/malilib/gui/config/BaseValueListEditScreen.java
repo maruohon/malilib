@@ -88,7 +88,7 @@ public class BaseValueListEditScreen<TYPE> extends BaseListScreen<DataListWidget
         searchBar.setToggleButtonAlignment(HorizontalAlignment.RIGHT);
         listWidget.setSearchBar(searchBar);
 
-        listWidget.setHeaderWidgetFactory((lw) -> new BaseDataListEditHeaderWidget<>(lw, "malilib.gui.button.hover.list.add_first", this.newEntrySupplier));
+        listWidget.setHeaderWidgetFactory((lw) -> new BaseDataListEditHeaderWidget<>(lw, "malilib.hover.button.list.add_first", this.newEntrySupplier));
         listWidget.setSearchBarPositioner((wgt, x, y, w) -> {
             wgt.setPosition(x + 17, y);
             wgt.setWidth(w - 17);

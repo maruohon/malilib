@@ -25,7 +25,7 @@ public class CustomHotkeyDefinition implements Hotkey
         this.keyBind = keyBind;
         this.actions = actions;
 
-        String custom = StringUtils.translate("malilib.label.custom");
+        String custom = StringUtils.translate("malilib.label.misc.custom");
         this.keyBind.setModInfo(new ModInfo(custom, custom));
         this.keyBind.setCallback(HotkeyCallback.of(this::execute));
         this.keyBind.setNameTranslationKey(name);
@@ -66,7 +66,8 @@ public class CustomHotkeyDefinition implements Hotkey
             return this.actions.get(0).getColoredWidgetDisplayName();
         }
 
-        return StyledTextLine.translate("malilib.label.custom_hotkey.multiple_actions", this.actions.size());
+        String key = "malilib.label.custom_hotkeys.widget.action_display_name.multiple_actions";
+        return StyledTextLine.translate(key, this.actions.size());
     }
 
     protected ActionResult execute(ActionContext ctx)

@@ -50,23 +50,23 @@ public class StringListRendererWidgetEditScreen extends BaseScreen
     {
         this.widget = widget;
         this.useTitleHierarchy = false;
-        this.setTitle("malilib.gui.title.string_list_renderer_configuration");
+        this.setTitle("malilib.title.screen.string_list_renderer_configuration");
 
         this.locationDropdownWidget = new DropDownListWidget<>(-1, 16, 160, 10, ScreenLocation.VALUES,
                                                                OptionListConfigValue::getDisplayName);
         this.locationDropdownWidget.setSelectedEntry(widget.getScreenLocation());
         this.locationDropdownWidget.setSelectionListener(this::changeWidgetLocation);
 
-        this.nameLabelWidget = new LabelWidget("malilib.label.name.colon");
-        this.sortIndexLabelWidget = new LabelWidget("malilib.label.sort_index.colon");
-        this.lineHeightLabelWidget = new LabelWidget("malilib.label.line_height.colon");
-        this.textColorLabelWidget = new LabelWidget("malilib.label.text_color.colon");
-        this.textScaleLabelWidget = new LabelWidget("malilib.label.text_scale.colon");
-        this.textShadowLabelWidget = new LabelWidget("malilib.label.text_shadow.colon");
-        this.backgroundLabelWidget = new LabelWidget("malilib.label.background.colon");
-        this.evenWidthBackgroundLabelWidget = new LabelWidget("malilib.label.string_list_renderer.even_width_background.colon");
-        this.oddBackgroundLabelWidget = new LabelWidget("malilib.label.config_status_indicator.background_odd.colon");
-        this.oddBackgroundLabelWidget.translateAndAddHoverString("malilib.label.config_status_indicator.background_odd.hover");
+        this.nameLabelWidget = new LabelWidget("malilib.label.misc.name.colon");
+        this.sortIndexLabelWidget = new LabelWidget("malilib.label.misc.sort_index");
+        this.lineHeightLabelWidget = new LabelWidget("malilib.label.misc.line_height");
+        this.textColorLabelWidget = new LabelWidget("malilib.label.misc.text_color");
+        this.textScaleLabelWidget = new LabelWidget("malilib.label.misc.text_scale");
+        this.textShadowLabelWidget = new LabelWidget("malilib.label.misc.text_shadow");
+        this.backgroundLabelWidget = new LabelWidget("malilib.label.misc.background");
+        this.evenWidthBackgroundLabelWidget = new LabelWidget("malilib.label.misc.even_width_background.short");
+        this.oddBackgroundLabelWidget = new LabelWidget("malilib.label.config_status_indicator.background_odd");
+        this.oddBackgroundLabelWidget.translateAndAddHoverString("malilib.hover.config_status_indicator.background_odd");
 
         this.nameTextField = new BaseTextFieldWidget(160, 16, widget.getName());
         this.nameTextField.setListener(widget::setName);
@@ -75,10 +75,10 @@ public class StringListRendererWidgetEditScreen extends BaseScreen
         this.lineHeightEditWidget = new IntegerEditWidget(72, 16, widget.getLineHeight(), 6, 40, widget::setLineHeight);
         this.textScaleEditWidget = new DoubleEditWidget(72, 16, widget.getScale(), 0.25, 20, widget::setScale);
 
-        this.marginEditButton = GenericButton.create(16, "malilib.label.margin", this::openMarginEditScreen);
+        this.marginEditButton = GenericButton.create(16, "malilib.label.misc.margin", this::openMarginEditScreen);
         this.marginEditButton.setHoverStringProvider("tooltip", this.widget.getMargin()::getHoverTooltip);
 
-        this.paddingEditButton = GenericButton.create(16, "malilib.label.padding", this::openPaddingEditScreen);
+        this.paddingEditButton = GenericButton.create(16, "malilib.label.misc.padding", this::openPaddingEditScreen);
         this.paddingEditButton.setHoverStringProvider("tooltip", this.widget.getPadding()::getHoverTooltip);
 
         this.enabledToggleButton = OnOffButton.simpleSlider(16, widget::isEnabled, widget::toggleEnabled);
@@ -87,7 +87,7 @@ public class StringListRendererWidgetEditScreen extends BaseScreen
 
         this.backgroundEnabledToggleButton = OnOffButton.simpleSlider(16, textSettings::getBackgroundEnabled, textSettings::toggleUseBackground);
         this.oddEvenBackgroundToggleButton = OnOffButton.simpleSlider(16, textSettings::getOddEvenBackgroundEnabled, textSettings::toggleUseOddEvenBackground);
-        this.oddEvenBackgroundToggleButton.translateAndAddHoverString("malilib.label.config_status_indicator.background_odd.hover");
+        this.oddEvenBackgroundToggleButton.translateAndAddHoverString("malilib.hover.config_status_indicator.background_odd");
 
         this.evenWidthBackgroundToggleButton = OnOffButton.simpleSlider(16, textSettings::getEvenWidthBackgroundEnabled, textSettings::toggleUseEvenWidthBackground);
         this.textShadowToggleButton = OnOffButton.simpleSlider(16, textSettings::getTextShadowEnabled, textSettings::toggleUseTextShadow);
@@ -217,7 +217,7 @@ public class StringListRendererWidgetEditScreen extends BaseScreen
     protected void openMarginEditScreen()
     {
         EdgeIntEditScreen screen = new EdgeIntEditScreen(this.widget.getMargin(), false,
-                                                         "malilib.gui.title.edit_margin", "malilib.label.margin");
+                                                         "malilib.title.screen.edit_margin", "malilib.label.misc.margin");
         screen.setParent(GuiUtils.getCurrentScreen());
         BaseScreen.openScreen(screen);
     }
@@ -225,7 +225,7 @@ public class StringListRendererWidgetEditScreen extends BaseScreen
     protected void openPaddingEditScreen()
     {
         EdgeIntEditScreen screen = new EdgeIntEditScreen(this.widget.getPadding(), false,
-                                                         "malilib.gui.title.edit_padding", "malilib.label.padding");
+                                                         "malilib.title.screen.edit_padding", "malilib.label.misc.padding");
         screen.setParent(GuiUtils.getCurrentScreen());
         BaseScreen.openScreen(screen);
     }
