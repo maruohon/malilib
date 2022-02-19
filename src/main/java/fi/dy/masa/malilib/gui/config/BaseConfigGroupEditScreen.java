@@ -6,7 +6,6 @@ import javax.annotation.Nullable;
 import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.gui.BaseListScreen;
-import fi.dy.masa.malilib.gui.config.liteloader.DialogHandler;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.list.ConfigOptionListWidget;
 import fi.dy.masa.malilib.listener.EventListener;
@@ -20,34 +19,19 @@ public class BaseConfigGroupEditScreen extends BaseListScreen<ConfigOptionListWi
     @Nullable protected KeybindEditingScreen keyBindEditingScreen;
     protected int elementsWidth = 200;
 
-    public BaseConfigGroupEditScreen(ModInfo modInfo,
-                                     @Nullable EventListener saveListener,
-                                     @Nullable DialogHandler dialogHandler,
-                                     @Nullable GuiScreen parent)
+    public BaseConfigGroupEditScreen(ModInfo modInfo, @Nullable EventListener saveListener, @Nullable GuiScreen parent)
     {
         super(8, 30, 14, 36);
 
         this.modInfo = modInfo;
         this.saveListener = saveListener;
-        this.dialogHandler = dialogHandler;
 
         this.shouldCenter = true;
         this.renderBorder = true;
         this.useTitleHierarchy = false;
         this.backgroundColor = 0xFF000000;
 
-        // When we have a dialog handler, then we are inside the Liteloader config menu.
-        // In there we don't want to use the normal "GUI replacement and render parent first" trick.
-        // The "dialog handler" stuff is used within the Liteloader config menus,
-        // because there we can't change the mc.currentScreen reference to this GUI,
-        // because otherwise Liteloader will freak out.
-        // So instead we are using a weird wrapper "sub panel" thingy in there, and thus
-        // we can NOT try to render the parent GUI here in that case, otherwise it will
-        // lead to an infinite recursion loop and a StackOverflowError.
-        if (this.dialogHandler == null)
-        {
-            this.setParent(parent);
-        }
+        this.setParent(parent);
     }
 
     @Override
@@ -98,7 +82,7 @@ public class BaseConfigGroupEditScreen extends BaseListScreen<ConfigOptionListWi
     @Override
     protected ConfigOptionListWidget<? extends ConfigInfo> createListWidget(int listX, int listY, int listWidth, int listHeight)
     {
-        ConfigWidgetContext ctx = new ConfigWidgetContext(this::getListWidget, this.getKeybindEditingScreen(), () -> this.dialogHandler, 0);
+        ConfigWidgetContext ctx = new ConfigWidgetContext(this::getListWidget, this.getKeybindEditingScreen(), 0);
         return ConfigOptionListWidget.createWithExpandedGroups(listX, listY, listWidth, listHeight,
                                                                this::getElementsWidth, this.modInfo, this::getConfigs, ctx);
     }

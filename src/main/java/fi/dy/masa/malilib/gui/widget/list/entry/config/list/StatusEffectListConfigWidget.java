@@ -24,11 +24,14 @@ public class StatusEffectListConfigWidget extends BaseValueListConfigWidget<Poti
     {
         String title = StringUtils.translate("malilib.title.screen.status_effect_list_edit", this.config.getDisplayName());
 
-        return new BaseValueListEditButton<>(width, height, config, this::updateButtonStates, ctx.getDialogHandler(),
-                                             title, () -> MobEffects.REGENERATION,
+        return new BaseValueListEditButton<>(width, height,
+                                             config,
+                                             this::updateButtonStates,
+                                             () -> MobEffects.REGENERATION,
                                              StatusEffectListConfigWidget::getSortedEffectList,
                                              StatusEffectListConfig::getRegistryName,
-                                             null);
+                                             null,
+                                             title);
     }
 
     public static List<Potion> getSortedEffectList()

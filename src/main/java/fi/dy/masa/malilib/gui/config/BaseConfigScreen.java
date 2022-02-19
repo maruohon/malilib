@@ -11,7 +11,6 @@ import fi.dy.masa.malilib.config.ConfigManagerImpl;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.gui.BaseListScreen;
 import fi.dy.masa.malilib.gui.BaseScreen;
-import fi.dy.masa.malilib.gui.config.liteloader.DialogHandler;
 import fi.dy.masa.malilib.gui.tab.ScreenTab;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.DropDownListWidget;
@@ -182,18 +181,6 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
     }
 
     @Override
-    @Nullable
-    public DialogHandler getDialogHandler()
-    {
-        return this.dialogHandler;
-    }
-
-    public void setDialogHandler(@Nullable DialogHandler handler)
-    {
-        this.dialogHandler = handler;
-    }
-
-    @Override
     public ModInfo getModInfo()
     {
         return this.modInfo;
@@ -238,7 +225,7 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
     @Override
     protected ConfigOptionListWidget<? extends ConfigInfo> createListWidget(int listX, int listY, int listWidth, int listHeight)
     {
-        ConfigWidgetContext ctx = new ConfigWidgetContext(this::getListWidget, this, this::getDialogHandler, 0);
+        ConfigWidgetContext ctx = new ConfigWidgetContext(this::getListWidget, this, 0);
         ConfigOptionListWidget<? extends ConfigInfo> widget = ConfigOptionListWidget.createWithExpandedGroups(
                 listX, listY, listWidth, listHeight, this::getDefaultConfigElementWidth,
                 this.modInfo, this::getConfigs, ctx);

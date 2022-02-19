@@ -1,14 +1,12 @@
 package fi.dy.masa.malilib.gui.config;
 
 import java.util.List;
-import javax.annotation.Nullable;
 import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.config.option.BaseConfigOption;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.config.option.IntegerConfig;
 import fi.dy.masa.malilib.config.option.OptionListConfig;
 import fi.dy.masa.malilib.gui.BaseScreen;
-import fi.dy.masa.malilib.gui.config.liteloader.DialogHandler;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
@@ -30,34 +28,21 @@ public class KeybindSettingsScreen extends BaseScreen
     protected int labelWidth;
     protected int configWidth;
 
-    public KeybindSettingsScreen(KeyBind keybind, String name, @Nullable DialogHandler dialogHandler, GuiScreen parent)
+    public KeybindSettingsScreen(KeyBind keybind, String name, GuiScreen parent)
     {
         this.keybind = keybind;
         this.keybindName = name;
-        this.dialogHandler = dialogHandler;
-
-        // When we have a dialog handler, then we are inside the Liteloader config menu.
-        // In there we don't want to use the normal "GUI replacement and render parent first" trick.
-        // The "dialog handler" stuff is used within the Liteloader config menus,
-        // because there we can't change the mc.currentScreen reference to this GUI,
-        // because otherwise Liteloader will freak out.
-        // So instead we are using a weird wrapper "sub panel" thingy in there, and thus
-        // we can NOT try to render the parent GUI here in that case, otherwise it will
-        // lead to an infinite recursion loop and a StackOverflowError.
-        if (this.dialogHandler == null)
-        {
-            this.setParent(parent);
-        }
 
         this.backgroundColor = 0xFF000000;
         this.renderBorder = true;
         this.useTitleHierarchy = false;
-        this.setTitle("malilib.title.screen.keybind_settings.advanced", this.keybindName);
-
         this.configs = new KeyBindSettingsConfigs(keybind, this::initScreen);
         this.configList = this.configs.getConfigList();
         this.labelWidth = this.getMaxDisplayNameLength(this.configList);
         this.configWidth = 100;
+
+        this.setTitle("malilib.title.screen.keybind_settings.advanced", this.keybindName);
+        this.setParent(parent);
 
         int totalWidth = this.labelWidth + this.configWidth + 30;
         totalWidth = Math.max(totalWidth, this.titleText.renderWidth + 20);

@@ -3,13 +3,11 @@ package fi.dy.masa.malilib.gui.widget;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
-import javax.annotation.Nullable;
 import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.config.value.OptionListConfigValue;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.config.KeybindSettingsScreen;
-import fi.dy.masa.malilib.gui.config.liteloader.DialogHandler;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.input.CancelCondition;
@@ -25,15 +23,13 @@ public class KeybindSettingsWidget extends InteractableWidget
 
     protected final String keyBindName;
     protected final KeyBind keyBind;
-    @Nullable protected final DialogHandler dialogHandler;
 
-    public KeybindSettingsWidget(KeyBind keyBind, String keyBindName, @Nullable DialogHandler dialogHandler)
+    public KeybindSettingsWidget(KeyBind keyBind, String keyBindName)
     {
         super(20, 20);
 
         this.keyBind = keyBind;
         this.keyBindName = keyBindName;
-        this.dialogHandler = dialogHandler;
         this.setHoverStringProvider("hover_info", this::rebuildHoverStrings);
     }
 
@@ -42,14 +38,8 @@ public class KeybindSettingsWidget extends InteractableWidget
     {
         if (mouseButton == 0)
         {
-            if (this.dialogHandler != null)
-            {
-                this.dialogHandler.openDialog(new KeybindSettingsScreen(this.keyBind, this.keyBindName, this.dialogHandler, GuiUtils.getCurrentScreen()));
-            }
-            else
-            {
-                BaseScreen.openPopupScreen(new KeybindSettingsScreen(this.keyBind, this.keyBindName, null, GuiUtils.getCurrentScreen()));
-            }
+            BaseScreen.openPopupScreen(new KeybindSettingsScreen(this.keyBind, this.keyBindName,
+                                                                 GuiUtils.getCurrentScreen()));
 
             return true;
         }

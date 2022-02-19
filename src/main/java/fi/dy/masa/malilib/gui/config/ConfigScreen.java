@@ -1,9 +1,7 @@
 package fi.dy.masa.malilib.gui.config;
 
 import java.util.List;
-import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
-import fi.dy.masa.malilib.gui.config.liteloader.DialogHandler;
 import fi.dy.masa.malilib.util.data.ModInfo;
 
 public interface ConfigScreen
@@ -26,14 +24,4 @@ public interface ConfigScreen
      * @return
      */
     List<? extends ConfigInfo> getConfigs();
-
-    /**
-     * Get the "dialog window" handler for this GUI, if any.
-     * @return
-     */
-    @Nullable
-    default DialogHandler getDialogHandler()
-    {
-        return null;
-    }
 }

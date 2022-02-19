@@ -11,7 +11,6 @@ import fi.dy.masa.malilib.config.option.list.ValueListConfig;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.config.BaseValueListEditScreen;
 import fi.dy.masa.malilib.gui.config.BaseValueListEditScreen.ValueListEditEntryWidgetFactory;
-import fi.dy.masa.malilib.gui.config.liteloader.DialogHandler;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.DropDownListWidget.IconWidgetFactory;
 import fi.dy.masa.malilib.gui.widget.list.entry.BaseValueListEditEntryWidget;
@@ -24,19 +23,19 @@ public class BaseValueListEditButton<TYPE> extends GenericButton
     protected final String screenTitle;
     protected final Supplier<TYPE> newEntryFactory;
     protected final ValueListEditEntryWidgetFactory<TYPE> widgetFactory;
-    @Nullable protected final DialogHandler dialogHandler;
     @Nullable protected final EventListener saveListener;
     protected ImmutableList<String> valueStrings;
 
-    public BaseValueListEditButton(int width, int height, ValueListConfig<TYPE> config,
-                                   @Nullable EventListener saveListener, @Nullable DialogHandler dialogHandler,
-                                   String screenTitle, Supplier<TYPE> newEntryFactory,
-                                   ValueListEditEntryWidgetFactory<TYPE> widgetFactory)
+    public BaseValueListEditButton(int width, int height,
+                                   ValueListConfig<TYPE> config,
+                                   @Nullable EventListener saveListener,
+                                   Supplier<TYPE> newEntryFactory,
+                                   ValueListEditEntryWidgetFactory<TYPE> widgetFactory,
+                                   String screenTitle)
     {
         super(width, height);
 
         this.config = config;
-        this.dialogHandler = dialogHandler;
         this.saveListener = saveListener;
         this.screenTitle = screenTitle;
         this.newEntryFactory = newEntryFactory;
@@ -48,35 +47,30 @@ public class BaseValueListEditButton<TYPE> extends GenericButton
         this.setDisplayStringSupplier(this::getCurrentDisplayString);
     }
 
-    public BaseValueListEditButton(int width, int height, ValueListConfig<TYPE> config,
-                                   @Nullable EventListener saveListener, @Nullable DialogHandler dialogHandler,
-                                   String screenTitle, Supplier<TYPE> newEntryFactory,
+    public BaseValueListEditButton(int width, int height,
+                                   ValueListConfig<TYPE> config,
+                                   @Nullable EventListener saveListener,
+                                   Supplier<TYPE> newEntryFactory,
                                    Supplier<List<TYPE>> possibleValuesSupplier,
                                    Function<TYPE, String> displayNameFactory,
-                                   @Nullable IconWidgetFactory<TYPE> iconWidgetFactory)
+                                   @Nullable IconWidgetFactory<TYPE> iconWidgetFactory,
+                                   String screenTitle)
     {
-        this(width, height, config, saveListener, dialogHandler, screenTitle, newEntryFactory,
-             (wx, wy, ww, wh, li, oi, iv, dv, lw) ->
-                 new BaseValueListEditEntryWidget<>(wx, wy, ww, wh, li, oi, iv, dv, lw,
-                                                    possibleValuesSupplier.get(), displayNameFactory, iconWidgetFactory));
+        this(width, height, config, saveListener, newEntryFactory,
+             (wx, wy, ww, wh, li, oi, iv, dv, lw) -> new BaseValueListEditEntryWidget<>(wx, wy, ww, wh, li, oi, iv, dv, lw,
+                                                         possibleValuesSupplier.get(), displayNameFactory, iconWidgetFactory),
+             screenTitle);
     }
 
-    protected BaseScreen createScreen(@Nullable DialogHandler dialogHandler, @Nullable GuiScreen currentScreen)
+    protected BaseScreen createScreen(@Nullable GuiScreen currentScreen)
     {
-        return new BaseValueListEditScreen<>(this.config, this.saveListener, dialogHandler, currentScreen,
-                                             this.screenTitle, this.newEntryFactory, this.widgetFactory);
+        return new BaseValueListEditScreen<>(this.screenTitle, this.config, this.saveListener,
+                                             this.newEntryFactory, this.widgetFactory, currentScreen);
     }
 
     protected void openEditScreen()
     {
-        if (this.dialogHandler != null)
-        {
-            this.dialogHandler.openDialog(this.createScreen(this.dialogHandler, null));
-        }
-        else
-        {
-            BaseScreen.openPopupScreen(this.createScreen(null, GuiUtils.getCurrentScreen()));
-        }
+        BaseScreen.openPopupScreen(this.createScreen(GuiUtils.getCurrentScreen()));
     }
 
     protected String getCurrentDisplayString()

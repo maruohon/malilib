@@ -12,7 +12,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.MaLiLibConfigs;
-import fi.dy.masa.malilib.gui.config.liteloader.DialogHandler;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
@@ -39,7 +38,6 @@ public abstract class BaseScreen extends GuiScreen
     private String titleString = "";
     @Nullable protected StyledTextLine titleText;
     @Nullable private GuiScreen parent;
-    @Nullable protected DialogHandler dialogHandler;
     @Nullable protected InteractableWidget hoveredWidget;
     @Nullable protected ScreenContext context;
     protected GenericButton closeButton;
@@ -636,13 +634,8 @@ public abstract class BaseScreen extends GuiScreen
 
     public boolean onKeyTyped(int keyCode, int scanCode, int modifiers)
     {
-        if (keyCode == Keyboard.KEY_ESCAPE && this.dialogHandler != null)
-        {
-            this.dialogHandler.closeDialog();
-            return true;
-        }
-        else if (keyCode == Keyboard.KEY_TAB &&
-                 GuiUtils.changeTextFieldFocus(this.getAllTextFields(), isShiftDown()))
+        if (keyCode == Keyboard.KEY_TAB &&
+            GuiUtils.changeTextFieldFocus(this.getAllTextFields(), isShiftDown()))
         {
             return true;
         }

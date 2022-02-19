@@ -26,8 +26,7 @@ public class HotkeyConfigWidget extends BaseConfigWidget<HotkeyConfig>
         this.keybindButton.setActionListener(() -> this.resetButton.setEnabled(this.config.isModified()));
         this.keybindButton.setValueChangeListener(() -> this.resetButton.setEnabled(this.config.isModified()));
 
-        this.settingsWidget = new KeybindSettingsWidget(config.getKeyBind(),
-                                                        config.getDisplayName(), ctx.getDialogHandler());
+        this.settingsWidget = new KeybindSettingsWidget(config.getKeyBind(), config.getDisplayName());
 
         this.resetButton.setActionListener(() -> {
             this.config.resetToDefault();

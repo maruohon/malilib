@@ -105,7 +105,7 @@ public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataLis
 
         KeyBind keyBind = widget.getHotkey().getKeyBind();
         this.keybindButton = new KeyBindConfigButton(120, 20, keyBind, this);
-        this.settingsWidget = new KeybindSettingsWidget(keyBind, widget.getHotkey().getDisplayName(), null);
+        this.settingsWidget = new KeybindSettingsWidget(keyBind, widget.getHotkey().getDisplayName());
     }
 
     @Override

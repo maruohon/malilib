@@ -25,9 +25,14 @@ public class EquipmentSlotListConfigWidget extends BaseValueListConfigWidget<Ent
     {
         String title = StringUtils.translate("malilib.title.screen.equipment_slot_list_edit", this.config.getDisplayName());
 
-        return new BaseValueListEditButton<>(width, height, config, this::updateButtonStates, ctx.getDialogHandler(),
-                                             title, () -> EntityEquipmentSlot.MAINHAND,
-                                             this::getSortedSlotList, EntityEquipmentSlot::getName, null);
+        return new BaseValueListEditButton<>(width, height,
+                                             config,
+                                             this::updateButtonStates,
+                                             () -> EntityEquipmentSlot.MAINHAND,
+                                             this::getSortedSlotList,
+                                             EntityEquipmentSlot::getName,
+                                             null,
+                                             title);
     }
 
     public List<EntityEquipmentSlot> getSortedSlotList()

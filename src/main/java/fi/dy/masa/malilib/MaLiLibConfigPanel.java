@@ -1,23 +1,11 @@
 package fi.dy.masa.malilib;
 
-import fi.dy.masa.malilib.gui.config.ModConfigScreen;
-import fi.dy.masa.malilib.gui.config.liteloader.BaseConfigPanel;
+import fi.dy.masa.malilib.gui.config.liteloader.RedirectingConfigPanel;
 
-public class MaLiLibConfigPanel extends BaseConfigPanel
+public class MaLiLibConfigPanel extends RedirectingConfigPanel
 {
-    @Override
-    protected String getPanelTitlePrefix()
+    public MaLiLibConfigPanel()
     {
-        return MaLiLibReference.MOD_NAME;
-    }
-
-    @Override
-    protected void createSubPanels()
-    {
-        this.addSubPanel((new ModConfigScreen(MaLiLibReference.MOD_INFO, MaLiLibConfigs.Generic.OPTIONS,
-                                              "malilib.gui.title.generic")).setConfigElementsWidth(240));
-
-        this.addSubPanel((new ModConfigScreen(MaLiLibReference.MOD_INFO, MaLiLibConfigs.Debug.OPTIONS,
-                                              "malilib.gui.title.debug")).setConfigElementsWidth(120));
+        super(MaLiLibConfigScreen::create);
     }
 }

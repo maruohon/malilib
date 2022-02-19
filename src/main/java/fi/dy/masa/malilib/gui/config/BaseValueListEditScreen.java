@@ -8,7 +8,6 @@ import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.config.option.list.ValueListConfig;
 import fi.dy.masa.malilib.config.value.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.BaseListScreen;
-import fi.dy.masa.malilib.gui.config.liteloader.DialogHandler;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.SearchBarWidget;
@@ -24,14 +23,16 @@ public class BaseValueListEditScreen<TYPE> extends BaseListScreen<DataListWidget
     protected final ValueListEditEntryWidgetFactory<TYPE> widgetFactory;
     @Nullable protected final EventListener saveListener;
 
-    public BaseValueListEditScreen(ValueListConfig<TYPE> config, @Nullable EventListener saveListener,
-                                   @Nullable DialogHandler dialogHandler, GuiScreen parent, String title,
-                                   Supplier<TYPE> newEntrySupplier, ValueListEditEntryWidgetFactory<TYPE> widgetFactory)
+    public BaseValueListEditScreen(String title,
+                                   ValueListConfig<TYPE> config,
+                                   @Nullable EventListener saveListener,
+                                   Supplier<TYPE> newEntrySupplier,
+                                   ValueListEditEntryWidgetFactory<TYPE> widgetFactory,
+                                   GuiScreen parent)
     {
         super(8, 20, 14, 25);
 
         this.config = config;
-        this.dialogHandler = dialogHandler;
         this.saveListener = saveListener;
         this.newEntrySupplier = newEntrySupplier;
         this.widgetFactory = widgetFactory;
@@ -40,20 +41,9 @@ public class BaseValueListEditScreen<TYPE> extends BaseListScreen<DataListWidget
         this.renderBorder = true;
         this.useTitleHierarchy = false;
         this.backgroundColor = 0xFF000000;
-        this.setTitle(title);
 
-        // When we have a dialog handler, then we are inside the Liteloader config menu.
-        // In there we don't want to use the normal "GUI replacement and render parent first" trick.
-        // The "dialog handler" stuff is used within the Liteloader config menus,
-        // because there we can't change the mc.currentScreen reference to this GUI,
-        // because otherwise Liteloader will freak out.
-        // So instead we are using a weird wrapper "sub panel" thingy in there, and thus
-        // we can NOT try to render the parent GUI here in that case, otherwise it will
-        // lead to an infinite recursion loop and a StackOverflowError.
-        if (this.dialogHandler == null)
-        {
-            this.setParent(parent);
-        }
+        this.setTitle(title);
+        this.setParent(parent);
     }
 
     @Override

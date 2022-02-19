@@ -23,10 +23,13 @@ public class ItemListConfigWidget extends BaseValueListConfigWidget<Item, ItemLi
     {
         String title = StringUtils.translate("malilib.title.screen.item_list_edit", this.config.getDisplayName());
 
-        return new BaseValueListEditButton<>(width, height, config, this::updateButtonStates, ctx.getDialogHandler(),
-                                             title, () -> Items.STICK,
+        return new BaseValueListEditButton<>(width, height,
+                                             config,
+                                             this::updateButtonStates,
+                                             () -> Items.STICK,
                                              ItemUtils::getSortedItemList,
                                              ItemStackWidget::getItemDisplayName,
-                                             ItemStackWidget::createItemWidget);
+                                             ItemStackWidget::createItemWidget,
+                                             title);
     }
 }

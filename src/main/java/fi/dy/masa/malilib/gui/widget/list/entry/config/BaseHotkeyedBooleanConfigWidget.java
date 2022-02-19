@@ -41,7 +41,7 @@ public abstract class BaseHotkeyedBooleanConfigWidget extends BaseConfigWidget<C
         this.hotkeyButton.setHoverStringProvider("locked", this.booleanConfig::getLockAndOverrideMessages);
         this.hotkeyButton.setValueChangeListener(this::updateButtonStates);
 
-        this.settingsWidget = new KeybindSettingsWidget(keyBind, booleanConfig.getDisplayName(), ctx.getDialogHandler());
+        this.settingsWidget = new KeybindSettingsWidget(keyBind, booleanConfig.getDisplayName());
 
         this.resetButton.setActionListener(() -> {
             this.config.resetToDefault();

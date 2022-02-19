@@ -1,13 +1,11 @@
 package fi.dy.masa.malilib.gui.config;
 
-import javax.annotation.Nullable;
 import net.minecraft.client.gui.GuiScreen;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.config.option.OptionListConfig;
 import fi.dy.masa.malilib.config.option.list.BlackWhiteListConfig;
 import fi.dy.masa.malilib.config.option.list.ValueListConfig;
 import fi.dy.masa.malilib.config.value.BlackWhiteList;
-import fi.dy.masa.malilib.gui.config.liteloader.DialogHandler;
 import fi.dy.masa.malilib.gui.widget.list.ConfigOptionListWidget;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.util.restriction.UsageRestriction.ListType;
@@ -20,10 +18,9 @@ public class BlackWhiteListEditScreen<TYPE> extends BaseConfigGroupEditScreen
     protected final ValueListConfig<TYPE> blackListConfig;
     protected final ValueListConfig<TYPE> whiteListConfig;
 
-    public BlackWhiteListEditScreen(BlackWhiteListConfig<TYPE> config, EventListener saveListener,
-                                    @Nullable DialogHandler dialogHandler, GuiScreen parent)
+    public BlackWhiteListEditScreen(BlackWhiteListConfig<TYPE> config, EventListener saveListener, GuiScreen parent)
     {
-        super(config.getModInfo(), saveListener, dialogHandler, parent);
+        super(config.getModInfo(), saveListener, parent);
 
         this.config = config;
         this.externalSaveListener = saveListener;

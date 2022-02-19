@@ -2,11 +2,9 @@ package fi.dy.masa.malilib.gui.widget.button;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.option.list.BlackWhiteListConfig;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.config.BlackWhiteListEditScreen;
-import fi.dy.masa.malilib.gui.config.liteloader.DialogHandler;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.util.StringUtils;
@@ -16,15 +14,12 @@ public class BlackWhiteListEditButton extends GenericButton
 {
     protected final BlackWhiteListConfig<?> config;
     protected final EventListener saveListener;
-    @Nullable protected final DialogHandler dialogHandler;
 
-    public BlackWhiteListEditButton(int width, int height, BlackWhiteListConfig<?> config,
-                                    EventListener saveListener, @Nullable DialogHandler dialogHandler)
+    public BlackWhiteListEditButton(int width, int height, BlackWhiteListConfig<?> config, EventListener saveListener)
     {
         super(width, height);
 
         this.config = config;
-        this.dialogHandler = dialogHandler;
         this.saveListener = saveListener;
 
         this.setHoverStringProvider("value_preview", this::generateHoverStrings);
@@ -34,14 +29,8 @@ public class BlackWhiteListEditButton extends GenericButton
 
     protected void openEditScreen()
     {
-        if (this.dialogHandler != null)
-        {
-            this.dialogHandler.openDialog(new BlackWhiteListEditScreen<>(this.config, this.saveListener, this.dialogHandler, null));
-        }
-        else
-        {
-            BaseScreen.openPopupScreen(new BlackWhiteListEditScreen<>(this.config, this.saveListener, null, GuiUtils.getCurrentScreen()));
-        }
+        BaseScreen.openPopupScreen(new BlackWhiteListEditScreen<>(this.config, this.saveListener,
+                                                                  GuiUtils.getCurrentScreen()));
     }
 
     protected String getCurrentDisplayString()

@@ -13,7 +13,6 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.gui.BaseScreen;
-import fi.dy.masa.malilib.gui.config.liteloader.DialogHandler;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.IntegerTextFieldWidget;
@@ -58,30 +57,17 @@ public class ColorEditorHSVScreen extends BaseScreen
     protected float relB;
     protected float relA;
 
-    public ColorEditorHSVScreen(int initialValue, IntConsumer valueConsumer, @Nullable DialogHandler dialogHandler, GuiScreen parent)
+    public ColorEditorHSVScreen(int initialValue, IntConsumer valueConsumer, @Nullable GuiScreen parent)
     {
         this.initialValue = initialValue;
         this.valueConsumer = valueConsumer;
-        this.dialogHandler = dialogHandler;
-
-        // When we have a dialog handler, then we are inside the Liteloader config menu.
-        // In there we don't want to use the normal "GUI replacement and render parent first" trick.
-        // The "dialog handler" stuff is used within the Liteloader config menus,
-        // because there we can't change the mc.currentScreen reference to this GUI,
-        // because otherwise Liteloader will freak out.
-        // So instead we are using a weird wrapper "sub panel" thingy in there, and thus
-        // we can NOT try to render the parent GUI here in that case, otherwise it will
-        // lead to an infinite recursion loop and a StackOverflowError.
-        if (this.dialogHandler == null)
-        {
-            this.setParent(parent);
-        }
 
         this.backgroundColor = 0xFF000000;
         this.renderBorder = true;
         this.useTitleHierarchy = false;
-        this.setTitle("malilib.title.screen.color_editor");
 
+        this.setTitle("malilib.title.screen.color_editor");
+        this.setParent(parent);
         this.setScreenWidthAndHeight(300, 180);
         this.centerOnScreen();
     }
