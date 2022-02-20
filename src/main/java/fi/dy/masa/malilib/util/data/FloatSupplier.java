@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.util.data;
 
 @FunctionalInterface
-public interface FloatConsumer
+public interface FloatSupplier
 {
-    void accept(float value);
+    float getAsFloat();
 }
