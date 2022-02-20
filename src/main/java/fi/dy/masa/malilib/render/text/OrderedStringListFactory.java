@@ -87,6 +87,17 @@ public class OrderedStringListFactory
     }
 
     /**
+     * Adds a string by creating a string list provider of the translation of
+     * the given translationKey and args. Uses the translationKey also as the key
+     * for the string list provider.
+     */
+    public void translateAndAddString(int priority, String translationKey, Object... args)
+    {
+        List<String> list = Collections.singletonList(StringUtils.translate(translationKey, args));
+        this.setStringListProvider(translationKey, () -> list, priority);
+    }
+
+    /**
      * Adds the provided lines, by creating a provider with an automatically generated key.
      * The lines should be already translated/localized.
      */
