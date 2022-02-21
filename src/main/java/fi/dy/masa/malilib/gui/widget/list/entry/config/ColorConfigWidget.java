@@ -45,6 +45,16 @@ public class ColorConfigWidget extends BaseConfigOptionWidget<Integer, ColorConf
     {
         super.reAddSubWidgets();
 
+        this.addWidget(this.colorIndicatorWidget);
+        this.addWidget(this.textField);
+        this.addWidget(this.resetButton);
+    }
+
+    @Override
+    public void updateSubWidgetsToGeometryChanges()
+    {
+        super.updateSubWidgetsToGeometryChanges();
+
         int x = this.getElementsStartPosition();
         int y = this.getY();
         int elementWidth = this.getElementWidth();
@@ -58,10 +68,6 @@ public class ColorConfigWidget extends BaseConfigOptionWidget<Integer, ColorConf
         this.textField.updateHoverStrings();
 
         this.updateResetButton(x + elementWidth + 4, y + 1);
-
-        this.addWidget(this.colorIndicatorWidget);
-        this.addWidget(this.textField);
-        this.addWidget(this.resetButton);
     }
 
     @Override

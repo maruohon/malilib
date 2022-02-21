@@ -50,13 +50,9 @@ public class OptionListConfigWidget extends BaseConfigWidget<OptionListConfig<Op
         super.reAddSubWidgets();
 
         boolean useDropDown = MaLiLibConfigs.Generic.OPTION_LIST_CONFIG_DROPDOWN.getBooleanValue();
-        int x = this.getElementsStartPosition();
-        int elementWidth = this.getElementWidth();
 
-        this.updateResetButton(x + elementWidth + 4, this.getY());
-
-        this.dropDownWidget.setWidth(elementWidth);
-        this.optionListButton.setWidth(elementWidth);
+        this.dropDownWidget.setEnabled(this.config.isLocked() == false);
+        this.optionListButton.setEnabled(this.config.isLocked() == false);
 
         this.addWidget(useDropDown ? this.dropDownWidget : this.optionListButton);
         this.addWidget(this.resetButton);
@@ -69,15 +65,18 @@ public class OptionListConfigWidget extends BaseConfigWidget<OptionListConfig<Op
 
         int x = this.getElementsStartPosition();
         int y = this.getY();
+        int elementWidth = this.getElementWidth();
 
-        this.dropDownWidget.setEnabled(this.config.isLocked() == false);
-        this.optionListButton.setEnabled(this.config.isLocked() == false);
+        this.dropDownWidget.setWidth(elementWidth);
+        this.optionListButton.setWidth(elementWidth);
 
         this.dropDownWidget.updateHoverStrings();
         this.optionListButton.updateHoverStrings();
 
-        this.optionListButton.setPosition(x, y);
+        this.optionListButton.setPosition(x, y + 1);
         this.dropDownWidget.setPosition(x, y + 2);
+
+        this.updateResetButton(x + elementWidth + 4, y + 1);
     }
 
     @Override

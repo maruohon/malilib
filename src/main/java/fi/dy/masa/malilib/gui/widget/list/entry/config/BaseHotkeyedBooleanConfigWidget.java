@@ -54,38 +54,29 @@ public abstract class BaseHotkeyedBooleanConfigWidget extends BaseConfigWidget<C
     {
         super.reAddSubWidgets();
 
+        this.addWidget(this.booleanButton);
+        this.addWidget(this.hotkeyButton);
+        this.addWidget(this.settingsWidget);
+        this.addWidget(this.resetButton);
+    }
+
+    @Override
+    public void updateSubWidgetsToGeometryChanges()
+    {
+        super.updateSubWidgetsToGeometryChanges();
+
         int x = this.getElementsStartPosition();
         int y = this.getY() + 1;
         int elementWidth = this.getElementWidth();
 
         this.booleanButton.setPosition(x, y);
+        this.hotkeyButton.setPosition(this.booleanButton.getRight() + 2, y);
 
-        int w = this.booleanButton.getWidth();
-        x += w + 4;
-        this.hotkeyButton.setPosition(x, y);
-
-        if (elementWidth < 0)
-        {
-            w = 120;
-        }
-        else
-        {
-            w = elementWidth - w - 20 - 4;
-        }
-
+        int w = elementWidth < 0 ? 120 : elementWidth - this.booleanButton.getWidth() - 20 - 4;
         this.hotkeyButton.setWidth(w);
+        this.settingsWidget.setPosition(this.hotkeyButton.getRight() + 2, y);
 
-        x += w + 2;
-        this.settingsWidget.setPosition(x, y);
-
-        x += this.settingsWidget.getWidth() + 4;
-        this.updateResetButton(x, y);
-
-        this.addWidget(this.booleanButton);
-        this.addWidget(this.hotkeyButton);
-        this.addWidget(this.settingsWidget);
-        this.addWidget(this.resetButton);
-
+        this.updateResetButton(this.settingsWidget.getRight() + 4, y);
         this.updateButtonStates();
     }
 
