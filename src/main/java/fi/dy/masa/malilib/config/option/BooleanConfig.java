@@ -1,10 +1,14 @@
 package fi.dy.masa.malilib.config.option;
 
+import java.util.ArrayList;
+import java.util.List;
+import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.BooleanStorage;
 
 public class BooleanConfig extends BaseGenericConfig<Boolean> implements BooleanStorage, OverridableConfig<Boolean>
 {
+    protected final List<EventListener> enableListeners = new ArrayList<>(0);
     protected Boolean effectiveValue;
     protected boolean booleanValue;
     protected boolean effectiveBooleanValue;
@@ -79,6 +83,20 @@ public class BooleanConfig extends BaseGenericConfig<Boolean> implements Boolean
     }
 
     @Override
+    public void onValueChanged(Boolean newValue, Boolean oldValue)
+    {
+        super.onValueChanged(newValue, oldValue);
+
+        if (newValue)
+        {
+            for (EventListener listener : this.enableListeners)
+            {
+                listener.onEvent();
+            }
+        }
+    }
+
+    @Override
     public boolean isLocked()
     {
         return super.isLocked() || this.hasOverride;
@@ -124,5 +142,14 @@ public class BooleanConfig extends BaseGenericConfig<Boolean> implements Boolean
         this.booleanValue = value;
         this.updateEffectiveValue();
         super.loadValueFromConfig(value);
+    }
+
+    /**
+     * Adds a listener that will get called when the value changes to true.
+     * Note that these are not called when the value is deserialized from a config file.
+     */
+    public void addEnableListener(EventListener listener)
+    {
+        this.enableListeners.add(listener);
     }
 }
