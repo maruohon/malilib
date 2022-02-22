@@ -19,6 +19,7 @@ import fi.dy.masa.malilib.input.ActionResult;
 import fi.dy.masa.malilib.input.CustomHotkeyManager;
 import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
 import fi.dy.masa.malilib.registry.Registry;
+import fi.dy.masa.malilib.render.overlay.OverlayRendererContainer;
 import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.data.ConfigOnTab;
 import fi.dy.masa.malilib.util.data.ModInfo;
@@ -109,6 +110,7 @@ public class ConfigUtils
         ((ConfigManagerImpl) Registry.CONFIG_MANAGER).saveIfDirty();
         Registry.INFO_WIDGET_MANAGER.saveToFileIfDirty();
         Registry.MESSAGE_REDIRECT_MANAGER.saveToFileIfDirty();
+        OverlayRendererContainer.INSTANCE.saveToFile(false);
         ActionExecutionWidgetManager.INSTANCE.clear();
 
         // These should always already be saved when closing the corresponding config screens

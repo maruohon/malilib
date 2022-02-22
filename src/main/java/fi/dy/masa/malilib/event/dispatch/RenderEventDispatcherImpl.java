@@ -8,6 +8,7 @@ import fi.dy.masa.malilib.event.PostGameOverlayRenderer;
 import fi.dy.masa.malilib.event.PostItemTooltipRenderer;
 import fi.dy.masa.malilib.event.PostScreenRenderer;
 import fi.dy.masa.malilib.event.PostWorldRenderer;
+import fi.dy.masa.malilib.render.overlay.OverlayRendererContainer;
 
 public class RenderEventDispatcherImpl implements RenderEventDispatcher
 {
@@ -117,9 +118,14 @@ public class RenderEventDispatcherImpl implements RenderEventDispatcher
      */
     public void onRenderWorldLast(Minecraft mc, float partialTicks)
     {
+        mc.profiler.startSection("malilib_world_last");
+
+        mc.profiler.startSection("overlays");
+        OverlayRendererContainer.INSTANCE.render(mc, partialTicks);
+        mc.profiler.endSection();
+
         if (this.worldLastRenderers.isEmpty() == false)
         {
-            mc.profiler.startSection("malilib_world_last");
 
             for (PostWorldRenderer renderer : this.worldLastRenderers)
             {
@@ -128,7 +134,8 @@ public class RenderEventDispatcherImpl implements RenderEventDispatcher
                 mc.profiler.endSection();
             }
 
-            mc.profiler.endSection();
         }
+
+        mc.profiler.endSection();
     }
 }

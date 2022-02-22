@@ -6,28 +6,22 @@ import net.minecraft.client.renderer.vertex.VertexFormatElement;
 
 public abstract class BaseRenderObject
 {
-    private final VertexFormat vertexFormat;
-    private final int glMode;
+    protected final VertexFormat vertexFormat;
     protected final boolean hasTexture;
+    protected final int glMode;
 
     public BaseRenderObject(int glMode, VertexFormat vertexFormat)
     {
         this.glMode = glMode;
         this.vertexFormat = vertexFormat;
+        this.hasTexture = this.vertexFormat.getElements().stream().anyMatch((el) -> el.getUsage() == VertexFormatElement.EnumUsage.UV);
+    }
 
-        boolean hasTexture = false;
-
-        // This isn't really that nice and clean, but it'll do for now...
-        for (VertexFormatElement el : this.vertexFormat.getElements())
-        {
-            if (el.getUsage() == VertexFormatElement.EnumUsage.UV)
-            {
-                hasTexture = true;
-                break;
-            }
-        }
-
-        this.hasTexture = hasTexture;
+    public BaseRenderObject(int glMode, VertexFormat vertexFormat, boolean usesTexture)
+    {
+        this.glMode = glMode;
+        this.vertexFormat = vertexFormat;
+        this.hasTexture = usesTexture;
     }
 
     public int getGlMode()
@@ -42,12 +36,12 @@ public abstract class BaseRenderObject
 
     /**
      * Uploads the given BufferBuilder to the VBO or Render List
-     * @param buffer
+     * @param buffer the BufferBuilder to upload
      */
     public abstract void uploadData(BufferBuilder buffer);
 
     /**
-     * Draws the VBO or Render List
+     * Draws the VBO or Render List to the screen
      */
     public abstract void draw();
 

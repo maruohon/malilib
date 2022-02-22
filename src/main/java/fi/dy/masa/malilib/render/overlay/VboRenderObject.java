@@ -7,15 +7,16 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.VertexBufferUploader;
 import net.minecraft.client.renderer.vertex.VertexBuffer;
 import net.minecraft.client.renderer.vertex.VertexFormat;
+import fi.dy.masa.malilib.listener.EventListener;
 
 public class VboRenderObject extends BaseRenderObject
 {
     public static final VertexBufferUploader VERTEX_UPLOADER = new VertexBufferUploader();
 
     protected final VertexBuffer vertexBuffer;
-    protected final IArrayPointerSetter arrayPointerSetter;
+    protected final EventListener arrayPointerSetter;
 
-    public VboRenderObject(int glMode, VertexFormat vertexFormat, IArrayPointerSetter arrayPointerSetter)
+    public VboRenderObject(int glMode, VertexFormat vertexFormat, EventListener arrayPointerSetter)
     {
         super(glMode, vertexFormat);
 
@@ -46,7 +47,7 @@ public class VboRenderObject extends BaseRenderObject
         }
 
         this.vertexBuffer.bindBuffer();
-        this.arrayPointerSetter.setupArrayPointers();
+        this.arrayPointerSetter.onEvent();
         this.vertexBuffer.drawArrays(this.getGlMode());
 
         if (this.hasTexture)
@@ -73,10 +74,5 @@ public class VboRenderObject extends BaseRenderObject
         GlStateManager.glVertexPointer(3, GL11.GL_FLOAT, 24, 0);
         GlStateManager.glTexCoordPointer(2, GL11.GL_FLOAT, 24, 12);
         GlStateManager.glColorPointer(4, GL11.GL_UNSIGNED_BYTE, 24, 20);
-    }
-
-    public interface IArrayPointerSetter
-    {
-        void setupArrayPointers();
     }
 }

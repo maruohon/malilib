@@ -8,6 +8,7 @@ import net.minecraft.client.multiplayer.WorldClient;
 import fi.dy.masa.malilib.config.util.ConfigOverrideUtils;
 import fi.dy.masa.malilib.config.util.ConfigUtils;
 import fi.dy.masa.malilib.event.ClientWorldChangeHandler;
+import fi.dy.masa.malilib.render.overlay.OverlayRendererContainer;
 
 public class ClientWorldChangeEventDispatcherImpl implements ClientWorldChangeEventDispatcher
 {
@@ -37,6 +38,11 @@ public class ClientWorldChangeEventDispatcherImpl implements ClientWorldChangeEv
      */
     public void onWorldLoadPre(@Nullable WorldClient worldBefore, @Nullable WorldClient worldAfter, Minecraft mc)
     {
+        if (worldBefore != null && worldAfter != null)
+        {
+            OverlayRendererContainer.INSTANCE.saveToFile(true);
+        }
+
         if (this.worldChangeHandlers.isEmpty() == false)
         {
             for (ClientWorldChangeHandler listener : this.worldChangeHandlers)
@@ -52,7 +58,7 @@ public class ClientWorldChangeEventDispatcherImpl implements ClientWorldChangeEv
     public void onWorldLoadPost(@Nullable WorldClient worldBefore, @Nullable WorldClient worldAfter, Minecraft mc)
     {
         // Save all the configs when exiting a world
-        if (worldAfter == null && worldBefore != null)
+        if (worldBefore != null && worldAfter == null)
         {
             this.onExitWorld();
         }
@@ -60,6 +66,10 @@ public class ClientWorldChangeEventDispatcherImpl implements ClientWorldChangeEv
         else if (worldBefore == null && worldAfter != null)
         {
             this.onEnterWorld();
+        }
+        else if (worldBefore != null && worldAfter != null)
+        {
+            OverlayRendererContainer.INSTANCE.loadFromFile(true);
         }
 
         if (this.worldChangeHandlers.isEmpty() == false)
@@ -80,6 +90,8 @@ public class ClientWorldChangeEventDispatcherImpl implements ClientWorldChangeEv
     protected void onEnterWorld()
     {
         ConfigUtils.loadAllConfigsFromFile();
+        OverlayRendererContainer.INSTANCE.loadFromFile(false);
+        OverlayRendererContainer.INSTANCE.resetRenderTimeout();
         ConfigOverrideUtils.applyConfigOverrides();
     }
 }
