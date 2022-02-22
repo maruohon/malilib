@@ -22,8 +22,8 @@ public class BaseConfigOptionWidget<TYPE, CFG extends ConfigOption<TYPE>> extend
     }
 
     @Override
-    protected void updateResetButtonState()
+    protected boolean isResetEnabled()
     {
-        this.resetButton.setEnabled(this.config.isLocked() == false && this.config.isModified());
+        return this.config.isModified() && this.config.isLocked() == false;
     }
 }

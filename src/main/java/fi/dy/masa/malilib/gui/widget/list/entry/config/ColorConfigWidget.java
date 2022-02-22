@@ -21,7 +21,7 @@ public class ColorConfigWidget extends BaseConfigOptionWidget<Integer, ColorConf
 
         this.colorIndicatorWidget = new ColorIndicatorWidget(18, 18, this.config, (newValue) -> {
             this.config.setValue(newValue);
-            this.reAddSubWidgets();
+            this.updateWidgetDisplayValues();
         });
         this.colorIndicatorWidget.getHoverInfoFactory()
                 .setStringListProvider("locked", this.config::getLockAndOverrideMessages, 110);
@@ -31,12 +31,7 @@ public class ColorConfigWidget extends BaseConfigOptionWidget<Integer, ColorConf
 
         this.textField.setListener((str) -> {
             this.config.setValueFromString(str);
-            this.updateResetButtonState();
-        });
-
-        this.resetButton.setActionListener(() -> {
-            this.config.resetToDefault();
-            this.reAddSubWidgets();
+            this.updateWidgetDisplayValues();
         });
     }
 
@@ -51,23 +46,30 @@ public class ColorConfigWidget extends BaseConfigOptionWidget<Integer, ColorConf
     }
 
     @Override
-    public void updateSubWidgetsToGeometryChanges()
+    public void updateSubWidgetPositions()
     {
-        super.updateSubWidgetsToGeometryChanges();
+        super.updateSubWidgetPositions();
 
         int x = this.getElementsStartPosition();
         int y = this.getY();
-        int elementWidth = this.getElementWidth();
 
         this.colorIndicatorWidget.setPosition(x, y + 2);
-        this.colorIndicatorWidget.updateHoverStrings();
 
-        this.textField.setPosition(x + this.colorIndicatorWidget.getWidth() + 4, y + 3);
-        this.textField.setText(this.config.getStringValue());
+        this.textField.setWidth(this.getElementWidth() - 22);
+        this.textField.setPosition(this.colorIndicatorWidget.getRight() + 4, y + 3);
         this.textField.setEnabled(this.config.isLocked() == false);
-        this.textField.updateHoverStrings();
 
-        this.updateResetButton(x + elementWidth + 4, y + 1);
+        this.resetButton.setPosition(this.textField.getRight() + 4, y + 1);
+    }
+
+    @Override
+    public void updateWidgetDisplayValues()
+    {
+        super.updateWidgetDisplayValues();
+
+        this.textField.setText(this.config.getStringValue());
+        this.textField.updateHoverStrings();
+        this.colorIndicatorWidget.updateHoverStrings();
     }
 
     @Override

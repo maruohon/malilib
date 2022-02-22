@@ -20,7 +20,7 @@ public class StringListConfigWidget extends BaseValueListConfigWidget<String, St
     {
         String title = StringUtils.translate("malilib.title.screen.string_list_edit", this.config.getDisplayName());
 
-        return new BaseValueListEditButton<>(width, height, config, this::updateButtonStates,
+        return new BaseValueListEditButton<>(width, height, config, this::updateWidgetDisplayValues,
                                              () -> "", StringListEditEntryWidget::new, title);
     }
 }

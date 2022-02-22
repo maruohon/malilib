@@ -65,8 +65,8 @@ public class GenericButton extends InteractableWidget
 
     /**
      * Sets a supplier that provides the enabled status for the button.
-     * The status can be refreshed by calling updateButtonState().
-     * An existing enabled status supplier overrides the internal enabled field.
+     * An existing enabled status supplier overrides the
+     * enabled field's value in the isEnabled() getter method.
      */
     public GenericButton setEnabledStatusSupplier(@Nullable BooleanSupplier enabledStatusSupplier)
     {

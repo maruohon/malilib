@@ -19,13 +19,8 @@ public class BlackWhiteListConfigWidget extends BaseConfigWidget<BlackWhiteListC
         this.config = config;
         this.initialValue = this.config.getValue();
 
-        this.button = new BlackWhiteListEditButton(this.getElementWidth(), 20, config, this::updateButtons);
+        this.button = new BlackWhiteListEditButton(this.getElementWidth(), 20, config, this::updateWidgetDisplayValues);
         this.button.setHoverStringProvider("locked", this.config::getLockAndOverrideMessages);
-
-        this.resetButton.setActionListener(() -> {
-            this.config.resetToDefault();
-            this.updateButtons();
-        });
     }
 
     @Override
@@ -38,9 +33,9 @@ public class BlackWhiteListConfigWidget extends BaseConfigWidget<BlackWhiteListC
     }
 
     @Override
-    public void updateSubWidgetsToGeometryChanges()
+    public void updateSubWidgetPositions()
     {
-        super.updateSubWidgetsToGeometryChanges();
+        super.updateSubWidgetPositions();
 
         int x = this.getElementsStartPosition();
         int y = this.getY() + 1;
@@ -51,13 +46,14 @@ public class BlackWhiteListConfigWidget extends BaseConfigWidget<BlackWhiteListC
         this.button.updateHoverStrings();
         this.button.setEnabled(this.config.isLocked() == false);
 
-        this.updateResetButton(x + elementWidth + 4, y);
+        this.resetButton.setPosition(this.button.getRight() + 4, y);
     }
 
-    public void updateButtons()
+    @Override
+    public void updateWidgetDisplayValues()
     {
+        super.updateWidgetDisplayValues();
         this.button.updateButtonState();
-        this.updateResetButtonState();
     }
 
     @Override

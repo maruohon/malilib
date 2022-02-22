@@ -65,16 +65,9 @@ public abstract class BaseStringListEditEntryWidget<TYPE> extends BaseOrderableL
     }
 
     @Override
-    public void focusWidget()
-    {
-        this.textField.setFocused(true);
-    }
-
-    @Override
     protected void updateSubWidgetsToGeometryChangesPre(int x, int y)
     {
-        int lx = this.getX();
-        this.labelWidget.setPosition(lx + 2, y + 6);
+        this.labelWidget.setPosition(this.getX() + 2, y + 6);
         this.textField.setPosition(x, y + 2);
         this.nextWidgetX = this.textField.getRight() + 2;
         this.draggableRegionEndX = x - 1;
@@ -84,6 +77,12 @@ public abstract class BaseStringListEditEntryWidget<TYPE> extends BaseOrderableL
     protected void updateSubWidgetsToGeometryChangesPost(int x, int y)
     {
         this.resetButton.setPosition(x, y + 2);
+    }
+
+    @Override
+    public void focusWidget()
+    {
+        this.textField.setFocused(true);
     }
 
     protected void onTextChanged(String newText)

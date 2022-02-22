@@ -20,10 +20,8 @@ public class StringConfigWidget extends BaseConfigOptionWidget<String, StringCon
 
         this.textField.setListener((str) -> {
             this.config.setValueFromString(str);
-            this.updateResetButtonState();
+            this.updateWidgetDisplayValues();
         });
-
-        this.resetButton.setActionListener(this::reset);
     }
 
     @Override
@@ -31,26 +29,39 @@ public class StringConfigWidget extends BaseConfigOptionWidget<String, StringCon
     {
         super.reAddSubWidgets();
 
-        int x = this.getElementsStartPosition();
-        int y = this.getY() + 1;
-        int elementWidth = this.getElementWidth();
-
-        this.textField.setPosition(x, y + 2);
-        this.textField.setWidth(elementWidth);
-        this.textField.setText(this.config.getStringValue());
-        this.textField.setEnabled(this.config.isLocked() == false);
-        this.textField.updateHoverStrings();
-
         // Set the cursor to the start at first, so that the beginning
         // of the string is shown by default. Otherwise, depending on the string length,
         // an arbitrary number of characters from the end would show at first,
         // even just one, depending on the alignment/length of the string.
         this.textField.setCursorToStart();
 
-        this.updateResetButton(x + elementWidth + 4, y);
-
         this.addWidget(this.textField);
         this.addWidget(this.resetButton);
+    }
+
+    @Override
+    public void updateSubWidgetPositions()
+    {
+        super.updateSubWidgetPositions();
+
+        int x = this.getElementsStartPosition();
+        int y = this.getY() + 1;
+        int elementWidth = this.getElementWidth();
+
+        this.textField.setPosition(x, y + 2);
+        this.textField.setWidth(elementWidth);
+        this.textField.setEnabled(this.config.isLocked() == false);
+
+        this.resetButton.setPosition(this.textField.getRight() + 4, y);
+    }
+
+    @Override
+    public void updateWidgetDisplayValues()
+    {
+        super.updateWidgetDisplayValues();
+
+        this.textField.setText(this.config.getStringValue());
+        this.textField.updateHoverStrings();
     }
 
     @Override
@@ -62,12 +73,5 @@ public class StringConfigWidget extends BaseConfigOptionWidget<String, StringCon
         {
             this.config.setValueFromString(text);
         }
-    }
-
-    protected void reset()
-    {
-        this.config.resetToDefault();
-        this.textField.setText(this.config.getStringValue());
-        this.updateResetButtonState();
     }
 }

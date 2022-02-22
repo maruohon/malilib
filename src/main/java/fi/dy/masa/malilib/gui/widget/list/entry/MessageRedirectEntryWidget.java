@@ -46,17 +46,17 @@ public class MessageRedirectEntryWidget extends BaseDataListEntryWidget<MessageR
     }
 
     @Override
-    public void updateSubWidgetsToGeometryChanges()
+    public void updateSubWidgetPositions()
     {
-        super.updateSubWidgetsToGeometryChanges();
+        super.updateSubWidgetPositions();
 
-        int x = this.getRight() - this.removeButton.getWidth() - 2;
         int y = this.getY() + 1;
 
-        this.removeButton.setPosition(x, y);
+        this.removeButton.setRight(this.getRight() - 2);
+        this.removeButton.setY(y);
 
-        x = this.removeButton.getX() - this.outputDropdown.getWidth() - 2;
-        this.outputDropdown.setPosition(x, y);
+        this.outputDropdown.setRight(this.removeButton.getX() - 2);
+        this.outputDropdown.setY(y);
     }
 
     protected void replaceRedirect(MessageOutput output)

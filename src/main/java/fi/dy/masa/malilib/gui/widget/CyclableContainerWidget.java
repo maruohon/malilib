@@ -27,6 +27,19 @@ public class CyclableContainerWidget extends ContainerWidget
         this.rightButton.setActionListener(this::cycleRight);
     }
 
+    @Override
+    public void reAddSubWidgets()
+    {
+        super.reAddSubWidgets();
+        this.reAddFittingWidgets();
+    }
+
+    @Override
+    public void updateSubWidgetPositions()
+    {
+        super.updateSubWidgetPositions();
+    }
+
     public CyclableContainerWidget setWidgetGap(int gap)
     {
         this.widgetGap = gap;
@@ -41,20 +54,6 @@ public class CyclableContainerWidget extends ContainerWidget
     public void setStartIndex(int index)
     {
         this.startIndex = index;
-    }
-
-    @Override
-    public void reAddSubWidgets()
-    {
-        super.reAddSubWidgets();
-
-        this.reAddFittingWidgets();
-    }
-
-    @Override
-    public void updateSubWidgetsToGeometryChanges()
-    {
-        super.updateSubWidgetsToGeometryChanges();
     }
 
     protected void cycleLeft()

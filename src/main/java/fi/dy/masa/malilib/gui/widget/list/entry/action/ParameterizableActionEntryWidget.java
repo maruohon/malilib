@@ -50,9 +50,9 @@ public class ParameterizableActionEntryWidget extends ActionListBaseActionEntryW
     }
 
     @Override
-    public void updateSubWidgetsToGeometryChanges()
+    public void updateSubWidgetPositions()
     {
-        super.updateSubWidgetsToGeometryChanges();
+        super.updateSubWidgetPositions();
 
         this.parameterizeButton.centerVerticallyInside(this);
         this.parameterizeButton.setRight(this.nextElementRight);

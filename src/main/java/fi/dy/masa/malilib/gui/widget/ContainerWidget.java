@@ -64,6 +64,7 @@ public abstract class ContainerWidget extends InteractableWidget
     {
         widget.setTaskQueue(this.taskQueue);
         widget.onWidgetAdded(this.getZ());
+        widget.updateWidgetDisplayValues();
     }
 
     public void openContextMenu(MenuWidget widget)
@@ -96,7 +97,7 @@ public abstract class ContainerWidget extends InteractableWidget
     @Override
     protected void onSizeChanged()
     {
-        this.updateSubWidgetsToGeometryChanges();
+        this.updateSubWidgetPositions();
     }
 
     @Override
@@ -111,7 +112,7 @@ public abstract class ContainerWidget extends InteractableWidget
         }
         else
         {
-            this.updateSubWidgetsToGeometryChanges();
+            this.updateSubWidgetPositions();
         }
     }
 
@@ -146,7 +147,7 @@ public abstract class ContainerWidget extends InteractableWidget
      * positions to the current position of this container widget,
      * or to any other changes such as width or height changes.
      */
-    public void updateSubWidgetsToGeometryChanges()
+    public void updateSubWidgetPositions()
     {
         this.onContainerGeometryChanged();
     }
@@ -156,7 +157,7 @@ public abstract class ContainerWidget extends InteractableWidget
     {
         super.onWidgetAdded(parentZLevel);
         this.reAddSubWidgets();
-        this.updateSubWidgetsToGeometryChanges();
+        this.updateSubWidgetPositions();
     }
 
     @Override

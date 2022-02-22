@@ -39,16 +39,15 @@ public abstract class NumericConfigWidget<TYPE, CFG extends BaseConfigOption<TYP
         this.textField.setHoverStringProvider("lock", config::getLockAndOverrideMessages);
         this.textField.setListener((str) -> {
             this.fromStringSetter.accept(this.config, str);
-            this.updateResetButtonState();
+            this.updateWidgetDisplayValues();
         });
 
-        this.sliderWidget = new SliderWidget(60, 20, config.getSliderCallback(this::updateResetButtonState));
+        this.sliderWidget = new SliderWidget(60, 20, config.getSliderCallback(this::updateWidgetDisplayValues));
         this.sliderWidget.setHoverStringProvider("lock", config::getLockAndOverrideMessages);
 
         this.sliderToggleButton = GenericButton.create(this::getSliderToggleButtonIcon, this::toggleSlider);
         this.sliderToggleButton.setHoverStringProvider("slider", this::getSliderMessages);
-
-        this.resetButton.setActionListener(this::reset);
+        this.sliderToggleButton.updateHoverStrings();
     }
 
     @Override
@@ -70,9 +69,9 @@ public abstract class NumericConfigWidget<TYPE, CFG extends BaseConfigOption<TYP
     }
 
     @Override
-    public void updateSubWidgetsToGeometryChanges()
+    public void updateSubWidgetPositions()
     {
-        super.updateSubWidgetsToGeometryChanges();
+        super.updateSubWidgetPositions();
 
         int x = this.getElementsStartPosition();
         int y = this.getY();
@@ -84,17 +83,23 @@ public abstract class NumericConfigWidget<TYPE, CFG extends BaseConfigOption<TYP
         this.sliderWidget.setWidth(elementWidth - 18);
 
         this.textField.setEnabled(locked == false);
-        this.textField.updateHoverStrings();
         this.textField.setPosition(x, y + 3);
         this.textField.setWidth(elementWidth - 18);
-        this.textField.setText(this.getCurrentValueAsString());
 
         x += elementWidth - 16;
         this.sliderToggleButton.setPosition(x, y + 3);
         this.sliderToggleButton.setEnabled(this.config.allowSlider());
-        this.sliderToggleButton.updateHoverStrings();
 
-        this.updateResetButton(x + 20, y + 1);
+        this.resetButton.setPosition(x + 20, y + 1);
+    }
+
+    @Override
+    public void updateWidgetDisplayValues()
+    {
+        super.updateWidgetDisplayValues();
+
+        this.textField.setText(this.getCurrentValueAsString());
+        this.textField.updateHoverStrings();
     }
 
     @Override
@@ -111,13 +116,6 @@ public abstract class NumericConfigWidget<TYPE, CFG extends BaseConfigOption<TYP
     protected void toggleSlider()
     {
         this.config.toggleSliderActive();
-        this.reAddSubWidgets();
-    }
-
-    protected void reset()
-    {
-        this.config.resetToDefault();
-        this.updateResetButtonState();
         this.reAddSubWidgets();
     }
 

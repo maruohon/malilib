@@ -57,9 +57,9 @@ public abstract class BaseNumberEditWidget extends ContainerWidget
     }
 
     @Override
-    public void updateSubWidgetsToGeometryChanges()
+    public void updateSubWidgetPositions()
     {
-        super.updateSubWidgetsToGeometryChanges();
+        super.updateSubWidgetPositions();
 
         int x = this.getX();
         int y = this.getY();
@@ -131,7 +131,7 @@ public abstract class BaseNumberEditWidget extends ContainerWidget
     protected void toggleSliderActive()
     {
         this.sliderActive = ! this.sliderActive;
-        this.updateSubWidgetsToGeometryChanges();
+        this.updateSubWidgetPositions();
         this.reAddSubWidgets();
     }
 

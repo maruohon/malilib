@@ -391,6 +391,10 @@ public class BaseWidget
     {
     }
 
+    public void updateWidgetDisplayValues()
+    {
+    }
+
     public void clampToScreen()
     {
         int screenRight = GuiUtils.getScaledWindowWidth();

@@ -37,14 +37,11 @@ public class MissingConfigTypeFactory implements ConfigOptionWidgetFactory<Confi
         }
 
         @Override
-        public void updateSubWidgetsToGeometryChanges()
+        public void updateSubWidgetPositions()
         {
-            super.updateSubWidgetsToGeometryChanges();
+            super.updateSubWidgetPositions();
 
-            int x = this.getElementsStartPosition();
-            int y = this.getY();
-
-            this.labelWidget.setPosition(x, y + 7);
+            this.labelWidget.setPosition(this.getElementsStartPosition(), this.getY() + 7);
         }
     }
 }

@@ -114,9 +114,9 @@ public abstract class BaseListWidget extends ContainerWidget
     }
 
     @Override
-    public void updateSubWidgetsToGeometryChanges()
+    public void updateSubWidgetPositions()
     {
-        super.updateSubWidgetsToGeometryChanges();
+        super.updateSubWidgetPositions();
 
         int bw = this.getBorderRenderer().getNormalSettings().getActiveBorderWidth();
         int x = this.getX() + bw;
@@ -178,13 +178,13 @@ public abstract class BaseListWidget extends ContainerWidget
 
         this.createAndSetHeaderWidget();
         this.reAddSubWidgets();
-        this.updateSubWidgetsToGeometryChanges();
+        this.updateSubWidgetPositions();
         this.refreshEntries();
     }
 
     protected void updatePositioningAndElements()
     {
-        this.updateSubWidgetsToGeometryChanges();
+        this.updateSubWidgetPositions();
         this.reCreateListEntryWidgets();
     }
 

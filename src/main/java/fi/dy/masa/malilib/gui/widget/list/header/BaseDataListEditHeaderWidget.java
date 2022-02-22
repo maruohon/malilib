@@ -43,15 +43,13 @@ public class BaseDataListEditHeaderWidget<DATATYPE> extends DataListHeaderWidget
     public void reAddSubWidgets()
     {
         super.reAddSubWidgets();
-
         this.addWidget(this.addButton);
     }
 
     @Override
-    public void updateSubWidgetsToGeometryChanges()
+    public void updateSubWidgetPositions()
     {
-        super.updateSubWidgetsToGeometryChanges();
-
+        super.updateSubWidgetPositions();
         this.addButton.setPosition(this.getX(), this.getY());
     }
 

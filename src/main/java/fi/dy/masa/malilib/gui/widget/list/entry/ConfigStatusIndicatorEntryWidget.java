@@ -38,17 +38,6 @@ public class ConfigStatusIndicatorEntryWidget extends BaseOrderableListEditEntry
         this.getBackgroundRenderer().getHoverSettings().setColor(0x50909090);
     }
 
-    public void removeInfoRendererWidget()
-    {
-        this.containerWidget.removeWidget(this.data);
-        this.listWidget.refreshEntries();
-    }
-
-    public void openEditScreen()
-    {
-        this.getData().openEditScreen();
-    }
-
     @Override
     public void reAddSubWidgets()
     {
@@ -79,6 +68,17 @@ public class ConfigStatusIndicatorEntryWidget extends BaseOrderableListEditEntry
 
         this.nextWidgetX = this.toggleButton.getX() - 36;
         this.draggableRegionEndX = this.nextWidgetX - 1;
+    }
+
+    public void removeInfoRendererWidget()
+    {
+        this.containerWidget.removeWidget(this.data);
+        this.listWidget.refreshEntries();
+    }
+
+    public void openEditScreen()
+    {
+        this.getData().openEditScreen();
     }
 
     @Override

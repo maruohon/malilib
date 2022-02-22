@@ -72,9 +72,9 @@ public class CustomHotkeyDefinitionEntryWidget extends BaseDataListEntryWidget<C
     }
 
     @Override
-    public void updateSubWidgetsToGeometryChanges()
+    public void updateSubWidgetPositions()
     {
-        super.updateSubWidgetsToGeometryChanges();
+        super.updateSubWidgetPositions();
 
         int x = this.getX();
         int y = this.getY();

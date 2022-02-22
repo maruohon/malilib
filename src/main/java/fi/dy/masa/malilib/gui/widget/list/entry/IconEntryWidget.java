@@ -52,17 +52,17 @@ public class IconEntryWidget extends BaseDataListEntryWidget<Icon>
     }
 
     @Override
-    public void updateSubWidgetsToGeometryChanges()
+    public void updateSubWidgetPositions()
     {
-        super.updateSubWidgetsToGeometryChanges();
+        super.updateSubWidgetPositions();
 
-        int x = this.getRight() - this.removeButton.getWidth() - 2;
         int y = this.getY() + 1;
 
-        this.removeButton.setPosition(x, y);
+        this.removeButton.setRight(this.getRight() - 2);
+        this.removeButton.setY(y);
 
-        x = this.removeButton.getX() - this.editButton.getWidth() - 2;
-        this.editButton.setPosition(x, y);
+        this.editButton.setRight(this.removeButton.getX() - 2);
+        this.editButton.setY(y);
     }
 
     @Override

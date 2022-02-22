@@ -20,11 +20,11 @@ public class PopupConfigGroupWidget extends BaseConfigWidget<PopupConfigGroup>
         super(x, y, width, height, listIndex, originalListIndex, config, ctx);
 
         this.config = config;
-
         this.groupOpenButton = GenericButton.create("malilib.button.config.popup_group.show_configs",
                                                     this::openConfigGroupEditScreen);
         this.groupOpenButton.getHoverInfoFactory().setTextLineProvider("config_list", this::getContainedConfigsHoverInfo);
         this.groupOpenButton.getHoverInfoFactory().setDynamic(false);
+
         this.getHoverInfoFactory().setTextLineProvider("config_list", this::getContainedConfigsHoverInfo);
         this.getHoverInfoFactory().setDynamic(false);
     }
@@ -33,18 +33,14 @@ public class PopupConfigGroupWidget extends BaseConfigWidget<PopupConfigGroup>
     public void reAddSubWidgets()
     {
         super.reAddSubWidgets();
-
         this.addWidget(this.groupOpenButton);
     }
 
     @Override
-    public void updateSubWidgetsToGeometryChanges()
+    public void updateSubWidgetPositions()
     {
-        super.updateSubWidgetsToGeometryChanges();
-
-        int x = this.getElementsStartPosition();
-        int y = this.getY();
-        this.groupOpenButton.setPosition(x, y);
+        super.updateSubWidgetPositions();
+        this.groupOpenButton.setPosition(this.getElementsStartPosition(), this.getY());
     }
 
     protected void openConfigGroupEditScreen()

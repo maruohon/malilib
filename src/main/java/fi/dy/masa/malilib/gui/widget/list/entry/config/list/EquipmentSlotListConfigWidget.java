@@ -27,7 +27,7 @@ public class EquipmentSlotListConfigWidget extends BaseValueListConfigWidget<Ent
 
         return new BaseValueListEditButton<>(width, height,
                                              config,
-                                             this::updateButtonStates,
+                                             this::updateWidgetDisplayValues,
                                              () -> EntityEquipmentSlot.MAINHAND,
                                              this::getSortedSlotList,
                                              EntityEquipmentSlot::getName,

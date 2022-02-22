@@ -43,6 +43,8 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
         this.nameText = StyledTextLine.translate("malilib.label.config.config_display_name", config.getDisplayName());
         this.internalNameText = StyledTextLine.translate("malilib.label.config.config_internal_name", config.getName());
         this.configOwnerAndNameLabelWidget = new LabelWidget(this.getMaxLabelWidth(), height, 0xFFFFFFFF);
+        this.resetButton = GenericButton.create("malilib.button.misc.reset.caps", this::onResetButtonClicked);
+        this.resetButton.setEnabledStatusSupplier(this::isResetEnabled);
 
         EventListener clickHandler = config.getLabelClickHandler();
         List<String> comments = new ArrayList<>();
@@ -59,7 +61,6 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
         config.getComment().ifPresent(comments::add);
 
         this.configOwnerAndNameLabelWidget.getHoverInfoFactory().addStrings(comments);
-        this.resetButton = GenericButton.create("malilib.button.misc.reset.caps");
 
         boolean bgEnabled = MaLiLibConfigs.Generic.CONFIG_WIDGET_BACKGROUND.getBooleanValue();
         this.getBackgroundRenderer().getNormalSettings()
@@ -69,15 +70,15 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
     @Override
     public void reAddSubWidgets()
     {
-        this.clearWidgets();
+        super.reAddSubWidgets();
 
         this.addWidget(this.configOwnerAndNameLabelWidget);
     }
 
     @Override
-    public void updateSubWidgetsToGeometryChanges()
+    public void updateSubWidgetPositions()
     {
-        super.updateSubWidgetsToGeometryChanges();
+        super.updateSubWidgetPositions();
 
         int nesting = this.getNestingOffset(this.ctx.getNestingLevel());
         boolean showCategory = this.ctx.getListWidget().isShowingOptionsFromOtherCategories();
@@ -102,6 +103,23 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
         }
     }
 
+    protected void onResetButtonClicked()
+    {
+        this.config.resetToDefault();
+        this.updateWidgetDisplayValues();
+    }
+
+    @Override
+    public void updateWidgetDisplayValues()
+    {
+        this.resetButton.updateButtonState();
+    }
+
+    protected boolean isResetEnabled()
+    {
+        return this.config.isModified();
+    }
+
     protected boolean shouldShowInternalName()
     {
         return this.ctx.getListWidget().getShowInternalConfigName();
@@ -116,17 +134,6 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
     protected int getElementWidth()
     {
         return this.ctx.getListWidget().getElementWidth();
-    }
-
-    protected void updateResetButton(int x, int y)
-    {
-        this.resetButton.setPosition(x, y);
-        this.updateResetButtonState();
-    }
-
-    protected void updateResetButtonState()
-    {
-        this.resetButton.setEnabled(this.config.isModified());
     }
 
     public boolean wasModified()
@@ -156,11 +163,10 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
         });
         button.setPosition(x, y + 1);
 
-        this.resetButton.setActionListener(this::onResetButtonClicked);
-
-        this.updateResetButton(x + elementWidth + 4, y + 1);
         this.addWidget(button);
         this.addWidget(this.resetButton);
+
+        this.resetButton.setPosition(x + elementWidth + 4, y + 1);
 
         return button;
     }
@@ -180,12 +186,6 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
         int nestingLevel = this.ctx.getNestingLevel();
         int offset = this.getNestingOffset(nestingLevel);
         return this.getX() + this.getMaxLabelWidth() + offset + 10;
-    }
-
-    protected void onResetButtonClicked()
-    {
-        this.config.resetToDefault();
-        this.reAddSubWidgets();
     }
 
     public interface FileSelectorScreenFactory

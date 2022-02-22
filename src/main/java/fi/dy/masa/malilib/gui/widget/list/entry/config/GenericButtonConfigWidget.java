@@ -22,11 +22,14 @@ public class GenericButtonConfigWidget extends BaseConfigWidget<GenericButtonCon
     {
         super.reAddSubWidgets();
 
-        int x = this.getElementsStartPosition();
-        int y = this.getY() + 1;
-
-        this.button.setPosition(x, y);
-
         this.addWidget(this.button);
+    }
+
+    @Override
+    public void updateSubWidgetPositions()
+    {
+        super.updateSubWidgetPositions();
+
+        this.button.setPosition(this.getElementsStartPosition(), this.getY() + 1);
     }
 }

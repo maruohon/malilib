@@ -395,7 +395,7 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
 
         this.addWidget(this.menuWidget);
         this.menuWidget.setZ(this.zLevel + 40);
-        this.menuWidget.updateSubWidgetsToGeometryChanges();
+        this.menuWidget.updateSubWidgetPositions();
     }
 
     protected void openGroupMenu(int mouseX, int mouseY)
@@ -409,7 +409,7 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
 
         this.addWidget(this.menuWidget);
         this.menuWidget.setZ(this.zLevel + 40);
-        this.menuWidget.updateSubWidgetsToGeometryChanges();
+        this.menuWidget.updateSubWidgetPositions();
     }
 
     protected void addActionWidget(BaseActionExecutionWidget widget)

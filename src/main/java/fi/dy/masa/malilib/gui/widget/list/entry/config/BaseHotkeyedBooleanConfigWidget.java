@@ -34,19 +34,14 @@ public abstract class BaseHotkeyedBooleanConfigWidget extends BaseConfigWidget<C
         this.booleanButton.setHoverStringProvider("locked", this.booleanConfig::getLockAndOverrideMessages);
         this.booleanButton.setActionListener(() -> {
             this.booleanConfig.toggleBooleanValue();
-            this.updateButtonStates();
+            this.updateWidgetDisplayValues();
         });
 
         this.hotkeyButton = new KeyBindConfigButton(120, 20, keyBind, ctx.getKeybindEditingScreen());
         this.hotkeyButton.setHoverStringProvider("locked", this.booleanConfig::getLockAndOverrideMessages);
-        this.hotkeyButton.setValueChangeListener(this::updateButtonStates);
+        this.hotkeyButton.setValueChangeListener(this::updateWidgetDisplayValues);
 
         this.settingsWidget = new KeybindSettingsWidget(keyBind, booleanConfig.getDisplayName());
-
-        this.resetButton.setActionListener(() -> {
-            this.config.resetToDefault();
-            this.updateButtonStates();
-        });
     }
 
     @Override
@@ -61,9 +56,9 @@ public abstract class BaseHotkeyedBooleanConfigWidget extends BaseConfigWidget<C
     }
 
     @Override
-    public void updateSubWidgetsToGeometryChanges()
+    public void updateSubWidgetPositions()
     {
-        super.updateSubWidgetsToGeometryChanges();
+        super.updateSubWidgetPositions();
 
         int x = this.getElementsStartPosition();
         int y = this.getY() + 1;
@@ -76,8 +71,7 @@ public abstract class BaseHotkeyedBooleanConfigWidget extends BaseConfigWidget<C
         this.hotkeyButton.setWidth(w);
         this.settingsWidget.setPosition(this.hotkeyButton.getRight() + 2, y);
 
-        this.updateResetButton(this.settingsWidget.getRight() + 4, y);
-        this.updateButtonStates();
+        this.resetButton.setPosition(this.settingsWidget.getRight() + 4, y);
     }
 
     @Override
@@ -87,8 +81,11 @@ public abstract class BaseHotkeyedBooleanConfigWidget extends BaseConfigWidget<C
                this.keyBind.getKeys().equals(this.initialHotkeyValue) == false;
     }
 
-    protected void updateButtonStates()
+    @Override
+    public void updateWidgetDisplayValues()
     {
+        super.updateWidgetDisplayValues();
+
         this.booleanButton.setEnabled(this.booleanConfig.isLocked() == false);
         this.booleanButton.updateButtonState();
         this.booleanButton.updateHoverStrings();
@@ -97,7 +94,11 @@ public abstract class BaseHotkeyedBooleanConfigWidget extends BaseConfigWidget<C
         this.hotkeyButton.setHoverInfoRequiresShift(this.booleanConfig.isLocked() == false);
         this.hotkeyButton.updateButtonState();
         this.hotkeyButton.updateHoverStrings();
+    }
 
-        this.resetButton.setEnabled(this.config.isModified() && this.booleanConfig.isLocked() == false);
+    @Override
+    protected boolean isResetEnabled()
+    {
+        return this.config.isModified() && this.booleanConfig.isLocked() == false;
     }
 }

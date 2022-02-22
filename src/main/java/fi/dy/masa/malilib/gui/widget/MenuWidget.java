@@ -24,6 +24,45 @@ public class MenuWidget extends ContainerWidget
     }
 
     @Override
+    public void reAddSubWidgets()
+    {
+        super.reAddSubWidgets();
+
+        for (MenuEntryWidget widget : this.menuEntries)
+        {
+            this.addWidget(widget);
+
+            if (this.renderEntryBackground)
+            {
+                widget.getBackgroundRenderer().getNormalSettings().setEnabledAndColor(true, this.normalEntryBackgroundColor);
+                widget.getBackgroundRenderer().getHoverSettings().setEnabledAndColor(true, this.hoveredEntryBackgroundColor);
+            }
+            else
+            {
+                widget.getBackgroundRenderer().getNormalSettings().setEnabled(false);
+                widget.getBackgroundRenderer().getHoverSettings().setEnabled(false);
+            }
+        }
+    }
+
+    @Override
+    public void updateSubWidgetPositions()
+    {
+        super.updateSubWidgetPositions();
+
+        int x = this.getX() + 1;
+        int y = this.getY() + 1;
+        int width = this.getWidth() - 2;
+
+        for (MenuEntryWidget widget : this.menuEntries)
+        {
+            widget.setPosition(x, y);
+            widget.setWidth(width);
+            y += widget.getHeight();
+        }
+    }
+
+    @Override
     protected int getSubWidgetZLevelIncrement()
     {
         return 50;
@@ -46,7 +85,7 @@ public class MenuWidget extends ContainerWidget
 
         this.updateSize();
         this.clampToScreen();
-        this.updateSubWidgetsToGeometryChanges();
+        this.updateSubWidgetPositions();
         this.reAddSubWidgets();
     }
 
@@ -99,45 +138,6 @@ public class MenuWidget extends ContainerWidget
         height += padding.getVerticalTotal() + borderWidth;
 
         this.setSizeNoUpdate(width, height);
-    }
-
-    @Override
-    public void reAddSubWidgets()
-    {
-        super.reAddSubWidgets();
-
-        for (MenuEntryWidget widget : this.menuEntries)
-        {
-            this.addWidget(widget);
-
-            if (this.renderEntryBackground)
-            {
-                widget.getBackgroundRenderer().getNormalSettings().setEnabledAndColor(true, this.normalEntryBackgroundColor);
-                widget.getBackgroundRenderer().getHoverSettings().setEnabledAndColor(true, this.hoveredEntryBackgroundColor);
-            }
-            else
-            {
-                widget.getBackgroundRenderer().getNormalSettings().setEnabled(false);
-                widget.getBackgroundRenderer().getHoverSettings().setEnabled(false);
-            }
-        }
-    }
-
-    @Override
-    public void updateSubWidgetsToGeometryChanges()
-    {
-        super.updateSubWidgetsToGeometryChanges();
-
-        int x = this.getX() + 1;
-        int y = this.getY() + 1;
-        int width = this.getWidth() - 2;
-
-        for (MenuEntryWidget widget : this.menuEntries)
-        {
-            widget.setPosition(x, y);
-            widget.setWidth(width);
-            y += widget.getHeight();
-        }
     }
 
     @Override

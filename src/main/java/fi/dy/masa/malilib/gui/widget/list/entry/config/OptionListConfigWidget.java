@@ -27,7 +27,7 @@ public class OptionListConfigWidget extends BaseConfigWidget<OptionListConfig<Op
 
         this.optionListButton = new OptionListConfigButton(80, 20, this.config);
         this.optionListButton.setHoverStringProvider("locked", this.config::getLockAndOverrideMessages);
-        this.optionListButton.setChangeListener(this::updateResetButtonState);
+        this.optionListButton.setChangeListener(this::updateWidgetDisplayValues);
 
         ArrayList<OptionListConfigValue> values = new ArrayList<>(config.getAllowedValues());
         this.dropDownWidget = new DropDownListWidget<>(80, 16, 200, 20, values, OptionListConfigValue::getDisplayName);
@@ -38,10 +38,8 @@ public class OptionListConfigWidget extends BaseConfigWidget<OptionListConfig<Op
         this.dropDownWidget.setSelectionListener((v) -> {
             this.config.setValue(v);
             this.dropDownWidget.updateHoverStrings();
-            this.updateResetButtonState();
+            this.updateWidgetDisplayValues();
         });
-
-        this.resetButton.setActionListener(this::reset);
     }
 
     @Override
@@ -51,17 +49,14 @@ public class OptionListConfigWidget extends BaseConfigWidget<OptionListConfig<Op
 
         boolean useDropDown = MaLiLibConfigs.Generic.OPTION_LIST_CONFIG_DROPDOWN.getBooleanValue();
 
-        this.dropDownWidget.setEnabled(this.config.isLocked() == false);
-        this.optionListButton.setEnabled(this.config.isLocked() == false);
-
         this.addWidget(useDropDown ? this.dropDownWidget : this.optionListButton);
         this.addWidget(this.resetButton);
     }
 
     @Override
-    public void updateSubWidgetsToGeometryChanges()
+    public void updateSubWidgetPositions()
     {
-        super.updateSubWidgetsToGeometryChanges();
+        super.updateSubWidgetPositions();
 
         int x = this.getElementsStartPosition();
         int y = this.getY();
@@ -70,35 +65,34 @@ public class OptionListConfigWidget extends BaseConfigWidget<OptionListConfig<Op
         this.dropDownWidget.setWidth(elementWidth);
         this.optionListButton.setWidth(elementWidth);
 
-        this.dropDownWidget.updateHoverStrings();
-        this.optionListButton.updateHoverStrings();
-
         this.optionListButton.setPosition(x, y + 1);
         this.dropDownWidget.setPosition(x, y + 2);
 
-        this.updateResetButton(x + elementWidth + 4, y + 1);
+        this.resetButton.setPosition(x + elementWidth + 4, y + 1);
+    }
+
+    @Override
+    public void updateWidgetDisplayValues()
+    {
+        super.updateWidgetDisplayValues();
+
+        this.dropDownWidget.setEnabled(this.config.isLocked() == false);
+        this.dropDownWidget.updateHoverStrings();
+        this.optionListButton.setEnabled(this.config.isLocked() == false);
+        this.optionListButton.updateButtonState();
+    }
+
+    @Override
+    protected void onResetButtonClicked()
+    {
+        super.onResetButtonClicked();
+        this.dropDownWidget.setSelectedEntry(this.config.getValue());
     }
 
     @Override
     public boolean wasModified()
     {
         return this.config.getValue().equals(this.initialValue) == false;
-    }
-
-    protected void reset()
-    {
-        this.config.resetToDefault();
-
-        if (MaLiLibConfigs.Generic.OPTION_LIST_CONFIG_DROPDOWN.getBooleanValue())
-        {
-            this.dropDownWidget.setSelectedEntry(this.config.getValue());
-        }
-        else
-        {
-            this.optionListButton.updateButtonState();
-        }
-
-        this.updateResetButtonState();
     }
 
     protected List<StyledTextLine> getOptionListPreviewHoverString(List<StyledTextLine> previousLines)

@@ -45,19 +45,15 @@ public class ColorEditorWidget extends ContainerWidget
     }
 
     @Override
-    public void updateSubWidgetsToGeometryChanges()
+    public void updateSubWidgetPositions()
     {
-        super.updateSubWidgetsToGeometryChanges();
+        super.updateSubWidgetPositions();
 
-        int x = this.getX();
-        int y = this.getY();
-        int width = this.getWidth();
-        int height = this.getHeight();
+        this.textField.setX(this.getX());
+        this.textField.centerVerticallyInside(this);
+        this.textField.setWidth(this.getWidth() - this.colorIndicator.getWidth() - 4);
 
-        this.textField.setPosition(x, y + height / 2 - 8);
-        this.textField.setWidth(width - height - 4);
-
-        this.colorIndicator.setPosition(x + width - height, y);
+        this.colorIndicator.setPosition(this.textField.getRight() + 2, this.getY());
     }
 
     protected void setColorFromEditor(int color)

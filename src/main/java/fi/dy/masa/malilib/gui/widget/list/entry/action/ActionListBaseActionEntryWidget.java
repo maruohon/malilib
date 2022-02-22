@@ -83,9 +83,9 @@ public class ActionListBaseActionEntryWidget extends BaseOrderableListEditEntryW
     }
 
     @Override
-    public void updateSubWidgetsToGeometryChanges()
+    public void updateSubWidgetPositions()
     {
-        super.updateSubWidgetsToGeometryChanges();
+        super.updateSubWidgetPositions();
 
         this.nextElementRight = this.getRight() - (this.noRemoveButtons ? 1 : 15);
 

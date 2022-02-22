@@ -20,11 +20,6 @@ public abstract class BaseValueListConfigWidget<TYPE, CFG extends ValueListConfi
 
         this.button = this.createButton(this.getElementWidth(), 20, config, ctx);
         this.button.setHoverStringProvider("locked", config::getLockAndOverrideMessages);
-
-        this.resetButton.setActionListener(() -> {
-            this.config.resetToDefault();
-            this.updateButtonStates();
-        });
     }
 
     protected abstract GenericButton createButton(int width, int height, CFG config, ConfigWidgetContext ctx);
@@ -39,9 +34,9 @@ public abstract class BaseValueListConfigWidget<TYPE, CFG extends ValueListConfi
     }
 
     @Override
-    public void updateSubWidgetsToGeometryChanges()
+    public void updateSubWidgetPositions()
     {
-        super.updateSubWidgetsToGeometryChanges();
+        super.updateSubWidgetPositions();
 
         int x = this.getElementsStartPosition();
         int y = this.getY() + 1;
@@ -51,12 +46,13 @@ public abstract class BaseValueListConfigWidget<TYPE, CFG extends ValueListConfi
         this.button.setWidth(elementWidth);
         this.button.setEnabled(this.config.isLocked() == false);
 
-        this.updateResetButton(x + elementWidth + 4, y);
+        this.resetButton.setPosition(this.button.getRight() + 4, y);
     }
 
-    public void updateButtonStates()
+    @Override
+    public void updateWidgetDisplayValues()
     {
+        super.updateWidgetDisplayValues();
         this.button.updateButtonState();
-        this.updateResetButtonState();
     }
 }

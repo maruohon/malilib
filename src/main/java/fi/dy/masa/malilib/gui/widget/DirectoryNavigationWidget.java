@@ -112,9 +112,9 @@ public class DirectoryNavigationWidget extends SearchBarWidget
     }
 
     @Override
-    public void updateSubWidgetsToGeometryChanges()
+    public void updateSubWidgetPositions()
     {
-        super.updateSubWidgetsToGeometryChanges();
+        super.updateSubWidgetPositions();
 
         int x = this.getX() + 2;
         int y = this.getY();

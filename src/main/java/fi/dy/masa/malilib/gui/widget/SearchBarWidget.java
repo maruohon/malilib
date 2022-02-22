@@ -65,9 +65,9 @@ public class SearchBarWidget extends ContainerWidget
     }
 
     @Override
-    public void updateSubWidgetsToGeometryChanges()
+    public void updateSubWidgetPositions()
     {
-        super.updateSubWidgetsToGeometryChanges();
+        super.updateSubWidgetPositions();
 
         int x = this.getX();
         int y = this.getY();
@@ -92,9 +92,9 @@ public class SearchBarWidget extends ContainerWidget
             }
         }
 
-        this.textField.setPosition(tx, ty);
-        this.textField.centerVerticallyInside(this);
         this.textField.setWidth(tw);
+        this.textField.setPosition(tx, ty);
+        //this.textField.centerVerticallyInside(this);
     }
 
     public void setAlwaysOpen(boolean alwaysOpen)

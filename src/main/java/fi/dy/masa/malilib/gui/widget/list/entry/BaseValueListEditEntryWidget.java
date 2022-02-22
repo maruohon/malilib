@@ -76,8 +76,7 @@ public class BaseValueListEditEntryWidget<TYPE> extends BaseOrderableListEditEnt
     @Override
     protected void updateSubWidgetsToGeometryChangesPre(int x, int y)
     {
-        int lx = this.getX();
-        this.labelWidget.setPosition(lx + 2, y + 6);
+        this.labelWidget.setPosition(this.getX() + 2, y + 6);
         this.dropDownWidget.setPosition(x, y + 1);
         this.nextWidgetX = this.dropDownWidget.getRight() + 2;
     }

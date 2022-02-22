@@ -59,9 +59,9 @@ public class ExpandableConfigGroupWidget extends BaseConfigWidget<ExpandableConf
     }
 
     @Override
-    public void updateSubWidgetsToGeometryChanges()
+    public void updateSubWidgetPositions()
     {
-        super.updateSubWidgetsToGeometryChanges();
+        super.updateSubWidgetPositions();
 
         int x = this.getX();
         int y = this.getY();

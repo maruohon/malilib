@@ -27,12 +27,6 @@ public class HotkeyConfigWidget extends BaseConfigWidget<HotkeyConfig>
         this.keybindButton.setValueChangeListener(() -> this.resetButton.setEnabled(this.config.isModified()));
 
         this.settingsWidget = new KeybindSettingsWidget(config.getKeyBind(), config.getDisplayName());
-
-        this.resetButton.setActionListener(() -> {
-            this.config.resetToDefault();
-            this.keybindButton.updateButtonState();
-            this.resetButton.setEnabled(this.config.isModified());
-        });
     }
 
     @Override
@@ -46,25 +40,28 @@ public class HotkeyConfigWidget extends BaseConfigWidget<HotkeyConfig>
     }
 
     @Override
-    public void updateSubWidgetsToGeometryChanges()
+    public void updateSubWidgetPositions()
     {
-        super.updateSubWidgetsToGeometryChanges();
+        super.updateSubWidgetPositions();
 
-        int x = this.getElementsStartPosition();
         int y = this.getY() + 1;
-        int elementWidth = this.getElementWidth();
 
-        this.keybindButton.setPosition(x, y);
-        this.keybindButton.setWidth(elementWidth - 22);
+        this.keybindButton.setPosition(this.getElementsStartPosition(), y);
+        this.keybindButton.setWidth(this.getElementWidth() - 22);
         this.keybindButton.setEnabled(this.config.isLocked() == false);
         this.keybindButton.setHoverInfoRequiresShift(this.config.isLocked() == false);
+
+        this.settingsWidget.setPosition(this.keybindButton.getRight() + 2, y);
+        this.resetButton.setPosition(this.settingsWidget.getRight() + 4, y);
+    }
+
+    @Override
+    public void updateWidgetDisplayValues()
+    {
+        super.updateWidgetDisplayValues();
+
+        this.keybindButton.updateButtonState();
         this.keybindButton.updateHoverStrings();
-
-        x += this.keybindButton.getWidth() + 2;
-        this.settingsWidget.setPosition(x, y);
-
-        x += this.settingsWidget.getWidth() + 4;
-        this.updateResetButton(x, y);
     }
 
     @Override
