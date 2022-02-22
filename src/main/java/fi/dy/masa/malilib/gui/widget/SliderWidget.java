@@ -30,6 +30,12 @@ public class SliderWidget extends InteractableWidget
     }
 
     @Override
+    public void updateWidgetDisplayValues()
+    {
+        this.callback.updateDisplayText();
+    }
+
+    @Override
     protected boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
         if (this.locked == false)

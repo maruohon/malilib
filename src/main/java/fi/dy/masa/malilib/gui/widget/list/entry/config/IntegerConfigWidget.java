@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.gui.widget.list.entry.config;
 
 import fi.dy.masa.malilib.config.option.IntegerConfig;
+import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.widget.IntegerTextFieldWidget;
 
@@ -18,5 +19,18 @@ public class IntegerConfigWidget extends NumericConfigWidget<Integer, IntegerCon
                                                   config.getMinIntegerValue(),
                                                   config.getMaxIntegerValue(),
                                                   config.getDefaultIntegerValue());
+    }
+
+    @Override
+    protected boolean onValueAdjustButtonClick(int mouseButton)
+    {
+        int amount = mouseButton == 1 ? -1 : 1;
+        if (BaseScreen.isShiftDown()) { amount *= 8; }
+        if (BaseScreen.isAltDown()) { amount *= 4; }
+
+        this.config.setIntegerValue(this.config.getIntegerValue() + amount);
+        this.updateWidgetDisplayValues();
+
+        return true;
     }
 }

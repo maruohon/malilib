@@ -17,6 +17,7 @@ import fi.dy.masa.malilib.util.StringUtils;
 public abstract class NumericConfigWidget<TYPE, CFG extends BaseConfigOption<TYPE> & SliderConfig> extends BaseConfigOptionWidget<TYPE, CFG>
 {
     protected final BaseTextFieldWidget textField;
+    protected final GenericButton valueAdjustButton;
     protected final GenericButton sliderToggleButton;
     protected final String initialStringValue;
     protected final BiConsumer<CFG, String> fromStringSetter;
@@ -45,6 +46,11 @@ public abstract class NumericConfigWidget<TYPE, CFG extends BaseConfigOption<TYP
         this.sliderWidget = new SliderWidget(60, 20, config.getSliderCallback(this::updateWidgetDisplayValues));
         this.sliderWidget.setHoverStringProvider("lock", config::getLockAndOverrideMessages);
 
+        this.valueAdjustButton = GenericButton.create(DefaultIcons.BTN_PLUSMINUS_16);
+        this.valueAdjustButton.setActionListener(this::onValueAdjustButtonClick);
+        this.valueAdjustButton.setCanScrollToClick(true);
+        this.valueAdjustButton.translateAndAddHoverString("malilib.hover.button.plus_minus_tip");
+
         this.sliderToggleButton = GenericButton.create(this::getSliderToggleButtonIcon, this::toggleSlider);
         this.sliderToggleButton.setHoverStringProvider("slider", this::getSliderMessages);
         this.sliderToggleButton.updateHoverStrings();
@@ -64,6 +70,7 @@ public abstract class NumericConfigWidget<TYPE, CFG extends BaseConfigOption<TYP
             this.addWidget(this.textField);
         }
 
+        this.addWidget(this.valueAdjustButton);
         this.addWidget(this.sliderToggleButton);
         this.addWidget(this.resetButton);
     }
@@ -80,11 +87,14 @@ public abstract class NumericConfigWidget<TYPE, CFG extends BaseConfigOption<TYP
 
         this.sliderWidget.setLocked(locked);
         this.sliderWidget.setPosition(x, y + 1);
-        this.sliderWidget.setWidth(elementWidth - 18);
+        this.sliderWidget.setWidth(elementWidth - 36);
 
         this.textField.setEnabled(locked == false);
         this.textField.setPosition(x, y + 3);
-        this.textField.setWidth(elementWidth - 18);
+        this.textField.setWidth(elementWidth - 36);
+
+        this.valueAdjustButton.setEnabled(locked == false);
+        this.valueAdjustButton.setPosition(this.textField.getRight() + 2, y + 3);
 
         x += elementWidth - 16;
         this.sliderToggleButton.setPosition(x, y + 3);
@@ -100,6 +110,7 @@ public abstract class NumericConfigWidget<TYPE, CFG extends BaseConfigOption<TYP
 
         this.textField.setText(this.getCurrentValueAsString());
         this.textField.updateHoverStrings();
+        this.sliderWidget.updateWidgetDisplayValues();
     }
 
     @Override
@@ -112,6 +123,8 @@ public abstract class NumericConfigWidget<TYPE, CFG extends BaseConfigOption<TYP
             this.fromStringSetter.accept(this.config, text);
         }
     }
+
+    protected abstract boolean onValueAdjustButtonClick(int mouseButton);
 
     protected void toggleSlider()
     {
