@@ -2,26 +2,29 @@ package fi.dy.masa.malilib.gui.config;
 
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
+import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.BaseConfigWidget;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class MissingConfigTypeFactory implements ConfigOptionWidgetFactory<ConfigInfo>
 {
     @Override
-    public BaseConfigWidget<ConfigInfo> create(int x, int y, int width, int height, int listIndex,
-                                               int originalListIndex, ConfigInfo config, ConfigWidgetContext ctx)
+    public BaseConfigWidget<ConfigInfo> create(ConfigInfo config,
+                                               DataListEntryWidgetData constructData,
+                                               ConfigWidgetContext ctx)
     {
-        return new MissingConfigWidget(x, y, width, 22, listIndex, originalListIndex, config, ctx);
+        return new MissingConfigWidget(config, constructData, ctx);
     }
 
     public static class MissingConfigWidget extends BaseConfigWidget<ConfigInfo>
     {
         protected final LabelWidget labelWidget;
 
-        public MissingConfigWidget(int x, int y, int width, int height, int listIndex,
-                                   int originalListIndex, ConfigInfo config, ConfigWidgetContext ctx)
+        public MissingConfigWidget(ConfigInfo config,
+                                   DataListEntryWidgetData constructData,
+                                   ConfigWidgetContext ctx)
         {
-            super(x, y, width, height, listIndex, originalListIndex, config, ctx);
+            super(config, constructData, ctx);
 
             String label = StringUtils.translate("malilib.label.config.no_widget_factory_for_config",
                                                  this.data.getClass().getName());

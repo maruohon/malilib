@@ -3,7 +3,6 @@ package fi.dy.masa.malilib.gui.widget.list.entry;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.button.OnOffButton;
-import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.overlay.widget.ConfigStatusIndicatorContainerWidget;
 import fi.dy.masa.malilib.overlay.widget.sub.BaseConfigStatusIndicatorWidget;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
@@ -15,13 +14,11 @@ public class ConfigStatusIndicatorEntryWidget extends BaseOrderableListEditEntry
     protected final GenericButton configureButton;
     protected final GenericButton removeButton;
 
-    public ConfigStatusIndicatorEntryWidget(int x, int y, int width, int height,
-                                            int listIndex, int originalListIndex,
-                                            BaseConfigStatusIndicatorWidget<?> data,
-                                            DataListWidget<BaseConfigStatusIndicatorWidget<?>> listWidget,
+    public ConfigStatusIndicatorEntryWidget(BaseConfigStatusIndicatorWidget<?> data,
+                                            DataListEntryWidgetData constructData,
                                             ConfigStatusIndicatorContainerWidget containerWidget)
     {
-        super(x, y, width, height, listIndex, originalListIndex, data, listWidget);
+        super(data, constructData);
 
         this.useAddButton = false;
         this.useRemoveButton = false;

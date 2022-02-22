@@ -13,6 +13,7 @@ import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.SearchBarWidget;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.BaseOrderableListEditEntryWidget;
+import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
 import fi.dy.masa.malilib.gui.widget.list.header.BaseDataListEditHeaderWidget;
 import fi.dy.masa.malilib.listener.EventListener;
 
@@ -88,10 +89,11 @@ public class BaseValueListEditScreen<TYPE> extends BaseListScreen<DataListWidget
             wgt.setWidth(15);
         });
 
-        listWidget.setEntryWidgetFactory((wx, wy, ww, wh, li, oi, entry, lw) -> {
+        listWidget.setEntryWidgetFactory((data, constructData) -> {
             List<TYPE> defaultList = this.config.getDefaultValue();
-            TYPE defaultValue = li < defaultList.size() ? defaultList.get(li) : this.newEntrySupplier.get();
-            return this.widgetFactory.create(wx, wy, ww, wh, li, oi, entry, defaultValue, lw);
+            int index = constructData.listIndex;
+            TYPE defaultValue = index < defaultList.size() ? defaultList.get(index) : this.newEntrySupplier.get();
+            return this.widgetFactory.create(data, constructData, defaultValue);
         });
 
         return listWidget;
@@ -99,8 +101,8 @@ public class BaseValueListEditScreen<TYPE> extends BaseListScreen<DataListWidget
 
     public interface ValueListEditEntryWidgetFactory<DATATYPE>
     {
-        BaseOrderableListEditEntryWidget<DATATYPE> create(int x, int y, int width, int height, int listIndex,
-                                                          int originalListIndex, DATATYPE initialValue,
-                                                          DATATYPE defaultValue, DataListWidget<DATATYPE> listWidget);
+        BaseOrderableListEditEntryWidget<DATATYPE> create(DATATYPE initialValue,
+                                                          DataListEntryWidgetData constructData,
+                                                          DATATYPE defaultValue);
     }
 }

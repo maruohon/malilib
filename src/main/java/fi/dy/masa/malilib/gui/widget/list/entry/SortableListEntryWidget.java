@@ -1,18 +1,15 @@
 package fi.dy.masa.malilib.gui.widget.list.entry;
 
-import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
-import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 
-public abstract class SortableListEntryWidget<TYPE> extends BaseDataListEntryWidget<TYPE>
+public abstract class SortableListEntryWidget<DATATYPE> extends BaseDataListEntryWidget<DATATYPE>
 {
     protected int columnCount = 2;
 
-    public SortableListEntryWidget(int x, int y, int width, int height, int listIndex,
-                                   int originalListIndex, @Nullable TYPE entry, DataListWidget<TYPE> listWidget)
+    public SortableListEntryWidget(DATATYPE data, DataListEntryWidgetData constructData)
     {
-        super(x, y, width, height, listIndex, originalListIndex, entry, listWidget);
+        super(data, constructData);
     }
 
     protected abstract int getColumnPosX(int column);

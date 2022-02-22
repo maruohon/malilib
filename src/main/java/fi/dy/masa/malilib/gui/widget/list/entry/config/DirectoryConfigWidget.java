@@ -4,14 +4,16 @@ import java.io.File;
 import fi.dy.masa.malilib.config.option.DirectoryConfig;
 import fi.dy.masa.malilib.gui.DirectorySelectorScreen;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
+import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
 import fi.dy.masa.malilib.util.FileUtils;
 
 public class DirectoryConfigWidget extends BaseConfigOptionWidget<File, DirectoryConfig>
 {
-    public DirectoryConfigWidget(int x, int y, int width, int height, int listIndex,
-                                 int originalListIndex, DirectoryConfig config, ConfigWidgetContext ctx)
+    public DirectoryConfigWidget(DirectoryConfig config,
+                                 DataListEntryWidgetData constructData,
+                                 ConfigWidgetContext ctx)
     {
-        super(x, y, width, height, listIndex, originalListIndex, config, ctx);
+        super(config, constructData, ctx);
     }
 
     @Override

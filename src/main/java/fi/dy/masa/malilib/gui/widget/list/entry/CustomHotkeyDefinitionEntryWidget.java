@@ -1,7 +1,6 @@
 package fi.dy.masa.malilib.gui.widget.list.entry;
 
 import java.util.ArrayList;
-import javax.annotation.Nullable;
 import fi.dy.masa.malilib.action.MacroAction;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.edit.CustomHotkeyEditScreen;
@@ -11,7 +10,6 @@ import fi.dy.masa.malilib.gui.widget.KeybindSettingsWidget;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.button.KeyBindConfigButton;
-import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.input.CustomHotkeyDefinition;
 import fi.dy.masa.malilib.input.CustomHotkeyManager;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
@@ -26,12 +24,11 @@ public class CustomHotkeyDefinitionEntryWidget extends BaseDataListEntryWidget<C
     protected final GenericButton editButton;
     protected final GenericButton removeButton;
 
-    public CustomHotkeyDefinitionEntryWidget(int x, int y, int width, int height, int listIndex, int originalListIndex,
-                                             @Nullable CustomHotkeyDefinition data,
-                                             @Nullable DataListWidget<? extends CustomHotkeyDefinition> listWidget,
+    public CustomHotkeyDefinitionEntryWidget(CustomHotkeyDefinition data,
+                                             DataListEntryWidgetData constructData,
                                              CustomHotkeysListScreen screen)
     {
-        super(x, y, width, height, listIndex, originalListIndex, data, listWidget);
+        super(data, constructData);
 
         this.screen = screen;
 
@@ -39,7 +36,7 @@ public class CustomHotkeyDefinitionEntryWidget extends BaseDataListEntryWidget<C
         StyledTextLine name = StyledTextLine.translate("malilib.label.custom_hotkeys.widget.hotkey_name", data.getName());
         StyledTextLine actionName = data.getActionDisplayName().withStartingStyle(actionStyle);
 
-        this.nameLabelWidget = new LabelWidget(-1, height, 0xFFF0F0F0);
+        this.nameLabelWidget = new LabelWidget(-1, this.getHeight(), 0xFFF0F0F0);
         this.nameLabelWidget.getPadding().setTop(2).setLeft(4);
         this.nameLabelWidget.setStyledTextLines(name, actionName);
 
@@ -67,8 +64,6 @@ public class CustomHotkeyDefinitionEntryWidget extends BaseDataListEntryWidget<C
         this.addWidget(this.settingsWidget);
         this.addWidget(this.editButton);
         this.addWidget(this.removeButton);
-
-        this.keybindButton.updateHoverStrings();
     }
 
     @Override
@@ -92,6 +87,15 @@ public class CustomHotkeyDefinitionEntryWidget extends BaseDataListEntryWidget<C
 
         this.editButton.setRight(this.keybindButton.getX() - 2);
         this.editButton.centerVerticallyInside(this);
+    }
+
+    @Override
+    public void updateWidgetDisplayValues()
+    {
+        super.updateWidgetDisplayValues();
+
+        this.updateHoverStrings();
+        this.keybindButton.updateHoverStrings();
     }
 
     protected void removeHotkey()

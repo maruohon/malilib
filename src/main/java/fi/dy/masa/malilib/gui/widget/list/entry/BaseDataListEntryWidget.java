@@ -6,22 +6,21 @@ import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.widget.list.DataListEntrySelectionHandler;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 
-public class BaseDataListEntryWidget<TYPE> extends BaseListEntryWidget
+public class BaseDataListEntryWidget<DATATYPE> extends BaseListEntryWidget
 {
-    @Nullable protected final DataListWidget<? extends TYPE> listWidget;
-    @Nullable protected final TYPE data;
+    @Nullable protected final DataListWidget<?> listWidget;
+    protected final DATATYPE data;
 
-    public BaseDataListEntryWidget(int x, int y, int width, int height, int listIndex, int originalListIndex,
-                                   @Nullable TYPE data, @Nullable DataListWidget<? extends TYPE> listWidget)
+    public BaseDataListEntryWidget(DATATYPE data,
+                                   DataListEntryWidgetData constructData)
     {
-        super(x, y, width, height, listIndex, originalListIndex);
+        super(constructData);
 
         this.data = data;
-        this.listWidget = listWidget;
+        this.listWidget = constructData.listWidget;
     }
 
-    @Nullable
-    public TYPE getData()
+    public DATATYPE getData()
     {
         return this.data;
     }
@@ -31,7 +30,7 @@ public class BaseDataListEntryWidget<TYPE> extends BaseListEntryWidget
     {
         if (this.listWidget != null)
         {
-            DataListEntrySelectionHandler<? extends TYPE> handler = this.listWidget.getEntrySelectionHandler();
+            DataListEntrySelectionHandler<?> handler = this.listWidget.getEntrySelectionHandler();
             return handler != null && handler.isEntrySelected(this.getListIndex());
         }
 
@@ -43,7 +42,7 @@ public class BaseDataListEntryWidget<TYPE> extends BaseListEntryWidget
     {
         if (this.listWidget != null)
         {
-            DataListEntrySelectionHandler<? extends TYPE> handler = this.listWidget.getEntrySelectionHandler();
+            DataListEntrySelectionHandler<?> handler = this.listWidget.getEntrySelectionHandler();
             return handler != null && handler.getKeyboardNavigationIndex() == this.getListIndex();
         }
 
@@ -51,7 +50,7 @@ public class BaseDataListEntryWidget<TYPE> extends BaseListEntryWidget
     }
 
     @Nullable
-    public Consumer<? extends BaseDataListEntryWidget<TYPE>> createWidgetInitializer(List<TYPE> dataList)
+    public Consumer<? extends BaseDataListEntryWidget<DATATYPE>> createWidgetInitializer(List<DATATYPE> dataList)
     {
         return null;
     }

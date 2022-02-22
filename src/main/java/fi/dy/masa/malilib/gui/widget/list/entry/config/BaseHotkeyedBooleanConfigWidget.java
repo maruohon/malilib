@@ -7,9 +7,10 @@ import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.widget.KeybindSettingsWidget;
 import fi.dy.masa.malilib.gui.widget.button.BooleanConfigButton;
 import fi.dy.masa.malilib.gui.widget.button.KeyBindConfigButton;
+import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
 import fi.dy.masa.malilib.input.KeyBind;
 
-public abstract class BaseHotkeyedBooleanConfigWidget extends BaseConfigWidget<ConfigInfo>
+public abstract class BaseHotkeyedBooleanConfigWidget<CFG extends ConfigInfo> extends BaseConfigWidget<CFG>
 {
     protected final BooleanConfig booleanConfig;
     protected final KeyBind keyBind;
@@ -19,11 +20,13 @@ public abstract class BaseHotkeyedBooleanConfigWidget extends BaseConfigWidget<C
     protected final KeybindSettingsWidget settingsWidget;
     protected final boolean initialBooleanValue;
 
-    public BaseHotkeyedBooleanConfigWidget(int x, int y, int width, int height, int listIndex, int originalListIndex,
-                                           ConfigInfo baseConfig, BooleanConfig booleanConfig, KeyBind keyBind,
+    public BaseHotkeyedBooleanConfigWidget(CFG baseConfig,
+                                           BooleanConfig booleanConfig,
+                                           KeyBind keyBind,
+                                           DataListEntryWidgetData constructData,
                                            ConfigWidgetContext ctx)
     {
-        super(x, y, width, height, listIndex, originalListIndex, baseConfig, ctx);
+        super(baseConfig, constructData, ctx);
 
         this.booleanConfig = booleanConfig;
         this.keyBind = keyBind;

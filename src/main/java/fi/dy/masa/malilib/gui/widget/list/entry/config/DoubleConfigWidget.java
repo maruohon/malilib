@@ -4,13 +4,15 @@ import fi.dy.masa.malilib.config.option.DoubleConfig;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.widget.DoubleTextFieldWidget;
+import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
 
 public class DoubleConfigWidget extends NumericConfigWidget<Double, DoubleConfig>
 {
-    public DoubleConfigWidget(int x, int y, int width, int height, int listIndex,
-                              int originalListIndex, DoubleConfig config, ConfigWidgetContext ctx)
+    public DoubleConfigWidget(DoubleConfig config,
+                              DataListEntryWidgetData constructData,
+                              ConfigWidgetContext ctx)
     {
-        super(x, y, width, height, listIndex, originalListIndex, config, ctx,
+        super(config, constructData, ctx,
               DoubleConfig::setValueFromString, DoubleConfig::getStringValue);
 
         this.textField.setTextValidator(new DoubleTextFieldWidget.DoubleValidator(config.getMinDoubleValue(),

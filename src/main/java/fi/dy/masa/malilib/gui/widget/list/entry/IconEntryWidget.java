@@ -1,6 +1,5 @@
 package fi.dy.masa.malilib.gui.widget.list.entry;
 
-import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.edit.CustomIconEditScreen;
 import fi.dy.masa.malilib.gui.edit.CustomIconListScreen;
@@ -8,7 +7,6 @@ import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
-import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 
@@ -17,12 +15,9 @@ public class IconEntryWidget extends BaseDataListEntryWidget<Icon>
     protected final GenericButton editButton;
     protected final GenericButton removeButton;
 
-    public IconEntryWidget(int x, int y, int width, int height,
-                           int listIndex, int originalListIndex,
-                           @Nullable Icon data,
-                           @Nullable DataListWidget<? extends Icon> listWidget)
+    public IconEntryWidget(Icon data, DataListEntryWidgetData constructData)
     {
-        super(x, y, width, height, listIndex, originalListIndex, data, listWidget);
+        super(data, constructData);
 
         this.editButton = GenericButton.create(20, "malilib.button.misc.edit", this::openEditScreen);
         this.removeButton = GenericButton.create(20, "malilib.button.misc.remove", this::removeIcon);

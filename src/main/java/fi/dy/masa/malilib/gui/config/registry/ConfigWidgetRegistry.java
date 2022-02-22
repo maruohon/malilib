@@ -63,8 +63,6 @@ public class ConfigWidgetRegistry
 
     /**
      * Registers a config screen widget factory for the given config type
-     * @param type
-     * @param factory
      */
     public <C extends ConfigInfo> void registerConfigWidgetFactory(Class<C> type, ConfigOptionWidgetFactory<C> factory)
     {
@@ -76,8 +74,6 @@ public class ConfigWidgetRegistry
      * These are only needed if your custom config type has boolean/toggle
      * option(s) or hotkey(s) and you want to have your custom config searchable/filterable
      * using the dropdown widget in the search bar, using the toggle and hotkey related options there.
-     * @param type
-     * @param info
      */
     public <C extends ConfigInfo> void registerConfigSearchInfo(Class<C> type, ConfigSearchInfo<C> info)
     {
@@ -105,10 +101,12 @@ public class ConfigWidgetRegistry
     protected void registerDefaultWidgetFactories()
     {
         this.registerConfigWidgetFactory(BlackWhiteListConfig.class,    BlackWhiteListConfigWidget::new);
+        this.registerConfigWidgetFactory(OptionListConfig.class,        OptionListConfigWidget::new);
+
         this.registerConfigWidgetFactory(BlockListConfig.class,         BlockListConfigWidget::new);
         this.registerConfigWidgetFactory(BooleanConfig.class,           BooleanConfigWidget::new);
         this.registerConfigWidgetFactory(ColorConfig.class,             ColorConfigWidget::new);
-        this.registerConfigWidgetFactory(ExpandableConfigGroup.class, ExpandableConfigGroupWidget::new);
+        this.registerConfigWidgetFactory(ExpandableConfigGroup.class,   ExpandableConfigGroupWidget::new);
         this.registerConfigWidgetFactory(DirectoryConfig.class,         DirectoryConfigWidget::new);
         this.registerConfigWidgetFactory(DoubleConfig.class,            DoubleConfigWidget::new);
         this.registerConfigWidgetFactory(EquipmentSlotListConfig.class, EquipmentSlotListConfigWidget::new);
@@ -120,8 +118,7 @@ public class ConfigWidgetRegistry
         this.registerConfigWidgetFactory(IntegerConfig.class,           IntegerConfigWidget::new);
         this.registerConfigWidgetFactory(ItemListConfig.class,          ItemListConfigWidget::new);
         this.registerConfigWidgetFactory(NestedConfig.class,            new NestedConfigWidgetFactory());
-        this.registerConfigWidgetFactory(OptionListConfig.class,        OptionListConfigWidget::new);
-        this.registerConfigWidgetFactory(PopupConfigGroup.class, PopupConfigGroupWidget::new);
+        this.registerConfigWidgetFactory(PopupConfigGroup.class,        PopupConfigGroupWidget::new);
         this.registerConfigWidgetFactory(StatusEffectListConfig.class,  StatusEffectListConfigWidget::new);
         this.registerConfigWidgetFactory(StringConfig.class,            StringConfigWidget::new);
         this.registerConfigWidgetFactory(StringListConfig.class,        StringListConfigWidget::new);

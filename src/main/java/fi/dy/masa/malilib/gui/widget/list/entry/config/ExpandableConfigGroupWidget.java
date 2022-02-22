@@ -8,6 +8,7 @@ import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
 import fi.dy.masa.malilib.gui.widget.IconWidget;
+import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 
 public class ExpandableConfigGroupWidget extends BaseConfigWidget<ExpandableConfigGroup>
@@ -16,10 +17,11 @@ public class ExpandableConfigGroupWidget extends BaseConfigWidget<ExpandableConf
     protected final IconWidget plusMinusIconWidget;
     protected final IconWidget arrowIconWidget;
 
-    public ExpandableConfigGroupWidget(int x, int y, int width, int height, int listIndex,
-                                       int originalListIndex, ExpandableConfigGroup config, ConfigWidgetContext ctx)
+    public ExpandableConfigGroupWidget(ExpandableConfigGroup config,
+                                       DataListEntryWidgetData constructData,
+                                       ConfigWidgetContext ctx)
     {
-        super(x, y, width, height, listIndex, originalListIndex, config, ctx);
+        super(config, constructData, ctx);
 
         this.config = config;
 

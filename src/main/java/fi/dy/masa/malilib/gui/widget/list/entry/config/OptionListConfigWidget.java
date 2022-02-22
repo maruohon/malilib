@@ -8,6 +8,7 @@ import fi.dy.masa.malilib.config.value.OptionListConfigValue;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.widget.DropDownListWidget;
 import fi.dy.masa.malilib.gui.widget.button.OptionListConfigButton;
+import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 
 public class OptionListConfigWidget extends BaseConfigWidget<OptionListConfig<OptionListConfigValue>>
@@ -17,10 +18,11 @@ public class OptionListConfigWidget extends BaseConfigWidget<OptionListConfig<Op
     protected final OptionListConfigButton optionListButton;
     protected final DropDownListWidget<OptionListConfigValue> dropDownWidget;
 
-    public OptionListConfigWidget(int x, int y, int width, int height, int listIndex, int originalListIndex,
-                                  OptionListConfig<OptionListConfigValue> config, ConfigWidgetContext ctx)
+    public OptionListConfigWidget(OptionListConfig<OptionListConfigValue> config,
+                                  DataListEntryWidgetData constructData,
+                                  ConfigWidgetContext ctx)
     {
-        super(x, y, width, height, listIndex, originalListIndex, config, ctx);
+        super(config, constructData, ctx);
 
         this.config = config;
         this.initialValue = this.config.getValue();

@@ -3,15 +3,17 @@ package fi.dy.masa.malilib.gui.widget.list.entry.config;
 import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.widget.button.BooleanConfigButton;
+import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
 
 public class BooleanConfigWidget extends BaseConfigOptionWidget<Boolean, BooleanConfig>
 {
     protected final BooleanConfigButton booleanButton;
 
-    public BooleanConfigWidget(int x, int y, int width, int height, int listIndex,
-                               int originalListIndex, BooleanConfig config, ConfigWidgetContext ctx)
+    public BooleanConfigWidget(BooleanConfig config,
+                               DataListEntryWidgetData constructData,
+                               ConfigWidgetContext ctx)
     {
-        super(x, y, width, height, listIndex, originalListIndex, config, ctx);
+        super(config, constructData, ctx);
 
         this.booleanButton = new BooleanConfigButton(-1, 20, this.config);
         this.booleanButton.setHoverStringProvider("locked", this.config::getLockAndOverrideMessages);

@@ -4,6 +4,7 @@ import fi.dy.masa.malilib.config.option.list.BlackWhiteListConfig;
 import fi.dy.masa.malilib.config.value.BlackWhiteList;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.widget.button.BlackWhiteListEditButton;
+import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
 
 public class BlackWhiteListConfigWidget extends BaseConfigWidget<BlackWhiteListConfig<?>>
 {
@@ -11,10 +12,11 @@ public class BlackWhiteListConfigWidget extends BaseConfigWidget<BlackWhiteListC
     protected final BlackWhiteListEditButton button;
     protected final BlackWhiteList<?> initialValue;
 
-    public BlackWhiteListConfigWidget(int x, int y, int width, int height, int listIndex, int originalListIndex,
-                                      BlackWhiteListConfig<?> config, ConfigWidgetContext ctx)
+    public BlackWhiteListConfigWidget(BlackWhiteListConfig<?> config,
+                                      DataListEntryWidgetData constructData,
+                                      ConfigWidgetContext ctx)
     {
-        super(x, y, width, height, listIndex, originalListIndex, config, ctx);
+        super(config, constructData, ctx);
 
         this.config = config;
         this.initialValue = this.config.getValue();

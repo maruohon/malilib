@@ -9,15 +9,17 @@ import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.widget.button.BaseValueListEditButton;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.entry.BaseValueListEditEntryWidget;
+import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
 import fi.dy.masa.malilib.gui.widget.list.entry.IdentifierListEditEntryWidget;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class IdentifierListConfigWidget extends BaseValueListConfigWidget<ResourceLocation, IdentifierListConfig>
 {
-    public IdentifierListConfigWidget(int x, int y, int width, int height, int listIndex,
-                                      int originalListIndex, IdentifierListConfig config, ConfigWidgetContext ctx)
+    public IdentifierListConfigWidget(IdentifierListConfig config,
+                                      DataListEntryWidgetData constructData,
+                                      ConfigWidgetContext ctx)
     {
-        super(x, y, width, height, listIndex, originalListIndex, config, ctx);
+        super(config, constructData, ctx);
     }
 
     @Override
@@ -32,10 +34,9 @@ public class IdentifierListConfigWidget extends BaseValueListConfigWidget<Resour
             final ArrayList<ResourceLocation> possibleValues = new ArrayList<>(validValues);
             possibleValues.sort(Comparator.comparing(ResourceLocation::toString));
 
-            return new BaseValueListEditButton<>(width, height, config, this::updateWidgetDisplayValues,
-                                                 () -> entry, (wx, wy, ww, wh, li, oi, iv, dv, lw) ->
-                                                      new BaseValueListEditEntryWidget<>(wx, wy, ww, wh, li, oi, iv, dv, lw,
-                                                                                         possibleValues, ResourceLocation::toString, null), title);
+            return new BaseValueListEditButton<>(width, height, config, this::updateWidgetDisplayValues, () -> entry,
+                                                 (iv, cd, dv) -> new BaseValueListEditEntryWidget<>(iv, cd, dv,
+                                                    possibleValues, ResourceLocation::toString, null), title);
         }
         else
         {

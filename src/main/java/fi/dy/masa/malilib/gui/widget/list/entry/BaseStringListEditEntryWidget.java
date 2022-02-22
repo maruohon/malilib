@@ -4,33 +4,32 @@ import java.util.function.Function;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
-import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 
-public abstract class BaseStringListEditEntryWidget<TYPE> extends BaseOrderableListEditEntryWidget<TYPE>
+public abstract class BaseStringListEditEntryWidget<DATATYPE> extends BaseOrderableListEditEntryWidget<DATATYPE>
 {
-    protected final TYPE defaultValue;
-    protected final TYPE initialValue;
-    protected final Function<TYPE, String> toStringConverter;
-    protected final Function<String, TYPE> fromStringConverter;
+    protected final DATATYPE defaultValue;
+    protected final DATATYPE initialValue;
+    protected final Function<DATATYPE, String> toStringConverter;
+    protected final Function<String, DATATYPE> fromStringConverter;
     protected final BaseTextFieldWidget textField;
     protected final GenericButton resetButton;
 
-    public BaseStringListEditEntryWidget(int x, int y, int width, int height, int listIndex, int originalListIndex,
-                                         TYPE initialValue, TYPE defaultValue,
-                                         Function<TYPE, String> toStringConverter,
-                                         Function<String, TYPE> fromStringConverter,
-                                         DataListWidget<TYPE> listWidget)
+    public BaseStringListEditEntryWidget(DATATYPE initialValue,
+                                         DataListEntryWidgetData constructData,
+                                         DATATYPE defaultValue,
+                                         Function<DATATYPE, String> toStringConverter,
+                                         Function<String, DATATYPE> fromStringConverter)
     {
-        super(x, y, width, height, listIndex, originalListIndex, initialValue, listWidget);
+        super(initialValue, constructData);
 
         this.defaultValue = defaultValue;
         this.initialValue = initialValue;
         this.toStringConverter = toStringConverter;
         this.fromStringConverter = fromStringConverter;
 
-        int textFieldWidth = width - 142;
+        int textFieldWidth = this.getWidth() - 142;
 
-        this.labelWidget = new LabelWidget(0xC0C0C0C0, String.format("%5d:", originalListIndex + 1));
+        this.labelWidget = new LabelWidget(0xC0C0C0C0, String.format("%5d:", this.originalListIndex + 1));
         this.textField = new BaseTextFieldWidget(textFieldWidth, 16, toStringConverter.apply(initialValue));
         this.textField.setShowCursorPosition(true);
 
@@ -89,7 +88,7 @@ public abstract class BaseStringListEditEntryWidget<TYPE> extends BaseOrderableL
     {
         if (this.originalListIndex < this.dataList.size())
         {
-            TYPE value = this.fromStringConverter.apply(newText);
+            DATATYPE value = this.fromStringConverter.apply(newText);
 
             if (value != null)
             {

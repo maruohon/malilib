@@ -32,16 +32,16 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
     protected int dragStartX;
     protected int dragStartY;
     protected int draggableRegionEndX = -1;
-
     @Nullable protected LabelWidget labelWidget;
 
-    public BaseOrderableListEditEntryWidget(int x, int y, int width, int height, int listIndex, int originalListIndex,
-                                            DATATYPE initialValue, DataListWidget<DATATYPE> listWidget)
+    @SuppressWarnings("unchecked")
+    public BaseOrderableListEditEntryWidget(DATATYPE data,
+                                            DataListEntryWidgetData constructData)
     {
-        super(x, y, width, height, listIndex, originalListIndex, initialValue, listWidget);
+        super(data, constructData);
 
         // This is a reference to the current entries list, which can be modified
-        this.dataList = listWidget.getCurrentContents();
+        this.dataList = ((DataListWidget<DATATYPE>) constructData.listWidget).getCurrentContents();
 
         this.addButton    = this.createListActionButton(ButtonType.ADD);
         this.removeButton = this.createListActionButton(ButtonType.REMOVE);

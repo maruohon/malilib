@@ -3,15 +3,17 @@ package fi.dy.masa.malilib.gui.widget.list.entry.config;
 import fi.dy.masa.malilib.config.option.StringConfig;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
+import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
 
 public class StringConfigWidget extends BaseConfigOptionWidget<String, StringConfig>
 {
     protected final BaseTextFieldWidget textField;
 
-    public StringConfigWidget(int x, int y, int width, int height, int listIndex,
-                              int originalListIndex, StringConfig config, ConfigWidgetContext ctx)
+    public StringConfigWidget(StringConfig config,
+                              DataListEntryWidgetData constructData,
+                              ConfigWidgetContext ctx)
     {
-        super(x, y, width, height, listIndex, originalListIndex, config, ctx);
+        super(config, constructData, ctx);
 
         this.textField = new BaseTextFieldWidget(20, 16, this.config.getStringValue());
         this.textField.setHoverStringProvider("locked", this.config::getLockAndOverrideMessages);

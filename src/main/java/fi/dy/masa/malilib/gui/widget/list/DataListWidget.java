@@ -15,6 +15,7 @@ import fi.dy.masa.malilib.config.value.SortDirection;
 import fi.dy.masa.malilib.gui.widget.list.entry.BaseDataListEntryWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.BaseListEntryWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetFactory;
+import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
 import fi.dy.masa.malilib.gui.widget.list.header.DataColumn;
 import fi.dy.masa.malilib.gui.widget.list.header.DataListHeaderWidget;
 
@@ -192,12 +193,15 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
 
         if (this.entryWidgetFactory != null && listIndex < list.size())
         {
+            DATATYPE entryData = list.get(listIndex);
             List<Integer> indices = this.filteredIndices;
-            DATATYPE data = list.get(listIndex);
             int originalDataIndex = listIndex < indices.size() ? indices.get(listIndex) : listIndex;
             int height = this.getHeightForListEntryWidgetCreation(listIndex);
-            return this.entryWidgetFactory.createWidget(x, y, this.entryWidgetWidth, height,
-                                                        listIndex, originalDataIndex, data, this);
+            DataListEntryWidgetData constructData
+                    = new DataListEntryWidgetData(x, y, this.entryWidgetWidth, height,
+                                                  listIndex, originalDataIndex, this);
+
+            return this.entryWidgetFactory.createWidget(entryData, constructData);
         }
 
         return null;

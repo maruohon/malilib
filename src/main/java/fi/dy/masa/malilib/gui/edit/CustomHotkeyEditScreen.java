@@ -13,6 +13,7 @@ import fi.dy.masa.malilib.gui.action.BaseActionListScreen;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
+import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
 import fi.dy.masa.malilib.gui.widget.list.entry.action.ActionListBaseActionEntryWidget;
 import fi.dy.masa.malilib.input.CustomHotkeyDefinition;
 import fi.dy.masa.malilib.input.CustomHotkeyManager;
@@ -174,13 +175,10 @@ public class CustomHotkeyEditScreen extends BaseActionListScreen
         return listWidget;
     }
 
-    protected ActionListBaseActionEntryWidget createRightSideEntryWidget(int x, int y, int width, int height,
-                                                                         int listIndex, int originalListIndex,
-                                                                         NamedAction data,
-                                                                         DataListWidget<NamedAction> listWidget)
+    protected ActionListBaseActionEntryWidget createRightSideEntryWidget(NamedAction data,
+                                                                         DataListEntryWidgetData constructData)
     {
-        ActionListBaseActionEntryWidget widget = new ActionListBaseActionEntryWidget(
-                x, y, width, height, listIndex, originalListIndex, data, listWidget);
+        ActionListBaseActionEntryWidget widget = new ActionListBaseActionEntryWidget(data, constructData);
 
         widget.setActionRemoveFunction(this::removeAction);
 

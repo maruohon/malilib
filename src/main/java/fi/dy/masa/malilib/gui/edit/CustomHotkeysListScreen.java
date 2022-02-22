@@ -17,6 +17,7 @@ import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.button.KeyBindConfigButton;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.CustomHotkeyDefinitionEntryWidget;
+import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
 import fi.dy.masa.malilib.input.CustomHotkeyDefinition;
 import fi.dy.masa.malilib.input.CustomHotkeyManager;
 import fi.dy.masa.malilib.input.KeyBind;
@@ -157,12 +158,10 @@ public class CustomHotkeysListScreen extends BaseListScreen<DataListWidget<Custo
         return listWidget;
     }
 
-    protected CustomHotkeyDefinitionEntryWidget createWidget(int x, int y, int width, int height, int listIndex,
-                                                             int originalListIndex, @Nullable CustomHotkeyDefinition data,
-                                                             @Nullable DataListWidget<? extends CustomHotkeyDefinition> listWidget)
+    protected CustomHotkeyDefinitionEntryWidget createWidget(@Nullable CustomHotkeyDefinition data,
+                                                             DataListEntryWidgetData constructData)
     {
-        return new CustomHotkeyDefinitionEntryWidget(x, y, width, height, listIndex, originalListIndex,
-                                                     data, listWidget, this);
+        return new CustomHotkeyDefinitionEntryWidget(data, constructData, this);
     }
 
     @Override

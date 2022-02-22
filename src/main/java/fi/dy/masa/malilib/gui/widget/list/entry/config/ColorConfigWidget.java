@@ -4,6 +4,7 @@ import fi.dy.masa.malilib.config.option.ColorConfig;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.ColorIndicatorWidget;
+import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
 import fi.dy.masa.malilib.util.data.Color4f;
 
 public class ColorConfigWidget extends BaseConfigOptionWidget<Integer, ColorConfig>
@@ -12,10 +13,11 @@ public class ColorConfigWidget extends BaseConfigOptionWidget<Integer, ColorConf
     protected final BaseTextFieldWidget textField;
     protected final String initialStringValue;
 
-    public ColorConfigWidget(int x, int y, int width, int height, int listIndex,
-                             int originalListIndex, ColorConfig config, ConfigWidgetContext ctx)
+    public ColorConfigWidget(ColorConfig config,
+                             DataListEntryWidgetData constructData,
+                             ConfigWidgetContext ctx)
     {
-        super(x, y, width, height, listIndex, originalListIndex, config, ctx);
+        super(config, constructData, ctx);
 
         this.initialStringValue = Color4f.getHexColorString(this.initialValue);
 

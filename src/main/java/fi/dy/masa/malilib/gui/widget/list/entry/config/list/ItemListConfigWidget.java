@@ -7,15 +7,17 @@ import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.widget.ItemStackWidget;
 import fi.dy.masa.malilib.gui.widget.button.BaseValueListEditButton;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
+import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
 import fi.dy.masa.malilib.util.ItemUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class ItemListConfigWidget extends BaseValueListConfigWidget<Item, ItemListConfig>
 {
-    public ItemListConfigWidget(int x, int y, int width, int height, int listIndex,
-                                  int originalListIndex, ItemListConfig config, ConfigWidgetContext ctx)
+    public ItemListConfigWidget(ItemListConfig config,
+                                DataListEntryWidgetData constructData,
+                                ConfigWidgetContext ctx)
     {
-        super(x, y, width, height, listIndex, originalListIndex, config, ctx);
+        super(config, constructData, ctx);
     }
 
     @Override

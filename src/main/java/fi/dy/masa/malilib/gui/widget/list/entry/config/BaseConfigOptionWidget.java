@@ -2,15 +2,17 @@ package fi.dy.masa.malilib.gui.widget.list.entry.config;
 
 import fi.dy.masa.malilib.config.option.ConfigOption;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
+import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
 
 public class BaseConfigOptionWidget<TYPE, CFG extends ConfigOption<TYPE>> extends BaseConfigWidget<CFG>
 {
     protected final TYPE initialValue;
 
-    public BaseConfigOptionWidget(int x, int y, int width, int height, int listIndex,
-                                  int originalListIndex, CFG config, ConfigWidgetContext ctx)
+    public BaseConfigOptionWidget(CFG config,
+                                  DataListEntryWidgetData constructData,
+                                  ConfigWidgetContext ctx)
     {
-        super(x, y, width, height, listIndex, originalListIndex, config, ctx);
+        super(config, constructData, ctx);
 
         this.initialValue = config.getValue();
     }

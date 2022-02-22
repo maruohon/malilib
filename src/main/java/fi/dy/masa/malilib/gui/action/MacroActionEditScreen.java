@@ -20,6 +20,7 @@ import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.BaseListEntryWidget;
+import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
 import fi.dy.masa.malilib.gui.widget.list.entry.action.ActionListBaseActionEntryWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.action.ParameterizableActionEntryWidget;
 import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
@@ -279,44 +280,39 @@ public class MacroActionEditScreen extends BaseActionListScreen
     }
 
     protected ActionListBaseActionEntryWidget createBaseMacroEditScreenActionWidget(
-            int x, int y, int width, int height, int listIndex, int originalListIndex,
-            NamedAction data, DataListWidget<NamedAction> listWidget)
+            NamedAction data, DataListEntryWidgetData constructData)
     {
         ActionListBaseActionEntryWidget widget;
 
         if (data instanceof ParameterizableNamedAction)
         {
-            ParameterizableActionEntryWidget parWidget = new ParameterizableActionEntryWidget(
-                    x, y, width, height, listIndex, originalListIndex, data, listWidget);
+            ParameterizableActionEntryWidget parWidget = new ParameterizableActionEntryWidget(data, constructData);
             parWidget.setParameterizedActionConsumer(this::addAction);
             parWidget.setParameterizationButtonHoverText("malilib.hover.button.parameterize_action_for_macro");
             widget = parWidget;
         }
         else
         {
-            widget = new ActionListBaseActionEntryWidget(
-                    x, y, width, height, listIndex, originalListIndex, data, listWidget);
+            widget = new ActionListBaseActionEntryWidget(data, constructData);
         }
 
         return widget;
     }
 
-    protected BaseListEntryWidget createMacroSourceActionsWidget(int x, int y, int width, int height,
-            int listIndex, int originalListIndex, NamedAction data, DataListWidget<NamedAction> listWidget)
+    protected BaseListEntryWidget createMacroSourceActionsWidget(NamedAction data,
+                                                                 DataListEntryWidgetData constructData)
     {
-        ActionListBaseActionEntryWidget widget = this.createBaseMacroEditScreenActionWidget(
-                x, y, width, height, listIndex, originalListIndex, data, listWidget);
+        ActionListBaseActionEntryWidget widget = this.createBaseMacroEditScreenActionWidget(data, constructData);
 
         widget.setNoRemoveButtons();
 
         return widget;
     }
 
-    protected BaseListEntryWidget createMacroMemberWidget(int x, int y, int width, int height,
-            int listIndex, int originalListIndex, NamedAction data, DataListWidget<NamedAction> listWidget)
+    protected BaseListEntryWidget createMacroMemberWidget(NamedAction data,
+                                                          DataListEntryWidgetData constructData)
     {
-        ActionListBaseActionEntryWidget widget = this.createBaseMacroEditScreenActionWidget(
-                x, y, width, height, listIndex, originalListIndex, data, listWidget);
+        ActionListBaseActionEntryWidget widget = this.createBaseMacroEditScreenActionWidget(data, constructData);
 
         if (data instanceof ParameterizedNamedAction)
         {

@@ -4,14 +4,16 @@ import java.io.File;
 import fi.dy.masa.malilib.config.option.FileConfig;
 import fi.dy.masa.malilib.gui.FileSelectorScreen;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
+import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
 import fi.dy.masa.malilib.util.FileUtils;
 
 public class FileConfigWidget extends BaseConfigOptionWidget<File, FileConfig>
 {
-    public FileConfigWidget(int x, int y, int width, int height, int listIndex,
-                            int originalListIndex, FileConfig config, ConfigWidgetContext ctx)
+    public FileConfigWidget(FileConfig config,
+                            DataListEntryWidgetData constructData,
+                            ConfigWidgetContext ctx)
     {
-        super(x, y, width, height, listIndex, originalListIndex, config, ctx);
+        super(config, constructData, ctx);
     }
 
     @Override

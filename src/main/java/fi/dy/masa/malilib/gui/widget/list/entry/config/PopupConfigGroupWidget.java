@@ -7,6 +7,7 @@ import fi.dy.masa.malilib.gui.config.BaseConfigGroupEditScreen;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
+import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 
 public class PopupConfigGroupWidget extends BaseConfigWidget<PopupConfigGroup>
@@ -14,10 +15,11 @@ public class PopupConfigGroupWidget extends BaseConfigWidget<PopupConfigGroup>
     protected final PopupConfigGroup config;
     protected final GenericButton groupOpenButton;
 
-    public PopupConfigGroupWidget(int x, int y, int width, int height, int listIndex, int originalListIndex,
-                                  PopupConfigGroup config, ConfigWidgetContext ctx)
+    public PopupConfigGroupWidget(PopupConfigGroup config,
+                                  DataListEntryWidgetData constructData,
+                                  ConfigWidgetContext ctx)
     {
-        super(x, y, width, height, listIndex, originalListIndex, config, ctx);
+        super(config, constructData, ctx);
 
         this.config = config;
         this.groupOpenButton = GenericButton.create("malilib.button.config.popup_group.show_configs",

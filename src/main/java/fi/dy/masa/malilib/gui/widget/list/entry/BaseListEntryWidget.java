@@ -17,12 +17,15 @@ public class BaseListEntryWidget extends ContainerWidget
     protected int keyboardNavigationHighlightColor = 0xFFFF5000;
     protected int selectedBackgroundColor = 0x50FFFFFF;
 
-    public BaseListEntryWidget(int x, int y, int width, int height, int listIndex, int originalListIndex)
+    public BaseListEntryWidget(DataListEntryWidgetData constructData)
     {
-        super(x, y, width, height);
+        super(constructData.x,
+              constructData.y,
+              constructData.width,
+              constructData.height);
 
-        this.listIndex = listIndex;
-        this.originalListIndex = originalListIndex;
+        this.listIndex = constructData.listIndex;
+        this.originalListIndex = constructData.originalListIndex;
 
         this.selectedBgSettings.setEnabled(true);
         this.selectedBorderSettings.setEnabled(true);
@@ -31,7 +34,7 @@ public class BaseListEntryWidget extends ContainerWidget
         int hoverColor = MaLiLibConfigs.Generic.HOVERED_LIST_ENTRY_COLOR.getIntegerValue();
         this.getBackgroundRenderer().getHoverSettings().setEnabledAndColor(true, hoverColor);
         this.getBackgroundRenderer().getNormalSettings().setColor(this.isOdd ? 0x20FFFFFF : 0x30FFFFFF);
-        this.setIsOdd((listIndex & 0x1) != 0);
+        this.setIsOdd((this.listIndex & 0x1) != 0);
     }
 
     public void setIsOdd(boolean isOdd)

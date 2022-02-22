@@ -86,12 +86,8 @@ public class KeyBindConfigButton extends GenericButton
         {
             this.keyBind.clearKeys();
             this.updateButtonState();
+            this.notifyListener();
             handled = true;
-
-            if (this.valueChangeListener != null)
-            {
-                this.valueChangeListener.onEvent();
-            }
         }
 
         if (handled)
@@ -178,11 +174,7 @@ public class KeyBindConfigButton extends GenericButton
         if (this.updateImmediately)
         {
             this.keyBind.setKeys(this.newKeys);
-
-            if (this.valueChangeListener != null)
-            {
-                this.valueChangeListener.onEvent();
-            }
+            this.notifyListener();
         }
     }
 
@@ -209,6 +201,11 @@ public class KeyBindConfigButton extends GenericButton
         this.updateConflicts();
         this.updateButtonState();
 
+        this.notifyListener();
+    }
+
+    protected void notifyListener()
+    {
         if (this.valueChangeListener != null)
         {
             this.valueChangeListener.onEvent();

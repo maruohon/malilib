@@ -12,6 +12,7 @@ import fi.dy.masa.malilib.gui.icon.MultiIcon;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.SliderWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
+import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public abstract class NumericConfigWidget<TYPE, CFG extends BaseConfigOption<TYPE> & SliderConfig> extends BaseConfigOptionWidget<TYPE, CFG>
@@ -24,13 +25,13 @@ public abstract class NumericConfigWidget<TYPE, CFG extends BaseConfigOption<TYP
     protected final Function<CFG, String> toStringConverter;
     protected SliderWidget sliderWidget;
 
-    protected NumericConfigWidget(int x, int y, int width, int height, int listIndex,
-                                  int originalListIndex, CFG config,
+    protected NumericConfigWidget(CFG config,
+                                  DataListEntryWidgetData constructData,
                                   ConfigWidgetContext ctx,
                                   BiConsumer<CFG, String> fromStringSetter,
                                   Function<CFG, String> toStringConverter)
     {
-        super(x, y, width, height, listIndex, originalListIndex, config, ctx);
+        super(config, constructData, ctx);
 
         this.fromStringSetter = fromStringSetter;
         this.toStringConverter = toStringConverter;

@@ -1,7 +1,6 @@
 package fi.dy.masa.malilib.gui.widget.list.entry.action;
 
 import java.util.function.BiFunction;
-import javax.annotation.Nullable;
 import fi.dy.masa.malilib.action.NamedAction;
 import fi.dy.masa.malilib.action.ParameterizableNamedAction;
 import fi.dy.masa.malilib.action.ParameterizedNamedAction;
@@ -9,7 +8,7 @@ import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.DualTextInputScreen;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
-import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
+import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
 import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.render.text.StyledText;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
@@ -23,14 +22,13 @@ public class ParameterizableActionEntryWidget extends ActionListBaseActionEntryW
     protected final GenericButton parameterizeButton;
     protected ToBooleanFunction<ParameterizedNamedAction> parameterizedActionConsumer;
 
-    public ParameterizableActionEntryWidget(int x, int y, int width, int height, int listIndex,
-                                            int originalListIndex, @Nullable NamedAction data,
-                                            @Nullable DataListWidget<NamedAction> listWidget)
+    public ParameterizableActionEntryWidget(NamedAction data,
+                                            DataListEntryWidgetData constructData)
     {
-        super(x, y, width, height, listIndex, originalListIndex, data, listWidget);
+        super(data, constructData);
 
         StyledTextLine nameText = data.getColoredWidgetDisplayName();
-        this.setText(StyledTextUtils.clampStyledTextToMaxWidth(nameText, width - 20, LeftRight.RIGHT, " ..."));
+        this.setText(StyledTextUtils.clampStyledTextToMaxWidth(nameText, this.getWidth() - 20, LeftRight.RIGHT, " ..."));
 
         this.parameterizedActionConsumer = Registry.ACTION_REGISTRY::addParameterizedAction;
         this.parameterizeButton = GenericButton.create(14, "malilib.button.action_list_screen_widget.parameterize",

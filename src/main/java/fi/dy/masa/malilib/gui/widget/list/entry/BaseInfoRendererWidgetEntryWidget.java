@@ -1,9 +1,7 @@
 package fi.dy.masa.malilib.gui.widget.list.entry;
 
-import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.button.OnOffButton;
-import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.overlay.widget.InfoRendererWidget;
 import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
@@ -17,12 +15,9 @@ public class BaseInfoRendererWidgetEntryWidget extends BaseDataListEntryWidget<I
     protected boolean canRemove;
     protected boolean canToggle;
 
-    public BaseInfoRendererWidgetEntryWidget(int x, int y, int width, int height,
-                                             int listIndex, int originalListIndex,
-                                             InfoRendererWidget data,
-                                             @Nullable DataListWidget<? extends InfoRendererWidget> listWidget)
+    public BaseInfoRendererWidgetEntryWidget(InfoRendererWidget data, DataListEntryWidgetData constructData)
     {
-        super(x, y, width, height, listIndex, originalListIndex, data, listWidget);
+        super(data, constructData);
 
         this.toggleButton = OnOffButton.simpleSlider(20, data::isEnabled, data::toggleEnabled);
         this.configureButton = GenericButton.create("malilib.button.misc.configure", data::openEditScreen);

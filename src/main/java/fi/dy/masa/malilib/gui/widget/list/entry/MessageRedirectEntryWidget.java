@@ -1,9 +1,7 @@
 package fi.dy.masa.malilib.gui.widget.list.entry;
 
-import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.widget.DropDownListWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
-import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.overlay.message.MessageOutput;
 import fi.dy.masa.malilib.overlay.message.MessageRedirectManager.MessageRedirect;
 import fi.dy.masa.malilib.registry.Registry;
@@ -16,12 +14,9 @@ public class MessageRedirectEntryWidget extends BaseDataListEntryWidget<MessageR
     protected final GenericButton removeButton;
     protected final DropDownListWidget<MessageOutput> outputDropdown;
 
-    public MessageRedirectEntryWidget(int x, int y, int width, int height,
-                                      int listIndex, int originalListIndex,
-                                      @Nullable MessageRedirect data,
-                                      @Nullable DataListWidget<? extends MessageRedirect> listWidget)
+    public MessageRedirectEntryWidget(MessageRedirect data, DataListEntryWidgetData constructData)
     {
-        super(x, y, width, height, listIndex, originalListIndex, data, listWidget);
+        super(data, constructData);
 
         this.removeButton = GenericButton.create(14, "malilib.button.misc.remove", this::removeRedirect);
 
@@ -29,7 +24,7 @@ public class MessageRedirectEntryWidget extends BaseDataListEntryWidget<MessageR
         this.outputDropdown.setSelectedEntry(data.getOutput());
         this.outputDropdown.setSelectionListener(this::replaceRedirect);
 
-        int textWidth = width - this.removeButton.getWidth() - this.outputDropdown.getWidth() - 20;
+        int textWidth = this.getWidth() - this.removeButton.getWidth() - this.outputDropdown.getWidth() - 20;
         String key = StringUtils.clampTextToRenderLength(data.getMessageTranslationKey(), textWidth, LeftRight.RIGHT, "...");
 
         this.setText(StyledTextLine.of(key));

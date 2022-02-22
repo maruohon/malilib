@@ -104,8 +104,8 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         this.defaultSortColumn = DirectoryEntryWidget.NAME_COLUMN;
         this.setColumnSupplier(this::createFileBrowserColumns);
 
-        this.setEntryWidgetFactory((wx, wy, ww, wh, li, oi, entry, lw) ->
-                                    new DirectoryEntryWidget(wx, wy, ww, wh, li, oi, entry, this, iconProvider));
+        this.setEntryWidgetFactory((data, constructData) ->
+                                    new DirectoryEntryWidget(data, constructData, this, iconProvider));
 
         this.setAllowSelection(true);
         this.getBackgroundRenderer().getNormalSettings().setEnabledAndColor(true, 0xB0000000);

@@ -4,15 +4,17 @@ import fi.dy.masa.malilib.config.option.list.StringListConfig;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.widget.button.BaseValueListEditButton;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
+import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
 import fi.dy.masa.malilib.gui.widget.list.entry.StringListEditEntryWidget;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class StringListConfigWidget extends BaseValueListConfigWidget<String, StringListConfig>
 {
-    public StringListConfigWidget(int x, int y, int width, int height, int listIndex,
-                                  int originalListIndex, StringListConfig config, ConfigWidgetContext ctx)
+    public StringListConfigWidget(StringListConfig config,
+                                  DataListEntryWidgetData constructData,
+                                  ConfigWidgetContext ctx)
     {
-        super(x, y, width, height, listIndex, originalListIndex, config, ctx);
+        super(config, constructData, ctx);
     }
 
     @Override

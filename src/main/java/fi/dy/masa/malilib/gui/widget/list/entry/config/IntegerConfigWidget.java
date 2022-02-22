@@ -4,13 +4,15 @@ import fi.dy.masa.malilib.config.option.IntegerConfig;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.widget.IntegerTextFieldWidget;
+import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
 
 public class IntegerConfigWidget extends NumericConfigWidget<Integer, IntegerConfig>
 {
-    public IntegerConfigWidget(int x, int y, int width, int height, int listIndex,
-                               int originalListIndex, IntegerConfig config, ConfigWidgetContext ctx)
+    public IntegerConfigWidget(IntegerConfig config,
+                               DataListEntryWidgetData constructData,
+                               ConfigWidgetContext ctx)
     {
-        super(x, y, width, height, listIndex, originalListIndex, config, ctx,
+        super(config, constructData, ctx,
               IntegerConfig::setValueFromString, IntegerConfig::getStringValue);
 
         this.textField.setTextValidator(new IntegerTextFieldWidget.IntValidator(config.getMinIntegerValue(),

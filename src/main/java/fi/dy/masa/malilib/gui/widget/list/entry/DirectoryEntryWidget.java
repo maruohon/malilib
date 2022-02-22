@@ -45,11 +45,12 @@ public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry
     protected int sizeColumnStartX;
     protected int mTimeColumnStartX;
 
-    public DirectoryEntryWidget(int x, int y, int width, int height, int listIndex, int originalListIndex,
-                                DirectoryEntry entry, BaseFileBrowserWidget fileBrowserWidget,
+    public DirectoryEntryWidget(DirectoryEntry entry,
+                                DataListEntryWidgetData constructData,
+                                BaseFileBrowserWidget fileBrowserWidget,
                                 @Nullable FileBrowserIconProvider iconProvider)
     {
-        super(x, y, width, height, listIndex, originalListIndex, entry, fileBrowserWidget);
+        super(entry, constructData);
 
         this.entry = entry;
         this.fileBrowserWidget = fileBrowserWidget;

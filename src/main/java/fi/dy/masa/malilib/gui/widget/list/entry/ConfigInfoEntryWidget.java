@@ -1,17 +1,14 @@
 package fi.dy.masa.malilib.gui.widget.list.entry;
 
 import fi.dy.masa.malilib.config.option.ConfigInfo;
-import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.data.ConfigOnTab;
 
 public class ConfigInfoEntryWidget extends BaseDataListEntryWidget<ConfigOnTab>
 {
-    public ConfigInfoEntryWidget(int x, int y, int width, int height, int listIndex, int originalListIndex,
-                                 ConfigOnTab data,
-                                 DataListWidget<ConfigOnTab> listWidget)
+    public ConfigInfoEntryWidget(ConfigOnTab data, DataListEntryWidgetData constructData)
     {
-        super(x, y, width, height, listIndex, originalListIndex, data, listWidget);
+        super(data, constructData);
 
         ConfigInfo config = data.getConfig();
         this.translateAndAddHoverString("malilib.hover.config.info_entry_widget",

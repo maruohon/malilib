@@ -7,28 +7,28 @@ import fi.dy.masa.malilib.gui.widget.DropDownListWidget;
 import fi.dy.masa.malilib.gui.widget.DropDownListWidget.IconWidgetFactory;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
-import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 
-public class BaseValueListEditEntryWidget<TYPE> extends BaseOrderableListEditEntryWidget<TYPE>
+public class BaseValueListEditEntryWidget<DATATYPE> extends BaseOrderableListEditEntryWidget<DATATYPE>
 {
-    protected final TYPE defaultValue;
-    protected final TYPE initialValue;
-    protected final DropDownListWidget<TYPE> dropDownWidget;
+    protected final DATATYPE defaultValue;
+    protected final DATATYPE initialValue;
+    protected final DropDownListWidget<DATATYPE> dropDownWidget;
     protected final GenericButton resetButton;
 
-    public BaseValueListEditEntryWidget(int x, int y, int width, int height, int listIndex, int originalListIndex,
-                                        TYPE initialValue, TYPE defaultValue, DataListWidget<TYPE> parent,
-                                        List<TYPE> possibleValues,
-                                        Function<TYPE, String> toStringConverter,
-                                        @Nullable IconWidgetFactory<TYPE> iconWidgetFactory)
+    public BaseValueListEditEntryWidget(DATATYPE initialValue,
+                                        DataListEntryWidgetData constructData,
+                                        DATATYPE defaultValue,
+                                        List<DATATYPE> possibleValues,
+                                        Function<DATATYPE, String> toStringConverter,
+                                        @Nullable IconWidgetFactory<DATATYPE> iconWidgetFactory)
     {
-        super(x, y, width, height, listIndex, originalListIndex, initialValue, parent);
+        super(initialValue, constructData);
 
         this.defaultValue = defaultValue;
         this.initialValue = initialValue;
         this.newEntryFactory = () -> this.defaultValue;
 
-        this.labelWidget = new LabelWidget(0xC0C0C0C0, String.format("%3d:", originalListIndex + 1));
+        this.labelWidget = new LabelWidget(0xC0C0C0C0, String.format("%3d:", this.originalListIndex + 1));
 
         this.resetButton = GenericButton.create(16, "malilib.button.misc.reset.caps");
         this.resetButton.getBorderRenderer().getNormalSettings().setBorderWidthAndColor(1, 0xFF404040);
@@ -36,7 +36,7 @@ public class BaseValueListEditEntryWidget<TYPE> extends BaseOrderableListEditEnt
         this.resetButton.setRenderButtonBackgroundTexture(false);
         this.resetButton.setDisabledTextColor(0xFF505050);
 
-        int ddWidth = width - this.resetButton.getWidth() - this.labelWidget.getWidth()
+        int ddWidth = this.getWidth() - this.resetButton.getWidth() - this.labelWidget.getWidth()
                             - this.addButton.getWidth() - this.removeButton.getWidth()
                             - this.upButton.getWidth() - this.downButton.getWidth() - 20;
         this.dropDownWidget = new DropDownListWidget<>(-ddWidth, 18, 216, 12, possibleValues, toStringConverter, iconWidgetFactory);

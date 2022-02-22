@@ -15,6 +15,7 @@ import fi.dy.masa.malilib.gui.BaseMultiListScreen;
 import fi.dy.masa.malilib.gui.tab.ScreenTab;
 import fi.dy.masa.malilib.gui.widget.DropDownListWidget;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
+import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
 import fi.dy.masa.malilib.gui.widget.list.entry.action.ActionListBaseActionEntryWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.action.ParameterizableActionEntryWidget;
 import fi.dy.masa.malilib.registry.Registry;
@@ -127,22 +128,20 @@ public abstract class BaseActionListScreen extends BaseMultiListScreen
 
     protected abstract DataListWidget<NamedAction> createRightSideActionListWidget();
 
-    protected ActionListBaseActionEntryWidget createEntryWidget(int x, int y, int width, int height,
-            int listIndex, int originalListIndex, NamedAction data, DataListWidget<NamedAction> listWidget)
+    protected ActionListBaseActionEntryWidget createEntryWidget(NamedAction data,
+                                                                DataListEntryWidgetData constructData)
     {
         ActionListBaseActionEntryWidget widget;
 
         if (data instanceof ParameterizableNamedAction)
         {
-            ParameterizableActionEntryWidget parWidget = new ParameterizableActionEntryWidget(
-                    x, y, width, height, listIndex, originalListIndex, data, listWidget);
+            ParameterizableActionEntryWidget parWidget = new ParameterizableActionEntryWidget(data, constructData);
             parWidget.setParameterizationButtonHoverText("malilib.hover.button.parameterize_action");
             widget = parWidget;
         }
         else
         {
-            widget = new ActionListBaseActionEntryWidget(
-                    x, y, width, height, listIndex, originalListIndex, data, listWidget);
+            widget = new ActionListBaseActionEntryWidget(data, constructData);
 
             if (data instanceof AliasAction)
             {

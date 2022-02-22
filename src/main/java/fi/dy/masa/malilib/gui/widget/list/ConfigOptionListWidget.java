@@ -15,6 +15,7 @@ import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.config.KeybindEditingScreen;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.widget.ConfigsSearchBarWidget;
+import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
 import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetFactory;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.BaseConfigWidget;
 import fi.dy.masa.malilib.registry.Registry;
@@ -276,12 +277,10 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
 
         @Override
         @Nullable
-        public BaseConfigWidget<? extends ConfigInfo> createWidget(int x, int y, int width, int height,
-                                                                   int listIndex, int originalListIndex,
-                                                                   C config, DataListWidget<C> listWidget)
+        public BaseConfigWidget<? extends ConfigInfo> createWidget(C config, DataListEntryWidgetData constructData)
         {
             ConfigOptionWidgetFactory<C> factory = Registry.CONFIG_WIDGET.getWidgetFactory(config);
-            return factory.create(x, y, width, height, listIndex, originalListIndex, config, this.ctx);
+            return factory.create(config, constructData, this.ctx);
         }
     }
 }

@@ -11,8 +11,8 @@ import fi.dy.masa.malilib.gui.action.MacroActionEditScreen;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
-import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.BaseOrderableListEditEntryWidget;
+import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
 import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
 import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
@@ -32,11 +32,10 @@ public class ActionListBaseActionEntryWidget extends BaseOrderableListEditEntryW
     protected boolean noRemoveButtons;
     protected int nextElementRight;
 
-    public ActionListBaseActionEntryWidget(int x, int y, int width, int height, int listIndex,
-                                           int originalListIndex, @Nullable NamedAction data,
-                                           @Nullable DataListWidget<NamedAction> listWidget)
+    public ActionListBaseActionEntryWidget(NamedAction data,
+                                           DataListEntryWidgetData constructData)
     {
-        super(x, y, width, height, listIndex, originalListIndex, data, listWidget);
+        super(data, constructData);
 
         this.canReOrder = false;
         this.useAddButton = false;
@@ -44,7 +43,7 @@ public class ActionListBaseActionEntryWidget extends BaseOrderableListEditEntryW
         this.useMoveButtons = false;
 
         StyledTextLine nameText = data.getColoredWidgetDisplayName();
-        this.setText(StyledTextUtils.clampStyledTextToMaxWidth(nameText, width - 20, LeftRight.RIGHT, " ..."));
+        this.setText(StyledTextUtils.clampStyledTextToMaxWidth(nameText, this.getWidth() - 20, LeftRight.RIGHT, " ..."));
 
         this.createAliasButton = GenericButton.create(14, "malilib.button.action_list_screen_widget.create_alias",
                                                       this::openAddAliasScreen);

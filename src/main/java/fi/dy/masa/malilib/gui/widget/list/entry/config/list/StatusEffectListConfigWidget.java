@@ -9,14 +9,16 @@ import fi.dy.masa.malilib.config.option.list.StatusEffectListConfig;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.widget.button.BaseValueListEditButton;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
+import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class StatusEffectListConfigWidget extends BaseValueListConfigWidget<Potion, StatusEffectListConfig>
 {
-    public StatusEffectListConfigWidget(int x, int y, int width, int height, int listIndex,
-                                int originalListIndex, StatusEffectListConfig config, ConfigWidgetContext ctx)
+    public StatusEffectListConfigWidget(StatusEffectListConfig config,
+                                        DataListEntryWidgetData constructData,
+                                        ConfigWidgetContext ctx)
     {
-        super(x, y, width, height, listIndex, originalListIndex, config, ctx);
+        super(config, constructData, ctx);
     }
 
     @Override

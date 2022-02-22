@@ -15,6 +15,7 @@ import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.entry.BaseDataListEntryWidget;
+import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.FileUtils;
@@ -30,19 +31,20 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
     protected final StyledTextLine internalNameText;
     @Nullable protected final StyledTextLine categoryText;
 
-    public BaseConfigWidget(int x, int y, int width, int height, int listIndex,
-                            int originalListIndex, CFG config, ConfigWidgetContext ctx)
+    public BaseConfigWidget(CFG config,
+                            DataListEntryWidgetData constructData,
+                            ConfigWidgetContext ctx)
     {
-        super(x, y, width, height, listIndex, originalListIndex, config, null);
+        super(config, constructData);
 
         this.config = config;
         this.ctx = ctx;
 
-        @Nullable String ownerLabel = this.getOwnerText(originalListIndex);
+        @Nullable String ownerLabel = this.getOwnerText(this.originalListIndex);
         this.categoryText = ownerLabel != null ? StyledTextLine.of(ownerLabel) : null;
         this.nameText = StyledTextLine.translate("malilib.label.config.config_display_name", config.getDisplayName());
         this.internalNameText = StyledTextLine.translate("malilib.label.config.config_internal_name", config.getName());
-        this.configOwnerAndNameLabelWidget = new LabelWidget(this.getMaxLabelWidth(), height, 0xFFFFFFFF);
+        this.configOwnerAndNameLabelWidget = new LabelWidget(this.getMaxLabelWidth(), this.getHeight(), 0xFFFFFFFF);
         this.resetButton = GenericButton.create("malilib.button.misc.reset.caps", this::onResetButtonClicked);
         this.resetButton.setEnabledStatusSupplier(this::isResetEnabled);
 

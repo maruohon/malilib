@@ -10,14 +10,16 @@ import fi.dy.masa.malilib.config.option.list.EquipmentSlotListConfig;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.widget.button.BaseValueListEditButton;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
+import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public class EquipmentSlotListConfigWidget extends BaseValueListConfigWidget<EntityEquipmentSlot, EquipmentSlotListConfig>
 {
-    public EquipmentSlotListConfigWidget(int x, int y, int width, int height, int listIndex,
-                                 int originalListIndex, EquipmentSlotListConfig config, ConfigWidgetContext ctx)
+    public EquipmentSlotListConfigWidget(EquipmentSlotListConfig config,
+                                         DataListEntryWidgetData constructData,
+                                         ConfigWidgetContext ctx)
     {
-        super(x, y, width, height, listIndex, originalListIndex, config, ctx);
+        super(config, constructData, ctx);
     }
 
     @Override

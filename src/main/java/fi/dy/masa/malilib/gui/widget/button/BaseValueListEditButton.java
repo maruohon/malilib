@@ -57,8 +57,8 @@ public class BaseValueListEditButton<TYPE> extends GenericButton
                                    String screenTitle)
     {
         this(width, height, config, saveListener, newEntryFactory,
-             (wx, wy, ww, wh, li, oi, iv, dv, lw) -> new BaseValueListEditEntryWidget<>(wx, wy, ww, wh, li, oi, iv, dv, lw,
-                                                         possibleValuesSupplier.get(), displayNameFactory, iconWidgetFactory),
+             (iv, cd, dv) -> new BaseValueListEditEntryWidget<>(iv, cd, dv,
+                                    possibleValuesSupplier.get(), displayNameFactory, iconWidgetFactory),
              screenTitle);
     }
 
