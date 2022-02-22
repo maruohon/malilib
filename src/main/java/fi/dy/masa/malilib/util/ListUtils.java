@@ -150,4 +150,17 @@ public class ListUtils
 
         return builder.build();
     }
+
+    public static <T> boolean containsAny(Collection<T> hayStack, Collection<T> needles)
+    {
+        for (T needle : needles)
+        {
+            if (hayStack.contains(needle))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

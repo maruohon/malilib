@@ -95,7 +95,6 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
                                                               this::getRootDirectoryDisplayName);
         this.searchBarWidget = this.navigationWidget;
         this.searchBarWidget.getMargin().setTop(2);
-        this.entryFilterStringFactory = (entry) -> ImmutableList.of(FileNameUtils.getFileNameWithoutExtension(entry.getName().toLowerCase(Locale.ROOT)));
 
         this.activeListSortComparator = Comparator.naturalOrder();
         this.defaultListSortComparator = this.activeListSortComparator;
@@ -230,12 +229,12 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         List<DirectoryEntry> list = new ArrayList<>();
 
         // Show directories at the top
-        this.addMatchingEntriesToList(dir, list, this.getDirectoryFilter(), null, null);
+        this.addMatchingEntriesToList(dir, list, this.getDirectoryFilter(), Collections.emptyList(), null);
         list.sort(this.activeListSortComparator);
         this.filteredContents.addAll(list);
         list.clear();
 
-        this.addMatchingEntriesToList(dir, list, this.getFileFilter(), null, null);
+        this.addMatchingEntriesToList(dir, list, this.getFileFilter(), Collections.emptyList(), null);
         this.sortEntryList(list);
         this.filteredContents.addAll(list);
     }
@@ -243,15 +242,16 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     protected void addFilteredContents(File dir)
     {
         String filterText = this.getSearchBarWidget().getFilter().toLowerCase();
+        List<String> searchTerms = Arrays.asList(filterText.split("\\|"));
         List<DirectoryEntry> list = new ArrayList<>();
-        this.addFilteredContents(dir, filterText, list, null);
+        this.addFilteredContents(dir, searchTerms, list, null);
         this.filteredContents.addAll(list);
     }
 
-    protected void addFilteredContents(File dir, String filterText, List<DirectoryEntry> listOut, @Nullable String prefix)
+    protected void addFilteredContents(File dir, List<String> searchTerms, List<DirectoryEntry> listOut, @Nullable String prefix)
     {
         List<DirectoryEntry> list = new ArrayList<>();
-        this.addMatchingEntriesToList(dir, list, this.getDirectoryFilter(), filterText, prefix);
+        this.addMatchingEntriesToList(dir, list, this.getDirectoryFilter(), searchTerms, prefix);
         list.sort(Comparator.comparing(e -> e.name.toLowerCase(Locale.ROOT)));
         listOut.addAll(list);
         list.clear();
@@ -269,31 +269,44 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
                 pre = subDir.getName() + "/";
             }
 
-            this.addFilteredContents(subDir, filterText, list, pre);
+            this.addFilteredContents(subDir, searchTerms, list, pre);
             this.sortEntryList(list);
             listOut.addAll(list);
             list.clear();
         }
 
-        this.addMatchingEntriesToList(dir, list, this.getFileFilter(), filterText, prefix);
+        this.addMatchingEntriesToList(dir, list, this.getFileFilter(), searchTerms, prefix);
         this.sortEntryList(list);
         listOut.addAll(list);
     }
 
     protected void addMatchingEntriesToList(final File dir, List<DirectoryEntry> outputList, final FileFilter filter,
-                                            @Nullable String filterText, @Nullable String displayNamePrefix)
+                                            List<String> searchTerms, @Nullable String displayNamePrefix)
     {
         for (File file : this.getContents(dir, filter))
         {
             String fileName = file.getName();
-            String searchTerm = FileNameUtils.getFileNameWithoutExtension(fileName.toLowerCase(Locale.ROOT));
+            String entryString = FileNameUtils.getFileNameWithoutExtension(fileName.toLowerCase(Locale.ROOT));
 
-            if (filterText == null || this.searchTermsMatchFilter(searchTerm, filterText))
+            if (searchTerms.isEmpty() || this.fileNameMatchesFilter(entryString, searchTerms))
             {
                 DirectoryEntryType type = DirectoryEntryType.fromFile(file);
                 outputList.add(new DirectoryEntry(type, dir, fileName, displayNamePrefix));
             }
         }
+    }
+
+    protected boolean fileNameMatchesFilter(String entryString, List<String> searchTerms)
+    {
+        for (String searchTerm : searchTerms)
+        {
+            if (entryString.contains(searchTerm))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     protected List<File> getContents(final File dir, final FileFilter filter)

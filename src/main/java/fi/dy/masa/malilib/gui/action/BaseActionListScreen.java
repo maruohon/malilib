@@ -104,7 +104,7 @@ public abstract class BaseActionListScreen extends BaseMultiListScreen
         listWidget.getBorderRenderer().getNormalSettings().setBorderWidth(1);
         listWidget.setFetchFromSupplierOnRefresh(true);
         listWidget.setEntryWidgetFactory(this::createEntryWidget);
-        listWidget.setEntryFilterStringFactory(NamedAction::getSearchString);
+        listWidget.setEntryFilterStringFunction(NamedAction::getSearchString);
 
         return listWidget;
     }

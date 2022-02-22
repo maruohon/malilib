@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.gui.widget.list;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -14,8 +15,8 @@ import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.value.SortDirection;
 import fi.dy.masa.malilib.gui.widget.list.entry.BaseDataListEntryWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.BaseListEntryWidget;
-import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetFactory;
 import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
+import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetFactory;
 import fi.dy.masa.malilib.gui.widget.list.header.DataColumn;
 import fi.dy.masa.malilib.gui.widget.list.header.DataListHeaderWidget;
 
@@ -27,18 +28,19 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
     protected final ArrayList<Integer> filteredIndices = new ArrayList<>();
     protected final ArrayList<BaseDataListEntryWidget<DATATYPE>> entryWidgets = new ArrayList<>();
     protected final ArrayList<DataColumn<DATATYPE>> columns = new ArrayList<>();
-    protected Function<DATATYPE, List<String>> entryFilterStringFactory = (e) -> Collections.singletonList(e.toString());
     protected SortDirection sortDirection = SortDirection.ASCENDING;
+    protected EntryFilter<DATATYPE> entryFilter;
+    protected Function<DATATYPE, List<String>> entrySearchStringFunction = (e) -> Collections.singletonList(e.toString());
     @Nullable protected Function<DataListWidget<DATATYPE>, DataListHeaderWidget<DATATYPE>> headerWidgetFactory;
     @Nullable protected Function<DataListWidget<DATATYPE>, DataListHeaderWidget<DATATYPE>> defaultHeaderWidgetFactory;
     @Nullable protected DataListEntryWidgetFactory<DATATYPE> entryWidgetFactory;
     @Nullable protected DataListEntrySelectionHandler<DATATYPE> selectionHandler;
-    @Nullable protected Comparator<DATATYPE> activeListSortComparator;
-    @Nullable protected Comparator<DATATYPE> defaultListSortComparator;
     @Nullable protected Consumer<BaseDataListEntryWidget<DATATYPE>> widgetInitializer;
+    @Nullable protected Supplier<List<DataColumn<DATATYPE>>> columnSupplier;
     @Nullable protected DataColumn<DATATYPE> activeSortColumn;
     @Nullable protected DataColumn<DATATYPE> defaultSortColumn;
-    @Nullable protected Supplier<List<DataColumn<DATATYPE>>> columnSupplier;
+    @Nullable protected Comparator<DATATYPE> activeListSortComparator;
+    @Nullable protected Comparator<DATATYPE> defaultListSortComparator;
 
     protected boolean fetchFromSupplierOnRefresh;
     protected boolean filterMatchesEmptyEntry;
@@ -52,6 +54,7 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
         this.entrySupplier = entrySupplier;
         this.currentContents = new ArrayList<>(entrySupplier.get());
         this.selectionHandler = new DataListEntrySelectionHandler<>(this::getFilteredEntries);
+        this.entryFilter = this::defaultEntryFilter;
     }
 
     @Override
@@ -117,13 +120,23 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
     }
 
     /**
-     * Sets the function that creates the strings from the data entries that the
-     * search strings are matched against.
-     * By default this is just a singleton list of the toString() return value of the entry.
+     * Sets the entry filter function that is used to search for entries from the list.
+     * The default filter just compares the {@link Object#toString()} value of an
+     * entry to the search terms.
      */
-    public DataListWidget<DATATYPE> setEntryFilterStringFactory(Function<DATATYPE, List<String>> factory)
+    public DataListWidget<DATATYPE> setEntryFilter(EntryFilter<DATATYPE> filter)
     {
-        this.entryFilterStringFactory = factory;
+        this.entryFilter = filter;
+        return this;
+    }
+
+    /**
+     * Sets the function that outputs the strings to match the search terms against.
+     * The default function is just a singleton list of {@link Object#toString()} of the entry.
+     */
+    public DataListWidget<DATATYPE> setEntryFilterStringFunction(Function<DATATYPE, List<String>> function)
+    {
+        this.entrySearchStringFunction = function;
         return this;
     }
 
@@ -397,6 +410,56 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
         }
     }
 
+    protected void addNonFilteredContents(List<DATATYPE> entries)
+    {
+        this.filteredContents.addAll(entries);
+    }
+
+    protected void addFilteredContents(List<DATATYPE> entries)
+    {
+        List<String> searchTerms = this.getSearchTerms();
+        final int size = entries.size();
+
+        for (int i = 0; i < size; ++i)
+        {
+            DATATYPE entry = entries.get(i);
+
+            if (this.entryMatchesFilter(entry, searchTerms))
+            {
+                this.filteredContents.add(entry);
+                this.filteredIndices.add(i);
+            }
+        }
+    }
+
+    protected List<String> getSearchTerms()
+    {
+        return Arrays.asList(this.getFilterText().split("\\|"));
+    }
+
+    protected boolean entryMatchesFilter(DATATYPE entry, List<String> searchTerms)
+    {
+        return searchTerms.isEmpty() || this.entryFilter.matches(entry, searchTerms);
+    }
+
+    protected boolean defaultEntryFilter(DATATYPE entry, List<String> searchTerms)
+    {
+        List<String> entrySearchTerms = this.entrySearchStringFunction.apply(entry);
+
+        for (String entrySearchTerm : entrySearchTerms)
+        {
+            for (String searchTerm : searchTerms)
+            {
+                if (entrySearchTerm.toLowerCase(Locale.ROOT).contains(searchTerm))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     @Override
     protected void onEntriesRefreshed()
     {
@@ -458,83 +521,6 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
         }
     }
 
-    protected boolean filterMatchesEmptySearchTerms(DATATYPE entry)
-    {
-        return false;
-    }
-
-    protected List<String> getSearchStringsForEntry(DATATYPE entry)
-    {
-        return this.entryFilterStringFactory.apply(entry);
-    }
-
-    protected void addNonFilteredContents(List<DATATYPE> entries)
-    {
-        this.filteredContents.addAll(entries);
-    }
-
-    protected void addFilteredContents(List<DATATYPE> entries)
-    {
-        String filterText = this.getFilterText();
-        final int size = entries.size();
-
-        for (int i = 0; i < size; ++i)
-        {
-            DATATYPE entry = entries.get(i);
-
-            if (this.entryMatchesFilter(entry, filterText))
-            {
-                this.filteredContents.add(entry);
-                this.filteredIndices.add(i);
-            }
-        }
-    }
-
-    protected boolean entryMatchesFilter(DATATYPE entry, String filterText)
-    {
-        if (filterText.isEmpty())
-        {
-            return true;
-        }
-
-        List<String> searchStrings = this.getSearchStringsForEntry(entry);
-
-        if (searchStrings.isEmpty())
-        {
-            return this.filterMatchesEmptySearchTerms(entry);
-        }
-
-        return this.searchTermsMatchFilter(searchStrings, filterText);
-    }
-
-    protected boolean searchTermsMatchFilter(List<String> searchTermsFromData, String filterText)
-    {
-        for (String str : searchTermsFromData)
-        {
-            if (this.searchTermsMatchFilter(str, filterText))
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    protected boolean searchTermsMatchFilter(String searchTermFromData, String filterText)
-    {
-        searchTermFromData = searchTermFromData.toLowerCase(Locale.ROOT);
-
-        for (String filter : filterText.split("\\|"))
-        {
-            if (searchTermFromData.contains(filter))
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     public void clearSelection()
     {
         if (this.getEntrySelectionHandler() != null)
@@ -585,5 +571,10 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
         {
             this.getEntrySelectionHandler().toggleKeyboardNavigationPositionSelection();
         }
+    }
+
+    public interface EntryFilter<T>
+    {
+        boolean matches(T entry, List<String> searchTerms);
     }
 }

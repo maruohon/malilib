@@ -45,7 +45,7 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
         this.showInternalConfigName = MaLiLibConfigs.Generic.SHOW_INTERNAL_CONFIG_NAME.getBooleanValue();
 
         this.setEntryWidgetFactory(new ConfigOptionListEntryWidgetFactory<>(ctx));
-        this.setEntryFilterStringFactory(ConfigInfo::getSearchStrings);
+        this.setEntryFilterStringFunction(ConfigInfo::getSearchStrings);
 
         this.listPosition.setTop(0);
     }
@@ -133,9 +133,9 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
     }
 
     @Override
-    protected boolean entryMatchesFilter(C entry, String filterText)
+    protected boolean entryMatchesFilter(C entry, List<String> searchTerms)
     {
-        return super.entryMatchesFilter(entry, filterText) &&
+        return super.entryMatchesFilter(entry, searchTerms) &&
                (this.configsSearchBarWidget == null || this.configsSearchBarWidget.passesFilter(entry));
     }
 
