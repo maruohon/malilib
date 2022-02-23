@@ -125,11 +125,11 @@ public abstract class BaseScreen extends GuiScreen
 
     protected void onScreenResolutionSet(int width, int height)
     {
-        boolean initial = this.screenWidth == this.width && this.screenHeight == this.height;
+        boolean initial = this.isFullScreen();
 
         this.updateCustomScreenScale();
 
-        if (this.shouldUseCustomScreenScaling())
+        if (this.useCustomScreenScaling)
         {
             width = this.width;
             height = this.height;
@@ -148,9 +148,9 @@ public abstract class BaseScreen extends GuiScreen
         }
     }
 
-    protected boolean shouldUseCustomScreenScaling()
+    protected boolean isFullScreen()
     {
-        return this.useCustomScreenScaling;
+        return this.screenWidth == this.width && this.screenHeight == this.height;
     }
 
     protected void updateCustomScreenScale()
@@ -159,31 +159,30 @@ public abstract class BaseScreen extends GuiScreen
 
         if (currentValue != this.customScreenScale)
         {
-            boolean oldUseCustomScale = this.shouldUseCustomScreenScaling();
+            boolean oldUseCustomScale = this.useCustomScreenScaling;
             this.useCustomScreenScaling = currentValue > 0 && currentValue != this.mc.gameSettings.guiScale;
             this.customScreenScale = currentValue;
 
-            if (oldUseCustomScale || this.shouldUseCustomScreenScaling())
+            if (oldUseCustomScale || this.useCustomScreenScaling)
             {
-                this.setDimensionsForScreenScale(currentValue);
+                this.setWidthAndHeightForScale(currentValue);
             }
         }
     }
 
-    protected void setDimensionsForScreenScale(double scaleFactor)
+    protected void setWidthAndHeightForScale(double scaleFactor)
     {
         int width = (int) Math.ceil((double) this.mc.displayWidth / scaleFactor);
         int height = (int) Math.ceil((double) this.mc.displayHeight / scaleFactor);
-        // Only set the screen size if it was originally the same as the window dimensions,
-        // ie. the screen was not a smaller (popup?) screen.
-        boolean setScreenSize = this.screenWidth == this.width && this.screenHeight == this.height;
 
         if (this.width != width || this.height != height)
         {
             this.width = width;
             this.height = height;
 
-            if (setScreenSize)
+            // Only set the screen size if it was originally the same as the window dimensions,
+            // ie. the screen was not a smaller (popup?) screen.
+            if (this.isFullScreen())
             {
                 this.setScreenWidthAndHeight(width, height);
             }
@@ -418,7 +417,7 @@ public abstract class BaseScreen extends GuiScreen
         // can/will also both enable and disable the custom scale,
         // so it needs to be enabled here again in any case after
         // rendering the parent screen.
-        if (this.shouldUseCustomScreenScaling())
+        if (this.useCustomScreenScaling)
         {
             RenderUtils.setupScaledScreenRendering(this.customScreenScale);
         }
@@ -444,7 +443,7 @@ public abstract class BaseScreen extends GuiScreen
 
         BaseWidget.renderDebugTextAndClear(ctx);
 
-        if (this.shouldUseCustomScreenScaling())
+        if (this.useCustomScreenScaling)
         {
             RenderUtils.setupScaledScreenRendering(RenderUtils.getVanillaScreenScale());
         }
@@ -480,7 +479,7 @@ public abstract class BaseScreen extends GuiScreen
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
     {
-        if (this.shouldUseCustomScreenScaling())
+        if (this.useCustomScreenScaling)
         {
             mouseX = Mouse.getX() * this.width / this.mc.displayWidth;
             mouseY = this.height - Mouse.getY() * this.height / this.mc.displayHeight - 1;
@@ -497,7 +496,7 @@ public abstract class BaseScreen extends GuiScreen
     {
         this.dragging = false;
 
-        if (this.shouldUseCustomScreenScaling())
+        if (this.useCustomScreenScaling)
         {
             mouseX = Mouse.getX() * this.width / this.mc.displayWidth;
             mouseY = this.height - Mouse.getY() * this.height / this.mc.displayHeight - 1;
