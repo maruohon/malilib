@@ -107,14 +107,14 @@ public class ActionPromptScreen extends BaseListScreen<DataListWidget<NamedActio
     }
 
     @Override
-    public void onGuiClosed()
+    protected void onScreenClosed()
     {
         if (MaLiLibConfigs.Generic.ACTION_PROMPT_REMEMBER_SEARCH.getBooleanValue())
         {
             MaLiLibConfigs.Internal.ACTION_PROMPT_SEARCH_TEXT.setValue(this.searchTextField.getText());
         }
 
-        super.onGuiClosed();
+        super.onScreenClosed();
     }
 
     @Override

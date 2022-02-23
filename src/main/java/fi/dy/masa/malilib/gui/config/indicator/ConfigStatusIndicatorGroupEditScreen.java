@@ -212,12 +212,12 @@ public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataLis
     }
 
     @Override
-    public void onGuiClosed()
+    protected void onScreenClosed()
     {
         this.widget.setStatusIndicatorWidgets(this.getListWidget().getCurrentContents());
         Registry.HOTKEY_MANAGER.updateUsedKeys();
 
-        super.onGuiClosed();
+        super.onScreenClosed();
     }
 
     @Override

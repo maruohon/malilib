@@ -50,6 +50,8 @@ public class ToastRendererWidgetEditScreen extends BaseScreen
     {
         this.widget = widget;
         this.useTitleHierarchy = false;
+        this.screenCloseListener = Registry.INFO_WIDGET_MANAGER::saveToFile;
+
         this.setTitle("malilib.title.screen.toast_renderer_configuration");
 
         this.locationDropdownWidget = new DropDownListWidget<>(-1, 16, 160, 10, ScreenLocation.VALUES,
@@ -191,14 +193,6 @@ public class ToastRendererWidgetEditScreen extends BaseScreen
         this.defaultFadeOutTimeEditWidget.setPosition(tmpX, y + 40);
         this.textColorEditWidget.setPosition(tmpX, y + 60);
         this.renderAboveScreenButton.setPosition(this.renderAboveScreenLabelWidget.getRight() + 6, y + 80);
-    }
-
-    @Override
-    public void onGuiClosed()
-    {
-        super.onGuiClosed();
-
-        Registry.INFO_WIDGET_MANAGER.saveToFile();
     }
 
     protected void toggleRenderAboveScreen()

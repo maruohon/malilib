@@ -25,13 +25,7 @@ public class MessageRedirectListScreen extends BaseListScreen<DataListWidget<Mes
 
         String key = "malilib.button.message_redirect.add_redirect";
         this.addRedirectButton = GenericButton.create(key, this::openAddRedirectScreen);
-    }
-
-    @Override
-    public void onGuiClosed()
-    {
-        Registry.MESSAGE_REDIRECT_MANAGER.saveToFileIfDirty();
-        super.onGuiClosed();
+        this.screenCloseListener = Registry.MESSAGE_REDIRECT_MANAGER::saveToFileIfDirty;
     }
 
     @Override

@@ -50,6 +50,8 @@ public class StringListRendererWidgetEditScreen extends BaseScreen
     {
         this.widget = widget;
         this.useTitleHierarchy = false;
+        this.screenCloseListener = Registry.INFO_WIDGET_MANAGER::saveToFile;
+
         this.setTitle("malilib.title.screen.string_list_renderer_configuration");
 
         this.locationDropdownWidget = new DropDownListWidget<>(-1, 16, 160, 10, ScreenLocation.VALUES,
@@ -197,14 +199,6 @@ public class StringListRendererWidgetEditScreen extends BaseScreen
 
         tmpX = Math.max(tmpX, this.evenWidthBackgroundLabelWidget.getRight() + 6);
         this.evenWidthBackgroundToggleButton.setPosition(tmpX, y + 60);
-    }
-
-    @Override
-    public void onGuiClosed()
-    {
-        super.onGuiClosed();
-
-        Registry.INFO_WIDGET_MANAGER.saveToFile();
     }
 
     protected void changeWidgetLocation(ScreenLocation location)

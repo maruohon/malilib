@@ -107,6 +107,8 @@ public class CustomIconEditScreen extends BaseScreen
 
         this.backgroundColor = 0xF0000000;
         this.renderBorder = true;
+        this.screenCloseListener = this::createAndApplyIcon;
+
         this.setScreenWidthAndHeight(300, 272);
         this.centerOnScreen();
     }
@@ -187,13 +189,6 @@ public class CustomIconEditScreen extends BaseScreen
 
         y += 32;
         this.previewLabel.setPosition(x, y);
-    }
-
-    @Override
-    public void onGuiClosed()
-    {
-        this.createAndApplyIcon();
-        super.onGuiClosed();
     }
 
     protected void createAndApplyIcon()

@@ -55,7 +55,7 @@ public class BaseValueListEditScreen<TYPE> extends BaseListScreen<DataListWidget
     }
 
     @Override
-    public void onGuiClosed()
+    protected void onScreenClosed()
     {
         this.config.setValues(ImmutableList.copyOf(this.getListWidget().getCurrentContents()));
 
@@ -64,7 +64,7 @@ public class BaseValueListEditScreen<TYPE> extends BaseListScreen<DataListWidget
             this.saveListener.onEvent();
         }
 
-        super.onGuiClosed();
+        super.onScreenClosed();
     }
 
     @Override

@@ -21,6 +21,7 @@ import fi.dy.masa.malilib.gui.widget.InteractableWidget;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.input.ActionResult;
+import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
@@ -36,6 +37,7 @@ public abstract class BaseScreen extends GuiScreen
     protected final List<Runnable> tasks = new ArrayList<>();
     private final List<InteractableWidget> widgets = new ArrayList<>();
     private String titleString = "";
+    @Nullable protected EventListener screenCloseListener;
     @Nullable protected StyledTextLine titleText;
     @Nullable private GuiScreen parent;
     @Nullable protected InteractableWidget hoveredWidget;
@@ -72,6 +74,193 @@ public abstract class BaseScreen extends GuiScreen
         this.closeButton.setPlayClickSound(false);
     }
 
+    @Override
+    public void initGui()
+    {
+        super.initGui();
+        this.initScreen();
+    }
+
+    @Override
+    public void onGuiClosed()
+    {
+        this.onScreenClosed();
+    }
+
+    @Override
+    public void setWorldAndResolution(Minecraft mc, int width, int height)
+    {
+        if (this.getParent() != null)
+        {
+            this.getParent().setWorldAndResolution(mc, width, height);
+        }
+
+        this.onScreenResolutionSet(width, height);
+
+        super.setWorldAndResolution(mc, width, height);
+    }
+
+    @Override
+    public boolean doesGuiPauseGame()
+    {
+        return this.getParent() != null && this.getParent().doesGuiPauseGame();
+    }
+
+    protected void initScreen()
+    {
+        this.reAddActiveWidgets();
+        this.updateWidgetPositions();
+        Keyboard.enableRepeatEvents(true);
+    }
+
+    protected void onScreenClosed()
+    {
+        Keyboard.enableRepeatEvents(false);
+
+        if (this.screenCloseListener != null)
+        {
+            this.screenCloseListener.onEvent();
+        }
+    }
+
+    protected void onScreenResolutionSet(int width, int height)
+    {
+        boolean initial = this.screenWidth == this.width && this.screenHeight == this.height;
+
+        this.updateCustomScreenScale();
+
+        if (this.shouldUseCustomScreenScaling())
+        {
+            width = this.width;
+            height = this.height;
+        }
+
+        // Don't override custom screen sizes when the window is resized or whatever,
+        // which calls this method again.
+        if (initial)
+        {
+            this.setScreenWidthAndHeight(width, height);
+        }
+
+        if (this.shouldCenter)
+        {
+            this.centerOnScreen();
+        }
+    }
+
+    protected boolean shouldUseCustomScreenScaling()
+    {
+        return this.useCustomScreenScaling;
+    }
+
+    protected void updateCustomScreenScale()
+    {
+        int currentValue = MaLiLibConfigs.Generic.CUSTOM_SCREEN_SCALE.getIntegerValue();
+
+        if (currentValue != this.customScreenScale)
+        {
+            boolean oldUseCustomScale = this.shouldUseCustomScreenScaling();
+            this.useCustomScreenScaling = currentValue > 0 && currentValue != this.mc.gameSettings.guiScale;
+            this.customScreenScale = currentValue;
+
+            if (oldUseCustomScale || this.shouldUseCustomScreenScaling())
+            {
+                this.setDimensionsForScreenScale(currentValue);
+            }
+        }
+    }
+
+    protected void setDimensionsForScreenScale(double scaleFactor)
+    {
+        int width = (int) Math.ceil((double) this.mc.displayWidth / scaleFactor);
+        int height = (int) Math.ceil((double) this.mc.displayHeight / scaleFactor);
+        // Only set the screen size if it was originally the same as the window dimensions,
+        // ie. the screen was not a smaller (popup?) screen.
+        boolean setScreenSize = this.screenWidth == this.width && this.screenHeight == this.height;
+
+        if (this.width != width || this.height != height)
+        {
+            this.width = width;
+            this.height = height;
+
+            if (setScreenSize)
+            {
+                this.setScreenWidthAndHeight(width, height);
+            }
+        }
+    }
+
+    protected void setScreenWidthAndHeight(int width, int height)
+    {
+        this.screenWidth = width;
+        this.screenHeight = height;
+    }
+
+    public void setScreenWidth(int screenWidth)
+    {
+        this.screenWidth = screenWidth;
+    }
+
+    public void setScreenHeight(int screenHeight)
+    {
+        this.screenHeight = screenHeight;
+    }
+
+    public void centerOnScreen()
+    {
+        int x;
+        int y;
+        GuiScreen parent = this.getParent();
+        GuiScreen current = GuiUtils.getCurrentScreen();
+
+        if (parent instanceof BaseScreen)
+        {
+            BaseScreen parentBaseScreen = (BaseScreen) this.getParent();
+            x = parentBaseScreen.x + parentBaseScreen.getScreenWidth() / 2;
+            y = parentBaseScreen.y + parentBaseScreen.getScreenHeight() / 2;
+        }
+        else if (parent != null)
+        {
+            x = parent.width / 2;
+            y = parent.height / 2;
+        }
+        else if (current != null)
+        {
+            x = current.width / 2;
+            y = current.height / 2;
+        }
+        else
+        {
+            x = GuiUtils.getScaledWindowWidth() / 2;
+            y = GuiUtils.getScaledWindowHeight() / 2;
+        }
+
+        x -= this.getScreenWidth() / 2;
+        y -= this.getScreenHeight() / 2;
+
+        this.setPosition(x, y);
+    }
+
+    protected void reAddActiveWidgets()
+    {
+        this.clearElements();
+
+        if (this.addCloseButton && this.closeButton != null)
+        {
+            this.addWidget(this.closeButton);
+        }
+    }
+
+    protected void updateWidgetPositions()
+    {
+        if (this.closeButton != null)
+        {
+            int x = this.x + this.screenWidth - this.closeButton.getWidth() - 2;
+            int y = this.y + 2;
+            this.closeButton.setPosition(x, y);
+        }
+    }
+
     public int getX()
     {
         return this.x;
@@ -90,6 +279,15 @@ public abstract class BaseScreen extends GuiScreen
     public int getScreenHeight()
     {
         return this.screenHeight;
+    }
+
+
+    public void setPosition(int x, int y)
+    {
+        this.x = x;
+        this.y = y;
+
+        this.updateWidgetPositions();
     }
 
     @Nullable
@@ -153,86 +351,6 @@ public abstract class BaseScreen extends GuiScreen
         return 50;
     }
 
-    @Override
-    public void onGuiClosed()
-    {
-        Keyboard.enableRepeatEvents(false);
-    }
-
-    @Override
-    public boolean doesGuiPauseGame()
-    {
-        return this.getParent() != null && this.getParent().doesGuiPauseGame();
-    }
-
-    @Override
-    public void setWorldAndResolution(Minecraft mc, int width, int height)
-    {
-        if (this.getParent() != null)
-        {
-            this.getParent().setWorldAndResolution(mc, width, height);
-        }
-
-        boolean initial = this.screenWidth == this.width && this.screenHeight == this.height;
-
-        this.updateCustomScreenScale();
-
-        if (this.shouldUseCustomScreenScaling())
-        {
-            width = this.width;
-            height = this.height;
-        }
-
-        // Don't override custom screen sizes when the window is resized or whatever,
-        // which calls this method again.
-        if (initial)
-        {
-            this.setScreenWidthAndHeight(width, height);
-        }
-
-        if (this.shouldCenter)
-        {
-            this.centerOnScreen();
-        }
-
-        super.setWorldAndResolution(mc, width, height);
-    }
-
-    @Override
-    public void initGui()
-    {
-        super.initGui();
-
-        this.initScreen();
-    }
-
-    protected void initScreen()
-    {
-        this.reAddActiveWidgets();
-        this.updateWidgetPositions();
-        Keyboard.enableRepeatEvents(true);
-    }
-
-    protected void reAddActiveWidgets()
-    {
-        this.clearElements();
-
-        if (this.addCloseButton && this.closeButton != null)
-        {
-            this.addWidget(this.closeButton);
-        }
-    }
-
-    protected void updateWidgetPositions()
-    {
-        if (this.closeButton != null)
-        {
-            int x = this.x + this.screenWidth - this.closeButton.getWidth() - 2;
-            int y = this.y + 2;
-            this.closeButton.setPosition(x, y);
-        }
-    }
-
     /**
      * Shows the parent screen (if one is set), unless the shift key is held,
      * in which case the screen is closed entirely.
@@ -257,107 +375,6 @@ public abstract class BaseScreen extends GuiScreen
     protected void openParentScreen()
     {
         openScreen(this.parent);
-    }
-
-    protected boolean shouldUseCustomScreenScaling()
-    {
-        return this.useCustomScreenScaling;
-    }
-
-    protected void updateCustomScreenScale()
-    {
-        int currentValue = MaLiLibConfigs.Generic.CUSTOM_SCREEN_SCALE.getIntegerValue();
-
-        if (currentValue != this.customScreenScale)
-        {
-            boolean oldUseCustomScale = this.shouldUseCustomScreenScaling();
-            this.useCustomScreenScaling = currentValue > 0 && currentValue != this.mc.gameSettings.guiScale;
-            this.customScreenScale = currentValue;
-
-            if (oldUseCustomScale || this.shouldUseCustomScreenScaling())
-            {
-                this.setDimensionsForScreenScale(currentValue);
-            }
-        }
-    }
-
-    protected void setDimensionsForScreenScale(double scaleFactor)
-    {
-        int width = (int) Math.ceil((double) this.mc.displayWidth / scaleFactor);
-        int height = (int) Math.ceil((double) this.mc.displayHeight / scaleFactor);
-        // Only set the screen size if it was originally the same as the window dimensions,
-        // ie. the screen was not a smaller (popup?) screen.
-        boolean setScreenSize = this.screenWidth == this.width && this.screenHeight == this.height;
-
-        if (this.width != width || this.height != height)
-        {
-            this.width = width;
-            this.height = height;
-
-            if (setScreenSize)
-            {
-                this.setScreenWidthAndHeight(width, height);
-            }
-        }
-    }
-
-    protected void setScreenWidthAndHeight(int width, int height)
-    {
-        this.screenWidth = width;
-        this.screenHeight = height;
-    }
-
-    public void setPosition(int x, int y)
-    {
-        this.x = x;
-        this.y = y;
-
-        this.updateWidgetPositions();
-    }
-
-    public void setScreenWidth(int screenWidth)
-    {
-        this.screenWidth = screenWidth;
-    }
-
-    public void setScreenHeight(int screenHeight)
-    {
-        this.screenHeight = screenHeight;
-    }
-
-    public void centerOnScreen()
-    {
-        int x;
-        int y;
-        GuiScreen parent = this.getParent();
-
-        if (parent instanceof BaseScreen)
-        {
-            BaseScreen parentBaseScreen = (BaseScreen) this.getParent();
-            x = parentBaseScreen.x + parentBaseScreen.screenWidth / 2;
-            y = parentBaseScreen.y + parentBaseScreen.screenHeight / 2;
-        }
-        else if (parent != null)
-        {
-            x = parent.width / 2;
-            y = parent.height / 2;
-        }
-        else if (GuiUtils.getCurrentScreen() != null)
-        {
-            GuiScreen current = GuiUtils.getCurrentScreen();
-            x = current.width / 2;
-            y = current.height / 2;
-        }
-        else
-        {
-            x = GuiUtils.getScaledWindowWidth() / 2;
-            y = GuiUtils.getScaledWindowHeight() / 2;
-        }
-
-        x -= this.screenWidth / 2;
-        y -= this.screenHeight / 2;
-
-        this.setPosition(x, y);
     }
 
     protected InteractableWidget getTopHoveredWidget(int mouseX, int mouseY,

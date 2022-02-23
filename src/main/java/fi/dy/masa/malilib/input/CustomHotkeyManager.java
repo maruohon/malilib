@@ -10,6 +10,7 @@ import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.config.util.ConfigUtils;
+import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.util.JsonUtils;
 import fi.dy.masa.malilib.util.data.ModInfo;
 
@@ -60,18 +61,26 @@ public class CustomHotkeyManager implements HotkeyProvider
         this.dirty = true;
     }
 
-    public boolean checkIfDirty()
+    public boolean checkIfDirtyAndSaveAndUpdate()
     {
+        boolean dirty = false;
+
         for (CustomHotkeyDefinition hotkey : this.hotkeys)
         {
             if (hotkey.getKeyBind().isDirty())
             {
-                this.dirty = true;
+                dirty = true;
                 break;
             }
         }
 
-        return this.dirty;
+        if (dirty)
+        {
+            this.saveToFile();
+            Registry.HOTKEY_MANAGER.updateUsedKeys();
+        }
+
+        return dirty;
     }
 
     public boolean saveToFileIfDirty()

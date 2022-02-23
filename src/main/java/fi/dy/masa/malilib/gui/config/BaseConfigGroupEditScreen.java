@@ -15,7 +15,6 @@ public class BaseConfigGroupEditScreen extends BaseListScreen<ConfigOptionListWi
 {
     protected final ArrayList<ConfigInfo> configs = new ArrayList<>();
     protected final ModInfo modInfo;
-    @Nullable protected EventListener saveListener;
     @Nullable protected KeybindEditingScreen keyBindEditingScreen;
     protected int elementsWidth = 200;
 
@@ -24,7 +23,7 @@ public class BaseConfigGroupEditScreen extends BaseListScreen<ConfigOptionListWi
         super(8, 30, 14, 36);
 
         this.modInfo = modInfo;
-        this.saveListener = saveListener;
+        this.screenCloseListener = saveListener;
 
         this.shouldCenter = true;
         this.renderBorder = true;
@@ -41,20 +40,9 @@ public class BaseConfigGroupEditScreen extends BaseListScreen<ConfigOptionListWi
         this.screenHeight = GuiUtils.getScaledWindowHeight() - 90;
     }
 
-    @Override
-    public void onGuiClosed()
-    {
-        if (this.saveListener != null)
-        {
-            this.saveListener.onEvent();
-        }
-
-        super.onGuiClosed();
-    }
-
     public void setSaveListener(@Nullable EventListener saveListener)
     {
-        this.saveListener = saveListener;
+        this.screenCloseListener = saveListener;
     }
 
     public void setConfigs(List<? extends ConfigInfo> configs)

@@ -76,14 +76,14 @@ public class BaseMultiListScreen extends BaseTabbedScreen
     }
 
     @Override
-    public void onGuiClosed()
+    protected void onScreenClosed()
     {
-        super.onGuiClosed();
-
         for (BaseListWidget listWidget : this.listWidgets)
         {
             listWidget.onGuiClosed();
         }
+
+        super.onScreenClosed();
     }
 
     @Override

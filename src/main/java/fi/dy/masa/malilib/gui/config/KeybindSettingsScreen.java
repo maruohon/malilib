@@ -40,6 +40,7 @@ public class KeybindSettingsScreen extends BaseScreen
         this.configList = this.configs.getConfigList();
         this.labelWidth = this.getMaxDisplayNameLength(this.configList);
         this.configWidth = 100;
+        this.screenCloseListener = this::saveSettings;
 
         this.setTitle("malilib.title.screen.keybind_settings.advanced", this.keybindName);
         this.setParent(parent);
@@ -141,10 +142,8 @@ public class KeybindSettingsScreen extends BaseScreen
         }
     }
 
-    @Override
-    public void onGuiClosed()
+    protected void saveSettings()
     {
         this.keybind.setSettings(this.configs.getCurrentSettings());
-        super.onGuiClosed();
     }
 }

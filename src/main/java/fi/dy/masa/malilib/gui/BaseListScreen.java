@@ -178,16 +178,16 @@ public abstract class BaseListScreen<LISTWIDGET extends BaseListWidget> extends 
     }
 
     @Override
-    public void onGuiClosed()
+    protected void onScreenClosed()
     {
-        super.onGuiClosed();
-
         BaseListWidget listWidget = this.getListWidget();
 
         if (listWidget != null)
         {
             listWidget.onGuiClosed();
         }
+
+        super.onScreenClosed();
     }
 
     @Override

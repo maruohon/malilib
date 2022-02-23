@@ -174,10 +174,8 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
     }
 
     @Override
-    public void onGuiClosed()
+    protected void onScreenClosed()
     {
-        super.onGuiClosed();
-
         if (this.dirty ||
             this.closeScreenOnExecute != this.data.closeScreenOnExecute ||
             this.closeScreenOnKeyRelease != this.data.closeScreenOnKeyRelease)
@@ -187,6 +185,8 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
         }
 
         this.clearActionWidgetContainerData();
+
+        super.onScreenClosed();
     }
 
     @Override

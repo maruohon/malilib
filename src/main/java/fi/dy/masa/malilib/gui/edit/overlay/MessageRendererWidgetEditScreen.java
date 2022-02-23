@@ -48,6 +48,8 @@ public class MessageRendererWidgetEditScreen extends BaseScreen
     {
         this.widget = widget;
         this.useTitleHierarchy = false;
+        this.screenCloseListener = Registry.INFO_WIDGET_MANAGER::saveToFile;
+
         this.setTitle("malilib.title.screen.message_renderer_configuration");
 
         this.locationDropdownWidget = new DropDownListWidget<>(-1, 16, 160, 10, ScreenLocation.VALUES,
@@ -173,14 +175,6 @@ public class MessageRendererWidgetEditScreen extends BaseScreen
         tmpX += 22;
         this.backgroundEnabledToggleButton.setPosition(tmpX, y + 20);
         this.borderEnabledToggleButton.setPosition(tmpX, y + 40);
-    }
-
-    @Override
-    public void onGuiClosed()
-    {
-        super.onGuiClosed();
-
-        Registry.INFO_WIDGET_MANAGER.saveToFile();
     }
 
     protected void changeWidgetLocation(ScreenLocation location)

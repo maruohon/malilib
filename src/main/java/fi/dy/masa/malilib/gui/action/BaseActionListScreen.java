@@ -37,6 +37,7 @@ public abstract class BaseActionListScreen extends BaseMultiListScreen
         this.allActionTypesDropdown.translateAndAddHoverString("malilib.hover.action.action_types_explanation");
 
         this.leftSideListWidget = this.createLeftSideActionListWidget();
+        this.screenCloseListener = this::saveChangesOnScreenClose;
     }
 
     @Override
@@ -64,14 +65,6 @@ public abstract class BaseActionListScreen extends BaseMultiListScreen
         int x = 10;
         int w = (this.screenWidth - 20 - this.centerGap) / 2;
         this.updateActionListScreenWidgetPositions(x, this.y + 44, w);
-    }
-
-    @Override
-    public void onGuiClosed()
-    {
-        this.saveChangesOnScreenClose();
-
-        super.onGuiClosed();
     }
 
     protected void addActionListScreenWidgets()

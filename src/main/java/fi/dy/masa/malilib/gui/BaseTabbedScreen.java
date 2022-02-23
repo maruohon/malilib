@@ -33,30 +33,52 @@ public abstract class BaseTabbedScreen extends BaseScreen
         this.screenTabs = screenTabs;
     }
 
-    public static TabbedScreenState getTabState(String screenId)
+    @Override
+    protected void initScreen()
     {
-        return CURRENT_STATE.computeIfAbsent(screenId, (id) -> new TabbedScreenState(null));
+        ScreenTab tab = this.getCurrentTab();
+
+        if (tab != null && tab.canUseCurrentScreen(this) == false)
+        {
+            tab.createAndOpenScreen(this);
+            return;
+        }
+
+        this.restoreScrollBarPositionForCurrentTab();
+
+        super.initScreen();
+
+        if (this.shouldCreateTabButtons())
+        {
+            this.createTabButtonContainerWidget();
+        }
     }
 
-    @Nullable
-    public static ScreenTab getCurrentTab(String screenId)
+    @Override
+    protected void onScreenClosed()
     {
-        return getTabState(screenId).currentTab;
+        if (this.tabButtonContainerWidget != null)
+        {
+            this.getTabState().visibleTabsStartIndex = this.tabButtonContainerWidget.getStartIndex();
+        }
+
+        this.saveScrollBarPositionForCurrentTab();
+
+        super.onScreenClosed();
     }
 
-    public static void setCurrentTab(String screenId, ScreenTab tab)
+    @Override
+    protected void updateWidgetPositions()
     {
-        getTabState(screenId).currentTab = tab;
-    }
+        super.updateWidgetPositions();
 
-    public static int getScrollBarPosition(ScreenTab tab)
-    {
-        return SCROLLBAR_POSITIONS.getInt(tab);
-    }
+        int x = this.x + this.tabButtonContainerWidgetX;
+        int y = this.y + this.tabButtonContainerWidgetY;
 
-    public static void setScrollBarPosition(ScreenTab tab, int position)
-    {
-        SCROLLBAR_POSITIONS.put(tab, position);
+        if (this.tabButtonContainerWidget != null)
+        {
+            this.tabButtonContainerWidget.setPosition(x, y);
+        }
     }
 
     public TabbedScreenState getTabState()
@@ -85,54 +107,6 @@ public abstract class BaseTabbedScreen extends BaseScreen
     public void switchToTab(ScreenTab tab)
     {
         this.setCurrentTab(tab);
-    }
-
-    @Override
-    protected void initScreen()
-    {
-        ScreenTab tab = this.getCurrentTab();
-
-        if (tab != null && tab.canUseCurrentScreen(this) == false)
-        {
-            tab.createAndOpenScreen(this);
-            return;
-        }
-
-        this.restoreScrollBarPositionForCurrentTab();
-
-        super.initScreen();
-
-        if (this.shouldCreateTabButtons())
-        {
-            this.createTabButtonContainerWidget();
-        }
-    }
-
-    @Override
-    public void onGuiClosed()
-    {
-        super.onGuiClosed();
-
-        if (this.tabButtonContainerWidget != null)
-        {
-            this.getTabState().visibleTabsStartIndex = this.tabButtonContainerWidget.getStartIndex();
-        }
-
-        this.saveScrollBarPositionForCurrentTab();
-    }
-
-    @Override
-    protected void updateWidgetPositions()
-    {
-        super.updateWidgetPositions();
-
-        int x = this.x + this.tabButtonContainerWidgetX;
-        int y = this.y + this.tabButtonContainerWidgetY;
-
-        if (this.tabButtonContainerWidget != null)
-        {
-            this.tabButtonContainerWidget.setPosition(x, y);
-        }
     }
 
     public void saveScrollBarPositionForCurrentTab()
@@ -228,5 +202,31 @@ public abstract class BaseTabbedScreen extends BaseScreen
         }
 
         return button;
+    }
+
+    public static TabbedScreenState getTabState(String screenId)
+    {
+        return CURRENT_STATE.computeIfAbsent(screenId, (id) -> new TabbedScreenState(null));
+    }
+
+    @Nullable
+    public static ScreenTab getCurrentTab(String screenId)
+    {
+        return getTabState(screenId).currentTab;
+    }
+
+    public static void setCurrentTab(String screenId, ScreenTab tab)
+    {
+        getTabState(screenId).currentTab = tab;
+    }
+
+    public static int getScrollBarPosition(ScreenTab tab)
+    {
+        return SCROLLBAR_POSITIONS.getInt(tab);
+    }
+
+    public static void setScrollBarPosition(ScreenTab tab, int position)
+    {
+        SCROLLBAR_POSITIONS.put(tab, position);
     }
 }

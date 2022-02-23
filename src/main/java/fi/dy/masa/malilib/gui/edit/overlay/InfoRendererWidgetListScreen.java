@@ -49,6 +49,9 @@ public class InfoRendererWidgetListScreen<WIDGET extends InfoRendererWidget> ext
 
         this.locationDropdownWidget = new DropDownListWidget<>(-1, 16, 160, 10, ScreenLocation.VALUES, OptionListConfigValue::getDisplayName);
         this.createWidgetButton = GenericButton.create(16, "malilib.button.csi_edit.add_csi_widget", this::createInfoRendererWidget);
+
+        // Unconditionally save here, since we don't track the individual info container widget changes
+        this.screenCloseListener = Registry.INFO_WIDGET_MANAGER::saveToFile;
     }
 
     @Override
@@ -85,15 +88,6 @@ public class InfoRendererWidgetListScreen<WIDGET extends InfoRendererWidget> ext
 
         this.locationDropdownWidget.setPosition(x, y);
         this.createWidgetButton.setPosition(this.locationDropdownWidget.getRight() + 4, y);
-    }
-
-    @Override
-    public void onGuiClosed()
-    {
-        super.onGuiClosed();
-
-        // Unconditionally save here, since we don't track the individual info container widget changes
-        Registry.INFO_WIDGET_MANAGER.saveToFile();
     }
 
     protected void createInfoRendererWidget()

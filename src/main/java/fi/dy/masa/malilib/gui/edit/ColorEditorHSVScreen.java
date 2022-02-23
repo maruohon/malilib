@@ -170,11 +170,11 @@ public class ColorEditorHSVScreen extends BaseScreen
     }
 
     @Override
-    public void onGuiClosed()
+    protected void onScreenClosed()
     {
         this.valueConsumer.accept(this.color);
 
-        super.onGuiClosed();
+        super.onScreenClosed();
     }
 
     @Override

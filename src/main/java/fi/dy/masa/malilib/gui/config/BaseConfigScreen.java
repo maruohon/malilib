@@ -48,14 +48,14 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
     }
 
     @Override
-    public void onGuiClosed()
+    protected void onScreenClosed()
     {
-        super.onGuiClosed();
-
         if (((ConfigManagerImpl) Registry.CONFIG_MANAGER).saveIfDirty())
         {
             this.onSettingsChanged();
         }
+
+        super.onScreenClosed();
     }
 
     @Override

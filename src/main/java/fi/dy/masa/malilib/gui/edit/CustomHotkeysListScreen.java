@@ -23,7 +23,6 @@ import fi.dy.masa.malilib.input.CustomHotkeyManager;
 import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.input.KeyBindImpl;
 import fi.dy.masa.malilib.input.KeyBindSettings;
-import fi.dy.masa.malilib.registry.Registry;
 
 public class CustomHotkeysListScreen extends BaseListScreen<DataListWidget<CustomHotkeyDefinition>> implements KeybindEditingScreen
 {
@@ -38,6 +37,7 @@ public class CustomHotkeysListScreen extends BaseListScreen<DataListWidget<Custo
 
         this.addHotkeyButton = GenericButton.create(16, "malilib.button.custom_hotkeys.add_hotkey", this::openAddHotkeyScreen);
         this.addHotkeyButton.translateAndAddHoverString("malilib.hover.button.custom_hotkeys.add_new_hotkey");
+        this.screenCloseListener = CustomHotkeyManager.INSTANCE::checkIfDirtyAndSaveAndUpdate;
     }
 
     @Override
@@ -55,18 +55,6 @@ public class CustomHotkeysListScreen extends BaseListScreen<DataListWidget<Custo
         super.updateWidgetPositions();
 
         this.addHotkeyButton.setPosition(this.x + 10, this.y + 57);
-    }
-
-    @Override
-    public void onGuiClosed()
-    {
-        if (CustomHotkeyManager.INSTANCE.checkIfDirty())
-        {
-            CustomHotkeyManager.INSTANCE.saveToFileIfDirty();
-            Registry.HOTKEY_MANAGER.updateUsedKeys();
-        }
-
-        super.onGuiClosed();
     }
 
     protected void openAddHotkeyScreen()

@@ -143,6 +143,8 @@ public class EditActionExecutionWidgetScreen extends BaseScreen
         this.hoveredBorderColorEditWidget       = new ColorEditorWidget(90, 16, widget.getBorderRenderer().getHoverSettings().getColor());
 
         this.backgroundColor = 0xFF101010;
+        this.screenCloseListener = this::applyValues;
+
         this.centerOnScreen();
     }
 
@@ -290,14 +292,6 @@ public class EditActionExecutionWidgetScreen extends BaseScreen
 
         y += 20;
         this.cancelButton.setPosition(this.x + 10, y);
-    }
-
-    @Override
-    public void onGuiClosed()
-    {
-        super.onGuiClosed();
-
-        this.applyValues();
     }
 
     protected void cancel()
