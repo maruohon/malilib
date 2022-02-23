@@ -456,7 +456,7 @@ public class StringUtils
 
             if (server != null)
             {
-                return server.serverIP.replace(':', '_');
+                return server.serverIP.trim().replace(':', '_');
             }
         }
 
