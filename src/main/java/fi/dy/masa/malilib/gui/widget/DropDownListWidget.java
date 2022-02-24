@@ -202,7 +202,7 @@ public class DropDownListWidget<T> extends ContainerWidget
     @Override
     protected int getSubWidgetZLevelIncrement()
     {
-        // Raise the z-level so it's likely to be on top of all other widgets in the same GUI
+        // Raise the z-level, so it's likely to be on top of all other widgets in the same GUI
         return 10;
     }
 

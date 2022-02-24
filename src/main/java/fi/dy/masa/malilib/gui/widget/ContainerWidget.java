@@ -110,10 +110,8 @@ public abstract class ContainerWidget extends InteractableWidget
         {
             this.moveSubWidgets(diffX, diffY);
         }
-        else
-        {
-            this.updateSubWidgetPositions();
-        }
+
+        this.updateSubWidgetPositions();
     }
 
     @Override

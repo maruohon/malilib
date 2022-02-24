@@ -186,6 +186,7 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
         }
 
         this.initListWidget();
+        this.refreshEntries();
     }
 
     protected void createColumns()
@@ -195,6 +196,17 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
         if (this.columnSupplier != null)
         {
             this.columns.addAll(this.columnSupplier.get());
+        }
+    }
+
+    @Override
+    public void moveSubWidgets(int diffX, int diffY)
+    {
+        super.moveSubWidgets(diffX, diffY);
+
+        for (BaseListEntryWidget widget : this.entryWidgets)
+        {
+            widget.setPosition(widget.getX() + diffX, widget.getY() + diffY);
         }
     }
 
@@ -461,45 +473,20 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
     }
 
     @Override
-    protected void onEntriesRefreshed()
-    {
-        super.onEntriesRefreshed();
-
-        this.clearWidgetInitializer();
-    }
-
-    @Override
-    protected void onListEntryWidgetsCreated()
-    {
-        super.onListEntryWidgetsCreated();
-
-        this.createWidgetInitializer();
-        this.applyWidgetInitializer();
-    }
-
-    protected void clearWidgetInitializer()
+    @SuppressWarnings("unchecked")
+    protected void reCreateEntryWidgetInitializer()
     {
         this.widgetInitializer = null;
-    }
 
-    protected void reInitializeWidgets()
-    {
-        this.clearWidgetInitializer();
-        this.createWidgetInitializer();
-        this.applyWidgetInitializer();
-    }
-
-    @SuppressWarnings("unchecked")
-    protected void createWidgetInitializer()
-    {
-        if (this.widgetInitializer == null && this.entryWidgets.isEmpty() == false)
+        if (this.entryWidgets.isEmpty() == false)
         {
             BaseDataListEntryWidget<DATATYPE> widget = this.entryWidgets.get(0);
             this.widgetInitializer = (Consumer<BaseDataListEntryWidget<DATATYPE>>) widget.createWidgetInitializer(this.getFilteredEntries());
         }
     }
 
-    protected void applyWidgetInitializer()
+    @Override
+    protected void applyEntryWidgetInitializer()
     {
         if (this.widgetInitializer != null)
         {

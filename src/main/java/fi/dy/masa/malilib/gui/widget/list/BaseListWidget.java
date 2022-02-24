@@ -85,22 +85,28 @@ public abstract class BaseListWidget extends ContainerWidget
     {
     }
 
+    /*
     @Override
     protected void onPositionChanged(int oldX, int oldY)
     {
-        this.updatePositioningAndElements();
+        this.updateSubWidgetPositions();
+        this.reCreateListEntryWidgets();
     }
+    */
 
     @Override
     protected void onSizeChanged()
     {
-        this.updatePositioningAndElements();
+        this.updateSubWidgetPositions();
+        this.reCreateListEntryWidgets();
     }
 
     @Override
     protected void onPositionOrSizeChanged(int oldX, int oldY)
     {
-        this.updatePositioningAndElements();
+        super.onPositionOrSizeChanged(oldX, oldY);
+
+        this.reCreateListEntryWidgets();
     }
 
     @Override
@@ -179,13 +185,13 @@ public abstract class BaseListWidget extends ContainerWidget
         this.createAndSetHeaderWidget();
         this.reAddSubWidgets();
         this.updateSubWidgetPositions();
-        this.refreshEntries();
     }
 
-    protected void updatePositioningAndElements()
+    @Override
+    protected int getSubWidgetZLevelIncrement()
     {
-        this.updateSubWidgetPositions();
-        this.reCreateListEntryWidgets();
+        // Raise the z-level, so it's likely to be on top of all other widgets in the same GUI
+        return 10;
     }
 
     protected void updateScrollBarHeight()
@@ -309,7 +315,7 @@ public abstract class BaseListWidget extends ContainerWidget
                                                    this::refreshFilteredEntries, DefaultIcons.SEARCH);
     }
 
-    public void onGuiClosed()
+    public void onScreenClosed()
     {
         for (BaseListEntryWidget widget : this.getEntryWidgetList())
         {
@@ -432,8 +438,8 @@ public abstract class BaseListWidget extends ContainerWidget
 
     public void onSearchBarChange(String text)
     {
+        this.resetScrollBarPositionWithoutNotify();
         this.refreshFilteredEntries();
-        this.resetScrollBarPosition();
     }
 
     @Override
@@ -596,9 +602,9 @@ public abstract class BaseListWidget extends ContainerWidget
     {
     }
 
-    public void resetScrollBarPosition()
+    public void resetScrollBarPositionWithoutNotify()
     {
-        this.scrollBar.setValue(0);
+        this.scrollBar.setValueNoNotify(0);
     }
 
     protected boolean isMouseOverListArea(int mouseX, int mouseY)
@@ -778,6 +784,20 @@ public abstract class BaseListWidget extends ContainerWidget
     {
     }
 
+    protected void reCreateEntryWidgetInitializer()
+    {
+    }
+
+    protected void applyEntryWidgetInitializer()
+    {
+    }
+
+    protected void initializeEntryWidgets()
+    {
+        this.reCreateEntryWidgetInitializer();
+        this.applyEntryWidgetInitializer();
+    }
+
     /**
      * Called after the list entry widgets have been (re-)created
      */
@@ -796,6 +816,8 @@ public abstract class BaseListWidget extends ContainerWidget
             this.getScrollbar().setValue(this.requestedScrollBarPosition);
             this.requestedScrollBarPosition = -1;
         }
+
+        this.initializeEntryWidgets();
     }
 
     @Override

@@ -88,10 +88,15 @@ public class ScrollBarWidget extends InteractableWidget
         return this.currentValue;
     }
 
+    public void setValueNoNotify(int value)
+    {
+        this.currentValue = MathHelper.clamp(value, 0, this.maxValue);
+    }
+
     public void setValue(int value)
     {
         int old = this.currentValue;
-        this.currentValue = MathHelper.clamp(value, 0, this.maxValue);
+        this.setValueNoNotify(value);
 
         if (this.changeListener != null && old != this.currentValue)
         {

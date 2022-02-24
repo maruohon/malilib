@@ -207,23 +207,13 @@ public class BaseWidget
     {
         int oldX = this.x;
         int oldY = this.y;
-        int oldWidth = this.width;
-        int oldHeight = this.height;
 
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
 
-        if (oldX != x || oldY != y)
-        {
-            this.onPositionChanged(oldX, oldY);
-        }
-
-        if (oldWidth != width || oldHeight != height)
-        {
-            this.onSizeChanged();
-        }
+        this.onPositionOrSizeChanged(oldX, oldY);
     }
 
     public void setRight(int xRight)
@@ -625,6 +615,11 @@ public class BaseWidget
 
             icon.renderAt(x, y, z + 0.0125f, true, false);
         }
+    }
+
+    public void render(ScreenContext ctx)
+    {
+        this.renderAt(this.x, this.y, this.z, ctx);
     }
 
     public void renderAt(int x, int y, float z, ScreenContext ctx)

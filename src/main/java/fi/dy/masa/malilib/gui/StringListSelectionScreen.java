@@ -2,7 +2,6 @@ package fi.dy.masa.malilib.gui;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Consumer;
 import com.google.common.collect.ImmutableList;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
@@ -11,11 +10,11 @@ import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 public class StringListSelectionScreen extends BaseListScreen<DataListWidget<String>>
 {
     protected final ImmutableList<String> strings;
-    protected final Consumer<Set<String>> consumer;
+    protected final Consumer<Collection<String>> consumer;
     protected final GenericButton confirmButton;
     protected final GenericButton cancelButton;
 
-    public StringListSelectionScreen(Collection<String> strings, Consumer<Set<String>> consumer)
+    public StringListSelectionScreen(Collection<String> strings, Consumer<Collection<String>> consumer)
     {
         super(10, 30, 20, 60);
 

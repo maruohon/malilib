@@ -37,6 +37,7 @@ public class BaseMultiListScreen extends BaseTabbedScreen
         widget.setTaskQueue(this::addTask);
         widget.setZ((int) this.zLevel + 2);
         widget.initListWidget();
+        widget.refreshEntries();
 
         this.listWidgets.add(widget);
     }
@@ -80,7 +81,7 @@ public class BaseMultiListScreen extends BaseTabbedScreen
     {
         for (BaseListWidget listWidget : this.listWidgets)
         {
-            listWidget.onGuiClosed();
+            listWidget.onScreenClosed();
         }
 
         super.onScreenClosed();
@@ -204,7 +205,7 @@ public class BaseMultiListScreen extends BaseTabbedScreen
     {
         for (BaseListWidget listWidget : this.listWidgets)
         {
-            listWidget.renderAt(listWidget.getX(), listWidget.getY(), listWidget.getZ(), ctx);
+            listWidget.render(ctx);
         }
     }
 

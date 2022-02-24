@@ -13,11 +13,11 @@ import fi.dy.masa.malilib.gui.widget.list.BaseListWidget;
 
 public abstract class BaseListScreen<LISTWIDGET extends BaseListWidget> extends BaseTabbedScreen
 {
-    private int listX;
-    private int listY;
+    protected LISTWIDGET listWidget;
+    protected int listX;
+    protected int listY;
     protected int totalListMarginX;
     protected int totalListMarginY;
-    private LISTWIDGET widget;
 
     protected BaseListScreen(int listX, int listY, int totalListMarginX, int totalListMarginY)
     {
@@ -36,147 +36,6 @@ public abstract class BaseListScreen<LISTWIDGET extends BaseListWidget> extends 
         this.setListPosition(listX, listY);
     }
 
-    @Nullable
-    protected abstract LISTWIDGET createListWidget(int listX, int listY, int listWidth, int listHeight);
-
-    protected void setListPosition(int listX, int listY)
-    {
-        this.listX = listX;
-        this.listY = listY;
-    }
-
-    protected int getListX()
-    {
-        return this.x + this.listX;
-    }
-
-    protected int getListY()
-    {
-        return this.y + this.listY;
-    }
-
-    protected int getListWidth()
-    {
-        return this.screenWidth - this.totalListMarginX;
-    }
-
-    protected int getListHeight()
-    {
-        return this.screenHeight - this.totalListMarginY;
-    }
-
-    @Nullable
-    public LISTWIDGET getListWidget()
-    {
-        if (this.widget == null)
-        {
-            this.reCreateListWidget();
-        }
-
-        return this.widget;
-    }
-
-    protected void reCreateListWidget()
-    {
-        this.widget = this.createListWidget(this.getListX(), this.getListY(), this.getListWidth(), this.getListHeight());
-
-        if (this.widget != null)
-        {
-            this.widget.setTaskQueue(this::addTask);
-            this.widget.setZ((int) this.zLevel + 2);
-            this.widget.initListWidget();
-        }
-    }
-
-    public boolean isSearchOpen()
-    {
-        BaseListWidget listWidget = this.getListWidget();
-        return listWidget != null && listWidget.isSearchOpen();
-    }
-
-    protected void updateListPosition(int listX, int listY)
-    {
-        this.setListPosition(listX, listY);
-
-        // Only update the widget if it has already been created.
-        // Using the getter method would force the widget to be created now,
-        // and that would lead to duplicated call to the setPositionAndSize() method.
-        if (this.widget != null)
-        {
-            this.widget.setPositionAndSize(listX, listY, this.getListWidth(), this.getListHeight());
-        }
-    }
-
-    @Override
-    protected void updateWidgetPositions()
-    {
-        super.updateWidgetPositions();
-
-        if (this.widget != null)
-        {
-            this.widget.setPosition(this.getListX(), this.getListY());
-        }
-    }
-
-    @Override
-    protected int getCurrentScrollbarPosition()
-    {
-        LISTWIDGET listWidget = this.getListWidget();
-        return listWidget != null ? listWidget.getScrollbar().getValue() : -1;
-    }
-
-    @Override
-    protected void setCurrentScrollbarPosition(int position)
-    {
-        LISTWIDGET listWidget = this.getListWidget();
-
-        if (listWidget != null)
-        {
-            listWidget.setRequestedScrollBarPosition(position);
-        }
-    }
-
-    @Override
-    protected InteractableWidget getTopHoveredWidget(int mouseX, int mouseY, @Nullable InteractableWidget highestFoundWidget)
-    {
-        highestFoundWidget = super.getTopHoveredWidget(mouseX, mouseY, highestFoundWidget);
-        BaseListWidget listWidget = this.getListWidget();
-
-        if (listWidget != null)
-        {
-            highestFoundWidget = listWidget.getTopHoveredWidget(mouseX, mouseY, highestFoundWidget);
-        }
-
-        return highestFoundWidget;
-    }
-
-    @Override
-    protected List<BaseTextFieldWidget> getAllTextFields()
-    {
-        List<BaseTextFieldWidget> textFields = new ArrayList<>(super.getAllTextFields());
-        BaseListWidget listWidget = this.getListWidget();
-
-        if (listWidget != null)
-        {
-            textFields.addAll(listWidget.getAllTextFields());
-        }
-
-        return textFields;
-    }
-
-    @Override
-    protected void initScreen()
-    {
-        super.initScreen();
-
-        BaseListWidget listWidget = this.getListWidget();
-
-        if (listWidget != null)
-        {
-            listWidget.setPositionAndSize(this.getListX(), this.getListY(), this.getListWidth(), this.getListHeight());
-        }
-    }
-
     @Override
     protected void onScreenClosed()
     {
@@ -184,7 +43,7 @@ public abstract class BaseListScreen<LISTWIDGET extends BaseListWidget> extends 
 
         if (listWidget != null)
         {
-            listWidget.onGuiClosed();
+            listWidget.onScreenClosed();
         }
 
         super.onScreenClosed();
@@ -279,6 +138,137 @@ public abstract class BaseListScreen<LISTWIDGET extends BaseListWidget> extends 
         return listWidget != null && listWidget.onCharTyped(charIn, modifiers);
     }
 
+    @Nullable
+    protected abstract LISTWIDGET createListWidget(int listX, int listY, int listWidth, int listHeight);
+
+    protected void setListPosition(int listX, int listY)
+    {
+        this.listX = listX;
+        this.listY = listY;
+    }
+
+    protected int getListX()
+    {
+        return this.x + this.listX;
+    }
+
+    protected int getListY()
+    {
+        return this.y + this.listY;
+    }
+
+    protected int getListWidth()
+    {
+        return this.screenWidth - this.totalListMarginX;
+    }
+
+    protected int getListHeight()
+    {
+        return this.screenHeight - this.totalListMarginY;
+    }
+
+    @Nullable
+    public LISTWIDGET getListWidget()
+    {
+        if (this.listWidget == null)
+        {
+            this.reCreateListWidget();
+        }
+
+        return this.listWidget;
+    }
+
+    protected void reCreateListWidget()
+    {
+        this.listWidget = this.createListWidget(this.getListX(), this.getListY(), this.getListWidth(), this.getListHeight());
+
+        if (this.listWidget != null)
+        {
+            this.listWidget.setTaskQueue(this::addTask);
+            this.listWidget.setZ((int) this.zLevel + 2);
+            this.listWidget.initListWidget();
+            this.listWidget.refreshEntries();
+        }
+    }
+
+    protected void updateListPosition(int listX, int listY)
+    {
+        this.setListPosition(listX, listY);
+
+        // Only update the widget if it has already been created.
+        // Using the getter method would force the widget to be created now,
+        // and that would lead to duplicated call to the setPositionAndSize() method.
+        if (this.listWidget != null)
+        {
+            this.listWidget.setPositionAndSize(listX, listY, this.getListWidth(), this.getListHeight());
+        }
+    }
+
+    public boolean isSearchOpen()
+    {
+        BaseListWidget listWidget = this.getListWidget();
+        return listWidget != null && listWidget.isSearchOpen();
+    }
+
+    @Override
+    protected void updateWidgetPositions()
+    {
+        super.updateWidgetPositions();
+
+        BaseListWidget listWidget = this.getListWidget();
+
+        if (listWidget != null)
+        {
+            listWidget.setPositionAndSize(this.getListX(), this.getListY(), this.getListWidth(), this.getListHeight());
+        }
+    }
+
+    @Override
+    protected int getCurrentScrollbarPosition()
+    {
+        LISTWIDGET listWidget = this.getListWidget();
+        return listWidget != null ? listWidget.getScrollbar().getValue() : -1;
+    }
+
+    @Override
+    protected void setCurrentScrollbarPosition(int position)
+    {
+        LISTWIDGET listWidget = this.getListWidget();
+
+        if (listWidget != null)
+        {
+            listWidget.setRequestedScrollBarPosition(position);
+        }
+    }
+
+    @Override
+    protected InteractableWidget getTopHoveredWidget(int mouseX, int mouseY, @Nullable InteractableWidget highestFoundWidget)
+    {
+        highestFoundWidget = super.getTopHoveredWidget(mouseX, mouseY, highestFoundWidget);
+        BaseListWidget listWidget = this.getListWidget();
+
+        if (listWidget != null)
+        {
+            highestFoundWidget = listWidget.getTopHoveredWidget(mouseX, mouseY, highestFoundWidget);
+        }
+
+        return highestFoundWidget;
+    }
+
+    @Override
+    protected List<BaseTextFieldWidget> getAllTextFields()
+    {
+        List<BaseTextFieldWidget> textFields = new ArrayList<>(super.getAllTextFields());
+        BaseListWidget listWidget = this.getListWidget();
+
+        if (listWidget != null)
+        {
+            textFields.addAll(listWidget.getAllTextFields());
+        }
+
+        return textFields;
+    }
+
     @Override
     protected void renderCustomContents(ScreenContext ctx)
     {
@@ -286,7 +276,7 @@ public abstract class BaseListScreen<LISTWIDGET extends BaseListWidget> extends 
 
         if (listWidget != null)
         {
-            listWidget.renderAt(listWidget.getX(), listWidget.getY(), listWidget.getZ(), ctx);
+            listWidget.render(ctx);
         }
     }
 

@@ -605,9 +605,9 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
             this.cache.setCurrentDirectoryForContext(this.browserContext, dir);
         }
 
+        this.resetScrollBarPositionWithoutNotify();
         this.refreshEntries();
         this.updateDirectoryNavigationWidget();
-        this.resetScrollBarPosition();
         // The index needs to be restored after the entries have been refreshed
         this.restoreKeyboardNavigationPosition(this.currentDirectory);
     }

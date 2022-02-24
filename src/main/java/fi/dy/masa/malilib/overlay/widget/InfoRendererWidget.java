@@ -290,21 +290,14 @@ public abstract class InfoRendererWidget extends BaseOverlayWidget
         return isScreenOpen == false || (this.renderAboveScreen == (context == InfoOverlay.OverlayRenderContext.GUI));
     }
 
-    public void render(ScreenContext ctx)
-    {
-        if (this.isEnabled())
-        {
-            int x = this.getX();
-            int y = this.getY();
-            float z = this.getZ();
-
-            this.renderAt(x, y, z, ctx);
-        }
-    }
-
     @Override
     public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
+        if (this.isEnabled() == false)
+        {
+            return;
+        }
+
         RenderUtils.color(1f, 1f, 1f, 1f);
         RenderUtils.setupBlend();
 
