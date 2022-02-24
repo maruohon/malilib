@@ -108,6 +108,9 @@ public class DropDownListWidget<T> extends ContainerWidget
         this.iconWidgetFactory = iconWidgetFactory;
         this.searchTipText = StyledTextLine.translate("malilib.label.misc.dropdown.type_to_search");
 
+        // Raise the z-level, so it's likely to be on top of all other widgets in the same screen
+        this.zLevelIncrement = 10;
+
         int v = Math.min(maxVisibleEntries, entries.size());
         v = Math.min(v, maxHeight / height);
         v = Math.max(v, 1);
@@ -197,13 +200,6 @@ public class DropDownListWidget<T> extends ContainerWidget
 
         this.selectionBarWidget.setPosition(x, y);
         this.searchField.setPosition(x, y - 16);
-    }
-
-    @Override
-    protected int getSubWidgetZLevelIncrement()
-    {
-        // Raise the z-level, so it's likely to be on top of all other widgets in the same GUI
-        return 10;
     }
 
     public void setIconProvider(@Nullable MultiIconProvider<T> iconProvider)

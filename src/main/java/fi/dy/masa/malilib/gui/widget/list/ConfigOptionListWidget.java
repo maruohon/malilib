@@ -32,20 +32,21 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
     protected boolean showInternalConfigName;
     protected int maxLabelWidth;
 
-    protected ConfigOptionListWidget(int x, int y, int width, int height, IntSupplier defaultElementWidthSupplier,
-                                     ModInfo modInfo, Supplier<List<C>> entrySupplier,
+    protected ConfigOptionListWidget(IntSupplier defaultElementWidthSupplier,
+                                     ModInfo modInfo,
+                                     Supplier<List<C>> entrySupplier,
                                      ConfigWidgetContext ctx)
     {
-        super(x, y, width, height, entrySupplier);
+        super(entrySupplier, true);
 
         this.modInfo = modInfo;
         this.defaultElementWidthSupplier = defaultElementWidthSupplier;
-        this.fetchFromSupplierOnRefresh = true;
         this.allowKeyboardNavigation = true;
         this.showInternalConfigName = MaLiLibConfigs.Generic.SHOW_INTERNAL_CONFIG_NAME.getBooleanValue();
 
         this.setEntryWidgetFactory(new ConfigOptionListEntryWidgetFactory<>(ctx));
         this.setEntryFilterStringFunction(ConfigInfo::getSearchStrings);
+        this.getBorderRenderer().getNormalSettings().setBorderWidth(0);
 
         this.listPosition.setTop(0);
     }
@@ -241,13 +242,14 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
         this.cachedConfigs.clear();
     }
 
-    public static <C extends ConfigInfo> ConfigOptionListWidget<C> createWithExpandedGroups(
-            int listX, int listY, int listWidth, int listHeight, IntSupplier defaultElementWidthSupplier,
-            ModInfo modInfo, Supplier<List<C>> entrySupplier, ConfigWidgetContext ctx)
+    public static <C extends ConfigInfo>
+    ConfigOptionListWidget<C> createWithExpandedGroups(IntSupplier defaultElementWidthSupplier,
+                                                       ModInfo modInfo,
+                                                       Supplier<List<C>> entrySupplier,
+                                                       ConfigWidgetContext ctx)
     {
-        return new ConfigOptionListWidget<>(listX, listY, listWidth, listHeight,
-                                            defaultElementWidthSupplier, modInfo,
-                                            createUnNestingConfigSupplier(entrySupplier), ctx);
+        Supplier<List<C>> supplier = createUnNestingConfigSupplier(entrySupplier);
+        return new ConfigOptionListWidget<>(defaultElementWidthSupplier, modInfo, supplier, ctx);
     }
 
     public static <C extends ConfigInfo> Supplier<List<C>> createUnNestingConfigSupplier(Supplier<List<C>> entrySupplier)

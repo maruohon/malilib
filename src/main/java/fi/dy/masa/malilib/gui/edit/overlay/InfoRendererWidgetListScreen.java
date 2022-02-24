@@ -114,12 +114,11 @@ public class InfoRendererWidgetListScreen<WIDGET extends InfoRendererWidget> ext
     }
 
     @Override
-    protected DataListWidget<WIDGET> createListWidget(int listX, int listY, int listWidth, int listHeight)
+    protected DataListWidget<WIDGET> createListWidget()
     {
-        DataListWidget<WIDGET> listWidget = new DataListWidget<>(listX, listY, listWidth, listHeight, this.widgetSupplier);
+        DataListWidget<WIDGET> listWidget = new DataListWidget<>(this.widgetSupplier, true);
+
         listWidget.setEntryWidgetFactory(this.entryWidgetFactory);
-        listWidget.setFetchFromSupplierOnRefresh(true);
-        listWidget.getBorderRenderer().getNormalSettings().setBorderWidth(1);
 
         return listWidget;
     }

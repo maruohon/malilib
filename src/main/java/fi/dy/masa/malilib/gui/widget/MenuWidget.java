@@ -19,6 +19,9 @@ public class MenuWidget extends ContainerWidget
     {
         super(x, y, width, height);
 
+        // Raise the z-level, so it's likely to be on top of all other widgets in the same screen
+        this.zLevelIncrement = 50;
+
         this.shouldReceiveOutsideClicks = true;
         this.getBorderRenderer().getNormalSettings().setBorderWidthAndColor(1, 0xFFC0C0C0);
     }
@@ -60,12 +63,6 @@ public class MenuWidget extends ContainerWidget
             widget.setWidth(width);
             y += widget.getHeight();
         }
-    }
-
-    @Override
-    protected int getSubWidgetZLevelIncrement()
-    {
-        return 50;
     }
 
     public void setMenuEntries(MenuEntryWidget... menuEntries)

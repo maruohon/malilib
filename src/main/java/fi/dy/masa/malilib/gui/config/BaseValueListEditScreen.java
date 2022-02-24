@@ -68,16 +68,17 @@ public class BaseValueListEditScreen<TYPE> extends BaseListScreen<DataListWidget
     }
 
     @Override
-    protected DataListWidget<TYPE> createListWidget(int listX, int listY, int listWidth, int listHeight)
+    protected DataListWidget<TYPE> createListWidget()
     {
-        DataListWidget<TYPE> listWidget = new DataListWidget<>(listX, listY, listWidth, listHeight, this.config::getValue);
+        DataListWidget<TYPE> listWidget = new DataListWidget<>(this.config::getValue, false);
 
-        listWidget.setListEntryWidgetFixedHeight(20);
-        SearchBarWidget searchBar = new SearchBarWidget(listWidget.getWidth() - 31, 14,
-                                                        listWidget::onSearchBarChange,
+        SearchBarWidget searchBar = new SearchBarWidget(10, 14, listWidget::onSearchBarChange,
                                                         listWidget::refreshFilteredEntries, DefaultIcons.SEARCH);
         searchBar.setToggleButtonAlignment(HorizontalAlignment.RIGHT);
+
+        listWidget.setListEntryWidgetFixedHeight(20);
         listWidget.setSearchBar(searchBar);
+        listWidget.getBorderRenderer().getNormalSettings().setBorderWidth(0);
 
         listWidget.setHeaderWidgetFactory((lw) -> new BaseDataListEditHeaderWidget<>(lw, "malilib.hover.button.list.add_first", this.newEntrySupplier));
         listWidget.setSearchBarPositioner((wgt, x, y, w) -> {

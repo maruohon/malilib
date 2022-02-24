@@ -47,14 +47,17 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
     protected boolean hasDataColumns;
     protected boolean shouldSortList;
 
-    public DataListWidget(int x, int y, int width, int height, Supplier<List<DATATYPE>> entrySupplier)
+    public DataListWidget(Supplier<List<DATATYPE>> entrySupplier, boolean fetchFromSupplierOnRefresh)
     {
-        super(x, y, width, height);
+        super(320, 320);
 
+        this.fetchFromSupplierOnRefresh = fetchFromSupplierOnRefresh;
         this.entrySupplier = entrySupplier;
         this.currentContents = new ArrayList<>(entrySupplier.get());
         this.selectionHandler = new DataListEntrySelectionHandler<>(this::getFilteredEntries);
         this.entryFilter = this::defaultEntryFilter;
+
+        this.getBorderRenderer().getNormalSettings().setBorderWidth(1);
     }
 
     @Override
@@ -238,18 +241,15 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
         if (this.headerWidgetFactory != null)
         {
             this.headerWidget = this.headerWidgetFactory.apply(this);
-
-            if (this.headerWidget != null)
-            {
-                int x = this.getX() + this.listPosition.getLeft();
-                int y = this.getY();
-                this.headerWidget.setPosition(x, y);
-                this.headerWidget.setHeaderWidgetSize(this.entryWidgetWidth, -1);
-            }
         }
         else
         {
             this.headerWidget = null;
+        }
+
+        if (this.headerWidget != null)
+        {
+            this.headerWidget.setHeaderWidgetSize(this.entryWidgetWidth, -1);
         }
     }
 

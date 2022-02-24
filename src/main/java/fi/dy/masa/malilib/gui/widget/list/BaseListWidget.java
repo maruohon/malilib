@@ -49,9 +49,12 @@ public abstract class BaseListWidget extends ContainerWidget
     protected boolean allowKeyboardNavigation;
     protected boolean areEntriesFixedHeight = true;
 
-    public BaseListWidget(int x, int y, int width, int height)
+    public BaseListWidget(int width, int height)
     {
-        super(x, y, width, height);
+        super(width, height);
+
+        // Raise the z-level, so it's likely to be on top of all other widgets in the same screen
+        this.zLevelIncrement = 10;
 
         // The position gets updated in setSize()
         this.scrollBar = new ScrollBarWidget(8, height);
@@ -180,18 +183,9 @@ public abstract class BaseListWidget extends ContainerWidget
 
     public void initListWidget()
     {
-        this.clearWidgets();
-
         this.createAndSetHeaderWidget();
         this.reAddSubWidgets();
         this.updateSubWidgetPositions();
-    }
-
-    @Override
-    protected int getSubWidgetZLevelIncrement()
-    {
-        // Raise the z-level, so it's likely to be on top of all other widgets in the same GUI
-        return 10;
     }
 
     protected void updateScrollBarHeight()

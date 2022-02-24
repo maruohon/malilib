@@ -134,15 +134,14 @@ public class CustomHotkeysListScreen extends BaseListScreen<DataListWidget<Custo
         return hotkeys;
     }
 
-    @Nullable
     @Override
-    protected DataListWidget<CustomHotkeyDefinition> createListWidget(int listX, int listY, int listWidth, int listHeight)
+    protected DataListWidget<CustomHotkeyDefinition> createListWidget()
     {
-        DataListWidget<CustomHotkeyDefinition> listWidget = new DataListWidget<>(0, 0, 200, 120, this::getCustomHotkeyDefinitions);
+        DataListWidget<CustomHotkeyDefinition> listWidget = new DataListWidget<>(this::getCustomHotkeyDefinitions, true);
+        
         listWidget.setListEntryWidgetFixedHeight(22);
-        listWidget.setFetchFromSupplierOnRefresh(true);
         listWidget.setEntryWidgetFactory(this::createWidget);
-        listWidget.getBorderRenderer().getNormalSettings().setBorderWidth(1);
+
         return listWidget;
     }
 

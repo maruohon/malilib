@@ -56,6 +56,7 @@ public class BaseWidget
     protected boolean automaticWidth;
     protected int maxHeight;
     protected int maxWidth;
+    protected int zLevelIncrement = 2;
 
     public BaseWidget()
     {
@@ -423,7 +424,7 @@ public class BaseWidget
 
     public void setZLevelBasedOnParent(float parentZLevel)
     {
-        this.setZ(parentZLevel + this.getSubWidgetZLevelIncrement());
+        this.setZ(parentZLevel + this.getZLevelIncrementFromParent());
     }
 
     /**
@@ -435,9 +436,9 @@ public class BaseWidget
         this.setZLevelBasedOnParent(parentZLevel);
     }
 
-    protected int getSubWidgetZLevelIncrement()
+    protected int getZLevelIncrementFromParent()
     {
-        return 2;
+        return this.zLevelIncrement;
     }
 
     public boolean canInteract()

@@ -50,16 +50,14 @@ public class CustomIconListScreen extends BaseListScreen<DataListWidget<Icon>>
         this.addIconButton.setPosition(this.x + 10, this.y + 57);
     }
 
-    @Nullable
     @Override
-    protected DataListWidget<Icon> createListWidget(int listX, int listY, int listWidth, int listHeight)
+    protected DataListWidget<Icon> createListWidget()
     {
-        DataListWidget<Icon> listWidget = new DataListWidget<>(listX, listY, listWidth, listHeight,
-                                                               Registry.ICON::getUserIcons);
-        listWidget.getBorderRenderer().getNormalSettings().setBorderWidth(1);
+        DataListWidget<Icon> listWidget = new DataListWidget<>(Registry.ICON::getUserIcons, true);
+
         listWidget.setListEntryWidgetFixedHeight(22);
-        listWidget.setFetchFromSupplierOnRefresh(true);
         listWidget.setEntryWidgetFactory(IconEntryWidget::new);
+
         return listWidget;
     }
 

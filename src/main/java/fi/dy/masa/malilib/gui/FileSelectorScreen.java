@@ -144,10 +144,10 @@ public class FileSelectorScreen extends BaseListScreen<BaseFileBrowserWidget>
     }
 
     @Override
-    protected BaseFileBrowserWidget createListWidget(int listX, int listY, int listWidth, int listHeight)
+    protected BaseFileBrowserWidget createListWidget()
     {
-        BaseFileBrowserWidget widget = new BaseFileBrowserWidget(listX, listY, listWidth, listHeight,
-                                                                 this.currentDirectory, this.rootDirectory, null, null);
+        BaseFileBrowserWidget widget = new BaseFileBrowserWidget(this.currentDirectory, this.rootDirectory, null, null);
+
         widget.setParentScreen(this.getParent());
         widget.setFileFilter(this.getFileFilter());
 

@@ -63,18 +63,21 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     protected boolean showFileSize;
     protected boolean showFileModificationTime;
 
-    public BaseFileBrowserWidget(int x, int y, int width, int height, File defaultDirectory, File rootDirectory,
-                                 @Nullable DirectoryCache cache, @Nullable String browserContext)
+    public BaseFileBrowserWidget(File defaultDirectory,
+                                 File rootDirectory,
+                                 @Nullable DirectoryCache cache,
+                                 @Nullable String browserContext)
     {
-        this(x, y, width, height, defaultDirectory, rootDirectory,
-             new DefaultFileBrowserIconProvider(), cache, browserContext);
+        this(defaultDirectory, rootDirectory, cache, browserContext, new DefaultFileBrowserIconProvider());
     }
 
-    public BaseFileBrowserWidget(int x, int y, int width, int height, File defaultDirectory, File rootDirectory,
-                                 FileBrowserIconProvider iconProvider,
-                                 @Nullable DirectoryCache cache, @Nullable String browserContext)
+    public BaseFileBrowserWidget(File defaultDirectory,
+                                 File rootDirectory,
+                                 @Nullable DirectoryCache cache,
+                                 @Nullable String browserContext,
+                                 FileBrowserIconProvider iconProvider)
     {
-        super(x, y, width, height, Collections::emptyList);
+        super(Collections::emptyList, false);
 
         this.rootDirectory = rootDirectory;
         this.cache = cache;
@@ -89,7 +92,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
             this.currentDirectory = defaultDirectory;
         }
 
-        this.navigationWidget = new DirectoryNavigationWidget(width, 14, this.currentDirectory,
+        this.navigationWidget = new DirectoryNavigationWidget(100, 14, this.currentDirectory,
                                                               rootDirectory, this, iconProvider,
                                                               this::onSearchBarChange, this::refreshFilteredEntries,
                                                               this::getRootDirectoryDisplayName);

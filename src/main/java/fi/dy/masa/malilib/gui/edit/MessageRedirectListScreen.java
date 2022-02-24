@@ -41,22 +41,19 @@ public class MessageRedirectListScreen extends BaseListScreen<DataListWidget<Mes
     {
         super.updateWidgetPositions();
 
-        int x = this.x + 10;
-        int y = this.y + 28;
-
-        this.addRedirectButton.setPosition(x, y);
+        this.addRedirectButton.setPosition(this.x + 10, this.y + 28);
     }
 
     @Nullable
     @Override
-    protected DataListWidget<MessageRedirect> createListWidget(int listX, int listY, int listWidth, int listHeight)
+    protected DataListWidget<MessageRedirect> createListWidget()
     {
-        DataListWidget<MessageRedirect> listWidget = new DataListWidget<>(listX, listY, listWidth, listHeight,
-                                                                          Registry.MESSAGE_REDIRECT_MANAGER::getAllRedirects);
-        listWidget.getBorderRenderer().getNormalSettings().setBorderWidth(1);
+        DataListWidget<MessageRedirect> listWidget
+                = new DataListWidget<>(Registry.MESSAGE_REDIRECT_MANAGER::getAllRedirects, true);
+
         listWidget.setListEntryWidgetFixedHeight(16);
-        listWidget.setFetchFromSupplierOnRefresh(true);
         listWidget.setEntryWidgetFactory(MessageRedirectEntryWidget::new);
+
         return listWidget;
     }
 

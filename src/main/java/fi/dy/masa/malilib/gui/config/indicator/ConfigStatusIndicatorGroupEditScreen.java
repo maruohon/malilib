@@ -280,18 +280,15 @@ public class ConfigStatusIndicatorGroupEditScreen extends BaseListScreen<DataLis
         BaseScreen.openScreen(screen);
     }
 
-    @Nullable
     @Override
-    protected DataListWidget<BaseConfigStatusIndicatorWidget<?>> createListWidget(int listX, int listY,
-                                                                                  int listWidth, int listHeight)
+    protected DataListWidget<BaseConfigStatusIndicatorWidget<?>> createListWidget()
     {
-        DataListWidget<BaseConfigStatusIndicatorWidget<?>> listWidget 
-                = new DataListWidget<>(listX, listY, listWidth, listHeight, this.widget::getStatusIndicatorWidgetsForEditScreen);
+        DataListWidget<BaseConfigStatusIndicatorWidget<?>> listWidget
+                = new DataListWidget<>(this.widget::getStatusIndicatorWidgetsForEditScreen, true);
+
+        listWidget.setListEntryWidgetFixedHeight(16);
         listWidget.setEntryWidgetFactory((data, constructData) ->
                                          new ConfigStatusIndicatorEntryWidget(data, constructData, this.widget));
-        listWidget.getBorderRenderer().getNormalSettings().setBorderWidth(1);
-        listWidget.setListEntryWidgetFixedHeight(16);
-        listWidget.setFetchFromSupplierOnRefresh(true);
 
         return listWidget;
     }

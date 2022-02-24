@@ -89,22 +89,21 @@ public abstract class BaseActionListScreen extends BaseMultiListScreen
         return this.allActionTypesDropdown.getSelectedEntry().getActions();
     }
 
-    protected DataListWidget<NamedAction> createBaseActionListWidget(Supplier<List<NamedAction>> supplier)
+    protected DataListWidget<NamedAction> createBaseActionListWidget(Supplier<List<NamedAction>> supplier,
+                                                                     boolean fetchFromSupplierOnRefresh)
     {
-        DataListWidget<NamedAction> listWidget = new DataListWidget<>(0, 0, 120, 120, supplier);
+        DataListWidget<NamedAction> listWidget = new DataListWidget<>(supplier, fetchFromSupplierOnRefresh);
 
         listWidget.setListEntryWidgetFixedHeight(14);
-        listWidget.getBorderRenderer().getNormalSettings().setBorderWidth(1);
-        listWidget.setFetchFromSupplierOnRefresh(true);
-        listWidget.setEntryWidgetFactory(this::createEntryWidget);
         listWidget.setEntryFilterStringFunction(NamedAction::getSearchString);
+        listWidget.setEntryWidgetFactory(this::createEntryWidget);
 
         return listWidget;
     }
 
     protected DataListWidget<NamedAction> createLeftSideActionListWidget()
     {
-        DataListWidget<NamedAction> listWidget = this.createBaseActionListWidget(this::getLeftSideActions);
+        DataListWidget<NamedAction> listWidget = this.createBaseActionListWidget(this::getLeftSideActions, true);
         listWidget.addDefaultSearchBar();
         listWidget.getEntrySelectionHandler()
                 .setAllowSelection(true)

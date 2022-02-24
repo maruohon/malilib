@@ -94,7 +94,7 @@ public class ActionListScreen extends BaseActionListScreen
     @Override
     protected DataListWidget<NamedAction> createRightSideActionListWidget()
     {
-        return this.createBaseActionListWidget(this::getRightSideActions);
+        return this.createBaseActionListWidget(this::getRightSideActions, true);
     }
 
     protected boolean canCreateMacro()

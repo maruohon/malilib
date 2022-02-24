@@ -25,17 +25,6 @@ public class StringListSelectionScreen extends BaseListScreen<DataListWidget<Str
         this.cancelButton = GenericButton.create("malilib.button.misc.cancel", this::openParentScreen);
     }
 
-    public List<String> getStrings()
-    {
-        return this.strings;
-    }
-
-    @Override
-    protected DataListWidget<String> createListWidget(int listX, int listY, int listWidth, int listHeight)
-    {
-        return new DataListWidget<>(listX, listY, listWidth, listHeight, this::getStrings);
-    }
-
     @Override
     protected void reAddActiveWidgets()
     {
@@ -51,7 +40,7 @@ public class StringListSelectionScreen extends BaseListScreen<DataListWidget<Str
         super.updateWidgetPositions();
 
         int x = 12;
-        int y = this.height - 32;
+        int y = this.getBottom() - 32;
 
         this.confirmButton.setPosition(x, y);
         this.cancelButton.setPosition(this.confirmButton.getRight() + 6, y);
@@ -60,5 +49,16 @@ public class StringListSelectionScreen extends BaseListScreen<DataListWidget<Str
     protected void onConfirm()
     {
         this.consumer.accept(this.getListWidget().getSelectedEntries());
+    }
+
+    public List<String> getStrings()
+    {
+        return this.strings;
+    }
+
+    @Override
+    protected DataListWidget<String> createListWidget()
+    {
+        return new DataListWidget<>(this::getStrings, false);
     }
 }

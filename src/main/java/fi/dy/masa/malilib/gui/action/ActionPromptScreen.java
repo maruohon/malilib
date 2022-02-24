@@ -31,7 +31,7 @@ public class ActionPromptScreen extends BaseListScreen<DataListWidget<NamedActio
 
     public ActionPromptScreen()
     {
-        super(0, 32, 0, 32);
+        super(0, 33, 0, 33);
 
         List<ActionList> lists = ActionList.getActionLists();
         this.dropDownWidget = new DropDownListWidget<>(-1, 16, 80, 4, lists, ActionList::getDisplayName);
@@ -56,7 +56,7 @@ public class ActionPromptScreen extends BaseListScreen<DataListWidget<NamedActio
         this.searchDisplayNameCheckBoxWidget.setListener((v) -> this.updateFilteredList());
 
         int screenWidth = 320;
-        this.searchTextField = new BaseTextFieldWidget(screenWidth - 12, 16);
+        this.searchTextField = new BaseTextFieldWidget(screenWidth - DefaultIcons.CHECKMARK_OFF.getWidth(), 16);
         this.searchTextField.setListener(this::updateFilteredList);
         this.searchTextField.setUpdateListenerAlways(true);
 
@@ -96,14 +96,16 @@ public class ActionPromptScreen extends BaseListScreen<DataListWidget<NamedActio
     {
         super.updateWidgetPositions();
 
-        int x = this.x + this.screenWidth - DefaultIcons.CHECKMARK_OFF.getWidth();
-        this.rememberSearchCheckBoxWidget.setPosition(x, this.y);
-        this.fuzzySearchCheckBoxWidget.setPosition(x, this.y + 11);
-        this.searchDisplayNameCheckBoxWidget.setPosition(x, this.y + 22);
-        this.closeButton.setX(x - this.closeButton.getWidth() - 2);
+        int x = this.getRight() - DefaultIcons.CHECKMARK_OFF.getWidth();
+        int y = this.y;
+        this.rememberSearchCheckBoxWidget.setPosition(x, y);
+        this.fuzzySearchCheckBoxWidget.setPosition(x, y + 11);
+        this.searchDisplayNameCheckBoxWidget.setPosition(x, y + 22);
+        this.closeButton.setRight(x - 2);
+        this.closeButton.setY(y + 2);
 
-        this.dropDownWidget.setPosition(this.x, this.y);
-        this.searchTextField.setPosition(this.x, this.y + 16);
+        this.dropDownWidget.setPosition(this.x, y + 1);
+        this.searchTextField.setPosition(this.x, y + 17);
     }
 
     @Override
@@ -234,14 +236,16 @@ public class ActionPromptScreen extends BaseListScreen<DataListWidget<NamedActio
     }
 
     @Override
-    protected DataListWidget<NamedAction> createListWidget(int listX, int listY, int listWidth, int listHeight)
+    protected DataListWidget<NamedAction> createListWidget()
     {
-        DataListWidget<NamedAction> listWidget = new DataListWidget<>(listX, listY, listWidth, listHeight, this::getFilteredActions);
-        listWidget.setAllowKeyboardNavigation(true);
+        DataListWidget<NamedAction> listWidget = new DataListWidget<>(this::getFilteredActions, true);
+
         listWidget.setListEntryWidgetFixedHeight(12);
-        listWidget.setFetchFromSupplierOnRefresh(true);
+        listWidget.setAllowKeyboardNavigation(true);
         listWidget.getBackgroundRenderer().getNormalSettings().setEnabledAndColor(true, 0xA0000000);
+        //listWidget.getBorderRenderer().getNormalSettings().setBorderWidth(0);
         listWidget.setEntryWidgetFactory(ActionPromptEntryWidget::new);
+
         return listWidget;
     }
 

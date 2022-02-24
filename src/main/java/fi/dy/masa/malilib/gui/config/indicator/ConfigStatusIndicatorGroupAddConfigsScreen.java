@@ -79,17 +79,15 @@ public class ConfigStatusIndicatorGroupAddConfigsScreen extends BaseListScreen<D
         this.addEntriesButton.setPosition(x, y);
     }
 
-    @Nullable
     @Override
-    protected DataListWidget<ConfigOnTab> createListWidget(int listX, int listY, int listWidth, int listHeight)
+    protected DataListWidget<ConfigOnTab> createListWidget()
     {
-        DataListWidget<ConfigOnTab> listWidget = new DataListWidget<>(listX, listY, listWidth, listHeight, this::getFilteredConfigs);
-        listWidget.setEntryWidgetFactory(ConfigInfoEntryWidget::new);
-        listWidget.setFetchFromSupplierOnRefresh(true);
+        DataListWidget<ConfigOnTab> listWidget = new DataListWidget<>(this::getFilteredConfigs, true);
+
+        listWidget.setListEntryWidgetFixedHeight(15);
         listWidget.getEntrySelectionHandler().setAllowSelection(true);
         listWidget.getEntrySelectionHandler().setAllowMultiSelection(true);
-        listWidget.getBorderRenderer().getNormalSettings().setBorderWidth(1);
-        listWidget.setListEntryWidgetFixedHeight(15);
+        listWidget.setEntryWidgetFactory(ConfigInfoEntryWidget::new);
 
         return listWidget;
     }

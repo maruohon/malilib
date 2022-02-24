@@ -59,9 +59,9 @@ public class BlackWhiteListEditScreen<TYPE> extends BaseConfigGroupEditScreen
     }
 
     @Override
-    protected ConfigOptionListWidget<? extends ConfigInfo> createListWidget(int listX, int listY, int listWidth, int listHeight)
+    protected ConfigOptionListWidget<? extends ConfigInfo> createListWidget()
     {
-        ConfigOptionListWidget<? extends ConfigInfo> listWidget = super.createListWidget(listX, listY, listWidth, listHeight);
+        ConfigOptionListWidget<? extends ConfigInfo> listWidget = super.createListWidget();
         listWidget.setShowInternalConfigName(false);
         return listWidget;
     }

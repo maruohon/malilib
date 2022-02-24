@@ -22,58 +22,14 @@ public class BaseMultiListScreen extends BaseTabbedScreen
     }
 
     @Override
-    protected int getCurrentScrollbarPosition()
+    protected void initScreen()
     {
-        return 0;
-    }
-
-    @Override
-    protected void setCurrentScrollbarPosition(int position)
-    {
-    }
-
-    protected void addListWidget(BaseListWidget widget)
-    {
-        widget.setTaskQueue(this::addTask);
-        widget.setZ((int) this.zLevel + 2);
-        widget.initListWidget();
-        widget.refreshEntries();
-
-        this.listWidgets.add(widget);
-    }
-
-    @Override
-    protected void clearElements()
-    {
-        super.clearElements();
-
-        this.listWidgets.clear();
-    }
-
-    @Override
-    protected InteractableWidget getTopHoveredWidget(int mouseX, int mouseY, @Nullable InteractableWidget highestFoundWidget)
-    {
-        highestFoundWidget = super.getTopHoveredWidget(mouseX, mouseY, highestFoundWidget);
+        super.initScreen();
 
         for (BaseListWidget listWidget : this.listWidgets)
         {
-            highestFoundWidget = listWidget.getTopHoveredWidget(mouseX, mouseY, highestFoundWidget);
+            listWidget.refreshEntries();
         }
-
-        return highestFoundWidget;
-    }
-
-    @Override
-    protected List<BaseTextFieldWidget> getAllTextFields()
-    {
-        List<BaseTextFieldWidget> textFields = new ArrayList<>(super.getAllTextFields());
-
-        for (BaseListWidget listWidget : this.listWidgets)
-        {
-            textFields.addAll(listWidget.getAllTextFields());
-        }
-
-        return textFields;
     }
 
     @Override
@@ -85,6 +41,22 @@ public class BaseMultiListScreen extends BaseTabbedScreen
         }
 
         super.onScreenClosed();
+    }
+
+    @Override
+    protected void clearElements()
+    {
+        super.clearElements();
+        this.listWidgets.clear();
+    }
+
+    protected void addListWidget(BaseListWidget widget)
+    {
+        widget.setTaskQueue(this::addTask);
+        widget.setZ((int) this.zLevel + 10);
+        widget.initListWidget();
+
+        this.listWidgets.add(widget);
     }
 
     @Override
@@ -198,6 +170,43 @@ public class BaseMultiListScreen extends BaseTabbedScreen
         }
 
         return false;
+    }
+
+    @Override
+    protected InteractableWidget getTopHoveredWidget(int mouseX, int mouseY, @Nullable InteractableWidget highestFoundWidget)
+    {
+        highestFoundWidget = super.getTopHoveredWidget(mouseX, mouseY, highestFoundWidget);
+
+        for (BaseListWidget listWidget : this.listWidgets)
+        {
+            highestFoundWidget = listWidget.getTopHoveredWidget(mouseX, mouseY, highestFoundWidget);
+        }
+
+        return highestFoundWidget;
+    }
+
+    @Override
+    protected List<BaseTextFieldWidget> getAllTextFields()
+    {
+        List<BaseTextFieldWidget> textFields = new ArrayList<>(super.getAllTextFields());
+
+        for (BaseListWidget listWidget : this.listWidgets)
+        {
+            textFields.addAll(listWidget.getAllTextFields());
+        }
+
+        return textFields;
+    }
+
+    @Override
+    protected int getCurrentScrollbarPosition()
+    {
+        return 0;
+    }
+
+    @Override
+    protected void setCurrentScrollbarPosition(int position)
+    {
     }
 
     @Override

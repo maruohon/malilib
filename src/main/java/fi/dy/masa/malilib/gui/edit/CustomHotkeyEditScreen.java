@@ -167,9 +167,8 @@ public class CustomHotkeyEditScreen extends BaseActionListScreen
     @Override
     protected DataListWidget<NamedAction> createRightSideActionListWidget()
     {
-        DataListWidget<NamedAction> listWidget = this.createBaseActionListWidget(Collections::emptyList);
+        DataListWidget<NamedAction> listWidget = this.createBaseActionListWidget(Collections::emptyList, false);
 
-        listWidget.setFetchFromSupplierOnRefresh(false);
         listWidget.setEntryWidgetFactory(this::createRightSideEntryWidget);
 
         return listWidget;

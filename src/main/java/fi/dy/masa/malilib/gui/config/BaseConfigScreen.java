@@ -223,12 +223,12 @@ public class BaseConfigScreen extends BaseListScreen<ConfigOptionListWidget<? ex
     }
 
     @Override
-    protected ConfigOptionListWidget<? extends ConfigInfo> createListWidget(int listX, int listY, int listWidth, int listHeight)
+    protected ConfigOptionListWidget<? extends ConfigInfo> createListWidget()
     {
         ConfigWidgetContext ctx = new ConfigWidgetContext(this::getListWidget, this, 0);
         ConfigOptionListWidget<? extends ConfigInfo> widget = ConfigOptionListWidget.createWithExpandedGroups(
-                listX, listY, listWidth, listHeight, this::getDefaultConfigElementWidth,
-                this.modInfo, this::getConfigs, ctx);
+                this::getDefaultConfigElementWidth, this.modInfo, this::getConfigs, ctx);
+
         widget.addConfigSearchBarWidget(this);
 
         return widget;

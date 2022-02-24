@@ -254,9 +254,8 @@ public abstract class BaseScreen extends GuiScreen
     {
         if (this.closeButton != null)
         {
-            int x = this.x + this.screenWidth - this.closeButton.getWidth() - 2;
-            int y = this.y + 2;
-            this.closeButton.setPosition(x, y);
+            int x = this.getRight() - this.closeButton.getWidth() - 2;
+            this.closeButton.setPosition(x, this.y + 2);
         }
     }
 
@@ -270,6 +269,16 @@ public abstract class BaseScreen extends GuiScreen
         return this.y;
     }
 
+    public int getRight()
+    {
+        return this.x + this.screenWidth;
+    }
+
+    public int getBottom()
+    {
+        return this.y + this.screenHeight;
+    }
+
     public int getScreenWidth()
     {
         return this.screenWidth;
@@ -280,13 +289,18 @@ public abstract class BaseScreen extends GuiScreen
         return this.screenHeight;
     }
 
-
     public void setPosition(int x, int y)
     {
+        int oldX = this.x;
+        int oldY = this.y;
+
         this.x = x;
         this.y = y;
 
-        this.updateWidgetPositions();
+        if (this.x != oldX || this.y != oldY)
+        {
+            this.updateWidgetPositions();
+        }
     }
 
     @Nullable
@@ -621,7 +635,6 @@ public abstract class BaseScreen extends GuiScreen
             int y = mouseY - this.dragStartOffset.y;
 
             this.setPosition(x, y);
-            this.updateWidgetPositions();
 
             return true;
         }
