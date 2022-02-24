@@ -97,6 +97,19 @@ public class SearchBarWidget extends ContainerWidget
         //this.textField.centerVerticallyInside(this);
     }
 
+    @Override
+    public void moveSubWidgets(int diffX, int diffY)
+    {
+        super.moveSubWidgets(diffX, diffY);
+
+        // If the search bar is not open and the text field is not in the widget list,
+        // then the super call will not move the text field
+        if (this.isSearchOpen() == false)
+        {
+            this.textField.setPosition(this.textField.getX() + diffX, this.textField.getY() + diffY);
+        }
+    }
+
     public void setAlwaysOpen(boolean alwaysOpen)
     {
         this.alwaysOpen = alwaysOpen;

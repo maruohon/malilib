@@ -29,15 +29,10 @@ public class BaseConfigGroupEditScreen extends BaseListScreen<ConfigOptionListWi
         this.renderBorder = true;
         this.useTitleHierarchy = false;
         this.backgroundColor = 0xFF000000;
-
-        this.setParent(parent);
-    }
-
-    @Override
-    protected void setScreenWidthAndHeight(int width, int height)
-    {
         this.screenWidth = Math.max(520, GuiUtils.getScaledWindowWidth() - 80);
         this.screenHeight = GuiUtils.getScaledWindowHeight() - 90;
+
+        this.setParent(parent);
     }
 
     public void setSaveListener(@Nullable EventListener saveListener)
