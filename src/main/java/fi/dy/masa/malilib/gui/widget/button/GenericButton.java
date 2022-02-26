@@ -16,6 +16,7 @@ import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.StyledTextUtils;
+import fi.dy.masa.malilib.util.data.Int2BooleanFunction;
 import fi.dy.masa.malilib.util.data.LeftRight;
 
 public class GenericButton extends InteractableWidget
@@ -33,6 +34,7 @@ public class GenericButton extends InteractableWidget
     protected boolean enabled = true;
     protected boolean playClickSound = true;
     protected boolean renderButtonBackgroundTexture = true;
+    protected boolean rightAligned;
     protected int disabledTextColor = 0xFF606060;
     protected int iconVsLabelPadding = 5;
 
@@ -51,12 +53,28 @@ public class GenericButton extends InteractableWidget
         this.getBorderRenderer().getNormalSettings().setColor(0x00000000);
     }
 
+    /**
+     * Sets an action listener that takes no arguments.
+     */
     public GenericButton setActionListener(@Nullable EventListener actionListener)
     {
-        this.actionListener = (btn) -> { if (btn == 0) { actionListener.onEvent(); return true; } return false; };
+        this.actionListener = (mBtn, btn) -> { if (mBtn == 0) { actionListener.onEvent(); return true; } return false; };
         return this;
     }
 
+    /**
+     * Sets an action listener that only takes in the mouse button that was clicked.
+     */
+    public GenericButton setActionListener(@Nullable Int2BooleanFunction actionListener)
+    {
+        this.actionListener = (mBtn, btn) -> actionListener.apply(mBtn);
+        return this;
+    }
+
+    /**
+     * Sets an action listener that gets in as arguments both the mouse button that was clicked,
+     * and a reference to this button widget.
+     */
     public GenericButton setActionListener(@Nullable ButtonActionListener actionListener)
     {
         this.actionListener = actionListener;
@@ -107,6 +125,12 @@ public class GenericButton extends InteractableWidget
     public GenericButton setPlayClickSound(boolean playSound)
     {
         this.playClickSound = playSound;
+        return this;
+    }
+
+    public GenericButton setIsRightAligned(boolean rightAligned)
+    {
+        this.rightAligned = rightAligned;
         return this;
     }
 
@@ -244,6 +268,16 @@ public class GenericButton extends InteractableWidget
                 width += this.buttonIcon.getWidth() + extraPadding;
             }
 
+            if (this.rightAligned)
+            {
+                int oldWidth = this.getWidth();
+
+                if (width != oldWidth)
+                {
+                    this.setPositionNoUpdate(this.getX() - (width - oldWidth), this.getY());
+                }
+            }
+
             this.setWidthNoUpdate(width);
         }
     }
@@ -273,7 +307,7 @@ public class GenericButton extends InteractableWidget
 
     protected boolean tryExecuteAction(int mouseButton)
     {
-        return this.actionListener == null || this.actionListener.actionPerformedWithButton(mouseButton);
+        return this.actionListener == null || this.actionListener.actionPerformedWithButton(mouseButton, this);
     }
 
     public void setEnabled(boolean enabled)

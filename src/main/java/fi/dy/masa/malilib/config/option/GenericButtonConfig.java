@@ -1,14 +1,14 @@
 package fi.dy.masa.malilib.config.option;
 
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.gui.widget.button.ButtonActionListener;
+import fi.dy.masa.malilib.util.data.Int2BooleanFunction;
 
 public class GenericButtonConfig extends BaseConfig 
 {
     protected final String buttonText;
-    protected final ButtonActionListener buttonListener;
+    protected final Int2BooleanFunction buttonListener;
 
-    public GenericButtonConfig(String name, String buttonText, ButtonActionListener buttonListener)
+    public GenericButtonConfig(String name, String buttonText, Int2BooleanFunction buttonListener)
     {
         super(name);
 
@@ -16,7 +16,7 @@ public class GenericButtonConfig extends BaseConfig
         this.buttonListener = buttonListener;
     }
 
-    public GenericButtonConfig(String name, String buttonText, ButtonActionListener buttonListener,
+    public GenericButtonConfig(String name, String buttonText, Int2BooleanFunction buttonListener,
                                String commentTranslationKey, Object... commentArgs)
     {
         super(name, commentTranslationKey, commentArgs);
@@ -25,7 +25,7 @@ public class GenericButtonConfig extends BaseConfig
         this.buttonListener = buttonListener;
     }
 
-    public GenericButtonConfig(String name, String buttonText, ButtonActionListener buttonListener,
+    public GenericButtonConfig(String name, String buttonText, Int2BooleanFunction buttonListener,
                                String nameTranslationKey, @Nullable String commentTranslationKey, Object... commentArgs)
     {
         super(name, nameTranslationKey, commentTranslationKey, commentArgs);
@@ -39,7 +39,7 @@ public class GenericButtonConfig extends BaseConfig
         return this.buttonText;
     }
 
-    public ButtonActionListener getButtonActionListener()
+    public Int2BooleanFunction getButtonActionListener()
     {
         return this.buttonListener;
     }

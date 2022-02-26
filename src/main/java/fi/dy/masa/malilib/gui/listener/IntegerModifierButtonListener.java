@@ -3,9 +3,9 @@ package fi.dy.masa.malilib.gui.listener;
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
 import fi.dy.masa.malilib.gui.BaseScreen;
-import fi.dy.masa.malilib.gui.widget.button.ButtonActionListener;
+import fi.dy.masa.malilib.util.data.Int2BooleanFunction;
 
-public class IntegerModifierButtonListener implements ButtonActionListener
+public class IntegerModifierButtonListener implements Int2BooleanFunction
 {
     protected final IntSupplier supplier;
     protected final IntConsumer consumer;
@@ -28,7 +28,7 @@ public class IntegerModifierButtonListener implements ButtonActionListener
     }
 
     @Override
-    public boolean actionPerformedWithButton(int mouseButton)
+    public boolean apply(int mouseButton)
     {
         int amount = mouseButton == 1 ? -1 : 1;
 

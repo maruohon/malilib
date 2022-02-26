@@ -1,30 +1,49 @@
 package fi.dy.masa.malilib.gui.edit;
 
+import java.util.List;
 import java.util.function.Consumer;
+import javax.annotation.Nullable;
 import net.minecraft.util.EnumFacing;
 import fi.dy.masa.malilib.config.value.LayerMode;
 import fi.dy.masa.malilib.gui.BaseScreen;
+import fi.dy.masa.malilib.gui.BaseTabbedScreen;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
 import fi.dy.masa.malilib.gui.listener.IntegerTextFieldListener;
+import fi.dy.masa.malilib.gui.tab.ScreenTab;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.CheckBoxWidget;
 import fi.dy.masa.malilib.gui.widget.IntegerTextFieldWidget;
-import fi.dy.masa.malilib.gui.widget.button.ButtonActionListener;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.button.OnOffButton;
-import fi.dy.masa.malilib.gui.widget.list.SelectionListener;
 import fi.dy.masa.malilib.util.EntityUtils;
 import fi.dy.masa.malilib.util.ListUtils;
 import fi.dy.masa.malilib.util.StringUtils;
+import fi.dy.masa.malilib.util.data.Int2BooleanFunction;
 import fi.dy.masa.malilib.util.position.LayerRange;
 
-public abstract class BaseRenderLayerEditScreen extends BaseScreen
+public abstract class BaseRenderLayerEditScreen extends BaseTabbedScreen
 {
     protected BaseTextFieldWidget textField1;
     protected BaseTextFieldWidget textField2;
     protected boolean addPlayerFollowingOptions;
-    protected int nextY;
+    protected boolean addLayerRangeHotkeyCheckboxes;
+    protected int controlsStartX;
+    protected int controlsStartY;
+
+    public BaseRenderLayerEditScreen(String screenId,
+                                     List<? extends ScreenTab> screenTabs,
+                                     @Nullable ScreenTab defaultTab)
+    {
+        super(screenId, screenTabs, defaultTab);
+    }
+
+    @Override
+    protected void initScreen()
+    {
+        super.initScreen();
+        this.createLayerEditControls(this.x + this.controlsStartX, this.y + this.controlsStartY, this.getLayerRange());
+    }
 
     protected abstract LayerRange getLayerRange();
 
@@ -41,7 +60,7 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
         this.createLayerConfigButton(x, y, ButtonListenerLayerEdit.Type.AXIS, layerRange);
         y += 26;
 
-        this.nextY = this.createTextFields(origX, y, 60, layerRange);
+        this.createTextFields(origX, y, 60, layerRange);
     }
 
     protected int createLayerConfigButton(int x, int y, ButtonListenerLayerEdit.Type type, LayerRange layerRange)
@@ -59,19 +78,32 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
         return 0;
     }
 
-    protected int createHotkeyCheckBoxes(int x, int y, LayerRange layerRange)
+    protected void createHotkeyCheckBoxes(int x, int y, LayerRange layerRange)
     {
-        return y;
+        String label = "malilib.checkbox.render_layers.hotkey";
+        String hover = "malilib.hover.checkbox.render_layers.hotkey";
+
+        CheckBoxWidget cb = new CheckBoxWidget(DefaultIcons.CHECKMARK_OFF, DefaultIcons.CHECKMARK_ON, label, hover);
+        cb.setBooleanStorage(layerRange::getMoveLayerRangeMax, layerRange::setMoveLayerRangeMax);
+        cb.setPosition(x, y + 4);
+        this.addWidget(cb);
+
+        y += 23;
+        cb = new CheckBoxWidget(DefaultIcons.CHECKMARK_OFF, DefaultIcons.CHECKMARK_ON, label, hover);
+        cb.setBooleanStorage(layerRange::getMoveLayerRangeMin, layerRange::setMoveLayerRangeMin);
+        cb.setSelected(layerRange.getMoveLayerRangeMin(), false);
+        cb.setPosition(x, y + 4);
+        this.addWidget(cb);
     }
 
-    protected int createTextFields(int x, int y, int width, final LayerRange layerRange)
+    protected void createTextFields(int x, int y, int width, final LayerRange layerRange)
     {
         int origX = x;
         LayerMode layerMode = layerRange.getLayerMode();
 
         if (layerMode == LayerMode.ALL)
         {
-            return y;
+            return;
         }
 
         if (layerMode == LayerMode.LAYER_RANGE)
@@ -99,7 +131,10 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
             this.textField2.setListener(new TextChangeListener(layerMode, layerRange, true));
             this.addWidget(this.textField2);
 
-            this.createHotkeyCheckBoxes(x + width + 24, y, layerRange);
+            if (this.addLayerRangeHotkeyCheckboxes)
+            {
+                this.createHotkeyCheckBoxes(x + width + 24, y, layerRange);
+            }
 
             this.createValueAdjustButton(x + width + 3, y, true, layerRange, valueAdjustIcon);
             y += 23;
@@ -128,10 +163,7 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
             final OnOffButton button = new OnOffButton(-1, 20, OnOffButton.OnOffStyle.SLIDER_ON_OFF, layerRange::shouldFollowPlayer, strLabel);
             button.translateAndAddHoverString("malilib.hover.button.render_layers.follow_player");
             button.setPosition(origX, y);
-            button.setActionListener((btn) -> {
-                layerRange.toggleShouldFollowPlayer();
-                return true;
-            });
+            button.setActionListener(layerRange::toggleShouldFollowPlayer);
             this.addWidget(button);
             y += 24;
 
@@ -158,8 +190,6 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
 
             this.addWidget(button2);
         }
-
-        return y;
     }
 
     protected void updateTextFieldValues(LayerRange layerRange)
@@ -186,7 +216,7 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
         this.addWidget(button);
     }
 
-    protected static class ButtonListenerLayerEdit implements ButtonActionListener
+    protected static class ButtonListenerLayerEdit implements Int2BooleanFunction
     {
         protected final BaseRenderLayerEditScreen parent;
         protected final LayerRange layerRange;
@@ -200,7 +230,7 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
         }
 
         @Override
-        public boolean actionPerformedWithButton(int mouseButton)
+        public boolean apply(int mouseButton)
         {
             if (this.type == Type.MODE)
             {
@@ -251,7 +281,7 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
         }
     }
 
-    protected static class ButtonListenerChangeValue implements ButtonActionListener
+    protected static class ButtonListenerChangeValue implements Int2BooleanFunction
     {
         protected final BaseRenderLayerEditScreen parent;
         protected final LayerRange layerRange;
@@ -267,7 +297,7 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
         }
 
         @Override
-        public boolean actionPerformedWithButton(int mouseButton)
+        public boolean apply(int mouseButton)
         {
             int change = mouseButton == 1 ? -1 : 1;
 
@@ -356,31 +386,6 @@ public abstract class BaseRenderLayerEditScreen extends BaseScreen
                     break;
 
                 default:
-            }
-        }
-    }
-
-    public static class RangeHotkeyListener implements SelectionListener<CheckBoxWidget>
-    {
-        protected final LayerRange layerRange;
-        protected final boolean isMax;
-
-        public RangeHotkeyListener(LayerRange layerRange, boolean isMax)
-        {
-            this.layerRange = layerRange;
-            this.isMax = isMax;
-        }
-
-        @Override
-        public void onSelectionChange(CheckBoxWidget entry)
-        {
-            if (this.isMax)
-            {
-                this.layerRange.toggleHotkeyMoveRangeMax();
-            }
-            else
-            {
-                this.layerRange.toggleHotkeyMoveRangeMin();
             }
         }
     }

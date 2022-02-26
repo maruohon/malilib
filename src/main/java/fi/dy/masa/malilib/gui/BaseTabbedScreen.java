@@ -26,7 +26,9 @@ public abstract class BaseTabbedScreen extends BaseScreen
     protected int tabButtonContainerWidgetX = 10;
     protected int tabButtonContainerWidgetY = 22;
 
-    public BaseTabbedScreen(String screenId, List<? extends ScreenTab> screenTabs, @Nullable ScreenTab defaultTab)
+    public BaseTabbedScreen(String screenId,
+                            List<? extends ScreenTab> screenTabs,
+                            @Nullable ScreenTab defaultTab)
     {
         this.screenId = screenId;
         this.defaultTab = defaultTab;
@@ -125,17 +127,25 @@ public abstract class BaseTabbedScreen extends BaseScreen
 
     public void restoreScrollBarPositionForCurrentTab()
     {
-        ScreenTab tab = this.getCurrentTab();
-
-        if (tab != null && this.shouldRestoreScrollBarPosition())
+        if (this.shouldRestoreScrollBarPosition())
         {
-            this.setCurrentScrollbarPosition(getScrollBarPosition(tab));
+            ScreenTab tab = this.getCurrentTab();
+
+            if (tab != null)
+            {
+                this.setCurrentScrollbarPosition(getScrollBarPosition(tab));
+            }
         }
     }
 
-    protected abstract int getCurrentScrollbarPosition();
+    protected int getCurrentScrollbarPosition()
+    {
+        return 0;
+    }
 
-    protected abstract void setCurrentScrollbarPosition(int position);
+    protected void setCurrentScrollbarPosition(int position)
+    {
+    }
 
     protected boolean shouldRestoreScrollBarPosition()
     {

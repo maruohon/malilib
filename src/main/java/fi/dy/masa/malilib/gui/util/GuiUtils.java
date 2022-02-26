@@ -23,11 +23,11 @@ import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.DoubleTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.IntegerTextFieldWidget;
-import fi.dy.masa.malilib.gui.widget.button.ButtonActionListener;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.util.GameUtils;
 import fi.dy.masa.malilib.util.PositionUtils.CoordinateType;
+import fi.dy.masa.malilib.util.data.Int2BooleanFunction;
 import fi.dy.masa.malilib.util.position.CoordinateValueModifier;
 
 public class GuiUtils
@@ -352,7 +352,7 @@ public class GuiUtils
         }
     }
 
-    public static class ButtonListenerCoordinateInput implements ButtonActionListener
+    public static class ButtonListenerCoordinateInput implements Int2BooleanFunction
     {
         protected final CoordinateValueModifier modifier;
         protected final CoordinateType type;
@@ -364,7 +364,7 @@ public class GuiUtils
         }
 
         @Override
-        public boolean actionPerformedWithButton(int mouseButton)
+        public boolean apply(int mouseButton)
         {
             int amount = mouseButton == 1 ? -1 : 1;
             if (BaseScreen.isShiftDown()) { amount *= 8; }

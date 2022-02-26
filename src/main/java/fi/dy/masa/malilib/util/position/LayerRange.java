@@ -49,6 +49,11 @@ public class LayerRange
         return this.axis;
     }
 
+    public boolean shouldFollowPlayer()
+    {
+        return this.followPlayer;
+    }
+
     public boolean getMoveLayerRangeMin()
     {
         return this.hotkeyRangeMin;
@@ -59,9 +64,14 @@ public class LayerRange
         return this.hotkeyRangeMax;
     }
 
-    public boolean shouldFollowPlayer()
+    public void setMoveLayerRangeMin(boolean move)
     {
-        return this.followPlayer;
+        this.hotkeyRangeMin = move;
+    }
+
+    public void setMoveLayerRangeMax(boolean move)
+    {
+        this.hotkeyRangeMax = move;
     }
 
     public void toggleHotkeyMoveRangeMin()

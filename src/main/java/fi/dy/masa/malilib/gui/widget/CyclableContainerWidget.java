@@ -100,19 +100,19 @@ public class CyclableContainerWidget extends ContainerWidget
     protected int getTotalCyclableWidgetsWidth()
     {
         int widgetCount = this.cyclableWidgets.size();
-        int allWidgetsWidth = 0;
+        int totalWidth = 0;
 
         for (InteractableWidget widget : this.cyclableWidgets)
         {
-            allWidgetsWidth += widget.getWidth();
+            totalWidth += widget.getWidth();
         }
 
         if (widgetCount > 1)
         {
-            allWidgetsWidth += (widgetCount - 1) * this.widgetGap;
+            totalWidth += (widgetCount - 1) * this.widgetGap;
         }
 
-        return allWidgetsWidth;
+        return totalWidth;
     }
 
     protected void reAddFittingWidgets()

@@ -32,7 +32,7 @@ public class BaseScreenTab implements ScreenTab
         this.translationKey = translationKey;
         this.screenChecker = screenChecker;
         this.screenFactory = screenFactory;
-        this.listenerFactory = (scr) -> (btn) -> this.openTab(scr);
+        this.listenerFactory = (scr) -> (mBtn, btn) -> this.openTab(scr);
     }
 
     public BaseScreenTab(String name, String translationKey, Predicate<GuiScreen> screenChecker,
