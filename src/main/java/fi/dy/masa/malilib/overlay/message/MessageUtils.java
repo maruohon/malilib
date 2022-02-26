@@ -103,7 +103,7 @@ public class MessageUtils
 
     public static void printCustomActionbarMessage(String translationKey, Object... args)
     {
-        MessageDispatcher.generic().type(MessageOutput.CUSTOM_HOTBAR).time(5000).fadeOut(500).translate(translationKey, args);
+        MessageDispatcher.generic(5000).fadeOut(500).customHotbar().translate(translationKey, args);
     }
 
     public static void printBooleanConfigToggleMessage(MessageOutput type, BooleanConfig config,
@@ -113,7 +113,7 @@ public class MessageUtils
 
         if (org.apache.commons.lang3.StringUtils.isBlank(msg) == false)
         {
-            MessageDispatcher.generic().type(type).time(5000).send(msg);
+            MessageDispatcher.generic(5000).type(type).send(msg);
         }
     }
 
@@ -142,7 +142,7 @@ public class MessageUtils
         }
         catch (Exception ignore) {}
 
-        MessageDispatcher.generic().type(type).time(displayTimeMs).send(msg);
+        MessageDispatcher.generic(displayTimeMs).type(type).send(msg);
 
         return ActionResult.SUCCESS;
     }

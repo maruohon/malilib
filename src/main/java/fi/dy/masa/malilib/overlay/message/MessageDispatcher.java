@@ -9,6 +9,7 @@ import net.minecraft.util.text.event.HoverEvent;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.config.value.ScreenLocation;
+import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.render.text.StyledText;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
@@ -51,6 +52,26 @@ public class MessageDispatcher
     public MessageDispatcher console()
     {
         this.console = true;
+        return this;
+    }
+
+    public MessageDispatcher customHotbar()
+    {
+        this.type = MessageOutput.CUSTOM_HOTBAR;
+        return this;
+    }
+
+    public MessageDispatcher screenOrActionbar()
+    {
+        if (GuiUtils.getCurrentScreen() != null)
+        {
+            this.type = MessageOutput.MESSAGE_OVERLAY;
+        }
+        else
+        {
+            this.type = MessageOutput.CUSTOM_HOTBAR;
+        }
+
         return this;
     }
 
@@ -212,12 +233,7 @@ public class MessageDispatcher
 
     public static MessageDispatcher generic()
     {
-        return generic(Message.INFO);
-    }
-
-    public static MessageDispatcher generic(int defaultTextColor)
-    {
-        return new MessageDispatcher(defaultTextColor);
+        return new MessageDispatcher(Message.INFO);
     }
 
     public static MessageDispatcher success()
@@ -233,6 +249,26 @@ public class MessageDispatcher
     public static MessageDispatcher error()
     {
         return new MessageDispatcher(Message.ERROR).consoleMessageConsumer(MaLiLib.LOGGER::error);
+    }
+
+    public static MessageDispatcher generic(int displayTimeMs)
+    {
+        return generic().time(displayTimeMs);
+    }
+
+    public static MessageDispatcher success(int displayTimeMs)
+    {
+        return success().time(displayTimeMs);
+    }
+
+    public static MessageDispatcher warning(int displayTimeMs)
+    {
+        return warning().time(displayTimeMs);
+    }
+
+    public static MessageDispatcher error(int displayTimeMs)
+    {
+        return error().time(displayTimeMs);
     }
 
     public static void generic(String translationKey, Object... args)

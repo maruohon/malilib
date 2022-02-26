@@ -165,7 +165,7 @@ public class SettingsExportImportScreen extends TextInputScreen
     protected void copyToClipboard()
     {
         GuiScreen.setClipboardString(this.textField.getText());
-        MessageDispatcher.success().time(this.messageDisplayTime).translate(this.copyToClipboardMessage);
+        MessageDispatcher.success(this.messageDisplayTime).translate(this.copyToClipboardMessage);
     }
 
     protected void pasteFromClipboard()
@@ -173,7 +173,7 @@ public class SettingsExportImportScreen extends TextInputScreen
         this.textField.setText(GuiScreen.getClipboardString());
         this.textField.setCursorToStart();
         this.textField.setFocused(true);
-        MessageDispatcher.success().time(this.messageDisplayTime).translate(this.pasteFromClipboardMessage);
+        MessageDispatcher.success(this.messageDisplayTime).translate(this.pasteFromClipboardMessage);
     }
 
     protected boolean setStringFromFile(File file)

@@ -74,11 +74,12 @@ public class MessagePacketHandler implements PluginChannelHandler
 
         message = buf.readString(8192);
 
-        MessageDispatcher.generic(defaultColor)
-                      .type(type).location(location)
-                      .time(displayTimeMs)
-                      .rendererMarker(marker).append(true)
-                      .send(message);
+        MessageDispatcher.generic(displayTimeMs)
+                .type(type)
+                .location(location)
+                .color(defaultColor)
+                .rendererMarker(marker).append(true)
+                .send(message);
     }
 
     public static void updateRegistration(boolean enabled)

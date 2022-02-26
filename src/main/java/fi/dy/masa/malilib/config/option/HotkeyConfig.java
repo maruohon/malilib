@@ -2,6 +2,8 @@ package fi.dy.masa.malilib.config.option;
 
 import java.util.List;
 import java.util.Locale;
+import fi.dy.masa.malilib.action.Action;
+import fi.dy.masa.malilib.action.NamedAction;
 import fi.dy.masa.malilib.input.Hotkey;
 import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.input.KeyBindImpl;
@@ -58,6 +60,16 @@ public class HotkeyConfig extends BaseConfigOption<KeyBind> implements Hotkey
     public void setHotkeyCallback(HotkeyCallback callback)
     {
         this.keyBind.setCallback(callback);
+    }
+
+    public void createCallbackForAction(Action action)
+    {
+        this.keyBind.setCallback(HotkeyCallback.of(action));
+    }
+
+    public void createCallbackForAction(NamedAction action)
+    {
+        this.keyBind.setCallback(HotkeyCallback.of(action));
     }
 
     @Override

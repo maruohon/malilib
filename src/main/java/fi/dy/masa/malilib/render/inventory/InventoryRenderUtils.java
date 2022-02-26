@@ -33,12 +33,14 @@ import net.minecraft.tileentity.TileEntityBrewingStand;
 import net.minecraft.tileentity.TileEntityDispenser;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.tileentity.TileEntityHopper;
+import net.minecraft.tileentity.TileEntityLockableLoot;
 import net.minecraft.tileentity.TileEntityShulkerBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.ILockableContainer;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import fi.dy.masa.malilib.config.value.HorizontalAlignment;
 import fi.dy.masa.malilib.config.value.VerticalAlignment;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
@@ -381,6 +383,7 @@ public class InventoryRenderUtils
         int screenHeight = GuiUtils.getScaledWindowHeight();
         int width = renderDefinition.getRenderWidth(inv);
         int height = renderDefinition.getRenderHeight(inv) + 8;
+        // FIXME: This seems very sus and reversed?
         int x = baseX - width - horizontalAlignment.getXStartOffsetForEdgeAlignment(width);
         int y = baseY - height - verticalAlignment.getYStartOffsetForEdgeAlignment(height);
 
@@ -498,74 +501,93 @@ public class InventoryRenderUtils
             return null;
         }
 
-        IInventory inv;
-
         if (trace.typeOfHit == RayTraceResult.Type.BLOCK)
         {
             BlockPos pos = trace.getBlockPos();
-            TileEntity te = world.getTileEntity(pos);
-
-            if (te instanceof IInventory)
-            {
-                inv = (IInventory) te;
-                IBlockState state = world.getBlockState(pos);
-
-                if (state.getBlock() instanceof BlockChest)
-                {
-                    ILockableContainer cont = ((BlockChest) state.getBlock()).getLockableContainer(world, pos);
-
-                    if (cont instanceof InventoryLargeChest)
-                    {
-                        inv = cont;
-                    }
-                }
-
-                Block block = world.getBlockState(pos).getBlock();
-
-                if (block instanceof BlockShulkerBox)
-                {
-                    BlockShulkerBox shulkerBoxBlock = (BlockShulkerBox) block;
-                    int bgColor = InventoryRenderUtils.getShulkerBoxBackgroundTintColor(shulkerBoxBlock);
-                    return Pair.of(new ColoredVanillaInventoryView(inv, bgColor), getInventoryType(inv));
-                }
-
-                return Pair.of(new VanillaInventoryView(inv), getInventoryType(inv));
-            }
+            return getInventoryViewFromBlock(pos, world);
         }
         else if (trace.typeOfHit == RayTraceResult.Type.ENTITY)
         {
-            Entity entity = trace.entityHit;
+            return getInventoryViewFromEntity(trace.entityHit);
+        }
 
-            if (entity instanceof EntityVillager)
-            {
-                inv = ((EntityVillager) entity).getVillagerInventory();
-                InventoryView equipmentInv = new EquipmentInventoryView((EntityVillager) entity);
-                InventoryView mainInventory = new VanillaInventoryView(inv);
+        return null;
+    }
 
-                return Pair.of(new CombinedInventoryView(equipmentInv, mainInventory),
-                               BuiltinInventoryRenderDefinitions.VILLAGER);
-            }
-            else if (entity instanceof AbstractHorse)
-            {
-                inv = ((IMixinAbstractHorse) entity).malilib_getHorseChest();
-                InventoryView equipmentInv = new EquipmentInventoryView((AbstractHorse) entity);
-                InventoryView mainInventory = new VanillaInventoryView(inv);
-                InventoryRenderDefinition def = (entity instanceof EntityLlama) ?
-                                                BuiltinInventoryRenderDefinitions.LLAMA :
-                                                BuiltinInventoryRenderDefinitions.HORSE;
+    @Nullable
+    public static Pair<InventoryView, InventoryRenderDefinition> getInventoryViewFromBlock(BlockPos pos, World world)
+    {
+        TileEntity te = world.getTileEntity(pos);
 
-                return Pair.of(new CombinedInventoryView(equipmentInv, mainInventory), def);
-            }
-            else if (entity instanceof IInventory)
+        if (te instanceof IInventory)
+        {
+            IInventory inv = (IInventory) te;
+            IBlockState state = world.getBlockState(pos);
+
+            // Prevent loot generation attempt from crashing due to NPEs
+            // TODO 1.13+ check if this is still needed
+            if (te instanceof TileEntityLockableLoot && (world instanceof WorldServer) == false)
             {
-                return Pair.of(new VanillaInventoryView((IInventory) entity),
-                               BuiltinInventoryRenderDefinitions.GENERIC);
+                ((TileEntityLockableLoot) te).setLootTable(null, 0);
             }
-            else if (entity instanceof EntityLivingBase)
+
+            if (state.getBlock() instanceof BlockChest)
             {
-                return Pair.of(new EquipmentInventoryView((EntityLivingBase) entity),
-                               BuiltinInventoryRenderDefinitions.LIVING_ENTITY);
+                ILockableContainer cont = ((BlockChest) state.getBlock()).getLockableContainer(world, pos);
+
+                if (cont instanceof InventoryLargeChest)
+                {
+                    inv = cont;
+                }
             }
+
+            Block block = world.getBlockState(pos).getBlock();
+
+            if (block instanceof BlockShulkerBox)
+            {
+                BlockShulkerBox shulkerBoxBlock = (BlockShulkerBox) block;
+                int bgColor = InventoryRenderUtils.getShulkerBoxBackgroundTintColor(shulkerBoxBlock);
+                return Pair.of(new ColoredVanillaInventoryView(inv, bgColor), getInventoryType(inv));
+            }
+
+            return Pair.of(new VanillaInventoryView(inv), getInventoryType(inv));
+        }
+
+        return null;
+    }
+
+    @Nullable
+    public static Pair<InventoryView, InventoryRenderDefinition> getInventoryViewFromEntity(Entity entity)
+    {
+        if (entity instanceof EntityVillager)
+        {
+            IInventory inv = ((EntityVillager) entity).getVillagerInventory();
+            InventoryView equipmentInv = new EquipmentInventoryView((EntityVillager) entity);
+            InventoryView mainInventory = new VanillaInventoryView(inv);
+
+            return Pair.of(new CombinedInventoryView(equipmentInv, mainInventory),
+                           BuiltinInventoryRenderDefinitions.VILLAGER);
+        }
+        else if (entity instanceof AbstractHorse)
+        {
+            IInventory inv = ((IMixinAbstractHorse) entity).malilib_getHorseChest();
+            InventoryView equipmentInv = new EquipmentInventoryView((AbstractHorse) entity);
+            InventoryView mainInventory = new VanillaInventoryView(inv);
+            InventoryRenderDefinition def = (entity instanceof EntityLlama) ?
+                                                    BuiltinInventoryRenderDefinitions.LLAMA :
+                                                    BuiltinInventoryRenderDefinitions.HORSE;
+
+            return Pair.of(new CombinedInventoryView(equipmentInv, mainInventory), def);
+        }
+        else if (entity instanceof IInventory)
+        {
+            return Pair.of(new VanillaInventoryView((IInventory) entity),
+                           BuiltinInventoryRenderDefinitions.GENERIC);
+        }
+        else if (entity instanceof EntityLivingBase)
+        {
+            return Pair.of(new EquipmentInventoryView((EntityLivingBase) entity),
+                           BuiltinInventoryRenderDefinitions.LIVING_ENTITY);
         }
 
         return null;

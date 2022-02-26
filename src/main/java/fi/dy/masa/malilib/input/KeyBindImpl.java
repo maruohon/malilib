@@ -273,7 +273,7 @@ public class KeyBindImpl implements KeyBind
 
             int displayTimeMs = MaLiLibConfigs.Generic.KEYBIND_DISPLAY_DURATION.getIntegerValue();
             StyledText text = StyledText.ofStrings(lines);
-            MessageDispatcher.generic().type(MessageOutput.TOAST).time(displayTimeMs)
+            MessageDispatcher.generic(displayTimeMs).type(MessageOutput.TOAST)
                              .messageMarker("keybind_display").append(true).send(text);
         }
     }
@@ -541,7 +541,7 @@ public class KeyBindImpl implements KeyBind
                 heldKeys = Keys.writeKeysToString(PRESSED_KEYS, " + ", Keys::charAsStorageString);
             }
 
-            MessageDispatcher.generic().type(MessageOutput.TOAST).time(2000).messageMarker("pressed_keys")
+            MessageDispatcher.generic(2000).type(MessageOutput.TOAST).messageMarker("pressed_keys")
                              .translate("malilib.label.toast.pressed_keys", heldKeys);
         }
 
@@ -602,7 +602,7 @@ public class KeyBindImpl implements KeyBind
 
         if (MaLiLibConfigs.Debug.KEYBIND_DEBUG_TOAST.getBooleanValue())
         {
-            MessageDispatcher.generic().type(MessageOutput.TOAST).time(5000).messageMarker("keybind_debug").send(msg);
+            MessageDispatcher.generic(5000).type(MessageOutput.TOAST).messageMarker("keybind_debug").send(msg);
         }
     }
 

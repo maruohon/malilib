@@ -460,6 +460,13 @@ public class GenericButton extends InteractableWidget
         return create(20, translationKey);
     }
 
+    public static GenericButton create(Supplier<String> displayStringSupplier)
+    {
+        GenericButton button = new GenericButton(-1, 20);
+        button.setDisplayStringSupplier(displayStringSupplier);
+        return button;
+    }
+
     public static GenericButton create(String translationKey, EventListener actionListener)
     {
         GenericButton button = create(translationKey);
@@ -480,6 +487,15 @@ public class GenericButton extends InteractableWidget
     public static GenericButton create(MultiIcon icon)
     {
         return create(icon.getWidth(), icon.getHeight(), icon);
+    }
+
+    public static GenericButton create(String translationKey, MultiIcon icon)
+    {
+        GenericButton button = new GenericButton(-1, 20);
+        button.fullDisplayString = StringUtils.translate(translationKey);
+        button.setButtonIcon(icon);
+        button.updateButtonState();
+        return button;
     }
 
     public static GenericButton create(MultiIcon icon, EventListener actionListener)

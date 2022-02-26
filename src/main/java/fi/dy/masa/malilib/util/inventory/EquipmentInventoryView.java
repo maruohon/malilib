@@ -1,11 +1,25 @@
 package fi.dy.masa.malilib.util.inventory;
 
+import java.util.function.Function;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 
 public class EquipmentInventoryView implements InventoryView
 {
+    /**
+     * Note: this order is different from how they are stored in vanilla.
+     * This is to make the InventoryRenderDefinitions a bit simpler, so that they can go from top down.
+     */
+    public static final ImmutableList<Function<EntityLivingBase, ItemStack>> SLOT_FETCHERS
+            = ImmutableList.of((e) -> e.getItemStackFromSlot(EntityEquipmentSlot.HEAD),
+                               (e) -> e.getItemStackFromSlot(EntityEquipmentSlot.CHEST),
+                               (e) -> e.getItemStackFromSlot(EntityEquipmentSlot.LEGS),
+                               (e) -> e.getItemStackFromSlot(EntityEquipmentSlot.FEET),
+                               (e) -> e.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND),
+                               (e) -> e.getItemStackFromSlot(EntityEquipmentSlot.OFFHAND));
+
     protected final EntityLivingBase entity;
 
     public EquipmentInventoryView(EntityLivingBase entity)
@@ -22,18 +36,6 @@ public class EquipmentInventoryView implements InventoryView
     @Override
     public ItemStack getStackInSlot(int slot)
     {
-        // Note: this order is different from how they are stored in vanilla.
-        // This is to make the InventoryRenderDefinitions a bit simpler, so that they can go from top down.
-        switch (slot)
-        {
-            case 0: return this.entity.getItemStackFromSlot(EntityEquipmentSlot.HEAD);
-            case 1: return this.entity.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
-            case 2: return this.entity.getItemStackFromSlot(EntityEquipmentSlot.LEGS);
-            case 3: return this.entity.getItemStackFromSlot(EntityEquipmentSlot.FEET);
-            case 4: return this.entity.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND);
-            case 5: return this.entity.getItemStackFromSlot(EntityEquipmentSlot.OFFHAND);
-        }
-
-        return ItemStack.EMPTY;
+        return slot >= 0 && slot < 6 ? SLOT_FETCHERS.get(slot).apply(this.entity) : ItemStack.EMPTY;
     }
 }

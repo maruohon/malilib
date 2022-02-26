@@ -190,7 +190,7 @@ public class ConfigOverrideUtils
                 MaLiLib.LOGGER.info("Applied {} feature overrides", overrideCount);
             }
 
-            MessageDispatcher.warning().time(8000).translate("malilib.message.info.feature_overrides_applied", overrideCount);
+            MessageDispatcher.warning(8000).translate("malilib.message.info.feature_overrides_applied", overrideCount);
         }
     }
 

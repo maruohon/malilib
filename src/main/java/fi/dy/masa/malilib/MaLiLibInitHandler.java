@@ -6,7 +6,6 @@ import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.input.CustomHotkeyManager;
 import fi.dy.masa.malilib.input.callback.AdjustableValueHotkeyCallback;
-import fi.dy.masa.malilib.input.callback.HotkeyCallback;
 import fi.dy.masa.malilib.network.message.MessagePacketHandler;
 import fi.dy.masa.malilib.overlay.widget.ConfigStatusIndicatorContainerWidget;
 import fi.dy.masa.malilib.registry.Registry;
@@ -24,10 +23,10 @@ public class MaLiLibInitHandler implements InitializationHandler
         Registry.HOTKEY_MANAGER.registerHotkeyProvider(CustomHotkeyManager.INSTANCE);
         Registry.HOTKEY_MANAGER.registerHotkeyProvider(ConfigStatusIndicatorContainerWidget.getHotkeyProvider());
 
-        MaLiLibConfigs.Hotkeys.OPEN_ACTION_PROMPT_SCREEN.getKeyBind().setCallback(HotkeyCallback.of(MaLiLibActions.OPEN_ACTION_PROMPT_SCREEN));
-        MaLiLibConfigs.Hotkeys.OPEN_CONFIG_SCREEN.getKeyBind().setCallback(HotkeyCallback.of(MaLiLibActions.OPEN_CONFIG_SCREEN));
-        MaLiLibConfigs.Hotkeys.SCROLL_VALUE_ADJUST_DECREASE.getKeyBind().setCallback(HotkeyCallback.of(AdjustableValueHotkeyCallback::scrollAdjustDecrease));
-        MaLiLibConfigs.Hotkeys.SCROLL_VALUE_ADJUST_INCREASE.getKeyBind().setCallback(HotkeyCallback.of(AdjustableValueHotkeyCallback::scrollAdjustIncrease));
+        MaLiLibConfigs.Hotkeys.OPEN_ACTION_PROMPT_SCREEN.createCallbackForAction(MaLiLibActions.OPEN_ACTION_PROMPT_SCREEN);
+        MaLiLibConfigs.Hotkeys.OPEN_CONFIG_SCREEN.createCallbackForAction(MaLiLibActions.OPEN_CONFIG_SCREEN);
+        MaLiLibConfigs.Hotkeys.SCROLL_VALUE_ADJUST_DECREASE.createCallbackForAction(AdjustableValueHotkeyCallback::scrollAdjustDecrease);
+        MaLiLibConfigs.Hotkeys.SCROLL_VALUE_ADJUST_INCREASE.createCallbackForAction(AdjustableValueHotkeyCallback::scrollAdjustIncrease);
 
         MaLiLibConfigs.Generic.OPTION_LIST_CONFIG_DROPDOWN.addValueChangeListener(GuiUtils::reInitCurrentScreen);
         MaLiLibConfigs.Generic.CUSTOM_SCREEN_SCALE.addValueChangeListener(BaseScreen::applyCustomScreenScaleChange);
