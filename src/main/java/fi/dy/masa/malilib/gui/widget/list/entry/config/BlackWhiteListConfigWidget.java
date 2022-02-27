@@ -21,7 +21,7 @@ public class BlackWhiteListConfigWidget extends BaseConfigWidget<BlackWhiteListC
         this.config = config;
         this.initialValue = this.config.getValue();
 
-        this.button = new BlackWhiteListEditButton(this.getElementWidth(), 20, config, this::updateWidgetDisplayValues);
+        this.button = new BlackWhiteListEditButton(this.getElementWidth(), 20, config, this::updateWidgetState);
         this.button.setHoverStringProvider("locked", this.config::getLockAndOverrideMessages);
     }
 
@@ -52,9 +52,9 @@ public class BlackWhiteListConfigWidget extends BaseConfigWidget<BlackWhiteListC
     }
 
     @Override
-    public void updateWidgetDisplayValues()
+    public void updateWidgetState()
     {
-        super.updateWidgetDisplayValues();
+        super.updateWidgetState();
         this.button.updateButtonState();
     }
 

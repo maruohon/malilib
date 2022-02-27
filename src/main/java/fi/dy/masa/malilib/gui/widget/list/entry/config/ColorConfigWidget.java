@@ -23,7 +23,7 @@ public class ColorConfigWidget extends BaseConfigOptionWidget<Integer, ColorConf
 
         this.colorIndicatorWidget = new ColorIndicatorWidget(18, 18, this.config, (newValue) -> {
             this.config.setValue(newValue);
-            this.updateWidgetDisplayValues();
+            this.updateWidgetState();
         });
         this.colorIndicatorWidget.getHoverInfoFactory()
                 .setStringListProvider("locked", this.config::getLockAndOverrideMessages, 110);
@@ -33,7 +33,7 @@ public class ColorConfigWidget extends BaseConfigOptionWidget<Integer, ColorConf
 
         this.textField.setListener((str) -> {
             this.config.setValueFromString(str);
-            this.updateWidgetDisplayValues();
+            this.updateWidgetState();
         });
     }
 
@@ -65,9 +65,9 @@ public class ColorConfigWidget extends BaseConfigOptionWidget<Integer, ColorConf
     }
 
     @Override
-    public void updateWidgetDisplayValues()
+    public void updateWidgetState()
     {
-        super.updateWidgetDisplayValues();
+        super.updateWidgetState();
 
         this.textField.setText(this.config.getStringValue());
         this.textField.updateHoverStrings();

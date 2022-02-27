@@ -30,7 +30,7 @@ public class SliderWidget extends InteractableWidget
     }
 
     @Override
-    public void updateWidgetDisplayValues()
+    public void updateWidgetState()
     {
         this.callback.updateDisplayText();
     }

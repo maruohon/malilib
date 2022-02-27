@@ -22,7 +22,7 @@ public class StringConfigWidget extends BaseConfigOptionWidget<String, StringCon
 
         this.textField.setListener((str) -> {
             this.config.setValueFromString(str);
-            this.updateWidgetDisplayValues();
+            this.updateWidgetState();
         });
     }
 
@@ -58,9 +58,9 @@ public class StringConfigWidget extends BaseConfigOptionWidget<String, StringCon
     }
 
     @Override
-    public void updateWidgetDisplayValues()
+    public void updateWidgetState()
     {
-        super.updateWidgetDisplayValues();
+        super.updateWidgetState();
 
         this.textField.setText(this.config.getStringValue());
         this.textField.updateHoverStrings();

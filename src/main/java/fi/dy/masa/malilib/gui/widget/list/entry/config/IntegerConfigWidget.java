@@ -31,7 +31,7 @@ public class IntegerConfigWidget extends NumericConfigWidget<Integer, IntegerCon
         if (BaseScreen.isAltDown()) { amount *= 4; }
 
         this.config.setIntegerValue(this.config.getIntegerValue() + amount);
-        this.updateWidgetDisplayValues();
+        this.updateWidgetState();
 
         return true;
     }

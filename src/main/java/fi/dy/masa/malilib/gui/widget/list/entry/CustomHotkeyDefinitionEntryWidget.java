@@ -90,9 +90,9 @@ public class CustomHotkeyDefinitionEntryWidget extends BaseDataListEntryWidget<C
     }
 
     @Override
-    public void updateWidgetDisplayValues()
+    public void updateWidgetState()
     {
-        super.updateWidgetDisplayValues();
+        super.updateWidgetState();
 
         this.updateHoverStrings();
         this.keybindButton.updateHoverStrings();

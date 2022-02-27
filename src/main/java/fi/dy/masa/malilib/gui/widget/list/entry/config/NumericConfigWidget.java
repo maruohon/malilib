@@ -41,10 +41,10 @@ public abstract class NumericConfigWidget<TYPE, CFG extends BaseConfigOption<TYP
         this.textField.setHoverStringProvider("lock", config::getLockAndOverrideMessages);
         this.textField.setListener((str) -> {
             this.fromStringSetter.accept(this.config, str);
-            this.updateWidgetDisplayValues();
+            this.updateWidgetState();
         });
 
-        this.sliderWidget = new SliderWidget(60, 20, config.getSliderCallback(this::updateWidgetDisplayValues));
+        this.sliderWidget = new SliderWidget(60, 20, config.getSliderCallback(this::updateWidgetState));
         this.sliderWidget.setHoverStringProvider("lock", config::getLockAndOverrideMessages);
 
         this.valueAdjustButton = GenericButton.create(DefaultIcons.BTN_PLUSMINUS_16);
@@ -105,13 +105,13 @@ public abstract class NumericConfigWidget<TYPE, CFG extends BaseConfigOption<TYP
     }
 
     @Override
-    public void updateWidgetDisplayValues()
+    public void updateWidgetState()
     {
-        super.updateWidgetDisplayValues();
+        super.updateWidgetState();
 
         this.textField.setText(this.getCurrentValueAsString());
         this.textField.updateHoverStrings();
-        this.sliderWidget.updateWidgetDisplayValues();
+        this.sliderWidget.updateWidgetState();
     }
 
     @Override

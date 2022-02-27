@@ -20,7 +20,7 @@ public class BooleanConfigWidget extends BaseConfigOptionWidget<Boolean, Boolean
 
         this.booleanButton.setActionListener(() -> {
             this.config.toggleBooleanValue();
-            this.updateWidgetDisplayValues();
+            this.updateWidgetState();
         });
     }
 
@@ -52,9 +52,9 @@ public class BooleanConfigWidget extends BaseConfigOptionWidget<Boolean, Boolean
     }
 
     @Override
-    public void updateWidgetDisplayValues()
+    public void updateWidgetState()
     {
-        super.updateWidgetDisplayValues();
+        super.updateWidgetState();
 
         this.booleanButton.setEnabled(this.config.isLocked() == false);
         this.booleanButton.updateButtonState();

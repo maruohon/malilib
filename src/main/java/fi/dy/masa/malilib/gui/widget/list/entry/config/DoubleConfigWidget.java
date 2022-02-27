@@ -31,7 +31,7 @@ public class DoubleConfigWidget extends NumericConfigWidget<Double, DoubleConfig
         if (BaseScreen.isAltDown()) { amount *= 8.0; }
 
         this.config.setDoubleValue(this.config.getDoubleValue() + amount);
-        this.updateWidgetDisplayValues();
+        this.updateWidgetState();
 
         return true;
     }

@@ -108,11 +108,11 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
     protected void onResetButtonClicked()
     {
         this.config.resetToDefault();
-        this.updateWidgetDisplayValues();
+        this.updateWidgetState();
     }
 
     @Override
-    public void updateWidgetDisplayValues()
+    public void updateWidgetState()
     {
         this.resetButton.updateButtonState();
     }

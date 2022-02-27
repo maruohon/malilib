@@ -52,9 +52,9 @@ public abstract class BaseValueListConfigWidget<TYPE, CFG extends ValueListConfi
     }
 
     @Override
-    public void updateWidgetDisplayValues()
+    public void updateWidgetState()
     {
-        super.updateWidgetDisplayValues();
+        super.updateWidgetState();
         this.button.updateButtonState();
     }
 }

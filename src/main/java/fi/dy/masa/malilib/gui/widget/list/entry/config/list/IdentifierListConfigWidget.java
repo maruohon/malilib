@@ -34,13 +34,13 @@ public class IdentifierListConfigWidget extends BaseValueListConfigWidget<Resour
             final ArrayList<ResourceLocation> possibleValues = new ArrayList<>(validValues);
             possibleValues.sort(Comparator.comparing(ResourceLocation::toString));
 
-            return new BaseValueListEditButton<>(width, height, config, this::updateWidgetDisplayValues, () -> entry,
+            return new BaseValueListEditButton<>(width, height, config, this::updateWidgetState, () -> entry,
                                                  (iv, cd, dv) -> new BaseValueListEditEntryWidget<>(iv, cd, dv,
                                                     possibleValues, ResourceLocation::toString, null), title);
         }
         else
         {
-            return new BaseValueListEditButton<>(width, height, config, this::updateWidgetDisplayValues,
+            return new BaseValueListEditButton<>(width, height, config, this::updateWidgetState,
                                                  () -> new ResourceLocation("minecraft:foo"),
                                                  IdentifierListEditEntryWidget::new, title);
         }

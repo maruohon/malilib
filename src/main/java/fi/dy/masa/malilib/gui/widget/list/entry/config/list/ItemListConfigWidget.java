@@ -27,7 +27,7 @@ public class ItemListConfigWidget extends BaseValueListConfigWidget<Item, ItemLi
 
         return new BaseValueListEditButton<>(width, height,
                                              config,
-                                             this::updateWidgetDisplayValues,
+                                             this::updateWidgetState,
                                              () -> Items.STICK,
                                              ItemUtils::getSortedItemList,
                                              ItemStackWidget::getItemDisplayName,

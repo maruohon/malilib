@@ -382,7 +382,7 @@ public class BaseWidget
     {
     }
 
-    public void updateWidgetDisplayValues()
+    public void updateWidgetState()
     {
     }
 

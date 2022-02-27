@@ -64,7 +64,7 @@ public abstract class ContainerWidget extends InteractableWidget
     {
         widget.setTaskQueue(this.taskQueue);
         widget.onWidgetAdded(this.getZ());
-        widget.updateWidgetDisplayValues();
+        widget.updateWidgetState();
     }
 
     public void openContextMenu(MenuWidget widget)

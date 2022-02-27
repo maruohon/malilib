@@ -29,7 +29,7 @@ public class OptionListConfigWidget extends BaseConfigWidget<OptionListConfig<Op
 
         this.optionListButton = new OptionListConfigButton(80, 20, this.config);
         this.optionListButton.setHoverStringProvider("locked", this.config::getLockAndOverrideMessages);
-        this.optionListButton.setChangeListener(this::updateWidgetDisplayValues);
+        this.optionListButton.setChangeListener(this::updateWidgetState);
 
         ArrayList<OptionListConfigValue> values = new ArrayList<>(config.getAllowedValues());
         this.dropDownWidget = new DropDownListWidget<>(80, 16, 200, 20, values, OptionListConfigValue::getDisplayName);
@@ -40,7 +40,7 @@ public class OptionListConfigWidget extends BaseConfigWidget<OptionListConfig<Op
         this.dropDownWidget.setSelectionListener((v) -> {
             this.config.setValue(v);
             this.dropDownWidget.updateHoverStrings();
-            this.updateWidgetDisplayValues();
+            this.updateWidgetState();
         });
     }
 
@@ -74,9 +74,9 @@ public class OptionListConfigWidget extends BaseConfigWidget<OptionListConfig<Op
     }
 
     @Override
-    public void updateWidgetDisplayValues()
+    public void updateWidgetState()
     {
-        super.updateWidgetDisplayValues();
+        super.updateWidgetState();
 
         this.dropDownWidget.setEnabled(this.config.isLocked() == false);
         this.dropDownWidget.updateHoverStrings();

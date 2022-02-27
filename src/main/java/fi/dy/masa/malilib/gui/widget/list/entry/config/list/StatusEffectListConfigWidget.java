@@ -28,7 +28,7 @@ public class StatusEffectListConfigWidget extends BaseValueListConfigWidget<Poti
 
         return new BaseValueListEditButton<>(width, height,
                                              config,
-                                             this::updateWidgetDisplayValues,
+                                             this::updateWidgetState,
                                              () -> MobEffects.REGENERATION,
                                              StatusEffectListConfigWidget::getSortedEffectList,
                                              StatusEffectListConfig::getRegistryName,
