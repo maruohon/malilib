@@ -398,8 +398,12 @@ public class TextRenderer implements IResourceManagerReloadListener
         // Reference equality is fine here, as the sheets are fixed/pre-determined
         if (this.currentFontTexture != segment.texture)
         {
-            this.renderTextBuffer();
-            this.startBuffers();
+            if (this.currentFontTexture != null)
+            {
+                this.renderTextBuffer();
+                this.startBuffers();
+            }
+
             this.currentFontTexture = segment.texture;
         }
 

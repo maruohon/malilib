@@ -122,6 +122,7 @@ public class TextRenderUtils
     {
         GuiScreen screen = GuiUtils.getCurrentScreen();
         int maxWidth = screen != null ? screen.width : GuiUtils.getScaledWindowWidth();
+        int maxHeight = screen != null ? screen.height : GuiUtils.getScaledWindowHeight();
         int textStartX = x;
         int textStartY = Math.max(0, y - renderHeight - 6);
 
@@ -135,10 +136,10 @@ public class TextRenderUtils
             {
                 textStartX = leftX;
             }
-            // otherwise move it to touching the edge of the screen that the cursor is closest to
+            // otherwise move it to touching the edge of the screen that the cursor is furthest from
             else
             {
-                textStartX = x < (maxWidth / 2) ? 0 : Math.max(0, maxWidth - renderWidth - 1);
+                textStartX = x > (maxWidth / 2) ? 0 : Math.max(0, maxWidth - renderWidth - 1);
             }
         }
 
@@ -149,6 +150,12 @@ public class TextRenderUtils
             x >= textStartX && x < textStartX + renderWidth)
         {
             textStartY = y + 12;
+
+            // Would clip at the bottom of the screen
+            if (textStartY + renderHeight >= maxHeight)
+            {
+                textStartY = maxHeight - renderHeight;
+            }
         }
 
         return new Vec2i(textStartX, textStartY);

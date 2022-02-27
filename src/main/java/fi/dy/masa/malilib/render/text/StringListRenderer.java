@@ -18,7 +18,6 @@ public class StringListRenderer extends BaseWidget
 {
     protected final List<StyledTextLine> originalTextLines = new ArrayList<>();
     protected final List<StyledTextLine> processedLinesClamped = new ArrayList<>();
-    protected final List<StyledTextLine> processedLinesFull = new ArrayList<>();
     protected final MultiLineTextRenderSettings textSettingsHover = new MultiLineTextRenderSettings();
     protected HorizontalAlignment horizontalAlignment = HorizontalAlignment.LEFT;
     protected LineClamper lineClamper;
@@ -79,12 +78,12 @@ public class StringListRenderer extends BaseWidget
 
     public int getTotalLineCount()
     {
-        return this.processedLinesFull.size();
+        return this.originalTextLines.size();
     }
 
     public boolean isEmpty()
     {
-        return this.processedLinesFull.isEmpty();
+        return this.originalTextLines.isEmpty();
     }
 
     public void setNormalTextSettingsFrom(TextRenderSettings settings)
@@ -135,7 +134,6 @@ public class StringListRenderer extends BaseWidget
     public void clearProcessedText()
     {
         this.processedLinesClamped.clear();
-        this.processedLinesFull.clear();
         this.hasClampedContent = false;
         this.totalTextWidth = 0;
         this.clampedTextWidth = 0;
@@ -145,8 +143,7 @@ public class StringListRenderer extends BaseWidget
 
     public void setText(String translationKey, Object... args)
     {
-        this.clearText();
-        this.addLine(translationKey, args);
+        this.setStyledText(StyledText.translate(translationKey, args));
     }
 
     public void setText(List<String> lines)
@@ -172,7 +169,6 @@ public class StringListRenderer extends BaseWidget
 
     public void setStyledText(StyledText text)
     {
-        this.clearText();
         this.setStyledTextLines(text.lines);
     }
 
@@ -210,9 +206,8 @@ public class StringListRenderer extends BaseWidget
         StyledTextLine clampedLine = line;
         int lineWidth = line.renderWidth;
         int lineHeight = this.getLineHeight();
-        this.totalTextHeight += this.processedLinesFull.size() > 0 ? lineHeight : TextRenderer.INSTANCE.getLineHeight();
+        this.totalTextHeight += this.processedLinesClamped.size() > 0 ? lineHeight : TextRenderer.INSTANCE.getLineHeight();
         this.totalTextWidth = Math.max(this.totalTextWidth, lineWidth);
-        this.processedLinesFull.add(line);
 
         if (this.hasMaxWidth() && lineWidth > this.maxWidth)
         {
@@ -248,7 +243,7 @@ public class StringListRenderer extends BaseWidget
     public void renderAt(int x, int y, float z, boolean hovered)
     {
         MultiLineTextRenderSettings settings = hovered ? this.textSettingsHover : this.textSettings;
-        List<StyledTextLine> lines = hovered ? this.processedLinesFull : this.processedLinesClamped;
+        List<StyledTextLine> lines = hovered ? this.originalTextLines : this.processedLinesClamped;
         boolean rightAlign = this.horizontalAlignment == HorizontalAlignment.RIGHT;
         boolean center = this.horizontalAlignment == HorizontalAlignment.CENTER;
         boolean shadow = settings.getTextShadowEnabled();
@@ -325,7 +320,6 @@ public class StringListRenderer extends BaseWidget
 
         if (renderBackground)
         {
-            GlStateManager.disableTexture2D();
             RenderUtils.drawBuffer();
             GlStateManager.enableTexture2D();
         }
