@@ -25,6 +25,7 @@ public class MaLiLibActions
         register("addMessage", MessageUtils::addMessageAction);
         register("addToast", MessageUtils::addToastAction);
         register("createActionWidgetScreen", ActionWidgetScreen::openCreateActionWidgetScreen);
+        register("loadAllConfigsFromFile", ConfigUtils::loadAllConfigsFromFileAction);
         register("openActionWidgetScreen", ActionWidgetScreen::openActionWidgetScreen);
         register("openCustomIconsListScreen", CustomIconListScreen::openCustomIconListScreenAction);
         register("openMessageRedirectsListScreen", MessageRedirectListScreen::openMessageRedirectListScreenAction);

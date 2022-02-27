@@ -519,6 +519,7 @@ malilib.message.info.config_overridden_off=§b%s§r is currently overridden to �
 malilib.message.info.config_overridden_on=§b%s§r is currently overridden to §aON§r
 malilib.message.info.directory_created=Created directory '%s'
 malilib.message.info.feature_overrides_applied=The server applied §b%s§r feature overrides
+malilib.message.info.loaded_all_configs_from_file=Loaded all configs from file
 malilib.message.info.moved_layer_range=Moved the entire layer range by §b%s§r on the §a%s§r axis
 malilib.message.info.moved_layer_range_max_boundary=Moved layer range §amax§r by §b%s§r on the §a%s§r axis
 malilib.message.info.moved_layer_range_min_boundary=Moved layer range §amin§r by §b%s§r on the §a%s§r axis

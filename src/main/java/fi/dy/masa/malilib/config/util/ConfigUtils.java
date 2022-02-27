@@ -161,4 +161,11 @@ public class ConfigUtils
 
         return ActionResult.PASS;
     }
+
+    public static ActionResult loadAllConfigsFromFileAction(ActionContext ctx)
+    {
+        loadAllConfigsFromFile();
+        MessageDispatcher.success("malilib.message.info.loaded_all_configs_from_file");
+        return ActionResult.SUCCESS;
+    }
 }
