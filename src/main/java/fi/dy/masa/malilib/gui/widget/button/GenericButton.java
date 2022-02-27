@@ -401,9 +401,11 @@ public class GenericButton extends InteractableWidget
 
         MultiIcon icon = this.buttonIcon;
 
-        if (this.iconAlignment == LeftRight.LEFT && icon != null)
+        if (this.iconAlignment == LeftRight.LEFT && icon != null &&
+            this.textOffset.getCenterHorizontally() == false)
         {
-            textX += icon.getWidth() + 2;
+            // The input x is this.x + this.padding.getLeft()
+            return x + this.iconOffset.getXOffset() + icon.getWidth() + this.textOffset.getXOffset();
         }
 
         return textX;
@@ -528,6 +530,9 @@ public class GenericButton extends InteractableWidget
         GenericButton button = new GenericButton(-1, 20);
         button.fullDisplayString = StringUtils.translate(translationKey);
         button.setButtonIcon(icon);
+        button.padding.setLeftRight(4);
+        button.getTextOffset().setCenterHorizontally(false);
+        button.getTextOffset().setXOffset(button.padding.getLeft() + button.iconOffset.getXOffset());
         button.updateButtonState();
         return button;
     }

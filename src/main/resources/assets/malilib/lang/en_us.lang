@@ -77,6 +77,7 @@ malilib.checkbox.action_prompt_screen.search_display_name=Display Name
 malilib.checkbox.action_widget_screen.close_on_execute=Close On Execute
 malilib.checkbox.action_widget_screen.close_on_key_release=Close On Key Release
 malilib.checkbox.center=Center
+malilib.checkbox.render_layers.hotkey=Hotkey
 
 malilib.hover.button.action_list_screen.create_macro=Create a Macro Action (or a "favorite actions list").\n- Select one or more actions from the list on the left.\n- You can hold Ctrl and/or Shift to select multiple entries.\n- Macros are basically just action lists.\n- Executing a macro runs all the actions on the list, in order.\n- The action lists/macros can also be used in the Action Prompt screen to "pre-filter" the list of shown actions.
 malilib.hover.button.action_list_screen.execute_action=Execute the selected action
@@ -126,6 +127,8 @@ malilib.hover.button.re_parameterize_action_for_macro=Create a new parameterized
 malilib.hover.button.render_layers.follow_player=If enabled, then the render layer follows the player
 malilib.hover.button.value_list_edit.entry=§7%s
 
+malilib.hover.checkbox.render_layers.hotkey=The next/previous layer hotkeys will affect this boundary. If both are unselected, then the hotkeys will affect the boundary that is closest to the player.
+
 malilib.hover.action.action_type=§8Type: <c=aaa>%s
 malilib.hover.action.action_types_explanation=- All: All actions currently in the registry\n- Alias: User-added aliases (= renamed copies)\n- Base: All mod-added "base" actions (= no user-added\n  actions ie. aliases, macros or the bound paramaterized actions)\n- Macro: User-created macros (= lists of actions)\n- Parameterizable: Base actions that need a string argument\n- Parameterized: User-added copies of parameterizable\n  actions, where the argument is set already\n- Simple: Non-parameterizable base actions\n- User-added: All user-added actions\n  (= aliases, macros and parameterized actions)
 malilib.hover.action.add_action_execution_widget.add_argument=Bind the argument to the action button directly.\nIf this is not set, then you will need to input the argument every time you run the action.
@@ -170,7 +173,7 @@ malilib.hover.item_tooltip_lines=§7%s
 malilib.hover.macro_action_export_import_screen.append_overwrite=- Append = add the actions from the imported macro to the end of the current actions in the macro\n- Overwrite = replace all the actions in the macro with the imported actions
 malilib.hover.macro_edit_screen.add_actions=Add the selected actions to the macro
 malilib.hover.misc.close_screen=Close the screen
-malilib.hover.misc.hold_shift_for_info=§oHold Shift for more information§r
+malilib.hover.misc.hold_shift_for_info=§oHold <c=ff0>Shift</c> for more information§r
 malilib.hover.toast_renderer.entry_name=%s (§b%s§r)
 
 malilib.info.action.create_action_widget_screen.name_is_final=§eNote:§r The name can't be changed later!\n§8(Except by renaming the corresponding save file manually.)§r\n\nThe name is only visible/used as the argument to the action to open the action screen. (And usually it would be set as the argument to the action in a parameterized action to be able to quickly/easily open the screen without typing in the name.)\n\nThe name should also be safe for a file name (it will also be automatically adjusted to be all lower case with underscores), as it will be the name of the file where the screen settings/configuration is saved.
@@ -463,7 +466,7 @@ malilib.title.screen.equipment_slot_list_edit=Edit Equipment Slot List '%s'
 malilib.title.screen.file_browser=File Browser
 malilib.title.screen.identifier_list_edit=Edit Identifier List '%s'
 malilib.title.screen.item_list_edit=Edit Item List '%s'
-malilib.title.screen.keybind_settings.advanced=Advanced Keybind Settings for '%s'
+malilib.title.screen.keybind_settings.advanced=Advanced Keybind Settings for §e%s§r
 malilib.title.screen.macro_edit.export_import=Export or Import Macro
 malilib.title.screen.message_redirect_list_screen=Manage Message Redirects
 malilib.title.screen.message_renderer_configuration=Message Renderer Configuration

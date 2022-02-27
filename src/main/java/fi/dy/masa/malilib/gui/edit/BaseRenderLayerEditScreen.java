@@ -110,15 +110,15 @@ public abstract class BaseRenderLayerEditScreen extends BaseTabbedScreen
         {
             String labelMin = StringUtils.translate("malilib.label.render_layers_screen.layer_min");
             String labelMax = StringUtils.translate("malilib.label.render_layers_screen.layer_max");
-            int w1 = this.addLabel(x, y +  5, 0xFFFFFF, labelMax).getWidth();
-            int w2 = this.addLabel(x, y + 28, 0xFFFFFF, labelMin).getWidth();
+            int w1 = this.addLabel(x, y +  5, 0xFFFFFFFF, labelMax).getWidth();
+            int w2 = this.addLabel(x, y + 28, 0xFFFFFFFF, labelMin).getWidth();
 
             x += Math.max(w1, w2) + 4;
         }
         else
         {
             String label = StringUtils.translate("malilib.label.render_layers_screen.layer");
-            x += this.addLabel(x, y + 5, 0xFFFFFF, label).getWidth() + 4;
+            x += this.addLabel(x, y + 5, 0xFFFFFFFF, label).getWidth() + 4;
         }
 
         MultiIcon valueAdjustIcon = this.getValueAdjustButtonIcon();
@@ -160,7 +160,7 @@ public abstract class BaseRenderLayerEditScreen extends BaseTabbedScreen
         if (this.addPlayerFollowingOptions)
         {
             String strLabel = "malilib.button.render_layers.follow_player";
-            final OnOffButton button = new OnOffButton(-1, 20, OnOffButton.OnOffStyle.SLIDER_ON_OFF, layerRange::shouldFollowPlayer, strLabel);
+            final OnOffButton button = new OnOffButton(-1, 20, OnOffButton.OnOffStyle.TEXT_ON_OFF, layerRange::shouldFollowPlayer, strLabel);
             button.translateAndAddHoverString("malilib.hover.button.render_layers.follow_player");
             button.setPosition(origX, y);
             button.setActionListener(layerRange::toggleShouldFollowPlayer);
@@ -168,7 +168,7 @@ public abstract class BaseRenderLayerEditScreen extends BaseTabbedScreen
             y += 24;
 
             String label = StringUtils.translate("malilib.label.render_layers_screen.player_follow_offset");
-            int w = this.addLabel(origX, y + 5, 0xFFFFFF, label).getWidth();
+            int w = this.addLabel(origX, y + 5, 0xFFFFFFFF, label).getWidth();
 
             final IntegerTextFieldWidget textField = new IntegerTextFieldWidget(40, 18, layerRange.getPlayerFollowOffset());
             textField.setPosition(origX + w + 4, y);

@@ -169,6 +169,13 @@ public class OnOffButton extends GenericButton
         RenderUtils.drawBuffer();
     }
 
+    public static OnOffButton onOff(int height, String translationKey, BooleanSupplier statusSupplier, EventListener actionListener)
+    {
+        OnOffButton button = new OnOffButton(-1, height, OnOffStyle.TEXT_ON_OFF, statusSupplier, translationKey);
+        button.setActionListener(actionListener);
+        return button;
+    }
+
     public static OnOffButton simpleSlider(int height, BooleanSupplier statusSupplier, EventListener actionListener)
     {
         OnOffButton button = new OnOffButton(-1, height, OnOffStyle.SLIDER_ON_OFF, statusSupplier, null);

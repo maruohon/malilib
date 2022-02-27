@@ -208,6 +208,12 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     }
 
     @Override
+    protected void fetchCurrentEntries()
+    {
+        this.directoryContentsCache.clear();
+    }
+
+    @Override
     protected void reAddFilteredEntries()
     {
         this.filteredContents.clear();

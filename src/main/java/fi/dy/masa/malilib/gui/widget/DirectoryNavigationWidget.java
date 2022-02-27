@@ -91,14 +91,14 @@ public class DirectoryNavigationWidget extends SearchBarWidget
 
         String hoverKey = "malilib.hover.button.directory_navigation_widget.hold_shift_to_open_directory";
         this.infoWidget = new InfoIconWidget(DefaultIcons.INFO_ICON_11, hoverKey);
-
-        this.generatePathParts(currentDir);
     }
 
     @Override
     public void reAddSubWidgets()
     {
         super.reAddSubWidgets();
+
+        this.generatePathParts(this.currentDir);
 
         if (this.isSearchOpen() == false)
         {

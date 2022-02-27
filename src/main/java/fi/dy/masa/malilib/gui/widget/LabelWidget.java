@@ -209,7 +209,7 @@ public class LabelWidget extends InteractableWidget
     @Override
     public void updateHeight()
     {
-        this.totalHeight = this.stringListRenderer.getTotalTextHeight() + this.padding.getTop() + this.padding.getBottom();
+        this.totalHeight = this.stringListRenderer.getTotalTextHeight() + this.padding.getVerticalTotal();
         this.totalHeight += this.getBorderRenderer().getNormalSettings().getActiveBorderWidth() * 2;
 
         if (this.automaticHeight)

@@ -497,6 +497,14 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
         }
     }
 
+    public void updateEntryWidgetStates()
+    {
+        for (BaseDataListEntryWidget<DATATYPE> widget : this.getEntryWidgetList())
+        {
+            widget.updateWidgetState();
+        }
+    }
+
     protected void sortEntryList(List<DATATYPE> list)
     {
         // FIXME how to get the indices in the same order?
