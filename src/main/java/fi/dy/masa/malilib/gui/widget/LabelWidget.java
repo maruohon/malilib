@@ -28,7 +28,7 @@ public class LabelWidget extends InteractableWidget
     {
         this(0, 0, -1, -1, textColor);
 
-        this.setText(Arrays.asList(text));
+        this.setLabelText(Arrays.asList(text));
     }
 
     public LabelWidget(int textColor, StyledTextLine... lines)
@@ -40,7 +40,7 @@ public class LabelWidget extends InteractableWidget
     {
         this(0, 0, -1, -1, textColor);
 
-        this.setStyledTextLines(lines);
+        this.setLabelStyledTextLines(lines);
     }
 
     public LabelWidget(int width, int height, int textColor)
@@ -71,49 +71,49 @@ public class LabelWidget extends InteractableWidget
         this.stringListRenderer.clearText();
     }
 
-    public LabelWidget setText(String translationKey, Object... args)
+    public LabelWidget setLabelText(String translationKey, Object... args)
     {
         this.stringListRenderer.setText(translationKey, args);
         this.updateLabelWidgetSize();
         return this;
     }
 
-    public LabelWidget setText(List<String> lines)
+    public LabelWidget setLabelText(List<String> lines)
     {
         this.stringListRenderer.setText(lines);
         this.updateLabelWidgetSize();
         return this;
     }
 
-    public LabelWidget addLine(String translationKey, Object... args)
+    public LabelWidget addLabelLine(String translationKey, Object... args)
     {
         this.stringListRenderer.addLine(translationKey, args);
         this.updateLabelWidgetSize();
         return this;
     }
 
-    public LabelWidget setStyledText(StyledText text)
+    public LabelWidget setLabelStyledText(StyledText text)
     {
         this.stringListRenderer.setStyledText(text);
         this.updateLabelWidgetSize();
         return this;
     }
 
-    public LabelWidget setStyledTextLines(StyledTextLine... lines)
+    public LabelWidget setLabelStyledTextLines(StyledTextLine... lines)
     {
         this.stringListRenderer.setStyledTextLines(Arrays.asList(lines));
         this.updateLabelWidgetSize();
         return this;
     }
 
-    public LabelWidget setStyledTextLines(List<StyledTextLine> lines)
+    public LabelWidget setLabelStyledTextLines(List<StyledTextLine> lines)
     {
         this.stringListRenderer.setStyledTextLines(lines);
         this.updateLabelWidgetSize();
         return this;
     }
 
-    public LabelWidget addStyledTextLine(StyledTextLine line)
+    public LabelWidget addLabelStyledTextLine(StyledTextLine line)
     {
         this.stringListRenderer.addStyledTextLine(line);
         this.updateLabelWidgetSize();

@@ -91,17 +91,17 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
         if (showCategory && this.categoryText != null)
         {
             this.configOwnerAndNameLabelWidget.getPadding().setTop(2);
-            this.configOwnerAndNameLabelWidget.setStyledTextLines(this.nameText, this.categoryText);
+            this.configOwnerAndNameLabelWidget.setLabelStyledTextLines(this.nameText, this.categoryText);
         }
         else if (this.shouldShowInternalName())
         {
             this.configOwnerAndNameLabelWidget.getPadding().setTop(2);
-            this.configOwnerAndNameLabelWidget.setStyledTextLines(this.nameText, this.internalNameText);
+            this.configOwnerAndNameLabelWidget.setLabelStyledTextLines(this.nameText, this.internalNameText);
         }
         else
         {
             this.configOwnerAndNameLabelWidget.getPadding().setTop(7);
-            this.configOwnerAndNameLabelWidget.setStyledTextLines(this.nameText);
+            this.configOwnerAndNameLabelWidget.setLabelStyledTextLines(this.nameText);
         }
     }
 

@@ -778,7 +778,7 @@ public abstract class BaseScreen extends GuiScreen
     public LabelWidget addLabel(int x, int y, int width, int height, int textColor, List<String> lines)
     {
         LabelWidget widget = this.addWidget(new LabelWidget(x, y, width, height, textColor));
-        widget.setText(lines);
+        widget.setLabelText(lines);
         return widget;
     }
 

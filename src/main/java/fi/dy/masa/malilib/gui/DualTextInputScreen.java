@@ -40,7 +40,7 @@ public class DualTextInputScreen extends BaseTextInputScreen
         this(titleKey, defaultText1, defaultText2, stringConsumer);
 
         this.setLabelText(labelKey1);
-        this.labelWidget2.setText(labelKey2);
+        this.labelWidget2.setLabelText(labelKey2);
         this.setParent(parent);
     }
 
@@ -81,7 +81,7 @@ public class DualTextInputScreen extends BaseTextInputScreen
 
         if (text != null)
         {
-            this.labelWidget2.setStyledText(text);
+            this.labelWidget2.setLabelStyledText(text);
         }
         else
         {
