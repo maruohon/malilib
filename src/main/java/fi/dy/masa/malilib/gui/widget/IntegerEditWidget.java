@@ -13,6 +13,16 @@ public class IntegerEditWidget extends BaseNumberEditWidget implements RangedInt
     protected final int maxValue;
     protected int value;
 
+    public IntegerEditWidget(int width, int height, IntConsumer consumer)
+    {
+        this(width, height, 0, Integer.MIN_VALUE, Integer.MAX_VALUE, consumer);
+    }
+
+    public IntegerEditWidget(int width, int height, int originalValue, IntConsumer consumer)
+    {
+        this(width, height, originalValue, Integer.MIN_VALUE, Integer.MAX_VALUE, consumer);
+    }
+
     public IntegerEditWidget(int width, int height, int originalValue,
                              int minValue, int maxValue, IntConsumer consumer)
     {
@@ -23,14 +33,14 @@ public class IntegerEditWidget extends BaseNumberEditWidget implements RangedInt
         this.maxValue = maxValue;
         this.setIntegerValue(originalValue);
 
-        this.textFieldWidget = new IntegerTextFieldWidget(width, 16, originalValue, minValue, maxValue);
-        this.textFieldWidget.setListener(this::setValueFromString);
+        this.textFieldWidget.setText(String.valueOf(originalValue));
+        this.textFieldWidget.setTextValidator(new IntegerTextFieldWidget.IntValidator(minValue, maxValue));
     }
 
     @Override
     protected SliderWidget createSliderWidget()
     {
-        return new SliderWidget(-1, 16, new IntegerSliderCallback(this, this::updateValue));
+        return new SliderWidget(-1, this.getHeight(), new IntegerSliderCallback(this, this::updateTextField));
     }
 
     @Override
@@ -41,38 +51,44 @@ public class IntegerEditWidget extends BaseNumberEditWidget implements RangedInt
         if (BaseScreen.isAltDown()) { amount *= 4; }
 
         this.setIntegerValue(this.value + amount);
-        this.updateValue();
+        this.consumer.accept(this.value);
 
         return true;
     }
 
-    protected void updateValue()
+    protected void updateTextField()
     {
         this.textFieldWidget.setText(String.valueOf(this.value));
-        this.consumer.accept(this.value);
     }
 
-    protected void setValueFromString(String str)
+    @Override
+    protected void setValueFromTextField(String str)
     {
         try
         {
-            this.setIntegerValue(Integer.parseInt(str));
+            this.clampAndSetValue(Integer.parseInt(str));
             this.consumer.accept(this.value);
         }
         catch (NumberFormatException ignore) {}
+    }
+
+    protected void clampAndSetValue(int newValue)
+    {
+        this.value = MathHelper.clamp(newValue, this.minValue, this.maxValue);
+    }
+
+    @Override
+    public boolean setIntegerValue(int newValue)
+    {
+        this.clampAndSetValue(newValue);
+        this.updateTextField();
+        return true;
     }
 
     @Override
     public int getIntegerValue()
     {
         return this.value;
-    }
-
-    @Override
-    public boolean setIntegerValue(int newValue)
-    {
-        this.value = MathHelper.clamp(newValue, this.minValue, this.maxValue);
-        return true;
     }
 
     @Override

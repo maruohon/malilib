@@ -23,14 +23,14 @@ public class DoubleEditWidget extends BaseNumberEditWidget implements RangedDoub
         this.maxValue = maxValue;
         this.setDoubleValue(originalValue);
 
-        this.textFieldWidget = new DoubleTextFieldWidget(width, 16, originalValue, minValue, maxValue);
-        this.textFieldWidget.setListener(this::setValueFromString);
+        this.textFieldWidget.setText(String.valueOf(originalValue));
+        this.textFieldWidget.setTextValidator(new DoubleTextFieldWidget.DoubleValidator(minValue, maxValue));
     }
 
     @Override
     protected SliderWidget createSliderWidget()
     {
-        return new SliderWidget(-1, 16, new DoubleSliderCallback(this, this::updateValue));
+        return new SliderWidget(-1, this.getHeight(), new DoubleSliderCallback(this, this::updateTextField));
     }
 
     @Override
@@ -41,38 +41,44 @@ public class DoubleEditWidget extends BaseNumberEditWidget implements RangedDoub
         if (BaseScreen.isAltDown()) { amount *= 8.0; }
 
         this.setDoubleValue(this.value + amount);
-        this.updateValue();
+        this.consumer.accept(this.value);
 
         return true;
     }
 
-    protected void updateValue()
+    protected void updateTextField()
     {
         this.textFieldWidget.setText(String.valueOf(this.value));
-        this.consumer.accept(this.value);
     }
 
-    protected void setValueFromString(String str)
+    @Override
+    protected void setValueFromTextField(String str)
     {
         try
         {
-            this.setDoubleValue(Double.parseDouble(str));
+            this.clampAndSetValue(Double.parseDouble(str));
             this.consumer.accept(this.value);
         }
         catch (NumberFormatException ignore) {}
+    }
+
+    protected void clampAndSetValue(double newValue)
+    {
+        this.value = MathHelper.clamp(newValue, this.minValue, this.maxValue);
+    }
+
+    @Override
+    public boolean setDoubleValue(double newValue)
+    {
+        this.clampAndSetValue(newValue);
+        this.updateTextField();
+        return true;
     }
 
     @Override
     public double getDoubleValue()
     {
         return this.value;
-    }
-
-    @Override
-    public boolean setDoubleValue(double newValue)
-    {
-        this.value = MathHelper.clamp(newValue, this.minValue, this.maxValue);
-        return true;
     }
 
     @Override

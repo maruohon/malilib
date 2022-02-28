@@ -23,14 +23,14 @@ public class FloatEditWidget extends BaseNumberEditWidget implements RangedFloat
         this.maxValue = maxValue;
         this.setFloatValue(originalValue);
 
-        this.textFieldWidget = new DoubleTextFieldWidget(width, 16, originalValue, minValue, maxValue);
-        this.textFieldWidget.setListener(this::setValueFromString);
+        this.textFieldWidget.setText(String.valueOf(originalValue));
+        this.textFieldWidget.setTextValidator(new DoubleTextFieldWidget.DoubleValidator(minValue, maxValue));
     }
 
     @Override
     protected SliderWidget createSliderWidget()
     {
-        return new SliderWidget(-1, 16, new FloatSliderCallback(this, this::updateValue));
+        return new SliderWidget(-1, this.getHeight(), new FloatSliderCallback(this, this::updateTextField));
     }
 
     @Override
@@ -41,38 +41,44 @@ public class FloatEditWidget extends BaseNumberEditWidget implements RangedFloat
         if (BaseScreen.isAltDown()) { amount *= 8.0F; }
 
         this.setFloatValue(this.value + amount);
-        this.updateValue();
+        this.consumer.accept(this.value);
 
         return true;
     }
 
-    protected void updateValue()
+    protected void updateTextField()
     {
         this.textFieldWidget.setText(String.valueOf(this.value));
-        this.consumer.accept(this.value);
     }
 
-    protected void setValueFromString(String str)
+    @Override
+    protected void setValueFromTextField(String str)
     {
         try
         {
-            this.setFloatValue(Float.parseFloat(str));
+            this.clampAndSetValue(Float.parseFloat(str));
             this.consumer.accept(this.value);
         }
         catch (NumberFormatException ignore) {}
+    }
+
+    protected void clampAndSetValue(float newValue)
+    {
+        this.value = MathHelper.clamp(newValue, this.minValue, this.maxValue);
+    }
+
+    @Override
+    public boolean setFloatValue(float newValue)
+    {
+        this.clampAndSetValue(newValue);
+        this.updateTextField();
+        return true;
     }
 
     @Override
     public float getFloatValue()
     {
         return this.value;
-    }
-
-    @Override
-    public boolean setFloatValue(float newValue)
-    {
-        this.value = MathHelper.clamp(newValue, this.minValue, this.maxValue);
-        return true;
     }
 
     @Override
