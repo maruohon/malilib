@@ -41,6 +41,21 @@ public abstract class ContainerWidget extends InteractableWidget
         return widget != null ? this.addWidget(widget) : null;
     }
 
+    /**
+     * Only adds the widget if the condition boolean is true.
+     * This is just a small convenience helper to reduce the if-statement clutter in some cases
+     */
+    public <T extends InteractableWidget> T addWidgetIf(T widget, boolean condition)
+    {
+        if (condition)
+        {
+            this.subWidgets.add(widget);
+            this.onSubWidgetAdded(widget);
+        }
+
+        return widget;
+    }
+
     public void removeWidget(InteractableWidget widget)
     {
         this.subWidgets.remove(widget);
