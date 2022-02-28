@@ -14,21 +14,12 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
 import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.config.value.HudAlignment;
 import fi.dy.masa.malilib.gui.BaseScreen;
-import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
-import fi.dy.masa.malilib.gui.widget.DoubleTextFieldWidget;
-import fi.dy.masa.malilib.gui.widget.IntegerTextFieldWidget;
-import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.util.GameUtils;
-import fi.dy.masa.malilib.util.PositionUtils.CoordinateType;
-import fi.dy.masa.malilib.util.data.Int2BooleanFunction;
-import fi.dy.masa.malilib.util.position.CoordinateValueModifier;
 
 public class GuiUtils
 {
@@ -88,91 +79,6 @@ public class GuiUtils
     public static boolean isMouseInRegion(int mouseX, int mouseY, int x, int y, int width, int height)
     {
         return mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + height;
-    }
-
-    public static void createBlockPosInputsVertical(int x, int y, int textFieldWidth, BlockPos pos,
-                                                    CoordinateValueModifier modifier, boolean addButton, BaseScreen gui)
-    {
-        createBlockPosInput(x, y     , textFieldWidth, CoordinateType.X, pos, modifier, addButton, gui);
-        createBlockPosInput(x, y + 17, textFieldWidth, CoordinateType.Y, pos, modifier, addButton, gui);
-        createBlockPosInput(x, y + 34, textFieldWidth, CoordinateType.Z, pos, modifier, addButton, gui);
-    }
-
-    public static void createVec3dInputsVertical(int x, int y, int textFieldWidth, Vec3d pos,
-                                                 CoordinateValueModifier modifier, boolean addButton, BaseScreen gui)
-    {
-        createVec3dInput(x, y     , textFieldWidth, CoordinateType.X, pos, modifier, addButton, gui);
-        createVec3dInput(x, y + 17, textFieldWidth, CoordinateType.Y, pos, modifier, addButton, gui);
-        createVec3dInput(x, y + 34, textFieldWidth, CoordinateType.Z, pos, modifier, addButton, gui);
-    }
-
-    public static void createBlockPosInput(int x, int y, int textFieldWidth, CoordinateType type, BlockPos pos,
-                                           CoordinateValueModifier modifier, boolean addButton, BaseScreen gui)
-    {
-        x = addLabel(x, y, type, gui);
-
-        IntegerTextFieldWidget textField = new IntegerTextFieldWidget(textFieldWidth, 16, getCoordinateValue(type, pos));
-        textField.setPosition(x, y);
-        textField.setUpdateListenerAlways(true);
-        addTextFieldAndButton(x + textFieldWidth + 4, y, type, modifier, textField, addButton, gui);
-    }
-
-    public static void createVec3dInput(int x, int y, int textFieldWidth, CoordinateType type, Vec3d pos,
-                                        CoordinateValueModifier modifier, boolean addButton, BaseScreen gui)
-    {
-        x = addLabel(x, y, type, gui);
-
-        DoubleTextFieldWidget textField = new DoubleTextFieldWidget(textFieldWidth, 16, getCoordinateValue(type, pos));
-        textField.setPosition(x, y);
-        textField.setUpdateListenerAlways(true);
-        addTextFieldAndButton(x + textFieldWidth + 4, y, type, modifier, textField, addButton, gui);
-    }
-
-    protected static void addTextFieldAndButton(int x, int y, CoordinateType type, CoordinateValueModifier modifier,
-                                                BaseTextFieldWidget textField, boolean addButton, BaseScreen gui)
-    {
-        textField.setListener((newText) -> modifier.setValueFromString(type, newText));
-        gui.addWidget(textField);
-
-        if (addButton)
-        {
-            GenericButton button = GenericButton.create(DefaultIcons.BTN_PLUSMINUS_16);
-            button.setActionListener(new ButtonListenerCoordinateInput(type, modifier));
-            button.translateAndAddHoverString("malilib.hover.button.plus_minus_tip");
-            button.setCanScrollToClick(true);
-            button.setPosition(x, y);
-            gui.addWidget(button);
-        }
-    }
-
-    public static int getCoordinateValue(CoordinateType type, BlockPos pos)
-    {
-        switch (type)
-        {
-            case X: return pos.getX();
-            case Y: return pos.getY();
-            case Z: return pos.getZ();
-        }
-
-        return 0;
-    }
-
-    public static double getCoordinateValue(CoordinateType type, Vec3d pos)
-    {
-        switch (type)
-        {
-            case X: return pos.x;
-            case Y: return pos.y;
-            case Z: return pos.z;
-        }
-
-        return 0;
-    }
-
-    protected static int addLabel(int x, int y, CoordinateType type, BaseScreen gui)
-    {
-        x += gui.addLabel(x, y + 4, 0xFFFFFFFF, type.name() + ":").getWidth() + 4;
-        return x;
     }
 
     public static int getHudOffsetForPotions(HudAlignment alignment, double scale, EntityPlayer player)
@@ -349,37 +255,6 @@ public class GuiUtils
             Throwable throwable = t.getCause();
             MaLiLib.LOGGER.error("Couldn't open link: {}", (throwable == null ? "<UNKNOWN>" : throwable.getMessage()));
             return false;
-        }
-    }
-
-    public static class ButtonListenerCoordinateInput implements Int2BooleanFunction
-    {
-        protected final CoordinateValueModifier modifier;
-        protected final CoordinateType type;
-
-        public ButtonListenerCoordinateInput(CoordinateType type, CoordinateValueModifier modifier)
-        {
-            this.modifier = modifier;
-            this.type = type;
-        }
-
-        @Override
-        public boolean apply(int mouseButton)
-        {
-            int amount = mouseButton == 1 ? -1 : 1;
-            if (BaseScreen.isShiftDown()) { amount *= 8; }
-            if (BaseScreen.isAltDown())   { amount *= 4; }
-
-            this.modifier.modifyValue(this.type, amount);
-
-            return true;
-        }
-
-        public enum Type
-        {
-            NUDGE_COORD_X,
-            NUDGE_COORD_Y,
-            NUDGE_COORD_Z;
         }
     }
 }

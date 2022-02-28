@@ -34,54 +34,6 @@ public class PositionUtils
                pos.getZ() >= posMin.getZ() && pos.getZ() <= posMax.getZ();
     }
 
-    public static Vec3d modifyValue(CoordinateType type, Vec3d valueIn, double amount)
-    {
-        switch (type)
-        {
-            case X: return new Vec3d(valueIn.x + amount, valueIn.y         , valueIn.z         );
-            case Y: return new Vec3d(valueIn.x         , valueIn.y + amount, valueIn.z         );
-            case Z: return new Vec3d(valueIn.x         , valueIn.y         , valueIn.z + amount);
-        }
-
-        return valueIn;
-    }
-
-    public static BlockPos modifyValue(CoordinateType type, BlockPos valueIn, int amount)
-    {
-        switch (type)
-        {
-            case X: return new BlockPos(valueIn.getX() + amount, valueIn.getY()         , valueIn.getZ()         );
-            case Y: return new BlockPos(valueIn.getX()         , valueIn.getY() + amount, valueIn.getZ()         );
-            case Z: return new BlockPos(valueIn.getX()         , valueIn.getZ()         , valueIn.getZ() + amount);
-        }
-
-        return valueIn;
-    }
-
-    public static Vec3d setValue(CoordinateType type, Vec3d valueIn, double newValue)
-    {
-        switch (type)
-        {
-            case X: return new Vec3d(newValue , valueIn.y, valueIn.z);
-            case Y: return new Vec3d(valueIn.x, newValue , valueIn.z);
-            case Z: return new Vec3d(valueIn.x, valueIn.y, newValue );
-        }
-
-        return valueIn;
-    }
-
-    public static BlockPos setValue(CoordinateType type, BlockPos valueIn, int newValue)
-    {
-        switch (type)
-        {
-            case X: return new BlockPos(newValue      , valueIn.getY(), valueIn.getZ());
-            case Y: return new BlockPos(valueIn.getX(), newValue      , valueIn.getZ());
-            case Z: return new BlockPos(valueIn.getX(), valueIn.getZ(), newValue      );
-        }
-
-        return valueIn;
-    }
-
     public static Rotation cycleRotation(Rotation rotation, boolean reverse)
     {
         int ordinal = rotation.ordinal();
@@ -427,12 +379,5 @@ public class PositionUtils
         RIGHT,
         BOTTOM,
         TOP;
-    }
-
-    public enum CoordinateType
-    {
-        X,
-        Y,
-        Z
     }
 }
