@@ -1,24 +1,24 @@
 package fi.dy.masa.malilib.gui.widget;
 
 import java.util.function.BooleanSupplier;
-import java.util.function.Consumer;
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.config.option.BooleanConfig;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
+import fi.dy.masa.malilib.util.data.BooleanConsumer;
 import fi.dy.masa.malilib.util.data.BooleanStorage;
 
 public class CheckBoxWidget extends InteractableWidget
 {
     protected final MultiIcon iconUnchecked;
     protected final MultiIcon iconChecked;
-    @Nullable protected Consumer<Boolean> listener;
-    protected BooleanSupplier booleanSupplier = () -> false;
-    protected Consumer<Boolean> booleanConsumer = (v) -> {};
+    @Nullable protected BooleanConsumer listener;
+    protected BooleanSupplier booleanSupplier;
+    protected BooleanConsumer booleanConsumer;
     protected int textColorChecked = 0xFFFFFFFF;
     protected int textColorUnchecked = 0xB0B0B0B0;
+    protected boolean currentValue;
 
     public CheckBoxWidget(MultiIcon iconUnchecked, MultiIcon iconChecked, @Nullable String translationKey)
     {
@@ -29,14 +29,15 @@ public class CheckBoxWidget extends InteractableWidget
         this.iconChecked = iconChecked;
         this.textOffset.setYOffset(2);
 
-        this.setBooleanStorage(new BooleanConfig("", false));
+        this.booleanConsumer = this::setBooleanValue;
+        this.booleanSupplier = this::getBooleanValue;
 
         int textWidth = this.text != null ? this.text.renderWidth : 0;
         int ih = iconChecked.getHeight();
         this.setWidth(iconUnchecked.getWidth() + (textWidth > 0 ? textWidth + 3 : 0));
         this.setHeight(textWidth > 0 ? Math.max(this.getFontHeight(), ih) : ih);
 
-        this.updateState();
+        this.updateCheckBoxState();
     }
 
     public CheckBoxWidget(@Nullable String translationKey, @Nullable String hoverInfoKey)
@@ -58,14 +59,14 @@ public class CheckBoxWidget extends InteractableWidget
     public CheckBoxWidget setTextColorChecked(int color)
     {
         this.textColorChecked = color;
-        this.updateState();
+        this.updateCheckBoxState();
         return this;
     }
 
     public CheckBoxWidget setTextColorUnchecked(int color)
     {
         this.textColorUnchecked = color;
-        this.updateState();
+        this.updateCheckBoxState();
         return this;
     }
 
@@ -74,14 +75,14 @@ public class CheckBoxWidget extends InteractableWidget
         this.setBooleanStorage(storage::getBooleanValue, storage::setBooleanValue);
     }
 
-    public void setBooleanStorage(BooleanSupplier booleanSupplier, Consumer<Boolean> booleanConsumer)
+    public void setBooleanStorage(BooleanSupplier booleanSupplier, BooleanConsumer booleanConsumer)
     {
         this.booleanSupplier = booleanSupplier;
         this.booleanConsumer = booleanConsumer;
-        this.updateState();
+        this.updateCheckBoxState();
     }
 
-    public void setListener(@Nullable Consumer<Boolean> listener)
+    public void setListener(@Nullable BooleanConsumer listener)
     {
         this.listener = listener;
     }
@@ -96,6 +97,12 @@ public class CheckBoxWidget extends InteractableWidget
         this.setSelected(selected, true);
     }
 
+    @Override
+    public void updateWidgetState()
+    {
+        this.updateCheckBoxState();
+    }
+
     /**
      * Set the current selected value/state
      * @param notifyListener If true, then the change listener (if set) will be notified.
@@ -104,7 +111,7 @@ public class CheckBoxWidget extends InteractableWidget
     public void setSelected(boolean selected, boolean notifyListener)
     {
         this.booleanConsumer.accept(selected);
-        this.updateState();
+        this.updateCheckBoxState();
 
         if (notifyListener && this.listener != null)
         {
@@ -112,7 +119,7 @@ public class CheckBoxWidget extends InteractableWidget
         }
     }
 
-    protected void updateState()
+    protected void updateCheckBoxState()
     {
         boolean selected = this.isSelected();
         Icon icon = selected ? this.iconChecked : this.iconUnchecked;
@@ -121,6 +128,16 @@ public class CheckBoxWidget extends InteractableWidget
         this.getTextSettings().setTextColor(selected ? this.textColorChecked : this.textColorUnchecked);
         this.getTextOffset().setXOffset(textXOffset);
         this.setIcon(icon);
+    }
+
+    protected void setBooleanValue(boolean value)
+    {
+        this.currentValue = value;
+    }
+
+    protected boolean getBooleanValue()
+    {
+        return this.currentValue;
     }
 
     @Override
