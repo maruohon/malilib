@@ -43,8 +43,8 @@ public class IntBoundingBox
         int y = BlockPos.unpackLongY(pos);
         int z = BlockPos.unpackLongZ(pos);
 
-        return x >= this.minX && y <= this.maxX && z >= this.minZ &&
-               x <= this.maxZ && y >= this.minY && z <= this.maxY;
+        return x >= this.minX && y >= this.minY && z >= this.minZ &&
+               x <= this.maxX && y <= this.maxY && z <= this.maxZ;
     }
 
     public boolean intersects(IntBoundingBox box)
