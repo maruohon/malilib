@@ -4,13 +4,11 @@ import fi.dy.masa.malilib.config.IConfigBoolean;
 import fi.dy.masa.malilib.hotkeys.IKeybind;
 
 /**
- * @Deprecated
  * This is just a temporary hack solution to get booleans and hotkeys to the same line in the config GUIs.
  * DO NOT USE this for actual config values!! This will not get serialized and deserialized properly!!
  * This is only intended as a wrapper type in the config GUIs for now,
  * until the proper malilib rewrite from 1.12.2 is ready to be ported!
  */
-@Deprecated
 public class BooleanHotkeyGuiWrapper extends ConfigBoolean
 {
     protected final IConfigBoolean booleanConfig;
