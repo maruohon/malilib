@@ -97,6 +97,12 @@ public abstract class BaseScreen extends GuiScreen
 
         this.onScreenResolutionSet(width, height);
 
+        if (this.useCustomScreenScaling)
+        {
+            width = this.width;
+            height = this.height;
+        }
+
         super.setWorldAndResolution(mc, width, height);
     }
 
@@ -163,7 +169,7 @@ public abstract class BaseScreen extends GuiScreen
             this.useCustomScreenScaling = currentValue > 0 && currentValue != this.mc.gameSettings.guiScale;
             this.customScreenScale = currentValue;
 
-            if (oldUseCustomScale || this.useCustomScreenScaling)
+            if ((oldUseCustomScale || this.useCustomScreenScaling) && currentValue > 0)
             {
                 this.setWidthAndHeightForScale(currentValue);
             }
@@ -177,12 +183,16 @@ public abstract class BaseScreen extends GuiScreen
 
         if (this.width != width || this.height != height)
         {
+            // Only set the screen size if it was originally the same as the window dimensions,
+            // ie. the screen was not a smaller (popup?) screen.
+            boolean setScreenSize = this.isFullScreen();
+
             this.width = width;
             this.height = height;
 
             // Only set the screen size if it was originally the same as the window dimensions,
             // ie. the screen was not a smaller (popup?) screen.
-            if (this.isFullScreen())
+            if (setScreenSize)
             {
                 this.setScreenWidthAndHeight(width, height);
             }
@@ -876,6 +886,13 @@ public abstract class BaseScreen extends GuiScreen
 
     public static boolean openScreen(@Nullable GuiScreen screen)
     {
+        GameUtils.getClient().displayGuiScreen(screen);
+        return true;
+    }
+
+    public static boolean openScreenWithParent(@Nullable BaseScreen screen)
+    {
+        screen.setParent(GuiUtils.getCurrentScreen());
         GameUtils.getClient().displayGuiScreen(screen);
         return true;
     }
