@@ -84,7 +84,7 @@ public class WidgetSearchBar extends WidgetBase
             {
                 if (GuiBase.isShiftDown())
                 {
-                    this.mc.currentScreen.onClose();
+                    this.mc.currentScreen.close();
                 }
 
                 this.searchOpen = false;

@@ -160,7 +160,7 @@ public abstract class GuiBase extends Screen implements IMessageConsumer, IStrin
         }
         else
         {
-            this.onClose();
+            this.close();
         }
     }
 

@@ -32,10 +32,10 @@ public class SubChunkPos extends Vec3i
             int y = this.referencePosition.getY();
             int z = this.referencePosition.getZ();
 
-            double dist1 = pos1.getSquaredDistance(x, y, z, false);
-            double dist2 = pos2.getSquaredDistance(x, y, z, false);
+            double dist1 = pos1.getSquaredDistance(x, y, z);
+            double dist2 = pos2.getSquaredDistance(x, y, z);
 
-            return dist1 < dist2 ? -1 : (dist1 > dist2 ? 1 : 0);
+            return Double.compare(dist1, dist2);
         }
     }
 }
