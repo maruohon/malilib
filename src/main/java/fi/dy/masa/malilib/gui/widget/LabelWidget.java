@@ -143,6 +143,7 @@ public class LabelWidget extends InteractableWidget
     {
         super.setLineHeight(lineHeight);
         this.stringListRenderer.setLineHeight(lineHeight);
+        this.updateLabelWidgetSize();
     }
     
     public LabelWidget setNormalTextColor(int color)

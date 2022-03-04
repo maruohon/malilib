@@ -86,6 +86,13 @@ public class StringListRenderer extends BaseWidget
         return this.originalTextLines.isEmpty();
     }
 
+    @Override
+    public void setLineHeight(int lineHeight)
+    {
+        super.setLineHeight(lineHeight);
+        this.reAddLines();
+    }
+
     public void setNormalTextSettingsFrom(TextRenderSettings settings)
     {
         this.textSettings.setFrom(settings);
