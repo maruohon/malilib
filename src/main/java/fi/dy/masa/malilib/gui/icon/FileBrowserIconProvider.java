@@ -8,8 +8,7 @@ import fi.dy.masa.malilib.gui.widget.list.BaseFileBrowserWidget.DirectoryEntryTy
 public interface FileBrowserIconProvider
 {
     /**
-     * Returns the icon to use for the given icon type
-     * @return
+     * @return the icon to use for the given icon type
      */
     default MultiIcon getIcon(FileBrowserIconType type)
     {
@@ -30,8 +29,6 @@ public interface FileBrowserIconProvider
     }
 
     /**
-     * Returns the icon that should be used for the given file, if any
-     * @param file
      * @return the icon that should be used for the given file, or null if it shouldn't have an icon
      */
     @Nullable
@@ -41,12 +38,9 @@ public interface FileBrowserIconProvider
     }
 
     /**
-     * Returns the icon that should be used for the given directory entry.
-     * Usually this would just call either {@link #getIcon(FileBrowserIconType)} with
-     * the <b>{@code FileBrowserIconType.DIRECTORY}</b> argument if the entry is a directory,
-     * or {@link #getIconForFile(File)} if the entry is a file.
-     * @param entry
-     * @return
+     * @return the icon that should be used for the given directory entry.
+     * Usually this would just call either {@link #getIcon(FileBrowserIconType)}
+     * or {@link #getIconForFile(File)} for directories and files respectively.
      */
     @Nullable
     default MultiIcon getIconForEntry(DirectoryEntry entry)
@@ -62,9 +56,7 @@ public interface FileBrowserIconProvider
     }
 
     /**
-     * Returns the expected width of the icons, for proper text alignment
-     * @param entry
-     * @return
+     * @return the expected width of the icons, for proper text alignment
      */
     default int getEntryIconWidth(DirectoryEntry entry)
     {

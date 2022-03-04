@@ -405,7 +405,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
 
         DataListEntrySelectionHandler<DirectoryEntry> handler = this.getEntrySelectionHandler();
 
-        // If right clicking on a non-selected entry, clear the selection and select just that one entry
+        // If right-clicking on a non-selected entry, clear the selection and select just that one entry
         // (This is to mimic the behavior of the windblows explorer context menu)
         if (listIndex >= 0 && handler.isEntrySelected(listIndex) == false)
         {
@@ -413,13 +413,13 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
             handler.setSelectedEntry(listIndex);
         }
 
-        MenuWidget menuWidget = new MenuWidget(mouseX + 4, mouseY, 10, 10);
-        menuWidget.setMenuCloseHook(this::closeCurrentContextMenu);
-
         List<MenuEntryWidget> entries = new ArrayList<>(listIndex >= 0 ?
                                                         this.getFileOperationMenuEntriesForFile() :
                                                         this.getFileOperationMenuEntriesForNonFile());
         entries.addAll(this.getColumnToggleMenuEntries());
+
+        MenuWidget menuWidget = new MenuWidget(mouseX + 4, mouseY, 10, 10);
+        menuWidget.setMenuCloseHook(this::closeCurrentContextMenu);
         menuWidget.setMenuEntries(entries);
 
         this.openContextMenu(menuWidget);
