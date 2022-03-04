@@ -9,7 +9,6 @@ import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
-import fi.dy.masa.malilib.util.data.EdgeInt;
 
 public class ColumnizedDataListHeaderWidget<DATATYPE> extends DataListHeaderWidget<DATATYPE>
 {
@@ -22,6 +21,7 @@ public class ColumnizedDataListHeaderWidget<DATATYPE> extends DataListHeaderWidg
         super(width, height, listWidget);
 
         this.columns = columns;
+        this.getBorderRenderer().getNormalSettings().setColor(0x50C0C0C0);
     }
 
     @Override
@@ -55,10 +55,8 @@ public class ColumnizedDataListHeaderWidget<DATATYPE> extends DataListHeaderWidg
     {
         super.renderAt(x, y, z, ctx);
 
-        EdgeInt normalBorderColor = this.getBorderRenderer().getNormalSettings().getColor();
-        EdgeInt hoveredBorderColor = this.getBorderRenderer().getHoverSettings().getColor();
         int height = this.getHeight();
-        int usableHeight = this.getHeight() - this.padding.getVerticalTotal();
+        int usableHeight = height - this.padding.getVerticalTotal();
         int ty = this.getTextPositionY(y, usableHeight, this.getLineHeight());
         boolean hoveredY = ctx.mouseY >= y && ctx.mouseY < y + height;
         boolean shadow = this.getTextSettings().getTextShadowEnabled();
@@ -66,11 +64,11 @@ public class ColumnizedDataListHeaderWidget<DATATYPE> extends DataListHeaderWidg
         for (DataColumn<DATATYPE> column : this.columns)
         {
             int cx = x + column.getRelativeStartX();
-            int tx = cx + 3;
+            int tx = cx + 4;
             boolean hovered = hoveredY && this.isMouseOverColumnOnX(column, x, ctx.mouseX);
-            boolean sortedBy = false;
             int textColor = this.getTextColorForRender(hovered);
-            EdgeInt borderColor = hovered ? hoveredBorderColor : normalBorderColor;
+            int borderColor = hovered ? this.getBorderRenderer().getHoverSettings().getColor().getTop() :
+                                        this.getBorderRenderer().getNormalSettings().getColor().getTop();
 
             if (column.getCanSortBy())
             {
@@ -78,7 +76,6 @@ public class ColumnizedDataListHeaderWidget<DATATYPE> extends DataListHeaderWidg
 
                 if (directionOptional.isPresent())
                 {
-                    sortedBy = true;
                     Optional<Icon> iconOptional = column.getSortIcon(directionOptional.get());
 
                     if (iconOptional.isPresent())
@@ -90,18 +87,20 @@ public class ColumnizedDataListHeaderWidget<DATATYPE> extends DataListHeaderWidg
 
                         if (align == HorizontalAlignment.LEFT)
                         {
-                            tx += icon.getWidth() + 3;
+                            tx += icon.getWidth() + 4;
                         }
 
                         icon.renderAt(ix, iy, z + 0.0125f);
                     }
+
+                    if (hovered == false)
+                    {
+                        borderColor |= 0xFF000000;
+                    }
                 }
             }
 
-            if (hovered || sortedBy)
-            {
-                ShapeRenderUtils.renderOutline(cx, y, z, column.getWidth(), height, 1, borderColor);
-            }
+            ShapeRenderUtils.renderOutline(cx, y, z, column.getWidth(), height, 1, borderColor);
 
             Optional<StyledTextLine> nameOptional = column.getName();
 
