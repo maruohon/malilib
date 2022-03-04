@@ -127,10 +127,12 @@ public abstract class BaseListWidget extends ContainerWidget
     {
         super.updateSubWidgetPositions();
 
-        int bw = this.getBorderRenderer().getNormalSettings().getActiveBorderWidth();
-        int x = this.getX() + bw;
+        final int bw = this.getBorderRenderer().getNormalSettings().getActiveBorderWidth();
+        final int x = this.getX() + bw;
+        final int listWidth = this.getListMaxWidthForTotalWidth(this.getWidth());
+        final int rightPadding = this.listPosition.getRight();
+        final int bottomPadding = this.listPosition.getBottom();
         int startY = this.getY() + bw;
-        int listWidth = this.getListMaxWidthForTotalWidth(this.getWidth());
 
         SearchBarWidget searchBarWidget = this.getSearchBarWidget();
 
@@ -140,18 +142,16 @@ public abstract class BaseListWidget extends ContainerWidget
             startY = searchBarWidget.getBottom() + searchBarWidget.getMargin().getBottom();
         }
 
+        this.entryWidgetStartX = x + this.listPosition.getLeft();
+        this.entryWidgetWidth = x + listWidth - this.entryWidgetStartX - rightPadding - this.scrollBar.getWidth() - 1;
+
         if (this.headerWidget != null)
         {
             this.updateHeaderWidgetPosition(x, startY, this.entryWidgetWidth);
             startY = this.headerWidget.getBottom() + this.headerWidget.getMargin().getBottom();
         }
 
-        int rightPadding = this.listPosition.getRight();
-        int bottomPadding = this.listPosition.getBottom();
-
-        this.entryWidgetStartX = x + this.listPosition.getLeft();
         this.entryWidgetStartY = startY + this.listPosition.getTop();
-        this.entryWidgetWidth = x + listWidth - this.entryWidgetStartX - rightPadding - this.scrollBar.getWidth() - 1;
         this.listHeight = this.getHeight() - (this.entryWidgetStartY - this.getY()) - bottomPadding;
 
         int scrollBarX = x + listWidth - this.scrollBar.getWidth() - bw - 1;
