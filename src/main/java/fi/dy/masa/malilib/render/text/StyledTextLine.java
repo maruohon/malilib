@@ -169,6 +169,17 @@ public class StyledTextLine
      * Creates a styled text line of the translation result of the provided translation key.
      * If the string has line breaks, the separate lines will be joined
      * and the line breaks will be replaced by the string '\n'.
+     * This is just a convenience method to also add the text to the given list.
+     */
+    public static void translate(List<StyledTextLine> lines, String translationKey, Object... args)
+    {
+        lines.add(of(StringUtils.translate(translationKey, args)));
+    }
+
+    /**
+     * Creates a styled text line of the translation result of the provided translation key.
+     * If the string has line breaks, the separate lines will be joined
+     * and the line breaks will be replaced by the string '\n'.
      */
     public static StyledTextLine translate(String translationKey, Object... args)
     {
@@ -184,6 +195,17 @@ public class StyledTextLine
     public static StyledTextLine translate(String translationKey, TextStyle startingStyle, Object... args)
     {
         return of(StringUtils.translate(translationKey, args), startingStyle);
+    }
+
+    /**
+     * Creates a styled text line of the provided raw string.
+     * If the string has line breaks, the separate lines will be joined
+     * and the line breaks will be replaced by the string '\n'.
+     * This is just a convenience method to also add the text to the given list.
+     */
+    public static void of(List<StyledTextLine> lines, String str)
+    {
+        lines.add(joinLines(StyledText.of(str)));
     }
 
     /**
