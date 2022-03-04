@@ -23,7 +23,6 @@ import fi.dy.masa.malilib.gui.TextInputScreen;
 import fi.dy.masa.malilib.gui.icon.DefaultFileBrowserIconProvider;
 import fi.dy.masa.malilib.gui.icon.FileBrowserIconProvider;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
-import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.DirectoryNavigationWidget;
 import fi.dy.masa.malilib.gui.widget.MenuEntryWidget;
 import fi.dy.masa.malilib.gui.widget.MenuWidget;
@@ -110,7 +109,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
                                     new DirectoryEntryWidget(data, constructData, this, iconProvider));
 
         this.setAllowSelection(true);
-        this.getBackgroundRenderer().getNormalSettings().setEnabledAndColor(true, 0xB0000000);
+        this.getBackgroundRenderer().getNormalSettings().setEnabledAndColor(true, 0xC0000000);
         this.getBorderRenderer().getNormalSettings().setBorderWidthAndColor(1, 0xFF999999);
         this.listPosition.setRight(3);
         this.listPosition.setBottom(1);
@@ -696,18 +695,6 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         }
 
         return false;
-    }
-
-    protected void drawAdditionalContents(int x, int y, float z, ScreenContext ctx)
-    {
-    }
-
-    @Override
-    public void renderAt(int x, int y, float z, ScreenContext ctx)
-    {
-        super.renderAt(x, y, z, ctx);
-
-        this.drawAdditionalContents(x, y, z, ctx);
     }
 
     public static class DirectoryEntry implements Comparable<DirectoryEntry>

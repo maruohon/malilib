@@ -346,16 +346,13 @@ public abstract class ContainerWidget extends InteractableWidget
     {
         if (this.subWidgets.isEmpty() == false)
         {
-            int diffX = x - this.getX();
-            int diffY = y - this.getY();
-            float diffZ = z - this.getZ();
+            int xOffset = x - this.getX();
+            int yOffset = y - this.getY();
+            float zOffset = z - this.getZ();
 
             for (InteractableWidget widget : this.subWidgets)
             {
-                int wx = widget.getX() + diffX;
-                int wy = widget.getY() + diffY;
-                float wz = widget.getZ() + diffZ;
-                widget.renderAt(wx, wy, wz, ctx);
+                widget.renderAtOffset(xOffset, yOffset, zOffset, ctx);
             }
         }
     }

@@ -21,7 +21,6 @@ import fi.dy.masa.malilib.gui.widget.list.header.DataListHeaderWidget;
 import fi.dy.masa.malilib.gui.widget.util.DefaultWidgetPositioner;
 import fi.dy.masa.malilib.gui.widget.util.WidgetPositioner;
 import fi.dy.masa.malilib.listener.EventListener;
-import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.data.EdgeInt;
 
 public abstract class BaseListWidget extends ContainerWidget
@@ -815,31 +814,19 @@ public abstract class BaseListWidget extends ContainerWidget
     }
 
     @Override
-    public void renderAt(int x, int y, float z, ScreenContext ctx)
+    protected void renderSubWidgets(int x, int y, float z, ScreenContext ctx)
     {
-        int diffX = x - this.getX();
-        int diffY = y - this.getY();
-        float diffZ = z - this.getZ();
+        super.renderSubWidgets(x, y, z, ctx);
 
-        RenderUtils.color(1f, 1f, 1f, 1f);
-
-        super.renderAt(x, y, z, ctx);
+        int xOffset = x - this.getX();
+        int yOffset = y - this.getY();
+        float zOffset = z - this.getZ();
 
         // Draw the currently visible widgets
-        for (int i = 0; i < this.getEntryWidgetList().size(); i++)
+        for (BaseListEntryWidget widget : this.getEntryWidgetList())
         {
-            this.renderWidget(i, diffX, diffY, diffZ, ctx);
+            widget.renderAtOffset(xOffset, yOffset, zOffset, ctx);
         }
-    }
-
-    protected void renderWidget(int widgetIndex, int diffX, int diffY, float diffZ, ScreenContext ctx)
-    {
-        BaseListEntryWidget widget =  this.getEntryWidgetList().get(widgetIndex);
-        int wx = widget.getX() + diffX;
-        int wy = widget.getY() + diffY;
-        float wz = widget.getZ() + diffZ;
-
-        widget.renderAt(wx, wy, wz, ctx);
     }
 
     @Override

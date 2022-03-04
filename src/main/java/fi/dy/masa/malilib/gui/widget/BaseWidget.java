@@ -630,6 +630,11 @@ public class BaseWidget
         this.renderText(x, y, z, color, ctx);
     }
 
+    public void renderAtOffset(int xOffset, int yOffset, float zOffset, ScreenContext ctx)
+    {
+        this.renderAt(this.x + xOffset, this.y + yOffset, this.z + zOffset, ctx);
+    }
+
     public void renderDebug(boolean hovered, ScreenContext ctx)
     {
         int x = this.getX();

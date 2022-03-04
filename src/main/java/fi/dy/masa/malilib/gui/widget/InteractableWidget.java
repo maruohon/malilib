@@ -285,6 +285,7 @@ public abstract class InteractableWidget extends BackgroundWidget
 
         boolean hovered = this.isHoveredForRender(ctx);
         int color = this.getTextColorForRender(hovered);
+
         this.renderIcon(x, y, z, true, false, ctx);
         this.renderText(x, y, z, color, ctx);
     }
