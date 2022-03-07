@@ -173,7 +173,7 @@ public class StyledTextLine
      */
     public static void translate(List<StyledTextLine> lines, String translationKey, Object... args)
     {
-        lines.add(of(StringUtils.translate(translationKey, args)));
+        lines.addAll(StyledText.translate(translationKey, args).lines);
     }
 
     /**
@@ -205,7 +205,7 @@ public class StyledTextLine
      */
     public static void of(List<StyledTextLine> lines, String str)
     {
-        lines.add(joinLines(StyledText.of(str)));
+        lines.addAll(StyledText.of(str).lines);
     }
 
     /**
