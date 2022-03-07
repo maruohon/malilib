@@ -426,9 +426,9 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
 
     protected List<MenuEntryWidget> getFileOperationMenuEntriesForNonFile()
     {
-        StyledTextLine textPaste  = StyledTextLine.translate("mmalilib.label.file_browser.context_menu.paste");
+        StyledTextLine textPaste  = StyledTextLine.translate("malilib.label.file_browser.context_menu.paste");
         boolean hasFiles = this.operatedOnFiles.isEmpty() == false;
-        return ImmutableList.of(new MenuEntryWidget(textPaste,  this::pasteFiles).setEnabled(hasFiles));
+        return ImmutableList.of(new MenuEntryWidget(textPaste, this::pasteFiles).setEnabled(hasFiles));
     }
 
     protected List<MenuEntryWidget> getFileOperationMenuEntriesForFile()
@@ -491,7 +491,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         this.storeSelectionAsOperatedOnFiles();
 
         ConfirmActionScreen screen = new ConfirmActionScreen(320, "malilib.title.screen.confirm_file_deletion",
-                                                             this::executeDeleteFiles, null,
+                                                             this::executeDeleteFiles,
                                                              "malilib.label.confirm.file_deletion",
                                                              this.operatedOnFiles.size());
         screen.setParent(GuiUtils.getCurrentScreen());
@@ -602,6 +602,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     @Override
     public void switchToDirectory(File dir)
     {
+        boolean hadSelection = this.getLastSelectedEntry() != null;
         this.clearSelection();
         this.storeKeyboardNavigationPosition(this.currentDirectory);
 
@@ -618,6 +619,11 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         this.updateDirectoryNavigationWidget();
         // The index needs to be restored after the entries have been refreshed
         this.restoreKeyboardNavigationPosition(this.currentDirectory);
+
+        if (hadSelection)
+        {
+            this.notifySelectionListener();
+        }
     }
 
     @Override

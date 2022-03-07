@@ -1053,7 +1053,7 @@ public class BaseTextFieldWidget extends InteractableWidget
 
         if (this.isFocused())
         {
-            this.renderCursor(textX, y + yOffset - 1, z + 0.1f, color, ctx);
+            this.renderCursor(textX, y + yOffset, z + 0.1f, 0xFF00FF00, ctx);
 
             if (this.showCursorPosition)
             {

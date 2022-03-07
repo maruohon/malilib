@@ -223,7 +223,7 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
     {
         String title = "malilib.title.screen.confirm_config_reset";
         String message = "malilib.label.confirm.selected_configs_reset";
-        ConfirmActionScreen confirmScreen = new ConfirmActionScreen(240, title, this.configResetter, null, message);
+        ConfirmActionScreen confirmScreen = new ConfirmActionScreen(240, title, this.configResetter, message);
         confirmScreen.setParent(GuiUtils.getCurrentScreen());
         BaseScreen.openPopupScreen(confirmScreen);
     }

@@ -521,6 +521,15 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
         if (this.getEntrySelectionHandler() != null)
         {
             this.getEntrySelectionHandler().clearSelection();
+            this.getEntrySelectionHandler().notifyListener();
+        }
+    }
+
+    public void notifySelectionListener()
+    {
+        if (this.getEntrySelectionHandler() != null)
+        {
+            this.getEntrySelectionHandler().notifyListener();
         }
     }
 

@@ -243,6 +243,47 @@ public class FileUtils
         return false;
     }
 
+    public static boolean renameFileToName(File oldFile, String newName, Consumer<String> messageConsumer)
+    {
+        if (FileNameUtils.doesFileNameContainIllegalCharacters(newName))
+        {
+            messageConsumer.accept(StringUtils.translate("malilib.message.error.illegal_characters_in_file_name",
+                                                         newName));
+            return false;
+        }
+
+        String oldName = oldFile.getName();
+        int indexExt = oldName.lastIndexOf('.');
+        String ext = indexExt > 0 ? oldName.substring(indexExt) : null;
+
+        if (ext != null && newName.endsWith(ext) == false)
+        {
+            newName = newName + ext;
+        }
+
+        File newFile = new File(oldFile.getParentFile(), newName);
+
+        if (newFile.exists() == false)
+        {
+            if (oldFile.exists() && oldFile.canRead() && oldFile.renameTo(newFile))
+            {
+                return true;
+            }
+            else
+            {
+                messageConsumer.accept(StringUtils.translate("malilib.message.error.file_rename.rename_failed",
+                                                             oldName, newName));
+            }
+        }
+        else
+        {
+            messageConsumer.accept(StringUtils.translate("malilib.message.error.failed_to_rename_file.exists",
+                                                         oldName, newName));
+        }
+
+        return false;
+    }
+
     public static boolean deleteFiles(Collection<File> files, Consumer<String> messageConsumer)
     {
         boolean success = true;

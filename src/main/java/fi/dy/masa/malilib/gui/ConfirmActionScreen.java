@@ -20,6 +20,14 @@ public class ConfirmActionScreen extends BaseScreen
     public ConfirmActionScreen(int width,
                                String titleKey,
                                EventListener confirmListener,
+                               String messageKey, Object... args)
+    {
+        this(width, titleKey, confirmListener, null, messageKey, args);
+    }
+
+    public ConfirmActionScreen(int width,
+                               String titleKey,
+                               EventListener confirmListener,
                                @Nullable EventListener cancelListener,
                                String messageKey, Object... args)
     {
@@ -27,7 +35,7 @@ public class ConfirmActionScreen extends BaseScreen
         this.cancelListener = cancelListener;
         this.useTitleHierarchy = false;
         this.renderBorder = true;
-        this.setTitle(titleKey);
+        this.backgroundColor = 0xFf000000;
 
         ImmutableList<StyledTextLine> messageLines = StyledTextUtils.wrapStyledTextToMaxWidth(StyledText.translate(messageKey, args).lines, width - 30);
         this.labelWidget = new LabelWidget(0xFFC0C0C0, messageLines);
@@ -35,6 +43,7 @@ public class ConfirmActionScreen extends BaseScreen
         this.confirmButton = GenericButton.create("malilib.button.misc.confirm.colored", this::onConfirm);
         this.cancelButton = GenericButton.create("malilib.button.misc.cancel.colored", this::onCancel);
 
+        this.setTitle(titleKey);
         this.setScreenWidthAndHeight(width, 50 + StyledTextUtils.getRenderHeight(messageLines));
         this.centerOnScreen();
     }

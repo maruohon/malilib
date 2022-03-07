@@ -158,6 +158,14 @@ public class DataListEntrySelectionHandler<DATATYPE>
         }
     }
 
+    public void notifyListener()
+    {
+        if (this.selectionListener != null)
+        {
+            this.selectionListener.onSelectionChange(this.lastSelectedEntry);
+        }
+    }
+
     public void clearSelection()
     {
         this.lastSelectedEntryIndex = -1;
@@ -207,11 +215,16 @@ public class DataListEntrySelectionHandler<DATATYPE>
             this.clearSelection();
         }
 
-        boolean unselect = listIndex == this.lastSelectedEntryIndex || this.selectedEntryIndices.contains(listIndex);
         List<DATATYPE> dataList = this.dataListSupplier.get();
-        @Nullable DATATYPE entry = dataList.get(listIndex);
+        boolean validIndex = listIndex >= 0 && listIndex < dataList.size();
+        boolean unselect = validIndex == false ||
+                           listIndex == this.lastSelectedEntryIndex ||
+                           this.selectedEntryIndices.contains(listIndex);
 
-        if (this.doModifierKeyMultiSelection(listIndex, dataList) == false &&
+        @Nullable DATATYPE entry = validIndex ? dataList.get(listIndex) : null;
+
+        if (validIndex &&
+            this.doModifierKeyMultiSelection(listIndex, dataList) == false &&
             this.allowMultiSelection && entry != null)
         {
             if (this.selectedEntryIndices.contains(listIndex))
@@ -229,10 +242,7 @@ public class DataListEntrySelectionHandler<DATATYPE>
         this.lastSelectedEntryIndex = unselect ? -1 : listIndex;
         this.lastSelectedEntry = unselect ? null : entry;
 
-        if (this.selectionListener != null)
-        {
-            this.selectionListener.onSelectionChange(entry);
-        }
+        this.notifyListener();
     }
 
     protected boolean doModifierKeyMultiSelection(int clickedIndex, List<DATATYPE> dataList)
