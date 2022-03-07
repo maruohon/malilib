@@ -33,4 +33,18 @@ public class GameUtils
     {
         return getClient().isSingleplayer();
     }
+
+    public static void scheduleToClientThread(Runnable task)
+    {
+        Minecraft mc = Minecraft.getMinecraft();
+
+        if (mc.isCallingFromMinecraftThread())
+        {
+            task.run();
+        }
+        else
+        {
+            mc.addScheduledTask(task);
+        }
+    }
 }
