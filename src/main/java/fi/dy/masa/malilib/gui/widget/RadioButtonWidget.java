@@ -95,12 +95,28 @@ public class RadioButtonWidget<T extends Enum<T>> extends InteractableWidget
 
     public void setSelection(T entry, boolean notifyListener)
     {
+        if (this.isEnabled() == false)
+        {
+            return;
+        }
+
         this.selectedEntry = entry;
 
         if (notifyListener && this.listener != null)
         {
             this.listener.onSelectionChange(this);
         }
+    }
+
+    @Override
+    protected int getTextColorForRender(boolean entrySelected)
+    {
+        if (this.isEnabled() == false)
+        {
+            return 0xFF707070;
+        }
+
+        return entrySelected ? this.selectedTextColor : this.unselectedTextColor;
     }
 
     @Override
@@ -145,7 +161,7 @@ public class RadioButtonWidget<T extends Enum<T>> extends InteractableWidget
             }
 
             final int textY = y + 1 + (this.entryHeight - this.getLineHeight()) / 2;
-            final int textColor = entrySelected ? this.selectedTextColor : this.unselectedTextColor;
+            final int textColor = this.getTextColorForRender(entrySelected);
 
             StyledTextLine displayString = this.displayStrings.get(i);
             this.renderTextLine(x + textOffsetX, textY, z, textColor, true, displayString, ctx);

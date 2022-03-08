@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.gui.widget;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
@@ -22,9 +23,12 @@ public abstract class InteractableWidget extends BackgroundWidget
     protected final OrderedStringListFactory hoverInfoFactory = new OrderedStringListFactory();
     @Nullable protected ImmutableList<StyledTextLine> hoverHelp;
     @Nullable protected EventListener clickListener;
+    @Nullable protected BooleanSupplier enabledStatusSupplier;
     @Nullable protected HoverChecker renderHoverChecker;
     @Nullable protected Consumer<Runnable> taskQueue;
     protected boolean canInteract = true;
+    protected boolean enabled = true;
+    protected boolean enabledLast = true;
     protected boolean hoverInfoRequiresShift;
     protected boolean shouldReceiveOutsideClicks;
     protected boolean shouldReceiveOutsideScrolls;
@@ -112,6 +116,45 @@ public abstract class InteractableWidget extends BackgroundWidget
         {
             this.taskQueue.accept(task);
         }
+    }
+
+    /**
+     * Sets a supplier that provides the enabled status for the button.
+     * An existing enabled status supplier overrides the
+     * enabled field's value in the isEnabled() getter method.
+     */
+    public void setEnabledStatusSupplier(@Nullable BooleanSupplier enabledStatusSupplier)
+    {
+        this.enabledStatusSupplier = enabledStatusSupplier;
+    }
+
+    protected void onEnabledStateChanged(boolean isEnabled)
+    {
+    }
+
+    public void setEnabled(boolean enabled)
+    {
+        boolean wasEnabled = this.enabled;
+        this.enabled = enabled;
+
+        if (enabled != wasEnabled)
+        {
+            this.onEnabledStateChanged(enabled);
+            this.enabledLast = enabled;
+        }
+    }
+
+    public boolean isEnabled()
+    {
+        boolean enabled = this.enabledStatusSupplier != null ? this.enabledStatusSupplier.getAsBoolean() : this.enabled;
+
+        if (enabled != this.enabledLast)
+        {
+            this.onEnabledStateChanged(enabled);
+            this.enabledLast = enabled;
+        }
+
+        return enabled;
     }
 
     public boolean isMouseOver(int mouseX, int mouseY)

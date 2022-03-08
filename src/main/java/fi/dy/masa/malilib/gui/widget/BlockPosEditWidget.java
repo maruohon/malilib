@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.gui.widget;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import net.minecraft.util.math.BlockPos;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
@@ -40,6 +41,12 @@ public class BlockPosEditWidget extends ContainerWidget
         this.xCoordinateWidget.setLabelText("malilib.label.misc.coordinate.x_colon");
         this.yCoordinateWidget.setLabelText("malilib.label.misc.coordinate.y_colon");
         this.zCoordinateWidget.setLabelText("malilib.label.misc.coordinate.z_colon");
+
+        BooleanSupplier enabledSupplier = this::isEnabled;
+        this.moveToPlayerButton.setEnabledStatusSupplier(enabledSupplier);
+        this.xCoordinateWidget.setEnabledStatusSupplier(enabledSupplier);
+        this.yCoordinateWidget.setEnabledStatusSupplier(enabledSupplier);
+        this.zCoordinateWidget.setEnabledStatusSupplier(enabledSupplier);
     }
 
     @Override

@@ -428,7 +428,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     {
         StyledTextLine textPaste  = StyledTextLine.translate("malilib.label.file_browser.context_menu.paste");
         boolean hasFiles = this.operatedOnFiles.isEmpty() == false;
-        return ImmutableList.of(new MenuEntryWidget(textPaste, this::pasteFiles).setEnabled(hasFiles));
+        return ImmutableList.of(new MenuEntryWidget(textPaste, this::pasteFiles, hasFiles));
     }
 
     protected List<MenuEntryWidget> getFileOperationMenuEntriesForFile()
@@ -442,7 +442,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
 
         return ImmutableList.of(new MenuEntryWidget(textCopy,   this::copyFiles),
                                 new MenuEntryWidget(textCut,    this::cutFiles),
-                                new MenuEntryWidget(textPaste,  this::pasteFiles).setEnabled(hasFiles),
+                                new MenuEntryWidget(textPaste,  this::pasteFiles, hasFiles),
                                 new MenuEntryWidget(textDelete, this::deleteFiles),
                                 new MenuEntryWidget(textRename, this::renameFiles));
     }

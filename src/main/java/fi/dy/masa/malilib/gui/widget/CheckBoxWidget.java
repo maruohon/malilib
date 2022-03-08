@@ -40,6 +40,11 @@ public class CheckBoxWidget extends InteractableWidget
         this.updateCheckBoxState();
     }
 
+    public CheckBoxWidget()
+    {
+        this(DefaultIcons.CHECKMARK_OFF, DefaultIcons.CHECKMARK_ON, null);
+    }
+
     public CheckBoxWidget(@Nullable String translationKey, @Nullable String hoverInfoKey)
     {
         this(DefaultIcons.CHECKMARK_OFF, DefaultIcons.CHECKMARK_ON, translationKey, hoverInfoKey);
@@ -110,6 +115,11 @@ public class CheckBoxWidget extends InteractableWidget
      */
     public void setSelected(boolean selected, boolean notifyListener)
     {
+        if (this.isEnabled() == false)
+        {
+            return;
+        }
+
         this.booleanConsumer.accept(selected);
         this.updateCheckBoxState();
 

@@ -1,7 +1,6 @@
 package fi.dy.masa.malilib.gui.widget.button;
 
 import java.util.List;
-import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
@@ -22,16 +21,13 @@ import fi.dy.masa.malilib.util.data.LeftRight;
 public class GenericButton extends InteractableWidget
 {
     @Nullable protected ButtonActionListener actionListener;
-    @Nullable protected BooleanSupplier enabledStatusSupplier;
     @Nullable protected Supplier<MultiIcon> buttonIconSupplier;
     @Nullable protected Supplier<String> displayStringSupplier;
     @Nullable protected MultiIcon buttonIcon;
-    @Nullable protected String displayString;
     @Nullable protected String fullDisplayString;
     protected MultiIcon backgroundIcon = DefaultIcons.BUTTON_BACKGROUND;
     protected LeftRight iconAlignment = LeftRight.LEFT;
     protected boolean canScrollToClick;
-    protected boolean enabled = true;
     protected boolean playClickSound = true;
     protected boolean renderButtonBackgroundTexture = true;
     protected boolean rightAligned;
@@ -78,17 +74,6 @@ public class GenericButton extends InteractableWidget
     public GenericButton setActionListener(@Nullable ButtonActionListener actionListener)
     {
         this.actionListener = actionListener;
-        return this;
-    }
-
-    /**
-     * Sets a supplier that provides the enabled status for the button.
-     * An existing enabled status supplier overrides the
-     * enabled field's value in the isEnabled() getter method.
-     */
-    public GenericButton setEnabledStatusSupplier(@Nullable BooleanSupplier enabledStatusSupplier)
-    {
-        this.enabledStatusSupplier = enabledStatusSupplier;
         return this;
     }
 
@@ -204,6 +189,12 @@ public class GenericButton extends InteractableWidget
         return EMPTY_STRING_LIST;
     }
 
+    @Override
+    public void updateWidgetState()
+    {
+        this.updateButtonState();
+    }
+
     /**
      * Updates the display string and any other possible state
      */
@@ -310,21 +301,6 @@ public class GenericButton extends InteractableWidget
         return this.actionListener == null || this.actionListener.actionPerformedWithButton(mouseButton, this);
     }
 
-    public void setEnabled(boolean enabled)
-    {
-        this.enabled = enabled;
-    }
-
-    public boolean isEnabled()
-    {
-        if (this.enabledStatusSupplier != null)
-        {
-            return this.enabledStatusSupplier.getAsBoolean();
-        }
-
-        return this.enabled;
-    }
-
     protected int getMaxDisplayStringWidth()
     {
         MultiIcon icon = this.buttonIcon;
@@ -369,12 +345,10 @@ public class GenericButton extends InteractableWidget
             }
 
             this.text = text;
-            this.displayString = text.displayText;
         }
         else
         {
             this.text = null;
-            this.displayString = null;
         }
 
         this.updateHoverStrings();

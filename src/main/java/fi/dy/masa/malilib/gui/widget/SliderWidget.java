@@ -12,7 +12,6 @@ public class SliderWidget extends InteractableWidget
     protected int sliderWidth;
     protected int lastMouseX;
     protected boolean dragging;
-    protected boolean locked;
 
     public SliderWidget(int width, int height, SliderCallback callback)
     {
@@ -24,11 +23,6 @@ public class SliderWidget extends InteractableWidget
         this.textOffset.setCenterHorizontally(true);
     }
 
-    public void setLocked(boolean locked)
-    {
-        this.locked = locked;
-    }
-
     @Override
     public void updateWidgetState()
     {
@@ -38,7 +32,7 @@ public class SliderWidget extends InteractableWidget
     @Override
     protected boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
-        if (this.locked == false)
+        if (this.isEnabled())
         {
             this.callback.setRelativeValue(this.getRelativePosition(mouseX));
             this.lastMouseX = mouseX;
@@ -57,7 +51,7 @@ public class SliderWidget extends InteractableWidget
     @Override
     protected boolean onMouseScrolled(int mouseX, int mouseY, double mouseWheelDelta)
     {
-        if (this.locked == false)
+        if (this.isEnabled())
         {
             double relPos = this.callback.getRelativeValue();
             double delta = 1.0 / (double) (this.getWidth() - this.sliderWidth);
@@ -102,10 +96,11 @@ public class SliderWidget extends InteractableWidget
         int sw = this.sliderWidth;
         int usableWidth = width - sw - 4;
         int sx = x + 2 + (int) (relPos * usableWidth);
+        boolean enabled = this.isEnabled();
         boolean hovered = GuiUtils.isMouseInRegion(ctx.mouseX, ctx.mouseY, sx, y, sw, height);
-        DefaultIcons.BUTTON_BACKGROUND.renderFourSplicedAt(sx, y, z, sw, height, this.locked == false, hovered);
+        DefaultIcons.BUTTON_BACKGROUND.renderFourSplicedAt(sx, y, z, sw, height, enabled, hovered);
 
-        int textColor = this.locked ? 0xFF909090 : 0xFFFFFFA0;
+        int textColor = enabled ? 0xFFFFFFA0 : 0xFF909090;
         this.renderTextLine(x, y, z, textColor, this.callback.getDisplayText(), ctx);
     }
 

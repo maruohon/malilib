@@ -56,7 +56,6 @@ public class BaseTextFieldWidget extends InteractableWidget
     protected int colorWarning;
     protected int cursorPosition;
     protected int selectionStartPosition = -1;
-    protected boolean enabled = true;
     protected boolean isFocused;
     protected boolean isValidInput = true;
     protected boolean showCursorPosition;
@@ -256,11 +255,7 @@ public class BaseTextFieldWidget extends InteractableWidget
         }
     }
 
-    public boolean isEnabled()
-    {
-        return this.enabled;
-    }
-
+    @Override
     public void setEnabled(boolean enabled)
     {
         if (enabled == false && this.isFocused())
@@ -268,21 +263,27 @@ public class BaseTextFieldWidget extends InteractableWidget
             this.setFocused(false);
         }
 
-        this.enabled = enabled;
-        this.updateColors();
+        super.setEnabled(enabled);
+    }
+
+    @Override
+    protected void onEnabledStateChanged(boolean isEnabled)
+    {
+        this.updateColors(isEnabled);
     }
 
     public boolean isFocused()
     {
-        return this.isFocused && this.enabled;
+        return this.isFocused && this.isEnabled();
     }
 
     public BaseTextFieldWidget setFocused(boolean isFocused)
     {
-        boolean wasFocused = this.isFocused;
+        boolean enabled = this.isEnabled();
+        boolean wasFocused = this.isFocused && enabled;
 
-        this.isFocused = isFocused && this.enabled;
-        this.updateColors();
+        this.isFocused = isFocused && enabled;
+        this.updateColors(enabled);
 
         if (wasFocused && this.isFocused == false)
         {
@@ -292,9 +293,9 @@ public class BaseTextFieldWidget extends InteractableWidget
         return this;
     }
 
-    public void updateColors()
+    public void updateColors(boolean isEnabled)
     {
-        int borderColor = this.enabled ? (this.isFocused ? this.colorFocused : this.colorUnfocused) : this.colorDisabled;
+        int borderColor = isEnabled ? (this.isFocused ? this.colorFocused : this.colorUnfocused) : this.colorDisabled;
         this.getBorderRenderer().getNormalSettings().setColor(borderColor);
     }
 
@@ -746,6 +747,11 @@ public class BaseTextFieldWidget extends InteractableWidget
     @Override
     protected boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
+        if (this.isEnabled() == false)
+        {
+            return false;
+        }
+
         boolean isMouseOver = this.isMouseOver(mouseX, mouseY);
 
         if (isMouseOver)
@@ -1027,11 +1033,11 @@ public class BaseTextFieldWidget extends InteractableWidget
 
         if (this.isValidInput)
         {
-            color = this.enabled ? (this.isFocused() ? this.colorFocused : this.colorUnfocused) : this.colorDisabled;
+            color = this.isEnabled() ? (this.isFocused() ? this.colorFocused : this.colorUnfocused) : this.colorDisabled;
         }
         else
         {
-            color = this.enabled ? this.colorError : this.colorErrorDisabled;
+            color = this.isEnabled() ? this.colorError : this.colorErrorDisabled;
         }
 
         int textX = x + this.getTextStartRelativeX();

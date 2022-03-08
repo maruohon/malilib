@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.gui.widget;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
@@ -36,6 +37,11 @@ public abstract class BaseNumberEditWidget extends ContainerWidget
         this.textFieldWidget.setListener(this::setValueFromTextField);
 
         this.sliderWidget = this.createSliderWidget();
+
+        BooleanSupplier enabledSupplier = this::isEnabled;
+        this.sliderWidget.setEnabledStatusSupplier(enabledSupplier);
+        this.textFieldWidget.setEnabledStatusSupplier(enabledSupplier);
+        this.valueAdjustButton.setEnabledStatusSupplier(enabledSupplier);
     }
 
     @Override

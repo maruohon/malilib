@@ -33,6 +33,8 @@ public class ColorEditorWidget extends ContainerWidget
 
         int size = height;
         this.colorIndicator = new ColorIndicatorWidget(size, size, colorInput, this::setColorFromEditor);
+
+        this.textField.setEnabledStatusSupplier(this::isEnabled);
     }
 
     @Override

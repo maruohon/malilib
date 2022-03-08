@@ -52,7 +52,6 @@ public class DropDownListWidget<T> extends ContainerWidget
     @Nullable protected SelectionListener<T> selectionListener;
     @Nullable protected T selectedEntry;
     protected LeftRight openIconSide = LeftRight.RIGHT;
-    protected boolean enabled = true;
     protected boolean isOpen;
     protected boolean searchOpen;
     protected boolean noCurrentEntryBar;
@@ -221,9 +220,9 @@ public class DropDownListWidget<T> extends ContainerWidget
         this.reAddSubWidgets();
     }
 
-    public void setEnabled(boolean enabled)
+    @Override
+    protected void onEnabledStateChanged(boolean isEnabled)
     {
-        this.enabled = enabled;
         this.updateSelectionBar();
     }
 
@@ -440,7 +439,7 @@ public class DropDownListWidget<T> extends ContainerWidget
 
     protected void toggleOpen()
     {
-        if (this.enabled)
+        if (this.isEnabled())
         {
             this.setOpen(! this.isOpen);
         }
@@ -448,7 +447,7 @@ public class DropDownListWidget<T> extends ContainerWidget
 
     protected void setOpen(boolean isOpen)
     {
-        this.isOpen = isOpen && this.enabled;
+        this.isOpen = isOpen && this.isEnabled();
 
         this.reCreateListEntryWidgets();
 
@@ -859,7 +858,7 @@ public class DropDownListWidget<T> extends ContainerWidget
         {
             DropDownListWidget<T> dropDown = this.dropdownWidget;
             int ddColor = dropDown.getBorderRenderer().getNormalSettings().getColor().getTop();
-            int color = dropDown.enabled ? (dropDown.isOpen() ? dropDown.borderColorOpen : ddColor) : dropDown.borderColorDisabled;
+            int color = dropDown.isEnabled() ? (dropDown.isOpen() ? dropDown.borderColorOpen : ddColor) : dropDown.borderColorDisabled;
             this.getBorderRenderer().getNormalSettings().setColor(color);
 
             super.renderAt(x, y, z, ctx);
@@ -874,7 +873,7 @@ public class DropDownListWidget<T> extends ContainerWidget
                 tx = this.iconWidget.getRight() + 4 + xDiff;
             }
 
-            int textColor = dropDown.enabled ? this.textColor : 0xFF505050;
+            int textColor = dropDown.isEnabled() ? this.textColor : 0xFF505050;
             this.renderTextLine(tx, ty, z, textColor, false, text, ctx);
         }
 

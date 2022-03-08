@@ -8,11 +8,17 @@ public class MenuEntryWidget extends InteractableWidget
 {
     protected final EventListener action;
     @Nullable protected EventListener menuCloseHook;
-    protected boolean enabled = true;
 
     public MenuEntryWidget(StyledTextLine text, EventListener action)
     {
+        this(text, action, true);
+    }
+
+    public MenuEntryWidget(StyledTextLine text, EventListener action, boolean enabled)
+    {
         this(10, 12, text, action);
+
+        this.setEnabled(enabled);
     }
 
     public MenuEntryWidget(int width, int height, StyledTextLine text, EventListener action)
@@ -24,14 +30,11 @@ public class MenuEntryWidget extends InteractableWidget
         this.setWidth(this.text.renderWidth + 10);
     }
 
-    public MenuEntryWidget setEnabled(boolean enabled)
+    @Override
+    protected void onEnabledStateChanged(boolean isEnabled)
     {
-        this.enabled = enabled;
-
-        int color = enabled ? 0xFFFFFFFF : 0xFF808080;
+        int color = isEnabled ? 0xFFFFFFFF : 0xFF808080;
         this.getTextSettings().setTextColor(color);
-
-        return this;
     }
 
     public void setMenuCloseHook(@Nullable EventListener menuCloseHook)
@@ -42,7 +45,7 @@ public class MenuEntryWidget extends InteractableWidget
     @Override
     protected boolean onMouseClicked(int mouseX, int mouseY, int mouseButton)
     {
-        if (this.enabled)
+        if (this.isEnabled())
         {
             this.action.onEvent();
 

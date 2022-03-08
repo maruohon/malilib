@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.gui.widget;
 
+import java.util.function.BooleanSupplier;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
@@ -45,6 +46,12 @@ public class EdgeIntEditWidget extends ContainerWidget
             this.bottomEdgeEditorWidget = new IntegerEditWidget(ww, wh, value.getBottom(), min, max, value::setBottom);
             this.leftEdgeEditorWidget   = new IntegerEditWidget(ww, wh, value.getLeft(),   min, max, value::setLeft);
         }
+
+        BooleanSupplier enabledSupplier = this::isEnabled;
+        this.bottomEdgeEditorWidget.setEnabledStatusSupplier(enabledSupplier);
+        this.leftEdgeEditorWidget.setEnabledStatusSupplier(enabledSupplier);
+        this.rightEdgeEditorWidget.setEnabledStatusSupplier(enabledSupplier);
+        this.topEdgeEditorWidget.setEnabledStatusSupplier(enabledSupplier);
     }
 
     @Override

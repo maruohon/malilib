@@ -84,17 +84,17 @@ public abstract class NumericConfigWidget<TYPE, CFG extends BaseConfigOption<TYP
         int x = this.getElementsStartPosition();
         int y = this.getY();
         int elementWidth = this.getElementWidth();
-        boolean locked = this.config.isLocked();
+        boolean enabled = this.config.isLocked() == false;
 
-        this.sliderWidget.setLocked(locked);
+        this.sliderWidget.setEnabled(enabled);
         this.sliderWidget.setPosition(x, y + 1);
         this.sliderWidget.setWidth(elementWidth - 36);
 
-        this.textField.setEnabled(locked == false);
+        this.textField.setEnabled(enabled);
         this.textField.setPosition(x, y + 3);
         this.textField.setWidth(elementWidth - 36);
 
-        this.valueAdjustButton.setEnabled(locked == false);
+        this.valueAdjustButton.setEnabled(enabled);
         this.valueAdjustButton.setPosition(this.textField.getRight() + 2, y + 3);
 
         x += elementWidth - 16;
