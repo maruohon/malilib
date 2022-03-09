@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.gui.widget;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3i;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.util.EntityUtils;
 import fi.dy.masa.malilib.util.position.Coordinate;
@@ -14,29 +15,29 @@ public class BlockPosEditWidget extends ContainerWidget
     protected final IntegerEditWidget yCoordinateWidget;
     protected final IntegerEditWidget zCoordinateWidget;
     protected final GenericButton moveToPlayerButton;
-    protected BlockPos pos;
-    protected boolean addMoveToPlayerButton = true;
+    protected Vec3i pos;
+    protected boolean addMoveToPlayerButton;
     protected int gap;
 
     public BlockPosEditWidget(int width, int height, int gap,
                               boolean addMoveToPlayerButton,
-                              BlockPos initialPos,
+                              Vec3i initialPos,
                               Consumer<BlockPos> posConsumer)
     {
         super(width, height);
 
-        BlockPos pos = initialPos;
         this.posConsumer = posConsumer;
-        this.pos = pos;
+        this.pos = initialPos;
         this.gap = gap;
+        this.addMoveToPlayerButton = addMoveToPlayerButton;
 
         int h = addMoveToPlayerButton ? (height - gap * 3 - 18) / 3 : (height - gap * 2) / 3;
         this.moveToPlayerButton = GenericButton.create(18, "malilib.button.render_layers.set_to_player");
         this.moveToPlayerButton.setActionListener(this::moveToPlayer);
 
-        this.xCoordinateWidget = new IntegerEditWidget(width, h, pos.getX(), (val) -> this.setPos(val, Coordinate.X));
-        this.yCoordinateWidget = new IntegerEditWidget(width, h, pos.getY(), (val) -> this.setPos(val, Coordinate.Y));
-        this.zCoordinateWidget = new IntegerEditWidget(width, h, pos.getZ(), (val) -> this.setPos(val, Coordinate.Z));
+        this.xCoordinateWidget = new IntegerEditWidget(width, h, initialPos.getX(), (val) -> this.setPos(val, Coordinate.X));
+        this.yCoordinateWidget = new IntegerEditWidget(width, h, initialPos.getY(), (val) -> this.setPos(val, Coordinate.Y));
+        this.zCoordinateWidget = new IntegerEditWidget(width, h, initialPos.getZ(), (val) -> this.setPos(val, Coordinate.Z));
 
         this.xCoordinateWidget.setLabelText("malilib.label.misc.coordinate.x_colon");
         this.yCoordinateWidget.setLabelText("malilib.label.misc.coordinate.y_colon");
@@ -66,23 +67,18 @@ public class BlockPosEditWidget extends ContainerWidget
         super.updateSubWidgetPositions();
 
         int x = this.getX();
-        int y = this.getY();
 
-        this.xCoordinateWidget.setPosition(x, y);
-        y = this.xCoordinateWidget.getBottom() + this.gap;
-        this.yCoordinateWidget.setPosition(x, y);
-        y = this.yCoordinateWidget.getBottom() + this.gap;
-        this.zCoordinateWidget.setPosition(x, y);
-        y = this.zCoordinateWidget.getBottom() + this.gap;
-
-        x = this.zCoordinateWidget.getTextFieldWidgetX();
-        this.moveToPlayerButton.setPosition(x, y);
+        this.xCoordinateWidget.setPosition(x, this.getY());
+        this.yCoordinateWidget.setPosition(x, this.xCoordinateWidget.getBottom() + this.gap);
+        this.zCoordinateWidget.setPosition(x, this.yCoordinateWidget.getBottom() + this.gap);
+        this.moveToPlayerButton.setPosition(this.zCoordinateWidget.getTextFieldWidgetX(),
+                                            this.zCoordinateWidget.getBottom() + this.gap);
     }
 
     @Override
     public void updateWidgetState()
     {
-        BlockPos pos = this.pos;
+        Vec3i pos = this.pos;
         this.xCoordinateWidget.setIntegerValue(pos.getX());
         this.yCoordinateWidget.setIntegerValue(pos.getY());
         this.zCoordinateWidget.setIntegerValue(pos.getZ());
@@ -96,6 +92,20 @@ public class BlockPosEditWidget extends ContainerWidget
     public void setAddMoveToPlayerButton(boolean addMoveToPlayerButton)
     {
         this.addMoveToPlayerButton = addMoveToPlayerButton;
+    }
+
+    public void setValidRange(int minX, int minY, int minZ, int maxX, int maxY, int maxZ)
+    {
+        this.xCoordinateWidget.setValidRange(minX, maxX);
+        this.yCoordinateWidget.setValidRange(minY, maxY);
+        this.zCoordinateWidget.setValidRange(minZ, maxZ);
+    }
+
+    public void setLabels(String xTranslationKey, String yTranslationKey, String zTranslationKey)
+    {
+        this.xCoordinateWidget.setLabelText(xTranslationKey);
+        this.yCoordinateWidget.setLabelText(yTranslationKey);
+        this.zCoordinateWidget.setLabelText(zTranslationKey);
     }
 
     protected void moveToPlayer()
@@ -113,5 +123,11 @@ public class BlockPosEditWidget extends ContainerWidget
     {
         this.pos = pos;
         this.posConsumer.accept(pos);
+    }
+
+    public void setPosAndUpdate(Vec3i pos)
+    {
+        this.setPos(new BlockPos(pos));
+        this.updateWidgetState();
     }
 }

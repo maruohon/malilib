@@ -9,8 +9,8 @@ import fi.dy.masa.malilib.util.data.RangedIntegerStorage;
 public class IntegerEditWidget extends BaseNumberEditWidget implements RangedIntegerStorage
 {
     protected final IntConsumer consumer;
-    protected final int minValue;
-    protected final int maxValue;
+    protected int minValue;
+    protected int maxValue;
     protected int value;
 
     public IntegerEditWidget(int width, int height, IntConsumer consumer)
@@ -29,12 +29,11 @@ public class IntegerEditWidget extends BaseNumberEditWidget implements RangedInt
         super(width, height);
 
         this.consumer = consumer;
-        this.minValue = minValue;
-        this.maxValue = maxValue;
+
+        this.setValidRange(minValue, maxValue);
         this.setIntegerValue(originalValue);
 
         this.textFieldWidget.setText(String.valueOf(originalValue));
-        this.textFieldWidget.setTextValidator(new IntegerTextFieldWidget.IntValidator(minValue, maxValue));
     }
 
     @Override
@@ -59,6 +58,13 @@ public class IntegerEditWidget extends BaseNumberEditWidget implements RangedInt
     protected void updateTextField()
     {
         this.textFieldWidget.setText(String.valueOf(this.value));
+    }
+
+    public void setValidRange(int minValue, int maxValue)
+    {
+        this.minValue = minValue;
+        this.maxValue = maxValue;
+        this.textFieldWidget.setTextValidator(new IntegerTextFieldWidget.IntValidator(minValue, maxValue));
     }
 
     @Override

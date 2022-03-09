@@ -9,8 +9,8 @@ import fi.dy.masa.malilib.util.data.RangedFloatStorage;
 public class FloatEditWidget extends BaseNumberEditWidget implements RangedFloatStorage
 {
     protected final FloatConsumer consumer;
-    protected final float minValue;
-    protected final float maxValue;
+    protected float minValue;
+    protected float maxValue;
     protected float value;
 
     public FloatEditWidget(int width, int height, float originalValue,
@@ -19,8 +19,8 @@ public class FloatEditWidget extends BaseNumberEditWidget implements RangedFloat
         super(width, height);
 
         this.consumer = consumer;
-        this.minValue = minValue;
-        this.maxValue = maxValue;
+
+        this.setValidRange(minValue, maxValue);
         this.setFloatValue(originalValue);
 
         this.textFieldWidget.setText(String.valueOf(originalValue));
@@ -49,6 +49,13 @@ public class FloatEditWidget extends BaseNumberEditWidget implements RangedFloat
     protected void updateTextField()
     {
         this.textFieldWidget.setText(String.valueOf(this.value));
+    }
+
+    public void setValidRange(float minValue, float maxValue)
+    {
+        this.minValue = minValue;
+        this.maxValue = maxValue;
+        this.textFieldWidget.setTextValidator(new DoubleTextFieldWidget.DoubleValidator(minValue, maxValue));
     }
 
     @Override

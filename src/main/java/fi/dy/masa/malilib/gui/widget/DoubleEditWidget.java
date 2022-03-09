@@ -9,8 +9,8 @@ import fi.dy.masa.malilib.util.data.RangedDoubleStorage;
 public class DoubleEditWidget extends BaseNumberEditWidget implements RangedDoubleStorage
 {
     protected final DoubleConsumer consumer;
-    protected final double minValue;
-    protected final double maxValue;
+    protected double minValue;
+    protected double maxValue;
     protected double value;
 
     public DoubleEditWidget(int width, int height, double originalValue,
@@ -19,8 +19,8 @@ public class DoubleEditWidget extends BaseNumberEditWidget implements RangedDoub
         super(width, height);
 
         this.consumer = consumer;
-        this.minValue = minValue;
-        this.maxValue = maxValue;
+
+        this.setValidRange(minValue, maxValue);
         this.setDoubleValue(originalValue);
 
         this.textFieldWidget.setText(String.valueOf(originalValue));
@@ -49,6 +49,13 @@ public class DoubleEditWidget extends BaseNumberEditWidget implements RangedDoub
     protected void updateTextField()
     {
         this.textFieldWidget.setText(String.valueOf(this.value));
+    }
+
+    public void setValidRange(double minValue, double maxValue)
+    {
+        this.minValue = minValue;
+        this.maxValue = maxValue;
+        this.textFieldWidget.setTextValidator(new DoubleTextFieldWidget.DoubleValidator(minValue, maxValue));
     }
 
     @Override

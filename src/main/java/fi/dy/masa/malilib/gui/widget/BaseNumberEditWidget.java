@@ -152,6 +152,11 @@ public abstract class BaseNumberEditWidget extends ContainerWidget
         return this;
     }
 
+    public BaseTextFieldWidget getTextField()
+    {
+        return this.textFieldWidget;
+    }
+
     public int getTextFieldWidgetX()
     {
         return this.sliderActive ? this.sliderWidget.getX() : this.textFieldWidget.getX();
