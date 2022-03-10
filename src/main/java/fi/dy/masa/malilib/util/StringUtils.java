@@ -439,6 +439,13 @@ public class StringUtils
     }
 
     @Nullable
+    public static String getWorldOrServerNameOrDefault(String defaultStr)
+    {
+        String name = getWorldOrServerName();
+        return name != null ? name : defaultStr;
+    }
+
+    @Nullable
     public static String getWorldOrServerName()
     {
         if (GameUtils.isSinglePlayer())
