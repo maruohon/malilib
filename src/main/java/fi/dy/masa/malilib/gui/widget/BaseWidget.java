@@ -84,8 +84,14 @@ public class BaseWidget
         this.automaticWidth = width < 0;
         this.automaticHeight = height < 0;
 
-        this.setMaxWidth(width < -1 ? -width : width);
-        this.setMaxHeight(height < -1 ? -height : height);
+        if (width < -1)
+        {
+            this.maxWidth = -width;
+        }
+        if (height < -1)
+        {
+            this.maxHeight = -height;
+        }
     }
 
     /**
