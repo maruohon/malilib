@@ -83,7 +83,6 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         this.browserContext = browserContext != null ? browserContext : "";
         this.currentDirectory = cache != null ? cache.getCurrentDirectoryForContext(this.browserContext) : null;
         this.allowKeyboardNavigation = true;
-        this.shouldSortList = true;
         this.entryWidgetFixedHeight = 14;
 
         if (this.currentDirectory == null)
@@ -97,22 +96,23 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
                                                               this::getRootDirectoryDisplayName);
         this.searchBarWidget = this.navigationWidget;
         this.searchBarWidget.getMargin().setTop(2);
-
-        this.activeListSortComparator = Comparator.naturalOrder();
-        this.defaultListSortComparator = this.activeListSortComparator;
         this.defaultHeaderWidgetFactory = this::createFileListHeaderWidget;
-        this.activeSortColumn = DirectoryEntryWidget.NAME_COLUMN;
-        this.defaultSortColumn = DirectoryEntryWidget.NAME_COLUMN;
-        this.setColumnSupplier(this::createFileBrowserColumns);
 
         this.setEntryWidgetFactory((data, constructData) ->
                                     new DirectoryEntryWidget(data, constructData, this, iconProvider));
 
-        this.setAllowSelection(true);
         this.getBackgroundRenderer().getNormalSettings().setEnabledAndColor(true, 0xC0000000);
         this.getBorderRenderer().getNormalSettings().setBorderWidthAndColor(1, 0xFF999999);
         this.listPosition.setRight(3);
         this.listPosition.setBottom(1);
+
+        this.setAllowSelection(true);
+        this.setShouldSortList(true);
+
+        this.defaultListSortComparator = Comparator.naturalOrder();
+        this.defaultSortColumn = DirectoryEntryWidget.NAME_COLUMN;
+        this.setColumnSupplier(this::createFileBrowserColumns);
+        this.updateActiveColumns();
     }
 
     public void setAllowFileOperations(boolean allowFileOperations)
@@ -151,14 +151,14 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     {
         this.showFileSize = showFileSize;
         this.hasDataColumns = this.showFileSize || this.showFileModificationTime;
-        this.updateActiveColumns();
+        this.updateActiveColumnsAndRefresh();
     }
 
     public void setShowFileModificationTime(boolean showFileModificationTime)
     {
         this.showFileModificationTime = showFileModificationTime;
         this.hasDataColumns = this.showFileSize || this.showFileModificationTime;
-        this.updateActiveColumns();
+        this.updateActiveColumnsAndRefresh();
     }
 
     public void toggleShowFileSize()

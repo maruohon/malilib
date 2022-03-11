@@ -5,6 +5,7 @@ import java.util.Optional;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.value.HorizontalAlignment;
 import fi.dy.masa.malilib.config.value.SortDirection;
+import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 
@@ -15,9 +16,33 @@ public class DataColumn<DATATYPE>
     @Nullable protected final Icon sortIconDesc;
     @Nullable protected final Comparator<DATATYPE> comparator;
     protected final HorizontalAlignment iconPosition;
+    protected SortDirection defaultSortDirection = SortDirection.ASCENDING;
     protected int maxContentWidth = -1;
     protected int relativeStartX;
     protected int width;
+
+    public DataColumn(@Nullable String nameTranslationKey,
+                      @Nullable Comparator<DATATYPE> comparator)
+    {
+        this(nameTranslationKey,
+             DefaultIcons.SMALL_ARROW_UP,
+             DefaultIcons.SMALL_ARROW_DOWN,
+             comparator,
+             HorizontalAlignment.RIGHT);
+    }
+
+    public DataColumn(@Nullable String nameTranslationKey,
+                      @Nullable Comparator<DATATYPE> comparator,
+                      SortDirection defaultSortDirection)
+    {
+        this(nameTranslationKey,
+             DefaultIcons.SMALL_ARROW_UP,
+             DefaultIcons.SMALL_ARROW_DOWN,
+             comparator,
+             HorizontalAlignment.RIGHT);
+
+        this.defaultSortDirection = defaultSortDirection;
+    }
 
     public DataColumn(@Nullable String nameTranslationKey,
                       @Nullable Icon sortIconAsc,
@@ -53,6 +78,17 @@ public class DataColumn<DATATYPE>
     public Optional<Comparator<DATATYPE>> getComparator()
     {
         return Optional.ofNullable(this.comparator);
+    }
+
+    public SortDirection getDefaultSortDirection()
+    {
+        return this.defaultSortDirection;
+    }
+
+    public DataColumn<DATATYPE> setDefaultSortDirection(SortDirection defaultSortDirection)
+    {
+        this.defaultSortDirection = defaultSortDirection;
+        return this;
     }
 
     public boolean getCanSortBy()

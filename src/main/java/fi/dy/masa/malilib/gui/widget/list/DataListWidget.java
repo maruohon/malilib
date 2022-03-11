@@ -148,10 +148,9 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
         this.columnSupplier = columnSupplier;
     }
 
-    public void setDataColumns(List<DataColumn<DATATYPE>> columns)
+    public void setDefaultSortColumn(@Nullable DataColumn<DATATYPE> defaultSortColumn)
     {
-        this.columns.clear();
-        this.columns.addAll(columns);
+        this.defaultSortColumn = defaultSortColumn;
     }
 
     public void setHasDataColumns(boolean hasDataColumns)
@@ -178,16 +177,30 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
         if (this.hasDataColumns)
         {
             this.createColumns();
+            this.activeSortColumn = this.defaultSortColumn;
             this.headerWidgetFactory = this.defaultHeaderWidgetFactory;
         }
         else
         {
             this.columns.clear();
-            this.activeSortColumn = this.defaultSortColumn;
-            this.activeListSortComparator = this.defaultListSortComparator;
+            this.activeSortColumn = null;
             this.headerWidgetFactory = null;
         }
 
+        if (this.activeSortColumn != null)
+        {
+            this.sortDirection = this.activeSortColumn.getDefaultSortDirection();
+            this.setActiveSortComparator(this.activeSortColumn.getComparator(), this.sortDirection);
+        }
+        else
+        {
+            this.activeListSortComparator = this.defaultListSortComparator;
+        }
+    }
+
+    public void updateActiveColumnsAndRefresh()
+    {
+        this.updateActiveColumns();
         this.initListWidget();
         this.refreshEntries();
     }
@@ -298,7 +311,7 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
      */
     public List<DATATYPE> getFilteredEntries()
     {
-        return this.hasFilter() ? this.filteredContents : this.getCurrentContents();
+        return this.filteredContents;
     }
 
     @Nullable
@@ -342,26 +355,28 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
             }
             else
             {
-                this.sortDirection = SortDirection.ASCENDING;
+                this.sortDirection = column.getDefaultSortDirection();
             }
 
-            Optional<Comparator<DATATYPE>> optional = column.getComparator();
-
-            if (optional.isPresent())
-            {
-                if (this.sortDirection == SortDirection.DESCENDING)
-                {
-                    this.activeListSortComparator = optional.get().reversed();
-                }
-                else
-                {
-                    this.activeListSortComparator = optional.get();
-                }
-            }
-
+            this.setActiveSortComparator(column.getComparator(), this.sortDirection);
             this.activeSortColumn = column;
 
             this.refreshFilteredEntries();
+        }
+    }
+
+    protected void setActiveSortComparator(Optional<Comparator<DATATYPE>> optional, SortDirection direction)
+    {
+        if (optional.isPresent())
+        {
+            if (direction == SortDirection.DESCENDING)
+            {
+                this.activeListSortComparator = optional.get().reversed();
+            }
+            else
+            {
+                this.activeListSortComparator = optional.get();
+            }
         }
     }
 

@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.icon.FileBrowserIconProvider;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
@@ -23,17 +22,14 @@ public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry
 {
     public static final DataColumn<DirectoryEntry> NAME_COLUMN =
             new DataColumn<DirectoryEntry>("malilib.label.file_browser.column.file_name",
-                                           DefaultIcons.SMALL_ARROW_UP, DefaultIcons.SMALL_ARROW_DOWN,
                                            Comparator.naturalOrder());
 
     public static final DataColumn<DirectoryEntry> SIZE_COLUMN =
             new DataColumn<>("malilib.label.file_browser.column.file_size",
-                             DefaultIcons.SMALL_ARROW_UP, DefaultIcons.SMALL_ARROW_DOWN,
                              Comparator.comparingLong((e) -> e.getFullPath().length()));
 
     public static final DataColumn<DirectoryEntry> TIME_COLUMN =
             new DataColumn<>("malilib.label.file_browser.column.last_modified",
-                             DefaultIcons.SMALL_ARROW_UP, DefaultIcons.SMALL_ARROW_DOWN,
                              Comparator.comparingLong((e) -> e.getFullPath().lastModified()));
 
     protected final BaseFileBrowserWidget fileBrowserWidget;
