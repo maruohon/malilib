@@ -465,6 +465,13 @@ public class GenericButton extends InteractableWidget
         return button;
     }
 
+    public static GenericButton create(int height, String translationKey, ButtonActionListener actionListener)
+    {
+        GenericButton button = create(height, translationKey);
+        button.setActionListener(actionListener);
+        return button;
+    }
+
     public static GenericButton create(String translationKey)
     {
         return create(20, translationKey);
@@ -474,6 +481,20 @@ public class GenericButton extends InteractableWidget
     {
         GenericButton button = new GenericButton(-1, height);
         button.setDisplayStringSupplier(displayStringSupplier);
+        return button;
+    }
+
+    public static GenericButton create(int height, Supplier<String> displayStringSupplier, EventListener actionListener)
+    {
+        GenericButton button = create(height, displayStringSupplier);
+        button.setActionListener(actionListener);
+        return button;
+    }
+
+    public static GenericButton create(int height, Supplier<String> displayStringSupplier, ButtonActionListener actionListener)
+    {
+        GenericButton button = create(height, displayStringSupplier);
+        button.setActionListener(actionListener);
         return button;
     }
 
