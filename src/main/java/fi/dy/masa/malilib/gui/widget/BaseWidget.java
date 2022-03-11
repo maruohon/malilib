@@ -579,6 +579,13 @@ public class BaseWidget
         this.textRenderer.renderLine(x, y, z, defaultColor, shadow, text, ctx);
     }
 
+    public void renderTextLineRightAligned(int x, int y, float z, int defaultColor, boolean shadow,
+                                           StyledTextLine text, ScreenContext ctx)
+    {
+        x -= text.renderWidth;
+        this.textRenderer.renderLine(x, y, z, defaultColor, shadow, text, ctx);
+    }
+
     /**
      * Renders a plain string, by converting it to a StyledTextLine.<br>
      * <b>Note:</b> It's discouraged to use this method, if it's possible to easily

@@ -17,13 +17,15 @@ import fi.dy.masa.malilib.render.text.OrderedStringListFactory;
 import fi.dy.masa.malilib.render.text.StyledText;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.StringUtils;
+import fi.dy.masa.malilib.util.position.Vec2i;
 
 public abstract class InteractableWidget extends BackgroundWidget
 {
     protected final OrderedStringListFactory hoverInfoFactory = new OrderedStringListFactory();
-    @Nullable protected ImmutableList<StyledTextLine> hoverHelp;
-    @Nullable protected EventListener clickListener;
     @Nullable protected BooleanSupplier enabledStatusSupplier;
+    @Nullable protected EventListener clickListener;
+    @Nullable protected BaseWidget hoverInfoWidget;
+    @Nullable protected ImmutableList<StyledTextLine> hoverHelp;
     @Nullable protected HoverChecker renderHoverChecker;
     @Nullable protected Consumer<Runnable> taskQueue;
     protected boolean canInteract = true;
@@ -104,6 +106,11 @@ public abstract class InteractableWidget extends BackgroundWidget
     protected int getTextColorForRender(boolean hovered)
     {
         return this.getTextSettings().getEffectiveTextColor(hovered);
+    }
+
+    public void setHoverInfoWidget(@Nullable BaseWidget hoverInfoWidget)
+    {
+        this.hoverInfoWidget = hoverInfoWidget;
     }
 
     /**
@@ -335,9 +342,28 @@ public abstract class InteractableWidget extends BackgroundWidget
 
     public void postRenderHovered(ScreenContext ctx)
     {
-        if (this.hasHoverText() && this.shouldRenderHoverInfo(ctx))
+        if (this.shouldRenderHoverInfo(ctx))
         {
-            TextRenderUtils.renderStyledHoverText(ctx.mouseX, ctx.mouseY, this.getZ() + 50f, this.getHoverText());
+            if (this.hoverInfoWidget != null)
+            {
+                renderHoverInfoWidget(this.hoverInfoWidget, this.getZ() + 50f, ctx);
+            }
+            else if (this.hasHoverText())
+            {
+                TextRenderUtils.renderStyledHoverText(ctx.mouseX, ctx.mouseY, this.getZ() + 50f, this.getHoverText());
+            }
+        }
+    }
+
+    @Override
+    public void renderDebug(int x, int y, float z, boolean hovered, ScreenContext ctx)
+    {
+        super.renderDebug(x, y, z, hovered, ctx);
+
+        if (hovered && this.hoverInfoWidget != null && this.shouldRenderHoverInfo(ctx))
+        {
+            Vec2i pos = getHoverInfoWidgetRenderPosition(this.hoverInfoWidget, ctx);
+            this.hoverInfoWidget.renderDebug(pos.x, pos.y, z, true, ctx);
         }
     }
 
@@ -365,6 +391,19 @@ public abstract class InteractableWidget extends BackgroundWidget
         }
 
         return highestFoundWidget;
+    }
+
+    public static void renderHoverInfoWidget(BaseWidget widget, float z, ScreenContext ctx)
+    {
+        Vec2i pos = getHoverInfoWidgetRenderPosition(widget, ctx);
+        widget.renderAt(pos.x, pos.y, z, ctx);
+    }
+
+    public static Vec2i getHoverInfoWidgetRenderPosition(BaseWidget widget, ScreenContext ctx)
+    {
+        int w = widget.getWidth();
+        int h = widget.getHeight();
+        return TextRenderUtils.getScreenClampedHoverTextStartPosition(ctx.mouseX, ctx.mouseY, w, h);
     }
 
     public interface HoverChecker
