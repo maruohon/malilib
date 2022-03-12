@@ -294,10 +294,10 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
     }
 
     /**
-     * Returns the current full list of data entries.
+     * @return the current full list of data entries.
      * This may be different from the original list of data,
-     * if this list widget/screen allows modifying the contents.
-     * @return
+     * if this list widget/screen allows modifying the contents
+     * by adding or removing entries or re-ordering them (i.e. if fetchFromSupplierOnRefresh is false).
      */
     public ArrayList<DATATYPE> getCurrentContents()
     {
@@ -305,9 +305,9 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
     }
 
     /**
-     * Returns the current list of data entries that is shown,
-     * meaning that any possible search/filter effects have been applied.
-     * @return
+     * @return the current list of data entries that is shown,
+     * meaning that any possible search/filter conditions have been
+     * applied to the original list of data.
      */
     public List<DATATYPE> getFilteredEntries()
     {
@@ -335,7 +335,7 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
         return handler != null ? handler.getSelectedEntries() : Collections.emptySet();
     }
 
-    public Optional<SortDirection> getSortDirectionFor(DataColumn<DATATYPE> column)
+    public Optional<SortDirection> getSortDirectionForColumn(DataColumn<DATATYPE> column)
     {
         if (this.activeSortColumn == column)
         {
@@ -514,7 +514,7 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
 
     public void updateEntryWidgetStates()
     {
-        for (BaseDataListEntryWidget<DATATYPE> widget : this.getEntryWidgetList())
+        for (BaseListEntryWidget widget : this.getEntryWidgetList())
         {
             widget.updateWidgetState();
         }

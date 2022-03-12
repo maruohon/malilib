@@ -21,6 +21,10 @@ public class IntegerConfigWidget extends NumericConfigWidget<Integer, IntegerCon
                                                   config.getMinIntegerValue(),
                                                   config.getMaxIntegerValue(),
                                                   config.getDefaultIntegerValue());
+        this.sliderWidget.translateAndAddHoverString("malilib.hover.config.numeric.range_and_default",
+                                                     config.getMinIntegerValue(),
+                                                     config.getMaxIntegerValue(),
+                                                     config.getDefaultIntegerValue());
     }
 
     @Override

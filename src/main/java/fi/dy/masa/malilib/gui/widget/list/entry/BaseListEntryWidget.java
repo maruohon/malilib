@@ -15,7 +15,6 @@ public class BaseListEntryWidget extends ContainerWidget
     protected final int originalListIndex;
     protected boolean isOdd;
     protected int keyboardNavigationHighlightColor = 0xFFFF5000;
-    protected int selectedBackgroundColor = 0x50FFFFFF;
 
     public BaseListEntryWidget(DataListEntryWidgetData constructData)
     {
@@ -32,19 +31,14 @@ public class BaseListEntryWidget extends ContainerWidget
         this.selectedBorderSettings.setColor(MaLiLibConfigs.Generic.SELECTED_LIST_ENTRY_COLOR.getIntegerValue());
 
         int hoverColor = MaLiLibConfigs.Generic.HOVERED_LIST_ENTRY_COLOR.getIntegerValue();
-        this.getBackgroundRenderer().getHoverSettings().setEnabledAndColor(true, hoverColor);
-        this.getBackgroundRenderer().getNormalSettings().setColor(this.isOdd ? 0x20FFFFFF : 0x30FFFFFF);
         this.setIsOdd((this.listIndex & 0x1) != 0);
+        this.getBackgroundRenderer().getNormalSettings().setEnabledAndColor(true, this.isOdd ? 0xC0101010 : 0xC0202020);
+        this.getBackgroundRenderer().getHoverSettings().setEnabledAndColor(true, hoverColor);
     }
 
     public void setIsOdd(boolean isOdd)
     {
         this.isOdd = isOdd;
-    }
-
-    public void setSelectedBackgroundColor(int selectedBackgroundColor)
-    {
-        this.selectedBackgroundColor = selectedBackgroundColor;
     }
 
     public int getListIndex()
@@ -55,7 +49,8 @@ public class BaseListEntryWidget extends ContainerWidget
     /**
      * This gets called from BaseListWidget before the widgets
      * are cleared before being re-created. This allows for example
-     * config widgets to save their changes before being destroyed.
+     * config widgets to save their changes before being destroyed
+     * when the list is scrolled after editing a value.
      */
     public void onAboutToDestroy()
     {
@@ -63,7 +58,6 @@ public class BaseListEntryWidget extends ContainerWidget
 
     /**
      * Focuses this widget.
-     * <br><br>
      * What this means is defined by the implementation.
      * In most cases it would be for example focusing a text field
      * in a newly created entry widget.

@@ -21,6 +21,7 @@ public class SliderWidget extends InteractableWidget
         int usableWidth = this.getWidth() - 4;
         this.sliderWidth = MathHelper.clamp(usableWidth / callback.getMaxSteps(), 8, usableWidth / 2);
         this.textOffset.setCenterHorizontally(true);
+        this.textOffset.setXOffset(0);
     }
 
     @Override

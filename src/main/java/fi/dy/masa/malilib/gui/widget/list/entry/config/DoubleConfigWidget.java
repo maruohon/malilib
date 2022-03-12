@@ -21,6 +21,10 @@ public class DoubleConfigWidget extends NumericConfigWidget<Double, DoubleConfig
                                                   config.getMinDoubleValue(),
                                                   config.getMaxDoubleValue(),
                                                   config.getDefaultValue());
+        this.sliderWidget.translateAndAddHoverString("malilib.hover.config.numeric.range_and_default",
+                                                     config.getMinDoubleValue(),
+                                                     config.getMaxDoubleValue(),
+                                                     config.getDefaultDoubleValue());
     }
 
     @Override

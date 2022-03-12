@@ -72,7 +72,7 @@ public class ColumnizedDataListHeaderWidget<DATATYPE> extends DataListHeaderWidg
 
             if (column.getCanSortBy())
             {
-                Optional<SortDirection> directionOptional = this.listWidget.getSortDirectionFor(column);
+                Optional<SortDirection> directionOptional = this.listWidget.getSortDirectionForColumn(column);
 
                 if (directionOptional.isPresent())
                 {
