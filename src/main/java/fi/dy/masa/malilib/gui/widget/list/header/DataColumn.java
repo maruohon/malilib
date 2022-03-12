@@ -131,6 +131,11 @@ public class DataColumn<DATATYPE>
         return this.width;
     }
 
+    public int getRelativeRight()
+    {
+        return this.relativeStartX + this.width;
+    }
+
     public void setMaxContentWidth(int maxContentWidth)
     {
         this.maxContentWidth = maxContentWidth;

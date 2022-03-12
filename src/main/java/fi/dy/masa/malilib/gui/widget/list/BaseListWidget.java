@@ -698,10 +698,38 @@ public abstract class BaseListWidget extends ContainerWidget
 
     protected void onEntriesRefreshed()
     {
+        this.updateWidgetInitializer();
+
         if (this.entryRefreshListener != null)
         {
             this.entryRefreshListener.onEvent();
         }
+    }
+
+    protected int getListStartIndex()
+    {
+        // This "request" workaround is needed because the ConfigScreenTabButtonListener
+        // can't set the scroll bar value before re-creating the widgets, as the
+        // maximum allowed value for the scroll bar isn't set yet to the correct value,
+        // which only happens once the amount of visible widgets is known.
+        if (this.requestedScrollBarPosition >= 0)
+        {
+            return this.requestedScrollBarPosition;
+        }
+
+        return this.scrollBar.getValue();
+    }
+
+    protected void onPreListEntryWidgetsCreation(int firstListIndex)
+    {
+    }
+
+    protected void updateWidgetInitializer()
+    {
+    }
+
+    protected void applyWidgetInitializer()
+    {
     }
 
     public void reCreateListEntryWidgets()
@@ -759,38 +787,6 @@ public abstract class BaseListWidget extends ContainerWidget
         this.onListEntryWidgetsCreated();
     }
 
-    protected int getListStartIndex()
-    {
-        // This "request" workaround is needed because the ConfigScreenTabButtonListener
-        // can't set the scroll bar value before re-creating the widgets, as the
-        // maximum allowed value for the scroll bar isn't set yet to the correct value,
-        // which only happens once the amount of visible widgets is known.
-        if (this.requestedScrollBarPosition >= 0)
-        {
-            return this.requestedScrollBarPosition;
-        }
-
-        return this.scrollBar.getValue();
-    }
-
-    protected void onPreListEntryWidgetsCreation(int firstListIndex)
-    {
-    }
-
-    protected void reCreateEntryWidgetInitializer()
-    {
-    }
-
-    protected void applyEntryWidgetInitializer()
-    {
-    }
-
-    protected void initializeEntryWidgets()
-    {
-        this.reCreateEntryWidgetInitializer();
-        this.applyEntryWidgetInitializer();
-    }
-
     /**
      * Called after the list entry widgets have been (re-)created
      */
@@ -810,7 +806,7 @@ public abstract class BaseListWidget extends ContainerWidget
             this.requestedScrollBarPosition = -1;
         }
 
-        this.initializeEntryWidgets();
+        this.applyWidgetInitializer();
     }
 
     @Override

@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
@@ -35,7 +34,7 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
     @Nullable protected Function<DataListWidget<DATATYPE>, DataListHeaderWidget<DATATYPE>> defaultHeaderWidgetFactory;
     @Nullable protected DataListEntryWidgetFactory<DATATYPE> entryWidgetFactory;
     @Nullable protected DataListEntrySelectionHandler<DATATYPE> selectionHandler;
-    @Nullable protected Consumer<BaseDataListEntryWidget<DATATYPE>> widgetInitializer;
+    @Nullable protected ListEntryWidgetInitializer<DATATYPE> widgetInitializer;
     @Nullable protected Supplier<List<DataColumn<DATATYPE>>> columnSupplier;
     @Nullable protected DataColumn<DATATYPE> activeSortColumn;
     @Nullable protected DataColumn<DATATYPE> defaultSortColumn;
@@ -49,8 +48,16 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
 
     public DataListWidget(Supplier<List<DATATYPE>> entrySupplier, boolean fetchFromSupplierOnRefresh)
     {
+        this(entrySupplier, null, fetchFromSupplierOnRefresh);
+    }
+
+    public DataListWidget(Supplier<List<DATATYPE>> entrySupplier,
+                          @Nullable DataListEntryWidgetFactory<DATATYPE> entryWidgetFactory,
+                          boolean fetchFromSupplierOnRefresh)
+    {
         super(320, 320);
 
+        this.entryWidgetFactory = entryWidgetFactory;
         this.fetchFromSupplierOnRefresh = fetchFromSupplierOnRefresh;
         this.entrySupplier = entrySupplier;
         this.currentContents = new ArrayList<>(entrySupplier.get());
@@ -95,6 +102,12 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
     public DataListWidget<DATATYPE> setEntryWidgetFactory(@Nullable DataListEntryWidgetFactory<DATATYPE> entryWidgetFactory)
     {
         this.entryWidgetFactory = entryWidgetFactory;
+        return this;
+    }
+
+    public DataListWidget<DATATYPE> setWidgetInitializer(@Nullable ListEntryWidgetInitializer<DATATYPE> widgetInitializer)
+    {
+        this.widgetInitializer = widgetInitializer;
         return this;
     }
 
@@ -488,27 +501,20 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    protected void reCreateEntryWidgetInitializer()
+    protected void updateWidgetInitializer()
     {
-        this.widgetInitializer = null;
-
-        if (this.entryWidgets.isEmpty() == false)
+        if (this.widgetInitializer != null)
         {
-            BaseDataListEntryWidget<DATATYPE> widget = this.entryWidgets.get(0);
-            this.widgetInitializer = (Consumer<BaseDataListEntryWidget<DATATYPE>>) widget.createWidgetInitializer(this.getFilteredEntries());
+            this.widgetInitializer.onListContentsRefreshed(this, this.entryWidgetWidth);
         }
     }
 
     @Override
-    protected void applyEntryWidgetInitializer()
+    protected void applyWidgetInitializer()
     {
         if (this.widgetInitializer != null)
         {
-            for (BaseDataListEntryWidget<DATATYPE> widget : this.getEntryWidgetList())
-            {
-                this.widgetInitializer.accept(widget);
-            }
+            this.widgetInitializer.applyToEntryWidgets(this);
         }
     }
 

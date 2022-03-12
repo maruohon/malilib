@@ -1,23 +1,22 @@
 package fi.dy.masa.malilib.gui.widget.list.entry;
 
-import java.util.List;
-import java.util.function.Consumer;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.widget.list.DataListEntrySelectionHandler;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 
 public class BaseDataListEntryWidget<DATATYPE> extends BaseListEntryWidget
 {
-    @Nullable protected final DataListWidget<?> listWidget;
     protected final DATATYPE data;
+    @Nullable protected final DataListWidget<DATATYPE> listWidget;
 
+    @SuppressWarnings("unchecked")
     public BaseDataListEntryWidget(DATATYPE data,
                                    DataListEntryWidgetData constructData)
     {
         super(constructData);
 
         this.data = data;
-        this.listWidget = constructData.listWidget;
+        this.listWidget = (DataListWidget<DATATYPE>) constructData.listWidget;
     }
 
     public DATATYPE getData()
@@ -47,11 +46,5 @@ public class BaseDataListEntryWidget<DATATYPE> extends BaseListEntryWidget
         }
 
         return false;
-    }
-
-    @Nullable
-    public Consumer<? extends BaseDataListEntryWidget<DATATYPE>> createWidgetInitializer(List<DATATYPE> dataList)
-    {
-        return null;
     }
 }
