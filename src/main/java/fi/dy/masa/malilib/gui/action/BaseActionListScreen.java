@@ -96,7 +96,7 @@ public abstract class BaseActionListScreen extends BaseMultiListScreen
 
         listWidget.setListEntryWidgetFixedHeight(14);
         listWidget.setEntryFilterStringFunction(NamedAction::getSearchString);
-        listWidget.setEntryWidgetFactory(this::createEntryWidget);
+        listWidget.setDataListEntryWidgetFactory(this::createEntryWidget);
 
         return listWidget;
     }

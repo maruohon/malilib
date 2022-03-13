@@ -41,7 +41,11 @@ public class BaseListEntryWidget extends ContainerWidget
         this.isOdd = isOdd;
     }
 
-    public int getListIndex()
+    /**
+     * @return the list index of the data entry this widget corresponds to, in the backing data list.
+     * This can be -1 if the widget does not correspond to a data entry.
+     */
+    public int getDataListIndex()
     {
         return this.listIndex;
     }

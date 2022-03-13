@@ -57,7 +57,6 @@ public abstract class BaseListWidget extends ContainerWidget
 
         // The position gets updated in setSize()
         this.scrollBar = new ScrollBarWidget(8, height);
-        this.scrollBar.setArrowTextures(DefaultIcons.SMALL_ARROW_UP, DefaultIcons.SMALL_ARROW_DOWN);
         this.scrollBar.setValueChangeListener(this::reCreateListEntryWidgets);
     }
 
@@ -66,7 +65,7 @@ public abstract class BaseListWidget extends ContainerWidget
     @Nullable
     protected abstract BaseListEntryWidget createListEntryWidget(int x, int y, int listIndex);
 
-    public abstract List<? extends BaseListEntryWidget> getEntryWidgetList();
+    public abstract ArrayList<BaseListEntryWidget> getEntryWidgetList();
 
     protected abstract void addNewEntryWidget(BaseListEntryWidget widget);
 
@@ -333,7 +332,7 @@ public abstract class BaseListWidget extends ContainerWidget
             return true;
         }
 
-        for (BaseListEntryWidget widget : this.getEntryWidgetList())
+        for (InteractableWidget widget : this.getEntryWidgetList())
         {
             if (widget.tryMouseClick(mouseX, mouseY, mouseButton))
             {
@@ -352,7 +351,7 @@ public abstract class BaseListWidget extends ContainerWidget
             this.headerWidget.onMouseReleased(mouseX, mouseY, mouseButton);
         }
 
-        for (BaseListEntryWidget widget : this.getEntryWidgetList())
+        for (InteractableWidget widget : this.getEntryWidgetList())
         {
             widget.onMouseReleased(mouseX, mouseY, mouseButton);
         }
@@ -380,7 +379,7 @@ public abstract class BaseListWidget extends ContainerWidget
             return true;
         }
 
-        for (BaseListEntryWidget widget : this.getEntryWidgetList())
+        for (InteractableWidget widget : this.getEntryWidgetList())
         {
             if (widget.tryMouseScroll(mouseX, mouseY, mouseWheelDelta))
             {
@@ -391,7 +390,7 @@ public abstract class BaseListWidget extends ContainerWidget
         if (GuiUtils.isMouseInRegion(mouseX, mouseY, this.getX(), this.entryWidgetStartY, this.getWidth(), this.listHeight))
         {
             int amount = MathHelper.clamp(3, 1, this.visibleListEntries);
-            this.offsetScrollbarPosition(mouseWheelDelta < 0 ? amount : -amount);
+            this.offsetScrollBarPosition(mouseWheelDelta < 0 ? amount : -amount);
             return true;
         }
 
@@ -413,7 +412,7 @@ public abstract class BaseListWidget extends ContainerWidget
             return true;
         }
 
-        for (BaseListEntryWidget widget : this.getEntryWidgetList())
+        for (InteractableWidget widget : this.getEntryWidgetList())
         {
             if (widget.onMouseMoved(mouseX, mouseY))
             {
@@ -443,7 +442,7 @@ public abstract class BaseListWidget extends ContainerWidget
             return true;
         }
 
-        for (BaseListEntryWidget widget : this.getEntryWidgetList())
+        for (InteractableWidget widget : this.getEntryWidgetList())
         {
             if (widget.onKeyTyped(keyCode, scanCode, modifiers))
             {
@@ -481,7 +480,7 @@ public abstract class BaseListWidget extends ContainerWidget
             return true;
         }
 
-        for (BaseListEntryWidget widget : this.getEntryWidgetList())
+        for (InteractableWidget widget : this.getEntryWidgetList())
         {
             if (widget.onCharTyped(charIn, modifiers))
             {
@@ -502,7 +501,7 @@ public abstract class BaseListWidget extends ContainerWidget
         return this.keyboardNavigationIndex;
     }
 
-    protected void offsetScrollbarPosition(int amount)
+    protected void offsetScrollBarPosition(int amount)
     {
         int old = this.scrollBar.getValue();
         this.scrollBar.offsetValue(amount);
@@ -546,14 +545,14 @@ public abstract class BaseListWidget extends ContainerWidget
             {
                 // scroll up so the keyboard index is the second to last visible row
                 int newScrollIndex = newKeyboardIndex - visibleMinusOne + 1;
-                this.offsetScrollbarPosition(newScrollIndex - scrollPosition);
+                this.offsetScrollBarPosition(newScrollIndex - scrollPosition);
             }
             // keyboard index went off-screen on the bottom
             else if (newKeyboardIndex > scrollPosition + visibleMinusOne)
             {
                 // scroll down so the keyboard index is the second visible row
                 int newScrollIndex = newKeyboardIndex - 1;
-                this.offsetScrollbarPosition(newScrollIndex - scrollPosition);
+                this.offsetScrollBarPosition(newScrollIndex - scrollPosition);
             }
         }
     }
@@ -574,7 +573,7 @@ public abstract class BaseListWidget extends ContainerWidget
             oldKeyboardIndex >= scrollPosition &&
             oldKeyboardIndex <= scrollPosition + visibleMinusOne)
         {
-            this.offsetScrollbarPosition(scrollAmount);
+            this.offsetScrollBarPosition(scrollAmount);
         }
 
         newKeyboardIndex = this.scrollBar.getValue() + (down ? visibleMinusOne : 0);
@@ -688,7 +687,7 @@ public abstract class BaseListWidget extends ContainerWidget
     {
         for (BaseListEntryWidget widget : this.getEntryWidgetList())
         {
-            if (widget.getListIndex() == listIndex)
+            if (widget.getDataListIndex() == listIndex)
             {
                 widget.focusWidget();
                 break;
@@ -819,7 +818,7 @@ public abstract class BaseListWidget extends ContainerWidget
         float zOffset = z - this.getZ();
 
         // Draw the currently visible widgets
-        for (BaseListEntryWidget widget : this.getEntryWidgetList())
+        for (InteractableWidget widget : this.getEntryWidgetList())
         {
             widget.renderAtOffset(xOffset, yOffset, zOffset, ctx);
         }

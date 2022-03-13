@@ -118,7 +118,7 @@ public class InfoRendererWidgetListScreen<WIDGET extends InfoRendererWidget> ext
     {
         DataListWidget<WIDGET> listWidget = new DataListWidget<>(this.widgetSupplier, true);
 
-        listWidget.setEntryWidgetFactory(this.entryWidgetFactory);
+        listWidget.setDataListEntryWidgetFactory(this.entryWidgetFactory);
 
         return listWidget;
     }

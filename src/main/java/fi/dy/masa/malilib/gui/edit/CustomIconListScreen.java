@@ -56,7 +56,7 @@ public class CustomIconListScreen extends BaseListScreen<DataListWidget<Icon>>
         DataListWidget<Icon> listWidget = new DataListWidget<>(Registry.ICON::getUserIcons, true);
 
         listWidget.setListEntryWidgetFixedHeight(22);
-        listWidget.setEntryWidgetFactory(IconEntryWidget::new);
+        listWidget.setDataListEntryWidgetFactory(IconEntryWidget::new);
 
         return listWidget;
     }

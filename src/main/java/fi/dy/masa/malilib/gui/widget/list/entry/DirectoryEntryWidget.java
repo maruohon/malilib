@@ -8,6 +8,7 @@ import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.icon.FileBrowserIconProvider;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
+import fi.dy.masa.malilib.gui.widget.InteractableWidget;
 import fi.dy.masa.malilib.gui.widget.list.BaseFileBrowserWidget;
 import fi.dy.masa.malilib.gui.widget.list.BaseFileBrowserWidget.DirectoryEntry;
 import fi.dy.masa.malilib.gui.widget.list.BaseFileBrowserWidget.DirectoryEntryType;
@@ -188,14 +189,17 @@ public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry
             int timeColumnRight = TIME_COLUMN.getRelativeRight() - 3;
             int sizeColumnRight = SIZE_COLUMN.getRelativeRight() - 3;
 
-            for (BaseListEntryWidget w : dataListWidget.getEntryWidgetList())
+            for (InteractableWidget w : dataListWidget.getEntryWidgetList())
             {
-                DirectoryEntryWidget widget = (DirectoryEntryWidget) w;
+                if (w instanceof DirectoryEntryWidget)
+                {
+                    DirectoryEntryWidget widget = (DirectoryEntryWidget) w;
 
-                widget.showSize = this.showFileSize && widget.data.getFullPath().isFile();
-                widget.showMTime = this.showFileMTime;
-                widget.mTimeColumnEndX = timeColumnRight;
-                widget.sizeColumnEndX = sizeColumnRight;
+                    widget.showSize = this.showFileSize && widget.data.getFullPath().isFile();
+                    widget.showMTime = this.showFileMTime;
+                    widget.mTimeColumnEndX = timeColumnRight;
+                    widget.sizeColumnEndX = sizeColumnRight;
+                }
             }
         }
     }

@@ -52,7 +52,7 @@ public class MessageRedirectListScreen extends BaseListScreen<DataListWidget<Mes
                 = new DataListWidget<>(Registry.MESSAGE_REDIRECT_MANAGER::getAllRedirects, true);
 
         listWidget.setListEntryWidgetFixedHeight(16);
-        listWidget.setEntryWidgetFactory(MessageRedirectEntryWidget::new);
+        listWidget.setDataListEntryWidgetFactory(MessageRedirectEntryWidget::new);
 
         return listWidget;
     }

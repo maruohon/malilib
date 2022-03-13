@@ -140,7 +140,7 @@ public class CustomHotkeysListScreen extends BaseListScreen<DataListWidget<Custo
         DataListWidget<CustomHotkeyDefinition> listWidget = new DataListWidget<>(this::getCustomHotkeyDefinitions, true);
         
         listWidget.setListEntryWidgetFixedHeight(22);
-        listWidget.setEntryWidgetFactory(this::createWidget);
+        listWidget.setDataListEntryWidgetFactory(this::createWidget);
 
         return listWidget;
     }

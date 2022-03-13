@@ -85,7 +85,7 @@ public class BaseValueListEditScreen<TYPE> extends BaseListScreen<DataListWidget
             wgt.setWidth(15);
         });
 
-        listWidget.setEntryWidgetFactory((data, constructData) -> {
+        listWidget.setDataListEntryWidgetFactory((data, constructData) -> {
             List<TYPE> defaultList = this.config.getDefaultValue();
             int index = constructData.listIndex;
             TYPE defaultValue = index < defaultList.size() ? defaultList.get(index) : this.newEntrySupplier.get();

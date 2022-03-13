@@ -45,7 +45,7 @@ public class CustomHotkeyEditScreen extends BaseActionListScreen
 
         this.exportImportButton = GenericButton.create(15, "malilib.button.export_slash_import", this::openExportImportScreen);
 
-        this.leftSideListWidget.setEntryWidgetFactory(ActionListBaseActionEntryWidget::new);
+        this.leftSideListWidget.setDataListEntryWidgetFactory(ActionListBaseActionEntryWidget::new);
         this.rightSideListWidget = this.createRightSideActionListWidget();
 
         // fetch the backing list reference from the list widget
@@ -169,7 +169,7 @@ public class CustomHotkeyEditScreen extends BaseActionListScreen
     {
         DataListWidget<NamedAction> listWidget = this.createBaseActionListWidget(Collections::emptyList, false);
 
-        listWidget.setEntryWidgetFactory(this::createRightSideEntryWidget);
+        listWidget.setDataListEntryWidgetFactory(this::createRightSideEntryWidget);
 
         return listWidget;
     }

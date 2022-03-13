@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.gui.widget;
 import javax.annotation.Nullable;
 import net.minecraft.util.math.MathHelper;
 import fi.dy.masa.malilib.gui.BaseScreen;
+import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
@@ -37,6 +38,8 @@ public class ScrollBarWidget extends InteractableWidget
         super(width, height);
 
         this.barTexture = barTexture;
+        this.arrowTextureUp = DefaultIcons.SMALL_ARROW_UP;
+        this.arrowTextureDown = DefaultIcons.SMALL_ARROW_DOWN;
     }
 
     public ScrollBarWidget setRenderBackgroundColor(boolean render)

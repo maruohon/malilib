@@ -98,7 +98,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         this.searchBarWidget.getMargin().setTop(2);
         this.defaultHeaderWidgetFactory = this::createFileListHeaderWidget;
 
-        this.setEntryWidgetFactory((data, constructData) ->
+        this.setDataListEntryWidgetFactory((data, constructData) ->
                                     new DirectoryEntryWidget(data, constructData, this, iconProvider));
         this.setWidgetInitializer(new DirectoryEntryWidget.WidgetInitializer());
 
@@ -202,7 +202,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     }
 
     @Override
-    public List<DirectoryEntry> getFilteredDataList()
+    public ArrayList<DirectoryEntry> getFilteredDataList()
     {
         return this.filteredDataList;
     }

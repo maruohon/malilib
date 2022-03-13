@@ -126,7 +126,6 @@ public class DropDownListWidget<T> extends ContainerWidget
         // The position gets updated in updateSubWidgetsToGeometryChanges
         this.scrollBar = new ScrollBarWidget(scrollbarWidth, scrollbarHeight);
         this.scrollBar.setMaxValue(this.entries.size() - this.maxVisibleEntries);
-        this.scrollBar.setArrowTextures(DefaultIcons.SMALL_ARROW_UP, DefaultIcons.SMALL_ARROW_DOWN);
         this.scrollBar.setValueChangeListener(this::onScrolled);
 
         this.selectionBarWidget = new SelectionBarWidget<>(width, height, this.textColor, this);

@@ -209,7 +209,7 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
     protected int getNewIndexFromDrag(int mouseY)
     {
         List<? extends BaseListEntryWidget> list = this.listWidget.getEntryWidgetList();
-        int newIndex = this.listIndex;
+        int newIndex = this.getDataListIndex();
 
         if (mouseY > this.dragStartY)
         {
@@ -220,7 +220,7 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
                     break;
                 }
 
-                newIndex = widget.getListIndex();
+                newIndex = widget.getDataListIndex();
             }
         }
         else if (mouseY < this.dragStartY)
@@ -234,7 +234,7 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
                     break;
                 }
 
-                newIndex = widget.getListIndex();
+                newIndex = widget.getDataListIndex();
             }
         }
 
@@ -342,13 +342,14 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
 
         int width = this.getWidth();
         int height = this.getHeight();
+        int listIndex = this.getDataListIndex();
         
-        if (this.dragged)
+        if (this.dragged && listIndex >= 0)
         {
             int newIndex = this.getNewIndexFromDrag(ctx.mouseY);
-            int off = (newIndex - this.listIndex) * height - 1;
+            int off = (newIndex - listIndex) * height - 1;
 
-            if (newIndex > this.listIndex)
+            if (newIndex > listIndex)
             {
                 off += height;
             }

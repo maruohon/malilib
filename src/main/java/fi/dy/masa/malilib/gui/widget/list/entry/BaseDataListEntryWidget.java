@@ -27,10 +27,12 @@ public class BaseDataListEntryWidget<DATATYPE> extends BaseListEntryWidget
     @Override
     protected boolean isSelected()
     {
-        if (this.listWidget != null)
+        int listIndex = this.getDataListIndex();
+
+        if (listIndex >= 0 && this.listWidget != null)
         {
             DataListEntrySelectionHandler<?> handler = this.listWidget.getEntrySelectionHandler();
-            return handler != null && handler.isEntrySelected(this.getListIndex());
+            return handler != null && handler.isEntrySelected(listIndex);
         }
 
         return false;
@@ -39,10 +41,12 @@ public class BaseDataListEntryWidget<DATATYPE> extends BaseListEntryWidget
     @Override
     protected boolean isKeyboardNavigationSelected()
     {
-        if (this.listWidget != null)
+        int listIndex = this.getDataListIndex();
+
+        if (listIndex >= 0 && this.listWidget != null)
         {
             DataListEntrySelectionHandler<?> handler = this.listWidget.getEntrySelectionHandler();
-            return handler != null && handler.getKeyboardNavigationIndex() == this.getListIndex();
+            return handler != null && handler.getKeyboardNavigationIndex() == listIndex;
         }
 
         return false;

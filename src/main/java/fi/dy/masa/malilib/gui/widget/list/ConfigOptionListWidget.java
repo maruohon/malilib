@@ -44,7 +44,7 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
         this.allowKeyboardNavigation = true;
         this.showInternalConfigName = MaLiLibConfigs.Generic.SHOW_INTERNAL_CONFIG_NAME.getBooleanValue();
 
-        this.setEntryWidgetFactory(new ConfigOptionListEntryWidgetFactory<>(ctx));
+        this.setDataListEntryWidgetFactory(new ConfigOptionListEntryWidgetFactory<>(ctx));
         this.setEntryFilterStringFunction(ConfigInfo::getSearchStrings);
         this.getBorderRenderer().getNormalSettings().setBorderWidth(0);
 

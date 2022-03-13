@@ -55,7 +55,7 @@ public class MacroActionEditScreen extends BaseActionListScreen
 
         this.exportImportButton = GenericButton.create(15, "malilib.button.export_slash_import", this::openExportImportScreen);
 
-        this.leftSideListWidget.setEntryWidgetFactory(this::createMacroSourceActionsWidget);
+        this.leftSideListWidget.setDataListEntryWidgetFactory(this::createMacroSourceActionsWidget);
         this.rightSideListWidget = this.createRightSideActionListWidget();
 
         // fetch the backing list reference from the list widget
@@ -273,7 +273,7 @@ public class MacroActionEditScreen extends BaseActionListScreen
     {
         DataListWidget<NamedAction> listWidget = this.createBaseActionListWidget(Collections::emptyList, false);
 
-        listWidget.setEntryWidgetFactory(this::createMacroMemberWidget);
+        listWidget.setDataListEntryWidgetFactory(this::createMacroMemberWidget);
 
         return listWidget;
     }

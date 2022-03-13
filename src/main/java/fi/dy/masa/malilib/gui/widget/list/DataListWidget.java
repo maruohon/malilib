@@ -12,27 +12,28 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.config.value.SortDirection;
-import fi.dy.masa.malilib.gui.widget.list.entry.BaseDataListEntryWidget;
+import fi.dy.masa.malilib.gui.widget.InteractableWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.BaseListEntryWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
 import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetFactory;
 import fi.dy.masa.malilib.gui.widget.list.header.DataColumn;
 import fi.dy.masa.malilib.gui.widget.list.header.DataListHeaderWidget;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 
 public class DataListWidget<DATATYPE> extends BaseListWidget
 {
     protected final Supplier<List<DATATYPE>> entrySupplier;
     protected final ArrayList<DATATYPE> fullDataList;
     protected final ArrayList<DATATYPE> filteredDataList = new ArrayList<>();
-    protected final ArrayList<Integer> filteredIndices = new ArrayList<>();
-    protected final ArrayList<BaseDataListEntryWidget<DATATYPE>> entryWidgets = new ArrayList<>();
+    protected final IntArrayList filteredIndices = new IntArrayList();
+    protected final ArrayList<BaseListEntryWidget> entryWidgets = new ArrayList<>();
     protected final ArrayList<DataColumn<DATATYPE>> columns = new ArrayList<>();
     protected SortDirection sortDirection = SortDirection.ASCENDING;
     protected EntryFilter<DATATYPE> entryFilter;
     protected Function<DATATYPE, List<String>> entrySearchStringFunction = (e) -> Collections.singletonList(e.toString());
     @Nullable protected Function<DataListWidget<DATATYPE>, DataListHeaderWidget<DATATYPE>> headerWidgetFactory;
     @Nullable protected Function<DataListWidget<DATATYPE>, DataListHeaderWidget<DATATYPE>> defaultHeaderWidgetFactory;
-    @Nullable protected DataListEntryWidgetFactory<DATATYPE> entryWidgetFactory;
+    @Nullable protected DataListEntryWidgetFactory<DATATYPE> dataListEntryWidgetFactory;
     @Nullable protected DataListEntrySelectionHandler<DATATYPE> selectionHandler;
     @Nullable protected ListEntryWidgetInitializer<DATATYPE> widgetInitializer;
     @Nullable protected Supplier<List<DataColumn<DATATYPE>>> columnSupplier;
@@ -52,12 +53,12 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
     }
 
     public DataListWidget(Supplier<List<DATATYPE>> entrySupplier,
-                          @Nullable DataListEntryWidgetFactory<DATATYPE> entryWidgetFactory,
+                          @Nullable DataListEntryWidgetFactory<DATATYPE> dataListEntryWidgetFactory,
                           boolean fetchFromSupplierOnRefresh)
     {
         super(320, 320);
 
-        this.entryWidgetFactory = entryWidgetFactory;
+        this.dataListEntryWidgetFactory = dataListEntryWidgetFactory;
         this.fetchFromSupplierOnRefresh = fetchFromSupplierOnRefresh;
         this.entrySupplier = entrySupplier;
         this.fullDataList = new ArrayList<>(entrySupplier.get());
@@ -80,9 +81,9 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
         return this;
     }
 
-    public DataListWidget<DATATYPE> setEntryWidgetFactory(@Nullable DataListEntryWidgetFactory<DATATYPE> entryWidgetFactory)
+    public DataListWidget<DATATYPE> setDataListEntryWidgetFactory(@Nullable DataListEntryWidgetFactory<DATATYPE> dataListEntryWidgetFactory)
     {
-        this.entryWidgetFactory = entryWidgetFactory;
+        this.dataListEntryWidgetFactory = dataListEntryWidgetFactory;
         return this;
     }
 
@@ -171,11 +172,11 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
         return this;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     protected void addNewEntryWidget(BaseListEntryWidget widget)
     {
-        this.entryWidgets.add((BaseDataListEntryWidget<DATATYPE>) widget);
+        this.entryWidgets.add(widget);
+        this.onSubWidgetAdded(widget);
     }
 
     public DataListWidget<DATATYPE> setAllowSelection(boolean allowSelection)
@@ -208,7 +209,7 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
     }
 
     @Override
-    public List<BaseDataListEntryWidget<DATATYPE>> getEntryWidgetList()
+    public ArrayList<BaseListEntryWidget> getEntryWidgetList()
     {
         return this.entryWidgets;
     }
@@ -235,7 +236,7 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
      * meaning that any possible search/filter conditions have been
      * applied to the original list of data.
      */
-    public List<DATATYPE> getFilteredDataList()
+    public ArrayList<DATATYPE> getFilteredDataList()
     {
         return this.filteredDataList;
     }
@@ -402,17 +403,16 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
     {
         List<DATATYPE> list = this.getFilteredDataList();
 
-        if (this.entryWidgetFactory != null && listIndex < list.size())
+        if (this.dataListEntryWidgetFactory != null && listIndex < list.size())
         {
             DATATYPE entryData = list.get(listIndex);
-            List<Integer> indices = this.filteredIndices;
-            int originalDataIndex = listIndex < indices.size() ? indices.get(listIndex) : listIndex;
+            IntArrayList indices = this.filteredIndices;
+            int originalDataIndex = listIndex < indices.size() ? indices.getInt(listIndex) : listIndex;
             int height = this.getHeightForListEntryWidgetCreation(listIndex);
-            DataListEntryWidgetData constructData
-                    = new DataListEntryWidgetData(x, y, this.entryWidgetWidth, height,
-                                                  listIndex, originalDataIndex, this);
+            DataListEntryWidgetData constructData = new DataListEntryWidgetData(x, y,
+                                        this.entryWidgetWidth, height, listIndex, originalDataIndex, this);
 
-            return this.entryWidgetFactory.createWidget(entryData, constructData);
+            return this.dataListEntryWidgetFactory.createWidget(entryData, constructData);
         }
 
         return null;
@@ -536,7 +536,7 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
 
     public void updateEntryWidgetStates()
     {
-        for (BaseListEntryWidget widget : this.getEntryWidgetList())
+        for (InteractableWidget widget : this.getEntryWidgetList())
         {
             widget.updateWidgetState();
         }
@@ -586,7 +586,7 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
     {
         if (widget.canSelectAt(mouseX, mouseY, mouseButton))
         {
-            int listIndex = widget.getListIndex();
+            int listIndex = widget.getDataListIndex();
 
             if (listIndex >= 0 && listIndex < this.getTotalListWidgetCount())
             {

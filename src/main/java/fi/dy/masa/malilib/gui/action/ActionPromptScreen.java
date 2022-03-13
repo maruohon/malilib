@@ -244,7 +244,7 @@ public class ActionPromptScreen extends BaseListScreen<DataListWidget<NamedActio
         listWidget.setAllowKeyboardNavigation(true);
         listWidget.getBackgroundRenderer().getNormalSettings().setEnabledAndColor(true, 0xA0000000);
         //listWidget.getBorderRenderer().getNormalSettings().setBorderWidth(0);
-        listWidget.setEntryWidgetFactory(ActionPromptEntryWidget::new);
+        listWidget.setDataListEntryWidgetFactory(ActionPromptEntryWidget::new);
 
         return listWidget;
     }
