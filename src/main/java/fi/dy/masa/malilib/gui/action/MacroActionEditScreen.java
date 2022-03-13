@@ -59,7 +59,7 @@ public class MacroActionEditScreen extends BaseActionListScreen
         this.rightSideListWidget = this.createRightSideActionListWidget();
 
         // fetch the backing list reference from the list widget
-        this.macroActionsList = this.rightSideListWidget.getCurrentContents();
+        this.macroActionsList = this.rightSideListWidget.getNonFilteredDataList();
         this.macroActionsList.addAll(this.originalMacroActionsList);
     }
 

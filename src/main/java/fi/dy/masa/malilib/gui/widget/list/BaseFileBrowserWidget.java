@@ -202,9 +202,9 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     }
 
     @Override
-    public List<DirectoryEntry> getFilteredEntries()
+    public List<DirectoryEntry> getFilteredDataList()
     {
-        return this.filteredContents;
+        return this.filteredDataList;
     }
 
     @Override
@@ -216,7 +216,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     @Override
     protected void reAddFilteredEntries()
     {
-        this.filteredContents.clear();
+        this.filteredDataList.clear();
 
         File dir = this.currentDirectory;
 
@@ -240,12 +240,12 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         // Show directories at the top
         this.addMatchingEntriesToList(dir, list, this.getDirectoryFilter(), Collections.emptyList(), null);
         list.sort(this.activeListSortComparator);
-        this.filteredContents.addAll(list);
+        this.filteredDataList.addAll(list);
         list.clear();
 
         this.addMatchingEntriesToList(dir, list, this.getFileFilter(), Collections.emptyList(), null);
         this.sortEntryList(list);
-        this.filteredContents.addAll(list);
+        this.filteredDataList.addAll(list);
     }
 
     protected void addFilteredContents(File dir)
@@ -254,7 +254,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         List<String> searchTerms = Arrays.asList(filterText.split("\\|"));
         List<DirectoryEntry> list = new ArrayList<>();
         this.addFilteredContents(dir, searchTerms, list, null);
-        this.filteredContents.addAll(list);
+        this.filteredDataList.addAll(list);
     }
 
     protected void addFilteredContents(File dir, List<String> searchTerms, List<DirectoryEntry> listOut, @Nullable String prefix)
@@ -342,9 +342,9 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     @Override
     protected int getHeightForListEntryWidgetCreation(int listIndex)
     {
-        if (listIndex >= 0 && listIndex < this.filteredContents.size())
+        if (listIndex >= 0 && listIndex < this.filteredDataList.size())
         {
-            DirectoryEntry entry = this.filteredContents.get(listIndex);
+            DirectoryEntry entry = this.filteredDataList.get(listIndex);
             return entry.getType() == DirectoryEntryType.DIRECTORY ? 14 : this.entryWidgetFixedHeight;
         }
 

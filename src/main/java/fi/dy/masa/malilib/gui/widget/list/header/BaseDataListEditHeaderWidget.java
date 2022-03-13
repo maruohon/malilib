@@ -32,7 +32,7 @@ public class BaseDataListEditHeaderWidget<DATATYPE> extends DataListHeaderWidget
         this.fixedHeight = height > 0 ? height : -1;
 
         // This is a reference to the current entries list, which can be modified
-        this.dataList = listWidget.getCurrentContents();
+        this.dataList = listWidget.getNonFilteredDataList();
         this.dataFactory = dataFactory;
 
         this.addButton = GenericButton.create(DefaultIcons.LIST_ADD_PLUS_13, this::insertEntry);

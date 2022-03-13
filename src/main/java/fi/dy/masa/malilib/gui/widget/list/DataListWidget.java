@@ -22,8 +22,8 @@ import fi.dy.masa.malilib.gui.widget.list.header.DataListHeaderWidget;
 public class DataListWidget<DATATYPE> extends BaseListWidget
 {
     protected final Supplier<List<DATATYPE>> entrySupplier;
-    protected final ArrayList<DATATYPE> currentContents;
-    protected final ArrayList<DATATYPE> filteredContents = new ArrayList<>();
+    protected final ArrayList<DATATYPE> fullDataList;
+    protected final ArrayList<DATATYPE> filteredDataList = new ArrayList<>();
     protected final ArrayList<Integer> filteredIndices = new ArrayList<>();
     protected final ArrayList<BaseDataListEntryWidget<DATATYPE>> entryWidgets = new ArrayList<>();
     protected final ArrayList<DataColumn<DATATYPE>> columns = new ArrayList<>();
@@ -60,35 +60,16 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
         this.entryWidgetFactory = entryWidgetFactory;
         this.fetchFromSupplierOnRefresh = fetchFromSupplierOnRefresh;
         this.entrySupplier = entrySupplier;
-        this.currentContents = new ArrayList<>(entrySupplier.get());
-        this.selectionHandler = new DataListEntrySelectionHandler<>(this::getFilteredEntries);
+        this.fullDataList = new ArrayList<>(entrySupplier.get());
+        this.selectionHandler = new DataListEntrySelectionHandler<>(this::getFilteredDataList);
         this.entryFilter = this::defaultEntryFilter;
 
         this.getBorderRenderer().getNormalSettings().setBorderWidth(1);
     }
 
-    @Override
-    public List<BaseDataListEntryWidget<DATATYPE>> getEntryWidgetList()
+    public DataListWidget<DATATYPE> setEntrySelectionHandler(@Nullable DataListEntrySelectionHandler<DATATYPE> selectionHandler)
     {
-        return this.entryWidgets;
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    protected void addNewEntryWidget(BaseListEntryWidget widget)
-    {
-        this.entryWidgets.add((BaseDataListEntryWidget<DATATYPE>) widget);
-    }
-
-    public DataListWidget<DATATYPE> setAllowSelection(boolean allowSelection)
-    {
-        DataListEntrySelectionHandler<DATATYPE> handler = this.getEntrySelectionHandler();
-
-        if (handler != null)
-        {
-            handler.setAllowSelection(allowSelection);
-        }
-
+        this.selectionHandler = selectionHandler;
         return this;
     }
 
@@ -116,7 +97,7 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
      * currentContents list any time the refreshEntries method is called.<br><br>
      * If this is false, then the entrySupplier is only used once, in the constructor,
      * to fetch the contents to the list.<br><br>
-     * The no-re-fetch case allows the currentContents list (returned by the {@link #getCurrentContents()} method)
+     * The no-re-fetch case allows the currentContents list (returned by the {@link #getNonFilteredDataList()} method)
      * to be used as a backing data list for other things.
      * For example the {@link fi.dy.masa.malilib.gui.widget.list.entry.BaseOrderableListEditEntryWidget}
      * uses the list returned by getCurrentEntries() to store the edited list,
@@ -177,12 +158,264 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
      * that was clicked on, should use this to set the comparator at least once
      * and then update it based on the column that is clicked on, or even to
      * switch the comparator each time.
-     * @param comparator
      */
     public void setListSortComparator(@Nullable Comparator<DATATYPE> comparator)
     {
         this.activeListSortComparator = comparator;
         this.defaultListSortComparator = comparator;
+    }
+
+    public DataListWidget<DATATYPE> setShouldSortList(boolean shouldSort)
+    {
+        this.shouldSortList = shouldSort;
+        return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    protected void addNewEntryWidget(BaseListEntryWidget widget)
+    {
+        this.entryWidgets.add((BaseDataListEntryWidget<DATATYPE>) widget);
+    }
+
+    public DataListWidget<DATATYPE> setAllowSelection(boolean allowSelection)
+    {
+        DataListEntrySelectionHandler<DATATYPE> handler = this.getEntrySelectionHandler();
+
+        if (handler != null)
+        {
+            handler.setAllowSelection(allowSelection);
+        }
+
+        return this;
+    }
+
+    @Override
+    public int getTotalListWidgetCount()
+    {
+        return this.getFilteredDataList().size();
+    }
+
+    protected boolean shouldSortList()
+    {
+        return this.shouldSortList;
+    }
+
+    @Nullable
+    public DataListEntrySelectionHandler<DATATYPE> getEntrySelectionHandler()
+    {
+        return this.selectionHandler;
+    }
+
+    @Override
+    public List<BaseDataListEntryWidget<DATATYPE>> getEntryWidgetList()
+    {
+        return this.entryWidgets;
+    }
+
+    @Nullable
+    protected Comparator<DATATYPE> getComparator()
+    {
+        return this.activeListSortComparator;
+    }
+
+    /**
+     * @return the current full list of data entries.
+     * This may be different from the original list of data,
+     * if this list widget/screen allows modifying the contents
+     * by adding or removing entries or re-ordering them (i.e. if fetchFromSupplierOnRefresh is false).
+     */
+    public ArrayList<DATATYPE> getNonFilteredDataList()
+    {
+        return this.fullDataList;
+    }
+
+    /**
+     * @return the current list of data entries that is shown,
+     * meaning that any possible search/filter conditions have been
+     * applied to the original list of data.
+     */
+    public List<DATATYPE> getFilteredDataList()
+    {
+        return this.filteredDataList;
+    }
+
+    @Nullable
+    public DATATYPE getLastSelectedEntry()
+    {
+        DataListEntrySelectionHandler<DATATYPE> handler = this.getEntrySelectionHandler();
+        return handler != null ? handler.getLastSelectedEntry() : null;
+    }
+
+    public Set<DATATYPE> getSelectedEntries()
+    {
+        DataListEntrySelectionHandler<DATATYPE> handler = this.getEntrySelectionHandler();
+        return handler != null ? handler.getSelectedEntries() : Collections.emptySet();
+    }
+
+    @Nullable
+    public DATATYPE getKeyboardNavigationEntry()
+    {
+        int index = this.getKeyboardNavigationIndex();
+        List<DATATYPE> list = this.getFilteredDataList();
+        return index >= 0 && index < list.size() ? list.get(index) : null;
+    }
+
+    @Override
+    protected void createAndSetHeaderWidget()
+    {
+        if (this.headerWidgetFactory != null)
+        {
+            this.headerWidget = this.headerWidgetFactory.apply(this);
+        }
+        else
+        {
+            this.headerWidget = null;
+        }
+
+        if (this.headerWidget != null)
+        {
+            this.headerWidget.setHeaderWidgetSize(this.entryWidgetWidth, -1);
+        }
+    }
+
+    @Override
+    public void moveSubWidgets(int diffX, int diffY)
+    {
+        super.moveSubWidgets(diffX, diffY);
+
+        for (BaseListEntryWidget widget : this.entryWidgets)
+        {
+            widget.setPosition(widget.getX() + diffX, widget.getY() + diffY);
+        }
+    }
+
+    @Override
+    protected int getKeyboardNavigationIndex()
+    {
+        if (this.getEntrySelectionHandler() != null)
+        {
+            return this.getEntrySelectionHandler().getKeyboardNavigationIndex();
+        }
+
+        return super.getKeyboardNavigationIndex();
+    }
+
+    @Override
+    public void setKeyboardNavigationIndex(int listIndex)
+    {
+        if (this.getEntrySelectionHandler() != null)
+        {
+            this.getEntrySelectionHandler().setKeyboardNavigationIndex(listIndex);
+        }
+        else
+        {
+            super.setKeyboardNavigationIndex(listIndex);
+        }
+    }
+
+    @Override
+    public void toggleKeyboardNavigationPositionSelection()
+    {
+        if (this.getEntrySelectionHandler() != null)
+        {
+            this.getEntrySelectionHandler().toggleKeyboardNavigationPositionSelection();
+        }
+    }
+
+    @Override
+    protected void updateWidgetInitializer()
+    {
+        if (this.widgetInitializer != null)
+        {
+            this.widgetInitializer.onListContentsRefreshed(this, this.entryWidgetWidth);
+        }
+    }
+
+    @Override
+    protected void applyWidgetInitializer()
+    {
+        if (this.widgetInitializer != null)
+        {
+            this.widgetInitializer.applyToEntryWidgets(this);
+        }
+    }
+
+    @Override
+    protected void fetchCurrentEntries()
+    {
+        if (this.fetchFromSupplierOnRefresh)
+        {
+            this.fullDataList.clear();
+            this.fullDataList.addAll(this.entrySupplier.get());
+        }
+    }
+
+    @Override
+    protected void reAddFilteredEntries()
+    {
+        this.filteredDataList.clear();
+        this.filteredIndices.clear();
+
+        List<DATATYPE> entries = this.getNonFilteredDataList();
+
+        if (this.hasFilter())
+        {
+            this.addFilteredContents(entries);
+        }
+        else
+        {
+            this.addNonFilteredContents(entries);
+        }
+
+        if (this.shouldSortList())
+        {
+            this.sortEntryList(this.filteredDataList);
+        }
+    }
+
+    protected void addNonFilteredContents(List<DATATYPE> entries)
+    {
+        this.filteredDataList.addAll(entries);
+    }
+
+    protected void addFilteredContents(List<DATATYPE> entries)
+    {
+        List<String> searchTerms = this.getSearchTerms();
+        final int size = entries.size();
+
+        for (int i = 0; i < size; ++i)
+        {
+            DATATYPE entry = entries.get(i);
+
+            if (this.entryMatchesFilter(entry, searchTerms))
+            {
+                this.filteredDataList.add(entry);
+                this.filteredIndices.add(i);
+            }
+        }
+    }
+
+    @Override
+    @Nullable
+    protected BaseListEntryWidget createListEntryWidget(int x, int y, int listIndex)
+    {
+        List<DATATYPE> list = this.getFilteredDataList();
+
+        if (this.entryWidgetFactory != null && listIndex < list.size())
+        {
+            DATATYPE entryData = list.get(listIndex);
+            List<Integer> indices = this.filteredIndices;
+            int originalDataIndex = listIndex < indices.size() ? indices.get(listIndex) : listIndex;
+            int height = this.getHeightForListEntryWidgetCreation(listIndex);
+            DataListEntryWidgetData constructData
+                    = new DataListEntryWidgetData(x, y, this.entryWidgetWidth, height,
+                                                  listIndex, originalDataIndex, this);
+
+            return this.entryWidgetFactory.createWidget(entryData, constructData);
+        }
+
+        return null;
     }
 
     public void updateActiveColumns()
@@ -226,126 +459,6 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
         {
             this.columns.addAll(this.columnSupplier.get());
         }
-    }
-
-    @Override
-    public void moveSubWidgets(int diffX, int diffY)
-    {
-        super.moveSubWidgets(diffX, diffY);
-
-        for (BaseListEntryWidget widget : this.entryWidgets)
-        {
-            widget.setPosition(widget.getX() + diffX, widget.getY() + diffY);
-        }
-    }
-
-    @Override
-    @Nullable
-    protected BaseListEntryWidget createListEntryWidget(int x, int y, int listIndex)
-    {
-        List<DATATYPE> list = this.getFilteredEntries();
-
-        if (this.entryWidgetFactory != null && listIndex < list.size())
-        {
-            DATATYPE entryData = list.get(listIndex);
-            List<Integer> indices = this.filteredIndices;
-            int originalDataIndex = listIndex < indices.size() ? indices.get(listIndex) : listIndex;
-            int height = this.getHeightForListEntryWidgetCreation(listIndex);
-            DataListEntryWidgetData constructData
-                    = new DataListEntryWidgetData(x, y, this.entryWidgetWidth, height,
-                                                  listIndex, originalDataIndex, this);
-
-            return this.entryWidgetFactory.createWidget(entryData, constructData);
-        }
-
-        return null;
-    }
-
-    @Override
-    protected void createAndSetHeaderWidget()
-    {
-        if (this.headerWidgetFactory != null)
-        {
-            this.headerWidget = this.headerWidgetFactory.apply(this);
-        }
-        else
-        {
-            this.headerWidget = null;
-        }
-
-        if (this.headerWidget != null)
-        {
-            this.headerWidget.setHeaderWidgetSize(this.entryWidgetWidth, -1);
-        }
-    }
-
-    @Override
-    protected boolean onEntryWidgetClicked(BaseListEntryWidget widget, int mouseX, int mouseY, int mouseButton)
-    {
-        if (widget.canSelectAt(mouseX, mouseY, mouseButton))
-        {
-            int listIndex = widget.getListIndex();
-
-            if (listIndex >= 0 && listIndex < this.getTotalListWidgetCount())
-            {
-                return this.clickEntry(listIndex);
-            }
-        }
-
-        return super.onEntryWidgetClicked(widget, mouseX, mouseY, mouseButton);
-    }
-
-    protected boolean shouldSortList()
-    {
-        return this.shouldSortList;
-    }
-
-    @Override
-    public int getTotalListWidgetCount()
-    {
-        return this.getFilteredEntries().size();
-    }
-
-    /**
-     * @return the current full list of data entries.
-     * This may be different from the original list of data,
-     * if this list widget/screen allows modifying the contents
-     * by adding or removing entries or re-ordering them (i.e. if fetchFromSupplierOnRefresh is false).
-     */
-    public ArrayList<DATATYPE> getCurrentContents()
-    {
-        return this.currentContents;
-    }
-
-    /**
-     * @return the current list of data entries that is shown,
-     * meaning that any possible search/filter conditions have been
-     * applied to the original list of data.
-     */
-    public List<DATATYPE> getFilteredEntries()
-    {
-        return this.filteredContents;
-    }
-
-    @Nullable
-    public DATATYPE getLastSelectedEntry()
-    {
-        DataListEntrySelectionHandler<DATATYPE> handler = this.getEntrySelectionHandler();
-        return handler != null ? handler.getLastSelectedEntry() : null;
-    }
-
-    @Nullable
-    public DATATYPE getKeyboardNavigationEntry()
-    {
-        int index = this.getKeyboardNavigationIndex();
-        List<DATATYPE> list = this.getFilteredEntries();
-        return index >= 0 && index < list.size() ? list.get(index) : null;
-    }
-
-    public Set<DATATYPE> getSelectedEntries()
-    {
-        DataListEntrySelectionHandler<DATATYPE> handler = this.getEntrySelectionHandler();
-        return handler != null ? handler.getSelectedEntries() : Collections.emptySet();
     }
 
     public Optional<SortDirection> getSortDirectionForColumn(DataColumn<DATATYPE> column)
@@ -393,85 +506,6 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
         }
     }
 
-    @Nullable
-    protected Comparator<DATATYPE> getComparator()
-    {
-        return this.activeListSortComparator;
-    }
-
-    @Nullable
-    public DataListEntrySelectionHandler<DATATYPE> getEntrySelectionHandler()
-    {
-        return this.selectionHandler;
-    }
-
-    public DataListWidget<DATATYPE> setEntrySelectionHandler(@Nullable DataListEntrySelectionHandler<DATATYPE> selectionHandler)
-    {
-        this.selectionHandler = selectionHandler;
-        return this;
-    }
-
-    public DataListWidget<DATATYPE> setShouldSortList(boolean shouldSort)
-    {
-        this.shouldSortList = shouldSort;
-        return this;
-    }
-
-    @Override
-    protected void fetchCurrentEntries()
-    {
-        if (this.fetchFromSupplierOnRefresh)
-        {
-            this.currentContents.clear();
-            this.currentContents.addAll(this.entrySupplier.get());
-        }
-    }
-
-    @Override
-    protected void reAddFilteredEntries()
-    {
-        this.filteredContents.clear();
-        this.filteredIndices.clear();
-
-        List<DATATYPE> entries = this.getCurrentContents();
-
-        if (this.hasFilter())
-        {
-            this.addFilteredContents(entries);
-        }
-        else
-        {
-            this.addNonFilteredContents(entries);
-        }
-
-        if (this.shouldSortList())
-        {
-            this.sortEntryList(this.filteredContents);
-        }
-    }
-
-    protected void addNonFilteredContents(List<DATATYPE> entries)
-    {
-        this.filteredContents.addAll(entries);
-    }
-
-    protected void addFilteredContents(List<DATATYPE> entries)
-    {
-        List<String> searchTerms = this.getSearchTerms();
-        final int size = entries.size();
-
-        for (int i = 0; i < size; ++i)
-        {
-            DATATYPE entry = entries.get(i);
-
-            if (this.entryMatchesFilter(entry, searchTerms))
-            {
-                this.filteredContents.add(entry);
-                this.filteredIndices.add(i);
-            }
-        }
-    }
-
     protected List<String> getSearchTerms()
     {
         return Arrays.asList(this.getFilterText().split("\\|"));
@@ -498,24 +532,6 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
         }
 
         return false;
-    }
-
-    @Override
-    protected void updateWidgetInitializer()
-    {
-        if (this.widgetInitializer != null)
-        {
-            this.widgetInitializer.onListContentsRefreshed(this, this.entryWidgetWidth);
-        }
-    }
-
-    @Override
-    protected void applyWidgetInitializer()
-    {
-        if (this.widgetInitializer != null)
-        {
-            this.widgetInitializer.applyToEntryWidgets(this);
-        }
     }
 
     public void updateEntryWidgetStates()
@@ -566,36 +582,19 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
     }
 
     @Override
-    protected int getKeyboardNavigationIndex()
+    protected boolean onEntryWidgetClicked(BaseListEntryWidget widget, int mouseX, int mouseY, int mouseButton)
     {
-        if (this.getEntrySelectionHandler() != null)
+        if (widget.canSelectAt(mouseX, mouseY, mouseButton))
         {
-            return this.getEntrySelectionHandler().getKeyboardNavigationIndex();
+            int listIndex = widget.getListIndex();
+
+            if (listIndex >= 0 && listIndex < this.getTotalListWidgetCount())
+            {
+                return this.clickEntry(listIndex);
+            }
         }
 
-        return super.getKeyboardNavigationIndex();
-    }
-
-    @Override
-    public void setKeyboardNavigationIndex(int listIndex)
-    {
-        if (this.getEntrySelectionHandler() != null)
-        {
-            this.getEntrySelectionHandler().setKeyboardNavigationIndex(listIndex);
-        }
-        else
-        {
-            super.setKeyboardNavigationIndex(listIndex);
-        }
-    }
-
-    @Override
-    public void toggleKeyboardNavigationPositionSelection()
-    {
-        if (this.getEntrySelectionHandler() != null)
-        {
-            this.getEntrySelectionHandler().toggleKeyboardNavigationPositionSelection();
-        }
+        return super.onEntryWidgetClicked(widget, mouseX, mouseY, mouseButton);
     }
 
     public interface EntryFilter<T>

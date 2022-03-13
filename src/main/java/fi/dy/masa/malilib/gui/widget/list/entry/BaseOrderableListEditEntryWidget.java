@@ -41,7 +41,7 @@ public abstract class BaseOrderableListEditEntryWidget<DATATYPE> extends BaseDat
         super(data, constructData);
 
         // This is a reference to the current entries list, which can be modified
-        this.dataList = ((DataListWidget<DATATYPE>) constructData.listWidget).getCurrentContents();
+        this.dataList = ((DataListWidget<DATATYPE>) constructData.listWidget).getNonFilteredDataList();
 
         this.addButton    = this.createListActionButton(ButtonType.ADD);
         this.removeButton = this.createListActionButton(ButtonType.REMOVE);

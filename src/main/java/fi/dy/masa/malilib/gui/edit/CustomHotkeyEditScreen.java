@@ -49,7 +49,7 @@ public class CustomHotkeyEditScreen extends BaseActionListScreen
         this.rightSideListWidget = this.createRightSideActionListWidget();
 
         // fetch the backing list reference from the list widget
-        this.currentActionsList = this.rightSideListWidget.getCurrentContents();
+        this.currentActionsList = this.rightSideListWidget.getNonFilteredDataList();
         this.currentActionsList.addAll(this.originalActionsList);
     }
 

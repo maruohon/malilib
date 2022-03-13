@@ -95,7 +95,7 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
 
     protected void resetFilteredConfigsToDefaults()
     {
-        for (C config : this.filteredContents)
+        for (C config : this.filteredDataList)
         {
             config.resetToDefault();
         }
@@ -145,7 +145,7 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
     {
         super.onEntriesRefreshed();
 
-        List<C> list = this.getCurrentContents();
+        List<C> list = this.getNonFilteredDataList();
         final int size = list.size();
         boolean showCategory = this.isShowingOptionsFromOtherCategories();
         int maxLabelWidth = 0;
@@ -182,7 +182,7 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
     }
 
     @Override
-    public ArrayList<C> getCurrentContents()
+    public ArrayList<C> getNonFilteredDataList()
     {
         if (this.configsSearchBarWidget != null &&
             this.configsSearchBarWidget.getCurrentScope() != ConfigsSearchBarWidget.Scope.CURRENT_CATEGORY)
@@ -191,7 +191,7 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
             return this.getAndCacheConfigsFromScope(scope);
         }
 
-        return super.getCurrentContents();
+        return super.getNonFilteredDataList();
     }
 
     protected ArrayList<C> getAndCacheConfigsFromScope(ConfigsSearchBarWidget.Scope scope)
