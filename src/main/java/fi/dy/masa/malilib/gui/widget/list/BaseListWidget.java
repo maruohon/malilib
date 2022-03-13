@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.gui.widget.list;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Consumer;
 import javax.annotation.Nullable;
 import org.lwjgl.input.Keyboard;
 import net.minecraft.client.gui.GuiScreen;
@@ -23,10 +24,11 @@ import fi.dy.masa.malilib.gui.widget.util.WidgetPositioner;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.util.data.EdgeInt;
 
-public abstract class BaseListWidget extends ContainerWidget
+public abstract class BaseListWidget extends ContainerWidget implements ListEntryWidgetFactory
 {
     protected final EdgeInt listPosition = new EdgeInt(2, 2, 2, 2);
     protected final ScrollBarWidget scrollBar;
+    protected ListEntryWidgetFactory listEntryWidgetFactory;
 
     protected WidgetPositioner searchBarPositioner = new DefaultWidgetPositioner();
     protected WidgetPositioner headerWidgetPositioner = new DefaultWidgetPositioner();
@@ -54,13 +56,12 @@ public abstract class BaseListWidget extends ContainerWidget
 
         // Raise the z-level, so it's likely to be on top of all other widgets in the same screen
         this.zLevelIncrement = 10;
+        this.listEntryWidgetFactory = this;
 
         // The position gets updated in setSize()
         this.scrollBar = new ScrollBarWidget(8, height);
         this.scrollBar.setValueChangeListener(this::reCreateListEntryWidgets);
     }
-
-    public abstract int getTotalListWidgetCount();
 
     @Nullable
     protected abstract BaseListEntryWidget createListEntryWidget(int x, int y, int listIndex);
@@ -77,6 +78,11 @@ public abstract class BaseListWidget extends ContainerWidget
     public void setRequestedScrollBarPosition(int position)
     {
         this.requestedScrollBarPosition = position;
+    }
+
+    public void setListEntryWidgetFactory(ListEntryWidgetFactory listEntryWidgetFactory)
+    {
+        this.listEntryWidgetFactory = listEntryWidgetFactory;
     }
 
     /**
@@ -503,13 +509,7 @@ public abstract class BaseListWidget extends ContainerWidget
 
     protected void offsetScrollBarPosition(int amount)
     {
-        int old = this.scrollBar.getValue();
         this.scrollBar.offsetValue(amount);
-
-        if (old != this.scrollBar.getValue())
-        {
-            this.reCreateListEntryWidgets();
-        }
     }
 
     protected void keyboardNavigateByOne(boolean down)
@@ -705,20 +705,6 @@ public abstract class BaseListWidget extends ContainerWidget
         }
     }
 
-    protected int getListStartIndex()
-    {
-        // This "request" workaround is needed because the ConfigScreenTabButtonListener
-        // can't set the scroll bar value before re-creating the widgets, as the
-        // maximum allowed value for the scroll bar isn't set yet to the correct value,
-        // which only happens once the amount of visible widgets is known.
-        if (this.requestedScrollBarPosition >= 0)
-        {
-            return this.requestedScrollBarPosition;
-        }
-
-        return this.scrollBar.getValue();
-    }
-
     protected void onPreListEntryWidgetsCreation(int firstListIndex)
     {
     }
@@ -731,6 +717,27 @@ public abstract class BaseListWidget extends ContainerWidget
     {
     }
 
+    protected void clampScrollBarPosition()
+    {
+        int expectedVisibleEntries = this.entryWidgetFixedHeight > 0 ? this.listHeight / this.entryWidgetFixedHeight : 10;
+        int max = this.getTotalListWidgetCount() - expectedVisibleEntries;
+        this.scrollBar.setMaxValueNoNotify(max);
+
+        // This "request" workaround is needed because the ConfigScreenTabButtonListener
+        // can't set the scroll bar value before re-creating the widgets, as the
+        // maximum allowed value for the scroll bar isn't set yet to the correct value,
+        // which only happens once the amount of visible widgets is known.
+        if (this.requestedScrollBarPosition >= 0)
+        {
+            this.scrollBar.setValueNoNotify(this.requestedScrollBarPosition);
+        }
+    }
+
+    protected int getListStartIndex()
+    {
+        return this.scrollBar.getValue();
+    }
+
     public void reCreateListEntryWidgets()
     {
         for (BaseListEntryWidget widget : this.getEntryWidgetList())
@@ -738,27 +745,32 @@ public abstract class BaseListWidget extends ContainerWidget
             widget.onAboutToDestroy();
         }
 
-        int max = this.getTotalListWidgetCount() - this.visibleListEntries;
+        this.clampScrollBarPosition();
 
-        if (this.getScrollbar().getValue() > max)
-        {
-            this.getScrollbar().setValue(max - 1);
-        }
-
-        int usableHeight = this.listHeight;
-        int usedHeight = 0;
-        int x = this.entryWidgetStartX;
-        int y = this.entryWidgetStartY;
+        int startIndex = this.getListStartIndex();
 
         this.getEntryWidgetList().clear();
-        this.visibleListEntries = 0;
+        this.onPreListEntryWidgetsCreation(startIndex);
 
-        int listIndex = this.getListStartIndex();
-        this.onPreListEntryWidgetsCreation(listIndex);
+        this.listEntryWidgetFactory.createEntryWidgets(this.entryWidgetStartX, this.entryWidgetStartY,
+                                                       this.listHeight, startIndex, this::addNewEntryWidget);
 
+        this.visibleListEntries = this.getEntryWidgetList().size();
+
+        this.onListEntryWidgetsCreated();
+    }
+
+    @Override
+    public void createEntryWidgets(int startX, int startY, int usableSpace,
+                                   int startIndex, Consumer<BaseListEntryWidget> widgetConsumer)
+    {
         final int totalEntryCount = this.getTotalListWidgetCount();
+        int x = startX;
+        int y = startY;
+        int usableHeight = usableSpace;
+        int usedHeight = 0;
 
-        for ( ; listIndex < totalEntryCount; ++listIndex)
+        for (int listIndex = startIndex ; listIndex < totalEntryCount; ++listIndex)
         {
             BaseListEntryWidget widget = this.createListEntryWidget(x, y, listIndex);
 
@@ -775,15 +787,11 @@ public abstract class BaseListWidget extends ContainerWidget
                 break;
             }
 
-            this.onSubWidgetAdded(widget);
-            this.addNewEntryWidget(widget);
-            ++this.visibleListEntries;
+            widgetConsumer.accept(widget);
 
             usedHeight += widgetHeight;
             y += widgetHeight;
         }
-
-        this.onListEntryWidgetsCreated();
     }
 
     /**
@@ -791,21 +799,22 @@ public abstract class BaseListWidget extends ContainerWidget
      */
     protected void onListEntryWidgetsCreated()
     {
-        this.getScrollbar().setMaxValue(this.getTotalListWidgetCount() - this.visibleListEntries);
-        this.updateScrollBarHeight();
-
         if (this.getKeyboardNavigationIndex() >= this.getTotalListWidgetCount())
         {
             this.setKeyboardNavigationIndex(-1);
         }
 
-        if (this.requestedScrollBarPosition >= 0)
+        this.updateScrollBarHeight();
+        this.applyWidgetInitializer();
+
+        // This is a bit of a "meh" fix for the early call that comes
+        // from BaseScreen#initScreen() -> updateWidgetPositions() before the
+        // data list has been populated. This prevents the requestedScrollBarPosition
+        // from being essentially ignored and cleared too early.
+        if (this.getTotalListWidgetCount() > 0)
         {
-            this.getScrollbar().setValue(this.requestedScrollBarPosition);
             this.requestedScrollBarPosition = -1;
         }
-
-        this.applyWidgetInitializer();
     }
 
     @Override

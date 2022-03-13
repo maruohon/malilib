@@ -123,6 +123,12 @@ public class ScrollBarWidget extends InteractableWidget
         this.setValue(this.currentValue);
     }
 
+    public void setMaxValueNoNotify(int maxValue)
+    {
+        this.maxValue = Math.max(0, maxValue);
+        this.setValueNoNotify(this.currentValue);
+    }
+
     public void setTotalHeight(int totalHeight)
     {
         this.totalHeight = totalHeight;
