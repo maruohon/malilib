@@ -75,9 +75,10 @@ public class ConfigBooleanHotkeyed extends ConfigBoolean implements IHotkeyToggl
                     this.keybind.setValueFromJsonElement(hotkeyObj);
                 }
             }
+            // Backwards compatibility with the old bugged serialization that only serialized the boolean value
             else
             {
-                MaLiLib.logger.warn("Failed to set config value for '{}' from the JSON element '{}'", this.getName(), element);
+                super.setValueFromJsonElement(element);
             }
         }
         catch (Exception e)
