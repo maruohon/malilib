@@ -100,7 +100,7 @@ public class ClientPacketChannelHandler implements IClientPacketChannelHandler
                 }
             }
 
-            //return true;
+            return true;
         }
 
         return false;
