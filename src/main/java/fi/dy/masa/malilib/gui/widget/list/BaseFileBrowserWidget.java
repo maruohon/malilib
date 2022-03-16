@@ -340,7 +340,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     }
 
     @Override
-    protected int getHeightForListEntryWidgetCreation(int listIndex)
+    public int getHeightForListEntryWidgetCreation(int listIndex)
     {
         if (listIndex >= 0 && listIndex < this.filteredDataList.size())
         {

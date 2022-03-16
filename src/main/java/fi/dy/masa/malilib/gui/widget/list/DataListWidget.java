@@ -215,7 +215,7 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
     }
 
     @Nullable
-    protected Comparator<DATATYPE> getComparator()
+    public Comparator<DATATYPE> getComparator()
     {
         return this.activeListSortComparator;
     }
@@ -397,6 +397,11 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
         }
     }
 
+    public int getOriginalListIndexFor(int filteredListIndex)
+    {
+        return filteredListIndex < this.filteredIndices.size() ? this.filteredIndices.getInt(filteredListIndex) : filteredListIndex;
+    }
+
     @Override
     @Nullable
     protected BaseListEntryWidget createListEntryWidget(int x, int y, int listIndex)
@@ -406,8 +411,7 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
         if (this.dataListEntryWidgetFactory != null && listIndex < list.size())
         {
             DATATYPE entryData = list.get(listIndex);
-            IntArrayList indices = this.filteredIndices;
-            int originalDataIndex = listIndex < indices.size() ? indices.getInt(listIndex) : listIndex;
+            int originalDataIndex = this.getOriginalListIndexFor(listIndex);
             int height = this.getHeightForListEntryWidgetCreation(listIndex);
             DataListEntryWidgetData constructData = new DataListEntryWidgetData(x, y,
                                         this.entryWidgetWidth, height, listIndex, originalDataIndex, this);

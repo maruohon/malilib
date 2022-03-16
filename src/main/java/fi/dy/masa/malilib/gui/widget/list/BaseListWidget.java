@@ -213,7 +213,12 @@ public abstract class BaseListWidget extends ContainerWidget implements ListEntr
         this.scrollBar.setTotalHeight(Math.max(totalHeight, this.scrollBar.getHeight()));
     }
 
-    protected int getHeightForListEntryWidgetCreation(int listIndex)
+    public int getEntryWidgetWidth()
+    {
+        return this.entryWidgetWidth;
+    }
+
+    public int getHeightForListEntryWidgetCreation(int listIndex)
     {
         return this.entryWidgetFixedHeight;
     }
@@ -672,6 +677,7 @@ public abstract class BaseListWidget extends ContainerWidget implements ListEntr
     {
         this.reAddFilteredEntries();
         this.onEntriesRefreshed();
+        this.notifyListWidgetFactory();
         this.reCreateListEntryWidgets();
     }
 
@@ -681,6 +687,14 @@ public abstract class BaseListWidget extends ContainerWidget implements ListEntr
 
     protected void reAddFilteredEntries()
     {
+    }
+
+    protected void notifyListWidgetFactory()
+    {
+        if (this.listEntryWidgetFactory != null)
+        {
+            this.listEntryWidgetFactory.onListRefreshed();
+        }
     }
 
     public void focusWidget(int listIndex)

@@ -26,4 +26,9 @@ public interface ListEntryWidgetFactory
      */
     void createEntryWidgets(int startX, int startY, int usableSpace,
                             int startIndex, Consumer<BaseListEntryWidget> widgetConsumer);
+
+    /**
+     * Called when the list contents are refreshed
+     */
+    default void onListRefreshed() {}
 }
