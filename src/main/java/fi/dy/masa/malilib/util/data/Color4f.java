@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.util.data;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import net.minecraft.util.math.MathHelper;
 
 public class Color4f
 {
@@ -10,7 +11,7 @@ public class Color4f
     public static final Pattern HEX_4 = Pattern.compile("(?:0x|#)([a-fA-F0-9]{4})");
     public static final Pattern HEX_3 = Pattern.compile("(?:0x|#)([a-fA-F0-9]{3})");
 
-    public static final Color4f WHITE = new Color4f(1F, 1F, 1F, 1F);
+    public static final Color4f WHITE = new Color4f(1.0F, 1.0F, 1.0F, 1.0F);
     public final float r;
     public final float g;
     public final float b;
@@ -19,45 +20,32 @@ public class Color4f
 
     public Color4f(float r, float g, float b)
     {
-        this(r, g, b, 1f);
+        this(r, g, b, 1.0F);
     }
 
     public Color4f(float r, float g, float b, float a)
     {
-        if (r == -0.0F)
-        {
-            r = 0.0F;
-        }
+        if (r == -0.0F) { r = 0.0F; }
+        if (g == -0.0F) { g = 0.0F; }
+        if (b == -0.0F) { b = 0.0F; }
+        if (a == -0.0F) { a = 0.0F; }
 
-        if (g == -0.0F)
-        {
-            g = 0.0F;
-        }
-
-        if (b == -0.0F)
-        {
-            b = 0.0F;
-        }
-
-        if (a == -0.0F)
-        {
-            a = 0.0F;
-        }
+        r = MathHelper.clamp(r, 0.0F, 1.0F);
+        g = MathHelper.clamp(g, 0.0F, 1.0F);
+        b = MathHelper.clamp(b, 0.0F, 1.0F);
+        a = MathHelper.clamp(a, 0.0F, 1.0F);
 
         this.r = r;
         this.g = g;
         this.b = b;
         this.a = a;
-        /*
-        this.r = MathHelper.clamp(r, 0f, 1f);
-        this.g = MathHelper.clamp(g, 0f, 1f);
-        this.b = MathHelper.clamp(b, 0f, 1f);
-        this.a = MathHelper.clamp(a, 0f, 1f);
-        */
 
         this.intValue = (((int) (a * 0xFF)) << 24) | (((int) (r * 0xFF)) << 16) | (((int) (g * 0xFF)) << 8) | (((int) (b * 0xFF)));
     }
 
+    /**
+     * @return a new copy of the color using the given alpha value
+     */
     public Color4f withAlpha(float alpha)
     {
         return fromColor(this.intValue, alpha);
@@ -70,35 +58,30 @@ public class Color4f
                              getHexColorString(this.intValue), this.a, this.r, this.g, this.b, this.intValue);
     }
 
+    /**
+     * @return a color value parsed from the given AARRGGBB formatted int value
+     */
     public static Color4f fromColor(int color)
     {
-        float alpha = ((color & 0xFF000000) >>> 24) / 255f;
+        float alpha = ((color & 0xFF000000) >>> 24) / 255.0F;
         return fromColor(color, alpha);
     }
 
+    /**
+     * @return a color value parsed from the given (AA)RRGGBB formatted int value,
+     * but using the separately given alpha value
+     */
     public static Color4f fromColor(int color, float alpha)
     {
-        float r = ((color & 0x00FF0000) >>> 16) / 255f;
-        float g = ((color & 0x0000FF00) >>>  8) / 255f;
-        float b = ((color & 0x000000FF)       ) / 255f;
+        float r = ((color & 0x00FF0000) >>> 16) / 255.0F;
+        float g = ((color & 0x0000FF00) >>>  8) / 255.0F;
+        float b = ((color & 0x000000FF)       ) / 255.0F;
 
         return new Color4f(r, g, b, alpha);
     }
 
-    public static Color4f fromColor(Color4f color, float alpha)
-    {
-        return new Color4f(color.r, color.g, color.b, alpha);
-    }
-
-    public static int getColorFromHue(int hue)
-    {
-        return 0xFF000000 | (java.awt.Color.HSBtoRGB((float) (hue % 360) / 360f, 1f, 1f) & 0x00FFFFFF);
-    }
-
     /**
-     * Returns the hex color string with a hashtag in front (in the format "#30505050")
-     * @param color
-     * @return
+     * @return the hex color string with a hashtag in front (in the format "#30505050")
      */
     public static String getHexColorString(int color)
     {
@@ -113,7 +96,7 @@ public class Color4f
      * so for example F159 will become FF115599.<br>
      * The 6 and 3 long versions will use 0xFF for the alpha channel.<br>
      * If the hex parsing fails, then the input it attempted to be parsed as a regular base 10 integer.
-     * @param colorStr
+     * @param colorStr the string representation of the color to parse
      * @param defaultColor the fallback color if the parsing fails
      * @return the parsed color as an AARRGGBB int, or the fallback color if the parsing fails
      */
@@ -176,6 +159,11 @@ public class Color4f
 
         try { return Integer.parseInt(colorStr, 10); }
         catch (NumberFormatException e) { return defaultColor; }
+    }
+
+    public static int getColorFromHue(int hue)
+    {
+        return 0xFF000000 | (java.awt.Color.HSBtoRGB((float) (hue % 360) / 360.0F, 1.0F, 1.0F) & 0x00FFFFFF);
     }
 
     public static float[] convertRgb2Hsv(int color)
