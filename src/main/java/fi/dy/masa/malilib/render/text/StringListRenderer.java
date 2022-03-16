@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import fi.dy.masa.malilib.config.value.HorizontalAlignment;
+import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.BaseWidget;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;
@@ -247,7 +248,7 @@ public class StringListRenderer extends BaseWidget
         }
     }
 
-    public void renderAt(int x, int y, float z, boolean hovered)
+    public void renderAt(int x, int y, float z, boolean hovered, ScreenContext ctx)
     {
         MultiLineTextRenderSettings settings = hovered ? this.textSettingsHover : this.textSettings;
         List<StyledTextLine> lines = hovered ? this.originalTextLines : this.processedLinesClamped;

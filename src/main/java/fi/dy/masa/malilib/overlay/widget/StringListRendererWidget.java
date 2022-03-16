@@ -191,7 +191,7 @@ public class StringListRendererWidget extends InfoRendererWidget
     @Override
     protected void renderContents(int x, int y, float z, ScreenContext ctx)
     {
-        this.stringListRenderer.renderAt(x, y, z, false);
+        this.stringListRenderer.renderAt(x, y, z, false, ctx);
     }
 
     @Override
