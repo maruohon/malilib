@@ -7,6 +7,7 @@ import net.minecraft.util.EnumFacing.AxisDirection;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 public class PositionUtils
@@ -16,6 +17,51 @@ public class PositionUtils
     public static final EnumFacing[] VERTICAL_DIRECTIONS = new EnumFacing[] { EnumFacing.DOWN, EnumFacing.UP };
     public static final Mirror[] MIRROR_VALUES = Mirror.values();
     public static final Rotation[] ROTATION_VALUES = Rotation.values();
+
+    public static final int SIZE_BITS_X = 1 + MathHelper.log2(MathHelper.smallestEncompassingPowerOfTwo(30000000));
+    public static final int SIZE_BITS_Z = SIZE_BITS_X;
+    public static final int SIZE_BITS_Y = 64 - SIZE_BITS_X - SIZE_BITS_Z;
+    public static final long BITMASK_X = (1L << SIZE_BITS_X) - 1L;
+    public static final long BITMASK_Y = (1L << SIZE_BITS_Y) - 1L;
+    public static final long BITMASK_Z = (1L << SIZE_BITS_Z) - 1L;
+    public static final int BIT_SHIFT_Z = SIZE_BITS_Y;
+    public static final int BIT_SHIFT_X = SIZE_BITS_Y + SIZE_BITS_Z;
+
+    public static long blockPosToLong(int x, int y, int z)
+    {
+        return (((long) x & BITMASK_X) << BIT_SHIFT_X) | (((long) z & BITMASK_Z) << BIT_SHIFT_Z) | ((long) y & BITMASK_Y);
+    }
+
+    public static int unpackX(long packedPos)
+    {
+        return (int) (packedPos << (64 - BIT_SHIFT_X - SIZE_BITS_X) >> (64 - SIZE_BITS_X));
+    }
+
+    public static int unpackY(long packedPos)
+    {
+        return (int) (packedPos << (64 - SIZE_BITS_Y) >> (64 - SIZE_BITS_Y));
+    }
+
+    public static int unpackZ(long packedPos)
+    {
+        return (int) (packedPos << (64 - BIT_SHIFT_Z - SIZE_BITS_Z) >> (64 - SIZE_BITS_Z));
+    }
+
+    public static int getPackedChunkRelativePosition(BlockPos pos)
+    {
+        return (pos.getY() << 8) | ((pos.getZ() & 0xF) << 4) | (pos.getX() & 0xF);
+    }
+
+    public static long getPackedAbsolutePosition(long chunkPos, int chunkRelativeBlockPos)
+    {
+        int chunkX = (int) chunkPos;
+        int chunkZ = (int) (chunkPos >> 32L);
+        int x = (chunkX << 4) + (chunkRelativeBlockPos & 0xF);
+        int y = chunkRelativeBlockPos >> 8;
+        int z = (chunkZ << 4) + ((chunkRelativeBlockPos >> 4) & 0xF);
+
+        return blockPosToLong(x, y, z);
+    }
 
     public static BlockPos getMinCorner(BlockPos pos1, BlockPos pos2)
     {

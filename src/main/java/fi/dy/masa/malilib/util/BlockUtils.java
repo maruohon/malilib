@@ -25,6 +25,7 @@ import fi.dy.masa.malilib.util.data.Constants;
 
 public class BlockUtils
 {
+    private static final ResourceLocation DUMMY = new ResourceLocation("-", "-");
     private static final Splitter COMMA_SPLITTER = Splitter.on(',');
     private static final Splitter EQUAL_SPLITTER = Splitter.on('=').limit(2);
 
@@ -40,6 +41,31 @@ public class BlockUtils
         }
     }
 
+    public static String getBlockRegistryName(IBlockState state)
+    {
+        try
+        {
+            return Block.REGISTRY.getNameForObject(state.getBlock()).toString();
+        }
+        catch (Exception e)
+        {
+            return "?";
+        }
+    }
+
+    public static ResourceLocation getBlockIdentifier(IBlockState state)
+    {
+        try
+        {
+            return Block.REGISTRY.getNameForObject(state.getBlock());
+        }
+        catch (Exception e)
+        {
+            return DUMMY;
+        }
+    }
+
+    @Nullable
     public static Block getBlockByRegistryName(String name)
     {
         try
