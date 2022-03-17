@@ -194,6 +194,11 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
     @Override
     public int getTotalListWidgetCount()
     {
+        return this.getDataListSize();
+    }
+
+    public int getDataListSize()
+    {
         return this.getFilteredDataList().size();
     }
 
@@ -592,7 +597,7 @@ public class DataListWidget<DATATYPE> extends BaseListWidget
         {
             int listIndex = widget.getDataListIndex();
 
-            if (listIndex >= 0 && listIndex < this.getTotalListWidgetCount())
+            if (listIndex >= 0 && listIndex < this.getDataListSize())
             {
                 return this.clickEntry(listIndex);
             }

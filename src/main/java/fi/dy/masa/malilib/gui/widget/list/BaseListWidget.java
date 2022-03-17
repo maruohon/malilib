@@ -194,7 +194,7 @@ public abstract class BaseListWidget extends ContainerWidget implements ListEntr
 
     protected void updateScrollBarHeight()
     {
-        final int count = this.getTotalListWidgetCount();
+        final int count = this.getFactoryTotalListWidgetCount();
         int totalHeight = 0;
 
         if (this.visibleListEntries < count)
@@ -541,7 +541,7 @@ public abstract class BaseListWidget extends ContainerWidget implements ListEntr
         }
         else
         {
-            int totalCount = this.getTotalListWidgetCount();
+            int totalCount = this.getFactoryTotalListWidgetCount();
             int newKeyboardIndex = MathHelper.clamp(oldKeyboardIndex + offset, 0, totalCount - 1);
             this.setKeyboardNavigationIndex(newKeyboardIndex);
 
@@ -588,7 +588,7 @@ public abstract class BaseListWidget extends ContainerWidget implements ListEntr
 
     protected void keyboardNavigateToEnd(boolean down)
     {
-        int totalCount = this.getTotalListWidgetCount();
+        int totalCount = this.getFactoryTotalListWidgetCount();
         int newIndex = down ? totalCount - 1 : 0;
 
         this.scrollBar.setValue(newIndex); // gets clamped
@@ -734,7 +734,7 @@ public abstract class BaseListWidget extends ContainerWidget implements ListEntr
     protected void clampScrollBarPosition()
     {
         int expectedVisibleEntries = this.entryWidgetFixedHeight > 0 ? this.listHeight / this.entryWidgetFixedHeight : 10;
-        int max = this.getTotalListWidgetCount() - expectedVisibleEntries;
+        int max = this.getFactoryTotalListWidgetCount() - expectedVisibleEntries;
         this.scrollBar.setMaxValueNoNotify(max);
 
         // This "request" workaround is needed because the ConfigScreenTabButtonListener
@@ -772,6 +772,11 @@ public abstract class BaseListWidget extends ContainerWidget implements ListEntr
         this.visibleListEntries = this.getEntryWidgetList().size();
 
         this.onListEntryWidgetsCreated();
+    }
+
+    protected int getFactoryTotalListWidgetCount()
+    {
+        return this.listEntryWidgetFactory.getTotalListWidgetCount();
     }
 
     @Override
@@ -813,7 +818,7 @@ public abstract class BaseListWidget extends ContainerWidget implements ListEntr
      */
     protected void onListEntryWidgetsCreated()
     {
-        if (this.getKeyboardNavigationIndex() >= this.getTotalListWidgetCount())
+        if (this.getKeyboardNavigationIndex() >= this.getFactoryTotalListWidgetCount())
         {
             this.setKeyboardNavigationIndex(-1);
         }
@@ -825,7 +830,7 @@ public abstract class BaseListWidget extends ContainerWidget implements ListEntr
         // from BaseScreen#initScreen() -> updateWidgetPositions() before the
         // data list has been populated. This prevents the requestedScrollBarPosition
         // from being essentially ignored and cleared too early.
-        if (this.getTotalListWidgetCount() > 0)
+        if (this.getFactoryTotalListWidgetCount() > 0)
         {
             this.requestedScrollBarPosition = -1;
         }
