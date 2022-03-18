@@ -369,7 +369,7 @@ public class InventoryRenderUtils
             InventoryRenderDefinition renderDefinition = InventoryRenderUtils.getInventoryType(stack);
 
             renderInventoryPreview(inv, renderDefinition, baseX, baseY, z, bgTintColor,
-                                   HorizontalAlignment.RIGHT, VerticalAlignment.TOP);
+                                   HorizontalAlignment.LEFT, VerticalAlignment.BOTTOM);
         }
     }
 
@@ -383,9 +383,8 @@ public class InventoryRenderUtils
         int screenHeight = GuiUtils.getScaledWindowHeight();
         int width = renderDefinition.getRenderWidth(inv);
         int height = renderDefinition.getRenderHeight(inv) + 8;
-        // FIXME: This seems very sus and reversed?
-        int x = baseX - width - horizontalAlignment.getXStartOffsetForEdgeAlignment(width);
-        int y = baseY - height - verticalAlignment.getYStartOffsetForEdgeAlignment(height);
+        int x = baseX + horizontalAlignment.getXStartOffsetForEdgeAlignment(width);
+        int y = baseY + verticalAlignment.getYStartOffsetForEdgeAlignment(height);
 
         x = MathHelper.clamp(x, 0, screenWidth - width);
         y = MathHelper.clamp(y, 0, screenHeight - height);
