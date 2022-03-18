@@ -1,11 +1,11 @@
 package fi.dy.masa.malilib.util;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.tuple.Pair;
@@ -15,12 +15,14 @@ import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.data.Constants;
 
 public class BlockUtils
@@ -287,24 +289,19 @@ public class BlockUtils
         return getFormattedBlockStateProperties(state, ": ");
     }
 
-    public static <T extends Comparable<T>> List<String> getFormattedBlockStateProperties(IBlockState state, String separator)
+    public static List<String> getFormattedBlockStateProperties(IBlockState state, String separator)
     {
-        if (state.getProperties().size() > 0)
+        Collection<IProperty<?>> properties = state.getPropertyKeys();
+
+        if (properties.size() > 0)
         {
             List<String> lines = new ArrayList<>();
 
             try
             {
-                for (Map.Entry<IProperty<?>, Comparable<?>> entry : state.getProperties().entrySet())
+                for (IProperty<?> prop : properties)
                 {
-                    @SuppressWarnings("unchecked")
-                    IProperty<T> prop = (IProperty<T>) entry.getKey();
-                    @SuppressWarnings("unchecked")
-                    Comparable<T> val = (Comparable<T>) entry.getValue();
-
-                    String propName = prop.getName();
-                    @SuppressWarnings("unchecked")
-                    String valStr = prop.getName((T) val);
+                    Comparable<?> val = state.getValue(prop);
                     String key;
 
                     if (prop instanceof PropertyBool)
@@ -316,6 +313,10 @@ public class BlockUtils
                     {
                         key = "malilib.label.block_state_properties.direction";
                     }
+                    else if (prop instanceof PropertyEnum)
+                    {
+                        key = "malilib.label.block_state_properties.enum";
+                    }
                     else if (prop instanceof PropertyInteger)
                     {
                         key = "malilib.label.block_state_properties.integer";
@@ -325,7 +326,56 @@ public class BlockUtils
                         key = "malilib.label.block_state_properties.generic";
                     }
 
-                    lines.add(StringUtils.translate(key, propName, separator, valStr));
+                    lines.add(StringUtils.translate(key, prop.getName(), separator, val.toString()));
+                }
+            }
+            catch (Exception ignore) {}
+
+            return lines;
+        }
+
+        return Collections.emptyList();
+    }
+
+
+    public static List<StyledTextLine> getBlockStatePropertyStyledTextLines(IBlockState state, String separator)
+    {
+        Collection<IProperty<?>> properties = state.getPropertyKeys();
+
+        if (properties.size() > 0)
+        {
+            List<StyledTextLine> lines = new ArrayList<>();
+
+            try
+            {
+                for (IProperty<?> prop : properties)
+                {
+                    Comparable<?> val = state.getValue(prop);
+                    String key;
+
+                    if (prop instanceof PropertyBool)
+                    {
+                        key = val.equals(Boolean.TRUE) ? "malilib.label.block_state_properties.boolean.true" :
+                                                         "malilib.label.block_state_properties.boolean.false";
+                    }
+                    else if (prop instanceof PropertyDirection)
+                    {
+                        key = "malilib.label.block_state_properties.direction";
+                    }
+                    else if (prop instanceof PropertyEnum)
+                    {
+                        key = "malilib.label.block_state_properties.enum";
+                    }
+                    else if (prop instanceof PropertyInteger)
+                    {
+                        key = "malilib.label.block_state_properties.integer";
+                    }
+                    else
+                    {
+                        key = "malilib.label.block_state_properties.generic";
+                    }
+
+                    lines.add(StyledTextLine.translate(key, prop.getName(), separator, val.toString()));
                 }
             }
             catch (Exception ignore) {}

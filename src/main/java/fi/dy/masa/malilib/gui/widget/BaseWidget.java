@@ -662,7 +662,7 @@ public class BaseWidget
         int w = this.getWidth();
         int h = this.getHeight();
 
-        if (hovered || ctx.debugRenderAll)
+        if (hovered || ctx.getDebugRenderAll())
         {
             renderDebugOutline(x, y, z, w, h, hovered, ctx);
 
@@ -677,12 +677,38 @@ public class BaseWidget
             }
         }
 
-        if (hovered || ctx.debugInfoAlways)
+        boolean debugInfoAlways = ctx.getDebugInfoAlways();
+
+        if (hovered || debugInfoAlways)
         {
-            int posX = ctx.debugInfoAlways ? x      : ctx.mouseX;
-            int posY = ctx.debugInfoAlways ? y - 12 : ctx.mouseY;
+            int posX = debugInfoAlways ? x      : ctx.mouseX;
+            int posY = debugInfoAlways ? y - 12 : ctx.mouseY;
             addDebugText(posX, posY, x, y, z, w, h, this.getClass().getName());
         }
+    }
+
+    public static int getMaxWidthFrom(BaseWidget... widgets)
+    {
+        int width = 0;
+
+        for (BaseWidget widget : widgets)
+        {
+            width = Math.max(width, widget.getWidth());
+        }
+
+        return width;
+    }
+
+    public static int getMaxHeightFrom(BaseWidget... widgets)
+    {
+        int height = 0;
+
+        for (BaseWidget widget : widgets)
+        {
+            height = Math.max(height, widget.getHeight());
+        }
+
+        return height;
     }
 
     public static void renderDebugOutline(double x, double y, double z, double w, double h,

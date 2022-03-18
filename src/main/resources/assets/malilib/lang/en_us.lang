@@ -207,6 +207,7 @@ malilib.label.action_widgets.type.radial=Radial
 malilib.label.block_state_properties.boolean.false=%s%s§c%s§r
 malilib.label.block_state_properties.boolean.true=%s%s§a%s§r
 malilib.label.block_state_properties.direction=%s%s§6%s§r
+malilib.label.block_state_properties.enum=%s%s§3%s§r
 malilib.label.block_state_properties.generic=%s%s%s
 malilib.label.block_state_properties.integer=%s%s§b%s§r
 malilib.label.boolean_config_status.enabled_condition=Enabled:

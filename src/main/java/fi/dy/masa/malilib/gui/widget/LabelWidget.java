@@ -19,6 +19,11 @@ public class LabelWidget extends InteractableWidget
     protected int totalHeight;
     protected int totalWidth;
 
+    public LabelWidget()
+    {
+        this(0, 0, -1, -1, 0xFFFFFFFF);
+    }
+
     public LabelWidget(String... text)
     {
         this(0xFFFFFFFF, text);

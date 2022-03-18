@@ -192,7 +192,7 @@ public class StyledTextLine
      * and the line breaks will be replaced by the string '\n'.
      * Uses the given startingStyle as the style builder base style.
      */
-    public static StyledTextLine translate(String translationKey, TextStyle startingStyle, Object... args)
+    public static StyledTextLine translate(TextStyle startingStyle, String translationKey, Object... args)
     {
         return of(StringUtils.translate(translationKey, args), startingStyle);
     }
