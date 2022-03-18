@@ -24,12 +24,13 @@ public class PositionUtils
     public static final long BITMASK_X = (1L << SIZE_BITS_X) - 1L;
     public static final long BITMASK_Y = (1L << SIZE_BITS_Y) - 1L;
     public static final long BITMASK_Z = (1L << SIZE_BITS_Z) - 1L;
-    public static final int BIT_SHIFT_Z = SIZE_BITS_Y;
+    public static final int BIT_SHIFT_Z = 0;
+    public static final int BIT_SHIFT_Y = SIZE_BITS_Z;
     public static final int BIT_SHIFT_X = SIZE_BITS_Y + SIZE_BITS_Z;
 
     public static long blockPosToLong(int x, int y, int z)
     {
-        return (((long) x & BITMASK_X) << BIT_SHIFT_X) | (((long) z & BITMASK_Z) << BIT_SHIFT_Z) | ((long) y & BITMASK_Y);
+        return (((long) x & BITMASK_X) << BIT_SHIFT_X) | (((long) y & BITMASK_Y) << BIT_SHIFT_Y) | (((long) z & BITMASK_Z) << BIT_SHIFT_Z);
     }
 
     public static int unpackX(long packedPos)
@@ -39,7 +40,7 @@ public class PositionUtils
 
     public static int unpackY(long packedPos)
     {
-        return (int) (packedPos << (64 - SIZE_BITS_Y) >> (64 - SIZE_BITS_Y));
+        return (int) (packedPos << (64 - BIT_SHIFT_Y - SIZE_BITS_Y) >> (64 - SIZE_BITS_Y));
     }
 
     public static int unpackZ(long packedPos)
