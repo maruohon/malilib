@@ -7,6 +7,7 @@ import net.minecraft.util.EnumFacing.AxisDirection;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
@@ -62,6 +63,11 @@ public class PositionUtils
         int z = (chunkZ << 4) + ((chunkRelativeBlockPos >> 4) & 0xF);
 
         return blockPosToLong(x, y, z);
+    }
+
+    public static ChunkPos chunkPosFromLong(long posLong)
+    {
+        return new ChunkPos((int) posLong, (int) (posLong >> 32));
     }
 
     public static BlockPos getMinCorner(BlockPos pos1, BlockPos pos2)

@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.render.inventory;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import org.apache.commons.lang3.tuple.Pair;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockChest;
@@ -61,7 +62,6 @@ import fi.dy.masa.malilib.util.inventory.InventoryUtils;
 import fi.dy.masa.malilib.util.inventory.InventoryView;
 import fi.dy.masa.malilib.util.inventory.VanillaInventoryView;
 import fi.dy.masa.malilib.util.position.Vec2i;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
 public class InventoryRenderUtils
 {
