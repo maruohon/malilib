@@ -587,12 +587,12 @@ malilib.config.comment.sortextensionmodoptions=Sorts the configs shown on the co
 malilib.config.comment.debugmessages=Enables some debug messages to the game console
 malilib.config.comment.guidebug=When enabled, all GUI widgets will draw their outlines, and when hovered, also their position and dimension info and the widget class name. If a key is set for Debug -> 'GUI Debug Key', then that key must be held for any of the debug rendering to happen.
 malilib.config.comment.guidebugall=If true, then all widgets will render the debug outline, otherwise only the hovered widget will render it
-malilib.config.comment.guidebuginfoalways=When enabled, the debug position and dimensions text is always rendered, even without hovering the widgets.\n16Note:§r This usually looks very messy!
+malilib.config.comment.guidebuginfoalways=When enabled, the debug position and dimensions text is always rendered, even without hovering the widgets.\n§eNote: This usually looks very messy!§r
 malilib.config.comment.infooverlaydebug=When enabled, the Info Overlay widgets and InfoAreas render debug outlines
 malilib.config.comment.keybinddebug=When enabled, key presses and held keys are printed to the game console (and the action bar and/or toast messages, if enabled)
-malilib.config.comment.keybinddebugactionbar=If enabled, then the messages from 'Keybind Debug' are printed to the action bar
-malilib.config.comment.keybinddebugtoast=If enabled, then the messages from 'Keybind Debug' are shown as toast messages
-malilib.config.comment.messagekeytochat=If enabled, then any messages that are sent using a translation/localization key will print that translation key to the game chat. This allows copying the translation key from chat if you want to add a message redirect/override for that message. Message Redirects can be configured via the config menu that opens by running the §eopenMessageRedirectsListScreen§r action either via the Action Prompt Screen or the §eActions§r config menu.
+malilib.config.comment.keybinddebugactionbar=If enabled, then the messages from §eKeyBind Debug§r are printed to the action bar
+malilib.config.comment.keybinddebugtoast=If enabled, then the messages from §eKeyBind Debug§r are shown as toast messages
+malilib.config.comment.messagekeytochat=If enabled, then any messages that are sent using a translation/localization key will print that translation key to the game chat. This allows copying the translation key from chat if you want to add a message redirect/override for that message.\n\nMessage Redirects can be configured via the config menu that opens by running the §eopenMessageRedirectsListScreen§r action either via the §3Action Prompt Screen§r (opened via the Hotkeys -> §eOpen Action Prompt Screen§r hotkey) or the §eActions§r config menu.
 
 malilib.config.comment.keybind_settings.activate_on=Does the keybind activate on press or release of the key combination
 malilib.config.comment.keybind_settings.allow_empty_keybind=Is an empty keybind valid.\nIf this is enabled, then the keybind will always be considered to be active.\nNote that this only affects keybinds that are checked to be held.\nThis doesn't affect keybinds that trigger an action on press (or release), like most toggle keys.
@@ -643,13 +643,13 @@ malilib.config.name.keybinddebugactionbar=KeyBind Debug In Action Bar
 malilib.config.name.keybinddebugtoast=KeyBind Debug Toast
 malilib.config.name.messagekeytochat=Print Message Key To Chat
 
-malilib.hotkey.comment.guidebugkey=The key that has to be held to render the GUI debug stuff, when the Debug -> 'GUI Debug' option is enabled
+malilib.hotkey.comment.guidebugkey=The key that has to be held to render the GUI debug stuff, when the Debug -> §eGUI Debug§r option is enabled
 malilib.hotkey.comment.ignoredkeys=Any keys set here will be completely ignored from the malilib hotkey system. This can be used to blacklist keys that cause issues or often get stuck for some reason.
 malilib.hotkey.comment.openactionpromptscreen=Open the action prompt screen for running actions by their name
 malilib.hotkey.comment.openconfigscreen=Open the malilib config screen
 malilib.hotkey.comment.scrollvalueadjustdecrease=The key to use for decreasing the value of "scroll-adjustable" configs
 malilib.hotkey.comment.scrollvalueadjustincrease=The key to use for increasing the value of "scroll-adjustable" configs
-malilib.hotkey.comment.scrollvalueadjustmodifier=The key that needs to be held for the scroll adjusting to be enabled.\nBy default this is set to NONE with Allow Empty Keybind enabled, that way you don't need to hold any extra keys in addition to the toggle keybind that the scroll adjusting is related to.\nIf you don't want scroll adjusting to happen "accidentally" while you are holding the toggle keybind and for example trying to scroll to change the selected hotbar slot, then you can set a key here (for example Shift) that you must additionally hold for the scroll adjusting to be possible.\nAlso note that the scroll adjusting is only enabled (for the handful of toggle keys that have it), when the Activate On setting is set to §6BOTH§r.
+malilib.hotkey.comment.scrollvalueadjustmodifier=The key that needs to be held for the scroll adjusting to be enabled.\n\nBy default this is set to §3NONE§r with §eAllow Empty Keybind§r enabled, that way you don't need to hold any extra keys in addition to the toggle keybind that the scroll adjusting is related to.\n\nIf you don't want scroll adjusting to happen "accidentally" while you are holding the toggle keybind and for example trying to scroll to change the selected hotbar slot, then you can set a key here (for example Shift) that you must additionally hold for the scroll adjusting to be possible.\n\nAlso note that the scroll adjusting is enabled (for the handful of toggle hotkeys that have it in the first place) only when the §eActivate On§r setting is set to §3BOTH§r.
 
 malilib.hotkey.name.csitogglekey=Toggle C.S.I. Group Enabled
 malilib.hotkey.name.guidebugkey=GUI Debug Key
