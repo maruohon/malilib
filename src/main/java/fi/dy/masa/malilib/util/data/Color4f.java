@@ -54,8 +54,28 @@ public class Color4f
     @Override
     public String toString()
     {
+        return getHexColorString(this.intValue);
+    }
+
+    public String getDebugString()
+    {
         return String.format("Color4f{hex=%s, a = %f, r = %f, g = %f, b = %f, intValue = %d}",
                              getHexColorString(this.intValue), this.a, this.r, this.g, this.b, this.intValue);
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o) {return true;}
+        if (o == null || this.getClass() != o.getClass()) {return false;}
+        Color4f color4f = (Color4f) o;
+        return this.intValue == color4f.intValue;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return this.intValue;
     }
 
     /**
@@ -65,6 +85,16 @@ public class Color4f
     {
         float alpha = ((color & 0xFF000000) >>> 24) / 255.0F;
         return fromColor(color, alpha);
+    }
+
+    /**
+     * @return a color value parsed from the given String argument.
+     * The supported formats are 3, 4, 6 or 8 digit HEX representations,
+     * with either a leading '#' or '0x' (one of them is required).
+     */
+    public static Color4f fromString(String str)
+    {
+        return fromColor(getColorFromString(str, 0xFFFFFFFF));
     }
 
     /**

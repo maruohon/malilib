@@ -3,7 +3,7 @@ package fi.dy.masa.malilib.gui.widget;
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.config.option.IntegerConfig;
+import fi.dy.masa.malilib.config.option.ColorConfig;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.edit.ColorEditorHSVScreen;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
@@ -15,14 +15,14 @@ public class ColorIndicatorWidget extends InteractableWidget
 {
     protected final IntSupplier valueSupplier;
     protected final IntConsumer valueConsumer;
-    @Nullable protected IntegerConfig config;
+    @Nullable protected ColorConfig config;
 
     public ColorIndicatorWidget(int width, int height, int color, IntConsumer consumer)
     {
         this(width, height, () -> color, consumer);
     }
 
-    public ColorIndicatorWidget(int width, int height, IntegerConfig config, IntConsumer consumer)
+    public ColorIndicatorWidget(int width, int height, ColorConfig config, IntConsumer consumer)
     {
         this(width, height, config::getIntegerValue, consumer);
 

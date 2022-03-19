@@ -7,7 +7,7 @@ import fi.dy.masa.malilib.util.data.RangedDoubleStorage;
 
 public class DoubleConfig extends BaseSliderConfig<Double> implements RangedDoubleStorage
 {
-    protected double doubleValue;
+    protected double effectiveDoubleValue;
     protected double minValue;
     protected double maxValue;
 
@@ -36,7 +36,7 @@ public class DoubleConfig extends BaseSliderConfig<Double> implements RangedDoub
     {
         super(name, defaultValue, comment, sliderActive);
 
-        this.doubleValue = defaultValue;
+        this.effectiveDoubleValue = defaultValue;
         this.minValue = minValue;
         this.maxValue = maxValue;
         this.sliderCallbackFactory = (listener) -> new DoubleSliderCallback(this, listener);
@@ -45,12 +45,12 @@ public class DoubleConfig extends BaseSliderConfig<Double> implements RangedDoub
     @Override
     public double getDoubleValue()
     {
-        return this.doubleValue;
+        return this.effectiveDoubleValue;
     }
 
     public float getFloatValue()
     {
-        return (float) this.doubleValue;
+        return (float) this.effectiveDoubleValue;
     }
 
     public double getDefaultDoubleValue()
@@ -61,24 +61,26 @@ public class DoubleConfig extends BaseSliderConfig<Double> implements RangedDoub
     @Override
     public boolean setValue(Double newValue)
     {
-        return this.setDoubleValue(newValue);
+        if (Double.isNaN(newValue) == false)
+        {
+            newValue = this.getClampedValue(newValue);
+            return super.setValue(newValue);
+        }
+
+        return false;
     }
 
     @Override
     public boolean setDoubleValue(double newValue)
     {
-        if (Double.isNaN(newValue) == false)
-        {
-            newValue = this.getClampedValue(newValue);
+        return this.setValue(newValue);
+    }
 
-            if (this.locked == false)
-            {
-                this.doubleValue = newValue;
-                return super.setValue(newValue);
-            }
-        }
-
-        return false;
+    @Override
+    protected void updateEffectiveValue()
+    {
+        super.updateEffectiveValue();
+        this.effectiveDoubleValue = this.effectiveValue;
     }
 
     @Override
@@ -96,13 +98,13 @@ public class DoubleConfig extends BaseSliderConfig<Double> implements RangedDoub
     public void setMinDoubleValue(double minValue)
     {
         this.minValue = minValue;
-        this.setValue(this.doubleValue);
+        this.setValue(this.value);
     }
 
     public void setMaxDoubleValue(double maxValue)
     {
         this.maxValue = maxValue;
-        this.setValue(this.doubleValue);
+        this.setValue(this.value);
     }
 
     protected double getClampedValue(double value)
@@ -116,16 +118,14 @@ public class DoubleConfig extends BaseSliderConfig<Double> implements RangedDoub
         {
             return Double.parseDouble(newValue) != this.defaultValue;
         }
-        catch (Exception ignore)
-        {
-        }
+        catch (Exception ignore) {}
 
         return true;
     }
 
     public String getStringValue()
     {
-        return String.valueOf(this.doubleValue);
+        return String.valueOf(this.effectiveDoubleValue);
     }
 
     public String getDefaultStringValue()
@@ -143,12 +143,5 @@ public class DoubleConfig extends BaseSliderConfig<Double> implements RangedDoub
         {
             MaLiLib.LOGGER.warn("Failed to set config value for {} from the string '{}'", this.getName(), value);
         }
-    }
-
-    @Override
-    public void loadValueFromConfig(Double value)
-    {
-        this.doubleValue = value;
-        super.loadValueFromConfig(value);
     }
 }

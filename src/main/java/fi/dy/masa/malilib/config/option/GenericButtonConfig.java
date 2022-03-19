@@ -34,6 +34,18 @@ public class GenericButtonConfig extends BaseConfig
         this.buttonListener = buttonListener;
     }
 
+    @Override
+    public boolean isModified()
+    {
+        return false;
+    }
+
+    @Override
+    public void resetToDefault()
+    {
+        // NO-OP
+    }
+
     public String getButtonText()
     {
         return this.buttonText;

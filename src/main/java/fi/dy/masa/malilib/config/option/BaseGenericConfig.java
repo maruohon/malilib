@@ -1,38 +1,40 @@
 package fi.dy.masa.malilib.config.option;
 
-public abstract class BaseGenericConfig<T> extends BaseConfigOption<T>
+import java.util.Objects;
+import fi.dy.masa.malilib.util.StringUtils;
+
+public abstract class BaseGenericConfig<T> extends BaseConfigOption<T> implements OverridableConfig<T>
 {
     protected final T defaultValue;
     protected T value;
+    protected T effectiveValue;
     protected T lastSavedValue;
+    protected T overrideValue;
+    protected boolean hasOverride;
 
     public BaseGenericConfig(String name, T defaultValue)
     {
-        super(name);
-
-        this.value = defaultValue;
-        this.defaultValue = defaultValue;
-
-        this.cacheSavedValue();
+        this(name, defaultValue, name, name, name);
     }
 
-    public BaseGenericConfig(String name, T defaultValue, String commentTranslationKey, Object... commentArgs)
+    public BaseGenericConfig(String name,
+                             T defaultValue,
+                             String commentTranslationKey, Object... commentArgs)
     {
-        super(name, commentTranslationKey, commentArgs);
-
-        this.value = defaultValue;
-        this.defaultValue = defaultValue;
-
-        this.cacheSavedValue();
+        this(name, defaultValue, name, name, commentTranslationKey, commentArgs);
     }
 
-    public BaseGenericConfig(String name, T defaultValue, String nameTranslationKey,
-                             String prettyNameTranslationKey, String commentTranslationKey, Object... commentArgs)
+    public BaseGenericConfig(String name,
+                             T defaultValue,
+                             String nameTranslationKey,
+                             String prettyNameTranslationKey,
+                             String commentTranslationKey, Object... commentArgs)
     {
         super(name, nameTranslationKey, prettyNameTranslationKey, commentTranslationKey, commentArgs);
 
-        this.value = defaultValue;
         this.defaultValue = defaultValue;
+        this.value = defaultValue;
+        this.effectiveValue = defaultValue;
 
         this.cacheSavedValue();
     }
@@ -40,7 +42,7 @@ public abstract class BaseGenericConfig<T> extends BaseConfigOption<T>
     @Override
     public T getValue()
     {
-        return this.value;
+        return this.effectiveValue;
     }
 
     public T getDefaultValue()
@@ -50,36 +52,86 @@ public abstract class BaseGenericConfig<T> extends BaseConfigOption<T>
 
     public boolean setValue(T newValue)
     {
-        T oldValue = this.value;
-
-        if (this.isLocked() == false && oldValue.equals(newValue) == false)
+        if (this.locked == false && Objects.equals(this.value, newValue) == false)
         {
             this.value = newValue;
-
-            // Re-fetch the current value, to take into account a possible value override
-            newValue = this.getValue();
-
-            if (oldValue.equals(newValue) == false)
-            {
-                this.onValueChanged(newValue, oldValue);
-            }
-
+            this.updateEffectiveValueAndNotify();
             return true;
         }
 
         return false;
     }
 
+    protected void updateEffectiveValue()
+    {
+        this.effectiveValue = this.hasOverride ? this.overrideValue : this.value;
+    }
+
+    protected void updateEffectiveValueAndNotify()
+    {
+        T oldValue = this.getValue();
+
+        this.updateEffectiveValue();
+
+        // Re-fetch the current value, to take into account a possible value override
+        T newValue = this.getValue();
+
+        if (Objects.equals(oldValue, newValue) == false)
+        {
+            this.onValueChanged(newValue, oldValue);
+        }
+    }
+
+    @Override
+    public boolean isLocked()
+    {
+        return super.isLocked() || this.hasOverride;
+    }
+
+    @Override
+    public boolean hasOverride()
+    {
+        return this.hasOverride;
+    }
+
+    @Override
+    public void enableOverrideWithValue(T overrideValue)
+    {
+        this.hasOverride = true;
+        this.overrideValue = overrideValue;
+        this.updateEffectiveValueAndNotify();
+        this.rebuildLockOverrideMessages();
+    }
+
+    @Override
+    public void disableOverride()
+    {
+        this.hasOverride = false;
+        this.updateEffectiveValueAndNotify();
+        this.rebuildLockOverrideMessages();
+    }
+
+    @Override
+    protected void rebuildLockOverrideMessages()
+    {
+        super.rebuildLockOverrideMessages();
+
+        if (this.hasOverride && this.overrideMessage != null)
+        {
+            this.lockOverrideMessages.add(StringUtils.translate(this.overrideMessage));
+        }
+    }
+
     @Override
     public boolean isModified()
     {
-        return this.value.equals(this.defaultValue) == false;
+        return Objects.equals(this.value, this.defaultValue) == false;
     }
 
     @Override
     public boolean isDirty()
     {
-        return this.value.equals(this.lastSavedValue) == false;
+        return Objects.equals(this.value, this.lastSavedValue) == false;
     }
 
     @Override
@@ -99,12 +151,13 @@ public abstract class BaseGenericConfig<T> extends BaseConfigOption<T>
      * This should set the value without calling the ValueChangeCallback,
      * but instead call the ValueLoadCallback and cache the current value
      * for the dirty checks by the {@link ConfigOption#isDirty()} method later on.
-     * @param value
+     * @param value the value being loaded
      */
     public void loadValueFromConfig(T value)
     {
         this.value = value;
         this.cacheSavedValue();
+        this.updateEffectiveValue();
         this.onValueLoaded(value);
     }
 }

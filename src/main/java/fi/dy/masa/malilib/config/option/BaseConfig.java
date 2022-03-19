@@ -9,10 +9,10 @@ import javax.annotation.Nullable;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.util.data.ModInfo;
 
-public class BaseConfig extends CommonDescription implements ConfigInfo
+public abstract class BaseConfig extends CommonDescription implements ConfigInfo
 {
-    protected final List<String> searchStrings = new ArrayList<>(0);
-    protected final List<String> oldNames = new ArrayList<>(0);
+    protected final ArrayList<String> searchStrings = new ArrayList<>(0);
+    protected final ArrayList<String> oldNames = new ArrayList<>(0);
     protected boolean locked;
     @Nullable protected EventListener labelClickHandler;
 
@@ -49,18 +49,6 @@ public class BaseConfig extends CommonDescription implements ConfigInfo
     public EventListener getLabelClickHandler()
     {
         return this.labelClickHandler;
-    }
-
-    @Override
-    public boolean isModified()
-    {
-        return false;
-    }
-
-    @Override
-    public void resetToDefault()
-    {
-        // NO-OP
     }
 
     @Override

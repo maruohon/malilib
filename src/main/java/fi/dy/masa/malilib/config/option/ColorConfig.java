@@ -2,10 +2,8 @@ package fi.dy.masa.malilib.config.option;
 
 import fi.dy.masa.malilib.util.data.Color4f;
 
-public class ColorConfig extends IntegerConfig
+public class ColorConfig extends BaseGenericConfig<Color4f>
 {
-    protected Color4f color;
-
     public ColorConfig(String name, String defaultValue)
     {
         this(name, defaultValue, name);
@@ -13,70 +11,39 @@ public class ColorConfig extends IntegerConfig
 
     public ColorConfig(String name, String defaultValue, String comment)
     {
-        super(name, Color4f.getColorFromString(defaultValue, 0), comment);
-
-        this.color = Color4f.fromColor(this.getIntegerValue());
+        super(name, Color4f.fromString(defaultValue), comment);
     }
 
     public Color4f getColor()
     {
-        return this.color;
+        return this.value;
     }
 
-    @Override
+    public int getIntegerValue()
+    {
+        return this.value.intValue;
+    }
+
+    public void setValueFromInt(int newValue)
+    {
+        this.setValue(Color4f.fromColor(newValue));
+    }
+
     public String getStringValue()
     {
-        return Color4f.getHexColorString(this.getIntegerValue());
+        return Color4f.getHexColorString(this.effectiveValue.intValue);
     }
 
-    @Override
-    public String getDefaultStringValue()
-    {
-        return Color4f.getHexColorString(this.getDefaultIntegerValue());
-    }
-
-    @Override
     public void setValueFromString(String value)
     {
-        this.setValue(Color4f.getColorFromString(value, 0));
-    }
-
-    @Override
-    public boolean setIntegerValue(int newValue)
-    {
-        if (this.locked == false)
-        {
-            if (newValue != this.integerValue)
-            {
-                this.color = Color4f.fromColor(newValue);
-            }
-
-            return super.setIntegerValue(newValue);
-        }
-
-        return false;
-    }
-
-    @Override
-    public boolean isModified(String newValue)
-    {
-        try
-        {
-            return Color4f.getColorFromString(newValue, 0) != this.getDefaultIntegerValue();
-        }
-        catch (Exception ignore)
-        {
-        }
-
-        return true;
+        this.setValue(Color4f.fromString(value));
     }
 
     public void loadColorValueFromString(String value)
     {
-        this.integerValue = this.getClampedValue(Color4f.getColorFromString(value, 0));
-        this.value = this.integerValue;
-        this.color = Color4f.fromColor(this.integerValue);
+        this.value = Color4f.fromString(value);
         this.cacheSavedValue();
-        this.onValueLoaded(this.integerValue);
+        this.updateEffectiveValue();
+        this.onValueLoaded(this.effectiveValue);
     }
 }

@@ -7,7 +7,7 @@ import fi.dy.masa.malilib.util.data.RangedIntegerStorage;
 
 public class IntegerConfig extends BaseSliderConfig<Integer> implements RangedIntegerStorage
 {
-    protected int integerValue;
+    protected int effectiveIntegerValue;
     protected int minValue;
     protected int maxValue;
 
@@ -35,7 +35,7 @@ public class IntegerConfig extends BaseSliderConfig<Integer> implements RangedIn
     {
         super(name, defaultValue, comment, sliderActive);
 
-        this.integerValue = defaultValue;
+        this.effectiveIntegerValue = defaultValue;
         this.minValue = minValue;
         this.maxValue = maxValue;
         this.sliderCallbackFactory = (listener) -> new IntegerSliderCallback(this, listener);
@@ -44,7 +44,7 @@ public class IntegerConfig extends BaseSliderConfig<Integer> implements RangedIn
     @Override
     public int getIntegerValue()
     {
-        return this.integerValue;
+        return this.effectiveIntegerValue;
     }
 
     public int getDefaultIntegerValue()
@@ -55,20 +55,21 @@ public class IntegerConfig extends BaseSliderConfig<Integer> implements RangedIn
     @Override
     public boolean setValue(Integer newValue)
     {
-        return this.setIntegerValue(newValue);
+        newValue = this.getClampedValue(newValue);
+        return super.setValue(newValue);
     }
 
     @Override
     public boolean setIntegerValue(int newValue)
     {
-        if (this.locked == false)
-        {
-            newValue = this.getClampedValue(newValue);
-            this.integerValue = newValue;
-            return super.setValue(newValue);
-        }
+        return this.setValue(newValue);
+    }
 
-        return false;
+    @Override
+    protected void updateEffectiveValue()
+    {
+        super.updateEffectiveValue();
+        this.effectiveIntegerValue = this.effectiveValue;
     }
 
     @Override
@@ -86,13 +87,13 @@ public class IntegerConfig extends BaseSliderConfig<Integer> implements RangedIn
     public void setMinIntegerValue(int minValue)
     {
         this.minValue = minValue;
-        this.setValue(this.integerValue);
+        this.setValue(this.value);
     }
 
     public void setMaxIntegerValue(int maxValue)
     {
         this.maxValue = maxValue;
-        this.setValue(this.integerValue);
+        this.setValue(this.value);
     }
 
     protected int getClampedValue(int value)
@@ -106,16 +107,14 @@ public class IntegerConfig extends BaseSliderConfig<Integer> implements RangedIn
         {
             return Integer.parseInt(newValue) != this.defaultValue;
         }
-        catch (Exception ignore)
-        {
-        }
+        catch (Exception ignore) {}
 
         return true;
     }
 
     public String getStringValue()
     {
-        return String.valueOf(this.integerValue);
+        return String.valueOf(this.effectiveIntegerValue);
     }
 
     public String getDefaultStringValue()
@@ -133,12 +132,5 @@ public class IntegerConfig extends BaseSliderConfig<Integer> implements RangedIn
         {
             MaLiLib.LOGGER.warn("Failed to set config value for {} from the string '{}'", this.getName(), value);
         }
-    }
-
-    @Override
-    public void loadValueFromConfig(Integer value)
-    {
-        this.integerValue = value;
-        super.loadValueFromConfig(value);
     }
 }

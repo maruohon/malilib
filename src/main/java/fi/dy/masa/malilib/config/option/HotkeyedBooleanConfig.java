@@ -127,9 +127,9 @@ public class HotkeyedBooleanConfig extends BooleanConfig implements Hotkey
 
     public void loadHotkeydBooleanValueFromConfig(boolean booleanValue)
     {
-        this.booleanValue = booleanValue;
         this.value = booleanValue;
         this.cacheSavedValue();
+        this.updateEffectiveValue();
         this.onValueLoaded(booleanValue);
     }
 }
