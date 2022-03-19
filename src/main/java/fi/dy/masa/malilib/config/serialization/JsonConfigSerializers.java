@@ -9,6 +9,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import fi.dy.masa.malilib.MaLiLib;
+import fi.dy.masa.malilib.config.option.DualColorConfig;
 import fi.dy.masa.malilib.config.option.HotkeyedBooleanConfig;
 import fi.dy.masa.malilib.config.option.OptionListConfig;
 import fi.dy.masa.malilib.config.option.list.BlackWhiteListConfig;
@@ -32,6 +33,40 @@ public class JsonConfigSerializers
             else
             {
                 MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}' - not a JSON primitive", configName, element);
+            }
+        }
+        catch (Exception e)
+        {
+            MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
+        }
+    }
+
+    public static JsonElement saveDualColorConfig(DualColorConfig config)
+    {
+        JsonObject obj = new JsonObject();
+        obj.add("color1", new JsonPrimitive(config.getFirstColorInt()));
+        obj.add("color2", new JsonPrimitive(config.getSecondColorInt()));
+        return obj;
+    }
+
+    public static void loadDualColorConfig(DualColorConfig config, JsonElement element, String configName)
+    {
+        try
+        {
+            if (element.isJsonObject())
+            {
+                JsonObject obj = element.getAsJsonObject();
+
+                if (JsonUtils.hasInteger(obj, "color1") &&
+                    JsonUtils.hasInteger(obj, "color2"))
+                {
+                    config.loadColorValueFromInts(JsonUtils.getInteger(obj, "color1"),
+                                                  JsonUtils.getInteger(obj, "color2"));
+                }
+            }
+            else
+            {
+                MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element);
             }
         }
         catch (Exception e)

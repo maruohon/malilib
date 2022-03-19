@@ -9,6 +9,7 @@ import fi.dy.masa.malilib.config.option.ColorConfig;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.config.option.DirectoryConfig;
 import fi.dy.masa.malilib.config.option.DoubleConfig;
+import fi.dy.masa.malilib.config.option.DualColorConfig;
 import fi.dy.masa.malilib.config.option.FileConfig;
 import fi.dy.masa.malilib.config.option.HotkeyConfig;
 import fi.dy.masa.malilib.config.option.HotkeyedBooleanConfig;
@@ -102,6 +103,7 @@ public class JsonConfigSerializerRegistry
         this.registerSerializers(StringConfig.class,    (c) -> new JsonPrimitive(c.getStringValue()),   (c, d, n) -> JsonConfigSerializers.loadGenericConfig(c::loadStringValueFromConfig,  d::getAsString, d, n));
 
         this.registerSerializers(BlackWhiteListConfig.class,    JsonConfigSerializers::saveBlackWhiteListConfig,    JsonConfigSerializers::loadBlackWhiteListConfig);
+        this.registerSerializers(DualColorConfig.class,         JsonConfigSerializers::saveDualColorConfig,         JsonConfigSerializers::loadDualColorConfig);
         this.registerSerializers(HotkeyedBooleanConfig.class,   JsonConfigSerializers::saveHotkeydBooleanConfig,    JsonConfigSerializers::loadHotkeydBooleanConfig);
         this.registerSerializers(OptionListConfig.class,        JsonConfigSerializers::saveOptionListConfig,        JsonConfigSerializers::loadOptionListConfig);
         this.registerSerializers(ValueListConfig.class,         JsonConfigSerializers::saveValueListConfig,         JsonConfigSerializers::loadValueListConfig);
