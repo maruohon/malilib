@@ -1,5 +1,11 @@
 package fi.dy.masa.malilib.config.util;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.Proxy;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -10,10 +16,10 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.client.Minecraft;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import net.minecraft.client.multiplayer.ServerData;
 import fi.dy.masa.malilib.MaLiLib;
-import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.action.ActionContext;
 import fi.dy.masa.malilib.config.ConfigManagerImpl;
 import fi.dy.masa.malilib.config.ModConfig;
@@ -42,49 +48,89 @@ public class ConfigOverrideUtils
 
     public static void applyConfigOverrides()
     {
-        if (GameUtils.isSinglePlayer() == false)
+        if (GameUtils.isSinglePlayer())
         {
-            Minecraft mc = GameUtils.getClient();
-            ServerData serverData = mc.getCurrentServerData();
+            return;
+        }
+
+        try
+        {
+            ServerData serverData = GameUtils.getClient().getCurrentServerData();
 
             if (serverData != null)
             {
                 String motd = serverData.serverMOTD;
                 String[] lines = motd.split("\\n");
 
-                if (lines.length >= 4 && lines[3].isEmpty() == false && lines[3].charAt(0) == '{')
+                for (int index = 3; index < lines.length; ++index)
                 {
-                    String jsonStr = lines[3];
-                    int lastBrace = jsonStr.lastIndexOf('}');
+                    String str = lines[index];
 
-                    // Strip away the ending '§r'
-                    if (lastBrace > 0)
+                    if (tryApplyOverridesFromString(str))
                     {
-                        jsonStr = jsonStr.substring(0, lastBrace + 1);
+                        return;
                     }
 
-                    JsonElement el = JsonUtils.parseJsonFromString(jsonStr);
-
-                    if (MaLiLibConfigs.Debug.DEBUG_MESSAGES.getBooleanValue())
+                    if (tryApplyOverridesFromURL(str))
                     {
-                        MaLiLib.LOGGER.info("Cleaned up config override JSON string: '{}'", jsonStr);
-                        MaLiLib.LOGGER.info("Parsed override JSON: '{}'", el);
-                    }
-
-                    if (el != null && el.isJsonObject())
-                    {
-                        applyConfigOverrides(el.getAsJsonObject());
+                        return;
                     }
                 }
             }
-            else
+        }
+        catch (Exception e)
+        {
+            MaLiLib.LOGGER.error("Exception while trying to apply config overrides", e);
+        }
+    }
+
+    protected static boolean tryApplyOverridesFromString(String str)
+    {
+        if (StringUtils.isBlank(str) || str.charAt(0) != '{')
+        {
+            return false;
+        }
+
+        int lastBrace = str.lastIndexOf('}');
+
+        if (lastBrace <= 1)
+        {
+            return false;
+        }
+
+        // Strip away the ending '§r'
+        str = str.substring(0, lastBrace + 1);
+
+        JsonElement el = JsonUtils.parseJsonFromString(str);
+
+        MaLiLib.debugLog("Cleaned up config override JSON string: '{}'", str);
+        MaLiLib.debugLog("Parsed override JSON: '{}'", el);
+
+        if (el != null && el.isJsonObject())
+        {
+            return applyConfigOverrides(el.getAsJsonObject());
+        }
+
+        return false;
+    }
+
+    protected static boolean tryApplyOverridesFromURL(String str)
+    {
+        if (str.startsWith("http://") || str.startsWith("https://"))
+        {
+            // Strip away the ending '§r'
+            str = str.substring(0, str.length() - 2);
+            System.out.printf("tryApplyOverridesFromURL(): %s\n", str);
+
+            String pageContent = tryFetchPage(str, 2000);
+
+            if (pageContent != null)
             {
-                getAllToggleConfigs().values().forEach((cfg) -> {
-                    cfg.setOverrideMessage("malilib.hover.config_override.error_getting_server_info_applying_fallback");
-                    cfg.enableOverrideWithValue(false);
-                });
+                return tryApplyOverridesFromString(pageContent.trim());
             }
         }
+
+        return false;
     }
 
     protected static ArrayListMultimap<String, BooleanConfig> getAllToggleConfigs()
@@ -116,16 +162,16 @@ public class ConfigOverrideUtils
         return configs;
     }
 
-    public static void applyConfigOverrides(JsonObject root)
+    public static boolean applyConfigOverrides(JsonObject root)
     {
-        if (JsonUtils.hasArray(root, "mod_features") == false)
+        if (JsonUtils.getStringOrDefault(root, "type", "?").equals("malilib_config_overrides") == false ||
+            JsonUtils.hasArray(root, "config_overrides") == false)
         {
-            return;
+            return false;
         }
 
         ArrayListMultimap<String, BooleanConfig> configs = getAllToggleConfigs();
-
-        JsonArray arrModFeatures = root.get("mod_features").getAsJsonArray();
+        JsonArray arrModFeatures = root.get("config_overrides").getAsJsonArray();
         final int size = arrModFeatures.size();
 
         for (int i = 0; i < size; ++i)
@@ -149,10 +195,7 @@ public class ConfigOverrideUtils
                 JsonArray overrideArr = obj.get("overrides").getAsJsonArray();
                 final int overridesSize = overrideArr.size();
 
-                if (MaLiLibConfigs.Debug.DEBUG_MESSAGES.getBooleanValue())
-                {
-                    MaLiLib.LOGGER.info("Found {} override definitions", overridesSize);
-                }
+                MaLiLib.debugLog("Found {} override definitions", overridesSize);
 
                 for (int overrideIndex = 0; overrideIndex < overridesSize; ++overrideIndex)
                 {
@@ -185,13 +228,11 @@ public class ConfigOverrideUtils
 
         if (overrideCount > 0)
         {
-            if (MaLiLibConfigs.Debug.DEBUG_MESSAGES.getBooleanValue())
-            {
-                MaLiLib.LOGGER.info("Applied {} feature overrides", overrideCount);
-            }
-
+            MaLiLib.debugLog("Applied {} feature overrides", overrideCount);
             MessageDispatcher.warning(8000).translate("malilib.message.info.feature_overrides_applied", overrideCount);
         }
+
+        return overrideCount > 0;
     }
 
     protected static void applyOverridesFrom(JsonObject obj,
@@ -201,7 +242,7 @@ public class ConfigOverrideUtils
                                              @Nullable String message)
     {
         String policy = JsonUtils.getStringOrDefault(obj, "policy", null);
-        boolean enableOverride = "deny".equals(policy);
+        boolean enableOverride = "deny".equalsIgnoreCase(policy);
         boolean overrideValue = JsonUtils.getBooleanOrDefault(obj, "inverse", false);
 
         for (String modId : configs.keySet())
@@ -225,20 +266,12 @@ public class ConfigOverrideUtils
 
                 if (enableOverride)
                 {
-                    if (MaLiLibConfigs.Debug.DEBUG_MESSAGES.getBooleanValue())
-                    {
-                        MaLiLib.LOGGER.info("Overriding status of '{}' to '{}'", cfg.getName(), overrideValue);
-                    }
-
+                    MaLiLib.debugLog("Overriding status of '{}' to '{}'", cfg.getName(), overrideValue);
                     cfg.enableOverrideWithValue(overrideValue);
                 }
                 else
                 {
-                    if (MaLiLibConfigs.Debug.DEBUG_MESSAGES.getBooleanValue())
-                    {
-                        MaLiLib.LOGGER.info("Disabling override for '{}'", cfg.getName());
-                    }
-
+                    MaLiLib.debugLog("Disabling override for '{}'", cfg.getName());
                     cfg.disableOverride();
                 }
             }
@@ -247,32 +280,8 @@ public class ConfigOverrideUtils
 
     protected static Predicate<String> getModFilterOrDefault(JsonObject obj, Predicate<String> defaultFilter)
     {
-        Predicate<String> filter = getModFilter(obj);
+        Predicate<String> filter = getStringTest(obj, "mod", "mod name filter");
         return filter != null ? filter : defaultFilter;
-    }
-
-    @Nullable
-    protected static Predicate<String> getModFilter(JsonObject obj)
-    {
-        Predicate<String> modFilter = null;
-
-        if (JsonUtils.hasString(obj, "mod"))
-        {
-            String filterStr = JsonUtils.getString(obj, "mod");
-
-            try
-            {
-                Pattern pattern = Pattern.compile(filterStr);
-                modFilter = (name) -> pattern.matcher(name).matches();
-            }
-            catch (Exception e)
-            {
-                MaLiLib.LOGGER.error("Failed to compile mod name filter regex '{}'", filterStr);
-                modFilter = (name) -> false;
-            }
-        }
-
-        return modFilter;
     }
 
     protected static Predicate<String> getFeatureFilterOrDefault(JsonObject obj, Predicate<String> defaultFilter)
@@ -282,37 +291,118 @@ public class ConfigOverrideUtils
     }
 
     @Nullable
-    protected static Predicate<String> getFeatureFilter(JsonObject obj)
+    protected static Predicate<String> getStringTest(JsonObject obj, String keyName, String errorMsgName)
     {
-        Predicate<String> featureFilter = null;
+        Predicate<String> test = null;
 
-        if (JsonUtils.hasString(obj, "feature_filter"))
+        if (JsonUtils.hasString(obj, keyName))
         {
-            String filterStr = JsonUtils.getString(obj, "feature_filter");
+            String str = JsonUtils.getString(obj, keyName);
 
             try
             {
-                Pattern pattern = Pattern.compile(filterStr);
-                featureFilter = (name) -> pattern.matcher(name).matches();
+                Pattern pattern = Pattern.compile(str);
+                test = (name) -> pattern.matcher(name).matches();
             }
             catch (Exception e)
             {
-                MaLiLib.LOGGER.error("Failed to compile mod feature filter regex '{}'", filterStr);
-                featureFilter = (name) -> false;
+                MaLiLib.LOGGER.error("Failed to compile {} regex '{}'", errorMsgName, str);
+                test = (name) -> false;
             }
         }
-        else if (JsonUtils.hasArray(obj, "features"))
+
+        return test;
+    }
+
+    @Nullable
+    protected static Predicate<String> getFeatureFilter(JsonObject obj)
+    {
+        Predicate<String> test = getStringTest(obj, "name_regex", "mod name");
+
+        if (test == null && JsonUtils.hasArray(obj, "features"))
         {
             final String prefix = JsonUtils.getStringOrDefault(obj, "name_prefix", "");
             final String suffix = JsonUtils.getStringOrDefault(obj, "name_suffix", "");
             final Set<String> names = new HashSet<>();
             JsonArray arr = obj.get("features").getAsJsonArray();
             final int size = arr.size();
-            for (int i = 0; i < size; ++i) { names.add(prefix + arr.get(i).getAsString() + suffix); }
 
-            featureFilter = names::contains;
+            for (int i = 0; i < size; ++i)
+            {
+                names.add(prefix + arr.get(i).getAsString() + suffix);
+            }
+
+            test = names::contains;
         }
 
-        return featureFilter;
+        return test;
+    }
+
+    protected static HttpURLConnection createUrlConnection(URL url, int timeout) throws IOException
+    {
+        MaLiLib.debugLog("Opening connection to {}", url);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection(Proxy.NO_PROXY);
+
+        connection.setConnectTimeout(timeout);
+        connection.setReadTimeout(timeout);
+        connection.setUseCaches(false);
+
+        return connection;
+    }
+
+    @Nullable
+    protected static String performGetRequest(URL url, int timeout) throws IOException
+    {
+        MaLiLib.debugLog("Reading data from: " + url);
+        HttpURLConnection connection = createUrlConnection(url, timeout);
+        InputStream inputStream = null;
+
+        try
+        {
+            inputStream = connection.getInputStream();
+            String result = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
+            MaLiLib.debugLog("Successful read, server response was: " + connection.getResponseCode());
+            MaLiLib.debugLog("Result: " + result);
+            return result;
+        }
+        catch (IOException e)
+        {
+            IOUtils.closeQuietly(inputStream);
+            inputStream = connection.getErrorStream();
+
+            if (inputStream != null)
+            {
+                MaLiLib.debugLog("Reading error page from: " + url);
+                final String result = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
+                MaLiLib.debugLog("Successful read, server response was: " + connection.getResponseCode());
+                MaLiLib.debugLog("Result: " + result);
+                return result;
+            }
+            else
+            {
+                MaLiLib.debugLog("Request failed", e);
+            }
+        }
+        finally
+        {
+            IOUtils.closeQuietly(inputStream);
+        }
+
+        return null;
+    }
+
+    @Nullable
+    public static String tryFetchPage(String pageURL, int timeout)
+    {
+        try
+        {
+            return performGetRequest(new URL(pageURL), timeout);
+        }
+        catch (Exception e)
+        {
+            MaLiLib.debugLog("Page fetch failed", e);
+        }
+
+        return null;
     }
 }

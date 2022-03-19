@@ -1,6 +1,7 @@
 package fi.dy.masa.malilib.config.option;
 
 import java.util.Objects;
+import javax.annotation.Nullable;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public abstract class BaseGenericConfig<T> extends BaseConfigOption<T> implements OverridableConfig<T>
@@ -10,6 +11,7 @@ public abstract class BaseGenericConfig<T> extends BaseConfigOption<T> implement
     protected T effectiveValue;
     protected T lastSavedValue;
     protected T overrideValue;
+    @Nullable protected String overrideMessage;
     protected boolean hasOverride;
 
     public BaseGenericConfig(String name, T defaultValue)
@@ -108,6 +110,13 @@ public abstract class BaseGenericConfig<T> extends BaseConfigOption<T> implement
     {
         this.hasOverride = false;
         this.updateEffectiveValueAndNotify();
+        this.rebuildLockOverrideMessages();
+    }
+
+    @Override
+    public void setOverrideMessage(@Nullable String translationKey)
+    {
+        this.overrideMessage = translationKey;
         this.rebuildLockOverrideMessages();
     }
 

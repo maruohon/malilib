@@ -18,7 +18,6 @@ public abstract class BaseConfigOption<T> extends BaseConfig implements ConfigOp
     @Nullable protected ValueChangeCallback<T> valueChangeCallback;
     @Nullable protected ValueLoadCallback<T> valueLoadCallback;
     @Nullable protected String lockMessage;
-    @Nullable protected String overrideMessage;
 
     public BaseConfigOption(String name)
     {
@@ -62,12 +61,6 @@ public abstract class BaseConfigOption<T> extends BaseConfig implements ConfigOp
     public void setLockMessage(@Nullable String translationKey)
     {
         this.lockMessage = translationKey;
-        this.rebuildLockOverrideMessages();
-    }
-
-    public void setOverrideMessage(@Nullable String translationKey)
-    {
-        this.overrideMessage = translationKey;
         this.rebuildLockOverrideMessages();
     }
 

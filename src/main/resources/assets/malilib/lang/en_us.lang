@@ -165,7 +165,6 @@ malilib.hover.config.option_list.total_values.allowed=Allowed values: §b%s§r /
 malilib.hover.config.option_list.total_values.disallowed=Disallowed values: §b%s§r / §b%s
 malilib.hover.config.search_default_scope=You can change the default scope that this drop down widget is set to in malilib's configs: Generic > Config Search Default Scope
 malilib.hover.config.string.default_value=Default: §a%s
-malilib.hover.config_override.error_getting_server_info_applying_fallback=§cError retrieving server info.\n§6All features have been disabled as a fall-back.
 malilib.hover.config_status_indicator.background_odd=Use a different background color for odd rows
 malilib.hover.custom_hotkey_edit_screen.add_actions=Add the selected actions to the hotkey
 malilib.hover.custom_hotkey_export_import_screen.append_overwrite=- Append = add the actions from the import to the end of the current actions in the hotkey\n- Overwrite = replace all the actions in the hotkey with the imported actions

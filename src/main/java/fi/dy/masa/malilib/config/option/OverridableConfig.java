@@ -1,5 +1,7 @@
 package fi.dy.masa.malilib.config.option;
 
+import javax.annotation.Nullable;
+
 public interface OverridableConfig<T>
 {
     /**
@@ -18,4 +20,10 @@ public interface OverridableConfig<T>
      * returned/visible value of the config.
      */
     void disableOverride();
+
+    /**
+     * Sets the hover info message that will appear on the config screen
+     * for any overridden/locked configs.
+     */
+    void setOverrideMessage(@Nullable String translationKey);
 }

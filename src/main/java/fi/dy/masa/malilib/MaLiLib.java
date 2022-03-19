@@ -11,4 +11,12 @@ public class MaLiLib
     {
         return MaLiLibConfigs.Generic.HIDE_ALL_COORDINATES.getBooleanValue() == false;
     }
+
+    public static void debugLog(String str, Object... args)
+    {
+        if (MaLiLibConfigs.Debug.DEBUG_MESSAGES.getBooleanValue())
+        {
+            LOGGER.info(str, args);
+        }
+    }
 }
