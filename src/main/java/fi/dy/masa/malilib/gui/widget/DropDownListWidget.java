@@ -370,6 +370,8 @@ public class DropDownListWidget<T> extends ContainerWidget
                 width = Math.max(width, this.getStringWidth(this.getDisplayString(entry)) + right);
             }
 
+            width += 8;
+
             if (entries.size() > 0)
             {
                 InteractableWidget iconWidget = this.createIconWidgetForEntry(this.lineHeight, entries.get(0));
@@ -446,19 +448,28 @@ public class DropDownListWidget<T> extends ContainerWidget
 
     protected void setOpen(boolean isOpen)
     {
+        boolean wasOpen = this.isOpen;
         this.isOpen = isOpen && this.isEnabled();
 
         this.reCreateListEntryWidgets();
 
         if (this.isOpen == false)
         {
-            this.setZ(this.getZ() - 50);
+            if (wasOpen)
+            {
+                this.setZ(this.getZ() - 50);
+            }
+
             this.setSearchOpen(false);
         }
         // setSearchOpen() already re-adds the widgets
         else
         {
-            this.setZ(this.getZ() + 50);
+            if (wasOpen == false)
+            {
+                this.setZ(this.getZ() + 50);
+            }
+
             // Add/remove the sub widgets as needed
             this.reAddSubWidgets();
         }
@@ -802,7 +813,7 @@ public class DropDownListWidget<T> extends ContainerWidget
 
             if (this.iconWidget != null)
             {
-                this.iconWidget.setPosition(x + 2, y + (height - this.iconWidget.getHeight()) / 2);
+                this.iconWidget.setPosition(x + 4, y + (height - this.iconWidget.getHeight()) / 2);
             }
 
             int openIconX = x + width - iconOpen.getWidth() - 2;
@@ -869,7 +880,7 @@ public class DropDownListWidget<T> extends ContainerWidget
             if (this.iconWidget != null)
             {
                 int xDiff = x - this.getX();
-                tx = this.iconWidget.getRight() + 4 + xDiff;
+                tx = this.iconWidget.getRight() + 3 + xDiff;
             }
 
             int textColor = dropDown.isEnabled() ? this.textColor : 0xFF505050;
@@ -1021,7 +1032,7 @@ public class DropDownListWidget<T> extends ContainerWidget
             if (this.iconWidget != null)
             {
                 int offY = (this.getHeight() - this.iconWidget.getHeight()) / 2;
-                this.iconWidget.setPosition(this.getX() + 1, this.getY() + offY);
+                this.iconWidget.setPosition(this.getX() + 3, this.getY() + offY);
             }
         }
 
@@ -1031,7 +1042,7 @@ public class DropDownListWidget<T> extends ContainerWidget
             super.renderAt(x, y, z, ctx);
 
             StyledTextLine text = this.isMouseOver(ctx.mouseX, ctx.mouseY) ? this.displayStringFull : this.displayStringClamped;
-            int tx = this.iconWidget != null ? this.iconWidget.getRight() + 4 : x + 4;
+            int tx = this.iconWidget != null ? this.iconWidget.getRight() + 3 : x + 4;
             int ty = y + (this.getHeight() - this.getFontHeight()) / 2;
 
             this.renderTextLine(tx, ty, z, this.textColor, true, text, ctx);

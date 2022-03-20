@@ -155,9 +155,8 @@ public class RadioButtonWidget<T extends Enum<T>> extends InteractableWidget
                 textOffsetX = icon.getWidth() + 3;
                 int iconHeight = icon.getHeight();
                 int iconY = y + (this.entryHeight - iconHeight) / 2;
-                boolean isMouseOverChoice = GuiUtils.isMouseInRegion(mouseX, mouseY, wx, y, width, this.entryHeight);
-                boolean entryHovered = hovered && isMouseOverChoice;
-                icon.renderAt(x, iconY, z, false, entryHovered);
+                boolean entryHovered = hovered && GuiUtils.isMouseInRegion(mouseX, mouseY, wx, y, width, this.entryHeight);
+                icon.renderAt(x, iconY, z, true, entryHovered);
             }
 
             final int textY = y + 1 + (this.entryHeight - this.getLineHeight()) / 2;
