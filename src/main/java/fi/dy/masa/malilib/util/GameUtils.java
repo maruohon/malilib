@@ -24,6 +24,12 @@ public class GameUtils
         return getClient().player;
     }
 
+    public static boolean isCreativeMode()
+    {
+        EntityPlayerSP player = getClientPlayer();
+        return player != null && player.capabilities.isCreativeMode;
+    }
+
     public static int getRenderDistanceChunks()
     {
         return getClient().gameSettings.renderDistanceChunks;

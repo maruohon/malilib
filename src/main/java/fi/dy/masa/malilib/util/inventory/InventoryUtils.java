@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.util.inventory;
 
 import java.util.List;
 import java.util.function.Consumer;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.apache.commons.lang3.tuple.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -19,7 +20,6 @@ import fi.dy.masa.malilib.util.GameUtils;
 import fi.dy.masa.malilib.util.data.Constants;
 import fi.dy.masa.malilib.util.data.IntRange;
 import fi.dy.masa.malilib.util.data.ItemType;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
 public class InventoryUtils
 {
@@ -212,7 +212,6 @@ public class InventoryUtils
     {
         Minecraft mc = GameUtils.getClient();
         EntityPlayer player = mc.player;
-        boolean isCreative = player.capabilities.isCreativeMode;
 
         // Already holding the requested item
         if (areStacksEqual(stackReference, player.getHeldItemMainhand(), ignoreNbt))
@@ -220,7 +219,7 @@ public class InventoryUtils
             return false;
         }
 
-        if (isCreative)
+        if (GameUtils.isCreativeMode())
         {
             player.inventory.setPickedItemStack(stackReference.copy());
             mc.playerController.sendSlotPacket(stackReference.copy(), 36 + player.inventory.currentItem);
