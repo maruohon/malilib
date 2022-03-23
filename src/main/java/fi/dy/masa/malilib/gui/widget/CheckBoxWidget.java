@@ -2,6 +2,7 @@ package fi.dy.masa.malilib.gui.widget;
 
 import java.util.function.BooleanSupplier;
 import javax.annotation.Nullable;
+import org.apache.commons.lang3.StringUtils;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
@@ -20,17 +21,42 @@ public class CheckBoxWidget extends InteractableWidget
     protected int textColorUnchecked = 0xB0B0B0B0;
     protected boolean currentValue;
 
-    public CheckBoxWidget(MultiIcon iconUnchecked, MultiIcon iconChecked, @Nullable String translationKey)
+    public CheckBoxWidget(@Nullable String translationKey,
+                          @Nullable String hoverInfoKey)
+    {
+        this(translationKey, hoverInfoKey, DefaultIcons.CHECKMARK_OFF, DefaultIcons.CHECKMARK_ON);
+    }
+
+    public CheckBoxWidget(@Nullable String translationKey,
+                          @Nullable String hoverInfoKey,
+                          MultiIcon iconUnchecked,
+                          MultiIcon iconChecked)
+    {
+        this(translationKey, iconUnchecked, iconChecked);
+
+        if (hoverInfoKey != null)
+        {
+            this.translateAndAddHoverString(hoverInfoKey);
+        }
+    }
+
+    public CheckBoxWidget(@Nullable String translationKey,
+                          MultiIcon iconUnchecked,
+                          MultiIcon iconChecked)
     {
         super(0, 0);
 
-        this.text = translationKey != null ? StyledTextLine.translate(translationKey) : null;
         this.iconUnchecked = iconUnchecked;
         this.iconChecked = iconChecked;
         this.textOffset.setYOffset(2);
 
         this.booleanConsumer = this::setBooleanValue;
         this.booleanSupplier = this::getBooleanValue;
+
+        if (StringUtils.isBlank(translationKey) == false)
+        {
+            this.text = StyledTextLine.translate(translationKey);
+        }
 
         int textWidth = this.text != null ? this.text.renderWidth : 0;
         int ih = iconChecked.getHeight();
@@ -40,32 +66,31 @@ public class CheckBoxWidget extends InteractableWidget
         this.updateCheckBoxState();
     }
 
-    public CheckBoxWidget()
+    public CheckBoxWidget(@Nullable String translationKey,
+                          BooleanStorage booleanStorage)
     {
-        this(DefaultIcons.CHECKMARK_OFF, DefaultIcons.CHECKMARK_ON, null);
+        this(translationKey, DefaultIcons.CHECKMARK_OFF, DefaultIcons.CHECKMARK_ON);
+
+        this.setBooleanStorage(booleanStorage);
     }
 
-    public CheckBoxWidget(BooleanSupplier booleanSupplier, BooleanConsumer booleanConsumer)
+    public CheckBoxWidget(@Nullable String translationKey,
+                          BooleanSupplier booleanSupplier,
+                          BooleanConsumer booleanConsumer)
     {
-        this(DefaultIcons.CHECKMARK_OFF, DefaultIcons.CHECKMARK_ON, null);
+        this(translationKey, DefaultIcons.CHECKMARK_OFF, DefaultIcons.CHECKMARK_ON);
 
         this.setBooleanStorage(booleanSupplier, booleanConsumer);
     }
 
-    public CheckBoxWidget(@Nullable String translationKey, @Nullable String hoverInfoKey)
+    public CheckBoxWidget(@Nullable String translationKey,
+                          @Nullable String hoverInfoKey,
+                          BooleanSupplier booleanSupplier,
+                          BooleanConsumer booleanConsumer)
     {
-        this(DefaultIcons.CHECKMARK_OFF, DefaultIcons.CHECKMARK_ON, translationKey, hoverInfoKey);
-    }
+        this(translationKey, hoverInfoKey, DefaultIcons.CHECKMARK_OFF, DefaultIcons.CHECKMARK_ON);
 
-    public CheckBoxWidget(MultiIcon iconUnchecked, MultiIcon iconChecked,
-                          @Nullable String translationKey, @Nullable String hoverInfoKey)
-    {
-        this(iconUnchecked, iconChecked, translationKey);
-
-        if (hoverInfoKey != null)
-        {
-            this.translateAndAddHoverString(hoverInfoKey);
-        }
+        this.setBooleanStorage(booleanSupplier, booleanConsumer);
     }
 
     public CheckBoxWidget setTextColorChecked(int color)
@@ -79,6 +104,12 @@ public class CheckBoxWidget extends InteractableWidget
     {
         this.textColorUnchecked = color;
         this.updateCheckBoxState();
+        return this;
+    }
+
+    public CheckBoxWidget setTranslationKey(String translationKey)
+    {
+        this.text = StyledTextLine.translate(translationKey);
         return this;
     }
 

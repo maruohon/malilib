@@ -83,14 +83,12 @@ public abstract class BaseRenderLayerEditScreen extends BaseTabbedScreen
         String label = "malilib.checkbox.render_layers.hotkey";
         String hover = "malilib.hover.checkbox.render_layers.hotkey";
 
-        CheckBoxWidget cb = new CheckBoxWidget(DefaultIcons.CHECKMARK_OFF, DefaultIcons.CHECKMARK_ON, label, hover);
-        cb.setBooleanStorage(layerRange::getMoveLayerRangeMax, layerRange::setMoveLayerRangeMax);
+        CheckBoxWidget cb = new CheckBoxWidget(label, hover, layerRange::getMoveLayerRangeMax, layerRange::setMoveLayerRangeMax);
         cb.setPosition(x, y + 4);
         this.addWidget(cb);
 
         y += 23;
-        cb = new CheckBoxWidget(DefaultIcons.CHECKMARK_OFF, DefaultIcons.CHECKMARK_ON, label, hover);
-        cb.setBooleanStorage(layerRange::getMoveLayerRangeMin, layerRange::setMoveLayerRangeMin);
+        cb = new CheckBoxWidget(label, hover, layerRange::getMoveLayerRangeMin, layerRange::setMoveLayerRangeMin);
         cb.setSelected(layerRange.getMoveLayerRangeMin(), false);
         cb.setPosition(x, y + 4);
         this.addWidget(cb);

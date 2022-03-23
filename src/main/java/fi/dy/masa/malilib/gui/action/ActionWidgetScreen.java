@@ -3,11 +3,11 @@ package fi.dy.masa.malilib.gui.action;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
+import com.google.common.collect.ImmutableList;
+import com.google.gson.JsonElement;
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
-import com.google.common.collect.ImmutableList;
-import com.google.gson.JsonElement;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.action.ActionContext;
 import fi.dy.masa.malilib.action.ActionExecutionWidgetManager;
@@ -73,12 +73,12 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
         this.infoWidget = new InfoIconWidget(DefaultIcons.INFO_ICON_18, "");
 
         this.closeOnExecuteCheckbox = new CheckBoxWidget("malilib.checkbox.action_widget_screen.close_on_execute",
-                                                         "malilib.hover.action.command_deck.close_screen_on_execute");
-        this.closeOnExecuteCheckbox.setBooleanStorage(this::shouldCloseScreenOnExecute, this::setCloseScreenOnExecute);
+                                                         "malilib.hover.action.command_deck.close_screen_on_execute",
+                                                         this::shouldCloseScreenOnExecute, this::setCloseScreenOnExecute);
 
         this.closeOnKeyReleaseCheckbox = new CheckBoxWidget("malilib.checkbox.action_widget_screen.close_on_key_release",
-                                                            "malilib.hover.action.command_deck.close_screen_on_key_release");
-        this.closeOnKeyReleaseCheckbox.setBooleanStorage(() -> this.closeScreenOnKeyRelease, this::setCloseScreenOnKeyRelease);
+                                                            "malilib.hover.action.command_deck.close_screen_on_key_release",
+                                                            () -> this.closeScreenOnKeyRelease, this::setCloseScreenOnKeyRelease);
 
         this.addWidgetButton = GenericButton.create(16, "malilib.button.action_widgets.add_action", this::openAddWidgetScreen);
 
