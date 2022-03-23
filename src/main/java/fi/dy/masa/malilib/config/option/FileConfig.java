@@ -42,6 +42,7 @@ public class FileConfig extends BaseStringConfig<File>
         this.stringValue = value;
         this.value = new File(value);
         this.cacheSavedValue();
-        this.onValueLoaded(this.value);
+        this.updateEffectiveValue();
+        this.onValueLoaded(this.effectiveValue);
     }
 }

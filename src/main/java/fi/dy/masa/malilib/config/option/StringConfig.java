@@ -37,6 +37,7 @@ public class StringConfig extends BaseStringConfig<String>
         this.stringValue = value;
         this.value = value;
         this.cacheSavedValue();
-        this.onValueLoaded(value);
+        this.updateEffectiveValue();
+        this.onValueLoaded(this.effectiveValue);
     }
 }

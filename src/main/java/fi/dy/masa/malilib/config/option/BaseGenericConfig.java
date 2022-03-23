@@ -167,6 +167,6 @@ public abstract class BaseGenericConfig<T> extends BaseConfigOption<T> implement
         this.value = value;
         this.cacheSavedValue();
         this.updateEffectiveValue();
-        this.onValueLoaded(value);
+        this.onValueLoaded(this.effectiveValue);
     }
 }
