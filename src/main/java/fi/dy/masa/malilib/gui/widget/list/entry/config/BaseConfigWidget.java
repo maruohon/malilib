@@ -1,24 +1,18 @@
 package fi.dy.masa.malilib.gui.widget.list.entry.config;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
-import fi.dy.masa.malilib.config.option.FileConfig;
-import fi.dy.masa.malilib.gui.BaseScreen;
-import fi.dy.masa.malilib.gui.FileSelectorScreen;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
-import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.list.entry.BaseDataListEntryWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
-import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.StringUtils;
 
 public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataListEntryWidget<CFG>
@@ -143,36 +137,6 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
         return false;
     }
 
-    protected GenericButton createFileSelectorWidgets(int y, final FileConfig config,
-                                                      final FileSelectorScreenFactory screenFactory,
-                                                      String buttonText, String hoverTextKey)
-    {
-        int x = this.getElementsStartPosition();
-        int elementWidth = this.getElementWidth();
-        File file = FileUtils.getCanonicalFileIfPossible(config.getValue());
-
-        ArrayList<String> lines = new ArrayList<>();
-        StringUtils.splitTextToLines(lines, StringUtils.translate(hoverTextKey, file.getAbsolutePath()), 280);
-
-        GenericButton button = GenericButton.create(elementWidth, 20, buttonText);
-        button.getHoverInfoFactory().setStringListProvider("path", () -> lines, 100);
-        button.getHoverInfoFactory().setStringListProvider("locked", config::getLockAndOverrideMessages, 101);
-        button.setEnabled(config.isLocked() == false);
-        button.setActionListener(() -> {
-            FileSelectorScreen browserScreen = screenFactory.create();
-            browserScreen.setParent(GuiUtils.getCurrentScreen());
-            BaseScreen.openScreen(browserScreen);
-        });
-        button.setPosition(x, y + 1);
-
-        this.addWidget(button);
-        this.addWidget(this.resetButton);
-
-        this.resetButton.setPosition(x + elementWidth + 4, y + 1);
-
-        return button;
-    }
-
     public int getMaxLabelWidth()
     {
         return this.ctx.getListWidget().getMaxLabelWidth();
@@ -188,10 +152,5 @@ public abstract class BaseConfigWidget<CFG extends ConfigInfo> extends BaseDataL
         int nestingLevel = this.ctx.getNestingLevel();
         int offset = this.getNestingOffset(nestingLevel);
         return this.getX() + this.getMaxLabelWidth() + offset + 10;
-    }
-
-    public interface FileSelectorScreenFactory
-    {
-        FileSelectorScreen create();
     }
 }
