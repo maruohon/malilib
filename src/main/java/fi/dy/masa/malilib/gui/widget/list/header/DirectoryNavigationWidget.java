@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -44,23 +43,27 @@ public class DirectoryNavigationWidget extends SearchBarWidget
     protected int pathStartX;
 
     public DirectoryNavigationWidget(int width, int height,
-                                     File currentDir, File rootDir, DirectoryNavigator navigator,
+                                     File currentDir,
+                                     File rootDir,
+                                     DirectoryNavigator navigator,
                                      FileBrowserIconProvider iconProvider,
-                                     Consumer<String> textChangeListener,
+                                     EventListener searchInputChangeListener,
                                      @Nullable EventListener openCloseListener)
     {
         this(width, height, currentDir, rootDir, navigator, iconProvider,
-             textChangeListener, openCloseListener, null);
+             searchInputChangeListener, openCloseListener, null);
     }
 
     public DirectoryNavigationWidget(int width, int height,
-                                     File currentDir, File rootDir, DirectoryNavigator navigator,
+                                     File currentDir,
+                                     File rootDir,
+                                     DirectoryNavigator navigator,
                                      FileBrowserIconProvider iconProvider,
-                                     Consumer<String> textChangeListener,
+                                     EventListener searchInputChangeListener,
                                      @Nullable EventListener openCloseListener,
                                      @Nullable Supplier<String> rootDirDisplayNameSupplier)
     {
-        super(width, height, textChangeListener, openCloseListener, iconProvider.getIcon(FileBrowserIconType.SEARCH));
+        super(width, height, searchInputChangeListener, openCloseListener, iconProvider.getIcon(FileBrowserIconType.SEARCH));
 
         this.currentDir = currentDir;
         this.rootDir = rootDir;

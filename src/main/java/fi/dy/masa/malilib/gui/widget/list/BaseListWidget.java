@@ -314,7 +314,7 @@ public abstract class BaseListWidget extends ContainerWidget implements ListEntr
 
     public void addDefaultSearchBar()
     {
-        this.searchBarWidget = new SearchBarWidget(this.getWidth() - 14, 14, this::onSearchBarChange,
+        this.searchBarWidget = new SearchBarWidget(this.getWidth() - 14, 14, this::onSearchBarTextChanged,
                                                    this::refreshFilteredEntries, DefaultIcons.SEARCH);
     }
 
@@ -437,12 +437,6 @@ public abstract class BaseListWidget extends ContainerWidget implements ListEntr
     protected boolean onEntryWidgetClicked(BaseListEntryWidget widget, int mouseX, int mouseY, int mouseButton)
     {
         return widget.tryMouseClick(mouseX, mouseY, mouseButton);
-    }
-
-    public void onSearchBarChange(String text)
-    {
-        this.resetScrollBarPositionWithoutNotify();
-        this.refreshFilteredEntries();
     }
 
     @Override
@@ -665,6 +659,12 @@ public abstract class BaseListWidget extends ContainerWidget implements ListEntr
         }
 
         return textFields;
+    }
+
+    public void onSearchBarTextChanged()
+    {
+        this.resetScrollBarPositionWithoutNotify();
+        this.refreshFilteredEntries();
     }
 
     public void refreshEntries()

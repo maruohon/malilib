@@ -17,15 +17,14 @@ public class SearchBarWidget extends ContainerWidget
     protected final BaseTextFieldWidget textField;
     protected HorizontalAlignment toggleButtonAlignment = HorizontalAlignment.LEFT;
     protected Vec2i searchBarOffset = Vec2i.ZERO;
-    @Nullable protected GenericButton searchToggleButton;
-    @Nullable protected EventListener geometryChangeListener;
     @Nullable protected EventListener openCloseListener;
+    @Nullable protected GenericButton searchToggleButton;
     protected boolean alwaysOpen;
     protected boolean isSearchOpen;
 
     public SearchBarWidget(int width,
                            int height,
-                           Consumer<String> textChangeListener,
+                           EventListener searchInputChangeListener,
                            @Nullable EventListener openCloseListener)
     {
         super(width, height);
@@ -36,16 +35,16 @@ public class SearchBarWidget extends ContainerWidget
         this.textField = new BaseTextFieldWidget(width - 7, height);
         this.textField.setUpdateListenerAlways(true);
         this.textField.setUpdateListenerFromTextSet(true);
-        this.textField.setListener(textChangeListener);
+        this.textField.setListener((s) -> searchInputChangeListener.onEvent());
     }
 
     public SearchBarWidget(int width,
                            int height,
-                           Consumer<String> textChangeListener,
+                           EventListener searchInputChangeListener,
                            @Nullable EventListener openCloseListener,
                            MultiIcon toggleButtonIcon)
     {
-        this(width, height, textChangeListener, openCloseListener);
+        this(width, height, searchInputChangeListener, openCloseListener);
 
         this.searchToggleButton = GenericButton.create(toggleButtonIcon, this::toggleSearchOpen);
         this.searchToggleButton.setPlayClickSound(false);
@@ -132,11 +131,6 @@ public class SearchBarWidget extends ContainerWidget
         this.textField.setListener(listener);
     }
 
-    public void setGeometryChangeListener(@Nullable EventListener geometryChangeListener)
-    {
-        this.geometryChangeListener = geometryChangeListener;
-    }
-
     public String getFilter()
     {
         return this.isSearchOpen() ? this.textField.getText() : "";
@@ -165,25 +159,14 @@ public class SearchBarWidget extends ContainerWidget
         }
 
         boolean wasOpen = this.isSearchOpen;
+
         this.isSearchOpen = isOpen;
-
-        if (this.isSearchOpen)
-        {
-            this.textField.setFocused(true);
-        }
-
+        this.textField.setFocused(this.isSearchOpen);
         this.reAddSubWidgets();
 
         if (this.openCloseListener != null && wasOpen != isOpen)
         {
             this.openCloseListener.onEvent();
-        }
-
-        // Update the parent or other listeners who may care about
-        // the search bar opening/closing and maybe changing in size
-        if (this.geometryChangeListener != null)
-        {
-            this.geometryChangeListener.onEvent();
         }
     }
 
@@ -198,8 +181,8 @@ public class SearchBarWidget extends ContainerWidget
             }
             else
             {
+                this.textField.setTextNoNotify("");
                 this.setSearchOpen(false);
-                this.textField.setText("");
             }
 
             return true;
@@ -211,7 +194,8 @@ public class SearchBarWidget extends ContainerWidget
     @Override
     public boolean onCharTyped(char charIn, int modifiers)
     {
-        if (this.isSearchOpen() == false && charIn != ' ')
+        // 0x7F = Delete key (wtf?)
+        if (this.isSearchOpen() == false && charIn != ' ' && charIn != 0x7F)
         {
             this.setSearchOpen(true);
             this.textField.onCharTyped(charIn, modifiers);

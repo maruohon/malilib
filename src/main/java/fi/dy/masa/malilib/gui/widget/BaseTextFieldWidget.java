@@ -188,6 +188,15 @@ public class BaseTextFieldWidget extends InteractableWidget
         return this;
     }
 
+    public BaseTextFieldWidget setTextNoNotify(String newText)
+    {
+        this.lastNotifiedText = newText;
+        this.setTextInternal(newText, false);
+        this.setCursorToEnd();
+
+        return this;
+    }
+
     protected BaseTextFieldWidget setTextInternal(String newText)
     {
         return this.setTextInternal(newText, this.updateListenerAlways);

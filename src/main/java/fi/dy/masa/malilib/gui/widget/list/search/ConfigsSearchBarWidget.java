@@ -2,7 +2,6 @@ package fi.dy.masa.malilib.gui.widget.list.search;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import org.lwjgl.input.Keyboard;
@@ -41,13 +40,14 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
 
     public ConfigsSearchBarWidget(int width,
                                   int openedHeight,
-                                  Consumer<String> textChangeListener,
-                                  EventListener filterChangeListener,
+                                  EventListener searchInputChangeListener,
+                                  EventListener openCloseListener,
+                                  EventListener configScopeChangeListener,
                                   MultiIcon iconSearch,
                                   EventListener configResetter,
                                   KeybindEditingScreen screen)
     {
-        super(width - 160, 14, textChangeListener, filterChangeListener, iconSearch);
+        super(width - 160, 14, searchInputChangeListener, openCloseListener, iconSearch);
 
         this.openedHeight = openedHeight;
         this.configResetter = configResetter;
@@ -59,7 +59,7 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
         this.hotkeySearchButton.setUpdateKeyBindImmediately();
         this.hotkeySearchButton.translateAndAddHoverString("malilib.hover.button.config.hotkey_search_button");
         this.hotkeySearchButton.setHoverInfoRequiresShift(false);
-        this.hotkeySearchButton.setValueChangeListener(filterChangeListener);
+        this.hotkeySearchButton.setValueChangeListener(searchInputChangeListener);
 
         this.resetConfigsButton = GenericButton.create(160, 16, "malilib.button.config.reset_all_filtered");
         this.resetConfigsButton.translateAndAddHoverString("malilib.hover.button.config.reset_all_filtered");
@@ -67,12 +67,12 @@ public class ConfigsSearchBarWidget extends SearchBarWidget
 
         this.sourceSelectionDropdown = new DropDownListWidget<>(-1, 14, 60, 10, Scope.VALUES, Scope::getDisplayName);
         this.sourceSelectionDropdown.setSelectedEntry(MaLiLibConfigs.Generic.CONFIG_SEARCH_DEFAULT_SCOPE.getValue());
-        this.sourceSelectionDropdown.setSelectionListener((s) -> filterChangeListener.onEvent());
+        this.sourceSelectionDropdown.setSelectionListener((s) -> configScopeChangeListener.onEvent());
         this.sourceSelectionDropdown.setOpenStateHoverText(StringUtils.translate("malilib.hover.config.search_default_scope"));
 
         this.typeFilterDropdown = new DropDownListWidget<>(-1, 14, 160, 10, TypeFilter.VALUES, TypeFilter::getDisplayName);
         this.typeFilterDropdown.setSelectedEntry(TypeFilter.ALL);
-        this.typeFilterDropdown.setSelectionListener((s) -> filterChangeListener.onEvent());
+        this.typeFilterDropdown.setSelectionListener((s) -> configScopeChangeListener.onEvent());
     }
 
     public KeyBind getKeybind()

@@ -92,7 +92,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
 
         this.navigationWidget = new DirectoryNavigationWidget(100, 14, this.currentDirectory,
                                                               rootDirectory, this, iconProvider,
-                                                              this::onSearchBarChange, this::refreshFilteredEntries,
+                                                              this::onSearchBarTextChanged, this::refreshFilteredEntries,
                                                               this::getRootDirectoryDisplayName);
         this.searchBarWidget = this.navigationWidget;
         this.searchBarWidget.getMargin().setTop(2);

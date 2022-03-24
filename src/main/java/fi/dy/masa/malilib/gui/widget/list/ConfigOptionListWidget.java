@@ -85,12 +85,21 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
 
     public void addConfigSearchBarWidget(KeybindEditingScreen screen)
     {
-        this.configsSearchBarWidget = new ConfigsSearchBarWidget(this.getWidth(), 32, this::onSearchBarChange,
-                                                                 this::refreshEntries, DefaultIcons.SEARCH,
-                                                                 this::resetFilteredConfigsToDefaults, screen);
-        this.configsSearchBarWidget.setGeometryChangeListener(this::updateSubWidgetPositions);
+        this.configsSearchBarWidget = new ConfigsSearchBarWidget(this.getWidth(), 32,
+                                                                 this::onSearchBarTextChanged,
+                                                                 this::onSearchOpenOrClose,
+                                                                 this::refreshEntries,
+                                                                 DefaultIcons.SEARCH,
+                                                                 this::resetFilteredConfigsToDefaults,
+                                                                 screen);
         this.configsSearchBarWidget.getMargin().setBottom(2);
         this.searchBarWidget = this.configsSearchBarWidget;
+    }
+
+    protected void onSearchOpenOrClose()
+    {
+        this.updateSubWidgetPositions();
+        this.refreshEntries();
     }
 
     protected void resetFilteredConfigsToDefaults()

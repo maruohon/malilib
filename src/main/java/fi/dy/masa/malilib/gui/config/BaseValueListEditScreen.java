@@ -67,7 +67,7 @@ public class BaseValueListEditScreen<TYPE> extends BaseListScreen<DataListWidget
     {
         DataListWidget<TYPE> listWidget = new DataListWidget<>(this.config::getValue, false);
 
-        SearchBarWidget searchBar = new SearchBarWidget(10, 14, listWidget::onSearchBarChange,
+        SearchBarWidget searchBar = new SearchBarWidget(10, 14, listWidget::onSearchBarTextChanged,
                                                         listWidget::refreshFilteredEntries, DefaultIcons.SEARCH);
         searchBar.setToggleButtonAlignment(HorizontalAlignment.RIGHT);
 
