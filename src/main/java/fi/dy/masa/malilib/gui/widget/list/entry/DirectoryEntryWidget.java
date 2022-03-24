@@ -7,6 +7,7 @@ import java.util.Date;
 import javax.annotation.Nullable;
 import fi.dy.masa.malilib.gui.icon.FileBrowserIconProvider;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
+import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
 import fi.dy.masa.malilib.gui.widget.InteractableWidget;
 import fi.dy.masa.malilib.gui.widget.list.BaseFileBrowserWidget;
@@ -15,9 +16,12 @@ import fi.dy.masa.malilib.gui.widget.list.BaseFileBrowserWidget.DirectoryEntryTy
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.gui.widget.list.ListEntryWidgetInitializer;
 import fi.dy.masa.malilib.gui.widget.list.header.DataColumn;
+import fi.dy.masa.malilib.render.ShapeRenderUtils;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.FileNameUtils;
 import fi.dy.masa.malilib.util.StringUtils;
+import fi.dy.masa.malilib.util.StyledTextUtils;
+import fi.dy.masa.malilib.util.data.LeftRight;
 
 public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry>
 {
@@ -38,6 +42,8 @@ public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry
     protected final BaseFileBrowserWidget fileBrowserWidget;
     protected final StyledTextLine fileSizeText;
     protected final StyledTextLine modificationTimeText;
+    protected final StyledTextLine fullNameText;
+    @Nullable protected StyledTextLine clampedNameText;
     protected boolean showSize;
     protected boolean showMTime;
     protected int sizeColumnEndX;
@@ -53,7 +59,7 @@ public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry
         this.fileBrowserWidget = fileBrowserWidget;
         this.getTextSettings().setTextShadowEnabled(false);
 
-        this.setText(StyledTextLine.raw(this.getDisplayName()));
+        this.fullNameText = StyledTextLine.raw(this.getDisplayName());
         this.getBackgroundRenderer().getNormalSettings().setEnabledAndColor(true, this.isOdd ? 0xFF202020 : 0xFF303030);
         this.getBackgroundRenderer().getHoverSettings().setColor(0xFF404040);
 
@@ -101,7 +107,6 @@ public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry
     public void renderAt(int x, int y, float z, ScreenContext ctx)
     {
         super.renderAt(x, y, z, ctx);
-
         this.renderInfoColumns(x, y, z, ctx);
     }
 
@@ -109,8 +114,25 @@ public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry
     {
         boolean hovered = this.isHoveredForRender(ctx);
         int color = this.getTextSettings().getEffectiveTextColor(hovered);
+        int nameColor = color;
         int usableHeight = this.getHeight() - this.padding.getVerticalTotal();
         int ty = this.getTextPositionY(y, usableHeight, this.getLineHeight());
+        float nameZ = this.clampedNameText != null ? z + 1.0125f : z + 0.0125f;
+        int height = this.getHeight();
+        StyledTextLine nameText = this.clampedNameText != null ? this.clampedNameText : this.fullNameText;
+
+        if (this.clampedNameText != null &&
+            GuiUtils.isMouseInRegion(ctx.mouseX, ctx.mouseY, x, y, NAME_COLUMN.getWidth(), height))
+        {
+            // Render a black background for the full name text
+            int bgWidth = this.fullNameText.renderWidth + 10;
+            int bgX = x + this.textOffset.getXOffset() - 3;
+            ShapeRenderUtils.renderOutlinedRectangle(bgX, y, z + 1.0f, bgWidth, height, 0xFF000000, 0xFFC0C0C0);
+            nameText = this.fullNameText;
+            nameColor = 0xFF40FFFF;
+        }
+
+        this.renderTextLine(x, y, nameZ, nameColor, nameText, ctx);
 
         if (this.showSize)
         {
@@ -186,6 +208,7 @@ public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry
         @Override
         public void applyToEntryWidgets(DataListWidget<DirectoryEntry> dataListWidget)
         {
+            int nameColumnWidth = NAME_COLUMN.getWidth() - 20;
             int timeColumnRight = TIME_COLUMN.getRelativeRight() - 3;
             int sizeColumnRight = SIZE_COLUMN.getRelativeRight() - 3;
 
@@ -199,6 +222,16 @@ public class DirectoryEntryWidget extends BaseDataListEntryWidget<DirectoryEntry
                     widget.showMTime = this.showFileMTime;
                     widget.mTimeColumnEndX = timeColumnRight;
                     widget.sizeColumnEndX = sizeColumnRight;
+
+                    if (widget.fullNameText.renderWidth >= nameColumnWidth)
+                    {
+                        widget.clampedNameText = StyledTextUtils.clampStyledTextToMaxWidth(
+                                widget.fullNameText, nameColumnWidth, LeftRight.RIGHT, " ...");
+                    }
+                    else
+                    {
+                        widget.clampedNameText = null;
+                    }
                 }
             }
         }

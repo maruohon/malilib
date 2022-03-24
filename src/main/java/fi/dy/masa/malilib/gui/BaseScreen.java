@@ -437,6 +437,9 @@ public abstract class BaseScreen extends GuiScreen
             this.getParent().drawScreen(mouseX, mouseY, partialTicks);
         }
 
+        RenderUtils.color(1f, 1f, 1f, 1f);
+        RenderUtils.setupBlend();
+
         // These are after the parent rendering, because the parent
         // can/will also both enable and disable the custom scale,
         // so it needs to be enabled here again in any case after
