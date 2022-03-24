@@ -10,7 +10,6 @@ import com.google.common.collect.ImmutableList;
 import com.ibm.icu.text.ArabicShaping;
 import com.ibm.icu.text.ArabicShapingException;
 import com.ibm.icu.text.Bidi;
-import org.apache.commons.io.IOUtils;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.resources.IResource;
 import net.minecraft.util.ResourceLocation;
@@ -53,45 +52,31 @@ public class TextRendererUtils
 
     public static void readGlyphSizes(byte[] glyphWidth)
     {
-        IResource resource = null;
-
-        try
+        try (IResource resource = GameUtils.getClient().getResourceManager().getResource(new ResourceLocation("font/glyph_sizes.bin")))
         {
-            resource = GameUtils.getClient().getResourceManager().getResource(new ResourceLocation("font/glyph_sizes.bin"));
-
             if (resource.getInputStream().read(glyphWidth) <= 0)
             {
                 MaLiLib.LOGGER.warn("Failed to read glyph sizes from 'font/glyph_sizes.bin'");
             }
         }
-        catch (IOException ioexception)
+        catch (IOException e)
         {
-            throw new RuntimeException(ioexception);
-        }
-        finally
-        {
-            IOUtils.closeQuietly(resource);
+            throw new RuntimeException(e);
         }
     }
 
     public static void readCharacterWidthsFromFontTexture(ResourceLocation texture, int[] charWidthArray,
                                                           IntConsumer glyphWidthListener, IntConsumer glyphHeightListener)
     {
-        IResource resource = null;
         BufferedImage bufferedImage;
 
-        try
+        try (IResource resource = GameUtils.getClient().getResourceManager().getResource(texture))
         {
-            resource = GameUtils.getClient().getResourceManager().getResource(texture);
             bufferedImage = TextureUtil.readBufferedImage(resource.getInputStream());
         }
-        catch (IOException ioexception)
+        catch (IOException e)
         {
-            throw new RuntimeException(ioexception);
-        }
-        finally
-        {
-            IOUtils.closeQuietly(resource);
+            throw new RuntimeException(e);
         }
 
         int imageWidth = bufferedImage.getWidth();
@@ -170,7 +155,8 @@ public class TextRendererUtils
 
         for (int i = 0; i < len; ++i, ++segmentLength)
         {
-            Glyph glyph = glyphSource.getGlyphFor(displayString.charAt(i));
+            char c = displayString.charAt(i);
+            Glyph glyph = glyphSource.getGlyphFor(c);
 
             // font sheet change, add the segment
             if (texture != null && glyph.texture != texture)

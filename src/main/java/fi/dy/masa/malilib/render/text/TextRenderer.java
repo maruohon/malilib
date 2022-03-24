@@ -227,9 +227,17 @@ public class TextRenderer implements IResourceManagerReloadListener
     {
         int width = this.asciiCharacterWidths[c];
 
+        // Get the index of the character on the font sheet
+        int characterLocation = VALID_ASCII_CHARACTERS.indexOf(c);
+
+        if (characterLocation == -1)
+        {
+            return EMPTY_GLYPH;
+        }
+
         // 16 characters per row and column
-        float u1 = (float) (c % 16) / 16.0F;
-        float v1 = (float) (c / 16) / 16.0F;
+        float u1 = (float) (characterLocation % 16) / 16.0F;
+        float v1 = (float) (characterLocation / 16) / 16.0F;
         float u2 = u1 + ((float) width / (float) this.asciiGlyphWidth / 16.0F);
         float v2 = v1 + 0.0625F;
         boolean whiteSpace = c == ' ' || c == '\t' || c == '\n';

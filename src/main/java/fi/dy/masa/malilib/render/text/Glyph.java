@@ -33,4 +33,23 @@ public class Glyph
         this.renderWidth = renderWidth;
         this.whiteSpace = whiteSpace;
     }
+
+    @Override
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder("Glyph{");
+
+        sb.append("texture=").append(this.texture);
+        sb.append(", u1=").append(this.u1);
+        sb.append(", u2=").append(this.u2);
+        sb.append(", v1=").append(this.v1);
+        sb.append(", v2=").append(this.v2);
+        sb.append(", width=").append(this.width);
+        sb.append(", height=").append(this.height);
+        sb.append(", renderWidth=").append(this.renderWidth);
+        sb.append(", whiteSpace=").append(this.whiteSpace);
+        sb.append('}');
+
+        return sb.toString();
+    }
 }
