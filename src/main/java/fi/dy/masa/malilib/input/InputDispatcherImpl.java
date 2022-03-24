@@ -3,10 +3,10 @@ package fi.dy.masa.malilib.input;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import fi.dy.masa.malilib.registry.Registry;
-import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 
 public class InputDispatcherImpl implements InputDispatcher
 {

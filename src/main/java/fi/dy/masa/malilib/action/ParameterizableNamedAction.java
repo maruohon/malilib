@@ -1,8 +1,8 @@
 package fi.dy.masa.malilib.action;
 
 import javax.annotation.Nullable;
-import org.apache.commons.lang3.StringUtils;
 import com.google.gson.JsonObject;
+import org.apache.commons.lang3.StringUtils;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.TextInputScreen;
 import fi.dy.masa.malilib.input.ActionResult;

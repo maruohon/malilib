@@ -5,11 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import fi.dy.masa.malilib.gui.tab.ScreenTab;
 import fi.dy.masa.malilib.gui.tab.TabbedScreenState;
 import fi.dy.masa.malilib.gui.widget.CyclableContainerWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
 public abstract class BaseTabbedScreen extends BaseScreen
 {

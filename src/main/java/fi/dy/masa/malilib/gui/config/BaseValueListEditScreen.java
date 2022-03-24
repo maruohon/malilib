@@ -10,11 +10,11 @@ import fi.dy.masa.malilib.config.value.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.BaseListScreen;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
-import fi.dy.masa.malilib.gui.widget.list.search.SearchBarWidget;
 import fi.dy.masa.malilib.gui.widget.list.DataListWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.BaseOrderableListEditEntryWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
 import fi.dy.masa.malilib.gui.widget.list.header.BaseDataListEditHeaderWidget;
+import fi.dy.masa.malilib.gui.widget.list.search.SearchBarWidget;
 import fi.dy.masa.malilib.listener.EventListener;
 
 public class BaseValueListEditScreen<TYPE> extends BaseListScreen<DataListWidget<TYPE>>

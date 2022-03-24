@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
-import fi.dy.masa.malilib.gui.BaseScreen;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import fi.dy.masa.malilib.gui.BaseScreen;
 
 public class DataListEntrySelectionHandler<DATATYPE>
 {

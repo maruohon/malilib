@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.IntUnaryOperator;
 import com.google.common.collect.ImmutableList;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.client.renderer.GlStateManager;
 import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.icon.PositionedIcon;
 import fi.dy.masa.malilib.render.RenderUtils;
 import fi.dy.masa.malilib.util.inventory.InventoryView;
 import fi.dy.masa.malilib.util.position.Vec2i;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
 public class InventoryRenderDefinition
 {

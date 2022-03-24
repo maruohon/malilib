@@ -6,12 +6,12 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.Nullable;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
 import com.google.common.collect.ImmutableList;
-import fi.dy.masa.malilib.MaLiLib;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
+import fi.dy.masa.malilib.MaLiLib;
 
 public class Keys
 {
