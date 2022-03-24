@@ -265,11 +265,14 @@ public class StringListRenderer extends BaseWidget
         int width = hovered ? this.getTotalRenderWidth() : this.getClampedRenderWidth();
         int leftPadding = this.padding.getLeft();
         int rightPadding = this.padding.getRight();
+        int topPadding = this.padding.getTop();
+        int bottomPadding = this.padding.getBottom();
         int horizontalPadding = leftPadding + rightPadding;
         int textLineX = x + leftPadding;
-        int textLineY = y + this.padding.getTop();
+        int textLineY = y + topPadding;
         int backgroundX = x;
         int backgroundY = y;
+        int fontHeight = this.getFontHeight();
         int lineHeight = this.getLineHeight();
         int size = lines.size();
         BufferBuilder buffer = null;
@@ -317,7 +320,8 @@ public class StringListRenderer extends BaseWidget
                 }
 
                 int bgColor = (i & 0x1) != 0 ? bgColorOdd : bgColorNormal;
-                ShapeRenderUtils.renderRectangle(backgroundX, backgroundY, z, backgroundWidth, lineHeight, bgColor, buffer);
+                int bgHeight = fontHeight + topPadding + bottomPadding;
+                ShapeRenderUtils.renderRectangle(backgroundX, backgroundY, z, backgroundWidth, bgHeight, bgColor, buffer);
                 backgroundY += lineHeight;
             }
 
