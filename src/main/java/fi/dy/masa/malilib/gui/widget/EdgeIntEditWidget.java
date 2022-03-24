@@ -32,10 +32,10 @@ public class EdgeIntEditWidget extends ContainerWidget
 
         if (isColor)
         {
-            this.topEdgeEditorWidget    = new ColorEditorWidget(ww, wh, value::getTop,    value::setTop);
-            this.rightEdgeEditorWidget  = new ColorEditorWidget(ww, wh, value::getRight,  value::setRight);
-            this.bottomEdgeEditorWidget = new ColorEditorWidget(ww, wh, value::getBottom, value::setBottom);
-            this.leftEdgeEditorWidget   = new ColorEditorWidget(ww, wh, value::getLeft,   value::setLeft);
+            this.topEdgeEditorWidget    = new ColorIndicatorAndEditWidget(ww, wh, value::getTop, value::setTop);
+            this.rightEdgeEditorWidget  = new ColorIndicatorAndEditWidget(ww, wh, value::getRight, value::setRight);
+            this.bottomEdgeEditorWidget = new ColorIndicatorAndEditWidget(ww, wh, value::getBottom, value::setBottom);
+            this.leftEdgeEditorWidget   = new ColorIndicatorAndEditWidget(ww, wh, value::getLeft, value::setLeft);
         }
         else
         {

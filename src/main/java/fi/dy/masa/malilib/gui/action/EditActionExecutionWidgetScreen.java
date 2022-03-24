@@ -7,7 +7,7 @@ import fi.dy.masa.malilib.gui.icon.Icon;
 import fi.dy.masa.malilib.gui.icon.IconRegistry;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.CheckBoxWidget;
-import fi.dy.masa.malilib.gui.widget.ColorEditorWidget;
+import fi.dy.masa.malilib.gui.widget.ColorIndicatorAndEditWidget;
 import fi.dy.masa.malilib.gui.widget.DropDownListWidget;
 import fi.dy.masa.malilib.gui.widget.FloatEditWidget;
 import fi.dy.masa.malilib.gui.widget.IconWidget;
@@ -48,12 +48,12 @@ public class EditActionExecutionWidgetScreen extends BaseScreen
     protected final CheckBoxWidget nameCenteredOnYCheckbox;
     protected final CheckBoxWidget iconCenteredOnXCheckbox;
     protected final CheckBoxWidget iconCenteredOnYCheckbox;
-    protected final ColorEditorWidget nameNormalColorEditWidget;
-    protected final ColorEditorWidget nameHoveredColorEditWidget;
-    protected final ColorEditorWidget hoveredBackgroundColorEditWidget;
-    protected final ColorEditorWidget normalBackgroundColorEditWidget;
-    protected final ColorEditorWidget hoveredBorderColorEditWidget;
-    protected final ColorEditorWidget normalBorderColorEditWidget;
+    protected final ColorIndicatorAndEditWidget nameNormalColorEditWidget;
+    protected final ColorIndicatorAndEditWidget nameHoveredColorEditWidget;
+    protected final ColorIndicatorAndEditWidget hoveredBackgroundColorEditWidget;
+    protected final ColorIndicatorAndEditWidget normalBackgroundColorEditWidget;
+    protected final ColorIndicatorAndEditWidget hoveredBorderColorEditWidget;
+    protected final ColorIndicatorAndEditWidget normalBorderColorEditWidget;
     protected final GenericButton cancelButton;
     protected final GenericButton removeIconButton;
     protected boolean shouldApplyValues = true;
@@ -127,14 +127,14 @@ public class EditActionExecutionWidgetScreen extends BaseScreen
         this.iconScaleYEditWidget = new FloatEditWidget(72, 16, widget.getIconScaleY(), 0, 100, widget::setIconScaleY);
 
         TextRenderSettings settings = widget.getTextSettings();
-        this.nameNormalColorEditWidget = new ColorEditorWidget(90, 16, settings::getTextColor, settings::setTextColor);
-        this.nameHoveredColorEditWidget = new ColorEditorWidget(90, 16, settings::getHoveredTextColor, settings::setHoveredTextColor);
+        this.nameNormalColorEditWidget = new ColorIndicatorAndEditWidget(90, 16, settings::getTextColor, settings::setTextColor);
+        this.nameHoveredColorEditWidget = new ColorIndicatorAndEditWidget(90, 16, settings::getHoveredTextColor, settings::setHoveredTextColor);
 
-        this.normalBackgroundColorEditWidget    = new ColorEditorWidget(90, 16, widget.getBackgroundRenderer().getNormalSettings()::getColor, widget.getBackgroundRenderer().getNormalSettings()::setColor);
-        this.hoveredBackgroundColorEditWidget   = new ColorEditorWidget(90, 16, widget.getBackgroundRenderer().getHoverSettings()::getColor, widget.getBackgroundRenderer().getHoverSettings()::setColor);
+        this.normalBackgroundColorEditWidget    = new ColorIndicatorAndEditWidget(90, 16, widget.getBackgroundRenderer().getNormalSettings()::getColor, widget.getBackgroundRenderer().getNormalSettings()::setColor);
+        this.hoveredBackgroundColorEditWidget   = new ColorIndicatorAndEditWidget(90, 16, widget.getBackgroundRenderer().getHoverSettings()::getColor, widget.getBackgroundRenderer().getHoverSettings()::setColor);
 
-        this.normalBorderColorEditWidget        = new ColorEditorWidget(90, 16, widget.getBorderRenderer().getNormalSettings().getColor());
-        this.hoveredBorderColorEditWidget       = new ColorEditorWidget(90, 16, widget.getBorderRenderer().getHoverSettings().getColor());
+        this.normalBorderColorEditWidget        = new ColorIndicatorAndEditWidget(90, 16, widget.getBorderRenderer().getNormalSettings().getColor());
+        this.hoveredBorderColorEditWidget       = new ColorIndicatorAndEditWidget(90, 16, widget.getBorderRenderer().getHoverSettings().getColor());
 
         this.backgroundColor = 0xFF101010;
         this.screenCloseListener = this::applyValues;

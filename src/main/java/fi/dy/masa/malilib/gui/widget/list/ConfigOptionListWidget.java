@@ -14,7 +14,7 @@ import fi.dy.masa.malilib.gui.config.ConfigTab;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.config.KeybindEditingScreen;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
-import fi.dy.masa.malilib.gui.widget.ConfigsSearchBarWidget;
+import fi.dy.masa.malilib.gui.widget.list.search.ConfigsSearchBarWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
 import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetFactory;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.BaseConfigWidget;

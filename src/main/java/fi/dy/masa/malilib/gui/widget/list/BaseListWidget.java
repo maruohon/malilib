@@ -16,7 +16,7 @@ import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
 import fi.dy.masa.malilib.gui.widget.ContainerWidget;
 import fi.dy.masa.malilib.gui.widget.InteractableWidget;
 import fi.dy.masa.malilib.gui.widget.ScrollBarWidget;
-import fi.dy.masa.malilib.gui.widget.SearchBarWidget;
+import fi.dy.masa.malilib.gui.widget.list.search.SearchBarWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.BaseListEntryWidget;
 import fi.dy.masa.malilib.gui.widget.list.header.DataListHeaderWidget;
 import fi.dy.masa.malilib.gui.widget.util.DefaultWidgetPositioner;

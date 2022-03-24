@@ -23,7 +23,7 @@ import fi.dy.masa.malilib.gui.TextInputScreen;
 import fi.dy.masa.malilib.gui.icon.DefaultFileBrowserIconProvider;
 import fi.dy.masa.malilib.gui.icon.FileBrowserIconProvider;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
-import fi.dy.masa.malilib.gui.widget.DirectoryNavigationWidget;
+import fi.dy.masa.malilib.gui.widget.list.header.DirectoryNavigationWidget;
 import fi.dy.masa.malilib.gui.widget.MenuEntryWidget;
 import fi.dy.masa.malilib.gui.widget.MenuWidget;
 import fi.dy.masa.malilib.gui.widget.list.BaseFileBrowserWidget.DirectoryEntry;

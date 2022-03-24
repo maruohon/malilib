@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.gui.widget;
+package fi.dy.masa.malilib.gui.widget.list.search;
 
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
@@ -6,6 +6,8 @@ import org.lwjgl.input.Keyboard;
 import fi.dy.masa.malilib.config.value.HorizontalAlignment;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
+import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
+import fi.dy.masa.malilib.gui.widget.ContainerWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.util.position.Vec2i;

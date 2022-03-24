@@ -12,7 +12,7 @@ import fi.dy.masa.malilib.config.option.IntegerConfig;
 import fi.dy.masa.malilib.config.option.OptionListConfig;
 import fi.dy.masa.malilib.config.option.StringConfig;
 import fi.dy.masa.malilib.config.value.KeybindDisplayMode;
-import fi.dy.masa.malilib.gui.widget.ConfigsSearchBarWidget.Scope;
+import fi.dy.masa.malilib.gui.widget.list.search.ConfigsSearchBarWidget.Scope;
 import fi.dy.masa.malilib.input.CancelCondition;
 import fi.dy.masa.malilib.input.Context;
 import fi.dy.masa.malilib.input.KeyAction;

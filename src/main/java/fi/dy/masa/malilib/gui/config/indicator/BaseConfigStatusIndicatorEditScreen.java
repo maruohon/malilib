@@ -6,7 +6,7 @@ import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.icon.DefaultIcons;
 import fi.dy.masa.malilib.gui.widget.BaseTextFieldWidget;
-import fi.dy.masa.malilib.gui.widget.ColorEditorWidget;
+import fi.dy.masa.malilib.gui.widget.ColorIndicatorAndEditWidget;
 import fi.dy.masa.malilib.gui.widget.LabelWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.overlay.widget.sub.BaseConfigStatusIndicatorWidget;
@@ -19,8 +19,8 @@ public class BaseConfigStatusIndicatorEditScreen <WIDGET extends BaseConfigStatu
     protected final LabelWidget valueColorLabel;
     protected final BaseTextFieldWidget nameTextFieldWidget;
     protected final GenericButton nameResetButton;
-    protected final ColorEditorWidget nameColorWidget;
-    protected final ColorEditorWidget valueColorWidget;
+    protected final ColorIndicatorAndEditWidget nameColorWidget;
+    protected final ColorIndicatorAndEditWidget valueColorWidget;
 
     public BaseConfigStatusIndicatorEditScreen(WIDGET widget, @Nullable GuiScreen parent)
     {
@@ -40,8 +40,8 @@ public class BaseConfigStatusIndicatorEditScreen <WIDGET extends BaseConfigStatu
         this.nameResetButton = GenericButton.create(DefaultIcons.RESET_12, this::resetName);
         this.nameResetButton.translateAndAddHoverString("malilib.hover.button.config.config_status_indicator.reset_name");
 
-        this.nameColorWidget = new ColorEditorWidget(90, 16, this.widget::getNameColor, this.widget::setNameColor);
-        this.valueColorWidget = new ColorEditorWidget(90, 16, this.widget::getValueColor, this.widget::setValueColor);
+        this.nameColorWidget = new ColorIndicatorAndEditWidget(90, 16, this.widget::getNameColor, this.widget::setNameColor);
+        this.valueColorWidget = new ColorIndicatorAndEditWidget(90, 16, this.widget::getValueColor, this.widget::setValueColor);
     }
 
     @Override

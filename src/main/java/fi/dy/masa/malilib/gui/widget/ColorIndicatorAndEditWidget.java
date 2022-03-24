@@ -5,7 +5,7 @@ import java.util.function.IntSupplier;
 import fi.dy.masa.malilib.util.data.Color4f;
 import fi.dy.masa.malilib.util.data.EdgeInt;
 
-public class ColorEditorWidget extends ContainerWidget
+public class ColorIndicatorAndEditWidget extends ContainerWidget
 {
     protected final IntSupplier colorInput;
     protected final IntConsumer colorOutput;
@@ -13,12 +13,12 @@ public class ColorEditorWidget extends ContainerWidget
     protected final ColorIndicatorWidget colorIndicator;
     protected final int originalColor;
 
-    public ColorEditorWidget(int width, int height, EdgeInt colorStorage)
+    public ColorIndicatorAndEditWidget(int width, int height, EdgeInt colorStorage)
     {
         this(width, height, colorStorage::getTop, colorStorage::setAll);
     }
 
-    public ColorEditorWidget(int width, int height, IntSupplier colorInput, IntConsumer colorOutput)
+    public ColorIndicatorAndEditWidget(int width, int height, IntSupplier colorInput, IntConsumer colorOutput)
     {
         super(width, height);
 

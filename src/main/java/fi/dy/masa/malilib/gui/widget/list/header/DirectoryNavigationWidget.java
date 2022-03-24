@@ -1,4 +1,4 @@
-package fi.dy.masa.malilib.gui.widget;
+package fi.dy.masa.malilib.gui.widget.list.header;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -17,7 +17,10 @@ import fi.dy.masa.malilib.gui.icon.FileBrowserIconProvider.FileBrowserIconType;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.util.ScreenContext;
+import fi.dy.masa.malilib.gui.widget.DropDownListWidget;
+import fi.dy.masa.malilib.gui.widget.InfoIconWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
+import fi.dy.masa.malilib.gui.widget.list.search.SearchBarWidget;
 import fi.dy.masa.malilib.gui.widget.util.DirectoryNavigator;
 import fi.dy.masa.malilib.listener.EventListener;
 import fi.dy.masa.malilib.render.ShapeRenderUtils;

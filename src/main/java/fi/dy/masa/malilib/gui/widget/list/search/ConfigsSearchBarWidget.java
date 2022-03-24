@@ -1,11 +1,11 @@
-package fi.dy.masa.malilib.gui.widget;
+package fi.dy.masa.malilib.gui.widget.list.search;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
-import org.lwjgl.input.Keyboard;
 import com.google.common.collect.ImmutableList;
+import org.lwjgl.input.Keyboard;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.config.value.BaseOptionListConfigValue;
@@ -16,6 +16,7 @@ import fi.dy.masa.malilib.gui.config.ConfigSearchInfo;
 import fi.dy.masa.malilib.gui.config.KeybindEditingScreen;
 import fi.dy.masa.malilib.gui.icon.MultiIcon;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
+import fi.dy.masa.malilib.gui.widget.DropDownListWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.button.KeyBindConfigButton;
 import fi.dy.masa.malilib.input.CancelCondition;
