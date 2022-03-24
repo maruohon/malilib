@@ -38,6 +38,7 @@ public class KeyBindConfigButton extends GenericButton
         this.setShouldReceiveOutsideClicks(true);
         this.setHoverInfoRequiresShift(true);
         this.setDisplayStringSupplier(this::getCurrentDisplayString);
+        this.updateConflicts();
     }
 
     public void setValueChangeListener(@Nullable EventListener valueChangeListener)
@@ -198,10 +199,15 @@ public class KeyBindConfigButton extends GenericButton
         this.selected = false;
         this.newKeys.clear();
         this.setHoverInfoRequiresShift(true);
-        this.updateConflicts();
         this.updateButtonState();
-
         this.notifyListener();
+    }
+
+    @Override
+    public void updateButtonState()
+    {
+        this.updateConflicts();
+        super.updateButtonState();
     }
 
     protected void notifyListener()
@@ -246,7 +252,7 @@ public class KeyBindConfigButton extends GenericButton
 
     protected List<String> getKeyBindHoverStrings()
     {
-        return this.isSelected() || this.isSelected() == false ? EMPTY_STRING_LIST : this.hoverStrings;
+        return this.isSelected() || this.isEnabled() == false ? EMPTY_STRING_LIST : this.hoverStrings;
     }
 
     protected void updateConflicts()
@@ -298,10 +304,10 @@ public class KeyBindConfigButton extends GenericButton
         this.overlapInfoSize = overlapInfo.size();
 
         boolean modified = this.keyBind.isModified();
+        boolean nonEmpty = this.keyBind.getKeys().isEmpty() == false;
 
         //if (modified)
         {
-            String label = StringUtils.translate("malilib.button.misc.default");
             String defaultStr = Keys.writeKeysToString(this.keyBind.getDefaultKeys(), " + ", Keys::charAsCharacter);
 
             if (org.apache.commons.lang3.StringUtils.isBlank(defaultStr))
@@ -309,10 +315,8 @@ public class KeyBindConfigButton extends GenericButton
                 defaultStr = StringUtils.translate("malilib.button.misc.none.caps");
             }
 
-            hoverStrings.add(label + ": " + defaultStr);
+            hoverStrings.add(StringUtils.translate("malilib.hover.button.keybind.default_value", defaultStr));
         }
-
-        boolean nonEmpty = this.keyBind.getKeys().isEmpty() == false;
 
         if (nonEmpty)
         {
@@ -323,7 +327,7 @@ public class KeyBindConfigButton extends GenericButton
         {
             if (modified || nonEmpty)
             {
-                hoverStrings.add("================");
+                hoverStrings.add("----------------");
             }
 
             hoverStrings.add(StringUtils.translate("malilib.hover.button.keybind.possible_overlaps"));

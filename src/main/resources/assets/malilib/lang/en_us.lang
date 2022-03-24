@@ -112,9 +112,10 @@ malilib.hover.button.export_import_screen.read_from_file=Read the settings from 
 malilib.hover.button.export_import_screen.write_to_file=Write the settings from the text field to a file\n(opens a file browser screen to select the file to save to)
 malilib.hover.button.full_button_label=§f%s
 malilib.hover.button.info_renderers_menu=Edit/manage Info Renderer Widgets
+malilib.hover.button.keybind.default_value=Default: [ §6%s§r ]
 malilib.hover.button.keybind.middle_click_to_clear=(Middle click to clear)
 malilib.hover.button.keybind.overlap_line=    - %s [ §6%s§r ]
-malilib.hover.button.keybind.possible_overlaps=Possible overlaps [<i>most are fine though!!</i>]:
+malilib.hover.button.keybind.possible_overlaps=Possible overlaps [<c=eee>most are fine though!!</c>]:
 malilib.hover.button.list.add_after=Add an entry after
 malilib.hover.button.list.add_first=Add an entry
 malilib.hover.button.list.move_down=Move Down
