@@ -18,13 +18,14 @@ import fi.dy.masa.malilib.registry.Registry;
  * <br><br>
  * The packet format is:<br>
  *         - InfoType (string - one of: "message", "toast", "custom_hotbar", "vanilla_hotbar", "chat")<br>
- *         - hasLocation (boolean)<br>
- *         - hasMarker (boolean)<br>
  *         - displayTimeMs (varInt)<br>
- *         - [if type != "toast"] color (int) - the default text color, if the text does not use formatting/color codes<br>
+ *         - color (int) - the default text color, if the text does not use formatting/color codes<br>
+ *         - hasLocation (boolean)<br>
  *         - [if hasLocation] ScreenLocation (string - one of: "bottom_left", "bottom_right", "bottom_center",
  *           "top_left", "top_right", "top_center", "center", "center_left", "center_right")<br>
- *         - [if hasMarker] marker (string) - this allows appending to a previous toast message with the same marker, if the previous message still young enough. Maximum length is 64 characters.<br>
+ *         - hasMarker (boolean)<br>
+ *         - [if hasMarker] marker (string) - this allows appending to a previous toast message with the same marker,
+ *           if the previous message is still young enough. Maximum length is 64 characters.<br>
  *         - message (string) - the message text, maximum length is 8192 characters. Supports malilib's custom text
  *           styling options as well as vanilla chat format codes.
  */
@@ -45,34 +46,35 @@ public class MessagePacketHandler implements PluginChannelHandler
     public void onPacketReceived(PacketBuffer buf)
     {
         // type (string)
-        // hasLocation (boolean)
-        // hasMarker (boolean)
         // displayTimeMs (varInt)
-        // [if type != "toast"] color (int)
+        // color (int)
+        // hasLocation (boolean)
         // [if hasLocation] ScreenLocation (string)
+        // hasMarker (boolean)
         // [if hasMarker] marker (string)
         // message (string)
 
         @Nullable ScreenLocation location = null;
         @Nullable String marker = null;
         MessageOutput type = MessageOutput.findValueByName(buf.readString(16), MessageOutput.getValues());
-        boolean hasLocation = buf.readBoolean();
-        boolean hasMarker = buf.readBoolean();
         int displayTimeMs = buf.readVarInt();
-        int defaultColor = type != MessageOutput.TOAST ? buf.readInt() : 0xFFFFFFFF;
-        String message;
+        int defaultColor = buf.readInt();
+
+        boolean hasLocation = buf.readBoolean();
 
         if (hasLocation)
         {
             location = ScreenLocation.findValueByName(buf.readString(16), ScreenLocation.VALUES);
         }
 
+        boolean hasMarker = buf.readBoolean();
+
         if (hasMarker)
         {
             marker = buf.readString(64);
         }
 
-        message = buf.readString(8192);
+        String message = buf.readString(8192);
 
         MessageDispatcher.generic(displayTimeMs)
                 .type(type)
