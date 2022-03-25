@@ -2,6 +2,8 @@ package fi.dy.masa.malilib.config;
 
 import java.io.File;
 import java.util.List;
+import java.util.function.BooleanSupplier;
+import java.util.function.IntSupplier;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.config.category.ConfigOptionCategory;
 import fi.dy.masa.malilib.util.data.ModInfo;
@@ -12,10 +14,10 @@ public abstract class BaseModConfig implements ModConfig
     protected final String configFileName;
     protected final List<ConfigOptionCategory> configOptionCategories;
     protected final int currentConfigVersion;
+    protected IntSupplier backupCountSupplier = MaLiLibConfigs.Generic.CONFIG_BACKUP_COUNT::getIntegerValue;
+    protected BooleanSupplier antiDuplicateSupplier = MaLiLibConfigs.Generic.CONFIG_BACKUP_ANTI_DUPLICATE::getBooleanValue;
     protected String backupDirectoryName = "config_backups";
-    protected int backupCount = MaLiLibConfigs.Generic.CONFIG_BACKUP_COUNT.getIntegerValue();
     protected int savedConfigVersion;
-    protected boolean antiDuplicate = MaLiLibConfigs.Generic.CONFIG_BACKUP_ANTI_DUPLICATE.getBooleanValue();
 
     public BaseModConfig(ModInfo modInfo, String configFileName, int currentConfigVersion,
                          List<ConfigOptionCategory> configOptionCategories)
@@ -58,9 +60,14 @@ public abstract class BaseModConfig implements ModConfig
     /**
      * Sets the maximum number of backup copies to keep of the config file
      */
-    public void setBackupCount(int backupCount)
+    public void setBackupCountSupplier(IntSupplier backupCountSupplier)
     {
-        this.backupCount = backupCount;
+        this.backupCountSupplier = backupCountSupplier;
+    }
+
+    public void setAntiDuplicateSupplier(BooleanSupplier antiDuplicateSupplier)
+    {
+        this.antiDuplicateSupplier = antiDuplicateSupplier;
     }
 
     /**
