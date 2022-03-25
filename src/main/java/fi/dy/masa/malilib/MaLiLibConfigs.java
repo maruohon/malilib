@@ -13,9 +13,6 @@ import fi.dy.masa.malilib.config.option.OptionListConfig;
 import fi.dy.masa.malilib.config.option.StringConfig;
 import fi.dy.masa.malilib.config.value.KeybindDisplayMode;
 import fi.dy.masa.malilib.gui.widget.list.search.ConfigsSearchBarWidget.Scope;
-import fi.dy.masa.malilib.input.CancelCondition;
-import fi.dy.masa.malilib.input.Context;
-import fi.dy.masa.malilib.input.KeyAction;
 import fi.dy.masa.malilib.input.KeyBindSettings;
 import fi.dy.masa.malilib.overlay.message.MessageOutput;
 import fi.dy.masa.malilib.util.ListUtils;
@@ -88,7 +85,7 @@ public class MaLiLibConfigs
 
     public static class Hotkeys
     {
-        public static final KeyBindSettings SCROLL_ADJUST = KeyBindSettings.create(Context.INGAME, KeyAction.PRESS, true, true, false, CancelCondition.ON_SUCCESS, false, 50, false, false, MessageOutput.NONE);
+        public static final KeyBindSettings SCROLL_ADJUST = KeyBindSettings.builder().extra().order().messageOutput(MessageOutput.NONE).showToast(false).build();
 
         public static final HotkeyConfig IGNORED_KEYS                           = new HotkeyConfig("ignoredKeys", "", KeyBindSettings.INGAME_SUCCESS);
         public static final HotkeyConfig OPEN_ACTION_PROMPT_SCREEN              = new HotkeyConfig("openActionPromptScreen", "");
@@ -110,13 +107,11 @@ public class MaLiLibConfigs
 
     public static class Debug
     {
-        public static final KeyBindSettings DBG_KS = KeyBindSettings.create(Context.GUI, KeyAction.PRESS, true, false, false, CancelCondition.NEVER, true);
-
         public static final BooleanConfig DEBUG_MESSAGES            = new BooleanConfig("debugMessages", false);
         public static final BooleanConfig GUI_DEBUG                 = new BooleanConfig("guiDebug", false);
         public static final BooleanConfig GUI_DEBUG_ALL             = new BooleanConfig("guiDebugAll", true);
         public static final BooleanConfig GUI_DEBUG_INFO_ALWAYS     = new BooleanConfig("guiDebugInfoAlways", false);
-        public static final HotkeyConfig  GUI_DEBUG_KEY             = new HotkeyConfig("guiDebugKey", "LMENU", DBG_KS);
+        public static final HotkeyConfig  GUI_DEBUG_KEY             = new HotkeyConfig("guiDebugKey", "LMENU", KeyBindSettings.GUI_MODIFIER);
         public static final BooleanConfig INFO_OVERLAY_DEBUG        = new BooleanConfig("infoOverlayDebug", false);
         public static final BooleanConfig KEYBIND_DEBUG             = new BooleanConfig("keybindDebug", false);
         public static final BooleanConfig KEYBIND_DEBUG_ACTIONBAR   = new BooleanConfig("keybindDebugActionBar", false);

@@ -93,19 +93,18 @@ public class KeyBindSettingsConfigs
 
     public KeyBindSettings getCurrentSettings()
     {
-        KeyAction activateOn = this.cfgActivateOn.getValue();
-        Context context = this.cfgContext.getValue();
-        boolean allowEmpty = this.cfgAllowEmpty.getBooleanValue();
-        boolean allowExtraKeys = this.cfgAllowExtra.getBooleanValue();
-        boolean orderSensitive = this.cfgOrderSensitive.getBooleanValue();
-        boolean exclusive = this.cfgExclusive.getBooleanValue();
-        boolean firstOnly = this.cfgFirstOnly.getBooleanValue();
-        int priority = this.cfgPriority.getIntegerValue();
-        boolean showToast = this.cfgShowToast.getBooleanValue();
-        CancelCondition cancel = this.cfgCancel.getValue();
-        MessageOutput messageOutput = this.cfgMessageType.getValue();
-
-        return KeyBindSettings.create(context, activateOn, allowExtraKeys, orderSensitive, exclusive,
-                                      cancel, allowEmpty, priority, firstOnly, showToast, messageOutput);
+        return KeyBindSettings.builder()
+                .context(this.cfgContext.getValue())
+                .activateOn(this.cfgActivateOn.getValue())
+                .allowExtraKeys(this.cfgAllowExtra.getBooleanValue())
+                .orderSensitive(this.cfgOrderSensitive.getBooleanValue())
+                .cancel(this.cfgCancel.getValue())
+                .exclusive(this.cfgExclusive.getBooleanValue())
+                .firstOnly(this.cfgFirstOnly.getBooleanValue())
+                .priority(this.cfgPriority.getIntegerValue())
+                .allowEmpty(this.cfgAllowEmpty.getBooleanValue())
+                .showToast(this.cfgShowToast.getBooleanValue())
+                .messageOutput(this.cfgMessageType.getValue())
+                .build();
     }
 }
