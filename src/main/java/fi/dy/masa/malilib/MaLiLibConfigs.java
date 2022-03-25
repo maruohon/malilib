@@ -49,6 +49,7 @@ public class MaLiLibConfigs
         public static final BooleanConfig OPTION_LIST_CONFIG_DROPDOWN           = new BooleanConfig("optionListConfigDropdown", false);
         public static final BooleanConfig PRESSED_KEYS_TOAST                    = new BooleanConfig("pressedKeysToast", false);
         public static final BooleanConfig REMEMBER_CONFIG_TAB_SCROLL_POSITIONS  = new BooleanConfig("rememberConfigTabScrollPositions", true);
+        public static final BooleanConfig REMEMBER_FILE_BROWSER_SCROLL_POSITIONS= new BooleanConfig("rememberFileBrowserScrollPositions", true);
         public static final ColorConfig   SELECTED_LIST_ENTRY_COLOR             = new ColorConfig("selectedListEntryColor", "#FFFFFFFF");
         public static final BooleanConfig SERVER_MESSAGES                       = new BooleanConfig("serverMessages", true);
         public static final BooleanConfig SHOW_INTERNAL_CONFIG_NAME             = new BooleanConfig("showInternalConfigName", false);
@@ -77,6 +78,7 @@ public class MaLiLibConfigs
                 OPTION_LIST_CONFIG_DROPDOWN,
                 PRESSED_KEYS_TOAST,
                 REMEMBER_CONFIG_TAB_SCROLL_POSITIONS,
+                REMEMBER_FILE_BROWSER_SCROLL_POSITIONS,
                 SELECTED_LIST_ENTRY_COLOR,
                 SERVER_MESSAGES,
                 SHOW_INTERNAL_CONFIG_NAME,

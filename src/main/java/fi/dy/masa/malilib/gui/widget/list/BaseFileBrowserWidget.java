@@ -15,8 +15,10 @@ import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.input.Keyboard;
+import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.ConfirmActionScreen;
 import fi.dy.masa.malilib.gui.TextInputScreen;
@@ -46,7 +48,8 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     protected final Map<Pair<File, FileFilter>, List<File>> directoryContentsCache = new HashMap<>();
-    protected final Map<File, Integer> keyboardNavigationPositions = new HashMap<>();
+    protected final Object2IntOpenHashMap<File> keyboardNavigationPositions = new Object2IntOpenHashMap<>();
+    protected final Object2IntOpenHashMap<File> scrollPositions = new Object2IntOpenHashMap<>();
     protected final Set<File> operatedOnFiles = new HashSet<>();
     protected final DirectoryNavigationWidget navigationWidget;
     protected final File rootDirectory;
@@ -58,6 +61,7 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     protected File currentDirectory;
     protected boolean allowFileOperations;
     protected boolean pendingOperationIsCut;
+    protected boolean rememberScrollPosition;
     protected boolean shouldStoreKeyboardNavigationPosition = true;
     protected boolean showFileSize;
     protected boolean showFileModificationTime;
@@ -83,7 +87,9 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         this.browserContext = browserContext != null ? browserContext : "";
         this.currentDirectory = cache != null ? cache.getCurrentDirectoryForContext(this.browserContext) : null;
         this.allowKeyboardNavigation = true;
+        this.rememberScrollPosition = MaLiLibConfigs.Generic.REMEMBER_FILE_BROWSER_SCROLL_POSITIONS.getBooleanValue();
         this.entryWidgetFixedHeight = 14;
+        this.scrollPositions.defaultReturnValue(0);
 
         if (this.currentDirectory == null)
         {
@@ -116,26 +122,36 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         this.updateActiveColumns();
     }
 
-    public void setAllowFileOperations(boolean allowFileOperations)
+    public BaseFileBrowserWidget setAllowFileOperations(boolean allowFileOperations)
     {
         this.allowFileOperations = allowFileOperations;
         this.getEntrySelectionHandler().setAllowMultiSelection(allowFileOperations);
         this.getEntrySelectionHandler().setModifierKeyMultiSelection(allowFileOperations);
+        return this;
     }
 
-    public void setFileFilter(FileFilter filter)
+    public BaseFileBrowserWidget setFileFilter(FileFilter filter)
     {
         this.fileFilter = filter;
+        return this;
     }
 
-    public void setDirectoryFilter(FileFilter directoryFilter)
+    public BaseFileBrowserWidget setDirectoryFilter(FileFilter directoryFilter)
     {
         this.directoryFilter = directoryFilter;
+        return this;
     }
 
-    public void setRootDirectoryDisplayName(@Nullable String rootDirectoryDisplayName)
+    public BaseFileBrowserWidget setRootDirectoryDisplayName(@Nullable String rootDirectoryDisplayName)
     {
         this.rootDirectoryDisplayName = rootDirectoryDisplayName;
+        return this;
+    }
+
+    public BaseFileBrowserWidget setRememberScrollPosition(boolean rememberScrollPosition)
+    {
+        this.rememberScrollPosition = rememberScrollPosition;
+        return this;
     }
 
     public boolean getShowFileSize()
@@ -380,6 +396,23 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         }
     }
 
+    protected void storeCurrentScrollPosition(File dir)
+    {
+        if (this.rememberScrollPosition)
+        {
+            this.scrollPositions.put(dir, this.scrollBar.getValue());
+        }
+    }
+
+    protected void restoreScrollBarPosition(File dir)
+    {
+        if (this.rememberScrollPosition)
+        {
+            int position = this.scrollPositions.getInt(dir);
+            this.setRequestedScrollBarPosition(position);
+        }
+    }
+
     protected DataListHeaderWidget<DirectoryEntry> createFileListHeaderWidget(DataListWidget<DirectoryEntry> listWidget)
     {
         ColumnizedDataListHeaderWidget<DirectoryEntry> widget =
@@ -604,11 +637,12 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
     public void switchToDirectory(File dir)
     {
         boolean hadSelection = this.getLastSelectedEntry() != null;
-        this.clearSelection();
+
         this.storeKeyboardNavigationPosition(this.currentDirectory);
+        this.storeCurrentScrollPosition(this.currentDirectory);
+        this.clearSelection();
 
         this.currentDirectory = FileUtils.getCanonicalFileIfPossible(dir);
-        this.directoryContentsCache.clear();
 
         if (this.cache != null)
         {
@@ -616,6 +650,9 @@ public class BaseFileBrowserWidget extends DataListWidget<DirectoryEntry> implem
         }
 
         this.resetScrollBarPositionWithoutNotify();
+        this.restoreScrollBarPosition(dir);
+        this.directoryContentsCache.clear();
+
         this.refreshEntries();
         this.updateDirectoryNavigationWidget();
         // The index needs to be restored after the entries have been refreshed
