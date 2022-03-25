@@ -6,7 +6,6 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import fi.dy.masa.malilib.config.value.ScreenLocation;
-import fi.dy.masa.malilib.network.PluginChannelHandler;
 import fi.dy.masa.malilib.overlay.message.MessageDispatcher;
 import fi.dy.masa.malilib.overlay.message.MessageOutput;
 import fi.dy.masa.malilib.registry.Registry;
@@ -29,7 +28,7 @@ import fi.dy.masa.malilib.registry.Registry;
  *         - message (string) - the message text, maximum length is 8192 characters. Supports malilib's custom text
  *           styling options as well as vanilla chat format codes.
  */
-public class MessagePacketHandler implements PluginChannelHandler
+public class MessagePacketHandler extends BasePacketHandler
 {
     public static final String CHANNEL_NAME = "malilib:message";
     public static final List<ResourceLocation> CHANNELS = ImmutableList.of(new ResourceLocation(CHANNEL_NAME));

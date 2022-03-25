@@ -8,17 +8,14 @@ import io.netty.buffer.Unpooled;
 import org.apache.commons.lang3.tuple.Pair;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.network.INetHandler;
-import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.client.CPacketCustomPayload;
 import net.minecraft.network.play.server.SPacketCustomPayload;
 import net.minecraft.util.ResourceLocation;
-import fi.dy.masa.malilib.util.GameUtils;
 
 /**
  * Network packet splitter code from QuickCarpet by skyrising
  * @author skyrising
- *
  */
 public class PacketSplitter
 {
@@ -31,35 +28,35 @@ public class PacketSplitter
 
     private static final Map<Pair<INetHandler, ResourceLocation>, ReadingSession> READING_SESSIONS = new HashMap<>();
 
-    public static void send(NetHandlerPlayServer networkHandler, ResourceLocation channel, PacketBuffer packet)
+    public static void send(ResourceLocation channel,
+                            PacketBuffer packet,
+                            NetHandlerPlayClient networkHandler)
     {
-        send(packet, MAX_PAYLOAD_PER_PACKET_S2C, buf -> networkHandler.sendPacket(new SPacketCustomPayload(channel.toString(), buf)));
+        send(packet, MAX_PAYLOAD_PER_PACKET_C2S,
+             buf -> networkHandler.sendPacket(new CPacketCustomPayload(channel.toString(), buf)));
     }
 
-    public static void send(NetHandlerPlayClient networkHandler, ResourceLocation channel, PacketBuffer packet)
+    private static void send(PacketBuffer packet,
+                             int payloadLimit,
+                             Consumer<PacketBuffer> sender)
     {
-        send(packet, MAX_PAYLOAD_PER_PACKET_C2S, buf -> networkHandler.sendPacket(new CPacketCustomPayload(channel.toString(), buf)));
-    }
-
-    private static void send(PacketBuffer packet, int payloadLimit, Consumer<PacketBuffer> sender)
-    {
-        int len = packet.writerIndex();
+        int totalSize = packet.writerIndex();
 
         packet.resetReaderIndex();
 
-        for (int offset = 0; offset < len; offset += payloadLimit)
+        for (int offset = 0; offset < totalSize; offset += payloadLimit)
         {
-            int thisLen = Math.min(len - offset, payloadLimit);
-            PacketBuffer buf = new PacketBuffer(Unpooled.buffer(thisLen));
+            int packetSize = Math.min(totalSize - offset, payloadLimit);
+            PacketBuffer buf = new PacketBuffer(Unpooled.buffer(packetSize));
 
             buf.resetWriterIndex();
 
             if (offset == 0)
             {
-                buf.writeVarInt(len);
+                buf.writeVarInt(totalSize);
             }
 
-            buf.writeBytes(packet, thisLen);
+            buf.writeBytes(packet, packetSize);
 
             sender.accept(buf);
         }
@@ -67,47 +64,23 @@ public class PacketSplitter
         packet.release();
     }
 
-    /*
     @Nullable
-    public static PacketBuffer receive(ServerPlayNetworkHandler networkHandler, CustomPayloadC2SPacket message)
-    {
-        return receive(networkHandler, message, DEFAULT_MAX_RECEIVE_SIZE_C2S);
-    }
-    @Nullable
-    private static PacketBuffer receive(ServerPlayNetworkHandler networkHandler, CustomPayloadC2SPacket message, int maxLength)
-    {
-        CustomPayloadC2SPacketAccessor messageAccessor = (CustomPayloadC2SPacketAccessor) message;
-        Pair<PacketListener, ResourceLocation> key = Pair.of(networkHandler, messageAccessor.getChannel());
-        return READING_SESSIONS.computeIfAbsent(key, ReadingSession::new).receive(messageAccessor.getData(), maxLength);
-    }
-    */
-
-    @Nullable
-    public static PacketBuffer receive(NetHandlerPlayClient networkHandler, SPacketCustomPayload message)
+    public static PacketBuffer receive(NetHandlerPlayClient networkHandler,
+                                       SPacketCustomPayload message)
     {
         return receive(networkHandler, message, DEFAULT_MAX_RECEIVE_SIZE_S2C);
     }
 
     @Nullable
-    private static PacketBuffer receive(NetHandlerPlayClient networkHandler, SPacketCustomPayload message, int maxLength)
+    private static PacketBuffer receive(NetHandlerPlayClient networkHandler,
+                                        SPacketCustomPayload message,
+                                        int maxLength)
     {
-        Pair<INetHandler, ResourceLocation> key = Pair.of(networkHandler, new ResourceLocation(message.getChannelName()));
+        Pair<INetHandler, ResourceLocation> key = Pair.of(networkHandler,
+                                                          new ResourceLocation(message.getChannelName()));
 
-        return READING_SESSIONS.computeIfAbsent(key, ReadingSession::new).receive(message.getBufferData(), maxLength);
-    }
-
-    @Nullable
-    public static PacketBuffer receive(String channelName, PacketBuffer rawData)
-    {
-        return receive(channelName, rawData, DEFAULT_MAX_RECEIVE_SIZE_S2C);
-    }
-
-    @Nullable
-    private static PacketBuffer receive(String channelName, PacketBuffer rawData, int maxLength)
-    {
-        Pair<INetHandler, ResourceLocation> key = Pair.of(GameUtils.getClient().getConnection(), new ResourceLocation(channelName));
-
-        return READING_SESSIONS.computeIfAbsent(key, ReadingSession::new).receive(rawData, maxLength);
+        return READING_SESSIONS.computeIfAbsent(key, ReadingSession::new)
+                .receive(PacketUtils.slice(message.getBufferData()), maxLength);
     }
 
     private static class ReadingSession

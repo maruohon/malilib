@@ -1,7 +1,9 @@
 package fi.dy.masa.malilib.network;
 
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import com.google.common.base.Charsets;
 import com.google.common.collect.ArrayListMultimap;
@@ -29,14 +31,18 @@ public class ClientPacketChannelHandlerImpl implements ClientPacketChannelHandle
     @Override
     public void registerClientChannelHandler(PluginChannelHandler handler)
     {
-        List<ResourceLocation> toRegister = new ArrayList<>();
+        Set<ResourceLocation> toRegister = new HashSet<>();
 
         for (ResourceLocation channel : handler.getChannels())
         {
             if (this.handlers.containsEntry(channel, handler) == false)
             {
                 this.handlers.put(channel, handler);
-                toRegister.add(channel);
+
+                if (handler.registerToServer())
+                {
+                    toRegister.add(channel);
+                }
             }
         }
 
@@ -49,11 +55,11 @@ public class ClientPacketChannelHandlerImpl implements ClientPacketChannelHandle
     @Override
     public void unregisterClientChannelHandler(PluginChannelHandler handler)
     {
-        List<ResourceLocation> toUnRegister = new ArrayList<>();
+        Set<ResourceLocation> toUnRegister = new HashSet<>();
 
         for (ResourceLocation channel : handler.getChannels())
         {
-            if (this.handlers.remove(channel, handler))
+            if (this.handlers.remove(channel, handler) && handler.registerToServer())
             {
                 toUnRegister.add(channel);
             }
@@ -75,16 +81,24 @@ public class ClientPacketChannelHandlerImpl implements ClientPacketChannelHandle
 
         if (handlers.isEmpty() == false)
         {
-            PacketBuffer buf = PacketSplitter.receive(netHandler, packet);
-
-            // Finished the complete packet
-            if (buf != null)
+            for (PluginChannelHandler handler : handlers)
             {
-                for (PluginChannelHandler handler : handlers)
+                PacketBuffer buf;
+
+                if (handler.usePacketSplitter())
                 {
-                    buf.readerIndex(0);
+                    buf = PacketSplitter.receive(netHandler, packet);
+                }
+                else
+                {
+                    buf = PacketUtils.retainedSlice(packet.getBufferData());
+                }
+
+                // Finished the complete packet
+                if (buf != null)
+                {
                     handler.onPacketReceived(buf);
-                    buf.readerIndex(0);
+                    buf.release();
                 }
             }
 
@@ -94,13 +108,12 @@ public class ClientPacketChannelHandlerImpl implements ClientPacketChannelHandle
         return false;
     }
 
-    protected void sendRegisterPacket(ResourceLocation type, List<ResourceLocation> channels)
+    protected void sendRegisterPacket(ResourceLocation type, Collection<ResourceLocation> channels)
     {
         String joinedChannels = channels.stream().map(ResourceLocation::toString).collect(Collectors.joining("\0"));
         ByteBuf payload = Unpooled.wrappedBuffer(joinedChannels.getBytes(Charsets.UTF_8));
-        CPacketCustomPayload packet = new CPacketCustomPayload(type.toString(), new PacketBuffer(payload));
-
         NetHandlerPlayClient handler = GameUtils.getClient().getConnection();
+        CPacketCustomPayload packet = new CPacketCustomPayload(type.toString(), new PacketBuffer(payload));
 
         if (handler != null)
         {

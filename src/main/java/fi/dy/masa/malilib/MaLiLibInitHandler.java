@@ -6,6 +6,7 @@ import fi.dy.masa.malilib.gui.BaseScreen;
 import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.input.CustomHotkeyManager;
 import fi.dy.masa.malilib.input.callback.AdjustableValueHotkeyCallback;
+import fi.dy.masa.malilib.network.message.ConfigOverridePacketHandler;
 import fi.dy.masa.malilib.network.message.MessagePacketHandler;
 import fi.dy.masa.malilib.overlay.widget.ConfigStatusIndicatorContainerWidget;
 import fi.dy.masa.malilib.registry.Registry;
@@ -37,6 +38,7 @@ public class MaLiLibInitHandler implements InitializationHandler
         Registry.RENDER_EVENT_DISPATCHER.registerScreenPostRenderer(Registry.INFO_OVERLAY);
         Registry.TICK_EVENT_DISPATCHER.registerClientTickHandler(Registry.INFO_OVERLAY);
 
+        ConfigOverridePacketHandler.updateRegistration(true);
         MaLiLibActions.init();
     }
 }
