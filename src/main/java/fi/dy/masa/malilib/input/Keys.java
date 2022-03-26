@@ -184,23 +184,23 @@ public class Keys
         addNameOverride(Keyboard.KEY_RSHIFT, "R_SHIFT");
         addNameOverride(Keyboard.KEY_LCONTROL, "L_CTRL");
         addNameOverride(Keyboard.KEY_RCONTROL, "R_CTRL");
-        addNameOverride(-100, "LMB");
-        addNameOverride(-99, "RMB");
-        addNameOverride(-98, "MMB");
+        addNameOverride(Keyboard.KEY_PRIOR, "PAGE_UP");
+        addNameOverride(Keyboard.KEY_NEXT, "PAGE_DOWN");
+        addNameOverride(-100, "LEFT_MOUSE");
+        addNameOverride(-99, "RIGHT_MOUSE");
+        addNameOverride(-98, "MIDDLE_MOUSE");
         addNameOverride(-199, "SCROLL_UP");
         addNameOverride(-201, "SCROLL_DOWN");
 
-        addLoadableNames(Keyboard.KEY_LMENU, "LMENU", "L_MENU", "LALT", "L_ALT", "LEFT_ALT");
-        addLoadableNames(Keyboard.KEY_RMENU, "RMENU", "R_MENU", "RALT", "R_ALT", "RIGHT_ALT");
-        addLoadableNames(Keyboard.KEY_LSHIFT, "LSHIFT", "L_SHIFT", "LEFT_SHIFT");
-        addLoadableNames(Keyboard.KEY_RSHIFT, "RSHIFT", "R_SHIFT", "RIGHT_SHIFT");
-        addLoadableNames(Keyboard.KEY_LCONTROL, "LCTRL", "L_CTRL", "LEFT_CTRL", "LCONTROL", "L_CONTROL", "LEFT_CONTROL");
-        addLoadableNames(Keyboard.KEY_RCONTROL, "RCTRL", "R_CTRL", "RIGHT_CTRL", "RCONTROL", "R_CONTROL", "RIGHT_CONTROL");
-        addLoadableNames(-100, "LMB", "BUTTON0", "MOUSE0");
-        addLoadableNames(-99, "RMB", "BUTTON1", "MOUSE1");
-        addLoadableNames(-98, "MMB", "BUTTON2", "MOUSE2");
-        addLoadableNames(-199, "SCROLL_UP");
-        addLoadableNames(-201, "SCROLL_DOWN");
+        addLoadableNames(Keyboard.KEY_LMENU, "LMENU", "L_MENU", "LALT", "LEFT_ALT");
+        addLoadableNames(Keyboard.KEY_RMENU, "RMENU", "R_MENU", "RALT", "RIGHT_ALT");
+        addLoadableNames(Keyboard.KEY_LSHIFT, "LSHIFT", "LEFT_SHIFT");
+        addLoadableNames(Keyboard.KEY_RSHIFT, "RSHIFT", "RIGHT_SHIFT");
+        addLoadableNames(Keyboard.KEY_LCONTROL, "LCTRL", "LEFT_CTRL", "LCONTROL", "L_CONTROL", "LEFT_CONTROL");
+        addLoadableNames(Keyboard.KEY_RCONTROL, "RCTRL", "RIGHT_CTRL", "RCONTROL", "R_CONTROL", "RIGHT_CONTROL");
+        addLoadableNames(-100, "BUTTON0", "MOUSE0", "LMB", "MOUSE_LEFT");
+        addLoadableNames(-99, "BUTTON1", "MOUSE1", "RMB", "MOUSE_RIGHT");
+        addLoadableNames(-98, "BUTTON2", "MOUSE2", "MMB", "MOUSE_MIDDLE");
     }
 
     /**
@@ -215,7 +215,7 @@ public class Keys
         {
             if (NAMES_TO_IDS.containsKey(name))
             {
-                MaLiLib.LOGGER.warn("Duplicate key fallback name '{}'", name);
+                MaLiLib.LOGGER.warn("Duplicate key fallback name '{}' => {}", name, keyCode);
                 continue;
             }
 
@@ -225,17 +225,17 @@ public class Keys
 
     /**
      * Adds an id -> name override, which determines what the config file will contain for a given keyCode.
+     * Also adds the reverse mapping, name -> id for being able to load the key by the given name.
      * @param name the name to use for this keyCode in the config files
      */
     public static void addNameOverride(int keyCode, String name)
     {
-        if (IDS_TO_NAMES.containsKey(keyCode) == false)
+        if (IDS_TO_NAMES.containsKey(keyCode))
         {
-            IDS_TO_NAMES.put(keyCode, name);
+            MaLiLib.LOGGER.warn("Duplicate key override name {} => '{}'", keyCode, name);
         }
-        else
-        {
-            MaLiLib.LOGGER.warn("Duplicate key override name '{}'", name);
-        }
+
+        IDS_TO_NAMES.put(keyCode, name);
+        NAMES_TO_IDS.put(name, keyCode);
     }
 }
