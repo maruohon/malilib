@@ -30,7 +30,7 @@ import fi.dy.masa.malilib.util.StringUtils;
 
 public class ConfigsSearchBarWidget extends SearchBarWidget
 {
-    protected static final KeyBindSettings SETTINGS = KeyBindSettings.builder().context(Context.ANY).activateOn(KeyAction.BOTH).extra().order().cancel(CancelCondition.NEVER).build();
+    protected static final KeyBindSettings SETTINGS = KeyBindSettings.builder().context(Context.ANY).activateOn(KeyAction.BOTH).extra().cancel(CancelCondition.NEVER).build();
     protected final KeyBindImpl searchKey;
     protected final KeyBindConfigButton hotkeySearchButton;
     protected final GenericButton resetConfigsButton;

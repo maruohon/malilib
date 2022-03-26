@@ -74,7 +74,7 @@ public class CustomHotkeysListScreen extends BaseListScreen<DataListWidget<Custo
             return false;
         }
 
-        KeyBind keyBind = KeyBindImpl.fromStorageString("", KeyBindSettings.INGAME_SUCCESS);
+        KeyBind keyBind = KeyBindImpl.fromStorageString("", KeyBindSettings.INGAME_DEFAULT);
         CustomHotkeyDefinition hotkey = new CustomHotkeyDefinition(name, keyBind, ImmutableList.of());
         CustomHotkeyManager.INSTANCE.addCustomHotkey(hotkey);
         CustomHotkeyEditScreen screen = new CustomHotkeyEditScreen(hotkey);

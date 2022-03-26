@@ -7,16 +7,15 @@ import fi.dy.masa.malilib.util.JsonUtils;
 
 public class KeyBindSettings
 {
-    public static final KeyBindSettings INGAME_DEFAULT              = new KeyBindSettings(Context.INGAME, KeyAction.PRESS, true, true, CancelCondition.ALWAYS);
-    public static final KeyBindSettings INGAME_SUCCESS              = new KeyBindSettings(Context.INGAME, KeyAction.PRESS, true, true, CancelCondition.ON_SUCCESS);
-    public static final KeyBindSettings INGAME_BOTH                 = new KeyBindSettings(Context.INGAME, KeyAction.BOTH, true, true, CancelCondition.ALWAYS);
+    public static final KeyBindSettings INGAME_DEFAULT              = new KeyBindSettings(Context.INGAME, KeyAction.PRESS, false, true, CancelCondition.ON_SUCCESS);
+    public static final KeyBindSettings INGAME_BOTH                 = new KeyBindSettings(Context.INGAME, KeyAction.BOTH, false, true, CancelCondition.ON_SUCCESS);
     public static final KeyBindSettings INGAME_MODIFIER             = builderInGameModifier().build();
     public static final KeyBindSettings INGAME_MODIFIER_EMPTY       = builderInGameModifier().empty().build();
-    public static final KeyBindSettings INGAME_MODIFIER_BOTH        = new KeyBindSettings(Context.INGAME, KeyAction.BOTH, true, false, CancelCondition.NEVER);
-    public static final KeyBindSettings INGAME_RELEASE              = new KeyBindSettings(Context.INGAME, KeyAction.RELEASE, true, true, CancelCondition.NEVER);
-    public static final KeyBindSettings INGAME_RELEASE_EXCLUSIVE    = builder().release().extra().order().exclusive().cancel(CancelCondition.NEVER).build();
-    public static final KeyBindSettings GUI_DEFAULT                 = new KeyBindSettings(Context.GUI, KeyAction.PRESS, true, true, CancelCondition.ALWAYS);
-    public static final KeyBindSettings GUI_MODIFIER                = new KeyBindSettings(Context.GUI, KeyAction.PRESS, true, false, CancelCondition.NEVER);
+    public static final KeyBindSettings INGAME_MODIFIER_BOTH        = new KeyBindSettings(Context.INGAME, KeyAction.BOTH, false, false, CancelCondition.NEVER);
+    public static final KeyBindSettings INGAME_RELEASE              = new KeyBindSettings(Context.INGAME, KeyAction.RELEASE, false, true, CancelCondition.NEVER);
+    public static final KeyBindSettings INGAME_RELEASE_EXCLUSIVE    = builder().release().exclusive().cancel(CancelCondition.NEVER).build();
+    public static final KeyBindSettings GUI_DEFAULT                 = new KeyBindSettings(Context.GUI, KeyAction.PRESS, false, true, CancelCondition.ON_SUCCESS);
+    public static final KeyBindSettings GUI_MODIFIER                = new KeyBindSettings(Context.GUI, KeyAction.PRESS, false, false, CancelCondition.NEVER);
 
     protected final KeyAction activateOn;
     protected final Context context;
@@ -222,7 +221,7 @@ public class KeyBindSettings
         protected CancelCondition cancel = CancelCondition.ON_SUCCESS;
         protected MessageOutput messageOutput = MessageOutput.CUSTOM_HOTBAR;
         protected boolean allowEmpty;
-        protected boolean allowExtraKeys = true;
+        protected boolean allowExtraKeys;
         protected boolean exclusive;
         protected boolean firstOnly;
         protected boolean orderSensitive = true;
@@ -329,9 +328,9 @@ public class KeyBindSettings
             return this;
         }
 
-        public Builder order()
+        public Builder noOrder()
         {
-            this.orderSensitive = true;
+            this.orderSensitive = false;
             return this;
         }
 
@@ -371,10 +370,11 @@ public class KeyBindSettings
     public static Builder builderInGameModifier()
     {
         Builder builder = new Builder();
-        builder.allowExtraKeys(true)
-               .orderSensitive(false)
+        builder.extra()
+               .noOrder()
                .cancel(CancelCondition.NEVER)
-               .messageOutput(MessageOutput.NONE);
+               .messageOutput(MessageOutput.NONE)
+               .showToast(false);
         return builder;
     }
 
