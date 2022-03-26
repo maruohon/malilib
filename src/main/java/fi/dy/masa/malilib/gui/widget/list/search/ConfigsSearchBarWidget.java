@@ -18,9 +18,7 @@ import fi.dy.masa.malilib.gui.util.GuiUtils;
 import fi.dy.masa.malilib.gui.widget.DropDownListWidget;
 import fi.dy.masa.malilib.gui.widget.button.GenericButton;
 import fi.dy.masa.malilib.gui.widget.button.KeyBindConfigButton;
-import fi.dy.masa.malilib.input.CancelCondition;
 import fi.dy.masa.malilib.input.Context;
-import fi.dy.masa.malilib.input.KeyAction;
 import fi.dy.masa.malilib.input.KeyBind;
 import fi.dy.masa.malilib.input.KeyBindImpl;
 import fi.dy.masa.malilib.input.KeyBindSettings;
@@ -30,7 +28,8 @@ import fi.dy.masa.malilib.util.StringUtils;
 
 public class ConfigsSearchBarWidget extends SearchBarWidget
 {
-    protected static final KeyBindSettings SETTINGS = KeyBindSettings.builder().context(Context.ANY).activateOn(KeyAction.BOTH).extra().cancel(CancelCondition.NEVER).build();
+    protected static final KeyBindSettings SETTINGS = KeyBindSettings.builder().context(Context.ANY).both().extra().noCancel().build();
+
     protected final KeyBindImpl searchKey;
     protected final KeyBindConfigButton hotkeySearchButton;
     protected final GenericButton resetConfigsButton;

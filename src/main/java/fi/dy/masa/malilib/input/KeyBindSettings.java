@@ -8,6 +8,7 @@ import fi.dy.masa.malilib.util.JsonUtils;
 public class KeyBindSettings
 {
     public static final KeyBindSettings INGAME_DEFAULT              = new KeyBindSettings(Context.INGAME, KeyAction.PRESS, false, true, CancelCondition.ON_SUCCESS);
+    public static final KeyBindSettings INGAME_EXTRA                = builder().extra().build();
     public static final KeyBindSettings INGAME_BOTH                 = new KeyBindSettings(Context.INGAME, KeyAction.BOTH, false, true, CancelCondition.ON_SUCCESS);
     public static final KeyBindSettings INGAME_MODIFIER             = builderInGameModifier().build();
     public static final KeyBindSettings INGAME_MODIFIER_EMPTY       = builderInGameModifier().empty().build();
@@ -216,8 +217,8 @@ public class KeyBindSettings
 
     public static class Builder
     {
-        protected KeyAction activateOn = KeyAction.PRESS;
         protected Context context = Context.INGAME;
+        protected KeyAction activateOn = KeyAction.PRESS;
         protected CancelCondition cancel = CancelCondition.ON_SUCCESS;
         protected MessageOutput messageOutput = MessageOutput.CUSTOM_HOTBAR;
         protected boolean allowEmpty;
@@ -316,6 +317,12 @@ public class KeyBindSettings
             return this;
         }
 
+        public Builder gui()
+        {
+            this.context = Context.GUI;
+            return this;
+        }
+
         public Builder press()
         {
             this.activateOn = KeyAction.PRESS;
@@ -325,6 +332,12 @@ public class KeyBindSettings
         public Builder release()
         {
             this.activateOn = KeyAction.RELEASE;
+            return this;
+        }
+
+        public Builder both()
+        {
+            this.activateOn = KeyAction.BOTH;
             return this;
         }
 
@@ -352,6 +365,19 @@ public class KeyBindSettings
             return this;
         }
 
+        public Builder noCancel()
+        {
+            this.cancel = CancelCondition.NEVER;
+            return this;
+        }
+
+        public Builder noOutput()
+        {
+            this.messageOutput = MessageOutput.NONE;
+            this.showToast = false;
+            return this;
+        }
+
         public KeyBindSettings build()
         {
             return new KeyBindSettings(this.context, this.activateOn,
@@ -370,16 +396,11 @@ public class KeyBindSettings
     public static Builder builderInGameModifier()
     {
         Builder builder = new Builder();
-        builder.extra()
-               .noOrder()
-               .cancel(CancelCondition.NEVER)
-               .messageOutput(MessageOutput.NONE)
-               .showToast(false);
-        return builder;
+        return builder.extra().noOrder().noCancel().noOutput();
     }
 
     public static Builder builderGuiModifier()
     {
-        return builderInGameModifier().context(Context.GUI);
+        return builderInGameModifier().gui();
     }
 }
