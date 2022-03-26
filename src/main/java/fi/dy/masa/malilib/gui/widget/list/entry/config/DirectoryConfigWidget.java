@@ -2,12 +2,10 @@ package fi.dy.masa.malilib.gui.widget.list.entry.config;
 
 import java.io.File;
 import fi.dy.masa.malilib.config.option.DirectoryConfig;
-import fi.dy.masa.malilib.gui.BaseScreen;
-import fi.dy.masa.malilib.gui.DirectorySelectorScreen;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
 import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
 
-public class DirectoryConfigWidget extends FileConfigWidget
+public class DirectoryConfigWidget extends BaseFileConfigWidget<File, DirectoryConfig>
 {
     public DirectoryConfigWidget(DirectoryConfig config,
                                  DataListEntryWidgetData constructData,
@@ -17,20 +15,14 @@ public class DirectoryConfigWidget extends FileConfigWidget
     }
 
     @Override
-    protected String getButtonLabelKey()
+    protected File getFileFromConfig()
     {
-        return "malilib.button.config.select_directory";
+        return this.config.getValue();
     }
 
     @Override
-    protected String getButtonHoverTextKey()
+    protected void setFileToConfig(File file)
     {
-        return "malilib.hover.button.config.selected_directory";
-    }
-
-    @Override
-    protected BaseScreen createScreen(File currentDir, File rootDir)
-    {
-        return new DirectorySelectorScreen(currentDir, rootDir, this::onPathSelected);
+        this.config.setValue(file);
     }
 }

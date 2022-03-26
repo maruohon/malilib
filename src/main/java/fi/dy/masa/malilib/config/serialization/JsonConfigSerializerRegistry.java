@@ -16,6 +16,7 @@ import fi.dy.masa.malilib.config.option.HotkeyConfig;
 import fi.dy.masa.malilib.config.option.HotkeyedBooleanConfig;
 import fi.dy.masa.malilib.config.option.IntegerConfig;
 import fi.dy.masa.malilib.config.option.OptionListConfig;
+import fi.dy.masa.malilib.config.option.OptionalDirectoryConfig;
 import fi.dy.masa.malilib.config.option.StringConfig;
 import fi.dy.masa.malilib.config.option.list.BlackWhiteListConfig;
 import fi.dy.masa.malilib.config.option.list.ValueListConfig;
@@ -106,6 +107,7 @@ public class JsonConfigSerializerRegistry
         this.registerSerializers(BlackWhiteListConfig.class,    JsonConfigSerializers::saveBlackWhiteListConfig,    JsonConfigSerializers::loadBlackWhiteListConfig);
         this.registerSerializers(DualColorConfig.class,         JsonConfigSerializers::saveDualColorConfig,         JsonConfigSerializers::loadDualColorConfig);
         this.registerSerializers(HotkeyedBooleanConfig.class,   JsonConfigSerializers::saveHotkeydBooleanConfig,    JsonConfigSerializers::loadHotkeydBooleanConfig);
+        this.registerSerializers(OptionalDirectoryConfig.class, JsonConfigSerializers::saveOptionalDirectoryConfig, JsonConfigSerializers::loadOptionalDirectoryConfig);
         this.registerSerializers(OptionListConfig.class,        JsonConfigSerializers::saveOptionListConfig,        JsonConfigSerializers::loadOptionListConfig);
         this.registerSerializers(ValueListConfig.class,         JsonConfigSerializers::saveValueListConfig,         JsonConfigSerializers::loadValueListConfig);
     }

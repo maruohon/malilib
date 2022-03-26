@@ -1,5 +1,6 @@
 package fi.dy.masa.malilib.config.serialization;
 
+import java.io.File;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -12,6 +13,8 @@ import fi.dy.masa.malilib.MaLiLib;
 import fi.dy.masa.malilib.config.option.DualColorConfig;
 import fi.dy.masa.malilib.config.option.HotkeyedBooleanConfig;
 import fi.dy.masa.malilib.config.option.OptionListConfig;
+import fi.dy.masa.malilib.config.option.OptionalDirectoryConfig;
+import fi.dy.masa.malilib.config.option.OptionalDirectoryConfig.BooleanAndFile;
 import fi.dy.masa.malilib.config.option.list.BlackWhiteListConfig;
 import fi.dy.masa.malilib.config.option.list.ValueListConfig;
 import fi.dy.masa.malilib.config.value.BaseOptionListConfigValue;
@@ -98,6 +101,42 @@ public class JsonConfigSerializers
                 }
 
                 config.loadHotkeydBooleanValueFromConfig(booleanValue);
+            }
+            else
+            {
+                MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element);
+            }
+        }
+        catch (Exception e)
+        {
+            MaLiLib.LOGGER.warn("Failed to set config value for '{}' from the JSON element '{}'", configName, element, e);
+        }
+    }
+
+    public static JsonElement saveOptionalDirectoryConfig(OptionalDirectoryConfig config)
+    {
+        JsonObject obj = new JsonObject();
+        BooleanAndFile value = config.getValue();
+        obj.add("enabled", new JsonPrimitive(value.booleanValue));
+        obj.add("directory", new JsonPrimitive(value.fileValue.getAbsolutePath()));
+        return obj;
+    }
+
+    public static void loadOptionalDirectoryConfig(OptionalDirectoryConfig config, JsonElement element, String configName)
+    {
+        try
+        {
+            if (element.isJsonObject())
+            {
+                JsonObject obj = element.getAsJsonObject();
+
+                if (JsonUtils.hasBoolean(obj, "enabled") &&
+                    JsonUtils.hasString(obj, "directory"))
+                {
+                    boolean booleanValue = JsonUtils.getBoolean(obj, "enabled");
+                    File fileValue = new File(JsonUtils.getString(obj, "directory"));
+                    config.loadValueFromConfig(new BooleanAndFile(booleanValue, fileValue));
+                }
             }
             else
             {
