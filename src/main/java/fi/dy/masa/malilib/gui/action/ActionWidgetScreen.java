@@ -668,7 +668,7 @@ public class ActionWidgetScreen extends BaseScreen implements ActionWidgetContai
 
     public static ActionResult openPreviousActionWidgetScreen(ActionContext ctx)
     {
-        String name = MaLiLibConfigs.Internal.PREVIOUS_ACTION_WIDGET_SCREEN.getStringValue();
+        String name = MaLiLibConfigs.Internal.PREVIOUS_ACTION_WIDGET_SCREEN.getValue();
 
         if (StringUtils.isBlank(name))
         {

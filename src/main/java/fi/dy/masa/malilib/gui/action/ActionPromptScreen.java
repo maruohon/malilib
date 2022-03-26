@@ -72,7 +72,7 @@ public class ActionPromptScreen extends BaseListScreen<DataListWidget<NamedActio
 
         if (MaLiLibConfigs.Generic.ACTION_PROMPT_REMEMBER_SEARCH.getBooleanValue())
         {
-            this.searchTextField.setText(MaLiLibConfigs.Internal.ACTION_PROMPT_SEARCH_TEXT.getStringValue());
+            this.searchTextField.setText(MaLiLibConfigs.Internal.ACTION_PROMPT_SEARCH_TEXT.getValue());
         }
 
         this.searchTextField.setFocused(true);

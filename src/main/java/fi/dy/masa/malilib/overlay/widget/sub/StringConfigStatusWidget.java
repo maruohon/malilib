@@ -24,7 +24,7 @@ public class StringConfigStatusWidget extends BaseConfigStatusIndicatorWidget<St
     @Override
     public void updateState(boolean force)
     {
-        if (force || this.config.getStringValue().equals(this.lastValue) == false)
+        if (force || this.config.getValue().equals(this.lastValue) == false)
         {
             this.updateValue();
         }
@@ -32,7 +32,7 @@ public class StringConfigStatusWidget extends BaseConfigStatusIndicatorWidget<St
 
     protected void updateValue()
     {
-        this.lastValue = this.config.getStringValue();
+        this.lastValue = this.config.getValue();
         this.valueDisplayText = StyledTextLine.of(this.lastValue, this.style);
         this.valueRenderWidth = this.valueDisplayText.renderWidth;
     }

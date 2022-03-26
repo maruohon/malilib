@@ -57,7 +57,7 @@ public class ActionList
 
     public static ActionList getSelectedList(List<ActionList> lists)
     {
-        String name = MaLiLibConfigs.Internal.ACTION_PROMPT_SELECTED_LIST.getStringValue();
+        String name = MaLiLibConfigs.Internal.ACTION_PROMPT_SELECTED_LIST.getValue();
 
         for (ActionList list : lists)
         {

@@ -15,13 +15,13 @@ public class StringConfigWidget extends BaseConfigOptionWidget<String, StringCon
     {
         super(config, constructData, ctx);
 
-        this.textField = new BaseTextFieldWidget(20, 16, this.config.getStringValue());
+        this.textField = new BaseTextFieldWidget(20, 16, this.config.getValue());
         this.textField.setHoverStringProvider("locked", this.config::getLockAndOverrideMessages);
         this.textField.translateAndAddHoverString("malilib.hover.config.string.default_value", config.getDefaultValue());
         this.textField.setShowCursorPosition(true);
 
         this.textField.setListener((str) -> {
-            this.config.setValueFromString(str);
+            this.config.setValue(str);
             this.updateWidgetState();
         });
     }
@@ -62,7 +62,7 @@ public class StringConfigWidget extends BaseConfigOptionWidget<String, StringCon
     {
         super.updateWidgetState();
 
-        this.textField.setText(this.config.getStringValue());
+        this.textField.setText(this.config.getValue());
         this.textField.updateHoverStrings();
     }
 
@@ -73,7 +73,7 @@ public class StringConfigWidget extends BaseConfigOptionWidget<String, StringCon
 
         if (text.equals(this.initialValue) == false)
         {
-            this.config.setValueFromString(text);
+            this.config.setValue(text);
         }
     }
 }

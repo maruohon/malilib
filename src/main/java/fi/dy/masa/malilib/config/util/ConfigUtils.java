@@ -31,7 +31,7 @@ public class ConfigUtils
      */
     public static File getActiveConfigDirectory()
     {
-        String profile = MaLiLibConfigs.Internal.ACTIVE_CONFIG_PROFILE.getStringValue();
+        String profile = MaLiLibConfigs.Internal.ACTIVE_CONFIG_PROFILE.getValue();
         return getActiveConfigDirectory(profile);
     }
 
@@ -140,7 +140,7 @@ public class ConfigUtils
 
     public static ActionResult switchConfigProfile(ActionContext ctx, String profile)
     {
-        String current = MaLiLibConfigs.Internal.ACTIVE_CONFIG_PROFILE.getStringValue();
+        String current = MaLiLibConfigs.Internal.ACTIVE_CONFIG_PROFILE.getValue();
 
         if ("default".equals(profile))
         {

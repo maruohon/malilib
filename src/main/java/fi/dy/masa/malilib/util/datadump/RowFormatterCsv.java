@@ -15,7 +15,7 @@ public class RowFormatterCsv extends RowFormatterBase
         this.addHeaders = false;
         this.addLineSeparators = false;
 
-        this.setColumnDelimiter(MaLiLibConfigs.Generic.DATA_DUMP_CSV_DELIMITER.getStringValue(), dump);
+        this.setColumnDelimiter(MaLiLibConfigs.Generic.DATA_DUMP_CSV_DELIMITER.getValue(), dump);
     }
 
     public RowFormatterCsv setColumnDelimiter(String delimiter, DataDump dump)

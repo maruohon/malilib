@@ -88,7 +88,7 @@ public class FileConfigWidget extends BaseConfigOptionWidget<File, FileConfig>
 
     protected boolean onPathSelected(File file)
     {
-        this.config.setValueFromString(file.getAbsolutePath());
+        this.config.setValue(file);
         this.reAddSubWidgets();
         return true;
     }
