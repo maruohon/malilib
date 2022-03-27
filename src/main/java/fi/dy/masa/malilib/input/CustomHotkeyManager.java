@@ -7,12 +7,14 @@ import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import fi.dy.masa.malilib.MaLiLibConfigScreen;
 import fi.dy.masa.malilib.MaLiLibConfigs;
 import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.config.util.ConfigUtils;
+import fi.dy.masa.malilib.gui.config.BaseConfigTab;
 import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.util.JsonUtils;
-import fi.dy.masa.malilib.util.data.ModInfo;
+import fi.dy.masa.malilib.util.StringUtils;
 
 public class CustomHotkeyManager implements HotkeyProvider
 {
@@ -30,12 +32,24 @@ public class CustomHotkeyManager implements HotkeyProvider
     @Override
     public List<HotkeyCategory> getHotkeysByCategories()
     {
-        return ImmutableList.of(new HotkeyCategory(ModInfo.NO_MOD, "malilib.hotkeys.category.custom" , this::getAllHotkeys));
+        return ImmutableList.of(new HotkeyCategory(MaLiLibReference.MOD_INFO,
+                                                   "malilib.hotkeys.category.custom", this::getAllHotkeys));
     }
 
     public List<CustomHotkeyDefinition> getAllCustomHotkeys()
     {
         return this.hotkeys;
+    }
+
+    /**
+     * Note: This is only intended to be used for the config search stuff, which needs
+     * the configs to be wrapped in a tab to get the owning mod and category from it
+     */
+    public BaseConfigTab getAllCustomHotkeysAsTabForConfigSearch()
+    {
+        String name = StringUtils.translate("malilib.screen.tab.custom_hotkeys");
+        return new BaseConfigTab(MaLiLibReference.MOD_INFO, name, name, 200,
+                                 this.getAllCustomHotkeys(), scr -> MaLiLibConfigScreen.create());
     }
 
     public void addCustomHotkey(CustomHotkeyDefinition hotkey)

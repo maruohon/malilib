@@ -3,6 +3,8 @@ package fi.dy.masa.malilib.input;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import javax.annotation.Nullable;
+import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 
@@ -11,6 +13,7 @@ public class HotkeyManagerImpl implements HotkeyManager
     protected final Int2ObjectOpenHashMap<ArrayList<KeyBind>> hotkeyMap = new Int2ObjectOpenHashMap<>();
     protected final List<HotkeyCategory> keyBindCategories = new ArrayList<>();
     protected final List<HotkeyProvider> keyBindProviders = new ArrayList<>();
+    @Nullable protected ImmutableList<HotkeyCategory> immutableKeyBindCategories;
 
     public HotkeyManagerImpl()
     {
@@ -37,9 +40,14 @@ public class HotkeyManagerImpl implements HotkeyManager
     }
 
     @Override
-    public List<HotkeyCategory> getHotkeyCategories()
+    public ImmutableList<HotkeyCategory> getHotkeyCategories()
     {
-        return this.keyBindCategories;
+        if (this.immutableKeyBindCategories == null)
+        {
+            this.immutableKeyBindCategories = ImmutableList.copyOf(this.keyBindCategories);
+        }
+
+        return this.immutableKeyBindCategories;
     }
 
     @Override
@@ -76,6 +84,7 @@ public class HotkeyManagerImpl implements HotkeyManager
         // Remove a previous entry, if any (matched based on the modName and keyCategory only!)
         this.keyBindCategories.remove(category);
         this.keyBindCategories.add(category);
+        this.immutableKeyBindCategories = null; // mark for rebuild
     }
 
     /**

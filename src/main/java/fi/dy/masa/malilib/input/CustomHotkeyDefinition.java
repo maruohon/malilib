@@ -4,16 +4,17 @@ import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import fi.dy.masa.malilib.MaLiLibReference;
 import fi.dy.masa.malilib.action.ActionContext;
 import fi.dy.masa.malilib.action.ActionUtils;
 import fi.dy.masa.malilib.action.NamedAction;
+import fi.dy.masa.malilib.config.option.CommonDescription;
+import fi.dy.masa.malilib.config.option.ConfigInfo;
 import fi.dy.masa.malilib.input.callback.HotkeyCallback;
 import fi.dy.masa.malilib.render.text.StyledTextLine;
 import fi.dy.masa.malilib.util.JsonUtils;
-import fi.dy.masa.malilib.util.StringUtils;
-import fi.dy.masa.malilib.util.data.ModInfo;
 
-public class CustomHotkeyDefinition implements Hotkey
+public class CustomHotkeyDefinition extends CommonDescription implements Hotkey, ConfigInfo
 {
     protected final String name;
     protected final KeyBind keyBind;
@@ -21,12 +22,13 @@ public class CustomHotkeyDefinition implements Hotkey
 
     public CustomHotkeyDefinition(String name, KeyBind keyBind, ImmutableList<NamedAction> actions)
     {
+        super(name, MaLiLibReference.MOD_INFO);
+
         this.name = name;
         this.keyBind = keyBind;
         this.actions = actions;
 
-        String custom = StringUtils.translate("malilib.label.misc.custom");
-        this.keyBind.setModInfo(new ModInfo(custom, custom));
+        this.keyBind.setModInfo(this.getModInfo());
         this.keyBind.setCallback(HotkeyCallback.of(this::execute));
         this.keyBind.setNameTranslationKey(name);
     }
@@ -41,6 +43,18 @@ public class CustomHotkeyDefinition implements Hotkey
     public String getDisplayName()
     {
         return this.name;
+    }
+
+    @Override
+    public boolean isModified()
+    {
+        return this.keyBind.isModified();
+    }
+
+    @Override
+    public void resetToDefault()
+    {
+        this.keyBind.resetToDefault();
     }
 
     @Override

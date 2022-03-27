@@ -9,21 +9,18 @@ import fi.dy.masa.malilib.util.data.ModInfo;
 public interface ConfigTabRegistry
 {
     /**
-     * Registers a config tab provider for the given modId.
+     * Registers a config tab provider for the given modId
      */
     void registerConfigTabProvider(ModInfo modInfo, Supplier<List<ConfigTab>> tabProvider);
 
     /**
-     * Returns the registered config tab provider for the given mod.
-     * @param modInfo
-     * @return
+     * @return the registered config tab provider for the given mod
      */
     @Nullable
     Supplier<List<ConfigTab>> getConfigTabProviderFor(ModInfo modInfo);
 
     /**
-     * Returns a list of all registered config tabs.
-     * @return
+     * @return a list of all registered config tabs
      */
     List<ConfigTab> getAllRegisteredConfigTabs();
 }

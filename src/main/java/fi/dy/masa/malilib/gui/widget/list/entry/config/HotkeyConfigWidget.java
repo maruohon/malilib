@@ -1,70 +1,17 @@
 package fi.dy.masa.malilib.gui.widget.list.entry.config;
 
-import it.unimi.dsi.fastutil.ints.IntArrayList;
 import fi.dy.masa.malilib.config.option.HotkeyConfig;
 import fi.dy.masa.malilib.gui.config.ConfigWidgetContext;
-import fi.dy.masa.malilib.gui.widget.KeybindSettingsWidget;
-import fi.dy.masa.malilib.gui.widget.button.KeyBindConfigButton;
 import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
 
-public class HotkeyConfigWidget extends BaseConfigWidget<HotkeyConfig>
+public class HotkeyConfigWidget extends BaseKeyBindConfigWidget
 {
-    protected final HotkeyConfig config;
-    protected final IntArrayList initialValue = new IntArrayList();
-    protected final KeyBindConfigButton keybindButton;
-    protected final KeybindSettingsWidget settingsWidget;
-
     public HotkeyConfigWidget(HotkeyConfig config,
                               DataListEntryWidgetData constructData,
                               ConfigWidgetContext ctx)
     {
-        super(config, constructData, ctx);
+        super(config, constructData, ctx, config.getKeyBind());
 
-        this.config = config;
-        this.config.getKeyBind().getKeysToList(this.initialValue);
-
-        this.keybindButton = new KeyBindConfigButton(120, 20, this.config.getKeyBind(), ctx.getKeybindEditingScreen());
-        this.keybindButton.setHoverStringProvider("locked", this.config::getLockAndOverrideMessages);
-        this.keybindButton.setValueChangeListener(this::updateWidgetState);
-        this.keybindButton.setHoverInfoRequiresShift(true);
-
-        this.settingsWidget = new KeybindSettingsWidget(config.getKeyBind(), config.getDisplayName());
-    }
-
-    @Override
-    public void reAddSubWidgets()
-    {
-        super.reAddSubWidgets();
-
-        this.addWidget(this.keybindButton);
-        this.addWidget(this.settingsWidget);
-        this.addWidget(this.resetButton);
-    }
-
-    @Override
-    public void updateSubWidgetPositions()
-    {
-        super.updateSubWidgetPositions();
-
-        int y = this.getY() + 1;
-
-        this.keybindButton.setPosition(this.getElementsStartPosition(), y);
-        this.keybindButton.setWidth(this.getElementWidth() - 22);
-
-        this.settingsWidget.setPosition(this.keybindButton.getRight() + 2, y);
-        this.resetButton.setPosition(this.settingsWidget.getRight() + 4, y);
-    }
-
-    @Override
-    public void updateWidgetState()
-    {
-        super.updateWidgetState();
-        this.keybindButton.updateButtonState();
-    }
-
-    @Override
-    public boolean wasModified()
-    {
-        return this.config.getKeyBind().matches(this.initialValue) == false;
+        this.keybindButton.setHoverStringProvider("locked", config::getLockAndOverrideMessages);
     }
 }

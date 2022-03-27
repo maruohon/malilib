@@ -3,6 +3,7 @@ package fi.dy.masa.malilib.gui.widget.button;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
+import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import org.lwjgl.input.Keyboard;
 import fi.dy.masa.malilib.MaLiLibConfigs;
@@ -274,7 +275,7 @@ public class KeyBindConfigButton extends GenericButton
             return;
         }
 
-        List<HotkeyCategory> categories = Registry.HOTKEY_MANAGER.getHotkeyCategories();
+        ImmutableList<HotkeyCategory> categories = Registry.HOTKEY_MANAGER.getHotkeyCategories();
         List<Hotkey> overlaps = new ArrayList<>();
         List<String> hoverStrings = new ArrayList<>();
         List<String> overlapInfo = new ArrayList<>();
@@ -299,11 +300,12 @@ public class KeyBindConfigButton extends GenericButton
                 }
 
                 overlapInfo.add(category.getModInfo().getModName());
-                overlapInfo.add(" > " + category.getCategoryName());
+                overlapInfo.add(StringUtils.translate("malilib.hover.button.keybind.overlap.category",
+                                                      category.getCategoryName()));
 
                 for (Hotkey overlap : overlaps)
                 {
-                    String translationKey = "malilib.hover.button.keybind.overlap_line";
+                    String translationKey = "malilib.hover.button.keybind.overlap.keybind";
                     String name = overlap.getDisplayName();
                     String keys = overlap.getKeyBind().getKeysDisplayString();
                     overlapInfo.add(StringUtils.translate(translationKey, name, keys));

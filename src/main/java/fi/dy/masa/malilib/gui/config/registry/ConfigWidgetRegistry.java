@@ -33,6 +33,7 @@ import fi.dy.masa.malilib.gui.config.NestedConfigWidgetFactory;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.BlackWhiteListConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.BooleanConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.ColorConfigWidget;
+import fi.dy.masa.malilib.gui.widget.list.entry.config.CustomHotkeyEntryWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.DirectoryConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.DoubleConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.DualColorConfigWidget;
@@ -52,6 +53,7 @@ import fi.dy.masa.malilib.gui.widget.list.entry.config.list.IdentifierListConfig
 import fi.dy.masa.malilib.gui.widget.list.entry.config.list.ItemListConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.list.StatusEffectListConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.list.StringListConfigWidget;
+import fi.dy.masa.malilib.input.CustomHotkeyDefinition;
 
 public class ConfigWidgetRegistry
 {
@@ -110,6 +112,7 @@ public class ConfigWidgetRegistry
         this.registerConfigWidgetFactory(BlockListConfig.class,         BlockListConfigWidget::new);
         this.registerConfigWidgetFactory(BooleanConfig.class,           BooleanConfigWidget::new);
         this.registerConfigWidgetFactory(ColorConfig.class,             ColorConfigWidget::new);
+        this.registerConfigWidgetFactory(CustomHotkeyDefinition.class,  CustomHotkeyEntryWidget::new);
         this.registerConfigWidgetFactory(DirectoryConfig.class,         DirectoryConfigWidget::new);
         this.registerConfigWidgetFactory(DoubleConfig.class,            DoubleConfigWidget::new);
         this.registerConfigWidgetFactory(DualColorConfig.class,         DualColorConfigWidget::new);
@@ -135,5 +138,7 @@ public class ConfigWidgetRegistry
         this.registerConfigSearchInfo(BooleanConfig.class,          new ConfigSearchInfo<BooleanConfig>(true, false).setBooleanConfigGetter((c) -> c));
         this.registerConfigSearchInfo(HotkeyConfig.class,           new ConfigSearchInfo<HotkeyConfig>(false, true).setKeyBindGetter(HotkeyConfig::getKeyBind));
         this.registerConfigSearchInfo(HotkeyedBooleanConfig.class,  new ConfigSearchInfo<HotkeyedBooleanConfig>(true, true).setBooleanConfigGetter((c) -> c).setKeyBindGetter(HotkeyedBooleanConfig::getKeyBind));
+
+        this.registerConfigSearchInfo(CustomHotkeyDefinition.class, new ConfigSearchInfo<CustomHotkeyDefinition>(false, true).setKeyBindGetter(CustomHotkeyDefinition::getKeyBind));
     }
 }

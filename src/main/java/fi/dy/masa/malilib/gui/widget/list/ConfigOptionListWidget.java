@@ -18,6 +18,7 @@ import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetData;
 import fi.dy.masa.malilib.gui.widget.list.entry.DataListEntryWidgetFactory;
 import fi.dy.masa.malilib.gui.widget.list.entry.config.BaseConfigWidget;
 import fi.dy.masa.malilib.gui.widget.list.search.ConfigsSearchBarWidget;
+import fi.dy.masa.malilib.input.CustomHotkeyManager;
 import fi.dy.masa.malilib.registry.Registry;
 import fi.dy.masa.malilib.util.StringUtils;
 import fi.dy.masa.malilib.util.data.ConfigOnTab;
@@ -214,6 +215,7 @@ public class ConfigOptionListWidget<C extends ConfigInfo> extends DataListWidget
             if (scope == ConfigsSearchBarWidget.Scope.ALL_MODS)
             {
                 List<ConfigTab> allModTabs = Registry.CONFIG_TAB.getAllRegisteredConfigTabs();
+                allModTabs.add(CustomHotkeyManager.INSTANCE.getAllCustomHotkeysAsTabForConfigSearch());
                 final List<ConfigOnTab> tmpList = configsInScope;
                 allModTabs.forEach((tab) -> tab.getTabbedExpandedConfigs(tmpList::add));
             }

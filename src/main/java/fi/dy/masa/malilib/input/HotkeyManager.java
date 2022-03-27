@@ -1,6 +1,6 @@
 package fi.dy.masa.malilib.input;
 
-import java.util.List;
+import com.google.common.collect.ImmutableList;
 
 public interface HotkeyManager
 {
@@ -19,7 +19,7 @@ public interface HotkeyManager
     /**
      * Returns a list of all the currently registered hotkeys, grouped by categories
      */
-    List<HotkeyCategory> getHotkeyCategories();
+    ImmutableList<HotkeyCategory> getHotkeyCategories();
 
     /**
      * Causes the key -> keybinds map to be rebuilt for all registered hotkeys.

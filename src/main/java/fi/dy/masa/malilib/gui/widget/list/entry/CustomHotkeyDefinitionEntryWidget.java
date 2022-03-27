@@ -40,7 +40,7 @@ public class CustomHotkeyDefinitionEntryWidget extends BaseDataListEntryWidget<C
         this.nameLabelWidget.getPadding().setTop(2).setLeft(4);
         this.nameLabelWidget.setLabelStyledTextLines(name, actionName);
 
-        this.keybindButton = new KeyBindConfigButton(120, 20, data.getKeyBind(), screen);
+        this.keybindButton = new KeyBindConfigButton(160, 20, data.getKeyBind(), screen);
         this.settingsWidget = new KeybindSettingsWidget(data.getKeyBind(), data.getName());
         this.editButton = GenericButton.create("malilib.button.misc.edit", this::editHotkey);
         this.removeButton = GenericButton.create("malilib.button.misc.remove", this::removeHotkey);
