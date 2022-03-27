@@ -66,7 +66,7 @@ public class HotkeyedBooleanConfig extends BooleanConfig implements Hotkey
      */
     public void setSpecialToggleMessageFactory(@Nullable Function<BooleanConfig, String> messageFactory)
     {
-        this.toggleAction = new BooleanToggleAction(this, messageFactory, this.keyBind.getSettings()::getMessageType);
+        this.toggleAction = BooleanToggleAction.of(this, messageFactory, this.keyBind.getSettings()::getMessageType);
         HotkeyCallback callback = new ToggleBooleanWithMessageKeyCallback(this, messageFactory);
         this.keyBind.setCallback(callback);
     }

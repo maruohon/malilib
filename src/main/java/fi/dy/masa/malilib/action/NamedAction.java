@@ -31,6 +31,11 @@ public abstract class NamedAction extends CommonDescription
         this.setActionCommentIfTranslationExists(mod.getModId(), name);
     }
 
+    /**
+     * @return true if this action was created by the user, and not registered by a mod
+     */
+    public abstract boolean isUserAdded();
+
     public abstract ActionResult execute(ActionContext ctx);
 
     public ActionResult execute()

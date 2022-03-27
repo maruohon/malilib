@@ -25,6 +25,12 @@ public class ParameterizableNamedAction extends NamedAction
     }
 
     @Override
+    public boolean isUserAdded()
+    {
+        return false;
+    }
+
+    @Override
     public ActionResult execute(ActionContext ctx)
     {
         TextInputScreen screen = new TextInputScreen("malilib.title.screen.provide_arguments_for_action",

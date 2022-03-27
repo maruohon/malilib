@@ -19,6 +19,12 @@ public class SimpleNamedAction extends NamedAction
     }
 
     @Override
+    public boolean isUserAdded()
+    {
+        return false;
+    }
+
+    @Override
     public ActionResult execute(ActionContext ctx)
     {
         return this.action.execute(ctx);

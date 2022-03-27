@@ -27,6 +27,12 @@ public class ParameterizedNamedAction extends NamedAction
     }
 
     @Override
+    public boolean isUserAdded()
+    {
+        return true;
+    }
+
+    @Override
     public ActionResult execute(ActionContext ctx)
     {
         return this.baseAction.action.executeWithArgument(ctx, this.argument);

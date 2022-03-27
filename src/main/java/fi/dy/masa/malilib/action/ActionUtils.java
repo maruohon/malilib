@@ -31,62 +31,57 @@ public class ActionUtils
         return ActionResult.FAIL;
     }
 
-    public static SimpleNamedAction createToggleActionWithToggleMessage(ModInfo mod, String name, BooleanConfig config)
-    {
-        return createToggleActionWithToggleMessage(mod, name, config, null);
-    }
-
-    public static SimpleNamedAction createToggleActionWithToggleMessage(ModInfo mod, String name, BooleanConfig config,
-                                                                        @Nullable Function<BooleanConfig, String> messageFactory)
-    {
-        return SimpleNamedAction.of(mod, name, BooleanToggleAction.of(config, messageFactory));
-    }
-
-    public static SimpleNamedAction createToggleActionWithToggleMessage(ModInfo mod, String name, BooleanConfig config,
-                                                                  @Nullable Function<BooleanConfig, String> messageFactory,
-                                                                  @Nullable Supplier<MessageOutput> messageTypeSupplier)
-    {
-        return SimpleNamedAction.of(mod, name, BooleanToggleAction.of(config, messageFactory, messageTypeSupplier));
-    }
-
-    public static SimpleNamedAction register(ModInfo modInfo, String name, EventListener action)
+    public static SimpleNamedAction register(ModInfo modInfo,
+                                             String name,
+                                             EventListener action)
     {
         SimpleNamedAction namedAction = SimpleNamedAction.of(modInfo, name, action);
         Registry.ACTION_REGISTRY.registerAction(namedAction);
         return namedAction;
     }
 
-    public static SimpleNamedAction register(ModInfo modInfo, String name, Action action)
+    public static SimpleNamedAction register(ModInfo modInfo,
+                                             String name,
+                                             Action action)
     {
         SimpleNamedAction namedAction = SimpleNamedAction.of(modInfo, name, action);
         Registry.ACTION_REGISTRY.registerAction(namedAction);
         return namedAction;
     }
 
-    public static ParameterizableNamedAction register(ModInfo modInfo, String name, ParameterizedAction action)
+    public static ParameterizableNamedAction register(ModInfo modInfo,
+                                                      String name,
+                                                      ParameterizedAction action)
     {
         ParameterizableNamedAction namedAction = ParameterizableNamedAction.of(modInfo, name, action);
         Registry.ACTION_REGISTRY.registerAction(namedAction);
         return namedAction;
     }
 
-    public static SimpleNamedAction registerToggle(ModInfo modInfo, String name, BooleanConfig config)
+    public static SimpleNamedAction registerToggle(ModInfo modInfo,
+                                                   String name,
+                                                   BooleanConfig config)
     {
         return registerToggle(modInfo, name, config, null, null);
     }
 
-    public static SimpleNamedAction registerToggle(ModInfo modInfo, String name, BooleanConfig config,
+    public static SimpleNamedAction registerToggle(ModInfo modInfo,
+                                                   String name,
+                                                   BooleanConfig config,
                                                    @Nullable Function<BooleanConfig, String> messageFactory,
                                                    @Nullable Supplier<MessageOutput> messageTypeSupplier)
     {
-        SimpleNamedAction namedAction = createToggleActionWithToggleMessage(modInfo, name, config,
-                                                                            messageFactory, messageTypeSupplier);
+        SimpleNamedAction namedAction = SimpleNamedAction.of(modInfo, name,
+                                                             BooleanToggleAction.of(config, messageFactory,
+                                                                                    messageTypeSupplier));
         namedAction.setCommentTranslationKey(config.getCommentTranslationKey());
         Registry.ACTION_REGISTRY.registerAction(namedAction);
         return namedAction;
     }
 
-    public static SimpleNamedAction registerToggleKey(ModInfo modInfo, String name, HotkeyedBooleanConfig config)
+    public static SimpleNamedAction registerToggleKey(ModInfo modInfo,
+                                                      String name,
+                                                      HotkeyedBooleanConfig config)
     {
         SimpleNamedAction namedAction = SimpleNamedAction.of(modInfo, name, config.getToggleAction());
         Registry.ACTION_REGISTRY.registerAction(namedAction);
@@ -172,9 +167,7 @@ public class ActionUtils
 
         for (NamedAction action : Registry.ACTION_REGISTRY.getAllActions())
         {
-            if (action instanceof ParameterizedNamedAction ||
-                action instanceof AliasAction ||
-                action instanceof MacroAction)
+            if (action.isUserAdded())
             {
                 builder.add(action);
             }

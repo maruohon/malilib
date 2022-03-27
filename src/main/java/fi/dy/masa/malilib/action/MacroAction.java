@@ -26,6 +26,12 @@ public class MacroAction extends NamedAction
         this.coloredDisplayNameTranslationKey = "malilib.label.actions.macro_entry_widget_name";
     }
 
+    @Override
+    public boolean isUserAdded()
+    {
+        return true;
+    }
+
     public ImmutableList<NamedAction> getActionList()
     {
         return this.actionList;

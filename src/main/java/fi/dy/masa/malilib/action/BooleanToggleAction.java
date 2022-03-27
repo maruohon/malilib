@@ -14,13 +14,7 @@ public class BooleanToggleAction implements Action
     @Nullable protected final Function<BooleanConfig, String> messageFactory;
     @Nullable protected final Supplier<MessageOutput> messageTypeSupplier;
 
-    public BooleanToggleAction(BooleanConfig config,
-                               @Nullable Function<BooleanConfig, String> messageFactory)
-    {
-        this(config, messageFactory, null);
-    }
-
-    public BooleanToggleAction(BooleanConfig config,
+    protected BooleanToggleAction(BooleanConfig config,
                                @Nullable Function<BooleanConfig, String> messageFactory,
                                @Nullable Supplier<MessageOutput> messageTypeSupplier)
     {
@@ -36,12 +30,6 @@ public class BooleanToggleAction implements Action
         MessageOutput messageOutput = this.messageTypeSupplier != null ? this.messageTypeSupplier.get() : MessageOutput.CUSTOM_HOTBAR;
         MessageUtils.printBooleanConfigToggleMessage(messageOutput, this.config, this.messageFactory);
         return ActionResult.SUCCESS;
-    }
-
-    public static BooleanToggleAction of(BooleanConfig config,
-                                         @Nullable Function<BooleanConfig, String> messageFactory)
-    {
-        return new BooleanToggleAction(config, messageFactory);
     }
 
     public static BooleanToggleAction of(BooleanConfig config,
