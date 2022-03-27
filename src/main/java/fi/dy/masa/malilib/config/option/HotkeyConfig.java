@@ -1,7 +1,7 @@
 package fi.dy.masa.malilib.config.option;
 
-import java.util.List;
 import java.util.Locale;
+import com.google.gson.JsonElement;
 import fi.dy.masa.malilib.action.Action;
 import fi.dy.masa.malilib.action.NamedAction;
 import fi.dy.masa.malilib.input.Hotkey;
@@ -108,11 +108,9 @@ public class HotkeyConfig extends BaseConfigOption<KeyBind> implements Hotkey
         this.keyBind.resetToDefault();
     }
 
-    public void loadHotkeyValueFromConfig(List<Integer> keys, KeyBindSettings settings)
+    public void loadHotkeyValueFromConfig(JsonElement element, String name)
     {
-        this.keyBind.setKeys(keys);
-        this.keyBind.setSettings(settings);
-        this.cacheSavedValue();
+        this.keyBind.setValueFromJsonElement(element, name);
         this.onValueLoaded(this.keyBind);
     }
 }

@@ -25,7 +25,10 @@ import fi.dy.masa.malilib.util.restriction.UsageRestriction;
 
 public class JsonConfigSerializers
 {
-    public static <T> void loadGenericConfig(Consumer<T> consumer, Supplier<T> supplier, JsonElement element, String configName)
+    public static <T> void loadGenericConfig(Consumer<T> consumer,
+                                             Supplier<T> supplier,
+                                             JsonElement element,
+                                             String configName)
     {
         try
         {
@@ -78,7 +81,7 @@ public class JsonConfigSerializers
         }
     }
 
-    public static JsonElement saveHotkeydBooleanConfig(HotkeyedBooleanConfig config)
+    public static JsonElement saveHotkeyedBooleanConfig(HotkeyedBooleanConfig config)
     {
         JsonObject obj = new JsonObject();
         obj.add("enabled", new JsonPrimitive(config.getBooleanValue()));
@@ -86,7 +89,7 @@ public class JsonConfigSerializers
         return obj;
     }
 
-    public static void loadHotkeydBooleanConfig(HotkeyedBooleanConfig config, JsonElement element, String configName)
+    public static void loadHotkeyedBooleanConfig(HotkeyedBooleanConfig config, JsonElement element, String configName)
     {
         try
         {
@@ -100,7 +103,7 @@ public class JsonConfigSerializers
                     config.getKeyBind().setValueFromJsonElement(JsonUtils.getNestedObject(obj, "hotkey", false), configName);
                 }
 
-                config.loadHotkeydBooleanValueFromConfig(booleanValue);
+                config.loadHotkeyedBooleanValueFromConfig(booleanValue);
             }
             else
             {

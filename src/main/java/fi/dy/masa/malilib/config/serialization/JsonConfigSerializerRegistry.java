@@ -100,13 +100,13 @@ public class JsonConfigSerializerRegistry
         this.registerSerializers(DirectoryConfig.class, (c) -> new JsonPrimitive(c.getStringValue()),   (c, d, n) -> JsonConfigSerializers.loadGenericConfig(c::loadValueFromConfig,        () -> new File(d.getAsString()), d, n));
         this.registerSerializers(DoubleConfig.class,    (c) -> new JsonPrimitive(c.getDoubleValue()),   (c, d, n) -> JsonConfigSerializers.loadGenericConfig(c::loadValueFromConfig,        d::getAsDouble, d, n));
         this.registerSerializers(FileConfig.class,      (c) -> new JsonPrimitive(c.getStringValue()),   (c, d, n) -> JsonConfigSerializers.loadGenericConfig(c::loadValueFromConfig,        () -> new File(d.getAsString()), d, n));
-        this.registerSerializers(HotkeyConfig.class,    (c) -> c.getKeyBind().getAsJsonElement(),       (c, d, n) -> c.getKeyBind().setValueFromJsonElement(d, n));
+        this.registerSerializers(HotkeyConfig.class,    (c) -> c.getKeyBind().getAsJsonElement(),       HotkeyConfig::loadHotkeyValueFromConfig);
         this.registerSerializers(IntegerConfig.class,   (c) -> new JsonPrimitive(c.getIntegerValue()),  (c, d, n) -> JsonConfigSerializers.loadGenericConfig(c::loadValueFromConfig,        d::getAsInt, d, n));
         this.registerSerializers(StringConfig.class,    (c) -> new JsonPrimitive(c.getValue()),         (c, d, n) -> JsonConfigSerializers.loadGenericConfig(c::loadValueFromConfig,        d::getAsString, d, n));
 
         this.registerSerializers(BlackWhiteListConfig.class,    JsonConfigSerializers::saveBlackWhiteListConfig,    JsonConfigSerializers::loadBlackWhiteListConfig);
         this.registerSerializers(DualColorConfig.class,         JsonConfigSerializers::saveDualColorConfig,         JsonConfigSerializers::loadDualColorConfig);
-        this.registerSerializers(HotkeyedBooleanConfig.class,   JsonConfigSerializers::saveHotkeydBooleanConfig,    JsonConfigSerializers::loadHotkeydBooleanConfig);
+        this.registerSerializers(HotkeyedBooleanConfig.class,   JsonConfigSerializers::saveHotkeyedBooleanConfig,   JsonConfigSerializers::loadHotkeyedBooleanConfig);
         this.registerSerializers(OptionalDirectoryConfig.class, JsonConfigSerializers::saveOptionalDirectoryConfig, JsonConfigSerializers::loadOptionalDirectoryConfig);
         this.registerSerializers(OptionListConfig.class,        JsonConfigSerializers::saveOptionListConfig,        JsonConfigSerializers::loadOptionListConfig);
         this.registerSerializers(ValueListConfig.class,         JsonConfigSerializers::saveValueListConfig,         JsonConfigSerializers::loadValueListConfig);

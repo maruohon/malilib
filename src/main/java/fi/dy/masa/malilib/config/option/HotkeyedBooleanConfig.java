@@ -125,7 +125,7 @@ public class HotkeyedBooleanConfig extends BooleanConfig implements Hotkey
         this.keyBind.resetToDefault();
     }
 
-    public void loadHotkeydBooleanValueFromConfig(boolean booleanValue)
+    public void loadHotkeyedBooleanValueFromConfig(boolean booleanValue)
     {
         this.value = booleanValue;
         this.cacheSavedValue();
